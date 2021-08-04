@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nia.ip.syslog.linkage.mapper.SyslogMapper">
+
+    <select id="selectIpYbNumKey" resultType="string">
+        SELECT nextval('nia.seq_ip_syslog') ::VARCHAR AS YD_NUM
+    </select>
+
+    <insert id="insertSyslogYd" parameterType="com.nia.ip.syslog.linkage.vo.syslog.SyslogListVo">
+        INSERT INTO NIA.TB_IP_SYSLOG_YD
+        (
+            YD_NUM, CLASSIFY, ROW_COUNT, INSERT_TIME
+        )
+        VALUES(
+            #{ydNum}, #{classify}, #{count}, #{insertTime}
+        )
+    </insert>
+
+    <insert id="insertSyslogData" parameterType="java.util.HashMap">
+      <if test="syslogList.size != 0">
+        INSERT INTO NIA.TB_IP_SYSLOG_DATA
+        (
+            YD_NUM, IP_DATA
+        )
+        VALUES
+        <foreach collection="syslogList" item="item" separator=",">
+        (
+            #{ydNum}, #{item.msg}
+        )
+        </foreach>
+      </if>
+    </insert>
+</mapper>
+
+

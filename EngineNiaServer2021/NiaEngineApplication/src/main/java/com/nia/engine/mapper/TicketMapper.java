@@ -1,0 +1,173 @@
+package com.nia.engine.mapper;
+
+import com.nia.engine.vo.*;
+import org.apache.ibatis.annotations.Mapper;
+
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@Mapper
+public interface TicketMapper{
+
+	/**
+	 * 티켓 조회
+	 * @return
+	 */
+	RCATicket selectRcaTicket(String ticketId);
+
+	/**
+	 * 티켓 리스트 조회
+	 * @return
+	 */
+	List<RCATicket> selectRcaTicketList(String day);
+
+	/**
+	 * 티켓 알람 리스트 조회
+	 * @return
+	 */
+	List<RCATicketAl> selectRcaTicketAlList(String ticketId);
+
+	/**
+	 * 티켓 key 생성
+	 * @param
+	 * @return
+	 */
+	String selectTicketKey();
+
+	/**
+	 * 티켓 데이터 저장
+	 * @param
+	 * @return
+	 */
+	void insertRcaTicket(RCATicket rcaTicket);
+
+	/**
+	 * 티켓 데이터 알람 저장
+	 * @param
+	 * @return
+	 */
+	void insertRcaTicketAl(Map<String, Object> map);
+
+	/**
+	 * Rca Ticket Status 저장
+	 * @param
+	 * @return
+	 */
+	void insertRCATicketHandlingStatus(RCATicketHandlingStatus rcaTicketStatus);
+
+	/**
+	 * Rca Ticket Status update
+	 * @param
+	 * @return
+	 */
+	void updateRCATicketHandlingStatus(RCATicketHandlingStatus rcaTicketStatus);
+
+	/**
+	 * Rca Ticket Status Hist 저장
+	 * @param
+	 * @return
+	 */
+	void insertRCATicketHandlingStatusHist(RCATicketHandlingStatus rcaTicketStatus);
+
+	/**
+	 * Rca Ticket Status 업데이트
+	 * @param
+	 * @return
+	 */
+	void updateRcaTicketChild(RCATicket rcaTicket);
+
+	/**
+	 * 티켓 updateTime
+	 * @param
+	 * @return
+	 */
+	void updateRcaTicketUpdateTime(HashMap<String, String> ticketUpdateTime);
+
+	/**
+	 * ticket cnt 저장
+	 * @param
+	 * @return
+	 */
+	void insertRcaTicketCnt(RCATicket rcaTicket);
+
+	/**
+	 * 티켓 클리어 체크
+	 * @return
+	 */
+	List<String> selectClearTicketCheckList();
+
+	/**
+	 * Handling Time 조회
+	 * @return
+	 */
+	String selectTicketHandlingStatusCurrent(String ticket_id);
+
+	/**
+	 * Sop 저장
+	 * @param
+	 * @return
+	 */
+	void insertSop(RCATicketHandlingStatus rcaTicketHandlingStatus);
+
+	/**
+	 * Sop Performance 저장
+	 * @param
+	 * @return
+	 */
+	void insertSopPerformance(RCATicketHandlingStatus rcaTicketHandlingStatus);
+
+	/**
+	 * Sop Mail 저장
+	 * @param
+	 * @return
+	 */
+	void insertSopMail(RCATicketHandlingStatus rcaTicketHandlingStatus);
+
+	/**
+	 * Sop 업데이트
+	 * @param
+	 * @return
+	 */
+	void updateSop(RCATicketHandlingStatus rcaTicketHandlingStatus);
+
+	/**
+	 * Rca Ticket Current State 업데이트
+	 * @param
+	 * @return
+	 */
+	void updateRcaTicketCurrentState(RCATicketHandlingStatus rcaTicketHandlingStatus);
+
+	/**
+	 * TICKET CLEAR
+	 *
+	 * @return
+	 */
+	String fcClearTicket(String parentTicketId);
+
+	/**
+	 * ALARM CLEARL
+	 *
+	 * @param alarmNo
+	 * @return
+	 */
+	List<String> fcClearAlarm(String alarmNo);
+
+
+	/**
+	 * fcClearTicketCheck
+	 *
+	 * @param ticketId
+	 * @return
+	 */
+	ClearTicketResultVo fcClearTicketCheck(String ticketId);
+
+	/**
+	 * Sop key 생성
+	 * @param
+	 * @return
+	 */
+	String selectSopKey();
+}

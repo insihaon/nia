@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nia.ai.per.ap.mapper.PerformanceMapper">
+
+    <select id="selectPerformanceList" resultType="com.nia.ai.per.ap.vo.RoadmPerformanceOrgVo" parameterType="java.util.HashMap">
+       WITH IN_DATA AS (
+            SELECT A.SYSNAME, A.ROADMCODE, PORT, UNIT, TMPER, IN_VALUE_CUR, IN_VALUE_MIN, IN_VALUE_MAX, IN_VALUE_AVE, OCRTIME, IS_IN_ROW_SIGNAL
+              FROM(
+                    SELECT A.SYSNAME, A.ROADMCODE, SPLIT_PART(PORT, '-', 1) AS PORT, UNIT, TMPER
+                         , CASE WHEN A.ROADMCODE LIKE 'ROADM' AND PORT LIKE '%LINE_RX%' THEN RXCUR
+                                WHEN A.ROADMCODE LIKE 'REPEATER' AND PORT LIKE '%LINE_RX%' THEN RXCUR
+                            END AS IN_VALUE_CUR
+                         , CASE WHEN A.ROADMCODE LIKE 'ROADM' AND PORT LIKE '%LINE_RX%' THEN RXMIN
+                                WHEN A.ROADMCODE LIKE 'REPEATER' AND PORT LIKE '%LINE_RX%' THEN RXMIN
+                            END AS IN_VALUE_MIN
+                         , CASE WHEN A.ROADMCODE LIKE 'ROADM' AND PORT LIKE '%LINE_RX%' THEN RXMAX
+                                WHEN A.ROADMCODE LIKE 'REPEATER' AND PORT LIKE '%LINE_RX%' THEN RXMAX
+                            END AS IN_VALUE_MAX
+                         , CASE WHEN A.ROADMCODE LIKE 'ROADM' AND PORT LIKE '%LINE_RX%' THEN RXAVE
+                                WHEN A.ROADMCODE LIKE 'REPEATER' AND PORT LIKE '%LINE_RX%' THEN RXAVE
+                            END AS IN_VALUE_AVE
+                         , CASE WHEN A.DIRECTION = 'RX' OR A.DIRECTION = 'ALL' THEN TRUE
+                                 ELSE FALSE END AS IS_IN_ROW_SIGNAL
+                         , OCRTIME
+                      FROM(
+                        SELECT A.SYSNAME, CASE WHEN B.SYSNAME LIKE '%중계%' THEN 'REPEATER' ELSE 'ROADM' END ROADMCODE
+                             , PORT, UNIT, TMPER, DIRECTION, RXCUR, RXMIN, RXMAX, RXAVE, TXCUR, TXMIN, TXMAX, TXAVE, OCRTIME
+                          FROM(
+                               SELECT DISTINCT SYSNAME, IP, PORT, UNIT, TMPER, DIRECTION
+                                      , RXCUR, RXMIN, RXMAX, RXAVE
+                                      , TXCUR, TXMIN, TXMAX, TXAVE, OCRTIME
+                                   from(
+                                        SELECT SYSNAME, IP, PORT, UNIT, TMPER
+                                              , CASE WHEN DIRECTION != NEXT_DIRECTION THEN 'ALL'
+                                                      WHEN DIRECTION != PRE_DIRECTION THEN 'ALL'
+                                                      ELSE DIRECTION
+                                                  END AS DIRECTION
+                                              , RXCUR, RXMIN, RXMAX, RXAVE
+                                              , TXCUR, TXMIN, TXMAX, TXAVE, OCRTIME
+                                           FROM(
+                                                 SELECT SYSNAME, SPLIT_PART(SYSNAME, '-', 1) AS IP, PORT, UNIT, TMPER
+                                                      , DIRECTION, RXCUR, RXMIN, RXMAX, RXAVE
+                                                      , TXCUR, TXMIN, TXMAX, TXAVE, OCRTIME
+                                                      , LEAD(DIRECTION) over CLIENT_WINDOW as NEXT_DIRECTION
+                                                      , LAG(DIRECTION) over CLIENT_WINDOW as PRE_DIRECTION
+                                                  FROM RCA.TB_AI_PERFORMACE_MST
+                                                 WHERE OCRTIME = #{ocrTime}::TIMESTAMP
+                                                   AND (PORT LIKE '%LINE_RX%' OR PORT LIKE '%ADD_IN%')
+                                                WINDOW CLIENT_WINDOW AS (PARTITION BY SYSNAME ORDER BY SYSNAME, PORT)
+                                           ) A
+                                   ) A
+                          ) A
+                         INNER JOIN NIA.TB_EQUIP_MST B
+                           ON A.IP = B.TID
+                    ) A
+              ) A
+            WHERE A.IN_VALUE_CUR IS NOT NULL
+        ),
+        OUT_DATA AS (
+            SELECT A.SYSNAME, A.ROADMCODE, PORT, UNIT, TMPER, OUT_VALUE_CUR, OUT_VALUE_MIN, OUT_VALUE_MAX, OUT_VALUE_AVE, OCRTIME, IS_OUT_ROW_SIGNAL
+              FROM(
+                    SELECT A.SYSNAME, A.ROADMCODE, SPLIT_PART(PORT, '-', 1) AS PORT, UNIT, TMPER
+                         , CASE WHEN A.ROADMCODE LIKE 'ROADM' AND PORT LIKE '%ADD_IN%' THEN TXCUR
+                                WHEN A.ROADMCODE LIKE 'REPEATER' AND PORT LIKE '%LINE_RX%' THEN TXCUR
+                            END AS OUT_VALUE_CUR
+                         , CASE WHEN A.ROADMCODE LIKE 'ROADM' AND PORT LIKE '%ADD_IN%' THEN TXMIN
+                                WHEN A.ROADMCODE LIKE 'REPEATER' AND PORT LIKE '%LINE_RX%' THEN TXMIN
+                            END AS OUT_VALUE_MIN
+                         , CASE WHEN A.ROADMCODE LIKE 'ROADM' AND PORT LIKE '%ADD_IN%' THEN TXMAX
+                                WHEN A.ROADMCODE LIKE 'REPEATER' AND PORT LIKE '%LINE_RX%' THEN TXMAX
+                            END AS OUT_VALUE_MAX
+                         , CASE WHEN A.ROADMCODE LIKE 'ROADM' AND PORT LIKE '%ADD_IN%' THEN TXAVE
+                                WHEN A.ROADMCODE LIKE 'REPEATER' AND PORT LIKE '%LINE_RX%' THEN TXAVE
+                            END AS OUT_VALUE_AVE
+                         , CASE WHEN A.DIRECTION = 'TX' OR A.DIRECTION = 'ALL' THEN TRUE
+                                 ELSE FALSE END AS IS_OUT_ROW_SIGNAL
+                         , OCRTIME
+                      FROM(
+                        SELECT A.SYSNAME, CASE WHEN B.SYSNAME LIKE '%중계%' THEN 'REPEATER' ELSE 'ROADM' END ROADMCODE
+                             , PORT, UNIT, TMPER, DIRECTION, RXCUR, RXMIN, RXMAX, RXAVE, TXCUR, TXMIN, TXMAX, TXAVE, OCRTIME
+                          FROM(
+                                SELECT DISTINCT SYSNAME, IP, PORT, UNIT, TMPER, DIRECTION
+                                      , RXCUR, RXMIN, RXMAX, RXAVE
+                                      , TXCUR, TXMIN, TXMAX, TXAVE, OCRTIME
+                                   FROM(
+                                        SELECT SYSNAME, IP, PORT, UNIT, TMPER
+                                              , CASE WHEN DIRECTION != NEXT_DIRECTION THEN 'ALL'
+                                                      WHEN DIRECTION != PRE_DIRECTION THEN 'ALL'
+                                                      ELSE DIRECTION
+                                                  END AS DIRECTION
+                                              , RXCUR, RXMIN, RXMAX, RXAVE
+                                              , TXCUR, TXMIN, TXMAX, TXAVE, OCRTIME
+                                           FROM(
+                                                 SELECT SYSNAME, SPLIT_PART(SYSNAME, '-', 1) AS IP, PORT, UNIT, TMPER
+                                                      , DIRECTION, RXCUR, RXMIN, RXMAX, RXAVE
+                                                      , TXCUR, TXMIN, TXMAX, TXAVE, OCRTIME
+                                                      , LEAD(DIRECTION) over CLIENT_WINDOW as NEXT_DIRECTION
+                                                      , LAG(DIRECTION) over CLIENT_WINDOW as PRE_DIRECTION
+                                                  FROM RCA.TB_AI_PERFORMACE_MST
+                                                 WHERE OCRTIME = #{ocrTime}::TIMESTAMP
+                                                   AND (PORT LIKE '%LINE_RX%' OR PORT LIKE '%ADD_IN%')
+                                                WINDOW CLIENT_WINDOW AS (PARTITION BY SYSNAME ORDER BY SYSNAME, PORT)
+                                           ) A
+                                   ) A
+                          ) A
+                         INNER JOIN NIA.TB_EQUIP_MST B
+                           ON A.IP = B.TID
+                    ) A
+              ) A
+            WHERE A.OUT_VALUE_CUR IS NOT NULL
+        )
+        SELECT A.SYSNAME AS sysname, A.ROADMCODE AS roadmCode, A.PORT AS port, A.UNIT AS unit, A.TMPER AS tmper
+              , A.IN_VALUE_CUR AS inValueCur, A.IN_VALUE_MIN AS inValueMin, A.IN_VALUE_MAX AS inValueMax, A.IN_VALUE_AVE AS inValueAve
+              , B.OUT_VALUE_CUR AS outValueCur, B.OUT_VALUE_MIN AS outValueMin, B.OUT_VALUE_MAX AS outValueMax, B.OUT_VALUE_AVE AS outValueAve
+              , A.OCRTIME AS ocrtime, A.IS_IN_ROW_SIGNAL AS isInRowSignal, B.IS_OUT_ROW_SIGNAL AS isOutRowSignal
+          FROM IN_DATA A
+          LEFT OUTER JOIN OUT_DATA B
+            ON A.SYSNAME = B.SYSNAME
+           AND A.PORT = B.PORT
+         ORDER BY SYSNAME, PORT
+    </select>
+    
+    <insert id="insertRowSignalData" parameterType="java.util.HashMap">
+      <if test="roadmPerformanceList.size != 0">
+         INSERT INTO RCA.TB_ROADM_OPTICAL_PERFORMANCE
+         (
+            TRUNK_ID, SYSNAME, ROADM_CODE, PORT, UNIT, TMPER,
+            IN_VALUE_CUR, IN_VALUE_MIN, IN_VALUE_MAX, IN_VALUE_AVE, OUT_VALUE_CUR,
+            OUT_VALUE_MIN, OUT_VALUE_MAX, OUT_VALUE_AVE, OCRTIME, ROUTE_NUM,
+            DIRECTION, IS_IN_ROW_SIGNAL, IS_OUT_ROW_SIGNAL
+         )
+         VALUES
+         <foreach collection="roadmPerformanceList" item="item" separator=",">
+         (
+            #{item.trunkId}, #{item.sysname}, #{item.roadmCode}, #{item.port}, #{item.unit}, #{item.tmper},
+            #{item.inValueCur}, #{item.inValueMin}, #{item.inValueMax}, #{item.inValueAve}, #{item.outValueCur},
+            #{item.outValueMin}, #{item.outValueMax}, #{item.outValueAve}, #{item.ocrtime}, #{item.routeNum},
+            #{item.direction}, #{item.isInRowSignal}, #{item.isOutRowSignal}
+         )
+         </foreach>
+      </if>
+    </insert>
+</mapper>
+
+

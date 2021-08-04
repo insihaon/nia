@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nia.data.linkage.mapper.TopologyMapper">
+
+    <select id="selectTsdnTopology" resultType="com.nia.data.linkage.vo.topology.TsdnTopologyVo">
+        SELECT TOPOLOGY_ID AS topologyId, NEW_SYSNAMEA AS newSysnamea, NEW_PTPNAMEA AS newPtpnamea, NEW_SYSNAMEZ AS newSysnamez, NEW_PTPNAMEZ AS newPtpnamez
+              , OLD_SYSNAMEA AS oldSysnamea, OLD_PTPNAMEA AS oldPtpnamea, OLD_SYSNAMEZ AS oldSysnamez, OLD_PTPNAMEZ AS oldPtpnamez
+          FROM NIA.TB_TSDN_TOPOLOGY
+
+    </select>
+
+    <insert id="insertTopology" parameterType="java.util.HashMap">
+      <if test="topologyVoList.size != 0">
+        INSERT INTO NIA.TB_TOPOLOGY_ELK( LINK_ID, SYSNAMEA, PTPNAMEA, SYSNAMEZ, PTPNAMEZ, TOPOLOGY_ID)
+        VALUES
+        <foreach collection="topologyVoList" item="item" separator=",">
+           (#{item.linkId}, #{item.sysnamea}, #{item.ptpnamea}, #{item.sysnamez}, #{item.ptpnamez}, #{item.topologyId})
+       </foreach>
+      </if>
+    </insert>
+
+    <insert id="insertEquipPort" parameterType="java.util.HashMap">
+      <if test="equipPortList.size != 0">
+        INSERT INTO NIA.TB_EQUIP_PORT(SYSNAME, PTPNAME, PORT_TYPE)
+        VALUES
+        <foreach collection="equipPortList" item="item" separator=",">
+           (#{item.sysname}, #{item.ptpname}, #{item.portType})
+       </foreach>
+      </if>
+    </insert>
+
+    <insert id="insertTsdnService" parameterType="java.util.HashMap">
+      <if test="serviceVoList.size != 0">
+        INSERT INTO NIA.TB_TSDN_SERVICE_MST
+        (
+            SERVICE_ID, SERVICE_NAME, DST_NODE_ID, DST_TP_ID, SRC_NODE_ID,
+            SRC_TP_ID, CBS, TOPO_ID, PIR, PBS,
+            SERVICE_TYPE, SERVICE_OFFER_NUM, RESERVED_NUM, CIR, CREATED_DATE
+        ) VALUES
+        <foreach collection="serviceVoList" item="item" separator=",">
+        (
+            #{item.serviceId}, #{item.serviceName}, #{item.dstNodeId}, #{item.dstTpId}, #{item.srcNodeId},
+            #{item.srcTpId}, #{item.cbs}, #{item.topoId}, #{item.pir}, #{item.pbs},
+            #{item.serviceType}, #{item.serviceOfferNum}, #{item.reservedNum}, #{item.cir}, #{item.createdDate})
+       </foreach>
+      </if>
+    </insert>
+
+    <insert id="insertTsdnServicePce" parameterType="java.util.HashMap">
+      <if test="servicePceVoList.size != 0">
+        INSERT INTO NIA.TB_TSDN_SERVICE_PCE_MST
+        (SERVICE_ID, COST, PCE_INDEX, DST_NODE_ID, SRC_TP_ID, DST_TP_ID, SRC_NODE_ID)
+        VALUES
+        <foreach collection="servicePceVoList" item="item" separator=",">
+           (#{item.serviceId}, #{item.cost}, #{item.pceIndex}, #{item.dstNodeId}, #{item.srcTpId}, #{item.dstTpId}, #{item.srcNodeId})
+       </foreach>
+      </if>
+    </insert>
+
+    <insert id="insertTsdnServiceNode" parameterType="java.util.HashMap">
+      <if test="serviceNodeVoList.size != 0">
+        INSERT INTO NIA.TB_TSDN_SERVICE_NODE_MST
+        (SERVICE_ID, NODE_INDEX, IS_ROOT_NODE, NODE_ID, TAG_INDEX, TAG_TYPE, TAG, TP_ID)
+        VALUES
+        <foreach collection="serviceNodeVoList" item="item" separator=",">
+           (#{item.serviceId}, #{item.nodeIndex}, #{item.isRootNode}, #{item.nodeId}, #{item.tagIndex}, #{item.tagType}, #{item.tag}, #{item.tpId})
+       </foreach>
+      </if>
+    </insert>
+
+    <delete id="deleteTopology">
+      DELETE FROM NIA.TB_TOPOLOGY_ELK
+    </delete>
+
+    <delete id="deleteEquipPort">
+      DELETE FROM NIA.TB_EQUIP_PORT
+    </delete>
+
+    <delete id="deleteTsdnService">
+      DELETE FROM NIA.TB_TOPOLOGY
+    </delete>
+
+    <delete id="deleteTsdnServicePce">
+      DELETE FROM NIA.TB_EQUIP_PORT
+    </delete>
+
+</mapper>
+
+

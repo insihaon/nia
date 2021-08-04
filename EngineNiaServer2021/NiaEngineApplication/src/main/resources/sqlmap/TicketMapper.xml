@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nia.engine.mapper.TicketMapper">
+
+    <resultMap id="RCATicket" type="com.nia.engine.vo.RCATicket">
+        <result property="ticketId" 					column="TICKET_ID"/>
+        <result property="clusterNo" 					column="CLUSTER_NO"/>
+        <result property="ticketType" 					column="TICKET_TYPE"/>
+        <result property="ticketGenerationTime"	 		column="TICKET_GENERATION_TIME"/>
+        <result property="faultTime"	 				column="FAULT_TIME"/>
+        <result property="rootCauseType"	 			column="ROOT_CAUSE_TYPE"/>
+        <result property="rootCauseCode"	 			column="ROOT_CAUSE_CODE"/>
+        <result property="rootCauseDomain" 				column="ROOT_CAUSE_DOMAIN"/>
+        <result property="relatedAlarmCnt" 				column="TOTAL_RELATED_ALARM_CNT"/>
+        <result property="status" 						column="STATUS"/>
+        <result property="ticketRcaResultCode" 			column="TICKET_RCA_RESULT_CODE"/>
+        <result property="ticketRcaResultDtlCode" 		column="TICKET_RCA_RESULT_DTL_CODE"/>
+        <result property="ticketRcaResultOrigDtlCode" 	column="TICKET_RCA_RESULT_ORIG_DTL_CODE"/>
+        <result property="parentTicketId" 				column="PARENT_TICKET_ID"/>
+        <result property="ticketUpdateTime"	 	    	column="TICKET_UPDATE_TIME"/>
+        <result property="occur"	 	    	        column="OCCUR"/>
+    </resultMap>
+
+    <resultMap id="RCATicketAl" type="com.nia.engine.vo.RCATicketAl">
+        <result property="ticketId" 					column="TICKET_ID"/>
+        <result property="ticketAlId" 					column="TICKET_AL_ID"/>
+        <result property="rootCauseAlarmNoA" 			column="ROOT_CAUSE_ALARM_NOA"/>
+        <result property="rootCauseSysnameA" 			column="ROOT_CAUSE_SYSNAMEA"/>
+        <result property="rootCauseEquipTypeA" 			column="ROOT_CAUSE_EQUIP_TYPEA"/>
+        <result property="rootCauseUnitA" 				column="ROOT_CAUSE_UNITA"/>
+        <result property="rootCauseSlotA" 				column="ROOT_CAUSE_SLOTA"/>
+        <result property="rootCausePortA" 				column="ROOT_CAUSE_PORTA"/>
+        <result property="rootCauseAlarmLevelA" 		column="ROOT_CAUSE_ALARM_LEVELA"/>
+        <result property="rootCauseAlarmNoZ" 			column="ROOT_CAUSE_ALARM_NOZ"/>
+        <result property="rootCauseSysnameZ" 			column="ROOT_CAUSE_SYSNAMEZ"/>
+        <result property="rootCauseEquipTypeZ" 			column="ROOT_CAUSE_EQUIP_TYPEZ"/>
+        <result property="rootCauseUnitZ" 				column="ROOT_CAUSE_UNITZ"/>
+        <result property="rootCauseSlotZ" 				column="ROOT_CAUSE_SLOTZ"/>
+        <result property="rootCausePortZ" 				column="ROOT_CAUSE_PORTZ"/>
+        <result property="rootCauseAlarmLevelZ" 		column="ROOT_CAUSE_ALARM_LEVELZ"/>
+        <result property="rootCausePtpnameA" 			column="ROOT_CAUSE_PTPNAMEA"/>
+        <result property="rootCausePtpnameZ" 			column="ROOT_CAUSE_PTPNAMEZ"/>
+    </resultMap>
+
+    <resultMap id="RCATicketHandlingStatus" type="com.nia.engine.vo.RCATicketHandlingStatus">
+        <result property="ticketId"	        		column="TICKET_ID"/>
+        <result property="handlingTime"	    		column="HANDLING_TIME"/>
+        <result property="status"	      	  		column="STATUS"/>
+        <result property="autoMation"	    		column="AUTOMATION"/>
+        <result property="handlingUser"	    		column="HANDLING_USER"/>
+        <result property="handlingDept"	    		column="HANDLING_DEPT"/>
+        <result property="handlingAgency"	    	column="HANDLING_AGENCY"/>
+        <result property="handlingContent"	    	column="HANDLING_CONTENT"/>
+        <result property="handlingFinContent"	   	column="HANDLING_FIN_CONTENT"/>
+        <result property="rcaAccuracy"	    		column="RCA_ACCURACY"/>
+        <result property="reasonLevel1"	    		column="REASON_LEVEL1"/>
+        <result property="reasonLevel2"	    		column="REASON_LEVEL2"/>
+        <result property="reasonLevel3"	    		column="REASON_LEVEL3"/>
+        <result property="chargeLevel1"	    		column="CHARGE_LEVEL1"/>
+        <result property="chargeLevel2"	    		column="CHARGE_LEVEL2"/>
+        <result property="finLevel1"	    		column="FIN_LEVEL1"/>
+        <result property="handlingFinUser"	    	column="HANDLING_FIN_USER"/>
+        <result property="handlingFinDept"	    	column="HANDLING_FIN_DEPT"/>
+        <result property="handlingFinAgency"	    column="HANDLING_FIN_AGENCY"/>
+    </resultMap>
+
+    <resultMap id="RCATicketCntVo" type="com.nia.engine.vo.RCATicketCntVo">
+        <result property="ticketId"	        		    column="TICKET_ID"/>
+        <result property="totalAlarmCount"	            column="TOTAL_ALARM_COUNT"/>
+        <result property="relatedAlarmCount"	        column="RELATED_ALARM_COUNT"/>
+        <result property="childCount"      	  	        column="CHILD_COUNT"/>
+    </resultMap>
+
+    <resultMap id="ClearTicketResultVo" type="com.nia.engine.vo.ClearTicketResultVo">
+        <result property="clearAlarmTicket" 			column="CLEAR_ALARM_TICKET_LIST"/>
+        <result property="isAllClearTicket" 			column="IS_ALL_CLEAR"/>
+    </resultMap>
+
+    <select id="selectRcaTicket" parameterType="string" resultMap="RCATicket">
+        SELECT TICKET_ID, CLUSTER_NO, TICKET_TYPE, TICKET_GENERATION_TIME, FAULT_TIME, ROOT_CAUSE_TYPE,
+               ROOT_CAUSE_CODE, ROOT_CAUSE_DOMAIN, TOTAL_RELATED_ALARM_CNT, STATUS, TICKET_RCA_RESULT_CODE,
+               TICKET_RCA_RESULT_DTL_CODE, TICKET_RCA_RESULT_ORIG_DTL_CODE, PARENT_TICKET_ID, TICKET_UPDATE_TIME, OCCUR
+        FROM RCA.TB_RCA_TICKET_CURRENT
+        WHERE TICKET_GENERATION_TIME > NOW() - INTERVAL '4DAY'
+            AND TICKET_ID = #{ticketId}
+    </select>
+
+    <select id="selectRcaTicketList" parameterType="string" resultMap="RCATicket">
+        SELECT TICKET_ID, CLUSTER_NO, TICKET_TYPE, TICKET_GENERATION_TIME, FAULT_TIME, ROOT_CAUSE_TYPE,
+               ROOT_CAUSE_CODE, ROOT_CAUSE_DOMAIN, TOTAL_RELATED_ALARM_CNT, STATUS, TICKET_RCA_RESULT_CODE,
+               TICKET_RCA_RESULT_DTL_CODE, TICKET_RCA_RESULT_ORIG_DTL_CODE, PARENT_TICKET_ID, TICKET_UPDATE_TIME, OCCUR
+        FROM(
+                SELECT T.TICKET_ID, T.CLUSTER_NO, T.TICKET_TYPE, T.TICKET_GENERATION_TIME, T.FAULT_TIME, T.ROOT_CAUSE_TYPE,
+                       T.ROOT_CAUSE_CODE, T.ROOT_CAUSE_DOMAIN, T.TOTAL_RELATED_ALARM_CNT, T.STATUS, T.TICKET_RCA_RESULT_CODE,
+                       T.TICKET_RCA_RESULT_DTL_CODE, T.TICKET_RCA_RESULT_ORIG_DTL_CODE, T.PARENT_TICKET_ID, T.TICKET_UPDATE_TIME, T.OCCUR
+                FROM RCA.TB_RCA_TICKET_CURRENT T
+                WHERE T.TICKET_GENERATION_TIME >= (SELECT NOW() - #{day}::INTERVAL)
+                  AND T.STATUS != 'FIN'
+            ) A
+        WHERE A.PARENT_TICKET_ID IS NULL
+    </select>
+
+    <select id="selectRcaTicketAlList" parameterType="string" resultMap="RCATicketAl">
+        SELECT TICKET_ID, TICKET_AL_ID, ROOT_CAUSE_ALARM_NOA, ROOT_CAUSE_SYSNAMEA, ROOT_CAUSE_EQUIP_TYPEA, ROOT_CAUSE_UNITA,
+               ROOT_CAUSE_SLOTA, ROOT_CAUSE_PORTA, ROOT_CAUSE_ALARM_LEVELA, ROOT_CAUSE_ALARM_NOZ, ROOT_CAUSE_SYSNAMEZ,
+               ROOT_CAUSE_EQUIP_TYPEZ, ROOT_CAUSE_UNITZ, ROOT_CAUSE_SLOTZ, ROOT_CAUSE_PORTZ, ROOT_CAUSE_ALARM_LEVELZ, ROOT_CAUSE_PTPNAMEA, ROOT_CAUSE_PTPNAMEZ
+        FROM RCA.TB_RCA_TICKET_AL_CURRENT
+        WHERE TICKET_ID = #{ticketId}
+    </select>
+
+    <select id="selectTicketKey" resultType="string">
+        SELECT nextval('rca.seq_ticket') ::VARCHAR AS TICKET_ID
+    </select>
+
+    <insert id="insertRcaTicket" parameterType="com.nia.engine.vo.RCATicket">
+        INSERT INTO RCA.tb_rca_ticket_current
+        (
+            ticket_id,
+            cluster_no,
+            ticket_type,
+            ticket_generation_time,
+            fault_time,
+            root_cause_type,
+            root_cause_code,
+            root_cause_domain,
+            total_related_alarm_cnt,
+            status,
+            ticket_rca_result_code,
+            ticket_rca_result_dtl_code,
+            ticket_rca_result_orig_dtl_code,
+            parent_ticket_id,
+            occur,
+            direction
+        )
+        VALUES (
+                   #{ticketId},
+                   #{clusterNo},
+                   #{ticketType},
+                   (SELECT NOW()),
+                   #{faultTime},
+                   #{rootCauseType},
+                   #{rootCauseCode},
+                   #{rootCauseDomain},
+                   #{relatedAlarmCnt},
+                   #{status},
+                   #{ticketRcaResultCode},
+                   #{ticketRcaResultDtlCode},
+                   #{ticketRcaResultDtlCode},
+                   #{parentTicketId},
+                   #{occur},
+                   #{direction}
+               )
+    </insert>
+
+    <insert id="insertRcaTicketAl" parameterType="java.util.HashMap">
+        <if test="rcaTicketAlList.size != 0">
+            INSERT INTO RCA.tb_rca_ticket_al_current
+            (
+            ticket_id,
+            ticket_al_id,
+            root_cause_alarm_noa,
+            root_cause_sysnamea,
+            root_cause_unita,
+            root_cause_slota,
+            root_cause_porta,
+            root_cause_alarm_levela,
+            root_cause_alarm_noz,
+            root_cause_sysnamez,
+            root_cause_unitz,
+            root_cause_slotz,
+            root_cause_portz,
+            root_cause_alarm_levelz,
+            root_cause_ptpnamea,
+            root_cause_ptpnamez,
+            insert_time
+            )
+            VALUES
+            <foreach collection="rcaTicketAlList" item="item" separator=",">
+                (
+                #{item.ticketId},
+                (SELECT nextval('rca.seq_ticket_al')) ::VARCHAR,
+                #{item.rootCauseAlarmNoA},
+                #{item.rootCauseSysnameA},
+                #{item.rootCauseUnitA},
+                (SELECT split_part(split_part(alarmloc, '-', '1'), '.', '2') FROM RCA.TB_ALARM_CUR_MST WHERE ALARMNO = #{item.rootCauseAlarmNoA} LIMIT 1),
+                #{item.rootCausePortA},
+                #{item.rootCauseAlarmLevelA},
+                #{item.rootCauseAlarmNoZ},
+                #{item.rootCauseSysnameZ},
+                #{item.rootCauseUnitZ},
+                (SELECT split_part(split_part(alarmloc, '-', '1'), '.', '2') FROM RCA.TB_ALARM_CUR_MST WHERE ALARMNO = #{item.rootCauseAlarmNoZ} LIMIT 1),
+                #{item.rootCausePortZ},
+                #{item.rootCauseAlarmLevelZ},
+                #{item.rootCausePtpnameA},
+                #{item.rootCausePtpnameZ},
+                (SELECT TICKET_GENERATION_TIME FROM RCA.TB_RCA_TICKET_CURRENT WHERE TICKET_ID = #{item.ticketId})
+                )
+            </foreach>
+        </if>
+    </insert>
+
+    <insert id="insertRCATicketHandlingStatus" parameterType="com.nia.engine.vo.RCATicketHandlingStatus">
+        INSERT INTO RCA.tb_rca_ticket_handling_status_current(
+          TICKET_ID
+          , STATUS
+          , HANDLING_USER
+          , HANDLING_DEPT
+          , HANDLING_TIME
+          , HANDLING_AGENCY
+          , HANDLING_CONTENT
+          , HANDLING_FIN_CONTENT
+          , RCA_ACCURACY
+          , REASON_LEVEL1
+          , REASON_LEVEL2
+          , REASON_LEVEL3
+          , CHARGE_LEVEL1
+          , CHARGE_LEVEL2
+          , FIN_LEVEL1
+          , HANDLING_FIN_USER
+          , HANDLING_FIN_DEPT
+          , HANDLING_FIN_AGENCY
+          , INSERT_TIME
+        )
+        VALUES (
+                #{ticketId}
+               , #{status}
+               , #{handlingUser}
+               , #{handlingDept}
+               , (SELECT NOW())
+               , #{handlingAgency}
+               , #{handlingContent}
+               , #{handlingFinContent}
+               , #{rcaAccuracy}
+               , #{reasonLevel1}
+               , #{reasonLevel2}
+               , #{reasonLevel3}
+               , #{chargeLevel1}
+               , #{chargeLevel2}
+               , #{finLevel1}
+               , #{handlingFinUser}
+               , #{handlingFinDept}
+               , #{handlingFinAgency}
+               , (SELECT TICKET_GENERATION_TIME FROM RCA.TB_RCA_TICKET_CURRENT WHERE TICKET_ID = #{ticketId})
+        )
+    </insert>
+
+    <update id="updateRCATicketHandlingStatus" parameterType="com.nia.engine.vo.RCATicketHandlingStatus">
+        UPDATE RCA.tb_rca_ticket_handling_status_current
+        SET STATUS    				= #{status}
+                , HANDLING_USER			= #{handlingUser}
+                , HANDLING_DEPT			= #{handlingDept}
+                , HANDLING_TIME			= (SELECT NOW())
+                , HANDLING_AGENCY		= #{handlingAgency}
+                , HANDLING_CONTENT		= #{handlingContent}
+                , HANDLING_FIN_CONTENT	= #{handlingFinContent}
+                , RCA_ACCURACY			= #{rcaAccuracy}
+                , REASON_LEVEL1			= #{reasonLevel1}
+                , REASON_LEVEL2			= #{reasonLevel2}
+                , REASON_LEVEL3			= #{reasonLevel3}
+                , CHARGE_LEVEL1			= #{chargeLevel1}
+                , CHARGE_LEVEL2			= #{chargeLevel2}
+                , FIN_LEVEL1				= #{finLevel1}
+                , HANDLING_FIN_USER		= #{handlingFinUser}
+                , HANDLING_FIN_DEPT		= #{handlingFinDept}
+                , HANDLING_FIN_AGENCY	= #{handlingFinAgency}
+        WHERE TICKET_ID    			= #{ticketId}
+    </update>
+
+    <insert id="insertRCATicketHandlingStatusHist" parameterType="com.nia.engine.vo.RCATicketHandlingStatus">
+        INSERT INTO RCA.tb_rca_ticket_handling_status_hist(
+            TICKET_ID
+            , STATUS
+            , HANDLING_USER
+            , HANDLING_DEPT
+            , HANDLING_TIME
+            , HANDLING_AGENCY
+            , HANDLING_CONTENT
+            , HANDLING_FIN_CONTENT
+            , RCA_ACCURACY
+            , REASON_LEVEL1
+            , REASON_LEVEL2
+            , REASON_LEVEL3
+            , CHARGE_LEVEL1
+            , CHARGE_LEVEL2
+            , FIN_LEVEL1
+            , HANDLING_FIN_USER
+            , HANDLING_FIN_DEPT
+            , HANDLING_FIN_AGENCY
+            , INSERT_TIME
+        )
+        VALUES (
+                   #{ticketId}
+                   , #{status}
+                   , #{handlingUser}
+                   , #{handlingDept}
+                   , (SELECT NOW())
+                   , #{handlingAgency}
+                   , #{handlingContent}
+                   , #{handlingFinContent}
+                   , #{rcaAccuracy}
+                   , #{reasonLevel1}
+                   , #{reasonLevel2}
+                   , #{reasonLevel3}
+                   , #{chargeLevel1}
+                   , #{chargeLevel2}
+                   , #{finLevel1}
+                   , #{handlingFinUser}
+                   , #{handlingFinDept}
+                   , #{handlingFinAgency}
+                   , (SELECT TICKET_GENERATION_TIME FROM RCA.TB_RCA_TICKET_CURRENT WHERE TICKET_ID = #{ticketId})
+               )
+    </insert>
+
+    <update id="updateRcaTicketChild" parameterType="com.nia.engine.vo.RCATicket">
+        UPDATE RCA.tb_rca_ticket_current
+        SET PARENT_TICKET_ID = #{parentTicketId}
+        WHERE TICKET_ID = #{ticketId}
+           OR PARENT_TICKET_ID = #{ticketId}
+    </update>
+
+    <update id="updateRcaTicketUpdateTime" parameterType="java.util.HashMap">
+        UPDATE RCA.tb_rca_ticket_current
+        SET TICKET_UPDATE_TIME = TO_TIMESTAMP(#{ticketUpdateTime}, 'YYYY-MM-DD HH24:MI:SS')
+        WHERE TICKET_ID = #{ticketId}
+    </update>
+
+    <insert id="insertRcaTicketCnt" parameterType="com.nia.engine.vo.RCATicket">
+        insert into rca.tb_rca_ticket_cnt
+        select T.ticket_id,
+        (SELECT count(*) FROM rca.tb_alarm_cur_mst where clusterno IN (SELECT unnest(T2.CHILD_CLUSTERS) UNION SELECT T.cluster_no) AND alarmlevel != '1') AS TOTAL_ALARM_COUNT,
+        (SELECT COUNT(DISTINCT alarms) FROM ( SELECT UNNEST(AL2.TOTAL_RELATED_ALARMS) AS alarms ) ac) as RELATED_ALARM_COUNT,
+        T2.CHILD_CNT AS CHILD_COUNT,
+        T.ticket_generation_time AS INSERT_TIME
+        FROM rca.tb_rca_ticket_current T
+            LEFT OUTER JOIN
+                (SELECT PARENT_TICKET_ID, COUNT(PARENT_TICKET_ID) AS CHILD_CNT, ARRAY_AGG(CLUSTER_NO) AS CHILD_CLUSTERS
+                FROM rca.tb_rca_ticket_current
+                WHERE parent_ticket_id IS NOT NULL
+                GROUP BY PARENT_TICKET_ID) T2 ON T2.PARENT_TICKET_ID = T.TICKET_ID
+            LEFT OUTER JOIN
+                (SELECT TICKET_ID,
+                ARRAY_AGG(ROOT_CAUSE_ALARM_NOA) || ARRAY_AGG(ROOT_CAUSE_ALARM_NOZ) AS TOTAL_RELATED_ALARMS
+                FROM rca.tb_rca_ticket_al_current
+                GROUP BY TICKET_ID) AL2 ON T.TICKET_ID = AL2.TICKET_ID
+        where T.ticket_id = #{ticketId};
+    </insert>
+
+    <select id="selectTicketCheckList" resultMap="RCATicket">
+        SELECT TICKET_ID, ticket_generation_time
+        FROM RCA.TB_RCA_TICKET_CURRENT
+        WHERE ticket_generation_time BETWEEN now() - interval '12 hour' AND TO_CHAR(now(),'YYYY-MM-DD' ||' 23:59:59') ::timestamp
+            AND (status != 'AUTO_FIN' AND status != 'FIN')
+        ORDER BY TICKET_ID DESC
+    </select>
+
+    <select id="selectTicketHandlingStatusCurrent" resultType="string" parameterType="string">
+        SELECT HANDLING_TIME
+        FROM RCA.tb_rca_ticket_handling_status_current
+        WHERE TICKET_ID = #{ticket_id}
+        ORDER BY HANDLING_TIME DESC
+        LIMIT 1
+    </select>
+
+    <insert id="insertSop" parameterType="com.nia.engine.vo.RCATicketHandlingStatus">
+        INSERT INTO nia.tb_sop
+        (sop_id, ticket_id, ticket_type, ticket_result, status, request_time, receive_time, detail)
+            VALUES (
+                        #{sopId},
+                        #{ticketId},
+                        #{ticketType},
+                        #{ticketResult},
+                        #{status},
+                        now(),
+                        NULL,
+                        #{detail}
+            );
+    </insert>
+
+    <insert id="insertSopPerformance" parameterType="com.nia.engine.vo.RCATicketHandlingStatus">
+        INSERT INTO nia.tb_sop_performace
+        (sop_id, request_id, service_id, result)
+        VALUES (#{sopId}, #{requestId}, #{serviceId}, #{result});
+    </insert>
+
+    <insert id="insertSopMail" parameterType="com.nia.engine.vo.RCATicketHandlingStatus">
+        INSERT INTO nia.tb_sop_mail
+        (sop_id, user_ids, mail_content)
+        VALUES (#{sopId}, #{userIds}, #{mailContent});
+    </insert>
+
+    <update id="updateSop" parameterType="com.nia.engine.vo.RCATicketHandlingStatus">
+        UPDATE nia.tb_sop
+        SET receive_time = now(), status = #{status}
+        WHERE sop_id = #{sopId}
+    </update>
+
+    <update id="updateRcaTicketCurrentState" parameterType="com.nia.engine.vo.RCATicketHandlingStatus">
+        UPDATE rca.tb_rca_ticket_current
+        SET status = #{status}
+        WHERE ticket_id = #{ticketId}
+    </update>
+
+    <select id="fcClearTicket" resultType="string" parameterType="string">
+        SELECT rca.fc_clear_ticket(#{parentTicketId})
+    </select>
+
+    <select id="fcClearAlarm" resultType="string" parameterType="string">
+        SELECT rca.fc_clear_alarm(#{alarmNo})
+    </select>
+
+    <select id="fcClearTicketCheck" resultMap="ClearTicketResultVo" parameterType="string">
+        SELECT CASE WHEN TICKET_ALARM_CLEAR_LIST IS NOT NULL THEN array_to_string(TICKET_ALARM_CLEAR_LIST,',','')
+                    ELSE NULL
+                   END AS CLEAR_ALARM_TICKET_LIST
+                , IS_ALL_CLEAR
+        FROM(
+                SELECT IS_ALL_CLEAR, TICKET_ALARM_CLEAR_LIST
+                FROM rca.fc_clear_ticket_check(#{ticketId})
+                AS t(TICKET_ALARM_CLEAR_LIST character varying[], IS_ALL_CLEAR BOOLEAN)
+            ) A
+    </select>
+
+    <select id="selectClearTicketCheckList" resultType="string" parameterType="string">
+        SELECT TICKET_ID
+        FROM RCA.TB_RCA_TICKET_CURRENT
+        WHERE ticket_generation_time > RCA.FC_GET_MINUS_DAY(2)
+          AND status NOT IN('AUTO_FIN','FIN')
+    </select>
+
+    <select id="selectSopKey" resultType="string">
+        SELECT nextval('rca.seq_sop') ::VARCHAR AS TICKET_ID
+    </select>
+</mapper>
+
+

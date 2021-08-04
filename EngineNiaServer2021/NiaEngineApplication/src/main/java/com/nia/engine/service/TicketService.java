@@ -1,0 +1,159 @@
+package com.nia.engine.service;
+
+import com.nia.engine.vo.*;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public interface TicketService {
+
+	/**
+	 * 티켓 조회
+	 * @return
+	 */
+	RCATicket selectRcaTicket(String ticketId) throws Exception;
+
+	/**
+	 * 티켓 리스트 조회
+	 * @return
+	 */
+	List<RCATicket> selectRcaTicketList(String day) throws Exception;
+
+	/**
+	 * 티켓 알람 리스트 조회
+	 * @return
+	 */
+	List<RCATicketAl> selectRcaTicketAlList(String ticketId) throws Exception;
+
+	/**
+	 * 티켓 key 생성
+	 * @return
+	 */
+	String selectTicketKey() throws Exception;
+
+	/**
+	 * 티켓 데이터 저장
+	 * @param
+	 * @return
+	 */
+	void insertRcaTicket(RCATicket rcaTicket) throws Exception;
+
+	/**
+	 * 티켓 데이터 알람 저장
+	 * @param
+	 * @return
+	 */
+	void insertRcaTicketAl(List<RCATicketAl> rcaTicketAlList) throws Exception;
+
+	/**
+	 * Rca Ticket Status 저장
+	 * @param
+	 * @return
+	 */
+	void insertRCATicketHandlingStatus(RCATicketHandlingStatus rcaTicketStatus) throws Exception;
+
+	/**
+	 * Rca Ticket Status 저장
+	 * @param
+	 * @return
+	 */
+	void updateRCATicketHandlingStatus(RCATicketHandlingStatus rcaTicketStatus) throws Exception;
+
+	/**
+	 * Rca Ticket Status 저장
+	 * @param
+	 * @return
+	 */
+	void insertRCATicketHandlingStatusHist(RCATicketHandlingStatus rcaTicketStatus) throws Exception;
+
+	/**
+	 * Rca Ticket 정보 업데이트
+	 * @param
+	 * @return
+	 */
+	void updateRcaTicketChild(RCATicket rcaTicket) throws Exception;
+
+	/**
+	 * 티켓 updateTime
+	 * @param ticketUpdateTime
+	 * @return
+	 */
+	void updateRcaTicketUpdateTime(HashMap<String, String> ticketUpdateTime) throws Exception;
+
+	/**
+	 * ticket cnt 저장
+	 * @param
+	 * @return
+	 */
+	void insertRcaTicketCnt(RCATicket rcaTicket) throws Exception;
+
+	/**
+	 * Sop 저장
+	 * @param
+	 * @return
+	 */
+	void insertSop(RCATicketHandlingStatus rcaTicketHandlingStatus) throws Exception;
+
+	/**
+	 * Sop Performance 저장
+	 * @param
+	 * @return
+	 */
+	void insertSopPerformance(RCATicketHandlingStatus rcaTicketHandlingStatus) throws Exception;
+
+	/**
+	 * Sop Mail 저장
+	 * @param
+	 * @return
+	 */
+	void insertSopMail(RCATicketHandlingStatus rcaTicketHandlingStatus) throws Exception;
+
+	/**
+	 * Sop 업데이트
+	 * @param
+	 * @return
+	 */
+	void updateSop(RCATicketHandlingStatus rcaTicketHandlingStatus) throws Exception;
+
+	/**
+	 * Rca Ticket Current State 업데이트
+	 * @param
+	 * @return
+	 */
+	void updateRcaTicketCurrentState(RCATicketHandlingStatus rcaTicketHandlingStatus) throws Exception;
+
+	/**
+	 * TICKET CLEAR
+	 * @return
+	 */
+	String fcClearTicket(String parentTicketId) throws Exception;
+
+	/**
+	 * RLARM CLEARL
+	 * @param alarmNo
+	 * @return
+	 */
+	List<String> fcClearAlarm(String alarmNo) throws Exception;
+
+	/**
+	 * fcClearTicketCheck
+	 * @param ticketId
+	 * @return
+	 */
+	ClearTicketResultVo fcClearTicketCheck(String ticketId);
+
+	/**
+	 * 티켓 클리어 체크
+	 *
+	 * @return
+	 */
+	List<String> selectClearTicketCheckList() throws Exception;
+
+	/**
+	 * Sop key 생성
+	 * @param
+	 * @return
+	 */
+	String selectSopKey() throws Exception;
+}
