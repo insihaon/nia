@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nia.engine.mapper.TopologyMapper">
+
+
+    <resultMap id="TopologyObject" type="com.nia.engine.vo.TopologyObject">
+        <result property="alarmid"	           	 	column="ALARMID"/>
+        <result property="link_id"	           	 	column="LINK_ID"/>
+        <result property="nwType"	        		column="NW_TYPE"/>
+        <result property="oppSysname"	        	column="OPP_SYSNAME"/>
+        <result property="oppPtpName"	        	column="OPP_PTPNAME"/>
+        <result property="oppSlot"	       		 	column="OPP_SLOT"/>
+        <result property="oppPort"	       		 	column="OPP_PORT"/>
+    </resultMap>
+
+    <select id="selectAlarmMstList" resultMap="TopologyObject" parameterType="hashmap">
+        SELECT ALARMID, LINK_ID, NW_TYPE, OPP_SYSNAME, OPP_PTPNAME, OPP_SLOT, OPP_PORT
+        FROM RCA.TB_CLUSTER_AL_TOPOLOGY
+        WHERE ALARMID = #{alarmid}
+    </select>
+
+    <select id="selectTopology" resultType="com.nia.engine.vo.TopologyDataVo" parameterType="hashmap">
+        SELECT LINK_ID AS linkId, SYSNAMEA AS sysnamea, PTPNAMEA_BAU AS ptpnameaBau, PTPNAMEA_PAU AS ptpnameaPau
+        FROM NIA.TB_TOPOLOGY
+        WHERE
+        <if test="ptpNameBau != null">
+            (SYSNAMEZ = #{sysname} AND PTPNAMEZ_BAU != #{ptpNameBau})
+        </if>
+
+        <if test="ptpNamePau != null">
+            (SYSNAMEA = #{sysname} AND PTPNAMEA_PAU != #{ptpNamePau})
+        </if>
+    </select>
+</mapper>

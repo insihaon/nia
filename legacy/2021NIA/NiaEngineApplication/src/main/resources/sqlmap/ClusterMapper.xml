@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nia.engine.mapper.ClusterMapper">
+	<resultMap id="ClusterObject" type="com.nia.engine.vo.ClusterObject">
+		<result property="clusterNo"	        	column="CLUSTER_NO"/>
+		<result property="tmpClusterNo"	            column="TMP_CLUSTER_NO"/>
+	</resultMap>
+
+	<select id="selectClusterData" resultMap="ClusterObject" parameterType="string">
+		SELECT CLUSTER_NO, TMP_CLUSTER_NO
+		FROM RCA.TB_CLUSTER_CURRENT_MST
+		WHERE TMP_CLUSTER_NO = #{tmpClusterNo}
+	</select>
+</mapper>
+
+

@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nia.ems.linkage.mapper.EquipmentMapper">
+
+    <select id="selectEquipList" resultType="com.nia.ems.linkage.vo.equipment.EquipVo">
+        SELECT SYSNAME AS sysname, MODEL AS equipType, TID AS ip FROM NIA.TB_EQUIP_MST WHERE MODEL LIKE '%6300%'
+    </select>
+
+    <select id="selectEquipSipcList" resultType="com.nia.ems.linkage.vo.equipment.EquipSipcVo">
+        SELECT TID AS sysname, SYSTEM_NAME AS sysnameName FROM NIA.TB_EQUIP_SIPC
+    </select>
+
+    <select id="selectEquipUpdateList" resultType="com.nia.ems.linkage.vo.equipment.EquipInfoVo">
+        SELECT TID, SYSNAME, PSU, MODEL, SID, SW_VER, SW_CHKSUM, SW_DATE, SW_TIME FROM NIA.TB_EQUIP_MST_YD
+        EXCEPT
+        SELECT TID, SYSNAME, PSU, MODEL, SID, SW_VER, SW_CHKSUM, SW_DATE, SW_TIME FROM NIA.TB_EQUIP_MST
+    </select>
+
+    <insert id="insertEquipSipc" parameterType="java.util.HashMap">
+        <if test="equipSipcVoList.size != 0">
+        INSERT INTO NIA.TB_EQUIP_SIPC (TID, SYSTEM_NAME)
+        VALUES
+        <foreach collection="equipSipcVoList" item="item" separator=",">
+           (#{item.sysname}, #{item.sysnameName})
+        </foreach>
+      </if>
+    </insert>
+
+    <insert id="insertEquipSlot" parameterType="java.util.HashMap">
+        <if test="equipSlotVoList.size != 0">
+        INSERT INTO NIA.TB_EQUIP_SLOT
+        (
+            SYSNAME, SLOT, P_UNIT, P_PORTS, ACT,
+            STATE, DEGREE, RX_DEGREE, TX_DEGREE, AD_SIDE,
+            CURRENT_UNIT, CURRENT_PORTS, PAIR_SLOT, NET_TYPE
+        )
+        VALUES
+        <foreach collection="equipSlotVoList" item="item" separator=",">
+          (
+              #{item.sysname}, #{item.slot}, #{item.pUnit}, #{item.pPorts}, #{item.act},
+              #{item.state}, #{item.degree}, #{item.rxDegree}, #{item.txDegree}, #{item.adSide},
+              #{item.currentUnit}, #{item.currentPorts}, #{item.pairSlot}, #{item.netType}
+          )
+        </foreach>
+      </if>
+    </insert>
+
+    <insert id="insertEquipOpcYd" parameterType="java.util.HashMap">
+        <if test="equipOpcVoList.size != 0">
+        INSERT INTO NIA.TB_EQUIP_OPC_YD
+        (SYSNAME, MRSA_SLOT, UNIT, LAMBDA, PORT, ADD_SOURCE, DROP_ADDRESS)
+        VALUES
+        <foreach collection="equipOpcVoList" item="item" separator=",">
+          (
+              #{item.sysname}, #{item.mrsaSlot}, #{item.unit}, #{item.lambda}, #{item.port}, #{item.addSource}, #{item.dropAddress}
+          )
+        </foreach>
+      </if>
+    </insert>
+
+    <insert id="insertEquipOpc" parameterType="java.util.HashMap">
+        INSERT INTO NIA.TB_EQUIP_OPC
+        (SYSNAME, MRSA_SLOT, UNIT, LAMBDA, PORT, ADD_SOURCE, DROP_ADDRESS)
+        SELECT SYSNAME, MRSA_SLOT, UNIT, LAMBDA, PORT, ADD_SOURCE, DROP_ADDRESS FROM NIA.TB_EQUIP_OPC_YD
+    </insert>
+
+    <insert id="insertNniTopologyTmp">
+        INSERT INTO NIA.TB_TOPOLOGY_TMP
+        WITH NETWORK_DATA AS(
+            SELECT SID, AID_BAU, AID_PAU, P_SID, P_AID_BAU, P_AID_PAU, ROW_NUMBER () OVER (ORDER BY SID) AS NUM
+              FROM(
+                SELECT DISTINCT SID, AID_BAU, AID_PAU, P_SID, P_AID_BAU, P_AID_PAU
+                  FROM NIA.TB_EQUIP_NETWORK_YD
+              ) A
+        ), NETWORK_DATA_A AS (
+            SELECT SID, AID_BAU, AID_PAU, 'A' AS GB, NUM FROM NETWORK_DATA
+        ), NETWORK_DATA_Z AS (
+            SELECT P_SID, P_AID_BAU, P_AID_PAU, 'Z' AS GB, NUM FROM NETWORK_DATA
+        ), NETWROK_DISTINCT_DATA AS (
+            SELECT SID, AID_BAU, AID_PAU
+              FROM(
+                  SELECT SID, AID_BAU, AID_PAU
+                    FROM NETWORK_DATA_A
+                   UNION ALL
+                  SELECT P_SID, P_AID_BAU, P_AID_PAU
+                    FROM NETWORK_DATA_Z
+              ) A
+        ), NETWORK_SEP_DATA AS (
+            SELECT SID, AID_BAU, AID_PAU, GB, NUM
+              FROM(
+                SELECT SID, AID_BAU, AID_PAU, GB, NUM
+                  FROM NETWORK_DATA_A
+                 UNION ALL
+                SELECT P_SID, P_AID_BAU, P_AID_PAU, GB, NUM
+                  FROM NETWORK_DATA_Z
+              ) A
+        )
+        SELECT A.SID||'--'||Z.SID AS LINK_ID, A.SID, A.AID_BAU, A.AID_PAU, Z.SID, Z.AID_BAU, Z.AID_PAU, 'ROADM'
+          FROM(
+             SELECT A.SID, A.AID_BAU, A.AID_PAU
+                 , (SELECT X1.GB FROM NETWORK_SEP_DATA X1 WHERE A.SID = X1.SID AND A.AID_BAU = X1.AID_BAU AND A.AID_PAU = X1.AID_PAU ORDER BY NUM LIMIT 1) AS GB
+                 , (SELECT X1.NUM FROM NETWORK_SEP_DATA X1 WHERE A.SID = X1.SID AND A.AID_BAU = X1.AID_BAU AND A.AID_PAU = X1.AID_PAU ORDER BY NUM LIMIT 1) AS NUM
+              FROM NETWROK_DISTINCT_DATA A
+          ) A
+         LEFT OUTER JOIN (
+             SELECT A.SID, A.AID_BAU, A.AID_PAU
+                  , (SELECT X1.GB FROM NETWORK_SEP_DATA X1 WHERE A.SID = X1.SID AND A.AID_BAU = X1.AID_BAU AND A.AID_PAU = X1.AID_PAU ORDER BY NUM LIMIT 1) AS GB
+                  , (SELECT X1.NUM FROM NETWORK_SEP_DATA X1 WHERE A.SID = X1.SID AND A.AID_BAU = X1.AID_BAU AND A.AID_PAU = X1.AID_PAU ORDER BY NUM LIMIT 1) AS NUM
+              FROM NETWROK_DISTINCT_DATA A
+         ) Z
+           ON A.NUM = Z.NUM
+          AND A.GB = 'A'
+          AND Z.GB = 'Z'
+        WHERE Z.SID IS NOT NULL
+    </insert>
+
+    <insert id="insertNniTopology">
+        INSERT INTO NIA.TB_TOPOLOGY
+        SELECT LINK_ID, SYSNAMEA, PTPNAMEA_BAU, PTPNAMEA_PAU, SYSNAMEZ, PTPNAMEZ_BAU, PTPNAMEZ_PAU, EQUIP_TYPE FROM NIA.TB_TOPOLOGY_TMP
+    </insert>
+
+    <insert id="insertUniTopology">
+        INSERT INTO NIA.TB_UNI_TOPOLOGY
+        SELECT LINK_ID, SYSNAMEA, SHELFA, PTPNAMEA, SYSNAMEZ, SHELFZ, PTPNAMEZ FROM NIA.TB_UNI_TOPOLOGY_TMP
+    </insert>
+
+    <insert id="insertUniTopologyTmp">
+        INSERT INTO NIA.TB_UNI_TOPOLOGY_TMP
+        WITH NNI_TOPOLOGY AS (
+            SELECT TRUNK_ID
+                 , SPLIT_PART(SYSNAME_DATA_A , '/', 1)||'-'||SPLIT_PART(SPLIT_PART(SYSNAME_DATA_A , '/', 2),'-',1) AS SYSNAMEA, SPLIT_PART(SPLIT_PART(SYSNAME_DATA_A , '/', 2),'-',2) AS PTPNAMEA
+                 , SPLIT_PART(SYSNAME_DATA_Z , '/', 1)||'-'||SPLIT_PART(SPLIT_PART(SYSNAME_DATA_Z , '/', 2),'-',1) AS SYSNAMEZ, SPLIT_PART(SPLIT_PART(SYSNAME_DATA_Z , '/', 2),'-',2) AS PTPNAMEZ
+              FROM(
+                SELECT TRUNK_ID, SPLIT_PART(TRUNK_ID , '--', 1) AS SYSNAME_DATA_A, SPLIT_PART(TRUNK_ID , '--', 2) AS SYSNAME_DATA_Z
+                  FROM NIA.TB_ROADM_TRUNK_REPEATER
+                 GROUP BY TRUNK_ID
+              )A
+        ),
+        ROADM_OPC_DATA AS (
+              SELECT A.TRUNK_ID, A.SYSNAME, A.MRSA_SLOT, A.UNIT, A.LAMBDA, GB, A.DROP_ADDRESS
+               FROM(
+                  SELECT A.TRUNK_ID, A.SYSNAME, A.MRSA_SLOT, A.UNIT, A.LAMBDA, 'A' AS GB, A.DROP_ADDRESS
+                    FROM(
+                       SELECT TRUNK_ID, X1.SYSNAME, X1.MRSA_SLOT, X1.UNIT, X1.LAMBDA, X1.DROP_ADDRESS
+                         FROM NIA.TB_EQUIP_OPC X1
+                         LEFT OUTER JOIN NNI_TOPOLOGY X2
+                           ON (X1.SYSNAME = X2.SYSNAMEA AND X1.MRSA_SLOT = X2.PTPNAMEA)
+                    ) A
+                   WHERE A.TRUNK_ID IS NOT NULL
+                  UNION ALL
+                  SELECT A.TRUNK_ID, A.SYSNAME, A.MRSA_SLOT, A.UNIT, A.LAMBDA, 'Z' AS GB, A.DROP_ADDRESS
+                    FROM(
+                       SELECT TRUNK_ID, X1.SYSNAME, X1.MRSA_SLOT, X1.UNIT, X1.LAMBDA, X1.DROP_ADDRESS
+                         FROM NIA.TB_EQUIP_OPC X1
+                         LEFT OUTER JOIN NNI_TOPOLOGY X2
+                           ON (X1.SYSNAME = X2.SYSNAMEZ AND X1.MRSA_SLOT = X2.PTPNAMEZ)
+                  ) A
+                   WHERE A.TRUNK_ID IS NOT NULL
+              ) A
+        ),
+        UNI_TOPOLOGY_A AS (
+          SELECT TRUNK_ID, SYSNAME, MRSA_SLOT, UNIT, LAMBDA, GB, DROP_ADDRESS
+           FROM ROADM_OPC_DATA
+          WHERE GB = 'A'
+        ),
+        UNI_TOPOLOGY_Z AS (
+          SELECT TRUNK_ID, SYSNAME, MRSA_SLOT, UNIT, LAMBDA, GB, DROP_ADDRESS
+           FROM ROADM_OPC_DATA
+          WHERE GB = 'Z'
+        )
+        SELECT DISTINCT A.TRUNK_ID, SPLIT_PART(A.SYSNAME , '-', 1) AS SYSNAMEA, SPLIT_PART(A.DROP_ADDRESS , '-', 1) AS SHELFA, REPLACE(A.DROP_ADDRESS, SPLIT_PART(A.DROP_ADDRESS , '-', 1)||'-','') AS PTPNAMEA
+             , SPLIT_PART(Z.SYSNAME , '-', 1) AS SYSNAMEZ, SPLIT_PART(Z.DROP_ADDRESS , '-', 1) AS SHELFZ, REPLACE(Z.DROP_ADDRESS, SPLIT_PART(Z.DROP_ADDRESS , '-', 1)||'-','') AS PTPNAMEZ
+          FROM UNI_TOPOLOGY_A A
+          LEFT OUTER JOIN UNI_TOPOLOGY_Z Z
+            ON A.TRUNK_ID = Z.TRUNK_ID
+           AND A.LAMBDA = Z.LAMBDA
+    </insert>
+
+    <insert id="insertEquipNetWorkYd" parameterType="java.util.HashMap">
+        <if test="equipNetWorkVoList.size != 0">
+        INSERT INTO NIA.TB_EQUIP_NETWORK_YD
+        (SID, AID_BAU, AID_PAU, P_SID, P_AID_BAU, P_AID_PAU)
+        VALUES
+        <foreach collection="equipNetWorkVoList" item="item" separator=",">
+          (
+              #{item.sid}, #{item.aidBau}, #{item.aidPau}, #{item.pSid}, #{item.pAidBau}, #{item.pAidPau}
+          )
+        </foreach>
+      </if>
+    </insert>
+
+    <insert id="insertEquipNetWork" parameterType="java.util.HashMap">
+        INSERT INTO NIA.TB_EQUIP_NETWORK
+        (SID, AID_BAU, AID_PAU, P_SID, P_AID_BAU, P_AID_PAU)
+        SELECT SID, AID_BAU, AID_PAU, P_SID, P_AID_BAU, P_AID_PAU FROM NIA.TB_EQUIP_NETWORK_YD
+    </insert>
+
+    <insert id="insertEquipMstYd" parameterType="com.nia.ems.linkage.vo.equipment.EquipInfoVo">
+        INSERT INTO NIA.TB_EQUIP_MST_YD
+        (TID, SYSNAME, PSU, MODEL, SID, SW_VER, SW_CHKSUM, SW_DATE, SW_TIME)
+        VALUES
+        (#{tid}, #{sysname}, #{psu}, #{model}, #{sid}, #{swVer}, #{swChksum}, #{swDate}, #{swTime})
+    </insert>
+
+    <update id="updateEquipMst" parameterType="com.nia.ems.linkage.vo.equipment.EquipInfoVo">
+        WITH UPSERT AS (
+            UPDATE NIA.TB_EQUIP_MST
+               SET SYSNAME = #{sysname}
+                 , PSU = #{psu}
+                 , MODEL = #{model}
+                 , SID = #{sid}
+                 , SW_VER = #{swVer}
+                 , SW_CHKSUM = #{swChksum}
+                 , SW_DATE = #{swDate}
+                 , SW_TIME = #{swTime}
+             WHERE TID = #{tid}
+            RETURNING *
+        )
+        INSERT INTO NIA.TB_EQUIP_MST
+        (
+            TID, SYSNAME, PSU, MODEL, SID, SW_VER, SW_CHKSUM, SW_DATE, SW_TIME
+        )
+        SELECT #{tid}, #{sysname}, #{psu}, #{model}, #{sid}, #{swVer}, #{swChksum}, #{swDate}, #{swTime}
+         WHERE NOT EXISTS (SELECT * FROM UPSERT)
+    </update>
+
+    <delete id="deleteNniTopology">
+        DELETE FROM NIA.TB_NNI_TOPOLOGY WHERE EQUIP_TYPE = 'ROADM'
+    </delete>
+
+    <delete id="deleteNniTopologyTmp">
+        TRUNCATE TABLE NIA.TB_NNI_TOPOLOGY_TMP
+    </delete>
+
+    <delete id="deleteUniTopology">
+        DELETE FROM NIA.TB_UNI_TOPOLOGY
+    </delete>
+
+    <delete id="deleteUniTopologyTmp">
+        TRUNCATE TABLE NIA.TB_UNI_TOPOLOGY_TMP
+    </delete>
+
+    <delete id="deleteEquipSipc" parameterType="java.util.HashMap">
+        DELETE FROM NIA.TB_EQUIP_SIPC WHERE TID = #{equipId}
+    </delete>
+
+    <delete id="deleteEquipOpc">
+        TRUNCATE TABLE NIA.TB_EQUIP_OPC
+    </delete>
+
+    <delete id="deleteEquipOpcYd">
+        TRUNCATE TABLE NIA.TB_EQUIP_OPC_YD
+    </delete>
+
+    <delete id="deleteEquipNetWork">
+        TRUNCATE TABLE NIA.TB_EQUIP_NETWORK
+    </delete>
+
+    <delete id="deleteEquipNetWorkYd">
+        TRUNCATE TABLE NIA.TB_EQUIP_NETWORK_YD
+    </delete>
+
+    <delete id="deleteEquipMstYd">
+        TRUNCATE TABLE NIA.TB_EQUIP_MST_YD
+    </delete>
+</mapper>

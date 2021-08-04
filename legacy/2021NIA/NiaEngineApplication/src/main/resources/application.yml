@@ -1,0 +1,167 @@
+server:
+  port: 8095
+
+logging:
+  level:
+    root: INFO
+
+---
+spring:
+  profiles: dev
+
+  jasypt:
+    encryptor:
+      bean: jasyptStringEncryptor
+      property:
+        prefix: ENC(
+        suffix: )
+
+  rabbitmq:
+  #  address: 183.107.19.138  #집
+    address: 192.168.0.87  #개발
+
+  #  port: 8001
+    port: 5675
+    username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
+    password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
+
+    engineExchange: nia.exchangeEngineDirectly
+    engineQueue: nia.EngineIndexDirectly
+    engineRoutingKey: nia.EngineIndexDirectly
+
+    engineResultExchange: nia.exchangeEngineResultDirectly
+    engineResultQueue: nia.EngineResultIndexDirectly
+    engineResultRoutingKey: EngineResultIndexDirectly
+
+    clusterStopExchange: nia.exchangeClusterStopDirectly
+    clusterStopQueue: nia.ClusterStopIndexDirectly
+    clusterStopRoutingKey: ClusterStopIndexDirectly
+
+    engineClearExchange: nia.exchangeEngineClearDirectly
+    engineClearQueue: nia.EngineClearIndexDirectly
+    engineClearRoutingKey: EngineClearIndexDirectly
+
+    uiToEngineExchange: nia.exchangeUiToEngineDirectly
+    uiToEngineQueue: nia.UiToEngineIndexDirectly
+    uiToEngineRoutingKey: UiToEngineIndexDirectly
+
+    engineToUiExchange: nia.exchangeEngineToUiDirectly
+    engineToUiQueue: nia.EngineToUiIndexDirectly
+    engineToUiRoutingKey: EngineToUiIndexDirectly
+
+    niaPerformanceEngineExchange: nia.exchangeNiaPerformanceEngineDirectly
+    niaPerformanceEngineQueue: nia.NiaPerformanceEngineIndexDirectly
+    niaPerformanceEngineRoutingKey: NiaPerformanceEngineIndexDirectly
+
+  cluster:
+    timeCondition: 5000
+
+
+  task:
+    poolSize: 100
+    keepAlive: 600000
+    queueCapacity: 100
+    concurrency: 100
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    data-source-class-name: org.postgresql.ds.PGSimpleDataSource
+  #  url: jdbc:postgresql://183.107.19.138:8000/niadb #집
+    url: jdbc:postgresql://192.168.0.87:5433/niadb #개발
+    username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
+    password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
+    maximumPoolSize : 10
+    idleTimeout : 6000
+
+  mybatis:
+    mapper-locations: classpath*:sqlmap/*.xml
+    mybatisConfig-locations : classpath:mybatis-config.xml
+    configuration:
+      mapUnderscoreToCamelCase: true
+
+  ftp:
+    host: 192.168.0.87
+    port: 2200
+    user: root
+    password: dlsvh00000
+    file-path: /home/koren0901/data/
+    nia-file-path: /home/koren0901/data/
+
+---
+spring:
+  profiles: real
+
+  jasypt:
+    encryptor:
+      bean: jasyptStringEncryptor
+      property:
+        prefix: ENC(
+        suffix: )
+
+  rabbitmq:
+    address: 116.89.186.194 #KOREN
+    port: 5675
+    username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
+    password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
+
+    engineExchange: nia.exchangeEngineDirectly
+    engineQueue: nia.EngineIndexDirectly
+    engineRoutingKey: nia.EngineIndexDirectly
+
+    engineResultExchange: nia.exchangeEngineResultDirectly
+    engineResultQueue: nia.EngineResultIndexDirectly
+    engineResultRoutingKey: EngineResultIndexDirectly
+
+    clusterStopExchange: nia.exchangeClusterStopDirectly
+    clusterStopQueue: nia.ClusterStopIndexDirectly
+    clusterStopRoutingKey: ClusterStopIndexDirectly
+
+    engineClearExchange: nia.exchangeEngineClearDirectly
+    engineClearQueue: nia.EngineClearIndexDirectly
+    engineClearRoutingKey: EngineClearIndexDirectly
+
+    uiToEngineExchange: nia.exchangeUiToEngineDirectly
+    uiToEngineQueue: nia.UiToEngineIndexDirectly
+    uiToEngineRoutingKey: UiToEngineIndexDirectly
+
+    engineToUiExchange: nia.exchangeEngineToUiDirectly
+    engineToUiQueue: nia.EngineToUiIndexDirectly
+    engineToUiRoutingKey: EngineToUiIndexDirectly
+
+    niaPerformanceEngineExchange: nia.exchangeNiaPerformanceEngineDirectly
+    niaPerformanceEngineQueue: nia.NiaPerformanceEngineIndexDirectly
+    niaPerformanceEngineRoutingKey: NiaPerformanceEngineIndexDirectly
+
+  cluster:
+    timeCondition: 5000
+
+
+  task:
+    poolSize: 100
+    keepAlive: 600000
+    queueCapacity: 100
+    concurrency: 100
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    data-source-class-name: org.postgresql.ds.PGSimpleDataSource
+    url: jdbc:postgresql://116.89.186.194:5433/niadb #KOREN
+    username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
+    password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
+    maximumPoolSize : 10
+    idleTimeout : 6000
+
+  mybatis:
+    mapper-locations: classpath*:sqlmap/*.xml
+    mybatisConfig-locations : classpath:mybatis-config.xml
+    configuration:
+      mapUnderscoreToCamelCase: true
+
+  ftp:
+    host: 116.89.186.207
+#    host: 116.89.186.194
+    port: 22
+    user: ENC(XMOpjFUtgZnBRPp7m7a9o2WSXQ1l5oe/)
+    password: ENC(Q5gydJpI5uME0zXRuMHImGC5bkFqmaRK)
+    file-path: /home/koren0901/data/
+    nia-file-path: /home/koren0901/data/

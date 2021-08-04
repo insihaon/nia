@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="com.nia.alarm.preprocessor" />
+        <module name="com.nia.linkage.snmp.ap" />
+        <module name="com.nia.ai.per.ap" />
+        <module name="com.nia.data.linkage" />
+        <module name="com.nia.rca.cluster.preprocessor" />
+        <module name="spring-snmp" />
+        <module name="com.nia.ems.linkage" />
+        <module name="com.nia.engine" />
+        <module name="com.nia.ai.performance.send" />
+        <module name="com.nia.ai.performance.result" />
+        <module name="com.nia.alarm.simulator" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="com.nia.ai.per.ap" target="1.8" />
+      <module name="com.nia.ai.performance.result" target="1.8" />
+      <module name="com.nia.ai.performance.send" target="1.8" />
+      <module name="com.nia.alarm.preprocessor" target="1.8" />
+      <module name="com.nia.alarm.simulator" target="1.8" />
+      <module name="com.nia.data.linkage" target="1.8" />
+      <module name="com.nia.ems.linkage" target="1.8" />
+      <module name="com.nia.engine" target="1.8" />
+      <module name="com.nia.linkage.snmp.ap" target="1.8" />
+      <module name="com.nia.rca.cluster.preprocessor" target="1.8" />
+      <module name="LiaSnmpLinkageApplication" target="1.5" />
+      <module name="spring-snmp" target="1.5" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="com.nia.ai.per.ap" options="-parameters" />
+      <module name="com.nia.ai.performance.result" options="-parameters" />
+      <module name="com.nia.ai.performance.send" options="-parameters" />
+      <module name="com.nia.alarm.preprocessor" options="-parameters" />
+      <module name="com.nia.alarm.simulator" options="-parameters" />
+      <module name="com.nia.data.linkage" options="-parameters" />
+      <module name="com.nia.ems.linkage" options="-parameters" />
+      <module name="com.nia.engine" options="-parameters" />
+      <module name="com.nia.linkage.snmp.ap" options="-parameters" />
+      <module name="com.nia.rca.cluster.preprocessor" options="-parameters" />
+    </option>
+  </component>
+</project>

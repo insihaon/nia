@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nia.engine.mapper.FaultEventMapper">
+
+    <select id="selectFaultEventKey" resultType="string">
+        SELECT nextval('rca.seq_fault_event') ::VARCHAR AS eventno
+    </select>
+
+    <select id="selectFaultEvent" parameterType="string" resultType="com.nia.engine.vo.falutEvent.FaultEventVo">
+        SELECT EVENTNO AS eventno, TITLE AS title, TO_CHAR(START_TIME,'YYYY-MM-DD HH24:MI:SS') AS startTime, TO_CHAR(END_TIME,'YYYY-MM-DD HH24:MI:SS') AS endTime
+         FROM RCA.TB_FAULT_EVENT WHERE EVENTNO = #{eventno}
+    </select>
+
+    <select id="selectFaultEventAlarm" resultType="com.nia.engine.vo.falutEvent.FaultEventAlarmDataVo" parameterType="string">
+        SELECT EVENTNO AS eventno, (SELECT TITLE FROM RCA.TB_FAULT_EVENT WHERE EVENTNO = #{eventno}) AS title
+              , ALARMNO AS alarmno, CLUSTERNO AS clusterno, TMP_CLUSTER_NO AS tmpClusterno, SYSNAME AS sysname
+              , EQUIPTYPE AS equiptype, ALARMTIME AS alarmtime, RECEIVETIME AS receivetime, ALARMLOC AS alarmloc
+              , ALARMMSG AS alarmmsg, UNIT AS unit
+              , CASE WHEN  ALARMLEVEL = '1' THEN 'CL'
+                      WHEN  ALARMLEVEL = '3' THEN 'WN'
+                      WHEN  ALARMLEVEL = '4' THEN 'MN'
+                      WHEN  ALARMLEVEL = '5' THEN 'MJ'
+                      WHEN  ALARMLEVEL = '7' THEN 'CR'
+                  END AS alarmlevel
+              , CLEARTIME AS cleartime, PTPNAME AS ptpname, SLOT AS slot, PORT AS port
+          FROM RCA.TB_FAULT_EVENT_ALARM_CUR_MST
+         WHERE EVENTNO = #{eventno}
+    </select>
+
+    <select id="selectFaultEventPerformance" resultType="com.nia.engine.vo.falutEvent.FaultEventPerformanceDataVo" parameterType="string">
+        SELECT EVENTNO AS eventno, (SELECT TITLE FROM RCA.TB_FAULT_EVENT WHERE EVENTNO = #{eventno}) AS title, SYSNAME AS sysname, PORT AS port, UNIT AS unit, TMPER AS tmper
+              , DIRECTION AS direction, RXCUR AS rxCur, RXMIN AS rxMin, RXMAX AS rxMax, RXAVE AS rxAve
+              , TXCUR AS txCur, TXMIN AS txMin, TXMAX AS txMax, TXAVE AS txAve, OCRTIME AS ocrtime
+          FROM RCA.TB_FAULT_EVENT_AI_PERFORMACE_MST
+         WHERE EVENTNO = #{eventno}
+    </select>
+
+    <select id="selectFaultEventNniTopology" resultType="com.nia.engine.vo.falutEvent.FaultEventNniTopologyDataVo" parameterType="string">
+        SELECT EVENTNO AS eventno, (SELECT TITLE FROM RCA.TB_FAULT_EVENT WHERE EVENTNO = #{eventno}) AS title, LINK_ID AS linkId, SYSNAMEA AS sysnamea, PTPNAMEA_BAU AS ptpnameaBau, PTPNAMEA_PAU AS ptpnameaPau
+              , SYSNAMEZ AS sysnamez, PTPNAMEZ_BAU AS ptpnamezBau, PTPNAMEZ_PAU AS ptpnamezPau
+          FROM RCA.TB_FAULT_EVENT_NNI_TOPOLOGY
+         WHERE EVENTNO = #{eventno}
+    </select>
+
+
+    <select id="selectFaultEventUniTopology" resultType="com.nia.engine.vo.falutEvent.FaultEventUniTopologyDataVo" parameterType="string">
+        SELECT EVENTNO AS eventno, (SELECT TITLE FROM RCA.TB_FAULT_EVENT WHERE EVENTNO = #{eventno}) AS title, LINK_ID AS linkId, SYSNAMEA AS sysnamea, SHELFA AS shelfa , PTPNAMEA AS ptpnamea
+              , SYSNAMEZ AS sysnamez, SHELFZ AS shelfz, PTPNAMEZ AS ptpnamez
+          FROM RCA.TB_FAULT_EVENT_UNI_TOPOLOGY
+         WHERE EVENTNO = #{eventno}
+    </select>
+
+    <insert id="insertFaultEvent" parameterType="java.util.HashMap">
+        INSERT INTO RCA.TB_FAULT_EVENT
+        (EVENTNO, TITLE ,START_TIME, END_TIME)
+        SELECT #{eventno}, #{title}, #{startTime}::TIMESTAMP, #{endTime}::TIMESTAMP
+    </insert>
+
+    <insert id="insertFaultEventAlarmCurMst" parameterType="java.util.HashMap">
+        INSERT INTO RCA.TB_FAULT_EVENT_ALARM_CUR_MST
+        (EVENTNO, ALARMNO, CLUSTERNO, TMP_CLUSTER_NO, SYSNAME, EQUIPTYPE, ALARMTIME, RECEIVETIME, ALARMLOC, ALARMMSG, UNIT, ALARMLEVEL, CLEARTIME, PTPNAME, SLOT, PORT)
+        SELECT DISTINCT #{eventno}, ALARMNO, CLUSTERNO, TMP_CLUSTER_NO, SYSNAME, EQUIPTYPE, ALARMTIME, RECEIVETIME, ALARMLOC, ALARMMSG_ORIGINAL, UNIT, ALARMLEVEL, CLEARTIME, PTPNAME, SLOT, PORT
+          FROM RCA.TB_ALARM_CUR_MST
+         WHERE RECEIVETIME BETWEEN #{startTime}::TIMESTAMP AND #{endTime}::TIMESTAMP
+    </insert>
+
+    <insert id="insertFaultEventAiPerformanceMst" parameterType="java.util.HashMap">
+        INSERT INTO RCA.TB_FAULT_EVENT_AI_PERFORMACE_MST
+        (EVENTNO, SYSNAME, PORT, UNIT, TMPER, DIRECTION, RXCUR, RXMIN, RXMAX, RXAVE, TXCUR, TXMIN, TXMAX, TXAVE, OCRTIME)
+        SELECT DISTINCT #{eventno}, SYSNAME, PORT, UNIT, TMPER, DIRECTION, RXCUR, RXMIN, RXMAX, RXAVE, TXCUR, TXMIN, TXMAX, TXAVE, OCRTIME
+          FROM RCA.TB_AI_PERFORMACE_MST
+         WHERE OCRTIME BETWEEN #{startTime}::TIMESTAMP AND #{endTime}::TIMESTAMP
+    </insert>
+
+    <insert id="insertFaultEventNniTopology" parameterType="java.util.HashMap">
+        INSERT INTO RCA.TB_FAULT_EVENT_NNI_TOPOLOGY
+        (EVENTNO, LINK_ID, SYSNAMEA, PTPNAMEA_BAU, PTPNAMEA_PAU, SYSNAMEZ, PTPNAMEZ_BAU, PTPNAMEZ_PAU)
+        SELECT DISTINCT #{eventno}, LINK_ID, SYSNAMEA, PTPNAMEA_BAU, PTPNAMEA_PAU, SYSNAMEZ, PTPNAMEZ_BAU, PTPNAMEZ_PAU
+          FROM NIA.TB_TOPOLOGY
+    </insert>
+
+    <insert id="insertFaultEventUniTopology" parameterType="java.util.HashMap">
+        INSERT INTO RCA.TB_FAULT_EVENT_UNI_TOPOLOGY
+        (EVENTNO, LINK_ID, SYSNAMEA, SHELFA, PTPNAMEA, SYSNAMEZ, SHELFZ, PTPNAMEZ)
+        SELECT DISTINCT #{eventno}, LINK_ID, SYSNAMEA, SHELFA, PTPNAMEA, SYSNAMEZ, SHELFZ, PTPNAMEZ
+          FROM NIA.TB_UNI_TOPOLOGY
+    </insert>
+</mapper>
+
+

@@ -1,0 +1,122 @@
+server:
+  port: 8095
+
+logging:
+  level:
+    root: INFO
+
+---
+spring:
+  profiles: dev
+  jasypt:
+    encryptor:
+      bean: jasyptStringEncryptor
+      property:
+        prefix: ENC(
+        suffix: )
+
+  logging:
+    config: classpath:context/logback-spring.xml
+
+#  cache:
+#    ehcache:
+#      config: classpath:context/ehcache-context.xml
+
+  rabbitmq:
+ #   address: 183.107.19.138  #집
+    address: 192.168.0.87  #개발
+
+ #   port: 8001
+    port: 5675
+    username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
+    password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
+
+    clusterExchange: nia.exchangeClusterDirectly
+    clusterQueue: nia.ClusterIndexDirectly
+    clusterRoutingKey: nia.ClusterIndexDirectly
+
+    engineExchange: nia.exchangeEngineDirectly
+    engineQueue: nia.EngineIndexDirectly
+    engineRoutingKey: nia.EngineIndexDirectly
+
+
+  cluster:
+    timeCondition: 8000
+    delay: 30000
+
+
+  task:
+    poolSize: 100
+    keepAlive: 600000
+    queueCapacity: 100
+    concurrency: 100
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    data-source-class-name: org.postgresql.ds.PGSimpleDataSource
+    #url: jdbc:postgresql://183.107.19.138:8000/niadb #집
+    url: jdbc:postgresql://192.168.0.87:5433/niadb #개발
+    username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
+    password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
+    maximumPoolSize: 10
+    idleTimeout: 6000
+
+  mybatis:
+    mapper-locations: classpath*:sqlmap/*.xml
+    mybatisConfig-locations : classpath:mybatis-config.xml
+    configuration:
+      mapUnderscoreToCamelCase: true
+
+---
+spring:
+  profiles: real
+  jasypt:
+    encryptor:
+      bean: jasyptStringEncryptor
+      property:
+        prefix: ENC(
+        suffix: )
+
+  logging:
+    config: classpath:context/logback-spring.xml
+
+  rabbitmq:
+    address: 116.89.186.194
+    port: 5675
+    username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
+    password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
+
+    clusterExchange: nia.exchangeClusterDirectly
+    clusterQueue: nia.ClusterIndexDirectly
+    clusterRoutingKey: nia.ClusterIndexDirectly
+
+    engineExchange: nia.exchangeEngineDirectly
+    engineQueue: nia.EngineIndexDirectly
+    engineRoutingKey: nia.EngineIndexDirectly
+
+
+  cluster:
+    timeCondition: 8000
+    delay: 30000
+
+
+  task:
+    poolSize: 100
+    keepAlive: 600000
+    queueCapacity: 100
+    concurrency: 100
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    data-source-class-name: org.postgresql.ds.PGSimpleDataSource
+    url: jdbc:postgresql://116.89.186.194:5433/niadb
+    username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
+    password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
+    maximumPoolSize: 10
+    idleTimeout: 6000
+
+  mybatis:
+    mapper-locations: classpath*:sqlmap/*.xml
+    mybatisConfig-locations : classpath:mybatis-config.xml
+    configuration:
+      mapUnderscoreToCamelCase: true

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nia.ems.linkage.mapper.AlarmMapper">
+
+    <!--<insert id="insertAlarm" parameterType="java.util.HashMap">-->
+      <!--<if test="alarmVoList.size != 0">-->
+        <!--INSERT INTO NIA.TB_ALARM_MST(ALARMNO, SYSNAME, EQUIPTYPE, UNIT, ALARMTIME, RECEIVETIME, ALARMLOC, ALARMMSG, ALARMLEVEL)-->
+        <!--VALUES-->
+        <!--<foreach collection="alarmVoList" item="item" separator=",">-->
+           <!--((select nextval('rca.seq_inspector') ::VARCHAR), #{item.sysname}, #{item.equiptype}, #{item.unit}, #{item.alarmtime}, #{item.receivetime}, #{item.alarmloc}, #{item.alarmmsg}, #{item.alarmlevel})-->
+       <!--</foreach>-->
+      <!--</if>-->
+    <!--</insert>-->
+
+    <insert id="insertAlarm" parameterType="com.nia.ems.linkage.vo.alarm.AlarmVo">
+        WITH UPSERT AS
+        (
+            SELECT (SELECT NEXTVAL('nia.seq_alarmno') ::VARCHAR) AS ALARMNO
+                 , #{sysname} AS SYSNAME
+                 , #{equiptype} AS EQUIPTYPE
+                 , #{unit} AS UNIT
+                 , #{alarmtime}::TIMESTAMP AS ALARMTIME
+                 , #{receivetime}::TIMESTAMP AS RECEIVETIME
+                 , #{alarmloc} AS ALARMLOC
+                 , #{alarmmsg} AS ALARMMSG
+                 , #{alarmlevel} AS ALARMLEVEL
+                 , #{lineName} AS LINE_NAME
+        )
+        INSERT INTO NIA.TB_ALARM_MST
+        (
+           ALARMNO, SYSNAME, EQUIPTYPE, UNIT, ALARMTIME, RECEIVETIME, ALARMLOC, ALARMMSG, ALARMLEVEL, LINE_NAME
+        )
+        SELECT U.ALARMNO, U.SYSNAME, U.EQUIPTYPE, U.UNIT, U.ALARMTIME, U.RECEIVETIME, U.ALARMLOC, U.ALARMMSG, U.ALARMLEVEL, U.LINE_NAME
+          FROM UPSERT U
+         WHERE NOT EXISTS(
+                SELECT A.SYSNAME, A.EQUIPTYPE, A.UNIT, A.ALARMTIME, A.RECEIVETIME, A.ALARMLOC, A.ALARMMSG, A.ALARMLEVEL, A.LINE_NAME
+                  FROM NIA.TB_ALARM_MST A
+                 WHERE A.SYSNAME = U.SYSNAME
+                   AND A.UNIT = U.UNIT
+                   AND A.RECEIVETIME = U.RECEIVETIME
+                   AND A.ALARMLOC = U.ALARMLOC
+                   AND A.ALARMMSG = U.ALARMMSG
+                   AND A.ALARMLEVEL = U.ALARMLEVEL
+        )
+        <!--
+        INSERT INTO NIA.TB_ALARM_MST(
+             ALARMNO, SYSNAME, EQUIPTYPE, UNIT, ALARMTIME, RECEIVETIME, ALARMLOC, ALARMMSG, ALARMLEVEL, LINE_NAME
+        )VALUES(
+             (SELECT NEXTVAL('nia.seq_alarmno') ::VARCHAR), #{sysname}, #{equiptype}, #{unit}, #{alarmtime}, #{receivetime}, #{alarmloc}, #{alarmmsg}, #{alarmlevel}, #{lineName}
+        )
+        -->
+    </insert>
+</mapper>

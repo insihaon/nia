@@ -1,0 +1,38 @@
+package com.nia.engine.vo.falutEvent;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
+import java.io.Serializable;
+import java.util.List;
+
+/**
+ * @author Administrator
+ *
+ */
+@Component
+@Data
+@Scope(value = "prototype")
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class FaultEventVo implements Serializable {
+	@JsonProperty("eventno")
+	private String eventno;
+	@JsonProperty("title")
+	private String title;
+	@JsonProperty("startTime")
+	private String startTime;
+	@JsonProperty("endTime")
+	private String endTime;
+	@JsonProperty("alarm")
+	private List<FaultEventAlarmDataVo> faultEventAlarmList;
+	@JsonProperty("performance")
+	private List<FaultEventPerformanceDataVo> faultEventPerformanceList;
+	@JsonProperty("nni_topology")
+	private List<FaultEventNniTopologyDataVo> faultEventNniTopologyList;
+	@JsonProperty("uni_topology")
+	private List<FaultEventUniTopologyDataVo> faultEventUniTopologyList;
+
+}

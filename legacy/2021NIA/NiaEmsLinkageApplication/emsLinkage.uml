@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>com.nia.ems.linkage.mapper.PerformaceMapper</OriginalElement>
+  <nodes>
+    <node x="0.0" y="747.0">com.nia.ems.linkage.service.impl.NiaLinkageSchdulerServiceImpl</node>
+    <node x="335.1575139756659" y="953.7185136468266">com.nia.ems.linkage.thread.impl.MessageListenerThreadImpl</node>
+    <node x="768.45" y="517.0">com.nia.ems.linkage.service.impl.RoadmEmsMmcServiceImpl</node>
+    <node x="1309.125" y="0.0">com.nia.ems.linkage.mapper.EquipmentMapper</node>
+    <node x="1406.2375" y="666.5">com.nia.ems.linkage.service.impl.RoadmEmsMmcPasingServiceImpl</node>
+    <node x="955.125" y="184.0">com.nia.ems.linkage.mapper.PerformaceMapper</node>
+    <node x="1846.2375" y="758.5">com.nia.ems.linkage.thread.impl.RoadmEmsMmcResultThreadImpl</node>
+    <node x="1773.0333333333333" y="207.0">com.nia.ems.linkage.service.RoadmEmsMmcPasingService</node>
+    <node x="396.48749999999995" y="126.5">com.nia.ems.linkage.service.RoadmEmsMmcService</node>
+    <node x="6.157513975665893" y="953.7185136468266">com.nia.ems.linkage.thread.impl.RoadmEmsThreadImpl</node>
+    <node x="700.125" y="183.5">com.nia.ems.linkage.amqp.PerformanceToAiPrdAmqp</node>
+    <node x="358.0" y="735.5">com.nia.ems.linkage.thread.impl.ServerAliveCheckThreadImpl</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="com.nia.ems.linkage.service.impl.RoadmEmsMmcServiceImpl" target="com.nia.ems.linkage.mapper.PerformaceMapper">
+      <point x="44.75" y="-303.0" />
+      <point x="992.2" y="497.0" />
+      <point x="1038.625" y="497.0" />
+      <point x="-83.5" y="49.5" />
+    </edge>
+    <edge source="com.nia.ems.linkage.service.impl.NiaLinkageSchdulerServiceImpl" target="com.nia.ems.linkage.service.RoadmEmsMmcService">
+      <point x="0.0" y="-73.0" />
+      <point x="169.0" y="497.0" />
+      <point x="436.6541666666667" y="497.0" />
+      <point x="-80.33333333333331" y="107.0" />
+    </edge>
+    <edge source="com.nia.ems.linkage.service.impl.RoadmEmsMmcServiceImpl" target="com.nia.ems.linkage.mapper.EquipmentMapper">
+      <point x="134.25" y="-303.0" />
+      <point x="1081.7" y="497.0" />
+      <point x="1400.125" y="497.0" />
+      <point x="-91.0" y="233.5" />
+    </edge>
+    <edge source="com.nia.ems.linkage.service.impl.RoadmEmsMmcPasingServiceImpl" target="com.nia.ems.linkage.service.RoadmEmsMmcPasingService">
+      <point x="52.5" y="-153.5" />
+      <point x="1668.7375" y="487.0" />
+      <point x="1822.2" y="487.0" />
+      <point x="-98.33333333333326" y="26.5" />
+    </edge>
+    <edge source="com.nia.ems.linkage.service.impl.RoadmEmsMmcPasingServiceImpl" target="com.nia.ems.linkage.mapper.EquipmentMapper">
+      <point x="-52.5" y="-153.5" />
+      <point x="1563.7375" y="497.0" />
+      <point x="1582.125" y="497.0" />
+      <point x="91.0" y="233.5" />
+    </edge>
+    <edge source="com.nia.ems.linkage.thread.impl.ServerAliveCheckThreadImpl" target="com.nia.ems.linkage.service.RoadmEmsMmcService">
+      <point x="0.0" y="-84.5" />
+      <point x="527.0" y="497.0" />
+      <point x="516.9875" y="497.0" />
+      <point x="0.0" y="107.0" />
+    </edge>
+    <edge source="com.nia.ems.linkage.service.impl.RoadmEmsMmcServiceImpl" target="com.nia.ems.linkage.amqp.PerformanceToAiPrdAmqp">
+      <point x="-44.75" y="-303.0" />
+      <point x="902.7" y="487.0" />
+      <point x="817.625" y="487.0" />
+      <point x="0.0" y="50.0" />
+    </edge>
+    <edge source="com.nia.ems.linkage.service.impl.RoadmEmsMmcServiceImpl" target="com.nia.ems.linkage.service.RoadmEmsMmcService">
+      <point x="-134.25" y="-303.0" />
+      <point x="813.2" y="497.0" />
+      <point x="597.3208333333333" y="497.0" />
+      <point x="80.33333333333337" y="107.0" />
+    </edge>
+    <edge source="com.nia.ems.linkage.thread.impl.RoadmEmsMmcResultThreadImpl" target="com.nia.ems.linkage.service.RoadmEmsMmcPasingService">
+      <point x="0.0" y="-61.5" />
+      <point x="2041.7375" y="497.0" />
+      <point x="2018.8666666666666" y="497.0" />
+      <point x="98.33333333333326" y="26.5" />
+    </edge>
+    <edge source="com.nia.ems.linkage.service.impl.RoadmEmsMmcPasingServiceImpl" target="com.nia.ems.linkage.mapper.PerformaceMapper">
+      <point x="-157.5" y="-153.5" />
+      <point x="1458.7375" y="487.0" />
+      <point x="1205.625" y="487.0" />
+      <point x="83.5" y="49.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.5120160213618157" x="1242.6772151727273" y="524.7124029834658" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Fields</Category>
+    <Category>Constructors</Category>
+    <Category>Methods</Category>
+    <Category>Properties</Category>
+    <Category>Inner Classes</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

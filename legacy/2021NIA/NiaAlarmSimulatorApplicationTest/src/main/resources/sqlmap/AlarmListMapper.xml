@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nia.rca.test.simulator.mapper.AlarmMapper">
+
+	<select id="selectAlarmList" resultType="com.nia.rca.test.simulator.vo.AlarmVo">
+		SELECT ALARMNO, SYSNAME, EQUIPTYPE, ALARMTIME, RECEIVETIME, ALARMLOC, ALARMMSG, UNIT, ALARMLEVEL
+		  FROM NIA.TB_ALARM_MST
+	     WHERE RECEIVETIME BETWEEN '2020-12-23 00:00:00' AND '2020-12-24 00:00:00'
+	    -- WHERE RECEIVETIME BETWEEN '2020-11-26 00:00:00' AND '2020-11-27 00:00:00'
+		--   AND ALARMLEVEL != '1'
+		ORDER BY RECEIVETIME
+	</select>
+
+</mapper>
+
+

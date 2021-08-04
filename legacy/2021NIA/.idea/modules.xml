@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/NIA_2021.iml" filepath="$PROJECT_DIR$/.idea/NIA_2021.iml" />
+      <module fileurl="file://$PROJECT_DIR$/NiaPerformanceApplication/com.nia.ai.per.ap.iml" filepath="$PROJECT_DIR$/NiaPerformanceApplication/com.nia.ai.per.ap.iml" />
+      <module fileurl="file://$PROJECT_DIR$/NiaAiResultLinkageApplication/com.nia.ai.performance.result.iml" filepath="$PROJECT_DIR$/NiaAiResultLinkageApplication/com.nia.ai.performance.result.iml" />
+      <module fileurl="file://$PROJECT_DIR$/NiaAiPerformanceLinkageApplication/com.nia.ai.performance.send.iml" filepath="$PROJECT_DIR$/NiaAiPerformanceLinkageApplication/com.nia.ai.performance.send.iml" />
+      <module fileurl="file://$PROJECT_DIR$/NiaPreprocessorApplication/com.nia.alarm.preprocessor.iml" filepath="$PROJECT_DIR$/NiaPreprocessorApplication/com.nia.alarm.preprocessor.iml" />
+      <module fileurl="file://$PROJECT_DIR$/NiaAlarmSimulatorApplication/com.nia.alarm.simulator.iml" filepath="$PROJECT_DIR$/NiaAlarmSimulatorApplication/com.nia.alarm.simulator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/NiaLinkageApplication/com.nia.data.linkage.iml" filepath="$PROJECT_DIR$/NiaLinkageApplication/com.nia.data.linkage.iml" />
+      <module fileurl="file://$PROJECT_DIR$/NiaEmsLinkageApplication/com.nia.ems.linkage.iml" filepath="$PROJECT_DIR$/NiaEmsLinkageApplication/com.nia.ems.linkage.iml" />
+      <module fileurl="file://$PROJECT_DIR$/NiaEngineApplication/com.nia.engine.iml" filepath="$PROJECT_DIR$/NiaEngineApplication/com.nia.engine.iml" />
+      <module fileurl="file://$PROJECT_DIR$/IpSnmpLinkageApplication/com.nia.linkage.snmp.ap.iml" filepath="$PROJECT_DIR$/IpSnmpLinkageApplication/com.nia.linkage.snmp.ap.iml" />
+      <module fileurl="file://$PROJECT_DIR$/NiaClusterApplication/com.nia.rca.cluster.preprocessor.iml" filepath="$PROJECT_DIR$/NiaClusterApplication/com.nia.rca.cluster.preprocessor.iml" />
+      <module fileurl="file://$PROJECT_DIR$/spring-snmp-master/spring-snmp.iml" filepath="$PROJECT_DIR$/spring-snmp-master/spring-snmp.iml" />
+    </modules>
+  </component>
+</project>
