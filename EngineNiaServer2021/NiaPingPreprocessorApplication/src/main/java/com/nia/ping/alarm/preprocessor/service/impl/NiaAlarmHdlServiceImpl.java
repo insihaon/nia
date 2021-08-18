@@ -35,7 +35,6 @@ public class NiaAlarmHdlServiceImpl implements NiaAlarmHdlService {
         try {
             pingDataVo = alarmService.convertAlarmObj(pingRowDataVo);
             alarmService.pingAlarmCheck(pingDataVo);
-            LOGGER.info(pingDataVo.toString());
         } catch (Exception e) {
             LOGGER.error("=====> [NiaAlarmHdlService] niaAlarmHdlProcessor error "+ ExceptionUtils.getStackTrace(e)+ "<=====");
         }
