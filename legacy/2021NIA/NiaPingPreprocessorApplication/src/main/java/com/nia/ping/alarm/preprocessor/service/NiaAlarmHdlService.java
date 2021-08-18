@@ -1,5 +1,7 @@
 package com.nia.ping.alarm.preprocessor.service;
 
+import com.nia.ping.alarm.preprocessor.vo.ping.PingRowDataVo;
+
 /**
 
  * @author
@@ -7,5 +9,5 @@ package com.nia.ping.alarm.preprocessor.service;
  */
 public interface NiaAlarmHdlService {
 
-	void niaAlarmHdlProcessor(String pringData) throws Exception;
+	void niaAlarmHdlProcessor(PingRowDataVo pingRowDataVo) throws Exception;
 }
