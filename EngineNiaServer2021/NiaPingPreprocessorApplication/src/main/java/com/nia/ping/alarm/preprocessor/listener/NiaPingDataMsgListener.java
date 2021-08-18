@@ -1,6 +1,9 @@
 package com.nia.ping.alarm.preprocessor.listener;
 
+import com.nia.ping.alarm.preprocessor.common.UtlCommon;
 import com.nia.ping.alarm.preprocessor.service.NiaAlarmHdlService;
+import com.nia.ping.alarm.preprocessor.vo.alarm.PingAlarmVo;
+import com.nia.ping.alarm.preprocessor.vo.ping.PingRowDataVo;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,12 +20,22 @@ public class NiaPingDataMsgListener {
 	@Qualifier("NiaAlarmHdlService")
 	private NiaAlarmHdlService niaAlarmHdlService;
 
-	@KafkaListener(topics = "telegraf3", groupId = "pringData")
+	@Autowired
+	private org.springframework.beans.factory.ObjectFactory<PingRowDataVo> pingRowDataVoObjectFactory;
+
+	@KafkaListener(topics = "telegraf2", groupId = "pringData")
 	public void onMessage(String message) {
+		PingRowDataVo pingRowDataVo;
 
 		try {
 			LOGGER.info(">>>>>>>>>>[NiaPingDataMsgListener] onMessage : " + message.toString() + " <<<<<<<<<<<<<<<<<");
-			niaAlarmHdlService.niaAlarmHdlProcessor(message);
+			Object obj;
+			pingRowDataVo = pingRowDataVoObjectFactory.getObject();
+
+			obj = UtlCommon.jsonToObject(pingRowDataVo, message);
+			pingRowDataVo = (PingRowDataVo)obj;
+
+			niaAlarmHdlService.niaAlarmHdlProcessor(pingRowDataVo);
 		} catch (Exception e) {
 			LOGGER.error("=====> [NiaPingDataMsgListener] onMessage error "+ ExceptionUtils.getStackTrace(e)+ "<=====");
 		}

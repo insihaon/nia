@@ -9,7 +9,7 @@
 
     <select id="selectPingAlarmCheck" resultType="com.nia.ping.alarm.preprocessor.vo.alarm.PingAlarmVo" parameterType="java.util.HashMap">
         SELECT ALARM_NO, ALARMTIME, CLEARTIME, ALARMLVL, HOST
-             , URL, TTL, PACKETS_RECEIVED, PERCENT_PACKET_LOSS, RESULT_CODE
+             , URL, PACKETS_RECEIVED, PERCENT_PACKET_LOSS, RESULT_CODE
              , PACKETS_TRANSMITTED
          FROM NIA.TB_PING_ALARM_MST
         WHERE URL = #{url}
@@ -47,13 +47,13 @@
     <insert id="insertPingCollect" parameterType="com.nia.ping.alarm.preprocessor.vo.alarm.PingAlarmVo">
         INSERT INTO NIA.TB_PING_COLLECT_CURRNET
         (
-           COLLECT_DATETIME, HOST_NAME, URL, TTL, PACKETS_RECEIVED,
-           PERCENT_PACKET_LOSS, RESULT_CODE, PACKETS_TRANSMITTED
+           COLLECT_DATETIME, HOST_NAME, URL, PACKETS_RECEIVED, PERCENT_PACKET_LOSS,
+           RESULT_CODE, PACKETS_TRANSMITTED
         )
         VALUES
         (
-           #{alarmtime}, #{host}, #{url}, #{ttl}, #{packetsReceived},
-           #{percentPacketLoss}, #{resultCode}, #{packetsTransmitted}
+           #{alarmtime}, #{host}, #{url}, #{packetsReceived}, #{percentPacketLoss},
+           #{resultCode}, #{packetsTransmitted}
         )
     </insert>
 
@@ -61,14 +61,12 @@
         INSERT INTO NIA.TB_PING_ALARM_MST
         (
            ALARM_NO, ALARMTIME, CLEARTIME, ALARMLVL, HOST,
-           URL, TTL, PACKETS_RECEIVED, PERCENT_PACKET_LOSS, RESULT_CODE,
-           PACKETS_TRANSMITTED
+           URL, PACKETS_RECEIVED, PERCENT_PACKET_LOSS, RESULT_CODE, PACKETS_TRANSMITTED
         )
         VALUES
         (
            #{alarmno}, #{alarmtime}, #{cleartime}, #{alarmlvl}, #{host},
-           #{url}, #{ttl}, #{packetsReceived}, #{percentPacketLoss}, #{resultCode},
-           #{packetsTransmitted}
+           #{url}, #{packetsReceived}, #{percentPacketLoss}, #{resultCode}, #{packetsTransmitted}
         )
     </insert>
 </mapper>

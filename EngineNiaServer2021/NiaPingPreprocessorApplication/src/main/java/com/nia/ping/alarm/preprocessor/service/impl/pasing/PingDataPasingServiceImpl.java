@@ -59,9 +59,6 @@ public class PingDataPasingServiceImpl implements PingDataPasingService {
                         case "result_code" :
                             pingDataVo.setResultCode(dataArr[1]);
                             break;
-                        case "ttl" :
-                            pingDataVo.setTtl(dataArr[1]);
-                            break;
                     }
 
 

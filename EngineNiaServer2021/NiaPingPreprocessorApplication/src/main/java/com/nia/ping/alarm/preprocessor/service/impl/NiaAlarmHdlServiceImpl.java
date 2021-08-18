@@ -5,6 +5,7 @@ import com.nia.ping.alarm.preprocessor.service.NiaAlarmHdlService;
 import com.nia.ping.alarm.preprocessor.service.alarm.AlarmService;
 import com.nia.ping.alarm.preprocessor.service.pasing.PingDataPasingService;
 import com.nia.ping.alarm.preprocessor.vo.alarm.PingAlarmVo;
+import com.nia.ping.alarm.preprocessor.vo.ping.PingRowDataVo;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,24 +25,15 @@ public class NiaAlarmHdlServiceImpl implements NiaAlarmHdlService {
     private final static Logger LOGGER = Logger.getLogger(NiaAlarmHdlService.class);
 
     @Autowired
-	private AlarmMapper alarmMapper;
-
-    @Autowired
-    @Qualifier("PingDataPasingService")
-    private PingDataPasingService pingDataPasingService;
-
-    @Autowired
     @Qualifier("AlarmService")
     private AlarmService alarmService;
 
-    private HashMap<String, String> parameterMap;
-
     @Override
-    public void niaAlarmHdlProcessor(String pringData) {
+    public void niaAlarmHdlProcessor(PingRowDataVo pingRowDataVo) {
         PingAlarmVo pingDataVo = null;
 
         try {
-            pingDataVo = pingDataPasingService.pingDataPasing(pringData);
+            pingDataVo = alarmService.convertAlarmObj(pingRowDataVo);
             alarmService.pingAlarmCheck(pingDataVo);
             LOGGER.info(pingDataVo.toString());
         } catch (Exception e) {

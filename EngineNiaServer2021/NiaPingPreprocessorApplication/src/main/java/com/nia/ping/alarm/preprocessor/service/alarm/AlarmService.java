@@ -2,6 +2,7 @@ package com.nia.ping.alarm.preprocessor.service.alarm;
 
 
 import com.nia.ping.alarm.preprocessor.vo.alarm.PingAlarmVo;
+import com.nia.ping.alarm.preprocessor.vo.ping.PingRowDataVo;
 
 /**
 
@@ -10,6 +11,8 @@ import com.nia.ping.alarm.preprocessor.vo.alarm.PingAlarmVo;
  */
 public interface AlarmService{
 
-    void pingAlarmCheck(PingAlarmVo pingAlarmVo);
+    void pingAlarmCheck(PingAlarmVo pPingAlarmVo);
+
+    PingAlarmVo convertAlarmObj(PingRowDataVo pingRowDataVo);
 
 }
