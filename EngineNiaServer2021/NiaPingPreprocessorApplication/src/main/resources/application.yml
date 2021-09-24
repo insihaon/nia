@@ -50,7 +50,7 @@ spring:
         suffix: )
 
   rabbitmq:
-    address: 116.89.186.194  #개발
+    address: 116.89.186.194 #KOREN
     port: 5675
     username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
     password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
@@ -74,11 +74,11 @@ spring:
   datasource:
     driver-class-name: org.postgresql.Driver
     data-source-class-name: org.postgresql.ds.PGSimpleDataSource
-    url: jdbc:postgresql://116.89.186.194:5433/niadb #개발
+    url: jdbc:postgresql://116.89.186.194:5433/niadb #KOREN
     username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
     password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
-    maximumPoolSize: 10
-    idleTimeout: 6000
+    maximumPoolSize : 10
+    idleTimeout : 6000
 
   mybatis:
     mapper-locations: classpath*:sqlmap/*.xml

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nia.alarm.ip.preprocessor.mapper.TopologyMapper">
+
+    <select id="selectTopologyList" resultType="com.nia.alarm.ip.preprocessor.vo.topology.TopologyDataVo" parameterType="hashmap">
+        SELECT INTIFIDX AS LINKID, MODULE_SRL, STRRESID, STRIFID, STRIFNAME, STRRESID_A AS SYSNAMEA, STRRESID_Z AS SYSNAMEZ
+          FROM CATCHVIEW.XE_CVNMS_RESOURCE_IF
+         WHERE STRRESID = #{strresid}
+    </select>
+</mapper>

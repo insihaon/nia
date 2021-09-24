@@ -23,7 +23,7 @@ public class NiaPingDataMsgListener {
 	@Autowired
 	private org.springframework.beans.factory.ObjectFactory<PingRowDataVo> pingRowDataVoObjectFactory;
 
-	@KafkaListener(topics = "telegraf2", groupId = "pringData")
+	@KafkaListener(topics = "telegraf-ping", groupId = "pringData")
 	public void onMessage(String message) {
 		PingRowDataVo pingRowDataVo;
 
