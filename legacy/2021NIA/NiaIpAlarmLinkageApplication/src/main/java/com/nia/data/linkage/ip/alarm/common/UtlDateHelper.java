@@ -1,11 +1,11 @@
-package com.nia.ip.syslog.linkage.common;
+package com.nia.data.linkage.ip.alarm.common;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class UtlDateHelper {
-    public static String sFormat = "yyyy-MM-dd HH:mm:ss";
+    public static String sFormat = "yyyy/MM/dd-HH:mm:ss";
 
     public static Timestamp getDate(String sDate) throws Exception {
         SimpleDateFormat sdf = new SimpleDateFormat(sFormat);
@@ -19,9 +19,9 @@ public class UtlDateHelper {
     }
     
     public static Timestamp stringToTimestamp(String sDate){
-
-        Timestamp tDate = Timestamp.valueOf(sDate);
-        return tDate;
+    	
+    	Timestamp tDate = Timestamp.valueOf(sDate);
+    	return tDate;
     }
     
     public static String timestampToString(String format, Timestamp timestamp){
