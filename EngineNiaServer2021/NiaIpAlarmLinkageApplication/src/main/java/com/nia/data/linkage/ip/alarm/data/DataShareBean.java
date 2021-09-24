@@ -1,4 +1,4 @@
-package com.nia.ip.syslog.linkage.data;
+package com.nia.data.linkage.ip.alarm.data;
 
 import com.google.common.collect.Maps;
 import org.apache.log4j.Logger;
