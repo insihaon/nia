@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nia.data.linkage.ip.perf.mapper.linkage.LinkagePerfMapper">
+
+    <select id="selectPerfList" resultType="com.nia.data.linkage.ip.perf.vo.perf.PerfVo" parameterType="long">
+        SELECT strifid, strresid, strtypemin, inttimestamp, intyear
+             , intmonth, intday, inthour, intmin, intweek
+             , intbandwidth, fltbpsin, fltbpsout, fltppsin, fltppsout
+             , flterrorin, flterrorout, fltdiscardin, fltdiscardout, fltunknown
+             , fltusage, flhcinoctets, flhcoutoctets, flhcinucastpkts, flhcoutucastpkts
+             , flhcinmulticastpkts, flhcoutmulticastpkts, flhcinbroadcastpkts, flhcoutbroadcastpkts, fltbpsinmax
+             , fltbpsoutmax, fltppsinmax, fltppsoutmax, flterrorinmax, flterroroutmax
+             , fltdiscardinmax, fltdiscardoutmax, fltunknownmax, fltusagemax
+          FROM catchview.xe_cvnms_perf_if
+         WHERE inttimestamp > #{inttimestamp}
+         ORDER BY inttimestamp
+    </select>
+</mapper>
+
+

@@ -1,0 +1,108 @@
+server:
+  port: 30401
+logging:
+  level:
+    root: INFO  
+    
+---
+spring:
+  profiles: dev
+  logging:
+    config: classpath:logback-spring.xml
+
+  jasypt:
+    encryptor:
+      bean: jasyptStringEncryptor
+      property:
+        prefix: ENC(
+        suffix: )
+
+
+  rabbitmq:
+    address: 192.168.0.87  #개발
+    port: 5675
+    username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
+    password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
+
+    niaIpAlarmExchange: nia.exchangeNiaIpAlarmDirectly
+    niaIpAlarmQueue: nia.NiaIpAlarmIndexDirectly
+    niaIpAlarmRoutingKey: nia.NiaIpAlarmIndexDirectl
+
+  task:
+    poolSize: 100 
+    keepAlive: 600000
+    queueCapacity: 100
+    concurrency: 100
+
+  datasource:
+    nia:
+      driver-class-name: org.postgresql.Driver
+      url: jdbc:postgresql://116.89.186.194:5433/niadb
+      username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
+      password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
+      maximumPoolSize : 10
+      idleTimeout : 6000
+    linkage:
+      driver-class-name: org.mariadb.jdbc.Driver
+      url: jdbc:mariadb://172.21.45.202:3306/ALARM?characterEncoding=UTF-8&serverTimezone=UTC
+      username: ENC(IOCxzGkF8UKH/AZDEWxDaw==)
+      password: ENC(A0LS5pxxFa3Z+twZA6rRmyJkj22MqCd2)
+      maximumPoolSize: 10
+      idleTimeout: 6000
+
+  mybatis:
+    mapper-locations: classpath*:sqlmap/*.xml
+    mybatisConfig-locations: classpath:mybatis-config.xml
+    configuration:
+      mapUnderscoreToCamelCase: true
+
+---
+spring:
+  profiles: real
+  logging:
+    config: classpath:logback-spring.xml
+
+  jasypt:
+    encryptor:
+      bean: jasyptStringEncryptor
+      property:
+        prefix: ENC(
+        suffix: )
+
+  rabbitmq:
+    address: 116.89.186.194
+    port: 5675
+    username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
+    password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
+
+    niaIpAlarmExchange: nia.exchangeNiaIpAlarmDirectly
+    niaIpAlarmQueue: nia.NiaIpAlarmIndexDirectly
+    niaIpAlarmRoutingKey: nia.NiaIpAlarmIndexDirectl
+
+  task:
+    poolSize: 100
+    keepAlive: 600000
+    queueCapacity: 100
+    concurrency: 100
+
+  datasource:
+    nia:
+      driver-class-name: org.postgresql.Driver
+      url: jdbc:postgresql://116.89.186.194:5433/niadb
+      username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
+      password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
+      maximumPoolSize : 10
+      idleTimeout : 6000
+    linkage:
+      driver-class-name: org.mariadb.jdbc.Driver
+      url: jdbc:mariadb://10.81.192.18:3306/catchview?characterEncoding=UTF-8&serverTimezone=UTC
+      username: root
+      password: codej12#$
+      maximumPoolSize: 10
+      idleTimeout: 6000
+
+  mybatis:
+    mapper-locations: classpath*:sqlmap/*.xml
+    mybatisConfig-locations: classpath:mybatis-config.xml
+    configuration:
+      mapUnderscoreToCamelCase: true
