@@ -74,8 +74,9 @@ public class AlarmServiceImpl implements AlarmService {
             basicAlarmVo = basicAlarmVoObjectFactory.getObject();
 
             basicAlarmVo.setAlarmno(alarmVo.getIntErrIdx()+"");
-            basicAlarmVo.setAlarmtime(UtlDateHelper.stringToTimestamp(alarmVo.getDateRaiseDate()));
-            basicAlarmVo.setReceivetime(UtlDateHelper.stringToTimestamp(alarmVo.getDateRaiseDate()));
+            basicAlarmVo.setAlarmtime(alarmVo.getDateRaiseDate());
+            basicAlarmVo.setReceivetime(alarmVo.getDateRaiseDate());
+            basicAlarmVo.setEquipCode(alarmVo.getStrResID());
             basicAlarmVo.setSysname(alarmVo.getStrResName());
             basicAlarmVo.setEquiptype(alarmVo.getModuleSrl()+"");
             basicAlarmVo.setAlarmloc(alarmVo.getStrIfID());

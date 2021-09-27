@@ -19,6 +19,7 @@ public class BasicAlarmVo implements Serializable {
 
 	private String alarmno;
     private String sysname;
+	private String equipCode;
 	private String equipName;
     private String equiptype;
     private String unit;
