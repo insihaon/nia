@@ -9,4 +9,5 @@ import java.util.HashMap;
 @Mapper
 public interface LinkageAlarmMapper {
     ArrayList<AlarmVo> selectAlarmList(int alarmId);
+    ArrayList<AlarmVo> selectAlarmClearList(String dateClearDate);
 }

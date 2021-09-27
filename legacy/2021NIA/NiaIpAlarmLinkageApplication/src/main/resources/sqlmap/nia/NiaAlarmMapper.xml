@@ -22,8 +22,8 @@
                 #{item.intErrIdx}, #{item.moduleSrl}, #{item.strResID}, #{item.strIfID}, #{item.strType},
                 #{item.strLevel}, #{item.strTitle}, #{item.strContent}, #{item.strGroupID}, #{item.strGroupID1},
                 #{item.strGroupID2}, #{item.strGroupID3}, #{item.strGroupID4}, #{item.strGroupID5}, #{item.strGroupID6},
-                #{item.strGroupID7}, #{item.strGroupID8}, #{item.strGroupID9}, #{item.strGroupID10}, #{item.dateRaiseDate},
-                #{item.dateClearDate}, #{item.dateRegDate}, #{item.strClearCheck}, #{item.strMemo}, #{item.strAcknownCheck},
+                #{item.strGroupID7}, #{item.strGroupID8}, #{item.strGroupID9}, #{item.strGroupID10}, to_timestamp(substring(#{item.dateraisedate},0,15), 'yyyymmddhh24miss'),
+                to_timestamp(substring(#{item.dateClearDate},0,15), 'yyyymmddhh24miss'), to_timestamp(substring(#{item.dateRegDate},0,15), 'yyyymmddhh24miss'), #{item.strClearCheck}, #{item.strMemo}, #{item.strAcknownCheck},
                 #{item.strAcknownCheckMemberSrl}
             )
             </foreach>
@@ -32,6 +32,13 @@
 
     <update id="updateAlarmYdKey" parameterType="java.util.HashMap">
         UPDATE NIA.TB_LINKAGE_SEQ SET VALUE_NAME = #{value}, YD_DATE = now() WHERE KEY_NAME = #{key}
+    </update>
+
+    <update id="updateClearAlarmYdKey" parameterType="java.util.HashMap">
+        UPDATE IP_YD.XE_CVNMS_ERROR
+           SET DATECLEARDATE = to_timestamp(substring(#{dateClearDate},0,15), 'yyyymmddhh24miss')
+         WHERE INTERRIDX = #{intErrIdx} ::integer
+           AND DATECLEARDATE IS NULL
     </update>
 </mapper>
 

@@ -16,7 +16,7 @@
                 FLTUSAGE, FLHCINOCTETS, FLHCOUTOCTETS, FLHCINUCASTPKTS, FLHCOUTUCASTPKTS,
                 FLHCINMULTICASTPKTS, FLHCOUTMULTICASTPKTS, FLHCINBROADCASTPKTS, FLHCOUTBROADCASTPKTS, FLTBPSINMAX,
                 FLTBPSOUTMAX, FLTPPSINMAX, FLTPPSOUTMAX, FLTERRORINMAX, FLTERROROUTMAX,
-                FLTDISCARDINMAX, FLTDISCARDOUTMAX, FLTUNKNOWNMAX, FLTUSAGEMAX
+                FLTDISCARDINMAX, FLTDISCARDOUTMAX, FLTUNKNOWNMAX, FLTUSAGEMAX, INSERT_TIME
             )
             VALUES
             <foreach collection="perfVoList" item="item" separator=",">
@@ -28,7 +28,7 @@
                 #{item.fltUsage}, #{item.flHCInOctets}, #{item.flHCOutOctets}, #{item.flHCInUcastPkts}, #{item.flHCOutUcastPkts},
                 #{item.flHCInMulticastPkts}, #{item.flHCOutMulticastPkts}, #{item.flHCInBroadcastPkts}, #{item.flHCOutBroadcastPkts}, #{item.fltBPSInMax},
                 #{item.fltBPSOutMax}, #{item.fltPPSInMax}, #{item.fltPPSOutMax}, #{item.fltErrorInMax}, #{item.fltErrorOutMax},
-                #{item.fltDiscardInMax}, #{item.fltDiscardOutMax}, #{item.fltUnknownMax}, #{item.fltUsageMax}
+                #{item.fltDiscardInMax}, #{item.fltDiscardOutMax}, #{item.fltUnknownMax}, #{item.fltUsageMax}, now()
             )
             </foreach>
         </if>

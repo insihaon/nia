@@ -1,7 +1,7 @@
-package com.nia.data.linkage.ip.equip;
+package com.nia.data.linkage.ip.sflow;
 
-import com.nia.data.linkage.ip.equip.service.CvnmsResourceIfService;
-import com.nia.data.linkage.ip.equip.service.CvnmsResourceService;
+import com.nia.data.linkage.ip.sflow.service.SflowLogService;
+import com.nia.data.linkage.ip.sflow.service.SflowProtocolLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
@@ -19,12 +19,12 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class Application implements CommandLineRunner{
 
 	@Autowired
-	@Qualifier("CvnmsResourceIfService")
-	private CvnmsResourceIfService cvnmsResourceIfService;
+	@Qualifier("SflowLogService")
+	private SflowLogService sflowLogService;
 
 	@Autowired
-	@Qualifier("CvnmsResourceService")
-	private CvnmsResourceService cvnmsResourceService;
+	@Qualifier("SflowProtocolLogService")
+	private SflowProtocolLogService sflowProtocolLogService;
 
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
