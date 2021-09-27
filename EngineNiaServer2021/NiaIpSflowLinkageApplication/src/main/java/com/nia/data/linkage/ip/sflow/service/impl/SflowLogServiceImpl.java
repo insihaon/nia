@@ -1,0 +1,63 @@
+package com.nia.data.linkage.ip.sflow.service.impl;
+
+import com.nia.data.linkage.ip.sflow.amqp.AlarmLinkageResultPrdAmqp;
+import com.nia.data.linkage.ip.sflow.mapper.linkage.LinkageSflowMapper;
+import com.nia.data.linkage.ip.sflow.mapper.nia.NiaSflowMapper;
+import com.nia.data.linkage.ip.sflow.service.SflowLogService;
+import com.nia.data.linkage.ip.sflow.vo.sflow.SflowLogVo;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
+@Service("SflowLogService")
+public class SflowLogServiceImpl implements SflowLogService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SflowLogServiceImpl.class);
+
+    @Autowired
+    private LinkageSflowMapper linkageAlarmMapper;
+
+    @Autowired
+    private NiaSflowMapper niaAlarmMapper;
+
+    @Override
+    public void getSflowLogData() {
+        LOGGER.info("==========>[SflowLogService] getSflowLogData <==============");
+
+        String interrIdx = null;
+
+        ArrayList<SflowLogVo> sflowLogVoList;
+        HashMap<String, Object> objectHashMap;
+        HashMap<String, String> strHashMap;
+
+        try {
+            interrIdx = niaAlarmMapper.selectSflowYdKey("ipSflowLogKey");
+
+            if(StringUtils.isNotEmpty(interrIdx)){
+                sflowLogVoList = linkageAlarmMapper.selectSflowLogList(Integer.parseInt(interrIdx));
+
+                if(sflowLogVoList != null && sflowLogVoList.size() > 0) {
+                    LOGGER.info("==========>[SflowLogService] getSflowLogData sflowLogVoList("+sflowLogVoList.size() +") <==============");
+
+                    objectHashMap = new HashMap<>();
+                    objectHashMap.put("sflowLogVoList", sflowLogVoList);
+                    niaAlarmMapper.insertSflowLog(objectHashMap);
+
+                    strHashMap = new HashMap<>();
+                    strHashMap.put("key", "ipSflowLogKey");
+                    strHashMap.put("value", sflowLogVoList.get(sflowLogVoList.size()-1).getIntIndex()+"");
+                    niaAlarmMapper.updateSflowYdKey(strHashMap);
+                }
+            }
+        }catch (Exception e){
+            LOGGER.error("=====> [SflowLogService] getSflowLogData error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
+        }
+    }
+
+}

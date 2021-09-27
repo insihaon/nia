@@ -12,4 +12,5 @@ public interface NiaAlarmMapper {
     String selectAlarmYdKey(String key);
     void insertIpAlarm(HashMap<String, Object> objectHashMap);
     void updateAlarmYdKey(HashMap<String, String> strHashMap);
+    void updateClearAlarmYdKey(HashMap<String, String> strHashMap);
 }

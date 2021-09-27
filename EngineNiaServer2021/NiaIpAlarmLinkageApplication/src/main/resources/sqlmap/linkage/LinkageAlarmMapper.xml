@@ -13,6 +13,19 @@
          WHERE INTERRIDX > #{interrIdx}
          ORDER BY INTERRIDX
     </select>
+
+    <select id="selectAlarmClearList" resultType="com.nia.data.linkage.ip.alarm.vo.alarm.AlarmVo" parameterType="string">
+        SELECT INTERRIDX, MODULE_SRL, STRRESID, STRIFID, STRTYPE
+             , STRLEVEL, STRTITLE, STRCONTENT, STRGROUPID, STRGROUPID1
+             , STRGROUPID2, STRGROUPID3, STRGROUPID4, STRGROUPID5, STRGROUPID6
+             , STRGROUPID7, STRGROUPID8, STRGROUPID9, STRGROUPID10, DATERAISEDATE
+             , DATECLEARDATE, DATEREGDATE, STRCLEARCHECK, STRMEMO, STRACKNOWNCHECK
+             , STRACKNOWNCHECK_MEMBER_SRL
+          FROM catchview.xe_cvnms_error
+         WHERE DATECLEARDATE IS NOT NULL
+           AND DATECLEARDATE > #{dateClearDate}
+        ORDER BY DATECLEARDATE
+    </select>
 </mapper>
 
 

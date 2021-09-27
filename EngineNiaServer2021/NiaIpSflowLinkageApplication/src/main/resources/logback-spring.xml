@@ -4,12 +4,12 @@
     <include resource="org/springframework/boot/logging/logback/defaults.xml" />
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
 
-    <appender name="ipPerfLinkageApplicationInfo"
+    <appender name="ipSflowLinkageApplicationInfo"
               class="ch.qos.logback.core.rolling.RollingFileAppender">
         <prudent>true</prudent>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!--<fileNamePattern>../logs/preprocessor_application.%d{yyyy-MM-dd}.log</fileNamePattern>-->
-            <fileNamePattern>/home/koren0901/server/logs/ipPerfLinkage_application.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>/home/koren0901/server/logs/ipSflowLinkage_application.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
         </rollingPolicy>
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
@@ -21,11 +21,11 @@
         </encoder>
     </appender>
 
-    <appender name="ipPerfLinkageApplicationError"
+    <appender name="ipSflowLinkageApplicationError"
               class="ch.qos.logback.core.rolling.RollingFileAppender">
         <prudent>true</prudent>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>/home/koren0901/server/logs/ipPerfLinkage_application_error.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>/home/koren0901/server/logs/ipSflowLinkage_application_error.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
         </rollingPolicy>
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
@@ -38,12 +38,12 @@
     </appender>
 
     <logger name="org.springframework" level="INFO"/>
-    <logger name="com.nia.data.linkage.ip.perf" level="INFO"/>
+    <logger name="com.nia.data.linkage.ip.sflow" level="INFO"/>
 
     <root level="INFO">
-        <appender-ref ref="ipPerfLinkageApplicationInfo"/>
+        <appender-ref ref="ipSflowLinkageApplicationInfo"/>
     </root>
     <root level="ERROR">
-        <appender-ref ref="ipPerfLinkageApplicationError"/>
+        <appender-ref ref="ipSflowLinkageApplicationError"/>
     </root>
 </configuration>

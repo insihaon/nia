@@ -4,12 +4,12 @@
     <include resource="org/springframework/boot/logging/logback/defaults.xml" />
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
 
-    <appender name="potnAlarmLinkageApplicationInfo"
+    <appender name="ipEquipLinkageApplicationInfo"
               class="ch.qos.logback.core.rolling.RollingFileAppender">
         <prudent>true</prudent>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!--<fileNamePattern>../logs/preprocessor_application.%d{yyyy-MM-dd}.log</fileNamePattern>-->
-            <fileNamePattern>/home/koren0901/server/logs/potnAlarmLinkage_application.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>/home/koren0901/server/logs/ipEquipLinkage_application.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
         </rollingPolicy>
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
@@ -21,11 +21,11 @@
         </encoder>
     </appender>
 
-    <appender name="potnAlarmLinkageApplicationError"
+    <appender name="ipEquipLinkageApplicationError"
               class="ch.qos.logback.core.rolling.RollingFileAppender">
         <prudent>true</prudent>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>/home/koren0901/server/logs/potnAlarmLinkage_application_error.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>/home/koren0901/server/logs/ipEquipLinkage_application_error.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
         </rollingPolicy>
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
@@ -41,9 +41,9 @@
     <logger name="com.nia.data.linkage.ip.equip" level="INFO"/>
 
     <root level="INFO">
-        <appender-ref ref="potnAlarmLinkageApplicationInfo"/>
+        <appender-ref ref="ipEquipLinkageApplicationInfo"/>
     </root>
     <root level="ERROR">
-        <appender-ref ref="potnAlarmLinkageApplicationError"/>
+        <appender-ref ref="ipEquipLinkageApplicationError"/>
     </root>
 </configuration>

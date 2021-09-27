@@ -1,5 +1,6 @@
 package com.nia.data.linkage.ip.perf.service.impl;
 
+import com.google.common.collect.Lists;
 import com.nia.data.linkage.ip.perf.mapper.linkage.LinkagePerfMapper;
 import com.nia.data.linkage.ip.perf.mapper.nia.NiaPerfMapper;
 import com.nia.data.linkage.ip.perf.service.PerfDataService;
@@ -13,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service("PerfDataService")
 public class PerfDataServiceImpl implements PerfDataService {
@@ -34,6 +37,8 @@ public class PerfDataServiceImpl implements PerfDataService {
         ArrayList<PerfVo> perfVoList;
         HashMap<String, Object> objectHashMap;
         HashMap<String, String> strHashMap;
+        List<List<PerfVo>> listByGroup = null;
+
 
         try {
             inttimestamp = niaAlarmMapper.selectPerfYdKey("ipPerfKey");
@@ -44,9 +49,16 @@ public class PerfDataServiceImpl implements PerfDataService {
                 if(perfVoList != null && perfVoList.size() > 0) {
 
                     LOGGER.info("==========>[PerfDataService] getPerfData perfVoList("+perfVoList.size() +") <==============");
-                    objectHashMap = new HashMap<>();
-                    objectHashMap.put("perfVoList", perfVoList);
-                    niaAlarmMapper.insertPerf(objectHashMap);
+
+                    listByGroup = Lists.partition(perfVoList, perfVoList.size() / 50);
+
+                    if(listByGroup.size() > 0 ) {
+                        for (List<PerfVo> perfList : listByGroup) {
+                            objectHashMap = new HashMap<>();
+                            objectHashMap.put("perfVoList", perfList);
+                            niaAlarmMapper.insertPerf(objectHashMap);
+                        }
+                    }
 
                     strHashMap = new HashMap<>();
                     strHashMap.put("key", "ipPerfKey");
