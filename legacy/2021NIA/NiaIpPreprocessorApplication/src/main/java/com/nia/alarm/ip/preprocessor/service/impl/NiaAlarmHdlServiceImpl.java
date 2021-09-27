@@ -37,7 +37,7 @@ public class NiaAlarmHdlServiceImpl implements NiaAlarmHdlService {
         try {
             basicAlarmVo = alarmService.convertAlarmObj(alarmVo);
 
-            if(StringUtils.isNotEmpty(alarmVo.getDateClearDate())){
+            if(alarmVo.getDateClearDate() != null){
                 alarmService.clearAlarmSendMessage(basicAlarmVo);
             }else{
                 pasingService.alarmPasing(basicAlarmVo);

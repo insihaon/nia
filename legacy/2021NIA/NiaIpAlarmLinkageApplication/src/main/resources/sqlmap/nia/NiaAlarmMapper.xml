@@ -22,7 +22,7 @@
                 #{item.intErrIdx}, #{item.moduleSrl}, #{item.strResID}, #{item.strIfID}, #{item.strType},
                 #{item.strLevel}, #{item.strTitle}, #{item.strContent}, #{item.strGroupID}, #{item.strGroupID1},
                 #{item.strGroupID2}, #{item.strGroupID3}, #{item.strGroupID4}, #{item.strGroupID5}, #{item.strGroupID6},
-                #{item.strGroupID7}, #{item.strGroupID8}, #{item.strGroupID9}, #{item.strGroupID10}, to_timestamp(substring(#{item.dateraisedate},0,15), 'yyyymmddhh24miss'),
+                #{item.strGroupID7}, #{item.strGroupID8}, #{item.strGroupID9}, #{item.strGroupID10}, to_timestamp(substring(#{item.dateRaiseDate},0,15), 'yyyymmddhh24miss'),
                 to_timestamp(substring(#{item.dateClearDate},0,15), 'yyyymmddhh24miss'), to_timestamp(substring(#{item.dateRegDate},0,15), 'yyyymmddhh24miss'), #{item.strClearCheck}, #{item.strMemo}, #{item.strAcknownCheck},
                 #{item.strAcknownCheckMemberSrl}
             )

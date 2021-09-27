@@ -1,21 +1,13 @@
-/*
- * NERC version 1.0
- *
- *  Copyright ⓒ 2017 kt corp. All rights reserved.
- *
- *  This is a proprietary software of kt corp, and you may not use this file except in
- *  compliance with license agreement with kt corp. Any redistribution or use of this
- *  software, with or without modification shall be strictly prohibited without prior written
- *  approval of kt corp, and the copyright notice above does not evidence any actual or
- *  intended publication of such software.
- */
+
 package com.nia.alarm.ip.preprocessor.vo.alarm;
 
+import com.nia.alarm.ip.preprocessor.common.UtlDateHelper;
 import lombok.Data;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 @Component()
 @Data
@@ -41,11 +33,23 @@ public class AlarmVo implements Serializable {
     private String strGroupID8;
     private String strGroupID9;
     private String strGroupID10;
-    private String dateRaiseDate;
-    private String dateClearDate;
-    private String dateRegDate;
+    private Timestamp dateRaiseDate;
+    private Timestamp dateClearDate;
+    private Timestamp dateRegDate;
     private String strClearCheck;
     private String strMemo;
     private String strAcknownCheck;
     private int strAcknownCheckMemberSrl;
+
+    public void setDateRaiseDate(String dateRaiseDate) {
+        this.dateRaiseDate = UtlDateHelper.stringToTimestamp2(dateRaiseDate.substring(0,14));
+    }
+
+    public void setDateClearDate(String dateClearDate) {
+        this.dateClearDate = UtlDateHelper.stringToTimestamp2(dateClearDate.substring(0,14));
+    }
+
+    public void setDateRegDate(String dateRegDate) {
+        this.dateRegDate = UtlDateHelper.stringToTimestamp2(dateRegDate.substring(0,14));
+    }
 }
