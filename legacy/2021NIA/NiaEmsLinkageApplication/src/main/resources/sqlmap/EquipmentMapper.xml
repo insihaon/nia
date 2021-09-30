@@ -225,11 +225,11 @@
     </update>
 
     <delete id="deleteNniTopology">
-        DELETE FROM NIA.TB_NNI_TOPOLOGY WHERE EQUIP_TYPE = 'ROADM'
+        DELETE FROM NIA.TB_TOPOLOGY WHERE EQUIP_TYPE = 'ROADM'
     </delete>
 
     <delete id="deleteNniTopologyTmp">
-        TRUNCATE TABLE NIA.TB_NNI_TOPOLOGY_TMP
+        TRUNCATE TABLE NIA.TB_TOPOLOGY_TMP
     </delete>
 
     <delete id="deleteUniTopology">

@@ -189,7 +189,7 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
             if(equipVoList != null && equipVoList.size() > 0){
                 roadmEmsTL1Client = roadmEmsTL1ClientObjectFactory.getObject();
 
-                if(roadmEmsTL1Client.login("S")){
+                if(roadmEmsTL1Client.login("D")){
                     for(EquipVo equipVo : equipVoList){
                         try {
                             if(roadmEmsTL1Client.isConnected()){
@@ -299,7 +299,7 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
             if(equipSipcVoList != null && equipSipcVoList.size() > 0){
                 roadmEmsTL1Client = roadmEmsTL1ClientObjectFactory.getObject();
 
-                if(roadmEmsTL1Client.login("S")){
+                if(roadmEmsTL1Client.login("D")){
                     for(EquipSipcVo equipSipc : equipSipcVoList){
                         if(roadmEmsTL1Client.isConnected()){
                             mmc = "RTRV-SLOT:"+equipSipc.getSysname()+"-"+equipSipc.getSysnameName()+"::123;\r";
@@ -352,7 +352,7 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
             if(equipSipcVoList != null && equipSipcVoList.size() > 0){
                 roadmEmsTL1Client = roadmEmsTL1ClientObjectFactory.getObject();
 
-                if(roadmEmsTL1Client.login("S")){
+                if(roadmEmsTL1Client.login("D")){
                     for(EquipSipcVo equipSipc : equipSipcVoList){
                         if(equipSipc.getSysname().startsWith("192")){
                             if(roadmEmsTL1Client.isConnected()){

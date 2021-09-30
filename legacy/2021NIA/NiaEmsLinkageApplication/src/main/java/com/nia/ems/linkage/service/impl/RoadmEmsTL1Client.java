@@ -132,8 +132,10 @@ public class RoadmEmsTL1Client {
             telnet.closeConnection();
             telnet = null;
         }else{
-            telnet.closeConnection();
-            telnet = null;
+            if(telnet != null){
+                telnet.closeConnection();
+                telnet = null;
+            }
         }
     }
 
