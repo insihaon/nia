@@ -39,9 +39,9 @@ public class NiaAlarmHdlServiceImpl implements NiaAlarmHdlService {
 
             if(alarmVo.getDateClearDate() != null){
                 alarmService.clearAlarmSendMessage(basicAlarmVo);
-            }else{
-                pasingService.alarmPasing(basicAlarmVo);
             }
+
+            pasingService.alarmPasing(basicAlarmVo);
         } catch (Exception e) {
             LOGGER.error("=====> [NiaAlarmHdlService] niaAlarmHdlProcessor error "+ ExceptionUtils.getStackTrace(e)+ "<=====");
         }
