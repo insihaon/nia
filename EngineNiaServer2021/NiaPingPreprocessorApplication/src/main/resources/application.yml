@@ -61,19 +61,18 @@ spring:
 
   kafka:
     consumer:
-      bootstrap-servers: localhost:9092
+      bootstrap-servers: 116.89.186.194:9092
       group-id: foo
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
     producer:
-      bootstrap-servers: localhost:9092
+      bootstrap-servers: 116.89.186.194:9092
       key-serializer: org.apache.kafka.common.serialization.StringDeserializer
       value-serializer: org.springframework.kafka.support.serializer.JsonDeserializer
 
   datasource:
     driver-class-name: org.postgresql.Driver
-    data-source-class-name: org.postgresql.ds.PGSimpleDataSource
     url: jdbc:postgresql://116.89.186.194:5433/niadb #KOREN
     username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
     password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)

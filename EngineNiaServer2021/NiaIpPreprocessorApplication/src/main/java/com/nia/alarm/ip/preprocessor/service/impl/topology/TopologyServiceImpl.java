@@ -29,15 +29,6 @@ public class TopologyServiceImpl implements TopologyService {
     private org.springframework.beans.factory.ObjectFactory<TopologyDataVo> topologyDataVoFactory;
 
     @Autowired
-    private org.springframework.beans.factory.ObjectFactory<UniTopologyObject> uniTopologyObjectObjectFactory;
-
-        @Autowired
-    private org.springframework.beans.factory.ObjectFactory<UniNeObject> uniNeObjectObjectFactoryA;
-
-    @Autowired
-    private org.springframework.beans.factory.ObjectFactory<UniNeObject> uniNeObjectObjectFactoryZ;
-
-    @Autowired
     private org.springframework.beans.factory.ObjectFactory<TopologyTmpVo> topologyTmpObjectFactory;
 
     @Autowired
@@ -113,61 +104,4 @@ public class TopologyServiceImpl implements TopologyService {
         }
         return topologyTmpObject;
     }
-
-    @Override
-    public UniTopologyObject selectUniTopologyList(HashMap<String, String> map) {
-        String ptpName = null;
-        String sysName = null;
-        UniNeObject uniNeObjectA = null;
-        UniNeObject uniNeObjectZ = null;
-        UniTopologyObject uniTopologyObject = null;
-        UniTopologyDataVo uniTopologyDataVo = null;
-
-        try{
-            uniTopologyObject = uniTopologyObjectObjectFactory.getObject();
-            uniNeObjectA = uniNeObjectObjectFactoryA.getObject();
-            uniNeObjectZ = uniNeObjectObjectFactoryZ.getObject();
-
-            ptpName = map.get("ptpName");
-            sysName = map.get("sysname");
-
-            if(ptpName == null){
-                ptpName = "";
-            }
-
-            if(sysName == null){
-                sysName = "";
-            }
-
-             uniTopologyDataVo = topologyMapper.selectUniTopologyList(map);
-
-            if(uniTopologyDataVo != null){
-                uniTopologyObject.setLinkId(uniTopologyDataVo.getLinkId());
-                uniNeObjectA.setSysname(uniTopologyDataVo.getSysnamea());
-                uniNeObjectA.setPtpname(uniTopologyDataVo.getPtpnamea());
-
-                uniNeObjectZ.setSysname(uniTopologyDataVo.getSysnamez());
-                uniNeObjectZ.setPtpname(uniTopologyDataVo.getPtpnamez());
-
-               if(!StringUtils.isEmpty(uniTopologyDataVo.getPtpnamea()) && !StringUtils.isEmpty(uniTopologyDataVo.getSysnamea())){
-                    if(sysName.split("-")[0].equals(uniNeObjectA.getSysname().split("-")[0])){
-                        uniTopologyObject.setNeA(uniNeObjectA);
-                        uniTopologyObject.setNeZ(uniNeObjectZ);
-                    }else {
-                        uniTopologyObject.setNeA(uniNeObjectZ);
-                        uniTopologyObject.setNeZ(uniNeObjectA);
-                    }
-                }
-            }
-        }catch (Exception e) {
-            LOGGER.error(">>>>>>>>> TopologyServiceImpl selectUniTopologyList error("+map.toString()+") : " + ExceptionUtils.getStackTrace(e)+" <<<<<<<<<");
-        }
-        return uniTopologyObject;
-    }
-
-    @Override
-    public RoadmRepeaterRouteVo selectRoadmTrunkId(HashMap<String, String> map) {
-        return topologyMapper.selectRoadmTrunkId(map);
-    }
-
 }
