@@ -41,7 +41,7 @@ public class Application implements CommandLineRunner{
 	//	roadmEmsPerMmcService.roadmAlarmMMC();
 	//	roadmEmsPerMmcService.roadmSlotMMC();
 	//	roadmEmsPerMmcService.createRoadmUniTopology();
-	//	roadmEmsPerMmcService.roadmNetWorkMmc();
+//		roadmEmsMmcService.roadmNetWorkMmc();
 	//	topologyService.getTopologyData();
 	//	alarmService.getAlarmData();
 	//	performanceService.getPerformanceData();
