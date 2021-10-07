@@ -5,7 +5,5 @@ import com.nia.alarm.ip.preprocessor.vo.alarm.BasicAlarmVo;
 public interface CommPasingService {
     BasicAlarmVo alarmPasing(BasicAlarmVo basicAlarmVo) throws Exception;
 
-    void setPortPasing(BasicAlarmVo basicAlarmVo) throws Exception;
-
     void setTopology(BasicAlarmVo basicAlarmVo) throws Exception;
 }

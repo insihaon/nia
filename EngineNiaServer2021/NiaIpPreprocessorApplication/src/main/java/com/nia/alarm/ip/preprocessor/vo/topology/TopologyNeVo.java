@@ -11,7 +11,11 @@ import java.io.Serializable;
 @Data
 public class TopologyNeVo implements Serializable{
 
-	private String sysname;
-	private String ptpNameBau;
-	private String ptpNamePau;
+	private String nodeNum;
+	private String nodeId;
+	private String ifNum;
+	private String ifId;
+	private String ipAddr;
+	private String macAddr;
+
 }

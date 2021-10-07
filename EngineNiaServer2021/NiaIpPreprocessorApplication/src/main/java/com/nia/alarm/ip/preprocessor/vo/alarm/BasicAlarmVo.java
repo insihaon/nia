@@ -33,6 +33,9 @@ public class BasicAlarmVo implements Serializable {
 	private String alarmType;
 	private String domain;
 
+	private String ifNum;
+	private String ifId;
+	private String ipAddr;
 
 	private Timestamp cleartime;
 	private String port;

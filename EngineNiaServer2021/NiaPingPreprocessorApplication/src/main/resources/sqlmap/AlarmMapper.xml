@@ -37,13 +37,6 @@
          WHERE NOT EXISTS (SELECT * FROM UPSERT)
     </update>
 
-    <update id="updatePingAlarmClear" parameterType="java.util.HashMap">
-        UPDATE NIA.TB_PING_ALARM_MST
-           SET CLEARTIME = #{clearTime}
-         WHERE URL= #{url}
-           AND CLEARTIME IS NULL
-    </update>
-
     <insert id="insertPingCollect" parameterType="com.nia.ping.alarm.preprocessor.vo.alarm.PingAlarmVo">
         INSERT INTO NIA.TB_PING_COLLECT_CURRNET
         (
@@ -57,18 +50,9 @@
         )
     </insert>
 
-    <insert id="insertPingAlarm" parameterType="com.nia.ping.alarm.preprocessor.vo.alarm.PingAlarmVo">
-        INSERT INTO NIA.TB_PING_ALARM_MST
-        (
-           ALARM_NO, ALARMTIME, CLEARTIME, ALARMLVL, HOST,
-           URL, PACKETS_RECEIVED, PERCENT_PACKET_LOSS, RESULT_CODE, PACKETS_TRANSMITTED
-        )
-        VALUES
-        (
-           #{alarmno}, #{alarmtime}, #{cleartime}, #{alarmlvl}, #{host},
-           #{url}, #{packetsReceived}, #{percentPacketLoss}, #{resultCode}, #{packetsTransmitted}
-        )
-    </insert>
+    <select id="fc_set_clear_al_pool" parameterType="com.nia.alarm.ip.preprocessor.vo.alarm.BasicAlarmVo" resultType="boolean">
+        SELECT RCA.FC_SET_CLEAR_AL_POOL(#{alarmno}, #{receivetime}, #{sysname}, #{unit}, #{alarmloc}, #{alarmmsg}, #{alarmmsgOriginal}, #{alarmlevel})
+    </select>
 </mapper>
 
 

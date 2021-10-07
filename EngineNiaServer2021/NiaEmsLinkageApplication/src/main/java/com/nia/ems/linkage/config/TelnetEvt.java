@@ -152,7 +152,7 @@ class StreamConnector implements Runnable {
                         if(StringUtils.isEmpty(str) && sbEmsMsg.length() == 0){
                             continue;
                         }else{
-                            LOGGER.info("=====> [StreamConnector] Evt msg : "+str+"  <=====");
+//                            LOGGER.info("=====> [StreamConnector] Evt msg : "+str+"  <=====");
                             if(str.contains(";")){
                                 if((sbEmsMsg.toString()).toUpperCase().replaceAll("\\s","").contains("REPTALM")){
                                     ((Queue<StringBuffer>)dataShareBean.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_ROADM_ALARM_MSG_QUE)).offer(sbEmsMsg);

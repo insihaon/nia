@@ -10,12 +10,24 @@ import java.io.Serializable;
 @Scope(value = "prototype")
 @Data
 public class TopologyDataVo implements Serializable{
-
-	private String linkId;
-	private String sysnamea;
-	private String ptpnameaBau;
-	private String ptpnameaPau;
-	private String sysnamez;
-	private String ptpnamezBau;
-	private String ptpnamezPau;
+	private String srcNodeNum;
+	private String srcNodeId;
+	private String srcIfNum;
+	private String srcIfId;
+	private String destNodeNum;
+	private String destNodeId;
+	private String destIfNum;
+	private String destIfId;
+	private String linkDesc;
+	private String vlan;
+	private String tag;
+	private String srcIpAddr;
+	private String srcMacAddr;
+	private String destIpAddr;
+	private String destMacAddr;
+	private String prefix;
+	private String topology;
+	private String bandwidth;
+	private String linkType;
+	private String linkDiv;
 }

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nia.alarm.ip.simulator.mapper.AlarmMapper">
+
+	<select id="selectAlarmList" resultType="com.nia.alarm.ip.simulator.vo.AlarmVo">
+		SELECT A.INTERRIDX, A.MODULE_SRL, A.STRRESID, A.STRIFID, A.STRTYPE
+		     , A.STRLEVEL, A.STRTITLE, A.STRCONTENT, A.STRGROUPID, A.STRGROUPID1
+		     , A.STRGROUPID2, A.STRGROUPID3, A.STRGROUPID4, A.STRGROUPID5, A.STRGROUPID6
+		     , A.STRGROUPID7, A.STRGROUPID8, A.STRGROUPID9, A.STRGROUPID10, A.DATERAISEDATE
+		     , A.DATECLEARDATE, A.DATEREGDATE, A.STRCLEARCHECK, A.STRMEMO, A.STRACKNOWNCHECK
+		     , A.STRACKNOWNCHECK_MEMBER_SRL, B.STRRESNAME
+		 FROM IP_YD.XE_CVNMS_ERROR A
+		 LEFT OUTER JOIN IP_YD.XE_CVNMS_RESOURCE B
+		   ON A.STRRESID = B.STRRESID
+        ORDER BY A.DATERAISEDATE
+	</select>
+
+	<delete id="deleteAlarm" parameterType="int">
+		DELETE FROM CATCHVIEW.XE_CVNMS_ERROR WHERE INTERRIDX = #{alarmno}
+	</delete>
+</mapper>
+
+

@@ -26,6 +26,10 @@ public class Application implements CommandLineRunner{
     @Qualifier("RoadmEmsMmcService")
     private RoadmEmsMmcService roadmEmsMmcService;
 
+	@Autowired
+    @Qualifier("RoadmEmsEventMsgService")
+    private RoadmEmsEventMsgService roadmEmsEventMsgService;
+
 
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
@@ -34,6 +38,8 @@ public class Application implements CommandLineRunner{
 	@Override
 	public void run(String... arg0) throws Exception {
 		bootSettingService.init();
+		roadmEmsEventMsgService.eventMsgListener();
+
 //		roadmEmsMmcService.roadmAlarmMMC();
 
 	//	roadmEmsPerMmcService.roadmSipcMMC();

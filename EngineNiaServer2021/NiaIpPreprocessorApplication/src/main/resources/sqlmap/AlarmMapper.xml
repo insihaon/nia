@@ -11,13 +11,9 @@
         SELECT RCA.FC_SET_CLEAR_AL_POOL(#{alarmno}, #{receivetime}, #{sysname}, #{unit}, #{alarmloc}, #{alarmmsg}, #{alarmmsgOriginal}, #{alarmlevel})
     </select>
 
-    <select id="selectEquiptype" parameterType="string" resultType="string">
-        SELECT MODEL FROM NIA.TB_EQUIP_MST WHERE TID = split_part(#{sysname}, '-', '1')
-    </select>
-
     <select id="selectAlNormalizerInfo" resultType="com.nia.alarm.ip.preprocessor.vo.alarm.AlNormalizerVo" parameterType="java.util.HashMap">
         SELECT MANUFACTURER AS manufacturer, EQUIPTYPE AS equipType, NAMECODE AS nameCode, ALARMMSG AS alarmMsg, NORMALIZEDALARM AS normalizedAlarm
-              , ALARM_TYPE AS alarmType
+             , ALARM_TYPE AS alarmType
           FROM RCA.AL_ALARM_NORMALIZER
          WHERE 1=1
            AND ALARMMSG = #{alarmMsg}
@@ -32,12 +28,12 @@
 
          <if test="unit != null">
            AND CASE WHEN UNIT IS NOT NULL THEN #{unit} LIKE '%'||UNIT||'%'
-                     ELSE 1=1
+                    ELSE 1=1
                 END
          </if>
          ORDER BY EQUIPTYPE
          LIMIT 1
-        </select>
+    </select>
 
 </mapper>
 

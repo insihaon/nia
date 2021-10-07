@@ -1,13 +1,18 @@
 package com.nia.ping.alarm.preprocessor.service.impl.alarm;
 
 
+import com.nia.ping.alarm.preprocessor.amqp.ClusterPrdAmqp;
+import com.nia.ping.alarm.preprocessor.amqp.EngineClearPrdAmqp;
 import com.nia.ping.alarm.preprocessor.common.NiaCodeInfo;
 import com.nia.ping.alarm.preprocessor.common.UtlDateHelper;
 import com.nia.ping.alarm.preprocessor.mapper.AlarmMapper;
+import com.nia.ping.alarm.preprocessor.mapper.EquipmentMapper;
 import com.nia.ping.alarm.preprocessor.service.alarm.AlarmService;
+import com.nia.ping.alarm.preprocessor.vo.alarm.BasicAlarmVo;
 import com.nia.ping.alarm.preprocessor.vo.alarm.PingAlarmCntVo;
 import com.nia.ping.alarm.preprocessor.vo.alarm.PingAlarmVo;
 import com.nia.ping.alarm.preprocessor.vo.alarm.PingPolicyVo;
+import com.nia.ping.alarm.preprocessor.vo.euqipment.NodeInfoVo;
 import com.nia.ping.alarm.preprocessor.vo.ping.PingRowDataVo;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -24,10 +29,22 @@ public class AlarmServiceImpl implements AlarmService {
 	private final static Logger LOGGER = Logger.getLogger(AlarmServiceImpl.class);
 
 	@Autowired
+	private ClusterPrdAmqp clusterPrdAmqp;
+
+	@Autowired
+	private EngineClearPrdAmqp engineClearPrdAmqp;
+
+	@Autowired
 	private AlarmMapper alarmMapper;
 
 	@Autowired
+	private EquipmentMapper equipmentMapper;
+
+	@Autowired
 	private org.springframework.beans.factory.ObjectFactory<PingAlarmVo> pingAlarmVoObjectFactory;
+
+	@Autowired
+	private org.springframework.beans.factory.ObjectFactory<BasicAlarmVo> basicAlarmVoObjectFactory;
 
 	@Override
 	public void pingAlarmCheck(PingAlarmVo pPingAlarmVo) {
@@ -37,68 +54,85 @@ public class AlarmServiceImpl implements AlarmService {
 		PingPolicyVo pingPolicyVo;
 		PingAlarmVo pingAlarmVo = pPingAlarmVo;
 		PingAlarmVo checkPingAlarmVo;
+		BasicAlarmVo basicAlarmVo;
+		NodeInfoVo nodeInfoVo;
 
-		pingPolicyVo = alarmMapper.selectPingPolicy();
+		try {
+			basicAlarmVo = basicAlarmVoObjectFactory.getObject();
+			pingPolicyVo = alarmMapper.selectPingPolicy();
 
-		if(pingPolicyVo.getCrFaultAvg() != 0 && (pingAlarmVo.getPercentPacketLoss() >= pingPolicyVo.getCrFaultAvg())){
-			pingAlarmVo.setAlarmno(alarmMapper.selectPingAlarmKey());
-			pingAlarmVo.setAlarmlvl(NiaCodeInfo.ALARM_LEVEL_CRITICAL);
-		} else if(pingPolicyVo.getMjFaultAvg() != 0 && (pingAlarmVo.getPercentPacketLoss() >= pingPolicyVo.getMjFaultAvg())){
-			pingAlarmVo.setAlarmno(alarmMapper.selectPingAlarmKey());
-			pingAlarmVo.setAlarmlvl(NiaCodeInfo.ALARM_LEVEL_MAJOR);
-		} else if(pingPolicyVo.getMiFaultAvg() != 0 && (pingAlarmVo.getPercentPacketLoss() >= pingPolicyVo.getMiFaultAvg())) {
-			pingAlarmVo.setAlarmno(alarmMapper.selectPingAlarmKey());
-			pingAlarmVo.setAlarmlvl(NiaCodeInfo.ALARM_LEVEL_MINOR);
-		} else if(pingPolicyVo.getWrFaultAvg() != 0 && (pingAlarmVo.getPercentPacketLoss() >= pingPolicyVo.getWrFaultAvg())){
-			pingAlarmVo.setAlarmno(alarmMapper.selectPingAlarmKey());
-			pingAlarmVo.setAlarmlvl(NiaCodeInfo.ALARM_LEVEL_WARNING);
-		}else if(pingAlarmVo.getPercentPacketLoss() == 0){
-			pingAlarmVo.setAlarmlvl(NiaCodeInfo.ALARM_LEVEL_CLEAR);
-		}
+			basicAlarmVo.setAlarmno("p"+alarmMapper.selectPingAlarmKey());
+			basicAlarmVo.setAlarmtime(pingAlarmVo.getAlarmtime());
+			basicAlarmVo.setReceivetime(pingAlarmVo.getAlarmtime());
+			basicAlarmVo.setIpAddr(pingAlarmVo.getUrl());
+			basicAlarmVo.setAlarmloc("ipAddr="+pingAlarmVo.getUrl());
+			basicAlarmVo.setAlarmmsg("PING 통신 장애 ("+pingAlarmVo.getUrl()+")"+",received="+pingAlarmVo.getPacketsReceived()+",packet_loss="+pingAlarmVo.getPercentPacketLoss()+",transmitted="+pingAlarmVo.getPacketsTransmitted());
+			basicAlarmVo.setAlarmmsgOriginal("PING 통신 장애 ("+pingAlarmVo.getUrl()+")"+",received="+pingAlarmVo.getPacketsReceived()+",packet_loss="+pingAlarmVo.getPercentPacketLoss()+",transmitted="+pingAlarmVo.getPacketsTransmitted());
 
-		LOGGER.info(">>>>>>>>>>[AlarmService] pingAlarmCheck alarmLvl: " + pPingAlarmVo.getUrl() + "("+pPingAlarmVo.getAlarmlvl()+") <<<<<<<<<<<<<<<<<");
+			hashMap = new HashMap<String, String>();
+			hashMap.put("ipAddr", basicAlarmVo.getIpAddr());
+			nodeInfoVo = equipmentMapper.selectNodeMst(hashMap);
 
-		hashMap = new HashMap<String, String>();
-		hashMap.put("url", pingAlarmVo.getUrl());
-		checkPingAlarmVo = alarmMapper.selectPingAlarmCheck(hashMap);
-
-		if(checkPingAlarmVo == null){
-			switch (pingAlarmVo.getAlarmlvl()){
-				case NiaCodeInfo.ALARM_LEVEL_CRITICAL:
-				case NiaCodeInfo.ALARM_LEVEL_MAJOR:
-				case NiaCodeInfo.ALARM_LEVEL_MINOR:
-				case NiaCodeInfo.ALARM_LEVEL_WARNING:
-					LOGGER.info(">>>>>>>>>>[AlarmService] pingAlarmCheck insertPingAlarm("+pPingAlarmVo.getAlarmno()+") : " + pPingAlarmVo.getUrl() + "("+pPingAlarmVo.getAlarmlvl()+") <<<<<<<<<<<<<<<<<");
-					alarmMapper.insertPingAlarm(pingAlarmVo);
-					break;
+			if(nodeInfoVo != null){
+				basicAlarmVo.setEquipCode(nodeInfoVo.getNodeNum());
+				basicAlarmVo.setSysname(nodeInfoVo.getNodeId());
+				basicAlarmVo.setEquiptype(nodeInfoVo.getModelNm());
 			}
-		}else{
-			switch (pingAlarmVo.getAlarmlvl()){
-				case NiaCodeInfo.ALARM_LEVEL_CRITICAL:
-				case NiaCodeInfo.ALARM_LEVEL_MAJOR:
-				case NiaCodeInfo.ALARM_LEVEL_MINOR:
-				case NiaCodeInfo.ALARM_LEVEL_WARNING:
-					if(!checkPingAlarmVo.getAlarmlvl().equals(pingAlarmVo.getAlarmlvl())){
-						if(Integer.parseInt(checkPingAlarmVo.getAlarmlvl()) < Integer.parseInt(pingAlarmVo.getAlarmlvl())){
-							LOGGER.info(">>>>>>>>>>[AlarmService] pingAlarmCheck insertPingAlarm("+pPingAlarmVo.getAlarmno()+") : " + pPingAlarmVo.getUrl() + "("+pPingAlarmVo.getAlarmlvl()+") <<<<<<<<<<<<<<<<<");
-							alarmMapper.insertPingAlarm(pingAlarmVo);
+
+			if(pingPolicyVo.getCrFaultAvg() != 0 && (pingAlarmVo.getPercentPacketLoss() >= pingPolicyVo.getCrFaultAvg())){
+				basicAlarmVo.setAlarmlevel(NiaCodeInfo.ALARM_LEVEL_CRITICAL);
+			} else if(pingPolicyVo.getMjFaultAvg() != 0 && (pingAlarmVo.getPercentPacketLoss() >= pingPolicyVo.getMjFaultAvg())){
+				basicAlarmVo.setAlarmlevel(NiaCodeInfo.ALARM_LEVEL_MAJOR);
+			} else if(pingPolicyVo.getMiFaultAvg() != 0 && (pingAlarmVo.getPercentPacketLoss() >= pingPolicyVo.getMiFaultAvg())) {
+				basicAlarmVo.setAlarmlevel(NiaCodeInfo.ALARM_LEVEL_MINOR);
+			} else if(pingPolicyVo.getWrFaultAvg() != 0 && (pingAlarmVo.getPercentPacketLoss() >= pingPolicyVo.getWrFaultAvg())){
+				basicAlarmVo.setAlarmlevel(NiaCodeInfo.ALARM_LEVEL_WARNING);
+			}else if(pingAlarmVo.getPercentPacketLoss() == 0){
+				basicAlarmVo.setAlarmlevel(NiaCodeInfo.ALARM_LEVEL_CLEAR);
+			}
+
+			LOGGER.info(">>>>>>>>>>[AlarmService] pingAlarmCheck alarmLvl: " + pPingAlarmVo.getUrl() + "("+pPingAlarmVo.getAlarmlvl()+") <<<<<<<<<<<<<<<<<");
+
+			hashMap = new HashMap<String, String>();
+			hashMap.put("url", pingAlarmVo.getUrl());
+			checkPingAlarmVo = alarmMapper.selectPingAlarmCheck(hashMap);
+
+			if(checkPingAlarmVo == null){
+				switch (pingAlarmVo.getAlarmlvl()){
+					case NiaCodeInfo.ALARM_LEVEL_CRITICAL:
+					case NiaCodeInfo.ALARM_LEVEL_MAJOR:
+					case NiaCodeInfo.ALARM_LEVEL_MINOR:
+					case NiaCodeInfo.ALARM_LEVEL_WARNING:
+						LOGGER.info(">>>>>>>>>>[AlarmService] pingAlarmCheck insertPingAlarm("+pPingAlarmVo.getAlarmno()+") : " + pPingAlarmVo.getUrl() + "("+pPingAlarmVo.getAlarmlvl()+") <<<<<<<<<<<<<<<<<");
+//						alarmMapper.insertPingAlarm(pingAlarmVo);
+						clusterPrdAmqp.sendMessageCmd(basicAlarmVo);
+						break;
+				}
+			}else{
+				switch (pingAlarmVo.getAlarmlvl()){
+					case NiaCodeInfo.ALARM_LEVEL_CRITICAL:
+					case NiaCodeInfo.ALARM_LEVEL_MAJOR:
+					case NiaCodeInfo.ALARM_LEVEL_MINOR:
+					case NiaCodeInfo.ALARM_LEVEL_WARNING:
+						if(!checkPingAlarmVo.getAlarmlvl().equals(pingAlarmVo.getAlarmlvl())){
+							if(Integer.parseInt(checkPingAlarmVo.getAlarmlvl()) < Integer.parseInt(pingAlarmVo.getAlarmlvl())){
+								LOGGER.info(">>>>>>>>>>[AlarmService] pingAlarmCheck insertPingAlarm("+pPingAlarmVo.getAlarmno()+") : " + pPingAlarmVo.getUrl() + "("+pPingAlarmVo.getAlarmlvl()+") <<<<<<<<<<<<<<<<<");
+//								alarmMapper.insertPingAlarm(pingAlarmVo);
+								clusterPrdAmqp.sendMessageCmd(basicAlarmVo);
+							}
 						}
-					}
-					break;
-				case NiaCodeInfo.ALARM_LEVEL_CLEAR:
-					pingAlarmVo.setCleartime(UtlDateHelper.getCurrentTime());
-
-					hashMap = new HashMap<String, String>();
-					hashMap.put("url", pingAlarmVo.getUrl());
-					hashMap.put("clearTime", UtlDateHelper.getCurrentTime()+"");
-
-					LOGGER.info(">>>>>>>>>>[AlarmService] pingAlarmCheck updatePingAlarmClear() url : " + pPingAlarmVo.getUrl() + "("+pPingAlarmVo.getAlarmlvl()+") <<<<<<<<<<<<<<<<<");
-					alarmMapper.updatePingAlarmClear(hashMap);
-					break;
+						break;
+					case NiaCodeInfo.ALARM_LEVEL_CLEAR:
+						LOGGER.info(">>>>>>>>>>[AlarmService] pingAlarmCheck updatePingAlarmClear() url : " + pPingAlarmVo.getUrl() + "("+pPingAlarmVo.getAlarmlvl()+") <<<<<<<<<<<<<<<<<");
+						alarmMapper.fc_set_clear_al_pool(basicAlarmVo);
+						engineClearPrdAmqp.sendMessageCmd(basicAlarmVo.getAlarmno());
+						break;
+				}
 			}
-		}
+			alarmMapper.insertPingCollect(pingAlarmVo);
+		}catch (Exception e){
 
-		alarmMapper.insertPingCollect(pingAlarmVo);
+		}
 	}
 
 	@Override

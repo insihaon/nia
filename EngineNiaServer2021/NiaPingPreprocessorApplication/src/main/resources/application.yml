@@ -8,6 +8,24 @@ logging:
 spring:
   profiles: dev
 
+  rabbitmq:
+    address: 116.89.186.194 #KOREN
+    port: 5675
+    username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
+    password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
+
+    niaAlarmExchange: nia.exchangeNiaAlarmDirectly
+    niaAlarmQueue: nia.NiaAlarmIndexDirectly
+    niaAlarmRoutingKey: nia.NiaAlarmIndexDirectl
+
+    clusterExchange: nia.exchangeClusterDirectly
+    clusterQueue: nia.ClusterIndexDirectly
+    clusterRoutingKey: nia.ClusterIndexDirectly
+
+    engineClearExchange: nia.exchangeEngineClearDirectly
+    engineClearQueue: nia.EngineClearIndexDirectly
+    engineClearRoutingKey: nia.EngineClearIndexDirectly
+
   kafka:
     consumer:
       bootstrap-servers: 210.114.91.190:9092
@@ -58,6 +76,14 @@ spring:
     niaAlarmExchange: nia.exchangeNiaAlarmDirectly
     niaAlarmQueue: nia.NiaAlarmIndexDirectly
     niaAlarmRoutingKey: nia.NiaAlarmIndexDirectl
+
+    clusterExchange: nia.exchangeClusterDirectly
+    clusterQueue: nia.ClusterIndexDirectly
+    clusterRoutingKey: nia.ClusterIndexDirectly
+
+    engineClearExchange: nia.exchangeEngineClearDirectly
+    engineClearQueue: nia.EngineClearIndexDirectly
+    engineClearRoutingKey: nia.EngineClearIndexDirectly
 
   kafka:
     consumer:

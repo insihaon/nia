@@ -1,9 +1,12 @@
 package com.nia.alarm.ip.preprocessor.service.impl.pasing;
 
 import com.nia.alarm.ip.preprocessor.common.NiaCodeInfo;
+import com.nia.alarm.ip.preprocessor.mapper.EquipmentMapper;
 import com.nia.alarm.ip.preprocessor.service.topology.TopologyService;
 import com.nia.alarm.ip.preprocessor.service.pasing.CommPasingService;
 import com.nia.alarm.ip.preprocessor.vo.alarm.BasicAlarmVo;
+import com.nia.alarm.ip.preprocessor.vo.euqipment.NodeInfoVo;
+import com.nia.alarm.ip.preprocessor.vo.euqipment.PortMstVo;
 import com.nia.alarm.ip.preprocessor.vo.topology.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -28,6 +31,9 @@ public class IpPasingServiceImpl implements CommPasingService {
 	private TopologyService topologyService;
 
     @Autowired
+    private EquipmentMapper equipmentMapper;
+
+    @Autowired
     private BasicAlarmVo basicAlarmVo;
 
 	private HashMap<String, String> parameterMap;
@@ -36,12 +42,27 @@ public class IpPasingServiceImpl implements CommPasingService {
 	public BasicAlarmVo alarmPasing(BasicAlarmVo basicAlarmVo){
         this.basicAlarmVo = basicAlarmVo;
 
-		try {
-          //  setPortPasing(this.basicAlarmVo);
+        NodeInfoVo nodeInfoVo;
+        PortMstVo portMstVo;
 
-//            if(!StringUtils.isEmpty(basicAlarmVo.getPtpName())) {
-//                setTopology(this.basicAlarmVo);
-//            }
+		try {
+            parameterMap = new HashMap<String, String>();
+            parameterMap.put("nodeNum", basicAlarmVo.getEquipCode());
+            nodeInfoVo = equipmentMapper.selectNodeMst(parameterMap);
+
+            if(nodeInfoVo != null){
+                this.basicAlarmVo.setSysname(nodeInfoVo.getNodeId());
+            }
+
+            parameterMap.put("nodeNum", basicAlarmVo.getEquipCode());
+            parameterMap.put("ifNum", basicAlarmVo.getIfNum());
+            portMstVo = equipmentMapper.selectPortMst(parameterMap);
+
+            if(portMstVo != null){
+                this.basicAlarmVo.setIfId(portMstVo.getIfId());
+            }
+
+            setTopology(this.basicAlarmVo);
 
             StringBuffer strLog = new StringBuffer();
             strLog.append("=====> [CmVmPasingService] alarmPasing <=====\n");
@@ -55,7 +76,7 @@ public class IpPasingServiceImpl implements CommPasingService {
             if(this.basicAlarmVo.getTopologyObject() != null){
                 strLog.append("linkId : " + this.basicAlarmVo.getTopologyObject().getLinkId()+"\n");
                 strLog.append("oppSysname : " + this.basicAlarmVo.getTopologyObject().getOppSysname()+"\n");
-                strLog.append("oppPtpName : " + this.basicAlarmVo.getTopologyObject().getOppPtpName()+"\n");
+                strLog.append("oppIfId : " + this.basicAlarmVo.getTopologyObject().getOppIfId()+"\n");
             }
             strLog.append("---------------------------------------------------------------");
             LOGGER.info(strLog.toString());
@@ -67,44 +88,6 @@ public class IpPasingServiceImpl implements CommPasingService {
 	}
 
     @Override
-    public void setPortPasing(BasicAlarmVo basicAlarmVo) {
-        String port;
-        String slot;
-        String[] ptpNameArr;
-        String ptpName = null;
-
-        try {
-            if(StringUtils.isNotEmpty(basicAlarmVo.getAlarmloc())){
-                if(basicAlarmVo.getAlarmloc().startsWith("S")){
-                    if(basicAlarmVo.getAlarmloc().contains("-")){
-                        basicAlarmVo.setSlot(basicAlarmVo.getAlarmloc().split("-")[0]);
-                        basicAlarmVo.setPort(basicAlarmVo.getAlarmloc().split("-")[1]);
-                    }else{
-                        basicAlarmVo.setSlot(basicAlarmVo.getAlarmloc());
-                    }
-                }
-                basicAlarmVo.setPtpName(basicAlarmVo.getAlarmloc());
-//                if(StringUtils.isNotEmpty(ptpName)){
-//                    basicAlarmVo.setPtpName(ptpName);
-//                }
-
-                if(StringUtils.isNotEmpty(basicAlarmVo.getPtpName())){
-                    if(basicAlarmVo.getPtpName().contains("-")){
-                        ptpNameArr = basicAlarmVo.getPtpName().split("-");
-                  //      basicAlarmVo.setPort();
-                    }
-    //                basicAlarmVo.setPort(Integer.toString(Integer.parseInt(basicAlarmVo.getPportId().substring(basicAlarmVo.getPportId().length()-2))));
-    //                basicAlarmVo.setSlot(Integer.toString(Integer.parseInt(basicAlarmVo.getPportId().substring(2,4))));
-                }
-            }
-
-            this.basicAlarmVo = basicAlarmVo;
-        } catch (Exception e) {
-            LOGGER.error(">>>>>>>>>>>> RoadmPasingService setPortPasing("+basicAlarmVo.toString()+") error : "+ ExceptionUtils.getStackTrace(e)+" <<<<<<<<<<<<<<<<");
-        }
-    }
-
-    @Override
     public void setTopology(BasicAlarmVo basicAlarmVo) {
         boolean isTopology = false;
 
@@ -113,23 +96,19 @@ public class IpPasingServiceImpl implements CommPasingService {
 
         try{
             parameterMap = new HashMap<String, String>();
-            parameterMap.put("ptpName", basicAlarmVo.getPtpName());
-            parameterMap.put("sysname", basicAlarmVo.getSysname());
+            parameterMap.put("nodeNum", basicAlarmVo.getEquipCode());
+            parameterMap.put("ifNum", basicAlarmVo.getIfNum());
 
             topologyTmpObject = topologyService.selectTopologyList(parameterMap);
 
             if(StringUtils.isNotEmpty(topologyTmpObject.getLinkId())){
                 topologyObject = topologyObjectFactory.getObject();
-                topologyObject.setNwType(NiaCodeInfo.TOPOLOGY_GB_NNI);
                 topologyObject.setLinkId(topologyTmpObject.getLinkId());
 
-                topologyObject.setOppSysname(topologyTmpObject.getNeZ().getSysname());
-
-                if(basicAlarmVo.getPtpName().equals(topologyTmpObject.getNeA().getPtpNameBau())){
-                    topologyObject.setOppPtpName(topologyTmpObject.getNeZ().getPtpNamePau());
-                }else if(basicAlarmVo.getPtpName().equals(topologyTmpObject.getNeA().getPtpNamePau())){
-                    topologyObject.setOppPtpName(topologyTmpObject.getNeZ().getPtpNameBau());
-                }
+                topologyObject.setOppSysname(topologyTmpObject.getNeZ().getNodeId());
+                topologyObject.setOppNescode(topologyTmpObject.getNeZ().getNodeNum());
+                topologyObject.setOppIfId(topologyTmpObject.getNeZ().getIfId());
+                topologyObject.setOppIfNum(topologyTmpObject.getNeZ().getIfNum());
 
                 isTopology = true;
             }
