@@ -20,4 +20,6 @@ public class TopologyObject implements Serializable{
 	private String oppPtpName;
 	private String oppPort;
 	private String oppSlot;
+	private String oppIfId;
+	private String oppIfNum;
 }

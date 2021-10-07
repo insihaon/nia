@@ -4,8 +4,11 @@
 <mapper namespace="com.nia.alarm.ip.preprocessor.mapper.TopologyMapper">
 
     <select id="selectTopologyList" resultType="com.nia.alarm.ip.preprocessor.vo.topology.TopologyDataVo" parameterType="hashmap">
-        SELECT INTIFIDX AS LINKID, MODULE_SRL, STRRESID, STRIFID, STRIFNAME, STRRESID_A AS SYSNAMEA, STRRESID_Z AS SYSNAMEZ
-          FROM CATCHVIEW.XE_CVNMS_RESOURCE_IF
-         WHERE STRRESID = #{strresid}
+        SELECT SRC_NODE_NUM, SRC_NODE_ID, SRC_IF_NUM, SRC_IF_ID, DEST_NODE_NUM
+             , DEST_NODE_ID, DEST_IF_NUM, DEST_IF_ID, LINK_DESC, VLAN
+             , TAG, SRC_IP_ADDR, SRC_MAC_ADDR, DEST_IP_ADDR, DEST_MAC_ADDR
+             , PREFIX, TOPOLOGY, BANDWIDTH, LINK_TYPE, LINK_DIV
+          FROM RESOURCE.TB_BACKBONE_LINK
+         WHERE (SRC_NODE_NUM = #{nodeNum} AND SRC_IF_NUM = #{ifNum}) OR (DEST_NODE_NUM = #{nodeNum} AND DEST_IF_NUM = #{ifNum})
     </select>
 </mapper>

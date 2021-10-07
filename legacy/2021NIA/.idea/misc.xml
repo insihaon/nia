@@ -14,6 +14,13 @@
         <option value="$PROJECT_DIR$/NiaLinkageApplication/pom.xml" />
         <option value="$PROJECT_DIR$/NiaPerformanceApplication/pom.xml" />
         <option value="$PROJECT_DIR$/NiaPreprocessorApplication/pom.xml" />
+        <option value="$PROJECT_DIR$/NiaPingPreprocessorApplication/pom.xml" />
+        <option value="$PROJECT_DIR$/NiaIpAlarmSimulatorApplication/pom.xml" />
+        <option value="$PROJECT_DIR$/NiaIpPreprocessorApplication/pom.xml" />
+        <option value="$PROJECT_DIR$/NiaIpAlarmLinkageApplication/pom.xml" />
+        <option value="$PROJECT_DIR$/NiaIpEquipLinkageApplication/pom.xml" />
+        <option value="$PROJECT_DIR$/NiaIpSflowLinkageApplication/pom.xml" />
+        <option value="$PROJECT_DIR$/NiaIpPerfLinkageApplication/pom.xml" />
       </list>
     </option>
   </component>

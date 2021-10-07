@@ -56,8 +56,6 @@ public class TopologyServiceImpl implements TopologyService {
      */
     @Override
     public TopologyTmpVo selectTopologyList(HashMap<String, String> map){
-        String ptpName = null;
-        String sysName = null;
 
         try{
             topologyTmpObject = topologyTmpObjectFactory.getObject();
@@ -65,38 +63,30 @@ public class TopologyServiceImpl implements TopologyService {
             topologyNeObjecta = topologyNeObjectFactoryA.getObject();
             topologyNeObjectz = topologyNeObjectFactoryZ.getObject();
 
-            ptpName = map.get("ptpName");
-            sysName = map.get("sysname");
-
-            if(ptpName == null){
-                ptpName = "";
-            }
-
-            if(sysName == null){
-                sysName = "";
-            }
-
-             topologyDataVo = topologyMapper.selectTopologyList(map);
+            topologyDataVo = topologyMapper.selectTopologyList(map);
 
             if(topologyDataVo != null){
-                topologyTmpObject.setLinkId(topologyDataVo.getLinkId());
-                topologyNeObjecta.setPtpNameBau(topologyDataVo.getPtpnameaBau());
-                topologyNeObjecta.setPtpNamePau(topologyDataVo.getPtpnameaPau());
-                topologyNeObjecta.setSysname(topologyDataVo.getSysnamea());
+                topologyTmpObject.setLinkId(topologyDataVo.getLinkDesc());
+                topologyNeObjecta.setNodeId(topologyDataVo.getSrcNodeId());
+                topologyNeObjecta.setNodeNum(topologyDataVo.getSrcNodeNum());
+                topologyNeObjecta.setIfId(topologyDataVo.getSrcIfId());
+                topologyNeObjecta.setIfNum(topologyDataVo.getSrcIfNum());
+                topologyNeObjecta.setIpAddr(topologyDataVo.getSrcIpAddr());
+                topologyNeObjecta.setMacAddr(topologyDataVo.getSrcMacAddr());
 
-                topologyNeObjectz.setPtpNameBau(topologyDataVo.getPtpnamezBau());
-                topologyNeObjectz.setPtpNamePau(topologyDataVo.getPtpnamezPau());
-                topologyNeObjectz.setSysname(topologyDataVo.getSysnamez());
+                topologyNeObjectz.setNodeId(topologyDataVo.getDestNodeId());
+                topologyNeObjectz.setNodeNum(topologyDataVo.getDestNodeNum());
+                topologyNeObjectz.setIfId(topologyDataVo.getDestIfId());
+                topologyNeObjectz.setIfNum(topologyDataVo.getDestIfNum());
+                topologyNeObjectz.setIpAddr(topologyDataVo.getDestIpAddr());
+                topologyNeObjectz.setMacAddr(topologyDataVo.getDestMacAddr());
 
-               if((!StringUtils.isEmpty(topologyDataVo.getPtpnameaBau()) || !StringUtils.isEmpty(topologyDataVo.getPtpnameaPau())) && !StringUtils.isEmpty(topologyDataVo.getSysnamea())){
-                    if((ptpName.equals(topologyDataVo.getPtpnameaBau()) || ptpName.equals(topologyDataVo.getPtpnameaPau()))
-                            && (sysName.equals(topologyDataVo.getSysnamea()))){
-                        topologyTmpObject.setNeA(topologyNeObjecta);
-                        topologyTmpObject.setNeZ(topologyNeObjectz);
-                    }else {
-                        topologyTmpObject.setNeZ(topologyNeObjecta);
-                        topologyTmpObject.setNeA(topologyNeObjectz);
-                    }
+                if(map.get("nodeNum").equals(topologyNeObjecta.getNodeNum()) && map.get("ifNum").equals(topologyNeObjecta.getIfNum())){
+                    topologyTmpObject.setNeA(topologyNeObjecta);
+                    topologyTmpObject.setNeZ(topologyNeObjectz);
+                }else {
+                    topologyTmpObject.setNeZ(topologyNeObjecta);
+                    topologyTmpObject.setNeA(topologyNeObjectz);
                 }
             }
         }catch (Exception e) {
