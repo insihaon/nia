@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nia.data.linkage.ai.mapper.ip.IpDataMapper">
+
+    <select id="selectPerfList" resultType="com.nia.data.linkage.ai.vo.ip.perf.PerfVo" parameterType="long">
+        SELECT STRIFID, STRRESID, STRTYPEMIN, INTTIMESTAMP, INTYEAR
+             , INTMONTH, INTDAY, INTHOUR, INTMIN, INTWEEK
+             , INTBANDWIDTH, FLTBPSIN, FLTBPSOUT, FLTPPSIN, FLTPPSOUT
+             , FLTERRORIN, FLTERROROUT, FLTDISCARDIN, FLTDISCARDOUT, FLTUNKNOWN
+             , FLTUSAGE, FLHCINOCTETS, FLHCOUTOCTETS, FLHCINUCASTPKTS, FLHCOUTUCASTPKTS
+             , FLHCINMULTICASTPKTS, FLHCOUTMULTICASTPKTS, FLHCINBROADCASTPKTS, FLHCOUTBROADCASTPKTS, FLTBPSINMAX
+             , FLTBPSOUTMAX, FLTPPSINMAX, FLTPPSOUTMAX, FLTERRORINMAX, FLTERROROUTMAX
+             , FLTDISCARDINMAX, FLTDISCARDOUTMAX, FLTUNKNOWNMAX, FLTUSAGEMAX
+          FROM IP_YD.XE_CVNMS_PERF_IF
+         WHERE INTTIMESTAMP > #{inttimestamp}
+         ORDER BY INTTIMESTAMP
+    </select>
+
+    <select id="selectNodeMst" resultType="com.nia.data.linkage.ai.vo.ip.equip.IpNodeInfoVo">
+        SELECT NODE_NUM, NODE_ID, NODE_NM, MODEL_NUM, MODEL_ID
+             , IP_ADDR, MAC_ADDR, ADMIN_YN, PRIMARY_GB, SNMP_VER
+             , SNMP_COMMUNITY, SNMP_PORT, LATITUDE, LONGITUDE, NETCONF_PORT
+             , NETCONF_ID, NETCONF_PW, NETCONF_TYPE, NODE_DIVISION, VENDOR
+             , SFLOW_IP, UP_DATETIME, CHNG_DATETIME, REG_DATETIME, DATA_SOURCE
+          FROM RESOURCE.TB_NODE_MST
+    </select>
+
+    <select id="selectPortMst" resultType="com.nia.data.linkage.ai.vo.ip.equip.IpPortMstVo">
+        SELECT NODE_NUM, NODE_ID, IF_NUM, IF_ID, IF_NM, IF_INDEX, IF_DESC, IF_TYPE, IF_SPEED, IP_ADDR, MAC_ADDR
+          FROM RESOURCE.TB_PORT_MST
+    </select>
+
+    <select id="selectBackboneLink" resultType="com.nia.data.linkage.ai.vo.ip.equip.IpBackboneLinkVo">
+        SELECT SRC_NODE_NUM, SRC_NODE_ID, SRC_IF_NUM, SRC_IF_ID, DEST_NODE_NUM
+             , DEST_NODE_ID, DEST_IF_NUM, DEST_IF_ID, LINK_DESC, VLAN
+             , TAG, SRC_IP_ADDR, SRC_MAC_ADDR, DEST_IP_ADDR, DEST_MAC_ADDR
+             , PREFIX, TOPOLOGY, BANDWIDTH, LINK_TYPE, LINK_DIV
+         FROM RESOURCE.TB_BACKBONE_LINK
+    </select>
+</mapper>
+
+

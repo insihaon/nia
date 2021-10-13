@@ -1,0 +1,201 @@
+package com.nia.data.linkage.ai.service.impl.ip.equip;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nia.data.linkage.ai.common.SFTPSession;
+import com.nia.data.linkage.ai.mapper.ip.IpDataMapper;
+import com.nia.data.linkage.ai.service.ip.equip.IpEquipTableDataAiLinkageService;
+import com.nia.data.linkage.ai.vo.ip.equip.*;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+
+@Service("IpEquipTableDataAiLinkageService")
+public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiLinkageService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(IpEquipTableDataAiLinkageService.class);
+
+    @Autowired
+    private IpDataMapper ipDataMapper;
+
+    @Autowired
+    private org.springframework.beans.factory.ObjectFactory<IpBackboneLinkListVo> ipBackboneLinkListVoObjectFactory;
+
+    @Autowired
+    private org.springframework.beans.factory.ObjectFactory<IpNodeListVo> ipNodeListVoObjectFactory;
+
+    @Autowired
+    private org.springframework.beans.factory.ObjectFactory<IpPortListVo> ipPortListVoObjectFactory;
+
+    @Autowired
+    private org.springframework.beans.factory.ObjectFactory<SFTPSession> sftpSessionObjectFactory;
+
+    @Value("${spring.ftp.file-path}")
+    private String uploadPath;
+
+
+    @Override
+    public void sendBackBoneLinkData() {
+        LOGGER.info("==========>[IpEquipTableDataAiLinkageService] sendBackBoneLinkData <==============");
+        SFTPSession sftpSession;
+
+        String dataKey = null;
+        String jsonData;
+
+        ArrayList<IpBackboneLinkVo> ipBackboneLinkVoList;
+
+        ObjectMapper mapper;
+        File putFile = null;
+
+        IpBackboneLinkListVo ipBackboneLinkListVo;
+
+        try {
+            ipBackboneLinkVoList = ipDataMapper.selectBackboneLink();
+
+            if(ipBackboneLinkVoList != null && ipBackboneLinkVoList.size() > 0) {
+                LOGGER.info("==========>[IpEquipTableDataAiLinkageService] sendBackBoneLinkData ipBackboneLinkVoList("+ipBackboneLinkVoList.size() +") <==============");
+
+                ipBackboneLinkListVo = ipBackboneLinkListVoObjectFactory.getObject();
+                ipBackboneLinkListVo.setData(ipBackboneLinkVoList);
+
+                mapper = new ObjectMapper();
+                jsonData = mapper.writeValueAsString(ipBackboneLinkListVo);
+
+                putFile = createJsonFile("IpBackBoneLink", jsonData, "");
+
+                sftpSession = sftpSessionObjectFactory.getObject();
+                sftpSession.init();
+
+                if(putFile != null){
+                    sftpSession.upload(uploadPath, putFile);
+                }
+
+                sftpSession.disconnection();
+            }
+        }catch (Exception e){
+            LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendBackBoneLinkData error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
+        }
+    }
+
+    @Override
+    public void sendNodeData() {
+        LOGGER.info("==========>[IpEquipTableDataAiLinkageService] sendNodeData <==============");
+
+        SFTPSession sftpSession;
+        String jsonData;
+
+        ArrayList<IpNodeInfoVo> ipNodeInfoVoList;
+
+        ObjectMapper mapper;
+        File putFile = null;
+
+        IpNodeListVo ipNodeListVo;
+
+        try {
+            ipNodeInfoVoList = ipDataMapper.selectNodeMst();
+
+            if(ipNodeInfoVoList != null && ipNodeInfoVoList.size() > 0) {
+                LOGGER.info("==========>[IpEquipTableDataAiLinkageService] sendNodeData ipNodeInfoVoList("+ipNodeInfoVoList.size() +") <==============");
+
+                ipNodeListVo = ipNodeListVoObjectFactory.getObject();
+                ipNodeListVo.setData(ipNodeInfoVoList);
+
+                mapper = new ObjectMapper();
+                jsonData = mapper.writeValueAsString(ipNodeListVo);
+
+                putFile = createJsonFile("IpNode", jsonData, "");
+
+                sftpSession = sftpSessionObjectFactory.getObject();
+                sftpSession.init();
+
+                if(putFile != null){
+                    sftpSession.upload(uploadPath, putFile);
+                }
+
+                sftpSession.disconnection();
+            }
+        }catch (Exception e){
+            LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendNodeData error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
+        }
+    }
+
+    @Override
+    public void sendPortData() {
+        LOGGER.info("==========>[IpEquipTableDataAiLinkageService] sendPortData <==============");
+
+        SFTPSession sftpSession;
+        String jsonData;
+
+        ArrayList<IpPortMstVo> ipPortMstVoList;
+
+        ObjectMapper mapper;
+        File putFile = null;
+
+        IpPortListVo ipPortListVo;
+
+        try {
+            ipPortMstVoList = ipDataMapper.selectPortMst();
+
+            if(ipPortMstVoList != null && ipPortMstVoList.size() > 0) {
+                LOGGER.info("==========>[IpEquipTableDataAiLinkageService] sendPortData ipNodeInfoVoList("+ipPortMstVoList.size() +") <==============");
+
+                ipPortListVo = ipPortListVoObjectFactory.getObject();
+                ipPortListVo.setData(ipPortMstVoList);
+
+                mapper = new ObjectMapper();
+                jsonData = mapper.writeValueAsString(ipPortListVo);
+
+                putFile = createJsonFile("IpPort", jsonData, "");
+
+                sftpSession = sftpSessionObjectFactory.getObject();
+                sftpSession.init();
+
+                if(putFile != null){
+                    sftpSession.upload(uploadPath, putFile);
+                }
+
+                sftpSession.disconnection();
+            }
+        }catch (Exception e){
+            LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendPortData error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
+        }
+    }
+
+    @Override
+    public File createJsonFile(String eventType, String jsonData, String interrIdx) {
+        LOGGER.info(">>>>>>>>>>[IpEquipTableDataAiLinkageService] createJsonFile(" + eventType + ") <<<<<<<<<<<<<<<<<");
+        File putFile = null;
+        BufferedWriter output;
+        PrintWriter pw;
+
+        try{
+            putFile = new File(uploadPath+eventType+".json");
+
+            if(!putFile.isFile()){
+                putFile.createNewFile();
+            }
+
+            output  = new BufferedWriter(new FileWriter(putFile,true));
+            pw = new PrintWriter(output,true);
+            pw.write(jsonData);
+            pw.flush();
+
+            LOGGER.info(">>>>>>>>>>[IpEquipTableDataAiLinkageService] createJsonFile putFile(" + (putFile != null ? putFile.getPath() : null) + ") <<<<<<<<<<<<<<<<<");
+
+            if (pw != null) {
+                pw.close();
+            }
+        }catch (Exception e){
+            LOGGER.error("=====> [IpEquipTableDataAiLinkageService] createJsonFile error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
+        }
+        return putFile;
+    }
+}
