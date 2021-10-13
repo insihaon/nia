@@ -3,7 +3,8 @@
 <mapper namespace="com.nia.ems.linkage.mapper.PerformaceMapper">
 
     <select id="selectPerformanceUpdateTime" resultType="string">
-      SELECT TO_CHAR(UPDATE_TIME,'YYYY-MM-DD HH24:MI:SS') AS UPDATE_TIME FROM NIA.TB_PERFORMANCE_UPDATE_TIME
+        SELECT MAX(OCRTIME) AS UPDATE_TIME FROM NIA.TB_PERFORMACE_MST WHERE OCRTIME > RCA.FC_GET_MINUS_DAY(1)
+      <!-- SELECT TO_CHAR(UPDATE_TIME,'YYYY-MM-DD HH24:MI:SS') AS UPDATE_TIME FROM NIA.TB_PERFORMANCE_UPDATE_TIME -->
     </select>
 
     <select id="selectPerformanceUpdateCnt" resultType="int" parameterType="java.util.HashMap">

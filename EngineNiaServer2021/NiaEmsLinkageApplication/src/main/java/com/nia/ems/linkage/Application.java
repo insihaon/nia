@@ -40,6 +40,10 @@ public class Application implements CommandLineRunner{
 		bootSettingService.init();
 		roadmEmsEventMsgService.eventMsgListener();
 
+//		roadmEmsMmcService.roadmNetWorkMmc();
+
+//		roadmPmDataAiLinkageService.sendRoadmPmData();
+
 //		roadmEmsMmcService.roadmAlarmMMC();
 
 	//	roadmEmsPerMmcService.roadmSipcMMC();

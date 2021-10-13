@@ -149,8 +149,9 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
                         roadmEmsTL1Client.logout();
 
                         if(isUpdateOk){
+                            Thread.sleep(5*1000);
                             performanceToAiPrdAmqp.sendMessageCmd(ocrTime+"");
-                            performaceMapper.updatePerformanceUpdateTime(ocrTime+"");
+                       //     performaceMapper.updatePerformanceUpdateTime(ocrTime+"");
                         }
                     }
                 }else{

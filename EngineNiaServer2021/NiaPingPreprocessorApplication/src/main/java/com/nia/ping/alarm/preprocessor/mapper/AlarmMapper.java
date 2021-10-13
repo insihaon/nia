@@ -13,7 +13,7 @@ public interface AlarmMapper{
     String selectPingAlarmKey();
     PingAlarmVo selectPingAlarmCheck(HashMap<String, String> hashMap);
     PingPolicyVo selectPingPolicy();
-    Boolean fc_set_clear_al_pool(BasicAlarmVo basicAlarmVo);
+    Boolean fcSetClearAlPool(BasicAlarmVo basicAlarmVo);
     void insertPingAlarm(PingAlarmVo pingAlarmVo);
     void insertPingCollect(PingAlarmVo pingAlarmVo);
     void updatePingAlarmCnt(HashMap<String, String> hashMap);

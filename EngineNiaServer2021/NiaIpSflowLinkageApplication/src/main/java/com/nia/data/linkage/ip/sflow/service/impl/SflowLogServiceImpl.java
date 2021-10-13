@@ -17,7 +17,6 @@ import java.util.HashMap;
 
 @Service("SflowLogService")
 public class SflowLogServiceImpl implements SflowLogService {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(SflowLogServiceImpl.class);
 
     @Autowired

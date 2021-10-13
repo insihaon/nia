@@ -17,7 +17,7 @@ import javax.sql.DataSource;
 import java.io.IOException;
 
 @Configuration
-@MapperScan(value="com.nia.data.linkage.ip.sflow.mapper.nia", sqlSessionFactoryRef="NiaSqlSessionFactory")
+@MapperScan(value="com.nia.data.linkage.ip.sflow.mapper.nia", sqlSessionFactoryRef="niaSqlSessionFactory")
 @EnableTransactionManagement
 public class NiaDatabaseConfiguration {
 
@@ -27,7 +27,7 @@ public class NiaDatabaseConfiguration {
     @Autowired
     private NiaDatabaseConfigVo databaseConfigVo;
 
-    @Bean(name = "NiaDataSource")
+    @Bean(name = "niaDataSource")
     public DataSource getDataSource() throws IOException{
         //	Properties prop = new Properties();
         HikariConfig config = new HikariConfig();
@@ -43,7 +43,7 @@ public class NiaDatabaseConfiguration {
         return new HikariDataSource(config);
     }
 
-    @Bean(name = "NiaSqlSessionFactory")
+    @Bean(name = "niaSqlSessionFactory")
     public SqlSessionFactory getSqlSessionFactory() throws Exception{
         SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
         sqlSessionFactoryBean.setDataSource(getDataSource());
@@ -52,7 +52,7 @@ public class NiaDatabaseConfiguration {
         return sqlSessionFactoryBean.getObject();
     }
 
-    @Bean(name = "NiaSqlSessionTemplate")
+    @Bean(name = "niaSqlSessionTemplate")
     public SqlSessionTemplate getSqlSessionTemplate() throws Exception{
         return new SqlSessionTemplate(getSqlSessionFactory());
     }

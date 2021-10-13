@@ -83,7 +83,7 @@ public class PerformanceServiceImpl implements PerformanceService {
         HashMap<String, String> map;
 
         try {
-            Thread.sleep((120*1000));
+            Thread.sleep((300*1000));
             updateTime = performaceMapper.selectPerformanceUpdateTime();
 
             yyyyMMddHH = (UtlDateHelper.getCurrentDateTime()+"").substring(0,14);
@@ -108,7 +108,7 @@ public class PerformanceServiceImpl implements PerformanceService {
                 roadmEmsMmcService.roadmPmMMC();
             }else{
                 map = new HashMap<String, String>();
-                map.put("ocrtime", updateTime);
+                map.put("ocrtime", ((updateTime+"").substring(0, (updateTime+"").indexOf("."))));
                 updateCnt = performaceMapper.selectPerformanceUpdateCnt(map);
 
                 if(updateCnt > 120){
