@@ -82,6 +82,15 @@ spring:
     configuration:
       mapUnderscoreToCamelCase: true
 
+  ftp:
+    host: 116.89.186.207
+    #    host: 116.89.186.194
+    port: 22
+    user: ENC(XMOpjFUtgZnBRPp7m7a9o2WSXQ1l5oe/)
+    password: ENC(Q5gydJpI5uME0zXRuMHImGC5bkFqmaRK)
+    file-path: /home/koren0901/data/
+    nia-file-path: /home/koren0901/data/
+
 ---
 spring:
   profiles: home
@@ -159,6 +168,15 @@ spring:
     configuration:
       mapUnderscoreToCamelCase: true
 
+  ftp:
+    host: 116.89.186.207
+    #    host: 116.89.186.194
+    port: 22
+    user: ENC(XMOpjFUtgZnBRPp7m7a9o2WSXQ1l5oe/)
+    password: ENC(Q5gydJpI5uME0zXRuMHImGC5bkFqmaRK)
+    file-path: /home/koren0901/data/
+    nia-file-path: /home/koren0901/data/
+
 ---
 spring:
   profiles: real
@@ -235,3 +253,11 @@ spring:
     mybatisConfig-locations: classpath:mybatis-config.xml
     configuration:
       mapUnderscoreToCamelCase: true
+
+  ftp:
+    host: 116.89.186.207
+    #    host: 116.89.186.194
+    port: 22
+    user: ENC(XMOpjFUtgZnBRPp7m7a9o2WSXQ1l5oe/)
+    password: ENC(Q5gydJpI5uME0zXRuMHImGC5bkFqmaRK)
+    file-path: /home/koren0901/data/

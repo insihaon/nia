@@ -5,6 +5,17 @@
         SELECT VALUE_NAME FROM NIA.TB_LINKAGE_SEQ WHERE KEY_NAME = #{keyName}
     </select>
 
+    <select id="selectSflowLogList" resultType="com.nia.data.linkage.ip.sflow.vo.sflow.SflowLogVo" parameterType="int">
+        SELECT INTINDEX, STRRESIP, STRRESNAME, STRRANK, STRS_IP
+             , STRS_PORT, STRD_IP, STRD_PORT, STRS_MAC, STRD_MAC
+             , STRPROTOCOL, STRIPV4TOS, STRCHANNEL, STRIP, STRPORT
+             , STRMAC, STRINTERFACE, STRSENDERIP, STRIN_INTERFACE, STROUT_INTERFACE
+             , STRBYTES, STRUNIT, DATEREGDATE
+          FROM IP_YD.XE_SFLOW_LOG
+         WHERE INTINDEX > #{interrIdx}
+         ORDER BY INTINDEX
+    </select>
+
     <insert id="insertSflowLog" parameterType="java.util.HashMap">
         <if test="sflowLogVoList.size != 0">
             INSERT INTO IP_YD.XE_SFLOW_LOG

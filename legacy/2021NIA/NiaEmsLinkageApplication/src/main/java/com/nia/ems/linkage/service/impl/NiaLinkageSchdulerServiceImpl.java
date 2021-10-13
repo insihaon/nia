@@ -1,6 +1,5 @@
 package com.nia.ems.linkage.service.impl;
 
-import com.nia.ems.linkage.data.DataShareBean;
 import com.nia.ems.linkage.service.PerformanceService;
 import com.nia.ems.linkage.service.RoadmEmsMmcService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,17 +26,17 @@ public class NiaLinkageSchdulerServiceImpl {
         Thread.sleep(2000);
     }
 
-    @Scheduled(cron = "0 0/15 * * * *") //초(0-59) 분(0-59) 시간(0-23) 일(1-31) 월(1-12) 요일(0-7)
-    public void conJobEmsPmMMC() throws InterruptedException {
-        performanceService.performanceDataCheck();
-        Thread.sleep(2000);
-    }
+//    @Scheduled(cron = "0 0/15 * * * *") //초(0-59) 분(0-59) 시간(0-23) 일(1-31) 월(1-12) 요일(0-7)
+//    public void conJobEmsPmMMC() throws InterruptedException {
+//        performanceService.performanceDataCheck();
+//    }
 
     @Scheduled(cron = "* 5 1 * * *") //초(0-59) 분(0-59) 시간(0-23) 일(1-31) 월(1-12) 요일(0-7)
     public void conJobCreateTopology() throws InterruptedException {
         roadmEmsMmcService.createRoadmUniTopology();
         Thread.sleep(5000);
-      //  roadmEmsMmcService.roadmNetWorkMmc();
+        roadmEmsMmcService.roadmNetWorkMmc();
         Thread.sleep(2000);
     }
+
 }

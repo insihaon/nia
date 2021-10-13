@@ -124,7 +124,7 @@ public class AlarmServiceImpl implements AlarmService {
 						break;
 					case NiaCodeInfo.ALARM_LEVEL_CLEAR:
 						LOGGER.info(">>>>>>>>>>[AlarmService] pingAlarmCheck updatePingAlarmClear() url : " + pPingAlarmVo.getUrl() + "("+pPingAlarmVo.getAlarmlvl()+") <<<<<<<<<<<<<<<<<");
-						alarmMapper.fc_set_clear_al_pool(basicAlarmVo);
+						alarmMapper.fcSetClearAlPool(basicAlarmVo);
 						engineClearPrdAmqp.sendMessageCmd(basicAlarmVo.getAlarmno());
 						break;
 				}
