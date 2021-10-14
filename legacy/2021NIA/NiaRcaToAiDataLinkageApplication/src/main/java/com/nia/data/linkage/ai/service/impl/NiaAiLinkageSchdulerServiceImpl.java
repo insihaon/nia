@@ -58,27 +58,27 @@ public class NiaAiLinkageSchdulerServiceImpl {
         transEquipTableDataAiLinkageService.sendEquipMstData();
     }
 
-    @Scheduled(cron = "0 0 2 * * *") //초(0-59) 분(0-59) 시간(0-23) 일(1-31) 월(1-12) 요일(0-7)
+    @Scheduled(cron = "0 10 2 * * *") //초(0-59) 분(0-59) 시간(0-23) 일(1-31) 월(1-12) 요일(0-7)
     public void conJobTransEquipPortMstData() {
         transEquipTableDataAiLinkageService.sendEquipPortData();
     }
 
-    @Scheduled(cron = "0 10 2 * * *") //초(0-59) 분(0-59) 시간(0-23) 일(1-31) 월(1-12) 요일(0-7)
+    @Scheduled(cron = "0 20 2 * * *") //초(0-59) 분(0-59) 시간(0-23) 일(1-31) 월(1-12) 요일(0-7)
     public void conJobTransEquipSlotMstData() {
         transEquipTableDataAiLinkageService.sendEquipSlotData();
     }
 
-    @Scheduled(cron = "0 20 2 * * *") //초(0-59) 분(0-59) 시간(0-23) 일(1-31) 월(1-12) 요일(0-7)
+    @Scheduled(cron = "0 30 2 * * *") //초(0-59) 분(0-59) 시간(0-23) 일(1-31) 월(1-12) 요일(0-7)
     public void conJobTransNniTopologyData() {
         transEquipTableDataAiLinkageService.sendNniTopologyData();
     }
 
-    @Scheduled(cron = "0 30 2 * * *") //초(0-59) 분(0-59) 시간(0-23) 일(1-31) 월(1-12) 요일(0-7)
+    @Scheduled(cron = "0 40 2 * * *") //초(0-59) 분(0-59) 시간(0-23) 일(1-31) 월(1-12) 요일(0-7)
     public void conJobTransUniTopologyData() {
         transEquipTableDataAiLinkageService.sendUniTopologyData();
     }
 
-    @Scheduled(cron = "0 40 2 * * *") //초(0-59) 분(0-59) 시간(0-23) 일(1-31) 월(1-12) 요일(0-7)
+    @Scheduled(cron = "0 50 2 * * *") //초(0-59) 분(0-59) 시간(0-23) 일(1-31) 월(1-12) 요일(0-7)
     public void conJobTransRoadmTrunkData() {
         transEquipTableDataAiLinkageService.sendRoadmTrunkData();
     }

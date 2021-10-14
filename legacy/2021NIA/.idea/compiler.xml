@@ -14,6 +14,7 @@
         <module name="com.nia.data.linkage.ip.equip" />
         <module name="spring-snmp" />
         <module name="com.nia.ems.linkage" />
+        <module name="com.nia.data.linkage.ai" />
         <module name="com.nia.engine" />
         <module name="com.nia.ai.performance.send" />
         <module name="com.nia.data.linkage.ip.alarm" />
@@ -36,6 +37,7 @@
       <module name="com.nia.alarm.preprocessor" target="1.8" />
       <module name="com.nia.alarm.simulator" target="1.8" />
       <module name="com.nia.data.linkage" target="1.8" />
+      <module name="com.nia.data.linkage.ai" target="1.8" />
       <module name="com.nia.data.linkage.ip.alarm" target="1.8" />
       <module name="com.nia.data.linkage.ip.equip" target="1.8" />
       <module name="com.nia.data.linkage.ip.perf" target="1.8" />
@@ -47,12 +49,14 @@
       <module name="LiaSnmpLinkageApplication" target="1.5" />
       <module name="NiaPingPerprocessorApplication" target="8" />
       <module name="NiaPingPreprocessorApplication" target="1.8" />
+      <module name="NiaRcaToAiDataLinkageApplication" target="1.8" />
       <module name="spring-snmp" target="1.5" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="NiaPingPreprocessorApplication" options="-parameters" />
+      <module name="NiaRcaToAiDataLinkageApplication" options="-parameters" />
       <module name="com.nia.ai.per.ap" options="-parameters" />
       <module name="com.nia.ai.performance.result" options="-parameters" />
       <module name="com.nia.ai.performance.send" options="-parameters" />
@@ -61,6 +65,7 @@
       <module name="com.nia.alarm.preprocessor" options="-parameters" />
       <module name="com.nia.alarm.simulator" options="-parameters" />
       <module name="com.nia.data.linkage" options="-parameters" />
+      <module name="com.nia.data.linkage.ai" options="-parameters" />
       <module name="com.nia.data.linkage.ip.alarm" options="-parameters" />
       <module name="com.nia.data.linkage.ip.equip" options="-parameters" />
       <module name="com.nia.data.linkage.ip.perf" options="-parameters" />

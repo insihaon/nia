@@ -3,7 +3,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.nia.ping.alarm.preprocessor.mapper.EquipmentMapper">
 
-    <select id="selectNodeMst" resultType="com.nia.alarm.ip.preprocessor.vo.euqipment.NodeInfoVo" parameterType="java.util.HashMap">
+    <select id="selectNodeMst" resultType="com.nia.ping.alarm.preprocessor.vo.euqipment.NodeInfoVo" parameterType="java.util.HashMap">
         SELECT NODE_NUM, NODE_ID, NODE_NM, MODEL_NUM, MODEL_ID
              , IP_ADDR, MAC_ADDR, ADMIN_YN, PRIMARY_GB, SNMP_VER
              , SNMP_COMMUNITY, SNMP_PORT, LATITUDE, LONGITUDE, NETCONF_PORT
@@ -14,7 +14,7 @@
         WHERE IP_ADDR = #{ipAddr}
     </select>
 
-    <select id="selectPortMst" resultType="com.nia.alarm.ip.preprocessor.vo.euqipment.PortMstVo" parameterType="java.util.HashMap">
+    <select id="selectPortMst" resultType="com.nia.ping.alarm.preprocessor.vo.euqipment.PortMstVo" parameterType="java.util.HashMap">
         SELECT NODE_NUM, NODE_ID, IF_NUM, IF_ID, IF_NM, IF_INDEX, IF_DESC, IF_TYPE, IF_SPEED, IP_ADDR, MAC_ADDR
           FROM RESOURCE.TB_PORT_MST
          WHERE NODE_NUM = #{nodeNum}
