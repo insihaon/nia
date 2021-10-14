@@ -88,14 +88,14 @@ spring:
   kafka:
     consumer:
       bootstrap-servers: 116.89.186.194:9092
-      group-id: foo
+      group-id: pringData
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
     producer:
       bootstrap-servers: 116.89.186.194:9092
       key-serializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      value-serializer: org.apache.kafka.common.serialization.StringDeserializer
 
   datasource:
     driver-class-name: org.postgresql.Driver

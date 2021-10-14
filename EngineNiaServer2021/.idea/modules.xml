@@ -12,6 +12,7 @@
       <module fileurl="file://$PROJECT_DIR$/NiaPreprocessorApplication/com.nia.alarm.preprocessor.iml" filepath="$PROJECT_DIR$/NiaPreprocessorApplication/com.nia.alarm.preprocessor.iml" />
       <module fileurl="file://$PROJECT_DIR$/NiaAlarmSimulatorApplication/com.nia.alarm.simulator.iml" filepath="$PROJECT_DIR$/NiaAlarmSimulatorApplication/com.nia.alarm.simulator.iml" />
       <module fileurl="file://$PROJECT_DIR$/NiaLinkageApplication/com.nia.data.linkage.iml" filepath="$PROJECT_DIR$/NiaLinkageApplication/com.nia.data.linkage.iml" />
+      <module fileurl="file://$PROJECT_DIR$/NiaRcaToAiDataLinkageApplication/com.nia.data.linkage.ai.iml" filepath="$PROJECT_DIR$/NiaRcaToAiDataLinkageApplication/com.nia.data.linkage.ai.iml" />
       <module fileurl="file://$PROJECT_DIR$/NiaIpAlarmLinkageApplication/com.nia.data.linkage.ip.alarm.iml" filepath="$PROJECT_DIR$/NiaIpAlarmLinkageApplication/com.nia.data.linkage.ip.alarm.iml" />
       <module fileurl="file://$PROJECT_DIR$/NiaIpEquipLinkageApplication/com.nia.data.linkage.ip.equip.iml" filepath="$PROJECT_DIR$/NiaIpEquipLinkageApplication/com.nia.data.linkage.ip.equip.iml" />
       <module fileurl="file://$PROJECT_DIR$/NiaIpPerfLinkageApplication/com.nia.data.linkage.ip.perf.iml" filepath="$PROJECT_DIR$/NiaIpPerfLinkageApplication/com.nia.data.linkage.ip.perf.iml" />

@@ -50,7 +50,7 @@
         )
     </insert>
 
-    <select id="fcSetClearAlPool" parameterType="com.nia.alarm.ip.preprocessor.vo.alarm.BasicAlarmVo" resultType="boolean">
+    <select id="fcSetClearAlPool" parameterType="com.nia.ping.alarm.preprocessor.vo.alarm.BasicAlarmVo" resultType="boolean">
         SELECT RCA.FC_SET_CLEAR_AL_POOL(#{alarmno}, #{receivetime}, #{sysname}, #{unit}, #{alarmloc}, #{alarmmsg}, #{alarmmsgOriginal}, #{alarmlevel})
     </select>
 </mapper>
