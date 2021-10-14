@@ -10,6 +10,7 @@ import java.io.Serializable;
 @Scope(value = "prototype")
 @Data
 public class TopologyDataVo implements Serializable{
+	private String linkId;
 	private String srcNodeNum;
 	private String srcNodeId;
 	private String srcIfNum;

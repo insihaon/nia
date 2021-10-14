@@ -8,7 +8,7 @@
     </select>
 
     <select id="fc_set_clear_al_pool" parameterType="com.nia.alarm.ip.preprocessor.vo.alarm.BasicAlarmVo" resultType="boolean">
-        SELECT RCA.FC_SET_CLEAR_AL_POOL(#{alarmno}, #{receivetime}, #{sysname}, #{unit}, #{alarmloc}, #{alarmmsg}, #{alarmmsgOriginal}, #{alarmlevel})
+        SELECT RCA.FC_SET_CLEAR_AL_POOL(#{alarmno}, #{receivetime}, #{equipCode}, #{unit}, #{ifNum}, #{alarmmsg}, #{alarmmsgOriginal}, '1')
     </select>
 
     <select id="selectAlNormalizerInfo" resultType="com.nia.alarm.ip.preprocessor.vo.alarm.AlNormalizerVo" parameterType="java.util.HashMap">
