@@ -15,7 +15,7 @@ public class AlarmPrdAmqp {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AlarmPrdAmqp.class);
 	
 	@Autowired
-	@Qualifier("NiaAlarm_RabbitTemplate")
+	@Qualifier("NiaIpAlarm_RabbitTemplate")
 	private RabbitTemplate rabbitTemplate;
 	
 	public void sendMessageCmd(AlarmVo alarmVo) {

@@ -79,8 +79,7 @@ public class AlarmServiceImpl implements AlarmService {
             basicAlarmVo.setEquipCode(alarmVo.getStrResID());
             basicAlarmVo.setSysname(alarmVo.getStrResName());
             basicAlarmVo.setEquiptype(alarmVo.getModuleSrl()+"");
-            basicAlarmVo.setAlarmloc(alarmVo.getStrIfID());
-            basicAlarmVo.setIfId(alarmVo.getStrIfID());
+            basicAlarmVo.setIfNum(alarmVo.getStrIfID());
             basicAlarmVo.setAlarmmsg(alarmVo.getStrContent());
             basicAlarmVo.setAlarmType(alarmVo.getStrType());
             basicAlarmVo.setAlarmCode(alarmVo.getStrTitle());

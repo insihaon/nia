@@ -13,7 +13,9 @@
 		 FROM IP_YD.XE_CVNMS_ERROR A
 		 LEFT OUTER JOIN IP_YD.XE_CVNMS_RESOURCE B
 		   ON A.STRRESID = B.STRRESID
+	    WHERE A.INTERRIDX IN('20433','20432')
         ORDER BY A.DATERAISEDATE
+        LIMIT 100
 	</select>
 
 	<delete id="deleteAlarm" parameterType="int">

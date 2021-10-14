@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
@@ -36,9 +37,12 @@ public class AlarmVo implements Serializable {
     private String strGroupID8;
     private String strGroupID9;
     private String strGroupID10;
-    private String dateRaiseDate;
-    private String dateClearDate;
-    private String dateRegDate;
+    @JsonProperty("dateRaiseDate2")
+    private Timestamp dateRaiseDate;
+    @JsonProperty("dateClearDate2")
+    private Timestamp dateClearDate;
+    @JsonProperty("dateRegDate2")
+    private Timestamp dateRegDate;
     private String strClearCheck;
     private String strMemo;
     private String strAcknownCheck;

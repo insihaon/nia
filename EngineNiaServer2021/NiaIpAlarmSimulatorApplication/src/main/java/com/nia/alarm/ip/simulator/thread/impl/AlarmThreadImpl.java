@@ -39,9 +39,9 @@ public class AlarmThreadImpl implements AlarmThread{
 	public void alHdlProcessor(){
 		try{
 			if(!singletoneAlarmData.getAlarmQue().isEmpty()){
-				if(UtlDateHelper.stringToTimestamp(singletoneAlarmData.alarmQuePeek().getDateRegDate()).getTime() == UtlDateHelper.getCurrentTime().getTime()){
+				if(singletoneAlarmData.alarmQuePeek().getDateRegDate().getTime() == UtlDateHelper.getCurrentTime().getTime()){
 					sendAlarm(singletoneAlarmData.alarmPoll());
-				}else if(UtlDateHelper.stringToTimestamp(singletoneAlarmData.alarmQuePeek().getDateRegDate()).getTime() < UtlDateHelper.getCurrentTime().getTime()){
+				}else if(singletoneAlarmData.alarmQuePeek().getDateRegDate().getTime() < UtlDateHelper.getCurrentTime().getTime()){
                     sendAlarm(singletoneAlarmData.alarmPoll());
 				}
 			}

@@ -66,7 +66,7 @@ public class TopologyServiceImpl implements TopologyService {
             topologyDataVo = topologyMapper.selectTopologyList(map);
 
             if(topologyDataVo != null){
-                topologyTmpObject.setLinkId(topologyDataVo.getLinkDesc());
+                topologyTmpObject.setLinkId(topologyDataVo.getLinkId());
                 topologyNeObjecta.setNodeId(topologyDataVo.getSrcNodeId());
                 topologyNeObjecta.setNodeNum(topologyDataVo.getSrcNodeNum());
                 topologyNeObjecta.setIfId(topologyDataVo.getSrcIfId());

@@ -31,14 +31,6 @@ public class PasingServiceImpl implements PasingService{
 	public void alarmPasing(BasicAlarmVo basicAlarmVo){
 
         try {
-        	String equiptype = null;
-
-        	equiptype = alarmMapper.selectEquiptype(basicAlarmVo.getSysname());
-
-        	if(StringUtils.isNotEmpty(equiptype)){
-        		basicAlarmVo.setEquiptype(equiptype);
-			}
-
         	switch (basicAlarmVo.getDomain()){
 				case "IP" :
 					basicAlarmVo = ipPasingService.alarmPasing(basicAlarmVo);

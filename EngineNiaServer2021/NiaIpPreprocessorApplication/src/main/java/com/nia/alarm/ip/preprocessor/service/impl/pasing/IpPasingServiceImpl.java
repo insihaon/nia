@@ -52,6 +52,7 @@ public class IpPasingServiceImpl implements CommPasingService {
 
             if(nodeInfoVo != null){
                 this.basicAlarmVo.setSysname(nodeInfoVo.getNodeId());
+                this.basicAlarmVo.setEquiptype(nodeInfoVo.getModelNm());
             }
 
             parameterMap.put("nodeNum", basicAlarmVo.getEquipCode());
@@ -60,6 +61,7 @@ public class IpPasingServiceImpl implements CommPasingService {
 
             if(portMstVo != null){
                 this.basicAlarmVo.setIfId(portMstVo.getIfId());
+                this.basicAlarmVo.setAlarmloc(portMstVo.getIfId());
             }
 
             setTopology(this.basicAlarmVo);
@@ -69,8 +71,7 @@ public class IpPasingServiceImpl implements CommPasingService {
             strLog.append("alarmNo : " + this.basicAlarmVo.getAlarmno()+"\n");
             strLog.append("equipType : " + this.basicAlarmVo.getEquiptype()+"\n");
             strLog.append("sysname : " + this.basicAlarmVo.getSysname()+"\n");
-            strLog.append("port : " + this.basicAlarmVo.getPort()+"\n");
-            strLog.append("slot : " + this.basicAlarmVo.getSlot()+"\n");
+            strLog.append("ifId : " + this.basicAlarmVo.getIfId()+"\n");
             strLog.append("ptpName : " + this.basicAlarmVo.getPtpName()+"\n");
 
             if(this.basicAlarmVo.getTopologyObject() != null){
