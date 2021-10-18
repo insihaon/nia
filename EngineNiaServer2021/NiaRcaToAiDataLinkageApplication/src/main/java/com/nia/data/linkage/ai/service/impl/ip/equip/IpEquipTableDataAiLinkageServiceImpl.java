@@ -2,6 +2,7 @@ package com.nia.data.linkage.ai.service.impl.ip.equip;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nia.data.linkage.ai.common.SFTPSession;
+import com.nia.data.linkage.ai.common.UtlDateHelper;
 import com.nia.data.linkage.ai.mapper.ip.IpDataMapper;
 import com.nia.data.linkage.ai.service.ip.equip.IpEquipTableDataAiLinkageService;
 import com.nia.data.linkage.ai.vo.ip.equip.*;
@@ -174,7 +175,7 @@ public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiL
         PrintWriter pw;
 
         try{
-            putFile = new File(uploadPath+eventType+".json");
+            putFile = new File(uploadPath+"ip/equip/"+eventType+"_"+(UtlDateHelper.getCurrentDate())+""+".json");
 
             if(!putFile.isFile()){
                 putFile.createNewFile();

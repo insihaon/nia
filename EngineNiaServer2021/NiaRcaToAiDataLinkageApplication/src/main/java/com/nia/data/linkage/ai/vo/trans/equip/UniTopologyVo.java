@@ -13,7 +13,9 @@ public class UniTopologyVo implements Serializable{
 
 	private String linkId;
 	private String sysnamea;
+	private String shelfa;
 	private String ptpnamea;
 	private String sysnamez;
+	private String shelfz;
 	private String ptpnamez;
 }

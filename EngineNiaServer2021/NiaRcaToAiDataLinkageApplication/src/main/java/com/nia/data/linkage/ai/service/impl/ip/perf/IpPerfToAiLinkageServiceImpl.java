@@ -105,7 +105,7 @@ public class IpPerfToAiLinkageServiceImpl implements IpPerfToAiLinkageService {
         PrintWriter pw;
 
         try{
-            putFile = new File(uploadPath+eventType + "_" + interrIdx+".json");
+            putFile = new File(uploadPath+"ip/perf/"+eventType + "_" + interrIdx+".json");
 
             if(!putFile.isFile()){
                 putFile.createNewFile();

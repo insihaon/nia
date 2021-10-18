@@ -105,7 +105,7 @@ public class RoadmPmDataAiLinkageServiceImpl implements RoadmPmDataAiLinkageServ
         PrintWriter pw;
 
         try{
-            putFile = new File(uploadPath+eventType+"_"+(UtlDateHelper.stringToTimestamp(ocrTime).getTime())+""+".json");
+            putFile = new File(uploadPath+"trans/perf/"+eventType+"_"+(UtlDateHelper.stringToTimestamp(ocrTime).getTime())+""+".json");
 
             if(!putFile.isFile()){
                 putFile.createNewFile();
