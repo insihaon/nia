@@ -61,13 +61,13 @@ public class AlarmServiceImpl implements AlarmService {
 			basicAlarmVo = basicAlarmVoObjectFactory.getObject();
 			pingPolicyVo = alarmMapper.selectPingPolicy();
 
-			basicAlarmVo.setAlarmno("p"+alarmMapper.selectPingAlarmKey());
+			basicAlarmVo.setAlarmno("P"+alarmMapper.selectPingAlarmKey());
 			basicAlarmVo.setAlarmtime(pingAlarmVo.getAlarmtime());
 			basicAlarmVo.setReceivetime(pingAlarmVo.getAlarmtime());
 			basicAlarmVo.setIpAddr(pingAlarmVo.getUrl());
 			basicAlarmVo.setAlarmloc("ipAddr="+pingAlarmVo.getUrl());
 			basicAlarmVo.setAlarmmsg("PING 통신 장애 ("+pingAlarmVo.getUrl()+")"+",received="+pingAlarmVo.getPacketsReceived()+",packet_loss="+pingAlarmVo.getPercentPacketLoss()+",transmitted="+pingAlarmVo.getPacketsTransmitted());
-			basicAlarmVo.setAlarmmsgOriginal("PING 통신 장애 ("+pingAlarmVo.getUrl()+")"+",received="+pingAlarmVo.getPacketsReceived()+",packet_loss="+pingAlarmVo.getPercentPacketLoss()+",transmitted="+pingAlarmVo.getPacketsTransmitted());
+			basicAlarmVo.setAlarmCode("port down");
 
 			hashMap = new HashMap<String, String>();
 			hashMap.put("ipAddr", basicAlarmVo.getIpAddr());

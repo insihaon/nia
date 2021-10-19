@@ -38,9 +38,9 @@ public class AlarmServiceImpl implements AlarmService {
 
         try{
             parameterMap = new HashMap<String, String>();
-            parameterMap.put("alarmMsg", basicAlarmVo.getAlarmmsgOriginal());
-            parameterMap.put("unit", basicAlarmVo.getUnit());
-            parameterMap.put("equiptype", basicAlarmVo.getEquiptype());
+            parameterMap.put("alarmMsg", basicAlarmVo.getAlarmCode());
+            parameterMap.put("equipType", "SWITCH");
+            parameterMap.put("domain", "IP");
 
             alNormalizerVo = alarmMapper.selectAlNormalizerInfo(parameterMap);
         }catch (Exception e){
@@ -73,13 +73,14 @@ public class AlarmServiceImpl implements AlarmService {
         try {
             basicAlarmVo = basicAlarmVoObjectFactory.getObject();
 
-            basicAlarmVo.setAlarmno(alarmVo.getIntErrIdx()+"");
+            basicAlarmVo.setAlarmno("I"+alarmVo.getIntErrIdx()+"");
             basicAlarmVo.setAlarmtime(alarmVo.getDateRaiseDate());
             basicAlarmVo.setReceivetime(alarmVo.getDateRaiseDate());
             basicAlarmVo.setEquipCode(alarmVo.getStrResID());
             basicAlarmVo.setSysname(alarmVo.getStrResName());
             basicAlarmVo.setEquiptype(alarmVo.getModuleSrl()+"");
             basicAlarmVo.setIfNum(alarmVo.getStrIfID());
+            basicAlarmVo.setPort(alarmVo.getStrIfID());
             basicAlarmVo.setAlarmmsg(alarmVo.getStrContent());
             basicAlarmVo.setAlarmType(alarmVo.getStrType());
             basicAlarmVo.setAlarmCode(alarmVo.getStrTitle());

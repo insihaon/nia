@@ -47,6 +47,7 @@ public class RoadmPmDataAiLinkageServiceImpl implements RoadmPmDataAiLinkageServ
         LOGGER.info("=====> [RoadmPmDataAiLinkageService] sendRoadmPmData <=====");
         SFTPSession sftpSession;
 
+        String ftpUpdatePath = uploadPath+"tbPerformaceMst/";
         String dataKey = null;
         String jsonData;
         List<PerformaceVo> performaceVoList;
@@ -57,7 +58,7 @@ public class RoadmPmDataAiLinkageServiceImpl implements RoadmPmDataAiLinkageServ
         PerfDataAiLinkageVo perfDataAiLinkageVo;
 
         try {
-            Thread.sleep(180*1000);
+            Thread.sleep(300*1000);
 
             dataKey = commonMapper.selectLinkageYdKey("aiRoadmPerfKey");
 
@@ -75,16 +76,21 @@ public class RoadmPmDataAiLinkageServiceImpl implements RoadmPmDataAiLinkageServ
                     mapper = new ObjectMapper();
                     jsonData = mapper.writeValueAsString(perfDataAiLinkageVo);
 
-                    putFile = createJsonFile("roadmPm", jsonData, performaceVoList.get(performaceVoList.size() - 1).getOcrtime() + "");
+                    putFile = createJsonFile("tbPerformaceMst", jsonData, performaceVoList.get(performaceVoList.size() - 1).getOcrtime() + "", ftpUpdatePath);
 
                     sftpSession = sftpSessionObjectFactory.getObject();
                     sftpSession.init();
 
                     if (putFile != null) {
-                        sftpSession.upload(uploadPath, putFile);
+                        sftpSession.upload(ftpUpdatePath, putFile);
+                        LOGGER.info("=====> [RoadmPmDataAiLinkageService] sendRoadmPmData upload : " + ftpUpdatePath+putFile.getName()+ "<=====");
                     }
 
                     sftpSession.disconnection();
+
+                    if(putFile.exists()){
+                        putFile.delete();
+                    }
 
                     strHashMap = new HashMap<>();
                     strHashMap.put("key", "aiRoadmPerfKey");
@@ -98,14 +104,14 @@ public class RoadmPmDataAiLinkageServiceImpl implements RoadmPmDataAiLinkageServ
     }
 
     @Override
-    public File createJsonFile(String eventType, String jsonData, String ocrTime) {
+    public File createJsonFile(String eventType, String jsonData, String ocrTime, String ftpUpdatePath) {
         LOGGER.info(">>>>>>>>>>[RoadmPmDataAiLinkageService] createJsonFile(" + eventType + ") <<<<<<<<<<<<<<<<<");
         File putFile = null;
         BufferedWriter output;
         PrintWriter pw;
 
         try{
-            putFile = new File(uploadPath+"trans/perf/"+eventType+"_"+(UtlDateHelper.stringToTimestamp(ocrTime).getTime())+""+".json");
+            putFile = new File(ftpUpdatePath+eventType+"_"+(UtlDateHelper.stringToTimestamp(ocrTime).getTime())+""+".json");
 
             if(!putFile.isFile()){
                 putFile.createNewFile();
@@ -116,7 +122,7 @@ public class RoadmPmDataAiLinkageServiceImpl implements RoadmPmDataAiLinkageServ
             pw.write(jsonData);
             pw.flush();
 
-            LOGGER.info(">>>>>>>>>>[RoadmPmDataAiLinkageService] createJsonFile putFile(" + (putFile != null ? putFile.getPath() : null) + ") <<<<<<<<<<<<<<<<<");
+            LOGGER.info(">>>>>>>>>>[RoadmPmDataAiLinkageService] createJsonFile(" + (putFile != null ? putFile.getPath() : null) + ") <<<<<<<<<<<<<<<<<");
 
             if (pw != null) {
                 pw.close();

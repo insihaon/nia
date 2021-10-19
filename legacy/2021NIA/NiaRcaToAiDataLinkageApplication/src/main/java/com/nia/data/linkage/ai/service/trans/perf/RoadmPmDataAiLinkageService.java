@@ -4,5 +4,5 @@ import java.io.File;
 
 public interface RoadmPmDataAiLinkageService {
     void sendRoadmPmData();
-    File createJsonFile(String eventType, String jsonData, String ocrtime);
+    File createJsonFile(String eventType, String jsonData, String ocrtime, String ftpUpdatePath);
 }
