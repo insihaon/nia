@@ -48,6 +48,7 @@ public class IpPerfToAiLinkageServiceImpl implements IpPerfToAiLinkageService {
 
         String dataKey = null;
         String jsonData;
+        String ftpUpdatePath = uploadPath+"xeCvnmsPerfIf/";
 
         ArrayList<PerfVo> perfVoList;
         HashMap<String, String> strHashMap;
@@ -75,16 +76,21 @@ public class IpPerfToAiLinkageServiceImpl implements IpPerfToAiLinkageService {
                     mapper = new ObjectMapper();
                     jsonData = mapper.writeValueAsString(aiPerfIfListVo);
 
-                    putFile = createJsonFile("perfIf", jsonData, perfVoList.get(perfVoList.size()-1).getIntTimestamp()+"");
+                    putFile = createJsonFile("xeCvnmsPerfIf", jsonData, perfVoList.get(perfVoList.size()-1).getIntTimestamp()+"", ftpUpdatePath);
 
                     sftpSession = sftpSessionObjectFactory.getObject();
                     sftpSession.init();
 
                     if(putFile != null){
-                        sftpSession.upload(uploadPath, putFile);
+                        sftpSession.upload(ftpUpdatePath, putFile);
+                        LOGGER.info("=====> [IpPerfToAiLinkageService] sendPerfLogData upload : " + ftpUpdatePath+"/"+putFile.getName()+ "<=====");
                     }
 
                     sftpSession.disconnection();
+
+                    if(putFile.exists()){
+                        putFile.delete();
+                    }
 
                     strHashMap = new HashMap<>();
                     strHashMap.put("key", "aiIpPerfKey");
@@ -98,14 +104,14 @@ public class IpPerfToAiLinkageServiceImpl implements IpPerfToAiLinkageService {
     }
 
     @Override
-    public File createJsonFile(String eventType, String jsonData, String interrIdx) {
+    public File createJsonFile(String eventType, String jsonData, String perfKey, String ftpUpdatePath) {
         LOGGER.info(">>>>>>>>>>[IpPerfToAiLinkageService] createJsonFile(" + eventType + ") <<<<<<<<<<<<<<<<<");
         File putFile = null;
         BufferedWriter output;
         PrintWriter pw;
 
         try{
-            putFile = new File(uploadPath+"ip/perf/"+eventType + "_" + interrIdx+".json");
+            putFile = new File(ftpUpdatePath+eventType + "_" + perfKey+".json");
 
             if(!putFile.isFile()){
                 putFile.createNewFile();
@@ -116,7 +122,7 @@ public class IpPerfToAiLinkageServiceImpl implements IpPerfToAiLinkageService {
             pw.write(jsonData);
             pw.flush();
 
-            LOGGER.info(">>>>>>>>>>[IpPerfToAiLinkageService] createJsonFile putFile(" + (putFile != null ? putFile.getPath() : null) + ") <<<<<<<<<<<<<<<<<");
+            LOGGER.info(">>>>>>>>>>[IpPerfToAiLinkageService] createJsonFile(" + (putFile != null ? putFile.getPath() : null) + ") <<<<<<<<<<<<<<<<<");
 
             if (pw != null) {
                 pw.close();

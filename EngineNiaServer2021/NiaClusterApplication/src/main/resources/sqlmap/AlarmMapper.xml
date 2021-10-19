@@ -9,14 +9,14 @@
 			  ALARMNO, CLUSTERNO, TMP_CLUSTER_NO, SYSNAME, EQUIPTYPE
 			, ALARMTIME, RECEIVETIME, ALARMLOC, ALARMMSG, UNIT
 			, ALARMLEVEL, CLUSTERNO_ORIGINAL, ALARMMSG_ORIGINAL, PTPNAME, SLOT
-			, PORT
+			, PORT, EQUIP_CODE
 		)
 		VALUES
 		(
 			  #{alarmno}, #{clusterno}, #{tmpClusterno}, #{sysname}, #{equiptype}
 		  	, #{alarmtime}, #{receivetime}, #{alarmloc}, #{alarmmsg}, #{unit}
 		  	, #{alarmlevel}, #{clusternoOriginal}, #{alarmmsgOriginal}, #{ptpName}, #{slot}
-		  	, #{port}
+		  	, #{port}, #{equipCode}
 		)
 	</insert>
 	

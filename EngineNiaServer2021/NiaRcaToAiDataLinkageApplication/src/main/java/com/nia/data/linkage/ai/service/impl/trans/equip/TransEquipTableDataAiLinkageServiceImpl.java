@@ -56,6 +56,7 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
         LOGGER.info("==========>[TransEquipTableDataAiLinkageService] sendEquipMstData <==============");
         SFTPSession sftpSession;
         String jsonData;
+        String ftpUpdatePath = uploadPath+"tbEquipMst/";
 
         ArrayList<EquipInfoVo> equipInfoVoList;
 
@@ -76,16 +77,21 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
                 mapper = new ObjectMapper();
                 jsonData = mapper.writeValueAsString(equipInfoListVo);
 
-                putFile = createJsonFile("TransEquipMst", jsonData, "");
+                putFile = createJsonFile("tbEquipMst", jsonData, "");
 
                 sftpSession = sftpSessionObjectFactory.getObject();
                 sftpSession.init();
 
                 if(putFile != null){
-                    sftpSession.upload(uploadPath, putFile);
+                    sftpSession.upload(ftpUpdatePath, putFile);
+                    LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendEquipMstData upload : " + ftpUpdatePath+putFile.getName()+ "<=====");
                 }
 
                 sftpSession.disconnection();
+
+                if(putFile.exists()){
+                    putFile.delete();
+                }
             }
         }catch (Exception e){
             LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendEquipMstData error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
@@ -98,6 +104,7 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
 
         SFTPSession sftpSession;
         String jsonData;
+        String ftpUpdatePath = uploadPath+"tbEquipPort/";
 
         ArrayList<EquipPortVo> equipPortVoList;
 
@@ -118,16 +125,21 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
                 mapper = new ObjectMapper();
                 jsonData = mapper.writeValueAsString(equipPortListVo);
 
-                putFile = createJsonFile("TransEquipPort", jsonData, "");
+                putFile = createJsonFile("tbEquipPort", jsonData, ftpUpdatePath);
 
                 sftpSession = sftpSessionObjectFactory.getObject();
                 sftpSession.init();
 
                 if(putFile != null){
-                    sftpSession.upload(uploadPath, putFile);
+                    sftpSession.upload(ftpUpdatePath, putFile);
+                    LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendEquipPortData upload : " + ftpUpdatePath+putFile.getName()+ "<=====");
                 }
 
                 sftpSession.disconnection();
+
+                if(putFile.exists()){
+                    putFile.delete();
+                }
             }
         }catch (Exception e){
             LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendEquipPortData error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
@@ -140,6 +152,7 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
 
         SFTPSession sftpSession;
         String jsonData;
+        String ftpUpdatePath = uploadPath+"tbEquipSlot/";
 
         ArrayList<EquipSlotVo> equipSlotVoList;
 
@@ -160,16 +173,21 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
                 mapper = new ObjectMapper();
                 jsonData = mapper.writeValueAsString(equipSlotListVo);
 
-                putFile = createJsonFile("TransEquipSlot", jsonData, "");
+                putFile = createJsonFile("tbEquipSlot", jsonData, ftpUpdatePath);
 
                 sftpSession = sftpSessionObjectFactory.getObject();
                 sftpSession.init();
 
                 if(putFile != null){
-                    sftpSession.upload(uploadPath, putFile);
+                    sftpSession.upload(ftpUpdatePath, putFile);
+                    LOGGER.info("=====> [RoadmPmDataAiLinkageService] sendEquipSlotData upload : " + ftpUpdatePath+putFile.getName()+ "<=====");
                 }
 
                 sftpSession.disconnection();
+
+                if(putFile.exists()){
+                    putFile.delete();
+                }
             }
         }catch (Exception e){
             LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendEquipSlotData error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
@@ -182,6 +200,7 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
 
         SFTPSession sftpSession;
         String jsonData;
+        String ftpUpdatePath = uploadPath+"tbTopology/";
 
         ArrayList<NNiTopologyVo> nniTopologyVoList;
 
@@ -202,16 +221,21 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
                 mapper = new ObjectMapper();
                 jsonData = mapper.writeValueAsString(nniTopologyListVo);
 
-                putFile = createJsonFile("TransNniTopology", jsonData, "");
+                putFile = createJsonFile("tbTopology", jsonData, "tbTopology");
 
                 sftpSession = sftpSessionObjectFactory.getObject();
                 sftpSession.init();
 
                 if(putFile != null){
-                    sftpSession.upload(uploadPath, putFile);
+                    sftpSession.upload(ftpUpdatePath, putFile);
+                    LOGGER.info("=====> [RoadmPmDataAiLinkageService] sendNniTopologyData upload : " + ftpUpdatePath+putFile.getName()+ "<=====");
                 }
 
                 sftpSession.disconnection();
+
+                if(putFile.exists()){
+                    putFile.delete();
+                }
             }
         }catch (Exception e){
             LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendNniTopologyData error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
@@ -224,6 +248,7 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
 
         SFTPSession sftpSession;
         String jsonData;
+        String ftpUpdatePath = uploadPath+"tbUniTopology/";
 
         ArrayList<UniTopologyVo> uniTopologyVoList;
 
@@ -244,16 +269,21 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
                 mapper = new ObjectMapper();
                 jsonData = mapper.writeValueAsString(uniTopologyListVo);
 
-                putFile = createJsonFile("TransUniTopology", jsonData, "");
+                putFile = createJsonFile("tbUniTopology", jsonData, "tbUniTopology");
 
                 sftpSession = sftpSessionObjectFactory.getObject();
                 sftpSession.init();
 
                 if(putFile != null){
-                    sftpSession.upload(uploadPath, putFile);
+                    sftpSession.upload(ftpUpdatePath, putFile);
+                    LOGGER.info("=====> [RoadmPmDataAiLinkageService] sendUniTopologyData upload : " + ftpUpdatePath+putFile.getName()+ "<=====");
                 }
 
                 sftpSession.disconnection();
+
+                if(putFile.exists()){
+                    putFile.delete();
+                }
             }
         }catch (Exception e){
             LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendUniTopologyData error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
@@ -266,6 +296,7 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
 
         SFTPSession sftpSession;
         String jsonData;
+        String ftpUpdatePath = uploadPath+"tbRoadmTrunkRepeater/";
 
         ArrayList<RoadmRepeaterRouteVo> roadmRepeaterRouteVoList;
 
@@ -287,16 +318,21 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
                 mapper = new ObjectMapper();
                 jsonData = mapper.writeValueAsString(roadmRepeaterRouteListVo);
 
-                putFile = createJsonFile("TransRoadmTrunkRepeater", jsonData, "");
+                putFile = createJsonFile("tbRoadmTrunkRepeater", jsonData, "");
 
                 sftpSession = sftpSessionObjectFactory.getObject();
                 sftpSession.init();
 
                 if(putFile != null){
-                    sftpSession.upload(uploadPath, putFile);
+                    sftpSession.upload(ftpUpdatePath, putFile);
+                    LOGGER.info("=====> [RoadmPmDataAiLinkageService] sendRoadmTrunkData upload : " + ftpUpdatePath+putFile.getName()+ "<=====");
                 }
 
                 sftpSession.disconnection();
+
+                if(putFile.exists()){
+                    putFile.delete();
+                }
             }
         }catch (Exception e){
             LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendRoadmTrunkData error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
@@ -304,14 +340,14 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
     }
 
     @Override
-    public File createJsonFile(String eventType, String jsonData, String interrIdx) {
+    public File createJsonFile(String eventType, String jsonData, String ftpUpdatePath) {
         LOGGER.info(">>>>>>>>>>[IpEquipTableDataAiLinkageService] createJsonFile(" + eventType + ") <<<<<<<<<<<<<<<<<");
         File putFile = null;
         BufferedWriter output;
         PrintWriter pw;
 
         try{
-            putFile = new File(uploadPath+"trans/equip/"+eventType+"_"+(UtlDateHelper.getCurrentDate())+""+".json");
+            putFile = new File(ftpUpdatePath+eventType+"_"+UtlDateHelper.getCurrentDate()+".json");
 
             if(!putFile.isFile()){
                 putFile.createNewFile();
@@ -322,7 +358,7 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
             pw.write(jsonData);
             pw.flush();
 
-            LOGGER.info(">>>>>>>>>>[IpEquipTableDataAiLinkageService] createJsonFile putFile(" + (putFile != null ? putFile.getPath() : null) + ") <<<<<<<<<<<<<<<<<");
+            LOGGER.info(">>>>>>>>>>[IpEquipTableDataAiLinkageService] createJsonFile(" + (putFile != null ? putFile.getPath() : null) + ") <<<<<<<<<<<<<<<<<");
 
             if (pw != null) {
                 pw.close();

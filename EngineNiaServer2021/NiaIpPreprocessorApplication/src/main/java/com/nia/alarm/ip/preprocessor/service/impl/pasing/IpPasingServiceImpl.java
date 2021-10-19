@@ -108,6 +108,7 @@ public class IpPasingServiceImpl implements CommPasingService {
 
                 topologyObject.setOppSysname(topologyTmpObject.getNeZ().getNodeId());
                 topologyObject.setOppNescode(topologyTmpObject.getNeZ().getNodeNum());
+                topologyObject.setOppPort(topologyTmpObject.getNeZ().getIfNum());
                 topologyObject.setOppIfId(topologyTmpObject.getNeZ().getIfId());
                 topologyObject.setOppIfNum(topologyTmpObject.getNeZ().getIfNum());
 

@@ -39,7 +39,6 @@ public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiL
     @Value("${spring.ftp.file-path}")
     private String uploadPath;
 
-
     @Override
     public void sendBackBoneLinkData() {
         LOGGER.info("==========>[IpEquipTableDataAiLinkageService] sendBackBoneLinkData <==============");
@@ -47,6 +46,7 @@ public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiL
 
         String dataKey = null;
         String jsonData;
+        String ftpUpdatePath = uploadPath+"tbBackboneLink/";
 
         ArrayList<IpBackboneLinkVo> ipBackboneLinkVoList;
 
@@ -67,16 +67,21 @@ public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiL
                 mapper = new ObjectMapper();
                 jsonData = mapper.writeValueAsString(ipBackboneLinkListVo);
 
-                putFile = createJsonFile("IpBackBoneLink", jsonData, "");
+                putFile = createJsonFile("tbBackboneLink", jsonData, ftpUpdatePath);
 
                 sftpSession = sftpSessionObjectFactory.getObject();
                 sftpSession.init();
 
                 if(putFile != null){
-                    sftpSession.upload(uploadPath, putFile);
+                    sftpSession.upload(ftpUpdatePath, putFile);
+                    LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendBackBoneLinkData upload : " + ftpUpdatePath+putFile.getName()+ "<=====");
                 }
 
                 sftpSession.disconnection();
+
+                if(putFile.exists()){
+                    putFile.delete();
+                }
             }
         }catch (Exception e){
             LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendBackBoneLinkData error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
@@ -89,6 +94,7 @@ public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiL
 
         SFTPSession sftpSession;
         String jsonData;
+        String ftpUpdatePath = uploadPath+"tbNodeMst/";
 
         ArrayList<IpNodeInfoVo> ipNodeInfoVoList;
 
@@ -109,13 +115,14 @@ public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiL
                 mapper = new ObjectMapper();
                 jsonData = mapper.writeValueAsString(ipNodeListVo);
 
-                putFile = createJsonFile("IpNode", jsonData, "");
+                putFile = createJsonFile("tbNodeMst", jsonData, ftpUpdatePath);
 
                 sftpSession = sftpSessionObjectFactory.getObject();
                 sftpSession.init();
 
                 if(putFile != null){
-                    sftpSession.upload(uploadPath, putFile);
+                    sftpSession.upload(ftpUpdatePath, putFile);
+                    LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendNodeData upload : " + ftpUpdatePath+putFile.getName()+ "<=====");
                 }
 
                 sftpSession.disconnection();
@@ -131,6 +138,7 @@ public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiL
 
         SFTPSession sftpSession;
         String jsonData;
+        String ftpUpdatePath = uploadPath+"tbPortMst/";
 
         ArrayList<IpPortMstVo> ipPortMstVoList;
 
@@ -151,13 +159,14 @@ public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiL
                 mapper = new ObjectMapper();
                 jsonData = mapper.writeValueAsString(ipPortListVo);
 
-                putFile = createJsonFile("IpPort", jsonData, "");
+                putFile = createJsonFile("tbPortMst", jsonData, ftpUpdatePath);
 
                 sftpSession = sftpSessionObjectFactory.getObject();
                 sftpSession.init();
 
                 if(putFile != null){
-                    sftpSession.upload(uploadPath, putFile);
+                    sftpSession.upload(ftpUpdatePath, putFile);
+                    LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendPortData upload : " + ftpUpdatePath+putFile.getName()+ "<=====");
                 }
 
                 sftpSession.disconnection();
@@ -168,14 +177,14 @@ public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiL
     }
 
     @Override
-    public File createJsonFile(String eventType, String jsonData, String interrIdx) {
+    public File createJsonFile(String eventType, String jsonData, String ftpUpdatePath) {
         LOGGER.info(">>>>>>>>>>[IpEquipTableDataAiLinkageService] createJsonFile(" + eventType + ") <<<<<<<<<<<<<<<<<");
         File putFile = null;
         BufferedWriter output;
         PrintWriter pw;
 
         try{
-            putFile = new File(uploadPath+"ip/equip/"+eventType+"_"+(UtlDateHelper.getCurrentDate())+""+".json");
+            putFile = new File(ftpUpdatePath+eventType+"_"+UtlDateHelper.getCurrentDate()+".json");
 
             if(!putFile.isFile()){
                 putFile.createNewFile();
@@ -186,7 +195,7 @@ public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiL
             pw.write(jsonData);
             pw.flush();
 
-            LOGGER.info(">>>>>>>>>>[IpEquipTableDataAiLinkageService] createJsonFile putFile(" + (putFile != null ? putFile.getPath() : null) + ") <<<<<<<<<<<<<<<<<");
+            LOGGER.info(">>>>>>>>>>[IpEquipTableDataAiLinkageService] createJsonFile(" + (putFile != null ? putFile.getPath() : null) + ") <<<<<<<<<<<<<<<<<");
 
             if (pw != null) {
                 pw.close();

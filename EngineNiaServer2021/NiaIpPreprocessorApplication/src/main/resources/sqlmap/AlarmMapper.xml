@@ -22,6 +22,10 @@
            AND EQUIPTYPE = #{equipType}
          </if>
 
+        <if test="domain != null">
+            AND DOMAIN = #{domain}
+        </if>
+
          <if test="nameCode != null">
            AND NAMECODE = #{nameCode}
          </if>

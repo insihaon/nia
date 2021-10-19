@@ -5,5 +5,5 @@ import java.io.File;
 public interface IpPerfToAiLinkageService {
 
     void sendPerfLogData();
-    File createJsonFile(String eventType, String jsonData, String perfKey);
+    File createJsonFile(String eventType, String jsonData, String perfKey, String ftpUpdatePath);
 }

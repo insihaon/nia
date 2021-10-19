@@ -11,6 +11,7 @@
              , STRACKNOWNCHECK_MEMBER_SRL
           FROM catchview.xe_cvnms_error
          WHERE INTERRIDX > #{interrIdx}
+           AND STRTYPE != 'ping'
          ORDER BY INTERRIDX
     </select>
 
@@ -24,6 +25,7 @@
           FROM catchview.xe_cvnms_error
          WHERE DATECLEARDATE IS NOT NULL
            AND DATECLEARDATE > #{dateClearDate}
+           AND STRTYPE != 'ping'
         ORDER BY DATECLEARDATE
     </select>
 </mapper>

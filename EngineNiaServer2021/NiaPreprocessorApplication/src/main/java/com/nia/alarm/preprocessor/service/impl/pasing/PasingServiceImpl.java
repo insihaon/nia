@@ -39,6 +39,8 @@ public class PasingServiceImpl implements PasingService{
 
         	equiptype = alarmMapper.selectEquiptype(basicAlarmVo.getSysname());
 
+			basicAlarmVo.setAlarmno("T"+basicAlarmVo.getAlarmno());
+
         	if(StringUtils.isNotEmpty(equiptype)){
         		basicAlarmVo.setEquiptype(equiptype);
 			}
@@ -49,9 +51,6 @@ public class PasingServiceImpl implements PasingService{
 					basicAlarmVo = potnPasingService.alarmPasing(basicAlarmVo);
 					break;
 				case "Utrans-6300p-H3" :
-					basicAlarmVo.setEquiptype("ROADM");
-					basicAlarmVo = roadmPasingService.alarmPasing(basicAlarmVo);
-					break;
 				case "Utrans-6300p-V9" :
 					basicAlarmVo.setEquiptype("ROADM");
 					basicAlarmVo = roadmPasingService.alarmPasing(basicAlarmVo);
