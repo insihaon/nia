@@ -5,13 +5,14 @@ import com.nia.rca.cluster.preprocessor.data.DataShareBean;
 import com.nia.rca.cluster.preprocessor.service.cluster.ClusterService;
 import com.nia.rca.cluster.preprocessor.thread.PreprocessorThread;
 import com.nia.rca.cluster.preprocessor.vo.BasicAlarmVo;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Queue;
+import java.util.Random;
 
 
 @Service("MessageListenerThread")
@@ -46,7 +47,7 @@ public class MessageListenerThreadImpl implements PreprocessorThread {
                 tempMat();
 			}
 		}catch( Exception e ) {
-			LOGGER.error("=====> [MessagelistenerThreadImpl] run error : "+ExceptionUtils.getStackTrace(e)+" <=====");
+			LOGGER.error("=====> [MessagelistenerThreadImpl] run error : "+ ExceptionUtils.getStackTrace(e)+" <=====");
 		}
 	}
 

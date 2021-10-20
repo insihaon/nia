@@ -2,8 +2,9 @@ package com.nia.rca.cluster.preprocessor.common;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -53,7 +54,7 @@ public class UtlCommon {
             objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);
             resultObject = objectMapper.readValue(jMsg, obj.getClass());
         }catch (Exception e) {
-            LOGGER.error(">>>>>>>>>>[UtlCommon] jsonToObject() error : " + ExceptionUtils.getStackTrace(e) +" <<<<<<<<<<<<<<<<<");
+            LOGGER.error(">>>>>>>>>>[UtlCommon] jsonToObject() error : " + org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace(e) +" <<<<<<<<<<<<<<<<<");
         }
         return resultObject;
     }

@@ -53,7 +53,6 @@ spring:
 
   datasource:
     driver-class-name: org.postgresql.Driver
-    data-source-class-name: org.postgresql.ds.PGSimpleDataSource
     #url: jdbc:postgresql://183.107.19.138:8000/niadb #집
     url: jdbc:postgresql://192.168.0.87:5433/niadb #개발
     username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
@@ -108,7 +107,6 @@ spring:
 
   datasource:
     driver-class-name: org.postgresql.Driver
-    data-source-class-name: org.postgresql.ds.PGSimpleDataSource
     url: jdbc:postgresql://116.89.186.194:5433/niadb
     username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
     password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)

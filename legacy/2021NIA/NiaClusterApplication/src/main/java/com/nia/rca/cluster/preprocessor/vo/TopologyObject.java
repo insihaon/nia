@@ -19,6 +19,7 @@ public class TopologyObject implements Serializable{
 	private String linkId;
 	private String trunkId;
 	private String nwType; // NNI or UNI
+	private String oppNescode;
 	private String oppSysname;
 	private String oppPtpName;
 	private String oppPort;
