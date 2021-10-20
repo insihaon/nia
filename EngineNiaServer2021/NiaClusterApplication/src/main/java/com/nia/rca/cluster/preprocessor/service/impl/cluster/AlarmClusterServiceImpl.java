@@ -7,9 +7,12 @@ import com.nia.rca.cluster.preprocessor.data.DataShareBean;
 import com.nia.rca.cluster.preprocessor.service.alarm.AlarmService;
 import com.nia.rca.cluster.preprocessor.service.cluster.AlarmClusterService;
 import com.nia.rca.cluster.preprocessor.service.cluster.ClusterService;
-import com.nia.rca.cluster.preprocessor.vo.*;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import com.nia.rca.cluster.preprocessor.vo.BasicAlarmVo;
+import com.nia.rca.cluster.preprocessor.vo.ClusterInfoVo;
+import com.nia.rca.cluster.preprocessor.vo.ClusterObject;
+import com.nia.rca.cluster.preprocessor.vo.TmpClusterObject;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +23,6 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.*;
-import java.util.concurrent.BlockingQueue;
 
 @Service("AlarmClusterService")
 @Scope(value="prototype")

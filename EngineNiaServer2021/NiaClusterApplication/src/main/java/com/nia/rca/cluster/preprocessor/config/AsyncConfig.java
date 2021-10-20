@@ -1,6 +1,6 @@
 package com.nia.rca.cluster.preprocessor.config;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -85,7 +85,7 @@ public class AsyncConfig {
         }
 
         private void handle(Exception ex) {
-            LOGGER.error(">>>>>>>>>>Failed to execute task. : {"+ExceptionUtils.getStackTrace(ex) + "} <<<<<<<<<<<<<<<<<");
+            LOGGER.error(">>>>>>>>>>Failed to execute task. : {"+ ExceptionUtils.getStackTrace(ex) + "} <<<<<<<<<<<<<<<<<");
         }
 
         public void destroy() {

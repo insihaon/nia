@@ -4,7 +4,7 @@ package com.nia.rca.cluster.preprocessor.service.impl.alarm;
 import com.nia.rca.cluster.preprocessor.mapper.AlarmMapper;
 import com.nia.rca.cluster.preprocessor.service.alarm.AlarmService;
 import com.nia.rca.cluster.preprocessor.vo.BasicAlarmVo;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
