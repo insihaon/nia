@@ -45,7 +45,7 @@ public class SflowToAiLinkageServiceImpl implements SflowToAiLinkageService {
     public void sendSflowLogData() {
         LOGGER.info("==========>[SflowToAiLinkageService] sendSflowLogData <==============");
 
-        String interrIdx = null;
+        String dateRegDate = null;
         String jsonData;
 
         ArrayList<SflowLogVo> sflowLogVoList;
@@ -57,10 +57,10 @@ public class SflowToAiLinkageServiceImpl implements SflowToAiLinkageService {
         AiSflowLogListVo aiSflowLogListVo;
 
         try {
-            interrIdx = niaAlarmMapper.selectSflowYdKey("aiSflowLogKey");
+            dateRegDate = niaAlarmMapper.selectSflowYdKey("aiSflowLogKey");
 
-            if(StringUtils.isNotEmpty(interrIdx)){
-                sflowLogVoList = niaAlarmMapper.selectSflowLogList(Integer.parseInt(interrIdx));
+            if(StringUtils.isNotEmpty(dateRegDate)){
+                sflowLogVoList = niaAlarmMapper.selectSflowLogList(dateRegDate);
 
                 if(sflowLogVoList != null && sflowLogVoList.size() > 0) {
                     LOGGER.info("==========>[SflowToAiLinkageService] sendSflowLogData sflowLogVoList("+sflowLogVoList.size() +") <==============");
@@ -71,7 +71,7 @@ public class SflowToAiLinkageServiceImpl implements SflowToAiLinkageService {
                     mapper = new ObjectMapper();
                     jsonData = mapper.writeValueAsString(aiSflowLogListVo);
 
-                    putFile = createJsonFile("sflowLog", jsonData, sflowLogVoList.get(sflowLogVoList.size()-1).getIntIndex()+"");
+                    putFile = createJsonFile("sflowLog", jsonData, sflowLogVoList.get(sflowLogVoList.size()-1).getDateRegDate()+"");
 
                     sftpSession.init();
 
@@ -83,7 +83,7 @@ public class SflowToAiLinkageServiceImpl implements SflowToAiLinkageService {
 
                     strHashMap = new HashMap<>();
                     strHashMap.put("key", "aiSflowLogKey");
-                    strHashMap.put("value", sflowLogVoList.get(sflowLogVoList.size()-1).getIntIndex()+"");
+                    strHashMap.put("value", sflowLogVoList.get(sflowLogVoList.size()-1).getDateRegDate()+"");
                     niaAlarmMapper.updateSflowYdKey(strHashMap);
                 }
             }

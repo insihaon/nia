@@ -5,35 +5,32 @@
         SELECT VALUE_NAME FROM NIA.TB_LINKAGE_SEQ WHERE KEY_NAME = #{keyName}
     </select>
 
-    <select id="selectSflowLogList" resultType="com.nia.data.linkage.ip.sflow.vo.sflow.SflowLogVo" parameterType="int">
-        SELECT INTINDEX, STRRESIP, STRRESNAME, STRRANK, STRS_IP
-             , STRS_PORT, STRD_IP, STRD_PORT, STRS_MAC, STRD_MAC
-             , STRPROTOCOL, STRIPV4TOS, STRCHANNEL, STRIP, STRPORT
-             , STRMAC, STRINTERFACE, STRSENDERIP, STRIN_INTERFACE, STROUT_INTERFACE
-             , STRBYTES, STRUNIT, DATEREGDATE
+    <select id="selectSflowLogList" resultType="com.nia.data.linkage.ip.sflow.vo.sflow.SflowLogVo" parameterType="string">
+        SELECT STRRESIP, STRRESNAME, STRS_IP, STRS_PORT, STRD_IP
+             , STRD_PORT, STRS_MAC, STRD_MAC, STRPROTOCOL, STRIPV4TOS
+             , STRCHANNEL, STRSENDERIP, STRIN_INTERFACE, STROUT_INTERFACE, STRBYTES_COL
+             , STRCOUNTS, DATEREGDATE
           FROM IP_YD.XE_SFLOW_LOG
-         WHERE INTINDEX > #{interrIdx}
-         ORDER BY INTINDEX
+         WHERE DATEREGDATE <![CDATA[ > ]]> #{dateRegDate} ::timestamp
+         ORDER BY DATEREGDATE
     </select>
 
     <insert id="insertSflowLog" parameterType="java.util.HashMap">
         <if test="sflowLogVoList.size != 0">
             INSERT INTO IP_YD.XE_SFLOW_LOG
             (
-                INTINDEX, STRRESIP, STRRESNAME, STRRANK, STRS_IP,
-                STRS_PORT, STRD_IP, STRD_PORT, STRS_MAC, STRD_MAC,
-                STRPROTOCOL, STRIPV4TOS, STRCHANNEL, STRIP, STRPORT,
-                STRMAC, STRINTERFACE, STRSENDERIP, STRIN_INTERFACE, STROUT_INTERFACE,
-                STRBYTES, STRUNIT, DATEREGDATE
+                STRRESIP, STRRESNAME, STRS_IP, STRS_PORT, STRD_IP,
+                STRD_PORT, STRS_MAC, STRD_MAC, STRPROTOCOL, STRIPV4TOS,
+                STRCHANNEL, STRSENDERIP, STRIN_INTERFACE, STROUT_INTERFACE, STRBYTES_COL,
+                STRCOUNTS, DATEREGDATE
             )
             VALUES
             <foreach collection="sflowLogVoList" item="item" separator=",">
             (
-                #{item.intIndex}, #{item.strResIP}, #{item.strResName}, #{item.strRank}, #{item.strSIP},
-                #{item.strSPORT}, #{item.strDIP}, #{item.strDPORT}, #{item.strSMAC}, #{item.strDMAC},
-                #{item.strProtocol}, #{item.strIPv4ToS}, #{item.strChannel}, #{item.strIP}, #{item.strPort},
-                #{item.strMAC}, #{item.strInterface}, #{item.strSenderIP}, #{item.strInInterface}, #{item.strOutInterface},
-                #{item.strBytes}, #{item.strUnit}, #{item.dateRegDate}
+                #{item.strResIP}, #{item.strResName}, #{item.strSIP}, #{item.strSPORT}, #{item.strDIP},
+                #{item.strDPORT}, #{item.strSMAC}, #{item.strDMAC}, #{item.strProtocol}, #{item.strIPv4ToS},
+                #{item.strChannel}, #{item.strSenderIP}, #{item.strInInterface}, #{item.strOutInterface}, #{item.strBytescol},
+                #{item.strCounts}, #{item.dateRegDate}
             )
             </foreach>
         </if>

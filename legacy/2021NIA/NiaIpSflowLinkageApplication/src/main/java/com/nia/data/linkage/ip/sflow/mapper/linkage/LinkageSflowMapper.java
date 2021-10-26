@@ -8,6 +8,6 @@ import java.util.ArrayList;
 
 @Mapper
 public interface LinkageSflowMapper {
-    ArrayList<SflowLogVo> selectSflowLogList(int interrIdx);
+    ArrayList<SflowLogVo> selectSflowLogList(String interrIdx);
     ArrayList<SflowProtocolLogVo> selectSflowProtocolLogList(int interrIdx);
 }
