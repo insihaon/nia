@@ -3,6 +3,7 @@ package com.nia.data.linkage.ai.service.impl.trans.equip;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nia.data.linkage.ai.common.SFTPSession;
 import com.nia.data.linkage.ai.common.UtlDateHelper;
+import com.nia.data.linkage.ai.common.UtlFileReaderWriter;
 import com.nia.data.linkage.ai.mapper.ip.IpDataMapper;
 import com.nia.data.linkage.ai.mapper.trans.TransDataMapper;
 import com.nia.data.linkage.ai.service.ip.equip.IpEquipTableDataAiLinkageService;
@@ -21,7 +22,7 @@ import java.io.*;
 import java.util.ArrayList;
 
 @Service("TransEquipTableDataAiLinkageService")
-public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableDataAiLinkageService {
+public class TransEquipTableDataAiLinkageServiceImpl extends UtlFileReaderWriter implements TransEquipTableDataAiLinkageService {
     private static final Logger LOGGER = LoggerFactory.getLogger(TransEquipTableDataAiLinkageService.class);
 
     @Autowired
@@ -56,7 +57,7 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
         LOGGER.info("==========>[TransEquipTableDataAiLinkageService] sendEquipMstData <==============");
         SFTPSession sftpSession;
         String jsonData;
-        String ftpUpdatePath = uploadPath+"tbEquipMst/";
+        String ftpUpdatePath = uploadPath+"tb_equip_mst/";
 
         ArrayList<EquipInfoVo> equipInfoVoList;
 
@@ -77,7 +78,7 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
                 mapper = new ObjectMapper();
                 jsonData = mapper.writeValueAsString(equipInfoListVo);
 
-                putFile = createJsonFile("tbEquipMst", jsonData, "");
+                putFile = createJsonFile("tb_equip_mst", jsonData, ftpUpdatePath);
 
                 sftpSession = sftpSessionObjectFactory.getObject();
                 sftpSession.init();
@@ -104,7 +105,7 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
 
         SFTPSession sftpSession;
         String jsonData;
-        String ftpUpdatePath = uploadPath+"tbEquipPort/";
+        String ftpUpdatePath = uploadPath+"tb_equip_port/";
 
         ArrayList<EquipPortVo> equipPortVoList;
 
@@ -125,7 +126,7 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
                 mapper = new ObjectMapper();
                 jsonData = mapper.writeValueAsString(equipPortListVo);
 
-                putFile = createJsonFile("tbEquipPort", jsonData, ftpUpdatePath);
+                putFile = createJsonFile("tb_equip_port", jsonData, ftpUpdatePath);
 
                 sftpSession = sftpSessionObjectFactory.getObject();
                 sftpSession.init();
@@ -152,7 +153,7 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
 
         SFTPSession sftpSession;
         String jsonData;
-        String ftpUpdatePath = uploadPath+"tbEquipSlot/";
+        String ftpUpdatePath = uploadPath+"tb_equip_slot/";
 
         ArrayList<EquipSlotVo> equipSlotVoList;
 
@@ -173,7 +174,7 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
                 mapper = new ObjectMapper();
                 jsonData = mapper.writeValueAsString(equipSlotListVo);
 
-                putFile = createJsonFile("tbEquipSlot", jsonData, ftpUpdatePath);
+                putFile = createJsonFile("tb_equip_slot", jsonData, ftpUpdatePath);
 
                 sftpSession = sftpSessionObjectFactory.getObject();
                 sftpSession.init();
@@ -200,7 +201,7 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
 
         SFTPSession sftpSession;
         String jsonData;
-        String ftpUpdatePath = uploadPath+"tbTopology/";
+        String ftpUpdatePath = uploadPath+"tb_topology/";
 
         ArrayList<NNiTopologyVo> nniTopologyVoList;
 
@@ -221,7 +222,7 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
                 mapper = new ObjectMapper();
                 jsonData = mapper.writeValueAsString(nniTopologyListVo);
 
-                putFile = createJsonFile("tbTopology", jsonData, "tbTopology");
+                putFile = createJsonFile("tb_topology", jsonData, ftpUpdatePath);
 
                 sftpSession = sftpSessionObjectFactory.getObject();
                 sftpSession.init();
@@ -248,7 +249,7 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
 
         SFTPSession sftpSession;
         String jsonData;
-        String ftpUpdatePath = uploadPath+"tbUniTopology/";
+        String ftpUpdatePath = uploadPath+"tb_uni_topology/";
 
         ArrayList<UniTopologyVo> uniTopologyVoList;
 
@@ -269,7 +270,7 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
                 mapper = new ObjectMapper();
                 jsonData = mapper.writeValueAsString(uniTopologyListVo);
 
-                putFile = createJsonFile("tbUniTopology", jsonData, "tbUniTopology");
+                putFile = createJsonFile("tb_uni_topology", jsonData, ftpUpdatePath);
 
                 sftpSession = sftpSessionObjectFactory.getObject();
                 sftpSession.init();
@@ -296,7 +297,7 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
 
         SFTPSession sftpSession;
         String jsonData;
-        String ftpUpdatePath = uploadPath+"tbRoadmTrunkRepeater/";
+        String ftpUpdatePath = uploadPath+"tb_roadm_trunk_repeater/";
 
         ArrayList<RoadmRepeaterRouteVo> roadmRepeaterRouteVoList;
 
@@ -318,7 +319,7 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
                 mapper = new ObjectMapper();
                 jsonData = mapper.writeValueAsString(roadmRepeaterRouteListVo);
 
-                putFile = createJsonFile("tbRoadmTrunkRepeater", jsonData, "");
+                putFile = createJsonFile("tb_roadm_trunk_repeater", jsonData, ftpUpdatePath);
 
                 sftpSession = sftpSessionObjectFactory.getObject();
                 sftpSession.init();

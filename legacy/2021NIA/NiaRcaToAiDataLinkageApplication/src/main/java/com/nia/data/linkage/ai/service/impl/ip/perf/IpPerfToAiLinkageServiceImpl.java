@@ -2,6 +2,7 @@ package com.nia.data.linkage.ai.service.impl.ip.perf;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nia.data.linkage.ai.common.SFTPSession;
+import com.nia.data.linkage.ai.common.UtlFileReaderWriter;
 import com.nia.data.linkage.ai.mapper.common.CommonMapper;
 import com.nia.data.linkage.ai.mapper.ip.IpDataMapper;
 import com.nia.data.linkage.ai.service.ip.perf.IpPerfToAiLinkageService;
@@ -23,7 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 @Service("IpPerfToAiLinkageService")
-public class IpPerfToAiLinkageServiceImpl implements IpPerfToAiLinkageService {
+public class IpPerfToAiLinkageServiceImpl extends UtlFileReaderWriter implements IpPerfToAiLinkageService {
     private static final Logger LOGGER = LoggerFactory.getLogger(IpPerfToAiLinkageService.class);
 
     @Autowired
@@ -48,7 +49,7 @@ public class IpPerfToAiLinkageServiceImpl implements IpPerfToAiLinkageService {
 
         String dataKey = null;
         String jsonData;
-        String ftpUpdatePath = uploadPath+"xeCvnmsPerfIf/";
+        String ftpUpdatePath = uploadPath+"xe_cvnms_perf_if/";
 
         ArrayList<PerfVo> perfVoList;
         HashMap<String, String> strHashMap;
@@ -76,14 +77,14 @@ public class IpPerfToAiLinkageServiceImpl implements IpPerfToAiLinkageService {
                     mapper = new ObjectMapper();
                     jsonData = mapper.writeValueAsString(aiPerfIfListVo);
 
-                    putFile = createJsonFile("xeCvnmsPerfIf", jsonData, perfVoList.get(perfVoList.size()-1).getIntTimestamp()+"", ftpUpdatePath);
+                    putFile = createJsonFile("xe_cvnms_perf_if", jsonData, perfVoList.get(perfVoList.size()-1).getInttimestamp()+"", ftpUpdatePath);
 
                     sftpSession = sftpSessionObjectFactory.getObject();
                     sftpSession.init();
 
                     if(putFile != null){
                         sftpSession.upload(ftpUpdatePath, putFile);
-                        LOGGER.info("=====> [IpPerfToAiLinkageService] sendPerfLogData upload : " + ftpUpdatePath+"/"+putFile.getName()+ "<=====");
+                        LOGGER.info("=====> [IpPerfToAiLinkageService] sendPerfLogData upload : " + ftpUpdatePath+putFile.getName()+ "<=====");
                     }
 
                     sftpSession.disconnection();
@@ -94,7 +95,7 @@ public class IpPerfToAiLinkageServiceImpl implements IpPerfToAiLinkageService {
 
                     strHashMap = new HashMap<>();
                     strHashMap.put("key", "aiIpPerfKey");
-                    strHashMap.put("value", perfVoList.get(perfVoList.size()-1).getIntTimestamp()+"");
+                    strHashMap.put("value", perfVoList.get(perfVoList.size()-1).getInttimestamp()+"");
                     commonMapper.updateLinkageYdKey(strHashMap);
                 }
             }

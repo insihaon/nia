@@ -10,18 +10,18 @@ import java.io.Serializable;
 @Component()
 @Scope(value = "prototype")
 public class EquipSlotVo implements Serializable {
-    private String tid;
+	private String sysname;
 	private String slot;
-	private String pUnit;
-	private String pPorts;
+	private String p_unit;
+	private String p_ports;
 	private String act;
 	private String state;
 	private String degree;
-	private String rxDegree;
-	private String txDegree;
-	private String adSide;
-	private String currentUnit;
-	private String currentPorts;
-	private String pairSlot;
-	private String netType;
+	private String rx_degree;
+	private String tx_degree;
+	private String ad_side;
+	private String current_unit;
+	private String current_ports;
+	private String pair_slot;
+	private String net_type;
 }

@@ -11,30 +11,30 @@ import java.sql.Timestamp;
 @Scope(value = "prototype")
 @Data
 public class IpNodeInfoVo implements Serializable{
-	private String nodeNum;
-	private String nodeId;
-	private String nodeNm;
-	private String modelId;
-	private String modelNm;
-	private String ipAddr;
-	private String macAddr;
-	private String adminYn;
-	private String primaryGb;
-	private String snmpVer;
-	private String snmpCommunity;
-	private int snmpPort;
+	private String node_num;
+	private String node_id;
+	private String node_nm;
+	private String model_num;
+	private String model_id;
+	private String ip_addr;
+	private String mac_addr;
+	private String admin_yn;
+	private String primary_gb;
+	private String snmp_ver;
+	private String snmp_community;
+	private int snmp_port;
 	private String latitude;
 	private String longitude;
-	private String netconfPort;
-	private String netconfId;
-	private String netconfPw;
-	private String netconfType;
-	private String nodeDivision;
+	private String netconf_port;
+	private String netconf_id;
+	private String netconf_pw;
+	private String netconf_type;
+	private String node_division;
 	private String vendor;
-	private String sflowIp;
-	private Timestamp upDatetime;
-	private Timestamp chngDatetime;
-	private Timestamp regDatetime;
-	private String dataSource;
+	private String sflow_ip;
+	private String up_datetime;
+	private String chng_datetime;
+	private String reg_datetime;
+	private String data_source;
 
 }

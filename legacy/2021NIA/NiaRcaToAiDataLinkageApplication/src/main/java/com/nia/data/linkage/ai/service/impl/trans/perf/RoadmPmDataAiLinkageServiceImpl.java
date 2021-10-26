@@ -3,6 +3,7 @@ package com.nia.data.linkage.ai.service.impl.trans.perf;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nia.data.linkage.ai.common.SFTPSession;
 import com.nia.data.linkage.ai.common.UtlDateHelper;
+import com.nia.data.linkage.ai.common.UtlFileReaderWriter;
 import com.nia.data.linkage.ai.mapper.common.CommonMapper;
 import com.nia.data.linkage.ai.mapper.trans.TransDataMapper;
 import com.nia.data.linkage.ai.service.trans.perf.RoadmPmDataAiLinkageService;
@@ -24,7 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 
 @Service("RoadmPmDataAiLinkageService")
-public class RoadmPmDataAiLinkageServiceImpl implements RoadmPmDataAiLinkageService {
+public class RoadmPmDataAiLinkageServiceImpl extends UtlFileReaderWriter implements RoadmPmDataAiLinkageService {
     private static final Logger LOGGER = LoggerFactory.getLogger(RoadmPmDataAiLinkageService.class);
 
     @Autowired
@@ -47,7 +48,7 @@ public class RoadmPmDataAiLinkageServiceImpl implements RoadmPmDataAiLinkageServ
         LOGGER.info("=====> [RoadmPmDataAiLinkageService] sendRoadmPmData <=====");
         SFTPSession sftpSession;
 
-        String ftpUpdatePath = uploadPath+"tbPerformaceMst/";
+        String ftpUpdatePath = uploadPath+"tb_performace_mst/";
         String dataKey = null;
         String jsonData;
         List<PerformaceVo> performaceVoList;
@@ -76,7 +77,7 @@ public class RoadmPmDataAiLinkageServiceImpl implements RoadmPmDataAiLinkageServ
                     mapper = new ObjectMapper();
                     jsonData = mapper.writeValueAsString(perfDataAiLinkageVo);
 
-                    putFile = createJsonFile("tbPerformaceMst", jsonData, performaceVoList.get(performaceVoList.size() - 1).getOcrtime() + "", ftpUpdatePath);
+                    putFile = createJsonFile("tb_performace_mst", jsonData, performaceVoList.get(performaceVoList.size() - 1).getOcrtime() + "", ftpUpdatePath);
 
                     sftpSession = sftpSessionObjectFactory.getObject();
                     sftpSession.init();
@@ -111,7 +112,7 @@ public class RoadmPmDataAiLinkageServiceImpl implements RoadmPmDataAiLinkageServ
         PrintWriter pw;
 
         try{
-            putFile = new File(ftpUpdatePath+eventType+"_"+(UtlDateHelper.stringToTimestamp(ocrTime).getTime())+""+".json");
+            putFile = new File(ftpUpdatePath+eventType+"_"+(UtlDateHelper.stringToTimestamp2(ocrTime).getTime())+""+".json");
 
             if(!putFile.isFile()){
                 putFile.createNewFile();

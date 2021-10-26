@@ -3,6 +3,7 @@ package com.nia.data.linkage.ai.service.impl.ip.equip;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nia.data.linkage.ai.common.SFTPSession;
 import com.nia.data.linkage.ai.common.UtlDateHelper;
+import com.nia.data.linkage.ai.common.UtlFileReaderWriter;
 import com.nia.data.linkage.ai.mapper.ip.IpDataMapper;
 import com.nia.data.linkage.ai.service.ip.equip.IpEquipTableDataAiLinkageService;
 import com.nia.data.linkage.ai.vo.ip.equip.*;
@@ -18,7 +19,7 @@ import java.io.*;
 import java.util.ArrayList;
 
 @Service("IpEquipTableDataAiLinkageService")
-public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiLinkageService {
+public class IpEquipTableDataAiLinkageServiceImpl extends UtlFileReaderWriter implements IpEquipTableDataAiLinkageService {
     private static final Logger LOGGER = LoggerFactory.getLogger(IpEquipTableDataAiLinkageService.class);
 
     @Autowired
@@ -46,7 +47,7 @@ public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiL
 
         String dataKey = null;
         String jsonData;
-        String ftpUpdatePath = uploadPath+"tbBackboneLink/";
+        String ftpUpdatePath = uploadPath+"tb_backbone_link/";
 
         ArrayList<IpBackboneLinkVo> ipBackboneLinkVoList;
 
@@ -67,7 +68,7 @@ public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiL
                 mapper = new ObjectMapper();
                 jsonData = mapper.writeValueAsString(ipBackboneLinkListVo);
 
-                putFile = createJsonFile("tbBackboneLink", jsonData, ftpUpdatePath);
+                putFile = createJsonFile("tb_backbone_link", jsonData, ftpUpdatePath);
 
                 sftpSession = sftpSessionObjectFactory.getObject();
                 sftpSession.init();
@@ -94,7 +95,7 @@ public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiL
 
         SFTPSession sftpSession;
         String jsonData;
-        String ftpUpdatePath = uploadPath+"tbNodeMst/";
+        String ftpUpdatePath = uploadPath+"tb_node_mst/";
 
         ArrayList<IpNodeInfoVo> ipNodeInfoVoList;
 
@@ -115,7 +116,7 @@ public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiL
                 mapper = new ObjectMapper();
                 jsonData = mapper.writeValueAsString(ipNodeListVo);
 
-                putFile = createJsonFile("tbNodeMst", jsonData, ftpUpdatePath);
+                putFile = createJsonFile("tb_node_mst", jsonData, ftpUpdatePath);
 
                 sftpSession = sftpSessionObjectFactory.getObject();
                 sftpSession.init();
@@ -138,7 +139,7 @@ public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiL
 
         SFTPSession sftpSession;
         String jsonData;
-        String ftpUpdatePath = uploadPath+"tbPortMst/";
+        String ftpUpdatePath = uploadPath+"tb_port_mst/";
 
         ArrayList<IpPortMstVo> ipPortMstVoList;
 
@@ -159,7 +160,7 @@ public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiL
                 mapper = new ObjectMapper();
                 jsonData = mapper.writeValueAsString(ipPortListVo);
 
-                putFile = createJsonFile("tbPortMst", jsonData, ftpUpdatePath);
+                putFile = createJsonFile("tb_port_mst", jsonData, ftpUpdatePath);
 
                 sftpSession = sftpSessionObjectFactory.getObject();
                 sftpSession.init();

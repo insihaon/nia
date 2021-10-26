@@ -1,7 +1,13 @@
 package com.nia.data.linkage.ai.service.impl;
 
+import com.nia.data.linkage.ai.service.impl.ip.equip.IpEquipTableDataAiLinkageServiceImpl;
+import com.nia.data.linkage.ai.service.impl.ip.perf.IpPerfToAiLinkageServiceImpl;
+import com.nia.data.linkage.ai.service.impl.ip.sflow.IpSflowToAiLinkageServiceImpl;
+import com.nia.data.linkage.ai.service.impl.trans.equip.TransEquipTableDataAiLinkageServiceImpl;
+import com.nia.data.linkage.ai.service.impl.trans.perf.RoadmPmDataAiLinkageServiceImpl;
 import com.nia.data.linkage.ai.service.ip.equip.IpEquipTableDataAiLinkageService;
 import com.nia.data.linkage.ai.service.ip.perf.IpPerfToAiLinkageService;
+import com.nia.data.linkage.ai.service.ip.sflow.IpSflowToAiLinkageService;
 import com.nia.data.linkage.ai.service.trans.equip.TransEquipTableDataAiLinkageService;
 import com.nia.data.linkage.ai.service.trans.perf.RoadmPmDataAiLinkageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +16,15 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
-public class NiaAiLinkageSchdulerServiceImpl {
+public class NiaAiLinkageSchdulerServiceImpl extends IpPerfToAiLinkageServiceImpl {
 
     @Autowired
     @Qualifier("IpPerfToAiLinkageService")
     private IpPerfToAiLinkageService ipPerfToAiLinkageService;
+
+    @Autowired
+    @Qualifier("IpSflowToAiLinkageService")
+    private IpSflowToAiLinkageService ipSflowToAiLinkageService;
 
     @Autowired
     @Qualifier("RoadmPmDataAiLinkageService")
@@ -31,6 +41,11 @@ public class NiaAiLinkageSchdulerServiceImpl {
     @Scheduled(cron = "0 0/5 * * * *") //초(0-59) 분(0-59) 시간(0-23) 일(1-31) 월(1-12) 요일(0-7)
     public void conJobIpPerfData() {
         ipPerfToAiLinkageService.sendPerfLogData();
+    }
+
+    @Scheduled(cron = "0 0/5 * * * *") //초(0-59) 분(0-59) 시간(0-23) 일(1-31) 월(1-12) 요일(0-7)
+    public void conJobIpSflowLogfData() {
+        ipSflowToAiLinkageService.sendSflowLogData();
     }
 
     @Scheduled(cron = "0 0/15 * * * *") //초(0-59) 분(0-59) 시간(0-23) 일(1-31) 월(1-12) 요일(0-7)

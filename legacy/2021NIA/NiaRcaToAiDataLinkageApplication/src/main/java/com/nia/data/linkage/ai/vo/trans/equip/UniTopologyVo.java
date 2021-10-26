@@ -10,8 +10,7 @@ import java.io.Serializable;
 @Scope(value = "prototype")
 @Data
 public class UniTopologyVo implements Serializable{
-
-	private String linkId;
+	private String link_id;
 	private String sysnamea;
 	private String shelfa;
 	private String ptpnamea;
