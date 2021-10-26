@@ -160,6 +160,7 @@ public class IpEquipTableDataAiLinkageServiceImpl extends UtlFileReaderWriter im
                 mapper = new ObjectMapper();
                 jsonData = mapper.writeValueAsString(ipPortListVo);
 
+
                 putFile = createJsonFile("tb_port_mst", jsonData, ftpUpdatePath);
 
                 sftpSession = sftpSessionObjectFactory.getObject();
