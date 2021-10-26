@@ -45,8 +45,8 @@ spring:
     linkage:
       driver-class-name: org.mariadb.jdbc.Driver
       url: jdbc:mariadb://172.21.45.202:3306/ALARM?characterEncoding=UTF-8&serverTimezone=UTC
-      username: ENC(IOCxzGkF8UKH/AZDEWxDaw==)
-      password: ENC(A0LS5pxxFa3Z+twZA6rRmyJkj22MqCd2)
+      username: ENC(cJ2mPGkq2FCBwLvZLhsHBA==)
+      password: ENC(hRIgFOMU9PeBmJ8Fbx03ZuQvM+yZXLNk)
       maximumPoolSize: 10
       idleTimeout: 6000
 
@@ -105,8 +105,8 @@ spring:
     linkage:
       driver-class-name: org.mariadb.jdbc.Driver
       url: jdbc:mariadb://203.255.249.194:3306/catchview?characterEncoding=UTF-8&serverTimezone=UTC
-      username: koren
-      password: koren1q
+      username: ENC(cJ2mPGkq2FCBwLvZLhsHBA==)
+      password: ENC(hRIgFOMU9PeBmJ8Fbx03ZuQvM+yZXLNk)
       maximumPoolSize: 10
       idleTimeout: 6000
 

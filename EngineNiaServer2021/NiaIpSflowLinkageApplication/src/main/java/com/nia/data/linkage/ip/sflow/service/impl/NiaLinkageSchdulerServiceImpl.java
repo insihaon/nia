@@ -8,7 +8,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
-public class NiaLinkageSchdulerServiceImpl {
+public class NiaLinkageSchdulerServiceImpl extends SflowLogServiceImpl {
 
     @Autowired
     @Qualifier("SflowLogService")

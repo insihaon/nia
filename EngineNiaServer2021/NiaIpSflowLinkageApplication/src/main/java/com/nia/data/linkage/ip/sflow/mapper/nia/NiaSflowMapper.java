@@ -9,7 +9,7 @@ import java.util.HashMap;
 @Mapper
 public interface NiaSflowMapper {
     String selectSflowYdKey(String key);
-    ArrayList<SflowLogVo> selectSflowLogList(int interrIdx);
+    ArrayList<SflowLogVo> selectSflowLogList(String dateRegDate);
     void insertSflowLog(HashMap<String, Object> objectHashMap);
     void insertSflowProtocolLog(HashMap<String, Object> objectHashMap);
     void updateSflowYdKey(HashMap<String, String> strHashMap);

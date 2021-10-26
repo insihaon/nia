@@ -11,10 +11,8 @@ import java.sql.Timestamp;
 @Component()
 @Scope(value = "prototype")
 public class SflowLogVo implements Serializable {
-    private int intIndex;
     private String strResIP;
     private String strResName;
-    private String strRank;
     private String strSIP;
     private String strSPORT;
     private String strDIP;
@@ -24,14 +22,10 @@ public class SflowLogVo implements Serializable {
     private String strProtocol;
     private String strIPv4ToS;
     private String strChannel;
-    private String strIP;
-    private String strPort;
-    private String strMAC;
-    private String strInterface;
     private String strSenderIP;
     private String strInInterface;
     private String strOutInterface;
-    private String strBytes;
-    private String strUnit;
+    private String strBytescol;
+    private String strCounts;
     private Timestamp dateRegDate;
 }
