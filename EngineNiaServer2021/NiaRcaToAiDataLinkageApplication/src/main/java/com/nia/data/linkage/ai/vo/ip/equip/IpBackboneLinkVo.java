@@ -10,24 +10,28 @@ import java.io.Serializable;
 @Scope(value = "prototype")
 @Data
 public class IpBackboneLinkVo implements Serializable{
-	private String srcNodeNum;
-	private String srcNodeId;
-	private String srcIfNum;
-	private String srcIfId;
-	private String destNodeNum;
-	private String destNodeId;
-	private String destIfNum;
-	private String destIfId;
-	private String linkDesc;
+	private String src_node_num;
+	private String src_node_id;
+	private String src_if_num;
+	private String src_if_id;
+	private String dest_node_num;
+	private String dest_node_id;
+	private String dest_if_num;
+	private String dest_if_id;
+	private String link_desc;
 	private String vlan;
 	private String tag;
-	private String srcIpAddr;
-	private String srcMacAddr;
-	private String destIpAddr;
-	private String destMacAddr;
+	private String src_ip_addr;
+	private String src_mac_addr;
+	private String dest_ip_addr;
+	private String dest_mac_addr;
 	private String prefix;
 	private String topology;
 	private String bandwidth;
-	private String linkType;
-	private String linkDiv;
+	private String link_type;
+	private String link_div;
+	private String chng_datetime;
+	private String reg_datetime;
+	private String data_source;
+	private String circuit_num;
 }

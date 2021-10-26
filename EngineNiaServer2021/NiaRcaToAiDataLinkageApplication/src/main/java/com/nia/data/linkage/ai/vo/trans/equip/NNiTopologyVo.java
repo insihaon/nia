@@ -11,11 +11,12 @@ import java.io.Serializable;
 @Data
 public class NNiTopologyVo implements Serializable{
 
-	private String linkId;
+	private String link_id;
 	private String sysnamea;
-	private String ptpnameaBau;
-	private String ptpnameaPau;
+	private String ptpnamea_bau;
+	private String ptpnamea_pau;
 	private String sysnamez;
-	private String ptpnamezBau;
-	private String ptpnamezPau;
+	private String ptpnamez_bau;
+	private String ptpnamez_pau;
+	private String equip_type;
 }

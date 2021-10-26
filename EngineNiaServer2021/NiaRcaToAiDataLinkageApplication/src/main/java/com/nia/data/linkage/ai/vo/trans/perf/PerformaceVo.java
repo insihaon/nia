@@ -15,13 +15,13 @@ public class PerformaceVo implements Serializable {
     private String port;
     private String unit;
     private String tmper;
-    private double rxCur;
-    private double rxMin;
-    private double rxMax;
-    private double rxAve;
-    private double txCur;
-    private double txMin;
-    private double txMax;
-    private double txAve;
-    private Timestamp ocrtime;
+    private double rxcur;
+    private double rxmin;
+    private double rxmax;
+    private double rxave;
+    private double txcur;
+    private double txmin;
+    private double txmax;
+    private double txave;
+    private String ocrtime;
 }

@@ -12,13 +12,12 @@ import java.io.Serializable;
 @Data
 @ToString
 public class RoadmRepeaterRouteVo implements Serializable {
-    private String trunkId;
-    private String trunkName;
-    private int routenum;
+    private String trunk_id;
+    private String trunk_name;
+    private String routenum;
     private String sysname;
-    private String upPtpnameBau;
-    private String upPtpnamePau;
-    private String downPtpnameBau;
-    private String downPtpnamePau;
-
+    private String up_ptpname_bau;
+    private String up_ptpname_pau;
+    private String down_ptpname_bau;
+    private String down_ptpname_pau;
 }

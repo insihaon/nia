@@ -16,8 +16,8 @@ public class EquipInfoVo implements Serializable {
     private String psu;
     private String model;
     private String sid;
-    private String swVer;
-    private String swChksum;
-    private String swDate;
-    private String swTime;
+    private String sw_ver;
+    private String sw_chksum;
+    private String sw_date;
+    private String sw_time;
 }

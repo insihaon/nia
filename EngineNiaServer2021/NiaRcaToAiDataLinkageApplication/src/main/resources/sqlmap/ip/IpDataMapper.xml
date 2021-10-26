@@ -16,6 +16,16 @@
          ORDER BY INTTIMESTAMP
     </select>
 
+    <select id="selectSflowLogList" resultType="com.nia.data.linkage.ai.vo.ip.sflow.SflowLogVo" parameterType="string">
+        SELECT STRRESIP, STRRESNAME, STRS_IP, STRS_PORT, STRD_IP
+             , STRD_PORT, STRS_MAC, STRD_MAC, STRPROTOCOL, STRIPV4TOS
+             , STRCHANNEL, STRSENDERIP, STRIN_INTERFACE, STROUT_INTERFACE, STRBYTES_COL
+             , STRCOUNTS, DATEREGDATE
+          FROM IP_YD.XE_SFLOW_LOG
+         WHERE DATEREGDATE <![CDATA[ > ]]> #{dateRegDate}::timestamp
+         ORDER BY DATEREGDATE
+    </select>
+
     <select id="selectNodeMst" resultType="com.nia.data.linkage.ai.vo.ip.equip.IpNodeInfoVo">
         SELECT NODE_NUM, NODE_ID, NODE_NM, MODEL_NUM, MODEL_ID
              , IP_ADDR, MAC_ADDR, ADMIN_YN, PRIMARY_GB, SNMP_VER
@@ -26,7 +36,10 @@
     </select>
 
     <select id="selectPortMst" resultType="com.nia.data.linkage.ai.vo.ip.equip.IpPortMstVo">
-        SELECT NODE_NUM, NODE_ID, IF_NUM, IF_ID, IF_NM, IF_INDEX, IF_DESC, IF_TYPE, IF_SPEED, IP_ADDR, MAC_ADDR
+        SELECT NODE_NUM, NODE_ID, IF_NUM, IF_ID, IF_NM
+             , IF_INDEX, IF_DESC, IF_TYPE, IF_SPEED, IP_ADDR
+             , MAC_ADDR, IF_OPER_STATUS, IP_PREFIX, IF_DIVISTION, CHNG_DATETIME
+             , REG_DATETIME, DATA_SOURCE
           FROM RESOURCE.TB_PORT_MST
     </select>
 
@@ -35,8 +48,10 @@
              , DEST_NODE_ID, DEST_IF_NUM, DEST_IF_ID, LINK_DESC, VLAN
              , TAG, SRC_IP_ADDR, SRC_MAC_ADDR, DEST_IP_ADDR, DEST_MAC_ADDR
              , PREFIX, TOPOLOGY, BANDWIDTH, LINK_TYPE, LINK_DIV
-         FROM RESOURCE.TB_BACKBONE_LINK
+             , CHNG_DATETIME, REG_DATETIME, DATA_SOURCE, CIRCUIT_NUM
+          FROM RESOURCE.TB_BACKBONE_LINK
     </select>
+
 </mapper>
 
 

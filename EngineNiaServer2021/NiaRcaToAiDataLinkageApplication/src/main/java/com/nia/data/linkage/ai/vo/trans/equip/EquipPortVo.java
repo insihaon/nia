@@ -10,7 +10,7 @@ import java.io.Serializable;
 @Component()
 @Scope(value = "prototype")
 public class EquipPortVo implements Serializable {
-    private String tid;
-	private String port;
-	private String portType;
+	private String sysname;
+	private String ptpname;
+	private String port_type;
 }
