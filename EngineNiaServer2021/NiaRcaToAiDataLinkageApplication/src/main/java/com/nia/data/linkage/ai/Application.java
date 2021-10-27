@@ -1,5 +1,6 @@
 package com.nia.data.linkage.ai;
 
+import com.nia.data.linkage.ai.service.ip.alarm.IpAlarmToAiLinkageService;
 import com.nia.data.linkage.ai.service.ip.equip.IpEquipTableDataAiLinkageService;
 import com.nia.data.linkage.ai.service.ip.perf.IpPerfToAiLinkageService;
 import com.nia.data.linkage.ai.service.ip.sflow.IpSflowToAiLinkageService;
@@ -38,6 +39,10 @@ public class Application implements CommandLineRunner {
     @Qualifier("IpEquipTableDataAiLinkageService")
     private IpEquipTableDataAiLinkageService ipEquipTableDataAiLinkageService;
 
+    @Autowired
+    @Qualifier("IpAlarmToAiLinkageService")
+    private IpAlarmToAiLinkageService ipAlarmToAiLinkageService;
+
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
@@ -45,6 +50,7 @@ public class Application implements CommandLineRunner {
 
     @Override
     public void run(String... arg0) throws Exception {
+//        ipAlarmToAiLinkageService.sendAlarmData();
 //        transEquipTableDataAiLinkageService.sendEquipMstData();
 //        transEquipTableDataAiLinkageService.sendRoadmTrunkData();
 //        transEquipTableDataAiLinkageService.sendEquipSlotData();
@@ -52,5 +58,6 @@ public class Application implements CommandLineRunner {
 //        transEquipTableDataAiLinkageService.sendEquipPortData();
 //        roadmPmDataAiLinkageService.sendRoadmPmData();
 //        ipEquipTableDataAiLinkageService.sendNodeData();
+//        ipEquipTableDataAiLinkageService.sendCvnmsResourceIfData();
     }
 }

@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 @Service("IpPerfToAiLinkageService")
-public class IpPerfToAiLinkageServiceImpl extends UtlFileReaderWriter implements IpPerfToAiLinkageService {
+public class IpPerfToAiLinkageServiceImpl implements IpPerfToAiLinkageService {
     private static final Logger LOGGER = LoggerFactory.getLogger(IpPerfToAiLinkageService.class);
 
     @Autowired

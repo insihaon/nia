@@ -1,10 +1,6 @@
 package com.nia.data.linkage.ai.service.impl;
 
-import com.nia.data.linkage.ai.service.impl.ip.equip.IpEquipTableDataAiLinkageServiceImpl;
-import com.nia.data.linkage.ai.service.impl.ip.perf.IpPerfToAiLinkageServiceImpl;
-import com.nia.data.linkage.ai.service.impl.ip.sflow.IpSflowToAiLinkageServiceImpl;
-import com.nia.data.linkage.ai.service.impl.trans.equip.TransEquipTableDataAiLinkageServiceImpl;
-import com.nia.data.linkage.ai.service.impl.trans.perf.RoadmPmDataAiLinkageServiceImpl;
+import com.nia.data.linkage.ai.service.ip.alarm.IpAlarmToAiLinkageService;
 import com.nia.data.linkage.ai.service.ip.equip.IpEquipTableDataAiLinkageService;
 import com.nia.data.linkage.ai.service.ip.perf.IpPerfToAiLinkageService;
 import com.nia.data.linkage.ai.service.ip.sflow.IpSflowToAiLinkageService;
@@ -16,7 +12,11 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
-public class NiaAiLinkageSchdulerServiceImpl extends IpPerfToAiLinkageServiceImpl {
+public class NiaAiLinkageSchdulerServiceImpl {
+
+    @Autowired
+    @Qualifier("IpAlarmToAiLinkageService")
+    private IpAlarmToAiLinkageService ipAlarmToAiLinkageService;
 
     @Autowired
     @Qualifier("IpPerfToAiLinkageService")
@@ -37,6 +37,11 @@ public class NiaAiLinkageSchdulerServiceImpl extends IpPerfToAiLinkageServiceImp
     @Autowired
     @Qualifier("TransEquipTableDataAiLinkageService")
     private TransEquipTableDataAiLinkageService transEquipTableDataAiLinkageService;
+
+    @Scheduled(cron = "0 0/5 * * * *") //초(0-59) 분(0-59) 시간(0-23) 일(1-31) 월(1-12) 요일(0-7)
+    public void conJobIpAlarmData() {
+        ipAlarmToAiLinkageService.sendAlarmData();
+    }
 
     @Scheduled(cron = "0 0/5 * * * *") //초(0-59) 분(0-59) 시간(0-23) 일(1-31) 월(1-12) 요일(0-7)
     public void conJobIpPerfData() {
@@ -66,6 +71,16 @@ public class NiaAiLinkageSchdulerServiceImpl extends IpPerfToAiLinkageServiceImp
     @Scheduled(cron = "0 20 2 * * *") //초(0-59) 분(0-59) 시간(0-23) 일(1-31) 월(1-12) 요일(0-7)
     public void conJobIpNodeData() {
         ipEquipTableDataAiLinkageService.sendNodeData();
+    }
+
+    @Scheduled(cron = "0 30 2 * * *") //초(0-59) 분(0-59) 시간(0-23) 일(1-31) 월(1-12) 요일(0-7)
+    public void conJobIpCvnmsResourceData() {
+        ipEquipTableDataAiLinkageService.sendCvnmsResourceData();
+    }
+
+    @Scheduled(cron = "0 40 2 * * *") //초(0-59) 분(0-59) 시간(0-23) 일(1-31) 월(1-12) 요일(0-7)
+    public void conJobIpCvnmsResourceIfData() {
+        ipEquipTableDataAiLinkageService.sendCvnmsResourceIfData();
     }
 
     @Scheduled(cron = "0 0 2 * * *") //초(0-59) 분(0-59) 시간(0-23) 일(1-31) 월(1-12) 요일(0-7)

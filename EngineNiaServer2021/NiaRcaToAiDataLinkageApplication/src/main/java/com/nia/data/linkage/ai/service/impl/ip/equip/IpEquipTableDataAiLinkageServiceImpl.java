@@ -3,11 +3,9 @@ package com.nia.data.linkage.ai.service.impl.ip.equip;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nia.data.linkage.ai.common.SFTPSession;
 import com.nia.data.linkage.ai.common.UtlDateHelper;
-import com.nia.data.linkage.ai.common.UtlFileReaderWriter;
 import com.nia.data.linkage.ai.mapper.ip.IpDataMapper;
 import com.nia.data.linkage.ai.service.ip.equip.IpEquipTableDataAiLinkageService;
 import com.nia.data.linkage.ai.vo.ip.equip.*;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +17,7 @@ import java.io.*;
 import java.util.ArrayList;
 
 @Service("IpEquipTableDataAiLinkageService")
-public class IpEquipTableDataAiLinkageServiceImpl extends UtlFileReaderWriter implements IpEquipTableDataAiLinkageService {
+public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiLinkageService {
     private static final Logger LOGGER = LoggerFactory.getLogger(IpEquipTableDataAiLinkageService.class);
 
     @Autowired
@@ -33,6 +31,12 @@ public class IpEquipTableDataAiLinkageServiceImpl extends UtlFileReaderWriter im
 
     @Autowired
     private org.springframework.beans.factory.ObjectFactory<IpPortListVo> ipPortListVoObjectFactory;
+
+    @Autowired
+    private org.springframework.beans.factory.ObjectFactory<IpCvnmsResourceListVo> ipCvnmsResourceListVoObjectFactory;
+
+    @Autowired
+    private org.springframework.beans.factory.ObjectFactory<IpCvnmsResourceIfListVo> ipCvnmsResourceIfListVoObjectFactory;
 
     @Autowired
     private org.springframework.beans.factory.ObjectFactory<SFTPSession> sftpSessionObjectFactory;
@@ -160,7 +164,6 @@ public class IpEquipTableDataAiLinkageServiceImpl extends UtlFileReaderWriter im
                 mapper = new ObjectMapper();
                 jsonData = mapper.writeValueAsString(ipPortListVo);
 
-
                 putFile = createJsonFile("tb_port_mst", jsonData, ftpUpdatePath);
 
                 sftpSession = sftpSessionObjectFactory.getObject();
@@ -175,6 +178,94 @@ public class IpEquipTableDataAiLinkageServiceImpl extends UtlFileReaderWriter im
             }
         }catch (Exception e){
             LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendPortData error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
+        }
+    }
+
+    @Override
+    public void sendCvnmsResourceData() {
+        LOGGER.info("==========>[IpEquipTableDataAiLinkageService] sendCvnmsResourceData <==============");
+
+        SFTPSession sftpSession;
+        String jsonData;
+        String ftpUpdatePath = uploadPath+"xe_cvnms_resource/";
+
+        ArrayList<IpCvnmsResourceVo> ipCvnmsResourceVoList;
+
+        ObjectMapper mapper;
+        File putFile = null;
+
+        IpCvnmsResourceListVo ipCvnmsResourceListVo;
+
+        try {
+            ipCvnmsResourceVoList = ipDataMapper.selectCvnmsResourceList();
+
+            if(ipCvnmsResourceVoList != null && ipCvnmsResourceVoList.size() > 0) {
+                LOGGER.info("==========>[IpEquipTableDataAiLinkageService] sendCvnmsResourceData ipCvnmsResourceVoList("+ipCvnmsResourceVoList.size() +") <==============");
+
+                ipCvnmsResourceListVo = ipCvnmsResourceListVoObjectFactory.getObject();
+                ipCvnmsResourceListVo.setData(ipCvnmsResourceVoList);
+
+                mapper = new ObjectMapper();
+                jsonData = mapper.writeValueAsString(ipCvnmsResourceListVo);
+
+                putFile = createJsonFile("xe_cvnms_resource", jsonData, ftpUpdatePath);
+
+                sftpSession = sftpSessionObjectFactory.getObject();
+                sftpSession.init();
+
+                if(putFile != null){
+                    sftpSession.upload(ftpUpdatePath, putFile);
+                    LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendCvnmsResourceData upload : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                }
+
+                sftpSession.disconnection();
+            }
+        }catch (Exception e){
+            LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendCvnmsResourceData error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
+        }
+    }
+
+    @Override
+    public void sendCvnmsResourceIfData() {
+        LOGGER.info("==========>[IpEquipTableDataAiLinkageService] sendCvnmsResourceIfData <==============");
+
+        SFTPSession sftpSession;
+        String jsonData;
+        String ftpUpdatePath = uploadPath+"xe_cvnms_resource_if/";
+
+        ArrayList<IpCvnmsResourceIfVo> ipCvnmsResourceIfList;
+
+        ObjectMapper mapper;
+        File putFile = null;
+
+        IpCvnmsResourceIfListVo ipCvnmsResourceIfListVo;
+
+        try {
+            ipCvnmsResourceIfList = ipDataMapper.selectCvnmsResourceIfList();
+
+            if(ipCvnmsResourceIfList != null && ipCvnmsResourceIfList.size() > 0) {
+                LOGGER.info("==========>[IpEquipTableDataAiLinkageService] sendCvnmsResourceIfData ipCvnmsResourceIfList("+ipCvnmsResourceIfList.size() +") <==============");
+
+                ipCvnmsResourceIfListVo = ipCvnmsResourceIfListVoObjectFactory.getObject();
+                ipCvnmsResourceIfListVo.setData(ipCvnmsResourceIfList);
+
+                mapper = new ObjectMapper();
+                jsonData = mapper.writeValueAsString(ipCvnmsResourceIfListVo);
+
+                putFile = createJsonFile("xe_cvnms_resource_if", jsonData, ftpUpdatePath);
+
+                sftpSession = sftpSessionObjectFactory.getObject();
+                sftpSession.init();
+
+                if(putFile != null){
+                    sftpSession.upload(ftpUpdatePath, putFile);
+                    LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendCvnmsResourceIfData upload : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                }
+
+                sftpSession.disconnection();
+            }
+        }catch (Exception e){
+            LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendCvnmsResourceIfData error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
         }
     }
 
