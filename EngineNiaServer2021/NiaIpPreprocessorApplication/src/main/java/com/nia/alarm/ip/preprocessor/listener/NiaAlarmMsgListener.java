@@ -2,6 +2,7 @@ package com.nia.alarm.ip.preprocessor.listener;
 
 import com.nia.alarm.ip.preprocessor.common.UtlCommon;
 import com.nia.alarm.ip.preprocessor.service.NiaAlarmHdlService;
+import com.nia.alarm.ip.preprocessor.service.impl.NiaAlarmHdlServiceImpl;
 import com.nia.alarm.ip.preprocessor.vo.alarm.AlarmVo;
 import com.nia.alarm.ip.preprocessor.vo.alarm.BasicAlarmVo;
 import com.rabbitmq.client.Channel;
@@ -15,7 +16,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 @Service
-public class NiaAlarmMsgListener implements ChannelAwareMessageListener {
+public class NiaAlarmMsgListener implements ChannelAwareMessageListener{
 	private static final Logger LOGGER = LoggerFactory.getLogger(NiaAlarmMsgListener.class);
 	
 	@Autowired

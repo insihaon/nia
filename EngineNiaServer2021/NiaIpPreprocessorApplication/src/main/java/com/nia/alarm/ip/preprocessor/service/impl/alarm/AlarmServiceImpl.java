@@ -6,6 +6,7 @@ import com.nia.alarm.ip.preprocessor.common.NiaCodeInfo;
 import com.nia.alarm.ip.preprocessor.common.UtlDateHelper;
 import com.nia.alarm.ip.preprocessor.mapper.AlarmMapper;
 import com.nia.alarm.ip.preprocessor.service.alarm.AlarmService;
+import com.nia.alarm.ip.preprocessor.service.impl.pasing.PasingServiceImpl;
 import com.nia.alarm.ip.preprocessor.vo.alarm.AlNormalizerVo;
 import com.nia.alarm.ip.preprocessor.vo.alarm.AlarmVo;
 import com.nia.alarm.ip.preprocessor.vo.alarm.BasicAlarmVo;

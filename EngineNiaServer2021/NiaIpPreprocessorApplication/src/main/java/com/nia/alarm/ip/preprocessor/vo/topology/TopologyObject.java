@@ -6,9 +6,9 @@ import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 
+@Data
 @Component
 @Scope(value = "prototype")
-@Data
 public class TopologyObject implements Serializable{
 
 	private String alarmno;
