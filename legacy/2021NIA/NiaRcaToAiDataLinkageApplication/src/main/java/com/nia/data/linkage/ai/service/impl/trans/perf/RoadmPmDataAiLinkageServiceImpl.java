@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 
 @Service("RoadmPmDataAiLinkageService")
-public class RoadmPmDataAiLinkageServiceImpl extends UtlFileReaderWriter implements RoadmPmDataAiLinkageService {
+public class RoadmPmDataAiLinkageServiceImpl implements RoadmPmDataAiLinkageService {
     private static final Logger LOGGER = LoggerFactory.getLogger(RoadmPmDataAiLinkageService.class);
 
     @Autowired

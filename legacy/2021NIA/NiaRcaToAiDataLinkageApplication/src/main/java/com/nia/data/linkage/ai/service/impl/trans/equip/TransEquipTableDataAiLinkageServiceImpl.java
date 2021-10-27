@@ -22,7 +22,7 @@ import java.io.*;
 import java.util.ArrayList;
 
 @Service("TransEquipTableDataAiLinkageService")
-public class TransEquipTableDataAiLinkageServiceImpl extends UtlFileReaderWriter implements TransEquipTableDataAiLinkageService {
+public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableDataAiLinkageService {
     private static final Logger LOGGER = LoggerFactory.getLogger(TransEquipTableDataAiLinkageService.class);
 
     @Autowired
