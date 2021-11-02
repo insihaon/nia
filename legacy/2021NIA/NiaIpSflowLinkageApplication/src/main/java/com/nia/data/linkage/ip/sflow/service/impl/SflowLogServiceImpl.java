@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.context.Theme;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,6 +37,7 @@ public class SflowLogServiceImpl implements SflowLogService {
         HashMap<String, String> strHashMap;
 
         try {
+            Thread.sleep(120*1000);
             dateRegDate = niaAlarmMapper.selectSflowYdKey("ipSflowLogKey");
 
             if(StringUtils.isNotEmpty(dateRegDate)){
