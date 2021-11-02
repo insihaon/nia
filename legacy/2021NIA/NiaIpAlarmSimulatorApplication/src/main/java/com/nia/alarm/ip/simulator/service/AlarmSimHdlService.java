@@ -2,6 +2,7 @@ package com.nia.alarm.ip.simulator.service;
 
 import java.util.ArrayList;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -46,9 +47,20 @@ public class AlarmSimHdlService {
 		}catch (Exception e) {
 		}
 	}
-	
-	public void alarmSimulatorThreadStart(){
-		Thread t = new Thread(alarmThreadImpl);
-		t.start();
+
+	public void alTestHdlProcessor() {
+		try {
+
+			alarmMapper.fcSetClearSimulator();
+			arrayAlarmVoList = alarmMapper.selectTestAlarmList();
+
+			LOGGER.info("AlarmSimHdlService size : " + arrayAlarmVoList.size());
+			for(AlarmVo alarmVo: arrayAlarmVoList){
+				prdAmqp.sendMessageCmd(alarmVo);
+			}
+
+		}catch (Exception e) {
+			LOGGER.error("=====> [AlarmSimHdlService] alTestHdlProcessor error "+ ExceptionUtils.getStackTrace(e)+" <=====");
+		}
 	}
 }
