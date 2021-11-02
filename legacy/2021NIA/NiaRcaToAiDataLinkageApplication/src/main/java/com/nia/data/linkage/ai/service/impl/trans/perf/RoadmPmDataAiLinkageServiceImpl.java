@@ -68,8 +68,9 @@ public class RoadmPmDataAiLinkageServiceImpl implements RoadmPmDataAiLinkageServ
             if(StringUtils.isNotEmpty(dataKey)){
                 performaceVoList = transDataMapper.selectAiSendPerformanceData(dataKey);
 
+                LOGGER.info("=====> [RoadmPmDataAiLinkageService] sendRoadmPmData performaceVoList size: " + performaceVoList.size() + "<=====");
+
                 if(performaceVoList != null && performaceVoList.size() > 0) {
-                    LOGGER.info("=====> [RoadmPmDataAiLinkageService] sendRoadmPmData performaceVoList size: " + performaceVoList.size() + "<=====");
 
                     perfDataAiLinkageVo = perfDataAiLinkageVoObjectFactory.getObject();
                     perfDataAiLinkageVo.setData(performaceVoList);

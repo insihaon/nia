@@ -48,16 +48,21 @@ public class PerfDataServiceImpl implements PerfDataService {
                 perfVoList = linkageAlarmMapper.selectPerfList(Long.parseLong(inttimestamp));
 
                 if(perfVoList != null && perfVoList.size() > 0) {
-
                     LOGGER.info("==========>[PerfDataService] getPerfData perfVoList("+perfVoList.size() +") <==============");
 
-                    listByGroup = Lists.partition(perfVoList, perfVoList.size() / 50);
+                    if(perfVoList.size() < 50){
+                        objectHashMap = new HashMap<>();
+                        objectHashMap.put("perfVoList", perfVoList);
+                        niaAlarmMapper.insertPerf(objectHashMap);
+                    }else{
+                        listByGroup = Lists.partition(perfVoList, perfVoList.size() / 50);
 
-                    if(listByGroup.size() > 0 ) {
-                        for (List<PerfVo> perfList : listByGroup) {
-                            objectHashMap = new HashMap<>();
-                            objectHashMap.put("perfVoList", perfList);
-                            niaAlarmMapper.insertPerf(objectHashMap);
+                        if(listByGroup.size() > 0 ) {
+                            for (List<PerfVo> perfList : listByGroup) {
+                                objectHashMap = new HashMap<>();
+                                objectHashMap.put("perfVoList", perfList);
+                                niaAlarmMapper.insertPerf(objectHashMap);
+                            }
                         }
                     }
 
