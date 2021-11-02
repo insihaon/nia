@@ -40,7 +40,7 @@ public class AlarmSchedulerJobService {
                     strLog.append("---------------------------------------------------------------");
                     LOGGER.info(strLog);
                     singletoneAlarmData.alarmQueOffer(alarmList.get(i));
-                //    alarmMapper.deleteAlarm(alarmList.get(i).getIntErrIdx());
+                    alarmMapper.deleteAlarm(alarmList.get(i).getIntErrIdx());
                 //    singletoneAlarmData.alarmListModify("I",alarmList.get(i),null);
                 }
 			}

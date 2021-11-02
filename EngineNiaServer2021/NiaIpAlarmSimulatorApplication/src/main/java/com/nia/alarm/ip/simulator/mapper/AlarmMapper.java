@@ -15,7 +15,8 @@ public interface AlarmMapper{
 	 * @return  ArrayList<AlarmVo>
 	 */
     ArrayList<AlarmVo> selectAlarmList();
-
+    ArrayList<AlarmVo> selectTestAlarmList();
+    void fcSetClearSimulator();
     void deleteAlarm(int alarmno);
 
 }
