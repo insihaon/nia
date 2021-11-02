@@ -8,7 +8,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
-public class NiaLinkageSchdulerServiceImpl extends SflowLogServiceImpl {
+public class NiaLinkageSchdulerServiceImpl {
 
     @Autowired
     @Qualifier("SflowLogService")
@@ -18,7 +18,7 @@ public class NiaLinkageSchdulerServiceImpl extends SflowLogServiceImpl {
     @Qualifier("SflowProtocolLogService")
     private SflowProtocolLogService sflowProtocolLogService;
 
-    @Scheduled(cron = "0 0/1 * * * *") //초(0-59) 분(0-59) 시간(0-23) 일(1-31) 월(1-12) 요일(0-7)
+    @Scheduled(cron = "0 0/5 * * * *") //초(0-59) 분(0-59) 시간(0-23) 일(1-31) 월(1-12) 요일(0-7)
     public void conJobIpSflowLogData() {
         sflowLogService.getSflowLogData();
     }

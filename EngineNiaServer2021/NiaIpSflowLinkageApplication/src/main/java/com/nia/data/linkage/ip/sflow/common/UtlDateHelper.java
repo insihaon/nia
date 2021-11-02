@@ -1,8 +1,10 @@
 package com.nia.data.linkage.ip.sflow.common;
 
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 public class UtlDateHelper {
     public static String sFormat = "yyyy/MM/dd-HH:mm:ss";
@@ -22,6 +24,22 @@ public class UtlDateHelper {
     	
     	Timestamp tDate = Timestamp.valueOf(sDate);
     	return tDate;
+    }
+
+    public static Timestamp stringToTimestamp2(String sDate) {
+        Timestamp tDate = null;
+
+        try {
+            SimpleDateFormat dtFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+            SimpleDateFormat newDtFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date formatDate = dtFormat.parse(sDate);
+            String strNewDtFormat = newDtFormat.format(formatDate);
+
+            tDate = Timestamp.valueOf(strNewDtFormat);
+        }catch (ParseException e){
+            return tDate;
+        }
+        return tDate;
     }
     
     public static String timestampToString(String format, Timestamp timestamp){
