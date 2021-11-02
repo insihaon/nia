@@ -3,6 +3,7 @@ package com.nia.ping.alarm.preprocessor.service.impl;
 import com.nia.ping.alarm.preprocessor.mapper.AlarmMapper;
 import com.nia.ping.alarm.preprocessor.service.NiaAlarmHdlService;
 import com.nia.ping.alarm.preprocessor.service.alarm.AlarmService;
+import com.nia.ping.alarm.preprocessor.service.impl.alarm.AlarmServiceImpl;
 import com.nia.ping.alarm.preprocessor.service.pasing.PingDataPasingService;
 import com.nia.ping.alarm.preprocessor.vo.alarm.PingAlarmVo;
 import com.nia.ping.alarm.preprocessor.vo.ping.PingRowDataVo;

@@ -5,7 +5,7 @@
         SELECT SYSNAME, PORT, UNIT, TMPER, RXCUR, RXMIN, RXMAX, RXAVE, TXCUR, TXMIN, TXMAX, TXAVE, OCRTIME
           FROM NIA.TB_PERFORMACE_MST
          WHERE OCRTIME > #{ocrtime}::TIMESTAMP
-         ORDER BY OCRTIME DESC
+         ORDER BY OCRTIME
     </select>
 
     <select id="selectEquipList" resultType="com.nia.data.linkage.ai.vo.trans.equip.EquipInfoVo">

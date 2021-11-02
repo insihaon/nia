@@ -2,6 +2,7 @@ package com.nia.ping.alarm.preprocessor.listener;
 
 import com.nia.ping.alarm.preprocessor.common.UtlCommon;
 import com.nia.ping.alarm.preprocessor.service.NiaAlarmHdlService;
+import com.nia.ping.alarm.preprocessor.service.impl.NiaAlarmHdlServiceImpl;
 import com.nia.ping.alarm.preprocessor.vo.alarm.PingAlarmVo;
 import com.nia.ping.alarm.preprocessor.vo.ping.PingRowDataVo;
 import org.apache.commons.lang3.exception.ExceptionUtils;
