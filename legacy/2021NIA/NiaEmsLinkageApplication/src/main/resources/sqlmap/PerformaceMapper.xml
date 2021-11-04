@@ -19,7 +19,7 @@
             <foreach collection="performaceVoList" item="item" separator=",">
                (#{item.sysname}, #{item.port}, #{item.unit}, #{item.tmper}, #{item.rxCur}, #{item.rxMin}, #{item.rxMax}, #{item.rxAve}, #{item.txCur}, #{item.txMin}, #{item.txMax}, #{item.txAve}, #{item.ocrtime})
             </foreach>
-            ON CONFLICT (SYSNAME, PORT, OCRTIME) DO NOTHING
+--             ON CONFLICT (SYSNAME, PORT, OCRTIME) DO NOTHING
         </if>
     </insert>
     
