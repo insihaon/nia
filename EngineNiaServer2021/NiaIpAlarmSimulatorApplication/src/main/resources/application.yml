@@ -25,6 +25,10 @@ spring:
     niaIpAlarmQueue: nia.NiaIpAlarmIndexDirectly
     niaIpAlarmRoutingKey: nia.NiaIpAlarmIndexDirectl
 
+    niaTicketReStartExchange: nia.exchangeNiaTicketReStartDirectly
+    niaTicketReStartQueue: nia.NiaTicketReStartIndexDirectly
+    niaTicketReStartRoutingKey: nia.NiaTicketReStartIndexDirectly
+
   task:
     poolSize: 100
     keepAlive: 600000
@@ -66,6 +70,10 @@ spring:
     niaIpAlarmExchange: nia.exchangeNiaIpAlarmDirectly
     niaIpAlarmQueue: nia.NiaIpAlarmIndexDirectly
     niaIpAlarmRoutingKey: nia.NiaIpAlarmIndexDirectl
+
+    niaTicketReStartExchange: nia.exchangeNiaTicketReStartDirectly
+    niaTicketReStartQueue: nia.NiaTicketReStartIndexDirectly
+    niaTicketReStartRoutingKey: nia.NiaTicketReStartIndexDirectly
 
   task:
     poolSize: 100
@@ -116,6 +124,10 @@ spring:
     niaIpAlarmExchange: nia.exchangeNiaIpAlarmDirectly
     niaIpAlarmQueue: nia.NiaIpAlarmIndexDirectly
     niaIpAlarmRoutingKey: nia.NiaIpAlarmIndexDirectl
+
+    niaTicketReStartExchange: nia.exchangeNiaTicketReStartDirectly
+    niaTicketReStartQueue: nia.NiaTicketReStartIndexDirectly
+    niaTicketReStartRoutingKey: nia.NiaTicketReStartIndexDirectly
 
   task:
     poolSize: 100

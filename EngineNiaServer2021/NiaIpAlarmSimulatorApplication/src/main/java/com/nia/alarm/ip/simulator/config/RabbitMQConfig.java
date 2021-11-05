@@ -35,6 +35,11 @@ public class RabbitMQConfig {
         return new Queue(rabbitMQVo.getNiaIpAlarmQueue());
     }
 
+    @Bean(name="NiaTicketReStart_Queue")
+    public Queue niaTicketReStartQueue() {
+        return new Queue(rabbitMQVo.getNiaTicketReStartQueue());
+    }
+
     @Bean
     public MessageConverter jsonMessageConverter(){
         return new Jackson2JsonMessageConverter();
