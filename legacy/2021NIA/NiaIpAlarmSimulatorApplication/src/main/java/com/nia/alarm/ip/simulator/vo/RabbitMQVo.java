@@ -25,4 +25,11 @@ public class RabbitMQVo implements Serializable {
 	private String niaIpAlarmRoutingKey;
 	@Value("${spring.rabbitmq.niaIpAlarmQueue}")
 	private String niaIpAlarmQueue;
+
+	@Value("${spring.rabbitmq.niaTicketReStartExchange}")
+	private String niaTicketReStartExchange;
+	@Value("${spring.rabbitmq.niaTicketReStartRoutingKey}")
+	private String niaTicketReStartRoutingKey;
+	@Value("${spring.rabbitmq.niaTicketReStartQueue}")
+	private String niaTicketReStartQueue;
 }
