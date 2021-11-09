@@ -308,10 +308,12 @@ public class RcaTicketManagerServiceImpl implements RcaTicketManagerService {
                                     rcaTicketAl.setRootCauseAlarmNoA(basicAlarm.getAlarmno());
                                     rcaTicketAl.setRootCausePortA(basicAlarm.getAlarmloc());
 
-                                    rcaTicketAl.setRootCauseSysnameZ(basicAlarm.getTopology().getOppSysname() + "-SH1");
+                                    if(basicAlarm.getTopology() != null) {
+                                        rcaTicketAl.setRootCauseSysnameZ(basicAlarm.getTopology().getOppSysname() + "-SH1");
+                                        rcaTicketAl.setRootCausePtpnameZ(basicAlarm.getTopology().getOppPtpName());
+                                        rcaTicketAl.setRootCauseSlotZ(basicAlarm.getTopology().getOppSlot());
+                                    }
                                     rcaTicketAl.setRootCauseEquipTypeZ("ROADM");
-                                    rcaTicketAl.setRootCausePtpnameZ(basicAlarm.getTopology().getOppPtpName());
-                                    rcaTicketAl.setRootCauseSlotZ(basicAlarm.getTopology().getOppSlot());
 
                                     rcaTicketAlList.add(rcaTicketAl);
                                 }
