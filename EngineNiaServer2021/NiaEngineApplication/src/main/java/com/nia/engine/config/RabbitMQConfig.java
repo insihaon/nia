@@ -76,6 +76,9 @@ public class RabbitMQConfig {
     @Bean(name="UIToEngineTicket_Queue")
     public Queue UIToEngineTicketQueue() { return new Queue(rabbitMQVo.getUIToEngineQueue()); }
 
+    @Bean(name="AiIpTrafficResult_Queue")
+    public Queue AiIpTrafficResultQueue() { return new Queue(rabbitMQVo.getAiIpTrafficResultQueue()); }
+
     @Bean(name="EngineToUiTicket_RabbitTemplate")
     public RabbitTemplate rabbitTemplateTicketEngineToUI() {
         RabbitTemplate template = new RabbitTemplate(connectionFactory());

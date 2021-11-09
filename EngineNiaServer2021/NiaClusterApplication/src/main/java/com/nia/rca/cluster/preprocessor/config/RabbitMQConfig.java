@@ -31,6 +31,7 @@ public class RabbitMQConfig {
         connectionFactory.setUsername(rabbitMQVo.getUserName());
         connectionFactory.setPassword(rabbitMQVo.getPassword());
         connectionFactory.setPort(rabbitMQVo.getPort());
+        connectionFactory.setConnectionTimeout(5000);
         return connectionFactory;
     }
 

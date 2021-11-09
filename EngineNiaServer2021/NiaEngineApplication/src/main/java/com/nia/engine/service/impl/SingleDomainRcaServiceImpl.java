@@ -37,8 +37,12 @@ public class SingleDomainRcaServiceImpl {
 	@Autowired
 	private RoadmSingleRule roadmAlarmRule;
 
+	@Autowired
+	private SwitchSingleRule switchAlarmRule;
+
 	private List<BasicAlarmVo> inputPotnAlarmList;
 	private List<BasicAlarmVo> inputRoadmAlarmList;
+	private List<BasicAlarmVo> inputSwitchAlarmList;
 	
 	private List<RcaResult> rcaResultList;
 	
@@ -47,6 +51,7 @@ public class SingleDomainRcaServiceImpl {
 		try {
 			inputPotnAlarmList = new ArrayList<BasicAlarmVo>();
 			inputRoadmAlarmList = new ArrayList<BasicAlarmVo>();
+			inputSwitchAlarmList = new ArrayList<BasicAlarmVo>();
 
 			for(BasicAlarmVo basicAlarmVo :  clusterObject.getBasicAlarmtVoList()){
 				if(basicAlarmVo.getEquiptype().startsWith("POTN")) {
@@ -54,6 +59,8 @@ public class SingleDomainRcaServiceImpl {
 				}else if(basicAlarmVo.getEquiptype().startsWith("ROADM")){
 					basicAlarmVo.setSysname(basicAlarmVo.getSysname().split("-")[0]);
 					inputRoadmAlarmList.add(basicAlarmVo);
+				}else if(basicAlarmVo.getAlarmno().startsWith("I")){
+					inputSwitchAlarmList.add(basicAlarmVo);
 				}
 			}
 
@@ -74,6 +81,15 @@ public class SingleDomainRcaServiceImpl {
 					rcaResultList.add(roadm8thwRcaResult);
 				}
 			}
+
+			if(inputSwitchAlarmList.size() > 0){
+				Collections.sort(inputSwitchAlarmList, new CompareAlarmAsc());
+				RcaResult switchRcaResult = switchAlarmRule.switchAlarmRule(inputSwitchAlarmList);
+				if(switchRcaResult.getRcaResultCode() != null) {
+					rcaResultList.add(switchRcaResult);
+				}
+			}
+
 
 			if(rcaResultList.size() > 0){
                 rcaTicketManager.createRcaTicket(rcaResultList);
