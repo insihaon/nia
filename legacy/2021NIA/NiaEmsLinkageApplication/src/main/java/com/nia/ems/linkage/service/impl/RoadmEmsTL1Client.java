@@ -29,7 +29,6 @@ public class RoadmEmsTL1Client {
     @Value("${spring.ems.pw}")
     private String pw;
 
-    @Autowired
     private TelnetMmc telnet;
 
     @Autowired
