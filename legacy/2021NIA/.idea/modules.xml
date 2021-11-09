@@ -19,9 +19,7 @@
       <module fileurl="file://$PROJECT_DIR$/NiaIpSflowLinkageApplication/com.nia.data.linkage.ip.sflow.iml" filepath="$PROJECT_DIR$/NiaIpSflowLinkageApplication/com.nia.data.linkage.ip.sflow.iml" />
       <module fileurl="file://$PROJECT_DIR$/NiaEmsLinkageApplication/com.nia.ems.linkage.iml" filepath="$PROJECT_DIR$/NiaEmsLinkageApplication/com.nia.ems.linkage.iml" />
       <module fileurl="file://$PROJECT_DIR$/NiaEngineApplication/com.nia.engine.iml" filepath="$PROJECT_DIR$/NiaEngineApplication/com.nia.engine.iml" />
-      <module fileurl="file://$PROJECT_DIR$/IpSnmpLinkageApplication/com.nia.linkage.snmp.ap.iml" filepath="$PROJECT_DIR$/IpSnmpLinkageApplication/com.nia.linkage.snmp.ap.iml" />
       <module fileurl="file://$PROJECT_DIR$/NiaClusterApplication/com.nia.rca.cluster.preprocessor.iml" filepath="$PROJECT_DIR$/NiaClusterApplication/com.nia.rca.cluster.preprocessor.iml" />
-      <module fileurl="file://$PROJECT_DIR$/spring-snmp-master/spring-snmp.iml" filepath="$PROJECT_DIR$/spring-snmp-master/spring-snmp.iml" />
     </modules>
   </component>
 </project>

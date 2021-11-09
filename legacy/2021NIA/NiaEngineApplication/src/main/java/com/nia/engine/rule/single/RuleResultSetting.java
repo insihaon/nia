@@ -24,7 +24,7 @@ public class RuleResultSetting {
 				rcaResult.setAlarmTime($a1.getAlarmtime());
 
 				if($a1.getEquiptype().startsWith("POTN")) {
-						rcaResult.setDomainCode(RcaCodeInfo.DOMAIN_POTN);
+					rcaResult.setDomainCode(RcaCodeInfo.DOMAIN_POTN);
 				}else if($a1.getEquiptype().startsWith("ROADM")){
 					rcaResult.setDomainCode(RcaCodeInfo.DOMAIN_ROADM);
 				}

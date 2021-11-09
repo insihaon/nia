@@ -42,4 +42,8 @@ public class DataShareBean<T> {
 
         return shareDataMap.size();
     }
+
+    public Boolean isContainsKey(String key){
+        return shareDataMap.containsKey(key);
+    }
 }

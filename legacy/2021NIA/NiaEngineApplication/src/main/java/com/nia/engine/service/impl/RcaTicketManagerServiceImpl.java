@@ -262,69 +262,70 @@ public class RcaTicketManagerServiceImpl implements RcaTicketManagerService {
             if(rcaResultList != null && rcaResultList.size() > 0){
                 itr = rcaResultList.iterator();
 
-                while( itr.hasNext() ){
+                while( itr.hasNext() ) {
                     rcaResult = itr.next();
 
-                    time1 = UtlDateHelper.timestampToString("yyyy-MM-dd",rcaResult.getAlarmTime()) + " 00:00:00";
-                    time2 = UtlDateHelper.timestampToString("yyyy-MM-dd",rcaResult.getAlarmTime()) + " 06:00:00";
+                    time1 = UtlDateHelper.timestampToString("yyyy-MM-dd", rcaResult.getAlarmTime()) + " 00:00:00";
+                    time2 = UtlDateHelper.timestampToString("yyyy-MM-dd", rcaResult.getAlarmTime()) + " 06:00:00";
                     time3 = UtlDateHelper.stringToTimestamp(time1);
                     time4 = UtlDateHelper.stringToTimestamp(time2);
 
-                    if(rcaResult.getAlarmTime().getTime() > time4.getTime()) {
-                        basicAlarmVoList = rcaResult.getRelatedAlarmList();
-                        ticketId = ticketService.selectTicketKey();
-                        rcaTicket = rcaTicketFactory.getObject();
-                        rcaTicket.setTicketId(ticketId);
-                        rcaTicket.setClusterNo(rcaResult.getClusterNo());
-                        rcaTicket.setTicketType(RcaCodeInfo.TICKET_TYPE_RCATICKET);
-                        rcaTicket.setTicketRcaResultCode(rcaResult.getRcaResultCode());
-                        rcaTicket.setTicketRcaResultDtlCode(rcaResult.getFaultDetailCode());
-                        rcaTicket.setTicketRcaResultOrigDtlCode(rcaResult.getFaultDetailCode());
-                        rcaTicket.setTicketRcaResultCode(rcaResult.getRcaResultCode());
-                        rcaTicket.setFaultTime(rcaResult.getAlarmTime());
-                        rcaTicket.setRootCauseCode(rcaResult.getNwType());
-                        rcaTicket.setRootCauseDomain(rcaResult.getDomainCode());
-                        rcaTicket.setRootCauseType(rcaResult.getRcaResultTypeCode());
-                        rcaTicket.setTicketGenerationTime(UtlDateHelper.getCurrentTime());
-                        rcaTicket.setOccur(true);
+//                    if (RcaCodeInfo.DOMAIN_ROADM.equals(rcaResult.getDomainCode()) || RcaCodeInfo.DOMAIN_POTN.equals(rcaResult.getDomainCode())) {
+                        if (rcaResult.getAlarmTime().getTime() > time4.getTime()) {
+                            basicAlarmVoList = rcaResult.getRelatedAlarmList();
+                            ticketId = ticketService.selectTicketKey();
+                            rcaTicket = rcaTicketFactory.getObject();
+                            rcaTicket.setTicketId(ticketId);
+                            rcaTicket.setClusterNo(rcaResult.getClusterNo());
+                            rcaTicket.setTicketType(RcaCodeInfo.TICKET_TYPE_RCATICKET);
+                            rcaTicket.setTicketRcaResultCode(rcaResult.getRcaResultCode());
+                            rcaTicket.setTicketRcaResultDtlCode(rcaResult.getFaultDetailCode());
+                            rcaTicket.setTicketRcaResultOrigDtlCode(rcaResult.getFaultDetailCode());
+                            rcaTicket.setTicketRcaResultCode(rcaResult.getRcaResultCode());
+                            rcaTicket.setFaultTime(rcaResult.getAlarmTime());
+                            rcaTicket.setRootCauseCode(rcaResult.getNwType());
+                            rcaTicket.setRootCauseDomain(rcaResult.getDomainCode());
+                            rcaTicket.setRootCauseType(rcaResult.getRcaResultTypeCode());
+                            rcaTicket.setTicketGenerationTime(UtlDateHelper.getCurrentTime());
+                            rcaTicket.setOccur(true);
 
-                        if (basicAlarmVoList != null) {
-                            rcaTicketAlList = new ArrayList<RCATicketAl>();
+                            if (basicAlarmVoList != null) {
+                                rcaTicketAlList = new ArrayList<RCATicketAl>();
 
-                            for (BasicAlarmVo basicAlarm : basicAlarmVoList) {
-                                rcaTicketAl = rcaTicketAlFactory.getObject();
+                                for (BasicAlarmVo basicAlarm : basicAlarmVoList) {
+                                    rcaTicketAl = rcaTicketAlFactory.getObject();
 
-                                basicAlarmVo = alarmService.selectAlarmInfo(basicAlarm.getAlarmno());
-                                rcaTicketAl.setRootCauseAlarmInfoA(basicAlarmVo);
+                                    basicAlarmVo = alarmService.selectAlarmInfo(basicAlarm.getAlarmno());
+                                    rcaTicketAl.setRootCauseAlarmInfoA(basicAlarmVo);
 
-                                rcaTicketAl.setTicketId(ticketId);
-                                rcaTicketAl.setRootCauseAlarmLevelA(basicAlarm.getAlarmlevel());
-                                rcaTicketAl.setRootCauseSysnameA(basicAlarm.getSysname());
-                                rcaTicketAl.setRootCauseEquipTypeA(basicAlarm.getEquiptype());
-                                rcaTicketAl.setRootCauseEquipTypeA("ROADM");
-                                rcaTicketAl.setRootCauseUnitA(basicAlarm.getUnit());
-                                rcaTicketAl.setRootCausePtpnameA(basicAlarm.getPtpname());
-                                rcaTicketAl.setRootCauseSlotA(basicAlarm.getSlot());
-                                rcaTicketAl.setRootCauseAlarmNoA(basicAlarm.getAlarmno());
+                                    rcaTicketAl.setTicketId(ticketId);
+                                    rcaTicketAl.setRootCauseAlarmLevelA(basicAlarm.getAlarmlevel());
+                                    rcaTicketAl.setRootCauseSysnameA(basicAlarm.getSysname());
+                                    rcaTicketAl.setRootCauseEquipTypeA(basicAlarm.getEquiptype());
+                                    rcaTicketAl.setRootCauseUnitA(basicAlarm.getUnit());
+                                    rcaTicketAl.setRootCausePtpnameA(basicAlarm.getPtpname());
+                                    rcaTicketAl.setRootCauseSlotA(basicAlarm.getSlot());
+                                    rcaTicketAl.setRootCauseAlarmNoA(basicAlarm.getAlarmno());
+                                    rcaTicketAl.setRootCausePortA(basicAlarm.getAlarmloc());
 
-                                rcaTicketAl.setRootCauseSysnameZ(basicAlarm.getTopology().getOppSysname() + "-SH1");
-                                rcaTicketAl.setRootCauseEquipTypeZ("ROADM");
-                                rcaTicketAl.setRootCausePtpnameZ(basicAlarm.getTopology().getOppPtpName());
-                                rcaTicketAl.setRootCauseSlotZ(basicAlarm.getTopology().getOppSlot());
+                                    rcaTicketAl.setRootCauseSysnameZ(basicAlarm.getTopology().getOppSysname() + "-SH1");
+                                    rcaTicketAl.setRootCauseEquipTypeZ("ROADM");
+                                    rcaTicketAl.setRootCausePtpnameZ(basicAlarm.getTopology().getOppPtpName());
+                                    rcaTicketAl.setRootCauseSlotZ(basicAlarm.getTopology().getOppSlot());
 
-                                rcaTicketAlList.add(rcaTicketAl);
+                                    rcaTicketAlList.add(rcaTicketAl);
+                                }
+                                rcaTicket.setRelatedAlarmCnt(rcaResult.getRelatedAlarmList().size());
                             }
-                            rcaTicket.setRelatedAlarmCnt(rcaResult.getRelatedAlarmList().size());
-                        }
 
-                        if (rcaTicketAlList != null) {
-                            rcaTicket.setTicketAlList(rcaTicketAlList);
-                        }
-                        rcaTicket.setStatus(RcaCodeInfo.TICKET_STATUS_INIT);
+                            if (rcaTicketAlList != null) {
+                                rcaTicket.setTicketAlList(rcaTicketAlList);
+                            }
+                            rcaTicket.setStatus(RcaCodeInfo.TICKET_STATUS_INIT);
 
-                        rcaTicketResult = rcaTicketMergeService.rcaTicketMerge(rcaTicket);
+                            rcaTicketResult = rcaTicketMergeService.rcaTicketMerge(rcaTicket);
 
-                        LOGGER.info("==========>[RcaTicketManager] rcaTicketResult : " + rcaTicketResult + "<==============");
+                            LOGGER.info("==========>[RcaTicketManager] rcaTicketResult : " + rcaTicketResult + "<==============");
                             rcaTicketStatus = rcaTicketHandlingStatusFactory.getObject();
                             rcaTicketStatus.setTicketId(rcaTicket.getTicketId());
                             rcaTicketStatus.setStatus(RcaCodeInfo.TICKET_STATUS_INIT);
@@ -334,80 +335,79 @@ public class RcaTicketManagerServiceImpl implements RcaTicketManagerService {
                             ticketService.insertRcaTicket(rcaTicket);
                             ticketService.insertRcaTicketAl(rcaTicketAlList);
 
+                            if (!rcaTicketResult.isResult()) {
+                                updateTime = String.valueOf(rcaTicket.getTicketGenerationTime());
 
-                        if (!rcaTicketResult.isResult()) {
-                            updateTime = String.valueOf(rcaTicket.getTicketGenerationTime());
+                                if (rcaTicket.getParentTicketId() != null) {
+                                    ticketService.updateRcaTicketChild(rcaTicket);
+                                }
 
-                            if (rcaTicket.getParentTicketId() != null) {
-                                ticketService.updateRcaTicketChild(rcaTicket);
-                            }
+                                ticketUpdateTime = new HashMap<String, String>();
+                                ticketUpdateTime.put("ticketId", rcaTicket.getParentTicketId());
+                                ticketUpdateTime.put("ticketUpdateTime", updateTime);
 
-                            ticketUpdateTime = new HashMap<String, String>();
-                            ticketUpdateTime.put("ticketId", rcaTicket.getParentTicketId());
-                            ticketUpdateTime.put("ticketUpdateTime", updateTime);
+                                ticketService.updateRcaTicketUpdateTime(ticketUpdateTime);
 
-                            ticketService.updateRcaTicketUpdateTime(ticketUpdateTime);
+                                ticketService.insertRcaTicketCnt(rcaTicket);
 
-                            ticketService.insertRcaTicketCnt(rcaTicket);
+                                rcaEngineResult = new RcaEngineResult();
+                                rcaEngineResult.setTicketId(rcaTicket.getTicketId());
+                                rcaEngineResult.setEventType(RcaCodeInfo.UI_TICKET_TYPE_NEW);
+                                rcaEngineResult.setTicketType("RT");
 
-                            rcaEngineResult = new RcaEngineResult();
-                            rcaEngineResult.setTicketId(rcaTicket.getTicketId());
-                            rcaEngineResult.setEventType(RcaCodeInfo.UI_TICKET_TYPE_NEW);
-                            rcaEngineResult.setTicketType("RT");
-
-                            uiSendTicketResult(rcaEngineResult);
-
-                            parameterMap = new HashMap<String, String>();
-                            parameterMap.put("ticketId", rcaEngineResult.getTicketId());
-                            parameterMap.put("status", RcaCodeInfo.TICKET_STATUS_INIT);
-
-                            // singletoneEngineData.addTicket(rcaTicket);
-                            ((ArrayList<RCATicket>)dataShareBean.getData(RcaCodeInfo.DATA_SHARE_NAME_TICKET_LIST)).add(rcaTicket);
-                        }else{
-                            properties = new HashMap<String,String>();
-
-                            if(rcaTicket.getParentTicketId() != null){
-                                ticketService.updateRcaTicketChild(rcaTicket);
-                            }
-
-                            updateTime = String.valueOf(rcaTicket.getTicketGenerationTime());
-                            ticketUpdateTime = new HashMap<String, String>();
-                            ticketUpdateTime.put("ticketId", rcaTicket.getParentTicketId());
-                            ticketUpdateTime.put("ticketUpdateTime", updateTime);
-
-
-                            ticketUpdateTime = new HashMap<String, String>();
-                            ticketUpdateTime.put("ticketId", rcaTicket.getParentTicketId());
-                            ticketUpdateTime.put("ticketUpdateTime", updateTime);
-
-                            ticketService.updateRcaTicketUpdateTime(ticketUpdateTime);
-
-                            properties.put("ticket_update_time", updateTime);
-
-                            rcaEngineResult = rcaEngineResultFactory.getObject();
-                            rcaEngineResult.setTicketId(rcaTicket.getParentTicketId());
-                            rcaEngineResult.setEventType(RcaCodeInfo.UI_TICKET_TYPE_MERGE);
-
-                            ticketService.insertRcaTicketCnt(rcaTicket);
-
-                            uiSendTicketResult(rcaEngineResult);
-
-                            if(rcaTicket.getParentTicketId() != null){
-                                parameterMap = new HashMap<String, String>();
-                                parameterMap.put("ticketId", rcaTicket.getTicketId());
-                                parameterMap.put("status", RcaCodeInfo.TICKET_STATUS_FIN);
+                                uiSendTicketResult(rcaEngineResult);
 
                                 parameterMap = new HashMap<String, String>();
-                                parameterMap.put("ticketId", rcaTicket.getParentTicketId());
+                                parameterMap.put("ticketId", rcaEngineResult.getTicketId());
                                 parameterMap.put("status", RcaCodeInfo.TICKET_STATUS_INIT);
-                            }
-                        }
 
-                        ticketClearCheck(rcaTicket);
+                                // singletoneEngineData.addTicket(rcaTicket);
+                                ((ArrayList<RCATicket>) dataShareBean.getData(RcaCodeInfo.DATA_SHARE_NAME_TICKET_LIST)).add(rcaTicket);
+                            } else {
+                                properties = new HashMap<String, String>();
+
+                                if (rcaTicket.getParentTicketId() != null) {
+                                    ticketService.updateRcaTicketChild(rcaTicket);
+                                }
+
+                                updateTime = String.valueOf(rcaTicket.getTicketGenerationTime());
+                                ticketUpdateTime = new HashMap<String, String>();
+                                ticketUpdateTime.put("ticketId", rcaTicket.getParentTicketId());
+                                ticketUpdateTime.put("ticketUpdateTime", updateTime);
+
+
+                                ticketUpdateTime = new HashMap<String, String>();
+                                ticketUpdateTime.put("ticketId", rcaTicket.getParentTicketId());
+                                ticketUpdateTime.put("ticketUpdateTime", updateTime);
+
+                                ticketService.updateRcaTicketUpdateTime(ticketUpdateTime);
+
+                                properties.put("ticket_update_time", updateTime);
+
+                                rcaEngineResult = rcaEngineResultFactory.getObject();
+                                rcaEngineResult.setTicketId(rcaTicket.getParentTicketId());
+                                rcaEngineResult.setEventType(RcaCodeInfo.UI_TICKET_TYPE_MERGE);
+
+                                ticketService.insertRcaTicketCnt(rcaTicket);
+
+                                uiSendTicketResult(rcaEngineResult);
+
+                                if (rcaTicket.getParentTicketId() != null) {
+                                    parameterMap = new HashMap<String, String>();
+                                    parameterMap.put("ticketId", rcaTicket.getTicketId());
+                                    parameterMap.put("status", RcaCodeInfo.TICKET_STATUS_FIN);
+
+                                    parameterMap = new HashMap<String, String>();
+                                    parameterMap.put("ticketId", rcaTicket.getParentTicketId());
+                                    parameterMap.put("status", RcaCodeInfo.TICKET_STATUS_INIT);
+                                }
+                            }
+
+                            ticketClearCheck(rcaTicket);
+                        }
                     }
                 }
-            }
-
+//            }
         }catch (Exception e) {
             LOGGER.error(">>>>>>>>>>[RcaTicketManager] createTicket() error : " + ExceptionUtils.getStackTrace(e) +" <<<<<<<<<<<<<<<<<");
         }

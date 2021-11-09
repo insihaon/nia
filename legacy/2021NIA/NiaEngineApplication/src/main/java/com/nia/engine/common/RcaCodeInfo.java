@@ -194,9 +194,15 @@ public class RcaCodeInfo {
 	public static final String ALARM_POTN_OTU_LOS = "OTU_LOS";
 	public static final String ALARM_POTN_PW_LOC = "PW_LOC";
 
+	// SWITCH
+	public static final String ALARM_SWITCH_PING_UNREACHABLE = "PING_UNREACHABLE";
+	public static final String ALARM_SWITCH_SNMP_TIME_OUT = "SNMP_TIME_OUT";
+	public static final String ALARM_SWITCH_PORT_DOWN = "PORT_DOWN";
+
 	// 도메인 ID
 	public static final String DOMAIN_ROADM = "ROADM";							// ROADM 도권망 코위버 장비 도메인
 	public static final String DOMAIN_POTN = "POTN";							// POTN 화웨이 장비 도메인
+	public static final String DOMAIN_SWITCH = "SWITCH";							// SWITCH 장비 도메인
 
 	// RCA OBJECT TYPE
 	public static final String RCA_OBJECT_BASIC = "BASIC";
@@ -213,6 +219,7 @@ public class RcaCodeInfo {
 	public static final String RCA_RESULT_POWER_FAIL = "PowerFail";				// 7. 전원장애
 	public static final String RCA_RESULT_ETC_FAIL = "EtcFail";					// 8. 기타장애
 	public static final String RCA_RESULT_CIRCUIT_FAIL = "CircuitFail";			// 9. 회선장애
+	public static final String RCA_RESULT_SWITCH_FAIL = "SwitchFail";			// 10. SWITCH장애
 
 	//RCA Ticket Type
 	public static final String TICKET_TYPE_PERFORMACE = "PF"; //Cable Inspecter Ticket
@@ -243,4 +250,6 @@ public class RcaCodeInfo {
 
 	// UI MESSAGE
 	public static final String UI_REQUEST_DATA_SNAPSHOT = "REQUEST_DATA_SNAPSHOT";
+
+	public static final String DATA_SHARE_NAME_IS_START = "isStart";
 }

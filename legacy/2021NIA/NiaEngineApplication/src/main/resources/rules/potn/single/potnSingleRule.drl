@@ -23,6 +23,7 @@ global RcaResult rcaResult;
 rule "POTN_NODE_ISOLATION"
 salience 1000
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -42,6 +43,7 @@ end
 rule "POTN_CONTROL_UNIT_OUT"
 salience 900
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -61,6 +63,7 @@ end
 rule "POTN_ETH_UNIT_OUT"
 salience 900
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -80,6 +83,7 @@ end
 rule "POTN_FAN_UNIT_OUT"
 salience 900
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -99,6 +103,7 @@ end
 rule "POTN_LINK_UNIT_OUT"
 salience 900
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -118,6 +123,7 @@ end
 rule "POTN_LOGIC_BOARD_OUT"
 salience 900
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -137,6 +143,7 @@ end
 rule "POTN_OTN_UNIT_OUT"
 salience 900
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -156,6 +163,7 @@ end
 rule "POTN_STM_UNIT_OUT"
 salience 900
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -175,6 +183,7 @@ end
 rule "POTN_SWITCH_FABRIC_UNIT_OUT"
 salience 900
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -194,6 +203,7 @@ end
 rule "POTN_CONTROL_UNIT_FAIL"
 salience 800
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -213,6 +223,7 @@ end
 rule "POTN_ETH_UNIT_FAIL"
 salience 800
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -232,6 +243,7 @@ end
 rule "POTN_FAN_UNIT_FAIL"
 salience 800
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -252,6 +264,7 @@ end
 rule "POTN_LINK_UNIT_FAIL"
 salience 800
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -271,6 +284,7 @@ end
 rule "POTN_OTN_UNIT_FAIL"
 salience 800
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -290,6 +304,7 @@ end
 rule "POTN_SM_UNIT_FAIL"
 salience 800
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -309,6 +324,7 @@ end
 rule "POTN_STM_UNIT_FAIL"
 salience 800
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -328,6 +344,7 @@ end
 rule "POTN_UAS_UNIT_FAIL"
 salience 800
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -347,6 +364,7 @@ end
 rule "POTN_PWR_FAIL"
 salience 800
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -366,6 +384,7 @@ end
 rule "POTN_SWITCH_FABRIC_UNIT_FAIL"
 salience 800
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -385,6 +404,7 @@ end
 rule "POTN_MPLS_PROT_SWITCH_LOCAL_REQ"
 salience 700
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -404,6 +424,7 @@ end
 rule "POTN_MPLS_PROT_SWITCH_REMOTE_REQ"
 salience 700
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -424,6 +445,7 @@ end
 rule "POTN_ETH_UNI_B_SF"
 salience 700
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -446,6 +468,7 @@ end
 rule "POTN_OTN_NNI_B_SF"
 salience 700
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -468,6 +491,7 @@ end
 rule "POTN_ODU_NNI_B_SF"
 salience 700
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -490,6 +514,7 @@ end
 rule "POTN_OCH_NNI_B_SF"
 salience 700
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -512,6 +537,7 @@ end
 rule "POTN_STM_UNI_B_SF"
 salience 700
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -534,6 +560,7 @@ end
 rule "POTN_WDM_NNI_B_SF"
 salience 700
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -557,6 +584,7 @@ end
 rule "POTN_ETH_UNI_SF_BI"
 salience 600
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -578,6 +606,7 @@ end
 rule "POTN_OTN_NNI_SF_BI"
 salience 600
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -599,6 +628,7 @@ end
 rule "POTN_STM_UNI_SF_BI"
 salience 600
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -620,6 +650,7 @@ end
 rule "POTN_WDM_NNI_SF_BI"
 salience 600
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -641,6 +672,7 @@ end
 rule "POTN_ETH_PORT_15M_TCA_THRESHOLD_OVER"
 salience 500
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -660,6 +692,7 @@ end
 rule "POTN_ETH_PORT_1D_TCA_THRESHOLD_OVER"
 salience 500
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -679,6 +712,7 @@ end
 rule "POTN_ASON_OSPF_TCA"
 salience 500
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -698,6 +732,7 @@ end
 rule "POTN_BACKUP_FAIL"
 salience 500
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -717,6 +752,7 @@ end
 rule "POTN_CONTROL_CHANNEL_FAIL"
 salience 500
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -736,6 +772,7 @@ end
 rule "POTN_CONTROL_UNIT_INIT"
 salience 500
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -755,6 +792,7 @@ end
 rule "POTN_CONTROL_UNIT_IPC_FAIL"
 salience 500
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -774,6 +812,7 @@ end
 rule "POTN_CPU_TCA"
 salience 500
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -793,6 +832,7 @@ end
 rule "POTN_DCN_FAIL"
 salience 500
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -812,6 +852,7 @@ end
 rule "POTN_GNE_CONNECT_FAIL"
 salience 500
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -831,6 +872,7 @@ end
 rule "POTN_IPC_FAIL"
 salience 500
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -850,6 +892,7 @@ end
 rule "POTN_LOGIN_FAIL"
 salience 500
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -869,6 +912,7 @@ end
 rule "POTN_ODU_FAIL"
 salience 500
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -888,6 +932,7 @@ end
 rule "POTN_ODU_UNIT_IPC_FAIL"
 salience 500
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -907,6 +952,7 @@ end
 rule "POTN_OTN_FAIL"
 salience 500
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -926,6 +972,7 @@ end
 rule "POTN_OTN_UNIT_IPC_FAIL"
 salience 500
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -945,6 +992,7 @@ end
 rule "POTN_OTU_FAIL"
 salience 500
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -964,6 +1012,7 @@ end
 rule "POTN_ETH_UNI_SF_SI"
 salience 500
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -983,6 +1032,7 @@ end
 rule "POTN_NTP_CONNECTION_FAIL"
 salience 500
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1002,6 +1052,7 @@ end
 rule "POTN_OTN_LOSS_OF_CLK"
 salience 500
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1021,6 +1072,7 @@ end
 rule "POTN_OTN_NNI_SF_SI"
 salience 500
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1040,6 +1092,7 @@ end
 rule "POTN_ODU_NNI_SF_SI"
 salience 500
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1059,6 +1112,7 @@ end
 rule "POTN_OCH_NNI_SF_SI"
 salience 500
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1078,6 +1132,7 @@ end
 rule "POTN_RSVP_FAIL"
 salience 500
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1097,6 +1152,7 @@ end
 rule "POTN_SFPP_LOS"
 salience 500
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1116,6 +1172,7 @@ end
 rule "POTN_STM_FAIL"
 salience 500
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1135,6 +1192,7 @@ end
 rule "POTN_STM_UNIT_IPC_FAIL"
 salience 500
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1154,6 +1212,7 @@ end
 rule "POTN_STM_UNI_SF_SI"
 salience 500
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1173,6 +1232,7 @@ end
 rule "POTN_STM_LOSS_OF_CLK"
 salience 500
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1192,6 +1252,7 @@ end
 rule "POTN_SYNC_FAIL"
 salience 500
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1212,6 +1273,7 @@ end
 rule "POTN_SYNC_LOS"
 salience 500
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1231,6 +1293,7 @@ end
 rule "POTN_TE_LINK_FAIL"
 salience 500
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1250,6 +1313,7 @@ end
 rule "POTN_VC3_SIGNAL_FAIL"
 salience 500
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1269,6 +1333,7 @@ end
 rule "POTN_VC4_SIGNAL_FAIL"
 salience 500
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1288,6 +1353,7 @@ end
 rule "POTN_WDM_NNI_SF_SI"
 salience 500
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1307,6 +1373,7 @@ end
 rule "POTN_WDM_CLK_FAIL"
 salience 500
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1326,6 +1393,7 @@ end
 rule "POTN_APS_ERR"
 salience 400
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1345,6 +1413,7 @@ end
 rule "POTN_BUS_ERR"
 salience 400
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1364,6 +1433,7 @@ end
 rule "POTN_DATA_ERR"
 salience 400
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1383,6 +1453,7 @@ end
 rule "POTN_DCN_ERR"
 salience 400
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1402,6 +1473,7 @@ end
 rule "POTN_ETH_ERR"
 salience 400
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1421,6 +1493,7 @@ end
 rule "POTN_ETH_UNIT_ERR"
 salience 400
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1440,6 +1513,7 @@ end
 rule "POTN_LOG_ERR"
 salience 400
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1459,6 +1533,7 @@ end
 rule "POTN_OCH_ERR"
 salience 400
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1478,6 +1553,7 @@ end
 rule "POTN_ODU_ERR"
 salience 400
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1497,6 +1573,7 @@ end
 rule "POTN_ODU_MSI_CONF_MISMATCH"
 salience 400
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1516,6 +1593,7 @@ end
 rule "POTN_OPTIC_TEMP_HIGH"
 salience 400
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1535,6 +1613,7 @@ end
 rule "POTN_OSRP_ERR"
 salience 400
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1554,6 +1633,7 @@ end
 rule "POTN_OTN_OPTIC_CONF_MISMATCH"
 salience 400
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1573,6 +1653,7 @@ end
 rule "POTN_OTN_UNIT_ERR"
 salience 400
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1592,6 +1673,7 @@ end
 rule "POTN_OTN_UNIT_TEMP_HIGH"
 salience 400
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1611,6 +1693,7 @@ end
 rule "POTN_OTU_ERR"
 salience 400
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1630,6 +1713,7 @@ end
 rule "POTN_PASSWORD_ERR"
 salience 400
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1649,6 +1733,7 @@ end
 rule "POTN_CLK_ERR"
 salience 400
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1668,6 +1753,7 @@ end
 rule "POTN_SECURITY_ERR"
 salience 400
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1687,6 +1773,7 @@ end
 rule "POTN_SERVICE_ERR"
 salience 400
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1706,6 +1793,7 @@ end
 rule "POTN_STM_CONF_MISMATCH"
 salience 400
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1725,6 +1813,7 @@ end
 rule "POTN_STM_ERR"
 salience 400
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1744,6 +1833,7 @@ end
 rule "POTN_STM_MS_ERR"
 salience 400
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1763,6 +1853,7 @@ end
 rule "POTN_STM_OPTIC_CONF_MISMATCH"
 salience 400
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1782,6 +1873,7 @@ end
 rule "POTN_STM_UNIT_ERR"
 salience 400
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1801,6 +1893,7 @@ end
 rule "POTN_STM_UNIT_TEMP_HIGH"
 salience 400
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1820,6 +1913,7 @@ end
 rule "POTN_SYNC_ERR"
 salience 400
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1839,6 +1933,7 @@ end
 rule "POTN_TE_LINK_ERR"
 salience 400
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1858,6 +1953,7 @@ end
 rule "POTN_TUNNEL_ERR"
 salience 400
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1877,6 +1973,7 @@ end
 rule "POTN_WDM_OPTIC_CONF_MISMATCH"
 salience 400
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1896,6 +1993,7 @@ end
 rule "POTN_WDM_UNIT_TEMP_HIGH"
 salience 400
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1915,6 +2013,7 @@ end
 rule "POTN_ETH_RX_PWR_HIGH"
 salience 300
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1934,6 +2033,7 @@ end
 rule "POTN_ETH_RX_PWR_LOW"
 salience 300
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1953,6 +2053,7 @@ end
 rule "POTN_OCH_RX_PWR_HIGH"
 salience 300
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1972,6 +2073,7 @@ end
 rule "POTN_OCH_RX_PWR_LOW"
 salience 300
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -1991,6 +2093,7 @@ end
 rule "POTN_ODU_RX_PWR_HIGH"
 salience 300
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2010,6 +2113,7 @@ end
 rule "POTN_OTN_RX_PWR_LOW"
 salience 300
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2029,6 +2133,7 @@ end
 rule "POTN_STM_RX_PWR_HIGH"
 salience 300
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2048,6 +2153,7 @@ end
 rule "POTN_STM_RX_PWR_LOW"
 salience 300
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2067,6 +2173,7 @@ end
 rule "POTN_ODU_RX_PWR_LOW"
 salience 300
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2086,6 +2193,7 @@ end
 rule "POTN_OTN_SD"
 salience 250
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2105,6 +2213,7 @@ end
 rule "POTN_STM_MS_SD"
 salience 250
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2124,6 +2233,7 @@ end
 rule "POTN_STM_SD"
 salience 250
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2144,6 +2254,7 @@ end
 rule "POTN_AU_AIS"
 salience 200
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2163,6 +2274,7 @@ end
 rule "POTN_AU_LOP"
 salience 200
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2182,6 +2294,7 @@ end
 rule "POTN_AU_RDI"
 salience 200
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2201,6 +2314,7 @@ end
 rule "POTN_ETH_FFI"
 salience 200
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2220,6 +2334,7 @@ end
 rule "POTN_ETH_LFI"
 salience 200
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2239,6 +2354,7 @@ end
 rule "POTN_ETH_LOF"
 salience 200
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2258,6 +2374,7 @@ end
 rule "POTN_ETH_RDI"
 salience 200
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2277,6 +2394,7 @@ end
 rule "POTN_GFP_LOF"
 salience 200
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2296,6 +2414,7 @@ end
 rule "POTN_LINK_BDI"
 salience 200
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2315,6 +2434,7 @@ end
 rule "POTN_LINK_LOF"
 salience 200
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2334,6 +2454,7 @@ end
 rule "POTN_LINK_RDI"
 salience 200
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2353,6 +2474,7 @@ end
 rule "POTN_OCH_LOF"
 salience 200
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2372,6 +2494,7 @@ end
 rule "POTN_ODU_AIS"
 salience 200
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2391,6 +2514,7 @@ end
 rule "POTN_ODU_BDI"
 salience 200
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2410,6 +2534,7 @@ end
 rule "POTN_ODU_CSF"
 salience 200
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2429,6 +2554,7 @@ end
 rule "POTN_ODU_LABEL_MISMATCH"
 salience 200
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2448,6 +2574,7 @@ end
 rule "POTN_ODU_LOCAL_FAULT"
 salience 200
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2467,6 +2594,7 @@ end
 rule "POTN_ODU_LOCKED"
 salience 200
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2486,6 +2614,7 @@ end
 rule "POTN_ODU_LOF"
 salience 200
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2505,6 +2634,7 @@ end
 rule "POTN_ODU_RDI"
 salience 200
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2524,6 +2654,7 @@ end
 rule "POTN_OTN_LFI"
 salience 200
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2543,6 +2674,7 @@ end
 rule "POTN_OTN_LOF"
 salience 200
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2562,6 +2694,7 @@ end
 rule "POTN_OTU_LOS"
 salience 200
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2581,6 +2714,7 @@ end
 rule "POTN_OTU_LOF"
 salience 200
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2600,6 +2734,7 @@ end
 rule "POTN_ADMIN_LOCKED"
 salience 200
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2619,6 +2754,7 @@ end
 rule "POTN_APS_ADMIN_LOCKED"
 salience 200
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2638,6 +2774,7 @@ end
 rule "POTN_STM_LFI"
 salience 200
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2657,6 +2794,7 @@ end
 rule "POTN_STM_LOF"
 salience 200
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2676,6 +2814,7 @@ end
 rule "POTN_STM_MS_AIS"
 salience 200
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2695,6 +2834,7 @@ end
 rule "POTN_STM_RDI"
 salience 200
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2714,6 +2854,7 @@ end
 rule "POTN_TE_LINK_TCA"
 salience 200
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2733,6 +2874,7 @@ end
 rule "POTN_PW_LOC"
 salience 200
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2752,6 +2894,7 @@ end
 rule "POTN_TUNNEL_LOC"
 salience 200
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2771,6 +2914,7 @@ end
 rule "POTN_VC3_AIS"
 salience 200
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2790,6 +2934,7 @@ end
 rule "POTN_VC3_BER_TCA"
 salience 200
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2809,6 +2954,7 @@ end
 rule "POTN_VC3_LABEL_MISMATCH"
 salience 200
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2828,6 +2974,7 @@ end
 rule "POTN_VC3_LO_BER_TCA"
 salience 200
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2847,6 +2994,7 @@ end
 rule "POTN_VC3_LO_LABEL_MISMATCH"
 salience 200
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2866,6 +3014,7 @@ end
 rule "POTN_VC3_LO_NO_PAYLOAD"
 salience 200
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2885,6 +3034,7 @@ end
 rule "POTN_VC3_LO_RDI"
 salience 200
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2904,6 +3054,7 @@ end
 rule "POTN_VC3_LOP"
 salience 200
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2923,6 +3074,7 @@ end
 rule "POTN_VC3_RDI"
 salience 200
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2942,6 +3094,7 @@ end
 rule "POTN_VC3_SD"
 salience 200
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2961,6 +3114,7 @@ end
 rule "POTN_VC3_TU_AIS"
 salience 200
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2980,6 +3134,7 @@ end
 rule "POTN_VC4_AIS"
 salience 200
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -2999,6 +3154,7 @@ end
 rule "POTN_VC4_LABEL_MISMATCH"
 salience 200
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -3018,6 +3174,7 @@ end
 rule "POTN_VC4_LOP"
 salience 200
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -3036,6 +3193,7 @@ end
 rule "POTN_VC4_RDI"
 salience 200
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -3055,6 +3213,7 @@ end
 rule "POTN_VC4_SD"
 salience 200
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -3074,6 +3233,7 @@ end
 rule "POTN_APS_EVENT"
 salience 100
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -3093,6 +3253,7 @@ end
 rule "POTN_ETH_LOOPBACK"
 salience 100
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -3112,6 +3273,7 @@ end
 rule "POTN_LAG_EVENT"
 salience 100
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -3131,6 +3293,7 @@ end
 rule "POTN_MSP_APS_EVENT"
 salience 100
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -3150,6 +3313,7 @@ end
 rule "POTN_ODU_EVENT"
 salience 100
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -3169,6 +3333,7 @@ end
 rule "POTN_ODU_LOOPBACK"
 salience 100
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -3188,6 +3353,7 @@ end
 rule "POTN_ODU_SNCP_EVENT"
 salience 100
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -3207,6 +3373,7 @@ end
 rule "POTN_OTN_EVENT"
 salience 100
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -3226,6 +3393,7 @@ end
 rule "POTN_OTN_LOOPBACK"
 salience 100
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -3245,6 +3413,7 @@ end
 rule "POTN_ADMIN_LOGIN"
 salience 100
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -3264,6 +3433,7 @@ end
 rule "POTN_CLK_EVENT"
 salience 100
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -3283,6 +3453,7 @@ end
 rule "POTN_SNCP_APS_EVENT"
 salience 100
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -3302,6 +3473,7 @@ end
 rule "POTN_STM_LOOPBACK"
 salience 100
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -3321,6 +3493,7 @@ end
 rule "POTN_SYNC_EVENT"
 salience 100
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
@@ -3340,6 +3513,7 @@ end
 rule "POTN_TEST_EVENT"
 salience 100
 lock-on-active
+no-loop
     when
         //conditions
         flagTF : Flag(flag == false)

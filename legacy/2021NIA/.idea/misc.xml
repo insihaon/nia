@@ -10,7 +10,6 @@
         <option value="$PROJECT_DIR$/NiaAiResultLinkageApplication/pom.xml" />
         <option value="$PROJECT_DIR$/NiaAlarmSimulatorApplication/pom.xml" />
         <option value="$PROJECT_DIR$/NiaClusterApplication/pom.xml" />
-        <option value="$PROJECT_DIR$/NiaEngineApplication/pom.xml" />
         <option value="$PROJECT_DIR$/NiaLinkageApplication/pom.xml" />
         <option value="$PROJECT_DIR$/NiaPerformanceApplication/pom.xml" />
         <option value="$PROJECT_DIR$/NiaPreprocessorApplication/pom.xml" />
@@ -22,8 +21,9 @@
         <option value="$PROJECT_DIR$/NiaIpSflowLinkageApplication/pom.xml" />
         <option value="$PROJECT_DIR$/NiaIpPerfLinkageApplication/pom.xml" />
         <option value="$PROJECT_DIR$/NiaRcaToAiDataLinkageApplication/pom.xml" />
+        <option value="$PROJECT_DIR$/NiaEngineApplication/pom.xml" />
       </list>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK" />
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8.0_131" project-jdk-type="JavaSDK" />
 </project>

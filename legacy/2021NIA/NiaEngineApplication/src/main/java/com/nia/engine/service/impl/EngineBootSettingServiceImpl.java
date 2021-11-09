@@ -53,6 +53,7 @@ public class EngineBootSettingServiceImpl implements EngineBootSettingService {
         dataShareBean.putData(RcaCodeInfo.DATA_SHARE_NAME_TICKET_LIST,new ArrayList<RCATicket>());
         dataShareBean.putData(RcaCodeInfo.DATA_SHARE_NAME_CLEAR_AL_LIST,new ConcurrentLinkedQueue<String>());
         dataShareBean.putData(RcaCodeInfo.DATA_SHARE_NAME_CLEAR_TICKET_LIST,new ConcurrentLinkedQueue<RCATicket>());
+        dataShareBean.putData(RcaCodeInfo.DATA_SHARE_NAME_IS_START, false);
         new Thread(ticketClearServiceThreadImpl).start();
         setTicket();
     }
@@ -67,7 +68,12 @@ public class EngineBootSettingServiceImpl implements EngineBootSettingService {
         HashMap<String, String> parameterMap;
         String loadDay;
         List<Integer> tcSeqList;
+        boolean isStart;
         try {
+            isStart = false;
+            LOGGER.info("==========>[EngineBootSettingServiceImpl] setTicket isStart : " + isStart + "<==============");
+            dataShareBean.putData(RcaCodeInfo.DATA_SHARE_NAME_IS_START, isStart);
+
             if("real".equals(profiles)) {
                 parameterMap = new HashMap<String, String>();
                 parameterMap.put("factor", "ticket_load_day");
@@ -80,9 +86,11 @@ public class EngineBootSettingServiceImpl implements EngineBootSettingService {
                     for (RCATicket ticket : ticketList) {
 
                         ticketAlList = ticketService.selectRcaTicketAlList(ticket.getTicketId());
+
                         if (ticketAlList != null && ticketAlList.size() > 0) {
-                            ticket.setTicketAlList(new ArrayList<RCATicketAl>());
-                            tcSeqList = new ArrayList<Integer>();
+
+                            ticket.setTicketAlList(ticketAlList);
+
                             for (RCATicketAl ticketAl : ticketAlList) {
                                 if (ticketAl.getRootCauseAlarmNoA() != null) {
                                     ticketAl.setRootCauseAlarmInfoA(alarmService.selectAlarmInfo(ticketAl.getRootCauseAlarmNoA()));
@@ -92,9 +100,9 @@ public class EngineBootSettingServiceImpl implements EngineBootSettingService {
                                     ticketAl.setRootCauseAlarmInfoZ(alarmService.selectAlarmInfo(ticketAl.getRootCauseAlarmNoZ()));
                                 }
 
-                                if (ticket.getTicketId().equals(ticketAl.getTicketId())) {
-                                    ticket.getTicketAlList().add(ticketAl);
-                                }
+//                                if (ticket.getTicketId().equals(ticketAl.getTicketId())) {
+//                                    ticket.getTicketAlList().add(ticketAl);
+//                                }
                             }
                         }
                         LOGGER.info("######################## [EngineBootSettingService] ticketList add(" + ticket.getTicketId() + ") ########################");
@@ -105,6 +113,10 @@ public class EngineBootSettingServiceImpl implements EngineBootSettingService {
                 LOGGER.info("######################## [EngineBootSettingService] setTicket end ticket size(" + ((ArrayList<RCATicket>) dataShareBean.getData(RcaCodeInfo.DATA_SHARE_NAME_TICKET_LIST)).size() + ") ########################");
                 LOGGER.info("###############################################################################################################");
             }
+
+            isStart = true;
+            LOGGER.info("==========>[EngineBootSettingServiceImpl] setTicket isStart : " + isStart + "<==============");
+            dataShareBean.putData(RcaCodeInfo.DATA_SHARE_NAME_IS_START, isStart);
         }catch (Exception e){
             LOGGER.error(">>>>>>>>>>[EngineBootSettingService] ticketSetting() error : " + ExceptionUtils.getStackTrace(e) +" <<<<<<<<<<<<<<<<<");
         }

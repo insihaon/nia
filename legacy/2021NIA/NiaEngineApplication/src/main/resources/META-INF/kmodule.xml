@@ -10,4 +10,9 @@
     <kbase name="roadm" packages="rules.roadm.single">
         <ksession name="ksession-roadm"/>
     </kbase>
+
+    <!--  SWITCH  -->
+    <kbase name="switchs" packages="rules.switchs.single">
+        <ksession name="ksession-switchs"/>
+    </kbase>
 </kmodule>
