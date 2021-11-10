@@ -7,19 +7,18 @@
         SELECT nextval('nia.seq_ping_alarm_no') ::VARCHAR AS ALARM_NO
     </select>
 
-    <select id="selectPingAlarmCheck" resultType="com.nia.ping.alarm.preprocessor.vo.alarm.PingAlarmVo" parameterType="java.util.HashMap">
-        SELECT ALARM_NO, ALARMTIME, CLEARTIME, ALARMLVL, HOST
-             , URL, PACKETS_RECEIVED, PERCENT_PACKET_LOSS, RESULT_CODE
-             , PACKETS_TRANSMITTED
-         FROM NIA.TB_PING_ALARM_MST
-        WHERE URL = #{url}
+    <select id="selectPingAlarmCheck" resultType="com.nia.ping.alarm.preprocessor.vo.alarm.BasicAlarmVo" parameterType="java.util.HashMap">
+        SELECT ALARMNO, SYSNAME, EQUIPTYPE, ALARMTIME, RECEIVETIME, ALARMLOC, ALARMMSG, ALARMLEVEL, CLEARTIME
+          FROM RCA.TB_ALARM_CUR_MST
+        WHERE ALARMLOC = #{url}
           AND CLEARTIME IS NULL
-        ORDER BY ALARMLVL DESC
+        ORDER BY ALARMLEVEL DESC
         LIMIT 1
     </select>
 
     <select id="selectPingPolicy" resultType="com.nia.ping.alarm.preprocessor.vo.alarm.PingPolicyVo">
-        SELECT POLICY_ID, WR_FAULT_AVG, MI_FAULT_AVG, MJ_FAULT_AVG, CR_FAULT_AVG FROM PUBLIC.TB_PING_POLICY
+        SELECT POLICY_ID, WR_FAULT_AVG, MI_FAULT_AVG, MJ_FAULT_AVG, CR_FAULT_AVG
+          FROM RESOURCE.TB_PING_POLICY
     </select>
 
     <update id="updatePingAlarmCnt" parameterType="java.util.HashMap">

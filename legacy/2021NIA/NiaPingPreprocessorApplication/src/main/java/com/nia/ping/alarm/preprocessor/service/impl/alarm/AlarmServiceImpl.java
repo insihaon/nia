@@ -55,6 +55,7 @@ public class AlarmServiceImpl implements AlarmService {
 		PingAlarmVo pingAlarmVo = pPingAlarmVo;
 		PingAlarmVo checkPingAlarmVo;
 		BasicAlarmVo basicAlarmVo;
+		BasicAlarmVo pingAlarmCheck;
 		NodeInfoVo nodeInfoVo;
 
 		try {
@@ -66,7 +67,7 @@ public class AlarmServiceImpl implements AlarmService {
 			basicAlarmVo.setReceivetime(pingAlarmVo.getAlarmtime());
 			basicAlarmVo.setIpAddr(pingAlarmVo.getUrl());
 			basicAlarmVo.setAlarmloc("ipAddr="+pingAlarmVo.getUrl());
-			basicAlarmVo.setAlarmmsg("PING 통신 장애 ("+pingAlarmVo.getUrl()+")"+",received="+pingAlarmVo.getPacketsReceived()+",packet_loss="+pingAlarmVo.getPercentPacketLoss()+",transmitted="+pingAlarmVo.getPacketsTransmitted());
+			basicAlarmVo.setAlarmmsg("PING_UNREACHABLE");
 			basicAlarmVo.setAlarmCode("port down");
 
 			hashMap = new HashMap<String, String>();
@@ -91,47 +92,49 @@ public class AlarmServiceImpl implements AlarmService {
 				basicAlarmVo.setAlarmlevel(NiaCodeInfo.ALARM_LEVEL_CLEAR);
 			}
 
-			LOGGER.info(">>>>>>>>>>[AlarmService] pingAlarmCheck alarmLvl: " + pPingAlarmVo.getUrl() + "("+pPingAlarmVo.getAlarmlvl()+") <<<<<<<<<<<<<<<<<");
+			LOGGER.info(">>>>>>>>>>[AlarmService] pingAlarmCheck alarmLvl: " + basicAlarmVo.getAlarmloc() + "("+basicAlarmVo.getAlarmlevel()+") <<<<<<<<<<<<<<<<<");
 
 			hashMap = new HashMap<String, String>();
-			hashMap.put("url", pingAlarmVo.getUrl());
-			checkPingAlarmVo = alarmMapper.selectPingAlarmCheck(hashMap);
+			hashMap.put("url", basicAlarmVo.getAlarmloc());
+			pingAlarmCheck = alarmMapper.selectPingAlarmCheck(hashMap);
 
-			if(checkPingAlarmVo == null){
-				switch (pingAlarmVo.getAlarmlvl()){
+			if(pingAlarmCheck == null){
+				switch (basicAlarmVo.getAlarmlevel()){
 					case NiaCodeInfo.ALARM_LEVEL_CRITICAL:
 					case NiaCodeInfo.ALARM_LEVEL_MAJOR:
 					case NiaCodeInfo.ALARM_LEVEL_MINOR:
 					case NiaCodeInfo.ALARM_LEVEL_WARNING:
-						LOGGER.info(">>>>>>>>>>[AlarmService] pingAlarmCheck insertPingAlarm("+pPingAlarmVo.getAlarmno()+") : " + pPingAlarmVo.getUrl() + "("+pPingAlarmVo.getAlarmlvl()+") <<<<<<<<<<<<<<<<<");
+						LOGGER.info(">>>>>>>>>>[AlarmService] pingAlarmCheck insertPingAlarm("+basicAlarmVo.getAlarmno()+") : " + basicAlarmVo.getAlarmloc() + "("+basicAlarmVo.getAlarmlevel()+") <<<<<<<<<<<<<<<<<");
 //						alarmMapper.insertPingAlarm(pingAlarmVo);
 						clusterPrdAmqp.sendMessageCmd(basicAlarmVo);
 						break;
 				}
 			}else{
-				switch (pingAlarmVo.getAlarmlvl()){
+				switch (basicAlarmVo.getAlarmlevel()){
 					case NiaCodeInfo.ALARM_LEVEL_CRITICAL:
 					case NiaCodeInfo.ALARM_LEVEL_MAJOR:
 					case NiaCodeInfo.ALARM_LEVEL_MINOR:
 					case NiaCodeInfo.ALARM_LEVEL_WARNING:
-						if(!checkPingAlarmVo.getAlarmlvl().equals(pingAlarmVo.getAlarmlvl())){
-							if(Integer.parseInt(checkPingAlarmVo.getAlarmlvl()) < Integer.parseInt(pingAlarmVo.getAlarmlvl())){
-								LOGGER.info(">>>>>>>>>>[AlarmService] pingAlarmCheck insertPingAlarm("+pPingAlarmVo.getAlarmno()+") : " + pPingAlarmVo.getUrl() + "("+pPingAlarmVo.getAlarmlvl()+") <<<<<<<<<<<<<<<<<");
+						if(!pingAlarmCheck.getAlarmlevel().equals(basicAlarmVo.getAlarmlevel())){
+							if(Integer.parseInt(pingAlarmCheck.getAlarmlevel()) < Integer.parseInt(basicAlarmVo.getAlarmlevel())){
+								LOGGER.info(">>>>>>>>>>[AlarmService] pingAlarmCheck insertPingAlarm("+basicAlarmVo.getAlarmno()+") : " + basicAlarmVo.getAlarmloc() + "("+basicAlarmVo.getAlarmlevel()+") <<<<<<<<<<<<<<<<<");
 //								alarmMapper.insertPingAlarm(pingAlarmVo);
 								clusterPrdAmqp.sendMessageCmd(basicAlarmVo);
 							}
 						}
 						break;
 					case NiaCodeInfo.ALARM_LEVEL_CLEAR:
-						LOGGER.info(">>>>>>>>>>[AlarmService] pingAlarmCheck updatePingAlarmClear() url : " + pPingAlarmVo.getUrl() + "("+pPingAlarmVo.getAlarmlvl()+") <<<<<<<<<<<<<<<<<");
+						LOGGER.info(">>>>>>>>>>[AlarmService] pingAlarmCheck updatePingAlarmClear() url : " + basicAlarmVo.getAlarmloc() + "("+basicAlarmVo.getAlarmlevel()+") <<<<<<<<<<<<<<<<<");
 						alarmMapper.fcSetClearAlPool(basicAlarmVo);
 						engineClearPrdAmqp.sendMessageCmd(basicAlarmVo.getAlarmno());
+						break;
+					default:
 						break;
 				}
 			}
 			alarmMapper.insertPingCollect(pingAlarmVo);
 		}catch (Exception e){
-
+			LOGGER.error("=====> [AlarmService] pingAlarmCheck error "+ ExceptionUtils.getStackTrace(e)+ "<=====");
 		}
 	}
 
@@ -190,7 +193,7 @@ public class AlarmServiceImpl implements AlarmService {
 
 			pingAlarmVo.setAlarmtime(UtlDateHelper.stringToTimestamp(currentTime));
 		}catch (Exception e){
-
+			LOGGER.error("=====> [AlarmService] convertAlarmObj error "+ ExceptionUtils.getStackTrace(e)+ "<=====");
 		}
 		return pingAlarmVo;
 	}
