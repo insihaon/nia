@@ -27,6 +27,7 @@ public class TelnetMmc {
     private int port;   //        접속 서버의 포트 번호
     private Boolean isStart = false;
     private StreamConnectorMmc socket_to_stdout = null;
+    private Thread output_thread = null;
 
     @Autowired
     private DataShareBean dataShareBean;
@@ -64,7 +65,7 @@ public class TelnetMmc {
     }
 
     public void main_proc() {
-        Thread output_thread = null;
+        output_thread = null;
 
         try {
             socket_to_stdout = streamConnectorMmcObjectFactory.getObject();
@@ -137,9 +138,15 @@ public class TelnetMmc {
         try {
             if(serverSocket.isConnected()){
                 socket_to_stdout.setStart(false);
+                socket_to_stdout = null;
                 serverSocket.close();
+                serverSocket = null;
+                output_thread.interrupt();
             }else{
                 socket_to_stdout.setStart(false);
+                socket_to_stdout = null;
+                serverSocket = null;
+                output_thread.interrupt();
             }
         }catch (Exception e){
             LOGGER.error("=====> [TelnetMmc] closeConnection error : "+ExceptionUtils.getStackTrace(e)+" <=====");
