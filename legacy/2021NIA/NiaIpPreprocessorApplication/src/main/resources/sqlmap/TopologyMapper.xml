@@ -12,4 +12,15 @@
           FROM RESOURCE.TB_BACKBONE_LINK
          WHERE (SRC_NODE_NUM = #{nodeNum} AND SRC_IF_NUM = #{ifNum}) OR (DEST_NODE_NUM = #{nodeNum} AND DEST_IF_NUM = #{ifNum})
     </select>
+
+    <select id="selectUniTopologyList" resultType="com.nia.alarm.ip.preprocessor.vo.topology.UniTopologyVo" parameterType="hashmap">
+        SELECT U.NREN_ID AS LINK_ID, N.NODE_NUM, U.NODE_ID, U.NREN_NAME, U.IF_ID, P.IF_NUM
+          FROM RESOURCE.TB_USER_ORGAN U
+          LEFT OUTER JOIN RESOURCE.TB_NODE_MST N
+            ON U.NODE_ID = N.NODE_ID
+          LEFT OUTER JOIN RESOURCE.TB_PORT_MST P
+            ON U.NODE_ID = P.NODE_ID
+           AND U.IF_ID = P.IF_ID
+        WHERE N.NODE_NUM = #{nodeNum} AND P.IF_NUM = #{ifNum}
+    </select>
 </mapper>

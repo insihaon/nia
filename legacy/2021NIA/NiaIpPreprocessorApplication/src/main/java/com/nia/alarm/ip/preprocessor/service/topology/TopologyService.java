@@ -13,4 +13,5 @@ public interface TopologyService {
 
 
     TopologyTmpVo selectTopologyList(HashMap<String, String> map);
+    UniTopologyVo selectUniTopologyList(HashMap<String, String> map);
 }

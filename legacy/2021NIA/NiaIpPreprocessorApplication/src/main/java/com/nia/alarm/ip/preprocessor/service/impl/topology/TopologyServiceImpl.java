@@ -94,4 +94,9 @@ public class TopologyServiceImpl implements TopologyService {
         }
         return topologyTmpObject;
     }
+
+    @Override
+    public UniTopologyVo selectUniTopologyList(HashMap<String, String> map) {
+        return topologyMapper.selectUniTopologyList(map);
+    }
 }

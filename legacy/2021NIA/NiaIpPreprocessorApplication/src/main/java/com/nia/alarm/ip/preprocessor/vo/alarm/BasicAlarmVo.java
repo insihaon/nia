@@ -41,7 +41,7 @@ public class BasicAlarmVo implements Serializable {
 	private String port;
 	private String slot;
 	private String ptpName;
-	private TopologyObject topologyObject;
+	private TopologyObject topology;
 	private TmpTopologyVo tmpTopologyVo;
 
 }
