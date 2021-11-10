@@ -11,7 +11,7 @@ import java.util.HashMap;
 @Mapper
 public interface AlarmMapper{
     String selectPingAlarmKey();
-    PingAlarmVo selectPingAlarmCheck(HashMap<String, String> hashMap);
+    BasicAlarmVo selectPingAlarmCheck(HashMap<String, String> hashMap);
     PingPolicyVo selectPingPolicy();
     Boolean fcSetClearAlPool(BasicAlarmVo basicAlarmVo);
     void insertPingAlarm(PingAlarmVo pingAlarmVo);
