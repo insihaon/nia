@@ -14,7 +14,7 @@
 	<artifactId>com.nia.alarm.ip.preprocessor</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <name>niaAlarmPreprocessorApplications</name>
+    <name>niaIpAlarmPreprocessorApplications</name>
     <description>Demo project for Spring Boot</description>
 
 

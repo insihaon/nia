@@ -9,4 +9,5 @@ import java.util.HashMap;
 public interface TopologyMapper {
 
     TopologyDataVo selectTopologyList(HashMap<String, String> map);
+    UniTopologyVo selectUniTopologyList(HashMap<String, String> map);
 }

@@ -75,10 +75,10 @@ public class IpPasingServiceImpl implements CommPasingService {
             strLog.append("ifId : " + this.basicAlarmVo.getIfId()+"\n");
             strLog.append("ptpName : " + this.basicAlarmVo.getPtpName()+"\n");
 
-            if(this.basicAlarmVo.getTopologyObject() != null){
-                strLog.append("linkId : " + this.basicAlarmVo.getTopologyObject().getLinkId()+"\n");
-                strLog.append("oppSysname : " + this.basicAlarmVo.getTopologyObject().getOppSysname()+"\n");
-                strLog.append("oppIfId : " + this.basicAlarmVo.getTopologyObject().getOppIfId()+"\n");
+            if(this.basicAlarmVo.getTopology() != null){
+                strLog.append("linkId : " + this.basicAlarmVo.getTopology().getLinkId()+"\n");
+                strLog.append("oppSysname : " + this.basicAlarmVo.getTopology().getOppSysname()+"\n");
+                strLog.append("oppIfId : " + this.basicAlarmVo.getTopology().getOppIfId()+"\n");
             }
             strLog.append("---------------------------------------------------------------");
             LOGGER.info(strLog.toString());
@@ -95,6 +95,7 @@ public class IpPasingServiceImpl implements CommPasingService {
 
         TopologyObject topologyObject = null;
         TopologyTmpVo topologyTmpObject = null;
+        UniTopologyVo uniTopologyVo;
 
         try{
             parameterMap = new HashMap<String, String>();
@@ -115,16 +116,30 @@ public class IpPasingServiceImpl implements CommPasingService {
 
                 isTopology = true;
             }
+//            else{
+//                uniTopologyVo = topologyService.selectUniTopologyList(parameterMap);
+//                if(uniTopologyVo != null){
+//                    topologyObject = topologyObjectFactory.getObject();
+//                    topologyObject.setLinkId(uniTopologyVo.getLinkId());
+//                    topologyObject.setOppSysname(uniTopologyVo.getNrenName());
+//                    topologyObject.setOppNescode(uniTopologyVo.getNodeNum());
+//                    topologyObject.setOppPort(uniTopologyVo.getIfNum());
+//                    topologyObject.setOppIfId(uniTopologyVo.getIfId());
+//                    topologyObject.setOppIfNum(uniTopologyVo.getIfNum());
+//
+//                    isTopology = true;
+//                }
+//            }
 
             if(isTopology){
                 topologyObject.setAlarmno(basicAlarmVo.getAlarmno());
-                basicAlarmVo.setTopologyObject(topologyObject);
+                basicAlarmVo.setTopology(topologyObject);
                 this.basicAlarmVo = basicAlarmVo;
             }else{
                 topologyObject = topologyObjectFactory.getObject();
                 topologyObject.setNwType(NiaCodeInfo.TOPOLOGY_GB_UNKNOWN);
                 topologyObject.setAlarmno(basicAlarmVo.getAlarmno());
-                basicAlarmVo.setTopologyObject(topologyObject);
+                basicAlarmVo.setTopology(topologyObject);
                 this.basicAlarmVo = basicAlarmVo;
             }
         }catch (Exception e) {
