@@ -191,7 +191,7 @@ public class AlarmServiceImpl implements AlarmService {
 			currentTime = yyyyMMddHH+mm+":00";
 
 
-			pingAlarmVo.setAlarmtime(UtlDateHelper.stringToTimestamp(currentTime));
+			pingAlarmVo.setAlarmtime(UtlDateHelper.longToTimestamp(pingRowDataVo.getCollectDatetime()*1000));
 		}catch (Exception e){
 			LOGGER.error("=====> [AlarmService] convertAlarmObj error "+ ExceptionUtils.getStackTrace(e)+ "<=====");
 		}

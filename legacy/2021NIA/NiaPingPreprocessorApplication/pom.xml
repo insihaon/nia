@@ -12,7 +12,7 @@
     </parent>
 
     <groupId>niaPingPreprocessorApplication</groupId>
-    <artifactId>com.nia.alarm.preprocessor</artifactId>
+    <artifactId>com.nia.ping.alarm.preprocessor</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>niaPingPreprocessorApplication</name>
