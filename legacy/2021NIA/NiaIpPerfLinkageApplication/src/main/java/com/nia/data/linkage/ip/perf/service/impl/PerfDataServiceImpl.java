@@ -2,8 +2,10 @@ package com.nia.data.linkage.ip.perf.service.impl;
 
 import com.google.common.collect.Lists;
 import com.nia.data.linkage.ip.perf.mapper.linkage.LinkagePerfMapper;
+import com.nia.data.linkage.ip.perf.mapper.nia.NiaEquipMapper;
 import com.nia.data.linkage.ip.perf.mapper.nia.NiaPerfMapper;
 import com.nia.data.linkage.ip.perf.service.PerfDataService;
+import com.nia.data.linkage.ip.perf.vo.equip.NodeMstVo;
 import com.nia.data.linkage.ip.perf.vo.perf.PerfVo;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -29,6 +31,9 @@ public class PerfDataServiceImpl implements PerfDataService {
     @Autowired
     private NiaPerfMapper niaAlarmMapper;
 
+    @Autowired
+    private NiaEquipMapper niaEquipMapper;
+
     @Override
     public void getPerfData() {
         LOGGER.info("==========>[PerfDataService] getPerfData <==============");
@@ -36,10 +41,11 @@ public class PerfDataServiceImpl implements PerfDataService {
         String inttimestamp = null;
 
         ArrayList<PerfVo> perfVoList;
+        ArrayList<PerfVo> insertPerfVoList;
+        ArrayList<NodeMstVo> nodeMstVoList;
         HashMap<String, Object> objectHashMap;
         HashMap<String, String> strHashMap;
         List<List<PerfVo>> listByGroup = null;
-
 
         try {
             inttimestamp = niaAlarmMapper.selectPerfYdKey("ipPerfKey");
@@ -50,12 +56,23 @@ public class PerfDataServiceImpl implements PerfDataService {
                 if(perfVoList != null && perfVoList.size() > 0) {
                     LOGGER.info("==========>[PerfDataService] getPerfData perfVoList("+perfVoList.size() +") <==============");
 
-                    if(perfVoList.size() < 50){
+                    nodeMstVoList = niaEquipMapper.selectNodeList();
+                    insertPerfVoList = new ArrayList<>();
+
+                    for(PerfVo perfVo : perfVoList){
+                        for(NodeMstVo nodeMstVo : nodeMstVoList){
+                            if(perfVo.getStrResID().equals(nodeMstVo.getNodeNum())){
+                                insertPerfVoList.add(perfVo);
+                            }
+                        }
+                    }
+
+                    if(insertPerfVoList.size() < 50){
                         objectHashMap = new HashMap<>();
-                        objectHashMap.put("perfVoList", perfVoList);
+                        objectHashMap.put("perfVoList", insertPerfVoList);
                         niaAlarmMapper.insertPerf(objectHashMap);
                     }else{
-                        listByGroup = Lists.partition(perfVoList, perfVoList.size() / 50);
+                        listByGroup = Lists.partition(insertPerfVoList, insertPerfVoList.size() / 50);
 
                         if(listByGroup.size() > 0 ) {
                             for (List<PerfVo> perfList : listByGroup) {
@@ -76,5 +93,4 @@ public class PerfDataServiceImpl implements PerfDataService {
             LOGGER.error("=====> [PerfDataService] getPerfData error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
         }
     }
-
 }
