@@ -22,4 +22,9 @@ public class PingAlarmVo implements Serializable {
     private int percentPacketLoss;
     private String resultCode;
     private String packetsTransmitted;
+
+    public void setAlarmtime(Timestamp alarmtime) {
+        this.alarmtime = alarmtime;
+    }
+
 }

@@ -12,6 +12,7 @@
              , (SELECT CODE_NM FROM RESOURCE.TB_CODE WHERE CATEGORY_CD = 'node_model' AND CODE_ID = MODEL_ID) AS MODEL_NM
          FROM RESOURCE.TB_NODE_MST
         WHERE IP_ADDR = #{ipAddr}
+        LIMIT 1
     </select>
 
     <select id="selectPortMst" resultType="com.nia.ping.alarm.preprocessor.vo.euqipment.PortMstVo" parameterType="java.util.HashMap">
