@@ -10,6 +10,13 @@ import java.io.Serializable;
 @Component()
 @Scope(value = "prototype")
 public class PerfVo implements Serializable {
+    private String strresname;
+    private String stripaddr;
+    private String strifname;
+    private String strifdesc;
+    private String strifspeed;
+    private String striftype;
+    private String strifoperstatus;
     private String strifid;
     private String strresid;
     private String strtypemin;

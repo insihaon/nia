@@ -10,6 +10,13 @@ import java.io.Serializable;
 @Component()
 @Scope(value = "prototype")
 public class IpAlarmVo implements Serializable {
+    private String strresname;
+    private String stripaddr;
+    private String strifname;
+    private String strifdesc;
+    private String strifspeed;
+    private String striftype;
+    private String strifoperstatus;
     private int interridx;
     private int module_srl;
     private String strresid;
