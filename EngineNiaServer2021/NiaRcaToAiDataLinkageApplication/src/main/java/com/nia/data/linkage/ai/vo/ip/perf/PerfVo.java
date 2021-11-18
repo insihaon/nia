@@ -17,10 +17,10 @@ public class PerfVo implements Serializable {
     private String strifspeed;
     private String striftype;
     private String strifoperstatus;
-    private String nrenId;
-    private String nrenName;
-    private String nodeId;
-    private String ifId;
+    private String nren_id;
+    private String nren_name;
+    private String node_id;
+    private String if_id;
     private String strifid;
     private String strresid;
     private String strtypemin;

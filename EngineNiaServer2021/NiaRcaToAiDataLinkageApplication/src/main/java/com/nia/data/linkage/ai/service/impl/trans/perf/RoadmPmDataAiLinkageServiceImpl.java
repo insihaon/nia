@@ -113,7 +113,11 @@ public class RoadmPmDataAiLinkageServiceImpl implements RoadmPmDataAiLinkageServ
         PrintWriter pw;
 
         try{
-            putFile = new File(ftpUpdatePath+eventType+"_"+(UtlDateHelper.stringToTimestamp2(ocrTime).getTime())+""+".json");
+            if(ocrTime.contains("+")){
+                ocrTime = ocrTime.substring(0,ocrTime.indexOf("+"));
+            }
+
+            putFile = new File(ftpUpdatePath+eventType+"_"+(UtlDateHelper.stringToTimestamp(ocrTime).getTime())+""+".json");
 
             if(!putFile.isFile()){
                 putFile.createNewFile();
