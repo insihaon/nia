@@ -3,7 +3,6 @@ package com.nia.ems.linkage.service.impl;
 import com.nia.ems.linkage.amqp.PerformanceToAiPrdAmqp;
 import com.nia.ems.linkage.common.LinkageCodeInfo;
 import com.nia.ems.linkage.common.UtlDateHelper;
-import com.nia.ems.linkage.config.TelnetMmc;
 import com.nia.ems.linkage.data.DataShareBean;
 import com.nia.ems.linkage.mapper.EquipmentMapper;
 import com.nia.ems.linkage.mapper.PerformaceMapper;
@@ -15,7 +14,6 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -66,6 +64,7 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
                                 break;
                             }
                         }
+                        Thread.sleep(1000);
                     }
                     if(roadmEmsTL1Client.isConnected()){
                         try {
@@ -99,6 +98,8 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
         RoadmEmsTL1Client roadmEmsTL1Client = null;
 
         try {
+            Thread.sleep(120*1000);
+
             equipSipcVoList = equipmentMapper.selectEquipSipcList();
 
             if(equipSipcVoList != null && equipSipcVoList.size() > 0){
@@ -259,7 +260,7 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
                             roadmEmsTL1Client.sendCommand(mmc, false);
 
                         }
-                        Thread.sleep(500);
+                        Thread.sleep(1000);
                     }
                     if(roadmEmsTL1Client.isConnected()){
                         roadmEmsTL1Client.logout();
@@ -308,7 +309,7 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
                             roadmEmsTL1Client.sendCommand(mmc, false);
 
                         }
-                        Thread.sleep(500);
+                        Thread.sleep(1000);
                     }
                     if(roadmEmsTL1Client.isConnected()){
                         roadmEmsTL1Client.logout();
@@ -360,8 +361,8 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
                                 mmc = "RTRV-OPC:"+equipSipc.getSysname()+"-"+equipSipc.getSysnameName()+"::123;\r";
                                 roadmEmsTL1Client.sendCommand(mmc, false);
                             }
-                            Thread.sleep(1000);
                         }
+                        Thread.sleep(1000);
                     }
                     if(roadmEmsTL1Client.isConnected()){
                         roadmEmsTL1Client.logout();

@@ -1,6 +1,6 @@
 package com.nia.ems.linkage.service.impl;
 
-import com.nia.ems.linkage.config.TelnetMmc;
+import com.nia.ems.linkage.client.TelnetMmc;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +29,7 @@ public class RoadmEmsTL1Client {
     @Value("${spring.ems.pw}")
     private String pw;
 
+    @Autowired
     private TelnetMmc telnet;
 
     @Autowired
