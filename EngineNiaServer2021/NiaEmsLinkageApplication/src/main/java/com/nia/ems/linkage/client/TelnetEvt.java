@@ -1,8 +1,7 @@
-package com.nia.ems.linkage.config;
+package com.nia.ems.linkage.client;
 
 import com.nia.ems.linkage.common.LinkageCodeInfo;
 import com.nia.ems.linkage.data.DataShareBean;
-import com.nia.ems.linkage.thread.impl.RoadmEmsThreadImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -11,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.net.Socket;
