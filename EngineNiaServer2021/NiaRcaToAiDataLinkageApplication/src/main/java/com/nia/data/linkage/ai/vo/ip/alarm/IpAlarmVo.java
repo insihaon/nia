@@ -17,6 +17,10 @@ public class IpAlarmVo implements Serializable {
     private String strifspeed;
     private String striftype;
     private String strifoperstatus;
+    private String nrenId;
+    private String nrenName;
+    private String nodeId;
+    private String ifId;
     private int interridx;
     private int module_srl;
     private String strresid;
