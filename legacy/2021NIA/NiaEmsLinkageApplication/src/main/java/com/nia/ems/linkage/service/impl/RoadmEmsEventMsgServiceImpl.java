@@ -1,7 +1,7 @@
 package com.nia.ems.linkage.service.impl;
 
 import com.nia.ems.linkage.common.LinkageCodeInfo;
-import com.nia.ems.linkage.config.TelnetEvt;
+import com.nia.ems.linkage.client.TelnetEvt;
 import com.nia.ems.linkage.data.DataShareBean;
 import com.nia.ems.linkage.service.RoadmEmsEventMsgService;
 import org.apache.commons.lang3.exception.ExceptionUtils;

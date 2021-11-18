@@ -1,14 +1,12 @@
 package com.nia.ems.linkage.thread.impl;
 
 import com.nia.ems.linkage.common.LinkageCodeInfo;
-import com.nia.ems.linkage.config.TelnetEvt;
+import com.nia.ems.linkage.client.TelnetEvt;
 import com.nia.ems.linkage.data.DataShareBean;
-import com.nia.ems.linkage.service.RoadmEmsMmcService;
 import com.nia.ems.linkage.thread.NiaEmsLinkageThread;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
