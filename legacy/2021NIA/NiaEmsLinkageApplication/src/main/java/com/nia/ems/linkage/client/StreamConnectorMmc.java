@@ -1,4 +1,4 @@
-package com.nia.ems.linkage.config;
+package com.nia.ems.linkage.client;
 
 import com.nia.ems.linkage.common.LinkageCodeInfo;
 import com.nia.ems.linkage.data.DataShareBean;
@@ -29,16 +29,18 @@ public class StreamConnectorMmc implements NiaEmsLinkageThread {
     private int port;
     private Boolean isStart = true;
     private Boolean isConnection = true;
+    private TelnetMmc telnetMmc;
 
     public StreamConnectorMmc(){
         super();
     }
 
-    public void setStream(InputStream in, OutputStream out, String host, int port){
+    public void setStream(TelnetMmc telnetMmc, InputStream in, OutputStream out, String host, int port){
         src = in;
         dist = out;
         this.host = host;
         this.port = port;
+        this.telnetMmc = telnetMmc;
     }
 
     //  처리 부분
@@ -82,6 +84,7 @@ public class StreamConnectorMmc implements NiaEmsLinkageThread {
                     }
                 }
                 LOGGER.info("=====> [StreamConnectorMmc] run() mmcMsg isSend : "+ isSend+ " isMmcResult : "+isMmcResult+"<=====");
+
                 if(isSend){
                     if(sbTemp != null && sbTemp.length() > 0){
                         ((Queue<String>)dataShareBean.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_MMC_MSG_QUE)).offer(sbTemp.toString());
@@ -93,7 +96,7 @@ public class StreamConnectorMmc implements NiaEmsLinkageThread {
                             isStart = false;
                         }
 
-                        sbTemp = new StringBuffer();
+                        sbTemp.delete(0,sbTemp.length());
                         isSend = false;
                         isMmcResult = false;
                     }
@@ -106,9 +109,11 @@ public class StreamConnectorMmc implements NiaEmsLinkageThread {
             }catch(SocketException e){
                 isStart = false;
                 isConnection = false;
+                telnetMmc.closeConnection();
                 LOGGER.error("=====> [StreamConnectorMmc] run error("+host+") "+ ExceptionUtils.getStackTrace(e)+ "<=====");
             }catch (Exception e){
                 isStart = false;
+                telnetMmc.closeConnection();
                 LOGGER.error("=====> [StreamConnectorMmc] run error("+host+") "+ ExceptionUtils.getStackTrace(e)+ "<=====");
             }
         }

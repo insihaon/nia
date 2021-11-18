@@ -1,4 +1,4 @@
-package com.nia.ems.linkage.config;
+package com.nia.ems.linkage.client;
 
 import com.nia.ems.linkage.common.LinkageCodeInfo;
 import com.nia.ems.linkage.data.DataShareBean;
@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.net.Socket;
-import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Queue;
 
@@ -69,7 +68,7 @@ public class TelnetMmc {
 
         try {
             socket_to_stdout = streamConnectorMmcObjectFactory.getObject();
-            socket_to_stdout.setStream(serverInput, System.out, host, port);
+            socket_to_stdout.setStream(this, serverInput, System.out, host, port);
             // 슬롯을 생성한다.
             output_thread = new Thread(socket_to_stdout);
             // 슬롯을 시작한다.
