@@ -19,10 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -122,7 +119,7 @@ public class IpAlarmToAiLinkageServiceImpl implements IpAlarmToAiLinkageService 
                 putFile.createNewFile();
             }
 
-            output  = new BufferedWriter(new FileWriter(putFile,true));
+            output  = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(putFile), "euc-kr"));
             pw = new PrintWriter(output,true);
             pw.write(jsonData);
             pw.flush();
