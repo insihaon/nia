@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nia.ai.traffic.preprocessor.mapper.TrafficMapper">
+
+    <insert id="insertAnomalousTraffic" parameterType="java.util.HashMap">
+        INSERT INTO RCA.TB_ANOMALOUS_TRAFFIC
+        SELECT NULL, STRIFID, STRRESID, STRTYPEMIN, INTTIMESTAMP, INTYEAR
+             , INTMONTH, INTDAY, INTHOUR, INTMIN, INTWEEK
+             , INTBANDWIDTH, FLTBPSIN, FLTBPSOUT, FLTPPSIN, FLTPPSOUT
+             , FLTERRORIN, FLTERROROUT, FLTDISCARDIN, FLTDISCARDOUT, FLTUNKNOWN
+             , FLTUSAGE, FLHCINOCTETS, FLHCOUTOCTETS, FLHCINUCASTPKTS, FLHCOUTUCASTPKTS
+             , FLHCINMULTICASTPKTS, FLHCOUTMULTICASTPKTS, FLHCINBROADCASTPKTS, FLHCOUTBROADCASTPKTS, FLTBPSINMAX
+             , FLTBPSOUTMAX, FLTPPSINMAX, FLTPPSOUTMAX, FLTERRORINMAX, FLTERROROUTMAX
+             , FLTDISCARDINMAX, FLTDISCARDOUTMAX, FLTUNKNOWNMAX, FLTUSAGEMAX
+        FROM IP_YD.XE_CVNMS_PERF_IF
+        WHERE STRIFID = #{strifid}
+          AND INTTIMESTAMP = #{inttimestamp}
+    </insert>
+
+    <insert id="insertNoxiousTraffic" parameterType="java.util.HashMap">
+        INSERT INTO RCA.TB_NOXIOUS_TRAFFIC
+        SELECT NULL, STRRESIP, STRRESNAME, STRS_IP, STRS_PORT, STRD_IP
+             , STRD_PORT, STRS_MAC, STRD_MAC, STRPROTOCOL, STRIPV4TOS
+             , STRCHANNEL, STRSENDERIP, STRIN_INTERFACE, STROUT_INTERFACE, STRBYTES_COL
+             , STRCOUNTS, DATEREGDATE
+          FROM IP_YD.XE_SFLOW_LOG
+         WHERE DATEREGDATE = #{dateregdate}
+    </insert>
+</mapper>
+
+

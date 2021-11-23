@@ -1,0 +1,106 @@
+server:
+  port: 50601
+
+logging:
+  level:
+    root: INFO  
+    
+---
+spring:
+  profiles: dev
+  logging:
+    config: classpath:context/logback-spring.xml
+
+  jasypt:
+    encryptor:
+      bean: jasyptStringEncryptor
+      property:
+        prefix: ENC(
+        suffix: )
+
+  rabbitmq:
+    address: 192.168.0.87  #개발
+    port: 5675
+    username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
+    password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
+
+    engineTrafficExchange: nia.exchangeEngineTrafficDirectly
+    engineTrafficQueue: nia.EngineTrafficIndexDirectly
+    engineTrafficRoutingKey: EngineTrafficIndexDirectly
+
+    aiIpAnomalousTrafficResultExchange: nia.exchangeAiIpAnomalousTrafficResultDirectly
+    aiIpAnomalousTrafficResultQueue: nia.AiIpAnomalousTrafficResultIndexDirectly
+    aiIpAnomalousTrafficResultRoutingKey: AiIpAnomalousTrafficResultIndexDirectly
+
+    aiIpNoxiousTrafficResultExchange: nia.exchangeAiIpNoxiousTrafficResultDirectly
+    aiIpNoxiousTrafficResultQueue: nia.AiIpNoxiousTrafficResultIndexDirectly
+    aiIpNoxiousTrafficResultRoutingKey: AiIpNoxiousTrafficResultIndexDirectly
+
+  task:
+    poolSize: 100 
+    keepAlive: 600000
+    queueCapacity: 100
+    concurrency: 100
+
+  mybatis:
+    mapper-locations: classpath*:sqlmap/*.xml
+    mybatisConfig-locations: classpath:mybatis-config.xml
+    configuration:
+      mapUnderscoreToCamelCase: true
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    data-source-class-name: org.postgresql.ds.PGSimpleDataSource
+    url: jdbc:postgresql://192.168.0.87:5433/niadb  #개발
+    username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
+    password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
+    maximumPoolSize : 5
+    idleTimeout : 6000
+
+---
+spring:
+  profiles: real
+  logging:
+    config: classpath:context/logback-spring.xml
+
+  jasypt:
+    encryptor:
+      bean: jasyptStringEncryptor
+      property:
+        prefix: ENC(
+        suffix: )
+
+  rabbitmq:
+    address: 116.89.186.194  #운영
+    port: 5675
+    username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
+    password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
+
+    engineTrafficExchange: nia.exchangeEngineTrafficDirectly
+    engineTrafficQueue: nia.EngineTrafficIndexDirectly
+    engineTrafficRoutingKey: EngineTrafficIndexDirectly
+
+    aiIpTrafficResultExchange: nia.exchangeAiIpTrafficResultDirectly
+    aiIpTrafficResultQueue: nia.AiIpTrafficResultIndexDirectly
+    aiIpTrafficResultRoutingKey: AiIpTrafficResultIndexDirectly
+
+  task:
+    poolSize: 100
+    keepAlive: 600000
+    queueCapacity: 100
+    concurrency: 100
+
+  mybatis:
+    mapper-locations: classpath*:sqlmap/*.xml
+    mybatisConfig-locations: classpath:mybatis-config.xml
+    configuration:
+      mapUnderscoreToCamelCase: true
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    data-source-class-name: org.postgresql.ds.PGSimpleDataSource
+    url: jdbc:postgresql://116.89.186.194:5433/niadb  #운영
+    username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
+    password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
+    maximumPoolSize : 5
+    idleTimeout : 6000
