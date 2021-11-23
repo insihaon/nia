@@ -80,9 +80,13 @@ spring:
     engineTrafficQueue: nia.EngineTrafficIndexDirectly
     engineTrafficRoutingKey: EngineTrafficIndexDirectly
 
-    aiIpTrafficResultExchange: nia.exchangeAiIpTrafficResultDirectly
-    aiIpTrafficResultQueue: nia.AiIpTrafficResultIndexDirectly
-    aiIpTrafficResultRoutingKey: AiIpTrafficResultIndexDirectly
+    aiIpAnomalousTrafficResultExchange: nia.exchangeAiIpAnomalousTrafficResultDirectly
+    aiIpAnomalousTrafficResultQueue: nia.AiIpAnomalousTrafficResultIndexDirectly
+    aiIpAnomalousTrafficResultRoutingKey: AiIpAnomalousTrafficResultIndexDirectly
+
+    aiIpNoxiousTrafficResultExchange: nia.exchangeAiIpNoxiousTrafficResultDirectly
+    aiIpNoxiousTrafficResultQueue: nia.AiIpNoxiousTrafficResultIndexDirectly
+    aiIpNoxiousTrafficResultRoutingKey: AiIpNoxiousTrafficResultIndexDirectly
 
   task:
     poolSize: 100
