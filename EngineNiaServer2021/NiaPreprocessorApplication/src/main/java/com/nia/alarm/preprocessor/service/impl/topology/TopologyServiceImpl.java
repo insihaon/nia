@@ -170,4 +170,9 @@ public class TopologyServiceImpl implements TopologyService {
         return topologyMapper.selectRoadmTrunkId(map);
     }
 
+    @Override
+    public E2eTopologyVo selectE2eTopologyList(HashMap<String, String> map) {
+        return topologyMapper.selectE2eTopologyList(map);
+    }
+
 }
