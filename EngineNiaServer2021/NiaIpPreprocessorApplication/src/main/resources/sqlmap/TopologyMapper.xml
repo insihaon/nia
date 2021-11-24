@@ -23,4 +23,11 @@
            AND U.IF_ID = P.IF_ID
         WHERE N.NODE_NUM = #{nodeNum} AND P.IF_NUM = #{ifNum}
     </select>
+
+    <select id="selectE2eTopologyList" resultType="com.nia.alarm.ip.preprocessor.vo.topology.E2eTopologyVo" parameterType="hashmap">
+        SELECT LINK_ID, NODE_IDA, PORTA, NODE_IDZ, PORTZ
+         FROM NIA.TB_E2E_TOPOLOGY
+        WHERE ((NODE_IDA = #{nodeId} AND PORTA = #{port})
+           OR (NODE_IDZ = #{nodeId} AND PORTZ = #{port}))
+    </select>
 </mapper>

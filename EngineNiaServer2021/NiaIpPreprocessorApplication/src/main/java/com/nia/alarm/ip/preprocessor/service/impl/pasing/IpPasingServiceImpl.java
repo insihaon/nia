@@ -96,6 +96,7 @@ public class IpPasingServiceImpl implements CommPasingService {
         TopologyObject topologyObject = null;
         TopologyTmpVo topologyTmpObject = null;
         UniTopologyVo uniTopologyVo;
+        E2eTopologyVo e2eTopologyVo;
 
         try{
             parameterMap = new HashMap<String, String>();
@@ -115,7 +116,22 @@ public class IpPasingServiceImpl implements CommPasingService {
                 topologyObject.setOppIfNum(topologyTmpObject.getNeZ().getIfNum());
 
                 isTopology = true;
+            }else{
+                parameterMap = new HashMap<String, String>();
+                parameterMap.put("nodeId", basicAlarmVo.getSysname());
+                parameterMap.put("port", basicAlarmVo.getIfId());
+                e2eTopologyVo = topologyService.selectE2eTopologyList(parameterMap);
+
+                if(e2eTopologyVo != null){
+                    topologyObject = topologyObjectFactory.getObject();
+                    topologyObject.setLinkId(e2eTopologyVo.getLinkId());
+                    topologyObject.setOppSysname(e2eTopologyVo.getNodeIdz());
+                    topologyObject.setOppPort(e2eTopologyVo.getPortz());
+
+                    isTopology = true;
+                }
             }
+
 //            else{
 //                uniTopologyVo = topologyService.selectUniTopologyList(parameterMap);
 //                if(uniTopologyVo != null){
