@@ -32,4 +32,11 @@
          WHERE SYSNAME = #{sysname} AND (UP_PTPNAME_BAU = #{ptpname} OR UP_PTPNAME_PAU = #{ptpname} OR DOWN_PTPNAME_BAU = #{ptpname} OR DOWN_PTPNAME_PAU = #{ptpname})
 
     </select>
+
+    <select id="selectE2eTopologyList" resultType="com.nia.alarm.preprocessor.vo.topology.E2eTopologyVo" parameterType="hashmap">
+        SELECT LINK_ID, NODE_IDA, PORTA, NODE_IDZ, PORTZ
+        FROM NIA.TB_E2E_TOPOLOGY
+        WHERE ((NODE_IDA = #{nodeId} AND PORTA = #{port})
+            OR (NODE_IDZ = #{nodeId} AND PORTZ = #{port}))
+    </select>
 </mapper>

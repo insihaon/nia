@@ -6,10 +6,7 @@ import com.nia.alarm.preprocessor.service.topology.TopologyService;
 import com.nia.alarm.preprocessor.service.pasing.CommPasingService;
 import com.nia.alarm.preprocessor.vo.alarm.BasicAlarmVo;
 import com.nia.alarm.preprocessor.vo.euqipment.EquipInfoVo;
-import com.nia.alarm.preprocessor.vo.topology.RoadmRepeaterRouteVo;
-import com.nia.alarm.preprocessor.vo.topology.TopologyObject;
-import com.nia.alarm.preprocessor.vo.topology.TopologyTmpVo;
-import com.nia.alarm.preprocessor.vo.topology.UniTopologyObject;
+import com.nia.alarm.preprocessor.vo.topology.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
@@ -127,6 +124,7 @@ public class RoadmPasingServiceImpl implements CommPasingService {
 
         UniTopologyObject uniTopologyObject = null;
         RoadmRepeaterRouteVo roadmRepeaterRouteVo = null;
+        E2eTopologyVo e2eTopologyVo;
 
         try{
             switch (basicAlarmVo.getUnit()){
@@ -162,6 +160,20 @@ public class RoadmPasingServiceImpl implements CommPasingService {
                         }
 
                         isTopology = true;
+                    }else{
+                        parameterMap = new HashMap<String, String>();
+                        parameterMap.put("nodeId", basicAlarmVo.getSysname());
+                        parameterMap.put("port", basicAlarmVo.getPtpName());
+                        e2eTopologyVo = topologyService.selectE2eTopologyList(parameterMap);
+
+                        if(e2eTopologyVo != null){
+                            topologyObject = topologyObjectFactory.getObject();
+                            topologyObject.setLinkId(e2eTopologyVo.getLinkId());
+                            topologyObject.setOppSysname(e2eTopologyVo.getNodeIdz());
+                            topologyObject.setOppPort(e2eTopologyVo.getPortz());
+
+                            isTopology = true;
+                        }
                     }
 
                     break;

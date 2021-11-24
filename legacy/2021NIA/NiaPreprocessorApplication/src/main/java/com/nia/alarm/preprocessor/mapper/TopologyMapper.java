@@ -13,4 +13,5 @@ public interface TopologyMapper {
     UniTopologyDataVo selectUniTopologyList(HashMap<String, String> map);
     EquipPortVo selectEquipPort(HashMap<String, String> map);
     RoadmRepeaterRouteVo selectRoadmTrunkId(HashMap<String, String> map);
+    E2eTopologyVo selectE2eTopologyList(HashMap<String, String> map);
 }

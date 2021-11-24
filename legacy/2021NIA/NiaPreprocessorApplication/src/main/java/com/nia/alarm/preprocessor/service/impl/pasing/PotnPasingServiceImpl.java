@@ -110,6 +110,7 @@ public class PotnPasingServiceImpl implements CommPasingService {
 
         TopologyObject topologyObject = null;
         TopologyTmpVo topologyTmpObject = null;
+        E2eTopologyVo e2eTopologyVo;
 
         try{
             parameterMap = new HashMap<String, String>();
@@ -132,6 +133,20 @@ public class PotnPasingServiceImpl implements CommPasingService {
                 }
 
                 isTopology = true;
+            }else{
+                parameterMap = new HashMap<String, String>();
+                parameterMap.put("nodeId", basicAlarmVo.getSysname());
+                parameterMap.put("port", basicAlarmVo.getPtpName());
+                e2eTopologyVo = topologyService.selectE2eTopologyList(parameterMap);
+
+                if(e2eTopologyVo != null){
+                    topologyObject = topologyObjectFactory.getObject();
+                    topologyObject.setLinkId(e2eTopologyVo.getLinkId());
+                    topologyObject.setOppSysname(e2eTopologyVo.getNodeIdz());
+                    topologyObject.setOppPort(e2eTopologyVo.getPortz());
+
+                    isTopology = true;
+                }
             }
 
             if(isTopology){
