@@ -21,10 +21,10 @@ public class SflowLogServiceImpl implements SflowLogService {
     private static final Logger LOGGER = LoggerFactory.getLogger(SflowLogServiceImpl.class);
 
     @Autowired
-    private LinkageSflowMapper linkageAlarmMapper;
+    private LinkageSflowMapper linkageSflowMapper;
 
     @Autowired
-    private NiaSflowMapper niaAlarmMapper;
+    private NiaSflowMapper niaSflowMapper;
 
     @Override
     public void getSflowLogData() {
@@ -38,22 +38,22 @@ public class SflowLogServiceImpl implements SflowLogService {
 
         try {
             Thread.sleep(120*1000);
-            dateRegDate = niaAlarmMapper.selectSflowYdKey("ipSflowLogKey");
+            dateRegDate = niaSflowMapper.selectSflowYdKey("ipSflowLogKey");
 
             if(StringUtils.isNotEmpty(dateRegDate)){
-                sflowLogVoList = linkageAlarmMapper.selectSflowLogList(dateRegDate);
+                sflowLogVoList = linkageSflowMapper.selectSflowLogList(dateRegDate);
 
                 if(sflowLogVoList != null && sflowLogVoList.size() > 0) {
                     LOGGER.info("==========>[SflowLogService] getSflowLogData sflowLogVoList("+sflowLogVoList.size() +") <==============");
 
                     objectHashMap = new HashMap<>();
                     objectHashMap.put("sflowLogVoList", sflowLogVoList);
-                    niaAlarmMapper.insertSflowLog(objectHashMap);
+                    niaSflowMapper.insertSflowLog(objectHashMap);
 
                     strHashMap = new HashMap<>();
                     strHashMap.put("key", "ipSflowLogKey");
                     strHashMap.put("value", sflowLogVoList.get(sflowLogVoList.size()-1).getDateRegDate()+"");
-                    niaAlarmMapper.updateSflowYdKey(strHashMap);
+                    niaSflowMapper.updateSflowYdKey(strHashMap);
                 }
             }
         }catch (Exception e){
