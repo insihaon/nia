@@ -49,7 +49,8 @@ spring:
       mapUnderscoreToCamelCase: true
 
   ftp:
-    host: 116.89.186.207
+    host1: 116.89.186.206
+    host2: 116.89.186.207
     #    host: 116.89.186.194
     port: 22
     user: ENC(XMOpjFUtgZnBRPp7m7a9o2WSXQ1l5oe/)
@@ -101,7 +102,8 @@ spring:
       mapUnderscoreToCamelCase: true
 
   ftp:
-    host: 116.89.186.207
+    host1: 116.89.186.206
+    host2: 116.89.186.207
     port: 22
     user: ENC(XMOpjFUtgZnBRPp7m7a9o2WSXQ1l5oe/)
     password: ENC(Q5gydJpI5uME0zXRuMHImGC5bkFqmaRK)

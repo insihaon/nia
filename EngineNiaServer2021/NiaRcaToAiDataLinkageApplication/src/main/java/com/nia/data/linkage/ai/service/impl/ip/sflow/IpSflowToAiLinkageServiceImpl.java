@@ -41,6 +41,21 @@ public class IpSflowToAiLinkageServiceImpl implements IpSflowToAiLinkageService 
     @Value("${spring.ftp.file-path}")
     private String uploadPath;
 
+    @Value("${spring.ftp.host1}")
+    private String host1 = null;
+
+    @Value("${spring.ftp.host2}")
+    private String host2 = null;
+
+    @Value("${spring.ftp.port}")
+    private int port = 0;
+
+    @Value("${spring.ftp.user}")
+    private String user = null;
+
+    @Value("${spring.ftp.password}")
+    private String pw = null;
+
     @Override
     public void sendSflowLogData() {
         LOGGER.info("==========>[IpSflowToAiLinkageService] sendSflowLogData <==============");
@@ -81,14 +96,32 @@ public class IpSflowToAiLinkageServiceImpl implements IpSflowToAiLinkageService 
                     putFile = createJsonFile("xe_sflow_log", jsonData, sflowVoList.get(sflowVoList.size()-1).getDateregdate()+"", ftpUpdatePath);
 
                     sftpSession = sftpSessionObjectFactory.getObject();
-                    sftpSession.init();
 
-                    if(putFile != null){
-                        sftpSession.upload(ftpUpdatePath, putFile);
-                        LOGGER.info("=====> [IpSflowToAiLinkageService] sendSflowLogData upload : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                    try {
+                        sftpSession.init(host1, port, user, pw);
+
+                        if(putFile != null){
+                            sftpSession.upload(ftpUpdatePath, putFile);
+                            LOGGER.info("=====> [IpSflowToAiLinkageService] sendSflowLogData upload("+host1+") : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                        }
+
+                        sftpSession.disconnection();
+                    }catch (Exception e1){
+                        LOGGER.error("=====> [IpSflowToAiLinkageService] sendSflowLogData upload("+host1+") error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
                     }
 
-                    sftpSession.disconnection();
+                    try {
+                        sftpSession.init(host2, port, user, pw);
+
+                        if(putFile != null){
+                            sftpSession.upload(ftpUpdatePath, putFile);
+                            LOGGER.info("=====> [IpSflowToAiLinkageService] sendSflowLogData upload("+host2+") : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                        }
+
+                        sftpSession.disconnection();
+                    }catch (Exception e1){
+                        LOGGER.error("=====> [IpSflowToAiLinkageService] sendSflowLogData upload("+host2+") error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
+                    }
 
                     if(putFile.exists()){
                         putFile.delete();
@@ -117,6 +150,12 @@ public class IpSflowToAiLinkageServiceImpl implements IpSflowToAiLinkageService 
             if(dataKey.contains("+")){
                 dataKey = dataKey.substring(0,dataKey.indexOf("+"));
             }
+            putFile = new File(ftpUpdatePath+eventType);
+
+            if(!putFile.exists()){
+                putFile.mkdir();
+            }
+
             putFile = new File(ftpUpdatePath+eventType+"_"+(UtlDateHelper.stringToTimestamp(dataKey).getTime())+""+".json");
 
             if(!putFile.isFile()){

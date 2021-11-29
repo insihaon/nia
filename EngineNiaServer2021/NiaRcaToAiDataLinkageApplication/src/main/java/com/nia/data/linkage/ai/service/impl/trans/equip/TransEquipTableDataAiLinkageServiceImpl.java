@@ -53,6 +53,21 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
     @Value("${spring.ftp.file-path}")
     private String uploadPath;
 
+    @Value("${spring.ftp.host1}")
+    private String host1 = null;
+
+    @Value("${spring.ftp.host2}")
+    private String host2 = null;
+
+    @Value("${spring.ftp.port}")
+    private int port = 0;
+
+    @Value("${spring.ftp.user}")
+    private String user = null;
+
+    @Value("${spring.ftp.password}")
+    private String pw = null;
+
     @Override
     public void sendEquipMstData() {
         LOGGER.info("==========>[TransEquipTableDataAiLinkageService] sendEquipMstData <==============");
@@ -82,14 +97,32 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
                 putFile = createJsonFile("tb_equip_mst", jsonData, ftpUpdatePath);
 
                 sftpSession = sftpSessionObjectFactory.getObject();
-                sftpSession.init();
 
-                if(putFile != null){
-                    sftpSession.upload(ftpUpdatePath, putFile);
-                    LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendEquipMstData upload : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                try {
+                    sftpSession.init(host1, port, user, pw);
+
+                    if(putFile != null){
+                        sftpSession.upload(ftpUpdatePath, putFile);
+                        LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendEquipMstData upload("+host1+") : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                    }
+
+                    sftpSession.disconnection();
+                }catch (Exception e1){
+                    LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendEquipMstData upload("+host1+") error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
                 }
 
-                sftpSession.disconnection();
+                try {
+                    sftpSession.init(host2, port, user, pw);
+
+                    if(putFile != null){
+                        sftpSession.upload(ftpUpdatePath, putFile);
+                        LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendEquipMstData upload("+host2+") : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                    }
+
+                    sftpSession.disconnection();
+                }catch (Exception e1){
+                    LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendEquipMstData upload("+host2+") error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
+                }
 
                 if(putFile.exists()){
                     putFile.delete();
@@ -130,14 +163,32 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
                 putFile = createJsonFile("tb_equip_port", jsonData, ftpUpdatePath);
 
                 sftpSession = sftpSessionObjectFactory.getObject();
-                sftpSession.init();
 
-                if(putFile != null){
-                    sftpSession.upload(ftpUpdatePath, putFile);
-                    LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendEquipPortData upload : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                try {
+                    sftpSession.init(host1, port, user, pw);
+
+                    if(putFile != null){
+                        sftpSession.upload(ftpUpdatePath, putFile);
+                        LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendEquipPortData upload("+host1+") : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                    }
+
+                    sftpSession.disconnection();
+                }catch (Exception e1){
+                    LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendEquipPortData upload("+host1+") error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
                 }
 
-                sftpSession.disconnection();
+                try {
+                    sftpSession.init(host2, port, user, pw);
+
+                    if(putFile != null){
+                        sftpSession.upload(ftpUpdatePath, putFile);
+                        LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendEquipPortData upload("+host2+") : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                    }
+
+                    sftpSession.disconnection();
+                }catch (Exception e1){
+                    LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendEquipPortData upload("+host2+") error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
+                }
 
                 if(putFile.exists()){
                     putFile.delete();
@@ -178,14 +229,32 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
                 putFile = createJsonFile("tb_equip_slot", jsonData, ftpUpdatePath);
 
                 sftpSession = sftpSessionObjectFactory.getObject();
-                sftpSession.init();
 
-                if(putFile != null){
-                    sftpSession.upload(ftpUpdatePath, putFile);
-                    LOGGER.info("=====> [RoadmPmDataAiLinkageService] sendEquipSlotData upload : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                try {
+                    sftpSession.init(host1, port, user, pw);
+
+                    if(putFile != null){
+                        sftpSession.upload(ftpUpdatePath, putFile);
+                        LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendEquipSlotData upload("+host1+") : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                    }
+
+                    sftpSession.disconnection();
+                }catch (Exception e1){
+                    LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendEquipSlotData upload("+host1+") error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
                 }
 
-                sftpSession.disconnection();
+                try {
+                    sftpSession.init(host2, port, user, pw);
+
+                    if(putFile != null){
+                        sftpSession.upload(ftpUpdatePath, putFile);
+                        LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendEquipSlotData upload("+host2+") : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                    }
+
+                    sftpSession.disconnection();
+                }catch (Exception e1){
+                    LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendEquipSlotData upload("+host2+") error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
+                }
 
                 if(putFile.exists()){
                     putFile.delete();
@@ -226,14 +295,32 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
                 putFile = createJsonFile("tb_topology", jsonData, ftpUpdatePath);
 
                 sftpSession = sftpSessionObjectFactory.getObject();
-                sftpSession.init();
 
-                if(putFile != null){
-                    sftpSession.upload(ftpUpdatePath, putFile);
-                    LOGGER.info("=====> [RoadmPmDataAiLinkageService] sendNniTopologyData upload : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                try {
+                    sftpSession.init(host1, port, user, pw);
+
+                    if(putFile != null){
+                        sftpSession.upload(ftpUpdatePath, putFile);
+                        LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendNniTopologyData upload("+host1+") : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                    }
+
+                    sftpSession.disconnection();
+                }catch (Exception e1){
+                    LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendNniTopologyData upload("+host1+") error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
                 }
 
-                sftpSession.disconnection();
+                try {
+                    sftpSession.init(host2, port, user, pw);
+
+                    if(putFile != null){
+                        sftpSession.upload(ftpUpdatePath, putFile);
+                        LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendNniTopologyData upload("+host2+") : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                    }
+
+                    sftpSession.disconnection();
+                }catch (Exception e1){
+                    LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendNniTopologyData upload("+host2+") error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
+                }
 
                 if(putFile.exists()){
                     putFile.delete();
@@ -274,14 +361,32 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
                 putFile = createJsonFile("tb_uni_topology", jsonData, ftpUpdatePath);
 
                 sftpSession = sftpSessionObjectFactory.getObject();
-                sftpSession.init();
 
-                if(putFile != null){
-                    sftpSession.upload(ftpUpdatePath, putFile);
-                    LOGGER.info("=====> [RoadmPmDataAiLinkageService] sendUniTopologyData upload : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                try {
+                    sftpSession.init(host1, port, user, pw);
+
+                    if(putFile != null){
+                        sftpSession.upload(ftpUpdatePath, putFile);
+                        LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendUniTopologyData upload("+host1+") : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                    }
+
+                    sftpSession.disconnection();
+                }catch (Exception e1){
+                    LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendUniTopologyData upload("+host1+") error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
                 }
 
-                sftpSession.disconnection();
+                try {
+                    sftpSession.init(host2, port, user, pw);
+
+                    if(putFile != null){
+                        sftpSession.upload(ftpUpdatePath, putFile);
+                        LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendUniTopologyData upload("+host2+") : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                    }
+
+                    sftpSession.disconnection();
+                }catch (Exception e1){
+                    LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendUniTopologyData upload("+host2+") error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
+                }
 
                 if(putFile.exists()){
                     putFile.delete();
@@ -323,14 +428,32 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
                 putFile = createJsonFile("tb_roadm_trunk_repeater", jsonData, ftpUpdatePath);
 
                 sftpSession = sftpSessionObjectFactory.getObject();
-                sftpSession.init();
 
-                if(putFile != null){
-                    sftpSession.upload(ftpUpdatePath, putFile);
-                    LOGGER.info("=====> [RoadmPmDataAiLinkageService] sendRoadmTrunkData upload : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                try {
+                    sftpSession.init(host1, port, user, pw);
+
+                    if(putFile != null){
+                        sftpSession.upload(ftpUpdatePath, putFile);
+                        LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendRoadmTrunkData upload("+host1+") : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                    }
+
+                    sftpSession.disconnection();
+                }catch (Exception e1){
+                    LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendRoadmTrunkData upload("+host1+") error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
                 }
 
-                sftpSession.disconnection();
+                try {
+                    sftpSession.init(host2, port, user, pw);
+
+                    if(putFile != null){
+                        sftpSession.upload(ftpUpdatePath, putFile);
+                        LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendRoadmTrunkData upload("+host2+") : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                    }
+
+                    sftpSession.disconnection();
+                }catch (Exception e1){
+                    LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendRoadmTrunkData upload("+host2+") error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
+                }
 
                 if(putFile.exists()){
                     putFile.delete();
@@ -349,6 +472,12 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
         PrintWriter pw;
 
         try{
+            putFile = new File(ftpUpdatePath+eventType);
+
+            if(!putFile.exists()){
+                putFile.mkdir();
+            }
+
             putFile = new File(ftpUpdatePath+eventType+"_"+UtlDateHelper.getCurrentDate()+".json");
 
             if(!putFile.isFile()){
