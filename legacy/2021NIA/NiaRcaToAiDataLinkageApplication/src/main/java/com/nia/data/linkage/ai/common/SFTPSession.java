@@ -18,21 +18,17 @@ public class SFTPSession {
     private Session session = null;
     private Channel channel = null;
 
-    @Value("${spring.ftp.host}")
     private String host = null;
 
-    @Value("${spring.ftp.port}")
     private int port = 0;
 
-    @Value("${spring.ftp.user}")
     private String user = null;
 
-    @Value("${spring.ftp.password}")
     private String pw = null;
 
     private ChannelSftp channelSftp;
 
-    public void init(){
+    public void init(String host, int port, String user, String pw){
 
         try{
             JSch jsch = new JSch();

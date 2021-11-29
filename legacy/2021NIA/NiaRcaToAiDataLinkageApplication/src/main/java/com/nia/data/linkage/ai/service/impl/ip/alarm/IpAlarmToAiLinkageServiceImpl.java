@@ -1,6 +1,7 @@
 package com.nia.data.linkage.ai.service.impl.ip.alarm;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jcraft.jsch.JSchException;
 import com.nia.data.linkage.ai.common.SFTPSession;
 import com.nia.data.linkage.ai.common.UtlDateHelper;
 import com.nia.data.linkage.ai.mapper.common.CommonMapper;
@@ -20,6 +21,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
+import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,6 +44,21 @@ public class IpAlarmToAiLinkageServiceImpl implements IpAlarmToAiLinkageService 
 
     @Value("${spring.ftp.file-path}")
     private String uploadPath;
+
+    @Value("${spring.ftp.host1}")
+    private String host1 = null;
+
+    @Value("${spring.ftp.host2}")
+    private String host2 = null;
+
+    @Value("${spring.ftp.port}")
+    private int port = 0;
+
+    @Value("${spring.ftp.user}")
+    private String user = null;
+
+    @Value("${spring.ftp.password}")
+    private String pw = null;
 
     @Override
     public void sendAlarmData() {
@@ -82,14 +99,33 @@ public class IpAlarmToAiLinkageServiceImpl implements IpAlarmToAiLinkageService 
                     putFile = createJsonFile("xe_cvnms_error", jsonData, ipAlarmVoList.get(ipAlarmVoList.size()-1).getInterridx()+"", ftpUpdatePath);
 
                     sftpSession = sftpSessionObjectFactory.getObject();
-                    sftpSession.init();
 
-                    if(putFile != null){
-                        sftpSession.upload(ftpUpdatePath, putFile);
-                        LOGGER.info("=====> [IpAlarmToAiLinkageService] sendAlarmData upload : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                    try {
+                        sftpSession.init(host1, port, user, pw);
+
+                        if(putFile != null){
+                            sftpSession.upload(ftpUpdatePath, putFile);
+                            LOGGER.info("=====> [IpAlarmToAiLinkageService] sendAlarmData upload("+host1+") : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                        }
+
+                        sftpSession.disconnection();
+                    }catch (Exception e1){
+                        LOGGER.error("=====> [IpAlarmToAiLinkageService] sendAlarmData upload("+host1+") error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
                     }
 
-                    sftpSession.disconnection();
+                    try {
+                        sftpSession.init(host2, port, user, pw);
+
+                        if(putFile != null){
+                            sftpSession.upload(ftpUpdatePath, putFile);
+                            LOGGER.info("=====> [IpAlarmToAiLinkageService] sendAlarmData upload("+host2+") : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                        }
+
+                        sftpSession.disconnection();
+                    }catch (Exception e1){
+                        LOGGER.error("=====> [IpAlarmToAiLinkageService] sendAlarmData upload("+host2+") error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
+                    }
+
 
                     if(putFile.exists()){
                         putFile.delete();
@@ -114,6 +150,12 @@ public class IpAlarmToAiLinkageServiceImpl implements IpAlarmToAiLinkageService 
         PrintWriter pw;
 
         try{
+            putFile = new File(ftpUpdatePath+eventType);
+
+            if(!putFile.exists()){
+                putFile.mkdir();
+            }
+
             putFile = new File(ftpUpdatePath+eventType+"_"+dataKey+""+".json");
 
             if(!putFile.isFile()){

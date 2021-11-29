@@ -37,6 +37,21 @@ public class RoadmPmDataAiLinkageServiceImpl implements RoadmPmDataAiLinkageServ
     @Value("${spring.ftp.file-path}")
     private String uploadPath;
 
+    @Value("${spring.ftp.host1}")
+    private String host1 = null;
+
+    @Value("${spring.ftp.host2}")
+    private String host2 = null;
+
+    @Value("${spring.ftp.port}")
+    private int port = 0;
+
+    @Value("${spring.ftp.user}")
+    private String user = null;
+
+    @Value("${spring.ftp.password}")
+    private String pw = null;
+
     @Autowired
     private org.springframework.beans.factory.ObjectFactory<PerfDataAiLinkageVo> perfDataAiLinkageVoObjectFactory;
 
@@ -81,14 +96,32 @@ public class RoadmPmDataAiLinkageServiceImpl implements RoadmPmDataAiLinkageServ
                     putFile = createJsonFile("tb_performace_mst", jsonData, performaceVoList.get(performaceVoList.size() - 1).getOcrtime() + "", ftpUpdatePath);
 
                     sftpSession = sftpSessionObjectFactory.getObject();
-                    sftpSession.init();
 
-                    if (putFile != null) {
-                        sftpSession.upload(ftpUpdatePath, putFile);
-                        LOGGER.info("=====> [RoadmPmDataAiLinkageService] sendRoadmPmData upload : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                    try {
+                        sftpSession.init(host1, port, user, pw);
+
+                        if(putFile != null){
+                            sftpSession.upload(ftpUpdatePath, putFile);
+                            LOGGER.info("=====> [RoadmPmDataAiLinkageService] sendRoadmPmData upload("+host1+") : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                        }
+
+                        sftpSession.disconnection();
+                    }catch (Exception e1){
+                        LOGGER.error("=====> [RoadmPmDataAiLinkageService] sendRoadmPmData upload("+host1+") error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
                     }
 
-                    sftpSession.disconnection();
+                    try {
+                        sftpSession.init(host2, port, user, pw);
+
+                        if(putFile != null){
+                            sftpSession.upload(ftpUpdatePath, putFile);
+                            LOGGER.info("=====> [RoadmPmDataAiLinkageService] sendRoadmPmData upload("+host2+") : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                        }
+
+                        sftpSession.disconnection();
+                    }catch (Exception e1){
+                        LOGGER.error("=====> [RoadmPmDataAiLinkageService] sendRoadmPmData upload("+host2+") error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
+                    }
 
                     if(putFile.exists()){
                         putFile.delete();
@@ -115,6 +148,12 @@ public class RoadmPmDataAiLinkageServiceImpl implements RoadmPmDataAiLinkageServ
         try{
             if(ocrTime.contains("+")){
                 ocrTime = ocrTime.substring(0,ocrTime.indexOf("+"));
+            }
+
+            putFile = new File(ftpUpdatePath+eventType);
+
+            if(!putFile.exists()){
+                putFile.mkdir();
             }
 
             putFile = new File(ftpUpdatePath+eventType+"_"+(UtlDateHelper.stringToTimestamp(ocrTime).getTime())+""+".json");

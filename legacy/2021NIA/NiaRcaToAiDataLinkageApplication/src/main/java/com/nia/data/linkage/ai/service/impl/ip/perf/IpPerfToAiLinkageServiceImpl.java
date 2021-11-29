@@ -40,6 +40,21 @@ public class IpPerfToAiLinkageServiceImpl implements IpPerfToAiLinkageService {
     @Value("${spring.ftp.file-path}")
     private String uploadPath;
 
+    @Value("${spring.ftp.host1}")
+    private String host1 = null;
+
+    @Value("${spring.ftp.host2}")
+    private String host2 = null;
+
+    @Value("${spring.ftp.port}")
+    private int port = 0;
+
+    @Value("${spring.ftp.user}")
+    private String user = null;
+
+    @Value("${spring.ftp.password}")
+    private String pw = null;
+
     @Override
     public void sendPerfLogData() {
         LOGGER.info("==========>[IpPerfToAiLinkageService] sendPerfLogData <==============");
@@ -78,14 +93,32 @@ public class IpPerfToAiLinkageServiceImpl implements IpPerfToAiLinkageService {
                     putFile = createJsonFile("xe_cvnms_perf_if", jsonData, perfVoList.get(perfVoList.size()-1).getInttimestamp()+"", ftpUpdatePath);
 
                     sftpSession = sftpSessionObjectFactory.getObject();
-                    sftpSession.init();
 
-                    if(putFile != null){
-                        sftpSession.upload(ftpUpdatePath, putFile);
-                        LOGGER.info("=====> [IpPerfToAiLinkageService] sendPerfLogData upload : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                    try {
+                        sftpSession.init(host1, port, user, pw);
+
+                        if(putFile != null){
+                            sftpSession.upload(ftpUpdatePath, putFile);
+                            LOGGER.info("=====> [IpPerfToAiLinkageService] sendPerfLogData upload("+host1+") : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                        }
+
+                        sftpSession.disconnection();
+                    }catch (Exception e1){
+                        LOGGER.error("=====> [IpPerfToAiLinkageService] sendPerfLogData upload("+host1+") error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
                     }
 
-                    sftpSession.disconnection();
+                    try {
+                        sftpSession.init(host2, port, user, pw);
+
+                        if(putFile != null){
+                            sftpSession.upload(ftpUpdatePath, putFile);
+                            LOGGER.info("=====> [IpPerfToAiLinkageService] sendPerfLogData upload("+host2+") : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                        }
+
+                        sftpSession.disconnection();
+                    }catch (Exception e1){
+                        LOGGER.error("=====> [IpPerfToAiLinkageService] sendPerfLogData upload("+host2+") error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
+                    }
 
                     if(putFile.exists()){
                         putFile.delete();
@@ -110,6 +143,12 @@ public class IpPerfToAiLinkageServiceImpl implements IpPerfToAiLinkageService {
         PrintWriter pw;
 
         try{
+            putFile = new File(ftpUpdatePath+eventType);
+
+            if(!putFile.exists()){
+                putFile.mkdir();
+            }
+
             putFile = new File(ftpUpdatePath+eventType + "_" + perfKey+".json");
 
             if(!putFile.isFile()){
