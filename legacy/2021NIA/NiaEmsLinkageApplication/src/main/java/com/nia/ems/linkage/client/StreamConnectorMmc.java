@@ -36,8 +36,8 @@ public class StreamConnectorMmc implements NiaEmsLinkageThread {
     }
 
     public void setStream(TelnetMmc telnetMmc, InputStream in, OutputStream out, String host, int port){
-        src = in;
-        dist = out;
+        this.src = in;
+        this.dist = out;
         this.host = host;
         this.port = port;
         this.telnetMmc = telnetMmc;
@@ -47,7 +47,7 @@ public class StreamConnectorMmc implements NiaEmsLinkageThread {
     //  스트림 읽고 쓰기를 무한히 반복한다.
     @Override
     public void run(){
-        LOGGER.info("=====> [StreamConnectorMmc] thread run host("+host+") <=====");
+        LOGGER.info("=====> [StreamConnectorMmc] thread run host("+this.host+") <=====");
 
         byte[] data;
         int bufferSize = 8192;
@@ -57,10 +57,10 @@ public class StreamConnectorMmc implements NiaEmsLinkageThread {
         Boolean isSend = false;
         Boolean isMmcResult = false;
 
-        while (isStart) {
+        while (this.isStart) {
             try {
                 data = new byte[bufferSize];
-                cnt = src.read(data, 0, bufferSize);
+                cnt = this.src.read(data, 0, bufferSize);
 
                 if(cnt > 0) {
                     line = new String(data, 0, cnt, "EUC-KR");
@@ -93,7 +93,7 @@ public class StreamConnectorMmc implements NiaEmsLinkageThread {
                         LOGGER.info("=====> [StreamConnectorMmc] run() mmcMsg : "+ sbTemp.toString()+ "<=====");
 
                         if(sbTemp.toString().contains("canc-user")){
-                            isStart = false;
+                            this.isStart = false;
                         }
 
                         sbTemp.delete(0,sbTemp.length());
@@ -107,23 +107,23 @@ public class StreamConnectorMmc implements NiaEmsLinkageThread {
                     LOGGER.error("=====> [StreamConnectorMmc] sendCommand() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
                 }
             }catch(SocketException e){
-                isStart = false;
-                isConnection = false;
-                telnetMmc.closeConnection();
-                LOGGER.error("=====> [StreamConnectorMmc] run error("+host+") "+ ExceptionUtils.getStackTrace(e)+ "<=====");
+                this.isStart = false;
+                this.isConnection = false;
+                this.telnetMmc.closeConnection();
+                LOGGER.error("=====> [StreamConnectorMmc] run error("+this.host+") "+ ExceptionUtils.getStackTrace(e)+ "<=====");
             }catch (Exception e){
-                isStart = false;
-                telnetMmc.closeConnection();
-                LOGGER.error("=====> [StreamConnectorMmc] run error("+host+") "+ ExceptionUtils.getStackTrace(e)+ "<=====");
+                this.isStart = false;
+                this.telnetMmc.closeConnection();
+                LOGGER.error("=====> [StreamConnectorMmc] run error("+this.host+") "+ ExceptionUtils.getStackTrace(e)+ "<=====");
             }
         }
     }
 
     public void setStart(Boolean start) {
-        isStart = start;
+        this.isStart = start;
     }
 
     public Boolean isConnected(){
-        return isConnection;
+        return this.isConnection;
     }
 }

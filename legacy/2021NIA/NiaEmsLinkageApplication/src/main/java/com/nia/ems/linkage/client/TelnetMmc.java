@@ -127,7 +127,7 @@ public class TelnetMmc {
                     LOGGER.error("=====> [TelnetMmc] sendCommand() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e){
             LOGGER.error("=====> [TelnetMmc] readStream error : "+ExceptionUtils.getStackTrace(e)+" <=====");
         }
         return msg;
@@ -147,7 +147,7 @@ public class TelnetMmc {
                 serverSocket = null;
                 output_thread.interrupt();
             }
-        }catch (Exception e){
+        } catch (Exception e){
             LOGGER.error("=====> [TelnetMmc] closeConnection error : "+ExceptionUtils.getStackTrace(e)+" <=====");
         }
     }
