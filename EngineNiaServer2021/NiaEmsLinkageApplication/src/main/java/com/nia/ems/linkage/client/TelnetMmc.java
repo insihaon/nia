@@ -135,7 +135,7 @@ public class TelnetMmc {
 
     public void closeConnection(){
         try {
-            if(serverSocket.isConnected()){
+            if(serverSocket != null && serverSocket.isConnected()){
                 socket_to_stdout.setStart(false);
                 socket_to_stdout = null;
                 serverSocket.close();
