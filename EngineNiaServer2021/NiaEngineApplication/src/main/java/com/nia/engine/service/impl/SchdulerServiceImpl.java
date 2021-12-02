@@ -21,6 +21,4 @@ public class SchdulerServiceImpl {
     public void conJobTicketClear() {
         engineClearSchedulerJobServiceImpl.clearTicket();
     }
-
-
 }

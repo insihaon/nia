@@ -34,6 +34,13 @@ RCATicket implements Serializable {
 	private Timestamp ticketUpdateTime;
 	private boolean occur;
 	private String direction;
+    private String profileTitle;
+	private int childCnt;
+	private boolean cur = false; // 과거 or 현재 티켓 구분 플래그
 
 	private List<RCATicketAl> ticketAlList;
+
+	public void addChild(){
+		++childCnt;
+	}
 }

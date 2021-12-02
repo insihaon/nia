@@ -2,6 +2,7 @@ package com.nia.engine.vo;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -28,7 +29,11 @@ public class RcaResult implements Serializable{
 	private String clusterNo;
 	private Timestamp alarmTime;
 	private String nwType; // NNI or UNI or UNKNOWN
+	private List<String> multiRcaResultCodeList = new ArrayList<>();
 
+	public void addMultiRcaResultCodeList(String string){
+		multiRcaResultCodeList.add(string);
+	}
 	public void addRelatedAlarm(BasicAlarmVo basicAlarmVo){
 		relatedAlarmList.add(basicAlarmVo);
 	}

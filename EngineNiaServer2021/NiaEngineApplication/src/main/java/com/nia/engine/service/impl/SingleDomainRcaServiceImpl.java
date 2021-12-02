@@ -26,10 +26,13 @@ import java.util.*;
 @Scope(value = "prototype", proxyMode= ScopedProxyMode.TARGET_CLASS)
 public class SingleDomainRcaServiceImpl {
 	private final Logger LOGGER = Logger.getLogger(SingleDomainRcaServiceImpl.class);
-	
+
 	@Autowired
-    @Qualifier("RcaTicketManagerService")
+	@Qualifier("RcaTicketManagerService")
 	private RcaTicketManagerService rcaTicketManager;
+
+	@Autowired
+	private MultiDomainRcaServiceImpl multiDomainRcaService;
 
 	@Autowired
 	private PotnSingleRule potnSingleRule;
@@ -54,12 +57,12 @@ public class SingleDomainRcaServiceImpl {
 			inputSwitchAlarmList = new ArrayList<BasicAlarmVo>();
 
 			for(BasicAlarmVo basicAlarmVo :  clusterObject.getBasicAlarmtVoList()){
-				if(basicAlarmVo.getEquiptype().startsWith("POTN")) {
+				if(basicAlarmVo.getEquiptype().contains("POTN")) {
 					inputPotnAlarmList.add(basicAlarmVo);
 				}else if(basicAlarmVo.getEquiptype().startsWith("ROADM")){
 					basicAlarmVo.setSysname(basicAlarmVo.getSysname().split("-")[0]);
 					inputRoadmAlarmList.add(basicAlarmVo);
-				}else if(basicAlarmVo.getAlarmno().startsWith("I")){
+				}else if(basicAlarmVo.getAlarmno().startsWith("I") || basicAlarmVo.getAlarmno().startsWith("P")){
 					inputSwitchAlarmList.add(basicAlarmVo);
 				}
 			}
@@ -90,8 +93,9 @@ public class SingleDomainRcaServiceImpl {
 				}
 			}
 
-
 			if(rcaResultList.size() > 0){
+				rcaResultList = multiDomainRcaService.multiDomainHdlProcessor(rcaResultList);
+
                 rcaTicketManager.createRcaTicket(rcaResultList);
 				LOGGER.info(">>>>>>>[SingleDomainRcaService] rcaResultList : " + rcaResultList.size() +" <<<<<<<<<<<<");
 			}

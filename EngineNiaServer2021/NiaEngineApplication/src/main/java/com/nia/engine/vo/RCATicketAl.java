@@ -36,4 +36,6 @@ public class RCATicketAl implements Serializable {
 
 	private String rootCausePtpnameA;
 	private String rootCausePtpnameZ;
+
+	private boolean cur = false; // 과거 or 현재 티켓 구분 플래그
 }
