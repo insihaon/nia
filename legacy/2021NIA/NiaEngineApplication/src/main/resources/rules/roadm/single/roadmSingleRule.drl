@@ -548,7 +548,7 @@ no-loop
     when
         //conditions
         flagTF : Flag(flag == false)
-        $a1 : BasicAlarmVo(alarmmsg == RcaCodeInfo.ALARM_ROADM_UNI_LOCAL_LOS,
+        $a1 : BasicAlarmVo(topology != null, alarmmsg == RcaCodeInfo.ALARM_ROADM_UNI_LOCAL_LOS,
         (unit matches "OT2A-2" || matches "OT2A-4" || matches "OT2HU_2" ||
         matches "OT2U_2" || matches "OTUC2A" || matches "OTUXA" ||
         matches "OM24A" || matches "OM24U" || matches "OTNU_C" ||

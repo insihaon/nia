@@ -1,6 +1,7 @@
 package com.nia.engine.service;
 
 import com.nia.engine.vo.*;
+import com.nia.engine.vo.profile.ProfileVo;
 
 import java.util.HashMap;
 import java.util.List;
@@ -117,6 +118,13 @@ public interface TicketService {
 	void updateSop(RCATicketHandlingStatus rcaTicketHandlingStatus) throws Exception;
 
 	/**
+	 * Sop Upsert
+	 * @param
+	 * @return
+	 */
+	void upsertSop(RCATicketHandlingStatus rcaTicketHandlingStatus) throws Exception;
+
+	/**
 	 * Rca Ticket Current State 업데이트
 	 * @param
 	 * @return
@@ -156,4 +164,18 @@ public interface TicketService {
 	 * @return
 	 */
 	String selectSopKey() throws Exception;
+
+	/**
+	 * Profile 조회
+	 * @param
+	 * @return
+	 */
+	ProfileVo selectProfile(HashMap<String, String> map) throws Exception;
+
+	/**
+	 * ticket cnt 삭제
+	 * @param
+	 * @return
+	 */
+	void deleteRcaTicketCnt(String ticketId) throws Exception;
 }

@@ -97,7 +97,44 @@ public class RcaTicketHandlingServiceImpl implements RcaTicketHandlingService {
                         }
                     }
                 }
+            } else if("TRAFFIC".equals(rcaTicketHandlingStatus.getTicketType())) {
+                status = rcaTicketHandlingStatus.getStatus();
 
+                sopId = ticketService.selectSopKey();
+                rcaTicketHandlingStatus.setSopId(sopId);
+
+                rcaTicketHandlingStatus.setSopId(sopId);
+                ticketService.upsertSop(rcaTicketHandlingStatus);
+                if("FIN".equals(rcaTicketHandlingStatus.getStatus())) {
+                    ticketService.insertSopMail(rcaTicketHandlingStatus);
+                }
+
+                ticketService.updateRcaTicketCurrentState(rcaTicketHandlingStatus);
+//                ticketService.insertRCATicketHandlingStatusHist(rcaTicketHandlingStatus);
+
+                rcaEngineResult = rcaEngineResultFactory.getObject();
+                rcaEngineResult.setResult("success");
+                rcaEngineResult.setTicketId(rcaTicketHandlingStatus.getTicketId());
+                rcaEngineResult.setEventType(RcaCodeInfo.UI_TICKET_TYPE_UPDATE);
+
+                properties = new HashMap<String, String>();
+                properties.put("status", status);
+                properties.put("sop_id", rcaTicketHandlingStatus.getSopId());
+                rcaEngineResult.setProperties(properties);
+
+                engineToUiTicketPrdAmqp.sendMessageCmd(rcaEngineResult);
+
+                if (((ArrayList<RCATicket>) dataShareBean.getData(RcaCodeInfo.DATA_SHARE_NAME_TICKET_LIST)).size() > 0) {
+                    Iterator<RCATicket> itr = ((ArrayList<RCATicket>) dataShareBean.getData(RcaCodeInfo.DATA_SHARE_NAME_TICKET_LIST)).iterator();
+
+                    while (itr.hasNext()) {
+                        rcaTicket = itr.next();
+
+                        if (rcaTicket.getTicketId().equals(rcaTicketHandlingStatus.getTicketId())) {
+                            rcaTicket.setStatus(status);
+                        }
+                    }
+                }
             } else if("RT".equals(rcaTicketHandlingStatus.getTicketType())) {
                 switch (rcaTicketHandlingStatus.getStatus()) {
                     case "ACK":

@@ -1,6 +1,7 @@
 package com.nia.engine.mapper;
 
 import com.nia.engine.vo.*;
+import com.nia.engine.vo.profile.ProfileVo;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.sql.Timestamp;
@@ -134,6 +135,13 @@ public interface TicketMapper{
 	void updateSop(RCATicketHandlingStatus rcaTicketHandlingStatus);
 
 	/**
+	 * Sop Upsert
+	 * @param
+	 * @return
+	 */
+	void upsertSop(RCATicketHandlingStatus rcaTicketHandlingStatus);
+
+	/**
 	 * Rca Ticket Current State 업데이트
 	 * @param
 	 * @return
@@ -170,4 +178,20 @@ public interface TicketMapper{
 	 * @return
 	 */
 	String selectSopKey();
+
+	/**
+	 * Profile 조회
+	 * @param
+	 * @return
+	 */
+	ProfileVo selectProfile(HashMap<String, String> map);
+
+
+	/**
+	 * ticket cnt 삭제
+	 *
+	 * @param
+	 * @return
+	 */
+	void deleteRcaTicketCnt(String ticketId);
 }

@@ -3,6 +3,7 @@ package com.nia.engine.service.impl;
 import com.nia.engine.mapper.TicketMapper;
 import com.nia.engine.service.TicketService;
 import com.nia.engine.vo.*;
+import com.nia.engine.vo.profile.ProfileVo;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -154,6 +155,16 @@ public class TicketServiceImpl implements TicketService {
 	}
 
 	/**
+	 * Sop Upsert
+	 * @param
+	 * @return
+	 */
+	@Override
+	public void upsertSop(RCATicketHandlingStatus rcaTicketHandlingStatus) throws Exception {
+		ticketMapper.upsertSop(rcaTicketHandlingStatus);
+	}
+
+	/**
 	 * Sop Performance 저장
 	 * @param
 	 * @return
@@ -240,5 +251,25 @@ public class TicketServiceImpl implements TicketService {
 	@Override
 	public synchronized String selectSopKey() throws Exception {
 		return ticketMapper.selectSopKey();
+	}
+
+	/**
+	 * Profile 조회
+	 * @param
+	 * @return
+	 */
+	@Override
+	public ProfileVo selectProfile(HashMap<String, String> map) throws Exception {
+		return ticketMapper.selectProfile(map);
+	}
+
+	/**
+	 * ticket cnt 삭제
+	 * @param
+	 * @return
+	 */
+	@Override
+	public void deleteRcaTicketCnt(String ticketId) throws Exception {
+		ticketMapper.deleteRcaTicketCnt(ticketId);
 	}
 }
