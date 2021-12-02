@@ -48,8 +48,12 @@ public class NiaNoxiousTrafficHdlServiceImpl implements NiaNoxiousTrafficHdlServ
 
                     for(NoxiousTrfficVo noxiousTrfficVo : noxiousListVo.getData()){
                         hashMap = new HashMap<>();
-//                        hashMap.put("strifid", noxiousTrfficVo.getStrifid());
-//                        hashMap.put("dateregdate", String.valueOf(noxiousTrfficVo.g()));
+                        hashMap.put("strresip", noxiousTrfficVo.getStrresip());
+                        hashMap.put("strsIp", noxiousTrfficVo.getStrs_ip());
+                        hashMap.put("strsPort", String.valueOf(noxiousTrfficVo.getStrs_port()));
+                        hashMap.put("strdIp", noxiousTrfficVo.getStrd_ip());
+                        hashMap.put("strdPort", String.valueOf(noxiousTrfficVo.getStrd_port()));
+                        hashMap.put("dateregdate", String.valueOf(noxiousTrfficVo.getDateregdate()));
                         trafficMapper.insertNoxiousTraffic(hashMap);
                     }
 
