@@ -15,7 +15,7 @@
              , FLTDISCARDINMAX, FLTDISCARDOUTMAX, FLTUNKNOWNMAX, FLTUSAGEMAX
         FROM IP_YD.XE_CVNMS_PERF_IF
         WHERE STRIFID = #{strifid}
-          AND INTTIMESTAMP = #{inttimestamp}
+          AND INTTIMESTAMP = #{inttimestamp} ::timestamp
     </insert>
 
     <insert id="insertNoxiousTraffic" parameterType="java.util.HashMap">
@@ -25,7 +25,7 @@
              , STRCHANNEL, STRSENDERIP, STRIN_INTERFACE, STROUT_INTERFACE, STRBYTES_COL
              , STRCOUNTS, DATEREGDATE
           FROM IP_YD.XE_SFLOW_LOG
-         WHERE DATEREGDATE = #{dateregdate}
+         WHERE DATEREGDATE = #{dateregdate} ::timestamp
            AND STRRESIP = #{strresip}
            AND STRS_IP = #{strsIp}
            AND STRS_PORT = #{strsPort}
