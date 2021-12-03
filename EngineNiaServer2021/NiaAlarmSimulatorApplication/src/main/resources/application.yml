@@ -79,9 +79,9 @@ spring:
 
   rabbitmq:
     address: 10.81.192.18
-    port: 5675
-    username: rcaaadmin
-    password: rcaaadmin12#$
+    port: 5672
+    username: rcaadmin
+    password: rcaadmin12#$
 
     niaPerformanceToAiSendExchange: nia.exchangeNiaPerformanceToAiSendDirectly
     niaPerformanceToAiSendQueue: nia.NiaPerformanceToAiSendIndexDirectly
