@@ -144,6 +144,7 @@ public class PotnPasingServiceImpl implements CommPasingService {
                     topologyObject.setLinkId(e2eTopologyVo.getLinkId());
                     topologyObject.setOppSysname(e2eTopologyVo.getNodeIdz());
                     topologyObject.setOppPort(e2eTopologyVo.getPortz());
+                    topologyObject.setNwType(NiaCodeInfo.TOPOLOGY_GB_UNI);
 
                     isTopology = true;
                 }
