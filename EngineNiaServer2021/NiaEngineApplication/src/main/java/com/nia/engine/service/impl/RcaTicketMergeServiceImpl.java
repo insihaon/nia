@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Service("RcaTicketMergeService")
 public class RcaTicketMergeServiceImpl implements RcaTicketMergeService {
@@ -26,13 +27,22 @@ public class RcaTicketMergeServiceImpl implements RcaTicketMergeService {
     private org.springframework.beans.factory.ObjectFactory<RcaTicketResult> rcaTicketResultFactory;
 
     @Autowired
+    private org.springframework.beans.factory.ObjectFactory<RcaEngineResult> rcaEngineResultFactory;
+
+    @Autowired
     @Qualifier("RcaTicketHandlingService")
     private RcaTicketHandlingService rcaTicketHandlingService;
 
     @Autowired
-    private DataShareBean dataShareBean;
+    @Qualifier("RcaTicketManagerService")
+    private RcaTicketManagerService rcaTicketManager;
 
-    private HashMap<String, String> parameterMap;
+    @Autowired
+    @Qualifier("TicketService")
+    private TicketService ticketService;
+
+    @Autowired
+    private DataShareBean dataShareBean;
 
     /*
      * Ticket 중복 체크
@@ -46,7 +56,7 @@ public class RcaTicketMergeServiceImpl implements RcaTicketMergeService {
         BasicAlarmVo alarmA;
         BasicAlarmVo alarmZ;
         Iterator<RCATicket> itr;
-        RCATicket tmpRcaTicket;
+//        RCATicket tmpRcaTicket;
         RcaTicketResult rcaTicketResult = null;
         RCATicketHandlingStatus rcaTicketHandlingStatus;
         String ticketGenerationTime;
@@ -56,15 +66,19 @@ public class RcaTicketMergeServiceImpl implements RcaTicketMergeService {
         BasicAlarmVo tmpAlarm = null;
         BasicAlarmVo alarm = null;
 
-        try{
-            parameterMap = new HashMap<String, String>();
-            parameterMap.put("factor","ticket_merge_time");
+        Map<String, String> properties;
+        RcaEngineResult rcaEngineResult;
 
+        List<RCATicket> rcaTicketList;
+
+        try{
             if(((ArrayList<RCATicket>)dataShareBean.getData(RcaCodeInfo.DATA_SHARE_NAME_TICKET_LIST)).size() > 0) {
-                itr = ((ArrayList<RCATicket>) dataShareBean.getData(RcaCodeInfo.DATA_SHARE_NAME_TICKET_LIST)).iterator();
+                rcaTicketList = new ArrayList<>();
+                rcaTicketList.addAll(((ArrayList<RCATicket>) dataShareBean.getData(RcaCodeInfo.DATA_SHARE_NAME_TICKET_LIST)));
+
                 curDate = UtlDateHelper.getCurrentDate();
-                while (itr.hasNext()) {
-                    tmpRcaTicket = itr.next();
+                for (RCATicket tmpRcaTicket : rcaTicketList) {
+//                    tmpRcaTicket = itr.next();
                     tmptTicketGenerationTime = UtlDateHelper.timestampToString("yyyy-MM-dd", tmpRcaTicket.getTicketGenerationTime());
                     if (tmptTicketGenerationTime.equals(curDate) && tmpRcaTicket.getParentTicketId() == null) {
                         if (!tmpRcaTicket.getTicketId().equals(rcaTicket.getTicketId())) {
@@ -93,7 +107,7 @@ public class RcaTicketMergeServiceImpl implements RcaTicketMergeService {
 
                                                 if (isContinue) {
                                                     if ((tmpAlarm != null && alarm != null)) {
-                                                        if(StringUtils.isNotEmpty(tmpAlarm.getSysname()) && tmpAlarm.getSysname().equals(alarm.getSysname()) &&
+                                                        if (StringUtils.isNotEmpty(tmpAlarm.getSysname()) && tmpAlarm.getSysname().equals(alarm.getSysname()) &&
                                                                 StringUtils.isNotEmpty(tmpAlarm.getPtpname()) && tmpAlarm.getPtpname().equals(alarm.getPtpname())) {
                                                             rcaTicketResult = rcaTicketResultFactory.getObject();
                                                             rcaTicketResult.setTicketId(tmpRcaTicket.getTicketId());
@@ -112,27 +126,33 @@ public class RcaTicketMergeServiceImpl implements RcaTicketMergeService {
                                                             LOGGER.info(">>>>>>>>>>[RcaTicketMergeServiceImpl] rcaTicketMerge Sysname : parent = " + rcaTicket.getParentTicketId() + ", child = " + rcaTicket.getTicketId() + " <<<<<<<<<<<<<<<<<");
                                                             return rcaTicketResult;
 
-                                                        }else if(RcaCodeInfo.DOMAIN_SWITCH.equals(tmpRcaTicket.getRootCauseDomain()) && RcaCodeInfo.DOMAIN_SWITCH.equals(rcaTicket.getRootCauseDomain()) &&
+                                                        } else if (RcaCodeInfo.DOMAIN_SWITCH.equals(tmpRcaTicket.getRootCauseDomain()) && RcaCodeInfo.DOMAIN_SWITCH.equals(rcaTicket.getRootCauseDomain()) &&
                                                                 StringUtils.isNotEmpty(tmpAlarm.getSysname()) && tmpAlarm.getSysname().equals(alarm.getSysname()) &&
                                                                 StringUtils.isNotEmpty(tmpAlarm.getAlarmloc()) && tmpAlarm.getAlarmloc().equals(alarm.getAlarmloc())) {
+                                                            tmpRcaTicket.setParentTicketId(rcaTicket.getTicketId());
+                                                            ticketService.updateRcaTicketChild(tmpRcaTicket);
 
-                                                                rcaTicketResult = rcaTicketResultFactory.getObject();
-                                                                rcaTicketResult.setTicketId(tmpRcaTicket.getTicketId());
-                                                                rcaTicketResult.setValue(tmpRcaTicket.getStatus());
-                                                                rcaTicketResult.setResult(true);
+                                                            tmpRcaTicket.setRootCauseType(rcaTicket.getRootCauseType());
+                                                            tmpRcaTicket.setTicketRcaResultCode(rcaTicket.getTicketRcaResultCode());
+                                                            tmpRcaTicket.setTicketRcaResultDtlCode(rcaTicket.getTicketRcaResultDtlCode());
 
-                                                                rcaTicket.setParentTicketId(tmpRcaTicket.getTicketId());
+                                                            ticketService.deleteRcaTicketCnt(tmpRcaTicket.getTicketId());
 
-                                                                if (RcaCodeInfo.TICKET_STATUS_AUTO_FIN.equals(tmpRcaTicket.getStatus())) {
-                                                                    rcaTicketHandlingStatus = rcaTicketHandlingStatusFactory.getObject();
-                                                                    rcaTicketHandlingStatus.setTicketId(tmpRcaTicket.getTicketId());
-                                                                    rcaTicketHandlingStatus.setStatus(RcaCodeInfo.TICKET_STATUS_AUTO_FIN);
-                                                                    rcaTicketHandlingService.ticketStatusModify(rcaTicketHandlingStatus);
-                                                                }
+                                                            rcaEngineResult = rcaEngineResultFactory.getObject();
+                                                            rcaEngineResult.setTicketId(tmpRcaTicket.getTicketId());
+                                                            rcaEngineResult.setEventType(RcaCodeInfo.UI_TICKET_TYPE_DELETE);
+                                                            rcaTicketManager.uiSendTicketResult(rcaEngineResult);
 
-                                                                LOGGER.info(">>>>>>>>>>[RcaTicketMergeServiceImpl] rcaTicketMerge Sysname : parent = " + rcaTicket.getParentTicketId() + ", child = " + rcaTicket.getTicketId() + " <<<<<<<<<<<<<<<<<");
-                                                                return rcaTicketResult;
-                                                        }else if((tmpAlarm.getTopology() != null && alarm.getTopology() != null)) {
+                                                            rcaTicketResult = rcaTicketResultFactory.getObject();
+                                                            rcaTicketResult.setTicketId(rcaTicket.getTicketId());
+                                                            rcaTicketResult.setValue(rcaTicket.getStatus());
+                                                            rcaTicketResult.setResult(false);
+
+                                                            ((ArrayList<RCATicket>) dataShareBean.getData(RcaCodeInfo.DATA_SHARE_NAME_TICKET_LIST)).remove(tmpRcaTicket);
+
+                                                            LOGGER.info(">>>>>>>>>>[RcaTicketMergeServiceImpl] rcaTicketMerge Sysname : parent = " + tmpRcaTicket.getParentTicketId() + ", child = " + tmpRcaTicket.getTicketId() + " <<<<<<<<<<<<<<<<<");
+                                                            return rcaTicketResult;
+                                                        } else if ((tmpAlarm.getTopology() != null && alarm.getTopology() != null)) {
                                                             if (tmpAlarm.getTopology().getTrunkId().equals(alarm.getTopology().getTrunkId())) {
                                                                 rcaTicketResult = rcaTicketResultFactory.getObject();
                                                                 rcaTicketResult.setTicketId(tmpRcaTicket.getTicketId());
@@ -150,8 +170,7 @@ public class RcaTicketMergeServiceImpl implements RcaTicketMergeService {
 
                                                                 LOGGER.info(">>>>>>>>>>[RcaTicketMergeServiceImpl] rcaTicketMerge TrunkId : parent = " + rcaTicket.getParentTicketId() + ", child = " + rcaTicket.getTicketId() + " <<<<<<<<<<<<<<<<<");
                                                                 return rcaTicketResult;
-                                                            }
-                                                            else if (tmpAlarm.getTopology().getLinkId().equals(alarm.getTopology().getLinkId())) {
+                                                            } else if (tmpAlarm.getTopology().getLinkId().equals(alarm.getTopology().getLinkId())) {
                                                                 rcaTicketResult = rcaTicketResultFactory.getObject();
                                                                 rcaTicketResult.setTicketId(tmpRcaTicket.getTicketId());
                                                                 rcaTicketResult.setValue(tmpRcaTicket.getStatus());
@@ -182,6 +201,7 @@ public class RcaTicketMergeServiceImpl implements RcaTicketMergeService {
                     }
                 }
             }
+
             if(rcaTicketResult == null){
                 rcaTicketResult = rcaTicketResultFactory.getObject();
                 rcaTicketResult.setResult(false);

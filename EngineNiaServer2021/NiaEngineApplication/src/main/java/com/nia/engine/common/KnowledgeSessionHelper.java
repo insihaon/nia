@@ -1,4 +1,5 @@
 package com.nia.engine.common;
+
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
