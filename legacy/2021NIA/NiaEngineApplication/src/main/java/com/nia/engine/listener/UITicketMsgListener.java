@@ -60,7 +60,6 @@ public class UITicketMsgListener implements ChannelAwareMessageListener {
 	public void onMessage(Message message, Channel channel) {
 		LOGGER.info("==========>[UITicketMsgListener] onMessage : "+new String(message.getBody())+"<==============");
 
-
 		try {
 			RcaEngineResult rcaEngineResult = rcaEngineResultObjectFactory.getObject();
 			Object obj;
@@ -71,6 +70,7 @@ public class UITicketMsgListener implements ChannelAwareMessageListener {
 
 			if("reset".equals(rcaTicketHandlingStatus.getStatus())){
 				((ArrayList<RCATicket>)dataShareBean.getData(RcaCodeInfo.DATA_SHARE_NAME_TICKET_LIST)).clear();
+				LOGGER.info("==========>[UITicketMsgListener] size : "+((ArrayList<RCATicket>)dataShareBean.getData(RcaCodeInfo.DATA_SHARE_NAME_TICKET_LIST)).size()+"<==============");
 
 				rcaEngineResult.setEventType("RESET");
 				engineToUiTicketPrdAmqp.sendMessageCmd(rcaEngineResult);

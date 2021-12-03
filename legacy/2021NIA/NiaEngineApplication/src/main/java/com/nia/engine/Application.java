@@ -42,15 +42,10 @@ public class Application implements CommandLineRunner{
     @Qualifier("EngineBootSettingService")
     private EngineBootSettingService engineBootSettingService;
 
-	@Autowired
-	@Qualifier("FaultEventService")
-	private FaultEventService faultEventService;
-
 	public static void main(String[] args) { SpringApplication.run(Application.class, args); }
 
 	@Override
 	public void run(String... arg0) throws Exception {
 		engineBootSettingService.engineInit();
-		//faultEventService.insertFaultEvent("2020-11-26 16:00:00", "2020-11-26 18:00:00","테스트데이터");
 	}
 }

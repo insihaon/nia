@@ -317,6 +317,7 @@ public class RcaTicketManagerServiceImpl implements RcaTicketManagerService {
                                         rcaTicketAl.setRootCausePtpnameZ(basicAlarm.getTopology().getOppPtpName());
                                         rcaTicketAl.setRootCauseSlotZ(basicAlarm.getTopology().getOppSlot());
                                         rcaTicketAl.setRootCauseEquipTypeZ(basicAlarm.getEquiptype());
+                                        rcaTicketAl.setRootCausePortA(basicAlarm.getTopology().getOppPort());
                                     }
 
                                     rcaTicketAlList.add(rcaTicketAl);
@@ -374,6 +375,8 @@ public class RcaTicketManagerServiceImpl implements RcaTicketManagerService {
 
                                 if (rcaTicket.getParentTicketId() != null) {
                                     ticketService.updateRcaTicketChild(rcaTicket);
+                                    rcaTicket.setParentTicketId(rcaTicketResult.getTicketId());
+                                    rcaTicket.addChild();
                                 }
 
                                 updateTime = String.valueOf(rcaTicket.getTicketGenerationTime());

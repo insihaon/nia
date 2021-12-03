@@ -365,7 +365,7 @@
 
     <insert id="insertSop" parameterType="com.nia.engine.vo.RCATicketHandlingStatus">
         INSERT INTO nia.tb_sop
-        (sop_id, ticket_id, ticket_type, ticket_result, status, request_time, receive_time, detail)
+        (sop_id, ticket_id, ticket_type, ticket_result, status, request_time, receive_time, detail, fault_classify, fault_type, fault_detail_content, etc_content, ai_accuracy)
             VALUES (
                         #{sopId},
                         #{ticketId},
@@ -374,7 +374,12 @@
                         #{status},
                         now(),
                         NULL,
-                        #{detail}
+                        #{detail},
+                        #{faultClassify},
+                        #{faultType},
+                        #{faultDetailContent},
+                        #{etcContent},
+                        #{aiAccuracy}
             );
     </insert>
 
@@ -394,6 +399,35 @@
         UPDATE nia.tb_sop
         SET receive_time = now(), status = #{status}
         WHERE sop_id = #{sopId}
+    </update>
+
+    <update id="upsertSop" parameterType="com.nia.engine.vo.RCATicketHandlingStatus">
+        WITH UPSERT AS (
+            UPDATE NIA.TB_SOP
+              SET RECEIVE_TIME = now(), STATUS = #{status}, FAULT_CLASSIFY = #{faultClassify},
+               FAULT_TYPE = #{faultType}, FAULT_DETAIL_CONTENT = #{faultDetailContent}, ETC_CONTENT = #{etcContent}, AI_ACCURACY = #{aiAccuracy}
+             WHERE TICKET_ID = #{ticketId}
+            RETURNING TICKET_ID
+        )
+        INSERT INTO NIA.TB_SOP
+            (SOP_ID, TICKET_ID, TICKET_TYPE, TICKET_RESULT, STATUS,
+            REQUEST_TIME, RECEIVE_TIME, DETAIL, FAULT_CLASSIFY, FAULT_TYPE,
+            FAULT_DETAIL_CONTENT, ETC_CONTENT, AI_ACCURACY)
+        SELECT
+            #{sopId},
+            #{ticketId},
+            #{ticketType},
+            #{ticketResult},
+            #{status},
+            now(),
+            NULL,
+            #{detail},
+            #{faultClassify},
+            #{faultType},
+            #{faultDetailContent},
+            #{etcContent},
+            #{aiAccuracy}
+          WHERE NOT EXISTS (SELECT 1 FROM UPSERT)
     </update>
 
     <update id="updateRcaTicketCurrentState" parameterType="com.nia.engine.vo.RCATicketHandlingStatus">
@@ -427,11 +461,33 @@
         FROM RCA.TB_RCA_TICKET_CURRENT
         WHERE ticket_generation_time > RCA.FC_GET_MINUS_DAY(2)
           AND status NOT IN('AUTO_FIN','FIN')
+          and ticket_type != 'PF'
+          AND ticket_type != 'TRAFFIC'
     </select>
 
     <select id="selectSopKey" resultType="string">
         SELECT nextval('rca.seq_sop') ::VARCHAR AS TICKET_ID
     </select>
+
+    <select id="selectProfile" resultType="com.nia.engine.vo.profile.ProfileVo" parameterType="java.util.HashMap">
+        SELECT A.PROFILE_TITLE as profileTitle, A.AUTO_RECOVERY as autoRecovery, B.PORT_ID as portId
+          FROM RESOURCE.TB_FAULT_PROCESS_PROFILE A
+          LEFT OUTER JOIN RESOURCE.TB_FAULT_PROCESS_IF B
+            ON A.PROFILE_NUM = B.PROFILE_NUM
+        WHERE A.NETWORK_TYPE = #{networkType}
+          AND A.PROCESSING_TEMPLATE = #{processingTemplate}
+          AND A.PROCESS_TYPE = #{processType}
+          AND B.NODE_ID = #{nodeId}
+  <![CDATA[   AND (A.AUTO_PROCESS_CHECK = TRUE OR (A.AUTO_PROCESS_END_DATETIME > #{faultTime}::timestamp AND A.AUTO_PROCESS_START_DATETIME < #{faultTime}::timestamp)) ]]>
+        <if test="portId != null">
+          AND B.PORT_ID = #{portId}
+        </if>
+    </select>
+
+    <delete id="deleteRcaTicketCnt" parameterType="string">
+        DELETE FROM rca.tb_rca_ticket_cnt
+        WHERE TICKET_ID = #{ticketId}
+    </delete>
 </mapper>
 
 

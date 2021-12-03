@@ -15,4 +15,9 @@
     <kbase name="switchs" packages="rules.switchs.single">
         <ksession name="ksession-switchs"/>
     </kbase>
+
+    <!--  MULTI  -->
+    <kbase name="multi" packages="rules.multi">
+        <ksession name="ksession-multi"/>
+    </kbase>
 </kmodule>
