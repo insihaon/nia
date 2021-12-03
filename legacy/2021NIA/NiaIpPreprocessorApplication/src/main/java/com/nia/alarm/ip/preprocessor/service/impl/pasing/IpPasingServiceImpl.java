@@ -75,10 +75,10 @@ public class IpPasingServiceImpl implements CommPasingService {
             strLog.append("ifId : " + this.basicAlarmVo.getIfId()+"\n");
             strLog.append("ptpName : " + this.basicAlarmVo.getPtpName()+"\n");
 
-            if(this.basicAlarmVo.getTopology() != null){
-                strLog.append("linkId : " + this.basicAlarmVo.getTopology().getLinkId()+"\n");
-                strLog.append("oppSysname : " + this.basicAlarmVo.getTopology().getOppSysname()+"\n");
-                strLog.append("oppIfId : " + this.basicAlarmVo.getTopology().getOppIfId()+"\n");
+            if(this.basicAlarmVo.getTopologyObject() != null){
+                strLog.append("linkId : " + this.basicAlarmVo.getTopologyObject().getLinkId()+"\n");
+                strLog.append("oppSysname : " + this.basicAlarmVo.getTopologyObject().getOppSysname()+"\n");
+                strLog.append("oppIfId : " + this.basicAlarmVo.getTopologyObject().getOppIfId()+"\n");
             }
             strLog.append("---------------------------------------------------------------");
             LOGGER.info(strLog.toString());
@@ -125,8 +125,8 @@ public class IpPasingServiceImpl implements CommPasingService {
                 if(e2eTopologyVo != null){
                     topologyObject = topologyObjectFactory.getObject();
                     topologyObject.setLinkId(e2eTopologyVo.getLinkId());
-                    topologyObject.setOppSysname(e2eTopologyVo.getNodeIdz());
-                    topologyObject.setOppPort(e2eTopologyVo.getPortz());
+                    topologyObject.setOppSysname(e2eTopologyVo.getNodeIda());
+                    topologyObject.setOppPort(e2eTopologyVo.getPorta());
 
                     isTopology = true;
                 }
@@ -149,13 +149,13 @@ public class IpPasingServiceImpl implements CommPasingService {
 
             if(isTopology){
                 topologyObject.setAlarmno(basicAlarmVo.getAlarmno());
-                basicAlarmVo.setTopology(topologyObject);
+                basicAlarmVo.setTopologyObject(topologyObject);
                 this.basicAlarmVo = basicAlarmVo;
             }else{
                 topologyObject = topologyObjectFactory.getObject();
                 topologyObject.setNwType(NiaCodeInfo.TOPOLOGY_GB_UNKNOWN);
                 topologyObject.setAlarmno(basicAlarmVo.getAlarmno());
-                basicAlarmVo.setTopology(topologyObject);
+                basicAlarmVo.setTopologyObject(topologyObject);
                 this.basicAlarmVo = basicAlarmVo;
             }
         }catch (Exception e) {

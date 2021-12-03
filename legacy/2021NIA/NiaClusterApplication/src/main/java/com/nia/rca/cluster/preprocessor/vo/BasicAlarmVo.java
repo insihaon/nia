@@ -46,7 +46,7 @@ public class BasicAlarmVo implements Serializable {
     private String port;
     private String slot;
     private String ptpName;
-	private TopologyObject topology;
+    private TopologyObject topologyObject;
 
     @JsonProperty("alarmtime")
     public void setAlarmtime(long alarmtime){
