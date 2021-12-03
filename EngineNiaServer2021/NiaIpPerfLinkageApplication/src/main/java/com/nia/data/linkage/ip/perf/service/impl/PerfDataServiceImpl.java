@@ -26,10 +26,10 @@ public class PerfDataServiceImpl implements PerfDataService {
     private static final Logger LOGGER = LoggerFactory.getLogger(PerfDataServiceImpl.class);
 
     @Autowired
-    private LinkagePerfMapper linkageAlarmMapper;
+    private LinkagePerfMapper linkagePerfMapper;
 
     @Autowired
-    private NiaPerfMapper niaAlarmMapper;
+    private NiaPerfMapper niaPerfMapper;
 
     @Autowired
     private NiaEquipMapper niaEquipMapper;
@@ -48,10 +48,10 @@ public class PerfDataServiceImpl implements PerfDataService {
         List<List<PerfVo>> listByGroup = null;
 
         try {
-            inttimestamp = niaAlarmMapper.selectPerfYdKey("ipPerfKey");
+            inttimestamp = niaPerfMapper.selectPerfYdKey("ipPerfKey");
 
             if(StringUtils.isNotEmpty(inttimestamp)){
-                perfVoList = linkageAlarmMapper.selectPerfList(Long.parseLong(inttimestamp));
+                perfVoList = linkagePerfMapper.selectPerfList(Long.parseLong(inttimestamp));
 
                 if(perfVoList != null && perfVoList.size() > 0) {
                     LOGGER.info("==========>[PerfDataService] getPerfData perfVoList("+perfVoList.size() +") <==============");
@@ -70,7 +70,7 @@ public class PerfDataServiceImpl implements PerfDataService {
                     if(insertPerfVoList.size() < 50){
                         objectHashMap = new HashMap<>();
                         objectHashMap.put("perfVoList", insertPerfVoList);
-                        niaAlarmMapper.insertPerf(objectHashMap);
+                        niaPerfMapper.insertPerf(objectHashMap);
                     }else{
                         listByGroup = Lists.partition(insertPerfVoList, insertPerfVoList.size() / 50);
 
@@ -78,7 +78,7 @@ public class PerfDataServiceImpl implements PerfDataService {
                             for (List<PerfVo> perfList : listByGroup) {
                                 objectHashMap = new HashMap<>();
                                 objectHashMap.put("perfVoList", perfList);
-                                niaAlarmMapper.insertPerf(objectHashMap);
+                                niaPerfMapper.insertPerf(objectHashMap);
                             }
                         }
                     }
@@ -86,7 +86,7 @@ public class PerfDataServiceImpl implements PerfDataService {
                     strHashMap = new HashMap<>();
                     strHashMap.put("key", "ipPerfKey");
                     strHashMap.put("value", perfVoList.get(perfVoList.size()-1).getIntTimestamp()+"");
-                    niaAlarmMapper.updatePerfYdKey(strHashMap);
+                    niaPerfMapper.updatePerfYdKey(strHashMap);
                 }
             }
         }catch (Exception e){

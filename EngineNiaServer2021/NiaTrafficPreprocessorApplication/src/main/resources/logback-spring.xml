@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+    <property name="LOG_TEMP" value="/home/codej8888/server/logs/" />
     <include resource="org/springframework/boot/logging/logback/defaults.xml" />
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
 
-    <appender name="aiResultLinkageApplicationInfo"
+    <appender name="aiTrafficePreprocessorApplicationInfo"
               class="ch.qos.logback.core.rolling.RollingFileAppender">
         <prudent>true</prudent>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!--<fileNamePattern>../logs/preprocessor_application.%d{yyyy-MM-dd}.log</fileNamePattern>-->
-            <fileNamePattern>/home/koren0901/server/logs/aiResultLinkage_application.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>/home/codej8888/server/logs/aiTrafficePreprocessor_application.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
         </rollingPolicy>
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
@@ -20,11 +21,11 @@
         </encoder>
     </appender>
 
-    <appender name="aiResultLinkageApplicationError"
+    <appender name="aiTrafficePreprocessorApplicationError"
               class="ch.qos.logback.core.rolling.RollingFileAppender">
         <prudent>true</prudent>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>/home/koren0901/server/logs/aiResultLinkage_application_error.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>/home/codej8888/server/logs/aiTrafficePreprocessor_application_error.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
         </rollingPolicy>
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
@@ -40,10 +41,10 @@
     <logger name="com.nia.ai.traffic.preprocessor" level="INFO"/>
 
     <root level="INFO">
-        <appender-ref ref="aiResultLinkageApplicationInfo"/>
+        <appender-ref ref="aiTrafficePreprocessorApplicationInfo"/>
     </root>
     <root level="ERROR">
-        <appender-ref ref="aiResultLinkageApplicationError"/>
+        <appender-ref ref="aiTrafficePreprocessorApplicationError"/>
     </root>
 
 </configuration>

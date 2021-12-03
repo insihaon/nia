@@ -55,8 +55,8 @@ spring:
     port: 22
     user: ENC(XMOpjFUtgZnBRPp7m7a9o2WSXQ1l5oe/)
     password: ENC(Q5gydJpI5uME0zXRuMHImGC5bkFqmaRK)
-    file-path: /home/koren0901/data/
-    nia-file-path: /home/koren0901/data/
+    file-path: /home/zerooneai211202/data/
+    nia-file-path: /home/zerooneai211202/data/
 
 ---
 spring:
@@ -107,4 +107,4 @@ spring:
     port: 22
     user: ENC(XMOpjFUtgZnBRPp7m7a9o2WSXQ1l5oe/)
     password: ENC(Q5gydJpI5uME0zXRuMHImGC5bkFqmaRK)
-    file-path: /home/koren0901/data/
+    file-path: /home/zerooneai211202/data/

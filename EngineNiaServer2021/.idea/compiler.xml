@@ -12,15 +12,14 @@
         <module name="com.nia.data.linkage.ip.perf" />
         <module name="com.nia.data.linkage" />
         <module name="com.nia.data.linkage.ip.equip" />
-        <module name="spring-snmp" />
         <module name="com.nia.ems.linkage" />
         <module name="com.nia.data.linkage.ai" />
         <module name="com.nia.engine" />
         <module name="com.nia.ai.performance.send" />
         <module name="com.nia.data.linkage.ip.alarm" />
         <module name="com.nia.alarm.ip.preprocessor" />
-        <module name="com.nia.linkage.snmp.ap" />
         <module name="com.nia.alarm.ip.simulator" />
+        <module name="com.nia.ai.traffic.preprocessor" />
         <module name="com.nia.ai.per.ap" />
         <module name="com.nia.rca.cluster.preprocessor" />
         <module name="com.nia.ai.performance.result" />
@@ -32,6 +31,8 @@
       <module name="com.nia.ai.per.ap" target="1.8" />
       <module name="com.nia.ai.performance.result" target="1.8" />
       <module name="com.nia.ai.performance.send" target="1.8" />
+      <module name="com.nia.ai.traffic.preprocessor" target="1.8" />
+      <module name="com.nia.ai.traffic.result" target="1.8" />
       <module name="com.nia.alarm.ip.preprocessor" target="1.8" />
       <module name="com.nia.alarm.ip.simulator" target="1.8" />
       <module name="com.nia.alarm.preprocessor" target="1.8" />
@@ -60,6 +61,8 @@
       <module name="com.nia.ai.per.ap" options="-parameters" />
       <module name="com.nia.ai.performance.result" options="-parameters" />
       <module name="com.nia.ai.performance.send" options="-parameters" />
+      <module name="com.nia.ai.traffic.preprocessor" options="-parameters" />
+      <module name="com.nia.ai.traffic.result" options="-parameters" />
       <module name="com.nia.alarm.ip.preprocessor" options="-parameters" />
       <module name="com.nia.alarm.ip.simulator" options="-parameters" />
       <module name="com.nia.alarm.preprocessor" options="-parameters" />
