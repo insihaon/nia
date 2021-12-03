@@ -13,7 +13,6 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 
 @Component
-@ToString
 @Data
 @Scope(value = "prototype")
 @JsonIgnoreProperties(ignoreUnknown = true)

@@ -63,13 +63,11 @@ public class AlarmServiceImpl implements AlarmService {
                             for(NodeMstVo nodeMstVo : nodeMstVoList){
                                 if(alarmVo.getStrResID().equals(nodeMstVo.getNodeNum())){
                                     sendAlarmList.add(alarmVo);
-
                                     alarmLinkageResultPrdAmqp.sendMessageCmd(alarmVo);
                                 }
                             }
                         }else{
                             sendAlarmList.add(alarmVo);
-
                             alarmLinkageResultPrdAmqp.sendMessageCmd(alarmVo);
                         }
                     }

@@ -42,7 +42,7 @@ public class Application implements CommandLineRunner{
 
 	@Override
 	public void run(String... arg0) throws Exception {
-		bootSettingService.init();
+//		bootSettingService.init();
 		topologyService.getTopologyData();
 	//	alarmService.getAlarmData();
 	}
