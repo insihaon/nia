@@ -20,8 +20,8 @@ import com.nia.alarm.ip.simulator.vo.RabbitMQVo;
 @Configuration
 public class RabbitMQConfig {
 
-	@Autowired
-	private RabbitMQVo rabbitMQVo;
+    @Autowired
+    private RabbitMQVo rabbitMQVo;
 
     @Autowired
     private RcaResetMsgListener rcaResetMsgListener;
@@ -46,6 +46,11 @@ public class RabbitMQConfig {
         return new Queue(rabbitMQVo.getNiaTicketReStartQueue());
     }
 
+    @Bean(name="uiToEngine_Queue")
+    public Queue uiToEngine_Queue() {
+        return new Queue(rabbitMQVo.getUiToEngineQueue());
+    }
+
     @Bean
     public MessageConverter jsonMessageConverter(){
         return new Jackson2JsonMessageConverter();
@@ -59,8 +64,16 @@ public class RabbitMQConfig {
         return template;
     }
 
+    @Bean(name="UiToEngine_RabbitTemplate")
+    public RabbitTemplate rabbitTemplateUiToEngine() {
+        RabbitTemplate template = new RabbitTemplate(connectionFactory());
+        template.setRoutingKey(rabbitMQVo.getUiToEngineQueue());
+        template.setMessageConverter(jsonMessageConverter());
+        return template;
+    }
+
     @Bean(name="NiaTicketReStart_ListenerContainer")
-    public SimpleMessageListenerContainer UIToengineListenerContainer() {
+    public SimpleMessageListenerContainer niaTicketReStartListenerContainer() {
         SimpleMessageListenerContainer listenerContainer = new SimpleMessageListenerContainer();
         listenerContainer.setConnectionFactory(connectionFactory());
         listenerContainer.setQueues(niaTicketReStartQueue());

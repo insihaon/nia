@@ -34,7 +34,7 @@
     </select>
 
     <select id="selectE2eTopologyList" resultType="com.nia.alarm.preprocessor.vo.topology.E2eTopologyVo" parameterType="hashmap">
-        SELECT LINK_ID, NODE_IDA, PORTA, NODE_IDZ, PORTZ
+        SELECT LINK_ID as linkId, NODE_IDA as nodeIda, PORTA as porta, NODE_IDZ as nodeIdz, PORTZ as portz
         FROM NIA.TB_E2E_TOPOLOGY
         WHERE ((NODE_IDA = #{nodeId} AND PORTA = #{port})
             OR (NODE_IDZ = #{nodeId} AND PORTZ = #{port}))

@@ -1,5 +1,6 @@
 package com.nia.alarm.ip.simulator.listener;
 
+import com.nia.alarm.ip.simulator.amqp.UiToEnginePrdAmqp;
 import com.nia.alarm.ip.simulator.service.AlarmSimHdlService;
 import com.rabbitmq.client.Channel;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -19,13 +20,18 @@ public class RcaResetMsgListener implements ChannelAwareMessageListener {
 	@Qualifier("AlarmSimHdlService")
 	private AlarmSimHdlService alarmSimHdlService;
 
+	@Autowired
+	private UiToEnginePrdAmqp uiToEnginePrdAmqp;
+
 	@Override
 	public void onMessage(Message message, Channel channel) {
 
 		try {
 			LOGGER.info(">>>>>>>>>>[RcaResetMsgListener] onMessage : " + message.toString() + " <<<<<<<<<<<<<<<<<");
-			alarmSimHdlService.alTestHdlProcessor();
 
+			uiToEnginePrdAmqp.sendMessageCmd();
+
+			alarmSimHdlService.alTestHdlProcessor();
 		} catch (Exception e) {
 			LOGGER.error("=====> [PerformanceMsgListener] onMessage error "+ ExceptionUtils.getStackTrace(e)+ "<=====");
 		}
