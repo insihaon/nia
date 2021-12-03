@@ -45,9 +45,9 @@ public class AlarmServiceImpl implements AlarmService {
 
             alarmMapper.insertAlarmMst(basicAlarmVo);
 
-            if(basicAlarmVo.getTopology() != null){
-                basicAlarmVo.getTopology().setInsertTime(basicAlarmVo.getReceivetime());
-                alarmMapper.insertAlTopology(basicAlarmVo.getTopology());
+            if(basicAlarmVo.getTopologyObject() != null){
+                basicAlarmVo.getTopologyObject().setInsertTime(basicAlarmVo.getReceivetime());
+                alarmMapper.insertAlTopology(basicAlarmVo.getTopologyObject());
             }
 
 		}catch (Exception e) {

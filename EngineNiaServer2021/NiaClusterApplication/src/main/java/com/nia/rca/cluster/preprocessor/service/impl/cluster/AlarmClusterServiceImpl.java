@@ -111,8 +111,8 @@ public class AlarmClusterServiceImpl implements AlarmClusterService {
             strLog.append("receiveTime : " + basicAlarmVo.getReceivetime()+"\n");
             strLog.append("equipType : " + basicAlarmVo.getEquiptype()+"\n");
             strLog.append("sysname : " + basicAlarmVo.getSysname()+"\n");
-            if(basicAlarmVo.getTopology() != null){
-                strLog.append("oppSysname : " + basicAlarmVo.getTopology().getOppSysname()+"\n");
+            if(basicAlarmVo.getTopologyObject() != null){
+                strLog.append("oppSysname : " + basicAlarmVo.getTopologyObject().getOppSysname()+"\n");
             }
             strLog.append("---------------------------------------------------------------");
             LOGGER.info(strLog.toString());
@@ -121,15 +121,15 @@ public class AlarmClusterServiceImpl implements AlarmClusterService {
 
 			if(clusterObjectList.size() > 0) {
                 for(ClusterObject clusterObject : clusterObjectList) {
-                    if(basicAlarmVo.getTopology() != null){
-                        if(StringUtils.isNotEmpty(basicAlarmVo.getTopology().getTrunkId())){
-                            isTrunkIdFind = clusterObject.findTrunkId(basicAlarmVo.getTopology().getTrunkId());
+                    if(basicAlarmVo.getTopologyObject() != null){
+                        if(StringUtils.isNotEmpty(basicAlarmVo.getTopologyObject().getTrunkId())){
+                            isTrunkIdFind = clusterObject.findTrunkId(basicAlarmVo.getTopologyObject().getTrunkId());
                         }
 
                         isSysNameFind = clusterObject.findSysName(basicAlarmVo.getSysname());
 
-                        if(!StringUtils.isEmpty(basicAlarmVo.getTopology().getOppSysname())){
-                            isOppSysNameFind = clusterObject.findSysName(basicAlarmVo.getTopology().getOppSysname());
+                        if(!StringUtils.isEmpty(basicAlarmVo.getTopologyObject().getOppSysname())){
+                            isOppSysNameFind = clusterObject.findSysName(basicAlarmVo.getTopologyObject().getOppSysname());
                         }
                     }else{
                         isSysNameFind = clusterObject.findSysName(basicAlarmVo.getSysname());
@@ -138,8 +138,8 @@ public class AlarmClusterServiceImpl implements AlarmClusterService {
                     if(isSysNameFind || isOppSysNameFind || isTrunkIdFind) {
                         clusterObject.addEquipList(basicAlarmVo.getSysname());
 
-                        if(basicAlarmVo.getTopology() != null && !StringUtils.isEmpty(basicAlarmVo.getTopology().getOppSysname())){
-                            clusterObject.addEquipList(basicAlarmVo.getTopology().getOppSysname());
+                        if(basicAlarmVo.getTopologyObject() != null && !StringUtils.isEmpty(basicAlarmVo.getTopologyObject().getOppSysname())){
+                            clusterObject.addEquipList(basicAlarmVo.getTopologyObject().getOppSysname());
                         }
 
                         basicAlarmVo.setClusterno(clusterObject.getClusterNo());
@@ -326,13 +326,13 @@ public class AlarmClusterServiceImpl implements AlarmClusterService {
 			basicAlarmVo.setClusterno(clusterNo);
 			clusterInfoVo = clusterInfoVoObjectFactory.getObject();
 
-			if(basicAlarmVo.getTopology() != null) {
-				if(StringUtils.isNotEmpty(basicAlarmVo.getTopology().getOppSysname())){
-                    clusterObject.addEquipList(basicAlarmVo.getTopology().getOppSysname());
+			if(basicAlarmVo.getTopologyObject() != null) {
+				if(StringUtils.isNotEmpty(basicAlarmVo.getTopologyObject().getOppSysname())){
+                    clusterObject.addEquipList(basicAlarmVo.getTopologyObject().getOppSysname());
                 }
 
-				if(StringUtils.isNotEmpty(basicAlarmVo.getTopology().getTrunkId())){
-			       clusterObject.addTrunkIdList(basicAlarmVo.getTopology().getTrunkId());
+				if(StringUtils.isNotEmpty(basicAlarmVo.getTopologyObject().getTrunkId())){
+			       clusterObject.addTrunkIdList(basicAlarmVo.getTopologyObject().getTrunkId());
                 }
 				clusterInfoVo.setTmpClusterNo(tmpClusterNo);
 				clusterInfoVo.setClusterNo(clusterNo);
