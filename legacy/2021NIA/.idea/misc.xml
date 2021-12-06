@@ -22,6 +22,7 @@
         <option value="$PROJECT_DIR$/NiaIpPerfLinkageApplication/pom.xml" />
         <option value="$PROJECT_DIR$/NiaRcaToAiDataLinkageApplication/pom.xml" />
         <option value="$PROJECT_DIR$/NiaEngineApplication/pom.xml" />
+        <option value="$PROJECT_DIR$/NiaAlarmSimulatorApplicationTest/pom.xml" />
       </list>
     </option>
   </component>

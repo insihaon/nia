@@ -58,6 +58,10 @@ public class RcaTicketManagerServiceImpl implements RcaTicketManagerService {
     private RcaTicketMergeService rcaTicketMergeService;
 
     @Autowired
+    @Qualifier("RcaTicketProfileService")
+    private RcaTicketProfileService rcaTicketProfileService;
+
+    @Autowired
     private EngineToUiTicketPrdAmqp engineToUiTicketPrdAmqp;
 
     @Autowired
@@ -412,6 +416,7 @@ public class RcaTicketManagerServiceImpl implements RcaTicketManagerService {
                                 }
                             }
 
+                            rcaTicketProfileService.profileCheck(rcaTicket);
                             ticketClearCheck(rcaTicket);
                         }
                     }

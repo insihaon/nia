@@ -7,24 +7,25 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="com.nia.alarm.preprocessor" />
-        <module name="NiaPingPreprocessorApplication" />
-        <module name="com.nia.data.linkage.ip.perf" />
-        <module name="com.nia.data.linkage" />
-        <module name="com.nia.data.linkage.ip.equip" />
-        <module name="com.nia.ems.linkage" />
-        <module name="com.nia.data.linkage.ai" />
-        <module name="com.nia.engine" />
+        <module name="com.nia.ai.per.ap" />
+        <module name="com.nia.ai.performance.result" />
         <module name="com.nia.ai.performance.send" />
-        <module name="com.nia.data.linkage.ip.alarm" />
+        <module name="com.nia.ai.traffic.preprocessor" />
         <module name="com.nia.alarm.ip.preprocessor" />
         <module name="com.nia.alarm.ip.simulator" />
-        <module name="com.nia.ai.traffic.preprocessor" />
-        <module name="com.nia.ai.per.ap" />
-        <module name="com.nia.rca.cluster.preprocessor" />
-        <module name="com.nia.ai.performance.result" />
+        <module name="com.nia.alarm.preprocessor" />
         <module name="com.nia.alarm.simulator" />
+        <module name="com.nia.data.linkage" />
+        <module name="com.nia.data.linkage.ai" />
+        <module name="com.nia.data.linkage.ip.alarm" />
+        <module name="com.nia.data.linkage.ip.equip" />
+        <module name="com.nia.data.linkage.ip.perf" />
         <module name="com.nia.data.linkage.ip.sflow" />
+        <module name="com.nia.ems.linkage" />
+        <module name="com.nia.engine" />
+        <module name="com.nia.rca.cluster.preprocessor" />
+        <module name="com.nia.rca.test.simulator" />
+        <module name="NiaPingPreprocessorApplication" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -47,6 +48,7 @@
       <module name="com.nia.engine" target="1.8" />
       <module name="com.nia.linkage.snmp.ap" target="1.8" />
       <module name="com.nia.rca.cluster.preprocessor" target="1.8" />
+      <module name="com.nia.rca.test.simulator" target="1.8" />
       <module name="LiaSnmpLinkageApplication" target="1.5" />
       <module name="NiaPingPerprocessorApplication" target="8" />
       <module name="NiaPingPreprocessorApplication" target="1.8" />
@@ -77,6 +79,7 @@
       <module name="com.nia.engine" options="-parameters" />
       <module name="com.nia.linkage.snmp.ap" options="-parameters" />
       <module name="com.nia.rca.cluster.preprocessor" options="-parameters" />
+      <module name="com.nia.rca.test.simulator" options="-parameters" />
     </option>
   </component>
 </project>

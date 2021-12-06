@@ -32,4 +32,11 @@ public class RabbitMQVo implements Serializable {
 	private String niaTicketReStartRoutingKey;
 	@Value("${spring.rabbitmq.niaTicketReStartQueue}")
 	private String niaTicketReStartQueue;
+
+	@Value("${spring.rabbitmq.uiToEngineExchange}")
+	private String uiToEngineExchange;
+	@Value("${spring.rabbitmq.uiToEngineQueue}")
+	private String uiToEngineQueue;
+	@Value("${spring.rabbitmq.uiToEngineRoutingKey}")
+	private String uiToEngineRoutingKey;
 }
