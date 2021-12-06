@@ -46,7 +46,7 @@ public class PasingServiceImpl implements PasingService{
 			}
 
         	switch (basicAlarmVo.getEquiptype()){
-				case "POTN" :
+				case "OPN-3000" :
 					basicAlarmVo.setEquiptype("POTN");
 					basicAlarmVo = potnPasingService.alarmPasing(basicAlarmVo);
 					break;

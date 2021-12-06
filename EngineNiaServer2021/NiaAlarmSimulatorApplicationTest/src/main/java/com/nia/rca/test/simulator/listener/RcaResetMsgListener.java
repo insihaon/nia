@@ -1,5 +1,6 @@
 package com.nia.rca.test.simulator.listener;
 
+import com.nia.rca.test.simulator.amqp.UiToEnginePrdAmqp;
 import com.nia.rca.test.simulator.mapper.RcaResetMapper;
 import com.nia.rca.test.simulator.service.RcaResetService;
 import com.rabbitmq.client.Channel;
@@ -20,12 +21,17 @@ public class RcaResetMsgListener implements ChannelAwareMessageListener {
 	@Qualifier("RcaResetService")
 	private RcaResetService rcaResetService;
 
+	@Autowired
+	private UiToEnginePrdAmqp uiToEnginePrdAmqp;
+
 
 	@Override
 	public void onMessage(Message message, Channel channel) {
 
 		try {
 			LOGGER.info(">>>>>>>>>>[RcaResetMsgListener] onMessage : " + message.toString() + " <<<<<<<<<<<<<<<<<");
+
+			uiToEnginePrdAmqp.sendMessageCmd();
 
 			rcaResetService.rcaTicketReStart();
 
