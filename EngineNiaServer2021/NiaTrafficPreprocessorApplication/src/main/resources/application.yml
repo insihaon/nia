@@ -126,8 +126,8 @@ spring:
   rabbitmq:
     address: 10.81.192.18
     port: 5672
-    username: rcaadmin
-    password: rcaadmin12#$
+    username: niaadmin
+    password: niaadmin12#$
 
     engineTrafficExchange: nia.exchangeEngineTrafficDirectly
     engineTrafficQueue: nia.EngineTrafficIndexDirectly
