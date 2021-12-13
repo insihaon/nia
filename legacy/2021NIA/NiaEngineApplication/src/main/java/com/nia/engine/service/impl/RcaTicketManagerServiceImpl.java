@@ -29,7 +29,7 @@ public class RcaTicketManagerServiceImpl implements RcaTicketManagerService {
     private org.springframework.beans.factory.ObjectFactory<RCATicketAl> rcaTicketAlFactory;
 
     @Autowired
-    private org.springframework.beans.factory.ObjectFactory<RCATicketHandlingStatus> rcaTicketHandlingStatusFactory;
+    private org.springframework.beans.factory.ObjectFactory<RCAHandlingStatus> rcaHandlingStatusObjectFactory;
 
     @Autowired
     private org.springframework.beans.factory.ObjectFactory<RcaEngineResult> rcaEngineResultFactory;
@@ -251,7 +251,7 @@ public class RcaTicketManagerServiceImpl implements RcaTicketManagerService {
         RcaResult rcaResult;
         List<BasicAlarmVo> basicAlarmVoList= null;
         RCATicketAl rcaTicketAl;
-        RCATicketHandlingStatus rcaTicketStatus;
+        RCAHandlingStatus rcaTicketStatus;
         RcaEngineResult rcaEngineResult;
         RcaTicketResult rcaTicketResult;
         String time1 = null;
@@ -337,7 +337,7 @@ public class RcaTicketManagerServiceImpl implements RcaTicketManagerService {
                             rcaTicketResult = rcaTicketMergeService.rcaTicketMerge(rcaTicket);
 
                             LOGGER.info("==========>[RcaTicketManager] rcaTicketResult : " + rcaTicketResult + "<==============");
-                            rcaTicketStatus = rcaTicketHandlingStatusFactory.getObject();
+                            rcaTicketStatus = rcaHandlingStatusObjectFactory.getObject();
                             rcaTicketStatus.setTicketId(rcaTicket.getTicketId());
                             rcaTicketStatus.setStatus(RcaCodeInfo.TICKET_STATUS_INIT);
 
@@ -345,6 +345,19 @@ public class RcaTicketManagerServiceImpl implements RcaTicketManagerService {
                             LOGGER.info("==========>[RcaTicketManager] rcaTicketAlList : " + rcaTicketAlList + "<==============");
                             ticketService.insertRcaTicket(rcaTicket);
                             ticketService.insertRcaTicketAl(rcaTicketAlList);
+
+                            rcaTicketStatus = rcaHandlingStatusObjectFactory.getObject();
+                            rcaTicketStatus.setTicketId(rcaTicket.getTicketId());
+                            rcaTicketStatus.setHandlingUser("AI");
+                            rcaTicketStatus.setAutoMation("Y");
+                            rcaTicketStatus.setHandlingTime(UtlDateHelper.getCurrentTime());
+                            rcaTicketStatus.setStatus(RcaCodeInfo.TICKET_STATUS_INIT);
+                            rcaTicketStatus.setTicketType("RT");
+                            rcaTicketStatus.setTicketGenerationTime(rcaTicket.getTicketGenerationTime());
+
+                            ticketService.updateRCATicketHandlingStatus(rcaTicketStatus);
+                            ticketService.insertRCATicketHandlingStatus(rcaTicketStatus);
+                            ticketService.insertRCATicketHandlingStatusHist(rcaTicketStatus);
 
                             if (!rcaTicketResult.isResult()) {
                                 updateTime = String.valueOf(rcaTicket.getTicketGenerationTime());
@@ -387,7 +400,6 @@ public class RcaTicketManagerServiceImpl implements RcaTicketManagerService {
                                 ticketUpdateTime = new HashMap<String, String>();
                                 ticketUpdateTime.put("ticketId", rcaTicket.getParentTicketId());
                                 ticketUpdateTime.put("ticketUpdateTime", updateTime);
-
 
                                 ticketUpdateTime = new HashMap<String, String>();
                                 ticketUpdateTime.put("ticketId", rcaTicket.getParentTicketId());

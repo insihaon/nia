@@ -52,21 +52,21 @@ public interface TicketService {
 	 * @param
 	 * @return
 	 */
-	void insertRCATicketHandlingStatus(RCATicketHandlingStatus rcaTicketStatus) throws Exception;
+	void insertRCATicketHandlingStatus(RCAHandlingStatus rcaTicketStatus) throws Exception;
 
 	/**
 	 * Rca Ticket Status 저장
 	 * @param
 	 * @return
 	 */
-	void updateRCATicketHandlingStatus(RCATicketHandlingStatus rcaTicketStatus) throws Exception;
+	void updateRCATicketHandlingStatus(RCAHandlingStatus rcaTicketStatus) throws Exception;
 
 	/**
 	 * Rca Ticket Status 저장
 	 * @param
 	 * @return
 	 */
-	void insertRCATicketHandlingStatusHist(RCATicketHandlingStatus rcaTicketStatus) throws Exception;
+	void insertRCATicketHandlingStatusHist(RCAHandlingStatus rcaTicketStatus) throws Exception;
 
 	/**
 	 * Rca Ticket 정보 업데이트
@@ -178,4 +178,18 @@ public interface TicketService {
 	 * @return
 	 */
 	void deleteRcaTicketCnt(String ticketId) throws Exception;
+
+	/**
+	 * Set Ticket Status as Profile
+	 *
+	 * @return
+	 */
+	String fcSetTicketStatusAsPofile(RCATicket rcaTicket) throws Exception;
+
+	/**
+	 * Ticket Check Profile
+	 *
+	 * @return
+	 */
+	List<RCATicket> selectRcaTicketProfileCheckList() throws Exception;
 }

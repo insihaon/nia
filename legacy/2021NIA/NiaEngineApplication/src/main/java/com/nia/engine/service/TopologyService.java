@@ -20,4 +20,6 @@ public interface TopologyService {
 
     TopologyDataVo selectTopology(HashMap<String, String> map) throws Exception;
 
+    TopologyObject selectE2eTopology(HashMap<String, String> map) throws Exception;
+
 }

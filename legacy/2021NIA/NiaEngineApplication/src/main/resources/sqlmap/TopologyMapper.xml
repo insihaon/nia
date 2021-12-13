@@ -32,4 +32,11 @@
             (SYSNAMEA = #{sysname} AND PTPNAMEA_PAU != #{ptpNamePau})
         </if>
     </select>
+
+    <select id="selectE2eTopology" resultType="com.nia.engine.vo.TopologyObject" parameterType="hashmap">
+        select opp_sysname as oppSysname, opp_port as oppPort from
+            (select node_idz as opp_sysname, portz as opp_port from nia.tb_e2e_topology where node_ida = #{sysname} and porta = #{port})
+            union all
+            (select node_ida as opp_sysname, porta as opp_port from nia.tb_e2e_topology where node_idz = #{sysname} and portz = #{port})) a
+    </select>
 </mapper>
