@@ -19,7 +19,7 @@
             ON CPI.STRIFID = PM.IF_NUM
            AND CPI.STRRESID = PM.NODE_NUM
          WHERE CPI.STRIFID = #{strifid}
-           AND CPI.INTTIMESTAMP = #{inttimestamp}
+           AND CPI.INTTIMESTAMP = #{inttimestamp} ::integer
     </insert>
 
     <insert id="insertNoxiousTraffic" parameterType="java.util.HashMap">
