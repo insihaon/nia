@@ -31,10 +31,11 @@ public class AiAnomalousTrafficeMsgListener implements ChannelAwareMessageListen
 	public void onMessage(Message message, Channel channel) {
 
 		try {
-			LOGGER.info(">>>>>>>>>>[AiAnomalousTrafficeMsgListener] onMessage : " + message.toString() + " <<<<<<<<<<<<<<<<<");
-
 			Object obj;
 			String msg = new String(message.getBody());
+
+			LOGGER.info(">>>>>>>>>>[AiAnomalousTrafficeMsgListener] onMessage : " + msg + " <<<<<<<<<<<<<<<<<");
+
 			anomalousTrafficListVo = perfListVoObjectFactory.getObject();
 
 			obj = UtlCommon.jsonToObject(anomalousTrafficListVo, msg);

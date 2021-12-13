@@ -2,12 +2,14 @@ package com.nia.ai.traffic.preprocessor.vo.noxious;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
+import lombok.ToString;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 
 @Data
+@ToString
 @Component()
 @Scope(value = "prototype")
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -26,7 +28,7 @@ public class NoxiousTrfficVo implements Serializable {
      private String strsenderip;
      private String strin_interface;
      private String strout_interface;
-     private int strbytes_col;
+     private String strbytes_col;
      private int strcounts;
      private String dateregdate;
      private int anomaly;

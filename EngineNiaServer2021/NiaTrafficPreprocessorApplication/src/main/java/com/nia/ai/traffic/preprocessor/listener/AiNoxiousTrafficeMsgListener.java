@@ -31,10 +31,11 @@ public class AiNoxiousTrafficeMsgListener implements ChannelAwareMessageListener
 	public void onMessage(Message message, Channel channel) {
 
 		try {
-			LOGGER.info(">>>>>>>>>>[AiNoxiousTrafficeMsgListener] onMessage : " + message.toString() + " <<<<<<<<<<<<<<<<<");
-
 			Object obj;
 			String msg = new String(message.getBody());
+
+			LOGGER.info(">>>>>>>>>>[AiNoxiousTrafficeMsgListener] onMessage : " + msg + " <<<<<<<<<<<<<<<<<");
+
 			noxiousTrafficListVo = noxiousTrafficListVoObjectFactory.getObject();
 
 			obj = UtlCommon.jsonToObject(noxiousTrafficListVo, msg);
