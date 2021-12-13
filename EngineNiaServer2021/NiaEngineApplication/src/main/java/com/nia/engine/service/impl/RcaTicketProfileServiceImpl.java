@@ -22,7 +22,6 @@ public class RcaTicketProfileServiceImpl implements RcaTicketProfileService {
 
     @Override
     public void profileCheck(RCATicket rcaTicket) {
-        LOGGER.info("==========>[RcaTicketProfileService] profileCheck rcaTicket : " + rcaTicket + "<==============");
         ProfileVo profileVo = null;
         String networkType = null;
 
@@ -39,7 +38,7 @@ public class RcaTicketProfileServiceImpl implements RcaTicketProfileService {
                 for(RCATicketAl rcaTicketAl : rcaTicket.getTicketAlList()) {
                     parameterMap = new HashMap<String, String>();
                     parameterMap.put("networkType", networkType);
-                    parameterMap.put("processingTemplate", "construction");
+//                    parameterMap.put("processingTemplate", "construction");
                     parameterMap.put("processType", rcaTicket.getTicketRcaResultDtlCode());
                     parameterMap.put("nodeId", rcaTicketAl.getRootCauseSysnameA());
                     parameterMap.put("faultTime", rcaTicket.getFaultTime()+"");
@@ -56,8 +55,11 @@ public class RcaTicketProfileServiceImpl implements RcaTicketProfileService {
                     }
 
                     if(profileVo != null) {
+                        LOGGER.info("==========>[RcaTicketProfileService] profileCheck ticketId : " + rcaTicket.getTicketId() + ", status : " + profileVo.getAutoRecovery() +  ", profileTitle : " + profileVo.getProfileTitle() + " <==============");
                         rcaTicket.setStatus(profileVo.getAutoRecovery());
                         rcaTicket.setProfileTitle(profileVo.getProfileTitle());
+
+                        ticketService.fcSetTicketStatusAsPofile(rcaTicket);
                     }
                 }
             }

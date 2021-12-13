@@ -57,6 +57,10 @@ spring:
     aiIpTrafficResultQueue: nia.AiIpTrafficResultIndexDirectly
     aiIpTrafficResultRoutingKey: AiIpTrafficResultIndexDirectly
 
+    engineTrafficExchange: nia.exchangeEngineTrafficDirectly
+    engineTrafficQueue: nia.EngineTrafficIndexDirectly
+    engineTrafficRoutingKey: EngineTrafficIndexDirectly
+
   cluster:
     timeCondition: 5000
 
@@ -139,6 +143,10 @@ spring:
     aiIpTrafficResultExchange: nia.exchangeAiIpTrafficResultDirectly
     aiIpTrafficResultQueue: nia.AiIpTrafficResultIndexDirectly
     aiIpTrafficResultRoutingKey: AiIpTrafficResultIndexDirectly
+
+    engineTrafficExchange: nia.exchangeEngineTrafficDirectly
+    engineTrafficQueue: nia.EngineTrafficIndexDirectly
+    engineTrafficRoutingKey: EngineTrafficIndexDirectly
 
   cluster:
     timeCondition: 5000
@@ -223,6 +231,10 @@ spring:
     aiIpTrafficResultExchange: nia.exchangeAiIpTrafficResultDirectly
     aiIpTrafficResultQueue: nia.AiIpTrafficResultIndexDirectly
     aiIpTrafficResultRoutingKey: AiIpTrafficResultIndexDirectly
+
+    engineTrafficExchange: nia.exchangeEngineTrafficDirectly
+    engineTrafficQueue: nia.EngineTrafficIndexDirectly
+    engineTrafficRoutingKey: EngineTrafficIndexDirectly
 
   cluster:
     timeCondition: 5000

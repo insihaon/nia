@@ -42,4 +42,14 @@ public class TopologyServiceImpl implements TopologyService {
     public TopologyDataVo selectTopology(HashMap<String, String> map) throws Exception {
         return topologyMapper.selectTopology(map);
     }
+
+    /**
+     * selectE2eTopology
+     * @param
+     * @return  TopologyObject
+     */
+    @Override
+    public TopologyObject selectE2eTopology(HashMap<String, String> map) throws Exception {
+        return topologyMapper.selectE2eTopology(map);
+    }
 }

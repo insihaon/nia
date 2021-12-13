@@ -1,5 +1,7 @@
 package com.nia.engine.vo;
 
+import com.nia.engine.vo.aiTraffic.anomalous.AnomalousTrafficVo;
+import com.nia.engine.vo.aiTraffic.noxious.NoxiousTrfficVo;
 import lombok.Data;
 import lombok.ToString;
 import org.springframework.context.annotation.Scope;
@@ -33,6 +35,10 @@ public class RCATicketAl implements Serializable {
 	private Timestamp insert_time;
 	private BasicAlarmVo rootCauseAlarmInfoA;
 	private BasicAlarmVo rootCauseAlarmInfoZ;
+	private AnomalousTrafficVo rootCauseAnomalousTrafficAlarmInfoA;
+	private AnomalousTrafficVo rootCauseAnomalousTrafficAlarmInfoZ;
+	private NoxiousTrfficVo rootCauseNoxiousTrfficAlarmInfoA;
+	private NoxiousTrfficVo rootCauseNoxiousTrfficAlarmInfoZ;
 
 	private String rootCausePtpnameA;
 	private String rootCausePtpnameZ;

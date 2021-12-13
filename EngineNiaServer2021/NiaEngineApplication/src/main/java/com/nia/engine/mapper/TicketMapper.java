@@ -57,21 +57,21 @@ public interface TicketMapper{
 	 * @param
 	 * @return
 	 */
-	void insertRCATicketHandlingStatus(RCATicketHandlingStatus rcaTicketStatus);
+	void insertRCATicketHandlingStatus(RCAHandlingStatus rcaTicketStatus);
 
 	/**
 	 * Rca Ticket Status update
 	 * @param
 	 * @return
 	 */
-	void updateRCATicketHandlingStatus(RCATicketHandlingStatus rcaTicketStatus);
+	void updateRCATicketHandlingStatus(RCAHandlingStatus rcaTicketStatus);
 
 	/**
 	 * Rca Ticket Status Hist 저장
 	 * @param
 	 * @return
 	 */
-	void insertRCATicketHandlingStatusHist(RCATicketHandlingStatus rcaTicketStatus);
+	void insertRCATicketHandlingStatusHist(RCAHandlingStatus rcaTicketStatus);
 
 	/**
 	 * Rca Ticket Status 업데이트
@@ -194,4 +194,18 @@ public interface TicketMapper{
 	 * @return
 	 */
 	void deleteRcaTicketCnt(String ticketId);
+
+	/**
+	 * Set Ticket Status as Profile
+	 *
+	 * @return
+	 */
+	String fcSetTicketStatusAsPofile(RCATicket rcaTicket);
+
+	/**
+	 * Ticket Check Profile
+	 *
+	 * @return
+	 */
+	List<RCATicket> selectRcaTicketProfileCheckList();
 }

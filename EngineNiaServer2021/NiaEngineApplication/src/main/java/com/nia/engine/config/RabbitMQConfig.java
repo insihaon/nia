@@ -35,6 +35,9 @@ public class RabbitMQConfig {
     @Autowired
     private PerformanceMsgListener performanceMsgListener;
 
+    @Autowired
+    private NiaEngineTrafficMsgListener niaEngineTrafficMsgListener;
+
 //    @Autowired
 //	private UITicketMsgListener uiTicketMsgListener;
 
@@ -78,6 +81,9 @@ public class RabbitMQConfig {
 
     @Bean(name="AiIpTrafficResult_Queue")
     public Queue AiIpTrafficResultQueue() { return new Queue(rabbitMQVo.getAiIpTrafficResultQueue()); }
+
+    @Bean(name="NiaEngineTraffic_Queue")
+    public Queue NiaEngineTrafficQueue() { return new Queue(rabbitMQVo.getNiaEngineTrafficQueue()); }
 
     @Bean(name="EngineToUiTicket_RabbitTemplate")
     public RabbitTemplate rabbitTemplateTicketEngineToUI() {
@@ -131,6 +137,16 @@ public class RabbitMQConfig {
         listenerContainer.setConnectionFactory(connectionFactory());
         listenerContainer.setQueues(UIToEngineTicketQueue());
         listenerContainer.setMessageListener(uiTicketMsgListener);
+        listenerContainer.setAcknowledgeMode(AcknowledgeMode.AUTO);
+        return listenerContainer;
+    }
+
+    @Bean(name="NiaEngineTraffic_ListenerContainer")
+    public SimpleMessageListenerContainer NiaEngineTrafficListenerContainer() {
+        SimpleMessageListenerContainer listenerContainer = new SimpleMessageListenerContainer();
+        listenerContainer.setConnectionFactory(connectionFactory());
+        listenerContainer.setQueues(NiaEngineTrafficQueue());
+        listenerContainer.setMessageListener(niaEngineTrafficMsgListener);
         listenerContainer.setAcknowledgeMode(AcknowledgeMode.AUTO);
         return listenerContainer;
     }

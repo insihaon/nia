@@ -84,7 +84,7 @@ public class TicketServiceImpl implements TicketService {
 	 * @return
 	 */
 	@Override
-	public void insertRCATicketHandlingStatus(RCATicketHandlingStatus rcaTicketStatus) throws Exception {
+	public void insertRCATicketHandlingStatus(RCAHandlingStatus rcaTicketStatus) throws Exception {
 		ticketMapper.insertRCATicketHandlingStatus(rcaTicketStatus);
 	}
 
@@ -94,7 +94,7 @@ public class TicketServiceImpl implements TicketService {
 	 * @return
 	 */
 	@Override
-	public void updateRCATicketHandlingStatus(RCATicketHandlingStatus rcaTicketStatus) throws Exception {
+	public void updateRCATicketHandlingStatus(RCAHandlingStatus rcaTicketStatus) throws Exception {
 		ticketMapper.updateRCATicketHandlingStatus(rcaTicketStatus);
 	}
 
@@ -104,7 +104,7 @@ public class TicketServiceImpl implements TicketService {
 	 * @return
 	 */
 	@Override
-	public void insertRCATicketHandlingStatusHist(RCATicketHandlingStatus rcaTicketStatus) throws Exception {
+	public void insertRCATicketHandlingStatusHist(RCAHandlingStatus rcaTicketStatus) throws Exception {
 		ticketMapper.insertRCATicketHandlingStatusHist(rcaTicketStatus);
 	}
 
@@ -271,5 +271,25 @@ public class TicketServiceImpl implements TicketService {
 	@Override
 	public void deleteRcaTicketCnt(String ticketId) throws Exception {
 		ticketMapper.deleteRcaTicketCnt(ticketId);
+	}
+
+	/**
+	 * Set Ticket Status as Profile
+	 *
+	 * @return
+	 */
+	@Override
+	public String fcSetTicketStatusAsPofile(RCATicket rcaTicket) throws Exception {
+		return ticketMapper.fcSetTicketStatusAsPofile(rcaTicket);
+	}
+
+	/**
+	 * Ticket Check Profile
+	 *
+	 * @return
+	 */
+	@Override
+	public List<RCATicket> selectRcaTicketProfileCheckList() throws Exception {
+		return ticketMapper.selectRcaTicketProfileCheckList();
 	}
 }

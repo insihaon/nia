@@ -17,4 +17,6 @@ public interface TopologyMapper {
     TopologyObject selectAlarmMstList(String alarmid);
 
 	TopologyDataVo selectTopology(HashMap<String, String> map);
+
+	TopologyObject selectE2eTopology(HashMap<String, String> map);
 }

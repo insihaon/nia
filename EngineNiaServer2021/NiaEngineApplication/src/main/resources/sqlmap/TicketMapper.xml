@@ -201,7 +201,7 @@
         </if>
     </insert>
 
-    <insert id="insertRCATicketHandlingStatus" parameterType="com.nia.engine.vo.RCATicketHandlingStatus">
+    <insert id="insertRCATicketHandlingStatus" parameterType="com.nia.engine.vo.RCAHandlingStatus">
         INSERT INTO RCA.tb_rca_ticket_handling_status_current(
           TICKET_ID
           , STATUS
@@ -246,7 +246,7 @@
         )
     </insert>
 
-    <update id="updateRCATicketHandlingStatus" parameterType="com.nia.engine.vo.RCATicketHandlingStatus">
+    <update id="updateRCATicketHandlingStatus" parameterType="com.nia.engine.vo.RCAHandlingStatus">
         UPDATE RCA.tb_rca_ticket_handling_status_current
         SET STATUS    				= #{status}
                 , HANDLING_USER			= #{handlingUser}
@@ -268,7 +268,7 @@
         WHERE TICKET_ID    			= #{ticketId}
     </update>
 
-    <insert id="insertRCATicketHandlingStatusHist" parameterType="com.nia.engine.vo.RCATicketHandlingStatus">
+    <insert id="insertRCATicketHandlingStatusHist" parameterType="com.nia.engine.vo.RCAHandlingStatus">
         INSERT INTO RCA.tb_rca_ticket_handling_status_hist(
             TICKET_ID
             , STATUS
@@ -475,19 +475,39 @@
           LEFT OUTER JOIN RESOURCE.TB_FAULT_PROCESS_IF B
             ON A.PROFILE_NUM = B.PROFILE_NUM
         WHERE A.NETWORK_TYPE = #{networkType}
-          AND A.PROCESSING_TEMPLATE = #{processingTemplate}
           AND A.PROCESS_TYPE = #{processType}
           AND B.NODE_ID = #{nodeId}
   <![CDATA[   AND (A.AUTO_PROCESS_CHECK = TRUE OR (A.AUTO_PROCESS_END_DATETIME > #{faultTime}::timestamp AND A.AUTO_PROCESS_START_DATETIME < #{faultTime}::timestamp)) ]]>
         <if test="portId != null">
           AND B.PORT_ID = #{portId}
         </if>
+        limit 1
     </select>
 
     <delete id="deleteRcaTicketCnt" parameterType="string">
         DELETE FROM rca.tb_rca_ticket_cnt
         WHERE TICKET_ID = #{ticketId}
     </delete>
+
+    <select id="fcSetTicketStatusAsPofile" resultType="string" parameterType="com.nia.engine.vo.RCATicket">
+        SELECT rca.fc_set_ticket_status_as_pofile(#{ticketId}, #{status}, #{profileTitle})
+    </select>
+
+    <select id="selectRcaTicketProfileCheckList" resultType="com.nia.engine.vo.RCATicket">
+        SELECT TICKET_ID, CLUSTER_NO, TICKET_TYPE, TICKET_GENERATION_TIME, FAULT_TIME, ROOT_CAUSE_TYPE,
+               ROOT_CAUSE_CODE, ROOT_CAUSE_DOMAIN, TOTAL_RELATED_ALARM_CNT, STATUS, TICKET_RCA_RESULT_CODE,
+               TICKET_RCA_RESULT_DTL_CODE, TICKET_RCA_RESULT_ORIG_DTL_CODE, PARENT_TICKET_ID, TICKET_UPDATE_TIME, OCCUR
+        FROM RCA.TB_RCA_TICKET_CURRENT
+        WHERE PROFILE_TITLE IS NULL
+          AND TICKET_GENERATION_TIME > RCA.FC_GET_MINUS_DAY(7)
+          AND ROOT_CAUSE_DOMAIN IN ('POTN', 'ROADM', 'SWITCH')
+    </select>
+
+    <update id="updateRcaTicketCurrentState" parameterType="com.nia.engine.vo.RCATicketHandlingStatus">
+        UPDATE rca.tb_rca_ticket_current
+        SET status = #{status}
+        WHERE ticket_id = #{ticketId}
+    </update>
 </mapper>
 
 
