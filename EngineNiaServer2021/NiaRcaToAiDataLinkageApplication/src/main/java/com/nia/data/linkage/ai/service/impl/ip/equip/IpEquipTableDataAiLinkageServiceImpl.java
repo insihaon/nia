@@ -60,6 +60,9 @@ public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiL
     @Value("${spring.ftp.password}")
     private String pw = null;
 
+    @Value("${spring.profiles}")
+    private String profiles;
+
     @Override
     public void sendBackBoneLinkData() {
         LOGGER.info("==========>[IpEquipTableDataAiLinkageService] sendBackBoneLinkData <==============");
@@ -92,30 +95,46 @@ public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiL
 
                 sftpSession = sftpSessionObjectFactory.getObject();
 
-                try {
-                    sftpSession.init(host1, port, user, pw);
+                if(!"codej".equals(profiles)) {
+                    try {
+                        sftpSession.init(host1, port, user, pw);
 
-                    if(putFile != null){
-                        sftpSession.upload(ftpUpdatePath, putFile);
-                        LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendBackBoneLinkData upload("+host1+") : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                        if (putFile != null) {
+                            sftpSession.upload(ftpUpdatePath, putFile);
+                            LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendBackBoneLinkData upload(" + host1 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                        }
+
+                        sftpSession.disconnection();
+                    } catch (Exception e1) {
+                        LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendBackBoneLinkData upload(" + host1 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
                     }
 
-                    sftpSession.disconnection();
-                }catch (Exception e1){
-                    LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendBackBoneLinkData upload("+host1+") error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
+                    try {
+                        sftpSession.init(host2, port, user, pw);
+
+                        if (putFile != null) {
+                            sftpSession.upload(ftpUpdatePath, putFile);
+                            LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendBackBoneLinkData upload(" + host2 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                        }
+
+                        sftpSession.disconnection();
+                    } catch (Exception e1) {
+                        LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendBackBoneLinkData upload(" + host2 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
+                    }
                 }
+                if("codej".equals(profiles)){
+                    try {
+                        sftpSession.init("10.81.192.18", 22, "aifactory", "dpdldkdl12!@");
 
-                try {
-                    sftpSession.init(host2, port, user, pw);
+                        if(putFile != null){
+                            sftpSession.upload("/home/aifactory/zerooneai/data/tb_backbone_link/", putFile);
+                            LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendBackBoneLinkData upload(10.81.192.18) : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                        }
 
-                    if(putFile != null){
-                        sftpSession.upload(ftpUpdatePath, putFile);
-                        LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendBackBoneLinkData upload("+host2+") : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                        sftpSession.disconnection();
+                    }catch (Exception e1){
+                        LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendBackBoneLinkData upload(10.81.192.18) error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
                     }
-
-                    sftpSession.disconnection();
-                }catch (Exception e1){
-                    LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendBackBoneLinkData upload("+host2+") error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
                 }
 
                 if(putFile.exists()){
@@ -158,30 +177,47 @@ public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiL
 
                 sftpSession = sftpSessionObjectFactory.getObject();
 
-                try {
-                    sftpSession.init(host1, port, user, pw);
+                if(!"codej".equals(profiles)) {
+                    try {
+                        sftpSession.init(host1, port, user, pw);
 
-                    if(putFile != null){
-                        sftpSession.upload(ftpUpdatePath, putFile);
-                        LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendNodeData upload("+host1+") : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                        if (putFile != null) {
+                            sftpSession.upload(ftpUpdatePath, putFile);
+                            LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendNodeData upload(" + host1 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                        }
+
+                        sftpSession.disconnection();
+                    } catch (Exception e1) {
+                        LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendNodeData upload(" + host1 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
                     }
 
-                    sftpSession.disconnection();
-                }catch (Exception e1){
-                    LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendNodeData upload("+host1+") error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
+                    try {
+                        sftpSession.init(host2, port, user, pw);
+
+                        if (putFile != null) {
+                            sftpSession.upload(ftpUpdatePath, putFile);
+                            LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendNodeData upload(" + host2 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                        }
+
+                        sftpSession.disconnection();
+                    } catch (Exception e1) {
+                        LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendNodeData upload(" + host2 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
+                    }
                 }
 
-                try {
-                    sftpSession.init(host2, port, user, pw);
+                if("codej".equals(profiles)){
+                    try {
+                        sftpSession.init("10.81.192.18", 22, "aifactory", "dpdldkdl12!@");
 
-                    if(putFile != null){
-                        sftpSession.upload(ftpUpdatePath, putFile);
-                        LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendNodeData upload("+host2+") : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                        if(putFile != null){
+                            sftpSession.upload("/home/aifactory/zerooneai/data/tb_node_mst/", putFile);
+                            LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendNodeData upload(10.81.192.18) : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                        }
+
+                        sftpSession.disconnection();
+                    }catch (Exception e1){
+                        LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendNodeData upload(10.81.192.18) error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
                     }
-
-                    sftpSession.disconnection();
-                }catch (Exception e1){
-                    LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendNodeData upload("+host2+") error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
                 }
 
                 if(putFile.exists()){
@@ -224,30 +260,47 @@ public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiL
 
                 sftpSession = sftpSessionObjectFactory.getObject();
 
-                try {
-                    sftpSession.init(host1, port, user, pw);
+                if(!"codej".equals(profiles)) {
+                    try {
+                        sftpSession.init(host1, port, user, pw);
 
-                    if(putFile != null){
-                        sftpSession.upload(ftpUpdatePath, putFile);
-                        LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendPortData upload("+host1+") : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                        if (putFile != null) {
+                            sftpSession.upload(ftpUpdatePath, putFile);
+                            LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendPortData upload(" + host1 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                        }
+
+                        sftpSession.disconnection();
+                    } catch (Exception e1) {
+                        LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendPortData upload(" + host1 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
                     }
 
-                    sftpSession.disconnection();
-                }catch (Exception e1){
-                    LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendPortData upload("+host1+") error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
+                    try {
+                        sftpSession.init(host2, port, user, pw);
+
+                        if (putFile != null) {
+                            sftpSession.upload(ftpUpdatePath, putFile);
+                            LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendPortData upload(" + host2 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                        }
+
+                        sftpSession.disconnection();
+                    } catch (Exception e1) {
+                        LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendPortData upload(" + host2 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
+                    }
                 }
 
-                try {
-                    sftpSession.init(host2, port, user, pw);
+                if("codej".equals(profiles)){
+                    try {
+                        sftpSession.init("10.81.192.18", 22, "aifactory", "dpdldkdl12!@");
 
-                    if(putFile != null){
-                        sftpSession.upload(ftpUpdatePath, putFile);
-                        LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendPortData upload("+host2+") : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                        if(putFile != null){
+                            sftpSession.upload("/home/aifactory/zerooneai/data/tb_port_mst/", putFile);
+                            LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendPortData upload(10.81.192.18) : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                        }
+
+                        sftpSession.disconnection();
+                    }catch (Exception e1){
+                        LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendPortData upload(10.81.192.18) error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
                     }
-
-                    sftpSession.disconnection();
-                }catch (Exception e1){
-                    LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendPortData upload("+host2+") error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
                 }
 
                 if(putFile.exists()){
@@ -290,30 +343,47 @@ public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiL
 
                 sftpSession = sftpSessionObjectFactory.getObject();
 
-                try {
-                    sftpSession.init(host1, port, user, pw);
+                if(!"codej".equals(profiles)) {
+                    try {
+                        sftpSession.init(host1, port, user, pw);
 
-                    if(putFile != null){
-                        sftpSession.upload(ftpUpdatePath, putFile);
-                        LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendCvnmsResourceData upload("+host1+") : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                        if (putFile != null) {
+                            sftpSession.upload(ftpUpdatePath, putFile);
+                            LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendCvnmsResourceData upload(" + host1 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                        }
+
+                        sftpSession.disconnection();
+                    } catch (Exception e1) {
+                        LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendCvnmsResourceData upload(" + host1 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
                     }
 
-                    sftpSession.disconnection();
-                }catch (Exception e1){
-                    LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendCvnmsResourceData upload("+host1+") error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
+                    try {
+                        sftpSession.init(host2, port, user, pw);
+
+                        if (putFile != null) {
+                            sftpSession.upload(ftpUpdatePath, putFile);
+                            LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendCvnmsResourceData upload(" + host2 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                        }
+
+                        sftpSession.disconnection();
+                    } catch (Exception e1) {
+                        LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendCvnmsResourceData upload(" + host2 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
+                    }
                 }
 
-                try {
-                    sftpSession.init(host2, port, user, pw);
+                if("codej".equals(profiles)){
+                    try {
+                        sftpSession.init("10.81.192.18", 22, "aifactory", "dpdldkdl12!@");
 
-                    if(putFile != null){
-                        sftpSession.upload(ftpUpdatePath, putFile);
-                        LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendCvnmsResourceData upload("+host2+") : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                        if(putFile != null){
+                            sftpSession.upload("/home/aifactory/zerooneai/data/xe_cvnms_resource/", putFile);
+                            LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendPortData upload(10.81.192.18) : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                        }
+
+                        sftpSession.disconnection();
+                    }catch (Exception e1){
+                        LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendPortData upload(10.81.192.18) error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
                     }
-
-                    sftpSession.disconnection();
-                }catch (Exception e1){
-                    LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendCvnmsResourceData upload("+host2+") error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
                 }
 
                 if(putFile.exists()){
@@ -356,30 +426,47 @@ public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiL
 
                 sftpSession = sftpSessionObjectFactory.getObject();
 
-                try {
-                    sftpSession.init(host1, port, user, pw);
+                if(!"codej".equals(profiles)) {
+                    try {
+                        sftpSession.init(host1, port, user, pw);
 
-                    if(putFile != null){
-                        sftpSession.upload(ftpUpdatePath, putFile);
-                        LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendCvnmsResourceIfData upload("+host1+") : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                        if (putFile != null) {
+                            sftpSession.upload(ftpUpdatePath, putFile);
+                            LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendCvnmsResourceIfData upload(" + host1 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                        }
+
+                        sftpSession.disconnection();
+                    } catch (Exception e1) {
+                        LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendCvnmsResourceIfData upload(" + host1 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
                     }
 
-                    sftpSession.disconnection();
-                }catch (Exception e1){
-                    LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendCvnmsResourceIfData upload("+host1+") error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
+                    try {
+                        sftpSession.init(host2, port, user, pw);
+
+                        if (putFile != null) {
+                            sftpSession.upload(ftpUpdatePath, putFile);
+                            LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendCvnmsResourceIfData upload(" + host2 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                        }
+
+                        sftpSession.disconnection();
+                    } catch (Exception e1) {
+                        LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendCvnmsResourceIfData upload(" + host2 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
+                    }
                 }
 
-                try {
-                    sftpSession.init(host2, port, user, pw);
+                if("codej".equals(profiles)){
+                    try {
+                        sftpSession.init("10.81.192.18", 22, "aifactory", "dpdldkdl12!@");
 
-                    if(putFile != null){
-                        sftpSession.upload(ftpUpdatePath, putFile);
-                        LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendCvnmsResourceIfData upload("+host2+") : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                        if(putFile != null){
+                            sftpSession.upload("/home/aifactory/zerooneai/data/xe_cvnms_resource_if/", putFile);
+                            LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendCvnmsResourceIfData upload(10.81.192.18) : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                        }
+
+                        sftpSession.disconnection();
+                    }catch (Exception e1){
+                        LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendCvnmsResourceIfData upload(10.81.192.18) error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
                     }
-
-                    sftpSession.disconnection();
-                }catch (Exception e1){
-                    LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendCvnmsResourceIfData upload("+host2+") error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
                 }
 
                 if(putFile.exists()){

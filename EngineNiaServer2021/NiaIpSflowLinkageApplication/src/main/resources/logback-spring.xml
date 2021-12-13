@@ -9,7 +9,7 @@
         <prudent>true</prudent>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!--<fileNamePattern>../logs/preprocessor_application.%d{yyyy-MM-dd}.log</fileNamePattern>-->
-            <fileNamePattern>server/logs/ipSflowLinkage_application.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>/home/codej8888/server/logs/ipSflowLinkage_application.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
         </rollingPolicy>
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">

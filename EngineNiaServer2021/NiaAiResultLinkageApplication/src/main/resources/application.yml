@@ -104,7 +104,7 @@ spring:
 
 ---
 spring:
-  profiles: real
+  profiles: codej
   logging:
     config: classpath:context/logback-spring.xml
 

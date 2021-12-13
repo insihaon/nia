@@ -155,7 +155,7 @@ spring:
   ftp:
     host1: 116.89.186.206
     host2: 116.89.186.207
-    port: 22
-    user: ENC(XMOpjFUtgZnBRPp7m7a9o2WSXQ1l5oe/)
-    password: ENC(Q5gydJpI5uME0zXRuMHImGC5bkFqmaRK)
+    port: 11689
+    user: zerooneai211202
+    password: ZeroOneAi11!@#
     file-path: /home/zerooneai211202/data/

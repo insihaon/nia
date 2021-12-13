@@ -142,13 +142,13 @@ spring:
 
   kafka:
     consumer:
-      bootstrap-servers: 116.89.186.194:9092
+      bootstrap-servers: 10.81.192.18:9092
       group-id: pringData
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
     producer:
-      bootstrap-servers: 116.89.186.194:9092
+      bootstrap-servers: 10.81.192.18:9092
       key-serializer: org.apache.kafka.common.serialization.StringDeserializer
       value-serializer: org.apache.kafka.common.serialization.StringDeserializer
 

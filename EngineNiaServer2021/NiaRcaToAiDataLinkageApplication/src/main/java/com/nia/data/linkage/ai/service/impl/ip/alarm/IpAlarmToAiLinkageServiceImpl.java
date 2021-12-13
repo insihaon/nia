@@ -60,6 +60,9 @@ public class IpAlarmToAiLinkageServiceImpl implements IpAlarmToAiLinkageService 
     @Value("${spring.ftp.password}")
     private String pw = null;
 
+    @Value("${spring.profiles}")
+    private String profiles;
+
     @Override
     public void sendAlarmData() {
         LOGGER.info("==========>[IpSflowToAiLinkageService] sendAlarmData <==============");
@@ -100,30 +103,47 @@ public class IpAlarmToAiLinkageServiceImpl implements IpAlarmToAiLinkageService 
 
                     sftpSession = sftpSessionObjectFactory.getObject();
 
-                    try {
-                        sftpSession.init(host1, port, user, pw);
+                    if(!"codej".equals(profiles)) {
+                        try {
+                            sftpSession.init(host1, port, user, pw);
 
-                        if(putFile != null){
-                            sftpSession.upload(ftpUpdatePath, putFile);
-                            LOGGER.info("=====> [IpAlarmToAiLinkageService] sendAlarmData upload("+host1+") : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                            if (putFile != null) {
+                                sftpSession.upload(ftpUpdatePath, putFile);
+                                LOGGER.info("=====> [IpAlarmToAiLinkageService] sendAlarmData upload(" + host1 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                            }
+
+                            sftpSession.disconnection();
+                        } catch (Exception e1) {
+                            LOGGER.error("=====> [IpAlarmToAiLinkageService] sendAlarmData upload(" + host1 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
                         }
 
-                        sftpSession.disconnection();
-                    }catch (Exception e1){
-                        LOGGER.error("=====> [IpAlarmToAiLinkageService] sendAlarmData upload("+host1+") error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
+                        try {
+                            sftpSession.init(host2, port, user, pw);
+
+                            if (putFile != null) {
+                                sftpSession.upload(ftpUpdatePath, putFile);
+                                LOGGER.info("=====> [IpAlarmToAiLinkageService] sendAlarmData upload(" + host2 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                            }
+
+                            sftpSession.disconnection();
+                        } catch (Exception e1) {
+                            LOGGER.error("=====> [IpAlarmToAiLinkageService] sendAlarmData upload(" + host2 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
+                        }
                     }
 
-                    try {
-                        sftpSession.init(host2, port, user, pw);
+                    if("codej".equals(profiles)){
+                          try {
+                            sftpSession.init("10.81.192.18", 22, "aifactory", "dpdldkdl12!@");
 
-                        if(putFile != null){
-                            sftpSession.upload(ftpUpdatePath, putFile);
-                            LOGGER.info("=====> [IpAlarmToAiLinkageService] sendAlarmData upload("+host2+") : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                            if(putFile != null){
+                                sftpSession.upload("/home/aifactory/zerooneai/data/xe_cvnms_error/", putFile);
+                                LOGGER.info("=====> [IpAlarmToAiLinkageService] sendAlarmData upload(10.81.192.18) : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                            }
+
+                            sftpSession.disconnection();
+                        }catch (Exception e1){
+                            LOGGER.error("=====> [IpAlarmToAiLinkageService] sendAlarmData upload(10.81.192.18) error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
                         }
-
-                        sftpSession.disconnection();
-                    }catch (Exception e1){
-                        LOGGER.error("=====> [IpAlarmToAiLinkageService] sendAlarmData upload("+host2+") error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
                     }
 
 

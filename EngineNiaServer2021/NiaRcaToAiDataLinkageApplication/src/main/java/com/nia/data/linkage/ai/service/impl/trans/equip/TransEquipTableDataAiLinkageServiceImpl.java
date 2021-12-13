@@ -68,6 +68,9 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
     @Value("${spring.ftp.password}")
     private String pw = null;
 
+    @Value("${spring.profiles}")
+    private String profiles;
+
     @Override
     public void sendEquipMstData() {
         LOGGER.info("==========>[TransEquipTableDataAiLinkageService] sendEquipMstData <==============");
@@ -98,30 +101,47 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
 
                 sftpSession = sftpSessionObjectFactory.getObject();
 
-                try {
-                    sftpSession.init(host1, port, user, pw);
+                if(!"codej".equals(profiles)) {
+                    try {
+                        sftpSession.init(host1, port, user, pw);
 
-                    if(putFile != null){
-                        sftpSession.upload(ftpUpdatePath, putFile);
-                        LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendEquipMstData upload("+host1+") : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                        if (putFile != null) {
+                            sftpSession.upload(ftpUpdatePath, putFile);
+                            LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendEquipMstData upload(" + host1 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                        }
+
+                        sftpSession.disconnection();
+                    } catch (Exception e1) {
+                        LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendEquipMstData upload(" + host1 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
                     }
 
-                    sftpSession.disconnection();
-                }catch (Exception e1){
-                    LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendEquipMstData upload("+host1+") error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
+                    try {
+                        sftpSession.init(host2, port, user, pw);
+
+                        if (putFile != null) {
+                            sftpSession.upload(ftpUpdatePath, putFile);
+                            LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendEquipMstData upload(" + host2 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                        }
+
+                        sftpSession.disconnection();
+                    } catch (Exception e1) {
+                        LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendEquipMstData upload(" + host2 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
+                    }
                 }
 
-                try {
-                    sftpSession.init(host2, port, user, pw);
+                if("codej".equals(profiles)){
+                    try {
+                        sftpSession.init("10.81.192.18", 22, "aifactory", "dpdldkdl12!@");
 
-                    if(putFile != null){
-                        sftpSession.upload(ftpUpdatePath, putFile);
-                        LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendEquipMstData upload("+host2+") : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                        if(putFile != null){
+                            sftpSession.upload("/home/aifactory/zerooneai/data/tb_equip_mst/", putFile);
+                            LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendEquipPortData upload(10.81.192.18) : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                        }
+
+                        sftpSession.disconnection();
+                    }catch (Exception e1){
+                        LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendEquipPortData upload(10.81.192.18) error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
                     }
-
-                    sftpSession.disconnection();
-                }catch (Exception e1){
-                    LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendEquipMstData upload("+host2+") error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
                 }
 
                 if(putFile.exists()){
@@ -164,30 +184,47 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
 
                 sftpSession = sftpSessionObjectFactory.getObject();
 
-                try {
-                    sftpSession.init(host1, port, user, pw);
+                if(!"codej".equals(profiles)) {
+                    try {
+                        sftpSession.init(host1, port, user, pw);
 
-                    if(putFile != null){
-                        sftpSession.upload(ftpUpdatePath, putFile);
-                        LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendEquipPortData upload("+host1+") : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                        if (putFile != null) {
+                            sftpSession.upload(ftpUpdatePath, putFile);
+                            LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendEquipPortData upload(" + host1 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                        }
+
+                        sftpSession.disconnection();
+                    } catch (Exception e1) {
+                        LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendEquipPortData upload(" + host1 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
                     }
 
-                    sftpSession.disconnection();
-                }catch (Exception e1){
-                    LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendEquipPortData upload("+host1+") error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
+                    try {
+                        sftpSession.init(host2, port, user, pw);
+
+                        if (putFile != null) {
+                            sftpSession.upload(ftpUpdatePath, putFile);
+                            LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendEquipPortData upload(" + host2 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                        }
+
+                        sftpSession.disconnection();
+                    } catch (Exception e1) {
+                        LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendEquipPortData upload(" + host2 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
+                    }
                 }
 
-                try {
-                    sftpSession.init(host2, port, user, pw);
+                if("codej".equals(profiles)){
+                    try {
+                        sftpSession.init("10.81.192.18", 22, "aifactory", "dpdldkdl12!@");
 
-                    if(putFile != null){
-                        sftpSession.upload(ftpUpdatePath, putFile);
-                        LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendEquipPortData upload("+host2+") : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                        if(putFile != null){
+                            sftpSession.upload("/home/aifactory/zerooneai/data/tb_equip_port/", putFile);
+                            LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendEquipPortData upload(10.81.192.18) : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                        }
+
+                        sftpSession.disconnection();
+                    }catch (Exception e1){
+                        LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendEquipPortData upload(10.81.192.18) error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
                     }
-
-                    sftpSession.disconnection();
-                }catch (Exception e1){
-                    LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendEquipPortData upload("+host2+") error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
                 }
 
                 if(putFile.exists()){
@@ -230,30 +267,47 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
 
                 sftpSession = sftpSessionObjectFactory.getObject();
 
-                try {
-                    sftpSession.init(host1, port, user, pw);
+                if(!"codej".equals(profiles)) {
+                    try {
+                        sftpSession.init(host1, port, user, pw);
 
-                    if(putFile != null){
-                        sftpSession.upload(ftpUpdatePath, putFile);
-                        LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendEquipSlotData upload("+host1+") : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                        if (putFile != null) {
+                            sftpSession.upload(ftpUpdatePath, putFile);
+                            LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendEquipSlotData upload(" + host1 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                        }
+
+                        sftpSession.disconnection();
+                    } catch (Exception e1) {
+                        LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendEquipSlotData upload(" + host1 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
                     }
 
-                    sftpSession.disconnection();
-                }catch (Exception e1){
-                    LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendEquipSlotData upload("+host1+") error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
+                    try {
+                        sftpSession.init(host2, port, user, pw);
+
+                        if (putFile != null) {
+                            sftpSession.upload(ftpUpdatePath, putFile);
+                            LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendEquipSlotData upload(" + host2 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                        }
+
+                        sftpSession.disconnection();
+                    } catch (Exception e1) {
+                        LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendEquipSlotData upload(" + host2 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
+                    }
                 }
 
-                try {
-                    sftpSession.init(host2, port, user, pw);
+                if("codej".equals(profiles)){
+                    try {
+                        sftpSession.init("10.81.192.18", 22, "aifactory", "dpdldkdl12!@");
 
-                    if(putFile != null){
-                        sftpSession.upload(ftpUpdatePath, putFile);
-                        LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendEquipSlotData upload("+host2+") : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                        if(putFile != null){
+                            sftpSession.upload("/home/aifactory/zerooneai/data/tb_equip_slot/", putFile);
+                            LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendEquipSlotData upload(10.81.192.18) : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                        }
+
+                        sftpSession.disconnection();
+                    }catch (Exception e1){
+                        LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendEquipSlotData upload(10.81.192.18) error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
                     }
-
-                    sftpSession.disconnection();
-                }catch (Exception e1){
-                    LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendEquipSlotData upload("+host2+") error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
                 }
 
                 if(putFile.exists()){
@@ -296,30 +350,47 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
 
                 sftpSession = sftpSessionObjectFactory.getObject();
 
-                try {
-                    sftpSession.init(host1, port, user, pw);
+                if(!"codej".equals(profiles)) {
+                    try {
+                        sftpSession.init(host1, port, user, pw);
 
-                    if(putFile != null){
-                        sftpSession.upload(ftpUpdatePath, putFile);
-                        LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendNniTopologyData upload("+host1+") : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                        if (putFile != null) {
+                            sftpSession.upload(ftpUpdatePath, putFile);
+                            LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendNniTopologyData upload(" + host1 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                        }
+
+                        sftpSession.disconnection();
+                    } catch (Exception e1) {
+                        LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendNniTopologyData upload(" + host1 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
                     }
 
-                    sftpSession.disconnection();
-                }catch (Exception e1){
-                    LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendNniTopologyData upload("+host1+") error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
+                    try {
+                        sftpSession.init(host2, port, user, pw);
+
+                        if (putFile != null) {
+                            sftpSession.upload(ftpUpdatePath, putFile);
+                            LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendNniTopologyData upload(" + host2 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                        }
+
+                        sftpSession.disconnection();
+                    } catch (Exception e1) {
+                        LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendNniTopologyData upload(" + host2 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
+                    }
                 }
 
-                try {
-                    sftpSession.init(host2, port, user, pw);
+                if("codej".equals(profiles)){
+                    try {
+                        sftpSession.init("10.81.192.18", 22, "aifactory", "dpdldkdl12!@");
 
-                    if(putFile != null){
-                        sftpSession.upload(ftpUpdatePath, putFile);
-                        LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendNniTopologyData upload("+host2+") : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                        if(putFile != null){
+                            sftpSession.upload("/home/aifactory/zerooneai/data/tb_topology/", putFile);
+                            LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendNniTopologyData upload(10.81.192.18) : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                        }
+
+                        sftpSession.disconnection();
+                    }catch (Exception e1){
+                        LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendNniTopologyData upload(10.81.192.18) error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
                     }
-
-                    sftpSession.disconnection();
-                }catch (Exception e1){
-                    LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendNniTopologyData upload("+host2+") error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
                 }
 
                 if(putFile.exists()){
@@ -362,30 +433,47 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
 
                 sftpSession = sftpSessionObjectFactory.getObject();
 
-                try {
-                    sftpSession.init(host1, port, user, pw);
+                if(!"codej".equals(profiles)) {
+                    try {
+                        sftpSession.init(host1, port, user, pw);
 
-                    if(putFile != null){
-                        sftpSession.upload(ftpUpdatePath, putFile);
-                        LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendUniTopologyData upload("+host1+") : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                        if (putFile != null) {
+                            sftpSession.upload(ftpUpdatePath, putFile);
+                            LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendUniTopologyData upload(" + host1 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                        }
+
+                        sftpSession.disconnection();
+                    } catch (Exception e1) {
+                        LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendUniTopologyData upload(" + host1 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
                     }
 
-                    sftpSession.disconnection();
-                }catch (Exception e1){
-                    LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendUniTopologyData upload("+host1+") error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
+                    try {
+                        sftpSession.init(host2, port, user, pw);
+
+                        if (putFile != null) {
+                            sftpSession.upload(ftpUpdatePath, putFile);
+                            LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendUniTopologyData upload(" + host2 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                        }
+
+                        sftpSession.disconnection();
+                    } catch (Exception e1) {
+                        LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendUniTopologyData upload(" + host2 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
+                    }
                 }
 
-                try {
-                    sftpSession.init(host2, port, user, pw);
+                if("codej".equals(profiles)){
+                    try {
+                        sftpSession.init("10.81.192.18", 22, "aifactory", "dpdldkdl12!@");
 
-                    if(putFile != null){
-                        sftpSession.upload(ftpUpdatePath, putFile);
-                        LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendUniTopologyData upload("+host2+") : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                        if(putFile != null){
+                            sftpSession.upload("/home/aifactory/zerooneai/data/tb_uni_topology/", putFile);
+                            LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendUniTopologyData upload(10.81.192.18) : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                        }
+
+                        sftpSession.disconnection();
+                    }catch (Exception e1){
+                        LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendUniTopologyData upload(10.81.192.18) error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
                     }
-
-                    sftpSession.disconnection();
-                }catch (Exception e1){
-                    LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendUniTopologyData upload("+host2+") error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
                 }
 
                 if(putFile.exists()){
@@ -429,30 +517,47 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
 
                 sftpSession = sftpSessionObjectFactory.getObject();
 
-                try {
-                    sftpSession.init(host1, port, user, pw);
+                if(!"codej".equals(profiles)) {
+                    try {
+                        sftpSession.init(host1, port, user, pw);
 
-                    if(putFile != null){
-                        sftpSession.upload(ftpUpdatePath, putFile);
-                        LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendRoadmTrunkData upload("+host1+") : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                        if (putFile != null) {
+                            sftpSession.upload(ftpUpdatePath, putFile);
+                            LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendRoadmTrunkData upload(" + host1 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                        }
+
+                        sftpSession.disconnection();
+                    } catch (Exception e1) {
+                        LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendRoadmTrunkData upload(" + host1 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
                     }
 
-                    sftpSession.disconnection();
-                }catch (Exception e1){
-                    LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendRoadmTrunkData upload("+host1+") error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
+                    try {
+                        sftpSession.init(host2, port, user, pw);
+
+                        if (putFile != null) {
+                            sftpSession.upload(ftpUpdatePath, putFile);
+                            LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendRoadmTrunkData upload(" + host2 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                        }
+
+                        sftpSession.disconnection();
+                    } catch (Exception e1) {
+                        LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendRoadmTrunkData upload(" + host2 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
+                    }
                 }
 
-                try {
-                    sftpSession.init(host2, port, user, pw);
+                if("codej".equals(profiles)){
+                    try {
+                        sftpSession.init("10.81.192.18", 22, "aifactory", "dpdldkdl12!@");
 
-                    if(putFile != null){
-                        sftpSession.upload(ftpUpdatePath, putFile);
-                        LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendRoadmTrunkData upload("+host2+") : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                        if(putFile != null){
+                            sftpSession.upload("/home/aifactory/zerooneai/data/tb_roadm_trunk_repeater/", putFile);
+                            LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendRoadmTrunkData upload(10.81.192.18) : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                        }
+
+                        sftpSession.disconnection();
+                    }catch (Exception e1){
+                        LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendRoadmTrunkData upload(10.81.192.18) error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
                     }
-
-                    sftpSession.disconnection();
-                }catch (Exception e1){
-                    LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendRoadmTrunkData upload("+host2+") error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
                 }
 
                 if(putFile.exists()){
