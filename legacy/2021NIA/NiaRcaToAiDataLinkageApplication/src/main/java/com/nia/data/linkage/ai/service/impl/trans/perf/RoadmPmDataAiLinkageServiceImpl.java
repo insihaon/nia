@@ -58,6 +58,9 @@ public class RoadmPmDataAiLinkageServiceImpl implements RoadmPmDataAiLinkageServ
     @Autowired
     private org.springframework.beans.factory.ObjectFactory<SFTPSession> sftpSessionObjectFactory;
 
+    @Value("${spring.profiles}")
+    private String profiles;
+
     @Override
     public void sendRoadmPmData() {
         LOGGER.info("=====> [RoadmPmDataAiLinkageService] sendRoadmPmData <=====");
@@ -97,30 +100,47 @@ public class RoadmPmDataAiLinkageServiceImpl implements RoadmPmDataAiLinkageServ
 
                     sftpSession = sftpSessionObjectFactory.getObject();
 
-                    try {
-                        sftpSession.init(host1, port, user, pw);
+                    if(!"codej".equals(profiles)) {
+                        try {
+                            sftpSession.init(host1, port, user, pw);
 
-                        if(putFile != null){
-                            sftpSession.upload(ftpUpdatePath, putFile);
-                            LOGGER.info("=====> [RoadmPmDataAiLinkageService] sendRoadmPmData upload("+host1+") : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                            if (putFile != null) {
+                                sftpSession.upload(ftpUpdatePath, putFile);
+                                LOGGER.info("=====> [RoadmPmDataAiLinkageService] sendRoadmPmData upload(" + host1 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                            }
+
+                            sftpSession.disconnection();
+                        } catch (Exception e1) {
+                            LOGGER.error("=====> [RoadmPmDataAiLinkageService] sendRoadmPmData upload(" + host1 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
                         }
 
-                        sftpSession.disconnection();
-                    }catch (Exception e1){
-                        LOGGER.error("=====> [RoadmPmDataAiLinkageService] sendRoadmPmData upload("+host1+") error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
+                        try {
+                            sftpSession.init(host2, port, user, pw);
+
+                            if (putFile != null) {
+                                sftpSession.upload(ftpUpdatePath, putFile);
+                                LOGGER.info("=====> [RoadmPmDataAiLinkageService] sendRoadmPmData upload(" + host2 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                            }
+
+                            sftpSession.disconnection();
+                        } catch (Exception e1) {
+                            LOGGER.error("=====> [RoadmPmDataAiLinkageService] sendRoadmPmData upload(" + host2 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
+                        }
                     }
 
-                    try {
-                        sftpSession.init(host2, port, user, pw);
+                    if("codej".equals(profiles)){
+                        try {
+                            sftpSession.init("10.81.192.18", 22, "aifactory", "dpdldkdl12!@");
 
-                        if(putFile != null){
-                            sftpSession.upload(ftpUpdatePath, putFile);
-                            LOGGER.info("=====> [RoadmPmDataAiLinkageService] sendRoadmPmData upload("+host2+") : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                            if(putFile != null){
+                                sftpSession.upload("/home/aifactory/zerooneai/data/tb_performace_mst/", putFile);
+                                LOGGER.info("=====> [RoadmPmDataAiLinkageService] sendRoadmPmData upload(10.81.192.18) : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                            }
+
+                            sftpSession.disconnection();
+                        }catch (Exception e1){
+                            LOGGER.error("=====> [RoadmPmDataAiLinkageService] sendRoadmPmData upload(10.81.192.18) error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
                         }
-
-                        sftpSession.disconnection();
-                    }catch (Exception e1){
-                        LOGGER.error("=====> [RoadmPmDataAiLinkageService] sendRoadmPmData upload("+host2+") error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
                     }
 
                     if(putFile.exists()){

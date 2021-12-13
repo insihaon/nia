@@ -7,6 +7,7 @@
       <module fileurl="file://$PROJECT_DIR$/NiaPerformanceApplication/com.nia.ai.per.ap.iml" filepath="$PROJECT_DIR$/NiaPerformanceApplication/com.nia.ai.per.ap.iml" />
       <module fileurl="file://$PROJECT_DIR$/NiaAiResultLinkageApplication/com.nia.ai.performance.result.iml" filepath="$PROJECT_DIR$/NiaAiResultLinkageApplication/com.nia.ai.performance.result.iml" />
       <module fileurl="file://$PROJECT_DIR$/NiaAiPerformanceLinkageApplication/com.nia.ai.performance.send.iml" filepath="$PROJECT_DIR$/NiaAiPerformanceLinkageApplication/com.nia.ai.performance.send.iml" />
+      <module fileurl="file://$PROJECT_DIR$/NiaTrafficPreprocessorApplication/com.nia.ai.traffic.preprocessor.iml" filepath="$PROJECT_DIR$/NiaTrafficPreprocessorApplication/com.nia.ai.traffic.preprocessor.iml" />
       <module fileurl="file://$PROJECT_DIR$/NiaIpPreprocessorApplication/com.nia.alarm.ip.preprocessor.iml" filepath="$PROJECT_DIR$/NiaIpPreprocessorApplication/com.nia.alarm.ip.preprocessor.iml" />
       <module fileurl="file://$PROJECT_DIR$/NiaIpAlarmSimulatorApplication/com.nia.alarm.ip.simulator.iml" filepath="$PROJECT_DIR$/NiaIpAlarmSimulatorApplication/com.nia.alarm.ip.simulator.iml" />
       <module fileurl="file://$PROJECT_DIR$/NiaPreprocessorApplication/com.nia.alarm.preprocessor.iml" filepath="$PROJECT_DIR$/NiaPreprocessorApplication/com.nia.alarm.preprocessor.iml" />
@@ -20,7 +21,6 @@
       <module fileurl="file://$PROJECT_DIR$/NiaEmsLinkageApplication/com.nia.ems.linkage.iml" filepath="$PROJECT_DIR$/NiaEmsLinkageApplication/com.nia.ems.linkage.iml" />
       <module fileurl="file://$PROJECT_DIR$/NiaEngineApplication/com.nia.engine.iml" filepath="$PROJECT_DIR$/NiaEngineApplication/com.nia.engine.iml" />
       <module fileurl="file://$PROJECT_DIR$/NiaClusterApplication/com.nia.rca.cluster.preprocessor.iml" filepath="$PROJECT_DIR$/NiaClusterApplication/com.nia.rca.cluster.preprocessor.iml" />
-      <module fileurl="file://$PROJECT_DIR$/NiaAlarmSimulatorApplicationTest/com.nia.rca.test.simulator.iml" filepath="$PROJECT_DIR$/NiaAlarmSimulatorApplicationTest/com.nia.rca.test.simulator.iml" />
     </modules>
   </component>
 </project>

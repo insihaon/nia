@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 @Service("CvnmsResourceIfService")
-public abstract class CvnmsResourceIfServiceImpl implements CvnmsResourceIfService {
+public class CvnmsResourceIfServiceImpl implements CvnmsResourceIfService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CvnmsResourceIfServiceImpl.class);
 

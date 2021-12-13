@@ -56,6 +56,9 @@ public class IpSflowToAiLinkageServiceImpl implements IpSflowToAiLinkageService 
     @Value("${spring.ftp.password}")
     private String pw = null;
 
+    @Value("${spring.profiles}")
+    private String profiles;
+
     @Override
     public void sendSflowLogData() {
         LOGGER.info("==========>[IpSflowToAiLinkageService] sendSflowLogData <==============");
@@ -97,30 +100,60 @@ public class IpSflowToAiLinkageServiceImpl implements IpSflowToAiLinkageService 
 
                     sftpSession = sftpSessionObjectFactory.getObject();
 
-                    try {
-                        sftpSession.init(host1, port, user, pw);
+                    if(!"codej".equals(profiles)) {
+                        try {
+                            sftpSession.init(host1, port, user, pw);
 
-                        if(putFile != null){
-                            sftpSession.upload(ftpUpdatePath, putFile);
-                            LOGGER.info("=====> [IpSflowToAiLinkageService] sendSflowLogData upload("+host1+") : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                            if (putFile != null) {
+                                sftpSession.upload(ftpUpdatePath, putFile);
+                                LOGGER.info("=====> [IpSflowToAiLinkageService] sendSflowLogData upload(" + host1 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                            }
+
+                            sftpSession.disconnection();
+                        } catch (Exception e1) {
+                            LOGGER.error("=====> [IpSflowToAiLinkageService] sendSflowLogData upload(" + host1 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
                         }
 
-                        sftpSession.disconnection();
-                    }catch (Exception e1){
-                        LOGGER.error("=====> [IpSflowToAiLinkageService] sendSflowLogData upload("+host1+") error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
+                        try {
+                            sftpSession.init(host2, port, user, pw);
+
+                            if (putFile != null) {
+                                sftpSession.upload(ftpUpdatePath, putFile);
+                                LOGGER.info("=====> [IpSflowToAiLinkageService] sendSflowLogData upload(" + host2 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                            }
+
+                            sftpSession.disconnection();
+                        } catch (Exception e1) {
+                            LOGGER.error("=====> [IpSflowToAiLinkageService] sendSflowLogData upload(" + host2 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
+                        }
                     }
 
-                    try {
-                        sftpSession.init(host2, port, user, pw);
+                    if("codej".equals(profiles)){
+                        try {
+                            sftpSession.init("10.81.192.18", 22, "aifactory", "dpdldkdl12!@");
 
-                        if(putFile != null){
-                            sftpSession.upload(ftpUpdatePath, putFile);
-                            LOGGER.info("=====> [IpSflowToAiLinkageService] sendSflowLogData upload("+host2+") : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                            if(putFile != null){
+                                sftpSession.upload("/home/aifactory/inference/raw/xe_sflow_log/", putFile);
+                                LOGGER.info("=====> [IpSflowToAiLinkageService] sendSflowLogData upload(10.81.192.18) : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                            }
+
+                            sftpSession.disconnection();
+                        }catch (Exception e1){
+                            LOGGER.error("=====> [IpSflowToAiLinkageService] sendSflowLogData upload(10.81.192.18) error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
                         }
 
-                        sftpSession.disconnection();
-                    }catch (Exception e1){
-                        LOGGER.error("=====> [IpSflowToAiLinkageService] sendSflowLogData upload("+host2+") error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
+                        try {
+                            sftpSession.init("10.81.192.18", 22, "aifactory", "dpdldkdl12!@");
+
+                            if(putFile != null){
+                                sftpSession.upload("/home/aifactory/zerooneai/data/xe_sflow_log/", putFile);
+                                LOGGER.info("=====> [IpSflowToAiLinkageService] sendSflowLogData upload(10.81.192.18) : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                            }
+
+                            sftpSession.disconnection();
+                        }catch (Exception e1){
+                            LOGGER.error("=====> [IpSflowToAiLinkageService] sendSflowLogData upload(10.81.192.18) error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
+                        }
                     }
 
                     if(putFile.exists()){

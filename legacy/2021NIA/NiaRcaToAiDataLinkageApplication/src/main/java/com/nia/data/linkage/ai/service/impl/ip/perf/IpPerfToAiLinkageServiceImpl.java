@@ -55,6 +55,9 @@ public class IpPerfToAiLinkageServiceImpl implements IpPerfToAiLinkageService {
     @Value("${spring.ftp.password}")
     private String pw = null;
 
+    @Value("${spring.profiles}")
+    private String profiles;
+
     @Override
     public void sendPerfLogData() {
         LOGGER.info("==========>[IpPerfToAiLinkageService] sendPerfLogData <==============");
@@ -94,30 +97,60 @@ public class IpPerfToAiLinkageServiceImpl implements IpPerfToAiLinkageService {
 
                     sftpSession = sftpSessionObjectFactory.getObject();
 
-                    try {
-                        sftpSession.init(host1, port, user, pw);
+                    if(!"codej".equals(profiles)) {
+                        try {
+                            sftpSession.init(host1, port, user, pw);
 
-                        if(putFile != null){
-                            sftpSession.upload(ftpUpdatePath, putFile);
-                            LOGGER.info("=====> [IpPerfToAiLinkageService] sendPerfLogData upload("+host1+") : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                            if (putFile != null) {
+                                sftpSession.upload(ftpUpdatePath, putFile);
+                                LOGGER.info("=====> [IpPerfToAiLinkageService] sendPerfLogData upload(" + host1 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                            }
+
+                            sftpSession.disconnection();
+                        } catch (Exception e1) {
+                            LOGGER.error("=====> [IpPerfToAiLinkageService] sendPerfLogData upload(" + host1 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
                         }
 
-                        sftpSession.disconnection();
-                    }catch (Exception e1){
-                        LOGGER.error("=====> [IpPerfToAiLinkageService] sendPerfLogData upload("+host1+") error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
+                        try {
+                            sftpSession.init(host2, port, user, pw);
+
+                            if (putFile != null) {
+                                sftpSession.upload(ftpUpdatePath, putFile);
+                                LOGGER.info("=====> [IpPerfToAiLinkageService] sendPerfLogData upload(" + host2 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                            }
+
+                            sftpSession.disconnection();
+                        } catch (Exception e1) {
+                            LOGGER.error("=====> [IpPerfToAiLinkageService] sendPerfLogData upload(" + host2 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
+                        }
                     }
 
-                    try {
-                        sftpSession.init(host2, port, user, pw);
+                    if("codej".equals(profiles)){
+                        try {
+                            sftpSession.init("10.81.192.18", 22, "aifactory", "dpdldkdl12!@");
 
-                        if(putFile != null){
-                            sftpSession.upload(ftpUpdatePath, putFile);
-                            LOGGER.info("=====> [IpPerfToAiLinkageService] sendPerfLogData upload("+host2+") : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                            if(putFile != null){
+                                sftpSession.upload("/home/aifactory/inference/raw/xe_cvnms_perf_if/", putFile);
+                                LOGGER.info("=====> [IpPerfToAiLinkageService] sendPerfLogData upload("+host2+") : " + "/home/aifactory/inference/raw/xe_cvnms_perf_if/"+putFile.getName()+ "<=====");
+                            }
+
+                            sftpSession.disconnection();
+                        }catch (Exception e1){
+                            LOGGER.error("=====> [IpPerfToAiLinkageService] sendPerfLogData upload("+host2+") error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
                         }
 
-                        sftpSession.disconnection();
-                    }catch (Exception e1){
-                        LOGGER.error("=====> [IpPerfToAiLinkageService] sendPerfLogData upload("+host2+") error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
+                        try {
+                            sftpSession.init("10.81.192.18", 22, "aifactory", "dpdldkdl12!@");
+
+                            if(putFile != null){
+                                sftpSession.upload("/home/aifactory/zerooneai/data/xe_cvnms_perf_if/", putFile);
+                                LOGGER.info("=====> [IpPerfToAiLinkageService] sendPerfLogData upload("+host2+") : " + "/home/aifactory/zerooneai/data/xe_cvnms_perf_if/"+putFile.getName()+ "<=====");
+                            }
+
+                            sftpSession.disconnection();
+                        }catch (Exception e1){
+                            LOGGER.error("=====> [IpPerfToAiLinkageService] sendPerfLogData upload("+host2+") error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
+                        }
                     }
 
                     if(putFile.exists()){
