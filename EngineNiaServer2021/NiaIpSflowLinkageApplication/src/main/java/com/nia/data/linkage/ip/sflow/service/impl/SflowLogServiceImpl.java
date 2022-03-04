@@ -40,6 +40,8 @@ public class SflowLogServiceImpl implements SflowLogService {
             Thread.sleep(120*1000);
             dateRegDate = niaSflowMapper.selectSflowYdKey("ipSflowLogKey");
 
+            LOGGER.info("==========>[SflowLogService] getSflowLogData dateRegDate : "+dateRegDate+" <==============");
+
             if(StringUtils.isNotEmpty(dateRegDate)){
                 sflowLogVoList = linkageSflowMapper.selectSflowLogList(dateRegDate);
 
