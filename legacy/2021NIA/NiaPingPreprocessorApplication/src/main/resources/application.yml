@@ -68,7 +68,7 @@ spring:
         suffix: )
 
   rabbitmq:
-    address: 116.89.186.194 #KOREN
+    address: 116.89.191.47 #KOREN
     port: 5675
     username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
     password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
@@ -87,19 +87,19 @@ spring:
 
   kafka:
     consumer:
-      bootstrap-servers: 116.89.186.194:9092
+      bootstrap-servers: 116.89.191.47:9092
       group-id: pringData
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
     producer:
-      bootstrap-servers: 116.89.186.194:9092
+      bootstrap-servers: 116.89.191.47:9092
       key-serializer: org.apache.kafka.common.serialization.StringDeserializer
       value-serializer: org.apache.kafka.common.serialization.StringDeserializer
 
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://116.89.186.194:5433/niadb #KOREN
+    url: jdbc:postgresql://116.89.191.47:5433/niadb #KOREN
     username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
     password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
     maximumPoolSize : 10
