@@ -10,18 +10,18 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
-	<groupId>niaTrafficPreprocessorApplication</groupId>
+	<groupId>aiIpTrafficPreprocessor</groupId>
 	<artifactId>com.nia.ai.traffic.preprocessor</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <name>niaTrafficPreprocessorApplication</name>
+    <name>aiIpTrafficPreprocessor</name>
     <description>Demo project for Spring Boot</description>
 
 
 	<properties>
 		<java.version>1.8</java.version>
-        <log4j2.version>2.15.0</log4j2.version>
-        <docker.image.prefix>niaTrafficPreprocessor.jar</docker.image.prefix>
+        <log4j2.version>2.17.1</log4j2.version>
+        <docker.image.prefix>aiIpTrafficPreprocessor.jar</docker.image.prefix>
 	</properties>
 
 	<dependencies>

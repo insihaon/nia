@@ -1,6 +1,7 @@
 package com.nia.data.linkage.ip.sflow.service.impl;
 
 import com.nia.data.linkage.ip.sflow.amqp.AlarmLinkageResultPrdAmqp;
+import com.nia.data.linkage.ip.sflow.common.UtlDateHelper;
 import com.nia.data.linkage.ip.sflow.mapper.linkage.LinkageSflowMapper;
 import com.nia.data.linkage.ip.sflow.mapper.nia.NiaSflowMapper;
 import com.nia.data.linkage.ip.sflow.service.SflowLogService;
@@ -36,6 +37,8 @@ public class SflowLogServiceImpl implements SflowLogService {
         HashMap<String, Object> objectHashMap;
         HashMap<String, String> strHashMap;
 
+        SflowLogVo sflowLogVo;
+
         try {
             Thread.sleep(120*1000);
             dateRegDate = niaSflowMapper.selectSflowYdKey("ipSflowLogKey");
@@ -43,19 +46,25 @@ public class SflowLogServiceImpl implements SflowLogService {
             LOGGER.info("==========>[SflowLogService] getSflowLogData dateRegDate : "+dateRegDate+" <==============");
 
             if(StringUtils.isNotEmpty(dateRegDate)){
-                sflowLogVoList = linkageSflowMapper.selectSflowLogList(dateRegDate);
+                sflowLogVo = linkageSflowMapper.selectMaxDateRegDate();
 
-                if(sflowLogVoList != null && sflowLogVoList.size() > 0) {
-                    LOGGER.info("==========>[SflowLogService] getSflowLogData sflowLogVoList("+sflowLogVoList.size() +") <==============");
+                if(sflowLogVo != null){
+                    if(UtlDateHelper.stringToTimestamp(dateRegDate).getTime() < sflowLogVo.getDateRegDate().getTime()){
+                        sflowLogVoList = linkageSflowMapper.selectSflowLogList(dateRegDate);
 
-                    objectHashMap = new HashMap<>();
-                    objectHashMap.put("sflowLogVoList", sflowLogVoList);
-                    niaSflowMapper.insertSflowLog(objectHashMap);
+                        if(sflowLogVoList != null && sflowLogVoList.size() > 0) {
+                            LOGGER.info("==========>[SflowLogService] getSflowLogData sflowLogVoList("+sflowLogVoList.size() +") <==============");
 
-                    strHashMap = new HashMap<>();
-                    strHashMap.put("key", "ipSflowLogKey");
-                    strHashMap.put("value", sflowLogVoList.get(sflowLogVoList.size()-1).getDateRegDate()+"");
-                    niaSflowMapper.updateSflowYdKey(strHashMap);
+                            objectHashMap = new HashMap<>();
+                            objectHashMap.put("sflowLogVoList", sflowLogVoList);
+                            niaSflowMapper.insertSflowLog(objectHashMap);
+
+                            strHashMap = new HashMap<>();
+                            strHashMap.put("key", "ipSflowLogKey");
+                            strHashMap.put("value", sflowLogVoList.get(sflowLogVoList.size()-1).getDateRegDate()+"");
+                            niaSflowMapper.updateSflowYdKey(strHashMap);
+                        }
+                    }
                 }
             }
         }catch (Exception e){

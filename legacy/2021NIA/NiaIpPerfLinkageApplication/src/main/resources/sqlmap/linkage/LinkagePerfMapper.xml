@@ -2,6 +2,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.nia.data.linkage.ip.perf.mapper.linkage.LinkagePerfMapper">
 
+    <select id="selectMaxIntTimestamp" resultType="com.nia.data.linkage.ip.perf.vo.perf.PerfVo">
+        SELECT MAX(inttimestamp) FROM catchview.xe_cvnms_perf_if
+    </select>
+
     <select id="selectPerfList" resultType="com.nia.data.linkage.ip.perf.vo.perf.PerfVo" parameterType="long">
         SELECT strifid, strresid, strtypemin, inttimestamp, intyear
              , intmonth, intday, inthour, intmin, intweek

@@ -2,6 +2,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.nia.data.linkage.ip.sflow.mapper.linkage.LinkageSflowMapper">
 
+    <select id="selectMaxDateRegDate" resultType="com.nia.data.linkage.ip.sflow.vo.sflow.SflowLogVo">
+        SELECT max(dateRegDate) as dateRegDate FROM catchview.xe_sflow_logs
+    </select>
+
     <select id="selectSflowLogList" resultType="com.nia.data.linkage.ip.sflow.vo.sflow.SflowLogVo" parameterType="string">
         SELECT strResIP, strResName, strS_IP, strS_PORT, strD_IP
              , strD_PORT, strS_MAC, strD_MAC, strProtocol, strIPv4ToS
