@@ -1,6 +1,7 @@
 package com.nia.data.linkage.ip.perf.service.impl;
 
 import com.google.common.collect.Lists;
+import com.nia.data.linkage.ip.perf.common.UtlDateHelper;
 import com.nia.data.linkage.ip.perf.mapper.linkage.LinkagePerfMapper;
 import com.nia.data.linkage.ip.perf.mapper.nia.NiaEquipMapper;
 import com.nia.data.linkage.ip.perf.mapper.nia.NiaPerfMapper;
@@ -47,46 +48,55 @@ public class PerfDataServiceImpl implements PerfDataService {
         HashMap<String, String> strHashMap;
         List<List<PerfVo>> listByGroup = null;
 
+        PerfVo maxPerfVo;
+
         try {
             inttimestamp = niaPerfMapper.selectPerfYdKey("ipPerfKey");
 
             if(StringUtils.isNotEmpty(inttimestamp)){
-                perfVoList = linkagePerfMapper.selectPerfList(Long.parseLong(inttimestamp));
 
-                if(perfVoList != null && perfVoList.size() > 0) {
-                    LOGGER.info("==========>[PerfDataService] getPerfData perfVoList("+perfVoList.size() +") <==============");
+                maxPerfVo = linkagePerfMapper.selectMaxIntTimestamp();
 
-                    nodeMstVoList = niaEquipMapper.selectNodeList();
-                    insertPerfVoList = new ArrayList<>();
+                if(maxPerfVo != null){
+                    if(Integer.parseInt(inttimestamp) < maxPerfVo.getIntTimestamp()){
+                        perfVoList = linkagePerfMapper.selectPerfList(Long.parseLong(inttimestamp));
 
-                    for(PerfVo perfVo : perfVoList){
-                        for(NodeMstVo nodeMstVo : nodeMstVoList){
-                            if(perfVo.getStrResID().equals(nodeMstVo.getNodeNum())){
-                                insertPerfVoList.add(perfVo);
+                        if(perfVoList != null && perfVoList.size() > 0) {
+                            LOGGER.info("==========>[PerfDataService] getPerfData perfVoList("+perfVoList.size() +") <==============");
+
+                            nodeMstVoList = niaEquipMapper.selectNodeList();
+                            insertPerfVoList = new ArrayList<>();
+
+                            for(PerfVo perfVo : perfVoList){
+                                for(NodeMstVo nodeMstVo : nodeMstVoList){
+                                    if(perfVo.getStrResID().equals(nodeMstVo.getNodeNum())){
+                                        insertPerfVoList.add(perfVo);
+                                    }
+                                }
                             }
-                        }
-                    }
 
-                    if(insertPerfVoList.size() < 50){
-                        objectHashMap = new HashMap<>();
-                        objectHashMap.put("perfVoList", insertPerfVoList);
-                        niaPerfMapper.insertPerf(objectHashMap);
-                    }else{
-                        listByGroup = Lists.partition(insertPerfVoList, insertPerfVoList.size() / 50);
-
-                        if(listByGroup.size() > 0 ) {
-                            for (List<PerfVo> perfList : listByGroup) {
+                            if(insertPerfVoList.size() < 50){
                                 objectHashMap = new HashMap<>();
-                                objectHashMap.put("perfVoList", perfList);
+                                objectHashMap.put("perfVoList", insertPerfVoList);
                                 niaPerfMapper.insertPerf(objectHashMap);
+                            }else{
+                                listByGroup = Lists.partition(insertPerfVoList, insertPerfVoList.size() / 50);
+
+                                if(listByGroup.size() > 0 ) {
+                                    for (List<PerfVo> perfList : listByGroup) {
+                                        objectHashMap = new HashMap<>();
+                                        objectHashMap.put("perfVoList", perfList);
+                                        niaPerfMapper.insertPerf(objectHashMap);
+                                    }
+                                }
                             }
+
+                            strHashMap = new HashMap<>();
+                            strHashMap.put("key", "ipPerfKey");
+                            strHashMap.put("value", perfVoList.get(perfVoList.size()-1).getIntTimestamp()+"");
+                            niaPerfMapper.updatePerfYdKey(strHashMap);
                         }
                     }
-
-                    strHashMap = new HashMap<>();
-                    strHashMap.put("key", "ipPerfKey");
-                    strHashMap.put("value", perfVoList.get(perfVoList.size()-1).getIntTimestamp()+"");
-                    niaPerfMapper.updatePerfYdKey(strHashMap);
                 }
             }
         }catch (Exception e){

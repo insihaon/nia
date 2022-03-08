@@ -36,7 +36,7 @@ spring:
 
   rabbitmq:
     address: 192.168.0.87  #개발
-    port: 5675
+    port: 6786
     username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
     password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
 
@@ -94,7 +94,7 @@ spring:
 
   rabbitmq:
     address: 116.89.186.194  #운영
-    port: 5675
+    port: 6786
     username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
     password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
 

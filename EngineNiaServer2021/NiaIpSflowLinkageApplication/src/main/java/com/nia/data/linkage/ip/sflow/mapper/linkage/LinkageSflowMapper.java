@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 @Mapper
 public interface LinkageSflowMapper {
+    SflowLogVo selectMaxDateRegDate();
     ArrayList<SflowLogVo> selectSflowLogList(String interrIdx);
     ArrayList<SflowProtocolLogVo> selectSflowProtocolLogList(int interrIdx);
 }
