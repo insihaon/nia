@@ -502,12 +502,6 @@
           AND TICKET_GENERATION_TIME > RCA.FC_GET_MINUS_DAY(7)
           AND ROOT_CAUSE_DOMAIN IN ('POTN', 'ROADM', 'SWITCH')
     </select>
-
-    <update id="updateRcaTicketCurrentState" parameterType="com.nia.engine.vo.RCATicketHandlingStatus">
-        UPDATE rca.tb_rca_ticket_current
-        SET status = #{status}
-        WHERE ticket_id = #{ticketId}
-    </update>
 </mapper>
 
 
