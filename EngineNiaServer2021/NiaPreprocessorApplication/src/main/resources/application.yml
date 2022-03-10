@@ -56,8 +56,6 @@ spring:
 ---
 spring:
   profiles: real
-  main:
-    allow-bean-definition-overriding: true
 
   jasypt:
     encryptor:

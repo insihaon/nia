@@ -102,12 +102,12 @@ spring:
       mapUnderscoreToCamelCase: true
 
   ftp:
-    host1: 116.89.186.206
-    host2: 116.89.186.207
-    port: 22
+    host1: 116.89.191.34
+    host2: 116.89.191.35
+    port: 16891
     user: ENC(XMOpjFUtgZnBRPp7m7a9o2WSXQ1l5oe/)
     password: ENC(Q5gydJpI5uME0zXRuMHImGC5bkFqmaRK)
-    file-path: /home/zerooneai211202/data/
+    file-path: /home/zero1ai/data/
 
 ---
 spring:
