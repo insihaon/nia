@@ -72,9 +72,11 @@ public class AlarmServiceImpl implements AlarmService {
                         }
                     }
 
-                    objectHashMap = new HashMap<>();
-                    objectHashMap.put("alarmList", sendAlarmList);
-                    niaAlarmMapper.insertIpAlarm(objectHashMap);
+                    if(sendAlarmList.size() > 0){
+                        objectHashMap = new HashMap<>();
+                        objectHashMap.put("alarmList", sendAlarmList);
+                        niaAlarmMapper.insertIpAlarm(objectHashMap);
+                    }
 
                     strHashMap = new HashMap<>();
                     strHashMap.put("key", "ipAlarmKey");
