@@ -8,5 +8,5 @@ import java.util.ArrayList;
 @Mapper
 public interface LinkagePerfMapper {
     PerfVo selectMaxIntTimestamp();
-    ArrayList<PerfVo> selectPerfList(long intTimestamp);
+    ArrayList<PerfVo> selectPerfList(int intTimestamp);
 }

@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -35,13 +36,19 @@ public class RoadmEmsTL1Client {
     @Autowired
     private org.springframework.beans.factory.ObjectFactory<TelnetMmc> telnetObjectFactory;
 
+    @Autowired
+    private ApplicationContext applicationContext;
+
     public Boolean login(String emsGb) {
         LOGGER.info("=====> [RoadmEmsTL1Client] login <=====");
+
         Boolean isLoginOk = false;
         String mmcResult;
         int loginCnt = 0;
 
         try {
+            telnet = applicationContext.getBean(TelnetMmc.class);
+
             if(telnet != null && telnet.isConnected()){
                 telnet.sendCommand("canc-user:::1:"+id+";", false);
                 telnet.closeConnection();

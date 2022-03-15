@@ -59,7 +59,7 @@ public class PerfDataServiceImpl implements PerfDataService {
 
                 if(maxPerfVo != null){
                     if(Integer.parseInt(inttimestamp) < maxPerfVo.getIntTimestamp()){
-                        perfVoList = linkagePerfMapper.selectPerfList(Long.parseLong(inttimestamp));
+                        perfVoList = linkagePerfMapper.selectPerfList(Integer.parseInt(inttimestamp));
 
                         if(perfVoList != null && perfVoList.size() > 0) {
                             LOGGER.info("==========>[PerfDataService] getPerfData perfVoList("+perfVoList.size() +") <==============");
@@ -74,22 +74,27 @@ public class PerfDataServiceImpl implements PerfDataService {
                                     }
                                 }
                             }
-
-                            if(insertPerfVoList.size() < 50){
+                            if(insertPerfVoList.size() != 0){
                                 objectHashMap = new HashMap<>();
                                 objectHashMap.put("perfVoList", insertPerfVoList);
-                                niaPerfMapper.insertPerf(objectHashMap);
-                            }else{
-                                listByGroup = Lists.partition(insertPerfVoList, insertPerfVoList.size() / 50);
-
-                                if(listByGroup.size() > 0 ) {
-                                    for (List<PerfVo> perfList : listByGroup) {
-                                        objectHashMap = new HashMap<>();
-                                        objectHashMap.put("perfVoList", perfList);
-                                        niaPerfMapper.insertPerf(objectHashMap);
-                                    }
-                                }
+                                 niaPerfMapper.insertPerf(objectHashMap);
                             }
+
+//                            if(insertPerfVoList.size() < 50){
+//                                objectHashMap = new HashMap<>();
+//                                objectHashMap.put("perfVoList", insertPerfVoList);
+//                                niaPerfMapper.insertPerf(objectHashMap);
+//                            }else{
+//                                listByGroup = Lists.partition(insertPerfVoList, insertPerfVoList.size() / 10);
+//
+//                                if(listByGroup.size() > 0 ) {
+//                                    for (List<PerfVo> perfList : listByGroup) {
+//                                        objectHashMap = new HashMap<>();
+//                                        objectHashMap.put("perfVoList", perfList);
+//                                        niaPerfMapper.insertPerf(objectHashMap);
+//                                    }
+//                                }
+//                            }
 
                             strHashMap = new HashMap<>();
                             strHashMap.put("key", "ipPerfKey");

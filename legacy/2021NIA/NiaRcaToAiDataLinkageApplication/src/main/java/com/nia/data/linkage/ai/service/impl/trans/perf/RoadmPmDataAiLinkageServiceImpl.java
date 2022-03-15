@@ -37,6 +37,9 @@ public class RoadmPmDataAiLinkageServiceImpl implements RoadmPmDataAiLinkageServ
     @Value("${spring.ftp.file-path}")
     private String uploadPath;
 
+    @Value("${spring.ftp.local-file-path}")
+    private String localUploadPath;
+
     @Value("${spring.ftp.host1}")
     private String host1 = null;
 
@@ -73,6 +76,7 @@ public class RoadmPmDataAiLinkageServiceImpl implements RoadmPmDataAiLinkageServ
         HashMap<String, String> strHashMap;
         ObjectMapper mapper;
         File putFile = null;
+        File folder = new File(ftpUpdatePath);
 
         PerfDataAiLinkageVo perfDataAiLinkageVo;
 
@@ -105,6 +109,10 @@ public class RoadmPmDataAiLinkageServiceImpl implements RoadmPmDataAiLinkageServ
                             sftpSession.init(host1, port, user, pw);
 
                             if (putFile != null) {
+                                if(!folder.exists()){
+                                    folder.mkdirs();
+                                }
+
                                 sftpSession.upload(ftpUpdatePath, putFile);
                                 LOGGER.info("=====> [RoadmPmDataAiLinkageService] sendRoadmPmData upload(" + host1 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
                             }
@@ -118,6 +126,10 @@ public class RoadmPmDataAiLinkageServiceImpl implements RoadmPmDataAiLinkageServ
                             sftpSession.init(host2, port, user, pw);
 
                             if (putFile != null) {
+                                if(!folder.exists()){
+                                    folder.mkdirs();
+                                }
+
                                 sftpSession.upload(ftpUpdatePath, putFile);
                                 LOGGER.info("=====> [RoadmPmDataAiLinkageService] sendRoadmPmData upload(" + host2 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
                             }
@@ -162,6 +174,8 @@ public class RoadmPmDataAiLinkageServiceImpl implements RoadmPmDataAiLinkageServ
     public File createJsonFile(String eventType, String jsonData, String ocrTime, String ftpUpdatePath) {
         LOGGER.info(">>>>>>>>>>[RoadmPmDataAiLinkageService] createJsonFile(" + eventType + ") <<<<<<<<<<<<<<<<<");
         File putFile = null;
+        File folder = new File(localUploadPath+eventType);
+
         BufferedWriter output;
         PrintWriter pw;
 
@@ -170,13 +184,11 @@ public class RoadmPmDataAiLinkageServiceImpl implements RoadmPmDataAiLinkageServ
                 ocrTime = ocrTime.substring(0,ocrTime.indexOf("+"));
             }
 
-            putFile = new File(ftpUpdatePath+eventType);
-
-            if(!putFile.exists()){
-                putFile.mkdir();
+            if(!folder.exists()){
+                folder.mkdir();
             }
 
-            putFile = new File(ftpUpdatePath+eventType+"_"+(UtlDateHelper.stringToTimestamp(ocrTime).getTime())+""+".json");
+            putFile = new File(folder.getPath()+"/"+eventType+"_"+(UtlDateHelper.stringToTimestamp(ocrTime).getTime())+""+".json");
 
             if(!putFile.isFile()){
                 putFile.createNewFile();
