@@ -45,6 +45,9 @@ public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiL
     @Value("${spring.ftp.file-path}")
     private String uploadPath;
 
+    @Value("${spring.ftp.local-file-path}")
+    private String localUploadPath;
+
     @Value("${spring.ftp.host1}")
     private String host1 = null;
 
@@ -76,6 +79,7 @@ public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiL
 
         ObjectMapper mapper;
         File putFile = null;
+        File folder = new File(ftpUpdatePath);
 
         IpBackboneLinkListVo ipBackboneLinkListVo;
 
@@ -100,6 +104,10 @@ public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiL
                         sftpSession.init(host1, port, user, pw);
 
                         if (putFile != null) {
+                            if(!folder.exists()){
+                                folder.mkdirs();
+                            }
+
                             sftpSession.upload(ftpUpdatePath, putFile);
                             LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendBackBoneLinkData upload(" + host1 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
                         }
@@ -158,6 +166,7 @@ public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiL
 
         ObjectMapper mapper;
         File putFile = null;
+        File folder = new File(ftpUpdatePath);
 
         IpNodeListVo ipNodeListVo;
 
@@ -182,6 +191,10 @@ public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiL
                         sftpSession.init(host1, port, user, pw);
 
                         if (putFile != null) {
+                            if(!folder.exists()){
+                                folder.mkdirs();
+                            }
+
                             sftpSession.upload(ftpUpdatePath, putFile);
                             LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendNodeData upload(" + host1 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
                         }
@@ -241,6 +254,7 @@ public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiL
 
         ObjectMapper mapper;
         File putFile = null;
+        File folder = new File(ftpUpdatePath);
 
         IpPortListVo ipPortListVo;
 
@@ -265,6 +279,10 @@ public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiL
                         sftpSession.init(host1, port, user, pw);
 
                         if (putFile != null) {
+                            if(!folder.exists()){
+                                folder.mkdirs();
+                            }
+
                             sftpSession.upload(ftpUpdatePath, putFile);
                             LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendPortData upload(" + host1 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
                         }
@@ -324,6 +342,7 @@ public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiL
 
         ObjectMapper mapper;
         File putFile = null;
+        File folder = new File(ftpUpdatePath);
 
         IpCvnmsResourceListVo ipCvnmsResourceListVo;
 
@@ -348,6 +367,10 @@ public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiL
                         sftpSession.init(host1, port, user, pw);
 
                         if (putFile != null) {
+                            if(!folder.exists()){
+                                folder.mkdirs();
+                            }
+
                             sftpSession.upload(ftpUpdatePath, putFile);
                             LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendCvnmsResourceData upload(" + host1 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
                         }
@@ -361,6 +384,10 @@ public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiL
                         sftpSession.init(host2, port, user, pw);
 
                         if (putFile != null) {
+                            if(!folder.exists()){
+                                folder.mkdirs();
+                            }
+
                             sftpSession.upload(ftpUpdatePath, putFile);
                             LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendCvnmsResourceData upload(" + host2 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
                         }
@@ -407,6 +434,7 @@ public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiL
 
         ObjectMapper mapper;
         File putFile = null;
+        File folder = new File(ftpUpdatePath);
 
         IpCvnmsResourceIfListVo ipCvnmsResourceIfListVo;
 
@@ -431,6 +459,10 @@ public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiL
                         sftpSession.init(host1, port, user, pw);
 
                         if (putFile != null) {
+                            if(!folder.exists()){
+                                folder.mkdirs();
+                            }
+
                             sftpSession.upload(ftpUpdatePath, putFile);
                             LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendCvnmsResourceIfData upload(" + host1 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
                         }
@@ -444,6 +476,10 @@ public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiL
                         sftpSession.init(host2, port, user, pw);
 
                         if (putFile != null) {
+                            if(!folder.exists()){
+                                folder.mkdirs();
+                            }
+
                             sftpSession.upload(ftpUpdatePath, putFile);
                             LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendCvnmsResourceIfData upload(" + host2 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
                         }
@@ -482,17 +518,17 @@ public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiL
     public File createJsonFile(String eventType, String jsonData, String ftpUpdatePath) {
         LOGGER.info(">>>>>>>>>>[IpEquipTableDataAiLinkageService] createJsonFile(" + eventType + ") <<<<<<<<<<<<<<<<<");
         File putFile = null;
+        File folder = new File(localUploadPath+eventType);
+
         BufferedWriter output;
         PrintWriter pw;
 
         try{
-            putFile = new File(ftpUpdatePath+eventType);
-
-            if(!putFile.exists()){
-                putFile.mkdir();
+            if(!folder.exists()){
+                folder.mkdirs();
             }
 
-            putFile = new File(ftpUpdatePath+eventType+"_"+UtlDateHelper.getCurrentDate()+".json");
+            putFile = new File(folder.getPath()+"/"+eventType+"_"+UtlDateHelper.getCurrentDate()+".json");
 
             if(!putFile.isFile()){
                 putFile.createNewFile();

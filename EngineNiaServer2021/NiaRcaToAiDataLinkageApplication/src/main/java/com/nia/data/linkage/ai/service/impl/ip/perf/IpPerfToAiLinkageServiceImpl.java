@@ -40,6 +40,9 @@ public class IpPerfToAiLinkageServiceImpl implements IpPerfToAiLinkageService {
     @Value("${spring.ftp.file-path}")
     private String uploadPath;
 
+    @Value("${spring.ftp.local-file-path}")
+    private String localUploadPath;
+
     @Value("${spring.ftp.host1}")
     private String host1 = null;
 
@@ -72,6 +75,7 @@ public class IpPerfToAiLinkageServiceImpl implements IpPerfToAiLinkageService {
 
         ObjectMapper mapper;
         File putFile = null;
+        File folder = new File(ftpUpdatePath);
 
         AiPerfIfListVo aiPerfIfListVo;
 
@@ -102,6 +106,10 @@ public class IpPerfToAiLinkageServiceImpl implements IpPerfToAiLinkageService {
                             sftpSession.init(host1, port, user, pw);
 
                             if (putFile != null) {
+                                if(!folder.exists()){
+                                    folder.mkdirs();
+                                }
+
                                 sftpSession.upload(ftpUpdatePath, putFile);
                                 LOGGER.info("=====> [IpPerfToAiLinkageService] sendPerfLogData upload(" + host1 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
                             }
@@ -115,6 +123,10 @@ public class IpPerfToAiLinkageServiceImpl implements IpPerfToAiLinkageService {
                             sftpSession.init(host2, port, user, pw);
 
                             if (putFile != null) {
+                                if(!folder.exists()){
+                                    folder.mkdirs();
+                                }
+
                                 sftpSession.upload(ftpUpdatePath, putFile);
                                 LOGGER.info("=====> [IpPerfToAiLinkageService] sendPerfLogData upload(" + host2 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
                             }
@@ -172,17 +184,17 @@ public class IpPerfToAiLinkageServiceImpl implements IpPerfToAiLinkageService {
     public File createJsonFile(String eventType, String jsonData, String perfKey, String ftpUpdatePath) {
         LOGGER.info(">>>>>>>>>>[IpPerfToAiLinkageService] createJsonFile(" + eventType + ") <<<<<<<<<<<<<<<<<");
         File putFile = null;
+        File folder = new File(localUploadPath+eventType);
+
         BufferedWriter output;
         PrintWriter pw;
 
         try{
-            putFile = new File(ftpUpdatePath+eventType);
-
-            if(!putFile.exists()){
-                putFile.mkdir();
+            if(!folder.exists()){
+                folder.mkdirs();
             }
 
-            putFile = new File(ftpUpdatePath+eventType + "_" + perfKey+".json");
+            putFile = new File(folder.getPath()+"/"+eventType + "_" + perfKey+".json");
 
             if(!putFile.isFile()){
                 putFile.createNewFile();

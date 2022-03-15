@@ -53,6 +53,9 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
     @Value("${spring.ftp.file-path}")
     private String uploadPath;
 
+    @Value("${spring.ftp.local-file-path}")
+    private String localUploadPath;
+
     @Value("${spring.ftp.host1}")
     private String host1 = null;
 
@@ -82,6 +85,7 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
 
         ObjectMapper mapper;
         File putFile = null;
+        File folder = new File(ftpUpdatePath);
 
         EquipInfoListVo equipInfoListVo;
 
@@ -106,6 +110,10 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
                         sftpSession.init(host1, port, user, pw);
 
                         if (putFile != null) {
+                            if(!folder.exists()){
+                                folder.mkdirs();
+                            }
+
                             sftpSession.upload(ftpUpdatePath, putFile);
                             LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendEquipMstData upload(" + host1 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
                         }
@@ -165,6 +173,7 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
 
         ObjectMapper mapper;
         File putFile = null;
+        File folder = new File(ftpUpdatePath);
 
         EquipPortListVo equipPortListVo;
 
@@ -189,6 +198,10 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
                         sftpSession.init(host1, port, user, pw);
 
                         if (putFile != null) {
+                            if(!folder.exists()){
+                                folder.mkdirs();
+                            }
+
                             sftpSession.upload(ftpUpdatePath, putFile);
                             LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendEquipPortData upload(" + host1 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
                         }
@@ -248,6 +261,7 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
 
         ObjectMapper mapper;
         File putFile = null;
+        File folder = new File(ftpUpdatePath);
 
         EquipSlotListVo equipSlotListVo;
 
@@ -272,6 +286,10 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
                         sftpSession.init(host1, port, user, pw);
 
                         if (putFile != null) {
+                            if(!folder.exists()){
+                                folder.mkdirs();
+                            }
+
                             sftpSession.upload(ftpUpdatePath, putFile);
                             LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendEquipSlotData upload(" + host1 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
                         }
@@ -331,6 +349,7 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
 
         ObjectMapper mapper;
         File putFile = null;
+        File folder = new File(ftpUpdatePath);
 
         NniTopologyListVo nniTopologyListVo;
 
@@ -355,6 +374,10 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
                         sftpSession.init(host1, port, user, pw);
 
                         if (putFile != null) {
+                            if(!folder.exists()){
+                                folder.mkdirs();
+                            }
+
                             sftpSession.upload(ftpUpdatePath, putFile);
                             LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendNniTopologyData upload(" + host1 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
                         }
@@ -414,6 +437,7 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
 
         ObjectMapper mapper;
         File putFile = null;
+        File folder = new File(ftpUpdatePath);
 
         UniTopologyListVo uniTopologyListVo;
 
@@ -438,6 +462,10 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
                         sftpSession.init(host1, port, user, pw);
 
                         if (putFile != null) {
+                            if(!folder.exists()){
+                                folder.mkdirs();
+                            }
+
                             sftpSession.upload(ftpUpdatePath, putFile);
                             LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendUniTopologyData upload(" + host1 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
                         }
@@ -497,6 +525,7 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
 
         ObjectMapper mapper;
         File putFile = null;
+        File folder = new File(ftpUpdatePath);
 
         RoadmRepeaterRouteListVo roadmRepeaterRouteListVo;
 
@@ -522,6 +551,10 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
                         sftpSession.init(host1, port, user, pw);
 
                         if (putFile != null) {
+                            if(!folder.exists()){
+                                folder.mkdirs();
+                            }
+
                             sftpSession.upload(ftpUpdatePath, putFile);
                             LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendRoadmTrunkData upload(" + host1 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
                         }
@@ -535,6 +568,10 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
                         sftpSession.init(host2, port, user, pw);
 
                         if (putFile != null) {
+                            if(!folder.exists()){
+                                folder.mkdirs();
+                            }
+
                             sftpSession.upload(ftpUpdatePath, putFile);
                             LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendRoadmTrunkData upload(" + host2 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
                         }
@@ -573,17 +610,17 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
     public File createJsonFile(String eventType, String jsonData, String ftpUpdatePath) {
         LOGGER.info(">>>>>>>>>>[IpEquipTableDataAiLinkageService] createJsonFile(" + eventType + ") <<<<<<<<<<<<<<<<<");
         File putFile = null;
+        File folder = new File(localUploadPath+eventType);
+
         BufferedWriter output;
         PrintWriter pw;
 
         try{
-            putFile = new File(ftpUpdatePath+eventType);
-
-            if(!putFile.exists()){
-                putFile.mkdir();
+            if(!folder.exists()){
+                folder.mkdirs();
             }
 
-            putFile = new File(ftpUpdatePath+eventType+"_"+UtlDateHelper.getCurrentDate()+".json");
+            putFile = new File(folder.getPath()+"/"+eventType+"_"+UtlDateHelper.getCurrentDate()+".json");
 
             if(!putFile.isFile()){
                 putFile.createNewFile();

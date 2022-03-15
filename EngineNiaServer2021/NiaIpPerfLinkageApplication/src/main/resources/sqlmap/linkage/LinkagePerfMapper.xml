@@ -3,10 +3,10 @@
 <mapper namespace="com.nia.data.linkage.ip.perf.mapper.linkage.LinkagePerfMapper">
 
     <select id="selectMaxIntTimestamp" resultType="com.nia.data.linkage.ip.perf.vo.perf.PerfVo">
-        SELECT MAX(inttimestamp) FROM catchview.xe_cvnms_perf_if
+        SELECT MAX(inttimestamp) AS inttimestamp FROM catchview.xe_cvnms_perf_if
     </select>
 
-    <select id="selectPerfList" resultType="com.nia.data.linkage.ip.perf.vo.perf.PerfVo" parameterType="long">
+    <select id="selectPerfList" resultType="com.nia.data.linkage.ip.perf.vo.perf.PerfVo" parameterType="int">
         SELECT strifid, strresid, strtypemin, inttimestamp, intyear
              , intmonth, intday, inthour, intmin, intweek
              , intbandwidth, fltbpsin, fltbpsout, fltppsin, fltppsout

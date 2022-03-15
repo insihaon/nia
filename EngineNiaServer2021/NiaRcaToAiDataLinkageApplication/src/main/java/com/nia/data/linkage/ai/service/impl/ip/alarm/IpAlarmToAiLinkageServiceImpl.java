@@ -45,6 +45,9 @@ public class IpAlarmToAiLinkageServiceImpl implements IpAlarmToAiLinkageService 
     @Value("${spring.ftp.file-path}")
     private String uploadPath;
 
+    @Value("${spring.ftp.local-file-path}")
+    private String localUploadPath;
+
     @Value("${spring.ftp.host1}")
     private String host1 = null;
 
@@ -77,6 +80,7 @@ public class IpAlarmToAiLinkageServiceImpl implements IpAlarmToAiLinkageService 
 
         ObjectMapper mapper;
         File putFile = null;
+        File folder = new File(ftpUpdatePath);
 
         IpAlarmListVo ipAlarmListVo;
 
@@ -108,6 +112,9 @@ public class IpAlarmToAiLinkageServiceImpl implements IpAlarmToAiLinkageService 
                             sftpSession.init(host1, port, user, pw);
 
                             if (putFile != null) {
+                                if(!folder.exists()){
+                                    folder.mkdirs();
+                                }
                                 sftpSession.upload(ftpUpdatePath, putFile);
                                 LOGGER.info("=====> [IpAlarmToAiLinkageService] sendAlarmData upload(" + host1 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
                             }
@@ -121,6 +128,10 @@ public class IpAlarmToAiLinkageServiceImpl implements IpAlarmToAiLinkageService 
                             sftpSession.init(host2, port, user, pw);
 
                             if (putFile != null) {
+                                if(!folder.exists()){
+                                    folder.mkdirs();
+                                }
+
                                 sftpSession.upload(ftpUpdatePath, putFile);
                                 LOGGER.info("=====> [IpAlarmToAiLinkageService] sendAlarmData upload(" + host2 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
                             }
@@ -166,17 +177,17 @@ public class IpAlarmToAiLinkageServiceImpl implements IpAlarmToAiLinkageService 
     public File createJsonFile(String eventType, String jsonData, String dataKey, String ftpUpdatePath) {
         LOGGER.info(">>>>>>>>>>[IpAlarmToAiLinkageService] createJsonFile(" + eventType + ") <<<<<<<<<<<<<<<<<");
         File putFile = null;
+        File folder = new File(localUploadPath+eventType);
+
         BufferedWriter output;
         PrintWriter pw;
 
         try{
-            putFile = new File(ftpUpdatePath+eventType);
-
-            if(!putFile.exists()){
-                putFile.mkdir();
+            if(!folder.exists()){
+                folder.mkdirs();
             }
 
-            putFile = new File(ftpUpdatePath+eventType+"_"+dataKey+""+".json");
+            putFile = new File(folder.getPath()+"/"+eventType+"_"+dataKey+""+".json");
 
             if(!putFile.isFile()){
                 putFile.createNewFile();

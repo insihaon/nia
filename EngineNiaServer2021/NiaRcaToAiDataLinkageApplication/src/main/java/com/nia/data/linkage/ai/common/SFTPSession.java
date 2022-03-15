@@ -61,9 +61,17 @@ public class SFTPSession {
 // 단일 파일 업로드
 public void upload(String dir, File file) {
     FileInputStream in = null;
+    String[] fileNameArr;
 
     try { //파일을 가져와서 inputStream에 넣고 저장경로를 찾아 put
+        if(!exists(dir)){
+            fileNameArr = dir.split("/");
+            channelSftp.cd("/data");
+            channelSftp.mkdir(fileNameArr[2]);
+        }
+
         in = new FileInputStream(file);
+
         channelSftp.cd(dir);
         channelSftp.put(in, file.getName());
     } catch (SftpException se) {
@@ -135,6 +143,23 @@ public void upload(String dir, File file) {
         }catch (SftpException e){
             LOGGER.error(">>>>>>>>>>>> SFTPSession fileDelete()  error : "+ ExceptionUtils.getStackTrace(e)+" <<<<<<<<<<<<<<<<");
         }
+    }
+
+    /**
+     * 디렉토리( or 파일) 존재 여부
+     * @param path 디렉토리 (or 파일)
+     * @return
+     */
+    public boolean exists(String path) {
+        Vector res = null;
+        try {
+            res = channelSftp.ls(path);
+        } catch (SftpException e) {
+            if (e.id == ChannelSftp.SSH_FX_NO_SUCH_FILE) {
+                return false;
+            }
+        }
+        return res != null && !res.isEmpty();
     }
 
     /**
