@@ -68,7 +68,7 @@ public class IpAlarmToAiLinkageServiceImpl implements IpAlarmToAiLinkageService 
 
     @Override
     public void sendAlarmData() {
-        LOGGER.info("==========>[IpSflowToAiLinkageService] sendAlarmData <==============");
+        LOGGER.info("==========>[IpAlarmToAiLinkageService] sendAlarmData <==============");
         SFTPSession sftpSession;
 
         String dataKey = null;
@@ -116,12 +116,12 @@ public class IpAlarmToAiLinkageServiceImpl implements IpAlarmToAiLinkageService 
                                     folder.mkdirs();
                                 }
                                 sftpSession.upload(ftpUpdatePath, putFile);
-                                LOGGER.info("=====> [IpAlarmToAiLinkageService] sendAlarmData upload(" + host1 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                                LOGGER.info("=====> [IpAlarmToAiLinkageService] sendAlarmData upload(" + host1.split("\\.")[3] + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
                             }
 
                             sftpSession.disconnection();
                         } catch (Exception e1) {
-                            LOGGER.error("=====> [IpAlarmToAiLinkageService] sendAlarmData upload(" + host1 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
+                            LOGGER.error("=====> [IpAlarmToAiLinkageService] sendAlarmData upload(" + host1.split("\\.")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
                         }
 
                         try {
@@ -133,12 +133,12 @@ public class IpAlarmToAiLinkageServiceImpl implements IpAlarmToAiLinkageService 
                                 }
 
                                 sftpSession.upload(ftpUpdatePath, putFile);
-                                LOGGER.info("=====> [IpAlarmToAiLinkageService] sendAlarmData upload(" + host2 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                                LOGGER.info("=====> [IpAlarmToAiLinkageService] sendAlarmData upload(" + host2.split("\\.")[3] + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
                             }
 
                             sftpSession.disconnection();
                         } catch (Exception e1) {
-                            LOGGER.error("=====> [IpAlarmToAiLinkageService] sendAlarmData upload(" + host2 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
+                            LOGGER.error("=====> [IpAlarmToAiLinkageService] sendAlarmData upload(" + host2.split("\\.")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
                         }
                     }
 

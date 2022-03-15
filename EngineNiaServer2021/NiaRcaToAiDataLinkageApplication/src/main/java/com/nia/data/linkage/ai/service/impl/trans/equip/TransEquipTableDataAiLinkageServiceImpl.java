@@ -115,12 +115,12 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
                             }
 
                             sftpSession.upload(ftpUpdatePath, putFile);
-                            LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendEquipMstData upload(" + host1 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                            LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendEquipMstData upload(" + host1.split("\\.")[3] + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
                         }
 
                         sftpSession.disconnection();
                     } catch (Exception e1) {
-                        LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendEquipMstData upload(" + host1 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
+                        LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendEquipMstData upload(" + host1.split("\\.")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
                     }
 
                     try {
@@ -128,12 +128,12 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
 
                         if (putFile != null) {
                             sftpSession.upload(ftpUpdatePath, putFile);
-                            LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendEquipMstData upload(" + host2 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                            LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendEquipMstData upload(" + host2.split("\\.")[3] + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
                         }
 
                         sftpSession.disconnection();
                     } catch (Exception e1) {
-                        LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendEquipMstData upload(" + host2 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
+                        LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendEquipMstData upload(" + host2.split("\\.")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
                     }
                 }
 
@@ -203,12 +203,12 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
                             }
 
                             sftpSession.upload(ftpUpdatePath, putFile);
-                            LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendEquipPortData upload(" + host1 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                            LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendEquipPortData upload(" + host1.split("\\.")[3] + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
                         }
 
                         sftpSession.disconnection();
                     } catch (Exception e1) {
-                        LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendEquipPortData upload(" + host1 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
+                        LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendEquipPortData upload(" + host1.split("\\.")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
                     }
 
                     try {
@@ -216,12 +216,12 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
 
                         if (putFile != null) {
                             sftpSession.upload(ftpUpdatePath, putFile);
-                            LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendEquipPortData upload(" + host2 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                            LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendEquipPortData upload(" + host2.split("\\.")[3] + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
                         }
 
                         sftpSession.disconnection();
                     } catch (Exception e1) {
-                        LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendEquipPortData upload(" + host2 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
+                        LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendEquipPortData upload(" + host2.split("\\.")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
                     }
                 }
 
@@ -291,12 +291,12 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
                             }
 
                             sftpSession.upload(ftpUpdatePath, putFile);
-                            LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendEquipSlotData upload(" + host1 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                            LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendEquipSlotData upload(" + host1.split("\\.")[3] + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
                         }
 
                         sftpSession.disconnection();
                     } catch (Exception e1) {
-                        LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendEquipSlotData upload(" + host1 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
+                        LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendEquipSlotData upload(" + host1.split("\\.")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
                     }
 
                     try {
@@ -304,12 +304,12 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
 
                         if (putFile != null) {
                             sftpSession.upload(ftpUpdatePath, putFile);
-                            LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendEquipSlotData upload(" + host2 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                            LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendEquipSlotData upload(" + host2.split("\\.")[3] + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
                         }
 
                         sftpSession.disconnection();
                     } catch (Exception e1) {
-                        LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendEquipSlotData upload(" + host2 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
+                        LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendEquipSlotData upload(" + host2.split("\\.")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
                     }
                 }
 
@@ -379,12 +379,12 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
                             }
 
                             sftpSession.upload(ftpUpdatePath, putFile);
-                            LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendNniTopologyData upload(" + host1 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                            LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendNniTopologyData upload(" + host1.split("\\.")[3] + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
                         }
 
                         sftpSession.disconnection();
                     } catch (Exception e1) {
-                        LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendNniTopologyData upload(" + host1 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
+                        LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendNniTopologyData upload(" + host1.split("\\.")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
                     }
 
                     try {
@@ -392,12 +392,12 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
 
                         if (putFile != null) {
                             sftpSession.upload(ftpUpdatePath, putFile);
-                            LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendNniTopologyData upload(" + host2 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                            LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendNniTopologyData upload(" + host2.split("\\.")[3] + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
                         }
 
                         sftpSession.disconnection();
                     } catch (Exception e1) {
-                        LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendNniTopologyData upload(" + host2 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
+                        LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendNniTopologyData upload(" + host2.split("\\.")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
                     }
                 }
 
@@ -467,12 +467,12 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
                             }
 
                             sftpSession.upload(ftpUpdatePath, putFile);
-                            LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendUniTopologyData upload(" + host1 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                            LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendUniTopologyData upload(" + host1.split("\\.")[3] + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
                         }
 
                         sftpSession.disconnection();
                     } catch (Exception e1) {
-                        LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendUniTopologyData upload(" + host1 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
+                        LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendUniTopologyData upload(" + host1.split("\\.")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
                     }
 
                     try {
@@ -480,12 +480,12 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
 
                         if (putFile != null) {
                             sftpSession.upload(ftpUpdatePath, putFile);
-                            LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendUniTopologyData upload(" + host2 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                            LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendUniTopologyData upload(" + host2.split("\\.")[3] + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
                         }
 
                         sftpSession.disconnection();
                     } catch (Exception e1) {
-                        LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendUniTopologyData upload(" + host2 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
+                        LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendUniTopologyData upload(" + host2.split("\\.")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
                     }
                 }
 
@@ -556,12 +556,12 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
                             }
 
                             sftpSession.upload(ftpUpdatePath, putFile);
-                            LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendRoadmTrunkData upload(" + host1 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                            LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendRoadmTrunkData upload(" + host1.split("\\.")[3] + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
                         }
 
                         sftpSession.disconnection();
                     } catch (Exception e1) {
-                        LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendRoadmTrunkData upload(" + host1 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
+                        LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendRoadmTrunkData upload(" + host1.split("\\.")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
                     }
 
                     try {
@@ -573,12 +573,12 @@ public class TransEquipTableDataAiLinkageServiceImpl implements TransEquipTableD
                             }
 
                             sftpSession.upload(ftpUpdatePath, putFile);
-                            LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendRoadmTrunkData upload(" + host2 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                            LOGGER.info("=====> [TransEquipTableDataAiLinkageService] sendRoadmTrunkData upload(" + host2.split("\\.")[3] + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
                         }
 
                         sftpSession.disconnection();
                     } catch (Exception e1) {
-                        LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendRoadmTrunkData upload(" + host2 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
+                        LOGGER.error("=====> [TransEquipTableDataAiLinkageService] sendRoadmTrunkData upload(" + host2.split("\\.")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
                     }
                 }
 

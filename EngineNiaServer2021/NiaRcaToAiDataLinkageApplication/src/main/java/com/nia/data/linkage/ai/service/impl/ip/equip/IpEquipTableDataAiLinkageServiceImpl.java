@@ -109,12 +109,12 @@ public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiL
                             }
 
                             sftpSession.upload(ftpUpdatePath, putFile);
-                            LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendBackBoneLinkData upload(" + host1 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                            LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendBackBoneLinkData upload(" + host1.split("\\.")[3] + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
                         }
 
                         sftpSession.disconnection();
                     } catch (Exception e1) {
-                        LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendBackBoneLinkData upload(" + host1 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
+                        LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendBackBoneLinkData upload(" + host1.split("\\.")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
                     }
 
                     try {
@@ -122,12 +122,12 @@ public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiL
 
                         if (putFile != null) {
                             sftpSession.upload(ftpUpdatePath, putFile);
-                            LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendBackBoneLinkData upload(" + host2 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                            LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendBackBoneLinkData upload(" + host2.split("\\.")[3] + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
                         }
 
                         sftpSession.disconnection();
                     } catch (Exception e1) {
-                        LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendBackBoneLinkData upload(" + host2 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
+                        LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendBackBoneLinkData upload(" + host2.split("\\.")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
                     }
                 }
                 if("codej".equals(profiles)){
@@ -196,12 +196,12 @@ public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiL
                             }
 
                             sftpSession.upload(ftpUpdatePath, putFile);
-                            LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendNodeData upload(" + host1 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                            LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendNodeData upload(" + host1.split("\\.")[3] + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
                         }
 
                         sftpSession.disconnection();
                     } catch (Exception e1) {
-                        LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendNodeData upload(" + host1 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
+                        LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendNodeData upload(" + host1.split("\\.")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
                     }
 
                     try {
@@ -209,12 +209,12 @@ public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiL
 
                         if (putFile != null) {
                             sftpSession.upload(ftpUpdatePath, putFile);
-                            LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendNodeData upload(" + host2 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                            LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendNodeData upload(" + host2.split("\\.")[3] + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
                         }
 
                         sftpSession.disconnection();
                     } catch (Exception e1) {
-                        LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendNodeData upload(" + host2 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
+                        LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendNodeData upload(" + host2.split("\\.")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
                     }
                 }
 
@@ -284,12 +284,12 @@ public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiL
                             }
 
                             sftpSession.upload(ftpUpdatePath, putFile);
-                            LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendPortData upload(" + host1 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                            LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendPortData upload(" + host1.split("\\.")[3] + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
                         }
 
                         sftpSession.disconnection();
                     } catch (Exception e1) {
-                        LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendPortData upload(" + host1 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
+                        LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendPortData upload(" + host1.split("\\.")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
                     }
 
                     try {
@@ -297,12 +297,12 @@ public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiL
 
                         if (putFile != null) {
                             sftpSession.upload(ftpUpdatePath, putFile);
-                            LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendPortData upload(" + host2 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                            LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendPortData upload(" + host2.split("\\.")[3] + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
                         }
 
                         sftpSession.disconnection();
                     } catch (Exception e1) {
-                        LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendPortData upload(" + host2 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
+                        LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendPortData upload(" + host2.split("\\.")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
                     }
                 }
 
@@ -372,12 +372,12 @@ public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiL
                             }
 
                             sftpSession.upload(ftpUpdatePath, putFile);
-                            LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendCvnmsResourceData upload(" + host1 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                            LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendCvnmsResourceData upload(" + host1.split("\\.")[3] + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
                         }
 
                         sftpSession.disconnection();
                     } catch (Exception e1) {
-                        LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendCvnmsResourceData upload(" + host1 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
+                        LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendCvnmsResourceData upload(" + host1.split("\\.")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
                     }
 
                     try {
@@ -389,12 +389,12 @@ public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiL
                             }
 
                             sftpSession.upload(ftpUpdatePath, putFile);
-                            LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendCvnmsResourceData upload(" + host2 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                            LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendCvnmsResourceData upload(" + host2.split("\\.")[3] + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
                         }
 
                         sftpSession.disconnection();
                     } catch (Exception e1) {
-                        LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendCvnmsResourceData upload(" + host2 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
+                        LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendCvnmsResourceData upload(" + host2.split("\\.")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
                     }
                 }
 
@@ -464,12 +464,12 @@ public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiL
                             }
 
                             sftpSession.upload(ftpUpdatePath, putFile);
-                            LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendCvnmsResourceIfData upload(" + host1 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                            LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendCvnmsResourceIfData upload(" + host1.split("\\.")[3] + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
                         }
 
                         sftpSession.disconnection();
                     } catch (Exception e1) {
-                        LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendCvnmsResourceIfData upload(" + host1 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
+                        LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendCvnmsResourceIfData upload(" + host1.split("\\.")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
                     }
 
                     try {
@@ -481,12 +481,12 @@ public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiL
                             }
 
                             sftpSession.upload(ftpUpdatePath, putFile);
-                            LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendCvnmsResourceIfData upload(" + host2 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                            LOGGER.info("=====> [IpEquipTableDataAiLinkageService] sendCvnmsResourceIfData upload(" + host2.split("\\.")[3] + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
                         }
 
                         sftpSession.disconnection();
                     } catch (Exception e1) {
-                        LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendCvnmsResourceIfData upload(" + host2 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
+                        LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendCvnmsResourceIfData upload(" + host2.split("\\.")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
                     }
                 }
 
