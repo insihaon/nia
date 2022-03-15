@@ -114,12 +114,12 @@ public class IpSflowToAiLinkageServiceImpl implements IpSflowToAiLinkageService 
                                 }
 
                                 sftpSession.upload(ftpUpdatePath, putFile);
-                                LOGGER.info("=====> [IpSflowToAiLinkageService] sendSflowLogData upload(" + host1 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                                LOGGER.info("=====> [IpSflowToAiLinkageService] sendSflowLogData upload(" + host1.split("\\.")[3] + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
                             }
 
                             sftpSession.disconnection();
                         } catch (Exception e1) {
-                            LOGGER.error("=====> [IpSflowToAiLinkageService] sendSflowLogData upload(" + host1 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
+                            LOGGER.error("=====> [IpSflowToAiLinkageService] sendSflowLogData upload(" + host1.split("\\.")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
                         }
 
                         try {
@@ -131,12 +131,12 @@ public class IpSflowToAiLinkageServiceImpl implements IpSflowToAiLinkageService 
                                 }
 
                                 sftpSession.upload(ftpUpdatePath, putFile);
-                                LOGGER.info("=====> [IpSflowToAiLinkageService] sendSflowLogData upload(" + host2 + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                                LOGGER.info("=====> [IpSflowToAiLinkageService] sendSflowLogData upload(" + host2.split("\\.")[3] + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
                             }
 
                             sftpSession.disconnection();
                         } catch (Exception e1) {
-                            LOGGER.error("=====> [IpSflowToAiLinkageService] sendSflowLogData upload(" + host2 + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
+                            LOGGER.error("=====> [IpSflowToAiLinkageService] sendSflowLogData upload(" + host2.split("\\.")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
                         }
                     }
 
