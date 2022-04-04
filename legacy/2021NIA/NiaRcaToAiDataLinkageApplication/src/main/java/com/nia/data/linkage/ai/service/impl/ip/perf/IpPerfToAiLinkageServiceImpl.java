@@ -80,6 +80,7 @@ public class IpPerfToAiLinkageServiceImpl implements IpPerfToAiLinkageService {
         AiPerfIfListVo aiPerfIfListVo;
 
         try {
+            Thread.sleep(120*1000);
 
             dataKey = commonMapper.selectLinkageYdKey("aiIpPerfKey");
 

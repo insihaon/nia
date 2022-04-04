@@ -81,7 +81,7 @@ public class IpSflowToAiLinkageServiceImpl implements IpSflowToAiLinkageService 
         SflowListVo sflowListVo;
 
         try {
-            Thread.sleep(180*1000);
+            Thread.sleep(120*1000);
 
             dataKey = commonMapper.selectLinkageYdKey("aiIpSfolwLogKey");
 

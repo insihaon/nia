@@ -58,30 +58,32 @@ public class AlarmServiceImpl implements AlarmService {
                     nodeMstVoList = niaEquipMapper.selectNodeList();
                     LOGGER.info("==========>[AlarmService] getAlarmData size ("+alarmList.size()+") <==============");
 
-                    for(AlarmVo alarmVo : alarmList){
-                        if(nodeMstVoList != null && nodeMstVoList.size() > 0){
-                            for(NodeMstVo nodeMstVo : nodeMstVoList){
-                                if(alarmVo.getStrResID().equals(nodeMstVo.getNodeNum())){
-                                    sendAlarmList.add(alarmVo);
-                                    alarmLinkageResultPrdAmqp.sendMessageCmd(alarmVo);
-                                }
-                            }
-                        }else{
-                            sendAlarmList.add(alarmVo);
-                            alarmLinkageResultPrdAmqp.sendMessageCmd(alarmVo);
-                        }
-                    }
+//                    for(AlarmVo alarmVo : alarmList){
+//                        if(nodeMstVoList != null && nodeMstVoList.size() > 0){
+//                            for(NodeMstVo nodeMstVo : nodeMstVoList){
+//                                if(alarmVo.getStrResID().equals(nodeMstVo.getNodeNum())){
+//                                    sendAlarmList.add(alarmVo);
+//                                    alarmLinkageResultPrdAmqp.sendMessageCmd(alarmVo);
+//                                }
+//                            }
+//                        }else{
+//                            sendAlarmList.add(alarmVo);
+//                            alarmLinkageResultPrdAmqp.sendMessageCmd(alarmVo);
+//                        }
+//                    }
+
+                    sendAlarmList = alarmList;
 
                     if(sendAlarmList.size() > 0){
                         objectHashMap = new HashMap<>();
                         objectHashMap.put("alarmList", sendAlarmList);
                         niaAlarmMapper.insertIpAlarm(objectHashMap);
-                    }
 
-                    strHashMap = new HashMap<>();
-                    strHashMap.put("key", "ipAlarmKey");
-                    strHashMap.put("value", alarmList.get(alarmList.size()-1).getIntErrIdx()+"");
-                    niaAlarmMapper.updateAlarmYdKey(strHashMap);
+                        strHashMap = new HashMap<>();
+                        strHashMap.put("key", "ipAlarmKey");
+                        strHashMap.put("value", alarmList.get(alarmList.size()-1).getIntErrIdx()+"");
+                        niaAlarmMapper.updateAlarmYdKey(strHashMap);
+                    }
                 }
             }
         }catch (Exception e){

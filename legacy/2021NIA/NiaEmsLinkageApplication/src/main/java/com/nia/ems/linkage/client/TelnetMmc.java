@@ -142,13 +142,21 @@ public class TelnetMmc {
                 serverSocket = null;
                 output_thread.interrupt();
             }else{
-                socket_to_stdout.setStart(false);
-                socket_to_stdout = null;
+                if(socket_to_stdout != null){
+                    socket_to_stdout.setStart(false);
+                    socket_to_stdout = null;
+                }else {
+                    socket_to_stdout = null;
+                }
                 serverSocket = null;
                 output_thread.interrupt();
             }
         } catch (Exception e){
             LOGGER.error("=====> [TelnetMmc] closeConnection error : "+ExceptionUtils.getStackTrace(e)+" <=====");
+            socket_to_stdout.setStart(false);
+            socket_to_stdout = null;
+            serverSocket = null;
+            output_thread.interrupt();
         }
     }
 }
