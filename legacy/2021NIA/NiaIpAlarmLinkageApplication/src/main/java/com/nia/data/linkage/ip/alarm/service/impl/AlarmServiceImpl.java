@@ -58,7 +58,7 @@ public class AlarmServiceImpl implements AlarmService {
                     nodeMstVoList = niaEquipMapper.selectNodeList();
                     LOGGER.info("==========>[AlarmService] getAlarmData size ("+alarmList.size()+") <==============");
 
-//                    for(AlarmVo alarmVo : alarmList){
+                    for(AlarmVo alarmVo : alarmList){
 //                        if(nodeMstVoList != null && nodeMstVoList.size() > 0){
 //                            for(NodeMstVo nodeMstVo : nodeMstVoList){
 //                                if(alarmVo.getStrResID().equals(nodeMstVo.getNodeNum())){
@@ -70,7 +70,9 @@ public class AlarmServiceImpl implements AlarmService {
 //                            sendAlarmList.add(alarmVo);
 //                            alarmLinkageResultPrdAmqp.sendMessageCmd(alarmVo);
 //                        }
-//                    }
+
+                        alarmLinkageResultPrdAmqp.sendMessageCmd(alarmVo);
+                    }
 
                     sendAlarmList = alarmList;
 

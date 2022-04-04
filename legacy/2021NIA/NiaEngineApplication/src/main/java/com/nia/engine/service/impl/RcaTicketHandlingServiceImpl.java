@@ -62,12 +62,12 @@ public class RcaTicketHandlingServiceImpl implements RcaTicketHandlingService {
                     case "FIN" :
                         status = rcaTicketHandlingStatus.getStatus();
 
-                        ticketService.updateSop(rcaTicketHandlingStatus);
+                        ticketService.upsertSop(rcaTicketHandlingStatus);
                         break;
                     case "INIT" :
                         status = rcaTicketHandlingStatus.getStatus();
 
-                        ticketService.updateSop(rcaTicketHandlingStatus);
+                        ticketService.upsertSop(rcaTicketHandlingStatus);
                         break;
                 }
 
@@ -97,7 +97,7 @@ public class RcaTicketHandlingServiceImpl implements RcaTicketHandlingService {
                         }
                     }
                 }
-            } else if("TRAFFIC".equals(rcaTicketHandlingStatus.getTicketType())) {
+            } else if("NTT".equals(rcaTicketHandlingStatus.getTicketType()) || "ATT".equals(rcaTicketHandlingStatus.getTicketType())) {
                 status = rcaTicketHandlingStatus.getStatus();
 
                 sopId = ticketService.selectSopKey();
@@ -105,7 +105,8 @@ public class RcaTicketHandlingServiceImpl implements RcaTicketHandlingService {
 
                 rcaTicketHandlingStatus.setSopId(sopId);
                 ticketService.upsertSop(rcaTicketHandlingStatus);
-                if("FIN".equals(rcaTicketHandlingStatus.getStatus())) {
+
+                if("INIT".equals(rcaTicketHandlingStatus.getStatus())) {
                     ticketService.insertSopMail(rcaTicketHandlingStatus);
                 }
 
@@ -148,7 +149,7 @@ public class RcaTicketHandlingServiceImpl implements RcaTicketHandlingService {
                     case "FIN":
                         status = rcaTicketHandlingStatus.getStatus();
 
-                        ticketService.updateSop(rcaTicketHandlingStatus);
+                        ticketService.upsertSop(rcaTicketHandlingStatus);
                         break;
                 }
 

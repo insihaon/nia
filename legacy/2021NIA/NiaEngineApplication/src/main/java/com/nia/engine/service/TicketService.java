@@ -1,6 +1,8 @@
 package com.nia.engine.service;
 
 import com.nia.engine.vo.*;
+import com.nia.engine.vo.aiTraffic.anomalous.AnomalousTrafficVo;
+import com.nia.engine.vo.aiTraffic.noxious.NoxiousTrfficVo;
 import com.nia.engine.vo.profile.ProfileVo;
 
 import java.util.HashMap;
@@ -192,4 +194,32 @@ public interface TicketService {
 	 * @return
 	 */
 	List<RCATicket> selectRcaTicketProfileCheckList() throws Exception;
+
+	/**
+	 * TB_ANOMALOUS_TRAFFIC Ticket Id 업데이트
+	 * @param
+	 * @return
+	 */
+	void updateAnomalousTrafficTicketId(HashMap<String, String> map) throws Exception;
+
+	/**
+	 * TB_NOXIOUS_TRAFFIC Ticket Id 업데이트
+	 * @param
+	 * @return
+	 */
+	void updateNoxiousTrafficTicketId(HashMap<String, String> map) throws Exception;
+
+	/**
+	 * Anomalous Traffic Alarm 조회
+	 * @param
+	 * @return
+	 */
+	AnomalousTrafficVo selectAnomalousTrafficAlarm(HashMap<String, String> map) throws Exception;
+
+	/**
+	 * Noxious Traffic Alarm 조회
+	 * @param
+	 * @return
+	 */
+	NoxiousTrfficVo selectNoxiousTrafficAlarm(HashMap<String, String> map) throws Exception;
 }

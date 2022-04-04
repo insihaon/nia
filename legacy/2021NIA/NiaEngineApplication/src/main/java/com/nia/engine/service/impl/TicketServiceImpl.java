@@ -3,6 +3,8 @@ package com.nia.engine.service.impl;
 import com.nia.engine.mapper.TicketMapper;
 import com.nia.engine.service.TicketService;
 import com.nia.engine.vo.*;
+import com.nia.engine.vo.aiTraffic.anomalous.AnomalousTrafficVo;
+import com.nia.engine.vo.aiTraffic.noxious.NoxiousTrfficVo;
 import com.nia.engine.vo.profile.ProfileVo;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -291,5 +293,45 @@ public class TicketServiceImpl implements TicketService {
 	@Override
 	public List<RCATicket> selectRcaTicketProfileCheckList() throws Exception {
 		return ticketMapper.selectRcaTicketProfileCheckList();
+	}
+
+	/**
+	 * TB_ANOMALOUS_TRAFFIC Ticket Id 업데이트
+	 * @param
+	 * @return
+	 */
+	@Override
+	public void updateAnomalousTrafficTicketId(HashMap<String, String> map) throws Exception {
+		ticketMapper.updateAnomalousTrafficTicketId(map);
+	}
+
+	/**
+	 * TB_NOXIOUS_TRAFFIC Ticket Id 업데이트
+	 * @param
+	 * @return
+	 */
+	@Override
+	public void updateNoxiousTrafficTicketId(HashMap<String, String> map) throws Exception {
+		ticketMapper.updateNoxiousTrafficTicketId(map);
+	}
+
+	/**
+	 * Anomalous Traffic Alarm 조회
+	 * @param
+	 * @return
+	 */
+	@Override
+	public AnomalousTrafficVo selectAnomalousTrafficAlarm(HashMap<String, String> map) throws Exception {
+		return ticketMapper.selectAnomalousTrafficAlarm(map);
+	}
+
+	/**
+	 * Noxious Traffic Alarm 조회
+	 * @param
+	 * @return
+	 */
+	@Override
+	public NoxiousTrfficVo selectNoxiousTrafficAlarm(HashMap<String, String> map) throws Exception {
+		return ticketMapper.selectNoxiousTrafficAlarm(map);
 	}
 }
