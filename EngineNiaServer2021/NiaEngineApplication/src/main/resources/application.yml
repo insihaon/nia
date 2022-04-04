@@ -185,7 +185,7 @@ spring:
 
 ---
 spring:
-  profiles: codej
+  profiles: local
 
   jasypt:
     encryptor:
@@ -195,10 +195,10 @@ spring:
         suffix: )
 
   rabbitmq:
-    address: 10.81.192.18 #KOREN
-    port: 5672
-    username: rcaadmin
-    password: rcaadmin12#$
+    address: localhost  #개발
+    port: 5675
+    username: local
+    password: local12!@
 
     engineExchange: nia.exchangeEngineDirectly
     engineQueue: nia.EngineIndexDirectly
@@ -249,11 +249,11 @@ spring:
   datasource:
     driver-class-name: org.postgresql.Driver
     data-source-class-name: org.postgresql.ds.PGSimpleDataSource
-    url: jdbc:postgresql://10.81.192.18:5433/niadb #KOREN
+    url: jdbc:postgresql://localhost:5433/niadb #운영
     username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
     password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
-    maximumPoolSize : 10
-    idleTimeout : 6000
+    maximumPoolSize: 10
+    idleTimeout: 6000
 
   mybatis:
     mapper-locations: classpath*:sqlmap/*.xml

@@ -56,6 +56,7 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
                     for(EquipVo equip : equipList){
                         if(roadmEmsTL1Client.isConnected()){
                             try {
+
                                 mmc = "RTRV-SIPC:"+equip.getIp()+"-SH1::::;\r";
                                 roadmEmsTL1Client.sendCommand(mmc, false);
                             //    roadmMmcMsgPasing(mmcResult, "RTRV-SIPC");
