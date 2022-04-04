@@ -1,5 +1,7 @@
 package com.nia.engine.listener;
 
+import com.nia.engine.amqp.AiTicketAmqp;
+import com.nia.engine.amqp.EngineToUiTicketPrdAmqp;
 import com.nia.engine.common.UtlCommon;
 import com.nia.engine.service.RcaTrafficTicketService;
 import com.nia.engine.vo.aiTraffic.EngineTrafficeResultVo;
@@ -23,6 +25,9 @@ public class NiaEngineTrafficMsgListener implements ChannelAwareMessageListener 
 	@Qualifier("RcaTrafficTicketService")
 	private RcaTrafficTicketService rcaTrafficTicketService;
 
+	@Autowired
+	private AiTicketAmqp aiTicketAmqp;
+
 	@Override
 	public void onMessage(Message message, Channel channel) {
 		LOGGER.info("==========>[UITicketMsgListener] onMessage : "+new String(message.getBody())+"<==============");
@@ -41,6 +46,10 @@ public class NiaEngineTrafficMsgListener implements ChannelAwareMessageListener 
 			else if("noxious".equals(engineTrafficeResultVo.getGb())){
 				rcaTrafficTicketService.createNoxiousTrfficTicket(engineTrafficeResultVo.getNoxiousListVo());
 			}
+
+//			aiTicketAmqp.sendMessageCmd(engineTrafficeResultVo);
+//
+//			Thread.sleep(10 * 1000);
 		} catch (Exception e) {
 			LOGGER.error("==========>[EngineClearAlarmMsgListener] onMessage error "+e.getMessage()+" <==============");
 		}

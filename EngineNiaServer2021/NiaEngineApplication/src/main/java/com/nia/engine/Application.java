@@ -1,7 +1,6 @@
 package com.nia.engine;
 
 import com.nia.engine.service.*;
-import com.nia.engine.service.impl.RcaTicketProfileSchedulerJobServiceImpl;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -19,6 +18,7 @@ public class Application implements CommandLineRunner{
 	@Autowired
     @Qualifier("EngineBootSettingService")
     private EngineBootSettingService engineBootSettingService;
+
 
 	public static void main(String[] args) { SpringApplication.run(Application.class, args); }
 

@@ -14,9 +14,9 @@ import java.io.Serializable;
 public class AnomalousTrafficVo implements Serializable {
 
     private String strifid;
-    private String if_id;
+    private String ifId;
     private String strreid;
-    private String node_id;
+    private String nodeId;
     private int inttimestamp;
     private int fltbpsin;
     private String fltbpsin_predict;

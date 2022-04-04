@@ -21,6 +21,7 @@
       <module fileurl="file://$PROJECT_DIR$/NiaEmsLinkageApplication/com.nia.ems.linkage.iml" filepath="$PROJECT_DIR$/NiaEmsLinkageApplication/com.nia.ems.linkage.iml" />
       <module fileurl="file://$PROJECT_DIR$/NiaEngineApplication/com.nia.engine.iml" filepath="$PROJECT_DIR$/NiaEngineApplication/com.nia.engine.iml" />
       <module fileurl="file://$PROJECT_DIR$/NiaClusterApplication/com.nia.rca.cluster.preprocessor.iml" filepath="$PROJECT_DIR$/NiaClusterApplication/com.nia.rca.cluster.preprocessor.iml" />
+      <module fileurl="file://$PROJECT_DIR$/NiaAlarmSimulatorApplicationTest/com.nia.rca.test.simulator.iml" filepath="$PROJECT_DIR$/NiaAlarmSimulatorApplicationTest/com.nia.rca.test.simulator.iml" />
     </modules>
   </component>
 </project>

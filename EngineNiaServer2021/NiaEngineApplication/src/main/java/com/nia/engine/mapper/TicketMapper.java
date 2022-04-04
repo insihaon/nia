@@ -1,6 +1,8 @@
 package com.nia.engine.mapper;
 
 import com.nia.engine.vo.*;
+import com.nia.engine.vo.aiTraffic.anomalous.AnomalousTrafficVo;
+import com.nia.engine.vo.aiTraffic.noxious.NoxiousTrfficVo;
 import com.nia.engine.vo.profile.ProfileVo;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -208,4 +210,32 @@ public interface TicketMapper{
 	 * @return
 	 */
 	List<RCATicket> selectRcaTicketProfileCheckList();
+
+	/**
+	 * TB_ANOMALOUS_TRAFFIC Ticket Id 업데이트
+	 * @param
+	 * @return
+	 */
+	void updateAnomalousTrafficTicketId(HashMap<String, String> map);
+
+	/**
+	 * TB_NOXIOUS_TRAFFIC Ticket Id 업데이트
+	 * @param
+	 * @return
+	 */
+	void updateNoxiousTrafficTicketId(HashMap<String, String> map);
+
+	/**
+	 * Anomalous Traffic Alarm 조회
+	 * @param
+	 * @return
+	 */
+	AnomalousTrafficVo selectAnomalousTrafficAlarm(HashMap<String, String> map);
+
+	/**
+	 * Noxious Traffic Alarm 조회
+	 * @param
+	 * @return
+	 */
+	NoxiousTrfficVo selectNoxiousTrafficAlarm(HashMap<String, String> map);
 }

@@ -58,6 +58,7 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
         String ticketId;
         Timestamp faultTime;
         AnomalousTrafficVo anomalousTrafficVo;
+        AnomalousTrafficVo tmpAnomalousTrafficVo;
         RcaEngineResult rcaEngineResult;
         RCATicketAl rcaTicketAl;
         TopologyObject topology;
@@ -72,6 +73,17 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
 
                 while( itr.hasNext() ) {
                     anomalousTrafficVo = itr.next();
+
+                    parameterMap = new HashMap<String, String>();
+                    parameterMap.put("strifid", anomalousTrafficVo.getStrifid());
+                    parameterMap.put("inttimestamp", anomalousTrafficVo.getInttimestamp() + "");
+                    tmpAnomalousTrafficVo = ticketService.selectAnomalousTrafficAlarm(parameterMap);
+
+                    if(tmpAnomalousTrafficVo != null) {
+                        anomalousTrafficVo.setIfId(tmpAnomalousTrafficVo.getIfId());
+                        anomalousTrafficVo.setStrreid(tmpAnomalousTrafficVo.getStrreid());
+                        anomalousTrafficVo.setNodeId(tmpAnomalousTrafficVo.getNodeId());
+                    }
 
                     faultTime  = Timestamp.valueOf(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(anomalousTrafficVo.getInttimestamp() * 1000L)));
 
@@ -102,18 +114,27 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
                         rcaTicketAl.setRootCauseAnomalousTrafficAlarmInfoA(anomalousTrafficVo);
 
                         rcaTicketAl.setTicketId(ticketId);
-                        rcaTicketAl.setRootCauseSysnameA(anomalousTrafficVo.getNode_id());
-                        rcaTicketAl.setRootCausePortA(anomalousTrafficVo.getIf_id());
+                        rcaTicketAl.setRootCauseSysnameA(anomalousTrafficVo.getNodeId());
+                        rcaTicketAl.setRootCausePortA(anomalousTrafficVo.getIfId());
 
                         parameterMap = new HashMap<String, String>();
-                        parameterMap.put("sysname", anomalousTrafficVo.getNode_id());
-                        parameterMap.put("port", anomalousTrafficVo.getIf_id());
+                        parameterMap.put("sysname", anomalousTrafficVo.getNodeId());
+                        parameterMap.put("port", anomalousTrafficVo.getIfId());
                         topology = topologyService.selectE2eTopology(parameterMap);
 
                         if(topology != null){
                             rcaTicketAl.setRootCauseSysnameZ(topology.getOppSysname());
                             rcaTicketAl.setRootCausePortZ(topology.getOppPort());
                         }
+
+                        parameterMap = new HashMap<String, String>();
+                        parameterMap.put("ticketId", ticketId);
+                        parameterMap.put("strifid", anomalousTrafficVo.getStrifid());
+                        parameterMap.put("ifId", anomalousTrafficVo.getIfId());
+                        parameterMap.put("inttimestamp", anomalousTrafficVo.getInttimestamp() + "");
+                        ticketService.updateAnomalousTrafficTicketId(parameterMap);
+
+                        ticketService.insertRcaTicketCnt(rcaTicket);
 
                         rcaTicketAlList.add(rcaTicketAl);
 
@@ -127,8 +148,6 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
                         ticketService.insertRcaTicket(rcaTicket);
                         LOGGER.info("==========>[RcaTicketManager] rcaTicketAlList : " + rcaTicketAlList + "<==============");
                         ticketService.insertRcaTicketAl(rcaTicketAlList);
-
-                        ticketService.insertRcaTicketCnt(rcaTicket);
 
                         rcaEngineResult = new RcaEngineResult();
                         rcaEngineResult.setTicketId(rcaTicket.getTicketId());
@@ -155,10 +174,10 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
         String ticketId;
         Timestamp faultTime;
         RCATicketAl rcaTicketAl;
-        NoxiousTrfficVo noxiousTrfficVo;
         RcaEngineResult rcaEngineResult;
 
         List<RCATicketAl> rcaTicketAlList = null;
+        HashMap<String, String> parameterMap;
 
         try {
             if (noxiousTrafficListVo != null && noxiousTrafficListVo.getData().size() > 0) {
@@ -195,6 +214,16 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
 
                         rcaTicketAl.setRootCauseSysnameZ(noxiousTrffic.getStrd_ip());
                         rcaTicketAl.setRootCausePortZ(String.valueOf(noxiousTrffic.getStrd_port()));
+
+                        parameterMap = new HashMap<String, String>();
+                        parameterMap.put("ticketId", ticketId);
+                        parameterMap.put("strresip", noxiousTrffic.getStrresip());
+                        parameterMap.put("strsIp", noxiousTrffic.getStrs_ip());
+                        parameterMap.put("strsPort", noxiousTrffic.getStrs_port() + "");
+                        parameterMap.put("strdIp", noxiousTrffic.getStrd_ip());
+                        parameterMap.put("strdPort", noxiousTrffic.getStrd_port() + "");
+                        parameterMap.put("dateregdate", noxiousTrffic.getDateregdate());
+                        ticketService.updateNoxiousTrafficTicketId(parameterMap);
 
                         rcaTicketAlList.add(rcaTicketAl);
                     }

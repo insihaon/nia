@@ -100,6 +100,14 @@ public class RabbitMQConfig {
         template.setMessageConverter(jsonMessageConverter());
         return template;
     }
+
+    @Bean(name="NiaEngineTraffic_RabbitTemplate")
+    public RabbitTemplate rabbitTemplateNiaEngineTraffic() {
+        RabbitTemplate template = new RabbitTemplate(connectionFactory());
+        template.setRoutingKey(rabbitMQVo.getNiaEngineTrafficQueue());
+        template.setMessageConverter(jsonMessageConverter());
+        return template;
+    }
     
     @Bean(name="Engine_ListenerContainer")
     public SimpleMessageListenerContainer engineListenerContainer() {

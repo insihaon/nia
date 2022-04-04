@@ -57,7 +57,7 @@ public class SingleDomainRcaServiceImpl {
 			inputSwitchAlarmList = new ArrayList<BasicAlarmVo>();
 
 			for(BasicAlarmVo basicAlarmVo :  clusterObject.getBasicAlarmtVoList()){
-				if(basicAlarmVo.getEquiptype().contains("POTN")) {
+				if(basicAlarmVo.getEquiptype().contains("OTN") || basicAlarmVo.getEquiptype().contains("OPN")) {
 					inputPotnAlarmList.add(basicAlarmVo);
 				}else if(basicAlarmVo.getEquiptype().startsWith("ROADM")){
 					basicAlarmVo.setSysname(basicAlarmVo.getSysname().split("-")[0]);
