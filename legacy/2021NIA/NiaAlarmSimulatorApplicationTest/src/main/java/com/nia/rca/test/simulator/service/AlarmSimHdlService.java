@@ -61,7 +61,7 @@ public class AlarmSimHdlService {
 			}
 
 			//performancePrdAmqp.sendMessageCmd("2020-11-26 17:00:00");
-			performanceToAiPrdAmqp.sendMessageCmd("2020-11-26 17:00:00");
+//			performanceToAiPrdAmqp.sendMessageCmd("2020-11-26 17:00:00");
 		}catch (Exception e) {
 			LOGGER.error("=====> [AlarmSimHdlService] alHdlProcessor error :  "+ ExceptionUtils.getStackTrace(e)+ "<=====");
 		}

@@ -1,7 +1,5 @@
 package com.nia.engine.listener;
 
-import com.nia.engine.amqp.AiTicketAmqp;
-import com.nia.engine.amqp.EngineToUiTicketPrdAmqp;
 import com.nia.engine.common.UtlCommon;
 import com.nia.engine.service.RcaTrafficTicketService;
 import com.nia.engine.vo.aiTraffic.EngineTrafficeResultVo;
@@ -25,8 +23,8 @@ public class NiaEngineTrafficMsgListener implements ChannelAwareMessageListener 
 	@Qualifier("RcaTrafficTicketService")
 	private RcaTrafficTicketService rcaTrafficTicketService;
 
-	@Autowired
-	private AiTicketAmqp aiTicketAmqp;
+//	@Autowired
+//	private AiTicketAmqp aiTicketAmqp;
 
 	@Override
 	public void onMessage(Message message, Channel channel) {

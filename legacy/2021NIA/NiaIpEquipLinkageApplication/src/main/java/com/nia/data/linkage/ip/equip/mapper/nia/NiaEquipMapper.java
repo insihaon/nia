@@ -10,4 +10,5 @@ public interface NiaEquipMapper {
     void insertCvnmsResource(HashMap<String, Object> objectHashMap);
     void deleteCvnmsResourceIf();
     void deleteCvnmsResource();
+    void updateLinkageHist(HashMap<String, String> strHashMap);
 }

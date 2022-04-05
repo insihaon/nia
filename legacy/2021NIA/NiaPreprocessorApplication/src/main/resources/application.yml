@@ -142,3 +142,47 @@ spring:
     mybatisConfig-locations : classpath:context/mybatis-config.xml
     configuration:
       mapUnderscoreToCamelCase: true
+
+---
+spring:
+  profiles: test
+
+  jasypt:
+    encryptor:
+      bean: jasyptStringEncryptor
+      property:
+        prefix: ENC(
+        suffix: )
+
+  rabbitmq:
+    address: codej.iptime.org  #개발
+    port: 9997
+    username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
+    password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
+
+    niaAlarmExchange: nia.exchangeNiaAlarmDirectly
+    niaAlarmQueue: nia.NiaAlarmIndexDirectly
+    niaAlarmRoutingKey: nia.NiaAlarmIndexDirectl
+
+    clusterExchange: nia.exchangeClusterDirectly
+    clusterQueue: nia.ClusterIndexDirectly
+    clusterRoutingKey: nia.ClusterIndexDirectly
+
+    engineClearExchange: nia.exchangeEngineClearDirectly
+    engineClearQueue: nia.EngineClearIndexDirectly
+    engineClearRoutingKey: nia.EngineClearIndexDirectly
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    data-source-class-name: org.postgresql.ds.PGSimpleDataSource
+    url: jdbc:postgresql://codej.iptime.org:9998/niadb #개발
+    username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
+    password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
+    maximumPoolSize: 10
+    idleTimeout: 6000
+
+  mybatis:
+    mapper-locations: classpath*:sqlmap/*.xml
+    mybatisConfig-locations : classpath:context/mybatis-config.xml
+    configuration:
+      mapUnderscoreToCamelCase: true

@@ -1,5 +1,6 @@
 package com.nia.data.linkage.ip.equip.service.impl;
 
+import com.nia.data.linkage.ip.equip.common.UtlDateHelper;
 import com.nia.data.linkage.ip.equip.mapper.linkage.LinkageEquipMapper;
 import com.nia.data.linkage.ip.equip.mapper.nia.NiaEquipMapper;
 import com.nia.data.linkage.ip.equip.service.CvnmsResourceIfService;
@@ -32,6 +33,7 @@ public class CvnmsResourceServiceImpl implements CvnmsResourceService {
 
         ArrayList<CvnmsResourceVo> cvnmsResourceVoList;
         HashMap<String, Object> objectHashMap;
+        HashMap<String, String> strHashMap;
 
         try {
             cvnmsResourceVoList = linkageAlarmMapper.selectCvnmsResourceList();
@@ -43,6 +45,11 @@ public class CvnmsResourceServiceImpl implements CvnmsResourceService {
                 objectHashMap = new HashMap<>();
                 objectHashMap.put("cvnmsResourceVoList", cvnmsResourceVoList);
                 niaAlarmMapper.insertCvnmsResource(objectHashMap);
+
+                strHashMap = new HashMap<>();
+                strHashMap.put("key", "ipResourceKey");
+                strHashMap.put("value", cvnmsResourceVoList.size() +"");
+                niaAlarmMapper.updateLinkageHist(strHashMap);
             }
         }catch (Exception e){
             LOGGER.error("=====> [CvnmsResourceService] getCvnmsResourceData error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");

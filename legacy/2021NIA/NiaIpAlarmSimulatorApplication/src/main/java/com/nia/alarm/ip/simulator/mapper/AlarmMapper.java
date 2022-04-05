@@ -16,7 +16,9 @@ public interface AlarmMapper{
 	 */
     ArrayList<AlarmVo> selectAlarmList();
     ArrayList<AlarmVo> selectTestAlarmList();
+    ArrayList<AlarmVo> selectEtriTestAlarmList();
     void fcSetClearSimulator();
+    void fcSetClearSimulatorEtri();
     void deleteAlarm(int alarmno);
 
 }

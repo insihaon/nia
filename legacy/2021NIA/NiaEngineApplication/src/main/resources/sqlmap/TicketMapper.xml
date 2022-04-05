@@ -366,24 +366,25 @@
     <insert id="insertSop" parameterType="com.nia.engine.vo.RCATicketHandlingStatus">
         INSERT INTO nia.tb_sop
         (sop_id, ticket_id, ticket_type, ticket_result, status, request_time, receive_time, detail, fault_classify, fault_type, fault_detail_content, etc_content, ai_accuracy, FAULT_TYPE_CONTENT, START_TIME, END_TIME)
-            VALUES (
-                        #{sopId},
-                        #{ticketId},
-                        #{ticketType},
-                        #{ticketResult},
-                        #{status},
-                        now(),
-                        NULL,
-                        #{detail},
-                        #{faultClassify},
-                        #{faultType},
-                        #{faultDetailContent},
-                        #{etcContent},
-                        #{aiAccuracy},
-                        #{faultTypeContent},
-                        #{startTime},
-                        #{endTime}
-            );
+        VALUES
+        (
+            #{sopId},
+            #{ticketId},
+            #{ticketType},
+            #{ticketResult},
+            #{status},
+            now(),
+            NULL,
+            #{detail},
+            #{faultClassify},
+            #{faultType},
+            #{faultDetailContent},
+            #{etcContent},
+            #{aiAccuracy},
+            #{faultTypeContent},
+            #{startTime},
+            #{endTime}
+        )
     </insert>
 
     <insert id="insertSopPerformance" parameterType="com.nia.engine.vo.RCATicketHandlingStatus">
@@ -421,9 +422,9 @@
             RETURNING TICKET_ID
         )
         INSERT INTO NIA.TB_SOP
-            (SOP_ID, TICKET_ID, TICKET_TYPE, TICKET_RESULT, STATUS,
-            REQUEST_TIME, RECEIVE_TIME, DETAIL, FAULT_CLASSIFY, FAULT_TYPE,
-            FAULT_DETAIL_CONTENT, ETC_CONTENT, AI_ACCURACY, FAULT_TYPE_CONTENT, START_TIME, END_TIME)
+        (SOP_ID, TICKET_ID, TICKET_TYPE, TICKET_RESULT, STATUS,
+        REQUEST_TIME, RECEIVE_TIME, DETAIL, FAULT_CLASSIFY, FAULT_TYPE,
+        FAULT_DETAIL_CONTENT, ETC_CONTENT, AI_ACCURACY, FAULT_TYPE_CONTENT, START_TIME, END_TIME)
         SELECT
             #{sopId},
             #{ticketId},

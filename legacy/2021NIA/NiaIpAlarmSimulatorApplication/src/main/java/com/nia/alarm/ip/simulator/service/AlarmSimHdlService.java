@@ -6,6 +6,7 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.nia.alarm.ip.simulator.amqp.AlarmPrdAmqp;
@@ -28,7 +29,9 @@ public class AlarmSimHdlService {
 
 	@Autowired
 	private AlarmPrdAmqp prdAmqp;
-	
+
+	@Value("${spring.profiles}")
+	private String profiles;
 
 	@Autowired
 	private AlarmThreadImpl alarmThreadImpl;
@@ -51,8 +54,13 @@ public class AlarmSimHdlService {
 	public void alTestHdlProcessor() {
 		try {
 
-			alarmMapper.fcSetClearSimulator();
-			arrayAlarmVoList = alarmMapper.selectTestAlarmList();
+			if("test".equals(profiles) || "codej".equals(profiles)){
+				alarmMapper.fcSetClearSimulator();
+				arrayAlarmVoList = alarmMapper.selectTestAlarmList();
+			}else if("etri".equals(profiles)){
+				alarmMapper.fcSetClearSimulatorEtri();
+				arrayAlarmVoList = alarmMapper.selectEtriTestAlarmList();
+			}
 
 			LOGGER.info("AlarmSimHdlService size : " + arrayAlarmVoList.size());
 			for(AlarmVo alarmVo: arrayAlarmVoList){

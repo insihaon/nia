@@ -105,4 +105,54 @@ spring:
     mybatisConfig-locations : classpath:mybatis-config.xml
     configuration:
       mapUnderscoreToCamelCase: true
-    
+
+
+---
+spring:
+  profiles: test
+
+  rabbitmq:
+    address: codej.iptime.org  #개발
+    port: 9997
+    username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
+    password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
+
+    niaAlarmExchange: nia.exchangeNiaAlarmDirectly
+    niaAlarmQueue: nia.NiaAlarmIndexDirectly
+    niaAlarmRoutingKey: nia.NiaAlarmIndexDirectly
+
+    niaTicketReStartExchange: nia.exchangeNiaTicketReStartDirectly
+    niaTicketReStartQueue: nia.NiaTicketReStartIndexDirectly
+    niaTicketReStartRoutingKey: nia.NiaTicketReStartIndexDirectly
+
+    niaPerformanceExchange: nia.exchangeNiaPerformanceDirectly
+    niaPerformanceQueue: nia.NiaPerformanceIndexDirectly
+    niaPerformanceRoutingKey: NiaPerformanceIndexDirectly
+
+    niaPerformanceToAiSendExchange: nia.exchangeNiaPerformanceToAiSendDirectly
+    niaPerformanceToAiSendQueue: nia.NiaPerformanceToAiSendIndexDirectly
+    niaPerformanceToAiSendRoutingKey: NiaPerformanceToAiSendIndexDirectly
+
+    uiToEngineExchange: rca.exchangeUiToEngineDirectly
+    uiToEngineQueue: rca.UiToEngineIndexDirectly
+    uiToEngineRoutingKey: UiToEngineIndexDirectly
+
+  task:
+    poolSize: 100
+    keepAlive: 600000
+    queueCapacity: 100
+    concurrency: 100
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    data-source-class-name: org.postgresql.ds.PGSimpleDataSource
+    url: jdbc:postgresql://codej.iptime.org:9998/niadb #개발
+    username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
+    password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
+    maximumPoolSize: 10
+    idleTimeout: 6000
+  mybatis:
+    mapper-locations: classpath*:sqlmap/*.xml
+    mybatisConfig-locations : classpath:mybatis-config.xml
+    configuration:
+      mapUnderscoreToCamelCase: true
