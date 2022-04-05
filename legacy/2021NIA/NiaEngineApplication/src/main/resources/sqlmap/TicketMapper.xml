@@ -413,7 +413,7 @@
                   FAULT_TYPE = (case when #{faultType} is null then FAULT_TYPE when #{faultType} = '' then FAULT_TYPE else #{faultType} end),
                   FAULT_DETAIL_CONTENT = (case when #{faultDetailContent} is null then FAULT_DETAIL_CONTENT when #{faultDetailContent} = '' then FAULT_DETAIL_CONTENT else #{faultDetailContent} end),
                   ETC_CONTENT = (case when #{etcContent} is null then ETC_CONTENT when #{etcContent} = '' then ETC_CONTENT else #{etcContent} end),
-                  AI_ACCURACY = (case when #{aiAccuracy} is null then AI_ACCURACY when #{aiAccuracy} = '' then AI_ACCURACY else #{aiAccuracy} end),
+                  AI_ACCURACY = (case when #{aiAccuracy}::varchar = 'NULL' then AI_ACCURACY when #{aiAccuracy}::varchar = '' then AI_ACCURACY else #{aiAccuracy}::varchar end),
                   FAULT_TYPE_CONTENT = #{faultTypeContent},
                   START_TIME = #{startTime},
                   END_TIME = #{endTime}
@@ -437,7 +437,7 @@
             #{faultType},
             #{faultDetailContent},
             #{etcContent},
-            #{aiAccuracy},
+            #{aiAccuracy}::varchar,
             #{faultTypeContent},
             #{startTime},
             #{endTime}
