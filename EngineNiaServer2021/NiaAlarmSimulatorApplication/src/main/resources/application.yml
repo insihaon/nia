@@ -7,7 +7,7 @@ logging:
     
 ---
 spring:
-
+  profiles: local
   jasypt:
     encryptor:
       bean: jasyptStringEncryptor
@@ -49,7 +49,7 @@ spring:
 
 ---
 spring:
-  profiles: local
+  profiles: real
   logging:
     config: classpath:context/logback-spring.xml
 

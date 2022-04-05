@@ -60,10 +60,6 @@ public class RcaTicketHandlingServiceImpl implements RcaTicketHandlingService {
                         ticketService.insertSopPerformance(rcaTicketHandlingStatus);
                         break;
                     case "FIN" :
-                        status = rcaTicketHandlingStatus.getStatus();
-
-                        ticketService.upsertSop(rcaTicketHandlingStatus);
-                        break;
                     case "INIT" :
                         status = rcaTicketHandlingStatus.getStatus();
 

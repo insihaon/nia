@@ -44,7 +44,7 @@ public class Application implements CommandLineRunner{
 			alarmSimHdlService.alHdlProcessor();
 		}else if("real".equals(profiles)){
 			alarmThread.run();
-		}else if("test".equals(profiles) || "codej".equals(profiles)){
+		}else if("test".equals(profiles) || "codej".equals(profiles) || "etri".equals(profiles)){
 			alarmSimHdlService.alTestHdlProcessor();
 		}
 	}
