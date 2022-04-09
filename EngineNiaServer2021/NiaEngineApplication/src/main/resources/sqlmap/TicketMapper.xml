@@ -497,7 +497,7 @@
           AND A.PROCESS_TYPE = #{processType}
         </if>
         <if test="nodeId != null">
-          AND (B.NODE_ID = #{nodeId} or B.NODE_ID is null)
+          AND (B.NODE_ID = #{nodeId})
         </if>
         <if test="faultTime != null">
   <![CDATA[   AND (A.AUTO_PROCESS_CHECK = TRUE OR (A.AUTO_PROCESS_END_DATETIME > #{faultTime}::timestamp AND A.AUTO_PROCESS_START_DATETIME < #{faultTime}::timestamp)) ]]>
