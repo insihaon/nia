@@ -15,10 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.PrintWriter;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 
@@ -32,11 +30,26 @@ public class FaultEventServiceImpl implements FaultEventService {
     @Autowired
 	private SFTPSession sftpSession;
 
-    @Value("${spring.ftp.nia-file-path}")
-    private String path;
-
     @Value("${spring.ftp.file-path}")
     private String uploadPath;
+
+    @Value("${spring.ftp.local-file-path}")
+    private String localUploadPath;
+
+    @Value("${spring.ftp.host1}")
+    private String host1 = null;
+
+    @Value("${spring.ftp.host2}")
+    private String host2 = null;
+
+    @Value("${spring.ftp.port}")
+    private int port = 0;
+
+    @Value("${spring.ftp.user}")
+    private String user = null;
+
+    @Value("${spring.ftp.password}")
+    private String pw = null;
 
     private HashMap<String, String> parameterMap;
 
@@ -44,14 +57,23 @@ public class FaultEventServiceImpl implements FaultEventService {
     public void jsonObjToFile(String faultEventKey) {
         LOGGER.info(">>>>>>>>>>[FaultEventService] jsonObjToFile(" + faultEventKey + ") <<<<<<<<<<<<<<<<<");
 
+        String ftpUpdatePath = uploadPath+"faultEvent/";
+
         FaultEventVo faultEventVo;
         List<FaultEventAlarmDataVo> alarmVoList;
         List<FaultEventPerformanceDataVo> performanceVoList;
         List<FaultEventNniTopologyDataVo> nniTopologyVoList;
         List<FaultEventUniTopologyDataVo> uniTopologyVoList;
+
+        List<FaultEventIpAlarmVo> ipAlarmList;
+        List<FaultEventPerfVo> ipPerfList;
+        List<FaultEventSflowLogVo> ipSflowLogList;
+        List<FaultEventIpCvnmsResourceVo> ipResourceList;
+        List<FaultEventIpCvnmsResourceIfVo> ipResourceIfList;
         ObjectMapper mapper;
         String jsonData;
         File putFile = null;
+        File folder = new File(ftpUpdatePath);
 
         try {
 
@@ -62,6 +84,12 @@ public class FaultEventServiceImpl implements FaultEventService {
                 performanceVoList = faultEventMapper.selectFaultEventPerformance(faultEventKey);
                 nniTopologyVoList = faultEventMapper.selectFaultEventNniTopology(faultEventKey);
                 uniTopologyVoList = faultEventMapper.selectFaultEventUniTopology(faultEventKey);
+
+                ipAlarmList = faultEventMapper.selectFaultEventXeCvnmsError(faultEventKey);
+                ipPerfList = faultEventMapper.selectFaultEventXeCvnmsPerfIf(faultEventKey);
+                ipSflowLogList = faultEventMapper.selectFaultEventXeSflowLog(faultEventKey);
+                ipResourceList = faultEventMapper.selectFaultEventXeCvnmsResource(faultEventKey);
+                ipResourceIfList = faultEventMapper.selectFaultEventCvnmsResourceIf(faultEventKey);
 
                 if(alarmVoList != null && alarmVoList.size() > 0){
                     faultEventVo.setFaultEventAlarmList(alarmVoList);
@@ -79,18 +107,69 @@ public class FaultEventServiceImpl implements FaultEventService {
                     faultEventVo.setFaultEventUniTopologyList(uniTopologyVoList);
                 }
 
+
+                if(ipAlarmList != null && ipAlarmList.size() > 0){
+                    faultEventVo.setFaultEventCvnmsErrorList(ipAlarmList);
+                }
+
+
+                if(ipPerfList != null && ipPerfList.size() > 0){
+                    faultEventVo.setFaultEventCvnmsPerfList(ipPerfList);
+                }
+
+
+                if(ipSflowLogList != null && ipSflowLogList.size() > 0){
+                    faultEventVo.setFaultEventCvnmsSflowList(ipSflowLogList);
+                }
+
+
+                if(ipResourceList != null && ipResourceList.size() > 0){
+                    faultEventVo.setFaultEventCvnmsResourceList(ipResourceList);
+                }
+
+
+                if(ipResourceIfList != null && ipResourceIfList.size() > 0){
+                    faultEventVo.setFaultEventCvnmsResourceIfList(ipResourceIfList);
+                }
+
                 mapper = new ObjectMapper();
                 jsonData = mapper.writeValueAsString(faultEventVo);
 
                 putFile = createJsonFile("faultEvent", jsonData, faultEventKey);
 
-                sftpSession.init();
+                try {
+                    sftpSession.init(host1, port, user, pw);
 
-                if(putFile != null){
-                    sftpSession.upload(uploadPath, putFile);
+                    if (putFile != null) {
+                        if(!folder.exists()){
+                            folder.mkdirs();
+                        }
+
+                        sftpSession.upload(ftpUpdatePath, putFile);
+                        LOGGER.info("=====> [IpSflowToAiLinkageService] faultEvent upload(" + host1.split("\\.")[3] + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                    }
+
+                    sftpSession.disconnection();
+                } catch (Exception e1) {
+                    LOGGER.error("=====> [IpSflowToAiLinkageService] faultEvent upload(" + host1.split("\\.")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
                 }
 
-                sftpSession.disconnection();
+                try {
+                    sftpSession.init(host2, port, user, pw);
+
+                    if (putFile != null) {
+                        if(!folder.exists()){
+                            folder.mkdirs();
+                        }
+
+                        sftpSession.upload(ftpUpdatePath, putFile);
+                        LOGGER.info("=====> [FaultEventService] faultEvent upload(" + host2.split("\\.")[3] + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                    }
+
+                    sftpSession.disconnection();
+                } catch (Exception e1) {
+                    LOGGER.error("=====> [FaultEventService] faultEvent upload(" + host2.split("\\.")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
+                }
             }
 
             LOGGER.info(">>>>>>>>>>[FaultEventService] jsonObjToFile putFile(" + (putFile != null ? putFile.getPath() : null) + ") <<<<<<<<<<<<<<<<<");
@@ -104,30 +183,40 @@ public class FaultEventServiceImpl implements FaultEventService {
     }
 
     @Override
-    public File createJsonFile(String eventType, String jsonData, String faultEventKey) {
+    public File createJsonFile(String eventType, String jsonData, String dataKey) {
         LOGGER.info(">>>>>>>>>>[FaultEventService] createJsonFile(" + eventType + ") <<<<<<<<<<<<<<<<<");
         File putFile = null;
+        File folder = new File(localUploadPath+"/"+eventType);
+
         BufferedWriter output;
         PrintWriter pw;
-        String createFilePath = null;
 
         try{
-            putFile = new File(path+eventType+"_"+ UtlDateHelper.getCurrentDate()+"_"+faultEventKey+".json");
+
+            if(dataKey.contains("+")){
+                dataKey = dataKey.substring(0,dataKey.indexOf("+"));
+            }
+
+            if(!folder.exists()){
+                folder.mkdirs();
+            }
+
+            putFile = new File(folder.getPath()+"/"+eventType+"_"+UtlDateHelper.getCurrentDate()+"_"+dataKey+".json");
 
             if(!putFile.isFile()){
-				putFile.createNewFile();
-			}
+                putFile.createNewFile();
+            }
 
-			output  = new BufferedWriter(new FileWriter(putFile,true));
-			pw = new PrintWriter(output,true);
-			pw.write(jsonData);
-			pw.flush();
+            output  = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(putFile), StandardCharsets.UTF_8));
+            pw = new PrintWriter(output,true);
+            pw.write(jsonData);
+            pw.flush();
 
-			LOGGER.info(">>>>>>>>>>[FaultEventService] createJsonFile putFile(" + (putFile != null ? putFile.getPath() : null) + ") <<<<<<<<<<<<<<<<<");
+            LOGGER.info(">>>>>>>>>>[FaultEventService] createJsonFile(" + (putFile != null ? putFile.getPath() : null) + ") <<<<<<<<<<<<<<<<<");
 
-			if (pw != null) {
-				pw.close();
-			}
+            if (pw != null) {
+                pw.close();
+            }
         }catch (Exception e){
             LOGGER.error("=====> [FaultEventService] createJsonFile error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
         }
@@ -182,6 +271,41 @@ public class FaultEventServiceImpl implements FaultEventService {
                     faultEventMapper.insertFaultEventUniTopology(parameterMap);
                 }catch (Exception e){
                     LOGGER.error("=====> [FaultEventService] insertFaultEvent(insertFaultEventUniTopology) error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
+                }
+
+
+                try {
+                    faultEventMapper.insertFaultEventXeCvnmsError(parameterMap);
+                }catch (Exception e){
+                    LOGGER.error("=====> [FaultEventService] insertFaultEvent(insertFaultEventXeCvnmsError) error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
+                }
+
+
+                try {
+                    faultEventMapper.insertFaultEventXeCvnmsPerfIf(parameterMap);
+                }catch (Exception e){
+                    LOGGER.error("=====> [FaultEventService] insertFaultEvent(insertFaultEventXeCvnmsPerfIf) error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
+                }
+
+
+                try {
+                    faultEventMapper.insertFaultEventXeSflowLog(parameterMap);
+                }catch (Exception e){
+                    LOGGER.error("=====> [FaultEventService] insertFaultEvent(insertFaultEventXeSflowLog) error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
+                }
+
+
+                try {
+                    faultEventMapper.insertFaultEventXeCvnmsResource(parameterMap);
+                }catch (Exception e){
+                    LOGGER.error("=====> [FaultEventService] insertFaultEvent(insertFaultEventXeCvnmsResource) error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
+                }
+
+
+                try {
+                    faultEventMapper.insertFaultEventCvnmsResourceIf(parameterMap);
+                }catch (Exception e){
+                    LOGGER.error("=====> [FaultEventService] insertFaultEvent(insertFaultEventCvnmsResourceIf) error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
                 }
 
                 jsonObjToFile(eventNo);

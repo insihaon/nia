@@ -3,34 +3,31 @@ package com.nia.engine.common;
 import com.jcraft.jsch.*;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.util.Vector;
 
 @Component
+@Scope(value = "prototype")
 public class SFTPSession {
     private final Logger LOGGER = Logger.getLogger(SFTPSession.class);
 
     private Session session = null;
     private Channel channel = null;
 
-    @Value("${spring.ftp.host}")
     private String host = null;
 
-    @Value("${spring.ftp.port}")
     private int port = 0;
 
-    @Value("${spring.ftp.user}")
     private String user = null;
 
-    @Value("${spring.ftp.password}")
     private String pw = null;
 
     private ChannelSftp channelSftp;
 
-    public void init(){
+    public void init(String host, int port, String user, String pw){
 
         try{
             JSch jsch = new JSch();
@@ -63,9 +60,17 @@ public class SFTPSession {
 // 단일 파일 업로드
 public void upload(String dir, File file) {
     FileInputStream in = null;
+    String[] fileNameArr;
 
     try { //파일을 가져와서 inputStream에 넣고 저장경로를 찾아 put
+        if(!exists(dir)){
+            fileNameArr = dir.split("/");
+            channelSftp.cd("/data");
+            channelSftp.mkdir(fileNameArr[2]);
+        }
+
         in = new FileInputStream(file);
+
         channelSftp.cd(dir);
         channelSftp.put(in, file.getName());
     } catch (SftpException se) {
@@ -137,6 +142,23 @@ public void upload(String dir, File file) {
         }catch (SftpException e){
             LOGGER.error(">>>>>>>>>>>> SFTPSession fileDelete()  error : "+ ExceptionUtils.getStackTrace(e)+" <<<<<<<<<<<<<<<<");
         }
+    }
+
+    /**
+     * 디렉토리( or 파일) 존재 여부
+     * @param path 디렉토리 (or 파일)
+     * @return
+     */
+    public boolean exists(String path) {
+        Vector res = null;
+        try {
+            res = channelSftp.ls(path);
+        } catch (SftpException e) {
+            if (e.id == ChannelSftp.SSH_FX_NO_SUCH_FILE) {
+                return false;
+            }
+        }
+        return res != null && !res.isEmpty();
     }
 
     /**

@@ -26,13 +26,23 @@ public class FaultEventVo implements Serializable {
 	private String startTime;
 	@JsonProperty("endTime")
 	private String endTime;
-	@JsonProperty("alarm")
+	@JsonProperty("alarmList")
 	private List<FaultEventAlarmDataVo> faultEventAlarmList;
-	@JsonProperty("performance")
+	@JsonProperty("performanceList")
 	private List<FaultEventPerformanceDataVo> faultEventPerformanceList;
-	@JsonProperty("nni_topology")
+	@JsonProperty("nni_topologyList")
 	private List<FaultEventNniTopologyDataVo> faultEventNniTopologyList;
-	@JsonProperty("uni_topology")
+	@JsonProperty("uni_topologyList")
 	private List<FaultEventUniTopologyDataVo> faultEventUniTopologyList;
+	@JsonProperty("cvnms_errorList")
+	private List<FaultEventIpAlarmVo> faultEventCvnmsErrorList;
+	@JsonProperty("cvnms_perfList")
+	private List<FaultEventPerfVo> faultEventCvnmsPerfList;
+	@JsonProperty("cvnms_sflowList")
+	private List<FaultEventSflowLogVo> faultEventCvnmsSflowList;
+	@JsonProperty("cvnms_resourceList")
+	private List<FaultEventIpCvnmsResourceVo> faultEventCvnmsResourceList;
+	@JsonProperty("cvnms_resource_ifList")
+	private List<FaultEventIpCvnmsResourceIfVo> faultEventCvnmsResourceIfList;
 
 }
