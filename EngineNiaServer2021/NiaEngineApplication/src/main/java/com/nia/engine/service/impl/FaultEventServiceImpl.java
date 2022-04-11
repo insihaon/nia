@@ -135,7 +135,7 @@ public class FaultEventServiceImpl implements FaultEventService {
                 mapper = new ObjectMapper();
                 jsonData = mapper.writeValueAsString(faultEventVo);
 
-                putFile = createJsonFile("faultEvent", jsonData, faultEventKey);
+                putFile = createJsonFile("faultEvent", jsonData, faultEventKey, faultEventVo.getTitle());
 
                 try {
                     sftpSession.init(host1, port, user, pw);
@@ -187,7 +187,7 @@ public class FaultEventServiceImpl implements FaultEventService {
     }
 
     @Override
-    public File createJsonFile(String eventType, String jsonData, String dataKey) {
+    public File createJsonFile(String eventType, String jsonData, String dataKey, String titleName) {
         LOGGER.info(">>>>>>>>>>[FaultEventService] createJsonFile(" + eventType + ") <<<<<<<<<<<<<<<<<");
         File putFile = null;
         File folder = new File(localUploadPath+"/"+eventType);
@@ -205,7 +205,7 @@ public class FaultEventServiceImpl implements FaultEventService {
                 folder.mkdirs();
             }
 
-            putFile = new File(folder.getPath()+"/"+eventType+"_"+UtlDateHelper.getCurrentDate()+"_"+dataKey+".json");
+            putFile = new File(folder.getPath()+"/"+eventType+"_"+UtlDateHelper.getCurrentDate()+"_"+titleName+"_"+dataKey+".json");
 
             if(!putFile.isFile()){
                 putFile.createNewFile();

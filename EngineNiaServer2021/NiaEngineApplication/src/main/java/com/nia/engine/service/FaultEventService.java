@@ -13,5 +13,5 @@ public interface FaultEventService {
 
     void jsonObjToFile(String faultEventKey);
 
-    File createJsonFile(String eventType, String jsonData, String faultEventKey);
+    File createJsonFile(String eventType, String jsonData, String faultEventKey, String titleName);
 }
