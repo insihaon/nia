@@ -21,8 +21,6 @@ import java.sql.Timestamp;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FaultEventAlarmDataVo implements Serializable {
 	private String alarmno;
-	private String clusterno;
-	private String tmpClusterno;
 	private String sysname;
 	private String equiptype;
     private String alarmtime;
@@ -31,9 +29,4 @@ public class FaultEventAlarmDataVo implements Serializable {
 	private String alarmmsg;
 	private String unit;
 	private String alarmlevel;
-	private String cleartime;
-	private String ptpname;
-	private String slot;
-	private String port;
-
 }

@@ -26,6 +26,16 @@ public interface FaultEventMapper {
 
 	List<FaultEventUniTopologyDataVo> selectFaultEventUniTopology(String eventNo);
 
+	List<FaultEventIpAlarmVo> selectFaultEventXeCvnmsError(String eventNo);
+
+	List<FaultEventPerfVo> selectFaultEventXeCvnmsPerfIf(String eventNo);
+
+	List<FaultEventSflowLogVo> selectFaultEventXeSflowLog(String eventNo);
+
+	List<FaultEventIpCvnmsResourceVo> selectFaultEventXeCvnmsResource(String eventNo);
+
+	List<FaultEventIpCvnmsResourceIfVo> selectFaultEventCvnmsResourceIf(String eventNo);
+
 	/**
 	 * 장애 이벤트 데이터 저장
 	 * @param
@@ -60,4 +70,10 @@ public interface FaultEventMapper {
 	 * @return
 	 */
 	void insertFaultEventUniTopology(HashMap<String, String> map);
+
+	void insertFaultEventXeCvnmsError(HashMap<String, String> map);
+	void insertFaultEventXeCvnmsPerfIf(HashMap<String, String> map);
+	void insertFaultEventXeSflowLog(HashMap<String, String> map);
+	void insertFaultEventXeCvnmsResource(HashMap<String, String> map);
+	void insertFaultEventCvnmsResourceIf(HashMap<String, String> map);
 }

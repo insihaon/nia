@@ -39,10 +39,10 @@ public class RCATicketHandlingStatus implements Serializable {
 	private String userIds;
 	@JsonProperty("mail_content")
 	private String mailContent;
-//	@JsonProperty("startTime")
-//	private Timestamp startTime;
-//	@JsonProperty("endTime")
-//	private Timestamp endTime;
+	@JsonProperty("startTime")
+	private Timestamp startTime;
+	@JsonProperty("endTime")
+	private Timestamp endTime;
 	@JsonProperty("fault_classify")
 	private String faultClassify;
 	@JsonProperty("fault_type")
@@ -55,10 +55,10 @@ public class RCATicketHandlingStatus implements Serializable {
 	private String aiAccuracy;
 	@JsonProperty("fault_type_content")
 	private String faultTypeContent;
-	@JsonProperty("start_time")
-	private Timestamp startTime;
-	@JsonProperty("end_time")
-	private Timestamp endTime;
+//	@JsonProperty("start_time")
+//	private Timestamp startTime;
+//	@JsonProperty("end_time")
+//	private Timestamp endTime;
 
 	private String eventno;
 	@JsonProperty("title")

@@ -88,12 +88,13 @@ spring:
       mapUnderscoreToCamelCase: true
 
   ftp:
-    host: 192.168.0.87
-    port: 2200
-    user: root
-    password: dlsvh00000
-    file-path: /home/koren0901/data/
-    nia-file-path: /home/koren0901/data/
+    host1: 116.89.191.34
+    host2: 116.89.191.35
+    port: 16891
+    user: ENC(wtT+ySV0UPXaO+Bb7vdPoV4bUUJh+u7u)
+    password: ENC(6X92hJE8naI+w7f2fLGL/A==)
+    file-path: /data/
+    local-file-path: /home/codej8888/data/
 
 ---
 spring:
@@ -174,13 +175,13 @@ spring:
       mapUnderscoreToCamelCase: true
 
   ftp:
-    host: 116.89.186.207
-#    host: 116.89.186.194
-    port: 22
-    user: ENC(XMOpjFUtgZnBRPp7m7a9o2WSXQ1l5oe/)
-    password: ENC(Q5gydJpI5uME0zXRuMHImGC5bkFqmaRK)
-    file-path: /home/koren0901/data/
-    nia-file-path: /home/koren0901/data/
+    host1: 116.89.191.34
+    host2: 116.89.191.35
+    port: 16891
+    user: ENC(wtT+ySV0UPXaO+Bb7vdPoV4bUUJh+u7u)
+    password: ENC(6X92hJE8naI+w7f2fLGL/A==)
+    file-path: /data/
+    local-file-path: /home/codej8888/data/
 
 
 ---
@@ -262,13 +263,13 @@ spring:
       mapUnderscoreToCamelCase: true
 
   ftp:
-    host: 10.81.192.18
-    #    host: 116.89.186.194
-    port: 22
-    user: ENC(XMOpjFUtgZnBRPp7m7a9o2WSXQ1l5oe/)
-    password: ENC(Q5gydJpI5uME0zXRuMHImGC5bkFqmaRK)
-    file-path: /home/koren0901/data/
-    nia-file-path: /home/koren0901/data/
+    host1: 116.89.191.34
+    host2: 116.89.191.35
+    port: 16891
+    user: ENC(wtT+ySV0UPXaO+Bb7vdPoV4bUUJh+u7u)
+    password: ENC(6X92hJE8naI+w7f2fLGL/A==)
+    file-path: /data/
+    local-file-path: /home/codej8888/data/
 
 
 ---
@@ -350,10 +351,10 @@ spring:
       mapUnderscoreToCamelCase: true
 
   ftp:
-    host: 116.89.186.207
-    #    host: 116.89.186.194
-    port: 22
-    user: ENC(XMOpjFUtgZnBRPp7m7a9o2WSXQ1l5oe/)
-    password: ENC(Q5gydJpI5uME0zXRuMHImGC5bkFqmaRK)
-    file-path: /home/koren0901/data/
-    nia-file-path: /home/koren0901/data/
+    host1: 116.89.191.34
+    host2: 116.89.191.35
+    port: 16891
+    user: ENC(wtT+ySV0UPXaO+Bb7vdPoV4bUUJh+u7u)
+    password: ENC(6X92hJE8naI+w7f2fLGL/A==)
+    file-path: /data/
+    local-file-path: /home/codej8888/data/
