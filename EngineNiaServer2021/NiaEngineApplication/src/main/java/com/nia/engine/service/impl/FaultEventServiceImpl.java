@@ -170,6 +170,10 @@ public class FaultEventServiceImpl implements FaultEventService {
                 } catch (Exception e1) {
                     LOGGER.error("=====> [FaultEventService] faultEvent upload(" + host2.split("\\.")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
                 }
+
+                if(putFile.exists()){
+                    putFile.delete();
+                }
             }
 
             LOGGER.info(">>>>>>>>>>[FaultEventService] jsonObjToFile putFile(" + (putFile != null ? putFile.getPath() : null) + ") <<<<<<<<<<<<<<<<<");
