@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.SocketException;
@@ -110,10 +111,23 @@ public class StreamConnectorMmc implements NiaEmsLinkageThread {
                 this.isStart = false;
                 this.isConnection = false;
                 this.telnetMmc.closeConnection();
+
+                try {
+                    this.src.close();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+
                 LOGGER.error("=====> [StreamConnectorMmc] run error("+this.host+") "+ ExceptionUtils.getStackTrace(e)+ "<=====");
             }catch (Exception e){
                 this.isStart = false;
                 this.telnetMmc.closeConnection();
+
+                try {
+                    this.src.close();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
                 LOGGER.error("=====> [StreamConnectorMmc] run error("+this.host+") "+ ExceptionUtils.getStackTrace(e)+ "<=====");
             }
         }
@@ -121,6 +135,17 @@ public class StreamConnectorMmc implements NiaEmsLinkageThread {
 
     public void setStart(Boolean start) {
         this.isStart = start;
+
+        if(!this.isStart){
+            this.isConnection = false;
+            this.telnetMmc.closeConnection();
+
+            try {
+                this.src.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
     public Boolean isConnected(){
