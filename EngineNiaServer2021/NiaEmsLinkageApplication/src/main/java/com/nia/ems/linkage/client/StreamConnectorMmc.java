@@ -111,7 +111,6 @@ public class StreamConnectorMmc implements NiaEmsLinkageThread {
                 this.isStart = false;
                 this.isConnection = false;
                 this.telnetMmc.closeConnection();
-
                 try {
                     this.src.close();
                 } catch (IOException ex) {
@@ -122,12 +121,6 @@ public class StreamConnectorMmc implements NiaEmsLinkageThread {
             }catch (Exception e){
                 this.isStart = false;
                 this.telnetMmc.closeConnection();
-
-                try {
-                    this.src.close();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
                 LOGGER.error("=====> [StreamConnectorMmc] run error("+this.host+") "+ ExceptionUtils.getStackTrace(e)+ "<=====");
             }
         }
@@ -135,17 +128,6 @@ public class StreamConnectorMmc implements NiaEmsLinkageThread {
 
     public void setStart(Boolean start) {
         this.isStart = start;
-
-        if(!this.isStart){
-            this.isConnection = false;
-            this.telnetMmc.closeConnection();
-
-            try {
-                this.src.close();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
     }
 
     public Boolean isConnected(){

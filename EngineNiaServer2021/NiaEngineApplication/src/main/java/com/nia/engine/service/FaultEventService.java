@@ -9,7 +9,7 @@ public interface FaultEventService {
 	 * @param
 	 * @return
 	 */
-	void insertFaultEvent(String startTime, String endTime, String title);
+	void insertFaultEvent(String startTime, String endTime, String title, String eventGb);
 
     void jsonObjToFile(String faultEventKey);
 

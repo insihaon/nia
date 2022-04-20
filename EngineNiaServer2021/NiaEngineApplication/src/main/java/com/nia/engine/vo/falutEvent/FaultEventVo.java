@@ -20,6 +20,8 @@ import java.util.List;
 public class FaultEventVo implements Serializable {
 	@JsonProperty("eventno")
 	private String eventno;
+	@JsonProperty("eventGb")
+	private String eventGb;
 	@JsonProperty("title")
 	private String title;
 	@JsonProperty("startTime")

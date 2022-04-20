@@ -34,12 +34,12 @@ public class AiAnomalousTrafficeMsgListener implements ChannelAwareMessageListen
 			Object obj;
 			String msg = new String(message.getBody());
 
-			LOGGER.info(">>>>>>>>>>[AiAnomalousTrafficeMsgListener] onMessage : " + msg + " <<<<<<<<<<<<<<<<<");
-
 			anomalousTrafficListVo = perfListVoObjectFactory.getObject();
 
 			obj = UtlCommon.jsonToObject(anomalousTrafficListVo, msg);
 			anomalousTrafficListVo = (AnomalousTrafficListVo)obj;
+
+			LOGGER.info(">>>>>>>>>>[AiAnomalousTrafficeMsgListener] onMessage : " + anomalousTrafficListVo.getData().size() + " <<<<<<<<<<<<<<<<<");
 
 			niaAnomalousTrafficHdlService.niaAnomalousTrafficeHdlProcessor(anomalousTrafficListVo);
 		} catch (Exception e) {

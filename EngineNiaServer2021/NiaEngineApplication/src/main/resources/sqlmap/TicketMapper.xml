@@ -530,7 +530,7 @@
     <update id="updateAnomalousTrafficTicketId" parameterType="java.util.HashMap">
         UPDATE RCA.TB_ANOMALOUS_TRAFFIC
         SET TICKET_ID = #{ticketId}
-        WHERE STRIFID = #{strifid} AND STRIFNM = #{ifId} AND INTTIMESTAMP = #{inttimestamp}::int
+        WHERE STRIFID = #{strifid} AND INTTIMESTAMP = #{inttimestamp}::int
     </update>
 
     <update id="updateNoxiousTrafficTicketId" parameterType="java.util.HashMap">
@@ -540,7 +540,7 @@
     </update>
 
     <select id="selectAnomalousTrafficAlarm" resultType="com.nia.engine.vo.aiTraffic.anomalous.AnomalousTrafficVo" parameterType="java.util.HashMap">
-        SELECT STRIFID as strifid, STRIFNM as ifId, STRRESID as strreid, STRRESNM as nodeId, INTTIMESTAMP as inttimestamp
+        SELECT STRIFID as strifid, STRIFNM as ifId, STRRESID as strresid, coalesce(STRRESNM, (select node_nm from resource.tb_node_mst where node_num = strresid)) as nodeId, INTTIMESTAMP as inttimestamp
         FROM RCA.TB_ANOMALOUS_TRAFFIC
         WHERE STRIFID = #{strifid}
           AND INTTIMESTAMP = #{inttimestamp}::int

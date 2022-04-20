@@ -76,12 +76,14 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
 
                     parameterMap = new HashMap<String, String>();
                     parameterMap.put("strifid", anomalousTrafficVo.getStrifid());
+                    parameterMap.put("strresid", anomalousTrafficVo.getStrresid());
                     parameterMap.put("inttimestamp", anomalousTrafficVo.getInttimestamp() + "");
+
                     tmpAnomalousTrafficVo = ticketService.selectAnomalousTrafficAlarm(parameterMap);
 
                     if(tmpAnomalousTrafficVo != null) {
                         anomalousTrafficVo.setIfId(tmpAnomalousTrafficVo.getIfId());
-                        anomalousTrafficVo.setStrreid(tmpAnomalousTrafficVo.getStrreid());
+                        anomalousTrafficVo.setStrresid(tmpAnomalousTrafficVo.getStrresid());
                         anomalousTrafficVo.setNodeId(tmpAnomalousTrafficVo.getNodeId());
                     }
 
@@ -130,7 +132,7 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
                         parameterMap = new HashMap<String, String>();
                         parameterMap.put("ticketId", ticketId);
                         parameterMap.put("strifid", anomalousTrafficVo.getStrifid());
-                        parameterMap.put("ifId", anomalousTrafficVo.getIfId());
+                        parameterMap.put("strresid", anomalousTrafficVo.getStrresid());
                         parameterMap.put("inttimestamp", anomalousTrafficVo.getInttimestamp() + "");
                         ticketService.updateAnomalousTrafficTicketId(parameterMap);
 
