@@ -34,12 +34,12 @@ public class AiNoxiousTrafficeMsgListener implements ChannelAwareMessageListener
 			Object obj;
 			String msg = new String(message.getBody());
 
-			LOGGER.info(">>>>>>>>>>[AiNoxiousTrafficeMsgListener] onMessage : " + msg + " <<<<<<<<<<<<<<<<<");
-
 			noxiousTrafficListVo = noxiousTrafficListVoObjectFactory.getObject();
 
 			obj = UtlCommon.jsonToObject(noxiousTrafficListVo, msg);
 			noxiousTrafficListVo = (NoxiousTrafficListVo)obj;
+
+			LOGGER.info(">>>>>>>>>>[AiNoxiousTrafficeMsgListener] onMessage : " + noxiousTrafficListVo.getData().size() + " <<<<<<<<<<<<<<<<<");
 
 			niaNoxiousTrafficHdlService.niaNoxiousTrafficeHdlProcessor(noxiousTrafficListVo);
 

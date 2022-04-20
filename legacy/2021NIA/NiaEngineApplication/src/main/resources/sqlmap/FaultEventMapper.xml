@@ -8,7 +8,7 @@
     </select>
 
     <select id="selectFaultEvent" parameterType="string" resultType="com.nia.engine.vo.falutEvent.FaultEventVo">
-        SELECT EVENTNO AS eventno, TITLE AS title, TO_CHAR(START_TIME,'YYYY-MM-DD HH24:MI:SS') AS startTime, TO_CHAR(END_TIME,'YYYY-MM-DD HH24:MI:SS') AS endTime
+        SELECT EVENTNO AS eventno, EVENT_GB as eventGb, TITLE AS title, TO_CHAR(START_TIME,'YYYY-MM-DD HH24:MI:SS') AS startTime, TO_CHAR(END_TIME,'YYYY-MM-DD HH24:MI:SS') AS endTime
           FROM RCA.TB_FAULT_EVENT WHERE EVENTNO = #{eventno}
     </select>
 
@@ -111,8 +111,8 @@
 
     <insert id="insertFaultEvent" parameterType="java.util.HashMap">
         INSERT INTO RCA.TB_FAULT_EVENT
-        (EVENTNO, TITLE ,START_TIME, END_TIME)
-        SELECT #{eventno}, #{title}, #{startTime}::TIMESTAMP, #{endTime}::TIMESTAMP
+        (EVENTNO, EVENT_GB, TITLE ,START_TIME, END_TIME)
+        SELECT #{eventno}, #{eventGb}, #{title}, #{startTime}::TIMESTAMP, #{endTime}::TIMESTAMP
     </insert>
 
     <insert id="insertFaultEventAlarmCurMst" parameterType="java.util.HashMap">
@@ -262,5 +262,3 @@
         FROM IP_YD.XE_CVNMS_RESOURCE_IF
     </insert>
 </mapper>
-
-

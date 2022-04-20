@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 
@@ -40,30 +41,41 @@ public class NiaNoxiousTrafficHdlServiceImpl implements NiaNoxiousTrafficHdlServ
         LOGGER.info("==========>[NiaNoxiousTrafficHdlService] niaNoxiousTrafficeHdlProcessor <==============");
 
         HashMap<String, String> hashMap;
+        ArrayList<NoxiousTrfficVo> noxiousTrfficVoList;
 
         try {
             if(noxiousListVo != null){
                 if(noxiousListVo.getData() != null && noxiousListVo.getData().size() > 0){
                     LOGGER.info("==========>[NiaNoxiousTrafficHdlService] niaNoxiousTrafficeHdlProcessor size : "+noxiousListVo.getData().size()+"<==============");
+                    noxiousTrfficVoList = new ArrayList<>();
 
                     for(NoxiousTrfficVo noxiousTrfficVo : noxiousListVo.getData()){
-                        hashMap = new HashMap<>();
-                        hashMap.put("strresip", noxiousTrfficVo.getStrresip());
-                        hashMap.put("strsIp", noxiousTrfficVo.getStrs_ip());
-                        hashMap.put("strsPort", String.valueOf(noxiousTrfficVo.getStrs_port()));
-                        hashMap.put("strdIp", noxiousTrfficVo.getStrd_ip());
-                        hashMap.put("strdPort", String.valueOf(noxiousTrfficVo.getStrd_port()));
-                        hashMap.put("dateregdate", String.valueOf(noxiousTrfficVo.getDateregdate()));
-                        trafficMapper.insertNoxiousTraffic(hashMap);
+                        if(noxiousTrfficVo.getAnomaly() == 1){
+                            hashMap = new HashMap<>();
+                            hashMap.put("strresip", noxiousTrfficVo.getStrresip());
+                            hashMap.put("strsIp", noxiousTrfficVo.getStrs_ip());
+                            hashMap.put("strsPort", String.valueOf(noxiousTrfficVo.getStrs_port()));
+                            hashMap.put("strdIp", noxiousTrfficVo.getStrd_ip());
+                            hashMap.put("strdPort", String.valueOf(noxiousTrfficVo.getStrd_port()));
+                            hashMap.put("dateregdate", String.valueOf(noxiousTrfficVo.getDateregdate()));
+                            trafficMapper.insertNoxiousTraffic(hashMap);
+
+                            noxiousTrfficVoList.add(noxiousTrfficVo);
+                            LOGGER.info("==========>[NiaNoxiousTrafficHdlService] niaNoxiousTrafficeHdlProcessor add : "+noxiousTrfficVo.toString()+"<==============");
+
+                        }
                     }
 
                     hashMap = null;
 
-                    engineTrafficeResultVo = engineTrafficeResultVoObjectFactory.getObject();
-                    engineTrafficeResultVo.setGb("noxious");
-                    engineTrafficeResultVo.setNoxiousListVo(noxiousListVo);
+                    if(noxiousTrfficVoList != null && noxiousTrfficVoList.size() > 0){
+                        noxiousListVo.setData(noxiousTrfficVoList);
+                        engineTrafficeResultVo = engineTrafficeResultVoObjectFactory.getObject();
+                        engineTrafficeResultVo.setGb("noxious");
+                        engineTrafficeResultVo.setNoxiousListVo(noxiousListVo);
 
-                    engineSendPrdAmqp.sendMessageCmd(engineTrafficeResultVo);
+                        engineSendPrdAmqp.sendMessageCmd(engineTrafficeResultVo);
+                    }
                 }
             }
         } catch (Exception e) {

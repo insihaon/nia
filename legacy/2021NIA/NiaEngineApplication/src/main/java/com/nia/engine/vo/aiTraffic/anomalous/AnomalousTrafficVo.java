@@ -15,7 +15,7 @@ public class AnomalousTrafficVo implements Serializable {
 
     private String strifid;
     private String ifId;
-    private String strreid;
+    private String strresid;
     private String nodeId;
     private int inttimestamp;
     private int fltbpsin;

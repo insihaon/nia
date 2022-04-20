@@ -60,16 +60,16 @@ public class FaultEventServiceImpl implements FaultEventService {
         String ftpUpdatePath = uploadPath+"faultEvent/";
 
         FaultEventVo faultEventVo;
-        List<FaultEventAlarmDataVo> alarmVoList;
-        List<FaultEventPerformanceDataVo> performanceVoList;
-        List<FaultEventNniTopologyDataVo> nniTopologyVoList;
-        List<FaultEventUniTopologyDataVo> uniTopologyVoList;
+        List<FaultEventAlarmDataVo> alarmVoList = null;
+        List<FaultEventPerformanceDataVo> performanceVoList = null;
+        List<FaultEventNniTopologyDataVo> nniTopologyVoList = null;
+        List<FaultEventUniTopologyDataVo> uniTopologyVoList = null;
 
-        List<FaultEventIpAlarmVo> ipAlarmList;
-        List<FaultEventPerfVo> ipPerfList;
-        List<FaultEventSflowLogVo> ipSflowLogList;
-        List<FaultEventIpCvnmsResourceVo> ipResourceList;
-        List<FaultEventIpCvnmsResourceIfVo> ipResourceIfList;
+        List<FaultEventIpAlarmVo> ipAlarmList = null;
+        List<FaultEventPerfVo> ipPerfList = null;
+        List<FaultEventSflowLogVo> ipSflowLogList = null;
+        List<FaultEventIpCvnmsResourceVo> ipResourceList = null;
+        List<FaultEventIpCvnmsResourceIfVo> ipResourceIfList = null;
         ObjectMapper mapper;
         String jsonData;
         File putFile = null;
@@ -80,16 +80,47 @@ public class FaultEventServiceImpl implements FaultEventService {
             faultEventVo = faultEventMapper.selectFaultEvent(faultEventKey);
 
             if(faultEventVo != null){
-                alarmVoList = faultEventMapper.selectFaultEventAlarm(faultEventKey);
-                performanceVoList = faultEventMapper.selectFaultEventPerformance(faultEventKey);
-                nniTopologyVoList = faultEventMapper.selectFaultEventNniTopology(faultEventKey);
-                uniTopologyVoList = faultEventMapper.selectFaultEventUniTopology(faultEventKey);
+                switch (faultEventVo.getEventGb()){
+                    case "test" :
+                        alarmVoList = faultEventMapper.selectFaultEventAlarm(faultEventKey);
+                        performanceVoList = faultEventMapper.selectFaultEventPerformance(faultEventKey);
+                        ipAlarmList = faultEventMapper.selectFaultEventXeCvnmsError(faultEventKey);
+                        ipPerfList = faultEventMapper.selectFaultEventXeCvnmsPerfIf(faultEventKey);
+                        ipSflowLogList = faultEventMapper.selectFaultEventXeSflowLog(faultEventKey);
 
-                ipAlarmList = faultEventMapper.selectFaultEventXeCvnmsError(faultEventKey);
-                ipPerfList = faultEventMapper.selectFaultEventXeCvnmsPerfIf(faultEventKey);
-                ipSflowLogList = faultEventMapper.selectFaultEventXeSflowLog(faultEventKey);
-                ipResourceList = faultEventMapper.selectFaultEventXeCvnmsResource(faultEventKey);
-                ipResourceIfList = faultEventMapper.selectFaultEventCvnmsResourceIf(faultEventKey);
+                        break;
+                    case "fault" :
+                        alarmVoList = faultEventMapper.selectFaultEventAlarm(faultEventKey);
+                        ipAlarmList = faultEventMapper.selectFaultEventXeCvnmsError(faultEventKey);
+
+                        break;
+                    case "traffic" :
+                        ipPerfList = faultEventMapper.selectFaultEventXeCvnmsPerfIf(faultEventKey);
+                        ipSflowLogList = faultEventMapper.selectFaultEventXeSflowLog(faultEventKey);
+
+                        break;
+                    case "perf" :
+                        performanceVoList = faultEventMapper.selectFaultEventPerformance(faultEventKey);
+
+                        break;
+                    case "etc" :
+                        nniTopologyVoList = faultEventMapper.selectFaultEventNniTopology(faultEventKey);
+                        uniTopologyVoList = faultEventMapper.selectFaultEventUniTopology(faultEventKey);
+                        ipResourceList = faultEventMapper.selectFaultEventXeCvnmsResource(faultEventKey);
+                        ipResourceIfList = faultEventMapper.selectFaultEventCvnmsResourceIf(faultEventKey);
+
+                        break;
+                    default:
+                        break;
+                }
+
+                if(!"etc".equals(faultEventVo.getEventGb())){
+                    nniTopologyVoList = faultEventMapper.selectFaultEventNniTopology(faultEventKey);
+                    uniTopologyVoList = faultEventMapper.selectFaultEventUniTopology(faultEventKey);
+                    ipResourceList = faultEventMapper.selectFaultEventXeCvnmsResource(faultEventKey);
+                    ipResourceIfList = faultEventMapper.selectFaultEventCvnmsResourceIf(faultEventKey);
+                }
+
 
                 if(alarmVoList != null && alarmVoList.size() > 0){
                     faultEventVo.setFaultEventAlarmList(alarmVoList);
@@ -107,26 +138,21 @@ public class FaultEventServiceImpl implements FaultEventService {
                     faultEventVo.setFaultEventUniTopologyList(uniTopologyVoList);
                 }
 
-
                 if(ipAlarmList != null && ipAlarmList.size() > 0){
                     faultEventVo.setFaultEventCvnmsErrorList(ipAlarmList);
                 }
-
 
                 if(ipPerfList != null && ipPerfList.size() > 0){
                     faultEventVo.setFaultEventCvnmsPerfList(ipPerfList);
                 }
 
-
                 if(ipSflowLogList != null && ipSflowLogList.size() > 0){
                     faultEventVo.setFaultEventCvnmsSflowList(ipSflowLogList);
                 }
 
-
                 if(ipResourceList != null && ipResourceList.size() > 0){
                     faultEventVo.setFaultEventCvnmsResourceList(ipResourceList);
                 }
-
 
                 if(ipResourceIfList != null && ipResourceIfList.size() > 0){
                     faultEventVo.setFaultEventCvnmsResourceIfList(ipResourceIfList);
@@ -233,7 +259,7 @@ public class FaultEventServiceImpl implements FaultEventService {
 	 * @return
 	 */
 	@Override
-	public void insertFaultEvent(String startTime, String endTime, String title){
+	public void insertFaultEvent(String startTime, String endTime, String title, String eventGb){
 	    LOGGER.info(">>>>>>>>>>[FaultEventService] insertFaultEvent startTime : "+startTime+" / endTime : "+endTime+" / title : "+title+" <<<<<<<<<<<<<<<<<");
 	    String eventNo;
 
@@ -246,6 +272,7 @@ public class FaultEventServiceImpl implements FaultEventService {
                 parameterMap.put("title", title);
                 parameterMap.put("startTime", startTime);
                 parameterMap.put("endTime", endTime);
+                parameterMap.put("eventGb", eventGb);
 
                 try {
                     faultEventMapper.insertFaultEvent(parameterMap);
@@ -253,63 +280,129 @@ public class FaultEventServiceImpl implements FaultEventService {
                     LOGGER.error("=====> [FaultEventService] insertFaultEvent(insertFaultEvent) error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
                 }
 
-                try {
-                    faultEventMapper.insertFaultEventAlarmCurMst(parameterMap);
-                }catch (Exception e){
-                    LOGGER.error("=====> [FaultEventService] insertFaultEvent(insertFaultEventAlarmCurMst) error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
+                switch (eventGb){
+                    case "test" :
+                        try {
+                            faultEventMapper.insertFaultEventAlarmCurMst(parameterMap);
+                        }catch (Exception e){
+                            LOGGER.error("=====> [FaultEventService] insertFaultEvent(insertFaultEventAlarmCurMst) error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
+                        }
+
+                        try {
+                            faultEventMapper.insertFaultEventAiPerformanceMst(parameterMap);
+                        }catch (Exception e){
+                            LOGGER.error("=====> [FaultEventService] insertFaultEvent(insertFaultEventAiPerformanceMst) error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
+                        }
+
+                        try {
+                            faultEventMapper.insertFaultEventXeCvnmsError(parameterMap);
+                        }catch (Exception e){
+                            LOGGER.error("=====> [FaultEventService] insertFaultEvent(insertFaultEventXeCvnmsError) error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
+                        }
+
+                        try {
+                            faultEventMapper.insertFaultEventXeCvnmsPerfIf(parameterMap);
+                        }catch (Exception e){
+                            LOGGER.error("=====> [FaultEventService] insertFaultEvent(insertFaultEventXeCvnmsPerfIf) error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
+                        }
+
+                        try {
+                            faultEventMapper.insertFaultEventXeSflowLog(parameterMap);
+                        }catch (Exception e){
+                            LOGGER.error("=====> [FaultEventService] insertFaultEvent(insertFaultEventXeSflowLog) error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
+                        }
+
+                        break;
+                    case "fault" :
+                        try {
+                            faultEventMapper.insertFaultEventAlarmCurMst(parameterMap);
+                        }catch (Exception e){
+                            LOGGER.error("=====> [FaultEventService] insertFaultEvent(insertFaultEventAlarmCurMst) error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
+                        }
+
+                        try {
+                            faultEventMapper.insertFaultEventXeCvnmsError(parameterMap);
+                        }catch (Exception e){
+                            LOGGER.error("=====> [FaultEventService] insertFaultEvent(insertFaultEventXeCvnmsError) error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
+                        }
+
+                        break;
+                    case "traffic" :
+                        try {
+                            faultEventMapper.insertFaultEventXeCvnmsPerfIf(parameterMap);
+                        }catch (Exception e){
+                            LOGGER.error("=====> [FaultEventService] insertFaultEvent(insertFaultEventXeCvnmsPerfIf) error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
+                        }
+
+                        try {
+                            faultEventMapper.insertFaultEventXeSflowLog(parameterMap);
+                        }catch (Exception e){
+                            LOGGER.error("=====> [FaultEventService] insertFaultEvent(insertFaultEventXeSflowLog) error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
+                        }
+
+                        break;
+                    case "perf" :
+                        try {
+                            faultEventMapper.insertFaultEventAiPerformanceMst(parameterMap);
+                        }catch (Exception e){
+                            LOGGER.error("=====> [FaultEventService] insertFaultEvent(insertFaultEventAiPerformanceMst) error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
+                        }
+
+                        break;
+                    case "etc" :
+                        try {
+                            faultEventMapper.insertFaultEventXeCvnmsResource(parameterMap);
+                        }catch (Exception e){
+                            LOGGER.error("=====> [FaultEventService] insertFaultEvent(insertFaultEventXeCvnmsResource) error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
+                        }
+
+                        try {
+                            faultEventMapper.insertFaultEventCvnmsResourceIf(parameterMap);
+                        }catch (Exception e){
+                            LOGGER.error("=====> [FaultEventService] insertFaultEvent(insertFaultEventCvnmsResourceIf) error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
+                        }
+
+                        try {
+                            faultEventMapper.insertFaultEventNniTopology(parameterMap);
+                        }catch (Exception e){
+                            LOGGER.error("=====> [FaultEventService] insertFaultEvent(insertFaultEventNniTopology) error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
+                        }
+
+                        try {
+                            faultEventMapper.insertFaultEventUniTopology(parameterMap);
+                        }catch (Exception e){
+                            LOGGER.error("=====> [FaultEventService] insertFaultEvent(insertFaultEventUniTopology) error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
+                        }
+
+                        break;
+                    default:
+                        break;
                 }
 
-                try {
-                    faultEventMapper.insertFaultEventAiPerformanceMst(parameterMap);
-                }catch (Exception e){
-                    LOGGER.error("=====> [FaultEventService] insertFaultEvent(insertFaultEventAiPerformanceMst) error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
-                }
+                if(!"etc".equals(eventGb)){
+                    try {
+                        faultEventMapper.insertFaultEventXeCvnmsResource(parameterMap);
+                    }catch (Exception e){
+                        LOGGER.error("=====> [FaultEventService] insertFaultEvent(insertFaultEventXeCvnmsResource) error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
+                    }
 
-                try {
-                    faultEventMapper.insertFaultEventNniTopology(parameterMap);
-                }catch (Exception e){
-                    LOGGER.error("=====> [FaultEventService] insertFaultEvent(insertFaultEventNniTopology) error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
-                }
+                    try {
+                        faultEventMapper.insertFaultEventCvnmsResourceIf(parameterMap);
+                    }catch (Exception e){
+                        LOGGER.error("=====> [FaultEventService] insertFaultEvent(insertFaultEventCvnmsResourceIf) error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
+                    }
 
-                try {
-                    faultEventMapper.insertFaultEventUniTopology(parameterMap);
-                }catch (Exception e){
-                    LOGGER.error("=====> [FaultEventService] insertFaultEvent(insertFaultEventUniTopology) error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
-                }
+                    try {
+                        faultEventMapper.insertFaultEventNniTopology(parameterMap);
+                    }catch (Exception e){
+                        LOGGER.error("=====> [FaultEventService] insertFaultEvent(insertFaultEventNniTopology) error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
+                    }
 
-
-                try {
-                    faultEventMapper.insertFaultEventXeCvnmsError(parameterMap);
-                }catch (Exception e){
-                    LOGGER.error("=====> [FaultEventService] insertFaultEvent(insertFaultEventXeCvnmsError) error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
-                }
-
-
-                try {
-                    faultEventMapper.insertFaultEventXeCvnmsPerfIf(parameterMap);
-                }catch (Exception e){
-                    LOGGER.error("=====> [FaultEventService] insertFaultEvent(insertFaultEventXeCvnmsPerfIf) error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
-                }
-
-
-                try {
-                    faultEventMapper.insertFaultEventXeSflowLog(parameterMap);
-                }catch (Exception e){
-                    LOGGER.error("=====> [FaultEventService] insertFaultEvent(insertFaultEventXeSflowLog) error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
-                }
-
-
-                try {
-                    faultEventMapper.insertFaultEventXeCvnmsResource(parameterMap);
-                }catch (Exception e){
-                    LOGGER.error("=====> [FaultEventService] insertFaultEvent(insertFaultEventXeCvnmsResource) error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
-                }
-
-
-                try {
-                    faultEventMapper.insertFaultEventCvnmsResourceIf(parameterMap);
-                }catch (Exception e){
-                    LOGGER.error("=====> [FaultEventService] insertFaultEvent(insertFaultEventCvnmsResourceIf) error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
+                    try {
+                        faultEventMapper.insertFaultEventUniTopology(parameterMap);
+                    }catch (Exception e){
+                        LOGGER.error("=====> [FaultEventService] insertFaultEvent(insertFaultEventUniTopology) error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
+                    }
                 }
 
                 jsonObjToFile(eventNo);
