@@ -6,6 +6,15 @@
         SELECT VALUE_NAME FROM NIA.TB_LINKAGE_SEQ WHERE KEY_NAME = #{keyName}
     </select>
 
+    <insert id="insertLinkageHist" parameterType="java.util.HashMap">
+        INSERT INTO nia.tb_linkage_hist
+        (
+            key_name, file_name, file_size, row_cnt, yd_date
+        ) VALUES(
+            #{key}, #{fileName}, #{fileSize}, #{rowCnt}::int , now()
+        )
+    </insert>
+
     <update id="updateLinkageYdKey" parameterType="java.util.HashMap">
         UPDATE NIA.TB_LINKAGE_SEQ SET VALUE_NAME = #{value}, YD_DATE = now() WHERE KEY_NAME = #{key}
     </update>

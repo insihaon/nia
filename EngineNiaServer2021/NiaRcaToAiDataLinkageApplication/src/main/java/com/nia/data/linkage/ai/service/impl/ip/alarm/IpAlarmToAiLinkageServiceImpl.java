@@ -74,6 +74,7 @@ public class IpAlarmToAiLinkageServiceImpl implements IpAlarmToAiLinkageService 
         String dataKey = null;
         String jsonData;
         String ftpUpdatePath = uploadPath+"xe_cvnms_error/";
+        long fileSize;
 
         ArrayList<IpAlarmVo> ipAlarmVoList = null;
         HashMap<String, String> strHashMap;
@@ -157,15 +158,24 @@ public class IpAlarmToAiLinkageServiceImpl implements IpAlarmToAiLinkageService 
                         }
                     }
 
-
-                    if(putFile.exists()){
-                        putFile.delete();
-                    }
-
                     strHashMap = new HashMap<>();
                     strHashMap.put("key", "aiIpAlarmKey");
                     strHashMap.put("value", ipAlarmVoList.get(ipAlarmVoList.size()-1).getInterridx()+"");
                     commonMapper.updateLinkageYdKey(strHashMap);
+
+                    if(putFile.exists()){
+                        fileSize = (putFile.length()) / 1024;
+
+                        strHashMap = new HashMap<>();
+                        strHashMap.put("key", "aiIpAlarmKey");
+                        strHashMap.put("fileName", putFile.getName());
+                        strHashMap.put("fileSize", fileSize+"");
+                        strHashMap.put("rowCnt", ipAlarmVoList.size()+"");
+
+                        commonMapper.insertLinkageHist(strHashMap);
+
+                        putFile.delete();
+                    }
                 }
             }
         }catch (Exception e){

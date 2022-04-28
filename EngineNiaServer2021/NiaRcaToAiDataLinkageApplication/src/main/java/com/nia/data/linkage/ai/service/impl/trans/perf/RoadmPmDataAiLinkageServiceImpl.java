@@ -72,6 +72,8 @@ public class RoadmPmDataAiLinkageServiceImpl implements RoadmPmDataAiLinkageServ
         String ftpUpdatePath = uploadPath+"tb_performace_mst/";
         String dataKey = null;
         String jsonData;
+        long fileSize;
+
         List<PerformaceVo> performaceVoList;
         HashMap<String, String> strHashMap;
         ObjectMapper mapper;
@@ -155,14 +157,25 @@ public class RoadmPmDataAiLinkageServiceImpl implements RoadmPmDataAiLinkageServ
                         }
                     }
 
-                    if(putFile.exists()){
-                        putFile.delete();
-                    }
-
                     strHashMap = new HashMap<>();
                     strHashMap.put("key", "aiRoadmPerfKey");
                     strHashMap.put("value", performaceVoList.get(performaceVoList.size()-1).getOcrtime()+"");
                     commonMapper.updateLinkageYdKey(strHashMap);
+
+                    if(putFile.exists()){
+                        fileSize = (putFile.length()) / 1024;
+
+                        strHashMap = new HashMap<>();
+                        strHashMap.put("key", "aiRoadmPerfKey");
+                        strHashMap.put("fileName", putFile.getName());
+                        strHashMap.put("fileSize", fileSize+"");
+                        strHashMap.put("rowCnt", performaceVoList.size()+"");
+
+                        commonMapper.insertLinkageHist(strHashMap);
+
+                        putFile.delete();
+                    }
+
                 }
             }
         }catch (Exception e){

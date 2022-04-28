@@ -69,6 +69,7 @@ public class IpPerfToAiLinkageServiceImpl implements IpPerfToAiLinkageService {
         String dataKey = null;
         String jsonData;
         String ftpUpdatePath = uploadPath+"xe_cvnms_perf_if/";
+        long fileSize;
 
         ArrayList<PerfVo> perfVoList;
         HashMap<String, String> strHashMap;
@@ -166,14 +167,24 @@ public class IpPerfToAiLinkageServiceImpl implements IpPerfToAiLinkageService {
                         }
                     }
 
-                    if(putFile.exists()){
-                        putFile.delete();
-                    }
-
                     strHashMap = new HashMap<>();
                     strHashMap.put("key", "aiIpPerfKey");
                     strHashMap.put("value", perfVoList.get(perfVoList.size()-1).getInttimestamp()+"");
                     commonMapper.updateLinkageYdKey(strHashMap);
+
+                    if(putFile.exists()){
+                        fileSize = (putFile.length()) / 1024;
+
+                        strHashMap = new HashMap<>();
+                        strHashMap.put("key", "aiIpPerfKey");
+                        strHashMap.put("fileName", putFile.getName());
+                        strHashMap.put("fileSize", fileSize+"");
+                        strHashMap.put("rowCnt", perfVoList.size()+"");
+
+                        commonMapper.insertLinkageHist(strHashMap);
+
+                        putFile.delete();
+                    }
                 }
             }
         }catch (Exception e){
