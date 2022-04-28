@@ -70,6 +70,7 @@ public class IpSflowToAiLinkageServiceImpl implements IpSflowToAiLinkageService 
         String dataKey = null;
         String jsonData;
         String ftpUpdatePath = uploadPath+"xe_sflow_log/";
+        long fileSize;
 
         ArrayList<SflowLogVo> sflowVoList = null;
         HashMap<String, String> strHashMap;
@@ -168,14 +169,24 @@ public class IpSflowToAiLinkageServiceImpl implements IpSflowToAiLinkageService 
                         }
                     }
 
-                    if(putFile.exists()){
-                        putFile.delete();
-                    }
-
                     strHashMap = new HashMap<>();
                     strHashMap.put("key", "aiIpSfolwLogKey");
                     strHashMap.put("value", sflowVoList.get(sflowVoList.size()-1).getDateregdate()+"");
                     commonMapper.updateLinkageYdKey(strHashMap);
+
+                    if(putFile.exists()){
+                        fileSize = (putFile.length()) / 1024;
+
+                        strHashMap = new HashMap<>();
+                        strHashMap.put("key", "aiIpSfolwLogKey");
+                        strHashMap.put("fileName", putFile.getName());
+                        strHashMap.put("fileSize", fileSize+"");
+                        strHashMap.put("rowCnt", sflowVoList.size()+"");
+
+                        commonMapper.insertLinkageHist(strHashMap);
+
+                        putFile.delete();
+                    }
                 }
             }
         }catch (Exception e){
