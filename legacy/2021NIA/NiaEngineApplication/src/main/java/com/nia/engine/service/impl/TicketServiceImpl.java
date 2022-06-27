@@ -138,6 +138,11 @@ public class TicketServiceImpl implements TicketService {
 		ticketMapper.insertRcaTicketCnt(rcaTicket);
 	}
 
+
+	@Override
+	public void updateTicketCnt(RCATicket rcaTicket) throws Exception {
+		ticketMapper.updateTicketCnt(rcaTicket);
+	}
 	/**
 	 * Handling Time 조회
 	 * @return
@@ -334,4 +339,16 @@ public class TicketServiceImpl implements TicketService {
 	public NoxiousTrfficVo selectNoxiousTrafficAlarm(HashMap<String, String> map) throws Exception {
 		return ticketMapper.selectNoxiousTrafficAlarm(map);
 	}
+
+	@Override
+	public UserOrganVo selectUserOrgan(HashMap<String, String> map) throws Exception {
+		return ticketMapper.selectUserOrgan(map);
+	}
+
+	@Override
+	public int selectChildTicketCnt(String ticketId) throws Exception {
+		return ticketMapper.selectChildTicketCnt(ticketId);
+	}
+
+
 }

@@ -97,7 +97,7 @@
                 FROM RCA.TB_RCA_TICKET_CURRENT T
                 WHERE T.TICKET_GENERATION_TIME >= RCA.FC_GET_MINUS_DAY(1)
                   AND T.STATUS != 'FIN'
-                  AND t.root_cause_domain != 'SWITCH'
+                  AND T.TICKET_TYPE = 'RT'
             ) A
         WHERE A.PARENT_TICKET_ID IS NULL
     </select>
@@ -347,6 +347,12 @@
         where T.ticket_id = #{ticketId};
     </insert>
 
+    <update id="updateTicketCnt" parameterType="com.nia.engine.vo.RCATicket">
+        UPDATE RCA.TB_RCA_TICKET_CNT
+           SET CHILD_COUNT = (SELECT COUNT(TICKET_ID) FROM RCA.TB_RCA_TICKET_CURRENT WHERE PARENT_TICKET_ID = #{parentTicketId})
+         WHERE TICKET_ID = #{parentTicketId}
+    </update>
+
     <select id="selectTicketCheckList" resultMap="RCATicket">
         SELECT TICKET_ID, ticket_generation_time
         FROM RCA.TB_RCA_TICKET_CURRENT
@@ -560,6 +566,32 @@
             AND SL.STRS_PORT = #{strsPort}
             AND SL.STRD_IP = #{strdIp}
             AND SL.STRD_PORT = #{strdPort}
+    </select>
+
+    <select id="selectUserOrgan" resultType="com.nia.engine.vo.UserOrganVo" parameterType="java.util.HashMap">
+        SELECT NREN_NAME, NODE_ID, IF_ID
+          FROM RESOURCE.TB_USER_ORGAN
+         WHERE NODE_ID = #{nodeId}
+           AND IF_ID = #{ifId}
+    </select>
+
+    <select id="selectTrafficeMageParentTicket" resultMap="RCATicket" parameterType="java.util.HashMap">
+        SELECT A.TICKET_ID, A.STATUS
+          FROM RCA.TB_RCA_TICKET_CURRENT A
+          LEFT OUTER JOIN RCA.TB_RCA_TICKET_AL_CURRENT B
+            ON A.TICKET_ID = B.TICKET_ID
+         WHERE A.TICKET_GENERATION_TIME > (RCA.FC_GET_MINUS_DAY(1) + INTERVAL '1 day')
+           AND A.PARENT_TICKET_ID IS NULL
+           AND A.TICKET_TYPE = #{ticketType}
+           AND A.STATUS NOT LIKE '%FIN%'
+           AND B.ROOT_CAUSE_SYSNAMEA  = #{sysname}
+           AND B.ROOT_CAUSE_PORTA = #{port}
+         ORDER BY TICKET_GENERATION_TIME
+         LIMIT 1
+    </select>
+
+    <select id="selectChildTicketCnt" resultType="int" parameterType="string">
+        SELECT COUNT(TICKET_ID) as ticket_cnt FROM RCA.TB_RCA_TICKET_CURRENT WHERE PARENT_TICKET_ID = #{ticketId}
     </select>
 </mapper>
 

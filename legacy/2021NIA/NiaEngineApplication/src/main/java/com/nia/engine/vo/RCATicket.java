@@ -13,8 +13,7 @@ import org.springframework.stereotype.Component;
 @Data
 @ToString
 @Scope(value = "prototype")
-public class
-RCATicket implements Serializable {
+public class RCATicket implements Serializable {
 	private static final long serialVersionUID = 3170781290435579732L;
 
 	private String ticketId;

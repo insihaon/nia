@@ -22,4 +22,6 @@ public interface TopologyService {
 
     TopologyObject selectE2eTopology(HashMap<String, String> map) throws Exception;
 
+    BackboneLinkVo selectBackboneTopology(HashMap<String, String> map) throws Exception;
+
 }

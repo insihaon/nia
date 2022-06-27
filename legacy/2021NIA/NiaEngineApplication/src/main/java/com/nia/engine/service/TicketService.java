@@ -91,6 +91,9 @@ public interface TicketService {
 	 */
 	void insertRcaTicketCnt(RCATicket rcaTicket) throws Exception;
 
+	void updateTicketCnt(RCATicket rcaTicket) throws Exception;
+
+
 	/**
 	 * Sop 저장
 	 * @param
@@ -222,4 +225,8 @@ public interface TicketService {
 	 * @return
 	 */
 	NoxiousTrfficVo selectNoxiousTrafficAlarm(HashMap<String, String> map) throws Exception;
+
+	UserOrganVo selectUserOrgan(HashMap<String, String> map) throws Exception;
+
+	int selectChildTicketCnt(String ticketId) throws Exception;
 }

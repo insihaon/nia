@@ -8,6 +8,7 @@ import com.nia.engine.vo.aiTraffic.anomalous.AnomalousTrafficListVo;
 import com.nia.engine.vo.aiTraffic.anomalous.AnomalousTrafficVo;
 import com.nia.engine.vo.aiTraffic.noxious.NoxiousTrafficListVo;
 import com.nia.engine.vo.aiTraffic.noxious.NoxiousTrfficVo;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,10 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
     private RcaTicketManagerService rcaTicketManagerService;
 
     @Autowired
+    @Qualifier("RcaTicketMergeService")
+    private RcaTicketMergeService rcaTicketMergeService;
+
+    @Autowired
     private RCATicket rcaTicket;
 
     @Value("${spring.profiles}")
@@ -54,6 +59,8 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
         String time2 = null;
         Timestamp time3 = null;
         Timestamp time4 = null;
+        Map<String, String> properties;
+        int updateCnt = 0;
 
         String ticketId;
         Timestamp faultTime;
@@ -61,7 +68,9 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
         AnomalousTrafficVo tmpAnomalousTrafficVo;
         RcaEngineResult rcaEngineResult;
         RCATicketAl rcaTicketAl;
-        TopologyObject topology;
+        UserOrganVo userOrganVo;
+        BackboneLinkVo backboneLinkVo;
+        RcaTicketResult rcaTicketResult = null;
 
         Iterator<AnomalousTrafficVo> itr;
         List<RCATicketAl> rcaTicketAlList = null;
@@ -103,8 +112,6 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
                         rcaTicket.setFaultTime(faultTime);
                         rcaTicket.setRootCauseType(RcaCodeInfo.RCA_RESULT_TRAFFIC_FAIL);
                         rcaTicket.setRootCauseDomain(RcaCodeInfo.DOMAIN_TRAFFIC);
-                        rcaTicket.setTicketRcaResultCode("TRAFFIC_ANOMALOUS_DETECTION");
-                        rcaTicket.setTicketRcaResultDtlCode("이상 트래픽 탐지");
                         rcaTicket.setOccur(true);
 
                         rcaTicket.setStatus(RcaCodeInfo.TICKET_STATUS_INIT);
@@ -120,13 +127,36 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
                         rcaTicketAl.setRootCausePortA(anomalousTrafficVo.getIfId());
 
                         parameterMap = new HashMap<String, String>();
-                        parameterMap.put("sysname", anomalousTrafficVo.getNodeId());
-                        parameterMap.put("port", anomalousTrafficVo.getIfId());
-                        topology = topologyService.selectE2eTopology(parameterMap);
+                        parameterMap.put("resid", anomalousTrafficVo.getStrresid());
+                        parameterMap.put("ifid", anomalousTrafficVo.getStrifid());
+                        backboneLinkVo = topologyService.selectBackboneTopology(parameterMap);
 
-                        if(topology != null){
-                            rcaTicketAl.setRootCauseSysnameZ(topology.getOppSysname());
-                            rcaTicketAl.setRootCausePortZ(topology.getOppPort());
+                        if(backboneLinkVo != null){
+                            rcaTicket.setTicketRcaResultDtlCode("이상 트래픽(링크)");
+
+                            if(anomalousTrafficVo.getStrresid().equals(backboneLinkVo.getSrcNodeNum())){
+                                rcaTicketAl.setRootCauseSysnameZ(backboneLinkVo.getDestNodeId());
+                                rcaTicketAl.setRootCausePortZ(backboneLinkVo.getDestIfId());
+                            }else{
+                                rcaTicketAl.setRootCauseSysnameZ(backboneLinkVo.getSrcNodeId());
+                                rcaTicketAl.setRootCausePortZ(backboneLinkVo.getSrcIfId());
+                            }
+                        }else{
+
+                            parameterMap = new HashMap<String, String>();
+                            parameterMap.put("nodeId", anomalousTrafficVo.getNodeId());
+                            parameterMap.put("ifId", anomalousTrafficVo.getIfId());
+                            userOrganVo = ticketService.selectUserOrgan(parameterMap);
+
+                            if(userOrganVo != null){
+                                rcaTicket.setTicketRcaResultDtlCode("이상 트래픽(이용기관)");
+
+                                rcaTicketAl.setRootCauseSysnameZ(userOrganVo.getNrenName());
+                                rcaTicketAl.setRootCausePortZ(userOrganVo.getIfId());
+                            }else{
+                                rcaTicket.setTicketRcaResultDtlCode("이상 트래픽(포트)");
+                                rcaTicketAl.setRootCauseSysnameZ("Unknown");
+                            }
                         }
 
                         parameterMap = new HashMap<String, String>();
@@ -136,8 +166,6 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
                         parameterMap.put("inttimestamp", anomalousTrafficVo.getInttimestamp() + "");
                         ticketService.updateAnomalousTrafficTicketId(parameterMap);
 
-                        ticketService.insertRcaTicketCnt(rcaTicket);
-
                         rcaTicketAlList.add(rcaTicketAl);
 
                         if (rcaTicketAlList != null) {
@@ -145,16 +173,49 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
                         }
                         rcaTicket.setStatus(RcaCodeInfo.TICKET_STATUS_INIT);
 
+                        rcaTicketResult = rcaTicketMergeService.rcaTrafficeTicketMerge(rcaTicket);
+
+                        if(rcaTicketResult != null && rcaTicketResult.isResult()){
+
+                            rcaTicket.setParentTicketId(rcaTicketResult.getTicketId());
+                            rcaTicket.setStatus(rcaTicketResult.getValue());
+
+                            rcaEngineResult = new RcaEngineResult();
+                            rcaEngineResult.setTicketId(rcaTicket.getParentTicketId());
+                            rcaEngineResult.setEventType(RcaCodeInfo.UI_TICKET_TYPE_MERGE);
+                            rcaEngineResult.setTicketType("RT");
+
+                            parameterMap = new HashMap<String, String>();
+                            parameterMap.put("ticketId", rcaTicket.getParentTicketId());
+                            parameterMap.put("ticketUpdateTime", rcaTicket.getTicketGenerationTime()+"");
+                            ticketService.updateRcaTicketUpdateTime(parameterMap);
+                        }else{
+                            rcaEngineResult = new RcaEngineResult();
+                            rcaEngineResult.setTicketId(rcaTicket.getTicketId());
+                            rcaEngineResult.setEventType(RcaCodeInfo.UI_TICKET_TYPE_NEW);
+                            rcaEngineResult.setTicketType("RT");
+                        }
+
 
                         LOGGER.info("==========>[RcaTicketManager] createTicket : " + rcaTicket.toString() + "<==============");
                         ticketService.insertRcaTicket(rcaTicket);
                         LOGGER.info("==========>[RcaTicketManager] rcaTicketAlList : " + rcaTicketAlList + "<==============");
                         ticketService.insertRcaTicketAl(rcaTicketAlList);
 
-                        rcaEngineResult = new RcaEngineResult();
-                        rcaEngineResult.setTicketId(rcaTicket.getTicketId());
-                        rcaEngineResult.setEventType(RcaCodeInfo.UI_TICKET_TYPE_NEW);
-                        rcaEngineResult.setTicketType("RT");
+
+                        if(StringUtils.isNotEmpty(rcaTicket.getParentTicketId())){
+                             ticketService.updateTicketCnt(rcaTicket);
+
+                            updateCnt = ticketService.selectChildTicketCnt(rcaTicket.getParentTicketId());
+
+                            properties = new HashMap<String, String>();
+                            properties.put("child_count", updateCnt + "");
+                            properties.put("ticket_update_time", rcaTicket.getTicketGenerationTime()+"");
+
+                            rcaEngineResult.setProperties(properties);
+                        }
+
+                        ticketService.insertRcaTicketCnt(rcaTicket);
 
                         rcaTicketManagerService.uiSendTicketResult(rcaEngineResult);
                     }
@@ -172,11 +233,14 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
         String time2 = null;
         Timestamp time3 = null;
         Timestamp time4 = null;
+        Map<String, String> properties;
+        int updateCnt = 0;
 
         String ticketId;
         Timestamp faultTime;
         RCATicketAl rcaTicketAl;
         RcaEngineResult rcaEngineResult;
+        RcaTicketResult rcaTicketResult = null;
 
         List<RCATicketAl> rcaTicketAlList = null;
         HashMap<String, String> parameterMap;
@@ -233,6 +297,29 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
                     if (rcaTicketAlList != null) {
                         rcaTicket.setTicketAlList(rcaTicketAlList);
                     }
+
+                    rcaTicketResult = rcaTicketMergeService.rcaTrafficeTicketMerge(rcaTicket);
+
+                    if(rcaTicketResult != null && rcaTicketResult.isResult()){
+
+                        rcaTicket.setParentTicketId(rcaTicketResult.getTicketId());
+                        rcaTicket.setStatus(rcaTicketResult.getValue());
+
+                        rcaEngineResult = new RcaEngineResult();
+                        rcaEngineResult.setTicketId(rcaTicket.getParentTicketId());
+                        rcaEngineResult.setEventType(RcaCodeInfo.UI_TICKET_TYPE_MERGE);
+                        rcaEngineResult.setTicketType("RT");
+
+                        parameterMap = new HashMap<String, String>();
+                        parameterMap.put("ticketId", rcaTicket.getParentTicketId());
+                        parameterMap.put("ticketUpdateTime", rcaTicket.getTicketGenerationTime()+"");
+                        ticketService.updateRcaTicketUpdateTime(parameterMap);
+                    }else{
+                        rcaEngineResult = new RcaEngineResult();
+                        rcaEngineResult.setTicketId(rcaTicket.getTicketId());
+                        rcaEngineResult.setEventType(RcaCodeInfo.UI_TICKET_TYPE_NEW);
+                        rcaEngineResult.setTicketType("RT");
+                    }
                     rcaTicket.setStatus(RcaCodeInfo.TICKET_STATUS_INIT);
 
                     LOGGER.info("==========>[RcaTicketManager] createTicket : " + rcaTicket.toString() + "<==============");
@@ -240,12 +327,19 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
                     LOGGER.info("==========>[RcaTicketManager] rcaTicketAlList : " + rcaTicketAlList + "<==============");
                     ticketService.insertRcaTicketAl(rcaTicketAlList);
 
-                    ticketService.insertRcaTicketCnt(rcaTicket);
+                    if(StringUtils.isNotEmpty(rcaTicket.getParentTicketId())){
+                         ticketService.updateTicketCnt(rcaTicket);
 
-                    rcaEngineResult = new RcaEngineResult();
-                    rcaEngineResult.setTicketId(rcaTicket.getTicketId());
-                    rcaEngineResult.setEventType(RcaCodeInfo.UI_TICKET_TYPE_NEW);
-                    rcaEngineResult.setTicketType("RT");
+                        updateCnt = ticketService.selectChildTicketCnt(rcaTicket.getParentTicketId());
+
+                        properties = new HashMap<String, String>();
+                        properties.put("child_count", updateCnt + "");
+                        properties.put("ticket_update_time", rcaTicket.getTicketGenerationTime()+"");
+
+                        rcaEngineResult.setProperties(properties);
+                    }
+
+                    ticketService.insertRcaTicketCnt(rcaTicket);
 
                     rcaTicketManagerService.uiSendTicketResult(rcaEngineResult);
                 }

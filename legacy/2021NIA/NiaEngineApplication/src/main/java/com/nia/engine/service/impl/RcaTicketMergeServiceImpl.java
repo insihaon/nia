@@ -3,6 +3,7 @@ package com.nia.engine.service.impl;
 import com.nia.engine.common.RcaCodeInfo;
 import com.nia.engine.common.UtlDateHelper;
 import com.nia.engine.data.DataShareBean;
+import com.nia.engine.mapper.TicketMapper;
 import com.nia.engine.service.*;
 import com.nia.engine.vo.*;
 import lombok.Synchronized;
@@ -43,6 +44,9 @@ public class RcaTicketMergeServiceImpl implements RcaTicketMergeService {
 
     @Autowired
     private DataShareBean dataShareBean;
+
+    @Autowired
+    private TicketMapper ticketMapper;
 
     /*
      * Ticket 중복 체크
@@ -208,6 +212,44 @@ public class RcaTicketMergeServiceImpl implements RcaTicketMergeService {
             }
         }catch (Exception e) {
             LOGGER.error(">>>>>>>>>>[RcaTicketMergeServiceImpl] rcaTicketMerge error("+rcaTicket.getTicketId()+") : "+ExceptionUtils.getStackTrace(e)+" <<<<<<<<<<<<<<<");
+            return rcaTicketResult;
+        }
+        return rcaTicketResult;
+    }
+
+    @Override
+    @Synchronized
+    public RcaTicketResult rcaTrafficeTicketMerge(RCATicket rcaTicket) {
+        LOGGER.info(">>>>>>>>>>[RcaTicketMergeServiceImpl] rcaTrafficeTicketMerge rcaTicket = " + rcaTicket + " <<<<<<<<<<<<<<<<<");
+        RcaTicketResult rcaTicketResult = null;
+        RCATicketHandlingStatus rcaTicketHandlingStatus;
+
+        HashMap<String, String> parameterMap;
+        RCATicket parentTicket;
+
+        try{
+            parameterMap = new HashMap<String, String>();
+            parameterMap.put("sysname", rcaTicket.getTicketAlList().get(0).getRootCauseSysnameA());
+            parameterMap.put("port", rcaTicket.getTicketAlList().get(0).getRootCausePortA());
+            parameterMap.put("ticketType", rcaTicket.getTicketType());
+
+            parentTicket = ticketMapper.selectTrafficeMageParentTicket(parameterMap);
+
+            if(parentTicket != null){
+                LOGGER.info(">>>>>>>>>>[RcaTicketMergeServiceImpl] rcaTrafficeTicketMerge ticketId("+rcaTicket.getTicketId()+") parentTicketId("+parentTicket.getTicketId()+") <<<<<<<<<<<<<<<<<");
+
+                rcaTicketResult = rcaTicketResultFactory.getObject();
+                rcaTicketResult.setTicketId(parentTicket.getTicketId());
+                rcaTicketResult.setValue(parentTicket.getStatus());
+                rcaTicketResult.setResult(true);
+            }
+
+            if(rcaTicketResult == null){
+                rcaTicketResult = rcaTicketResultFactory.getObject();
+                rcaTicketResult.setResult(false);
+            }
+        }catch (Exception e) {
+            LOGGER.error(">>>>>>>>>>[RcaTicketMergeServiceImpl] rcaTrafficeTicketMerge error("+rcaTicket.getTicketId()+") : "+ExceptionUtils.getStackTrace(e)+" <<<<<<<<<<<<<<<");
             return rcaTicketResult;
         }
         return rcaTicketResult;

@@ -28,9 +28,9 @@
 
     <select id="selectFaultEventPerformance" resultType="com.nia.engine.vo.falutEvent.FaultEventPerformanceDataVo" parameterType="string">
         SELECT SYSNAME AS sysname, PORT AS port, UNIT AS unit, TMPER AS tmper
-             , DIRECTION AS direction, RXCUR AS rxCur, RXMIN AS rxMin, RXMAX AS rxMax, RXAVE AS rxAve
+             , RXCUR AS rxCur, RXMIN AS rxMin, RXMAX AS rxMax, RXAVE AS rxAve
              , TXCUR AS txCur, TXMIN AS txMin, TXMAX AS txMax, TXAVE AS txAve, OCRTIME AS ocrtime
-          FROM RCA.TB_FAULT_EVENT_AI_PERFORMACE_MST
+          FROM RCA.TB_FAULT_EVENT_PERFORMACE_MST
          WHERE EVENTNO = #{eventno}
     </select>
 
@@ -124,10 +124,10 @@
     </insert>
 
     <insert id="insertFaultEventAiPerformanceMst" parameterType="java.util.HashMap">
-        INSERT INTO RCA.TB_FAULT_EVENT_AI_PERFORMACE_MST
-        (EVENTNO, SYSNAME, PORT, UNIT, TMPER, DIRECTION, RXCUR, RXMIN, RXMAX, RXAVE, TXCUR, TXMIN, TXMAX, TXAVE, OCRTIME)
-        SELECT DISTINCT #{eventno}, SYSNAME, PORT, UNIT, TMPER, DIRECTION, RXCUR, RXMIN, RXMAX, RXAVE, TXCUR, TXMIN, TXMAX, TXAVE, OCRTIME
-          FROM RCA.TB_AI_PERFORMACE_MST
+        INSERT INTO RCA.TB_FAULT_EVENT_PERFORMACE_MST
+        (EVENTNO, SYSNAME, PORT, UNIT, TMPER, RXCUR, RXMIN, RXMAX, RXAVE, TXCUR, TXMIN, TXMAX, TXAVE, OCRTIME)
+        SELECT DISTINCT #{eventno}, SYSNAME, PORT, UNIT, TMPER, RXCUR, RXMIN, RXMAX, RXAVE, TXCUR, TXMIN, TXMAX, TXAVE, OCRTIME
+          FROM NIA.TB_PERFORMACE_MST
          WHERE OCRTIME BETWEEN #{startTime}::TIMESTAMP AND #{endTime}::TIMESTAMP
     </insert>
 
