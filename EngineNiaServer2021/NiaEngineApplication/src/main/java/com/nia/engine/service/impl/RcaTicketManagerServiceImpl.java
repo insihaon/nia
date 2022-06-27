@@ -274,7 +274,7 @@ public class RcaTicketManagerServiceImpl implements RcaTicketManagerService {
                     time3 = UtlDateHelper.stringToTimestamp(time1);
                     time4 = UtlDateHelper.stringToTimestamp(time2);
 
-                    if (RcaCodeInfo.DOMAIN_ROADM.equals(rcaResult.getDomainCode()) || RcaCodeInfo.DOMAIN_POTN.equals(rcaResult.getDomainCode())) {
+//                    if (RcaCodeInfo.DOMAIN_ROADM.equals(rcaResult.getDomainCode()) || RcaCodeInfo.DOMAIN_POTN.equals(rcaResult.getDomainCode())) {
                         if (rcaResult.getAlarmTime().getTime() > time4.getTime()) {
                             basicAlarmVoList = rcaResult.getRelatedAlarmList();
                             ticketId = ticketService.selectTicketKey();
@@ -433,7 +433,7 @@ public class RcaTicketManagerServiceImpl implements RcaTicketManagerService {
                         }
                     }
                 }
-            }
+//            }
         }catch (Exception e) {
             LOGGER.error(">>>>>>>>>>[RcaTicketManager] createTicket() error : " + ExceptionUtils.getStackTrace(e) +" <<<<<<<<<<<<<<<<<");
         }

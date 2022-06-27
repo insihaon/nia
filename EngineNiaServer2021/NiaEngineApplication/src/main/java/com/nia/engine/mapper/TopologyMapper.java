@@ -1,5 +1,6 @@
 package com.nia.engine.mapper;
 
+import com.nia.engine.vo.BackboneLinkVo;
 import com.nia.engine.vo.TopologyDataVo;
 import com.nia.engine.vo.TopologyObject;
 import org.apache.ibatis.annotations.Mapper;
@@ -19,4 +20,6 @@ public interface TopologyMapper {
 	TopologyDataVo selectTopology(HashMap<String, String> map);
 
 	TopologyObject selectE2eTopology(HashMap<String, String> map);
+
+	BackboneLinkVo selectBackboneTopology(HashMap<String, String> map);
 }

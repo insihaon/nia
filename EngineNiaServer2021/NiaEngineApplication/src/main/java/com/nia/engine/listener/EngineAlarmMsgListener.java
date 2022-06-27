@@ -53,9 +53,9 @@ public class EngineAlarmMsgListener implements ChannelAwareMessageListener {
 	@Override
 	public void onMessage(Message message, Channel channel) {
 		try {
-			while (true) {
-				if (dataShareBean.isContainsKey(RcaCodeInfo.DATA_SHARE_NAME_IS_START)) {
-					if ((Boolean) dataShareBean.getData(RcaCodeInfo.DATA_SHARE_NAME_IS_START)) {
+//			while (true) {
+//				if (dataShareBean.isContainsKey(RcaCodeInfo.DATA_SHARE_NAME_IS_START)) {
+//					if ((Boolean) dataShareBean.getData(RcaCodeInfo.DATA_SHARE_NAME_IS_START)) {
 						LOGGER.info(">>>>>>>>>>[EngineAlarmMsgListener] onMessage : " + message.toString() + " <<<<<<<<<<<<<<<<<");
 
 						List<ClusterObject> clusterList;
@@ -89,11 +89,11 @@ public class EngineAlarmMsgListener implements ChannelAwareMessageListener {
 								sendSingleDomainHdlProcessor(clusterObject);
 							}
 						}
-
-						break;
-					}
-				}
-			}
+//
+//						break;
+//					}
+//				}
+//			}
 		}catch (Exception e) {
 			LOGGER.error(">>>>>>>>>>[EngineAlarmMsgListener] onMessage error : " + ExceptionUtils.getStackTrace(e) + " <<<<<<<<<<<<<<<<<");
 		}

@@ -24,9 +24,9 @@ public class EngineClearAlarmMsgListener implements ChannelAwareMessageListener 
 	public void onMessage(Message message, Channel channel) {
 		LOGGER.info("==========>[EngineClearAlarmMsgListener] onMessage : "+new String(message.getBody())+"<==============");
 		try {
-            while (true) {
-                if (dataShareBean.isContainsKey(RcaCodeInfo.DATA_SHARE_NAME_IS_START)) {
-                    if ((Boolean) dataShareBean.getData(RcaCodeInfo.DATA_SHARE_NAME_IS_START)) {
+//            while (true) {
+//                if (dataShareBean.isContainsKey(RcaCodeInfo.DATA_SHARE_NAME_IS_START)) {
+//                    if ((Boolean) dataShareBean.getData(RcaCodeInfo.DATA_SHARE_NAME_IS_START)) {
 //            Object obj;
 //            String msg = new String(message.getBody());
 //            basicAlarmVo = basicAlarmVoFactory.getObject();
@@ -34,18 +34,18 @@ public class EngineClearAlarmMsgListener implements ChannelAwareMessageListener 
 //            obj = UtlCommon.jsonToObject(basicAlarmVo, msg);
 //            basicAlarmVo = (BasicAlarmVo)obj;
 
-                        Object obj;
-                        String msg = new String(message.getBody()).replaceAll("\"", "");
+            Object obj;
+            String msg = new String(message.getBody()).replaceAll("\"", "");
 
-                        //  ticketClear(msg);
+            //  ticketClear(msg);
 
-                        ((ConcurrentLinkedQueue<String>) dataShareBean.getData(RcaCodeInfo.DATA_SHARE_NAME_CLEAR_AL_LIST)).add(msg);
+            ((ConcurrentLinkedQueue<String>) dataShareBean.getData(RcaCodeInfo.DATA_SHARE_NAME_CLEAR_AL_LIST)).add(msg);
 
                         //      ticketClear(msg);
-                        break;
-                    }
-                }
-            }
+//                        break;
+//                    }
+//                }
+//            }
 		} catch (Exception e) {
 			LOGGER.error("==========>[EngineClearAlarmMsgListener] onMessage error : "+ExceptionUtils.getStackTrace(e)+" <==============");
 		}

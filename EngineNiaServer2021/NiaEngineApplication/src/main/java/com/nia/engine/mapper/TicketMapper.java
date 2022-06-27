@@ -96,6 +96,8 @@ public interface TicketMapper{
 	 */
 	void insertRcaTicketCnt(RCATicket rcaTicket);
 
+	void updateTicketCnt(RCATicket rcaTicket);
+
 	/**
 	 * 티켓 클리어 체크
 	 * @return
@@ -238,4 +240,10 @@ public interface TicketMapper{
 	 * @return
 	 */
 	NoxiousTrfficVo selectNoxiousTrafficAlarm(HashMap<String, String> map);
+
+	UserOrganVo selectUserOrgan(HashMap<String, String> map);
+
+	RCATicket selectTrafficeMageParentTicket(HashMap<String, String> map);
+
+	int selectChildTicketCnt(String ticketId);
 }

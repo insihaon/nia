@@ -52,4 +52,9 @@ public class TopologyServiceImpl implements TopologyService {
     public TopologyObject selectE2eTopology(HashMap<String, String> map) throws Exception {
         return topologyMapper.selectE2eTopology(map);
     }
+
+    @Override
+    public BackboneLinkVo selectBackboneTopology(HashMap<String, String> map) throws Exception {
+        return topologyMapper.selectBackboneTopology(map);
+    }
 }

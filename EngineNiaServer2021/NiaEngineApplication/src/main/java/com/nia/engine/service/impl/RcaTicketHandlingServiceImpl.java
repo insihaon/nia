@@ -5,6 +5,7 @@ import com.nia.engine.common.RcaCodeInfo;
 import com.nia.engine.data.DataShareBean;
 import com.nia.engine.service.*;
 import com.nia.engine.vo.*;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +56,6 @@ public class RcaTicketHandlingServiceImpl implements RcaTicketHandlingService {
                         sopId = ticketService.selectSopKey();
                         rcaTicketHandlingStatus.setSopId(sopId);
 
-                        rcaTicketHandlingStatus.setSopId(sopId);
                         ticketService.insertSop(rcaTicketHandlingStatus);
                         ticketService.insertSopPerformance(rcaTicketHandlingStatus);
                         break;
@@ -63,6 +63,10 @@ public class RcaTicketHandlingServiceImpl implements RcaTicketHandlingService {
                     case "INIT" :
                         status = rcaTicketHandlingStatus.getStatus();
 
+                        if(StringUtils.isNotEmpty(rcaTicketHandlingStatus.getSopId())){
+                            sopId = ticketService.selectSopKey();
+                            rcaTicketHandlingStatus.setSopId(sopId);
+                        }
                         ticketService.upsertSop(rcaTicketHandlingStatus);
                         break;
                 }
@@ -102,7 +106,7 @@ public class RcaTicketHandlingServiceImpl implements RcaTicketHandlingService {
                 rcaTicketHandlingStatus.setSopId(sopId);
                 ticketService.upsertSop(rcaTicketHandlingStatus);
 
-                if("INIT".equals(rcaTicketHandlingStatus.getStatus())) {
+                if("INIT".equals(rcaTicketHandlingStatus.getStatus()) || "ACK".equals(rcaTicketHandlingStatus.getStatus())) {
                     ticketService.insertSopMail(rcaTicketHandlingStatus);
                 }
 
@@ -145,6 +149,10 @@ public class RcaTicketHandlingServiceImpl implements RcaTicketHandlingService {
                     case "FIN":
                         status = rcaTicketHandlingStatus.getStatus();
 
+                        if(StringUtils.isNotEmpty(rcaTicketHandlingStatus.getSopId())){
+                            sopId = ticketService.selectSopKey();
+                            rcaTicketHandlingStatus.setSopId(sopId);
+                        }
                         ticketService.upsertSop(rcaTicketHandlingStatus);
                         break;
                 }

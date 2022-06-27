@@ -39,4 +39,14 @@
             union all
             (select node_ida as opp_sysname, porta as opp_port from nia.tb_e2e_topology where node_idz = #{sysname} and portz = #{port})) a
     </select>
+
+    <select id="selectBackboneTopology" resultType="com.nia.engine.vo.BackboneLinkVo" parameterType="hashmap">
+        SELECT SRC_NODE_NUM, SRC_NODE_ID, SRC_IF_NUM, SRC_IF_ID, DEST_NODE_NUM
+             , DEST_NODE_ID, DEST_IF_NUM, DEST_IF_ID, LINK_DESC, VLAN
+             , TAG, SRC_IP_ADDR, SRC_MAC_ADDR, DEST_IP_ADDR, DEST_MAC_ADDR
+             , PREFIX, TOPOLOGY, BANDWIDTH, LINK_TYPE, LINK_DIV
+             , CIRCUIT_NUM
+          FROM RESOURCE.TB_BACKBONE_LINK
+         WHERE ((SRC_NODE_NUM = #{resid} AND SRC_IF_NUM = #{ifId}) OR (DEST_NODE_NUM = #{resid} AND DEST_IF_NUM = #{ifid}))
+    </select>
 </mapper>
