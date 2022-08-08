@@ -164,6 +164,7 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
                         parameterMap.put("strifid", anomalousTrafficVo.getStrifid());
                         parameterMap.put("strresid", anomalousTrafficVo.getStrresid());
                         parameterMap.put("inttimestamp", anomalousTrafficVo.getInttimestamp() + "");
+
                         ticketService.updateAnomalousTrafficTicketId(parameterMap);
 
                         rcaTicketAlList.add(rcaTicketAl);
@@ -196,15 +197,13 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
                             rcaEngineResult.setTicketType("RT");
                         }
 
-
                         LOGGER.info("==========>[RcaTicketManager] createTicket : " + rcaTicket.toString() + "<==============");
                         ticketService.insertRcaTicket(rcaTicket);
                         LOGGER.info("==========>[RcaTicketManager] rcaTicketAlList : " + rcaTicketAlList + "<==============");
                         ticketService.insertRcaTicketAl(rcaTicketAlList);
 
-
                         if(StringUtils.isNotEmpty(rcaTicket.getParentTicketId())){
-                             ticketService.updateTicketCnt(rcaTicket);
+                            ticketService.updateTicketCnt(rcaTicket);
 
                             updateCnt = ticketService.selectChildTicketCnt(rcaTicket.getParentTicketId());
 
@@ -246,102 +245,105 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
         HashMap<String, String> parameterMap;
 
         try {
-            if (noxiousTrafficListVo != null && noxiousTrafficListVo.getData().size() > 0) {
-                faultTime  = Timestamp.valueOf(noxiousTrafficListVo.getData().get(0).getDateregdate());
+            if(noxiousTrafficListVo != null && noxiousTrafficListVo.getData().size() > 0) {
+                for(NoxiousTrfficVo noxiousTrffic : noxiousTrafficListVo.getData()) {
+                    faultTime  = Timestamp.valueOf(noxiousTrffic.getDateregdate());
 
-                time1 = UtlDateHelper.timestampToString("yyyy-MM-dd", faultTime) + " 00:00:00";
-                time2 = UtlDateHelper.timestampToString("yyyy-MM-dd", faultTime) + " 06:00:00";
-                time3 = UtlDateHelper.stringToTimestamp(time1);
-                time4 = UtlDateHelper.stringToTimestamp(time2);
+                    time1 = UtlDateHelper.timestampToString("yyyy-MM-dd", faultTime) + " 00:00:00";
+                    time2 = UtlDateHelper.timestampToString("yyyy-MM-dd", faultTime) + " 06:00:00";
+                    time3 = UtlDateHelper.stringToTimestamp(time1);
+                    time4 = UtlDateHelper.stringToTimestamp(time2);
 
-                if (faultTime.getTime() > time4.getTime()) {
-                    rcaTicket = rcaTicketFactory.getObject();
-                    ticketId = ticketService.selectTicketKey();
-                    rcaTicket.setTicketId(ticketId);
-                    rcaTicket.setTicketType(RcaCodeInfo.TICKET_TYPE_NOXIOUS_TRAFFIC_TICKET);
-                    rcaTicket.setTicketGenerationTime(UtlDateHelper.getCurrentTime());
-                    rcaTicket.setFaultTime(faultTime);
-                    rcaTicket.setRootCauseType(RcaCodeInfo.RCA_RESULT_TRAFFIC_FAIL);
-                    rcaTicket.setRootCauseDomain(RcaCodeInfo.DOMAIN_TRAFFIC);
-                    rcaTicket.setTicketRcaResultCode("TRAFFIC_NOXIOUS_DETECTION");
-                    rcaTicket.setTicketRcaResultDtlCode("유해 트래픽 탐지");
-                    rcaTicket.setOccur(true);
-                    rcaTicket.setRelatedAlarmCnt(noxiousTrafficListVo.getData().size());
+                    if(faultTime.getTime() > time4.getTime()) {
+                        rcaTicket = rcaTicketFactory.getObject();
+                        ticketId = ticketService.selectTicketKey();
+                        rcaTicket.setTicketId(ticketId);
+                        rcaTicket.setTicketType(RcaCodeInfo.TICKET_TYPE_NOXIOUS_TRAFFIC_TICKET);
+                        rcaTicket.setTicketGenerationTime(UtlDateHelper.getCurrentTime());
+                        rcaTicket.setFaultTime(faultTime);
+                        rcaTicket.setRootCauseType(RcaCodeInfo.RCA_RESULT_TRAFFIC_FAIL);
+                        rcaTicket.setRootCauseDomain(RcaCodeInfo.DOMAIN_TRAFFIC);
+                        rcaTicket.setTicketRcaResultCode("TRAFFIC_NOXIOUS_DETECTION");
+                        rcaTicket.setTicketRcaResultDtlCode("유해 트래픽 탐지");
+                        rcaTicket.setOccur(true);
+                        rcaTicket.setRelatedAlarmCnt(noxiousTrafficListVo.getData().size());
 
-                    for(NoxiousTrfficVo noxiousTrffic :noxiousTrafficListVo.getData()){
-                        rcaTicketAl = rcaTicketAlFactory.getObject();
-                        rcaTicketAlList = new ArrayList<>();
 
-                        rcaTicketAl.setRootCauseNoxiousTrfficAlarmInfoA(noxiousTrffic);
+                            rcaTicketAl = rcaTicketAlFactory.getObject();
+                            rcaTicketAlList = new ArrayList<>();
 
-                        rcaTicketAl.setTicketId(ticketId);
-                        rcaTicketAl.setRootCauseSysnameA(noxiousTrffic.getStrs_ip());
-                        rcaTicketAl.setRootCausePortA(String.valueOf(noxiousTrffic.getStrs_port()));
+                            rcaTicketAl.setRootCauseNoxiousTrfficAlarmInfoA(noxiousTrffic);
 
-                        rcaTicketAl.setRootCauseSysnameZ(noxiousTrffic.getStrd_ip());
-                        rcaTicketAl.setRootCausePortZ(String.valueOf(noxiousTrffic.getStrd_port()));
+                            rcaTicketAl.setTicketId(ticketId);
+                            rcaTicketAl.setRootCauseSysnameA(noxiousTrffic.getStrs_ip());
+                            rcaTicketAl.setRootCausePortA(String.valueOf(noxiousTrffic.getStrs_port()));
 
-                        parameterMap = new HashMap<String, String>();
-                        parameterMap.put("ticketId", ticketId);
-                        parameterMap.put("strresip", noxiousTrffic.getStrresip());
-                        parameterMap.put("strsIp", noxiousTrffic.getStrs_ip());
-                        parameterMap.put("strsPort", noxiousTrffic.getStrs_port() + "");
-                        parameterMap.put("strdIp", noxiousTrffic.getStrd_ip());
-                        parameterMap.put("strdPort", noxiousTrffic.getStrd_port() + "");
-                        parameterMap.put("dateregdate", noxiousTrffic.getDateregdate());
-                        ticketService.updateNoxiousTrafficTicketId(parameterMap);
+                            rcaTicketAl.setRootCauseSysnameZ(noxiousTrffic.getStrd_ip());
+                            rcaTicketAl.setRootCausePortZ(String.valueOf(noxiousTrffic.getStrd_port()));
 
-                        rcaTicketAlList.add(rcaTicketAl);
+                            parameterMap = new HashMap<String, String>();
+                            parameterMap.put("ticketId", ticketId);
+                            parameterMap.put("strresip", noxiousTrffic.getStrresip());
+                            parameterMap.put("strsIp", noxiousTrffic.getStrs_ip());
+                            parameterMap.put("strsPort", noxiousTrffic.getStrs_port() + "");
+                            parameterMap.put("strdIp", noxiousTrffic.getStrd_ip());
+                            parameterMap.put("strdPort", noxiousTrffic.getStrd_port() + "");
+                            parameterMap.put("dateregdate", noxiousTrffic.getDateregdate());
+                            ticketService.updateNoxiousTrafficTicketId(parameterMap);
+
+                            rcaTicketAlList.add(rcaTicketAl);
+
+
+                        if(rcaTicketAlList != null) {
+                            rcaTicket.setTicketAlList(rcaTicketAlList);
+                        }
+
+                        rcaTicketResult = rcaTicketMergeService.rcaTrafficeTicketMerge(rcaTicket);
+
+                        if(rcaTicketResult != null && rcaTicketResult.isResult()){
+
+                            rcaTicket.setParentTicketId(rcaTicketResult.getTicketId());
+                            rcaTicket.setStatus(rcaTicketResult.getValue());
+
+                            rcaEngineResult = new RcaEngineResult();
+                            rcaEngineResult.setTicketId(rcaTicket.getParentTicketId());
+                            rcaEngineResult.setEventType(RcaCodeInfo.UI_TICKET_TYPE_MERGE);
+                            rcaEngineResult.setTicketType("RT");
+
+                            parameterMap = new HashMap<String, String>();
+                            parameterMap.put("ticketId", rcaTicket.getParentTicketId());
+                            parameterMap.put("ticketUpdateTime", rcaTicket.getTicketGenerationTime()+"");
+                            ticketService.updateRcaTicketUpdateTime(parameterMap);
+                        } else {
+                            rcaEngineResult = new RcaEngineResult();
+                            rcaEngineResult.setTicketId(rcaTicket.getTicketId());
+                            rcaEngineResult.setEventType(RcaCodeInfo.UI_TICKET_TYPE_NEW);
+                            rcaEngineResult.setTicketType("RT");
+                        }
+
+                        rcaTicket.setStatus(RcaCodeInfo.TICKET_STATUS_INIT);
+
+                        LOGGER.info("==========>[RcaTicketManager] createTicket : " + rcaTicket.toString() + "<==============");
+                        ticketService.insertRcaTicket(rcaTicket);
+                        LOGGER.info("==========>[RcaTicketManager] rcaTicketAlList : " + rcaTicketAlList + "<==============");
+                        ticketService.insertRcaTicketAl(rcaTicketAlList);
+
+                        if(StringUtils.isNotEmpty(rcaTicket.getParentTicketId())){
+                            ticketService.updateTicketCnt(rcaTicket);
+
+                            updateCnt = ticketService.selectChildTicketCnt(rcaTicket.getParentTicketId());
+
+                            properties = new HashMap<String, String>();
+                            properties.put("child_count", updateCnt + "");
+                            properties.put("ticket_update_time", rcaTicket.getTicketGenerationTime()+"");
+
+                            rcaEngineResult.setProperties(properties);
+                        }
+
+                        ticketService.insertRcaTicketCnt(rcaTicket);
+
+                        rcaTicketManagerService.uiSendTicketResult(rcaEngineResult);
                     }
-
-                    if (rcaTicketAlList != null) {
-                        rcaTicket.setTicketAlList(rcaTicketAlList);
-                    }
-
-                    rcaTicketResult = rcaTicketMergeService.rcaTrafficeTicketMerge(rcaTicket);
-
-                    if(rcaTicketResult != null && rcaTicketResult.isResult()){
-
-                        rcaTicket.setParentTicketId(rcaTicketResult.getTicketId());
-                        rcaTicket.setStatus(rcaTicketResult.getValue());
-
-                        rcaEngineResult = new RcaEngineResult();
-                        rcaEngineResult.setTicketId(rcaTicket.getParentTicketId());
-                        rcaEngineResult.setEventType(RcaCodeInfo.UI_TICKET_TYPE_MERGE);
-                        rcaEngineResult.setTicketType("RT");
-
-                        parameterMap = new HashMap<String, String>();
-                        parameterMap.put("ticketId", rcaTicket.getParentTicketId());
-                        parameterMap.put("ticketUpdateTime", rcaTicket.getTicketGenerationTime()+"");
-                        ticketService.updateRcaTicketUpdateTime(parameterMap);
-                    }else{
-                        rcaEngineResult = new RcaEngineResult();
-                        rcaEngineResult.setTicketId(rcaTicket.getTicketId());
-                        rcaEngineResult.setEventType(RcaCodeInfo.UI_TICKET_TYPE_NEW);
-                        rcaEngineResult.setTicketType("RT");
-                    }
-                    rcaTicket.setStatus(RcaCodeInfo.TICKET_STATUS_INIT);
-
-                    LOGGER.info("==========>[RcaTicketManager] createTicket : " + rcaTicket.toString() + "<==============");
-                    ticketService.insertRcaTicket(rcaTicket);
-                    LOGGER.info("==========>[RcaTicketManager] rcaTicketAlList : " + rcaTicketAlList + "<==============");
-                    ticketService.insertRcaTicketAl(rcaTicketAlList);
-
-                    if(StringUtils.isNotEmpty(rcaTicket.getParentTicketId())){
-                         ticketService.updateTicketCnt(rcaTicket);
-
-                        updateCnt = ticketService.selectChildTicketCnt(rcaTicket.getParentTicketId());
-
-                        properties = new HashMap<String, String>();
-                        properties.put("child_count", updateCnt + "");
-                        properties.put("ticket_update_time", rcaTicket.getTicketGenerationTime()+"");
-
-                        rcaEngineResult.setProperties(properties);
-                    }
-
-                    ticketService.insertRcaTicketCnt(rcaTicket);
-
-                    rcaTicketManagerService.uiSendTicketResult(rcaEngineResult);
                 }
             }
         }catch (Exception e) {
