@@ -135,23 +135,23 @@
             direction
         )
         VALUES (
-                   #{ticketId},
-                   #{clusterNo},
-                   #{ticketType},
-                   (SELECT NOW()),
-                   #{faultTime},
-                   #{rootCauseType},
-                   #{rootCauseCode},
-                   #{rootCauseDomain},
-                   #{relatedAlarmCnt},
-                   #{status},
-                   #{ticketRcaResultCode},
-                   #{ticketRcaResultDtlCode},
-                   #{ticketRcaResultDtlCode},
-                   #{parentTicketId},
-                   #{occur},
-                   #{direction}
-               )
+           #{ticketId},
+           #{clusterNo},
+           #{ticketType},
+           (SELECT NOW()),
+           #{faultTime},
+           #{rootCauseType},
+           #{rootCauseCode},
+           #{rootCauseDomain},
+           #{relatedAlarmCnt},
+           #{status},
+           #{ticketRcaResultCode},
+           #{ticketRcaResultDtlCode},
+           #{ticketRcaResultDtlCode},
+           #{parentTicketId},
+           #{occur},
+           #{direction}
+       )
     </insert>
 
     <insert id="insertRcaTicketAl" parameterType="java.util.HashMap">
@@ -178,7 +178,7 @@
             )
             VALUES
             <foreach collection="rcaTicketAlList" item="item" separator=",">
-                (
+            (
                 #{item.ticketId},
                 (SELECT nextval('rca.seq_ticket_al')) ::VARCHAR,
                 #{item.rootCauseAlarmNoA},
@@ -196,7 +196,7 @@
                 #{item.rootCausePtpnameA},
                 #{item.rootCausePtpnameZ},
                 (SELECT TICKET_GENERATION_TIME FROM RCA.TB_RCA_TICKET_CURRENT WHERE TICKET_ID = #{item.ticketId})
-                )
+            )
             </foreach>
         </if>
     </insert>
@@ -370,10 +370,13 @@
     </select>
 
     <insert id="insertSop" parameterType="com.nia.engine.vo.RCATicketHandlingStatus">
-        INSERT INTO nia.tb_sop
-        (sop_id, ticket_id, ticket_type, ticket_result, status, request_time, receive_time, detail, fault_classify, fault_type, fault_detail_content, etc_content, ai_accuracy, FAULT_TYPE_CONTENT, START_TIME, END_TIME)
-        VALUES
+        INSERT INTO NIA.TB_SOP
         (
+            SOP_ID, TICKET_ID, TICKET_TYPE, TICKET_RESULT, STATUS,
+            REQUEST_TIME, RECEIVE_TIME, DETAIL, FAULT_CLASSIFY, FAULT_TYPE,
+            FAULT_DETAIL_CONTENT, ETC_CONTENT, AI_ACCURACY, FAULT_TYPE_CONTENT, START_TIME,
+            END_TIME, HANDLING_ACK_USER, HANDLING_ACK_TIME, HANDLING_FIN_USER, HANDLING_FIN_TIME
+        )VALUES(
             #{sopId},
             #{ticketId},
             #{ticketType},
@@ -389,7 +392,25 @@
             #{aiAccuracy},
             #{faultTypeContent},
             #{startTime},
-            #{endTime}
+            #{endTime},
+            #{handlingAckUser},
+            <choose>
+                <when test="handlingAckUser != null">
+                    now(),
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            #{handlingFinUser},
+            <choose>
+                <when test="handlingFinTime != null">
+                    now()
+                </when>
+                <otherwise>
+                    null
+                </otherwise>
+            </choose>
         )
     </insert>
 
@@ -407,30 +428,52 @@
 
     <update id="updateSop" parameterType="com.nia.engine.vo.RCATicketHandlingStatus">
         UPDATE nia.tb_sop
-        SET receive_time = now(), status = #{status}
+          SET receive_time = now()
+            , status = #{status}
+        <if test="handlingAckUser != null">
+            , HANDLING_ACK_USER = #{handlingAckUser}
+            , HANDLING_ACK_TIME = now()
+        </if>
+
+        <if test="handlingFinUser != null">
+            , HANDLING_FIN_USER = #{handlingFinUser}
+            , HANDLING_FIN_TIME = now()
+        </if>
         WHERE sop_id = #{sopId}
     </update>
 
     <update id="upsertSop" parameterType="com.nia.engine.vo.RCATicketHandlingStatus">
         WITH UPSERT AS (
             UPDATE NIA.TB_SOP
-              SET RECEIVE_TIME = now(),
-                  STATUS = #{status},
-                  FAULT_CLASSIFY = (case when #{faultClassify} is null then FAULT_CLASSIFY else #{faultClassify} end),
-                  FAULT_TYPE = (case when #{faultType} is null then FAULT_TYPE when #{faultType} = '' then FAULT_TYPE else #{faultType} end),
-                  FAULT_DETAIL_CONTENT = (case when #{faultDetailContent} is null then FAULT_DETAIL_CONTENT when #{faultDetailContent} = '' then FAULT_DETAIL_CONTENT else #{faultDetailContent} end),
-                  ETC_CONTENT = (case when #{etcContent} is null then ETC_CONTENT when #{etcContent} = '' then ETC_CONTENT else #{etcContent} end),
-                  AI_ACCURACY = (case when #{aiAccuracy}::varchar = 'NULL' then AI_ACCURACY when #{aiAccuracy}::varchar = '' then AI_ACCURACY else #{aiAccuracy}::varchar end),
-                  FAULT_TYPE_CONTENT = #{faultTypeContent},
-                  START_TIME = #{startTime},
-                  END_TIME = #{endTime}
+              SET RECEIVE_TIME = now()
+                , STATUS = #{status}
+                , FAULT_CLASSIFY = (case when #{faultClassify} is null then FAULT_CLASSIFY else #{faultClassify} end)
+                , FAULT_TYPE = (case when #{faultType} is null then FAULT_TYPE when #{faultType} = '' then FAULT_TYPE else #{faultType} end)
+                , FAULT_DETAIL_CONTENT = (case when #{faultDetailContent} is null then FAULT_DETAIL_CONTENT when #{faultDetailContent} = '' then FAULT_DETAIL_CONTENT else #{faultDetailContent} end)
+                , ETC_CONTENT = (case when #{etcContent} is null then ETC_CONTENT when #{etcContent} = '' then ETC_CONTENT else #{etcContent} end)
+                , AI_ACCURACY = (case when #{aiAccuracy}::varchar = 'NULL' then AI_ACCURACY when #{aiAccuracy}::varchar = '' then AI_ACCURACY else #{aiAccuracy}::varchar end)
+                , FAULT_TYPE_CONTENT = #{faultTypeContent}
+                , START_TIME = #{startTime}
+                , END_TIME = #{endTime}
+            <if test="handlingAckUser != null">
+                , HANDLING_ACK_USER = #{handlingAckUser}
+                , HANDLING_ACK_TIME = now()
+            </if>
+
+            <if test="handlingFinUser != null">
+                , HANDLING_FIN_USER = #{handlingFinUser}
+                , HANDLING_FIN_TIME = now()
+            </if>
              WHERE TICKET_ID = #{ticketId}
             RETURNING TICKET_ID
         )
         INSERT INTO NIA.TB_SOP
-        (SOP_ID, TICKET_ID, TICKET_TYPE, TICKET_RESULT, STATUS,
-        REQUEST_TIME, RECEIVE_TIME, DETAIL, FAULT_CLASSIFY, FAULT_TYPE,
-        FAULT_DETAIL_CONTENT, ETC_CONTENT, AI_ACCURACY, FAULT_TYPE_CONTENT, START_TIME, END_TIME)
+        (
+            SOP_ID, TICKET_ID, TICKET_TYPE, TICKET_RESULT, STATUS,
+            REQUEST_TIME, RECEIVE_TIME, DETAIL, FAULT_CLASSIFY, FAULT_TYPE,
+            FAULT_DETAIL_CONTENT, ETC_CONTENT, AI_ACCURACY, FAULT_TYPE_CONTENT, START_TIME, END_TIME,
+            HANDLING_ACK_USER, HANDLING_ACK_TIME, HANDLING_FIN_USER, HANDLING_FIN_TIME
+        )
         SELECT
             #{sopId},
             #{ticketId},
@@ -447,7 +490,25 @@
             #{aiAccuracy}::varchar,
             #{faultTypeContent},
             #{startTime},
-            #{endTime}
+            #{endTime},
+            #{handlingAckUser},
+            <choose>
+                <when test="handlingAckUser != null">
+                    now(),
+                </when>
+                <otherwise>
+                    null,
+                </otherwise>
+            </choose>
+            #{handlingFinUser},
+            <choose>
+                <when test="handlingFinUser != null">
+                    now()
+                </when>
+                <otherwise>
+                    null
+                </otherwise>
+            </choose>
           WHERE NOT EXISTS (SELECT 1 FROM UPSERT)
     </update>
 

@@ -49,6 +49,8 @@ public class CvnmsResourceIfServiceImpl implements CvnmsResourceIfService {
                 strHashMap.put("key", "ipResourceIfKey");
                 strHashMap.put("value", cvnmsResourceIfVoList.size() +"");
                 niaAlarmMapper.updateLinkageHist(strHashMap);
+
+                niaAlarmMapper.fcResourceIfYd();
             }
         }catch (Exception e){
             LOGGER.error("=====> [CvnmsResourceIfService] getCvnmsResourceIfData error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");

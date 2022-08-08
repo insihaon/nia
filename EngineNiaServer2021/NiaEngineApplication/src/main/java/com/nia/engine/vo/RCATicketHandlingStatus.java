@@ -55,6 +55,17 @@ public class RCATicketHandlingStatus implements Serializable {
 	private String aiAccuracy;
 	@JsonProperty("fault_type_content")
 	private String faultTypeContent;
+	@JsonProperty("handling_ack_user")
+	private String handlingAckUser;
+	@JsonProperty("handling_ack_time")
+	private Timestamp handlingAckTime;
+	@JsonProperty("handling_fin_user")
+	private String handlingFinUser;
+	@JsonProperty("handling_fin_time")
+	private Timestamp handlingFinTime;
+
+
+
 //	@JsonProperty("start_time")
 //	private Timestamp startTime;
 //	@JsonProperty("end_time")

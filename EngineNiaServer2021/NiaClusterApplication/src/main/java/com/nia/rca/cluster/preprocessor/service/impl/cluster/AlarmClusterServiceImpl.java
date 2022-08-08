@@ -122,9 +122,9 @@ public class AlarmClusterServiceImpl implements AlarmClusterService {
 			if(clusterObjectList.size() > 0) {
                 for(ClusterObject clusterObject : clusterObjectList) {
                     if(basicAlarmVo.getTopologyObject() != null){
-                        if(StringUtils.isNotEmpty(basicAlarmVo.getTopologyObject().getTrunkId())){
-                            isTrunkIdFind = clusterObject.findTrunkId(basicAlarmVo.getTopologyObject().getTrunkId());
-                        }
+//                        if(StringUtils.isNotEmpty(basicAlarmVo.getTopologyObject().getTrunkId())){
+//                            isTrunkIdFind = clusterObject.findTrunkId(basicAlarmVo.getTopologyObject().getTrunkId());
+//                        }
 
                         isSysNameFind = clusterObject.findSysName(basicAlarmVo.getSysname());
 

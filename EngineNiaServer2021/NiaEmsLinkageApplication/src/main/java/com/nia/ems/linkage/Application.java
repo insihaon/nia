@@ -30,6 +30,10 @@ public class Application implements CommandLineRunner{
     @Qualifier("RoadmEmsEventMsgService")
     private RoadmEmsEventMsgService roadmEmsEventMsgService;
 
+	@Autowired
+    @Qualifier("RoadmEmsPmMmcCheckService")
+    private RoadmEmsPmMmcCheckService roadmEmsPmMmcCheckService;
+
 
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
@@ -39,6 +43,7 @@ public class Application implements CommandLineRunner{
 	public void run(String... arg0) throws Exception {
 		bootSettingService.init();
 		roadmEmsEventMsgService.eventMsgListener();
+		roadmEmsPmMmcCheckService.pmMmcLinkageCheck();
 
 //		roadmEmsMmcService.roadmPmMMC();
 

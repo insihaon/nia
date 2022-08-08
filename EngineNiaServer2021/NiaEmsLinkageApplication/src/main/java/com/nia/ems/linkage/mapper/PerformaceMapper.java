@@ -10,6 +10,9 @@ import java.util.List;
 public interface PerformaceMapper {
     String selectPerformanceUpdateTime();
     Integer selectPerformanceUpdateCnt(HashMap<String, String> map);
+
+    List<PerformaceVo> selectPerformanceDataList(HashMap<String, String> map);
+
     void insertPerformace(HashMap<String, Object> map);
     void updatePerformanceUpdateTime(String updateTime);
 }

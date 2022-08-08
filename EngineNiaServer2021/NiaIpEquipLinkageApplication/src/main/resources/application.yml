@@ -2,8 +2,8 @@ server:
   port: 30403
 logging:
   level:
-    root: INFO  
-    
+    root: INFO
+
 ---
 spring:
   profiles: dev
@@ -16,17 +16,6 @@ spring:
       property:
         prefix: ENC(
         suffix: )
-
-
-  rabbitmq:
-    address: 192.168.0.87  #개발
-    port: 6786
-    username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
-    password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
-
-    niaIpAlarmExchange: nia.exchangeNiaIpAlarmDirectly
-    niaIpAlarmQueue: nia.NiaIpAlarmIndexDirectly
-    niaIpAlarmRoutingKey: nia.NiaIpAlarmIndexDirectl
 
   task:
     poolSize: 100 
@@ -69,16 +58,6 @@ spring:
         prefix: ENC(
         suffix: )
 
-  rabbitmq:
-    address: 116.89.191.47
-    port: 6786
-    username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
-    password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
-
-    niaIpAlarmExchange: nia.exchangeNiaIpAlarmDirectly
-    niaIpAlarmQueue: nia.NiaIpAlarmIndexDirectly
-    niaIpAlarmRoutingKey: nia.NiaIpAlarmIndexDirectl
-
   task:
     poolSize: 100
     keepAlive: 600000
@@ -89,8 +68,8 @@ spring:
     nia:
       driver-class-name: org.postgresql.Driver
       url: jdbc:postgresql://116.89.191.47:6544/niadb
-      username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
-      password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
+      username: niaadmin
+      password: niaadmin12#$
       maximumPoolSize : 10
       idleTimeout : 6000
     linkage:
@@ -119,16 +98,6 @@ spring:
       property:
         prefix: ENC(
         suffix: )
-
-  rabbitmq:
-    address: 10.81.192.18
-    port: 5672
-    username: rcaadmin
-    password: rcaadmin12#$
-
-    niaIpAlarmExchange: nia.exchangeNiaIpAlarmDirectly
-    niaIpAlarmQueue: nia.NiaIpAlarmIndexDirectly
-    niaIpAlarmRoutingKey: nia.NiaIpAlarmIndexDirectl
 
   task:
     poolSize: 100
@@ -170,16 +139,6 @@ spring:
       property:
         prefix: ENC(
         suffix: )
-
-  rabbitmq:
-    address: codej.iptime.org  #개발
-    port: 9997
-    username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
-    password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
-
-    niaIpAlarmExchange: nia.exchangeNiaIpAlarmDirectly
-    niaIpAlarmQueue: nia.NiaIpAlarmIndexDirectly
-    niaIpAlarmRoutingKey: nia.NiaIpAlarmIndexDirectl
 
   task:
     poolSize: 100

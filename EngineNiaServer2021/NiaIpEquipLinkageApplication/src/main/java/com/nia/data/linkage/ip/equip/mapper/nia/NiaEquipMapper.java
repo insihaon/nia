@@ -8,6 +8,8 @@ import java.util.HashMap;
 public interface NiaEquipMapper {
     void insertCvnmsResourceIf(HashMap<String, Object> objectHashMap);
     void insertCvnmsResource(HashMap<String, Object> objectHashMap);
+    void fcResourceIfYd();
+    void fcResourceNodeYd();
     void deleteCvnmsResourceIf();
     void deleteCvnmsResource();
     void updateLinkageHist(HashMap<String, String> strHashMap);

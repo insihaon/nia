@@ -11,6 +11,17 @@
         SELECT COUNT(*) FROM NIA.TB_PERFORMACE_MST WHERE OCRTIME = #{ocrtime}::TIMESTAMP
     </select>
 
+    <select id="selectPerformanceDataList" parameterType="hashmap" resultType="com.nia.ems.linkage.vo.performance.PerformaceVo">
+        SELECT SYSNAME AS sysname , PORT AS port, UNIT AS unit, TMPER AS tmper, RXCUR AS rxcur
+        , RXMIN AS rxmin, RXMAX AS rxmax, RXAVE AS rxave, TXCUR AS txcur, TXMIN AS txmin, TXMAX AS txmax, TXAVE AS txave, TO_CHAR(OCRTIME,'YYYY-MM-DD HH24:MI:SS') AS ocrtime
+        FROM NIA.TB_PERFORMACE_MST
+        <![CDATA[   WHERE OCRTIME = #{ocrtime} ::TIMESTAMP ]]>
+        <!--   and ((sysname = '192.168.200.220-SH1' and port like '%S.1%')
+           or (sysname = '192.168.200.214-SH1' and port like '%S.2%')
+           or (sysname = '10.38.96.110-SH1' and port like '%S.1%')
+           or (sysname = '10.85.112.199-SH1' and port like '%S.1%')
+           or (sysname = '10.85.80.183-SH1' and port like '%S.1%')) -->
+    </select>
 
     <insert id="insertPerformace" parameterType="java.util.HashMap">
         <if test="performaceVoList.size != 0">

@@ -66,6 +66,14 @@
         </if>
     </insert>
 
+    <select id="fcResourceIfYd" resultType="boolean">
+        SELECT RESOURCE.FC_CREATE_RESOURCE_IF_YD()
+    </select>
+
+    <select id="fcResourceNodeYd" resultType="boolean">
+        SELECT RESOURCE.FC_CREATE_RESOURCE_NODE_YD()
+    </select>
+
     <delete id="deleteCvnmsResource">
         TRUNCATE TABLE IP_YD.XE_CVNMS_RESOURCE
     </delete>
@@ -75,7 +83,10 @@
     </delete>
 
     <update id="updateLinkageHist" parameterType="java.util.HashMap">
-        UPDATE NIA.TB_LINKAGE_SEQ SET VALUE_NAME = #{value}, YD_DATE = now() WHERE KEY_NAME = #{key}
+        UPDATE NIA.TB_LINKAGE_SEQ
+           SET VALUE_NAME = #{value}
+             , YD_DATE = now() 
+         WHERE KEY_NAME = #{key}
     </update>
 </mapper>
 
