@@ -18,7 +18,7 @@ import java.util.Queue;
 
 @Component
 @Scope(value = "prototype")
-public class StreamConnectorMmc implements NiaEmsLinkageThread {
+public class StreamConnectorMmc implements NiaEmsLinkageThread{
     private static final Logger LOGGER = LoggerFactory.getLogger(StreamConnectorMmc.class);
 
     @Autowired

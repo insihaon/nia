@@ -1,9 +1,11 @@
 package com.nia.ems.linkage.service.impl;
 
+import com.nia.ems.linkage.client.TelnetMmc;
 import com.nia.ems.linkage.service.PerformanceService;
 import com.nia.ems.linkage.service.RoadmEmsMmcService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 

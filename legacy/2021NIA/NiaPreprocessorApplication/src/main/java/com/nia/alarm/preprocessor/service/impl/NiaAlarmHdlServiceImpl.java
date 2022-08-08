@@ -65,9 +65,9 @@ public class NiaAlarmHdlServiceImpl implements NiaAlarmHdlService {
             if(NiaCodeInfo.ALARM_LEVEL_CLEAR.equals(basicAlarmVo.getAlarmlevel())){
                 alarmService.clearAlarmSendMessage(basicAlarmVo);
             }else{
-                if(StringUtils.isEmpty(alarmno)){
-                    pasingService.alarmPasing(basicAlarmVo);
-                }
+//                if(StringUtils.isEmpty(alarmno)){
+                pasingService.alarmPasing(basicAlarmVo);
+//                }
             }
 
             StringBuffer strLog = new StringBuffer();

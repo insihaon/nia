@@ -83,7 +83,7 @@ public class IpPasingServiceImpl implements CommPasingService {
             strLog.append("---------------------------------------------------------------");
             LOGGER.info(strLog.toString());
 		}catch( Exception e ) {
-			LOGGER.error(">>>>>>>>>>[RoadmPasingService] alarmPasing("+this.basicAlarmVo.getAlarmno()+") error : " + ExceptionUtils.getStackTrace(e) + " <<<<<<<<<<<<<<<<<");
+			LOGGER.error(">>>>>>>>>>[IpPasingService] alarmPasing("+this.basicAlarmVo.getAlarmno()+") error : " + ExceptionUtils.getStackTrace(e) + " <<<<<<<<<<<<<<<<<");
 			return this.basicAlarmVo;
 		}
 		return this.basicAlarmVo;
@@ -159,7 +159,7 @@ public class IpPasingServiceImpl implements CommPasingService {
                 this.basicAlarmVo = basicAlarmVo;
             }
         }catch (Exception e) {
-            LOGGER.error(">>>>>>>>>>>> RoadmPasingService setTopology("+basicAlarmVo.getAlarmno()+") error : "+ ExceptionUtils.getStackTrace(e)+" <<<<<<<<<<<<<<<<");
+            LOGGER.error(">>>>>>>>>>>> IpPasingService setTopology("+basicAlarmVo.getAlarmno()+") error : "+ ExceptionUtils.getStackTrace(e)+" <<<<<<<<<<<<<<<<");
         }
     }
 }

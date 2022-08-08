@@ -50,6 +50,8 @@ public class CvnmsResourceServiceImpl implements CvnmsResourceService {
                 strHashMap.put("key", "ipResourceKey");
                 strHashMap.put("value", cvnmsResourceVoList.size() +"");
                 niaAlarmMapper.updateLinkageHist(strHashMap);
+
+                niaAlarmMapper.fcResourceNodeYd();
             }
         }catch (Exception e){
             LOGGER.error("=====> [CvnmsResourceService] getCvnmsResourceData error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");

@@ -65,7 +65,7 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
                                 break;
                             }
                         }
-                        Thread.sleep(1000);
+                        Thread.sleep(1500);
                     }
                     if(roadmEmsTL1Client.isConnected()){
                         try {
@@ -129,7 +129,7 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
                             isUpdateOk = false;
                             break;
                         }
-                        Thread.sleep(500);
+                        Thread.sleep(1500);
                     }
 
                     yyyyMMddHH = (UtlDateHelper.getCurrentDateTime()+"").substring(0,14);
@@ -261,7 +261,7 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
                             roadmEmsTL1Client.sendCommand(mmc, false);
 
                         }
-                        Thread.sleep(1000);
+                        Thread.sleep(1500);
                     }
                     if(roadmEmsTL1Client.isConnected()){
                         roadmEmsTL1Client.logout();
@@ -310,7 +310,7 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
                             roadmEmsTL1Client.sendCommand(mmc, false);
 
                         }
-                        Thread.sleep(1000);
+                        Thread.sleep(1500);
                     }
                     if(roadmEmsTL1Client.isConnected()){
                         roadmEmsTL1Client.logout();
@@ -363,7 +363,7 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
                                 roadmEmsTL1Client.sendCommand(mmc, false);
                             }
                         }
-                        Thread.sleep(1000);
+                        Thread.sleep(1500);
                     }
                     if(roadmEmsTL1Client.isConnected()){
                         roadmEmsTL1Client.logout();

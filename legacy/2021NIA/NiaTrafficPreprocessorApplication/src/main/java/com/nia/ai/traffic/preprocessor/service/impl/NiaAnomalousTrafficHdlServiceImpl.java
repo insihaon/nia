@@ -55,6 +55,8 @@ public class NiaAnomalousTrafficHdlServiceImpl implements NiaAnomalousTrafficHdl
                             hashMap = new HashMap<>();
                             hashMap.put("strifid", anomalousTrafficVo.getStrifid());
                             hashMap.put("inttimestamp", String.valueOf(anomalousTrafficVo.getInttimestamp()));
+                            hashMap.put("fltbpsinAnomaly", String.valueOf(anomalousTrafficVo.isFltbpsin_anomaly()));
+                            hashMap.put("fltbpsoutAnomaly", String.valueOf(anomalousTrafficVo.isFltbpsout_anomaly()));
                             trafficMapper.insertAnomalousTraffic(hashMap);
 
                             anomalousTrafficVoList.add(anomalousTrafficVo);
