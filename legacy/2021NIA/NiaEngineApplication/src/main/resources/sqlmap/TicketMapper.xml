@@ -645,8 +645,25 @@
            AND A.PARENT_TICKET_ID IS NULL
            AND A.TICKET_TYPE = #{ticketType}
            AND A.STATUS NOT LIKE '%FIN%'
-           AND B.ROOT_CAUSE_SYSNAMEA  = #{sysname}
-           AND B.ROOT_CAUSE_PORTA = #{port}
+           AND B.ROOT_CAUSE_SYSNAMEA  = #{sysnamea}
+            <choose>
+                <when test="porta != null">
+                    AND B.ROOT_CAUSE_PORTA = #{porta}
+                </when>
+                <otherwise>
+                    AND B.ROOT_CAUSE_PORTA IS NULL
+                </otherwise>
+            </choose>
+            AND B.ROOT_CAUSE_SYSNAMEZ = #{sysnamez}
+            <choose>
+                <when test="portz != null">
+                    AND B.ROOT_CAUSE_PORTZ = #{portz}
+                </when>
+                <otherwise>
+                    AND B.ROOT_CAUSE_PORTZ IS NULL
+                </otherwise>
+            </choose>
+
          ORDER BY TICKET_GENERATION_TIME
          LIMIT 1
     </select>
