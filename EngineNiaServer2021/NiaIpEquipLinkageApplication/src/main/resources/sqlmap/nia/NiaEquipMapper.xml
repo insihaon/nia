@@ -74,6 +74,10 @@
         SELECT RESOURCE.FC_CREATE_RESOURCE_NODE_YD()
     </select>
 
+    <select id="fcCreateUserOrganYd" resultType="boolean">
+        SELECT RESOURCE.FC_CREATE_USER_ORGAN_YD()
+    </select>
+
     <delete id="deleteCvnmsResource">
         TRUNCATE TABLE IP_YD.XE_CVNMS_RESOURCE
     </delete>

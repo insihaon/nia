@@ -10,6 +10,7 @@ public interface NiaEquipMapper {
     void insertCvnmsResource(HashMap<String, Object> objectHashMap);
     void fcResourceIfYd();
     void fcResourceNodeYd();
+    void fcCreateUserOrganYd();
     void deleteCvnmsResourceIf();
     void deleteCvnmsResource();
     void updateLinkageHist(HashMap<String, String> strHashMap);
