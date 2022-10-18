@@ -51,6 +51,7 @@ public class CvnmsResourceIfServiceImpl implements CvnmsResourceIfService {
                 niaAlarmMapper.updateLinkageHist(strHashMap);
 
                 niaAlarmMapper.fcResourceIfYd();
+                niaAlarmMapper.fcCreateUserOrganYd();
             }
         }catch (Exception e){
             LOGGER.error("=====> [CvnmsResourceIfService] getCvnmsResourceIfData error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");

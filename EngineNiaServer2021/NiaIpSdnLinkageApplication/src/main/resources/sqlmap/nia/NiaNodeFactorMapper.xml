@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nia.ip.sdn.linkage.mapper.nia.NiaNodeFactorMapper">
+
+    <insert id="insertNodeFactor" parameterType="java.util.HashMap">
+        <if test="nodeFactorVoList.size != 0">
+            INSERT INTO IP_SDN.TB_NODEFACTOR
+            (
+                ID, CPU_USAGE, MEM_USAGE, NODE_ID, MEASURED_DATETIME
+            )
+            VALUES
+            <foreach collection="nodeFactorVoList" item="item" separator=",">
+            (
+                #{item.id}, #{item.cpuUsage}, #{item.memUsage}, #{item.nodeId}, #{item.measuredDateTime}
+            )
+            </foreach>
+        </if>
+    </insert>
+</mapper>
+
+

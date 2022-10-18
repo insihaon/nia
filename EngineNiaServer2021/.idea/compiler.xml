@@ -7,51 +7,36 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="com.nia.ai.per.ap" />
-        <module name="com.nia.ai.performance.result" />
-        <module name="com.nia.ai.performance.send" />
-        <module name="com.nia.ai.traffic.preprocessor" />
-        <module name="com.nia.alarm.ip.preprocessor" />
-        <module name="com.nia.alarm.ip.simulator" />
         <module name="com.nia.alarm.preprocessor" />
-        <module name="com.nia.alarm.simulator" />
-        <module name="com.nia.data.linkage" />
-        <module name="com.nia.data.linkage.ai" />
-        <module name="com.nia.data.linkage.ip.alarm" />
-        <module name="com.nia.data.linkage.ip.equip" />
+        <module name="NiaIpSdnSflowLinkageApplication" />
+        <module name="NiaPingPreprocessorApplication" />
         <module name="com.nia.data.linkage.ip.perf" />
-        <module name="com.nia.data.linkage.ip.sflow" />
+        <module name="com.nia.data.linkage" />
+        <module name="com.nia.data.linkage.ip.equip" />
+        <module name="com.nia.data.linkage.ai" />
         <module name="com.nia.ems.linkage" />
         <module name="com.nia.engine" />
+        <module name="com.nia.ai.performance.send" />
+        <module name="com.nia.data.linkage.ip.alarm" />
+        <module name="com.nia.alarm.ip.preprocessor" />
+        <module name="com.nia.alarm.ip.simulator" />
+        <module name="com.nia.ai.traffic.preprocessor" />
+        <module name="com.nia.ai.per.ap" />
+        <module name="NiaIpSdnLinkageApplication" />
         <module name="com.nia.rca.cluster.preprocessor" />
         <module name="com.nia.rca.test.simulator" />
-        <module name="NiaPingPreprocessorApplication" />
+        <module name="com.nia.ai.performance.result" />
+        <module name="com.nia.alarm.simulator" />
+        <module name="com.nia.data.linkage.ip.sflow" />
+        <module name="NiaIpSdnSyslogLinkageApplication" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="com.nia.ai.per.ap" target="1.8" />
-      <module name="com.nia.ai.performance.result" target="1.8" />
-      <module name="com.nia.ai.performance.send" target="1.8" />
-      <module name="com.nia.ai.traffic.preprocessor" target="1.8" />
-      <module name="com.nia.alarm.ip.preprocessor" target="1.8" />
-      <module name="com.nia.alarm.ip.simulator" target="1.8" />
-      <module name="com.nia.alarm.preprocessor" target="1.8" />
-      <module name="com.nia.alarm.simulator" target="1.8" />
-      <module name="com.nia.data.linkage" target="1.8" />
-      <module name="com.nia.data.linkage.ai" target="1.8" />
-      <module name="com.nia.data.linkage.ip.alarm" target="1.8" />
-      <module name="com.nia.data.linkage.ip.equip" target="1.8" />
-      <module name="com.nia.data.linkage.ip.perf" target="1.8" />
-      <module name="com.nia.data.linkage.ip.sflow" target="1.8" />
-      <module name="com.nia.ems.linkage" target="1.8" />
-      <module name="com.nia.engine" target="1.8" />
-      <module name="com.nia.rca.cluster.preprocessor" target="1.8" />
-      <module name="com.nia.rca.test.simulator" target="1.8" />
-      <module name="NiaPingPreprocessorApplication" target="1.8" />
-    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="NiaIpSdnLinkageApplication" options="-parameters" />
+      <module name="NiaIpSdnSflowLinkageApplication" options="-parameters" />
+      <module name="NiaIpSdnSyslogLinkageApplication" options="-parameters" />
       <module name="NiaPingPreprocessorApplication" options="-parameters" />
       <module name="com.nia.ai.per.ap" options="-parameters" />
       <module name="com.nia.ai.performance.result" options="-parameters" />
