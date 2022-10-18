@@ -229,8 +229,10 @@ public class RcaTicketMergeServiceImpl implements RcaTicketMergeService {
 
         try{
             parameterMap = new HashMap<String, String>();
-            parameterMap.put("sysname", rcaTicket.getTicketAlList().get(0).getRootCauseSysnameA());
-            parameterMap.put("port", rcaTicket.getTicketAlList().get(0).getRootCausePortA());
+            parameterMap.put("sysnamea", rcaTicket.getTicketAlList().get(0).getRootCauseSysnameA());
+            parameterMap.put("porta", rcaTicket.getTicketAlList().get(0).getRootCausePortA());
+            parameterMap.put("sysnamez", rcaTicket.getTicketAlList().get(0).getRootCauseSysnameZ());
+            parameterMap.put("portz", rcaTicket.getTicketAlList().get(0).getRootCausePortZ());
             parameterMap.put("ticketType", rcaTicket.getTicketType());
 
             parentTicket = ticketMapper.selectTrafficeMageParentTicket(parameterMap);

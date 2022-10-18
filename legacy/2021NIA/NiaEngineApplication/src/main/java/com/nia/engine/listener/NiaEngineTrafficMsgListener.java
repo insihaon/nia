@@ -28,7 +28,7 @@ public class NiaEngineTrafficMsgListener implements ChannelAwareMessageListener 
 
 	@Override
 	public void onMessage(Message message, Channel channel) {
-		LOGGER.info("==========>[UITicketMsgListener] onMessage : "+new String(message.getBody())+"<==============");
+		LOGGER.info("==========>[NiaEngineTrafficMsgListener] onMessage : "+new String(message.getBody())+"<==============");
 
 		try {
 			Object obj;
@@ -49,7 +49,7 @@ public class NiaEngineTrafficMsgListener implements ChannelAwareMessageListener 
 //
 //			Thread.sleep(10 * 1000);
 		} catch (Exception e) {
-			LOGGER.error("==========>[EngineClearAlarmMsgListener] onMessage error "+e.getMessage()+" <==============");
+			LOGGER.error("==========>[NiaEngineTrafficMsgListener] onMessage error "+e.getMessage()+" <==============");
 		}
 	}
 }

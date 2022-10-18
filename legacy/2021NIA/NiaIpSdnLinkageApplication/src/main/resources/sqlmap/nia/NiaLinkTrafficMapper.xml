@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nia.ip.sdn.linkage.mapper.nia.NiaLinkTrafficMapper">
+
+    <insert id="insertLinkTraffic" parameterType="java.util.HashMap">
+        <if test="linkTrafficVoList.size != 0">
+            INSERT INTO IP_SDN.TB_LINK_TRAFFIC
+            (
+                ID, IF_ID, TX_BIT_RATE, RX_BIT_RATE, TX_PKT_RATE, RX_PKT_RATE, MEASURED_DATETIME
+            )
+            VALUES
+            <foreach collection="linkTrafficVoList" item="item" separator=",">
+            (
+                #{item.id}, #{item.ifId}, #{item.txBitRate}, #{item.rxBitRate}, #{item.txPktRate}, #{item.rxPktRate}, #{item.measuredDateTime}
+            )
+            </foreach>
+        </if>
+    </insert>
+</mapper>
+
+
