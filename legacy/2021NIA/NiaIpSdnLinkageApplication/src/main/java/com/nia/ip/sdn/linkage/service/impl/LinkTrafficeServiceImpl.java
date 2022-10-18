@@ -39,8 +39,7 @@ public class LinkTrafficeServiceImpl implements LinkTrafficeService {
         String key;
 
         try {
-//            Thread.sleep(120*1000);
-            key = niaLinkageHistMapper.selectLinkageKey("ipSdnTrafficeFactorKey");
+            key = niaLinkageHistMapper.selectLinkageKey("ipSdnTrafficeKey");
 
             LOGGER.info("==========>[LinkTrafficeService] getLinkTrafficeData key : "+key+" <==============");
 
@@ -59,7 +58,7 @@ public class LinkTrafficeServiceImpl implements LinkTrafficeService {
                             niaLinkTrafficMapper.insertLinkTraffic(objectHashMap);
 
                             strHashMap = new HashMap<>();
-                            strHashMap.put("key", "ipSdnTrafficeFactorKey");
+                            strHashMap.put("key", "ipSdnTrafficeKey");
                             strHashMap.put("value", linkTrafficVoList.get(linkTrafficVoList.size()-1).getId()+"");
                             niaLinkageHistMapper.updateLinkageHist(strHashMap);
                         }

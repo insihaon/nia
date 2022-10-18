@@ -1,13 +1,9 @@
 package com.nia.ip.sdn.linkage.service.impl;
 
-import com.nia.ip.sdn.linkage.mapper.linkage.LinkageLinkMapper;
 import com.nia.ip.sdn.linkage.mapper.linkage.LinkageNodeMapper;
-import com.nia.ip.sdn.linkage.mapper.nia.NiaLinkMapper;
 import com.nia.ip.sdn.linkage.mapper.nia.NiaLinkageHistMapper;
 import com.nia.ip.sdn.linkage.mapper.nia.NiaNodeMapper;
-import com.nia.ip.sdn.linkage.service.LinkService;
 import com.nia.ip.sdn.linkage.service.NodeService;
-import com.nia.ip.sdn.linkage.vo.LinkVo;
 import com.nia.ip.sdn.linkage.vo.NodeVo;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;

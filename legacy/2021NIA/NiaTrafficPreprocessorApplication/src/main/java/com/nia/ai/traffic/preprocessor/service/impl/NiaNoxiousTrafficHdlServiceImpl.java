@@ -60,6 +60,8 @@ public class NiaNoxiousTrafficHdlServiceImpl implements NiaNoxiousTrafficHdlServ
                             hashMap.put("dateregdate", String.valueOf(noxiousTrfficVo.getDateregdate()));
                             trafficMapper.insertNoxiousTraffic(hashMap);
 
+                            trafficMapper.insertAiNoxious(noxiousTrfficVo);
+
                             noxiousTrfficVoList.add(noxiousTrfficVo);
                             LOGGER.info("==========>[NiaNoxiousTrafficHdlService] niaNoxiousTrafficeHdlProcessor add : "+noxiousTrfficVo.toString()+"<==============");
 
