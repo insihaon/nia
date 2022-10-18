@@ -18,4 +18,5 @@ public interface IpDataMapper {
     ArrayList<IpBackboneLinkVo> selectBackboneLink();
     ArrayList<IpCvnmsResourceVo> selectCvnmsResourceList();
     ArrayList<IpCvnmsResourceIfVo> selectCvnmsResourceIfList();
+
 }

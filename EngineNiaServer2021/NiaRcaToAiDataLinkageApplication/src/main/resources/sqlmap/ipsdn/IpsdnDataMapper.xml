@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nia.data.linkage.ai.mapper.ipsdn.IpsdnDataMapper">
+
+
+    <select id="selectNodeLink" resultType="com.nia.data.linkage.ai.vo.ipsdn.resource.NodeVo">
+        SELECT ID, NODE_NAME, LOOP_BACK_ADDR, MGMT_ADDR
+          FROM IP_SDN.TB_NODE
+    </select>
+
+    <select id="selectInterfaceLink" resultType="com.nia.data.linkage.ai.vo.ipsdn.resource.InterfaceVo">
+        SELECT ID, IF_NAME, NODE_ID, IP_ADDR, HW_IF_ID
+        FROM IP_SDN.TB_INTERFACE
+    </select>
+
+    <select id="selectLink" resultType="com.nia.data.linkage.ai.vo.ipsdn.resource.LinkVo">
+        SELECT ID, SIF_ID, RIF_ID, OSPF_METRIC, USAGED
+        FROM IP_SDN.TB_LINK
+    </select>
+
+
+<!--    트래픽       -->
+    <select id="selectTrafficList" resultType="com.nia.data.linkage.ai.vo.ipsdn.traffic.LinkTrafficVo">
+        SELECT ID AS id, IF_ID AS ifId, TX_BIT_RATE AS txBitRate , RX_BIT_RATE AS rxBitRate, TX_PKT_RATE AS txPktRate , RX_PKT_RATE AS rxPktRate, MEASURED_DATETIME AS measuredDatetime
+        FROM IP_SDN.TB_LINK_TRAFFIC
+        WHERE ID > #{id}
+        ORDER BY MEASURED_DATETIME
+    </select>
+
+    <!--    팩터팩터팩터       -->
+    <select id="selectNodeFactorLink" resultType="com.nia.data.linkage.ai.vo.ipsdn.factor.NodeFactorVo" parameterType="int" >
+        SELECT ID AS id, CPU_USAGE AS cpuUsage , MEM_USAGE AS memUsage, NODE_ID AS nodeId, MEASURED_DATETIME AS measuredDatetime
+        FROM IP_SDN.TB_NODEFACTOR
+        WHERE ID > #{id}
+        ORDER BY MEASURED_DATETIME
+    </select>
+
+
+
+
+
+</mapper>
+
+
