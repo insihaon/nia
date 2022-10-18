@@ -59,6 +59,8 @@ public class NiaAnomalousTrafficHdlServiceImpl implements NiaAnomalousTrafficHdl
                             hashMap.put("fltbpsoutAnomaly", String.valueOf(anomalousTrafficVo.isFltbpsout_anomaly()));
                             trafficMapper.insertAnomalousTraffic(hashMap);
 
+                            trafficMapper.insertAiAnomalous(anomalousTrafficVo);
+
                             anomalousTrafficVoList.add(anomalousTrafficVo);
                             LOGGER.info("==========>[NiaAnomalousTrafficHdlService] niaAnomalousTrafficeHdlProcessor add : "+anomalousTrafficVo.toString()+"<==============");
                         }

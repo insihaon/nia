@@ -1,14 +1,10 @@
 package com.nia.ip.sdn.linkage.service.impl;
 
 import com.nia.ip.sdn.linkage.mapper.linkage.LinkageNodeFactorMapper;
-import com.nia.ip.sdn.linkage.mapper.linkage.LinkageNodeMapper;
 import com.nia.ip.sdn.linkage.mapper.nia.NiaLinkageHistMapper;
 import com.nia.ip.sdn.linkage.mapper.nia.NiaNodeFactorMapper;
-import com.nia.ip.sdn.linkage.mapper.nia.NiaNodeMapper;
 import com.nia.ip.sdn.linkage.service.NodeFactorService;
-import com.nia.ip.sdn.linkage.service.NodeService;
 import com.nia.ip.sdn.linkage.vo.NodeFactorVo;
-import com.nia.ip.sdn.linkage.vo.NodeVo;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -43,7 +39,6 @@ public class NodeFactorServiceImpl implements NodeFactorService {
         String key;
 
         try {
-//            Thread.sleep(120*1000);
             key = niaLinkageHistMapper.selectLinkageKey("ipSdnNodeFactorKey");
 
             LOGGER.info("==========>[NodeFactorService] getNodeFactorData key : "+key+" <==============");

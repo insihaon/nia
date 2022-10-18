@@ -1,5 +1,5 @@
 server:
-  port: 30404
+  port: 30407
 logging:
   level:
     root: INFO

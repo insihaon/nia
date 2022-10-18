@@ -38,6 +38,38 @@
            AND SL.STRD_IP = #{strdIp}
            AND SL.STRD_PORT = #{strdPort}
     </insert>
+
+    <insert id="insertAiAnomalous" parameterType="com.nia.ai.traffic.preprocessor.vo.anomalous.AnomalousTrafficVo">
+        INSERT INTO RCA.TB_AI_ANOMALOUS
+        (
+            STRIFID, INTTIMESTAMP, FLTBPSIN, FLTBPSIN_PREDICT, FLTBPSIN_THRESHOLD_UPPER,
+            FLTBPSIN_THRESHOLD_LOWER, FLTBPSIN_ANOMALY, FLTBPSOUT, FLTBPSOUT_PREDICT, FLTBPSOUT_THRESHOLD_UPPER,
+            FLTBPSOUT_THRESHOLD_LOWER, FLTBPSOUT_ANOMALY
+        )
+        VALUES
+        (
+            #{strifid}, #{inttimestamp} ::integer, #{fltbpsin}, #{fltbpsin_predict}, #{fltbpsin_threshold_upper},
+            #{fltbpsin_threshold_lower}, #{fltbpsin_anomaly}, #{fltbpsout}, #{fltbpsout_predict}, #{fltbpsout_threshold_upper},
+            #{fltbpsout_threshold_lower}, #{fltbpsout_anomaly}
+        )
+    </insert>
+
+    <insert id="insertAiNoxious" parameterType="com.nia.ai.traffic.preprocessor.vo.noxious.NoxiousTrfficVo">
+        INSERT INTO RCA.TB_AI_NOXIOUS
+        (
+            STRRESIP, STRRESNAME, STRS_IP, STRS_PORT, STRD_IP,
+            STRD_PORT, STRS_MAC, STRD_MAC, STRPROTOCOL, STRIPV4TOS,
+            STRCHANNEL, STRSENDERIP, STRIN_INTERFACE, STROUT_INTERFACE, STRBYTES_COL,
+            STRCOUNTS, DATEREGDATE, ANOMALY
+        )
+        VALUES
+        (
+            #{strresip}, #{strresname}, #{strs_ip}, #{strs_port}, #{strd_ip},
+            #{strd_port}, #{strs_mac}, #{strd_mac}, #{strprotocol}, #{stripv4tos},
+            #{strchannel}, #{strsenderip}, #{strin_interface}, #{strout_interface}, #{strbytes_col},
+            #{strcounts}, #{dateregdate} ::timestamp, #{anomaly}
+        )
+    </insert>
 </mapper>
 
 
