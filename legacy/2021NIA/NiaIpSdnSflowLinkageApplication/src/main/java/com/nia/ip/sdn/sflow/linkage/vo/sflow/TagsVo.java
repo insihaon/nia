@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import java.io.Serializable;
 
 @Component()
-@ToString
+@Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Scope(value = "prototype")
 public class TagsVo implements Serializable {

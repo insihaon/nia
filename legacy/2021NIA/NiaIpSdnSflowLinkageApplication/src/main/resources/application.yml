@@ -1,3 +1,5 @@
+#server:
+#  port: 30408
 
 logging:
   level:
@@ -6,28 +8,34 @@ logging:
 spring:
   profiles: dev
 
+  jasypt:
+    encryptor:
+      bean: jasyptStringEncryptor
+      property:
+        prefix: ENC(
+        suffix: )
+
   kafka:
     consumer:
-      bootstrap-servers: incodej-lab.iptime.org:9343
+      bootstrap-servers: incodej-lab.iptime.org:9392
       group-id: sflowData
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
 #      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
     producer:
-      bootstrap-servers: incodej-lab.iptime.org:9343
+      bootstrap-servers: incodej-lab.iptime.org:9392
       key-serializer: org.apache.kafka.common.serialization.StringDeserializer
       value-serializer: org.apache.kafka.common.serialization.StringDeserializer
 #      value-serializer: org.springframework.kafka.support.serializer.JsonDeserializer
 
   datasource:
     driver-class-name: org.postgresql.Driver
-    data-source-class-name: org.postgresql.ds.PGSimpleDataSource
-    url: jdbc:postgresql://210.114.91.190:5433/codejdb #개발
-    username: codej
-    password: codej12!@
-    maximumPoolSize: 10
-    idleTimeout: 6000
+    url: jdbc:postgresql://incodej-lab.iptime.org:65433/niadb
+    username: niaadmin
+    password: niaadmin12
+    maximumPoolSize : 10
+    idleTimeout : 6000
 
   mybatis:
     mapper-locations: classpath*:sqlmap/*.xml
