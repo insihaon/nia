@@ -10,8 +10,6 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class JasyptConfig {
-    private final static Logger LOGGER = LoggerFactory.getLogger(JasyptConfig.class);
-
     @Bean("jasyptStringEncryptor")
     public StringEncryptor stringEncryptor() {
         String salt = System.getProperty("jasypt.encryptor.password");

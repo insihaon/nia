@@ -1,12 +1,39 @@
 package com.nia.ip.sdn.sflow.linkage.service;
 
+import com.nia.ip.sdn.sflow.linkage.common.LoggerPrint;
+import com.nia.ip.sdn.sflow.linkage.mapper.SflowMapper;
+import com.nia.ip.sdn.sflow.linkage.vo.sflow.SflowCollectVo;
 import com.nia.ip.sdn.sflow.linkage.vo.sflow.SflowDataVo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service("IpSdnSflowService")
 public class IpSdnSflowService {
 
+    @Autowired
+    private SflowMapper sflowMapper;
+
+    @Autowired
+    private SflowCollectVo sflowCollectVo;
+
+    @Autowired
+    private org.springframework.beans.factory.ObjectFactory<SflowCollectVo> sflowCollectVoObjectFactory;
+
     public void sflowDataHdlProcessor(SflowDataVo sflowDataVo){
 
+        int collectSeq;
+
+        try {
+            collectSeq = sflowMapper.selectSflowSeq();
+
+            sflowDataVo.setCollectSeq(collectSeq);
+
+            sflowCollectVo = sflowCollectVoObjectFactory.getObject();
+            sflowCollectVo.setSflowCollectVo(sflowDataVo);
+
+            sflowMapper.insertSflowData(sflowDataVo);
+        }catch (Exception e){
+            LoggerPrint.errorLog(e);
+        }
     }
 }
