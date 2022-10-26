@@ -3,11 +3,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.nia.ip.sdn.sflow.linkage.mapper.SflowMapper">
 
-    <select id="selectSflowSeq" resultType="string">
+    <select id="selectSflowSeq" resultType="int">
         SELECT nextval('gather.seq_sflow_collect') AS COLLECT_SEQ
     </select>
 
-    <insert id="insertSflowData" parameterType="com.nia.ip.sdn.sflow.linkage.vo.sflow.SflowDataVo">
+    <insert id="insertSflowData" parameterType="com.nia.ip.sdn.sflow.linkage.vo.sflow.SflowCollectVo">
         INSERT INTO GATHER.TB_SFLOW_COLLECT
         (
             COLLECT_SEQ, COLLECT_HOST, AGENT_ADDRESS, ETHER_TYPE, HEADER_PROTOCOL,
