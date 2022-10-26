@@ -8,27 +8,35 @@ logging:
 spring:
   profiles: dev
 
+
+  jasypt:
+    encryptor:
+      bean: jasyptStringEncryptor
+      property:
+        prefix: ENC(
+        suffix: )
+
+
   kafka:
     consumer:
-      bootstrap-servers: incodej-lab.iptime.org:9514
+      bootstrap-servers: 192.168.10.6:9392
       group-id: syslogData
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
 #      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
     producer:
-      bootstrap-servers: incodej-lab.iptime.org:9514
+      bootstrap-servers: 192.168.10.6:9392
       key-serializer: org.apache.kafka.common.serialization.StringDeserializer
       value-serializer: org.apache.kafka.common.serialization.StringDeserializer
 #      value-serializer: org.springframework.kafka.support.serializer.JsonDeserializer
 
   datasource:
     driver-class-name: org.postgresql.Driver
-    data-source-class-name: org.postgresql.ds.PGSimpleDataSource
-#    url: jdbc:postgresql://183.107.19.138:8000/niadb #집
-    url: jdbc:postgresql://210.114.91.190:5433/codejdb #개발
-    username: codej
-    password: codej12!@
+#    data-source-class-name: org.postgresql.ds.PGSimpleDataSource
+    url: jdbc:postgresql://192.168.10.6:5433/niadb #개발
+    username: niaadmin
+    password: niaadmin12
     maximumPoolSize: 10
     idleTimeout: 6000
 

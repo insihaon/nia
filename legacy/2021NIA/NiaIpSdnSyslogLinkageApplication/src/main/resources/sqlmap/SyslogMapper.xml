@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nia.ip.sdn.syslog.linkage.mapper.SyslogMapper">
+
+<insert id="insertSyslogData" parameterType="com.nia.ip.sdn.syslog.linkage.vo.syslog.SyslogDataVo">
+    INSERT INTO GATHER.TB_SYSLOG_COLLECT
+    (
+        COLLECT_SEQ, COLLECT_HOST, SOURCE as source, APPNAME, HOSTNAME, FACILITY_CODE, FACILITY, SEVERITY_CODE,
+        SEVERITY, SYSLOG_MESSAGE, SYSLOG_PROCID, COLLECT_TIMESTAMP, PARTITION_KEY
+    )
+    VALUES
+    (
+        #{collectSeq},#{collectHost},#{source},#{appname},#{hostname},#{facilityCode},#{facility},
+        #{severityCode},#{severity},#{syslogMessage},#{syslogProcid},#{collectTimestamp},#{partitionKey}
+    )
+</insert>
+
+    <select id="selectSyslogSeq" resultType="string">
+        SELECT nextval('gather.seq_syslog_collect') AS COLLECT_SEQ
+    </select>
+
+</mapper>
+
+
