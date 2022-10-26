@@ -11,20 +11,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @EnableEncryptableProperties
 @SpringBootApplication
-@MapperScan(value = {"com.nia.ip.sdn.syslog.linkage.*"})
-public class Application implements CommandLineRunner {
-
-    @Autowired
-    IpSdnSyslogService ipSdnSyslogService;
-
-    @Autowired
-    private SyslogDataVo syslogDataVo;
+public class Application {
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
 
-    @Override
-    public void run(String... args) throws Exception {
-    }
 }

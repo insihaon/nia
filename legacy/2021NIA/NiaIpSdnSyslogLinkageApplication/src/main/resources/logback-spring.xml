@@ -10,7 +10,7 @@
 		<prudent>true</prudent>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!--<fileNamePattern>../logs/preprocessor_application.%d{yyyy-MM-dd}.log</fileNamePattern>-->
-            <fileNamePattern>/home/codej8888/server/logs/ipSdnSyslogLinkage.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>/Users/wang-gyujin/IdeaProjects/logs/ipSdnSyslogLinkage.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>15</maxHistory>
             <totalSizeCap>5GB</totalSizeCap>
         </rollingPolicy>
@@ -27,7 +27,7 @@
         class="ch.qos.logback.core.rolling.RollingFileAppender">
         <prudent>true</prudent>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>/home/codej8888/server/logs/ipSdnSyslogLinkage_error.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>/Users/wang-gyujin/IdeaProjects/logs/ipSdnSyslogLinkage_error.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>15</maxHistory>
             <totalSizeCap>5GB</totalSizeCap>
         </rollingPolicy>
