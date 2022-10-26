@@ -8,14 +8,12 @@ logging:
 spring:
   profiles: dev
 
-
   jasypt:
     encryptor:
       bean: jasyptStringEncryptor
       property:
         prefix: ENC(
         suffix: )
-
 
   kafka:
     consumer:
