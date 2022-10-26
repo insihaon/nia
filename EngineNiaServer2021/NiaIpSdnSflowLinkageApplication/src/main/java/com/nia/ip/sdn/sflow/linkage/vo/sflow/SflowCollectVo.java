@@ -1,6 +1,7 @@
 package com.nia.ip.sdn.sflow.linkage.vo.sflow;
 
 import com.nia.ip.sdn.sflow.linkage.common.UtlDateHelper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import lombok.*;
@@ -49,11 +50,19 @@ public class SflowCollectVo implements Serializable {
 
 	public void setSflowCollectVo(SflowDataVo sflowDataVo) {
 		this.setCollectSeq(sflowDataVo.getCollectSeq());
+		this.setCollectHost(sflowDataVo.getTags().getHost());
 		this.setAgentAddress(sflowDataVo.getTags().getAgentAddress());
 		this.setEtherType(sflowDataVo.getTags().getEtherType());
 		this.setHeaderProtocol(sflowDataVo.getTags().getHeaderProtocol());
-		this.setInputIfindex(Integer.parseInt(sflowDataVo.getTags().getInputIfindex()));
-		this.setOutputIfindex(Integer.parseInt(sflowDataVo.getTags().getOutputIfindex()));
+
+		if(StringUtils.isNotEmpty(sflowDataVo.getTags().getInputIfindex())){
+			this.setInputIfindex(Integer.parseInt(sflowDataVo.getTags().getInputIfindex()));
+		}
+
+		if(StringUtils.isNotEmpty(sflowDataVo.getTags().getOutputIfindex())){
+			this.setOutputIfindex(Integer.parseInt(sflowDataVo.getTags().getOutputIfindex()));
+		}
+
 		this.setSampleDirection(sflowDataVo.getTags().getSampleDirection());
 		this.setSrcIp(sflowDataVo.getTags().getSrcIp());
 		this.setSrcMac(sflowDataVo.getTags().getSrcMac());
