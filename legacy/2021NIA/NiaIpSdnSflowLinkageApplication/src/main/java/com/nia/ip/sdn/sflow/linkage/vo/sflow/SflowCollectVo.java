@@ -9,6 +9,8 @@ import lombok.*;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Data
 @Component
@@ -86,7 +88,7 @@ public class SflowCollectVo implements Serializable {
 		this.setTcpHeaderLength(sflowDataVo.getFields().getTcpHeaderLength());
 		this.setTcpUrgentPointer(sflowDataVo.getFields().getTcpUrgentPointer());
 		this.setTcpWindowSize(sflowDataVo.getFields().getTcpWindowSize());
-		this.setCollectTimestamp(UtlDateHelper.longToTimestamp(sflowDataVo.getTimestamp()));
+		this.setCollectTimestamp(Timestamp.valueOf(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(sflowDataVo.getTimestamp() * 1000L))));
 		this.setPartitionKey(String.valueOf(sflowDataVo.getCollectSeq()));
 	}
 }
