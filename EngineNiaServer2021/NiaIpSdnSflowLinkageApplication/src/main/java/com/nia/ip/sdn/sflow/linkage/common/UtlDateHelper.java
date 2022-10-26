@@ -35,6 +35,12 @@ public class UtlDateHelper {
         Timestamp date = new Timestamp(sDate);
         return date;
     }
+
+    public static Timestamp intToTimestamp(int sDate){
+        SimpleDateFormat sdf = new SimpleDateFormat(sFormat);
+        Timestamp date = new Timestamp(sDate);
+        return date;
+    }
     
     public static Timestamp getCurrentTime(){
 		Calendar cal = Calendar.getInstance();
