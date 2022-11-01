@@ -15,4 +15,5 @@ public class EngineTrafficeResultVo {
     private String gb;
     private AnomalousTrafficListVo perfListVo;
     private NoxiousTrafficListVo noxiousListVo;
+
 }
