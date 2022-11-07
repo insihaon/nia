@@ -1,6 +1,7 @@
 package com.nia.ip.sdn.syslog.linkage.mapper;
 
 
+import com.nia.ip.sdn.syslog.linkage.vo.syslog.SyslogCollectVo;
 import com.nia.ip.sdn.syslog.linkage.vo.syslog.SyslogDataVo;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -8,5 +9,5 @@ import org.apache.ibatis.annotations.Mapper;
 public interface SyslogMapper {
 
     int selectSyslogSeq();
-    void insertSyslogData(SyslogDataVo syslogDataVo);
+    void insertSyslogData(SyslogCollectVo syslogCollectVo);
 }

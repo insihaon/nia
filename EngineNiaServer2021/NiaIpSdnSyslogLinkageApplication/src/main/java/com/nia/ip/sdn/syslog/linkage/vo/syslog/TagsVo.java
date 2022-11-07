@@ -14,14 +14,10 @@ import java.sql.Timestamp;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TagsVo implements Serializable {
-    @JsonProperty("app_name")
-    private String appName;
+    private String appname;
     private String facility;
     private String host;
-    @JsonProperty("host_name")
-    private String hostName;
+    private String hostname;
     private String severity;
     private String source;
-//    source는 String이 맞는걸까?
-    private Timestamp timestamp;
 }

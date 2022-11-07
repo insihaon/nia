@@ -8,7 +8,6 @@ import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
 @Service("IpSdnSyslogService")
 public class IpSdnSyslogService {
 
@@ -34,12 +33,11 @@ public class IpSdnSyslogService {
             syslogCollectVo = syslogCollectVoObjectFactory.getObject();
             syslogCollectVo.setSyslogCollectVo(syslogDataVo);
 
-            syslogMapper.insertSyslogData(syslogDataVo);
+            syslogMapper.insertSyslogData(syslogCollectVo);
 
         }catch (Exception e){
             LoggerPrint.infoLog(">>>>>>>>>>>>>>[SyslogDataHdlProcessor]"+e+"<<<<<<<<<<<<<<<");
 
         }
-
     }
 }

@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-
 import java.io.Serializable;
 import java.sql.Timestamp;
 
@@ -21,5 +20,4 @@ public class FieldsVo implements Serializable {
     private String procid;
     @JsonProperty("severity_code")
     private int severityCode;
-    private Timestamp timestamp;
 }
