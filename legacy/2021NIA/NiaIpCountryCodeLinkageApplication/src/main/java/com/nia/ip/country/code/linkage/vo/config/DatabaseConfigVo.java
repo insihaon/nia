@@ -1,4 +1,4 @@
-package com.nia.ip.sdn.sflow.linkage.vo.config;
+package com.nia.ip.country.code.linkage.vo.config;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
