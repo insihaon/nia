@@ -89,6 +89,5 @@ public class SflowCollectVo implements Serializable {
 		this.setTcpUrgentPointer(sflowDataVo.getFields().getTcpUrgentPointer());
 		this.setTcpWindowSize(sflowDataVo.getFields().getTcpWindowSize());
 		this.setCollectTimestamp(Timestamp.valueOf(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(sflowDataVo.getTimestamp() * 1000L))));
-		this.setPartitionKey(String.valueOf(sflowDataVo.getCollectSeq()));
 	}
 }

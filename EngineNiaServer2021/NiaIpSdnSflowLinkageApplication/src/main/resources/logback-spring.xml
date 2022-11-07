@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<configuration>
+<configuration>'
+    <property name="LOG_TEMP" value="/home/codej8888/server/logs/" />
 	<include resource="org/springframework/boot/logging/logback/defaults.xml" />
 	<include resource="org/springframework/boot/logging/logback/base.xml"/>
 

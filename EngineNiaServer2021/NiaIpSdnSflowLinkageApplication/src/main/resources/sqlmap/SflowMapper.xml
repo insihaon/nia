@@ -16,7 +16,7 @@
             DST_PORT, PACKET_BYTES, PACKET_DROPS, FRAME_LENGTH, HEADER_LENGTH,
             IP_DSCP, IP_ECN, IP_FLAGS, IP_FRAGMENT_OFFSET, IP_TOTAL_LENGTH,
             IP_TTL, SAMPLING_RATE, TCP_HEADER_LENGTH, TCP_URGENT_POINTER, TCP_WINDOW_SIZE,
-            COLLECT_TIMESTAMP, PARTITION_KEY
+            COLLECT_TIMESTAMP
         )
         VALUES
         (
@@ -26,7 +26,7 @@
             #{dstPort}, #{packetBytes}, #{packetDrops}, #{frameLength}, #{headerLength},
             #{ipDscp}, #{ipEcn}, #{ipFlags}, #{ipFragmentOffset}, #{ipTotalLength},
             #{ipTtl}, #{samplingRate}, #{tcpHeaderLength}, #{tcpUrgentPointer}, #{tcpWindowSize},
-            #{collectTimestamp}, #{partitionKey}
+            #{collectTimestamp}
         )
     </insert>
 
