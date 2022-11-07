@@ -19,7 +19,7 @@ public class SyslogDataVo implements Serializable {
     private FieldsVo fields;
     private String name;
     private TagsVo tags;
-    private Timestamp timestamp;
+    private long timestamp;
 
 
 }
