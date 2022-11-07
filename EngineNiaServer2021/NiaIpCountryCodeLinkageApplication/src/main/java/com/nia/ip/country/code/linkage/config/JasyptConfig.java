@@ -1,4 +1,4 @@
-package com.nia.ip.sdn.sflow.linkage.config;
+package com.nia.ip.country.code.linkage.config;
 
 import org.jasypt.encryption.StringEncryptor;
 import org.jasypt.encryption.pbe.PooledPBEStringEncryptor;

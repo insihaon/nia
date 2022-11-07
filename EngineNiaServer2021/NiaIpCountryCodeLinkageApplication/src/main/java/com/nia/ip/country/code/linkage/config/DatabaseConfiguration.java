@@ -1,6 +1,6 @@
-package com.nia.ip.sdn.sflow.linkage.config;
+package com.nia.ip.country.code.linkage.config;
 
-import com.nia.ip.sdn.sflow.linkage.vo.config.DatabaseConfigVo;
+import com.nia.ip.country.code.linkage.vo.config.DatabaseConfigVo;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.apache.ibatis.session.SqlSessionFactory;

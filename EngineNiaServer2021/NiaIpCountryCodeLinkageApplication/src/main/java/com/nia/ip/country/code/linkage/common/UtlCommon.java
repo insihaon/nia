@@ -1,4 +1,4 @@
-package com.nia.ip.sdn.sflow.linkage.common;
+package com.nia.ip.country.code.linkage.common;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;

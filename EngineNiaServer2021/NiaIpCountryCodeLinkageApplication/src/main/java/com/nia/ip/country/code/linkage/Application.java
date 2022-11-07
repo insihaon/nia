@@ -1,4 +1,4 @@
-package com.nia.ip.sdn.sflow.linkage;
+package com.nia.ip.country.code.linkage;
 
 import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
 import org.springframework.boot.SpringApplication;
