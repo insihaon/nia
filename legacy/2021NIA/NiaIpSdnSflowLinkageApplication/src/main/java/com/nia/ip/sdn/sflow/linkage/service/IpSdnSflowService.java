@@ -25,7 +25,7 @@ public class IpSdnSflowService {
     private org.springframework.beans.factory.ObjectFactory<SflowCollectVo> sflowCollectVoObjectFactory;
 
     public void sflowDataHdlProcessor(SflowDataVo sflowDataVo){
-        LOGGER.info(">>>>>>>>>>[IpSdnSflowService] sflowDataHdlProcessor <<<<<<<<<<<<<<<<<");
+//        LOGGER.info(">>>>>>>>>>[IpSdnSflowService] sflowDataHdlProcessor <<<<<<<<<<<<<<<<<");
 
         int collectSeq;
 

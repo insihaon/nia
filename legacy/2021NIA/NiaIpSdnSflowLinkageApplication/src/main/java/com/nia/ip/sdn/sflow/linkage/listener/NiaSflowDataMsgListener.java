@@ -27,7 +27,7 @@ public class NiaSflowDataMsgListener {
 		SflowDataVo sflowDataVo;
 
 		try {
-			LOGGER.info(">>>>>>>>>>[NiaSflowDataMsgListener] onMessage <<<<<<<<<<<<<<<<<");
+//			LOGGER.info(">>>>>>>>>>[NiaSflowDataMsgListener] onMessage <<<<<<<<<<<<<<<<<");
 			Object obj;
 			sflowDataVo = pingRowDataVoObjectFactory.getObject();
 
