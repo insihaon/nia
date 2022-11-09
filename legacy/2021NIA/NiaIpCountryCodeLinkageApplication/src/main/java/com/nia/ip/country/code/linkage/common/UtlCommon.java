@@ -6,9 +6,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -111,4 +109,16 @@ public class UtlCommon {
         return result;
     }
 
+    public static String mapToUrlParam(Map<String, String> params) {
+        StringBuffer paramData = new StringBuffer();
+        for (Map.Entry<String, String> param : params.entrySet()) {
+            if (paramData.length() != 0) {
+                paramData.append('&');
+            }
+            paramData.append(param.getKey());
+            paramData.append('=');
+            paramData.append(param.getValue());
+        }
+        return paramData.toString();
+    }
 }

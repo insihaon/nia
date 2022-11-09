@@ -15,12 +15,19 @@ spring:
         prefix: ENC(
         suffix: )
 
+  restTemplate:
+    factory:
+      readTimeout: 5000
+      connectTimeout: 3000
+    httpClient:
+      maxConnTotal: 100
+      maxConnPerRoute: 5
 
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://192.168.10.6:5433/niadb
+    url: jdbc:postgresql://incodej-lab.iptime.org:6544/niadb
     username: niaadmin
-    password: niaadmin12
+    password: niaadmin12#$
     maximumPoolSize: 10
     idleTimeout: 6000
 
@@ -40,6 +47,14 @@ spring:
       property:
         prefix: ENC(
         suffix: )
+
+  restTemplate:
+    factory:
+      readTimeout: 5000
+      connectTimeout: 3000
+    httpClient:
+      maxConnTotal: 100
+      maxConnPerRoute: 5
 
   datasource:
     driver-class-name: org.postgresql.Driver
@@ -65,7 +80,15 @@ spring:
       property:
         prefix: ENC(
         suffix: )
-        
+
+  restTemplate:
+    factory:
+      readTimeout: 5000
+      connectTimeout: 3000
+    httpClient:
+      maxConnTotal: 100
+      maxConnPerRoute: 5
+
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://116.89.191.47:6544/niadb
