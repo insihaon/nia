@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nia.ip.country.code.linkage.mapper.CountryMapper">
+
+    <select id="selectIpCountryCodeList" resultType="com.nia.ip.country.code.linkage.vo.country.CountryVo">
+        SELECT IP_ADDR, COUNTRY_CODE, REGISTRY FROM NIA.TB_IP_COUNTRY_CODE WHERE COUNTRY_CODE IS NULL LIMIT 10000
+    </select>
+
+    <update id="updateIpCountryCode" parameterType="com.nia.ip.country.code.linkage.vo.web.WhoisVo">
+        UPDATE NIA.TB_IP_COUNTRY_CODE
+           SET COUNTRY_CODE = #{countryCode}
+             , REGISTRY = #{registry}
+         WHERE IP_ADDR = #{query}
+    </update>
+</mapper>
+
+
