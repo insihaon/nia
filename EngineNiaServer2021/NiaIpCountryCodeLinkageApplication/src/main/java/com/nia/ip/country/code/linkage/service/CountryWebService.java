@@ -17,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service("CountryWebService")
@@ -43,6 +44,7 @@ public class CountryWebService {
         Map<String, String> paramMap;
         Object obj;
         WebResultVo webResultVo;
+        int failCnt = 0;
 
         try {
             serviceKey = "gkODhBXK7ccFDlrEyXMUleY7tkLmU0ruF8PQ0BDVRwVc9gLLqPgxb3tgFaAb32cxtq%2BJYYPEUx6gLV1%2BCmMLTw%3D%3D";
@@ -81,8 +83,13 @@ public class CountryWebService {
             webResultVo = (WebResultVo)obj;
 
             countryMapper.updateIpCountryCode(webResultVo.getResponseVo().getWhoisVo());
+            failCnt = 0;
         }catch (Exception e){
             LoggerPrint.errorLog(e);
+
+            if(failCnt++ < 3){
+                sendData(ip);
+            }
         }
     }
 }
