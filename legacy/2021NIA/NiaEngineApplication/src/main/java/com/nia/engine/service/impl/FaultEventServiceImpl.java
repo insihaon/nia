@@ -19,6 +19,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service("FaultEventService")
 public class FaultEventServiceImpl implements FaultEventService {
@@ -95,12 +96,14 @@ public class FaultEventServiceImpl implements FaultEventService {
 
                         break;
                     case "anomalous" :
+                    case "ticket-att" :
                         ipPerfList = faultEventMapper.selectFaultEventXeCvnmsPerfIf(faultEventKey);
 //                        ipSflowLogList = faultEventMapper.selectFaultEventXeSflowLog(faultEventKey);
 
                         break;
 
                     case "noxious" :
+                    case "ticket-ntt" :
 //                        ipPerfList = faultEventMapper.selectFaultEventXeCvnmsPerfIf(faultEventKey);
                         ipSflowLogList = faultEventMapper.selectFaultEventXeSflowLog(faultEventKey);
 
@@ -334,6 +337,7 @@ public class FaultEventServiceImpl implements FaultEventService {
 
                         break;
                     case "anomalous" :
+                    case "ticket-att" :
                         try {
                             faultEventMapper.insertFaultEventXeCvnmsPerfIf(parameterMap);
                         }catch (Exception e){
@@ -348,6 +352,7 @@ public class FaultEventServiceImpl implements FaultEventService {
 
                         break;
                     case "noxious" :
+                    case "ticket-ntt" :
 //                        try {
 //                            faultEventMapper.insertFaultEventXeCvnmsPerfIf(parameterMap);
 //                        }catch (Exception e){
