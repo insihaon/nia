@@ -1,5 +1,6 @@
 package com.nia.engine.vo.falutEvent;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -11,7 +12,7 @@ import java.io.Serializable;
 @Scope(value = "prototype")
 public class FaultEventIpCvnmsResourceIfVo implements Serializable {
     private int intifidx;
-    private int module_srl;
+    private int moduleSrl;
     private String strresid;
     private String strifid;
     private String strifname;
@@ -37,4 +38,9 @@ public class FaultEventIpCvnmsResourceIfVo implements Serializable {
     private String strifmemo;
     private String datelastupdatedate;
     private String dateregdate;
+
+    @JsonProperty("module_srl")
+    public int getModuleSrl() {
+        return moduleSrl;
+    }
 }

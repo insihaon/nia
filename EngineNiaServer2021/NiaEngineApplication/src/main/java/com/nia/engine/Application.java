@@ -19,11 +19,16 @@ public class Application implements CommandLineRunner{
     @Qualifier("EngineBootSettingService")
     private EngineBootSettingService engineBootSettingService;
 
+	@Autowired
+	@Qualifier("FaultEventService")
+	private FaultEventService faultEventService;
+
 
 	public static void main(String[] args) { SpringApplication.run(Application.class, args); }
 
 	@Override
 	public void run(String... arg0) throws Exception {
+//		faultEventService.jsonObjToFile("147");
 		engineBootSettingService.engineInit();
 	}
 }
