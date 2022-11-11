@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <configuration>
+
 	<include resource="org/springframework/boot/logging/logback/defaults.xml" />
 	<include resource="org/springframework/boot/logging/logback/base.xml"/>
 
@@ -13,6 +14,7 @@
     </springProfile>
 
     <springProfile name="real">
+        <property name="LOG_TEMP" value="/home/codej8888/server/logs/" />
         <property resource="log-properties/logback-real.properties"/>
     </springProfile>
     
