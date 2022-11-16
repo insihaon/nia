@@ -1,5 +1,6 @@
 package com.nia.ip.sdn.syslog.linkage.service;
 
+import com.nia.ip.sdn.syslog.linkage.amqp.SyslogDataPrdAmqp;
 import com.nia.ip.sdn.syslog.linkage.common.LoggerPrint;
 import com.nia.ip.sdn.syslog.linkage.mapper.SyslogMapper;
 import com.nia.ip.sdn.syslog.linkage.vo.syslog.SyslogCollectVo;
@@ -10,6 +11,9 @@ import org.springframework.stereotype.Service;
 
 @Service("IpSdnSyslogService")
 public class IpSdnSyslogService {
+
+    @Autowired
+    private SyslogDataPrdAmqp syslogDataPrdAmqp;
 
     @Autowired
     private SyslogMapper syslogMapper;
@@ -35,9 +39,11 @@ public class IpSdnSyslogService {
 
             syslogMapper.insertSyslogData(syslogCollectVo);
 
+            if(syslogDataVo.getFields().getSeverityCode() < 4){
+                syslogDataPrdAmqp.sendMessageCmd(syslogDataVo);
+            }
         }catch (Exception e){
-            LoggerPrint.infoLog(">>>>>>>>>>>>>>[SyslogDataHdlProcessor]"+e+"<<<<<<<<<<<<<<<");
-
+            LoggerPrint.errorLog(e);
         }
     }
 }

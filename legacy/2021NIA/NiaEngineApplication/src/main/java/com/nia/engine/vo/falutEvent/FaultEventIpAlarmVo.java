@@ -1,5 +1,6 @@
 package com.nia.engine.vo.falutEvent;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -17,12 +18,12 @@ public class FaultEventIpAlarmVo implements Serializable {
     private String strifspeed;
     private String striftype;
     private String strifoperstatus;
-    private String nren_id;
-    private String nren_name;
-    private String node_id;
-    private String if_id;
+    private String nrenId;
+    private String nrenName;
+    private String nodeId;
+    private String ifId;
     private int interridx;
-    private int module_srl;
+    private int moduleSrl;
     private String strresid;
     private String strifid;
     private String strtype;
@@ -46,5 +47,30 @@ public class FaultEventIpAlarmVo implements Serializable {
     private String strclearcheck;
     private String strmemo;
     private String stracknowncheck;
-    private int stracknowncheck_member_srl;
+    private int stracknowncheckMemberSrl;
+
+    @JsonProperty("nren_id")
+    public String getNrenId() {
+        return nrenId;
+    }
+    @JsonProperty("nren_name")
+    public String getNrenName() {
+        return nrenName;
+    }
+    @JsonProperty("node_id")
+    public String getNodeId() {
+        return nodeId;
+    }
+    @JsonProperty("if_id")
+    public String getIfId() {
+        return ifId;
+    }
+    @JsonProperty("module_srl")
+    public int getModuleSrl() {
+        return moduleSrl;
+    }
+    @JsonProperty("stracknowncheck_member_srl")
+    public int getStracknowncheckMemberSrl() {
+        return stracknowncheckMemberSrl;
+    }
 }

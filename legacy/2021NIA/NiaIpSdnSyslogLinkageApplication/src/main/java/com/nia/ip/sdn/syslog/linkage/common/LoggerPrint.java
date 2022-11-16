@@ -9,6 +9,10 @@ import org.slf4j.LoggerFactory;
 public class LoggerPrint {
     private final static Logger LOGGER = LoggerFactory.getLogger(LoggerPrint.class);
 
+    public static void infoLog(){
+        LOGGER.info(">>>>>>>>>>["+getClassName()+"] " + getMethodName() + " <<<<<<<<<<<<<<<<<");
+    }
+
     public static void infoLog(String logMsg){
         LOGGER.info(">>>>>>>>>>["+getClassName()+"] " + getMethodName() + "\n" + logMsg + " <<<<<<<<<<<<<<<<<");
     }

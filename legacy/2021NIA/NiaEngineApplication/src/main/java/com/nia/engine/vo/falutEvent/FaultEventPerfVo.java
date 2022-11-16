@@ -1,5 +1,6 @@
 package com.nia.engine.vo.falutEvent;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -17,10 +18,10 @@ public class FaultEventPerfVo implements Serializable {
     private String strifspeed;
     private String striftype;
     private String strifoperstatus;
-    private String nren_id;
-    private String nren_name;
-    private String node_id;
-    private String if_id;
+    private String nrenId;
+    private String nrenName;
+    private String nodeId;
+    private String ifId;
     private String strifid;
     private String strresid;
     private String strtypemin;
@@ -60,4 +61,27 @@ public class FaultEventPerfVo implements Serializable {
     private double fltdiscardoutmax;
     private double fltunknownmax;
     private double fltusagemax;
+    private String aiAccuracy;
+
+
+    @JsonProperty("nren_id")
+    public String getNrenId() {
+        return nrenId;
+    }
+    @JsonProperty("nren_name")
+    public String getNrenName() {
+        return nrenName;
+    }
+    @JsonProperty("node_id")
+    public String getNodeId() {
+        return nodeId;
+    }
+    @JsonProperty("if_id")
+    public String getIfId() {
+        return ifId;
+    }
+    @JsonProperty("ai_accuracy")
+    public String getAiAccuracy() {
+        return aiAccuracy;
+    }
 }
