@@ -1,5 +1,6 @@
 package com.nia.ip.sdn.syslog.linkage.listener;
 
+import com.nia.ip.sdn.syslog.linkage.common.LoggerPrint;
 import com.nia.ip.sdn.syslog.linkage.common.UtlCommon;
 import com.nia.ip.sdn.syslog.linkage.service.IpSdnSyslogService;
 import com.nia.ip.sdn.syslog.linkage.vo.syslog.SyslogDataVo;
@@ -22,16 +23,17 @@ public class NiaSyslogDataMsgListener {
     private IpSdnSyslogService ipSdnSyslogService;
 
     @Autowired
-    private org.springframework.beans.factory.ObjectFactory<SyslogDataVo> pingRowDataVoObjectFactory;
+    private org.springframework.beans.factory.ObjectFactory<SyslogDataVo> syslogDataVoObjectFactory;
 
     @KafkaListener(topics = "telegraf-syslog", groupId = "syslogData")
     public void onMessege(String message){
         SyslogDataVo syslogDataVo;
 
         try {
-            LOGGER.info(">>>>>>>>>>[NiaSyslogDataMsgListener] on Message <<<<<<<<<<<<<<<<");
+            LoggerPrint.infoLog();
+
             Object obj;
-            syslogDataVo = pingRowDataVoObjectFactory.getObject();
+            syslogDataVo = syslogDataVoObjectFactory.getObject();
 
             obj = UtlCommon.jsonToObject(syslogDataVo, message);
             syslogDataVo = (SyslogDataVo) obj;
@@ -39,7 +41,7 @@ public class NiaSyslogDataMsgListener {
             ipSdnSyslogService.syslogDataHdlProcessor(syslogDataVo);
 
         }catch (Exception e){
-            LOGGER.error("=====> [NiaSyslogDataMsgListener] onMessage error "+ ExceptionUtils.getStackTrace(e)+ "<=====");
+            LoggerPrint.errorLog(e);
 
         }
     }
