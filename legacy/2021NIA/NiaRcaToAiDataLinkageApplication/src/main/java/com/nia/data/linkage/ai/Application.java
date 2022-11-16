@@ -4,9 +4,6 @@ import com.nia.data.linkage.ai.service.ip.alarm.IpAlarmToAiLinkageService;
 import com.nia.data.linkage.ai.service.ip.equip.IpEquipTableDataAiLinkageService;
 import com.nia.data.linkage.ai.service.ip.perf.IpPerfToAiLinkageService;
 import com.nia.data.linkage.ai.service.ip.sflow.IpSflowToAiLinkageService;
-import com.nia.data.linkage.ai.service.ipsdn.factor.IpSdnFactorLinkageService;
-import com.nia.data.linkage.ai.service.ipsdn.resource.IpSdnResourceLinkageService;
-import com.nia.data.linkage.ai.service.ipsdn.traffic.IpSdnTrafficLinkageService;
 import com.nia.data.linkage.ai.service.trans.equip.TransEquipTableDataAiLinkageService;
 import com.nia.data.linkage.ai.service.trans.perf.RoadmPmDataAiLinkageService;
 import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
@@ -46,18 +43,6 @@ public class Application implements CommandLineRunner {
     @Qualifier("IpAlarmToAiLinkageService")
     private IpAlarmToAiLinkageService ipAlarmToAiLinkageService;
 
-    @Autowired
-    @Qualifier("IpSdnResourceLinkageService")
-    private IpSdnResourceLinkageService ipSdnResourceLinkageService;
-
-    @Autowired
-    @Qualifier("IpSdnFactorLinkageService")
-    private IpSdnFactorLinkageService ipSdnFactorLinkageService;
-
-    @Autowired
-    @Qualifier("IpSdnTrafficLinkageService")
-    private IpSdnTrafficLinkageService ipSdnTrafficLinkageService;
-
 
     @Autowired
     @Qualifier("EntityService")
@@ -69,14 +54,6 @@ public class Application implements CommandLineRunner {
 
     @Override
     public void run(String... arg0) throws Exception {
-
-//        ipSdnResourceLinkageService.sendNodeData();
-//        ipSdnResourceLinkageService.sendLinkData();
-//        ipSdnResourceLinkageService.sendInterfaceData();
-
-//        ipSdnFactorLinkageService.sendFactorData();
-//        ipSdnTrafficLinkageService.sendTrafficData();
-
 
 
 //        ipPerfToAiLinkageService.sendPerfLogData();

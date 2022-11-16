@@ -1,14 +1,19 @@
 package com.nia.data.linkage.ai.common;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.log4j.Logger;
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,20 +23,158 @@ import java.util.regex.Pattern;
  *
  */
 public class UtlCommon {	
-	private static final Logger LOGGER = Logger.getLogger(UtlCommon.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(UtlCommon.class);
+	
+	public static final String JOB_EQUIP_RESULT_STATE_SUCCESS = "S";
+	public static final String JOB_EQUIP_RESULT_STATE_FAIL = "F";
+	public static final String JOB_EQUIP_RESULT_STATE_CANCEL = "C";
 
 	public static String getNowTimeToString() {
 		Calendar calendar = Calendar.getInstance();
 		Date date = calendar.getTime();
+		
     	return (new SimpleDateFormat("yyyyMMddHHmmss", Locale.KOREA).format(date));
     }
     
+    public static int getIntJson(JSONObject json, String key) {
+    	try {
+			return json.isNull(key) ? 0 : json.getInt(key);
+		} catch (JSONException e) {
+			LOGGER.info("getIntJson Error : key : " + key + ", json : " + json);
+			return 0;
+		}
+    }
+    
+    public static long getLongJson(JSONObject json, String key) {
+    	try {
+			return json.isNull(key) ? 0 : json.getLong(key);
+		} catch (JSONException e) {
+			LOGGER.info("getIntJson Error : key : " + key + ", json : " + json);
+			return 0;
+		}
+    }
+    
+    public static String getStringJson(JSONObject json, String key) {
+    	try {
+			return json.isNull(key) ? "" : json.getString(key);
+		} catch (JSONException e) {
+			LOGGER.info("getStringJson Error : key : " + key + ", json : " + json);
+			return "";
+		}
+    }  
+    
+    public static boolean getBooleanJson(JSONObject json, String key) {
+    	try {
+			return !json.isNull(key) && json.getBoolean(key);
+		} catch (JSONException e) {
+			LOGGER.info("getIntJson Error : key : " + key + ", json : " + json);
+			return false;
+		}
+    }
+    
+    public static Map<String, Object> getMapFromJsonObject( JSONObject jsonObj , String key) {
+
+		Map<String, Object> map = null;
+		
+		try {
+			
+			map = new ObjectMapper().readValue(jsonObj.get(key).toString(), Map.class) ;
+			
+		} catch (JsonParseException e) {
+            e.printStackTrace();
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+			e.printStackTrace();
+		}
+        return map;
+	}
+    
+    public static Map<String, Object> toMap(JSONObject object){
+    	Map<String, Object> map = new HashMap<String, Object>();
+    	try {
+	
+	        Iterator<String> keysItr = object.keys();
+	        while(keysItr.hasNext()) {
+	            String key = keysItr.next();
+	            Object value;
+				
+            	value = object.get(key);
+            	 map.put(key, value);
+            	 break;
+
+	           /* if(value instanceof JSONArray) {
+	                value = toList((JSONArray) value);
+	            }
+	
+	            else if(value instanceof JSONObject) {
+	                value = toMap((JSONObject) value);
+	            }*/
+	           
+	        }
+	        return map;
+    	} catch (JSONException e) {
+    		LOGGER.info(">>>>>>>>>>>>>>>>>>>>[UtlCommon] toMap error : " + ExceptionUtils.getStackTrace(e) + " <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+		}
+		return map;
+    }
+    
+    public static List<Object> toList(JSONArray array) {
+    	List<Object> list = new ArrayList<Object>();
+    	try {
+	        for(int i = 0; i < array.length(); i++) {
+	            Object value;
+				
+				value = array.get(i);
+				
+	            if(value instanceof JSONArray) {
+	                value = toList((JSONArray) value);
+	            }
+	
+	            else if(value instanceof JSONObject) {
+	                value = toMap((JSONObject) value);
+	            }
+	            list.add(value);
+	        }
+    	} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        return list;
+    }
+    
+    public static List<String> toListString(JSONArray array) {
+    	List<String> list = new ArrayList<String>();
+    	try {
+	        for(int i = 0; i < array.length(); i++) {
+	            Object value;
+				
+				value = array.get(i);
+				
+	            if(value instanceof JSONArray) {
+	                value = toList((JSONArray) value);
+	            }
+	
+	            else if(value instanceof JSONObject) {
+	                value = toMap((JSONObject) value);
+	            }
+	            list.add((String) value);
+	        }
+    	} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        return list;
+    }
+
     public static boolean isCheckKr(String s){
         boolean isKr = false;
         try {
             isKr = s.matches(".*[ㄱ-ㅎㅏ-ㅣ가-힣]+.*");
         }catch (Exception e){
-			return isKr = false;
+
         }
         return isKr;
     }
@@ -41,7 +184,7 @@ public class UtlCommon {
         try {
             isKr = s.matches(".*\\d.*");
         }catch (Exception e){
-			return isKr = false;
+
         }
         return isKr;
     }
@@ -87,9 +230,21 @@ public class UtlCommon {
      		resultObject = objectMapper.readValue(jMsg, obj.getClass());
      	}catch (Exception e) {
      		LOGGER.error(">>>>>>>>>>[UtlCommon] jsonToObject() error : " + ExceptionUtils.getStackTrace(e) +" <<<<<<<<<<<<<<<<<");
-     		return resultObject = null;
  		}
      	return resultObject;
+     }
+
+     public static String objectToJson(Object obj){
+
+		 ObjectMapper mapper;
+		 String resultMsg = null;
+     	try{
+			mapper = new ObjectMapper();
+			resultMsg = mapper.writeValueAsString(obj);
+     	}catch (Exception e) {
+     		LOGGER.error(">>>>>>>>>>[UtlCommon] objectToJson() error : " + ExceptionUtils.getStackTrace(e) +" <<<<<<<<<<<<<<<<<");
+ 		}
+     	return resultMsg;
      }
 
      public static String lTrim(String str){
@@ -98,7 +253,6 @@ public class UtlCommon {
             result = str.replaceAll("^\\s+","");
         }catch (Exception e){
             LOGGER.error(">>>>>>>>>>[UtlCommon] ltrim("+str+") error : " + ExceptionUtils.getStackTrace(e) +" <<<<<<<<<<<<<<<<<");
-            return result = null;
         }
          return result;
      }
@@ -109,7 +263,6 @@ public class UtlCommon {
             result = str.replaceAll("\\s+$","");
         }catch (Exception e){
             LOGGER.error(">>>>>>>>>>[UtlCommon] rTrim("+str+") error : " + ExceptionUtils.getStackTrace(e) +" <<<<<<<<<<<<<<<<<");
-            result = null;
         }
         return result;
     }
