@@ -2,7 +2,7 @@ package com.nia.syslog.preprocessor.listener;
 
 import com.nia.syslog.preprocessor.common.LoggerPrint;
 import com.nia.syslog.preprocessor.common.UtlCommon;
-import com.nia.syslog.preprocessor.service.NiaSyslogAlarmHdlService;
+import com.nia.syslog.preprocessor.service.SyslogAlarmHdlService;
 import com.nia.syslog.preprocessor.vo.syslog.SyslogDataVo;
 import com.rabbitmq.client.Channel;
 import org.springframework.amqp.core.Message;
@@ -16,7 +16,7 @@ public class SyslogOrgDataMsgListener implements ChannelAwareMessageListener {
 	
 	@Autowired
     @Qualifier("NiaSyslogAlarmHdlService")
-	private NiaSyslogAlarmHdlService niaSyslogAlarmHdlService;
+	private SyslogAlarmHdlService syslogAlarmHdlService;
 	
 	@Autowired
 	private SyslogDataVo syslogDataVo;
@@ -37,7 +37,7 @@ public class SyslogOrgDataMsgListener implements ChannelAwareMessageListener {
 		    obj = UtlCommon.jsonToObject(syslogDataVo, msg);
 			syslogDataVo = (SyslogDataVo)obj;
 
-			niaSyslogAlarmHdlService.niaSyslogHdlProcessor(syslogDataVo);
+			syslogAlarmHdlService.niaSyslogHdlProcessor(syslogDataVo);
 		} catch (Exception e) {
 			LoggerPrint.errorLog(e);
 		}
