@@ -28,10 +28,13 @@ public class SyslogRuleHdlService {
 
             if(!CollectionUtils.isEmpty(syslogRuleVoList)){
                 resultSyslogRuleVoList = syslogRuleVoList.stream()
-//                        .filter(x -> Integer.parseInt(x.getAlarmSeverity()) == syslogDataVo.getFields().getSeverityCode())
-                        .filter(x -> syslogDataVo.getFields().getMessage().contains(x.getOccurStr1()))
-                        .filter(x -> StringUtils.isEmpty(x.getOccurStr2()) && syslogDataVo.getFields().getMessage().contains(x.getOccurStr2()))
-                        .filter(x -> StringUtils.isEmpty(x.getOccurStr3()) && syslogDataVo.getFields().getMessage().contains(x.getOccurStr3()))
+                        .filter(x -> ((!StringUtils.isEmpty(x.getOccurStr1()) && syslogDataVo.getFields().getMessage().contains(x.getOccurStr1()))
+                                    && (!StringUtils.isEmpty(x.getOccurExceptStr1()) && !syslogDataVo.getFields().getMessage().contains(x.getOccurExceptStr1())))
+                                && ((!StringUtils.isEmpty(x.getOccurStr2()) && syslogDataVo.getFields().getMessage().contains(x.getOccurStr2()))
+                                    && (!StringUtils.isEmpty(x.getOccurExceptStr2()) && !syslogDataVo.getFields().getMessage().contains(x.getOccurExceptStr2())))
+                                && ((!StringUtils.isEmpty(x.getOccurStr3()) && syslogDataVo.getFields().getMessage().contains(x.getOccurStr3()))
+                                    && (!StringUtils.isEmpty(x.getOccurExceptStr3()) && !syslogDataVo.getFields().getMessage().contains(x.getOccurExceptStr3())))
+                        )
                         .collect(Collectors.toList());
             }
 

@@ -23,11 +23,5 @@ public class SyslogRuleVo implements Serializable {
 	private String occurExceptStr1;
 	private String occurExceptStr2;
 	private String occurExceptStr3;
-	private String clearStr1;
-	private String clearStr2;
-	private String clearStr3;
-	private String clearExceptStr1;
-	private String clearExceptStr2;
-	private String clearExceptStr3;
 	private String useYn;
 }
