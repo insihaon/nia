@@ -28,6 +28,7 @@ public class FaultEventSflowLogVo implements Serializable {
     private String strbytesCol;
     private String strcounts;
     private String dateregdate;
+    private String aiAccuracy;
 
     @JsonProperty("strresip")
     public String getStrresip() {
@@ -96,5 +97,9 @@ public class FaultEventSflowLogVo implements Serializable {
     @JsonProperty("dateregdate")
     public String getDateregdate() {
         return dateregdate;
+    }
+    @JsonProperty("ai_accuracy")
+    public String getAiAccuracy() {
+        return aiAccuracy;
     }
 }
