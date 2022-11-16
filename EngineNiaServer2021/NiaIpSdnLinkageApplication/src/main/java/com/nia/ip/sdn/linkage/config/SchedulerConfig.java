@@ -15,7 +15,7 @@ public class SchedulerConfig implements SchedulingConfigurer {
         ThreadPoolTaskScheduler threadPoolTaskScheduler = new ThreadPoolTaskScheduler();
 
         threadPoolTaskScheduler.setPoolSize(POOL_SIZE);
-        threadPoolTaskScheduler.setThreadNamePrefix("niaIpSdnLinkage-scheduled-task-pool");
+        threadPoolTaskScheduler.setThreadNamePrefix("ipSdnLinkage-scheduled-task-pool");
         threadPoolTaskScheduler.initialize();
 
         taskRegistrar.setTaskScheduler(threadPoolTaskScheduler );

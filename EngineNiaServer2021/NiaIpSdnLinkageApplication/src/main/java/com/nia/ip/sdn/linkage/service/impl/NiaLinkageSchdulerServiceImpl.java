@@ -22,6 +22,10 @@ public class NiaLinkageSchdulerServiceImpl {
     private NodeService nodeService;
 
     @Autowired
+    @Qualifier("E2eNodeService")
+    private E2eNodeService e2eNodeService;
+
+    @Autowired
     @Qualifier("LinkTrafficeService")
     private LinkTrafficeService linkTrafficeService;
 
@@ -43,6 +47,11 @@ public class NiaLinkageSchdulerServiceImpl {
     @Scheduled(cron = "0 10 1 * * *") //초(0-59) 분(0-59) 시간(0-23) 일(1-31) 월(1-12) 요일(0-7)
     public void conJobNodeData() {
         nodeService.getNodeData();
+    }
+
+    @Scheduled(cron = "0 30 1 * * *") //초(0-59) 분(0-59) 시간(0-23) 일(1-31) 월(1-12) 요일(0-7)
+    public void conJobE2eNodeData() {
+        e2eNodeService.getE2eNodeData();
     }
 
     @Scheduled(cron = "15 0/1 * * * *") //초(0-59) 분(0-59) 시간(0-23) 일(1-31) 월(1-12) 요일(0-7)

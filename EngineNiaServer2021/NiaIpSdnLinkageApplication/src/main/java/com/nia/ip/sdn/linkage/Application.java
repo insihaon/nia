@@ -8,7 +8,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-@EnableScheduling
+//@EnableScheduling
 @SpringBootApplication
 public class Application implements CommandLineRunner{
 
@@ -31,6 +31,10 @@ public class Application implements CommandLineRunner{
 	@Autowired
 	@Qualifier("NodeFactorService")
 	private NodeFactorService nodeFactorService;
+
+	@Autowired
+	@Qualifier("E2eNodeService")
+	private E2eNodeService e2eNodeService;
 
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
