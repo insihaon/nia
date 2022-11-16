@@ -1,0 +1,110 @@
+server:
+  port: 8098
+
+logging:
+  level:
+    root: INFO
+---
+spring:
+  profiles: local
+
+  jasypt:
+    encryptor:
+      bean: jasyptStringEncryptor
+      property:
+        prefix: ENC(
+        suffix: )
+
+  rabbitmq:
+    address: 116.89.191.47  #개발
+    port: 6786
+    username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
+    password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
+
+    niaSyslogAlarmExchange: nia.exchangeNiaSyslogAlarmDirectly
+    niaSyslogAlarmQueue: nia.NiaSyslogAlarmIndexDirectly
+    niaSyslogAlarmRoutingKey: nia.NiaSyslogAlarmIndexDirectl
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://192.168.10.6:5433/niadb
+    username: niaadmin
+    password: niaadmin12
+    maximumPoolSize: 10
+    idleTimeout: 6000
+
+  mybatis:
+    mapper-locations: classpath*:sqlmap/*.xml
+    mybatisConfig-locations : classpath:mybatis-config.xml
+    configuration:
+      mapUnderscoreToCamelCase: true
+
+---
+spring:
+  profiles: dev
+
+  jasypt:
+    encryptor:
+      bean: jasyptStringEncryptor
+      property:
+        prefix: ENC(
+        suffix: )
+
+  rabbitmq:
+    address: 116.89.191.47  #개발
+    port: 6786
+    username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
+    password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
+
+    niaSyslogAlarmExchange: nia.exchangeNiaSyslogAlarmDirectly
+    niaSyslogAlarmQueue: nia.NiaSyslogAlarmIndexDirectly
+    niaSyslogAlarmRoutingKey: nia.NiaSyslogAlarmIndexDirectl
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://116.89.191.47:6544/niadb
+    username: niaadmin
+    password: niaadmin12#$
+    maximumPoolSize : 10
+    idleTimeout : 6000
+
+  mybatis:
+    mapper-locations: classpath*:sqlmap/*.xml
+    mybatisConfig-locations : classpath:mybatis-config.xml
+    configuration:
+      mapUnderscoreToCamelCase: true
+
+---
+spring:
+  profiles: real
+
+  jasypt:
+    encryptor:
+      bean: jasyptStringEncryptor
+      property:
+        prefix: ENC(
+        suffix: )
+
+  rabbitmq:
+    address: 116.89.191.47  #개발
+    port: 6786
+    username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
+    password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
+
+    niaSyslogAlarmExchange: nia.exchangeNiaSyslogAlarmDirectly
+    niaSyslogAlarmQueue: nia.NiaSyslogAlarmIndexDirectly
+    niaSyslogAlarmRoutingKey: nia.NiaSyslogAlarmIndexDirectl
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://116.89.191.47:6544/niadb
+    username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
+    password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
+    maximumPoolSize: 10
+    idleTimeout: 6000
+
+  mybatis:
+    mapper-locations: classpath*:sqlmap/*.xml
+    mybatisConfig-locations : classpath:mybatis-config.xml
+    configuration:
+      mapUnderscoreToCamelCase: true
