@@ -12,6 +12,9 @@ public class LoggerPrint {
     public static void infoLog(String logMsg){
         LOGGER.info(">>>>>>>>>>["+getClassName()+"] " + getMethodName() + "\n" + logMsg + " <<<<<<<<<<<<<<<<<");
     }
+    public static void infoLog(){
+        LOGGER.info(">>>>>>>>>>["+getClassName()+"] " + getMethodName() + " <<<<<<<<<<<<<<<<<");
+    }
 
     public static void errorLog(Exception e){
         LOGGER.error(">>>>>>>>>>["+getClassName()+"] " + getMethodName() + " error : \n" + ExceptionUtils.getStackTrace(e) + " <<<<<<<<<<<<<<<<<");

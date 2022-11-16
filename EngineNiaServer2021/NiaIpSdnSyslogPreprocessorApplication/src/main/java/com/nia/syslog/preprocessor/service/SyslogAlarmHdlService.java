@@ -23,6 +23,8 @@ public class SyslogAlarmHdlService {
     private org.springframework.beans.factory.ObjectFactory<SysLogAlarmVo> sysLogAlarmVoObjectFactory;
 
     public void niaSyslogHdlProcessor(SyslogDataVo pSyslogDataVo) {
+        LoggerPrint.infoLog("coollectSeq : "+ pSyslogDataVo.getCollectSeq());
+
         SyslogDataVo syslogDataVo;
         SysLogAlarmVo sysLogAlarmVo;
 
@@ -42,6 +44,8 @@ public class SyslogAlarmHdlService {
     }
 
     private SysLogAlarmVo setSyslogAlarm(SyslogDataVo syslogDataVo){
+        LoggerPrint.infoLog("coollectSeq : "+ syslogDataVo.getCollectSeq());
+
         IpNodeInfoVo ipNodeInfoVo = null;
         SysLogAlarmVo sysLogAlarmVo = null;
 

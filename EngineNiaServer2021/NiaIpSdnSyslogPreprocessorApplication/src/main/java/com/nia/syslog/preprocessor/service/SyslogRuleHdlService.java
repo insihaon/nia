@@ -20,6 +20,7 @@ public class SyslogRuleHdlService {
     private SyslogAlarmMapper syslogAlarmMapper;
 
     protected SyslogDataVo occurRuleCheck(SyslogDataVo syslogDataVo){
+        LoggerPrint.infoLog("coollectSeq : "+ syslogDataVo.getCollectSeq());
         List<SyslogRuleVo> syslogRuleVoList = null;
         List<SyslogRuleVo> resultSyslogRuleVoList = null;
 
@@ -39,6 +40,7 @@ public class SyslogRuleHdlService {
             }
 
             if(!CollectionUtils.isEmpty(resultSyslogRuleVoList)){
+                LoggerPrint.infoLog("sysRuleId : " + resultSyslogRuleVoList.get(0).getSyslogRuleId());
                 syslogDataVo.setSyslogRuleVo(resultSyslogRuleVoList.get(0));
             }
         }catch (Exception e){
