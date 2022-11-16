@@ -61,6 +61,8 @@ public class FaultEventPerfVo implements Serializable {
     private double fltdiscardoutmax;
     private double fltunknownmax;
     private double fltusagemax;
+    private String aiAccuracy;
+
 
     @JsonProperty("nren_id")
     public String getNrenId() {
@@ -77,5 +79,9 @@ public class FaultEventPerfVo implements Serializable {
     @JsonProperty("if_id")
     public String getIfId() {
         return ifId;
+    }
+    @JsonProperty("ai_accuracy")
+    public String getAiAccuracy() {
+        return aiAccuracy;
     }
 }
