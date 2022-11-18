@@ -1,4 +1,4 @@
-package com.nia.data.linkage.ai.common;
+package com.nia.data.linkage.ipsdn.common;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
