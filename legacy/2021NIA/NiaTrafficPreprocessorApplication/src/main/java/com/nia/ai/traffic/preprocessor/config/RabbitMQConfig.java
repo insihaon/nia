@@ -1,6 +1,8 @@
 package com.nia.ai.traffic.preprocessor.config;
 
 import com.nia.ai.traffic.preprocessor.listener.AiAnomalousTrafficeMsgListener;
+import com.nia.ai.traffic.preprocessor.listener.AiIpSdnNodeFactorMsgListener;
+import com.nia.ai.traffic.preprocessor.listener.AiIpSdnTrafficeMsgListener;
 import com.nia.ai.traffic.preprocessor.listener.AiNoxiousTrafficeMsgListener;
 import com.nia.ai.traffic.preprocessor.vo.RabbitMQVo;
 import org.springframework.amqp.core.AcknowledgeMode;
@@ -27,6 +29,12 @@ public class RabbitMQConfig{
 	@Autowired
 	private AiNoxiousTrafficeMsgListener aiNoxiousTrafficeMsgListener;
 
+	@Autowired
+	private AiIpSdnTrafficeMsgListener aiIpSdnTrafficeMsgListener;
+
+	@Autowired
+	private AiIpSdnNodeFactorMsgListener aiIpSdnNodeFactorMsgListener;
+
     @Bean
     public ConnectionFactory connectionFactory() {
         CachingConnectionFactory connectionFactory = new CachingConnectionFactory(rabbitMQVo.getAddress());
@@ -49,6 +57,16 @@ public class RabbitMQConfig{
     @Bean(name="NiaEngineTraffic_Queue")
     public Queue getNiaEngineTrafficQueue() {
         return new Queue(rabbitMQVo.getNiaEngineTrafficQueue());
+    }
+
+    @Bean(name="AiISdnTrafficResult_Queue")
+    public Queue getAiISdnTrafficResultQueue() {
+        return new Queue(rabbitMQVo.getAiISdnTrafficResultQueue());
+    }
+
+    @Bean(name="AiIpSdnNodeFactorResult_Queue")
+    public Queue getAiIpSdnNodeFactorResultQueue() {
+        return new Queue(rabbitMQVo.getAiIpSdnNodeFactorResultQueue());
     }
 
     @Bean(name="JsonMessageConverter")
@@ -80,6 +98,26 @@ public class RabbitMQConfig{
         listenerContainer.setConnectionFactory(connectionFactory());
         listenerContainer.setQueues(getNiaAiIpNoxiousTrafficResultQueue());
         listenerContainer.setMessageListener(aiNoxiousTrafficeMsgListener);
+        listenerContainer.setAcknowledgeMode(AcknowledgeMode.AUTO);
+        return listenerContainer;
+    }
+
+    @Bean(name="AiIpSdnTrafficResult_ListenerContainer")
+    public SimpleMessageListenerContainer ipSdnTrafficResultListenerContainer() {
+        SimpleMessageListenerContainer listenerContainer = new SimpleMessageListenerContainer();
+        listenerContainer.setConnectionFactory(connectionFactory());
+        listenerContainer.setQueues(getAiISdnTrafficResultQueue());
+        listenerContainer.setMessageListener(aiIpSdnTrafficeMsgListener);
+        listenerContainer.setAcknowledgeMode(AcknowledgeMode.AUTO);
+        return listenerContainer;
+    }
+
+    @Bean(name="AiIpSdnNodeFactorResult_ListenerContainer")
+    public SimpleMessageListenerContainer ipSdnNodeFactorListenerContainer() {
+        SimpleMessageListenerContainer listenerContainer = new SimpleMessageListenerContainer();
+        listenerContainer.setConnectionFactory(connectionFactory());
+        listenerContainer.setQueues(getAiIpSdnNodeFactorResultQueue());
+        listenerContainer.setMessageListener(aiIpSdnNodeFactorMsgListener);
         listenerContainer.setAcknowledgeMode(AcknowledgeMode.AUTO);
         return listenerContainer;
     }
