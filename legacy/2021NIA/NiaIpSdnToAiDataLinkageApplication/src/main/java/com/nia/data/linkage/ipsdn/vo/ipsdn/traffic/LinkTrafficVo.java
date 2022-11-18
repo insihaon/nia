@@ -9,6 +9,7 @@ import java.sql.Timestamp;
 @Data
 public class LinkTrafficVo implements Serializable {
 	private int sdn_node_id;
+	private int id;
 	private String strresid;
 	private String strresnm;
 	private int sdn_if_id;

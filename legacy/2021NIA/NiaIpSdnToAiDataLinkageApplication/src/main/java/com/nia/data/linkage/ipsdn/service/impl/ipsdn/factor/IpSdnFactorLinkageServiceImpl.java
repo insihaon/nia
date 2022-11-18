@@ -96,7 +96,8 @@ public class IpSdnFactorLinkageServiceImpl implements IpSdnFactorLinkageService 
 
                     nodeFactorListVo = nodeFactorListVoObjectFactory.getObject();
                     nodeFactorListVo.setData(nodeFactorVoList);
-         mapper = new ObjectMapper();
+
+                    mapper = new ObjectMapper();
                     jsonData = mapper.writeValueAsString(nodeFactorListVo);
 
                     putFile = createJsonFile("nodefactor", jsonData, nodeFactorVoList.get(nodeFactorVoList.size()-1).getMeasured_datetime().getTime()+"", ftpUpdatePath);
@@ -137,14 +138,11 @@ public class IpSdnFactorLinkageServiceImpl implements IpSdnFactorLinkageService 
                             LOGGER.error("=====> [IpSdnFactorLinkageService] sendFactorData upload(" + host2.split("\\.")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
                         }
 
-                    Comparator<NodeFactorVo> comparatorById  = Comparator.comparingInt(NodeFactorVo::getSdn_node_id);
-                    maxNodeFactorVo = nodeFactorVoList.stream()
-                            .max(comparatorById)
-                            .orElseThrow(NoSuchElementException::new);
+
 
                     strHashMap = new HashMap<>();
                     strHashMap.put("key", "aiIpSdnNodeFactorKey");
-                    strHashMap.put("value", maxNodeFactorVo.getSdn_node_id()+"");
+                    strHashMap.put("value", nodeFactorVoList.get(nodeFactorVoList.size()-1).getId()+"");
                     commonMapper.updateLinkageYdKey(strHashMap);
 
 

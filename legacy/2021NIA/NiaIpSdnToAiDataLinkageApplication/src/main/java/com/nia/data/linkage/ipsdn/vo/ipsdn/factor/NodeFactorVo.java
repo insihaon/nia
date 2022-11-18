@@ -9,6 +9,7 @@ import java.sql.Timestamp;
 @Data
 public class NodeFactorVo implements Serializable {
 	private int sdn_node_id;
+	private int id;
 	private String strresid;
 	private String strresnm;
 	private double cpuUsage;
