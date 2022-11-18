@@ -1,4 +1,4 @@
-package com.nia.data.linkage.ai.config;
+package com.nia.data.linkage.ipsdn.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;

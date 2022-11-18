@@ -3,7 +3,6 @@ package com.nia.data.linkage.ai.service.impl.trans.perf;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nia.data.linkage.ai.common.SFTPSession;
 import com.nia.data.linkage.ai.common.UtlDateHelper;
-import com.nia.data.linkage.ai.common.UtlFileReaderWriter;
 import com.nia.data.linkage.ai.mapper.common.CommonMapper;
 import com.nia.data.linkage.ai.mapper.trans.TransDataMapper;
 import com.nia.data.linkage.ai.service.trans.perf.RoadmPmDataAiLinkageService;
