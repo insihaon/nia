@@ -39,4 +39,18 @@ public class RabbitMQVo implements Serializable {
     private String niaAiIpNoxiousTrafficResultRoutingKey;
     @Value("${spring.rabbitmq.aiIpNoxiousTrafficResultQueue}")
     private String niaAiIpNoxiousTrafficResultQueue;
+
+    @Value("${spring.rabbitmq.aiIpSdnTrafficResultExchange}")
+    private String aiIpSdnTrafficResultExchange;
+    @Value("${spring.rabbitmq.aiIpSdnTrafficResultRoutingKey}")
+    private String aiIpSdnTrafficResultRoutingKey;
+    @Value("${spring.rabbitmq.aiIpSdnTrafficResultQueue}")
+    private String aiISdnTrafficResultQueue;
+
+    @Value("${spring.rabbitmq.aiIpSdnNodeFactorResultExchange}")
+    private String aiIpSdnNodeFactorResultExchange;
+    @Value("${spring.rabbitmq.aiIpSdnNodeFactorResultRoutingKey}")
+    private String aiIpSdnNodeFactorResultRoutingKey;
+    @Value("${spring.rabbitmq.aiIpSdnNodeFactorResultQueue}")
+    private String aiIpSdnNodeFactorResultQueue;
 }
