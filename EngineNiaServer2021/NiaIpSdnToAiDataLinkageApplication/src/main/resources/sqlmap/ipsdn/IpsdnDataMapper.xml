@@ -20,13 +20,13 @@
 
 
 <!--    트래픽       -->
-    <select id="selectTrafficList" resultType="com.nia.data.linkage.ipsdn.vo.ipsdn.traffic.LinkTrafficVo">
+    <select id="selectTrafficList" resultType="com.nia.data.linkage.ipsdn.vo.ipsdn.traffic.LinkTrafficVo" parameterType="int">
         SELECT N.ID AS SDN_NODE_ID
              , NM.NODE_NUM AS STRRESID, NM.NODE_NM AS STRRESNM
              , I.ID AS SDN_IF_ID, I.IF_NAME AS STRIFNM
              , PM.IF_NUM AS STRIFID
              , LT.TX_BIT_RATE AS FLTBPSOUT, LT.RX_BIT_RATE AS FLTBPSIN, LT.TX_PKT_RATE AS FLTPPSOUT, LT.RX_PKT_RATE AS FLTPPSIN
-             , UO.NREN_ID, UO.NREN_NAME, LT.MEASURED_DATETIME
+             , UO.NREN_ID, UO.NREN_NAME, LT.MEASURED_DATETIME, LT.ID
         FROM IP_SDN.TB_LINK_TRAFFIC LT
                  INNER JOIN IP_SDN.TB_INTERFACE I
                             ON LT.IF_ID = I.ID
@@ -39,20 +39,20 @@
   LEFT OUTER JOIN RESOURCE.TB_USER_ORGAN UO
         ON UO.NODE_ID = NM.NODE_ID
             AND UO.IF_ID = PM.IF_ID
-        WHERE PM.NODE_NUM = NM.NODE_NUM
-          AND LT.MEASURED_DATETIME > '2022-11-15 00:00:00'
+        WHERE PM.NODE_NUM = NM.NODE_NUM AND LT.ID > #{dataKey}
+        ORDER BY LT.ID
     </select>
 
     <!--    팩터      -->
     <select id="selectNodeFactorLink" resultType="com.nia.data.linkage.ipsdn.vo.ipsdn.factor.NodeFactorVo" parameterType="int" >
         SELECT N.ID AS SDN_NODE_ID
              , NM.NODE_NUM as STRRESID , NM.NODE_NM as STRRESNM
-             , NF.CPU_USAGE as CpuUsage , NF.MEM_USAGE as MemUsage,NF.MEASURED_DATETIME as measured_datetime
+             , NF.CPU_USAGE as CpuUsage , NF.MEM_USAGE as MemUsage,NF.MEASURED_DATETIME as measured_datetime, NF.ID
         FROM IP_SDN.TB_NODEFACTOR NF
                  INNER JOIN IP_SDN.TB_NODE N ON NF.NODE_ID = N.ID
                  INNER JOIN RESOURCE.TB_NODE_MST NM ON N.ID = NM.IP_SDN_ID::INT
-        WHERE NF.MEASURED_DATETIME > '2022-10-28 15:20:00'
-        ORDER BY NF.MEASURED_DATETIME
+        WHERE NF.ID > #{dataKey}
+        ORDER BY NF.ID
     </select>
 
     <select id="selectSyslogData" resultType="com.nia.data.linkage.ipsdn.vo.ipsdn.syslog.SyslogDataVo" parameterType="int">

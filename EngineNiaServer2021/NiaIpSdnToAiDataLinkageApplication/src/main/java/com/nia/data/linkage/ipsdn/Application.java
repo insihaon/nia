@@ -59,6 +59,6 @@ public class Application implements CommandLineRunner {
 //        ipSdnTrafficLinkageService.sendTrafficData();
 
 //        ipSdnSflowLinkageService.sendSflowData();
-         ipSdnSyslogLinkageService.sendSyslogData();
+//         ipSdnSyslogLinkageService.sendSyslogData();
     }
 }

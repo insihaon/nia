@@ -142,21 +142,21 @@ public class IpSdnTrafficLinkageServiceImpl implements IpSdnTrafficLinkageServic
                         }
 
 
-                    Comparator<LinkTrafficVo> comparatorById  = Comparator.comparingInt(LinkTrafficVo::getSdn_node_id);
-                    maxLinkTrafficVo = linkTrafficVoList.stream()
-                            .max(comparatorById)
-                            .orElseThrow(NoSuchElementException::new);
+//                    Comparator<LinkTrafficVo> comparatorById  = Comparator.comparingInt(LinkTrafficVo::getId);
+//                    maxLinkTrafficVo = linkTrafficVoList.stream()
+//                            .max(comparatorById)
+//                            .orElseThrow(NoSuchElementException::new);
 
                     strHashMap = new HashMap<>();
                     strHashMap.put("key", "aiIpSdnTrafficeKey");
-                    strHashMap.put("value", maxLinkTrafficVo.getSdn_node_id()+"");
+                    strHashMap.put("value", linkTrafficVoList.get(linkTrafficVoList.size()-1).getId()+"");
                     commonMapper.updateLinkageYdKey(strHashMap);
 
                     if(putFile.exists()){
                         fileSize = (putFile.length()) / 1024;
 
                         strHashMap = new HashMap<>();
-                        strHashMap.put("key", "ipSdnTrafficeKey");
+                        strHashMap.put("key", "aiIpSdnTrafficeKey");
                         strHashMap.put("fileName", putFile.getName());
                         strHashMap.put("fileSize", fileSize+"");
                         strHashMap.put("rowCnt", linkTrafficVoList.size()+"");
@@ -187,7 +187,6 @@ public class IpSdnTrafficLinkageServiceImpl implements IpSdnTrafficLinkageServic
             }
 
             putFile = new File(folder.getPath()+"/"+eventType + "_" + perfKey+".json");
-            //          perfKey >>  UtlDateHelper.getCurrentDate()
 
             if(!putFile.isFile()){
                 putFile.createNewFile();
