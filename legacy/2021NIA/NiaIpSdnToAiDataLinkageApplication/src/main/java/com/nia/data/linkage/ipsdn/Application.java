@@ -1,5 +1,6 @@
 package com.nia.data.linkage.ipsdn;
 
+import com.nia.data.linkage.ipsdn.service.ipsdn.alarm.IpSdnAlarmToAiLinkageService;
 import com.nia.data.linkage.ipsdn.service.ipsdn.factor.IpSdnFactorLinkageService;
 import com.nia.data.linkage.ipsdn.service.ipsdn.resource.IpSdnResourceLinkageService;
 import com.nia.data.linkage.ipsdn.service.ipsdn.sflow.IpSdnSflowLinkageService;
@@ -39,6 +40,10 @@ public class Application implements CommandLineRunner {
     @Qualifier("IpSdnSflowDataAiLinkageService")
     private IpSdnSflowLinkageService ipSdnSflowLinkageService;
 
+    @Autowired
+    @Qualifier("IpSdnAlarmToAiLinkageService")
+    private IpSdnAlarmToAiLinkageService ipSdnAlarmToAiLinkageService;
+
 
     @Autowired
     @Qualifier("EntityService")
@@ -60,5 +65,7 @@ public class Application implements CommandLineRunner {
 
 //        ipSdnSflowLinkageService.sendSflowData();
 //         ipSdnSyslogLinkageService.sendSyslogData();
+
+        ipSdnAlarmToAiLinkageService.sendAlarmData();
     }
 }

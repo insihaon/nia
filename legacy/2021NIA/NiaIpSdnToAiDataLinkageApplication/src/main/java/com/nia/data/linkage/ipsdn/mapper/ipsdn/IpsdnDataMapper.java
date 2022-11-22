@@ -1,5 +1,6 @@
 package com.nia.data.linkage.ipsdn.mapper.ipsdn;
 
+import com.nia.data.linkage.ipsdn.vo.ipsdn.alarm.AlarmDataVo;
 import com.nia.data.linkage.ipsdn.vo.ipsdn.factor.NodeFactorVo;
 import com.nia.data.linkage.ipsdn.vo.ipsdn.resource.InterfaceVo;
 import com.nia.data.linkage.ipsdn.vo.ipsdn.resource.LinkVo;
@@ -20,5 +21,7 @@ public interface IpsdnDataMapper {
     ArrayList<LinkTrafficVo> selectTrafficList(int dataKey);
     ArrayList<SyslogDataVo> selectSyslogData(int dataKey);
     ArrayList<SflowDataVo> selectSflowData(int dataKey);
+
+    ArrayList<AlarmDataVo> selectAlarmList(int alarmno);
 
 }
