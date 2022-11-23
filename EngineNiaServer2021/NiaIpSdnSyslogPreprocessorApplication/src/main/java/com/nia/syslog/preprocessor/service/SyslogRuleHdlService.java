@@ -48,6 +48,7 @@ public class SyslogRuleHdlService {
 //                                    && (!StringUtils.isEmpty(x.getOccurExceptStr3()) && !syslogDataVo.getFields().getMessage().contains(x.getOccurExceptStr3()))
                         )
                         .collect(Collectors.toList());
+
             }
 
             Comparator<SyslogRuleVo> comparatorByPriority = Comparator.comparingInt(SyslogRuleVo::getPriorityOrder);
