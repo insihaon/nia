@@ -18,10 +18,9 @@ public class TagsVo implements Serializable {
     private String appName;
     private String facility;
     private String host;
-    @JsonProperty("host_name")
+    @JsonProperty("hostname")
     private String hostName;
     private String severity;
     private String source;
-//    source는 String이 맞는걸까?
     private Timestamp timestamp;
 }
