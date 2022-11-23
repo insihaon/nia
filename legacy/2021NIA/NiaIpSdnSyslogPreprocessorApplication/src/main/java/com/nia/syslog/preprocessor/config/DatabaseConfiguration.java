@@ -1,6 +1,6 @@
 package com.nia.syslog.preprocessor.config;
 
-import com.nia.alarm.preprocessor.vo.config.DatabaseConfigVo;
+import com.nia.syslog.preprocessor.vo.config.DatabaseConfigVo;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.apache.ibatis.session.SqlSessionFactory;

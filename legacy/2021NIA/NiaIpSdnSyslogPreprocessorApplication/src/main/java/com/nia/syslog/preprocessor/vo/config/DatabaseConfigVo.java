@@ -12,8 +12,6 @@ public class DatabaseConfigVo implements Serializable {
 	
 	@Value("${spring.datasource.driver-class-name}")
 	private String driverClassName;
-	@Value("${spring.datasource.data-source-class-name}")
-	private String dataSourceClassName;
 	@Value("${spring.datasource.url}")
 	private String url;
 	@Value("${spring.datasource.username}")

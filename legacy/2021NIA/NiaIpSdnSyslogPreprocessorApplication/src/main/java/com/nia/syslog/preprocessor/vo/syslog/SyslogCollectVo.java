@@ -6,6 +6,8 @@ import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Component
 @Data
@@ -32,7 +34,7 @@ public class SyslogCollectVo implements Serializable {
 		this.setHostname(syslogDataVo.getTags().getHostName());
 		this.setFacility(syslogDataVo.getTags().getFacility());
 		this.setSeverity(syslogDataVo.getTags().getSeverity());
-		this.setCollectTimestamp(syslogDataVo.getTimestamp());
+		this.setCollectTimestamp(Timestamp.valueOf(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(syslogDataVo.getTimestamp() * 1000L))));
 		this.setFacilityCode(syslogDataVo.getFields().getFacilityCode());
 		this.setSeverityCode(syslogDataVo.getFields().getSeverityCode());
 		this.setSyslogMessage(syslogDataVo.getFields().getMessage());
