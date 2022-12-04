@@ -596,14 +596,21 @@
 
     <update id="updateAnomalousTrafficTicketId" parameterType="java.util.HashMap">
         UPDATE RCA.TB_ANOMALOUS_TRAFFIC
-        SET TICKET_ID = #{ticketId}
-        WHERE STRIFID = #{strifid} AND INTTIMESTAMP = #{inttimestamp}::int
+           SET TICKET_ID = #{ticketId}
+         WHERE STRIFID = #{strifid} AND INTTIMESTAMP = #{inttimestamp}::int
+           AND TICKET_ID IS NULL
     </update>
 
     <update id="updateNoxiousTrafficTicketId" parameterType="java.util.HashMap">
         UPDATE RCA.TB_NOXIOUS_TRAFFIC
-        SET TICKET_ID = #{ticketId}
-        WHERE STRRESIP = #{strresip} AND STRS_IP = #{strsIp} AND STRS_PORT = #{strsPort} AND STRD_IP = #{strdIp} AND STRD_PORT = #{strdPort} AND DATEREGDATE = #{dateregdate}::timestamp
+           SET TICKET_ID = #{ticketId}
+         WHERE STRRESIP = #{strresip}
+           AND STRS_IP = #{strsIp}
+           AND STRS_PORT = #{strsPort}
+           AND STRD_IP = #{strdIp}
+           AND STRD_PORT = #{strdPort}
+           AND DATEREGDATE = #{dateregdate}::timestamp
+           AND TICKET_ID IS NULL
     </update>
 
     <select id="selectAnomalousTrafficAlarm" resultType="com.nia.engine.vo.aiTraffic.anomalous.AnomalousTrafficVo" parameterType="java.util.HashMap">

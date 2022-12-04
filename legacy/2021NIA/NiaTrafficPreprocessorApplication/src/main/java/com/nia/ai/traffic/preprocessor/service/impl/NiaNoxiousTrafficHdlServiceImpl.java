@@ -42,6 +42,7 @@ public class NiaNoxiousTrafficHdlServiceImpl implements NiaNoxiousTrafficHdlServ
 
         HashMap<String, String> hashMap;
         ArrayList<NoxiousTrfficVo> noxiousTrfficVoList;
+        int cnt = 0;
 
         try {
             if(noxiousListVo != null){
@@ -58,13 +59,19 @@ public class NiaNoxiousTrafficHdlServiceImpl implements NiaNoxiousTrafficHdlServ
                             hashMap.put("strdIp", noxiousTrfficVo.getStrd_ip());
                             hashMap.put("strdPort", String.valueOf(noxiousTrfficVo.getStrd_port()));
                             hashMap.put("dateregdate", String.valueOf(noxiousTrfficVo.getDateregdate()));
-                            trafficMapper.insertNoxiousTraffic(hashMap);
 
-                            trafficMapper.insertAiNoxious(noxiousTrfficVo);
+                            cnt = trafficMapper.selectNoxiousTrafficCheck(hashMap);
 
-                            noxiousTrfficVoList.add(noxiousTrfficVo);
-                            LOGGER.info("==========>[NiaNoxiousTrafficHdlService] niaNoxiousTrafficeHdlProcessor add : "+noxiousTrfficVo.toString()+"<==============");
+                            LOGGER.info("==========>[NiaNoxiousTrafficHdlService] niaNoxiousTrafficeHdlProcessor check cnt : "+cnt+"<==============");
 
+                            if(cnt < 1){
+                                trafficMapper.insertNoxiousTraffic(hashMap);
+
+                                trafficMapper.insertAiNoxious(noxiousTrfficVo);
+
+                                noxiousTrfficVoList.add(noxiousTrfficVo);
+                                LOGGER.info("==========>[NiaNoxiousTrafficHdlService] niaNoxiousTrafficeHdlProcessor add : "+noxiousTrfficVo.toString()+"<==============");
+                            }
                         }
                     }
 

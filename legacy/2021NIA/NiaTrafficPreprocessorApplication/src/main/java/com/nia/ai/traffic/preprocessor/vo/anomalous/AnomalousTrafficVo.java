@@ -16,7 +16,9 @@ import java.io.Serializable;
 public class AnomalousTrafficVo implements Serializable {
 
     private String strifid;
+    private String sdn_node_id;
     private String inttimestamp;
+    private String measured_datetime;
     private int fltbpsin;
     private String fltbpsin_predict;
     private String fltbpsin_threshold_upper;
@@ -27,4 +29,6 @@ public class AnomalousTrafficVo implements Serializable {
     private String fltbpsout_threshold_upper;
     private String fltbpsout_threshold_lower;
     private boolean fltbpsout_anomaly;
+
+
 }

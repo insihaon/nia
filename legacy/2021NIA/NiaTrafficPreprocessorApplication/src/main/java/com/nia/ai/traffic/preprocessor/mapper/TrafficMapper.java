@@ -14,4 +14,7 @@ public interface TrafficMapper {
     void insertNoxiousTraffic(HashMap<String, String> map);
     void insertAiAnomalous(AnomalousTrafficVo anomalousTrafficVo);
     void insertAiNoxious(NoxiousTrfficVo noxiousTrfficVo);
+
+    int selectAnomalousTrafficCheck(HashMap<String, String> map);
+    int selectNoxiousTrafficCheck(HashMap<String, String> map);
 }

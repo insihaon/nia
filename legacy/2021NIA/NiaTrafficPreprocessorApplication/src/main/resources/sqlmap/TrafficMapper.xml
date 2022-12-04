@@ -3,9 +3,24 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.nia.ai.traffic.preprocessor.mapper.TrafficMapper">
 
+    <select id="selectAnomalousTrafficCheck" parameterType="java.util.HashMap" resultType="int">
+        SELECT COUNT(*) AS CNT FROM RCA.TB_ANOMALOUS_TRAFFIC WHERE STRIFID = #{strifid} AND INTTIMESTAMP = #{inttimestamp} ::integer
+    </select>
+
+    <select id="selectNoxiousTrafficCheck" parameterType="java.util.HashMap" resultType="int">
+        SELECT COUNT(*) AS CNT
+          FROM RCA.TB_NOXIOUS_TRAFFIC
+         WHERE DATEREGDATE = #{dateregdate} ::timestamp
+           AND STRRESIP = #{strresip}
+           AND STRS_IP = #{strsIp}
+           AND STRS_PORT = #{strsPort}
+           AND STRD_IP = #{strdIp}
+           AND STRD_PORT = #{strdPort}
+    </select>
+
     <insert id="insertAnomalousTraffic" parameterType="java.util.HashMap">
         INSERT INTO RCA.TB_ANOMALOUS_TRAFFIC
-        SELECT NULL, CPI.STRIFID, PM.IF_ID, CPI.STRRESID, PM.NODE_ID
+        SELECT DISTINCT NULL, CPI.STRIFID, PM.IF_ID, CPI.STRRESID, PM.NODE_ID
              , CPI.STRTYPEMIN, CPI.INTTIMESTAMP, CPI.INTYEAR, CPI.INTMONTH, CPI.INTDAY
              , CPI.INTHOUR, CPI.INTMIN, CPI.INTWEEK, CPI.INTBANDWIDTH, CPI.FLTBPSIN
              , CPI.FLTBPSOUT, CPI.FLTPPSIN, CPI.FLTPPSOUT, CPI.FLTERRORIN, CPI.FLTERROROUT
@@ -24,7 +39,7 @@
 
     <insert id="insertNoxiousTraffic" parameterType="java.util.HashMap">
         INSERT INTO RCA.TB_NOXIOUS_TRAFFIC
-        SELECT NULL, NM.NODE_NUM, SL.STRRESIP, SL.STRRESNAME, SL.STRS_IP
+        SELECT DISTINCT NULL, NM.NODE_NUM, SL.STRRESIP, SL.STRRESNAME, SL.STRS_IP
              , SL.STRS_PORT, SL.STRD_IP, SL.STRD_PORT, SL.STRS_MAC, SL.STRD_MAC
              , SL.STRPROTOCOL, SL.STRIPV4TOS, SL.STRCHANNEL, SL.STRSENDERIP, SL.STRIN_INTERFACE
              , SL.STROUT_INTERFACE, SL.STRBYTES_COL, SL.STRCOUNTS, SL.DATEREGDATE

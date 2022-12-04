@@ -23,9 +23,6 @@ public class NiaEngineTrafficMsgListener implements ChannelAwareMessageListener 
 	@Qualifier("RcaTrafficTicketService")
 	private RcaTrafficTicketService rcaTrafficTicketService;
 
-//	@Autowired
-//	private AiTicketAmqp aiTicketAmqp;
-
 	@Override
 	public void onMessage(Message message, Channel channel) {
 		LOGGER.info("==========>[NiaEngineTrafficMsgListener] onMessage : "+new String(message.getBody())+"<==============");
