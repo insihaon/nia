@@ -1,9 +1,9 @@
 package com.nia.ai.traffic.preprocessor.config;
 
-import com.nia.ai.traffic.preprocessor.listener.AiAnomalousTrafficeMsgListener;
+import com.nia.ai.traffic.preprocessor.listener.AiAnomalousTrafficMsgListener;
 import com.nia.ai.traffic.preprocessor.listener.AiIpSdnNodeFactorMsgListener;
-import com.nia.ai.traffic.preprocessor.listener.AiIpSdnTrafficeMsgListener;
-import com.nia.ai.traffic.preprocessor.listener.AiNoxiousTrafficeMsgListener;
+import com.nia.ai.traffic.preprocessor.listener.AiIpSdnTrafficMsgListener;
+import com.nia.ai.traffic.preprocessor.listener.AiNoxiousTrafficMsgListener;
 import com.nia.ai.traffic.preprocessor.vo.RabbitMQVo;
 import org.springframework.amqp.core.AcknowledgeMode;
 import org.springframework.amqp.core.Queue;
@@ -24,13 +24,13 @@ public class RabbitMQConfig{
 	private RabbitMQVo rabbitMQVo;
 
 	@Autowired
-	private AiAnomalousTrafficeMsgListener aiAnomalousTrafficeMsgListener;
+	private AiAnomalousTrafficMsgListener aiAnomalousTrafficMsgListener;
 
 	@Autowired
-	private AiNoxiousTrafficeMsgListener aiNoxiousTrafficeMsgListener;
+	private AiNoxiousTrafficMsgListener aiNoxiousTrafficMsgListener;
 
 	@Autowired
-	private AiIpSdnTrafficeMsgListener aiIpSdnTrafficeMsgListener;
+	private AiIpSdnTrafficMsgListener aiIpSdnTrafficMsgListener;
 
 	@Autowired
 	private AiIpSdnNodeFactorMsgListener aiIpSdnNodeFactorMsgListener;
@@ -87,7 +87,7 @@ public class RabbitMQConfig{
         SimpleMessageListenerContainer listenerContainer = new SimpleMessageListenerContainer();
         listenerContainer.setConnectionFactory(connectionFactory());
         listenerContainer.setQueues(getNiaAiIpAnomalousTrafficResultQueue());
-        listenerContainer.setMessageListener(aiAnomalousTrafficeMsgListener);
+        listenerContainer.setMessageListener(aiAnomalousTrafficMsgListener);
         listenerContainer.setAcknowledgeMode(AcknowledgeMode.AUTO);
         return listenerContainer;
     }
@@ -97,7 +97,7 @@ public class RabbitMQConfig{
         SimpleMessageListenerContainer listenerContainer = new SimpleMessageListenerContainer();
         listenerContainer.setConnectionFactory(connectionFactory());
         listenerContainer.setQueues(getNiaAiIpNoxiousTrafficResultQueue());
-        listenerContainer.setMessageListener(aiNoxiousTrafficeMsgListener);
+        listenerContainer.setMessageListener(aiNoxiousTrafficMsgListener);
         listenerContainer.setAcknowledgeMode(AcknowledgeMode.AUTO);
         return listenerContainer;
     }
@@ -107,7 +107,7 @@ public class RabbitMQConfig{
         SimpleMessageListenerContainer listenerContainer = new SimpleMessageListenerContainer();
         listenerContainer.setConnectionFactory(connectionFactory());
         listenerContainer.setQueues(getAiISdnTrafficResultQueue());
-        listenerContainer.setMessageListener(aiIpSdnTrafficeMsgListener);
+        listenerContainer.setMessageListener(aiIpSdnTrafficMsgListener);
         listenerContainer.setAcknowledgeMode(AcknowledgeMode.AUTO);
         return listenerContainer;
     }

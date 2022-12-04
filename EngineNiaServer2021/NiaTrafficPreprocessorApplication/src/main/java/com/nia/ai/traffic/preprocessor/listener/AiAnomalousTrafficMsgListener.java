@@ -14,8 +14,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AiAnomalousTrafficeMsgListener implements ChannelAwareMessageListener {
-	private static final Logger LOGGER = LoggerFactory.getLogger(AiAnomalousTrafficeMsgListener.class);
+public class AiAnomalousTrafficMsgListener implements ChannelAwareMessageListener {
+	private static final Logger LOGGER = LoggerFactory.getLogger(AiAnomalousTrafficMsgListener.class);
 
 	@Autowired
 	private org.springframework.beans.factory.ObjectFactory<AnomalousTrafficListVo> perfListVoObjectFactory;

@@ -97,11 +97,11 @@ spring:
     aiIpNoxiousTrafficResultRoutingKey: AiIpNoxiousTrafficResultIndexDirectly
 
     aiIpSdnTrafficResultExchange: nia.exchangeAiIpSdnTrafficResultDirectly
-    aiISdnTrafficResultQueue: nia.AiIpSdnTrafficResultIndexDirectly
+    aiIpSdnTrafficResultQueue: nia.AiIpSdnTrafficResultIndexDirectly
     aiIpSdnTrafficResultRoutingKey: AiIpSdnTrafficResultIndexDirectly
 
     aiIpSdnNodeFactorResultExchange: nia.exchangeAiIpSdnNodeFactorResultDirectly
-    aiISdnNodeFactorResultQueue: nia.AiIpSdnNodeFactorResultIndexDirectly
+    aiIpSdnNodeFactorResultQueue: nia.AiIpSdnNodeFactorResultIndexDirectly
     aiIpSdnNodeFactorResultRoutingKey: AiIpSdnNodeFactorResultIndexDirectly
 
   task:

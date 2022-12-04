@@ -42,6 +42,7 @@ public class NiaAnomalousTrafficHdlServiceImpl implements NiaAnomalousTrafficHdl
 
         HashMap<String, String> hashMap;
         ArrayList<AnomalousTrafficVo> anomalousTrafficVoList;
+        int cnt = 0;
 
         try {
             if(anomalousTrafficListVo != null){
@@ -57,12 +58,19 @@ public class NiaAnomalousTrafficHdlServiceImpl implements NiaAnomalousTrafficHdl
                             hashMap.put("inttimestamp", String.valueOf(anomalousTrafficVo.getInttimestamp()));
                             hashMap.put("fltbpsinAnomaly", String.valueOf(anomalousTrafficVo.isFltbpsin_anomaly()));
                             hashMap.put("fltbpsoutAnomaly", String.valueOf(anomalousTrafficVo.isFltbpsout_anomaly()));
-                            trafficMapper.insertAnomalousTraffic(hashMap);
 
-                            trafficMapper.insertAiAnomalous(anomalousTrafficVo);
+                            cnt = trafficMapper.selectAnomalousTrafficCheck(hashMap);
 
-                            anomalousTrafficVoList.add(anomalousTrafficVo);
-                            LOGGER.info("==========>[NiaAnomalousTrafficHdlService] niaAnomalousTrafficeHdlProcessor add : "+anomalousTrafficVo.toString()+"<==============");
+                            LOGGER.info("==========>[NiaAnomalousTrafficHdlService] niaAnomalousTrafficeHdlProcessor check cnt : "+cnt+"<==============");
+
+                            if(cnt < 1){
+                                trafficMapper.insertAnomalousTraffic(hashMap);
+
+                                trafficMapper.insertAiAnomalous(anomalousTrafficVo);
+
+                                anomalousTrafficVoList.add(anomalousTrafficVo);
+                                LOGGER.info("==========>[NiaAnomalousTrafficHdlService] niaAnomalousTrafficeHdlProcessor add : "+anomalousTrafficVo.toString()+"<==============");
+                            }
                         }
                     }
 
