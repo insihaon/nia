@@ -13,7 +13,7 @@ import java.io.Serializable;
 @Component()
 @Scope(value = "prototype")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class NoxiousTrfficVo implements Serializable {
+public class NoxiousTrafficVo implements Serializable {
      private String strresip;
      private String strresname;
      private String strs_ip;

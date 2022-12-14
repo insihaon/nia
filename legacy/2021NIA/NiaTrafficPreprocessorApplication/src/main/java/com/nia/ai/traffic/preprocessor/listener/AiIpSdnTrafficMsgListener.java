@@ -1,8 +1,9 @@
 package com.nia.ai.traffic.preprocessor.listener;
 
 import com.nia.ai.traffic.preprocessor.common.UtlCommon;
-import com.nia.ai.traffic.preprocessor.service.NiaNoxiousTrafficHdlService;
-import com.nia.ai.traffic.preprocessor.vo.noxious.NoxiousTrafficListVo;
+import com.nia.ai.traffic.preprocessor.service.NiaSdnTrafficHdlService;
+import com.nia.ai.traffic.preprocessor.vo.sdn.traffic.SdnTrafficJsonVo;
+import com.nia.ai.traffic.preprocessor.vo.sdn.traffic.SdnTrafficListVo;
 import com.rabbitmq.client.Channel;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -18,14 +19,14 @@ public class AiIpSdnTrafficMsgListener implements ChannelAwareMessageListener {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AiIpSdnTrafficMsgListener.class);
 
 	@Autowired
-	private org.springframework.beans.factory.ObjectFactory<NoxiousTrafficListVo> noxiousTrafficListVoObjectFactory;
+	private org.springframework.beans.factory.ObjectFactory<SdnTrafficJsonVo> sdnTrafficJsonVoObjectFactory;
 
 	@Autowired
-	@Qualifier("NiaNoxiousTrafficHdlService")
-	private NiaNoxiousTrafficHdlService niaNoxiousTrafficHdlService;
+	@Qualifier("NiaSdnTrafficHdlService")
+	private NiaSdnTrafficHdlService niaSdnTrafficHdlService;
 
 	@Autowired
-	private NoxiousTrafficListVo noxiousTrafficListVo;
+	private SdnTrafficJsonVo sdnTrafficJsonVo;
 
 	@Override
 	public void onMessage(Message message, Channel channel) {
@@ -34,17 +35,17 @@ public class AiIpSdnTrafficMsgListener implements ChannelAwareMessageListener {
 			Object obj;
 			String msg = new String(message.getBody());
 
-			noxiousTrafficListVo = noxiousTrafficListVoObjectFactory.getObject();
+			sdnTrafficJsonVo = sdnTrafficJsonVoObjectFactory.getObject();
 
-			obj = UtlCommon.jsonToObject(noxiousTrafficListVo, msg);
-			noxiousTrafficListVo = (NoxiousTrafficListVo)obj;
+			obj = UtlCommon.jsonToObject(sdnTrafficJsonVo, msg);
+			sdnTrafficJsonVo = (SdnTrafficJsonVo)obj;
 
-			LOGGER.info(">>>>>>>>>>[AiNoxiousTrafficeMsgListener] onMessage : " + noxiousTrafficListVo.getData().size() + " <<<<<<<<<<<<<<<<<");
+			LOGGER.info(">>>>>>>>>>[AiSdnTrafficeMsgListener] onMessage : " + sdnTrafficJsonVo.getData().getData().size() + " <<<<<<<<<<<<<<<<<");
 
-			niaNoxiousTrafficHdlService.niaNoxiousTrafficeHdlProcessor(noxiousTrafficListVo);
+			niaSdnTrafficHdlService.niaSdnTrafficeHdlProcessor(sdnTrafficJsonVo.getData());
 
 		} catch (Exception e) {
-			LOGGER.error("=====> [AiNoxiousTrafficeMsgListener] onMessage error "+ ExceptionUtils.getStackTrace(e)+ "<=====");
+			LOGGER.error("=====> [AiSdnTrafficeMsgListener] onMessage error "+ ExceptionUtils.getStackTrace(e)+ "<=====");
 		}
 	}
 }

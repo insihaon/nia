@@ -1,8 +1,8 @@
 package com.nia.ai.traffic.preprocessor.listener;
 
 import com.nia.ai.traffic.preprocessor.common.UtlCommon;
-import com.nia.ai.traffic.preprocessor.service.NiaNoxiousTrafficHdlService;
-import com.nia.ai.traffic.preprocessor.vo.noxious.NoxiousTrafficListVo;
+import com.nia.ai.traffic.preprocessor.service.NiaSdnNodeFactorHdlService;
+import com.nia.ai.traffic.preprocessor.vo.sdn.factor.NodeFactorJsonVo;
 import com.rabbitmq.client.Channel;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -18,14 +18,14 @@ public class AiIpSdnNodeFactorMsgListener implements ChannelAwareMessageListener
 	private static final Logger LOGGER = LoggerFactory.getLogger(AiIpSdnNodeFactorMsgListener.class);
 
 	@Autowired
-	private org.springframework.beans.factory.ObjectFactory<NoxiousTrafficListVo> noxiousTrafficListVoObjectFactory;
+	private org.springframework.beans.factory.ObjectFactory<NodeFactorJsonVo> nodeFactorJsonVoObjectFactory;
 
 	@Autowired
-	@Qualifier("NiaNoxiousTrafficHdlService")
-	private NiaNoxiousTrafficHdlService niaNoxiousTrafficHdlService;
+	@Qualifier("NiaSdnNodeFactorHdlService")
+	private NiaSdnNodeFactorHdlService niaSdnNodeFactorHdlService;
 
 	@Autowired
-	private NoxiousTrafficListVo noxiousTrafficListVo;
+	private NodeFactorJsonVo nodeFactorJsonVo;
 
 	@Override
 	public void onMessage(Message message, Channel channel) {
@@ -34,17 +34,17 @@ public class AiIpSdnNodeFactorMsgListener implements ChannelAwareMessageListener
 			Object obj;
 			String msg = new String(message.getBody());
 
-			noxiousTrafficListVo = noxiousTrafficListVoObjectFactory.getObject();
+			nodeFactorJsonVo = nodeFactorJsonVoObjectFactory.getObject();
 
-			obj = UtlCommon.jsonToObject(noxiousTrafficListVo, msg);
-			noxiousTrafficListVo = (NoxiousTrafficListVo)obj;
+			obj = UtlCommon.jsonToObject(nodeFactorJsonVo, msg);
+			nodeFactorJsonVo = (NodeFactorJsonVo) obj;
 
-			LOGGER.info(">>>>>>>>>>[AiNoxiousTrafficeMsgListener] onMessage : " + noxiousTrafficListVo.getData().size() + " <<<<<<<<<<<<<<<<<");
+			LOGGER.info(">>>>>>>>>>[AiNodeFactorMsgListener] onMessage : " + nodeFactorJsonVo.getData().getData().size() + " <<<<<<<<<<<<<<<<<");
 
-			niaNoxiousTrafficHdlService.niaNoxiousTrafficeHdlProcessor(noxiousTrafficListVo);
+			niaSdnNodeFactorHdlService.niaSdnNodeFactorHdlProcessor(nodeFactorJsonVo.getData());
 
 		} catch (Exception e) {
-			LOGGER.error("=====> [AiNoxiousTrafficeMsgListener] onMessage error "+ ExceptionUtils.getStackTrace(e)+ "<=====");
+			LOGGER.error("=====> [AiNodeFactorMsgListener] onMessage error "+ ExceptionUtils.getStackTrace(e)+ "<=====");
 		}
 	}
 }
