@@ -338,6 +338,7 @@ public class FaultEventServiceImpl implements FaultEventService {
                         break;
                     case "anomalous" :
                     case "ticket-att" :
+                    case "ticket-att2" :
                         try {
                             faultEventMapper.insertFaultEventXeCvnmsPerfIf(parameterMap);
                         }catch (Exception e){
