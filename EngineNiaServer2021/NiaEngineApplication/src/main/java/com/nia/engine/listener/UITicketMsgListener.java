@@ -1,14 +1,16 @@
 package com.nia.engine.listener;
 
 import com.nia.engine.amqp.EngineToUiTicketPrdAmqp;
+import com.nia.engine.common.RcaCodeInfo;
+import com.nia.engine.common.UtlCommon;
 import com.nia.engine.data.DataShareBean;
 import com.nia.engine.service.*;
 import com.nia.engine.service.impl.SingleDomainRcaServiceImpl;
-import com.nia.engine.vo.*;
+import com.nia.engine.vo.RCATicketHandlingStatus;
+import com.nia.engine.vo.RcaEngineResult;
 import com.nia.engine.vo.aiTraffic.anomalous.AnomalousTrafficListVo;
 import com.nia.engine.vo.aiTraffic.noxious.NoxiousTrafficListVo;
-import org.apache.commons.lang.StringUtils;
-import org.json.simple.JSONObject;
+import com.rabbitmq.client.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
@@ -17,16 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.json.simple.parser.JSONParser;
 
-import com.nia.engine.common.RcaCodeInfo;
-import com.nia.engine.common.UtlCommon;
-import com.rabbitmq.client.Channel;
-
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 
 @Service

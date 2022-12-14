@@ -4,6 +4,7 @@ import com.nia.engine.vo.*;
 import com.nia.engine.vo.aiTraffic.anomalous.AnomalousTrafficVo;
 import com.nia.engine.vo.aiTraffic.noxious.NoxiousTrfficVo;
 import com.nia.engine.vo.profile.ProfileVo;
+import com.nia.engine.vo.sdn.traffic.SdnTrafficVo;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.sql.Timestamp;
@@ -246,4 +247,5 @@ public interface TicketMapper{
 	RCATicket selectTrafficeMageParentTicket(HashMap<String, String> map);
 
 	int selectChildTicketCnt(String ticketId);
+
 }

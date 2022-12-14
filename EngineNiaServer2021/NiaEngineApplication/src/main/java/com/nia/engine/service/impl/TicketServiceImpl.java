@@ -6,6 +6,7 @@ import com.nia.engine.vo.*;
 import com.nia.engine.vo.aiTraffic.anomalous.AnomalousTrafficVo;
 import com.nia.engine.vo.aiTraffic.noxious.NoxiousTrfficVo;
 import com.nia.engine.vo.profile.ProfileVo;
+import com.nia.engine.vo.sdn.traffic.SdnTrafficVo;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -329,6 +330,7 @@ public class TicketServiceImpl implements TicketService {
 	public AnomalousTrafficVo selectAnomalousTrafficAlarm(HashMap<String, String> map) throws Exception {
 		return ticketMapper.selectAnomalousTrafficAlarm(map);
 	}
+
 
 	/**
 	 * Noxious Traffic Alarm 조회

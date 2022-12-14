@@ -47,6 +47,6 @@
              , PREFIX, TOPOLOGY, BANDWIDTH, LINK_TYPE, LINK_DIV
              , CIRCUIT_NUM
           FROM RESOURCE.TB_BACKBONE_LINK
-         WHERE ((SRC_NODE_NUM = #{resid} AND SRC_IF_NUM = #{ifId}) OR (DEST_NODE_NUM = #{resid} AND DEST_IF_NUM = #{ifid}))
+          WHERE ((SRC_NODE_NUM = #{resid} AND SRC_IF_NUM = #{ifid}) OR (DEST_NODE_NUM = #{resid} AND DEST_IF_NUM = #{ifid}))
     </select>
 </mapper>
