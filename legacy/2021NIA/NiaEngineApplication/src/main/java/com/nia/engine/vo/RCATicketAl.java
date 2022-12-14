@@ -2,6 +2,8 @@ package com.nia.engine.vo;
 
 import com.nia.engine.vo.aiTraffic.anomalous.AnomalousTrafficVo;
 import com.nia.engine.vo.aiTraffic.noxious.NoxiousTrfficVo;
+import com.nia.engine.vo.sdn.traffic.SdnTrafficListVo;
+import com.nia.engine.vo.sdn.traffic.SdnTrafficVo;
 import lombok.Data;
 import lombok.ToString;
 import org.springframework.context.annotation.Scope;

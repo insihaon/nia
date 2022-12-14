@@ -4,6 +4,7 @@ import com.nia.engine.vo.*;
 import com.nia.engine.vo.aiTraffic.anomalous.AnomalousTrafficVo;
 import com.nia.engine.vo.aiTraffic.noxious.NoxiousTrfficVo;
 import com.nia.engine.vo.profile.ProfileVo;
+import com.nia.engine.vo.sdn.traffic.SdnTrafficVo;
 
 import java.util.HashMap;
 import java.util.List;
@@ -229,4 +230,5 @@ public interface TicketService {
 	UserOrganVo selectUserOrgan(HashMap<String, String> map) throws Exception;
 
 	int selectChildTicketCnt(String ticketId) throws Exception;
+
 }

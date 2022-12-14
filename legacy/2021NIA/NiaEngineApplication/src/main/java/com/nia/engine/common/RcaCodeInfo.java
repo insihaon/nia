@@ -204,6 +204,7 @@ public class RcaCodeInfo {
 	public static final String DOMAIN_POTN = "POTN";							// POTN 화웨이 장비 도메인
 	public static final String DOMAIN_SWITCH = "SWITCH";							// SWITCH 장비 도메인
 	public static final String DOMAIN_TRAFFIC = "TRAFFIC";							// TRAFFIC 도메인
+	public static final String DOMAIN_FACTOR = "FACTOR"; 							//FACTOR 도메인
 
 	// RCA OBJECT TYPE
 	public static final String RCA_OBJECT_BASIC = "BASIC";
@@ -222,12 +223,19 @@ public class RcaCodeInfo {
 	public static final String RCA_RESULT_CIRCUIT_FAIL = "CircuitFail";			// 9. 회선장애
 	public static final String RCA_RESULT_SWITCH_FAIL = "SwitchFail";			// 10. SWITCH장애
 	public static final String RCA_RESULT_TRAFFIC_FAIL = "TrafficFail";			// 11. TRAFFIC장애
+	public static final String RCA_RESULT_FACTOR_FAIL = "FactorFail"; 				// 12. FACTOR 장애
+
 
 	//RCA Ticket Type
 	public static final String TICKET_TYPE_PERFORMACE = "PF"; // Cable Inspecter Ticket
 	public static final String TICKET_TYPE_RCATICKET = "RT"; // RCA Ticket
 	public static final String TICKET_TYPE_ANOMALOUS_TRAFFIC_TICKET = "ATT"; // RCA Ticket
+
+	public static final String TICKET_TYPE_ANOMALOUS2_TRAFFIC_TICKET = "ATT2"; // RCA Ticket
 	public static final String TICKET_TYPE_NOXIOUS_TRAFFIC_TICKET = "NTT"; // RCA Ticket
+	public static final String TICKET_TYPE_NODE_FACTOR_TICKET = "NFTT";
+
+
 
 	//RCA Ticket Status Code
 	public static final String TICKET_STATUS_INIT = "INIT"; //시작

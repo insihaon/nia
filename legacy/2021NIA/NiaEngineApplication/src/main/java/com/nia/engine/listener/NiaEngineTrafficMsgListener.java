@@ -41,9 +41,13 @@ public class NiaEngineTrafficMsgListener implements ChannelAwareMessageListener 
 			else if("noxious".equals(engineTrafficeResultVo.getGb())){
 				rcaTrafficTicketService.createNoxiousTrfficTicket(engineTrafficeResultVo.getNoxiousListVo());
 			}
+			else if("nodefactor".equals(engineTrafficeResultVo.getGb())){
+				rcaTrafficTicketService.createNodeFactorTicket(engineTrafficeResultVo.getNodeFactorListVo());
+			}else if("Traffic_N".equals(engineTrafficeResultVo.getGb())||"Traffic_P".equals(engineTrafficeResultVo.getGb())){
+				rcaTrafficTicketService.createSdnTrafficTicket((engineTrafficeResultVo.getTrafficListVo()));
+			}
 
 //			aiTicketAmqp.sendMessageCmd(engineTrafficeResultVo);
-//
 //			Thread.sleep(10 * 1000);
 		} catch (Exception e) {
 			LOGGER.error("==========>[NiaEngineTrafficMsgListener] onMessage error "+e.getMessage()+" <==============");

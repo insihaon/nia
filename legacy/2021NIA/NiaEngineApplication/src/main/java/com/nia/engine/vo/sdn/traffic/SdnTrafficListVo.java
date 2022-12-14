@@ -1,16 +1,17 @@
-package com.nia.engine.vo.aiTraffic.sdn;
+package com.nia.engine.vo.sdn.traffic;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 @Data
 @Component()
 @Scope(value = "prototype")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SdnTrafficListVo {
-    private ArrayList<SdnTrfficVo> data;
+public class SdnTrafficListVo implements Serializable {
+    private ArrayList<SdnTrafficVo> data;
 }

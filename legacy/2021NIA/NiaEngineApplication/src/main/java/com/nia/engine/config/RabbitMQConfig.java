@@ -38,8 +38,6 @@ public class RabbitMQConfig {
     @Autowired
     private NiaEngineTrafficMsgListener niaEngineTrafficMsgListener;
 
-//    @Autowired
-//	private UITicketMsgListener uiTicketMsgListener;
 
     @Bean
     public ConnectionFactory connectionFactory() {
@@ -118,7 +116,7 @@ public class RabbitMQConfig {
         listenerContainer.setAcknowledgeMode(AcknowledgeMode.AUTO);
         return listenerContainer;
     }
-    
+
     @Bean(name="EngineClear_ListenerContainer")
     public SimpleMessageListenerContainer engineClearListenerContainer() {
     	SimpleMessageListenerContainer listenerContainer = new SimpleMessageListenerContainer();
