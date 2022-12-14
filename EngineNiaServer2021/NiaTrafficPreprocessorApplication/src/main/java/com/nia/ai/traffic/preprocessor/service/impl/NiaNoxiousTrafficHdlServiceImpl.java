@@ -5,7 +5,7 @@ import com.nia.ai.traffic.preprocessor.mapper.TrafficMapper;
 import com.nia.ai.traffic.preprocessor.service.NiaNoxiousTrafficHdlService;
 import com.nia.ai.traffic.preprocessor.vo.EngineTrafficeResultVo;
 import com.nia.ai.traffic.preprocessor.vo.noxious.NoxiousTrafficListVo;
-import com.nia.ai.traffic.preprocessor.vo.noxious.NoxiousTrfficVo;
+import com.nia.ai.traffic.preprocessor.vo.noxious.NoxiousTrafficVo;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,24 +41,24 @@ public class NiaNoxiousTrafficHdlServiceImpl implements NiaNoxiousTrafficHdlServ
         LOGGER.info("==========>[NiaNoxiousTrafficHdlService] niaNoxiousTrafficeHdlProcessor <==============");
 
         HashMap<String, String> hashMap;
-        ArrayList<NoxiousTrfficVo> noxiousTrfficVoList;
+        ArrayList<NoxiousTrafficVo> noxiousTrafficVoList;
         int cnt = 0;
 
         try {
             if(noxiousListVo != null){
                 if(noxiousListVo.getData() != null && noxiousListVo.getData().size() > 0){
                     LOGGER.info("==========>[NiaNoxiousTrafficHdlService] niaNoxiousTrafficeHdlProcessor size : "+noxiousListVo.getData().size()+"<==============");
-                    noxiousTrfficVoList = new ArrayList<>();
+                    noxiousTrafficVoList = new ArrayList<>();
 
-                    for(NoxiousTrfficVo noxiousTrfficVo : noxiousListVo.getData()){
-                        if(noxiousTrfficVo.getAnomaly() == 1){
+                    for(NoxiousTrafficVo noxiousTrafficVo : noxiousListVo.getData()){
+                        if(noxiousTrafficVo.getAnomaly() == 1){
                             hashMap = new HashMap<>();
-                            hashMap.put("strresip", noxiousTrfficVo.getStrresip());
-                            hashMap.put("strsIp", noxiousTrfficVo.getStrs_ip());
-                            hashMap.put("strsPort", String.valueOf(noxiousTrfficVo.getStrs_port()));
-                            hashMap.put("strdIp", noxiousTrfficVo.getStrd_ip());
-                            hashMap.put("strdPort", String.valueOf(noxiousTrfficVo.getStrd_port()));
-                            hashMap.put("dateregdate", String.valueOf(noxiousTrfficVo.getDateregdate()));
+                            hashMap.put("strresip", noxiousTrafficVo.getStrresip());
+                            hashMap.put("strsIp", noxiousTrafficVo.getStrs_ip());
+                            hashMap.put("strsPort", String.valueOf(noxiousTrafficVo.getStrs_port()));
+                            hashMap.put("strdIp", noxiousTrafficVo.getStrd_ip());
+                            hashMap.put("strdPort", String.valueOf(noxiousTrafficVo.getStrd_port()));
+                            hashMap.put("dateregdate", String.valueOf(noxiousTrafficVo.getDateregdate()));
 
                             cnt = trafficMapper.selectNoxiousTrafficCheck(hashMap);
 
@@ -67,18 +67,18 @@ public class NiaNoxiousTrafficHdlServiceImpl implements NiaNoxiousTrafficHdlServ
                             if(cnt < 1){
                                 trafficMapper.insertNoxiousTraffic(hashMap);
 
-                                trafficMapper.insertAiNoxious(noxiousTrfficVo);
+                                trafficMapper.insertAiNoxious(noxiousTrafficVo);
 
-                                noxiousTrfficVoList.add(noxiousTrfficVo);
-                                LOGGER.info("==========>[NiaNoxiousTrafficHdlService] niaNoxiousTrafficeHdlProcessor add : "+noxiousTrfficVo.toString()+"<==============");
+                                noxiousTrafficVoList.add(noxiousTrafficVo);
+                                LOGGER.info("==========>[NiaNoxiousTrafficHdlService] niaNoxiousTrafficeHdlProcessor add : "+ noxiousTrafficVo.toString()+"<==============");
                             }
                         }
                     }
 
                     hashMap = null;
 
-                    if(noxiousTrfficVoList != null && noxiousTrfficVoList.size() > 0){
-                        noxiousListVo.setData(noxiousTrfficVoList);
+                    if(noxiousTrafficVoList != null && noxiousTrafficVoList.size() > 0){
+                        noxiousListVo.setData(noxiousTrafficVoList);
                         engineTrafficeResultVo = engineTrafficeResultVoObjectFactory.getObject();
                         engineTrafficeResultVo.setGb("noxious");
                         engineTrafficeResultVo.setNoxiousListVo(noxiousListVo);
