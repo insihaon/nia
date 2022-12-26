@@ -36,7 +36,7 @@ public class RestfulConfig {
     @Value("${spring.restTemplate.httpClient.maxConnPerRoute}")
     private int MAX_CONN_PER_ROUTE;
 
-    @Bean(name = "RestTemplate")
+    @Bean(name = "Intrnet_RestTemplate")
     public RestTemplate restTemplate() throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
 
         TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;

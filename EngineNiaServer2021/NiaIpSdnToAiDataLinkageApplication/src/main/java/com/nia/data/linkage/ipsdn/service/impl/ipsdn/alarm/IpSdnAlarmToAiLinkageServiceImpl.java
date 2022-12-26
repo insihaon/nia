@@ -64,6 +64,9 @@ public class IpSdnAlarmToAiLinkageServiceImpl implements IpSdnAlarmToAiLinkageSe
     @Value("${spring.profiles}")
     private String profiles;
 
+    @Autowired
+    private AlarmDataVo alarmDataVo;
+
     @Override
     public void sendAlarmData(){
         LOGGER.info("==========>[IpSdnAlarmToAiLinkageService] sendSyslogData <==============");
@@ -138,10 +141,14 @@ public class IpSdnAlarmToAiLinkageServiceImpl implements IpSdnAlarmToAiLinkageSe
                         LOGGER.error("=====> [IpSdnAlarmToAiLinkageService] sendAlarmData upload(" + host2.split("\\.")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
                     }
 
-                    Comparator<AlarmDataVo> comparatorById = Comparator.comparingInt(AlarmDataVo::getAlarmno);
-                    maxAlarmDataVo = alarmDataVoList.stream()
-                            .max(comparatorById)
-                            .orElseThrow(NoSuchElementException::new);
+//                    Comparator<AlarmDataVo> comparatorById = Comparator.comparingInt(Integer.parseInt(AlarmDataVo::getAlarmno));
+//                    maxAlarmDataVo = alarmDataVoList.stream()
+//                            .max(comparatorById)
+//                            .orElseThrow(NoSuchElementException::new);
+
+                    maxAlarmDataVo = alarmDataVoList.get(alarmDataVoList.size() -1 );
+                    LOGGER.info("=================> maxAlarmData" + maxAlarmDataVo);
+
 
 
                     strHashMap = new HashMap<>();

@@ -17,7 +17,7 @@ import java.util.Date;
 @Scope(value = "prototype")
 public class SflowCollectVo implements Serializable {
 
-	private int collectSeq;
+	private long collectSeq;
 	private String collectHost;
 	private String agentAddress;
 	private String etherType;

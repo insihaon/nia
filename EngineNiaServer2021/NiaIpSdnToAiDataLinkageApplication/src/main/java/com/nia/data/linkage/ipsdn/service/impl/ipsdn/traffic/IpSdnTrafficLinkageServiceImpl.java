@@ -19,9 +19,7 @@ import org.springframework.stereotype.Service;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.NoSuchElementException;
 
 @Service("IpSdnTrafficLinkageService")
 public class IpSdnTrafficLinkageServiceImpl implements IpSdnTrafficLinkageService {
@@ -103,7 +101,7 @@ public class IpSdnTrafficLinkageServiceImpl implements IpSdnTrafficLinkageServic
                     mapper = new ObjectMapper();
                     jsonData = mapper.writeValueAsString(linkTrafficListVo);
 
-                    putFile = createJsonFile("linktraffic", jsonData, linkTrafficVoList.get(linkTrafficVoList.size()-1).getMeasured_datetime().getTime()+"", ftpUpdatePath);
+                    putFile = createJsonFile("linktraffic", jsonData, linkTrafficVoList.get(linkTrafficVoList.size()-1).getMeasuredDatetime().getTime()+"", ftpUpdatePath);
 
                     sftpSession = sftpSessionObjectFactory.getObject();
 

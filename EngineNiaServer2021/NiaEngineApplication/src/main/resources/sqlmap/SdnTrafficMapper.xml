@@ -15,7 +15,7 @@
 		SET TICKET_ID = #{ticketId}
 		WHERE strifid = #{strifid}
 		AND STRRESID = #{strresid}
-		AND MEASURED_DATETIME = to_timestamp(cast(#{measured_datetime} AS int8)/1000)
+		AND MEASURED_DATETIME = to_timestamp(cast(#{inttimestamp} AS int8)/1000)
 	</update>
 
 </mapper>

@@ -7,20 +7,27 @@
     <file url="file://$PROJECT_DIR$/NiaAiResultLinkageApplication/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/NiaAlarmSimulatorApplication" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/NiaAlarmSimulatorApplication/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/NiaAlarmSimulatorApplication/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/NiaAlarmSimulatorApplicationTest" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/NiaAlarmSimulatorApplicationTest/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/NiaClusterApplication" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/NiaClusterApplication/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/NiaClusterApplication/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/NiaDataSnapShotServerApplication/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/NiaDataSnapShotServerApplication/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/NiaEmsLinkageApplication" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/NiaEmsLinkageApplication/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/NiaEngineApplication" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/NiaEngineApplication/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/NiaEngineApplication/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/NiaIpAlarmLinkageApplication" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/NiaIpAlarmLinkageApplication/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/NiaIpAlarmLinkageApplication/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/NiaIpAlarmSimulatorApplication" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/NiaIpAlarmSimulatorApplication/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/NiaIpAlarmSimulatorApplication/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/NiaIpCountryCodeLinkageApplication/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/NiaIpCountryCodeLinkageApplication/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/NiaIpEquipLinkageApplication" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/NiaIpEquipLinkageApplication/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/NiaIpEquipLinkageApplication/src/main/resources" charset="UTF-8" />
@@ -36,6 +43,10 @@
     <file url="file://$PROJECT_DIR$/NiaIpSdnSflowLinkageApplication/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/NiaIpSdnSyslogLinkageApplication/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/NiaIpSdnSyslogLinkageApplication/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/NiaIpSdnSyslogPreprocessorApplication/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/NiaIpSdnSyslogPreprocessorApplication/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/NiaIpSdnToAiDataLinkageApplication/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/NiaIpSdnToAiDataLinkageApplication/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/NiaIpSflowLinkageApplication" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/NiaIpSflowLinkageApplication/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/NiaIpSflowLinkageApplication/src/main/resources" charset="UTF-8" />

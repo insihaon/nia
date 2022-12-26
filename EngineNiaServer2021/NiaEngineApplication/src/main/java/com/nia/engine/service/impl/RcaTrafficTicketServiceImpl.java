@@ -602,7 +602,7 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
                         }
 
                         parameterMap = new HashMap<String, String>();
-                        parameterMap.put("ticketId", ticketId);
+                        parameterMap.put("ticketId", rcaTicket.getTicketId());
                         parameterMap.put("strifid", sdnTrafficVo.getStrifid());
                         parameterMap.put("strresid", sdnTrafficVo.getStrresid());
                         parameterMap.put("inttimestamp", sdnTrafficVo.getMeasured_datetime() + "");

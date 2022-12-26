@@ -139,7 +139,6 @@ public class IpSdnResourceLinkageServiceImpl implements IpSdnResourceLinkageServ
     @Override
     public void sendInterfaceData() {
         LOGGER.info("==========>[IpSdnResourceLinkageService] sendInterfaceData <==============");
-
         SFTPSession sftpSession;
         String jsonData;
         String ftpUpdatePath = uploadPath+"interface/";
@@ -168,6 +167,7 @@ public class IpSdnResourceLinkageServiceImpl implements IpSdnResourceLinkageServ
 
                 sftpSession = sftpSessionObjectFactory.getObject();
 
+
                 try {
                     sftpSession.init(host1, port, user, pw);
 
@@ -175,7 +175,6 @@ public class IpSdnResourceLinkageServiceImpl implements IpSdnResourceLinkageServ
                         if(!folder.exists()){
                             folder.mkdirs();
                         }
-
                             sftpSession.upload(ftpUpdatePath, putFile);
                         LOGGER.info("=====> [IpSdnResourceLinkageService] sendInterfaceData upload(" + host1.split("\\.")[3] + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
                     }

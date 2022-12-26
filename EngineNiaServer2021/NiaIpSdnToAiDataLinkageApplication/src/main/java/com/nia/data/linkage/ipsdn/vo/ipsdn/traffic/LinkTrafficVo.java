@@ -1,4 +1,5 @@
 package com.nia.data.linkage.ipsdn.vo.ipsdn.traffic;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -8,21 +9,43 @@ import java.sql.Timestamp;
 @Scope(value = "prototype")
 @Data
 public class LinkTrafficVo implements Serializable {
-	private int sdn_node_id;
+	private int sdnNodeId;
 	private int id;
 	private String strresid;
 	private String strresnm;
-	private int sdn_if_id;
+	private int sdnIfId;
 	private String strifid;
 	private String strifnm;
 	private int fltbpsin;
 	private int fltbpsout;
 	private int fltppsin;
 	private int fltppsout;
-	private String nren_id;
-	private String nren_name;
-	private Timestamp measured_datetime;
+	private String nrenId;
+	private String nrenName;
+	private Timestamp measuredDatetime;
 
+	@JsonProperty("sdn_node_id")
+	public int getSdnNodeId() {
+		return sdnNodeId;
+	}
 
+	@JsonProperty("sdn_if_id")
+	public int getSdnIfId() {
+		return sdnIfId;
+	}
 
+	@JsonProperty("nren_id")
+	public String getNrenId() {
+		return nrenId;
+	}
+
+	@JsonProperty("nren_name")
+	public String getNrenName() {
+		return nrenName;
+	}
+
+	@JsonProperty("measured_datetime")
+	public Timestamp getMeasuredDatetime() {
+		return measuredDatetime;
+	}
 }

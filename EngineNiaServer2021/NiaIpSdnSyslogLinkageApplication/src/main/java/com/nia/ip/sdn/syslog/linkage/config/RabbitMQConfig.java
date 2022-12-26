@@ -40,7 +40,7 @@ public class RabbitMQConfig {
         return new Jackson2JsonMessageConverter();
     }
 
-    @Bean(name="SyslogArlarm_RabbitTemplate")
+    @Bean(name="SyslogAlarm_RabbitTemplate")
     public RabbitTemplate rabbitTemplateCluster() {
         RabbitTemplate template = new RabbitTemplate(connectionFactory());
         template.setRoutingKey(rabbitMQVo.getNiaSyslogAlarmQueue());

@@ -79,7 +79,6 @@ public class IpSdnFactorLinkageServiceImpl implements IpSdnFactorLinkageService 
         HashMap<String, String> strHashMap;
 
         NodeFactorListVo nodeFactorListVo;
-        NodeFactorVo maxNodeFactorVo;
 
 
         try {
@@ -100,7 +99,7 @@ public class IpSdnFactorLinkageServiceImpl implements IpSdnFactorLinkageService 
                     mapper = new ObjectMapper();
                     jsonData = mapper.writeValueAsString(nodeFactorListVo);
 
-                    putFile = createJsonFile("nodefactor", jsonData, nodeFactorVoList.get(nodeFactorVoList.size()-1).getMeasured_datetime().getTime()+"", ftpUpdatePath);
+                    putFile = createJsonFile("nodefactor", jsonData, nodeFactorVoList.get(nodeFactorVoList.size()-1).getMeasuredDatetime().getTime()+"", ftpUpdatePath);
 
                     sftpSession = sftpSessionObjectFactory.getObject();
 

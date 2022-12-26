@@ -33,6 +33,7 @@ public class IpSdnSflowService {
             collectSeq = sflowMapper.selectSflowSeq();
 
             sflowDataVo.setCollectSeq(collectSeq);
+            LoggerPrint.infoLog("Sflow Seq ===> " + collectSeq);
 
             sflowCollectVo = sflowCollectVoObjectFactory.getObject();
             sflowCollectVo.setSflowCollectVo(sflowDataVo);
