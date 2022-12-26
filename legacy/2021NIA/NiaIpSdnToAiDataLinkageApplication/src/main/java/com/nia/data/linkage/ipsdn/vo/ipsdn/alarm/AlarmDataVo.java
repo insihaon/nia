@@ -13,51 +13,51 @@ import java.sql.Timestamp;
 @Component()
 @Scope(value = "prototype")
 public class AlarmDataVo implements Serializable {
-    private int alarmno;
+    private String alarmno;
     private Timestamp alarmtime;
-    private int nodeNum;
+    private String nodeNum;
     private String nodeNm;
     private String alarmmsg;
     private int alarmlvl;
     private String etc;
     private int ruleId;
 
-    @JsonProperty("AlarmNo")
-    public int getAlarmno() {
+    @JsonProperty("alarmno")
+    public String getAlarmno() {
         return alarmno;
     }
 
-    @JsonProperty("AlarmTime")
+    @JsonProperty("alarm_time")
     public Timestamp getAlarmtime() {
         return alarmtime;
     }
 
-    @JsonProperty("NodeNum")
-    public int getNodeNum() {
+    @JsonProperty("node_num")
+    public String getNodeNum() {
         return nodeNum;
     }
 
-    @JsonProperty("NodeNm")
+    @JsonProperty("node_nm")
     public String getNodeNm() {
         return nodeNm;
     }
 
-    @JsonProperty("AlarmMsg")
+    @JsonProperty("alarmmsg")
     public String getAlarmmsg() {
         return alarmmsg;
     }
 
-    @JsonProperty("AlarmLvl")
+    @JsonProperty("alarmlvl")
     public int getAlarmlvl() {
         return alarmlvl;
     }
 
-    @JsonProperty("Etc")
+    @JsonProperty("etc")
     public String getEtc() {
         return etc;
     }
 
-    @JsonProperty("RuleId")
+    @JsonProperty("rule_id")
     public int getRuleId() {
         return ruleId;
     }

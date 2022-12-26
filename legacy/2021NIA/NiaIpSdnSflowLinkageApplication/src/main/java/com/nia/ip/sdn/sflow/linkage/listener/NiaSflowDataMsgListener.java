@@ -33,7 +33,6 @@ public class NiaSflowDataMsgListener {
 
 			obj = UtlCommon.jsonToObject(sflowDataVo, message);
 			sflowDataVo = (SflowDataVo)obj;
-
 			ipSdnSflowService.sflowDataHdlProcessor(sflowDataVo);
 		} catch (Exception e) {
 			LOGGER.error("=====> [NiaSflowDataMsgListener] onMessage error "+ ExceptionUtils.getStackTrace(e)+ "<=====");

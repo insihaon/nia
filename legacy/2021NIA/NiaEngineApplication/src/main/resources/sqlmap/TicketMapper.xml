@@ -547,6 +547,8 @@
           AND ticket_type != 'TRAFFIC'
           AND ticket_type != 'ATT'
           AND ticket_type != 'NTT'
+          AND ticket_type != 'NFTT'
+          AND ticket_type != 'ATT2'
           AND profile_title is null
     </select>
 

@@ -57,7 +57,8 @@
 
 <!--    Syslog   -->
     <select id="selectSyslogData" resultType="com.nia.data.linkage.ipsdn.vo.ipsdn.syslog.SyslogDataVo" parameterType="int">
-        SELECT COLLECT_SEQ as collectSeq, COLLECT_HOST as collectHost, SOURCE, APPNAME, HOSTNAME, FACILITY_CODE as facilityCode, FACILITY, SEVERITY_CODE as severityCode,
+        SELECT COLLECT_SEQ as collectSeq, COLLECT_HOST as collectHost, SOURCE, APPNAME, HOSTNAME,
+               FACILITY_CODE as facilityCode, FACILITY, SEVERITY_CODE as severityCode,
                SEVERITY, SYSLOG_MESSAGE as syslogMessage, SYSLOG_PROCID as syslogProcid, COLLECT_TIMESTAMP as collectTimestamp
         FROM GATHER.TB_SYSLOG_COLLECT
         WHERE COLLECT_SEQ > #{collectSeq} AND COLLECT_TIMESTAMP > rca.fc_get_minus_time(1)

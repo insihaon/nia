@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
 public class SyslogDataPrdAmqp {
 
 	@Autowired
-	@Qualifier("SyslogArlarm_RabbitTemplate")
+	@Qualifier("SyslogAlarm_RabbitTemplate")
 	private RabbitTemplate rabbitTemplate;
 	
 	public void sendMessageCmd(SyslogDataVo syslogDataVo) {

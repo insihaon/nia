@@ -97,6 +97,7 @@ public class FaultEventServiceImpl implements FaultEventService {
                         break;
                     case "anomalous" :
                     case "ticket-att" :
+                    case "ticket-att2" :
                         ipPerfList = faultEventMapper.selectFaultEventXeCvnmsPerfIf(faultEventKey);
 //                        ipSflowLogList = faultEventMapper.selectFaultEventXeSflowLog(faultEventKey);
 

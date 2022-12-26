@@ -66,6 +66,6 @@ public class Application implements CommandLineRunner {
 //        ipSdnSflowLinkageService.sendSflowData();
 //         ipSdnSyslogLinkageService.sendSyslogData();
 
-        ipSdnAlarmToAiLinkageService.sendAlarmData();
+//        ipSdnAlarmToAiLinkageService.sendAlarmData();
     }
 }

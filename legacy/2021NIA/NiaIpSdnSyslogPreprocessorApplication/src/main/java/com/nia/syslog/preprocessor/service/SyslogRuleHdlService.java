@@ -28,6 +28,7 @@ public class SyslogRuleHdlService {
         List<SyslogRuleVo> resultSyslogRuleVoList = null;
         ArrayList<SyslogRuleVo> syslogRuleVo;
         SyslogRuleVo minSyslogPriority;
+        List<SyslogRuleVo> minSyslogPriority2;
 
         try {
             syslogRuleVoList = syslogAlarmMapper.selectSyslogRule();
