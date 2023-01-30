@@ -8,6 +8,6 @@ import java.util.HashMap;
 
 @Mapper
 public interface SflowMapper {
-    int selectSflowSeq();
+    long selectSflowSeq();
     void insertSflowData(SflowCollectVo sflowCollectVo);
 }

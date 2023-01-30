@@ -12,7 +12,7 @@ import java.io.Serializable;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SflowDataVo implements Serializable {
-    private int collectSeq;
+    private long collectSeq;
     private FieldsVo fields;
     private String name;
     private TagsVo tags;
