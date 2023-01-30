@@ -27,7 +27,7 @@ public class IpSdnSflowService {
     public void sflowDataHdlProcessor(SflowDataVo sflowDataVo){
 //        LOGGER.info(">>>>>>>>>>[IpSdnSflowService] sflowDataHdlProcessor <<<<<<<<<<<<<<<<<");
 
-        int collectSeq;
+        long collectSeq;
 
         try {
             collectSeq = sflowMapper.selectSflowSeq();
