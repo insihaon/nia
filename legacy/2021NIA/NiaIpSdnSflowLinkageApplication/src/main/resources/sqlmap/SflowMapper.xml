@@ -3,7 +3,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.nia.ip.sdn.sflow.linkage.mapper.SflowMapper">
 
-    <select id="selectSflowSeq" resultType="int">
+    <select id="selectSflowSeq" resultType="long">
         SELECT nextval('gather.seq_sflow_collect') AS COLLECT_SEQ
     </select>
 

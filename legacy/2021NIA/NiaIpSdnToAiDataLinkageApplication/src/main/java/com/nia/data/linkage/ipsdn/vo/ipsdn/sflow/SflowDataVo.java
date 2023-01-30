@@ -9,7 +9,7 @@ import java.sql.Timestamp;
 @Data
 @Scope(value = "prototype")
 public class SflowDataVo implements Serializable {
-	private int collectSeq;
+	private long collectSeq;
 	private String collectHost;
 	private String agentAddress;
 	private String etherType;
@@ -43,7 +43,7 @@ public class SflowDataVo implements Serializable {
 
 
 	@JsonProperty("CollectSeq")
-	public int getCollectSeq() {
+	public long getCollectSeq() {
 		return collectSeq;
 	}
 

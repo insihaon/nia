@@ -143,7 +143,7 @@ public class IpSdnSflowDataAiLinkageServiceImpl implements IpSdnSflowLinkageServ
                         LOGGER.error("=====> [IpSdnSflowLinkageService] sendSflowData upload(" + host2.split("\\.")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
                     }
 
-                    Comparator<SflowDataVo> comparatorById  = Comparator.comparingInt(SflowDataVo::getCollectSeq);
+                    Comparator<SflowDataVo> comparatorById  = Comparator.comparingLong(SflowDataVo::getCollectSeq);
                     maxSflowVo = sflowDataVoList.stream()
                             .max(comparatorById)
                             .orElseThrow(NoSuchElementException::new);
