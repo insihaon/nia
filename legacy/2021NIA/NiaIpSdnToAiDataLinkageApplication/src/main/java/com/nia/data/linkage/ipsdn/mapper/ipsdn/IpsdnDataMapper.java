@@ -20,7 +20,7 @@ public interface IpsdnDataMapper {
     ArrayList<NodeFactorVo> selectNodeFactorLink(int dataKey);
     ArrayList<LinkTrafficVo> selectTrafficList(int dataKey);
     ArrayList<SyslogDataVo> selectSyslogData(int dataKey);
-    ArrayList<SflowDataVo> selectSflowData(int dataKey);
+    ArrayList<SflowDataVo> selectSflowData(long dataKey);
 
     ArrayList<AlarmDataVo> selectAlarmList(int alarmno);
 
