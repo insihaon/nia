@@ -95,7 +95,7 @@ public class IpSdnSflowDataAiLinkageServiceImpl implements IpSdnSflowLinkageServ
             LOGGER.info("==========>[IpSdnSflowLinkageService] sendSflowData dataKey : "+dataKey+" <==============");
 
             if(StringUtils.isNotEmpty(dataKey)){
-                sflowDataVoList = ipsdnDataMapper.selectSflowData(Integer.parseInt(dataKey));
+                sflowDataVoList = ipsdnDataMapper.selectSflowData(Long.parseLong(dataKey));
 
                 if(sflowDataVoList != null && sflowDataVoList.size() > 0) {
                     LOGGER.info("==========>[IpSdnSflowLinkageService] sendSflowData sflowVoList("+sflowDataVoList.size() +") <==============");

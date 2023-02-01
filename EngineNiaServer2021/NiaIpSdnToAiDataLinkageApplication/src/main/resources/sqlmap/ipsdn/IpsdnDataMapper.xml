@@ -66,7 +66,7 @@
     </select>
 
 <!--    Sflow    -->
-    <select id="selectSflowData" resultType="com.nia.data.linkage.ipsdn.vo.ipsdn.sflow.SflowDataVo" parameterType="int">
+    <select id="selectSflowData" resultType="com.nia.data.linkage.ipsdn.vo.ipsdn.sflow.SflowDataVo" parameterType="long">
         SELECT COLLECT_SEQ as collectSeq, COLLECT_HOST as collectHost, AGENT_ADDRESS as agentAddress, ETHER_TYPE as etherType,
                HEADER_PROTOCOL as headerProtocol, INPUT_IFINDEX as inputIfindex, OUTPUT_IFINDEX as outputIfindex, SAMPLE_DIRECTION as sampleDirection,
                SRC_IP as srcIp, SRC_MAC as srcMac, SRC_PORT as srcPort, SOURCE_ID_TYPE as sourceIdType, SOURCE_ID_INDEX as sourceIdIndex,
