@@ -50,7 +50,7 @@ public class RoadmEmsTL1Client {
             telnet = applicationContext.getBean(TelnetMmc.class);
 
             if(telnet != null && telnet.isConnected()){
-                telnet.sendCommand("canc-user:::1:"+id+";", false);
+                telnet.sendCommand("canc-user:::1:"+id+";\r\n", false);
                 telnet.closeConnection();
                 telnet = null;
             }else if(telnet != null){
@@ -69,16 +69,16 @@ public class RoadmEmsTL1Client {
             telnet.main_proc();
 
             if(telnet.isConnected()){
-                mmcResult = telnet.sendCommand("\r", false);
+                mmcResult = telnet.sendCommand("\r\n", false);
                 Thread.sleep(500);
 
                 if(mmcResult.contains("LOGIN:")){
 
-                    mmcResult = telnet.sendCommand( id+"\r", false);
+                    mmcResult = telnet.sendCommand( id+"\r\n", false);
                     Thread.sleep(500);
 
                     if(mmcResult.contains("PASSWORD:")) {
-                        mmcResult = telnet.sendCommand( pw+"\r", false);
+                        mmcResult = telnet.sendCommand( pw+"\r\n", false);
 
                         if(mmcResult.contains("TL1>")) {
                             isLoginOk = true;
@@ -135,7 +135,7 @@ public class RoadmEmsTL1Client {
 
     public void logout(){
         if(telnet != null && telnet.isConnected()){
-            telnet.sendCommand("canc-user:::1:"+id+";", false);
+            telnet.sendCommand("canc-user:::1:"+id+";\r\n", false);
             telnet.closeConnection();
             telnet = null;
         }else{

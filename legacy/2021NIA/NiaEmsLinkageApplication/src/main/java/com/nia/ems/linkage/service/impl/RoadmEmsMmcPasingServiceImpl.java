@@ -180,7 +180,7 @@ public class RoadmEmsMmcPasingServiceImpl  implements RoadmEmsMmcPasingService {
                                     mmcMsgLineDataArr = mmcStr.split(",");
 
                                     performaceVo = performaceVoObjectFactory.getObject();
-                                    performaceVo.setSysname(UtlCommon.lTrim(mmcMsgLineArr[3].replaceAll("\"","")).split("\\s")[0]);
+                                    performaceVo.setSysname(UtlCommon.lTrim(mmcMsgLineArr[2].replaceAll("\"","")).split("\\s")[0]);
                                     performaceVo.setPort(mmcMsgLineDataArr[0].replaceAll("\"","").replaceAll("\\s",""));
                                     performaceVo.setUnit(mmcMsgLineDataArr[1].split(":")[0]);
                                     performaceVo.setTmper(mmcMsgLineDataArr[2]);

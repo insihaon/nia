@@ -57,7 +57,7 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
                         if(roadmEmsTL1Client.isConnected()){
                             try {
 
-                                mmc = "RTRV-SIPC:"+equip.getIp()+"-SH1::::;\r";
+                                mmc = "RTRV-SIPC:"+equip.getIp()+"-SH1::::;\r\n";
                                 roadmEmsTL1Client.sendCommand(mmc, false);
                             //    roadmMmcMsgPasing(mmcResult, "RTRV-SIPC");
                             }catch (Exception e){
@@ -110,7 +110,7 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
                     for(EquipSipcVo equipSipc : equipSipcVoList){
                         try {
                             if(roadmEmsTL1Client.isConnected()){
-                                mmc = "RTRV-PM:"+equipSipc.getSysname()+"-"+equipSipc.getSysnameName()+"::::SIGNAL=AMPPWR,TYPE=15M,INTERVAL=CURR;\r";
+                                mmc = "RTRV-PM:"+equipSipc.getSysname()+"-"+equipSipc.getSysnameName()+"::::SIGNAL=AMPPWR,TYPE=15M,INTERVAL=CURR;\r\n";
 
                                 try {
                                     roadmEmsTL1Client.sendCommand(mmc, false);
@@ -196,7 +196,7 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
                     for(EquipVo equipVo : equipVoList){
                         try {
                             if(roadmEmsTL1Client.isConnected()){
-                                mmc = "RTRV-NETWORK:"+equipVo.getIp()+"::123;\r";
+                                mmc = "RTRV-NETWORK:"+equipVo.getIp()+"::123;\r\n";
                                 try {
                                     roadmEmsTL1Client.sendCommand(mmc, false);
                                 }catch (Exception e){
@@ -256,7 +256,7 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
                 if(roadmEmsTL1Client.login("D")){
                     for(EquipSipcVo equipSipc : equipSipcVoList){
                         if(roadmEmsTL1Client.isConnected()){
-                            mmc = "RTRV-ALM:"+equipSipc.getSysname()+"-"+equipSipc.getSysnameName()+"::123;\r";
+                            mmc = "RTRV-ALM:"+equipSipc.getSysname()+"-"+equipSipc.getSysnameName()+"::123;\r\n";
 
                             roadmEmsTL1Client.sendCommand(mmc, false);
 
@@ -305,7 +305,7 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
                 if(roadmEmsTL1Client.login("D")){
                     for(EquipSipcVo equipSipc : equipSipcVoList){
                         if(roadmEmsTL1Client.isConnected()){
-                            mmc = "RTRV-SLOT:"+equipSipc.getSysname()+"-"+equipSipc.getSysnameName()+"::123;\r";
+                            mmc = "RTRV-SLOT:"+equipSipc.getSysname()+"-"+equipSipc.getSysnameName()+"::123;\r\n";
 
                             roadmEmsTL1Client.sendCommand(mmc, false);
 
@@ -359,7 +359,7 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
                     for(EquipSipcVo equipSipc : equipSipcVoList){
                         if(equipSipc.getSysname().startsWith("192")){
                             if(roadmEmsTL1Client.isConnected()){
-                                mmc = "RTRV-OPC:"+equipSipc.getSysname()+"-"+equipSipc.getSysnameName()+"::123;\r";
+                                mmc = "RTRV-OPC:"+equipSipc.getSysname()+"-"+equipSipc.getSysnameName()+"::123;\r\n";
                                 roadmEmsTL1Client.sendCommand(mmc, false);
                             }
                         }
@@ -413,7 +413,7 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
 
             if(roadmEmsTL1Client.login("D")){
                 if(roadmEmsTL1Client.isConnected()){
-                    mmc = "RTRV-NET:::;\r";
+                    mmc = "RTRV-NET:::;\r\n";
                     roadmEmsTL1Client.sendCommand(mmc, false);
                 }
                 Thread.sleep(1000);
@@ -456,7 +456,7 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
                 if(roadmEmsTL1Client.login("D")){
                     for(String tid : tidList){
                         if(roadmEmsTL1Client.isConnected()){
-                            mmc = "RTRV-SYS:"+tid+"::123;\r";
+                            mmc = "RTRV-SYS:"+tid+"::123;\r\n";
                             roadmEmsTL1Client.sendCommand(mmc, false);
                         }
                         Thread.sleep(1000);

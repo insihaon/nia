@@ -91,6 +91,10 @@ public class TelnetMmc {
                 output.write(command.getBytes());
                 output.flush();
 
+//                output = new PrintStream(serverOutput, isFlush, "EUC-KR");
+//                output.write(command.getBytes("EUC-KR"));
+//                output.flush();
+
                 LOGGER.info("=====> [TelnetMmc] sendCommand :  "+ command+ " OK <=====");
 
                 try {
