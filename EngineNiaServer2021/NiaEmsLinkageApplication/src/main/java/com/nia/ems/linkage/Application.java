@@ -9,11 +9,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-/**
- * 
- * @author 
- *
- */
 @EnableScheduling
 @SpringBootApplication
 public class Application implements CommandLineRunner{
@@ -44,6 +39,9 @@ public class Application implements CommandLineRunner{
 		bootSettingService.init();
 		roadmEmsEventMsgService.eventMsgListener();
 		roadmEmsPmMmcCheckService.pmMmcLinkageCheck();
+
+//		roadmEmsMmcService.roadmSipcMMC();
+//		roadmEmsMmcService.roadmPmMMC();
 
 //		roadmEmsMmcService.roadmPmMMC();
 
