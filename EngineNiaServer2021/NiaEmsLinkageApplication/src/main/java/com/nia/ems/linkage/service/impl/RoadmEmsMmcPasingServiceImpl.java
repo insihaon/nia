@@ -174,13 +174,15 @@ public class RoadmEmsMmcPasingServiceImpl  implements RoadmEmsMmcPasingService {
                         if(mmcMsgLineArr != null && mmcMsgLineArr.length > 0) {
 
                             yyyyMMddHH = (UtlDateHelper.getCurrentDateTime()+"").substring(0,14);
-
                             for (String mmcStr : mmcMsgLineArr) {
+                                if(mmcStr.contains("SH") && !mmcStr.contains("-PM")){
+                                    mmcStr = UtlCommon.lTrim(mmcStr);
+                                    sysname = mmcStr.split("\\s")[0];
+                                }
                                 if(mmcStr.contains("S.")){
                                     mmcMsgLineDataArr = mmcStr.split(",");
-
                                     performaceVo = performaceVoObjectFactory.getObject();
-                                    performaceVo.setSysname(UtlCommon.lTrim(mmcMsgLineArr[2].replaceAll("\"","")).split("\\s")[0]);
+                                    performaceVo.setSysname(sysname);
                                     performaceVo.setPort(mmcMsgLineDataArr[0].replaceAll("\"","").replaceAll("\\s",""));
                                     performaceVo.setUnit(mmcMsgLineDataArr[1].split(":")[0]);
                                     performaceVo.setTmper(mmcMsgLineDataArr[2]);
