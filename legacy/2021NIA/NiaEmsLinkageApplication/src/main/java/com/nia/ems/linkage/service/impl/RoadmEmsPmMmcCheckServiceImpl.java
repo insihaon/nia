@@ -9,7 +9,9 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
@@ -20,6 +22,7 @@ public class RoadmEmsPmMmcCheckServiceImpl implements RoadmEmsPmMmcCheckService 
     private static final Logger LOGGER = LoggerFactory.getLogger(RoadmEmsPmMmcCheckServiceImpl.class);
 
     @Autowired
+    @Qualifier("RoadmEmsMmcService")
     private RoadmEmsMmcService roadmEmsMmcService;
 
     @Autowired
@@ -53,7 +56,7 @@ public class RoadmEmsPmMmcCheckServiceImpl implements RoadmEmsPmMmcCheckService 
             parameterMap.put("ocrtime", ocrTime+"");
             performaceVoList = performaceMapper.selectPerformanceDataList(parameterMap);
 
-            if(performaceVoList == null){
+            if(CollectionUtils.isEmpty(performaceVoList)){
                 LOGGER.info("=====> [RoadmEmsPmMmcCheckService] pmMmcLinkageCheck performaceVoList size 0<=====");
                 roadmEmsMmcService.roadmPmMMC();
             }else{
