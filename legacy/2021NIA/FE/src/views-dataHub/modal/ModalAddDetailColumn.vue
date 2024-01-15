@@ -49,7 +49,7 @@ import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
 import _ from 'lodash'
 import { param } from '@/utils'
-import CompAgGrid from '@/components/AgGrid/CompAgGrid.vue'
+import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
 import { apiSelectDataSetColumnList } from '@/api/dataHub'
 
 const routeName = 'ModalAddDetailColumn'
