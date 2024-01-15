@@ -132,7 +132,7 @@
 
 <script>
 import { Base } from '@/min/Base.min'
-import CompAgGrid from '@/components/AgGrid/CompAgGrid.vue'
+import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
 import CompCheckSelector from '@/views-dataHub/components/CompCheckSelector'
 import OrgSelect from '@/views-dataHub/components/OrgSelect'
 import VJsoneditor from 'v-jsoneditor/src/index'
