@@ -1,12 +1,12 @@
 <template>
   <div class="currentMenu">
-    <breadcrumb id="breadcrumb-container" class="breadcrumb-container" />
+    <Breadcrumb id="breadcrumb-container" class="breadcrumb-container" />
   </div>
 </template>
 
 <script>
 import { Base } from '@/min/Base.min'
-import Breadcrumb from '@/components/Breadcrumb'
+import Breadcrumb from '@/components/breadcrumb'
 
 export default {
   components: {
