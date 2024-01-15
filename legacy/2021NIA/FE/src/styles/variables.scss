@@ -1,0 +1,94 @@
+// base color
+$blue: #324157;
+$light-blue: #3a71a8;
+$red: #c03639;
+$pink: #e65d6e;
+$green: #30b08f;
+$tiffany: #4ab7bd;
+$yellow: #fec171;
+$panGreen: #30b08f;
+
+// sidebar
+// https://github.com/ElemeFE/element/issues/12951
+
+// $menuText: #ebebeb91;
+// $menuActiveText: #ebebeb;
+// $menuBg: #3b3a3a;
+// $menuHover: #313131;
+// $subMenuBg: #313131;
+// $subMenuHover: #222222;
+// $subMenuActiveText: #f4f4f5; 
+
+// $menuText: #bfcbd9; 
+// $menuActiveText: #409eff;
+// $menuBg: #304156;
+// $menuHover: #263445;
+// $subMenuBg: #1f2d3d;
+// $subMenuHover: #001528;
+// $subMenuActiveText: #f4f4f5; 
+
+$menuText: #bfcbd9; 
+$menuActiveText: #f4f4f5;
+$menuBg: #304156;
+$menuHover: #263445;
+$subMenuBg: #1f2d3d;
+$subMenuHover: #001528;
+$subMenuActiveText: #f4f4f5; 
+
+
+
+
+$sideBarWidth: 0px;
+
+//untact
+$topBarWidth: 150px;
+
+// sidebar
+
+$miniFontSize : 12px;
+
+$smallFontSize : 13px;
+
+$mediumFontSize : 15px;
+
+$rms-primary: #0e4194;
+
+$cp-primary: #2b2d31;
+
+$datahub-primary: #5d5d5d;
+
+$datahub-border-box: #2e3574;
+
+$pmmlte-border-box: #2b2d31;
+$pmmlte-button: #2b2d31;
+$pmmlte-button-hover: #2b2d31db;
+
+// untact navbar
+$untactHoverColor: #003f33;
+
+
+// untact fontsize
+$miniFontSize : 12px;
+$smallFontSize : 13px;
+$mediumFontSize : 15px;
+
+
+// the :export directive is the magic sauce for webpack
+// https://www.bluematador.com/blog/how-to-share-variables-between-js-and-sass
+:export {
+  menuText: $menuText;
+  menuActiveText: $menuActiveText;
+  subMenuActiveText: $subMenuActiveText;
+  menuBg: $menuBg;
+  menuHover: $menuHover;
+  subMenuBg: $subMenuBg;
+  subMenuHover: $subMenuHover;
+  sideBarWidth: $sideBarWidth;
+  miniFontSize: $miniFontSize;
+  smallFontSize: $smallFontSize;
+  mediumFontSize: $mediumFontSize;
+  $blue: $blue;
+  $red: $red;
+  rms-primary: $rms-primary;
+  cp-primary: $cp-primary;
+}

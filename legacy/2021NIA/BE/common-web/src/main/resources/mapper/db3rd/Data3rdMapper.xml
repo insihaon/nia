@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.codej.web.mapper.db3rd.Data3rdMapper">
+    <select id="SELECT_NOW" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+        SELECT  SYSDATE
+        FROM    dual
+    </select>
+</mapper>

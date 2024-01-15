@@ -1,0 +1,31 @@
+server:
+  port: 8080
+  servlet:
+    context-path: 
+
+spring:
+  profiles.active: dev
+  
+  datasource2nd:
+    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+    url: ENC(Rbsjy05r7tg9uhjGxqWZEfQ5xE+2YabtdYX3XegSlgj6WDIIb3zTP50JYxiVTB2rwOXQMpAchluLE7YYnxgBNw==)
+    username: ENC(BM4aY0nH3QmYagxcv7bOvA==)
+    password: ENC(5wuR7RSaFfNs5/sf/L74ufnWgg8Q3SRV)
+    dataSource-name: datahub
+    enabled: true
+
+  sql:
+    init:
+      platform: postgres
+      encoding: UTF-8
+
+myconf:
+  auth:
+    use: true 
+    
+logging:
+  level:
+    org.springframework.boot.web.embedded.tomcat: info
+    com.codej.web: debug
+    com.codej.web.Intercepts: info
+
