@@ -1,0 +1,1146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.codej.dataHub.mapper.db2nd.DataHubMapper">
+    <sql id="TotalCountPrefix">
+      <if test="TOTAL_COUNT != null">
+         SELECT COUNT(*) AS "count" FROM (
+      </if>
+   </sql>
+    
+   <sql id="TotalCountSuffix">
+   <if test="TOTAL_COUNT == null and sort_column_name != null and sort_type != null">
+        ORDER BY ${sort_column_name} ${sort_type}
+   </if>
+   <if test="TOTAL_COUNT != null">
+        ) TOTALCOUNT
+   </if>
+   <choose>
+        <when test="TOTAL_COUNT != null and limit != null">
+            <!-- 존재이유를 아직 모르겠음. -->
+            LIMIT ${limit}
+        </when>
+        <when test="TOTAL_COUNT == null and page != null and limit != null">
+            LIMIT ${limit} OFFSET ${(page - 1) * limit}
+        </when>
+        <when test="TOTAL_COUNT == null and page != null and limit == null">
+            <!--  default 10으로 설정 -->
+            LIMIT 10 OFFSET ${(page - 1) * limit}
+        </when>
+   </choose>
+   </sql>
+
+    <!-- API 정보/오류리스트 -->
+    <select id="SELECT_API_INFO_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+    <include refid="TotalCountPrefix"/>
+    SELECT
+        TAM.API_ID,
+        TAM.API_NAME,
+        TAM.SYSTEM_ID,
+        TAM.API_URL,
+        TAM.INTGR_INTERVAL,
+        TAM.API_DESC,
+        TAM.EXPIRD_TIME,
+        TAM.UPDATE_TIME
+        <!-- COUNT(taiph.api_id) PROC_COUNT  -->
+    ,CASE
+        WHEN EXEC_MODE_CD = 'B' THEN 'Batch'
+        WHEN EXEC_MODE_CD = 'F' THEN 'SFTP'
+        ELSE 'OnDemand'
+    END AS EXEC_MODE_CD
+    FROM
+        DATAHUB.TB_API_MST TAM
+        <!-- LEFT JOIN DATAHUB.TB_API_INTRL_PROC_HIST TAIPH
+        ON TAIPH.API_ID = TAM.API_ID  -->
+    WHERE 1=1
+    <if test="api_name != null and api_name != ''">
+    AND (
+        UPPER(TAM.API_NAME) LIKE '%' || UPPER(#{api_name}) || '%'
+        <!-- OR UPPER(TAM.API_DESC) LIKE '%' || UPPER(#{api_name}) || '%' -->
+    )
+    </if>
+    <if test="exec_mode_cd != null and !exec_mode_cd.isEmpty() and !exec_mode_cd.contains('ALL') and !exec_mode_cd.contains('CT')">
+    AND TAM.EXEC_MODE_CD IN
+        <foreach collection="exec_mode_cd" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </if>
+    <if test="api_url != null and !api_url.isEmpty() and  !api_url.contains('ALL') and !api_url.contains('CT')">
+    AND TAM.API_URL IN
+        <foreach collection="api_url" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </if>
+    GROUP BY
+        TAM.API_ID,
+        TAM.API_NAME,
+        TAM.API_URL,
+        TAM.INTGR_INTERVAL,
+        TAM.API_DESC,
+        TAM.EXPIRD_TIME,
+        TAM.UPDATE_TIME,
+        EXEC_MODE_CD
+    <include refid="TotalCountSuffix"/>
+    </select> 
+
+    <!-- API 연동 이력  -->
+    <select id="SELECT_API_HIST_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+    <include refid="TotalCountPrefix"/>
+    SELECT 
+    TAIPH.API_ID
+   	,TAIPH.PROC_SERIAL 
+   	, TAIPH.RESULT_CD
+    , TAIPH.RESULT_MSG
+    , TAIPH.RETRY_PROC
+    , TAIPH.REQUEST_PARAM
+   	, TAM.API_NAME
+   	, TAM.API_URL
+   	, TAM.API_DESC
+   	, TO_CHAR(TAIPH.CREATE_TIME, 'YYYY-MM-DD HH24:MI:SS') AS CREATE_TIME
+    , TO_CHAR(TAM.UPDATE_TIME, 'YYYY-MM-DD HH24:MI:SS') as UPDATE_TIME
+    , TISM.SYSTEM_NM
+    , TAARH.API_URL as TARGETURL
+    ,CASE
+        WHEN EXEC_MODE_CD = 'B' THEN 'Batch'
+        WHEN EXEC_MODE_CD = 'F' THEN 'SFTP'
+        ELSE 'OnDemand'
+    END AS EXEC_MODE_CD
+    ,CASE
+        WHEN RESULT_CD = 'S' THEN 'SUCCESS'
+        ELSE 'FAIL'
+    END AS RESULT_CD_DESC
+    FROM DATAHUB.TB_API_INTRL_PROC_HIST TAIPH
+    LEFT JOIN DATAHUB.TB_API_MST TAM ON TAM.API_ID = TAIPH.API_ID
+    LEFT JOIN DATAHUB.TB_INTRL_SYSTEM_MST TISM ON TAM.SYSTEM_ID  = TISM.SYSTEM_ID
+    LEFT JOIN (
+        SELECT API_ID, API_URL
+        FROM DATAHUB.TB_API_AUTH_REQ_HIST TAARH
+        WHERE SYSTEM_ID IS NOT null and status_cd = 'GRANT'
+        GROUP BY API_ID, API_URL
+    ) TAARH ON TAARH.API_ID = TAIPH.API_ID
+    WHERE 1=1
+        <if test="api_id != null">
+            AND TAIPH.API_ID = #{api_id}
+        </if>
+        <if test="result_cd != null">
+            AND TAIPH.RESULT_CD = #{result_cd}
+        </if>
+        <if test="start_date != null">
+            AND TO_CHAR(TAIPH.CREATE_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[ >= ]]> #{start_date}
+        </if>
+        <if test="end_date != null">
+            AND TO_CHAR(TAIPH.CREATE_TIME, 'YYYY-MM-DD HH24:MI:SS') <![CDATA[ <= ]]> #{end_date}
+        </if>
+     <include refid="TotalCountSuffix"/>
+    </select>
+
+    
+    <!-- 연동 오류 재처리 -->
+    <update id="UPDATE_API_PROC_RETRY_STATUS">
+    UPDATE DATAHUB.TB_API_INTRL_PROC_HIST
+    <set>
+        RETRY_PROC = #{retry_proc}
+    </set>
+    WHERE PROC_SERIAL = #{proc_serial}
+    </update>
+
+
+    
+    <!-- API 연동 성공 통계 테이블 -->
+   <select id="SELECT_API_SUCCESS_COUNT_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+    <include refid="TotalCountPrefix"/>
+    SELECT 
+    TO_CHAR(TAIPH.CREATE_TIME, 'YYYY-MM-DD') AS CREATE_TIME,
+    TAIPH.API_ID,
+    TAM.API_NAME,
+    TAM.API_URL,
+    CASE 
+        WHEN TAM.EXEC_MODE_CD = 'O' THEN 'OnDemand' 
+        WHEN TAM.EXEC_MODE_CD = 'F' THEN 'SFTP'
+        ELSE 'Batch' 
+    END AS EXEC_MODE_CD,
+    COUNT(TAIPH.API_ID) AS PROC_COUNT,
+    COALESCE(TAARH.SYSTEM_COUNT, 0) AS SYSTEM_COUNT
+FROM DATAHUB.TB_API_INTRL_PROC_HIST TAIPH
+INNER JOIN DATAHUB.TB_API_MST TAM ON TAIPH.API_ID = TAM.API_ID 
+LEFT JOIN (
+    SELECT 
+        API_ID, 
+        API_URL,
+        COUNT(CASE WHEN TAARH.STATUS_CD = 'GRANT' THEN taarh.SYSTEM_ID END) AS SYSTEM_COUNT
+    FROM DATAHUB.TB_API_AUTH_REQ_HIST TAARH
+    WHERE SYSTEM_ID IS NOT NULL AND STATUS_CD = 'GRANT'
+    GROUP BY API_ID, API_URL
+) TAARH ON TAARH.API_ID = TAIPH.API_ID
+    WHERE 1=1
+    <!-- <if test="result_cd != null"> 
+        AND TAIPH.RESULT_CD = #{result_cd}
+    </if> -->
+    <if test="api_id != null and api_id != ''">
+        AND TAM.API_ID = #{api_id}
+    </if>
+    <if test="start_date != null"> 
+        AND TO_CHAR(TAIPH.CREATE_TIME, 'YYYY-MM-DD') <![CDATA[ >= ]]> #{start_date}
+    </if>
+    <if test="end_date != null"> 
+        AND TO_CHAR(TAIPH.CREATE_TIME, 'YYYY-MM-DD') <![CDATA[ <= ]]> #{end_date}
+    </if>
+    AND TAIPH.RESULT_CD = 'S' 
+    GROUP BY 
+    TO_CHAR(TAIPH.CREATE_TIME, 'YYYY-MM-DD'),
+    TAIPH.API_ID,
+    TAM.API_NAME,
+    TAM.EXEC_MODE_CD,
+    TAM.API_URL,
+   	TAARH.SYSTEM_COUNT
+    <include refid="TotalCountSuffix"/>
+    </select>
+
+
+    <!-- API 연동 실패 통계 테이블 -->
+   <select id="SELECT_API_FAIL_COUNT_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+    <include refid="TotalCountPrefix"/>
+     SELECT 
+    TO_CHAR(TAIPH.CREATE_TIME, 'YYYY-MM-DD') AS CREATE_TIME,
+    TAIPH.API_ID,
+    TAM.API_NAME,
+    TAM.API_URL,
+    CASE 
+        WHEN TAM.EXEC_MODE_CD = 'O' THEN 'OnDemand' 
+        WHEN TAM.EXEC_MODE_CD = 'F' THEN 'SFTP'
+        ELSE 'Batch' 
+    END AS EXEC_MODE_CD,
+    COUNT(TAIPH.API_ID) AS PROC_COUNT,
+    COALESCE(TAARH.SYSTEM_COUNT, 0) AS SYSTEM_COUNT
+FROM DATAHUB.TB_API_INTRL_PROC_HIST TAIPH
+INNER JOIN DATAHUB.TB_API_MST TAM ON TAIPH.API_ID = TAM.API_ID 
+LEFT JOIN (
+    SELECT 
+        API_ID, 
+        API_URL,
+        COUNT(CASE WHEN TAARH.STATUS_CD = 'GRANT' THEN taarh.SYSTEM_ID END) AS SYSTEM_COUNT
+    FROM DATAHUB.TB_API_AUTH_REQ_HIST TAARH
+    WHERE SYSTEM_ID IS NOT NULL AND STATUS_CD = 'GRANT'
+    GROUP BY API_ID, API_URL
+) TAARH ON TAARH.API_ID = TAIPH.API_ID
+    WHERE 1=1
+    <!-- <if test="result_cd != null"> 
+        AND TAIPH.RESULT_CD = #{result_cd}
+    </if> -->
+    <if test="api_id != null and api_id != ''">
+        AND TAM.API_ID = #{api_id}
+    </if>
+    <if test="start_date != null"> 
+        AND TO_CHAR(TAIPH.CREATE_TIME, 'YYYY-MM-DD') <![CDATA[ >= ]]> #{start_date}
+    </if>
+    <if test="end_date != null"> 
+        AND TO_CHAR(TAIPH.CREATE_TIME, 'YYYY-MM-DD') <![CDATA[ <= ]]> #{end_date}
+    </if>
+        AND TAIPH.RESULT_CD = 'F' 
+      GROUP BY 
+    TO_CHAR(TAIPH.CREATE_TIME, 'YYYY-MM-DD'),
+    TAIPH.API_ID,
+    TAM.API_NAME,
+    TAM.EXEC_MODE_CD,
+    TAM.API_URL,
+   	TAARH.SYSTEM_COUNT
+    <include refid="TotalCountSuffix"/>
+    </select>
+
+    <!-- API 서비스 사용 권한 신청 이력  -->
+    <select id="SELECT_API_HIST_AUTH_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+    <include refid="TotalCountPrefix"/>
+    SELECT 
+    TAARH.API_ID
+    ,TAARH.HIST_SERIAL 
+    ,TAM.API_NAME
+    ,TAM.API_URL
+    ,TAM.REQ_PARAM
+    ,TAARH.REG_USER 
+    ,TAARH.REFUSE_MSG
+    ,TO_CHAR(TAARH.EXPIRD_DATE , 'YYYY-MM-DD HH24:MI:SS') AS EXPIRD_DATE
+    ,TAARH.API_DESC 
+    ,TO_CHAR(TAARH.CREATE_TIME , 'YYYY-MM-DD HH24:MI:SS') AS CREATE_TIME
+    ,TO_CHAR(TAARH.UPDATE_TIME , 'YYYY-MM-DD HH24:MI:SS') AS UPDATE_TIME
+    ,TISM.SYSTEM_DESC 
+    ,TAARH.SYSTEM_ID
+    ,TISM.API_KEY
+    ,COALESCE(TAM.KONG_HOST, 'HOST_'|| TAM.API_ID) as KONG_HOST
+    ,TISM.API_KEY AS KONG_KEY
+    , CASE WHEN TAARH.STATUS_CD = 'APPLY' THEN '신청'
+        WHEN TAARH.STATUS_CD = 'GRANT' THEN '승인'
+        WHEN TAARH.STATUS_CD = 'REJECT' THEN '반려'
+        ELSE '회수' 
+        END AS STATUS_CD
+        ,CASE 
+        WHEN TAM.EXEC_MODE_CD = 'B' THEN 'Batch'
+        WHEN TAM.EXEC_MODE_CD = 'F' THEN 'SFTP'
+        ELSE 'OnDemand'
+        END AS EXEC_MODE_CD
+        ,ROW_NUMBER() OVER (ORDER BY TO_CHAR(TAARH.CREATE_TIME , 'YYYY-MM-DD HH24:MI:SS') DESC) as RANK
+        ,TISM.SYSTEM_NM
+    FROM DATAHUB.TB_API_AUTH_REQ_HIST TAARH
+    LEFT JOIN DATAHUB.TB_API_MST TAM ON TAARH.API_ID = TAM.API_ID
+    LEFT JOIN DATAHUB.TB_INTRL_SYSTEM_MST TISM ON TAARH.SYSTEM_ID = TISM.SYSTEM_ID
+    WHERE TAM.EXEC_MODE_CD != 'F'
+        <if test="api_id != null and api_id != ''">
+        AND TAARH.API_ID = #{api_id}
+        </if>
+        <if test="system_id != null">
+        AND TAARH.SYSTEM_ID = #{system_id}
+        </if>
+        <if test="api_name != null and api_name != ''"> 
+        AND UPPER(TAM.API_NAME) LIKE '%' || UPPER(#{api_name}) || '%'
+        </if>
+        <if test="api_name_list != null and !api_name_list.isEmpty() and !api_name_list.contains('ALL')">
+        AND TAM.API_NAME IN
+            <foreach collection="api_name_list" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="status_cd != null and !status_cd.isEmpty() and !status_cd.contains('ALL')">
+        AND TAARH.STATUS_CD IN
+            <foreach collection="status_cd" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="system_nm != null and system_nm != ''"> 
+        AND UPPER(TISM.SYSTEM_NM) LIKE '%' || UPPER(#{system_nm}) || '%'
+        </if>
+        <if test="exec_mode_cd != null and exec_mode_cd != ''"> 
+        AND TAM.EXEC_MODE_CD = #{exec_mode_cd}
+        </if>
+        <if test="start_create_time != null"> 
+        AND TO_CHAR(TAARH.CREATE_TIME, 'YYYY-MM-DD HH24:MI:SS')  <![CDATA[ >= ]]>  #{start_create_time}
+        </if>
+        <if test="end_create_time != null"> 
+        AND TO_CHAR(TAARH.CREATE_TIME, 'YYYY-MM-DD HH24:MI:SS')  <![CDATA[ <= ]]>  #{end_create_time}
+        </if>
+        <if test="start_expird_date != null"> 
+        AND TO_CHAR(TAARH.EXPIRD_DATE, 'YYYY-MM-DD HH24:MI:SS')  <![CDATA[ >= ]]>  #{start_expird_date}
+        </if>
+        <if test="end_expird_date != null"> 
+        AND TO_CHAR(TAARH.EXPIRD_DATE, 'YYYY-MM-DD HH24:MI:SS')  <![CDATA[ <= ]]>  #{end_expird_date}
+        </if>
+    <include refid="TotalCountSuffix"/>
+    </select>
+
+    <!-- API 서비스 권한 신청 -->
+    <insert id="INSERT_API_AUTH_HIST" parameterType="java.util.HashMap">
+    INSERT INTO DATAHUB.TB_API_AUTH_REQ_HIST   
+    (
+        API_ID
+        ,STATUS_CD
+        ,API_DESC
+        ,REG_USER
+        ,EXPIRD_DATE
+        ,CREATE_TIME
+        ,UPDATE_TIME
+        ,SYSTEM_ID
+        ,API_URL
+    ) 
+    VALUES
+    (
+         #{api_id}
+        , #{status_cd}
+        , #{api_desc}
+        , #{reg_user}
+        , TO_DATE( #{expird_date},'YYYY-MM-DD HH24:MI:SS')
+        ,TO_TIMESTAMP(TO_CHAR(CURRENT_TIMESTAMP, 'YYYY-MM-DD HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS')
+        ,TO_TIMESTAMP(TO_CHAR(CURRENT_TIMESTAMP, 'YYYY-MM-DD HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS')
+        , #{system_id}
+        , #{api_url}
+    )
+    </insert>
+    <!-- API 서비스 권한 신청 중복 확인 -->
+    <select id="SELECT_API_AUTH_HIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+    SELECT  STATUS_CD,
+            API_DESC,
+            API_ID,
+            SYSTEM_ID,
+            EXPIRD_DATE
+    FROM    DATAHUB.TB_API_AUTH_REQ_HIST
+    WHERE   1=1
+        <if test="status_cd != null"> 
+            AND STATUS_CD = #{status_cd}
+        </if>
+        <if test="api_id != null"> 
+            AND API_ID = #{api_id}
+        </if>
+        <if test="system_id != null"> 
+            AND SYSTEM_ID = #{system_id}
+        </if>
+    </select>
+
+    <!-- API 서비스 권한 수정 (관리자만 변경 가능) -->
+    <update id="UPDATE_API_AUTH_HIST">
+    UPDATE DATAHUB.TB_API_AUTH_REQ_HIST
+    <set>
+        STATUS_CD = #{status_cd}
+        <if test="refuse_msg != null and refuse_msg != ''">
+        ,REFUSE_MSG = #{refuse_msg}
+        </if>
+    </set>
+    WHERE HIST_SERIAL = #{hist_serial}
+    </update>
+
+    
+    <!-- API 서비스 권한 신청 취소-->
+    <delete id="DELETE_API_AUTH_HIST" parameterType="hashmap">
+    DELETE FROM DATAHUB.TB_API_AUTH_REQ_HIST
+    WHERE 
+        HIST_SERIAL = #{hist_serial}
+    </delete>
+
+
+    <!--  메타데이터, 데이터 카탈로그 테이블 조회 -->
+     <select id="SELECT_DATA_SET_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+    <include refid="TotalCountPrefix"/>
+    SELECT 
+        METADATA_SEQ
+        ,TDM.TABLE_NM 
+        ,TDM.COLUMN_NM 
+        ,TDM.DATA_TYPE 
+        ,TDM.METADATA_DESC
+        ,TDM.UPDATE_USER
+        ,TO_CHAR(TDM.CREATE_TIME , 'YYYY-MM-DD HH24:MI:SS') AS CREATE_TIME
+        ,TO_CHAR(TDM.UPDATE_TIME , 'YYYY-MM-DD HH24:MI:SS') AS UPDATE_TIME
+   FROM DATAHUB.TB_METADATA_MST TDM
+    WHERE 1=1
+        <if test="table_nm != null and !table_nm.isEmpty() and !table_nm.contains('ALL') and !table_nm.contains('CT')">
+         AND TABLE_NM = #{table_nm}
+        </if>
+         <if test="table_nm != null and table_nm != ''"> 
+        AND UPPER(TDM.TABLE_NM) LIKE '%' || UPPER(#{table_nm}) || '%'
+        </if>
+       <if test="column_nm != null and column_nm != ''"> 
+        AND UPPER(TDM.COLUMN_NM) LIKE '%' || UPPER(#{column_nm}) || '%'
+        </if>
+        <if test="metadata_desc != null and metadata_desc != ''"> 
+        AND UPPER(TDM.METADATA_DESC) LIKE '%' || UPPER(#{metadata_desc}) || '%'
+        </if>
+        <if test="start_date != null"> 
+            AND TO_CHAR(TDM.UPDATE_TIME, 'YYYY-MM-DD HH24:MI:SS')  <![CDATA[ >= ]]>  #{start_date}
+        </if>
+        <if test="end_date != null"> 
+            AND TO_CHAR(TDM.UPDATE_TIME, 'YYYY-MM-DD HH24:MI:SS')  <![CDATA[ <= ]]>  #{end_date}
+        </if>
+        <!-- <if test="sort_column_name == null and sort_type == null">
+        ORDER BY TDM.TABLE_NM ASC
+        </if> -->
+    <include refid="TotalCountSuffix"/>
+    </select>
+
+    <!--   데이터셋(메타데이터) 테이블 데이터 등록 -->
+
+    <insert id="INSERT_DATA_SET_LIST" parameterType="java.util.HashMap">
+    INSERT INTO DATAHUB.TB_METADATA_MST
+    (
+        METADATA_SEQ
+        ,TABLE_NM
+        ,COLUMN_NM
+        ,DATA_TYPE
+        ,CREATE_TIME
+        ,UPDATE_TIME
+        ,METADATA_DESC
+        ,UPDATE_USER
+    )
+    VALUES 
+    (
+        NEXTVAL('DATAHUB.SEQ_TB_METADATA_MST') <!-- 시퀀스 사용 -->
+        ,#{table_nm}
+        ,#{column_nm}
+        ,#{data_type}
+        , NOW()
+        , NOW()
+        ,#{metadata_desc}
+        ,#{update_user}
+    )
+    </insert> 
+    
+    
+    <!--  데이터셋(메타데이터) 테이블 데이터 수정 -->
+
+    <update id="UPDATE_DATA_SET_LIST">
+    UPDATE DATAHUB.TB_METADATA_MST
+    <set>
+        ,TABLE_NM = #{table_nm}
+        ,COLUMN_NM = #{column_nm}
+        ,DATA_TYPE = #{data_type}
+        ,UPDATE_TIME = TO_DATE( #{update_time},'YYYY-MM-DD HH24:MI:SS')
+        ,METADATA_DESC = #{metadata_desc}
+    </set>
+    WHERE 
+        METADATA_SEQ = #{metadata_seq}
+    </update>
+
+    <!--  메타데이터, 데이터 카탈로그 테이블 데이터 삭제 -->
+    <delete id="DELETE_DATA_SET_LIST" parameterType="hashmap">
+    DELETE FROM DATAHUB.TB_METADATA_MST
+    WHERE 
+        METADATA_SEQ = #{metadata_seq}
+    </delete>
+
+    
+    <!--데이터카탈로그 테이블 조회(select Box) -->
+    <select id="SELECT_DATA_TABLE_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+    SELECT
+        TDM.TABLE_NM
+    FROM DATAHUB.TB_METADATA_MST TDM
+    GROUP BY TDM.TABLE_NM
+    ORDER BY TDM.TABLE_NM
+    </select>
+
+    <!-- 연동시스템 테이블 조회 (select Box) -->
+    <select id="SELECT_LINK_SYSTEM_TABLE_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+    SELECT
+        SYSTEM_ID
+        ,SYSTEM_NM
+    FROM DATAHUB.TB_INTRL_SYSTEM_MST TISM
+    </select>
+
+    <!-- 연동 시스템 관리 리스트 조회 -->
+    <select id="SELECT_LINK_SYSTEM_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+    <include refid="TotalCountPrefix"/>
+    SELECT 
+        SYSTEM_ID
+        ,SYSTEM_NM
+        ,SYSTEM_DESC
+        ,MANAGER_ID
+        ,MANAGER_PHONE
+        ,MANAGER_EMAIL
+        ,TO_CHAR(CREATE_TIME , 'YYYY-MM-DD HH24:MI:SS') AS CREATE_TIME
+        ,TO_CHAR(UPDATE_TIME , 'YYYY-MM-DD HH24:MI:SS') AS UPDATE_TIME
+    FROM DATAHUB.TB_INTRL_SYSTEM_MST TISM
+    WHERE 1=1
+        <if test="system_nm != null and system_nm != ''"> 
+        AND UPPER(SYSTEM_NM) LIKE '%' || UPPER(#{system_nm}) || '%'
+        </if>
+    <include refid="TotalCountSuffix"/>
+    </select>
+
+    <select id="SELECT_LINK_SYSTEM_NEXTVAL" parameterType="java.util.HashMap" resultType="int">
+        SELECT NEXTVAL('DATAHUB.SEQ_TB_INTRL_SYSTEM_MST')
+    </select>
+
+    <select id="SELECT_API_MST_NEXTVAL" parameterType="java.util.HashMap" resultType="int">
+        SELECT NEXTVAL('DATAHUB.SEQ_TB_API_MST')
+    </select>
+
+     <select id="SELECT_DATASET_REQ_COL_MST" parameterType="java.util.HashMap" resultType="int">
+        SELECT NEXTVAL('DATAHUB.SEQ_TB_DATASET_REQ_COL_MST')
+    </select>
+
+    <insert id="INSERT_API_MST" parameterType="java.util.HashMap">
+    INSERT
+    INTO    DATAHUB.TB_API_MST
+        (
+            api_id,
+            api_url,
+            api_name,
+            kong_host,
+            exec_mode_cd,
+            update_time
+        )
+        VALUES
+        (
+            #{api_id},
+            #{api_url},
+            #{api_name},
+            #{kong_host},
+            #{exec_mode_cd},
+            now()
+        )
+    </insert>
+
+
+    <!-- 연동 시스템 관리 리스트 등록 -->
+    <insert id="INSERT_LINK_SYSTEM_LIST" parameterType="java.util.HashMap">
+    INSERT INTO DATAHUB.TB_INTRL_SYSTEM_MST
+    (
+        SYSTEM_ID,
+        SYSTEM_NM,
+        SYSTEM_DESC,
+        MANAGER_ID,
+        MANAGER_PHONE,
+        MANAGER_EMAIL,
+        API_KEY,
+        CREATE_TIME
+    )
+    VALUES 
+    (
+        #{system_id},
+        #{system_nm},
+        #{system_desc},
+        #{manager_id},
+        #{manager_phone},
+        #{manager_email},
+        #{api_key},
+        CURRENT_TIMESTAMP
+    );
+    </insert> 
+
+    <!-- 연동 시스템 관리 리스트 수정 -->
+    <update id="UPDATE_LINK_SYSTEM">
+    UPDATE DATAHUB.TB_INTRL_SYSTEM_MST
+    <set>
+        SYSTEM_NM = #{system_nm}
+        <!-- ,MANAGER_ID = #{manager_id} -->
+        <!-- ,MANAGER_PHONE = #{manager_phone} -->
+        ,SYSTEM_DESC = #{system_desc}
+        ,UPDATE_TIME = now()
+    </set>
+    WHERE SYSTEM_ID = #{system_id}
+    </update>
+
+    <!-- 연동 시스템 관리 리스트 삭제 -->
+    <delete id="DELETE_LINK_SYSTEM_LIST" parameterType="hashmap">
+    DELETE FROM DATAHUB.TB_INTRL_SYSTEM_MST TISM
+    WHERE 
+        SYSTEM_ID = #{system_id}
+    </delete>
+
+    <select id="SELECT_TABLE_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+    WITH TEMP AS (
+        SELECT
+            'TB_AL_CURRENT_DTL' || (1 + ((systemnum - 1) % 10)) AS TABLE,
+            'AL_SRL_NUM' || (1 + ((systemnum - 1) % 10)) AS category,
+            CASE WHEN random() <![CDATA[ < ]]> 0.5 THEN 'On-demand' ELSE 'batch' END AS "type",
+            '설명' AS ex,
+            TO_CHAR(NOW(), 'YYYY-MM-DD HH24:MI:SS') AS collectionTime,
+            systemnum AS systemnum
+        FROM generate_series(1, 100) AS sequential_nums(systemnum)
+    )
+    <include refid="TotalCountPrefix"/>
+        SELECT *
+        FROM TEMP
+    <if test="table != null">
+        WHERE "TABLE" = ${table}
+    </if>
+    <include refid="TotalCountSuffix"/>
+    </select>
+
+    <!-- API 공통코드 테이블 조회 -->
+    <select id="SELECT_API_CODE_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap"> 
+    SELECT 
+        CD
+        ,CD_NM
+        ,CATEGORY_CD
+        ,DISPLAY_ORD 
+   FROM DATAHUB.TB_CODE_CD TCC
+    ORDER BY DISPLAY_ORD
+    </select>
+
+    <!-- 데이터셋 요청 이력 조회 -->
+   <select id="SELECT_DATA_SET_HIST_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap"> 
+    <include refid="TotalCountPrefix"/>
+    SELECT
+        DATASET_ID,
+        DATASET_NM,
+        CASE
+            WHEN STATUS_CD = 'A' THEN '요청'
+            WHEN STATUS_CD = 'G' THEN '승인'
+            ELSE '반려'
+        END AS STATUS_CD_DESC,
+        STATUS_CD,
+        TO_CHAR(CREATE_TIME, 'YYYY-MM-DD HH24:MI:SS') AS CREATE_TIME,
+        TO_CHAR(UPDATE_TIME, 'YYYY-MM-DD HH24:MI:SS') AS UPDATE_TIME,
+        DATASET_DESC,
+        REFUSE_MSG,
+        DATASET_REQUEST_COLUMN,
+        DATASET_CLS_CD,
+        REFUSE_MSG,
+        EXEC_MODE_CD,
+        CASE
+            WHEN EXEC_MODE_CD = 'B' THEN 'Batch'
+            WHEN EXEC_MODE_CD = 'F' THEN 'SFTP'
+            ELSE 'OnDemand'
+        END AS EXEC_MODE_CD_DESC,
+        FIXED_DELAY
+    FROM DATAHUB.TB_DATASET_REQ_MST
+    WHERE 1=1
+        <if test="dataset_nm != null and dataset_nm != ''"> 
+        AND UPPER(DATASET_NM) LIKE '%' || UPPER(#{dataset_nm}) || '%'
+        </if>
+        <if test="status_cd != null and !status_cd.isEmpty() and !status_cd.contains('ALL')">
+            AND STATUS_CD IN
+            <foreach collection="status_cd" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    <include refid="TotalCountSuffix"/>
+    </select>
+
+
+
+    <!-- API 데이터셋 조회 -->
+    <select id="SELECT_API_DATA_SET_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap"> 
+    SELECT  TAM.API_NAME,
+            TDRM.DATASET_NM,
+            TDRM.DATASET_REQUEST_COLUMN ,
+            TADMM.API_ID,
+            TADMM.DATASET_ID,
+            TAM.API_URL,
+            TAM.EXEC_MODE_CD 
+    FROM    DATAHUB.TB_API_DATASET_MAPP_MST TADMM
+    INNER JOIN DATAHUB.TB_API_MST TAM          ON TADMM.API_ID = TAM.API_ID
+    INNER JOIN DATAHUB.TB_DATASET_REQ_MST TDRM ON TADMM.DATASET_ID = TDRM.DATASET_ID
+    WHERE TAM.EXEC_MODE_CD = 'O'
+    </select>
+
+
+
+      <!-- 데이터셋 요청 이력 수정(관리자) -->
+     <update id="UPDATE_DATA_SET_HIST_LIST">
+        UPDATE DATAHUB.TB_DATASET_REQ_MST
+        <set>
+            STATUS_CD = #{status_cd}
+        <if test="refuse_msg != null and refuse_msg != ''">
+           ,REFUSE_MSG = #{refuse_msg}
+        </if>
+        </set>
+        WHERE 
+            DATASET_ID = #{dataset_id}
+    </update>
+
+    <!-- 데이터셋 요청 이력 삭제(사용자) -->
+    <delete id="DELETE_DATA_SET_HIST_LIST" parameterType="hashmap">
+    DELETE FROM DATAHUB.TB_DATASET_REQ_MST
+    WHERE 
+        DATASET_ID = #{dataset_id}
+    </delete>
+
+    <insert id="INSERT_DATASET_MAPP_MST" parameterType="java.util.HashMap">
+    INSERT INTO DATAHUB.TB_API_DATASET_MAPP_MST
+    (
+        api_id
+       ,dataset_id
+       ,reg_date
+    )
+    VALUES 
+    (
+        #{api_id}
+        ,#{dataset_id}
+        ,CURRENT_TIMESTAMP
+    );
+    </insert> 
+
+
+
+    <!-- 데이터셋 요청 테이블, 컬럼 조회 -->
+    <select id="SELECT_DATA_SET_COL_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap"> 
+     SELECT  
+        TDRCM.DATASET_ID
+        ,TDRCM.TABLE_NM
+        ,TDRCM.COLUMN_NM
+        ,TDRCM.DATA_TYPE
+        ,TO_CHAR(TDRCM.CREATE_TIME, 'YYYY-MM-DD HH24:MI:SS') AS CREATE_TIME
+        ,TO_CHAR(TDRM.UPDATE_TIME, 'YYYY-MM-DD HH24:MI:SS') AS UPDATE_TIME
+        ,TDRCM.PK_YN
+        ,TDRCM.NULL_YN
+        ,EXEC_MODE_CD
+        ,FIXED_DELAY
+        FROM DATAHUB.TB_DATASET_REQ_COL_MST TDRCM
+        INNER JOIN DATAHUB.TB_DATASET_REQ_MST TDRM
+        ON TDRCM.DATASET_ID = TDRM.DATASET_ID 
+    WHERE 1=1
+        <if test="dataset_id != null and dataset_id != ''">
+        AND TDRCM.DATASET_ID = #{dataset_id}
+        </if>
+    </select>
+    
+    <!-- API 테이블 이력 조회 -->
+    <select id="SELECT_API_TABLE_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap"> 
+    <include refid="TotalCountPrefix"/>
+    SELECT  TACM.API_ID,
+            TACM.TABLE_NM,
+            TACM.COLUMN_NM,
+            TACM.DATA_TYPE,
+            TO_CHAR(TACM.CREATE_TIME, 'YYYY-MM-DD HH24:MI:SS') AS CREATE_TIME,
+            TAM.EXEC_MODE_CD
+    FROM    DATAHUB.TB_API_COL_MST TACM
+    INNER JOIN DATAHUB.TB_API_MST TAM ON TACM.API_ID = TAM.API_ID
+    WHERE   TAM.EXEC_MODE_CD = 'O'
+        <if test="api_id != null and api_id != ''">
+        AND TACM.API_ID = #{api_id}
+        </if>
+    <include refid="TotalCountSuffix"/>
+    </select>
+    
+    <!-- API 조회 -->
+    <select id="SELECT_API_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap"> 
+    <include refid="TotalCountPrefix"/>
+    SELECT  TAM.API_NAME,
+            TAM.API_ID,
+            TAM.EXEC_MODE_CD,
+            TAM.API_URL,
+            TAM.REQ_PARAM
+    FROM DATAHUB.TB_API_MST TAM
+    WHERE 1=1
+        AND EXEC_MODE_CD = 'O'
+    <include refid="TotalCountSuffix"/>
+    </select>
+    
+    <!-- 데이터셋 테이블 삭제 -->
+    <delete id="DELETE_API_TABLE_ONE" parameterType="hashmap">
+    DELETE FROM DATAHUB.TB_API_COL_MST
+    WHERE 1=1
+        <if test="api_id != null">
+        AND API_ID = #{api_id}
+        </if>
+        <if test="table_nm != null">
+        AND TABLE_NM = #{table_nm}
+        </if>
+        <if test="column_nm != null">
+        AND COLUMN_NM = #{column_nm}
+        </if>
+        <if test="data_type != null">
+        AND DATA_TYPE = #{data_type}
+        </if>
+    </delete>
+
+    <!-- 데이터셋 PopOver 정보 조회 -->
+    <select id="SELECT_DATA_SET_POP_OVER_DATA" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap"> 
+    SELECT  REQCOLMST.TABLE_NM,
+            REQCOLMST.COLUMN_NM,
+            REQCOLMST.DATA_TYPE
+    FROM    DATAHUB.TB_DATASET_REQ_MST REQMST
+    INNER JOIN DATAHUB.TB_DATASET_REQ_COL_MST REQCOLMST ON REQMST.DATASET_ID = REQCOLMST.DATASET_ID
+    WHERE 1=1
+        <if test="dataset_id != null">
+        AND REQCOLMST.DATASET_ID = #{dataset_id}
+        </if>
+    </select>
+    
+    <!-- 데이터셋 생성 요청 -->
+    <insert id="INSERT_DATA_SET_AUTH_LIST" parameterType="java.util.HashMap">
+        /* ${exec_mode_cd}::varchar */
+        INSERT INTO DATAHUB.TB_DATASET_REQ_MST
+        (
+            DATASET_ID
+            ,DATASET_DESC
+            ,STATUS_CD
+            ,CREATE_TIME
+            ,DATASET_NM
+            ,DATASET_REQUEST_COLUMN
+            ,EXEC_MODE_CD
+            ,INTGR_INTERVAL
+        )
+        VALUES
+        (
+            #{dataset_id} <!-- 시퀀스 사용 -->
+            ,#{dataset_desc}
+            ,'A'
+            ,CURRENT_TIMESTAMP
+            ,#{dataset_nm}
+            ,#{dataset_request_column}
+            ,#{exec_mode_cd}::varchar
+            <if test="fixed_delay == ''" >
+            ,'300'
+            </if>
+            <if test="fixed_delay != ''" >
+            ,#{fixed_delay}
+            </if>
+        )
+    </insert>
+     
+    <insert id="INSERT_DATA_SET_VALUE_LIST" parameterType="java.util.HashMap">
+    <!-- <selectKey keyProperty="dataset_id" resultType="java.lang.Long">
+        SELECT nextval('DATAHUB.SEQ_TB_DATASET_REQ_COL_MST') AS dataset_id
+    </selectKey> -->
+        <foreach collection="list" item="item" separator=";">
+            INSERT INTO    DATAHUB.TB_DATASET_REQ_COL_MST
+            (
+                DATASET_ID,
+                TABLE_NM,
+                COLUMN_NM,
+                DATA_TYPE,
+                CREATE_TIME
+            )
+            VALUES
+            (
+                #{dataset_id}, 
+                #{item.table_nm},
+                #{item.column_nm},
+                #{item.data_type},
+                CURRENT_TIMESTAMP
+            )
+        </foreach>
+    </insert>
+
+    <select id="SELECT_TB_METADATA_MST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+    SELECT table_nm 
+    FROM  DATAHUB.TB_METADATA_MST
+    GROUP BY table_nm 
+    </select>
+
+    <!-- 본부 -->
+    <select id="SELECT_VW_ORG_MST_HQ" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+    SELECT ORG_ID AS ORGSCODE, ORG_NM AS ORGNAME
+    FROM ndhub.VW_ORG_MST
+    WHERE ORG_ID in ('468338','482973','468633','468042','468994','467044','467653')
+    </select>
+
+    <!-- 조직 선택  (센터, 팀) -->
+    <select id="GET_ORG_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+    SELECT ORG_ID AS ORGSCODE, ORG_NM AS ORGNAME
+    FROM ndhub.VW_ORG_MST
+    WHERE HIGHER_ORG_ID = #{ORGSCODE}
+    </select>
+
+    <!-- 국사 조회 -->
+    <select id="GET_OFFICE_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+    SELECT o.OFFICE_ID AS OFFICESCODE, o.OFFICE_NM AS OFFICENAME
+    FROM ndhub.TB_OFFICE_ORG_MAPP_MST OMM
+    INNER JOIN ndhub.VW_ORG_MST org on OMM.org_id  = org.ORG_ID
+    INNER JOIN ndhub.TB_OFFICE_MST o on OMM.office_id  = o.OFFICE_ID
+    WHERE org.ORG_ID = #{ORGSCODE}
+    </select>
+    
+    <!-- 영향회선 본부 검색 쿼리 -->
+    <select id="ORG_HEAD_ORGS_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+    SELECT DISTINCT ORGSCODE, ORGNAME
+    FROM ndhub.TB_OFFICEROLE OFR
+    INNER JOIN ndhub.TB_ORG ORG ON ORG.ORGSCODE = OFR.HEADORGSCODE 
+    </select> 
+
+    <!-- 영향회선 센터 검색 쿼리 -->
+    <select id="ORG_CENTER_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+    SELECT DISTINCT ORGSCODE, ORGNAME
+    FROM ndhub.TB_OFFICEROLE OFR
+    INNER JOIN ndhub.TB_ORG ORG ON ORG.ORGSCODE = OFR.CSCENTERCODE
+    WHERE OFR.HEADORGSCODE = #{HEADORGSCODE}
+    </select> 
+
+    <!-- 영향회선 팀 검색 쿼리 -->
+    <select id="ORG_TEAM_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+    SELECT DISTINCT ORGSCODE, ORGNAME
+    FROM ndhub.TB_OFFICEROLE OFR 
+    INNER JOIN ndhub.TB_ORG ORG ON ORG.ORGSCODE = OFR.MGMTORGSCODE
+    WHERE 1=1
+        AND OFR.HEADORGSCODE = #{HEADORGSCODE} 
+        AND OFR.CSCENTERCODE = #{CSCENTERCODE}
+    </select> 
+
+    <!-- 영향회선 국사 검색 쿼리 -->
+    <select id="ORG_OFFICE_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+    SELECT DISTINCT OFF.OFFICESCODE, OFF.OFFICENAME
+    FROM ndhub.TB_OFFICEROLE OFR
+    INNER JOIN ndhub.TB_OFFICE OFF ON OFF.OFFICESCODE = OFR.OFFICESCODE
+        WHERE 1=1
+        AND OFR.HEADORGSCODE = #{HEADORGSCODE} 
+        AND OFR.CSCENTERCODE = #{CSCENTERCODE} 
+        AND OFR.MGMTORGSCODE = #{MGMTORGSCODE}
+    </select>
+
+    <!-- 영향회선 목록 리스트 -->
+    <select id="SELECT_NEA_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap"> 
+    <include refid="TotalCountPrefix"/>
+    SELECT 
+        ROW_NUMBER() OVER(ORDER BY NE.NECATSEQ) ORDER_NUM <!-- 번호 -->
+        , TOFF.OFFICE_ABBR_NM OFFICESCODE <!-- 관리국사 코드 -->
+        , TOFF.OFFICE_ID OFFICENAMESCODE <!-- 관리국사 -->
+        , CLSCODE.NEMAINCLSCODE <!-- 대분류 코드 -->
+        , CLSCODE.MAINDESCRIPTION <!-- 대분류 -->
+        , CLSCODE.NESUBCLSCODE <!-- 소분류 코드 -->
+        , CLSCODE.SUBDESCRIPTION <!-- 소분류 -->
+        , USG.DESCRIPTION DESCRIPTION <!-- 용도 -->
+        , NEC.MODELNAME <!-- 모델명 -->
+        , NE.NEALIAS2 <!-- 장치명2 -->
+        , NE.NESCODE <!-- 장치코드 -->
+        , NE.NEALIAS <!-- 장치명 -->
+        , TOFF.OFFICE_NM OFFICENAME <!-- 설치국사 -->
+        , ADDR.addr1||' '||ADDR.addr2||' '||ADDR.addr3||' '||
+        CASE 
+            WHEN BLDG.addrnum   <![CDATA[ <> ]]>   '0' THEN BLDG.addrnum||'번지'
+            ELSE ''
+            END ||
+        CASE 
+            WHEN BLDG.addrsubnum  <![CDATA[ <> ]]>  '0' THEN BLDG.addrsubnum||'호' 
+            ELSE ''
+        END AS FULL_ADDRESS <!-- 주소 -->
+        , BLDG.BLDGSCODE <!-- 빌딩 코드 -->
+        , BLDG.BLDGNAME <!-- 빌딩 -->
+        , NESU.NEA_NES_CNT <!-- 수용고객 고객 -->
+		, NESU.NEA_LINE_CNT <!-- 수용고객 영향회선 -->
+		, NESU.NEA_SVC_CNT <!-- 수용고객 서비스 -->
+		, NESU.NEA_RELATION_NES_CNT <!-- 영향고객 고객 -->
+		, NESU.NEA_RELATION_LINE_CNT <!-- 영향고객 영향회선 -->
+		, NESU.NEA_RELATION_SVC_CNT <!-- 영향고객 서비스 -->
+    FROM ndhub.TB_NE NE
+    INNER JOIN ndhub.TB_NECAT NEC ON NEC.NECATSEQ = NE.NECATSEQ
+    INNER JOIN ndhub.TB_NECLSCODE CLSCODE ON NE.MAINCLSCODE = CLSCODE.NEMAINCLSCODE AND NE.SUBCLSCODE = CLSCODE.NESUBCLSCODE
+    INNER JOIN ndhub.TB_NEUSGCODE USG ON USG.svcnetcode = NE.svcnetcode and USG.neusgcode = ne.neusgcode
+	LEFT OUTER JOIN ndhub.TB_OFFICE_MST TOFF ON TOFF.office_id = NE.officescode
+    LEFT OUTER JOIN ndhub.tb_office_org_mapp_mst TOOMM on ne.svcnetcode= TOOMM.svc_net_cd and TOFF.office_id = toomm.office_id 
+    LEFT OUTER JOIN ndhub.VW_ORG_MST VOM5 on TOOMM.ORG_ID = VOM5.ORG_ID 
+	LEFT OUTER JOIN ndhub.VW_ORG_MST VOM4 on VOM4.ORG_ID = VOM5.HIGHER_ORG_ID 
+	LEFT OUTER JOIN ndhub.VW_ORG_MST VOM3 on VOM3.ORG_ID = VOM4.HIGHER_ORG_ID
+	LEFT OUTER JOIN ndhub.TB_ADDR ADDR on ADDR.addrseq = NE.addrseq 
+    LEFT OUTER JOIN ndhub.TB_BLDG BLDG ON BLDG.BLDGSCODE = NE.BLDGSCODE
+    LEFT OUTER JOIN ndhub.TB_NEA_NESUIDATA NESU on NESU.NESCODE = NE.NESCODE 
+    WHERE 1=1
+        <if test="SEARCHTEXT != null">
+            AND (
+                NE.NEALIAS LIKE '%' || #{SEARCHTEXT} || '%'
+                OR
+                NE.NESCODE = #{SEARCHTEXT}
+            )
+        </if>
+        <if test="HEADORGSCODE != null and HEADORGSCODE != 'ALL'">
+            AND VOM3.ORG_ID = #{HEADORGSCODE} 
+        </if>
+        <if test="CSCENTERCODE != null and CSCENTERCODE != 'ALL'">
+            AND VOM4.ORG_ID = #{CSCENTERCODE} 
+        </if>
+        <if test="MGMTORGSCODE != null and MGMTORGSCODE != 'ALL'">
+            AND VOM3.ORG_ID = #{MGMTORGSCODE} 
+        </if>
+        <if test="OFFICESCODE != null and OFFICESCODE != 'ALL'">
+            AND TOFF.OFFICE_ID = #{OFFICESCODE} 
+        </if>
+        ORDER BY NE.NECATSEQ
+    <include refid="TotalCountSuffix"/>
+    </select>
+
+    <select id="SELECT_NEA_UPPER_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap"> 
+    with recursive TMP_NEA_COLLECTDATA( KEY01, KEY03, depth, path, cycle) as (
+	select 
+		key01, key03, 1, array[key01::text], false
+	from ndhub.TB_NEA_COLLECTDATA03
+	where key03= #{NESCODE}
+	AND KEY06 = 'DIR'
+	union all
+	select 
+		LKO.key01
+		, LKO.KEY03 
+		, LKT.depth+1 
+		, ARRAY_APPEND(LKT.path, LKO.KEY01::TEXT)
+		, LKO.KEY01 = ANY(LKT.PATH)
+	from 
+		ndhub.TB_NEA_COLLECTDATA03 LKO 
+		inner join TMP_NEA_COLLECTDATA LKT on LKO.KEY03=LKT.KEY01
+		where not cycle
+		and LKT.depth=0
+    )
+    select 
+        ROW_NUMBER() OVER(ORDER BY NE.NECATSEQ) ORDER_NUM 
+        , TOFF.OFFICE_ABBR_NM OFFICESCODE 
+        , TOFF.OFFICE_ID OFFICENAMESCODE 
+        , CLSCODE.NEMAINCLSCODE 
+        , CLSCODE.MAINDESCRIPTION 
+        , CLSCODE.NESUBCLSCODE 
+        , CLSCODE.SUBDESCRIPTION 
+        , USG.DESCRIPTION DESCRIPTION 
+        , NEC.MODELNAME 
+        , NE.NEALIAS2 
+        , NE.NESCODE 
+        , NE.NEALIAS 
+        , TOFF.OFFICE_NM OFFICENAME 
+        , ADDR.addr1||' '||ADDR.addr2||' '||ADDR.addr3||' '||
+        CASE 
+            WHEN BLDG.addrnum     <![CDATA[ <> ]]>     '0' THEN BLDG.addrnum||'번지'
+            ELSE ''
+            END ||
+        CASE 
+            WHEN BLDG.addrsubnum    <![CDATA[ <> ]]>    '0' THEN BLDG.addrsubnum||'호' 
+            ELSE ''
+        END AS FULL_ADDRESS 
+        , BLDG.BLDGSCODE 
+        , BLDG.BLDGNAME 
+        , NESU.NEA_NES_CNT 
+        , NESU.NEA_LINE_CNT 
+        , NESU.NEA_SVC_CNT 
+        , NESU.NEA_RELATION_NES_CNT 
+        , NESU.NEA_RELATION_LINE_CNT 
+        , NESU.NEA_RELATION_SVC_CNT 
+        , case when not exists (select 1 from ndhub.TB_NEA_COLLECTDATA03  where key03 = CD.key01) then true else false end as is_leaf
+    from TMP_NEA_COLLECTDATA CD
+    inner join ndhub.TB_NE NE on CD.KEY01 = NE.NESCODE and NE.SVCNETCODE NOT IN ('A1', 'A2', 'A3', 'A4')
+    INNER JOIN ndhub.TB_NECAT NEC ON NEC.NECATSEQ = NE.NECATSEQ 
+    INNER JOIN ndhub.TB_NECLSCODE CLSCODE ON NE.MAINCLSCODE = CLSCODE.NEMAINCLSCODE AND NE.SUBCLSCODE = CLSCODE.NESUBCLSCODE
+    INNER JOIN ndhub.TB_NEUSGCODE USG ON USG.svcnetcode = NE.svcnetcode and USG.neusgcode = ne.neusgcode
+    INNER JOIN ndhub.TB_OFFICE_MST TOFF ON TOFF.office_id = NE.officescode
+    LEFT OUTER JOIN ndhub.TB_ADDR ADDR on ADDR.addrseq = NE.addrseq 
+    LEFT OUTER JOIN ndhub.TB_BLDG BLDG ON BLDG.BLDGSCODE = NE.BLDGSCODE
+    LEFT OUTER JOIN ndhub.TB_NEA_NESUIDATA NESU on NESU.NESCODE = NE.NESCODE 
+    </select>
+
+    <select id="SELECT_NEA_DOWN_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap"> 
+    with recursive TMP_NEA_COLLECTDATA( KEY01, KEY03, depth, path, cycle) as (
+	select 
+		key01, key03, 1, array[key03::text], false
+	from ndhub.TB_NEA_COLLECTDATA03
+	where key01= #{NESCODE}
+	AND KEY06 = 'DIR'
+	union all
+	select 
+		LKO.key01
+		, LKO.KEY03
+		, LKT.depth+1
+		, ARRAY_APPEND(LKT.path, LKO.KEY03::TEXT)
+		, LKO.KEY03 = ANY(LKT.PATH)
+	from 
+		ndhub.TB_NEA_COLLECTDATA03 LKO 
+		inner join TMP_NEA_COLLECTDATA LKT on LKO.KEY01=LKT.KEY03
+		where not cycle
+		and LKT.depth=0
+    )
+    select 
+        ROW_NUMBER() OVER(ORDER BY NE.NECATSEQ) ORDER_NUM 
+        , TOFF.OFFICE_ABBR_NM OFFICESCODE 
+        , TOFF.OFFICE_ID OFFICENAMESCODE 
+        , CLSCODE.NEMAINCLSCODE 
+        , CLSCODE.MAINDESCRIPTION 
+        , CLSCODE.NESUBCLSCODE 
+        , CLSCODE.SUBDESCRIPTION 
+        , USG.DESCRIPTION DESCRIPTION 
+        , NEC.MODELNAME 
+        , NE.NEALIAS2 
+        , NE.NESCODE 
+        , NE.NEALIAS 
+        , TOFF.OFFICE_NM OFFICENAME 
+        , ADDR.addr1||' '||ADDR.addr2||' '||ADDR.addr3||' '||
+        CASE 
+            WHEN BLDG.addrnum  <![CDATA[ <> ]]> '0' THEN BLDG.addrnum||'번지'
+            ELSE ''
+            END ||
+        CASE 
+            WHEN BLDG.addrsubnum <![CDATA[ <> ]]>  '0' THEN BLDG.addrsubnum||'호' 
+            ELSE ''
+        END AS FULL_ADDRESS 
+        , BLDG.BLDGSCODE 
+        , BLDG.BLDGNAME 
+        , NESU.NEA_NES_CNT 
+        , NESU.NEA_LINE_CNT 
+        , NESU.NEA_SVC_CNT 
+        , NESU.NEA_RELATION_NES_CNT 
+        , NESU.NEA_RELATION_LINE_CNT 
+        , NESU.NEA_RELATION_SVC_CNT 
+        , case when not exists (select 1 from ndhub.TB_NEA_COLLECTDATA03  where key01 = CD.key03) then true else false end as is_leaf
+    from TMP_NEA_COLLECTDATA CD
+    inner join ndhub.TB_NE NE on CD.KEY03 = NE.NESCODE and NE.SVCNETCODE NOT IN ('A1', 'A2', 'A3', 'A4')
+    INNER JOIN ndhub.TB_NECAT NEC ON NEC.NECATSEQ = NE.NECATSEQ 
+    INNER JOIN ndhub.TB_NECLSCODE CLSCODE ON NE.MAINCLSCODE = CLSCODE.NEMAINCLSCODE AND NE.SUBCLSCODE = CLSCODE.NESUBCLSCODE
+    INNER JOIN ndhub.TB_NEUSGCODE USG ON USG.svcnetcode = NE.svcnetcode and USG.neusgcode = ne.neusgcode
+    INNER JOIN ndhub.TB_OFFICE_MST TOFF ON TOFF.office_id = NE.officescode
+    LEFT OUTER JOIN ndhub.TB_ADDR ADDR on ADDR.addrseq = NE.addrseq 
+    LEFT OUTER JOIN ndhub.TB_BLDG BLDG ON BLDG.BLDGSCODE = NE.BLDGSCODE
+    LEFT OUTER JOIN ndhub.TB_NEA_NESUIDATA NESU on NESU.NESCODE = NE.NESCODE 
+    </select>
+
+    <select id="SELECT_TB_INTRL_SYSTEM_MST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+    SELECT 
+        SYSTEM_ID
+        , SYSTEM_NM
+        , SYSTEM_DESC
+        , MANAGER_ID
+        , MANAGER_PHONE
+        , MANAGER_EMAIL
+        , CREATE_TIME
+        , UPDATE_TIME
+        , API_KEY
+    FROM datahub.TB_INTRL_SYSTEM_MST
+    </select>
+
+</mapper>

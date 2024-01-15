@@ -1,0 +1,145 @@
+.simple.CompAgGrid {
+  &.multi-header-2 .ag-theme-material {
+    .ag-header {
+      height: 90px !important;
+      min-height: 90px !important;
+
+      .ag-header-row:first-child {
+        top: 20px !important;
+      }
+    }
+  }
+
+  &.multi-header-3 .ag-theme-material {
+    .ag-header {
+      height: 105px !important;
+      min-height: 105px !important;
+
+      .ag-header-row:nth-child(2) {
+        top: 35px !important;
+      }
+      .ag-header-row:nth-child(3) {
+        top: 70px !important;
+      }
+      .ag-header-group-cell-label {
+        justify-content: center !important;
+      }
+
+      .ag-header-cell,
+      .ag-header-group-cell {
+        font-family: 'NanumSquare';
+        padding: 0px;
+        border-top: 1px solid #eaeaea;
+        border-left: 1px solid #eaeaea;
+        background-color: #3b3a3a33;
+      }
+    }
+    .ag-cell,
+    .ag-full-width-row .ag-cell-wrapper.ag-row-group {
+      font-family: 'NanumSquare' !important;
+      display: flex;
+      align-items: center;
+      font-size: 14px;
+    }
+  }
+
+  .el-checkbox-button.is-checked .el-checkbox-button__inner {
+    color: #ffffff;
+    background-color: #304156c7;
+    border-color: #304156c7;
+    box-shadow: -1px 0 0 0 #304156c7;
+    border-left-color: #304156c7 !important;
+  }
+
+  .el-checkbox-button__inner {
+    padding: 5px 8px !important;
+    font-size: 12px;
+  }
+
+  .ag-theme-material .ag-ltr .ag-column-drop-horizontal {
+    height: 40px;
+  }
+
+  .ag-theme-material .ag-cell,
+  .ag-theme-material .ag-full-width-row .ag-cell-wrapper.ag-row-group {
+    line-height: 20px !important;
+    color: black !important;
+    transform: skew(-0.03deg);
+  }
+}
+
+.normal.CompAgGrid {
+  font-size: 16px;
+  transform: skew(-0.03deg);
+
+  .ag-header-cell {
+    font-family: 'NanumSquare';
+    padding: 0px;
+    background-color: #f8f8f9;
+    border: 1px solid #e3e3e3;
+    font-weight: 800;
+    font-size: 14px;
+    &:hover {
+      background-color: #dfdfdf !important;
+    }
+  }
+  .ag-header-row {
+    font-size: 0.9em;
+  }
+  .ag-cell,
+  .ag-theme-material .ag-full-width-row .ag-cell-wrapper.ag-row-group {
+    font-family: 'NanumSquare' !important;
+    color: black !important;
+    font-weight: 600;
+    line-height: 30px !important;
+    font-size: 14px;
+    transform: skew(-0.03deg);
+    padding: 0px;
+    text-align: center;
+  }
+}
+
+.blue.CompAgGrid {
+  transform: skew(-0.03deg);
+
+  .ag-header-cell {
+    font-family: 'NanumSquare';
+    background: rgb(203, 230, 253);
+    &:hover {
+      background-color: rgb(230 243 254) !important;
+    }
+  }
+  .ag-header-row {
+    font-size: 1em;
+    font-weight: 800;
+  }
+  .ag-cell,
+  .ag-theme-material .ag-full-width-row .ag-cell-wrapper.ag-row-group {
+    line-height: 30px !important;
+    font-size: 14px;
+    padding: 0px;
+  }
+}
+
+.CompAgGrid {
+  .ag-theme-material .ag-ltr .ag-has-focus .ag-cell-focus:not(.ag-cell-range-selected),
+  .ag-theme-material .ag-ltr .ag-context-menu-open .ag-cell-focus:not(.ag-cell-range-selected),
+  .ag-theme-material .ag-ltr .ag-has-focus .ag-full-width-row.ag-row-focus .ag-cell-wrapper.ag-row-group,
+  .ag-theme-material .ag-ltr .ag-cell-range-single-cell,
+  .ag-theme-material .ag-ltr .ag-cell-range-single-cell.ag-cell-range-handle,
+  .ag-theme-material .ag-rtl .ag-has-focus .ag-cell-focus:not(.ag-cell-range-selected),
+  .ag-theme-material .ag-rtl .ag-context-menu-open .ag-cell-focus:not(.ag-cell-range-selected),
+  .ag-theme-material .ag-rtl .ag-has-focus .ag-full-width-row.ag-row-focus .ag-cell-wrapper.ag-row-group,
+  .ag-theme-material .ag-rtl .ag-cell-range-single-cell,
+  .ag-theme-material .ag-rtl .ag-cell-range-single-cell.ag-cell-range-handle {
+    border: none !important;
+    border-color: unset !important;
+  }
+
+  .ag-theme-material .ag-cell.ag-cell-range-selected:not(.ag-cell-range-single-cell).ag-cell-range-left,
+  .ag-theme-material .ag-cell.ag-cell-range-selected:not(.ag-cell-range-single-cell).ag-cell-range-top,
+  .ag-theme-material .ag-cell.ag-cell-range-selected:not(.ag-cell-range-single-cell).ag-cell-range-right,
+  .ag-theme-material .ag-cell.ag-cell-range-selected:not(.ag-cell-range-single-cell).ag-cell-range-bottom {
+    border: none !important;
+  }
+}

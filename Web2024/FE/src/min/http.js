@@ -1,0 +1,181 @@
+import { AppOptions } from '@/class/appOptions'
+import { clone, getJsonfileName, wait } from '@/utils'
+import store from '@/store'
+import { getToken } from '@/utils/auth'
+import axios from 'axios'
+import { Message, MessageBox } from 'element-ui'
+import moment from 'moment'
+import Encrypt from '@/assets/libs/Encrypt.min'
+
+const { debug, mock, serverMock, baseURL, project, debugOrDev } = AppOptions.instance
+const debugLog = debug ? console.log : () => { /* 빈 블록 사용 금지 */ }
+const clearLog = (debugOrDev) ? () => { } : () => { wait(500).then(console.clear) }
+export const __ = { store, AppOptions }
+
+if (debug) {
+  Object.assign(console, console._)
+}
+
+axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*'
+axios.defaults.headers.common['Access-Control-Expose-Headers'] = 'Client-Addr'
+const service = axios.create({
+  baseURL: baseURL,
+  timeout: (process.env.VUE_APP_HTTP_TIMEOUT || 10) * 1000 // request timeout
+})
+
+service.interceptors.request.use(
+  config => {
+    config.data = config.data || {}
+    const { data, testData } = config
+    const server = store.getters.server || {}
+
+    if (store.getters.token) {
+      config.headers['X-AUTH-TOKEN'] = getToken()
+    }
+
+    const encryptRequest = !config.encrypt && !mock && !debug
+    config.data = Encrypt.encryptHttp(data, encryptRequest, server.isDevProfile)
+
+    const sqlId = config.sqlId || ''
+    let url = config.url
+
+    const command = config.command = url.slice(1).replace(/[^a-zA-Z0-9]+/, '_')
+
+    if (/\/(selectList|selectListPaging|selectOne|modify)$/.test(url) && sqlId) {
+      url = config.url += `/${sqlId}`
+    }
+
+    if (command) {
+      const params = config.data || testData || {}
+      config.requestTime = Date.now()
+      config.headers['fileIndex'] = config.fileIndex
+      config.headers['project'] = project
+      config.headers['jsonFileName'] = getJsonfileName(url, config)
+      config.headers['urlOrigin'] = config.urlOrigin = url
+
+      if (serverMock === true) {
+        config.url = '/mock'
+      }
+
+      debugLog({ url, command, sqlId }, params && clone(params))
+    }
+    clearLog()
+    return config
+  },
+  error => {
+    debugLog(error)
+    return Promise.reject(error)
+  }
+)
+
+service.interceptors.response.use(
+  response => {
+    debugLog(`response=`, { ...response })
+    const res = response.data
+
+    Encrypt.decryptHttp(res)
+
+    store.dispatch('serviceLog/addServiceLog', response)
+    if (res.sql) debugLog(res.sql)
+
+    if (mock === true && res.resultOrigin !== response.config.data) {
+      console.warn('확인필요=', response.config.url, res.resultOrigin, response.config.data)
+    }
+
+    if (response.result === 'kickout') {
+      store.dispatch('user/logout')
+    }
+
+    clearLog()
+
+    switch (response.status) {
+      case 200:
+        debugLog(`response.status=${response.status}`)
+        return res
+      case 401:
+        debugLog(`response.status=${response.status}`)
+        logout()
+      // eslint-disable-next-line no-fallthrough
+      default:
+        debugLog(`response.status=${response.status}`)
+        Message({
+          message: res.message || 'Error',
+          type: 'error',
+          duration: 5 * 1000
+        })
+
+        return Promise.reject(new Error(res.message || 'Error'))
+    }
+  },
+  error => {
+    debugLog(`response error=`, { ...error })
+    const useServiceLog = true
+    const { urlOrigin, requestTime } = error.config
+
+    if (useServiceLog) {
+      store.dispatch('serviceLog/addServiceErrorLog', error)
+
+      if (error && error.response && error.response.status === 401) {
+        debugLog(`error.response.status=`, 401)
+        logout()
+      }
+
+      wait(500).then(() => {
+        const { response } = error
+        const result = response ? response.result : null
+        if (result) {
+          if (result.sql) debugLog(result.sql)
+          if (result.success === false) {
+            console.error(result.detailMessage)
+            console.error(result.message)
+            if (debug) {
+              Message({
+                message: result.message || result.detailMessage,
+                type: 'error',
+                duration: 5 * 1000
+              })
+            }
+          }
+        } else {
+          console.error('response data is null, error=', error)
+        }
+      })
+    } else {
+      debugLog('err' + error)
+      Message({
+        message: error.message,
+        type: 'error',
+        duration: 5 * 1000
+      })
+    }
+
+    store.dispatch('errorLog/addErrorLog', {
+      err: error,
+      vm: '',
+      info: `requestTime:${moment(new Date(requestTime)).format('YYYY-MM-DD HH:mm:ss.SSS')}, client-addr:${error.response.headers['client-addr']}`,
+      url: urlOrigin
+    })
+
+    clearLog()
+    return Promise.reject(error)
+  }
+)
+
+function logout() {
+  setTimeout(() => {
+    store.dispatch('user/logout')
+  }, 5000)
+  MessageBox.confirm(
+    '"로그인 세션 토큰 만료" 정책에 따라 로그아웃 됩니다. ',
+    '로그아웃',
+    {
+      confirmButtonText: '세션 토큰 갱신',
+      cancelButtonText: '취소',
+      type: 'warning'
+    }
+  ).then(() => {
+    store.dispatch('user/logout')
+  })
+}
+
+export default service

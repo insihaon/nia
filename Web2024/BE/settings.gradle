@@ -1,0 +1,6 @@
+rootProject.name = 'web'
+include 'common-base'
+include 'common-web'
+include 'common-mq'
+include 'common-ws'
+include 'app-datahub'

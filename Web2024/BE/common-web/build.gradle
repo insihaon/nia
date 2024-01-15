@@ -1,0 +1,84 @@
+//=================================================================//
+// common-web
+//=================================================================//
+bootJar {
+	enabled = false
+}
+jar {
+	enabled = true
+}
+
+dependencies {	
+	implementation project(':common-base')
+
+	implementation fileTree(dir: 'libs', include: ['**/*.jar'])
+
+	implementation 'org.springframework.boot:spring-boot-starter'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'junit:junit:4.13.2'
+
+	implementation 'org.json:json:20231013'
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
+	implementation 'org.apache.commons:commons-collections4:4.4'	
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-security'	/* User */
+	implementation 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'	/* javax.xml.bind */
+	implementation 'com.google.code.gson:gson'	/* HttpUtil, JsonUtil */
+	implementation 'org.apache.httpcomponents:httpclient:4.5.14' /* HttpClientConfiguration */
+	implementation 'commons-io:commons-io:2.11.0'	/* FileStorageService */
+
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis' /* RedisConfiguration */
+	implementation 'com.github.ben-manes.caffeine:caffeine:2.9.1' /* CachingConfiguration */
+	implementation ('it.ozimov:embedded-redis:0.7.3') {		/* EmbeddedRedisConfiguration */
+		exclude group: "org.slf4j", module: "slf4j-simple"
+	}
+
+	// <<< Log4j2 보안취약점 대응
+	implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.17.1'
+	implementation group: 'org.apache.logging.log4j', name: 'log4j-to-slf4j', version: '2.17.1'
+	implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.32'
+	// >>> Log4j2 보안취약점 대응
+
+	// <<< spring.database.url 설정 필요. compileOnly 로 하면 배포시 문제됨
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc'	
+	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.2'    /* MyBatis */
+    implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'  /* MyBatis 쿼리 로그 출력 */  
+    // >>> spring.database.url 설정 필요
+
+	// <<< DB
+	implementation 'mysql:mysql-connector-java:8.0.23' 
+	runtimeOnly 'com.h2database:h2'	
+	runtimeOnly 'org.postgresql:postgresql:42.6.0'	/* postgresql */
+	// runtimeOnly 'com.oracle.database.jdbc:ojdbc8'	/* Oracle */
+	// runtimeOnly 'com.oracle.ojdbc:orai18n'	/* Oracle */
+	// implementation 'com.tmax.tibero:tibero-jdbc'
+	// implementation("org.mariadb.jdbc:mariadb-java-client:3.0.5")	/* mariadb */
+	// >>> DB
+
+	implementation 'io.jsonwebtoken:jjwt:0.9.1'		/* JwtTokenProvider : WebSocket */
+
+	implementation 'net.rakugakibox.util:yaml-resource-bundle:1.1' /* MessageConfiguration : 한글화 */
+
+	// <<< lombok : 컴파일시 @Slf4j 나 log  에러가 발생할 경우
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	testRuntimeOnly 'org.projectlombok:lombok'  
+	testAnnotationProcessor 'org.projectlombok:lombok'
+	// >>> lombok 
+
+	// <<< swagger
+	implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
+	// >>> swagger
+
+	implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.5'
+
+	// 컴파일 시 'javax.annotation.meta.When' 경고 제거
+	implementation 'com.google.code.findbugs:jsr305:3.0.2'
+
+	// org.joda.time.LocalDateTime 사용
+	implementation 'joda-time:joda-time:2.3'
+
+	// YML 암호화
+	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.4' 
+}
+

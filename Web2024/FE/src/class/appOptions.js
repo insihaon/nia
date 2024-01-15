@@ -1,0 +1,166 @@
+import store from '@/store'
+import _ from 'lodash'
+import { Device } from './device'
+import { Storage } from '@/assets/libs/Storage.min'
+const { param2Obj, reload } = require('@/utils')
+
+const APP_PROJECT = process.env.VUE_APP_PROJECT
+const NODE_ENV_DEV = process.env.NODE_ENV === 'development'
+
+let instance = null
+
+export class AppOptions extends Storage {
+  static get instance() {
+    return new AppOptions()
+  }
+
+  constructor() {
+    if (instance) {
+      return instance
+    }
+
+    super()
+
+    instance = this
+    this.self = this
+    this._data = Object.assign(this._data, {
+      baseURLs: this.readEnv(process.env.VUE_APP_BASE_API, ['//localhost:8070', '/mock']),
+      baseURLIndex: this.readEnv(process.env.VUE_APP_BASE_API_INDEX, 0),
+      dark: false,
+      mobile: Device.instance.mobile ?? false,
+      serverMock: false,
+      showOptionButton: false,
+      project: APP_PROJECT?.toLowerCase(),
+      baseURL: null,
+      useWebsocket: this.readEnv(process.env.VUE_APP_USE_WEBSOCKET, true),
+      useSessionSignin: this.readEnv(process.env.VUE_APP_USE_SESSION_SIGNIN, true),
+      lastUser: null,
+      useWsLog: false,
+      wsTicket: true,
+      language: ['ko', 'en'].at(0),
+      urlParam: {},
+    })
+    this._load()
+    this._defineProp()
+    this._data.baseURL = this._getDefaultBaseUrl()
+
+    const href = location.href
+    this._data.urlParam = param2Obj(href)
+    this.updateUseWebSocket()
+
+    if (this.debug) {
+      setTimeout(() => {
+        console.log(`useWebsocket=${this.useWebsocket}`)
+        console.log(`baseURL=${this.baseURL}`)
+        console.log(this._data)
+      }, 1000)
+    }
+  }
+
+  get mock() {
+    /* request 요청시 json file을 가져온다 */
+    return this.baseURL === '/mock'
+  }
+
+  get isGod() {
+    return this.debug
+  }
+
+  get debugOrDev() {
+    return this.debug || NODE_ENV_DEV
+  }
+
+  setFrontMock(mockMode) {
+    this.setMockMode(this.project, mockMode, 'frontend-mock')
+  }
+
+  setBackendMock(mockMode) {
+    this.setMockMode(this.project, mockMode, 'backend-mock')
+  }
+
+  setMockMode(project, mockMode, from = 'backend-mock') {
+    const newOptions = {}
+    if (mockMode) {
+      if (project) newOptions.project = project
+      switch (from) {
+        case 'frontend-mock':
+          newOptions.baseURL = '/mock'
+          newOptions.debug = true
+          console.error(`\\frontend\\mock\\json\\${project} 에 json 파일이 있는지 확인하세요`)
+          break
+        case 'backend-mock':
+        // eslint-disable-next-line no-fallthrough
+        default:
+          console.error(`\\msa\\json\\mock 에 json 파일이 있는지 확인하세요`)
+          newOptions.baseURL = this._getDefaultBaseUrl()
+          newOptions.serverMock = true
+          break
+      }
+      newOptions.useWebsocket = false
+      this.update(newOptions, false)
+      setTimeout(() => {
+        reload(true)
+      }, 1000)
+    } else {
+      this.reset()
+    }
+  }
+
+  _getDefaultBaseUrl = function () {
+    const { baseURL, baseURLs, baseURLIndex } = this
+
+    if (!baseURLs.includes('/mock')) {
+      baseURLs.push('/mock')
+    }
+
+    const { host } = document.location
+
+    let url = null
+    if (baseURL) {
+      return baseURL
+    } else if (!this.debugOrDev) {
+      url = `//${host}`
+    } else if (baseURLs[baseURLIndex]) {
+      url = baseURLs[baseURLIndex]
+    } else {
+      url = `//${host}`
+    }
+
+    return `${url.replace(/\/+$/, '')}${process.env.BASE_URL}`
+  }
+
+  get blackDtlList() {
+    return store?.getters?.blackDtlList
+  }
+
+  get roles() {
+    return store?.getters?.roles
+  }
+
+  get routes() {
+    return store?.getters?.permission_routes
+  }
+
+  get wsUrl() {
+    let url = store.getters?.server?.wsUrl || '/ws-stomp'
+    const server = this._getDefaultBaseUrl()
+    url = url.startsWith('//') ? url : `${server}${url}`
+    url = url.replaceAll(/(\/\/)+/g, '/').replaceAll(/^\//g, '//')
+    // console.log(`wsUrl=${url}`)
+    return url
+  }
+
+  updateUseWebSocket() {
+    const isMock = this._data.baseURL.includes('/mock')
+    this._data.useWebsocket = !isMock
+  }
+
+  setBaseURLIndex(index) {
+    const { baseURLs } = this
+    const baseURL = baseURLs[index]
+    if (baseURL !== undefined) {
+      this.update({ baseURLIndex: index, baseURL })
+    }
+    return baseURLs[index]
+  }
+}
