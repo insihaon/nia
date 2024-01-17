@@ -27,7 +27,7 @@
   <script>
   import { Base } from '@/min/Base.min'
   import Vue from 'vue'
-  import CompAgGrid from '@/components/aggrid_/CompAgGrid.vue'
+  import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
   import { apiSelectDataSetPopOver } from '@/api/dataHub'
 
   const routeName = 'CellRenderDataSetButtons'

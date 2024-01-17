@@ -53,7 +53,7 @@
 
 <script>
 import { defaultNescode } from '@/store/modules/influenceCircitStore'
-import CompAgGrid from '@/components/aggrid_/CompAgGrid.vue'
+import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
 import { Base } from '@/min/Base.min'
 import { apiSELECT_NEA_DOWN_LIST, apiSELECT_NEA_UPPER_LIST } from '@/api/dataHub'
 import EventBus from '@/utils/event-bus'
