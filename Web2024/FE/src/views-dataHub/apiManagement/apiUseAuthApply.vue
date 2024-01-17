@@ -1,41 +1,43 @@
 <template>
   <div :class="{ [name]: true }">
-    <DataHubComponent
-      ref="selectApi"
-      :ag-grid="selectApiAgGrid"
-      title="API 조회"
-      :items="searchApiItems"
-      :search-model.sync="searchApiModel"
-      :pagination-info="paginationInfoApi"
-      class="w-100 h-50 flex-fill"
-      @handleClickSearch="onClickSearchApi"
-      @selectedRow="selectedApiRow"
-      @keyupEnter="onClickSearchApi"
-      @searchClear="handleApiSearchClear"
-      @sortedChange="onSortedChangeApi"
-    >
-      <template #inquireButton>
-        <span> API 서비스에 대한 사용신청이 가능합니다</span>
-      </template>
-    </DataHubComponent>
+    <div class="main-layout">
+      <DataHubComponent
+        ref="selectApi"
+        :ag-grid="selectApiAgGrid"
+        title="API 조회"
+        :items="searchApiItems"
+        :search-model.sync="searchApiModel"
+        :pagination-info="paginationInfoApi"
+        class="w-50 h-100 flex-fill"
+        @handleClickSearch="onClickSearchApi"
+        @selectedRow="selectedApiRow"
+        @keyupEnter="onClickSearchApi"
+        @searchClear="handleApiSearchClear"
+        @sortedChange="onSortedChangeApi"
+      >
+        <template #inquireButton>
+          <span> API 서비스에 대한 사용신청이 가능합니다</span>
+        </template>
+      </DataHubComponent>
 
-    <DataHubComponent
-      ref="selectHistoryAuth"
-      :ag-grid="applyHistoryAgGrid"
-      title="신청 이력"
-      :items="searchApplyHistoryItems"
-      :search-model.sync="searchApplyHistoryModel"
-      :pagination-info="paginationInfoHist"
-      class="w-100 h-50 flex-fill"
-      @selectedRow="selectedApiHistRow"
-      @handleClickSearch="onClickSearchHist"
-      @searchClear="handleApplyHistorySearchClear"
-      @sortedChange="onSortedChangeHist"
-    >
-      <template #inquireButton>
-        <span> API 서비스 사용신청 이력을 확인할 수 있습니다</span>
-      </template>
-    </DataHubComponent>
+      <DataHubComponent
+        ref="selectHistoryAuth"
+        :ag-grid="applyHistoryAgGrid"
+        title="신청 이력"
+        :items="searchApplyHistoryItems"
+        :search-model.sync="searchApplyHistoryModel"
+        :pagination-info="paginationInfoHist"
+        class="w-50 h-100 flex-fill"
+        @selectedRow="selectedApiHistRow"
+        @handleClickSearch="onClickSearchHist"
+        @searchClear="handleApplyHistorySearchClear"
+        @sortedChange="onSortedChangeHist"
+      >
+        <template #inquireButton>
+          <span> API 서비스 사용신청 이력을 확인할 수 있습니다</span>
+        </template>
+      </DataHubComponent>
+    </div>
     <ModalAuthApply ref="ModalAuthApply" />
     <ModalSelectDataSet ref="ModalSelectDataSet" />
   </div>
@@ -285,6 +287,13 @@ methods: {
 </script>
 
 <style lang="scss" scoped>
+   .ApiUseAuthApply{
+    .main-layout{
+      display: flex ;
+      flex-direction: row !important;
+      height: 100% !important;
+    }
+   }
 
 </style>
 

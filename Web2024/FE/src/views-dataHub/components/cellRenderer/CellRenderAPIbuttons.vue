@@ -8,7 +8,7 @@
       >
         <el-table :data="rowData">
           <el-table-column property="api_name" label="API명" />
-          <el-table-column property="api_desc" label="시스템" />
+          <el-table-column property="system_nm" label="시스템" />
           <el-table-column property="api_key" label="API 키" />
           <el-table-column property="kong_host" label="Kong 호스트" />
         </el-table>

@@ -1,47 +1,49 @@
 <template>
   <div :class="{ [name]: true }">
-    <DataHubComponent
-      ref="reqNewDataSet"
-      :ag-grid="DatasetReqHistAgGrid"
-      :is-button-slot="true"
-      :items="searchItems"
-      :search-model="searchModel"
-      :pagination-info="paginationInfoNewReq"
-      class=" w-100 h-50"
-      @handleClickSearch="onClickSearchDataSet"
-      @keyupEnter="onClickSearchDataSet"
-      @selectedRow="selectedItems"
-      @searchClear="handleDataSearchClear"
-      @sortedChange="onSortedChangeNewDataSet"
-    >
+    <div class="main-layout">
+      <DataHubComponent
+        ref="reqNewDataSet"
+        :ag-grid="DatasetReqHistAgGrid"
+        :is-button-slot="true"
+        :items="searchItems"
+        :search-model="searchModel"
+        :pagination-info="paginationInfoNewReq"
+        class="w-50 h-100 flex-fill"
+        @handleClickSearch="onClickSearchDataSet"
+        @keyupEnter="onClickSearchDataSet"
+        @selectedRow="selectedItems"
+        @searchClear="handleDataSearchClear"
+        @sortedChange="onSortedChangeNewDataSet"
+      >
 
-      <template #inquireButton>
-        <span> API데이터 신청 현황입니다</span>
-      </template>
+        <template #inquireButton>
+          <span> API데이터 신청 현황입니다</span>
+        </template>
 
-      <template slot="button-container">
-        <div class="button-panel my-1">
-          <el-button type="danger" plain size="mini" class="float-left " :disabled="!btnDisabled || selectedColRow.length < 1" @click.native="rejectAuth()">선택 반려</el-button>
-          <el-button size="mini" class="float-right common-btn" :disabled="!btnDisabled || selectedColRow.length < 1" @click.native="approveSelection()">선택 승인</el-button>
-        </div>
-      </template>
+        <template slot="button-container">
+          <div class="button-panel my-1">
+            <el-button type="danger" plain size="mini" class="float-left " :disabled="!btnDisabled || selectedColRow.length < 1" @click.native="rejectAuth()">선택 반려</el-button>
+            <el-button size="mini" class="float-right common-btn" :disabled="!btnDisabled || selectedColRow.length < 1" @click.native="approveSelection()">선택 승인</el-button>
+          </div>
+        </template>
 
-    </DataHubComponent>
-    <DataHubComponent
-      ref="dataSet"
-      :ag-grid="dataSetAgGrid"
-      :is-search="false"
-      :pagination-info="paginationInfoDataset"
-      title="API 데이터"
-      class=" w-100 h-50"
-      @selectedRow="selectedColumns"
-      @sortedChange="onSortedChangeDataSet"
-    >
-      <template #inquireButton>
-        <span>신청 현황의 체크 박스 선택시 API데이터의 관련 파라미터 확인이 가능합니다</span>
-      </template>
-    </DataHubComponent>
-    <ModalAddDetailColumn ref="ModalAddDetailColumn" />
+      </DataHubComponent>
+      <DataHubComponent
+        ref="dataSet"
+        :ag-grid="dataSetAgGrid"
+        :is-search="false"
+        :pagination-info="paginationInfoDataset"
+        title="API 데이터"
+        class="w-50 h-100 flex-fill"
+        @selectedRow="selectedColumns"
+        @sortedChange="onSortedChangeDataSet"
+      >
+        <template #inquireButton>
+          <span>신청 현황의 체크 박스 선택시 API데이터의 관련 파라미터 확인이 가능합니다</span>
+        </template>
+      </DataHubComponent>
+    </div>
+    <!-- <ModalAddDetailColumn ref="ModalAddDetailColumn" /> -->
   </div>
 </template>
 
@@ -333,21 +335,22 @@
             }
             const res = await apiSelectDataCatalogList(param)
             const params = res?.result
-            this.$refs.ModalAddDetailColumn.open({
-                type,
-                params,
-                routeName
-            })
+            this.$modal.show('editMonitoringExcludeAlarm', { type, params, routeName })
         },
     }
   }
   </script>
   <style lang="scss" scoped>
-  .dataSetManagement {
+  .DataSetManagement {
     font-family: "NanumSquare";
     padding: 25px;
     overflow: hidden !important;
     user-select: none;
+    .main-layout{
+      display: flex ;
+      flex-direction: row !important;
+      height: 100% !important;
+    }
   }
   </style>
 

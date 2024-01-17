@@ -68,6 +68,9 @@
                   </el-col>
 
                 </div>
+                <el-row class="d-flex flex-column w-50" style="justify-content: end; color : rgb(50, 49, 49)">
+                  <slot name="searchCaption" />
+                </el-row>
               </div>
             </div>
             <div class="optionBoxButtons" style="margin: 5px 8px 3px 3px; float: right">
@@ -132,7 +135,7 @@
 
 <script>
 import { Base } from '@/min/Base.min'
-import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
+import CompAgGrid from '@/components/aggrid_/CompAgGrid.vue'
 import CompCheckSelector from '@/views-dataHub/components/CompCheckSelector'
 import OrgSelect from '@/views-dataHub/components/OrgSelect'
 import VJsoneditor from 'v-jsoneditor/src/index'
