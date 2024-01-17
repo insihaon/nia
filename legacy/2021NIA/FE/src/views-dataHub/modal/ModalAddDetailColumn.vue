@@ -52,7 +52,7 @@
 import { Modal } from '@/min/Modal.min'
 import _ from 'lodash'
 import { param } from '@/utils'
-import CompAgGrid from '@/components/aggrid_/CompAgGrid.vue'
+import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
 import { apiSelectDataSetColumnList, apiSelectDataCatalogList } from '@/api/dataHub'
 
 const routeName = 'ModalAddDetailColumn'
