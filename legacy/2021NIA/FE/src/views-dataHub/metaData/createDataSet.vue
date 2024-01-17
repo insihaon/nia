@@ -27,6 +27,7 @@
       class="w-100 h-50"
       @cellClicked="selectedColItem"
       @selectedRow="selectedNewRow"
+      @selectedNewCol="changeSelected"
     >
       <template #inquireButton>
         <span> API 데이터 생성 요청시 추가한 내역입니다</span>
@@ -42,7 +43,7 @@
     </DataHubComponent>
     <ModalRequestData ref="ModalRequestData" :fullscreen="isViewport('<', 'sm')" @clearData="handleDataclear" />
     <ModalCreateDataHist ref="ModalCreateDataHist" :fullscreen="isViewport('<', 'sm')" />
-    <ModalAddDetailColumn ref="ModalAddDetailColumn" :fullscreen="isViewport('<', 'sm')" @selectedNewItem="selectedColNewItem" />
+    <!-- <ModalAddDetailColumn ref="ModalAddDetailColumn" :fullscreen="isViewport('<', 'sm')" @selectedNewItem="selectedColNewItem" /> -->
   </div>
 </template>
 
@@ -59,6 +60,7 @@
     import { apiSelectDataCatalogList, apiSelectDataTableList } from '@/api/dataHub'
     import { mapState } from 'vuex'
     import { AppOptions } from '@/class/appOptions'
+    import EventBus from '@/utils/event-bus'
 
     const routeName = 'CreateDataSet'
     export default {
@@ -149,6 +151,10 @@
       this.selectTableList()
     },
     created() {
+      EventBus.$on('selectedNewCol', this.changeSelected)
+    },
+    beforeDestroy() {
+      EventBus.$off('selectedNewCol', this.changeSelected)
     },
     methods: {
       onSortedChange(param) {
@@ -164,13 +170,14 @@
     async selectTableList() {
       const res = await apiSelectDataTableList()
       this.selectTableDataList = res.result.map(item => ({ label: item.table_nm, value: item.table_nm }))
+      // this.selectTableDataList.unshift({ label: '전체', value: 'ALL' }) // unshift() => 배열 맨앞에 추가
 
       const tableNmItem = this.searchItems.find(item => item.model === 'table_nm')
       if (tableNmItem) {
         tableNmItem.options = this.selectTableDataList
       }
     },
-    selectedColItem(params) {
+    selectedColItem(params) { // @cellClicked
       const colId = params.column.colId
       if (colId === 'table_nm') {
       const rowNode = params.node
@@ -182,6 +189,7 @@
     }
       this.selectedCol = params
     },
+
     selectedColNewItem(params, type) {
       this.changeSelected(params, type)
     },
@@ -234,13 +242,14 @@
       const res = await apiSelectDataCatalogList(param)
       const params = res?.result
       const columnColId = this.selectedCol.column.colId
-      this.$refs.ModalAddDetailColumn.open({ type, params, columnColId, routeName, newData: this.newData })
+      // this.$refs.ModalAddDetailColumn.open({ type, params, columnColId, routeName, newData: this.newData })
+      this.$modal.show('editMonitoringExcludeAlarm', { type, params, columnColId, routeName, newData: this.newData })
     },
     handleDataclear(data) {
       this.newData = data
       this.paginationInfoNewDataSet.totalCount = 0
     },
-    changeSelected(param, type) {
+    changeSelected(param, type) { // @selectedRow\
       this.selectedTable = []
       if (!Array.isArray(param)) {
         this.selectedTable.push(param)
@@ -259,6 +268,7 @@
         this.paginationInfoNewDataSet.totalCount = this.newData.length
         }
       })
+        this.$modal.hide('editMonitoringExcludeAlarm')
     },
     handleDeleteData(param) {
       this.checkedDeleteList = []
@@ -293,3 +303,11 @@
     }
     }
   </script>
+
+  <style lang="scss" scope>
+
+  .button-panel{
+
+  }
+
+  </style>

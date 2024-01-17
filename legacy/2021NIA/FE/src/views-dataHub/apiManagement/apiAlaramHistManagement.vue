@@ -1,42 +1,44 @@
 <template>
   <div :class="{ [name]: true }">
-    <DataHubComponent
-      ref="selectApi"
-      :ag-grid="selectApiAgGrid"
-      title="API 조회"
-      :items="searchApiItems"
-      :search-model.sync="searchApiModel"
-      :pagination-info="paginationInfoApi"
-      class="w-100 h-50"
-      @handleClickSearch="onClickSearchApi"
-      @selectedRow="selectedAPIRow"
-      @keyupEnter="onClickSearchApi"
-      @searchClear="handleApiSearchClear"
-      @sortedChange="onSortedChangeApi"
-    >
-      <template #inquireButton>
-        <span> API 서비스에 대한 조회가 가능합니다 </span>
-      </template>
-    </DataHubComponent>
+    <div class="main-layout">
+      <DataHubComponent
+        ref="selectApi"
+        :ag-grid="selectApiAgGrid"
+        title="API 조회"
+        :items="searchApiItems"
+        :search-model.sync="searchApiModel"
+        :pagination-info="paginationInfoApi"
+        class="w-50 h-100 flex-fill"
+        @handleClickSearch="onClickSearchApi"
+        @selectedRow="selectedAPIRow"
+        @keyupEnter="onClickSearchApi"
+        @searchClear="handleApiSearchClear"
+        @sortedChange="onSortedChangeApi"
+      >
+        <template #inquireButton>
+          <span> API 서비스에 대한 조회가 가능합니다 </span>
+        </template>
+      </DataHubComponent>
 
-    <DataHubComponent
-      ref="selectHistory"
-      :ag-grid="selectHistoryAgGrid"
-      :ag-grid-list="selectHistoryAgGrid"
-      title=" API 오류 이력 조회"
-      :items="searchHistoryItems"
-      :search-model.sync="searchHistoryModel"
-      :pagination-info="paginationInfoHist"
-      class=" w-100 h-50"
-      @handleClickSearch="onClickSearchHist"
-      @keyupEnter="onClickSearchApi"
-      @searchClear="handleHistorySearchClear"
-      @sortedChange="onSortedChangeHist"
-    >
-      <template #inquireButton>
-        <span> API 사용에 대한 오류이력 조회가 가능합니다</span>
-      </template>
-    </DataHubComponent>
+      <DataHubComponent
+        ref="selectHistory"
+        :ag-grid="selectHistoryAgGrid"
+        :ag-grid-list="selectHistoryAgGrid"
+        title=" API 오류 이력 조회"
+        :items="searchHistoryItems"
+        :search-model.sync="searchHistoryModel"
+        :pagination-info="paginationInfoHist"
+        class=" w-50 h-100 flex-fill"
+        @handleClickSearch="onClickSearchHist"
+        @keyupEnter="onClickSearchApi"
+        @searchClear="handleHistorySearchClear"
+        @sortedChange="onSortedChangeHist"
+      >
+        <template #inquireButton>
+          <span> API 사용에 대한 오류이력 조회가 가능합니다</span>
+        </template>
+      </DataHubComponent>
+    </div>
     <ModalApiDetail ref="modalApiDetail" :fullscreen="isViewport('<', 'sm')" />
   </div>
 </template>
@@ -254,9 +256,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.apiAlaramHistManagement {
+.ApiAlaramHistManagement {
+  .main-layout{
+    display: flex ;
+    flex-direction: row !important;
+    height: 100% !important;
+  }
     .ag-header-cell-label {
-
      .th--class{
        display: flex !important;
      }

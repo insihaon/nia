@@ -109,13 +109,13 @@ export const dataHubRoute = Object.freeze([
         path: 'createDataSet',
         component: () => import('@/views-dataHub/metaData/createDataSet'),
         name: 'CreateDataSet',
-        meta: { title: 'API 데이터 신청' }
+        meta: { title: 'API 생성요청' }
       },
       {
         path: 'dataSetManagement',
         component: () => import('@/views-dataHub/metaData/dataSetManagement'),
         name: 'DataSetManagement',
-        meta: { title: 'API 데이터 관리', grant: ['ROLE_ADMIN'] },
+        meta: { title: 'API 생성요청 관리', grant: ['ROLE_ADMIN'] },
 
       },
     ]

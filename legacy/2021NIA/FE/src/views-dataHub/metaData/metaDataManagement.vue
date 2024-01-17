@@ -40,6 +40,7 @@
 
     </DataHubComponent>
     <CompApplyModal ref="CompApplyModal" :fullscreen="isViewport('<', 'sm')" @systemEdit="refreshData()" />
+    <!-- <ModalAddDetailColumn ref="ModalAddDetailColumn" /> -->
   </div>
 </template>
 
@@ -53,6 +54,8 @@ import CellRenderButtons from '@/views-dataHub/components/cellRenderer/CellRende
 import CompApplyModal from '@/views-dataHub/modal/CompApplyModal'
 import { apiSelectDataCatalogList, apiDeleteDataCatalogList, apiSelectDataTableList } from '@/api/dataHub'
 import { getToken } from '@/utils/auth'
+import ModalAddDetailColumn from '@/views-dataHub/modal/ModalAddDetailColumn'
+import hyperLinkTextRender from '@/views-dataHub/layout/components/cellRenderer/hyperLinkTextRender'
 import { AppOptions } from '@/class/appOptions'
 import axios from 'axios'
 
@@ -60,7 +63,7 @@ const routeName = 'MetaDataManagement'
 export default {
   name: routeName,
   // eslint-disable-next-line vue/no-unused-components
-  components: { DataHubComponent, CellRenderButtons, CompApplyModal },
+  components: { DataHubComponent, CellRenderButtons, CompApplyModal, hyperLinkTextRender, ModalAddDetailColumn },
   extends: Base,
 
   data() {
@@ -99,8 +102,10 @@ export default {
         const options = {
           name: this.name + 'table1', checkable: true, rowGroupPanel: false, rowHeight: 40, rowSelection: 'multiple', headerCheckboxSelection: true, suppressRowClickSelection: true, checkboxSelection: true, showDisabledCheckboxes: true,
         }
-        const columns = [
-          { type: '', prop: 'table_nm', name: '테이블', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'left', sortable: true, filterable: false },
+      const columns = [
+          { type: '', prop: 'metadata_seq', name: '테이블ID', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'left', sortable: true, filterable: false },
+          { type: '', prop: 'table_nm', name: '테이블', minWidth: 100, flex: 1, suppressMenu: true, alignItems: 'left', sortable: true, filterable: false,
+          cellRendererFramework: 'hyperLinkTextRender', cellRendererParams: { type: 'detail', action: this.handleOpenTableModalDetail.bind(this) }, },
           { type: '', prop: 'column_nm', name: '컬럼', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'left', sortable: true, filterable: false },
           { type: '', prop: 'data_type', name: '타입', minWidth: 200, flex: 0, suppressMenu: true, alignItems: 'left' },
           { type: '', prop: 'metadata_desc', name: '설명', minWidth: 150, flex: 0, suppressMenu: true, alignItems: 'left', sortable: true, filterable: false },
@@ -238,7 +243,15 @@ export default {
       const downloadUrl = `${AppOptions.instance.baseURL}downloadFile/${dirName}/${fileName}`
 
       window.open(downloadUrl, 'metaData_dataForm')
+    },
+    async handleOpenTableModalDetail(type, row) {
+      const param = {
+        table_nm: row.table_nm
       }
+      const res = await apiSelectDataCatalogList(param)
+      const params = res?.result
+      this.$modal.show('editMonitoringExcludeAlarm', { type, params, routeName })
+    },
     },
     handleExcelUpload() {
 
