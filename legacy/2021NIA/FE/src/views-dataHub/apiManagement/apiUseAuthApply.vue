@@ -288,10 +288,17 @@ methods: {
 
 <style lang="scss" scoped>
    .ApiUseAuthApply{
+     padding : 0 40px !important;
+
     .main-layout{
       display: flex ;
       flex-direction: row !important;
       height: 100% !important;
+
+    }
+
+    .common-padding{
+     padding : 15px 30px !important;
     }
    }
 

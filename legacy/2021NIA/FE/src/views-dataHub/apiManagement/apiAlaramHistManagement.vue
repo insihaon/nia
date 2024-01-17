@@ -257,6 +257,7 @@ export default {
 
 <style lang="scss" scoped>
 .ApiAlaramHistManagement {
+  padding : 0 40px !important;
   .main-layout{
     display: flex ;
     flex-direction: row !important;
@@ -267,6 +268,10 @@ export default {
        display: flex !important;
      }
   }
+
+   .common-padding{
+     padding : 15px 30px !important;
+    }
 }
 
 </style>

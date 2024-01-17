@@ -342,6 +342,7 @@
   </script>
   <style lang="scss" scoped>
   .DataSetManagement {
+    padding : 0 40px !important;
     font-family: "NanumSquare";
     padding: 25px;
     overflow: hidden !important;
@@ -351,6 +352,11 @@
       flex-direction: row !important;
       height: 100% !important;
     }
+
+    .common-padding{
+     padding : 15px 30px !important;
+    }
+
   }
   </style>
 
