@@ -1,6 +1,5 @@
 @import './variables.scss';
 
-
 // dataHub api 조회 테이블 기본 스타일
 table.basic {
   width: 100%;
@@ -50,7 +49,7 @@ table.basic {
     border-radius: 7px;
   }
   .el-dialog__body {
-    padding: 10px 20px;
+    padding: 0 20px 10px 20px;
     max-height: auto;
     background: #fff;
   }
@@ -72,19 +71,18 @@ table.basic {
     font-size: 18px;
   }
 
-  .el-button{
+  .el-button {
     background: #2e3574;
     color: #fff;
   }
 }
 
 .datahub {
-
   .button-panel {
     .common-btn {
       background: #2e3574;
       color: #fff;
-  
+
       &:hover {
         background-color: #303775;
         border-color: #303775;
@@ -101,7 +99,7 @@ table.basic {
     src: url(https://fonts.gstatic.com/s/notosanskr/v36/PbyxFmXiEBPT4ITbgNA5Cgms3VYcOA-vvnIzzuoyeLGC5nwuDo-KBTUm6CryotyJROlrnQ.1.woff2) format('woff2');
     unicode-range: U+f92f-f980, U+f982-f9c9;
   }
-      
+
   .CompAgGrid {
     .aggrid-row.el-row {
       background-color: white !important;
@@ -110,11 +108,11 @@ table.basic {
       margin: 0 auto !important;
     }
 
-    .el-pager{
+    .el-pager {
       padding: 0 15px !important;
     }
 
-    .el-pager li{
+    .el-pager li {
       font-weight: normal;
       color: #666666b2;
       font-size: 12px !important;
@@ -135,8 +133,8 @@ table.basic {
       font-size: 14px !important;
     }
 
-    .el-pagination button{
-      background-color: #EEEEEE;
+    .el-pagination button {
+      background-color: #eeeeee;
       color: #666666;
       padding: 5px 10px;
       border-radius: 3px;
@@ -146,7 +144,7 @@ table.basic {
     }
 
     .el-pagination button:disabled {
-      background-color: #EEEEEE;
+      background-color: #eeeeee;
       color: #666666;
       padding: 5px 10px;
       border-radius: 3px;
@@ -154,27 +152,23 @@ table.basic {
     }
 
     .el-pagination button:hover {
-      background-color:#2e3574;
-      color:#FFFFFF;
+      background-color: #2e3574;
+      color: #ffffff;
     }
-
- 
 
     .ag-header-cell-label {
       justify-content: flex-start !important;
       padding-left: 22px;
     }
 
-    .el-button{
+    .el-button {
       padding-bottom: 5px !important;
       height: 25px !important;
       font-size: 12px !important;
       line-height: 5px;
-    }  
-
+    }
   }
 }
-
 
 .datahub .ag-header-group-cell-label,
 .ag-header-cell-label {
@@ -212,10 +206,7 @@ table.basic {
 
 .el-popover {
   width: 450px !important;
-  height: auto
-
-  tr,
-  td {
+  height: auto tr, td {
     width: 400px !important;
   }
 }
@@ -223,7 +214,6 @@ table.basic {
 .datahub .CompAgGrid .ag-theme-material .ag-checked::after {
   color: #363636bd !important;
   font-size: 13px;
-
 }
 
 .datahub .CompAgGrid .ag-theme-material .ag-checkbox-input-wrapper {
@@ -239,8 +229,72 @@ table.basic {
   }
 }
 
-.el-table tr{
+.el-table tr {
   background-color: rgba(228, 236, 244, 0.326) !important;
 }
 
+// dataHub api 테이블 관련 상세 데이터 모달 기본 스타일
+.resize-modal {
+  font-family: 'NanumSquare';
+  transform: rotate(-0.03deg);
 
+  .modal-top-container {
+    height: 60px;
+    padding: 20px;
+    font-size: 17px;
+
+    i.close {
+      float: right;
+      cursor: pointer;
+      padding: 5px;
+    }
+    span {
+      font-weight: 700;
+      padding: 5px;
+      line-height: 28px;
+    }
+  }
+
+  .modal-body-container {
+    padding: 0px 15px;
+    height: calc(100% - 125px);
+  }
+
+  .modal-footer-container {
+    height: 65px;
+    padding: 0px 15px;
+    text-align: end;
+    hr {
+      margin-bottom: 10px;
+      margin-top: 2px;
+    }
+
+    button:not(.is-disable) {
+      border: 1px solid #222222;
+    }
+
+    button:not(.is-disable):hover {
+      background-color: #ffffff;
+      color: black;
+      opacity: 0.7;
+    }
+  }
+}
+
+.full-screen {
+  .vm--modal {
+    top: 0px !important;
+    left: 0px !important;
+    width: 100% !important;
+    height: 100vh !important;
+    z-index: 2999 !important;
+  }
+}
+.vm--overlay {
+  position:fixed !important;
+  left:-300px !important;
+  top:0 !important;
+  height:100vh !important;
+  width : 200% !important;
+  background:#0000007e !important;
+}

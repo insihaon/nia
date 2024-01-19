@@ -19,7 +19,7 @@
       </template>
     </DataHubComponent>
     <CompApplyModal ref="CompApplyModal" :fullscreen="isViewport('<', 'sm')" />
-    <ModalAddDetailColumn ref="ModalAddDetailColumn" />
+    <!-- <ModalAddDetailColumn ref="ModalAddDetailColumn" /> -->
   </div>
 </template>
 
@@ -72,7 +72,8 @@ export default {
         const options = {
           name: this.name + 'table1', checkable: false, rowGroupPanel: false, rowHeight: 40, rowSelection: 'multiple', headerCheckboxSelection: true, checkboxSelection: true, showDisabledCheckboxes: true,
         }
-        const columns = [
+      const columns = [
+          { type: '', prop: 'metadata_seq', name: '테이블ID', minWidth: 100, flex: 1, suppressMenu: true, alignItems: 'left', sortable: true, filterable: false },
           { type: '', prop: 'table_nm', name: '테이블', minWidth: 100, flex: 1, suppressMenu: true, alignItems: 'left', sortable: true, filterable: false,
           cellRendererFramework: 'hyperLinkTextRender', cellRendererParams: { type: 'detail', action: this.handleOpenTableModalDetail.bind(this) }, },
           { type: '', prop: 'column_nm', name: '컬럼', minWidth: 100, flex: 1, suppressMenu: true, alignItems: 'left', sortable: true, filterable: false,
@@ -139,12 +140,10 @@ export default {
       this.$refs.CompApplyModal.open({ row: row, type: type, grant: 'user' })
     },
     async handleOpenTableModalDetail(type, row) {
-      const param = {
+      const params = {
         table_nm: row.table_nm
       }
-      const res = await apiSelectDataCatalogList(param)
-      const params = res?.result
-      this.$refs.ModalAddDetailColumn.open({ type, params, routeName })
+      this.$modal.show('editMonitoringExcludeAlarm', { type, params, routeName })
     },
   }
 

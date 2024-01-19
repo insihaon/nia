@@ -19,7 +19,7 @@
     <a :class="valueCheck" @click="openModal(params)">
       {{ params.value }}
     </a>
-    <ModalAddDetailColumn ref="ModalAddDetailColumn" />
+    <!-- <ModalAddDetailColumn ref="ModalAddDetailColumn" /> -->
     <ModalRejectReason ref="ModalRejectReason" />
   </a>
 </template>
@@ -31,7 +31,7 @@ const routeName = 'hyperLinkTextRender'
 
 export default {
   name: routeName,
-  components: { ModalAddDetailColumn, ModalRejectReason },
+  components: { ModalRejectReason },
   data() {
     return {
       name: routeName,

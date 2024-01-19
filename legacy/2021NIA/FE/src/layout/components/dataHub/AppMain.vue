@@ -5,15 +5,19 @@
         <router-view :key="key" />
       </keep-alive>
     </transition>
+    <ModalAddDetailColumn ref="ModalAddDetailColumn" @selectedNewItem="selectedColNewItem" />
   </section>
 </template>
 
 <script>
 import { Base } from '@/min/Base.min'
 import { AppOptions } from '@/class/appOptions'
+import ModalAddDetailColumn from '@/views-dataHub/modal/ModalAddDetailColumn'
+import EventBus from '@/utils/event-bus'
 
 export default {
   name: 'AppMain',
+  components: { ModalAddDetailColumn },
   extends: Base,
   data() {
     return {
@@ -48,6 +52,12 @@ export default {
         this.$store.dispatch('tagsView/addView', this.$route)
       }
       return false
+    },
+    selectedColNewItem(params, type) {
+      EventBus.$emit('selectedNewCol', params, 'modalSelected')
+      //     EventBus.$emit('selectedNewItem', () => {
+      //     this.changeSelected()
+      // })
     },
   }
 }

@@ -398,32 +398,32 @@ LEFT JOIN (
     <include refid="TotalCountPrefix"/>
     SELECT 
         METADATA_SEQ
-        ,TDM.TABLE_NM 
-        ,TDM.COLUMN_NM 
-        ,TDM.DATA_TYPE 
-        ,TDM.METADATA_DESC
-        ,TDM.UPDATE_USER
-        ,TO_CHAR(TDM.CREATE_TIME , 'YYYY-MM-DD HH24:MI:SS') AS CREATE_TIME
-        ,TO_CHAR(TDM.UPDATE_TIME , 'YYYY-MM-DD HH24:MI:SS') AS UPDATE_TIME
-   FROM DATAHUB.TB_METADATA_MST TDM
+        ,TABLE_NM 
+        ,COLUMN_NM 
+        ,DATA_TYPE 
+        ,METADATA_DESC
+        ,UPDATE_USER
+        ,TO_CHAR(CREATE_TIME , 'YYYY-MM-DD HH24:MI:SS') AS CREATE_TIME
+        ,TO_CHAR(UPDATE_TIME , 'YYYY-MM-DD HH24:MI:SS') AS UPDATE_TIME
+   FROM DATAHUB.TB_METADATA_MST
     WHERE 1=1
-        <if test="table_nm != null and !table_nm.isEmpty() and !table_nm.contains('ALL') and !table_nm.contains('CT')">
+        <!-- <if test="table_nm != null and table_nm != ''">
          AND TABLE_NM = #{table_nm}
-        </if>
+        </if> -->
          <if test="table_nm != null and table_nm != ''"> 
-        AND UPPER(TDM.TABLE_NM) LIKE '%' || UPPER(#{table_nm}) || '%'
+        AND UPPER(TABLE_NM) LIKE '%' || UPPER(#{table_nm}) || '%'
         </if>
        <if test="column_nm != null and column_nm != ''"> 
-        AND UPPER(TDM.COLUMN_NM) LIKE '%' || UPPER(#{column_nm}) || '%'
+        AND UPPER(COLUMN_NM) LIKE '%' || UPPER(#{column_nm}) || '%'
         </if>
         <if test="metadata_desc != null and metadata_desc != ''"> 
-        AND UPPER(TDM.METADATA_DESC) LIKE '%' || UPPER(#{metadata_desc}) || '%'
+        AND UPPER(METADATA_DESC) LIKE '%' || UPPER(#{metadata_desc}) || '%'
         </if>
         <if test="start_date != null"> 
-            AND TO_CHAR(TDM.UPDATE_TIME, 'YYYY-MM-DD HH24:MI:SS')  <![CDATA[ >= ]]>  #{start_date}
+            AND TO_CHAR(UPDATE_TIME, 'YYYY-MM-DD HH24:MI:SS')  <![CDATA[ >= ]]>  #{start_date}
         </if>
         <if test="end_date != null"> 
-            AND TO_CHAR(TDM.UPDATE_TIME, 'YYYY-MM-DD HH24:MI:SS')  <![CDATA[ <= ]]>  #{end_date}
+            AND TO_CHAR(UPDATE_TIME, 'YYYY-MM-DD HH24:MI:SS')  <![CDATA[ <= ]]>  #{end_date}
         </if>
         <!-- <if test="sort_column_name == null and sort_type == null">
         ORDER BY TDM.TABLE_NM ASC
