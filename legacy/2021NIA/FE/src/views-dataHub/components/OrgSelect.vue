@@ -84,11 +84,13 @@
 <script>
 const routeName = 'CompCheckSelector'
 import { Base } from '@/min/Base.min'
+import ComponentTesterMixins from '@/test/ComponentTesterMixins'
 
 export default {
   name: routeName,
   components: {},
   extends: Base,
+  mixins: [ComponentTesterMixins],
   props: {
     item: {
       type: Object,
