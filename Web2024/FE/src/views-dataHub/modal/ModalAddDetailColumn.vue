@@ -12,6 +12,7 @@
         @before-open="beforeOpen"
       >
         <div class="modal-top-container">
+          <i class="el-icon-close close" @click="$modal.hide('editMonitoringExcludeAlarm')" />
           <span slot="title">
             <i class="el-icon-bell pr-1" style="font-size: 18px;font-weight: 800;" />
             테이블 정보 - {{ modelParam }}
