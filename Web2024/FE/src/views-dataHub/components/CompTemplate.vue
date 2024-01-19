@@ -68,6 +68,9 @@
                   </el-col>
 
                 </div>
+                <el-row class="d-flex flex-column w-50" style="justify-content: end; color : rgb(50, 49, 49)">
+                  <slot name="searchCaption" />
+                </el-row>
               </div>
             </div>
             <div class="optionBoxButtons" style="margin: 5px 8px 3px 3px; float: right">

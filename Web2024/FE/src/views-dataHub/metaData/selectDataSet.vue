@@ -12,6 +12,11 @@
       @searchClear="handleApiSearchClear"
       @sortedChange="onSortedChange"
     >
+
+      <template #searchCaption>
+        <span> Ondemand 서비스만 확인 가능 </span>
+      </template>
+
       <template #inquireButton>
         <span> API서비스 관련 상세내역을 확인할 수 있습니다 </span>
       </template>
@@ -28,7 +33,7 @@
       @handleRequest="requestAPI"
     />
 
-    <ModalAddDetailColumn ref="ModalAddDetailColumn" />
+    <!-- <ModalAddDetailColumn ref="ModalAddDetailColumn" /> -->
   </div>
 </template>
 <script>
@@ -132,7 +137,7 @@ export default {
     },
     requestAPI(value) {
       try {
-        if (value.reqJsonData.json === null || value.reqJsonData.json === {}) {
+        if (value.reqJsonData.json === null || value.reqJsonData.json === '') {
           throw new Error('요청 데이터가 존재하지 않습니다. API 데이터를 선택하세요')
         }
         var selectApiUrl = ''
@@ -215,7 +220,7 @@ export default {
       }
       const res = await apiSelectDataCatalogList(param)
       const params = res?.result
-      this.$refs.ModalAddDetailColumn.open({ type, params, routeName })
+      this.$modal.show('editMonitoringExcludeAlarm', { type, params, routeName })
     },
 }
 

@@ -115,6 +115,7 @@ import _ from 'lodash'
 const routeName = 'collectionAnalysis'
 export default {
     name: routeName,
+    directives: { },
     components: { DataHubComponent },
     extends: Base,
     data() {
@@ -162,7 +163,6 @@ export default {
   },
 
   async mounted() {
-    this.selectCodeList()
     this.loadTableMetaData()
   },
 
@@ -181,22 +181,6 @@ export default {
       } finally {
         // this.closeLoading(target)
       }
-    },
-
-    async selectCodeList() {
-      try {
-        const res = await apiSelectApicodeList()
-        const selectCodeData = res.result.map(item => ({ label: item.cd_nm, value: item.cd }))
-        const tableNmItem = this.searchItems.find(item => item.model === 'code')
-        if (tableNmItem) {
-          tableNmItem.options = selectCodeData
-          this.searchModel.code = tableNmItem.options[0].value
-        }
-      } catch (error) {
-          console.error(error)
-        } finally {
-          // this.closeLoading(target)
-        }
     },
 
     handleSearchClear() {

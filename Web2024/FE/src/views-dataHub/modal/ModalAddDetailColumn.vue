@@ -1,56 +1,60 @@
 <template>
-  <div>
+  <div :class="{[name]: true}">
     <transition :name="animation">
-      <el-dialog
-        v-if="animationVisible"
-        v-el-drag-dialog
-        :visible.sync="visible"
-        :width="domElement.maxWidth + `px`"
-        :height="domElement.minHeight + `px`"
-        :fullscreen.sync="fullscreen"
-        :modal-append-to-body="false"
-        :append-to-body="true"
-        :modal="modal"
-        :close-on-click-modal="closeOnClickModal"
-        :loading="loading"
-        class="datahub-dialog"
-        :class="{ [name]: true }"
+      <modal
+        name="editMonitoringExcludeAlarm"
+        transition="pop-out"
+        class="resize-modal"
+        :width="600"
+        :height="500"
+        :resizable="true"
+        :draggable="false"
+        @before-open="beforeOpen"
       >
-        <span slot="title">
-          <i class="el-icon-document mr-2" style="font-size: 17px;" />
-          테이블 정보 - {{ modelParam }}
-          <hr>
-        </span>
+        <div class="modal-top-container">
+          <i class="el-icon-close close" @click="$modal.hide('editMonitoringExcludeAlarm')" />
+          <span slot="title">
+            <i class="el-icon-bell pr-1" style="font-size: 18px;font-weight: 800;" />
+            테이블 정보 - {{ modelParam }}
+            <hr>
+          </span>
+        </div>
 
-        <div class="d-flex flex-column h-100" style="height:100%">
+        <div class="modal-body-container flex flex-column">
+          <!-- <div class="filter-container h-100"> -->
           <CompAgGrid
             ref="CompTemplateTable"
             v-model="newDataAgGrid"
             class="flex-fill w-100 h-100"
             @changeSelectedRows="onSelectedRows"
           />
+          <!-- </div> -->
         </div>
 
-        <div slot="footer" class="dialog-footer">
-          <el-button v-if="routeName === 'CreateDataSet'" size="small" plain type="primary" @click.native="onClickColItem">
-            선택 추가
-          </el-button>
-          <el-button size="small" plain type="info" @click.native="close()">
-            {{ $t('exit') }}
-          </el-button>
+        <div class="modal-footer-container">
+          <hr>
+          <el-row class="w-100 h-100">
+            <el-button v-if="routeName === 'CreateDataSet'" size="small" plain type="primary" @click.native="onClickColItem">
+              선택 추가
+            </el-button>
+            <el-button size="small" type="info" @click="$modal.hide('editMonitoringExcludeAlarm')">
+              {{ $t('exit') }}
+            </el-button>
+          </el-row>
         </div>
-      </el-dialog>
+
+      </modal>
     </transition>
   </div>
 </template>
 
 <script>
-import elDragDialog from '@/directive/el-drag-dialog'
+// import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
 import _ from 'lodash'
 import { param } from '@/utils'
 import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
-import { apiSelectDataSetColumnList } from '@/api/dataHub'
+import { apiSelectDataSetColumnList, apiSelectDataCatalogList } from '@/api/dataHub'
 
 const routeName = 'ModalAddDetailColumn'
 
@@ -58,7 +62,7 @@ export default {
   name: routeName,
     // eslint-disable-next-line vue/no-unused-components
     components: { CompAgGrid },
-  directives: { elDragDialog },
+  directives: { /* elDragDialog */ },
   extends: Modal,
   data() {
     return {
@@ -67,9 +71,10 @@ export default {
       type: true,
       tableData: [],
       modelParam: {},
+      tableParam: {},
       routeName: '',
       selectedItem: [],
-      newData: []
+      newData: [],
     }
   },
   computed: {
@@ -95,26 +100,47 @@ export default {
   mounted() {
   },
   methods: {
+      onOpenPopup(ticketRow) {
+      this.contentView = false
+      this.$modal.show('editMonitoringExcludeAlarm', { ticketRow: ticketRow })
+    },
+    beforeOpen(event) {
+      const { params } = event
+      this.type = event.params.type
+      this.routeName = event.params.routeName
+      this.modelParam = event.params.params.table_nm
+      this.tableParam = params
+      if (this.routeName !== 'CreateDataSet') {
+        this.loadColList(this.tableParam)
+      } else {
+          this.newData = event.params.params
+          this.tableData = event.params.params
+          this.modelParam = event.params.params[0].table_nm
+      }
+        setTimeout(() => {
+      this.setSelectedRows()
+    }, 100)
+    },
     onClickColItem() {
       this.$emit('selectedNewItem', this.selectedItem, 'modalSelected')
-      this.close()
+      // this.close()
+    },
+    async loadColList(event) {
+      const param = {
+        table_nm: event.params.table_nm
+      }
+      try {
+        const res = await apiSelectDataCatalogList(param)
+        this.newData = res?.result
+        this.tableData = res?.result
+      } catch (error) {
+        console.error(error)
+      } finally {
+        /*  */
+      }
     },
     onSelectedRows(param) {
       this.selectedItem = param
-    },
-    onCreated() {
-      Modal.methods.onCreated.call(this)
-      this.domElement.minHeight = 700
-      this.closeOnClickModal = false
-    },
-    onOpen(param, actionMode) {
-      this.newData = param.newData
-      this.modelParam = param.params[0].table_nm
-      this.tableData = param.params
-      this.routeName = param.routeName
-      setTimeout(() => {
-      this.setSelectedRows()
-    }, 100)
     },
     isMultiple() {
       if (this.routeName === 'CreateDataSet') {
@@ -142,7 +168,7 @@ export default {
       })
     }
     },
-    onClose() { /* for Override */ },
+    onClose() { },
     onSubmit() {
         console.log('submit!')
       }
@@ -163,6 +189,7 @@ export default {
       background: #e8ecf0;
     }
     .ag-header-cell-label {
+      // display: block !important;
       text-align: left !important;
     }
     .ag-theme-material .ag-checked::after {
@@ -185,6 +212,13 @@ export default {
     .ag-header-cell-label {
     display: block !important;
     text-align: left !important;
+  }
+  .ag-row-odd{
+    transform: none !important;
+  }
+
+  .ag-row-even{
+    transform: none !important;
   }
 }
 </style>
