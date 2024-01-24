@@ -25,8 +25,13 @@ dependencies {
 
 	// JJWT (JSON Web Token): JSON Web Token 작업을 위한 Java 라이브러리
 	// JwtTokenProvider : WebSocket
-	implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
-	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2'
+	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+	/* 
+		jsonwebtoken 0.11.2 버전은 mac os에서 다음과 같은 에러가 발생할 수 있다.
+		The signing key's size is 104 bits which is not secure enough for the HS256 algorithm.
+	*/
+	// implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+	// runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2'
 
 	// Jackson Databind: Jackson JSON 처리 라이브러리의 일부로 데이터 바인딩 기능을 제공
 	implementation 'com.fasterxml.jackson.core:jackson-databind'
