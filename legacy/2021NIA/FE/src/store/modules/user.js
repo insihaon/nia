@@ -20,7 +20,7 @@ const state = {
   info: getInfo(),
   nmsUid: '' /* gwt의 nms에서는 LOGIN_ID와 USER_ID가 다르므로, USER_ID는 DB에서 따로 가져온다. */,
   nmsLoginId: '',
-  blackDtlList: ['btnAdd', 'btnTemplate', 'btnManualAdd', 'btnReceiver', 'btnExceptAdd', 'btnAnalysis', 'btnDelete', 'btnManualDelete'],
+  blackDtlList: ['btnAdd', 'btnTemplate', 'btnManualAdd', 'btnReceiver', 'btnExceptAdd', 'btnAnalysis', 'btnDelete', 'btnManualDelete']
 }
 
 const mutations = {
@@ -114,10 +114,10 @@ const actions = {
 
   // get user info
   async getInfo({ commit, state, rootState }, anonymousMode) {
-    const { id, roles, N_NAME, user_name, Name } = state.info
+    const { id, roles, name } = state.info
     commit('SET_UID', id)
     commit('SET_ROLES', roles)
-    commit('SET_NAME', N_NAME || user_name || Name)
+    commit('SET_NAME', name)
 
     if (!roles || roles.length <= 0) {
       console.error('getInfo: roles must be a non-null array!')

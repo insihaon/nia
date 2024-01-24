@@ -11,9 +11,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,7 +23,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonNaming(PropertyNamingStrategy.PascalCaseStrategy.class)
+@JsonIgnoreProperties(ignoreUnknown = true)
+// @JsonNaming(PropertyNamingStrategy.PascalCaseStrategy.class)
 public class DbUser implements BaseUser {
 
     static final long serialVersionUID = 4086111309539465670L;
@@ -57,6 +57,7 @@ public class DbUser implements BaseUser {
     private String reserved3;
     private List<String> blackDtlList;
 
+    @JsonIgnore
     public List<String> getRolesList() {
         return Arrays.asList(this.getRoles().split(","));
     }

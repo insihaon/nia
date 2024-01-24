@@ -19,9 +19,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
+import com.codej.base.dto.BaseUser;
 import com.codej.base.dto.DbUser;
 import com.codej.base.exception.CAuthenticationException;
 import com.codej.base.utils.EncryptUtil;
+import com.codej.base.utils.JsonUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -54,10 +57,18 @@ public class JwtTokenProvider { // JWT 토큰을 생성 및 검증 모듈
     }
 
     // Jwt 토큰 생성
-    public String createToken(String userPk, List<String> roles, String address) {
+    public String createToken(BaseUser user, String address) throws JsonProcessingException {
+        String userPk = String.valueOf(user.getUsername());
+        List<String> roles = user.getRolesList();
         Claims claims = Jwts.claims().setSubject(userPk);
+
         claims.put("roles", roles);
         claims.put("address", address);
+
+        UserDetails userDetails = userDetailsService.loadUserByUsername(userPk);
+        String json = JsonUtil.convertClassToJsonString(userDetails);
+        claims.put("details", json);
+
         Date now = new Date();
         String token = Jwts.builder()
                 .setClaims(claims) // 데이터
@@ -102,7 +113,14 @@ public class JwtTokenProvider { // JWT 토큰을 생성 및 검증 모듈
         String pk = this.getUserPk(token);
         log.info("getAuthentication > getUserPk: {}, token: {}", pk, token);
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(pk);
+        /* 2024.01.24
+            세션에 대한 사용자 정보를 가져올 때
+            DB 나 메모리에 사용자정보를 저장/로드 하는 형태에서  
+            JWT 에 정보를 관리하는 형태로 변경함
+        */
+        // UserDetails userDetails = userDetailsService.loadUserByUsername(pk);
+        UserDetails userDetails = getUserDetails(token);
+
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
@@ -203,18 +221,17 @@ public class JwtTokenProvider { // JWT 토큰을 생성 및 검증 모듈
     /**
      * Jwt Token을 복호화 하여 사용자 정보를 얻는다.
      */
-    public DbUser getUser(String token) {
-        DbUser user = null;
+    public DbUser getUserDetails(String jwtToken) {
         try {
-            user = (DbUser) getAuthentication(token).getPrincipal();
+            String json =  (String)this.getClaims(jwtToken).get("details");
+            DbUser user = JsonUtil.convertJsonToClass(json, DbUser.class);
             if (user.getIpAddress() == null) {
-                user.setIpAddress(getAddress(token));
+                user.setIpAddress(getAddress(jwtToken));
             }
+            return user;
         } catch (Exception e) {
-            log.error("getUser :{}", e.getMessage());
+            return null;
         }
-
-        return user;
     }
 
     private String getAddress(String jwtToken) {
