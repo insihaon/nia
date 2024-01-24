@@ -10,7 +10,7 @@
     :placeholder="item.placeholder"
     filterable
     remote
-    @change="(value)=> $emit('selectedChange', value)"
+    @change="(value)=> runEmit('selectedChange', value)"
   >
     <el-option
       v-if="eval('item?.setting?.allOption?.toggle')"
@@ -23,12 +23,6 @@
         @click.prevent="onClickAll"
       >
         전체
-        <!-- <el-checkbox
-          :value="toggleAll"
-          style="pointer-events:none"
-        > 전체
-        </el-checkbox>
-        <i class="sort-caret descending" /> -->
       </span>
     </el-option>
     <el-option
@@ -42,11 +36,6 @@
         @click.prevent="onClickOption(option)"
       >
         {{ option.label }}
-        <!-- <el-checkbox
-          :value="selectLabel.includes(option.value)"
-          style="pointer-events: none"
-        > {{ option.label }}
-        </el-checkbox> -->
       </span>
     </el-option>
   </el-select>
@@ -55,15 +44,30 @@
 <script>
 const routeName = 'CompCheckSelector'
 import { Base } from '@/min/Base.min'
+import ComponentTesterMixins from '@/test/ComponentTesterMixins'
+import { isTestPage } from '@/test/commonTester.js'
 
 export default {
   name: routeName,
   components: {},
   extends: Base,
+  mixins: [ComponentTesterMixins],
   props: {
     item: {
       type: Object,
-      default() { return { } }
+      default() {
+        return isTestPage() ? {
+          options: [
+            { label: 'test1', value: 'test1' },
+            { label: 'test2', value: 'test2' },
+            { label: 'test3', value: 'test3' },
+            { label: 'test4', value: 'test4' },
+          ],
+          placeholder: 'test123',
+          disabled: false,
+          readonly: false
+        } : {}
+      }
     },
     searchModel: {
       type: Array,
@@ -84,7 +88,7 @@ export default {
     model: {
       get() {
         // if (this.isSettingAllOption && this.searchModel.length === this.fullOptions.length) {
-        //   this.$emit('update:searchModel', ['ALL'])
+        //   this.runEmit('update:searchModel', ['ALL'])
         // }
         return this.searchModel
       },
@@ -92,12 +96,12 @@ export default {
         const nM = m.filter((d) => d !== 'ALL')
         if (this.isSettingAllOption && nM.length === this.fullOptions.length) {
           if (this.item.valueConsistsOf === 'LEAF_PRIORITY') {
-            this.$emit('update:searchModel', this.fullOptions)
+            this.runEmit('update:searchModel', this.fullOptions)
           } else {
-            this.$emit('update:searchModel', ['ALL'])
+            this.runEmit('update:searchModel', ['ALL'])
           }
         } else {
-          this.$emit('update:searchModel', nM)
+          this.runEmit('update:searchModel', nM)
         }
       }
     },
@@ -129,6 +133,9 @@ export default {
   mounted() {
   },
   methods: {
+    getDefaultProps() {
+    },
+
     eval(p) {
       // eslint-disable-next-line no-eval
       return eval('this.' + p)

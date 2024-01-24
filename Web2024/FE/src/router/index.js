@@ -51,6 +51,11 @@ export const constantRoutes = [
     hidden: true
   },
   {
+    name: 'testComponentTest',
+    path: '/test',
+    component: () => import('@/test/ComponentTestPage'),
+  },
+  {
     name: 'AuthRedirect',
     path: '/auth-redirect',
     component: () => import('@/views/login/auth-redirect'),

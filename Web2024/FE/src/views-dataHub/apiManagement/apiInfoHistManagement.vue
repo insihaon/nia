@@ -226,10 +226,15 @@ export default {
 
 <style lang="scss" scoped>
    .ApiInfoHistManagement{
+     padding : 0 40px !important;
     .main-layout{
       display: flex ;
       flex-direction: row !important;
       height: 100% !important;
+    }
+
+    .common-padding{
+     padding : 15px 30px !important;
     }
    }
 </style>
