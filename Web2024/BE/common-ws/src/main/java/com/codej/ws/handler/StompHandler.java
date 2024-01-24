@@ -57,7 +57,7 @@ public class StompHandler implements ChannelInterceptor {
                 if (jwtTokenProvider.validateToken(jwtToken, "StompHandler")) {
                     SessionUser sessionUser = null;
                     if (appDto.getWsCanAccessUser() == true) {
-                        DbUser user = (DbUser) jwtTokenProvider.getUser(jwtToken);
+                        DbUser user = (DbUser) jwtTokenProvider.getUserDetails(jwtToken);
                         sessionUser = new SessionUser(user);
                     } else {
                         Claims claims = jwtTokenProvider.getClaims(jwtToken);
