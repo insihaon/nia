@@ -403,16 +403,6 @@ export function apiDeleteLinkSystemListProc(params = {}) { // 연동 시스템 �
   })
 }
 
-export function apiSelectApicodeList(params = {}) { // API 코드 리스트 조회
-  return http({
-    url: '/selectList',
-    method: 'post',
-    filePath: filePath,
-    sqlId: 'SELECT_API_CODE_LIST',
-    data: params
-  })
-}
-
 export function apiSelectDataSetReqProc(params = {}) { // 데이터셋 > 조회 > 요청
   return http({
     url: '/selectList',
