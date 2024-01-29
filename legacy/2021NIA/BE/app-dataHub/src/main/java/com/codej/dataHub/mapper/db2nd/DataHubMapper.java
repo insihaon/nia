@@ -61,7 +61,6 @@ public interface DataHubMapper extends BaseDataMapper {
 
         public int DELETE_LINK_SYSTEM_LIST(HashMap<String, Object> map);
 
-        public List<ResultMap> SELECT_API_CODE_LIST(HashMap<String, Object> map);
 
         public List<ResultMap> SELECT_DATA_SET_HIST_LIST(HashMap<String, Object> map);
 
