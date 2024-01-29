@@ -215,11 +215,9 @@ export default {
       }
     },
     async handleOpenTableModalDetail(type, row) {
-      const param = {
+      const params = {
         table_nm: row.table_nm
       }
-      const res = await apiSelectDataCatalogList(param)
-      const params = res?.result
       this.$modal.show('editMonitoringExcludeAlarm', { type, params, routeName })
     },
 }
