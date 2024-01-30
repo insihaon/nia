@@ -96,11 +96,7 @@ function atou(str) {
       data = {
         data: encryptText || data,
       }
-    } else {
-      if (!isDevProfile) {
-        data._t = Encrypt.toEncrypt(String(Date.now()))
-      }
-    }
+    } 
     data.encrypt = Encrypt.toEncrypt(encryptText != null)
 
     // const decrypt = Encrypt.toDecrypt(config.data.encrypt)
