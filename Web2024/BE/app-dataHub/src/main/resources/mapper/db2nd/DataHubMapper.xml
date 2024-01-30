@@ -620,16 +620,7 @@ LEFT JOIN (
     <include refid="TotalCountSuffix"/>
     </select>
 
-    <!-- API 공통코드 테이블 조회 -->
-    <select id="SELECT_API_CODE_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap"> 
-    SELECT 
-        CD
-        ,CD_NM
-        ,CATEGORY_CD
-        ,DISPLAY_ORD 
-   FROM DATAHUB.TB_CODE_CD TCC
-    ORDER BY DISPLAY_ORD
-    </select>
+
 
     <!-- 데이터셋 요청 이력 조회 -->
    <select id="SELECT_DATA_SET_HIST_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap"> 

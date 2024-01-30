@@ -48,7 +48,7 @@ import ModalApiDetail from '@/views-dataHub/modal/ModalApiDetail'
 import DataHubComponent from '@/views-dataHub/components/CompTemplate'
 import CellRenderButtons from '@/views-dataHub/components/cellRenderer/CellRenderButtons'
 import CellRenderDetailbuttons from '@/views-dataHub/components/cellRenderer/CellRenderDetailbuttons'
-import { apiDataListTest, apiSelectInfoList, apiSelectHistList, apiSelectApicodeList } from '@/api/dataHub'
+import { apiDataListTest, apiSelectInfoList, apiSelectHistList } from '@/api/dataHub'
 import hyperLinkTextRender from '@/views-dataHub/layout/components/cellRenderer/hyperLinkTextRender'
 
 const routeName = 'ApiInfoHistManagement'
