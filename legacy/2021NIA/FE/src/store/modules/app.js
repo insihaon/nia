@@ -143,6 +143,7 @@ const actions = {
     try {
       if (force === false && state.server) return state.server
       const { result } = await apiSetting()
+      result.timeDiff = new Date().getTime() - result.time
       commit('SET_SERVER', result)
       return result
     } catch (e) {

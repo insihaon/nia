@@ -1,5 +1,7 @@
 package com.codej.base.dto;
 
+import java.util.Date;
+
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -181,6 +183,8 @@ public class AppDto {
     @Value("${myconf.api-server.hub-api:http://127.0.0.1:8070/dh}")
     private String hubUrl;
 
+    private Object time;
+
     @PostConstruct
     public void init() {
         isDevProfile = isDevProfile();
@@ -192,4 +196,8 @@ public class AppDto {
         return this.getProfileDev();
     }
 
+    public Object update() {
+        this.time = new Date().getTime();
+        return this;
+    }
 }
