@@ -34,15 +34,15 @@ function atou(str) {
  class Encrypt {
   constructor(keys, data) {
     function generateUUID() {
-      var d = new Date().getTime()
-      //'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
+      var d = new Date().getTime();
       var uuid = 'xxxxxxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-        var r = (d + Math.random() * 16) % 16 | 0
-        d = Math.floor(d / 16)
-        return (c == 'x' ? r : (r & 0x7) | 0x8).toString(16)
-      })
-      return uuid.toUpperCase()
-    }
+          var r = (d + Math.random() * 16) % 16 | 0;
+          d = Math.floor(d / 16);
+          var randomChar = (c === 'x' ? r : (r & 0x7) | 0x8).toString(16);
+          return Math.random() > 0.5 ? randomChar.toUpperCase() : randomChar;
+      });
+      return uuid;
+  }
 
     function generateKey() {
       return generateUUID()

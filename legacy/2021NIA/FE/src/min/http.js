@@ -36,7 +36,7 @@ service.interceptors.request.use(
 
     const command = config.command = url.slice(1).replace(/[^a-zA-Z0-9]+/, '_')
 
-    if (/\/(selectList|selectListPaging|selectOne|modify)$/.test(url) && sqlId) {
+    if (/\/(selectList|selectListPaging12|selectOne|modify)$/.test(url) && sqlId) {
       url = config.url += `/${sqlId}`
     }
 
@@ -51,7 +51,7 @@ service.interceptors.request.use(
       config.headers['project'] = project
       config.headers['jsonFileName'] = getJsonfileName(url, config)
       config.headers['urlOrigin'] = config.urlOrigin = url
-      if (store?.getters?.server) {
+      if (store.getters.server) {
         config.headers['_t'] = Encrypt.toEncrypt(String(Date.now() - (store.getters.server.timeDiff || 0)))
       }
 
