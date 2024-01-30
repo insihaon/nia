@@ -137,7 +137,7 @@
         }
         const columns = [
           { type: '', prop: 'table_nm', name: '테이블', minWidth: 100, flex: 1, suppressMenu: true, alignItems: 'left', sortable: true, filterable: false,
-          cellRendererFramework: 'hyperLinkTextRender', cellRendererParams: { type: 'detail', action: this.handleOpenModalDetail.bind(this.dataSetColData) } },
+          cellRendererFramework: 'hyperLinkTextRender', cellRendererParams: { type: 'detail', action: this.handleOpenModalDetail.bind(this) } },
           { type: '', prop: 'column_nm', name: '컬럼', minWidth: 100, flex: 1, suppressMenu: true, alignItems: 'left', sortable: true, filterable: false },
           { type: '', prop: 'data_type', name: '타입', minWidth: 100, flex: 1, suppressMenu: true, alignItems: 'left', sortable: true, filterable: false },
           { type: '', prop: 'update_time', name: '수정일시', minWidth: 100, flex: 1, suppressMenu: true, alignItems: 'left', sortable: true, filterable: false },
@@ -330,11 +330,9 @@
             this.selectedCol = param
         },
         async handleOpenModalDetail(type, row) {
-            const param = {
+            const params = {
                 table_nm: row.table_nm
             }
-            const res = await apiSelectDataCatalogList(param)
-            const params = res?.result
             this.$modal.show('editMonitoringExcludeAlarm', { type, params, routeName })
         },
     }

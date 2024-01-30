@@ -149,7 +149,7 @@
       },
       onClose() { /* for Override */ },
       async insertApiAuth() {
-         if (!this.linkSystem || !this.rowInfo.usage) {
+         if (!this.selectedLinkSystem || !this.rowInfo.usage) {
             this.$message({
               message: '연동 시스템과 사용 용도를 입력해주세요.',
               type: 'error',
