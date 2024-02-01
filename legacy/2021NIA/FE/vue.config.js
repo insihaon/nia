@@ -133,7 +133,18 @@ module.exports = {
     node: {
       __filename: true
     },
-    plugins: getPlugIns()
+    plugins: getPlugIns(),
+
+    module: {
+      rules: [
+        // Getting webpack to recognize the `.mjs` file
+        {
+          test: /\.mjs$/,
+          include: /node_modules/,
+          type: 'javascript/auto',
+        },
+      ],
+    },
   },
 
   chainWebpack(config) {
@@ -225,6 +236,6 @@ module.exports = {
   },
 
   transpileDependencies: [
-    'quasar'
+    'quasar', 'json-editor-vue'
   ]
 }
