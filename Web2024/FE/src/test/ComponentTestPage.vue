@@ -22,15 +22,15 @@
                 "
             >
               <el-tree
-                v-if="testComponentConfig.defaultComponentTreeKey.length > 0"
+                v-if="defaultComponentTreeKey.length > 0"
                 ref="elTree"
                 node-key="componentPath"
                 icon-class="el-icon-arrow-right"
                 accordion
                 empty-text="데이터가 없습니다."
-                :data="testComponentConfig.componentTreeData"
+                :data="componentTreeData"
                 :draggable="false"
-                :current-node-key="testComponentConfig.defaultComponentTreeKey"
+                :current-node-key="defaultComponentTreeKey"
                 :show-checkbox="false"
                 :render-content="renderContent"
                 :expand-on-click-node="false"
@@ -79,6 +79,7 @@
                     style="width: 50% !important"
                   >
                     <TypeComponent
+                      v-if="testPropKey !== 'propChangeIndex'"
                       :prop-key="testPropKey"
                       :prop-data.sync="currentComponentConfig.testProps[testPropKey]"
                       @changeDataValue="changeTestProps"
@@ -87,9 +88,9 @@
                 </div>
               </div>
               <div style="height: 33%; overflow-y: auto; border-top: 1px solid">
-                <div style="height: 30px">
-                  <span>컴포넌트 Events</span>
-                  <div style="float:right">
+                <div style="height: 30px; display:flex">
+                  <span style="margin-right: 10px">컴포넌트 Events</span>
+                  <div>
                     <el-button size="mini" @click="eventStateReset">상태 초기화</el-button>
                   </div>
                 </div>
@@ -106,7 +107,7 @@
                     </div>
 
                     <div style="margin-top: 10px">
-                      emitParam 리스트
+                      Emit Params
                       <div
                         v-for="(emitParam, emitParamIndex) in currentComponentConfig.emitConfig[emitConfigElementKey].emitParamList"
                         :key="emitParamIndex"
@@ -116,11 +117,8 @@
                           :prop-data.sync="currentComponentConfig.emitConfig[emitConfigElementKey].emitParamList[emitParamIndex]"
                           :json-editor-disabled="true"
                         />
-                        <!-- @changeDataValue="changeTestProps" -->
                       </div>
-
                     </div>
-
                   </div>
                 </div>
               </div>
@@ -140,16 +138,28 @@
 </template>
 
 <script>
-import router from '@/router/index.js'
 import TypeComponent from '@/test/TypeComponent'
 import WorkControlModalTemplate from '@/components/WorkControlModalTemplate/index'
 import { Base } from '@/min/Base.min'
+import { mapState } from 'vuex'
+
 import _ from 'lodash'
 const routeName = 'ComponentTestPage'
 
 const defaultEmitConfigElement = {
   emitCount: 0, emitParamList: []
 }
+
+const defaultCurrentComponentConfig = {
+      // 현재 선택된 컴포넌트 정보
+      selectedComponent: {}, // 선택된 컴포넌트 정보
+      testProps: { propChangeIndex: 0 }, // 테스트할 때 사용되는 props (propChangeIndex는 변경을 감지할 값이다.)
+      emitConfig: {
+        /*
+          구조 : [특정 emit명] : defaultEmitConfigElement
+        */
+      },
+    }
 
 export default {
   name: routeName,
@@ -163,47 +173,35 @@ export default {
         children: 'children'
       },
 
-      duplicateCheckFileObject: {},
-      testComponentConfig: {
-        // test용 컴포넌트 정보들
-        testComponentList: [], //
-        componentTreeData: [],
-        defaultComponentTreeKey: ''
-      },
+      currentComponentConfig: _.cloneDeep(defaultCurrentComponentConfig),
 
-      currentComponentConfig: {
-        // 현재 선택된 컴포넌트 정보
-        selectedComponent: {}, // 선택된 컴포넌트 정보
-        testProps: { propChangeIndex: 0 }, // 테스트할 때 사용되는 props (propChangeIndex는 변경을 감지할 값이다.)
-        emitConfig: {
-          /*
-            구조 : [특정 emit명] : defaultEmitConfigElement
-          */
-        },
-      }
+    }
+  },
+
+  computed: {
+      ...mapState({
+        testComponentList: state => state.componentTester.testComponentList,
+        componentTreeData: state => state.componentTester.componentTreeData,
+        defaultComponentTreeKey: state => state.componentTester.defaultComponentTreeKey
+      }),
+  },
+
+  watch: {
+    async componentTreeData() {
+      await this.setDefaultComponent()
     }
   },
 
   async mounted() {
     window.v = this
-
     // 컴포넌트 셋팅
-    await this.setComponentList()
-    this.componentListMakeTreeData()
-    this.setDefaultComponent()
+    this.$store.dispatch('componentTester/initTestComponentList')
+    await this.setDefaultComponent()
   },
 
   destroyed() { },
 
   methods: {
-    eventStateReset() {
-      const temp = _.cloneDeep(this.currentComponentConfig.emitConfig)
-      this.currentComponentConfig.emitConfig = {}
-      Object.keys(temp).forEach((emitConfigElementKey) => {
-        this.$set(this.currentComponentConfig.emitConfig, emitConfigElementKey, _.cloneDeep(defaultEmitConfigElement))
-      })
-    },
-
     setEmitState(data) {
       this.propChangeIndexUp()
 
@@ -223,13 +221,18 @@ export default {
       this.$set(this.currentComponentConfig.testProps, param.objectKey, param.dataValue)
 
       // 2. Prop 변경 인식
-      setTimeout(() => {
+      // setTimeout(() => {
         this.propChangeIndexUp()
-      }, 1000)
+      // }, 1000)
 
       // 3. 변경된 Prop을 새로 적용시키기 위해 컴포넌트 재호출
       this.reloadComponent()
+      // this.debounceReload(this)
     },
+
+    debounceReload: _.debounce((THIS) => {
+      THIS.reloadComponent()
+    }, 500),
 
     reloadComponent() {
       const tempComponentCache = this.currentComponentConfig.selectedComponent.component
@@ -268,8 +271,21 @@ export default {
     },
 
     // Tree 클릭 이벤트
-    nodeClick(data, node) {
+    async nodeClick(data, node) {
+      this.resetCurrentComponentConfig()
       this.currentComponentConfig.selectedComponent = data
+    },
+
+    resetCurrentComponentConfig() {
+      this.currentComponentConfig = _.cloneDeep(defaultCurrentComponentConfig)
+    },
+
+    eventStateReset() {
+      const temp = _.cloneDeep(this.currentComponentConfig.emitConfig)
+      this.currentComponentConfig.emitConfig = {}
+      Object.keys(temp).forEach((emitConfigElementKey) => {
+        this.$set(this.currentComponentConfig.emitConfig, emitConfigElementKey, _.cloneDeep(defaultEmitConfigElement))
+      })
     },
 
     initTestProps(propMap) {
@@ -283,55 +299,13 @@ export default {
     // Tree 확장 이벤트
     nodeExpand() { },
 
-    setDefaultComponent() {
-      this.currentComponentConfig.selectedComponent = this.testComponentConfig.componentTreeData[0]
-      this.testComponentConfig.defaultComponentTreeKey = this.currentComponentConfig.selectedComponent.componentPath
-    },
-
-    async setComponentList() {
-        this.duplicateCheckFileObject = {}
-        this.testComponentConfig.testComponentList = []
-
-        const testRoutes = [...router.options.routes, ...router.options.routes2]
-        for (const route of testRoutes) {
-          this.recursiveSetComponent(route.component)
-
-          if (route.children) {
-            for (const child of route.children) {
-              const childComponent = await child.component()
-              this.recursiveSetComponent(childComponent.default)
-            }
-          }
-        }
-    },
-
-    recursiveSetComponent(component) {
-      if (!Object.hasOwnProperty.call(this.duplicateCheckFileObject, component.__file)) {
-        this.duplicateCheckFileObject[component.__file] = component
-        if (component.mixins) {
-          const testComponent = component.mixins.find(mixin => mixin.__file === 'src/test/ComponentTesterMixins.vue')
-          testComponent && this.testComponentConfig.testComponentList.push(component)
-        }
-
-        if (component.components) {
-          Object.keys(component.components).forEach((childComponent) => {
-            this.recursiveSetComponent(component.components[childComponent])
-          })
-        }
+    async setDefaultComponent() {
+      if (this.componentTreeData.length > 0) {
+        this.currentComponentConfig.selectedComponent = this.componentTreeData[0]
+        this.$store.commit('componentTester/SET_DEFAULT_COMPONENT_TREE_KEY', this.currentComponentConfig.selectedComponent.componentPath)
       }
     },
 
-    componentListMakeTreeData() {
-      this.testComponentConfig.componentTreeData = []
-
-      this.testComponentConfig.testComponentList.forEach((testComponent) => {
-        this.testComponentConfig.componentTreeData.push({
-            componentPath: testComponent.__file,
-            componentAlias: testComponent.__file.split('/').pop(),
-            component: testComponent
-          })
-      })
-    }
   }
 }
 </script>
@@ -342,7 +316,6 @@ export default {
 }
 
 .ComponentTestPage{
-
   .el-tree::v-deep{
     .el-tree-node.is-current{
       z-index: 1000;
