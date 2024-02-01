@@ -3,12 +3,9 @@
     <div class="popupHeader" />
 
     <div class="popupBody">
-      <JSONEditor
-        id="editor"
-        ref="editor"
-        :json="jsonData"
-        :options="options"
-        :on-change="onChange"
+      <JsonEditorVue
+        v-model="jsonData"
+        v-bind="{/* local props & attrs */}"
       />
     </div>
 
@@ -21,12 +18,11 @@
 <script>
 /* eslint-disable */
 import dialogOpenMixin from "@/mixin/dialogOpenMixin";
-import JSONEditor from '@/test/jsonEditor/jsonEditor.vue'
-
+import JsonEditorVue from 'json-editor-vue' // https://www.npmjs.com/package/json-editor-vue
 import _ from 'lodash';
 
 export default {  
-  components: { JSONEditor },
+  components: { JsonEditorVue },
   mixins: [dialogOpenMixin],
   props: {
       wdata: Object

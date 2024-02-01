@@ -11,6 +11,7 @@
   "dependencies": {
     "@quasar/extras": "^1.0.0",
     "@riophae/vue-treeselect": "^0.4.0",
+    "@vue/composition-api": "^1.7.2",
     "ag-grid-community": "^28.2.0",
     "ag-grid-enterprise": "^28.2.0",
     "ag-grid-vue": "^28.2.0",
@@ -24,6 +25,7 @@
     "element-ui": "2.13.2",
     "hotkeys-js": "^3.8.1",
     "js-cookie": "2.2.0",
+    "json-editor-vue": "^0.12.0",
     "jsonlint": "1.6.3",
     "moment": "^2.27.0",
     "normalize.css": "7.0.0",
