@@ -28,11 +28,6 @@ service.interceptors.request.use(
     config.data = config.data || {}
     const { data, testData } = config
     const server = store.getters.server || {}
-
-    if (store.getters.token) {
-      config.headers['X-AUTH-TOKEN'] = getToken()
-    }
-
     const encryptRequest = !config.encrypt && !mock && !debug
     config.data = Encrypt.encryptHttp(data, encryptRequest, server.isDevProfile)
 
@@ -41,8 +36,12 @@ service.interceptors.request.use(
 
     const command = config.command = url.slice(1).replace(/[^a-zA-Z0-9]+/, '_')
 
-    if (/\/(selectList|selectListPaging|selectOne|modify)$/.test(url) && sqlId) {
+    if (/\/(selectList|selectListPaging12|selectOne|modify)$/.test(url) && sqlId) {
       url = config.url += `/${sqlId}`
+    }
+
+    if (store.getters.token) {
+      config.headers['X-AUTH-TOKEN'] = getToken()
     }
 
     if (command) {
@@ -52,6 +51,9 @@ service.interceptors.request.use(
       config.headers['project'] = project
       config.headers['jsonFileName'] = getJsonfileName(url, config)
       config.headers['urlOrigin'] = config.urlOrigin = url
+      if (store.getters.server) {
+        config.headers['_t'] = Encrypt.toEncrypt(String(Date.now() - (store.getters.server.timeDiff || 0)))
+      }
 
       if (serverMock === true) {
         config.url = '/mock'

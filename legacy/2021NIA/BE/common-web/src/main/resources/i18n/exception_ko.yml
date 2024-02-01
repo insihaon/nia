@@ -25,9 +25,9 @@ notOwner:
 resourceNotExist:
   code: "-1007"
   message: "요청한 자원이 존재 하지 않습니다."
-forbiddenWord:
+forbiddenRequest:
   code: "-1008"
-  message: "입력한 내용에 금칙어({0})가 포함되어 있습니다."
+  message: "허용되지 않은 요청입니다."
 serviceException:
   code: "-1009"
   message: "서비스 처리 중 오류가 발생했습니다."

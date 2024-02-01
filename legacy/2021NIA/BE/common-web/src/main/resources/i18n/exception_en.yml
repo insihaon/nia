@@ -25,6 +25,6 @@ notOwner:
 resourceNotExist:
   code: "-1007"
   message: "This resource does not exist."
-forbiddenWord:
+forbiddenRequest:
   code: "-1008"
-  message: "forbidden words ({0}) are included in the input."
+  message: "forbidden request"

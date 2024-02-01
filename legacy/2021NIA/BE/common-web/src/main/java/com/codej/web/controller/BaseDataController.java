@@ -83,19 +83,6 @@ public abstract class BaseDataController extends BaseController {
 
         HashMap<String, Object> data = paramToData(param, encrypt);
 
-        if (appDto.isDevProfile() == false && encrypt == false) {
-            String encSalt = (String) data.get("_t");
-            String raw = EncryptUtil.decryptText(encSalt);
-            if (raw == null)
-                return null;
-            long req = Long.parseLong(raw);
-            long now = System.currentTimeMillis();
-            if (Math.abs(now - req) > 1000 * 60 * 2) {
-                log.error("_t is invalid");
-                return null;
-            }
-        }
-
         // SecurityContext에서 인증받은 회원의 정보를 얻어온다.
         // String lang = request.getHeader(HttpHeaders.ACCEPT_LANGUAGE);
         String lang = request.getHeader(GlobalConstants.Common.N_LANG);

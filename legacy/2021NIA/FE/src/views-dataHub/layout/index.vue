@@ -89,7 +89,7 @@ export default {
           'sidebar',
         ]),
         loginUsername() {
-          const userNM = this.username.replace(/.$/, '*')
+          const userNM = this.username ? this.username.replace(/.$/, '*') : 'UNKONWN'
           return userNM
         },
         activeMenu() {

@@ -33,8 +33,7 @@ public class AppController extends BaseController {
     @PostMapping(value = "/setting")
     public BaseResponse postSetting() throws Exception {
         log.info("/setting PostMapping");
-        // return responseService.createSingleResponse(appDto);
-        return SingleResponse.createResult(responseService.createSingleResponse(appDto), true);
+        return SingleResponse.createResult(responseService.createSingleResponse(appDto.update()), true);
     }
 
     @GetMapping(value = "/setting")

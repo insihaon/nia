@@ -109,7 +109,7 @@
 <script>
 import { Base } from '@/min/Base.min'
 import DataHubComponent from '@/views-dataHub/components/CompTemplate'
-import { apiSelectApicodeList, apiSelectTbMetaDataSetMst } from '@/api/dataHub'
+import { apiSelectTbMetaDataSetMst } from '@/api/dataHub'
 import { makeGrafanaVariable, grafanaDashboardUrlMap, grafanaSettings } from '@/views-dataHub/grafanaManager'
 import _ from 'lodash'
 const routeName = 'collectionAnalysis'
