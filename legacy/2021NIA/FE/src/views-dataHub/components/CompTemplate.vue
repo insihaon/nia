@@ -139,12 +139,14 @@ import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
 import CompCheckSelector from '@/views-dataHub/components/CompCheckSelector'
 import OrgSelect from '@/views-dataHub/components/OrgSelect'
 import VJsoneditor from 'v-jsoneditor/src/index'
+import ComponentTesterMixins from '@/test/ComponentTesterMixins'
 
 const routeName = 'CompTemplate'
 export default {
   name: routeName,
   components: { CompAgGrid, CompCheckSelector, OrgSelect, VJsoneditor },
   extends: Base,
+  mixins: [ComponentTesterMixins],
   props: {
     paginationInfo: {
       type: Object,
@@ -154,10 +156,11 @@ export default {
           pageSize: 50,
           totalCount: null,
           totalPages: null,
-          pagerCount: null,
+          pagerCount: null
         }
       }
     },
+
     agGrid: {
       type: Object,
       default: () => { return {} }
@@ -214,6 +217,7 @@ export default {
       selectedItem: [],
       clearModelItems: {},
       jsonOptions: { mode: 'code' },
+      emitKeys: ['handleClickSearch'],
     }
   },
   computed: {
@@ -249,15 +253,15 @@ export default {
   methods: {
     onSortChanged(sortedColumns) {
       const sortColInfo = sortedColumns?.length > 0 ? sortedColumns[0] : {}
-      this.$emit('sortedChange', sortColInfo)
+      this.runEmit('sortedChange', sortColInfo)
     },
     handleSearchClear() {
-      this.$emit('searchClear', this.searchModel)
-      this.$emit('jsonClear', this.jsonData)
+      this.runEmit('searchClear', this.searchModel)
+      this.runEmit('jsonClear', this.jsonData)
     },
     onClickSearchButton() {
       this.paginationInfo.currentPage = 1
-      this.$emit('handleClickSearch', this.searchModel)
+      this.runEmit('handleClickSearch', this.searchModel)
     },
     prevPage() {
       if (this.paginationInfo.currentPage > 1) {
@@ -268,12 +272,12 @@ export default {
     nextPage() {
       if (this.paginationInfo.currentPage < this.paginationInfo.totalPages) {
         this.paginationInfo.currentPage++
-        this.emit('handleClickSearch', this.paginationInfo.currentPage) // 다음 페이지로 이동할 때 데이터 다시 가져오기
+        this.runEmit('handleClickSearch', this.paginationInfo.currentPage) // 다음 페이지로 이동할 때 데이터 다시 가져오기
       }
     },
     handlePageChange(newPage) {
       this.paginationInfo.currentPage = newPage
-      this.$emit('handleClickSearch', this.paginationInfo.currentPage) // 특정 페이지로 이동할 때 데이터 다시 가져오기
+      this.runEmit('handleClickSearch', this.paginationInfo.currentPage) // 특정 페이지로 이동할 때 데이터 다시 가져오기
     },
     refreshData() {
       this.selectedItem = []
