@@ -59,69 +59,82 @@
           </el-row>
           <el-row style="height: calc(100% - 100px); border: 1px solid; padding: 10px;" align="middle">
             <el-col :span="24" style="height: 100%">
-              <div ref="testComponentBox" style="height: 33%; overflow-y: auto">
-                <span>컴포넌트 {{ currentComponentConfig.selectedComponent.componentAlias }}</span>
-                <component
-                  :is="currentComponentConfig.selectedComponent.component"
-                  ref="testComponent"
-                  v-bind.sync="currentComponentConfig.testProps"
-                  @emitComponentData="setInitCurrentComponentData"
-                  @runEmit="setEmitState"
-                />
-              </div>
-              <div style="height: 33%; overflow-y: auto; border-top: 1px solid">
-                <span>컴포넌트 Props</span>
-                <div style="display: flex; flex-wrap:wrap; padding-top: 10px">
-                  <div
-                    v-for="(testPropKey, index) of Object.keys(currentComponentConfig.testProps)"
-                    v-show="testPropKey !== 'propChangeIndex'"
-                    :key="index"
-                    style="width: 50% !important"
-                  >
-                    <TypeComponent
-                      v-if="testPropKey !== 'propChangeIndex'"
-                      :prop-key="testPropKey"
-                      :prop-data.sync="currentComponentConfig.testProps[testPropKey]"
-                      @changeDataValue="changeTestProps"
+              <splitpanes
+                style="height: 100%"
+                :horizontal="true"
+                class="default-theme"
+              >
+                <pane>
+                  <div rethis.runEmitf="testComponentBox" style="height: 100%; overflow-y: auto">
+                    <span>컴포넌트 {{ currentComponentConfig.selectedComponent.componentAlias }}</span>
+                    <component
+                      :is="currentComponentConfig.selectedComponent.component"
+                      ref="testComponent"
+                      :style="{height: 'calc(100% - 25px)'}"
+                      v-bind.sync="currentComponentConfig.testProps"
+                      @emitComponentData="setInitCurrentComponentData"
+                      @runEmit="setEmitState"
                     />
                   </div>
-                </div>
-              </div>
-              <div style="height: 33%; overflow-y: auto; border-top: 1px solid">
-                <div style="height: 30px; display:flex">
-                  <span style="margin-right: 10px">컴포넌트 Events</span>
-                  <div>
-                    <el-button size="mini" @click="eventStateReset">상태 초기화</el-button>
-                  </div>
-                </div>
-                <div style="height: calc(100% - 30px)">
-                  <div
-                    v-for="(emitConfigElementKey, index) of Object.keys(currentComponentConfig.emitConfig)"
-                    :key="index"
-                    style="border: 1px solid; width: 45%; display: inline-block; margin-right:5%; padding: 10px;
-                    max-height: 300px; overflow-y: auto
-                    "
-                  >
-                    <div>
-                      {{ emitConfigElementKey }} [ 발생횟수 : {{ currentComponentConfig.emitConfig[emitConfigElementKey].emitCount }} ]
-                    </div>
-
-                    <div style="margin-top: 10px">
-                      Emit Params
+                </pane>
+                <pane>
+                  <div style="height: 100%; overflow-y: auto; border-top: 1px solid">
+                    <span>컴포넌트 Props</span> <span style="color: red">※ 0.5초 딜레이가 있습니다.</span>
+                    <div style="display: flex; flex-wrap:wrap; padding-top: 10px">
                       <div
-                        v-for="(emitParam, emitParamIndex) in currentComponentConfig.emitConfig[emitConfigElementKey].emitParamList"
-                        :key="emitParamIndex"
+                        v-for="(testPropKey, index) of Object.keys(currentComponentConfig.testProps)"
+                        v-show="testPropKey !== 'propChangeIndex'"
+                        :key="index"
+                        style="width: 50% !important"
                       >
                         <TypeComponent
-                          :prop-key="String(emitParamIndex + '번째 param')"
-                          :prop-data.sync="currentComponentConfig.emitConfig[emitConfigElementKey].emitParamList[emitParamIndex]"
-                          :json-editor-disabled="true"
+                          v-if="testPropKey !== 'propChangeIndex'"
+                          :prop-key="testPropKey"
+                          :prop-data.sync="currentComponentConfig.testProps[testPropKey]"
+                          @changeDataValue="changeTestProps"
                         />
                       </div>
                     </div>
                   </div>
-                </div>
-              </div>
+                </pane>
+                <pane>
+                  <div style="height: 100%; overflow-y: auto; border-top: 1px solid">
+                    <div style="height: 30px; display:flex">
+                      <span style="margin-right: 10px">컴포넌트 Events</span>
+                      <div>
+                        <el-button size="mini" @click="eventStateReset">상태 초기화</el-button>
+                      </div>
+                    </div>
+                    <div style="height: calc(100% - 30px)">
+                      <div
+                        v-for="(emitConfigElementKey, index) of Object.keys(currentComponentConfig.emitConfig)"
+                        :key="index"
+                        style="border: 1px solid; width: 45%; display: inline-block; margin-right:5%; padding: 10px;
+                    max-height: 300px; overflow-y: auto
+                    "
+                      >
+                        <div>
+                          {{ emitConfigElementKey }} [ 발생횟수 : {{ currentComponentConfig.emitConfig[emitConfigElementKey].emitCount }} ]
+                        </div>
+
+                        <div style="margin-top: 10px">
+                          Emit Params
+                          <div
+                            v-for="(emitParam, emitParamIndex) in currentComponentConfig.emitConfig[emitConfigElementKey].emitParamList"
+                            :key="emitParamIndex"
+                          >
+                            <TypeComponent
+                              :prop-key="String(emitParamIndex + '번째 param')"
+                              :prop-data.sync="currentComponentConfig.emitConfig[emitConfigElementKey].emitParamList[emitParamIndex]"
+                              :json-editor-disabled="true"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </pane>
+              </splitpanes>
             </el-col>
           </el-row>
         </el-main>
@@ -142,8 +155,10 @@ import TypeComponent from '@/test/TypeComponent'
 import WorkControlModalTemplate from '@/components/WorkControlModalTemplate/index'
 import { Base } from '@/min/Base.min'
 import { mapState } from 'vuex'
-
+import { Splitpanes, Pane } from 'splitpanes'
+import 'splitpanes/dist/splitpanes.css'
 import _ from 'lodash'
+
 const routeName = 'ComponentTestPage'
 
 const defaultEmitConfigElement = {
@@ -163,7 +178,7 @@ const defaultCurrentComponentConfig = {
 
 export default {
   name: routeName,
-  components: { TypeComponent, WorkControlModalTemplate },
+  components: { TypeComponent, WorkControlModalTemplate, Splitpanes, Pane },
   extends: Base,
   data() {
     return {
@@ -226,8 +241,7 @@ export default {
       // }, 1000)
 
       // 3. 변경된 Prop을 새로 적용시키기 위해 컴포넌트 재호출
-      this.reloadComponent()
-      // this.debounceReload(this)
+      this.debounceReload(this)
     },
 
     debounceReload: _.debounce((THIS) => {
@@ -320,11 +334,16 @@ export default {
     .el-tree-node.is-current{
       z-index: 1000;
       background-color: #7a7b8d;
-      color:white;
-    }
-    .el-tree-node__content:hover {
-      &:hover{
+      .el-tree-node__content{
         background-color: #7a7b8d;
+        color: white
+      }
+    }
+    .el-tree-node:hover {
+      background-color: #7a7b8d;
+      .el-tree-node__content{
+        background-color: #7a7b8d;
+        color:white
       }
     }
   }
@@ -392,6 +411,10 @@ export default {
     border-radius: 100%;
     padding:5px;
     font-size:13px;
+  }
+
+  .splitpanes__pane{
+    background: white;
   }
 }
 

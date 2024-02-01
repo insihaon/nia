@@ -33,6 +33,7 @@
     "path-to-regexp": "2.4.0",
     "quasar": "^1.15.21",
     "screenfull": "4.2.0",
+    "splitpanes": "^2.4.1",
     "v-jsoneditor": "^1.4.5",
     "vue": "2.6.11",
     "vue-debounce": "^2.6.0",

@@ -98,7 +98,11 @@ import { AG_GRID_LOCALE_EN } from './locale.en'
 import { deepCloneFilter, exportToFile, array_equals } from '@/utils'
 import Hook from '@/class/hook'
 import _ from 'lodash'
+import { isTestPage, testData } from '@/test/commonTesterUtil.js'
+
 export const _var = { array_equals }
+
+import ComponentTesterMixins from '@/test/ComponentTesterMixins'
 
 const EVENTS = {
   /**
@@ -146,15 +150,28 @@ export default {
   name: routeName,
   components: { AgGridVue },
   extends: Base,
+  mixins: [ComponentTesterMixins],
   props: {
     value: {
       type: Object,
-      default() { return { } }
+      default() {
+        if (isTestPage) {
+          return testData.compAgGrid.value
+        } else {
+          return {}
+        }
+      }
     },
 
     paginationInfo: {
       type: Object,
-      default() { return {} }
+      default() {
+        if (isTestPage) {
+          return testData.compAgGrid.paginationInfo
+        } else {
+          return {}
+        }
+      }
     }
 
   },
@@ -344,14 +361,14 @@ export default {
   methods: {
     handleSizeChange(changedSize) {
       this.paginationInfo.pageSize = changedSize
-      this.$emit('emitPagingCommonEvent', changedSize) // 페이징 관련 공통 이벤트
-      this.$emit('pageSizeChange', changedSize) // 페이지 사이즈 변경 이벤트
+      this.runEmit('emitPagingCommonEvent', changedSize) // 페이징 관련 공통 이벤트
+      this.runEmit('pageSizeChange', changedSize) // 페이지 사이즈 변경 이벤트
     },
 
     handlePageChange(newPage) {
       this.paginationInfo.currentPage = newPage
-      this.$emit('emitPagingCommonEvent', newPage) // 페이징 관련 공통 이벤트
-      this.$emit('pageChange', this.paginationInfo.currentPage) // 특정 페이지로 이동할 때 데이터 다시 가져오기
+      this.runEmit('emitPagingCommonEvent', newPage) // 페이징 관련 공통 이벤트
+      this.runEmit('pageChange', this.paginationInfo.currentPage) // 특정 페이지로 이동할 때 데이터 다시 가져오기
     },
 
     isRowSelectable(rowNode) {
@@ -455,14 +472,14 @@ export default {
     onSelectionChanged($event) {
       // 이벤트 핸들러 샘플
       this.selectedRows = [].concat(...this.gridApi.getSelectedRows())
-      this.$emit(EVENTS.rowSelectionChanged, this.selectedRows)
+      this.runEmit(EVENTS.rowSelectionChanged, this.selectedRows)
     },
     onRowDoubleClicked($event) {
       const selectedNodeds = this.gridApi.getSelectedNodes()
       const selectedData = selectedNodeds.map(node => node.data)
       copyToClipboard(this.clickedCell.value)
-      this.$emit(EVENTS.rowDoubleClicked, this.value.options.rowMultiSelection ? [$event.data] : selectedData)
-      this.$emit(EVENTS.rowDoubleClickedEvent, Object.assign($event, this.clickedCell))
+      this.runEmit(EVENTS.rowDoubleClicked, this.value.options.rowMultiSelection ? [$event.data] : selectedData)
+      this.runEmit(EVENTS.rowDoubleClickedEvent, Object.assign($event, this.clickedCell))
     },
     printFilterAndSort() {
       this.log('### api.forEachNodeAfterFilterAndSort() ###')
@@ -492,8 +509,8 @@ export default {
     getSelectedRows(param) {
       const selectedNodeds = this.gridApi.getSelectedNodes()
       const selectedData = selectedNodeds.map(node => node.data)
-      this.$emit(EVENTS.changeSelectedRows, selectedData, param)
-      this.$emit(EVENTS.changeRowChecked, param)
+      this.runEmit(EVENTS.changeSelectedRows, selectedData, param)
+      this.runEmit(EVENTS.changeRowChecked, param)
       return selectedData
     },
     sizeToFit() {
@@ -656,7 +673,7 @@ export default {
       this.onColumnChanged()
       // this.log('Event Sort Changed', e);
       const sortedColumns = e.columnApi.getColumnState().filter(col => col.sort)
-      this.$emit(EVENTS.sortChanged, sortedColumns)
+      this.runEmit(EVENTS.sortChanged, sortedColumns)
     },
     onColumnResized(e) {
       this.onColumnChanged()
@@ -699,24 +716,24 @@ export default {
       return !this.value.onDoesExternalFilterPass || this.value.onDoesExternalFilterPass(this.externalFilter, node)
     },
     onCheckRow(row) {
-      this.$emit(EVENTS.check, row)
+      this.runEmit(EVENTS.check, row)
     },
     onRowClicked(row) {
-      this.$emit(EVENTS.rowClicked, row)
+      this.runEmit(EVENTS.rowClicked, row)
     },
     onCellClicked(event) {
-      this.$emit(EVENTS.cellClicked, event)
+      this.runEmit(EVENTS.cellClicked, event)
       this.clickedCell = {
         column: event.column,
         value: event.value
       }
     },
     onPaginationChanged() {
-      this.$emit(EVENTS.paginationPageLode, this.gridApi)
+      this.runEmit(EVENTS.paginationPageLode, this.gridApi)
     },
     onGridWidth() {
       const width = this.$refs.aggrid?.clientWidth
-      this.$emit(EVENTS.gridWidth, width)
+      this.runEmit(EVENTS.gridWidth, width)
     },
     onRemoveSelected() {
       const selectedData = this.gridApi.getSelectedRows()
@@ -730,7 +747,7 @@ export default {
     onClickPageBtn(Fn) {
       if (!this.value.options.paginationModel) {
         Fn && this.gridApi[Fn]()
-        this.$emit('pageChange', this.paginationModel)
+        this.runEmit('pageChange', this.paginationModel)
       } else {
         this.value.options.paginationModel.currentPage++
         this.$forceUpdate()
