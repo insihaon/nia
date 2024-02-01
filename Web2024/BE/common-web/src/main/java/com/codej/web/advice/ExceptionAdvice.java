@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.codej.base.dto.response.BaseResponse;
 import com.codej.base.exception.CAuthenticationException;
 import com.codej.base.exception.CCommunicationException;
-import com.codej.base.exception.CForbiddenWordException;
+import com.codej.base.exception.CForbiddenRequestException;
 import com.codej.base.exception.CHttpRelayServiceFail;
 import com.codej.base.exception.CMybatisException;
 import com.codej.base.exception.CNotOwnerException;
@@ -98,10 +98,10 @@ public class ExceptionAdvice {
         return responseService.createFailResponse(Integer.valueOf(getMessage("resourceNotExist.code")), getMessage("resourceNotExist.message"), e.getMessage());
     }
 
-    @ExceptionHandler(CForbiddenWordException.class)
+    @ExceptionHandler(CForbiddenRequestException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public BaseResponse forbiddenWordException(HttpServletRequest request, CForbiddenWordException e) {
-        return responseService.createFailResponse(Integer.valueOf(getMessage("forbiddenWord.code")), getMessage("forbiddenWord.message", new Object[]{e.getMessage()}));
+    public BaseResponse forbiddenRequestException(HttpServletRequest request, CForbiddenRequestException e) {
+        return responseService.createFailResponse(Integer.valueOf(getMessage("forbiddenRequest.code")), getMessage("forbiddenRequest.message", new Object[]{e.getMessage()}));
     }
 
     @ExceptionHandler(CServiceNotImplement.class)

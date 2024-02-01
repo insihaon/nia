@@ -164,7 +164,7 @@ public abstract class AbsAuthController extends BaseController {
         
         // String token_origin = jwtTokenProvider.createToken(String.valueOf(user.getUid()), user.getRolesList(), address);
         // jwtTokenProvider.removeToken(token_origin);
-        String token = jwtTokenProvider.createToken(user.getUsername(), user.getRolesList(), address);
+        String token = jwtTokenProvider.createToken(user, address);
 
         // User 정보와 토큰 정보를 반환
         HashMap<String, Object> mapUser = JsonUtil.convertObjectToMap(user);
@@ -257,7 +257,7 @@ public abstract class AbsAuthController extends BaseController {
         DbUser user = (DbUser) getService().findUserByUidAndProvider(String.valueOf(profile.getId()), provider);
         user.setIpAddress(address);
         return responseService.createSingleResponse(
-                jwtTokenProvider.createToken(String.valueOf(user.getUid()), user.getRolesList(), address));
+                jwtTokenProvider.createToken(user, address));
     }
     
      /**

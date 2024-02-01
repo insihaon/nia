@@ -29,7 +29,7 @@ public class MainService extends BaseDataService {
             put(GlobalConstants.Common.UID, map.get("id"));
         }};
         DbUser user = (DbUser) userMapper.SELECT_LOGIN_USER(param);
-        String token = jwtTokenProvider.createToken(String.valueOf(user.getUid()), user.getRolesList(), null);
+        String token = jwtTokenProvider.createToken(user, null);
 
         // User 정보와 토큰 정보를 반환
         HashMap<String, Object> mapUser = JsonUtil.convertObjectToMap(user);
