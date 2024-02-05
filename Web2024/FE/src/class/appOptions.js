@@ -26,6 +26,7 @@ export class AppOptions extends Storage {
     this._data = Object.assign(this._data, {
       baseURLs: this.readEnv(process.env.VUE_APP_BASE_API, ['//localhost:8070', '/mock']),
       baseURLIndex: this.readEnv(process.env.VUE_APP_BASE_API_INDEX, 0),
+      isOnlyFront: this.readEnv(process.env.VUE_APP_ONLY_FE, false),
       dark: false,
       mobile: Device.instance.mobile ?? false,
       serverMock: false,

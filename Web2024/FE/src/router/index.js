@@ -12,14 +12,31 @@ Vue.use(vueDebounce, {
 
 export const _var = { Layout }
 const isDebug = (AppOptions.instance.debug === true)
+const isOnlyFront = (AppOptions.instance.isOnlyFront === true)
 const { project } = AppOptions.instance
 
 const { dataHubHome, dataHubLogin, dataHubRoute } = require('./dataHub/index')
-const loginView = dataHubLogin
-const projectRoute = dataHubRoute
-const projectHome = dataHubHome
+// const { aiTemplateHome, aiTemplateLogin, aiTemplateRoute } = require('./aiTemplate/index')
+import { aiTemplateHome, aiTemplateLogin, aiTemplateRoute } from './aiTemplate/index'
 
-export const constantRoutes = [
+let loginView
+let projectRoute
+let projectHome = '/'
+
+switch (project) {
+  case 'datahub':
+    loginView = dataHubLogin
+    projectRoute = dataHubRoute
+    projectHome = dataHubHome
+    break
+  case 'ai':
+    loginView = aiTemplateLogin
+    projectRoute = aiTemplateRoute
+    projectHome = aiTemplateHome
+    break
+}
+
+export let constantRoutes = [
   {
     name: 'ROOT',
     path: '/',
@@ -70,8 +87,12 @@ export const constantRoutes = [
     path: '/401',
     component: () => import('@/views/error-page/401'),
     hidden: true
-  }
+  },
 ].filter(v => v.disable !== true)
+
+if (isOnlyFront) {
+  constantRoutes = constantRoutes.concat(constantRoutes, ...projectRoute.filter(v => v.disable !== true))
+}
 
 export const asyncRoutes = [
   ...projectRoute,
