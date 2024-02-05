@@ -25,6 +25,8 @@ import '@/styles/index.scss'
 import 'ag-grid-community/dist/styles/ag-grid.scss'
 import 'ag-grid-community/dist/styles/ag-theme-material.css'
 
+import './assets/css/tailwindcss.css'
+
 import LoadScript from 'vue-plugin-load-script'
 
 import VModal from 'vue-js-modal'
