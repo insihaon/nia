@@ -14,13 +14,13 @@ NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
 const whiteList = ['/login', '/auth-redirect', '/404', '/401', '/responsive'] // no redirect whitelist
 const anonymousMode = JSON.parse(process.env.VUE_APP_ANONYMOUS_MODE || 'true')
+const isOnlyFront = JSON.parse(process.env.VUE_APP_ONLY_FE || 'false')
 const useErrorPage = JSON.parse(process.env.VUE_APP_ERROR_PAGE || 'true')
 const onlyIframe = JSON.parse(process.env.VUE_APP_ONLY_IFRAME || 'false')
 export const _ = { anonymousMode, env: process.env, store }
 
 const getAuthToken = () => getToken()
 const isWhiteList = (path) => whiteList.indexOf(path) !== -1
-
 router.beforeEach(onBeforeEach)
 router.afterEach((to, from, next) => {
   NProgress.done()
@@ -38,7 +38,7 @@ async function onBeforeEach(to, from, next) {
   document.title = getPageTitle(to.meta.title)
 
   if (to.path === '/login') {
-    next('/')
+    next()
     return
   } else if (isWhiteList(to.path)) {
     if (useErrorPage) {
@@ -62,13 +62,16 @@ async function onBeforeEach(to, from, next) {
   let hasToken = getAuthToken()
   let newToken = false
   if (!hasToken) {
-    const server = await store.dispatch('app/getServer')
     if (anonymousMode) {
       const retval = await store.dispatch('user/login')
       if (retval !== true) {
         next(`/401`)
         return
       }
+      hasToken = getAuthToken()
+      newToken = true
+    }
+    if (isOnlyFront) {
       hasToken = getAuthToken()
       newToken = true
     }
@@ -100,7 +103,7 @@ async function onBeforeEach(to, from, next) {
       }
     }
   } else {
-    if (isWhiteList(to.path)) {
+    if (isWhiteList(to.path) || isOnlyFront) {
       next()
     } else {
       next(`/login?redirect=${to.path}`)
