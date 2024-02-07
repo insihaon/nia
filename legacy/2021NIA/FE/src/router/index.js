@@ -54,6 +54,11 @@ export const constantRoutes = [
     name: 'testComponentTest',
     path: '/test',
     component: () => import('@/test/ComponentTestPage'),
+    children: [
+      {
+        path: ':componentName(.*)'
+      }
+    ]
   },
   {
     name: 'AuthRedirect',
