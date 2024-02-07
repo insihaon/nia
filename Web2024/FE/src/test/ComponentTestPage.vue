@@ -81,7 +81,7 @@
                       :style="{height: 'calc(100% - 25px)'}"
                       v-bind.sync="currentComponentConfig.testProps"
                       @emitComponentData="setInitCurrentComponentData"
-                      @runEmit="setEmitState"
+                      @devEmit="setEmitState"
                     />
                   </div>
                 </pane>

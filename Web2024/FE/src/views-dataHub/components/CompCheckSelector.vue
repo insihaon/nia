@@ -10,7 +10,7 @@
     :placeholder="item.placeholder"
     filterable
     remote
-    @change="(value)=> runEmit('selectedChange', value)"
+    @change="(value)=> devEmit('selectedChange', value)"
   >
     <el-option
       v-if="eval('item?.setting?.allOption?.toggle')"
@@ -88,7 +88,7 @@ export default {
     model: {
       get() {
         // if (this.isSettingAllOption && this.searchModel.length === this.fullOptions.length) {
-        //   this.runEmit('update:searchModel', ['ALL'])
+        //   this.devEmit('update:searchModel', ['ALL'])
         // }
         return this.searchModel
       },
@@ -96,12 +96,12 @@ export default {
         const nM = m.filter((d) => d !== 'ALL')
         if (this.isSettingAllOption && nM.length === this.fullOptions.length) {
           if (this.item.valueConsistsOf === 'LEAF_PRIORITY') {
-            this.runEmit('update:searchModel', this.fullOptions)
+            this.devEmit('update:searchModel', this.fullOptions)
           } else {
-            this.runEmit('update:searchModel', ['ALL'])
+            this.devEmit('update:searchModel', ['ALL'])
           }
         } else {
-          this.runEmit('update:searchModel', nM)
+          this.devEmit('update:searchModel', nM)
         }
       }
     },
