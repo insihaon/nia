@@ -56,9 +56,9 @@ export default {
             this.$emit('emitComponentData', { propMap: propMap, emitKeys: emitKeys })
         },
 
-        runEmit(emitKey, param) {
+        devEmit(emitKey, param) {
             this.$emit(emitKey, param)
-            this.$emit('runEmit', { emitKey: emitKey, param: param })
+            this.$emit('devEmit', { emitKey: emitKey, param: param })
         }
 
     }
