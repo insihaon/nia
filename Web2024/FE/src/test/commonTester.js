@@ -102,7 +102,15 @@ export function getDataTypeDefaultValue(type) {
 }
 
 export function isTestPage() {
-    return router.history.current.path === '/test'
+    if (router.history.current.path === '/test') {
+        return true
+    }
+
+    if (/^\/test\/.*/.test(router.history.current.path)) {
+        return true
+    }
+
+    return false
 }
 
 export const defaultTypeComponentData = {

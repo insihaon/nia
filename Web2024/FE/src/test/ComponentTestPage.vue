@@ -9,6 +9,15 @@
           <el-button type="info" style="background-color:#7a7b8d;">
             컴포넌트 리스트
           </el-button>
+          <div style="display:flex">
+            <label style="text-wrap: nowrap; margin-right: 10px">검색</label>
+            <el-input
+              v-model="searchText"
+              type="text"
+              clearable
+              placeholder="검색어를 입력하세요"
+            />
+          </div>
           <el-card class="treeCard" :style="{ position: 'relative' }">
             <div
               style="
@@ -28,7 +37,7 @@
                 icon-class="el-icon-arrow-right"
                 accordion
                 empty-text="데이터가 없습니다."
-                :data="componentTreeData"
+                :data="treeData"
                 :draggable="false"
                 :current-node-key="defaultComponentTreeKey"
                 :show-checkbox="false"
@@ -42,7 +51,6 @@
           </el-card>
         </div>
       </el-aside>
-
       <el-container>
         <el-main class="rightContainer">
           <el-row type="flex" align="bottom" style="min-height:70px; padding: 10px 0px 10px 0px;">
@@ -65,7 +73,7 @@
                 class="default-theme"
               >
                 <pane>
-                  <div rethis.runEmitf="testComponentBox" style="height: 100%; overflow-y: auto">
+                  <div style="height: 100%; overflow-y: auto">
                     <span>컴포넌트 {{ currentComponentConfig.selectedComponent.componentAlias }}</span>
                     <component
                       :is="currentComponentConfig.selectedComponent.component"
@@ -170,9 +178,7 @@ const defaultCurrentComponentConfig = {
       selectedComponent: {}, // 선택된 컴포넌트 정보
       testProps: { propChangeIndex: 0 }, // 테스트할 때 사용되는 props (propChangeIndex는 변경을 감지할 값이다.)
       emitConfig: {
-        /*
-          구조 : [특정 emit명] : defaultEmitConfigElement
-        */
+        /* 구조 : [특정 emit명] : defaultEmitConfigElement */
       },
     }
 
@@ -189,6 +195,7 @@ export default {
       },
 
       currentComponentConfig: _.cloneDeep(defaultCurrentComponentConfig),
+      searchText: ''
 
     }
   },
@@ -199,19 +206,32 @@ export default {
         componentTreeData: state => state.componentTester.componentTreeData,
         defaultComponentTreeKey: state => state.componentTester.defaultComponentTreeKey
       }),
+
+    treeData() {
+      if (this.searchText.length > 0) {
+        return this.componentTreeData.filter(treeData => treeData.componentAlias.includes(this.searchText))
+      } else {
+        return this.componentTreeData
+      }
+    }
   },
 
   watch: {
+    async '$route.params.componentName'() {
+      await this.setCurrentComponent()
+    },
+
     async componentTreeData() {
-      await this.setDefaultComponent()
-    }
+      // 새로고침으로 컴포넌트를 로딩했을때
+      await this.setCurrentComponent()
+    },
+
   },
 
   async mounted() {
     window.v = this
-    // 컴포넌트 셋팅
+    // 전체 컴포넌트 리스트 셋팅
     this.$store.dispatch('componentTester/initTestComponentList')
-    await this.setDefaultComponent()
   },
 
   destroyed() { },
@@ -286,8 +306,14 @@ export default {
 
     // Tree 클릭 이벤트
     async nodeClick(data, node) {
+      if (this.$route.params.componentName && this.$route.params.componentName.length > 0) {
+        if (this.$route.params.componentName === data.componentAlias) {
+          return
+        }
+      }
+
       this.resetCurrentComponentConfig()
-      this.currentComponentConfig.selectedComponent = data
+      this.$router.push({ path: '/test/' + data.componentAlias })
     },
 
     resetCurrentComponentConfig() {
@@ -304,7 +330,6 @@ export default {
 
     initTestProps(propMap) {
       this.currentComponentConfig.testProps = { propChangeIndex: 0 }
-
       Object.keys(propMap).forEach((propKey) => {
         this.currentComponentConfig.testProps[propKey] = propMap[propKey]
       })
@@ -313,9 +338,17 @@ export default {
     // Tree 확장 이벤트
     nodeExpand() { },
 
-    async setDefaultComponent() {
+    async setCurrentComponent() {
+      let currentComponent
       if (this.componentTreeData.length > 0) {
-        this.currentComponentConfig.selectedComponent = this.componentTreeData[0]
+        if (this.$route.params.componentName && this.$route.params.componentName.length > 0) {
+          const findComponent = this.componentTreeData.find((treeData) => treeData.componentAlias === this.$route.params.componentName)
+          if (findComponent) {
+            currentComponent = this.currentComponentConfig.selectedComponent = findComponent
+          }
+        }
+
+        this.currentComponentConfig.selectedComponent = currentComponent || this.componentTreeData[0]
         this.$store.commit('componentTester/SET_DEFAULT_COMPONENT_TREE_KEY', this.currentComponentConfig.selectedComponent.componentPath)
       }
     },
