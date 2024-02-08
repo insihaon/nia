@@ -98,7 +98,6 @@ import { AG_GRID_LOCALE_EN } from './locale.en'
 import { deepCloneFilter, exportToFile, array_equals } from '@/utils'
 import Hook from '@/class/hook'
 import _ from 'lodash'
-import { isTestPage, testData } from '@/test/commonTesterUtil.js'
 
 export const _var = { array_equals }
 
@@ -155,22 +154,14 @@ export default {
     value: {
       type: Object,
       default() {
-        if (isTestPage) {
-          return testData.compAgGrid.value
-        } else {
-          return {}
-        }
+        return {}
       }
     },
 
     paginationInfo: {
       type: Object,
       default() {
-        if (isTestPage) {
-          return testData.compAgGrid.paginationInfo
-        } else {
-          return {}
-        }
+        return {}
       }
     }
 

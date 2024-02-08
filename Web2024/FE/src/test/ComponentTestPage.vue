@@ -1,56 +1,120 @@
 <template>
   <div style="height: 100%" :class="{[name]: true}">
     <el-container style="height: 100%">
-      <el-aside width="350px" style="padding: 30px 0 0 20px;">
+      <el-aside width="400px" style="padding: 30px 0 0 20px;">
         <div class="leftContainer">
-          <p class="leftContainerTitle dashIcon_02">
-            Project: <span style="color: red">{{ appOptions.project }}</span> <strong>컴포넌트</strong>테스터
-          </p>
-          <el-button type="info" style="background-color:#7a7b8d;">
-            컴포넌트 리스트
-          </el-button>
-          <div style="display:flex">
-            <label style="text-wrap: nowrap; margin-right: 10px">검색</label>
-            <el-input
-              v-model="searchText"
-              type="text"
-              clearable
-              placeholder="검색어를 입력하세요"
-            />
-          </div>
-          <el-card class="treeCard" :style="{ position: 'relative' }">
-            <div
-              style="
-                position: absolute;
-                height: 100%;
-                overflow-y: scroll;
-                left: 0px;
-                top: 0;
-                right: 0px;
-                box-sizing: border-box;
-                "
-            >
-              <el-tree
-                v-if="defaultComponentTreeKey.length > 0"
-                ref="elTree"
-                node-key="componentPath"
-                icon-class="el-icon-arrow-right"
-                accordion
-                empty-text="데이터가 없습니다."
-                :data="treeData"
-                :draggable="false"
-                :current-node-key="defaultComponentTreeKey"
-                :show-checkbox="false"
-                :render-content="renderContent"
-                :expand-on-click-node="false"
-                :props="defaultTreeProps"
-                @node-click="nodeClick"
-                @node-expand="nodeExpand"
+          <div style="height: 125px">
+            <p class="leftContainerTitle dashIcon_02">
+              Project: <span style="color: red">{{ appOptions.project }}</span> <strong>컴포넌트</strong>테스터
+            </p>
+            <el-button type="info" style="background-color:#7a7b8d; width: 100%">
+              컴포넌트 리스트
+            </el-button>
+            <div style="display:flex; margin-top: 10px">
+              <label style="text-wrap: nowrap; margin-right: 10px">검색</label>
+              <el-input
+                v-model="searchText"
+                type="text"
+                clearable
+                placeholder="검색어를 입력하세요"
               />
             </div>
-          </el-card>
+          </div>
+          <div style="height: calc(100% - 135px)">
+            <el-card class="treeCard" :style="{ position: 'relative' }">
+              <div
+                style="
+                  position: absolute;
+                  height: 100%;
+                  overflow-y: scroll;
+                  left: 0px;
+                  top: 0;
+                  right: 0px;
+                  box-sizing: border-box;
+                  "
+              >
+                <el-tree
+                  v-if="defaultComponentTreeKey.length > 0"
+                  ref="elTree"
+                  node-key="componentPath"
+                  icon-class="el-icon-arrow-right"
+                  accordion
+                  empty-text="데이터가 없습니다."
+                  :data="treeData"
+                  :draggable="false"
+                  :current-node-key="defaultComponentTreeKey"
+                  :show-checkbox="false"
+                  :render-content="renderContent"
+                  :expand-on-click-node="false"
+                  :props="defaultTreeProps"
+                  @node-click="nodeClick"
+                  @node-expand="nodeExpand"
+                />
+              </div>
+            </el-card>
+
+            <el-tabs type="border-card" style="flex:1">
+              <el-tab-pane label="Props" style="height: 100%">
+                <div style="height: 100%; overflow-y: auto; border-top: 1px solid">
+                  <span>컴포넌트 Props</span><span style="color: red">※ 0.5초 딜레이가 있습니다.</span>
+                  <div style="display: flex; flex-wrap:wrap; padding-top: 10px">
+                    <div
+                      v-for="(testPropKey, index) of Object.keys(currentComponentConfig.testProps)"
+                      v-show="testPropKey !== 'propChangeIndex'"
+                      :key="index"
+                    >
+                      <TypeComponent
+                        v-if="testPropKey !== 'propChangeIndex'"
+                        :prop-key="testPropKey"
+                        :prop-data.sync="currentComponentConfig.testProps[testPropKey]"
+                        @changeDataValue="changeTestProps"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </el-tab-pane>
+              <el-tab-pane label="Event" style="height: 100%">
+                <div style="height: 100%; overflow-y: auto; border-top: 1px solid">
+                  <div style="height: 30px; display:flex">
+                    <span style="margin-right: 10px">컴포넌트 Events</span>
+                    <div>
+                      <el-button size="mini" @click="eventStateReset">상태 초기화</el-button>
+                    </div>
+                  </div>
+                  <div style="height: calc(100% - 30px)">
+                    <div
+                      v-for="(emitConfigElementKey, index) of Object.keys(currentComponentConfig.emitConfig)"
+                      :key="index"
+                      style="border: 1px solid; width: 45%; display: inline-block; margin-right:5%; padding: 10px;
+                      max-height: 300px; overflow-y: auto
+                      "
+                    >
+                      <div>
+                        {{ emitConfigElementKey }} [ 발생횟수 : {{ currentComponentConfig.emitConfig[emitConfigElementKey].emitCount }} ]
+                      </div>
+
+                      <div style="margin-top: 10px">
+                        Emit Params
+                        <div
+                          v-for="(emitParam, emitParamIndex) in currentComponentConfig.emitConfig[emitConfigElementKey].emitParamList"
+                          :key="emitParamIndex"
+                        >
+                          <TypeComponent
+                            :prop-key="String(emitParamIndex + '번째 param')"
+                            :prop-data.sync="currentComponentConfig.emitConfig[emitConfigElementKey].emitParamList[emitParamIndex]"
+                            :json-editor-disabled="true"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </el-tab-pane>
+            </el-tabs>
+          </div>
         </div>
       </el-aside>
+
       <el-container>
         <el-main class="rightContainer">
           <el-row type="flex" align="bottom" style="min-height:70px; padding: 10px 0px 10px 0px;">
@@ -85,7 +149,7 @@
                     />
                   </div>
                 </pane>
-                <pane>
+                <!--  <pane>
                   <div style="height: 100%; overflow-y: auto; border-top: 1px solid">
                     <span>컴포넌트 Props</span> <span style="color: red">※ 0.5초 딜레이가 있습니다.</span>
                     <div style="display: flex; flex-wrap:wrap; padding-top: 10px">
@@ -104,8 +168,8 @@
                       </div>
                     </div>
                   </div>
-                </pane>
-                <pane>
+                </pane> -->
+                <!-- <pane>
                   <div style="height: 100%; overflow-y: auto; border-top: 1px solid">
                     <div style="height: 30px; display:flex">
                       <span style="margin-right: 10px">컴포넌트 Events</span>
@@ -141,7 +205,7 @@
                       </div>
                     </div>
                   </div>
-                </pane>
+                </pane> -->
               </splitpanes>
             </el-col>
           </el-row>
@@ -166,6 +230,7 @@ import { mapState } from 'vuex'
 import { Splitpanes, Pane } from 'splitpanes'
 import 'splitpanes/dist/splitpanes.css'
 import _ from 'lodash'
+import { testData } from '@/test/commonTesterUtil.js'
 
 const routeName = 'ComponentTestPage'
 
@@ -209,11 +274,12 @@ export default {
 
     treeData() {
       if (this.searchText.length > 0) {
-        return this.componentTreeData.filter(treeData => treeData.componentAlias.includes(this.searchText))
+        return this.componentTreeData.filter(treeData => treeData.componentAlias.toLowerCase().includes(this.searchText.toLowerCase()))
       } else {
         return this.componentTreeData
       }
-    }
+    },
+
   },
 
   watch: {
@@ -294,7 +360,7 @@ export default {
 
     setInitCurrentComponentData(data) {
       if (data.propMap) {
-        this.initTestProps(data.propMap)
+        this.setEmptyDataToProps(data.propMap)
       }
 
       if (data.emitKeys) {
@@ -312,7 +378,6 @@ export default {
         }
       }
 
-      this.resetCurrentComponentConfig()
       this.$router.push({ path: '/test/' + data.componentAlias })
     },
 
@@ -328,17 +393,22 @@ export default {
       })
     },
 
-    initTestProps(propMap) {
-      this.currentComponentConfig.testProps = { propChangeIndex: 0 }
+    setEmptyDataToProps(propMap) {
       Object.keys(propMap).forEach((propKey) => {
-        this.currentComponentConfig.testProps[propKey] = propMap[propKey]
+        if (!Object.hasOwnProperty.call(this.currentComponentConfig.testProps, propKey)) {
+          this.currentComponentConfig.testProps[propKey] = propMap[propKey]
+        }
       })
+
+      this.propChangeIndexUp()
     },
 
     // Tree 확장 이벤트
     nodeExpand() { },
 
     async setCurrentComponent() {
+      this.resetCurrentComponentConfig() // 이전 컴포넌트의 설정을 초기화 시킨다.
+
       let currentComponent
       if (this.componentTreeData.length > 0) {
         if (this.$route.params.componentName && this.$route.params.componentName.length > 0) {
@@ -349,10 +419,22 @@ export default {
         }
 
         this.currentComponentConfig.selectedComponent = currentComponent || this.componentTreeData[0]
+        this.setCurrentComponentDefaultPropsDataSet()
         this.$store.commit('componentTester/SET_DEFAULT_COMPONENT_TREE_KEY', this.currentComponentConfig.selectedComponent.componentPath)
       }
     },
 
+    setCurrentComponentDefaultPropsDataSet() {
+      this.currentComponentConfig.testProps = { propChangeIndex: 0 }
+
+      const fK = Object.keys(testData).find(oKey => oKey === this.currentComponentConfig.selectedComponent.component.name)
+      const pageTestData = testData[fK]
+      if (pageTestData) {
+        Object.keys(pageTestData).forEach((pageTestDataKey) => {
+          this.currentComponentConfig.testProps[pageTestDataKey] = pageTestData[pageTestDataKey]
+        })
+      }
+    }
   }
 }
 </script>
@@ -363,6 +445,7 @@ export default {
 }
 
 .ComponentTestPage{
+
   .el-tree::v-deep{
     .el-tree-node.is-current{
       z-index: 1000;
@@ -391,6 +474,7 @@ export default {
   }
   .leftContainer{
     display: flex;
+    height: 100%;
     flex-direction: column;
     gap:10px;
   }
@@ -410,8 +494,9 @@ export default {
     background-position: 0 1px;
   }
 
-  .leftContainer>.treeCard{
-    height:calc(100vh - 435px );
+  .leftContainer .treeCard{
+    height: 40%;
+    max-height: 500px
   }
   .leftContainer>.searchOptionCard{
     height:130px;
@@ -449,6 +534,15 @@ export default {
   .splitpanes__pane{
     background: white;
   }
+
+  .el-tabs::v-deep{
+    height: calc(100% - 500px);
+    min-height: 60%;
+    .el-tabs__content{
+      height:calc(100% - 40px);
+    }
+  }
+
 }
 
 </style>

@@ -45,7 +45,6 @@
 const routeName = 'CompCheckSelector'
 import { Base } from '@/min/Base.min'
 import ComponentTesterMixins from '@/test/ComponentTesterMixins'
-import { isTestPage } from '@/test/commonTester.js'
 
 export default {
   name: routeName,
@@ -56,17 +55,7 @@ export default {
     item: {
       type: Object,
       default() {
-        return isTestPage() ? {
-          options: [
-            { label: 'test1', value: 'test1' },
-            { label: 'test2', value: 'test2' },
-            { label: 'test3', value: 'test3' },
-            { label: 'test4', value: 'test4' },
-          ],
-          placeholder: 'test123',
-          disabled: false,
-          readonly: false
-        } : {}
+        return {}
       }
     },
     searchModel: {

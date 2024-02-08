@@ -72,6 +72,7 @@ import influenceCircitContent from '@/views-dataHub/dashboard/influenceCircit/in
 import influenceCircitHyperLinkRenderer from '@/views-dataHub/dashboard/influenceCircit/subModule/influenceCircitHyperLinkRenderer'
 import EventBus from '@/utils/event-bus'
 import { defaultZero } from '@/views-dataHub/commonFormat'
+import CompTreeSelector from '@/components/selector/CompTreeSelector'
 
 const defaultSearchModel = {
   searchTerm: '',
@@ -90,7 +91,9 @@ export default {
   components: {
     influenceCircitContent, DataHubComponent,
     // eslint-disable-next-line vue/no-unused-components
-    influenceCircitHyperLinkRenderer
+    influenceCircitHyperLinkRenderer,
+    // eslint-disable-next-line vue/no-unused-components
+    CompTreeSelector
   },
   extends: Base,
   data() {
