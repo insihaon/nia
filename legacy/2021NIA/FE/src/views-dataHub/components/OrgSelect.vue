@@ -82,10 +82,9 @@
 </template>
 
 <script>
-const routeName = 'CompCheckSelector'
+const routeName = 'OrgSelect'
 import { Base } from '@/min/Base.min'
 import ComponentTesterMixins from '@/test/ComponentTesterMixins'
-
 export default {
   name: routeName,
   components: {},
@@ -94,11 +93,13 @@ export default {
   props: {
     item: {
       type: Object,
-      default() { return { } }
+      default() {
+        return {}
+      }
     },
     searchModel: {
       type: Object,
-      default() { return [] }
+      default() { return {} }
     }
   },
   data() {

@@ -1,5 +1,7 @@
 <script>
 
+import { isTestPage, testData } from '@/test/commonTesterUtil.js'
+
 export default {
     data() {
         return {
@@ -9,9 +11,6 @@ export default {
     },
 
     computed: {
-        isComponentTestPage() {
-            return this.$route.path === '/test'
-        }
     },
 
     watch: {
@@ -19,16 +18,33 @@ export default {
     },
 
     mounted() {
-        this.emitCurrentTestComponentData()
+        if (isTestPage) {
+            this.emitCurrentTestComponentData()
+        }
     },
 
     destroyed() {
     },
 
     methods: {
+        setDefaultProps(propMap) {
+            const fK = Object.keys(testData).find(oKey => oKey === this.name)
+            const pageTestData = testData[fK]
+
+            if (pageTestData) {
+                Object.keys(pageTestData).forEach((pageTestDataKey) => {
+                    if (Object.hasOwnProperty.call(propMap, pageTestDataKey)) {
+                        propMap[pageTestDataKey] = pageTestData[pageTestDataKey]
+                    }
+                })
+            }
+
+            return propMap
+        },
+
         emitCurrentTestComponentData() {
             const THIS = this
-            const propMap = Object.keys(this._props).reduce((map, propName) => {
+            let propMap = Object.keys(this._props).reduce((map, propName) => {
                 try {
                     if (!this._props[propName]) {
                         // map[propName] = this.$options.props[propName].type()
@@ -52,6 +68,7 @@ export default {
                 }
             }, {})
 
+            propMap = this.setDefaultProps(propMap)
             const emitKeys = this.emitKeys || null
             this.$emit('emitComponentData', { propMap: propMap, emitKeys: emitKeys })
         },

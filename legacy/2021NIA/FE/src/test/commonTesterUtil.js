@@ -4,8 +4,9 @@ export function isTestPage() {
     return router.history.current.name === 'testComponentTest'
 }
 
+// 컴포넌트의 name과 일치해야함
 export const testData = {
-    compAgGrid: {
+    CompAgGrid: {
         value: {
             'options': {
                 'name': 'ApiUseAuthApplytable1',
@@ -159,5 +160,49 @@ export const testData = {
             totalPages: null, // 전체 페이지 수
             pagerCount: 11
         }
+    },
+
+    OrgSelect: {
+        item: {
+            'label': '관리센터/국사',
+            'type': 'orgSelect',
+            'size': 18,
+            'model': 'ORG',
+            'HEAD': {
+                'options': [
+                    { value: '467044', label: '강북&강원NW운용본부' },
+                    { value: '468338', label: '대구&경북NW운용본부' },
+                    { value: '468994', label: '충남&충북NW운용본부' },
+                    { value: '482973', label: '제주단' },
+                    { value: '468633', label: '전남&전북NW운용본부' },
+                    { value: '467653', label: '강남&서부NW운용본부' },
+                    { value: '468042', label: '부산&경남NW운용본부' },
+                ]
+            },
+            'CENTER': {
+                'options': []
+            },
+            'TEAM': {
+                'options': []
+            },
+            'OFFICE': {
+                'options': []
+            }
+        }
+    },
+
+    CompCheckSelector: {
+        item: {
+            options: [
+                { label: 'test1', value: 'test1' },
+                { label: 'test2', value: 'test2' },
+                { label: 'test3', value: 'test3' },
+                { label: 'test4', value: 'test4' },
+            ],
+            placeholder: 'test123',
+            disabled: false,
+            readonly: false
+        }
     }
+
 }
