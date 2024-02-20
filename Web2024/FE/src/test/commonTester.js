@@ -1,3 +1,17 @@
+import router from '@/router'
+
+export function isTestPage() {
+    if (router.history.current.path === '/test') {
+        return true
+    }
+
+    if (/^\/test\/.*/.test(router.history.current.path)) {
+        return true
+    }
+
+    return false
+}
+
 export function getDataType(data) {
     try {
         if (data === 'componentType-multitype-specialType') return 'multitype'

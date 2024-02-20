@@ -1,7 +1,5 @@
 <script>
-
-import { isTestPage, testData } from '@/test/commonTesterUtil.js'
-import { testerConstants } from '@/test/commonTester.js'
+import { testerConstants, isTestPage } from '@/test/commonTester.js'
 
 export default {
     data() {
@@ -28,24 +26,9 @@ export default {
     },
 
     methods: {
-        setDefaultProps(propMap) {
-            const fK = Object.keys(testData).find(oKey => oKey === this.name)
-            const pageTestData = testData[fK]
-
-            if (pageTestData) {
-                Object.keys(pageTestData).forEach((pageTestDataKey) => {
-                    if (Object.hasOwnProperty.call(propMap, pageTestDataKey)) {
-                        propMap[pageTestDataKey] = pageTestData[pageTestDataKey]
-                    }
-                })
-            }
-
-            return propMap
-        },
-
         emitCurrentTestComponentData() {
             const THIS = this
-            let propMap = Object.keys(this._props).reduce((map, propName) => {
+            const defaultPropMap = Object.keys(this._props).reduce((map, propName) => {
                 try {
                     if (!this._props[propName]) {
                         // map[propName] = this.$options.props[propName].type()
@@ -68,7 +51,6 @@ export default {
                 }
             }, {})
 
-            propMap = this.setDefaultProps(propMap)
             const emitKeys = this.emitKeys || null
 
             let existComponentAutoTest = testerConstants.notExist
@@ -76,7 +58,7 @@ export default {
                 existComponentAutoTest = testerConstants.exist
             }
 
-            this.$emit('initComponentData', { propMap: propMap, emitKeys: emitKeys, existComponentAutoTest: existComponentAutoTest })
+            this.$emit('initComponentData', { propMap: defaultPropMap, emitKeys: emitKeys, existComponentAutoTest: existComponentAutoTest })
         },
 
         devEmit(emitKey, param) {

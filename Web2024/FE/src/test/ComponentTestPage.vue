@@ -177,7 +177,6 @@ import { mapState } from 'vuex'
 import { Splitpanes, Pane } from 'splitpanes'
 import 'splitpanes/dist/splitpanes.css'
 import _ from 'lodash'
-import { testData } from '@/test/commonTesterUtil.js'
 import { testerConstants } from '@/test/commonTester.js'
 const routeName = 'ComponentTestPage'
 
@@ -249,11 +248,17 @@ export default {
     window.v = this
     // 전체 컴포넌트 리스트 셋팅
     this.$store.dispatch('componentTester/initTestComponentList')
+    this.getjsonData()
   },
 
   destroyed() { },
 
   methods: {
+    getjsonData() {
+      const file = require('./jsonData/Sample_CompAgGrid.json')
+      console.log(file)
+    },
+
     setEmitState(data) {
       this.propChangeIndexUp()
 
@@ -309,7 +314,7 @@ export default {
 
     setInitCurrentComponentData(data) {
       if (data.propMap) {
-        this.setEmptyDataToProps(data.propMap)
+        this.notExistSamplePropsDefaultValueSet(data.propMap)
       }
 
       this.currentComponentConfig.existComponentAutoTest = data.existComponentAutoTest
@@ -334,6 +339,7 @@ export default {
 
     resetCurrentComponentConfig() {
       this.currentComponentConfig = _.cloneDeep(defaultCurrentComponentConfig)
+      this.currentComponentConfig.selectedComponent = null
     },
 
     eventStateReset() {
@@ -344,7 +350,7 @@ export default {
       })
     },
 
-    setEmptyDataToProps(propMap) {
+    notExistSamplePropsDefaultValueSet(propMap) {
       Object.keys(propMap).forEach((propKey) => {
         if (!Object.hasOwnProperty.call(this.currentComponentConfig.testProps, propKey)) {
           this.currentComponentConfig.testProps[propKey] = propMap[propKey]
@@ -370,20 +376,22 @@ export default {
         }
 
         this.currentComponentConfig.selectedComponent = currentComponent || this.componentTreeData[0]
-        this.setCurrentComponentDefaultPropsDataSet()
+        this.loadSampleJsonData()
         this.$store.commit('componentTester/SET_DEFAULT_COMPONENT_TREE_KEY', this.currentComponentConfig.selectedComponent.componentPath)
       }
     },
 
-    setCurrentComponentDefaultPropsDataSet() {
-      this.currentComponentConfig.testProps = { propChangeIndex: 0 }
-
-      const fK = Object.keys(testData).find(oKey => oKey === this.currentComponentConfig.selectedComponent.component.name)
-      const pageTestData = testData[fK]
-      if (pageTestData) {
-        Object.keys(pageTestData).forEach((pageTestDataKey) => {
-          this.currentComponentConfig.testProps[pageTestDataKey] = pageTestData[pageTestDataKey]
-        })
+    loadSampleJsonData() {
+      const componentName = this.currentComponentConfig.selectedComponent.component.name
+      try {
+        const sampleData = require(`./jsonData/Sample_${componentName}.json`)
+        if (sampleData) {
+          Object.keys(sampleData).forEach((sampleDataKey) => {
+            this.currentComponentConfig.testProps[sampleDataKey] = sampleData[sampleDataKey]
+          })
+        }
+      } catch (e) {
+        this.$message(componentName + '은 sample Json Data가 없습니다.')
       }
     },
 
@@ -537,7 +545,7 @@ export default {
 }
 .cmdDashboardGrid>div.el-table__body-wrapper>table.el-table__body>tbody>tr.el-table__row>td{
   font-size:12px; color:#000000 !important;
-  -webkit-user-select: none;
+  /* -webkit-user-select: none; */
 }
 .cmdDashboardGrid>div.el-table__body-wrapper>table.el-table__body>tbody>tr.el-table__row>td>div.cell{
   color:#000000 !important;  line-height:18px !important; font-size:14px !important; font-weight: 600 !important;
