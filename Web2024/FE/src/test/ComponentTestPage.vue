@@ -52,11 +52,12 @@
                 />
               </div>
             </el-card>
-
             <el-tabs type="border-card" style="flex:1">
               <el-tab-pane label="Props" style="height: 100%">
                 <div style="height: 100%; overflow-y: auto; border-top: 1px solid">
-                  <span>컴포넌트 Props</span><span style="color: red">※ 0.5초 딜레이가 있습니다.</span>
+                  <div class="componentOptionTitleBox">
+                    <span style="margin-right: 10px">컴포넌트 Props</span><span style="color: red;">※ 0.5초 딜레이가 있습니다.</span>
+                  </div>
                   <div style="display: flex; flex-wrap:wrap; padding-top: 10px">
                     <div
                       v-for="(testPropKey, index) of Object.keys(currentComponentConfig.testProps)"
@@ -74,32 +75,32 @@
                 </div>
               </el-tab-pane>
               <el-tab-pane label="Event" style="height: 100%">
-                <div style="height: 100%; overflow-y: auto; border-top: 1px solid">
-                  <div style="height: 30px; display:flex">
+                <div style="height: 100%; overflow-y: auto; border-top: 1px solid; padding: 10px">
+                  <div class="componentOptionTitleBox">
                     <span style="margin-right: 10px">컴포넌트 Events</span>
                     <div>
                       <el-button size="mini" @click="eventStateReset">상태 초기화</el-button>
                     </div>
                   </div>
-                  <div style="height: calc(100% - 30px)">
+                  <div style="height: calc(100% - 40px)">
                     <div
                       v-for="(emitConfigElementKey, index) of Object.keys(currentComponentConfig.emitConfig)"
                       :key="index"
-                      style="border: 1px solid; width: 45%; display: inline-block; margin-right:5%; padding: 10px;
+                      style="border: 1px solid; width: 100%; display: inline-block; padding: 10px;
                       max-height: 300px; overflow-y: auto
                       "
                     >
                       <div>
                         {{ emitConfigElementKey }} [ 발생횟수 : {{ currentComponentConfig.emitConfig[emitConfigElementKey].emitCount }} ]
                       </div>
-
                       <div style="margin-top: 10px">
-                        Emit Params
+                        전달된 Event Data
                         <div
                           v-for="(emitParam, emitParamIndex) in currentComponentConfig.emitConfig[emitConfigElementKey].emitParamList"
                           :key="emitParamIndex"
                         >
                           <TypeComponent
+                            class="emitParamsTypeComponent"
                             :prop-key="String(emitParamIndex + '번째 param')"
                             :prop-data.sync="currentComponentConfig.emitConfig[emitConfigElementKey].emitParamList[emitParamIndex]"
                             :json-editor-disabled="true"
@@ -114,11 +115,10 @@
           </div>
         </div>
       </el-aside>
-
       <el-container>
         <el-main class="rightContainer">
           <el-row type="flex" align="bottom" style="min-height:70px; padding: 10px 0px 10px 0px;">
-            <el-col :span="20">
+            <span style="margin-right: 15px">
               <el-breadcrumb v-if="!!currentComponentConfig.selectedComponent.componentAlias" separator-class="el-icon-arrow-right icon-bold">
                 <el-breadcrumb-item v-for="(item, index) in currentComponentConfig.selectedComponent.componentPath.split('/')" :key="index">
                   <span v-if="index === 0" style="color: blue; font-weight: bold">[ 파일 경로 ]</span>
@@ -127,87 +127,34 @@
                   </span>
                 </el-breadcrumb-item>
               </el-breadcrumb>
-            </el-col>
+            </span>
+            <el-tooltip :disabled="isAutoTestExist" content="컴포넌트 테스트를 위해서는 componentAutoTest 함수를 컴포넌트에 등록하세요" placement="bottom">
+              <el-button style="position:relative; top: 5px;" :disabled="!isAutoTestExist" @click="onAutoTest">컴포넌트 자동 테스트</el-button>
+            </el-tooltip>
           </el-row>
           <el-row style="height: calc(100% - 100px); border: 1px solid; padding: 10px;" align="middle">
-            <el-col :span="24" style="height: 100%">
-              <splitpanes
-                style="height: 100%"
-                :horizontal="true"
-                class="default-theme"
-              >
-                <pane>
-                  <div style="height: 100%; overflow-y: auto">
-                    <span>컴포넌트 {{ currentComponentConfig.selectedComponent.componentAlias }}</span>
-                    <component
-                      :is="currentComponentConfig.selectedComponent.component"
-                      ref="testComponent"
-                      :style="{height: 'calc(100% - 25px)'}"
-                      v-bind.sync="currentComponentConfig.testProps"
-                      @emitComponentData="setInitCurrentComponentData"
-                      @devEmit="setEmitState"
-                    />
-                  </div>
-                </pane>
-                <!--  <pane>
-                  <div style="height: 100%; overflow-y: auto; border-top: 1px solid">
-                    <span>컴포넌트 Props</span> <span style="color: red">※ 0.5초 딜레이가 있습니다.</span>
-                    <div style="display: flex; flex-wrap:wrap; padding-top: 10px">
-                      <div
-                        v-for="(testPropKey, index) of Object.keys(currentComponentConfig.testProps)"
-                        v-show="testPropKey !== 'propChangeIndex'"
-                        :key="index"
-                        style="width: 50% !important"
-                      >
-                        <TypeComponent
-                          v-if="testPropKey !== 'propChangeIndex'"
-                          :prop-key="testPropKey"
-                          :prop-data.sync="currentComponentConfig.testProps[testPropKey]"
-                          @changeDataValue="changeTestProps"
-                        />
-                      </div>
+            <div ref="componentDiv" style="height: 100%">
+              <el-col :span="24" style="height: 100%">
+                <splitpanes
+                  style="height: 100%"
+                  :horizontal="true"
+                  class="default-theme"
+                >
+                  <pane>
+                    <div style="height: 100%; overflow-y: auto">
+                      <component
+                        :is="currentComponentConfig.selectedComponent.component"
+                        ref="testComponent"
+                        :style="{height: 'calc(100% - 25px)'}"
+                        v-bind.sync="currentComponentConfig.testProps"
+                        @initComponentData="setInitCurrentComponentData"
+                        @devEmit="setEmitState"
+                      />
                     </div>
-                  </div>
-                </pane> -->
-                <!-- <pane>
-                  <div style="height: 100%; overflow-y: auto; border-top: 1px solid">
-                    <div style="height: 30px; display:flex">
-                      <span style="margin-right: 10px">컴포넌트 Events</span>
-                      <div>
-                        <el-button size="mini" @click="eventStateReset">상태 초기화</el-button>
-                      </div>
-                    </div>
-                    <div style="height: calc(100% - 30px)">
-                      <div
-                        v-for="(emitConfigElementKey, index) of Object.keys(currentComponentConfig.emitConfig)"
-                        :key="index"
-                        style="border: 1px solid; width: 45%; display: inline-block; margin-right:5%; padding: 10px;
-                    max-height: 300px; overflow-y: auto
-                    "
-                      >
-                        <div>
-                          {{ emitConfigElementKey }} [ 발생횟수 : {{ currentComponentConfig.emitConfig[emitConfigElementKey].emitCount }} ]
-                        </div>
-
-                        <div style="margin-top: 10px">
-                          Emit Params
-                          <div
-                            v-for="(emitParam, emitParamIndex) in currentComponentConfig.emitConfig[emitConfigElementKey].emitParamList"
-                            :key="emitParamIndex"
-                          >
-                            <TypeComponent
-                              :prop-key="String(emitParamIndex + '번째 param')"
-                              :prop-data.sync="currentComponentConfig.emitConfig[emitConfigElementKey].emitParamList[emitParamIndex]"
-                              :json-editor-disabled="true"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </pane> -->
-              </splitpanes>
-            </el-col>
+                  </pane>
+                </splitpanes>
+              </el-col>
+            </div>
           </el-row>
         </el-main>
       </el-container>
@@ -231,7 +178,7 @@ import { Splitpanes, Pane } from 'splitpanes'
 import 'splitpanes/dist/splitpanes.css'
 import _ from 'lodash'
 import { testData } from '@/test/commonTesterUtil.js'
-
+import { testerConstants } from '@/test/commonTester.js'
 const routeName = 'ComponentTestPage'
 
 const defaultEmitConfigElement = {
@@ -239,13 +186,14 @@ const defaultEmitConfigElement = {
 }
 
 const defaultCurrentComponentConfig = {
-      // 현재 선택된 컴포넌트 정보
-      selectedComponent: {}, // 선택된 컴포넌트 정보
-      testProps: { propChangeIndex: 0 }, // 테스트할 때 사용되는 props (propChangeIndex는 변경을 감지할 값이다.)
-      emitConfig: {
-        /* 구조 : [특정 emit명] : defaultEmitConfigElement */
-      },
-    }
+  // 현재 선택된 컴포넌트 정보
+  selectedComponent: {}, // 선택된 컴포넌트 정보
+  testProps: { propChangeIndex: 0 }, // 테스트할 때 사용되는 props (propChangeIndex는 변경을 감지할 값이다.)
+  emitConfig: {
+    /* 구조 : [특정 emit명] : defaultEmitConfigElement */
+  },
+  existComponentAutoTest: testerConstants.notExist
+}
 
 export default {
   name: routeName,
@@ -261,7 +209,6 @@ export default {
 
       currentComponentConfig: _.cloneDeep(defaultCurrentComponentConfig),
       searchText: ''
-
     }
   },
 
@@ -279,6 +226,10 @@ export default {
         return this.componentTreeData
       }
     },
+
+    isAutoTestExist() {
+      return this.currentComponentConfig.existComponentAutoTest === testerConstants.exist
+    }
 
   },
 
@@ -322,9 +273,7 @@ export default {
       this.$set(this.currentComponentConfig.testProps, param.objectKey, param.dataValue)
 
       // 2. Prop 변경 인식
-      // setTimeout(() => {
-        this.propChangeIndexUp()
-      // }, 1000)
+      this.propChangeIndexUp()
 
       // 3. 변경된 Prop을 새로 적용시키기 위해 컴포넌트 재호출
       this.debounceReload(this)
@@ -335,11 +284,11 @@ export default {
     }, 500),
 
     reloadComponent() {
-      const tempComponentCache = this.currentComponentConfig.selectedComponent.component
+      const tempComponent = this.currentComponentConfig.selectedComponent.component
       this.currentComponentConfig.selectedComponent.component = undefined
-      const loading = this.$loading({ target: this.$refs.testComponentBox })
+      const loading = this.$loading({ target: this.$refs.componentDiv })
       setTimeout(() => {
-        this.currentComponentConfig.selectedComponent.component = tempComponentCache
+        this.currentComponentConfig.selectedComponent.component = tempComponent
         loading.close()
       }, 1000)
     },
@@ -363,6 +312,8 @@ export default {
         this.setEmptyDataToProps(data.propMap)
       }
 
+      this.currentComponentConfig.existComponentAutoTest = data.existComponentAutoTest
+
       if (data.emitKeys) {
         data.emitKeys.forEach((k) => {
           this.currentComponentConfig.emitConfig[k] = _.cloneDeep(defaultEmitConfigElement)
@@ -378,7 +329,7 @@ export default {
         }
       }
 
-      this.$router.push({ path: '/test/' + data.componentAlias })
+      this.$router.push({ path: '/ComponentTestPage/' + data.componentAlias })
     },
 
     resetCurrentComponentConfig() {
@@ -434,8 +385,17 @@ export default {
           this.currentComponentConfig.testProps[pageTestDataKey] = pageTestData[pageTestDataKey]
         })
       }
-    }
-  }
+    },
+
+    onAutoTest(clickEvent, allToggle) {
+      if (this.currentComponentConfig.existComponentAutoTest === testerConstants.notExist) {
+        this.$message.error({ message: `해당 컴포넌트는 autoTest가 등록되지 않았습니다.` })
+      } else {
+        this.$refs.testComponent.runComponentAutoTest()
+      }
+    },
+  },
+
 }
 </script>
 
@@ -543,6 +503,19 @@ export default {
     }
   }
 
+  .emitParamsTypeComponent::v-deep{
+    .el-input{
+      min-width: 130px !important;
+      max-width: 130px !important;
+    }
+  }
+
+  .componentOptionTitleBox{
+    height: 30px;
+    display: flex;
+    margin-bottom: 10px;
+  }
+
 }
 
 </style>
@@ -570,4 +543,4 @@ export default {
   color:#000000 !important;  line-height:18px !important; font-size:14px !important; font-weight: 600 !important;
 }
 
-</style>ㅑ
+</style>
