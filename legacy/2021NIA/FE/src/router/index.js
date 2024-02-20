@@ -51,8 +51,8 @@ export const constantRoutes = [
     hidden: true
   },
   {
-    name: 'testComponentTest',
-    path: '/test',
+    name: 'ComponentTestPage',
+    path: '/ComponentTestPage',
     component: () => import('@/test/ComponentTestPage'),
     children: [
       {

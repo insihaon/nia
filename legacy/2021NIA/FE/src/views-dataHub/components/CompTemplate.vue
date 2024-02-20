@@ -240,7 +240,7 @@ export default {
     },
     resultCount() {
       const dataLength = this.agGrid?.data?.length
-       return dataLength
+      return dataLength
     },
     totalCount() {
       return this.humanNumber(this.paginationInfo?.totalCount)
@@ -285,9 +285,19 @@ export default {
     onSelectedEditRows(param) {
     },
     subscribeEvent() {
+    },
+
+    componentAutoTest() {
+      this.testFunction('handleSearchClear')
+      this.testFunction('onClickSearchButton')
+      this.testFunction('nextPage')
+      this.testFunction('refreshData')
+
+      // this.testFunction('handlePageChange')
+      // this.testFunction('onSortChanged')
     }
-   }
- }
+  }
+}
 </script>
 
 <style lang="scss">
