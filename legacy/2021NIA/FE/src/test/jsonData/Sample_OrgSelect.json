@@ -1,0 +1,28 @@
+{
+  "item": {
+    "label": "관리센터/국사",
+    "type": "orgSelect",
+    "size": 18,
+    "model": "ORG",
+    "HEAD": {
+      "options": [
+        { "value": "467044", "label": "강북&강원NW운용본부" },
+        { "value": "468338", "label": "대구&경북NW운용본부" },
+        { "value": "468994", "label": "충남&충북NW운용본부" },
+        { "value": "482973", "label": "제주단" },
+        { "value": "468633", "label": "전남&전북NW운용본부" },
+        { "value": "467653", "label": "강남&서부NW운용본부" },
+        { "value": "468042", "label": "부산&경남NW운용본부" }
+      ]
+    },
+    "CENTER": {
+      "options": []
+    },
+    "TEAM": {
+      "options": []
+    },
+    "OFFICE": {
+      "options": []
+    }
+  }
+}
