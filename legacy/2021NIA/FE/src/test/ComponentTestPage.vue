@@ -248,16 +248,11 @@ export default {
     window.v = this
     // 전체 컴포넌트 리스트 셋팅
     this.$store.dispatch('componentTester/initTestComponentList')
-    this.getjsonData()
   },
 
   destroyed() { },
 
   methods: {
-    getjsonData() {
-      const file = require('./jsonData/Sample_CompAgGrid.json')
-      console.log(file)
-    },
 
     setEmitState(data) {
       this.propChangeIndexUp()
@@ -382,16 +377,18 @@ export default {
     },
 
     loadSampleJsonData() {
-      const componentName = this.currentComponentConfig.selectedComponent.component.name
+      let componentFilePath = this.currentComponentConfig.selectedComponent.component.__file
+      componentFilePath = componentFilePath.replaceAll('\/', '_')
+      componentFilePath = componentFilePath.replaceAll('\.vue', '')
       try {
-        const sampleData = require(`./jsonData/Sample_${componentName}.json`)
+        const sampleData = require(`./jsonData/${componentFilePath}.json`)
         if (sampleData) {
           Object.keys(sampleData).forEach((sampleDataKey) => {
             this.currentComponentConfig.testProps[sampleDataKey] = sampleData[sampleDataKey]
           })
         }
       } catch (e) {
-        this.$message(componentName + '은 sample Json Data가 없습니다.')
+        this.$message(componentFilePath + '은 sample Json Data가 없습니다.')
       }
     },
 
