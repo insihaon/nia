@@ -5,7 +5,6 @@ export default {
     data() {
         return {
             src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-            emitKeys: []
         }
     },
 
@@ -50,8 +49,7 @@ export default {
                 }
             }, {})
 
-            const emitKeys = this.emitKeys || null
-            this.$emit('initComponentData', { propMap: defaultPropMap, emitKeys: emitKeys })
+            this.$emit('initComponentData', { propMap: defaultPropMap })
         },
 
         devEmit(emitKey, param) {
