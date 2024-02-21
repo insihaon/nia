@@ -119,20 +119,29 @@
         </div>
       </pane>
       <pane class="rightPane">
-        <el-row type="flex" align="bottom" style="min-height:70px; padding: 10px 0px 10px 0px;">
-          <span style="margin-right: 15px">
-            <el-breadcrumb v-if="!!currentComponentConfig.selectedComponent.componentAlias" separator-class="el-icon-arrow-right icon-bold">
-              <el-breadcrumb-item v-for="(item, index) in currentComponentConfig.selectedComponent.componentPath.split('/')" :key="index">
-                <span v-if="index === 0" style="color: white; font-weight: bold; background-color: rgb(122, 123, 141); font-size: 20px">컴포넌트 경로</span>
-                <span class="selectionTreeItem">
-                  {{ item }}
-                </span>
-              </el-breadcrumb-item>
-            </el-breadcrumb>
-          </span>
-          <el-tooltip :disabled="isAutoTestExist" content="컴포넌트 테스트를 위해서는 autotestFuction에 테스트할 컴포넌트를 등록하세요" placement="bottom">
-            <el-button style="position:relative; top: 5px;" :disabled="!isAutoTestExist" @click="onAutoTest">컴포넌트 자동 테스트</el-button>
-          </el-tooltip>
+        <el-row type="flex" align="bottom" style="min-height:70px; padding: 10px;">
+          <div style="display:flex; width: 100%">
+            <span style="margin-right: 15px">
+              <el-breadcrumb v-if="!!currentComponentConfig.selectedComponent.componentAlias" separator-class="el-icon-arrow-right icon-bold">
+                <el-breadcrumb-item v-for="(item, index) in currentComponentConfig.selectedComponent.componentPath.split('/')" :key="index">
+                  <span v-if="index === 0" style="color: white; font-weight: bold; background-color: rgb(122, 123, 141); font-size: 20px">컴포넌트 경로</span>
+                  <span class="selectionTreeItem">
+                    {{ item }}
+                  </span>
+                </el-breadcrumb-item>
+              </el-breadcrumb>
+            </span>
+            <el-tooltip :disabled="isAutoTestExist" content="컴포넌트 테스트를 위해서는 autotestFuction에 테스트할 컴포넌트를 등록하세요" placement="bottom">
+              <el-button style="position:relative; bottom: 10px" :disabled="!isAutoTestExist" @click="onAutoTest">컴포넌트 자동 테스트</el-button>
+            </el-tooltip>
+            <div style="text-align: right; flex:1">
+              <el-button
+                :style="{'background-color': currentComponentConfig.isSaveStatus ? 'orange' : 'yellow'}"
+                style="position:relative; bottom: 10px; color: blue"
+                @click="saveComponentState"
+              >상태저장</el-button>
+            </div>
+          </div>
         </el-row>
         <el-row style="height: calc(100% - 100px); border: 1px solid; padding: 10px;" align="middle">
           <div ref="componentDiv" style="height: 100%">
@@ -144,7 +153,7 @@
                   :style="{height: 'calc(100% - 25px)'}"
                   v-bind.sync="currentComponentConfig.testProps"
                   @initComponentData="setInitCurrentComponentData"
-                  @devEmit="setEmitState"
+                  @devEmit="changeEmitState"
                 />
               </div>
             </el-col>
@@ -184,10 +193,9 @@ const defaultCurrentComponentConfig = {
   // 현재 선택된 컴포넌트 정보
   selectedComponent: {}, // 선택된 컴포넌트 정보
   testProps: { propChangeIndex: 0 }, // 테스트할 때 사용되는 props (propChangeIndex는 변경을 감지할 값이다.)
-  emitConfig: {
-    /* 구조 : [특정 emit명] : defaultEmitConfigElement */
-  },
-  existComponentAutoTest: testerConstants.notExist
+  emitConfig: { /* 구조 : [특정 emit명] : defaultEmitConfigElement */ },
+  existComponentAutoTest: testerConstants.notExist,
+  isSaveStatus: false
 }
 
 export default {
@@ -211,7 +219,8 @@ export default {
       ...mapState({
         testComponentList: state => state.testComponentTreeDataStore.testComponentList,
         componentTreeData: state => state.testComponentTreeDataStore.componentTreeData,
-        defaultComponentTreeKey: state => state.testComponentTreeDataStore.defaultComponentTreeKey
+        defaultComponentTreeKey: state => state.testComponentTreeDataStore.defaultComponentTreeKey,
+        savedComponentConfigMap: state => state.testComponentPersisted.savedComponentConfigMap
       }),
 
     treeData() {
@@ -227,10 +236,8 @@ export default {
     },
 
     componentFilePath() {
-      let componentFilePath = this.currentComponentConfig.selectedComponent.component.__file
-      componentFilePath = componentFilePath.replaceAll('\/', '_')
-      componentFilePath = componentFilePath.replaceAll('\.vue', '')
-      return componentFilePath
+      const fileName = this.currentComponentConfig.selectedComponent.component.__file
+      return this.getComponentPath(fileName)
     }
 
   },
@@ -244,7 +251,6 @@ export default {
       // 새로고침으로 컴포넌트를 로딩했을때
       await this.setCurrentComponent()
     },
-
   },
 
   async mounted() {
@@ -256,7 +262,13 @@ export default {
   destroyed() { },
 
   methods: {
-    setEmitState(data) {
+    getComponentPath(fileName) {
+      fileName = fileName.replaceAll('\/', '_')
+      const componentPath = fileName.replaceAll('\.vue', '')
+      return componentPath
+    },
+
+    changeEmitState(data) {
       this.propChangeIndexUp()
 
       const existEmitElementToggle = Object.keys(this.currentComponentConfig.emitConfig).find((emitConfigElementKey) => {
@@ -268,6 +280,9 @@ export default {
       }
       this.currentComponentConfig.emitConfig[data.emitKey].emitCount++
       this.currentComponentConfig.emitConfig[data.emitKey].emitParamList.push(data.param)
+
+      // 변경된 상태저장
+      this.saveStatus()
     },
 
     changeTestProps(param) {
@@ -279,6 +294,9 @@ export default {
 
       // 3. 변경된 Prop을 새로 적용시키기 위해 컴포넌트 재호출
       this.debounceReload(this)
+
+      // 변경된 상태저장
+      this.saveStatus()
     },
 
     debounceReload: _.debounce((THIS) => {
@@ -370,10 +388,16 @@ export default {
             currentComponent = this.currentComponentConfig.selectedComponent = findComponent
           }
         }
+        const realComponent = currentComponent || this.componentTreeData[0]
+        const fileName = realComponent.component.__file
+        const filePath = this.getComponentPath(fileName)
 
-        this.currentComponentConfig.selectedComponent = currentComponent || this.componentTreeData[0]
-
-        this.loadSampleJsonData()
+        if (Object.hasOwnProperty.call(this.savedComponentConfigMap, filePath)) {
+          this.currentComponentConfig = this.savedComponentConfigMap[filePath]
+        } else {
+          this.loadSampleJsonData()
+        }
+        this.currentComponentConfig.selectedComponent = realComponent
         this.autoTestExistCheck()
         this.$store.commit('testComponentTreeDataStore/SET_DEFAULT_COMPONENT_TREE_KEY', this.currentComponentConfig.selectedComponent.componentPath)
       }
@@ -395,7 +419,6 @@ export default {
         }
       } catch (e) {
         console.error(this.componentFilePath + '은 sample Json Data가 없습니다.')
-        // this.$message(this.componentFilePath + '은 sample Json Data가 없습니다.')
       }
     },
 
@@ -406,6 +429,22 @@ export default {
         AutoTestManager.instance.runAutoTest(this.componentFilePath, this, this.$refs.testComponent)
       }
     },
+
+    saveComponentState() {
+      const isSaveStatus = this.currentComponentConfig.isSaveStatus = !this.currentComponentConfig.isSaveStatus
+      if (isSaveStatus) {
+        this.saveStatus()
+      } else {
+        this.$store.commit('testComponentPersisted/DEL_SAVED_COMPONENT_DATA', this.componentFilePath)
+      }
+    },
+
+    saveStatus() {
+      const isSaveStatus = this.currentComponentConfig.isSaveStatus
+      if (isSaveStatus) {
+        this.$store.commit('testComponentPersisted/SAVE_COMPONENT_DATA', { path: this.componentFilePath, data: this.currentComponentConfig })
+      }
+    }
   },
 
 }
@@ -488,12 +527,6 @@ export default {
     /* border:1px solid #EEEEEE; */
     padding:4px 0px;
   }
-
-  /* .rightPane{
-    padding:10px 20px 0px 20px !important;
-    height: 100%;
-    width: 100%;
-  } */
   .selectionTreeItem{
     font-size:16px;
     font-weight: 600;
