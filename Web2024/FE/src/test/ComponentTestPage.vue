@@ -362,6 +362,8 @@ export default {
       Object.keys(temp).forEach((emitConfigElementKey) => {
         this.$set(this.currentComponentConfig.emitConfig, emitConfigElementKey, _.cloneDeep(defaultEmitConfigElement))
       })
+
+      this.saveStatus()
     },
 
     notExistSamplePropsDefaultValueSet(propMap) {
