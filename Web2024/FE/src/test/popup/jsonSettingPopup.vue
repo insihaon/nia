@@ -55,7 +55,11 @@ export default {
     search(){
     },
 
-    apply(){
+    apply() {
+      if (typeof this.jsonData === 'string') {
+        this.jsonData = JSON.parse(this.jsonData) 
+      }
+      
       this.$emit('callback', this.jsonData) 
       this.$emit('windowClose')
     },
