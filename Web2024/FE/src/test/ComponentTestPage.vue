@@ -65,6 +65,7 @@
                     v-for="(testPropKey, index) of Object.keys(currentComponentConfig.testProps)"
                     v-show="testPropKey !== 'propChangeIndex'"
                     :key="index"
+                    style="width: 100%"
                   >
                     <TypeComponent
                       v-if="testPropKey !== 'propChangeIndex'"
@@ -208,9 +209,9 @@ export default {
 
   computed: {
       ...mapState({
-        testComponentList: state => state.componentTester.testComponentList,
-        componentTreeData: state => state.componentTester.componentTreeData,
-        defaultComponentTreeKey: state => state.componentTester.defaultComponentTreeKey
+        testComponentList: state => state.testComponentTreeDataStore.testComponentList,
+        componentTreeData: state => state.testComponentTreeDataStore.componentTreeData,
+        defaultComponentTreeKey: state => state.testComponentTreeDataStore.defaultComponentTreeKey
       }),
 
     treeData() {
@@ -249,7 +250,7 @@ export default {
   async mounted() {
     window.v = this
     // 전체 컴포넌트 리스트 셋팅
-    this.$store.dispatch('componentTester/initTestComponentList')
+    this.$store.dispatch('testComponentTreeDataStore/initTestComponentList')
   },
 
   destroyed() { },
@@ -374,7 +375,7 @@ export default {
 
         this.loadSampleJsonData()
         this.autoTestExistCheck()
-        this.$store.commit('componentTester/SET_DEFAULT_COMPONENT_TREE_KEY', this.currentComponentConfig.selectedComponent.componentPath)
+        this.$store.commit('testComponentTreeDataStore/SET_DEFAULT_COMPONENT_TREE_KEY', this.currentComponentConfig.selectedComponent.componentPath)
       }
     },
 
