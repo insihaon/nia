@@ -26,14 +26,14 @@
           <el-card class="treeCard" :style="{ position: 'relative' }">
             <div
               style="
-                  position: absolute;
-                  height: 100%;
-                  overflow-y: scroll;
-                  left: 0px;
-                  top: 0;
-                  right: 0px;
-                  box-sizing: border-box;
-                  "
+                position: absolute;
+                height: 100%;
+                overflow-y: scroll;
+                left: 0px;
+                top: 0;
+                right: 0px;
+                box-sizing: border-box;
+                "
             >
               <el-tree
                 v-if="defaultComponentTreeKey.length > 0"
@@ -135,11 +135,13 @@
               <el-button style="position:relative; bottom: 10px" :disabled="!isAutoTestExist" @click="onAutoTest">컴포넌트 자동 테스트</el-button>
             </el-tooltip>
             <div style="text-align: right; flex:1">
-              <el-button
-                :style="{'background-color': currentComponentConfig.isSaveStatus ? 'orange' : 'yellow'}"
-                style="position:relative; bottom: 10px; color: blue"
-                @click="saveComponentState"
-              >상태저장</el-button>
+              <el-tooltip content="컴포넌트의 Prop과 Event를 저장합니다." placement="bottom">
+                <el-button
+                  :style="{'background-color': currentComponentConfig.isSaveStatus ? 'orange' : 'yellow'}"
+                  style="position:relative; bottom: 10px; color: blue"
+                  @click="saveComponentState"
+                >상태저장</el-button>
+              </el-tooltip>
             </div>
           </div>
         </el-row>
@@ -239,7 +241,6 @@ export default {
       const fileName = this.currentComponentConfig.selectedComponent.component.__file
       return this.getComponentPath(fileName)
     }
-
   },
 
   watch: {
@@ -330,12 +331,6 @@ export default {
     setInitCurrentComponentData(data) {
       if (data.propMap) {
         this.notExistSamplePropsDefaultValueSet(data.propMap)
-      }
-
-      if (data.emitKeys) {
-        data.emitKeys.forEach((k) => {
-          this.currentComponentConfig.emitConfig[k] = _.cloneDeep(defaultEmitConfigElement)
-        })
       }
     },
 

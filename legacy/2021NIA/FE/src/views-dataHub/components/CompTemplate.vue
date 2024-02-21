@@ -216,7 +216,6 @@ export default {
       selectedItem: [],
       clearModelItems: {},
       jsonOptions: { mode: 'code' },
-      emitKeys: ['handleClickSearch'],
     }
   },
   computed: {
