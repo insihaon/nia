@@ -1,29 +1,31 @@
 <template>
   <div style="height: 100%" :class="{[name]: true}">
-    <el-container style="height: 100%">
-      <el-aside width="400px" style="padding: 30px 0 0 20px;">
-        <div class="leftContainer">
-          <div style="height: 125px">
-            <p class="leftContainerTitle dashIcon_02">
-              Project: <span style="color: red">{{ appOptions.project }}</span> <strong>컴포넌트</strong>테스터
-            </p>
-            <el-button type="info" style="background-color:#7a7b8d; width: 100%">
-              컴포넌트 리스트
-            </el-button>
-            <div style="display:flex; margin-top: 10px">
-              <label style="text-wrap: nowrap; margin-right: 10px">검색</label>
-              <el-input
-                v-model="searchText"
-                type="text"
-                clearable
-                placeholder="검색어를 입력하세요"
-              />
-            </div>
+    <splitpanes
+      :horizontal="false"
+      class="default-theme"
+    >
+      <pane class="leftPane" max-size="25">
+        <div style="height: 125px">
+          <p class="leftContainerTitle dashIcon_02">
+            Project: <span style="color: red">{{ appOptions.project }}</span> <strong>컴포넌트</strong>테스터
+          </p>
+          <el-button type="info" style="background-color:#7a7b8d; width: 100%">
+            컴포넌트 리스트
+          </el-button>
+          <div style="display:flex; margin-top: 10px">
+            <label style="text-wrap: nowrap; margin-right: 10px">검색</label>
+            <el-input
+              v-model="searchText"
+              type="text"
+              clearable
+              placeholder="검색어를 입력하세요"
+            />
           </div>
-          <div style="height: calc(100% - 135px)">
-            <el-card class="treeCard" :style="{ position: 'relative' }">
-              <div
-                style="
+        </div>
+        <div style="height: calc(100% - 135px)">
+          <el-card class="treeCard" :style="{ position: 'relative' }">
+            <div
+              style="
                   position: absolute;
                   height: 100%;
                   overflow-y: scroll;
@@ -32,133 +34,124 @@
                   right: 0px;
                   box-sizing: border-box;
                   "
-              >
-                <el-tree
-                  v-if="defaultComponentTreeKey.length > 0"
-                  ref="elTree"
-                  node-key="componentPath"
-                  icon-class="el-icon-arrow-right"
-                  accordion
-                  empty-text="데이터가 없습니다."
-                  :data="treeData"
-                  :draggable="false"
-                  :current-node-key="defaultComponentTreeKey"
-                  :show-checkbox="false"
-                  :render-content="renderContent"
-                  :expand-on-click-node="false"
-                  :props="defaultTreeProps"
-                  @node-click="nodeClick"
-                  @node-expand="nodeExpand"
-                />
-              </div>
-            </el-card>
-            <el-tabs type="border-card" style="flex:1">
-              <el-tab-pane label="Props" style="height: 100%">
-                <div style="height: 100%; overflow-y: auto; border-top: 1px solid">
-                  <div class="componentOptionTitleBox">
-                    <span style="margin-right: 10px">컴포넌트 Props</span><span style="color: red;">※ 0.5초 딜레이가 있습니다.</span>
-                  </div>
-                  <div style="display: flex; flex-wrap:wrap; padding-top: 10px">
-                    <div
-                      v-for="(testPropKey, index) of Object.keys(currentComponentConfig.testProps)"
-                      v-show="testPropKey !== 'propChangeIndex'"
-                      :key="index"
-                    >
-                      <TypeComponent
-                        v-if="testPropKey !== 'propChangeIndex'"
-                        :prop-key="testPropKey"
-                        :prop-data.sync="currentComponentConfig.testProps[testPropKey]"
-                        @changeDataValue="changeTestProps"
-                      />
-                    </div>
+            >
+              <el-tree
+                v-if="defaultComponentTreeKey.length > 0"
+                ref="elTree"
+                node-key="componentPath"
+                icon-class="el-icon-arrow-right"
+                accordion
+                empty-text="데이터가 없습니다."
+                :data="treeData"
+                :draggable="false"
+                :current-node-key="defaultComponentTreeKey"
+                :show-checkbox="false"
+                :render-content="renderContent"
+                :expand-on-click-node="false"
+                :props="defaultTreeProps"
+                @node-click="nodeClick"
+                @node-expand="nodeExpand"
+              />
+            </div>
+          </el-card>
+          <el-tabs type="border-card" style="flex:1">
+            <el-tab-pane label="Props" style="height: 100%">
+              <div style="height: 100%; overflow-y: auto; border-top: 1px solid">
+                <div class="componentOptionTitleBox">
+                  <span style="margin-right: 10px">컴포넌트 Props</span><span style="color: red;">※ 0.5초 딜레이가 있습니다.</span>
+                </div>
+                <div style="display: flex; flex-wrap:wrap; padding-top: 10px">
+                  <div
+                    v-for="(testPropKey, index) of Object.keys(currentComponentConfig.testProps)"
+                    v-show="testPropKey !== 'propChangeIndex'"
+                    :key="index"
+                  >
+                    <TypeComponent
+                      v-if="testPropKey !== 'propChangeIndex'"
+                      :prop-key="testPropKey"
+                      :prop-data.sync="currentComponentConfig.testProps[testPropKey]"
+                      @changeDataValue="changeTestProps"
+                    />
                   </div>
                 </div>
-              </el-tab-pane>
-              <el-tab-pane label="Event" style="height: 100%">
-                <div style="height: 100%; overflow-y: auto; border-top: 1px solid; padding: 10px">
-                  <div class="componentOptionTitleBox">
-                    <span style="margin-right: 10px">컴포넌트 Events</span>
-                    <div>
-                      <el-button size="mini" @click="eventStateReset">상태 초기화</el-button>
-                    </div>
+              </div>
+            </el-tab-pane>
+            <el-tab-pane label="Event" style="height: 100%">
+              <div style="height: 100%; overflow-y: auto; border-top: 1px solid; padding: 10px">
+                <div class="componentOptionTitleBox">
+                  <span style="margin-right: 10px">컴포넌트 Events</span>
+                  <div>
+                    <el-button size="mini" @click="eventStateReset">상태 초기화</el-button>
                   </div>
-                  <div style="height: calc(100% - 40px)">
-                    <div
-                      v-for="(emitConfigElementKey, index) of Object.keys(currentComponentConfig.emitConfig)"
-                      :key="index"
-                      style="border: 1px solid; width: 100%; display: inline-block; padding: 10px;
+                </div>
+                <div style="height: calc(100% - 40px)">
+                  <div
+                    v-for="(emitConfigElementKey, index) of Object.keys(currentComponentConfig.emitConfig)"
+                    :key="index"
+                    style="
+                      border: 1px solid; width: 100%; display: inline-block; padding: 10px;
                       max-height: 300px; overflow-y: auto
                       "
-                    >
-                      <div>
-                        {{ emitConfigElementKey }} [ 발생횟수 : {{ currentComponentConfig.emitConfig[emitConfigElementKey].emitCount }} ]
-                      </div>
-                      <div style="margin-top: 10px">
-                        전달된 Event Data
-                        <div
-                          v-for="(emitParam, emitParamIndex) in currentComponentConfig.emitConfig[emitConfigElementKey].emitParamList"
-                          :key="emitParamIndex"
-                        >
-                          <TypeComponent
-                            class="emitParamsTypeComponent"
-                            :prop-key="String(emitParamIndex + '번째 param')"
-                            :prop-data.sync="currentComponentConfig.emitConfig[emitConfigElementKey].emitParamList[emitParamIndex]"
-                            :json-editor-disabled="true"
-                          />
-                        </div>
+                  >
+                    <div>
+                      {{ emitConfigElementKey }} [ 발생횟수 : {{ currentComponentConfig.emitConfig[emitConfigElementKey].emitCount }} ]
+                    </div>
+                    <div style="margin-top: 10px">
+                      전달된 Event Data
+                      <div
+                        v-for="(emitParam, emitParamIndex) in currentComponentConfig.emitConfig[emitConfigElementKey].emitParamList"
+                        :key="emitParamIndex"
+                      >
+                        <TypeComponent
+                          class="emitParamsTypeComponent"
+                          :prop-key="String(emitParamIndex + '번째 param')"
+                          :prop-data.sync="currentComponentConfig.emitConfig[emitConfigElementKey].emitParamList[emitParamIndex]"
+                          :json-editor-disabled="true"
+                        />
                       </div>
                     </div>
                   </div>
                 </div>
-              </el-tab-pane>
-            </el-tabs>
-          </div>
+              </div>
+            </el-tab-pane>
+          </el-tabs>
         </div>
-      </el-aside>
-      <el-container>
-        <el-main class="rightContainer">
-          <el-row type="flex" align="bottom" style="min-height:70px; padding: 10px 0px 10px 0px;">
-            <span style="margin-right: 15px">
-              <el-breadcrumb v-if="!!currentComponentConfig.selectedComponent.componentAlias" separator-class="el-icon-arrow-right icon-bold">
-                <el-breadcrumb-item v-for="(item, index) in currentComponentConfig.selectedComponent.componentPath.split('/')" :key="index">
-                  <span v-if="index === 0" style="color: blue; font-weight: bold">[ 파일 경로 ]</span>
-                  <span class="selectionTreeItem">
-                    {{ item }}
-                  </span>
-                </el-breadcrumb-item>
-              </el-breadcrumb>
-            </span>
-            <el-tooltip :disabled="isAutoTestExist" content="컴포넌트 테스트를 위해서는 componentAutoTest 함수를 컴포넌트에 등록하세요" placement="bottom">
-              <el-button style="position:relative; top: 5px;" :disabled="!isAutoTestExist" @click="onAutoTest">컴포넌트 자동 테스트</el-button>
-            </el-tooltip>
-          </el-row>
-          <el-row style="height: calc(100% - 100px); border: 1px solid; padding: 10px;" align="middle">
-            <div ref="componentDiv" style="height: 100%">
-              <el-col :span="24" style="height: 100%">
-                <splitpanes
-                  style="height: 100%"
-                  :horizontal="true"
-                  class="default-theme"
-                >
-                  <pane>
-                    <div style="height: 100%; overflow-y: auto">
-                      <component
-                        :is="currentComponentConfig.selectedComponent.component"
-                        ref="testComponent"
-                        :style="{height: 'calc(100% - 25px)'}"
-                        v-bind.sync="currentComponentConfig.testProps"
-                        @initComponentData="setInitCurrentComponentData"
-                        @devEmit="setEmitState"
-                      />
-                    </div>
-                  </pane>
-                </splitpanes>
-              </el-col>
-            </div>
-          </el-row>
-        </el-main>
-      </el-container>
-    </el-container>
+      </pane>
+      <pane class="rightPane">
+        <el-row type="flex" align="bottom" style="min-height:70px; padding: 10px 0px 10px 0px;">
+          <span style="margin-right: 15px">
+            <el-breadcrumb v-if="!!currentComponentConfig.selectedComponent.componentAlias" separator-class="el-icon-arrow-right icon-bold">
+              <el-breadcrumb-item v-for="(item, index) in currentComponentConfig.selectedComponent.componentPath.split('/')" :key="index">
+                <span v-if="index === 0" style="color: white; font-weight: bold; background-color: rgb(122, 123, 141); font-size: 20px">컴포넌트 경로</span>
+                <span class="selectionTreeItem">
+                  {{ item }}
+                </span>
+              </el-breadcrumb-item>
+            </el-breadcrumb>
+          </span>
+          <el-tooltip :disabled="isAutoTestExist" content="컴포넌트 테스트를 위해서는 autotestFuction에 테스트할 컴포넌트를 등록하세요" placement="bottom">
+            <el-button style="position:relative; top: 5px;" :disabled="!isAutoTestExist" @click="onAutoTest">컴포넌트 자동 테스트</el-button>
+          </el-tooltip>
+        </el-row>
+        <el-row style="height: calc(100% - 100px); border: 1px solid; padding: 10px;" align="middle">
+          <div ref="componentDiv" style="height: 100%">
+            <el-col :span="24" style="height: 100%">
+              <div style="height: 100%; overflow-y: auto">
+                <component
+                  :is="currentComponentConfig.selectedComponent.component"
+                  ref="testComponent"
+                  :style="{height: 'calc(100% - 25px)'}"
+                  v-bind.sync="currentComponentConfig.testProps"
+                  @initComponentData="setInitCurrentComponentData"
+                  @devEmit="setEmitState"
+                />
+              </div>
+            </el-col>
+          </div>
+        </el-row>
+      </pane>
+    </splitpanes>
+
     <WorkControlModalTemplate
       v-for="window in $store.getters.windows"
       :key="window.id"
@@ -178,6 +171,8 @@ import { Splitpanes, Pane } from 'splitpanes'
 import 'splitpanes/dist/splitpanes.css'
 import _ from 'lodash'
 import { testerConstants } from '@/test/commonTester.js'
+import { AutoTestManager } from '@/test/autoTest/autoTestManager'
+
 const routeName = 'ComponentTestPage'
 
 const defaultEmitConfigElement = {
@@ -228,6 +223,13 @@ export default {
 
     isAutoTestExist() {
       return this.currentComponentConfig.existComponentAutoTest === testerConstants.exist
+    },
+
+    componentFilePath() {
+      let componentFilePath = this.currentComponentConfig.selectedComponent.component.__file
+      componentFilePath = componentFilePath.replaceAll('\/', '_')
+      componentFilePath = componentFilePath.replaceAll('\.vue', '')
+      return componentFilePath
     }
 
   },
@@ -253,7 +255,6 @@ export default {
   destroyed() { },
 
   methods: {
-
     setEmitState(data) {
       this.propChangeIndexUp()
 
@@ -312,8 +313,6 @@ export default {
         this.notExistSamplePropsDefaultValueSet(data.propMap)
       }
 
-      this.currentComponentConfig.existComponentAutoTest = data.existComponentAutoTest
-
       if (data.emitKeys) {
         data.emitKeys.forEach((k) => {
           this.currentComponentConfig.emitConfig[k] = _.cloneDeep(defaultEmitConfigElement)
@@ -335,6 +334,7 @@ export default {
     resetCurrentComponentConfig() {
       this.currentComponentConfig = _.cloneDeep(defaultCurrentComponentConfig)
       this.currentComponentConfig.selectedComponent = null
+      AutoTestManager.autoTestManagerReset()
     },
 
     eventStateReset() {
@@ -371,24 +371,30 @@ export default {
         }
 
         this.currentComponentConfig.selectedComponent = currentComponent || this.componentTreeData[0]
+
         this.loadSampleJsonData()
+        this.autoTestExistCheck()
         this.$store.commit('componentTester/SET_DEFAULT_COMPONENT_TREE_KEY', this.currentComponentConfig.selectedComponent.componentPath)
       }
     },
 
+    autoTestExistCheck() {
+      if (Object.hasOwnProperty.call(AutoTestManager.instance.autoTestFunctionMap, this.componentFilePath)) {
+        this.currentComponentConfig.existComponentAutoTest = testerConstants.exist
+      }
+    },
+
     loadSampleJsonData() {
-      let componentFilePath = this.currentComponentConfig.selectedComponent.component.__file
-      componentFilePath = componentFilePath.replaceAll('\/', '_')
-      componentFilePath = componentFilePath.replaceAll('\.vue', '')
       try {
-        const sampleData = require(`./jsonData/${componentFilePath}.json`)
+        const sampleData = require(`./jsonData/${this.componentFilePath}.json`)
         if (sampleData) {
           Object.keys(sampleData).forEach((sampleDataKey) => {
             this.currentComponentConfig.testProps[sampleDataKey] = sampleData[sampleDataKey]
           })
         }
       } catch (e) {
-        this.$message(componentFilePath + '은 sample Json Data가 없습니다.')
+        console.error(this.componentFilePath + '은 sample Json Data가 없습니다.')
+        // this.$message(this.componentFilePath + '은 sample Json Data가 없습니다.')
       }
     },
 
@@ -396,7 +402,7 @@ export default {
       if (this.currentComponentConfig.existComponentAutoTest === testerConstants.notExist) {
         this.$message.error({ message: `해당 컴포넌트는 autoTest가 등록되지 않았습니다.` })
       } else {
-        this.$refs.testComponent.runComponentAutoTest()
+        AutoTestManager.instance.runAutoTest(this.componentFilePath, this, this.$refs.testComponent)
       }
     },
   },
@@ -410,7 +416,6 @@ export default {
 }
 
 .ComponentTestPage{
-
   .el-tree::v-deep{
     .el-tree-node.is-current{
       z-index: 1000;
@@ -437,13 +442,17 @@ export default {
   .el-loading-mask{
     z-index: 3;
   }
-  .leftContainer{
+  .leftPane{
     display: flex;
     height: 100%;
     flex-direction: column;
-    gap:10px;
+    padding: 10px;
   }
-  p.leftContainerTitle{
+
+  .rightPane{
+    padding: 10px 20px 0px 20px;
+  }
+  p.leftPaneTitle{
     font-size:20px;
     color:#222222;
     letter-spacing: -0.5px;
@@ -459,31 +468,31 @@ export default {
     background-position: 0 1px;
   }
 
-  .leftContainer .treeCard{
+  .leftPane .treeCard{
     height: 40%;
     max-height: 500px
   }
-  .leftContainer>.searchOptionCard{
+  .leftPane>.searchOptionCard{
     height:130px;
   }
 
-  .leftContainer>.searchOptionCard table{
+  .leftPane>.searchOptionCard table{
     border-collapse: collapse; margin-bottom:5px;
   }
-  .leftContainer>.searchOptionCard table th{
+  .leftPane>.searchOptionCard table th{
     white-space: nowrap; text-align: center; font-size:14px; font-weight: 400; letter-spacing: -0.5px; min-width: 100px;
   }
-  .leftContainer>.searchOptionCard table th,
-  .leftContainer>.searchOptionCard table td{
+  .leftPane>.searchOptionCard table th,
+  .leftPane>.searchOptionCard table td{
     /* border:1px solid #EEEEEE; */
     padding:4px 0px;
   }
 
-  .rightContainer{
+  /* .rightPane{
     padding:10px 20px 0px 20px !important;
     height: 100%;
     width: 100%;
-  }
+  } */
   .selectionTreeItem{
     font-size:16px;
     font-weight: 600;

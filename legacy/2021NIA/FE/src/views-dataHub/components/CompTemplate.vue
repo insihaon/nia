@@ -286,16 +286,6 @@ export default {
     },
     subscribeEvent() {
     },
-
-    componentAutoTest() {
-      this.testFunction('handleSearchClear')
-      this.testFunction('onClickSearchButton')
-      this.testFunction('nextPage')
-      this.testFunction('refreshData')
-
-      // this.testFunction('handlePageChange')
-      // this.testFunction('onSortChanged')
-    }
   }
 }
 </script>
