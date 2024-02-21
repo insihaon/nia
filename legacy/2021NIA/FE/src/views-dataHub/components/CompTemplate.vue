@@ -201,7 +201,6 @@ export default {
       type: Object,
       default() { return {} }
     },
-
     customSearchContainerHeight: {
       type: String,
       default() { return null }

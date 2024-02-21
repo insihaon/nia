@@ -64,8 +64,7 @@ const actions = {
                 })
             }
         }
-    },
-
+    }
 }
 
 export default {
