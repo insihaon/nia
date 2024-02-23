@@ -23,7 +23,7 @@
             (
                 #{item.strIfID}, #{item.strResID}, #{item.strTypeMin}, #{item.intTimestamp}, #{item.intYear},
                 #{item.intMonth}, #{item.intDay}, #{item.intHour}, #{item.intMin}, #{item.intWeek},
-                #{item.intBandwidth}, #{item.fltBPSIn}, #{item.fltBPSOut}, #{item.fltPPSIn}, #{item.fltPPSOut},
+                #{item.intBandwidth}, #{item.flHCInOctets}, #{item.flHCOutOctets}, #{item.fltPPSIn}, #{item.fltPPSOut},
                 #{item.fltErrorIn}, #{item.fltErrorOut}, #{item.fltDiscardIn}, #{item.fltDiscardOut}, #{item.fltUnknown},
                 #{item.fltUsage}, #{item.flHCInOctets}, #{item.flHCOutOctets}, #{item.flHCInUcastPkts}, #{item.flHCOutUcastPkts},
                 #{item.flHCInMulticastPkts}, #{item.flHCOutMulticastPkts}, #{item.flHCInBroadcastPkts}, #{item.flHCOutBroadcastPkts}, #{item.fltBPSInMax},
