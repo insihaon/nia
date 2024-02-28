@@ -1,7 +1,6 @@
-import store from '@/store'
-import _ from 'lodash'
-import { Device } from './device'
 import { Storage } from '@/assets/libs/Storage.min'
+import store from '@/store'
+import { Device } from './device'
 const { param2Obj, reload } = require('@/utils')
 
 const APP_PROJECT = process.env.VUE_APP_PROJECT
@@ -30,6 +29,7 @@ export class AppOptions extends Storage {
       dark: false,
       mobile: Device.instance.mobile ?? false,
       serverMock: false,
+      projectList: ['dataub', 'nia'],
       project: APP_PROJECT?.toLowerCase(),
       baseURL: null,
       useWebsocket: this.readEnv(process.env.VUE_APP_USE_WEBSOCKET, true),

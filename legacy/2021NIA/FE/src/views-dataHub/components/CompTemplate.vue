@@ -201,7 +201,6 @@ export default {
       type: Object,
       default() { return {} }
     },
-
     customSearchContainerHeight: {
       type: String,
       default() { return null }
@@ -217,7 +216,6 @@ export default {
       selectedItem: [],
       clearModelItems: {},
       jsonOptions: { mode: 'code' },
-      emitKeys: ['handleClickSearch'],
     }
   },
   computed: {
@@ -240,7 +238,7 @@ export default {
     },
     resultCount() {
       const dataLength = this.agGrid?.data?.length
-       return dataLength
+      return dataLength
     },
     totalCount() {
       return this.humanNumber(this.paginationInfo?.totalCount)
@@ -253,15 +251,15 @@ export default {
   methods: {
     onSortChanged(sortedColumns) {
       const sortColInfo = sortedColumns?.length > 0 ? sortedColumns[0] : {}
-      this.runEmit('sortedChange', sortColInfo)
+      this.devEmit('sortedChange', sortColInfo)
     },
     handleSearchClear() {
-      this.runEmit('searchClear', this.searchModel)
-      this.runEmit('jsonClear', this.jsonData)
+      this.devEmit('searchClear', this.searchModel)
+      this.devEmit('jsonClear', this.jsonData)
     },
     onClickSearchButton() {
       this.paginationInfo.currentPage = 1
-      this.runEmit('handleClickSearch', this.searchModel)
+      this.devEmit('handleClickSearch', this.searchModel)
     },
     prevPage() {
       if (this.paginationInfo.currentPage > 1) {
@@ -272,12 +270,12 @@ export default {
     nextPage() {
       if (this.paginationInfo.currentPage < this.paginationInfo.totalPages) {
         this.paginationInfo.currentPage++
-        this.runEmit('handleClickSearch', this.paginationInfo.currentPage) // 다음 페이지로 이동할 때 데이터 다시 가져오기
+        this.devEmit('handleClickSearch', this.paginationInfo.currentPage) // 다음 페이지로 이동할 때 데이터 다시 가져오기
       }
     },
     handlePageChange(newPage) {
       this.paginationInfo.currentPage = newPage
-      this.runEmit('handleClickSearch', this.paginationInfo.currentPage) // 특정 페이지로 이동할 때 데이터 다시 가져오기
+      this.devEmit('handleClickSearch', this.paginationInfo.currentPage) // 특정 페이지로 이동할 때 데이터 다시 가져오기
     },
     refreshData() {
       this.selectedItem = []
@@ -285,9 +283,9 @@ export default {
     onSelectedEditRows(param) {
     },
     subscribeEvent() {
-    }
-   }
- }
+    },
+  }
+}
 </script>
 
 <style lang="scss">

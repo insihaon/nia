@@ -10,7 +10,7 @@
     :placeholder="item.placeholder"
     filterable
     remote
-    @change="(value)=> runEmit('selectedChange', value)"
+    @change="(value)=> devEmit('selectedChange', value)"
   >
     <el-option
       v-if="eval('item?.setting?.allOption?.toggle')"
@@ -45,7 +45,6 @@
 const routeName = 'CompCheckSelector'
 import { Base } from '@/min/Base.min'
 import ComponentTesterMixins from '@/test/ComponentTesterMixins'
-import { isTestPage } from '@/test/commonTester.js'
 
 export default {
   name: routeName,
@@ -56,17 +55,7 @@ export default {
     item: {
       type: Object,
       default() {
-        return isTestPage() ? {
-          options: [
-            { label: 'test1', value: 'test1' },
-            { label: 'test2', value: 'test2' },
-            { label: 'test3', value: 'test3' },
-            { label: 'test4', value: 'test4' },
-          ],
-          placeholder: 'test123',
-          disabled: false,
-          readonly: false
-        } : {}
+        return {}
       }
     },
     searchModel: {
@@ -88,7 +77,7 @@ export default {
     model: {
       get() {
         // if (this.isSettingAllOption && this.searchModel.length === this.fullOptions.length) {
-        //   this.runEmit('update:searchModel', ['ALL'])
+        //   this.devEmit('update:searchModel', ['ALL'])
         // }
         return this.searchModel
       },
@@ -96,12 +85,12 @@ export default {
         const nM = m.filter((d) => d !== 'ALL')
         if (this.isSettingAllOption && nM.length === this.fullOptions.length) {
           if (this.item.valueConsistsOf === 'LEAF_PRIORITY') {
-            this.runEmit('update:searchModel', this.fullOptions)
+            this.devEmit('update:searchModel', this.fullOptions)
           } else {
-            this.runEmit('update:searchModel', ['ALL'])
+            this.devEmit('update:searchModel', ['ALL'])
           }
         } else {
-          this.runEmit('update:searchModel', nM)
+          this.devEmit('update:searchModel', nM)
         }
       }
     },

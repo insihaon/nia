@@ -10,7 +10,7 @@
               <span>관리시스템</span>
             </router-link>
           </div>
-          <span class="menuTitle">{{ activeTitle }}</span>
+          <!-- <span class="menuTitle">{{ activeTitle }}</span> -->
           <div class="headerMenu">
             <ul>
               <li v-for="menu in dataHubRoute" v-show="!menu.hidden" :key="menu.path">
@@ -101,9 +101,9 @@ export default {
             }
           return path
         },
-        activeTitle() {
-          return this.$route?.meta?.title
-        },
+        // activeTitle() {
+        //   return this.$route?.meta?.title
+        // },
       dataHubRoute() {
         // console.log(dataHubRoute)
         return dataHubRoute

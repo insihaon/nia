@@ -18,21 +18,28 @@ const { project } = AppOptions.instance
 const { dataHubHome, dataHubLogin, dataHubRoute } = require('./dataHub/index')
 // const { aiTemplateHome, aiTemplateLogin, aiTemplateRoute } = require('./aiTemplate/index')
 import { aiTemplateHome, aiTemplateLogin, aiTemplateRoute } from './aiTemplate/index'
+const { niaHome, niaLogin, niaRoute } = require('./nia/index')
 
 let loginView
 let projectRoute
 let projectHome = '/'
-
 switch (project) {
   case 'datahub':
     loginView = dataHubLogin
     projectRoute = dataHubRoute
     projectHome = dataHubHome
     break
-  case 'ai':
+  case 'ai': // layout, grid sample
     loginView = aiTemplateLogin
     projectRoute = aiTemplateRoute
     projectHome = aiTemplateHome
+    break
+  case 'nia':
+    loginView = niaLogin
+    projectRoute = niaRoute
+    projectHome = niaHome
+    break
+  default:
     break
 }
 
@@ -68,9 +75,14 @@ export let constantRoutes = [
     hidden: true
   },
   {
-    name: 'testComponentTest',
-    path: '/test',
+    name: 'ComponentTestPage',
+    path: '/ComponentTestPage',
     component: () => import('@/test/ComponentTestPage'),
+    children: [
+      {
+        path: ':componentName(.*)'
+      }
+    ]
   },
   {
     name: 'AuthRedirect',

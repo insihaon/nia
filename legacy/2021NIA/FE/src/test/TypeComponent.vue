@@ -7,7 +7,8 @@
         v-model="objectKey"
         class="bg_purple"
         style="
-          min-width: 180px !important; max-width: 180px;
+          min-width: 180px;
+          max-width: 180px;
           overflow:hidden;
           text-overflow:ellipsis;
           "
@@ -118,7 +119,6 @@ export default {
     },
 
     methods: {
-
       fn_projectDetailCallback(prop) {
         const componentTypeData = getConvertSinglePropToSingleComponentTypeData(prop)
         this.$emit('changeDataValue', componentTypeData)
@@ -207,50 +207,3 @@ export default {
 
 </style>
 
-<style>
-  [data-tooltip]{
-    background:red;
-    position:relative;
-  }
-
-  [data-tooltip]:before, [data-tooltip]:after{
-    /* visibility:hidden; */
-    /* opacity:0; */
-    position:absolute;
-    left:50%;
-    transform:translateX(-50%);
-    white-space:nowrap;
-    transition:all .2s ease;
-    font-size:11px;
-    font-family:dotum;
-    letter-spacing:-1px;
-  }
-  [data-tooltip]:before{
-    content:attr(data-tooltip);
-    height:13px;
-    position:absolute;
-    top:-20px;
-    padding:5px 10px;
-    border-radius:5px;
-    color:#fff;
-    background:#025272;
-    box-shadow:0 3px 8px rgba(165, 165, 165, 0.5);
-  }
-  [data-tooltip]:after{
-    content: '';
-    border-left:5px solid transparent;
-    top:2px;
-    border-right:5px solid transparent;
-    border-top:5px solid #025272;
-  }
-  /* [data-tooltip]:not([data-tooltip=""]):hover:before{
-    visibility:visible;
-    opacity:1;
-    top:-30px
-  }
-  [data-tooltip]:not([data-tooltip=""]):hover:after{
-    visibility:visible;
-    opacity:1;
-    top:-8px
-  } */
-</style>
