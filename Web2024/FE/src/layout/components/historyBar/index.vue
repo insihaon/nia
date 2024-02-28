@@ -240,6 +240,11 @@ export default {
     padding: 0px 15px;
     border-radius: 6px;
     margin-top: 5px;
+    white-space: nowrap;
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: all 0.3s;
     span {
       margin-left: 10px;
       border-radius: 50%;
@@ -252,6 +257,10 @@ export default {
       color: #fff;
       background-color: $aiTemplateDefault;
       justify-content: flex-start;
+      white-space: nowrap;
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
       &::before {
         content: '';
         background: #fff;
@@ -265,6 +274,8 @@ export default {
     }
     &:hover {
       background: #64748b;
+      white-space: break-spaces;
+      height: fit-content;
     }
   }
 }

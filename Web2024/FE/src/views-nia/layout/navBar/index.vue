@@ -1,26 +1,13 @@
 <template>
   <el-header id="header-menu" class="dark bg-slate-900 flex h-20 p-0 w-full items-center">
     <div class="flex w-full h-full justify-between ">
-      <div class="flex items-center h-full">
-        <div v-if="showSidebar" id="hamburger-container" class="d-flex" :class="{'justify-center':isActive, 'justify-end':!isActive}" @click="toggleSideBar">
-          <i :class="{'el-icon-s-unfold': isActive , 'el-icon-s-fold': !isActive}" />
-        </div>
+      <div class="headerWrapLogo flex items-center h-full">
         <div id="systeminfo-container">
-          <slot name="logo">
-            <!-- https://github.com/LottieFiles/lottie-vue -->
-            <lottie-vue-player
-              src="https://lottie.host/8a69086e-0fae-42c8-9aaa-1b7c41d58c03/ujjpO2qD25.json"
-              name="lottie"
-              class="lottie"
-              loop
-              autoplay
-            />
-          </slot>
-          <div id="system-name" @click="onClickHeaderLogo()">{{ systemName }} |</div>
-          <div id="route-name">SELECTED MENU</div>
+          <div id="system-name" @click="onClickHeaderLogo()">NIA KOREN |</div>
+          <div id="route-name">{{ activeMenuTitle }}</div>
         </div>
         <!-- only parent -->
-        <nav v-if="!showSidebar" id="menu-bar" class="h-full ml-14">
+        <nav id="menu-bar" class="h-full ml-14">
           <el-menu class="flex h-full" :background-color="bgColor" :text-color="textColor" style="border-right: 0px">
             <el-menu-item
               v-for="route in routes"
@@ -30,15 +17,14 @@
               style="line-height: 4rem;"
               class="h-full text-white font-semibold transition-colors"
             >
-              <router-link :to="route.path">
-                {{ route.meta.title }}
-              </router-link>
+              <!-- <router-link :to="route.path"> -->
+              {{ route.meta.title }}
+              <!-- </router-link> -->
             </el-menu-item>
           </el-menu>
         </nav>
       </div>
       <div id="function-container" class="flex items-center">
-        <MenuPopover />
         <svg-icon type="mdi" :path="path" @click.native="toggleHistoryBar" />
         <button
           class="button h-10 px-4 py-2 bg-transparent text-white rounded"
@@ -59,52 +45,34 @@
 </template>
 
 <script>
-import { aiTemplateRoute } from '@/router/aiTemplate/index'
+import { niaRoute } from '@/router/nia/index'
 import ChildItem from './ChildItem'
-import MenuPopover from '../CompPopover'
 import { mdiHistory } from '@mdi/js'
 import { mapState, mapGetters } from 'vuex'
 
 const routeName = 'NavBar'
 export default {
   name: routeName,
-  components: { ChildItem, MenuPopover },
-  props: {
-    mainPath: {
-      type: String,
-      default: 'at/index'
-    },
-    propRoutes: {
-      type: Array,
-      default: aiTemplateRoute
-    },
-    systemName: {
-      type: String,
-      default: 'SYSTEM NAME'
-    }
-  },
+  components: { ChildItem },
   data() {
     return {
       bgColor: '#1e293b',
       textColor: '#bfcbd9',
       buttonDisabled: false,
-      isActiveMenu: false, // Top Menu
       popoverVisible: false,
       path: mdiHistory
     }
   },
   computed: {
     routes() {
-      return this.propRoutes
+      return niaRoute
     },
-    isActive() {
-      return this.sidebar.opened
+    activeMenuTitle() {
+      return this.$route?.meta?.title ?? ''
     },
     ...mapGetters([
-      'sidebar',
     ]),
     ...mapState({
-      showSidebar: state => state.settings.menuType === 'LEFT',
     }),
   },
   mounted () {
@@ -129,10 +97,7 @@ export default {
   },
   methods: {
     onClickHeaderLogo() {
-      this.$router.push({ path: this.mainPath })
-    },
-    toggleSideBar() {
-      this.$store.dispatch('app/toggleSideBar')
+      this.$router.push({ path: '/dashboard/index' })
     },
     toggleHistoryBar() {
       this.$store.dispatch('app/toggleHistoryBar')
@@ -211,7 +176,7 @@ export default {
     }
   }
   #menu-item {
-    font-size: 19px;
+    font-size: 16px;
     padding: 0px !important;
     margin: 0 15px;
     transition: all 0.4s;
@@ -238,7 +203,7 @@ export default {
   #sub-menu {
     height: 0px;
     width: 100%;
-    padding-left: 410px;
+    padding-left: 200px;
     overflow: hidden;
     background-color: #eef0f3;
     transition: height, 0.25s linear;

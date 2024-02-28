@@ -37,11 +37,11 @@ div.headerWrap span.menuTitle{
 div.headerWrapLogo{
   background-image: url("../images/nia/header_logo2.png");
   background-repeat: no-repeat;
-  background-position: 0 center;
-  height:50px;
-  padding-left:45px;
-  line-height:28px;
-  font-size:20px;
+  background-position: 10px center;
+  height:100%;
+  padding-left: 45px;
+  line-height :28px;
+  font-size: 20px;
   letter-spacing: -0.5px;
   user-select: none;
   cursor:pointer;
