@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.codej.nia.mapper.db2nd.NiaMapper">
+    <sql id="TotalCountPrefix">
+      <if test="TOTAL_COUNT != null">
+         SELECT COUNT(*) AS "count" FROM (
+      </if>
+   </sql>
+    
+   <sql id="TotalCountSuffix">
+   <if test="TOTAL_COUNT == null and sort_column_name != null and sort_type != null">
+        ORDER BY ${sort_column_name} ${sort_type}
+   </if>
+   <if test="TOTAL_COUNT != null">
+        ) TOTALCOUNT
+   </if>
+   <choose>
+        <when test="TOTAL_COUNT != null and limit != null">
+            LIMIT ${limit}
+        </when>
+        <when test="TOTAL_COUNT == null and page != null and limit != null">
+            LIMIT ${limit} OFFSET ${(page - 1) * limit}
+        </when>
+        <when test="TOTAL_COUNT == null and page != null and limit == null">
+            <!--  default 10으로 설정 -->
+            LIMIT 10 OFFSET ${(page - 1) * limit}
+        </when>
+   </choose>
+   </sql>
+
+    <!-- API 정보/오류리스트 -->
+    <!-- <select id="SELECT_API_INFO_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+    <include refid="TotalCountPrefix"/>
+    SELECT
+        TAM.API_ID,
+        TAM.API_NAME,
+        TAM.SYSTEM_ID,
+        TAM.API_URL,
+        TAM.INTGR_INTERVAL,
+        TAM.API_DESC,
+        TAM.EXPIRD_TIME,
+        TAM.UPDATE_TIME
+    ,CASE
+        WHEN EXEC_MODE_CD = 'B' THEN 'Batch'
+        WHEN EXEC_MODE_CD = 'F' THEN 'SFTP'
+        ELSE 'OnDemand'
+    END AS EXEC_MODE_CD
+    FROM
+        DATAHUB.TB_API_MST TAM
+    WHERE 1=1
+    <if test="api_name != null and api_name != ''">
+    AND (
+        UPPER(TAM.API_NAME) LIKE '%' || UPPER(#{api_name}) || '%'
+    )
+    </if>
+    <if test="exec_mode_cd != null and !exec_mode_cd.isEmpty() and !exec_mode_cd.contains('ALL') and !exec_mode_cd.contains('CT')">
+    AND TAM.EXEC_MODE_CD IN
+        <foreach collection="exec_mode_cd" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </if>
+    <if test="api_url != null and !api_url.isEmpty() and  !api_url.contains('ALL') and !api_url.contains('CT')">
+    AND TAM.API_URL IN
+        <foreach collection="api_url" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </if>
+    GROUP BY
+        TAM.API_ID,
+        TAM.API_NAME,
+        TAM.API_URL,
+        TAM.INTGR_INTERVAL,
+        TAM.API_DESC,
+        TAM.EXPIRD_TIME,
+        TAM.UPDATE_TIME,
+        EXEC_MODE_CD
+    <include refid="TotalCountSuffix"/>
+    </select>  -->
+
+  
+
+</mapper>
