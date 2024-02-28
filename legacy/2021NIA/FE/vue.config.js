@@ -79,6 +79,9 @@ function getOutputDir() {
     case 'datahub':
       dir = '../BE/app-dataHub/src/main/resources/static'
       break
+    case 'nia':
+      dir = '../BE/app-nia/src/main/resources/static'
+        break
   }
   console.log(`OutputDir=${dir}`)
   return dir

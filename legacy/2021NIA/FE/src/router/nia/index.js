@@ -1,0 +1,297 @@
+import Layout from '@/views-nia/layout'
+
+export const niaLogin = import('@/views-nia/login/index')
+// export const niaHome = '/dashBoard/index'
+export const niaHome = '/operationStatusScreen/controlScreen'
+
+export const niaRoute = Object.freeze([
+
+  {
+    path: '/dashBoard',
+    component: Layout,
+    hidden: true,
+    disable: false,
+    redirect: '/index',
+    meta: {
+      title: '대시보드',
+    },
+    // children: [
+    //   {
+    //     path: 'index',
+    //     // component: () => import('@/views-nia/layout/index'), // 로그인 페이지
+    //     component: () => import('@/views-nia/dashBoard/index'),
+    //     name: 'niaMain',
+    //     meta: { title: '', affix: false }
+    //   }
+    // ]
+  },
+  {
+    path: '/performanceMonitoring',
+    component: Layout,
+    hidden: false,
+    disable: false,
+    redirect: '/performanceMonitoring',
+    meta: {
+      title: '성능감시',
+    },
+    children: [
+      {
+        path: 'trafficAnalysisCountry',
+        component: () => import('@/views-nia/performanceMonitoring/trafficAnalysisCountry'),
+        name: 'TrafficAnalysisCountry',
+        meta: { title: '국가별 트래픽 분석 및 Top N' },
+        // modalMode: true
+      },
+      {
+        path: 'trafficAnalysisInstitution',
+        component: () => import('@/views-nia/performanceMonitoring/trafficAnalysisInstitution'),
+        name: 'TrafficAnalysisInstitution',
+        meta: { title: '이용기관별 트래픽 분석 및 Top N' }
+      },
+      {
+        path: 'trafficAnalysisApp',
+        component: () => import('@/views-nia/performanceMonitoring/trafficAnalysisApp'),
+        name: 'TrafficAnalysisApp',
+        meta: { title: '어플리케이션별 트래픽분석 및 Top N' }
+      },
+      {
+        path: 'trafficAnalysisPort',
+        component: () => import('@/views-nia/performanceMonitoring/trafficAnalysisPort'),
+        name: 'TrafficAnalysisPort',
+        meta: { title: '장비 포트별 in/out 트래픽 감시 및 이력 조회 기능' }
+      },
+      {
+        path: 'undefindedTraffic',
+        component: () => import('@/views-nia/performanceMonitoring/undefindedTraffic'),
+        name: 'UndefindedTraffic',
+        meta: { title: '미확인 트래픽 정의' }
+      },
+    ]
+  },
+  {
+    path: '/alarmMonitoring',
+    component: Layout,
+    hidden: false,
+    disable: false,
+    redirect: '/alarmMonitoring',
+    meta: {
+      title: '장애감시',
+    },
+    children: [
+      {
+        path: 'sopHistory',
+        component: () => import('@/views-nia/alarmMonitoring/sopHistory'),
+        name: 'SopHistory',
+        meta: { title: 'SOP 이력 조회' },
+      },
+      {
+        path: 'disabilityStatusHistoryManagement',
+        component: () => import('@/views-nia/alarmMonitoring/disabilityStatusHistoryManagement'),
+        name: 'DisabilityStatusHistoryManagement',
+        meta: { title: '장애현황 및 이력관리' },
+      },
+      {
+        path: 'syslogHistoryInquiry',
+        component: () => import('@/views-nia/alarmMonitoring/syslogHistoryInquiry'),
+        name: 'SyslogHistoryInquiry',
+        meta: { title: 'Syslog 이력조회' },
+      },
+      {
+        path: 'syslogRuleHistoryInquiry',
+        component: () => import('@/views-nia/alarmMonitoring/syslogRuleHistoryInquiry'),
+        name: 'SyslogRuleHistoryInquiry',
+        meta: { title: 'Syslog rule 이력조회' },
+        modalMode: true
+      },
+
+    ]
+  },
+  {
+    path: '/operationStatusScreen',
+    component: Layout,
+    hidden: false,
+    disable: false,
+    redirect: '/operationStatusScreen',
+    meta: {
+      title: '운용현황 화면',
+    },
+    children: [
+      {
+        path: 'controlScreen',
+        component: () => import('@/views-nia/operationStatusScreen/index'),
+        name: 'ControlScreen',
+        meta: { title: '관제화면' },
+      },
+      {
+        path: 'aiMonitoring',
+        component: () => import('@/views-nia/operationStatusScreen/aiMonitoring'),
+        name: 'AiMonitoring',
+        meta: { title: 'AI 모니터링' },
+      },
+      {
+        path: 'serverMonitoring',
+        component: () => import('@/views-nia/operationStatusScreen/serverMonitoring'),
+        name: 'ServerMonitoring',
+        meta: { title: '서버모니터링' },
+      },
+      {
+        path: 'operationStatusStatistics',
+        component: () => import('@/views-nia/operationStatusScreen/operationStatusStatistics'),
+        name: 'OperationStatusStatistics',
+        meta: { title: '운용 현황 통계' },
+      },
+      {
+        path: 'selfProcessingDashboard',
+        component: () => import('@/views-nia/operationStatusScreen/selfProcessingDashboard'),
+        name: 'SelfProcessingDashboard',
+        meta: { title: '자가처리 현황 대시보드' },
+      }
+
+    ]
+  },
+  {
+    path: '/aiDisabilityResponse',
+    component: Layout,
+    hidden: false,
+    disable: false,
+    redirect: '/aiDisabilityResponse',
+    meta: {
+      title: 'AI 장애대응',
+    },
+    children: [
+      {
+        path: 'selfProcessingHist',
+        component: () => import('@/views-nia/aiDisabilityResponse/selfProcessingHist'),
+        name: 'SelfProcessingHist',
+        meta: { title: '자가구성/회복/처리이력' },
+      }
+    ]
+  },
+  {
+    path: '/profile',
+    component: Layout,
+    hidden: false,
+    disable: false,
+    redirect: '/profile',
+    meta: {
+      title: '프로파일',
+    },
+    children: [
+      {
+        path: 'profileInquiry',
+        component: () => import('@/views-nia/profile/profileInquiry'),
+        name: 'ProfileInquiry',
+        meta: { title: '조치 프로파일 조회' },
+      },
+    ]
+  },
+  {
+    path: '/dataSnapshot',
+    component: Layout,
+    hidden: false,
+    disable: false,
+    redirect: '/dataSnapshot',
+    meta: {
+      title: '데이터스냅샷',
+    },
+    children: [
+      {
+        path: 'snapshotHistory',
+        component: () => import('@/views-nia/dataSnapshot/snapshotHistory'),
+        name: 'SnapshotHistory',
+        meta: { title: '스냅샷 이력조회' },
+      },
+    ]
+  },
+  {
+    path: '/userManagement',
+    component: Layout,
+    hidden: false,
+    disable: false,
+    redirect: '/userManagement',
+    meta: {
+      title: '사용자 관리',
+    },
+    children: [
+      {
+        path: 'userSettings',
+        component: () => import('@/views-nia/userManagement/ModaluserSettings'),
+        name: 'UserSettings',
+        meta: { title: '사용자 설정' },
+        modalMode: true
+      },
+    ]
+  },
+  {
+    path: '/manager',
+    component: Layout,
+    hidden: false,
+    disable: false,
+    redirect: '/manager',
+    meta: {
+      title: '관리자',
+    },
+    children: [
+      {
+        path: 'manager',
+        component: () => import('@/views-nia/manager/authSettings'),
+        name: 'AuthSettings',
+        meta: { title: '관리자 권한 설정' },
+      },
+    ]
+  },
+  {
+    path: '/nodeManagement',
+    component: Layout,
+    hidden: false,
+    disable: false,
+    redirect: '/nodeManagement',
+    meta: {
+      title: '노드관리',
+    },
+    children: [
+      {
+        path: 'nodeInquiryList',
+        component: () => import('@/views-nia/nodeManagement/nodeInquiryList'),
+        name: 'NodeInquiryList',
+        meta: { title: '노드 리스트 조회' },
+      },
+    ]
+  },
+  {
+    path: '/linkManagement',
+    component: Layout,
+    hidden: false,
+    disable: false,
+    redirect: '/linkManagement',
+    meta: {
+      title: '링크관리',
+    },
+    children: [
+      {
+        path: 'linkInquiryInfoList',
+        component: () => import('@/views-nia/linkManagement/linkInquiryInfoList'),
+        name: 'LinkInquiryInfoList',
+        meta: { title: '링크 정보 조회' },
+      },
+    ]
+  },
+  {
+    path: '/organization',
+    component: Layout,
+    hidden: false,
+    disable: false,
+    redirect: '/organization',
+    meta: {
+      title: '이용기관',
+    },
+    children: [
+      {
+        path: 'organizationInquiryList',
+        component: () => import('@/views-nia/organization/organizationInquiryList'),
+        name: 'OrganizationInquiryList',
+        meta: { title: '이용기관 조회' },
+      },
+    ]
+  },
+].filter(v => v.disable !== true))

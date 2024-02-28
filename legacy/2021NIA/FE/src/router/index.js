@@ -15,9 +15,28 @@ const isDebug = (AppOptions.instance.debug === true)
 const { project } = AppOptions.instance
 
 const { dataHubHome, dataHubLogin, dataHubRoute } = require('./dataHub/index')
-const loginView = dataHubLogin
-const projectRoute = dataHubRoute
-const projectHome = dataHubHome
+const { niaHome, niaLogin, niaRoute } = require('./nia/index')
+
+let loginView
+let projectRoute
+let projectHome
+
+switch (project) {
+  case 'datahub':
+    loginView = dataHubLogin
+    projectRoute = dataHubRoute
+    projectHome = dataHubHome
+    break
+  case 'nia':
+    loginView = niaLogin
+    projectRoute = niaRoute
+    projectHome = niaHome
+    break
+
+  default:
+
+    break
+}
 
 export const constantRoutes = [
   {
