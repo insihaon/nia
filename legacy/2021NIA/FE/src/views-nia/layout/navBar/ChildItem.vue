@@ -1,7 +1,7 @@
 <template>
   <li v-if="!item.hidden" :class="[{ ['sub'+idx]: true }]">
     <template v-if="hasOneShowingAll(item.children,item)">
-      <router-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path)">
+      <router-link :to="resolvePath(onlyOneChild.path)">
         {{ item.meta.title }}
       </router-link>
     </template>
@@ -67,6 +67,7 @@ export default {
       if (showingChildren.length > 0) {
         return true
       }
+
       // Show parent if there are no child router to display
       if (showingChildren.length === 0) {
         this.onlyOneChild = { ... parent, path: '', noShowingChildren: true }

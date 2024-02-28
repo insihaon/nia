@@ -11,8 +11,6 @@
 <script>
 import { Base } from '@/min/Base.min'
 import { AppOptions } from '@/class/appOptions'
-import EventBus from '@/utils/event-bus'
-import { niaRoute } from '@/router/nia/index'
 
 export default {
   name: 'AppMain',
@@ -24,19 +22,10 @@ export default {
     }
   },
   computed: {
-    niaRoute() {
-      return niaRoute
-    },
     cachedViews() {
       return this.$store.state.tagsView.cachedViews
     },
-    childMenu() {
-      return this.niaRoute.childMenu
-    },
     key() {
-      // if (this.niaRoute) {
-      //   return false
-      // }
       return this.$route.path
     },
     duration() {
@@ -60,12 +49,6 @@ export default {
         this.$store.dispatch('tagsView/addView', this.$route)
       }
       return false
-    },
-    selectedColNewItem(params, type) {
-      EventBus.$emit('selectedNewCol', params, 'modalSelected')
-      //     EventBus.$emit('selectedNewItem', () => {
-      //     this.changeSelected()
-      // })
     },
   }
 }

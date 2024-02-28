@@ -103,21 +103,5 @@ export const aiTemplateRoute = Object.freeze([
         meta: { title: 'MENU 2-1' },
       },
     ]
-  },
-  {
-    path: '/menu3',
-    component: Layout,
-    hidden: true,
-    disable: false,
-    redirect: '/menu3/index',
-    meta: { title: 'MENU 3' },
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views-aiTemplate/index'),
-        name: 'aiTemplate',
-        meta: { title: 'MainPage', affix: false }
-      },
-    ]
-  },
+  }
 ].filter(v => v.disable !== true))

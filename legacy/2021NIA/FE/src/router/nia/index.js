@@ -1,11 +1,8 @@
 import Layout from '@/views-nia/layout'
 
 export const niaLogin = import('@/views-nia/login/index')
-// export const niaHome = '/dashBoard/index'
-export const niaHome = '/operationStatusScreen/controlScreen'
-
+export const niaHome = '/dashBoard/index'
 export const niaRoute = Object.freeze([
-
   {
     path: '/dashBoard',
     component: Layout,
@@ -15,25 +12,20 @@ export const niaRoute = Object.freeze([
     meta: {
       title: '대시보드',
     },
-    // children: [
-    //   {
-    //     path: 'index',
-    //     // component: () => import('@/views-nia/layout/index'), // 로그인 페이지
-    //     component: () => import('@/views-nia/dashBoard/index'),
-    //     name: 'niaMain',
-    //     meta: { title: '', affix: false }
-    //   }
-    // ]
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views-nia/dashBoard/index'),
+        name: 'NiaMain',
+        meta: { title: 'DashBoard', affix: false }
+      }
+    ]
   },
   {
     path: '/performanceMonitoring',
     component: Layout,
-    hidden: false,
-    disable: false,
     redirect: '/performanceMonitoring',
-    meta: {
-      title: '성능감시',
-    },
+    meta: { title: '성능감시' },
     children: [
       {
         path: 'trafficAnalysisCountry',
