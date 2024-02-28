@@ -34,6 +34,15 @@ import { i18n } from './i18n'
 
 import DomHints from 'vue-dom-hints'
 
+import splitPane from 'vue-splitpane'
+Vue.component('split-pane', splitPane)
+
+import LottieVuePlayer from '@lottiefiles/vue-lottie-player'
+Vue.use(LottieVuePlayer)
+
+import SvgIcon from '@jamescoyle/vue-icon'
+Vue.component('svg-icon', SvgIcon)
+
 process.env.NODE_ENV === 'development' ? require('@/min/global') : require('@/min/global.min')
 
 Vue.use(LoadScript)

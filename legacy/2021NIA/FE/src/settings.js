@@ -21,6 +21,12 @@ module.exports = {
 
   /**
    * @type {boolean} true | false
+   * @description Whether fix the sidebar
+   */
+  fixSide: true,
+
+  /**
+   * @type {boolean} true | false
    * @description Whether hide the sidebar at all
    */
   navbarOnly: true,
@@ -36,6 +42,21 @@ module.exports = {
    * @description Whether show the bottombar in sidebar
    */
   bottombar: false,
+
+  /**
+   * @type {string} 'top' | 'left'
+   * @description Whether show the topbar or sidebar
+   */
+  menuType: 'TOP',
+
+  /**
+   * @type {string} 'TopBottom' | 'LeftRight' | 'LeftBar' | 'RightBar'
+   * @description Whether show the topbar or sidebar
+   */
+  layoutType: 'TopBottom',
+
+  topPaneSize: 50,
+  sidePaneSize: 20,
 
   popupLayout: false,
 
