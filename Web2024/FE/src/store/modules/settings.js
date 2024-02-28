@@ -4,16 +4,21 @@ import defaultSettings from '@/settings'
 export const _var = { variables, defaultSettings }
 
 const storage = window.localStorage || window.sessionStorage
-const { showSettings, tagsView, fixedHeader, navbarOnly, sidebarLogo, bottombar, popupLayout } = Object.assign(defaultSettings, JSON.parse(storage.getItem('settings') || '{}'))
+const { showSettings, tagsView, fixedHeader, navbarOnly, sidebarLogo, bottombar, popupLayout, menuType, layoutType, fixSide, topPaneSize, sidePaneSize } = Object.assign(defaultSettings, JSON.parse(storage.getItem('settings') || '{}'))
 
 const state = {
   theme: variables.theme,
   showSettings: showSettings,
   tagsView: tagsView,
   fixedHeader: fixedHeader,
+  fixSide: fixSide,
   navbarOnly: navbarOnly,
   sidebarLogo: sidebarLogo,
   bottombar: bottombar,
+  menuType: menuType,
+  layoutType: layoutType,
+  topPaneSize: topPaneSize,
+  sidePaneSize: sidePaneSize,
   popupLayout: popupLayout
 }
 

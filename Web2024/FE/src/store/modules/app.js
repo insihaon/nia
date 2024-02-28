@@ -9,6 +9,10 @@ const state = {
     opened: storage.getItem('sidebarStatus') ? !!+storage.getItem('sidebarStatus') : true,
     withoutAnimation: false
   },
+  historybar: {
+    opened: storage.getItem('historybarStatus') ? !!+storage.getItem('historybarStatus') : true,
+    withoutAnimation: false
+  },
   screenDevice: 'desktop',
   viewport: 'xl',
   size: storage.getItem('size') ?? ('mini' || 'small' || 'medium'),
@@ -25,7 +29,6 @@ const state = {
 const mutations = {
   TOGGLE_SIDEBAR: state => {
     state.sidebar.opened = !state.sidebar.opened
-    state.sidebar.withoutAnimation = false
     if (state.sidebar.opened) {
       storage.setItem('sidebarStatus', 1)
     } else {
@@ -35,7 +38,20 @@ const mutations = {
   CLOSE_SIDEBAR: (state, withoutAnimation) => {
     storage.setItem('sidebarStatus', 0)
     state.sidebar.opened = false
-    state.sidebar.withoutAnimation = withoutAnimation
+  },
+  TOGGLE_HISTORYBAR: state => {
+    state.historybar.opened = !state.historybar.opened
+    state.historybar.withoutAnimation = false
+    if (state.historybar.opened) {
+      storage.setItem('historybarStatus', 1)
+    } else {
+      storage.setItem('historybarStatus', 0)
+    }
+  },
+  CLOSE_HISTORYBAR: (state, withoutAnimation) => {
+    storage.setItem('historybarStatus', 0)
+    state.historybar.opened = false
+    state.historybar.withoutAnimation = withoutAnimation
   },
   SET_SCREEN_DEVICE: (state, screenDevice) => {
     state.screenDevice = screenDevice
@@ -104,6 +120,12 @@ const actions = {
   },
   closeSideBar({ commit }, { withoutAnimation }) {
     commit('CLOSE_SIDEBAR', withoutAnimation)
+  },
+  toggleHistoryBar({ commit }) {
+    commit('TOGGLE_HISTORYBAR')
+  },
+  closeHistoryBar({ commit }, { withoutAnimation }) {
+    commit('CLOSE_HISTORYBAR', withoutAnimation)
   },
   setScreenDevice({ commit }, screenDevice) {
     commit('SET_SCREEN_DEVICE', screenDevice)
