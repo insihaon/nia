@@ -4,7 +4,7 @@ server:
     context-path: 
     # 디버깅 context-path 를 사용하려면 
     # .env.development 의 BASE_URL 도 같이 변경해야 한다
-    # context-path: /datahub/portal
+    # context-path: /nia/portal
     session.timeout: 30m
   compression:
       enabled: true
@@ -27,7 +27,7 @@ server:
   #   key-password: gjqm12!!
 
 spring:
-  application.name: dataHub-web
+  application.name: nia-web
   config.use-legacy-processing: true  # 스프링 부트 2.4 이전 레거시 구동방식 유지
   main.allow-bean-definition-overriding: true
 
@@ -64,7 +64,7 @@ spring:
     username: ENC(Foe1N9w7xSwqRPUP0bK2BA==)
     password: ENC(wP3cyL4akqyo58OMIx8SSJ7dtMmP5bWo)
     dataSource-name: ENC(BM4aY0nH3QmYagxcv7bOvA==)
-    mapper-packages: com.codej.dataHub.mapper.db2nd # 공백없이 ','로 구분된 맵퍼 패키지들
+    mapper-packages: com.codej.nia.mapper.db2nd # 공백없이 ','로 구분된 맵퍼 패키지들
 
   datasource3rd:
   #   driver-class-name: oracle.jdbc.driver.OracleDriver
@@ -104,7 +104,7 @@ jasypt:
       suffix: )
 
 myconf:
-  project: datahub
+  project: nia
   websocket:
     enabled: false   #websocket.enabled
     url: /ws-stomp
