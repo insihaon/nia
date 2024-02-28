@@ -9,7 +9,7 @@
       filterable
       reserve-keyword
       remote
-      @change="$emit('orgChange', 'HEAD')"
+      @change="devEmit('orgChange', 'HEAD')"
     >
       <el-option
         v-for="(option, i) in item.HEAD.options"
@@ -29,7 +29,7 @@
       filterable
       reserve-keyword
       remote
-      @change="$emit('orgChange', 'CENTER')"
+      @change="devEmit('orgChange', 'CENTER')"
     >
       <el-option
         v-for="(option, i) in item.CENTER.options"
@@ -49,7 +49,7 @@
       filterable
       reserve-keyword
       remote
-      @change="$emit('orgChange', 'TEAM')"
+      @change="devEmit('orgChange', 'TEAM')"
     >
       <el-option
         v-for="(option, i) in item.TEAM.options"
@@ -68,7 +68,7 @@
       filterable
       reserve-keyword
       remote
-      @change="$emit('orgChange', 'OFFICE')"
+      @change="devEmit('orgChange', 'OFFICE')"
     >
       <el-option
         v-for="(option, i) in item.OFFICE.options"
@@ -82,10 +82,9 @@
 </template>
 
 <script>
-const routeName = 'CompCheckSelector'
+const routeName = 'OrgSelect'
 import { Base } from '@/min/Base.min'
 import ComponentTesterMixins from '@/test/ComponentTesterMixins'
-
 export default {
   name: routeName,
   components: {},
@@ -94,11 +93,13 @@ export default {
   props: {
     item: {
       type: Object,
-      default() { return { } }
+      default() {
+        return {}
+      }
     },
     searchModel: {
       type: Object,
-      default() { return [] }
+      default() { return {} }
     }
   },
   data() {

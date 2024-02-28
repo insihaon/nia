@@ -14,25 +14,24 @@ const mutations = {
 
     COMPONENT_LIST_CONVERT_TREE_DATA(state) {
         state.testComponentList.forEach((testComponent) => {
-          state.componentTreeData.push({
-              componentPath: testComponent.__file,
-              componentAlias: testComponent.__file.split('/').pop(),
-              component: testComponent
+            state.componentTreeData.push({
+                componentPath: testComponent.__file,
+                componentAlias: testComponent.__file.split('/').pop(),
+                component: testComponent
             })
         })
     },
 
-    SET_DEFAULT_COMPONENT_TREE_KEY(state, component) {
-        state.defaultComponentTreeKey = component
+    SET_DEFAULT_COMPONENT_TREE_KEY(state, componentPath) {
+        state.defaultComponentTreeKey = componentPath
     }
 }
 
 const actions = {
     async initTestComponentList({ dispatch, commit, state }) {
-        // 최초 1번만 로딩하며, 그 이후에는 store를 비우지 않는이상 로딩하지 않는다.
         if (state.testComponentList.length === 0) {
             await dispatch('setComponentList')
-            commit('COMPONENT_LIST_CONVERT_TREE_DATA')
+            await commit('COMPONENT_LIST_CONVERT_TREE_DATA')
         }
     },
 
@@ -42,8 +41,10 @@ const actions = {
             dispatch('recursiveSetComponent', route.component)
             if (route.children) {
                 for (const child of route.children) {
-                    const childComponent = await child.component()
-                    dispatch('recursiveSetComponent', childComponent.default)
+                    if (child.component) {
+                        const childComponent = await child.component()
+                        dispatch('recursiveSetComponent', childComponent.default)
+                    }
                 }
             }
         }
@@ -53,18 +54,17 @@ const actions = {
         if (!Object.hasOwnProperty.call(duplicateCheckFileObject, component.__file)) {
             duplicateCheckFileObject[component.__file] = component
             if (component.mixins) {
-              const testComponent = component.mixins.find(mixin => mixin.__file === 'src/test/ComponentTesterMixins.vue')
-              testComponent && commit('PUSH_TEST_COMPONENT_LIST', component)
+                const testComponent = component.mixins.find(mixin => mixin.__file === 'src/test/ComponentTesterMixins.vue')
+                testComponent && commit('PUSH_TEST_COMPONENT_LIST', component)
             }
 
             if (component.components) {
-              Object.keys(component.components).forEach((childComponent) => {
-                dispatch('recursiveSetComponent', component.components[childComponent])
-              })
+                Object.keys(component.components).forEach((childComponent) => {
+                    dispatch('recursiveSetComponent', component.components[childComponent])
+                })
             }
         }
-    },
-
+    }
 }
 
 export default {

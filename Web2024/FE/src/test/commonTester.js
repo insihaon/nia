@@ -1,5 +1,17 @@
 import router from '@/router'
 
+export function isTestPage() {
+    if (router.history.current.path === '/test') {
+        return true
+    }
+
+    if (/^\/test\/.*/.test(router.history.current.path)) {
+        return true
+    }
+
+    return false
+}
+
 export function getDataType(data) {
     try {
         if (data === 'componentType-multitype-specialType') return 'multitype'
@@ -101,12 +113,13 @@ export function getDataTypeDefaultValue(type) {
     }
 }
 
-export function isTestPage() {
-    return router.history.current.path === '/test'
-}
-
 export const defaultTypeComponentData = {
     type: undefined,
     dataValue: undefined,
     objectKey: undefined
+}
+
+export const testerConstants = {
+    'notExist': 'notExist',
+    'exist': 'exist'
 }

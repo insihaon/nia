@@ -1,17 +1,14 @@
 <script>
+import { isTestPage } from '@/test/commonTester.js'
 
 export default {
     data() {
         return {
             src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-            emitKeys: []
         }
     },
 
     computed: {
-        isComponentTestPage() {
-            return this.$route.path === '/test'
-        }
     },
 
     watch: {
@@ -19,7 +16,9 @@ export default {
     },
 
     mounted() {
-        this.emitCurrentTestComponentData()
+        if (isTestPage) {
+            this.emitCurrentTestComponentData()
+        }
     },
 
     destroyed() {
@@ -28,14 +27,13 @@ export default {
     methods: {
         emitCurrentTestComponentData() {
             const THIS = this
-            const propMap = Object.keys(this._props).reduce((map, propName) => {
+            const defaultPropMap = Object.keys(this._props).reduce((map, propName) => {
                 try {
                     if (!this._props[propName]) {
                         // map[propName] = this.$options.props[propName].type()
                         if (typeof this.$options.props[propName].type === 'function') {
                             map[propName] = this.$options.props[propName].type()
                         } else if (Array.isArray(this.$options.props[propName].type)) {
-                            debugger
                             map[propName] = 'componentType-multitype-specialType'
                         } else {
                             throw new Error('해당 prop 처리중 에러발생 : ' + propName)
@@ -48,19 +46,16 @@ export default {
                     console.error('해당 prop 처리중 에러발생 : ' + propName)
                     console.log(THIS)
                     console.error(e)
-                    debugger
                 }
             }, {})
 
-            const emitKeys = this.emitKeys || null
-            this.$emit('emitComponentData', { propMap: propMap, emitKeys: emitKeys })
+            this.$emit('initComponentData', { propMap: defaultPropMap })
         },
 
-        runEmit(emitKey, param) {
+        devEmit(emitKey, param) {
             this.$emit(emitKey, param)
-            this.$emit('runEmit', { emitKey: emitKey, param: param })
+            this.$emit('devEmit', { emitKey: emitKey, param: param })
         }
-
     }
 }
 

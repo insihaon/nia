@@ -16,7 +16,7 @@ const modules = modulesFiles.keys().reduce((modules, modulePath) => {
   return modules
 }, {})
 
-const paths = [] // Object.keys(modules)
+const paths = ['testComponentPersisted'] // Object.keys(modules)
 const SALT_KEY = '__DATAHUB__'
 const persistedState = createPersistedState({
   key: 'state', // 저장할 상태의 키
