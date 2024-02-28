@@ -5,52 +5,70 @@
       <div :class="{'fixed-header':fixedHeader}" @dblclick="handleDoubleClick">
         <div class="headerWrap">
           <div class="headerWrapLogo">
-            <router-link :to="{ name: 'datahubMain' }">
-              <span style="font-weight: bold;">{{ '데이터허브' }} </span>
-              <span>관리시스템</span>
+            <router-link :to="{ name: 'ControlScreen' }">
+              <span style="font-weight: bold; color :#fff; font-size : 20pt; margin-top: 30px">{{ 'NIA KOREN' }} </span>
             </router-link>
           </div>
           <!-- <span class="menuTitle">{{ activeTitle }}</span> -->
           <div class="headerMenu">
             <ul>
-              <li v-for="menu in dataHubRoute" v-show="!menu.hidden" :key="menu.path">
+              <li v-for="menu in niaRoute" v-show="!menu.hidden" :key="menu.path">
                 <span>{{ menu.meta.title }}</span>
                 <ul>
                   <template v-for="childMenu in menu.children">
-                    <li v-show="!childMenu.hidden" v-if="hasPermission(childMenu)" :key="childMenu.path">
-                      <router-link :to="{name : childMenu.name}">
-                        <div>
-                          <span>{{ childMenu.meta.title }}</span>
-                        </div>
-                      </router-link>
+                    <li v-show="!childMenu.hidden" :key="childMenu.path">
+                      <template v-if="hasPermission(childMenu)">
+                        <router-link v-if="!childMenu.modalMode" :to="{ name: childMenu.name }">
+                          <div>
+                            <span>{{ childMenu.meta.title }}</span>
+                          </div>
+                        </router-link>
+                        <template v-else>
+                          <div @click="handleOpenEditModal(childMenu)">
+                            <span>{{ childMenu.meta.title }}</span>
+                          </div>
+                        </template>
+                      </template>
                     </li>
                   </template>
                 </ul>
               </li>
             </ul>
           </div>
-          <div class="headerUserInfo">
-            <span>{{ loginUsername }}님 안녕하세요</span>
+          <div class="container container-one">
+            <!-- <button>
+              {{ loginUsername }}
+            </button>
+            <div class="fill-one" @click="userDetail()">{{ '상세정보' }}</div> -->
+            <div class="container container-one">
+              <button>
+                Hover over me
+                <div class="fill-one" />
+              </button>
+            </div>
           </div>
-          <!-- <div class="headerLogOut">
+          <div class="headerLogOut">
             <span>로그아웃</span>
-          </div> -->
+          </div>
           <currentMenu v-if="false" />
         </div>
         <AppMain v-if="!popupLayout" />
       </div>
     </div>
+    <!-- <CompTrafficAnalysisModal ref="CompTrafficAnalysisModal" :fullscreen="isViewport('<', 'sm')" /> -->
+    <ModaluserSettings ref="ModaluserSettings" :fullscreen="isViewport('<', 'sm')" />
   </div>
 </template>
 
 <script>
 import { AppOptions } from '@/class/appOptions'
 import { Base } from '@/min/Base.min'
-import AppMain from '@/layout/components/dataHub/AppMain'
-import currentMenu from '@/layout/components/dataHub/currentMenu'
+import AppMain from '@/layout/components/nia/AppMain'
+// import currentMenu from '@/layout/components/dataHub/currentMenu'
 import ResizeMixin from '@/layout/mixin/ResizeHandler'
-import { dataHubRoute } from '@/router/dataHub/index'
-
+import { niaRoute } from '@/router/nia/index'
+// import CompTrafficAnalysisModal from '@/views-nia/modal/CompTrafficAnalysisModal'
+import ModaluserSettings from '@/views-nia/userManagement/ModaluserSettings'
 import { mapState, mapGetters } from 'vuex'
 import hotkeys from 'hotkeys-js'
 
@@ -66,8 +84,9 @@ export default {
   name: routeName,
   components: {
     AppMain,
-    currentMenu,
-
+    ModaluserSettings
+    // CompTrafficAnalysisModal
+    // currentMenu,
   },
   extends: Base,
   mixins: [ResizeMixin],
@@ -101,12 +120,12 @@ export default {
             }
           return path
         },
-        // activeTitle() {
-        //   return this.$route?.meta?.title
-        // },
-      dataHubRoute() {
+        activeTitle() {
+          return this.$route?.meta?.title
+        },
+      niaRoute() {
         // console.log(dataHubRoute)
-        return dataHubRoute
+        return niaRoute
       },
     showLogo() {
       return this.$store.state.settings.sidebarLogo
@@ -171,14 +190,13 @@ export default {
     hotkeys('alt+h+4', 'debug', (e, h) => { e.preventDefault(); this.onChangeHeader(4) })
   },
   mounted() {
-     this.subscribeEvent()
+    //  this.subscribeEvent()
   },
   methods: {
+    handleOpenEditModal(row, type) {
+        this.$refs.ModaluserSettings.open({ row: row, type: type })
+    },
     hasPermission(item) {
-      // if (item?.meta?.grant) {
-      //   console.log(item.path)
-      // }
-
       const menuRoles = item?.meta?.grant ?? ['ROLE_ADMIN', 'ROLE_USER']
       const myRoles = this.roles ?? ['ROLE_USER']
 
@@ -222,6 +240,9 @@ export default {
       const data = message.properties
 
       this.$refs.preview.open(data)
+    },
+    userDetail() {
+
     }
   }
 }
@@ -290,10 +311,51 @@ export default {
     z-index: 100;
     opacity: 0.8;
   }
+
+  .container {
+  text-align: center;
+  position: relative;
+  width: 300px;
+  margin: 0 auto;
+  cursor: pointer;
+}
+
+button {
+  position: relative;
+  height: 50px;
+  width: 280px;
+  border: 0;
+  border-radius: 5px;
+  text-transform: uppercase;
+  font-size: 1.1em;
+  letter-spacing: 0.2em;
+  overflow: hidden;
+  box-shadow: 0 4px 12px 0 rgba(152, 160, 180, 10);
+  z-index: -2;
+}
+
+/* Styles specific to the first button */
+.fill-one {
+  position: absolute;
+  background-image: linear-gradient(to right, #E040FB, #00BCD4);
+  height: 70px;
+  width: 420px;
+  border-radius: 5px;
+  margin: -40px 0 0 -140px;
+  z-index: -1;
+  transition: all 0.4s ease;
+}
+
+.container-one:hover .fill-one {
+  -webkit-transform: translateX(100px);
+  -moz-transform: translateX(100px);
+  transform: translateX(100px);
+}
+
 </style>
 
 <style lang="scss" scoped>
-@import "~@/assets/css/style_main.css";
+@import "~@/assets/css/nia_style_main.css";
 
 .viewport-container > .el-card__body {
   padding: 5px;
@@ -301,8 +363,8 @@ export default {
   h3 {
     text-align: -webkit-center;
     min-width: 150px;
-    // background-color: #606364;
+    // background-color: rgba(255, 255, 255, 0.242);
   }
 }
-
 </style>
+
