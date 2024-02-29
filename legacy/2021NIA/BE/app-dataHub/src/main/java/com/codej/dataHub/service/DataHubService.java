@@ -37,7 +37,7 @@ public class DataHubService extends MainService {
     @Autowired
     protected PlatformTransactionManager transactionManager;
 
-    @Value("${myconf.api-server.kong-use:true}")
+    @Value("${myconf.api-server.kong-use:false}")
     private Boolean kongApiUse;
 
 

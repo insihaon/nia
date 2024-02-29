@@ -71,7 +71,8 @@ export default {
   height: 35px;
   overflow: hidden;
   align-items: center;
-  background-color: #94a3b8;
+  padding: 0px 5px;
+  background-color: #94a3b838;
   #function-container {
     padding: 0px 10px;
     display: flex;

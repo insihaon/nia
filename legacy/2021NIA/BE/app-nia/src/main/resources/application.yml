@@ -60,10 +60,10 @@ spring:
   datasource2nd:
     enabled: true
     driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-    url: jdbc:log4jdbc:postgresql://incodej.iptime.org:22432/datahub
-    username: ENC(Foe1N9w7xSwqRPUP0bK2BA==)
-    password: ENC(wP3cyL4akqyo58OMIx8SSJ7dtMmP5bWo)
-    dataSource-name: ENC(BM4aY0nH3QmYagxcv7bOvA==)
+    url: jdbc:log4jdbc:postgresql://incodej-lab.iptime.org:6544/niadb?allowMultiQueries=true
+    username: ENC(8Fi3mfw4UUT/4sIfuw71gKaNJQnbCn7y)
+    password: ENC(qth6L1xxsdq5xTajX4jkKmlJQ9ieFYm6)
+    dataSource-name: ENC(+24YoukpnVKZAmX8g5jOtw==)
     mapper-packages: com.codej.nia.mapper.db2nd # 공백없이 ','로 구분된 맵퍼 패키지들
 
   datasource3rd:
@@ -90,7 +90,12 @@ spring:
 
   rabbitmq:
     enabled: false  # 접속 불가 환경을 위해 추가함
-
+    address: incodej-lab.iptime.org
+    port: 6786
+    EngineToUi: nia.EngineToUiIndexDirectly
+    UiToEngine: nia.UiToEngineIndexDirectly
+    InspectorToUID: nia.InspectorToUIDirectly
+    TickeRestart: nia.NiaTicketReStartIndexDirectly
 
   jwt:
     secret: ENC(JHGQ4l2duXL/dcZJSWYxdyASjfzLjyXb)
@@ -118,11 +123,11 @@ myconf:
     login: false
   
   api-server:
-    kong: http://127.0.0.1:8000
-    kong-admin: http://127.0.0.1:8001
-    kong-use: true
-    grafana-url: http://incodej.iptime.org:22330 
-    hub-api: http://127.0.0.1:8070/dh
+    ipsdn: 
+      host: incodej-lab.iptime.org
+      port : 8088
+      user: codej
+      pw: '!codej@'
   
 file:
   access-Url: /external/**

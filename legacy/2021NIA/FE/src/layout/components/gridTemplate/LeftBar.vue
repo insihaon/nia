@@ -6,13 +6,13 @@
         <slot name="leftbar-container" />
       </template>
       <template slot="paneR">
-        <split-pane split="horizontal" :default-percent="topPaneSize" @resize="(val)=> resize(val, 'topPaneSize')">
-          <template slot="paneL">
-            <filterBar position="TOP" />
+        <split-pane :min-percent="5" split="horizontal" :default-percent="topPaneSize" @resize="(val)=> resize(val, 'topPaneSize')">
+          <template slot="paneL" class="top-container">
+            <!-- <filterBar position="TOP" /> -->
             <slot name="top-container" />
           </template>
           <template slot="paneR">
-            <filterBar position="BOTTOM" />
+            <!-- <filterBar position="BOTTOM" /> -->
             <slot name="bottom-container" />
           </template>
         </split-pane>
@@ -23,13 +23,13 @@
 <script>
 import { Base } from '@/min/Base.min'
 import { mapState } from 'vuex'
-import filterBar from '@/layout/components/filterBar'
+// import filterBar from '@/layout/components/filterBar'
 
 const routeName = 'GridLeftBar'
 
 export default {
   name: routeName,
-  components: { filterBar },
+  components: { },
   extends: Base,
   data() {
     return {

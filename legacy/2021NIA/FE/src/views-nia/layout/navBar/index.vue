@@ -36,7 +36,7 @@
       </div>
     </div>
     <!-- all child -->
-    <div id="sub-menu" style="z-index: 1;">
+    <div id="sub-menu">
       <el-menu id="top-inner" class="flex h-full text-white" style="border-right: 0px">
         <child-item v-for="(route, index) in routes" :key="route.path" :base-path="route.path" :item="route" :idx="index.toString()" />
       </el-menu>
@@ -201,6 +201,7 @@ export default {
     }
   }
   #sub-menu {
+    z-index: 2;
     height: 0px;
     width: 100%;
     padding-left: 200px;

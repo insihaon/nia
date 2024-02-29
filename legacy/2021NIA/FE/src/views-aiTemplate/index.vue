@@ -56,28 +56,5 @@ export default {
     border: solid 1px #363636;
     transition: all 0.4s;
   }
-  .gridGroup {
-    height: 25px;
-    padding: 5px 0;
-    i {
-      margin-left: 5.5px;
-      filter: contrast(0.5);
-    }
-    .gridIcon {
-      cursor: pointer;
-      width: 17px;
-      margin-left: 4px;
-      height: 17px;
-      filter: contrast(0);
-    }
-
-    .gridIcon.selected {
-      filter: contrast(0.8);
-    }
-
-    .gridIcon:hover {
-      filter: contrast(0.5);
-    }
-  }
 }
 </style>
