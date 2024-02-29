@@ -14,8 +14,12 @@
       @click.middle.native="!isAffix(tag)?closeSelectedTag(tag):''"
     >
       <!-- @contextmenu.prevent.native="openMenu(tag,$event)" -->
-      {{ $t(tag.meta.i18n) || tag.meta.tagTitle || tag.title }}
-      <span v-if="!isAffix(tag)" class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)" />
+      <div class="title">
+        {{ $t(tag.meta.i18n) || tag.meta.tagTitle || tag.title }}
+      </div>
+      <div>
+        <span v-if="!isAffix(tag)" class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)" />
+      </div>
     </router-link>
     <ul v-show="visible" :style="{left:left+'px',top:top+'px'}" class="contextmenu">
       <li @click="refreshSelectedTag(selectedTag)">Refresh</li>
@@ -240,11 +244,18 @@ export default {
     padding: 0px 15px;
     border-radius: 6px;
     margin-top: 5px;
-    white-space: nowrap;
-    display: block;
-    overflow: hidden;
-    text-overflow: ellipsis;
     transition: all 0.3s;
+    .title {
+      display: block;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      &:hover {
+        line-height: 12px;
+        height: fit-content;
+        white-space: break-spaces;
+      }
+    }
     span {
       margin-left: 10px;
       border-radius: 50%;
@@ -253,12 +264,15 @@ export default {
         background-color: #fff;
       }
     }
+    &:hover {
+      background: #64748b;
+    }
     &.active {
       color: #fff;
       background-color: $aiTemplateDefault;
       justify-content: flex-start;
       white-space: nowrap;
-      display: block;
+      display: flex;
       overflow: hidden;
       text-overflow: ellipsis;
       &::before {
@@ -271,11 +285,6 @@ export default {
         position: relative;
         margin-right: 4px;
       }
-    }
-    &:hover {
-      background: #64748b;
-      white-space: break-spaces;
-      height: fit-content;
     }
   }
 }
