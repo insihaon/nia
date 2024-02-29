@@ -28,55 +28,32 @@
         </when>
    </choose>
    </sql>
-
-    <!-- API 정보/오류리스트 -->
-    <!-- <select id="SELECT_API_INFO_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
-    <include refid="TotalCountPrefix"/>
-    SELECT
-        TAM.API_ID,
-        TAM.API_NAME,
-        TAM.SYSTEM_ID,
-        TAM.API_URL,
-        TAM.INTGR_INTERVAL,
-        TAM.API_DESC,
-        TAM.EXPIRD_TIME,
-        TAM.UPDATE_TIME
-    ,CASE
-        WHEN EXEC_MODE_CD = 'B' THEN 'Batch'
-        WHEN EXEC_MODE_CD = 'F' THEN 'SFTP'
-        ELSE 'OnDemand'
-    END AS EXEC_MODE_CD
-    FROM
-        DATAHUB.TB_API_MST TAM
-    WHERE 1=1
-    <if test="api_name != null and api_name != ''">
-    AND (
-        UPPER(TAM.API_NAME) LIKE '%' || UPPER(#{api_name}) || '%'
-    )
-    </if>
-    <if test="exec_mode_cd != null and !exec_mode_cd.isEmpty() and !exec_mode_cd.contains('ALL') and !exec_mode_cd.contains('CT')">
-    AND TAM.EXEC_MODE_CD IN
-        <foreach collection="exec_mode_cd" item="item" open="(" separator="," close=")">
-            #{item}
-        </foreach>
-    </if>
-    <if test="api_url != null and !api_url.isEmpty() and  !api_url.contains('ALL') and !api_url.contains('CT')">
-    AND TAM.API_URL IN
-        <foreach collection="api_url" item="item" open="(" separator="," close=")">
-            #{item}
-        </foreach>
-    </if>
-    GROUP BY
-        TAM.API_ID,
-        TAM.API_NAME,
-        TAM.API_URL,
-        TAM.INTGR_INTERVAL,
-        TAM.API_DESC,
-        TAM.EXPIRD_TIME,
-        TAM.UPDATE_TIME,
-        EXEC_MODE_CD
-    <include refid="TotalCountSuffix"/>
-    </select>  -->
+   
+   <select id="SELECT_IP_ALARM_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+        SELECT
+            T.TICKET_ID AS TICKET_ID,
+            T.CLUSTER_NO AS CLUSTER_NO,
+            T.TICKET_TYPE AS TICKET_TYPE,
+            T.TICKET_GENERATION_TIME AS TICKET_GENERATION_TIME,
+            T.FAULT_TIME AS FAULT_TIME,
+            T.ROOT_CAUSE_TYPE AS ROOT_CAUSE_TYPE,
+            T.ROOT_CAUSE_CODE AS ROOT_CAUSE_CODE,
+            T.ROOT_CAUSE_DOMAIN AS ROOT_CAUSE_DOMAIN,
+            T.TOTAL_RELATED_ALARM_CNT AS TOTAL_RELATED_ALARM_CNT,
+            T.STATUS AS STATUS,
+            T.PARENT_TICKET_ID AS PARENT_TICKET_ID,
+            T.TICKET_RCA_RESULT_CODE AS TICKET_RCA_RESULT_CODE,
+            T.TICKET_RCA_RESULT_DTL_CODE AS TICKET_RCA_RESULT_DTL_CODE,
+            T.TICKET_RCA_RESULT_ORIG_DTL_CODE AS TICKET_RCA_RESULT_ORIG_DTL_CODE,
+            T.TICKET_UPDATE_TIME AS TICKET_UPDATE_TIME,
+            T.ZERO1_MODEL AS ZERO1_MODEL,
+            T.ZERO1_ENTROPY AS ZERO1_ENTROPY
+        FROM rca.tb_rca_ticket_current T
+        WHERE 1=1
+            AND T.OCCUR = TRUE AND T.PARENT_TICKET_ID IS NULL
+            AND ticket_generation_time <![CDATA[ > ]]>  now() - INTERVAL '48' HOUR
+        ORDER BY ticket_generation_time DESC, ticket_id desc
+   </select>
 
   
 

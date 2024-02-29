@@ -45,15 +45,4 @@ public class DataController extends AbsDataController {
         return mapper;
     }
 
-
-
-    @Override
-    @PostMapping(value = "/selectList/{sqlId}")
-    public Object postSelectList2(
-            @RequestHeader(value = "command", required = false) String command,
-            @PathVariable("sqlId") String sqlId,
-            @RequestBody HashMap<String, Object> param) throws Exception {
-        return postSelectList(command, sqlId, param);
-    }
-
 }

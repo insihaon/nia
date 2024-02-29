@@ -59,11 +59,6 @@ public class NiaApiController extends AbsDataController {
         return niaService;
     }
 
-    @PostMapping(value = "/SELECT_BLACK_AUTHORITY_BY_MENU") 
-    public BaseResponse auth( @RequestBody HashMap<String, Object> param) throws Exception {
-        return responseService.createSingleResponse(getAuth(param));
-    }
-
     public ResponseEntity<String> getAuth(@RequestBody HashMap<String, Object> param) throws Exception {
         return postAuth(param);
     }
