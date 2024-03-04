@@ -13,3 +13,12 @@ export function apiIpAlarmList(params = {}) {
     data: params
   })
 }
+export function apiTransmissionAlarmList(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_TRANSMISSION_ALARM_LIST',
+    data: params
+  })
+}

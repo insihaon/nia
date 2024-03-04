@@ -50,9 +50,9 @@ class BaseFilterGroup {
   //   }
   // }
 
-  addFilter(filterName, constants, options) {
+  addFilter(filterName, filterTitle, constants, options) {
     if (!this.filters[filterName]) {
-      this.filters[filterName] = new BaseFilter({ constants, parent: this, filterName, options })
+      this.filters[filterName] = new BaseFilter({ constants, parent: this, filterName, filterTitle, options })
     }
   }
 

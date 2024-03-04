@@ -1,7 +1,7 @@
 <template>
   <li v-if="!item.hidden" :class="[{ ['sub'+idx]: true }]">
-    <template v-if="hasOneShowingAll(item.children,item)">
-      <router-link :to="resolvePath(onlyOneChild.path)">
+    <template v-if="hasOneShowingAll(item.children, item)">
+      <router-link v-if="item.meta" :to="resolvePath(onlyOneChild.path)">
         {{ item.meta.title }}
       </router-link>
     </template>
@@ -99,20 +99,20 @@ export default {
     display: block;
     font-weight: 600;
     color: black;
-    font-size: 18px;
+    font-size: 16px;
   }
   li > ul > li {
     margin-top: 5px;
     padding-left: 5px;
     a {
-      font-size: 16px;
+      font-size: 14px;
       font-weight: 600;
       color: #141414;
     }
   }
   li > ul > li > ul > li {
     a {
-      font-size: 14px;
+      font-size: 12px;
       padding-left: 5px;
       color: gray;
     }

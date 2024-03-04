@@ -10,16 +10,16 @@
         <nav id="menu-bar" class="h-full ml-14">
           <el-menu class="flex h-full" :background-color="bgColor" :text-color="textColor" style="border-right: 0px">
             <el-menu-item
-              v-for="route in routes"
+              v-for="route in permission_routes"
               v-if="!route.hidden"
               id="menu-item"
               :key="route.path"
               style="line-height: 4rem;"
               class="h-full text-white font-semibold transition-colors"
             >
-              <!-- <router-link :to="route.path"> -->
-              {{ route.meta.title }}
-              <!-- </router-link> -->
+              <router-link v-if="route.meta" :to="route.path">
+                {{ route.meta.title }}
+              </router-link>
             </el-menu-item>
           </el-menu>
         </nav>
@@ -38,14 +38,13 @@
     <!-- all child -->
     <div id="sub-menu">
       <el-menu id="top-inner" class="flex h-full text-white" style="border-right: 0px">
-        <child-item v-for="(route, index) in routes" :key="route.path" :base-path="route.path" :item="route" :idx="index.toString()" />
+        <child-item v-for="(route, index) in permission_routes" :key="route.path" :base-path="route.path" :item="route" :idx="index.toString()" />
       </el-menu>
     </div>
   </el-header>
 </template>
 
 <script>
-import { niaRoute } from '@/router/nia/index'
 import ChildItem from './ChildItem'
 import { mdiHistory } from '@mdi/js'
 import { mapState, mapGetters } from 'vuex'
@@ -60,39 +59,32 @@ export default {
       textColor: '#bfcbd9',
       buttonDisabled: false,
       popoverVisible: false,
-      path: mdiHistory
+      path: mdiHistory,
     }
   },
   computed: {
-    routes() {
-      return niaRoute
-    },
     activeMenuTitle() {
       return this.$route?.meta?.title ?? ''
     },
     ...mapGetters([
+    'permission_routes',
     ]),
     ...mapState({
     }),
   },
   mounted () {
-    console.log(this.permission_routes)
-  },
-  created () {
-    this.$nextTick(() => {
-      const header = document.querySelector('#sub-menu')
-      const menuItem = document.querySelectorAll('#menu-item')
-      menuItem?.forEach((el) => {
-        el.addEventListener('mouseover', (event) => {
-          header.classList.add('open')
-        })
-      })
-      header?.addEventListener('mouseover', function(event) {
+    const header = document.querySelector('#sub-menu')
+    const menuItem = document.querySelectorAll('#menu-item')
+    menuItem?.forEach((el) => {
+      el.addEventListener('mouseover', (event) => {
         header.classList.add('open')
       })
-      header?.addEventListener('mouseout', function(event) {
-        header.classList.remove('open')
-      })
+    })
+    header?.addEventListener('mouseover', function(event) {
+      header.classList.add('open')
+    })
+    header?.addEventListener('mouseout', function(event) {
+      header.classList.remove('open')
     })
   },
   methods: {
@@ -204,7 +196,7 @@ export default {
     z-index: 2;
     height: 0px;
     width: 100%;
-    padding-left: 200px;
+    padding-left: 330px;
     overflow: hidden;
     background-color: #eef0f3;
     transition: height, 0.25s linear;

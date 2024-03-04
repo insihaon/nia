@@ -73,12 +73,12 @@ const actions = {
     const { debug, urlParam, project, isProd } = AppOptions.instance
     const { LOGIN_ID, MENU_ID, USER_ID, USER_NAME } = urlParam
     const NODE_ENV_DEV = Boolean(process.env.NODE_ENV === 'development' ?? 'false')
-    const isOnlyFront = Boolean(process.env.VUE_APP_ONLY_FE ?? 'false')
+    const isOnlyFront = Boolean(process?.env?.VUE_APP_ONLY_FE ?? false)
 
     return new Promise((resolve, reject) => {
-      if (isOnlyFront) {
-        return resolve(true)
-      }
+      // if (isOnlyFront) {
+      //   return resolve(true)
+      // }
       if (!(debug || NODE_ENV_DEV) && (project === 'datahub' && ['O1000179', 'O1000184', 'O0000183'].includes(MENU_ID) === false)) {
         console.error('권한 요청 실패 : 부적합한 MENU_ID')
         resolve(false)

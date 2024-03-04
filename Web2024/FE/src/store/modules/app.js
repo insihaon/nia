@@ -124,8 +124,8 @@ const actions = {
   toggleHistoryBar({ commit }) {
     commit('TOGGLE_HISTORYBAR')
   },
-  closeHistoryBar({ commit }, { withoutAnimation }) {
-    commit('CLOSE_HISTORYBAR', withoutAnimation)
+  closeHistoryBar({ commit }) {
+    commit('CLOSE_HISTORYBAR')
   },
   setScreenDevice({ commit }, screenDevice) {
     commit('SET_SCREEN_DEVICE', screenDevice)

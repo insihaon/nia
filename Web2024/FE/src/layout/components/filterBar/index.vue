@@ -4,7 +4,7 @@
       <slot id="function-container" name="function-container">ADD FILTER FUNCTION</slot>
       <div id="resize-container" class="px-1">
         <img src="@/assets/icon/reset.png" class="w-6 h-6" @click="onChangeSettings('RESET')">
-        <img src="@/assets/icon/minimization.png" class="w-6 h-6" @click="onChangeSettings('MIN')">
+        <img src="@/assets/icon/minimize.png" class="w-6 h-6" @click="onChangeSettings('MIN')">
         <img src="@/assets/icon/maximize.png" class="w-6 h-6" @click="onChangeSettings('MAX')">
       </div>
     </div>
@@ -71,7 +71,6 @@ export default {
   height: 35px;
   overflow: hidden;
   align-items: center;
-  padding: 0px 5px;
   background-color: #94a3b838;
   #function-container {
     padding: 0px 10px;
@@ -82,12 +81,11 @@ export default {
     display: flex;
     align-items: center;
     img {
-      // margin-right: 4px;
       transition: all 0.3s;
-      width: 30px;
-      height: 30px;
-      padding: 4px;
-      border-radius: 50%;
+      width: 25px;
+      height: 25px;
+      padding: 2px;
+      border-radius: 5px;
       &:hover {
         cursor: pointer;
         background-color: #cbd5e1;

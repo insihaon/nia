@@ -535,6 +535,13 @@ const Base = {
     formatterDateTime(row, col, value, index) {
       return this.parseTime(value, '{y}-{m}-{d} {h}:{i}')
     },
+    formatterTimeStamp(time, formatStr = '') {
+      if (time === null || formatStr.length === 0) {
+        console.error('formatterDateTime ERROR')
+        return
+      }
+      return moment(time).format(formatStr)
+    },
     formatterLink(row, col, value, index) {
     },
     trace: !AppOptions.instance ? console.trace.bind(null, `called`) : () => { /* 빈 블록 사용 금지 */ },

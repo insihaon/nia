@@ -1,7 +1,8 @@
 <template>
   <div id="tags-view-container">
     <div id="title-container">
-      visited History
+      <div>visited History</div>
+      <div><i class="el-icon-close" @click="closeHistoryBar()" /></div>
     </div>
     <router-link
       v-for="tag in visitedViews"
@@ -11,7 +12,7 @@
       :class="isActive(tag)?'active':''"
       :to="{ path: tag.path, query: tag.query, fullPath: tag.fullPath }"
       tag="div"
-      @click.middle.native="!isAffix(tag)?closeSelectedTag(tag):''"
+      @click.middle.native="!isAffix(tag) ? closeSelectedTag(tag):''"
     >
       <!-- @contextmenu.prevent.native="openMenu(tag,$event)" -->
       <div class="title">
@@ -21,13 +22,13 @@
         <span v-if="!isAffix(tag)" class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)" />
       </div>
     </router-link>
-    <ul v-show="visible" :style="{left:left+'px',top:top+'px'}" class="contextmenu">
+    <!-- <ul v-show="visible" :style="{left:left+'px',top:top+'px'}" class="contextmenu">
       <li @click="refreshSelectedTag(selectedTag)">Refresh</li>
       <li @click="openNewTab(selectedTag)">Open New Tab</li>
       <li v-if="!isAffix(selectedTag)" @click="closeSelectedTag(selectedTag)">Close</li>
       <li @click="closeOthersTags">Close Others</li>
       <li @click="closeAllTags(selectedTag)">Close All</li>
-    </ul>
+    </ul> -->
   </div>
 </template>
 
@@ -50,7 +51,9 @@ export default {
   computed: {
     visitedViews() {
       const visitedViews = [...this.$store.state.tagsView.visitedViews]
-      return visitedViews.reverse()
+      const excludeAffix = visitedViews.filter(v => !v.meta.affix)
+
+      return visitedViews.filter(v => v.meta.affix).concat(excludeAffix.reverse())
     },
     routes() {
       return this.$store.state.permission.routes
@@ -119,6 +122,9 @@ export default {
     },
     moveToCurrentTag() {
       const tags = this.$refs.tag
+      if (!tags) {
+        return
+      }
       this.$nextTick(() => {
         for (const tag of tags) {
           if (tag.to.path === this.$route.path) {
@@ -203,6 +209,9 @@ export default {
     closeMenu() {
       this.visible = false
     },
+    closeHistoryBar() {
+      this.$store.dispatch('app/closeHistoryBar')
+    },
     handleScroll() {
       this.closeMenu()
     }
@@ -228,7 +237,18 @@ export default {
   border-bottom: 1px solid #d8dce5;
   box-shadow: 0 1px 3px 0 rgba(16, 12, 12, 0.12), 0 0 3px 0 rgba(0, 0, 0, .04);
   #title-container {
+    display: flex;
+    width: 100%;
     font-weight: bold;
+    justify-content: space-around;
+    i {
+      border-radius: 5px;
+      padding: 2px;
+      &:hover {
+        color: #fff;
+        background-color: black;
+      }
+    }
   }
   #tags-view-item {
     width: 100%;
@@ -253,7 +273,7 @@ export default {
       &:hover {
         line-height: 12px;
         height: fit-content;
-        white-space: break-spaces;
+        white-space: normal;
       }
     }
     span {
@@ -275,16 +295,6 @@ export default {
       display: flex;
       overflow: hidden;
       text-overflow: ellipsis;
-      &::before {
-        content: '';
-        background: #fff;
-        display: inline-block;
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        position: relative;
-        margin-right: 4px;
-      }
     }
   }
 }
