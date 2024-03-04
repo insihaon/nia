@@ -29,7 +29,62 @@
    </choose>
    </sql>
    
+   <!-- IP망 ALARM + SYSLOG -->
    <select id="SELECT_IP_ALARM_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+        SELECT *
+        FROM (
+            SELECT
+            tc.TICKET_ID
+            , CLUSTER_NO
+            , TICKET_TYPE
+            , TICKET_GENERATION_TIME
+            , FAULT_TIME
+            , ROOT_CAUSE_TYPE
+            , ROOT_CAUSE_CODE
+            , ROOT_CAUSE_DOMAIN
+            , TOTAL_RELATED_ALARM_CNT
+            , STATUS
+            , TICKET_RCA_RESULT_CODE
+            , TICKET_RCA_RESULT_DTL_CODE
+            , TICKET_RCA_RESULT_ORIG_DTL_CODE
+            , TICKET_UPDATE_TIME
+            , ZERO1_MODEL
+            , ZERO1_ENTROPY
+            , NM.IP_ADDR AS IP_ADDR
+            FROM rca.tb_rca_ticket_current TC
+            INNER JOIN rca.tb_rca_ticket_al_current AL ON TC.TICKET_ID = AL.TICKET_ID
+            LEFT OUTER JOIN resource.tb_node_mst NM ON NM.NODE_ID = al.root_cause_sysnamea
+            WHERE TICKET_TYPE IN ('ATT2', 'NTT')
+            UNION ALL
+            SELECT
+                ALARMNO AS TICKET_ID
+                , NULL CLUSTER_NO
+                , 'SYSLOG' TICKET_TYPE
+                , alarmtime AS TICKET_GENERATION_TIME
+                , NULL FAULT_TIME
+                , NULL ROOT_CAUSE_TYPE
+                , NULL ROOT_CAUSE_CODE
+                , NULL ROOT_CAUSE_DOMAIN
+                , NULL TOTAL_RELATED_ALARM_CNT
+                , CASE WHEN sam.status IN ('INIT', 'FIN', 'AUTO_FIN') THEN sam.status
+                    ELSE '-'
+                    END AS STATUS
+                , ALARMMSG AS  TICKET_RCA_RESULT_CODE
+                , ETC AS TICKET_RCA_RESULT_DTL_CODE
+                , NULL TICKET_RCA_RESULT_ORIG_DTL_CODE
+                , NULL TICKET_UPDATE_TIME
+                , NULL ZERO1_MODEL
+                , NULL ZERO1_ENTROPY
+                , NM.IP_ADDR AS IP_ADDR
+            FROM rca.tb_syslog_alarm_mst SAM
+            LEFT OUTER JOIN resource.tb_node_mst NM ON NM.NODE_ID = SAM.NODE_NM
+        ) T
+        WHERE 1=1
+        AND t.TICKET_GENERATION_TIME <![CDATA[ > ]]> now() - INTERVAL '48' HOUR
+   </select>
+
+   <!-- 전송망 TICKET -->
+   <select id="SELECT_TRANSMISSION_ALARM_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
         SELECT
             T.TICKET_ID AS TICKET_ID,
             T.CLUSTER_NO AS CLUSTER_NO,
@@ -51,10 +106,31 @@
         FROM rca.tb_rca_ticket_current T
         WHERE 1=1
             AND T.OCCUR = TRUE AND T.PARENT_TICKET_ID IS NULL
-            AND ticket_generation_time <![CDATA[ > ]]>  now() - INTERVAL '48' HOUR
-        ORDER BY ticket_generation_time DESC, ticket_id desc
+            AND TICKET_GENERATION_TIME <![CDATA[ > ]]>  NOW() - INTERVAL '48' HOUR
+            AND T.TICKET_TYPE IN ('FTT', 'PF', 'NFTT')
+        ORDER BY TICKET_GENERATION_TIME DESC, TICKET_ID DESC
    </select>
 
-  
+   <!-- <select id="SELECT_NIA_SYSLOG_LIST" parameterType="hashmap" resultType="hashmap">
+    SELECT  sysDialog.alarmno,
+            sysDialog.alarmtime,
+            sysDialog.node_num,
+            sysDialog.node_nm,
+            sysDialog.alarmmsg,
+            sysDialog.alarmlvl,
+            sysDialog.etc,
+            sysDialog.rule_id,
+            sysDialog.alarmloc,
+            CASE WHEN sysDialog.status = 'INIT' THEN '발생'
+            WHEN sysDialog.status = 'FIN' THEN '마감'
+            WHEN sysDialog.status = 'AUTO_FIN' THEN '자동 마감'
+            ELSE '-'
+            END AS status,
+            nodea.ip_addr
+    FROM    rca.tb_syslog_alarm_mst sysDialog
+    LEFT OUTER JOIN resource.tb_node_mst nodea ON nodea.node_id = sysDialog.node_nm
+    WHERE sysDialog.alarmtime <![CDATA[ > ]]> now() - INTERVAL '48' HOUR
+    ORDER BY sysDialog.alarmno DESC
+    </select> -->
 
 </mapper>

@@ -11,4 +11,5 @@ import com.codej.web.mapper.db1st.BaseDataMapper;
 @Mapper
 public interface NiaMapper extends BaseDataMapper {
         public List<ResultMap> SELECT_IP_ALARM_LIST(HashMap<String, Object> map);
+        public List<ResultMap> SELECT_TRANSMISSION_ALARM_LIST(HashMap<String, Object> map);
 }

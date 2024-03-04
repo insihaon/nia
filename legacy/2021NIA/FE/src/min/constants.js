@@ -1,3 +1,5 @@
+import { safeArray, safeString } from '@/utils'
+
 export default {
   channels: {
     UNKNOWN: { name: 'UNKNOWN', enable: true },
@@ -36,6 +38,24 @@ export default {
     batch: { code: 'B', state: 'Batch', label: '' },
     retry: { code: 'T', label: '재처리 성공' }
   },
+  nia: {
+    alarm_type: [
+      { value: 'ALL', text: '전체' },
+      { value: 'RT', text: '장애' },
+      { value: 'FTT', text: '비장애' },
+      { value: 'PF', text: '광레벨' },
+      { value: 'ATT2', text: '이상 트래픽' },
+      { value: 'NTT', text: '유해 트래픽' },
+      { value: 'NFTT', text: '장비부하장애' },
+      // { value: 'TRAFFIC', text: '트래픽(TRAFFIC)' }
+    ],
+    status_type: [
+      { code: 'INIT', hex: '', text: '발생', fnCount: (d) => safeString(d.status).trim() === 'INIT', fnFilter: (d) => safeString(d.status).trim() === 'INIT' },
+      { code: 'ACK', hex: '', text: '인지', fnCount: (d) => safeString(d.status).trim() === 'ACK', fnFilter: (d) => safeString(d.status).trim() === 'ACK' },
+      { code: 'FIN', hex: '', text: '마감', fnCount: (d) => safeString(d.status).trim() === 'FIN', fnFilter: (d) => safeString(d.status).trim() === 'FIN' },
+      { code: 'AUTO_FIN', hex: '', text: '자동마감', fnCount: (d) => safeString(d.status).trim() === 'AUTO_FIN', fnFilter: (d) => safeString(d.status).trim() === 'AUTO_FIN' },
+    ]
+  }
 }
 
 export function objectToArray(obj) {

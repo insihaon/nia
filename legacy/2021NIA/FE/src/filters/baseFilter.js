@@ -5,9 +5,10 @@ function objectToArray(obj) {
 }
 
 export class BaseFilter {
-  constructor({ constants, parent, filterName, options }) {
+  constructor({ constants, parent, filterName, filterTitle, options }) {
     this.filterGroup = parent
     this.filterName = filterName
+    this.filterTitle = filterTitle
     this.options = options = Object.assign({ isMultiSelect: true, allItem: true, ifAllthenOtherUncheck: false, isCheckBox: true }, options)
 
     const array = objectToArray(constants)

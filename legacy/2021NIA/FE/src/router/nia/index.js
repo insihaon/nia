@@ -24,7 +24,7 @@ export const niaRoute = Object.freeze([
   {
     path: '/performanceMonitoring',
     component: Layout,
-    redirect: '/performanceMonitoring',
+    redirect: '/performanceMonitoring/trafficAnalysisCountry',
     meta: { title: '성능감시' },
     children: [
       {
@@ -65,7 +65,7 @@ export const niaRoute = Object.freeze([
     component: Layout,
     hidden: false,
     disable: false,
-    redirect: '/alarmMonitoring',
+    redirect: '/alarmMonitoring/sopHistory',
     meta: {
       title: '장애감시',
     },
@@ -95,7 +95,6 @@ export const niaRoute = Object.freeze([
         meta: { title: 'Syslog rule 이력조회' },
         modalMode: true
       },
-
     ]
   },
   {
@@ -103,7 +102,7 @@ export const niaRoute = Object.freeze([
     component: Layout,
     hidden: false,
     disable: false,
-    redirect: '/operationStatusScreen',
+    redirect: '/operationStatusScreen/controlScreen',
     meta: {
       title: '운용현황 화면',
     },
@@ -146,7 +145,7 @@ export const niaRoute = Object.freeze([
     component: Layout,
     hidden: false,
     disable: false,
-    redirect: '/aiDisabilityResponse',
+    redirect: '/aiDisabilityResponse/selfProcessingHist',
     meta: {
       title: 'AI 장애대응',
     },
@@ -164,7 +163,7 @@ export const niaRoute = Object.freeze([
     component: Layout,
     hidden: false,
     disable: false,
-    redirect: '/profile',
+    redirect: '/profile/profileInquiry',
     meta: {
       title: '프로파일',
     },
@@ -182,7 +181,7 @@ export const niaRoute = Object.freeze([
     component: Layout,
     hidden: false,
     disable: false,
-    redirect: '/dataSnapshot',
+    redirect: '/dataSnapshot/snapshotHistory',
     meta: {
       title: '데이터스냅샷',
     },
@@ -200,7 +199,6 @@ export const niaRoute = Object.freeze([
     component: Layout,
     hidden: false,
     disable: false,
-    redirect: '/userManagement',
     meta: {
       title: '사용자 관리',
     },
@@ -214,76 +212,76 @@ export const niaRoute = Object.freeze([
       },
     ]
   },
-  {
-    path: '/manager',
-    component: Layout,
-    hidden: false,
-    disable: false,
-    redirect: '/manager',
-    meta: {
-      title: '관리자',
-    },
-    children: [
-      {
-        path: 'manager',
-        component: () => import('@/views-nia/manager/authSettings'),
-        name: 'AuthSettings',
-        meta: { title: '관리자 권한 설정' },
-      },
-    ]
-  },
-  {
-    path: '/nodeManagement',
-    component: Layout,
-    hidden: false,
-    disable: false,
-    redirect: '/nodeManagement',
-    meta: {
-      title: '노드관리',
-    },
-    children: [
-      {
-        path: 'nodeInquiryList',
-        component: () => import('@/views-nia/nodeManagement/nodeInquiryList'),
-        name: 'NodeInquiryList',
-        meta: { title: '노드 리스트 조회' },
-      },
-    ]
-  },
-  {
-    path: '/linkManagement',
-    component: Layout,
-    hidden: false,
-    disable: false,
-    redirect: '/linkManagement',
-    meta: {
-      title: '링크관리',
-    },
-    children: [
-      {
-        path: 'linkInquiryInfoList',
-        component: () => import('@/views-nia/linkManagement/linkInquiryInfoList'),
-        name: 'LinkInquiryInfoList',
-        meta: { title: '링크 정보 조회' },
-      },
-    ]
-  },
-  {
-    path: '/organization',
-    component: Layout,
-    hidden: false,
-    disable: false,
-    redirect: '/organization',
-    meta: {
-      title: '이용기관',
-    },
-    children: [
-      {
-        path: 'organizationInquiryList',
-        component: () => import('@/views-nia/organization/organizationInquiryList'),
-        name: 'OrganizationInquiryList',
-        meta: { title: '이용기관 조회' },
-      },
-    ]
-  },
+  // {
+  //   path: '/manager',
+  //   component: Layout,
+  //   hidden: false,
+  //   disable: false,
+  //   redirect: '/manager',
+  //   meta: {
+  //     title: '관리자',
+  //   },
+  //   children: [
+  //     {
+  //       path: 'manager',
+  //       component: () => import('@/views-nia/manager/authSettings'),
+  //       name: 'AuthSettings',
+  //       meta: { title: '관리자 권한 설정' },
+  //     },
+  //   ]
+  // },
+  // {
+  //   path: '/nodeManagement',
+  //   component: Layout,
+  //   hidden: false,
+  //   disable: false,
+  //   redirect: '/nodeManagement',
+  //   meta: {
+  //     title: '노드관리',
+  //   },
+  //   children: [
+  //     {
+  //       path: 'nodeInquiryList',
+  //       component: () => import('@/views-nia/nodeManagement/nodeInquiryList'),
+  //       name: 'NodeInquiryList',
+  //       meta: { title: '노드 리스트 조회' },
+  //     },
+  //   ]
+  // },
+  // {
+  //   path: '/linkManagement',
+  //   component: Layout,
+  //   hidden: false,
+  //   disable: false,
+  //   redirect: '/linkManagement',
+  //   meta: {
+  //     title: '링크관리',
+  //   },
+  //   children: [
+  //     {
+  //       path: 'linkInquiryInfoList',
+  //       component: () => import('@/views-nia/linkManagement/linkInquiryInfoList'),
+  //       name: 'LinkInquiryInfoList',
+  //       meta: { title: '링크 정보 조회' },
+  //     },
+  //   ]
+  // },
+  // {
+  //   path: '/organization',
+  //   component: Layout,
+  //   hidden: false,
+  //   disable: false,
+  //   redirect: '/organization',
+  //   meta: {
+  //     title: '이용기관',
+  //   },
+  //   children: [
+  //     {
+  //       path: 'organizationInquiryList',
+  //       component: () => import('@/views-nia/organization/organizationInquiryList'),
+  //       name: 'OrganizationInquiryList',
+  //       meta: { title: '이용기관 조회' },
+  //     },
+  //   ]
+  // },
 ].filter(v => v.disable !== true))

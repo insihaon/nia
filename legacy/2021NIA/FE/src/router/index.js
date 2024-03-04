@@ -77,6 +77,7 @@ export let constantRoutes = [
   {
     name: 'ComponentTestPage',
     path: '/ComponentTestPage',
+    hidden: true,
     component: () => import('@/test/ComponentTestPage'),
     children: [
       {
