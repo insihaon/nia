@@ -74,10 +74,6 @@ export default {
       type: String,
       default: 'at/index'
     },
-    propRoutes: {
-      type: Array,
-      default: aiTemplateRoute
-    },
     systemName: {
       type: String,
       default: 'SYSTEM NAME'
@@ -95,7 +91,7 @@ export default {
   },
   computed: {
     routes() {
-      return this.propRoutes
+      return aiTemplateRoute
     },
     isActive() {
       return this.sidebar.opened
