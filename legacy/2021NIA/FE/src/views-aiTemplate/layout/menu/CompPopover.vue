@@ -40,7 +40,7 @@
     <div>
       <div class="function-title">BOTTOM BAR</div>
       <el-switch
-        v-model="showBottombar"
+        v-model="isShowBottombar"
         active-text="SHOW"
         inactive-text="HIDE"
         @change="(val) => onChangeSettings(val, 'bottombar')"
@@ -64,6 +64,7 @@ export default {
       popoverVisible: false,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       menuType: '',
+      isShowBottombar: '',
       layoutOption: 'TopBottom',
       isFixSide: true,
       grid: [
@@ -87,6 +88,7 @@ export default {
   mounted () {
     this.menuType = this.menubarType
     this.isFixSide = this.fixSide
+    this.isShowBottombar = this.showBottombar
   },
   created () {
   },
