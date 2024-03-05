@@ -557,7 +557,7 @@ div.subContentWrap div.tableBox div.tableFooter>div.tableButtonWrap{
 div.subContentWrap div.tableBox div.tableFooter>div.tableButtonWrap>Button{
   background-color:#2e3574;
   color:#FFFFFF;
-  height:34px;
+  height:28px;
   padding: 0px 15px;
   border:none;
   outline: none;
@@ -658,7 +658,7 @@ div.subContentWrap div.optionBox>div.optionBoxContent>div.optionItem input::plac
   text-align: center;
 }
 div.subContentWrap div.optionBox>div.optionBoxContent>div.optionItem el-input[type=text]{
-  height:34px;
+  height:28px;
   border:1px solid #2e357433;
   font-size:14px;
   border-radius: 3px;
@@ -670,7 +670,7 @@ div.subContentWrap div.optionBox>div.optionBoxContent>div.optionItem el-input[ty
 }
 
 div.subContentWrap div.optionBox>div.optionBoxContent>div.optionItem select[type=text]{
-  height:34px;
+  height:28px;
   border:1px solid #2e357433;
   font-size:14px;
   border-radius: 3px;
@@ -682,7 +682,7 @@ div.subContentWrap div.optionBox>div.optionBoxContent>div.optionItem select[type
 }
 
 div.subContentWrap div.optionBox>div.optionBoxContent>div.optionItem el-date-editor[type=text]{
-  height:34px;
+  height:28px;
   border:1px solid #2e357433;
   font-size:14px;
   border-radius: 3px;
@@ -703,7 +703,7 @@ div.subContentWrap div.optionBox>div.optionBoxButtons{
   gap:0 5px;
 }
 div.subContentWrap div.optionBox>div.optionBoxButtons Button.btn-r{
-  background-color:#2e3574;
+  background-color:#252526;
   color:#FFFFFF;
   height:38px;
   padding: 10px 13px;
