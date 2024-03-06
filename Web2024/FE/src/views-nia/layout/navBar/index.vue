@@ -3,8 +3,8 @@
     <div class="flex w-full h-full justify-between ">
       <div class="headerWrapLogo flex items-center h-full">
         <div id="systeminfo-container">
-          <div id="system-name" @click="onClickHeaderLogo()">NIA KOREN |</div>
-          <div id="route-name">{{ activeMenuTitle }}</div>
+          <div id="system-name" @click="onClickHeaderLogo()">NIA KOREN </div>
+          <div id="route-name"> <span>|</span> {{ activeMenuTitle }}</div>
         </div>
         <!-- only parent -->
         <nav id="menu-bar" class="h-full ml-14">
@@ -127,7 +127,7 @@ export default {
       background: transparent;
     }
     #system-name {
-      color: #bebebe;
+      color: rgb(255, 255, 255);
     }
     #route-name {
       margin-left: 5px;
@@ -231,6 +231,26 @@ export default {
     }
     #hamburger-container {
       color: $aiTemplateDefault
+    }
+
+    #system-name {
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent !important;
+      background-image: linear-gradient(
+        180deg,
+        $niaMainTitle
+      ) !important;
+    }
+
+     #route-name {
+      margin-left: 5px;
+      font-size: 18px;
+      color: rgb(15, 15, 85) !important;
+
+      span {
+        color: #bebebe !important;
+      }
     }
   }
 
