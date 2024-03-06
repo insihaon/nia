@@ -111,6 +111,79 @@
         ORDER BY TICKET_GENERATION_TIME DESC, TICKET_ID DESC
    </select>
 
+    <!-- SOP 리스트 조회 -->
+     <select id="SELECT_SOP_INQUIRY_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+     <include refid="TotalCountPrefix"/>   
+        SELECT  SOP.SOP_ID ,
+                SOP.TICKET_ID ,
+                SOP.TICKET_TYPE ,
+                CASE WHEN SOP.TICKET_TYPE = 'ATT2' THEN '이상 트래픽'
+                WHEN SOP.TICKET_TYPE = 'NTT' THEN '유해 트래픽'
+                WHEN SOP.TICKET_TYPE = 'NFTT' THEN '장비 과부하 장애'
+                WHEN SOP.TICKET_TYPE = 'FTT' THEN '비장애'
+                ELSE '장애' END AS TICKETTYPE,
+                SOP.TICKET_RESULT ,
+                SOP.STATUS ,
+                SOP.REQUEST_TIME ,
+                SOP.RECEIVE_TIME ,
+                SOP.DETAIL ,
+                SOP.fault_classify ,
+                SOP.fault_type ,
+                SOP.fault_detail_content ,
+                SOP.etc_content ,
+                SOP.ai_accuracy ,
+                al.ROOT_CAUSE_SYSNAMEA ,
+                al.ROOT_CAUSE_SYSNAMEZ ,
+                al.ROOT_CAUSE_PORTA ,
+                al.ROOT_CAUSE_PORTZ ,
+                NODEA.IP_ADDR AS IP_ADDRA ,
+                NODEZ.IP_ADDR AS IP_ADDRZ ,
+                TC.ROOT_CAUSE_TYPE AS ROOT_CAUSE_TYPE ,
+                TC.FAULT_TIME AS FAULT_TIME ,
+                SOP.HANDLING_ACK_USER AS HANDLING_ACK_USER ,
+                SOP.HANDLING_ACK_TIME AS HANDLING_ACK_TIME ,
+                SOP.HANDLING_FIN_USER AS HANDLING_FIN_USER ,
+                SOP.HANDLING_FIN_TIME AS HANDLING_FIN_TIME ,
+                COUNT(1) over () totalCount
+        FROM    ( SELECT ticket_id,
+                        MAX(ticket_al_id) AS ticket_al_id
+                FROM    rca.tb_rca_ticket_al_current tac
+                WHERE   1=1
+                <if test="TICKET_ID != null">
+                AND     tac.TICKET_ID LIKE '%' || #{TICKET_ID} || '%'
+                </if>
+                <if test="START_DATE == null and END_DATE == null">
+                AND     tac.insert_time <![CDATA[ > ]]> now() - INTERVAL '7' day
+                </if>
+                <if test="START_DATE != null">
+                AND     tac.insert_time <![CDATA[ >= ]]> #{START_DATE}::TIMESTAMP
+                </if>
+                <if test="END_DATE != null">
+                AND     tac.insert_time <![CDATA[ <= ]]> #{END_DATE}::TIMESTAMP
+                </if>
+                GROUP BY ticket_id ) AL_ID
+        INNER JOIN rca.tb_rca_ticket_al_current AL ON AL.ticket_al_id = AL_ID.ticket_al_id
+        INNER JOIN rca.tb_rca_ticket_current TC    ON AL_ID.ticket_id = TC.ticket_id
+        INNER JOIN nia.tb_sop SOP                  ON SOP.ticket_id = AL_ID.ticket_id
+        LEFT OUTER JOIN resource.tb_node_mst NODEA ON NODEA.node_id = AL.ROOT_CAUSE_SYSNAMEA
+        LEFT OUTER JOIN resource.tb_node_mst NODEZ ON NODEZ.node_id = AL.ROOT_CAUSE_SYSNAMEZ
+        WHERE 1=1
+        <if test="TICKET_TYPE != null">
+            AND TC.TICKET_TYPE IN (#{TICKET_TYPE})
+        </if>
+        <if test="ROOT_CAUSE_SYSNAMEA != null">
+            AND al.ROOT_CAUSE_SYSNAMEA <![CDATA[ = ]]> #{ROOT_CAUSE_SYSNAMEA}
+        </if>
+        ORDER BY SOP.request_time DESC 
+        <if test="OFFSET != null">
+            OFFSET #{OFFSET}
+        </if>
+        <if test="LIMIT != null">
+            LIMIT #{LIMIT}
+        </if>
+    <include refid="TotalCountSuffix"/>
+    </select>
+
    <!-- <select id="SELECT_NIA_SYSLOG_LIST" parameterType="hashmap" resultType="hashmap">
     SELECT  sysDialog.alarmno,
             sysDialog.alarmtime,

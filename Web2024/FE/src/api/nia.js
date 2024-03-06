@@ -1,5 +1,5 @@
-import http from '@/min/http'
 import { AppOptions } from '@/class/appOptions'
+import http from '@/min/http'
 const { debug, isProd } = AppOptions.instance
 
 export const filePath = __filename.replace(/\\/g, '/')
@@ -19,6 +19,16 @@ export function apiTransmissionAlarmList(params = {}) {
     method: 'post',
     filePath: filePath,
     sqlId: 'SELECT_TRANSMISSION_ALARM_LIST',
+    data: params
+  })
+}
+
+export function apiSopInquiryList(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_SOP_INQUIRY_LIST',
     data: params
   })
 }

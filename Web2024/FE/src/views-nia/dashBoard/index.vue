@@ -33,6 +33,7 @@
           ref="ipAgGrid"
           v-model="ipAgGrid"
           class="w-100 flex-fill"
+          @rowClicked="selectedTicket"
         />
         <!-- top-container content -->
       </template>
@@ -52,6 +53,8 @@
         />
       </template>
     </LeftBar>
+    <ModalSopLIst ref="ModalSopLIst" />
+    <ModalAiResponse ref="ModalAiResponse" />
   </div>
 </template>
 <script>
@@ -60,20 +63,24 @@ import LeftBar from '@/layout/components/gridTemplate/LeftBar'
 import filterBar from '@/layout/components/filterBar'
 import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
 import BaseFilterGroup from '@/filters/baseFilterGroup'
-
+import CellRenderAibuttons from '@/views-nia/components/cellRenderer/CellRenderAibuttons'
+import ModalSopLIst from '@/views-nia/modal/ModalSopLIst'
+import ModalAiResponse from '@/views-nia/modal/ModalSopLIst'
 import { apiIpAlarmList, apiTransmissionAlarmList } from '@/api/nia'
 const routeName = 'NiaMain'
 
 export default {
   name: routeName,
-  components: { CompAgGrid, LeftBar, filterBar },
+  // eslint-disable-next-line vue/no-unused-components
+  components: { CompAgGrid, LeftBar, filterBar, ModalSopLIst, CellRenderAibuttons, ModalAiResponse },
   extends: Base,
   data() {
     return {
       name: routeName,
       filterGroup: '',
       ipNetworkList: [],
-      transmissionNetworkList: []
+      transmissionNetworkList: [],
+      selectedItem: []
 
     }
   },
@@ -88,8 +95,10 @@ export default {
         { type: '', prop: 'ticket_rca_result_dtl_code', name: '장애 원인', width: 200, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'total_related_alarm_cnt', name: '근원알람개수', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'ip_addr', name: 'ip_addr', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
-        { type: '', prop: '', name: 'SOP', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
-        { type: '', prop: '', name: '장애대응', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
+        { type: '', prop: '', name: 'SOP', width: 100, alignItems: 'center', fixed: false, suppressMenu: true,
+        cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: 'SOP', type: 'sop', action: this.handleOpenEditModal.bind(this) } },
+        { type: '', prop: '', name: '장애대응', width: 100, alignItems: 'center', fixed: false, suppressMenu: true,
+         cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '장애대응', type: 'alarm', action: this.handleOpenEditModal.bind(this) } }
       ]
       const options = { name: this.name, checkable: false, rowGroupPanel: false, onDoesExternalFilterPass: this.onIpDoesExternalFilterPass }
       return { options, columns, data: this.ipNetworkList }
@@ -202,7 +211,18 @@ export default {
           break
       }
       return result
-    }
+    },
+    selectedTicket(param) {
+      this.selectedItem = param
+    },
+    handleOpenEditModal(row, type) {
+      if (type === 'sop') {
+        this.$refs.ModalSopLIst.open({ row: row, type: type })
+      } else {
+        this.$refs.ModalAiResponse.open({ row: row, type: type })
+      }
+    },
+
   }
 }
 </script>
