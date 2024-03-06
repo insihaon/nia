@@ -10,7 +10,7 @@ const state = {
     withoutAnimation: false
   },
   historybar: {
-    opened: storage.getItem('historybarStatus') ? !!+storage.getItem('historybarStatus') : true,
+    opened: storage.getItem('historybarStatus') ? !!+storage.getItem('historybarStatus') : false,
     withoutAnimation: false
   },
   screenDevice: 'desktop',

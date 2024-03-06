@@ -7,11 +7,11 @@
             <div class="filter-container">
               <div class="title">IP망</div>
               <div class="filter-group">
-                <template v-for="(filter, keyName, i) in filterGroup.filters">
-                  <div :key="keyName" class="item-title mr-2">
+                <template v-for="(filter, keyName) in filterGroup.filters">
+                  <div v-if="filter.filterTitle" :key="filter.filterTitle" class="item-title ml-2">
                     {{ filter.filterTitle || '' }}
                   </div>
-                  <ul :key="i">
+                  <ul v-if="keyName" :key="keyName">
                     <!-- :class="{'filterBtn': !filterIconList.includes(keyName), 'filterIcon d-flex':filterIconList.includes(keyName)}" -->
                     <li
                       v-for="(item, index) in filter.getArray()"
@@ -53,7 +53,7 @@
         />
       </template>
     </LeftBar>
-    <ModalSopLIst ref="ModalSopLIst" />
+    <ModalSopList ref="ModalSopList" />
     <ModalAiResponse ref="ModalAiResponse" />
   </div>
 </template>
@@ -64,15 +64,15 @@ import filterBar from '@/layout/components/filterBar'
 import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
 import BaseFilterGroup from '@/filters/baseFilterGroup'
 import CellRenderAibuttons from '@/views-nia/components/cellRenderer/CellRenderAibuttons'
-import ModalSopLIst from '@/views-nia/modal/ModalSopLIst'
-import ModalAiResponse from '@/views-nia/modal/ModalSopLIst'
+import ModalSopList from '@/views-nia/modal/ModalSopList'
+import ModalAiResponse from '@/views-nia/modal/ModalAiResponse'
 import { apiIpAlarmList, apiTransmissionAlarmList } from '@/api/nia'
 const routeName = 'NiaMain'
 
 export default {
   name: routeName,
   // eslint-disable-next-line vue/no-unused-components
-  components: { CompAgGrid, LeftBar, filterBar, ModalSopLIst, CellRenderAibuttons, ModalAiResponse },
+  components: { CompAgGrid, LeftBar, filterBar, ModalSopList, CellRenderAibuttons, ModalAiResponse },
   extends: Base,
   data() {
     return {
@@ -92,7 +92,11 @@ export default {
         { type: '', prop: 'status', name: '상태', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, formatter: this.getStatus },
         { type: '', prop: 'ticket_type', name: 'ALARM TYPE', width: 150, alignItems: 'center', fixed: false, suppressMenu: true, formatter: this.getAlarmType },
         { type: '', prop: 'root_cause_type', name: '장애유형', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
+        { type: '', prop: 'ticket_rca_result_code', name: '장애내용', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'ticket_rca_result_dtl_code', name: '장애 원인', width: 200, alignItems: 'center', fixed: false, suppressMenu: true },
+        { type: '', prop: 'node_num', name: '장비ID', width: 200, alignItems: 'center', fixed: false, suppressMenu: true },
+        { type: '', prop: 'node_nm', name: '장비명', width: 200, alignItems: 'center', fixed: false, suppressMenu: true },
+        { type: '', prop: 'alarmloc', name: '인터페이스명', width: 200, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'total_related_alarm_cnt', name: '근원알람개수', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'ip_addr', name: 'ip_addr', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: '', name: 'SOP', width: 100, alignItems: 'center', fixed: false, suppressMenu: true,
@@ -100,8 +104,8 @@ export default {
         { type: '', prop: '', name: '장애대응', width: 100, alignItems: 'center', fixed: false, suppressMenu: true,
          cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '장애대응', type: 'alarm', action: this.handleOpenEditModal.bind(this) } }
       ]
-      const options = { name: this.name, checkable: false, rowGroupPanel: false, onDoesExternalFilterPass: this.onIpDoesExternalFilterPass }
-      return { options, columns, data: this.ipNetworkList }
+      const options = { name: this.name, checkable: false, rowGroupPanel: false }
+      return { options, columns, data: this.ipNetworkList, onDoesExternalFilterPass: this.onIpDoesExternalFilterPass }
     },
     transmissionAgGrid() {
       const columns = [
@@ -133,10 +137,11 @@ export default {
   methods: {
     setIPFilterGroup() {
       const listName = 'ipNetworkList'
-      const btnOption = { isMultiSelect: false, allItem: true, ifAllthenOtherUncheck: true, listName }
+      const btnOption = { isMultiSelect: true, allItem: true, ifAllthenOtherUncheck: true, listName }
       const iconOption = { allItem: true, ifAllthenOtherUncheck: true, listName }
 
-      this.filterGroup.addFilter('ip_status', '상태', this.CONSTANTS.nia.status_type, btnOption) // 누적레벨
+      this.filterGroup.addFilter('ipStatus', '상태', this.CONSTANTS.nia.statusType, btnOption) // 누적레벨
+      this.filterGroup.addFilter('ipAlarmType', 'TYPE', this.CONSTANTS.nia.ipAlarmType, btnOption) // 누적레벨
     },
     onFilterChanged(changedFilter, code) {
       console.log('onFilterChanged')
@@ -148,11 +153,29 @@ export default {
     },
     onIpDoesExternalFilterPass(externalFilter, node) {
       if (!this.filterGroup.filters) return true
+
+      const { data: row } = node
+      let resMultiCondition = true
+      const multiFilterKeys = Object.keys(this.filterGroup.filters).filter(key => this.filterGroup.filters[key].options.isMultiSelect)
+
+      resMultiCondition = multiFilterKeys.map(mkey => {
+        return this.filterGroup.filters[mkey].dataArray.some(item => {
+          if (item.code !== 'All') {
+            if (typeof item.fnFilter !== 'function') {
+              return
+            } else if (item.selected) {
+              return item.fnFilter(row)
+            }
+          } else return item.selected
+        })
+      }).every(res => res)
+      return resMultiCondition
     },
     async onLoadIpAlarmList() {
       try {
         const res = await apiIpAlarmList()
         this.ipNetworkList = res?.result
+        this.$store.dispatch('nia/insertIpNetworkList', this.ipNetworkList)
       } catch (error) {
         this.error(error)
       }
@@ -160,7 +183,8 @@ export default {
     async onLoadTransmissionAlarmList() {
       try {
         const res = await apiTransmissionAlarmList()
-        this.ipNetwotransmissionNetworkListrkList = res?.result
+        this.transmissionNetworkList = res?.result
+        this.$store.dispatch('nia/insertTransmissionNetworkList', this.transmissionNetworkList)
       } catch (error) {
         this.error(error)
       }
@@ -206,7 +230,9 @@ export default {
         case 'NFTT':
         result = '장비부하장애'
           break
-
+        case 'SYSLOG':
+        result = 'SYSLOG'
+        break
         default:
           break
       }
@@ -217,7 +243,7 @@ export default {
     },
     handleOpenEditModal(row, type) {
       if (type === 'sop') {
-        this.$refs.ModalSopLIst.open({ row: row, type: type })
+        this.$refs.ModalSopList.open({ row: row, type: type })
       } else {
         this.$refs.ModalAiResponse.open({ row: row, type: type })
       }
@@ -250,9 +276,17 @@ export default {
     .filter-group {
       display: flex;
       margin-left: 10px;
-      // .item-title {
-
-      // }
+      .split {
+        &:before {
+          content: "|";
+          padding-left: 5px;
+          font-weight: 700;
+        }
+      }
+      .item-title {
+        border-radius: solid 1px;
+        font-weight: 600;
+      }
       ul {
         display: flex;
       }

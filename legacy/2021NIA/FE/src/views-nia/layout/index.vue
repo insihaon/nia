@@ -6,7 +6,7 @@
         <NavBar ref="navbar" />
         <HistoryBar v-if="showHistorybar" ref="historybar" />
         <AppMain v-if="!popupLayout" ref="appmain" />
-        <!-- <BottomBar v-if="showBottombar" ref="bottombr" /> -->
+        <BottomBar ref="bottombr" />
       </div>
     </div>
     <CompTrafficAnalysisModal ref="CompTrafficAnalysisModal" :fullscreen="isViewport('<', 'sm')" />
@@ -20,6 +20,7 @@ import AppMain from '@/layout/components/nia/AppMain'
 import { Base } from '@/min/Base.min'
 import ResizeMixin from '@/layout/mixin/ResizeHandler'
 import NavBar from './navBar/index'
+import BottomBar from './BottomBar'
 import HistoryBar from '@/layout/components/historyBar/index'
 import CompTrafficAnalysisModal from '@/views-nia/modal/CompTrafficAnalysisModal'
 import ModaluserSettings from '@/views-nia/userManagement/ModaluserSettings'
@@ -34,6 +35,7 @@ export default {
   components: {
     AppMain,
     NavBar,
+    BottomBar,
     HistoryBar,
     ModaluserSettings,
     CompTrafficAnalysisModal,
@@ -126,6 +128,7 @@ export default {
   },
   mounted() {
     //  this.subscribeEvent()
+    this.setShowBottombar()
   },
   methods: {
     handleOpenEditModal(row, type) {
@@ -146,6 +149,12 @@ export default {
       const data = message.properties
 
       this.$refs.preview.open(data)
+    },
+    setShowBottombar() {
+      window.helper.$store.dispatch('settings/changeSetting', {
+        key: 'bottombar',
+        value: true
+      })
     },
     userDetail() {
 

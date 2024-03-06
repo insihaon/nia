@@ -1,5 +1,5 @@
 <template>
-  <section class="app-main common-font">
+  <section class="app-main common-font" :style="{height: `calc(100vh - ${showBottombar ? '110': '60'}px)`}">
     <transition name="fade-transform" mode="out-in" :duration="duration">
       <keep-alive :include="cachedViews">
         <router-view :key="key" />
@@ -11,6 +11,7 @@
 <script>
 import { Base } from '@/min/Base.min'
 import { AppOptions } from '@/class/appOptions'
+import { mapState } from 'vuex'
 
 export default {
   name: 'AppMain',
@@ -30,7 +31,10 @@ export default {
     },
     duration() {
       return this.$store.state.tagsView.lazyCachedViews.includes(this.$route.name) ? 200 : 500
-    }
+    },
+    ...mapState({
+      showBottombar: state => state.settings.bottombar
+    }),
   },
   watch: {
     $route() {
