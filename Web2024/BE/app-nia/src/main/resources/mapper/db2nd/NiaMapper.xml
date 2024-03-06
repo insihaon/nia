@@ -10,21 +10,21 @@
     
    <sql id="TotalCountSuffix">
    <if test="TOTAL_COUNT == null and sort_column_name != null and sort_type != null">
-        ORDER BY ${sort_column_name} ${sort_type}
+        ORDER BY ${SORT_COLUMN_NAME} ${SORT_TYPE}
    </if>
    <if test="TOTAL_COUNT != null">
         ) TOTALCOUNT
    </if>
    <choose>
         <when test="TOTAL_COUNT != null and limit != null">
-            LIMIT ${limit}
+            LIMIT ${LIMIT}
         </when>
         <when test="TOTAL_COUNT == null and page != null and limit != null">
-            LIMIT ${limit} OFFSET ${(page - 1) * limit}
+            LIMIT ${LIMIT} OFFSET ${(PAGE - 1) * LIMIT}
         </when>
         <when test="TOTAL_COUNT == null and page != null and limit == null">
             <!--  default 10으로 설정 -->
-            LIMIT 10 OFFSET ${(page - 1) * limit}
+            LIMIT 10 OFFSET ${(PAGE - 1) * LIMIT}
         </when>
    </choose>
    </sql>
@@ -47,6 +47,9 @@
             , TICKET_RCA_RESULT_CODE
             , TICKET_RCA_RESULT_DTL_CODE
             , TICKET_RCA_RESULT_ORIG_DTL_CODE
+            , NULL NODE_NUM
+	        , NULL NODE_NM
+            , NULL ALARMLOC
             , TICKET_UPDATE_TIME
             , ZERO1_MODEL
             , ZERO1_ENTROPY
@@ -72,6 +75,9 @@
                 , ALARMMSG AS  TICKET_RCA_RESULT_CODE
                 , ETC AS TICKET_RCA_RESULT_DTL_CODE
                 , NULL TICKET_RCA_RESULT_ORIG_DTL_CODE
+                , sam.NODE_NUM
+                , sam.NODE_NM
+                , sam.ALARMLOC
                 , NULL TICKET_UPDATE_TIME
                 , NULL ZERO1_MODEL
                 , NULL ZERO1_ENTROPY
@@ -175,12 +181,6 @@
             AND al.ROOT_CAUSE_SYSNAMEA <![CDATA[ = ]]> #{ROOT_CAUSE_SYSNAMEA}
         </if>
         ORDER BY SOP.request_time DESC 
-        <if test="OFFSET != null">
-            OFFSET #{OFFSET}
-        </if>
-        <if test="LIMIT != null">
-            LIMIT #{LIMIT}
-        </if>
     <include refid="TotalCountSuffix"/>
     </select>
 

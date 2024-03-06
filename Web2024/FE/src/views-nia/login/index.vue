@@ -1,68 +1,57 @@
 <template>
-  <div class="login-container defaultLogin">
-    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">
-
-      <div class="title-container">
-        <h3 class="title">Login Form</h3>
+  <div class="login-container h-full d-flex justify-center flex-column">
+    <video muted autoplay loop>
+      <source src="@/assets/video/technology_network.mp4" type="video/mp4">
+    </video>
+    <div class="browserInfo" title="크롬 브라우저 다운로드 페이지로 이동합니다.">
+      <img src="@/assets/icon/icon_chrome.png" @click="onClickDownloadChrome()">
+      <span>NIA KOREN은 Chrome Browser 및 1920x1080 해상도에 최적화 되어 있습니다.</span>
+    </div>
+    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form d-flex items-center flex-column" autocomplete="on" label-position="left">
+      <div class="title-container d-flex justify-center flex-column items-center pb-4">
+        <img src="@/assets/images/nia/login_logo_koren.png">
+        <span>AI기반 KOREN 모니터링 시스템</span>
+        <span class="sub-title">AI based KOREN Monitoring System</span>
       </div>
-
       <el-form-item prop="username">
         <el-input
           ref="username"
           v-model="loginForm.username"
-          placeholder="Username"
+          placeholder="아이디를 입력해주세요"
           name="username"
           type="text"
           tabindex="1"
           autocomplete="on"
-        />
-      </el-form-item>
-
-      <el-tooltip v-model="capsTooltip" content="Caps lock is On" placement="right" manual>
+        /></el-form-item>
+      <el-tooltip v-model="capsTooltip" content="Caps lock is On" placement="right" effect="light">
         <el-form-item prop="password">
           <el-input
             :key="passwordType"
             ref="password"
             v-model="loginForm.password"
-            :type="passwordType"
-            placeholder="Password"
-            name="password"
+            placeholder="비밀번호를 입력해주세요"
             tabindex="2"
             autocomplete="on"
-            @keyup.native="checkCapslock"
+            name="password"
+            show-password
+            type="password"
             @blur="capsTooltip = false"
+            @keyup.native="checkCapslock"
             @keyup.enter.native="handleLogin"
           />
-          <span class="show-pwd" @click="showPwd">
-            <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
-          </span>
         </el-form-item>
       </el-tooltip>
 
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
-
-      <div style="position:relative">
-        <div class="tips">
-          <span>Username : admin</span>
-          <span>Password : any</span>
-        </div>
-        <div class="tips">
-          <span style="margin-right:18px;">Username : editor</span>
-          <span>Password : any</span>
-        </div>
-
-        <el-button class="thirdparty-button" type="primary" @click="showDialog=true">
-          Or connect with
-        </el-button>
-      </div>
+      <el-button :loading="loading" @click="handleLogin">Login</el-button>
     </el-form>
-
-    <el-dialog title="Or connect with" :visible.sync="showDialog">
-      Can not be simulated on local, so please combine you own business simulation! ! !
-      <br>
-      <br>
-      <br>
-    </el-dialog>
+    <div class="bottom">
+      <span>(주)코드제이 대전광역시 유성구 관평동 803</span>
+      <span>Copyright© ## All rights reserved.</span>
+      <div class="logo gap-y-12">
+        <img src="@/assets/images/nia/login_bottom_logo_1.png">
+        <img src="@/assets/images/nia/login_bottom_logo_2.png">
+      </div>
+    </div>
   </div>
 </template>
 
@@ -71,6 +60,7 @@ import Encrypt from '@/assets/libs/Encrypt.min'
 import { Base } from '@/min/Base.min'
 import { AppOptions } from '@/class/appOptions'
 import { rulesUsername, rulesPassword } from '@/utils/validate'
+import { onDownloadChrome } from '@/utils/index'
 
 const routeName = 'Login'
 
@@ -91,7 +81,6 @@ export default {
       passwordType: 'password',
       capsTooltip: false,
       loading: false,
-      showDialog: false,
       otherQuery: {}
     }
   },
@@ -161,6 +150,9 @@ export default {
         }
         return acc
       }, {})
+    },
+    onClickDownloadChrome() {
+      onDownloadChrome()
     }
     // afterQRScan() {
     //   if (e.key === 'x-admin-oauth-code') {
@@ -184,129 +176,116 @@ export default {
 }
 </script>
 
-<style lang="scss">
-/* input 커서 배경 색상 수정 */
-/* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
-
-$bg:#283443;
-$light_gray:#fff;
-$cursor: #fff;
-
-@supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
-  .login-container .el-input input {
-    color: $cursor;
-  }
-}
-
-/* reset element-ui css */
-.login-container.defaultLogin {
-  .el-input {
-    display: inline-block;
-    height: 47px;
-    width: 85%;
-
-    input {
-      background: transparent;
-      border: 0px;
-      -webkit-appearance: none;
-      border-radius: 0px;
-      padding: 12px 5px 12px 15px;
-      color: $light_gray;
-      height: 47px;
-      caret-color: $cursor;
-
-      &:-webkit-autofill,
-      &:-webkit-autofill:hover,
-      &:-webkit-autofill:focus,
-      &:-webkit-autofill:active {
-        transition: background-color 5000s;
-        -webkit-text-fill-color: #fff !important;
-      }
-    }
-  }
-
-  .el-form-item {
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
-    color: #454545;
-  }
-}
-</style>
-
 <style lang="scss" scoped>
 $bg:#2d3a4b;
 $dark_gray:#889aa4;
 $light_gray:#eee;
 
-.login-container.defaultLogin {
-  min-height: 100%;
-  width: 100%;
-  background-color: $bg;
-  overflow: hidden;
+.login-container {
+  background-color: #002c55;
+  font-family: NanumSquare,sans-serif;
+  align-items: center;
 
-  .login-form {
-    position: relative;
-    width: 520px;
-    max-width: 100%;
-    padding: 160px 35px 0;
-    margin: 0 auto;
-    overflow: hidden;
+  video {
+    position:absolute;
+    width:100%;
+    height:100%;
+    object-fit: cover;
+    pointer-events: none;
+    user-select: none;
+    opacity: 0.25;
   }
+  .browserInfo {
+    position: absolute;
+    right: 40px;
+    top: 40px;
+    width: 230px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: default;
 
-  .tips {
-    font-size: 14px;
-    color: #fff;
-    margin-bottom: 10px;
+    img {
+      padding: 0 20px;
+      transition: all .5s;
+      cursor: pointer;
+      filter: grayscale(100%);
+    }
 
-    span {
-      &:first-of-type {
-        margin-right: 16px;
+    span{
+      display:inline-block;
+      font-size: 12px;
+      transform: rotate(.03deg);
+      text-align: center;
+      letter-spacing: -.25px;
+      color: #fff;
+      margin-top: 5px;
+      font-weight: 600;
+    }
+    &:hover > img {
+      filter: none;
+      transform: rotate(360deg);
+      transition: all 0.5s;
+    }
+  }
+  .login-form {
+    z-index: 0;
+    .title-container {
+      color: #fff;
+      font-size: 42px;
+      font-weight: 800;
+      text-align: center;
+      .sub-title {
+        font-size: 27px;
+        font-weight: 200;
+        white-space: nowrap;
+      }
+    }
+    .el-form-item {
+      margin-bottom: 17px;
+      .show-pwd {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        color: black;
+      }
+    }
+    ::v-deep .el-input__inner {
+      width: 330px;
+      height: 45px;
+      border-radius: 25px;
+      padding: 0px 40px;
+      color: black;
+      font-family: monospace;
+      background-color: #ffffffcc;
+      &:focus {
+        background-color: #fff;
+      }
+    }
+    ::v-deep .el-button {
+      width: 330px;
+      height: 45px;
+      border-radius: 25px;
+      background-color: #609fe6;
+      font-weight: 900;
+      color: #141414;
+    }
+  }
+  .bottom {
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+    .logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      padding: 20px;
+      img {
+        padding: 0px 15px;
       }
     }
   }
-
-  .svg-container {
-    padding: 6px 5px 6px 15px;
-    color: $dark_gray;
-    vertical-align: middle;
-    width: 30px;
-    display: inline-block;
-  }
-
-  .title-container {
-    position: relative;
-
-    .title {
-      font-size: 26px;
-      color: $light_gray;
-      margin: 0px auto 40px auto;
-      text-align: center;
-      font-weight: bold;
-    }
-  }
-
-  .show-pwd {
-    position: absolute;
-    right: 10px;
-    top: 7px;
-    font-size: 16px;
-    color: $dark_gray;
-    cursor: pointer;
-    user-select: none;
-  }
-
-  .thirdparty-button {
-    position: absolute;
-    right: 0;
-    bottom: 6px;
-  }
-
-  @media only screen and (max-width: 470px) {
-    .thirdparty-button {
-      display: none;
-    }
-  }
-
 }
+
 </style>

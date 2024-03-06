@@ -162,8 +162,6 @@ public abstract class AbsAuthController extends BaseController {
         user.setPassword(null);
         user.setIpAddress(address);
         
-        // String token_origin = jwtTokenProvider.createToken(String.valueOf(user.getUid()), user.getRolesList(), address);
-        // jwtTokenProvider.removeToken(token_origin);
         String token = jwtTokenProvider.createToken(user, address);
 
         // User 정보와 토큰 정보를 반환

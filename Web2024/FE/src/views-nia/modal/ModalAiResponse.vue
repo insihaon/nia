@@ -1,40 +1,41 @@
 <template>
-  <div>
-    <el-dialog
-      v-if="animationVisible"
-      v-el-drag-dialog
-      :visible.sync="visible"
-      :width="domElement.maxWidth + `px`"
-      :height="domElement.minHeight + `px`"
-      :fullscreen.sync="fullscreen"
-      :modal-append-to-body="false"
-      :append-to-body="true"
-      :modal="modal"
-      :close-on-click-modal="closeOnClickModal"
-      :loading="loading"
-      class="nia-dialog"
-      :class="{ [name]: true }"
-    >
-      <span slot="title">
-        <i class="el-icon-document mr-2" style="font-size: 17px;" />
-        {{ title }}
-        <hr>
-      </span>
-      <div class="d-flex flex-column h-100" style="height:100%">
-        <CompInquiryPannel
-          ref="selectApi"
-          :ag-grid="dataSetAgGrid"
-          class="w-100 h-100 flex-fill"
-          @handleClickSearch="onClickSearchAlarm"
-        />
-      </div>
-      <div />
-      <div slot="footer" class="dialog-footer">
-        <el-button size="small" plain type="info" class="close-btn" @click.native="close()">
-          {{ $t('exit') }}
-        </el-button>
-      </div>
-    </el-dialog>
+  <div :class="{ [name]: true }">
+    <transition :name="animation">
+      <el-dialog
+        v-if="animationVisible"
+        v-el-drag-dialog
+        :visible.sync="visible"
+        :width="domElement.maxWidth + `px`"
+        :height="domElement.minHeight + `px`"
+        :fullscreen.sync="fullscreen"
+        :modal-append-to-body="false"
+        :append-to-body="true"
+        :modal="modal"
+        :close-on-click-modal="closeOnClickModal"
+        :loading="loading"
+        class="nia-dialog"
+        :class="{ [name]: true }"
+      >
+        <span slot="title">
+          <i class="el-icon-document mr-2 text-base" />
+          AI 장애대응
+          <hr>
+        </span>
+        <div class="d-flex flex-column h-full">
+          <CompInquiryPannel
+            ref="selectApi"
+            :ag-grid="dataSetAgGrid"
+            class="w-100 h-100 flex-fill"
+            @handleClickSearch="onClickSearchAlarm"
+          />
+        </div>
+        <div slot="footer" class="dialog-footer">
+          <el-button size="small" plain type="info" class="close-btn" @click.native="close()">
+            {{ $t('exit') }}
+          </el-button>
+        </div>
+      </el-dialog>
+    </transition>
   </div>
 </template>
 
@@ -44,15 +45,13 @@ import { Modal } from '@/min/Modal.min'
 import _ from 'lodash'
 import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
 import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
-import CellRenderDataSetButtons from '@/views-dataHub/components/cellRenderer/CellRenderDataSetButtons'
-import { apiSelectDataSetHistList, apiDeleteDataSetHistList } from '@/api/dataHub'
 
 const routeName = 'ModalAiResponse'
 
 export default {
   name: routeName,
     // eslint-disable-next-line vue/no-unused-components
-    components: { CompAgGrid, CellRenderDataSetButtons, apiSelectDataSetHistList, CompInquiryPannel },
+    components: { CompAgGrid, CompInquiryPannel },
 
   directives: { elDragDialog },
   extends: Modal,
@@ -62,7 +61,6 @@ export default {
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       type: true,
       visible: false,
-      title: 'AI 장애대응',
     }
   },
   computed: {
@@ -99,7 +97,7 @@ export default {
     },
     onOpen(model, actionMode) {
       this.modalParam = model
-      this.onLoadList()
+      // this.onLoadList()
     },
     onClickSearchAlarm(params) {
       this.onLoadList(params)
@@ -107,19 +105,9 @@ export default {
     async onLoadList(params) {
       const target = ({ vue: this.$refs.selectApi })
       this.openLoading(target)
-      const param = {
-        limit: this.paginationInfoApi.pageSize,
-        page: this.paginationInfoApi.currentPage,
-        api_name: this.searchApiModel.api_name,
-        exec_mode_cd: this.searchApiModel.exec_mode_cd,
-        sort_column_name: this.sortInfo.colId,
-        sort_type: this.sortInfo.sort
-       }
     try {
         const res = ''
         this.dataSetList = res?.result
-        this.paginationInfoApi.totalCount = res.total // 총 항목 수 설정
-        this.paginationInfoApi.totalPages = Math.ceil(this.paginationInfoApi.totalCount / this.paginationInfoApi.pageSize) // 전체 페이지 수 계산
     } catch (error) {
         console.error(error)
       } finally {

@@ -844,9 +844,7 @@ export function alertInputOtpInfo(parent) {
 }
 
 export function onDownloadChrome(projectName) {
-  var path = ''
-  if (projectName === 'oasis') path = 'http://' + window.location.host + '/v1/downloadFile/static/'
-  else if (projectName === 'untact') path = window.location.protocol + '//' + window.location.host + '/external/static/'
+  var path = window.location.protocol + '//' + window.location.host + '/external/static/'
 
   var a = document.createElement('A')
   var fileName = 'ChromeStandaloneSetup'
