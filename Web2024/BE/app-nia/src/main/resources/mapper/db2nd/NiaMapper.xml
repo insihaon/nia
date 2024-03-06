@@ -118,7 +118,7 @@
    </select>
 
     <!-- SOP 리스트 조회 -->
-     <select id="SELECT_SOP_INQUIRY_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+     <select id="SELECT_SOP_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
      <include refid="TotalCountPrefix"/>   
         SELECT  SOP.SOP_ID ,
                 SOP.TICKET_ID ,
@@ -182,6 +182,33 @@
         </if>
         ORDER BY SOP.request_time DESC 
     <include refid="TotalCountSuffix"/>
+    </select>
+
+     <select id="SELECT_SOP_CODE_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+        SELECT 
+            FAULT_GB
+            , ARRAY_AGG(FAULT_TYPE) AS CODE_ARR
+        FROM nia.tb_sop_code
+        GROUP BY FAULT_GB
+        <where>
+            <trim prefix="(" prefixOverrides="AND|OR" suffix=")" suffixOverrides="">
+                <if test="USER_ID != null">
+                    AND user_id like '%' || #{USER_ID} || '%'
+                </if>
+                <if test="FAULT_GB != null">
+                    AND fault_gb like '%' || #{FAULT_GB} || '%'
+                </if>
+                <if test="FAULT_TYPE != null">
+                    AND fault_type like '%' || #{FAULT_TYPE} || '%'
+                </if>
+                <if test="START_DATE != null">
+                    AND reg_time <![CDATA[ > ]]> #{START_DATE}::TIMESTAMP
+                </if>
+                <if test="END_DATE != null">
+                    AND reg_time <![CDATA[ <= ]]> #{END_DATE}::TIMESTAMP
+                </if>
+            </trim>
+        </where>
     </select>
 
    <!-- <select id="SELECT_NIA_SYSLOG_LIST" parameterType="hashmap" resultType="hashmap">

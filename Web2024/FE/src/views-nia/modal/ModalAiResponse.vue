@@ -30,7 +30,7 @@
           />
         </div>
         <div slot="footer" class="dialog-footer">
-          <el-button size="small" plain type="info" class="close-btn" @click.native="close()">
+          <el-button size="small" plain class="close-btn" @click.native="close()">
             {{ $t('exit') }}
           </el-button>
         </div>
@@ -121,7 +121,6 @@ export default {
 </script>
 
 <style lang="scss" scope>
-@import "~@/styles/dataHub.scss";
 
 .aiDisabilityResponse {
   font-family: "NanumSquare";
