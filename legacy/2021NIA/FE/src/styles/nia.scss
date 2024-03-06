@@ -29,9 +29,59 @@ table.basic {
     background: #fff;
   }
 }
+
 .nia-dialog {
- 
+  font-family: 'NanumSquare';
+  .el-dialog {
+    border: 2px solid $datahub-border-box;
+    // border-bottom: 11px solid $datahub-primary;
+    box-shadow: 0 1px 5px 0 rgb(0 0 0 / 27%);
+    border-radius: 7px;
+    height: auto;
+  }
+  .el-dialog__header {
+    background-color: white !important;
+    color: black !important;
+    font-size: 16px;
+    font-family: 'NanumSquare';
+    transform: rotate(0.03deg);
+    font-weight: bold;
+    border-radius: 7px;
+  }
+  .el-dialog__body {
+    padding: 0 20px 10px 20px;
+    max-height: auto;
+    background: #fff;
+  }
+  .el-dialog__footer {
+    height: 70px !important;
+    background-color: white !important;
+  }
+
+  ~ .el-select-dropdown {
+    min-width: 220px !important;
+  }
+
+  .el-select,
+  .el-date-editor {
+    width: auto !important;
+  }
+
+  .text-size {
+    font-size: 18px;
+  }
+
+  .el-button {
+    background: #05092e;
+    color: #fff;
+  }
+
+  .close-btn{
+    background: rgb(220, 216, 216) !important;
+    color: #000 !important;
+  }
 }
+
 
 .nia {
 
@@ -39,14 +89,6 @@ table.basic {
     transition: all 0.25s;
   }
 
-  @font-face {
-    font-family: 'Noto Sans KR';
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: url(https://fonts.gstatic.com/s/notosanskr/v36/PbyxFmXiEBPT4ITbgNA5Cgms3VYcOA-vvnIzzuoyeLGC5nwuDo-KBTUm6CryotyJROlrnQ.1.woff2) format('woff2');
-    unicode-range: U+f92f-f980, U+f982-f9c9;
-  }
 }
 .full-screen {
   .vm--modal {
