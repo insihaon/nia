@@ -11,67 +11,59 @@
                   <i :class="item.icon" />
                   {{ item.label }}
                 </label>
-                <div>
-                  <el-col>
-                    <el-input
-                      v-if="item.type === 'input'"
-                      v-model="searchModel[item.model]"
-                      type="text"
-                      clearable
-                      style="width : 230px;"
+                <el-col>
+                  <el-input
+                    v-if="item.type === 'input'"
+                    v-model="searchModel[item.model]"
+                    type="text"
+                    clearable
+                    style="width : 230px;"
 
-                      :placeholder="item.placeholder"
-                      @keyup.native.enter="$emit('keyupEnter', searchModel)"
+                    :placeholder="item.placeholder"
+                    @keyup.native.enter="$emit('keyupEnter', searchModel)"
+                  />
+
+                  <CompCheckSelector
+                    v-if="item.type === 'select' && item.multiple"
+                    v-model="searchModel[item.model]"
+                    :item="item"
+                    :search-model.sync="searchModel[item.model]"
+                  />
+
+                  <el-select
+                    v-if="item.type === 'select' && !item.multiple"
+                    v-model="searchModel[item.model]"
+                    collapse-tags
+                    filterable
+                    :placeholder="item.placeholder"
+                    reserve-keyword
+                    remote
+                  >
+                    <el-option
+                      v-for="(option, i) in item.options"
+                      :key="i"
+                      :label="option.label"
+                      :value="option.value"
                     />
+                  </el-select>
 
-                    <CompCheckSelector
-                      v-if="item.type === 'select' && item.multiple"
-                      v-model="searchModel[item.model]"
-                      :item="item"
-                      :search-model.sync="searchModel[item.model]"
-                      :style="{ width: '230px' }"
-                    />
+                  <OrgSelect
+                    v-if="item.type === 'orgSelect'"
+                    v-model="searchModel[item.model]"
+                    :item="item"
+                    :search-model.sync="searchModel[item.model]"
+                    @orgChange="(orgLvl)=> $emit('orgChange', orgLvl)"
+                  />
 
-                    <el-select
-                      v-if="item.type === 'select' && !item.multiple"
-                      v-model="searchModel[item.model]"
-                      collapse-tags
-                      :style="{ width: '230px' }"
-                      filterable
-                      :placeholder="item.placeholder"
-                      reserve-keyword
-                      remote
-                    >
-                      <el-option
-                        v-for="(option, i) in item.options"
-                        :key="i"
-                        :label="option.label"
-                        :value="option.value"
-                        :style="{ width: '100%' }"
-                      />
-                    </el-select>
-
-                    <OrgSelect
-                      v-if="item.type === 'orgSelect'"
-                      v-model="searchModel[item.model]"
-                      :item="item"
-                      :search-model.sync="searchModel[item.model]"
-                      :style="{ width: '100%' }"
-                      @orgChange="(orgLvl)=> $emit('orgChange', orgLvl)"
-                    />
-
-                    <el-date-picker
-                      v-if="item.type === 'date'"
-                      v-model="searchModel[item.model]"
-                      type="daterange"
-                      style="width : 230px"
-                      start-placeholder="시작 일자"
-                      end-placeholder="종료 일자"
-                      :default-time="['00:00:00','23:59:59']"
-                    />
-                  </el-col>
-                </div>
-
+                  <el-date-picker
+                    v-if="item.type === 'date'"
+                    v-model="searchModel[item.model]"
+                    type="daterange"
+                    start-placeholder="시작 일자"
+                    end-placeholder="종료 일자"
+                    :default-time="['00:00:00','23:59:59']"
+                  />
+                </el-col>
                 <el-row class="d-flex flex-column w-50" style="justify-content: end; color : rgb(50, 49, 49)">
                   <slot name="searchCaption" />
                 </el-row>
@@ -195,11 +187,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      searchContainerHeight: '0px',
-      // eslint-disable-next-line vue/no-dupe-keys
-      modelItems: {},
       selectedItem: [],
-      emitKeys: ['handleClickSearch'],
     }
   },
   computed: {
@@ -242,19 +230,19 @@ export default {
     prevPage() {
       if (this.paginationInfo.currentPage > 1) {
         this.paginationInfo.currentPage--
-        this.emit('handleClickSearch', this.paginationInfo.currentPage) // 이전 페이지로 이동할 때 데이터 다시 가져오기
+        this.emit('onChangePage', this.paginationInfo.currentPage) // 이전 페이지로 이동할 때 데이터 다시 가져오기
       }
     },
     nextPage() {
       if (this.paginationInfo.currentPage < this.paginationInfo.totalPages) {
         this.paginationInfo.currentPage++
-        this.$emit('handleClickSearch', this.paginationInfo.currentPage) // 다음 페이지로 이동할 때 데이터 다시 가져오기
+        this.$emit('onChangePage', this.paginationInfo.currentPage) // 다음 페이지로 이동할 때 데이터 다시 가져오기
       }
     },
     handlePageChange(newPage) {
       if (newPage) {
         this.paginationInfo.currentPage = newPage
-        this.$emit('handleClickSearch', this.paginationInfo.currentPage) // 특정 페이지로 이동할 때 데이터 다시 가져오기
+        this.$emit('handleCliconChangePagekSearch', this.paginationInfo.currentPage) // 특정 페이지로 이동할 때 데이터 다시 가져오기
       }
     },
     refreshData() {

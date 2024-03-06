@@ -33,15 +33,16 @@ table.basic {
 .nia-dialog {
   font-family: 'NanumSquare';
   .el-dialog {
-    border: 2px solid $datahub-border-box;
-    // border-bottom: 11px solid $datahub-primary;
-    box-shadow: 0 1px 5px 0 rgb(0 0 0 / 27%);
-    border-radius: 7px;
     height: auto;
+    width: 1500px;
+    border-radius: 7px;
+    margin-top: 5vh !important;
+    border: 2px solid $nia-primary;
+    box-shadow: 0 1px 5px 0 rgb(0 0 0 / 27%);
   }
   .el-dialog__header {
-    background-color: white !important;
-    color: black !important;
+    background-color: white;
+    color: black;
     font-size: 16px;
     font-family: 'NanumSquare';
     transform: rotate(0.03deg);
@@ -50,45 +51,31 @@ table.basic {
   }
   .el-dialog__body {
     padding: 0 20px 10px 20px;
-    max-height: auto;
+    height: 700px;
     background: #fff;
   }
   .el-dialog__footer {
-    height: 70px !important;
-    background-color: white !important;
+    height: 60px;
+    border-radius: 7px;
+    background-color: white;
+    .close-btn{
+      background: rgb(220, 216, 216);
+      color: $nia-primary;
+    }
   }
-
   ~ .el-select-dropdown {
     min-width: 220px !important;
   }
-
-  .el-select,
-  .el-date-editor {
-    width: auto !important;
-  }
-
-  .text-size {
-    font-size: 18px;
-  }
-
   .el-button {
     background: #05092e;
     color: #fff;
   }
-
-  .close-btn{
-    background: rgb(220, 216, 216) !important;
-    color: #000 !important;
-  }
 }
 
-
 .nia {
-
   .splitter-paneL, .splitter-paneR {
     transition: all 0.25s;
   }
-
 }
 .full-screen {
   .vm--modal {

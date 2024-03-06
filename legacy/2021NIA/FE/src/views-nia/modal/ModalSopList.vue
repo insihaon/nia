@@ -25,17 +25,21 @@
           <CompInquiryPannel
             ref="selectApi"
             :ag-grid="dataSetAgGrid"
+            :pagination-info="paginationInfo"
             title="장비 검색"
             :items.sync="searchAiItems"
             class="w-100 h-100 flex-fill"
-            @handleClickSearch="onClickSearchAi"
+            @handleClickSearch="onClickSearch"
+            @onChangePage="onChangePage"
+            @selectedRow="onClickRow"
           />
         </div>
         <div slot="footer" class="dialog-footer">
-          <el-button size="small" plain type="info" class="close-btn" @click.native="close()">
+          <el-button size="small" plain class="close-btn" @click.native="close()">
             {{ $t('exit') }}
           </el-button>
         </div>
+        <ModalSopDetail ref="ModalSopDetail" />
       </el-dialog>
     </transition>
   </div>
@@ -47,23 +51,22 @@ import { Modal } from '@/min/Modal.min'
 import _ from 'lodash'
 import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
 import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
+import ModalSopDetail from './ModalSopDetail.vue'
 import CellRenderDataSetButtons from '@/views-dataHub/components/cellRenderer/CellRenderDataSetButtons'
-import { apiSopInquiryList } from '@/api/nia'
+import { apiSopList } from '@/api/nia'
 
 const routeName = 'ModalSopList'
 
 export default {
   name: routeName,
-    // eslint-disable-next-line vue/no-unused-components
-    components: { CompAgGrid, CellRenderDataSetButtons, CompInquiryPannel },
-
+  // eslint-disable-next-line vue/no-unused-components
+  components: { CompAgGrid, CellRenderDataSetButtons, CompInquiryPannel, ModalSopDetail },
   directives: { elDragDialog },
   extends: Modal,
   data() {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      type: true,
       sopList: [],
       visible: false,
       selectedRow: null,
@@ -74,9 +77,8 @@ export default {
         totalPages: null, // 전체 페이지 수
       },
       searchAiItems: [
-          { label: '티켓번호', type: 'input', size: 8, model: 'api_name', placeholder: '티켓번호를 검색하세요' },
-          { label: 'FROM', type: 'date', size: 4, model: 'exec_mode_cd', placeholder: '연동방식을 선택하세요' },
-          { label: 'TO', type: 'date', size: 4, model: 'exec_mode_cd', placeholder: '연동방식을 선택하세요' },
+          { label: '티켓번호', type: 'input', size: 8, model: 'TICKET_ID', placeholder: '티켓번호를 검색하세요' },
+          { label: 'DATE', type: 'date', size: 4, model: 'DATE', placeholder: '' },
       ],
     }
   },
@@ -113,13 +115,25 @@ export default {
       this.selectedRow = model?.row
       this.onLoadSopList()
     },
-    onClickSearchAi(params) {
-      this.onLoadSopList(params)
+    onClickSearch(searchModel) {
+      const { TICKET_ID, DATE } = searchModel
+      const param = { TICKET_ID }
+      if (DATE) {
+        Object.assign(param, { START_DATE: DATE[0], END_DATE: DATE[1] })
+      }
+      this.onLoadSopList(param)
     },
-     async onLoadSopList() {
+    onClickRow(rows) {
+      this.$refs.ModalSopDetail.open({ row: rows[0] })
+    },
+    async onLoadSopList(receiveParam = null) {
       const { limit, currentPage } = this.paginationInfo
+      const param = { TICKET_TYPE: this.selectedRow.ticket_type, LIMIT: limit, PAGE: currentPage }
+      if (receiveParam) {
+        this._merge(param, receiveParam)
+      }
       try {
-        const res = await apiSopInquiryList({ TICKET_TYPE: this.selectedRow.ticket_type, LIMIT: limit, PAGE: currentPage })
+        const res = await apiSopList(param)
         this.sopList = res?.result
         this.paginationInfo.totalCount = res.total // 총 항목 수 설정
         this.paginationInfo.totalPages = Math.ceil(this.paginationInfo.totalCount / this.paginationInfo.pageSize) // 전체 페이지 수 계산
@@ -127,31 +141,16 @@ export default {
         this.error(error)
       }
     },
+    onChangePage(curPage) {
+      this.paginationInfo.currentPage = curPage
+      this.onLoadSopList()
+    },
     onClose() { /* for Override */ },
     }
 
   }
 </script>
 
-<style lang="scss" scope>
-@import "~@/styles/dataHub.scss";
-
-.ModalSopList {
-  font-family: "NanumSquare";
-
-  .el-dialog__body{
-    height: 700px !important;
-  }
-
-  .CompAgGrid{
-    border: 1px solid #d6d6d6;
-
-    .ag-header-container{
-      background: #e8ecf0;
-    }
-  }
-
-}
+<style lang="scss" scoped>
 
 </style>
-./ModalSopList.vue

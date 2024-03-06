@@ -23,12 +23,21 @@ export function apiTransmissionAlarmList(params = {}) {
   })
 }
 
-export function apiSopInquiryList(params = {}) {
+export function apiSopList(params = {}) {
   return http({
     url: '/selectList',
     method: 'post',
     filePath: filePath,
-    sqlId: 'SELECT_SOP_INQUIRY_LIST',
+    sqlId: 'SELECT_SOP_LIST',
+    data: params
+  })
+}
+export function apiSopCode(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_SOP_CODE_LIST',
     data: params
   })
 }
