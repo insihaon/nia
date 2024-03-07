@@ -140,7 +140,6 @@ export default {
         }
       }
     },
-
     agGrid: {
       type: Object,
       default: () => { return {} }
@@ -242,7 +241,7 @@ export default {
     handlePageChange(newPage) {
       if (newPage) {
         this.paginationInfo.currentPage = newPage
-        this.$emit('handleCliconChangePagekSearch', this.paginationInfo.currentPage) // 특정 페이지로 이동할 때 데이터 다시 가져오기
+        this.$emit('onChangePage', this.paginationInfo.currentPage) // 특정 페이지로 이동할 때 데이터 다시 가져오기
       }
     },
     refreshData() {
