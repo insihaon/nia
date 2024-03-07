@@ -23,7 +23,7 @@
         </span>
         <div class="d-flex flex-column h-100">
           <CompInquiryPannel
-            ref="selectApi"
+            ref="search"
             :ag-grid="dataSetAgGrid"
             :pagination-info="paginationInfo"
             title="장비 검색"
@@ -72,7 +72,7 @@ export default {
       selectedRow: null,
       paginationInfo: {
         currentPage: 1, // 현재 페이지
-        limit: 100, // 페이지당 항목 수
+        pageSize: 100, // 페이지당 항목 수
         totalCount: 0, // 총 항목 수
         totalPages: null, // 전체 페이지 수
       },
@@ -116,27 +116,27 @@ export default {
       this.onLoadSopList()
     },
     onClickSearch(searchModel) {
-      const { TICKET_ID, DATE } = searchModel
-      const param = { TICKET_ID }
-      if (DATE) {
-        Object.assign(param, { START_DATE: DATE[0], END_DATE: DATE[1] })
-      }
-      this.onLoadSopList(param)
+      this.onLoadSopList()
     },
     onClickRow(rows) {
       this.$refs.ModalSopDetail.open({ row: rows[0] })
     },
-    async onLoadSopList(receiveParam = null) {
-      const { limit, currentPage } = this.paginationInfo
-      const param = { TICKET_TYPE: this.selectedRow.ticket_type, LIMIT: limit, PAGE: currentPage }
-      if (receiveParam) {
-        this._merge(param, receiveParam)
+    async onLoadSopList() {
+      const { pageSize: limit, currentPage: page } = this.paginationInfo
+      const param = { TICKET_TYPE: this.selectedRow.ticket_type, limit, page }
+      const searchModel = this.$refs?.search?.searchModel ?? {}
+      if (searchModel?.TICKET_ID) {
+        this._merge(param, { TICKET_ID: this.$refs.search.searchModel.TICKET_ID })
+      }
+      if (searchModel?.DATE) {
+        const dateTime = this.$refs.search.searchModel.DATE
+        this._merge(param, { START_DATE: dateTime[0], END_DATE: dateTime[1] })
       }
       try {
         const res = await apiSopList(param)
         this.sopList = res?.result
         this.paginationInfo.totalCount = res.total // 총 항목 수 설정
-        this.paginationInfo.totalPages = Math.ceil(this.paginationInfo.totalCount / this.paginationInfo.pageSize) // 전체 페이지 수 계산
+        this.paginationInfo.totalPages = Math.ceil(this.paginationInfo.totalCount / this.paginationInfo.pageSizes) // 전체 페이지 수 계산
       } catch (error) {
         this.error(error)
       }

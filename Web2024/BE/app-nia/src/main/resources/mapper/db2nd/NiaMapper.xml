@@ -10,21 +10,21 @@
     
    <sql id="TotalCountSuffix">
    <if test="TOTAL_COUNT == null and sort_column_name != null and sort_type != null">
-        ORDER BY ${SORT_COLUMN_NAME} ${SORT_TYPE}
+        ORDER BY ${sort_column_name} ${sort_type}
    </if>
    <if test="TOTAL_COUNT != null">
         ) TOTALCOUNT
    </if>
    <choose>
         <when test="TOTAL_COUNT != null and limit != null">
-            LIMIT ${LIMIT}
+            LIMIT ${limit}
         </when>
         <when test="TOTAL_COUNT == null and page != null and limit != null">
-            LIMIT ${LIMIT} OFFSET ${(PAGE - 1) * LIMIT}
+            LIMIT ${limit} OFFSET ${(page - 1) * limit}
         </when>
         <when test="TOTAL_COUNT == null and page != null and limit == null">
             <!--  default 10으로 설정 -->
-            LIMIT 10 OFFSET ${(PAGE - 1) * LIMIT}
+            LIMIT 10 OFFSET ${(page - 1) * limit}
         </when>
    </choose>
    </sql>
@@ -149,8 +149,7 @@
                 SOP.HANDLING_ACK_USER AS HANDLING_ACK_USER ,
                 SOP.HANDLING_ACK_TIME AS HANDLING_ACK_TIME ,
                 SOP.HANDLING_FIN_USER AS HANDLING_FIN_USER ,
-                SOP.HANDLING_FIN_TIME AS HANDLING_FIN_TIME ,
-                COUNT(1) over () totalCount
+                SOP.HANDLING_FIN_TIME AS HANDLING_FIN_TIME 
         FROM    ( SELECT ticket_id,
                         MAX(ticket_al_id) AS ticket_al_id
                 FROM    rca.tb_rca_ticket_al_current tac
