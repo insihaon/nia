@@ -39,16 +39,22 @@ export default {
     retry: { code: 'T', label: '재처리 성공' }
   },
   nia: {
-    transAlarmType: [
+    // 전송망
+    transType: [
       { value: 'RT', text: '장애' },
-      { value: 'FTT', text: '비장애' },
       { value: 'PF', text: '광레벨' },
-      { value: 'NFTT', text: '장비부하장애' },
     ],
-    ipAlarmType: [
+    // IP망
+    ipType: [
+      { value: 'NFTT', text: '장비부하장애', fnCount: (d) => safeString(d.ticket_type).trim() === 'NFTT', fnFilter: (d) => safeString(d.ticket_type).trim() === 'NFTT' },
+      { value: 'FTT', text: '비장애', fnCount: (d) => safeString(d.ticket_type).trim() === 'FTT', fnFilter: (d) => safeString(d.ticket_type).trim() === 'FTT' },
       { code: 'ATT2', text: '이상 트래픽', fnCount: (d) => safeString(d.ticket_type).trim() === 'ATT2', fnFilter: (d) => safeString(d.ticket_type).trim() === 'ATT2' },
       { code: 'NTT', text: '유해 트래픽', fnCount: (d) => safeString(d.ticket_type).trim() === 'NTT', fnFilter: (d) => safeString(d.ticket_type).trim() === 'NTT' },
-      { code: 'SYSLOG', text: 'SYSLOG', fnCount: (d) => safeString(d.ticket_type).trim() === 'SYSLOG', fnFilter: (d) => safeString(d.ticket_type).trim() === 'SYSLOG' },
+      // { code: 'SYSLOG', text: 'SYSLOG', fnCount: (d) => safeString(d.ticket_type).trim() === 'SYSLOG', fnFilter: (d) => safeString(d.ticket_type).trim() === 'SYSLOG' },
+    ],
+    ipAlarmType: [
+      { code: 'ALARM', text: 'ALARM', fnCount: (d) => safeString(d.ticket_type).trim() !== 'SYSLOG', fnFilter: (d) => safeString(d.ticket_type).trim() !== 'SYSLOG' },
+      { code: 'SYSLOG', text: 'SYSLOG ALARM', fnCount: (d) => safeString(d.ticket_type).trim() === 'SYSLOG', fnFilter: (d) => safeString(d.ticket_type).trim() === 'SYSLOG' }
     ],
     statusType: [
       { code: 'INIT', hex: '', text: '발생', fnCount: (d) => safeString(d.status).trim() === 'INIT', fnFilter: (d) => safeString(d.status).trim() === 'INIT' },

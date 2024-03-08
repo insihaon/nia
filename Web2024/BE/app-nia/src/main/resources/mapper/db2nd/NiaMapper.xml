@@ -28,6 +28,60 @@
         </when>
    </choose>
    </sql>
+
+   <select id="SELECT_SELF_PROCESS_STATISTICS" parameterType="hashmap" resultType="hashmap">
+        <if test="STATISTICS_TYPE != null">
+            <bind name="STATISTICS_TYPE" value="STATISTICS_TYPE"/>
+            <bind name="SERIES_TYPE" value="SERIES_TYPE"/>
+            <if test="STATISTICS_TYPE == 'hour'">
+                <bind name="STATISTICS_FORMAT" value="'YYYY-MM-DD HH24:MI'"/>
+                <bind name="SERIES_FORMAT" value="'YYYY-MM-DD'"/>
+            </if>
+            <if test="STATISTICS_TYPE == 'day'">
+                <bind name="STATISTICS_FORMAT" value="'YYYY-MM-DD'"/>
+                <bind name="SERIES_FORMAT" value="'YYYY-MM'"/>
+            </if>
+            <if test="STATISTICS_TYPE == 'month'">
+                <bind name="STATISTICS_FORMAT" value="'YYYY-MM'"/>
+                <bind name="SERIES_FORMAT" value="'YYYY'"/>
+            </if>
+        </if>
+        <if test="STATISTICS_TYPE == null">
+            <!-- hour, day, month -->
+            <bind name="STATISTICS_TYPE" value="'hour'"/>
+            <!-- day, month, year -->
+            <bind name="SERIES_TYPE" value="'day'"/>
+        </if>
+        <if test="FORMAT != null">
+            <bind name="FORMAT" value="FORMAT"/>
+        </if>
+        WITH 
+        series AS (
+            SELECT generate_series (
+             <if test="DATE != null and DATE != ''">
+                DATE_TRUNC(#{SERIES_TYPE}, TO_DATE(#{DATE}, #{SERIES_FORMAT})::date),
+                DATE_TRUNC(#{SERIES_TYPE}, TO_DATE(#{DATE}, #{SERIES_FORMAT})::date) + ('1 ' || #{SERIES_TYPE})::INTERVAL - ('1 ' || #{STATISTICS_TYPE})::INTERVAL,
+            </if>
+            <if test="DATE == null or DATE == ''">
+                DATE_TRUNC(#{SERIES_TYPE}, CURRENT_DATE),
+                DATE_TRUNC(#{SERIES_TYPE}, CURRENT_DATE) + ('1 ' || #{SERIES_TYPE})::INTERVAL - ('1 ' || #{STATISTICS_TYPE})::INTERVAL,
+            </if>
+            ('1 '|| #{STATISTICS_TYPE})::INTERVAL
+            ) AS series_time
+        )
+        SELECT
+            TO_CHAR(series.series_time, #{STATISTICS_FORMAT}) AS series_time,
+            <!-- SO: 최적화 / ST: 회복 -->
+            COALESCE(COUNT(CASE WHEN TPD.self_process_group IN ('SO') THEN 1 END), 0) AS SO_TOTALCOUNT,
+            COALESCE(COUNT(CASE WHEN TPD.self_process_group IN ('SO') AND TPD.clos_type = 'A' AND TPD.clos_status = 'Y' THEN 1 END), 0) AS SO_COUNT,
+            COALESCE(COUNT(CASE WHEN TPD.self_process_group IN ('ST') THEN 1 END), 0) AS ST_TOTALCOUNT,
+            COALESCE(COUNT(CASE WHEN TPD.self_process_group IN ('ST') AND TPD.clos_type = 'A' AND TPD.clos_status = 'Y' THEN 1 END), 0) AS ST_COUNT
+        FROM series
+        LEFT JOIN nia.tb_auto_treat_process_dtl TPD
+        ON DATE_TRUNC(#{STATISTICS_TYPE}, TPD.occur_time) = series.series_time
+        GROUP BY series_time
+        ORDER BY series_time
+   </select>
    
    <!-- IP망 ALARM + SYSLOG -->
    <select id="SELECT_IP_ALARM_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
@@ -116,6 +170,32 @@
             AND T.TICKET_TYPE IN ('FTT', 'PF', 'NFTT')
         ORDER BY TICKET_GENERATION_TIME DESC, TICKET_ID DESC
    </select>
+
+   <!-- AI관제 시스템 처리량 -->
+    <select id="SELECT_DASHBOARD_STATISTICS" parameterType="hashmap" resultType="hashmap">
+        SELECT  SUM(trans_perf_cnt) AS trans_perf_cnt,
+                SUM(trans_alarm_cnt) AS trans_alarm_cnt,
+                SUM(ip_resource_cnt) AS ip_resource_cnt,
+                SUM(ip_alarm_cnt) AS ip_alarm_cnt,
+                SUM(ip_perf_cnt) AS ip_perf_cnt,
+                SUM(ip_sflow_cnt) AS ip_sflow_cnt,
+                SUM(ticket_rt_cnt) AS ticket_rt_cnt,
+                SUM(ticket_att_cnt) AS ticket_att_cnt,
+                SUM(ticket_ntt_cnt) AS ticket_ntt_cnt,
+                SUM(ticket_pf_cnt) AS ticket_pf_cnt,
+                SUM(link_total_resource_cnt) AS link_total_resource_cnt,
+                SUM(link_total_alarm_cnt) AS link_total_alarm_cnt,
+                SUM(link_ip_perf_cnt) AS link_ip_perf_cnt,
+                SUM(link_trans_perf_cnt) AS link_trans_perf_cnt
+        FROM    nia.tb_opsts
+        WHERE 1=1
+        <if test="SEARCH_DATE != null">
+            AND opsts_time <![CDATA[ = ]]> #{SEARCH_DATE}
+        </if>
+        <if test="DATE_TYPE != null">
+            AND opsts_gb <![CDATA[ = ]]> #{DATE_TYPE}
+        </if>
+    </select>
 
     <!-- SOP 리스트 조회 -->
      <select id="SELECT_SOP_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
@@ -209,27 +289,5 @@
             </trim>
         </where>
     </select>
-
-   <!-- <select id="SELECT_NIA_SYSLOG_LIST" parameterType="hashmap" resultType="hashmap">
-    SELECT  sysDialog.alarmno,
-            sysDialog.alarmtime,
-            sysDialog.node_num,
-            sysDialog.node_nm,
-            sysDialog.alarmmsg,
-            sysDialog.alarmlvl,
-            sysDialog.etc,
-            sysDialog.rule_id,
-            sysDialog.alarmloc,
-            CASE WHEN sysDialog.status = 'INIT' THEN '발생'
-            WHEN sysDialog.status = 'FIN' THEN '마감'
-            WHEN sysDialog.status = 'AUTO_FIN' THEN '자동 마감'
-            ELSE '-'
-            END AS status,
-            nodea.ip_addr
-    FROM    rca.tb_syslog_alarm_mst sysDialog
-    LEFT OUTER JOIN resource.tb_node_mst nodea ON nodea.node_id = sysDialog.node_nm
-    WHERE sysDialog.alarmtime <![CDATA[ > ]]> now() - INTERVAL '48' HOUR
-    ORDER BY sysDialog.alarmno DESC
-    </select> -->
 
 </mapper>

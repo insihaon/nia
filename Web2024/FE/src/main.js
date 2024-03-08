@@ -40,6 +40,10 @@ Vue.component('split-pane', splitPane)
 import LottieVuePlayer from '@lottiefiles/vue-lottie-player'
 Vue.use(LottieVuePlayer)
 
+import * as echarts from 'echarts'
+import { plugin } from 'echarts-for-vue'
+Vue.use(plugin, { echarts })
+
 import SvgIcon from '@jamescoyle/vue-icon'
 Vue.component('svg-icon', SvgIcon)
 

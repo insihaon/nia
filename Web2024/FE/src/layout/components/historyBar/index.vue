@@ -13,6 +13,7 @@
       :to="{ path: tag.path, query: tag.query, fullPath: tag.fullPath }"
       tag="div"
       @click.middle.native="!isAffix(tag) ? closeSelectedTag(tag):''"
+      @contextmenu.prevent.native="openMenu(tag,$event)"
     >
       <!-- @contextmenu.prevent.native="openMenu(tag,$event)" -->
       <div class="title">
@@ -22,13 +23,13 @@
         <span v-if="!isAffix(tag)" class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)" />
       </div>
     </router-link>
-    <!-- <ul v-show="visible" :style="{left:left+'px',top:top+'px'}" class="contextmenu">
+    <ul v-show="visible" :style="{left:left+'px',top:top+'px'}" class="contextmenu">
       <li @click="refreshSelectedTag(selectedTag)">Refresh</li>
       <li @click="openNewTab(selectedTag)">Open New Tab</li>
       <li v-if="!isAffix(selectedTag)" @click="closeSelectedTag(selectedTag)">Close</li>
       <li @click="closeOthersTags">Close Others</li>
       <li @click="closeAllTags(selectedTag)">Close All</li>
-    </ul> -->
+    </ul>
   </div>
 </template>
 
