@@ -22,7 +22,24 @@ export function apiTransmissionAlarmList(params = {}) {
     data: params
   })
 }
-
+export function apiDashboardStatistics(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_DASHBOARD_STATISTICS',
+    data: params
+  })
+}
+export function apiSelfProcessStatistics(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_SELF_PROCESS_STATISTICS',
+    data: params
+  })
+}
 export function apiSopList(params = {}) {
   return http({
     url: '/selectList',
@@ -41,3 +58,4 @@ export function apiSopCode(params = {}) {
     data: params
   })
 }
+

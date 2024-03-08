@@ -1,6 +1,54 @@
 <template>
   <div :class="{ [name]: true }">
     <LeftBar class="h-full">
+      <template slot="leftbar-container">
+        <div class="h-20 text-center mt-1">
+          <span class="font-bold text-lg whitespace-nowrap">AI관제 시스템 처리량</span>
+          <div class="d-flex p-2 justify-center items-center">
+            <span class="font-semibold whitespace-nowrap pr-2">검색</span>
+            <el-radio-group v-model="systemChartCondition.dayType" size="mini" class="d-flex">
+              <el-radio-button label="DAY">일별</el-radio-button>
+              <el-radio-button label="MONTH">월별</el-radio-button>
+            </el-radio-group>
+            <el-date-picker
+              v-model="systemChartCondition.date"
+              style="width: 150px;"
+              size="mini"
+              :type="systemChartCondition.dayType ==='DAY' ? 'date':'month'"
+            />
+            <el-button icon="el-icon-search" size="mini" style="padding: 7px 7px;" @click="onLoadDashboardStatistics()" />
+          </div>
+        </div>
+        <hr>
+        <div style="height: calc(70% - 5rem);">
+          <CompChart :options="ticketOptions" class="h-1/3" />
+          <CompChart :options="collectOptions" class="h-1/3" />
+          <CompChart :options="servingOptions" class="h-1/3" />
+        </div>
+        <hr>
+        <div class="h-20 text-center">
+          <span class="font-bold text-lg whitespace-nowrap p-2">자가 처리 현황</span>
+          <div class="d-flex p-2 justify-center items-center">
+            <span class="font-semibold whitespace-nowrap pr-2">검색</span>
+            <el-radio-group v-model="selfChartCondition.statisticsType" size="mini" class="d-flex">
+              <el-radio-button label="hour">시간별</el-radio-button>
+              <el-radio-button label="day">일별</el-radio-button>
+              <el-radio-button label="month">월별</el-radio-button>
+            </el-radio-group>
+            <el-date-picker
+              v-model="selfChartCondition.date"
+              style="width: 150px;"
+              size="mini"
+              :type="getSelfProDateType()"
+            />
+            <el-button icon="el-icon-search" size="mini" style="padding: 7px 7px;" @click="onLoadSelfProcessStatistics()" />
+          </div>
+        </div>
+        <hr>
+        <div style="height: calc(30% - 5rem);">
+          <CompChart :options="selfProcessOptions" class="h-full" />
+        </div>
+      </template>
       <template slot="top-container">
         <filterBar position="TOP">
           <template slot="function-container">
@@ -62,25 +110,39 @@ import { Base } from '@/min/Base.min'
 import LeftBar from '@/layout/components/gridTemplate/LeftBar'
 import filterBar from '@/layout/components/filterBar'
 import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
+import CompChart from '@/components/chart/CompChart.vue'
 import BaseFilterGroup from '@/filters/baseFilterGroup'
 import CellRenderAibuttons from '@/views-nia/components/cellRenderer/CellRenderAibuttons'
 import ModalSopList from '@/views-nia/modal/ModalSopList'
 import ModalAiResponse from '@/views-nia/modal/ModalAiResponse'
-import { apiIpAlarmList, apiTransmissionAlarmList } from '@/api/nia'
+import { apiIpAlarmList, apiTransmissionAlarmList, apiDashboardStatistics, apiSelfProcessStatistics } from '@/api/nia'
 const routeName = 'NiaMain'
 
 export default {
   name: routeName,
   // eslint-disable-next-line vue/no-unused-components
-  components: { CompAgGrid, LeftBar, filterBar, ModalSopList, CellRenderAibuttons, ModalAiResponse },
+  components: { CompAgGrid, CompChart, LeftBar, filterBar, ModalSopList, CellRenderAibuttons, ModalAiResponse },
   extends: Base,
   data() {
     return {
       name: routeName,
+      src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       filterGroup: '',
       ipNetworkList: [],
       transmissionNetworkList: [],
-      selectedItem: []
+      selectedItem: [],
+      systemChartCondition: {
+        dayType: 'DAY',
+        date: this.moment().format('YYYY-MM-DD')
+      },
+      selfChartCondition: {
+        statisticsType: 'hour',
+        date: this.moment().format('YYYY-MM-DD')
+      },
+      statistics: {},
+      selfStatistics: [],
+      chartloading: false
+
     }
   },
   computed: {
@@ -120,12 +182,100 @@ export default {
       ]
       const options = { name: this.name, checkable: false, rowGroupPanel: false }
       return { options, columns, data: this.transmissionNetworkList }
+    },
+    ticketOptions() {
+      const keyByTitle = [
+        { name: '장애', key: 'ticket_rt_cnt' },
+        { name: '광레벨 저하', key: 'ticket_pf_cnt' },
+        { name: '이상 트래픽', key: 'ticket_att_cnt' },
+        { name: '유해 트래픽', key: 'ticket_ntt_cnt' },
+      ]
+      return this.getDefaultChartOptions('티켓 발생량', keyByTitle)
+    },
+    collectOptions() {
+      const keyByTitle = [
+      { name: '광레벨 수집', key: 'trans_perf_cnt' },
+      { name: '전송 경보 수집', key: 'trans_alarm_cnt' },
+      { name: 'IP 시설 연동', key: 'ip_resource_cnt' },
+      { name: 'IP 경보 연동', key: 'ip_alarm_cnt' },
+      { name: 'IP 트래픽 연동', key: 'ip_perf_cnt' },
+      { name: 'IP SFlow 연동', key: 'ip_sflow_cnt' }
+      ]
+      return this.getDefaultChartOptions('데이터 수집량', keyByTitle)
+    },
+    servingOptions() {
+      const keyByTitle = [
+        { name: '시설 연동', key: 'link_total_resource_cnt' },
+        { name: '경보 연동', key: 'link_total_alarm_cnt' },
+        { name: '트래픽 연동', key: 'link_ip_perf_cnt' },
+        { name: '광레벨 연동', key: 'link_trans_perf_cnt' }
+      ]
+      return this.getDefaultChartOptions('데이터 제공량(데이터레이크 연계량)', keyByTitle)
+    },
+    selfProcessOptions() {
+      const selfStatistics = this.selfStatistics
+      return {
+        legend: {
+          data: ['자가최적화 총 발생', '자가최적화 건 수', '자가회복 총 발생', '자가회복 건 수'],
+          top: '5%'
+        },
+        title: {
+          // text: '자가 최적화/자가 회복',
+          // left: 'center',
+          textStyle: {
+            fontSize: 13
+          }
+        },
+        dataZoom: [{ type: 'inside' }, { type: 'slider' }],
+        tooltip: {},
+        xAxis: {
+          type: 'category',
+          data: selfStatistics.map(v => v.series_time),
+          axisLabel: { fontWeight: 'bold', },
+        },
+        yAxis: {
+          type: 'value',
+          axisLabel: {
+            formatter: function (value, index) {
+              let result = value
+              if (value >= 1000) {
+                result = (value / 1000) + 'K'
+              } else {
+                result = value.toString()
+              }
+              return result
+            }
+          }
+        },
+        series: [
+          {
+            name: '자가최적화 총 발생',
+            type: 'bar',
+            data: this.selfStatistics.map(v => v.so_totalcount)
+          },
+          {
+            name: '자가최적화 건 수',
+            type: 'bar',
+
+            data: this.selfStatistics.map(v => v.so_count)
+          },
+          {
+            name: '자가회복 총 발생',
+            type: 'bar',
+            data: this.selfStatistics.map(v => v.st_totalcount)
+          },
+          {
+            name: '자가회복 건 수',
+            type: 'bar',
+            data: this.selfStatistics.map(v => v.st_count)
+          },
+        ]
+      }
     }
   },
-  beforeMount () {
-    // this.filterGroup = new BaseFilterGroup(this, { onFilterChanged: this.onFilterChanged, isCheckBox: false })
-  },
-  mounted () {
+  async mounted () {
+    await this.onLoadDashboardStatistics()
+    await this.onLoadSelfProcessStatistics()
     this.$nextTick(async() => {
       await this.onLoadIpAlarmList()
       await this.onLoadTransmissionAlarmList()
@@ -137,10 +287,9 @@ export default {
     setIPFilterGroup() {
       const listName = 'ipNetworkList'
       const btnOption = { isMultiSelect: true, allItem: true, ifAllthenOtherUncheck: true, listName }
-      const iconOption = { allItem: true, ifAllthenOtherUncheck: true, listName }
 
       this.filterGroup.addFilter('ipStatus', '상태', this.CONSTANTS.nia.statusType, btnOption) // 누적레벨
-      this.filterGroup.addFilter('ipAlarmType', 'TYPE', this.CONSTANTS.nia.ipAlarmType, btnOption) // 누적레벨
+      this.filterGroup.addFilter('ipType', 'TYPE', this.CONSTANTS.nia.ipType, btnOption) // 누적레벨
     },
     onFilterChanged(changedFilter, code) {
       console.log('onFilterChanged')
@@ -188,6 +337,115 @@ export default {
         this.error(error)
       }
     },
+    async onLoadDashboardStatistics() {
+      const { dayType: DATE_TYPE, date } = this.systemChartCondition
+      const formatStr = DATE_TYPE === 'DAY' ? 'YYYY-MM-DD' : 'YYYY-MM'
+      const defaultSt = {
+        trans_alarm_cnt: 0,
+        link_ip_perf_cnt: 0,
+        link_total_alarm_cnt: 0,
+        ticket_ntt_cnt: 0,
+        ticket_att_cnt: 0,
+        ip_alarm_cnt: 0,
+        ticket_rt_cnt: 0,
+        link_total_resource_cnt: 0,
+        trans_perf_cnt: 0,
+        ip_resource_cnt: 0,
+        ticket_pf_cnt: 0,
+        ip_perf_cnt: 0,
+        ip_sflow_cnt: 0,
+        link_trans_perf_cnt: 0
+      }
+      try {
+        const res = await apiDashboardStatistics({ DATE_TYPE, SEARCH_DATE: this.moment(date).format(formatStr) })
+        this.statistics = res.result[0] ?? defaultSt
+      } catch (error) {
+        this.error(error)
+      }
+    },
+    async onLoadSelfProcessStatistics() {
+      const { statisticsType: STATISTICS_TYPE, date } = this.selfChartCondition
+      const SERIES_TYPE = STATISTICS_TYPE === 'hour' ? 'day' : this.getSelfProDateType()
+      try {
+        const resSelfProcess = await apiSelfProcessStatistics({ STATISTICS_TYPE, SERIES_TYPE, DATE: this.moment(date).add(1, 'd') })
+        this.selfStatistics = resSelfProcess.result ?? []
+      } catch (error) {
+        this.error(error)
+      }
+    },
+    getDefaultChartOptions(title, keyByTitle) {
+      return {
+        title: {
+          text: title,
+          left: 'center',
+          textStyle: {
+            fontSize: 13
+          }
+          // subtext: 'Living Expenses in Shenzhen'
+        },
+        xAxis: {
+          type: 'category',
+          data: keyByTitle.map(v => v.name),
+          axisLabel: { interval: 0, rotate: 20, fontWeight: 'bold', },
+        },
+        yAxis: {
+          type: 'value',
+          axisLabel: {
+            formatter: function (value, index) {
+              let result = value
+            if (value >= 1000000) {
+              result = (value / 1000000) + 'M'
+            } else if (value >= 1000) {
+              result = (value / 1000) + 'K'
+            } else {
+              result = value.toString()
+            }
+              return result
+            }
+          }
+        },
+        series: [
+          {
+            type: 'bar',
+            label: {
+              show: true,
+              position: 'top',
+              fontWeight: 'bold',
+              formatter: (param) => {
+                return param.data.toLocaleString()
+              },
+            },
+            barWidth: '30',
+            itemStyle: {
+              color: '#6149c7',
+              borderWidth: 1,
+              borderColor: '#189ec0',
+              borderRadius: [5, 5, 0, 0]
+            },
+            data: keyByTitle.map(v => { return this.statistics[v.key] === null ? 0 : this.statistics[v.key] }),
+
+          }
+        ]
+      }
+    },
+    getSelfProDateType() {
+      let type = 'date'
+      switch (this.selfChartCondition.statisticsType) {
+        case 'hour':
+          type = 'date'
+          break
+        case 'day':
+          type = 'month'
+          break
+        case 'month':
+          type = 'year'
+          break
+        default:
+          break
+      }
+      return type
+    },
+
     getStatus(row, col, value, index) {
       let result = ''
       switch (row.status) {

@@ -76,6 +76,24 @@ table.basic {
   .splitter-paneL, .splitter-paneR {
     transition: all 0.25s;
   }
+  // radio button custom
+  .el-radio-button__orig-radio:checked + .el-radio-button__inner {
+    background-color: $nia-primary;
+    border-color: $nia-primary;
+    box-shadow: -1px 0 0 0 $nia-primary;
+    &:hover {
+      color: #fff;
+      opacity: 0.7;
+    }
+  }
+  .el-radio-button__inner:hover {
+    color: $nia-primary;
+  }
+  .el-button:hover {
+    color: $nia-primary;
+    border-color: #1e293b9e;
+    background-color: #1e293b24;;
+  }
 }
 .full-screen {
   .vm--modal {

@@ -22,12 +22,21 @@
           <hr>
         </span>
         <div class="d-flex flex-column h-full">
-          <CompInquiryPannel
-            ref="selectApi"
-            :ag-grid="dataSetAgGrid"
-            class="w-100 h-100 flex-fill"
-            @handleClickSearch="onClickSearchAlarm"
-          />
+          <el-tabs v-model="tabActiveName">
+            <!-- @tab-click="handleClick" -->
+            <el-tab-pane label="자가구성" name="first">
+              자가구성
+            </el-tab-pane>
+            <el-tab-pane label="처리이력" name="second">
+              <CompInquiryPannel
+                ref="selectApi"
+                :ag-grid="dataSetAgGrid"
+                class="w-100 h-100 flex-fill"
+                @handleClickSearch="onClickSearchAlarm"
+              />
+            </el-tab-pane>
+          </el-tabs>
+
         </div>
         <div slot="footer" class="dialog-footer">
           <el-button size="small" plain class="close-btn" @click.native="close()">
@@ -59,6 +68,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      tabActiveName: 'first',
       type: true,
       visible: false,
     }
