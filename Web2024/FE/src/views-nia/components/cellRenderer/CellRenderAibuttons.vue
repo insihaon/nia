@@ -43,6 +43,7 @@ export default Vue.extend({
 .CellRenderAibuttons{
   &:hover{
     color: red !important;
+    cursor: pointer
   }
 }
 </style>

@@ -312,8 +312,8 @@ export default {
         background-color: #fff;
         min-height: 20px !important;
         // height: 50px !important;
-        border-top:1px solid #2e3574;
-        border-bottom:1px solid #2e3574;
+        // border-top:1px solid #2e3574;
+        border:1px solid #2e3574;
       }
 
       .ag-Grid-row{

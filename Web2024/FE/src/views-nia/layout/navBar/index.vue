@@ -193,7 +193,7 @@ export default {
     }
   }
   #sub-menu {
-    z-index: 2;
+    z-index: 3;
     height: 0px;
     width: 100%;
     padding-left: 330px;
