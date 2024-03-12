@@ -290,4 +290,293 @@
         </where>
     </select>
 
+
+    <!-- 이용기관별 트래픽 분석 리스트 조회  -->  
+    <select id="SELECT_TRAFFIC_AGENCY_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+    <include refid="TotalCountPrefix"/>
+    SELECT  
+        src_ip,
+        src_nren_id,
+        src_nren_name,
+        dst_ip,
+        dst_nren_id,
+        dst_nren_name,
+        collect_timestamp,
+        SUM(packet_bytes) packet_bytes,
+        row_number() over (
+            ORDER BY 
+                collect_timestamp DESC, 
+                CASE 
+                    WHEN src_nren_id IS NULL AND dst_nren_id IS NULL THEN 0
+                    ELSE 2 
+                END DESC, 
+                SUM(packet_bytes) DESC
+        ) row_number
+    FROM    
+        gather.tb_mdb_sflow_traffic_day
+    WHERE   
+        1=1 
+        AND collect_timestamp <![CDATA[ <= ]]> CURRENT_DATE 
+        AND collect_timestamp <![CDATA[ >= ]]> CURRENT_DATE - interval '5 days'
+        <if test="src_nren_name != null and src_nren_name != ''">
+            AND src_nren_id = #{src_nren_name}
+        </if>
+        <if test="src_ip != null and src_ip != ''">
+            AND src_ip LIKE '%' || #{src_ip} || '%'
+        </if>
+        <if test="dst_nren_name != null and dst_nren_name != ''">
+            AND dst_nren_id = #{dst_nren_name}
+        </if>
+        <if test="dst_ip != null and dst_ip != ''">
+            AND dst_ip LIKE '%' || #{dst_ip} || '%'
+        </if>
+    GROUP BY 
+        src_ip,
+        src_nren_id,
+        src_nren_name,
+        dst_ip,
+        dst_nren_id,
+        dst_nren_name,
+        collect_timestamp
+        LIMIT 200
+        <include refid="TotalCountSuffix"/>
+    </select>
+
+
+     <!-- 이용기관 리스트 -->
+    <select id="SELECT_AGENCY_CODE_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+        select nren_name as name, nren_id as id 
+        from resource.tb_user_organ tcc 
+        ORDER BY nren_name
+    </select>
+
+    <!-- 어플리케이션별 트래픽 분석 리스트 -->
+    <select id="SELECT_APP_TRAFFIC_TOP_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+    SELECT  src_protocol,
+            src_port,
+            dst_protocol,
+            dst_port,
+            packet_bytes
+            rank_order
+    FROM    ( SELECT src_protocol,
+                    src_port,
+                    dst_protocol,
+                    dst_port,
+                    SUM(packet_bytes) packet_bytes ,
+                    row_number() over (ORDER BY
+                    CASE
+                            WHEN src_protocol IS NULL
+                            AND     dst_protocol IS NULL
+                            THEN 0
+                            ELSE 2
+                    END DESC, SUM(packet_bytes) DESC) rank_order
+            FROM    gather.tb_mdb_sflow_traffic_day dt
+            WHERE   1=1
+                    and dt.collect_timestamp <![CDATA[ <= ]]> CURRENT_DATE 
+                    AND dt.collect_timestamp <![CDATA[ >= ]]> CURRENT_DATE - interval '5 days'
+                    <!-- <if test="src_protocol != null and src_protocol != ''">
+                        AND src_protocol = #{src_protocol}
+                    </if> -->
+                    <if test="src_port != null and src_port != ''">
+                        AND src_port like '%' || #{src_port} || '%'
+                    </if>
+                    <!-- <if test="dst_protocol != null and dst_protocol != ''">
+                        AND dst_protocol = #{dst_protocol}
+                    </if> -->
+                     <if test="dst_port != null and dst_port != ''">
+                        AND dst_port like '%' || #{dst_port} || '%'
+                    </if>
+            GROUP BY src_protocol,
+                    src_port,
+                    dst_protocol,
+                    dst_port ) dt
+    </select>
+
+    <!-- 어플리케이션 코드리스트 -->
+    <select id="SELECT_APPLICATION_CODE_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+        SELECT  port_num AS code ,
+                protocol AS name
+        FROM    gather.tb_default_port_number
+        WHERE protocol IS NOT NULL
+        ORDER BY protocol
+    </select>
+
+    <!-- 장비 포트별 in/out 트래픽 감시 및 이력조회 -->
+    <select id="SELECT_INOUT_TRAFFIC_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+        <!-- SELECT  nm.node_num AS node_num,
+                nm.node_nm AS node_name,
+                n.id AS sdn_node_id,
+                pm.if_num AS if_num,
+                i.if_name AS if_name,
+                lt.tx_bit_rate AS tx_bit_rate,
+                lt.rx_bit_rate AS rx_bit_rate,
+                lt.tx_pkt_rate AS tx_pkt_rate,
+                lt.rx_pkt_rate AS rx_pkt_rate,
+                lt.measured_datetime AS measured_datetime
+        FROM    ip_sdn.tb_link_traffic lt
+        INNER JOIN ip_sdn.tb_interface i   ON lt.if_id = i.id
+        INNER JOIN resource.tb_port_mst pm ON pm.if_id = lower(i.if_name)
+        INNER JOIN ip_sdn.tb_node n        ON i.node_id = n.id
+        INNER JOIN resource.tb_node_mst nm ON n.id = nm.ip_sdn_id::INT
+        WHERE   pm.node_num = nm.node_num 
+            <if test="START_DATE != null">
+            AND lt.MEASURED_DATETIME <![CDATA[ > ]]> #{START_DATE}::timestamp 
+            </if>
+            <if test="END_DATE != null">
+            AND lt.MEASURED_DATETIME <![CDATA[ <= ]]> #{END_DATE}::timestamp 
+            </if>
+            <if test="EQUIPMENT != null">
+                AND nm.NODE_NM = #{EQUIPMENT}
+            </if>
+            <if test="INTERFACE != null">
+                AND i.IF_NAME = #{INTERFACE}
+            </if>
+            ORDER BY MEASURED_DATETIME DESC
+            <if test="OFFSET != null">
+                OFFSET #{OFFSET} LIMIT #{LIMIT}
+            </if>
+            <if test="LIMIT != null and OFFSET == null">
+                LIMIT #{LIMIT}
+            </if> -->
+    </select>
+
+    <!-- 미확인 트래픽 조회 (국가) -->
+    <select id="SELECT_UNIDENTIFIED_NATION_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+        select
+            country_name,
+            koica
+        from gather.tb_country_code
+            <trim prefix="(" prefixOverrides="AND|OR" suffix=")" suffixOverrides="">
+                <if test="COUNTRY_NAME != null">
+                    AND country_name like '%' || #{COUNTRY_NAME} || '%' 
+                </if>
+                <if test="COUNTRY_CODE != null">
+                    AND koica like '%' || #{COUNTRY_CODE} || '%'
+                </if>
+            </trim>
+    </select>
+
+    <!-- 미확인 트래픽 조회 (이용기관) -->
+    <select id="SELECT_UNIDENTIFIED_AGENCY_LIST" parameterType="hashmap" resultType="hashmap">
+        select
+            ip.nren_id as nren_id,
+            ip.nren_name as nren_name,
+            ip.nren_ip as nren_ip
+        from resource.tb_user_organ uo
+        inner join resource.tb_user_organ_ip ip on uo.nren_id = ip.nren_id 
+        <where>
+                <if test="NREN_NAME != null">
+                    AND ip.nren_name like '%' || #{NREN_NAME} || '%' 
+                </if>
+                <if test="NREN_IP != null">
+                    AND ip.nren_ip like '%' || #{NREN_IP} || '%' 
+                </if>
+                <if test="NODE_ID != null">
+                    AND ip.nren_id in (SELECT nren_id FROM resource.tb_user_organ WHERE node_id = #{NODE_ID})
+                </if>
+        </where>
+        <if test="OFFSET != null">
+            OFFSET #{OFFSET} LIMIT #{LIMIT}
+        </if>
+        <if test="LIMIT != null and OFFSET == null">
+            LIMIT #{LIMIT}
+        </if>
+    </select>
+
+    <!-- 미확인 트래픽 조회 (어플리케이션) -->
+    <select id="SELECT_UNIDENTIFIED_APP_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+    SELECT  
+        mapp_serial, 
+        port_num, 
+        ip_type, 
+        protocol, 
+        description
+    FROM   gather.tb_default_port_number
+    <where>
+                AND protocol IS NOT NULL
+            <if test="APP_NAME != null">
+                AND protocol like '%' || #{APP_NAME} || '%' 
+            </if>
+            <if test="PORT != null">
+                AND port_num like '%' || #{PORT} || '%' 
+            </if>
+    </where>
+    ORDER BY protocol COLLATE "ko_KR.utf8" ASC
+    </select>
+    
+
+    <!-- 장비 사용량 감시 및 이력 조회 -->
+     <select id="SELECT_EQUIP_AMOUNT_USED_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+            SELECT  a.node_num AS node_num,
+                    a.sdn_node_id AS sdn_node_id,
+                    a.node_nm AS node_nm,
+                    trunc(a.cpu_usage::numeric,3) * 100 as cpu_usage,
+                    trunc(a.mem_usage::numeric,3) * 100 as mem_usage,
+                    to_char(a.measured_datetime, 'YYYY-MM-DD HH24:MI:SS') AS measured_datetime,
+                    CASE WHEN tn.strresid IS NOT NULL THEN true ELSE false
+                    END AS ai_result
+            FROM   ( SELECT nm.node_num,
+                            n.id AS sdn_node_id,
+                            nm.node_nm,
+                            nf.cpu_usage,
+                            nf.mem_usage,
+                            nf.measured_datetime
+                    FROM    ip_sdn.tb_nodefactor nf
+                    INNER JOIN ip_sdn.tb_node n        ON nf.node_id = n.id
+                    INNER JOIN resource.tb_node_mst nm ON n.id = nm.ip_sdn_id::INT
+                    WHERE   1=1 
+                        <if test="START_DATE == null and END_DATE == null">
+                        AND nf.MEASURED_DATETIME BETWEEN NOW()::timestamp - interval '30 min' AND NOW()::timestamp
+                        </if>
+                        <if test="START_DATE != null">
+                        AND nf.MEASURED_DATETIME <![CDATA[ > ]]> #{START_DATE}::timestamp
+                        </if>
+                        <if test="END_DATE != null">
+                        AND nf.MEASURED_DATETIME <![CDATA[ <= ]]> #{END_DATE}::timestamp
+                        </if>
+                        <if test="EQUIPMENT != null">
+                        AND nm.NODE_NM = #{EQUIPMENT}
+                        </if>
+                        <if test="CPU != null">
+                        AND nf.cpu_usage::text LIKE #{CPU} || '%'
+                        </if>
+                        <if test="MEM != null">
+                        AND nf.mem_usage::text LIKE #{MEM} || '%'
+                        </if>
+                        ORDER BY MEASURED_DATETIME DESC
+                        <if test="OFFSET != null">
+                            OFFSET #{OFFSET} LIMIT #{LIMIT}
+                        </if>
+                        <if test="LIMIT != null and OFFSET == null">
+                            LIMIT #{LIMIT}
+                        </if>
+                    ) a
+            LEFT OUTER JOIN rca.tb_nodefactor tn 
+                ON tn.strresid = a.node_num 
+                    AND tn.measured_datetime = a.measured_datetime
+    </select>
+
+
+   <!-- <select id="SELECT_NIA_SYSLOG_LIST" parameterType="hashmap" resultType="hashmap">
+    SELECT  sysDialog.alarmno,
+            sysDialog.alarmtime,
+            sysDialog.node_num,
+            sysDialog.node_nm,
+            sysDialog.alarmmsg,
+            sysDialog.alarmlvl,
+            sysDialog.etc,
+            sysDialog.rule_id,
+            sysDialog.alarmloc,
+            CASE WHEN sysDialog.status = 'INIT' THEN '발생'
+            WHEN sysDialog.status = 'FIN' THEN '마감'
+            WHEN sysDialog.status = 'AUTO_FIN' THEN '자동 마감'
+            ELSE '-'
+            END AS status,
+            nodea.ip_addr
+    FROM    rca.tb_syslog_alarm_mst sysDialog
+    LEFT OUTER JOIN resource.tb_node_mst nodea ON nodea.node_id = sysDialog.node_nm
+    WHERE sysDialog.alarmtime <![CDATA[ > ]]> now() - INTERVAL '48' HOUR
+    ORDER BY sysDialog.alarmno DESC
+    </select> -->
+
 </mapper>

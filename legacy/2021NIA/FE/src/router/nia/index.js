@@ -28,29 +28,28 @@ export const niaRoute = Object.freeze([
     meta: { title: '성능감시' },
     children: [
       {
-        path: 'trafficAnalysisCountry',
-        component: () => import('@/views-nia/performanceMonitoring/trafficAnalysisCountry'),
-        name: 'TrafficAnalysisCountry',
-        meta: { title: '국가별 트래픽 분석 및 Top N' },
-        // modalMode: true
-      },
-      {
         path: 'trafficAnalysisInstitution',
         component: () => import('@/views-nia/performanceMonitoring/trafficAnalysisInstitution'),
         name: 'TrafficAnalysisInstitution',
-        meta: { title: '이용기관별 트래픽 분석 및 Top N' }
+        meta: { title: '이용기관별 트래픽 분석' }
       },
       {
         path: 'trafficAnalysisApp',
         component: () => import('@/views-nia/performanceMonitoring/trafficAnalysisApp'),
         name: 'TrafficAnalysisApp',
-        meta: { title: '어플리케이션별 트래픽분석 및 Top N' }
+        meta: { title: '어플리케이션별 트래픽분석' }
       },
       {
         path: 'trafficAnalysisPort',
         component: () => import('@/views-nia/performanceMonitoring/trafficAnalysisPort'),
         name: 'TrafficAnalysisPort',
-        meta: { title: '장비 포트별 in/out 트래픽 감시 및 이력 조회 기능' }
+        meta: { title: '장비 포트별 in/out 트래픽' }
+      },
+      {
+        path: 'equipmentUsage',
+        component: () => import('@/views-nia/performanceMonitoring/equipmentUsage'),
+        name: 'EquipmentUsage',
+        meta: { title: '장비 사용량' },
       },
       {
         path: 'undefindedTraffic',

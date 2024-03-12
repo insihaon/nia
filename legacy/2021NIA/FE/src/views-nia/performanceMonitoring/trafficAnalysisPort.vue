@@ -2,7 +2,7 @@
   <div :class="{ [name]: true }">
     <CompInquiryPannel
       ref="trafficAnalysis"
-      :ag-grid="authAgGrid"
+      :ag-grid="trafficAgGrid"
       :is-button-slot="false"
       :items="searchItems"
       :search-model.sync="searchModel"
@@ -16,8 +16,7 @@
 <script>
 import { Base } from '@/min/Base.min'
 import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
-// import { apiSelectAuthHistList, apiUpdateApiAuth, apiUpdateApiAuthProc } from '@/api/dataHub'
-import { AppOptions } from '@/class/appOptions'
+import { apiSelectInOutTrafficList } from '@/api/nia'
 
 const routeName = 'TrafficAnalysisPort'
 export default {
@@ -37,39 +36,17 @@ export default {
         pagerCount: 11
       },
       selectedRow: [],
-       authData: [
-        {
-          model_name: '상황방명',
-          key: 1,
-          start_date: '2022-09-06',
-          end_date: '2022-09-07',
-        },
-        {
-          model_name: '상황',
-          key: 2,
-          start_date: '2022-09-06',
-          end_date: '2022-09-07',
-        },
-       ],
+      trafficData: [],
       searchItems: [
-        { label: 'Filter', type: 'select', multiple: true, placeholder: '티켓 종류를 선택하세요', model: 'ticket', setting: { allOption: { toggle: true } },
-          options:
-          [
-            { label: '신청', value: 'APPLY' },
-            { label: '승인', value: 'GRANT' },
-            { label: '반려', value: 'REJECT' },
-          ],
-        },
-        { label: '상태', type: 'select', multiple: true, placeholder: '경보 상태를 선택하세요', model: 'status_cd', setting: { allOption: { toggle: true } },
-          options:
-          [
-            { label: '신청', value: 'APPLY' },
-            { label: '승인', value: 'GRANT' },
-            { label: '반려', value: 'REJECT' },
-          ],
-        },
-        { label: '요청시간', type: 'date', model: 'create_time' },
-        { label: '만료시간', type: 'date', model: 'expird_date' },
+        { label: '감시방식', type: 'select', placeholder: '상태를 선택하세요', model: 'watch', setting: { allOption: { toggle: true } }, options: [
+            { label: 'OnDemand', value: 'OnDemand' },
+            { label: '실시간', value: 'live' },
+        ] },
+        { label: '장비', type: 'input', model: 'api_name', placeholder: '장비명을 검색하세요' },
+        { label: '인터페이스', type: 'input', model: 'api_name', placeholder: '인터페이스를 검색하세요' },
+        { label: '시작일시', type: 'date', model: 'start_date' },
+        { label: '종료일시', type: 'date', model: 'start_date' },
+
       ],
       searchModel: {
         api_name: '',
@@ -82,53 +59,47 @@ export default {
   },
 
   computed: {
-    authAgGrid() {
+    trafficAgGrid() {
       const options = {
-        name: this.name + 'table1', checkable: true, rowGroupPanel: false, rowHeight: 40, rowSelection: 'multiple', rowMultiSelection: false, suppressRowClickSelection: true,
+        name: this.name + 'table1', checkable: false, rowGroupPanel: false, rowHeight: 40, rowSelection: 'multiple', rowMultiSelection: false, suppressRowClickSelection: true,
       }
       const columns = [
-        { type: '', prop: 'model_name', name: 'API명', minWidth: 30, flex: 0, suppressMenu: true, alignItems: 'left' },
-        { type: '', prop: 'start_date', name: '상태', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'left', sortable: false, filterable: false },
-        { type: '', prop: 'end_date', name: '사용 용도', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'left', sortable: false, filterable: true },
+        { type: '', prop: 'measured_datetime', name: '수집시간', minWidth: 30, flex: 0, suppressMenu: true, alignItems: 'left' },
+        { type: '', prop: 'node_name', name: '장비명', minWidth: 30, flex: 0, suppressMenu: true, alignItems: 'left' },
+        { type: '', prop: 'if_name', name: '인터페이스명', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'left', sortable: false, filterable: false },
+        { type: '', prop: 'if_num', name: '인터페이스 번호', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'left', sortable: false, filterable: true },
+        { type: '', prop: 'tx_bit_rate', name: '발신 bps', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'left', sortable: false, filterable: true },
+        { type: '', prop: 'tx_bit_rate', name: '수신 bps', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'left', sortable: false, filterable: true },
+        { type: '', prop: 'tx_bit_rate', name: '발신 bps', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'left', sortable: false, filterable: true },
+        { type: '', prop: 'tx_bit_rate', name: '수신 bps', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'left', sortable: false, filterable: true },
       ]
-      return { options, columns, data: this.authData, getRightClickMenuItems: () => { return [] } }
+      return { options, columns, data: this.trafficData, getRightClickMenuItems: () => { return [] } }
     },
   },
   mounted() {
-    this.onLoadtrafficList()
+    this.onLoadTrafficList()
   },
   methods: {
     cellTemp() {},
     sortTemp() {},
     onSortedChange(param) {
        this.sortInfo = []
-       this.onLoadtrafficList()
+       this.onLoadTrafficList()
     },
 
     // onClickSearchAuth(params) {
-    //   this.onLoadtrafficList(params)
+    //   this.onLoadTrafficList(params)
     // },
-    async onLoadtrafficList(params) {
-      const target = { vue: this.$refs.authManagement }
+    async onLoadTrafficList() {
+      const target = { vue: this.$refs.trafficAnalysis }
       this.openLoading(target)
-      const defaultDate = null
-      const param = {
-        api_name: this.searchModel.api_name,
-        status_cd: this.searchModel.status_cd,
-        start_create_time: this.formatterDateTime(null, null, this.searchModel.create_time[0] ? this.searchModel.create_time[0] : defaultDate),
-        end_create_time: this.formatterDateTime(null, null, this.searchModel.create_time[1] ? this.searchModel.create_time[1] : defaultDate),
-        start_expird_date: this.formatterDateTime(null, null, this.searchModel.expird_date[0] ? this.searchModel.expird_date[0] : defaultDate),
-        end_expird_date: this.formatterDateTime(null, null, this.searchModel.expird_date[1] ? this.searchModel.expird_date[1] : defaultDate),
-        limit: this.paginationInfo.pageSize,
-        page: this.paginationInfo.currentPage,
-        sort_column_name: this.sortInfo.colId,
-        sort_type: this.sortInfo.sort
-      }
       try {
-        const res = ''/* await apiSelectAuthHistList(param) */
-        this.authData = res?.result
+        const res = await apiSelectInOutTrafficList()
+        this.trafficData = res?.result
         this.paginationInfo.totalCount = res.total
         this.paginationInfo.totalPages = Math.ceil(this.paginationInfo.totalCount / this.paginationInfo.pageSize) // 전체 페이지 수 계산
+                  //  const packetBytesInGbyte = item.packet_bytes / (1024 * 1024); // 바이트를 기가바이트로 변환
+                  //   const roundedGbyte = Math.round(packetBytesInGbyte * 100) / 100; // 소수점 두 자리까지 반올림
       } catch (error) {
         console.error(error)
       } finally {
@@ -136,10 +107,7 @@ export default {
       }
     },
 
-    // handleOpenModalDetail(type, row) {
-    //   this.$refs.modalApiDetail.open({ type, row })
-    // },
   },
 }
 </script>
-l
+
