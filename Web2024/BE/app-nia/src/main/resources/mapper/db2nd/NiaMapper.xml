@@ -356,7 +356,7 @@
             src_port,
             dst_protocol,
             dst_port,
-            packet_bytes
+            ROUND(packet_bytes / (1024 * 1024), 2) AS packet_bytes,
             rank_order
     FROM    ( SELECT src_protocol,
                     src_port,
@@ -372,17 +372,17 @@
                     END DESC, SUM(packet_bytes) DESC) rank_order
             FROM    gather.tb_mdb_sflow_traffic_day dt
             WHERE   1=1
-                    and dt.collect_timestamp <![CDATA[ <= ]]> CURRENT_DATE 
+                    AND dt.collect_timestamp <![CDATA[ <= ]]> CURRENT_DATE 
                     AND dt.collect_timestamp <![CDATA[ >= ]]> CURRENT_DATE - interval '5 days'
-                    <!-- <if test="src_protocol != null and src_protocol != ''">
-                        AND src_protocol = #{src_protocol}
-                    </if> -->
+                    <if test="src_protocol != null and src_protocol != ''">
+                        AND src_port = #{src_protocol}
+                    </if>
                     <if test="src_port != null and src_port != ''">
                         AND src_port like '%' || #{src_port} || '%'
                     </if>
-                    <!-- <if test="dst_protocol != null and dst_protocol != ''">
-                        AND dst_protocol = #{dst_protocol}
-                    </if> -->
+                    <if test="dst_protocol != null and dst_protocol != ''">
+                        AND dst_port = #{dst_protocol}
+                    </if>
                      <if test="dst_port != null and dst_port != ''">
                         AND dst_port like '%' || #{dst_port} || '%'
                     </if>
@@ -390,12 +390,23 @@
                     src_port,
                     dst_protocol,
                     dst_port ) dt
+                    limit 200
+                <!-- <if test="rank_order != null and rank_order != ''">
+                    <choose>
+                        <when test="rank_order != null and rank_order != ''">
+                        limit #{rank_order}
+                        </when>
+                        <otherwise>
+                        limit 200
+                        </otherwise>
+                    </choose>
+                </if> -->
     </select>
 
     <!-- 어플리케이션 코드리스트 -->
     <select id="SELECT_APPLICATION_CODE_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
-        SELECT  port_num AS code ,
-                protocol AS name
+        SELECT  port_num AS port_code ,
+                protocol AS protocol_name
         FROM    gather.tb_default_port_number
         WHERE protocol IS NOT NULL
         ORDER BY protocol
@@ -403,7 +414,7 @@
 
     <!-- 장비 포트별 in/out 트래픽 감시 및 이력조회 -->
     <select id="SELECT_INOUT_TRAFFIC_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
-        <!-- SELECT  nm.node_num AS node_num,
+        SELECT  nm.node_num AS node_num,
                 nm.node_nm AS node_name,
                 n.id AS sdn_node_id,
                 pm.if_num AS if_num,
@@ -412,32 +423,28 @@
                 lt.rx_bit_rate AS rx_bit_rate,
                 lt.tx_pkt_rate AS tx_pkt_rate,
                 lt.rx_pkt_rate AS rx_pkt_rate,
-                lt.measured_datetime AS measured_datetime
+                TO_CHAR(lt.measured_datetime , 'YYYY-MM-DD HH24:MI:SS') AS measured_datetime
         FROM    ip_sdn.tb_link_traffic lt
         INNER JOIN ip_sdn.tb_interface i   ON lt.if_id = i.id
         INNER JOIN resource.tb_port_mst pm ON pm.if_id = lower(i.if_name)
         INNER JOIN ip_sdn.tb_node n        ON i.node_id = n.id
         INNER JOIN resource.tb_node_mst nm ON n.id = nm.ip_sdn_id::INT
-        WHERE   pm.node_num = nm.node_num 
-            <if test="START_DATE != null">
-            AND lt.MEASURED_DATETIME <![CDATA[ > ]]> #{START_DATE}::timestamp 
+        WHERE  1=1
+            AND pm.node_num = nm.node_num 
+            <if test="start_date != null">
+            AND lt.measured_datetime <![CDATA[ > ]]> #{start_date}::timestamp 
             </if>
-            <if test="END_DATE != null">
-            AND lt.MEASURED_DATETIME <![CDATA[ <= ]]> #{END_DATE}::timestamp 
+            <if test="end_date != null">
+            AND lt.measured_datetime <![CDATA[ <= ]]> #{end_date}::timestamp 
             </if>
-            <if test="EQUIPMENT != null">
-                AND nm.NODE_NM = #{EQUIPMENT}
+            <if test="node_name != null and node_name != ''">
+                AND nm.node_nm LIKE '%' || #{node_name} || '%'
             </if>
-            <if test="INTERFACE != null">
-                AND i.IF_NAME = #{INTERFACE}
+            <if test="if_name != null and if_name != ''">
+                AND nm.if_name LIKE '%' || #{if_name} || '%'
             </if>
-            ORDER BY MEASURED_DATETIME DESC
-            <if test="OFFSET != null">
-                OFFSET #{OFFSET} LIMIT #{LIMIT}
-            </if>
-            <if test="LIMIT != null and OFFSET == null">
-                LIMIT #{LIMIT}
-            </if> -->
+            ORDER BY measured_datetime DESC
+            LIMIT 200
     </select>
 
     <!-- 미확인 트래픽 조회 (국가) -->
@@ -525,58 +532,29 @@
                     INNER JOIN ip_sdn.tb_node n        ON nf.node_id = n.id
                     INNER JOIN resource.tb_node_mst nm ON n.id = nm.ip_sdn_id::INT
                     WHERE   1=1 
-                        <if test="START_DATE == null and END_DATE == null">
+                        <if test="start_date == null and end_date == null">
                         AND nf.MEASURED_DATETIME BETWEEN NOW()::timestamp - interval '30 min' AND NOW()::timestamp
                         </if>
-                        <if test="START_DATE != null">
+                        <if test="node_nm != null and node_nm != ''">
+                        AND node_nm LIKE '%' || #{node_nm} || '%'
+                        </if>
+                        <if test="start_date != null">
                         AND nf.MEASURED_DATETIME <![CDATA[ > ]]> #{START_DATE}::timestamp
                         </if>
-                        <if test="END_DATE != null">
+                        <if test="end_date != null">
                         AND nf.MEASURED_DATETIME <![CDATA[ <= ]]> #{END_DATE}::timestamp
                         </if>
-                        <if test="EQUIPMENT != null">
-                        AND nm.NODE_NM = #{EQUIPMENT}
+                        <if test="cpu_usage != null">
+                        AND nf.cpu_usage::text LIKE #{cpu_usage} || '%'
                         </if>
-                        <if test="CPU != null">
-                        AND nf.cpu_usage::text LIKE #{CPU} || '%'
-                        </if>
-                        <if test="MEM != null">
-                        AND nf.mem_usage::text LIKE #{MEM} || '%'
+                        <if test="mem_usage != null">
+                        AND nf.mem_usage::text LIKE #{mem_usage} || '%'
                         </if>
                         ORDER BY MEASURED_DATETIME DESC
-                        <if test="OFFSET != null">
-                            OFFSET #{OFFSET} LIMIT #{LIMIT}
-                        </if>
-                        <if test="LIMIT != null and OFFSET == null">
-                            LIMIT #{LIMIT}
-                        </if>
                     ) a
             LEFT OUTER JOIN rca.tb_nodefactor tn 
                 ON tn.strresid = a.node_num 
                     AND tn.measured_datetime = a.measured_datetime
     </select>
-
-
-   <!-- <select id="SELECT_NIA_SYSLOG_LIST" parameterType="hashmap" resultType="hashmap">
-    SELECT  sysDialog.alarmno,
-            sysDialog.alarmtime,
-            sysDialog.node_num,
-            sysDialog.node_nm,
-            sysDialog.alarmmsg,
-            sysDialog.alarmlvl,
-            sysDialog.etc,
-            sysDialog.rule_id,
-            sysDialog.alarmloc,
-            CASE WHEN sysDialog.status = 'INIT' THEN '발생'
-            WHEN sysDialog.status = 'FIN' THEN '마감'
-            WHEN sysDialog.status = 'AUTO_FIN' THEN '자동 마감'
-            ELSE '-'
-            END AS status,
-            nodea.ip_addr
-    FROM    rca.tb_syslog_alarm_mst sysDialog
-    LEFT OUTER JOIN resource.tb_node_mst nodea ON nodea.node_id = sysDialog.node_nm
-    WHERE sysDialog.alarmtime <![CDATA[ > ]]> now() - INTERVAL '48' HOUR
-    ORDER BY sysDialog.alarmno DESC
-    </select> -->
 
 </mapper>

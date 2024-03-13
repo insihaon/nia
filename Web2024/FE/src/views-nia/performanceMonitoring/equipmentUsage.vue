@@ -8,8 +8,8 @@
       :search-model.sync="searchModel"
       :pagination-info="paginationInfo"
       class="w-100 h-100"
-      @cellClicked="cellTemp"
-      @sortChanged="sortTemp"
+      @handleClickSearch="onClickSearch"
+      @onChangePage="onChangePage"
     />
   </div>
 </template>
@@ -39,23 +39,22 @@ export default {
       selectedRow: [],
       equitmentsData: [],
       searchItems: [
-        { label: '감시방식', type: 'select', multiple: true, placeholder: '상태를 선택하세요', model: 'surveillance', setting: { allOption: { toggle: true } },
+        { label: '감시방식', type: 'select', multiple: true, placeholder: '상태를 선택하세요', model: 'monitoring_type', setting: { allOption: { toggle: true } },
         options: [
             { label: 'OnDemand', value: 'OnDemand' },
             { label: '실시간', value: 'live' },
         ] },
         { label: '장비', type: 'input', model: 'equipment', placeholder: '장비명을 검색하세요' },
-        { label: 'CPU >=', type: 'input', model: 'cpu' },
-        { label: 'Memory >=', type: 'input', model: 'memory' },
-        { label: '시작일시', type: 'date', model: 'start_date' },
-        { label: '종료일시', type: 'date', model: 'end_date' },
+        { label: 'CPU >=', type: 'input', model: 'cpu_usage' },
+        { label: 'Memory >=', type: 'input', model: 'mem_usage' },
+        { label: '시작일시', type: 'date', model: 'datetime' },
+        { label: '종료일시', type: 'date', model: 'datetime' },
       ],
       searchModel: {
-        equipment: '',
-        cpu: '',
-        memory: '',
-        start_date: [],
-        end_date: [],
+        monitoring_type: [],
+        cpu_usage: '',
+        mem_usage: '',
+        datetime: [],
       },
       sortInfo: {}
     }
@@ -85,23 +84,35 @@ export default {
        this.sortInfo = []
        this.onLoadUsageList()
     },
-
-    // onClickSearchAuth(params) {
-    //   this.onLoadUsageList(params)
-    // },
-    async onLoadUsageList(params) {
-      const target = { vue: this.$refs.authManagement }
+    onClickSearch(params) {
+      this.onLoadUsageList(params)
+    },
+    async onLoadUsageList() {
+      const target = { vue: this.$refs.trafficAnalysis }
       this.openLoading(target)
+      const param = {
+        node_nm: this.searchModel.node_nm,
+        cpu_usage: this.searchModel.cpu_usage,
+        mem_usage: this.searchModel.node_nm
+      }
+      if (this.searchModel?.datetime) {
+        const dateTime = this.$refs?.trafficAnalysis.searchModel.datetime
+        this._merge(param, { start_date: dateTime[0], end_date: dateTime[1] })
+      }
       try {
-        const res = await apiSelectEquipAmountUsedList()
+        const res = await apiSelectEquipAmountUsedList(param)
         this.equitmentsData = res?.result
         this.paginationInfo.totalCount = res.total
-        this.paginationInfo.totalPages = Math.ceil(this.paginationInfo.totalCount / this.paginationInfo.pageSize) // 전체 페이지 수 계산
+        this.paginationInfo.totalPages = Math.ceil(this.paginationInfo.totalCount / this.paginationInfo.pageSizes) // 전체 페이지 수 계산
       } catch (error) {
         console.error(error)
       } finally {
         this.closeLoading(target)
       }
+    },
+    onChangePage(curPage) {
+      this.paginationInfo.currentPage = curPage
+      this.onLoadSopList()
     },
   },
 }
