@@ -345,53 +345,6 @@ export default {
       height: auto;
     }
 
-      .grafana-container {
-        width: 100%;
-        height: calc(100% - var(--common-search-height));
-        .title {
-          font-size: 18px;
-          font-weight: 600;
-          display: flex;
-          justify-content: center;
-        }
-        .garafana-section {
-          width: 100%;
-          height: calc(100% - 30px);
-          iframe {
-            width: 100%;
-            height: 100%;
-          }
-        }
-      }
-
-      .json-box{
-        height: calc(100% - 35px) !important;
-      }
-
-      .jsoneditor {
-        border: 1px solid #d3d3d3 !important;
-      }
-
-      .jsoneditor-menu{
-        background-color: #05050567 !important;
-        border-bottom: 1px solid #d3d3d3 !important;
-      }
-
-      .jsoneditor-poweredBy{
-        display: none !important;
-      }
-
-      .max-btn{
-        right: 10px !important;
-      }
-
-      .jsoneditor-redo{
-        display: none;
-      }
-
-      .jsoneditor-undo{
-        display: none;
-      }
     }
 }
 </style>

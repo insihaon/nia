@@ -17,7 +17,7 @@
 import { Base } from '@/min/Base.min'
 import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
 import { AppOptions } from '@/class/appOptions'
-import { apiSelectAppTrafficList } from '@/api/nia'
+import { apiSelectAppTrafficList, apiApplicationCodeList } from '@/api/nia'
 
 const routeName = 'TrafficAnalysisApp'
 export default {
@@ -36,13 +36,12 @@ export default {
         totalPages: null, // 전체 페이지 수
         pagerCount: 11
       },
-      selectedRow: [],
       trafficData: [],
       searchItems: [
-        { label: 'Application(S)', type: 'select', multiple: true, placeholder: '', model: 'src_protocol', setting: { allOption: { toggle: true } }, options: [] },
+        { label: 'Application(S)', type: 'select', multiple: false, placeholder: '', model: 'src_protocol', setting: { allOption: { toggle: true } }, options: [] },
         { label: 'Port (S)', type: 'input', model: 'src_port', placeholder: '' },
         { label: 'Application(S)', type: 'input', model: 'dst_protocol', placeholder: '' },
-        { label: 'Port (D)', type: 'select', multiple: true, placeholder: '', model: 'dst_port', setting: { allOption: { toggle: true } }, options: [] },
+        { label: 'Port (D)', type: 'select', multiple: false, placeholder: '', model: 'dst_port', setting: { allOption: { toggle: true } }, options: [] },
         { label: 'Top N', type: 'select', multiple: false, placeholder: '', model: 'rank_order', icon: 'el-icon-warning', setting: { allOption: { toggle: true } },
           options: [
             { label: '10', value: '10' },
@@ -53,9 +52,9 @@ export default {
         }
       ],
       searchModel: {
-        src_protocol: [],
+        src_protocol: '',
         src_port: '',
-        dst_protocol: [],
+        dst_protocol: '',
         dst_port: '',
         rank_order: ''
       },
@@ -82,6 +81,7 @@ export default {
   },
   mounted() {
     this.onLoadTrafficList()
+    this.onloadAppCodeList()
   },
   methods: {
     cellTemp() {},
@@ -101,7 +101,7 @@ export default {
         src_port: this.searchModel.src_port,
         dst_protocol: this.searchModel.dst_protocol,
         dst_port: this.searchModel.dst_port,
-        rank_order: this.searchModel.rank_order,
+        // rank_order: this.searchModel?.rank_order,
         pageSize: limit,
         currentPage: page
        }
@@ -110,13 +110,25 @@ export default {
         this.trafficData = res?.result
         this.paginationInfo.totalCount = res.total
         this.paginationInfo.totalPages = Math.ceil(this.paginationInfo.totalCount / this.paginationInfo.pageSize) // 전체 페이지 수 계산
-                  //  const packetBytesInGbyte = item.packet_bytes / (1024 * 1024); // 바이트를 기가바이트로 변환
-                  //   const roundedGbyte = Math.round(packetBytesInGbyte * 100) / 100; // 소수점 두 자리까지 반올림
       } catch (error) {
         console.error(error)
       } finally {
        /*  */
       }
+    },
+    async onloadAppCodeList() {
+      try {
+        const res = await apiApplicationCodeList()
+        const selectCodeData = res.result.map(item => ({ label: item.protocol_name, value: item.port_code }))
+        const codeKeyExists = this.searchItems.some(item => item.model === 'src_protocol')
+        if (codeKeyExists) {
+          this.searchItems[0].options = selectCodeData
+          }
+      } catch (error) {
+          console.error(error)
+        } finally {
+          // this.closeLoading(target)
+        }
     },
     onChangePage(curPage) {
       this.paginationInfo.currentPage = curPage

@@ -8,8 +8,8 @@
       :search-model.sync="searchModel"
       :pagination-info="paginationInfo"
       class="w-100 h-100"
-      @cellClicked="cellTemp"
-      @sortChanged="sortTemp"
+      @handleClickSearch="onClickSearch"
+      @onChangePage="onChangePage"
     />
   </div>
 </template>
@@ -42,19 +42,19 @@ export default {
             { label: 'OnDemand', value: 'OnDemand' },
             { label: '실시간', value: 'live' },
         ] },
-        { label: '장비', type: 'input', model: 'api_name', placeholder: '장비명을 검색하세요' },
-        { label: '인터페이스', type: 'input', model: 'api_name', placeholder: '인터페이스를 검색하세요' },
-        { label: '시작일시', type: 'date', model: 'start_date' },
-        { label: '종료일시', type: 'date', model: 'start_date' },
+        { label: '장비', type: 'input', model: 'node_name', placeholder: '장비명을 검색하세요' },
+        { label: '인터페이스', type: 'input', model: 'if_name', placeholder: '인터페이스를 검색하세요' },
+        { label: '시작일시', type: 'date', model: 'datetime' },
+        { label: '종료일시', type: 'date', model: 'datetime' },
 
       ],
       searchModel: {
-        api_name: '',
-        status_cd: [],
-        create_time: [],
-        expird_date: [],
+        node_name: '',
+        if_name: '',
+        // start_date: [],
+        // end_date: [],
       },
-      sortInfo: {}
+      // sortInfo: {}
     }
   },
 
@@ -64,14 +64,14 @@ export default {
         name: this.name + 'table1', checkable: false, rowGroupPanel: false, rowHeight: 40, rowSelection: 'multiple', rowMultiSelection: false, suppressRowClickSelection: true,
       }
       const columns = [
-        { type: '', prop: 'measured_datetime', name: '수집시간', minWidth: 30, flex: 0, suppressMenu: true, alignItems: 'left' },
-        { type: '', prop: 'node_name', name: '장비명', minWidth: 30, flex: 0, suppressMenu: true, alignItems: 'left' },
-        { type: '', prop: 'if_name', name: '인터페이스명', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'left', sortable: false, filterable: false },
-        { type: '', prop: 'if_num', name: '인터페이스 번호', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'left', sortable: false, filterable: true },
-        { type: '', prop: 'tx_bit_rate', name: '발신 bps', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'left', sortable: false, filterable: true },
-        { type: '', prop: 'tx_bit_rate', name: '수신 bps', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'left', sortable: false, filterable: true },
-        { type: '', prop: 'tx_bit_rate', name: '발신 bps', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'left', sortable: false, filterable: true },
-        { type: '', prop: 'tx_bit_rate', name: '수신 bps', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'left', sortable: false, filterable: true },
+        { type: '', prop: 'measured_datetime', name: '수집시간', minWidth: 30, flex: 0, suppressMenu: true, alignItems: 'center' },
+        { type: '', prop: 'node_name', name: '장비명', minWidth: 30, flex: 0, suppressMenu: true, alignItems: 'center' },
+        { type: '', prop: 'if_name', name: '인터페이스명', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: false },
+        { type: '', prop: 'if_num', name: '인터페이스 번호', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
+        { type: '', prop: 'tx_bit_rate', name: '발신 bps', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
+        { type: '', prop: 'rx_bit_rate', name: '수신 bps', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
+        { type: '', prop: 'tx_pkt_rate', name: '발신 bps', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
+        { type: '', prop: 'rx_pkt_rate', name: '수신 bps', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
       ]
       return { options, columns, data: this.trafficData, getRightClickMenuItems: () => { return [] } }
     },
@@ -80,31 +80,37 @@ export default {
     this.onLoadTrafficList()
   },
   methods: {
-    cellTemp() {},
-    sortTemp() {},
     onSortedChange(param) {
-       this.sortInfo = []
        this.onLoadTrafficList()
     },
-
-    // onClickSearchAuth(params) {
-    //   this.onLoadTrafficList(params)
-    // },
+    onClickSearch(params) {
+      this.onLoadTrafficList(params)
+    },
     async onLoadTrafficList() {
       const target = { vue: this.$refs.trafficAnalysis }
       this.openLoading(target)
+      const param = {
+        node_name: this.searchModel.node_name,
+        if_name: this.searchModel.if_name,
+      }
+      if (this.searchModel?.datetime) {
+        const dateTime = this.$refs?.trafficAnalysis.searchModel.datetime
+        this._merge(param, { start_date: dateTime[0], end_date: dateTime[1] })
+      }
       try {
-        const res = await apiSelectInOutTrafficList()
+        const res = await apiSelectInOutTrafficList(param)
         this.trafficData = res?.result
-        this.paginationInfo.totalCount = res.total
-        this.paginationInfo.totalPages = Math.ceil(this.paginationInfo.totalCount / this.paginationInfo.pageSize) // 전체 페이지 수 계산
-                  //  const packetBytesInGbyte = item.packet_bytes / (1024 * 1024); // 바이트를 기가바이트로 변환
-                  //   const roundedGbyte = Math.round(packetBytesInGbyte * 100) / 100; // 소수점 두 자리까지 반올림
+        this.paginationInfo.totalCount = res.total // 총 항목 수 설정
+        this.paginationInfo.totalPages = Math.ceil(this.paginationInfo.totalCount / this.paginationInfo.pageSizes) // 전체 페이지 수 계산
       } catch (error) {
         console.error(error)
       } finally {
         this.closeLoading(target)
       }
+    },
+    onChangePage(curPage) {
+      this.paginationInfo.currentPage = curPage
+      this.onLoadSopList()
     },
 
   },
