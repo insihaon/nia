@@ -85,14 +85,12 @@
    
    <!-- IP망 ALARM + SYSLOG -->
    <select id="SELECT_IP_ALARM_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
-        SELECT *
-        FROM (
-            SELECT
-            tc.TICKET_ID
+        SELECT 
+            TICKET_ID
             , CLUSTER_NO
             , TICKET_TYPE
-            , TICKET_GENERATION_TIME
-            , FAULT_TIME
+            , TO_CHAR(TICKET_GENERATION_TIME, 'YYYY-MM-DD HH24:MI:SS') AS  TICKET_GENERATION_TIME
+            , TO_CHAR(FAULT_TIME, 'YYYY-MM-DD HH24:MI:SS') AS FAULT_TIME
             , ROOT_CAUSE_TYPE
             , ROOT_CAUSE_CODE
             , ROOT_CAUSE_DOMAIN
@@ -101,13 +99,35 @@
             , TICKET_RCA_RESULT_CODE
             , TICKET_RCA_RESULT_DTL_CODE
             , TICKET_RCA_RESULT_ORIG_DTL_CODE
-            , NULL NODE_NUM
-	        , NULL NODE_NM
-            , NULL ALARMLOC
-            , TICKET_UPDATE_TIME
+            , NODE_NUM
+            , NODE_NM
+            , ALARMLOC
+            , TO_CHAR(TICKET_UPDATE_TIME, 'YYYY-MM-DD HH24:MI:SS') AS TICKET_UPDATE_TIME
             , ZERO1_MODEL
             , ZERO1_ENTROPY
-            , NM.IP_ADDR AS IP_ADDR
+            , IP_ADDR
+        FROM (
+            SELECT
+                tc.TICKET_ID
+                , CLUSTER_NO
+                , TICKET_TYPE
+                , TICKET_GENERATION_TIME 
+                , FAULT_TIME
+                , ROOT_CAUSE_TYPE
+                , ROOT_CAUSE_CODE
+                , ROOT_CAUSE_DOMAIN
+                , TOTAL_RELATED_ALARM_CNT
+                , STATUS
+                , TICKET_RCA_RESULT_CODE
+                , TICKET_RCA_RESULT_DTL_CODE
+                , TICKET_RCA_RESULT_ORIG_DTL_CODE
+                , NULL NODE_NUM
+                , NULL NODE_NM
+                , NULL ALARMLOC
+                , TICKET_UPDATE_TIME
+                , ZERO1_MODEL
+                , ZERO1_ENTROPY
+                , NM.IP_ADDR AS IP_ADDR
             FROM rca.tb_rca_ticket_current TC
             INNER JOIN rca.tb_rca_ticket_al_current AL ON TC.TICKET_ID = AL.TICKET_ID
             LEFT OUTER JOIN resource.tb_node_mst NM ON NM.NODE_ID = al.root_cause_sysnamea
@@ -117,7 +137,7 @@
                 ALARMNO AS TICKET_ID
                 , NULL CLUSTER_NO
                 , 'SYSLOG' TICKET_TYPE
-                , alarmtime AS TICKET_GENERATION_TIME
+                , ALARMTIME AS TICKET_GENERATION_TIME
                 , NULL FAULT_TIME
                 , NULL ROOT_CAUSE_TYPE
                 , NULL ROOT_CAUSE_CODE
@@ -149,8 +169,8 @@
             T.TICKET_ID AS TICKET_ID,
             T.CLUSTER_NO AS CLUSTER_NO,
             T.TICKET_TYPE AS TICKET_TYPE,
-            T.TICKET_GENERATION_TIME AS TICKET_GENERATION_TIME,
-            T.FAULT_TIME AS FAULT_TIME,
+            TO_CHAR(T.TICKET_GENERATION_TIME, 'YYYY-MM-DD HH24:MI:SS') AS TICKET_GENERATION_TIME,
+            TO_CHAR(T.FAULT_TIME, 'YYYY-MM-DD HH24:MI:SS') AS FAULT_TIME,
             T.ROOT_CAUSE_TYPE AS ROOT_CAUSE_TYPE,
             T.ROOT_CAUSE_CODE AS ROOT_CAUSE_CODE,
             T.ROOT_CAUSE_DOMAIN AS ROOT_CAUSE_DOMAIN,
@@ -160,7 +180,7 @@
             T.TICKET_RCA_RESULT_CODE AS TICKET_RCA_RESULT_CODE,
             T.TICKET_RCA_RESULT_DTL_CODE AS TICKET_RCA_RESULT_DTL_CODE,
             T.TICKET_RCA_RESULT_ORIG_DTL_CODE AS TICKET_RCA_RESULT_ORIG_DTL_CODE,
-            T.TICKET_UPDATE_TIME AS TICKET_UPDATE_TIME,
+            TO_CHAR(T.TICKET_UPDATE_TIME, 'YYYY-MM-DD HH24:MI:SS') AS TICKET_UPDATE_TIME,
             T.ZERO1_MODEL AS ZERO1_MODEL,
             T.ZERO1_ENTROPY AS ZERO1_ENTROPY
         FROM rca.tb_rca_ticket_current T
@@ -173,33 +193,78 @@
 
    <!-- AI관제 시스템 처리량 -->
     <select id="SELECT_DASHBOARD_STATISTICS" parameterType="hashmap" resultType="hashmap">
-        SELECT  SUM(trans_perf_cnt) AS trans_perf_cnt,
-                SUM(trans_alarm_cnt) AS trans_alarm_cnt,
-                SUM(ip_resource_cnt) AS ip_resource_cnt,
-                SUM(ip_alarm_cnt) AS ip_alarm_cnt,
-                SUM(ip_perf_cnt) AS ip_perf_cnt,
-                SUM(ip_sflow_cnt) AS ip_sflow_cnt,
-                SUM(ticket_rt_cnt) AS ticket_rt_cnt,
-                SUM(ticket_att_cnt) AS ticket_att_cnt,
-                SUM(ticket_ntt_cnt) AS ticket_ntt_cnt,
-                SUM(ticket_pf_cnt) AS ticket_pf_cnt,
-                SUM(link_total_resource_cnt) AS link_total_resource_cnt,
-                SUM(link_total_alarm_cnt) AS link_total_alarm_cnt,
-                SUM(link_ip_perf_cnt) AS link_ip_perf_cnt,
-                SUM(link_trans_perf_cnt) AS link_trans_perf_cnt
+        SELECT  SUM(TRANS_PERF_CNT) AS TRANS_PERF_CNT,
+                SUM(TRANS_ALARM_CNT) AS TRANS_ALARM_CNT,
+                SUM(IP_RESOURCE_CNT) AS IP_RESOURCE_CNT,
+                SUM(IP_ALARM_CNT) AS IP_ALARM_CNT,
+                SUM(IP_PERF_CNT) AS IP_PERF_CNT,
+                SUM(IP_SFLOW_CNT) AS IP_SFLOW_CNT,s
+                SUM(TICKET_RT_CNT) AS TICKET_RT_CNT,
+                SUM(TICKET_ATT_CNT) AS TICKET_ATT_CNT,
+                SUM(TICKET_NTT_CNT) AS TICKET_NTT_CNT,
+                SUM(TICKET_PF_CNT) AS TICKET_PF_CNT,
+                SUM(LINK_TOTAL_RESOURCE_CNT) AS LINK_TOTAL_RESOURCE_CNT,
+                SUM(LINK_TOTAL_ALARM_CNT) AS LINK_TOTAL_ALARM_CNT,
+                SUM(LINK_IP_PERF_CNT) AS LINK_IP_PERF_CNT,
+                SUM(LINK_TRANS_PERF_CNT) AS LINK_TRANS_PERF_CNT
         FROM    nia.tb_opsts
         WHERE 1=1
         <if test="SEARCH_DATE != null">
-            AND opsts_time <![CDATA[ = ]]> #{SEARCH_DATE}
+            AND OPSTS_TIME <![CDATA[ = ]]> #{SEARCH_DATE}
         </if>
         <if test="DATE_TYPE != null">
-            AND opsts_gb <![CDATA[ = ]]> #{DATE_TYPE}
+            AND OPSTS_GB <![CDATA[ = ]]> #{DATE_TYPE}
         </if>
+    </select>
+
+   <!-- 자가처리 조회 -->
+    <select id="SELECT_SELF_PROCESS_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+        <include refid="TotalCountPrefix"/>
+        SELECT
+        	CASE 
+	        	WHEN tpd.SELF_PROCESS_TYPE = 'S' THEN tpd.ALARMNO
+	            ELSE tpd.TICKET_ID
+	            END AS TICKET_ID
+        	, TO_CHAR(OCCUR_TIME, 'YYYY-MM-DD HH24:MI:SS') AS OCCUR_TIME
+        	, TO_CHAR(CLOS_TIME, 'YYYY-MM-DD HH24:MI:SS') AS CLOS_TIME
+        	, tpd.TICKET_TYPE
+        	, SELF_PROCESS_TYPE <!--  A:이상트래픽 / N: 유해트래픽 / S:SYSLOG / F: 비장애 -->
+        	, CASE 
+	        	WHEN tpd.SELF_PROCESS_TYPE = 'S' THEN tss.FAULT_DETAIL_CONTENT
+	            ELSE ts.FAULT_DETAIL_CONTENT
+	            END AS FAULT_DETAIL_CONTENT
+	        , CLOS_TYPE <!--  A: 자동 / ELSE: 수동 -->
+	        , CLOS_STATUS <!-- Y: red / N: blue -->
+       	FROM nia.tb_auto_treat_process_dtl tpd
+       	LEFT JOIN nia.tb_sop ts ON tpd.ticket_id = ts.ticket_id 
+       	LEFT JOIN nia.tb_syslog_sop tss ON tpd.alarmno = tss.alarmno
+       	WHERE 1=1
+        <if test="DATE_TIME != null and DATE_TYPE == 'year'">
+       	    AND DATE_TRUNC('MONTH', tpd.OCCUR_TIME) = TO_TIMESTAMP(CONCAT(#{DATE_TIME}, '-01'), 'YYYY-MM-DD')
+        </if>
+        <if test="DATE_TIME != null and DATE_TYPE != 'year'">
+       	    AND tpd.OCCUR_TIME <![CDATA[ >= ]]> #{DATE_TIME}::TIMESTAMP
+            AND tpd.OCCUR_TIME <![CDATA[ < ]]> #{DATE_TIME}::TIMESTAMP + ('1'||#{DATE_TYPE})::INTERVAL
+        </if>
+        <if test="SELF_PROCESS_GROUP != '' and SELF_PROCESS_GROUP != null">
+            AND tpd.SELF_PROCESS_GROUP = #{SELF_PROCESS_GROUP}
+        </if>
+        <if test="SELF_PROCESS_TYPE != '' and SELF_PROCESS_TYPE != null">
+            AND tpd.SELF_PROCESS_TYPE = #{SELF_PROCESS_TYPE}
+        </if>
+        <if test="CLOS_TYPE != '' and CLOS_TYPE != null">
+            AND tpd.CLOS_TYPE = #{CLOS_TYPE}
+        </if>
+        <if test="CLOS_STATUS != '' and CLOS_STATUS != null">
+            AND tpd.CLOS_STATUS = #{CLOS_STATUS}
+        </if>
+       	ORDER BY TPD.OCCUR_TIME DESC
+        <include refid="TotalCountSuffix"/>
     </select>
 
     <!-- SOP 리스트 조회 -->
      <select id="SELECT_SOP_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
-     <include refid="TotalCountPrefix"/>   
+     <include refid="TotalCountPrefix"/>
         SELECT  SOP.SOP_ID ,
                 SOP.TICKET_ID ,
                 SOP.TICKET_TYPE ,
@@ -210,14 +275,14 @@
                 ELSE '장애' END AS TICKETTYPE,
                 SOP.TICKET_RESULT ,
                 SOP.STATUS ,
-                SOP.REQUEST_TIME ,
-                SOP.RECEIVE_TIME ,
+                TO_CHAR(SOP.REQUEST_TIME, 'YYYY-MM-DD HH24:MI:SS') AS REQUEST_TIME,
+                TO_CHAR(SOP.RECEIVE_TIME, 'YYYY-MM-DD HH24:MI:SS') AS RECEIVE_TIME,
                 SOP.DETAIL ,
-                SOP.fault_classify ,
-                SOP.fault_type ,
-                SOP.fault_detail_content ,
-                SOP.etc_content ,
-                SOP.ai_accuracy ,
+                SOP.FAULT_CLASSIFY ,
+                SOP.FAULT_TYPE ,
+                SOP.FAULT_DETAIL_CONTENT ,
+                SOP.ETC_CONTENT ,
+                SOP.AI_ACCURACY ,
                 al.ROOT_CAUSE_SYSNAMEA ,
                 al.ROOT_CAUSE_SYSNAMEZ ,
                 al.ROOT_CAUSE_PORTA ,
@@ -225,11 +290,11 @@
                 NODEA.IP_ADDR AS IP_ADDRA ,
                 NODEZ.IP_ADDR AS IP_ADDRZ ,
                 TC.ROOT_CAUSE_TYPE AS ROOT_CAUSE_TYPE ,
-                TC.FAULT_TIME AS FAULT_TIME ,
+                TO_CHAR(TC.FAULT_TIME, 'YYYY-MM-DD HH24:MI:SS') AS FAULT_TIME ,
                 SOP.HANDLING_ACK_USER AS HANDLING_ACK_USER ,
-                SOP.HANDLING_ACK_TIME AS HANDLING_ACK_TIME ,
+                TO_CHAR(SOP.HANDLING_ACK_TIME, 'YYYY-MM-DD HH24:MI:SS') AS HANDLING_ACK_TIME ,
                 SOP.HANDLING_FIN_USER AS HANDLING_FIN_USER ,
-                SOP.HANDLING_FIN_TIME AS HANDLING_FIN_TIME 
+                TO_CHAR(SOP.HANDLING_FIN_TIME, 'YYYY-MM-DD HH24:MI:SS') AS HANDLING_FIN_TIME 
         FROM    ( SELECT ticket_id,
                         MAX(ticket_al_id) AS ticket_al_id
                 FROM    rca.tb_rca_ticket_al_current tac
@@ -238,18 +303,18 @@
                 AND     tac.TICKET_ID LIKE '%' || #{TICKET_ID} || '%'
                 </if>
                 <if test="START_DATE == null and END_DATE == null">
-                AND     tac.insert_time <![CDATA[ > ]]> now() - INTERVAL '7' day
+                AND     tac.INSERT_TIME <![CDATA[ > ]]> now() - INTERVAL '7' day
                 </if>
                 <if test="START_DATE != null">
-                AND     tac.insert_time <![CDATA[ >= ]]> #{START_DATE}::TIMESTAMP
+                AND     tac.INSERT_TIME <![CDATA[ >= ]]> #{START_DATE}::TIMESTAMP
                 </if>
                 <if test="END_DATE != null">
-                AND     tac.insert_time <![CDATA[ <= ]]> #{END_DATE}::TIMESTAMP
+                AND     tac.INSERT_TIME <![CDATA[ <= ]]> #{END_DATE}::TIMESTAMP
                 </if>
-                GROUP BY ticket_id ) AL_ID
-        INNER JOIN rca.tb_rca_ticket_al_current AL ON AL.ticket_al_id = AL_ID.ticket_al_id
-        INNER JOIN rca.tb_rca_ticket_current TC    ON AL_ID.ticket_id = TC.ticket_id
-        INNER JOIN nia.tb_sop SOP                  ON SOP.ticket_id = AL_ID.ticket_id
+                GROUP BY TICKET_ID ) AL_ID
+        INNER JOIN rca.tb_rca_ticket_al_current AL ON AL.TICKET_AL_ID = AL_ID.TICKET_AL_ID
+        INNER JOIN rca.tb_rca_ticket_current TC    ON AL_ID.TICKET_ID = TC.TICKET_ID
+        INNER JOIN nia.tb_sop SOP                  ON SOP.TICKET_ID = AL_ID.TICKET_ID
         LEFT OUTER JOIN resource.tb_node_mst NODEA ON NODEA.node_id = AL.ROOT_CAUSE_SYSNAMEA
         LEFT OUTER JOIN resource.tb_node_mst NODEZ ON NODEZ.node_id = AL.ROOT_CAUSE_SYSNAMEZ
         WHERE 1=1
@@ -259,7 +324,7 @@
         <if test="ROOT_CAUSE_SYSNAMEA != null">
             AND al.ROOT_CAUSE_SYSNAMEA <![CDATA[ = ]]> #{ROOT_CAUSE_SYSNAMEA}
         </if>
-        ORDER BY SOP.request_time DESC 
+        ORDER BY SOP.REQUEST_TIME DESC 
     <include refid="TotalCountSuffix"/>
     </select>
 
@@ -272,19 +337,19 @@
         <where>
             <trim prefix="(" prefixOverrides="AND|OR" suffix=")" suffixOverrides="">
                 <if test="USER_ID != null">
-                    AND user_id like '%' || #{USER_ID} || '%'
+                    AND USER_ID LIKE '%' || #{USER_ID} || '%'
                 </if>
                 <if test="FAULT_GB != null">
-                    AND fault_gb like '%' || #{FAULT_GB} || '%'
+                    AND FAULT_GB LIKE '%' || #{FAULT_GB} || '%'
                 </if>
                 <if test="FAULT_TYPE != null">
-                    AND fault_type like '%' || #{FAULT_TYPE} || '%'
+                    AND FAULT_TYPE LIKE '%' || #{FAULT_TYPE} || '%'
                 </if>
                 <if test="START_DATE != null">
-                    AND reg_time <![CDATA[ > ]]> #{START_DATE}::TIMESTAMP
+                    AND REG_TIME <![CDATA[ > ]]> #{START_DATE}::TIMESTAMP
                 </if>
                 <if test="END_DATE != null">
-                    AND reg_time <![CDATA[ <= ]]> #{END_DATE}::TIMESTAMP
+                    AND REG_TIME <![CDATA[ <= ]]> #{END_DATE}::TIMESTAMP
                 </if>
             </trim>
         </where>
