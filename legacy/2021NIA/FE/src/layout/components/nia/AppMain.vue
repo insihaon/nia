@@ -1,8 +1,9 @@
 <template>
   <section class="app-main common-font" :style="{height: `calc(100vh - ${showBottombar ? '110': '60'}px)`}">
+    <HistoryBar ref="historybar" />
     <transition name="fade-transform" mode="out-in" :duration="duration">
       <keep-alive :include="cachedViews">
-        <router-view :key="key" />
+        <router-view :key="key" :style="{ 'padding-right': getHistoryOffset }" />
       </keep-alive>
     </transition>
   </section>
@@ -11,11 +12,12 @@
 <script>
 import { Base } from '@/min/Base.min'
 import { AppOptions } from '@/class/appOptions'
+import HistoryBar from '@/layout/components/historyBar/index'
 import { mapState } from 'vuex'
 
 export default {
   name: 'AppMain',
-  components: { },
+  components: { HistoryBar },
   extends: Base,
   data() {
     return {
@@ -33,8 +35,12 @@ export default {
       return this.$store.state.tagsView.lazyCachedViews.includes(this.$route.name) ? 200 : 500
     },
     ...mapState({
-      showBottombar: state => state.settings.bottombar
+      showBottombar: state => state.settings.bottombar,
+      historybar: state => state.app.historybar,
     }),
+    getHistoryOffset() {
+      return this.historybar.opened ? 'var(--historybar-width)' : 'var(--historybar-default-width)'
+    }
   },
   watch: {
     $route() {
@@ -66,6 +72,8 @@ export default {
 
 :root {
     --navTopbar-height: 0px;
+    --historybar-width: 180px;
+    --historybar-default-width: 10px;
     --tag-bar-height: 75px;
     --fixed-top-header-height: calc( var(--navTopbar-height) + var(--tag-bar-height));
 }
@@ -92,9 +100,11 @@ export default {
 .app-main {
   font-family: "NotoSansKR";
   height: calc(100vh - 80px);
+
   width: 100%;
   position: relative;
   overflow: hidden;
+  transition: all 0.3s;
 
   &>* {
     height: 100%;

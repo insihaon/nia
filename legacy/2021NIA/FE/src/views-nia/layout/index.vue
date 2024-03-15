@@ -2,9 +2,8 @@
   <div :class="[classObj]" class="layout-wrapper common-font" :style="setHeight">
     <div v-if="screenDevice==='mobile'" class="drawer-bg" @click="handleClickOutside" />
     <div class="main-container" :class="[{hasTagsView:needTagsView}, AppOptions.instance.project]">
-      <div :class="{ 'fixed-header':fixedHeader }" :style="{ 'padding-right': getHistoryOffset }">
+      <div :class="{ 'fixed-header':fixedHeader }">
         <NavBar ref="navbar" />
-        <HistoryBar v-if="showHistorybar" ref="historybar" />
         <AppMain v-if="!popupLayout" ref="appmain" />
         <BottomBar ref="bottombr" />
       </div>
@@ -21,7 +20,6 @@ import { Base } from '@/min/Base.min'
 import ResizeMixin from '@/layout/mixin/ResizeHandler'
 import NavBar from './navBar/index'
 import BottomBar from './BottomBar'
-import HistoryBar from '@/layout/components/historyBar/index'
 import CompTrafficAnalysisModal from '@/views-nia/modal/CompTrafficAnalysisModal'
 import ModaluserSettings from '@/views-nia/userManagement/ModaluserSettings'
 import { mapState, mapGetters } from 'vuex'
@@ -36,7 +34,6 @@ export default {
     AppMain,
     NavBar,
     BottomBar,
-    HistoryBar,
     ModaluserSettings,
     CompTrafficAnalysisModal,
   },
@@ -122,13 +119,12 @@ export default {
         '--common-padding': widthPadding + 'px ' + heightPadding + 'px'
       }
     },
-    getHistoryOffset() {
-      return this.historybar.opened ? 'var(--historybar-width)' : '0px'
-    }
   },
   mounted() {
     //  this.subscribeEvent()
-    this.setShowBottombar()
+    this.$nextTick(() => {
+      this.setShowBottombar()
+    })
   },
   methods: {
     handleOpenEditModal(row, type) {
@@ -151,7 +147,7 @@ export default {
       this.$refs.preview.open(data)
     },
     setShowBottombar() {
-      window.helper.$store.dispatch('settings/changeSetting', {
+      window.helper?.$store.dispatch('settings/changeSetting', {
         key: 'bottombar',
         value: true
       })

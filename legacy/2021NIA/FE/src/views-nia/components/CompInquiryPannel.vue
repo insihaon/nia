@@ -8,10 +8,10 @@
             <div class="optionBoxContent">
               <div v-for="(item, index) in items" :key="index" class="optionItem">
                 <label>
-                  <i :class="item.icon" />
+                  <i :class="item.icon || ''" />
                   {{ item.label }}
                 </label>
-                <el-col>
+                <el-col :size="item.size">
                   <el-input
                     v-if="item.type === 'input'"
                     v-model="searchModel[item.model]"

@@ -2,7 +2,7 @@
   <div :class="{ [name]: true }">
     <LeftBar class="h-full">
       <template slot="leftbar-container">
-        <div class="h-20 text-center mt-1">
+        <div class="h-20 text-center mt-1" style="z-index: 1;">
           <span class="font-bold text-lg whitespace-nowrap">AI관제 시스템 처리량</span>
           <div class="d-flex p-2 justify-center items-center">
             <span class="font-semibold whitespace-nowrap pr-2">검색</span>
@@ -21,9 +21,9 @@
         </div>
         <hr>
         <div style="height: calc(70% - 5rem);">
-          <CompChart :options="ticketOptions" class="h-1/3" />
-          <CompChart :options="collectOptions" class="h-1/3" />
-          <CompChart :options="servingOptions" class="h-1/3" />
+          <CompChart :options="ticketOptions" class="relative h-64" style="top: -2rem;" />
+          <CompChart :options="collectOptions" class="relative h-72" style="top: -7rem;" />
+          <CompChart :options="servingOptions" class="relative h-64" style="top: -12rem;" />
         </div>
         <hr>
         <div class="h-20 text-center">
@@ -46,7 +46,7 @@
         </div>
         <hr>
         <div style="height: calc(30% - 5rem);">
-          <CompChart :options="selfProcessOptions" class="h-full" />
+          <CompChart :options="selfProcessOptions" class="h-full" @click="onClickChart" />
         </div>
       </template>
       <template slot="top-container">
@@ -55,7 +55,7 @@
             <div class="filter-container">
               <div class="title">IP망</div>
               <div class="filter-group">
-                <template v-for="(filter, keyName) in filterGroup.filters">
+                <template v-for="(filter, keyName) in ipFilterGroup.filters">
                   <div v-if="filter.filterTitle" :key="filter.filterTitle" class="item-title ml-2">
                     {{ filter.filterTitle || '' }}
                   </div>
@@ -90,7 +90,26 @@
           <template slot="function-container">
             <div class="filter-container">
               <div class="title">전송망</div>
-              <div />
+              <div class="filter-group">
+                <template v-for="(filter, keyName) in transFilterGroup.filters">
+                  <div v-if="filter.filterTitle" :key="filter.filterTitle" class="item-title ml-2">
+                    {{ filter.filterTitle || '' }}
+                  </div>
+                  <ul v-if="keyName" :key="keyName">
+                    <!-- :class="{'filterBtn': !filterIconList.includes(keyName), 'filterIcon d-flex':filterIconList.includes(keyName)}" -->
+                    <li
+                      v-for="(item, index) in filter.getArray()"
+                      :key="index"
+                      class="checkItem d-flex items-center checked ml-1"
+                      :style="{'background-color': item.hex, 'color': item.color }"
+                      @click="onClickFilterItem(filter.filterName , item.code)"
+                    >
+                      <i :class="item.selected ? 'el-icon-success': 'el-icon-circle-check'" />
+                      <div class="filter-text">{{ item.text + '(' + item.count + ')' }}</div>
+                    </li>
+                  </ul>
+                </template>
+              </div>
             </div>
           </template>
         </filterBar>
@@ -103,6 +122,7 @@
     </LeftBar>
     <ModalSopList ref="ModalSopList" />
     <ModalAiResponse ref="ModalAiResponse" />
+    <ModalSelfProcessList ref="ModalSelfProcessList" />
   </div>
 </template>
 <script>
@@ -115,19 +135,21 @@ import BaseFilterGroup from '@/filters/baseFilterGroup'
 import CellRenderAibuttons from '@/views-nia/components/cellRenderer/CellRenderAibuttons'
 import ModalSopList from '@/views-nia/modal/ModalSopList'
 import ModalAiResponse from '@/views-nia/modal/ModalAiResponse'
+import ModalSelfProcessList from '@/views-nia/modal/ModalSelfProcessList'
 import { apiIpAlarmList, apiTransmissionAlarmList, apiDashboardStatistics, apiSelfProcessStatistics } from '@/api/nia'
 const routeName = 'NiaMain'
 
 export default {
   name: routeName,
   // eslint-disable-next-line vue/no-unused-components
-  components: { CompAgGrid, CompChart, LeftBar, filterBar, ModalSopList, CellRenderAibuttons, ModalAiResponse },
+  components: { CompAgGrid, CompChart, LeftBar, filterBar, ModalSopList, CellRenderAibuttons, ModalAiResponse, ModalSelfProcessList },
   extends: Base,
   data() {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      filterGroup: '',
+      ipFilterGroup: '',
+      transFilterGroup: '',
       ipNetworkList: [],
       transmissionNetworkList: [],
       selectedItem: [],
@@ -186,31 +208,31 @@ export default {
     ticketOptions() {
       const keyByTitle = [
         { name: '장애', key: 'ticket_rt_cnt' },
-        { name: '광레벨 저하', key: 'ticket_pf_cnt' },
-        { name: '이상 트래픽', key: 'ticket_att_cnt' },
-        { name: '유해 트래픽', key: 'ticket_ntt_cnt' },
+        { name: '광레벨\n저하', key: 'ticket_pf_cnt' },
+        { name: '이상\n트래픽', key: 'ticket_att_cnt' },
+        { name: '유해\n트래픽', key: 'ticket_ntt_cnt' },
       ]
-      return this.getDefaultChartOptions('티켓 발생량', keyByTitle)
+      return this.getDefaultChartOptions('티켓 발생량', keyByTitle.reverse())
     },
     collectOptions() {
       const keyByTitle = [
-      { name: '광레벨 수집', key: 'trans_perf_cnt' },
-      { name: '전송 경보 수집', key: 'trans_alarm_cnt' },
-      { name: 'IP 시설 연동', key: 'ip_resource_cnt' },
-      { name: 'IP 경보 연동', key: 'ip_alarm_cnt' },
-      { name: 'IP 트래픽 연동', key: 'ip_perf_cnt' },
-      { name: 'IP SFlow 연동', key: 'ip_sflow_cnt' }
+      { name: '광레벨\n수집', key: 'trans_perf_cnt' },
+      { name: '전송\n경보수집', key: 'trans_alarm_cnt' },
+      { name: 'IP시설\n연동', key: 'ip_resource_cnt' },
+      { name: 'IP경보\n연동', key: 'ip_alarm_cnt' },
+      { name: 'IP트래픽\n연동', key: 'ip_perf_cnt' },
+      { name: 'IP SFlow\n연동', key: 'ip_sflow_cnt' }
       ]
-      return this.getDefaultChartOptions('데이터 수집량', keyByTitle)
+      return this.getDefaultChartOptions('데이터 수집량', keyByTitle.reverse())
     },
     servingOptions() {
       const keyByTitle = [
-        { name: '시설 연동', key: 'link_total_resource_cnt' },
-        { name: '경보 연동', key: 'link_total_alarm_cnt' },
-        { name: '트래픽 연동', key: 'link_ip_perf_cnt' },
-        { name: '광레벨 연동', key: 'link_trans_perf_cnt' }
+        { name: '시설\n연동', key: 'link_total_resource_cnt' },
+        { name: '경보\n연동', key: 'link_total_alarm_cnt' },
+        { name: '트래픽\n연동', key: 'link_ip_perf_cnt' },
+        { name: '광레벨\n연동', key: 'link_trans_perf_cnt' }
       ]
-      return this.getDefaultChartOptions('데이터 제공량(데이터레이크 연계량)', keyByTitle)
+      return this.getDefaultChartOptions('데이터 제공량(데이터레이크 연계량)', keyByTitle.reverse())
     },
     selfProcessOptions() {
       const selfStatistics = this.selfStatistics
@@ -231,20 +253,19 @@ export default {
         xAxis: {
           type: 'category',
           data: selfStatistics.map(v => v.series_time),
-          axisLabel: { fontWeight: 'bold', },
         },
         yAxis: {
           type: 'value',
           axisLabel: {
             formatter: function (value, index) {
-              let result = value
-              if (value >= 1000) {
-                result = (value / 1000) + 'K'
-              } else {
-                result = value.toString()
+                let result = value
+                if (value >= 1000) {
+                  result = (value / 1000) + 'K'
+                } else {
+                  result = value.toString()
+                }
+                return result
               }
-              return result
-            }
           }
         },
         series: [
@@ -276,38 +297,59 @@ export default {
   async mounted () {
     await this.onLoadDashboardStatistics()
     await this.onLoadSelfProcessStatistics()
+
     this.$nextTick(async() => {
       await this.onLoadIpAlarmList()
       await this.onLoadTransmissionAlarmList()
-      this.filterGroup = new BaseFilterGroup(this, { onFilterChanged: this.onFilterChanged, isCheckBox: false })
+
+      this.ipFilterGroup = new BaseFilterGroup(this, { onFilterChanged: this.onFilterChanged, isCheckBox: false })
       this.setIPFilterGroup()
+
+      this.transFilterGroup = new BaseFilterGroup(this, { onFilterChanged: this.onFilterChanged, isCheckBox: false })
+      this.setTransFilterGroup()
     })
   },
   methods: {
+    onClickChart(e) {
+      const params = {
+        DATE_TYPE: this.selfChartCondition.statisticsType,
+        DATE_TIME: e.name,
+        SELF_PROCESS_GROUP: e.seriesName.includes('최적화') ? 'SO' : 'ST'
+      }
+      this.$refs.ModalSelfProcessList.open(params)
+    },
     setIPFilterGroup() {
       const listName = 'ipNetworkList'
       const btnOption = { isMultiSelect: true, allItem: true, ifAllthenOtherUncheck: true, listName }
 
-      this.filterGroup.addFilter('ipStatus', '상태', this.CONSTANTS.nia.statusType, btnOption) // 누적레벨
-      this.filterGroup.addFilter('ipType', 'TYPE', this.CONSTANTS.nia.ipType, btnOption) // 누적레벨
+      this.ipFilterGroup.addFilter('ipStatus', '상태', this.CONSTANTS.nia.statusType, btnOption) // 상태
+      this.ipFilterGroup.addFilter('ipType', 'TYPE', this.CONSTANTS.nia.ipType, btnOption) // ip망 장애 종류
+      this.ipFilterGroup.addFilter('ipAlarmType', '알람 종류', this.CONSTANTS.nia.ipAlarmType, btnOption) // ip망 알람 종류
+    },
+    setTransFilterGroup() {
+      const listName = 'transmissionNetworkList'
+      const btnOption = { isMultiSelect: true, allItem: true, ifAllthenOtherUncheck: true, listName }
+
+      this.transFilterGroup.addFilter('transStatus', '상태', this.CONSTANTS.nia.statusType, btnOption) // 상태
+      this.transFilterGroup.addFilter('transType', 'TYPE', this.CONSTANTS.nia.transType, btnOption) // 전송망 장애 종류
     },
     onFilterChanged(changedFilter, code) {
       console.log('onFilterChanged')
       this.$refs.ipAgGrid.externalFilterChanged({ name: this.name })
     },
     onClickFilterItem(name, code) {
-      this.filterGroup.onItemClick(name, code)
+      this.ipFilterGroup.onItemClick(name, code)
       this.$forceUpdate()
     },
     onIpDoesExternalFilterPass(externalFilter, node) {
-      if (!this.filterGroup.filters) return true
+      if (!this.ipFilterGroup.filters) return true
 
       const { data: row } = node
       let resMultiCondition = true
-      const multiFilterKeys = Object.keys(this.filterGroup.filters).filter(key => this.filterGroup.filters[key].options.isMultiSelect)
+      const multiFilterKeys = Object.keys(this.ipFilterGroup.filters).filter(key => this.ipFilterGroup.filters[key].options.isMultiSelect)
 
       resMultiCondition = multiFilterKeys.map(mkey => {
-        return this.filterGroup.filters[mkey].dataArray.some(item => {
+        return this.ipFilterGroup.filters[mkey].dataArray.some(item => {
           if (item.code !== 'All') {
             if (typeof item.fnFilter !== 'function') {
               return
@@ -378,18 +420,16 @@ export default {
         title: {
           text: title,
           left: 'center',
+          top: 40,
           textStyle: {
             fontSize: 13
           }
           // subtext: 'Living Expenses in Shenzhen'
         },
         xAxis: {
-          type: 'category',
-          data: keyByTitle.map(v => v.name),
-          axisLabel: { interval: 0, rotate: 20, fontWeight: 'bold', },
-        },
-        yAxis: {
+          // type: 'category',
           type: 'value',
+          // data: keyByTitle.map(v => v.name),
           axisLabel: {
             formatter: function (value, index) {
               let result = value
@@ -403,24 +443,44 @@ export default {
               return result
             }
           }
+          // axisLabel: { interval: 0, rotate: 20, fontWeight: 'bold', },
+        },
+        yAxis: {
+          // type: 'value',
+          type: 'category',
+          data: keyByTitle.map(v => v.name),
+          // axisLabel: {
+          //   formatter: function (value, index) {
+          //     let result = value
+          //   if (value >= 1000000) {
+          //     result = (value / 1000000) + 'M'
+          //   } else if (value >= 1000) {
+          //     result = (value / 1000) + 'K'
+          //   } else {
+          //     result = value.toString()
+          //   }
+          //     return result
+          //   }
+          // }
         },
         series: [
           {
             type: 'bar',
             label: {
               show: true,
-              position: 'top',
+              width: 20,
+              position: 'right',
               fontWeight: 'bold',
               formatter: (param) => {
                 return param.data.toLocaleString()
               },
             },
-            barWidth: '30',
+            barWidth: '20',
             itemStyle: {
               color: '#6149c7',
               borderWidth: 1,
               borderColor: '#189ec0',
-              borderRadius: [5, 5, 0, 0]
+              borderRadius: [0, 5, 5, 0]
             },
             data: keyByTitle.map(v => { return this.statistics[v.key] === null ? 0 : this.statistics[v.key] }),
 
