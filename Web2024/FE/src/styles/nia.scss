@@ -2,10 +2,10 @@
 
 table.basic {
   width: 100%;
-  font-size: 14px;
+  font-size: 12px;
   text-align: left;
   border-collapse: collapse;
-  border: solid 1px #bdbdbd;
+  border: solid 1px $nia-primary;
   th,
   td {
     padding: 10px;
@@ -13,16 +13,17 @@ table.basic {
   }
   th {
     font-weight: normal;
-    color: #000;
-    background: #e8ecf0;
+    // color: #fff;
+    // background: $nia-primary;
     text-align: center;
-    font-size: 15px;
+    font-size: 14px;
     max-width: 50px;
   }
   td {
     font-weight: 600;
     max-width: 100px;
     min-width: 80px;
+    text-align: center;
   }
   td.disable {
     font-weight: 600;

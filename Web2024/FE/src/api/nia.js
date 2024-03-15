@@ -40,6 +40,69 @@ export function apiSelfProcessStatistics(params = {}) {
     data: params
   })
 }
+export function apiSelfProcessList(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_SELF_PROCESS_LIST',
+    data: params
+  })
+}
+export function apiSelfProcessTrafficInfo(params = {}) {
+  return http({
+    url: '/selectOne',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_SELF_PROCESS_TRAFFIC_INFO',
+    data: params
+  })
+}
+export function apiSelfProcessSyslogInfo(params = {}) {
+  return http({
+    url: '/selectOne',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_SELF_PROCESS_SYSLOG_INFO',
+    data: params
+  })
+}
+export function apiATTTrafficChart(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_ATT2_CHART',
+    data: params
+  })
+}
+export function apiNTTTrafficChart(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_NTT_CHART',
+    data: params
+  })
+}
+export function apiSelectAiDetectionInfo(params = {}) {
+  return http({
+    url: '/selectOne',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_AI_DETECTION_INFO',
+    data: params
+  })
+}
+export function apiSopHistList(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_SOP_HIST_LIST',
+    data: params
+  })
+}
 export function apiSopList(params = {}) {
   return http({
     url: '/selectList',

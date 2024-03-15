@@ -24,7 +24,7 @@ export const niaRoute = Object.freeze([
   {
     path: '/performanceMonitoring',
     component: Layout,
-    redirect: '/performanceMonitoring/trafficAnalysisCountry',
+    redirect: '/performanceMonitoring/trafficAnalysisInstitution',
     meta: { title: '성능감시' },
     children: [
       {

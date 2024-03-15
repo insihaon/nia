@@ -1,5 +1,5 @@
 <template>
-  <div id="tags-view-container">
+  <div id="tags-view-container" :class="{'opend': historybar.opened}">
     <div id="title-container">
       <div>visited History</div>
       <div><i class="el-icon-close" @click="closeHistoryBar()" /></div>
@@ -16,13 +16,15 @@
       @contextmenu.prevent.native="openMenu(tag,$event)"
     >
       <!-- @contextmenu.prevent.native="openMenu(tag,$event)" -->
-      <div class="title">
+      <div class="title" :class="{'long-title': tag.title.length > 10}">
         {{ $t(tag.meta.i18n) || tag.meta.tagTitle || tag.title }}
       </div>
-      <div>
+      <div class="d-flex">
+        <i v-if="!isAffix(tag)" class="el-icon-collection-tag" @click.prevent.stop="closeSelectedTag(tag)" />
         <span v-if="!isAffix(tag)" class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)" />
       </div>
     </router-link>
+    <div />
     <ul v-show="visible" :style="{left:left+'px',top:top+'px'}" class="contextmenu">
       <li @click="refreshSelectedTag(selectedTag)">Refresh</li>
       <li @click="openNewTab(selectedTag)">Open New Tab</li>
@@ -35,6 +37,7 @@
 
 <script>
 import { AppOptions } from '@/class/appOptions'
+import { mapState } from 'vuex'
 import path from 'path'
 
 export default {
@@ -58,7 +61,10 @@ export default {
     },
     routes() {
       return this.$store.state.permission.routes
-    }
+    },
+    ...mapState({
+      historybar: state => state.app.historybar,
+    }),
   },
   watch: {
     $route() {
@@ -76,8 +82,19 @@ export default {
   mounted() {
     this.initTags()
     this.addTags()
+    const THIS = this
+    const historyBar = document.querySelector('#tags-view-container')
+    historyBar?.addEventListener('mouseover', function(event) {
+      !THIS.historybar.opened && THIS.toggleHistoryBar()
+    })
+    historyBar?.addEventListener('mouseout', function(event) {
+      THIS.historybar.opened && THIS.toggleHistoryBar()
+    })
   },
   methods: {
+    toggleHistoryBar() {
+      this.$store.dispatch('app/toggleHistoryBar')
+    },
     isActive(route) {
       return route.path === this.$route.path
     },
@@ -223,22 +240,33 @@ export default {
 <style lang="scss" scoped>
 @import "~@/styles/variables.scss";
 
+#tags-view-container.opend {
+  width: var(--historybar-width);
+  #title-container {
+    display: flex;
+  }
+  #tags-view-item {
+    display: flex !important;
+  }
+}
+
 #tags-view-container {
   top: 0;
   right:0;
-  width: var(--historybar-width);
+  width: var(--historybar-default-width);
+  padding: 5px;
   height: 100%;
   display: flex;
-  padding: 10px;
   flex-direction: column;
   align-items: center;
-  position: fixed;
-  transition: width 0.28s;
+  position: absolute;
+  transition: width 0.4s;
   background: #fff;
   border-bottom: 1px solid #d8dce5;
   box-shadow: 0 1px 3px 0 rgba(16, 12, 12, 0.12), 0 0 3px 0 rgba(0, 0, 0, .04);
   #title-container {
-    display: flex;
+    display: none;
+    transition: all 0.3s;
     width: 100%;
     font-weight: bold;
     justify-content: space-around;
@@ -253,9 +281,10 @@ export default {
   }
   #tags-view-item {
     width: 100%;
-    display: flex;
-    justify-content: space-between;
+    display: none !important;
+    transition: all 0.3s;
     align-items: center;
+    justify-content: space-between;
     cursor: pointer;
     height: 26px;
     line-height: 26px;
@@ -265,20 +294,18 @@ export default {
     padding: 0px 15px;
     border-radius: 6px;
     margin-top: 5px;
-    transition: all 0.3s;
     .title {
       display: block;
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
-      &:hover {
-        line-height: 12px;
-        height: fit-content;
-        white-space: normal;
-      }
+    }
+    .long-title:hover {
+      line-height: 14px;
+      white-space: normal;
+      transition: all 0.3s;
     }
     span {
-      margin-left: 10px;
       border-radius: 50%;
       &:hover {
         color: black;
@@ -286,12 +313,16 @@ export default {
       }
     }
     &:hover {
+      color: #fff;
       background: #64748b;
+      height: fit-content;
+      padding: 5px 15px;
     }
     &.active {
       color: #fff;
       background-color: $aiTemplateDefault;
-      justify-content: flex-start;
+      justify-content: space-between;
+      // justify-content: flex-start;
       white-space: nowrap;
       display: flex;
       overflow: hidden;
