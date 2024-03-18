@@ -620,4 +620,45 @@
                     AND tn.measured_datetime = a.measured_datetime
     </select>
 
+    <!-- 조치프로파일 리스트 조회 -->
+
+     <select id="SELECT_PROFILE_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+        SELECT
+            PROFILE_NUM,
+            PROFILE_TITLE,
+            PROFILE_DESC,
+            NETWORK_TYPE,
+            PROCESSING_TEMPLATE,
+            CONSTRUCTION_CHECK,
+            AUTO_PROCESS_CHECK,
+            TICKET_TYPE,
+            PROCESS_TYPE,
+            AUTO_RECOVERY,
+            EMAIL_CHECK,
+            CASE
+                WHEN AUTO_PROCESS_CHECK = 'true' THEN '상시'
+                ELSE 
+                    CASE
+                        WHEN AUTO_PROCESS_START_DATETIME IS NOT NULL AND AUTO_PROCESS_END_DATETIME IS NOT NULL THEN 
+                            AUTO_PROCESS_START_DATETIME || ' ~ ' || AUTO_PROCESS_END_DATETIME
+                        ELSE NULL 
+                    END
+            END AS AUTO_PROCESS_INFO,
+            TO_CHAR(CHNG_DATETIME, 'YYYY-MM-DD HH:MI:SS') AS CHNG_DATETIME,
+            ROW_NUMBER() OVER (ORDER BY PROFILE_NUM) AS ROWNUM,
+            COUNT(1) OVER () AS "PROFILETOTALCOUNT"
+        FROM RESOURCE.TB_FAULT_PROCESS_PROFILE
+        WHERE 1=1
+        <if test="profile_title != null and profile_title != ''">
+            AND PROFILE_TITLE LIKE '%' || #{profile_title} || '%'
+        </if>
+        <if test="network_type != null and network_type != ''">
+            AND UPPER(NETWORK_TYPE) LIKE '%' || UPPER(#{network_type}) || '%'
+        </if>
+        <if test="processing_template != null and processing_template != ''">
+            AND PROCESSING_TEMPLATE LIKE '%' || #{processing_template} || '%'
+        </if>
+        ORDER BY PROFILE_NUM
+    </select>
+
 </mapper>

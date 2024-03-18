@@ -211,3 +211,13 @@ export function apiSelectEquipAmountUsedList(params = {}) {
     data: params
   })
 }
+
+export function apiSelectProfileList(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_PROFILE_LIST',
+    data: params
+  })
+}
