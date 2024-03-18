@@ -108,8 +108,8 @@ export const niaRoute = Object.freeze([
     children: [
       {
         path: 'controlScreen',
-        component: () => import('@/views-nia/operationStatusScreen/index'),
-        name: 'ControlScreen',
+        component: () => import('@/views-nia/dashBoard/index'),
+        name: 'NiaMain',
         meta: { title: '관제화면' },
       },
       {
@@ -198,6 +198,7 @@ export const niaRoute = Object.freeze([
     component: Layout,
     hidden: false,
     disable: false,
+    redirect: '/userManagement/ModaluserSettings',
     meta: {
       title: '사용자 관리',
     },
@@ -211,76 +212,76 @@ export const niaRoute = Object.freeze([
       },
     ]
   },
-  // {
-  //   path: '/manager',
-  //   component: Layout,
-  //   hidden: false,
-  //   disable: false,
-  //   redirect: '/manager',
-  //   meta: {
-  //     title: '관리자',
-  //   },
-  //   children: [
-  //     {
-  //       path: 'manager',
-  //       component: () => import('@/views-nia/manager/authSettings'),
-  //       name: 'AuthSettings',
-  //       meta: { title: '관리자 권한 설정' },
-  //     },
-  //   ]
-  // },
-  // {
-  //   path: '/nodeManagement',
-  //   component: Layout,
-  //   hidden: false,
-  //   disable: false,
-  //   redirect: '/nodeManagement',
-  //   meta: {
-  //     title: '노드관리',
-  //   },
-  //   children: [
-  //     {
-  //       path: 'nodeInquiryList',
-  //       component: () => import('@/views-nia/nodeManagement/nodeInquiryList'),
-  //       name: 'NodeInquiryList',
-  //       meta: { title: '노드 리스트 조회' },
-  //     },
-  //   ]
-  // },
-  // {
-  //   path: '/linkManagement',
-  //   component: Layout,
-  //   hidden: false,
-  //   disable: false,
-  //   redirect: '/linkManagement',
-  //   meta: {
-  //     title: '링크관리',
-  //   },
-  //   children: [
-  //     {
-  //       path: 'linkInquiryInfoList',
-  //       component: () => import('@/views-nia/linkManagement/linkInquiryInfoList'),
-  //       name: 'LinkInquiryInfoList',
-  //       meta: { title: '링크 정보 조회' },
-  //     },
-  //   ]
-  // },
-  // {
-  //   path: '/organization',
-  //   component: Layout,
-  //   hidden: false,
-  //   disable: false,
-  //   redirect: '/organization',
-  //   meta: {
-  //     title: '이용기관',
-  //   },
-  //   children: [
-  //     {
-  //       path: 'organizationInquiryList',
-  //       component: () => import('@/views-nia/organization/organizationInquiryList'),
-  //       name: 'OrganizationInquiryList',
-  //       meta: { title: '이용기관 조회' },
-  //     },
-  //   ]
-  // },
+  {
+    path: '/manager',
+    component: Layout,
+    hidden: false,
+    disable: false,
+    redirect: '/manager/authSettings',
+    meta: {
+      title: '관리자',
+    },
+    children: [
+      {
+        path: 'manager',
+        component: () => import('@/views-nia/manager/authSettings'),
+        name: 'AuthSettings',
+        meta: { title: '관리자 권한 설정' },
+      },
+    ]
+  },
+  {
+    path: '/nodeManagement',
+    component: Layout,
+    hidden: false,
+    disable: false,
+    redirect: '/nodeManagement/nodeInquiryList',
+    meta: {
+      title: '노드관리',
+    },
+    children: [
+      {
+        path: 'nodeInquiryList',
+        component: () => import('@/views-nia/nodeManagement/nodeInquiryList'),
+        name: 'NodeInquiryList',
+        meta: { title: '노드 리스트 조회' },
+      },
+    ]
+  },
+  {
+    path: '/linkManagement',
+    component: Layout,
+    hidden: false,
+    disable: false,
+    redirect: '/linkManagement/linkInquiryInfoList',
+    meta: {
+      title: '링크관리',
+    },
+    children: [
+      {
+        path: 'linkInquiryInfoList',
+        component: () => import('@/views-nia/linkManagement/linkInquiryInfoList'),
+        name: 'LinkInquiryInfoList',
+        meta: { title: '링크 정보 조회' },
+      },
+    ]
+  },
+  {
+    path: '/organization',
+    component: Layout,
+    hidden: false,
+    disable: false,
+    redirect: '/organization/organizationInquiryList',
+    meta: {
+      title: '이용기관',
+    },
+    children: [
+      {
+        path: 'organizationInquiryList',
+        component: () => import('@/views-nia/organization/organizationInquiryList'),
+        name: 'OrganizationInquiryList',
+        meta: { title: '이용기관 조회' },
+      },
+    ]
+  },
 ].filter(v => v.disable !== true))

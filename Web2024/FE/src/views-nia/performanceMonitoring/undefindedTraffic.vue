@@ -31,7 +31,6 @@
               @handleClickSearch="onClickSearch"
               @onChangePage="onChangePage"
               @searchClear="searchClear"
-              @selectedRow="selectedAPIRow"
             />
           </div>
         </el-tab-pane>
