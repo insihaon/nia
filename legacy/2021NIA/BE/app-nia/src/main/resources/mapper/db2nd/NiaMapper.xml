@@ -359,30 +359,31 @@
     <!-- 이용기관별 트래픽 분석 리스트 조회  -->  
     <select id="SELECT_TRAFFIC_AGENCY_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
     <include refid="TotalCountPrefix"/>
-    SELECT  
-        src_ip,
-        src_nren_id,
-        src_nren_name,
-        dst_ip,
-        dst_nren_id,
-        dst_nren_name,
-        collect_timestamp,
-        SUM(packet_bytes) packet_bytes,
-        row_number() over (
-            ORDER BY 
-                collect_timestamp DESC, 
-                CASE 
-                    WHEN src_nren_id IS NULL AND dst_nren_id IS NULL THEN 0
-                    ELSE 2 
-                END DESC, 
-                SUM(packet_bytes) DESC
-        ) row_number
-    FROM    
-        gather.tb_mdb_sflow_traffic_day
-    WHERE   
-        1=1 
-        AND collect_timestamp <![CDATA[ <= ]]> CURRENT_DATE 
-        AND collect_timestamp <![CDATA[ >= ]]> CURRENT_DATE - interval '5 days'
+        SELECT  src_ip,
+            src_nren_id,
+            src_nren_name,
+            src_country_code,
+            dst_ip,
+            dst_nren_id,
+            dst_nren_name,
+            dst_country_code,
+            packet_bytes,
+            row_number
+    FROM    ( SELECT src_ip,
+                    src_nren_id,
+                    src_nren_name ,
+                    src_country_code,
+                    dst_ip,
+                    dst_nren_id,
+                    dst_nren_name ,
+                    dst_country_code ,
+                    SUM(packet_bytes) packet_bytes ,
+                    row_number() over (ORDER BY case when src_nren_id is null and dst_nren_id is null then 0
+                                                 else 2 end desc, SUM(packet_bytes) DESC) row_number
+            FROM    gather.tb_mdb_sflow_traffic_day dt
+            WHERE   1=1 
+        AND dt.collect_timestamp <![CDATA[ <= ]]> CURRENT_DATE 
+        AND dt.collect_timestamp <![CDATA[ >= ]]> CURRENT_DATE - interval '5 days'
         <if test="src_nren_name != null and src_nren_name != ''">
             AND src_nren_id = #{src_nren_name}
         </if>
@@ -395,15 +396,17 @@
         <if test="dst_ip != null and dst_ip != ''">
             AND dst_ip LIKE '%' || #{dst_ip} || '%'
         </if>
-    GROUP BY 
-        src_ip,
-        src_nren_id,
-        src_nren_name,
-        dst_ip,
-        dst_nren_id,
-        dst_nren_name,
-        collect_timestamp
-        LIMIT 200
+        GROUP BY 
+                src_ip,
+                src_nren_id,
+                src_nren_name,
+                src_country_code,
+                dst_ip,
+                dst_nren_id,
+                dst_nren_name ,
+                dst_country_code 
+            ) dt
+        LIMIT 100
         <include refid="TotalCountSuffix"/>
     </select>
 
@@ -514,66 +517,61 @@
 
     <!-- 미확인 트래픽 조회 (국가) -->
     <select id="SELECT_UNIDENTIFIED_NATION_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
-        select
-            country_name,
-            koica
-        from gather.tb_country_code
-            <trim prefix="(" prefixOverrides="AND|OR" suffix=")" suffixOverrides="">
-                <if test="COUNTRY_NAME != null">
-                    AND country_name like '%' || #{COUNTRY_NAME} || '%' 
+        SELECT
+            COUNTRY_NAME AS COUNTRY_NAME,
+            KOICA AS COUNTRY_CODE 
+        FROM GATHER.TB_COUNTRY_CODE
+        WHERE 1=1
+            <!-- <trim prefix="(" prefixOverrides="AND|OR" suffix=")" suffixOverrides=""> -->
+                <if test="country_name != null and country_name != ''">
+                    AND COUNTRY_NAME LIKE '%' || #{country_name} || '%'
                 </if>
-                <if test="COUNTRY_CODE != null">
-                    AND koica like '%' || #{COUNTRY_CODE} || '%'
+                <if test="country_code != null and country_code != ''">
+                    AND KOICA LIKE '%' || #{country_code} || '%'
                 </if>
-            </trim>
+            <!-- </trim> -->
     </select>
 
     <!-- 미확인 트래픽 조회 (이용기관) -->
     <select id="SELECT_UNIDENTIFIED_AGENCY_LIST" parameterType="hashmap" resultType="hashmap">
-        select
-            ip.nren_id as nren_id,
-            ip.nren_name as nren_name,
-            ip.nren_ip as nren_ip
-        from resource.tb_user_organ uo
-        inner join resource.tb_user_organ_ip ip on uo.nren_id = ip.nren_id 
+        SELECT
+            IP.NREN_ID AS NREN_ID,
+            IP.NREN_NAME AS NREN_NAME,
+            IP.NREN_IP AS NREN_IP
+        FROM RESOURCE.TB_USER_ORGAN UO
+        INNER JOIN RESOURCE.TB_USER_ORGAN_IP IP ON UO.NREN_ID = IP.NREN_ID 
         <where>
-                <if test="NREN_NAME != null">
-                    AND ip.nren_name like '%' || #{NREN_NAME} || '%' 
+                <if test="nren_name != null and nren_name != ''">
+                    AND IP.NREN_NAME LIKE '%' || #{nren_name} || '%'
                 </if>
-                <if test="NREN_IP != null">
-                    AND ip.nren_ip like '%' || #{NREN_IP} || '%' 
+                <if test="nren_ip != null and nren_ip != ''">
+                    AND IP.NREN_IP LIKE '%' || #{nren_ip} || '%' 
                 </if>
-                <if test="NODE_ID != null">
-                    AND ip.nren_id in (SELECT nren_id FROM resource.tb_user_organ WHERE node_id = #{NODE_ID})
+                <if test="node_id != null and node_id != ''">
+                    AND IP.NREN_ID IN (SELECT NREN_ID FROM RESOURCE.TB_USER_ORGAN WHERE NODE_ID = #{node_id})
                 </if>
         </where>
-        <if test="OFFSET != null">
-            OFFSET #{OFFSET} LIMIT #{LIMIT}
-        </if>
-        <if test="LIMIT != null and OFFSET == null">
-            LIMIT #{LIMIT}
-        </if>
     </select>
 
     <!-- 미확인 트래픽 조회 (어플리케이션) -->
     <select id="SELECT_UNIDENTIFIED_APP_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
     SELECT  
-        mapp_serial, 
-        port_num, 
-        ip_type, 
-        protocol, 
-        description
-    FROM   gather.tb_default_port_number
+        MAPP_SERIAL, 
+        PORT_NUM, 
+        IP_TYPE, 
+        PROTOCOL, 
+        DESCRIPTION
+    FROM   GATHER.TB_DEFAULT_PORT_NUMBER
     <where>
-                AND protocol IS NOT NULL
-            <if test="APP_NAME != null">
-                AND protocol like '%' || #{APP_NAME} || '%' 
+            AND PROTOCOL IS NOT NULL
+            <if test="protocol != null and protocol != ''">
+                AND PROTOCOL LIKE '%' || #{protocol} || '%'
             </if>
-            <if test="PORT != null">
-                AND port_num like '%' || #{PORT} || '%' 
+            <if test="port_num != null and port_num != ''">
+                AND PORT_NUM like '%' || #{port_num} || '%' 
             </if>
     </where>
-    ORDER BY protocol COLLATE "ko_KR.utf8" ASC
+    ORDER BY PROTOCOL ASC
     </select>
     
 
@@ -601,19 +599,19 @@
                         AND nf.MEASURED_DATETIME BETWEEN NOW()::timestamp - interval '30 min' AND NOW()::timestamp
                         </if>
                         <if test="node_nm != null and node_nm != ''">
-                        AND node_nm LIKE '%' || #{node_nm} || '%'
+                        AND nm.node_nm LIKE '%' || #{node_nm} || '%'
                         </if>
                         <if test="start_date != null">
-                        AND nf.MEASURED_DATETIME <![CDATA[ > ]]> #{START_DATE}::timestamp
+                        AND nf.MEASURED_DATETIME::timestamp <![CDATA[ >= ]]> #{start_date}::timestamp
                         </if>
                         <if test="end_date != null">
-                        AND nf.MEASURED_DATETIME <![CDATA[ <= ]]> #{END_DATE}::timestamp
+                        AND nf.MEASURED_DATETIME::timestamp <![CDATA[ <= ]]> #{end_date}::timestamp
                         </if>
-                        <if test="cpu_usage != null">
-                        AND nf.cpu_usage::text LIKE #{cpu_usage} || '%'
+                        <if test="cpu_usage != null and cpu_usage != ''">
+                        AND nf.cpu_usage <![CDATA[ <= ]]> #{cpu_usage}::NUMERIC
                         </if>
-                        <if test="mem_usage != null">
-                        AND nf.mem_usage::text LIKE #{mem_usage} || '%'
+                        <if test="mem_usage != null and mem_usage != ''">
+                        AND nf.mem_usage <![CDATA[ <= ]]> #{mem_usage}::NUMERIC
                         </if>
                         ORDER BY MEASURED_DATETIME DESC
                     ) a

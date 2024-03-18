@@ -10,6 +10,7 @@
       class="w-100 h-100"
       @handleClickSearch="onClickSearch"
       @onChangePage="onChangePage"
+      @searchClear="searchClear"
     />
   </div>
 </template>
@@ -119,28 +120,22 @@ export default {
       try {
         const res = await apiSelectAgencyCodeList()
         this.selectCodeData = res.result.map(item => ({ label: item.name, value: item.id }))
-        this.setAgencyCode()
+        this.searchItems[0].options = this.selectCodeData
+        this.searchItems[2].options = this.selectCodeData
       } catch (error) {
           console.error(error)
         } finally {
           // this.closeLoading(target)
         }
     },
-    setAgencyCode() {
-      const codeKeyExists = this.searchItems.some(item => item.model === 'src_nren_name')
-
-      if (codeKeyExists) {
-        this.searchItems[0].options = this.selectCodeData
-      } else {
-        this.searchItems[2].options = this.selectCodeData
-      }
-    },
-
     onChangePage(curPage) {
       this.paginationInfo.currentPage = curPage
       this.onLoadSopList()
     },
+    searchClear() {
+      this.searchModel = {}
+    }
   },
 }
 </script>
-l
+

@@ -18,7 +18,6 @@
                     type="text"
                     clearable
                     style="width : 230px;"
-
                     :placeholder="item.placeholder"
                     @keyup.native.enter="$emit('keyupEnter', searchModel)"
                   />
@@ -38,6 +37,7 @@
                     :placeholder="item.placeholder"
                     reserve-keyword
                     remote
+                    style="width : 230px;"
                   >
                     <el-option
                       v-for="(option, i) in item.options"
@@ -63,6 +63,16 @@
                     end-placeholder="종료 일자"
                     :default-time="['00:00:00','23:59:59']"
                   />
+
+                  <el-date-picker
+                    v-if="item.type === 'dateTime'"
+                    v-model="searchModel[item.model]"
+                    type="datetimerange"
+                    range-separator="to"
+                    start-placeholder="Start date"
+                    end-placeholder="End date"
+                  />
+
                 </el-col>
                 <el-row class="d-flex flex-column w-50" style="justify-content: end; color : rgb(50, 49, 49)">
                   <slot name="searchCaption" />
@@ -107,10 +117,6 @@
       <slot name="button-container" />
     </div>
 
-    <!-- grafana -->
-    <!-- <div v-if="isShowGraph" class="grafana-container" :style="setContainerHeight">
-      <slot name="grafana" />
-    </div> -->
   </div>
 </template>
 
@@ -164,10 +170,6 @@ export default {
       type: Boolean,
       default: false
     },
-    // isShowGraph: {
-    //   type: Boolean,
-    //   default: false
-    // },
     items: {
       type: Array,
       default() { return [] }
@@ -255,6 +257,7 @@ export default {
 <style lang="scss">
 
 .nia{
+
   .CompInquiryPannel {
     font-family: "NotoSansKR";
     z-index: 0;
@@ -266,6 +269,11 @@ export default {
         height: 25px;
         line-height: 36px;
       }
+    }
+
+    .el-input,
+    .el-input__clear {
+      line-height: 25px !important;
     }
 
     .el-range-editor--medium {
@@ -284,6 +292,7 @@ export default {
       .el-range-separator {
         line-height: 17px;
       }
+
     }
 
     .el-select__input.is-medium{
@@ -338,6 +347,10 @@ export default {
       .button-container{
         display: flex;
         justify-content: space-between;
+      }
+
+      .el-input__icon el-icon-circle-close{
+        line-height: 26px !important;
       }
 
     }

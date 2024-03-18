@@ -10,6 +10,7 @@
       class="w-100 h-100"
       @handleClickSearch="onClickSearch"
       @onChangePage="onChangePage"
+      @searchClear="searchClear"
     />
   </div>
 </template>
@@ -40,8 +41,8 @@ export default {
       searchItems: [
         { label: 'Application(S)', type: 'select', multiple: false, placeholder: '', model: 'src_protocol', setting: { allOption: { toggle: true } }, options: [] },
         { label: 'Port (S)', type: 'input', model: 'src_port', placeholder: '' },
-        { label: 'Application(S)', type: 'input', model: 'dst_protocol', placeholder: '' },
-        { label: 'Port (D)', type: 'select', multiple: false, placeholder: '', model: 'dst_port', setting: { allOption: { toggle: true } }, options: [] },
+        { label: 'Application(S)', type: 'select', model: 'dst_protocol', placeholder: '', setting: { allOption: { toggle: true } }, options: [] },
+        { label: 'Port (D)', type: 'input', multiple: false, placeholder: '', model: 'dst_port', setting: { allOption: { toggle: true } }, options: [] },
         { label: 'Top N', type: 'select', multiple: false, placeholder: '', model: 'rank_order', icon: 'el-icon-warning', setting: { allOption: { toggle: true } },
           options: [
             { label: '10', value: '10' },
@@ -120,10 +121,8 @@ export default {
       try {
         const res = await apiApplicationCodeList()
         const selectCodeData = res.result.map(item => ({ label: item.protocol_name, value: item.port_code }))
-        const codeKeyExists = this.searchItems.some(item => item.model === 'src_protocol')
-        if (codeKeyExists) {
-          this.searchItems[0].options = selectCodeData
-          }
+        this.searchItems[0].options = selectCodeData
+        this.searchItems[2].options = selectCodeData
       } catch (error) {
           console.error(error)
         } finally {
@@ -134,7 +133,9 @@ export default {
       this.paginationInfo.currentPage = curPage
       this.onLoadSopList()
     },
-
+    searchClear() {
+      this.searchModel = {}
+    }
   },
 }
 </script>
