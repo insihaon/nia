@@ -10,6 +10,7 @@
       class="w-100 h-100"
       @handleClickSearch="onClickSearch"
       @onChangePage="onChangePage"
+      @searchClear="searchClear"
     />
   </div>
 </template>
@@ -17,7 +18,6 @@
 import { Base } from '@/min/Base.min'
 import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
 import { apiSelectEquipAmountUsedList } from '@/api/nia'
-import { AppOptions } from '@/class/appOptions'
 
 const routeName = 'EquipmentUsage'
 export default {
@@ -44,19 +44,17 @@ export default {
             { label: 'OnDemand', value: 'OnDemand' },
             { label: '실시간', value: 'live' },
         ] },
-        { label: '장비', type: 'input', model: 'equipment', placeholder: '장비명을 검색하세요' },
+        { label: '장비', type: 'input', model: 'node_nm', placeholder: '장비명을 검색하세요' },
         { label: 'CPU >=', type: 'input', model: 'cpu_usage' },
         { label: 'Memory >=', type: 'input', model: 'mem_usage' },
-        { label: '시작일시', type: 'date', model: 'datetime' },
-        { label: '종료일시', type: 'date', model: 'datetime' },
+        { label: '수집기간', type: 'dateTime', model: 'date_time' },
       ],
       searchModel: {
         monitoring_type: [],
+        node_nm: '',
         cpu_usage: '',
         mem_usage: '',
-        datetime: [],
       },
-      sortInfo: {}
     }
   },
 
@@ -78,8 +76,6 @@ export default {
     this.onLoadUsageList()
   },
   methods: {
-    cellTemp() {},
-    sortTemp() {},
     onSortedChange(param) {
        this.sortInfo = []
        this.onLoadUsageList()
@@ -93,10 +89,10 @@ export default {
       const param = {
         node_nm: this.searchModel.node_nm,
         cpu_usage: this.searchModel.cpu_usage,
-        mem_usage: this.searchModel.node_nm
+        mem_usage: this.searchModel.mem_usage
       }
-      if (this.searchModel?.datetime) {
-        const dateTime = this.$refs?.trafficAnalysis.searchModel.datetime
+        const dateTime = this.$refs.trafficAnalysis.searchModel.date_time
+      if (dateTime) {
         this._merge(param, { start_date: dateTime[0], end_date: dateTime[1] })
       }
       try {
@@ -114,6 +110,9 @@ export default {
       this.paginationInfo.currentPage = curPage
       this.onLoadSopList()
     },
+    searchClear() {
+      this.searchModel = {}
+    }
   },
 }
 </script>

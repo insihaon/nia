@@ -1,8 +1,8 @@
 <template>
   <div class="cell-container" :class="{ [name]: true }">
     <div class="button-panel">
-      <div class="common-btn" size="mini" @click="openModal(params)">
-        <i class="el-icon-circle-check" /> {{ getLable }}
+      <div :class="linkType" size="mini" @click="openModal(params)">
+        <i :class="classType" /> {{ getLable }}
       </div>
     </div>
   </div>
@@ -28,6 +28,26 @@ export default Vue.extend({
         result = 'SOP'
       } else if (this.params.type === 'alarm') {
         result = '장애 대응'
+      } else {
+        result = '수정/삭제'
+      }
+      return result
+    },
+    classType() {
+      let result = ''
+      if (this.params.type === 'editAgency' || this.params.type === 'editApp') {
+        result = 'el-icon-edit'
+      } else {
+        result = 'el-icon-circle-check'
+      }
+      return result
+    },
+    linkType() {
+      let result = ''
+      if (this.params.type === 'editAgency' || this.params.type === 'editApp') {
+        result = 'edit-class'
+      } else {
+        result = 'sop-class'
       }
       return result
     }
@@ -41,9 +61,18 @@ export default Vue.extend({
 </script>
 <style lang="scss" scoped>
 .CellRenderAibuttons{
+
   &:hover{
     color: red !important;
     cursor: pointer
+  }
+
+  .edit-class {
+    text-decoration: underline;
+    color: blue !important;
+    }
+  .edit-class:hover {
+    color: rgb(23, 162, 255) !important;
   }
 }
 </style>

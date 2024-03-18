@@ -73,6 +73,44 @@ table.basic {
   }
 }
 
+.nia-edit-dialog {
+  font-family: 'NanumSquare';
+  .el-dialog {
+    border: 2px solid $nia-primary;
+    box-shadow: 0 1px 5px 0 rgb(0 0 0 / 27%);
+    border-radius: 7px;
+    height: auto;
+  }
+  .el-dialog__header {
+    background-color: white !important;
+    color: black !important;
+    font-size: 16px;
+    font-family: 'NanumSquare';
+    transform: rotate(0.03deg);
+    font-weight: bold;
+    border-radius: 7px;
+  }
+  .el-dialog__body {
+    padding: 0 20px 10px 20px;
+    max-height: auto;
+    background: #fff;
+  }
+  .el-dialog__footer {
+    height: 70px !important;
+    background-color: white !important;
+  }
+
+  .el-button {
+    background: $nia-primary;
+    color: #fff;
+  }
+
+  .exit-btn{
+    background: gainsboro;
+    color: #000000 !important;
+  }
+}
+
 .nia {
   .splitter-paneL, .splitter-paneR {
     transition: all 0.25s;
@@ -96,20 +134,4 @@ table.basic {
     background-color: #1e293b24;;
   }
 }
-.full-screen {
-  .vm--modal {
-    top: 0px !important;
-    left: 0px !important;
-    width: 100% !important;
-    height: 100vh !important;
-    z-index: 2999 !important;
-  }
-}
-.vm--overlay {
-  position:fixed !important;
-  left:-300px !important;
-  top:0 !important;
-  height:100vh !important;
-  width : 200% !important;
-  background:#0000007e !important;
-}
+

@@ -10,6 +10,7 @@
       class="w-100 h-100"
       @handleClickSearch="onClickSearch"
       @onChangePage="onChangePage"
+      @searchClear="searchClear"
     />
   </div>
 </template>
@@ -51,8 +52,6 @@ export default {
       searchModel: {
         node_name: '',
         if_name: '',
-        // start_date: [],
-        // end_date: [],
       },
       // sortInfo: {}
     }
@@ -112,7 +111,9 @@ export default {
       this.paginationInfo.currentPage = curPage
       this.onLoadSopList()
     },
-
+    searchClear() {
+      this.searchModel = {}
+    }
   },
 }
 </script>

@@ -7,14 +7,14 @@
             <CompInquiryPannel
               ref="trafficNation"
               :ag-grid="nationAgGrid"
-              :is-button-slot="false"
               :items="searchNationItems"
               :search-model.sync="searchModel"
               :pagination-info="paginationInfo"
               class="w-100 flex-fill"
               :style="{ height : 'calc(100vh - 200px)'}"
-              @cellClicked="cellTemp"
-              @sortChanged="sortTemp"
+              @handleClickSearch="onClickSearch"
+              @onChangePage="onChangePage"
+              @searchClear="searchClear"
             />
           </div>
         </el-tab-pane>
@@ -23,14 +23,15 @@
             <CompInquiryPannel
               ref="trafficAgency"
               :ag-grid="agencyAgGrid"
-              :is-button-slot="false"
               :items="searchAgencyItems"
               :search-model.sync="searchModel"
               :pagination-info="paginationInfo"
               class="w-100 flex-fill"
               :style="{ height : 'calc(100vh - 200px)'}"
-              @cellClicked="cellTemp"
-              @sortChanged="sortTemp"
+              @handleClickSearch="onClickSearch"
+              @onChangePage="onChangePage"
+              @searchClear="searchClear"
+              @selectedRow="selectedAPIRow"
             />
           </div>
         </el-tab-pane>
@@ -39,33 +40,35 @@
             <CompInquiryPannel
               ref="trafficApp"
               :ag-grid="appAgGrid"
-              :is-button-slot="false"
               :items="searchAppItems"
               :search-model.sync="searchModel"
               :pagination-info="paginationInfo"
               class="w-100 flex-fill"
               :style="{ height : 'calc(100vh - 200px)'}"
-              @cellClicked="cellTemp"
-              @sortChanged="sortTemp"
+              @handleClickSearch="onClickSearch"
+              @onChangePage="onChangePage"
+              @searchClear="searchClear"
             />
           </div>
         </el-tab-pane>
       </el-tabs>
+      <ModalEditTrafficData ref="ModalEditTrafficData" />
     </div>
   </div>
 </template>
 <script>
 import { Base } from '@/min/Base.min'
 import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
-// import { apiSelectAuthHistList, apiUpdateApiAuth, apiUpdateApiAuthProc } from '@/api/dataHub'
 import { AppOptions } from '@/class/appOptions'
+import ModalEditTrafficData from '@/views-nia/modal/ModalEditTrafficData'
+import CellRenderAibuttons from '@/views-nia/components/cellRenderer/CellRenderAibuttons'
 import { apiSelectUnidentifiedNationList, apiSelectUnidentifiedAgencyList, apiSelectUnidentifiedAppList } from '@/api/nia'
 
 const routeName = 'UndefindedTraffic'
 export default {
   name: routeName,
   // eslint-disable-next-line vue/no-unused-components
-  components: { CompInquiryPannel },
+  components: { CompInquiryPannel, CellRenderAibuttons, ModalEditTrafficData },
   extends: Base,
   data() {
     return {
@@ -83,24 +86,24 @@ export default {
        agencyData: [],
        appData: [],
       searchNationItems: [
-       { label: '국가명', type: 'input', model: 'nation_name', placeholder: '국가명을 검색하세요' },
-       { label: '국가코드', type: 'input', model: 'nation_code', placeholder: '국가코드를 검색하세요' },
+       { label: '국가명', type: 'input', model: 'country_name', placeholder: '국가명을 검색하세요' },
+       { label: '국가코드', type: 'input', model: 'country_code', placeholder: '국가코드를 검색하세요' },
       ],
       searchAgencyItems: [
-       { label: '이용기관명', type: 'input', model: 'agency_name', placeholder: '이용기관명을 검색하세요' },
-       { label: 'IP주소', type: 'input', model: 'ip_addr', placeholder: 'IP주소를 검색하세요' },
+       { label: '이용기관명', type: 'input', model: 'nren_name', placeholder: '이용기관명을 검색하세요' },
+       { label: 'IP주소', type: 'input', model: 'nren_ip', placeholder: 'IP주소를 검색하세요' },
       ],
         searchAppItems: [
-       { label: '어플리케이션명', type: 'input', model: 'app_name', placeholder: '어플리케이션명을 검색하세요' },
-       { label: 'PORT번호', type: 'input', model: 'port_number', placeholder: 'PORT번호를 검색하세요' },
+       { label: '어플리케이션명', type: 'input', model: 'protocol', placeholder: '어플리케이션명을 검색하세요' },
+       { label: 'PORT번호', type: 'input', model: 'port_num', placeholder: 'PORT번호를 검색하세요' },
       ],
       searchModel: {
-        nation_name: '',
-        nation_code: '',
-        agency_name: '',
-        ip_addr: '',
-        app_name: '',
-        port_number: '',
+        country_name: '',
+        country_code: '',
+        nren_name: '',
+        nren_ip: '',
+        protocol: '',
+        port_num: '',
       },
       sortInfo: {}
     }
@@ -112,8 +115,8 @@ export default {
         name: this.name + 'table1', rowGroupPanel: false, rowHeight: 40, rowSelection: 'multiple', rowMultiSelection: false, suppressRowClickSelection: true,
       }
       const columns = [
-        { type: '', prop: 'country_name', name: '국가명', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center' },
-        { type: '', prop: 'koica', name: '국가코드', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center' },
+        { type: '', prop: 'country_name', name: '국가명', minWidth: 120, flex: 0, suppressMenu: true, alignItems: 'center' },
+        { type: '', prop: 'country_code', name: '국가코드', minWidth: 120, flex: 0, suppressMenu: true, alignItems: 'center' },
       ]
       return { options, columns, data: this.nationData, getRightClickMenuItems: () => { return [] } }
     },
@@ -124,6 +127,8 @@ export default {
       const columns = [
         { type: '', prop: 'nren_name', name: '이용기관명', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center' },
         { type: '', prop: 'nren_ip', name: 'IP주소', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center' },
+         { type: '', prop: '', name: '', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center',
+          cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { type: 'editAgency', action: this.handleOpenEditModal.bind(this) } }
       ]
       return { options, columns, data: this.agencyData, getRightClickMenuItems: () => { return [] } }
     },
@@ -134,6 +139,8 @@ export default {
       const columns = [
         { type: '', prop: 'protocol', name: '어플리케이션명', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center' },
         { type: '', prop: 'port_num', name: 'PORT 번호', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center' },
+        { type: '', prop: '', name: '', minWidth: 30, flex: 0, suppressMenu: true, alignItems: 'center',
+          cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { type: 'editApp', action: this.handleOpenEditModal.bind(this) } }
       ]
       return { options, columns, data: this.appData, getRightClickMenuItems: () => { return [] } }
     },
@@ -151,17 +158,23 @@ export default {
        this.onLoadNationList()
       //  this.onLoadAgencyList()
     },
-    // onClickSearchAuth(params) {
-    //   this.onLoadNationList(params)
-    // },
+    onClickSearch(params) {
+      this.onLoadNationList(params)
+      this.onLoadAgencyList(params)
+      this.onLoadAppList(params)
+    },
     async onLoadNationList(params) {
       const target = { vue: this.$refs.trafficNation }
       this.openLoading(target)
+      const param = {
+        country_name: this.searchModel.country_name,
+        country_code: this.searchModel.country_code
+      }
       try {
-        const res = await apiSelectUnidentifiedNationList()
+        const res = await apiSelectUnidentifiedNationList(param)
         this.nationData = res?.result
         this.paginationInfo.totalCount = res.total
-        this.paginationInfo.totalPages = Math.ceil(this.paginationInfo.totalCount / this.paginationInfo.pageSize) // 전체 페이지 수 계산
+        this.paginationInfo.totalPages = Math.ceil(this.paginationInfo.totalCount / this.paginationInfo.pageSizes) // 전체 페이지 수 계산
       } catch (error) {
         console.error(error)
       } finally {
@@ -171,11 +184,15 @@ export default {
     async onLoadAgencyList(params) {
       const target = { vue: this.$refs.trafficAgency }
       this.openLoading(target)
+      const param = {
+        nren_name: this.searchModel.nren_name,
+        nren_ip: this.searchModel.nren_ip
+      }
       try {
-        const res = await apiSelectUnidentifiedAgencyList()
+        const res = await apiSelectUnidentifiedAgencyList(param)
         this.agencyData = res?.result
         this.paginationInfo.totalCount = res.total
-        this.paginationInfo.totalPages = Math.ceil(this.paginationInfo.totalCount / this.paginationInfo.pageSize) // 전체 페이지 수 계산
+        this.paginationInfo.totalPages = Math.ceil(this.paginationInfo.totalCount / this.paginationInfo.pageSizes) // 전체 페이지 수 계산
       } catch (error) {
         console.error(error)
       } finally {
@@ -185,25 +202,32 @@ export default {
     async onLoadAppList(params) {
       const target = { vue: this.$refs.trafficApp }
       this.openLoading(target)
+       const param = {
+        protocol: this.searchModel.protocol,
+        port_num: this.searchModel.port_num
+      }
       try {
-        const res = await apiSelectUnidentifiedAppList()
+        const res = await apiSelectUnidentifiedAppList(param)
         this.appData = res?.result
         this.paginationInfo.totalCount = res.total
-        this.paginationInfo.totalPages = Math.ceil(this.paginationInfo.totalCount / this.paginationInfo.pageSize) // 전체 페이지 수 계산
+        this.paginationInfo.totalPages = Math.ceil(this.paginationInfo.totalCount / this.paginationInfo.pageSizes) // 전체 페이지 수 계산
       } catch (error) {
         console.error(error)
       } finally {
         this.closeLoading(target)
       }
     },
-
+    onChangePage(curPage) {
+      this.paginationInfo.currentPage = curPage
+      this.onLoadSopList()
+    },
+    searchClear() {
+      this.searchModel = {}
+    },
+    handleOpenEditModal(row, type) {
+      this.$refs.ModalEditTrafficData.open({ row: row, type: type })
+    },
   },
 }
 </script>
 
-<style lang="scss" scoped>
-.UndefindedTraffic{
-
-}
-
-</style>
