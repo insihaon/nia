@@ -1,15 +1,16 @@
 <template>
   <div :class="{ [name]: true }">
     <CompInquiryPannel
-      ref="trafficAnalysis"
-      :ag-grid="authAgGrid"
+      ref="linkManagement"
+      :ag-grid="linkAgGrid"
       :is-button-slot="false"
       :items="searchItems"
       :search-model.sync="searchModel"
       :pagination-info="paginationInfo"
       class="w-100 h-100"
-      @cellClicked="cellTemp"
-      @sortChanged="sortTemp"
+      @handleClickSearch="onClickSearch"
+      @onChangePage="onChangePage"
+      @searchClear="searchClear"
     />
   </div>
 </template>
@@ -17,7 +18,7 @@
 import { Base } from '@/min/Base.min'
 import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
 // import { apiSelectAuthHistList, apiUpdateApiAuth, apiUpdateApiAuthProc } from '@/api/dataHub'
-import { AppOptions } from '@/class/appOptions'
+import { apiSelectLinkList } from '@/api/nia'
 
 const routeName = 'LinkInquiryInfoList'
 export default {
@@ -37,97 +38,69 @@ export default {
         pagerCount: 11
       },
       selectedRow: [],
-       authData: [
-        {
-          model_name: '상황방명',
-          key: 1,
-          start_date: '2022-09-06',
-          end_date: '2022-09-07',
-        },
-        {
-          model_name: '상황',
-          key: 2,
-          start_date: '2022-09-06',
-          end_date: '2022-09-07',
-        },
-       ],
+       linkData: [],
       searchItems: [
-        { label: 'Filter', type: 'select', multiple: true, placeholder: '티켓 종류를 선택하세요', model: 'ticket', setting: { allOption: { toggle: true } },
-          options:
-          [
-            { label: '장애', value: 'alarm' },
-            { label: '광레벨', value: 'level' },
-            { label: '이상트래픽', value: 'traffic1' },
-            { label: '유해트래픽', value: 'traffic2' },
-            { label: '장비부하장애', value: 'traffic3' },
-          ],
-        },
-        { label: '상태', type: 'select', multiple: true, placeholder: '경보 상태를 선택하세요', model: 'status_cd', setting: { allOption: { toggle: true } },
-          options:
-          [
-            { label: '발생', value: 'OCCUR' },
-            { label: '인지', value: 'RECOGNIZE' },
-            { label: '마감', value: 'CLOSE' },
-            { label: '자동 마감', value: 'CLOSE-A' },
-          ],
-        },
+         { label: '시작점노드', type: 'input', model: 'src_node_id', placeholder: '노드를 검색하세요' },
+         { label: '끝점 노드', type: 'input', model: 'dest_node_id', placeholder: '노드를 검색하세요' },
+         { label: '링크 용도', type: 'input', model: 'link_desc', placeholder: '노드를 검색하세요' },
+         { label: '시작점 I/F명', type: 'input', model: 'src_if_name', placeholder: '노드를 검색하세요' },
+         { label: '끝점 I/F명', type: 'input', model: 'dest_if_name', placeholder: '노드를 검색하세요' },
       ],
       searchModel: {
-        api_name: '',
-        status_cd: [],
-        create_time: [],
-        expird_date: [],
+       src_node_id: '',
+       dest_node_id: '',
+       link_desc: '',
+       src_if_name: '',
+       dest_if_name: ''
       },
       sortInfo: {}
     }
   },
 
   computed: {
-    authAgGrid() {
+    linkAgGrid() {
       const options = {
-        name: this.name + 'table1', checkable: true, rowGroupPanel: false, rowHeight: 40, rowSelection: 'multiple', rowMultiSelection: false, suppressRowClickSelection: true,
+        name: this.name + 'table1', rowGroupPanel: false, rowHeight: 40, rowSelection: 'multiple', rowMultiSelection: false, suppressRowClickSelection: true,
       }
       const columns = [
-        { type: '', prop: 'model_name', name: '티켓번호', minWidth: 30, flex: 0, suppressMenu: true, alignItems: 'left' },
-        { type: '', prop: 'start_date', name: '티켓유형', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'left', sortable: false, filterable: false },
-        { type: '', prop: 'end_date', name: '장애 내용', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'left', sortable: false, filterable: true },
+        { type: '', prop: 'rownum', name: '번호', minWidth: 20, flex: 0, suppressMenu: true, alignItems: 'center' },
+        { type: '', prop: 'src_node_id', name: '시작점 노드', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: false },
+        { type: '', prop: 'src_if_id', name: '시작점 I/F ID', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
+        { type: '', prop: 'src_if_name', name: '시작점 I/F명', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
+        { type: '', prop: 'dest_node_id', name: '끝점 노드', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: false },
+        { type: '', prop: 'dest_if_id', name: '끝점 I/F ID', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
+        { type: '', prop: 'dest_if_name', name: '끝점 I/F ID명', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
+        { type: '', prop: 'bandwidth', name: '대역폭(Gpbs)', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
+        { type: '', prop: 'link_desc', name: '링크용도', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
+        { type: '', prop: 'chng_datetime', name: '수정일', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
       ]
-      return { options, columns, data: this.authData, getRightClickMenuItems: () => { return [] } }
+      return { options, columns, data: this.linkData, getRightClickMenuItems: () => { return [] } }
     },
   },
   mounted() {
-    this.onLoadtrafficList()
+    this.onLoadLinkList()
   },
   methods: {
-    cellTemp() {},
-    sortTemp() {},
     onSortedChange(param) {
        this.sortInfo = []
-       this.onLoadtrafficList()
+       this.onLoadLinkList()
     },
-
-    // onClickSearchAuth(params) {
-    //   this.onLoadtrafficList(params)
-    // },
-    async onLoadtrafficList(params) {
-      const target = { vue: this.$refs.authManagement }
+    onClickSearch(params) {
+      this.onLoadLinkList(params)
+    },
+    async onLoadLinkList() {
+      const target = { vue: this.$refs.linkManagement }
       this.openLoading(target)
-      const defaultDate = null
       const param = {
-        api_name: this.searchModel.api_name,
-        status_cd: this.searchModel.status_cd,
-        start_create_time: this.formatterDateTime(null, null, this.searchModel.create_time[0] ? this.searchModel.create_time[0] : defaultDate),
-        end_create_time: this.formatterDateTime(null, null, this.searchModel.create_time[1] ? this.searchModel.create_time[1] : defaultDate),
-        start_expird_date: this.formatterDateTime(null, null, this.searchModel.expird_date[0] ? this.searchModel.expird_date[0] : defaultDate),
-        end_expird_date: this.formatterDateTime(null, null, this.searchModel.expird_date[1] ? this.searchModel.expird_date[1] : defaultDate),
-        limit: this.paginationInfo.pageSize,
-        page: this.paginationInfo.currentPage,
-        sort_column_name: this.sortInfo.colId,
-        sort_type: this.sortInfo.sort
+        src_node_id: this.searchModel.src_node_id,
+        src_if_id: this.searchModel.src_if_id,
+        dest_node_id: this.searchModel.dest_node_id,
+        dest_if_id: this.searchModel.dest_if_id,
+        link_desc: this.searchModel.link_desc
       }
       try {
-        const res = ''/* await apiSelectAuthHistList(param) */
-        this.authData = res?.result
+        const res = await apiSelectLinkList(param)
+        this.linkData = res?.result
         this.paginationInfo.totalCount = res.total
         this.paginationInfo.totalPages = Math.ceil(this.paginationInfo.totalCount / this.paginationInfo.pageSize) // 전체 페이지 수 계산
       } catch (error) {
@@ -136,7 +109,13 @@ export default {
         this.closeLoading(target)
       }
     },
-
+    onChangePage(curPage) {
+      this.paginationInfo.currentPage = curPage
+      this.onLoadSopList()
+    },
+    searchClear() {
+      this.searchModel = {}
+    },
     // handleOpenModalDetail(type, row) {
     //   this.$refs.modalApiDetail.open({ type, row })
     // },
