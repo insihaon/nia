@@ -24,15 +24,37 @@
           </el-menu>
         </nav>
       </div>
-      <div id="function-container" class="flex items-center">
-        <svg-icon type="mdi" :path="path" @click.native="toggleHistoryBar" />
-        <button
-          class="button h-10 px-4 py-2 bg-transparent text-white rounded"
-          :disabled="buttonDisabled"
+      <div id="other-container" class="flex items-center">
+        <div id="function-container">
+          <svg-icon class="mr-2" type="mdi" :path="path" @click.native="toggleHistoryBar" />
+        </div>
+        <div id="user-info">
+          <div class="d-flex items-baseline">
+            <i class="el-icon-alarm-clock" />
+            <span class="text-xs">{{ currentTime }}</span>
+          </div>
+          <div id="user" class="d-flex items-baseline justify-between">
+            <div class="d-flex items-baseline">
+              <i class="el-icon-user" />
+              <span>{{ $store.state.user.name }}</span>
+            </div>
+            <span class="text-xs mr-2">정보수정</span>
+          </div>
+        </div>
+        <div
+          id="logout"
+          class="d-flex flex-column items-center"
           @click="$router.push({ path: '/login' })"
         >
-          LogOut
-        </button>
+          <i class="el-icon-unlock text-3xl" />
+          <button
+            class="button h-5 px-3 bg-transparent text-white rounded"
+            :disabled="buttonDisabled"
+          >
+            <!-- @click="$router.push({ path: '/login' })" -->
+            LogOut
+          </button>
+        </div>
       </div>
     </div>
     <!-- all child -->
@@ -45,6 +67,7 @@
 </template>
 
 <script>
+import { Base } from '@/min/Base.min'
 import ChildItem from './ChildItem'
 import { mdiHistory } from '@mdi/js'
 import { mapState, mapGetters } from 'vuex'
@@ -53,6 +76,7 @@ const routeName = 'NavBar'
 export default {
   name: routeName,
   components: { ChildItem },
+  extends: Base,
   data() {
     return {
       bgColor: '#1e293b',
@@ -60,6 +84,8 @@ export default {
       buttonDisabled: false,
       popoverVisible: false,
       path: mdiHistory,
+      timeInterval: null,
+      currentTime: null
     }
   },
   computed: {
@@ -72,7 +98,13 @@ export default {
     ...mapState({
     }),
   },
+  created () {
+    setInterval(() => {
+      this.currentTime = this.toStringTime(Date.now(), 'YYYY.MM.DD A hh:mm:ss')
+    }, 1000)
+  },
   mounted () {
+    this.setTime()
     const header = document.querySelector('#sub-menu')
     const menuItem = document.querySelectorAll('#menu-item')
     menuItem?.forEach((el) => {
@@ -86,6 +118,7 @@ export default {
     header?.addEventListener('mouseout', function(event) {
       header.classList.remove('open')
     })
+    // this.timeInterval = setInterval(() => { this.getTime() }, 1000)
   },
   methods: {
     onClickHeaderLogo() {
@@ -141,29 +174,44 @@ export default {
       letter-spacing: 1px;
     }
   }
-  ::v-deep #function-container {
-    i {
-      margin-right: 5px;
-      width: 35px;
-      height: 35px;
-      display: flex;
-      border-radius: 50%;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.4s;
+  ::v-deep #other-container {
+    #user-info {
+      height: 60px;
+      width: 190px;
+      border-left: 1px solid rgb(255 255 255 / 34%);
+      i {
+        margin-right: 5px;
+        width: 28px;
+        height: 28px;
+        display: flex;
+        border-radius: 50%;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.4s;
+      }
+    }
+    #user {
+      border-top: 1px solid rgb(255 255 255 / 34%);
+    }
+    #logout {
+      width: 60px;
+      height: 60px;
+      border-left: 1px solid rgb(255 255 255 / 34%);
       &:hover {
-        font-size: 20px;
         cursor: pointer;
       }
     }
-    svg {
-      transition: all 0.4s;
-      &:hover {
-        scale: 1.2;
-        cursor: pointer;
+    #function-container {
+      svg, i {
+        transition: all 0.4s;
+        &:hover {
+          scale: 1.2;
+          font-size: 20px;
+          cursor: pointer;
+        }
       }
     }
-    i, svg {
+    i, svg, span {
       color: white;
     }
   }
@@ -224,9 +272,15 @@ export default {
         background-color: #fff !important;
       }
     }
-    ::v-deep #function-container {
-      .button, i, svg {
+    ::v-deep #other-container {
+      .button, i, svg, span {
         color: $aiTemplateDefault !important;
+      }
+      #logout, #user-info {
+        border-left: 1px solid $aiTemplateDefault;
+      }
+      #user {
+        border-top: 1px solid $aiTemplateDefault;
       }
     }
     #hamburger-container {

@@ -15,6 +15,12 @@ public interface NiaMapper extends BaseDataMapper {
         public List<ResultMap> SELECT_DASHBOARD_STATISTICS(HashMap<String, Object> map);
         public List<ResultMap> SELECT_SELF_PROCESS_LIST(HashMap<String, Object> map);
         public List<ResultMap> SELECT_SELF_PROCESS_STATISTICS(HashMap<String, Object> map);
+        public ResultMap SELECT_SELF_PROCESS_TRAFFIC_INFO(HashMap<String, Object> map);
+        public ResultMap SELECT_SELF_PROCESS_SYSLOG_INFO(HashMap<String, Object> map);
+        public List<ResultMap> SELECT_ATT2_CHART(HashMap<String, Object> map);
+        public List<ResultMap> SELECT_NTT_CHART(HashMap<String, Object> map);
+        public List<ResultMap> SELECT_AI_DETECTION_INFO(HashMap<String, Object> map);
+        public List<ResultMap> SELECT_SOP_HIST_LIST(HashMap<String, Object> map);
         public List<ResultMap> SELECT_SOP_LIST(HashMap<String, Object> map);
         public List<ResultMap> SELECT_TRAFFIC_AGENCY_LIST(HashMap<String, Object> map);
         public List<ResultMap> SELECT_AGENCY_CODE_LIST(HashMap<String, Object> map);

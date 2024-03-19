@@ -374,7 +374,7 @@ public abstract class AbsAuthController extends BaseController {
         return ipAddress;
     }
 
-    private JsonObject decryptRequestParameter(HashMap<String, Object> body) {
+    public JsonObject decryptRequestParameter(HashMap<String, Object> body) {
         // RequestBody 에서 파라미터 추출
         // log.info("signin(): id={}, password={}", body.get("id"),
         HashMap encData = (HashMap)body.get("data");

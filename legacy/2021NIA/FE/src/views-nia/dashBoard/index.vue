@@ -66,7 +66,7 @@
                       :key="index"
                       class="checkItem d-flex items-center checked ml-1"
                       :style="{'background-color': item.hex, 'color': item.color }"
-                      @click="onClickFilterItem(filter.filterName , item.code)"
+                      @click="onClickFilterItem('ip', filter.filterName , item.code)"
                     >
                       <i :class="item.selected ? 'el-icon-success': 'el-icon-circle-check'" />
                       <div class="filter-text">{{ item.text + '(' + item.count + ')' }}</div>
@@ -102,7 +102,7 @@
                       :key="index"
                       class="checkItem d-flex items-center checked ml-1"
                       :style="{'background-color': item.hex, 'color': item.color }"
-                      @click="onClickFilterItem(filter.filterName , item.code)"
+                      @click="onClickFilterItem('trans', filter.filterName , item.code)"
                     >
                       <i :class="item.selected ? 'el-icon-success': 'el-icon-circle-check'" />
                       <div class="filter-text">{{ item.text + '(' + item.count + ')' }}</div>
@@ -194,9 +194,9 @@ export default {
       const columns = [
         { type: '', prop: 'ticket_id', name: 'TICKET_ID', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'cluster_no', name: '클러스터 No.', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
-        { type: '', prop: 'ticket_generation_time', name: '최초 장애 발생시간', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
-        { type: '', prop: 'status', name: '상태', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
-        { type: '', prop: 'ticket_type', name: 'ALARM TYPE', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
+        { type: '', prop: 'fault_time', name: '최초 장애 발생시간', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
+        { type: '', prop: 'status', name: '상태', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, formatter: this.getStatus },
+        { type: '', prop: 'ticket_type', name: 'ALARM TYPE', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, formatter: this.getAlarmType },
         { type: '', prop: 'root_cause_type', name: '장애유형', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'ticket_rca_result_dtl_code', name: '장애 원인', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'total_related_alarm_cnt', name: '근원알람개수', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
@@ -337,8 +337,12 @@ export default {
       console.log('onFilterChanged')
       this.$refs.ipAgGrid.externalFilterChanged({ name: this.name })
     },
-    onClickFilterItem(name, code) {
-      this.ipFilterGroup.onItemClick(name, code)
+    onClickFilterItem(filterType, name, code) {
+      if (filterType === 'ip') {
+        this.ipFilterGroup.onItemClick(name, code)
+      } else {
+        this.transFilterGroup.onItemClick(name, code)
+      }
       this.$forceUpdate()
     },
     onIpDoesExternalFilterPass(externalFilter, node) {

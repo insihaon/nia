@@ -7,7 +7,7 @@
       <img src="@/assets/icon/icon_chrome.png" @click="onClickDownloadChrome()">
       <span>NIA KOREN은 Chrome Browser 및 1920x1080 해상도에 최적화 되어 있습니다.</span>
     </div>
-    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form d-flex items-center flex-column" autocomplete="on" label-position="left">
+    <el-form v-if="!isJoin" ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form d-flex items-center flex-column" autocomplete="on" label-position="left">
       <div class="title-container d-flex justify-center flex-column items-center pb-4">
         <img src="@/assets/images/nia/login_logo_koren.png">
         <span>AI기반 KOREN 모니터링 시스템</span>
@@ -43,6 +43,43 @@
       </el-tooltip>
 
       <el-button :loading="loading" @click="handleLogin">Login</el-button>
+      <div id="loginForm" class="pt-2">
+        <span>
+          <input id="ex_chk" type="checkbox"><label for="ex_chk" class="pr-2">아이디 저장</label>
+        </span>
+        <span class="pl-2" @click="isJoin= true">회원가입</span>
+      </div>
+    </el-form>
+
+    <!-- 회원가입 FORM  -->
+    <el-form v-else ref="joinForm" :model="joinForm" :rules="joinRules" class="login-form d-flex flex-column items-start">
+      <div class="title-container d-flex w-full justify-center items-center pb-2">
+        <span class="ml-2">회원가입</span>
+      </div>
+      <el-form-item v-for="form in joinFormItem" :key="form.value" :prop="form.value" :label="form.label" class="join-form-item d-flex">
+        <el-input
+          :key="form.value"
+          :ref="form.value"
+          v-model="joinForm[form.value]"
+          :placeholder="form.placeholder || form.label+'을(를) 입력해주세요'"
+          tabindex="2"
+          autocomplete="on"
+          :name="form.id"
+          :show-password="form.value.includes('password')"
+          :type="form.value.includes('password')?'password':'text'"
+          @blur="capsTooltip = false"
+          @keyup.native="checkCapslock"
+          @keyup.enter.native="handleLogin"
+        />
+      </el-form-item>
+      <el-form-item label="분류" class="join-form-item d-flex" prop="type">
+        <el-radio ref="NOC" v-model="joinForm.agency_name" class="text-white" label="NOC">NOC</el-radio>
+        <el-radio ref="EMS" v-model="joinForm.agency_name" class="text-white" label="EMS">EMS</el-radio>
+      </el-form-item>
+      <div id="loginForm" class="d-flex w-full justify-center pt-2">
+        <span class="pr-2" style="border-right: 2px solid rgb(255 255 255 / 34%);" @click="isJoin= false">취소</span>
+        <span class="pl-2" @click="handleJoin()">회원가입</span>
+      </div>
     </el-form>
     <div class="bottom">
       <span>(주)코드제이 대전광역시 유성구 관평동 803</span>
@@ -59,8 +96,9 @@
 import Encrypt from '@/assets/libs/Encrypt.min'
 import { Base } from '@/min/Base.min'
 import { AppOptions } from '@/class/appOptions'
-import { rulesUsername, rulesPassword } from '@/utils/validate'
+import { rulesUsername, rulesPassword, rulesRePassword, rulesRequire, rulesTelephone, rulesEmail } from '@/utils/validate'
 import { onDownloadChrome } from '@/utils/index'
+import { apiNiaSignUp } from '@/api/auth'
 
 const routeName = 'Login'
 
@@ -71,8 +109,8 @@ export default {
     return {
       name: routeName,
       loginForm: {
-        username: null,
-        password: null
+        username: '',
+        password: ''
       },
       loginRules: {
         username: rulesUsername(),
@@ -81,7 +119,39 @@ export default {
       passwordType: 'password',
       capsTooltip: false,
       loading: false,
-      otherQuery: {}
+      otherQuery: {},
+      isJoin: false,
+      joinFormItem: [
+        { label: '아이디', value: 'id' },
+        { label: '비밀번호', value: 'password' },
+        { label: '비밀번호 확인', value: 'repassword', placeholder: '비밀번호를 다시 한번 입력해주세요' },
+        { label: '이름', value: 'name' },
+        { label: '연락처', value: 'phone' },
+        { label: 'E-MAIL', value: 'email' }
+      ],
+      joinForm: {
+        id: '',
+        password: '',
+        repassword: '',
+        name: '',
+        phone: '',
+        email: '',
+        agency_name: 'NOC'
+      }
+    }
+  },
+  computed: {
+    joinRules() {
+      const res = rulesRePassword(this.joinForm.password, this.joinForm.repassword)
+      console.log(res)
+      return {
+        id: rulesRequire(),
+        password: rulesPassword('password'),
+        repassword: rulesRePassword(this.joinForm.password),
+        name: rulesRequire('name'),
+        phone: rulesTelephone(),
+        email: rulesEmail(),
+      }
     }
   },
   watch: {
@@ -95,9 +165,6 @@ export default {
       },
       immediate: true
     }
-  },
-  created() {
-    // window.addEventListener('storage', this.afterQRScan)
   },
   mounted() {
     // Encrypt.testEncryptToDecrypt2()
@@ -143,6 +210,29 @@ export default {
         }
       })
     },
+    handleJoin() {
+      this.$refs.joinForm.validate(async valid => {
+        if (!valid) {
+          this.$message('필수 입력 조건을 확인하세요')
+          return
+        }
+
+        try {
+          this.loading = true
+          const res = await apiNiaSignUp(this.joinForm)
+          if (res?.success) {
+            await this.confirm('회원가입이 완료되었습니다.<br >로그인 화면으로 이동합니다.', '알림', { dangerouslyUseHTMLString: true })
+            this.isJoin = false
+          } else {
+            await this.confirm('회원가입이 실패하였습니다.<br >관리자에게 문의하세요.', '알림', { dangerouslyUseHTMLString: true })
+          }
+        } catch (error) {
+          return false
+        } finally {
+          this.loading = false
+        }
+      })
+    },
     getOtherQuery(query) {
       return Object.keys(query).reduce((acc, cur) => {
         if (cur !== 'redirect') {
@@ -153,7 +243,7 @@ export default {
     },
     onClickDownloadChrome() {
       onDownloadChrome()
-    }
+    },
     // afterQRScan() {
     //   if (e.key === 'x-admin-oauth-code') {
     //     const code = getQueryObject(e.newValue)
@@ -270,6 +360,12 @@ $light_gray:#eee;
       font-weight: 900;
       color: #141414;
     }
+    .join-form-item ::v-deep {
+      .el-form-item__label {
+        width: 110px;
+        color: white;
+      }
+    }
   }
   .bottom {
     position: fixed;
@@ -285,6 +381,46 @@ $light_gray:#eee;
         padding: 0px 15px;
       }
     }
+  }
+
+  #loginForm {
+    color: white;
+    span {
+      cursor: pointer;
+    }
+  }
+
+  #loginForm input[type="checkbox"] {
+    position: absolute;
+    clip:rect(0,0,0,0);
+  }
+
+  #loginForm input[type="checkbox"] + label {
+    cursor: pointer;
+    font-weight: 400;
+    // padding-right: 5px;
+    border-right: 2px solid rgb(255 255 255 / 34%);
+  }
+  // 새로운 디자인의 체크박스 생성
+  #loginForm input[type="checkbox"] + label:before {
+    content: '';
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    line-height: 18px;
+    margin: -2px 8px 0 0;
+    text-align: center;
+    vertical-align: middle;
+    background-color: #fafafa;
+    border: 3px solid #7a7c8db3;
+    border-radius: 100%;
+    transition: all .25s;
+  }
+  #loginForm input[type="checkbox"]:checked + label:before {
+    content: '';
+    background: #f1f4ff;
+    border-color: #7a7c8db3;
+    background-color: #373737eb;
   }
 }
 
