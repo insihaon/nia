@@ -221,3 +221,43 @@ export function apiSelectProfileList(params = {}) {
     data: params
   })
 }
+
+export function apiSelectNodeList(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_NODE_LIST',
+    data: params
+  })
+}
+
+export function apiSelectPortList(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_PORT_LIST',
+    data: params
+  })
+}
+
+export function apiSelectLinkList(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_LINK_LIST',
+    data: params
+  })
+}
+
+export function apiSelectAgencyList(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_AGENCY_LIST',
+    data: params
+  })
+}

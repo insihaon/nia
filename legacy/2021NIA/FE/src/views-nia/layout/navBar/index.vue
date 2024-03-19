@@ -20,6 +20,7 @@
               <router-link v-if="route.meta" :to="route.path">
                 {{ route.meta.title }}
               </router-link>
+
             </el-menu-item>
           </el-menu>
         </nav>
@@ -34,6 +35,7 @@
           LogOut
         </button>
       </div>
+      <ModaluserSettings ref="ModaluserSettings" />
     </div>
     <!-- all child -->
     <div id="sub-menu">
@@ -48,11 +50,12 @@
 import ChildItem from './ChildItem'
 import { mdiHistory } from '@mdi/js'
 import { mapState, mapGetters } from 'vuex'
+import ModaluserSettings from '@/views-nia/userManagement/ModaluserSettings'
 
 const routeName = 'NavBar'
 export default {
   name: routeName,
-  components: { ChildItem },
+  components: { ChildItem, ModaluserSettings },
   data() {
     return {
       bgColor: '#1e293b',
@@ -93,6 +96,15 @@ export default {
     },
     toggleHistoryBar() {
       this.$store.dispatch('app/toggleHistoryBar')
+    },
+    handleMenuClick(route) {
+      if (route.modalMode) {
+        // route.modalMode가 true이면 다른 메소드를 실행
+        this.handleOpenEditModal()
+      }
+    },
+    handleOpenEditModal(row, type) {
+      this.$refs.ModaluserSettings.open({ row: row, type: type })
     },
   }
 }

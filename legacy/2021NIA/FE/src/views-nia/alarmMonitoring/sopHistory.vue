@@ -8,8 +8,6 @@
       :search-model.sync="searchModel"
       :pagination-info="paginationInfo"
       class="w-100 h-100"
-      @cellClicked="cellTemp"
-      @sortChanged="sortTemp"
     />
   </div>
 </template>
@@ -18,6 +16,7 @@ import { Base } from '@/min/Base.min'
 import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
 // import { apiSelectAuthHistList, apiUpdateApiAuth, apiUpdateApiAuthProc } from '@/api/dataHub'
 import { AppOptions } from '@/class/appOptions'
+import { apiSelectProfileList } from '@/api/nia'
 
 const routeName = 'SopHistory'
 export default {
@@ -96,13 +95,10 @@ export default {
     this.onLoadtrafficList()
   },
   methods: {
-    cellTemp() {},
-    sortTemp() {},
     onSortedChange(param) {
        this.sortInfo = []
        this.onLoadtrafficList()
     },
-
     // onClickSearchAuth(params) {
     //   this.onLoadtrafficList(params)
     // },
@@ -113,17 +109,9 @@ export default {
       const param = {
         api_name: this.searchModel.api_name,
         status_cd: this.searchModel.status_cd,
-        start_create_time: this.formatterDateTime(null, null, this.searchModel.create_time[0] ? this.searchModel.create_time[0] : defaultDate),
-        end_create_time: this.formatterDateTime(null, null, this.searchModel.create_time[1] ? this.searchModel.create_time[1] : defaultDate),
-        start_expird_date: this.formatterDateTime(null, null, this.searchModel.expird_date[0] ? this.searchModel.expird_date[0] : defaultDate),
-        end_expird_date: this.formatterDateTime(null, null, this.searchModel.expird_date[1] ? this.searchModel.expird_date[1] : defaultDate),
-        limit: this.paginationInfo.pageSize,
-        page: this.paginationInfo.currentPage,
-        sort_column_name: this.sortInfo.colId,
-        sort_type: this.sortInfo.sort
       }
       try {
-        const res = ''/* await apiSelectAuthHistList(param) */
+        const res = await apiSelectProfileList(param)
         this.authData = res?.result
         this.paginationInfo.totalCount = res.total
         this.paginationInfo.totalPages = Math.ceil(this.paginationInfo.totalCount / this.paginationInfo.pageSize) // 전체 페이지 수 계산
