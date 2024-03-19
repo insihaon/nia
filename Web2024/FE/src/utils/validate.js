@@ -93,6 +93,20 @@ export function validateUsername(rule, value, callback) {
     callback()
   }
 }
+export function validateEmail(rule, value, callback) {
+  if (!validEmail(value)) {
+    callback(new Error(rule.message))
+  } else {
+    callback()
+  }
+}
+export function validateMatchPassword(rule, value, callback, orginPass) {
+  if (value !== orginPass) {
+    callback(new Error(rule.message))
+  } else {
+    callback()
+  }
+}
 
 export function validateNodeName(rule, value, callback) {
   if (value == null || value === '') {
@@ -110,6 +124,10 @@ export const rulesPassword = () => [
   { message: 'Password is required', required: true },
   { message: 'Password is not correct', pattern: /^.{3,16}$/ }
 ]
+export const rulesRePassword = (orginPassword) => [
+  { message: 'Re Password is required', required: true },
+  { message: 'Password mismatch', validator: (rule, value, callback) => validateMatchPassword(rule, value, callback, orginPassword), required: true, trigger: 'blur' }
+]
 export const rulesRequire = (name) => [
   { required: true, message: `${name} is required` }
 ]
@@ -124,6 +142,9 @@ export const rulesNumber = () => [
 ]
 export const rulesTelephone = () => [
   { message: 'not in telephone number format.', pattern: /^\d{2,3}-\d{3,4}-\d{4}$/ }
+]
+export const rulesEmail = () => [
+  { message: 'not in email format.', validator: validateEmail }
 ]
 export const rulesPhone = () => [
   { message: 'not in phone number format.', pattern: /^01(?:0|1|[6-9])-?([0-9]{3,4})-?([0-9]{4})$/ }

@@ -73,6 +73,17 @@ export async function apiSignUp(data) {
     data: data
   })
 }
+/* NIA 회원가입 */
+export async function apiNiaSignUp(data) {
+  data = await encrypt(data)
+  return http({
+    url: '/nia/signup',
+    filePath: filePath,
+    sqlId: 'apiSignUp',
+    method: 'post',
+    data: data
+  })
+}
 
 export async function apiChangeRmsUserPassword(data) {
   data = await encrypt(data)

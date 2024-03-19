@@ -239,10 +239,16 @@ export default {
       const { ticket_type } = this.selectedRow
       const chartData = this.trafficChartList
       const xAxisKey = ticket_type === 'ATT2' ? 'measured_datetime' : 'collect_time'
+      const markLine = {
+          symbol: ['none', 'none'],
+          label: { show: false },
+          data: [{ xAxis: this.selectedRow?.fault_time || '' }]
+        }
       let seriesArr = []
       if (ticket_type === 'ATT2') {
         seriesArr = [
         {
+          markLine,
           name: 'PPS_IN',
           type: 'line',
           data: chartData.map(v => v.fltpps_in)
@@ -266,6 +272,7 @@ export default {
       } else {
         seriesArr = [
           {
+            markLine,
             name: 'STRCOUNTS',
             type: 'line',
             data: chartData.map(v => v.strcounts)
@@ -336,7 +343,7 @@ export default {
         this.chartLoading = true
         let chartRes
         if (ticket_type === 'ATT2') {
-          chartRes = await apiATTTrafficChart(chartRes)
+          chartRes = await apiATTTrafficChart(param)
         } else if (ticket_type === 'NTT') {
           this._merge(param, { END_NODE, END_PORT })
           chartRes = await apiNTTTrafficChart(param)

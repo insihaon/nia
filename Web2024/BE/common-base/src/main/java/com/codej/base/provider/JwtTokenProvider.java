@@ -12,6 +12,7 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -34,6 +35,7 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
+import com.codej.base.dto.AppDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -42,6 +44,9 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class JwtTokenProvider { // JWT 토큰을 생성 및 검증 모듈
 
+    @Autowired
+    private AppDto appDto;
+
     @Value("${spring.jwt.secret:jwtsecret12#$}")
     private String secretKey;
 
@@ -49,11 +54,24 @@ public class JwtTokenProvider { // JWT 토큰을 생성 및 검증 모듈
     private long tokenValidSecond; // 토큰유효시간, default: 24hours
 
     @Autowired
-    private UserDetailsService userDetailsService;
+    @Qualifier("userDetailServiceImpl")
+    private final UserDetailsService userDetailsService;
+
+    @Autowired
+    @Qualifier("niaUserDetailServiceImpl")
+    private final UserDetailsService niaUserDetailsService;
 
     @PostConstruct
     protected void init() {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
+    }
+
+    private UserDetailsService getDetailService() {
+        if(appDto.getProject().equals("nia")) {
+            return niaUserDetailsService;
+        } else {
+            return userDetailsService;
+        }
     }
 
     // Jwt 토큰 생성
@@ -65,7 +83,7 @@ public class JwtTokenProvider { // JWT 토큰을 생성 및 검증 모듈
         claims.put("roles", roles);
         claims.put("address", address);
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(userPk);
+        UserDetails userDetails = getDetailService().loadUserByUsername(userPk);
         String json = JsonUtil.convertClassToJsonString(userDetails);
         claims.put("details", json);
 
