@@ -14,7 +14,7 @@ table.basic {
   th {
     font-weight: normal;
     // color: #fff;
-    background: #c1d3f64d;
+    background: #cfd5e28f;
     text-align: center;
     font-size: 14px;
     max-width: 50px;
@@ -80,6 +80,7 @@ table.basic {
     box-shadow: 0 1px 5px 0 rgb(0 0 0 / 27%);
     border-radius: 7px;
     height: auto;
+    min-width: 700px !important;
   }
   .el-dialog__header {
     background-color: white !important;
@@ -106,7 +107,7 @@ table.basic {
   }
 
   .exit-btn{
-    background: gainsboro;
+    background: gainsboro !important;
     color: #000000 !important;
   }
 }

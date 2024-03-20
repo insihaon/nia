@@ -74,14 +74,14 @@ export default {
       const columns = [
         { type: '', prop: 'rownum', name: '번호', minWidth: 20, flex: 0, suppressMenu: true, alignItems: 'center' },
         { type: '', prop: 'node_nm', name: '노드명', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center',
-          cellRendererFramework: 'CellRenderHyperlink', cellRendererParams: { type: 'nodeDetail', action: this.handleOpenEditModal.bind(this) } },
+          cellRendererFramework: 'CellRenderHyperlink', cellRendererParams: { type: 'nodeDetail', action: this.handleOpenModalDetail.bind(this) } },
         { type: '', prop: 'model_id', name: '모델명', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: false },
         { type: '', prop: 'mac_addr', name: '맥주소', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
         { type: '', prop: 'ip_addr', name: '대표IP', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
         { type: '', prop: 'admin_yn_info', name: '사용여부', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
         { type: '', prop: 'chng_datetime', name: '수정일', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
         { type: '', prop: 'rx_pkt_rate', name: '포트', minWidth: 30, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true,
-          cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { type: 'nodeManegement', action: this.handleOpenEditModal.bind(this) } }
+          cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { type: 'nodeManegement', action: this.handleOpenModalDetail.bind(this) } }
       ]
       return { options, columns, data: this.nodeData, getRightClickMenuItems: () => { return [] } }
     },
@@ -127,7 +127,7 @@ export default {
     searchClear() {
       this.searchModel = {}
     },
-    handleOpenEditModal(row, type) {
+    handleOpenModalDetail(row, type) {
       if (type === 'nodeDetail') {
         this.$refs.ModalNodeDetail.open({ row: row, type: type })
       } else {

@@ -12,19 +12,21 @@
       @onChangePage="onChangePage"
       @searchClear="searchClear"
     />
+    <ModalLinkDetail ref="ModalLinkDetail" />
   </div>
 </template>
 <script>
 import { Base } from '@/min/Base.min'
 import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
-// import { apiSelectAuthHistList, apiUpdateApiAuth, apiUpdateApiAuthProc } from '@/api/dataHub'
+import CellRenderHyperlink from '@/views-nia/components/cellRenderer/CellRenderHyperlink'
+import ModalLinkDetail from '@/views-nia/modal/ModalLinkDetail'
 import { apiSelectLinkList } from '@/api/nia'
 
 const routeName = 'LinkInquiryInfoList'
 export default {
   name: routeName,
   // eslint-disable-next-line vue/no-unused-components
-  components: { CompInquiryPannel },
+  components: { CompInquiryPannel, CellRenderHyperlink, ModalLinkDetail },
   extends: Base,
   data() {
     return {
@@ -64,7 +66,8 @@ export default {
       }
       const columns = [
         { type: '', prop: 'rownum', name: '번호', minWidth: 20, flex: 0, suppressMenu: true, alignItems: 'center' },
-        { type: '', prop: 'src_node_id', name: '시작점 노드', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: false },
+        { type: '', prop: 'src_node_id', name: '시작점 노드', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: false,
+         cellRendererFramework: 'CellRenderHyperlink', cellRendererParams: { type: 'linkDetail', action: this.handleOpenModalDetail.bind(this) } },
         { type: '', prop: 'src_if_id', name: '시작점 I/F ID', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
         { type: '', prop: 'src_if_name', name: '시작점 I/F명', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
         { type: '', prop: 'dest_node_id', name: '끝점 노드', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: false },
@@ -116,9 +119,9 @@ export default {
     searchClear() {
       this.searchModel = {}
     },
-    // handleOpenModalDetail(type, row) {
-    //   this.$refs.modalApiDetail.open({ type, row })
-    // },
+    handleOpenModalDetail(row, type) {
+      this.$refs.ModalLinkDetail.open({ row, type })
+    },
   },
 }
 </script>

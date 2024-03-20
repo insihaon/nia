@@ -261,3 +261,14 @@ export function apiSelectAgencyList(params = {}) {
     data: params
   })
 }
+
+export function apiSelectAgencyIfIdList(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_AGENCY_LIST',
+    data: params
+  })
+}
+
