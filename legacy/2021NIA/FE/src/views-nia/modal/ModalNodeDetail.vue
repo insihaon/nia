@@ -11,7 +11,7 @@
       :modal="modal"
       :close-on-click-modal="closeOnClickModal"
       :loading="loading"
-      class="datahub-dialog"
+      class="nia-edit-dialog"
       :class="{ [name]: true }"
     >
       <span slot="title">

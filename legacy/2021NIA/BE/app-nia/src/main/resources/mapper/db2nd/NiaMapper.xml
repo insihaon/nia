@@ -805,28 +805,37 @@
     <!-- 이용기관 리스트 조회  -->
      <select id="SELECT_AGENCY_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
         SELECT
-            tuo.NREN_ID,
-            tuo.NREN_NAME,
-            tuo.NODE_ID,
-            tuo.IF_ID AS NODE_INT,
+            TUO.NREN_ID,
+            TUO.NREN_NAME,
+            TUO.NODE_ID,
+            TUO.IF_ID AS NODE_INT,
             IF.IF_NM,
-            COALESCE(REGEXP_REPLACE((REVERSE((REGEXP_MATCH(REVERSE(IF.IF_NM), E'G[0-9]+'))[1])), 'G', ''), CAST(CAST(tuo.BANDWIDTH AS BIGINT) / 1000000000 AS BIGINT)::CHAR) AS BANDWIDTH,
-            tuo.CUSTOMER_ID,
-            tuo.EMAIL,
+            COALESCE(REGEXP_REPLACE((REVERSE((REGEXP_MATCH(REVERSE(IF.IF_NM), E'G[0-9]+'))[1])), 'G', ''), CAST(CAST(TUO.BANDWIDTH AS BIGINT) / 1000000000 AS BIGINT)::CHAR) AS BANDWIDTH,
+            TUO.CUSTOMER_ID,
+            TUO.EMAIL,
             ROW_NUMBER() OVER (ORDER BY NREN_ID) AS ROWNUM,
             COUNT(1) OVER () AS "AGENCYTOTALCOUNT"
-        FROM RESOURCE.TB_USER_ORGAN tuo
-        LEFT OUTER JOIN (SELECT DISTINCT NODE_ID, IF_ID, IF_NM FROM RESOURCE.TB_PORT_MST) IF ON IF.NODE_ID = tuo.NODE_ID AND IF.IF_ID = tuo.IF_ID
+        FROM RESOURCE.TB_USER_ORGAN TUO
+        LEFT OUTER JOIN (SELECT DISTINCT NODE_ID, IF_ID, IF_NM FROM RESOURCE.TB_PORT_MST) IF ON IF.NODE_ID = TUO.NODE_ID AND IF.IF_ID = TUO.IF_ID
         WHERE 1=1
-        <if test="NREN_NAME != null and NREN_NAME != ''">
-            AND tuo.nren_name LIKE '%' || #{NREN_NAME} || '%'
+        <if test="nren_name != null and nren_name != ''">
+            AND UPPER(TUO.NREN_NAME) LIKE '%' || UPPER(#{nren_name}) || '%'
         </if>
-        <if test="NODE_ID != null and NODE_ID != ''">
-            AND tuo.node_id LIKE '%' || #{NODE_ID} || '%'
+        <if test="node_id != null and node_id != ''">
+            AND UPPER(TUO.NODE_ID) LIKE '%' || UPPER(#{node_id}) || '%'
         </if>
-        <if test="CUSTOMER_ID != null and CUSTOMER_ID != ''">
-            AND tuo.customer_id LIKE '%' || #{CUSTOMER_ID} || '%'
+        <if test="customer_id != null and customer_id != ''">
+            AND UPPER(TUO.CUSTOMER_ID) LIKE '%' || UPPER(#{customer_id}) || '%'
         </if>
-        ORDER BY nren_id
+        ORDER BY NREN_ID
+    </select>
+
+    <!-- 이용기관 인터페이스 ID 리스트 조회 -->
+    <select id="SELECT_AGENCY_IF_ID_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+--         select distinct if_id from resource.tb_user_organ tuo
+        SELECT DISTINCT IF_ID, IF_SPEED
+        FROM RESOURCE.TB_PORT_MST
+        WHERE NODE_ID = #{node_name} and IF_OPER_STATUS = 'up'
+        ORDER BY IF_ID
     </select>
 </mapper>
