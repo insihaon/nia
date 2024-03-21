@@ -813,7 +813,6 @@
     </select>
 
     <!-- 조치프로파일 리스트 조회 -->
-
      <select id="SELECT_PROFILE_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
         SELECT
             PROFILE_NUM,
@@ -853,4 +852,182 @@
         ORDER BY PROFILE_NUM
     </select>
 
+    <!-- 노드리스트 조회 -->
+    <select id="SELECT_NODE_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+        SELECT
+            ROW_NUMBER() OVER (ORDER BY NODE_NUM) AS ROWNUM,
+            node.*
+        FROM (
+            SELECT
+                TNM.NODE_NUM,
+                TNM.NODE_ID,
+                TNM.NODE_NM,
+                TNM.MODEL_NUM,
+                TNM.MODEL_ID,
+                CODE.CODE_NM,
+                TNM.IP_ADDR,
+                TNM.MAC_ADDR,
+                TNM.ADMIN_YN,
+                CASE
+                	WHEN ADMIN_YN = 'W' THEN '사용'
+                	ELSE '미사용' 
+                    	END AS ADMIN_YN_INFO,
+                TNM.PRIMARY_GB,
+                TNM.SNMP_VER,
+                TNM.SNMP_COMMUNITY,
+                TNM.SNMP_PORT,
+                TNM.LATITUDE,
+                TNM.LONGITUDE,
+                TNM.NETCONF_PORT,
+                TNM.NETCONF_ID,
+                TNM.NETCONF_PW,
+                TNM.NETCONF_TYPE,
+                TNM.NODE_DIVISION,
+                TNM.VENDOR,
+                TNM.SFLOW_IP,
+                TO_CHAR(TNM.CHNG_DATETIME, 'YYYY-MM-DD HH:MI:SS') AS CHNG_DATETIME,
+                COUNT(1) OVER () AS "NODETOTALCOUNT"
+                FROM RESOURCE.TB_NODE_MST TNM
+                LEFT OUTER JOIN RESOURCE.TB_CODE CODE ON (TNM.MODEL_ID = CODE.CODE_ID)
+                WHERE 1=1
+                <if test="NODE_NM != null and node_nm != ''">
+                    AND tnm.NODE_NM like '%' || #{node_nm} || '%'
+                </if>
+                <if test="MODEL_ID != null and model_id != ''">
+                    AND code.CODE_NM like '%' || #{model_id} || '%'
+                </if>
+                <if test="IP_ADDR != null and ip_addr != ''">
+                    AND tnm.IP_ADDR like '%' || #{ip_addr} || '%'
+                </if>
+                <if test="ADMIN_YN != null">
+                    AND tnm.ADMIN_YN like '%' || #{admin_yn} || '%'
+                </if>
+                <if test="start_date != null and end_date != null">
+                    AND tnm.CHNG_DATETIME BETWEEN #{start_date} ::timestamp and #{end_date}::timestamp
+                </if>
+                ORDER BY CHNG_DATETIME ASC
+        ) AS node
+        ORDER BY NODE_NUM
+    </select>
+
+    <!-- 포트리스트 조회 -->
+     <select id="SELECT_PORT_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+        SELECT
+            ROW_NUMBER() OVER () AS ROWNUM,
+            *,
+            COUNT(1) OVER () AS "PORTTOTALCOUNT"
+        FROM (
+             SELECT DISTINCT
+                 TPM.NODE_NUM,
+                 TPM.NODE_ID,
+                 TPM.IF_NUM,
+                 TPM.IF_ID,
+                 TPM.IF_NM,
+                 TPM.IF_INDEX,
+                 TPM.IF_TYPE,
+                 COALESCE(REGEXP_REPLACE((REVERSE((REGEXP_MATCH(REVERSE(TPM.IF_NM), E'G[0-9]+'))[1])), 'G', ''), CAST(CAST(TPM.IF_SPEED AS BIGINT) / 1000000000 AS BIGINT)::CHAR) AS IF_SPEED,
+                 TPM.IP_ADDR,
+                 TPM.MAC_ADDR,
+                 TPM.IF_OPER_STATUS,
+                 CASE
+                	WHEN IF_OPER_STATUS = 'up' THEN '사용'
+                	ELSE '미사용' 
+                    	END AS IF_OPER_STATUS_INFO,
+                 COALESCE(TPM.IP_PREFIX, ''),
+                 TPM.IF_DIVISTION,
+                 TO_CHAR(TPM.CHNG_DATETIME, 'YYYY-MM-DD HH:MI:SS') AS CHNG_DATETIME
+             FROM RESOURCE.TB_PORT_MST TPM
+             WHERE NODE_ID = #{node_id}
+             ORDER BY IF_OPER_STATUS DESC, CHNG_DATETIME DESC
+        ) AS port
+    </select>
+
+    <!-- 링크 리스트 조회  -->
+    <select id="SELECT_LINK_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+        SELECT
+            ROW_NUMBER() OVER () AS ROWNUM
+            , *
+            , COUNT(1) OVER () AS "LINKTOTALCOUNT"
+        FROM (
+        SELECT DISTINCT
+        BL.SRC_NODE_NUM
+        , BL.SRC_NODE_ID
+        , BL.SRC_IF_NUM
+        , BL.SRC_IF_ID
+        , SP.IF_NM AS SRC_IF_NAME
+        , BL.SRC_IP_ADDR
+        , BL.SRC_MAC_ADDR
+        , BL.DEST_NODE_NUM
+        , BL.DEST_NODE_ID
+        , BL.DEST_IF_NUM
+        , BL.DEST_IF_ID
+        , DP.IF_NM AS DEST_IF_NAME
+        , BL.DEST_IP_ADDR
+        , BL.DEST_MAC_ADDR
+        , BL.PREFIX
+        , BL.BANDWIDTH
+        , BL.CIRCUIT_NUM
+        , BL.LINK_TYPE
+        , BL.VLAN "VLAN"
+        , BL.TAG "TAG"
+        , BL.LINK_DESC
+        , TO_CHAR(BL.CHNG_DATETIME, 'YYYY-MM-DD HH24:MI:SS') AS CHNG_DATETIME
+        FROM RESOURCE.TB_BACKBONE_LINK BL
+        LEFT OUTER JOIN RESOURCE.TB_PORT_MST SP ON SP.NODE_ID = BL.SRC_NODE_ID AND SP.IF_ID = BL.SRC_IF_ID
+        LEFT OUTER JOIN RESOURCE.TB_PORT_MST DP ON DP.NODE_ID = BL.DEST_NODE_ID AND DP.IF_ID = BL.DEST_IF_ID
+        WHERE 1=1
+            <if test="src_node_id != null and src_node_id != ''">
+                AND UPPER(BL.SRC_NODE_ID) LIKE '%' || UPPER(#{src_node_id}) || '%'
+            </if>
+            <if test="src_if_id != null and src_if_id != ''">
+                AND UPPER(BL.SRC_IF_ID) LIKE '%' || UPPER(#{src_if_id}) || '%'
+            </if>
+            <if test="dest_node_id != null and dest_node_id != ''">
+                AND UPPER(BL.DEST_NODE_ID) LIKE '%' || UPPER(#{dest_node_id}) || '%'
+            </if>
+            <if test="dest_if_id != null and dest_if_id != ''">
+                AND UPPER(BL.DEST_IF_ID) LIKE '%' || UPPER(#{dest_if_id}) || '%'
+            </if>
+            <if test="link_desc != null and link_desc != ''">
+                AND UPPER(BL.LINK_DESC) LIKE '%' || UPPER(#{link_desc}) || '%'
+            </if>
+        ) AS link
+    </select>
+
+    <!-- 이용기관 리스트 조회  -->
+     <select id="SELECT_AGENCY_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+        SELECT
+            TUO.NREN_ID,
+            TUO.NREN_NAME,
+            TUO.NODE_ID,
+            TUO.IF_ID AS NODE_INT,
+            IF.IF_NM,
+            COALESCE(REGEXP_REPLACE((REVERSE((REGEXP_MATCH(REVERSE(IF.IF_NM), E'G[0-9]+'))[1])), 'G', ''), CAST(CAST(TUO.BANDWIDTH AS BIGINT) / 1000000000 AS BIGINT)::CHAR) AS BANDWIDTH,
+            TUO.CUSTOMER_ID,
+            TUO.EMAIL,
+            ROW_NUMBER() OVER (ORDER BY NREN_ID) AS ROWNUM,
+            COUNT(1) OVER () AS "AGENCYTOTALCOUNT"
+        FROM RESOURCE.TB_USER_ORGAN TUO
+        LEFT OUTER JOIN (SELECT DISTINCT NODE_ID, IF_ID, IF_NM FROM RESOURCE.TB_PORT_MST) IF ON IF.NODE_ID = TUO.NODE_ID AND IF.IF_ID = TUO.IF_ID
+        WHERE 1=1
+        <if test="nren_name != null and nren_name != ''">
+            AND UPPER(TUO.NREN_NAME) LIKE '%' || UPPER(#{nren_name}) || '%'
+        </if>
+        <if test="node_id != null and node_id != ''">
+            AND UPPER(TUO.NODE_ID) LIKE '%' || UPPER(#{node_id}) || '%'
+        </if>
+        <if test="customer_id != null and customer_id != ''">
+            AND UPPER(TUO.CUSTOMER_ID) LIKE '%' || UPPER(#{customer_id}) || '%'
+        </if>
+        ORDER BY NREN_ID
+    </select>
+
+    <!-- 이용기관 인터페이스 ID 리스트 조회 -->
+    <select id="SELECT_AGENCY_IF_ID_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+--         select distinct if_id from resource.tb_user_organ tuo
+        SELECT DISTINCT IF_ID, IF_SPEED
+        FROM RESOURCE.TB_PORT_MST
+        WHERE NODE_ID = #{node_name} and IF_OPER_STATUS = 'up'
+        ORDER BY IF_ID
+    </select>
 </mapper>

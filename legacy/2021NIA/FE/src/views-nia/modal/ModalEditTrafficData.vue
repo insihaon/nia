@@ -22,12 +22,28 @@
         </span>
         <table class="basic">
           <th>{{ titleNameA }}</th>
-          <td v-if="viewType === 'editAgency'" class="disable">{{ rowInfo.nren_name }}</td>
-          <td v-if="viewType === 'editApp'" class="disable">{{ rowInfo.protocol }}</td>
+          <td v-if="viewType === 'editAgency'" class="disable">
+            <el-input v-model="rowInfo.nren_name">
+              {{ rowInfo.nren_name }}
+            </el-input>
+          </td>
+          <td v-if="viewType === 'editApp'" class="disable">
+            <el-input v-model="rowInfo.protocol">
+              {{ rowInfo.protocol }}
+            </el-input>
+          </td>
           <tr>
             <th>{{ titleNameB }}</th>
-            <td v-if="viewType === 'editAgency'">{{ rowInfo.nren_ip }}</td>
-            <td v-if="viewType === 'editApp'">{{ rowInfo.port_num }}</td>
+            <td v-if="viewType === 'editAgency'">
+              <el-input v-model="rowInfo.nren_ip">
+                {{ rowInfo.nren_ip }}
+              </el-input>
+            </td>
+            <td v-if="viewType === 'editApp'">
+              <el-input v-model="rowInfo.port_num">
+                {{ rowInfo.port_num }}
+              </el-input>
+            </td>
           </tr>
         </table>
         <div slot="footer" class="dialog-footer">

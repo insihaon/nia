@@ -32,5 +32,11 @@ public interface NiaMapper extends BaseDataMapper {
         public List<ResultMap> SELECT_UNIDENTIFIED_APP_LIST(HashMap<String, Object> map);
         public List<ResultMap> SELECT_EQUIP_AMOUNT_USED_LIST(HashMap<String, Object> map);
         public List<ResultMap> SELECT_PROFILE_LIST(HashMap<String, Object> map);
+        public List<ResultMap> SELECT_NODE_LIST(HashMap<String, Object> map);
+        public List<ResultMap> SELECT_PORT_LIST(HashMap<String, Object> map);
+        public List<ResultMap> SELECT_LINK_LIST(HashMap<String, Object> map);
+        public List<ResultMap> SELECT_AGENCY_LIST(HashMap<String, Object> map);
+        public List<ResultMap> SELECT_AGENCY_IF_ID_LIST(HashMap<String, Object> map);
+
 
 }
