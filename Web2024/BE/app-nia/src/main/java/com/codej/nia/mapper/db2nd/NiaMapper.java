@@ -20,8 +20,12 @@ public interface NiaMapper extends BaseDataMapper {
         public List<ResultMap> SELECT_ATT2_CHART(HashMap<String, Object> map);
         public List<ResultMap> SELECT_NTT_CHART(HashMap<String, Object> map);
         public List<ResultMap> SELECT_AI_DETECTION_INFO(HashMap<String, Object> map);
+        public List<ResultMap> SELECT_SOP_SYSLOG_HIST_LIST(HashMap<String, Object> map);
+        public List<ResultMap> SELECT_EQUIPMENT_LIST(HashMap<String, Object> map);
+        public List<ResultMap> SELECT_INTERFACE_LIST(HashMap<String, Object> map);
         public List<ResultMap> SELECT_SOP_HIST_LIST(HashMap<String, Object> map);
-        public List<ResultMap> SELECT_SOP_LIST(HashMap<String, Object> map);
+        public List<ResultMap> SELECT_ALARM_CURRENT_HISTORY_LIST(HashMap<String, Object> map);
+        public List<ResultMap> SELECT_SOP_CODE_LIST(HashMap<String, Object> map);
         public List<ResultMap> SELECT_TRAFFIC_AGENCY_LIST(HashMap<String, Object> map);
         public List<ResultMap> SELECT_AGENCY_CODE_LIST(HashMap<String, Object> map);
         public List<ResultMap> SELECT_APP_TRAFFIC_TOP_LIST(HashMap<String, Object> map);

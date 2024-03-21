@@ -85,6 +85,7 @@
         @size-change="handleSizeChange"
         @current-change="handlePageChange"
       />
+      <!-- pagerCount : 홀수 -->
     </el-row>
   </div>
 </template>
@@ -157,12 +158,9 @@ export default {
         return {}
       }
     },
-
     paginationInfo: {
       type: Object,
-      default() {
-        return {}
-      }
+      default() { return {} }
     }
 
   },

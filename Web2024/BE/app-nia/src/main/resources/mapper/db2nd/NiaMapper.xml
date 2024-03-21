@@ -420,8 +420,9 @@
         AND     MEASURED_DATETIME = #{FAULT_TIME}::TIMESTAMP
     </select>
 
-    <!-- 자가회복 SOP HIST 조회 -->
-    <select id="SELECT_SOP_HIST_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+    <!-- 자가회복 이력 / SYSLOG 이력-->
+    <select id="SELECT_SOP_SYSLOG_HIST_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+        <include refid="TotalCountPrefix"/>
         SELECT  SYSLOG.ALARMNO
                 , SYSLOG.NODE_NM
                 , SYSLOG.NODE_NUM
@@ -439,24 +440,47 @@
                 , SOP.HANDLING_FIN_USER
                 , SOP.STATUS
         FROM    nia.tb_syslog_sop SOP
-        LEFT OUTER JOIN rca.tb_syslog_alarm_mst SYSLOG ON SOP.ALARMNO = SYSLOG.ALARMNO
+        INNER JOIN rca.tb_syslog_alarm_mst SYSLOG ON SOP.ALARMNO = SYSLOG.ALARMNO
         <where>
             <trim prefix="(" prefixOverrides="AND|OR" suffix=")" suffixOverrides="">
-                SYSLOG.ALARMTIME <![CDATA[ > ]]> NOW() - INTERVAL '1' MONTH
-                <if test="NODE_NM != null">
+                <if test="ISHISTORY == null or ISHISTORY == false">
+                    AND SYSLOG.ALARMTIME <![CDATA[ > ]]> NOW() - INTERVAL '1' MONTH
+                </if>
+                <if test="NODE_NM != null and NODE_NM != ''">
                     AND SYSLOG.NODE_NM = #{NODE_NM}
                 </if>
-                <if test="ALARMLOC != null">
+                <if test="ALARMLOC != null and ALARMLOC != ''">
                     AND SYSLOG.ALARMLOC = #{ALARMLOC}
                 </if>
-                
+                <if test="STATUS != null and STATUS != ''">
+                    AND SOP.STATUS = #{STATUS}
+                </if>
+                <if test="START_DATE != null and START_DATE != ''">
+                    AND SOP.ALARM_OCCUR_TIME <![CDATA[ >= ]]> #{START_DATE}::TIMESTAMP
+                </if>
+                <if test="END_DATE != null and END_DATE != ''">
+                    AND SOP.HANDLING_FIN_TIME <![CDATA[ <= ]]> #{END_DATE}::TIMESTAMP
+                </if>
             </trim>
         </where>
-        ORDER BY SYSLOG.ALARMTIME DESC
+        ORDER BY SOP.ALARM_OCCUR_TIME DESC
+        <include refid="TotalCountSuffix"/>
     </select>
 
-    <!-- SOP 리스트 조회 -->
-     <select id="SELECT_SOP_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+    <select id="SELECT_EQUIPMENT_LIST" parameterType="hashmap" resultType="hashmap">
+        SELECT  DISTINCT NODE_NM AS VALUE
+        FROM    rca.tb_syslog_alarm_mst
+        <!-- WHERE   ALARMTIME BETWEEN NOW()::TIMESTAMP - INTERVAL '30 day' AND NOW()::TIMESTAMP -->
+    </select>
+
+    <select id="SELECT_INTERFACE_LIST" parameterType="hashmap" resultType="hashmap">
+        SELECT DISTINCT ALARMLOC AS VALUE
+        FROM rca.tb_syslog_alarm_mst
+        WHERE ALARMLOC IS NOT NULL
+    </select>
+
+    <!-- SOP 이력 조회 -->
+     <select id="SELECT_SOP_HIST_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
      <include refid="TotalCountPrefix"/>
         SELECT  SOP.SOP_ID ,
                 SOP.TICKET_ID ,
@@ -519,6 +543,57 @@
         </if>
         ORDER BY SOP.REQUEST_TIME DESC 
     <include refid="TotalCountSuffix"/>
+    </select>
+
+    <!-- 장애 현황 및 이력 -->
+    <select id="SELECT_ALARM_CURRENT_HISTORY_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+        <include refid="TotalCountPrefix"/>
+        SELECT  TC.TICKET_ID
+                , TC.PARENT_TICKET_ID 
+                , TC.FAULT_TIME
+                , CASE WHEN TC.STATUS = 'AUTO_FIN' 
+                    THEN TC.TICKET_UPDATE_TIME 
+                    ELSE SOP.HANDLING_FIN_TIME 
+                 END AS HANDLING_FIN_TIME
+                , TC.TICKET_TYPE
+                , TC.TICKET_RCA_RESULT_DTL_CODE
+                , TC.STATUS 
+                , TA.ROOT_CAUSE_SYSNAMEA
+                , TA.ROOT_CAUSE_PORTA
+                , TA.ROOT_CAUSE_SYSNAMEZ
+                , TA.ROOT_CAUSE_PORTZ
+        FROM    rca.tb_rca_ticket_current TC
+        INNER JOIN rca.tb_rca_ticket_al_current TA ON TC.TICKET_ID = TA.TICKET_ID
+        LEFT JOIN NIA.TB_SOP SOP ON TC.TICKET_ID = SOP.TICKET_ID
+        <where>
+            <trim prefix="(" prefixOverrides="AND|OR" suffix=")" suffixOverrides="">
+                <if test="TICKET_ID != null and TICKET_ID != ''">
+                    AND TC.TICKET_ID = #{TICKET_ID}
+                </if>
+                <if test="TICKET_TYPE != null and TICKET_TYPE != ''">
+                    AND TC.TICKET_TYPE = #{TICKET_TYPE}
+                </if>
+                <choose>
+                    <when test="INIT_START_DATE != null and INIT_START_DATE != '' and INIT_END_DATE != null and INIT_END_DATE != ''">
+                    AND TC.FAULT_TIME <![CDATA[ >= ]]> #{INIT_START_DATE}::TIMESTAMP
+                    AND TC.FAULT_TIME <![CDATA[ <= ]]> #{INIT_END_DATE}::TIMESTAMP
+                    </when>
+                    <when test="FIN_START_DATE != null and FIN_START_DATE != '' and FIN_END_DATE != null and FIN_END_DATE != ''">
+                    AND CASE WHEN TC.STATUS = 'AUTO_FIN' 
+                        THEN TC.TICKET_UPDATE_TIME 
+                        ELSE SOP.HANDLING_FIN_TIME END <![CDATA[ >= ]]> #{FIN_START_DATE}::TIMESTAMP
+                    AND CASE WHEN TC.STATUS = 'AUTO_FIN' 
+                        THEN TC.TICKET_UPDATE_TIME 
+                        ELSE SOP.HANDLING_FIN_TIME END <![CDATA[ <= ]]> #{FIN_END_DATE}::TIMESTAMP
+                    </when>
+                    <otherwise>
+                    AND TC.FAULT_TIME <![CDATA[ > ]]> RCA.FC_GET_MINUS_DAY(7)
+                    </otherwise>
+                </choose>
+            </trim>
+        </where>
+        ORDER BY TC.TICKET_ID DESC
+        <include refid="TotalCountSuffix"/>
     </select>
 
      <select id="SELECT_SOP_CODE_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
