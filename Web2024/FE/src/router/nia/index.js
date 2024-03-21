@@ -267,19 +267,19 @@ export const niaRoute = Object.freeze([
     ]
   },
   {
-    path: '/organization',
+    path: '/agency',
     component: Layout,
     hidden: false,
     disable: false,
-    redirect: '/organization/organizationInquiryList',
+    redirect: '/agency/agencyInquiryList',
     meta: {
       title: '이용기관',
     },
     children: [
       {
-        path: 'organizationInquiryList',
-        component: () => import('@/views-nia/organization/organizationInquiryList'),
-        name: 'OrganizationInquiryList',
+        path: 'agencyInquiryList',
+        component: () => import('@/views-nia/agency/agencyInquiryList'),
+        name: 'AgencyInquiryList',
         meta: { title: '이용기관 조회' },
       },
     ]

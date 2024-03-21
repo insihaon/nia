@@ -28,6 +28,8 @@ export default Vue.extend({
         result = 'SOP'
       } else if (this.params.type === 'alarm') {
         result = '장애 대응'
+      } else if (this.params.type === 'nodeManegement') {
+        result = '관리'
       } else {
         result = '수정/삭제'
       }
@@ -37,6 +39,8 @@ export default Vue.extend({
       let result = ''
       if (this.params.type === 'editAgency' || this.params.type === 'editApp') {
         result = 'el-icon-edit'
+      } else if (this.params.type === 'nodeManegement') {
+        result = 'el-icon-s-tools'
       } else {
         result = 'el-icon-circle-check'
       }
@@ -46,6 +50,8 @@ export default Vue.extend({
       let result = ''
       if (this.params.type === 'editAgency' || this.params.type === 'editApp') {
         result = 'edit-class'
+      } else if (this.params.type === 'nodeManegement') {
+        result = 'node-class'
       } else {
         result = 'sop-class'
       }
@@ -70,9 +76,17 @@ export default Vue.extend({
   .edit-class {
     text-decoration: underline;
     color: blue !important;
+    }&:hover{
+      color: rgb(23, 162, 255) !important;
     }
-  .edit-class:hover {
-    color: rgb(23, 162, 255) !important;
-  }
+
+  .node-class{
+    color: rgb(86, 84, 84) !important;
+    font-size: 15px !important;
+    font-weight: 400;
+  }&:hover{
+     text-decoration: underline;
+     color: rgb(86, 84, 84) !important;
+   }
 }
 </style>
