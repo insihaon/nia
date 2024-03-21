@@ -41,7 +41,7 @@ public class AuthController extends AbsAuthController {
         return niaUserService;
     }
 
-    @PostMapping(value = "/nia/signup")
+    @PostMapping(value = "/nia/upserUser")
     public BaseResponse signup(
             HttpServletRequest request,
             @RequestBody HashMap<String, Object> body) 
@@ -50,7 +50,7 @@ public class AuthController extends AbsAuthController {
         String password = json.get("password").getAsString();
 
         BaseUser user = DbUser.builder()
-                .uid(json.get("id").getAsString())
+                .uid(json.get("uid").getAsString())
                 .password(passwordEncoder.encode(password))
                 .name(json.get("name").getAsString())
                 .mobile(json.get("phone").getAsString())
@@ -58,9 +58,33 @@ public class AuthController extends AbsAuthController {
                 .agencyName(json.get("agency_name").getAsString())
                 .build();
 
-        getService().INSERT_USER(user);
+        getService().UPSERT_USER(user);
         return responseService.createSuccessResponse();
     }
 
+    @PostMapping(value = "/deleteAccount")
+    public BaseResponse postDeleteAccount(
+            HttpServletRequest request,
+            @RequestBody HashMap<String, Object> body)
+            throws Exception {
+        JsonObject json = decryptRequestParameter(body);
+        String uid = json.get("uid").getAsString();
+        String password = json.get("password").getAsString();
+
+        return deleteUser(uid, password);
+    }
+
+    private BaseResponse deleteUser(String uid, String password) {
+        try {
+            BaseUser user = getService().getUser(uid);
+            if(passwordEncoder.matches(password, user.getPassword())) {
+                getService().deleteUserByUid(uid);
+                return responseService.createSuccessResponse();
+            }
+        } catch (Exception e) {
+            log.error("deleteUser fail ===>{}", e.toString());
+        }
+        return responseService.createFailResponse(-9999, "password mismatch");
+    }
 
 }

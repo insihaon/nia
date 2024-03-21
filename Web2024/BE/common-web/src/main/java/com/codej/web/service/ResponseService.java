@@ -103,6 +103,7 @@ public class ResponseService {
         ErrorResponse response = new ErrorResponse();
         response.setSql(getSql());
         response.setMessage(message);
+        response.setSuccess(false);
         response.setDetailMessage(detailMessage);
         return response;
     }

@@ -1,7 +1,7 @@
 <template>
   <div id="tags-view-container" :class="{'opend': historybar.opened}">
     <div id="title-container">
-      <div>visited History</div>
+      <div><i class="el-icon-reading pr-1" />방문 기록</div>
       <div><i class="el-icon-close" @click="closeHistoryBar()" /></div>
     </div>
     <router-link
@@ -16,15 +16,14 @@
       @contextmenu.prevent.native="openMenu(tag,$event)"
     >
       <!-- @contextmenu.prevent.native="openMenu(tag,$event)" -->
-      <div class="title" :class="{'long-title': tag.title.length > 10}">
+      <div class="title" :class="{'long-title': getTitleLen(tag.title) > 10}">
         {{ $t(tag.meta.i18n) || tag.meta.tagTitle || tag.title }}
       </div>
       <div class="d-flex">
-        <i v-if="!isAffix(tag)" class="el-icon-collection-tag" @click.prevent.stop="closeSelectedTag(tag)" />
+        <!-- <i v-if="!isAffix(tag)" class="el-icon-collection-tag" @click.prevent.stop="closeSelectedTag(tag)" /> -->
         <span v-if="!isAffix(tag)" class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)" />
       </div>
     </router-link>
-    <div />
     <ul v-show="visible" :style="{left:left+'px',top:top+'px'}" class="contextmenu">
       <li @click="refreshSelectedTag(selectedTag)">Refresh</li>
       <li @click="openNewTab(selectedTag)">Open New Tab</li>
@@ -36,12 +35,17 @@
 </template>
 
 <script>
+import { Base } from '@/min/Base.min'
 import { AppOptions } from '@/class/appOptions'
 import { mapState } from 'vuex'
 import path from 'path'
 
+const routeName = 'HistoryBar'
+
 export default {
+  name: routeName,
   components: { },
+  extends: Base,
   data() {
     return {
       visible: false,
@@ -94,6 +98,10 @@ export default {
   methods: {
     toggleHistoryBar() {
       this.$store.dispatch('app/toggleHistoryBar')
+    },
+    getTitleLen(title) {
+      const tempTitle = this._cloneDeep(title)
+      return tempTitle.replace(/ /g, '').length
     },
     isActive(route) {
       return route.path === this.$route.path
@@ -241,7 +249,7 @@ export default {
 @import "~@/styles/variables.scss";
 
 #tags-view-container.opend {
-  width: var(--historybar-width);
+  right: 0px;
   #title-container {
     display: flex;
   }
@@ -252,24 +260,25 @@ export default {
 
 #tags-view-container {
   top: 0;
-  right:0;
-  width: var(--historybar-default-width);
+  right: -170px;
+  width: 180px;
   padding: 5px;
   height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   position: absolute;
-  transition: width 0.4s;
+  transition: 0.3s;
   background: #fff;
   border-bottom: 1px solid #d8dce5;
   box-shadow: 0 1px 3px 0 rgba(16, 12, 12, 0.12), 0 0 3px 0 rgba(0, 0, 0, .04);
   #title-container {
     display: none;
-    transition: all 0.3s;
     width: 100%;
-    font-weight: bold;
-    justify-content: space-around;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 0px 5px;
+    justify-content: space-between;
     i {
       border-radius: 5px;
       padding: 2px;
@@ -300,11 +309,6 @@ export default {
       white-space: nowrap;
       text-overflow: ellipsis;
     }
-    .long-title:hover {
-      line-height: 14px;
-      white-space: normal;
-      transition: all 0.3s;
-    }
     span {
       border-radius: 50%;
       &:hover {
@@ -315,14 +319,17 @@ export default {
     &:hover {
       color: #fff;
       background: #64748b;
-      height: fit-content;
-      padding: 5px 15px;
+      height: 35px;
+      .long-title {
+        line-height: 14px;
+        white-space: normal;
+        transition: all 0.3s;
+      }
     }
     &.active {
       color: #fff;
       background-color: $aiTemplateDefault;
       justify-content: space-between;
-      // justify-content: flex-start;
       white-space: nowrap;
       display: flex;
       overflow: hidden;

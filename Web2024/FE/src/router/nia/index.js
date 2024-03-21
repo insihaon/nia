@@ -193,25 +193,25 @@ export const niaRoute = Object.freeze([
       },
     ]
   },
-  {
-    path: '/userManagement',
-    component: Layout,
-    hidden: false,
-    disable: false,
-    redirect: '/userManagement/ModaluserSettings',
-    meta: {
-      title: '사용자 관리',
-    },
-    children: [
-      {
-        path: 'userSettings',
-        component: () => import('@/views-nia/userManagement/ModaluserSettings'),
-        name: 'UserSettings',
-        meta: { title: '사용자 설정' },
-        modalMode: true
-      },
-    ]
-  },
+  // {
+  //   path: '/userManagement',
+  //   component: Layout,
+  //   hidden: false,
+  //   disable: false,
+  //   redirect: '/userManagement/ModaluserSettings',
+  //   meta: {
+  //     title: '사용자 관리',
+  //   },
+  //   children: [
+  //     {
+  //       path: 'userSettings',
+  //       component: () => import('@/views-nia/userManagement/ModaluserSettings'),
+  //       name: 'UserSettings',
+  //       meta: { title: '사용자 설정' },
+  //       modalMode: true
+  //     },
+  //   ]
+  // },
   {
     path: '/manager',
     component: Layout,

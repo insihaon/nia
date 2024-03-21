@@ -6,7 +6,7 @@
         v-el-drag-dialog
         :visible.sync="visible"
         :width="domElement.maxWidth + `px`"
-        :height="domElement.minHeight + `px`"
+        :height="domElement.maxHeight + `px`"
         :fullscreen.sync="fullscreen"
         :modal-append-to-body="false"
         :append-to-body="true"
@@ -108,6 +108,7 @@ export default {
   methods: {
     onCreated() {
       Modal.methods.onCreated.call(this)
+      this.domElement.maxWidth = 1500
       this.domElement.maxHeight = 1600
       this.closeOnClickModal = false
     },

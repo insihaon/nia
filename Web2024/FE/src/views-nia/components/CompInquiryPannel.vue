@@ -17,7 +17,6 @@
                     v-model="searchModel[item.model]"
                     type="text"
                     clearable
-                    style="width : 230px;"
                     :placeholder="item.placeholder"
                     @keyup.native.enter="$emit('keyupEnter', searchModel)"
                   />
@@ -37,7 +36,6 @@
                     :placeholder="item.placeholder"
                     reserve-keyword
                     remote
-                    style="width : 230px;"
                   >
                     <el-option
                       v-for="(option, i) in item.options"
@@ -106,7 +104,8 @@
       <CompAgGrid
         ref="compSearchEquip"
         v-model="agGrid"
-        class="w-100 h-100"
+        class="w-100"
+        :style="{'height': getHeight()}"
         style="min-height: 20px"
         :pagination-info="paginationInfo"
         @pageChange="handlePageChange"
@@ -206,7 +205,6 @@ export default {
 
       return { '--common-search-height': height + 'px' }
     },
-
     totalCount() {
       return this.humanNumber(this.paginationInfo?.totalCount)
     }
@@ -215,7 +213,11 @@ export default {
   },
   mounted() {
   },
-  methods: {
+  methods:
+  {
+    getHeight() {
+      return this.$parent?.$parent?.name?.includes('Modal') ? '500px' : '100%'
+    },
     onSortChanged(sortedColumns) {
       const sortColInfo = sortedColumns?.length > 0 ? sortedColumns[0] : {}
       this.$emit('sortedChange', sortColInfo)
