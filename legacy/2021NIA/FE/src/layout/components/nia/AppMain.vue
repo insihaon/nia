@@ -3,7 +3,7 @@
     <HistoryBar ref="historybar" />
     <transition name="fade-transform" mode="out-in" :duration="duration">
       <keep-alive :include="cachedViews">
-        <router-view :key="key" :style="{ 'padding-right': getHistoryOffset }" />
+        <router-view :key="key" :style="{ 'padding-right': getHistoryOffset }" style="transition: all 0.3s" />
       </keep-alive>
     </transition>
   </section>
@@ -81,7 +81,7 @@ export default {
 // fix css style bug in open el-dialog
 .el-popup-parent--hidden {
   .fixed-header {
-    padding-right: 10px;
+    padding-right: 0px;
   }
 }
 

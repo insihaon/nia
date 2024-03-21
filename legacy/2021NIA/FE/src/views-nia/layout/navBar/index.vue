@@ -38,7 +38,7 @@
               <i class="el-icon-user" />
               <span>{{ $store.state.user.name }}</span>
             </div>
-            <span class="text-xs mr-2">정보수정</span>
+            <span class="text-xs mr-2 cursor-pointer" @click="$refs.ModaluserSettings.open()">정보수정</span>
           </div>
         </div>
         <div
@@ -63,6 +63,7 @@
         <child-item v-for="(route, index) in permission_routes" :key="route.path" :base-path="route.path" :item="route" :idx="index.toString()" />
       </el-menu>
     </div>
+    <ModaluserSettings ref="ModaluserSettings" :fullscreen="isViewport('<', 'sm')" />
   </el-header>
 </template>
 
@@ -71,11 +72,12 @@ import { Base } from '@/min/Base.min'
 import ChildItem from './ChildItem'
 import { mdiHistory } from '@mdi/js'
 import { mapState, mapGetters } from 'vuex'
+import ModaluserSettings from '@/views-nia/userManagement/ModaluserSettings'
 
 const routeName = 'NavBar'
 export default {
   name: routeName,
-  components: { ChildItem },
+  components: { ChildItem, ModaluserSettings },
   extends: Base,
   data() {
     return {
@@ -118,7 +120,6 @@ export default {
     header?.addEventListener('mouseout', function(event) {
       header.classList.remove('open')
     })
-    // this.timeInterval = setInterval(() => { this.getTime() }, 1000)
   },
   methods: {
     onClickHeaderLogo() {
@@ -127,6 +128,9 @@ export default {
     toggleHistoryBar() {
       this.$store.dispatch('app/toggleHistoryBar')
     },
+    setTime() {
+      this.currentTime = this.toStringTime(Date.now(), 'YYYY.MM.DD A hh:mm:ss')
+    }
   }
 }
 </script>

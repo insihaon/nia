@@ -1,18 +1,13 @@
 package com.codej.nia.service;
 
 import java.util.HashMap;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import com.codej.base.exception.CUserNotFoundException;
 import com.codej.web.service.BaseUserService;
 import com.codej.base.property.GlobalConstants;
-import com.codej.base.property.GlobalConstants.CustomCacheKey;
 import com.codej.base.dto.model.Data;
-
 import com.codej.base.dto.BaseUser;
 import com.codej.base.dto.DbUser;
 import com.codej.nia.mapper.db2nd.NiaUserMapper;

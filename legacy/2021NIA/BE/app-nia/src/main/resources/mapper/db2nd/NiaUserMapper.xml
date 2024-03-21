@@ -6,6 +6,9 @@
         SELECT  U.ID AS "uid"
                 , U.NAME AS "name"
                 , U.PW AS "password"
+                , U.PHONE_NUMBER AS "mobile"
+                , U.EMAIL AS "email"
+                , U.AGENCY_NAME AS "agencyName"
                 <!-- , (SELECT STRING_AGG(roles, ',') FROM USER_ROLES UR WHERE UR.USER_UID = U.UID) AS "roles" -->
         FROM    nia.tb_user U
         WHERE   U.ID = #{uid} 
@@ -31,7 +34,7 @@
             , update_time
             , phone_number
             , email
-            , agency_name
+            , agencyName
         )
         VALUES
         (
@@ -46,4 +49,76 @@
             , #{agencyName}
         )
     </insert>
+
+    <update id ="UPSERT_USER" parameterType="hashmap">
+        WITH UPSERT AS
+        ( UPDATE nia.tb_user
+        <set>
+            <if test="password != null">
+                , PW = #{password}
+            </if>
+            <if test="name != null">
+                , NAME = #{name}
+            </if>
+            <if test="mobile != null">
+                , PHONE_NUMBER = #{mobile}
+            </if>
+            <if test="email != null">
+                , EMAIL = #{email}
+            </if>
+            <if test="agencyName != null">
+                , AGENCY_NAME = #{agencyName}
+            </if>
+            , update_time = NOW()
+        </set>
+        WHERE ID = #{uid} RETURNING * )
+        INSERT
+        INTO nia.tb_user
+        (
+            ID
+            , PW
+            , LVL 
+            , LAST_LOGIN
+            , UPDATE_TIME
+            <if test="name != null">
+            , NAME
+            </if>
+            <if test="mobile != null">
+            , PHONE_NUMBER
+            </if>
+            <if test="email != null">
+            , EMAIL
+            </if>
+            <if test="agencyName != null">
+            , AGENCY_NAME
+            </if>
+        )
+        SELECT 
+            #{uid}
+            , #{password}
+            , 1::INT
+            , NOW()
+            , NOW()
+            <if test="name != null">
+            , #{name}
+            </if>
+            <if test="mobile != null">
+            , #{mobile}
+            </if>
+            <if test="email != null">
+            , #{email}
+            </if>
+            <if test="agencyName != null">
+            , #{agencyName}
+            </if>
+        WHERE NOT EXISTS
+        (SELECT *
+        FROM UPSERT)
+    </update>
+
+    <delete id="DELETE_USER_MAP" parameterType="hashmap">
+        DELETE FROM
+            nia.tb_user
+        WHERE ID = #{uid}
+    </delete>
 </mapper>

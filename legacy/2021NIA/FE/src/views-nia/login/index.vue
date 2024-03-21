@@ -68,7 +68,6 @@
           :show-password="form.value.includes('password')"
           :type="form.value.includes('password')?'password':'text'"
           @blur="capsTooltip = false"
-          @keyup.native="checkCapslock"
           @keyup.enter.native="handleLogin"
         />
       </el-form-item>
@@ -97,8 +96,8 @@ import Encrypt from '@/assets/libs/Encrypt.min'
 import { Base } from '@/min/Base.min'
 import { AppOptions } from '@/class/appOptions'
 import { rulesUsername, rulesPassword, rulesRePassword, rulesRequire, rulesTelephone, rulesEmail } from '@/utils/validate'
-import { onDownloadChrome } from '@/utils/index'
-import { apiNiaSignUp } from '@/api/auth'
+import { onDownloadChrome, exceptionLoginFail } from '@/utils/index'
+import { apiNiaUpsertUser } from '@/api/auth'
 
 const routeName = 'Login'
 
@@ -122,7 +121,7 @@ export default {
       otherQuery: {},
       isJoin: false,
       joinFormItem: [
-        { label: '아이디', value: 'id' },
+        { label: '아이디', value: 'uid' },
         { label: '비밀번호', value: 'password' },
         { label: '비밀번호 확인', value: 'repassword', placeholder: '비밀번호를 다시 한번 입력해주세요' },
         { label: '이름', value: 'name' },
@@ -130,7 +129,7 @@ export default {
         { label: 'E-MAIL', value: 'email' }
       ],
       joinForm: {
-        id: '',
+        uid: '',
         password: '',
         repassword: '',
         name: '',
@@ -142,10 +141,8 @@ export default {
   },
   computed: {
     joinRules() {
-      const res = rulesRePassword(this.joinForm.password, this.joinForm.repassword)
-      console.log(res)
       return {
-        id: rulesRequire(),
+        uid: rulesRequire(),
         password: rulesPassword('password'),
         repassword: rulesRePassword(this.joinForm.password),
         name: rulesRequire('name'),
@@ -204,7 +201,7 @@ export default {
           await this.$store.dispatch('user/login', Object.assign(this.loginForm, { ctrlKey: event.ctrlKey }))
           this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
         } catch (error) {
-          return false
+          exceptionLoginFail(this)
         } finally {
           this.loading = false
         }
@@ -219,7 +216,7 @@ export default {
 
         try {
           this.loading = true
-          const res = await apiNiaSignUp(this.joinForm)
+          const res = await apiNiaUpsertUser(this.joinForm)
           if (res?.success) {
             await this.confirm('회원가입이 완료되었습니다.<br >로그인 화면으로 이동합니다.', '알림', { dangerouslyUseHTMLString: true })
             this.isJoin = false

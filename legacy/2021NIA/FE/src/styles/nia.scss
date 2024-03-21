@@ -35,9 +35,9 @@ table.basic {
   font-family: 'NanumSquare';
   .el-dialog {
     height: auto;
-    width: 1500px;
+    // width: 1500px;
     border-radius: 7px;
-    margin-top: 5vh !important;
+    // margin-top: 5vh !important; // 필요한 곳에서 설정하여 사용할 것
     border: 2px solid $nia-primary;
     box-shadow: 0 1px 5px 0 rgb(0 0 0 / 27%);
   }
@@ -52,7 +52,7 @@ table.basic {
   }
   .el-dialog__body {
     padding: 0 20px 10px 20px;
-    height: 700px;
+    // height: 700px;
     background: #fff;
   }
   .el-dialog__footer {
@@ -70,6 +70,10 @@ table.basic {
   .el-button {
     background: #05092e;
     color: #fff;
+  }
+  .common-btn {
+    background: $nia-primary;
+      color: #fff;
   }
 }
 

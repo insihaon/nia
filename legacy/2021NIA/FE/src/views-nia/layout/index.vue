@@ -9,7 +9,7 @@
       </div>
     </div>
     <CompTrafficAnalysisModal ref="CompTrafficAnalysisModal" :fullscreen="isViewport('<', 'sm')" />
-    <ModaluserSettings ref="ModaluserSettings" :fullscreen="isViewport('<', 'sm')" />
+
   </div>
 </template>
 
@@ -21,7 +21,7 @@ import ResizeMixin from '@/layout/mixin/ResizeHandler'
 import NavBar from './navBar/index'
 import BottomBar from './BottomBar'
 import CompTrafficAnalysisModal from '@/views-nia/modal/CompTrafficAnalysisModal'
-import ModaluserSettings from '@/views-nia/userManagement/ModaluserSettings'
+
 import { mapState, mapGetters } from 'vuex'
 
 export const _ = { AppOptions }
@@ -34,7 +34,6 @@ export default {
     AppMain,
     NavBar,
     BottomBar,
-    ModaluserSettings,
     CompTrafficAnalysisModal,
   },
   extends: Base,

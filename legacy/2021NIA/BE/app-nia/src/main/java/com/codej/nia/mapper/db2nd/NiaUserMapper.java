@@ -12,4 +12,6 @@ import com.codej.web.mapper.db1st.BaseUserMapper;
 public interface NiaUserMapper extends BaseUserMapper {
         public BaseUser SELECT_LOGIN_USER(HashMap<String, Object> map) throws Exception;
         public int INSERT_USER(HashMap<String, Object> user) throws Exception;
+        public int UPDATE_USER(HashMap<String, Object> user) throws Exception;
+        public int DELETE_USER_MAP(HashMap<String, Object> map) throws Exception;
 }
