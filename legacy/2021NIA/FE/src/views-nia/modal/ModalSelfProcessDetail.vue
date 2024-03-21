@@ -165,7 +165,7 @@ import _ from 'lodash'
 import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
 import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
 import CellRenderDataSetButtons from '@/views-dataHub/components/cellRenderer/CellRenderDataSetButtons'
-import { apiSelfProcessTrafficInfo, apiATTTrafficChart, apiNTTTrafficChart, apiSelectAiDetectionInfo, apiSelfProcessSyslogInfo, apiSopHistList } from '@/api/nia'
+import { apiSelfProcessTrafficInfo, apiATTTrafficChart, apiNTTTrafficChart, apiSelectAiDetectionInfo, apiSelfProcessSyslogInfo, apiSopSyslogHistList } from '@/api/nia'
 import { getTicketType, formatterTime } from '@/views-nia/js/commonFormat'
 import CompChart from '@/components/chart/CompChart.vue'
 
@@ -227,15 +227,6 @@ export default {
   },
   computed: {
     trafficChart() {
-      // collect_time
-      // :
-      // "2024-03-01T22:39:54.000+09:00"
-      // strbytes_col
-      // :
-      // "0"
-      // strcounts
-      // :
-      // "0"
       const { ticket_type } = this.selectedRow
       const chartData = this.trafficChartList
       const xAxisKey = ticket_type === 'ATT2' ? 'measured_datetime' : 'collect_time'
@@ -372,7 +363,7 @@ export default {
       const { node_nm: NODE_NM, alarmmsg: ALARMMSG } = this.syslogInfo
       const param = { NODE_NM, ALARMMSG }
       try {
-        const res = await apiSopHistList(param)
+        const res = await apiSopSyslogHistList(param)
         this.sopHistList = res?.result
       } catch (error) {
         this.error(error)
@@ -421,11 +412,6 @@ span.title {
   i {
     margin-right: 5px;
   }
-}
-.ModalSelfProcessDetail ::v-deep {
-  // .el-dialog__body {
-  //   height: 400px;
-  // }
 }
 ::v-deep .el-form-item__label {
   width: 90px;

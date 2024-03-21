@@ -92,15 +92,10 @@
 
     <!-- agGrid -->
     <div v-if="Object.keys(agGrid).length > 0 " class="d-flex flex-column agGridShell" :style="{ flex: 1}">
-      <div class="d-flex" style="padding-top:20px">
-        <!-- <el-row class="d-flex flex-column w-50" style="justify-content: end; relative;margin-top: -20px;">
-          <slot name="inquireButton" />
-          <el-row class="d-flex flex-column w-50" style="text-align: right">
-            <span>검색결과 : {{ totalCount }}건 </span>
-          </el-row>
-        </el-row> -->
+      <div class="d-flex flex-column w-full text-right font-bold">
+        <slot name="inquireButton" />
+        <span class="mr-2">검색결과 : {{ totalCount }}건 </span>
       </div>
-
       <CompAgGrid
         ref="compSearchEquip"
         v-model="agGrid"
@@ -115,7 +110,6 @@
       />
       <slot name="button-container" />
     </div>
-
   </div>
 </template>
 
@@ -144,6 +138,10 @@ export default {
           pagerCount: null
         }
       }
+    },
+    isModal: {
+      type: Boolean,
+      default: false
     },
     agGrid: {
       type: Object,
@@ -216,13 +214,17 @@ export default {
   methods:
   {
     getHeight() {
-      return this.$parent?.$parent?.name?.includes('Modal') ? '500px' : '100%'
+      return this.$parent?.$parent?.name?.includes('Modal') || this.isModal ? '500px' : '100%'
     },
     onSortChanged(sortedColumns) {
       const sortColInfo = sortedColumns?.length > 0 ? sortedColumns[0] : {}
       this.$emit('sortedChange', sortColInfo)
     },
     handleSearchClear() {
+      const modelKeys = Object.keys(this.searchModel)
+      modelKeys.forEach(key => {
+        this.searchModel[key] = ''
+      })
       this.$emit('searchClear', this.searchModel)
       this.$emit('jsonClear', this.jsonData)
     },
@@ -257,110 +259,75 @@ export default {
 </script>
 
 <style lang="scss">
-
-.nia{
-
+.nia {
   .CompInquiryPannel {
     font-family: "NotoSansKR";
     z-index: 0;
-
     .el-input--medium {
       font-size: 12px;
-
       .el-input__inner {
         height: 25px;
         line-height: 36px;
       }
     }
-
     .el-input,
     .el-input__clear {
       line-height: 25px !important;
     }
-
     .el-range-editor--medium {
       height: 25px;
       line-height: 36px;
-
       .el-range-input{
         font-size: 11px;
       }
-
       .el-range__icon,
       .el-range__close-icon {
         line-height: 19px;
       }
-
       .el-range-separator {
         line-height: 17px;
       }
-
     }
-
     .el-select__input.is-medium{
       display: none !important;
     }
-
     .result-cnt span{
       font-size : 11px
     }
-
-    .CompAgGrid{
+    .CompAgGrid {
       display: inline-block;
       min-width: 50% !important;
-
       .ag-cell{
         font-size: 12px !important;
         font-weight: 200;
       }
-
       .ag-cell-value{
         color:#000000 !important;
-        padding-top: 5px !important;
+        // padding-top: 5px !important;
       }
-
       .ag-header{
         background-color: #fff;
         min-height: 20px !important;
-        // height: 50px !important;
-        // border-top:1px solid #2e3574;
-        border:1px solid #2e3574;
       }
-
-      .ag-Grid-row{
-        height: 20px !important;
-      }
-
       .ag-header-cell{
         font-size: 13px;
         font-weight: 600;
-
       }
-
-      .ag-header-row{
-        // margin-top: 3px !important;
-        // top: 1px !important;
-      }
-
       .ag-body-viewport {
         border-bottom: 1px solid #e8eaec;
       }
-
       .button-container{
         display: flex;
         justify-content: space-between;
       }
-
       .el-input__icon el-icon-circle-close{
         line-height: 26px !important;
       }
-
     }
     .search-container {
       height: auto;
     }
-
-    }
+  }
 }
 </style>
  <style lang="css" scoped>

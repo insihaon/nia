@@ -18,7 +18,7 @@
       >
         <span slot="title">
           <i class="el-icon-document mr-2 text-base" />
-          TICKET SOP 상세보기
+          {{ viewType }} SOP 상세보기
           <hr>
         </span>
         <div class="d-flex flex-column h-100 rounded justify-center" style="border: solid 1px #1e293b;">
@@ -33,7 +33,13 @@
               <el-col v-for="(item, index) in formInfo" :key="index" :span="item.size || 12">
                 <el-form-item :ref="item.model" :label="item.label" class="d-flex items-center">
                   <el-input
+                    v-if="viewType === 'TICKET'"
                     v-model="sopInfo[item.model]"
+                    readonly
+                  />
+                  <el-input
+                    v-if="viewType === 'SYSLOG'"
+                    v-model="syslogInfo[item.model]"
                     readonly
                   />
                 </el-form-item>
@@ -87,6 +93,7 @@ import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
 import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
 import CellRenderDataSetButtons from '@/views-dataHub/components/cellRenderer/CellRenderDataSetButtons'
 import { apiSopCode } from '@/api/nia'
+import { getTicketStatus } from '@/views-nia/js/commonFormat'
 
 const routeName = 'ModalSopDetail'
 
@@ -101,6 +108,7 @@ export default {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       selectedRow: null,
+      viewType: 'TICKET',
       sopCodeList: [],
       visible: false,
       codeKeys: { gubun: '장애구분', type: '장애유형', content: '조치내용' },
@@ -112,26 +120,44 @@ export default {
       sopInfo: {
         ticket_id: '',
         ticket_type: '',
-        node_nm: '',
         node_num: '',
-        ip_addr: ''
+        ip_addr: '',
+      },
+      syslogInfo: {
+        alarmno: '',
+        node_nm: '',
+        alarmloc: '',
+        etc: '',
+        status: '',
       },
       updateInfo: {
         gubun: '',
         type: '',
         content: '',
-      }
+      },
     }
   },
   computed: {
     formInfo() {
-      return [
-        { label: 'TICKET NO.', model: 'ticket_id' },
-        { label: 'TICKET 유형', model: 'ticket_type' },
-        { label: '장비 이름', model: 'root_cause_sysnamea' },
-        { label: '장비 ID', model: 'root_cause_sysnamea' },
-        { label: '마스터 IP', model: 'ip_addra' }
-      ]
+      let form
+      if (this.viewType === 'TICKET') {
+        form = [
+          { label: 'TICKET NO.', model: 'ticket_id' },
+          { label: 'TICKET 유형', model: 'ticket_type' },
+          { label: '장비 이름', model: 'root_cause_sysnamea' },
+          { label: '장비 ID', model: 'root_cause_sysnamea' },
+          { label: '마스터 IP', model: 'ip_addra' }
+        ]
+      } else {
+        form = [
+          { label: '알람번호', model: 'alarmno' },
+          { label: '장비명', model: 'node_nm' },
+          { label: '인터페이스', model: 'alarmloc' },
+          { label: 'syslog 원본메시지', model: 'etc' },
+          { label: '처리상태', model: '_status' },
+        ]
+      }
+      return form
     },
     formUpdate() {
       return [
@@ -149,7 +175,10 @@ export default {
     },
     onOpen(model, actionMode) {
       this.selectedRow = model?.row
-      this._merge(this.sopInfo, this.selectedRow)
+      this.viewType = model?.type
+
+      this.syslogInfo['_status'] = getTicketStatus(null, null, this.selectedRow.status)
+      this._merge(this.viewType === 'TICKET' ? this.sopInfo : this.syslogInfo, this.selectedRow)
       this.onLoadSopCodeList()
     },
     async onLoadSopCodeList() {
@@ -182,6 +211,7 @@ export default {
 ::v-deep .el-form-item__label {
   width: 90px;
   margin-left: 5px;
+  line-height: 20px;
 }
 ::v-deep .el-form-item__content {
   width: calc(100% - 90px);

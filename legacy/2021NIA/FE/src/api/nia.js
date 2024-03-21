@@ -49,6 +49,24 @@ export function apiSelfProcessList(params = {}) {
     data: params
   })
 }
+export function apiEquipmentList(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_EQUIPMENT_LIST',
+    data: params
+  })
+}
+export function apiInterfaceList(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_INTERFACE_LIST',
+    data: params
+  })
+}
 export function apiSelfProcessTrafficInfo(params = {}) {
   return http({
     url: '/selectOne',
@@ -94,6 +112,15 @@ export function apiSelectAiDetectionInfo(params = {}) {
     data: params
   })
 }
+export function apiSopSyslogHistList(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_SOP_SYSLOG_HIST_LIST',
+    data: params
+  })
+}
 export function apiSopHistList(params = {}) {
   return http({
     url: '/selectList',
@@ -103,12 +130,12 @@ export function apiSopHistList(params = {}) {
     data: params
   })
 }
-export function apiSopList(params = {}) {
+export function apiAlarmCurAndHistList(params = {}) {
   return http({
     url: '/selectList',
     method: 'post',
     filePath: filePath,
-    sqlId: 'SELECT_SOP_LIST',
+    sqlId: 'SELECT_ALARM_CURRENT_HISTORY_LIST',
     data: params
   })
 }
