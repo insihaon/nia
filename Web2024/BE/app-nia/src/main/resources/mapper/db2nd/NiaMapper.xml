@@ -727,16 +727,6 @@
                     dst_protocol,
                     dst_port ) dt
                     limit 200
-                <!-- <if test="rank_order != null and rank_order != ''">
-                    <choose>
-                        <when test="rank_order != null and rank_order != ''">
-                        limit #{rank_order}
-                        </when>
-                        <otherwise>
-                        limit 200
-                        </otherwise>
-                    </choose>
-                </if> -->
     </select>
 
     <!-- 어플리케이션 코드리스트 -->
@@ -911,8 +901,8 @@
                     END
             END AS AUTO_PROCESS_INFO,
             TO_CHAR(CHNG_DATETIME, 'YYYY-MM-DD HH:MI:SS') AS CHNG_DATETIME,
-            ROW_NUMBER() OVER (ORDER BY PROFILE_NUM) AS ROWNUM,
-            COUNT(1) OVER () AS "PROFILETOTALCOUNT"
+            ROW_NUMBER() OVER (ORDER BY PROFILE_NUM) AS ROWNUM
+            <!-- COUNT(1) OVER () AS "PROFILETOTALCOUNT" -->
         FROM RESOURCE.TB_FAULT_PROCESS_PROFILE
         WHERE 1=1
         <if test="profile_title != null and profile_title != ''">
@@ -960,8 +950,8 @@
                 TNM.NODE_DIVISION,
                 TNM.VENDOR,
                 TNM.SFLOW_IP,
-                TO_CHAR(TNM.CHNG_DATETIME, 'YYYY-MM-DD HH:MI:SS') AS CHNG_DATETIME,
-                COUNT(1) OVER () AS "NODETOTALCOUNT"
+                TO_CHAR(TNM.CHNG_DATETIME, 'YYYY-MM-DD HH:MI:SS') AS CHNG_DATETIME
+                <!-- COUNT(1) OVER () AS "NODETOTALCOUNT" -->
                 FROM RESOURCE.TB_NODE_MST TNM
                 LEFT OUTER JOIN RESOURCE.TB_CODE CODE ON (TNM.MODEL_ID = CODE.CODE_ID)
                 WHERE 1=1
@@ -989,8 +979,8 @@
      <select id="SELECT_PORT_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
         SELECT
             ROW_NUMBER() OVER () AS ROWNUM,
-            *,
-            COUNT(1) OVER () AS "PORTTOTALCOUNT"
+            *
+            <!-- COUNT(1) OVER () AS "PORTTOTALCOUNT" -->
         FROM (
              SELECT DISTINCT
                  TPM.NODE_NUM,
@@ -1022,7 +1012,7 @@
         SELECT
             ROW_NUMBER() OVER () AS ROWNUM
             , *
-            , COUNT(1) OVER () AS "LINKTOTALCOUNT"
+            <!-- , COUNT(1) OVER () AS "LINKTOTALCOUNT" -->
         FROM (
         SELECT DISTINCT
         BL.SRC_NODE_NUM
@@ -1075,13 +1065,13 @@
             TUO.NREN_ID,
             TUO.NREN_NAME,
             TUO.NODE_ID,
-            TUO.IF_ID AS NODE_INT,
+            TUO.IF_ID,
             IF.IF_NM,
             COALESCE(REGEXP_REPLACE((REVERSE((REGEXP_MATCH(REVERSE(IF.IF_NM), E'G[0-9]+'))[1])), 'G', ''), CAST(CAST(TUO.BANDWIDTH AS BIGINT) / 1000000000 AS BIGINT)::CHAR) AS BANDWIDTH,
             TUO.CUSTOMER_ID,
             TUO.EMAIL,
-            ROW_NUMBER() OVER (ORDER BY NREN_ID) AS ROWNUM,
-            COUNT(1) OVER () AS "AGENCYTOTALCOUNT"
+            ROW_NUMBER() OVER (ORDER BY NREN_ID) AS ROWNUM
+            <!-- COUNT(1) OVER () AS "AGENCYTOTALCOUNT" -->
         FROM RESOURCE.TB_USER_ORGAN TUO
         LEFT OUTER JOIN (SELECT DISTINCT NODE_ID, IF_ID, IF_NM FROM RESOURCE.TB_PORT_MST) IF ON IF.NODE_ID = TUO.NODE_ID AND IF.IF_ID = TUO.IF_ID
         WHERE 1=1
@@ -1097,12 +1087,88 @@
         ORDER BY NREN_ID
     </select>
 
-    <!-- 이용기관 인터페이스 ID 리스트 조회 -->
+    <!-- 이용기관 인터페이스 IF ID 리스트 조회 -->
+     <select id="SELECT_AGENCY_NODE_ID_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+        --         select distinct node_id from resource.tb_user_organ tuo
+        SELECT distinct
+            node_nm AS node_id
+            , 'IP' AS TYPE
+        FROM resource.tb_node_mst
+        ORDER BY node_nm ASC
+    </select>
+
+    <!-- 이용기관 인터페이스 IF ID 리스트 조회 -->
     <select id="SELECT_AGENCY_IF_ID_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
 --         select distinct if_id from resource.tb_user_organ tuo
-        SELECT DISTINCT IF_ID, IF_SPEED
+        SELECT DISTINCT IF_ID,
+                IF_SPEED
         FROM RESOURCE.TB_PORT_MST
-        WHERE NODE_ID = #{node_name} and IF_OPER_STATUS = 'up'
-        ORDER BY IF_ID
+        WHERE NODE_ID = #{node_name}
+            AND IF_OPER_STATUS = 'up'
+        ORDER BY IF_ID 
     </select>
+
+
+<!-- 이용기관 IP 리스트  -->
+    <select id="SELECT_AGENCY_IP_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+        SELECT
+            NREN_ID,
+            NREN_NAME,
+            NREN_IP
+        FROM RESOURCE.TB_USER_ORGAN_IP
+        <where>
+            <trim prefix="(" prefixOverrides="AND|OR" suffix=")" suffixOverrides="">
+                <if test="nren_id != null and nren_name != null">
+                    AND NREN_ID = #{nren_id} AND NREN_NAME = #{nren_name}
+                </if>
+                <if test="node_id != null">
+                    AND NREN_ID IN (SELECT NREN_ID FROM RESOURCE.TB_USER_ORGAN WHERE NODE_ID = #{node_id})
+                </if>
+            </trim>
+        </where>
+    </select>
+
+    <!-- 이용기관 IP 추가  -->
+    <insert id="INSERT_AGENCY_IP_LIST" parameterType="java.util.HashMap">
+    INSERT INTO RESOURCE.TB_USER_ORGAN_IP
+    (
+        NREN_ID, 
+        NREN_NAME,
+        NREN_IP
+    )
+    VALUES
+    (
+        #{nren_id},
+        #{nren_name},
+        #{nren_ip}
+    )
+    </insert>
+
+    <!-- 이용기관 IP 삭제 -->
+    <delete id="DELETE_AGENCY_IP_LIST" parameterType="hashmap">
+        DELETE FROM RESOURCE.TB_USER_ORGAN_IP
+        <where>
+            <trim prefixOverrides="AND|OR">
+                <if test="nren_id != null">
+                    AND NREN_ID = #{nren_id}
+                </if>
+                <if test="nren_name != null">
+                    AND NREN_NAME = #{nren_name}
+                </if>
+                <if test="nren_ip != null">
+                    AND NREN_IP = #{nren_ip}
+                </if>
+            </trim>
+        </where>
+    </delete>
+
+    <!-- 이용기관 리스트 수정 -->
+    <update id="UPDATE_AGENCY_DETAIL_LIST">
+        update resource.tb_user_organ
+        <set>
+            CUSTOMER_ID = #{customer_id},
+            EMAIL = #{email}
+        </set>
+        WHERE NREN_ID = #{nren_id}
+    </update>
 </mapper>
