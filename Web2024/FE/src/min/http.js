@@ -1,5 +1,5 @@
 import { AppOptions } from '@/class/appOptions'
-import { clone, getJsonfileName, wait } from '@/utils'
+import { clone, getJsonfileName, getJsonfileName2, wait } from '@/utils'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
 import axios from 'axios'
@@ -49,13 +49,13 @@ service.interceptors.request.use(
       config.requestTime = Date.now()
       config.headers['fileIndex'] = config.fileIndex
       config.headers['project'] = project
-      config.headers['jsonFileName'] = getJsonfileName(url, config)
       config.headers['urlOrigin'] = config.urlOrigin = url
       if (store.getters.server) {
         config.headers['_t'] = Encrypt.toEncrypt(String(Date.now() - (store.getters.server.timeDiff || 0)))
       }
 
       if (serverMock === true) {
+        config.headers['jsonfilename'] = getJsonfileName2(url, config)
         config.url = '/mock'
       }
 

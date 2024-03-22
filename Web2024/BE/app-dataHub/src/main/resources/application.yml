@@ -60,7 +60,9 @@ spring:
   datasource2nd:
     enabled: true
     driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-    url: jdbc:log4jdbc:postgresql://incodej.iptime.org:22432/datahub
+    # url: ENC(nga7aHhKEHxf43nuOo6cCSfTCs5yT3z4O9sBOlF/T0bpCSqZTPdnJ+Tn/sJQaoU9UY8NaiGeXx3P/bAIV+YGiw==)
+    # url: jdbc:log4jdbc:postgresql://incodej.iptime.org:22432/datahub
+    url: jdbc:log4jdbc:postgresql://incodej.iptime.org:22543/datahub
     username: ENC(Foe1N9w7xSwqRPUP0bK2BA==)
     password: ENC(wP3cyL4akqyo58OMIx8SSJ7dtMmP5bWo)
     dataSource-name: ENC(BM4aY0nH3QmYagxcv7bOvA==)
