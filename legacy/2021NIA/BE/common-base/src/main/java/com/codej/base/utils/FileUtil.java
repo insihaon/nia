@@ -48,6 +48,16 @@ public class FileUtil {
 		return file;
 	}
 
+	public static boolean existFile(String pathname) {
+		try {
+			File file = new File(pathname);
+			return file != null && file.exists();
+		} catch (Exception e) {
+		}
+
+		return false;
+	}
+
 	public static String getCurrentDir() {
 		return System.getProperty("user.dir");
 	}

@@ -45,7 +45,14 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
         try {
-            String token = jwtTokenProvider.resolveToken((HttpServletRequest) request);
+            HttpServletRequest httpRequest = (HttpServletRequest) request;
+            String token = jwtTokenProvider.resolveToken(httpRequest);
+            String requestURI = httpRequest.getRequestURI();
+
+            if ("/mock".equals(requestURI)) {
+                throw new Exception("JwtAuthenticationFilter PASS");
+            }
+            
             boolean isBanned = token != null && jwtTokenProvider.isBannedTocken(token, true);
             boolean validate = token != null && jwtTokenProvider.validateToken(token, "JwtAuthenticationFilter");
             if (isBanned) {

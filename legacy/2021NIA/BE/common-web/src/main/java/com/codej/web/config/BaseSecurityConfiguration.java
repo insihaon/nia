@@ -63,6 +63,7 @@ public class BaseSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll() 
                 .antMatchers("/signin", "/signin/**", "/signup", "/signup/**", "/social/**", "/cache/**").permitAll() 
                 .antMatchers("/getkey/**", "/currentkey/**", "/loginform/**", "/kickout/**").permitAll() 
+                .antMatchers("/mock").permitAll() 
                 .antMatchers(fileStorage.getAccessUrl()).permitAll()
                 .antMatchers(HttpMethod.GET, "/exception/**", "/favicon.ico").permitAll() 
                 .antMatchers(dataUrlPattern).authenticated()

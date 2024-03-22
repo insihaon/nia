@@ -663,6 +663,62 @@ export function sortObjectKeys(obj) {
   }, {})
 }
 
+function toSimpleString(arr, regex) {
+  // 1. 정규 표현식 객체 생성
+  const re = new RegExp(regex)
+
+  // 2. 배열 필터링
+  // const filteredArr = arr.filter(element => {
+  // 	// 3. 각 요소를 정규 표현식으로 테스트
+  // 	return re.test(element);
+  // });
+
+  const filteredArr = arr
+
+  // 4. 필터링된 배열의 각 요소에서 매칭된 부분만 추출
+  const matchingElements = filteredArr.map(element => {
+    // 4.1. exec() 메서드를 사용하여 매칭 결과 객체 얻기
+    const match = re.exec(element)
+
+    // 4.2. 매칭 결과 객체에서 그룹 값 추출
+    return match?.at(0) || ''
+  })
+
+  // 5. 추출된 값들을 배열로 반환
+  return matchingElements.join('|')
+}
+
+function convertText(data) {
+  let json = data
+  if (typeof data === 'object') {
+    // console.log(JSON.stringify(data))
+    const values = Object.values(data)
+    const regex = /^(?:\S{1,10})/
+    json = toSimpleString(values, regex)
+  }
+  const bytes = new TextEncoder().encode(json)
+  const base64 = btoa(String.fromCharCode(...bytes))
+  const urlSafe = base64
+    .replace(/=/g, '')
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+  return urlSafe
+}
+
+export function getJsonfileName2(url, config) {
+  const param = config.data
+
+  delete param.encrypt
+  delete param._t
+
+  const param_encoding = convertText(JSON.parse(JSON.stringify(param)))
+  const param_encoding_min = param_encoding.replace(/[^0-9]/g, '')
+  const url_encoding = url.replace(/^(\/selectList|\/selectOne|\/modify|\/)/g, '')
+  const filename = `${convertText(url_encoding)}_${param_encoding}.json`
+
+  return filename
+}
+
 export function getJsonfileName(url, config) {
   const { data, fileIndex } = config
   let { command, sqlId } = config
