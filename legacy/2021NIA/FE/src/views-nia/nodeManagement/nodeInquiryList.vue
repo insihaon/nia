@@ -81,7 +81,7 @@ export default {
         { type: '', prop: 'admin_yn_info', name: '사용여부', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
         { type: '', prop: 'chng_datetime', name: '수정일', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
         { type: '', prop: 'rx_pkt_rate', name: '포트', minWidth: 30, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true,
-          cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { type: 'nodeManegement', action: this.handleOpenModalDetail.bind(this) } }
+          cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '관리', icon: 's-tools', type: 'node-mng', action: this.handleOpenModalDetail.bind(this) } }
       ]
       return { options, columns, data: this.nodeData, getRightClickMenuItems: () => { return [] } }
     },

@@ -1,8 +1,8 @@
 <template>
   <div class="cell-container" :class="{ [name]: true }">
-    <div class="button-panel">
+    <div v-if="isShow()" class="button-panel">
       <div :class="linkType" size="mini" @click="openModal(params)">
-        <i :class="classType" /> {{ getLable }}
+        <i :class="{['el-icon-'+params.icon] : true}" /> {{ getLable }}
       </div>
     </div>
   </div>
@@ -19,46 +19,26 @@ export default Vue.extend({
       name: routeName,
     }
   },
-  moutned() {
-  },
   computed: {
     getLable() {
-      let result = ''
-      if (this.params.type === 'sop') {
-        result = 'SOP'
-      } else if (this.params.type === 'alarm') {
-        result = '장애 대응'
-      } else if (this.params.type === 'nodeManegement') {
-        result = '관리'
-      } else {
-        result = '수정/삭제'
-      }
-      return result
-    },
-    classType() {
-      let result = ''
-      if (this.params.type === 'editAgency' || this.params.type === 'editApp') {
-        result = 'el-icon-edit'
-      } else if (this.params.type === 'nodeManegement') {
-        result = 'el-icon-s-tools'
-      } else {
-        result = 'el-icon-circle-check'
-      }
-      return result
+      return this.params?.name ?? ''
     },
     linkType() {
-      let result = ''
-      if (this.params.type === 'editAgency' || this.params.type === 'editApp') {
-        result = 'edit-class'
-      } else if (this.params.type === 'nodeManegement') {
-        result = 'node-class'
+      if (this.params.type.includes('edit')) {
+        return 'edit-class'
       } else {
-        result = 'sop-class'
+        return `${this.params.type}-class`
       }
-      return result
     }
   },
   methods: {
+    isShow() {
+      const { data, type } = this.params
+      if (data.ticket_type === 'SYSLOG' && type === 'alarm') {
+        return false
+      }
+      return true
+    },
     openModal(params) {
       params.action(params.data, params.type)
     },
@@ -66,27 +46,26 @@ export default Vue.extend({
 })
 </script>
 <style lang="scss" scoped>
-.CellRenderAibuttons{
-
+.CellRenderAibuttons {
   &:hover{
     color: red !important;
     cursor: pointer
   }
-
   .edit-class {
     text-decoration: underline;
     color: blue !important;
-    }&:hover{
-      color: rgb(23, 162, 255) !important;
-    }
-
-  .node-class{
+  }
+  &:hover{
+    color: rgb(23, 162, 255) !important;
+  }
+  .node-mng-class {
     color: rgb(86, 84, 84) !important;
     font-size: 15px !important;
     font-weight: 400;
-  }&:hover{
-     text-decoration: underline;
-     color: rgb(86, 84, 84) !important;
-   }
+  }
+  &:hover {
+    text-decoration: underline;
+    color: rgb(86, 84, 84) !important;
+  }
 }
 </style>

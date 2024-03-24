@@ -137,6 +137,7 @@ import ModalSopList from '@/views-nia/modal/ModalSopList'
 import ModalAiResponse from '@/views-nia/modal/ModalAiResponse'
 import ModalSelfProcessList from '@/views-nia/modal/ModalSelfProcessList'
 import { apiIpAlarmList, apiTransmissionAlarmList, apiDashboardStatistics, apiSelfProcessStatistics } from '@/api/nia'
+import { getAlarmType } from '@/views-nia/js/commonFormat'
 const routeName = 'NiaMain'
 
 export default {
@@ -173,7 +174,10 @@ export default {
         { type: '', prop: 'ticket_id', name: 'TICKET_ID', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'ticket_generation_time', name: '최초 장애 발생시간', width: 200, alignItems: 'center', fixed: false, suppressMenu: true, formatter: (row) => { return this.formatterTimeStamp(row.ticket_generation_time, 'YYYY/MM/DD-HH:mm:ss') } },
         { type: '', prop: 'status', name: '상태', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, formatter: this.getStatus },
-        { type: '', prop: 'ticket_type', name: 'ALARM TYPE', width: 150, alignItems: 'center', fixed: false, suppressMenu: true, formatter: this.getAlarmType },
+        { type: '', prop: '', name: 'SOP', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: 'SOP', icon: 'circle-check', type: 'SOP', action: this.handleOpenEditModal.bind(this) } },
+        { type: '', prop: '', name: '장애대응', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '장애대응', icon: 'circle-check', type: 'alarm', action: this.handleOpenEditModal.bind(this) } },
+        { type: '', prop: '', name: '상황전파', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '조치요청', icon: 'circle-check', type: 'NTF', action: this.handleOpenEditModal.bind(this) } },
+        { type: '', prop: 'ticket_type', name: 'ALARM TYPE', width: 150, alignItems: 'center', fixed: false, suppressMenu: true, formatter: getAlarmType },
         { type: '', prop: 'root_cause_type', name: '장애유형', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'ticket_rca_result_code', name: '장애내용', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'ticket_rca_result_dtl_code', name: '장애 원인', width: 200, alignItems: 'center', fixed: false, suppressMenu: true },
@@ -182,10 +186,6 @@ export default {
         { type: '', prop: 'alarmloc', name: '인터페이스명', width: 200, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'total_related_alarm_cnt', name: '근원알람개수', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'ip_addr', name: 'ip_addr', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
-        { type: '', prop: '', name: 'SOP', width: 100, alignItems: 'center', fixed: false, suppressMenu: true,
-        cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: 'SOP', type: 'sop', action: this.handleOpenEditModal.bind(this) } },
-        { type: '', prop: '', name: '장애대응', width: 100, alignItems: 'center', fixed: false, suppressMenu: true,
-         cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '장애대응', type: 'alarm', action: this.handleOpenEditModal.bind(this) } }
       ]
       const options = { name: this.name, checkable: false, rowGroupPanel: false }
       return { options, columns, data: this.ipNetworkList, onDoesExternalFilterPass: this.onIpDoesExternalFilterPass }
@@ -196,7 +196,10 @@ export default {
         { type: '', prop: 'cluster_no', name: '클러스터 No.', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'fault_time', name: '최초 장애 발생시간', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'status', name: '상태', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, formatter: this.getStatus },
-        { type: '', prop: 'ticket_type', name: 'ALARM TYPE', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, formatter: this.getAlarmType },
+        { type: '', prop: '', name: 'SOP', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: 'SOP', icon: 'circle-check', type: 'sop', action: this.handleOpenEditModal.bind(this) } },
+        { type: '', prop: '', name: '장애대응', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '장애대응', icon: 'circle-check', type: 'alarm', action: this.handleOpenEditModal.bind(this) } },
+        { type: '', prop: '', name: '상황전파', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '조치요청', icon: 'circle-check', type: 'NTF', action: this.handleOpenEditModal.bind(this) } },
+        { type: '', prop: 'ticket_type', name: 'ALARM TYPE', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, formatter: getAlarmType },
         { type: '', prop: 'root_cause_type', name: '장애유형', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'ticket_rca_result_dtl_code', name: '장애 원인', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'total_related_alarm_cnt', name: '근원알람개수', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
@@ -509,7 +512,6 @@ export default {
       }
       return type
     },
-
     getStatus(row, col, value, index) {
       let result = ''
       switch (row.status) {
@@ -524,7 +526,7 @@ export default {
           break
         case 'AUTO_FIN':
         result = '자동마감'
-          break
+        break
         default:
           break
       }
@@ -553,7 +555,7 @@ export default {
           break
         case 'SYSLOG':
         result = 'SYSLOG'
-        break
+          break
         default:
           break
       }
