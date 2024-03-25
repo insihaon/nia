@@ -1,0 +1,70 @@
+{
+  "success": true,
+  "encrypt": false,
+  "sql": "SELECT\n        TAM.API_ID,\n        TAM.API_NAME,\n        TAM.SYSTEM_ID,\n        TAM.API_URL,\n        TAM.INTGR_INTERVAL,\n        TAM.API_DESC,\n        TAM.EXPIRD_TIME,\n        TAM.UPDATE_TIME\n    ,CASE\n        WHEN EXEC_MODE_CD = 'B' THEN 'Batch'\n        WHEN EXEC_MODE_CD = 'F' THEN 'SFTP'\n        ELSE 'OnDemand'\n    END AS EXEC_MODE_CD\n    FROM\n        DATAHUB.TB_API_MST TAM\n    WHERE 1=1\n    GROUP BY\n        TAM.API_ID,\n        TAM.API_NAME,\n        TAM.API_URL,\n        TAM.INTGR_INTERVAL,\n        TAM.API_DESC,\n        TAM.EXPIRD_TIME,\n        TAM.UPDATE_TIME,\n        EXEC_MODE_CD",
+  "total": 5,
+  "result": [
+    {
+      "api_id": 38,
+      "expird_time": null,
+      "update_time": "2023-11-15T14:10:16.035+09:00",
+      "api_desc": "TEST_서비스_000",
+      "exec_mode_cd": "OnDemand",
+      "api_url": "/WS_000",
+      "api_name": "TEST_서비스_000",
+      "system_id": 10,
+      "intgr_interval": null
+    },
+    {
+      "api_id": 39,
+      "expird_time": null,
+      "update_time": null,
+      "api_desc": "TEST_서비스_000_Batch",
+      "exec_mode_cd": "Batch",
+      "api_url": "http://10.220.178.141:28000/WS_000",
+      "api_name": "TEST_서비스_000_Batch",
+      "system_id": 13,
+      "intgr_interval": null
+    },
+    {
+      "api_id": 40,
+      "expird_time": null,
+      "update_time": null,
+      "api_desc": "교환 TT 재해 정보 연동",
+      "exec_mode_cd": "OnDemand",
+      "api_url": "/WS_008",
+      "api_name": "교환 TT 재해 정보 연동",
+      "system_id": 10,
+      "intgr_interval": null
+    },
+    {
+      "api_id": 41,
+      "expird_time": null,
+      "update_time": null,
+      "api_desc": "TT조치이력 송신",
+      "exec_mode_cd": "OnDemand",
+      "api_url": "/WS_005",
+      "api_name": "TT조치이력 송신",
+      "system_id": 11,
+      "intgr_interval": null
+    },
+    {
+      "api_id": 53,
+      "expird_time": null,
+      "update_time": null,
+      "api_desc": "TT고장 발생/회복 정보",
+      "exec_mode_cd": "OnDemand",
+      "api_url": "/WS_009",
+      "api_name": "TT고장 발생/회복 정보",
+      "system_id": 13,
+      "intgr_interval": null
+    }
+  ],
+  "config": {
+    "url": "http://localhost:8070/selectList/SELECT_API_INFO_LIST",
+    "param": {},
+    "receivedTime": "2024-03-21 10:12:48.781",
+    "duration": 58,
+    "filename": "L1NFTEVDVF9BUElfSU5GT19MSVNU_.json"
+  }
+}
