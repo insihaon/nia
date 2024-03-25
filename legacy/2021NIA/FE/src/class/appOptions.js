@@ -1,4 +1,4 @@
-import { Storage } from '@/assets/libs/Storage.min'
+import { Storage } from '@/assets/libs/Storage'
 import store from '@/store'
 import { Device } from './device'
 const { param2Obj, reload } = require('@/utils')
@@ -42,6 +42,9 @@ export class AppOptions extends Storage {
     })
     this._load()
     this._defineProp()
+    // _load 된 데이터를 encrypt / decrypt 로 적용하기 위해 저장
+    this._save()
+
     this._data.baseURL = this._getDefaultBaseUrl()
 
     const href = location.href
@@ -64,10 +67,6 @@ export class AppOptions extends Storage {
 
   get isGod() {
     return this.debug
-  }
-
-  get debugOrDev() {
-    return this.debug || NODE_ENV_DEV
   }
 
   setFrontMock(mockMode) {
