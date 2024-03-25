@@ -117,7 +117,7 @@ module.exports = {
     //     changeOrigin: true
     //   }
     // },
-    before: require('./mock/mock-server.js'), // nodejs 서버 실행
+    // before: require('./mock/mock-server.js'), // nodejs 서버 실행
     // #region no live-reload start
     hot: liveReload,
     inline: liveReload,
