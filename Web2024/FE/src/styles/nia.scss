@@ -10,12 +10,13 @@ table.basic {
   td {
     padding: 10px;
     border: 1px solid #bdbdbd;
+    text-align: left !important;
   }
   th {
     font-weight: normal;
     // color: #fff;
     background: #cfd5e28f;
-    text-align: center;
+    text-align: center !important;
     font-size: 14px;
     max-width: 50px;
   }
@@ -78,7 +79,6 @@ table.basic {
 }
 
 .nia-edit-dialog {
-  font-family: 'NanumSquare';
   .el-dialog {
     border: 2px solid $nia-primary;
     box-shadow: 0 1px 5px 0 rgb(0 0 0 / 27%);
@@ -100,14 +100,10 @@ table.basic {
     max-height: auto;
     background: #fff;
   }
+
   .el-dialog__footer {
     height: 70px !important;
     background-color: white !important;
-  }
-
-  .el-button {
-    background: $nia-primary;
-    color: #fff;
   }
 
   .exit-btn{
@@ -122,6 +118,8 @@ table.basic {
     }
   }
 }
+
+
 
 .nia, .nia-dialog {
   .splitter-paneL, .splitter-paneR {

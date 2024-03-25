@@ -1,96 +1,98 @@
 <template>
   <div>
-    <el-dialog
-      v-if="animationVisible"
-      v-el-drag-dialog
-      :visible.sync="visible"
-      :width="domElement.maxWidth + `px`"
-      :fullscreen.sync="fullscreen"
-      :modal-append-to-body="false"
-      :append-to-body="true"
-      :modal="modal"
-      :close-on-click-modal="closeOnClickModal"
-      :loading="loading"
-      class="nia-edit-dialog"
-      :class="{ [name]: true }"
-    >
-      <span slot="title">
-        <i class="el-icon-user mr-2" style="font-size: 17px" />
-        {{ '이용기관 상세보기' }}
-        <hr>
-      </span>
-      <table class="basic">
-        <th>기관ID</th>
-        <td class="disable">{{ rowInfo.nren_id }}</td>
-        <th>기관명</th>
-        <td class="disable">{{ rowInfo.nren_name }}</td>
-        <tr>
-          <th>노드명</th>
-          <td class="disable">{{ rowInfo.node_id }}</td>
-          <th>IF명</th>
-          <td class="disable">{{ rowInfo.if_id }}</td>
-        </tr>
-        <tr>
-          <th>고객ID</th>
-          <td class="disable">
-            <el-input v-model="rowInfo.customer_id">
-              {{ rowInfo.customer_id }}
-            </el-input>
-          </td>
-          <th>대역폭(Gbps)</th>
-          <td class="disable">{{ rowInfo.bandwidth }}</td>
-        </tr>
-        <tr>
-          <th colspan="1">담당Email</th>
-          <td colspan="3" class="disable">
-            <el-input
-              v-model="rowInfo.email"
-              clearable
-            />
-          </td>
-        </tr>
-        <tr>
-          <th colspan="1">IP등록</th>
-          <td colspan="3" class="disable">
-            <el-input
-              v-model="ip_num"
-              clearable
-              style="width:80%; min-width:70%;float:left"
-            />
-            <el-button
-              size="mideum"
-              style="float:right"
-              plain
-              @click="insertAgencyIpData()"
-            >추가
-            </el-button>
-          </td>
-        </tr>
-        <tr>
-          <th colspan="1">IP</th>
-          <td colspan="3" class="disable">
-            <el-upload
-              class="ip-list"
-              action="#"
-              :on-remove="handleRemove"
-              :before-remove="beforeRemove"
-              multiple
-              :limit="3"
-              :file-list="ipList"
-            />
-          </td>
-        </tr>
-      </table>
+    <transition :name="animation">
+      <el-dialog
+        v-if="animationVisible"
+        v-el-drag-dialog
+        :visible.sync="visible"
+        :width="domElement.maxWidth + `px`"
+        :fullscreen.sync="fullscreen"
+        :modal-append-to-body="false"
+        :append-to-body="true"
+        :modal="modal"
+        :close-on-click-modal="closeOnClickModal"
+        :loading="loading"
+        class="nia-edit-dialog"
+        :class="{ [name]: true }"
+      >
+        <span slot="title">
+          <i class="el-icon-user mr-2" style="font-size: 17px" />
+          {{ '이용기관 상세보기' }}
+          <hr>
+        </span>
+        <table class="basic">
+          <th>기관ID</th>
+          <td class="disable">{{ rowInfo.nren_id }}</td>
+          <th>기관명</th>
+          <td class="disable">{{ rowInfo.nren_name }}</td>
+          <tr>
+            <th>노드명</th>
+            <td class="disable">{{ rowInfo.node_id }}</td>
+            <th>IF명</th>
+            <td class="disable">{{ rowInfo.if_id }}</td>
+          </tr>
+          <tr>
+            <th>고객ID</th>
+            <td class="disable">
+              <el-input v-model="rowInfo.customer_id">
+                {{ rowInfo.customer_id }}
+              </el-input>
+            </td>
+            <th>대역폭(Gbps)</th>
+            <td class="disable">{{ rowInfo.bandwidth }}</td>
+          </tr>
+          <tr>
+            <th colspan="1">담당Email</th>
+            <td colspan="3" class="disable">
+              <el-input
+                v-model="rowInfo.email"
+                clearable
+              />
+            </td>
+          </tr>
+          <tr>
+            <th colspan="1">IP등록</th>
+            <td colspan="3" class="disable">
+              <el-input
+                v-model="ip_num"
+                clearable
+                style="min-width:70%;"
+              />
+              <el-button
+                size="mideum"
+                style="float:right"
+                plain
+                @click="insertAgencyIpData()"
+              >추가
+              </el-button>
+            </td>
+          </tr>
+          <tr>
+            <th colspan="1">IP</th>
+            <td colspan="3" class="disable">
+              <el-upload
+                class="ip-list"
+                action="#"
+                :on-remove="handleRemove"
+                :before-remove="beforeRemove"
+                multiple
+                :limit="3"
+                :file-list="ipList"
+              />
+            </td>
+          </tr>
+        </table>
 
-      <div slot="footer" class="dialog-footer">
-        <el-button size="medium" @click.native="editAgencyData()">
-          {{ '저장' }}
-        </el-button>
-        <el-button class="exit-btn" size="medium" @click.native="close()">
-          {{ $t('exit') }}
-        </el-button>
-      </div>
-    </el-dialog>
+        <div slot="footer" class="dialog-footer">
+          <el-button size="medium" @click.native="editAgencyData()">
+            {{ '저장' }}
+          </el-button>
+          <el-button class="exit-btn" size="medium" @click.native="close()">
+            {{ $t('exit') }}
+          </el-button>
+        </div>
+      </el-dialog>
+    </transition>
   </div>
 </template>
 
