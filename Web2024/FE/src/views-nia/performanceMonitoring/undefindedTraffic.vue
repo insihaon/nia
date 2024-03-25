@@ -127,7 +127,7 @@ export default {
         { type: '', prop: 'nren_name', name: '이용기관명', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center' },
         { type: '', prop: 'nren_ip', name: 'IP주소', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center' },
          { type: '', prop: '', name: '', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center',
-          cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { type: 'editAgency', action: this.handleOpenEditModal.bind(this) } }
+          cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '수정/삭제', icon: 'edit', type: 'editAgency', action: this.handleOpenEditModal.bind(this) } }
       ]
       return { options, columns, data: this.agencyData, getRightClickMenuItems: () => { return [] } }
     },
@@ -139,7 +139,7 @@ export default {
         { type: '', prop: 'protocol', name: '어플리케이션명', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center' },
         { type: '', prop: 'port_num', name: 'PORT 번호', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center' },
         { type: '', prop: '', name: '', minWidth: 30, flex: 0, suppressMenu: true, alignItems: 'center',
-          cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { type: 'editApp', action: this.handleOpenEditModal.bind(this) } }
+          cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '수정/삭제', icon: 'edit', type: 'editApp', action: this.handleOpenEditModal.bind(this) } }
       ]
       return { options, columns, data: this.appData, getRightClickMenuItems: () => { return [] } }
     },
