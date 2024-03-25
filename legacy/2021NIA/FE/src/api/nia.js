@@ -289,13 +289,62 @@ export function apiSelectAgencyList(params = {}) {
   })
 }
 
+export function apiSelectAgencyNodeIdList(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_AGENCY_NODE_ID_LIST',
+    data: params
+  })
+}
+
 export function apiSelectAgencyIfIdList(params = {}) {
   return http({
     url: '/selectList',
     method: 'post',
     filePath: filePath,
-    sqlId: 'SELECT_AGENCY_LIST',
+    sqlId: 'SELECT_AGENCY_IF_ID_LIST',
     data: params
   })
 }
 
+export function apiSelectAgencyIpList(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_AGENCY_IP_LIST',
+    data: params
+  })
+}
+
+export function apiInsertAgencyIpList(params = {}) {
+  return http({
+    url: '/selectOne',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'INSERT_AGENCY_IP_LIST',
+    data: params
+  })
+}
+
+export function apiDeleteAgencyIpList(params = {}) {
+  return http({
+    url: '/modify',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'DELETE_AGENCY_IP_LIST',
+    data: params
+  })
+}
+
+export function apiUpdateAgencyList(params = {}) {
+  return http({
+    url: '/modify',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'UPDATE_AGENCY_DETAIL_LIST',
+    data: params
+  })
+}

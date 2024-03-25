@@ -12,7 +12,7 @@
       @onChangePage="onChangePage"
       @searchClear="searchClear"
     />
-    <ModalAgencyDetail ref="ModalAgencyDetail" />
+    <ModalAgencyDetail ref="ModalAgencyDetail" @systemEdit="onLoadAgencyList()" />
   </div>
 </template>
 <script>
