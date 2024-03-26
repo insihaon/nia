@@ -8,19 +8,23 @@
       :search-model.sync="searchModel"
       :pagination-info="paginationInfo"
       class="w-100 h-100"
+      @handleClickSearch="onClickSearch"
+      @onChangePage="onChangePage"
+      @searchClear="searchClear"
     />
   </div>
 </template>
 <script>
 import { Base } from '@/min/Base.min'
 import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
-import { } from '@/api/nia'
+import { apiSelectUserList } from '@/api/nia'
+import CellRenderSelectBox from '@/views-nia/components/cellRenderer/CellRenderSelectBox'
 
 const routeName = 'AuthSettings'
 export default {
   name: routeName,
   // eslint-disable-next-line vue/no-unused-components
-  components: { CompInquiryPannel },
+  components: { CompInquiryPannel, CellRenderSelectBox },
   extends: Base,
   data() {
     return {
@@ -33,73 +37,71 @@ export default {
         totalPages: null, // 전체 페이지 수
         pagerCount: 11
       },
-      authData: [],
+      userData: [],
       searchItems: [
-        { label: 'Top N', type: 'select', multiple: false, placeholder: '', model: 'rank_order', icon: 'el-icon-warning', setting: { allOption: { toggle: true } } },
-        { label: '권한 설정', type: 'select', multiple: true, model: 'status_cd', setting: { allOption: { toggle: true } },
+        { label: '이름 검색', type: 'input', multiple: false, placeholder: '', model: 'name', icon: 'el-icon-search' },
+        { label: '권한 설정', type: 'select', multiple: true, model: 'lvl_value', icon: 'el-icon-setting', setting: { allOption: { toggle: false } },
           options:
           [
-            { label: '사용자', value: 'OCCUR' },
-            { label: '담당자', value: 'RECOGNIZE' },
-            { label: '관리자', value: 'CLOSE' },
-
+            { label: '사용자', value: '1' },
+            { label: '담당자', value: '3' },
+            { label: '관리자', value: '7' },
           ],
         },
       ],
       searchModel: {
-        api_name: '',
-        status_cd: '',
+        name: '',
+        lvl_value: [],
       },
-      sortInfo: {}
     }
   },
-
   computed: {
     authAgGrid() {
       const options = {
         name: this.name + 'table1', rowGroupPanel: false, rowHeight: 40, rowSelection: 'multiple', rowMultiSelection: false, suppressRowClickSelection: true,
       }
       const columns = [
-        { type: '', prop: 'model_name', name: 'name', minWidth: 30, flex: 0, suppressMenu: true, alignItems: 'center' },
-        { type: '', prop: 'start_date', name: 'ID', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: false },
-        { type: '', prop: 'end_date', name: '분류', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
-        { type: '', prop: 'end_date', name: 'PHONE_NUMBER', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
-        { type: '', prop: 'end_date', name: 'EMAIL', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
-        { type: '', prop: 'end_date', name: '마지막 접속시간', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
-        { type: '', prop: 'end_date', name: '권한선택', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
-        { type: '', prop: '', name: '', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
+        { type: '', prop: 'name', name: '이름', minWidth: 30, flex: 0, suppressMenu: true, alignItems: 'center' },
+        { type: '', prop: 'id', name: 'ID', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: false },
+        { type: '', prop: 'agency_name', name: '분류', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
+        { type: '', prop: 'phone_number', name: 'PHONE_NUMBER', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
+        { type: '', prop: 'email', name: 'EMAIL', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
+        { type: '', prop: 'last_login', name: '마지막 접속시간', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
+        { type: '', prop: 'end_date', name: '권한선택', minWidth: 30, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true,
+          cellRendererFramework: 'CellRenderSelectBox', cellRendererParams: { type: 'auth', action: this.setUserAuth.bind(this) } },
+        { type: '', prop: '', name: '', minWidth: 20, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true,
+         cellRendererFramework: 'CellRenderSelectBox', cellRendererParams: { type: 'authSetting', name: '저장', action: this.setUserAuth.bind(this) } },
+
       ]
-      return { options, columns, data: this.authData, getRightClickMenuItems: () => { return [] } }
+      return { options, columns, data: this.userData, getRightClickMenuItems: () => { return [] } }
     },
   },
   mounted() {
     this.onLoadAuthList()
   },
   methods: {
-    cellTemp() {},
-    sortTemp() {},
     onSortedChange(param) {
        this.sortInfo = []
        this.onLoadAuthList()
     },
-
-    // onClickSearchAuth(params) {
-    //   this.onLoadAuthList(params)
-    // },
+     onClickSearch(params) {
+      this.onLoadAuthList(params)
+    },
+     onChangePage(curPage) {
+      this.paginationInfo.currentPage = curPage
+      this.onLoadSopList()
+    },
     async onLoadAuthList() {
      const { pageSize: limit, currentPage: page } = this.paginationInfo
        const param = {
-        src_protocol: this.searchModel.src_protocol,
-        src_port: this.searchModel.src_port,
-        dst_protocol: this.searchModel.dst_protocol,
-        dst_port: this.searchModel.dst_port,
-        // rank_order: this.searchModel?.rank_order,
+        name: this.searchModel.name,
+        lvl_value: this.searchModel.lvl_value,
         pageSize: limit,
         currentPage: page
        }
       try {
-        const res = await ''
-        this.trafficData = res?.result
+        const res = await apiSelectUserList(param)
+        this.userData = res?.result
         this.paginationInfo.totalCount = res.total
         this.paginationInfo.totalPages = Math.ceil(this.paginationInfo.totalCount / this.paginationInfo.pageSize) // 전체 페이지 수 계산
       } catch (error) {
@@ -108,7 +110,13 @@ export default {
        /*  */
       }
     },
+    searchClear() {
+     this.searchModel = {}
+    },
+    setUserAuth() {
+
+    }
   },
 }
 </script>
-l
+

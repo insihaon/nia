@@ -9,7 +9,7 @@
       :pagination-info="paginationInfo"
       class="w-100 h-100"
       @handleClickSearch="onClickSearch"
-      @onChangePage="onChangePage"
+      @onChangePage="(curPage) => onChangePage(curPage)"
       @searchClear="searchClear"
     />
   </div>
@@ -17,8 +17,6 @@
 <script>
 import { Base } from '@/min/Base.min'
 import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
-// import { apiSelectAuthHistList, apiUpdateApiAuth, apiUpdateApiAuthProc } from '@/api/dataHub'
-import { AppOptions } from '@/class/appOptions'
 import { apiTrafficAgencyList, apiSelectAgencyCodeList } from '@/api/nia'
 
 const routeName = 'TrafficAnalysisInstitution'
@@ -95,7 +93,6 @@ export default {
       this.onLoadTrafficList(params)
     },
     async onLoadTrafficList() {
-      // const { pageSize: limit, currentPage: page } = this.paginationInfo
        const param = {
         src_nren_name: this.searchModel.src_nren_name,
         src_ip: this.searchModel.src_ip,
@@ -103,7 +100,7 @@ export default {
         dst_ip: this.searchModel.dst_ip,
         row_number: this.searchModel.row_number,
         limit: this.paginationInfo.pageSize,
-        page: this.paginationInfo.currentPage
+        page: this.paginationInfo.currentPage,
        }
       try {
         const res = await apiTrafficAgencyList(param)
