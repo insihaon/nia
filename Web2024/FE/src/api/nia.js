@@ -368,3 +368,14 @@ export function apiUpdateAgencyList(params = {}) {
     data: params
   })
 }
+
+export function apiSelectUserList(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_USER_LIST',
+    data: params
+  })
+}
+

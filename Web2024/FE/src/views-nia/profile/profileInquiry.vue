@@ -3,8 +3,8 @@
     <CompInquiryPannel
       ref="trafficAnalysis"
       :ag-grid="trafficAgGrid"
-      :is-button-slot="false"
       :items="searchItems"
+      :is-excel="true"
       :search-model.sync="searchModel"
       :pagination-info="paginationInfo"
       class="w-100 h-100"
