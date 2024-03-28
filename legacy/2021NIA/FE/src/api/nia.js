@@ -269,6 +269,16 @@ export function apiAlarmTypeCode(params = {}) {
   })
 }
 
+export function apiProfileNodeCode(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_PROFILE_NODE_LIST',
+    data: params
+  })
+}
+
 export function apiSelectNodeList(params = {}) {
   return http({
     url: '/selectList',
