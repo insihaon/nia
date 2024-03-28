@@ -44,7 +44,11 @@ dependencies {
 
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf:2.7.3'	// 404 Error Page
 
-	// <<< h2-console
+	implementation 'javax.mail:mail:1.4.7'
+
+	implementation 'org.springframework.boot:spring-boot-starter-amqp' /* RabbitMQConfiguration */
+
+	// <<< h2-console                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
 	runtimeOnly 'com.h2database:h2'
 	implementation 'mysql:mysql-connector-java:8.0.23' 
 	// >>> h2-console

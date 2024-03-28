@@ -29,6 +29,7 @@ import com.codej.base.utils.CryptUtil;
 import com.codej.base.utils.EncryptUtil;
 import com.codej.web.security.AuthUserService;
 import com.codej.web.service.ResponseService;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -66,6 +67,24 @@ public abstract class BaseDataController extends BaseController {
     protected abstract Object getService();
 
     protected abstract Object getMapper();
+
+    public Boolean getEncrypt(@RequestBody HashMap<String, Object> body) {
+        Boolean encrypt = true;
+        try {
+           String encryptText = (String) body.get(GlobalConstants.Common.ENCRYPT);
+           String decryptText = EncryptUtil.decryptText(encryptText);
+           if(decryptText == null) {
+                 throw new CServiceIncorrectUse("데이터 형식을 알 수 없습니다.");
+           }
+           encrypt = Boolean.parseBoolean(CommonUtil.toString(decryptText, "true"));
+           
+        } catch (CServiceIncorrectUse e) {
+           throw e;            
+        } catch (Exception e) {
+           e.printStackTrace();
+        }
+        return encrypt;
+      }
 
     protected HashMap<String, Object> nomalizeParam(HashMap<String, Object> param) {
         Boolean encrypt = false;

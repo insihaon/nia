@@ -4,6 +4,25 @@ const { debug, isProd } = AppOptions.instance
 
 export const filePath = __filename.replace(/\\/g, '/')
 
+export function apiSendMail(params = {}) {
+  return http({
+    url: '/nia/sendMail',
+    method: 'post',
+    filePath: filePath,
+    sqlId: '',
+    data: params
+  })
+}
+
+export function apiUserList(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_USER_LIST',
+    data: params
+  })
+}
 export function apiIpAlarmList(params = {}) {
   return http({
     url: '/selectList',
