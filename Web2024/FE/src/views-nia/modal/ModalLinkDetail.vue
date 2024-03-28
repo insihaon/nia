@@ -57,11 +57,10 @@
           </td>
         </tr>
         <tr>
-          <th colspan="1">VLAN</th>
-          <td colspan="3" class="disable">
+          <th>VLAN</th>
+          <td>
             <el-select
               v-model="rowInfo.vlan"
-              style="display: block; width : 400px"
             >
               <el-option
                 v-for="item in vlanOptions"
@@ -71,13 +70,10 @@
               />
             </el-select>
           </td>
-        </tr>
-        <tr>
-          <th colspan="1">TAG</th>
-          <td colspan="3" class="disable">
+          <th>TAG</th>
+          <td>
             <el-select
               v-model="rowInfo.tag"
-              style="display: block;"
             >
               <el-option
                 v-for="item in tagOptions"

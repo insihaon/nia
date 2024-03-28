@@ -268,6 +268,56 @@ export function apiSelectProfileList(params = {}) {
   })
 }
 
+export function apiTicketTypeCode(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_PROFILE_TICKET_TYPE_LIST',
+    data: params
+  })
+}
+
+export function apiAlarmTypeCode(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_PROFILE_ALARM_TYPE_LIST',
+    data: params
+  })
+}
+
+export function apiProfileNodeCode(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_PROFILE_NODE_LIST',
+    data: params
+  })
+}
+
+export function apiInsertProfileNodeName(params = {}) {
+  return http({
+    url: '/selectOne',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'INSERT_PROFILE_NODE_NAME_LIST',
+    data: params
+  })
+}
+
+export function apiProfileRecoveryList(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_PROFILE_RECOVERY_LIST',
+    data: params
+  })
+}
+
 export function apiSelectNodeList(params = {}) {
   return http({
     url: '/selectList',
@@ -367,3 +417,14 @@ export function apiUpdateAgencyList(params = {}) {
     data: params
   })
 }
+
+export function apiSelectUserList(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_USER_LIST',
+    data: params
+  })
+}
+

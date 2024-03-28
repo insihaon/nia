@@ -9,7 +9,7 @@
       :pagination-info="paginationInfo"
       class="w-100 h-100"
       @handleClickSearch="onClickSearch"
-      @onChangePage="onChangePage"
+      @onChangePage="(curPage) => onChangePage(curPage)"
       @searchClear="searchClear"
     />
   </div>
@@ -17,8 +17,6 @@
 <script>
 import { Base } from '@/min/Base.min'
 import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
-// import { apiSelectAuthHistList, apiUpdateApiAuth, apiUpdateApiAuthProc } from '@/api/dataHub'
-import { AppOptions } from '@/class/appOptions'
 import { apiTrafficAgencyList, apiSelectAgencyCodeList } from '@/api/nia'
 
 const routeName = 'TrafficAnalysisInstitution'
@@ -60,7 +58,6 @@ export default {
         dst_ip: '',
         row_number: '',
       },
-      sortInfo: {},
       selectCodeData: []
     }
   },
@@ -96,21 +93,20 @@ export default {
       this.onLoadTrafficList(params)
     },
     async onLoadTrafficList() {
-      const { pageSize: limit, currentPage: page } = this.paginationInfo
        const param = {
         src_nren_name: this.searchModel.src_nren_name,
         src_ip: this.searchModel.src_ip,
         dst_nren_name: this.searchModel.dst_nren_name,
         dst_ip: this.searchModel.dst_ip,
         row_number: this.searchModel.row_number,
-        pageSize: limit,
-        currentPage: page
+        limit: this.paginationInfo.pageSize,
+        page: this.paginationInfo.currentPage,
        }
       try {
         const res = await apiTrafficAgencyList(param)
         this.trafficData = res?.result
         this.paginationInfo.totalCount = res.total // 총 항목 수 설정
-        this.paginationInfo.totalPages = Math.ceil(this.paginationInfo.totalCount / this.paginationInfo.pageSizes) // 전체 페이지 수 계산
+        this.paginationInfo.totalPages = Math.ceil(this.paginationInfo.totalCount / this.paginationInfo.pageSize) // 전체 페이지 수 계산
       } catch (error) {
         this.error(error)
       }

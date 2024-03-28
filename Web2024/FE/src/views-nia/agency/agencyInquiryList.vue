@@ -3,7 +3,7 @@
     <CompInquiryPannel
       ref="agency"
       :ag-grid="agencyAgGrid"
-      :is-button-slot="false"
+      :is-excel="true"
       :items="searchItems"
       :search-model.sync="searchModel"
       :pagination-info="paginationInfo"

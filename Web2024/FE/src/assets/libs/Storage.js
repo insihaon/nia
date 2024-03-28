@@ -1,4 +1,4 @@
-import { decryptState, encryptState } from '@/utils/crypto'
+import Encrypt from '@/assets/libs/Encrypt'
 import _ from 'lodash'
 const { param2Obj, reload } = require('@/utils')
 const SALT_KEY = '__SALT_KEY__'
@@ -61,19 +61,11 @@ export class Storage {
       return
     }
     const save = () => STORAGE.setItem(STORAGE_KEY, JSON.stringify(this._data))
-    const save2 = () => STORAGE.setItem(STORAGE_KEY, encryptState(this._data, SALT_KEY))
+    const save2 = () => STORAGE.setItem(STORAGE_KEY, Encrypt.toEncrypt(this._data))
     if (this.debug) {
-      try {
-        save()
-      } catch (error) {
-        save2()
-      }
+      save()
     } else {
-      try {
-        save2()
-      } catch (error) {
-        save()
-      }
+      save2()
     }
   }
 
@@ -82,23 +74,14 @@ export class Storage {
       return
     }
     const load = () => JSON.parse(STORAGE.getItem(STORAGE_KEY))
-    const load2 = () => decryptState(STORAGE.getItem(STORAGE_KEY), SALT_KEY)
+    const load2 = () => Encrypt.toDecrypt(STORAGE.getItem(STORAGE_KEY))
     let loaded
-    if (this.debug) {
-      try {
-        loaded = load()
-      } catch (error) {
-        loaded = load2()
-        this._save()
-      }
-    } else {
-      try {
-        loaded = load2()
-      } catch (error) {
-        loaded = load()
-        this._save()
-      }
+    try {
+      loaded = load()
+    } catch (error) {
+      loaded = load2()
     }
+    this._save()
 
     _.merge(this._data, loaded, param2Obj(location.search))
   }
