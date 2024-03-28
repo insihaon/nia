@@ -46,11 +46,17 @@
             <if test="NAME != null">
                 U.NAME LIKE '%' || #{NAME} || '%'
             </if>
-            <if test="LVL_VALUE != null">
-                AND U.lvl <![CDATA[ & ]]> #{LVL_VALUE}!= 0
-            </if>
             <if test="AGENCY_NAME != null">
                 AND U.AGENCY_NAME LIKE '%' || #{AGENCY_NAME} || '%'
+            </if>
+            <if test="NAME != null and NAME != ''">
+                AND UPPER(U.NAME) LIKE '%' || UPPER(#{name}) || '%'
+            </if>
+            <if test="LVL_VALUE != null and !LVL_VALUE.isEmpty()">
+                AND CAST(U.LVL AS VARCHAR) IN
+                <foreach item="LEVEL" collection="LVL_VALUE" open="(" separator="," close=")">
+                    #{LEVEL}
+                </foreach>
             </if>
         </where>
         <if test="IS_ALL == true">
@@ -1299,51 +1305,5 @@
         </set>
         WHERE NREN_ID = #{nren_id}
     </update>
-
-    <!-- 사용자(유저) 리스트 조회 -->
-     <select id="SELECT_USER_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
-        SELECT
-            U.NAME
-            , U.EMAIL
-            , U.AGENCY_NAME
-            <!-- <if test="IS_ALL == true"> -->
-                ,U.ID
-                , U.PW
-                , U.LVL
-                , TO_CHAR(U.LAST_LOGIN, 'YYYY-MM-DD HH24:MI:SS') AS LAST_LOGIN
-                , U.PHONE_NUMBER
-            <!-- </if> -->
-        FROM NIA.TB_USER U
-        <where>
-            <if test="name != null and name != ''">
-                AND UPPER(U.NAME) LIKE '%' || UPPER(#{name}) || '%'
-            </if>
-            <if test="lvl_value != null and !lvl_value.isEmpty()">
-                AND CAST(U.LVL AS VARCHAR) IN
-                <foreach item="level" collection="lvl_value" open="(" separator="," close=")">
-                    #{level}
-                </foreach>
-            </if>
-            <!-- <if test="AGENCY_NAME != null">
-                AND U.AGENCY_NAME LIKE '%' || #{AGENCY_NAME} || '%'
-            </if> -->
-        </where>
-        <if test="IS_ORGAN_LINK == true">
-        UNION
-        SELECT
-            COALESCE( (SELECT name FROM nia.tb_user WHERE email = O.email) , O.customer_id ) AS NAME,
-            O.email AS email ,
-            COALESCE( (SELECT AGENCY_NAME FROM nia.tb_user WHERE email = O.email) , O.nren_name ) AS AGENCY_NAME
-        FROM resource.tb_user_organ O
-        WHERE node_id = #{NODE_ID}
-        </if>
-        <if test="IS_ALL == true">
-            ORDER BY last_login desc
-        </if>
-        <if test="IS_ALL != true">
-            ORDER BY NAME desc
-        </if>
-    </select>
-
 
 </mapper>
