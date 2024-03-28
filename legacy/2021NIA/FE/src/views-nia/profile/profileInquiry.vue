@@ -3,27 +3,30 @@
     <CompInquiryPannel
       ref="trafficAnalysis"
       :ag-grid="trafficAgGrid"
-      :is-button-slot="false"
       :items="searchItems"
+      :is-excel="true"
       :search-model.sync="searchModel"
       :pagination-info="paginationInfo"
       class="w-100 h-100"
       @handleClickSearch="onClickSearch"
-      @onChangePage="onChangePage"
+      @onChangePage="(curPage) => onChangePage(curPage)"
       @searchClear="searchClear"
     />
+    <ModalProfileDetail ref="ModalProfileDetail" />
   </div>
 </template>
 <script>
 import { Base } from '@/min/Base.min'
 import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
+import CellRenderHyperlink from '@/views-nia/components/cellRenderer/CellRenderHyperlink'
+import ModalProfileDetail from '@/views-nia/modal/ModalProfileDetail'
 import { apiSelectProfileList } from '@/api/nia'
 
 const routeName = 'ProfileInquiry'
 export default {
   name: routeName,
   // eslint-disable-next-line vue/no-unused-components
-  components: { CompInquiryPannel },
+  components: { CompInquiryPannel, CellRenderHyperlink, ModalProfileDetail },
   extends: Base,
   data() {
     return {
@@ -58,7 +61,8 @@ export default {
       }
       const columns = [
         { type: '', prop: 'rownum', name: '번호', minWidth: 30, flex: 0, suppressMenu: true, alignItems: 'center' },
-        { type: '', prop: 'profile_title', name: '제목', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center' },
+        { type: '', prop: 'profile_title', name: '제목', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center',
+          cellRendererFramework: 'CellRenderHyperlink', cellRendererParams: { type: 'profileDetail', action: this.handleOpenModalDetail.bind(this) } },
         { type: '', prop: 'network_type', name: '네트워크', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: false },
         { type: '', prop: 'processing_template', name: '장애대응', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
         { type: '', prop: 'auto_process_info', name: '자동처리기간', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
@@ -84,12 +88,14 @@ export default {
         profile_title: this.searchModel.profile_title,
         network_type: this.searchModel.network_type,
         processing_template: this.searchModel.processing_template,
+        limit: this.paginationInfo.pageSize,
+        page: this.paginationInfo.currentPage,
       }
       try {
         const res = await apiSelectProfileList(param)
         this.trafficData = res?.result
         this.paginationInfo.totalCount = res.total // 총 항목 수 설정
-        this.paginationInfo.totalPages = Math.ceil(this.paginationInfo.totalCount / this.paginationInfo.pageSizes) // 전체 페이지 수 계산
+        this.paginationInfo.totalPages = Math.ceil(this.paginationInfo.totalCount / this.paginationInfo.pageSize) // 전체 페이지 수 계산
       } catch (error) {
         console.error(error)
       } finally {
@@ -102,7 +108,10 @@ export default {
     },
     searchClear() {
       this.searchModel = {}
-    }
+    },
+    handleOpenModalDetail(row, type) {
+      this.$refs.ModalProfileDetail.open({ row, type })
+    },
   },
 }
 </script>

@@ -1,0 +1,18 @@
+{
+  "success": true,
+  "encrypt": false,
+  "sql": "UPDATE DATAHUB.TB_INTRL_SYSTEM_MST\n     SET SYSTEM_NM = 'TEST_AIB'\n        ,SYSTEM_DESC = '.'\n        ,UPDATE_TIME = now() \n    WHERE SYSTEM_ID = 11",
+  "total": 1,
+  "result": 1,
+  "config": {
+    "url": "http://localhost:8070/modify/UPDATE_LINK_SYSTEM",
+    "param": {
+      "system_id": 11,
+      "system_nm": "TEST_AIB",
+      "system_desc": "."
+    },
+    "receivedTime": "2024-03-21 10:12:51.198",
+    "duration": 81,
+    "filename": "L1VQREFURV9MSU5LX1NZU1RFTQ_MTF8VEVTVF9BSUJ8Lg.json"
+  }
+}

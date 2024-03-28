@@ -20,6 +20,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
+import com.codej.base.dto.AppDto;
 import com.codej.base.dto.BaseUser;
 import com.codej.base.dto.DbUser;
 import com.codej.base.exception.CAuthenticationException;
@@ -35,7 +36,6 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
-import com.codej.base.dto.AppDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -57,7 +57,7 @@ public class JwtTokenProvider { // JWT 토큰을 생성 및 검증 모듈
     @Qualifier("userDetailServiceImpl")
     private final UserDetailsService userDetailsService;
 
-    @Autowired
+    @Autowired(required = false)
     @Qualifier("niaUserDetailServiceImpl")
     private final UserDetailsService niaUserDetailsService;
 

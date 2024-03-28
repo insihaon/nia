@@ -1,4 +1,4 @@
-import { Storage } from '@/assets/libs/Storage.min'
+import { Storage } from '@/assets/libs/Storage'
 import store from '@/store'
 import { Device } from './device'
 const { param2Obj, reload } = require('@/utils')
@@ -28,8 +28,8 @@ export class AppOptions extends Storage {
       isOnlyFront: this.readEnv(process.env.VUE_APP_ONLY_FE, false),
       dark: false,
       mobile: Device.instance.mobile ?? false,
-      serverMock: false,
-      projectList: ['dataub', 'nia'],
+      mock: null,
+      projectList: ['datahub', 'nia'],
       project: APP_PROJECT?.toLowerCase(),
       baseURL: null,
       useWebsocket: this.readEnv(process.env.VUE_APP_USE_WEBSOCKET, true),
@@ -42,6 +42,9 @@ export class AppOptions extends Storage {
     })
     this._load()
     this._defineProp()
+    // _load 된 데이터를 encrypt / decrypt 로 적용하기 위해 저장
+    this._save()
+
     this._data.baseURL = this._getDefaultBaseUrl()
 
     const href = location.href
@@ -66,44 +69,38 @@ export class AppOptions extends Storage {
     return this.debug
   }
 
-  get debugOrDev() {
-    return this.debug || NODE_ENV_DEV
+  setFrontMock() {
+    this.setMock('FE')
   }
 
-  setFrontMock(mockMode) {
-    this.setMockMode(this.project, mockMode, 'frontend-mock')
+  setBackendMock() {
+    this.setMock('BE')
   }
 
-  setBackendMock(mockMode) {
-    this.setMockMode(this.project, mockMode, 'backend-mock')
-  }
-
-  setMockMode(project, mockMode, from = 'backend-mock') {
+  setMock(mock = null, project = null) {
     const newOptions = {}
-    if (mockMode) {
-      if (project) newOptions.project = project
-      switch (from) {
-        case 'frontend-mock':
-          newOptions.baseURL = '/mock'
-          newOptions.debug = true
-          console.error(`\\frontend\\mock\\json\\${project} 에 json 파일이 있는지 확인하세요`)
-          break
-        case 'backend-mock':
-        // eslint-disable-next-line no-fallthrough
-        default:
-          console.error(`\\msa\\json\\mock 에 json 파일이 있는지 확인하세요`)
-          newOptions.baseURL = this._getDefaultBaseUrl()
-          newOptions.serverMock = true
-          break
-      }
-      newOptions.useWebsocket = false
-      this.update(newOptions, false)
-      setTimeout(() => {
-        reload(true)
-      }, 1000)
-    } else {
-      this.reset()
+
+    if (project) newOptions.project = project
+
+    switch (mock) {
+      case 'FE':
+        newOptions.debug = true
+        console.error(`\\frontend\\mock\\json\\${project} 에 json 파일이 있는지 확인하세요`)
+        break
+      case 'BE':
+      // eslint-disable-next-line no-fallthrough
+        console.error(`\\msa\\json\\mock 에 json 파일이 있는지 확인하세요`)
+        break
+      default:
+        mock = null
+        this.reset()
     }
+    newOptions.mock = mock
+    newOptions.useWebsocket = false
+    this.update(newOptions, false)
+    setTimeout(() => {
+      reload(true)
+    }, 1000)
   }
 
   _getDefaultBaseUrl = function () {

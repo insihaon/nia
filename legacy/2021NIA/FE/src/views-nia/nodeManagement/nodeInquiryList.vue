@@ -3,13 +3,13 @@
     <CompInquiryPannel
       ref="trafficAnalysis"
       :ag-grid="trafficAgGrid"
-      :is-button-slot="false"
+      :is-excel="true"
       :items="searchItems"
       :search-model.sync="searchModel"
       :pagination-info="paginationInfo"
       class="w-100 h-100"
       @handleClickSearch="onClickSearch"
-      @onChangePage="onChangePage"
+      @onChangePage="(curPage) => onChangePage(curPage)"
       @searchClear="searchClear"
     />
     <ModalNodeDetail ref="ModalNodeDetail" />
@@ -104,6 +104,8 @@ export default {
         model_id: this.searchModel.if_name,
         ip_addr: this.searchModel.ip_addr,
         admin_yn: this.searchModel.admin_yn,
+        limit: this.paginationInfo.pageSize,
+        page: this.paginationInfo.currentPage,
       }
       if (this.searchModel?.datetime) {
         const dateTime = this.$refs?.trafficAnalysis.searchModel.datetime
@@ -113,7 +115,7 @@ export default {
         const res = await apiSelectNodeList(param)
         this.nodeData = res?.result
         this.paginationInfo.totalCount = res.total // 총 항목 수 설정
-        this.paginationInfo.totalPages = Math.ceil(this.paginationInfo.totalCount / this.paginationInfo.pageSizes) // 전체 페이지 수 계산
+        this.paginationInfo.totalPages = Math.ceil(this.paginationInfo.totalCount / this.paginationInfo.pageSize) // 전체 페이지 수 계산
       } catch (error) {
         console.error(error)
       } finally {
