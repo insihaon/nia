@@ -187,7 +187,7 @@ import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
 import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
 import { formatterTime } from '@/views-nia/js/commonFormat'
-import { apiSendMail, apiSelectAiDetectionInfo, apiSelfProcessSyslogInfo, apiSelfProcessTrafficInfo, apiSopHistList, apiSopSyslogHistList, apiUserList } from '@/api/nia'
+import { apiSendMail, apiSelectAiDetectionInfo, apiSelfProcessSyslogInfo, apiSelfProcessTrafficInfo, apiSopHistList, apiSopSyslogHistList, apiSelectUserList } from '@/api/nia'
 
 import _ from 'lodash'
 
@@ -376,7 +376,7 @@ export default {
     },
     async onLoadUserList() {
       try {
-        const res = await apiUserList()
+        const res = await apiSelectUserList()
         this.userList = res?.result ?? {}
       } catch (error) {
         this.error(error)
