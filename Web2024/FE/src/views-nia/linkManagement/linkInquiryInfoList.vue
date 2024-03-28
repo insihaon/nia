@@ -3,7 +3,7 @@
     <CompInquiryPannel
       ref="linkManagement"
       :ag-grid="linkAgGrid"
-      :is-button-slot="false"
+      :is-excel="true"
       :items="searchItems"
       :search-model.sync="searchModel"
       :pagination-info="paginationInfo"
@@ -44,16 +44,16 @@ export default {
       searchItems: [
          { label: '시작점노드', type: 'input', model: 'src_node_id', placeholder: '노드를 검색하세요' },
          { label: '끝점 노드', type: 'input', model: 'dest_node_id', placeholder: '노드를 검색하세요' },
-         { label: '링크 용도', type: 'input', model: 'link_desc', placeholder: '노드를 검색하세요' },
          { label: '시작점 I/F명', type: 'input', model: 'src_if_name', placeholder: '노드를 검색하세요' },
          { label: '끝점 I/F명', type: 'input', model: 'dest_if_name', placeholder: '노드를 검색하세요' },
+         { label: '링크 용도', type: 'input', model: 'link_desc', placeholder: '노드를 검색하세요' },
       ],
       searchModel: {
        src_node_id: '',
        dest_node_id: '',
-       link_desc: '',
        src_if_name: '',
-       dest_if_name: ''
+       dest_if_name: '',
+       link_desc: ''
       },
       sortInfo: {}
     }
@@ -72,7 +72,7 @@ export default {
         { type: '', prop: 'src_if_name', name: '시작점 I/F명', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
         { type: '', prop: 'dest_node_id', name: '끝점 노드', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: false },
         { type: '', prop: 'dest_if_id', name: '끝점 I/F ID', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
-        { type: '', prop: 'dest_if_name', name: '끝점 I/F ID명', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
+        { type: '', prop: 'dest_if_name', name: '끝점 I/F명', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
         { type: '', prop: 'bandwidth', name: '대역폭(Gpbs)', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
         { type: '', prop: 'link_desc', name: '링크용도', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
         { type: '', prop: 'chng_datetime', name: '수정일', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
@@ -96,9 +96,9 @@ export default {
       this.openLoading(target)
       const param = {
         src_node_id: this.searchModel.src_node_id,
-        src_if_id: this.searchModel.src_if_id,
         dest_node_id: this.searchModel.dest_node_id,
-        dest_if_id: this.searchModel.dest_if_id,
+        src_if_name: this.searchModel.src_if_name,
+        dest_if_name: this.searchModel.dest_if_name,
         link_desc: this.searchModel.link_desc
       }
       try {

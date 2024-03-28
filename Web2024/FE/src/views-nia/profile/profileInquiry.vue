@@ -3,8 +3,8 @@
     <CompInquiryPannel
       ref="trafficAnalysis"
       :ag-grid="trafficAgGrid"
-      :is-button-slot="false"
       :items="searchItems"
+      :is-excel="true"
       :search-model.sync="searchModel"
       :pagination-info="paginationInfo"
       class="w-100 h-100"
@@ -12,18 +12,21 @@
       @onChangePage="onChangePage"
       @searchClear="searchClear"
     />
+    <ModalProfileDetail ref="ModalProfileDetail" />
   </div>
 </template>
 <script>
 import { Base } from '@/min/Base.min'
 import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
+import CellRenderHyperlink from '@/views-nia/components/cellRenderer/CellRenderHyperlink'
+import ModalProfileDetail from '@/views-nia/modal/ModalProfileDetail'
 import { apiSelectProfileList } from '@/api/nia'
 
 const routeName = 'ProfileInquiry'
 export default {
   name: routeName,
   // eslint-disable-next-line vue/no-unused-components
-  components: { CompInquiryPannel },
+  components: { CompInquiryPannel, CellRenderHyperlink, ModalProfileDetail },
   extends: Base,
   data() {
     return {
@@ -58,7 +61,8 @@ export default {
       }
       const columns = [
         { type: '', prop: 'rownum', name: '번호', minWidth: 30, flex: 0, suppressMenu: true, alignItems: 'center' },
-        { type: '', prop: 'profile_title', name: '제목', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center' },
+        { type: '', prop: 'profile_title', name: '제목', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center',
+          cellRendererFramework: 'CellRenderHyperlink', cellRendererParams: { type: 'profileDetail', action: this.handleOpenModalDetail.bind(this) } },
         { type: '', prop: 'network_type', name: '네트워크', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: false },
         { type: '', prop: 'processing_template', name: '장애대응', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
         { type: '', prop: 'auto_process_info', name: '자동처리기간', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
@@ -102,7 +106,10 @@ export default {
     },
     searchClear() {
       this.searchModel = {}
-    }
+    },
+    handleOpenModalDetail(row, type) {
+      this.$refs.ModalProfileDetail.open({ row, type })
+    },
   },
 }
 </script>

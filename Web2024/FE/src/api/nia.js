@@ -249,6 +249,26 @@ export function apiSelectProfileList(params = {}) {
   })
 }
 
+export function apiTicketTypeCode(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_PROFILE_TICKET_TYPE_LIST',
+    data: params
+  })
+}
+
+export function apiAlarmTypeCode(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_PROFILE_ALARM_TYPE_LIST',
+    data: params
+  })
+}
+
 export function apiSelectNodeList(params = {}) {
   return http({
     url: '/selectList',
@@ -348,3 +368,14 @@ export function apiUpdateAgencyList(params = {}) {
     data: params
   })
 }
+
+export function apiSelectUserList(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_USER_LIST',
+    data: params
+  })
+}
+
