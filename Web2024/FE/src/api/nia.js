@@ -13,16 +13,6 @@ export function apiSendMail(params = {}) {
     data: params
   })
 }
-
-export function apiUserList(params = {}) {
-  return http({
-    url: '/selectList',
-    method: 'post',
-    filePath: filePath,
-    sqlId: 'SELECT_USER_LIST',
-    data: params
-  })
-}
 export function apiIpAlarmList(params = {}) {
   return http({
     url: '/selectList',
