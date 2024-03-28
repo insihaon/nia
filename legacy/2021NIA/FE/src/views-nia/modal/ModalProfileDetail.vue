@@ -97,7 +97,7 @@
           <th>노드명</th>
           <td colspan="3">
             <el-select
-              v-model="rowInfo.vlan"
+              v-model="selectNode"
               style="min-width:70%;"
             >
               <el-option
@@ -127,6 +127,10 @@
               <el-table-column
                 prop="name"
                 label="노드명"
+              />
+              <el-table-column
+                prop="profile_num"
+                label="프로필 번호"
               />
               <el-table-column
                 width="100%"
@@ -163,7 +167,7 @@
         </tr>
       </table>
       <div slot="footer" class="dialog-footer">
-        <el-button size="small" type="info" plain @click.native="close()">
+        <el-button size="small" type="info" plain @click.native="updateProfileSetting()">
           {{ '저장' }}
         </el-button>
         <el-button size="small" type="danger" plain @click.native="close()">
@@ -182,7 +186,7 @@
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
 import { mapState } from 'vuex'
-import { apiTicketTypeCode, apiAlarmTypeCode, apiProfileNodeCode } from '@/api/nia'
+import { apiTicketTypeCode, apiAlarmTypeCode, apiProfileNodeCode, apiProfileRecoveryList, apiInsertProfileNodeName } from '@/api/nia'
 
 const routeName = 'ModalProfileDetail'
 
@@ -211,7 +215,8 @@ export default {
            { value: 'AUTO_FIN', label: '자동마감' }
         ],
       ticketData: [],
-      nodeName: []
+      nodeName: [],
+      selectNode: ''
     }
   },
   computed: {
@@ -251,6 +256,7 @@ export default {
       this.onLoadTicketCode()
       this.onLoadAlarmCode()
       this.onLoadNodeCode()
+      this.onLoadNodeRecovery()
     },
     async onLoadTicketCode() {
       const param = {
@@ -311,17 +317,54 @@ export default {
         /*  */
       }
     },
-    insertAgencyIpData() {
-
+    async onLoadNodeRecovery() {
+    const param = {
+      profile_num: this.rowInfo.profile_num,
+    }
+    try {
+      const res = await apiProfileRecoveryList(param)
+      const recoveryData = res.result.map(item => ({
+        name: item.node_id,
+        profile_num: item.profile_num
+      }))
+      this.tableData = recoveryData
+      } catch (error) {
+        console.error(error)
+      } finally {
+        /*  */
+      }
     },
+    insertAgencyIpData() {
+      const selectNode = this.selectNode // 공백 제거
+      if (selectNode === '') {
+        this.$message('노드명을 선택하세요')
+        return false
+      }
+      const isNameExists = this.tableData.some(item => item.name === selectNode)
+      if (!isNameExists) {
+        const newNode = { name: selectNode }
+        this.tableData.push(newNode)
+      } else {
+        return false
+      }
+    },
+    handleDelete(index, row) {
+    this.$confirm(`${row.name} 노드를 삭제 하시겠습니까?`, '삭제 메세지', {
+      confirmButtonText: '확인',
+      cancelButtonText: '취소',
+      type: 'warning'
+    }).then(() => {
+      this.tableData = this.tableData.filter((item, idx) => {
+        return item.name !== row.name
+      })
+    }
+    )
+  },
     onClose() {
       /* for Override */
     },
-    onSubmit() {
+    updateProfileSetting() {
       console.log('submit!')
-    },
-    handleDelete(index, row) {
-      console.log(index, row)
     }
   },
 }

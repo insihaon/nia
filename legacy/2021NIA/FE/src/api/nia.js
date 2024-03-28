@@ -279,6 +279,26 @@ export function apiProfileNodeCode(params = {}) {
   })
 }
 
+export function apiInsertProfileNodeName(params = {}) {
+  return http({
+    url: '/selectOne',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'INSERT_PROFILE_NODE_NAME_LIST',
+    data: params
+  })
+}
+
+export function apiProfileRecoveryList(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_PROFILE_RECOVERY_LIST',
+    data: params
+  })
+}
+
 export function apiSelectNodeList(params = {}) {
   return http({
     url: '/selectList',
