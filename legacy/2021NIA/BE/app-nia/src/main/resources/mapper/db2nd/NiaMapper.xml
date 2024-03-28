@@ -674,7 +674,6 @@
                 dst_nren_name ,
                 dst_country_code 
             ) dt
-        LIMIT 100
         <include refid="TotalCountSuffix"/>
     </select>
 
@@ -775,6 +774,7 @@
 
     <!-- 미확인 트래픽 조회 (국가) -->
     <select id="SELECT_UNIDENTIFIED_NATION_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+        <include refid="TotalCountPrefix"/>
         select
             country_name,
             koica
@@ -784,13 +784,15 @@
                     AND country_name like '%' || #{COUNTRY_NAME} || '%' 
                 </if>
                 <if test="country_code != null and country_code != ''">
-                    AND KOICA LIKE '%' || #{country_code} || '%'
+                    AND KOICA LIKE '%' || #{koica} || '%'
                 </if>
             </trim>
+        <include refid="TotalCountSuffix"/>
     </select>
 
     <!-- 미확인 트래픽 조회 (이용기관) -->
     <select id="SELECT_UNIDENTIFIED_AGENCY_LIST" parameterType="hashmap" resultType="hashmap">
+        <include refid="TotalCountPrefix"/>
         SELECT
             IP.NREN_ID AS NREN_ID,
             IP.NREN_NAME AS NREN_NAME,
@@ -808,10 +810,12 @@
                     AND IP.NREN_ID IN (SELECT NREN_ID FROM RESOURCE.TB_USER_ORGAN WHERE NODE_ID = #{node_id})
                 </if>
         </where>
+         <include refid="TotalCountSuffix"/>
     </select>
 
     <!-- 미확인 트래픽 조회 (어플리케이션) -->
     <select id="SELECT_UNIDENTIFIED_APP_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+        <include refid="TotalCountPrefix"/>
     SELECT  
         MAPP_SERIAL, 
         PORT_NUM, 
@@ -829,6 +833,7 @@
             </if>
     </where>
     ORDER BY PROTOCOL ASC
+        <include refid="TotalCountSuffix"/>
     </select>
     
 
@@ -891,6 +896,8 @@
             PROCESS_TYPE,
             AUTO_RECOVERY,
             EMAIL_CHECK,
+            TO_CHAR(AUTO_PROCESS_START_DATETIME, 'YYYY-MM-DD HH:MI:SS') AS AUTO_PROCESS_START_DATETIME,
+            TO_CHAR(AUTO_PROCESS_END_DATETIME, 'YYYY-MM-DD HH:MI:SS') AS AUTO_PROCESS_END_DATETIME,
             CASE
                 WHEN AUTO_PROCESS_CHECK = 'true' THEN '상시'
                 ELSE 
@@ -916,6 +923,50 @@
         </if>
         ORDER BY PROFILE_NUM
     </select>
+
+    <!-- 조치 프로파일 티켓 타입 리스트 -->
+     <select id="SELECT_PROFILE_TICKET_TYPE_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+        SELECT 
+        TICKET_TYPE,
+        MIN(TICKET_GB) AS TICKET_GB
+        FROM RCA.TB_RCA_TICKET_TYPE_LIST
+        WHERE 1=1
+        <if test="ticket_gb == '전송'">
+            AND TICKET_GB != 'SWITCH'
+        </if>
+        <if test="ticket_gb == 'IP'">
+            AND TICKET_GB = 'SWITCH'
+        </if>
+        GROUP BY TICKET_TYPE
+    </select>
+    
+
+    <!-- 조치 프로파일 장애 타입 리스트 -->
+    <select id="SELECT_PROFILE_ALARM_TYPE_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+        SELECT 
+            FAIL_TYPE,
+            TICKET_TYPE
+        FROM RCA.TB_RCA_TICKET_TYPE_LIST
+        WHERE TICKET_TYPE = #{ticket_type}
+    </select>
+
+    <!-- 조치 프로파일 노드 리스트  -->
+    <select id="SELECT_PROFILE_NODE_ID_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+        SELECT * FROM (
+          SELECT
+              node_nm AS ROOT_CAUSE_SYSNAMEA
+              , 'IP' AS TYPE
+          FROM resource.tb_node_mst
+          UNION
+          SELECT
+              sysname AS ROOT_CAUSE_SYSNAMEA
+              , '전송' AS TYPE
+          FROM nia.tb_equip_mst
+          WHERE model != 'Utrans-6300p-H3'
+      ) AS node
+        ORDER BY ROOT_CAUSE_SYSNAMEA ASC
+    </select>
+
 
     <!-- 노드리스트 조회 -->
     <select id="SELECT_NODE_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
@@ -1044,14 +1095,14 @@
             <if test="src_node_id != null and src_node_id != ''">
                 AND UPPER(BL.SRC_NODE_ID) LIKE '%' || UPPER(#{src_node_id}) || '%'
             </if>
-            <if test="src_if_id != null and src_if_id != ''">
-                AND UPPER(BL.SRC_IF_ID) LIKE '%' || UPPER(#{src_if_id}) || '%'
-            </if>
             <if test="dest_node_id != null and dest_node_id != ''">
                 AND UPPER(BL.DEST_NODE_ID) LIKE '%' || UPPER(#{dest_node_id}) || '%'
             </if>
-            <if test="dest_if_id != null and dest_if_id != ''">
-                AND UPPER(BL.DEST_IF_ID) LIKE '%' || UPPER(#{dest_if_id}) || '%'
+            <if test="src_if_name != null and src_if_name != ''">
+                AND UPPER(SP.IF_NM) LIKE '%' || UPPER(#{src_if_name}) || '%'
+            </if>
+            <if test="dest_if_name != null and dest_if_name != ''">
+                AND UPPER(DP.IF_NM) LIKE '%' || UPPER(#{dest_if_name}) || '%'
             </if>
             <if test="link_desc != null and link_desc != ''">
                 AND UPPER(BL.LINK_DESC) LIKE '%' || UPPER(#{link_desc}) || '%'
@@ -1171,4 +1222,51 @@
         </set>
         WHERE NREN_ID = #{nren_id}
     </update>
+
+    <!-- 사용자(유저) 리스트 조회 -->
+     <select id="SELECT_USER_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+        SELECT
+            U.NAME
+            , U.EMAIL
+            , U.AGENCY_NAME
+            <!-- <if test="IS_ALL == true"> -->
+                ,U.ID
+                , U.PW
+                , U.LVL
+                , TO_CHAR(U.LAST_LOGIN, 'YYYY-MM-DD HH24:MI:SS') AS LAST_LOGIN
+                , U.PHONE_NUMBER
+            <!-- </if> -->
+        FROM NIA.TB_USER U
+        <where>
+            <if test="name != null and name != ''">
+                AND UPPER(U.NAME) LIKE '%' || UPPER(#{name}) || '%'
+            </if>
+            <if test="lvl_value != null and !lvl_value.isEmpty()">
+                AND CAST(U.LVL AS VARCHAR) IN
+                <foreach item="level" collection="lvl_value" open="(" separator="," close=")">
+                    #{level}
+                </foreach>
+            </if>
+            <!-- <if test="AGENCY_NAME != null">
+                AND U.AGENCY_NAME LIKE '%' || #{AGENCY_NAME} || '%'
+            </if> -->
+        </where>
+        <if test="IS_ORGAN_LINK == true">
+        UNION
+        SELECT
+            COALESCE( (SELECT name FROM nia.tb_user WHERE email = O.email) , O.customer_id ) AS NAME,
+            O.email AS email ,
+            COALESCE( (SELECT AGENCY_NAME FROM nia.tb_user WHERE email = O.email) , O.nren_name ) AS AGENCY_NAME
+        FROM resource.tb_user_organ O
+        WHERE node_id = #{NODE_ID}
+        </if>
+        <if test="IS_ALL == true">
+            ORDER BY last_login desc
+        </if>
+        <if test="IS_ALL != true">
+            ORDER BY NAME desc
+        </if>
+    </select>
+
+
 </mapper>

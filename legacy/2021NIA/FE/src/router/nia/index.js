@@ -223,7 +223,7 @@ export const niaRoute = Object.freeze([
     },
     children: [
       {
-        path: 'manager',
+        path: 'authSettings',
         component: () => import('@/views-nia/manager/authSettings'),
         name: 'AuthSettings',
         meta: { title: '관리자 권한 설정' },

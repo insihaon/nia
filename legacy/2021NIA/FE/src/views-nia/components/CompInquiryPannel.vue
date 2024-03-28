@@ -78,6 +78,9 @@
               </div>
             </div>
             <div class="optionBoxButtons" style="margin: 5px 8px 3px 3px; float: right">
+              <el-button v-if="isExcel" type="button" size="mini" class="excel-form-export" icon="el-icon-download" @click="handleExcel">
+                엑셀 업로드
+              </el-button>
               <el-button v-if="title !== '데이터셋' && title !== '노드 정보 조회'" class="btn-r" type="info" size="mini" @click="onClickSearchButton">
                 <i class="el-icon-search" />
               </el-button>
@@ -151,17 +154,13 @@ export default {
       type: String,
       default: null
     },
-    jsonData: {
-      type: Object,
-      default: () => { return {} }
-    },
     isSearch: {
       type: Boolean,
       default: true
     },
-    isFormButton: {
+    isExcel: {
       type: Boolean,
-      default: true
+      default: false
     },
     isButtonSlot: {
       type: Boolean,
@@ -226,7 +225,6 @@ export default {
         this.searchModel[key] = ''
       })
       this.$emit('searchClear', this.searchModel)
-      this.$emit('jsonClear', this.jsonData)
     },
     onClickSearchButton() {
       this.paginationInfo.currentPage = 1
@@ -253,6 +251,10 @@ export default {
     refreshData() {
       this.selectedItem = []
     },
+    handleExcel() {
+      const name = `장애(${(this.isStatType)}) 상세 현황_${this.toStringTime(new Date(), 'YYMMDD')}`
+      this.$refs.agGrid.exportExcel(name)
+    }
 
    }
  }
@@ -326,6 +328,15 @@ export default {
     }
     .search-container {
       height: auto;
+    }
+
+    .excel-form-export{
+      background: rgb(34, 123, 74);
+      color: white;
+      padding: 9px 13px;
+        &:hover{
+          background: rgba(137, 174, 154, 0.952) !important;
+        }
     }
   }
 }
