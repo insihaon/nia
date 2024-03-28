@@ -11,7 +11,6 @@ import hotkeys from 'hotkeys-js'
 import _ from 'lodash'
 import Vue from 'vue'
 ;(function (global) {
-  console.log(1)
   const helper = {
     Vue,
     $store: $store,

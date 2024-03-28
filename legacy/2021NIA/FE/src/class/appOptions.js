@@ -28,8 +28,8 @@ export class AppOptions extends Storage {
       isOnlyFront: this.readEnv(process.env.VUE_APP_ONLY_FE, false),
       dark: false,
       mobile: Device.instance.mobile ?? false,
-      serverMock: false,
-      projectList: ['dataub', 'nia'],
+      mock: null,
+      projectList: ['datahub', 'nia'],
       project: APP_PROJECT?.toLowerCase(),
       baseURL: null,
       useWebsocket: this.readEnv(process.env.VUE_APP_USE_WEBSOCKET, true),
@@ -69,40 +69,38 @@ export class AppOptions extends Storage {
     return this.debug
   }
 
-  setFrontMock(mockMode) {
-    this.setMockMode(this.project, mockMode, 'frontend-mock')
+  setFrontMock() {
+    this.setMock('FE')
   }
 
-  setBackendMock(mockMode) {
-    this.setMockMode(this.project, mockMode, 'backend-mock')
+  setBackendMock() {
+    this.setMock('BE')
   }
 
-  setMockMode(project, mockMode, from = 'backend-mock') {
+  setMock(mock = null, project = null) {
     const newOptions = {}
-    if (mockMode) {
-      if (project) newOptions.project = project
-      switch (from) {
-        case 'frontend-mock':
-          newOptions.baseURL = '/mock'
-          newOptions.debug = true
-          console.error(`\\frontend\\mock\\json\\${project} 에 json 파일이 있는지 확인하세요`)
-          break
-        case 'backend-mock':
-        // eslint-disable-next-line no-fallthrough
-        default:
-          console.error(`\\msa\\json\\mock 에 json 파일이 있는지 확인하세요`)
-          newOptions.baseURL = this._getDefaultBaseUrl()
-          newOptions.serverMock = true
-          break
-      }
-      newOptions.useWebsocket = false
-      this.update(newOptions, false)
-      setTimeout(() => {
-        reload(true)
-      }, 1000)
-    } else {
-      this.reset()
+
+    if (project) newOptions.project = project
+
+    switch (mock) {
+      case 'FE':
+        newOptions.debug = true
+        console.error(`\\frontend\\mock\\json\\${project} 에 json 파일이 있는지 확인하세요`)
+        break
+      case 'BE':
+      // eslint-disable-next-line no-fallthrough
+        console.error(`\\msa\\json\\mock 에 json 파일이 있는지 확인하세요`)
+        break
+      default:
+        mock = null
+        this.reset()
     }
+    newOptions.mock = mock
+    newOptions.useWebsocket = false
+    this.update(newOptions, false)
+    setTimeout(() => {
+      reload(true)
+    }, 1000)
   }
 
   _getDefaultBaseUrl = function () {

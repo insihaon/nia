@@ -7,7 +7,7 @@ import { Message, MessageBox } from 'element-ui'
 import moment from 'moment'
 import Encrypt from '@/assets/libs/Encrypt.min'
 
-const { debug, mock, serverMock, baseURL, project, debugOrDev } = AppOptions.instance
+const { debug, mock, baseURL, project, debugOrDev } = AppOptions.instance
 const debugLog = debug ? console.log : () => { /* 빈 블록 사용 금지 */ }
 const clearLog = (debugOrDev) ? () => { } : () => { wait(500).then(console.clear) }
 export const __ = { store, AppOptions }
@@ -19,7 +19,7 @@ if (debug) {
 axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*'
 axios.defaults.headers.common['Access-Control-Expose-Headers'] = 'Client-Addr'
 const service = axios.create({
-  baseURL: baseURL,
+  baseURL: mock === 'FE' ? '/mock' : baseURL, // url = base url + request url
   timeout: (process.env.VUE_APP_HTTP_TIMEOUT || 10) * 1000 // request timeout
 })
 
@@ -28,7 +28,7 @@ service.interceptors.request.use(
     config.data = config.data || {}
     const { data, testData } = config
     const server = store.getters.server || {}
-    const encryptRequest = !config.encrypt && !mock && !debug
+    const encryptRequest = !config.encrypt && mock !== 'FE' && !debug
     config.data = Encrypt.encryptHttp(data, encryptRequest, server.isDevProfile)
 
     const sqlId = config.sqlId || ''
@@ -55,7 +55,7 @@ service.interceptors.request.use(
         config.headers['_t'] = Encrypt.toEncrypt(String(Date.now() - (store.getters.server.timeDiff || 0)))
       }
 
-      if (serverMock === true) {
+      if (mock === 'BE') {
         config.url = '/mock'
       }
 
@@ -79,10 +79,6 @@ service.interceptors.response.use(
 
     store.dispatch('serviceLog/addServiceLog', response)
     if (res.sql) debugLog(res.sql)
-
-    if (mock === true && res.resultOrigin !== response.config.data) {
-      console.warn('확인필요=', response.config.url, res.resultOrigin, response.config.data)
-    }
 
     if (response.result === 'kickout') {
       store.dispatch('user/logout')
