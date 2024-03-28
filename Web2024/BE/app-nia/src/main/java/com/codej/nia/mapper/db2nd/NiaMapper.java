@@ -38,7 +38,7 @@ public interface NiaMapper extends BaseDataMapper {
         public List<ResultMap> SELECT_PROFILE_LIST(HashMap<String, Object> map);
         public List<ResultMap> SELECT_PROFILE_TICKET_TYPE_LIST(HashMap<String, Object> map);
         public List<ResultMap> SELECT_PROFILE_ALARM_TYPE_LIST(HashMap<String, Object> map);
-        
+        public List<ResultMap> SELECT_PROFILE_NODE_LIST(HashMap<String, Object> map);
         public List<ResultMap> SELECT_NODE_LIST(HashMap<String, Object> map);
         public List<ResultMap> SELECT_PORT_LIST(HashMap<String, Object> map);
         public List<ResultMap> SELECT_LINK_LIST(HashMap<String, Object> map);

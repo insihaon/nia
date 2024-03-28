@@ -86,6 +86,7 @@ table.basic {
     height: auto;
     min-width: 700px !important;
   }
+
   .el-dialog__header {
     background-color: white !important;
     color: black !important;
@@ -99,6 +100,18 @@ table.basic {
     padding: 0 20px 10px 20px;
     max-height: auto;
     background: #fff;
+  }
+
+  .is-checked .el-checkbox__inner,
+  .is-checked .el-radio__inner {
+    border-color: #63666a !important;
+    background: #63666a !important;
+  }
+
+  .el-checkbox__input.is-checked + .el-checkbox__label,
+  .el-radio__input.is-checked + .el-radio__label {
+    color: #000000;
+    font-weight: bold;
   }
 
   .el-dialog__footer {

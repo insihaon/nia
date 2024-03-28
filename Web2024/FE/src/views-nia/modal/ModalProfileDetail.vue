@@ -111,6 +111,8 @@
               size="mideum"
               style="float:right"
               plain
+              round
+              type="info"
               @click="insertAgencyIpData()"
             >추가
             </el-button>
@@ -180,7 +182,7 @@
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
 import { mapState } from 'vuex'
-import { apiTicketTypeCode, apiAlarmTypeCode } from '@/api/nia'
+import { apiTicketTypeCode, apiAlarmTypeCode, apiProfileNodeCode } from '@/api/nia'
 
 const routeName = 'ModalProfileDetail'
 
@@ -198,7 +200,6 @@ export default {
       autoProcTime: [],
       ticketType: '',
       alarmType: [],
-      nodeName: '',
       tableData: [{
           name: 'Temp',
         }, {
@@ -209,8 +210,8 @@ export default {
            { value: 'FIN', label: '마감' },
            { value: 'AUTO_FIN', label: '자동마감' }
         ],
-      ticketData: []
-
+      ticketData: [],
+      nodeName: []
     }
   },
   computed: {
@@ -223,9 +224,15 @@ export default {
       return userNM
     },
   },
-  watch: {},
+    watch: {
+    'rowInfo.network_type': function(newVal, oldVal) {
+      if (newVal !== oldVal) {
+        this.onLoadNodeCode()
+        this.onLoadTicketCode()
+      }
+    }
+  },
   mounted() {
-
   },
   methods: {
     onCreated() {
@@ -243,6 +250,7 @@ export default {
 
       this.onLoadTicketCode()
       this.onLoadAlarmCode()
+      this.onLoadNodeCode()
     },
     async onLoadTicketCode() {
       const param = {
@@ -250,7 +258,16 @@ export default {
       }
       try {
         const res = await apiTicketTypeCode(param)
-        const codeData = res.result.map(item => ({ label: item.ticket_type, value: item.ticket_type }))
+         const codeData = res.result.map(item => ({
+          label: item.ticket_type,
+          value: item.ticket_type,
+          ticket_gb: item.ticket_gb
+        }))
+          if (this.rowInfo.network_type === '전송') {
+            this.ticketType = codeData.filter(item => item.type === 'POTN')
+          } else {
+            this.ticketType = codeData.filter(item => item.type === 'SWITCH')
+          }
         this.ticketType = codeData
       } catch (error) {
         console.error(error)
@@ -258,13 +275,16 @@ export default {
         /*  */
       }
     },
-       async onLoadAlarmCode() {
+      async onLoadAlarmCode() {
       const param = {
         ticket_type: this.rowInfo.ticket_type,
       }
       try {
         const res = await apiAlarmTypeCode(param)
-        const codeData = res.result.map(item => ({ label: item.fail_type, value: item.fail_type }))
+        const codeData = res.result.map(item => ({
+          label: item.fail_type,
+          value: item.fail_type
+        }))
         this.alarmType = codeData
       } catch (error) {
         console.error(error)
@@ -272,7 +292,28 @@ export default {
         /*  */
       }
     },
+    async onLoadNodeCode() {
+    try {
+      const res = await apiProfileNodeCode()
+      const codeData = res.result.map(item => ({
+        label: item.root_cause_sysnamea,
+        value: item.root_cause_sysnamea,
+        type: item.type
+      }))
+        if (this.rowInfo.network_type === '전송') {
+          this.nodeName = codeData.filter(item => item.type === '전송')
+        } else {
+          this.nodeName = codeData.filter(item => item.type === 'IP')
+        }
+      } catch (error) {
+        console.error(error)
+      } finally {
+        /*  */
+      }
+    },
+    insertAgencyIpData() {
 
+    },
     onClose() {
       /* for Override */
     },

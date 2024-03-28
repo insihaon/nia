@@ -791,7 +791,7 @@
     </select>
 
     <!-- 미확인 트래픽 조회 (이용기관) -->
-    <select id="SELECT_UNIDENTIFIED_AGENCY_LIST" parameterType="hashmap" resultType="hashmap">
+    <select id="SELECT_UNIDENTIFIED_AGENCY_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
         <include refid="TotalCountPrefix"/>
         SELECT
             IP.NREN_ID AS NREN_ID,
@@ -884,6 +884,7 @@
 
     <!-- 조치프로파일 리스트 조회 -->
      <select id="SELECT_PROFILE_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+        <include refid="TotalCountPrefix"/>
         SELECT
             PROFILE_NUM,
             PROFILE_TITLE,
@@ -922,6 +923,7 @@
             AND PROCESSING_TEMPLATE LIKE '%' || #{processing_template} || '%'
         </if>
         ORDER BY PROFILE_NUM
+        <include refid="TotalCountSuffix"/>
     </select>
 
     <!-- 조치 프로파일 티켓 타입 리스트 -->
@@ -950,8 +952,8 @@
         WHERE TICKET_TYPE = #{ticket_type}
     </select>
 
-    <!-- 조치 프로파일 노드 리스트  -->
-    <select id="SELECT_PROFILE_NODE_ID_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+    <!-- 조치 프로파일 노드(ID) 리스트  -->
+    <select id="SELECT_PROFILE_NODE_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
         SELECT * FROM (
           SELECT
               node_nm AS ROOT_CAUSE_SYSNAMEA
@@ -970,6 +972,7 @@
 
     <!-- 노드리스트 조회 -->
     <select id="SELECT_NODE_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+        <include refid="TotalCountPrefix"/>
         SELECT
             ROW_NUMBER() OVER (ORDER BY NODE_NUM) AS ROWNUM,
             node.*
@@ -1024,6 +1027,7 @@
                 ORDER BY CHNG_DATETIME ASC
         ) AS node
         ORDER BY NODE_NUM
+        <include refid="TotalCountSuffix"/>
     </select>
 
     <!-- 포트리스트 조회 -->
