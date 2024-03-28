@@ -75,6 +75,20 @@ table.basic {
     background: $nia-primary;
       color: #fff;
   }
+  span.title {
+    margin: 0px 10px;
+    font-weight: 700;
+    font-size: 1rem;
+    position: relative;
+    bottom: 5px;
+    width: fit-content;
+    background: #edf0f5;
+    padding: 5px 10px;
+    box-shadow: 2px 1px 3px 0 #89898963;
+    i {
+      margin-right: 5px;
+    }
+  }
 }
 
 .nia-edit-dialog {

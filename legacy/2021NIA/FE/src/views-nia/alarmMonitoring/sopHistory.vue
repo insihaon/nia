@@ -39,7 +39,7 @@
 import { Base } from '@/min/Base.min'
 import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
 import { apiSopHistList, apiSopSyslogHistList, apiEquipmentList, apiInterfaceList } from '@/api/nia'
-import { getTicketType, getTicketStatus } from '@/views-nia/js/commonFormat'
+import { getAlarmType, getTicketStatus } from '@/views-nia/js/commonFormat'
 import ModalSopDetail from '@/views-nia/modal/ModalSopDetail.vue'
 
 const routeName = 'SopHistory'
@@ -96,7 +96,7 @@ export default {
       const options = { name: this.name, checkable: false, rowGroupPanel: false, rowSelection: 'multiple', rowMultiSelection: false }
         const columns = [
           { type: '', prop: 'ticket_id', name: '티켓번호', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
-          { type: '', prop: 'ticket_type', name: '티켓유형', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false, format: getTicketType },
+          { type: '', prop: 'ticket_type', name: '티켓유형', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false, format: getAlarmType },
           { type: '', prop: 'ticket_result', name: '장애내용', width: 160, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
           { type: '', prop: 'fault_classify', name: '장애구분', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
           { type: '', prop: 'fault_type', name: '장애유형', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },

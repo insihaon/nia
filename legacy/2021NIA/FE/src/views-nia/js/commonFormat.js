@@ -18,19 +18,45 @@ export function getTicketType(row, col, value, index) {
   let result = ''
   switch (value) {
     case 'A':
-    case 'ATT2':
       result = '이상트래픽'
       break
     case 'N':
-    case 'NTT':
       result = '유해트래픽'
       break
     case 'S':
       result = 'SYSLOG'
       break
     case 'F':
-    case 'FTT':
       result = '비장애'
+      break
+  }
+  return result
+}
+export function getAlarmType(row, col, value, index) {
+  let result = ''
+  switch (row.ticket_type) {
+    case 'RT':
+    result = '장애'
+      break
+    case 'FTT':
+    result = '비장애'
+      break
+    case 'PF':
+    result = '광레벨'
+      break
+    case 'ATT2':
+    result = '이상 트래픽'
+      break
+    case 'NTT':
+    result = '유해 트래픽'
+      break
+    case 'NFTT':
+    result = '장비부하장애'
+      break
+    case 'SYSLOG':
+    result = 'SYSLOG'
+    break
+    default:
       break
   }
   return result

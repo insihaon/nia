@@ -90,10 +90,10 @@ spring:
 
   rabbitmq:
     enabled: false # 접속 불가 환경을 위해 추가함
-    address: incodej-lab.iptime.org
-    port: 6786
-    EngineToUi: nia.EngineToUiIndexDirectly
-    UiToEngine: nia.UiToEngineIndexDirectly
+    address: incodej-lab.iptime.org  # incodej.iptime.org 
+    port: 6786 # 15123 
+    niaEngineToUi: nia.EngineToUiIndexDirectly
+    niaUiToEngine: nia.exchangeUiToEngineDirectly
     InspectorToUID: nia.InspectorToUIDirectly
     TickeRestart: nia.NiaTicketReStartIndexDirectly
 
@@ -121,6 +121,11 @@ myconf:
     single-only: false
     expired-seconds: 86400 # 60*60*24
     login: false
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    sender: codej@koren.kr
+    password: zgpi wyws mnko mokj
 
   api-server:
     ipsdn:
