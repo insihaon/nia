@@ -7,6 +7,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
+import org.json.JSONObject;
+
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -94,6 +96,27 @@ public class JsonUtil {
     public static <T> T convertMapToObject(HashMap<String, Object> map, Class<T> valueType) {
         return objectMapper.convertValue(map, valueType);
     }
+
+    /**
+     * @param Map<String, Object>
+     * @apiNote Map<String, Object>를 JSONObject로 변환처리.
+     * @return JSONObject
+     * **/
+    public static JSONObject convertMapToJson(Map<String, Object> map) {
+        
+        JSONObject json = new JSONObject();
+        String key = "";
+        Object value = null;
+        for(Map.Entry<String, Object> entry : map.entrySet()) {
+            key = entry.getKey();
+            value = entry.getValue();
+            if(key!= null && value != null) {
+                json.put(key, value);
+            }
+        }
+        return json;
+    }
+
 
     public static HashMap<String, Object> convertObjectToMap(Object object) {
         HashMap<String, Object> map = objectMapper.convertValue(object, new TypeReference<HashMap<String, Object>>() {

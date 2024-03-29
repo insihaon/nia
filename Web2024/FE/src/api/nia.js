@@ -4,6 +4,15 @@ const { debug, isProd } = AppOptions.instance
 
 export const filePath = __filename.replace(/\\/g, '/')
 
+export function apiSendMail(params = {}) {
+  return http({
+    url: '/nia/sendMail',
+    method: 'post',
+    filePath: filePath,
+    sqlId: '',
+    data: params
+  })
+}
 export function apiIpAlarmList(params = {}) {
   return http({
     url: '/selectList',
@@ -265,6 +274,36 @@ export function apiAlarmTypeCode(params = {}) {
     method: 'post',
     filePath: filePath,
     sqlId: 'SELECT_PROFILE_ALARM_TYPE_LIST',
+    data: params
+  })
+}
+
+export function apiProfileNodeCode(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_PROFILE_NODE_LIST',
+    data: params
+  })
+}
+
+export function apiInsertProfileNodeName(params = {}) {
+  return http({
+    url: '/selectOne',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'INSERT_PROFILE_NODE_NAME_LIST',
+    data: params
+  })
+}
+
+export function apiProfileRecoveryList(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_PROFILE_RECOVERY_LIST',
     data: params
   })
 }

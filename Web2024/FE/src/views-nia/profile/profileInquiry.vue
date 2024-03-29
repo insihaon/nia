@@ -9,7 +9,7 @@
       :pagination-info="paginationInfo"
       class="w-100 h-100"
       @handleClickSearch="onClickSearch"
-      @onChangePage="onChangePage"
+      @onChangePage="(curPage) => onChangePage(curPage)"
       @searchClear="searchClear"
     />
     <ModalProfileDetail ref="ModalProfileDetail" />
@@ -88,12 +88,14 @@ export default {
         profile_title: this.searchModel.profile_title,
         network_type: this.searchModel.network_type,
         processing_template: this.searchModel.processing_template,
+        limit: this.paginationInfo.pageSize,
+        page: this.paginationInfo.currentPage,
       }
       try {
         const res = await apiSelectProfileList(param)
         this.trafficData = res?.result
         this.paginationInfo.totalCount = res.total // 총 항목 수 설정
-        this.paginationInfo.totalPages = Math.ceil(this.paginationInfo.totalCount / this.paginationInfo.pageSizes) // 전체 페이지 수 계산
+        this.paginationInfo.totalPages = Math.ceil(this.paginationInfo.totalCount / this.paginationInfo.pageSize) // 전체 페이지 수 계산
       } catch (error) {
         console.error(error)
       } finally {

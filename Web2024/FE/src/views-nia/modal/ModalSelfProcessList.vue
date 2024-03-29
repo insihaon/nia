@@ -55,7 +55,7 @@ import CellRenderDataSetButtons from '@/views-dataHub/components/cellRenderer/Ce
 import { apiSelfProcessList } from '@/api/nia'
 import { getTicketType } from '@/views-nia/js/commonFormat'
 
-const routeName = 'ModalSopList'
+const routeName = 'ModalSelfProcessList'
 
 export default {
   name: routeName,
@@ -131,15 +131,15 @@ export default {
     },
     onOpen(params, actionMode) {
       this.receviedParams = params
-      this.onLoadselfProcessList()
+      this.onLoadSelfProcessList()
     },
     onClickSearch(searchModel) {
-      this.onLoadselfProcessList()
+      this.onLoadSelfProcessList()
     },
     onClickRow(rows) {
       this.$refs.ModalSelfProcessDetail.open({ row: this._merge(rows[0], this.receviedParams) })
     },
-    async onLoadselfProcessList() {
+    async onLoadSelfProcessList() {
       const { pageSize: limit, currentPage: page } = this.paginationInfo
       const params = this._cloneDeep(this.receviedParams)
       this._merge(params, { limit, page })
@@ -158,7 +158,7 @@ export default {
     },
     onChangePage(curPage) {
       this.paginationInfo.currentPage = curPage
-      this.onLoadselfProcessList()
+      this.onLoadSelfProcessList()
     },
     onClose() { /* for Override */ },
     },

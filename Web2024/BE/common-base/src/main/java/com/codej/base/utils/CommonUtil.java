@@ -2,6 +2,7 @@ package com.codej.base.utils;
 
 import java.text.MessageFormat;
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 import lombok.extern.slf4j.Slf4j;
@@ -56,5 +57,14 @@ public class CommonUtil {
             message.append(key).append(": ").append(value).append("\n");
         }
         return message.toString();
+    }
+    public static String toString(Object obj) {
+        return toString(obj, "");
+    }
+    public static String toString(Object obj, String defaultValue) {
+        if(obj == null) {
+            return defaultValue;
+        }
+        return Optional.ofNullable(obj.toString()).orElse(defaultValue);
     }
 }

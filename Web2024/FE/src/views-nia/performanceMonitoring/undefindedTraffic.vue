@@ -164,13 +164,6 @@ export default {
     this.onLoadAppList()
   },
   methods: {
-    cellTemp() {},
-    sortTemp() {},
-    onSortedChange(param) {
-       this.sortInfo = []
-       this.onLoadNationList()
-      //  this.onLoadAgencyList()
-    },
     onClickSearch(params) {
       this.onLoadNationList(params)
       this.onLoadAgencyList(params)
@@ -204,7 +197,6 @@ export default {
         nren_ip: this.searchModel.nren_ip,
         limit: this.agencyPaginationInfo.pageSize,
         page: this.agencyPaginationInfo.currentPage,
-
       }
       try {
         const res = await apiSelectUnidentifiedAgencyList(param)
@@ -245,7 +237,7 @@ export default {
         this.agencyPaginationInfo.currentPage = curPage
         this.onLoadAgencyList()
       } else {
-         this.appPaginationInfo.currentPage = curPage
+        this.appPaginationInfo.currentPage = curPage
         this.onLoadAppList()
       }
     },

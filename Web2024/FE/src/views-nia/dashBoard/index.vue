@@ -120,6 +120,7 @@
         />
       </template>
     </LeftBar>
+    <ModalNTF ref="ModalNTF" />
     <ModalSopList ref="ModalSopList" />
     <ModalAiResponse ref="ModalAiResponse" />
     <ModalSelfProcessList ref="ModalSelfProcessList" />
@@ -133,6 +134,7 @@ import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
 import CompChart from '@/components/chart/CompChart.vue'
 import BaseFilterGroup from '@/filters/baseFilterGroup'
 import CellRenderAibuttons from '@/views-nia/components/cellRenderer/CellRenderAibuttons'
+import ModalNTF from '@/views-nia/modal/ModalNTF'
 import ModalSopList from '@/views-nia/modal/ModalSopList'
 import ModalAiResponse from '@/views-nia/modal/ModalAiResponse'
 import ModalSelfProcessList from '@/views-nia/modal/ModalSelfProcessList'
@@ -143,7 +145,7 @@ const routeName = 'NiaMain'
 export default {
   name: routeName,
   // eslint-disable-next-line vue/no-unused-components
-  components: { CompAgGrid, CompChart, LeftBar, filterBar, ModalSopList, CellRenderAibuttons, ModalAiResponse, ModalSelfProcessList },
+  components: { CompAgGrid, CompChart, LeftBar, filterBar, ModalNTF, ModalSopList, CellRenderAibuttons, ModalAiResponse, ModalSelfProcessList },
   extends: Base,
   data() {
     return {
@@ -173,7 +175,7 @@ export default {
       const columns = [
         { type: '', prop: 'ticket_id', name: 'TICKET_ID', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'ticket_generation_time', name: '최초 장애 발생시간', width: 200, alignItems: 'center', fixed: false, suppressMenu: true, formatter: (row) => { return this.formatterTimeStamp(row.ticket_generation_time, 'YYYY/MM/DD-HH:mm:ss') } },
-        { type: '', prop: 'status', name: '상태', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, formatter: this.getStatus },
+        { type: '', prop: 'status', name: '상태', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, formatter: this.getStatus, cellStyle: this.getCellStyle, },
         { type: '', prop: '', name: 'SOP', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: 'SOP', icon: 'circle-check', type: 'SOP', action: this.handleOpenEditModal.bind(this) } },
         { type: '', prop: '', name: '장애대응', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '장애대응', icon: 'circle-check', type: 'alarm', action: this.handleOpenEditModal.bind(this) } },
         { type: '', prop: '', name: '상황전파', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '조치요청', icon: 'circle-check', type: 'NTF', action: this.handleOpenEditModal.bind(this) } },
@@ -188,15 +190,15 @@ export default {
         { type: '', prop: 'ip_addr', name: 'ip_addr', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
       ]
       const options = { name: this.name, checkable: false, rowGroupPanel: false }
-      return { options, columns, data: this.ipNetworkList, onDoesExternalFilterPass: this.onIpDoesExternalFilterPass }
+      return { options, columns, data: this.ipNetworkList, onDoesExternalFilterPass: (externalFilter, node) => { return this.onDoesExternalFilterPass(externalFilter, node, 'ip') } }
     },
     transmissionAgGrid() {
       const columns = [
         { type: '', prop: 'ticket_id', name: 'TICKET_ID', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'cluster_no', name: '클러스터 No.', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'fault_time', name: '최초 장애 발생시간', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
-        { type: '', prop: 'status', name: '상태', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, formatter: this.getStatus },
-        { type: '', prop: '', name: 'SOP', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: 'SOP', icon: 'circle-check', type: 'sop', action: this.handleOpenEditModal.bind(this) } },
+        { type: '', prop: 'status', name: '상태', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, formatter: this.getStatus, cellStyle: this.getCellStyle },
+        { type: '', prop: '', name: 'SOP', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: 'SOP', icon: 'circle-check', type: 'SOP', action: this.handleOpenEditModal.bind(this) } },
         { type: '', prop: '', name: '장애대응', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '장애대응', icon: 'circle-check', type: 'alarm', action: this.handleOpenEditModal.bind(this) } },
         { type: '', prop: '', name: '상황전파', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '조치요청', icon: 'circle-check', type: 'NTF', action: this.handleOpenEditModal.bind(this) } },
         { type: '', prop: 'ticket_type', name: 'ALARM TYPE', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, formatter: getAlarmType },
@@ -206,7 +208,7 @@ export default {
         { type: '', prop: 'ip_addr', name: 'ip_addr', width: 100, alignItems: 'center', fixed: false, suppressMenu: true }
       ]
       const options = { name: this.name, checkable: false, rowGroupPanel: false }
-      return { options, columns, data: this.transmissionNetworkList }
+      return { options, columns, data: this.transmissionNetworkList, onDoesExternalFilterPass: (externalFilter, node) => { return this.onDoesExternalFilterPass(externalFilter, node, 'trans') } }
     },
     ticketOptions() {
       const keyByTitle = [
@@ -305,10 +307,10 @@ export default {
       await this.onLoadIpAlarmList()
       await this.onLoadTransmissionAlarmList()
 
-      this.ipFilterGroup = new BaseFilterGroup(this, { onFilterChanged: this.onFilterChanged, isCheckBox: false })
+      this.ipFilterGroup = new BaseFilterGroup(this, { onFilterChanged: () => this.onFilterChanged('ip'), isCheckBox: false })
       this.setIPFilterGroup()
 
-      this.transFilterGroup = new BaseFilterGroup(this, { onFilterChanged: this.onFilterChanged, isCheckBox: false })
+      this.transFilterGroup = new BaseFilterGroup(this, { onFilterChanged: () => this.onFilterChanged('trans'), isCheckBox: false })
       this.setTransFilterGroup()
     })
   },
@@ -336,9 +338,8 @@ export default {
       this.transFilterGroup.addFilter('transStatus', '상태', this.CONSTANTS.nia.statusType, btnOption) // 상태
       this.transFilterGroup.addFilter('transType', 'TYPE', this.CONSTANTS.nia.transType, btnOption) // 전송망 장애 종류
     },
-    onFilterChanged(changedFilter, code) {
-      console.log('onFilterChanged')
-      this.$refs.ipAgGrid.externalFilterChanged({ name: this.name })
+    onFilterChanged(type) {
+      this.$refs[type === 'ip' ? 'ipAgGrid' : 'transmissionAgGrid'].externalFilterChanged({ name: this.name })
     },
     onClickFilterItem(filterType, name, code) {
       if (filterType === 'ip') {
@@ -348,15 +349,16 @@ export default {
       }
       this.$forceUpdate()
     },
-    onIpDoesExternalFilterPass(externalFilter, node) {
-      if (!this.ipFilterGroup.filters) return true
+    onDoesExternalFilterPass(externalFilter, node, gridType) {
+      const filterGroup = gridType === 'ip' ? 'ipFilterGroup' : 'transFilterGroup'
+      if (!this[filterGroup].filters) return true
 
       const { data: row } = node
       let resMultiCondition = true
-      const multiFilterKeys = Object.keys(this.ipFilterGroup.filters).filter(key => this.ipFilterGroup.filters[key].options.isMultiSelect)
+      const multiFilterKeys = Object.keys(this[filterGroup].filters).filter(key => this[filterGroup].filters[key].options.isMultiSelect)
 
       resMultiCondition = multiFilterKeys.map(mkey => {
-        return this.ipFilterGroup.filters[mkey].dataArray.some(item => {
+        return this[filterGroup].filters[mkey].dataArray.some(item => {
           if (item.code !== 'All') {
             if (typeof item.fnFilter !== 'function') {
               return
@@ -526,48 +528,39 @@ export default {
           break
         case 'AUTO_FIN':
         result = '자동마감'
-        break
+
+          break
         default:
           break
       }
       return result
     },
-    getAlarmType(row, col, value, index) {
-      let result = ''
-      switch (row.ticket_type) {
-        case 'RT':
-        result = '장애'
-          break
-        case 'FTT':
-        result = '비장애'
-          break
-        case 'PF':
-        result = '광레벨'
-          break
-        case 'ATT2':
-        result = '이상 트래픽'
-          break
-        case 'NTT':
-        result = '유해 트래픽'
-          break
-        case 'NFTT':
-        result = '장비부하장애'
-          break
-        case 'SYSLOG':
-        result = 'SYSLOG'
-          break
+    getCellStyle(params) {
+      let color = ''
+      let background = ''
+      switch (params.value) {
+        case 'INIT':
+          background = '#b14948'; color = '#fff'; break
+        case 'ACK':
+          background = '#f7aa17'; break
+        case 'FIN':
+          background = '#52a43a'; break
+        case 'AUTO_FIN':
+          background = '#adcc1e'; break
         default:
           break
       }
-      return result
+      return { 'background-color': background, color: color, 'font-weight': 600 }
     },
     selectedTicket(param) {
       this.selectedItem = param
     },
     handleOpenEditModal(row, type) {
-      if (type === 'sop') {
+      if (type === 'SOP') {
         this.$refs.ModalSopList.open({ row: row, type: type })
-      } else {
+      } else if (type === 'NTF') {
+        this.$refs.ModalNTF.open({ row: row, type: type })
+      } else if (type === 'alarm') {
         this.$refs.ModalAiResponse.open({ row: row, type: type })
       }
     },
@@ -609,6 +602,9 @@ export default {
       .item-title {
         border-radius: solid 1px;
         font-weight: 600;
+        .filter-text {
+          white-space: nowrap;
+        }
       }
       ul {
         display: flex;
