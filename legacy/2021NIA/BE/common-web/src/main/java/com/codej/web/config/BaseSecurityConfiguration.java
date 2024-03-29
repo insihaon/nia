@@ -103,6 +103,9 @@ public class BaseSecurityConfiguration extends WebSecurityConfigurerAdapter {
         configuration.setAllowCredentials(true);    // false 로 설정하면 websock connection 시 cors 에러가 발생한다.
         configuration.addAllowedOriginPattern("*"); // 모든 도메인에서 요청을 허용
         // configuration.setAllowedOrigins(Arrays.asList("*"));
+        // configuration.addAllowedMethod(HttpMethod.GET.name());
+        // configuration.addAllowedMethod(HttpMethod.POST.name());
+        // configuration.addAllowedMethod(HttpMethod.OPTIONS.name());
         configuration.addExposedHeader("Client-Addr"); 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration(corsUrlPattern, configuration);
