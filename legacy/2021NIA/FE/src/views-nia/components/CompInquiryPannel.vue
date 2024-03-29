@@ -111,7 +111,7 @@
         @cellClicked="(value) => $emit('cellClicked', value)"
         @sortChanged="onSortChanged"
       />
-      <slot name="button-container" />
+      <slot name="button-area" />
     </div>
   </div>
 </template>
@@ -159,10 +159,6 @@ export default {
       default: true
     },
     isExcel: {
-      type: Boolean,
-      default: false
-    },
-    isButtonSlot: {
       type: Boolean,
       default: false
     },

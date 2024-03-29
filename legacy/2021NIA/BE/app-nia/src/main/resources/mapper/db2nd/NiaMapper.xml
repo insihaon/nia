@@ -731,9 +731,11 @@
 
      <!-- 이용기관 리스트 -->
     <select id="SELECT_AGENCY_CODE_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
-        select nren_name as name, nren_id as id 
-        from resource.tb_user_organ tcc 
-        ORDER BY nren_name
+        SELECT 
+            NREN_NAME AS NAME, 
+            NREN_ID AS ID 
+        FROM RESOURCE.TB_USER_ORGAN TCC 
+        ORDER BY NREN_NAME
     </select>
 
     <!-- 어플리케이션별 트래픽 분석 리스트 -->
@@ -863,6 +865,7 @@
         </where>
          <include refid="TotalCountSuffix"/>
     </select>
+
 
     <!-- 미확인 트래픽 조회 (어플리케이션) -->
     <select id="SELECT_UNIDENTIFIED_APP_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
@@ -1277,6 +1280,27 @@
         #{nren_ip}
     )
     </insert>
+
+     <update id="UPDATE_NIA_AGENCY_IP">
+    UPDATE resource.tb_user_organ_ip
+    <set>
+        nren_ip = #{UPDATE_NREN_IP}
+    </set>
+    <where>
+        AND nren_id = #{NREN_ID} 
+        AND nren_name = #{NREN_NAME}
+        AND nren_ip = #{NREN_IP}
+    </where>
+    </update>
+
+    <delete id="DELETE_NIA_AGENCY_IP">
+        DELETE FROM resource.tb_user_organ_ip
+        <where>
+            AND nren_id = #{NREN_ID} 
+            AND nren_name = #{NREN_NAME}
+            AND nren_ip = #{NREN_IP}
+        </where>
+    </delete>
 
     <!-- 이용기관 IP 삭제 -->
     <delete id="DELETE_AGENCY_IP_LIST" parameterType="hashmap">

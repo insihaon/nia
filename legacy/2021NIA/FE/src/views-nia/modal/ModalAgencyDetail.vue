@@ -241,6 +241,7 @@ export default {
        const res = await apiDeleteAgencyIpList(param)
         if (res.success) {
           this.$message.success({ message: `삭제되었습니다.` })
+          this.$emit('systemEdit')
         }
       } catch (error) {
           this.$message.error('삭제에 실패했습니다.')
