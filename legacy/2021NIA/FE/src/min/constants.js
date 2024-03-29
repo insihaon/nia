@@ -41,13 +41,13 @@ export default {
   nia: {
     // 전송망
     transType: [
-      { value: 'RT', text: '장애' },
-      { value: 'PF', text: '광레벨' },
+      { code: 'RT', text: '장애', fnCount: (d) => safeString(d.ticket_type).trim() === 'RT', fnFilter: (d) => safeString(d.ticket_type).trim() === 'RT' },
+      { code: 'PF', text: '광레벨', fnCount: (d) => safeString(d.ticket_type).trim() === 'PF', fnFilter: (d) => safeString(d.ticket_type).trim() === 'PF' },
     ],
     // IP망
     ipType: [
-      { value: 'NFTT', text: '장비부하장애', fnCount: (d) => safeString(d.ticket_type).trim() === 'NFTT', fnFilter: (d) => safeString(d.ticket_type).trim() === 'NFTT' },
-      { value: 'FTT', text: '비장애', fnCount: (d) => safeString(d.ticket_type).trim() === 'FTT', fnFilter: (d) => safeString(d.ticket_type).trim() === 'FTT' },
+      { code: 'NFTT', text: '장비부하장애', fnCount: (d) => safeString(d.ticket_type).trim() === 'NFTT', fnFilter: (d) => safeString(d.ticket_type).trim() === 'NFTT' },
+      { code: 'FTT', text: '비장애', fnCount: (d) => safeString(d.ticket_type).trim() === 'FTT', fnFilter: (d) => safeString(d.ticket_type).trim() === 'FTT' },
       { code: 'ATT2', text: '이상 트래픽', fnCount: (d) => safeString(d.ticket_type).trim() === 'ATT2', fnFilter: (d) => safeString(d.ticket_type).trim() === 'ATT2' },
       { code: 'NTT', text: '유해 트래픽', fnCount: (d) => safeString(d.ticket_type).trim() === 'NTT', fnFilter: (d) => safeString(d.ticket_type).trim() === 'NTT' },
       // { code: 'SYSLOG', text: 'SYSLOG', fnCount: (d) => safeString(d.ticket_type).trim() === 'SYSLOG', fnFilter: (d) => safeString(d.ticket_type).trim() === 'SYSLOG' },

@@ -706,7 +706,7 @@ function convertText(data) {
 }
 
 export function getJsonfileName2(url, config) {
-  const param = config.data
+  const param = Object.assign({}, config.data)
 
   delete param.encrypt
   delete param._t

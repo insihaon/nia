@@ -1,45 +1,45 @@
 package com.codej.nia.controller;
 
-import java.io.IOException;
 import java.util.HashMap;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.codej.base.dto.response.BaseResponse;
-import com.codej.base.provider.JwtTokenProvider;
-import com.codej.base.utils.CryptUtil;
-import com.codej.base.utils.JsonUtil;
+import com.codej.base.dto.response.ResultResponse;
+import com.codej.base.utils.cipher.rsa.RSA;
 import com.codej.web.controller.AbsDataController;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.codej.nia.service.NiaService;
 
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.Headers;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okio.Buffer;
 
 @Slf4j
 @RestController
-@RequestMapping(value = { "/dh" })
-
+@RequestMapping(value = { "/nia" })
 public class NiaApiController extends AbsDataController {
-
-    private static final OkHttpClient client = new OkHttpClient();
 
 
     @Autowired
-    private JwtTokenProvider jwtTokenProvider;
+    private NiaService niaService;
 
 
+    public static HashMap<String, RSA.RSAKey> RsaMAP = new HashMap<>();
 
+    @PostMapping(value = "/sendMail")
+    public ResultResponse<?> sendMail(HttpServletRequest request,
+        @RequestBody HashMap<String, Object> param) 
+        throws Exception {
+
+        Boolean encrypt = true;
+        try {
+            encrypt = getEncrypt(param);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return niaService.mailProcessing(param, encrypt);
+    }
 }

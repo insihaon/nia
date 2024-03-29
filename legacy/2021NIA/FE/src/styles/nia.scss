@@ -76,6 +76,20 @@ table.basic {
     background: $nia-primary;
       color: #fff;
   }
+  span.title {
+    margin: 0px 10px;
+    font-weight: 700;
+    font-size: 1rem;
+    position: relative;
+    bottom: 5px;
+    width: fit-content;
+    background: #edf0f5;
+    padding: 5px 10px;
+    box-shadow: 2px 1px 3px 0 #89898963;
+    i {
+      margin-right: 5px;
+    }
+  }
 }
 
 .nia-edit-dialog {
@@ -86,6 +100,7 @@ table.basic {
     height: auto;
     min-width: 700px !important;
   }
+
   .el-dialog__header {
     background-color: white !important;
     color: black !important;
@@ -99,6 +114,18 @@ table.basic {
     padding: 0 20px 10px 20px;
     max-height: auto;
     background: #fff;
+  }
+
+  .is-checked .el-checkbox__inner,
+  .is-checked .el-radio__inner {
+    border-color: #63666a !important;
+    background: #63666a !important;
+  }
+
+  .el-checkbox__input.is-checked + .el-checkbox__label,
+  .el-radio__input.is-checked + .el-radio__label {
+    color: #000000;
+    font-weight: bold;
   }
 
   .el-dialog__footer {

@@ -79,7 +79,7 @@
             </div>
             <div class="optionBoxButtons" style="margin: 5px 8px 3px 3px; float: right">
               <el-button v-if="isExcel" type="button" size="mini" class="excel-form-export" icon="el-icon-download" @click="handleExcel">
-                엑셀 업로드
+                엑셀 저장
               </el-button>
               <el-button v-if="title !== '데이터셋' && title !== '노드 정보 조회'" class="btn-r" type="info" size="mini" @click="onClickSearchButton">
                 <i class="el-icon-search" />

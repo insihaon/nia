@@ -89,13 +89,12 @@ export default {
     },
      onChangePage(curPage) {
       this.paginationInfo.currentPage = curPage
-      this.onLoadSopList()
     },
     async onLoadAuthList() {
      const { pageSize: limit, currentPage: page } = this.paginationInfo
        const param = {
-        name: this.searchModel.name,
-        lvl_value: this.searchModel.lvl_value,
+        NAME: this.searchModel.name,
+        LVL_VALUE: this.searchModel.lvl_value,
         pageSize: limit,
         currentPage: page
        }
@@ -106,8 +105,6 @@ export default {
         this.paginationInfo.totalPages = Math.ceil(this.paginationInfo.totalCount / this.paginationInfo.pageSize) // 전체 페이지 수 계산
       } catch (error) {
         console.error(error)
-      } finally {
-       /*  */
       }
     },
     searchClear() {
