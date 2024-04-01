@@ -43,6 +43,15 @@
               <el-input v-model="input_item" />
             </td>
           </tr>
+          <tr v-if="viewType === 'APP'">
+            <th v-if="viewType === 'APP'">{{ '설명' }}</th>
+            <td v-if="viewType === 'APP'">
+              <el-input
+                v-model="description"
+                type="textarea"
+              />
+            </td>
+          </tr>
         </table>
         <div slot="footer" class="dialog-footer">
           <el-button size="medium" @click.native="modeChange()">
@@ -61,7 +70,7 @@
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
 import { mapState } from 'vuex'
-import { apiInsertAgencyIpList, apiSelectAgencyCodeList } from '@/api/nia'
+import { apiInsertAgencyIpList, apiSelectAgencyCodeList, apiInsertAppIp } from '@/api/nia'
 
 const routeName = 'ModalAddTrafficData'
 
@@ -79,7 +88,8 @@ export default {
       agency_id: '',
       agencyList: [],
       protocol: '',
-      input_item: ''
+      input_item: '',
+      description: ''
     }
   },
   computed: {
@@ -157,6 +167,7 @@ export default {
             const res = await apiInsertAgencyIpList(param)
             if (res.result > 0) {
               this.$message('등록 되었습니다.')
+              this.$emit('systemEdit')
               this.close()
             }
           } catch (error) {
@@ -166,13 +177,32 @@ export default {
           }
         })
     },
-    insertAppData() {
-
+    async insertAppIpData() {
+       this.$confirm('어플리케이션을 등록하시겠습니까?', `어플리케이션 등록`, {
+          confirmButtonText: '예',
+          cancelButtonText: '아니오',
+          type: 'success'
+        }).then(async() => {
+          const param = {
+            protocol: this.protocol,
+            port_num: this.input_item,
+            description: this.description
+          }
+          try {
+            const res = await apiInsertAppIp(param)
+            if (res.result > 0) {
+              this.$message('등록 되었습니다.')
+              this.$emit('systemEdit')
+              this.close()
+            }
+          } catch (error) {
+            console.error(error)
+          } finally {
+            /*  */
+          }
+        })
     },
     onClose() { /* for Override */ },
-    onSubmit() {
-        console.log('submit!')
-      }
     }
   }
 </script>

@@ -828,13 +828,13 @@
     <!-- 미확인 트래픽 조회 (국가) -->
     <select id="SELECT_UNIDENTIFIED_NATION_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
         <include refid="TotalCountPrefix"/>
-        select
-            country_name,
-            koica
-        from gather.tb_country_code
+        SELECT
+            COUNTRY_NAME,
+            KOICA
+        FROM GATHER.TB_COUNTRY_CODE
             <trim prefix="(" prefixOverrides="AND|OR" suffix=")" suffixOverrides="">
                 <if test="COUNTRY_NAME != null">
-                    AND country_name like '%' || #{COUNTRY_NAME} || '%' 
+                    AND COUNTRY_NAME like '%' || #{COUNTRY_NAME} || '%' 
                 </if>
                 <if test="country_code != null and country_code != ''">
                     AND KOICA LIKE '%' || #{koica} || '%'
@@ -889,6 +889,47 @@
     ORDER BY PROTOCOL ASC
         <include refid="TotalCountSuffix"/>
     </select>
+
+    <!-- 어플리케이션 수정 -->
+    <update id="UPDATE_APP_IP">
+        UPDATE GATHER.TB_DEFAULT_PORT_NUMBER
+        <set>
+            <!-- PROTOCOL = #{protocol}, -->
+            <if test="description != null and description != ''">
+            DESCRIPTION = #{description}
+            </if>
+        </set>
+        <where>
+            MAPP_SERIAL= #{mapp_serial}
+        </where>
+    </update>
+
+
+    <!-- 어플리케이션 삭제 -->
+     <delete id="DELETE_APP_IP" parameterType="hashmap">
+        DELETE FROM GATHER.TB_DEFAULT_PORT_NUMBER
+        <where>
+            MAPP_SERIAL = #{mapp_serial}
+        </where>
+    </delete>
+
+    
+    <insert id="INSERT_APP_IP" parameterType="java.util.HashMap">
+    INSERT INTO GATHER.TB_DEFAULT_PORT_NUMBER
+    ( 
+        PROTOCOL, 
+        PORT_NUM, 
+        <!-- IP_TYPE,  -->
+        DESCRIPTION
+    )
+    values
+    (
+        #{protocol},
+        #{port_num},
+        <!-- null, -->
+        #{description}
+    )
+    </insert>
     
 
     <!-- 장비 사용량 감시 및 이력 조회 -->
@@ -1280,27 +1321,19 @@
         #{nren_ip}
     )
     </insert>
-
-     <update id="UPDATE_NIA_AGENCY_IP">
-    UPDATE resource.tb_user_organ_ip
+    
+    <!-- 이용기관 IP 수정 -->
+    <update id="UPDATE_AGENCY_IP_LIST">
+    UPDATE RESOURCE.TB_USER_ORGAN_IP
     <set>
-        nren_ip = #{UPDATE_NREN_IP}
+        NREN_IP = #{update_nren_ip}
     </set>
     <where>
-        AND nren_id = #{NREN_ID} 
-        AND nren_name = #{NREN_NAME}
-        AND nren_ip = #{NREN_IP}
+        AND NREN_ID = #{nren_id} 
+        AND NREN_NAME = #{nren_name}
+        AND NREN_IP = #{nren_ip}
     </where>
     </update>
-
-    <delete id="DELETE_NIA_AGENCY_IP">
-        DELETE FROM resource.tb_user_organ_ip
-        <where>
-            AND nren_id = #{NREN_ID} 
-            AND nren_name = #{NREN_NAME}
-            AND nren_ip = #{NREN_IP}
-        </where>
-    </delete>
 
     <!-- 이용기관 IP 삭제 -->
     <delete id="DELETE_AGENCY_IP_LIST" parameterType="hashmap">
