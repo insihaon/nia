@@ -238,6 +238,36 @@ export function apiSelectUnidentifiedAppList(params = {}) {
   })
 }
 
+export function apiUpdateAppIpList(params = {}) {
+  return http({
+    url: '/modify',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'UPDATE_APP_IP',
+    data: params
+  })
+}
+
+export function apiInsertAppIp(params = {}) {
+  return http({
+    url: '/selectOne',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'INSERT_APP_IP',
+    data: params
+  })
+}
+
+export function apiDeleteAppIpList(params = {}) {
+  return http({
+    url: '/modify',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'DELETE_APP_IP',
+    data: params
+  })
+}
+
 export function apiSelectEquipAmountUsedList(params = {}) {
   return http({
     url: '/selectList',
@@ -388,6 +418,16 @@ export function apiInsertAgencyIpList(params = {}) {
   })
 }
 
+export function apiUpdateAgencyIpList(params = {}) {
+  return http({
+    url: '/modify',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'UPDATE_AGENCY_IP_LIST',
+    data: params
+  })
+}
+
 export function apiDeleteAgencyIpList(params = {}) {
   return http({
     url: '/modify',
@@ -398,7 +438,7 @@ export function apiDeleteAgencyIpList(params = {}) {
   })
 }
 
-export function apiUpdateAgencyList(params = {}) {
+export function apiUpdateAgencyDetailList(params = {}) {
   return http({
     url: '/modify',
     method: 'post',

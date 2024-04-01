@@ -63,14 +63,13 @@
         </div>
       </el-tab-pane>
     </el-tabs>
-    <ModalEditTrafficData ref="ModalEditTrafficData" />
-    <ModalAddTrafficData ref="ModalAddTrafficData" />
+    <ModalEditTrafficData ref="ModalEditTrafficData" @systemEdit="refreshData()" />
+    <ModalAddTrafficData ref="ModalAddTrafficData" @systemEdit="refreshData()" />
   </div>
 </template>
 <script>
 import { Base } from '@/min/Base.min'
 import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
-import { AppOptions } from '@/class/appOptions'
 import ModalEditTrafficData from '@/views-nia/modal/ModalEditTrafficData'
 import ModalAddTrafficData from '@/views-nia/modal/ModalAddTrafficData'
 import CellRenderAibuttons from '@/views-nia/components/cellRenderer/CellRenderAibuttons'
@@ -264,6 +263,10 @@ export default {
         this.$refs.ModalEditTrafficData.open({ row: row, type: type })
       }
     },
+    refreshData() {
+       this.onLoadAgencyList()
+       this.onLoadAppList()
+    }
   },
 }
 </script>

@@ -35,6 +35,9 @@ public interface NiaMapper extends BaseDataMapper {
         public List<ResultMap> SELECT_UNIDENTIFIED_NATION_LIST(HashMap<String, Object> map);
         public List<ResultMap> SELECT_UNIDENTIFIED_AGENCY_LIST(HashMap<String, Object> map);
         public List<ResultMap> SELECT_UNIDENTIFIED_APP_LIST(HashMap<String, Object> map);
+        public int INSERT_APP_IP(HashMap<String, Object> map);
+        public int UPDATE_APP_IP(HashMap<String, Object> map);
+        public int DELETE_APP_IP(HashMap<String, Object> map);
         public List<ResultMap> SELECT_EQUIP_AMOUNT_USED_LIST(HashMap<String, Object> map);
         public List<ResultMap> SELECT_PROFILE_LIST(HashMap<String, Object> map);
         public List<ResultMap> SELECT_PROFILE_TICKET_TYPE_LIST(HashMap<String, Object> map);
@@ -50,6 +53,7 @@ public interface NiaMapper extends BaseDataMapper {
         public List<ResultMap> SELECT_AGENCY_IF_ID_LIST(HashMap<String, Object> map);
         public List<ResultMap> SELECT_AGENCY_IP_LIST(HashMap<String, Object> map);
         public int INSERT_AGENCY_IP_LIST(HashMap<String, Object> map);
+        public int UPDATE_AGENCY_IP_LIST(HashMap<String, Object> map);
         public int DELETE_AGENCY_IP_LIST(HashMap<String, Object> map);
         public int UPDATE_AGENCY_DETAIL_LIST(HashMap<String, Object> map);
 
