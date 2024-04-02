@@ -48,6 +48,10 @@ public interface NiaMapper extends BaseDataMapper {
         public List<ResultMap> SELECT_NODE_LIST(HashMap<String, Object> map);
         public List<ResultMap> SELECT_PORT_LIST(HashMap<String, Object> map);
         public List<ResultMap> SELECT_LINK_LIST(HashMap<String, Object> map);
+        public int UPDATE_LINK_LIST(HashMap<String, Object> map);
+        public int DELETE_LINK_LIST(HashMap<String, Object> map);
+        public List<ResultMap> SELECT_LINK_START_NODE_LIST(HashMap<String, Object> map);
+        public List<ResultMap> SELECT_LINK_END_NODE_LIST(HashMap<String, Object> map);
         public List<ResultMap> SELECT_AGENCY_LIST(HashMap<String, Object> map);
         public List<ResultMap> SELECT_AGENCY_NODE_ID_LIST(HashMap<String, Object> map);
         public List<ResultMap> SELECT_AGENCY_IF_ID_LIST(HashMap<String, Object> map);

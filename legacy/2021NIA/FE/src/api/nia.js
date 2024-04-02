@@ -368,6 +368,45 @@ export function apiSelectLinkList(params = {}) {
   })
 }
 
+export function apiDeleteLinkList(params = {}) {
+  return http({
+    url: '/modify',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'DELETE_LINK_LIST',
+    data: params
+  })
+}
+export function apiSelectlinkStartNode(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_LINK_START_NODE_LIST',
+    data: params
+  })
+}
+
+export function apiSelectlinkEndNode(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_LINK_END_NODE_LIST',
+    data: params
+  })
+}
+
+export function apiUpdateLinkList(params = {}) {
+  return http({
+    url: '/modify',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'UPDATE_LINK_LIST',
+    data: params
+  })
+}
+
 export function apiSelectAgencyList(params = {}) {
   return http({
     url: '/selectList',

@@ -678,7 +678,20 @@
     <!-- 이용기관별 트래픽 분석 리스트 조회  -->  
     <select id="SELECT_TRAFFIC_AGENCY_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
     <include refid="TotalCountPrefix"/>
-        SELECT  src_ip,
+        SELECT
+        src_ip,
+        src_nren_id,
+        src_nren_name,
+        src_country_code,
+        dst_ip,
+        dst_nren_id,
+        dst_nren_name,
+        dst_country_code,
+        packet_bytes,
+        row_num
+    FROM (
+        SELECT
+            src_ip,
             src_nren_id,
             src_nren_name,
             src_country_code,
@@ -686,45 +699,45 @@
             dst_nren_id,
             dst_nren_name,
             dst_country_code,
-            packet_bytes,
-            row_number
-    FROM    ( SELECT src_ip,
-                    src_nren_id,
-                    src_nren_name ,
-                    src_country_code,
-                    dst_ip,
-                    dst_nren_id,
-                    dst_nren_name ,
-                    dst_country_code ,
-                    SUM(packet_bytes) packet_bytes ,
-                    row_number() over (ORDER BY case when src_nren_id is null and dst_nren_id is null then 0
-                                                 else 2 end desc, SUM(packet_bytes) DESC) row_number
-            FROM    gather.tb_mdb_sflow_traffic_day dt
-            WHERE   1=1 
-        AND dt.collect_timestamp <![CDATA[ <= ]]> CURRENT_DATE 
-        AND dt.collect_timestamp <![CDATA[ >= ]]> CURRENT_DATE - interval '5 days'
-        <if test="src_nren_name != null and src_nren_name != ''">
-            AND src_nren_id = #{src_nren_name}
-        </if>
-        <if test="src_ip != null and src_ip != ''">
-            AND src_ip LIKE '%' || #{src_ip} || '%'
-        </if>
-        <if test="dst_nren_name != null and dst_nren_name != ''">
-            AND dst_nren_id = #{dst_nren_name}
-        </if>
-        <if test="dst_ip != null and dst_ip != ''">
-            AND dst_ip LIKE '%' || #{dst_ip} || '%'
-        </if>
-        GROUP BY 
-                src_ip,
-                src_nren_id,
-                src_nren_name,
-                src_country_code,
-                dst_ip,
-                dst_nren_id,
-                dst_nren_name ,
-                dst_country_code 
-            ) dt
+            SUM(packet_bytes) AS packet_bytes,
+            row_number() OVER (
+                ORDER BY
+                    CASE
+                        WHEN src_nren_id IS NULL AND dst_nren_id IS NULL THEN 0
+                        ELSE 2
+                    END DESC,
+                    SUM(packet_bytes) DESC
+            ) AS row_num
+        FROM
+            gather.tb_mdb_sflow_traffic_day dt
+        WHERE
+            1=1
+            AND dt.collect_timestamp <![CDATA[ <= ]]> CURRENT_DATE
+            AND dt.collect_timestamp <![CDATA[ >= ]]> CURRENT_DATE - INTERVAL '5 days'
+            <if test="src_nren_name != null and src_nren_name != ''">
+                AND src_nren_id = #{src_nren_name}
+            </if>
+            <if test="src_ip != null and src_ip != ''">
+                AND src_ip LIKE '%' || #{src_ip} || '%'
+            </if>
+            <if test="dst_nren_name != null and dst_nren_name != ''">
+                AND dst_nren_id = #{dst_nren_name}
+            </if>
+            <if test="dst_ip != null and dst_ip != ''">
+                AND dst_ip LIKE '%' || #{dst_ip} || '%'
+            </if>
+        GROUP BY
+            src_ip,
+            src_nren_id,
+            src_nren_name,
+            src_country_code,
+            dst_ip,
+            dst_nren_id,
+            dst_nren_name,
+            dst_country_code
+    ) AS subquery
+    WHERE
+        row_num <![CDATA[ <= ]]> COALESCE(#{TOP_N}, 101)
         <include refid="TotalCountSuffix"/>
     </select>
 
@@ -1190,7 +1203,6 @@
         SELECT
             ROW_NUMBER() OVER () AS ROWNUM
             , *
-            <!-- , COUNT(1) OVER () AS "LINKTOTALCOUNT" -->
         FROM (
         SELECT DISTINCT
         BL.SRC_NODE_NUM
@@ -1235,6 +1247,68 @@
                 AND UPPER(BL.LINK_DESC) LIKE '%' || UPPER(#{link_desc}) || '%'
             </if>
         ) AS link
+    </select>
+
+    <!-- 링크 리스트 삭제 -->
+    <delete id="DELETE_LINK_LIST" parameterType="hashmap">
+        DELETE FROM RESOURCE.TB_BACKBONE_LINK
+        WHERE 
+          SRC_NODE_ID = #{src_node_id}
+          AND SRC_IF_ID = #{src_if_id}
+          AND DEST_NODE_ID = #{dest_node_id}
+          AND DEST_IF_ID = #{dest_if_id}
+    </delete>
+
+    <!-- 링크 리스트 수정 -->
+      <update id="UPDATE_LINK_LIST">
+    UPDATE RESOURCE.TB_BACKBONE_LINK
+    SET
+        <if test="bandwidth != null and bandwidth != ''">
+            BANDWIDTH = #{bandwidth},
+        </if>
+        <if test="link_desc != null and link_desc != ''">
+            LINK_DESC = #{link_desc},
+        </if>
+        <if test="vlan != null and vlan != ''">
+            VLAN = #{vlan},
+        </if>
+        <if test="tag != null and tag != ''">
+            TAG = #{tag},
+        </if>
+                CHNG_DATETIME = now()
+            WHERE 
+                SRC_NODE_ID = #{src_node_id}
+                AND SRC_IF_ID = #{src_if_id}
+                AND DEST_NODE_ID = #{dest_node_id}
+                AND DEST_IF_ID = #{dest_if_id}
+        </update>
+
+
+    <!-- 링크 시작 노드 리스트 조회 -->
+     <select id="SELECT_LINK_START_NODE_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+        SELECT DISTINCT PM.NODE_ID
+        FROM RESOURCE.TB_PORT_MST PM
+        WHERE NOT EXISTS (
+            SELECT 1
+            FROM RESOURCE.TB_BACKBONE_LINK BL
+            WHERE BL.SRC_NODE_ID = PM.NODE_ID AND BL.SRC_IF_ID  = PM.IF_ID
+               OR BL.DEST_NODE_ID = PM.NODE_ID AND BL.DEST_IF_ID = PM.IF_ID
+            )
+        ORDER BY NODE_ID
+    </select>
+
+    <!-- 링크 끝 노드 리스트 조회 -->
+    <select id="SELECT_LINK_END_NODE_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+        SELECT DISTINCT PM.NODE_ID--, PM.INT_NAME
+        FROM RESOURCE.TB_PORT_MST PM
+        WHERE NOT EXISTS (
+            SELECT 1
+            FROM RESOURCE.TB_BACKBONE_LINK BL
+            WHERE BL.SRC_NODE_ID = PM.NODE_ID AND BL.SRC_IF_ID  = PM.IF_ID
+               OR BL.DEST_NODE_ID = PM.NODE_ID AND BL.DEST_IF_ID = PM.IF_ID
+            )
+        AND PM.NODE_ID != #{node_id}
+        ORDER BY NODE_ID
     </select>
 
     <!-- 이용기관 리스트 조회  -->
