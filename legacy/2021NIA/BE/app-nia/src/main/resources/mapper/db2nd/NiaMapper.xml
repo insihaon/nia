@@ -1249,6 +1249,48 @@
         ) AS link
     </select>
 
+    <!-- 링크 리스트 등록 -->
+     <insert id="INSERT_LINK_LIST" parameterType="java.util.HashMap">
+        INSERT INTO RESOURCE.TB_BACKBONE_LINK
+        (
+            SRC_NODE_NUM,
+            SRC_NODE_ID,
+            SRC_IF_NUM,
+            SRC_IF_ID,
+            DEST_NODE_NUM,
+            DEST_NODE_ID,
+            DEST_IF_NUM,
+            DEST_IF_ID,
+            SRC_IP_ADDR,
+            DEST_IP_ADDR,
+            BANDWIDTH,
+            LINK_DESC,
+            VLAN,
+            TAG,
+            REG_DATETIME,
+            DATA_SOURCE
+        )
+        values
+        (
+            (SELECT RESOURCE.UF_GENERATOR_NUM('')),
+            #{src_node_id},
+            (SELECT RESOURCE.UF_GENERATOR_NUM('')),
+            #{src_if_id},
+            (SELECT RESOURCE.UF_GENERATOR_NUM('')),
+            #{dest_node_id},
+            (SELECT RESOURCE.UF_GENERATOR_NUM('')),
+            #{dest_if_id},
+            #{src_ip_addr},
+            #{dest_ip_addr},
+            #{bandwidth},
+            #{link_desc},
+            #{vlan},
+            #{tag},
+            NOW(),
+            'web'
+        )
+    </insert>
+
     <!-- 링크 리스트 삭제 -->
     <delete id="DELETE_LINK_LIST" parameterType="hashmap">
         DELETE FROM RESOURCE.TB_BACKBONE_LINK
@@ -1309,6 +1351,24 @@
             )
         AND PM.NODE_ID != #{node_id}
         ORDER BY NODE_ID
+    </select>
+
+    <select id="SELECT_LINK_IF_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+        SELECT 
+            DISTINCT PM.NODE_ID, 
+            PM.IF_ID ,
+            IP_ADDR , 
+            IF_SPEED
+        FROM RESOURCE.TB_PORT_MST PM
+        WHERE NOT EXISTS (
+            SELECT 1
+            FROM RESOURCE.TB_BACKBONE_LINK BL
+            WHERE BL.SRC_NODE_ID = PM.NODE_ID AND BL.SRC_IF_ID  = PM.IF_ID
+               OR BL.DEST_NODE_ID = PM.NODE_ID AND BL.DEST_IF_ID = PM.IF_ID
+            )
+          AND  PM.NODE_ID = #{node_id} 
+          AND IF_OPER_STATUS = 'up'
+        ORDER BY IF_ID
     </select>
 
     <!-- 이용기관 리스트 조회  -->

@@ -27,6 +27,7 @@
           <td class="disable">
             <el-select
               v-model="src_node_id"
+              :disabled="isDisable"
             >
               <el-option
                 v-for="item in srcNodeList"
@@ -40,6 +41,7 @@
           <td class="disable">
             <el-select
               v-model="dest_node_id"
+              :disabled="isDisable"
             >
               <el-option
                 v-for="item in destNodeList"
@@ -53,18 +55,42 @@
         <tr>
           <th>I/F</th>
           <td class="disable">
-            <el-input v-model="rowInfo.src_if_id" />
+            <el-select
+              v-model="src_if_id"
+              :disabled="isDisable"
+            >
+              <el-option
+                v-for="item in srcIfList"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
           </td>
           <th>I/F</th>
           <td class="disable">
-            <el-input v-model="rowInfo.dest_if_id" />
+            <el-select
+              v-model="dest_if_id"
+              :disabled="isDisable"
+            >
+              <el-option
+                v-for="item in destIfList"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
           </td>
         </tr>
         <tr>
           <th>IF IP</th>
-          <td class="disable">{{ rowInfo.src_ip_addr }}</td>
+          <td class="disable">
+            <el-input v-model="src_ip_addr" :disabled="isDisable" />
+          </td>
           <th>IF IP</th>
-          <td class="disable">{{ rowInfo.dest_ip_addr }}</td>
+          <td class="disable">
+            <el-input v-model="dest_ip_addr" :disabled="isDisable" />
+          </td>
         </tr>
         <tr>
           <th colspan="1">대역폭</th>
@@ -82,7 +108,7 @@
           <th>VLAN</th>
           <td>
             <el-select
-              v-model="rowInfo.vlan"
+              v-model="vlan"
             >
               <el-option
                 v-for="item in vlanOptions"
@@ -95,7 +121,7 @@
           <th>TAG</th>
           <td>
             <el-select
-              v-model="rowInfo.tag"
+              v-model="tag"
             >
               <el-option
                 v-for="item in tagOptions"
@@ -126,7 +152,7 @@
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
 import { mapState } from 'vuex'
-import { apiUpdateLinkList, apiDeleteLinkList, apiSelectlinkStartNode, apiSelectlinkEndNode } from '@/api/nia'
+import { apiUpdateLinkList, apiSelectlinkIfList, apiDeleteLinkList, apiInsertLinkList, apiSelectlinkStartNode, apiSelectlinkEndNode } from '@/api/nia'
 
 const routeName = 'ModalLinkDetail'
 
@@ -142,10 +168,17 @@ export default {
       rowInfo: {},
       src_node_id: '',
       dest_node_id: '',
+      src_if_id: '',
+      dest_if_id: '',
       bandwidth: '',
       link_desc: '',
+      src_ip_addr: '',
+      dest_ip_addr: '',
       srcNodeList: [],
       destNodeList: [],
+      srcIfList: [],
+      destIfList: [],
+      linkData: [],
       vlanOptions: [
         {
           value: 'True',
@@ -166,6 +199,8 @@ export default {
           label: 'False',
         },
       ],
+      vlan: '',
+      tag: ''
 
     }
   },
@@ -179,14 +214,22 @@ export default {
   },
   title() {
     return this.viewType === 'OPEN' ? '링크 등록' : '링크 상세보기'
+  },
+  isDisable() {
+    return this.viewType === 'linkDetail'
   }
   },
   watch: {
-    // 'srcNodeList': function(newVal, oldVal) {
-    //   if (newVal !== oldVal) {
-    //     this.onloadLinkEndNode(newVal)
+    'src_node_id': function(newVal, oldVal) {
+      if (newVal !== oldVal) {
+        this.onloadLinkIf()
+        this.onloadLinkEndNode()
+      }
+    },
+    // 'src_node_id': function(newVal, oldVal) {
+    //    if (newVal !== oldVal) {
+    //     this.onloadLinkIf()
     //   }
-    // }
   },
   mounted() {},
   methods: {
@@ -198,18 +241,31 @@ export default {
       this.viewType = model.type
       this.onloadLinkStartNode()
       this.onloadLinkEndNode()
+      // this.onloadLinkIf()
       if (this.viewType === 'OPEN') {
         this.rowInfo = ''
         this.src_node_id = ''
         this.dest_node_id = ''
+        this.src_if_id = ''
+        this.dest_if_id = ''
+        this.src_ip_addr = ''
+        this.dest_ip_addr = ''
         this.bandwidth = ''
         this.link_desc = ''
+        this.vlan = ''
+        this.tag = ''
       } else {
         this.rowInfo = this._cloneDeep(model.row)
         this.src_node_id = this.rowInfo.src_node_id
         this.dest_node_id = this.rowInfo.dest_node_id
+        this.src_if_id = this.rowInfo.src_if_id
+        this.dest_if_id = this.rowInfo.dest_if_id
+        this.src_ip_addr = this.rowInfo.src_ip_addr
+        this.dest_ip_addr = this.rowInfo.dest_ip_addr
         this.bandwidth = this.rowInfo.bandwidth
         this.link_desc = this.rowInfo.link_desc
+        this.vlan = this.rowInfo.VLAN
+        this.tag = this.rowInfo.TAG
       }
     },
     async onloadLinkStartNode() {
@@ -237,6 +293,20 @@ export default {
         // this.closeLoading(target)
       }
     },
+    async onloadLinkIf() {
+      try {
+        const param = {
+          node_id: this.src_node_id
+        }
+        const res = await apiSelectlinkIfList(param)
+        this.selectCodeData = res.result.map(item => ({ label: item.if_id, value: item.if_id }))
+        this.srcIfList = this.selectCodeData
+      } catch (error) {
+        console.error(error)
+      } finally {
+        // this.closeLoading(target)
+      }
+    },
     insertLinkData() {
        this.confirm('등록하시겠습니까?', '등록', {
           confirmButtonText: 'OK',
@@ -244,16 +314,19 @@ export default {
           type: 'success'
         }).then(async () => {
           const param = {
-            src_node_id: this.rowInfo.src_node_id,
-            src_if_id: this.rowInfo.src_if_id,
-            dest_node_id: this.rowInfo.dest_node_id,
-            dest_if_id: this.rowInfo.dest_if_id,
+            src_node_id: this.src_node_id,
+            src_if_id: this.src_if_id,
+            dest_node_id: this.dest_node_id,
+            dest_if_id: this.dest_if_id,
+            src_ip_addr: this.src_ip_addr,
+            dest_ip_addr: this.dest_ip_addr,
+            bandwidth: this.bandwidth,
             link_desc: this.link_desc,
             vlan: this.vlan,
             tag: this.tag
           }
           try {
-              const res = await ''
+              const res = await apiInsertLinkList(param)
               if (res.success) {
                 this.$message('등록 되었습니다.')
                 this.$emit('systemEdit')
@@ -276,9 +349,10 @@ export default {
             src_if_id: this.rowInfo.src_if_id,
             dest_node_id: this.rowInfo.dest_node_id,
             dest_if_id: this.rowInfo.dest_if_id,
+            bandwidth: this.bandwidth,
             link_desc: this.link_desc,
-            vlan: this.vlan,
-            tag: this.tag
+            vlan: this.rowInfo.VLAN,
+            tag: this.rowInfo.TAG
           }
           try {
               const res = await apiUpdateLinkList(param)
@@ -306,7 +380,7 @@ export default {
             dest_if_id: this.rowInfo.dest_if_id,
           }
           try {
-              const res = await apiUpdateLinkList(param)
+              const res = await apiDeleteLinkList(param)
               if (res.success) {
                 this.$message('삭제 되었습니다.')
                 this.$emit('systemEdit')
@@ -334,10 +408,11 @@ export default {
 
 <style lang="scss" scoped>
 @import '~@/styles/variables.scss';
-.ModalNodeDetail {
+.ModalLinkDetail {
   .line-class {
     font-weight: bold;
     font-size: 15px;
   }
+
 }
 </style>

@@ -18,7 +18,7 @@
         </div>
       </template>
     </CompInquiryPannel>
-    <ModalLinkDetail ref="ModalLinkDetail" />
+    <ModalLinkDetail ref="ModalLinkDetail" @systemEdit="onLoadLinkList()" />
   </div>
 </template>
 <script>
