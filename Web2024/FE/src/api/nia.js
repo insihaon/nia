@@ -397,6 +397,26 @@ export function apiSelectlinkEndNode(params = {}) {
   })
 }
 
+export function apiSelectlinkIfList(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_LINK_IF_LIST',
+    data: params
+  })
+}
+
+export function apiInsertLinkList(params = {}) {
+  return http({
+    url: '/selectOne',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'INSERT_LINK_LIST',
+    data: params
+  })
+}
+
 export function apiUpdateLinkList(params = {}) {
   return http({
     url: '/modify',
