@@ -358,6 +358,16 @@ export function apiSelectPortList(params = {}) {
   })
 }
 
+export function apiUpdatePortList(params = {}) {
+  return http({
+    url: '/modify',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'UPDATE_PORT_LIST',
+    data: params
+  })
+}
+
 export function apiSelectLinkList(params = {}) {
   return http({
     url: '/selectList',

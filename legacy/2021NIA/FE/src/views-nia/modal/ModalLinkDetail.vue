@@ -85,11 +85,19 @@
         <tr>
           <th>IF IP</th>
           <td class="disable">
-            <el-input v-model="src_ip_addr" :disabled="isDisable" />
+            <el-input
+              v-model="src_ip_addr"
+              :disabled="isDisable"
+              placeholder="0.0.0.0"
+            />
           </td>
           <th>IF IP</th>
           <td class="disable">
-            <el-input v-model="dest_ip_addr" :disabled="isDisable" />
+            <el-input
+              v-model="dest_ip_addr"
+              :disabled="isDisable"
+              placeholder="0.0.0.0"
+            />
           </td>
         </tr>
         <tr>
@@ -221,15 +229,19 @@ export default {
   },
   watch: {
     'src_node_id': function(newVal, oldVal) {
-      if (newVal !== oldVal) {
-        this.onloadLinkIf()
+    if (newVal !== oldVal) {
+      this.destNodeList = []
+        this.onloadLinkIf(newVal, 'src')
         this.onloadLinkEndNode()
-      }
-    },
-    // 'src_node_id': function(newVal, oldVal) {
-    //    if (newVal !== oldVal) {
-    //     this.onloadLinkIf()
-    //   }
+    }
+  },
+  'dest_node_id': function(newVal, oldVal) {
+    if (newVal !== oldVal) {
+        this.onloadLinkIf(newVal, 'dest')
+        // this.onloadLinkEndNode()
+    }
+  }
+
   },
   mounted() {},
   methods: {
@@ -240,8 +252,6 @@ export default {
     onOpen(model, actionMode) {
       this.viewType = model.type
       this.onloadLinkStartNode()
-      this.onloadLinkEndNode()
-      // this.onloadLinkIf()
       if (this.viewType === 'OPEN') {
         this.rowInfo = ''
         this.src_node_id = ''
@@ -271,8 +281,8 @@ export default {
     async onloadLinkStartNode() {
       try {
         const res = await apiSelectlinkStartNode()
-        this.selectCodeData = res.result.map(item => ({ label: item.node_id, value: item.node_id }))
-        this.srcNodeList = this.selectCodeData
+        const selectCodeData = res.result.map(item => ({ label: item.node_id, value: item.node_id }))
+        this.srcNodeList = selectCodeData
       } catch (error) {
           console.error(error)
         } finally {
@@ -280,27 +290,34 @@ export default {
         }
     },
     async onloadLinkEndNode() {
+      const nullCheck = this.src_node_id.trim() !== ''
+      if (nullCheck) {
       try {
         const param = {
           node_id: this.src_node_id
         }
         const res = await apiSelectlinkEndNode(param)
-        this.selectCodeData = res.result.map(item => ({ label: item.node_id, value: item.node_id }))
-        this.destNodeList = this.selectCodeData
+        const selectCodeData = res.result.map(item => ({ label: item.node_id, value: item.node_id }))
+        this.destNodeList = selectCodeData
       } catch (error) {
         console.error(error)
       } finally {
         // this.closeLoading(target)
       }
+    }
     },
-    async onloadLinkIf() {
+    async onloadLinkIf(newVal, type) {
       try {
         const param = {
-          node_id: this.src_node_id
+          node_id: newVal
         }
         const res = await apiSelectlinkIfList(param)
-        this.selectCodeData = res.result.map(item => ({ label: item.if_id, value: item.if_id }))
-        this.srcIfList = this.selectCodeData
+        const selectCodeData = res.result.map(item => ({ label: item.if_id, value: item.if_id }))
+        if (type === 'src') {
+          this.srcIfList = selectCodeData
+        } else {
+          this.destIfList = selectCodeData
+        }
       } catch (error) {
         console.error(error)
       } finally {
@@ -401,7 +418,6 @@ export default {
       },
     },
     onClose() {
-      /* for Override */
     }
 }
 </script>
