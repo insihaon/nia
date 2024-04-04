@@ -1,11 +1,10 @@
 <template>
-  <div :class="{ [name]: true }">
+  <div>
     <el-dialog
       v-if="animationVisible"
       v-el-drag-dialog
       :visible.sync="visible"
       :width="domElement.maxWidth + `px`"
-      :height="domElement.minHeight + `px`"
       :fullscreen.sync="fullscreen"
       :modal-append-to-body="false"
       :append-to-body="true"
@@ -50,7 +49,7 @@
             </td>
             <th>사용여부</th>
             <td class="disable">
-              <el-select v-model="selectedRow.if_oper_status_info ">
+              <el-select v-model="if_oper_status_status">
                 <el-option
                   v-for="item in options"
                   :key="item.value"
@@ -63,7 +62,7 @@
         </table>
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button size="small" plain @click.native="close()">
+        <el-button size="small" plain @click.native="updatePortData()">
           {{ '수정' }}
         </el-button>
         <el-button size="small" plain class="exit-btn" @click.native="close()">
@@ -80,6 +79,7 @@ import { Modal } from '@/min/Modal.min'
 import _ from 'lodash'
 import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
 import CellRenderDataSetButtons from '@/views-dataHub/components/cellRenderer/CellRenderDataSetButtons'
+import { apiUpdatePortList } from '@/api/nia'
 
 const routeName = 'ModalPortEdit'
 
@@ -94,13 +94,7 @@ export default {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       nodeList: [],
-      selectedRow: null,
-      paginationInfo: {
-        currentPage: 1, // 현재 페이지
-        pageSize: 100, // 페이지당 항목 수
-        totalCount: 0, // 총 항목 수
-        totalPages: null, // 전체 페이지 수
-      },
+      selectedRow: {},
       options: [{
           value: 'up',
           label: '사용'
@@ -108,6 +102,7 @@ export default {
           value: 'down',
           label: '미사용'
         }],
+      if_oper_status_status: ''
     }
   },
   computed: {
@@ -119,13 +114,37 @@ export default {
       this.closeOnClickModal = false
     },
     onOpen(model, actionMode) {
-      this.selectedRow = model?.row
+      this.selectedRow = this._cloneDeep(model.row)
+      this.if_oper_status_status = this.selectedRow.if_oper_status_info
     },
-    onChangePage(curPage) {
-      this.paginationInfo.currentPage = curPage
-      this.onLoadNodeList()
+    updatePortData() {
+       this.confirm('수정하시겠습니까?', '포트 수정', {
+          confirmButtonText: 'OK',
+          cancelButtonText: 'Cancel',
+          type: 'success'
+        }).then(async () => {
+          const param = {
+            src_noif_typede_id: this.selectedRow.if_type,
+            if_speed: this.selectedRow.if_speed,
+            ip_addr: this.selectedRow.ip_addr,
+            if_oper_status: this.if_oper_status_status,
+            node_num: this.selectedRow.node_num,
+            node_id: this.selectedRow.node_id,
+            if_nm: this.selectedRow.if_nm,
+          }
+          try {
+              const res = await apiUpdatePortList(param)
+              if (res.success) {
+                this.$message('수정 되었습니다.')
+                this.$emit('systemEdit')
+                this.close()
+              }
+          } catch (error) {
+            this.$message.error({ message: `수정에 실패했습니다.` })
+            console.error(error)
+          }
+        })
     },
-    onClose() { /* for Override */ },
     }
 
   }

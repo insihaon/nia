@@ -1198,6 +1198,22 @@
         ) AS port
     </select>
 
+    <!-- 포트 리스트 수정 -->
+    <update id="UPDATE_PORT_LIST">
+        UPDATE RESOURCE.TB_PORT_MST
+        SET
+            IF_TYPE = #{if_type},
+            IF_SPEED = #{if_speed},
+            IP_ADDR = #{ip_addr},
+            IF_OPER_STATUS = #{if_oper_status},
+            DATA_SOURCE = 'web',
+            CHNG_DATETIME = NOW()
+        WHERE 
+          NODE_NUM = #{node_num}
+          AND NODE_ID = #{node_id}
+          AND IF_NM = #{if_nm}
+    </update>
+
     <!-- 링크 리스트 조회  -->
     <select id="SELECT_LINK_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
         SELECT
@@ -1411,7 +1427,7 @@
 
     <!-- 이용기관 인터페이스 IF ID 리스트 조회 -->
     <select id="SELECT_AGENCY_IF_ID_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
---         select distinct if_id from resource.tb_user_organ tuo
+      <!-- select distinct if_id from resource.tb_user_organ tuo -->
         SELECT DISTINCT IF_ID,
                 IF_SPEED
         FROM RESOURCE.TB_PORT_MST
