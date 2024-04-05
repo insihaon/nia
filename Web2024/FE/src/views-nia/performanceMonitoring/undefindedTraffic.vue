@@ -1,65 +1,77 @@
 <template>
   <div :class="{ [name]: true }">
-    <div class="common-padding">
-      <el-tabs class="h-100" type="border-card" style="flex:1">
-        <el-tab-pane label="국가">
-          <div class="h-100 flex-fill" sytle="height: 100%">
-            <CompInquiryPannel
-              ref="trafficNation"
-              :ag-grid="nationAgGrid"
-              :items="searchNationItems"
-              :search-model.sync="searchModel"
-              :pagination-info="nationPaginationInfo"
-              class="w-100 flex-fill"
-              :style="{ height : 'calc(100vh - 200px)'}"
-              @handleClickSearch="onClickSearch"
-              @onChangePage="(curPage) => onChangePage(curPage, 'NATION')"
-              @searchClear="searchClear"
-            />
-          </div>
-        </el-tab-pane>
-        <el-tab-pane label="이용기관">
-          <div class="h-100 flex-fill" sytle="height: 100%">
-            <CompInquiryPannel
-              ref="trafficAgency"
-              :ag-grid="agencyAgGrid"
-              :items="searchAgencyItems"
-              :search-model.sync="searchModel"
-              :pagination-info="agencyPaginationInfo"
-              class="w-100 flex-fill"
-              :style="{ height : 'calc(100vh - 200px)'}"
-              @handleClickSearch="onClickSearch"
-              @onChangePage="(curPage) => onChangePage(curPage, 'AGENCY')"
-              @searchClear="searchClear"
-            />
-          </div>
-        </el-tab-pane>
-        <el-tab-pane label="어플리케이션">
-          <div class="h-100 flex-fill" sytle="height: 100%">
-            <CompInquiryPannel
-              ref="trafficApp"
-              :ag-grid="appAgGrid"
-              :items="searchAppItems"
-              :search-model.sync="searchModel"
-              :pagination-info="appPaginationInfo"
-              class="w-100 flex-fill"
-              :style="{ height : 'calc(100vh - 200px)'}"
-              @handleClickSearch="onClickSearch"
-              @onChangePage="(curPage) => onChangePage(curPage, 'APP')"
-              @searchClear="searchClear"
-            />
-          </div>
-        </el-tab-pane>
-      </el-tabs>
-      <ModalEditTrafficData ref="ModalEditTrafficData" />
-    </div>
+    <el-tabs class="h-100 common-padding" style="flex:1">
+      <el-tab-pane label="국가">
+        <div class="h-100 flex-fill" sytle="height: 100%">
+          <CompInquiryPannel
+            ref="trafficNation"
+            :ag-grid="nationAgGrid"
+            :items="searchNationItems"
+            :search-model.sync="searchModel"
+            :pagination-info="nationPaginationInfo"
+            class="w-100 flex-fill"
+            :style="{ height : 'calc(100vh - 200px)'}"
+            @handleClickSearch="onClickSearch"
+            @onChangePage="(curPage) => onChangePage(curPage, 'NATION')"
+            @searchClear="searchClear"
+          />
+        </div>
+      </el-tab-pane>
+      <el-tab-pane label="이용기관">
+        <div class="h-90 flex-fill" sytle="height: 100%">
+          <CompInquiryPannel
+            ref="trafficAgency"
+            :ag-grid="agencyAgGrid"
+            :items="searchAgencyItems"
+            :search-model.sync="searchModel"
+            :pagination-info="agencyPaginationInfo"
+            class="w-100 flex-fill"
+            :style="{ height : 'calc(100vh - 200px)'}"
+            @handleClickSearch="onClickSearch"
+            @onChangePage="(curPage) => onChangePage(curPage, 'AGENCY')"
+            @searchClear="searchClear"
+          >
+            <template slot="button-area">
+              <div class="button-panel">
+                <el-button class="float-right" type="info" @click="handleOpenEditModal('','AGENCY')">등록</el-button>
+              </div>
+            </template>
+          </CompInquiryPannel>
+        </div>
+
+      </el-tab-pane>
+      <el-tab-pane label="어플리케이션">
+        <div class="h-100 flex-fill" sytle="height: 100%">
+          <CompInquiryPannel
+            ref="trafficApp"
+            :ag-grid="appAgGrid"
+            :items="searchAppItems"
+            :search-model.sync="searchModel"
+            :pagination-info="appPaginationInfo"
+            class="w-100 flex-fill"
+            :style="{ height : 'calc(100vh - 200px)'}"
+            @handleClickSearch="onClickSearch"
+            @onChangePage="(curPage) => onChangePage(curPage, 'APP')"
+            @searchClear="searchClear"
+          >
+            <template slot="button-area">
+              <div class="button-panel">
+                <el-button class="float-right" type="info" @click="handleOpenEditModal('', 'APP')">등록</el-button>
+              </div>
+            </template>
+          </CompInquiryPannel>
+        </div>
+      </el-tab-pane>
+    </el-tabs>
+    <ModalEditTrafficData ref="ModalEditTrafficData" @systemEdit="refreshData()" />
+    <ModalAddTrafficData ref="ModalAddTrafficData" @systemEdit="refreshData()" />
   </div>
 </template>
 <script>
 import { Base } from '@/min/Base.min'
 import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
-import { AppOptions } from '@/class/appOptions'
 import ModalEditTrafficData from '@/views-nia/modal/ModalEditTrafficData'
+import ModalAddTrafficData from '@/views-nia/modal/ModalAddTrafficData'
 import CellRenderAibuttons from '@/views-nia/components/cellRenderer/CellRenderAibuttons'
 import { apiSelectUnidentifiedNationList, apiSelectUnidentifiedAgencyList, apiSelectUnidentifiedAppList } from '@/api/nia'
 
@@ -67,7 +79,7 @@ const routeName = 'UndefindedTraffic'
 export default {
   name: routeName,
   // eslint-disable-next-line vue/no-unused-components
-  components: { CompInquiryPannel, CellRenderAibuttons, ModalEditTrafficData },
+  components: { CompInquiryPannel, CellRenderAibuttons, ModalEditTrafficData, ModalAddTrafficData },
   extends: Base,
   data() {
     return {
@@ -245,8 +257,16 @@ export default {
       this.searchModel = {}
     },
     handleOpenEditModal(row, type) {
-      this.$refs.ModalEditTrafficData.open({ row: row, type: type })
+      if (type === 'AGENCY' || type === 'APP') {
+          this.$refs.ModalAddTrafficData.open({ type: type })
+      } else {
+        this.$refs.ModalEditTrafficData.open({ row: row, type: type })
+      }
     },
+    refreshData() {
+       this.onLoadAgencyList()
+       this.onLoadAppList()
+    }
   },
 }
 </script>

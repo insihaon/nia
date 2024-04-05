@@ -11,8 +11,14 @@
       @handleClickSearch="onClickSearch"
       @onChangePage="onChangePage"
       @searchClear="searchClear"
-    />
-    <ModalLinkDetail ref="ModalLinkDetail" />
+    >
+      <template slot="button-area">
+        <div class="button-panel">
+          <el-button class="float-right" type="info" @click="handleOpenModalDetail('', 'OPEN')">등록</el-button>
+        </div>
+      </template>
+    </CompInquiryPannel>
+    <ModalLinkDetail ref="ModalLinkDetail" @systemEdit="onLoadLinkList()" />
   </div>
 </template>
 <script>
