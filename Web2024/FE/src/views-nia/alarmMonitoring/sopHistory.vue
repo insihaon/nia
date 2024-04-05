@@ -38,7 +38,7 @@
 <script>
 import { Base } from '@/min/Base.min'
 import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
-import { apiSopHistList, apiSopSyslogHistList, apiEquipmentList, apiInterfaceList } from '@/api/nia'
+import { apiSelectSopHistList, apiSopSyslogHistList, apiEquipmentList, apiInterfaceList } from '@/api/nia'
 import { getAlarmType, getTicketStatus } from '@/views-nia/js/commonFormat'
 import ModalSopDetail from '@/views-nia/modal/ModalSopDetail.vue'
 
@@ -109,7 +109,6 @@ export default {
           { type: '', prop: 'root_cause_sysnamez', name: '노드Z', width: 250, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true },
           { type: '', prop: 'ip_addra', name: '마스터 IP', width: 250, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true },
           { type: '', prop: 'root_cause_porta', name: '장비I/F', width: 250, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true },
-
         ]
         return { options, columns, data: this.sopHistList }
     },
@@ -180,7 +179,7 @@ export default {
         this._merge(param, { TICKET_TYPE: this.row.ticket_type })
       }
       try {
-        const res = await apiSopHistList(param)
+        const res = await apiSelectSopHistList(param)
         this.sopHistList = res?.result
         this.sopPaginationInfo.totalCount = res.total
         this.sopPaginationInfo.totalPages = Math.ceil(this.sopPaginationInfo.totalCount / this.sopPaginationInfo.pageSize) // 전체 페이지 수 계산

@@ -89,11 +89,13 @@ spring:
     maxheap: 128M
 
   rabbitmq:
-    enabled: false # 접속 불가 환경을 위해 추가함
+    enabled: true # 접속 불가 환경을 위해 추가함
     address: incodej-lab.iptime.org  # incodej.iptime.org 
     port: 6786 # 15123 
+    username: niaadmin
+    password: niaadmin12#$
     niaEngineToUi: nia.EngineToUiIndexDirectly
-    niaUiToEngine: nia.exchangeUiToEngineDirectly
+    niaUiToEngine: nia.UiToEngineIndexDirectly
     InspectorToUID: nia.InspectorToUIDirectly
     TickeRestart: nia.NiaTicketReStartIndexDirectly
 
@@ -133,7 +135,9 @@ myconf:
       port: 8088
       user: codej
       pw: "!codej@"
-
+  aimonitorFrame-Url: http://incodej-lab.iptime.org:82
+  snapshot-Url: http://incodej-lab.iptime.org:24888/download/
+  
 file:
   access-Url: /external/**
 

@@ -171,7 +171,7 @@ import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
 import ModalAiResponse from '@/views-nia/modal/ModalAiResponse'
 import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
 import CellRenderDataSetButtons from '@/views-dataHub/components/cellRenderer/CellRenderDataSetButtons'
-import { apiSelfProcessTrafficInfo, apiATTTrafficChart, apiNTTTrafficChart, apiSelectAiDetectionInfo, apiSelfProcessSyslogInfo, apiSopHistList, apiSopSyslogHistList } from '@/api/nia'
+import { apiSelfProcessTrafficInfo, apiATTTrafficChart, apiNTTTrafficChart, apiSelectAiDetectionInfo, apiSelfProcessSyslogInfo, apiSelectSopHistList, apiSopSyslogHistList } from '@/api/nia'
 import { getTicketType, formatterTime } from '@/views-nia/js/commonFormat'
 import CompChart from '@/components/chart/CompChart.vue'
 
@@ -393,7 +393,7 @@ export default {
           res = await apiSopSyslogHistList({ NODE_NM, ALARMMSG })
         } else {
           const { ticket_type: TICKET_TYPE, root_cause_sysnamea: ROOT_CAUSE_SYSNAMEA } = this.selectedRow
-          res = await apiSopHistList({ TICKET_TYPE, ROOT_CAUSE_SYSNAMEA })
+          res = await apiSelectSopHistList({ TICKET_TYPE, ROOT_CAUSE_SYSNAMEA })
         }
         this.sopHistList = res?.result
       } catch (error) {

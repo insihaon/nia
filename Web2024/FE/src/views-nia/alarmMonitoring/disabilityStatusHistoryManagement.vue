@@ -1,7 +1,7 @@
 <template>
   <div :class="{ [name]: true }">
     <CompInquiryPannel
-      ref="search"
+      ref="inquiry"
       :ag-grid="alarmAgGrid"
       :is-button-slot="false"
       :items="searchItems"
@@ -84,7 +84,7 @@ export default {
       const { pageSize: limit, currentPage: page } = this.paginationInfo
       const param = { limit, page }
 
-      const searchModel = this.$refs?.search?.searchModel ?? {}
+      const searchModel = this.$refs?.inquiry?.searchModel ?? {}
       if (searchModel?.INIT_DATE) {
         const dateTime = searchModel.INIT_DATE
         this._merge(this.searchModel, { INIT_START_DATE: dateTime[0], INIT_END_DATE: dateTime[1] })

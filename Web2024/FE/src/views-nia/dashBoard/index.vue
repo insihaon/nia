@@ -53,7 +53,7 @@
         <filterBar position="TOP">
           <template slot="function-container">
             <div class="filter-container">
-              <div class="title">IP망</div>
+              <div class="title">IP-SDN</div>
               <div class="filter-group">
                 <template v-for="(filter, keyName) in ipFilterGroup.filters">
                   <div v-if="filter.filterTitle" :key="filter.filterTitle" class="item-title ml-2">
@@ -120,6 +120,7 @@
         />
       </template>
     </LeftBar>
+    <ModalFIN ref="ModalFIN" />
     <ModalNTF ref="ModalNTF" />
     <ModalSopList ref="ModalSopList" />
     <ModalAiResponse ref="ModalAiResponse" />
@@ -135,6 +136,7 @@ import CompChart from '@/components/chart/CompChart.vue'
 import BaseFilterGroup from '@/filters/baseFilterGroup'
 import CellRenderAibuttons from '@/views-nia/components/cellRenderer/CellRenderAibuttons'
 import ModalNTF from '@/views-nia/modal/ModalNTF'
+import ModalFIN from '@/views-nia/modal/ModalFIN'
 import ModalSopList from '@/views-nia/modal/ModalSopList'
 import ModalAiResponse from '@/views-nia/modal/ModalAiResponse'
 import ModalSelfProcessList from '@/views-nia/modal/ModalSelfProcessList'
@@ -145,7 +147,7 @@ const routeName = 'NiaMain'
 export default {
   name: routeName,
   // eslint-disable-next-line vue/no-unused-components
-  components: { CompAgGrid, CompChart, LeftBar, filterBar, ModalNTF, ModalSopList, CellRenderAibuttons, ModalAiResponse, ModalSelfProcessList },
+  components: { CompAgGrid, CompChart, LeftBar, filterBar, ModalFIN, ModalNTF, ModalSopList, CellRenderAibuttons, ModalAiResponse, ModalSelfProcessList },
   extends: Base,
   data() {
     return {
@@ -158,7 +160,7 @@ export default {
       selectedItem: [],
       systemChartCondition: {
         dayType: 'DAY',
-        date: this.moment().format('YYYY-MM-DD')
+        date: this.moment().subtract(1, 'd').format('YYYY-MM-DD')
       },
       selfChartCondition: {
         statisticsType: 'hour',
@@ -173,14 +175,18 @@ export default {
   computed: {
     ipAgGrid() {
       const columns = [
+        { type: '', prop: 'alarmno', name: '알람번호', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'ticket_id', name: 'TICKET_ID', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
-        { type: '', prop: 'ticket_generation_time', name: '최초 장애 발생시간', width: 200, alignItems: 'center', fixed: false, suppressMenu: true, formatter: (row) => { return this.formatterTimeStamp(row.ticket_generation_time, 'YYYY/MM/DD-HH:mm:ss') } },
+        { type: '', prop: 'alarmtime', name: '장애 발생시간', width: 200, alignItems: 'center', fixed: false, suppressMenu: true, formatter: (row) => { return this.formatterTimeStamp(row.ticket_generation_time, 'YYYY/MM/DD-HH:mm:ss') } },
         { type: '', prop: 'status', name: '상태', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, formatter: this.getStatus, cellStyle: this.getCellStyle, },
-        { type: '', prop: '', name: 'SOP', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: 'SOP', icon: 'circle-check', type: 'SOP', action: this.handleOpenEditModal.bind(this) } },
+        { type: '', prop: '', name: '마감', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '', icon: 'edit-outline', type: 'FIN', action: this.handleOpenEditModal.bind(this) } },
+        { type: '', prop: '', name: 'SOP이력', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: 'SOP', icon: 'circle-check', type: 'SOP', action: this.handleOpenEditModal.bind(this) } },
         { type: '', prop: '', name: '장애대응', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '장애대응', icon: 'circle-check', type: 'alarm', action: this.handleOpenEditModal.bind(this) } },
         { type: '', prop: '', name: '상황전파', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '조치요청', icon: 'circle-check', type: 'NTF', action: this.handleOpenEditModal.bind(this) } },
-        { type: '', prop: 'ticket_type', name: 'ALARM TYPE', width: 150, alignItems: 'center', fixed: false, suppressMenu: true, formatter: getAlarmType },
+        { type: '', prop: 'ticket_type', name: '전표 유형', width: 150, alignItems: 'center', fixed: false, suppressMenu: true, formatter: getAlarmType },
         { type: '', prop: 'root_cause_type', name: '장애유형', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
+        { type: '', prop: 'alarmmsg', name: '장애정보', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
+        { type: '', prop: 'alarmmsg_original', name: '알람 원본메시지', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'ticket_rca_result_code', name: '장애내용', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'ticket_rca_result_dtl_code', name: '장애 원인', width: 200, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'node_num', name: '장비ID', width: 200, alignItems: 'center', fixed: false, suppressMenu: true },
@@ -194,19 +200,19 @@ export default {
     },
     transmissionAgGrid() {
       const columns = [
-        { type: '', prop: 'ticket_id', name: 'TICKET_ID', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
-        { type: '', prop: 'cluster_no', name: '클러스터 No.', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
-        { type: '', prop: 'fault_time', name: '최초 장애 발생시간', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
-        { type: '', prop: 'status', name: '상태', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, formatter: this.getStatus, cellStyle: this.getCellStyle },
-        { type: '', prop: '', name: 'SOP', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: 'SOP', icon: 'circle-check', type: 'SOP', action: this.handleOpenEditModal.bind(this) } },
-        { type: '', prop: '', name: '장애대응', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '장애대응', icon: 'circle-check', type: 'alarm', action: this.handleOpenEditModal.bind(this) } },
+        { type: '', prop: 'alarmno', name: '알람 번호', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
+        { type: '', prop: 'sysname', name: '장비명', width: 160, alignItems: 'center', fixed: false, suppressMenu: true },
+        { type: '', prop: 'alarmtime', name: '알람 발생시간', width: 200, alignItems: 'center', fixed: false, suppressMenu: true },
+        { type: '', prop: 'alarmloc', name: '인터페이스명', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
+        { type: '', prop: 'alarmmsg', name: '알람 메시지', width: 120, alignItems: 'center', fixed: false, suppressMenu: true },
+        { type: '', prop: '', name: '마감', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '', icon: 'edit-outline', type: 'FIN', action: this.handleOpenEditModal.bind(this) } },
+        // { type: '', prop: '', name: 'SOP이력', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: 'SOP', icon: 'circle-check', type: 'SOP', action: this.handleOpenEditModal.bind(this) } },
+        // { type: '', prop: '', name: '장애대응', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '장애대응', icon: 'circle-check', type: 'alarm', action: this.handleOpenEditModal.bind(this) } },
         { type: '', prop: '', name: '상황전파', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '조치요청', icon: 'circle-check', type: 'NTF', action: this.handleOpenEditModal.bind(this) } },
-        { type: '', prop: 'ticket_type', name: 'ALARM TYPE', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, formatter: getAlarmType },
-        { type: '', prop: 'root_cause_type', name: '장애유형', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
-        { type: '', prop: 'ticket_rca_result_dtl_code', name: '장애 원인', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
-        { type: '', prop: 'total_related_alarm_cnt', name: '근원알람개수', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
-        { type: '', prop: 'ip_addr', name: 'ip_addr', width: 100, alignItems: 'center', fixed: false, suppressMenu: true }
-      ]
+        // { type: '', prop: 'ticket_id', name: 'RCA 전표', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
+        // { type: '', prop: 'ticket_type', name: '전표 유형', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, formatter: getAlarmType },
+        // { type: '', prop: 'status', name: '상태', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, formatter: this.getStatus, cellStyle: this.getCellStyle },
+ ]
       const options = { name: this.name, checkable: false, rowGroupPanel: false }
       return { options, columns, data: this.transmissionNetworkList, onDoesExternalFilterPass: (externalFilter, node) => { return this.onDoesExternalFilterPass(externalFilter, node, 'trans') } }
     },
@@ -335,7 +341,7 @@ export default {
       const listName = 'transmissionNetworkList'
       const btnOption = { isMultiSelect: true, allItem: true, ifAllthenOtherUncheck: true, listName }
 
-      this.transFilterGroup.addFilter('transStatus', '상태', this.CONSTANTS.nia.statusType, btnOption) // 상태
+      // this.transFilterGroup.addFilter('transStatus', '상태', this.CONSTANTS.nia.statusType, btnOption) // 상태
       this.transFilterGroup.addFilter('transType', 'TYPE', this.CONSTANTS.nia.transType, btnOption) // 전송망 장애 종류
     },
     onFilterChanged(type) {
@@ -556,12 +562,15 @@ export default {
       this.selectedItem = param
     },
     handleOpenEditModal(row, type) {
+      const param = { row, type }
       if (type === 'SOP') {
-        this.$refs.ModalSopList.open({ row: row, type: type })
+        this.$refs.ModalSopList.open(param)
       } else if (type === 'NTF') {
-        this.$refs.ModalNTF.open({ row: row, type: type })
+        this.$refs.ModalNTF.open(param)
       } else if (type === 'alarm') {
-        this.$refs.ModalAiResponse.open({ row: row, type: type })
+        this.$refs.ModalAiResponse.open(param)
+      } else if (type === 'FIN') {
+        this.$refs.ModalFIN.open(param)
       }
     },
 

@@ -73,7 +73,6 @@
             </div>
           </div>
           <div
-            v-if="sendItem.ticket_type !== 'RT'"
             id="mail-content"
             v-loading="containerLoading"
             class="d-flex flex-column rounded shadow-sm leading-7 p-4 pl-5 w-50 overflow-y-auto"
@@ -103,10 +102,18 @@
                 &nbsp;&nbsp;- Threshold_Lower: {{ sendItem.out_threshold_lower + ' MB' }}<br>
                 &nbsp;&nbsp;- Anomaly: {{ sendItem.out_anomaly + 'MB' }}<br>
               </div>
+
+              <div v-if="sendItem.ticket_type === 'ATT2' || sendItem.ticket_type === 'NTT'">
+                <span class="font-semibold">&nbsp;&nbsp;&middot;장애 유무 판단 확률</span><br>
+                &nbsp;&nbsp;&nbsp;- 유효 확률 : {{ ((1-sendItem.zero1_entropy)*100).toFixed(1)+'%' }}<br>
+                &nbsp;&nbsp;&nbsp;- 무효 확률 : {{ (sendItem.zero1_entropy*100).toFixed(1)+'%' }}
+              </div>
+              <!-- $scope.model_config.text = $scope.ticket.zero1_entropy ? $scope.model_config.text.replace('${available_percentage}',((1-$scope.ticket.zero1_entropy)*100).toFixed(1)+'%') : $scope.model_config.text.replace('${available_percentage}','');
+                    $scope.model_config.text = $scope.ticket.zero1_entropy ? $scope.model_config.text.replace('${invalidity_percentage}', ($scope.ticket.zero1_entropy*100).toFixed(1)+'%') : $scope.model_config.text.replace('${invalidity_percentage}','');  -->
               <!-- FTT(비장애) -->
               <div v-if="sendItem.ticket_type === 'FTT'">
-                &nbsp;&nbsp;- 장애 확률 : {{ (zero1_entropy*100).toFixed(1)+'%' }}
-                &nbsp;&nbsp;- 비장애 확률 : {{ (1 - zero1_entropy*100).toFixed(1)+'%' }}
+                &nbsp;&nbsp;- 장애 확률 : {{ (sendItem.zero1_entropy*100).toFixed(1)+'%' }}<br>
+                &nbsp;&nbsp;- 비장애 확률 : {{ ((1 - sendItem.zero1_entropy)*100).toFixed(1)+'%' }}
               </div>
 
               <!-- NFTT -->
@@ -126,7 +133,7 @@
               <span class="sub-title font-semibold"><h4>&middot;작업 요청 내용</h4></span>
               <!-- SELECT_SOP_HIST_LIST -->
               <div v-if="isSyslog">
-                &nbsp;&nbsp;- 발생 시간 : {{ syslogInfo.alarmtime }}<br>
+                &nbsp;&nbsp;- 발생 시간 : {{ formatterTimeStamp(syslogInfo.alarmtime) }}<br>
                 &nbsp;&nbsp;- 알람 번호 : {{ syslogInfo.alarmno }} <br>
                 &nbsp;&nbsp;- 장비명 : {{ syslogInfo.node_nm }}<br>
                 &nbsp;&nbsp;- 장비 번호 : {{ syslogInfo.node_num }}<br>
@@ -165,11 +172,15 @@
               </div>
             </div>
           </div>
-          <div v-else-if="sendItem.ticket_type === 'RT' && sendItem.status !== 'INIT'" class="w-50 d-flex shadow-sm items-center justify-center text-lg font-semibold" style="height: 550px;">
+          <!--
+          <div v-else class="w-50 d-flex shadow-sm items-center justify-center text-lg font-semibold" style="height: 550px;">
             발송된 조치 요청서가 존재하지 않습니다.
-          </div>
+          </div> -->
         </div>
         <div slot="footer" class="dialog-footer">
+          <el-button size="small" @click.native="onClickFin()">
+            {{ selectedRow.status == 'FIN' || selectedRow.status == 'AUTO_FIN' ? '수정' : '마감' }}
+          </el-button>
           <el-button size="small" :disabled="sendItem.status != 'INIT'" @click.native="onClickEmailSender()">
             메일 전송
           </el-button>
@@ -177,6 +188,7 @@
             {{ $t('exit') }}
           </el-button>
         </div>
+        <ModalFIN ref="ModalFIN" />
       </el-dialog>
     </transition>
   </div>
@@ -186,8 +198,9 @@
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
 import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
+import ModalFIN from '@/views-nia/modal/ModalFIN'
 import { formatterTime } from '@/views-nia/js/commonFormat'
-import { apiSendMail, apiSelectAiDetectionInfo, apiSelfProcessSyslogInfo, apiSelfProcessTrafficInfo, apiSopHistList, apiSopSyslogHistList, apiSelectUserList } from '@/api/nia'
+import { apiSendMQ, apiSelectAiDetectionInfo, apiSelfProcessSyslogInfo, apiSelfProcessTrafficInfo, apiSelectSopHistList, apiSopSyslogHistList, apiSelectUserList } from '@/api/nia'
 
 import _ from 'lodash'
 
@@ -196,7 +209,7 @@ const routeName = 'ModalNTF'
 export default {
   name: routeName,
   // eslint-disable-next-line vue/no-unused-components
-  components: { CompAgGrid },
+  components: { CompAgGrid, ModalFIN },
   directives: { elDragDialog },
   extends: Modal,
   data() {
@@ -259,7 +272,7 @@ export default {
       ]
       const columns = [
         { type: '', prop: 'ticket_id', name: '티켓번호', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: false },
-        { type: '', prop: 'ticket_type', name: '티켓유형', width: 50, suppressMenu: true, alignItems: 'left', sortable: true, filterable: false/* , formatter: getAlarmType */ },
+        { type: '', prop: 'ticket_type', name: '티켓유형', width: 80, suppressMenu: true, alignItems: 'left', sortable: true, filterable: false/* , formatter: getAlarmType */ },
         { type: '', prop: 'root_cause_porta', name: '장애구분', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: true },
         { type: '', prop: 'fault_classify', name: '장애유형', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: true },
         { type: '', prop: 'fault_detail_content', name: '조치내용', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: true },
@@ -341,7 +354,7 @@ export default {
         this.sendItem['out_threshold_lower'] = out_threshold_lower.toLocaleString()
         this.sendItem['out_anomaly'] = out_anomaly
       }
-      if (ticket_type === 'FTT') {
+      if (['FTT', 'ATT2', 'NTT'].includes(ticket_type)) {
         this.sendItem['zero1_entropy'] = this.selectedRow.zero1_entropy
       }
       if (ticket_type === 'NFTT') {
@@ -368,7 +381,7 @@ export default {
     },
     async onLoadSyslogInfo() {
       try {
-        const res = await apiSelfProcessSyslogInfo({ ALARMNO: this.selectedRow.ticket_id })
+        const res = await apiSelfProcessSyslogInfo({ ALARMNO: this.selectedRow.alarmno })
         this.syslogInfo = res?.result ?? {}
       } catch (error) {
         this.error(error)
@@ -391,9 +404,9 @@ export default {
           param = { NODE_NM, ALARMLOC }
           res = await apiSopSyslogHistList(param)
         } else {
-          const { ticket_id: TICKET_ID, ticket_type: TICKET_TYPE, root_cause_sysnamea: ROOT_CAUSE_SYSNAMEA } = this.selectedRow
-          param = TICKET_TYPE === 'ATT2' ? { TICKET_TYPE, ROOT_CAUSE_SYSNAMEA } : { TICKET_ID }
-          res = await apiSopHistList(param)
+          const { /* ticket_id: TICKET_ID,  */ticket_type: TICKET_TYPE, root_cause_sysnamea: ROOT_CAUSE_SYSNAMEA } = this.selectedRow
+          param = { TICKET_TYPE, ROOT_CAUSE_SYSNAMEA }
+          res = await apiSelectSopHistList(param)
         }
         this.relatedSopList = res?.result ?? []
       } catch (error) {
@@ -416,6 +429,11 @@ export default {
       } finally {
         this.chartLoading = false
       }
+    },
+    onClickFin() {
+      const addInfo = this.selectedRow.ticket_type === 'SYSLOG' ? this.syslogInfo : this.sendItem
+      const row = Object.assign(this.selectedRow, addInfo)
+      this.$refs.ModalFIN.open({ row })
     },
     async onClickEmailSender() {
      const { uid, name } = this.$store.state.user.info
@@ -444,7 +462,7 @@ export default {
       })
     }
       try {
-        const res = await apiSendMail(param)
+        const res = await apiSendMQ('sendMail', param)
         this.$alert(`메일 전송에 ${res.success ? '성공' : '실패'} 하였습니다.`, '알림', {
           confirmButtonText: '확인'
         })

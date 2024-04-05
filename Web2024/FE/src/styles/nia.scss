@@ -170,7 +170,7 @@ table.basic {
     border-color: #1e293b9e;
     background-color: #1e293b24;;
   }
-  // nia custom taps
+  // custom taps
   .el-tabs {
     .el-tabs__header {
       margin: 0px 25px;
@@ -187,6 +187,17 @@ table.basic {
     .el-tabs__item:hover {
       color: $nia-primary;
     }
+  }
+  // custom radio
+  .el-radio {
+    margin-right: 20px;
+  }
+  .el-radio__input.is-checked .el-radio__inner {
+    background-color: $nia-primary;
+    border-color: $nia-primary;
+  }
+  .el-radio__input.is-checked + .el-radio__label {
+    color: $nia-primary;
   }
 }
 

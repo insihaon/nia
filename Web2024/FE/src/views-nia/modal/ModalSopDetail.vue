@@ -92,7 +92,7 @@ import _ from 'lodash'
 import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
 import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
 import CellRenderDataSetButtons from '@/views-dataHub/components/cellRenderer/CellRenderDataSetButtons'
-import { apiSopCode } from '@/api/nia'
+import { apiSelectSopCode } from '@/api/nia'
 import { getTicketStatus } from '@/views-nia/js/commonFormat'
 
 const routeName = 'ModalSopDetail'
@@ -183,7 +183,7 @@ export default {
     },
     async onLoadSopCodeList() {
       try {
-        const res = await apiSopCode()
+        const res = await apiSelectSopCode({ IS_OPTION: true })
         this.sopCodeList = res?.result
         this.setSopCode()
       } catch (error) {
