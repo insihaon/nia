@@ -41,7 +41,6 @@
             :ag-grid="dataSetAgGrid"
             :pagination-info="paginationInfo"
             :is-search="false"
-            title="장비 검색"
             class="w-100 h-100 flex-fill"
             @handleClickSearch="onClickSearch"
             @onChangePage="onChangePage"
@@ -55,7 +54,7 @@
         </div>
       </el-dialog>
     </transition>
-    <ModalPortEdit ref="ModalPortEdit" />
+    <ModalPortEdit ref="ModalPortEdit" @systemEdit="onLoadNodeList()" />
   </div>
 </template>
 
@@ -116,7 +115,8 @@ export default {
       this.closeOnClickModal = false
     },
     onOpen(model, actionMode) {
-      this.selectedRow = model?.row
+      // this.selectedRow = model?.row
+            this.selectedRow = this._cloneDeep(model.row)
       this.onLoadNodeList()
     },
     onClickSearch(searchModel) {
