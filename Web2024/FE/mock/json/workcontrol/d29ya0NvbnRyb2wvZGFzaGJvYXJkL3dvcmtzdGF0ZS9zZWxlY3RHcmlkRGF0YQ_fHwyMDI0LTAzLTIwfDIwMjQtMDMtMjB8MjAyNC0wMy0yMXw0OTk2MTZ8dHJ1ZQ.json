@@ -1,0 +1,22 @@
+[
+  {
+    "higherOrgId": "499613",
+    "orgId": "499616",
+    "orgNm3": "전남&전북NW운용본부",
+    "orgNm4": "전남&전북코어운용센터",
+    "orgNm5": "IP망기술부",
+    "orgNm6": " ",
+    "orgNm": "IP망기술부",
+    "dayNightCdNm": "야간",
+    "constTypeCdNm": "IP코어",
+    "constRiskCdNm": "Level 2",
+    "orgDayNightCd": "N",
+    "orgConstTypeCd": "05",
+    "orgConstRiskCd": "2",
+    "incmplCnt": "-",
+    "confCnt": "-",
+    "cnclCnt": "-",
+    "cmplCnt": "3",
+    "totalCnt": "3"
+  }
+]

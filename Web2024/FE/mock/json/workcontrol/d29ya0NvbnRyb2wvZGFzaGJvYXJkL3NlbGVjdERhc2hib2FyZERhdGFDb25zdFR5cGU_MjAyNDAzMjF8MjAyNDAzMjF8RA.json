@@ -1,0 +1,178 @@
+[
+  {
+    "cd": "01",
+    "cdNm": "선로",
+    "displayOrder": 1,
+    "incmplCnt": 8,
+    "confCnt": 54,
+    "cnclCnt": 13,
+    "cmplCnt": 66,
+    "totalCnt": 141,
+    "cmplRate": "47%"
+  },
+  {
+    "cd": "20",
+    "cdNm": "통신구",
+    "displayOrder": 2,
+    "incmplCnt": 0,
+    "confCnt": 2,
+    "cnclCnt": 0,
+    "cmplCnt": 0,
+    "totalCnt": 2,
+    "cmplRate": "0%"
+  },
+  {
+    "cd": "02",
+    "cdNm": "전원",
+    "displayOrder": 3,
+    "incmplCnt": 0,
+    "confCnt": 53,
+    "cnclCnt": 11,
+    "cmplCnt": 25,
+    "totalCnt": 89,
+    "cmplRate": "28%"
+  },
+  {
+    "cd": "03",
+    "cdNm": "전송",
+    "displayOrder": 4,
+    "incmplCnt": 0,
+    "confCnt": 10,
+    "cnclCnt": 2,
+    "cmplCnt": 2,
+    "totalCnt": 14,
+    "cmplRate": "14%"
+  },
+  {
+    "cd": "04",
+    "cdNm": "교환",
+    "displayOrder": 5,
+    "incmplCnt": 0,
+    "confCnt": 9,
+    "cnclCnt": 0,
+    "cmplCnt": 0,
+    "totalCnt": 9,
+    "cmplRate": "0%"
+  },
+  {
+    "cd": "05",
+    "cdNm": "IP코어",
+    "displayOrder": 6,
+    "incmplCnt": 0,
+    "confCnt": 4,
+    "cnclCnt": 1,
+    "cmplCnt": 6,
+    "totalCnt": 11,
+    "cmplRate": "55%"
+  },
+  {
+    "cd": "11",
+    "cdNm": "IP액세스",
+    "displayOrder": 7,
+    "incmplCnt": 0,
+    "confCnt": 14,
+    "cnclCnt": 4,
+    "cmplCnt": 5,
+    "totalCnt": 23,
+    "cmplRate": "22%"
+  },
+  {
+    "cd": "08",
+    "cdNm": "통화플랫폼",
+    "displayOrder": 8,
+    "incmplCnt": 0,
+    "confCnt": 0,
+    "cnclCnt": 0,
+    "cmplCnt": 0,
+    "totalCnt": 0,
+    "cmplRate": "0%"
+  },
+  {
+    "cd": "10",
+    "cdNm": "IP서버",
+    "displayOrder": 9,
+    "incmplCnt": 0,
+    "confCnt": 1,
+    "cnclCnt": 0,
+    "cmplCnt": 0,
+    "totalCnt": 1,
+    "cmplRate": "0%"
+  },
+  {
+    "cd": "07",
+    "cdNm": "고객단말",
+    "displayOrder": 10,
+    "incmplCnt": 0,
+    "confCnt": 0,
+    "cnclCnt": 0,
+    "cmplCnt": 0,
+    "totalCnt": 0,
+    "cmplRate": "0%"
+  },
+  {
+    "cd": "06",
+    "cdNm": "무선MW",
+    "displayOrder": 12,
+    "incmplCnt": 0,
+    "confCnt": 1,
+    "cnclCnt": 0,
+    "cmplCnt": 0,
+    "totalCnt": 1,
+    "cmplRate": "0%"
+  },
+  {
+    "cd": "12",
+    "cdNm": "방송",
+    "displayOrder": 13,
+    "incmplCnt": 0,
+    "confCnt": 0,
+    "cnclCnt": 0,
+    "cmplCnt": 0,
+    "totalCnt": 0,
+    "cmplRate": "0%"
+  },
+  {
+    "cd": "15",
+    "cdNm": "무선코어",
+    "displayOrder": 14,
+    "incmplCnt": 0,
+    "confCnt": 0,
+    "cnclCnt": 0,
+    "cmplCnt": 0,
+    "totalCnt": 0,
+    "cmplRate": "0%"
+  },
+  {
+    "cd": "14",
+    "cdNm": "무선액세스",
+    "displayOrder": 15,
+    "incmplCnt": 0,
+    "confCnt": 4,
+    "cnclCnt": 1,
+    "cmplCnt": 1,
+    "totalCnt": 6,
+    "cmplRate": "17%"
+  },
+  {
+    "cd": "16",
+    "cdNm": "무선기지국",
+    "displayOrder": 17,
+    "incmplCnt": 0,
+    "confCnt": 52,
+    "cnclCnt": 5,
+    "cmplCnt": 21,
+    "totalCnt": 78,
+    "cmplRate": "27%"
+  },
+  {
+    "cd": "17",
+    "cdNm": "무선중계기",
+    "displayOrder": 18,
+    "incmplCnt": 0,
+    "confCnt": 15,
+    "cnclCnt": 2,
+    "cmplCnt": 2,
+    "totalCnt": 19,
+    "cmplRate": "11%"
+  }
+]

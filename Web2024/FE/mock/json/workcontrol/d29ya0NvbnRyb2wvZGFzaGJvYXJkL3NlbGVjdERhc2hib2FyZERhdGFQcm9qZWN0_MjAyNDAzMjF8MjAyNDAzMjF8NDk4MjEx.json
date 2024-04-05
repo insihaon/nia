@@ -1,0 +1,23 @@
+{
+  "joinProject": {
+    "confCnt": 0,
+    "execCnt": 0,
+    "cmplCnt": 0
+  },
+  "mainProject": {
+    "confCnt": 0,
+    "execCnt": 0,
+    "cmplCnt": 0
+  },
+  "config": {
+    "url": "https://ktnms.kt.com/workControl/dashboard/selectDashboardDataProject",
+    "param": {
+      "startDate": "20240321",
+      "endDate": "20240321",
+      "orgId": "498211"
+    },
+    "receivedTime": "2024-03-21 15:33:30.677",
+    "duration": 44,
+    "filename": "d29ya0NvbnRyb2wvZGFzaGJvYXJkL3NlbGVjdERhc2hib2FyZERhdGFQcm9qZWN0_MjAyNDAzMjF8MjAyNDAzMjF8NDk4MjEx.json"
+  }
+}

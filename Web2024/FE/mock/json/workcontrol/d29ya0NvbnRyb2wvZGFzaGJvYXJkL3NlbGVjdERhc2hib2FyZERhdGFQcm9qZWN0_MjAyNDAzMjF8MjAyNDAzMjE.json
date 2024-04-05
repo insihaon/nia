@@ -1,0 +1,18 @@
+{
+  "joinProject": {},
+  "mainProject": {
+    "confCnt": 0,
+    "execCnt": 0,
+    "cmplCnt": 0
+  },
+  "config": {
+    "url": "https://ktnms.kt.com/workControl/dashboard/selectDashboardDataProject",
+    "param": {
+      "startDate": "20240321",
+      "endDate": "20240321"
+    },
+    "receivedTime": "2024-03-21 15:33:28.989",
+    "duration": 63,
+    "filename": "d29ya0NvbnRyb2wvZGFzaGJvYXJkL3NlbGVjdERhc2hib2FyZERhdGFQcm9qZWN0_MjAyNDAzMjF8MjAyNDAzMjE.json"
+  }
+}

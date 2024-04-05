@@ -1,0 +1,43 @@
+{
+  "workRiskData": {
+    "lv1": 95,
+    "lv2": 15,
+    "lv3": 6,
+    "lv4": 0
+  },
+  "workData": {
+    "higherOrgId": null,
+    "orgId": "499693",
+    "orgNm": "충남&충북광역본부",
+    "incmplCnt": 2,
+    "confCnt": 48,
+    "cnclCnt": 13,
+    "cmplCnt": 53,
+    "totalCnt": 116,
+    "cmplRate": "46%"
+  },
+  "config": {
+    "url": "https://ktnms.kt.com/workControl/dashboard/selectWorkData",
+    "param": {
+      "higherOrgId": null,
+      "orgId": "499693",
+      "orgNm": "충남&충북광역본부",
+      "incmplCnt": 0,
+      "confCnt": 68,
+      "cnclCnt": 6,
+      "cmplCnt": 33,
+      "totalCnt": 107,
+      "cmplRate": "31%",
+      "lv1": 86,
+      "lv2": 15,
+      "lv3": 6,
+      "lv4": 0,
+      "dayNightCd": "",
+      "startDate": "20240321",
+      "endDate": "20240321"
+    },
+    "receivedTime": "2024-03-21 15:33:45.835",
+    "duration": 43,
+    "filename": "d29ya0NvbnRyb2wvZGFzaGJvYXJkL3NlbGVjdFdvcmtEYXRh_bnVsbHw0OTk2OTN87Lap64KoJuy2qeu2geq0keyXreuzuOu2gHwwfDY4fDZ8MzN8MTA3fDMxJXw4NnwxNXw2fDB8fDIwMjQwMzIxfDIwMjQwMzIx.json"
+  }
+}

@@ -1,29 +1,31 @@
 {
-  "success": true,
-  "encrypt": false,
-  "sql": "SELECT \n    TO_CHAR(TAIPH.CREATE_TIME, 'YYYY-MM-DD') AS CREATE_TIME,\n    TAIPH.API_ID,\n    TAM.API_NAME,\n    TAM.API_URL,\n    CASE \n        WHEN TAM.EXEC_MODE_CD = 'O' THEN 'OnDemand' \n        WHEN TAM.EXEC_MODE_CD = 'F' THEN 'SFTP'\n        ELSE 'Batch' \n    END AS EXEC_MODE_CD,\n    COUNT(TAIPH.API_ID) AS PROC_COUNT,\n    COALESCE(TAARH.SYSTEM_COUNT, 0) AS SYSTEM_COUNT\nFROM DATAHUB.TB_API_INTRL_PROC_HIST TAIPH\nINNER JOIN DATAHUB.TB_API_MST TAM ON TAIPH.API_ID = TAM.API_ID \nLEFT JOIN (\n    SELECT \n        API_ID, \n        API_URL,\n        COUNT(CASE WHEN TAARH.STATUS_CD = 'GRANT' THEN taarh.SYSTEM_ID END) AS SYSTEM_COUNT\n    FROM DATAHUB.TB_API_AUTH_REQ_HIST TAARH\n    WHERE SYSTEM_ID IS NOT NULL AND STATUS_CD = 'GRANT'\n    GROUP BY API_ID, API_URL\n) TAARH ON TAARH.API_ID = TAIPH.API_ID\n    WHERE 1=1\n        AND TAIPH.RESULT_CD = 'F' \n      GROUP BY \n    TO_CHAR(TAIPH.CREATE_TIME, 'YYYY-MM-DD'),\n    TAIPH.API_ID,\n    TAM.API_NAME,\n    TAM.EXEC_MODE_CD,\n    TAM.API_URL,\n   \tTAARH.SYSTEM_COUNT\n            LIMIT 20 OFFSET 0",
-  "total": 2,
-  "result": [
-    {
-      "api_id": 39,
-      "create_time": "2023-10-03",
-      "exec_mode_cd": "Batch",
-      "api_url": "http://10.220.178.141:28000/WS_000",
-      "api_name": "TEST_서비스_000_Batch",
-      "system_count": 0,
-      "proc_count": 1
-    },
-    {
-      "api_id": 40,
-      "create_time": "2023-10-03",
-      "exec_mode_cd": "OnDemand",
-      "api_url": "/WS_008",
-      "api_name": "교환 TT 재해 정보 연동",
-      "system_count": 1,
-      "proc_count": 2
-    }
-  ],
-  "config": {
+  "__body": {
+    "success": true,
+    "encrypt": false,
+    "sql": "SELECT \n    TO_CHAR(TAIPH.CREATE_TIME, 'YYYY-MM-DD') AS CREATE_TIME,\n    TAIPH.API_ID,\n    TAM.API_NAME,\n    TAM.API_URL,\n    CASE \n        WHEN TAM.EXEC_MODE_CD = 'O' THEN 'OnDemand' \n        WHEN TAM.EXEC_MODE_CD = 'F' THEN 'SFTP'\n        ELSE 'Batch' \n    END AS EXEC_MODE_CD,\n    COUNT(TAIPH.API_ID) AS PROC_COUNT,\n    COALESCE(TAARH.SYSTEM_COUNT, 0) AS SYSTEM_COUNT\nFROM DATAHUB.TB_API_INTRL_PROC_HIST TAIPH\nINNER JOIN DATAHUB.TB_API_MST TAM ON TAIPH.API_ID = TAM.API_ID \nLEFT JOIN (\n    SELECT \n        API_ID, \n        API_URL,\n        COUNT(CASE WHEN TAARH.STATUS_CD = 'GRANT' THEN taarh.SYSTEM_ID END) AS SYSTEM_COUNT\n    FROM DATAHUB.TB_API_AUTH_REQ_HIST TAARH\n    WHERE SYSTEM_ID IS NOT NULL AND STATUS_CD = 'GRANT'\n    GROUP BY API_ID, API_URL\n) TAARH ON TAARH.API_ID = TAIPH.API_ID\n    WHERE 1=1\n        AND TAIPH.RESULT_CD = 'F' \n      GROUP BY \n    TO_CHAR(TAIPH.CREATE_TIME, 'YYYY-MM-DD'),\n    TAIPH.API_ID,\n    TAM.API_NAME,\n    TAM.EXEC_MODE_CD,\n    TAM.API_URL,\n   \tTAARH.SYSTEM_COUNT\n            LIMIT 20 OFFSET 0",
+    "total": 2,
+    "result": [
+      {
+        "api_id": 39,
+        "create_time": "2023-10-03",
+        "exec_mode_cd": "Batch",
+        "api_url": "http://10.220.178.141:28000/WS_000",
+        "api_name": "TEST_서비스_000_Batch",
+        "system_count": 0,
+        "proc_count": 1
+      },
+      {
+        "api_id": 40,
+        "create_time": "2023-10-03",
+        "exec_mode_cd": "OnDemand",
+        "api_url": "/WS_008",
+        "api_name": "교환 TT 재해 정보 연동",
+        "system_count": 1,
+        "proc_count": 2
+      }
+    ]
+  },
+  "__config": {
     "url": "http://localhost:8070/selectList/SELECT_API_FAIL_COUNT_LIST",
     "param": {
       "api_id": "",
@@ -32,8 +34,8 @@
       "limit": 20,
       "page": 1
     },
-    "receivedTime": "2024-03-21 10:12:48.514",
-    "duration": 90,
+    "receivedTime": "2024-04-03 09:05:49.625",
+    "duration": 30,
     "filename": "L1NFTEVDVF9BUElfRkFJTF9DT1VOVF9MSVNU_fG51bGx8bnVsbHwyMHwx.json"
   }
 }

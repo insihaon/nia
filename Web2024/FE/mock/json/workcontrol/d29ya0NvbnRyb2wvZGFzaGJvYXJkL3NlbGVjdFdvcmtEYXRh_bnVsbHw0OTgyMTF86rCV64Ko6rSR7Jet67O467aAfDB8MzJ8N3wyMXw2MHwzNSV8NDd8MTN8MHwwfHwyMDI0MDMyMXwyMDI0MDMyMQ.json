@@ -1,0 +1,43 @@
+{
+  "workRiskData": {
+    "lv1": 52,
+    "lv2": 13,
+    "lv3": 0,
+    "lv4": 0
+  },
+  "workData": {
+    "higherOrgId": null,
+    "orgId": "498211",
+    "orgNm": "강남광역본부",
+    "incmplCnt": 2,
+    "confCnt": 26,
+    "cnclCnt": 8,
+    "cmplCnt": 29,
+    "totalCnt": 65,
+    "cmplRate": "45%"
+  },
+  "config": {
+    "url": "https://ktnms.kt.com/workControl/dashboard/selectWorkData",
+    "param": {
+      "higherOrgId": null,
+      "orgId": "498211",
+      "orgNm": "강남광역본부",
+      "incmplCnt": 0,
+      "confCnt": 32,
+      "cnclCnt": 7,
+      "cmplCnt": 21,
+      "totalCnt": 60,
+      "cmplRate": "35%",
+      "lv1": 47,
+      "lv2": 13,
+      "lv3": 0,
+      "lv4": 0,
+      "dayNightCd": "",
+      "startDate": "20240321",
+      "endDate": "20240321"
+    },
+    "receivedTime": "2024-03-21 15:33:29.863",
+    "duration": 53,
+    "filename": "d29ya0NvbnRyb2wvZGFzaGJvYXJkL3NlbGVjdFdvcmtEYXRh_bnVsbHw0OTgyMTF86rCV64Ko6rSR7Jet67O467aAfDB8MzJ8N3wyMXw2MHwzNSV8NDd8MTN8MHwwfHwyMDI0MDMyMXwyMDI0MDMyMQ.json"
+  }
+}

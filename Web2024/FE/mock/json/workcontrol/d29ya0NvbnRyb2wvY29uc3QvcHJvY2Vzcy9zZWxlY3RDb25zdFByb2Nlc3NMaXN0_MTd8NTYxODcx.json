@@ -1,0 +1,22 @@
+[
+  {
+    "processNmTot": "S/W",
+    "processIdTot": "7",
+    "constSrlNum": 561871,
+    "constProcessSrlNum": 1774369,
+    "processSrlNum": 7,
+    "processOrder": 1,
+    "constProcessDesc": null,
+    "officeId": null,
+    "officeNm": null,
+    "orgId": "499945",
+    "orgNm": "무선시설팀",
+    "remoteFacilityCnt": 0,
+    "workUser": "T001872203^이은*",
+    "entrUser": "T000529275^김형*",
+    "equipCnt": 6,
+    "circuitCnt": 0,
+    "workStepCnt": 6,
+    "noScriptCnt": 0
+  }
+]
