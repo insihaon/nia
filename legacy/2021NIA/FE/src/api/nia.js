@@ -4,9 +4,9 @@ const { debug, isProd } = AppOptions.instance
 
 export const filePath = __filename.replace(/\\/g, '/')
 
-export function apiSendMail(params = {}) {
+export function apiSendMQ(serviceName, params = {}) {
   return http({
-    url: '/nia/sendMail',
+    url: `/nia/send/${serviceName}`,
     method: 'post',
     filePath: filePath,
     sqlId: '',
@@ -130,7 +130,7 @@ export function apiSopSyslogHistList(params = {}) {
     data: params
   })
 }
-export function apiSopHistList(params = {}) {
+export function apiSelectSopHistList(params = {}) {
   return http({
     url: '/selectList',
     method: 'post',
@@ -148,12 +148,39 @@ export function apiAlarmCurAndHistList(params = {}) {
     data: params
   })
 }
-export function apiSopCode(params = {}) {
+export function apiSelectSopCode(params = {}) {
   return http({
     url: '/selectList',
     method: 'post',
     filePath: filePath,
     sqlId: 'SELECT_SOP_CODE_LIST',
+    data: params
+  })
+}
+export function apiInsertSop(params = {}) {
+  return http({
+    url: '/selectOne',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'INSERT_SOP_CODE',
+    data: params
+  })
+}
+export function apiUpdateSop(params = {}) {
+  return http({
+    url: '/selectOne',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'UPDATE_SOP_CODE',
+    data: params
+  })
+}
+export function apiDeleteSop(params = {}) {
+  return http({
+    url: '/selectOne',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'DELETE_SOP_CODE',
     data: params
   })
 }
@@ -414,6 +441,24 @@ export function apiSelectUserList(params = {}) {
     method: 'post',
     filePath: filePath,
     sqlId: 'SELECT_USER_LIST',
+    data: params
+  })
+}
+export function apiSelectSnapshotList(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_DATA_SNAPSHOT_LIST',
+    data: params
+  })
+}
+export function apiDeleteSnapshot(params = {}) {
+  return http({
+    url: '/modify',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'DELETE_DATA_SNAPSHOT',
     data: params
   })
 }

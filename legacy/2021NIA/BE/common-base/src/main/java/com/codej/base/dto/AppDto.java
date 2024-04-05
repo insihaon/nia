@@ -182,6 +182,12 @@ public class AppDto {
 
     @Value("${myconf.api-server.hub-api:http://127.0.0.1:8070/dh}")
     private String hubUrl;
+    @Value("${myconf.snapshot-Url:http://incodej-lab.iptime.org:24888/download/}")
+    private String snapshotUrl;
+    @Value("${myconf.servermonitor-Url:http://incodej-lab.iptime.org:3000/download/}")
+    private String serverMonitorUrl;
+    @Value("${myconf.aimonitor-Url:http://incodej-lab.iptime.org:82/download/}")
+    private String aiMonitorUrl;
 
     private Object time;
 

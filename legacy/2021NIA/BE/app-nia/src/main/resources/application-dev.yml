@@ -15,6 +15,11 @@ spring:
 
 myconf:
   api-server:
+  aimonitor-Url: http://incodej-lab.iptime.org:82
+  servermonitor-Url: http://116.89.191.40:3000
+  snapshot-Url: http://incodej-lab.iptime.org:24888/download/
 
 file:
   upload-dir: ./external
+
+

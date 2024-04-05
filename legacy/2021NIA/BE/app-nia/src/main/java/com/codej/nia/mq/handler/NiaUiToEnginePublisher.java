@@ -7,6 +7,9 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import com.codej.nia.mq.properties.NiaRabbitMQProperites;
+import com.google.gson.JsonObject;
+import com.codej.base.utils.JsonUtil;
+
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +31,7 @@ public class NiaUiToEnginePublisher {
 		try {
 			// log.info("=====> [MQ:sendMessage] : AiOperatorReviewSend data={} <=====", data.toString());
 			log.info("[MQ:{}] <<< SendPublisher {} <=====", rabbitMQProperites.getAddress(), rabbitMQProperites.getNiaUiToEngine(),data.toString());
+			// JsonObject jsonObj = JsonUtil.convertJsonToJsonObject(data.toString());
 			niaUiToEangineTemplate.convertAndSend(data);
 			// Thread.sleep(100);
 		} catch (Exception e) {

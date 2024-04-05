@@ -41,20 +41,23 @@ export default {
   nia: {
     // 전송망
     transType: [
-      { code: 'RT', text: '장애', fnCount: (d) => safeString(d.ticket_type).trim() === 'RT', fnFilter: (d) => safeString(d.ticket_type).trim() === 'RT' },
+
+      { code: 'EMS', text: 'EMS', fnCount: (d) => safeString(d.ticket_type).trim() !== 'PF', fnFilter: (d) => safeString(d.ticket_type).trim() !== 'PF' },
       { code: 'PF', text: '광레벨', fnCount: (d) => safeString(d.ticket_type).trim() === 'PF', fnFilter: (d) => safeString(d.ticket_type).trim() === 'PF' },
     ],
-    // IP망
+    // IP-SDN
     ipType: [
       { code: 'NFTT', text: '장비부하장애', fnCount: (d) => safeString(d.ticket_type).trim() === 'NFTT', fnFilter: (d) => safeString(d.ticket_type).trim() === 'NFTT' },
+      { code: 'RT', text: '장애', fnCount: (d) => safeString(d.ticket_type).trim() === 'RT', fnFilter: (d) => safeString(d.ticket_type).trim() === 'RT' },
       { code: 'FTT', text: '비장애', fnCount: (d) => safeString(d.ticket_type).trim() === 'FTT', fnFilter: (d) => safeString(d.ticket_type).trim() === 'FTT' },
       { code: 'ATT2', text: '이상 트래픽', fnCount: (d) => safeString(d.ticket_type).trim() === 'ATT2', fnFilter: (d) => safeString(d.ticket_type).trim() === 'ATT2' },
       { code: 'NTT', text: '유해 트래픽', fnCount: (d) => safeString(d.ticket_type).trim() === 'NTT', fnFilter: (d) => safeString(d.ticket_type).trim() === 'NTT' },
       // { code: 'SYSLOG', text: 'SYSLOG', fnCount: (d) => safeString(d.ticket_type).trim() === 'SYSLOG', fnFilter: (d) => safeString(d.ticket_type).trim() === 'SYSLOG' },
     ],
     ipAlarmType: [
-      { code: 'ALARM', text: 'ALARM', fnCount: (d) => safeString(d.ticket_type).trim() !== 'SYSLOG', fnFilter: (d) => safeString(d.ticket_type).trim() !== 'SYSLOG' },
-      { code: 'SYSLOG', text: 'SYSLOG ALARM', fnCount: (d) => safeString(d.ticket_type).trim() === 'SYSLOG', fnFilter: (d) => safeString(d.ticket_type).trim() === 'SYSLOG' }
+      { code: 'ALARM', text: 'ALARM', fnCount: (d) => ['ATT2', 'NTT', 'SYSLOG'].includes(safeString(d.ticket_type).trim()), fnFilter: (d) => ['ATT2', 'NTT', 'SYSLOG'].includes(safeString(d.ticket_type).trim()) },
+      { code: 'TRAFFIC', text: 'TRAFFIC', fnCount: (d) => ['ATT2', 'NTT'].includes(safeString(d.ticket_type).trim()), fnFilter: (d) => ['ATT2', 'NTT'].includes(safeString(d.ticket_type).trim()) },
+      { code: 'SYSLOG', text: 'SYSLOG', fnCount: (d) => safeString(d.ticket_type).trim() === 'SYSLOG', fnFilter: (d) => safeString(d.ticket_type).trim() === 'SYSLOG' }
     ],
     statusType: [
       { code: 'INIT', hex: '', text: '발생', fnCount: (d) => safeString(d.status).trim() === 'INIT', fnFilter: (d) => safeString(d.status).trim() === 'INIT' },

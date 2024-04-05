@@ -22,21 +22,20 @@ public class NiaRabbitMQProperites {
     @Value("${spring.rabbitmq.enabled:true}")
     private Boolean enabled; // false: rabbitmq 를 사용 하지 않는다
 
-    @Value("${spring.rabbitmq.address:10.81.208.123}")
+    @Value("${spring.rabbitmq.address:incodej-lab.iptime.org}")
     private String address;
 
-    @Value("${spring.rabbitmq.port:5675}")
+    @Value("${spring.rabbitmq.port:6786}")
     private int port;
 
-    @Value("${spring.rabbitmq.username:rcaadmin}")
+    @Value("${spring.rabbitmq.username:niaadmin}")
     private String userName;
 
     @JsonIgnore
-    @Value("${spring.rabbitmq.password:rcaadmin12#$}")
+    @Value("${spring.rabbitmq.password:niaadmin12#$}")
     private String password;
 
-    
-    @Value("${spring.rabbitmq.niaUiToEngine:nia.exchangeUiToEngineDirectly}")
+    @Value("${spring.rabbitmq.niaUiToEngine:nia.UiToEngineIndexDirectly}")
     private String niaUiToEngine;
 
 }

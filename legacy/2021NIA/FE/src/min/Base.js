@@ -535,7 +535,7 @@ const Base = {
     formatterDateTime(row, col, value, index) {
       return this.parseTime(value, '{y}-{m}-{d} {h}:{i}')
     },
-    formatterTimeStamp(time, formatStr = '') {
+    formatterTimeStamp(time, formatStr = 'YYYY-MM-DD HH:mm:ss') {
       if (time === null || formatStr.length === 0) {
         console.error('formatterDateTime ERROR')
         return

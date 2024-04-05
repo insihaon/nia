@@ -65,15 +65,14 @@ public class NiaService extends MainService {
     //     return resultList;
     // }
 
-    public ResultResponse<?> mailProcessing(@RequestBody HashMap<String, Object> map, Boolean encrypt) throws Exception {
+    public ResultResponse<?> mailProcessing(Map<String, Object> param) throws Exception {
         try {
-            HashMap<String, Object> param = encrypt == true ? CryptUtil.decryptToMap(map) : map;
             Map<String, Object> mailInfo = (Map<String, Object>)param.get("mail");
             Boolean resMail = sendEmail(mailInfo);
             // 결과가 성공일 경우에 ticket정보 update 수행
             if(resMail) {
                 Map<String, Object> ticketInfo = (Map<String, Object>)param.get("ticketInfo");
-                updateStatus(ticketInfo);
+                send(ticketInfo);
             } else {
                 return responseService.createFailResponse();    
             }
@@ -82,7 +81,6 @@ public class NiaService extends MainService {
             log.error(e.toString());
         }
         return responseService.createFailResponse();    
-        
     }
     private Boolean sendEmail(Map<String, Object> mailInfo) throws Exception {
 
@@ -124,13 +122,12 @@ public class NiaService extends MainService {
         }
     }
 
-    private void updateStatus(Map<String, Object> ticketInfo) throws Exception {
+    public void send(Map<String, Object> ticketInfo) throws Exception {
         try {
-            JSONObject jsonObj = JsonUtil.convertMapToJson(ticketInfo);
-            niaUiToEnginePublisher.sendMessage(jsonObj);
+            // JSONObject jsonObj = JsonUtil.convertMapToJson(ticketInfo);
+            niaUiToEnginePublisher.sendMessage(ticketInfo);
         } catch (Exception e) {
             log.error(e.toString());
-            // TODO: handle exception
         }
     }
     

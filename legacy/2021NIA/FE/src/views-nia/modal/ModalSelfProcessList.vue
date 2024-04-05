@@ -23,7 +23,7 @@
         </span>
         <div class="d-flex flex-column h-100">
           <CompInquiryPannel
-            ref="search"
+            ref="inquiry"
             :ag-grid="selfProcessAgGrid"
             :pagination-info="paginationInfo"
             :items.sync="searchItems"
@@ -143,7 +143,7 @@ export default {
       const { pageSize: limit, currentPage: page } = this.paginationInfo
       const params = this._cloneDeep(this.receviedParams)
       this._merge(params, { limit, page })
-      const searchModel = this.$refs?.search?.searchModel ?? {}
+      const searchModel = this.$refs?.inquiry?.searchModel ?? {}
       if (Object.keys(searchModel).length !== 0) {
         this._merge(params, searchModel)
       }

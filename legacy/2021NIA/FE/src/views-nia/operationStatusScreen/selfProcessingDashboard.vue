@@ -1,146 +1,166 @@
 <template>
   <div :class="{ [name]: true }">
-    <CompInquiryPannel
-      ref="trafficAnalysis"
-      :ag-grid="authAgGrid"
-      :is-button-slot="false"
-      :items="searchItems"
-      :search-model.sync="searchModel"
-      :pagination-info="paginationInfo"
-      class="w-100 h-100"
-      @cellClicked="cellTemp"
-      @sortChanged="sortTemp"
-    />
+    <div class="search-container">
+      <div class="title"><i class="el-icon-pie-chart pr-2" />자가 처리 관제 화면</div>
+      <div>
+        <el-radio-group v-model="selfChartCondition.statisticsType">
+          <el-radio-button label="hour">시간별</el-radio-button>
+          <el-radio-button label="day">일별</el-radio-button>
+          <el-radio-button label="month">월별</el-radio-button>
+        </el-radio-group>
+        <el-date-picker
+          v-model="selfChartCondition.date"
+          :type="getSelfProDateType()"
+        />
+        <el-button icon="el-icon-search" style="padding: 7px 7px;" @click="onLoadSelfProcessStatistics()" />
+      </div>
+    </div>
+    <div class="chart-container">
+      <CompChart :options="selfProcessOptions" class="w-100 h-100" @click="onClickChart" />
+    </div>
+    <ModalSelfProcessList ref="ModalSelfProcessList" />
   </div>
 </template>
 <script>
 import { Base } from '@/min/Base.min'
-import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
-// import { apiSelectAuthHistList, apiUpdateApiAuth, apiUpdateApiAuthProc } from '@/api/dataHub'
-import { AppOptions } from '@/class/appOptions'
+import { apiSelfProcessStatistics } from '@/api/nia'
+import CompChart from '@/components/chart/CompChart.vue'
+import ModalSelfProcessList from '@/views-nia/modal/ModalSelfProcessList'
 
 const routeName = 'SelfProcessingDashboard'
 export default {
   name: routeName,
   // eslint-disable-next-line vue/no-unused-components
-  components: { CompInquiryPannel },
+  components: { CompChart, ModalSelfProcessList },
   extends: Base,
   data() {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      paginationInfo: {
-        currentPage: 1, // 현재 페이지
-        pageSize: 50, // 페이지당 항목 수
-        totalCount: 0, // 총 항목 수
-        totalPages: null, // 전체 페이지 수
-        pagerCount: 11
+      selfStatistics: [],
+      selfChartCondition: {
+        statisticsType: 'hour',
+        date: this.moment().format('YYYY-MM-DD')
       },
-      selectedRow: [],
-       authData: [
-        {
-          model_name: '상황방명',
-          key: 1,
-          start_date: '2022-09-06',
-          end_date: '2022-09-07',
-        },
-        {
-          model_name: '상황',
-          key: 2,
-          start_date: '2022-09-06',
-          end_date: '2022-09-07',
-        },
-       ],
-      searchItems: [
-        { label: 'Filter', type: 'select', multiple: true, placeholder: '티켓 종류를 선택하세요', model: 'ticket', setting: { allOption: { toggle: true } },
-          options:
-          [
-            { label: '장애', value: 'alarm' },
-            { label: '광레벨', value: 'level' },
-            { label: '이상트래픽', value: 'traffic1' },
-            { label: '유해트래픽', value: 'traffic2' },
-            { label: '장비부하장애', value: 'traffic3' },
-          ],
-        },
-        { label: '상태', type: 'select', multiple: true, placeholder: '경보 상태를 선택하세요', model: 'status_cd', setting: { allOption: { toggle: true } },
-          options:
-          [
-            { label: '발생', value: 'OCCUR' },
-            { label: '인지', value: 'RECOGNIZE' },
-            { label: '마감', value: 'CLOSE' },
-            { label: '자동 마감', value: 'CLOSE-A' },
-          ],
-        },
-      ],
-      searchModel: {
-        api_name: '',
-        status_cd: [],
-        create_time: [],
-        expird_date: [],
-      },
-      sortInfo: {}
     }
   },
 
   computed: {
-    authAgGrid() {
-      const options = {
-        name: this.name + 'table1', checkable: true, rowGroupPanel: false, rowHeight: 40, rowSelection: 'multiple', rowMultiSelection: false, suppressRowClickSelection: true,
+    selfProcessOptions() {
+      const selfStatistics = this.selfStatistics
+      return {
+        legend: {
+          data: ['자가최적화 총 발생', '자가최적화 건 수', '자가회복 총 발생', '자가회복 건 수'],
+          // top: '5%'
+        },
+        title: {
+          // text: '자가 최적화/자가 회복',
+          // left: 'center',
+          textStyle: {
+            // fontSize: 13
+          }
+        },
+        dataZoom: [{ type: 'inside' }, { type: 'slider' }],
+        tooltip: {},
+        xAxis: {
+          type: 'category',
+          data: selfStatistics.map(v => v.series_time),
+        },
+        yAxis: {
+          type: 'value',
+          axisLabel: {
+            formatter: function (value, index) {
+                let result = value
+                if (value >= 1000) {
+                  result = (value / 1000) + 'K'
+                } else {
+                  result = value.toString()
+                }
+                return result
+              }
+          }
+        },
+        series: [
+          {
+            name: '자가최적화 총 발생',
+            type: 'bar',
+            data: this.selfStatistics.map(v => v.so_totalcount)
+          },
+          {
+            name: '자가최적화 건 수',
+            type: 'bar',
+
+            data: this.selfStatistics.map(v => v.so_count)
+          },
+          {
+            name: '자가회복 총 발생',
+            type: 'bar',
+            data: this.selfStatistics.map(v => v.st_totalcount)
+          },
+          {
+            name: '자가회복 건 수',
+            type: 'bar',
+            data: this.selfStatistics.map(v => v.st_count)
+          },
+        ]
       }
-      const columns = [
-        { type: '', prop: 'model_name', name: '티켓번호', minWidth: 30, flex: 0, suppressMenu: true, alignItems: 'left' },
-        { type: '', prop: 'start_date', name: '티켓유형', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'left', sortable: false, filterable: false },
-        { type: '', prop: 'end_date', name: '장애 내용', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'left', sortable: false, filterable: true },
-      ]
-      return { options, columns, data: this.authData, getRightClickMenuItems: () => { return [] } }
-    },
+    }
   },
   mounted() {
-    this.onLoadtrafficList()
+    this.onLoadSelfProcessStatistics()
   },
   methods: {
-    cellTemp() {},
-    sortTemp() {},
-    onSortedChange(param) {
-       this.sortInfo = []
-       this.onLoadtrafficList()
-    },
-
-    // onClickSearchAuth(params) {
-    //   this.onLoadtrafficList(params)
-    // },
-    async onLoadtrafficList(params) {
-      const target = { vue: this.$refs.authManagement }
-      this.openLoading(target)
-      const defaultDate = null
-      const param = {
-        api_name: this.searchModel.api_name,
-        status_cd: this.searchModel.status_cd,
-        start_create_time: this.formatterDateTime(null, null, this.searchModel.create_time[0] ? this.searchModel.create_time[0] : defaultDate),
-        end_create_time: this.formatterDateTime(null, null, this.searchModel.create_time[1] ? this.searchModel.create_time[1] : defaultDate),
-        start_expird_date: this.formatterDateTime(null, null, this.searchModel.expird_date[0] ? this.searchModel.expird_date[0] : defaultDate),
-        end_expird_date: this.formatterDateTime(null, null, this.searchModel.expird_date[1] ? this.searchModel.expird_date[1] : defaultDate),
-        limit: this.paginationInfo.pageSize,
-        page: this.paginationInfo.currentPage,
-        sort_column_name: this.sortInfo.colId,
-        sort_type: this.sortInfo.sort
-      }
+    async onLoadSelfProcessStatistics() {
+      const { statisticsType: STATISTICS_TYPE, date } = this.selfChartCondition
+      const SERIES_TYPE = STATISTICS_TYPE === 'hour' ? 'day' : this.getSelfProDateType()
       try {
-        const res = ''/* await apiSelectAuthHistList(param) */
-        this.authData = res?.result
-        this.paginationInfo.totalCount = res.total
-        this.paginationInfo.totalPages = Math.ceil(this.paginationInfo.totalCount / this.paginationInfo.pageSize) // 전체 페이지 수 계산
+        const resSelfProcess = await apiSelfProcessStatistics({ STATISTICS_TYPE, SERIES_TYPE, DATE: this.moment(date).add(1, 'd') })
+        this.selfStatistics = resSelfProcess.result ?? []
       } catch (error) {
-        console.error(error)
-      } finally {
-        this.closeLoading(target)
+        this.error(error)
       }
     },
-
-    // handleOpenModalDetail(type, row) {
-    //   this.$refs.modalApiDetail.open({ type, row })
-    // },
+    onClickChart(e) {
+      const params = {
+        DATE_TYPE: this.selfChartCondition.statisticsType,
+        DATE_TIME: e.name,
+        SELF_PROCESS_GROUP: e.seriesName.includes('최적화') ? 'SO' : 'ST'
+      }
+      this.$refs.ModalSelfProcessList.open(params)
+    },
+    getSelfProDateType() {
+      let type = 'date'
+      switch (this.selfChartCondition.statisticsType) {
+        case 'hour':
+          type = 'date'
+          break
+        case 'day':
+          type = 'month'
+          break
+        case 'month':
+          type = 'year'
+          break
+        default:
+          break
+      }
+      return type
+    },
   },
 }
 </script>
-l
+<style lang="scss" scoped>
+.search-container {
+  height: 80px;
+  display: flex;
+  padding: 5px 15px;
+  justify-content: space-between;
+  .title {
+    font-size: 20px;
+    font-weight: 700;
+  }
+}
+.chart-container {
+  display: flex;
+  height: calc(100% - 80px);
+}
+</style>

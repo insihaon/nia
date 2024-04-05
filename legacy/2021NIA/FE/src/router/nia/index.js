@@ -8,7 +8,7 @@ export const niaRoute = Object.freeze([
     component: Layout,
     hidden: true,
     disable: false,
-    redirect: '/index',
+    redirect: '/dashBoard/index',
     meta: {
       title: '대시보드',
     },

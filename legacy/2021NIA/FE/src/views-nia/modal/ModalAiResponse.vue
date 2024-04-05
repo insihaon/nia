@@ -52,32 +52,23 @@
                     <CompChart :options="trafficChart" :chart-loading="chartLoading" class="h-64" />
                   </div>
                 </div>
-                <!-- <div class="shadow-sm p-1 mt-2">
-                  <span class="title">연관 SOP리스트</span>
-                  <div v-if="relatedSopList.length > 0" class="shadow-sm">
-                    <CompAgGrid
-                      ref="sopAgGrid"
-                      v-model="sopAgGrid"
-                      class="w-100"
-                      style="height: 200px"
-                    />
-                  </div>
-                  <div v-else class="d-flex items-center justify-center text-lg font-semibold" style="height: 100px">연관 SOP 데이터가 존재하지 않습니다.</div>
-                </div>
-              </div> -->
-              </div></el-tab-pane>
+              </div>
+            </el-tab-pane>
             <el-tab-pane label="처리이력" name="second">
-              <CompInquiryPannel
+              <!-- <CompInquiryPannel
                 ref="selectApi"
                 :ag-grid="sopAgGrid"
                 class="w-100 h-100 flex-fill"
-              />
+              /> -->
               <!-- @handleClickSearch="" -->
             </el-tab-pane>
           </el-tabs>
 
         </div>
         <div slot="footer" class="dialog-footer">
+          <el-button size="small" @click.native="$refs.ModalSnapshot.open({row: selectedRow})">
+            데이터 스냅샷
+          </el-button>
           <el-button size="small" @click.native="$refs.ModalNTF.open({row: selectedRow})">
             상황전파
           </el-button>
@@ -88,6 +79,7 @@
       </el-dialog>
     </transition>
     <ModalNTF ref="ModalNTF" />
+    <ModalSnapshot ref="ModalSnapshot" />
   </div>
 </template>
 
@@ -97,9 +89,10 @@ import { Modal } from '@/min/Modal.min'
 import _ from 'lodash'
 import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
 import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
-import { apiSelfProcessTrafficInfo, apiATTTrafficChart, apiNTTTrafficChart, apiSopHistList } from '@/api/nia'
+import { apiSelfProcessTrafficInfo, apiATTTrafficChart, apiNTTTrafficChart } from '@/api/nia'
 import { getAlarmType, formatterTime } from '@/views-nia/js/commonFormat'
 import ModalNTF from '@/views-nia/modal/ModalNTF.vue'
+import ModalSnapshot from '@/views-nia/modal/ModalSnapshot.vue'
 import CompChart from '@/components/chart/CompChart.vue'
 
 const routeName = 'ModalAiResponse'
@@ -107,7 +100,7 @@ const routeName = 'ModalAiResponse'
 export default {
   name: routeName,
   // eslint-disable-next-line vue/no-unused-components
-  components: { CompAgGrid, CompChart, CompInquiryPannel, ModalNTF },
+  components: { CompAgGrid, CompChart, CompInquiryPannel, ModalNTF, ModalSnapshot },
   directives: { elDragDialog },
   extends: Modal,
   data() {
@@ -120,7 +113,7 @@ export default {
       selectedRow: null,
       chartLoading: false,
       trafficChartList: [],
-      relatedSopList: [],
+      // relatedSopList: [],
       trafficInfo: {
         root_cause_sysnamea: '',
         root_cause_sysnamez: '',
@@ -138,25 +131,6 @@ export default {
   computed: {
     isRT() {
       return this.selectedRow?.ticket_type === 'RT'
-    },
-    sopAgGrid() {
-      const options = { name: this.name, checkable: false, rowGroupPanel: false, rowHeight: 30, rowSelection: 'multiple', rowMultiSelection: false }
-        const columns = [
-          { type: '', prop: 'ticket_id', name: '티켓번호', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: false },
-          { type: '', prop: 'ticket_type', name: '티켓유형', width: 50, suppressMenu: true, alignItems: 'left', sortable: true, filterable: false/* , formatter: getAlarmType */ },
-          { type: '', prop: 'root_cause_porta', name: '장애구분', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: true },
-          { type: '', prop: 'fault_classify', name: '장애유형', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: true },
-          { type: '', prop: 'fault_detail_content', name: '조치내용', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: true },
-          { type: '', prop: 'etc_content', name: '기타사항', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: true },
-          { type: '', prop: 'root_cause_sysnamea', name: '장비ID', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: false },
-          { type: '', prop: 'root_cause_sysnamea', name: '장비이름', width: 50, suppressMenu: true, alignItems: 'left', sortable: true, filterable: false },
-          { type: '', prop: 'ip_addra', name: '마스터 IP', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: true },
-          { type: '', prop: 'root_cause_porta', name: '장비I/F', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: true },
-          { type: '', prop: 'handling_fin_user', name: '마감자', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: true },
-          { type: '', prop: 'handling_fin_time', name: '마감시간', width: 150, suppressMenu: true, alignItems: 'left', sortable: true, filterable: true, formatter: (row) => { return formatterTime(row.handling_fin_time) } },
-
-        ]
-        return { options, columns, data: this.relatedSopList }
     },
     trafficChart() {
       const { ticket_type } = this.selectedRow
@@ -230,7 +204,6 @@ export default {
     onOpen(model, actionMode) {
       this.selectedRow = model?.row
       this.onLoadTrafficInfo()
-      this.onLoadSopHistList()
     },
     // 자가 구성 조치 구간정보 조회
     async onLoadTrafficInfo() {
@@ -262,19 +235,6 @@ export default {
         this.error(error)
       } finally {
         this.chartLoading = false
-      }
-    },
-    async onLoadSopHistList() {
-      const { pageSize: limit, currentPage: page } = this.paginationInfo
-      const { ticket_type: TICKET_TYPE, root_cause_sysnamea: ROOT_CAUSE_SYSNAMEA } = this.selectedRow
-      const param = { limit, page, TICKET_TYPE, ROOT_CAUSE_SYSNAMEA }
-      try {
-        const res = await apiSopHistList(param)
-        this.relatedSopList = res?.result ?? []
-        this.paginationInfo.totalCount = res.total
-        this.paginationInfo.totalPages = Math.ceil(this.paginationInfo.totalCount / this.paginationInfo.pageSize) // 전체 페이지 수 계산
-      } catch (error) {
-        console.error(error)
       }
     },
     onClose() { /* for Override */ },
