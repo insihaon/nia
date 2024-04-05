@@ -1,0 +1,323 @@
+{
+  "__body": {
+    "success": true,
+    "encrypt": false,
+    "sql": "SELECT \n        METADATA_SEQ\n        ,TDM.TABLE_NM \n        ,TDM.COLUMN_NM \n        ,TDM.DATA_TYPE \n        ,TDM.METADATA_DESC\n        ,TDM.UPDATE_USER\n        ,TO_CHAR(TDM.CREATE_TIME , 'YYYY-MM-DD HH24:MI:SS') AS CREATE_TIME\n        ,TO_CHAR(TDM.UPDATE_TIME , 'YYYY-MM-DD HH24:MI:SS') AS UPDATE_TIME\n   FROM DATAHUB.TB_METADATA_MST TDM\n    WHERE 1=1\n            LIMIT 30 OFFSET 0",
+    "total": 4289,
+    "result": [
+      {
+        "table_nm": "TB_VOC_DTL",
+        "update_time": "2023-10-09 20:07:09",
+        "update_user": "SYSTEM",
+        "metadata_seq": 2,
+        "create_time": "2023-10-09 20:07:09",
+        "metadata_desc": "고장접수대장번호",
+        "data_type": "VARCHAR",
+        "column_nm": "TTID"
+      },
+      {
+        "table_nm": "TB_VOC_DTL",
+        "update_time": "2023-10-09 20:07:09",
+        "update_user": "SYSTEM",
+        "metadata_seq": 3,
+        "create_time": "2023-10-09 20:07:09",
+        "metadata_desc": "고객유형코드",
+        "data_type": "VARCHAR",
+        "column_nm": "CUSTTYPECODE"
+      },
+      {
+        "table_nm": "TB_VOC_DTL",
+        "update_time": "2023-10-09 20:07:09",
+        "update_user": "SYSTEM",
+        "metadata_seq": 4,
+        "create_time": "2023-10-09 20:07:09",
+        "metadata_desc": "고객ID",
+        "data_type": "VARCHAR",
+        "column_nm": "CUSTID"
+      },
+      {
+        "table_nm": "TB_VOC_DTL",
+        "update_time": "2023-10-09 20:07:09",
+        "update_user": "SYSTEM",
+        "metadata_seq": 5,
+        "create_time": "2023-10-09 20:07:09",
+        "metadata_desc": "고객명",
+        "data_type": "VARCHAR",
+        "column_nm": "CUSTNAME"
+      },
+      {
+        "table_nm": "TB_VOC_DTL",
+        "update_time": "2023-10-09 20:07:09",
+        "update_user": "SYSTEM",
+        "metadata_seq": 6,
+        "create_time": "2023-10-09 20:07:09",
+        "metadata_desc": "고장처리우선순위 (고객등급코드)",
+        "data_type": "VARCHAR",
+        "column_nm": "CUSTGDCODE"
+      },
+      {
+        "table_nm": "TB_VOC_DTL",
+        "update_time": "2023-10-09 20:07:09",
+        "update_user": "SYSTEM",
+        "metadata_seq": 7,
+        "create_time": "2023-10-09 20:07:09",
+        "metadata_desc": "상품코드",
+        "data_type": "VARCHAR",
+        "column_nm": "SVCMAINTYPECODE"
+      },
+      {
+        "table_nm": "TB_VOC_DTL",
+        "update_time": "2023-10-09 20:07:09",
+        "update_user": "SYSTEM",
+        "metadata_seq": 8,
+        "create_time": "2023-10-09 20:07:09",
+        "metadata_desc": "세부상품코드",
+        "data_type": "VARCHAR",
+        "column_nm": "SVCSUBTYPECODE"
+      },
+      {
+        "table_nm": "TB_VOC_DTL",
+        "update_time": "2023-10-09 20:07:09",
+        "update_user": "SYSTEM",
+        "metadata_seq": 9,
+        "create_time": "2023-10-09 20:07:09",
+        "metadata_desc": "서비스대분류코드",
+        "data_type": "VARCHAR",
+        "column_nm": "SVCMAINCLSCODE"
+      },
+      {
+        "table_nm": "TB_VOC_DTL",
+        "update_time": "2023-10-09 20:07:09",
+        "update_user": "SYSTEM",
+        "metadata_seq": 10,
+        "create_time": "2023-10-09 20:07:09",
+        "metadata_desc": "서비스소분류코드",
+        "data_type": "VARCHAR",
+        "column_nm": "SVCSUBCLSCODE"
+      },
+      {
+        "table_nm": "TB_VOC_DTL",
+        "update_time": "2023-10-09 20:07:09",
+        "update_user": "SYSTEM",
+        "metadata_seq": 11,
+        "create_time": "2023-10-09 20:07:09",
+        "metadata_desc": "서비스용도코드",
+        "data_type": "VARCHAR",
+        "column_nm": "SVCUSGCODE"
+      },
+      {
+        "table_nm": "TB_VOC_DTL",
+        "update_time": "2023-10-09 20:07:09",
+        "update_user": "SYSTEM",
+        "metadata_seq": 12,
+        "create_time": "2023-10-09 20:07:09",
+        "metadata_desc": "서비스계약ID",
+        "data_type": "VARCHAR",
+        "column_nm": "SCN"
+      },
+      {
+        "table_nm": "TB_VOC_DTL",
+        "update_time": "2023-10-09 20:07:09",
+        "update_user": "SYSTEM",
+        "metadata_seq": 13,
+        "create_time": "2023-10-09 20:07:09",
+        "metadata_desc": "신고유형코드",
+        "data_type": "VARCHAR",
+        "column_nm": "REPORTTYPECODE"
+      },
+      {
+        "table_nm": "TB_VOC_DTL",
+        "update_time": "2023-10-09 20:07:09",
+        "update_user": "SYSTEM",
+        "metadata_seq": 14,
+        "create_time": "2023-10-09 20:07:09",
+        "metadata_desc": "고장서비스유형코드",
+        "data_type": "VARCHAR",
+        "column_nm": "TROUBSVCTYPECODE"
+      },
+      {
+        "table_nm": "TB_VOC_DTL",
+        "update_time": "2023-10-09 20:07:09",
+        "update_user": "SYSTEM",
+        "metadata_seq": 15,
+        "create_time": "2023-10-09 20:07:09",
+        "metadata_desc": "고장시설유형코드",
+        "data_type": "VARCHAR",
+        "column_nm": "TROUBFACTYPECODE"
+      },
+      {
+        "table_nm": "TB_VOC_DTL",
+        "update_time": "2023-10-09 20:07:09",
+        "update_user": "SYSTEM",
+        "metadata_seq": 16,
+        "create_time": "2023-10-09 20:07:09",
+        "metadata_desc": "서비스유형구분자코드",
+        "data_type": "VARCHAR",
+        "column_nm": "SVCTYPEDIVCODE"
+      },
+      {
+        "table_nm": "TB_VOC_DTL",
+        "update_time": "2023-10-09 20:07:09",
+        "update_user": "SYSTEM",
+        "metadata_seq": 17,
+        "create_time": "2023-10-09 20:07:09",
+        "metadata_desc": "시설유형구분자코드",
+        "data_type": "VARCHAR",
+        "column_nm": "FACTYPEDIVCODE"
+      },
+      {
+        "table_nm": "TB_VOC_DTL",
+        "update_time": "2023-10-09 20:07:09",
+        "update_user": "SYSTEM",
+        "metadata_seq": 18,
+        "create_time": "2023-10-09 20:07:09",
+        "metadata_desc": "고장접수유형코드",
+        "data_type": "VARCHAR",
+        "column_nm": "TROUBRECEIPTTYPECODE"
+      },
+      {
+        "table_nm": "TB_VOC_DTL",
+        "update_time": "2023-10-09 20:07:09",
+        "update_user": "SYSTEM",
+        "metadata_seq": 19,
+        "create_time": "2023-10-09 20:07:09",
+        "metadata_desc": "고장접수일시",
+        "data_type": "DATETIME",
+        "column_nm": "TROUBRECEIPTDT"
+      },
+      {
+        "table_nm": "TB_VOC_DTL",
+        "update_time": "2023-10-09 20:07:09",
+        "update_user": "SYSTEM",
+        "metadata_seq": 20,
+        "create_time": "2023-10-09 20:07:09",
+        "metadata_desc": "최종접수일자",
+        "data_type": "DATETIME",
+        "column_nm": "LASTRECEIPTDT"
+      },
+      {
+        "table_nm": "TB_VOC_DTL",
+        "update_time": "2023-10-09 20:07:09",
+        "update_user": "SYSTEM",
+        "metadata_seq": 21,
+        "create_time": "2023-10-09 20:07:09",
+        "metadata_desc": "신고자의견",
+        "data_type": "VARCHAR",
+        "column_nm": "REPORTEROPINION"
+      },
+      {
+        "table_nm": "TB_VOC_DTL",
+        "update_time": "2023-10-09 20:07:09",
+        "update_user": "SYSTEM",
+        "metadata_seq": 22,
+        "create_time": "2023-10-09 20:07:09",
+        "metadata_desc": "현작업단계",
+        "data_type": "VARCHAR",
+        "column_nm": "CURWORKSTEP"
+      },
+      {
+        "table_nm": "TB_VOC_DTL",
+        "update_time": "2023-10-09 20:07:09",
+        "update_user": "SYSTEM",
+        "metadata_seq": 23,
+        "create_time": "2023-10-09 20:07:09",
+        "metadata_desc": "현작업단계변경일자",
+        "data_type": "DATETIME",
+        "column_nm": "CURWORKSTEPDT"
+      },
+      {
+        "table_nm": "TB_VOC_DTL",
+        "update_time": "2023-10-09 20:07:09",
+        "update_user": "SYSTEM",
+        "metadata_seq": 24,
+        "create_time": "2023-10-09 20:07:09",
+        "metadata_desc": "VOC4차유형",
+        "data_type": "VARCHAR",
+        "column_nm": "VOC4TYPECODE"
+      },
+      {
+        "table_nm": "TB_VOC_DTL",
+        "update_time": "2023-10-09 20:07:09",
+        "update_user": "SYSTEM",
+        "metadata_seq": 25,
+        "create_time": "2023-10-09 20:07:09",
+        "metadata_desc": "VOC5차유형",
+        "data_type": "VARCHAR",
+        "column_nm": "VOC5TYPECODE"
+      },
+      {
+        "table_nm": "TB_VOC_DTL",
+        "update_time": "2023-10-09 20:07:09",
+        "update_user": "SYSTEM",
+        "metadata_seq": 26,
+        "create_time": "2023-10-09 20:07:09",
+        "metadata_desc": "주소(시도)",
+        "data_type": "VARCHAR",
+        "column_nm": "ADDR1"
+      },
+      {
+        "table_nm": "TB_VOC_DTL",
+        "update_time": "2023-10-09 20:07:10",
+        "update_user": "SYSTEM",
+        "metadata_seq": 27,
+        "create_time": "2023-10-09 20:07:10",
+        "metadata_desc": "주소(시군구)",
+        "data_type": "VARCHAR",
+        "column_nm": "ADDR2"
+      },
+      {
+        "table_nm": "TB_VOC_DTL",
+        "update_time": "2023-10-09 20:07:10",
+        "update_user": "SYSTEM",
+        "metadata_seq": 28,
+        "create_time": "2023-10-09 20:07:10",
+        "metadata_desc": "주소(법정동)",
+        "data_type": "VARCHAR",
+        "column_nm": "ADDR3"
+      },
+      {
+        "table_nm": "TB_VOC_DTL",
+        "update_time": "2023-10-09 20:07:10",
+        "update_user": "SYSTEM",
+        "metadata_seq": 29,
+        "create_time": "2023-10-09 20:07:10",
+        "metadata_desc": "기타주소",
+        "data_type": "VARCHAR",
+        "column_nm": "ADDR4"
+      },
+      {
+        "table_nm": "TB_VOC_DTL",
+        "update_time": "2023-10-09 20:07:10",
+        "update_user": "SYSTEM",
+        "metadata_seq": 30,
+        "create_time": "2023-10-09 20:07:10",
+        "metadata_desc": "번지타입",
+        "data_type": "VARCHAR",
+        "column_nm": "ADDRTYPE"
+      },
+      {
+        "table_nm": "TB_VOC_DTL",
+        "update_time": "2023-10-09 20:07:10",
+        "update_user": "SYSTEM",
+        "metadata_seq": 31,
+        "create_time": "2023-10-09 20:07:10",
+        "metadata_desc": "번지",
+        "data_type": "VARCHAR",
+        "column_nm": "ADDRNUM"
+      }
+    ]
+  },
+  "__config": {
+    "url": "http://localhost:8070/selectList/SELECT_DATA_SET_LIST",
+    "param": {
+      "table_nm": "",
+      "column_nm": "",
+      "metadata_desc": "",
+      "limit": 30,
+      "page": 1
+    },
+    "receivedTime": "2024-04-03 09:06:01.338",
+    "duration": 35,
+    "filename": "L1NFTEVDVF9EQVRBX1NFVF9MSVNU_fHx8MzB8MQ.json"
+  }
+}

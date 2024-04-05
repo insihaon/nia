@@ -1,0 +1,23 @@
+{
+  "__body": {
+    "success": true,
+    "encrypt": false,
+    "sql": null,
+    "total": 1,
+    "result": {
+      "code": 401,
+      "message": "Invalid token"
+    }
+  },
+  "__config": {
+    "url": "http://localhost:8070/dh/api-test/WS_008",
+    "param": {
+      "USER_ID": "T021239112",
+      "MENU_ID": "M0000788",
+      "INT": 999
+    },
+    "receivedTime": "2024-04-03 09:05:59.619",
+    "duration": 20,
+    "filename": "ZGgvYXBpLXRlc3QvV1NfMDA4_VDAyMTIzOTExMnxNMDAwMDc4OHw5OTk.json"
+  }
+}

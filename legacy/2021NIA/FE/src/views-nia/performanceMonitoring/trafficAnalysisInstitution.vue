@@ -43,7 +43,7 @@ export default {
         { label: 'IP(S)', type: 'input', multiple: false, placeholder: 'SEARCH', icon: 'el-icon-search', model: 'src_ip' },
         { label: '이용기관(D)', type: 'select', multiple: false, placeholder: '이용기관을 선택하세요', model: 'dst_nren_name', icon: 'el-icon-warning', setting: { allOption: { toggle: true } }, options: [] },
         { label: 'IP(D)', type: 'input', multiple: false, placeholder: 'SEARCH', icon: 'el-icon-search', model: 'dst_ip' },
-        { label: 'Top N', type: 'select', multiple: false, placeholder: '', model: 'row_number', icon: 'el-icon-warning', setting: { allOption: { toggle: true } },
+        { label: 'Top N', type: 'select', multiple: false, placeholder: '', model: 'top_n', icon: 'el-icon-warning', setting: { allOption: { toggle: true } },
           options: [
             { label: '10', value: '10' },
             { label: '30', value: '30' },
@@ -56,7 +56,7 @@ export default {
         src_ip: '',
         dst_nren_name: [],
         dst_ip: '',
-        row_number: '',
+        top_n: '',
       },
       selectCodeData: []
     }
@@ -68,7 +68,7 @@ export default {
         name: this.name + 'table1', rowGroupPanel: false, rowHeight: 40, rowSelection: 'multiple', rowMultiSelection: false, suppressRowClickSelection: true,
       }
       const columns = [
-        { type: '', prop: 'row_number', name: 'Rank', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center' },
+        { type: '', prop: 'row_num', name: 'Rank', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center' },
         { type: '', prop: 'src_nren_name', name: '이용기관(Soruce)', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: false },
         { type: '', prop: 'src_ip', name: 'IP(Soruce)', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
         { type: '', prop: 'dst_nren_name', name: '이용기관(Destination)', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
@@ -98,7 +98,7 @@ export default {
         src_ip: this.searchModel.src_ip,
         dst_nren_name: this.searchModel.dst_nren_name,
         dst_ip: this.searchModel.dst_ip,
-        row_number: this.searchModel.row_number,
+        top_n: this.searchModel.top_n,
         limit: this.paginationInfo.pageSize,
         page: this.paginationInfo.currentPage,
        }
