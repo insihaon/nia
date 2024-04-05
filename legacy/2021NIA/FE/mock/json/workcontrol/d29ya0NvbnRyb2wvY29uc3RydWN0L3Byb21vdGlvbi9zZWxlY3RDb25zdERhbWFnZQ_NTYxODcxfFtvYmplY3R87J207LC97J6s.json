@@ -1,0 +1,26 @@
+{
+  "pagination": {
+    "total": 0,
+    "currentPage": 1,
+    "pageSize": 20,
+    "data": []
+  },
+  "constSrlNum": 561871,
+  "customerNm": "이창재",
+  "config": {
+    "url": "https://ktnms.kt.com/workControl/construct/promotion/selectConstDamage",
+    "param": {
+      "constSrlNum": 561871,
+      "pagination": {
+        "total": 0,
+        "currentPage": 1,
+        "pageSize": 20,
+        "data": []
+      },
+      "customerNm": "이창재"
+    },
+    "receivedTime": "2024-03-21 15:34:33.234",
+    "duration": 1012,
+    "filename": "d29ya0NvbnRyb2wvY29uc3RydWN0L3Byb21vdGlvbi9zZWxlY3RDb25zdERhbWFnZQ_NTYxODcxfFtvYmplY3R87J207LC97J6s.json"
+  }
+}

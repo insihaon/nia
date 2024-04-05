@@ -1,0 +1,42 @@
+[
+  {
+    "higherOrgId": "499447",
+    "orgId": "499458",
+    "orgNm3": "전남&전북고객본부",
+    "orgNm4": "순천지사",
+    "orgNm5": "CS부",
+    "orgNm6": " ",
+    "orgNm": "CS부",
+    "dayNightCdNm": "야간",
+    "constTypeCdNm": "선로",
+    "constRiskCdNm": "Level 1",
+    "orgDayNightCd": "N",
+    "orgConstTypeCd": "01",
+    "orgConstRiskCd": "1",
+    "incmplCnt": "-",
+    "confCnt": "-",
+    "cnclCnt": "1",
+    "cmplCnt": "-",
+    "totalCnt": "1"
+  },
+  {
+    "higherOrgId": "499447",
+    "orgId": "499461",
+    "orgNm3": "전남&전북고객본부",
+    "orgNm4": "순천지사",
+    "orgNm5": "여수지점",
+    "orgNm6": " ",
+    "orgNm": "여수지점",
+    "dayNightCdNm": "주간",
+    "constTypeCdNm": "선로",
+    "constRiskCdNm": "Level 1",
+    "orgDayNightCd": "D",
+    "orgConstTypeCd": "01",
+    "orgConstRiskCd": "1",
+    "incmplCnt": "2",
+    "confCnt": "-",
+    "cnclCnt": "-",
+    "cmplCnt": "-",
+    "totalCnt": "2"
+  }
+]

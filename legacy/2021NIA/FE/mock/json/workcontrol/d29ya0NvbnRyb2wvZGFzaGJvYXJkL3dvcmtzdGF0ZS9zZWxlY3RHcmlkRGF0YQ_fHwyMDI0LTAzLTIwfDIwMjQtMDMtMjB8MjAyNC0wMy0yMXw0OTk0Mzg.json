@@ -1,0 +1,22 @@
+[
+  {
+    "higherOrgId": "499438",
+    "orgId": "499439",
+    "orgNm3": "전남&전북고객본부",
+    "orgNm4": "광주지사",
+    "orgNm5": "담양지점",
+    "orgNm6": "CM1팀",
+    "orgNm": "CM1팀",
+    "dayNightCdNm": "주간",
+    "constTypeCdNm": "선로",
+    "constRiskCdNm": "Level 1",
+    "orgDayNightCd": "D",
+    "orgConstTypeCd": "01",
+    "orgConstRiskCd": "1",
+    "incmplCnt": "-",
+    "confCnt": "2",
+    "cnclCnt": "1",
+    "cmplCnt": "3",
+    "totalCnt": "6"
+  }
+]

@@ -1,0 +1,43 @@
+{
+  "workRiskData": {
+    "lv1": 103,
+    "lv2": 11,
+    "lv3": 1,
+    "lv4": 0
+  },
+  "workData": {
+    "higherOrgId": null,
+    "orgId": "497827",
+    "orgNm": "강북&강원광역본부",
+    "incmplCnt": 1,
+    "confCnt": 37,
+    "cnclCnt": 6,
+    "cmplCnt": 71,
+    "totalCnt": 115,
+    "cmplRate": "62%"
+  },
+  "config": {
+    "url": "https://ktnms.kt.com/workControl/dashboard/selectWorkData",
+    "param": {
+      "higherOrgId": null,
+      "orgId": "497827",
+      "orgNm": "강북&강원광역본부",
+      "incmplCnt": 0,
+      "confCnt": 46,
+      "cnclCnt": 5,
+      "cmplCnt": 49,
+      "totalCnt": 100,
+      "cmplRate": "49%",
+      "lv1": 88,
+      "lv2": 11,
+      "lv3": 1,
+      "lv4": 0,
+      "dayNightCd": "",
+      "startDate": "20240321",
+      "endDate": "20240321"
+    },
+    "receivedTime": "2024-03-21 15:33:26.609",
+    "duration": 84,
+    "filename": "d29ya0NvbnRyb2wvZGFzaGJvYXJkL3NlbGVjdFdvcmtEYXRh_bnVsbHw0OTc4Mjd86rCV67aBJuqwleybkOq0keyXreuzuOu2gHwwfDQ2fDV8NDl8MTAwfDQ5JXw4OHwxMXwxfDB8fDIwMjQwMzIxfDIwMjQwMzIx.json"
+  }
+}

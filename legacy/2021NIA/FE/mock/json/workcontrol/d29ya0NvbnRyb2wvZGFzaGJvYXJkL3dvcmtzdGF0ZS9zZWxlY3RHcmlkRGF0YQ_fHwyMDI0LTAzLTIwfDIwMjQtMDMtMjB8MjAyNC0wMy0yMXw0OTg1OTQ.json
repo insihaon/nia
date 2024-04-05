@@ -1,0 +1,22 @@
+[
+  {
+    "higherOrgId": "498594",
+    "orgId": "498601",
+    "orgNm3": "서부고객본부",
+    "orgNm4": "인천지사",
+    "orgNm5": "CS부",
+    "orgNm6": " ",
+    "orgNm": "CS부",
+    "dayNightCdNm": "주간",
+    "constTypeCdNm": "선로",
+    "constRiskCdNm": "Level 1",
+    "orgDayNightCd": "D",
+    "orgConstTypeCd": "01",
+    "orgConstRiskCd": "1",
+    "incmplCnt": "-",
+    "confCnt": "1",
+    "cnclCnt": "-",
+    "cmplCnt": "1",
+    "totalCnt": "2"
+  }
+]

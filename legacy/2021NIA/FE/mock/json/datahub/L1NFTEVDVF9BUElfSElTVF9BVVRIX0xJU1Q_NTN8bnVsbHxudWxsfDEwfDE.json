@@ -1,55 +1,57 @@
 {
-  "success": true,
-  "encrypt": false,
-  "sql": "SELECT \n    TAARH.API_ID\n    ,TAARH.HIST_SERIAL \n    ,TAM.API_NAME\n    ,TAM.API_URL\n    ,TAM.REQ_PARAM\n    ,TAARH.REG_USER \n    ,TAARH.REFUSE_MSG\n    ,TO_CHAR(TAARH.EXPIRD_DATE , 'YYYY-MM-DD HH24:MI:SS') AS EXPIRD_DATE\n    ,TAARH.API_DESC \n    ,TO_CHAR(TAARH.CREATE_TIME , 'YYYY-MM-DD HH24:MI:SS') AS CREATE_TIME\n    ,TO_CHAR(TAARH.UPDATE_TIME , 'YYYY-MM-DD HH24:MI:SS') AS UPDATE_TIME\n    ,TISM.SYSTEM_DESC \n    ,TAARH.SYSTEM_ID\n    ,TISM.API_KEY\n    ,COALESCE(TAM.KONG_HOST, 'HOST_'|| TAM.API_ID) as KONG_HOST\n    ,TISM.API_KEY AS KONG_KEY\n    , CASE WHEN TAARH.STATUS_CD = 'APPLY' THEN '신청'\n        WHEN TAARH.STATUS_CD = 'GRANT' THEN '승인'\n        WHEN TAARH.STATUS_CD = 'REJECT' THEN '반려'\n        ELSE '회수' \n        END AS STATUS_CD\n        ,CASE \n        WHEN TAM.EXEC_MODE_CD = 'B' THEN 'Batch'\n        WHEN TAM.EXEC_MODE_CD = 'F' THEN 'SFTP'\n        ELSE 'OnDemand'\n        END AS EXEC_MODE_CD\n        ,ROW_NUMBER() OVER (ORDER BY TO_CHAR(TAARH.CREATE_TIME , 'YYYY-MM-DD HH24:MI:SS') DESC) as RANK\n        ,TISM.SYSTEM_NM\n    FROM DATAHUB.TB_API_AUTH_REQ_HIST TAARH\n    LEFT JOIN DATAHUB.TB_API_MST TAM ON TAARH.API_ID = TAM.API_ID\n    LEFT JOIN DATAHUB.TB_INTRL_SYSTEM_MST TISM ON TAARH.SYSTEM_ID = TISM.SYSTEM_ID\n    WHERE TAM.EXEC_MODE_CD != 'F'\n        AND TAARH.API_ID = 53\n            LIMIT 10 OFFSET 0",
-  "total": 2,
-  "result": [
-    {
-      "api_id": 53,
-      "system_nm": "TEST_AIB",
-      "kong_key": "ecCPLLGEAgF0pLMiH84ruavlUE9WpbD9",
-      "create_time": "2023-12-01 15:10:36",
-      "exec_mode_cd": "OnDemand",
-      "api_url": "/WS_009",
-      "reg_user": "91187283",
-      "system_id": 11,
-      "expird_date": "2024-12-01 00:00:00",
-      "req_param": null,
-      "refuse_msg": "반려",
-      "hist_serial": 149,
-      "update_time": "2023-12-01 15:10:36",
-      "kong_host": "HOST_53",
-      "api_desc": "uid test",
-      "api_key": "ecCPLLGEAgF0pLMiH84ruavlUE9WpbD9",
-      "status_cd": "반려",
-      "api_name": "TT고장 발생/회복 정보",
-      "system_desc": ".",
-      "rank": 1
-    },
-    {
-      "api_id": 53,
-      "system_nm": null,
-      "kong_key": null,
-      "create_time": "2023-11-10 14:24:07",
-      "exec_mode_cd": "OnDemand",
-      "api_url": "/WS_009",
-      "reg_user": "dimmby",
-      "system_id": 10,
-      "expird_date": "2023-11-15 00:00:00",
-      "req_param": null,
-      "refuse_msg": null,
-      "hist_serial": 138,
-      "update_time": "2023-11-10 14:24:07",
-      "kong_host": "HOST_53",
-      "api_desc": "test",
-      "api_key": null,
-      "status_cd": "회수",
-      "api_name": "TT고장 발생/회복 정보",
-      "system_desc": null,
-      "rank": 2
-    }
-  ],
-  "config": {
+  "__body": {
+    "success": true,
+    "encrypt": false,
+    "sql": "SELECT \n    TAARH.API_ID\n    ,TAARH.HIST_SERIAL \n    ,TAM.API_NAME\n    ,TAM.API_URL\n    ,TAM.REQ_PARAM\n    ,TAARH.REG_USER \n    ,TAARH.REFUSE_MSG\n    ,TO_CHAR(TAARH.EXPIRD_DATE , 'YYYY-MM-DD HH24:MI:SS') AS EXPIRD_DATE\n    ,TAARH.API_DESC \n    ,TO_CHAR(TAARH.CREATE_TIME , 'YYYY-MM-DD HH24:MI:SS') AS CREATE_TIME\n    ,TO_CHAR(TAARH.UPDATE_TIME , 'YYYY-MM-DD HH24:MI:SS') AS UPDATE_TIME\n    ,TISM.SYSTEM_DESC \n    ,TAARH.SYSTEM_ID\n    ,TISM.API_KEY\n    ,COALESCE(TAM.KONG_HOST, 'HOST_'|| TAM.API_ID) as KONG_HOST\n    ,TISM.API_KEY AS KONG_KEY\n    , CASE WHEN TAARH.STATUS_CD = 'APPLY' THEN '신청'\n        WHEN TAARH.STATUS_CD = 'GRANT' THEN '승인'\n        WHEN TAARH.STATUS_CD = 'REJECT' THEN '반려'\n        ELSE '회수' \n        END AS STATUS_CD\n        ,CASE \n        WHEN TAM.EXEC_MODE_CD = 'B' THEN 'Batch'\n        WHEN TAM.EXEC_MODE_CD = 'F' THEN 'SFTP'\n        ELSE 'OnDemand'\n        END AS EXEC_MODE_CD\n        ,ROW_NUMBER() OVER (ORDER BY TO_CHAR(TAARH.CREATE_TIME , 'YYYY-MM-DD HH24:MI:SS') DESC) as RANK\n        ,TISM.SYSTEM_NM\n    FROM DATAHUB.TB_API_AUTH_REQ_HIST TAARH\n    LEFT JOIN DATAHUB.TB_API_MST TAM ON TAARH.API_ID = TAM.API_ID\n    LEFT JOIN DATAHUB.TB_INTRL_SYSTEM_MST TISM ON TAARH.SYSTEM_ID = TISM.SYSTEM_ID\n    WHERE TAM.EXEC_MODE_CD != 'F'\n        AND TAARH.API_ID = 53\n            LIMIT 10 OFFSET 0",
+    "total": 2,
+    "result": [
+      {
+        "api_id": 53,
+        "system_nm": "TEST_AIB",
+        "kong_key": "ecCPLLGEAgF0pLMiH84ruavlUE9WpbD9",
+        "create_time": "2023-12-01 15:10:36",
+        "exec_mode_cd": "OnDemand",
+        "api_url": "/WS_009",
+        "reg_user": "91187283",
+        "system_id": 11,
+        "expird_date": "2024-12-01 00:00:00",
+        "req_param": null,
+        "refuse_msg": "반려",
+        "hist_serial": 149,
+        "update_time": "2023-12-01 15:10:36",
+        "kong_host": "HOST_53",
+        "api_desc": "uid test",
+        "api_key": "ecCPLLGEAgF0pLMiH84ruavlUE9WpbD9",
+        "status_cd": "반려",
+        "api_name": "TT고장 발생/회복 정보",
+        "system_desc": ".",
+        "rank": 1
+      },
+      {
+        "api_id": 53,
+        "system_nm": null,
+        "kong_key": null,
+        "create_time": "2023-11-10 14:24:07",
+        "exec_mode_cd": "OnDemand",
+        "api_url": "/WS_009",
+        "reg_user": "dimmby",
+        "system_id": 10,
+        "expird_date": "2023-11-15 00:00:00",
+        "req_param": null,
+        "refuse_msg": null,
+        "hist_serial": 138,
+        "update_time": "2023-11-10 14:24:07",
+        "kong_host": "HOST_53",
+        "api_desc": "test",
+        "api_key": null,
+        "status_cd": "회수",
+        "api_name": "TT고장 발생/회복 정보",
+        "system_desc": null,
+        "rank": 2
+      }
+    ]
+  },
+  "__config": {
     "url": "http://localhost:8070/selectList/SELECT_API_HIST_AUTH_LIST",
     "param": {
       "api_id": 53,
@@ -58,8 +60,8 @@
       "limit": 10,
       "page": 1
     },
-    "receivedTime": "2024-03-21 10:12:38.248",
-    "duration": 43,
+    "receivedTime": "2024-04-03 09:05:41.013",
+    "duration": 46,
     "filename": "L1NFTEVDVF9BUElfSElTVF9BVVRIX0xJU1Q_NTN8bnVsbHxudWxsfDEwfDE.json"
   }
 }

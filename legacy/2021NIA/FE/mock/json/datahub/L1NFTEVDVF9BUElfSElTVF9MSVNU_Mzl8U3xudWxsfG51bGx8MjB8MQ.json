@@ -1,28 +1,30 @@
 {
-  "success": true,
-  "encrypt": false,
-  "sql": "SELECT \n    TAIPH.API_ID\n   \t,TAIPH.PROC_SERIAL \n   \t, TAIPH.RESULT_CD\n    , TAIPH.RESULT_MSG\n    , TAIPH.RETRY_PROC\n    , TAIPH.REQUEST_PARAM\n   \t, TAM.API_NAME\n   \t, TAM.API_URL\n   \t, TAM.API_DESC\n   \t, TO_CHAR(TAIPH.CREATE_TIME, 'YYYY-MM-DD HH24:MI:SS') AS CREATE_TIME\n    , TO_CHAR(TAM.UPDATE_TIME, 'YYYY-MM-DD HH24:MI:SS') as UPDATE_TIME\n    , TISM.SYSTEM_NM\n    , TAARH.API_URL as TARGETURL\n    ,CASE\n        WHEN EXEC_MODE_CD = 'B' THEN 'Batch'\n        WHEN EXEC_MODE_CD = 'F' THEN 'SFTP'\n        ELSE 'OnDemand'\n    END AS EXEC_MODE_CD\n    ,CASE\n        WHEN RESULT_CD = 'S' THEN 'SUCCESS'\n        ELSE 'FAIL'\n    END AS RESULT_CD_DESC\n    FROM DATAHUB.TB_API_INTRL_PROC_HIST TAIPH\n    LEFT JOIN DATAHUB.TB_API_MST TAM ON TAM.API_ID = TAIPH.API_ID\n    LEFT JOIN DATAHUB.TB_INTRL_SYSTEM_MST TISM ON TAM.SYSTEM_ID  = TISM.SYSTEM_ID\n    LEFT JOIN (\n        SELECT API_ID, API_URL\n        FROM DATAHUB.TB_API_AUTH_REQ_HIST TAARH\n        WHERE SYSTEM_ID IS NOT null and status_cd = 'GRANT'\n        GROUP BY API_ID, API_URL\n    ) TAARH ON TAARH.API_ID = TAIPH.API_ID\n    WHERE 1=1\n            AND TAIPH.API_ID = 39\n            AND TAIPH.RESULT_CD = 'S'\n            LIMIT 20 OFFSET 0",
-  "total": 1,
-  "result": [
-    {
-      "result_cd_desc": "SUCCESS",
-      "api_id": 39,
-      "retry_proc": null,
-      "system_nm": "TEST_RCA",
-      "create_time": "2023-10-03 14:35:23",
-      "exec_mode_cd": "Batch",
-      "api_url": "http://10.220.178.141:28000/WS_000",
-      "proc_serial": 16,
-      "result_cd": "S",
-      "result_msg": "성공",
-      "update_time": null,
-      "api_desc": "TEST_서비스_000_Batch",
-      "api_name": "TEST_서비스_000_Batch",
-      "request_param": null,
-      "targeturl": null
-    }
-  ],
-  "config": {
+  "__body": {
+    "success": true,
+    "encrypt": false,
+    "sql": "SELECT \n    TAIPH.API_ID\n   \t,TAIPH.PROC_SERIAL \n   \t, TAIPH.RESULT_CD\n    , TAIPH.RESULT_MSG\n    , TAIPH.RETRY_PROC\n    , TAIPH.REQUEST_PARAM\n   \t, TAM.API_NAME\n   \t, TAM.API_URL\n   \t, TAM.API_DESC\n   \t, TO_CHAR(TAIPH.CREATE_TIME, 'YYYY-MM-DD HH24:MI:SS') AS CREATE_TIME\n    , TO_CHAR(TAM.UPDATE_TIME, 'YYYY-MM-DD HH24:MI:SS') as UPDATE_TIME\n    , TISM.SYSTEM_NM\n    , TAARH.API_URL as TARGETURL\n    ,CASE\n        WHEN EXEC_MODE_CD = 'B' THEN 'Batch'\n        WHEN EXEC_MODE_CD = 'F' THEN 'SFTP'\n        ELSE 'OnDemand'\n    END AS EXEC_MODE_CD\n    ,CASE\n        WHEN RESULT_CD = 'S' THEN 'SUCCESS'\n        ELSE 'FAIL'\n    END AS RESULT_CD_DESC\n    FROM DATAHUB.TB_API_INTRL_PROC_HIST TAIPH\n    LEFT JOIN DATAHUB.TB_API_MST TAM ON TAM.API_ID = TAIPH.API_ID\n    LEFT JOIN DATAHUB.TB_INTRL_SYSTEM_MST TISM ON TAM.SYSTEM_ID  = TISM.SYSTEM_ID\n    LEFT JOIN (\n        SELECT API_ID, API_URL\n        FROM DATAHUB.TB_API_AUTH_REQ_HIST TAARH\n        WHERE SYSTEM_ID IS NOT null and status_cd = 'GRANT'\n        GROUP BY API_ID, API_URL\n    ) TAARH ON TAARH.API_ID = TAIPH.API_ID\n    WHERE 1=1\n            AND TAIPH.API_ID = 39\n            AND TAIPH.RESULT_CD = 'S'\n            LIMIT 20 OFFSET 0",
+    "total": 1,
+    "result": [
+      {
+        "result_cd_desc": "SUCCESS",
+        "api_id": 39,
+        "retry_proc": null,
+        "system_nm": "TEST_RCA",
+        "create_time": "2023-10-03 14:35:23",
+        "exec_mode_cd": "Batch",
+        "api_url": "http://10.220.178.141:28000/WS_000",
+        "proc_serial": 16,
+        "result_cd": "S",
+        "result_msg": "성공",
+        "update_time": null,
+        "api_desc": "TEST_서비스_000_Batch",
+        "api_name": "TEST_서비스_000_Batch",
+        "request_param": null,
+        "targeturl": null
+      }
+    ]
+  },
+  "__config": {
     "url": "http://localhost:8070/selectList/SELECT_API_HIST_LIST",
     "param": {
       "api_id": 39,
@@ -32,8 +34,8 @@
       "limit": 20,
       "page": 1
     },
-    "receivedTime": "2024-03-21 10:12:42.974",
-    "duration": 59,
+    "receivedTime": "2024-04-03 09:05:42.415",
+    "duration": 48,
     "filename": "L1NFTEVDVF9BUElfSElTVF9MSVNU_Mzl8U3xudWxsfG51bGx8MjB8MQ.json"
   }
 }

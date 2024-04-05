@@ -1,0 +1,62 @@
+{
+  "START_TIME": "2024-03-13 00:00",
+  "END_TIME": "2024-03-19 00:00",
+  "pagination": {
+    "pageSize": 20,
+    "currentPage": 1,
+    "total": 0,
+    "data": []
+  },
+  "CONST_PROC_STATUS_CD": [
+    "WEXEC",
+    "WEXECAPPRT",
+    "CEXECAPPRT",
+    "REXECAPPRT",
+    "EXECAPPRT",
+    "EXEC",
+    "CADDTIMEAPPR",
+    "RADDTIMEAPPR",
+    "WADDTIMEAPPR",
+    "ADDTIMEAPPR",
+    "WSAFEENTR",
+    "SAFEENTR"
+  ],
+  "ACT_ORG_ID": [
+    "T0000202"
+  ],
+  "CONST_TYPE_CD": [],
+  "ACTOR_USER_ID": "T021239112",
+  "LOAD_TOTAL_RECORD_COUNT": true,
+  "config": {
+    "url": "https://ktnms.kt.com/workControl/monitorConfWork/selectMonitorConfWorkList",
+    "param": {
+      "CONST_TYPE_CD": [],
+      "CONST_PROC_STATUS_CD": [
+        "WEXEC",
+        "WEXECAPPRT",
+        "CEXECAPPRT",
+        "REXECAPPRT",
+        "EXECAPPRT",
+        "EXEC",
+        "CADDTIMEAPPR",
+        "RADDTIMEAPPR",
+        "WADDTIMEAPPR",
+        "ADDTIMEAPPR",
+        "WSAFEENTR",
+        "SAFEENTR"
+      ],
+      "ACT_ORG_ID": [
+        "T0000202"
+      ],
+      "START_TIME": "2024-03-13 00:00",
+      "END_TIME": "2024-03-19 00:00",
+      "pagination": {
+        "pageSize": 20,
+        "currentPage": 1
+      }
+    },
+    "receivedTime": "2024-03-21 15:34:19.919",
+    "duration": 87,
+    "filename": "d29ya0NvbnRyb2wvbW9uaXRvckNvbmZXb3JrL3NlbGVjdE1vbml0b3JDb25mV29ya0xpc3Q_fFdFWEVDLFdFWEV8VDAwMDAyMDJ8MjAyNC0wMy0xM3wyMDI0LTAzLTE5fFtvYmplY3Q.json"
+  }
+}

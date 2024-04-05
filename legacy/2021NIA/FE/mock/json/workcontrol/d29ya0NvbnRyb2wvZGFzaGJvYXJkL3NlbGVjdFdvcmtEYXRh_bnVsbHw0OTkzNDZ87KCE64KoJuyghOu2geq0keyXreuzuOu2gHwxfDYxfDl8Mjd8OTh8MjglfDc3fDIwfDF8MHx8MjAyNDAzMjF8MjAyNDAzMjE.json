@@ -1,0 +1,43 @@
+{
+  "workRiskData": {
+    "lv1": 82,
+    "lv2": 20,
+    "lv3": 1,
+    "lv4": 0
+  },
+  "workData": {
+    "higherOrgId": null,
+    "orgId": "499346",
+    "orgNm": "전남&전북광역본부",
+    "incmplCnt": 3,
+    "confCnt": 47,
+    "cnclCnt": 10,
+    "cmplCnt": 43,
+    "totalCnt": 103,
+    "cmplRate": "42%"
+  },
+  "config": {
+    "url": "https://ktnms.kt.com/workControl/dashboard/selectWorkData",
+    "param": {
+      "higherOrgId": null,
+      "orgId": "499346",
+      "orgNm": "전남&전북광역본부",
+      "incmplCnt": 1,
+      "confCnt": 61,
+      "cnclCnt": 9,
+      "cmplCnt": 27,
+      "totalCnt": 98,
+      "cmplRate": "28%",
+      "lv1": 77,
+      "lv2": 20,
+      "lv3": 1,
+      "lv4": 0,
+      "dayNightCd": "",
+      "startDate": "20240321",
+      "endDate": "20240321"
+    },
+    "receivedTime": "2024-03-21 15:33:42.644",
+    "duration": 47,
+    "filename": "d29ya0NvbnRyb2wvZGFzaGJvYXJkL3NlbGVjdFdvcmtEYXRh_bnVsbHw0OTkzNDZ87KCE64KoJuyghOu2geq0keyXreuzuOu2gHwxfDYxfDl8Mjd8OTh8MjglfDc3fDIwfDF8MHx8MjAyNDAzMjF8MjAyNDAzMjE.json"
+  }
+}

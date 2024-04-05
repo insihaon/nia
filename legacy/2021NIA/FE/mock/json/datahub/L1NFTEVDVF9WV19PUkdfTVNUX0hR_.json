@@ -1,0 +1,16 @@
+{
+  "__body": {
+    "success": true,
+    "encrypt": false,
+    "sql": "SELECT ORG_ID AS ORGSCODE, ORG_NM AS ORGNAME\n    FROM ndhub.VW_ORG_MST\n    WHERE ORG_ID in ('468338','482973','468633','468042','468994','467044','467653')",
+    "total": 0,
+    "result": []
+  },
+  "__config": {
+    "url": "http://localhost:8070/selectList/SELECT_VW_ORG_MST_HQ",
+    "param": {},
+    "receivedTime": "2024-04-03 09:06:04.434",
+    "duration": 22,
+    "filename": "L1NFTEVDVF9WV19PUkdfTVNUX0hR_.json"
+  }
+}

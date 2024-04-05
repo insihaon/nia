@@ -1,0 +1,349 @@
+{
+  "__body": {
+    "success": true,
+    "encrypt": false,
+    "sql": "SELECT \n        METADATA_SEQ\n        ,TDM.TABLE_NM \n        ,TDM.COLUMN_NM \n        ,TDM.DATA_TYPE \n        ,TDM.METADATA_DESC\n        ,TDM.UPDATE_USER\n        ,TO_CHAR(TDM.CREATE_TIME , 'YYYY-MM-DD HH24:MI:SS') AS CREATE_TIME\n        ,TO_CHAR(TDM.UPDATE_TIME , 'YYYY-MM-DD HH24:MI:SS') AS UPDATE_TIME\n   FROM DATAHUB.TB_METADATA_MST TDM\n    WHERE 1=1\n         AND TABLE_NM = 'TB_AL_CURRENT_SUB_DTL'\n        AND UPPER(TDM.TABLE_NM) LIKE '%' || UPPER('TB_AL_CURRENT_SUB_DTL') || '%'",
+    "total": 33,
+    "result": [
+      {
+        "table_nm": "TB_AL_CURRENT_SUB_DTL",
+        "update_time": "2023-10-09 20:07:10",
+        "update_user": "SYSTEM",
+        "metadata_seq": 68,
+        "create_time": "2023-10-09 20:07:10",
+        "metadata_desc": "DB서버구분",
+        "data_type": "VARCHAR",
+        "column_nm": "DB_SVR_GB"
+      },
+      {
+        "table_nm": "TB_AL_CURRENT_SUB_DTL",
+        "update_time": "2023-10-09 20:07:10",
+        "update_user": "SYSTEM",
+        "metadata_seq": 69,
+        "create_time": "2023-10-09 20:07:10",
+        "metadata_desc": "경보일련번호",
+        "data_type": "INTEGER",
+        "column_nm": "AL_SRL_NUM"
+      },
+      {
+        "table_nm": "TB_AL_CURRENT_SUB_DTL",
+        "update_time": "2023-10-09 20:07:10",
+        "update_user": "SYSTEM",
+        "metadata_seq": 70,
+        "create_time": "2023-10-09 20:07:10",
+        "metadata_desc": "시스템ID",
+        "data_type": "VARCHAR",
+        "column_nm": "SYS_ID"
+      },
+      {
+        "table_nm": "TB_AL_CURRENT_SUB_DTL",
+        "update_time": "2023-10-09 20:07:10",
+        "update_user": "SYSTEM",
+        "metadata_seq": 71,
+        "create_time": "2023-10-09 20:07:10",
+        "metadata_desc": "시스템DN",
+        "data_type": "VARCHAR",
+        "column_nm": "SYS_DN"
+      },
+      {
+        "table_nm": "TB_AL_CURRENT_SUB_DTL",
+        "update_time": "2023-10-09 20:07:10",
+        "update_user": "SYSTEM",
+        "metadata_seq": 72,
+        "create_time": "2023-10-09 20:07:10",
+        "metadata_desc": "본부ID",
+        "data_type": "VARCHAR",
+        "column_nm": "HEADQUARTER_ID"
+      },
+      {
+        "table_nm": "TB_AL_CURRENT_SUB_DTL",
+        "update_time": "2023-10-09 20:07:10",
+        "update_user": "SYSTEM",
+        "metadata_seq": 73,
+        "create_time": "2023-10-09 20:07:10",
+        "metadata_desc": "본부이름",
+        "data_type": "VARCHAR",
+        "column_nm": "HEADQUARTER_NM"
+      },
+      {
+        "table_nm": "TB_AL_CURRENT_SUB_DTL",
+        "update_time": "2023-10-09 20:07:10",
+        "update_user": "SYSTEM",
+        "metadata_seq": 74,
+        "create_time": "2023-10-09 20:07:10",
+        "metadata_desc": "NSCID",
+        "data_type": "VARCHAR",
+        "column_nm": "NSC_ID"
+      },
+      {
+        "table_nm": "TB_AL_CURRENT_SUB_DTL",
+        "update_time": "2023-10-09 20:07:10",
+        "update_user": "SYSTEM",
+        "metadata_seq": 75,
+        "create_time": "2023-10-09 20:07:10",
+        "metadata_desc": "국사ID",
+        "data_type": "VARCHAR",
+        "column_nm": "OFFICE_ID"
+      },
+      {
+        "table_nm": "TB_AL_CURRENT_SUB_DTL",
+        "update_time": "2023-10-09 20:07:10",
+        "update_user": "SYSTEM",
+        "metadata_seq": 76,
+        "create_time": "2023-10-09 20:07:10",
+        "metadata_desc": "국사이름",
+        "data_type": "VARCHAR",
+        "column_nm": "OFFICE_NM"
+      },
+      {
+        "table_nm": "TB_AL_CURRENT_SUB_DTL",
+        "update_time": "2023-10-09 20:07:10",
+        "update_user": "SYSTEM",
+        "metadata_seq": 77,
+        "create_time": "2023-10-09 20:07:10",
+        "metadata_desc": "장비이름",
+        "data_type": "VARCHAR",
+        "column_nm": "EQUIP_NM"
+      },
+      {
+        "table_nm": "TB_AL_CURRENT_SUB_DTL",
+        "update_time": "2023-10-09 20:07:10",
+        "update_user": "SYSTEM",
+        "metadata_seq": 78,
+        "create_time": "2023-10-09 20:07:10",
+        "metadata_desc": "장비모델유형",
+        "data_type": "VARCHAR",
+        "column_nm": "EQUIP_MDL_TYPE_CD"
+      },
+      {
+        "table_nm": "TB_AL_CURRENT_SUB_DTL",
+        "update_time": "2023-10-09 20:07:10",
+        "update_user": "SYSTEM",
+        "metadata_seq": 79,
+        "create_time": "2023-10-09 20:07:10",
+        "metadata_desc": "사용자시스템",
+        "data_type": "VARCHAR",
+        "column_nm": "USER_SYS"
+      },
+      {
+        "table_nm": "TB_AL_CURRENT_SUB_DTL",
+        "update_time": "2023-10-09 20:07:10",
+        "update_user": "SYSTEM",
+        "metadata_seq": 80,
+        "create_time": "2023-10-09 20:07:10",
+        "metadata_desc": "어댑터ID",
+        "data_type": "VARCHAR",
+        "column_nm": "ADPTR_ID"
+      },
+      {
+        "table_nm": "TB_AL_CURRENT_SUB_DTL",
+        "update_time": "2023-10-09 20:07:10",
+        "update_user": "SYSTEM",
+        "metadata_seq": 81,
+        "create_time": "2023-10-09 20:07:10",
+        "metadata_desc": "OMCID",
+        "data_type": "VARCHAR",
+        "column_nm": "OMC_ID"
+      },
+      {
+        "table_nm": "TB_AL_CURRENT_SUB_DTL",
+        "update_time": "2023-10-09 20:07:10",
+        "update_user": "SYSTEM",
+        "metadata_seq": 82,
+        "create_time": "2023-10-09 20:07:10",
+        "metadata_desc": "수리자전화번호",
+        "data_type": "VARCHAR",
+        "column_nm": "FIXOR_TEL_NUM"
+      },
+      {
+        "table_nm": "TB_AL_CURRENT_SUB_DTL",
+        "update_time": "2023-10-09 20:07:10",
+        "update_user": "SYSTEM",
+        "metadata_seq": 83,
+        "create_time": "2023-10-09 20:07:10",
+        "metadata_desc": "접수일시",
+        "data_type": "DATETIME",
+        "column_nm": "RCV_TIME"
+      },
+      {
+        "table_nm": "TB_AL_CURRENT_SUB_DTL",
+        "update_time": "2023-10-09 20:07:10",
+        "update_user": "SYSTEM",
+        "metadata_seq": 84,
+        "create_time": "2023-10-09 20:07:10",
+        "metadata_desc": "접수자이름",
+        "data_type": "VARCHAR",
+        "column_nm": "RCVUSER_NM"
+      },
+      {
+        "table_nm": "TB_AL_CURRENT_SUB_DTL",
+        "update_time": "2023-10-09 20:07:10",
+        "update_user": "SYSTEM",
+        "metadata_seq": 85,
+        "create_time": "2023-10-09 20:07:10",
+        "metadata_desc": "접수자전화번호",
+        "data_type": "VARCHAR",
+        "column_nm": "RCVUSER_TEL_NUM"
+      },
+      {
+        "table_nm": "TB_AL_CURRENT_SUB_DTL",
+        "update_time": "2023-10-09 20:07:10",
+        "update_user": "SYSTEM",
+        "metadata_seq": 86,
+        "create_time": "2023-10-09 20:07:10",
+        "metadata_desc": "일반트랩종류",
+        "data_type": "VARCHAR",
+        "column_nm": "GNRAL_TRAP_KIND"
+      },
+      {
+        "table_nm": "TB_AL_CURRENT_SUB_DTL",
+        "update_time": "2023-10-09 20:07:10",
+        "update_user": "SYSTEM",
+        "metadata_seq": 87,
+        "create_time": "2023-10-09 20:07:10",
+        "metadata_desc": "NMS접수일시",
+        "data_type": "DATETIME",
+        "column_nm": "NMS_RCV_TIME"
+      },
+      {
+        "table_nm": "TB_AL_CURRENT_SUB_DTL",
+        "update_time": "2023-10-09 20:07:10",
+        "update_user": "SYSTEM",
+        "metadata_seq": 88,
+        "create_time": "2023-10-09 20:07:10",
+        "metadata_desc": "NMS접수자이름",
+        "data_type": "VARCHAR",
+        "column_nm": "NMS_RCVUSER_NM"
+      },
+      {
+        "table_nm": "TB_AL_CURRENT_SUB_DTL",
+        "update_time": "2023-10-09 20:07:10",
+        "update_user": "SYSTEM",
+        "metadata_seq": 89,
+        "create_time": "2023-10-09 20:07:10",
+        "metadata_desc": "NMS접수자전화번호",
+        "data_type": "VARCHAR",
+        "column_nm": "NMS_RCVUSER_TEL_NUM"
+      },
+      {
+        "table_nm": "TB_AL_CURRENT_SUB_DTL",
+        "update_time": "2023-10-09 20:07:10",
+        "update_user": "SYSTEM",
+        "metadata_seq": 90,
+        "create_time": "2023-10-09 20:07:10",
+        "metadata_desc": "NMS수배일시",
+        "data_type": "DATETIME",
+        "column_nm": "NMS_ARNG_TIME"
+      },
+      {
+        "table_nm": "TB_AL_CURRENT_SUB_DTL",
+        "update_time": "2023-10-09 20:07:10",
+        "update_user": "SYSTEM",
+        "metadata_seq": 91,
+        "create_time": "2023-10-09 20:07:10",
+        "metadata_desc": "NMS수배자이름",
+        "data_type": "VARCHAR",
+        "column_nm": "NMS_ARNGR_NM"
+      },
+      {
+        "table_nm": "TB_AL_CURRENT_SUB_DTL",
+        "update_time": "2023-10-09 20:07:10",
+        "update_user": "SYSTEM",
+        "metadata_seq": 92,
+        "create_time": "2023-10-09 20:07:10",
+        "metadata_desc": "NMS수배자전화번호",
+        "data_type": "VARCHAR",
+        "column_nm": "NMS_ARNGR_TEL_NUM"
+      },
+      {
+        "table_nm": "TB_AL_CURRENT_SUB_DTL",
+        "update_time": "2023-10-09 20:07:10",
+        "update_user": "SYSTEM",
+        "metadata_seq": 93,
+        "create_time": "2023-10-09 20:07:10",
+        "metadata_desc": "NMS수배자국사ID",
+        "data_type": "VARCHAR",
+        "column_nm": "NMS_ARNGR_OFFICE_ID"
+      },
+      {
+        "table_nm": "TB_AL_CURRENT_SUB_DTL",
+        "update_time": "2023-10-09 20:07:10",
+        "update_user": "SYSTEM",
+        "metadata_seq": 94,
+        "create_time": "2023-10-09 20:07:10",
+        "metadata_desc": "NMS수리일시",
+        "data_type": "DATETIME",
+        "column_nm": "NMS_FIX_TIME"
+      },
+      {
+        "table_nm": "TB_AL_CURRENT_SUB_DTL",
+        "update_time": "2023-10-09 20:07:10",
+        "update_user": "SYSTEM",
+        "metadata_seq": 95,
+        "create_time": "2023-10-09 20:07:10",
+        "metadata_desc": "NMS수리자이름",
+        "data_type": "VARCHAR",
+        "column_nm": "NMS_FIXOR_NM"
+      },
+      {
+        "table_nm": "TB_AL_CURRENT_SUB_DTL",
+        "update_time": "2023-10-09 20:07:10",
+        "update_user": "SYSTEM",
+        "metadata_seq": 96,
+        "create_time": "2023-10-09 20:07:10",
+        "metadata_desc": "NMS수리자전화번호",
+        "data_type": "VARCHAR",
+        "column_nm": "NMS_FIXOR_TEL_NUM"
+      },
+      {
+        "table_nm": "TB_AL_CURRENT_SUB_DTL",
+        "update_time": "2023-10-09 20:07:10",
+        "update_user": "SYSTEM",
+        "metadata_seq": 97,
+        "create_time": "2023-10-09 20:07:10",
+        "metadata_desc": "NMS수리자국사ID",
+        "data_type": "VARCHAR",
+        "column_nm": "NMS_FIXOR_OFFICE_ID"
+      },
+      {
+        "table_nm": "TB_AL_CURRENT_SUB_DTL",
+        "update_time": "2023-10-09 20:07:10",
+        "update_user": "SYSTEM",
+        "metadata_seq": 98,
+        "create_time": "2023-10-09 20:07:10",
+        "metadata_desc": "OMS수배자국사ID",
+        "data_type": "VARCHAR",
+        "column_nm": "OMS_ARNGR_OFFICE_ID"
+      },
+      {
+        "table_nm": "TB_AL_CURRENT_SUB_DTL",
+        "update_time": "2023-10-09 20:07:10",
+        "update_user": "SYSTEM",
+        "metadata_seq": 99,
+        "create_time": "2023-10-09 20:07:10",
+        "metadata_desc": "OMS수리자국사ID",
+        "data_type": "VARCHAR",
+        "column_nm": "OMS_FIXOR_OFFICE_ID"
+      },
+      {
+        "table_nm": "TB_AL_CURRENT_SUB_DTL",
+        "update_time": "2023-10-09 20:07:22",
+        "update_user": "SYSTEM",
+        "metadata_seq": 2929,
+        "create_time": "2023-10-09 20:07:22",
+        "metadata_desc": "",
+        "data_type": "DATETIME",
+        "column_nm": "DHUB_INSERT_TIME"
+      }
+    ]
+  },
+  "__config": {
+    "url": "http://localhost:8070/selectList/SELECT_DATA_SET_LIST",
+    "param": {
+      "table_nm": "TB_AL_CURRENT_SUB_DTL"
+    },
+    "receivedTime": "2024-04-03 09:05:52.069",
+    "duration": 20,
+    "filename": "L1NFTEVDVF9EQVRBX1NFVF9MSVNU_VEJfQUxfQ1VSUg.json"
+  }
+}

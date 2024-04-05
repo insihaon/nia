@@ -1,0 +1,602 @@
+{
+  "headerList": [
+    {
+      "higherOrgId": "498790",
+      "orgId": "498805",
+      "orgNm": "부산&경남고객본부",
+      "child": [
+        {
+          "higherOrgId": "498805",
+          "orgId": null,
+          "orgNm": "소계",
+          "childYn": null
+        },
+        {
+          "higherOrgId": "498805",
+          "orgId": "498826",
+          "orgNm": "OSP담당",
+          "childYn": "Y"
+        },
+        {
+          "higherOrgId": "498805",
+          "orgId": "498834",
+          "orgNm": "동부산지사",
+          "childYn": "Y"
+        },
+        {
+          "higherOrgId": "498805",
+          "orgId": "498857",
+          "orgNm": "남부산지사",
+          "childYn": "Y"
+        },
+        {
+          "higherOrgId": "498805",
+          "orgId": "498907",
+          "orgNm": "창원지사",
+          "childYn": "Y"
+        },
+        {
+          "higherOrgId": "498805",
+          "orgId": "498933",
+          "orgNm": "울산지사",
+          "childYn": "Y"
+        },
+        {
+          "higherOrgId": "498805",
+          "orgId": "498956",
+          "orgNm": "경남서부지사",
+          "childYn": "Y"
+        },
+        {
+          "higherOrgId": "498805",
+          "orgId": "509753",
+          "orgNm": "서부산지사",
+          "childYn": "Y"
+        }
+      ]
+    },
+    {
+      "higherOrgId": "498790",
+      "orgId": "499056",
+      "orgNm": "부산&경남NW운용본부",
+      "child": [
+        {
+          "higherOrgId": "499056",
+          "orgId": null,
+          "orgNm": "소계",
+          "childYn": null
+        },
+        {
+          "higherOrgId": "499056",
+          "orgId": "499057",
+          "orgNm": "부산&경남ICT기술담당",
+          "childYn": "Y"
+        },
+        {
+          "higherOrgId": "499056",
+          "orgId": "499069",
+          "orgNm": "부산&경남코어운용센터",
+          "childYn": "Y"
+        },
+        {
+          "higherOrgId": "499056",
+          "orgId": "499076",
+          "orgNm": "부산액세스운용센터",
+          "childYn": "Y"
+        },
+        {
+          "higherOrgId": "499056",
+          "orgId": "499088",
+          "orgNm": "경남액세스운용센터",
+          "childYn": "Y"
+        },
+        {
+          "higherOrgId": "499056",
+          "orgId": "499102",
+          "orgNm": "품질혁신TF",
+          "childYn": "N"
+        }
+      ]
+    }
+  ],
+  "bodyList": [
+    [
+      {
+        "value": "계"
+      },
+      {
+        "value": 58,
+        "orgId": "498790"
+      },
+      {
+        "higherOrgId": "498805",
+        "value": 11,
+        "orgId": "null"
+      },
+      {
+        "higherOrgId": "498805",
+        "value": 0,
+        "orgId": "498826"
+      },
+      {
+        "higherOrgId": "498805",
+        "value": 4,
+        "orgId": "498834"
+      },
+      {
+        "higherOrgId": "498805",
+        "value": 0,
+        "orgId": "498857"
+      },
+      {
+        "higherOrgId": "498805",
+        "value": 1,
+        "orgId": "498907"
+      },
+      {
+        "higherOrgId": "498805",
+        "value": 1,
+        "orgId": "498933"
+      },
+      {
+        "higherOrgId": "498805",
+        "value": 5,
+        "orgId": "498956"
+      },
+      {
+        "higherOrgId": "498805",
+        "value": 0,
+        "orgId": "509753"
+      },
+      {
+        "higherOrgId": "499056",
+        "value": 47,
+        "orgId": "null"
+      },
+      {
+        "higherOrgId": "499056",
+        "value": 0,
+        "orgId": "499057"
+      },
+      {
+        "higherOrgId": "499056",
+        "value": 13,
+        "orgId": "499069"
+      },
+      {
+        "higherOrgId": "499056",
+        "value": 13,
+        "orgId": "499076"
+      },
+      {
+        "higherOrgId": "499056",
+        "value": 21,
+        "orgId": "499088"
+      },
+      {
+        "higherOrgId": "499056",
+        "value": 0,
+        "orgId": "499102"
+      }
+    ],
+    [
+      {
+        "value": "완료"
+      },
+      {
+        "value": 41,
+        "orgId": "498790"
+      },
+      {
+        "higherOrgId": "498805",
+        "value": 5,
+        "orgId": "null"
+      },
+      {
+        "higherOrgId": "498805",
+        "value": 0,
+        "orgId": "498826"
+      },
+      {
+        "higherOrgId": "498805",
+        "value": 2,
+        "orgId": "498834"
+      },
+      {
+        "higherOrgId": "498805",
+        "value": 0,
+        "orgId": "498857"
+      },
+      {
+        "higherOrgId": "498805",
+        "value": 1,
+        "orgId": "498907"
+      },
+      {
+        "higherOrgId": "498805",
+        "value": 0,
+        "orgId": "498933"
+      },
+      {
+        "higherOrgId": "498805",
+        "value": 2,
+        "orgId": "498956"
+      },
+      {
+        "higherOrgId": "498805",
+        "value": 0,
+        "orgId": "509753"
+      },
+      {
+        "higherOrgId": "499056",
+        "value": 36,
+        "orgId": "null"
+      },
+      {
+        "higherOrgId": "499056",
+        "value": 0,
+        "orgId": "499057"
+      },
+      {
+        "higherOrgId": "499056",
+        "value": 12,
+        "orgId": "499069"
+      },
+      {
+        "higherOrgId": "499056",
+        "value": 8,
+        "orgId": "499076"
+      },
+      {
+        "higherOrgId": "499056",
+        "value": 16,
+        "orgId": "499088"
+      },
+      {
+        "higherOrgId": "499056",
+        "value": 0,
+        "orgId": "499102"
+      }
+    ],
+    [
+      {
+        "value": "예정"
+      },
+      {
+        "value": 12,
+        "orgId": "498790"
+      },
+      {
+        "higherOrgId": "498805",
+        "value": 5,
+        "orgId": "null"
+      },
+      {
+        "higherOrgId": "498805",
+        "value": 0,
+        "orgId": "498826"
+      },
+      {
+        "higherOrgId": "498805",
+        "value": 2,
+        "orgId": "498834"
+      },
+      {
+        "higherOrgId": "498805",
+        "value": 0,
+        "orgId": "498857"
+      },
+      {
+        "higherOrgId": "498805",
+        "value": 0,
+        "orgId": "498907"
+      },
+      {
+        "higherOrgId": "498805",
+        "value": 1,
+        "orgId": "498933"
+      },
+      {
+        "higherOrgId": "498805",
+        "value": 2,
+        "orgId": "498956"
+      },
+      {
+        "higherOrgId": "498805",
+        "value": 0,
+        "orgId": "509753"
+      },
+      {
+        "higherOrgId": "499056",
+        "value": 7,
+        "orgId": "null"
+      },
+      {
+        "higherOrgId": "499056",
+        "value": 0,
+        "orgId": "499057"
+      },
+      {
+        "higherOrgId": "499056",
+        "value": 1,
+        "orgId": "499069"
+      },
+      {
+        "higherOrgId": "499056",
+        "value": 2,
+        "orgId": "499076"
+      },
+      {
+        "higherOrgId": "499056",
+        "value": 4,
+        "orgId": "499088"
+      },
+      {
+        "higherOrgId": "499056",
+        "value": 0,
+        "orgId": "499102"
+      }
+    ],
+    [
+      {
+        "value": "취소"
+      },
+      {
+        "value": 5,
+        "orgId": "498790"
+      },
+      {
+        "higherOrgId": "498805",
+        "value": 1,
+        "orgId": "null"
+      },
+      {
+        "higherOrgId": "498805",
+        "value": 0,
+        "orgId": "498826"
+      },
+      {
+        "higherOrgId": "498805",
+        "value": 0,
+        "orgId": "498834"
+      },
+      {
+        "higherOrgId": "498805",
+        "value": 0,
+        "orgId": "498857"
+      },
+      {
+        "higherOrgId": "498805",
+        "value": 0,
+        "orgId": "498907"
+      },
+      {
+        "higherOrgId": "498805",
+        "value": 0,
+        "orgId": "498933"
+      },
+      {
+        "higherOrgId": "498805",
+        "value": 1,
+        "orgId": "498956"
+      },
+      {
+        "higherOrgId": "498805",
+        "value": 0,
+        "orgId": "509753"
+      },
+      {
+        "higherOrgId": "499056",
+        "value": 4,
+        "orgId": "null"
+      },
+      {
+        "higherOrgId": "499056",
+        "value": 0,
+        "orgId": "499057"
+      },
+      {
+        "higherOrgId": "499056",
+        "value": 0,
+        "orgId": "499069"
+      },
+      {
+        "higherOrgId": "499056",
+        "value": 3,
+        "orgId": "499076"
+      },
+      {
+        "higherOrgId": "499056",
+        "value": 1,
+        "orgId": "499088"
+      },
+      {
+        "higherOrgId": "499056",
+        "value": 0,
+        "orgId": "499102"
+      }
+    ],
+    [
+      {
+        "value": "미완료"
+      },
+      {
+        "value": 0,
+        "orgId": "498790"
+      },
+      {
+        "higherOrgId": "498805",
+        "value": 0,
+        "orgId": "null"
+      },
+      {
+        "higherOrgId": "498805",
+        "value": 0,
+        "orgId": "498826"
+      },
+      {
+        "higherOrgId": "498805",
+        "value": 0,
+        "orgId": "498834"
+      },
+      {
+        "higherOrgId": "498805",
+        "value": 0,
+        "orgId": "498857"
+      },
+      {
+        "higherOrgId": "498805",
+        "value": 0,
+        "orgId": "498907"
+      },
+      {
+        "higherOrgId": "498805",
+        "value": 0,
+        "orgId": "498933"
+      },
+      {
+        "higherOrgId": "498805",
+        "value": 0,
+        "orgId": "498956"
+      },
+      {
+        "higherOrgId": "498805",
+        "value": 0,
+        "orgId": "509753"
+      },
+      {
+        "higherOrgId": "499056",
+        "value": 0,
+        "orgId": "null"
+      },
+      {
+        "higherOrgId": "499056",
+        "value": 0,
+        "orgId": "499057"
+      },
+      {
+        "higherOrgId": "499056",
+        "value": 0,
+        "orgId": "499069"
+      },
+      {
+        "higherOrgId": "499056",
+        "value": 0,
+        "orgId": "499076"
+      },
+      {
+        "higherOrgId": "499056",
+        "value": 0,
+        "orgId": "499088"
+      },
+      {
+        "higherOrgId": "499056",
+        "value": 0,
+        "orgId": "499102"
+      }
+    ],
+    [
+      {
+        "value": "완료율"
+      },
+      {
+        "value": "71%",
+        "orgId": "498790"
+      },
+      {
+        "higherOrgId": "498805",
+        "value": "45%",
+        "orgId": "null"
+      },
+      {
+        "higherOrgId": "498805",
+        "value": "0%",
+        "orgId": "498826"
+      },
+      {
+        "higherOrgId": "498805",
+        "value": "50%",
+        "orgId": "498834"
+      },
+      {
+        "higherOrgId": "498805",
+        "value": "0%",
+        "orgId": "498857"
+      },
+      {
+        "higherOrgId": "498805",
+        "value": "100%",
+        "orgId": "498907"
+      },
+      {
+        "higherOrgId": "498805",
+        "value": "0%",
+        "orgId": "498933"
+      },
+      {
+        "higherOrgId": "498805",
+        "value": "40%",
+        "orgId": "498956"
+      },
+      {
+        "higherOrgId": "498805",
+        "value": "0%",
+        "orgId": "509753"
+      },
+      {
+        "higherOrgId": "499056",
+        "value": "77%",
+        "orgId": "null"
+      },
+      {
+        "higherOrgId": "499056",
+        "value": "0%",
+        "orgId": "499057"
+      },
+      {
+        "higherOrgId": "499056",
+        "value": "92%",
+        "orgId": "499069"
+      },
+      {
+        "higherOrgId": "499056",
+        "value": "62%",
+        "orgId": "499076"
+      },
+      {
+        "higherOrgId": "499056",
+        "value": "76%",
+        "orgId": "499088"
+      },
+      {
+        "higherOrgId": "499056",
+        "value": "0%",
+        "orgId": "499102"
+      }
+    ]
+  ],
+  "config": {
+    "url": "https://ktnms.kt.com/workControl/dashboard/selectWorkDataOrgCeneterTable",
+    "param": {
+      "higherOrgId": null,
+      "orgId": "498790",
+      "orgNm": "부산&경남광역본부",
+      "incmplCnt": 0,
+      "confCnt": 20,
+      "cnclCnt": 4,
+      "cmplCnt": 30,
+      "totalCnt": 54,
+      "cmplRate": "56%",
+      "lv1": 41,
+      "lv2": 13,
+      "lv3": 0,
+      "lv4": 0,
+      "dayNightCd": "",
+      "startDate": "20240321",
+      "endDate": "20240321"
+    },
+    "receivedTime": "2024-03-21 15:33:36.781",
+    "duration": 55,
+    "filename": "d29ya0NvbnRyb2wvZGFzaGJvYXJkL3NlbGVjdFdvcmtEYXRhT3JnQ2VuZXRlclRhYmxl_bnVsbHw0OTg3OTB867aA7IKwJuqyveuCqOq0keyXreuzuOu2gHwwfDIwfDR8MzB8NTR8NTYlfDQxfDEzfDB8MHx8MjAyNDAzMjF8MjAyNDAzMjE.json"
+  }
+}
