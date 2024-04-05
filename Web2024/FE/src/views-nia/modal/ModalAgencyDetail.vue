@@ -56,7 +56,7 @@
               <el-input
                 v-model="ip_num"
                 clearable
-                style="min-width:70%;"
+                style="width:70%;"
               />
               <el-button
                 size="mideum"
@@ -84,7 +84,7 @@
         </table>
 
         <div slot="footer" class="dialog-footer">
-          <el-button size="medium" @click.native="editAgencyData()">
+          <el-button size="medium" @click.native="updateAgencyData()">
             {{ '저장' }}
           </el-button>
           <el-button class="exit-btn" size="medium" @click.native="close()">
@@ -100,7 +100,7 @@
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
 import { mapState } from 'vuex'
-import { apiSelectAgencyIfIdList, apiSelectAgencyIpList, apiInsertAgencyIpList, apiDeleteAgencyIpList, apiUpdateAgencyList } from '@/api/nia'
+import { apiSelectAgencyIfIdList, apiSelectAgencyIpList, apiInsertAgencyIpList, apiDeleteAgencyIpList, apiUpdateAgencyDetailList } from '@/api/nia'
 
 const routeName = 'ModalAgencyDetail'
 
@@ -241,6 +241,7 @@ export default {
        const res = await apiDeleteAgencyIpList(param)
         if (res.success) {
           this.$message.success({ message: `삭제되었습니다.` })
+          this.$emit('systemEdit')
         }
       } catch (error) {
           this.$message.error('삭제에 실패했습니다.')
@@ -250,7 +251,7 @@ export default {
         return false
       }
     },
-      editAgencyData() {
+      updateAgencyData() {
         this.confirm('수정하시겠습니까?', '수정', {
           confirmButtonText: 'OK',
           cancelButtonText: 'Cancel',
@@ -262,7 +263,7 @@ export default {
             email: this.rowInfo.email,
           }
           try {
-              const res = await apiUpdateAgencyList(param)
+              const res = await apiUpdateAgencyDetailList(param)
               if (res.success) {
                 this.$message('수정 되었습니다.')
                 this.$emit('systemEdit')

@@ -1,0 +1,189 @@
+{
+  "__body": {
+    "success": true,
+    "encrypt": false,
+    "sql": "SELECT \n        METADATA_SEQ\n        ,TDM.TABLE_NM \n        ,TDM.COLUMN_NM \n        ,TDM.DATA_TYPE \n        ,TDM.METADATA_DESC\n        ,TDM.UPDATE_USER\n        ,TO_CHAR(TDM.CREATE_TIME , 'YYYY-MM-DD HH24:MI:SS') AS CREATE_TIME\n        ,TO_CHAR(TDM.UPDATE_TIME , 'YYYY-MM-DD HH24:MI:SS') AS UPDATE_TIME\n   FROM DATAHUB.TB_METADATA_MST TDM\n    WHERE 1=1\n         AND TABLE_NM = 'TB_AGWEQUIP'\n        AND UPPER(TDM.TABLE_NM) LIKE '%' || UPPER('TB_AGWEQUIP') || '%'",
+    "total": 17,
+    "result": [
+      {
+        "table_nm": "TB_AGWEQUIP",
+        "update_time": "2023-10-09 20:07:11",
+        "update_user": "SYSTEM",
+        "metadata_seq": 270,
+        "create_time": "2023-10-09 20:07:11",
+        "metadata_desc": "변경일시",
+        "data_type": "DATETIME",
+        "column_nm": "CHANGEDT"
+      },
+      {
+        "table_nm": "TB_AGWEQUIP",
+        "update_time": "2023-10-09 20:07:11",
+        "update_user": "SYSTEM",
+        "metadata_seq": 271,
+        "create_time": "2023-10-09 20:07:11",
+        "metadata_desc": "EMS 경보용 포트 번호",
+        "data_type": "VARCHAR",
+        "column_nm": "EMSALARMPORTNUM"
+      },
+      {
+        "table_nm": "TB_AGWEQUIP",
+        "update_time": "2023-10-09 20:07:11",
+        "update_user": "SYSTEM",
+        "metadata_seq": 272,
+        "create_time": "2023-10-09 20:07:11",
+        "metadata_desc": "EMS의 IP주소",
+        "data_type": "VARCHAR",
+        "column_nm": "EMSIP"
+      },
+      {
+        "table_nm": "TB_AGWEQUIP",
+        "update_time": "2023-10-09 20:07:11",
+        "update_user": "SYSTEM",
+        "metadata_seq": 273,
+        "create_time": "2023-10-09 20:07:11",
+        "metadata_desc": "EMS 관리용 포트 번호",
+        "data_type": "VARCHAR",
+        "column_nm": "EMSMGMTPORTNUM"
+      },
+      {
+        "table_nm": "TB_AGWEQUIP",
+        "update_time": "2023-10-09 20:07:11",
+        "update_user": "SYSTEM",
+        "metadata_seq": 274,
+        "create_time": "2023-10-09 20:07:11",
+        "metadata_desc": "EMS 조회용 포트 번호",
+        "data_type": "VARCHAR",
+        "column_nm": "EMSREADPORTNUM"
+      },
+      {
+        "table_nm": "TB_AGWEQUIP",
+        "update_time": "2023-10-09 20:07:11",
+        "update_user": "SYSTEM",
+        "metadata_seq": 275,
+        "create_time": "2023-10-09 20:07:11",
+        "metadata_desc": "EMS 시험용 포트 번호1",
+        "data_type": "VARCHAR",
+        "column_nm": "EMSTESTPORTNUM1"
+      },
+      {
+        "table_nm": "TB_AGWEQUIP",
+        "update_time": "2023-10-09 20:07:11",
+        "update_user": "SYSTEM",
+        "metadata_seq": 276,
+        "create_time": "2023-10-09 20:07:11",
+        "metadata_desc": "EMS 시험용 포트 번호2",
+        "data_type": "VARCHAR",
+        "column_nm": "EMSTESTPORTNUM2"
+      },
+      {
+        "table_nm": "TB_AGWEQUIP",
+        "update_time": "2023-10-09 20:07:11",
+        "update_user": "SYSTEM",
+        "metadata_seq": 277,
+        "create_time": "2023-10-09 20:07:11",
+        "metadata_desc": "MGID",
+        "data_type": "VARCHAR",
+        "column_nm": "MGID"
+      },
+      {
+        "table_nm": "TB_AGWEQUIP",
+        "update_time": "2023-10-09 20:07:11",
+        "update_user": "SYSTEM",
+        "metadata_seq": 278,
+        "create_time": "2023-10-09 20:07:11",
+        "metadata_desc": "시설표준코드",
+        "data_type": "character(9)",
+        "column_nm": "NESCODE"
+      },
+      {
+        "table_nm": "TB_AGWEQUIP",
+        "update_time": "2023-10-09 20:07:11",
+        "update_user": "SYSTEM",
+        "metadata_seq": 279,
+        "create_time": "2023-10-09 20:07:11",
+        "metadata_desc": "상위 시설표준코드",
+        "data_type": "character(9)",
+        "column_nm": "PNESCODE"
+      },
+      {
+        "table_nm": "TB_AGWEQUIP",
+        "update_time": "2023-10-09 20:07:11",
+        "update_user": "SYSTEM",
+        "metadata_seq": 280,
+        "create_time": "2023-10-09 20:07:11",
+        "metadata_desc": "SSW 시설표준코드",
+        "data_type": "character(9)",
+        "column_nm": "SNESCODE"
+      },
+      {
+        "table_nm": "TB_AGWEQUIP",
+        "update_time": "2023-10-09 20:07:21",
+        "update_user": "SYSTEM",
+        "metadata_seq": 2518,
+        "create_time": "2023-10-09 20:07:21",
+        "metadata_desc": "",
+        "data_type": "VARCHAR",
+        "column_nm": "SGN"
+      },
+      {
+        "table_nm": "TB_AGWEQUIP",
+        "update_time": "2023-10-09 20:07:23",
+        "update_user": "SYSTEM",
+        "metadata_seq": 3047,
+        "create_time": "2023-10-09 20:07:23",
+        "metadata_desc": "",
+        "data_type": "VARCHAR",
+        "column_nm": "LOGINID"
+      },
+      {
+        "table_nm": "TB_AGWEQUIP",
+        "update_time": "2023-10-09 20:07:24",
+        "update_user": "SYSTEM",
+        "metadata_seq": 3288,
+        "create_time": "2023-10-09 20:07:24",
+        "metadata_desc": "",
+        "data_type": "DATETIME",
+        "column_nm": "DHUB_INSERT_TIME"
+      },
+      {
+        "table_nm": "TB_AGWEQUIP",
+        "update_time": "2023-10-09 20:07:24",
+        "update_user": "SYSTEM",
+        "metadata_seq": 3321,
+        "create_time": "2023-10-09 20:07:24",
+        "metadata_desc": "",
+        "data_type": "character(9)",
+        "column_nm": "VNESCODE"
+      },
+      {
+        "table_nm": "TB_AGWEQUIP",
+        "update_time": "2023-10-09 20:07:25",
+        "update_user": "SYSTEM",
+        "metadata_seq": 3460,
+        "create_time": "2023-10-09 20:07:25",
+        "metadata_desc": "",
+        "data_type": "VARCHAR",
+        "column_nm": "IPSECGWIP"
+      },
+      {
+        "table_nm": "TB_AGWEQUIP",
+        "update_time": "2023-10-09 20:07:25",
+        "update_user": "SYSTEM",
+        "metadata_seq": 3549,
+        "create_time": "2023-10-09 20:07:25",
+        "metadata_desc": "",
+        "data_type": "VARCHAR",
+        "column_nm": "PASSWD"
+      }
+    ]
+  },
+  "__config": {
+    "url": "http://localhost:8070/selectList/SELECT_DATA_SET_LIST",
+    "param": {
+      "table_nm": "TB_AGWEQUIP"
+    },
+    "receivedTime": "2024-04-03 09:05:54.448",
+    "duration": 22,
+    "filename": "L1NFTEVDVF9EQVRBX1NFVF9MSVNU_VEJfQUdXRVFVSQ.json"
+  }
+}

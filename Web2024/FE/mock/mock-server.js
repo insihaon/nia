@@ -4,6 +4,8 @@ const chalk = require('chalk')
 const path = require('path')
 const Mock = require('mockjs')
 
+console.log('jsfile loading ...', `mock\\mock-server.js`)
+
 const mockDir = path.join(process.cwd(), 'mock')
 
 function registerRoutes(app) {
@@ -45,6 +47,8 @@ function responseFake(url, type, respond) {
 }
 
 module.exports = app => {
+  console.log(`Mock Server started`)
+
   // parse app.body
   // https://expressjs.com/en/4x/api.html#req.body
   app.use(bodyParser.json())
@@ -58,8 +62,8 @@ module.exports = app => {
 
   // watch files, hot reload mock server
   chokidar.watch(mockDir, {
-    ignored: /mock-server/,
-    ignoreInitial: true
+    ignored: [/mock-server/, /.*\.json$/],
+    ignoreInitial: true,
   }).on('all', (event, path) => {
     if (event === 'change' || event === 'add') {
       try {

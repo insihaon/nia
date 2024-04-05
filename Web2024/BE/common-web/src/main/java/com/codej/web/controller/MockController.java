@@ -45,24 +45,25 @@ public class MockController extends BaseController {
 
     public ResponseEntity<?> doResponse(String jsonfilename) throws Exception {
 
-       if (jsonfilename == null) {
+        if (jsonfilename == null) {
             throw new CServiceIncorrectUse();
         }
 
         String filePath = getFilePath(jsonfilename);
         if (!FileUtil.existFile(filePath)) {
             filePath = findLikeFile(jsonfilename);
-            // throw new CUnknowException(String.format("JSON 파일을 찾을 수 없습니다.(%s)", filePath));
+            // throw new CUnknowException(String.format("JSON 파일을 찾을 수 없습니다.(%s)",
+            // filePath));
         }
 
         try {
-            JsonObject jsonObject = (JsonObject) readJsonFile(filePath);
+            JsonObject jsonObject = ((JsonObject) readJsonFile(filePath)).getAsJsonObject("__body");
             return new ResponseEntity<String>(jsonObject.toString(), HttpStatus.OK);
         } catch (ClassCastException e) {
             throw new CUnknowException(String.format("JSON 파일이 알 수 없는 형식입니다.(%s)", filePath));
         } catch (Exception e) {
             throw new CUnknowException(e.toString());
-        } 
+        }
     }
 
     private String findLikeFile(String jsonfilename) throws CUnknowException {
@@ -76,7 +77,7 @@ public class MockController extends BaseController {
         if (index >= fileList.size()) {
             index -= 1;
         }
-        
+
         return FileUtil.combine(FileUtil.getCurrentDir(), "json", appDto.getProject(), fileList.get(index));
     }
 
@@ -84,17 +85,17 @@ public class MockController extends BaseController {
     private List<String> getJsonFileList(String dirPath) {
         File[] files = new File(dirPath).listFiles();
         return Arrays.asList(files).stream().map(File::getName)
-            .filter(s -> s.endsWith(".json"))
-            .collect(Collectors.toList());
+                .filter(s -> s.endsWith(".json"))
+                .collect(Collectors.toList());
     }
 
     public static int getLikeFileIndex(List<String> list, String target) {
         // List 정렬
         Collections.sort(list);
-        
+
         // 정렬된 List에서 target의 인덱스 찾기
         int index = Collections.binarySearch(list, target);
-    
+
         // target이 없는 경우, 삽입 위치의 음수 인덱스 반환
         if (index < 0) {
             index = -(index + 1);
@@ -103,27 +104,26 @@ public class MockController extends BaseController {
         String[] parts = target.split("_");
         String svcname = parts[0];
 
-        if(svcname != null && list.get(index).startsWith(svcname)) {
+        if (svcname != null && list.get(index).startsWith(svcname)) {
             index = index - 1;
         }
-    
+
         // target이 있는 경우, 인덱스 반환
         return index;
     }
-    
 
     // 파일명을 입력하면 해당 파일 경로를 반환하는 함수
     // 현재 폴더의 json 폴더 아래에 해당 파일이 있는지 확인하고 있으면 그 경로를 반환한다.
     private String getFilePath(String fileName) {
         String path = FileUtil.combine(FileUtil.getCurrentDir(), "json", appDto.getProject(), fileName);
-        log.info("JsonFile Path={}",path);
+        log.info("JsonFile Path={}", path);
         return path;
     }
 
-    
     private Object readJsonFile(String path) throws FileNotFoundException, UnsupportedEncodingException {
         File file = new File(path);
-        // FileReader reader = new FileReader(file);    // 한글 깨짐 때문에 아래와 같이 InputStreamReader 를 사용.
+        // FileReader reader = new FileReader(file); // 한글 깨짐 때문에 아래와 같이
+        // InputStreamReader 를 사용.
         InputStreamReader reader = new InputStreamReader(new FileInputStream(file), "UTF8");
 
         JsonParser jsonParser = new JsonParser();

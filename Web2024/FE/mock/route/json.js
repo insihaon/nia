@@ -1,4 +1,4 @@
-const { responseJson } = require('../utils')
+const { responseJson } = require('../response')
 
 module.exports = [
   {

@@ -265,6 +265,36 @@ export function apiSelectUnidentifiedAppList(params = {}) {
   })
 }
 
+export function apiUpdateAppIpList(params = {}) {
+  return http({
+    url: '/modify',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'UPDATE_APP_IP',
+    data: params
+  })
+}
+
+export function apiInsertAppIp(params = {}) {
+  return http({
+    url: '/selectOne',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'INSERT_APP_IP',
+    data: params
+  })
+}
+
+export function apiDeleteAppIpList(params = {}) {
+  return http({
+    url: '/modify',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'DELETE_APP_IP',
+    data: params
+  })
+}
+
 export function apiSelectEquipAmountUsedList(params = {}) {
   return http({
     url: '/selectList',
@@ -355,12 +385,81 @@ export function apiSelectPortList(params = {}) {
   })
 }
 
+export function apiUpdatePortList(params = {}) {
+  return http({
+    url: '/modify',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'UPDATE_PORT_LIST',
+    data: params
+  })
+}
+
 export function apiSelectLinkList(params = {}) {
   return http({
     url: '/selectList',
     method: 'post',
     filePath: filePath,
     sqlId: 'SELECT_LINK_LIST',
+    data: params
+  })
+}
+
+export function apiDeleteLinkList(params = {}) {
+  return http({
+    url: '/modify',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'DELETE_LINK_LIST',
+    data: params
+  })
+}
+export function apiSelectlinkStartNode(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_LINK_START_NODE_LIST',
+    data: params
+  })
+}
+
+export function apiSelectlinkEndNode(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_LINK_END_NODE_LIST',
+    data: params
+  })
+}
+
+export function apiSelectlinkIfList(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_LINK_IF_LIST',
+    data: params
+  })
+}
+
+export function apiInsertLinkList(params = {}) {
+  return http({
+    url: '/selectOne',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'INSERT_LINK_LIST',
+    data: params
+  })
+}
+
+export function apiUpdateLinkList(params = {}) {
+  return http({
+    url: '/modify',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'UPDATE_LINK_LIST',
     data: params
   })
 }
@@ -415,6 +514,16 @@ export function apiInsertAgencyIpList(params = {}) {
   })
 }
 
+export function apiUpdateAgencyIpList(params = {}) {
+  return http({
+    url: '/modify',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'UPDATE_AGENCY_IP_LIST',
+    data: params
+  })
+}
+
 export function apiDeleteAgencyIpList(params = {}) {
   return http({
     url: '/modify',
@@ -425,7 +534,7 @@ export function apiDeleteAgencyIpList(params = {}) {
   })
 }
 
-export function apiUpdateAgencyList(params = {}) {
+export function apiUpdateAgencyDetailList(params = {}) {
   return http({
     url: '/modify',
     method: 'post',
