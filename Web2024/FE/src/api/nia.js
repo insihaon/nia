@@ -325,6 +325,16 @@ export function apiInsertProfileList(params = {}) {
   })
 }
 
+export function apiUpdateProfileList(params = {}) {
+  return http({
+    url: '/modify',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'UPDATE_PROFILE_LIST',
+    data: params
+  })
+}
+
 export function apiDeleteProfileList(params = {}) {
   return http({
     url: '/modify',

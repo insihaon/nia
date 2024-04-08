@@ -1311,8 +1311,34 @@
         )
     </insert>
 
+    <!-- 조치 프로파일 리스트 수정 -->
+    <update id="UPDATE_PROFILE_LIST">
+        UPDATE
+            RESOURCE.TB_FAULT_PROCESS_PROFILE
+        SET
+            PROFILE_TITLE = #{profile_title},
+            PROFILE_DESC = #{profile_desc},
+            NETWORK_TYPE = #{network_type},
+            PROCESSING_TEMPLATE = #{processing_template},
+            AUTO_PROCESS_CHECK = #{auto_process_check},
+            <if test="auto_process_check != true">
+                AUTO_PROCESS_START_DATETIME = #{auto_process_start_datetime} ::timestamp,
+            </if>
+            <if test="auto_process_check != true">
+                AUTO_PROCESS_END_DATETIME = #{auto_process_end_datetime}::timestamp,
+            </if>
+            CHNG_DATETIME = NOW(),
+            AUTO_RECOVERY = #{auto_recovery},
+            EMAIL_CHECK = #{email_check},
+            TICKET_TYPE = #{ticket_type},
+            PROCESS_TYPE = #{process_type}
+        WHERE PROFILE_NUM = #{profile_num}
+    </update>
+
+    
+
+
     <!-- 조치 프로파일 리스트 삭제 -->
-    <!-- 시퀀스 키 필요 -->
     <delete id="DELETE_PROFILE_LIST" parameterType="hashmap">
         DELETE FROM RESOURCE.TB_FAULT_PROCESS_PROFILE
         WHERE PROFILE_NUM = #{profile_num}
