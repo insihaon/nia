@@ -18,7 +18,7 @@
         </div>
       </template>
     </CompInquiryPannel>
-    <ModalProfileDetail ref="ModalProfileDetail" />
+    <ModalProfileDetail ref="ModalProfileDetail" @systemEdit="onLoadProfileList()" />
   </div>
 </template>
 <script>

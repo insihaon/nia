@@ -44,6 +44,7 @@ public interface NiaMapper extends BaseDataMapper {
         public List<ResultMap> SELECT_EQUIP_AMOUNT_USED_LIST(HashMap<String, Object> map);
         public List<ResultMap> SELECT_PROFILE_LIST(HashMap<String, Object> map);
         public int INSERT_PROFILE_LIST(HashMap<String, Object> map);
+        public int UPDATE_PROFILE_LIST(HashMap<String, Object> map);
         public int DELETE_PROFILE_LIST(HashMap<String, Object> map);
         public List<ResultMap> SELECT_PROFILE_TICKET_TYPE_LIST(HashMap<String, Object> map);
         public List<ResultMap> SELECT_PROFILE_ALARM_TYPE_LIST(HashMap<String, Object> map);
