@@ -33,6 +33,7 @@
                     v-model="searchModel[item.model]"
                     collapse-tags
                     filterable
+                    clearable
                     :placeholder="item.placeholder"
                     reserve-keyword
                     remote

@@ -593,6 +593,17 @@ export function apiSelectUserList(params = {}) {
     data: params
   })
 }
+
+export function apiUpdateUserGrantList(params = {}) {
+  return http({
+    url: '/modify',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'UPDATE_USER_GRANT_LIST',
+    data: params
+  })
+}
+
 export function apiSelectSnapshotList(params = {}) {
   return http({
     url: '/selectList',

@@ -34,13 +34,11 @@
             U.NAME
             , U.EMAIL
             , U.AGENCY_NAME
-            <if test="IS_ALL == true">
                 ,U.ID
                 , U.PW
                 , U.LVL
-                , U.LAST_LOGIN
+                , TO_CHAR(U.LAST_LOGIN, 'YYYY-MM-DD HH24:MI:SS') AS LAST_LOGIN
                 , U.PHONE_NUMBER
-            </if>
         FROM nia.tb_user U
         <where>
             <if test="NAME != null">
@@ -66,6 +64,14 @@
             ORDER BY NAME DESC
         </if>
     </select>
+
+    <!-- 사용자 권한 수정 -->
+     <update id="UPDATE_USER_GRANT_LIST" parameterType="hashmap">
+        UPDATE NIA.TB_USER 
+        SET    LVL = #{lvl_value}
+        WHERE NAME = #{name} 
+              AND ID = #{id}
+    </update>
 
    <select id="SELECT_SELF_PROCESS_STATISTICS" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
         <if test="STATISTICS_TYPE != null">
