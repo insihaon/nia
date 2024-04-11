@@ -12,13 +12,16 @@
       @onChangePage="onChangePage"
       @searchClear="searchClear"
     />
+
   </div>
 </template>
 <script>
 import { Base } from '@/min/Base.min'
 import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
 import { apiSelectUserList } from '@/api/nia'
+import EventBus from '@/utils/event-bus'
 import CellRenderSelectBox from '@/views-nia/components/cellRenderer/CellRenderSelectBox'
+import { apiUpdateUserGrantList } from '@/api/nia'
 
 const routeName = 'AuthSettings'
 export default {
@@ -40,7 +43,7 @@ export default {
       userData: [],
       searchItems: [
         { label: '이름 검색', type: 'input', multiple: false, placeholder: '', model: 'name', icon: 'el-icon-search' },
-        { label: '권한 설정', type: 'select', multiple: true, model: 'lvl_value', icon: 'el-icon-setting', setting: { allOption: { toggle: false } },
+        { label: '권한 설정', type: 'select', multiple: true, model: 'lvl_value', icon: 'el-icon-setting',
           options:
           [
             { label: '사용자', value: '1' },
@@ -53,6 +56,7 @@ export default {
         name: '',
         lvl_value: [],
       },
+      paramAuth: []
     }
   },
   computed: {
@@ -68,7 +72,7 @@ export default {
         { type: '', prop: 'email', name: 'EMAIL', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
         { type: '', prop: 'last_login', name: '마지막 접속시간', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
         { type: '', prop: 'end_date', name: '권한선택', minWidth: 30, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true,
-          cellRendererFramework: 'CellRenderSelectBox', cellRendererParams: { type: 'auth', action: this.setUserAuth.bind(this) } },
+          cellRendererFramework: 'CellRenderSelectBox', cellRendererParams: { type: 'auth', /*  action: this.setUserAuth.bind(this) */ } },
         { type: '', prop: '', name: '', minWidth: 20, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true,
          cellRendererFramework: 'CellRenderSelectBox', cellRendererParams: { type: 'authSetting', name: '저장', action: this.setUserAuth.bind(this) } },
 
@@ -110,8 +114,28 @@ export default {
     searchClear() {
      this.searchModel = {}
     },
-    setUserAuth() {
-
+    setUserAuth(row, type, auth) {
+      this.confirm('권한을 수정하시겠습니까?', '권한 수정', {
+        confirmButtonText: 'OK',
+        cancelButtonText: 'Cancel',
+        type: 'success',
+      }).then(async () => {
+        try {
+          const param = {
+            id: row.id,
+            name: row.name,
+            lvl_value: parseInt(auth, 10),
+          }
+          const res = await apiUpdateUserGrantList(param)
+          if (res.success) {
+            this.$message('수정 되었습니다.')
+            this.close()
+          }
+        } catch (error) {
+          this.$message.error({ message: `수정에 실패했습니다.` })
+          console.error(error)
+        }
+      })
     }
   },
 }
