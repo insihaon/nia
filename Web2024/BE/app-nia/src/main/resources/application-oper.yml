@@ -3,7 +3,6 @@ server:
   servlet:
     context-path: /nia/portal
 
-    
 spring:
   profiles:
     active: oper
@@ -25,11 +24,16 @@ spring:
     port: 6786
 
 myconf:
+  ssh:
+    host: 116.89.191.47
+    port: 16891
+    user: codej8888
+    password: zhfps!
+  api-server:
+    ipsdn: http://203.255.249.31:8088
   aimonitor-Url: http://116.89.191.45:82
   servermonitor-Url: http://116.89.191.40:3000
   snapshot-Url: http://116.89.191.35:24888/download/
 
 file:
   upload-dir: ./external
-  
-

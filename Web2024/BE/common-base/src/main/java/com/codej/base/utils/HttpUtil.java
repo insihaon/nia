@@ -1,6 +1,6 @@
 package com.codej.base.utils;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -80,14 +80,48 @@ public class HttpUtil {
         return new ResponseEntity<String>(json, HttpStatus.OK);
     }
 
-    public static ResponseEntity<?> post(String url, HashMap<String, Object> param)
-            throws CHttpRelayServiceFail, Exception {
+    public static ResponseEntity<?> get(String url,
+            Map<String, String> headers) throws CHttpRelayServiceFail, Exception {
         String json = "";
         int timeout = 30;
         RequestConfig config = RequestConfig.custom()
                 .setConnectTimeout(timeout * 3000)
                 .setConnectionRequestTimeout(timeout * 3000)
                 .setSocketTimeout(timeout * 1000).build();
+
+        CloseableHttpClient httpClient = HttpClientBuilder.create().setDefaultRequestConfig(config).build();
+        try {
+            HttpGet request = new HttpGet(url);
+
+            if (headers != null && !headers.isEmpty()) {
+                for (Map.Entry<String, String> entry : headers.entrySet()) {
+                    request.addHeader(entry.getKey(), entry.getValue());
+                }
+            }
+
+            CloseableHttpResponse response = httpClient.execute(request);
+            json = EntityUtils.toString(response.getEntity());
+
+            request.releaseConnection();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new CHttpRelayServiceFail("Error in get request", ex);
+        } finally {
+            httpClient.close();
+        }
+
+        return new ResponseEntity<String>(json, HttpStatus.OK);
+    }
+
+    public static ResponseEntity<?> post(String url, Map<String, Object> param)
+            throws CHttpRelayServiceFail, Exception {
+        String json = "";
+        int timeout = 30;
+        RequestConfig config = RequestConfig.custom()
+                .setConnectTimeout(timeout * 3000)
+                .setConnectionRequestTimeout(timeout * 3000)
+                .setSocketTimeout(timeout * 1000)
+                .build();
 
         CloseableHttpClient httpClient = HttpClientBuilder.create().setDefaultRequestConfig(config).build();
         try {
@@ -108,4 +142,41 @@ public class HttpUtil {
 
         return new ResponseEntity<String>(json, HttpStatus.OK);
     }
+
+    public static ResponseEntity<?> post(String url, Map<String, Object> param,
+            Map<String, String> headers)
+            throws CHttpRelayServiceFail, Exception {
+        String json = "";
+        int timeout = 30;
+        RequestConfig config = RequestConfig.custom()
+                .setConnectTimeout(timeout * 3000)
+                .setConnectionRequestTimeout(timeout * 3000)
+                .setSocketTimeout(timeout * 1000)
+                .build();
+
+        CloseableHttpClient httpClient = HttpClientBuilder.create().setDefaultRequestConfig(config).build();
+        try {
+            HttpPost request = new HttpPost(url);
+
+            if (headers != null && !headers.isEmpty()) {
+                for (Map.Entry<String, String> entry : headers.entrySet()) {
+                    request.addHeader(entry.getKey(), entry.getValue());
+                }
+            }
+            request.setEntity(new StringEntity(new ObjectMapper().writeValueAsString(param).toString(), "UTF-8"));
+
+            CloseableHttpResponse response = httpClient.execute(request);
+            json = EntityUtils.toString(response.getEntity());
+
+            request.releaseConnection();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new CHttpRelayServiceFail("Error in findUserByUid", ex);
+        } finally {
+            httpClient.close();
+        }
+
+        return new ResponseEntity<String>(json, HttpStatus.OK);
+    }
+
 }

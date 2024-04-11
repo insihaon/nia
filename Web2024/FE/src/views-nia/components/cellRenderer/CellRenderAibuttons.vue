@@ -1,9 +1,7 @@
 <template>
   <div class="cell-container" :class="{ [name]: true }">
     <div v-if="isShow()" class="button-panel">
-      <div :class="linkType" size="mini" @click="openModal(params)">
-        <i :class="{['el-icon-'+params.icon] : true}" /> {{ getLable }}
-      </div>
+      <div :class="linkType" size="mini" @click="openModal(params)"><i :class="{ ['el-icon-' + params.icon]: true }" /> {{ getLable }}</div>
     </div>
   </div>
 </template>
@@ -29,12 +27,17 @@ export default Vue.extend({
       } else {
         return `${this.params.type}-class`
       }
-    }
+    },
   },
   methods: {
     isShow() {
       const { data, type } = this.params
-      if (data.ticket_type === 'SYSLOG' && type === 'alarm') {
+      if (data.ticket_type === 'SYSLOG' && type === 'ALARM') {
+        // 장애대응 버튼 SYSLOG 비활성
+        return false
+      }
+      if (!['ATT2', 'NTT', 'SYSLOG'].includes(data.ticket_type) && type === 'CONFIG_TEST') {
+        // 시험기능 ATT2, NTT, SYSLOG 만 활성화
         return false
       }
       return true
@@ -47,15 +50,15 @@ export default Vue.extend({
 </script>
 <style lang="scss" scoped>
 .CellRenderAibuttons {
-  &:hover{
+  &:hover {
     color: red !important;
-    cursor: pointer
+    cursor: pointer;
   }
   .edit-class {
     text-decoration: underline;
     color: blue !important;
   }
-  &:hover{
+  &:hover {
     color: rgb(23, 162, 255) !important;
   }
   .node-mng-class {

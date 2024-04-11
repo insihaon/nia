@@ -19,7 +19,7 @@
         <span slot="title">
           <i class="el-icon-document mr-2 text-base" />
           마감 처리
-          <hr>
+          <hr />
         </span>
         <div class="d-flex flex-column h-100 rounded justify-between p-3">
           <div class="shadow-sm p-1 mt-2">
@@ -27,17 +27,10 @@
             <div class="d-flex p-2">
               <div v-for="item in actionForm" :key="item.model">
                 <el-select v-model="finSop[item.model]" :placeholder="item.label">
-                  <el-option
-                    v-for="op in item.options"
-                    :key="op.value"
-                    :label="op.label"
-                    :value="op.value"
-                  />
+                  <el-option v-for="op in item.options" :key="op.value" :label="op.label" :value="op.value" />
                 </el-select>
               </div>
-              <el-button size="small" class="ml-1" @click.native="$refs.ModalSopMng.open()">
-                편집
-              </el-button>
+              <el-button size="small" class="ml-1" @click.native="$refs.ModalSopMng.open()"> 편집 </el-button>
             </div>
             <div class="px-2 input">
               <el-input v-model="etcContent" placeholder="기타 조치내용 입력" />
@@ -50,14 +43,7 @@
               <el-radio v-model="aiFeedback" label="1">불일치</el-radio>
             </div>
             <div class="p-2">
-              <el-date-picker
-                v-model="period"
-                type="datetimerange"
-                range-separator="To"
-                start-placeholder="시작 시간"
-                end-placeholder="종료 시간"
-                :disabled="aiFeedback === '0'"
-              />
+              <el-date-picker v-model="period" type="datetimerange" range-separator="To" start-placeholder="시작 시간" end-placeholder="종료 시간" :disabled="aiFeedback === '0'" />
             </div>
           </div>
           <div class="shadow-sm p-1 mt-3 input">
@@ -66,9 +52,7 @@
           </div>
         </div>
         <div slot="footer" class="dialog-footer">
-          <el-button size="small" @click.native="onClickFin()">
-            마감
-          </el-button>
+          <el-button size="small" @click.native="onClickFin()"> 마감 </el-button>
           <el-button size="small" plain class="close-btn" @click.native="close()">
             {{ $t('exit') }}
           </el-button>
@@ -83,7 +67,7 @@
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
 import _ from 'lodash'
-import { apiSelectSopCode } from '@/api/nia'
+import { apiSelectSopCode, apiSendMQ } from '@/api/nia'
 import ModalSopMng from '@/views-nia/modal/ModalSopMng'
 import sopHistory from '@/views-nia/alarmMonitoring/sopHistory.vue'
 
@@ -101,6 +85,7 @@ export default {
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       visible: false,
       selectedRow: null,
+      dataType: null,
       sopCodeList: [],
       selectOption: {
         gubun: [],
@@ -127,11 +112,11 @@ export default {
       return [
         { label: '장애구분', model: 'faultClassify', options: this.selectOption.gubun },
         { label: '장애유형', model: 'faultType', options: this.selectOption.type },
-        { label: '조치내용', model: 'faultDetail', options: this.selectOption.content }
+        { label: '조치내용', model: 'faultDetail', options: this.selectOption.content },
       ]
-    }
+    },
   },
-  mounted () {
+  mounted() {
     this.onLoadSopCodeList()
   },
   methods: {
@@ -153,68 +138,83 @@ export default {
         this.error(error)
       }
     },
-    onClickSopEdit() {
-
-    },
+    onClickSopEdit() {},
     onClickFin() {
-     /*
-    service: tools.constants.Service.rca,
-    action: tools.constants.Action.CHANGE_TICKET_STATUS,
-    eventType: 'REQUEST_CHANGE_TICKET_STATUS',
-      ticket_id: ticket.ticket_id,
-    status: tools.constants.TicketStatus.FIN.code,
-      ticket_type: ticket.ticket_type,
-      sop_id : ticket.sop_id,
-      detail: ticket.handling_fin_content,
-    ai_accuracy: $scope.ai_accuracy,
-    fault_classify: $scope.opinion.faultClassify,
-    fault_type: $scope.opinion.faultType,
-    fault_detail_content: $scope.opinion.faultDetail,
-    etc_content: $scope.opinion.etcContent,
-    fault_type_content: $scope.ai_accuracy == 1 ? $scope.fault_type_content : null,
-    start_time:  $scope.ai_accuracy == 1 ? $scope.startTime : null,
-    end_time:  $scope.ai_accuracy == 1 ? $scope.endTime : null,
-    handling_fin_user: tools.store.userName
-*/
       if (this.aiFeedback == null) {
         this.$alert('AI 결과 피드백 여부를 선택해 주십시오.', '알림', {
-          confirmButtonText: '확인'
+          confirmButtonText: '확인',
         })
+        return
       }
+      this.confirm('확인 버튼 클릭 시 해당 티켓은 최종 마감처리 됩니다.', '알림', {
+        confirmButtonText: '확인',
+        cancelButtonText: '취소',
+      }).then(async () => {
+        const param = this.getFinParam()
+        if (this.selectedTicket) {
+          Object.assign(param, { ticket_id: this.selectedTicket.ticket_id })
+        }
+        try {
+          const res = await apiSendMQ('fin', param)
+          if (res.success) {
+            this.$alert('마감 처리 되었습니다.', '알림', {
+              confirmButtonText: '확인',
+            })
+          }
+        } catch (error) {
+          this.$alert('저장에 실패하였습니다.', '알림', {
+            confirmButtonText: '확인',
+          })
+          console.error(error)
+        }
+      })
     },
     getFinParam() {
+      const finType = this.selectedRow.ticket_type === 'SYSLOG' ? 'SYSLOG' : 'TICKET'
       const param = {
-        eventType: 'REQUEST_CHANGE_TICKET_STATUS',
+        eventType: `REQUEST_CHANGE_${finType}_STATUS`,
         status: 'FIN',
         ai_accuracy: this.ai_accuracy,
         etc_content: this.etcContent,
         fault_type_content: this.ai_accuracy === 1 ? this.fault_type_content : null,
         start_time: this.ai_accuracy === 1 ? this.period[0] : null,
         end_time: this.ai_accuracy === 1 ? this.period[1] : null,
-        handling_fin_user: this.$store.state.user.name
+        handling_fin_user: this.$store.state.user.name,
       }
       Object.assign(param, this.finSop)
 
-      if (this.dataType === 'TICKET') {
-        const { ticket_id, ticket_type, sop_id, handling_fin_content } = this.selectRow
+      if (finType === 'TICKET') {
+        const { ticket_id, ticket_type, sop_id, handling_fin_content } = this.selectedRow
         Object.assign(param, { ticket_id, ticket_type, sop_id, detail: handling_fin_content })
-      } else if (this.dataType === 'SYSLOG') {
+      } else if (finType === 'SYSLOG') {
         const { alarmno, node_num, node_nm, alarmloc, alarmmsg, etc, ip_addr, alarmtime } = this.selectedRow
         Object.assign(param, {
-          alarmno, alarmtime: this.moment(alarmtime).format('YYYY-MM-DD HH:mm:ss'), node_num, node_nm,
-          alarmloc: alarmloc || '', alarmmsg, etc, ip_addr })
+          alarmno,
+          alarmtime: this.moment(alarmtime).format('YYYY-MM-DD HH:mm:ss'),
+          node_num,
+          node_nm,
+          alarmloc: alarmloc || '',
+          alarmmsg,
+          etc,
+          ip_addr,
+        })
       }
+      return param
     },
     setSopCode() {
       const codeKeys = Object.keys(this.codeKeys)
-      codeKeys.forEach(key => {
-        const sopCodeObj = this.sopCodeList.find(d => d.fault_gb === this.codeKeys[key])
-        this.selectOption[key] = sopCodeObj?.code_arr?.map(v => { return { value: v } })
+      codeKeys.forEach((key) => {
+        const sopCodeObj = this.sopCodeList.find((d) => d.fault_gb === this.codeKeys[key])
+        this.selectOption[key] = sopCodeObj?.code_arr?.map((v) => {
+          return { value: v }
+        })
       })
     },
-    onClose() { /* for Override */ },
-    }
-  }
+    onClose() {
+      /* for Override */
+    },
+  },
+}
 </script>
 
 <style lang="scss" scoped>

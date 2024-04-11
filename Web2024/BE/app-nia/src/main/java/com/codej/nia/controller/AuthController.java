@@ -1,6 +1,7 @@
 package com.codej.nia.controller;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -14,10 +15,17 @@ import org.springframework.web.bind.annotation.RestController;
 import com.codej.base.dto.AppDto;
 import com.codej.base.dto.BaseUser;
 import com.codej.base.dto.DbUser;
+import com.codej.base.dto.model.Data;
 import com.codej.base.dto.response.BaseResponse;
+import com.codej.base.dto.response.SingleResponse;
+import com.codej.base.exception.CSigninFailedException;
+import com.codej.base.utils.JsonUtil;
+import com.codej.base.utils.cipher.rsa.RSA;
 import com.codej.web.controller.AbsAuthController;
+import com.codej.base.provider.JwtTokenProvider;
 import com.codej.web.service.ResponseService;
 import com.codej.nia.service.NiaUserService;
+import com.codej.nia.service.NiaService;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -25,26 +33,82 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController("authController")
-@RequestMapping(value = "/") 
+@RequestMapping(value = "/")
 public class AuthController extends AbsAuthController {
     @Autowired
     private NiaUserService niaUserService;
+
+    @Autowired
+    private NiaService niaService;
+
     @Autowired
     private ResponseService responseService;
+
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+
     @Autowired
     private AppDto appDto;
+
+    protected static final String ipsdnTokenKey = "ipsdnToken";
 
     @Override
     protected NiaUserService getService() {
         return niaUserService;
     }
 
+    public BaseResponse signin(String uid, String password, String address, JsonObject json) throws Exception {
+        log.debug(String.format("signin: %s, %s, %s", uid, password, json.toString()));
+        BaseUser user = null;
+        if (appDto.isDevProfile()) {
+            log.debug(passwordEncoder.encode(password));
+        }
+
+        user = getService().loginFromDb(uid, password);
+        if (appDto.getAuthUse() != false) {
+            if (!passwordEncoder.matches(password, user.getPassword())) {
+                log.debug("Password is wrong: enc={}, dec={}", user.getPassword(), password);
+                throw new CSigninFailedException();
+            } else {
+                log.debug("Password is match: enc={}, dec={}", user.getPassword(), password);
+                getService().updateLoginDate(uid);
+            }
+        }
+
+        updateUser(user, json);
+
+        user.setPassword(null);
+        user.setIpAddress(address);
+
+        String token = jwtTokenProvider.createToken(user, address);
+
+        // User 정보와 토큰 정보를 반환
+        HashMap<String, Object> mapUser = JsonUtil.convertObjectToMap(user);
+        Data data = new Data(mapUser);
+        data.set(tokenKey, token);
+
+        Map<String, Object> ipsdnToken = niaService.getIpsdnToken();
+        data.set(ipsdnTokenKey, ipsdnToken);
+
+        Boolean otpShow = isOtpShow(uid);
+        data.set("otpShow", otpShow);
+
+        if (otpShow) {
+            String otp = generateOtp(6, 1);
+            otpNumber = otp;
+            sendOtp(uid, otp);
+        }
+        SingleResponse<Map<String, Object>> response = responseService.createSingleDataResponse(data);
+        return SingleResponse.createResult(response, true);
+    }
+
     @PostMapping(value = "/nia/upserUser")
     public BaseResponse signup(
             HttpServletRequest request,
-            @RequestBody HashMap<String, Object> body) 
+            @RequestBody HashMap<String, Object> body)
             throws Exception {
         JsonObject json = decryptRequestParameter(body);
         String password = json.get("password").getAsString();
@@ -77,7 +141,7 @@ public class AuthController extends AbsAuthController {
     private BaseResponse deleteUser(String uid, String password) {
         try {
             BaseUser user = getService().getUser(uid);
-            if(passwordEncoder.matches(password, user.getPassword())) {
+            if (passwordEncoder.matches(password, user.getPassword())) {
                 getService().deleteUserByUid(uid);
                 return responseService.createSuccessResponse();
             }

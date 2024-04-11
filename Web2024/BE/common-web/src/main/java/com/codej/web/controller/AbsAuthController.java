@@ -79,7 +79,7 @@ public abstract class AbsAuthController extends BaseController {
         if (session.getAttribute(GlobalConstants.KEY.RSA_KEY) == null) {
             session.setAttribute(GlobalConstants.KEY.RSA_KEY, RSA.createRsa());
         }
-        //RSA.RSAKey rsaKey = (RSA.RSAKey) session.getAttribute(GlobalConstants.KEY.RSA_KEY);
+        // RSA.RSAKey rsaKey = (RSA.RSAKey) session.getAttribute(GlobalConstants.KEY.RSA_KEY);
 
         RSA.RSAKey rsaKey = RSA.createRsa();
         AbsAuthController.RsaMAP.put(rsaKey.getPublicKeyModulus(), rsaKey);
@@ -102,7 +102,8 @@ public abstract class AbsAuthController extends BaseController {
     }
 
     @PostMapping("/loginform")
-    public BaseResponse formSignin(HttpServletRequest request, @RequestParam HashMap<String, Object> body) throws Exception {
+    public BaseResponse formSignin(HttpServletRequest request, @RequestParam HashMap<String, Object> body)
+            throws Exception {
         return postSignin(request, body);
     }
 
@@ -127,7 +128,7 @@ public abstract class AbsAuthController extends BaseController {
             throws Exception {
         return signin(id, password, getAddress(request), null);
     }
-    
+
     @PostMapping(value = "/otpCheck")
     @Operation(operationId = "otp체크", description = "otp 일치 여부를 확인한다.")
     public BaseResponse postOtpCheck(
@@ -141,11 +142,11 @@ public abstract class AbsAuthController extends BaseController {
 
     public BaseResponse signin(String uid, String password, String address, JsonObject json) throws Exception {
         log.debug(String.format("signin: %s, %s, %s", uid, password, json.toString()));
-        BaseUser user = null; 
+        BaseUser user = null;
         if (appDto.isDevProfile()) {
             log.debug(passwordEncoder.encode(password));
         }
-        
+
         user = getService().loginFromDb(uid, password);
         if (appDto.getAuthUse() != false) {
             if (!passwordEncoder.matches(password, user.getPassword())) {
@@ -161,26 +162,22 @@ public abstract class AbsAuthController extends BaseController {
 
         user.setPassword(null);
         user.setIpAddress(address);
-        
+
         String token = jwtTokenProvider.createToken(user, address);
 
         // User 정보와 토큰 정보를 반환
         HashMap<String, Object> mapUser = JsonUtil.convertObjectToMap(user);
         Data data = new Data(mapUser);
         data.set(tokenKey, token);
-        
+
         Boolean otpShow = isOtpShow(uid);
         data.set("otpShow", otpShow);
-        
+
         if (otpShow) {
             String otp = generateOtp(6, 1);
             otpNumber = otp;
             sendOtp(uid, otp);
-            /* 
-             * 기존방식
-             * boolean sended = sendOtp(user, otp);
-             * data.set("otp", sended ? AesCryptUtil.encrypt(otp) : null);
-             */
+
         }
         SingleResponse<Map<String, Object>> response = responseService.createSingleDataResponse(data);
         return SingleResponse.createResult(response, true);
@@ -192,13 +189,13 @@ public abstract class AbsAuthController extends BaseController {
 
     public boolean isOtpShow(String id) {
         boolean otpShow = false;
-        if(appDto.getOtpUse()){
-            if(userOtpInfo.containsKey(id)) {
+        if (appDto.getOtpUse()) {
+            if (userOtpInfo.containsKey(id)) {
                 LocalDateTime otpSendTime = userOtpInfo.get(id);
                 Duration duration = Duration.between(otpSendTime, LocalDateTime.now());
-                if(duration.toHours() < 24) {
+                if (duration.toHours() < 24) {
                     otpShow = false;
-                } else if(duration.toHours() > 24) {
+                } else if (duration.toHours() > 24) {
                     otpShow = true;
                 }
             } else {
@@ -209,8 +206,9 @@ public abstract class AbsAuthController extends BaseController {
         }
         return otpShow;
     }
+
     public BaseResponse otpCheck(String otpInput) {
-        if(otpNumber.equals(otpInput)) {
+        if (otpNumber.equals(otpInput)) {
             return responseService.createSuccessResponse();
         } else {
             return responseService.createFailResponse(-9999, "OTP authentication failed");
@@ -220,14 +218,13 @@ public abstract class AbsAuthController extends BaseController {
     public boolean sendOtp(String id, String number) {
         // String mobile = user.getMobile();
         // if (mobile == null || mobile.length() < 8) {
-        //     return false;
+        // return false;
         // }
-        
+
         /* db user정보 insert -> agent otp send */
         userOtpInfo.put(id, LocalDateTime.now());
         return true;
     }
-
 
     public void save(String id, String password, String name) throws Exception {
         getService().INSERT_USER(
@@ -248,8 +245,8 @@ public abstract class AbsAuthController extends BaseController {
 
     @PostMapping(value = "/signin/{provider}")
     public SingleResponse<String> signinByProvider(HttpServletRequest request,
-                                                   @PathVariable String provider,
-                                                   @RequestParam String accessToken) throws Exception {
+            @PathVariable String provider,
+            @RequestParam String accessToken) throws Exception {
         String address = getAddress(request);
         KakaoProfile profile = kakaoService.getKakaoProfile(accessToken);
         DbUser user = (DbUser) getService().findUserByUidAndProvider(String.valueOf(profile.getId()), provider);
@@ -257,15 +254,16 @@ public abstract class AbsAuthController extends BaseController {
         return responseService.createSingleResponse(
                 jwtTokenProvider.createToken(user, address));
     }
-    
-     /**
+
+    /**
      * 전달된 파라미터에 맞게 난수를 생성한다
-     * @param len : 생성할 난수의 길이
+     * 
+     * @param len   : 생성할 난수의 길이
      * @param dupCd : 중복 허용 여부 (1: 중복허용, 2:중복제거)
      */
     public static String generateOtp(int len, int dupCd) {
         Random rand = new Random();
-        StringBuffer numStr = new StringBuffer();   // 난수가 저장될 변수
+        StringBuffer numStr = new StringBuffer(); // 난수가 저장될 변수
 
         for (int i = 0; i < len; i++) {
             // 0~9 까지 난수 생성
@@ -291,7 +289,7 @@ public abstract class AbsAuthController extends BaseController {
     @PostMapping(value = "/rms/signup")
     public BaseResponse postSignup(
             HttpServletRequest request,
-            @RequestBody HashMap<String, Object> body) 
+            @RequestBody HashMap<String, Object> body)
             throws Exception {
         JsonObject json = decryptRequestParameter(body);
         String password = json.get("password").getAsString();
@@ -306,11 +304,10 @@ public abstract class AbsAuthController extends BaseController {
         user.put("auth_id", "GUEST");
         user.put("approval_yn", "n"); /* 승인여부는 회원가입 시 무조건 n => 관리자가 승인 시 y */
 
-
         getService().INSERT_USER(user);
         return responseService.createSuccessResponse();
     }
-    
+
     // @PostMapping(value = "/signup")
     public BaseResponse _signup(
             @RequestParam String id,
@@ -339,7 +336,7 @@ public abstract class AbsAuthController extends BaseController {
     @PostMapping(value = "/rms/changepwd")
     public BaseResponse postFindUser(
             HttpServletRequest request,
-            @RequestBody HashMap<String, Object> body) 
+            @RequestBody HashMap<String, Object> body)
             throws Exception {
         JsonObject json = decryptRequestParameter(body);
         String password = json.get("login_password").getAsString();
@@ -377,11 +374,11 @@ public abstract class AbsAuthController extends BaseController {
     public JsonObject decryptRequestParameter(HashMap<String, Object> body) {
         // RequestBody 에서 파라미터 추출
         // log.info("signin(): id={}, password={}", body.get("id"),
-        HashMap encData = (HashMap)body.get("data");
+        HashMap encData = (HashMap) body.get("data");
 
-        String encryptKey = (String)encData.get("key");
-        String encryptValue = Base64.decodeString((String)encData.get("value"));
-        String m = (String)encData.get("m");
+        String encryptKey = (String) encData.get("key");
+        String encryptValue = Base64.decodeString((String) encData.get("value"));
+        String m = (String) encData.get("m");
 
         RSA.RSAKey rsaKey = RsaMAP.get(m);
 
