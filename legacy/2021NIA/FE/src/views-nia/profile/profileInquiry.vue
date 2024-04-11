@@ -11,8 +11,14 @@
       @handleClickSearch="onClickSearch"
       @onChangePage="(curPage) => onChangePage(curPage)"
       @searchClear="searchClear"
-    />
-    <ModalProfileDetail ref="ModalProfileDetail" />
+    >
+      <template slot="button-area">
+        <div class="button-panel">
+          <el-button class="float-right" type="info" size="mini" @click="handleOpenModalDetail('', 'OPEN')">등록</el-button>
+        </div>
+      </template>
+    </CompInquiryPannel>
+    <ModalProfileDetail ref="ModalProfileDetail" @systemEdit="onLoadProfileList()" />
   </div>
 </template>
 <script>
@@ -72,16 +78,16 @@ export default {
     },
   },
   mounted() {
-    this.onLoadTrafficList()
+    this.onLoadProfileList()
   },
   methods: {
     onSortedChange(param) {
-       this.onLoadTrafficList()
+       this.onLoadProfileList()
     },
     onClickSearch(params) {
-      this.onLoadTrafficList(params)
+      this.onLoadProfileList(params)
     },
-    async onLoadTrafficList() {
+    async onLoadProfileList() {
       const target = { vue: this.$refs.trafficAnalysis }
       this.openLoading(target)
       const param = {

@@ -333,6 +333,36 @@ export function apiSelectProfileList(params = {}) {
   })
 }
 
+export function apiInsertProfileList(params = {}) {
+  return http({
+    url: '/selectOne',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'INSERT_PROFILE_LIST',
+    data: params
+  })
+}
+
+export function apiUpdateProfileList(params = {}) {
+  return http({
+    url: '/modify',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'UPDATE_PROFILE_LIST',
+    data: params
+  })
+}
+
+export function apiDeleteProfileList(params = {}) {
+  return http({
+    url: '/modify',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'DELETE_PROFILE_LIST',
+    data: params
+  })
+}
+
 export function apiTicketTypeCode(params = {}) {
   return http({
     url: '/selectList',
@@ -363,7 +393,17 @@ export function apiProfileNodeCode(params = {}) {
   })
 }
 
-export function apiInsertProfileNodeName(params = {}) {
+export function apiProfileRecoveryList(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_PROFILE_RECOVERY_LIST',
+    data: params
+  })
+}
+
+export function apiInsertProfileRecovery(params = {}) {
   return http({
     url: '/selectOne',
     method: 'post',
@@ -373,12 +413,12 @@ export function apiInsertProfileNodeName(params = {}) {
   })
 }
 
-export function apiProfileRecoveryList(params = {}) {
+export function apiDeleteProfileRecovery(params = {}) {
   return http({
-    url: '/selectList',
+    url: '/modify',
     method: 'post',
     filePath: filePath,
-    sqlId: 'SELECT_PROFILE_RECOVERY_LIST',
+    sqlId: 'DELETE_PROFILE_NODE_NAME_LIST',
     data: params
   })
 }
@@ -571,6 +611,17 @@ export function apiSelectUserList(params = {}) {
     data: params
   })
 }
+
+export function apiUpdateUserGrantList(params = {}) {
+  return http({
+    url: '/modify',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'UPDATE_USER_GRANT_LIST',
+    data: params
+  })
+}
+
 export function apiSelectSnapshotList(params = {}) {
   return http({
     url: '/selectList',
