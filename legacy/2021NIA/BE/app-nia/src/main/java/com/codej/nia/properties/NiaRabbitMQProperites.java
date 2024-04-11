@@ -1,4 +1,4 @@
-package com.codej.nia.mq.properties;
+package com.codej.nia.properties;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
