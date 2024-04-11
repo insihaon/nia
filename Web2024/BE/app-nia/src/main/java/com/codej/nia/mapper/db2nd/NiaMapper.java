@@ -11,6 +11,7 @@ import com.codej.web.mapper.db1st.BaseDataMapper;
 @Mapper
 public interface NiaMapper extends BaseDataMapper {
         public List<ResultMap> SELECT_USER_LIST(HashMap<String, Object> map);
+        public int UPDATE_USER_GRANT_LIST(HashMap<String, Object> map);
         public List<ResultMap> SELECT_IP_ALARM_LIST(HashMap<String, Object> map);
         public List<ResultMap> SELECT_TRANSMISSION_ALARM_LIST(HashMap<String, Object> map);
         public List<ResultMap> SELECT_DASHBOARD_STATISTICS(HashMap<String, Object> map);
@@ -43,11 +44,15 @@ public interface NiaMapper extends BaseDataMapper {
         public int DELETE_APP_IP(HashMap<String, Object> map);
         public List<ResultMap> SELECT_EQUIP_AMOUNT_USED_LIST(HashMap<String, Object> map);
         public List<ResultMap> SELECT_PROFILE_LIST(HashMap<String, Object> map);
+        public int INSERT_PROFILE_LIST(HashMap<String, Object> map);
+        public int UPDATE_PROFILE_LIST(HashMap<String, Object> map);
+        public int DELETE_PROFILE_LIST(HashMap<String, Object> map);
         public List<ResultMap> SELECT_PROFILE_TICKET_TYPE_LIST(HashMap<String, Object> map);
         public List<ResultMap> SELECT_PROFILE_ALARM_TYPE_LIST(HashMap<String, Object> map);
         public List<ResultMap> SELECT_PROFILE_NODE_LIST(HashMap<String, Object> map);
-        public int INSERT_PROFILE_NODE_NAME_LIST(HashMap<String, Object> map);
         public List<ResultMap> SELECT_PROFILE_RECOVERY_LIST(HashMap<String, Object> map);
+        public int INSERT_PROFILE_NODE_NAME_LIST(HashMap<String, Object> map);
+        public int DELETE_PROFILE_NODE_NAME_LIST(HashMap<String, Object> map);
         public List<ResultMap> SELECT_NODE_LIST(HashMap<String, Object> map);
         public List<ResultMap> SELECT_PORT_LIST(HashMap<String, Object> map);
         public int UPDATE_PORT_LIST(HashMap<String, Object> map);

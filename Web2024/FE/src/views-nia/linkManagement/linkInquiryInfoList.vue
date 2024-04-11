@@ -14,7 +14,7 @@
     >
       <template slot="button-area">
         <div class="button-panel">
-          <el-button class="float-right" type="info" @click="handleOpenModalDetail('', 'OPEN')">등록</el-button>
+          <el-button class="float-right" type="info" size="mini" @click="handleOpenModalDetail('', 'OPEN')">등록</el-button>
         </div>
       </template>
     </CompInquiryPannel>

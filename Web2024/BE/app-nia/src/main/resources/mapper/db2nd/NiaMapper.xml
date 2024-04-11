@@ -34,13 +34,11 @@
             U.NAME
             , U.EMAIL
             , U.AGENCY_NAME
-            <if test="IS_ALL == true">
                 ,U.ID
                 , U.PW
                 , U.LVL
-                , U.LAST_LOGIN
+                , TO_CHAR(U.LAST_LOGIN, 'YYYY-MM-DD HH24:MI:SS') AS LAST_LOGIN
                 , U.PHONE_NUMBER
-            </if>
         FROM nia.tb_user U
         <where>
             <if test="NAME != null">
@@ -66,6 +64,14 @@
             ORDER BY NAME DESC
         </if>
     </select>
+
+    <!-- 사용자 권한 수정 -->
+     <update id="UPDATE_USER_GRANT_LIST" parameterType="hashmap">
+        UPDATE NIA.TB_USER 
+        SET    LVL = #{lvl_value}
+        WHERE NAME = #{name} 
+              AND ID = #{id}
+    </update>
 
    <select id="SELECT_SELF_PROCESS_STATISTICS" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
         <if test="STATISTICS_TYPE != null">
@@ -1265,6 +1271,86 @@
         <include refid="TotalCountSuffix"/>
     </select>
 
+    <!-- 조치 프로파일 리스트 추가 -->
+    <insert id="INSERT_PROFILE_LIST" parameterType="java.util.HashMap">
+        INSERT INTO RESOURCE.TB_FAULT_PROCESS_PROFILE
+        (
+            PROFILE_NUM,
+            PROFILE_TITLE,
+            PROFILE_DESC,
+            NETWORK_TYPE,
+            PROCESSING_TEMPLATE,
+            AUTO_PROCESS_CHECK,
+            <if test="auto_process_check != true">
+                AUTO_PROCESS_START_DATETIME,
+            </if>
+            <if test="auto_process_check != true">
+                AUTO_PROCESS_END_DATETIME,
+            </if>
+            TICKET_TYPE,
+            PROCESS_TYPE,
+            CHNG_DATETIME,
+            REG_DATETIME,
+            AUTO_RECOVERY,
+            EMAIL_CHECK
+        )
+        values
+        (
+            resource.uf_self_healing_profile_num(''),
+            #{profile_title},
+            #{profile_desc},
+            #{network_type},
+            #{processing_template},
+            #{auto_process_check},
+            <if test="auto_process_check != true">
+                #{auto_process_start_datetime}::timestamp,
+            </if>
+            <if test="auto_process_check != true">
+                #{auto_process_end_datetime}::timestamp,
+            </if>
+            #{ticket_type},
+            #{process_type},
+            now(),
+            now(),
+            #{auto_recovery},
+            #{email_check}
+        )
+    </insert>
+
+    <!-- 조치 프로파일 리스트 수정 -->
+    <update id="UPDATE_PROFILE_LIST">
+        UPDATE
+            RESOURCE.TB_FAULT_PROCESS_PROFILE
+        SET
+            PROFILE_TITLE = #{profile_title},
+            PROFILE_DESC = #{profile_desc},
+            NETWORK_TYPE = #{network_type},
+            PROCESSING_TEMPLATE = #{processing_template},
+            AUTO_PROCESS_CHECK = #{auto_process_check},
+            <if test="auto_process_check != true">
+                AUTO_PROCESS_START_DATETIME = #{auto_process_start_datetime} ::timestamp,
+            </if>
+            <if test="auto_process_check != true">
+                AUTO_PROCESS_END_DATETIME = #{auto_process_end_datetime}::timestamp,
+            </if>
+            CHNG_DATETIME = NOW(),
+            AUTO_RECOVERY = #{auto_recovery},
+            EMAIL_CHECK = #{email_check},
+            TICKET_TYPE = #{ticket_type},
+            PROCESS_TYPE = #{process_type}
+        WHERE PROFILE_NUM = #{profile_num}
+    </update>
+
+    
+
+
+    <!-- 조치 프로파일 리스트 삭제 -->
+    <delete id="DELETE_PROFILE_LIST" parameterType="hashmap">
+        DELETE FROM RESOURCE.TB_FAULT_PROCESS_PROFILE
+        WHERE PROFILE_NUM = #{profile_num}
+    </delete>
+
+
     <!-- 조치 프로파일 티켓 타입 리스트 -->
      <select id="SELECT_PROFILE_TICKET_TYPE_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
         SELECT 
@@ -1313,29 +1399,39 @@
         SELECT 
         <!-- DISTINCT -->
             PROFILE_NUM,
-            NODE_ID
+            NODE_ID,
+            SERIAL_NUM
         FROM RESOURCE.TB_FAULT_PROCESS_IF
         WHERE PROFILE_NUM = #{profile_num}
     </select>
 
-     <insert id="INSERT_PROFILE_NODE_NAME_LIST" parameterType="java.util.HashMap">
+    <!-- 프로파일 리커버리 리스트 등록 -->
+    <insert id="INSERT_PROFILE_NODE_NAME_LIST" parameterType="java.util.HashMap">
         INSERT INTO RESOURCE.TB_FAULT_PROCESS_IF
         (
-            <!-- PROFILE_NUM, -->
+            SERIAL_NUM,
+            PROFILE_NUM,
             NODE_ID,
             CHNG_DATETIME,
             REG_DATETIME
         )
-        values
+        VALUES
         (
-            <!-- #{profile_num}, -->
+            NEXTVAL('RESOURCE.SEQ_TB_FAULT_PROCESS_IF'),
+            #{profile_num},
             #{node_id},
             NOW(),
             NOW()
         )
     </insert>
 
-
+    <!-- 프로파일 리커버리 리스트 삭제 -->
+    <delete id="DELETE_PROFILE_NODE_NAME_LIST" parameterType="hashmap">
+        DELETE FROM RESOURCE.TB_FAULT_PROCESS_IF
+        <!-- WHERE SERIAL_NUM = #{serial_num} -->
+        WHERE PROFILE_NUM = #{profile_num}
+              AND NODE_ID = #{node_id}
+    </delete>
 
     <!-- 노드리스트 조회 -->
     <select id="SELECT_NODE_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
