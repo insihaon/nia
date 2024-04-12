@@ -72,9 +72,7 @@ export default {
         { type: '', prop: 'email', name: 'EMAIL', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
         { type: '', prop: 'last_login', name: '마지막 접속시간', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
         { type: '', prop: 'end_date', name: '권한선택', minWidth: 30, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true,
-          cellRendererFramework: 'CellRenderSelectBox', cellRendererParams: { type: 'auth', /*  action: this.setUserAuth.bind(this) */ } },
-        { type: '', prop: '', name: '', minWidth: 20, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true,
-         cellRendererFramework: 'CellRenderSelectBox', cellRendererParams: { type: 'authSetting', name: '저장', action: this.setUserAuth.bind(this) } },
+          cellRendererFramework: 'CellRenderSelectBox', cellRendererParams: { type: 'auth', name: '저장', action: this.setUserAuth.bind(this) } }
 
       ]
       return { options, columns, data: this.userData, getRightClickMenuItems: () => { return [] } }
@@ -121,15 +119,30 @@ export default {
         type: 'success',
       }).then(async () => {
         try {
+          const lastAuth = auth[auth.length - 1]
+          let lvl_value
+          switch (parseInt(lastAuth, 10)) {
+            case 1:
+              lvl_value = 1
+              break
+            case 3:
+              lvl_value = 3
+              break
+            case 7:
+              lvl_value = 7
+              break
+            default:
+              return
+          }
           const param = {
             id: row.id,
             name: row.name,
-            lvl_value: parseInt(auth, 10),
+            lvl_value: lvl_value
           }
           const res = await apiUpdateUserGrantList(param)
           if (res.success) {
             this.$message('수정 되었습니다.')
-            this.close()
+            this.onLoadAuthList()
           }
         } catch (error) {
           this.$message.error({ message: `수정에 실패했습니다.` })
