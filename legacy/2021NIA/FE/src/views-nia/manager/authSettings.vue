@@ -119,21 +119,9 @@ export default {
         type: 'success',
       }).then(async () => {
         try {
-          const lastAuth = auth[auth.length - 1]
-          let lvl_value
-          switch (parseInt(lastAuth, 10)) {
-            case 1:
-              lvl_value = 1
-              break
-            case 3:
-              lvl_value = 3
-              break
-            case 7:
-              lvl_value = 7
-              break
-            default:
-              return
-          }
+          const lvl_value = auth.reduce((accum, current) => {
+            return accum + current
+          })
           const param = {
             id: row.id,
             name: row.name,
