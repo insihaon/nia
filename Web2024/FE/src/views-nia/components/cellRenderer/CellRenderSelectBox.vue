@@ -2,7 +2,6 @@
   <div class="cell-container" :class="{ [name]: true }">
     <div class="default-cell w-100 h-100" style="cursor: pointer;">
       <el-select
-        v-show="params.type === 'auth'"
         v-model="authValue"
         multiple
         collapse-tags
@@ -17,7 +16,7 @@
           :value="item.value"
         />
       </el-select>
-      <el-button v-if="params.type === 'authSetting'" plain size="mini" type="info" @click="openModal(params)">
+      <el-button class="mx-sm-3" plain size="mini" type="info" @click="openModal(params)">
         {{ params.name }}
       </el-button>
     </div>
@@ -26,9 +25,6 @@
 
 <script>
 import Vue from 'vue'
-import { Base } from '@/min/Base.min'
-import EventBus from '@/utils/event-bus'
-
 const routeName = 'CellRenderSelectBox'
 
 export default Vue.extend({
@@ -45,14 +41,17 @@ export default Vue.extend({
           value: '7',
           label: '관리자'
       }],
-      authValue: [],
-      paramsAuth: {},
+      authValue: []
     }
   },
   computed: {
-    setValue: {
-      get() {
-        const authValue = []
+  },
+  mounted() {
+    this.authValue = this.setAuthValue()
+  },
+  methods: {
+    setAuthValue() {
+      const authValue = []
         if (this.params.data.lvl === 1) {
           authValue.push('1')
         } else if (this.params.data.lvl === 3) {
@@ -61,23 +60,10 @@ export default Vue.extend({
           authValue.push('1', '3', '7')
         }
         return authValue
-      },
-      set(newValue) {
-        /*  */
-          this.authValue = newValue
-      }
+    },
+    openModal(params) {
+      params.action(params.data, params.type, this.authValue)
     }
-  },
-  watch: {
-  },
-  mounted() {
-    this.authValue = this.setValue
-  },
-  methods: {
-  openModal(params) {
-    params.action(params.data, params.type, this.setValue)
-  },
-
   },
 })
 </script>
