@@ -1,5 +1,5 @@
 <template>
-  <li v-if="!item.hidden" :class="[{ ['sub'+idx]: true }]">
+  <li v-if="isHidden(item)" :class="[{ ['sub'+idx]: true }]">
     <template v-if="hasOneShowingAll(item.children, item)">
       <router-link v-if="item.meta" :to="resolvePath(onlyOneChild.path)">
         {{ item.meta.title }}
@@ -18,13 +18,16 @@
 </template>
 
 <script>
+import { Base } from '@/min/Base.min'
 import path from 'path'
 import { isExternal } from '@/utils/validate'
 
 const routeName = 'ChildItem'
 export default {
   name: routeName,
+  src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
   components: { },
+  extends: Base,
   props: {
     // route object
     item: {
@@ -53,6 +56,17 @@ export default {
   mounted () {
   },
   methods: {
+    isHidden(item) {
+      if (item.path === '/manager') {
+        return this.hasGrant(this.CONSTANTS.userGrant.ADMIN.value)
+      } else {
+        return !item.hidden
+      }
+    },
+    hasGrant(grant) {
+      const userAuth = Number(this.$store.state.user.info.lvl)
+      return ((userAuth || 1) & grant) == grant
+    },
     hasOneShowingAll(children = [], parent) {
       const showingChildren = children.filter(item => {
         if (item.hidden) {

@@ -42,6 +42,7 @@ public class DbUser implements BaseUser {
     @JsonProperty("roles")
     private String roles = "ROLE_USER";
 
+    private String lvl;
     private String deptCd;
     private String deptName;
     private String agencyCd;
