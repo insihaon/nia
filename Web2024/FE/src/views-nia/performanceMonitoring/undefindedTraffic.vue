@@ -13,7 +13,7 @@
             :style="{ height : 'calc(100vh - 200px)'}"
             @handleClickSearch="onClickSearch"
             @onChangePage="(curPage) => onChangePage(curPage, 'NATION')"
-            @searchClear="searchClear"
+            @searchClear="searchClear('NATION')"
           />
         </div>
       </el-tab-pane>
@@ -29,7 +29,7 @@
             :style="{ height : 'calc(100vh - 200px)'}"
             @handleClickSearch="onClickSearch"
             @onChangePage="(curPage) => onChangePage(curPage, 'AGENCY')"
-            @searchClear="searchClear"
+            @searchClear="searchClear('AGENCY')"
           >
             <template slot="button-area">
               <div class="button-panel">
@@ -52,7 +52,7 @@
             :style="{ height : 'calc(100vh - 200px)'}"
             @handleClickSearch="onClickSearch"
             @onChangePage="(curPage) => onChangePage(curPage, 'APP')"
-            @searchClear="searchClear"
+            @searchClear="searchClear('APP')"
           >
             <template slot="button-area">
               <div class="button-panel">
@@ -253,8 +253,20 @@ export default {
         this.onLoadAppList()
       }
     },
-    searchClear() {
+    searchClear(type) {
       this.searchModel = {}
+      // if(type ===)
+      switch (type) {
+        case 'NATION':
+          this.onLoadNationList()
+          break
+        case 'AGENCY':
+          this.onLoadAgencyList()
+          break
+        case 'APP':
+          this.onLoadAppList()
+          break
+      }
     },
     handleOpenEditModal(row, type) {
       if (type === 'AGENCY' || type === 'APP') {
