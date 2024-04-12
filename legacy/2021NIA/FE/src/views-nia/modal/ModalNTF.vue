@@ -493,10 +493,7 @@ export default {
 ::v-deep .el-dialog {
   margin-top: 3vh !important;
 }
-::v-deep .el-loading-spinner {
-  display: flex;
-  justify-content: center;
-}
+
 .sub-title {
   font-size: 1rem;
 }

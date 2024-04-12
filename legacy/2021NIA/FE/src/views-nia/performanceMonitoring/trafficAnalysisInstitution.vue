@@ -5,6 +5,7 @@
       :ag-grid="trafficAgGrid"
       :is-button-slot="false"
       :items="searchItems"
+      :is-grid-loading="loading"
       :search-model.sync="searchModel"
       :pagination-info="paginationInfo"
       class="w-100 h-100"
@@ -29,6 +30,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      loading: false,
       paginationInfo: {
         currentPage: 1, // 현재 페이지
         pageSize: 50, // 페이지당 항목 수
@@ -103,12 +105,15 @@ export default {
         page: this.paginationInfo.currentPage,
        }
       try {
+        this.loading = true
         const res = await apiTrafficAgencyList(param)
         this.trafficData = res?.result
         this.paginationInfo.totalCount = res.total // 총 항목 수 설정
         this.paginationInfo.totalPages = Math.ceil(this.paginationInfo.totalCount / this.paginationInfo.pageSize) // 전체 페이지 수 계산
       } catch (error) {
         this.error(error)
+      } finally {
+        this.loading = false
       }
     },
 

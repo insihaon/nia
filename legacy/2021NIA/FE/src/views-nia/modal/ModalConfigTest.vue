@@ -249,10 +249,6 @@ export default {
   border-bottom: solid 1px lightgray;
   border-radius: 0px;
 }
-::v-deep .el-loading-spinner {
-  display: flex;
-  justify-content: center;
-}
 .ip-title {
   color: #fff;
   padding: 0px 10px;
