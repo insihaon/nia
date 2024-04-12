@@ -7,6 +7,7 @@
           :ag-grid="sopAgGrid"
           :is-button-slot="false"
           :items="searchSopItems"
+          :is-grid-loading="loading"
           :pagination-info="sopPaginationInfo"
           class="w-100 h-100"
           @handleClickSearch="()=> onClickSearch('TICKET')"
@@ -21,6 +22,7 @@
           :ag-grid="syslogAgGrid"
           :is-button-slot="false"
           :search-model.sync="syslogSearchModel"
+          :is-grid-loading="loading"
           :items="searchSyslogItems"
           :pagination-info="syslogPaginationInfo"
           class="w-100 h-100"
@@ -58,6 +60,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      loading: false,
       tapCurrent: 'ticket',
       sopHistList: [],
       syslogHistList: [],
@@ -139,9 +142,9 @@ export default {
           options: this.interfaceOptionList },
         { label: '상태', type: 'select', size: 6, model: 'STATUS', setting: { allOption: { toggle: true } },
           options: [
-            { label: '', value: '전체' },
-            { label: '자동', value: '자동' },
-            { label: '수동', value: '수동' }
+            { label: '전체', value: 'ALL' },
+            { label: '자동', value: 'AUTO_FIN' },
+            { label: '수동', value: 'FIN' }
           ] },
         { label: 'DATE', type: 'date', size: 6, model: 'DATE', placeholder: '' },
       ]
@@ -179,30 +182,37 @@ export default {
         this._merge(param, { TICKET_TYPE: this.row.ticket_type })
       }
       try {
+        this.loading = true
         const res = await apiSelectSopHistList(param)
         this.sopHistList = res?.result
         this.sopPaginationInfo.totalCount = res.total
         this.sopPaginationInfo.totalPages = Math.ceil(this.sopPaginationInfo.totalCount / this.sopPaginationInfo.pageSize) // 전체 페이지 수 계산
       } catch (error) {
         console.error(error)
+      } finally {
+        this.loading = false
       }
     },
     async onLoadSyslogHistList() {
       const { pageSize: limit, currentPage: page } = this.syslogPaginationInfo
       const param = { limit, page, ISHISTORY: true }
       const searchModel = this.$refs?.syslogSearch?.searchModel ?? {}
+      this._merge(param, this.syslogSearchModel)
       if (searchModel?.DATE) {
         const dateTime = this.$refs.syslogSearch.searchModel.DATE
         this._merge(param, { START_DATE: dateTime[0], END_DATE: dateTime[1] })
       }
-      this._merge(param, this.syslogSearchModel)
+      searchModel.STATUS === 'ALL' && delete param.STATUS
       try {
+        this.loading = true
         const res = await apiSopSyslogHistList(param)
         this.syslogHistList = res?.result
         this.syslogPaginationInfo.totalCount = res.total
         this.syslogPaginationInfo.totalPages = Math.ceil(this.syslogPaginationInfo.totalCount / this.syslogPaginationInfo.pageSize) // 전체 페이지 수 계산
       } catch (error) {
         console.error(error)
+      } finally {
+        this.loading = false
       }
     },
     onChangePage(curPage, type) {

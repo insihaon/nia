@@ -20,13 +20,11 @@ import com.codej.base.dto.response.BaseResponse;
 import com.codej.base.dto.response.SingleResponse;
 import com.codej.base.exception.CSigninFailedException;
 import com.codej.base.utils.JsonUtil;
-import com.codej.base.utils.cipher.rsa.RSA;
 import com.codej.web.controller.AbsAuthController;
 import com.codej.base.provider.JwtTokenProvider;
 import com.codej.web.service.ResponseService;
 import com.codej.nia.service.NiaUserService;
 import com.codej.nia.service.NiaService;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import lombok.extern.slf4j.Slf4j;
@@ -110,20 +108,37 @@ public class AuthController extends AbsAuthController {
             HttpServletRequest request,
             @RequestBody HashMap<String, Object> body)
             throws Exception {
-        JsonObject json = decryptRequestParameter(body);
-        String password = json.get("password").getAsString();
+        
+        try {
+            JsonObject json = decryptRequestParameter(body);
+            String token = jwtTokenProvider.resolveToken(request);
+            DbUser currentUser = jwtTokenProvider.getUserDetails(token);
+            BaseUser dbUser = getService().loginFromDb(currentUser.getUid(), currentUser.getPassword());
+            
+            String orgPassword = json.get("orgpassword").getAsString();
 
-        BaseUser user = DbUser.builder()
+            if (!passwordEncoder.matches(orgPassword, dbUser.getPassword())) {
+                return responseService.createFailResponse(-9999, "password mismatch");
+            } else {
+                String newPassword = json.get("password").getAsString();
+
+            BaseUser user = DbUser.builder()
                 .uid(json.get("uid").getAsString())
-                .password(passwordEncoder.encode(password))
+                .password(passwordEncoder.encode(newPassword))
                 .name(json.get("name").getAsString())
                 .mobile(json.get("phone").getAsString())
                 .email(json.get("email").getAsString())
                 .agencyName(json.get("agency_name").getAsString())
                 .build();
 
-        getService().UPSERT_USER(user);
+                getService().UPSERT_USER(user);
+                
+            }
+        } catch (Exception e) {
+            log.error("upserUser fail ===>{}", e.toString());
+        }
         return responseService.createSuccessResponse();
+
     }
 
     @PostMapping(value = "/deleteAccount")

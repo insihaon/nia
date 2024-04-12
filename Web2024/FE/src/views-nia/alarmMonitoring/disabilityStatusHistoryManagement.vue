@@ -5,6 +5,7 @@
       :ag-grid="alarmAgGrid"
       :is-button-slot="false"
       :items="searchItems"
+      :is-grid-loading="loading"
       :search-model.sync="searchModel"
       :pagination-info="paginationInfo"
       class="w-100 h-100"
@@ -19,7 +20,7 @@ import { Base } from '@/min/Base.min'
 import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
 import { apiAlarmCurAndHistList } from '@/api/nia'
 
-const routeName = 'disabilityStatusHistoryManagement'
+const routeName = 'DisabilityStatusHistoryManagement'
 export default {
   name: routeName,
   // eslint-disable-next-line vue/no-unused-components
@@ -29,6 +30,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      loading: false,
       alarmCurHistList: [],
       paginationInfo: {
         currentPage: 1, // 현재 페이지
@@ -88,19 +90,26 @@ export default {
       if (searchModel?.INIT_DATE) {
         const dateTime = searchModel.INIT_DATE
         this._merge(this.searchModel, { INIT_START_DATE: dateTime[0], INIT_END_DATE: dateTime[1] })
+      } else {
+        this._merge(this.searchModel, { INIT_START_DATE: null, INIT_END_DATE: null })
       }
       if (searchModel?.FIN_DATE) {
         const dateTime = searchModel.FIN_DATE
         this._merge(this.searchModel, { FIN_START_DATE: dateTime[0], FIN_END_DATE: dateTime[1] })
+      } else {
+        this._merge(this.searchModel, { FIN_START_DATE: null, FIN_END_DATE: null })
       }
       this._merge(param, this.searchModel)
       try {
+        this.loading = true
         const res = await apiAlarmCurAndHistList(param)
         this.alarmCurHistList = res?.result
         this.paginationInfo.totalCount = res.total
         this.paginationInfo.totalPages = Math.ceil(this.paginationInfo.totalCount / this.paginationInfo.pageSize) // 전체 페이지 수 계산
       } catch (error) {
         console.error(error)
+      } finally {
+        this.loading = false
       }
     },
   },

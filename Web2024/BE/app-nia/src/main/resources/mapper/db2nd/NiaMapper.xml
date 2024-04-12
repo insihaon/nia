@@ -749,22 +749,22 @@
         LEFT JOIN resource.tb_node_mst NODEZ ON NODEZ.node_id = AL.ROOT_CAUSE_SYSNAMEZ
         WHERE 1=1
         <if test="TICKET_ID != null">
-            AND tac.TICKET_ID LIKE '%' || #{TICKET_ID} || '%'
+            AND SOP.TICKET_ID LIKE '%' || #{TICKET_ID} || '%'
         </if>
         <!-- <if test="START_DATE == null and END_DATE == null">
-            AND tac.INSERT_TIME <![CDATA[ > ]]> now() - INTERVAL '7' day
+            AND AL.INSERT_TIME <![CDATA[ > ]]> now() - INTERVAL '7' day
         </if> -->
         <if test="START_DATE != null">
-            AND tac.INSERT_TIME <![CDATA[ >= ]]> #{START_DATE}::TIMESTAMP
+            AND AL.INSERT_TIME <![CDATA[ >= ]]> #{START_DATE}::TIMESTAMP
         </if>
         <if test="END_DATE != null">
-            AND tac.INSERT_TIME <![CDATA[ <= ]]> #{END_DATE}::TIMESTAMP
+            AND AL.INSERT_TIME <![CDATA[ <= ]]> #{END_DATE}::TIMESTAMP
         </if>
         <if test="TICKET_TYPE != null">
             AND TC.TICKET_TYPE IN (#{TICKET_TYPE})
         </if>
         <if test="ROOT_CAUSE_SYSNAMEA != null">
-            AND al.ROOT_CAUSE_SYSNAMEA <![CDATA[ = ]]> #{ROOT_CAUSE_SYSNAMEA}
+            AND AL.ROOT_CAUSE_SYSNAMEA <![CDATA[ = ]]> #{ROOT_CAUSE_SYSNAMEA}
         </if>
         ORDER BY SOP.REQUEST_TIME DESC 
     <include refid="TotalCountSuffix"/>
