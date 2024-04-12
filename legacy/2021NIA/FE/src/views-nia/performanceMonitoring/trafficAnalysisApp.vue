@@ -5,6 +5,7 @@
       :ag-grid="authAgGrid"
       :is-button-slot="false"
       :items="searchItems"
+      :is-grid-loading="loading"
       :search-model.sync="searchModel"
       :pagination-info="paginationInfo"
       class="w-100 h-100"
@@ -30,6 +31,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      loading: false,
       paginationInfo: {
         currentPage: 1, // 현재 페이지
         pageSize: 50, // 페이지당 항목 수
@@ -119,6 +121,7 @@ export default {
     },
     async onloadAppCodeList() {
       try {
+        this.loading = true
         const res = await apiApplicationCodeList()
         const selectCodeData = res.result.map(item => ({ label: item.protocol_name, value: item.port_code }))
         this.searchItems[0].options = selectCodeData
@@ -126,7 +129,7 @@ export default {
       } catch (error) {
           console.error(error)
         } finally {
-          // this.closeLoading(target)
+           this.loading = false
         }
     },
     onChangePage(curPage) {
@@ -135,6 +138,7 @@ export default {
     },
     searchClear() {
       this.searchModel = {}
+      this.onLoadTrafficList()
     }
   },
 }

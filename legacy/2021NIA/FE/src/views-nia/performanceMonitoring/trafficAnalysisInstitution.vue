@@ -135,6 +135,7 @@ export default {
     },
     searchClear() {
       this.searchModel = {}
+      this.onLoadTrafficList()
     }
   },
 }

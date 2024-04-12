@@ -1083,11 +1083,11 @@
             KOICA
         FROM GATHER.TB_COUNTRY_CODE
             <trim prefix="(" prefixOverrides="AND|OR" suffix=")" suffixOverrides="">
-                <if test="COUNTRY_NAME != null">
-                    AND COUNTRY_NAME like '%' || #{COUNTRY_NAME} || '%' 
+                <if test="country_name != null and country_name != ''">
+                    AND COUNTRY_NAME LIKE '%' || #{country_name} || '%' 
                 </if>
                 <if test="country_code != null and country_code != ''">
-                    AND KOICA LIKE '%' || #{koica} || '%'
+                    AND KOICA LIKE '%' || #{country_code} || '%'
                 </if>
             </trim>
         <include refid="TotalCountSuffix"/>
