@@ -45,12 +45,12 @@ export default {
         { label: 'IP(S)', type: 'input', multiple: false, placeholder: 'SEARCH', icon: 'el-icon-search', model: 'src_ip' },
         { label: '이용기관(D)', type: 'select', multiple: false, placeholder: '이용기관을 선택하세요', model: 'dst_nren_name', icon: 'el-icon-warning', setting: { allOption: { toggle: true } }, options: [] },
         { label: 'IP(D)', type: 'input', multiple: false, placeholder: 'SEARCH', icon: 'el-icon-search', model: 'dst_ip' },
-        { label: 'Top N', type: 'select', multiple: false, placeholder: '', model: 'top_n', icon: 'el-icon-warning', setting: { allOption: { toggle: true } },
+        { label: 'Top N', type: 'select', multiple: false, placeholder: '', model: 'top_n', icon: 'el-icon-warning',
           options: [
-            { label: '10', value: '10' },
-            { label: '30', value: '30' },
-            { label: '50', value: '50' },
-            { label: '100', value: '100' },
+            { label: '10', value: 10 },
+            { label: '30', value: 30 },
+            { label: '50', value: 50 },
+            { label: '100', value: 100 },
           ], }
       ],
       searchModel: {
@@ -124,14 +124,12 @@ export default {
         this.searchItems[0].options = this.selectCodeData
         this.searchItems[2].options = this.selectCodeData
       } catch (error) {
-          console.error(error)
-        } finally {
-          // this.closeLoading(target)
-        }
+        console.error(error)
+      }
     },
     onChangePage(curPage) {
       this.paginationInfo.currentPage = curPage
-      this.onLoadSopList()
+      this.onLoadTrafficList()
     },
     searchClear() {
       this.searchModel = {}

@@ -914,20 +914,8 @@
 
     <!-- 이용기관별 트래픽 분석 리스트 조회  -->  
     <select id="SELECT_TRAFFIC_AGENCY_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
-    <include refid="TotalCountPrefix"/>
-        SELECT
-        src_ip,
-        src_nren_id,
-        src_nren_name,
-        src_country_code,
-        dst_ip,
-        dst_nren_id,
-        dst_nren_name,
-        dst_country_code,
-        packet_bytes,
-        row_num
-    FROM (
-        SELECT
+        <include refid="TotalCountPrefix"/>
+            SELECT
             src_ip,
             src_nren_id,
             src_nren_name,
@@ -936,46 +924,63 @@
             dst_nren_id,
             dst_nren_name,
             dst_country_code,
-            SUM(packet_bytes) AS packet_bytes,
-            row_number() OVER (
-                ORDER BY
-                    CASE
-                        WHEN src_nren_id IS NULL AND dst_nren_id IS NULL THEN 0
-                        ELSE 2
-                    END DESC,
-                    SUM(packet_bytes) DESC
-            ) AS row_num
-        FROM
-            gather.tb_mdb_sflow_traffic_day dt
-        WHERE
-            1=1
-            AND dt.collect_timestamp <![CDATA[ <= ]]> CURRENT_DATE
-            AND dt.collect_timestamp <![CDATA[ >= ]]> CURRENT_DATE - INTERVAL '5 days'
-            <if test="src_nren_name != null and src_nren_name != ''">
-                AND src_nren_id = #{src_nren_name}
+            packet_bytes,
+            row_num
+        FROM (
+            SELECT
+                src_ip,
+                src_nren_id,
+                src_nren_name,
+                src_country_code,
+                dst_ip,
+                dst_nren_id,
+                dst_nren_name,
+                dst_country_code,
+                SUM(packet_bytes) AS packet_bytes,
+                row_number() OVER (
+                    ORDER BY
+                        CASE
+                            WHEN src_nren_id IS NULL AND dst_nren_id IS NULL THEN 0
+                            ELSE 2
+                        END DESC,
+                        SUM(packet_bytes) DESC
+                ) AS row_num
+            FROM
+                gather.tb_mdb_sflow_traffic_day dt
+            WHERE
+                1=1
+                AND dt.collect_timestamp <![CDATA[ <= ]]> CURRENT_DATE
+                AND dt.collect_timestamp <![CDATA[ >= ]]> CURRENT_DATE - INTERVAL '5 days'
+                <if test="src_nren_name != null and src_nren_name != ''">
+                    AND src_nren_id = #{src_nren_name}
+                </if>
+                <if test="src_ip != null and src_ip != ''">
+                    AND src_ip LIKE '%' || #{src_ip} || '%'
+                </if>
+                <if test="dst_nren_name != null and dst_nren_name != ''">
+                    AND dst_nren_id = #{dst_nren_name}
+                </if>
+                <if test="dst_ip != null and dst_ip != ''">
+                    AND dst_ip LIKE '%' || #{dst_ip} || '%'
+                </if>
+            GROUP BY
+                src_ip,
+                src_nren_id,
+                src_nren_name,
+                src_country_code,
+                dst_ip,
+                dst_nren_id,
+                dst_nren_name,
+                dst_country_code
+        ) AS subquery
+        WHERE 1=1
+            <if test="top_n != null and top_n != ''">
+                AND row_num <![CDATA[ <= ]]> #{top_n}
             </if>
-            <if test="src_ip != null and src_ip != ''">
-                AND src_ip LIKE '%' || #{src_ip} || '%'
+            <if test="top_n == null or top_n == ''">
+                AND row_num <![CDATA[ < ]]> 101
             </if>
-            <if test="dst_nren_name != null and dst_nren_name != ''">
-                AND dst_nren_id = #{dst_nren_name}
-            </if>
-            <if test="dst_ip != null and dst_ip != ''">
-                AND dst_ip LIKE '%' || #{dst_ip} || '%'
-            </if>
-        GROUP BY
-            src_ip,
-            src_nren_id,
-            src_nren_name,
-            src_country_code,
-            dst_ip,
-            dst_nren_id,
-            dst_nren_name,
-            dst_country_code
-    ) AS subquery
-    WHERE
-        row_num <![CDATA[ <= ]]> COALESCE(#{TOP_N}, 101)
-        <include refid="TotalCountSuffix"/>
+            <include refid="TotalCountSuffix"/>
     </select>
 
 
@@ -990,45 +995,53 @@
 
     <!-- 어플리케이션별 트래픽 분석 리스트 -->
     <select id="SELECT_APP_TRAFFIC_TOP_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
-    SELECT  src_protocol,
-            src_port,
-            dst_protocol,
-            dst_port,
-            ROUND(packet_bytes / (1024 * 1024), 2) AS packet_bytes,
-            rank_order
-    FROM    ( SELECT src_protocol,
-                    src_port,
-                    dst_protocol,
-                    dst_port,
-                    SUM(packet_bytes) packet_bytes ,
-                    row_number() over (ORDER BY
-                    CASE
-                            WHEN src_protocol IS NULL
-                            AND     dst_protocol IS NULL
-                            THEN 0
-                            ELSE 2
-                    END DESC, SUM(packet_bytes) DESC) rank_order
-            FROM    gather.tb_mdb_sflow_traffic_day dt
-            WHERE   1=1
-                    AND dt.collect_timestamp <![CDATA[ <= ]]> CURRENT_DATE 
-                    AND dt.collect_timestamp <![CDATA[ >= ]]> CURRENT_DATE - interval '5 days'
-                    <if test="src_protocol != null and src_protocol != ''">
-                        AND src_port = #{src_protocol}
-                    </if>
-                    <if test="src_port != null and src_port != ''">
-                        AND src_port like '%' || #{src_port} || '%'
-                    </if>
-                    <if test="dst_protocol != null and dst_protocol != ''">
-                        AND dst_port = #{dst_protocol}
-                    </if>
-                     <if test="dst_port != null and dst_port != ''">
-                        AND dst_port like '%' || #{dst_port} || '%'
-                    </if>
-            GROUP BY src_protocol,
-                    src_port,
-                    dst_protocol,
-                    dst_port ) dt
-                    limit 200
+        <include refid="TotalCountPrefix"/>
+        SELECT  src_protocol,
+                src_port,
+                dst_protocol,
+                dst_port,
+                ROUND(packet_bytes / (1024 * 1024), 2) AS packet_bytes,
+                rank_order
+        FROM    ( SELECT src_protocol,
+                        src_port,
+                        dst_protocol,
+                        dst_port,
+                        SUM(packet_bytes) packet_bytes ,
+                        row_number() over (ORDER BY
+                        CASE
+                                WHEN src_protocol IS NULL
+                                AND     dst_protocol IS NULL
+                                THEN 0
+                                ELSE 2
+                        END DESC, SUM(packet_bytes) DESC) rank_order
+                FROM    gather.tb_mdb_sflow_traffic_day dt
+                WHERE   1=1
+                        AND dt.collect_timestamp <![CDATA[ <= ]]> CURRENT_DATE 
+                        AND dt.collect_timestamp <![CDATA[ >= ]]> CURRENT_DATE - interval '5 days'
+                        <if test="src_protocol != null and src_protocol != ''">
+                            AND src_port = #{src_protocol}
+                        </if>
+                        <if test="src_port != null and src_port != ''">
+                            AND src_port like '%' || #{src_port} || '%'
+                        </if>
+                        <if test="dst_protocol != null and dst_protocol != ''">
+                            AND dst_port = #{dst_protocol}
+                        </if>
+                        <if test="dst_port != null and dst_port != ''">
+                            AND dst_port like '%' || #{dst_port} || '%'
+                        </if>
+                GROUP BY src_protocol,
+                        src_port,
+                        dst_protocol,
+                        dst_port ) dt
+                WHERE   1=1
+                <if test="top_n != null and top_n != ''">
+                    AND rank_order <![CDATA[ <= ]]> #{top_n}
+                </if>
+                <if test="top_n == null or top_n == ''">
+                    AND rank_order <![CDATA[ < ]]> 101
+                </if>
+        <include refid="TotalCountSuffix"/>
     </select>
 
     <!-- 어플리케이션 코드리스트 -->
@@ -1042,37 +1055,64 @@
 
     <!-- 장비 포트별 in/out 트래픽 감시 및 이력조회 -->
     <select id="SELECT_INOUT_TRAFFIC_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
-        SELECT  nm.node_num AS node_num,
-                nm.node_nm AS node_name,
-                n.id AS sdn_node_id,
-                pm.if_num AS if_num,
-                i.if_name AS if_name,
-                lt.tx_bit_rate AS tx_bit_rate,
-                lt.rx_bit_rate AS rx_bit_rate,
-                lt.tx_pkt_rate AS tx_pkt_rate,
-                lt.rx_pkt_rate AS rx_pkt_rate,
-                TO_CHAR(lt.measured_datetime , 'YYYY-MM-DD HH24:MI:SS') AS measured_datetime
-        FROM    ip_sdn.tb_link_traffic lt
-        INNER JOIN ip_sdn.tb_interface i   ON lt.if_id = i.id
-        INNER JOIN resource.tb_port_mst pm ON pm.if_id = lower(i.if_name)
-        INNER JOIN ip_sdn.tb_node n        ON i.node_id = n.id
-        INNER JOIN resource.tb_node_mst nm ON n.id = nm.ip_sdn_id::INT
-        WHERE  1=1
-            AND pm.node_num = nm.node_num 
-            <if test="start_date != null">
-            AND lt.measured_datetime <![CDATA[ > ]]> #{start_date}::timestamp 
-            </if>
-            <if test="end_date != null">
-            AND lt.measured_datetime <![CDATA[ <= ]]> #{end_date}::timestamp 
-            </if>
-            <if test="node_name != null and node_name != ''">
-                AND nm.node_nm LIKE '%' || #{node_name} || '%'
-            </if>
-            <if test="if_name != null and if_name != ''">
-                AND nm.if_name LIKE '%' || #{if_name} || '%'
-            </if>
-            ORDER BY measured_datetime DESC
-            LIMIT 200
+        <include refid="TotalCountPrefix"/>
+        WITH TRAFFIC_DATA AS
+                ( SELECT NM.NODE_NUM, NM.NODE_NM, N.ID AS SDN_NODE_ID, PM.IF_NUM, I.ID AS SDN_IF_ID, I.IF_NAME, LT.TX_BIT_RATE, LT.RX_BIT_RATE, LT.TX_PKT_RATE, LT.RX_PKT_RATE, LT.MEASURED_DATETIME
+                FROM    IP_SDN.TB_LINK_TRAFFIC LT
+                INNER JOIN IP_SDN.TB_INTERFACE I   ON LT.IF_ID = I.ID
+                INNER JOIN RESOURCE.TB_PORT_MST PM ON PM.IF_ID = LOWER(I.IF_NAME)
+                INNER JOIN IP_SDN.TB_NODE N        ON I.NODE_ID = N.ID
+                INNER JOIN RESOURCE.TB_NODE_MST NM ON N.ID = NM.IP_SDN_ID::INT
+                WHERE   PM.NODE_NUM = NM.NODE_NUM 
+                    <if test="start_date == null and end_date == null">
+                    AND LT.MEASURED_DATETIME BETWEEN NOW()::timestamp - interval '10 min' AND NOW()::timestamp
+                    </if>
+                    <if test="start_date != null">
+                    AND LT.MEASURED_DATETIME <![CDATA[ > ]]> #{start_date}::timestamp 
+                    </if>
+                    <if test="end_date != null">
+                    AND LT.MEASURED_DATETIME <![CDATA[ <= ]]> #{end_date}::timestamp 
+                    </if>
+                    <if test="node_name != null and node_name != ''">
+                        AND nm.NODE_NM = #{node_name}
+                    </if>
+                    <if test="if_name != null and if_name != ''">
+                        AND I.IF_NAME = #{if_name}
+                    </if>
+                )
+        SELECT  T.NODE_NUM, 
+                T.NODE_NM AS NODE_NAME, 
+                T.SDN_NODE_ID, 
+                T.IF_NUM,
+                T.SDN_IF_ID,
+                T.IF_NAME,
+                T.DIRECTION,
+                T.RX_BIT_RATE,
+                T.RX_PKT_RATE,
+                T.TX_BIT_RATE,
+                T.TX_PKT_RATE,
+                TO_CHAR(T.MEASURED_DATETIME, 'YYYY-MM-DD HH24:MI:SS') AS MEASURED_DATETIME,
+                CASE WHEN (SELECT 1
+                                        FROM    RCA.TB_ANOMALOUS_1MI_TRAFFIC
+                                        WHERE   STRRESID = T.NODE_NUM AND STRIFID = T.IF_NUM AND MEASURED_DATETIME = T.MEASURED_DATETIME 
+                                            <if test="start_date == null and end_date == null">
+                                            AND MEASURED_DATETIME BETWEEN NOW()::timestamp - interval '10 min' AND NOW()::timestamp
+                                            </if>
+                                            <if test="start_date != null">
+                                            AND MEASURED_DATETIME <![CDATA[ > ]]> #{start_date}::timestamp 
+                                            </if>
+                                            <if test="end_date != null">
+                                            AND MEASURED_DATETIME <![CDATA[ <= ]]> #{end_date}::timestamp 
+                                            </if>
+                            ) =1 THEN TRUE ELSE FALSE
+                END AI_RESULT
+        FROM   ( SELECT NODE_NUM, NODE_NM, SDN_NODE_ID, IF_NUM, SDN_IF_ID, IF_NAME, 'IN' AS DIRECTION, RX_BIT_RATE, RX_PKT_RATE, 0 AS TX_BIT_RATE, 0 AS TX_PKT_RATE, MEASURED_DATETIME
+                FROM    TRAFFIC_DATA
+                UNION ALL
+                SELECT  NODE_NUM, NODE_NM, SDN_NODE_ID, IF_NUM, SDN_IF_ID, IF_NAME, 'OUT' AS DIRECTION, 0 AS RX_BIT_RATE, 0 AS RX_PKT_RATE, TX_BIT_RATE, TX_PKT_RATE, MEASURED_DATETIME
+                FROM    TRAFFIC_DATA ) T
+        ORDER BY MEASURED_DATETIME DESC
+         <include refid="TotalCountSuffix"/>
     </select>
 
     <!-- 미확인 트래픽 조회 (국가) -->
@@ -1082,6 +1122,7 @@
             COUNTRY_NAME,
             KOICA
         FROM GATHER.TB_COUNTRY_CODE
+        <where>
             <trim prefix="(" prefixOverrides="AND|OR" suffix=")" suffixOverrides="">
                 <if test="country_name != null and country_name != ''">
                     AND COUNTRY_NAME LIKE '%' || #{country_name} || '%' 
@@ -1090,6 +1131,7 @@
                     AND KOICA LIKE '%' || #{country_code} || '%'
                 </if>
             </trim>
+         </where>   
         <include refid="TotalCountSuffix"/>
     </select>
 
