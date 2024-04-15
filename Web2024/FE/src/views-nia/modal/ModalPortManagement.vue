@@ -19,7 +19,7 @@
         <span slot="title">
           <i class="el-icon-s-tools mr-2 text-base" />
           포트 관리
-          <hr>
+          <hr />
         </span>
 
         <div class="des-class mr-2">
@@ -44,7 +44,6 @@
             class="w-100 h-100 flex-fill"
             @handleClickSearch="onClickSearch"
             @onChangePage="onChangePage"
-            @selectedRow="onClickRow"
           />
         </div>
         <div slot="footer" class="dialog-footer">
@@ -115,15 +114,11 @@ export default {
       this.closeOnClickModal = false
     },
     onOpen(model, actionMode) {
-      // this.selectedRow = model?.row
-            this.selectedRow = this._cloneDeep(model.row)
+      this.selectedRow = this._cloneDeep(model.row)
       this.onLoadNodeList()
     },
     onClickSearch(searchModel) {
       this.onLoadNodeList()
-    },
-    onClickRow(rows) {
-      this.$refs.ModalSopDetail.open({ row: rows[0] })
     },
     async onLoadNodeList() {
       const { pageSize: limit, currentPage: page } = this.paginationInfo
@@ -144,8 +139,6 @@ export default {
       this.paginationInfo.currentPage = curPage
       this.onLoadNodeList()
     },
-    onClose() { /* for Override */ },
-    }
-
-  }
+  },
+}
 </script>

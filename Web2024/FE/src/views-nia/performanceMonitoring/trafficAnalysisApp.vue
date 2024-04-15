@@ -5,12 +5,12 @@
       :ag-grid="authAgGrid"
       :is-button-slot="false"
       :items="searchItems"
-      :is-grid-loading="loading"
       :search-model.sync="searchModel"
+      :is-grid-loading="loading"
       :pagination-info="paginationInfo"
       class="w-100 h-100"
       @handleClickSearch="onClickSearch"
-      @onChangePage="onChangePage"
+      @onChangePage="(curPage) => onChangePage(curPage)"
       @searchClear="searchClear"
     />
   </div>
@@ -45,12 +45,12 @@ export default {
         { label: 'Port (S)', type: 'input', model: 'src_port', placeholder: '' },
         { label: 'Application(S)', type: 'select', model: 'dst_protocol', placeholder: '', setting: { allOption: { toggle: true } }, options: [] },
         { label: 'Port (D)', type: 'input', multiple: false, placeholder: '', model: 'dst_port', setting: { allOption: { toggle: true } }, options: [] },
-        { label: 'Top N', type: 'select', multiple: false, placeholder: '', model: 'rank_order', icon: 'el-icon-warning', setting: { allOption: { toggle: true } },
+        { label: 'Top N', type: 'select', multiple: false, placeholder: '', model: 'top_n', icon: 'el-icon-warning', setting: { allOption: { toggle: true } },
           options: [
-            { label: '10', value: '10' },
-            { label: '30', value: '30' },
-            { label: '50', value: '50' },
-            { label: '100', value: '100' }
+            { label: '10', value: 10 },
+            { label: '30', value: 30 },
+            { label: '50', value: 50 },
+            { label: '100', value: 100 },
           ],
         }
       ],
@@ -59,7 +59,7 @@ export default {
         src_port: '',
         dst_protocol: '',
         dst_port: '',
-        rank_order: ''
+        top_n: ''
       },
       sortInfo: {}
     }
@@ -98,17 +98,18 @@ export default {
       this.onLoadTrafficList(params)
     },
     async onLoadTrafficList() {
-     const { pageSize: limit, currentPage: page } = this.paginationInfo
+    const target = { vue: this.$refs.trafficAnalysis }
        const param = {
         src_protocol: this.searchModel.src_protocol,
         src_port: this.searchModel.src_port,
         dst_protocol: this.searchModel.dst_protocol,
         dst_port: this.searchModel.dst_port,
-        // rank_order: this.searchModel?.rank_order,
-        pageSize: limit,
-        currentPage: page
+        top_n: this.searchModel.top_n,
+        limit: this.paginationInfo.pageSize,
+        page: this.paginationInfo.currentPage,
        }
       try {
+        this.loading = true
         const res = await apiSelectAppTrafficList(param)
         this.trafficData = res?.result
         this.paginationInfo.totalCount = res.total
@@ -116,12 +117,11 @@ export default {
       } catch (error) {
         console.error(error)
       } finally {
-       /*  */
+        this.closeLoading(target)
       }
     },
     async onloadAppCodeList() {
       try {
-        this.loading = true
         const res = await apiApplicationCodeList()
         const selectCodeData = res.result.map(item => ({ label: item.protocol_name, value: item.port_code }))
         this.searchItems[0].options = selectCodeData
@@ -129,12 +129,12 @@ export default {
       } catch (error) {
           console.error(error)
         } finally {
-           this.loading = false
+         this.loading = false
         }
     },
     onChangePage(curPage) {
       this.paginationInfo.currentPage = curPage
-      this.onLoadSopList()
+      this.onLoadTrafficList()
     },
     searchClear() {
       this.searchModel = {}

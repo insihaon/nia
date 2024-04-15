@@ -17,7 +17,7 @@
       <span slot="title">
         <i class="el-icon-check mr-2 text-base" />
         포트 수정 및 삭제
-        <hr>
+        <hr />
       </span>
 
       <div class="des-class mr-2">

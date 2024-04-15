@@ -255,7 +255,6 @@ export default {
     },
     searchClear(type) {
       this.searchModel = {}
-      // if(type ===)
       switch (type) {
         case 'NATION':
           this.onLoadNationList()
