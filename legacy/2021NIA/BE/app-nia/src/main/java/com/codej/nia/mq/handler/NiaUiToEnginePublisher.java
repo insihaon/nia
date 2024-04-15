@@ -6,7 +6,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import com.codej.nia.mq.properties.NiaRabbitMQProperites;
+import com.codej.nia.properties.NiaRabbitMQProperites;
 import com.google.gson.JsonObject;
 import com.codej.base.utils.JsonUtil;
 
@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 public class NiaUiToEnginePublisher {
 
 	@Autowired
-    private NiaRabbitMQProperites rabbitMQProperites;
+	private NiaRabbitMQProperites rabbitMQProperites;
 
 	@Autowired
 	@Qualifier("NiaUiToEngine_RabbitTemplate")
@@ -29,13 +29,13 @@ public class NiaUiToEnginePublisher {
 
 	public void sendMessage(Object data) throws Exception {
 		try {
-			// log.info("=====> [MQ:sendMessage] : AiOperatorReviewSend data={} <=====", data.toString());
-			log.info("[MQ:{}] <<< SendPublisher {} <=====", rabbitMQProperites.getAddress(), rabbitMQProperites.getNiaUiToEngine(),data.toString());
-			// JsonObject jsonObj = JsonUtil.convertJsonToJsonObject(data.toString());
+
+			log.info("[MQ:{}] <<< SendPublisher {} <=====", rabbitMQProperites.getAddress(),
+					rabbitMQProperites.getNiaUiToEngine(), data.toString());
 			niaUiToEangineTemplate.convertAndSend(data);
-			// Thread.sleep(100);
 		} catch (Exception e) {
-			log.error("=====> [MQ:sendMessage] : error cause={}, stackTrace={} <=====", ExceptionUtils.getStackTrace(e), e.getCause());
+			log.error("=====> [MQ:sendMessage] : error cause={}, stackTrace={} <=====", ExceptionUtils.getStackTrace(e),
+					e.getCause());
 			throw new Exception(CommonUtil.format("전송 실패-{}:{}", this.getClass().getSimpleName(), data.toString()));
 		}
 	}

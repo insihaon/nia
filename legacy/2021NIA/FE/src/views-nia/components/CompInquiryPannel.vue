@@ -33,6 +33,7 @@
                     v-model="searchModel[item.model]"
                     collapse-tags
                     filterable
+                    clearable
                     :placeholder="item.placeholder"
                     reserve-keyword
                     remote
@@ -102,6 +103,7 @@
       <CompAgGrid
         ref="compSearchEquip"
         v-model="agGrid"
+        v-loading="isGridLoading"
         class="w-100"
         :style="{'height': getHeight()}"
         style="min-height: 20px"
@@ -149,6 +151,10 @@ export default {
     agGrid: {
       type: Object,
       default: () => { return {} }
+    },
+    isGridLoading: {
+      type: Boolean,
+      default: false
     },
     title: {
       type: String,
@@ -268,12 +274,15 @@ export default {
         line-height: 36px;
       }
     }
+    .el-input__suffix {
+      top: 3px;
+    }
     .el-input,
     .el-input__clear {
-      line-height: 25px !important;
+      line-height: 30px !important;
     }
     .el-range-editor--medium {
-      height: 25px;
+      height: 30px;
       line-height: 36px;
       .el-range-input{
         font-size: 11px;
@@ -286,7 +295,7 @@ export default {
         line-height: 17px;
       }
     }
-    .el-select__input.is-medium{
+    .el-select__input.is-medium {
       display: none !important;
     }
     .result-cnt span{

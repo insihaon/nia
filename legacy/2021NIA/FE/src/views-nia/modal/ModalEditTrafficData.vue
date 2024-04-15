@@ -18,7 +18,7 @@
         <span slot="title">
           <i class="el-icon-user mr-2" style="font-size: 17px;" />
           {{ titleMode }}
-          <hr>
+          <hr />
         </span>
         <table class="basic">
           <th>{{ titleNameA }}</th>
@@ -42,9 +42,9 @@
             <td v-if="viewType === 'editApp'">
               <el-input v-model="port_num" /></td>
           </tr>
-          <tr>
+          <tr v-if="viewType === 'editApp'">
             <th>{{ '설명' }}</th>
-            <td v-if="viewType === 'editApp'">
+            <td>
               <el-input
                 v-model="description"
                 type="textarea"

@@ -140,24 +140,6 @@ export const niaRoute = Object.freeze([
     ]
   },
   {
-    path: '/aiDisabilityResponse',
-    component: Layout,
-    hidden: false,
-    disable: false,
-    redirect: '/aiDisabilityResponse/selfProcessingHist',
-    meta: {
-      title: 'AI 장애대응',
-    },
-    children: [
-      {
-        path: 'selfProcessingHist',
-        component: () => import('@/views-nia/aiDisabilityResponse/selfProcessingHist'),
-        name: 'SelfProcessingHist',
-        meta: { title: '자가구성/회복/처리이력' },
-      }
-    ]
-  },
-  {
     path: '/profile',
     component: Layout,
     hidden: false,

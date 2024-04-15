@@ -21,7 +21,7 @@
         사용자 {{ isDeleteMode ? '계정삭제':'정보수정' }}
       </span>
       <el-form v-if="!isDeleteMode" ref="userUpdateInfo" :model="userUpdateInfo" :rules="formRules" class="h-full border rounded px-3 py-4">
-        <el-col v-for="form in userFormItem" :key="form.value" :span="form.value === 'uid' ? 24: 12">
+        <el-col v-for="form in userFormItem" :key="form.value" :span="12">
           <el-form-item :prop="form.value" :label="form.label" class="d-flex">
             <el-input
               :key="form.value"
@@ -94,7 +94,8 @@ export default {
       isDeleteMode: false,
       userFormItem: [
         { label: '아이디', value: 'uid' },
-        { label: '비밀번호', value: 'password' },
+        { label: '기존 비밀번호', value: 'orgpassword' },
+        { label: '변경 비밀번호', value: 'password' },
         { label: '비밀번호 확인', value: 'repassword' },
         { label: '이름', value: 'name' },
         { label: '연락처', value: 'phone' },
@@ -102,6 +103,7 @@ export default {
       ],
       userUpdateInfo: {
         uid: '',
+        orgpassword: '',
         password: '',
         repassword: '',
         name: '',
@@ -120,6 +122,7 @@ export default {
       return {
         id: rulesRequire(),
         password: rulesPassword('password'),
+        orgpassword: rulesPassword('orgPassword'),
         repassword: rulesRePassword(this.userUpdateInfo.password),
         name: rulesRequire('name'),
         phone: rulesTelephone(),
@@ -143,10 +146,12 @@ export default {
     onOpen(model, actionMode) {
     },
     onClickUpdateAccount() {
-      const checkValidate = this.$refs.userUpdateInfo.validate(async valid => {
+      let checkValidate = false
+      this.$refs.userUpdateInfo.validate(async valid => {
         if (!valid) {
           this.$message('필수 입력 조건을 확인하세요.')
-          return false
+        } else {
+          checkValidate = true
         }
       })
       if (!checkValidate) return
@@ -157,11 +162,15 @@ export default {
           try {
             const res = await apiNiaUpsertUser(this.userUpdateInfo)
             if (res?.success) {
-              await this.confirm('정보수정이 완료되었습니다.<br >재로그인 하세요.', '알림', { dangerouslyUseHTMLString: true })
+              this.confirm('정보수정이 완료되었습니다.<br >재로그인 하세요.', '알림', { dangerouslyUseHTMLString: true })
               this.close()
               this.$store.dispatch('user/logout')
             } else {
-              await this.confirm('정보수정에 실패하였습니다.<br >관리자에게 문의하세요.', '알림', { dangerouslyUseHTMLString: true })
+              if (res?.message === 'password mismatch') {
+                await this.confirm('패스워드가 일치하지 않습니다.', '알림', {})
+              } else {
+                await this.confirm('정보수정에 실패하였습니다.<br >관리자에게 문의하세요.', '알림', { dangerouslyUseHTMLString: true })
+              }
             }
           } catch (error) {
             return false
@@ -183,7 +192,7 @@ export default {
             const res = await apiNiaDeleteUser({ uid: this.$store.state.user.info.uid, password: this.userUpdateInfo.password })
 
             if (res?.success) {
-              await this.confirm('계정이 삭제되었습니다.<br >로그아웃 합니다.', '알림', { dangerouslyUseHTMLString: true })
+              this.confirm('계정이 삭제되었습니다.<br >로그아웃 합니다.', '알림', { dangerouslyUseHTMLString: true })
               this.close()
               this.$store.dispatch('user/logout')
             } else {
@@ -234,6 +243,7 @@ export default {
     display: flex;
     align-items: center;
     justify-content: flex-end;
+    word-break: auto-phrase;
   }
   .el-form-item__content {
     width: 320px;

@@ -13,6 +13,24 @@ export function apiSendMQ(serviceName, params = {}) {
     data: params
   })
 }
+export function apiRemote(remoteType, params = {}) {
+  return http({
+    url: `/nia/remote/${remoteType}`,
+    method: 'post',
+    filePath: filePath,
+    sqlId: '',
+    data: params
+  })
+}
+export function apiIpsdnRequest(params = {}) {
+  return http({
+    url: `/nia/ipsdn`,
+    method: 'post',
+    filePath: filePath,
+    sqlId: '',
+    data: params
+  })
+}
 export function apiIpAlarmList(params = {}) {
   return http({
     url: '/selectList',
@@ -593,6 +611,17 @@ export function apiSelectUserList(params = {}) {
     data: params
   })
 }
+
+export function apiUpdateUserGrantList(params = {}) {
+  return http({
+    url: '/modify',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'UPDATE_USER_GRANT_LIST',
+    data: params
+  })
+}
+
 export function apiSelectSnapshotList(params = {}) {
   return http({
     url: '/selectList',

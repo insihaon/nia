@@ -2,14 +2,16 @@ import { apiGetInfo, apiLogin, apiLogout, apiSignUp } from '@/api/auth'
 import { AppOptions } from '@/class/appOptions'
 import Encrypt from '@/assets/libs/Encrypt.min'
 import router, { resetRouter } from '@/router'
-import { getInfo, setInfo, removeInfo, getToken, removeToken, setToken } from '@/utils/auth'
+import { getInfo, setInfo, removeInfo, getToken, getIpsdnToken, removeToken, setToken, setIpsdnToken } from '@/utils/auth'
 
-export const _var = { Encrypt, apiLogin, apiLogout, apiSignUp, apiGetInfo, getToken, setToken, removeToken, router, resetRouter,
+export const _var = {
+  Encrypt, apiLogin, apiLogout, apiSignUp, apiGetInfo, getToken, setToken, setIpsdnToken, removeToken, router, resetRouter,
   getInfo, setInfo, removeInfo
 }
 
 const state = {
   token: getToken(),
+  ipsdnToken: getIpsdnToken(),
   useOtp: '',
   uid: '',
   name: '',
@@ -31,6 +33,10 @@ const mutations = {
   SET_TOKEN: (state, token) => {
     state.token = token
     setToken(token)
+  },
+  SET_IPSDN_TOKEN: (state, token) => {
+    state.ipsdnToken = token
+    setIpsdnToken(token)
   },
   SET_USE_OTP: (state, useOtp) => {
     state.useOtp = useOtp
@@ -98,6 +104,9 @@ const actions = {
             }
           }
         }
+        if (project === 'nia' && result.ipsdnToken) {
+          commit('SET_IPSDN_TOKEN', result.ipsdnToken.map.accessToken)
+        }
 
         commit('SET_INFO', result)
         commit('SET_TOKEN', result.accessToken)
@@ -137,6 +146,7 @@ const actions = {
     apiLogout(state.token)
 
     commit('SET_TOKEN', '')
+    commit('SET_IPSDN_TOKEN', '')
     commit('SET_INFO', '')
     commit('SET_ROLES', [])
     removeToken()
@@ -179,6 +189,7 @@ const actions = {
   resetToken({ commit }) {
     return new Promise(resolve => {
       commit('SET_TOKEN', '')
+      commit('SET_IPSDN_TOKEN', '')
       commit('SET_ROLES', [])
       removeToken()
       resolve()

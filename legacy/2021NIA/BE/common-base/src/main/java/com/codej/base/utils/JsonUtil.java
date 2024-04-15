@@ -78,6 +78,13 @@ public class JsonUtil {
         });
     }
 
+    public static Map<String, Object> convertJsonToMap(String json)
+            throws IOException, JsonParseException, JsonMappingException {
+        TypeReference<Map<String, Object>> map = new TypeReference<Map<String, Object>>() {
+        };
+        return objectMapper.readValue(json, map);
+    }
+
     public static <T> List<T> convertJsonToListClass(String json, Class<T> valueType)
             throws IOException, JsonParseException, JsonMappingException {
         List<T> list = objectMapper.readValue(json,
@@ -89,6 +96,7 @@ public class JsonUtil {
         JsonObject jsonObject = gson.fromJson(json, JsonObject.class);
         return jsonObject;
     }
+
     /*
      * Map map = Utils.convertMapToObject(map, Map.class)
      * 대소문자를 구분 안함
@@ -101,28 +109,28 @@ public class JsonUtil {
      * @param Map<String, Object>
      * @apiNote Map<String, Object>를 JSONObject로 변환처리.
      * @return JSONObject
-     * **/
+     **/
     public static JSONObject convertMapToJson(Map<String, Object> map) {
-        
+
         JSONObject json = new JSONObject();
         String key = "";
         Object value = null;
-        for(Map.Entry<String, Object> entry : map.entrySet()) {
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
             key = entry.getKey();
             value = entry.getValue();
-            if(key!= null && value != null) {
+            if (key != null && value != null) {
                 json.put(key, value);
             }
         }
         return json;
     }
 
-
     public static HashMap<String, Object> convertObjectToMap(Object object) {
         HashMap<String, Object> map = objectMapper.convertValue(object, new TypeReference<HashMap<String, Object>>() {
         });
         return map;
     }
+
     public static <T> T convertClass(Object object, String clazzName) throws IOException, ClassNotFoundException {
         Class<?> clazz = Class.forName(clazzName);
         return convertClass(object, clazz);
@@ -136,7 +144,7 @@ public class JsonUtil {
     public static String convertClassToJsonString(Object object) throws JsonProcessingException {
         return objectMapper.writeValueAsString(object);
     }
-    
+
     public static Map<String, Object> fromJson(JsonObject jsonObject) {
         JsonNode jsonNode;
         try {

@@ -9,6 +9,7 @@
                 , U.PHONE_NUMBER AS "mobile"
                 , U.EMAIL AS "email"
                 , U.AGENCY_NAME AS "agencyName"
+                , U.LVL AS "lvl"
                 <!-- , (SELECT STRING_AGG(roles, ',') FROM USER_ROLES UR WHERE UR.USER_UID = U.UID) AS "roles" -->
         FROM    nia.tb_user U
         WHERE   U.ID = #{uid} 
