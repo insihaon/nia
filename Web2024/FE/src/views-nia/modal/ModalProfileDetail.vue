@@ -96,7 +96,7 @@
         <tr>
           <th>자동회복 처리</th>
           <td>
-            <el-select v-model="auto_recovery">
+            <el-select v-model="auto_recovery" multiple>
               <el-option v-for="item in procOptions" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
           </td>

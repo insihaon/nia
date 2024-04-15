@@ -17,7 +17,7 @@
         <span slot="title">
           <i class="el-icon-document mr-2 text-base" />
           {{ isSyslog ? 'SYSLOG 장애대응' : 'AI 장애대응' }} 조치 요청서
-          <hr>
+          <hr />
         </span>
         <div class="w-full h-full d-flex">
           <div class="w-50 p-3 shadow-sm">
@@ -27,12 +27,9 @@
                 <table class="ticket-info basic">
                   <thead>
                     <tr>
-                      <th
-                        v-for="(col, index) in defineSyslogDetailTable.col"
-                        :key="index"
-                        class="whitespace-nowrap"
-                        style="max-width: fit-content"
-                      > <span>{{ col }}</span></th>
+                      <th v-for="(col, index) in defineSyslogDetailTable.col" :key="index" class="whitespace-nowrap" style="max-width: fit-content">
+                        <span>{{ col }}</span>
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -41,8 +38,10 @@
                         v-for="(valueKey, index) in defineSyslogDetailTable.valueKey"
                         :key="index"
                         class="whitespace-nowrap"
-                        style="min-width: fit-content;max-width: fit-content"
-                      ><span>{{ syslogInfo[valueKey] ||'' }}</span></td>
+                        style="min-width: fit-content; max-width: fit-content"
+                      >
+                        <span>{{ syslogInfo[valueKey] || '' }}</span>
+                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -50,26 +49,15 @@
             </div>
             <div v-loading="containerLoading" class="shadow-sm mt-1" style="height: 250px">
               <span class="title">연관 SOP 리스트</span>
-              <div v-if="relatedSopList.length > 0" class="shadow-sm  h-full">
-                <CompAgGrid
-                  ref="sopHistAgGrid"
-                  v-model="sopHistAgGrid"
-                  class="w-100"
-                  style="height: calc(100% - 25px);"
-                />
-              <!-- @rowClicked="selectedTicket" -->
+              <div v-if="relatedSopList.length > 0" class="shadow-sm h-full">
+                <CompAgGrid ref="sopHistAgGrid" v-model="sopHistAgGrid" class="w-100" style="height: calc(100% - 25px)" />
+                <!-- @rowClicked="selectedTicket" -->
               </div>
-              <div v-else class="d-flex items-center justify-center text-lg font-semibold" style="height: calc(100% - 25px);">연관 SOP 데이터가 존재하지 않습니다.</div>
+              <div v-else class="d-flex items-center justify-center text-lg font-semibold" style="height: calc(100% - 25px)">연관 SOP 데이터가 존재하지 않습니다.</div>
             </div>
             <div v-loading="containerLoading" class="shadow-sm mt-2" style="height: 250px">
               <span class="title">담당 직원 정보</span>
-              <CompAgGrid
-                ref="userInfoGrid"
-                v-model="userInfoGrid"
-                class="w-100"
-                style="height: calc(100% - 25px);"
-                @rowSelectionChanged="onChangeRowSelected"
-              />
+              <CompAgGrid ref="userInfoGrid" v-model="userInfoGrid" class="w-100" style="height: calc(100% - 25px)" @rowSelectionChanged="onChangeRowSelected" />
             </div>
           </div>
           <div
@@ -77,7 +65,7 @@
             v-loading="containerLoading"
             class="d-flex flex-column rounded shadow-sm leading-7 p-4 pl-5 w-50 overflow-y-auto"
             contenteditable="true"
-            :style="{'height': (isSyslog ? 700 : 550) + 'px', border: 'solid 1px lightgray'}"
+            :style="{ height: (isSyslog ? 700 : 550) + 'px', border: 'solid 1px lightgray' }"
           >
             <!-- <span class="title">장애 상세내역 및 조치 요청서</span> -->
             <div class="text-xl font-bold"><h2>장애 상세내역 및 조치 요청서</h2></div>
@@ -88,39 +76,39 @@
             <div>
               <span class="sub-title font-semibold"><h4>&middot;AI 분석 결과 정보</h4></span>
               <!-- ATT2 / 이상 트래픽 -->
-              <div v-if="sendItem.ticket_type === 'ATT2' && aiDetection !== null">
-                &emsp;<span>IN</span><br>
-                &nbsp;&nbsp;- bps: {{ sendItem.in_bps + ' MB' }} <br>
-                &nbsp;&nbsp;- Predict: {{ sendItem.in_predict + ' MB' }}<br>
-                &nbsp;&nbsp;- Threshold_Upper: {{ sendItem.in_threshold_upper + ' MB' }}<br>
-                &nbsp;&nbsp;- Threshold_Lower: {{ sendItem.in_threshold_lower + ' MB' }}<br>
-                - Anomaly: {{ sendItem.in_anomaly + 'MB' }}<br>
-                &emsp;<span>OUT</span><br>
-                &nbsp;&nbsp;- bps: {{ sendItem.out_bps + ' MB' }}<br>
-                &nbsp;&nbsp;- Predict : {{ sendItem.out_predict + ' MB' }}<br>
-                &nbsp;&nbsp;- Threshold_Upper: {{ sendItem.out_threshold_upper + ' MB' }}<br>
-                &nbsp;&nbsp;- Threshold_Lower: {{ sendItem.out_threshold_lower + ' MB' }}<br>
-                &nbsp;&nbsp;- Anomaly: {{ sendItem.out_anomaly + 'MB' }}<br>
+              <div v-if="sendItem.ticket_type === 'ATT2'">
+                &emsp;<span>IN</span><br />
+                &nbsp;&nbsp;- bps: {{ aiDetection !== null ? sendItem.in_bps + ' MB' : '' }} <br />
+                &nbsp;&nbsp;- Predict: {{ aiDetection !== null ? sendItem.in_predict + ' MB' : '' }}<br />
+                &nbsp;&nbsp;- Threshold_Upper: {{ aiDetection !== null ? sendItem.in_threshold_upper + ' MB' : '' }}<br />
+                &nbsp;&nbsp;- Threshold_Lower: {{ aiDetection !== null ? sendItem.in_threshold_lower + ' MB' : '' }}<br />
+                - Anomaly: {{ aiDetection !== null ? sendItem.in_anomaly + 'MB' : '' }}<br />
+                &emsp;<span>OUT</span><br />
+                &nbsp;&nbsp;- bps: {{ aiDetection !== null ? sendItem.out_bps + ' MB' : '' }}<br />
+                &nbsp;&nbsp;- Predict : {{ aiDetection !== null ? sendItem.out_predict + ' MB' : '' }}<br />
+                &nbsp;&nbsp;- Threshold_Upper: {{ aiDetection !== null ? sendItem.out_threshold_upper + ' MB' : '' }}<br />
+                &nbsp;&nbsp;- Threshold_Lower: {{ aiDetection !== null ? sendItem.out_threshold_lower + ' MB' : '' }}<br />
+                &nbsp;&nbsp;- Anomaly: {{ aiDetection !== null ? sendItem.out_anomaly + 'MB' : '' }}<br />
               </div>
 
               <div v-if="sendItem.ticket_type === 'ATT2' || sendItem.ticket_type === 'NTT'">
-                <span class="font-semibold">&nbsp;&nbsp;&middot;장애 유무 판단 확률</span><br>
-                &nbsp;&nbsp;&nbsp;- 유효 확률 : {{ ((1-sendItem.zero1_entropy)*100).toFixed(1)+'%' }}<br>
-                &nbsp;&nbsp;&nbsp;- 무효 확률 : {{ (sendItem.zero1_entropy*100).toFixed(1)+'%' }}
+                <span class="font-semibold">&nbsp;&nbsp;&middot;장애 유무 판단 확률</span><br />
+                &nbsp;&nbsp;&nbsp;- 유효 확률 : {{ ((1 - sendItem.zero1_entropy) * 100).toFixed(1) + '%' }}<br />
+                &nbsp;&nbsp;&nbsp;- 무효 확률 : {{ (sendItem.zero1_entropy * 100).toFixed(1) + '%' }}
               </div>
               <!-- $scope.model_config.text = $scope.ticket.zero1_entropy ? $scope.model_config.text.replace('${available_percentage}',((1-$scope.ticket.zero1_entropy)*100).toFixed(1)+'%') : $scope.model_config.text.replace('${available_percentage}','');
                     $scope.model_config.text = $scope.ticket.zero1_entropy ? $scope.model_config.text.replace('${invalidity_percentage}', ($scope.ticket.zero1_entropy*100).toFixed(1)+'%') : $scope.model_config.text.replace('${invalidity_percentage}','');  -->
               <!-- FTT(비장애) -->
               <div v-if="sendItem.ticket_type === 'FTT'">
-                &nbsp;&nbsp;- 장애 확률 : {{ (sendItem.zero1_entropy*100).toFixed(1)+'%' }}<br>
-                &nbsp;&nbsp;- 비장애 확률 : {{ ((1 - sendItem.zero1_entropy)*100).toFixed(1)+'%' }}
+                &nbsp;&nbsp;- 장애 확률 : {{ (sendItem.zero1_entropy * 100).toFixed(1) + '%' }}<br />
+                &nbsp;&nbsp;- 비장애 확률 : {{ ((1 - sendItem.zero1_entropy) * 100).toFixed(1) + '%' }}
               </div>
 
               <!-- NFTT -->
               <div v-if="sendItem.ticket_type === 'NFTT'">
-                &nbsp;&nbsp;- Measured Time : {{ sendItem.measured_datetime }} <br>
-                &nbsp;&nbsp;- CPU 예측값 : {{ sendItem.cpu_predicted }} <br>
-                &nbsp;&nbsp;- Mem 예측값 : {{ sendItem.mem_predicted }} <br>
+                &nbsp;&nbsp;- Measured Time : {{ sendItem.measured_datetime }} <br />
+                &nbsp;&nbsp;- CPU 예측값 : {{ sendItem.cpu_predicted }} <br />
+                &nbsp;&nbsp;- Mem 예측값 : {{ sendItem.mem_predicted }} <br />
               </div>
             </div>
             <div>
@@ -133,41 +121,40 @@
               <span class="sub-title font-semibold"><h4>&middot;작업 요청 내용</h4></span>
               <!-- SELECT_SOP_HIST_LIST -->
               <div v-if="isSyslog">
-                &nbsp;&nbsp;- 발생 시간 : {{ formatterTimeStamp(syslogInfo.alarmtime) }}<br>
-                &nbsp;&nbsp;- 알람 번호 : {{ syslogInfo.alarmno }} <br>
-                &nbsp;&nbsp;- 장비명 : {{ syslogInfo.node_nm }}<br>
-                &nbsp;&nbsp;- 장비 번호 : {{ syslogInfo.node_num }}<br>
-                &nbsp;&nbsp;- 인터페이스 : {{ syslogInfo.alarmloc }}<br>
-                &nbsp;&nbsp;- 알람 메시지 : {{ syslogInfo.alarmmsg }}<br>
-                &nbsp;&nbsp;- 원본 메시지 : {{ syslogInfo.etc }}<br>
+                &nbsp;&nbsp;- 발생 시간 : {{ formatterTimeStamp(syslogInfo.alarmtime) }}<br />
+                &nbsp;&nbsp;- 알람 번호 : {{ syslogInfo.alarmno }} <br />
+                &nbsp;&nbsp;- 장비명 : {{ syslogInfo.node_nm }}<br />
+                &nbsp;&nbsp;- 장비 번호 : {{ syslogInfo.node_num }}<br />
+                &nbsp;&nbsp;- 인터페이스 : {{ syslogInfo.alarmloc }}<br />
+                &nbsp;&nbsp;- 알람 메시지 : {{ syslogInfo.alarmmsg }}<br />
+                &nbsp;&nbsp;- 원본 메시지 : {{ syslogInfo.etc }}<br />
                 &nbsp;&nbsp;- 상세 내용 :
               </div>
               <div v-else>
-                &nbsp;&nbsp;- 작업 요청 구간 : {{ trafficInfo.root_cause_sysnamea+'('+trafficInfo.root_cause_porta+')' }} → {{ trafficInfo.root_cause_sysnamez+'('+trafficInfo.root_cause_portz+')' }}<br>
-                &nbsp;&nbsp;- 티켓 번호 : {{ sendItem.ticket_id }} <br>
-                &nbsp;&nbsp;- 티켓 타입 : {{ sendItem.ticket_type }}<br>
-                &nbsp;&nbsp;- 발생 원인 : {{ sendItem.ticket_result || sendItem.ticket_rca_result_dtl_code }}<br>
-                &nbsp;&nbsp;- 발생 시간 : {{ sendItem.fault_time }}<br>
+                &nbsp;&nbsp;- 작업 요청 구간 : {{ trafficInfo.root_cause_sysnamea + '(' + trafficInfo.root_cause_porta + ')' }} →
+                {{ trafficInfo.root_cause_sysnamez + '(' + trafficInfo.root_cause_portz + ')' }}<br />
+                &nbsp;&nbsp;- 티켓 번호 : {{ sendItem.ticket_id }} <br />
+                &nbsp;&nbsp;- 티켓 타입 : {{ sendItem.ticket_type }}<br />
+                &nbsp;&nbsp;- 발생 원인 : {{ sendItem.ticket_result || sendItem.ticket_rca_result_dtl_code }}<br />
+                &nbsp;&nbsp;- 발생 시간 : {{ sendItem.fault_time }}<br />
                 &nbsp;&nbsp;- 상세 내용 :
               </div>
             </div>
             <div v-if="isSyslog">
               <span class="sub-title font-semibold"><h4>&middot;장애 구역</h4></span>
-              <div>
-                &nbsp;&nbsp;- 장애 구역:{{ sendItem.node_nm+'('+ sendItem.alarmloc +')' }}
-              </div>
+              <div>&nbsp;&nbsp;- 장애 구역:{{ sendItem.node_nm + '(' + sendItem.alarmloc + ')' }}</div>
             </div>
             <div v-if="['NTT', 'ATT2'].includes(sendItem.ticket_type)">
               <span class="sub-title font-semibold"><h4>&middot;장애 구간</h4></span>
               <div>
-                <h5>&nbsp;&nbsp;- 장애 구간:</h5> {{ trafficInfo.root_cause_sysnamea+'('+trafficInfo.root_cause_porta+')' }} → {{ trafficInfo.root_cause_sysnamez+'('+trafficInfo.root_cause_portz+')' }}
+                {{ trafficInfo.root_cause_sysnamea + '(' + trafficInfo.root_cause_porta + ')' }} → {{ trafficInfo.root_cause_sysnamez + '(' + trafficInfo.root_cause_portz + ')' }}
               </div>
             </div>
             <div>
               <span class="sub-title font-semibold"><h4>&middot;연관 SOP</h4></span>
               <div>
-                &nbsp;&nbsp;- 장애 구분: {{ sendItem.fault_classify || '' }}<br>
-                &nbsp;&nbsp;- 장애 유형: {{ sendItem.fault_type || '' }}<br>
+                &nbsp;&nbsp;- 장애 구분: {{ sendItem.fault_classify || '' }}<br />
+                &nbsp;&nbsp;- 장애 유형: {{ sendItem.fault_type || '' }}<br />
                 &nbsp;&nbsp;- 조치 내용: {{ sendItem.fault_detail_content || '' }}
               </div>
             </div>
@@ -181,9 +168,7 @@
           <el-button size="small" @click.native="onClickFin()">
             {{ selectedRow.status == 'FIN' || selectedRow.status == 'AUTO_FIN' ? '수정' : '마감' }}
           </el-button>
-          <el-button size="small" :disabled="sendItem.status != 'INIT'" @click.native="onClickEmailSender()">
-            메일 전송
-          </el-button>
+          <el-button size="small" :disabled="sendItem.status != 'INIT'" @click.native="onClickEmailSender()"> 메일 전송 </el-button>
           <el-button size="small" plain class="close-btn" @click.native="close()">
             {{ $t('exit') }}
           </el-button>
@@ -234,7 +219,7 @@ export default {
         in_bps: '',
         in_anomaly: '',
         out_bps: '',
-        out_anomaly: ''
+        out_anomaly: '',
       },
       syslogInfo: {
         ruleid: '',
@@ -249,9 +234,9 @@ export default {
       },
       defineSyslogDetailTable: {
         col: ['알람 번호', '발생 시간', '장비 번호', '장비명', '인터페이스', '알람메시지', '원본 메시지'],
-        valueKey: ['alarmno', 'alarmtime', 'node_num', 'node_nm', 'alarmloc', 'alarmmsg', 'etc']
+        valueKey: ['alarmno', 'alarmtime', 'node_num', 'node_nm', 'alarmloc', 'alarmmsg', 'etc'],
       },
-      selectedReceiverUser: []
+      selectedReceiverUser: [],
     }
   },
   computed: {
@@ -259,7 +244,19 @@ export default {
       const options = { name: this.name, checkable: false, rowGroupPanel: false, rowHeight: 30, rowSelection: 'multiple', rowMultiSelection: false }
       const syslogCol = [
         { type: '', prop: 'alarmno', name: '알람번호', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
-        { type: '', prop: 'alarm_occur_time', name: '발생시간', width: 250, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true, formatter: (row) => { return this.formatterTimeStamp(row.fault_time, 'YYYY/MM/DD-HH:mm:ss') } },
+        {
+          type: '',
+          prop: 'alarm_occur_time',
+          name: '발생시간',
+          width: 250,
+          suppressMenu: true,
+          alignItems: 'center',
+          sortable: true,
+          filterable: true,
+          formatter: (row) => {
+            return this.formatterTimeStamp(row.fault_time, 'YYYY/MM/DD-HH:mm:ss')
+          },
+        },
         { type: '', prop: 'fault_classify', name: '장애구분', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
         { type: '', prop: 'fault_type', name: '장애유형', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
         { type: '', prop: 'fault_detail_content', name: '조치내용', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true },
@@ -272,7 +269,7 @@ export default {
       ]
       const columns = [
         { type: '', prop: 'ticket_id', name: '티켓번호', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: false },
-        { type: '', prop: 'ticket_type', name: '티켓유형', width: 80, suppressMenu: true, alignItems: 'left', sortable: true, filterable: false/* , formatter: getAlarmType */ },
+        { type: '', prop: 'ticket_type', name: '티켓유형', width: 80, suppressMenu: true, alignItems: 'left', sortable: true, filterable: false /* , formatter: getAlarmType */ },
         { type: '', prop: 'root_cause_porta', name: '장애구분', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: true },
         { type: '', prop: 'fault_classify', name: '장애유형', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: true },
         { type: '', prop: 'fault_detail_content', name: '조치내용', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: true },
@@ -282,25 +279,37 @@ export default {
         { type: '', prop: 'ip_addra', name: '마스터 IP', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: true },
         { type: '', prop: 'root_cause_porta', name: '장비I/F', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: true },
         { type: '', prop: 'handling_fin_user', name: '마감자', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: true },
-        { type: '', prop: 'handling_fin_time', name: '마감시간', width: 150, suppressMenu: true, alignItems: 'left', sortable: true, filterable: true, formatter: (row) => { return formatterTime(row.handling_fin_time) } },
+        {
+          type: '',
+          prop: 'handling_fin_time',
+          name: '마감시간',
+          width: 150,
+          suppressMenu: true,
+          alignItems: 'left',
+          sortable: true,
+          filterable: true,
+          formatter: (row) => {
+            return formatterTime(row.handling_fin_time)
+          },
+        },
       ]
       const isSyslog = this.isSyslog
       return { options, columns: isSyslog ? syslogCol : columns, data: this.relatedSopList }
     },
     userInfoGrid() {
       const options = { name: this.name, checkable: true, rowGroupPanel: false, rowHeight: 30, rowSelection: 'multiple', rowMultiSelection: true }
-        const columns = [
-          { type: '', prop: 'name', name: '이름', width: 120, suppressMenu: true, alignItems: 'left', sortable: true, filterable: false },
-          { type: '', prop: 'agency_name', name: '분류', width: 120, suppressMenu: true, alignItems: 'left', sortable: true, filterable: false },
-          { type: '', prop: 'email', name: 'E-mail', width: 200, suppressMenu: true, alignItems: 'left', sortable: true, filterable: true },
-        ]
-        return { options, columns, data: this.userList }
+      const columns = [
+        { type: '', prop: 'name', name: '이름', width: 120, suppressMenu: true, alignItems: 'left', sortable: true, filterable: false },
+        { type: '', prop: 'agency_name', name: '분류', width: 120, suppressMenu: true, alignItems: 'left', sortable: true, filterable: false },
+        { type: '', prop: 'email', name: 'E-mail', width: 200, suppressMenu: true, alignItems: 'left', sortable: true, filterable: true },
+      ]
+      return { options, columns, data: this.userList }
     },
     isSyslog() {
       return this.selectedRow.ticket_type === 'SYSLOG'
-    }
+    },
   },
-  mounted () {
+  mounted() {
     const { uid, name, mobile, email, agencyName } = this.$store.state.user.info
     this.sendItem['sender'] = `${agencyName} ${name}`
   },
@@ -339,8 +348,8 @@ export default {
 
       // AI 분석 결과 정보
       if (ticket_type === 'ATT2') {
-        const { in_bps, in_predict, in_threshold_upper, in_threshold_lower, in_anomaly
-          , out_bps, out_predict, out_threshold_upper, out_threshold_lower, out_anomaly } = this.aiDetection
+        const { in_bps, in_predict, in_threshold_upper, in_threshold_lower, in_anomaly, out_bps, out_predict, out_threshold_upper, out_threshold_lower, out_anomaly } =
+          this.aiDetection
         // IN
         this.sendItem['in_bps'] = in_bps.toLocaleString()
         this.sendItem['in_predict'] = in_predict.toLocaleString()
@@ -404,7 +413,7 @@ export default {
           param = { NODE_NM, ALARMLOC }
           res = await apiSopSyslogHistList(param)
         } else {
-          const { /* ticket_id: TICKET_ID,  */ticket_type: TICKET_TYPE, root_cause_sysnamea: ROOT_CAUSE_SYSNAMEA } = this.selectedRow
+          const { /* ticket_id: TICKET_ID,  */ ticket_type: TICKET_TYPE, root_cause_sysnamea: ROOT_CAUSE_SYSNAMEA } = this.selectedRow
           param = { TICKET_TYPE, ROOT_CAUSE_SYSNAMEA }
           res = await apiSelectSopHistList(param)
         }
@@ -436,35 +445,38 @@ export default {
       this.$refs.ModalFIN.open({ row })
     },
     async onClickEmailSender() {
-     const { uid, name } = this.$store.state.user.info
-     const receiverUser = this.$refs.userInfoGrid.getSelectedRows()
-     if (receiverUser.length === 0) {
-      this.$alert('담당 직원을 선택해주세요.', '알림', {
-        confirmButtonText: '확인'
-      })
-      return
-     }
-     const contentEl = document?.querySelector('#mail-content')
-     const param = {
-      mail: {
-        subject: this.moment(new Date()).format('YYYY년 MM월 DD일 HH시mm분ss초') + ' 장비 조치 요청서',
-        content: contentEl.getInnerHTML(),
-        receiverUser: receiverUser.map(v => v.email).join(', ').replace(/\s{0,}[\r\n]/gi, '\r\n')
-      },
-      ticketInfo: this._merge({}, this.sendItem, {
-        eventType: 'REQUEST_CHANGE_TICKET_STATUS',
-        status: 'ACK',
-        user_ids: uid,
-        detail: 'DETAIL',
-        mail_content: contentEl.getInnerHTML(),
-        handling_ack_user: name,
-        ticket_result: this.selectedRow.ticket_result || this.selectedRow.ticket_rca_result_code,
-      })
-    }
+      const { uid, name } = this.$store.state.user.info
+      const receiverUser = this.$refs.userInfoGrid.getSelectedRows()
+      if (receiverUser.length === 0) {
+        this.$alert('담당 직원을 선택해주세요.', '알림', {
+          confirmButtonText: '확인',
+        })
+        return
+      }
+      const contentEl = document?.querySelector('#mail-content')
+      const param = {
+        mail: {
+          subject: this.moment(new Date()).format('YYYY년 MM월 DD일 HH시mm분ss초') + ' 장비 조치 요청서',
+          content: contentEl.getInnerHTML(),
+          receiverUser: receiverUser
+            .map((v) => v.email)
+            .join(', ')
+            .replace(/\s{0,}[\r\n]/gi, '\r\n'),
+        },
+        ticketInfo: this._merge({}, this.sendItem, {
+          eventType: 'REQUEST_CHANGE_TICKET_STATUS',
+          status: 'ACK',
+          user_ids: uid,
+          detail: 'DETAIL',
+          mail_content: contentEl.getInnerHTML(),
+          handling_ack_user: name,
+          ticket_result: this.selectedRow.ticket_result || this.selectedRow.ticket_rca_result_code,
+        }),
+      }
       try {
         const res = await apiSendMQ('sendMail', param)
         this.$alert(`메일 전송에 ${res.success ? '성공' : '실패'} 하였습니다.`, '알림', {
-          confirmButtonText: '확인'
+          confirmButtonText: '확인',
         })
       } catch (error) {
         this.error(error)
@@ -472,8 +484,8 @@ export default {
     },
     onClose() {
       this.selectedUser = []
-     },
-  }
+    },
+  },
 }
 </script>
 
@@ -481,10 +493,7 @@ export default {
 ::v-deep .el-dialog {
   margin-top: 3vh !important;
 }
-::v-deep .el-loading-spinner {
-  display: flex;
-  justify-content: center;
-}
+
 .sub-title {
   font-size: 1rem;
 }

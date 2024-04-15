@@ -6,12 +6,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 
-import com.codej.nia.mq.properties.NiaRabbitMQProperites;
+import com.codej.nia.properties.NiaRabbitMQProperites;
 import com.codej.mq.config.BaseRabbitMQConfiguration;
 
 @Configuration
 @ConditionalOnExpression("'${spring.rabbitmq.enabled:true}' == 'true'")
-public class NiaRabbitMQConfiguration extends  BaseRabbitMQConfiguration {
+public class NiaRabbitMQConfiguration extends BaseRabbitMQConfiguration {
 
     @Autowired
     private NiaRabbitMQProperites rabbitMqProperites;

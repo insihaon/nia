@@ -125,27 +125,27 @@ public class AppDto {
 
     private Boolean isDevProfile = true;
 
-    @Value("${myconf.api-server.topas:http://10.240.34.39:20300}")
-    private String topasUrl;
+    @Value("${myconf.api-server.ipsdn:http://203.255.249.31:8088}")
+    private String ipsdnUrl;
 
-    @Value("${myconf.api-server.rca:http://127.0.0.1:8070}")
-    private String rcaUrl;
+    @Value("${myconf.api-server.user:code}")
+    private String ipsdnId;
 
-    @Value("${myconf.api-server.rca-use:true}")
-    private Boolean rcaApiUse;
+    @Value("${myconf.api-server.pw:codej!@#}")
+    private String ipsdnPass;
 
     @Value("${myconf.api-server.kong:http://192.168.0.222:8000}")
     private String kongUrl;
 
     @Value("${myconf.api-server.kong-admin:http://192.168.0.222:8001}")
     private String kongAdminUrl;
-    
+
     @Value("${myconf.api-server.kong-use:true}")
     private Boolean kongApiUse;
-    
+
     // @Value("${myconf.api-server.hub-api:http://10.220.178.184:28000}")
     // private String requestApiUrl;
-    
+
     @Value("${myconf.api-server.tcping:false}")
     private Boolean tcping;
 
@@ -178,16 +178,32 @@ public class AppDto {
     private String rabbitmqAamAlarmQueue;
 
     @Value("${myconf.api-server.grafana-url:127.0.0.1}")
-    private String grafanaUrl ;
+    private String grafanaUrl;
 
     @Value("${myconf.api-server.hub-api:http://127.0.0.1:8070/dh}")
     private String hubUrl;
+
     @Value("${myconf.snapshot-Url:http://incodej-lab.iptime.org:24888/download/}")
     private String snapshotUrl;
+
     @Value("${myconf.servermonitor-Url:http://incodej-lab.iptime.org:3000/download/}")
     private String serverMonitorUrl;
+
     @Value("${myconf.aimonitor-Url:http://incodej-lab.iptime.org:82/download/}")
     private String aiMonitorUrl;
+
+    @Value("${myconf.ssh.host:incodej-lab.iptime.org}")
+
+    private String sshHost;
+
+    @Value("${myconf.ssh.port:16891}")
+    private int sshPort;
+
+    @Value("${myconf.ssh.user:codej8888}")
+    private String sshUser;
+
+    @Value("${myconf.ssh.password:zhfps!}")
+    private String sshPassword;
 
     private Object time;
 

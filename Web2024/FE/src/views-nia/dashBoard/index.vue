@@ -19,13 +19,13 @@
             <el-button icon="el-icon-search" size="mini" style="padding: 7px 7px;" @click="onLoadDashboardStatistics()" />
           </div>
         </div>
-        <hr>
+        <hr />
         <div style="height: calc(70% - 5rem);">
           <CompChart :options="ticketOptions" class="relative h-64" style="top: -2rem;" />
           <CompChart :options="collectOptions" class="relative h-72" style="top: -7rem;" />
           <CompChart :options="servingOptions" class="relative h-64" style="top: -12rem;" />
         </div>
-        <hr>
+        <hr />
         <div class="h-20 text-center">
           <span class="font-bold text-lg whitespace-nowrap p-2">자가 처리 현황</span>
           <div class="d-flex p-2 justify-center items-center">
@@ -44,7 +44,7 @@
             <el-button icon="el-icon-search" size="mini" style="padding: 7px 7px;" @click="onLoadSelfProcessStatistics()" />
           </div>
         </div>
-        <hr>
+        <hr />
         <div style="height: calc(30% - 5rem);">
           <CompChart :options="selfProcessOptions" class="h-full" @click="onClickChart" />
         </div>
@@ -123,6 +123,7 @@
     <ModalFIN ref="ModalFIN" />
     <ModalNTF ref="ModalNTF" />
     <ModalSopList ref="ModalSopList" />
+    <ModalConfigTest ref="ModalConfigTest" />
     <ModalAiResponse ref="ModalAiResponse" />
     <ModalSelfProcessList ref="ModalSelfProcessList" />
   </div>
@@ -137,6 +138,7 @@ import BaseFilterGroup from '@/filters/baseFilterGroup'
 import CellRenderAibuttons from '@/views-nia/components/cellRenderer/CellRenderAibuttons'
 import ModalNTF from '@/views-nia/modal/ModalNTF'
 import ModalFIN from '@/views-nia/modal/ModalFIN'
+import ModalConfigTest from '@/views-nia/modal/ModalConfigTest'
 import ModalSopList from '@/views-nia/modal/ModalSopList'
 import ModalAiResponse from '@/views-nia/modal/ModalAiResponse'
 import ModalSelfProcessList from '@/views-nia/modal/ModalSelfProcessList'
@@ -147,7 +149,7 @@ const routeName = 'NiaMain'
 export default {
   name: routeName,
   // eslint-disable-next-line vue/no-unused-components
-  components: { CompAgGrid, CompChart, LeftBar, filterBar, ModalFIN, ModalNTF, ModalSopList, CellRenderAibuttons, ModalAiResponse, ModalSelfProcessList },
+  components: { CompAgGrid, CompChart, LeftBar, filterBar, ModalFIN, ModalNTF, ModalConfigTest, ModalSopList, CellRenderAibuttons, ModalAiResponse, ModalSelfProcessList },
   extends: Base,
   data() {
     return {
@@ -180,8 +182,9 @@ export default {
         { type: '', prop: 'alarmtime', name: '장애 발생시간', width: 200, alignItems: 'center', fixed: false, suppressMenu: true, formatter: (row) => { return this.formatterTimeStamp(row.ticket_generation_time, 'YYYY/MM/DD-HH:mm:ss') } },
         { type: '', prop: 'status', name: '상태', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, formatter: this.getStatus, cellStyle: this.getCellStyle, },
         { type: '', prop: '', name: '마감', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '', icon: 'edit-outline', type: 'FIN', action: this.handleOpenEditModal.bind(this) } },
+        { type: '', prop: '', name: '시험', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '', icon: 'edit-outline', type: 'CONFIG_TEST', action: this.handleOpenEditModal.bind(this) } },
         { type: '', prop: '', name: 'SOP이력', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: 'SOP', icon: 'circle-check', type: 'SOP', action: this.handleOpenEditModal.bind(this) } },
-        { type: '', prop: '', name: '장애대응', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '장애대응', icon: 'circle-check', type: 'alarm', action: this.handleOpenEditModal.bind(this) } },
+        { type: '', prop: '', name: '장애대응', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '장애대응', icon: 'circle-check', type: 'ALARM', action: this.handleOpenEditModal.bind(this) } },
         { type: '', prop: '', name: '상황전파', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '조치요청', icon: 'circle-check', type: 'NTF', action: this.handleOpenEditModal.bind(this) } },
         { type: '', prop: 'ticket_type', name: '전표 유형', width: 150, alignItems: 'center', fixed: false, suppressMenu: true, formatter: getAlarmType },
         { type: '', prop: 'root_cause_type', name: '장애유형', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
@@ -567,10 +570,12 @@ export default {
         this.$refs.ModalSopList.open(param)
       } else if (type === 'NTF') {
         this.$refs.ModalNTF.open(param)
-      } else if (type === 'alarm') {
+      } else if (type === 'ALARM') {
         this.$refs.ModalAiResponse.open(param)
       } else if (type === 'FIN') {
         this.$refs.ModalFIN.open(param)
+      } else if (type === 'CONFIG_TEST') {
+        this.$refs.ModalConfigTest.open(param)
       }
     },
 

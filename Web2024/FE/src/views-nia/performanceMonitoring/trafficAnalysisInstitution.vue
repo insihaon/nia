@@ -5,6 +5,7 @@
       :ag-grid="trafficAgGrid"
       :is-button-slot="false"
       :items="searchItems"
+      :is-grid-loading="loading"
       :search-model.sync="searchModel"
       :pagination-info="paginationInfo"
       class="w-100 h-100"
@@ -29,6 +30,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      loading: false,
       paginationInfo: {
         currentPage: 1, // 현재 페이지
         pageSize: 50, // 페이지당 항목 수
@@ -43,12 +45,12 @@ export default {
         { label: 'IP(S)', type: 'input', multiple: false, placeholder: 'SEARCH', icon: 'el-icon-search', model: 'src_ip' },
         { label: '이용기관(D)', type: 'select', multiple: false, placeholder: '이용기관을 선택하세요', model: 'dst_nren_name', icon: 'el-icon-warning', setting: { allOption: { toggle: true } }, options: [] },
         { label: 'IP(D)', type: 'input', multiple: false, placeholder: 'SEARCH', icon: 'el-icon-search', model: 'dst_ip' },
-        { label: 'Top N', type: 'select', multiple: false, placeholder: '', model: 'top_n', icon: 'el-icon-warning', setting: { allOption: { toggle: true } },
+        { label: 'Top N', type: 'select', multiple: false, placeholder: '', model: 'top_n', icon: 'el-icon-warning',
           options: [
-            { label: '10', value: '10' },
-            { label: '30', value: '30' },
-            { label: '50', value: '50' },
-            { label: '100', value: '100' },
+            { label: '10', value: 10 },
+            { label: '30', value: 30 },
+            { label: '50', value: 50 },
+            { label: '100', value: 100 },
           ], }
       ],
       searchModel: {
@@ -103,12 +105,15 @@ export default {
         page: this.paginationInfo.currentPage,
        }
       try {
+        this.loading = true
         const res = await apiTrafficAgencyList(param)
         this.trafficData = res?.result
         this.paginationInfo.totalCount = res.total // 총 항목 수 설정
         this.paginationInfo.totalPages = Math.ceil(this.paginationInfo.totalCount / this.paginationInfo.pageSize) // 전체 페이지 수 계산
       } catch (error) {
         this.error(error)
+      } finally {
+        this.loading = false
       }
     },
 
@@ -119,17 +124,16 @@ export default {
         this.searchItems[0].options = this.selectCodeData
         this.searchItems[2].options = this.selectCodeData
       } catch (error) {
-          console.error(error)
-        } finally {
-          // this.closeLoading(target)
-        }
+        console.error(error)
+      }
     },
     onChangePage(curPage) {
       this.paginationInfo.currentPage = curPage
-      this.onLoadSopList()
+      this.onLoadTrafficList()
     },
     searchClear() {
       this.searchModel = {}
+      this.onLoadTrafficList()
     }
   },
 }

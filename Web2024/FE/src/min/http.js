@@ -1,7 +1,7 @@
 import { AppOptions } from '@/class/appOptions'
 import { clone, getJsonfileName, getJsonfileName2, wait } from '@/utils'
 import store from '@/store'
-import { getToken } from '@/utils/auth'
+import { getToken, getIpsdnToken } from '@/utils/auth'
 import axios from 'axios'
 import { Message, MessageBox } from 'element-ui'
 import moment from 'moment'
@@ -42,6 +42,9 @@ service.interceptors.request.use(
 
     if (store.getters.token) {
       config.headers['X-AUTH-TOKEN'] = getToken()
+    }
+    if (project === 'nia' && store.getters.ipsdnToken) {
+      config.headers['X-AUTH-IP-TOKEN'] = getIpsdnToken()
     }
 
     if (command) {

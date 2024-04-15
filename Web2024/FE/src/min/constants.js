@@ -16,11 +16,18 @@ export default {
     cancel: '취소',
     error: '에러'
   },
-  authOptions: [
-    { text: '사용자', code: 'user', value: 1, index: 0 },
-    { text: '담당자', code: 'manager', value: 2, index: 1 },
-    { text: '관리자', code: 'admin', value: 4, index: 2 }
-  ],
+  // authOptions: [
+  //   { text: '사용자', code: 'user', value: 1, index: 0 },
+  //   { text: '담당자', code: 'manager', value: 2, index: 1 },
+  //   { text: '관리자', code: 'admin', value: 4, index: 2 }
+  // ],
+  userGrant: {
+    USER: { text: '사용자', value: 1, index: 0 },
+    MANAGER: { text: '담당자', value: 2, index: 1 },
+    ADMIN: { text: '관리자', value: 4, index: 2 },
+    // DROP:{text:"이슈편집",value:8 ,index:3},
+    // ARAM:{text:"알람기능",value:16, index:4}
+  },
   authManagement: {
     GRANT: { code: 'GRANT', label: '승인', index: 0 },
     REJECT: { code: 'REJECT', label: '반려', index: 1 },

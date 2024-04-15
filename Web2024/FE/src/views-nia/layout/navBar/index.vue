@@ -11,7 +11,7 @@
           <el-menu class="flex h-full" :background-color="bgColor" :text-color="textColor" style="border-right: 0px">
             <el-menu-item
               v-for="route in permission_routes"
-              v-if="!route.hidden"
+              v-if="isHidden(route)"
               id="menu-item"
               :key="route.path"
               style="line-height: 4rem;"
@@ -78,6 +78,7 @@ import ModaluserSettings from '@/views-nia/userManagement/ModaluserSettings'
 const routeName = 'NavBar'
 export default {
   name: routeName,
+  src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
   components: { ChildItem, ModaluserSettings },
   extends: Base,
   data() {
@@ -123,6 +124,17 @@ export default {
     })
   },
   methods: {
+    isHidden(route) {
+      if (route.path === '/manager') {
+        return this.hasGrant(this.CONSTANTS.userGrant.ADMIN.value)
+      } else {
+        return !route.hidden
+      }
+    },
+    hasGrant(grant) {
+      const userAuth = Number(this.$store.state.user.info.lvl)
+      return ((userAuth || 1) & grant) == grant
+    },
     onClickHeaderLogo() {
       this.$router.push({ path: '/dashboard/index' })
     },
