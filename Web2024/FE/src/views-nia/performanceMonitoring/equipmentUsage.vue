@@ -1,7 +1,7 @@
 <template>
   <div :class="{ [name]: true }">
     <CompInquiryPannel
-      ref="trafficAnalysis"
+      ref="equipmentUsage"
       :ag-grid="usageAgGrid"
       :is-button-slot="false"
       :items="searchItems"
@@ -9,7 +9,7 @@
       :pagination-info="paginationInfo"
       class="w-100 h-100"
       @handleClickSearch="onClickSearch"
-      @onChangePage="onChangePage"
+      @onChangePage="(curPage) => onChangePage(curPage)"
       @searchClear="searchClear"
     />
   </div>
@@ -20,6 +20,11 @@ import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
 import { apiSelectEquipAmountUsedList } from '@/api/nia'
 
 const routeName = 'EquipmentUsage'
+
+function getFilterValue(row, col, value, index) {
+  return value + ' %'
+}
+
 export default {
   name: routeName,
   // eslint-disable-next-line vue/no-unused-components
@@ -59,19 +64,21 @@ export default {
   },
 
   computed: {
-    usageAgGrid() {
-      const options = {
-        name: this.name + 'table1', rowGroupPanel: false, rowHeight: 40, rowSelection: 'multiple', rowMultiSelection: false, suppressRowClickSelection: true,
-      }
-      const columns = [
-        { type: '', prop: 'measured_datetime', name: '수집기간', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center' },
-        { type: '', prop: 'node_nm', name: '장비명', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: false },
-        { type: '', prop: 'cpu_usage', name: 'CPU 사용량', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
-        { type: '', prop: 'mem_usage', name: 'MEM 사용량', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center' },
-      ]
-      return { options, columns, data: this.equitmentsData, getRightClickMenuItems: () => { return [] } }
-    },
-  },
+  usageAgGrid() {
+    const options = {
+      name: this.name + 'table1', rowGroupPanel: false, rowHeight: 40, rowSelection: 'multiple', rowMultiSelection: false, suppressRowClickSelection: true,
+    }
+    const columns = [
+      { type: '', prop: 'measured_datetime', name: '수집기간', minWidth: 80, flex: 0, suppressMenu: true, alignItems: 'center' },
+      { type: '', prop: 'node_nm', name: '장비명', minWidth: 80, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: false },
+      { type: '', prop: 'cpu_usage', name: 'CPU 사용량', minWidth: 80, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true, /* format: getFilterValue  */ },
+      { type: '', prop: 'mem_usage', name: 'MEM 사용량', minWidth: 80, flex: 0, suppressMenu: true, alignItems: 'center', valueFormatter: this.formatPercentage, format: getFilterValue },
+    ]
+
+    return { options, columns, data: this.equitmentsData, getRightClickMenuItems: () => { return [] } }
+  }
+},
+
   mounted() {
     this.onLoadUsageList()
   },
@@ -84,14 +91,16 @@ export default {
       this.onLoadUsageList(params)
     },
     async onLoadUsageList() {
-      const target = { vue: this.$refs.trafficAnalysis }
+      const target = { vue: this.$refs.equipmentUsage }
       this.openLoading(target)
       const param = {
         node_nm: this.searchModel.node_nm,
         cpu_usage: this.searchModel.cpu_usage,
-        mem_usage: this.searchModel.mem_usage
+        mem_usage: this.searchModel.mem_usage,
+        limit: this.paginationInfo.pageSize,
+        page: this.paginationInfo.currentPage,
       }
-        const dateTime = this.$refs.trafficAnalysis.searchModel.date_time
+      const dateTime = this.$refs.equipmentUsage.searchModel.date_time
       if (dateTime) {
         this._merge(param, { start_date: dateTime[0], end_date: dateTime[1] })
       }
@@ -99,7 +108,7 @@ export default {
         const res = await apiSelectEquipAmountUsedList(param)
         this.equitmentsData = res?.result
         this.paginationInfo.totalCount = res.total
-        this.paginationInfo.totalPages = Math.ceil(this.paginationInfo.totalCount / this.paginationInfo.pageSizes) // 전체 페이지 수 계산
+        this.paginationInfo.totalPages = Math.ceil(this.paginationInfo.totalCount / this.paginationInfo.pageSize) // 전체 페이지 수 계산
       } catch (error) {
         console.error(error)
       } finally {
@@ -108,7 +117,7 @@ export default {
     },
     onChangePage(curPage) {
       this.paginationInfo.currentPage = curPage
-      this.onLoadSopList()
+      this.onLoadUsageList()
     },
     searchClear() {
       this.searchModel = {}
