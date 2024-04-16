@@ -1226,47 +1226,49 @@
 
     <!-- 장비 사용량 감시 및 이력 조회 -->
      <select id="SELECT_EQUIP_AMOUNT_USED_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
-            SELECT  a.node_num AS node_num,
-                    a.sdn_node_id AS sdn_node_id,
-                    a.node_nm AS node_nm,
-                    trunc(a.cpu_usage::numeric,3) * 100 as cpu_usage,
-                    trunc(a.mem_usage::numeric,3) * 100 as mem_usage,
-                    to_char(a.measured_datetime, 'YYYY-MM-DD HH24:MI:SS') AS measured_datetime,
-                    CASE WHEN tn.strresid IS NOT NULL THEN true ELSE false
-                    END AS ai_result
-            FROM   ( SELECT nm.node_num,
-                            n.id AS sdn_node_id,
-                            nm.node_nm,
-                            nf.cpu_usage,
-                            nf.mem_usage,
-                            nf.measured_datetime
-                    FROM    ip_sdn.tb_nodefactor nf
-                    INNER JOIN ip_sdn.tb_node n        ON nf.node_id = n.id
-                    INNER JOIN resource.tb_node_mst nm ON n.id = nm.ip_sdn_id::INT
+         <include refid="TotalCountPrefix"/>    
+            SELECT  A.NODE_NUM AS NODE_NUM,
+                    A.SDN_NODE_ID AS SDN_NODE_ID,
+                    A.NODE_NM AS NODE_NM,
+                    TRUNC(A.CPU_USAGE::NUMERIC,3) * 100 AS CPU_USAGE,
+                    TRUNC(A.MEM_USAGE::NUMERIC,3) * 100 AS MEM_USAGE,
+                    TO_CHAR(A.MEASURED_DATETIME, 'YYYY-MM-DD HH24:MI:SS') AS MEASURED_DATETIME,
+                    CASE WHEN TN.STRRESID IS NOT NULL THEN TRUE ELSE FALSE
+                    END AS AI_RESULT
+            FROM   ( SELECT NM.NODE_NUM,
+                            N.ID AS SDN_NODE_ID,
+                            NM.NODE_NM,
+                            NF.CPU_USAGE,
+                            NF.MEM_USAGE,
+                            NF.MEASURED_DATETIME
+                    FROM    IP_SDN.TB_NODEFACTOR NF
+                    INNER JOIN IP_SDN.TB_NODE N        ON NF.NODE_ID = N.ID
+                    INNER JOIN RESOURCE.TB_NODE_MST NM ON N.ID = NM.IP_SDN_ID::INT
                     WHERE   1=1 
                         <if test="start_date == null and end_date == null">
-                        AND nf.MEASURED_DATETIME BETWEEN NOW()::timestamp - interval '30 min' AND NOW()::timestamp
+                        AND NF.MEASURED_DATETIME BETWEEN NOW()::timestamp - interval '30 min' AND NOW()::timestamp
                         </if>
                         <if test="node_nm != null and node_nm != ''">
-                        AND nm.node_nm LIKE '%' || #{node_nm} || '%'
+                        AND NM.NODE_NM LIKE '%' || #{node_nm} || '%'
                         </if>
                         <if test="start_date != null">
-                        AND nf.MEASURED_DATETIME::timestamp <![CDATA[ >= ]]> #{start_date}::timestamp
+                        AND NF.MEASURED_DATETIME::timestamp <![CDATA[ >= ]]> #{start_date}::timestamp
                         </if>
                         <if test="end_date != null">
-                        AND nf.MEASURED_DATETIME::timestamp <![CDATA[ <= ]]> #{end_date}::timestamp
+                        AND NF.MEASURED_DATETIME::timestamp <![CDATA[ <= ]]> #{end_date}::timestamp
                         </if>
                         <if test="cpu_usage != null and cpu_usage != ''">
-                        AND nf.cpu_usage <![CDATA[ <= ]]> #{cpu_usage}::NUMERIC
+                        AND NF.CPU_USAGE::VARCHAR LIKE #{cpu_usage} || '%'
                         </if>
                         <if test="mem_usage != null and mem_usage != ''">
-                        AND nf.mem_usage <![CDATA[ <= ]]> #{mem_usage}::NUMERIC
+                        AND NF.MEM_USAGE::VARCHAR LIKE #{mem_usage} || '%'
                         </if>
                         ORDER BY MEASURED_DATETIME DESC
-                    ) a
-            LEFT OUTER JOIN rca.tb_nodefactor tn 
-                ON tn.strresid = a.node_num 
-                    AND tn.measured_datetime = a.measured_datetime
+                    ) A
+            LEFT OUTER JOIN RCA.TB_NODEFACTOR TN 
+                ON TN.STRRESID = A.NODE_NUM 
+                    AND TN.MEASURED_DATETIME = A.MEASURED_DATETIME
+        <include refid="TotalCountSuffix"/>
     </select>
 
     <!-- 조치프로파일 리스트 조회 -->
