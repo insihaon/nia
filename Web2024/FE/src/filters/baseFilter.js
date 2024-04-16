@@ -23,6 +23,10 @@ export class BaseFilter {
     }
     if (options?.listName) {
       this.countRows(parent.refVue[options.listName])
+      parent.refVue.$watch(options.listName, (n) => {
+        this.countRows(n)
+        parent?.refVue?.$forceUpdate()
+      })
     }
   }
 

@@ -10,7 +10,7 @@ public class Channel implements Serializable {
 
     public enum EmChannel {
         UNKNOWN, HEARTBEAT, RELOAD, 
-        AAM_ALARM
+        AAM_ALARM, TRANS_ALARM, IPSDN_ALARM, SYSTEM_MONITORING
     }
 
 	private static final long serialVersionUID = 6494678977089006639L;

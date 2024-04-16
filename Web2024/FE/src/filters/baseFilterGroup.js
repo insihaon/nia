@@ -39,17 +39,6 @@ class BaseFilterGroup {
     return this.filters[filterName]
   }
 
-  // init() {
-  //   const { refVue, vueDataName, filters } = this
-  //   if (vueDataName) {
-  //     refVue.$watch(vueDataName, (n) => {
-  //       Object.keys(filters).forEach(filterName => {
-  //         filters[filterName].countRows(n)
-  //       })
-  //     })
-  //   }
-  // }
-
   addFilter(filterName, filterTitle, constants, options) {
     if (!this.filters[filterName]) {
       this.filters[filterName] = new BaseFilter({ constants, parent: this, filterName, filterTitle, options })
@@ -72,7 +61,7 @@ class BaseFilterGroup {
     const currentState = {}
     for (const key in this.filters) {
       if (this.filters[key].options.isMultiSelect) {
-        const arr = this.filters[key].getArray().map(function(v) {
+        const arr = this.filters[key].getArray().map(function (v) {
           return v.item === undefined ? { code: v.code, selected: v.selected } : { code: v.code, selected: v.selected, item: v.item }
         })
         currentState[key] = arr

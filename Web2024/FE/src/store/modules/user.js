@@ -2,6 +2,7 @@ import { apiGetInfo, apiLogin, apiLogout, apiSignUp } from '@/api/auth'
 import { AppOptions } from '@/class/appOptions'
 import Encrypt from '@/assets/libs/Encrypt.min'
 import router, { resetRouter } from '@/router'
+import WebSocketManager from '@/min/webSocketManager'
 import { getInfo, setInfo, removeInfo, getToken, getIpsdnToken, removeToken, setToken, setIpsdnToken } from '@/utils/auth'
 
 export const _var = {
@@ -133,8 +134,8 @@ const actions = {
     }
 
     try {
-      // const ws = WebSocketManager.instance
-      // ws.connect()
+      const ws = WebSocketManager.instance
+      ws.connect()
     } catch (error) {
       // 예외 처리
     }

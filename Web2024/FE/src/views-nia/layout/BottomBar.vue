@@ -2,7 +2,7 @@
   <div :class="{ [name]: true }">
     <div class="alarm-container flex flex-nowrap ml-3">
       <div v-if="isViewport('>', 'md')" class="alarm-title flex items-center mx-2">
-        <img src="@/assets/icon/attention.png" style="height: 22px; width: 22px; filter: contrast(0) brightness(2)">
+        <img src="@/assets/icon/attention.png" style="height: 22px; width: 22px; filter: contrast(0) brightness(2)" />
         <span class="text-lg font-bold pl-1 pt-1">경보 현황</span>
       </div>
       <div class="alarm-content flex flex-nowrap items-center ml-2 text-sm">
@@ -25,8 +25,14 @@
           <div class="text-xs">{{ a.name }}</div>
         </el-col> -->
         <div class="pt-1 font-bold text-base">시스템 현황 모니터링</div>
+        <div class="ml-2 d-flex font-bold items-center gap-x-2">
+          <div v-for="system in niaProcess" :key="system.name" :style="{ color: system.status === 'Y' ? 'lime' : 'red' }" :class="{ blinking: system.status === 'N' }">
+            {{ system.name }}
+          </div>
+        </div>
       </div>
     </div>
+
     <div class="notice-container flex items-center mr-4 text-base pt-1">
       <div v-if="isViewport('>', 'md')" class="notice-title flex items-center">
         <i class="el-icon-s-tools m-2 mt-1 m_icon" />
@@ -39,14 +45,15 @@
     </div>
   </div>
 </template>
-
 <script>
 import { Base } from '@/min/Base.min'
 const routeName = 'BottomBar'
+import { AppOptions } from '@/class/appOptions'
 
 export default {
   name: routeName,
-  components: { },
+  src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+  components: {},
   extends: Base,
   data() {
     return {
@@ -59,31 +66,51 @@ export default {
         { name: 'CRITICAL', count: 3, color: 'red' },
         { name: 'MAJOR', count: 8, color: 'orange' },
         { name: 'MINOR', count: 11, color: 'yellow' },
-        { name: 'WARNING', count: 20, color: 'skyblue' }
-      ]
+        { name: 'WARNING', count: 20, color: 'skyblue' },
+      ],
+      niaProcess: {
+        ipsdn_linkage_status: { name: 'IPSDN_LINK', status: 'Y' },
+        linkage_ai_status: { name: 'LINK_AI', status: 'Y' },
+        engine_status: { name: 'ENGINE', status: 'Y' },
+        ipsdn_sflow_linkage_status: { name: 'IPSDN_SFLOW', status: 'Y' },
+        ipsdn_linkage_ai_status: { name: 'IPSDN_AI', status: 'Y' },
+        sflow_linkage_status: { name: 'SFLOW', status: 'Y' },
+        ipsdn_syslog_status: { name: 'SYSLOG', status: 'Y' },
+        ai_traffic_status: { name: 'TRAFFIC', status: 'N' },
+      },
     }
   },
   mounted() {
     window.bbar = Object.assign(window.bbar || {}, { header: this })
   },
   methods: {
+    subscribeEvent() {
+      this.addWsEventListener(this.CONSTANTS.channels.SYSTEM_MONITORING.name, this.onReceivedSystemMonitoring)
+    },
+    onReceivedSystemMonitoring({ channelName, socketMessage }) {
+      if (channelName !== 'SYSTEM_MONITORING') return
+
+      const data = JSON.parse(socketMessage.message)
+      AppOptions.instance.useWsLog && this.log('RECEIVED SIBSCRIBE SYSTEM_MONITORING EVENT: ', data)
+    },
     handleChangeExpandType(param) {
       this.$emit('changeSize', param)
-    }
-  }
+    },
+  },
 }
 </script>
 
 <style lang="scss" scoped>
-@import "~@/styles/variables.scss";
- .BottomBar {
-    width: 100%;
-    height: 50px;
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: $aiTemplateDefault;
+@import '~@/styles/variables.scss';
+@import '~@/styles/animation.scss';
+.BottomBar {
+  width: 100%;
+  height: 50px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: $aiTemplateDefault;
   .m_icon {
     font-size: 21px;
   }

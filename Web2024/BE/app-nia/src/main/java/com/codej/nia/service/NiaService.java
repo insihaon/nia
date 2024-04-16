@@ -8,9 +8,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import java.util.HashMap;
 import java.util.Map;
-import org.json.JSONObject;
+import java.util.List;
+import java.util.HashMap;
+import com.codej.base.dto.model.ResultMap;
 
 import com.codej.base.dto.AppDto;
 
@@ -22,11 +23,11 @@ import com.codej.base.dto.response.SingleResponse;
 import com.codej.base.exception.CHttpRelayServiceFail;
 import com.codej.nia.properties.ApiServerProperites;
 import com.codej.nia.controller.NiaApiController;
+import com.codej.nia.mapper.db2nd.NiaMapper;
 import com.codej.nia.mq.handler.NiaUiToEnginePublisher;
 import com.codej.web.service.MainService;
 import com.codej.web.service.ResponseService;
 import com.codej.base.utils.CommonUtil;
-import com.codej.base.utils.CryptUtil;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
@@ -50,6 +51,9 @@ public class NiaService extends MainService {
 
     @Autowired
     private ResponseService responseService;
+
+    @Autowired
+    private NiaMapper niaMapper;
 
     @Autowired
     @Lazy
@@ -199,6 +203,18 @@ public class NiaService extends MainService {
             log.error(e.toString());
             return responseService.createSingleResponse(false);
         }
+    }
+
+    public List<ResultMap> selectIpsdnAlarmList(HashMap<String, Object> map) {
+        return niaMapper.SELECT_IP_ALARM_LIST(map);
+    }
+
+    public List<ResultMap> selectTransmissionAlarmList(HashMap<String, Object> map) {
+        return niaMapper.SELECT_TRANSMISSION_ALARM_LIST(map);
+    }
+
+    public List<ResultMap> selectSystemMonitoringCur() {
+        return niaMapper.SELECT_SYSTEM_MONITORING_CURRENT();
     }
 
 }

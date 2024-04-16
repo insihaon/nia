@@ -1,6 +1,7 @@
 import { AppOptions } from '@/class/appOptions'
 import { Device } from '@/class/device'
 import { ModalManager } from '@/class/modalManager'
+import WebSocketManager from '@/min/webSocketManager'
 import elAdaptiveTable from '@/directive/el-table' // base on element-ui
 import variables from '@/styles/variables.scss'
 import { assert, assertEquals, deepCloneFilter, getViewportArr, parseTime, simplize, toJson, wait, humanNumber } from '@/utils'
@@ -67,7 +68,8 @@ const Base = {
       influenceCircitStore: (state) => state.influenceCircitStore,
       t3d: (state) => state.t3d,
       t3dPersisted: (state) => state.t3dPersisted,
-      pmmlte: (state) => state.pmmlte
+      pmmlte: (state) => state.pmmlte,
+      nia: (state) => state.nia
     }),
     webSocketManager() {
       return null
@@ -314,10 +316,18 @@ const Base = {
       }
     },
     addWsEventListener(channelName, eventHandler) {
+      if (!channelName) return
+      const ws = WebSocketManager.instance
+      ws.addEventListener(channelName, eventHandler, this)
     },
     removeWsEventListener(channelName, eventHandler) {
+      if (!channelName) return
+      const ws = WebSocketManager.instance
+      ws.removeEventListener(channelName, eventHandler, this)
     },
     removeAllWsEventListener() {
+      const ws = WebSocketManager.instance
+      ws.removeAllEventListener(this)
     },
     async autoTest() {
       const { wait } = this

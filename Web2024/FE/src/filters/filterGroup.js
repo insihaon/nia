@@ -73,7 +73,7 @@ class FilterGroup {
     const currentState = {}
     for (const key in this.filters) {
       if (this.filters[key].options.multiSingle !== 'single') {
-        const arr = this.filters[key]._data.map(function(v) {
+        const arr = this.filters[key]._data.map(function (v) {
           return v.item === undefined ? { code: v.code, selected: v.selected } : { code: v.code, selected: v.selected, item: v.item }
         })
         currentState[key] = arr
