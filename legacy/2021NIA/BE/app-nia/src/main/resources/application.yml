@@ -113,7 +113,7 @@ jasypt:
 myconf:
   project: nia
   websocket:
-    enabled: false #websocket.enabled
+    enabled: true #websocket.enabled
     url: /ws-stomp
     heartbeat.enabled: false
   auth:

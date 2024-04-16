@@ -1,6 +1,7 @@
+
 const state = {
-    ipNetworkList: [],
-    transmissionNetworkList: []
+  ipNetworkList: [],
+  transmissionNetworkList: []
 }
 
 const mutations = {

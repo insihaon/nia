@@ -14,6 +14,7 @@ public interface NiaMapper extends BaseDataMapper {
         public int UPDATE_USER_GRANT_LIST(HashMap<String, Object> map);
         public List<ResultMap> SELECT_IP_ALARM_LIST(HashMap<String, Object> map);
         public List<ResultMap> SELECT_TRANSMISSION_ALARM_LIST(HashMap<String, Object> map);
+        public List<ResultMap> SELECT_SYSTEM_MONITORING_CURRENT();
         public List<ResultMap> SELECT_DASHBOARD_STATISTICS(HashMap<String, Object> map);
         public List<ResultMap> SELECT_SELF_PROCESS_LIST(HashMap<String, Object> map);
         public List<ResultMap> SELECT_SELF_PROCESS_STATISTICS(HashMap<String, Object> map);
