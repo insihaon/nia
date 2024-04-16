@@ -117,7 +117,7 @@ export default {
       } catch (error) {
         console.error(error)
       } finally {
-        this.closeLoading(target)
+        this.loading = false
       }
     },
     async onloadAppCodeList() {
@@ -129,7 +129,7 @@ export default {
       } catch (error) {
           console.error(error)
         } finally {
-         this.loading = false
+         /*  */
         }
     },
     onChangePage(curPage) {
