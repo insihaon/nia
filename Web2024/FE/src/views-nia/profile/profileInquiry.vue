@@ -5,6 +5,7 @@
       :ag-grid="trafficAgGrid"
       :items="searchItems"
       :is-excel="true"
+      :title="titleName"
       :search-model.sync="searchModel"
       :pagination-info="paginationInfo"
       class="w-100 h-100"
@@ -38,6 +39,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      titleName: '조치 프로파일',
       paginationInfo: {
         currentPage: 1, // 현재 페이지
         pageSize: 50, // 페이지당 항목 수
@@ -110,7 +112,7 @@ export default {
     },
     onChangePage(curPage) {
       this.paginationInfo.currentPage = curPage
-      this.onLoadSopList()
+      this.onLoadProfileList()
     },
     searchClear() {
       this.searchModel = {}

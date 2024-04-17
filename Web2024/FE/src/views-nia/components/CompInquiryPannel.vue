@@ -254,10 +254,9 @@ export default {
       this.selectedItem = []
     },
     handleExcel() {
-      const name = `장애(${(this.isStatType)}) 상세 현황_${this.toStringTime(new Date(), 'YYMMDD')}`
-      this.$refs.agGrid.exportExcel(name)
+      const name = `${this.title}_${this.toStringTime(new Date(), 'YYMMDD')}`
+      this.$refs.compSearchEquip.exportExcel(name)
     }
-
    }
  }
 </script>

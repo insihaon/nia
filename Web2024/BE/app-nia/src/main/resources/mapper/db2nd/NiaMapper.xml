@@ -1243,7 +1243,6 @@
             END AS AUTO_PROCESS_INFO,
             TO_CHAR(CHNG_DATETIME, 'YYYY-MM-DD HH:MI:SS') AS CHNG_DATETIME,
             ROW_NUMBER() OVER (ORDER BY PROFILE_NUM) AS ROWNUM
-            <!-- COUNT(1) OVER () AS "PROFILETOTALCOUNT" -->
         FROM RESOURCE.TB_FAULT_PROCESS_PROFILE
         WHERE 1=1
         <if test="profile_title != null and profile_title != ''">
@@ -1456,7 +1455,6 @@
                 TNM.VENDOR,
                 TNM.SFLOW_IP,
                 TO_CHAR(TNM.CHNG_DATETIME, 'YYYY-MM-DD HH:MI:SS') AS CHNG_DATETIME
-                <!-- COUNT(1) OVER () AS "NODETOTALCOUNT" -->
                 FROM RESOURCE.TB_NODE_MST TNM
                 LEFT OUTER JOIN RESOURCE.TB_CODE CODE ON (TNM.MODEL_ID = CODE.CODE_ID)
                 WHERE 1=1
@@ -1486,7 +1484,6 @@
         SELECT
             ROW_NUMBER() OVER () AS ROWNUM,
             *
-            <!-- COUNT(1) OVER () AS "PORTTOTALCOUNT" -->
         FROM (
              SELECT DISTINCT
                  TPM.NODE_NUM,
@@ -1704,6 +1701,7 @@
 
     <!-- 이용기관 리스트 조회  -->
      <select id="SELECT_AGENCY_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+        <include refid="TotalCountPrefix"/>
         SELECT
             TUO.NREN_ID,
             TUO.NREN_NAME,
@@ -1714,7 +1712,6 @@
             TUO.CUSTOMER_ID,
             TUO.EMAIL,
             ROW_NUMBER() OVER (ORDER BY NREN_ID) AS ROWNUM
-            <!-- COUNT(1) OVER () AS "AGENCYTOTALCOUNT" -->
         FROM RESOURCE.TB_USER_ORGAN TUO
         LEFT OUTER JOIN (SELECT DISTINCT NODE_ID, IF_ID, IF_NM FROM RESOURCE.TB_PORT_MST) IF ON IF.NODE_ID = TUO.NODE_ID AND IF.IF_ID = TUO.IF_ID
         WHERE 1=1
@@ -1728,6 +1725,7 @@
             AND UPPER(TUO.CUSTOMER_ID) LIKE '%' || UPPER(#{customer_id}) || '%'
         </if>
         ORDER BY NREN_ID
+        <include refid="TotalCountSuffix"/>
     </select>
 
     <!-- 이용기관 인터페이스 IF ID 리스트 조회 -->

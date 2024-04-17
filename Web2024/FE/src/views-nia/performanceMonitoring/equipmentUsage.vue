@@ -71,7 +71,7 @@ export default {
     const columns = [
       { type: '', prop: 'measured_datetime', name: '수집기간', minWidth: 80, flex: 0, suppressMenu: true, alignItems: 'center' },
       { type: '', prop: 'node_nm', name: '장비명', minWidth: 80, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: false },
-      { type: '', prop: 'cpu_usage', name: 'CPU 사용량', minWidth: 80, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true, /* format: getFilterValue  */ },
+      { type: '', prop: 'cpu_usage', name: 'CPU 사용량', minWidth: 80, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true, format: getFilterValue },
       { type: '', prop: 'mem_usage', name: 'MEM 사용량', minWidth: 80, flex: 0, suppressMenu: true, alignItems: 'center', valueFormatter: this.formatPercentage, format: getFilterValue },
     ]
 
@@ -95,8 +95,8 @@ export default {
       this.openLoading(target)
       const param = {
         node_nm: this.searchModel.node_nm,
-        cpu_usage: this.searchModel.cpu_usage,
-        mem_usage: this.searchModel.mem_usage,
+        cpu_usage: this.searchModel.cpu_usage / 100,
+        mem_usage: this.searchModel.mem_usage / 100,
         limit: this.paginationInfo.pageSize,
         page: this.paginationInfo.currentPage,
       }

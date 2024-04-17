@@ -4,12 +4,13 @@
       ref="agency"
       :ag-grid="agencyAgGrid"
       :is-excel="true"
+      :title="titleName"
       :items="searchItems"
       :search-model.sync="searchModel"
       :pagination-info="paginationInfo"
       class="w-100 h-100"
       @handleClickSearch="onClickSearch"
-      @onChangePage="onChangePage"
+      @onChangePage="(curPage) => onChangePage(curPage)"
       @searchClear="searchClear"
     />
     <ModalAgencyDetail ref="ModalAgencyDetail" @systemEdit="onLoadAgencyList()" />
@@ -32,6 +33,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      titleName: '이용기관',
       paginationInfo: {
         currentPage: 1, // 현재 페이지
         pageSize: 50, // 페이지당 항목 수
@@ -90,7 +92,9 @@ export default {
       const param = {
         nren_name: this.searchModel.nren_name,
         node_id: this.searchModel.node_id,
-        customer_id: this.searchModel.customer_id
+        customer_id: this.searchModel.customer_id,
+        limit: this.paginationInfo.pageSize,
+        page: this.paginationInfo.currentPage,
       }
       try {
         const res = await apiSelectAgencyList(param)
@@ -105,7 +109,7 @@ export default {
     },
       onChangePage(curPage) {
       this.paginationInfo.currentPage = curPage
-      this.onLoadSopList()
+      this.onLoadAgencyList()
     },
       searchClear() {
       this.searchModel = {}
