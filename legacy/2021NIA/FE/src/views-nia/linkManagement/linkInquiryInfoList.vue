@@ -4,12 +4,13 @@
       ref="linkManagement"
       :ag-grid="linkAgGrid"
       :is-excel="true"
+      :title="titleName"
       :items="searchItems"
       :search-model.sync="searchModel"
       :pagination-info="paginationInfo"
       class="w-100 h-100"
       @handleClickSearch="onClickSearch"
-      @onChangePage="onChangePage"
+      @onChangePage="(curPage) => onChangePage(curPage)"
       @searchClear="searchClear"
     >
       <template slot="button-area">
@@ -38,6 +39,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      titleName: '링크 정보',
       paginationInfo: {
         currentPage: 1, // 현재 페이지
         pageSize: 50, // 페이지당 항목 수
@@ -105,7 +107,9 @@ export default {
         dest_node_id: this.searchModel.dest_node_id,
         src_if_name: this.searchModel.src_if_name,
         dest_if_name: this.searchModel.dest_if_name,
-        link_desc: this.searchModel.link_desc
+        link_desc: this.searchModel.link_desc,
+        limit: this.paginationInfo.pageSize,
+        page: this.paginationInfo.currentPage,
       }
       try {
         const res = await apiSelectLinkList(param)
@@ -120,7 +124,7 @@ export default {
     },
     onChangePage(curPage) {
       this.paginationInfo.currentPage = curPage
-      this.onLoadSopList()
+      this.onLoadLinkList()
     },
     searchClear() {
       this.searchModel = {}

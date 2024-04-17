@@ -1,9 +1,10 @@
 <template>
   <div :class="{ [name]: true }">
     <CompInquiryPannel
-      ref="trafficAnalysis"
+      ref="nodeList"
       :ag-grid="trafficAgGrid"
       :is-excel="true"
+      :title="titleName"
       :items="searchItems"
       :search-model.sync="searchModel"
       :pagination-info="paginationInfo"
@@ -35,6 +36,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      titleName: '노드 리스트',
       paginationInfo: {
         currentPage: 1, // 현재 페이지
         pageSize: 50, // 페이지당 항목 수
@@ -97,7 +99,7 @@ export default {
       this.onLoadTrafficList(params)
     },
     async onLoadTrafficList() {
-      const target = { vue: this.$refs.trafficAnalysis }
+      const target = { vue: this.$refs.nodeList }
       this.openLoading(target)
       const param = {
         node_nm: this.searchModel.node_name,
@@ -108,7 +110,7 @@ export default {
         page: this.paginationInfo.currentPage,
       }
       if (this.searchModel?.datetime) {
-        const dateTime = this.$refs?.trafficAnalysis.searchModel.datetime
+        const dateTime = this.$refs?.nodeList.searchModel.datetime
         this._merge(param, { start_date: dateTime[0], end_date: dateTime[1] })
       }
       try {
@@ -124,7 +126,7 @@ export default {
     },
     onChangePage(curPage) {
       this.paginationInfo.currentPage = curPage
-      this.onLoadSopList()
+      this.onLoadTrafficList()
     },
     searchClear() {
       this.searchModel = {}

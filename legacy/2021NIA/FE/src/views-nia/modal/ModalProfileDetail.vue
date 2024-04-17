@@ -18,7 +18,7 @@
       <span slot="title">
         <i class="el-icon-user mr-2" style="font-size: 17px" />
         {{ '조치프로파일 상세보기' }}
-        <hr>
+        <hr />
       </span>
       <table class="basic">
         <th class="disable">프로파일제목</th>
@@ -83,7 +83,7 @@
         </tr>
         <tr>
           <td colspan="4">
-            <el-table :data="tableData" style="width: 100%">
+            <el-table :data="tableData" style="width: 100%; background: #fff;">
               <el-table-column prop="name" label="노드명" />
               <el-table-column width="100%">
                 <template slot-scope="scope">
@@ -388,7 +388,6 @@ export default {
     },
     /* 프로파일 등록 */
     handleInsertProfile() {
-      // apiInsertProfileList
       if (!this.auto_process_check && this.autoProcTime.length === 0) {
         this.$message('자동 처리 기간을 설정하세요')
         return false

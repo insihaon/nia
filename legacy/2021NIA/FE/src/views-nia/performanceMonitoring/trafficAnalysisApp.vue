@@ -127,10 +127,8 @@ export default {
         this.searchItems[0].options = selectCodeData
         this.searchItems[2].options = selectCodeData
       } catch (error) {
-          console.error(error)
-        } finally {
-         /*  */
-        }
+        console.error(error)
+      }
     },
     onChangePage(curPage) {
       this.paginationInfo.currentPage = curPage

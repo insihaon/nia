@@ -33,7 +33,7 @@
           >
             <template slot="button-area">
               <div class="button-panel">
-                <el-button class="float-right" type="info" @click="handleOpenEditModal('','AGENCY')">등록</el-button>
+                <el-button class="float-right" size="mini" type="info" @click="handleOpenEditModal('','AGENCY')">등록</el-button>
               </div>
             </template>
           </CompInquiryPannel>
