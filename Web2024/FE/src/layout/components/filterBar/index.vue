@@ -1,11 +1,11 @@
 <template>
   <div :class="[{ [name]: true }]">
-    <div id="filter-container" class="w-full flex flex-nowrap justify-between">
+    <div id="filter-container" class="w-full flex flex-nowrap justify-between" :style="{ height: barHeight + 'px' }">
       <slot id="function-container" name="function-container">ADD FILTER FUNCTION</slot>
       <div id="resize-container" class="px-1">
-        <img src="@/assets/icon/reset.png" class="w-6 h-6" @click="onChangeSettings('RESET')">
-        <img src="@/assets/icon/minimize.png" class="w-6 h-6" @click="onChangeSettings('MIN')">
-        <img src="@/assets/icon/maximize.png" class="w-6 h-6" @click="onChangeSettings('MAX')">
+        <img src="@/assets/icon/reset.png" class="w-6 h-6" @click="onChangeSettings('RESET')" />
+        <img src="@/assets/icon/minimize.png" class="w-6 h-6" @click="onChangeSettings('MIN')" />
+        <img src="@/assets/icon/maximize.png" class="w-6 h-6" @click="onChangeSettings('MAX')" />
       </div>
     </div>
   </div>
@@ -22,7 +22,10 @@ export default {
     position: {
       type: String,
       default: 'top',
-
+    },
+    barHeight: {
+      typp: Number,
+      default: 35,
     },
     sizeByType: {
       type: Object,
@@ -30,18 +33,18 @@ export default {
         return {
           TOP: {
             MIN: 5,
-            MAX: 95
+            MAX: 95,
           },
-        /*
+          /*
           vue-splitpane에서는 top size가 기준이기 때문에 bottom size는 top과 반대로 지정한다.
         */
           BOTTOM: {
             MIN: 95,
-            MAX: 5
-          }
+            MAX: 5,
+          },
         }
       },
-    }
+    },
   },
   data() {
     return {
@@ -57,18 +60,17 @@ export default {
       const changeVal = this.sizeByType[this.position][changeType]
       window.helper.$store.dispatch('settings/changeSetting', {
         key: 'topPaneSize',
-        value: changeVal
+        value: changeVal,
       })
-    }
+    },
   },
 }
 </script>
 
 <style lang="scss" scoped>
-@import "~@/styles/variables.scss";
+@import '~@/styles/variables.scss';
 
 #filter-container {
-  height: 35px;
   overflow: hidden;
   align-items: center;
   background-color: #94a3b838;
@@ -80,6 +82,8 @@ export default {
   #resize-container {
     display: flex;
     align-items: center;
+    height: 100%;
+    margin-right: 10px;
     img {
       transition: all 0.3s;
       width: 20px;

@@ -8,6 +8,9 @@
         <BottomBar ref="bottombr" />
       </div>
     </div>
+    <el-card v-if="showWindowSize" class="viewport-container" shadow="always">
+      <h6>{{ viewSize }}</h6>
+    </el-card>
     <CompTrafficAnalysisModal ref="CompTrafficAnalysisModal" :fullscreen="isViewport('<', 'sm')" />
 
   </div>
@@ -158,6 +161,7 @@ export default {
 }
 </script>
 <style lang="scss">
+@import "~@/assets/css/style_main.css";
   .common-padding{
     padding: var(--common-padding);
     position: relative;
@@ -215,6 +219,22 @@ export default {
   width: 300px;
   margin: 0 auto;
   cursor: pointer;
+}
+.viewport-container {
+  position: fixed;
+  background: #409eff;
+  color: white;
+  right: 0;
+  bottom: 0;
+  z-index: 100;
+  opacity: 0.8;
+  ::v-deep .el-card__body{
+    padding: 5px;
+    h3 {
+      text-align: -webkit-center;
+      min-width: 150px;
+    }
+  }
 }
 </style>
 
