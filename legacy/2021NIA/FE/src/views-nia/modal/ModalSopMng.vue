@@ -19,9 +19,9 @@
         <span slot="title">
           <i class="el-icon-document mr-2 text-base" />
           조치 SOP 관리
-          <hr>
+          <hr />
         </span>
-        <div class="d-flex flex-column h-100 rounded justify-center" style="border: solid 1px #1e293b;">
+        <div class="d-flex flex-column h-100 rounded justify-center" style="border: solid 1px #1e293b">
           <CompInquiryPannel
             ref="inquiry"
             :ag-grid="sopEditGrid"
@@ -39,13 +39,9 @@
             @searchClear="searchClear" -->
         </div>
         <div slot="footer" class="dialog-footer">
-          <hr>
-          <el-button size="small" plain class="mt-2" @click.native="$refs.ModalSopMngEdit.open({ type: 'add' })">
-            등록
-          </el-button>
-          <el-button size="small" plain class="mt-2" @click.native="onClickSopDelete()">
-            삭제
-          </el-button>
+          <hr />
+          <el-button size="small" plain class="mt-2" @click.native="$refs.ModalSopMngEdit.open({ type: 'add' })"> 등록 </el-button>
+          <el-button size="small" plain class="mt-2" @click.native="onClickSopDelete()"> 삭제 </el-button>
           <el-button size="small" plain class="close-btn mt-2" @click.native="close()">
             {{ $t('exit') }}
           </el-button>
@@ -85,7 +81,7 @@ export default {
         pageSize: 50, // 페이지당 항목 수
         totalCount: 0, // 총 항목 수
         totalPages: null, // 전체 페이지 수
-        pagerCount: 11
+        pagerCount: 11,
       },
       selectedRow: null,
       totalCount: 0,
@@ -94,29 +90,53 @@ export default {
       visible: false,
       searchItems: [
         { label: '등록자', type: 'input', model: 'USER_ID', size: 12 },
-        { label: '조치 SOP', type: 'input', model: 'FAULT_GB', },
-        { label: '조치 유형', type: 'input', model: 'FAULT_TYPE', },
-        { label: '등록일', type: 'date', model: 'period', },
+        { label: '조치 SOP', type: 'input', model: 'FAULT_GB' },
+        { label: '조치 유형', type: 'input', model: 'FAULT_TYPE' },
+        { label: '등록일', type: 'date', model: 'period' },
       ],
       searchModel: {
         period: null,
         USER_ID: '',
         FAULT_GB: '',
-        FAULT_TYPE: ''
-      }
+        FAULT_TYPE: '',
+      },
     }
   },
   computed: {
     sopEditGrid() {
       const options = { name: this.name, checkable: false, rowGroupPanel: false, rowSelection: 'multiple', rowMultiSelection: false }
-        const columns = [
-          { type: '', prop: 'user_id', name: '등록자', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
-          { type: '', prop: 'fault_gb', name: '조치 SOP', width: 160, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
-          { type: '', prop: 'fault_type', name: '항목', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
-          { type: '', prop: 'edit', name: '편집', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false, cellRenderer: (params) => { return `<button class='el-icon-edit' />` } },
-          { type: '', prop: 'reg_time', name: '등록일', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false, formatter: (row) => { return this.formatterTimeStamp(row.reg_time, 'YYYY/MM/DD-HH:mm:ss') } },
-        ]
-        return { options, columns, data: this.sopCodeList }
+      const columns = [
+        { type: '', prop: 'user_id', name: '등록자', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
+        { type: '', prop: 'fault_gb', name: '조치 SOP', width: 160, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
+        { type: '', prop: 'fault_type', name: '항목', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
+        {
+          type: '',
+          prop: 'edit',
+          name: '편집',
+          width: 100,
+          suppressMenu: true,
+          alignItems: 'center',
+          sortable: true,
+          filterable: false,
+          cellRenderer: (params) => {
+            return `<button class='el-icon-edit' />`
+          },
+        },
+        {
+          type: '',
+          prop: 'reg_time',
+          name: '등록일',
+          width: 100,
+          suppressMenu: true,
+          alignItems: 'center',
+          sortable: true,
+          filterable: false,
+          formatter: (row) => {
+            return this.formatterTimeStamp(row.reg_time, 'YYYY/MM/DD-HH:mm:ss')
+          },
+        },
+      ]
+      return { options, columns, data: this.sopCodeList }
     },
   },
   methods: {
@@ -163,11 +183,11 @@ export default {
         cancelButtonText: '취소',
       }).then(async () => {
         try {
-            const res = await apiDeleteSop({ SEQ })
-            if (res.success) {
-              this.alert('삭제 되었습니다.')
-              this.onLoadSopCodeList()
-            }
+          const res = await apiDeleteSop({ SEQ })
+          if (res.success) {
+            this.alert('삭제 되었습니다.')
+            this.onLoadSopCodeList()
+          }
         } catch (error) {
           this.alert('삭제 실패 하였습니다.')
           console.error(error)
@@ -177,10 +197,11 @@ export default {
     alert(message) {
       this.$alert(message, '알림', { confirmButtonText: '확인' })
     },
-    onClose() { /* for Override */ },
-    }
-
-  }
+    onClose() {
+      /* for Override */
+    },
+  },
+}
 </script>
 <style lang="scss" scoped>
 // .ModalSopDetail ::v-deep {

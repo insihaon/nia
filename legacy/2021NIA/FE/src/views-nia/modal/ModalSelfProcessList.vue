@@ -19,7 +19,7 @@
         <span slot="title">
           <i class="el-icon-document mr-2 text-base" />
           자가 {{ getPageType }} 이력조회
-          <hr>
+          <hr />
         </span>
         <div class="d-flex flex-column h-100">
           <CompInquiryPannel
@@ -77,23 +77,22 @@ export default {
         totalCount: 0, // 총 항목 수
         totalPages: null, // 전체 페이지 수
       },
-      searchOptions: {
-      },
+      searchOptions: {},
       recoveryType: [
         { label: '비장애성', value: 'F' },
-        { label: 'SYSLOG', value: 'S' }
+        { label: 'SYSLOG', value: 'S' },
       ],
       optimizationType: [
         { label: '이상트래픽', value: 'A' },
-        { label: '유해트래픽', value: 'N' }
+        { label: '유해트래픽', value: 'N' },
       ],
       closType: [
         { label: '자동', value: 'A' },
-        { label: '수동', value: 'M' }
+        { label: '수동', value: 'M' },
       ],
       closStatus: [
         { label: '마감', value: 'Y' },
-        { label: '발생', value: 'N' }
+        { label: '발생', value: 'N' },
       ],
     }
   },
@@ -102,12 +101,63 @@ export default {
       const options = { name: this.name, checkable: false, rowGroupPanel: false, rowHeight: 30, rowSelection: 'multiple', rowMultiSelection: false }
       const columns = [
         { type: '', prop: 'ticket_id', name: '티켓번호', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
-        { type: '', prop: 'occur_time', name: '발생시간', width: 200, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true, format: (row) => { return row.occur_time ? this.formatterTimeStamp(row.occur_time, 'YYYY/MM/DD-HH:mm:ss') : '' } },
-        { type: '', prop: 'clos_time', name: '마감시간', width: 200, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true, format: (row) => { return row.clos_time ? this.formatterTimeStamp(row.clos_time, 'YYYY/MM/DD-HH:mm:ss') : '' } },
+        {
+          type: '',
+          prop: 'occur_time',
+          name: '발생시간',
+          width: 200,
+          suppressMenu: true,
+          alignItems: 'center',
+          sortable: true,
+          filterable: true,
+          format: (row) => {
+            return row.occur_time ? this.formatterTimeStamp(row.occur_time, 'YYYY/MM/DD-HH:mm:ss') : ''
+          },
+        },
+        {
+          type: '',
+          prop: 'clos_time',
+          name: '마감시간',
+          width: 200,
+          suppressMenu: true,
+          alignItems: 'center',
+          sortable: true,
+          filterable: true,
+          format: (row) => {
+            return row.clos_time ? this.formatterTimeStamp(row.clos_time, 'YYYY/MM/DD-HH:mm:ss') : ''
+          },
+        },
         { type: '', prop: 'self_process_type', name: '알람종류', width: 120, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false, format: getTicketType },
         { type: '', prop: 'fault_detail_content', name: '조치내용', suppressMenu: true, alignItems: 'center', sortable: true, filterable: true },
-        { type: '', prop: 'clos_type', name: '마감종류', width: 80, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true, format: (row) => { return row.clos_type === 'A' ? '자동' : '수동' } },
-        { type: '', prop: 'clos_status', name: '마감여부', width: 80, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true, format: (row) => { return row.clos_status === 'Y' ? '마감' : '발생' }, cellStyle: (params) => { return params.value === 'Y' ? { color: 'red' } : { color: 'blue' } } },
+        {
+          type: '',
+          prop: 'clos_type',
+          name: '마감종류',
+          width: 80,
+          suppressMenu: true,
+          alignItems: 'center',
+          sortable: true,
+          filterable: true,
+          format: (row) => {
+            return row.clos_type === 'A' ? '자동' : '수동'
+          },
+        },
+        {
+          type: '',
+          prop: 'clos_status',
+          name: '마감여부',
+          width: 80,
+          suppressMenu: true,
+          alignItems: 'center',
+          sortable: true,
+          filterable: true,
+          format: (row) => {
+            return row.clos_status === 'Y' ? '마감' : '발생'
+          },
+          cellStyle: (params) => {
+            return params.value === 'Y' ? { color: 'red' } : { color: 'blue' }
+          },
+        },
       ]
       return { options, columns, data: this.selfProcessList }
     },
@@ -116,12 +166,20 @@ export default {
     },
     searchItems() {
       return [
-          { label: '종류', type: 'select', multiple: false, size: 4, model: 'SELF_PROCESS_TYPE', placeholder: '', options: this.getPageType === '최적화' ? this.optimizationType : this.recoveryType },
-          { label: '마감종류', type: 'select', multiple: false, size: 4, model: 'CLOS_TYPE', placeholder: '', options: this.closType },
-          { label: '마감상태', type: 'select', multiple: false, size: 4, model: 'CLOS_STATUS', placeholder: '', options: this.closStatus },
-          // { label: '조회기간', type: 'date', size: 4, model: 'DATE', placeholder: '' },
+        {
+          label: '종류',
+          type: 'select',
+          multiple: false,
+          size: 4,
+          model: 'SELF_PROCESS_TYPE',
+          placeholder: '',
+          options: this.getPageType === '최적화' ? this.optimizationType : this.recoveryType,
+        },
+        { label: '마감종류', type: 'select', multiple: false, size: 4, model: 'CLOS_TYPE', placeholder: '', options: this.closType },
+        { label: '마감상태', type: 'select', multiple: false, size: 4, model: 'CLOS_STATUS', placeholder: '', options: this.closStatus },
+        // { label: '조회기간', type: 'date', size: 4, model: 'DATE', placeholder: '' },
       ]
-    }
+    },
   },
   methods: {
     onCreated() {
@@ -160,15 +218,16 @@ export default {
       this.paginationInfo.currentPage = curPage
       this.onLoadSelfProcessList()
     },
-    onClose() { /* for Override */ },
+    onClose() {
+      /* for Override */
     },
-
-  }
+  },
+}
 </script>
 
 <style lang="scss" scoped>
 .CompInquiryPannel ::v-deep {
-  div.subContentWrap div.optionBox>div.optionBoxContent>div.optionItem>label {
+  div.subContentWrap div.optionBox > div.optionBoxContent > div.optionItem > label {
     min-width: 50px;
   }
 }

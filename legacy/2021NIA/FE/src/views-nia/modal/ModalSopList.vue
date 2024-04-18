@@ -19,7 +19,7 @@
         <span slot="title">
           <i class="el-icon-document mr-2 text-base" />
           SOP 이력 조회
-          <hr>
+          <hr />
         </span>
         <div class="d-flex flex-column h-100">
           <component :is="componentLoader" :row="selectedRow" class="h-full" />
@@ -71,15 +71,17 @@ export default {
     onOpen(model, actionMode) {
       this.selectedRow = model?.row
     },
-    onClose() { /* for Override */ },
-    }
-  }
+    onClose() {
+      /* for Override */
+    },
+  },
+}
 </script>
 
 <style lang="scss" scoped>
- ::v-deep .CompInquiryPannel {
+::v-deep .CompInquiryPannel {
   height: 500px !important;
-  div.subContentWrap div.optionBox>div.optionBoxContent>div.optionItem>label {
+  div.subContentWrap div.optionBox > div.optionBoxContent > div.optionItem > label {
     min-width: 50px;
   }
 }

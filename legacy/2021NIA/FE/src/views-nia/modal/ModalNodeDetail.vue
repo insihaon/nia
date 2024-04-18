@@ -15,9 +15,9 @@
       :class="{ [name]: true }"
     >
       <span slot="title">
-        <i class="el-icon-user mr-2" style="font-size: 17px;" />
+        <i class="el-icon-user mr-2" style="font-size: 17px" />
         {{ '노드 상세보기' }}
-        <hr>
+        <hr />
       </span>
       <table class="basic">
         <tr>
@@ -39,9 +39,7 @@
           <td colspan="3" class="disable">{{ rowInfo.admin_yn_info }}</td>
         </tr>
         <tr>
-          <th colspan="4" class="line-class">
-            NetConf
-          </th>
+          <th colspan="4" class="line-class">NetConf</th>
         </tr>
         <tr>
           <th>PORT</th>
@@ -54,9 +52,7 @@
           <td colspan="3" class="disable">{{ rowInfo.phone_number }}</td>
         </tr>
         <tr>
-          <th colspan="4" class="line-class">
-            좌표
-          </th>
+          <th colspan="4" class="line-class">좌표</th>
         </tr>
         <tr>
           <th>위도</th>
@@ -96,18 +92,16 @@ export default {
   },
   computed: {
     ...mapState({
-      viewport: state => state.app.viewport,
-      username: state => state.user.name,
+      viewport: (state) => state.app.viewport,
+      username: (state) => state.user.name,
     }),
     loginUsername() {
       const userNM = this.username ? this.username.replace(/.$/, '*') : 'UNKONWN'
       return userNM
     },
   },
-  watch: {
-  },
-  mounted() {
-  },
+  watch: {},
+  mounted() {},
   methods: {
     onCreated() {
       Modal.methods.onCreated.call(this)
@@ -117,22 +111,22 @@ export default {
       this.viewType = model.type
       this.rowInfo = this._cloneDeep(model.row)
     },
-    onClose() { /* for Override */ },
+    onClose() {
+      /* for Override */
+    },
     onSubmit() {
-        console.log('submit!')
-      }
-    }
-
-  }
+      console.log('submit!')
+    },
+  },
+}
 </script>
 
 <style lang="scss" scoped>
-@import "~@/styles/variables.scss";
-   .ModalNodeDetail{
-     .line-class{
-      font-weight : bold;
-      font-size : 15px;
-     }
-   }
+@import '~@/styles/variables.scss';
+.ModalNodeDetail {
+  .line-class {
+    font-weight: bold;
+    font-size: 15px;
+  }
+}
 </style>
-
