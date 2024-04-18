@@ -273,9 +273,11 @@
         FROM nia.tb_alarm_mst AM
         LEFT JOIN rca.tb_rca_ticket_al_current AC ON AM.ALARMNO = AC.TICKET_AL_ID
         LEFT JOIN rca.tb_rca_ticket_current TC ON AC.TICKET_ID = TC.TICKET_ID
-        WHERE ALARMTIME <![CDATA[ > ]]>  now() - INTERVAL '7' day
+        <if test="IS_POLLING == null">
+            WHERE ALARMTIME <![CDATA[ > ]]>  now() - INTERVAL '7' day
+        </if>
         <if test="IS_POLLING != null and IS_POLLING == true">
-            AND ALARMTIME <![CDATA[ >= ]]> (CURRENT_TIMESTAMP - INTERVAL '5 minutes')
+            WHERE ALARMTIME <![CDATA[ >= ]]> (CURRENT_TIMESTAMP - INTERVAL '5 minutes')
         </if>
         ORDER BY ALARMTIME DESC
    </select>

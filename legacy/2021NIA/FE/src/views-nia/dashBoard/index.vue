@@ -40,11 +40,15 @@
         </div>
       </template>
       <template slot="top-container">
-        <filterBar position="TOP">
+        <filterBar position="TOP" :bar-height="60">
           <template slot="function-container">
             <div class="filter-container">
               <div class="title">IP-SDN</div>
               <div class="filter-group">
+                <div class="d-flex">
+                  <span class="item-title mr-1">검색</span>
+                  <el-input v-model="ipspnTextSearch" @input="(value) => onChangeTextSearch('ipsdn', value)" clearable />
+                </div>
                 <template v-for="(filter, keyName) in ipFilterGroup.filters">
                   <div v-if="filter.filterTitle" :key="filter.filterTitle" class="item-title ml-2">
                     {{ filter.filterTitle || '' }}
@@ -76,6 +80,10 @@
             <div class="filter-container">
               <div class="title">전송망</div>
               <div class="filter-group">
+                <div class="d-flex">
+                  <span class="item-title mr-1">검색</span>
+                  <el-input v-model="transTextSearch" @input="(value) => onChangeTextSearch('trans', value)" clearable />
+                </div>
                 <template v-for="(filter, keyName) in transFilterGroup.filters">
                   <div v-if="filter.filterTitle" :key="filter.filterTitle" class="item-title ml-2">
                     {{ filter.filterTitle || '' }}
@@ -139,6 +147,8 @@ export default {
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       ipFilterGroup: '',
       transFilterGroup: '',
+      ipspnTextSearch: '',
+      transTextSearch: '',
       ipNetworkList: [],
       transmissionNetworkList: [],
       selectedItem: [],
@@ -469,6 +479,10 @@ export default {
       this._orderBy(temp, ['desc', 'alarmtime'])
       return temp
     },
+    onChangeTextSearch(type, value) {
+      const refName = type === 'ipsdn' ? 'ipAgGrid' : 'transmissionAgGrid'
+      this.$refs[refName].gridApi.setQuickFilter(value)
+    },
     onClickChart(e) {
       const params = {
         DATE_TYPE: this.selfChartCondition.statisticsType,
@@ -754,9 +768,11 @@ export default {
       padding: 0px 10px;
       align-items: center;
       letter-spacing: 1.2px;
+      white-space: nowrap;
     }
     .filter-group {
       display: flex;
+      flex-wrap: wrap;
       margin-left: 10px;
       .split {
         &:before {
@@ -765,12 +781,21 @@ export default {
           font-weight: 700;
         }
       }
+      ::v-deep .el-input--medium .el-input__inner {
+        height: 25px;
+        width: 300px;
+      }
+      ::v-deep .el-input__suffix {
+        top: -4px;
+      }
       .item-title {
-        border-radius: solid 1px;
+        display: flex;
+        align-items: center;
         font-weight: 600;
-        .filter-text {
-          white-space: nowrap;
-        }
+        white-space: nowrap;
+      }
+      .filter-text {
+        white-space: nowrap;
       }
       ul {
         display: flex;
