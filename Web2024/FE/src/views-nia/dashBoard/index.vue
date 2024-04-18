@@ -47,7 +47,7 @@
               <div class="filter-group">
                 <div class="d-flex">
                   <span class="item-title mr-1">검색</span>
-                  <el-input v-model="ipspnTextSearch" @input="(value) => onChangeTextSearch('ipsdn', value)" clearable />
+                  <el-input v-model="ipspnTextSearch" clearable @input="(value) => onChangeTextSearch('ipsdn', value)" />
                 </div>
                 <template v-for="(filter, keyName) in ipFilterGroup.filters">
                   <div v-if="filter.filterTitle" :key="filter.filterTitle" class="item-title ml-2">
@@ -82,7 +82,7 @@
               <div class="filter-group">
                 <div class="d-flex">
                   <span class="item-title mr-1">검색</span>
-                  <el-input v-model="transTextSearch" @input="(value) => onChangeTextSearch('trans', value)" clearable />
+                  <el-input v-model="transTextSearch" clearable @input="(value) => onChangeTextSearch('trans', value)" />
                 </div>
                 <template v-for="(filter, keyName) in transFilterGroup.filters">
                   <div v-if="filter.filterTitle" :key="filter.filterTitle" class="item-title ml-2">

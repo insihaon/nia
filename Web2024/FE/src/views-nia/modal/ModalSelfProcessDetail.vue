@@ -19,15 +19,17 @@
         <span slot="title">
           <i class="el-icon-document mr-2 text-base" />
           자가 {{ pageType }} 이력 상세보기
-          <hr>
+          <hr />
         </span>
-        <div class="d-flex flex-column h-100 rounded justify-between p-3" style="border: solid 1px #1e293b;">
+        <div class="d-flex flex-column h-100 rounded justify-between p-3" style="border: solid 1px #1e293b">
           <div class="shadow-sm p-1 mt-2">
-            <span class="title"><i class="el-icon-tickets" />{{ pageType === '최적화' ? '티켓': '알람' }}정보</span>
+            <span class="title"><i class="el-icon-tickets" />{{ pageType === '최적화' ? '티켓' : '알람' }}정보</span>
             <table class="ticket-info basic">
               <thead>
                 <tr>
-                  <th><span>{{ processType !== 'S' ? '티켓': '알람' }}번호</span></th>
+                  <th>
+                    <span>{{ processType !== 'S' ? '티켓' : '알람' }}번호</span>
+                  </th>
                   <th><span>타입</span></th>
                   <th><span>발생시간</span></th>
                 </tr>
@@ -49,19 +51,14 @@
           <div v-else class="shadow-sm p-1 mt-2">
             <span class="title">연관 SOP 리스트</span>
             <div v-if="sopHistList.length > 0" class="overflow-auto" style="max-height: 250px">
-              <CompAgGrid
-                ref="sopAgGrid"
-                v-model="sopAgGrid"
-                class="w-100"
-                style="height: 200px"
-              />
+              <CompAgGrid ref="sopAgGrid" v-model="sopAgGrid" class="w-100" style="height: 200px" />
             </div>
             <div v-else class="d-flex items-center justify-center text-lg font-semibold" style="height: 100px">연관 SOP 데이터가 존재하지 않습니다.</div>
           </div>
 
           <div v-if="processType !== 'S'" class="shadow-sm p-1 mt-2">
             <span class="title"><i class="el-icon-document" />AI 탐지 정보</span>
-            <table v-if="selectedRow.ticket_type ==='FTT'" class="ticket-info basic">
+            <table v-if="selectedRow.ticket_type === 'FTT'" class="ticket-info basic">
               <thead>
                 <tr>
                   <th><span>장애 확률</span></th>
@@ -70,8 +67,8 @@
               </thead>
               <tbody>
                 <tr class="repeated-item">
-                  <td>{{ selectedRow.zero1_entropy ? `${(selectedRow.zero1_entropy*100).toFixed(1)}%`: '' }}</td>
-                  <td>{{ selectedRow.zero1_entropy ? `${((1 - selectedRow.zero1_entropy)*100).toFixed(1)}%` : '' }}</td>
+                  <td>{{ selectedRow.zero1_entropy ? `${(selectedRow.zero1_entropy * 100).toFixed(1)}%` : '' }}</td>
+                  <td>{{ selectedRow.zero1_entropy ? `${((1 - selectedRow.zero1_entropy) * 100).toFixed(1)}%` : '' }}</td>
                 </tr>
               </tbody>
             </table>
@@ -86,20 +83,20 @@
               <tbody>
                 <tr class="repeated-item">
                   <td>BPS</td>
-                  <td colspan="2">{{ aiDetection.in_bps +'MB' }}</td>
-                  <td colspan="2">{{ aiDetection.out_bps +'MB' }}</td>
+                  <td colspan="2">{{ aiDetection.in_bps + 'MB' }}</td>
+                  <td colspan="2">{{ aiDetection.out_bps + 'MB' }}</td>
                 </tr>
 
                 <tr class="repeated-item">
                   <td>PREDICT</td>
-                  <td colspan="2">{{ aiDetection.in_predict+'MB' }}</td>
-                  <td colspan="2">{{ aiDetection.out_predict+'MB' }}</td>
+                  <td colspan="2">{{ aiDetection.in_predict + 'MB' }}</td>
+                  <td colspan="2">{{ aiDetection.out_predict + 'MB' }}</td>
                 </tr>
 
                 <tr class="repeated-item">
                   <td>THRESHOLD_UPPER</td>
-                  <td colspan="2">{{ aiDetection.in_threshold_upper+'MB' }}</td>
-                  <td colspan="2">{{ aiDetection.out_threshold_upper+'MB' }}</td>
+                  <td colspan="2">{{ aiDetection.in_threshold_upper + 'MB' }}</td>
+                  <td colspan="2">{{ aiDetection.out_threshold_upper + 'MB' }}</td>
                 </tr>
 
                 <tr class="repeated-item">
@@ -117,22 +114,16 @@
               <table class="ticket-info basic">
                 <thead>
                   <tr>
-                    <th
-                      v-for="(col, index) in defineSyslogDetailTable.col"
-                      :key="index"
-                      class="whitespace-nowrap"
-                      style="max-width: fit-content"
-                    > <span>{{ col }}</span></th>
+                    <th v-for="(col, index) in defineSyslogDetailTable.col" :key="index" class="whitespace-nowrap" style="max-width: fit-content">
+                      <span>{{ col }}</span>
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr class="repeated-item">
-                    <td
-                      v-for="(valueKey, index) in defineSyslogDetailTable.valueKey"
-                      :key="index"
-                      class="whitespace-nowrap"
-                      style="min-width: fit-content;max-width: fit-content"
-                    ><span>{{ syslogInfo[valueKey] ||'' }}</span></td>
+                    <td v-for="(valueKey, index) in defineSyslogDetailTable.valueKey" :key="index" class="whitespace-nowrap" style="min-width: fit-content; max-width: fit-content">
+                      <span>{{ syslogInfo[valueKey] || '' }}</span>
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -141,18 +132,20 @@
           <div class="d-flex flex-column mr-2 shadow-sm p-1 mt-2">
             <span class="title">설명</span>
             <div class="d-flex flex-column mr-2 items-center text-xs">
-              <span>&nbsp;{{ pageType === '최적화' ? '티켓': '알람' }}번호 :{{ selectedRow.ticket_id || '' }}</span>
+              <span>&nbsp;{{ pageType === '최적화' ? '티켓' : '알람' }}번호 :{{ selectedRow.ticket_id || '' }}</span>
               <span>&nbsp;티켓의 정보를 참고하여 "수동 마감" 처리를 원하실 경우</span>
-              <span>&nbsp;하단의 <button style="color: white; background-color: rgb(31, 51, 92); border: none; font-size: 12px; padding: 3px;">AI 장애대응(수동)</button>버튼을 클릭하여 "수동 마감" 하시기 바랍니다.</span>
-              <span>&nbsp;티켓의 정보가 상단의 정보와 일치하여 "자동 마감"을 원하신다면 <button style="color: white; background-color: rgb(31, 51, 92); border: none; font-size: 12px; padding: 3px;">닫기</button> 버튼을 클릭하시기 바랍니다. </span>
+              <span>&nbsp;하단의 <button style="color: white; background-color: rgb(31, 51, 92); border: none; font-size: 12px; padding: 3px">AI 장애대응(수동)</button>버튼을 클릭하여
+                "수동 마감" 하시기 바랍니다.</span>
+              <span>&nbsp;티켓의 정보가 상단의 정보와 일치하여 "자동 마감"을 원하신다면
+                <button style="color: white; background-color: rgb(31, 51, 92); border: none; font-size: 12px; padding: 3px">닫기</button> 버튼을 클릭하시기 바랍니다.
+              </span>
             </div>
           </div>
-        </div>ㅜ
+        </div>
+        ㅜ
         <div slot="footer" class="dialog-footer">
-          <hr>
-          <el-button size="small" class="mt-2" @click.native="onOpenAiResponse">
-            AI 장애대응(수동)
-          </el-button>
+          <hr />
+          <el-button size="small" class="mt-2" @click.native="onOpenAiResponse"> AI 장애대응(수동) </el-button>
           <el-button size="small" class="close-btn mt-2" @click.native="close()">
             {{ $t('exit') }}
           </el-button>
@@ -171,7 +164,15 @@ import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
 import ModalAiResponse from '@/views-nia/modal/ModalAiResponse'
 import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
 import CellRenderDataSetButtons from '@/views-dataHub/components/cellRenderer/CellRenderDataSetButtons'
-import { apiSelfProcessTrafficInfo, apiATTTrafficChart, apiNTTTrafficChart, apiSelectAiDetectionInfo, apiSelfProcessSyslogInfo, apiSelectSopHistList, apiSopSyslogHistList } from '@/api/nia'
+import {
+  apiSelfProcessTrafficInfo,
+  apiATTTrafficChart,
+  apiNTTTrafficChart,
+  apiSelectAiDetectionInfo,
+  apiSelfProcessSyslogInfo,
+  apiSelectSopHistList,
+  apiSopSyslogHistList,
+} from '@/api/nia'
 import { getTicketType, formatterTime } from '@/views-nia/js/commonFormat'
 import CompChart from '@/components/chart/CompChart.vue'
 
@@ -203,7 +204,7 @@ export default {
         in_bps: '',
         in_anomaly: '',
         out_bps: '',
-        out_anomaly: ''
+        out_anomaly: '',
       },
       trafficChartList: [],
       // ST
@@ -217,56 +218,56 @@ export default {
         nodenm: '',
         nodenu: '',
         alarmloc: '',
-        status: ''
+        status: '',
       },
       sopHistList: [],
       defineSolHistTable: {
         col: ['알람 번호', '장비명', '인터페이스', '장애구분', '장애유형', '조치내용', '원본메시지', '발생시간', '마감시간', '마감자'],
-        valueKey: ['alarmno', 'node_nm', 'alarmloc', 'fault_classify', 'fault_type', 'fault_detail_content', 'etc', 'alarm_occur_time', 'handling_fin_time', 'handling_fin_user']
+        valueKey: ['alarmno', 'node_nm', 'alarmloc', 'fault_classify', 'fault_type', 'fault_detail_content', 'etc', 'alarm_occur_time', 'handling_fin_time', 'handling_fin_user'],
       },
       defineSyslogDetailTable: {
         col: ['알람 번호', '알람 시간', '장비 ID', '장비명', '장애내용', '인터페이스', '원본 메시지'],
-        valueKey: ['alarmno', 'alarmtime', 'node_num', 'node_nm', 'alarmmsg', 'alarmloc', 'etc']
-      }
+        valueKey: ['alarmno', 'alarmtime', 'node_num', 'node_nm', 'alarmmsg', 'alarmloc', 'etc'],
+      },
     }
   },
   computed: {
     sopAgGrid() {
       const options = { name: this.name, checkable: false, rowGroupPanel: false, rowHeight: 30, rowSelection: 'multiple', rowMultiSelection: false }
-        const sopColumns = [
-          { type: '', prop: 'alarmno', name: '알람 번호', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: false },
-          { type: '', prop: 'node_nm', name: '장비명', width: 50, suppressMenu: true, alignItems: 'left', sortable: true, filterable: false/* , formatter: getAlarmType */ },
-          { type: '', prop: 'alarmloc', name: '인터페이스', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: true },
-          { type: '', prop: 'fault_classify', name: '장애구분', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: true },
-          { type: '', prop: 'fault_type', name: '장애유형', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: true },
-          { type: '', prop: 'fault_detail_content', name: '조치내용', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: true },
-          { type: '', prop: 'etc', name: '원본메시지', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: false },
-          { type: '', prop: 'alarm_occur_time', name: '발생시간', width: 50, suppressMenu: true, alignItems: 'left', sortable: true, filterable: false },
-          { type: '', prop: 'handling_fin_time', name: '마감시간', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: true },
-          { type: '', prop: 'handling_fin_user', name: '마감자', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: true },
-        ]
-        const syslogColumns = [
+      const sopColumns = [
         { type: '', prop: 'alarmno', name: '알람 번호', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: false },
-          { type: '', prop: 'alarmtime', name: '알람 시간', width: 50, suppressMenu: true, alignItems: 'left', sortable: true, filterable: false/* , formatter: getAlarmType */ },
-          { type: '', prop: 'alarmloc', name: '인터페이스', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: true },
-          { type: '', prop: 'node_num', name: '장비 ID', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: true },
-          { type: '', prop: 'node_nm', name: '장비명', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: true },
-          { type: '', prop: 'alarmmsg', name: '장애내용', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: true },
-          { type: '', prop: 'alarmloc', name: '인터페이스', width: 50, suppressMenu: true, alignItems: 'left', sortable: true, filterable: false },
-          { type: '', prop: 'etc', name: '원본 메시지', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: true },
-        ]
-        const columns = this.selectedRow.ticket_type === 'SYSLOG' ? syslogColumns : sopColumns
-        return { options, columns, data: this.sopHistList }
+        { type: '', prop: 'node_nm', name: '장비명', width: 50, suppressMenu: true, alignItems: 'left', sortable: true, filterable: false /* , formatter: getAlarmType */ },
+        { type: '', prop: 'alarmloc', name: '인터페이스', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: true },
+        { type: '', prop: 'fault_classify', name: '장애구분', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: true },
+        { type: '', prop: 'fault_type', name: '장애유형', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: true },
+        { type: '', prop: 'fault_detail_content', name: '조치내용', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: true },
+        { type: '', prop: 'etc', name: '원본메시지', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: false },
+        { type: '', prop: 'alarm_occur_time', name: '발생시간', width: 50, suppressMenu: true, alignItems: 'left', sortable: true, filterable: false },
+        { type: '', prop: 'handling_fin_time', name: '마감시간', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: true },
+        { type: '', prop: 'handling_fin_user', name: '마감자', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: true },
+      ]
+      const syslogColumns = [
+        { type: '', prop: 'alarmno', name: '알람 번호', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: false },
+        { type: '', prop: 'alarmtime', name: '알람 시간', width: 50, suppressMenu: true, alignItems: 'left', sortable: true, filterable: false /* , formatter: getAlarmType */ },
+        { type: '', prop: 'alarmloc', name: '인터페이스', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: true },
+        { type: '', prop: 'node_num', name: '장비 ID', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: true },
+        { type: '', prop: 'node_nm', name: '장비명', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: true },
+        { type: '', prop: 'alarmmsg', name: '장애내용', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: true },
+        { type: '', prop: 'alarmloc', name: '인터페이스', width: 50, suppressMenu: true, alignItems: 'left', sortable: true, filterable: false },
+        { type: '', prop: 'etc', name: '원본 메시지', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: true },
+      ]
+      const columns = this.selectedRow.ticket_type === 'SYSLOG' ? syslogColumns : sopColumns
+      return { options, columns, data: this.sopHistList }
     },
     trafficChart() {
       const { ticket_type } = this.selectedRow
       const chartData = this.trafficChartList
       const xAxisKey = ticket_type === 'ATT2' ? 'measured_datetime' : 'collect_time'
       const markLine = {
-          symbol: ['none', 'none'],
-          label: { show: false },
-          data: [{ xAxis: this.selectedRow?.fault_time || '' }]
-        }
+        symbol: ['none', 'none'],
+        label: { show: false },
+        data: [{ xAxis: this.selectedRow?.fault_time || '' }],
+      }
       let seriesArr = []
       if (ticket_type === 'ATT2') {
         const seriesInfo = [
@@ -275,12 +276,12 @@ export default {
           { name: 'BPS_IN', value: 'fltbps_in' },
           { name: 'BPS_OUT', value: 'fltbps_out' },
         ]
-        seriesArr = seriesInfo.map(item => {
+        seriesArr = seriesInfo.map((item) => {
           return {
             markLine,
             name: item.name,
             type: 'line',
-            data: chartData.map(v => v[item.value])
+            data: chartData.map((v) => v[item.value]),
           }
         })
       } else {
@@ -289,30 +290,28 @@ export default {
             markLine,
             name: 'STRCOUNTS',
             type: 'line',
-            data: chartData.map(v => v.strcounts)
+            data: chartData.map((v) => v.strcounts),
           },
           {
             name: 'STRBYTES_COL',
             type: 'line',
-            data: chartData.map(v => v.strbytes_col)
-          }
+            data: chartData.map((v) => v.strbytes_col),
+          },
         ]
       }
       return {
         tooltip: {
-          trigger: 'axis'
+          trigger: 'axis',
         },
-        dataZoom: [
-          { type: 'inside', }
-        ],
+        dataZoom: [{ type: 'inside' }],
         xAxis: {
           type: 'category',
-          data: chartData.map(v => formatterTime(v[xAxisKey]))
+          data: chartData.map((v) => formatterTime(v[xAxisKey])),
         },
         yAxis: {
-          type: 'value'
+          type: 'value',
         },
-        series: seriesArr
+        series: seriesArr,
       }
     },
     pageType() {
@@ -320,7 +319,7 @@ export default {
     },
     processType() {
       return this.selectedRow.self_process_type
-    }
+    },
   },
   methods: {
     onCreated() {
@@ -407,7 +406,7 @@ export default {
     },
     onClose() {
       this.sopHistList = []
-     },
+    },
   },
 }
 </script>
@@ -416,13 +415,13 @@ export default {
   margin-top: 3vh !important;
 }
 ::v-deep .el-dialog__header {
-    height: 65px;
-  }
+  height: 65px;
+}
 ::v-deep .el-dialog__body {
-    height: calc(100% - 120px);
-    padding: 0 15px 0 15px;
-    overflow: auto;
-  }
+  height: calc(100% - 120px);
+  padding: 0 15px 0 15px;
+  overflow: auto;
+}
 
 ::v-deep .el-dialog__footer {
   height: 55px !important;

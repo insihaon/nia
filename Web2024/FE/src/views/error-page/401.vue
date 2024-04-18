@@ -19,7 +19,7 @@
         </ul> -->
       </el-col>
       <el-col :span="8">
-        <img :src="errGif" loop="infinite" width="313" height="428" alt="Girl has dropped her ice cream.">
+        <img :src="errGif" loop="infinite" width="313" height="428" alt="Girl has dropped her ice cream." />
       </el-col>
     </el-row>
     <!-- <el-dialog :visible.sync="dialogVisible" title="이미지">
