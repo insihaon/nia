@@ -22,6 +22,13 @@ import { AppOptions } from '@/class/appOptions'
 import { apiSelectAppTrafficList, apiApplicationCodeList } from '@/api/nia'
 
 const routeName = 'TrafficAnalysisApp'
+
+function getFormatValue(row, col, value, index) {
+  const packetBytesInGbyte = value / (1024 * 1024 * 1024)
+  const roundedGbyte = Math.round(packetBytesInGbyte * 100) / 100
+  return roundedGbyte.toLocaleString()
+}
+
 export default {
   name: routeName,
   // eslint-disable-next-line vue/no-unused-components
@@ -60,8 +67,7 @@ export default {
         dst_protocol: '',
         dst_port: '',
         top_n: ''
-      },
-      sortInfo: {}
+      }
     }
   },
 
@@ -76,24 +82,16 @@ export default {
         { type: '', prop: 'src_port', name: 'Port(Source)', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: false },
         { type: '', prop: 'dst_protocol', name: 'Application(Destination)', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
         { type: '', prop: 'dst_port', name: 'Port(Destination)', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
-        { type: '', prop: 'packet_bytes', name: 'Gbyte', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
+        { type: '', prop: 'packet_bytes', name: 'Gbyte', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true, formatter: getFormatValue },
       ]
-      // packet_bytes.toLocaleString
       return { options, columns, data: this.trafficData, getRightClickMenuItems: () => { return [] } }
-    },
+    }
   },
   mounted() {
     this.onLoadTrafficList()
     this.onloadAppCodeList()
   },
   methods: {
-    cellTemp() {},
-    sortTemp() {},
-    onSortedChange() {
-       this.sortInfo = []
-       this.onLoadTrafficList()
-    },
-
     onClickSearch(params) {
       this.onLoadTrafficList(params)
     },

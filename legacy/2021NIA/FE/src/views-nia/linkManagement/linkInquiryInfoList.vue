@@ -63,7 +63,6 @@ export default {
        dest_if_name: '',
        link_desc: ''
       },
-      sortInfo: {}
     }
   },
 
@@ -92,10 +91,6 @@ export default {
     this.onLoadLinkList()
   },
   methods: {
-    onSortedChange(param) {
-       this.sortInfo = []
-       this.onLoadLinkList()
-    },
     onClickSearch(params) {
       this.onLoadLinkList(params)
     },
