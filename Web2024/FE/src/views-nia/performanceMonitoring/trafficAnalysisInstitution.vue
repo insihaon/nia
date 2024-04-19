@@ -85,12 +85,6 @@ export default {
     this.onloadAgencyCodeList()
   },
   methods: {
-    cellTemp() {},
-    sortTemp() {},
-    onSortedChange() {
-       this.sortInfo = []
-       this.onLoadTrafficList()
-    },
     onClickSearch(params) {
       this.onLoadTrafficList(params)
     },
