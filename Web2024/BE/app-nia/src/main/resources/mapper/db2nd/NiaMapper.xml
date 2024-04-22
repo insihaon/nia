@@ -947,7 +947,7 @@
                 src_port,
                 dst_protocol,
                 dst_port,
-                ROUND(packet_bytes / (1024 * 1024), 2) AS packet_bytes,
+                packet_bytes,
                 rank_order
         FROM    ( SELECT src_protocol,
                         src_port,

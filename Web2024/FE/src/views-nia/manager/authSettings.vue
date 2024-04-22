@@ -82,10 +82,6 @@ export default {
     this.onLoadAuthList()
   },
   methods: {
-    onSortedChange(param) {
-       this.sortInfo = []
-       this.onLoadAuthList()
-    },
      onClickSearch(params) {
       this.onLoadAuthList(params)
     },
