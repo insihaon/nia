@@ -334,7 +334,6 @@ export default {
         await this.onLoadAiDetectionInfo()
         await this.onLoadSopHistList()
         this.onLoadUserList()
-        this.setTemplateContent()
       } catch (error) {
         this.error(error)
       } finally {
@@ -348,8 +347,7 @@ export default {
 
       // AI 분석 결과 정보
       if (ticket_type === 'ATT2') {
-        const { in_bps, in_predict, in_threshold_upper, in_threshold_lower, in_anomaly, out_bps, out_predict, out_threshold_upper, out_threshold_lower, out_anomaly } =
-          this.aiDetection
+        const { in_bps, in_predict, in_threshold_upper, in_threshold_lower, in_anomaly, out_bps, out_predict, out_threshold_upper, out_threshold_lower, out_anomaly } = this.aiDetection
         // IN
         this.sendItem['in_bps'] = in_bps.toLocaleString()
         this.sendItem['in_predict'] = in_predict.toLocaleString()
@@ -429,10 +427,14 @@ export default {
       const { fault_time: FAULT_TIME, ticket_id: TICKET_ID, ticket_type } = this.selectedRow
       const { root_cause_sysnamea: START_NODE, root_cause_sysnamez: END_NODE, root_cause_porta: START_PORT, root_cause_portz: END_PORT } = this.trafficInfo
 
+      if (!TICKET_ID) {
+        return
+      }
       const param = { TICKET_ID, START_NODE, START_PORT, FAULT_TIME }
       try {
         const res = await apiSelectAiDetectionInfo(param)
         this.aiDetection = res?.result[0] ?? null
+        this.aiDetection && this.setTemplateContent()
       } catch (error) {
         this.error(error)
       } finally {

@@ -161,7 +161,7 @@
         this.wdata.callback(data);
       },
       focusIn(){
-        this.$store.dispatch("workControlModal/bringToFrontWindow", this.wdata.id);
+        this.$store.dispatch("mdi/bringToFrontWindow", this.wdata.id);
       },
       restoreWindow(){
         this.$set(this.wdata, "windowState", 'normal' );
@@ -602,14 +602,14 @@
       // 타이틀바의 윈도우 닫기 버튼과 컨펌창 닫기 버튼 이벤트 핸들러
       closeWindowHandler:function(){
         this.closeWindowDialog = false;
-        this.$store.dispatch("workControlModal/removeWindow", this.wdata.id);
+        this.$store.dispatch("mdi/removeWindow", this.wdata.id);
       },
       // 컨텐츠에서 올라오는 윈도우 닫기 이벤트 핸들러
       closeEventHandler(check){
         if( check == true){
           this.closeWindowDialog = true;
         }else{
-          this.$store.dispatch("workControlModal/removeWindow", this.wdata.id);
+          this.$store.dispatch("mdi/removeWindow", this.wdata.id);
         }
       }
     },

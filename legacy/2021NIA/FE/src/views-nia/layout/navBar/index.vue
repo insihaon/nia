@@ -1,31 +1,33 @@
 <template>
   <el-header id="header-menu" class="dark bg-slate-900 flex h-20 p-0 w-full items-center">
-    <div class="flex w-full h-full justify-between ">
-      <div class="headerWrapLogo flex items-center h-full">
+    <div class="flex w-full h-full justify-between">
+      <div class="flex items-center h-full" :class="{ 'headerWrapLogo': !isMobile }">
+        <div v-if="isMobile" id="hamburger-container" class="d-flex" :class="{ 'justify-center': isActive, 'justify-end': !isActive }" @click="toggleSideBar">
+          <i :class="{ 'el-icon-s-unfold': isActive, 'el-icon-s-fold': !isActive }" />
+        </div>
         <div id="systeminfo-container">
-          <div id="system-name" @click="onClickHeaderLogo()">NIA KOREN </div>
-          <div id="route-name"> <span>|</span> {{ activeMenuTitle }}</div>
+          <div id="system-name" @click="onClickHeaderLogo()">NIA KOREN</div>
+          <div id="route-name"><span>|</span> {{ activeMenuTitle }}</div>
         </div>
         <!-- only parent -->
-        <nav id="menu-bar" class="h-full ml-14">
+        <nav v-if="!isMobile" id="menu-bar" class="h-full ml-14">
           <el-menu class="flex h-full" :background-color="bgColor" :text-color="textColor" style="border-right: 0px">
             <el-menu-item
               v-for="route in permission_routes"
               v-if="isHidden(route)"
               id="menu-item"
               :key="route.path"
-              style="line-height: 4rem;"
+              style="line-height: 4rem"
               class="h-full text-white font-semibold transition-colors"
             >
               <router-link v-if="route.meta" :to="route.path">
                 {{ route.meta.title }}
               </router-link>
-
             </el-menu-item>
           </el-menu>
         </nav>
       </div>
-      <div id="other-container" class="flex items-center">
+      <div v-if="!isMobile" id="other-container" class="flex items-center">
         <div id="function-container">
           <svg-icon class="mr-2" type="mdi" :path="path" @click.native="toggleHistoryBar" />
         </div>
@@ -42,16 +44,9 @@
             <span class="text-xs mr-2 cursor-pointer" @click="$refs.ModaluserSettings.open()">정보수정</span>
           </div>
         </div>
-        <div
-          id="logout"
-          class="d-flex flex-column items-center"
-          @click="$router.push({ path: '/login' })"
-        >
+        <div id="logout" class="d-flex flex-column items-center" @click="$router.push({ path: '/login' })">
           <i class="el-icon-unlock text-3xl" />
-          <button
-            class="button h-5 px-3 bg-transparent text-white rounded"
-            :disabled="buttonDisabled"
-          >
+          <button class="button h-5 px-3 bg-transparent text-white rounded" :disabled="buttonDisabled">
             <!-- @click="$router.push({ path: '/login' })" -->
             LogOut
           </button>
@@ -89,25 +84,25 @@ export default {
       popoverVisible: false,
       path: mdiHistory,
       timeInterval: null,
-      currentTime: null
+      currentTime: null,
     }
   },
   computed: {
     activeMenuTitle() {
       return this.$route?.meta?.title ?? ''
     },
-    ...mapGetters([
-    'permission_routes',
-    ]),
-    ...mapState({
-    }),
+    isActive() {
+      return this.sidebar.opened
+    },
+    ...mapGetters(['permission_routes', 'sidebar',]),
+    ...mapState({}),
   },
-  created () {
+  created() {
     setInterval(() => {
       this.currentTime = this.toStringTime(Date.now(), 'YYYY.MM.DD A hh:mm:ss')
     }, 1000)
   },
-  mounted () {
+  mounted() {
     this.setTime()
     const header = document.querySelector('#sub-menu')
     const menuItem = document.querySelectorAll('#menu-item')
@@ -116,10 +111,10 @@ export default {
         header.classList.add('open')
       })
     })
-    header?.addEventListener('mouseover', function(event) {
+    header?.addEventListener('mouseover', function (event) {
       header.classList.add('open')
     })
-    header?.addEventListener('mouseout', function(event) {
+    header?.addEventListener('mouseout', function (event) {
       header.classList.remove('open')
     })
   },
@@ -141,15 +136,18 @@ export default {
     toggleHistoryBar() {
       this.$store.dispatch('app/toggleHistoryBar')
     },
+    toggleSideBar() {
+      this.$store.dispatch('app/toggleSideBar')
+    },
     setTime() {
       this.currentTime = this.toStringTime(Date.now(), 'YYYY.MM.DD A hh:mm:ss')
-    }
-  }
+    },
+  },
 }
 </script>
 
 <style lang="scss" scoped>
-@import "~@/styles/variables.scss";
+@import '~@/styles/variables.scss';
 
 #header-menu {
   transition: all 0.4s;
@@ -186,7 +184,8 @@ export default {
     }
   }
   #menu-bar {
-    ul, li {
+    ul,
+    li {
       transition: all 0.4s;
       letter-spacing: 1px;
     }
@@ -219,7 +218,8 @@ export default {
       }
     }
     #function-container {
-      svg, i {
+      svg,
+      i {
         transition: all 0.4s;
         &:hover {
           scale: 1.2;
@@ -228,7 +228,9 @@ export default {
         }
       }
     }
-    i, svg, span {
+    i,
+    svg,
+    span {
       color: white;
     }
   }
@@ -250,7 +252,8 @@ export default {
       transform: translateY(-10px);
     }
     &:hover {
-      a:after, a:focus:after {
+      a:after,
+      a:focus:after {
         height: 4px;
         opacity: 1;
         transform: translateY(-3px);
@@ -270,16 +273,16 @@ export default {
       background-color: #eef0f3;
     }
   }
-  .open#sub-menu  {
+  .open#sub-menu {
     height: 300px;
     transition: height, 0.25s linear;
-    box-shadow: 0 3px 3px rgba(0,0,0,0.1);
+    box-shadow: 0 3px 3px rgba(0, 0, 0, 0.1);
   }
 
   &:hover {
     color: $aiTemplateDefault;
     background: #fff;
-    box-shadow: 0 3px 3px rgba(0,0,0,0.1);
+    box-shadow: 0 3px 3px rgba(0, 0, 0, 0.1);
     #menu-bar {
       ul {
         background-color: #fff !important;
@@ -290,10 +293,14 @@ export default {
       }
     }
     ::v-deep #other-container {
-      .button, i, svg, span {
+      .button,
+      i,
+      svg,
+      span {
         color: $aiTemplateDefault !important;
       }
-      #logout, #user-info {
+      #logout,
+      #user-info {
         border-left: 1px solid $aiTemplateDefault;
       }
       #user {
@@ -301,20 +308,17 @@ export default {
       }
     }
     #hamburger-container {
-      color: $aiTemplateDefault
+      color: $aiTemplateDefault;
     }
 
     #system-name {
       background-clip: text;
       -webkit-background-clip: text;
       color: transparent !important;
-      background-image: linear-gradient(
-        180deg,
-        $niaMainTitle
-      ) !important;
+      background-image: linear-gradient(180deg, $niaMainTitle) !important;
     }
 
-     #route-name {
+    #route-name {
       margin-left: 5px;
       font-size: 18px;
       color: rgb(15, 15, 85) !important;
@@ -324,6 +328,5 @@ export default {
       }
     }
   }
-
 }
 </style>

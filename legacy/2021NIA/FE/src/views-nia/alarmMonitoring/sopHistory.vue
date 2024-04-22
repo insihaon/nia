@@ -1,5 +1,5 @@
 <template>
-  <div :class="{ [name]: true }">
+  <div :class="{ [name]: true, 'h-100': true }">
     <el-tabs v-model="tapCurrent" class="h-full">
       <el-tab-pane label="TICKET" name="ticket" class="h-full">
         <CompInquiryPannel
@@ -10,10 +10,10 @@
           :is-grid-loading="loading"
           :pagination-info="sopPaginationInfo"
           class="w-100 h-100"
-          @handleClickSearch="()=> onClickSearch('TICKET')"
+          @handleClickSearch="() => onClickSearch('TICKET')"
           @onChangePage="(curPage) => onChangePage(curPage, 'TICKET')"
-          @selectedRow="(row)=> onClickRow(row,'TICKET')"
-          @searchClear="()=> onLoadSopHistList()"
+          @selectedRow="(row) => onClickRow(row, 'TICKET')"
+          @searchClear="() => onLoadSopHistList()"
         />
       </el-tab-pane>
       <el-tab-pane label="SYSLOG" name="syslog" class="h-full">
@@ -22,14 +22,14 @@
           :ag-grid="syslogAgGrid"
           :is-button-slot="false"
           :search-model.sync="syslogSearchModel"
-          :is-grid-loading="loading"
+          :is-grid-loading="syslogLoading"
           :items="searchSyslogItems"
           :pagination-info="syslogPaginationInfo"
           class="w-100 h-100"
-          @handleClickSearch="()=> onClickSearch('SYSLOG')"
+          @handleClickSearch="() => onClickSearch('SYSLOG')"
           @onChangePage="(curPage) => onChangePage(curPage, 'SYSLOG')"
-          @selectedRow="(row)=> onClickRow(row, 'SYSLOG')"
-          @searchClear="()=> onLoadSyslogHistList()"
+          @selectedRow="(row) => onClickRow(row, 'SYSLOG')"
+          @searchClear="() => onLoadSyslogHistList()"
         />
       </el-tab-pane>
     </el-tabs>
@@ -51,16 +51,23 @@ export default {
   components: { CompInquiryPannel, ModalSopDetail },
   extends: Base,
   props: {
+    wdata: Object,
+    // editMode: { type: String, default: "I" }, //I: 등록, U: 수정, D: 상세
+  },
+  props: {
     row: {
       type: Object,
-      default() { return null }
-    }
+      default() {
+        return null
+      },
+    },
   },
   data() {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       loading: false,
+      syslogLoading: false,
       tapCurrent: 'ticket',
       sopHistList: [],
       syslogHistList: [],
@@ -75,19 +82,19 @@ export default {
         pageSize: 100, // 페이지당 항목 수
         totalCount: 0, // 총 항목 수
         totalPages: null, // 전체 페이지 수
-        pagerCount: 11
+        pagerCount: 11,
       },
       selectedRow: [],
       searchSopItems: [
-          { label: '티켓번호', type: 'input', size: 8, model: 'TICKET_ID' },
-          { label: 'DATE', type: 'date', size: 4, model: 'DATE' },
+        { label: '티켓번호', type: 'input', size: 8, model: 'TICKET_ID' },
+        { label: 'DATE', type: 'date', size: 4, model: 'DATE' },
       ],
       syslogSearchModel: {
         NODE_NM: '',
         ALARMLOC: '',
         STATUS: '',
         START_DATE: '',
-        END_DATE: ''
+        END_DATE: '',
       },
       equipmentOptionList: [],
       interfaceOptionList: [],
@@ -151,6 +158,9 @@ export default {
       return searchItems
     }
   },
+  created() {
+    this.selectedRow = this.wdata?.params
+  },
   mounted() {
     this.setSelectedOptions()
     this.onLoadSopHistList()
@@ -160,9 +170,13 @@ export default {
     async setSelectedOptions() {
       try {
         const equipRes = await apiEquipmentList()
-        this.equipmentOptionList = equipRes?.result.map(v => { return { label: v.value, value: v.value } })
+        this.equipmentOptionList = equipRes?.result.map((v) => {
+          return { label: v.value, value: v.value }
+        })
         const ifRes = await apiInterfaceList()
-        this.interfaceOptionList = ifRes?.result.map(v => { return { label: v.value, value: v.value } })
+        this.interfaceOptionList = ifRes?.result.map((v) => {
+          return { label: v.value, value: v.value }
+        })
       } catch (error) {
         this.error(error)
       }
@@ -181,16 +195,16 @@ export default {
       if (this.row !== null) {
         this._merge(param, { TICKET_TYPE: this.row.ticket_type })
       }
+      this.loading = true
       try {
-        this.loading = true
         const res = await apiSelectSopHistList(param)
         this.sopHistList = res?.result
         this.sopPaginationInfo.totalCount = res.total
         this.sopPaginationInfo.totalPages = Math.ceil(this.sopPaginationInfo.totalCount / this.sopPaginationInfo.pageSize) // 전체 페이지 수 계산
+        this.loading = false
       } catch (error) {
         console.error(error)
       } finally {
-        this.loading = false
       }
     },
     async onLoadSyslogHistList() {
@@ -203,8 +217,8 @@ export default {
         this._merge(param, { START_DATE: dateTime[0], END_DATE: dateTime[1] })
       }
       searchModel.STATUS === 'ALL' && delete param.STATUS
+      this.syslogLoading = true
       try {
-        this.loading = true
         const res = await apiSopSyslogHistList(param)
         this.syslogHistList = res?.result
         this.syslogPaginationInfo.totalCount = res.total
@@ -212,7 +226,7 @@ export default {
       } catch (error) {
         console.error(error)
       } finally {
-        this.loading = false
+        this.syslogLoading = false
       }
     },
     onChangePage(curPage, type) {
@@ -237,6 +251,4 @@ export default {
   },
 }
 </script>
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

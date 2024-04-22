@@ -168,6 +168,9 @@ table.basic {
       line-height: 5px;
     }
   }
+  .el-table tr {
+    background-color: rgba(228, 236, 244, 0.326) !important;
+  }
 }
 
 .datahub .ag-header-group-cell-label,
@@ -229,9 +232,7 @@ table.basic {
   }
 }
 
-.el-table tr {
-  background-color: rgba(228, 236, 244, 0.326) !important;
-}
+
 
 // dataHub api 테이블 관련 상세 데이터 모달 기본 스타일
 .resize-modal {

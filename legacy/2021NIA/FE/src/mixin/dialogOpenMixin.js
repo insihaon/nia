@@ -12,6 +12,38 @@ var dialogOpenMixin = {
       },
 
       dialogList: {
+        aiResponse: {
+          component: () => import('@/views-nia/dashBoard/aiResponse'),
+          pageTitle: 'AI 장애대응',
+          top: '2vh',
+          width: '800',
+          height: '650',
+          resizeble: true,
+        },
+        requestForAction: {
+          component: () => import('@/views-nia/dashBoard/requestForAction'),
+          pageTitle: '조치 요청서',
+          top: '2vh',
+          width: '1200',
+          height: '800',
+          resizeble: true,
+        },
+        snapShot: {
+          component: () => import('@/views-nia/dashBoard/snapShot'),
+          pageTitle: '데이터 스냅샷',
+          top: '2vh',
+          width: '600',
+          height: '280',
+          resizeble: true,
+        },
+        sopList: {
+          component: () => import('@/views-nia/alarmMonitoring/sopHistory'),
+          pageTitle: 'SOP 이력 조회',
+          top: '2vh',
+          width: '1200',
+          height: '800',
+          resizeble: true,
+        },
         jsonSettingPopup: {
           component: () => import('@/test/popup/jsonSettingPopup'),
           pageTitle: 'jsonSettingPopup',
@@ -54,7 +86,7 @@ var dialogOpenMixin = {
 
       tmpWindowData.params = Object.assign({}, data)
 
-      this.$store.dispatch('workControlModal/addWindow', tmpWindowData)
+      this.$store.dispatch('mdi/addWindow', tmpWindowData)
     },
 
     fn_openDialog(dialogNm, pageTitle, fullscreen, center, callback) {

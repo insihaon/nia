@@ -48,7 +48,8 @@ const Base = {
     innerHeight: () => {
       return window.innerHeight - this.$el.getBoundingClientRect().top
     },
-    device: () => (AppOptions.instance.mobile ? 'desktop' : 'mobile'),
+    device: () => (AppOptions.instance.mobile ? 'mobile' : 'desktop'),
+    isMobile: () => (window.deviceInfo.mobile),
     ...mapState({
       screenDevice: (state) => state.app.screenDevice,
       viewport: (state) => state.app.viewport,
