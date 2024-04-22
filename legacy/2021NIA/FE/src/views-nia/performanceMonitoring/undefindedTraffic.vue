@@ -130,7 +130,6 @@ export default {
         protocol: '',
         port_num: '',
       },
-      sortInfo: {}
     }
   },
 

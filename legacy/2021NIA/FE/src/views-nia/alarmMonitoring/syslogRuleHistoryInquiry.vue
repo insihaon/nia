@@ -8,8 +8,6 @@
       :search-model.sync="searchModel"
       :pagination-info="paginationInfo"
       class="w-100 h-100"
-      @cellClicked="cellTemp"
-      @sortChanged="sortTemp"
     />
   </div>
 </template>
@@ -98,13 +96,10 @@ export default {
     this.onLoadtrafficList()
   },
   methods: {
-    cellTemp() {},
-    sortTemp() {},
     onSortedChange(param) {
        this.sortInfo = []
        this.onLoadtrafficList()
     },
-
     // onClickSearchAuth(params) {
     //   this.onLoadtrafficList(params)
     // },

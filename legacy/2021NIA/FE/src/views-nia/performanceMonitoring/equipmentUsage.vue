@@ -83,10 +83,6 @@ export default {
     this.onLoadUsageList()
   },
   methods: {
-    onSortedChange(param) {
-       this.sortInfo = []
-       this.onLoadUsageList()
-    },
     onClickSearch(params) {
       this.onLoadUsageList(params)
     },

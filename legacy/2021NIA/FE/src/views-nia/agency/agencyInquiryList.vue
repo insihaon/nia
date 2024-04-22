@@ -79,10 +79,6 @@ export default {
     this.onLoadAgencyList()
   },
   methods: {
-    onSortedChange(param) {
-       this.sortInfo = []
-       this.onLoadAgencyList()
-    },
     onClickSearch(params) {
       this.onLoadAgencyList(params)
     },

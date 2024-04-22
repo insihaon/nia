@@ -83,7 +83,7 @@
         </tr>
         <tr>
           <td colspan="4">
-            <el-table :data="tableData" style="width: 100%; background: #fff;">
+            <el-table class="node-table" :data="tableData" style="width: 100%;">
               <el-table-column prop="name" label="노드명" />
               <el-table-column width="100%">
                 <template slot-scope="scope">
@@ -261,8 +261,6 @@ export default {
         this.ticket_type = matchingItem?.value
       } catch (error) {
         console.error(error)
-      } finally {
-        /*  */
       }
     },
     /* 장애 유형 코드 리스트 */
@@ -281,8 +279,6 @@ export default {
         this.process_type = matchingItem?.value
       } catch (error) {
         console.error(error)
-      } finally {
-        /*  */
       }
     },
     /* 노드명 코드 리스트  */
@@ -301,8 +297,6 @@ export default {
         }
       } catch (error) {
         console.error(error)
-      } finally {
-        /*  */
       }
     },
     /* 노드명 조회 */
@@ -320,8 +314,6 @@ export default {
         this.tableData = recoveryData
       } catch (error) {
         console.error(error)
-      } finally {
-        /*  */
       }
     },
     /* 노드 등록 */
@@ -499,5 +491,18 @@ export default {
     height: auto;
     min-width: 600px !important;
   }
+
+  ::v-deep {
+    .node-table th {
+      background: #fff;
+      border: none;
+    }
+    td {
+      background: #fff;
+      border-bottom: 0px;
+    }
+
+  }
+
 }
 </style>
