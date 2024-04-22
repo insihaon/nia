@@ -10,7 +10,7 @@ export class Device {
     if (instance) {
       return instance
     }
-    instance = window.deviceInfo = this
+    instance = window.deviceInfo =/*  this */
     this.self = this
     this.#load()
     this.#defineProp()

@@ -1,8 +1,9 @@
 <template>
   <div :class="[classObj]" class="layout-wrapper common-font" :style="setHeight">
-    <div v-if="screenDevice==='mobile'" class="drawer-bg" @click="handleClickOutside" />
-    <div class="main-container" :class="[{hasTagsView:needTagsView}, AppOptions.instance.project]">
-      <div :class="{ 'fixed-header':fixedHeader }">
+    <SideBar ref="sidebar" />
+    <div v-if="isMobile && isActive" class="drawer-bg" @click="handleClickOutside" />
+    <div class="main-container" :class="[{ hasTagsView: needTagsView }, AppOptions.instance.project]">
+      <div :class="{ 'fixed-header': fixedHeader }">
         <NavBar ref="navbar" />
         <AppMain v-if="!popupLayout" ref="appmain" />
         <BottomBar ref="bottombr" />
@@ -11,8 +12,7 @@
     <el-card v-if="showWindowSize" class="viewport-container" shadow="always">
       <h6>{{ viewSize }}</h6>
     </el-card>
-    <CompTrafficAnalysisModal ref="CompTrafficAnalysisModal" :fullscreen="isViewport('<', 'sm')" />
-
+    <WindowBase v-for="window in $store.getters.windows" :key="window.id" :type="window.type" :wdata="window" :target="window.target" />
   </div>
 </template>
 
@@ -20,10 +20,10 @@
 import { AppOptions } from '@/class/appOptions'
 import AppMain from '@/layout/components/nia/AppMain'
 import { Base } from '@/min/Base.min'
-import ResizeMixin from '@/layout/mixin/ResizeHandler'
 import NavBar from './navBar/index'
+import SideBar from './sideBar/index'
 import BottomBar from './BottomBar'
-import CompTrafficAnalysisModal from '@/views-nia/modal/CompTrafficAnalysisModal'
+import WindowBase from '@/views-nia/layout/components/WindowBase'
 
 import { mapState, mapGetters } from 'vuex'
 
@@ -36,11 +36,11 @@ export default {
   components: {
     AppMain,
     NavBar,
+    SideBar,
     BottomBar,
-    CompTrafficAnalysisModal,
+    WindowBase
   },
   extends: Base,
-  mixins: [ResizeMixin],
   data() {
     return {
       name: routeName,
@@ -51,24 +51,21 @@ export default {
     }
   },
   computed: {
-    ...mapState({
-      roles: state => state.user.roles,
-    }),
-    ...mapGetters([
-      'permission_routes',
-      'sidebar',
-    ]),
+    ...mapGetters(['permission_routes']),
     loginUsername() {
       const userNM = this.username ? this.username.replace(/.$/, '*') : 'UNKONWN'
       return userNM
     },
+    isActive() {
+      return this.sidebar.opened
+    },
     activeMenu() {
-        const route = this.$route
-        const { meta, path } = route
-        // if set path, the sidebar will highlight the path you set
-        if (meta.activeMenu) {
-          return meta.activeMenu
-        }
+      const route = this.$route
+      const { meta, path } = route
+      // if set path, the sidebar will highlight the path you set
+      if (meta.activeMenu) {
+        return meta.activeMenu
+      }
       return path
     },
     activeTitle() {
@@ -78,21 +75,22 @@ export default {
       return this.$store.state.settings.sidebarLogo
     },
     ...mapState({
-      historybar: state => state.app.historybar,
-      showHistorybar: state => state.app.historybar.opened,
-      fixedHeader: state => state.settings.fixedHeader,
-      screenDevice: state => state.app.screenDevice,
-      viewport: state => state.app.viewport,
-      windowSize: state => state.app.windowSize,
-      showWindowSize: state => state.app.showWindowSize,
-      showSettings: state => state.settings.showSettings,
-      needTagsView: state => state.settings.tagsView,
-      popupLayout: state => state.settings.popupLayout,
-      size: state => state.app.size,
-      username: state => state.user.name,
-      templateVariables: state => state.aamPersisted.templateVariables,
-      commonSelectListData: state => state.aamPersisted.commonSelectListData,
-
+      roles: (state) => state.user.roles,
+      sidebar: state => state.app.sidebar,
+      historybar: (state) => state.app.historybar,
+      showHistorybar: (state) => state.app.historybar.opened,
+      fixedHeader: (state) => state.settings.fixedHeader,
+      screenDevice: (state) => state.app.screenDevice,
+      viewport: (state) => state.app.viewport,
+      windowSize: (state) => state.app.windowSize,
+      showWindowSize: (state) => state.app.showWindowSize,
+      showSettings: (state) => state.settings.showSettings,
+      needTagsView: (state) => state.settings.tagsView,
+      popupLayout: (state) => state.settings.popupLayout,
+      size: (state) => state.app.size,
+      username: (state) => state.user.name,
+      templateVariables: (state) => state.aamPersisted.templateVariables,
+      commonSelectListData: (state) => state.aamPersisted.commonSelectListData,
     }),
     viewSize() {
       return `${this.viewport.toUpperCase()} ${this.windowSize.width}x${this.windowSize.height}`
@@ -104,7 +102,7 @@ export default {
         withoutAnimation: this.sidebar.withoutAnimation,
         mobile: this.screenDevice === 'mobile',
         [`viewport_${this.viewport}`]: false,
-        en: this.$i18n?.locale === 'en'
+        en: this.$i18n?.locale === 'en',
       }
     },
     setHeight() {
@@ -117,8 +115,8 @@ export default {
         widthPadding = 15
         heightPadding = 80
       }
-       return {
-        '--common-padding': widthPadding + 'px ' + heightPadding + 'px'
+      return {
+        '--common-padding': widthPadding + 'px ' + heightPadding + 'px',
       }
     },
   },
@@ -130,7 +128,7 @@ export default {
   },
   methods: {
     handleOpenEditModal(row, type) {
-        this.$refs.ModaluserSettings.open({ row: row, type: type })
+      this.$refs.ModaluserSettings.open({ row: row, type: type })
     },
     handleClickOutside() {
       this.$store.dispatch('app/closeSideBar', { withoutAnimation: false })
@@ -151,69 +149,73 @@ export default {
     setShowBottombar() {
       window.helper?.$store.dispatch('settings/changeSetting', {
         key: 'bottombar',
-        value: true
+        value: true,
       })
     },
-    userDetail() {
-
-    }
-  }
+    userDetail() {},
+  },
 }
 </script>
 <style lang="scss">
-@import "~@/assets/css/style_main.css";
-  .common-padding{
-    padding: var(--common-padding);
-    position: relative;
-    height: 100%;
-    width: 100%;
-  }
+@import '~@/assets/css/style_main.css';
+.common-padding {
+  padding: 5px 15px/* var(--common-padding) */;
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
 
-  .common-font{
-    font-family: "NotoSansKR";
-  }
-
+.common-font {
+  font-family: 'NotoSansKR';
+}
 </style>
 
 <style lang="scss" scoped>
-  @import "~@/styles/mixin.scss";
-  @import "~@/styles/variables.scss";
+@import '~@/styles/mixin.scss';
+@import '~@/styles/variables.scss';
 
-  .router-link-active {
-    color: #93c3ed !important;
-  }
-
-  .layout-wrapper {
-    @include clearfix;
-    position: relative;
-    height: 100%;
+.router-link-active {
+  color: #93c3ed !important;
+}
+.layout-wrapper {
+  @include clearfix;
+  position: relative;
+  height: 100%;
+  width: 100%;
+  .drawer-bg {
+    background: #000;
+    opacity: 0.3;
     width: 100%;
-  }
-
-  body.el-popup-parent--hidden .fixed-header {
-    z-index: 1;
-  }
-
-  .fixed-header {
-    position: fixed;
     top: 0;
-    right: 0;
-    z-index: 9;
-    width: 100%;
-    transition: all 0.28s;
-    ul.el-menu {
-      border-bottom: none !important;
+    height: 100%;
+    position: absolute;
+    z-index: 999;
+  }
+}
+body.el-popup-parent--hidden .fixed-header {
+  z-index: 1;
+}
 
-      .el-menu-item.is-active {
-        font-weight: bold; /* 활성화된 메뉴 항목의 텍스트를 굵게 표시 */
-      }
+.fixed-header {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 9;
+  width: 100%;
+  transition: all 0.28s;
+  ul.el-menu {
+    border-bottom: none !important;
+
+    .el-menu-item.is-active {
+      font-weight: bold; /* 활성화된 메뉴 항목의 텍스트를 굵게 표시 */
     }
   }
+}
 
-  .en .fixed-header {
-    width: calc(100% - 250px);
-  }
-  .container {
+.en .fixed-header {
+  width: calc(100% - 250px);
+}
+.container {
   text-align: center;
   position: relative;
   width: 300px;
@@ -228,7 +230,7 @@ export default {
   bottom: 0;
   z-index: 100;
   opacity: 0.8;
-  ::v-deep .el-card__body{
+  ::v-deep .el-card__body {
     padding: 5px;
     h3 {
       text-align: -webkit-center;
@@ -237,4 +239,3 @@ export default {
   }
 }
 </style>
-

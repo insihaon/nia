@@ -26,8 +26,7 @@ const getters = {
   showHistory: (state) => state.app.showHistory,
   pmmlte: (state) => state.pmmlte,
 
-  // 리사이징 모달
-  windows: state => state.workControlModal.windows,
-  window_param: state => state.workControlModal.window_param
+  windows: (state) => state.mdi.windows,
+  window_param: (state) => state.mdi.window_param
 }
 export default getters

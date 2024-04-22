@@ -32,15 +32,16 @@ export default Vue.extend({
   methods: {
     isShow() {
       const { data, type } = this.params
+      let result = true
       if (data.ticket_type === 'SYSLOG' && type === 'ALARM') {
         // 장애대응 버튼 SYSLOG 비활성
-        return false
+        result = false
       }
       if (!['ATT2', 'NTT', 'SYSLOG'].includes(data.ticket_type) && type === 'CONFIG_TEST') {
         // 시험기능 ATT2, NTT, SYSLOG 만 활성화
-        return false
+        result = false
       }
-      return true
+      return result
     },
     openModal(params) {
       params.action(params.data, params.type)

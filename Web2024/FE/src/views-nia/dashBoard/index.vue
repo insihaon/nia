@@ -134,13 +134,15 @@ import ModalSelfProcessList from '@/views-nia/modal/ModalSelfProcessList'
 import { apiIpAlarmList, apiTransmissionAlarmList, apiDashboardStatistics, apiSelfProcessStatistics } from '@/api/nia'
 import { getAlarmType } from '@/views-nia/js/commonFormat'
 import { AppOptions } from '@/class/appOptions'
-const routeName = 'NiaMain'
+import dialogOpenMixin from '@/mixin/dialogOpenMixin'
 
+const routeName = 'NiaMain'
 export default {
   name: routeName,
   // eslint-disable-next-line vue/no-unused-components
   components: { CompAgGrid, CompChart, LeftBar, filterBar, ModalFIN, ModalNTF, ModalConfigTest, ModalSopList, CellRenderAibuttons, ModalAiResponse, ModalSelfProcessList },
   extends: Base,
+  mixins: [dialogOpenMixin],
   data() {
     return {
       name: routeName,
@@ -171,75 +173,13 @@ export default {
       const columns = [
         { type: '', prop: 'alarmno', name: '알람번호', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'ticket_id', name: 'TICKET_ID', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
-        {
-          type: '',
-          prop: 'alarmtime',
-          name: '장애 발생시간',
-          width: 200,
-          alignItems: 'center',
-          sort: 'desc',
-          fixed: false,
-          suppressMenu: true,
-          formatter: (row) => {
-            return this.formatterTimeStamp(row.alarmtime, 'YYYY/MM/DD-HH:mm:ss')
-          },
-        },
-        { type: '', prop: 'status', name: '상태', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, formatter: this.getStatus, cellStyle: this.getCellStyle },
-        {
-          type: '',
-          prop: '',
-          name: '마감',
-          width: 100,
-          alignItems: 'center',
-          fixed: false,
-          suppressMenu: true,
-          cellRendererFramework: 'CellRenderAibuttons',
-          cellRendererParams: { name: '', icon: 'edit-outline', type: 'FIN', action: this.handleOpenEditModal.bind(this) },
-        },
-        {
-          type: '',
-          prop: '',
-          name: '시험',
-          width: 100,
-          alignItems: 'center',
-          fixed: false,
-          suppressMenu: true,
-          cellRendererFramework: 'CellRenderAibuttons',
-          cellRendererParams: { name: '', icon: 'edit-outline', type: 'CONFIG_TEST', action: this.handleOpenEditModal.bind(this) },
-        },
-        {
-          type: '',
-          prop: '',
-          name: 'SOP이력',
-          width: 100,
-          alignItems: 'center',
-          fixed: false,
-          suppressMenu: true,
-          cellRendererFramework: 'CellRenderAibuttons',
-          cellRendererParams: { name: 'SOP', icon: 'circle-check', type: 'SOP', action: this.handleOpenEditModal.bind(this) },
-        },
-        {
-          type: '',
-          prop: '',
-          name: '장애대응',
-          width: 100,
-          alignItems: 'center',
-          fixed: false,
-          suppressMenu: true,
-          cellRendererFramework: 'CellRenderAibuttons',
-          cellRendererParams: { name: '장애대응', icon: 'circle-check', type: 'ALARM', action: this.handleOpenEditModal.bind(this) },
-        },
-        {
-          type: '',
-          prop: '',
-          name: '상황전파',
-          width: 100,
-          alignItems: 'center',
-          fixed: false,
-          suppressMenu: true,
-          cellRendererFramework: 'CellRenderAibuttons',
-          cellRendererParams: { name: '조치요청', icon: 'circle-check', type: 'NTF', action: this.handleOpenEditModal.bind(this) },
-        },
+        { type: '', prop: 'alarmtime', name: '장애 발생시간', width: 200, alignItems: 'center', fixed: false, suppressMenu: true, formatter: (row) => { return this.formatterTimeStamp(row.ticket_generation_time, 'YYYY/MM/DD-HH:mm:ss') } },
+        { type: '', prop: 'status', name: '상태', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, formatter: this.getStatus, cellStyle: this.getCellStyle, },
+        { type: '', prop: '', name: '마감', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '', icon: 'edit-outline', type: 'FIN', action: this.handleOpenEditModal.bind(this) } },
+        { type: '', prop: '', name: '시험', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '', icon: 'edit-outline', type: 'CONFIG_TEST', action: this.handleOpenEditModal.bind(this) } },
+        { type: '', prop: '', name: 'SOP이력', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: 'SOP', icon: 'circle-check', type: 'SOP', action: this.handleOpenEditModal.bind(this) } },
+        { type: '', prop: '', name: '장애대응', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '장애대응', icon: 'circle-check', type: 'ALARM', action: this.handleOpenEditModal.bind(this) } },
+        { type: '', prop: '', name: '상황전파', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '조치요청', icon: 'circle-check', type: 'NTF', action: this.handleOpenEditModal.bind(this) } },
         { type: '', prop: 'ticket_type', name: '전표 유형', width: 150, alignItems: 'center', fixed: false, suppressMenu: true, formatter: getAlarmType },
         { type: '', prop: 'root_cause_type', name: '장애유형', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'alarmmsg', name: '장애정보', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
@@ -253,14 +193,7 @@ export default {
         { type: '', prop: 'ip_addr', name: 'ip_addr', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
       ]
       const options = { name: this.name, checkable: false, rowGroupPanel: false }
-      return {
-        options,
-        columns,
-        data: this.ipNetworkList,
-        onDoesExternalFilterPass: (externalFilter, node) => {
-          return this.onDoesExternalFilterPass(externalFilter, node, 'ip')
-        },
-      }
+      return { options, columns, data: this.ipNetworkList, onDoesExternalFilterPass: (externalFilter, node) => { return this.onDoesExternalFilterPass(externalFilter, node, 'ip') } }
     },
     transmissionAgGrid() {
       const columns = [
@@ -269,45 +202,16 @@ export default {
         { type: '', prop: 'alarmtime', name: '알람 발생시간', width: 200, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'alarmloc', name: '인터페이스명', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'alarmmsg', name: '알람 메시지', width: 120, alignItems: 'center', fixed: false, suppressMenu: true },
-        {
-          type: '',
-          prop: '',
-          name: '마감',
-          width: 100,
-          alignItems: 'center',
-          fixed: false,
-          suppressMenu: true,
-          cellRendererFramework: 'CellRenderAibuttons',
-          cellRendererParams: { name: '', icon: 'edit-outline', type: 'FIN', action: this.handleOpenEditModal.bind(this) },
-        },
+        { type: '', prop: '', name: '마감', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '', icon: 'edit-outline', type: 'FIN', action: this.handleOpenEditModal.bind(this) } },
         // { type: '', prop: '', name: 'SOP이력', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: 'SOP', icon: 'circle-check', type: 'SOP', action: this.handleOpenEditModal.bind(this) } },
         // { type: '', prop: '', name: '장애대응', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '장애대응', icon: 'circle-check', type: 'alarm', action: this.handleOpenEditModal.bind(this) } },
-        {
-          type: '',
-          prop: '',
-          name: '상황전파',
-          width: 100,
-          alignItems: 'center',
-          fixed: false,
-          suppressMenu: true,
-          cellRendererFramework: 'CellRenderAibuttons',
-          cellRendererParams: { name: '조치요청', icon: 'circle-check', type: 'NTF', action: this.handleOpenEditModal.bind(this) },
-        },
-        { type: '', prop: 'ticket_id', name: 'TICKET_ID', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
-        { type: '', prop: 'status', name: '상태', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, formatter: this.getStatus, cellStyle: this.getCellStyle },
+        { type: '', prop: '', name: '상황전파', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '조치요청', icon: 'circle-check', type: 'NTF', action: this.handleOpenEditModal.bind(this) } },
         // { type: '', prop: 'ticket_id', name: 'RCA 전표', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
         // { type: '', prop: 'ticket_type', name: '전표 유형', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, formatter: getAlarmType },
         // { type: '', prop: 'status', name: '상태', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, formatter: this.getStatus, cellStyle: this.getCellStyle },
-      ]
+ ]
       const options = { name: this.name, checkable: false, rowGroupPanel: false }
-      return {
-        options,
-        columns,
-        data: this.transmissionNetworkList,
-        onDoesExternalFilterPass: (externalFilter, node) => {
-          return this.onDoesExternalFilterPass(externalFilter, node, 'trans')
-        },
-      }
+      return { options, columns, data: this.transmissionNetworkList, onDoesExternalFilterPass: (externalFilter, node) => { return this.onDoesExternalFilterPass(externalFilter, node, 'trans') } }
     },
     ticketOptions() {
       const keyByTitle = [
@@ -320,12 +224,12 @@ export default {
     },
     collectOptions() {
       const keyByTitle = [
-        { name: '광레벨\n수집', key: 'trans_perf_cnt' },
-        { name: '전송\n경보수집', key: 'trans_alarm_cnt' },
-        { name: 'IP시설\n연동', key: 'ip_resource_cnt' },
-        { name: 'IP경보\n연동', key: 'ip_alarm_cnt' },
-        { name: 'IP트래픽\n연동', key: 'ip_perf_cnt' },
-        { name: 'IP SFlow\n연동', key: 'ip_sflow_cnt' },
+      { name: '광레벨\n수집', key: 'trans_perf_cnt' },
+      { name: '전송\n경보수집', key: 'trans_alarm_cnt' },
+      { name: 'IP시설\n연동', key: 'ip_resource_cnt' },
+      { name: 'IP경보\n연동', key: 'ip_alarm_cnt' },
+      { name: 'IP트래픽\n연동', key: 'ip_perf_cnt' },
+      { name: 'IP SFlow\n연동', key: 'ip_sflow_cnt' }
       ]
       return this.getDefaultChartOptions('데이터 수집량', keyByTitle.reverse())
     },
@@ -334,7 +238,7 @@ export default {
         { name: '시설\n연동', key: 'link_total_resource_cnt' },
         { name: '경보\n연동', key: 'link_total_alarm_cnt' },
         { name: '트래픽\n연동', key: 'link_ip_perf_cnt' },
-        { name: '광레벨\n연동', key: 'link_trans_perf_cnt' },
+        { name: '광레벨\n연동', key: 'link_trans_perf_cnt' }
       ]
       return this.getDefaultChartOptions('데이터 제공량(데이터레이크 연계량)', keyByTitle.reverse())
     },
@@ -343,60 +247,75 @@ export default {
       return {
         legend: {
           data: ['자가최적화 총 발생', '자가최적화 건 수', '자가회복 총 발생', '자가회복 건 수'],
-          top: '5%',
+          top: '5%'
         },
         title: {
           // text: '자가 최적화/자가 회복',
           // left: 'center',
           textStyle: {
-            fontSize: 13,
-          },
+            fontSize: 13
+          }
         },
         dataZoom: [{ type: 'inside' }, { type: 'slider' }],
         tooltip: {},
         xAxis: {
           type: 'category',
-          data: selfStatistics.map((v) => v.series_time),
+          data: selfStatistics.map(v => v.series_time),
         },
         yAxis: {
           type: 'value',
           axisLabel: {
             formatter: function (value, index) {
-              let result = value
-              if (value >= 1000) {
-                result = value / 1000 + 'K'
-              } else {
-                result = value.toString()
+                let result = value
+                if (value >= 1000) {
+                  result = (value / 1000) + 'K'
+                } else {
+                  result = value.toString()
+                }
+                return result
               }
-              return result
-            },
-          },
+          }
         },
         series: [
           {
             name: '자가최적화 총 발생',
             type: 'bar',
-            data: this.selfStatistics.map((v) => v.so_totalcount),
+            data: this.selfStatistics.map(v => v.so_totalcount)
           },
           {
             name: '자가최적화 건 수',
             type: 'bar',
 
-            data: this.selfStatistics.map((v) => v.so_count),
+            data: this.selfStatistics.map(v => v.so_count)
           },
           {
             name: '자가회복 총 발생',
             type: 'bar',
-            data: this.selfStatistics.map((v) => v.st_totalcount),
+            data: this.selfStatistics.map(v => v.st_totalcount)
           },
           {
             name: '자가회복 건 수',
             type: 'bar',
-            data: this.selfStatistics.map((v) => v.st_count),
+            data: this.selfStatistics.map(v => v.st_count)
           },
-        ],
+        ]
       }
-    },
+    }
+  },
+  async mounted () {
+    await this.onLoadDashboardStatistics()
+    await this.onLoadSelfProcessStatistics()
+
+    this.$nextTick(async() => {
+      await this.onLoadIpAlarmList()
+      await this.onLoadTransmissionAlarmList()
+
+      this.ipFilterGroup = new BaseFilterGroup(this, { onFilterChanged: () => this.onFilterChanged('ip'), isCheckBox: false })
+      this.setIPFilterGroup()
+
+      this.transFilterGroup = new BaseFilterGroup(this, { onFilterChanged: () => this.onFilterChanged('trans'), isCheckBox: false })
+      this.setTransFilterGroup()
+    })
   },
   async mounted() {
     await this.onLoadDashboardStatistics()
@@ -732,13 +651,18 @@ export default {
       this.selectedItem = param
     },
     handleOpenEditModal(row, type) {
+      // this.fn_openWindow('sopList', row, 'SOP 이력 조회')
+
       const param = { row, type }
       if (type === 'SOP') {
-        this.$refs.ModalSopList.open(param)
+        this.fn_openWindow('sopList', row)
+        // this.$refs.ModalSopList.open(param)
       } else if (type === 'NTF') {
-        this.$refs.ModalNTF.open(param)
+        // this.$refs.ModalNTF.open(param)
+        this.fn_openWindow('requestForAction', row)
       } else if (type === 'ALARM') {
-        this.$refs.ModalAiResponse.open(param)
+        this.fn_openWindow('aiResponse', row)
+        // this.$refs.ModalAiResponse.open(param)
       } else if (type === 'FIN') {
         this.$refs.ModalFIN.open(param)
       } else if (type === 'CONFIG_TEST') {

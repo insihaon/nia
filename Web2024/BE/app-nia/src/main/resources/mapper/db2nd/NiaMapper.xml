@@ -251,6 +251,7 @@
         FROM rca.tb_syslog_alarm_mst SAM
         LEFT JOIN resource.tb_node_mst NM ON NM.NODE_ID = SAM.NODE_NM
         WHERE ALARMTIME <![CDATA[ > ]]> now() - INTERVAL '48' HOUR
+        <!-- WHERE ALARMTIME <![CDATA[ > ]]> now() - INTERVAL '7' DAY -->
         ) T
         <if test="IS_POLLING != null and IS_POLLING == true">
             WHERE T.ALARMTIME <![CDATA[ >= ]]> (CURRENT_TIMESTAMP - INTERVAL '5 minutes')
