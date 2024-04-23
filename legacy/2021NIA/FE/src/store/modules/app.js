@@ -6,7 +6,7 @@ const storage = window.localStorage || window.sessionStorage
 
 const state = {
   sidebar: {
-    opened: storage.getItem('sidebarStatus') ? !!+storage.getItem('sidebarStatus') : true,
+    opened: storage.getItem('sidebarStatus') ? !!+storage.getItem('sidebarStatus') : false,
     withoutAnimation: false
   },
   historybar: {
