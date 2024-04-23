@@ -166,6 +166,37 @@ export function apiAlarmCurAndHistList(params = {}) {
     data: params
   })
 }
+
+export function apiSyslogHistList(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_SYSLOG_HIST_LIST',
+    data: params
+  })
+}
+
+export function apiSyslogEquipmentList(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_SYSLOG_EQUIPMENT_LIST',
+    data: params
+  })
+}
+
+export function apiSyslogRuleList(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_SYSLOG_RULE_LIST',
+    data: params
+  })
+}
+
 export function apiSelectSopCode(params = {}) {
   return http({
     url: '/selectList',

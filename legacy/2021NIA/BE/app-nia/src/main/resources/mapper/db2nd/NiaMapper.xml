@@ -768,6 +768,92 @@
         <include refid="TotalCountSuffix"/>
     </select>
 
+     <!-- syslog 이력조회 -->
+    <select id="SELECT_SYSLOG_HIST_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+    <include refid="TotalCountPrefix"/>
+        SELECT  sysDialog.alarmno,
+                sysDialog.alarmtime,
+                TO_CHAR(sysDialog.alarmtime, 'YYYY-MM-DD HH24:MI:SS') AS syslog_alarmtime,
+                sysDialog.node_num,
+                sysDialog.node_nm,
+                sysDialog.alarmmsg,
+                sysDialog.alarmlvl,
+                sysDialog.etc,
+                sysDialog.rule_id,
+                sysDialog.alarmloc,
+                CASE WHEN sysDialog.status = 'INIT' THEN '발생'
+                WHEN sysDialog.status = 'FIN' THEN '마감'
+                WHEN sysDialog.status = 'AUTO_FIN' THEN '자동 마감'
+                ELSE '-'
+                END AS status
+        FROM    rca.tb_syslog_alarm_mst sysDialog
+            <where>
+                <if test="start_date == null">
+                sysDialog.alarmtime BETWEEN NOW()::timestamp - interval '30 day' AND NOW()::timestamp
+                </if>
+            <if test="start_date != null">
+                AND sysDialog.alarmtime <![CDATA[ > ]]> #{start_date}::timestamp 
+                </if>
+                <if test="end_date != null">
+                AND sysDialog.alarmtime <![CDATA[ <= ]]> #{end_date}::timestamp 
+                </if>
+                <if test="alarmno != null and alarmno != ''">
+                AND sysDialog.alarmno = #{alarmno}
+                </if>
+                <if test="node_nm != null and node_nm != ''">
+                AND sysDialog.node_nm = #{node_nm}
+                </if>
+                <if test="node_num != null and node_num != ''">
+                AND sysDialog.node_num = #{node_num}
+                </if>
+                <if test="alarmmsg != null and alarmmsg != ''">
+                AND UPPER(sysDialog.alarmmsg) LIKE '%' || UPPER(#{alarmmsg}) || '%'
+                </if>
+                ORDER BY sysDialog.alarmno DESC
+            </where> 
+        <include refid="TotalCountSuffix"/>
+    </select>
+
+    <!-- 장비명 리스트 조회 -->
+    <select id="SELECT_SYSLOG_EQUIPMENT_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+        SELECT  node_nm
+        FROM    rca.tb_syslog_alarm_mst tsam
+        WHERE   tsam.alarmtime BETWEEN NOW()::TIMESTAMP - interval '30 day' AND NOW()::TIMESTAMP
+        GROUP BY node_nm
+    </select>
+
+    <!-- SYSLOG RULE 관리 리스트 조회 -->
+    <select id="SELECT_SYSLOG_RULE_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+        <include refid="TotalCountPrefix"/>
+        SELECT  syslog_rule_id ,
+                syslog_rule_nm ,
+                occur_str1 ,
+                occur_str2 ,
+                occur_str3 ,
+                occur_except_str1 ,
+                occur_except_str2 ,
+                occur_except_str3 ,
+                CASE
+                        WHEN tsrm.use_yn = 'Y'
+                        THEN '사용'
+                        ELSE '미사용'
+                END AS use_yn
+        FROM    gather.tb_syslog_rule_mst tsrm
+        <!-- <where>
+                <if test="syslog_rule_nm != null">
+                syslog_rule_nm = #{syslog_rule_nm}
+                </if>
+                <if test="occur_str != null and occur_str != ''">
+                AND occur_str1 = #{occur_str}
+                </if>
+                <if test="occur_except_str != null and occur_except_str != ''">
+                AND occur_except_str1 = #{occur_except_str}
+                </if> -->
+            ORDER BY syslog_rule_id
+         <!-- </where>  -->
+        <include refid="TotalCountSuffix"/>
+    </select>
+
     <!-- 조치 SOP 정보 -->
     <select id="SELECT_SOP_CODE_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
         <include refid="TotalCountPrefix"/>

@@ -1,124 +1,124 @@
 <template>
   <div>
-    <!-- <transition :name="animation"> -->
-    <el-dialog
-      v-if="animationVisible"
-      v-el-drag-dialog
-      :visible.sync="visible"
-      :width="domElement.maxWidth + `px`"
-      :fullscreen.sync="fullscreen"
-      :modal-append-to-body="false"
-      :append-to-body="true"
-      :modal="modal"
-      :close-on-click-modal="closeOnClickModal"
-      :loading="loading"
-      class="nia-edit-dialog"
-      :class="{ [name]: true }"
-    >
-      <span slot="title">
-        <i class="el-icon-user mr-2" style="font-size: 17px" />
-        {{ '조치프로파일 상세보기' }}
-        <hr />
-      </span>
-      <table class="basic">
-        <th class="disable">프로파일제목</th>
-        <td colspan="3">
-          <el-input v-model="profile_title" />
-        </td>
-        <tr>
-          <th>프로파일설명</th>
-          <td colspan="3" class="disable">
-            <el-input v-model="profile_desc" type="textarea" />
-          </td>
-        </tr>
-        <tr>
-          <th>네트워크구분</th>
+    <transition :name="animation">
+      <el-dialog
+        v-if="animationVisible"
+        v-el-drag-dialog
+        :visible.sync="visible"
+        :width="domElement.maxWidth + `px`"
+        :fullscreen.sync="fullscreen"
+        :modal-append-to-body="false"
+        :append-to-body="true"
+        :modal="modal"
+        :close-on-click-modal="closeOnClickModal"
+        :loading="loading"
+        class="nia-edit-dialog"
+        :class="{ [name]: true }"
+      >
+        <span slot="title">
+          <i class="el-icon-user mr-2" style="font-size: 17px" />
+          {{ '조치프로파일 상세보기' }}
+          <hr />
+        </span>
+        <table class="basic">
+          <th class="disable">프로파일제목</th>
           <td colspan="3">
-            <el-radio-group v-model="network_type" size="mini" class="d-flex">
-              <el-radio label="전송">KOREN(전송)</el-radio>
-              <el-radio label="IP">KOREN(IP)</el-radio>
-            </el-radio-group>
+            <el-input v-model="profile_title" />
           </td>
-        </tr>
-        <tr>
-          <th>장애대응구분</th>
-          <td colspan="3">
-            <el-radio-group v-model="processing_template" size="mini" class="d-flex">
-              <el-radio label="recovery">자가회복</el-radio>
-              <el-radio label="construction">공사</el-radio>
-            </el-radio-group>
-          </td>
-        </tr>
-        <tr>
-          <th>자동처리기간</th>
-          <td colspan="3" style="text-align: left">
-            <el-date-picker v-model="autoProcTime" type="daterange" range-separator="~" start-placeholder="시작일" end-placeholder="종료일" :disabled="auto_process_check" />
+          <tr>
+            <th>프로파일설명</th>
+            <td colspan="3" class="disable">
+              <el-input v-model="profile_desc" type="textarea" />
+            </td>
+          </tr>
+          <tr>
+            <th>네트워크구분</th>
+            <td colspan="3">
+              <el-radio-group v-model="network_type" size="mini" class="d-flex">
+                <el-radio label="전송">KOREN(전송)</el-radio>
+                <el-radio label="IP">KOREN(IP)</el-radio>
+              </el-radio-group>
+            </td>
+          </tr>
+          <tr>
+            <th>장애대응구분</th>
+            <td colspan="3">
+              <el-radio-group v-model="processing_template" size="mini" class="d-flex">
+                <el-radio label="recovery">자가회복</el-radio>
+                <el-radio label="construction">공사</el-radio>
+              </el-radio-group>
+            </td>
+          </tr>
+          <tr>
+            <th>자동처리기간</th>
+            <td colspan="3" style="text-align: left">
+              <el-date-picker v-model="autoProcTime" type="daterange" range-separator="~" start-placeholder="시작일" end-placeholder="종료일" :disabled="auto_process_check" />
             &nbsp;
-            <el-checkbox v-model="auto_process_check" label="상시" />
-          </td>
-        </tr>
-        <tr>
-          <th>Ticket 유형</th>
-          <td>
-            <el-select v-model="ticket_type">
-              <el-option v-for="item in ticketType" :key="item.value" :label="item.label" :value="item.value" />
-            </el-select>
-          </td>
-          <th>장애 유형</th>
-          <td>
-            <el-select v-model="process_type">
-              <el-option v-for="item in alarmType" :key="item.value" :label="item.label" :value="item.value" />
-            </el-select>
-          </td>
-        </tr>
-        <th colspan="4" class="line-class">자동처리 대상 등록</th>
-        <tr>
-          <th>노드명</th>
-          <td colspan="3">
-            <el-select v-model="selectNode" style="min-width: 70%">
-              <el-option v-for="item in nodeName" :key="item.value" :label="item.label" :value="item.value" />
-            </el-select>
-            <el-button size="mideum" style="float: right" plain round type="info" @click="handleInsertNode()">추가 </el-button>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="4">
-            <el-table class="node-table" :data="tableData" style="width: 100%;">
-              <el-table-column prop="name" label="노드명" />
-              <el-table-column width="100%">
-                <template slot-scope="scope">
-                  <el-button size="mini" plain round type="danger" @click="handleDeleteNode(scope.$index, scope.row)"><i class="el-icon-delete" /></el-button>
-                </template>
-              </el-table-column>
-            </el-table>
-          </td>
-        </tr>
-        <tr>
-          <th>자동회복 처리</th>
-          <td>
-            <el-select v-model="auto_recovery" multiple>
-              <el-option v-for="item in procOptions" :key="item.value" :label="item.label" :value="item.value" />
-            </el-select>
-          </td>
-          <th>메일 자동 발송</th>
-          <td>
-            <el-checkbox v-model="email_check" />
-          </td>
-        </tr>
-      </table>
-      <div slot="footer" class="dialog-footer">
-        <el-button size="small" type="info" @click.native="modeChange()">
-          {{ btnMode }}
-        </el-button>
-        <el-button v-if="viewType === 'profileDetail'" size="small" type="danger" plain @click.native="handleDeleteProfile()">
-          {{ '삭제' }}
-        </el-button>
-        <el-button class="exit-btn" size="small" @click.native="close()">
-          {{ $t('exit') }}
-        </el-button>
-      </div>
-    </el-dialog>
-    <!-- </transition> -->
+              <el-checkbox v-model="auto_process_check" label="상시" />
+            </td>
+          </tr>
+          <tr>
+            <th>Ticket 유형</th>
+            <td>
+              <el-select v-model="ticket_type">
+                <el-option v-for="item in ticketType" :key="item.value" :label="item.label" :value="item.value" />
+              </el-select>
+            </td>
+            <th>장애 유형</th>
+            <td>
+              <el-select v-model="process_type">
+                <el-option v-for="item in alarmType" :key="item.value" :label="item.label" :value="item.value" />
+              </el-select>
+            </td>
+          </tr>
+          <th colspan="4" class="line-class">자동처리 대상 등록</th>
+          <tr>
+            <th>노드명</th>
+            <td colspan="3">
+              <el-select v-model="selectNode" style="min-width: 70%">
+                <el-option v-for="item in nodeName" :key="item.value" :label="item.label" :value="item.value" />
+              </el-select>
+              <el-button size="mideum" style="float: right" plain round type="info" @click="handleInsertNode()">추가 </el-button>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="4">
+              <el-table class="node-table" :data="tableData" style="width: 100%;">
+                <el-table-column prop="name" label="노드명" />
+                <el-table-column width="100%">
+                  <template slot-scope="scope">
+                    <el-button size="mini" plain round type="danger" @click="handleDeleteNode(scope.$index, scope.row)"><i class="el-icon-delete" /></el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </td>
+          </tr>
+          <tr>
+            <th>자동회복 처리</th>
+            <td>
+              <el-select v-model="auto_recovery" multiple>
+                <el-option v-for="item in procOptions" :key="item.value" :label="item.label" :value="item.value" />
+              </el-select>
+            </td>
+            <th>메일 자동 발송</th>
+            <td>
+              <el-checkbox v-model="email_check" />
+            </td>
+          </tr>
+        </table>
+        <div slot="footer" class="dialog-footer">
+          <el-button size="small" type="info" @click.native="modeChange()">
+            {{ btnMode }}
+          </el-button>
+          <el-button v-if="viewType === 'profileDetail'" size="small" type="danger" plain @click.native="handleDeleteProfile()">
+            {{ '삭제' }}
+          </el-button>
+          <el-button class="exit-btn" size="small" @click.native="close()">
+            {{ $t('exit') }}
+          </el-button>
+        </div>
+      </el-dialog>
+    </transition>
   </div>
 </template>
 
