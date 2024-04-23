@@ -55,6 +55,12 @@
                   />
 
                   <el-date-picker
+                    v-if="item.type === 'basicDate'"
+                    v-model="searchModel[item.model]"
+                    type="date"
+                  />
+
+                  <el-date-picker
                     v-if="item.type === 'date'"
                     v-model="searchModel[item.model]"
                     type="daterange"

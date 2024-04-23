@@ -1,21 +1,24 @@
 <template>
   <div :class="{ [name]: true }">
     <CompInquiryPannel
-      ref="trafficAnalysis"
-      :ag-grid="authAgGrid"
-      :is-button-slot="false"
+      ref="syslogHist"
+      :ag-grid="syslogAgGrid"
+      :is-excel="true"
+      :title="titleName"
       :items="searchItems"
       :search-model.sync="searchModel"
       :pagination-info="paginationInfo"
       class="w-100 h-100"
+      @handleClickSearch="onClickSearch"
+      @onChangePage="(curPage) => onChangePage(curPage)"
+      @searchClear="searchClear"
     />
   </div>
 </template>
 <script>
 import { Base } from '@/min/Base.min'
 import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
-// import { apiSelectAuthHistList, apiUpdateApiAuth, apiUpdateApiAuthProc } from '@/api/dataHub'
-import { AppOptions } from '@/class/appOptions'
+import { apiSyslogHistList, apiSyslogEquipmentList } from '@/api/nia'
 
 const routeName = 'syslogHistoryInquiry'
 export default {
@@ -27,6 +30,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      titleName: 'SYSLOG_HIST',
       paginationInfo: {
         currentPage: 1, // 현재 페이지
         pageSize: 50, // 페이지당 항목 수
@@ -34,96 +38,80 @@ export default {
         totalPages: null, // 전체 페이지 수
         pagerCount: 11
       },
-      selectedRow: [],
-       authData: [
-        {
-          model_name: '상황방명',
-          key: 1,
-          start_date: '2022-09-06',
-          end_date: '2022-09-07',
-        },
-        {
-          model_name: '상황',
-          key: 2,
-          start_date: '2022-09-06',
-          end_date: '2022-09-07',
-        },
-       ],
+      syslogData: [],
       searchItems: [
-        { label: 'Ticket', type: 'select', multiple: true, placeholder: '티켓 종류를 선택하세요', model: 'ticket', setting: { allOption: { toggle: true } },
-          options:
-          [
-            { label: '장애', value: 'alarm' },
-            { label: '광레벨', value: 'level' },
-            { label: '이상트래픽', value: 'traffic1' },
-            { label: '유해트래픽', value: 'traffic2' },
-            { label: '장비부하장애', value: 'traffic3' },
-          ],
-        },
-        { label: 'State', type: 'select', multiple: true, placeholder: '경보 상태를 선택하세요', model: 'status_cd', setting: { allOption: { toggle: true } },
-          options:
-          [
-            { label: '발생', value: 'OCCUR' },
-            { label: '인지', value: 'RECOGNIZE' },
-            { label: '마감', value: 'CLOSE' },
-            { label: '자동 마감', value: 'CLOSE-A' },
-          ],
-        },
+        { label: 'FROM', type: 'basicDate', model: 'start_date' },
+        { label: 'TO', type: 'basicDate', model: 'end_date' },
+        { label: '알람번호', type: 'input', model: 'alarmno' },
+        { label: '장비ID', type: 'input', model: 'node_num' },
+        { label: '장비명', type: 'select', model: 'node_nm', options: [] },
+        { label: '장애내용', type: 'input', model: 'alarmmsg' },
       ],
       searchModel: {
-        api_name: '',
-        status_cd: [],
-        create_time: [],
-        expird_date: [],
-      },
-      sortInfo: {}
+        alarmno: '',
+        node_num: '',
+        node_nm: '',
+        alarmmsg: '',
+        start_date: '',
+        end_date: ''
+      }
     }
   },
 
   computed: {
-    authAgGrid() {
+    syslogAgGrid() {
       const options = {
-        name: this.name + 'table1', checkable: true, rowGroupPanel: false, rowHeight: 40, rowSelection: 'multiple', rowMultiSelection: false, suppressRowClickSelection: true,
+        name: this.name + 'table1', rowGroupPanel: false, rowHeight: 30, rowSelection: 'multiple', rowMultiSelection: false, suppressRowClickSelection: true,
       }
       const columns = [
-        { type: '', prop: 'model_name', name: '티켓번호', minWidth: 30, flex: 0, suppressMenu: true, alignItems: 'left' },
-        { type: '', prop: 'start_date', name: '티켓유형', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'left', sortable: false, filterable: false },
-        { type: '', prop: 'end_date', name: '장애 내용', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'left', sortable: false, filterable: true },
+        { type: '', prop: 'syslog_alarmtime', name: '경보 발생 시간', minWidth: 50, flex: 0, suppressMenu: true, },
+        { type: '', prop: 'alarmno', name: '알람 번호', minWidth: 50, flex: 0, suppressMenu: true, sortable: false, filterable: false },
+        { type: '', prop: 'node_num', name: '장비 ID', minWidth: 50, flex: 0, suppressMenu: true, sortable: false, filterable: false },
+        { type: '', prop: 'node_nm', name: '장비명', minWidth: 50, flex: 0, suppressMenu: true, sortable: false, filterable: false },
+        { type: '', prop: 'alarmmsg', name: '장애내용', minWidth: 50, flex: 0, suppressMenu: true, sortable: false, filterable: false },
+        { type: '', prop: 'alarmloc', name: '인터페이스명', minWidth: 50, flex: 0, suppressMenu: true, sortable: false, filterable: false },
+        { type: '', prop: 'etc', name: 'SYSLOG 원본 메시지', minWidth: 50, flex: 0, suppressMenu: true, sortable: false, filterable: false },
+        { type: '', prop: 'status', name: '상태', minWidth: 50, flex: 0, suppressMenu: true, sortable: false, filterable: true },
       ]
-      return { options, columns, data: this.authData, getRightClickMenuItems: () => { return [] } }
+      return { options, columns, data: this.syslogData, getRightClickMenuItems: () => { return [] } }
     },
   },
   mounted() {
-    this.onLoadtrafficList()
+    this.onLoadSyslogHistList()
+    this.onLoadEquipmentList()
   },
   methods: {
-    onSortedChange(param) {
-       this.sortInfo = []
-       this.onLoadtrafficList()
+    onClickSearch(params) {
+      this.onLoadSyslogHistList(params)
     },
-
-    // onClickSearchAuth(params) {
-    //   this.onLoadtrafficList(params)
-    // },
-    async onLoadtrafficList(params) {
-      const target = { vue: this.$refs.authManagement }
+    async onLoadEquipmentList() {
+      try {
+        const res = await apiSyslogEquipmentList()
+        const nodeData = res.result.map((item) => ({
+          label: item.node_nm,
+          value: item.node_nm,
+        }))
+        this.searchItems[4].options = nodeData
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    async onLoadSyslogHistList() {
+      const target = { vue: this.$refs.syslogHist }
       this.openLoading(target)
-      const defaultDate = null
       const param = {
-        api_name: this.searchModel.api_name,
-        status_cd: this.searchModel.status_cd,
-        start_create_time: this.formatterDateTime(null, null, this.searchModel.create_time[0] ? this.searchModel.create_time[0] : defaultDate),
-        end_create_time: this.formatterDateTime(null, null, this.searchModel.create_time[1] ? this.searchModel.create_time[1] : defaultDate),
-        start_expird_date: this.formatterDateTime(null, null, this.searchModel.expird_date[0] ? this.searchModel.expird_date[0] : defaultDate),
-        end_expird_date: this.formatterDateTime(null, null, this.searchModel.expird_date[1] ? this.searchModel.expird_date[1] : defaultDate),
+        start_date: this.searchModel.start_date !== '' ? this.searchModel.start_date : null,
+        end_date: this.searchModel.end_date !== '' ? this.searchModel.end_date : null,
+        alarmno: this.searchModel.alarmno,
+        node_nm: this.searchModel.node_nm,
+        node_num: this.searchModel.node_num,
+        alarmmsg: this.searchModel.alarmmsg,
         limit: this.paginationInfo.pageSize,
         page: this.paginationInfo.currentPage,
-        sort_column_name: this.sortInfo.colId,
-        sort_type: this.sortInfo.sort
       }
       try {
-        const res = ''/* await apiSelectAuthHistList(param) */
-        this.authData = res?.result
+        const res = await apiSyslogHistList(param)
+        this.syslogData = res?.result
         this.paginationInfo.totalCount = res.total
         this.paginationInfo.totalPages = Math.ceil(this.paginationInfo.totalCount / this.paginationInfo.pageSize) // 전체 페이지 수 계산
       } catch (error) {
@@ -132,11 +120,14 @@ export default {
         this.closeLoading(target)
       }
     },
-
-    // handleOpenModalDetail(type, row) {
-    //   this.$refs.modalApiDetail.open({ type, row })
-    // },
+    onChangePage(curPage) {
+      this.paginationInfo.currentPage = curPage
+      this.onLoadSyslogHistList()
+    },
+    searchClear() {
+      this.searchModel = {}
+      this.onLoadSyslogHistList()
+    },
   },
 }
 </script>
-l
