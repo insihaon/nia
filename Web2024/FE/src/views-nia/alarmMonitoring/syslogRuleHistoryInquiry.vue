@@ -1,27 +1,35 @@
 <template>
   <div :class="{ [name]: true }">
     <CompInquiryPannel
-      ref="trafficAnalysis"
+      ref="syslogRules"
       :ag-grid="authAgGrid"
-      :is-button-slot="false"
       :items="searchItems"
       :search-model.sync="searchModel"
       :pagination-info="paginationInfo"
       class="w-100 h-100"
-    />
+      @selectedRow="(row)=> handleOpenModalDetail(row,'EDIT')"
+    >
+      <template slot="button-area">
+        <div class="button-panel">
+          <el-button class="float-right" size="mini" type="info" @click="handleOpenModalDetail('', 'OPEN')">등록</el-button>
+        </div>
+      </template>
+    </CompInquiryPannel>
+    <ModalSyslogRules ref="ModalSyslogRules" />
   </div>
 </template>
 <script>
 import { Base } from '@/min/Base.min'
 import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
-// import { apiSelectAuthHistList, apiUpdateApiAuth, apiUpdateApiAuthProc } from '@/api/dataHub'
-import { AppOptions } from '@/class/appOptions'
+import { apiSyslogRuleList } from '@/api/nia'
+import ModalSyslogRules from '@/views-nia/modal/ModalSyslogRules.vue'
+import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
 
 const routeName = 'syslogRuleHistoryInquiry'
 export default {
   name: routeName,
   // eslint-disable-next-line vue/no-unused-components
-  components: { CompInquiryPannel },
+  components: { CompInquiryPannel, ModalSyslogRules },
   extends: Base,
   data() {
     return {
@@ -35,93 +43,63 @@ export default {
         pagerCount: 11
       },
       selectedRow: [],
-       authData: [
-        {
-          model_name: '상황방명',
-          key: 1,
-          start_date: '2022-09-06',
-          end_date: '2022-09-07',
-        },
-        {
-          model_name: '상황',
-          key: 2,
-          start_date: '2022-09-06',
-          end_date: '2022-09-07',
-        },
-       ],
+      ruleData: [],
       searchItems: [
-        { label: 'Filter', type: 'select', multiple: true, placeholder: '티켓 종류를 선택하세요', model: 'ticket', setting: { allOption: { toggle: true } },
-          options:
-          [
-            { label: '신청', value: 'APPLY' },
-            { label: '승인', value: 'GRANT' },
-            { label: '반려', value: 'REJECT' },
-          ],
-        },
-        { label: '상태', type: 'select', multiple: true, placeholder: '경보 상태를 선택하세요', model: 'status_cd', setting: { allOption: { toggle: true } },
-          options:
-          [
-            { label: '신청', value: 'APPLY' },
-            { label: '승인', value: 'GRANT' },
-            { label: '반려', value: 'REJECT' },
-          ],
-        },
-        { label: '요청시간', type: 'date', model: 'create_time' },
-        { label: '만료시간', type: 'date', model: 'expird_date' },
+        { label: '규칙명', type: 'select', model: 'syslog_rule_nm', options: [] },
+        { label: '발생 키워드 ', type: 'input', model: 'occur_str' },
+        { label: '제외 키워드', type: 'input', model: 'occur_except_str' },
       ],
       searchModel: {
-        api_name: '',
-        status_cd: [],
-        create_time: [],
-        expird_date: [],
+        syslog_rule_nm: '',
+        occur_str: '',
+        occur_except_str: '',
       },
-      sortInfo: {}
     }
   },
-
   computed: {
     authAgGrid() {
       const options = {
-        name: this.name + 'table1', checkable: true, rowGroupPanel: false, rowHeight: 40, rowSelection: 'multiple', rowMultiSelection: false, suppressRowClickSelection: true,
+        name: this.name + 'table1', rowGroupPanel: false, rowHeight: 30, rowSelection: 'multiple', rowMultiSelection: false,
       }
       const columns = [
-        { type: '', prop: 'model_name', name: 'API명', minWidth: 30, flex: 0, suppressMenu: true, alignItems: 'left' },
-        { type: '', prop: 'start_date', name: '상태', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'left', sortable: false, filterable: false },
-        { type: '', prop: 'end_date', name: '사용 용도', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'left', sortable: false, filterable: true },
+        { type: '', prop: 'syslog_rule_id', name: 'RULE ID', minWidth: 30, flex: 0, suppressMenu: true, sortable: true },
+        { type: '', prop: 'syslog_rule_nm', name: 'RULE NAME', minWidth: 30, flex: 0, suppressMenu: true, sortable: true },
+        { type: '', prop: 'occur_str1', name: '발생 키워드1', minWidth: 30, flex: 0, suppressMenu: true, sortable: true },
+        { type: '', prop: 'occur_str2', name: '발생 키워드2', minWidth: 30, flex: 0, suppressMenu: true, sortable: true },
+        { type: '', prop: 'occur_str3', name: '발생 키워드3', minWidth: 30, flex: 0, suppressMenu: true, sortable: true },
+        { type: '', prop: 'occur_except_str1', name: '제외 키워드1', minWidth: 30, flex: 0, suppressMenu: true, sortable: true },
+        { type: '', prop: 'occur_except_str2', name: '제외 키워드2', minWidth: 30, flex: 0, suppressMenu: true, sortable: true },
+        { type: '', prop: 'occur_except_str3', name: '제외 키워드3', minWidth: 40, flex: 0, suppressMenu: true, sortable: true, filterable: false },
+        { type: '', prop: 'use_yn', name: '사용 여부', minWidth: 50, flex: 0, suppressMenu: true, sortable: true, filterable: true },
       ]
-      return { options, columns, data: this.authData, getRightClickMenuItems: () => { return [] } }
+      return { options, columns, data: this.ruleData, getRightClickMenuItems: () => { return [] } }
     },
   },
   mounted() {
-    this.onLoadtrafficList()
+    this.onLoadSyslogRuleList()
   },
   methods: {
-    onSortedChange(param) {
-       this.sortInfo = []
-       this.onLoadtrafficList()
+    onClickSearch(params) {
+      this.onLoadSyslogRuleList(params)
     },
-    // onClickSearchAuth(params) {
-    //   this.onLoadtrafficList(params)
-    // },
-    async onLoadtrafficList(params) {
-      const target = { vue: this.$refs.authManagement }
+    async onLoadSyslogRuleList() {
+      const target = { vue: this.$refs.syslogRules }
       this.openLoading(target)
-      const defaultDate = null
       const param = {
-        api_name: this.searchModel.api_name,
-        status_cd: this.searchModel.status_cd,
-        start_create_time: this.formatterDateTime(null, null, this.searchModel.create_time[0] ? this.searchModel.create_time[0] : defaultDate),
-        end_create_time: this.formatterDateTime(null, null, this.searchModel.create_time[1] ? this.searchModel.create_time[1] : defaultDate),
-        start_expird_date: this.formatterDateTime(null, null, this.searchModel.expird_date[0] ? this.searchModel.expird_date[0] : defaultDate),
-        end_expird_date: this.formatterDateTime(null, null, this.searchModel.expird_date[1] ? this.searchModel.expird_date[1] : defaultDate),
+        syslog_rule_nm: this.searchModel.syslog_rule_nm,
+        occur_str: this.searchModel.occur_str,
+        occur_except_str: this.searchModel.occur_except_str,
         limit: this.paginationInfo.pageSize,
         page: this.paginationInfo.currentPage,
-        sort_column_name: this.sortInfo.colId,
-        sort_type: this.sortInfo.sort
       }
       try {
-        const res = ''/* await apiSelectAuthHistList(param) */
-        this.authData = res?.result
+        const res = await apiSyslogRuleList(param)
+        this.ruleData = res?.result
+        const ruleNameData = res.result.map((item) => ({
+          label: item.syslog_rule_nm,
+          value: item.syslog_rule_nm,
+        }))
+        this.searchItems[0].options = ruleNameData
         this.paginationInfo.totalCount = res.total
         this.paginationInfo.totalPages = Math.ceil(this.paginationInfo.totalCount / this.paginationInfo.pageSize) // 전체 페이지 수 계산
       } catch (error) {
@@ -130,11 +108,17 @@ export default {
         this.closeLoading(target)
       }
     },
-
-    // handleOpenModalDetail(type, row) {
-    //   this.$refs.modalApiDetail.open({ type, row })
-    // },
-  },
+    handleOpenModalDetail(rows, type) {
+      this.$refs.ModalSyslogRules.open({ row: rows[0], type })
+    },
+  }
 }
 </script>
-l
+
+<style lang="scss" scoped>
+.syslogRuleHistoryInquiry {
+  .CompAgGrid .ag-row{
+    cursor: pointer !important;
+  }
+}
+</style>

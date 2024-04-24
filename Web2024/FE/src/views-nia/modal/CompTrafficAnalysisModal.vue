@@ -19,7 +19,7 @@
       <span slot="title">
         <i class="el-icon-document mr-2" style="font-size: 17px;" />
         국가별 트래픽 분석 및 Top N
-        <hr>
+        <hr />
       </span>
       <div class="d-flex flex-column h-100" style="height:100%">
         <!-- <CompAgGrid

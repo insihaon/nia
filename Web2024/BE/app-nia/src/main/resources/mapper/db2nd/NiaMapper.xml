@@ -768,6 +768,168 @@
         <include refid="TotalCountSuffix"/>
     </select>
 
+     <!-- syslog 이력조회 -->
+    <select id="SELECT_SYSLOG_HIST_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+    <include refid="TotalCountPrefix"/>
+        SELECT  sysDialog.alarmno,
+                sysDialog.alarmtime,
+                TO_CHAR(sysDialog.alarmtime, 'YYYY-MM-DD HH24:MI:SS') AS syslog_alarmtime,
+                sysDialog.node_num,
+                sysDialog.node_nm,
+                sysDialog.alarmmsg,
+                sysDialog.alarmlvl,
+                sysDialog.etc,
+                sysDialog.rule_id,
+                sysDialog.alarmloc,
+                CASE WHEN sysDialog.status = 'INIT' THEN '발생'
+                WHEN sysDialog.status = 'FIN' THEN '마감'
+                WHEN sysDialog.status = 'AUTO_FIN' THEN '자동 마감'
+                ELSE '-'
+                END AS status
+        FROM    rca.tb_syslog_alarm_mst sysDialog
+            <where>
+                <if test="start_date == null">
+                sysDialog.alarmtime BETWEEN NOW()::timestamp - interval '30 day' AND NOW()::timestamp
+                </if>
+            <if test="start_date != null">
+                AND sysDialog.alarmtime <![CDATA[ > ]]> #{start_date}::timestamp 
+                </if>
+                <if test="end_date != null">
+                AND sysDialog.alarmtime <![CDATA[ <= ]]> #{end_date}::timestamp 
+                </if>
+                <if test="alarmno != null and alarmno != ''">
+                AND sysDialog.alarmno = #{alarmno}
+                </if>
+                <if test="node_nm != null and node_nm != ''">
+                AND sysDialog.node_nm = #{node_nm}
+                </if>
+                <if test="node_num != null and node_num != ''">
+                AND sysDialog.node_num = #{node_num}
+                </if>
+                <if test="alarmmsg != null and alarmmsg != ''">
+                AND UPPER(sysDialog.alarmmsg) LIKE '%' || UPPER(#{alarmmsg}) || '%'
+                </if>
+                ORDER BY sysDialog.alarmno DESC
+            </where> 
+        <include refid="TotalCountSuffix"/>
+    </select>
+
+    <!-- 장비명 리스트 조회 -->
+    <select id="SELECT_SYSLOG_EQUIPMENT_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+        SELECT  node_nm
+        FROM    rca.tb_syslog_alarm_mst tsam
+        WHERE   tsam.alarmtime BETWEEN NOW()::TIMESTAMP - interval '30 day' AND NOW()::TIMESTAMP
+        GROUP BY node_nm
+    </select>
+
+    <!-- SYSLOG RULE 관리 리스트 조회 -->
+    <select id="SELECT_SYSLOG_RULE_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+        <include refid="TotalCountPrefix"/>
+        SELECT  syslog_rule_id ,
+                syslog_rule_nm ,
+                occur_str1 ,
+                occur_str2 ,
+                occur_str3 ,
+                occur_except_str1 ,
+                occur_except_str2 ,
+                occur_except_str3 ,
+                CASE
+                        WHEN tsrm.use_yn = 'Y'
+                        THEN '사용'
+                        ELSE '미사용'
+                END AS use_yn
+        FROM    gather.tb_syslog_rule_mst tsrm
+        <!-- <where>
+                <if test="syslog_rule_nm != null">
+                syslog_rule_nm = #{syslog_rule_nm}
+                </if>
+                <if test="occur_str != null and occur_str != ''">
+                AND occur_str1 = #{occur_str}
+                </if>
+                <if test="occur_except_str != null and occur_except_str != ''">
+                AND occur_except_str1 = #{occur_except_str}
+                </if> -->
+            ORDER BY syslog_rule_id
+         <!-- </where>  -->
+        <include refid="TotalCountSuffix"/>
+    </select>
+
+    <!-- SYSLOG RULE 수정 -->
+    <update id="UPDATE_NIA_SYSLOG_RULE">
+        UPDATE GATHER.TB_SYSLOG_RULE_MST
+        SET    SYSLOG_RULE_NM = #{syslog_rule_nm},
+               OCCUR_STR1 = #{occur_str1},
+               OCCUR_STR2 = #{occur_str2},
+               OCCUR_STR3 = #{occur_str3},
+               OCCUR_EXCEPT_STR1 = #{occur_except_str1},
+               OCCUR_EXCEPT_STR2 = #{occur_except_str2},
+               OCCUR_EXCEPT_STR3 = #{occur_except_str3},
+               USE_YN = CASE WHEN #{use_yn} = '사용' THEN 'Y' ELSE 'N' END
+        WHERE SYSLOG_RULE_ID = #{syslog_rule_id}
+    </update>
+
+    <!-- SYSLOG RULE 삭제 -->
+     <delete id="DELETE_NIA_SYSLOG_RULE" parameterType="hashmap">
+        DELETE FROM  GATHER.TB_SYSLOG_RULE_MST 
+        WHERE SYSLOG_RULE_ID = #{syslog_rule_id}
+    </delete>
+
+    <!-- SYSLOG RULE 등록 -->
+    <insert id="INSERT_NIA_SYSLOG_RULE" parameterType="java.util.HashMap">
+        INSERT INTO    gather.tb_syslog_rule_mst
+        (
+                syslog_rule_id,
+                syslog_rule_nm,
+                node_type,
+                priority_order,
+                alarm_severity,
+                occur_str1,
+                occur_str2,
+                occur_str3,
+                occur_except_str1,
+                occur_except_str2,
+                occur_except_str3,
+                use_yn
+        )
+        VALUES
+        (
+                NEXTVAL('gather.seq_syslog_rule')
+                ,#{syslog_rule_nm}
+                ,'*'
+                ,1
+                ,7
+                ,#{occur_str1}
+                <if test="occur_str2 != null">
+                ,#{occur_str2}
+                </if>
+                <if test="occur_str3 != null">
+                ,#{occur_str3}
+                </if>
+                <if test="occur_except_str1 != null">
+                ,#{occur_except_str1}
+                </if>
+                <if test="occur_except_str2 != null">
+                ,#{occur_except_str2}
+                </if>
+                <if test="occur_except_str3 != null">
+                ,#{occur_except_str3}
+                </if>
+                <if test="use_yn != null">
+                ,#{use_yn}
+                </if>
+        )
+    </insert>
+
+    <!-- SYSLOG RULE NAME 중복 체크 -->
+    <select id="SELECT_CHECK_RULE_NAME" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+    SELECT  syslog_rule_nm, COUNT(*)
+    FROM    gather.tb_syslog_rule_mst
+    WHERE   syslog_rule_nm = #{SYSLOG_RULE_NM}
+    GROUP BY syslog_rule_nm
+    HAVING  COUNT(*) <![CDATA[ > ]]> 0
+    </select>
+    
+
     <!-- 조치 SOP 정보 -->
     <select id="SELECT_SOP_CODE_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
         <include refid="TotalCountPrefix"/>
