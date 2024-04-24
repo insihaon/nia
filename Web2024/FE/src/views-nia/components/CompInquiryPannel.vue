@@ -1,102 +1,81 @@
 <template>
   <div :class="{ [name]: true }" class="common-padding common-font" style="display: flex;flex-direction: column;">
     <div class="search-container" :style="setContainerHeight">
-      <div v-if="isSearch" class="mainWrap">
-        <div class="contentWrap subContentWrap">
-          <!-- 조회 옵션상자 -->
-          <div :model="searchModel" class="optionBox">
-            <div class="optionBoxContent">
-              <div v-for="(item, index) in items" :key="index" class="optionItem">
-                <label>
-                  <i :class="item.icon || ''" />
-                  {{ item.label }}
-                </label>
-                <el-col :size="item.size">
-                  <el-input
-                    v-if="item.type === 'input'"
-                    v-model="searchModel[item.model]"
-                    type="text"
-                    clearable
-                    :placeholder="item.placeholder"
-                    @keyup.native.enter="$emit('keyupEnter', searchModel)"
-                  />
+      <div v-if="isSearch" class="optionBox">
+        <!-- 조회 옵션상자 -->
+        <el-row class="optionRow">
+          <el-col v-for="(item, index) in items" :key="index" class="optionCol" :xs="24" :sm="12" :md="12" :lg="8" :xl="6">
+            <label>
+              {{ item.label }}
+            </label>
+            <div>
+              <el-input
+                v-if="item.type === 'input'"
+                v-model="searchModel[item.model]"
+                type="text"
+                clearable
+                :placeholder="item.placeholder"
+                @keyup.native.enter="$emit('keyupEnter', searchModel)"
+              />
 
-                  <CompCheckSelector
-                    v-if="item.type === 'select' && item.multiple"
-                    v-model="searchModel[item.model]"
-                    :item="item"
-                    :search-model.sync="searchModel[item.model]"
-                  />
+              <CompCheckSelector
+                v-if="item.type === 'select' && item.multiple"
+                v-model="searchModel[item.model]"
+                :item="item"
+                :search-model.sync="searchModel[item.model]"
+              />
 
-                  <el-select
-                    v-if="item.type === 'select' && !item.multiple"
-                    v-model="searchModel[item.model]"
-                    collapse-tags
-                    filterable
-                    clearable
-                    :placeholder="item.placeholder"
-                    reserve-keyword
-                    remote
-                  >
-                    <el-option
-                      v-for="(option, i) in item.options"
-                      :key="i"
-                      :label="option.label"
-                      :value="option.value"
-                    />
-                  </el-select>
+              <el-select
+                v-if="item.type === 'select' && !item.multiple"
+                v-model="searchModel[item.model]"
+                collapse-tags
+                filterable
+                clearable
+                :placeholder="item.placeholder"
+                reserve-keyword
+                remote
+              >
+                <el-option
+                  v-for="(option, i) in item.options"
+                  :key="i"
+                  :label="option.label"
+                  :value="option.value"
+                />
+              </el-select>
 
-                  <OrgSelect
-                    v-if="item.type === 'orgSelect'"
-                    v-model="searchModel[item.model]"
-                    :item="item"
-                    :search-model.sync="searchModel[item.model]"
-                    @orgChange="(orgLvl)=> $emit('orgChange', orgLvl)"
-                  />
+              <el-date-picker
+                v-if="item.type === 'date'"
+                v-model="searchModel[item.model]"
+                type="daterange"
+                start-placeholder="시작 일자"
+                end-placeholder="종료 일자"
+                :default-time="['00:00:00','23:59:59']"
+              />
 
-                  <el-date-picker
-                    v-if="item.type === 'basicDate'"
-                    v-model="searchModel[item.model]"
-                    type="date"
-                  />
-
-                  <el-date-picker
-                    v-if="item.type === 'date'"
-                    v-model="searchModel[item.model]"
-                    type="daterange"
-                    start-placeholder="시작 일자"
-                    end-placeholder="종료 일자"
-                    :default-time="['00:00:00','23:59:59']"
-                  />
-
-                  <el-date-picker
-                    v-if="item.type === 'dateTime'"
-                    v-model="searchModel[item.model]"
-                    type="datetimerange"
-                    range-separator="to"
-                    start-placeholder="Start date"
-                    end-placeholder="End date"
-                  />
-
-                </el-col>
-                <el-row class="d-flex flex-column w-50" style="justify-content: end; color : rgb(50, 49, 49)">
-                  <slot name="searchCaption" />
-                </el-row>
-              </div>
+              <el-date-picker
+                v-if="item.type === 'dateTime'"
+                v-model="searchModel[item.model]"
+                type="datetimerange"
+                range-separator="to"
+                start-placeholder="Start date"
+                end-placeholder="End date"
+              />
             </div>
-            <div class="optionBoxButtons" style="margin: 5px 8px 3px 3px; float: right">
-              <el-button v-if="isExcel" type="button" size="mini" class="excel-form-export" icon="el-icon-download" @click="handleExcel">
-                엑셀 저장
-              </el-button>
-              <el-button v-if="title !== '데이터셋' && title !== '노드 정보 조회'" class="btn-r" type="info" size="mini" @click="onClickSearchButton">
-                <i class="el-icon-search" />
-              </el-button>
-              <el-button class="btn-r" style="background : rgba(128, 128, 128, 0.604)" type="info" size="mini" @click="handleSearchClear">
-                <i type="info" class="el-icon-refresh-right" style="font-weight: 800; width: 100%;" />
-              </el-button>
-            </div>
-          </div>
-        </div>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24" align="center" class="searchBtnGroup">
+            <el-button class="btn-r" type="info" size="mini" icon="el-icon-search" @click="onClickSearchButton">
+              검색
+            </el-button>
+            <el-button class="btn-r" type="info" size="mini" icon="el-icon-refresh" @click="handleSearchClear">
+              초기화
+            </el-button>
+            <el-button v-if="isExcel" type="button" size="mini" class="excel-form-export" icon="el-icon-download" @click="handleExcel">
+              엑셀 저장
+            </el-button>
+          </el-col>
+        </el-row>
       </div>
     </div>
 
@@ -128,15 +107,12 @@
 import { Base } from '@/min/Base.min'
 import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
 import CompCheckSelector from '@/views-dataHub/components/CompCheckSelector'
-import OrgSelect from '@/views-dataHub/components/OrgSelect'
-// import ComponentTesterMixins from '@/test/ComponentTesterMixins'
 
 const routeName = 'CompInquiryPannel'
 export default {
   name: routeName,
-  components: { CompAgGrid, CompCheckSelector, OrgSelect },
+  components: { CompAgGrid, CompCheckSelector },
   extends: Base,
-  // mixins: [ComponentTesterMixins],
   props: {
     paginationInfo: {
       type: Object,
@@ -268,88 +244,6 @@ export default {
 </script>
 
 <style lang="scss">
-.nia {
-  .CompInquiryPannel {
-    font-family: "NotoSansKR";
-    z-index: 0;
-    .el-input--medium {
-      font-size: 12px;
-      .el-input__inner {
-        height: 25px;
-        line-height: 36px;
-      }
-    }
-    .el-input__suffix {
-      top: 3px;
-    }
-    .el-input,
-    .el-input__clear {
-      line-height: 30px !important;
-    }
-    .el-range-editor--medium {
-      height: 30px;
-      line-height: 36px;
-      .el-range-input{
-        font-size: 11px;
-      }
-      .el-range__icon,
-      .el-range__close-icon {
-        line-height: 19px;
-      }
-      .el-range-separator {
-        line-height: 17px;
-      }
-    }
-    .el-select__input.is-medium {
-      display: none !important;
-    }
-    .result-cnt span{
-      font-size : 11px
-    }
-    .CompAgGrid {
-      display: inline-block;
-      min-width: 50% !important;
-      .ag-cell{
-        font-size: 12px !important;
-        font-weight: 200;
-      }
-      .ag-cell-value{
-        color:#000000 !important;
-        // padding-top: 5px !important;
-      }
-      .ag-header{
-        background-color: #fff;
-        min-height: 20px !important;
-      }
-      .ag-header-cell{
-        font-size: 13px;
-        font-weight: 600;
-      }
-      .ag-body-viewport {
-        border-bottom: 1px solid #e8eaec;
-      }
-      .button-container{
-        display: flex;
-        justify-content: space-between;
-      }
-      .el-input__icon el-icon-circle-close{
-        line-height: 26px !important;
-      }
-    }
-    .search-container {
-      height: auto;
-    }
-
-    .excel-form-export{
-      background: rgb(34, 123, 74);
-      color: white;
-      padding: 9px 13px;
-        &:hover{
-          background: rgba(137, 174, 154, 0.952) !important;
-        }
-    }
-  }
-}
 </style>
  <style lang="css" scoped>
   @import "~@/assets/css/nia_style_main.css";
