@@ -73,9 +73,7 @@ export default {
         { type: '', prop: 'alarmmsg', name: '장애내용', minWidth: 50, flex: 0, suppressMenu: true, sortable: false, filterable: false },
         { type: '', prop: 'alarmloc', name: '인터페이스명', minWidth: 50, flex: 0, suppressMenu: true, sortable: false, filterable: false },
         { type: '', prop: 'etc', name: 'SYSLOG 원본 메시지', minWidth: 50, flex: 0, suppressMenu: true, sortable: false, filterable: false },
-        { type: '', prop: 'status', name: '상태', minWidth: 50, flex: 0, suppressMenu: true, sortable: false, filterable: true, cellStyle: (params) => {
-          return params.value === '자동 마감' ? { background: 'red' } : { color: 'blue' }
-        } },
+        { type: '', prop: 'status', name: '상태', minWidth: 50, flex: 0, suppressMenu: true, sortable: false, filterable: true, cellStyle: this.getCellStyle },
       ]
       return { options, columns, data: this.syslogData, getRightClickMenuItems: () => { return [] } }
     },
@@ -85,15 +83,15 @@ export default {
     this.onLoadEquipmentList()
   },
   methods: {
-    // getCellStyle(params) {
-    //   let color = ''
-    //   if (params.value === '자동 마감') {
-    //      color = 'red'
-    //   } else {
-    //      color = 'blue'
-    //   }
-    //   return { color: color }
-    // },
+    getCellStyle(params) {
+      let color = ''
+      if (params.value === '자동 마감') {
+         color = 'red'
+      } else {
+         color = 'blue'
+      }
+      return { color: color }
+    },
     onClickSearch(params) {
       this.onLoadSyslogHistList(params)
     },
