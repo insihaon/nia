@@ -941,7 +941,7 @@
     <select id="SELECT_CHECK_RULE_NAME" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
     SELECT  syslog_rule_nm, COUNT(*)
     FROM    gather.tb_syslog_rule_mst
-    WHERE   syslog_rule_nm = #{SYSLOG_RULE_NM}
+    WHERE   syslog_rule_nm = #{syslog_rule_nm}
     GROUP BY syslog_rule_nm
     HAVING  COUNT(*) <![CDATA[ > ]]> 0
     </select>

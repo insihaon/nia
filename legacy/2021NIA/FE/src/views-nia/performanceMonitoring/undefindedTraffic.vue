@@ -136,7 +136,7 @@ export default {
   computed: {
     nationAgGrid() {
       const options = {
-        name: this.name + 'table1', rowGroupPanel: false, rowHeight: 40, rowSelection: 'multiple', rowMultiSelection: false, suppressRowClickSelection: true,
+        name: this.name + 'table1', rowGroupPanel: false, rowSelection: 'multiple', rowMultiSelection: false, suppressRowClickSelection: true,
       }
       const columns = [
         { type: '', prop: 'country_name', name: '국가명', minWidth: 120, flex: 0, suppressMenu: true, alignItems: 'center' },
@@ -146,7 +146,7 @@ export default {
     },
      agencyAgGrid() {
       const options = {
-        name: this.name + 'table2', rowGroupPanel: false, rowHeight: 40, rowSelection: 'multiple', rowMultiSelection: false, suppressRowClickSelection: true,
+        name: this.name + 'table2', rowGroupPanel: false, rowSelection: 'multiple', rowMultiSelection: false, suppressRowClickSelection: true,
       }
       const columns = [
         { type: '', prop: 'nren_name', name: '이용기관명', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center' },
@@ -158,7 +158,7 @@ export default {
     },
     appAgGrid() {
       const options = {
-        name: this.name + 'table3', rowGroupPanel: false, rowHeight: 40, rowSelection: 'multiple', rowMultiSelection: false, suppressRowClickSelection: true,
+        name: this.name + 'table3', rowGroupPanel: false, rowSelection: 'multiple', rowMultiSelection: false, suppressRowClickSelection: true,
       }
       const columns = [
         { type: '', prop: 'protocol', name: '어플리케이션명', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center' },
