@@ -31,6 +31,10 @@ public interface NiaMapper extends BaseDataMapper {
         public List<ResultMap> SELECT_SYSLOG_HIST_LIST(HashMap<String, Object> map);
         public List<ResultMap> SELECT_SYSLOG_EQUIPMENT_LIST(HashMap<String, Object> map);
         public List<ResultMap> SELECT_SYSLOG_RULE_LIST(HashMap<String, Object> map);
+        public int UPDATE_NIA_SYSLOG_RULE(HashMap<String, Object> map);
+        public int DELETE_NIA_SYSLOG_RULE(HashMap<String, Object> map);
+        public int INSERT_NIA_SYSLOG_RULE(HashMap<String, Object> map);
+        public List<ResultMap> SELECT_CHECK_RULE_NAME(HashMap<String, Object> map);
         public List<ResultMap> SELECT_SOP_CODE_LIST(HashMap<String, Object> map);
         public int INSERT_SOP_CODE(HashMap<String, Object> map);
         public int UPDATE_SOP_CODE(HashMap<String, Object> map);
