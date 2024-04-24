@@ -854,6 +854,82 @@
         <include refid="TotalCountSuffix"/>
     </select>
 
+    <!-- SYSLOG RULE 수정 -->
+    <update id="UPDATE_NIA_SYSLOG_RULE">
+        UPDATE GATHER.TB_SYSLOG_RULE_MST
+        SET    SYSLOG_RULE_NM = #{syslog_rule_nm},
+               OCCUR_STR1 = #{occur_str1},
+               OCCUR_STR2 = #{occur_str2},
+               OCCUR_STR3 = #{occur_str3},
+               OCCUR_EXCEPT_STR1 = #{occur_except_str1},
+               OCCUR_EXCEPT_STR2 = #{occur_except_str2},
+               OCCUR_EXCEPT_STR3 = #{occur_except_str3},
+               USE_YN = CASE WHEN #{use_yn} = '사용' THEN 'Y' ELSE 'N' END
+        WHERE SYSLOG_RULE_ID = #{syslog_rule_id}
+    </update>
+
+    <!-- SYSLOG RULE 삭제 -->
+     <delete id="DELETE_NIA_SYSLOG_RULE" parameterType="hashmap">
+        DELETE FROM  GATHER.TB_SYSLOG_RULE_MST 
+        WHERE SYSLOG_RULE_ID = #{syslog_rule_id}
+    </delete>
+
+    <!-- SYSLOG RULE 등록 -->
+    <insert id="INSERT_NIA_SYSLOG_RULE" parameterType="java.util.HashMap">
+        INSERT INTO    gather.tb_syslog_rule_mst
+        (
+                syslog_rule_id,
+                syslog_rule_nm,
+                node_type,
+                priority_order,
+                alarm_severity,
+                occur_str1,
+                occur_str2,
+                occur_str3,
+                occur_except_str1,
+                occur_except_str2,
+                occur_except_str3,
+                use_yn
+        )
+        VALUES
+        (
+                NEXTVAL('gather.seq_syslog_rule')
+                ,#{syslog_rule_nm}
+                ,'*'
+                ,1
+                ,7
+                ,#{occur_str1}
+                <if test="occur_str2 != null">
+                ,#{occur_str2}
+                </if>
+                <if test="occur_str3 != null">
+                ,#{occur_str3}
+                </if>
+                <if test="occur_except_str1 != null">
+                ,#{occur_except_str1}
+                </if>
+                <if test="occur_except_str2 != null">
+                ,#{occur_except_str2}
+                </if>
+                <if test="occur_except_str3 != null">
+                ,#{occur_except_str3}
+                </if>
+                <if test="use_yn != null">
+                ,#{use_yn}
+                </if>
+        )
+    </insert>
+
+    <!-- SYSLOG RULE NAME 중복 체크 -->
+    <select id="SELECT_CHECK_RULE_NAME" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+    SELECT  syslog_rule_nm, COUNT(*)
+    FROM    gather.tb_syslog_rule_mst
+    WHERE   syslog_rule_nm = #{SYSLOG_RULE_NM}
+    GROUP BY syslog_rule_nm
+    HAVING  COUNT(*) <![CDATA[ > ]]> 0
+    </select>
+    
+
     <!-- 조치 SOP 정보 -->
     <select id="SELECT_SOP_CODE_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
         <include refid="TotalCountPrefix"/>
