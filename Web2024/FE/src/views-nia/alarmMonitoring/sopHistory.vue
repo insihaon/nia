@@ -52,9 +52,6 @@ export default {
   extends: Base,
   props: {
     wdata: Object,
-    // editMode: { type: String, default: "I" }, //I: 등록, U: 수정, D: 상세
-  },
-  props: {
     row: {
       type: Object,
       default() {
@@ -104,59 +101,110 @@ export default {
   computed: {
     sopAgGrid() {
       const options = { name: this.name, checkable: false, rowGroupPanel: false, rowSelection: 'multiple', rowMultiSelection: false }
-        const columns = [
-          { type: '', prop: 'ticket_id', name: '티켓번호', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
-          { type: '', prop: 'ticket_type', name: '티켓유형', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false, format: getAlarmType },
-          { type: '', prop: 'ticket_result', name: '장애내용', width: 160, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
-          { type: '', prop: 'fault_classify', name: '장애구분', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
-          { type: '', prop: 'fault_type', name: '장애유형', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
-          { type: '', prop: 'fault_detail_content', name: '조치내용', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true },
-          { type: '', prop: 'etc_content', name: '기타사항', width: 250, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true },
-          { type: '', prop: 'fault_time', name: '발생시간', width: 250, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true, formatter: (row) => { return this.formatterTimeStamp(row.fault_time, 'YYYY/MM/DD-HH:mm:ss') } },
-          { type: '', prop: 'handling_fin_time', name: '마감시간', width: 250, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true, formatter: (row) => { return this.formatterTimeStamp(row.handling_fin_time, 'YYYY/MM/DD-HH:mm:ss') } },
-          { type: '', prop: 'handling_fin_user', name: '마감자', width: 250, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true },
-          { type: '', prop: 'root_cause_sysnamea', name: '노드A', width: 250, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true },
-          { type: '', prop: 'root_cause_sysnamez', name: '노드Z', width: 250, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true },
-          { type: '', prop: 'ip_addra', name: '마스터 IP', width: 250, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true },
-          { type: '', prop: 'root_cause_porta', name: '장비I/F', width: 250, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true },
-        ]
-        return { options, columns, data: this.sopHistList }
+      const columns = [
+        { type: '', prop: 'ticket_id', name: '티켓번호', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
+        { type: '', prop: 'ticket_type', name: '티켓유형', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false, format: getAlarmType },
+        { type: '', prop: 'ticket_result', name: '장애내용', width: 160, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
+        { type: '', prop: 'fault_classify', name: '장애구분', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
+        { type: '', prop: 'fault_type', name: '장애유형', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
+        { type: '', prop: 'fault_detail_content', name: '조치내용', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true },
+        { type: '', prop: 'etc_content', name: '기타사항', width: 250, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true },
+        {
+          type: '',
+          prop: 'fault_time',
+          name: '발생시간',
+          width: 250,
+          suppressMenu: true,
+          alignItems: 'center',
+          sortable: true,
+          filterable: true,
+          formatter: (row) => {
+            return this.formatterTimeStamp(row.fault_time, 'YYYY/MM/DD-HH:mm:ss')
+          },
+        },
+        {
+          type: '',
+          prop: 'handling_fin_time',
+          name: '마감시간',
+          width: 250,
+          suppressMenu: true,
+          alignItems: 'center',
+          sortable: true,
+          filterable: true,
+          formatter: (row) => {
+            return this.formatterTimeStamp(row.handling_fin_time, 'YYYY/MM/DD-HH:mm:ss')
+          },
+        },
+        { type: '', prop: 'handling_fin_user', name: '마감자', width: 250, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true },
+        { type: '', prop: 'root_cause_sysnamea', name: '노드A', width: 250, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true },
+        { type: '', prop: 'root_cause_sysnamez', name: '노드Z', width: 250, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true },
+        { type: '', prop: 'ip_addra', name: '마스터 IP', width: 250, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true },
+        { type: '', prop: 'root_cause_porta', name: '장비I/F', width: 250, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true },
+      ]
+      return { options, columns, data: this.sopHistList }
     },
     syslogAgGrid() {
       const options = { name: this.name, checkable: false, rowGroupPanel: false, rowSelection: 'multiple', rowMultiSelection: false }
-        const columns = [
-          { type: '', prop: 'alarmno', name: '알람번호', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
-          { type: '', prop: 'node_nm', name: '장비명', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
-          { type: '', prop: 'alarmloc', name: '인터페이스', width: 160, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
-          { type: '', prop: 'fault_classify', name: '장애구분', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
-          { type: '', prop: 'fault_type', name: '장애유형', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
-          { type: '', prop: 'fault_detail_content', name: '조치내용', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true },
-          { type: '', prop: 'etc_content', name: '기타조치내용', width: 250, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true },
-          { type: '', prop: 'etc', name: 'syslog 원본메시지', width: 250, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true },
-          { type: '', prop: 'alarm_occur_time', name: '발생시간', width: 250, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true, formatter: (row) => { return this.formatterTimeStamp(row.fault_time, 'YYYY/MM/DD-HH:mm:ss') } },
-          { type: '', prop: 'handling_fin_time', name: '마감시간', width: 250, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true, formatter: (row) => { return this.formatterTimeStamp(row.handling_fin_time, 'YYYY/MM/DD-HH:mm:ss') } },
-          { type: '', prop: 'handling_fin_user', name: '마감자', width: 250, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true },
-          { type: '', prop: 'status', name: '처리상태', width: 250, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true, format: getTicketStatus }
-
-        ]
-        return { options, columns, data: this.syslogHistList }
+      const columns = [
+        { type: '', prop: 'alarmno', name: '알람번호', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
+        { type: '', prop: 'node_nm', name: '장비명', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
+        { type: '', prop: 'alarmloc', name: '인터페이스', width: 160, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
+        { type: '', prop: 'fault_classify', name: '장애구분', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
+        { type: '', prop: 'fault_type', name: '장애유형', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
+        { type: '', prop: 'fault_detail_content', name: '조치내용', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true },
+        { type: '', prop: 'etc_content', name: '기타조치내용', width: 250, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true },
+        { type: '', prop: 'etc', name: 'syslog 원본메시지', width: 250, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true },
+        {
+          type: '',
+          prop: 'alarm_occur_time',
+          name: '발생시간',
+          width: 250,
+          suppressMenu: true,
+          alignItems: 'center',
+          sortable: true,
+          filterable: true,
+          formatter: (row) => {
+            return this.formatterTimeStamp(row.fault_time, 'YYYY/MM/DD-HH:mm:ss')
+          },
+        },
+        {
+          type: '',
+          prop: 'handling_fin_time',
+          name: '마감시간',
+          width: 250,
+          suppressMenu: true,
+          alignItems: 'center',
+          sortable: true,
+          filterable: true,
+          formatter: (row) => {
+            return this.formatterTimeStamp(row.handling_fin_time, 'YYYY/MM/DD-HH:mm:ss')
+          },
+        },
+        { type: '', prop: 'handling_fin_user', name: '마감자', width: 250, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true },
+        { type: '', prop: 'status', name: '처리상태', width: 250, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true, format: getTicketStatus },
+      ]
+      return { options, columns, data: this.syslogHistList }
     },
     searchSyslogItems() {
       const searchItems = [
-        { label: '장비명', type: 'select', size: 4, model: 'NODE_NM', setting: { allOption: { toggle: true } },
-          options: this.equipmentOptionList },
-        { label: 'I/F', type: 'select', size: 4, model: 'ALARMLOC', setting: { allOption: { toggle: true } },
-          options: this.interfaceOptionList },
-        { label: '상태', type: 'select', size: 6, model: 'STATUS', setting: { allOption: { toggle: true } },
+        { label: '장비명', type: 'select', size: 4, model: 'NODE_NM', setting: { allOption: { toggle: true } }, options: this.equipmentOptionList },
+        { label: 'I/F', type: 'select', size: 4, model: 'ALARMLOC', setting: { allOption: { toggle: true } }, options: this.interfaceOptionList },
+        {
+          label: '상태',
+          type: 'select',
+          size: 6,
+          model: 'STATUS',
+          setting: { allOption: { toggle: true } },
           options: [
             { label: '전체', value: 'ALL' },
             { label: '자동', value: 'AUTO_FIN' },
-            { label: '수동', value: 'FIN' }
-          ] },
+            { label: '수동', value: 'FIN' },
+          ],
+        },
         { label: 'DATE', type: 'date', size: 6, model: 'DATE', placeholder: '' },
       ]
       return searchItems
-    }
+    },
   },
   created() {
     this.selectedRow = this.wdata?.params

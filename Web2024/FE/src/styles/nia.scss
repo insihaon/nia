@@ -149,6 +149,9 @@ table.basic {
 
 
 .nia, .nia-dialog {
+  .CompAgGrid .ag-cell {
+    font-size: 13px;
+  }
   .splitter-paneL, .splitter-paneR {
     transition: all 0.25s;
   }

@@ -4,7 +4,8 @@
       <div v-if="isSearch" class="optionBox">
         <!-- 조회 옵션상자 -->
         <el-row class="optionRow">
-          <el-col v-for="(item, index) in items" :key="index" class="optionCol" :xs="24" :sm="12" :md="12" :lg="8" :xl="6">
+          <el-col v-for="(item, index) in items" :key="index" :xs="24" :sm="12" :md="12" :lg="8" :xl="6">
+            <div class="optionItem">
             <label>
               {{ item.label }}
             </label>
@@ -13,6 +14,7 @@
                 v-if="item.type === 'input'"
                 v-model="searchModel[item.model]"
                 type="text"
+                size="mini"
                 clearable
                 :placeholder="item.placeholder"
                 @keyup.native.enter="$emit('keyupEnter', searchModel)"
@@ -31,6 +33,7 @@
                 collapse-tags
                 filterable
                 clearable
+                size="mini"
                 :placeholder="item.placeholder"
                 reserve-keyword
                 remote
@@ -47,6 +50,7 @@
                 v-if="item.type === 'date'"
                 v-model="searchModel[item.model]"
                 type="daterange"
+                size="mini"
                 start-placeholder="시작 일자"
                 end-placeholder="종료 일자"
                 :default-time="['00:00:00','23:59:59']"
@@ -56,11 +60,13 @@
                 v-if="item.type === 'dateTime'"
                 v-model="searchModel[item.model]"
                 type="datetimerange"
+                size="mini"
                 range-separator="to"
                 start-placeholder="Start date"
                 end-placeholder="End date"
               />
             </div>
+          </div>
           </el-col>
         </el-row>
         <el-row>
@@ -80,7 +86,7 @@
     </div>
 
     <!-- agGrid -->
-    <div v-if="Object.keys(agGrid).length > 0 " class="d-flex flex-column agGridShell" :style="{ flex: 1}">
+    <div v-if="Object.keys(agGrid).length > 0 " class="d-flex flex-column agGridShell p-1" :style="{ flex: 1}">
       <div class="d-flex flex-column w-full text-right font-bold">
         <slot name="inquireButton" />
         <span class="mr-2">검색결과 : {{ totalCount }}건 </span>

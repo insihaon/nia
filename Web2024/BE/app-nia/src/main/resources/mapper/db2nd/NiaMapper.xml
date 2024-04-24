@@ -262,25 +262,42 @@
    <!-- 전송망 TICKET -->
    <select id="SELECT_TRANSMISSION_ALARM_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
         SELECT 
-            AM.ALARMNO
-            , AM.SYSNAME 
-            , TO_CHAR(AM.ALARMTIME , 'YYYY-MM-DD HH24:MI:SS') AS ALARMTIME
-            , AM.ALARMLOC
-            , AM.ALARMMSG 
-            , TC.TICKET_ID 
-            , AC.TICKET_AL_ID 
-            , TC.TICKET_TYPE
-            , TC.STATUS 
-        FROM nia.tb_alarm_mst AM
-        LEFT JOIN rca.tb_rca_ticket_al_current AC ON AM.ALARMNO = AC.TICKET_AL_ID
-        LEFT JOIN rca.tb_rca_ticket_current TC ON AC.TICKET_ID = TC.TICKET_ID
-        <if test="IS_POLLING == null">
-            WHERE ALARMTIME <![CDATA[ > ]]>  now() - INTERVAL '7' day
-        </if>
-        <if test="IS_POLLING != null and IS_POLLING == true">
-            WHERE ALARMTIME <![CDATA[ >= ]]> (CURRENT_TIMESTAMP - INTERVAL '5 minutes')
-        </if>
-        ORDER BY ALARMTIME DESC
+			ALARMNO
+			, SYSNAME
+			, EQUIPTYPE
+            , TO_CHAR(ALARMTIME , 'YYYY-MM-DD HH24:MI:SS') AS ALARMTIME
+			, RECEIVETIME
+			, ALARMLOC
+			, ALARMMSG
+			, UNIT
+			, CLEARTIME
+			, PTPNAME
+			, SLOT
+			, PORT
+			, ALARMMSG_ORIGINAL
+			, RT.TICKET_ID
+			, RT.TICKET_TYPE
+            , TO_CHAR(RT.TICKET_GENERATION_TIME , 'YYYY-MM-DD HH24:MI:SS') AS TICKET_GENERATION_TIME
+            , TO_CHAR(RT.FAULT_TIME , 'YYYY-MM-DD HH24:MI:SS') AS FAULT_TIME
+			, RT.ROOT_CAUSE_TYPE
+			, RT.ROOT_CAUSE_DOMAIN
+			, RT.TOTAL_RELATED_ALARM_CNT
+			, RT.STATUS
+			, RT.TICKET_RCA_RESULT_CODE
+			, RT.TICKET_RCA_RESULT_DTL_CODE
+            , TO_CHAR(RT.TICKET_UPDATE_TIME , 'YYYY-MM-DD HH24:MI:SS') AS TICKET_UPDATE_TIME
+        FROM rca.tb_alarm_cur_mst AC
+     	LEFT JOIN rca.tb_rca_ticket_al_current AL ON AC.ALARMNO = AL.ROOT_CAUSE_ALARM_NOA
+     	LEFT JOIN rca.tb_rca_ticket_current RT ON RT.TICKET_ID = AL.TICKET_ID 
+     	WHERE ALARMNO LIKE 'T%' 
+        <!-- AND RT.TICKET_ID IS NOT NULL -->
+            <if test="IS_POLLING == null">
+                AND ALARMTIME <![CDATA[ > ]]>  NOW() - INTERVAL '7' day
+            </if>
+            <if test="IS_POLLING != null and IS_POLLING == true">
+                AND ALARMTIME <![CDATA[ >= ]]> (CURRENT_TIMESTAMP - INTERVAL '5 minutes')
+            </if>
+     	ORDER BY ALARMTIME DESC
    </select>
 
    <!-- 시스템 현황 모니터링 -->

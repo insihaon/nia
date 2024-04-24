@@ -2,53 +2,62 @@
   <div :class="{ [name]: true }">
     <div class="common-padding">
       <div class="search-container">
-        <div class="mainWrap">
-          <div class="contentWrap subContentWrap">
+        <div class="optionBox">
             <!-- 조회 옵션상자 -->
-            <div class="optionBox">
-              <div class="optionBoxContent">
-                <div class="optionItem" :class="{'py-2': isModal && !isShowHist}">
-                  <label> 제목 </label>
-                  <el-input
-                    v-model="registItem.title"
-                    type="text"
-                    placeholder="제목을 입력하세요"
-                    clearable
-                  />
-                </div>
-                <div class="optionItem" :class="{'py-2': isModal && !isShowHist}">
-                  <label> 분류 </label>
-                  <el-radio-group v-model="registItem.type" size="mini">
-                    <el-radio
-                      v-for="option in categoryOptions"
-                      v-if="option.show"
-                      :key="option.value"
-                      :label="option.value"
-                      @change="onChangeSnapshotType"
-                    >{{ option.label }}</el-radio>
-                  </el-radio-group>
-                </div>
-                <div class="optionItem" :class="{'py-2': isModal && !isShowHist}">
-                  <label> 기간 </label>
-                  <el-date-picker
-                    v-model="registItem.period"
-                    type="datetimerange"
-                    start-placeholder="시작 일자"
-                    end-placeholder="종료 일자"
-                    :default-time="['00:00:00','23:59:59']"
-                  />
-                </div>
-              </div>
-              <div class="optionBoxButtons" style="margin: 5px 8px 3px 3px; float: right">
-                <!-- <el-button class="btn-r" type="info" size="mini" @click="onLoadSnapShotList()">
-                  <i class="el-icon-search" />
-                </el-button> -->
-                <el-button class="btn-r" type="info" size="mini" @click="onClickSnapshot()">
-                  저장
-                </el-button>
+          <el-row class="optionRow">
+          <el-col :class="{'py-2': isModal && !isShowHist}" :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
+            <div class="optionItem">
+              <label> 제목 </label>
+              <div>
+                <el-input
+                v-model="registItem.title"
+                size="mini"
+                type="text"
+                placeholder="제목을 입력하세요"
+                clearable
+                />
               </div>
             </div>
-          </div>
+          </el-col>
+          <el-col :class="{'py-2': isModal && !isShowHist}" :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
+            <div class="optionItem">
+              <label> 분류 </label>
+              <div>
+                <el-radio-group v-model="registItem.type" size="mini">
+                  <el-radio
+                    v-for="option in categoryOptions"
+                    v-if="option.show"
+                    :key="option.value"
+                    :label="option.value"
+                    @change="onChangeSnapshotType"
+                  >{{ option.label }}</el-radio>
+                </el-radio-group>
+              </div>
+            </div>
+          </el-col>
+          <el-col :class="{'py-2': isModal && !isShowHist}" :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
+            <div class="optionItem">
+              <label> 기간 </label>
+              <div>
+                <el-date-picker
+                  v-model="registItem.period"
+                  type="datetimerange"
+                  size="mini"
+                  start-placeholder="시작 일자"
+                  end-placeholder="종료 일자"
+                  :default-time="['00:00:00','23:59:59']"
+                />
+              </div>
+            </div>
+          </el-col>
+        </el-row>
+          <el-row>
+            <el-col :span="24" align="center" class="searchBtnGroup">
+              <el-button class="btn-r" type="info" size="mini" icon="el-icon-folder-opened" @click="onClickSnapshot()">
+                저장
+              </el-button>
+            </el-col>
+          </el-row>
         </div>
       </div>
       <CompInquiryPannel

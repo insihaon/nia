@@ -4,15 +4,7 @@ body{
   padding:0; margin:0; box-sizing: border-box;
 }
 
-div.mainWrap{
-  /* position:relative;
-  width:100vw;
-  height: calc(100vh - 80px);
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column; */
-  
-}
+
 div.headerWrap{
   position:relative;
   width:100%;
@@ -189,45 +181,57 @@ div.headerLogOut>span{
 div.headerLogOut:hover::before{
   background-color:rgba(255,255,255,0.15);
 }
-
-
-div.contentWrap{
-  position:relative;
-  background-color:#b3d1d6;
-  border-radius: 25px;
-  width:100%;
-  height: calc(100% - 10px - 110px);
-  /* background-image: url("../images/datahub/main_background_center.png"); */
-  background-position: center -80px;
-  background-repeat: no-repeat;
-  box-sizing: border-box;
-  /* .png */
+div.search-container>div.optionBox{
+  border: 2px solid #909399;
+  padding: 10px 20px;
+  border-radius: 5px;
 }
-div.contentWrap::before{
-  position:absolute;
-  display: inline-block;
-  content: "";
-  left:0;
-  top:0;
-  width:100%;
-  height:100%;
-  background-image:url("../images/datahub/main_background.png");
-  user-select: none;
-  pointer-events: none;
+div.optionBox>div>div.searchBtnGroup{
+  border-top: solid 1px #909399;
+  padding-top: 10px;
 }
-
-div.contentWrap div.slideBottom{
-  position:absolute;
-  width:100%;
-  height:100px;
-  bottom:0;
-  background-image: url("../images/datahub/main_slide_background.png");
-  background-repeat: repeat-x;
-  animation-name: slideAnimation;
-  animation-iteration-count: infinite;
-  animation-timing-function: linear;
-  user-select: none;
-  pointer-events: none;
+div.optionRow{
+  padding: 5px 0px;
+}
+div.optionRow label{
+  width: 95px;
+  /* min-width: 95px; */
+  font-size: 13px;
+  font-weight: 600;
+  color: #141414;
+  padding: 4px 0px 4px 10px;
+  margin-right: 10px;
+  border-right: solid 2px #909399;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+}
+div.optionRow>div>div.optionItem {
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+}
+div.optionRow>div>div.optionItem>div {
+  width: 100%;
+}
+div.optionRow>div>div.optionItem>div>div.el-radio-group {
+  display: flex;
+}
+div.optionRow>div>div.optionItem>div>div.el-radio-group>label {
+  font-weight: 500;
+  width: fit-content;
+  border-right: solid 0px;
+}
+div.optionRow>div>div.optionItem>div>div.el-input>.el-input__inner {
+  color: #141414;
+  border: solid 1px #909399;
+}
+div.optionRow>div>div.optionItem>div>.el-select
+, div.optionRow>div>div.optionItem>div>.el-input {
+  width: 100%;
+}
+div.optionRow>div>div.optionItem>div>div.el-select>div.el-input>.el-input__inner {
+  border: solid 1px #909399;
 }
 
 .slide1{
@@ -484,250 +488,6 @@ div.mainCenterBoxWrap div.menuItem div.itemIcon{
 div.mainCenterBoxWrap div.menuItem:hover div.itemIcon{
   opacity: 1;
   transform: translateY(0px);
-}
-
-
-
-div.subContentWrap{
-  background:none;
-  background-color:#f9f9f9;
-  padding: 5px 0;
-  height: calc(100% - 80px);
-  overflow: auto;
-}
-div.subContentWrap::before{
-  display: none;
-}
-
-div.subContentWrap div.tableBox>div.tableHeader{
-  text-align: right;
-}
-
-
-div.subContentWrap div.tableBox table{
-  width:100%;
-  border-collapse: collapse;
-  background-color:#FFFFFF;
-  margin: 10px 0;
-}
-div.subContentWrap div.tableBox table th{
-  border-top:1px solid #2e3574;
-  border-bottom:1px solid #2e3574;
-  padding:10px 20px;
-  font-size:13px;
-  font-weight: bold;
-  text-align: left;
-  box-sizing: border-box;
-}
-div.subContentWrap div.tableBox table td{
-  border-bottom:1px solid #EEEEEE;
-  padding:10px 20px;
-  font-size:13px;
-  box-sizing: border-box;
-  transition: all 0.25s;
-  cursor:pointer;
-  color:#000000;
-}
-div.subContentWrap div.tableBox table tr:hover>td{
-  background-color:#f5f5f5;
-}
-div.subContentWrap div.tableBox table th>input[type=checkbox],
-div.subContentWrap div.tableBox table td>input[type=checkbox]{
-  width:14px;
-  height:14px;
-  background-color:#000000;
-  color:#000000;
-  padding: 5px;
-  cursor:pointer;
-  /* opacity: 0.8; */
-}
-
-
-div.subContentWrap div.tableBox div.tableFooter{
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top:20px;
-}
-div.subContentWrap div.tableBox div.tableFooter>div.tableButtonWrap{
-  display: flex;
-  gap:5px;
-  align-items: center;
-}
-div.subContentWrap div.tableBox div.tableFooter>div.tableButtonWrap>Button{
-  background-color:#2e3574;
-  color:#FFFFFF;
-  height:28px;
-  padding: 0px 15px;
-  border:none;
-  outline: none;
-  border-radius: 5px;
-  cursor:pointer;
-  transition: all 0.25s;
-  font-weight: bold;
-  font-size:14px;
-  white-space: nowrap;
-}
-
-div.subContentWrap div.tableBox div.tableFooter>div.tableButtonWrap>Button:hover{
-  opacity: 0.75;
-}
-div.subContentWrap div.tableBox div.tableFooter>div.tableButtonWrap>Button:active{
-  opacity: 1;
-}
-div.subContentWrap div.tableBox div.tableFooter>div.tableButtonWrap>Button:disabled{
-  opacity: 0.25;
-  cursor:default !important;
-  filter:grayscale(1)
-}
-
-
-
-div.subContentWrap div.tableBox div.tableFooter>div.tablePaging{
-  display: flex;
-  gap:10px;
-  align-items: center;
-  flex-wrap: nowrap;
-  justify-content: center;
-  margin-right:auto;
-  margin-left: auto;
-}
-div.subContentWrap div.tableBox div.tableFooter>div.tablePaging>div.pageNum{
-  padding: 5px 8px;
-  font-size:14px;
-  color:#999999;
-  cursor:pointer;
-  border-radius: 5px;
-}
-div.subContentWrap div.tableBox div.tableFooter>div.tablePaging>div.pageNum:hover{
-  background-color:#FFFFFF;
-  color:#666666;
-  font-weight: bold;
-}
-div.subContentWrap div.tableBox div.tableFooter>div.tablePaging>div.currentPage{
-  font-weight: bold;
-  color:#000000;
-}
-div.subContentWrap div.tableBox div.tableFooter>div.tablePaging>div.pageBtn{
-  background-color:#EEEEEE;
-  padding: 5px 10px;
-  border-radius: 3px;
-  color:#666666;
-  font-size:12px;
-  cursor:pointer;
-  transition: all 0.25s;
-}
-div.subContentWrap div.tableBox div.tableFooter>div.tablePaging>div.pageBtn:hover{
-  background-color:#2e3574;
-  color:#FFFFFF;
-}
-
-
-div.subContentWrap div.optionBox{
-  background-color:#FFFFFF;
-  padding:5px;
-  box-shadow: 0px 5px 10px rgba(0,0,0,0.05);
-  /* margin-bottom:30px; */
-  border-radius: 25px;
-  display: flex;
-  flex-wrap: nowrap;
-  justify-content: space-between;
-  align-items: center;
-  border:1px solid #2e3574;
-  padding: 2px;
-}
-div.subContentWrap div.optionBox>div.optionBoxContent{
-  display: flex;
-  flex-wrap: wrap;
-}
-div.subContentWrap div.optionBox>div.optionBoxContent>div.optionItem{
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap:8px;
-  margin:3px;
-}
-div.subContentWrap div.optionBox>div.optionBoxContent>div.optionItem>label{
-  min-width: 100px;
-  font-size:14px;
-  text-align: right;
-  color:#1e293b;
-  font-weight: bold;
-}
-div.subContentWrap div.optionBox>div.optionBoxContent>div.optionItem input::placeholder{
-  color:#999999;
-  text-align: center;
-}
-div.subContentWrap div.optionBox>div.optionBoxContent>div.optionItem el-input[type=text]{
-  height:28px;
-  border:1px solid #2e357433;
-  font-size:14px;
-  border-radius: 3px;
-  background-color:#f9f9f9;
-  padding: 0 10px;
-  outline: none;
-  transition: all 0.25s;
-  min-width: 200px;
-}
-
-div.subContentWrap div.optionBox>div.optionBoxContent>div.optionItem select[type=text]{
-  height:28px;
-  border:1px solid #2e357433;
-  font-size:14px;
-  border-radius: 3px;
-  background-color:#f9f9f9;
-  padding: 0 10px;
-  outline: none;
-  transition: all 0.25s;
-  min-width: 200px;
-}
-
-div.subContentWrap div.optionBox>div.optionBoxContent>div.optionItem el-date-editor[type=text]{
-  height:28px;
-  border:1px solid #2e357433;
-  font-size:14px;
-  border-radius: 3px;
-  background-color:#f9f9f9;
-  padding: 0 10px;
-  outline: none;
-  transition: all 0.25s;
-  min-width: 200px;
-}
-
-div.subContentWrap div.optionBox>div.optionBoxContent>div.optionItem input[type=text]:focus,
-div.subContentWrap div.optionBox>div.optionBoxContent>div.optionItem input[type=text]:hover{
-  background-color:#FFFFFF;
-  border:1px solid #2e3574;
-}
-div.subContentWrap div.optionBox>div.optionBoxButtons{
-  display: flex;
-  gap:0 5px;
-}
-div.subContentWrap div.optionBox>div.optionBoxButtons Button.btn-r{
-  background-color:#252526;
-  color:#FFFFFF;
-  height:38px;
-  padding: 10px 13px;
-  border:none;
-  outline: none;
-  border-radius: 10px;
-  cursor:pointer;
-  transition: all 0.25s;
-  font-weight: bold;
-  font-size:14px;
-  white-space: nowrap;
-}
-
-div.subContentWrap div.optionBox Button.btn-r:hover{
-  opacity: 0.75;
-}
-div.subContentWrap div.optionBox Button.btn-r:active{
-  opacity: 1;
-}
-div.subContentWrap div.optionBox Button.btn-r:disabled{
-  opacity: 0.25;
-  cursor:default !important;
-  filter:grayscale(1)
 }
 
 

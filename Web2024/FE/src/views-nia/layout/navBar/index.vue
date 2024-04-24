@@ -94,8 +94,7 @@ export default {
     isActive() {
       return this.sidebar.opened
     },
-    ...mapGetters(['permission_routes', 'sidebar',]),
-    ...mapState({}),
+    ...mapGetters(['permission_routes', 'sidebar']),
   },
   created() {
     setInterval(() => {
@@ -128,7 +127,7 @@ export default {
     },
     hasGrant(grant) {
       const userAuth = Number(this.$store.state.user.info.lvl)
-      return ((userAuth || 1) & grant) == grant
+      return ((userAuth || 1) & grant) === grant
     },
     onClickHeaderLogo() {
       this.$router.push({ path: '/dashboard/index' })

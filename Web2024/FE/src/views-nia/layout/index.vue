@@ -157,9 +157,8 @@ export default {
 }
 </script>
 <style lang="scss">
-@import '~@/assets/css/style_main.css';
 .common-padding {
-  padding: 5px 15px/* var(--common-padding) */;
+  padding: 15px/* var(--common-padding) */;
   position: relative;
   height: 100%;
   width: 100%;
@@ -173,6 +172,7 @@ export default {
 <style lang="scss" scoped>
 @import '~@/styles/mixin.scss';
 @import '~@/styles/variables.scss';
+@import "~@/assets/css/nia_style_main.css";
 
 .router-link-active {
   color: #93c3ed !important;
