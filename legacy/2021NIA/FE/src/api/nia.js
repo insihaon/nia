@@ -166,6 +166,77 @@ export function apiAlarmCurAndHistList(params = {}) {
     data: params
   })
 }
+
+export function apiSyslogHistList(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_SYSLOG_HIST_LIST',
+    data: params
+  })
+}
+
+export function apiSyslogEquipmentList(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_SYSLOG_EQUIPMENT_LIST',
+    data: params
+  })
+}
+
+export function apiSyslogRuleList(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_SYSLOG_RULE_LIST',
+    data: params
+  })
+}
+
+export function apiUpdateSyslogRule(params = {}) {
+  return http({
+    url: '/selectOne',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'UPDATE_NIA_SYSLOG_RULE',
+    data: params
+  })
+}
+
+export function apiDeleteSyslogRule(params = {}) {
+  return http({
+    url: '/selectOne',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'DELETE_NIA_SYSLOG_RULE',
+    data: params
+  })
+}
+
+export function apiInsertSyslogRule(params = {}) {
+  return http({
+    url: '/selectOne',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'INSERT_NIA_SYSLOG_RULE',
+    data: params
+  })
+}
+
+export function apiSelectCheckRuleName(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_CHECK_RULE_NAME',
+    data: params
+  })
+}
+
 export function apiSelectSopCode(params = {}) {
   return http({
     url: '/selectList',
@@ -175,6 +246,7 @@ export function apiSelectSopCode(params = {}) {
     data: params
   })
 }
+
 export function apiInsertSop(params = {}) {
   return http({
     url: '/selectOne',
