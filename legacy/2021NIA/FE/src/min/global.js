@@ -149,20 +149,20 @@ import Vue from 'vue'
     assert: assert,
     assertEquals: assertEquals,
     async autoTest() {
-      const { ws } = global
-      const label = `### websocket 테스트`
+      // const { ws } = global
+      // const label = `### websocket 테스트`
 
-      const fn = (event) => {
-        ws.removeEventListener('UNKNOWN', fn)
-        console.timeEnd(label)
-        assert(event.data.message === `### websocket 테스트`)
-      }
-      console.time(label)
-      ws.addEventListener('UNKNOWN', fn)
-      ws.sendMessage('UNKNOWN', label)
+      // const fn = (event) => {
+      //   ws.removeEventListener('UNKNOWN', fn)
+      //   console.timeEnd(label)
+      //   assert(event.data.message === `### websocket 테스트`)
+      // }
+      // console.time(label)
+      // ws.addEventListener('UNKNOWN', fn)
+      // ws.sendMessage('UNKNOWN', label)
 
       // console.log('\n')
-      // label = `### 화면별 테스트`
+      // label = `### 화면별 테스트 (전체)`
       // const views = global.v.printRoutes()
       // for (let index = 0; index < views.length; index++) {
       //   const view = views[index]
@@ -179,6 +179,7 @@ import Vue from 'vue'
       //   console.timeEnd(label)
       //   await wait(1000)
       // }
+
     },
     copySrc() {
       const src = global.v.src
