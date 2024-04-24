@@ -66,7 +66,7 @@ export default {
   computed: {
   usageAgGrid() {
     const options = {
-      name: this.name + 'table1', rowGroupPanel: false, rowHeight: 40, rowSelection: 'multiple', rowMultiSelection: false, suppressRowClickSelection: true,
+      name: this.name + 'table1', rowGroupPanel: false, rowSelection: 'multiple', rowMultiSelection: false, suppressRowClickSelection: true,
     }
     const columns = [
       { type: '', prop: 'measured_datetime', name: '수집기간', minWidth: 80, flex: 0, suppressMenu: true, alignItems: 'center' },

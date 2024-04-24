@@ -21,12 +21,12 @@
       </span>
       <table class="basic">
         <tr>
-          <th>RULE ID</th>
-          <td class="disable">
+          <th v-if="viewType === 'EDIT'">RULE ID</th>
+          <td v-if="viewType === 'EDIT'" class="disable">
             <el-input v-model="syslog_rule_id" />
           </td>
           <th>RULE NAME</th>
-          <td class="disable">
+          <td :colspan="isColspan">
             <el-input
               v-model="syslog_rule_nm"
               style="width: 60%;"
@@ -86,7 +86,7 @@
         <el-button size="mini" type="info" @click.native="onChangeMode()">
           {{ changeText }}
         </el-button>
-        <el-button v-if="viewType !== 'OPEN'" plain type="danger" size="mini" @click.native="deleteLinkData()">
+        <el-button v-if="viewType !== 'OPEN'" plain type="danger" size="mini" @click.native="deleteSyslogRule()">
           {{ '삭제' }}
         </el-button>
         <el-button class="exit-btn" size="mini" @click.native="close()">
@@ -101,7 +101,7 @@
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
 import { mapState } from 'vuex'
-import { apiUpdateLinkList, apiDeleteLinkList, apiInsertLinkList, apiSelectlinkStartNode, } from '@/api/nia'
+import { apiUpdateSyslogRule, apiInsertSyslogRule, apiDeleteSyslogRule, apiSelectCheckRuleName } from '@/api/nia'
 
 const routeName = 'ModalSyslogRules'
 
@@ -125,15 +125,14 @@ export default {
       occur_except_str3: '',
       use_yn: '',
       useMode: [
-        { value: '사용', label: '사용' },
-        { value: '미사용', label: '미사용' },
+        { value: 'Y', label: '사용' },
+        { value: 'N', label: '미사용' },
       ],
     }
   },
   computed: {
     ...mapState({
       viewport: (state) => state.app.viewport,
-      username: (state) => state.user.name,
     }),
     changeText() {
       return this.viewType === 'OPEN' ? '저장' : '수정'
@@ -141,9 +140,9 @@ export default {
     title() {
       return this.viewType === 'OPEN' ? 'SYSLOG RULE 등록' : 'SYSLOG RULE 수정'
     },
-    isDisable() {
-      return this.viewType === 'linkDetail'
-    },
+    isColspan() {
+      return this.viewType === 'OPEN' ? '3' : ''
+    }
   },
   watch: {},
   mounted() {},
@@ -177,40 +176,28 @@ export default {
       this.use_yn = this.rowInfo.use_yn
       }
     },
-    async onloadLinkStartNode() {
-      try {
-        const res = await apiSelectlinkStartNode()
-        const selectCodeData = res.result.map((item) => ({ label: item.node_id, value: item.node_id }))
-        this.srcNodeList = selectCodeData
-      } catch (error) {
-        console.error(error)
-      } finally {
-        // this.closeLoading(target)
-      }
-    },
-    insertLinkData() {
-      this.confirm('등록하시겠습니까?', '등록', {
+
+    insertSyslogRule() {
+      this.confirm('등록하시겠습니까?', 'SYSLOG RULE 등록', {
         confirmButtonText: 'OK',
         cancelButtonText: 'Cancel',
         type: 'success',
       }).then(async () => {
         const param = {
-          src_node_id: this.src_node_id,
-          src_if_id: this.src_if_id,
-          dest_node_id: this.dest_node_id,
-          dest_if_id: this.dest_if_id,
-          src_ip_addr: this.src_ip_addr,
-          dest_ip_addr: this.dest_ip_addr,
-          bandwidth: this.bandwidth,
-          link_desc: this.link_desc,
-          vlan: this.vlan,
-          tag: this.tag,
+          syslog_rule_nm: this.syslog_rule_nm,
+          occur_str1: this.occur_str1,
+          occur_str2: this.occur_str2,
+          occur_str3: this.occur_str3,
+          occur_except_str1: this.occur_except_str1,
+          occur_except_str2: this.occur_except_str2,
+          occur_except_str3: this.occur_except_str3,
+          use_yn: this.use_yn,
         }
         try {
-          const res = await apiInsertLinkList(param)
+          const res = await apiInsertSyslogRule(param)
           if (res.success) {
             this.$message('등록 되었습니다.')
-            this.$emit('systemEdit')
+            this.$emit('syslogRuleEdit')
             this.close()
           }
         } catch (error) {
@@ -219,27 +206,28 @@ export default {
         }
       })
     },
-    updateLinkData() {
-      this.confirm('수정하시겠습니까?', '수정', {
+    updateSyslogRule() {
+      this.confirm('수정하시겠습니까?', 'SYSLOG RULE 수정', {
         confirmButtonText: 'OK',
         cancelButtonText: 'Cancel',
         type: 'success',
       }).then(async () => {
         const param = {
-          src_node_id: this.rowInfo.src_node_id,
-          src_if_id: this.rowInfo.src_if_id,
-          dest_node_id: this.rowInfo.dest_node_id,
-          dest_if_id: this.rowInfo.dest_if_id,
-          bandwidth: this.bandwidth,
-          link_desc: this.link_desc,
-          vlan: this.rowInfo.VLAN,
-          tag: this.rowInfo.TAG,
+          syslog_rule_id: this.syslog_rule_id,
+          syslog_rule_nm: this.syslog_rule_nm,
+          occur_str1: this.occur_str1,
+          occur_str2: this.occur_str2,
+          occur_str3: this.occur_str3,
+          occur_except_str1: this.occur_except_str1,
+          occur_except_str2: this.occur_except_str2,
+          occur_except_str3: this.occur_except_str3,
+          use_yn: this.use_yn,
         }
         try {
-          const res = await apiUpdateLinkList(param)
+          const res = await apiUpdateSyslogRule(param)
           if (res.success) {
             this.$message('수정 되었습니다.')
-            this.$emit('systemEdit')
+            this.$emit('syslogRuleEdit')
             this.close()
           }
         } catch (error) {
@@ -248,23 +236,20 @@ export default {
         }
       })
     },
-    deleteLinkData() {
-      this.confirm('삭제하시겠습니까?', '삭제', {
+    deleteSyslogRule() {
+      this.confirm('삭제하시겠습니까?', 'SYSLOG RULE 삭제', {
         confirmButtonText: 'OK',
         cancelButtonText: 'Cancel',
         type: 'success',
       }).then(async () => {
         const param = {
-          src_node_id: this.rowInfo.src_node_id,
-          src_if_id: this.rowInfo.src_if_id,
-          dest_node_id: this.rowInfo.dest_node_id,
-          dest_if_id: this.rowInfo.dest_if_id,
+          syslog_rule_id: this.syslog_rule_id,
         }
         try {
-          const res = await apiDeleteLinkList(param)
+          const res = await apiDeleteSyslogRule(param)
           if (res.success) {
             this.$message('삭제 되었습니다.')
-            this.$emit('systemEdit')
+            this.$emit('syslogRuleEdit')
             this.close()
           }
         } catch (error) {
@@ -275,9 +260,9 @@ export default {
     },
     onChangeMode() {
       if (this.viewType === 'OPEN') {
-        this.insertLinkData()
+        this.insertSyslogRule()
       } else {
-        this.updateLinkData()
+        this.updateSyslogRule()
       }
     },
   },

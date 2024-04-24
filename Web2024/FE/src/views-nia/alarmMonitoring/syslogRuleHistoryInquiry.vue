@@ -15,7 +15,7 @@
         </div>
       </template>
     </CompInquiryPannel>
-    <ModalSyslogRules ref="ModalSyslogRules" />
+    <ModalSyslogRules ref="ModalSyslogRules" @syslogRuleEdit="onLoadSyslogRuleList()" />
   </div>
 </template>
 <script>
@@ -23,7 +23,6 @@ import { Base } from '@/min/Base.min'
 import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
 import { apiSyslogRuleList } from '@/api/nia'
 import ModalSyslogRules from '@/views-nia/modal/ModalSyslogRules.vue'
-import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
 
 const routeName = 'syslogRuleHistoryInquiry'
 export default {
@@ -114,11 +113,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-.syslogRuleHistoryInquiry {
-  .CompAgGrid .ag-row{
-    cursor: pointer !important;
-  }
-}
-</style>
