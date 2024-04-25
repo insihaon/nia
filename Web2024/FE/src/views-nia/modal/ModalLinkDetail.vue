@@ -31,7 +31,7 @@
           </td>
           <th>노드</th>
           <td class="disable">
-            <el-select v-model="dest_node_id" :disabled="isDisable">
+            <el-select v-model="dest_node_id" :disabled="isDisable || isSrcNodeId">
               <el-option v-for="item in destNodeList" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
           </td>
@@ -39,13 +39,13 @@
         <tr>
           <th>I/F</th>
           <td class="disable">
-            <el-select v-model="src_if_id" :disabled="isDisable">
+            <el-select v-model="src_if_id" :disabled="isDisable || isSrcNodeId">
               <el-option v-for="item in srcIfList" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
           </td>
           <th>I/F</th>
           <td class="disable">
-            <el-select v-model="dest_if_id" :disabled="isDisable">
+            <el-select v-model="dest_if_id" :disabled="isDisable || isDestNodeId">
               <el-option v-for="item in destIfList" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
           </td>
@@ -155,6 +155,7 @@ export default {
       ],
       vlan: '',
       tag: '',
+      selectLinkData: []
     }
   },
   computed: {
@@ -171,6 +172,12 @@ export default {
     isDisable() {
       return this.viewType === 'linkDetail'
     },
+    isSrcNodeId() {
+      return this.src_node_id === ''
+    },
+    isDestNodeId() {
+      return this.dest_node_id === ''
+    }
   },
   watch: {
     src_node_id: function (newVal, oldVal) {
@@ -183,9 +190,13 @@ export default {
     dest_node_id: function (newVal, oldVal) {
       if (newVal !== oldVal) {
         this.onloadLinkIf(newVal, 'dest')
-        // this.onloadLinkEndNode()
       }
     },
+    'src_if_id': function(n, o) {
+      if (n !== o) {
+        this.setBandwidth()
+     }
+  }
   },
   mounted() {},
   methods: {
@@ -229,8 +240,6 @@ export default {
         this.srcNodeList = selectCodeData
       } catch (error) {
         console.error(error)
-      } finally {
-        // this.closeLoading(target)
       }
     },
     async onloadLinkEndNode() {
@@ -245,8 +254,6 @@ export default {
           this.destNodeList = selectCodeData
         } catch (error) {
           console.error(error)
-        } finally {
-          // this.closeLoading(target)
         }
       }
     },
@@ -256,16 +263,21 @@ export default {
           node_id: newVal,
         }
         const res = await apiSelectlinkIfList(param)
-        const selectCodeData = res.result.map((item) => ({ label: item.if_id, value: item.if_id }))
+        this.selectLinkData = res.result.map((item) => ({ label: item.if_id, value: item.if_id, if_speed: item.if_speed }))
         if (type === 'src') {
-          this.srcIfList = selectCodeData
+          this.srcIfList = this.selectLinkData
+          // this.bandwidth = res.result[0].if_speed
         } else {
-          this.destIfList = selectCodeData
+          this.destIfList = this.selectLinkData
         }
       } catch (error) {
         console.error(error)
-      } finally {
-        // this.closeLoading(target)
+      }
+    },
+     setBandwidth() {
+    const selectedSrcIf = this.selectLinkData.find(item => item.value === this.src_if_id)
+    if (selectedSrcIf) {
+      this.bandwidth = selectedSrcIf.if_speed
       }
     },
     insertLinkData() {
