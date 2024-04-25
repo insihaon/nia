@@ -31,7 +31,7 @@
               v-model="syslog_rule_nm"
               style="width: 60%;"
             />
-            <el-button size="small" style="float: right" plain round type="info">중복확인 </el-button>
+            <el-button size="small" style="float: right" :disabled="isDisabled" plain round type="info" @click="checkRuleName">중복확인 </el-button>
           </td>
         </tr>
         <tr>
@@ -128,6 +128,7 @@ export default {
         { value: 'Y', label: '사용' },
         { value: 'N', label: '미사용' },
       ],
+      isCheckRuleName: null
     }
   },
   computed: {
@@ -142,10 +143,15 @@ export default {
     },
     isColspan() {
       return this.viewType === 'OPEN' ? '3' : ''
-    }
+    },
+    isDisabled() {
+      if (this.viewType === 'EDIT') {
+        return this.model?.row?.syslog_rule_nm === this.syslog_rule_nm
+      } else {
+        return this.syslog_rule_nm === ''
+      }
+    },
   },
-  watch: {},
-  mounted() {},
   methods: {
     onCreated() {
       Modal.methods.onCreated.call(this)
@@ -183,6 +189,10 @@ export default {
         cancelButtonText: 'Cancel',
         type: 'success',
       }).then(async () => {
+        if (!this.isCheckRuleName) {
+          this.$message('RULE NAME 중복확인을 해주세요.')
+          return false
+        }
         const param = {
           syslog_rule_nm: this.syslog_rule_nm,
           occur_str1: this.occur_str1,
@@ -258,15 +268,32 @@ export default {
         }
       })
     },
+    async checkRuleName() {
+      const param = {
+        syslog_rule_nm: this.syslog_rule_nm
+       }
+      try {
+        const res = await apiSelectCheckRuleName(param)
+        if (res.result.length !== 0) {
+          this.$message.error({ message: '중복된 규칙 이름이 존재합니다.' })
+          this.isCheckRuleName = false
+        } else {
+          this.message('사용 가능합니다')
+          this.isCheckRuleName = true
+        }
+      } catch (error) {
+        console.error(error)
+        this.$message.error({ message: '중복확인에 실패했습니다.' })
+      }
+    },
     onChangeMode() {
       if (this.viewType === 'OPEN') {
         this.insertSyslogRule()
       } else {
         this.updateSyslogRule()
-      }
-    },
-  },
-  onClose() {},
+     }
+    }
+  }
 }
 </script>
 

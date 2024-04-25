@@ -24,7 +24,7 @@ import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
 import { apiSyslogRuleList } from '@/api/nia'
 import ModalSyslogRules from '@/views-nia/modal/ModalSyslogRules.vue'
 
-const routeName = 'syslogRuleHistoryInquiry'
+const routeName = 'SyslogRuleHistoryInquiry'
 export default {
   name: routeName,
   // eslint-disable-next-line vue/no-unused-components
@@ -61,15 +61,15 @@ export default {
         name: this.name + 'table1', rowGroupPanel: false, rowHeight: 30, rowSelection: 'multiple', rowMultiSelection: false,
       }
       const columns = [
-        { type: '', prop: 'syslog_rule_id', name: 'RULE ID', minWidth: 30, flex: 0, suppressMenu: true, sortable: true },
-        { type: '', prop: 'syslog_rule_nm', name: 'RULE NAME', minWidth: 30, flex: 0, suppressMenu: true, sortable: true },
-        { type: '', prop: 'occur_str1', name: '발생 키워드1', minWidth: 30, flex: 0, suppressMenu: true, sortable: true },
-        { type: '', prop: 'occur_str2', name: '발생 키워드2', minWidth: 30, flex: 0, suppressMenu: true, sortable: true },
-        { type: '', prop: 'occur_str3', name: '발생 키워드3', minWidth: 30, flex: 0, suppressMenu: true, sortable: true },
-        { type: '', prop: 'occur_except_str1', name: '제외 키워드1', minWidth: 30, flex: 0, suppressMenu: true, sortable: true },
-        { type: '', prop: 'occur_except_str2', name: '제외 키워드2', minWidth: 30, flex: 0, suppressMenu: true, sortable: true },
-        { type: '', prop: 'occur_except_str3', name: '제외 키워드3', minWidth: 40, flex: 0, suppressMenu: true, sortable: true, filterable: false },
-        { type: '', prop: 'use_yn', name: '사용 여부', minWidth: 50, flex: 0, suppressMenu: true, sortable: true, filterable: true },
+        { type: '', prop: 'syslog_rule_id', name: 'RULE ID', minWidth: 100, flex: 0, suppressMenu: true, sortable: true },
+        { type: '', prop: 'syslog_rule_nm', name: 'RULE NAME', minWidth: 100, flex: 0, suppressMenu: true, sortable: true },
+        { type: '', prop: 'occur_str1', name: '발생 키워드1', minWidth: 100, flex: 0, suppressMenu: true, sortable: true },
+        { type: '', prop: 'occur_str2', name: '발생 키워드2', minWidth: 100, flex: 0, suppressMenu: true, sortable: true },
+        { type: '', prop: 'occur_str3', name: '발생 키워드3', minWidth: 100, flex: 0, suppressMenu: true, sortable: true },
+        { type: '', prop: 'occur_except_str1', name: '제외 키워드1', minWidth: 100, flex: 0, suppressMenu: true, sortable: true },
+        { type: '', prop: 'occur_except_str2', name: '제외 키워드2', minWidth: 100, flex: 0, suppressMenu: true, sortable: true },
+        { type: '', prop: 'occur_except_str3', name: '제외 키워드3', minWidth: 100, flex: 0, suppressMenu: true, sortable: true, filterable: false },
+        { type: '', prop: 'use_yn', name: '사용 여부', minWidth: 100, flex: 0, suppressMenu: true, sortable: true, filterable: true },
       ]
       return { options, columns, data: this.ruleData, getRightClickMenuItems: () => { return [] } }
     },
@@ -109,7 +109,15 @@ export default {
     },
     handleOpenModalDetail(rows, type) {
       this.$refs.ModalSyslogRules.open({ row: rows[0], type })
-    },
+    }
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.SyslogRuleHistoryInquiry{
+   ::v-deep .ag-cell-value{
+    cursor: pointer !important;
+  }
+}
+</style>

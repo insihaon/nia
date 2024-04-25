@@ -21,7 +21,7 @@ import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
 import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
 import { apiSyslogHistList, apiSyslogEquipmentList } from '@/api/nia'
 
-const routeName = 'syslogHistoryInquiry'
+const routeName = 'SyslogHistoryInquiry'
 
 export default {
   name: routeName,
@@ -47,7 +47,7 @@ export default {
         { label: '알람번호', type: 'input', model: 'alarmno' },
         { label: '장비ID', type: 'input', model: 'node_num' },
         { label: '장비명', type: 'select', model: 'node_nm', options: [] },
-        { label: '장애내용', type: 'input', model: 'alarmmsg' },
+        { label: '장애내용', type: 'input', model: 'alarmmsg' }
       ],
       searchModel: {
         alarmno: '',
@@ -59,7 +59,6 @@ export default {
       }
     }
   },
-
   computed: {
     syslogAgGrid() {
       const options = {
@@ -138,7 +137,7 @@ export default {
     searchClear() {
       this.searchModel = {}
       this.onLoadSyslogHistList()
-    },
-  },
+    }
+  }
 }
 </script>
