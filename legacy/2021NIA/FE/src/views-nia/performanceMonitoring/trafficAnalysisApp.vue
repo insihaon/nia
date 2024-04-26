@@ -3,7 +3,6 @@
     <CompInquiryPannel
       ref="trafficAnalysis"
       :ag-grid="authAgGrid"
-      :is-button-slot="false"
       :items="searchItems"
       :search-model.sync="searchModel"
       :is-grid-loading="loading"
@@ -70,7 +69,6 @@ export default {
       }
     }
   },
-
   computed: {
     authAgGrid() {
       const options = {
@@ -136,7 +134,7 @@ export default {
       this.searchModel = {}
       this.onLoadTrafficList()
     }
-  },
+  }
 }
 </script>
 

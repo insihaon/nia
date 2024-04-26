@@ -3,7 +3,6 @@
     <CompInquiryPannel
       ref="trafficAnalysis"
       :ag-grid="trafficAgGrid"
-      :is-button-slot="false"
       :items="searchItems"
       :search-model.sync="searchModel"
       :pagination-info="paginationInfo"
@@ -39,14 +38,14 @@ export default {
       selectedRow: [],
       trafficData: [],
       searchItems: [
-        { label: '감시방식', type: 'select', placeholder: '상태를 선택하세요', model: 'watch', setting: { allOption: { toggle: true } }, options: [
+        { label: '감시방식', type: 'select', placeholder: '상태를 선택하세요', model: 'search_type', default: true, options: [
             { label: 'OnDemand', value: 'OnDemand' },
             { label: '실시간', value: 'live' },
         ] },
-        { label: '장비', type: 'input', model: 'node_name', placeholder: '장비명을 검색하세요' },
-        { label: '인터페이스', type: 'input', model: 'if_name', placeholder: '인터페이스를 검색하세요' },
-        { label: '시작일시', type: 'date', model: 'datetime' },
-        { label: '종료일시', type: 'date', model: 'datetime' },
+        { label: '장비', type: 'input', model: 'node_name', placeholder: '장비명을 검색하세요', disabled: false },
+        { label: '인터페이스', type: 'input', model: 'if_name', placeholder: '인터페이스를 검색하세요', disabled: false },
+        { label: '시작일시', type: 'date', model: 'datetime', disabled: false },
+        { label: '종료일시', type: 'date', model: 'datetime', disabled: false },
 
       ],
       searchModel: {
@@ -74,15 +73,33 @@ export default {
       return { options, columns, data: this.trafficData, getRightClickMenuItems: () => { return [] } }
     },
   },
+  watch: {
+   searchItems: {
+        handler(newVal, oldVal) {
+            const searchTypeItem = newVal.find(item => item.model === 'search_type')
+            if (searchTypeItem) {
+            this.searchItems.forEach(item => {
+            item.disabled = true
+          })
+            }
+        },
+        deep: true // 깊은 감시를 사용하여 배열 내부의 변경도 감지
+    }
+  },
   mounted() {
     this.onLoadTrafficList()
   },
   methods: {
-    onSortedChange(param) {
-       this.onLoadTrafficList()
-    },
     onClickSearch(params) {
       this.onLoadTrafficList(params)
+      if (params.search_type === 'live') {
+          setTimeout(() => {
+          this.onLoadTrafficList()
+        }, 60 * 1000)
+        this.searchItems.forEach(item => {
+          item.disabled = true
+        })
+      }
     },
     async onLoadTrafficList() {
       const target = { vue: this.$refs.trafficAnalysis }
@@ -116,7 +133,7 @@ export default {
       this.searchModel = {}
       this.onLoadTrafficList()
     }
-  },
+  }
 }
 </script>
 

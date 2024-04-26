@@ -118,6 +118,12 @@ table.basic {
   }
 }
 
+.el-input.is-disabled .el-input__inner{
+  width: -webkit-fill-available !important;
+  margin-left: 0 !important;
+}
+
+
 .nia, .nia-dialog {
   .CompAgGrid .ag-cell {
     font-size: 13px;

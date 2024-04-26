@@ -16,6 +16,7 @@
                   type="text"
                   size="mini"
                   clearable
+                  :disabled="item.disabled === true"
                   :placeholder="item.placeholder"
                   @keyup.native.enter="$emit('keyupEnter', searchModel)"
                 />
@@ -54,6 +55,7 @@
                   start-placeholder="시작 일자"
                   end-placeholder="종료 일자"
                   :default-time="['00:00:00','23:59:59']"
+                  :disabled="item.disabled === true"
                 />
 
                 <el-date-picker
@@ -64,6 +66,7 @@
                   range-separator="to"
                   start-placeholder="Start date"
                   end-placeholder="End date"
+                  :disabled="item.disabled === true"
                 />
               </div>
             </div>

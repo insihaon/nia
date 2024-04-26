@@ -479,15 +479,17 @@ export default {
   .line-class {
     font-weight: bold;
     font-size: 15px;
+    color: rgb(44, 41, 41);
     text-align: center !important;
+    background: rgb(217, 216, 216)
   }
 
-  .el-dialog {
+  ::v-deep .el-dialog {
     border: 2px solid $nia-primary;
     box-shadow: 0 1px 5px 0 rgb(0 0 0 / 27%);
     border-radius: 7px;
     height: auto;
-    min-width: 600px !important;
+    width: 800px !important;
   }
 
   ::v-deep {
