@@ -32,7 +32,12 @@ export default {
   directives: { elDragDialog },
   extends: Modal,
   props: {
-    wdata: Object,
+    wdata: {
+      type: Object,
+      default() {
+        return {}
+      }
+    },
   },
   data() {
     return {

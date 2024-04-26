@@ -109,9 +109,9 @@ export default {
     }
   },
   mounted() {
-    if (this.$route.query?.ticket_id || this.$route.query?.alarmno) { 
+    if (this.$route.query?.ticket_id || this.$route.query?.alarmno) {
       this.loadSelfProcessInfo()
-      // 
+      //
     }
     this.onLoadSelfProcessStatistics()
   },
@@ -135,7 +135,7 @@ export default {
         this.$set(this.selfProcessInfo, 'SELF_PROCESS_GROUP', this.$route.query?.self_process_group)
       } catch (error) {
         this.error(error)
-      } finally { 
+      } finally {
         this.$refs.ModalSelfProcessDetail.open({ row: this.selfProcessInfo })
       }
     },

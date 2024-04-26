@@ -7,7 +7,7 @@
           <el-radio-button label="DAY">일별</el-radio-button>
           <el-radio-button label="MONTH">월별</el-radio-button>
         </el-radio-group>
-        <el-button icon="el-icon-caret-left" @click="onChangeDate('minus')"/>
+        <el-button icon="el-icon-caret-left" @click="onChangeDate('minus')" />
         <el-date-picker
           v-model="systemChartCondition.date"
           :type="systemChartCondition.dayType ==='DAY' ? 'date':'month'"
@@ -102,11 +102,6 @@ export default {
 
     }
   },
-  watch: {
-    'systemChartCondition.date'() { 
-      this.onLoadStatistics()
-    }
-  },
   computed: {
     ticketOptions() {
       const keyByTitle = this.ticketTitle
@@ -120,6 +115,11 @@ export default {
       const keyByTitle = this.servingTitle
       return this.getDefaultChartOptions('데이터 제공량(데이터레이크 연계량)', keyByTitle)
     },
+  },
+  watch: {
+    'systemChartCondition.date'() {
+      this.onLoadStatistics()
+    }
   },
   async mounted() {
     await this.onLoadStatistics()
@@ -151,7 +151,7 @@ export default {
         this.error(error)
       }
     },
-    onChangeDate(type) { 
+    onChangeDate(type) {
       const { dayType, date } = this.systemChartCondition
       if (dayType === 'DAY') {
         if (type === 'plus') {
@@ -159,7 +159,7 @@ export default {
         } else {
           this.$set(this.systemChartCondition, 'date', this.moment(date).subtract(1, 'd'))
         }
-      } else { 
+      } else {
         if (type === 'plus') {
           this.$set(this.systemChartCondition, 'date', this.moment(date).add(1, 'M'))
         } else {
@@ -167,13 +167,13 @@ export default {
         }
       }
     },
-    onExportExcel() { 
+    onExportExcel() {
       const exportData = []
       const keyArr = [].concat(this.ticketTitle, this.collectTitle, this.servingTitle)
 
       const sheetRow = {}
       keyArr.forEach(row => {
-        Object.assign(sheetRow, {[row.name.replace('\n', '')]: this.statistics[row.key].toLocaleString()})
+        Object.assign(sheetRow, { [row.name.replace('\n', '')]: this.statistics[row.key].toLocaleString() })
       })
       exportData.push(sheetRow)
 

@@ -33,7 +33,6 @@
         />
       </el-tab-pane>
     </el-tabs>
-
     <ModalSopDetail ref="ModalSopDetail" />
   </div>
 </template>
@@ -51,7 +50,12 @@ export default {
   components: { CompInquiryPannel, ModalSopDetail },
   extends: Base,
   props: {
-    wdata: Object,
+    wdata: {
+      type: Object,
+      default() {
+        return {}
+      }
+    },
     row: {
       type: Object,
       default() {
@@ -251,8 +255,7 @@ export default {
         this.sopPaginationInfo.totalPages = Math.ceil(this.sopPaginationInfo.totalCount / this.sopPaginationInfo.pageSize) // 전체 페이지 수 계산
         this.loading = false
       } catch (error) {
-        console.error(error)
-      } finally {
+        this.error(error)
       }
     },
     async onLoadSyslogHistList() {

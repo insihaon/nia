@@ -23,7 +23,7 @@
           <tr>
             <th class="disable">프로파일 제목</th>
             <td>
-              <el-input size="mini" v-model="profile_title" />
+              <el-input v-model="profile_title" size="mini" />
             </td>
             <th>프로파일 설명</th>
             <td class="disable">
@@ -32,14 +32,14 @@
           </tr>
           <tr>
             <th>네트워크 구분</th>
-            <td >
+            <td>
               <el-radio-group v-model="network_type" size="mini" class="d-flex">
                 <el-radio label="전송">KOREN(전송)</el-radio>
                 <el-radio label="IP">KOREN(IP)</el-radio>
               </el-radio-group>
             </td>
             <th>장애대응 구분</th>
-            <td >
+            <td>
               <el-radio-group v-model="processing_template" size="mini" class="d-flex">
                 <el-radio label="recovery">자가회복</el-radio>
                 <el-radio label="construction">공사</el-radio>

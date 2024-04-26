@@ -7,9 +7,9 @@
         </div>
         <el-row style="height: 140px" class="d-flex flex-column justify-center">
           <div class="node-section d-flex justify-center">
-            <img src="@/assets/images/nia/node/switch.png" />
+            <img src="@/assets/images/nia/node/switch.png">
             <div class="blinking mt-8" />
-            <img src="@/assets/images/nia/node/switch.png" />
+            <img src="@/assets/images/nia/node/switch.png">
           </div>
           <div class="node-info d-flex justify-evenly">
             <div>
@@ -68,7 +68,12 @@ export default {
   extends: Base,
   mixins: [dialogOpenMixin],
   props: {
-    wdata: Object,
+    wdata: {
+      type: Object,
+      default() {
+        return {}
+      }
+    },
   },
   data() {
     return {

@@ -18,7 +18,7 @@
         <span slot="title">
           <i class="el-icon-user mr-2" style="font-size: 17px" />
           {{ '이용기관 상세보기' }}
-          <hr />
+          <hr>
         </span>
         <table class="basic">
           <th>기관ID</th>

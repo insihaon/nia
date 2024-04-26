@@ -19,7 +19,7 @@
         <span slot="title">
           <i class="el-icon-document mr-2 text-base" />
           SOP 수정
-          <hr />
+          <hr>
         </span>
         <div class="d-flex flex-column h-100 rounded justify-center" style="border: solid 1px #1e293b">
           <el-form ref="sopEdit" :model="sopInfo" class="h-full border rounded px-3 py-4">
@@ -45,7 +45,7 @@
           </el-form>
         </div>
         <div slot="footer" class="dialog-footer">
-          <hr />
+          <hr>
           <el-button size="small" plain class="mt-2" @click.native="onClickSopEdit()">
             {{ textByProcessType }}
           </el-button>

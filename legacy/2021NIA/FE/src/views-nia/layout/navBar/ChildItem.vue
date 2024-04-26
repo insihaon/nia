@@ -65,7 +65,7 @@ export default {
     },
     hasGrant(grant) {
       const userAuth = Number(this.$store.state.user.info.lvl)
-      return ((userAuth || 1) & grant) == grant
+      return ((userAuth || 1) & grant) === grant
     },
     hasOneShowingChild(children = [], parent) {
       const showingChildren = children.filter(item => {

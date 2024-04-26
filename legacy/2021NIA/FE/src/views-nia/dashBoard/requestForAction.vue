@@ -4,7 +4,7 @@
     <!-- <el-row class="d-flex p-1">
         <i class="el-icon-document mr-2 text-base" />
         {{ isSyslog ? 'SYSLOG 장애대응' : 'AI 장애대응' }} 조치 요청서
-        <hr />
+        <hr>
       </el-row> -->
     <el-row class="w-full d-flex">
       <div class="w-50 p-1">
@@ -210,7 +210,7 @@
           {{ sendItem.status == 'FIN' || sendItem.status == 'AUTO_FIN' ? '수정' : '마감' }}
         </el-button>
         <!-- :disabled="sendItem.status != 'INIT'" -->
-        <el-button size="mini"  @click.native="onClickEmailSender()"> 메일 전송 </el-button>
+        <el-button size="mini" @click.native="onClickEmailSender()"> 메일 전송 </el-button>
         <el-button size="mini" type="info" class="close-btn" icon="el-icon-close" @click.native="$emit('windowClose')">
           {{ $t('exit') }}
         </el-button>
@@ -223,7 +223,6 @@
 <script>
 import { Base } from '@/min/Base'
 // import elDragDialog from '@/directive/el-drag-dialog'
-import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
 import { formatterTime } from '@/views-nia/js/commonFormat'
 import { apiSendMQ, apiSelectAiDetectionInfo, apiSelfProcessSyslogInfo, apiSelfProcessTrafficInfo, apiSelectSopHistList, apiSopSyslogHistList, apiSelectUserList } from '@/api/nia'
 import dialogOpenMixin from '@/mixin/dialogOpenMixin'
@@ -234,11 +233,15 @@ const routeName = 'requestForAction'
 
 export default {
   name: routeName,
-  components: { CompAgGrid },
   extends: Base,
   mixins: [dialogOpenMixin],
   props: {
-    wdata: Object,
+    wdata: {
+      type: Object,
+      default() {
+        return {}
+      }
+    },
     popup: { type: String, default: 'N' }
   },
   data() {
@@ -322,7 +325,7 @@ export default {
     isSyslog() {
       return this.selectedRow?.ticket_type === 'SYSLOG' ?? false
     },
-    getMailToSystemUrl() { 
+    getMailToSystemUrl() {
       let host = ''
       const profileActive = this.$store.state.app.server.profile
       let key = ''
@@ -330,7 +333,7 @@ export default {
       if (this.selectedRow?.ticket_type === 'SYSLOG') {
         key = 'alarmno'
         value = this.selectedRow?.alarmno
-      } else { 
+      } else {
         key = 'ticket_id'
         value = this.selectedRow?.ticket_id
       }
@@ -339,16 +342,16 @@ export default {
         case 'dev':
         case 'local':
           host = 'localhost'
-          break;
+          break
         case 'test':
           host = 'incodej-lab.iptime.org'
-          break;
+          break
         case 'oper':
           host = '116.89.191.47'
-          break;
-      
+          break
+
         default:
-          break;
+          break
       }
       return `http://${host}:4002/#/operationStatusScreen/selfProcessingDashboard/?${key}=${value}&self_process_group=${self_process_group}`
     },
@@ -380,11 +383,6 @@ export default {
     }
   },
   methods: {
-    onCreated() {
-      Modal.methods.onCreated.call(this)
-      this.domElement.maxWidth = 1200
-      this.closeOnClickModal = false
-    },
     setTemplateContent() {
       const { ticket_type, status } = this.selectedRow
 
@@ -455,11 +453,11 @@ export default {
         if (this.isSyslog) {
           const { node_nm: NODE_NM, alarmloc: ALARMLOC } = this.syslogInfo
           param = { NODE_NM, ALARMLOC }
-          if(!NODE_NM && !ALARMLOC) return
+          if (!NODE_NM && !ALARMLOC) return
           res = await apiSopSyslogHistList(param)
         } else {
           const { /* ticket_id: TICKET_ID,  */ ticket_type: TICKET_TYPE, root_cause_sysnamea: ROOT_CAUSE_SYSNAMEA } = this.selectedRow
-          if(!TICKET_TYPE && !ROOT_CAUSE_SYSNAMEA) return
+          if (!TICKET_TYPE && !ROOT_CAUSE_SYSNAMEA) return
           param = { TICKET_TYPE, ROOT_CAUSE_SYSNAMEA }
           res = await apiSelectSopHistList(param)
         }
