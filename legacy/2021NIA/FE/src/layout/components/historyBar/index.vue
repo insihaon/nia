@@ -328,7 +328,7 @@ export default {
     }
     &.active {
       color: #fff;
-      background-color: $aiTemplateDefault;
+      background-color: #3d4048c7;
       justify-content: space-between;
       white-space: nowrap;
       display: flex;

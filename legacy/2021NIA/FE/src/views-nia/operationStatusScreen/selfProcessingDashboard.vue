@@ -19,32 +19,34 @@
       <CompChart :options="selfProcessOptions" class="w-100 h-100" @click="onClickChart" />
     </div>
     <ModalSelfProcessList ref="ModalSelfProcessList" />
+    <ModalSelfProcessDetail ref="ModalSelfProcessDetail" />
   </div>
 </template>
 <script>
 import { Base } from '@/min/Base.min'
-import { apiSelfProcessStatistics } from '@/api/nia'
+import { apiSelfProcessStatistics, apiSelfProcessList } from '@/api/nia'
 import CompChart from '@/components/chart/CompChart.vue'
 import ModalSelfProcessList from '@/views-nia/modal/ModalSelfProcessList'
+import ModalSelfProcessDetail from '@/views-nia/modal/ModalSelfProcessDetail.vue'
 
 const routeName = 'SelfProcessingDashboard'
 export default {
   name: routeName,
   // eslint-disable-next-line vue/no-unused-components
-  components: { CompChart, ModalSelfProcessList },
+  components: { CompChart, ModalSelfProcessList, ModalSelfProcessDetail },
   extends: Base,
   data() {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       selfStatistics: [],
+      selfProcessInfo: {},
       selfChartCondition: {
         statisticsType: 'hour',
         date: this.moment().format('YYYY-MM-DD')
       },
     }
   },
-
   computed: {
     selfProcessOptions() {
       const selfStatistics = this.selfStatistics
@@ -107,6 +109,10 @@ export default {
     }
   },
   mounted() {
+    if (this.$route.query?.ticket_id || this.$route.query?.alarmno) { 
+      this.loadSelfProcessInfo()
+      // 
+    }
     this.onLoadSelfProcessStatistics()
   },
   methods: {
@@ -118,6 +124,19 @@ export default {
         this.selfStatistics = resSelfProcess.result ?? []
       } catch (error) {
         this.error(error)
+      }
+    },
+    async loadSelfProcessInfo() {
+      const key = this.$route.query?.ticket_id ? 'ticket_id' : 'alarmno'
+      const value = this.$route.query?.ticket_id ?? this.$route.query?.alarmno
+      try {
+        const res = await apiSelfProcessList({ [key]: value })
+        this.selfProcessInfo = res.result[0] ?? null
+        this.$set(this.selfProcessInfo, 'SELF_PROCESS_GROUP', this.$route.query?.self_process_group)
+      } catch (error) {
+        this.error(error)
+      } finally { 
+        this.$refs.ModalSelfProcessDetail.open({ row: this.selfProcessInfo })
       }
     },
     onClickChart(e) {

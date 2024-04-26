@@ -28,6 +28,15 @@ module.exports = {
         after: true,
       },
     ],
+    "vue/html-self-closing": ["error", {
+      "html": {
+        "void": "never",
+        "normal": "always",
+        "component": "always"
+      },
+      "svg": "always",
+      "math": "always"
+    }],
     'block-spacing': [2, 'always'],
     'brace-style': [
       2,
@@ -173,15 +182,6 @@ module.exports = {
         defaultAssignment: false,
       },
     ],
-    "vue/html-self-closing": ["error", {
-      "html": {
-        "void": "always",
-        "normal": "always",
-        "component": "always"
-      },
-      "svg": "always",
-      "math": "always"
-    }],
     'no-unreachable': 2,
     'no-unsafe-finally': 2,
     'no-unused-vars': [

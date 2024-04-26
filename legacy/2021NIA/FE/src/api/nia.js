@@ -96,7 +96,7 @@ export function apiInterfaceList(params = {}) {
 }
 export function apiSelfProcessTrafficInfo(params = {}) {
   return http({
-    url: '/selectOne',
+    url: '/selectList',
     method: 'post',
     filePath: filePath,
     sqlId: 'SELECT_SELF_PROCESS_TRAFFIC_INFO',
@@ -105,7 +105,7 @@ export function apiSelfProcessTrafficInfo(params = {}) {
 }
 export function apiSelfProcessSyslogInfo(params = {}) {
   return http({
-    url: '/selectOne',
+    url: '/selectList',
     method: 'post',
     filePath: filePath,
     sqlId: 'SELECT_SELF_PROCESS_SYSLOG_INFO',

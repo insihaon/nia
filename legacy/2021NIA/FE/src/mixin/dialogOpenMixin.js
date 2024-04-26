@@ -10,14 +10,13 @@ var dialogOpenMixin = {
         fullscreen: false,
         center: false
       },
-
       dialogList: {
         aiResponse: {
           component: () => import('@/views-nia/dashBoard/aiResponse'),
           pageTitle: 'AI 장애대응',
           top: '2vh',
-          width: '800',
-          height: '650',
+          width: '700',
+          height: '620',
           resizeble: true,
         },
         requestForAction: {
@@ -28,12 +27,28 @@ var dialogOpenMixin = {
           height: '800',
           resizeble: true,
         },
+        processFin: {
+          component: () => import('@/views-nia/dashBoard/processFin'),
+          pageTitle: '마감 처리',
+          top: '2vh',
+          width: '500',
+          height: '475',
+          resizeble: true,
+        },
+        configTest: {
+          component: () => import('@/views-nia/dashBoard/configTest'),
+          pageTitle: '시험',
+          top: '2vh',
+          width: '750',
+          height: '660',
+          resizeble: true,
+        },
         snapShot: {
           component: () => import('@/views-nia/dashBoard/snapShot'),
           pageTitle: '데이터 스냅샷',
           top: '2vh',
           width: '600',
-          height: '280',
+          height: '300',
           resizeble: true,
         },
         sopList: {

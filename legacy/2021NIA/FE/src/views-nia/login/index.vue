@@ -1,15 +1,15 @@
 <template>
   <div class="login-container h-full d-flex justify-center flex-column">
     <video muted autoplay loop>
-      <source src="@/assets/video/technology_network.mp4" type="video/mp4" />
+      <source src="@/assets/video/technology_network.mp4" type="video/mp4">
     </video>
     <div class="browserInfo" title="크롬 브라우저 다운로드 페이지로 이동합니다.">
-      <img src="@/assets/icon/icon_chrome.png" @click="onClickDownloadChrome()" />
+      <img src="@/assets/icon/icon_chrome.png" @click="onClickDownloadChrome()">
       <span>NIA KOREN은 Chrome Browser 및 1920x1080 해상도에 최적화 되어 있습니다.</span>
     </div>
     <el-form v-if="!isJoin" ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form d-flex items-center flex-column" autocomplete="on" label-position="left">
       <div class="title-container d-flex justify-center flex-column items-center pb-4">
-        <img src="@/assets/images/nia/login_logo_koren.png" />
+        <img src="@/assets/images/nia/login_logo_koren.png">
         <span>AI기반 KOREN 모니터링 시스템</span>
         <span class="sub-title">AI based KOREN Monitoring System</span>
       </div>
@@ -46,7 +46,7 @@
       <el-button :loading="loading" @click="handleLogin">Login</el-button>
       <div id="loginForm" class="pt-2">
         <span>
-          <input id="ex_chk" type="checkbox" /><label for="ex_chk" class="pr-2">아이디 저장</label>
+          <input id="ex_chk" type="checkbox"><label for="ex_chk" class="pr-2">아이디 저장</label>
         </span>
         <span class="pl-2" @click="isJoin= true">회원가입</span>
       </div>
@@ -85,8 +85,8 @@
       <span>(주)코드제이 대전광역시 유성구 관평동 803</span>
       <span>Copyright© ## All rights reserved.</span>
       <div class="logo gap-y-12">
-        <img src="@/assets/images/nia/login_bottom_logo_1.png" />
-        <img src="@/assets/images/nia/login_bottom_logo_2.png" />
+        <img src="@/assets/images/nia/login_bottom_logo_1.png">
+        <img src="@/assets/images/nia/login_bottom_logo_2.png">
       </div>
     </div>
   </div>

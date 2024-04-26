@@ -106,8 +106,8 @@ const Modal = {
   },
   computed: {
     model: {
-      get: function() { return this.result },
-      set: function(newValue) { this.result = newValue }
+      get: function () { return this.result },
+      set: function (newValue) { this.result = newValue }
     },
     dataForm() {
       // Vue Test Utils(VTU)로 Vue 컴포넌트 단위(Unit) 테스트  시 clearValidate 값이 undefined 로 발생하는 에러 방지

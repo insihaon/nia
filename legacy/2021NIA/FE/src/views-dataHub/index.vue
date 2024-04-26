@@ -8,7 +8,7 @@
           <div class="slideBottom slide3" />
 
           <div class="mainVisualWrap">
-            <img src="@/assets/images/datahub/main_center.png" />
+            <img src="@/assets/images/datahub/main_center.png">
             <div>
               <span style="font-weight: bold">{{ '데이터허브' }} </span><span>관리시스템</span>
             </div>
@@ -25,7 +25,7 @@
               </div>
               <div class="quickBtn">{{ handlePageText }}</div>
               <div class="itemIcon">
-                <img src="@/assets/images/datahub/menu_item_icon_front_01.png" />
+                <img src="@/assets/images/datahub/menu_item_icon_front_01.png">
               </div>
               <div class="menuBtnWrap">
                 <template v-for="menu in dataHubRoute">
@@ -51,7 +51,7 @@
               </div>
               <div class="quickBtn">{{ handlePageText }}</div>
               <div class="itemIcon">
-                <img src="@/assets/images/datahub/menu_item_icon_front_02.png" />
+                <img src="@/assets/images/datahub/menu_item_icon_front_02.png">
               </div>
               <div class="menuBtnWrap">
                 <template v-for="menu in dataHubRoute">
@@ -77,7 +77,7 @@
               </div>
               <div class="quickBtn">{{ handlePageText }}</div>
               <div class="itemIcon">
-                <img src="@/assets/images/datahub/menu_item_icon_front_03.png" />
+                <img src="@/assets/images/datahub/menu_item_icon_front_03.png">
               </div>
               <div class="menuBtnWrap">
                 <template v-for="menu in dataHubRoute">
@@ -101,7 +101,7 @@
               </div>
               <div class="quickBtn">{{ handlePageText }}</div>
               <div class="itemIcon">
-                <img src="@/assets/images/datahub/menu_item_icon_front_04.png" />
+                <img src="@/assets/images/datahub/menu_item_icon_front_04.png">
               </div>
               <div class="menuBtnWrap">
                 <template v-for="menu in dataHubRoute">
