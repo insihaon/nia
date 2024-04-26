@@ -5,6 +5,7 @@
     <div class="main-container" :class="[{ hasTagsView: needTagsView }, AppOptions.instance.project]">
       <div :class="{ 'fixed-header': fixedHeader }">
         <NavBar ref="navbar" />
+        <!-- <div id="route-name"><span>|</span> {{ activeMenuTitle }}</div> -->
         <AppMain v-if="!popupLayout" ref="appmain" />
         <BottomBar ref="bottombr" />
       </div>
@@ -52,6 +53,9 @@ export default {
   },
   computed: {
     ...mapGetters(['permission_routes']),
+    activeMenuTitle() {
+      return this.$route?.meta?.title ?? ''
+    },
     loginUsername() {
       const userNM = this.username ? this.username.replace(/.$/, '*') : 'UNKONWN'
       return userNM

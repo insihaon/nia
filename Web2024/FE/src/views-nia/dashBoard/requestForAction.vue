@@ -18,7 +18,7 @@
             <el-table
               ref="table"
               size="mini"
-              :data="syslogInfo"
+              :data="[syslogInfo]"
               class="w-100"
               :height="90"
               border
@@ -57,6 +57,7 @@
                 :prop="col.prop"
                 :label="col.name"
                 :width="col.width"
+                :formatter="col.formatter"
               />
             </el-table>
           </el-col>
@@ -109,6 +110,8 @@
               contenteditable="true"
               :style="{ height: 645 + 'px', border: 'solid 1px lightgray' }"
             >
+
+              <div style="display: none"><a :href="getMailToSystemUrl">바로가기</a><br></div>
               <div class="text-xl font-bold"><h2>장애 상세내역 및 조치 요청서</h2></div>
               <div>
                 <span class="sub-title font-semibold"><h4>&middot;발신</h4></span>
@@ -118,36 +121,36 @@
                 <span class="sub-title font-semibold"><h4>&middot;AI 분석 결과 정보</h4></span>
                 ATT2 / 이상 트래픽
                 <div v-if="sendItem.ticket_type === 'ATT2'">
-                  &emsp;<span>IN</span><br />
-                  &nbsp;&nbsp;- bps: {{ aiDetection !== null ? sendItem.in_bps + ' MB' : '' }} <br />
-                  &nbsp;&nbsp;- Predict: {{ aiDetection !== null ? sendItem.in_predict + ' MB' : '' }}<br />
-                  &nbsp;&nbsp;- Threshold_Upper: {{ aiDetection !== null ? sendItem.in_threshold_upper + ' MB' : '' }}<br />
-                  &nbsp;&nbsp;- Threshold_Lower: {{ aiDetection !== null ? sendItem.in_threshold_lower + ' MB' : '' }}<br />
-                  - Anomaly: {{ aiDetection !== null ? sendItem.in_anomaly + 'MB' : '' }}<br />
-                  &emsp;<span>OUT</span><br />
-                  &nbsp;&nbsp;- bps: {{ aiDetection !== null ? sendItem.out_bps + ' MB' : '' }}<br />
-                  &nbsp;&nbsp;- Predict : {{ aiDetection !== null ? sendItem.out_predict + ' MB' : '' }}<br />
-                  &nbsp;&nbsp;- Threshold_Upper: {{ aiDetection !== null ? sendItem.out_threshold_upper + ' MB' : '' }}<br />
-                  &nbsp;&nbsp;- Threshold_Lower: {{ aiDetection !== null ? sendItem.out_threshold_lower + ' MB' : '' }}<br />
-                  &nbsp;&nbsp;- Anomaly: {{ aiDetection !== null ? sendItem.out_anomaly + 'MB' : '' }}<br />
+                  &emsp;<span>IN</span><br>
+                  &nbsp;&nbsp;- bps: {{ aiDetection !== null ? sendItem.in_bps + ' MB' : '' }} <br>
+                  &nbsp;&nbsp;- Predict: {{ aiDetection !== null ? sendItem.in_predict + ' MB' : '' }}<br>
+                  &nbsp;&nbsp;- Threshold_Upper: {{ aiDetection !== null ? sendItem.in_threshold_upper + ' MB' : '' }}<br>
+                  &nbsp;&nbsp;- Threshold_Lower: {{ aiDetection !== null ? sendItem.in_threshold_lower + ' MB' : '' }}<br>
+                  - Anomaly: {{ aiDetection !== null ? sendItem.in_anomaly + 'MB' : '' }}<br>
+                  &emsp;<span>OUT</span><br>
+                  &nbsp;&nbsp;- bps: {{ aiDetection !== null ? sendItem.out_bps + ' MB' : '' }}<br>
+                  &nbsp;&nbsp;- Predict : {{ aiDetection !== null ? sendItem.out_predict + ' MB' : '' }}<br>
+                  &nbsp;&nbsp;- Threshold_Upper: {{ aiDetection !== null ? sendItem.out_threshold_upper + ' MB' : '' }}<br>
+                  &nbsp;&nbsp;- Threshold_Lower: {{ aiDetection !== null ? sendItem.out_threshold_lower + ' MB' : '' }}<br>
+                  &nbsp;&nbsp;- Anomaly: {{ aiDetection !== null ? sendItem.out_anomaly + 'MB' : '' }}<br>
                 </div>
 
                 <div v-if="sendItem.ticket_type === 'ATT2' || sendItem.ticket_type === 'NTT'">
-                  <span class="font-semibold">&nbsp;&nbsp;&middot;장애 유무 판단 확률</span><br />
-                  &nbsp;&nbsp;&nbsp;- 유효 확률 : {{ ((1 - sendItem.zero1_entropy) * 100).toFixed(1) + '%' }}<br />
+                  <span class="font-semibold">&nbsp;&nbsp;&middot;장애 유무 판단 확률</span><br>
+                  &nbsp;&nbsp;&nbsp;- 유효 확률 : {{ ((1 - sendItem.zero1_entropy) * 100).toFixed(1) + '%' }}<br>
                   &nbsp;&nbsp;&nbsp;- 무효 확률 : {{ (sendItem.zero1_entropy * 100).toFixed(1) + '%' }}
                 </div>
                 FTT(비장애)
                 <div v-if="sendItem.ticket_type === 'FTT'">
-                  &nbsp;&nbsp;- 장애 확률 : {{ (sendItem.zero1_entropy * 100).toFixed(1) + '%' }}<br />
+                  &nbsp;&nbsp;- 장애 확률 : {{ (sendItem.zero1_entropy * 100).toFixed(1) + '%' }}<br>
                   &nbsp;&nbsp;- 비장애 확률 : {{ ((1 - sendItem.zero1_entropy) * 100).toFixed(1) + '%' }}
                 </div>
 
                 NFTT
                 <div v-if="sendItem.ticket_type === 'NFTT'">
-                  &nbsp;&nbsp;- Measured Time : {{ sendItem.measured_datetime }} <br />
-                  &nbsp;&nbsp;- CPU 예측값 : {{ sendItem.cpu_predicted }} <br />
-                  &nbsp;&nbsp;- Mem 예측값 : {{ sendItem.mem_predicted }} <br />
+                  &nbsp;&nbsp;- Measured Time : {{ sendItem.measured_datetime }} <br>
+                  &nbsp;&nbsp;- CPU 예측값 : {{ sendItem.cpu_predicted }} <br>
+                  &nbsp;&nbsp;- Mem 예측값 : {{ sendItem.mem_predicted }} <br>
                 </div>
               </div>
               <div>
@@ -159,22 +162,22 @@
               <div>
                 <span class="sub-title font-semibold"><h4>&middot;작업 요청 내용</h4></span>
                 <div v-if="isSyslog">
-                  &nbsp;&nbsp;- 발생 시간 : {{ formatterTimeStamp(syslogInfo.alarmtime) }}<br />
-                  &nbsp;&nbsp;- 알람 번호 : {{ syslogInfo.alarmno }} <br />
-                  &nbsp;&nbsp;- 장비명 : {{ syslogInfo.node_nm }}<br />
-                  &nbsp;&nbsp;- 장비 번호 : {{ syslogInfo.node_num }}<br />
-                  &nbsp;&nbsp;- 인터페이스 : {{ syslogInfo.alarmloc }}<br />
-                  &nbsp;&nbsp;- 알람 메시지 : {{ syslogInfo.alarmmsg }}<br />
-                  &nbsp;&nbsp;- 원본 메시지 : {{ syslogInfo.etc }}<br />
+                  &nbsp;&nbsp;- 발생 시간 : {{ formatterTimeStamp(syslogInfo.alarmtime) }}<br>
+                  &nbsp;&nbsp;- 알람 번호 : {{ syslogInfo.alarmno }} <br>
+                  &nbsp;&nbsp;- 장비명 : {{ syslogInfo.node_nm }}<br>
+                  &nbsp;&nbsp;- 장비 번호 : {{ syslogInfo.node_num }}<br>
+                  &nbsp;&nbsp;- 인터페이스 : {{ syslogInfo.alarmloc }}<br>
+                  &nbsp;&nbsp;- 알람 메시지 : {{ syslogInfo.alarmmsg }}<br>
+                  &nbsp;&nbsp;- 원본 메시지 : {{ syslogInfo.etc }}<br>
                   &nbsp;&nbsp;- 상세 내용 :
                 </div>
                 <div v-else>
-                  &nbsp;&nbsp;- 작업 요청 구간 : {{ trafficInfo.root_cause_sysnamea + '(' + trafficInfo.root_cause_porta + ')' }} →
-                  {{ trafficInfo.root_cause_sysnamez + '(' + trafficInfo.root_cause_portz + ')' }}<br />
-                  &nbsp;&nbsp;- 티켓 번호 : {{ sendItem.ticket_id }} <br />
-                  &nbsp;&nbsp;- 티켓 타입 : {{ sendItem.ticket_type }}<br />
-                  &nbsp;&nbsp;- 발생 원인 : {{ sendItem.ticket_result || sendItem.ticket_rca_result_dtl_code }}<br />
-                  &nbsp;&nbsp;- 발생 시간 : {{ sendItem.fault_time }}<br />
+                  &nbsp;&nbsp;- 작업 요청 구간 : {{ (trafficInfo.root_cause_sysnamea || '') + '(' + (trafficInfo.root_cause_porta || '')+ ')' }} →
+                  {{ (trafficInfo.root_cause_sysnamez ||'') + '(' +(trafficInfo.root_cause_portz ||'') + ')' }}<br>
+                  &nbsp;&nbsp;- 티켓 번호 : {{ sendItem.ticket_id }} <br>
+                  &nbsp;&nbsp;- 티켓 타입 : {{ sendItem.ticket_type }}<br>
+                  &nbsp;&nbsp;- 발생 원인 : {{ sendItem.ticket_result || sendItem.ticket_rca_result_dtl_code }}<br>
+                  &nbsp;&nbsp;- 발생 시간 : {{ formatterTimeStamp(sendItem.fault_time) }}<br>
                   &nbsp;&nbsp;- 상세 내용 :
                 </div>
               </div>
@@ -191,8 +194,8 @@
               <div>
                 <span class="sub-title font-semibold"><h4>&middot;연관 SOP</h4></span>
                 <div>
-                  &nbsp;&nbsp;- 장애 구분: {{ sendItem.fault_classify || '' }}<br />
-                  &nbsp;&nbsp;- 장애 유형: {{ sendItem.fault_type || '' }}<br />
+                  &nbsp;&nbsp;- 장애 구분: {{ sendItem.fault_classify || '' }}<br>
+                  &nbsp;&nbsp;- 장애 유형: {{ sendItem.fault_type || '' }}<br>
                   &nbsp;&nbsp;- 조치 내용: {{ sendItem.fault_detail_content || '' }}
                 </div>
               </div>
@@ -206,14 +209,14 @@
         <el-button size="mini" icon="el-icon-edit-outline" @click.native="onClickFin()">
           {{ sendItem.status == 'FIN' || sendItem.status == 'AUTO_FIN' ? '수정' : '마감' }}
         </el-button>
-        <el-button size="mini" :disabled="sendItem.status != 'INIT'" @click.native="onClickEmailSender()"> 메일 전송 </el-button>
+        <!-- :disabled="sendItem.status != 'INIT'" -->
+        <el-button size="mini"  @click.native="onClickEmailSender()"> 메일 전송 </el-button>
         <el-button size="mini" type="info" class="close-btn" icon="el-icon-close" @click.native="$emit('windowClose')">
           {{ $t('exit') }}
         </el-button>
       </el-col>
     </el-row>
     <!-- </el-row> -->
-    <ModalFIN ref="ModalFIN" />
   </el-row>
 </template>
 
@@ -221,9 +224,9 @@
 import { Base } from '@/min/Base'
 // import elDragDialog from '@/directive/el-drag-dialog'
 import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
-import ModalFIN from '@/views-nia/modal/ModalFIN'
 import { formatterTime } from '@/views-nia/js/commonFormat'
 import { apiSendMQ, apiSelectAiDetectionInfo, apiSelfProcessSyslogInfo, apiSelfProcessTrafficInfo, apiSelectSopHistList, apiSopSyslogHistList, apiSelectUserList } from '@/api/nia'
+import dialogOpenMixin from '@/mixin/dialogOpenMixin'
 
 import _ from 'lodash'
 
@@ -231,13 +234,11 @@ const routeName = 'requestForAction'
 
 export default {
   name: routeName,
-  // eslint-disable-next-line vue/no-unused-components
-  components: { CompAgGrid, ModalFIN },
-  // directives: { elDragDialog },
+  components: { CompAgGrid },
   extends: Base,
+  mixins: [dialogOpenMixin],
   props: {
     wdata: Object,
-    // editMode: { type: String, default: "I" }, //I: 등록, U: 수정, D: 상세
     popup: { type: String, default: 'N' }
   },
   data() {
@@ -252,6 +253,7 @@ export default {
       trafficInfo: {},
       relatedSopList: [],
       userList: [],
+      mailToSystemUrl: null,
       aiDetection: {
         in_threshold_upper: '',
         out_predict: '',
@@ -280,64 +282,84 @@ export default {
   computed: {
     sopHistColumn() {
       const syslogCol = [
-        { type: '', prop: 'alarmno', name: '알람번호', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
-        { type: '', prop: 'alarm_occur_time', name: '발생시간', width: 250, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true, formatter: (row) => { return this.formatterTimeStamp(row.fault_time, 'YYYY/MM/DD-HH:mm:ss') }, },
-        { type: '', prop: 'fault_classify', name: '장애구분', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
-        { type: '', prop: 'fault_type', name: '장애유형', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
-        { type: '', prop: 'fault_detail_content', name: '조치내용', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true },
-        { type: '', prop: 'etc_content', name: '기타조치내용', width: 250, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true },
-        { type: '', prop: 'node_num', name: '장비번호', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
-        { type: '', prop: 'node_nm', name: '장비명', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
-        { type: '', prop: 'alarmloc', name: '인터페이스', width: 160, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
-        { type: '', prop: 'alarmmsg', name: '알람메시지', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
-        { type: '', prop: 'etc', name: 'syslog 원본메시지', width: 250, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true },
+        { type: '', prop: 'alarmno', name: '알람번호', width: 100 },
+        { type: '', prop: '', name: '발생시간', width: 180, formatter: (row) => { return this.formatterTimeStamp(row.fault_time, 'YYYY/MM/DD-HH:mm:ss') }, },
+        { type: '', prop: 'fault_classify', name: '장애구분', width: 100 },
+        { type: '', prop: 'fault_type', name: '장애유형', width: 100 },
+        { type: '', prop: 'fault_detail_content', name: '조치내용', width: 100 },
+        { type: '', prop: 'etc_content', name: '기타조치내용', width: 250 },
+        { type: '', prop: 'node_num', name: '장비번호', width: 100 },
+        { type: '', prop: 'node_nm', name: '장비명', width: 100 },
+        { type: '', prop: 'alarmloc', name: '인터페이스', width: 160 },
+        { type: '', prop: 'alarmmsg', name: '알람메시지', width: 100 },
+        { type: '', prop: 'etc', name: 'syslog 원본메시지', width: 250 },
       ]
       const columns = [
-        { type: '', prop: 'ticket_id', name: '티켓번호', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: false },
-        { type: '', prop: 'ticket_type', name: '티켓유형', width: 80, suppressMenu: true, alignItems: 'left', sortable: true, filterable: false /* , formatter: getAlarmType */ },
-        { type: '', prop: 'root_cause_porta', name: '장애구분', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: true },
-        { type: '', prop: 'fault_classify', name: '장애유형', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: true },
-        { type: '', prop: 'fault_detail_content', name: '조치내용', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: true },
-        { type: '', prop: 'etc_content', name: '기타사항', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: true },
-        { type: '', prop: 'root_cause_sysnamea', name: '장비ID', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: false },
-        { type: '', prop: 'root_cause_sysnamea', name: '장비이름', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: false },
-        { type: '', prop: 'ip_addra', name: '마스터 IP', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: true },
-        { type: '', prop: 'root_cause_porta', name: '장비I/F', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: true },
-        { type: '', prop: 'handling_fin_user', name: '마감자', width: 100, suppressMenu: true, alignItems: 'left', sortable: true, filterable: true },
-        { type: '', prop: 'handling_fin_time', name: '마감시간', width: 150, suppressMenu: true, alignItems: 'left', sortable: true, filterable: true, formatter: (row) => { return formatterTime(row.handling_fin_time) }, },
+        { type: '', prop: 'ticket_id', name: '티켓번호', width: 100 },
+        { type: '', prop: '', name: '처리시간', width: 180, formatter: (row) => { return this.formatterTimeStamp(row.request_time, 'YYYY/MM/DD-HH:mm:ss') }, },
+        { type: '', prop: 'ticket_type', name: '티켓유형', width: 80 /* , formatter: getAlarmType */ },
+        { type: '', prop: 'root_cause_porta', name: '장애구분', width: 100 },
+        { type: '', prop: 'fault_classify', name: '장애유형', width: 100 },
+        { type: '', prop: 'fault_detail_content', name: '조치내용', width: 100 },
+        { type: '', prop: 'etc_content', name: '기타사항', width: 100 },
+        { type: '', prop: 'root_cause_sysnamea', name: '장비ID', width: 100 },
+        { type: '', prop: 'root_cause_sysnamea', name: '장비이름', width: 100 },
+        { type: '', prop: 'ip_addra', name: '마스터 IP', width: 100 },
+        { type: '', prop: 'root_cause_porta', name: '장비I/F', width: 100 },
+        { type: '', prop: 'handling_fin_user', name: '마감자', width: 100 },
+        { type: '', prop: 'handling_fin_time', name: '마감시간', width: 150, formatter: (row) => { return formatterTime(row.handling_fin_time) }, },
       ]
       const isSyslog = this.isSyslog
       return isSyslog ? syslogCol : columns
     },
-    sopHistAgGrid() {
-      const options = { name: this.name, checkable: false, rowGroupPanel: false, rowHeight: 30, rowSelection: 'multiple', rowMultiSelection: false }
-
-      const isSyslog = this.isSyslog
-      return { options, columns: isSyslog ? syslogCol : columns, data: this.relatedSopList }
-    },
     userInfoColumn() {
       return [
-        { type: '', prop: 'name', name: '이름', width: 120, suppressMenu: true, alignItems: 'left', sortable: true, filterable: false },
-        { type: '', prop: 'agency_name', name: '분류', width: 120, suppressMenu: true, alignItems: 'left', sortable: true, filterable: false },
-        { type: '', prop: 'email', name: 'E-mail', width: 200, suppressMenu: true, alignItems: 'left', sortable: true, filterable: true },
+        { type: '', prop: 'name', name: '이름', width: 120 },
+        { type: '', prop: 'agency_name', name: '분류', width: 120 },
+        { type: '', prop: 'email', name: 'E-mail', width: 200 },
       ]
-    },
-    userInfoGrid() {
-      const options = { name: this.name, checkable: true, rowGroupPanel: false, rowHeight: 30, rowSelection: 'multiple', rowMultiSelection: true }
-      const columns = [
-        { type: '', prop: 'name', name: '이름', width: 120, suppressMenu: true, alignItems: 'left', sortable: true, filterable: false },
-        { type: '', prop: 'agency_name', name: '분류', width: 120, suppressMenu: true, alignItems: 'left', sortable: true, filterable: false },
-        { type: '', prop: 'email', name: 'E-mail', width: 200, suppressMenu: true, alignItems: 'left', sortable: true, filterable: true },
-      ]
-      return { options, columns, data: this.userList }
     },
     isSyslog() {
       return this.selectedRow?.ticket_type === 'SYSLOG' ?? false
     },
+    getMailToSystemUrl() { 
+      let host = ''
+      const profileActive = this.$store.state.app.server.profile
+      let key = ''
+      let value
+      if (this.selectedRow?.ticket_type === 'SYSLOG') {
+        key = 'alarmno'
+        value = this.selectedRow?.alarmno
+      } else { 
+        key = 'ticket_id'
+        value = this.selectedRow?.ticket_id
+      }
+      const self_process_group = key === 'ticket_id' ? this.trafficInfo?.self_process_group : this.syslogInfo?.self_process_group
+      switch (profileActive) {
+        case 'dev':
+        case 'local':
+          host = 'localhost'
+          break;
+        case 'test':
+          host = 'incodej-lab.iptime.org'
+          break;
+        case 'oper':
+          host = '116.89.191.47'
+          break;
+      
+        default:
+          break;
+      }
+      return `http://${host}:4002/#/operationStatusScreen/selfProcessingDashboard/?${key}=${value}&self_process_group=${self_process_group}`
+    },
+  },
+  created () {
+    this.onLoadUserList()
   },
   async mounted() {
     const { uid, name, mobile, email, agencyName } = this.$store.state.user.info
-    this.sendItem['sender'] = `${agencyName} ${name}`
+    this.$set(this.sendItem, 'sender', `${agencyName} ${name}`)
+
     this.selectedRow = this.wdata.params
     this._merge(this.sendItem, this.selectedRow)
 
@@ -351,7 +373,6 @@ export default {
       }
       await this.onLoadAiDetectionInfo()
       await this.onLoadSopHistList()
-      this.onLoadUserList()
     } catch (error) {
       this.error(error)
     } finally {
@@ -406,7 +427,7 @@ export default {
       if (!this.selectedRow.ticket_id) return
       try {
         const res = await apiSelfProcessTrafficInfo({ TICKET_ID: this.selectedRow.ticket_id })
-        this.trafficInfo = res?.result ?? {}
+        this.trafficInfo = res?.result[0] ?? {}
       } catch (error) {
         this.error(error)
       }
@@ -414,7 +435,7 @@ export default {
     async onLoadSyslogInfo() {
       try {
         const res = await apiSelfProcessSyslogInfo({ ALARMNO: this.selectedRow.alarmno })
-        this.syslogInfo = [res?.result] ?? []
+        this.syslogInfo = res?.result[0] ?? []
       } catch (error) {
         this.error(error)
       }
@@ -434,9 +455,11 @@ export default {
         if (this.isSyslog) {
           const { node_nm: NODE_NM, alarmloc: ALARMLOC } = this.syslogInfo
           param = { NODE_NM, ALARMLOC }
+          if(!NODE_NM && !ALARMLOC) return
           res = await apiSopSyslogHistList(param)
         } else {
           const { /* ticket_id: TICKET_ID,  */ ticket_type: TICKET_TYPE, root_cause_sysnamea: ROOT_CAUSE_SYSNAMEA } = this.selectedRow
+          if(!TICKET_TYPE && !ROOT_CAUSE_SYSNAMEA) return
           param = { TICKET_TYPE, ROOT_CAUSE_SYSNAMEA }
           res = await apiSelectSopHistList(param)
         }
@@ -469,7 +492,7 @@ export default {
     onClickFin() {
       const addInfo = this.selectedRow.ticket_type === 'SYSLOG' ? this.syslogInfo : this.sendItem
       const row = Object.assign(this.selectedRow, addInfo)
-      this.$refs.ModalFIN.open({ row })
+      this.fn_openWindow('processFin', row)
     },
     async onClickEmailSender() {
       const { uid, name } = this.$store.state.user.info
@@ -485,7 +508,7 @@ export default {
       const param = {
         mail: {
           subject: this.moment(new Date()).format('YYYY년 MM월 DD일 HH시mm분ss초') + ' 장비 조치 요청서',
-          content: contentEl.getInnerHTML(),
+          content: contentEl.getInnerHTML().replace('display: none;'),
           receiverUser: receiverUser
             .map((v) => v.email)
             .join(', ')
@@ -496,7 +519,7 @@ export default {
           status: 'ACK',
           user_ids: uid,
           detail: 'DETAIL',
-          mail_content: contentEl.getInnerHTML(),
+          mail_content: contentEl.getInnerHTML().replace('display: none;'),
           handling_ack_user: name,
           ticket_result: this.selectedRow.ticket_result || this.selectedRow.ticket_rca_result_code,
         }),

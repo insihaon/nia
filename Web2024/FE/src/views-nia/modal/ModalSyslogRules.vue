@@ -17,7 +17,7 @@
       <span slot="title">
         <i class="el-icon-user mr-2" style="font-size: 17px" />
         {{ title }}
-        <hr />
+        <hr>
       </span>
       <table class="basic">
         <tr>

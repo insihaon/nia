@@ -19,7 +19,7 @@
         <span slot="title">
           <i class="el-icon-document mr-2 text-base" />
           자가 {{ getPageType }} 이력조회
-          <hr />
+          <hr>
         </span>
         <div class="d-flex flex-column h-100">
           <CompInquiryPannel

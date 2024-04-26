@@ -19,7 +19,7 @@
         <span slot="title">
           <i class="el-icon-document mr-2 text-base" />
           자가 {{ pageType }} 이력 상세보기
-          <hr />
+          <hr>
         </span>
         <div class="d-flex flex-column h-100 rounded justify-between p-3" style="border: solid 1px #1e293b">
           <div class="shadow-sm p-1 mt-2">
@@ -152,7 +152,6 @@
         </div>
       </el-dialog>
     </transition>
-    <ModalAiResponse ref="ModalAiResponse" />
   </div>
 </template>
 
@@ -161,7 +160,6 @@ import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
 import _ from 'lodash'
 import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
-import ModalAiResponse from '@/views-nia/modal/ModalAiResponse'
 import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
 import CellRenderDataSetButtons from '@/views-dataHub/components/cellRenderer/CellRenderDataSetButtons'
 import {
@@ -175,15 +173,17 @@ import {
 } from '@/api/nia'
 import { getTicketType, formatterTime } from '@/views-nia/js/commonFormat'
 import CompChart from '@/components/chart/CompChart.vue'
+import dialogOpenMixin from '@/mixin/dialogOpenMixin'
 
 const routeName = 'ModalSelfProcessDetail'
 
 export default {
   name: routeName,
   // eslint-disable-next-line vue/no-unused-components
-  components: { CompAgGrid, CellRenderDataSetButtons, CompInquiryPannel, CompChart, ModalAiResponse },
+  components: { CompAgGrid, CellRenderDataSetButtons, CompInquiryPannel, CompChart },
   directives: { elDragDialog },
   extends: Modal,
+  mixins: [dialogOpenMixin],
   data() {
     return {
       name: routeName,
@@ -315,7 +315,7 @@ export default {
       }
     },
     pageType() {
-      return this.selectedRow.SELF_PROCESS_GROUP === 'SO' ? '최적화' : '회복' || ''
+      return this.selectedRow?.SELF_PROCESS_GROUP === 'SO' ? '최적화' : '회복' || ''
     },
     processType() {
       return this.selectedRow.self_process_type
@@ -328,7 +328,11 @@ export default {
       this.closeOnClickModal = false
     },
     onOpen(model, actionMode) {
-      this.selectedRow = model?.row
+      // if (model?.isMail) {
+
+      // } else { 
+        this.selectedRow = model?.row
+      // }
       let widthByPageType
       if (this.pageType === '최적화') {
         this.onLoadTrafficInfo()
@@ -401,8 +405,7 @@ export default {
     },
     onOpenAiResponse() {
       this.close()
-
-      this.$refs.ModalAiResponse.open({ row: this.selectedRow })
+      this.fn_openWindow('aiResponse', { row: this.selectedRow })
     },
     onClose() {
       this.sopHistList = []

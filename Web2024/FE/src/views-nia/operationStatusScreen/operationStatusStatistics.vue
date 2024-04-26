@@ -3,15 +3,18 @@
     <div class="search-container">
       <div class="title"><i class="el-icon-pie-chart pr-2" />AI 관제 시스템 처리량</div>
       <div>
-        <el-radio-group v-model="systemChartCondition.dayType">
+        <el-radio-group v-model="systemChartCondition.dayType" @change="onLoadStatistics()">
           <el-radio-button label="DAY">일별</el-radio-button>
           <el-radio-button label="MONTH">월별</el-radio-button>
         </el-radio-group>
+        <el-button icon="el-icon-caret-left" @click="onChangeDate('minus')"/>
         <el-date-picker
           v-model="systemChartCondition.date"
           :type="systemChartCondition.dayType ==='DAY' ? 'date':'month'"
         />
-        <el-button class="h-fit" icon="el-icon-search" @click="onLoadStatistics()" />
+        <el-button icon="el-icon-caret-right" @click="onChangeDate('plus')" />
+        <el-button class="h-fit" icon="el-icon-refresh" @click="onLoadStatistics()" />
+        <el-button class="h-fit" icon="el-icon-download" @click="onExportExcel()"> 엑셀저장</el-button>
       </div>
     </div>
     <div class="chart-container">
@@ -58,7 +61,7 @@
   </div>
 </template>
 <script>
-import { Base } from '@/min/Base.min'
+import { Base } from '@/min/Base'
 import { apiDashboardStatistics } from '@/api/nia'
 import CompChart from '@/components/chart/CompChart.vue'
 
@@ -97,6 +100,11 @@ export default {
         { name: '광레벨\n연동', key: 'link_trans_perf_cnt' }
       ],
 
+    }
+  },
+  watch: {
+    'systemChartCondition.date'() { 
+      this.onLoadStatistics()
     }
   },
   computed: {
@@ -142,6 +150,37 @@ export default {
       } catch (error) {
         this.error(error)
       }
+    },
+    onChangeDate(type) { 
+      const { dayType, date } = this.systemChartCondition
+      if (dayType === 'DAY') {
+        if (type === 'plus') {
+          this.$set(this.systemChartCondition, 'date', this.moment(date).add(1, 'd'))
+        } else {
+          this.$set(this.systemChartCondition, 'date', this.moment(date).subtract(1, 'd'))
+        }
+      } else { 
+        if (type === 'plus') {
+          this.$set(this.systemChartCondition, 'date', this.moment(date).add(1, 'M'))
+        } else {
+          this.$set(this.systemChartCondition, 'date', this.moment(date).subtract(1, 'M'))
+        }
+      }
+    },
+    onExportExcel() { 
+      const exportData = []
+      const keyArr = [].concat(this.ticketTitle, this.collectTitle, this.servingTitle)
+
+      const sheetRow = {}
+      keyArr.forEach(row => {
+        Object.assign(sheetRow, {[row.name.replace('\n', '')]: this.statistics[row.key].toLocaleString()})
+      })
+      exportData.push(sheetRow)
+
+      const formatStr = this.systemChartCondition.dayType === 'DAY' ? 'YYYYMMDD' : 'YYYYMM'
+      const savedDate = this.moment(this.systemChartCondition.date).format(formatStr)
+
+      this.exportExcel(exportData, `${savedDate}_운용 현황 통계`)
     },
     getLocaleString(value) {
       return value?.toLocaleString()

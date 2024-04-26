@@ -16,7 +16,7 @@
     >
       <span slot="title">
         <i class="el-icon-user mr-2" style="font-size: 17px" />
-        {{ '노드 상세보기' }}
+        노드 상세보기
         <hr />
       </span>
       <table class="basic">
@@ -39,7 +39,7 @@
           <td colspan="3" class="disable">{{ rowInfo.admin_yn_info }}</td>
         </tr>
         <tr>
-          <th colspan="4" class="line-class">NetConf</th>
+          <th colspan="4" class="line-class" >NetConf</th>
         </tr>
         <tr>
           <th>PORT</th>
@@ -62,7 +62,7 @@
         </tr>
       </table>
       <div slot="footer" class="dialog-footer">
-        <el-button size="medium" @click.native="close()">
+        <el-button size="mini" icon="el-icon-close" @click.native="close()">
           {{ $t('exit') }}
         </el-button>
       </div>
@@ -106,6 +106,7 @@ export default {
     onCreated() {
       Modal.methods.onCreated.call(this)
       this.closeOnClickModal = false
+      this.domElement.maxWidth = 550
     },
     onOpen(model, actionMode) {
       this.viewType = model.type
@@ -127,6 +128,7 @@ export default {
   .line-class {
     font-weight: bold;
     font-size: 15px;
+    text-align: center;
   }
 }
 </style>

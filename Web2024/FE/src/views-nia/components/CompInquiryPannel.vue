@@ -1,72 +1,72 @@
 <template>
-  <div :class="{ [name]: true }" class="common-padding common-font" style="display: flex;flex-direction: column;">
+  <div :class="{ [name]: true , 'common-padding': !isModal}" class="common-font d-flex flex-column">
     <div class="search-container" :style="setContainerHeight">
       <div v-if="isSearch" class="optionBox">
         <!-- 조회 옵션상자 -->
         <el-row class="optionRow">
           <el-col v-for="(item, index) in items" :key="index" :xs="24" :sm="12" :md="12" :lg="8" :xl="6">
             <div class="optionItem">
-            <label>
-              {{ item.label }}
-            </label>
-            <div>
-              <el-input
-                v-if="item.type === 'input'"
-                v-model="searchModel[item.model]"
-                type="text"
-                size="mini"
-                clearable
-                :placeholder="item.placeholder"
-                @keyup.native.enter="$emit('keyupEnter', searchModel)"
-              />
-
-              <CompCheckSelector
-                v-if="item.type === 'select' && item.multiple"
-                v-model="searchModel[item.model]"
-                :item="item"
-                :search-model.sync="searchModel[item.model]"
-              />
-
-              <el-select
-                v-if="item.type === 'select' && !item.multiple"
-                v-model="searchModel[item.model]"
-                collapse-tags
-                filterable
-                clearable
-                size="mini"
-                :placeholder="item.placeholder"
-                reserve-keyword
-                remote
-              >
-                <el-option
-                  v-for="(option, i) in item.options"
-                  :key="i"
-                  :label="option.label"
-                  :value="option.value"
+              <label>
+                {{ item.label }}
+              </label>
+              <div>
+                <el-input
+                  v-if="item.type === 'input'"
+                  v-model="searchModel[item.model]"
+                  type="text"
+                  size="mini"
+                  clearable
+                  :placeholder="item.placeholder"
+                  @keyup.native.enter="$emit('keyupEnter', searchModel)"
                 />
-              </el-select>
 
-              <el-date-picker
-                v-if="item.type === 'date'"
-                v-model="searchModel[item.model]"
-                type="daterange"
-                size="mini"
-                start-placeholder="시작 일자"
-                end-placeholder="종료 일자"
-                :default-time="['00:00:00','23:59:59']"
-              />
+                <CompCheckSelector
+                  v-if="item.type === 'select' && item.multiple"
+                  v-model="searchModel[item.model]"
+                  :item="item"
+                  :search-model.sync="searchModel[item.model]"
+                />
 
-              <el-date-picker
-                v-if="item.type === 'dateTime'"
-                v-model="searchModel[item.model]"
-                type="datetimerange"
-                size="mini"
-                range-separator="to"
-                start-placeholder="Start date"
-                end-placeholder="End date"
-              />
+                <el-select
+                  v-if="item.type === 'select' && !item.multiple"
+                  v-model="searchModel[item.model]"
+                  collapse-tags
+                  filterable
+                  clearable
+                  size="mini"
+                  :placeholder="item.placeholder"
+                  reserve-keyword
+                  remote
+                >
+                  <el-option
+                    v-for="(option, i) in item.options"
+                    :key="i"
+                    :label="option.label"
+                    :value="option.value"
+                  />
+                </el-select>
+
+                <el-date-picker
+                  v-if="item.type === 'date'"
+                  v-model="searchModel[item.model]"
+                  type="daterange"
+                  size="mini"
+                  start-placeholder="시작 일자"
+                  end-placeholder="종료 일자"
+                  :default-time="['00:00:00','23:59:59']"
+                />
+
+                <el-date-picker
+                  v-if="item.type === 'dateTime'"
+                  v-model="searchModel[item.model]"
+                  type="datetimerange"
+                  size="mini"
+                  range-separator="to"
+                  start-placeholder="Start date"
+                  end-placeholder="End date"
+                />
+              </div>
             </div>
-          </div>
           </el-col>
         </el-row>
         <el-row>
