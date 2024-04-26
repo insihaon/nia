@@ -66,7 +66,7 @@ export default Vue.extend({
 <style lang="scss" scope>
 .CellRenderSelectBox {
   .el-input__inner {
-    height: 27px !important;
+    height: 25px !important;
   }
   .default-cell {
     padding-top: 2px !important;
