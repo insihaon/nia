@@ -3,7 +3,6 @@
     <CompInquiryPannel
       ref="equipmentUsage"
       :ag-grid="usageAgGrid"
-      :is-button-slot="false"
       :items="searchItems"
       :search-model.sync="searchModel"
       :pagination-info="paginationInfo"
