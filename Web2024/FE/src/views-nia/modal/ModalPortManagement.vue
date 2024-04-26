@@ -19,7 +19,7 @@
         <span slot="title">
           <i class="el-icon-s-tools mr-2 text-base" />
           포트 관리
-          <hr />
+          <hr>
         </span>
 
         <div class="des-class mr-2">

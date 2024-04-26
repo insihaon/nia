@@ -19,7 +19,7 @@
         <span slot="title">
           <i class="el-icon-document mr-2 text-base" />
           {{ viewType }} SOP 상세보기
-          <hr />
+          <hr>
         </span>
         <div class="d-flex flex-column h-100 rounded justify-center" style="border: solid 1px #1e293b">
           <el-form ref="sopForm" :model="updateInfo" autocomplete="on" label-position="left" style="padding-top: 10px">
@@ -44,7 +44,7 @@
           </el-form>
         </div>
         <div slot="footer" class="dialog-footer">
-          <hr />
+          <hr>
           <el-button size="small" plain class="mt-2" @click.native="close()"> 수정 </el-button>
           <el-button size="small" plain class="mt-2" @click.native="close()"> 삭제 </el-button>
           <el-button size="small" plain class="close-btn mt-2" @click.native="close()">

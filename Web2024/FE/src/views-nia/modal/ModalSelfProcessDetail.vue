@@ -144,7 +144,7 @@
         </div>
         ㅜ
         <div slot="footer" class="dialog-footer">
-          <hr />
+          <hr>
           <el-button size="small" class="mt-2" @click.native="onOpenAiResponse"> AI 장애대응(수동) </el-button>
           <el-button size="small" class="close-btn mt-2" @click.native="close()">
             {{ $t('exit') }}
@@ -330,7 +330,7 @@ export default {
     onOpen(model, actionMode) {
       // if (model?.isMail) {
 
-      // } else { 
+      // } else {
         this.selectedRow = model?.row
       // }
       let widthByPageType

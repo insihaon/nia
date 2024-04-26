@@ -17,7 +17,7 @@
       <span slot="title">
         <i class="el-icon-user mr-2" style="font-size: 17px" />
         {{ title }}
-        <hr />
+        <hr>
       </span>
       <table class="basic">
         <th colspan="2" class="line-class">시작점</th>

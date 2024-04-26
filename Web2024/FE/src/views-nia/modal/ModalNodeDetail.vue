@@ -17,7 +17,7 @@
       <span slot="title">
         <i class="el-icon-user mr-2" style="font-size: 17px" />
         노드 상세보기
-        <hr />
+        <hr>
       </span>
       <table class="basic">
         <tr>
@@ -39,7 +39,7 @@
           <td colspan="3" class="disable">{{ rowInfo.admin_yn_info }}</td>
         </tr>
         <tr>
-          <th colspan="4" class="line-class" >NetConf</th>
+          <th colspan="4" class="line-class">NetConf</th>
         </tr>
         <tr>
           <th>PORT</th>

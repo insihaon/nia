@@ -70,7 +70,12 @@ export default {
   components: { sopHistory, ModalSopMng },
   extends: Base,
   props: {
-    wdata: Object,
+    wdata: {
+      type: Object,
+      default() {
+        return {}
+      }
+    },
   },
   data() {
     return {
