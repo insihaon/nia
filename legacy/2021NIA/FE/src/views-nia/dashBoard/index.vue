@@ -119,6 +119,7 @@ import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
 import CompChart from '@/components/chart/CompChart.vue'
 import BaseFilterGroup from '@/filters/baseFilterGroup'
 import CellRenderAibuttons from '@/views-nia/components/cellRenderer/CellRenderAibuttons'
+import CellRenderTicketDetail from '@/views-nia/components/cellRenderer/CellRenderTicketDetail'
 import { apiIpAlarmList, apiTransmissionAlarmList, apiDashboardStatistics, apiSelfProcessStatistics } from '@/api/nia'
 import { getAlarmType } from '@/views-nia/js/commonFormat'
 import { AppOptions } from '@/class/appOptions'
@@ -128,7 +129,7 @@ const routeName = 'NiaMain'
 export default {
   name: routeName,
   // eslint-disable-next-line vue/no-unused-components
-  components: { CompAgGrid, CompChart, LeftBar, filterBar },
+  components: { CompAgGrid, CompChart, LeftBar, filterBar, CellRenderAibuttons, CellRenderTicketDetail },
   extends: Base,
   mixins: [dialogOpenMixin],
   data() {
@@ -205,6 +206,7 @@ export default {
         { type: '', prop: 'ticket_rca_result_code', name: '장애내용', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'ticket_rca_result_dtl_code', name: '장애 원인', width: 200, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'total_related_alarm_cnt', name: '근원알람개수', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
+        { type: '', prop: '_', name: '상세보기', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderTicketDetail', cellRendererParams: { name: '상세보기', action: this.handleOpenTicketDetail.bind(this) } },
  ]
       const options = { name: this.name, checkable: false, rowGroupPanel: false }
       return { options, columns, data: this.transmissionNetworkList, onDoesExternalFilterPass: (externalFilter, node) => { return this.onDoesExternalFilterPass(externalFilter, node, 'trans') } }
@@ -629,6 +631,9 @@ export default {
     },
     selectedTicket(param) {
       this.selectedItem = param
+    },
+    handleOpenTicketDetail(row) {
+      this.fn_openWindow('ticketDetail', row)
     },
     handleOpenEditModal(row, type) {
       // this.fn_openWindow('sopList', row, 'SOP 이력 조회')

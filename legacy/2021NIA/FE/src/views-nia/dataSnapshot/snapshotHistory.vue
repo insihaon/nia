@@ -275,6 +275,9 @@ export default {
 ::v-deep .CompAgGrid {
   height: 300px !important;
 }
+::v-deep .el-date-editor--datetimerange.el-input__inner {
+  width: 300px;
+}
 
 // .SnapshotHistory{
 //   table.tb-class {

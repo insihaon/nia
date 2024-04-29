@@ -59,6 +59,14 @@ var dialogOpenMixin = {
           height: '800',
           resizeble: true,
         },
+        ticketDetail: {
+          component: () => import('@/views-nia/dashBoard/ticketDetail'),
+          pageTitle: '전표 상세내역',
+          top: '2vh',
+          width: '1200',
+          height: '770',
+          resizeble: true,
+        },
         jsonSettingPopup: {
           component: () => import('@/test/popup/jsonSettingPopup'),
           pageTitle: 'jsonSettingPopup',

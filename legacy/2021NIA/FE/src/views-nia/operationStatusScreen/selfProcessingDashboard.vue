@@ -3,15 +3,17 @@
     <div class="search-container">
       <div class="title"><i class="el-icon-pie-chart pr-2" />자가 처리 관제 화면</div>
       <div>
-        <el-radio-group v-model="selfChartCondition.statisticsType">
+        <el-radio-group v-model="selfChartCondition.statisticsType" @change="onLoadSelfProcessStatistics()">
           <el-radio-button label="hour">시간별</el-radio-button>
           <el-radio-button label="day">일별</el-radio-button>
           <el-radio-button label="month">월별</el-radio-button>
         </el-radio-group>
+        <el-button icon="el-icon-caret-left" @click="onChangeDate('minus')" />
         <el-date-picker
           v-model="selfChartCondition.date"
           :type="getSelfProDateType()"
         />
+        <el-button icon="el-icon-caret-right" @click="onChangeDate('plus')" />
         <el-button icon="el-icon-search" style="padding: 7px 7px;" @click="onLoadSelfProcessStatistics()" />
       </div>
     </div>
@@ -108,6 +110,11 @@ export default {
       }
     }
   },
+  watch: {
+    'selfChartCondition.date'() {
+      this.onLoadSelfProcessStatistics()
+    }
+  },
   mounted() {
     if (this.$route.query?.ticket_id || this.$route.query?.alarmno) {
       this.loadSelfProcessInfo()
@@ -137,6 +144,28 @@ export default {
         this.error(error)
       } finally {
         this.$refs.ModalSelfProcessDetail.open({ row: this.selfProcessInfo })
+      }
+    },
+    onChangeDate(type) {
+      const { statisticsType, date } = this.selfChartCondition
+      if (statisticsType === 'hour') {
+        if (type === 'plus') {
+          this.$set(this.selfChartCondition, 'date', this.moment(date).add(1, 'd'))
+        } else {
+          this.$set(this.selfChartCondition, 'date', this.moment(date).subtract(1, 'd'))
+        }
+      } else if (statisticsType === 'day') {
+        if (type === 'plus') {
+          this.$set(this.selfChartCondition, 'date', this.moment(date).add(1, 'M'))
+        } else {
+          this.$set(this.selfChartCondition, 'date', this.moment(date).subtract(1, 'M'))
+        }
+      } else {
+        if (type === 'plus') {
+          this.$set(this.selfChartCondition, 'date', this.moment(date).add(1, 'y'))
+        } else {
+          this.$set(this.selfChartCondition, 'date', this.moment(date).subtract(1, 'y'))
+        }
       }
     },
     onClickChart(e) {

@@ -5,8 +5,17 @@
     <div class="main-container" :class="[{ hasTagsView: needTagsView }, AppOptions.instance.project]">
       <div :class="{ 'fixed-header': fixedHeader }">
         <NavBar ref="navbar" />
-        <!-- <div id="route-name"><span>|</span> {{ activeMenuTitle }}</div> -->
-        <AppMain v-if="!popupLayout" ref="appmain" />
+        <div
+          v-if="$route.name !== 'NiaMain'"
+          class="cur-title-container"
+          :style="{'background-color': ($route.name.includes('Monitoring')) ? '#1f335d' : '#fff', color: ($route.name.includes('Monitoring')) ? '#fff' : '#141414'}"
+        >
+          <div>
+            <span><i class="el-icon-document" />홈 > {{ getCurPageParentTitle }} > </span>
+            <span>{{ getCurPageTitle }}</span>
+          </div>
+        </div>
+        <AppMain v-if="!popupLayout" ref="appmain" :style="{height: `calc(100vh - ${$route.name === 'NiaMain' ? '110': '155'}px)`}" />
         <BottomBar ref="bottombr" />
       </div>
     </div>
@@ -53,8 +62,13 @@ export default {
   },
   computed: {
     ...mapGetters(['permission_routes']),
-    activeMenuTitle() {
+    getCurPageTitle() {
       return this.$route?.meta?.title ?? ''
+    },
+    getCurPageParentTitle() {
+      const parantPath = this.$route.path.split('/')[1]
+      const parantRoute = this.permission_routes.find(v => v.path === `/${parantPath}`)
+      return parantRoute?.meta?.title ?? ''
     },
     loginUsername() {
       const userNM = this.username ? this.username.replace(/.$/, '*') : 'UNKONWN'
@@ -219,6 +233,27 @@ body.el-popup-parent--hidden .fixed-header {
 .en .fixed-header {
   width: calc(100% - 250px);
 }
+.cur-title-container {
+  width: 100%;
+  height: 45px;
+  padding: 15px 20px 5px 20px;
+  div {
+    padding-bottom: 5px;
+    border-bottom: solid 1px #EEEEEE;
+    i {
+      padding-right: 5px;
+    }
+    span:nth-child(1) {
+      font-weight: 500;
+      font-size: 13px;
+    }
+    span:nth-child(2) {
+      font-weight: 600;
+      font-size: 15px;
+    }
+  }
+}
+
 .container {
   text-align: center;
   position: relative;
