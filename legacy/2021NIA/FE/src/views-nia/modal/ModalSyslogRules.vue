@@ -29,7 +29,7 @@
           <td :colspan="isColspan">
             <el-input
               v-model="syslog_rule_nm"
-              style="width: 60%;"
+              style="width: 70%; float: left"
             />
             <el-button size="small" style="float: right" :disabled="isDisabled" plain round type="info" @click="checkRuleName">중복확인 </el-button>
           </td>
@@ -86,7 +86,7 @@
         <el-button size="mini" type="info" @click.native="onChangeMode()">
           {{ changeText }}
         </el-button>
-        <el-button v-if="viewType !== 'OPEN'" plain type="danger" size="mini" @click.native="deleteSyslogRule()">
+        <el-button v-if="viewType !== 'OPEN'" class="delete-btn" plain type="danger" size="mini" @click.native="deleteSyslogRule()">
           {{ '삭제' }}
         </el-button>
         <el-button class="exit-btn" size="mini" @click.native="close()">

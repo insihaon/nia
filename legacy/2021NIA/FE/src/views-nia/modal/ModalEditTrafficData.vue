@@ -53,13 +53,13 @@
           </tr>
         </table>
         <div slot="footer" class="dialog-footer">
-          <el-button size="medium" @click.native="changeEditMode()">
+          <el-button size="mini" @click.native="changeEditMode()">
             {{ '수정' }}
           </el-button>
-          <el-button size="medium" @click.native="changeDeleteMode()">
+          <el-button size="mini" class="delete-btn" @click.native="changeDeleteMode()">
             {{ '삭제' }}
           </el-button>
-          <el-button class="exit-btn" size="medium" @click.native="close()">
+          <el-button class="exit-btn" size="mini" @click.native="close()">
             {{ $t('exit') }}
           </el-button>
         </div>

@@ -88,13 +88,13 @@
         </tr>
       </table>
       <div slot="footer" class="dialog-footer">
-        <el-button size="medium" @click.native="onChangeMode()">
+        <el-button size="mini" @click.native="onChangeMode()">
           {{ changeText }}
         </el-button>
-        <el-button v-if="viewType !== 'OPEN'" size="medium" @click.native="deleteLinkData()">
+        <el-button v-if="viewType !== 'OPEN'" class="delete-btn" size="mini" @click.native="deleteLinkData()">
           {{ '삭제' }}
         </el-button>
-        <el-button class="exit-btn" size="medium" @click.native="close()">
+        <el-button class="exit-btn" size="mini" @click.native="close()">
           {{ $t('exit') }}
         </el-button>
       </div>

@@ -47,7 +47,7 @@
           />
         </div>
         <div slot="footer" class="dialog-footer">
-          <el-button size="small" plain class="close-btn" @click.native="close()">
+          <el-button size="small" plain class="exit-btn" @click.native="close()">
             {{ $t('exit') }}
           </el-button>
         </div>

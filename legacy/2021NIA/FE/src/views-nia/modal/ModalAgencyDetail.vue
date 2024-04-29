@@ -34,7 +34,9 @@
           <tr>
             <th>고객ID</th>
             <td class="disable">
-              <el-input v-model="rowInfo.customer_id">
+              <el-input
+                v-model="rowInfo.customer_id"
+              >
                 {{ rowInfo.customer_id }}
               </el-input>
             </td>
@@ -56,12 +58,13 @@
               <el-input
                 v-model="ip_num"
                 clearable
-                style="width:70%;"
+                style="width:80%; float:left"
               />
               <el-button
-                size="mideum"
+                size="small"
                 style="float:right"
                 plain
+                round
                 @click="insertAgencyIpData()"
               >추가
               </el-button>
@@ -84,10 +87,10 @@
         </table>
 
         <div slot="footer" class="dialog-footer">
-          <el-button size="medium" @click.native="updateAgencyData()">
+          <el-button size="mini" @click.native="updateAgencyData()">
             {{ '저장' }}
           </el-button>
-          <el-button class="exit-btn" size="medium" @click.native="close()">
+          <el-button class="exit-btn" size="mini" @click.native="close()">
             {{ $t('exit') }}
           </el-button>
         </div>
@@ -284,3 +287,11 @@ export default {
   },
 }
 </script>
+
+<style lang="scss" scoped>
+  .ModalAgencyDetail{
+    ::v-deep .el-button--small.is-round {
+     padding: 11px 11px;
+    }
+  }
+</style>

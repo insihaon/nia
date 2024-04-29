@@ -84,7 +84,7 @@
                 <el-table-column align="center" prop="name" label="노드명" />
                 <el-table-column width="100%">
                   <template slot-scope="scope">
-                    <el-button size="mini" plain round type="danger" icon="el-icon-delete" @click="handleDeleteNode(scope.$index, scope.row)" />
+                    <el-button size="mini" class="delete-btn" plain round type="danger" icon="el-icon-delete" @click="handleDeleteNode(scope.$index, scope.row)" />
                   </template>
                 </el-table-column>
               </el-table>
@@ -107,7 +107,7 @@
           <el-button size="mini" icon="el-icon-folder-checked" type="info" @click.native="modeChange()">
             {{ btnMode }}
           </el-button>
-          <el-button v-if="viewType === 'profileDetail'" icon="el-icon-delete" size="mini" type="danger" plain @click.native="handleDeleteProfile()">
+          <el-button v-if="viewType === 'profileDetail'" class="delete-btn" icon="el-icon-delete" size="mini" type="danger" plain @click.native="handleDeleteProfile()">
             {{ '삭제' }}
           </el-button>
           <el-button class="exit-btn" type="info" size="mini" icon="el-icon-close" @click.native="close()">
