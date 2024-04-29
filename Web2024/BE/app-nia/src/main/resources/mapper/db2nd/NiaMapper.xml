@@ -292,12 +292,42 @@
      	WHERE ALARMNO LIKE 'T%' 
         <!-- AND RT.TICKET_ID IS NOT NULL -->
             <if test="IS_POLLING == null">
-                AND ALARMTIME <![CDATA[ > ]]>  NOW() - INTERVAL '7' day
+                AND ALARMTIME <![CDATA[ > ]]>  NOW() - INTERVAL '14' day
             </if>
             <if test="IS_POLLING != null and IS_POLLING == true">
                 AND ALARMTIME <![CDATA[ >= ]]> (CURRENT_TIMESTAMP - INTERVAL '5 minutes')
             </if>
      	ORDER BY ALARMTIME DESC
+   </select>
+
+   <!-- 전송망 전표 상세 내역 조회 (근원/파생 알람) -->
+   <select id="SELECT_TRANSMISSION_TICKET_DETAIL" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+        SELECT 
+       		AC.ALARMNO
+       		, AC.CLUSTERNO
+       		, AC.SYSNAME
+       		, AC.EQUIPTYPE
+       		, TO_CHAR(AC.ALARMTIME , 'YYYY-MM-DD HH24:MI:SS') AS ALARMTIME
+            , TO_CHAR(AC.RECEIVETIME , 'YYYY-MM-DD HH24:MI:SS') AS RECEIVETIME
+       		, AC.ALARMLOC
+       		, AC.ALARMMSG
+       		, AC.UNIT
+       		, AC.ALARMLEVEL
+       		, AC.CLUSTERNO_ORIGINAL
+            , TO_CHAR(AC.CLEARTIME , 'YYYY-MM-DD HH24:MI:SS') AS CLEARTIME
+       		, AC.PTPNAME
+       		, AC.SLOT
+       		, AC.PORT
+       		, AC.ALARMMSG_ORIGINAL
+       		, AL.TICKET_ID AS AL_TICKET_ID
+        FROM rca.tb_alarm_cur_mst AC
+        LEFT JOIN rca.tb_rca_ticket_al_current AL ON AC.ALARMNO = AL.ROOT_CAUSE_ALARM_NOA
+        WHERE CLUSTERNO IN (
+	        SELECT CLUSTER_NO
+	        FROM rca.tb_rca_ticket_current
+	        WHERE TICKET_ID = #{TICKET_ID}
+	    )
+	    AND ALARMTIME <![CDATA[ > ]]> NOW() - INTERVAL '1' YEAR
    </select>
 
    <!-- 시스템 현황 모니터링 -->

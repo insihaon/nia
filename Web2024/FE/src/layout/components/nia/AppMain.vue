@@ -1,5 +1,5 @@
 <template>
-  <section class="app-main common-font" :style="{height: `calc(100vh - ${showBottombar ? '110': '60'}px)`}">
+  <section class="app-main common-font">
     <HistoryBar ref="historybar" />
     <transition name="fade-transform" mode="out-in" :duration="duration">
       <keep-alive :include="cachedViews">
@@ -40,7 +40,7 @@ export default {
     }),
     getHistoryOffset() {
       return this.historybar.opened ? 'var(--historybar-width)' : 'var(--historybar-default-width)'
-    }
+    },
   },
   watch: {
     $route() {
@@ -104,7 +104,7 @@ export default {
   width: 100%;
   position: relative;
   overflow: hidden;
-  transition: all 0.3s;
+  // transition: all 0.3s;
 
   &>* {
     height: 100%;

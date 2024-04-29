@@ -49,6 +49,15 @@ export function apiTransmissionAlarmList(params = {}) {
     data: params
   })
 }
+export function apiTransmissionTicketDetail(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_TRANSMISSION_TICKET_DETAIL',
+    data: params
+  })
+}
 export function apiDashboardStatistics(params = {}) {
   return http({
     url: '/selectList',

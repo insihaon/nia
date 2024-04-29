@@ -18,6 +18,8 @@ public interface NiaMapper extends BaseDataMapper {
 
         public List<ResultMap> SELECT_TRANSMISSION_ALARM_LIST(HashMap<String, Object> map);
 
+        public List<ResultMap> SELECT_TRANSMISSION_TICKET_DETAIL(HashMap<String, Object> map);
+
         public List<ResultMap> SELECT_SYSTEM_MONITORING_CURRENT();
 
         public List<ResultMap> SELECT_DASHBOARD_STATISTICS(HashMap<String, Object> map);
