@@ -54,10 +54,10 @@
           </tr>
         </table>
         <div slot="footer" class="dialog-footer">
-          <el-button size="medium" @click.native="modeChange()">
+          <el-button size="mini" @click.native="modeChange()">
             {{ '등록' }}
           </el-button>
-          <el-button class="exit-btn" size="medium" @click.native="close()">
+          <el-button class="exit-btn" size="mini" @click.native="close()">
             {{ $t('exit') }}
           </el-button>
         </div>

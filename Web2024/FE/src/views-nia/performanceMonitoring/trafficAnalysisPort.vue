@@ -38,7 +38,7 @@ export default {
       selectedRow: [],
       trafficData: [],
       searchItems: [
-        { label: '감시방식', type: 'select', placeholder: '상태를 선택하세요', model: 'search_type', default: true, options: [
+        { label: '감시방식', type: 'select', placeholder: '상태를 선택하세요', model: 'search_type', options: [
             { label: 'OnDemand', value: 'OnDemand' },
             { label: '실시간', value: 'live' },
         ] },
@@ -49,6 +49,7 @@ export default {
 
       ],
       searchModel: {
+        search_type: 'OnDemand',
         node_name: '',
         if_name: '',
       }
@@ -71,19 +72,16 @@ export default {
         { type: '', prop: 'rx_pkt_rate', name: '수신 bps', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
       ]
       return { options, columns, data: this.trafficData, getRightClickMenuItems: () => { return [] } }
-    },
+    }
   },
   watch: {
-   searchItems: {
-        handler(newVal, oldVal) {
-            const searchTypeItem = newVal.find(item => item.model === 'search_type')
-            if (searchTypeItem) {
-            this.searchItems.forEach(item => {
-            item.disabled = true
-          })
-            }
-        },
-        deep: true // 깊은 감시를 사용하여 배열 내부의 변경도 감지
+    'searchModel.search_type'(n) {
+      this.searchItems.forEach(item => {
+        if (item.model !== 'search_type') {
+          item.disabled = n === 'live'
+          this.onSearchLive()
+        }
+      })
     }
   },
   mounted() {
@@ -92,14 +90,11 @@ export default {
   methods: {
     onClickSearch(params) {
       this.onLoadTrafficList(params)
-      if (params.search_type === 'live') {
-          setTimeout(() => {
-          this.onLoadTrafficList()
-        }, 60 * 1000)
-        this.searchItems.forEach(item => {
-          item.disabled = true
-        })
-      }
+    },
+    onSearchLive() {
+      setTimeout(() => {
+        this.onLoadTrafficList()
+      }, 60 * 1000)
     },
     async onLoadTrafficList() {
       const target = { vue: this.$refs.trafficAnalysis }

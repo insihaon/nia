@@ -86,22 +86,36 @@ table.basic {
   .el-button {
     background: #05092e;
     color: #fff;
+    &:hover{
+      background:#535356;
+      color: #fef0f0;
+    }
   }
   .common-btn {
     background: $nia-primary;
-      color: #fff;
-  }
-  .exit-btn{
-    background: gainsboro !important;
-    color: #000000 !important;
+    color: #fff;
+    border-color: #05092e;
   }
 
-  .delete_btn{
-    background: red !important;
+  .exit-btn{
+    background: #a6a9ad !important;
+    color: #000000 !important;
+    border-color: #05092e;
     &:hover{
-      background: rgba(255, 0, 0, 0.645) !important;
+      background: #cbcfd3 !important;
     }
   }
+
+  .delete-btn{
+    background: #fef0f0;
+    color: #f56c6c;
+    border-color: #05092e;
+    &:hover{
+      background: #f56c6c;
+      color: #fef0f0;
+    }
+  }
+  
    span.title {
     margin: 0px 10px;
     font-weight: 700;

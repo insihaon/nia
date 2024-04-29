@@ -6,7 +6,7 @@
         <el-row class="optionRow">
           <el-col v-for="(item, index) in items" :key="index" :xs="24" :sm="12" :md="12" :lg="8" :xl="6">
             <div class="optionItem">
-              <label>
+              <label style="width : 100px">
                 {{ item.label }}
               </label>
               <div>
@@ -67,6 +67,13 @@
                   start-placeholder="Start date"
                   end-placeholder="End date"
                   :disabled="item.disabled === true"
+                />
+
+                <el-date-picker
+                  v-if="item.type === 'basicDate'"
+                  v-model="searchModel[item.model]"
+                  type="date"
+                  size="mini"
                 />
               </div>
             </div>
