@@ -31,7 +31,7 @@
               v-model="syslog_rule_nm"
               style="width: 70%; float: left"
             />
-            <el-button size="small" style="float: right" :disabled="isDisabled" plain round type="info" @click="checkRuleName">중복확인 </el-button>
+            <el-button size="small" style="float: right" :disabled="isDisabled" plain round type="info" @click="checkRuleName()">중복확인 </el-button>
           </td>
         </tr>
         <tr>
@@ -157,29 +157,21 @@ export default {
       Modal.methods.onCreated.call(this)
       this.closeOnClickModal = false
     },
-    onOpen(model, actionMode) {
+    onOpen(model) {
       this.viewType = model.type
       this.rowInfo = this._cloneDeep(model.row)
       if (this.viewType === 'OPEN') {
-      this.syslog_rule_id = ''
-      this.syslog_rule_nm = ''
-      this.occur_str1 = ''
-      this.occur_except_str1 = ''
-      this.occur_str2 = ''
-      this.occur_except_str2 = ''
-      this.occur_str3 = ''
-      this.occur_except_str3 = ''
-      this.use_yn = ''
+        this.setItem()
       } else {
-      this.syslog_rule_id = this.rowInfo.syslog_rule_id
-      this.syslog_rule_nm = this.rowInfo.syslog_rule_nm
-      this.occur_str1 = this.rowInfo.occur_str1
-      this.occur_except_str1 = this.rowInfo.occur_except_str1
-      this.occur_str2 = this.rowInfo.occur_str2
-      this.occur_except_str2 = this.rowInfo.occur_except_str2
-      this.occur_str3 = this.rowInfo.occur_str3
-      this.occur_except_str3 = this.rowInfo.occur_except_str3
-      this.use_yn = this.rowInfo.use_yn
+        this.syslog_rule_id = this.rowInfo.syslog_rule_id
+        this.syslog_rule_nm = this.rowInfo.syslog_rule_nm
+        this.occur_str1 = this.rowInfo.occur_str1
+        this.occur_except_str1 = this.rowInfo.occur_except_str1
+        this.occur_str2 = this.rowInfo.occur_str2
+        this.occur_except_str2 = this.rowInfo.occur_except_str2
+        this.occur_str3 = this.rowInfo.occur_str3
+        this.occur_except_str3 = this.rowInfo.occur_except_str3
+        this.use_yn = this.rowInfo.use_yn
       }
     },
 
@@ -292,6 +284,17 @@ export default {
       } else {
         this.updateSyslogRule()
      }
+    },
+    setItem() {
+      this.syslog_rule_id = ''
+      this.syslog_rule_nm = ''
+      this.occur_str1 = ''
+      this.occur_except_str1 = ''
+      this.occur_str2 = ''
+      this.occur_except_str2 = ''
+      this.occur_str3 = ''
+      this.occur_except_str3 = ''
+      this.use_yn = ''
     }
   }
 }
@@ -304,9 +307,8 @@ export default {
     font-weight: bold;
     font-size: 15px;
   }
-
    .el-dialog {
-      min-width: 600px !important;
+    min-width: 600px !important;
    }
 }
 </style>

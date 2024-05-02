@@ -93,7 +93,7 @@
           <tr>
             <th>자동회복 처리</th>
             <td>
-              <el-select v-model="auto_recovery" multiple size="mini">
+              <el-select v-model="auto_recovery" size="mini">
                 <el-option v-for="item in procOptions" :key="item.value" :label="item.label" :value="item.value" />
               </el-select>
             </td>
@@ -208,13 +208,7 @@ export default {
       this.viewType = model.type
       this.rowInfo = this._cloneDeep(model.row)
       if (this.viewType === 'OPEN') {
-        this.profile_title = ''
-        this.profile_desc = ''
-        this.network_type = ''
-        this.processing_template = ''
-        this.autoProcTime = []
-        this.ticket_type = ''
-        this.process_type = ''
+        this.setItem()
       } else {
         this.profile_title = this.rowInfo.profile_title
         this.profile_desc = this.rowInfo.profile_desc
@@ -405,6 +399,7 @@ export default {
           if (insertRes.success) {
             this.$message('등록 되었습니다.')
             this.$emit('systemEdit')
+            this.setItem()
             this.close()
           }
         } catch (error) {
@@ -469,6 +464,15 @@ export default {
         }
       })
     },
+    setItem() {
+      this.profile_title = ''
+      this.profile_desc = ''
+      this.network_type = ''
+      this.processing_template = ''
+      this.autoProcTime = ''
+      this.ticket_type = ''
+      this.process_type = ''
+    }
   },
 }
 </script>

@@ -167,6 +167,11 @@ export const rulesProtocol = () => [
 export const rulesIp = () => [
   { message: 'Data is only IP', pattern: /^([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})$/ }
 ]
+
+export const rulesIpCheck = () => [
+  { message: 'IP 주소 형식이 아닙니다.', pattern: /\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/ }
+]
+
 export const rulesNodeName = () => [
   { message: 'Please enter the node name', validator: validateNodeName, trigger: 'blur' }
 ]
