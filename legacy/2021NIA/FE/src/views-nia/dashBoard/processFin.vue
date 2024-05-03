@@ -46,7 +46,7 @@
           <el-button size="mini" type="primary" class="el-icon-edit-outline" @click.native="onClickFin()">
             {{ selectedRow.status == 'FIN' || selectedRow.status == 'AUTO_FIN' ? '수정' : '마감' }}
           </el-button>
-          <el-button size="mini" type="info" class="close-btn" icon="el-icon-close" @click.native="$emit('windowClose')">
+          <el-button size="mini" type="info" icon="el-icon-close" @click.native="$emit('windowClose')">
             {{ $t('exit') }}
           </el-button>
         </el-col>

@@ -72,15 +72,15 @@ export default {
   computed: {
     authAgGrid() {
       const options = {
-        name: this.name + 'table1', checkable: false, rowGroupPanel: false, rowHeight: 40, rowSelection: 'multiple', rowMultiSelection: false, suppressRowClickSelection: true,
+        name: this.name + 'table1', checkable: false, rowGroupPanel: false, rowSelection: 'multiple', rowMultiSelection: false, suppressRowClickSelection: true,
       }
       const columns = [
-        { type: '', prop: 'rank_order', name: 'Rank', minWidth: 30, flex: 0, suppressMenu: true, alignItems: 'center' },
-        { type: '', prop: 'src_protocol', name: 'Application(Source)', minWidth: 30, flex: 0, suppressMenu: true, alignItems: 'center' },
-        { type: '', prop: 'src_port', name: 'Port(Source)', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: false },
-        { type: '', prop: 'dst_protocol', name: 'Application(Destination)', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
-        { type: '', prop: 'dst_port', name: 'Port(Destination)', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
-        { type: '', prop: 'packet_bytes', name: 'Gbyte', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true, formatter: getFormatValue },
+        { type: '', prop: 'rank_order', name: 'Rank', minWidth: 30, suppressMenu: true, alignItems: 'center' },
+        { type: '', prop: 'src_protocol', name: 'Application(Source)', minWidth: 30, suppressMenu: true, alignItems: 'center' },
+        { type: '', prop: 'src_port', name: 'Port(Source)', minWidth: 40, suppressMenu: true, alignItems: 'center', sortable: false, filterable: false },
+        { type: '', prop: 'dst_protocol', name: 'Application(Destination)', minWidth: 50, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
+        { type: '', prop: 'dst_port', name: 'Port(Destination)', minWidth: 50, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
+        { type: '', prop: 'packet_bytes', name: 'Gbyte', minWidth: 50, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true, formatter: getFormatValue },
       ]
       return { options, columns, data: this.trafficData, getRightClickMenuItems: () => { return [] } }
     }

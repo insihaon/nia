@@ -1,16 +1,16 @@
 <template>
   <div :class="{ [name]: true }">
     <div class="alarm-container flex flex-nowrap ml-3">
-      <div v-if="isViewport('>', 'md')" class="alarm-title flex items-center mx-2">
+      <div v-if="isViewport('>', 'md')" class="alarm-title flex items-center flex-nowrap whitespace-nowrap mx-2" style="min-width: 93px;">
         <img src="@/assets/icon/attention.png" style="height: 22px;width: 22px;filter: contrast(0) brightness(2)">
         <span class="text-lg font-bold pl-1 pt-1">경보 현황</span>
       </div>
       <div class="alarm-content flex flex-nowrap items-center ml-2 text-sm">
-        <span class="pt-1">IP Alarm</span>
+        <span class="pt-1 whitespace-nowrap">IP Alarm</span>
         <span class="text-3xl text-red-600 font-bold mx-1">{{ $store.state.nia.ipNetworkList.length }}</span>
         <span class="pt-1">건</span>
         <el-divider direction="vertical" />
-        <span class="pt-1">전송 Ticket</span>
+        <span class="pt-1 whitespace-nowrap">전송 Alarm</span>
         <span class="text-3xl text-red-600 font-bold mx-1">{{ $store.state.nia.transmissionNetworkList.length }}</span>
         <span class="pt-1">건</span>
       </div>

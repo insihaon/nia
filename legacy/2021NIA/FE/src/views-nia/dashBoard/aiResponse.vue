@@ -41,7 +41,7 @@
         <el-button size="mini" type="primary" @click.native="fn_openWindow('requestForAction', selectedRow)"> 상황전파 </el-button>
         <el-button size="mini" type="primary" @click.native="fn_openWindow('configTest', selectedRow)"> 시험 </el-button>
         <el-button size="mini" type="primary" @click.native="fn_openWindow('processFin', selectedRow)"> 마감 </el-button>
-        <el-button size="mini" type="info" class="close-btn" icon="el-icon-close" @click.native="$emit('windowClose')">
+        <el-button size="mini" type="info" icon="el-icon-close" @click.native="$emit('windowClose')">
           {{ $t('exit') }}
         </el-button>
       </el-col>

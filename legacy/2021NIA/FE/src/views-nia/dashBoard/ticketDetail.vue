@@ -39,7 +39,7 @@
     </el-row>
     <el-row>
       <el-col align="right" class="mt-1">
-        <el-button size="mini" type="info" class="close-btn" icon="el-icon-close" @click.native="$emit('windowClose')">{{ $t('exit') }}</el-button>
+        <el-button size="mini" type="info" icon="el-icon-close" @click.native="$emit('windowClose')">{{ $t('exit') }}</el-button>
       </el-col>
     </el-row>
   </div>

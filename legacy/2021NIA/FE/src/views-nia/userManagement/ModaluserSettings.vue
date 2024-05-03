@@ -1,13 +1,10 @@
 <template>
   <div>
-    <!-- <transition :name="animation"> -->
     <el-dialog
       v-if="animationVisible"
       v-el-drag-dialog
       :visible.sync="visible"
       :width="domElement.maxWidth + `px`"
-      :height="domElement.maxHeight + `px`"
-      :fullscreen.sync="fullscreen"
       :modal-append-to-body="true"
       :append-to-body="true"
       :modal="modal"
@@ -15,13 +12,23 @@
       :loading="loading"
       class="nia-dialog"
       :class="{ [name]: true, 'isDeleteMode': isDeleteMode }"
+      :style="{
+        top: domElement.y +'px'
+      }"
     >
       <span slot="title">
         <i class="el-icon-user mr-2" style="font-size: 17px;" />
         사용자 {{ isDeleteMode ? '계정삭제':'정보수정' }}
       </span>
-      <el-form v-if="!isDeleteMode" ref="userUpdateInfo" :model="userUpdateInfo" :rules="formRules" class="h-full border rounded px-3 py-4">
-        <el-col v-for="form in userFormItem" :key="form.value" :span="12">
+      <el-form
+        v-if="!isDeleteMode"
+        ref="userUpdateInfo"
+        :model="userUpdateInfo"
+        :rules="formRules"
+        class="h-full border rounded px-3 py-4"
+        :style="{'height': isMobile ? '520px' : '300px'}"
+      >
+        <el-col v-for="form in userFormItem" :key="form.value" :span="getColSize">
           <el-form-item :prop="form.value" :label="form.label" class="d-flex">
             <el-input
               :key="form.value"
@@ -59,24 +66,23 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="isDeleteMode ? isDeleteMode = false: onClickUpdateAccount()">
+        <el-button icon="el-icon-edit" size="mini" @click="isDeleteMode ? isDeleteMode = false: onClickUpdateAccount()">
           정보수정
         </el-button>
-        <el-button @click="isDeleteMode ? onClickDeleteAccount() : isDeleteMode = true">
+        <el-button icon="el-icon-delete" type="danger" size="mini" @click="isDeleteMode ? onClickDeleteAccount() : isDeleteMode = true">
           계정삭제
         </el-button>
-        <el-button @click.native="close()">
+        <el-button icon="el-icon-close" type="info" size="mini" @click.native="close()">
           {{ $t('exit') }}
         </el-button>
       </div>
     </el-dialog>
-    <!-- </transition> -->
   </div>
 </template>
 
 <script>
 import elDragDialog from '@/directive/el-drag-dialog'
-import { Modal } from '@/min/Modal.min'
+import { Modal } from '@/min/Modal'
 import { mapState } from 'vuex'
 import { rulesPassword, rulesRePassword, rulesRequire, rulesTelephone, rulesEmail } from '@/utils/validate'
 import { apiNiaUpsertUser, apiNiaDeleteUser } from '@/api/auth'
@@ -128,10 +134,22 @@ export default {
         phone: rulesTelephone(),
         email: rulesEmail(),
       }
+    },
+    getColSize() {
+      return this.isMobile ? 24 : 12
+    }
+  },
+  watch: {
+    isDeleteMode(newValue, oldValue) {
+      if (!this.isMobile) {
+        this.domElement.maxWidth = newValue ? 400 : 1000
+      }
     }
   },
   mounted () {
     this.setUserInfo()
+  },
+  created() {
   },
   methods: {
     setUserInfo() {
@@ -140,8 +158,8 @@ export default {
     },
     onCreated() {
       Modal.methods.onCreated.call(this)
-      this.domElement.maxHeight = 1000
       this.closeOnClickModal = false
+      this.domElement.maxWidth = 1000
     },
     onOpen(model, actionMode) {
     },
@@ -223,15 +241,14 @@ export default {
     width: 400px;
   }
   .el-dialog__body {
-    height: 100px;
     .el-form-item__label {
       width: 120px;
     }
   }
 }
-::v-deep .el-dialog__body {
-    height: 300px;
-  }
+.el-dialog {
+  width: 1000px;
+}
 .el-col {
   padding-bottom: 10px;
 }

@@ -3,7 +3,7 @@
     <HistoryBar ref="historybar" />
     <transition name="fade-transform" mode="out-in" :duration="duration">
       <keep-alive :include="cachedViews">
-        <router-view :key="key" :style="{ 'padding-right': getHistoryOffset }" style="transition: all 0.3s" />
+        <router-view :key="key" :style="{ 'padding-right': isMobile ? '0px' : getHistoryOffset }" style="transition: all 0.3s" />
       </keep-alive>
     </transition>
   </section>

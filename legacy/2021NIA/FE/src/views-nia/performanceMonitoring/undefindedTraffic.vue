@@ -31,10 +31,8 @@
             @onChangePage="(curPage) => onChangePage(curPage, 'AGENCY')"
             @searchClear="searchClear('AGENCY')"
           >
-            <template slot="button-area">
-              <div class="button-panel">
-                <el-button class="float-right" size="mini" type="info" @click="handleOpenEditModal('','AGENCY')">등록</el-button>
-              </div>
+            <template slot="add-function">
+              <el-button type="info" size="mini" icon="el-icon-edit" @click="handleOpenEditModal('', 'AGENCY')">등록</el-button>
             </template>
           </CompInquiryPannel>
         </div>
@@ -54,10 +52,8 @@
             @onChangePage="(curPage) => onChangePage(curPage, 'APP')"
             @searchClear="searchClear('APP')"
           >
-            <template slot="button-area">
-              <div class="button-panel">
-                <el-button class="float-right" size="mini" type="info" @click="handleOpenEditModal('', 'APP')">등록</el-button>
-              </div>
+            <template slot="add-function">
+              <el-button type="info" size="mini" icon="el-icon-edit" @click="handleOpenEditModal('', 'APP')">등록</el-button>
             </template>
           </CompInquiryPannel>
         </div>
@@ -268,9 +264,9 @@ export default {
     },
     handleOpenEditModal(row, type) {
       if (type === 'AGENCY' || type === 'APP') {
-          this.$refs.ModalAddTrafficData.open({ type: type })
+          this.$refs.ModalAddTrafficData.open({ type })
       } else {
-        this.$refs.ModalEditTrafficData.open({ row: row, type: type })
+        this.$refs.ModalEditTrafficData.open({ row, type })
       }
     },
     refreshData() {

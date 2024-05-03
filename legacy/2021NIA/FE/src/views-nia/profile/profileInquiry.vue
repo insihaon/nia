@@ -13,10 +13,8 @@
       @onChangePage="(curPage) => onChangePage(curPage)"
       @searchClear="searchClear"
     >
-      <template slot="button-area">
-        <div class="button-panel">
-          <el-button class="float-right" type="info" size="mini" @click="handleOpenModalDetail('', 'OPEN')">등록</el-button>
-        </div>
+      <template slot="add-function">
+        <el-button type="info" size="mini" icon="el-icon-edit" @click="handleOpenModalDetail('', 'OPEN')">등록</el-button>
       </template>
     </CompInquiryPannel>
     <ModalProfileDetail ref="ModalProfileDetail" @systemEdit="onLoadProfileList()" />

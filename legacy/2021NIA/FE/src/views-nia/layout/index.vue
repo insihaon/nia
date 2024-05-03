@@ -34,6 +34,7 @@ import NavBar from './navBar/index'
 import SideBar from './sideBar/index'
 import BottomBar from './BottomBar'
 import WindowBase from '@/views-nia/layout/components/WindowBase'
+import ResizeMixin from '@/layout/mixin/ResizeHandler'
 
 import { mapState, mapGetters } from 'vuex'
 
@@ -51,6 +52,7 @@ export default {
     WindowBase
   },
   extends: Base,
+  mixins: [ResizeMixin],
   data() {
     return {
       name: routeName,

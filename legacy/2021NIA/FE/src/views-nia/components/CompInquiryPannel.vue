@@ -20,14 +20,12 @@
                   :placeholder="item.placeholder"
                   @keyup.native.enter="$emit('keyupEnter', searchModel)"
                 />
-
                 <CompCheckSelector
                   v-if="item.type === 'select' && item.multiple"
                   v-model="searchModel[item.model]"
                   :item="item"
                   :search-model.sync="searchModel[item.model]"
                 />
-
                 <el-select
                   v-if="item.type === 'select' && !item.multiple"
                   v-model="searchModel[item.model]"
@@ -90,11 +88,11 @@
             <el-button v-if="isExcel" type="button" size="mini" class="excel-form-export" icon="el-icon-download" @click="handleExcel">
               엑셀 저장
             </el-button>
+            <slot name="add-function" />
           </el-col>
         </el-row>
       </div>
     </div>
-
     <!-- agGrid -->
     <div v-if="Object.keys(agGrid).length > 0 " class="d-flex flex-column agGridShell p-1" :style="{ flex: 1}">
       <div class="d-flex flex-column w-full text-right font-bold">
@@ -114,15 +112,13 @@
         @cellClicked="(value) => $emit('cellClicked', value)"
         @sortChanged="onSortChanged"
       />
-      <slot name="button-area" />
     </div>
   </div>
 </template>
-
 <script>
 import { Base } from '@/min/Base.min'
 import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
-import CompCheckSelector from '@/views-dataHub/components/CompCheckSelector'
+import CompCheckSelector from '@/views-nia/components/CompCheckSelector'
 
 const routeName = 'CompInquiryPannel'
 export default {
@@ -210,8 +206,7 @@ export default {
   },
   mounted() {
   },
-  methods:
-  {
+  methods: {
     getHeight() {
       return this.$parent?.$parent?.name?.includes('Modal') || this.isModal ? '500px' : '100%'
     },
@@ -255,13 +250,13 @@ export default {
       const name = `${this.title}_${this.toStringTime(new Date(), 'YYMMDD')}`
       this.$refs.compSearchEquip.exportExcel(name)
     }
-   }
- }
+  }
+}
 </script>
-
-<style lang="scss">
-</style>
- <style lang="css" scoped>
-  @import "~@/assets/css/nia_style_main.css";
+<style lang="css" scoped>
+@import "~@/assets/css/nia_style_main.css";
+::v-deep .el-range-editor--mini.el-input__inner {
+  width: 100%;
+}
 </style>
 
