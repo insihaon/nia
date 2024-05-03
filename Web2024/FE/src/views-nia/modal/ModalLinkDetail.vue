@@ -15,7 +15,7 @@
       :class="{ [name]: true }"
     >
       <span slot="title">
-        <i class="el-icon-user mr-2" style="font-size: 17px" />
+        <i :class="{'el-icon-edit': viewType === 'OPEN', 'el-icon-document': viewType !== 'OPEN'}" class="mr-2" style="font-size: 17px" />
         {{ title }}
         <hr>
       </span>
@@ -94,13 +94,13 @@
         </table>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button size="mini" @click.native="onChangeMode()">
+        <el-button size="mini" icon="el-icon-edit" @click.native="onChangeMode()">
           {{ changeText }}
         </el-button>
-        <el-button v-if="viewType !== 'OPEN'" class="delete-btn" size="mini" @click.native="deleteLinkData()">
-          {{ '삭제' }}
+        <el-button v-if="viewType !== 'OPEN'" type="danger" icon="el-icon-delete" size="mini" @click.native="deleteLinkData()">
+          삭제
         </el-button>
-        <el-button class="exit-btn" size="mini" @click.native="close()">
+        <el-button size="mini" type="info" class="el-icon-close" @click.native="close()">
           {{ $t('exit') }}
         </el-button>
       </div>
@@ -220,6 +220,7 @@ export default {
     onCreated() {
       Modal.methods.onCreated.call(this)
       this.closeOnClickModal = false
+      this.domElement.maxWidth = 700
     },
     onOpen(model, actionMode) {
       this.viewType = model.type

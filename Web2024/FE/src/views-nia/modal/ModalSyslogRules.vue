@@ -15,7 +15,7 @@
       :class="{ [name]: true }"
     >
       <span slot="title">
-        <i class="el-icon-user mr-2" style="font-size: 17px" />
+        <i class="el-icon-edit mr-2" style="font-size: 17px" />
         {{ title }}
         <hr>
       </span>
@@ -83,24 +83,22 @@
         </tr>
       </table>
       <div slot="footer" class="dialog-footer">
-        <el-button size="mini" type="info" @click.native="onChangeMode()">
+        <el-button size="mini" icon="el-icon-edit" @click.native="onChangeMode()">
           {{ changeText }}
         </el-button>
-        <el-button v-if="viewType !== 'OPEN'" class="delete-btn" plain type="danger" size="mini" @click.native="deleteSyslogRule()">
-          {{ '삭제' }}
+        <el-button v-if="viewType !== 'OPEN'" icon="el-icon-delete" type="danger" size="mini" @click.native="deleteSyslogRule()">
+          삭제
         </el-button>
-        <el-button class="exit-btn" size="mini" @click.native="close()">
+        <el-button size="mini" type="info" icon="el-icon-close" @click.native="close()">
           {{ $t('exit') }}
         </el-button>
       </div>
     </el-dialog>
   </div>
 </template>
-
 <script>
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
-import { mapState } from 'vuex'
 import { apiUpdateSyslogRule, apiInsertSyslogRule, apiDeleteSyslogRule, apiSelectCheckRuleName } from '@/api/nia'
 
 const routeName = 'ModalSyslogRules'
@@ -132,9 +130,6 @@ export default {
     }
   },
   computed: {
-    ...mapState({
-      viewport: (state) => state.app.viewport,
-    }),
     changeText() {
       return this.viewType === 'OPEN' ? '저장' : '수정'
     },
@@ -156,6 +151,7 @@ export default {
     onCreated() {
       Modal.methods.onCreated.call(this)
       this.closeOnClickModal = false
+      this.domElement.maxWidth = 750
     },
     onOpen(model) {
       this.viewType = model.type

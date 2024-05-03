@@ -7,7 +7,7 @@
       <el-col align="right">
         <!-- <el-button size="small" plain class="btn-r" @click.native="onClickShowHist()"> 이력 {{ isShowHist ? '닫기' : '보기' }} </el-button> -->
         <el-button size="mini" type="info" plain class="btn-r" @click.native="isShowHist = !isShowHist"> 이력 {{ isShowHist ? '닫기' : '보기' }} </el-button>
-        <el-button size="mini" type="info" class="close-btn" icon="el-icon-close" @click.native="$emit('windowClose')">
+        <el-button size="mini" type="info" icon="el-icon-close" @click.native="$emit('windowClose')">
           {{ $t('exit') }}
         </el-button>
       </el-col>

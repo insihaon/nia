@@ -51,6 +51,19 @@
           </button>
         </div>
       </div>
+      <div v-else>
+        <el-dropdown class="h-100" trigger="click" style="font-size: 26px">
+          <div class="h-100 d-flex items-center" style="margin-right:10px">
+            <i style="background: white;border-radius: 20px;padding: 5px;" class="el-icon-user" />
+          </div>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item @click.native="$refs.ModaluserSettings.open()">정보수정</el-dropdown-item>
+            <el-dropdown-item divided @click.native="logout">
+              <span style="display:block;">Log Out</span>
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+      </div>
     </div>
     <!-- all child -->
     <div id="sub-menu">
@@ -268,6 +281,7 @@ export default {
     background-color: #eef0f3;
     transition: height, 0.25s linear;
     #top-inner {
+      min-width: 1400px;
       padding-top: 8px;
       background-color: #eef0f3;
       li {

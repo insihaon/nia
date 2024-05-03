@@ -9,10 +9,8 @@
       class="w-100 h-100"
       @selectedRow="(row)=> handleOpenModalDetail(row,'EDIT')"
     >
-      <template slot="button-area">
-        <div class="button-panel">
-          <el-button class="float-right" size="mini" type="info" @click="handleOpenModalDetail('', 'OPEN')">등록</el-button>
-        </div>
+      <template slot="add-function">
+        <el-button type="info" size="mini" icon="el-icon-edit" @click="handleOpenModalDetail('', 'OPEN')">등록</el-button>
       </template>
     </CompInquiryPannel>
     <ModalSyslogRules ref="ModalSyslogRules" @syslogRuleEdit="onLoadSyslogRuleList()" />

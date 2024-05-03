@@ -230,10 +230,10 @@ div.optionRow>div>div.optionItem>div>.el-select
 , div.optionRow>div>div.optionItem>div>.el-input {
   width: 100%;
 }
-div.optionRow>div>div.optionItem>div>div.el-select>div.el-input>.el-input__inner {
+div.optionRow>div>div.optionItem>div>div.el-select>div.el-input>.el-input__inner
+, div.optionRow>div>div.optionItem>div>div.el-range-editor {
   border: solid 1px #909399;
 }
-
 .slide1{
   animation-duration: 7s;
   animation-delay: 0s;

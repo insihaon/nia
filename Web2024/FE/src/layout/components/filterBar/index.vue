@@ -1,11 +1,11 @@
 <template>
   <div :class="[{ [name]: true }]">
-    <div id="filter-container" class="w-full flex flex-nowrap justify-between" :style="{ height: barHeight + 'px' }">
-      <slot id="function-container" name="function-container">ADD FILTER FUNCTION</slot>
-      <div id="resize-container" class="px-1">
-        <img src="@/assets/icon/reset.png" class="w-6 h-6" @click="onChangeSettings('RESET')" />
-        <img src="@/assets/icon/minimize.png" class="w-6 h-6" @click="onChangeSettings('MIN')" />
-        <img src="@/assets/icon/maximize.png" class="w-6 h-6" @click="onChangeSettings('MAX')" />
+    <div id="filter-container" class="w-full flex flex-nowrap justify-between">
+      <slot name="function-container">ADD FILTER FUNCTION</slot>
+      <div id="resize-container">
+        <img src="@/assets/icon/reset.png" class="w-6 h-6" @click="onChangeSettings('RESET')">
+        <img src="@/assets/icon/minimize.png" class="w-6 h-6" @click="onChangeSettings('MIN')">
+        <img src="@/assets/icon/maximize.png" class="w-6 h-6" @click="onChangeSettings('MAX')">
       </div>
     </div>
   </div>
@@ -22,10 +22,6 @@ export default {
     position: {
       type: String,
       default: 'top',
-    },
-    barHeight: {
-      typp: Number,
-      default: 35,
     },
     sizeByType: {
       type: Object,
@@ -69,21 +65,27 @@ export default {
 
 <style lang="scss" scoped>
 @import '~@/styles/variables.scss';
-
-#filter-container {
-  overflow: hidden;
-  align-items: center;
-  background-color: #94a3b838;
-  #function-container {
-    padding: 0px 10px;
-    display: flex;
+.filterBar {
+  display: flex;
+  #filter-container {
+    padding: 5px;
+    overflow: hidden;
     align-items: center;
+    width: 100%;
+    background-color: #94a3b838;
+    #function-container {
+      padding: 0px 10px;
+      display: flex;
+      align-items: center;
+    }
   }
   #resize-container {
+    width: 50px;
+    min-width: 50px;
+    height: 100%;
     display: flex;
     align-items: center;
-    height: 100%;
-    margin-right: 10px;
+    margin-right: 15px;
     img {
       transition: all 0.3s;
       width: 20px;

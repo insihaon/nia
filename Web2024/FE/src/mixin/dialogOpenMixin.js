@@ -86,7 +86,7 @@ var dialogOpenMixin = {
       tmpWindowData.name = this.dialogList[dialogNm]['pageTitle']
       tmpWindowData.target = this.dialogList[dialogNm]['component']
       // tmpWindowData.type = this.dialogList[dialogNm]
-      tmpWindowData.width = this.dialogList[dialogNm]['width']
+      tmpWindowData.width = this.isMobile ? window.innerWidth : this.dialogList[dialogNm]['width']
       tmpWindowData.height = this.dialogList[dialogNm]['height']
       tmpWindowData.minWidth = this.dialogList[dialogNm]['minWidth']
       tmpWindowData.minHeight = this.dialogList[dialogNm]['minHeight']
@@ -101,7 +101,7 @@ var dialogOpenMixin = {
       tmpWindowData.y = (window.innerHeight - tmpWindowData.height) * 0.5 + (this.$store.getters.windows.length - 1) * 20
 
       if (tmpWindowData.x < 0) {
-        tmpWindowData.x = 15
+        tmpWindowData.x = this.isMobile ? 0 : 15
       }
       if (tmpWindowData.y < 0) {
         tmpWindowData.y = 85

@@ -4,6 +4,7 @@
       ref="trafficAnalysis"
       :ag-grid="trafficAgGrid"
       :items="searchItems"
+      :is-grid-loading="loading"
       :search-model.sync="searchModel"
       :pagination-info="paginationInfo"
       class="w-100 h-100"
@@ -28,6 +29,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      loading: false,
       paginationInfo: {
         currentPage: 1, // 현재 페이지
         pageSize: 50, // 페이지당 항목 수
@@ -55,7 +57,6 @@ export default {
       }
     }
   },
-
   computed: {
     trafficAgGrid() {
       const options = {
@@ -97,8 +98,6 @@ export default {
       }, 60 * 1000)
     },
     async onLoadTrafficList() {
-      const target = { vue: this.$refs.trafficAnalysis }
-      this.openLoading(target)
       const param = {
         node_name: this.searchModel.node_name,
         if_name: this.searchModel.if_name,
@@ -110,6 +109,7 @@ export default {
         this._merge(param, { start_date: dateTime[0], end_date: dateTime[1] })
       }
       try {
+        this.loading = true
         const res = await apiSelectInOutTrafficList(param)
         this.trafficData = res?.result
         this.paginationInfo.totalCount = res.total // 총 항목 수 설정
@@ -117,7 +117,7 @@ export default {
       } catch (error) {
         console.error(error)
       } finally {
-        this.closeLoading(target)
+        this.loading = false
       }
     },
     onChangePage(curPage) {

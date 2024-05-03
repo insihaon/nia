@@ -1,68 +1,66 @@
 <template>
   <div>
-    <transition :name="animation">
-      <el-dialog
-        v-if="animationVisible"
-        v-el-drag-dialog
-        :visible.sync="visible"
-        :width="domElement.maxWidth + `px`"
-        :fullscreen.sync="fullscreen"
-        :modal-append-to-body="false"
-        :append-to-body="true"
-        :modal="modal"
-        :close-on-click-modal="closeOnClickModal"
-        :loading="loading"
-        class="nia-edit-dialog"
-        :class="{ [name]: true }"
-      >
-        <span slot="title">
-          <i class="el-icon-user mr-2" style="font-size: 17px;" />
-          {{ titleMode }}
-          <hr>
-        </span>
-        <table class="basic">
-          <th>{{ titleNameA }}</th>
-          <td v-if="viewType === 'AGENCY'">
-            <el-select
-              v-model="agency_id"
-            >
-              <el-option
-                v-for="item in agencyList"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              />
-            </el-select>
+    <el-dialog
+      v-if="animationVisible"
+      v-el-drag-dialog
+      :visible.sync="visible"
+      :width="domElement.maxWidth + `px`"
+      :fullscreen.sync="fullscreen"
+      :modal-append-to-body="false"
+      :append-to-body="true"
+      :modal="modal"
+      :close-on-click-modal="closeOnClickModal"
+      :loading="loading"
+      class="nia-edit-dialog"
+      :class="{ [name]: true }"
+    >
+      <span slot="title">
+        <i class="el-icon-edit mr-2" style="font-size: 17px;" />
+        {{ titleMode }}
+        <hr>
+      </span>
+      <table class="basic">
+        <th>{{ titleNameA }}</th>
+        <td v-if="viewType === 'AGENCY'">
+          <el-select
+            v-model="agency_id"
+          >
+            <el-option
+              v-for="item in agencyList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </td>
+        <td v-if="viewType === 'APP'">
+          <el-input v-model="protocol" />
+        </td>
+        <tr>
+          <th>{{ titleNameB }}</th>
+          <td>
+            <el-input v-model="input_item" />
           </td>
+        </tr>
+        <tr v-if="viewType === 'APP'">
+          <th v-if="viewType === 'APP'">{{ '설명' }}</th>
           <td v-if="viewType === 'APP'">
-            <el-input v-model="protocol" />
+            <el-input
+              v-model="description"
+              type="textarea"
+            />
           </td>
-          <tr>
-            <th>{{ titleNameB }}</th>
-            <td>
-              <el-input v-model="input_item" />
-            </td>
-          </tr>
-          <tr v-if="viewType === 'APP'">
-            <th v-if="viewType === 'APP'">{{ '설명' }}</th>
-            <td v-if="viewType === 'APP'">
-              <el-input
-                v-model="description"
-                type="textarea"
-              />
-            </td>
-          </tr>
-        </table>
-        <div slot="footer" class="dialog-footer">
-          <el-button size="mini" @click.native="modeChange()">
-            {{ '등록' }}
-          </el-button>
-          <el-button class="exit-btn" size="mini" @click.native="close()">
-            {{ $t('exit') }}
-          </el-button>
-        </div>
-      </el-dialog>
-    </transition>
+        </tr>
+      </table>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="mini" icon="el-icon-edit" @click.native="modeChange()">
+          {{ '등록' }}
+        </el-button>
+        <el-button size="mini" icon="el-icon-close" type="info" @click.native="close()">
+          {{ $t('exit') }}
+        </el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -127,6 +125,7 @@ export default {
     onCreated() {
       Modal.methods.onCreated.call(this)
       this.closeOnClickModal = false
+      this.domElement.maxWidth = 500
     },
     onOpen(model, actionMode) {
       this.viewType = model.type

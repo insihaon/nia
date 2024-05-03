@@ -24,7 +24,7 @@
               <div class="optionItem">
                 <label> 분류 </label>
                 <div>
-                  <el-radio-group v-model="registItem.type" size="mini">
+                  <el-radio-group v-model="registItem.type" size="mini" :class="{'flex-column': isMobile}">
                     <el-radio
                       v-for="option in categoryOptions"
                       v-if="option.show"

@@ -1,12 +1,9 @@
 <template>
-  <div class="login-container h-full d-flex justify-center flex-column">
+  <div class="login-container h-screen d-flex justify-center flex-column">
+    <!-- style="overflow: none;flex-direction: column;flex-wrap: nowrap;" -->
     <video muted autoplay loop>
       <source src="@/assets/video/technology_network.mp4" type="video/mp4">
     </video>
-    <div class="browserInfo" title="크롬 브라우저 다운로드 페이지로 이동합니다.">
-      <img src="@/assets/icon/icon_chrome.png" @click="onClickDownloadChrome()">
-      <span>NIA KOREN은 Chrome Browser 및 1920x1080 해상도에 최적화 되어 있습니다.</span>
-    </div>
     <el-form v-if="!isJoin" ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form d-flex items-center flex-column" autocomplete="on" label-position="left">
       <div class="title-container d-flex justify-center flex-column items-center pb-4">
         <img src="@/assets/images/nia/login_logo_koren.png">
@@ -277,7 +274,7 @@ $light_gray:#eee;
   video {
     position:absolute;
     width:100%;
-    height:100%;
+    height: 100vh;
     object-fit: cover;
     pointer-events: none;
     user-select: none;
@@ -318,13 +315,16 @@ $light_gray:#eee;
   }
   .login-form {
     z-index: 0;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
     .title-container {
       color: #fff;
-      font-size: 42px;
+      font-size: 20px;
       font-weight: 800;
       text-align: center;
       .sub-title {
-        font-size: 27px;
+        font-size: 17px;
         font-weight: 200;
         white-space: nowrap;
       }
@@ -339,8 +339,8 @@ $light_gray:#eee;
       }
     }
     ::v-deep .el-input__inner {
-      width: 330px;
-      height: 45px;
+      width: 300px;
+      height: 40px;
       border-radius: 25px;
       padding: 0px 40px;
       color: black;
@@ -351,8 +351,9 @@ $light_gray:#eee;
       }
     }
     ::v-deep .el-button {
-      width: 330px;
-      height: 45px;
+      width: 300px;
+      height: 40px;
+      margin-top: 10px;
       border-radius: 25px;
       background-color: #609fe6;
       font-weight: 900;
@@ -373,15 +374,16 @@ $light_gray:#eee;
     display: flex;
     flex-direction: column;
     align-items: center;
+    font-size: 12px;
     .logo {
       width: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
       background: #fff;
-      padding: 8px 20px;
+      padding: 5px 20px;
       img {
-        width: 220px;
+        width: 180px;
         padding: 0px 15px;
       }
     }
@@ -389,6 +391,7 @@ $light_gray:#eee;
 
   #loginForm {
     color: white;
+    font-size: 12px;
     span {
       cursor: pointer;
     }

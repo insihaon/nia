@@ -6,8 +6,8 @@
         {{ isSyslog ? 'SYSLOG 장애대응' : 'AI 장애대응' }} 조치 요청서
         <hr>
       </el-row> -->
-    <el-row class="w-full d-flex">
-      <div class="w-50 p-1">
+    <el-row class="w-full">
+      <el-col class="p-1" :span="isMobile ? 24: 12">
         <el-card shadow="never" :body-style="{'padding': '10px'}">
           <div slot="header">
             <div>
@@ -94,8 +94,8 @@
             </el-table>
           </el-col>
         </el-card>
-      </div>
-      <div class="w-50 p-1">
+      </el-col>
+      <el-col class="p-1" :span="isMobile ? 24: 12">
         <el-card shadow="never" :body-style="{'padding': '10px'}" class="h-100">
           <div slot="header">
             <div>
@@ -202,7 +202,7 @@
             </div>
           </el-col>
         </el-card>
-      </div>
+      </el-col>
     </el-row>
     <el-row>
       <el-col align="right" class="mt-1">
@@ -211,7 +211,7 @@
         </el-button>
         <!-- :disabled="sendItem.status != 'INIT'" -->
         <el-button size="mini" @click.native="onClickEmailSender()"> 메일 전송 </el-button>
-        <el-button size="mini" type="info" class="close-btn" icon="el-icon-close" @click.native="$emit('windowClose')">
+        <el-button size="mini" type="info" icon="el-icon-close" @click.native="$emit('windowClose')">
           {{ $t('exit') }}
         </el-button>
       </el-col>
@@ -276,7 +276,7 @@ export default {
         { type: '', prop: 'node_num', name: '장비번호', width: 100, },
         { type: '', prop: 'node_nm', name: '장비명', width: 100, },
         { type: '', prop: 'alarmloc', name: '인터페이스', width: 100, },
-        { type: '', prop: 'alarmmsg', name: '알람메시지', width: 120, },
+        { type: '', prop: 'alarmmsg', name: '알람메시지', width: 150, },
         { type: '', prop: 'etc', name: '원본메시지', width: 230, },
       ],
       selectedReceiverUser: [],
@@ -294,7 +294,7 @@ export default {
         { type: '', prop: 'node_num', name: '장비번호', width: 100 },
         { type: '', prop: 'node_nm', name: '장비명', width: 100 },
         { type: '', prop: 'alarmloc', name: '인터페이스', width: 160 },
-        { type: '', prop: 'alarmmsg', name: '알람메시지', width: 100 },
+        { type: '', prop: 'alarmmsg', name: '알람메시지', width: 150 },
         { type: '', prop: 'etc', name: 'syslog 원본메시지', width: 250 },
       ]
       const columns = [

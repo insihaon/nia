@@ -62,7 +62,7 @@
         </tr>
       </table>
       <div slot="footer" class="dialog-footer">
-        <el-button size="mini" class="exit-btn" icon="el-icon-close" @click.native="close()">
+        <el-button size="mini" type="info" icon="el-icon-close" @click.native="close()">
           {{ $t('exit') }}
         </el-button>
       </div>

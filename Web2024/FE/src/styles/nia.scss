@@ -64,10 +64,6 @@ table.basic {
     border-top: solid 1px #999999;
     height: 50px;
     padding: 9px;
-    .close-btn{
-      background: rgb(220, 216, 216);
-      color: $nia-primary;
-    }
   }
   ~ .el-select-dropdown {
     min-width: 220px !important;
@@ -83,8 +79,9 @@ table.basic {
     color: #000000;
     font-weight: bold;
   }
-  .el-button {
+  .el-button--primary {
     background: #05092e;
+    border-color: #05092e;
     color: #fff;
     &:hover{
       background:#535356;
@@ -97,19 +94,10 @@ table.basic {
     border-color: #05092e;
   }
 
-  .exit-btn{
-    background: #a6a9ad !important;
-    color: #000000 !important;
-    border-color: #05092e;
-    &:hover{
-      background: #cbcfd3 !important;
-    }
-  }
 
   .delete-btn{
     background: #fef0f0;
     color: #f56c6c;
-    border-color: #05092e;
     &:hover{
       background: #f56c6c;
       color: #fef0f0;
@@ -157,11 +145,6 @@ table.basic {
   }
   .el-radio-button__inner:hover {
     color: $nia-primary;
-  }
-  .el-button:hover {
-    color: $nia-primary;
-    border-color: #1e293b9e;
-    background-color: #1e293b24;;
   }
   // custom taps
   .el-tabs {
@@ -213,6 +196,11 @@ table.basic {
   }
   .el-pager li {
     background-color: transparent;
+  }
+}
+.mobile .nia {
+  .el-range-editor--mini.el-input__inner {
+    width: 100%;
   }
 }
 
