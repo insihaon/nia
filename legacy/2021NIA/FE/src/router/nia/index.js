@@ -102,7 +102,7 @@ export const niaRoute = Object.freeze([
     component: Layout,
     hidden: false,
     disable: false,
-    redirect: '/operationStatusScreen/controlScreen',
+    redirect: '/operationStatusScreen/operationStatusStatistics',
     meta: {
       title: '운용현황 화면',
     },

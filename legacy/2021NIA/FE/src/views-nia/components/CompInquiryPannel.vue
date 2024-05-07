@@ -78,7 +78,7 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="24" align="center" class="searchBtnGroup">
+          <el-col :span="24" align="center" class="searchBtnGroup" :class="{'is-mobile': isMobile}">
             <el-button class="btn-r" type="info" size="mini" icon="el-icon-search" @click="onClickSearchButton">
               검색
             </el-button>
@@ -257,6 +257,9 @@ export default {
 @import "~@/assets/css/nia_style_main.css";
 ::v-deep .el-range-editor--mini.el-input__inner {
   width: 100%;
+}
+::v-deep .is-mobile.searchBtnGroup .el-button--mini {
+  padding: 7px 10px;
 }
 </style>
 
