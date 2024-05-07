@@ -67,7 +67,7 @@
         :ag-grid="snapshotAgGrid"
         :pagination-info="paginationInfo"
         class="w-100"
-        :style="{'height': isModal ? '300px':'100%' }"
+        :style="{'height': isModal ? '300px':'' }"
         :is-search="false"
         :is-modal="true"
         @handleClickSearch="onClickSearch"

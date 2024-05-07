@@ -1,6 +1,7 @@
 <template>
   <section class="app-main common-font">
     <HistoryBar ref="historybar" />
+    <div v-if="isOpenHistorybar" class="drawer-bg" @click="handleClickOutside" />
     <transition name="fade-transform" mode="out-in" :duration="duration">
       <keep-alive :include="cachedViews">
         <router-view :key="key" :style="{ 'padding-right': isMobile ? '0px' : getHistoryOffset }" style="transition: all 0.3s" />
@@ -38,6 +39,9 @@ export default {
       showBottombar: state => state.settings.bottombar,
       historybar: state => state.app.historybar,
     }),
+    isOpenHistorybar() {
+      return this.historybar.opened
+    },
     getHistoryOffset() {
       return this.historybar.opened ? 'var(--historybar-width)' : 'var(--historybar-default-width)'
     },
@@ -59,6 +63,9 @@ export default {
         this.$store.dispatch('tagsView/addView', this.$route)
       }
       return false
+    },
+    handleClickOutside() {
+      this.$store.dispatch('app/closeHistoryBar')
     },
   }
 }
@@ -110,6 +117,15 @@ export default {
     height: 100%;
     overflow: auto;
     width: 100%;
+  }
+  .drawer-bg {
+    background: #000;
+    opacity: 0.3;
+    width: 100%;
+    top: 0;
+    height: 100%;
+    position: absolute;
+    z-index: 999;
   }
 }
 
