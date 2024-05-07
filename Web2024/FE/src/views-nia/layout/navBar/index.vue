@@ -58,6 +58,7 @@
           </div>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item @click.native="$refs.ModaluserSettings.open()">정보수정</el-dropdown-item>
+            <el-dropdown-item @click.native="toggleHistoryBar">방문기록</el-dropdown-item>
             <el-dropdown-item divided @click.native="logout">
               <span style="display:block;">Log Out</span>
             </el-dropdown-item>

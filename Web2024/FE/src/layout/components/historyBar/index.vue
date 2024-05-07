@@ -250,6 +250,7 @@ export default {
 
 #tags-view-container.opend {
   right: 0px !important;
+  z-index: 1000;
   #title-container {
     display: flex;
   }
