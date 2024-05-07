@@ -1,20 +1,23 @@
 <template>
   <div :class="{ [name]: true }">
-    <div class="search-container">
-      <div class="title"><i class="el-icon-pie-chart pr-2" />자가 처리 관제 화면</div>
-      <div>
-        <el-radio-group v-model="selfChartCondition.statisticsType" @change="onLoadSelfProcessStatistics()">
+    <div class="search-container" :class="{'flex-column': isViewport('<=', 'sm')}">
+      <div v-if="!isMobile" class="title"><i class="el-icon-pie-chart pr-2" />자가 처리 관제 화면</div>
+      <div class="d-flex items-center" :class="{ 'flex-wrap': isMobile }">
+        <el-radio-group v-model="selfChartCondition.statisticsType" size="mini" @change="onLoadSelfProcessStatistics()">
           <el-radio-button label="hour">시간별</el-radio-button>
           <el-radio-button label="day">일별</el-radio-button>
           <el-radio-button label="month">월별</el-radio-button>
         </el-radio-group>
-        <el-button icon="el-icon-caret-left" @click="onChangeDate('minus')" />
-        <el-date-picker
-          v-model="selfChartCondition.date"
-          :type="getSelfProDateType()"
-        />
-        <el-button icon="el-icon-caret-right" @click="onChangeDate('plus')" />
-        <el-button icon="el-icon-search" style="padding: 7px 7px;" @click="onLoadSelfProcessStatistics()" />
+        <div class="d-flex items-center">
+          <el-button icon="el-icon-caret-left" size="mini" @click="onChangeDate('minus')" />
+          <el-date-picker
+            v-model="selfChartCondition.date"
+            :type="getSelfProDateType()"
+            size="mini"
+          />
+          <el-button icon="el-icon-caret-right" size="mini" @click="onChangeDate('plus')" />
+          <el-button icon="el-icon-search" size="mini" style="padding: 7px 7px;" @click="onLoadSelfProcessStatistics()" />
+        </div>
       </div>
     </div>
     <div class="chart-container">
@@ -198,7 +201,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .search-container {
-  height: 80px;
+  // height: 80px;
   display: flex;
   padding: 5px 15px;
   justify-content: space-between;

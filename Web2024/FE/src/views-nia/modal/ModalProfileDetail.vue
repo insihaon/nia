@@ -12,11 +12,11 @@
       :close-on-click-modal="closeOnClickModal"
       :loading="loading"
       class="nia-edit-dialog"
-      :class="{ [name]: true }"
+      :class="{ [name]: true, 'is-mobile': isMobile }"
     >
       <span slot="title">
         <i class="el-icon-user mr-2" style="font-size: 17px" />
-        조치 프로파일 상세보기
+        조치 프로파일 {{ viewType === 'OPEN' ? '등록' : '상세보기' }}
       </span>
       <table class="basic">
         <tr>
@@ -24,6 +24,8 @@
           <td>
             <el-input v-model="profile_title" size="mini" />
           </td>
+        </tr>
+        <tr>
           <th>프로파일 설명</th>
           <td class="disable">
             <el-input v-model="profile_desc" type="textarea" />
@@ -37,6 +39,8 @@
               <el-radio label="IP">KOREN(IP)</el-radio>
             </el-radio-group>
           </td>
+        </tr>
+        <tr>
           <th>장애대응 구분</th>
           <td>
             <el-radio-group v-model="processing_template" size="mini" class="d-flex">
@@ -48,9 +52,10 @@
         <tr>
           <th>자동처리 기간</th>
           <td colspan="3" style="text-align: left">
-            <el-date-picker v-model="autoProcTime" type="daterange" range-separator="~" size="mini" start-placeholder="시작일" end-placeholder="종료일" :disabled="auto_process_check" />
-          &nbsp;
-            <el-checkbox v-model="auto_process_check" label="상시" />
+            <div class="d-flex items-center">
+              <el-date-picker v-model="autoProcTime" type="daterange" range-separator="~" size="mini" start-placeholder="시작일" end-placeholder="종료일" :disabled="auto_process_check" />
+              <el-checkbox v-model="auto_process_check" label="상시" class="ml-1" />
+            </div>
           </td>
         </tr>
         <tr>
@@ -60,6 +65,8 @@
               <el-option v-for="item in ticketType" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
           </td>
+        </tr>
+        <tr>
           <th>장애 유형</th>
           <td>
             <el-select v-model="process_type" size="mini">
@@ -71,10 +78,12 @@
         <tr>
           <th>노드명</th>
           <td colspan="3">
-            <el-select v-model="selectNode" size="mini" style="width:85%">
-              <el-option v-for="item in nodeName" :key="item.value" :label="item.label" :value="item.value" />
-            </el-select>
-            <el-button size="mini" style="float: right" plain round type="info" @click="handleInsertNode()">추가 </el-button>
+            <div class="d-flex items-center">
+              <el-select v-model="selectNode" size="mini" style="width:85%">
+                <el-option v-for="item in nodeName" :key="item.value" :label="item.label" :value="item.value" />
+              </el-select>
+              <el-button size="mini" class="ml-1" round type="info" @click="handleInsertNode()">추가 </el-button>
+            </div>
           </td>
         </tr>
         <tr>
@@ -96,6 +105,8 @@
               <el-option v-for="item in procOptions" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
           </td>
+        </tr>
+        <tr>
           <th>메일 자동 발송</th>
           <td class="text-left">
             <el-checkbox v-model="email_check" />
@@ -200,7 +211,7 @@ export default {
     onCreated() {
       Modal.methods.onCreated.call(this)
       this.closeOnClickModal = false
-      this.domElement.maxWidth = 750
+      this.domElement.maxWidth = 500
     },
     onOpen(model, actionMode) {
       this.viewType = model.type
@@ -486,6 +497,7 @@ export default {
     background: rgb(217, 216, 216)
   }
   ::v-deep .el-dialog {
+    margin-top: 10vh !important;
     border: 2px solid $nia-primary;
     box-shadow: 0 1px 5px 0 rgb(0 0 0 / 27%);
     border-radius: 7px;
@@ -500,5 +512,8 @@ export default {
       border-bottom: 0px;
     }
   }
+}
+ ::v-deep.is-mobile.ModalProfileDetail .el-dialog {
+  margin-top: 5vh !important;
 }
 </style>

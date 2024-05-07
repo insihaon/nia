@@ -1,24 +1,27 @@
 <template>
   <div :class="{ [name]: true }">
-    <div class="search-container">
-      <div class="title"><i class="el-icon-pie-chart pr-2" />AI 관제 시스템 처리량</div>
-      <div>
-        <el-radio-group v-model="systemChartCondition.dayType" @change="onLoadStatistics()">
+    <div class="search-container" :class="{'flex-column': isViewport('<=', 'sm')}">
+      <div v-if="!isMobile" class="title"><i class="el-icon-pie-chart pr-2" />AI 관제 시스템 처리량</div>
+      <div class="d-flex items-center" :class="{ 'flex-wrap': isMobile }">
+        <el-radio-group v-model="systemChartCondition.dayType" size="mini" @change="onLoadStatistics()">
           <el-radio-button label="DAY">일별</el-radio-button>
           <el-radio-button label="MONTH">월별</el-radio-button>
         </el-radio-group>
-        <el-button icon="el-icon-caret-left" @click="onChangeDate('minus')" />
-        <el-date-picker
-          v-model="systemChartCondition.date"
-          :type="systemChartCondition.dayType ==='DAY' ? 'date':'month'"
-        />
-        <el-button icon="el-icon-caret-right" @click="onChangeDate('plus')" />
-        <el-button class="h-fit" icon="el-icon-refresh" @click="onLoadStatistics()" />
-        <el-button class="h-fit" icon="el-icon-download" @click="onExportExcel()"> 엑셀저장</el-button>
+        <div class="d-flex items-center">
+          <el-button size="mini" icon="el-icon-caret-left" @click="onChangeDate('minus')" />
+          <el-date-picker
+            v-model="systemChartCondition.date"
+            :type="systemChartCondition.dayType ==='DAY' ? 'date':'month'"
+            size="mini"
+          />
+          <el-button size="mini" icon="el-icon-caret-right" @click="onChangeDate('plus')" />
+          <el-button size="mini" class="h-fit" icon="el-icon-refresh" @click="onLoadStatistics()" />
+        </div>
+        <el-button size="mini" class="h-fit" icon="el-icon-download" @click="onExportExcel()"> 엑셀저장</el-button>
       </div>
     </div>
-    <div class="chart-container">
-      <div class="chart h-100 w-1/3">
+    <el-row class="chart-container">
+      <el-col :xs="24" :sm="24" :md="8" :lg="8" :xl="8" class="chart" :class="{'h-100': isViewport('>', 'sm')}">
         <CompChart :options="ticketOptions" class="h-60" />
         <div class="table-conatiner">
           <table>
@@ -30,8 +33,8 @@
             </tbody>
           </table>
         </div>
-      </div>
-      <div class="chart h-100 w-1/3">
+      </el-col>
+      <el-col :xs="24" :sm="24" :md="8" :lg="8" :xl="8" class="chart" :class="{'h-100': isViewport('>', 'sm')}">
         <CompChart :options="collectOptions" class="h-60" />
         <div class="table-conatiner">
           <table>
@@ -43,8 +46,8 @@
             </tbody>
           </table>
         </div>
-      </div>
-      <div class="chart h-100 w-1/3">
+      </el-col>
+      <el-col :xs="24" :sm="24" :md="8" :lg="8" :xl="8" class="chart" :class="{'h-100': isViewport('>', 'sm')}">
         <CompChart :options="servingOptions" class="h-60" />
         <div class="table-conatiner">
           <table>
@@ -56,8 +59,8 @@
             </tbody>
           </table>
         </div>
-      </div>
-    </div>
+      </el-col>
+    </el-row>
   </div>
 </template>
 <script>
@@ -256,7 +259,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .search-container {
-  height: 80px;
+  // height: 80px;
   display: flex;
   padding: 5px 15px;
   justify-content: space-between;
@@ -266,7 +269,7 @@ export default {
   }
 }
 .chart-container {
-  display: flex;
+  // display: flex;
   height: calc(100% - 80px);
   .table-conatiner {
     height: 35%;
@@ -280,7 +283,7 @@ export default {
       color: #dadada;
       th, td {
         border: dotted;
-        font-size: 15px;
+        font-size: 14px;
         text-align: center;
         border-style: dotted;
       }
