@@ -414,12 +414,12 @@ export function apiSelectProfileList(params = {}) {
   })
 }
 
-export function apiInsertProfileList(params = {}) {
+export function apiInsertProfileListProc(params = {}) {
   return http({
     url: '/selectOne',
     method: 'post',
     filePath: filePath,
-    sqlId: 'INSERT_PROFILE_LIST',
+    sqlId: 'insertProfileList',
     data: params
   })
 }

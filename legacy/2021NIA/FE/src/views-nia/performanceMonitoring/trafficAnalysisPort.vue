@@ -4,7 +4,6 @@
       ref="trafficAnalysis"
       :ag-grid="trafficAgGrid"
       :items="searchItems"
-      :is-grid-loading="loading"
       :search-model.sync="searchModel"
       :pagination-info="paginationInfo"
       class="w-100 h-100"
@@ -29,7 +28,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      loading: false,
+      alarmInterval: null,
       paginationInfo: {
         currentPage: 1, // 현재 페이지
         pageSize: 50, // 페이지당 항목 수
@@ -76,26 +75,35 @@ export default {
     }
   },
   watch: {
-    'searchModel.search_type'(n) {
-      this.searchItems.forEach(item => {
-        if (item.model !== 'search_type') {
-          item.disabled = n === 'live'
-          this.onSearchLive()
-        }
-      })
+   'searchModel.search_type'(n) {
+    this.searchItems.forEach(item => {
+      item.disabled = (item.model !== 'search_type') && (n === 'live')
+    })
+
+    if (n === 'live') {
+      this.startInterval()
+    } else {
+      this.stopInterval()
     }
+  }
   },
   mounted() {
     this.onLoadTrafficList()
   },
   methods: {
+    startInterval() {
+      this.alarmInterval = setInterval(() => {
+        const seconds = new Date().getSeconds()
+        if (seconds === 0) {
+          this.onLoadTrafficList()
+        }
+      }, 1000)
+    },
+    stopInterval() {
+      clearInterval(this.alarmInterval)
+    },
     onClickSearch(params) {
       this.onLoadTrafficList(params)
-    },
-    onSearchLive() {
-      setTimeout(() => {
-        this.onLoadTrafficList()
-      }, 60 * 1000)
     },
     async onLoadTrafficList() {
       const param = {
@@ -109,15 +117,12 @@ export default {
         this._merge(param, { start_date: dateTime[0], end_date: dateTime[1] })
       }
       try {
-        this.loading = true
         const res = await apiSelectInOutTrafficList(param)
         this.trafficData = res?.result
         this.paginationInfo.totalCount = res.total // 총 항목 수 설정
         this.paginationInfo.totalPages = Math.ceil(this.paginationInfo.totalCount / this.paginationInfo.pageSize) // 전체 페이지 수 계산
       } catch (error) {
         console.error(error)
-      } finally {
-        this.loading = false
       }
     },
     onChangePage(curPage) {

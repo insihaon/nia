@@ -842,18 +842,21 @@
                         ELSE '미사용'
                 END AS use_yn
         FROM    gather.tb_syslog_rule_mst tsrm
-        <!-- <where>
-                <if test="syslog_rule_nm != null">
-                syslog_rule_nm = #{syslog_rule_nm}
-                </if>
-                <if test="occur_str != null and occur_str != ''">
-                AND occur_str1 = #{occur_str}
-                </if>
-                <if test="occur_except_str != null and occur_except_str != ''">
-                AND occur_except_str1 = #{occur_except_str}
-                </if> -->
-            ORDER BY syslog_rule_id
-         <!-- </where>  -->
+        WHERE 1=1
+            <if test="syslog_rule_nm != null and syslog_rule_nm != ''">
+            AND syslog_rule_nm = #{syslog_rule_nm}
+            </if>
+            <if test="occur_str != null and occur_str != ''">
+            AND UPPER(occur_str1) LIKE '%' || UPPER(#{occur_str}) || '%'
+            OR UPPER(occur_str2) LIKE '%' || UPPER(#{occur_str}) || '%'
+            OR UPPER(occur_str3) LIKE '%' || UPPER(#{occur_str}) || '%'
+            </if>
+            <if test="occur_except_str != null and occur_except_str != ''">
+            AND UPPER(occur_except_str1) LIKE '%' || UPPER(#{occur_except_str}) || '%'
+            OR UPPER(occur_except_str2) LIKE '%' || UPPER(#{occur_except_str}) || '%'
+            OR UPPER(occur_except_str3) LIKE '%' || UPPER(#{occur_except_str}) || '%'
+            </if>
+        ORDER BY syslog_rule_id
         <include refid="TotalCountSuffix"/>
     </select>
 
@@ -927,7 +930,7 @@
     <select id="SELECT_CHECK_RULE_NAME" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
     SELECT  syslog_rule_nm, COUNT(*)
     FROM    gather.tb_syslog_rule_mst
-    WHERE   syslog_rule_nm = #{syslog_rule_nm}
+    WHERE   syslog_rule_nm = TRIM(#{syslog_rule_nm})
     GROUP BY syslog_rule_nm
     HAVING  COUNT(*) <![CDATA[ > ]]> 0
     </select>
@@ -1424,6 +1427,11 @@
         </if>
         ORDER BY PROFILE_NUM
         <include refid="TotalCountSuffix"/>
+    </select>
+
+    <!-- 프로파일 번호 max 값  -->
+     <select id="SELECT_MAX_PROFILE_NUM" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+     SELECT MAX(PROFILE_NUM) AS max_profile_num FROM RESOURCE.TB_FAULT_PROCESS_PROFILE;
     </select>
 
     <!-- 조치 프로파일 리스트 추가 -->
