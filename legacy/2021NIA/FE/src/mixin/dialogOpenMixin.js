@@ -59,6 +59,14 @@ var dialogOpenMixin = {
           height: '800',
           resizeble: true,
         },
+        selfProcessList: {
+          component: () => import('@/views-nia/dashBoard/selfProcessList'),
+          pageTitle: '자가 최적화 이력조회',
+          top: '2vh',
+          width: '1000',
+          height: '800',
+          resizeble: true,
+        },
         ticketDetail: {
           component: () => import('@/views-nia/dashBoard/ticketDetail'),
           pageTitle: '전표 상세내역',
@@ -101,7 +109,10 @@ var dialogOpenMixin = {
       tmpWindowData.y = (window.innerHeight - tmpWindowData.height) * 0.5 + (this.$store.getters.windows.length - 1) * 20
 
       if (tmpWindowData.x < 0) {
-        tmpWindowData.x = this.isMobile ? 0 : 15
+        tmpWindowData.x = 15
+      }
+      if (this.isMobile) {
+        tmpWindowData.x = 0
       }
       if (tmpWindowData.y < 0) {
         tmpWindowData.y = 85

@@ -11,11 +11,12 @@
         <el-card shadow="never" :body-style="{'padding': '10px'}">
           <div slot="header">
             <div>
-              <span><i class="el-icon-document" /> 알람 상세 정보</span>
+              <span><i class="el-icon-document" /> {{ isSyslog ? '알람': '티켓' }} 상세 정보</span>
             </div>
           </div>
           <el-col>
             <el-table
+              v-if="isSyslog"
               ref="table"
               size="mini"
               :data="[syslogInfo]"
@@ -26,6 +27,24 @@
             >
               <el-table-column
                 v-for="col in defineSyslogDetailTable"
+                :key="col.prop"
+                :prop="col.prop"
+                :label="col.name"
+                :width="col.width"
+              />
+            </el-table>
+            <el-table
+              v-else
+              ref="table"
+              size="mini"
+              :data="[sendItem]"
+              class="w-100"
+              :height="90"
+              border
+              fit
+            >
+              <el-table-column
+                v-for="col in defineTicketDetailTable"
                 :key="col.prop"
                 :prop="col.prop"
                 :label="col.name"
@@ -206,6 +225,9 @@
     </el-row>
     <el-row>
       <el-col align="right" class="mt-1">
+        <el-button v-if="isSyslog" size="mini" type="primary" icon="el-icon-camera" @click.native="fn_openWindow('snapShot', selectedRow)"> 데이터 스냅샷 </el-button>
+        <el-button v-if="isSyslog" size="mini" type="primary" @click.native="fn_openWindow('configTest', selectedRow)"> 시험 </el-button>
+        <el-button v-if="isSyslog" size="mini" type="primary" @click.native="fn_openWindow('processFin', selectedRow)"> 마감 </el-button>
         <el-button size="mini" icon="el-icon-edit-outline" @click.native="onClickFin()">
           {{ sendItem.status == 'FIN' || sendItem.status == 'AUTO_FIN' ? '수정' : '마감' }}
         </el-button>
@@ -270,6 +292,7 @@ export default {
         out_anomaly: '',
       },
       syslogInfo: [],
+      ticketInfo: [],
       defineSyslogDetailTable: [
         { type: '', prop: 'alarmno', name: '알람번호', width: 100 },
         { type: '', prop: 'alarmtime', name: '발생시간', width: 140, },
@@ -278,6 +301,15 @@ export default {
         { type: '', prop: 'alarmloc', name: '인터페이스', width: 100, },
         { type: '', prop: 'alarmmsg', name: '알람메시지', width: 150, },
         { type: '', prop: 'etc', name: '원본메시지', width: 230, },
+      ],
+      defineTicketDetailTable: [
+        { type: '', prop: 'ticket_id', name: '티켓번호', width: 100 },
+        { type: '', prop: 'fault_time', name: '처리시간', width: 140, },
+        { type: '', prop: 'clos_time', name: '마감시간', width: 140, },
+        { type: '', prop: 'ticket_type', name: '티켓유형', width: 100 },
+        { type: '', prop: 'ticket_result', name: '장애내용', width: 120, },
+        { type: '', prop: 'root_cause_sysnamea', name: '장비ID', width: 100, },
+        { type: '', prop: 'root_cause_porta', name: '인터페이스', width: 100, }
       ],
       selectedReceiverUser: [],
     }
@@ -374,8 +406,8 @@ export default {
       if (this.isSyslog) {
         await this.onLoadSyslogInfo()
       }
-      await this.onLoadAiDetectionInfo()
       await this.onLoadSopHistList()
+      await this.onLoadAiDetectionInfo()
     } catch (error) {
       this.error(error)
     } finally {
@@ -389,7 +421,7 @@ export default {
       if (ticket_type === 'RT' && status !== 'INIT') return
 
       // AI 분석 결과 정보
-      if (ticket_type === 'ATT2') {
+      if (ticket_type === 'ATT2' && this.aiDetection) {
         const { in_bps, in_predict, in_threshold_upper, in_threshold_lower, in_anomaly, out_bps, out_predict, out_threshold_upper, out_threshold_lower, out_anomaly } = this.aiDetection
         // IN
         this.sendItem['in_bps'] = in_bps.toLocaleString()
@@ -456,8 +488,10 @@ export default {
           if (!NODE_NM && !ALARMLOC) return
           res = await apiSopSyslogHistList(param)
         } else {
+          const ticket = this.selectedRow
+          console.log(ticket)
           const { /* ticket_id: TICKET_ID,  */ ticket_type: TICKET_TYPE, root_cause_sysnamea: ROOT_CAUSE_SYSNAMEA } = this.selectedRow
-          if (!TICKET_TYPE && !ROOT_CAUSE_SYSNAMEA) return
+          if (!TICKET_TYPE || !ROOT_CAUSE_SYSNAMEA) return
           param = { TICKET_TYPE, ROOT_CAUSE_SYSNAMEA }
           res = await apiSelectSopHistList(param)
         }
@@ -480,7 +514,7 @@ export default {
       try {
         const res = await apiSelectAiDetectionInfo(param)
         this.aiDetection = res?.result[0] ?? null
-        this.aiDetection && this.setTemplateContent()
+        this.setTemplateContent()
       } catch (error) {
         this.error(error)
       } finally {

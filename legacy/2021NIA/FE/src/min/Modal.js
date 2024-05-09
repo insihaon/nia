@@ -102,7 +102,6 @@ const Modal = {
     // this.trace(`Modal mounted ${this.name}`)
   },
   updated() {
-    // this.setOffsetTop()
     // data 변경 시 호출됨
     this.trace(`Modal updated ${this.name}`)
   },
@@ -134,9 +133,6 @@ const Modal = {
       if (this.isMobile || !this.domElement.maxWidth) {
         this.domElement.maxWidth = window.innerWidth
       }
-    },
-    setOffsetTop() {
-      this.domElement.y = (window.innerHeight - document.querySelector('.el-dialog')?.offsetHeight) * 0.5
     },
     bringToFront(options) {
       const fn = options.beforeClose

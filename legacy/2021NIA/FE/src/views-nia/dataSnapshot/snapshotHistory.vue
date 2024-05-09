@@ -273,44 +273,10 @@ export default {
   min-width: 70px;
 }
 ::v-deep .CompAgGrid {
-  height: 300px !important;
+  height: 340px !important;
 }
 ::v-deep .el-date-editor--datetimerange.el-input__inner {
   width: 300px;
 }
-
-// .SnapshotHistory{
-//   table.tb-class {
-//   width: 100%;
-//   font-size: 12px;
-//   text-align: left;
-//   border-collapse: collapse;
-//   border: solid 1px #1e293b;
-//   th,
-//   td {
-//     padding: 10px;
-//     border: 1px solid #bdbdbd !important;
-
-//   }
-//   th {
-//     font-weight: normal;
-//     background: #c1d3f64d;
-//     text-align: center;
-//     font-size: 14px;
-//     max-width: 15px !important;
-//   }
-//   td {
-//     font-weight: 600;
-//     max-width: 50px !important;
-//     min-width: 30px !important;
-//   }
-//   td.disable {
-//     font-weight: 600;
-//     background: #fff;
-//   }
-// }
-
-// }
-
 </style>
 

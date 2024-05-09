@@ -37,10 +37,10 @@
 
     <el-row>
       <el-col align="right" class="mt-2">
-        <el-button size="mini" type="primary" icon="el-icon-camera" @click.native="fn_openWindow('snapShot', selectedRow)"> 데이터 스냅샷 </el-button>
-        <el-button size="mini" type="primary" @click.native="fn_openWindow('requestForAction', selectedRow)"> 상황전파 </el-button>
-        <el-button size="mini" type="primary" @click.native="fn_openWindow('configTest', selectedRow)"> 시험 </el-button>
-        <el-button size="mini" type="primary" @click.native="fn_openWindow('processFin', selectedRow)"> 마감 </el-button>
+        <el-button size="mini" type="primary" icon="el-icon-camera" @click.native="fn_openWindow('snapShot', _merge(selectedRow, trafficInfo))"> 데이터 스냅샷 </el-button>
+        <el-button size="mini" type="primary" @click.native="fn_openWindow('requestForAction', _merge(selectedRow, trafficInfo))"> 상황전파 </el-button>
+        <el-button size="mini" type="primary" @click.native="fn_openWindow('configTest', _merge(selectedRow, trafficInfo))"> 시험 </el-button>
+        <el-button size="mini" type="primary" @click.native="fn_openWindow('processFin', _merge(selectedRow, trafficInfo))"> 마감 </el-button>
         <el-button size="mini" type="info" icon="el-icon-close" @click.native="$emit('windowClose')">
           {{ $t('exit') }}
         </el-button>
@@ -107,14 +107,14 @@ export default {
     trafficChart() {
       const { ticket_type } = this.selectedRow
       const chartData = this.trafficChartList
-      const xAxisKey = ticket_type === 'ATT2' ? 'measured_datetime' : 'collect_time'
+      const xAxisKey = ['ATT2', 'FTT'].includes(ticket_type) ? 'measured_datetime' : 'collect_time'
       const markLine = {
         symbol: ['none', 'none'],
         label: { show: false },
         data: [{ xAxis: this.selectedRow?.fault_time || '' }],
       }
       let seriesArr = []
-      if (ticket_type === 'ATT2') {
+      if (['ATT2', 'FTT'].includes(ticket_type)) {
         const seriesInfo = [
           { name: 'PPS_IN', value: 'fltpps_in' },
           { name: 'PPS_OUT', value: 'fltpps_out' },
@@ -161,18 +161,28 @@ export default {
     },
   },
   created() {
-    this.selectedRow = this.wdata?.params
+    this.selectedRow = this.wdata?.params?.row
+    this.trafficInfo = this.wdata?.params?.trafficInfo ?? {
+      root_cause_sysnamea: '',
+      root_cause_sysnamez: '',
+      root_cause_porta: '',
+      root_cause_portz: ''
+    }
   },
   mounted() {
-    this.onLoadTrafficInfo()
+    if (!this.wdata?.params['trafficInfo'] !== undefined) {
+      this.onLoadTrafficInfo()
+    } else {
+      this.onLoadTrafficChart()
+    }
   },
   methods: {
-    // onOpen(model, actionMode) {
-    //   this.selectedRow = model?.row
-    //   this.onLoadTrafficInfo()
-    // },
     // 자가 구성 조치 구간정보 조회
     async onLoadTrafficInfo() {
+      if (!this.selectedRow?.ticket_id) {
+        this.error('aiResponse view : ticket_id not found')
+        return
+      }
       try {
         const res = await apiSelfProcessTrafficInfo({ TICKET_ID: this.selectedRow.ticket_id })
         this.trafficInfo = res?.result[0] ?? {}
@@ -190,7 +200,7 @@ export default {
       try {
         this.chartLoading = true
         let chartRes
-        if (ticket_type === 'ATT2') {
+        if (['ATT2', 'FTT'].includes(ticket_type)) {
           chartRes = await apiATTTrafficChart(param)
         } else if (ticket_type === 'NTT') {
           this._merge(param, { END_NODE, END_PORT })
@@ -212,6 +222,9 @@ export default {
 
 <style lang="scss" scoped>
 @import '~@/styles/animation.scss';
+.mobile .el-button--mini {
+  padding: 7px 10px;
+}
 .node-section {
   img {
     width: 85px;

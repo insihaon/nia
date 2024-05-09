@@ -1,72 +1,55 @@
 <template>
-  <div :class="{ [name]: true }">
-    <transition :name="animation">
-      <el-dialog
-        v-if="animationVisible"
-        v-el-drag-dialog
-        :visible.sync="visible"
-        :width="domElement.maxWidth + `px`"
-        :height="domElement.minHeight + `px`"
-        :fullscreen.sync="fullscreen"
-        :modal-append-to-body="false"
-        :append-to-body="true"
-        :modal="modal"
-        :close-on-click-modal="closeOnClickModal"
-        :loading="loading"
-        class="nia-dialog"
-        :class="{ [name]: true }"
-      >
-        <span slot="title">
-          <i class="el-icon-document mr-2 text-base" />
-          자가 {{ getPageType }} 이력조회
-          <hr>
-        </span>
-        <div class="d-flex flex-column h-100">
-          <CompInquiryPannel
-            ref="inquiry"
-            :ag-grid="selfProcessAgGrid"
-            :pagination-info="paginationInfo"
-            :items.sync="searchItems"
-            class="w-100 h-100 flex-fill"
-            @handleClickSearch="onClickSearch"
-            @onChangePage="onChangePage"
-            @selectedRow="onClickRow"
-          />
-        </div>
-        <div slot="footer" class="dialog-footer">
-          <el-button size="small" plain @click.native="close()">
-            {{ $t('exit') }}
-          </el-button>
-        </div>
-        <ModalSelfProcessDetail ref="ModalSelfProcessDetail" />
-      </el-dialog>
-    </transition>
-  </div>
+  <el-row :class="{ [name]: true, 'h-100':true }">
+    <div class="d-flex flex-column h-100">
+      <CompInquiryPannel
+        ref="inquiry"
+        :ag-grid="selfProcessAgGrid"
+        :pagination-info="paginationInfo"
+        :items.sync="searchItems"
+        class="w-100 h-100 flex-fill"
+        @handleClickSearch="onClickSearch"
+        @onChangePage="onChangePage"
+        @rowClicked="onClickRow"
+      />
+    </div>
+    <div slot="footer" class="dialog-footer">
+      <el-button size="small" plain @click.native="close()">
+        {{ $t('exit') }}
+      </el-button>
+    </div>
+    <ModalSelfProcessDetail ref="ModalSelfProcessDetail" />
+  </el-row>
 </template>
 
 <script>
-import elDragDialog from '@/directive/el-drag-dialog'
-import { Modal } from '@/min/Modal.min'
+import { Base } from '@/min/Base'
 import _ from 'lodash'
 import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
 import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
-import ModalSelfProcessDetail from './ModalSelfProcessDetail.vue'
-import CellRenderDataSetButtons from '@/views-dataHub/components/cellRenderer/CellRenderDataSetButtons'
+import ModalSelfProcessDetail from '@/views-nia/modal/ModalSelfProcessDetail.vue'
 import { apiSelfProcessList } from '@/api/nia'
 import { getTicketType } from '@/views-nia/js/commonFormat'
 
-const routeName = 'ModalSelfProcessList'
+const routeName = 'selfProcessList'
 
 export default {
   name: routeName,
   // eslint-disable-next-line vue/no-unused-components
-  components: { CompAgGrid, CellRenderDataSetButtons, CompInquiryPannel, ModalSelfProcessDetail },
-  directives: { elDragDialog },
-  extends: Modal,
+  components: { CompAgGrid, CompInquiryPannel, ModalSelfProcessDetail },
+  extends: Base,
+  props: {
+    wdata: {
+      type: Object,
+      default() {
+        return {}
+      }
+    },
+  },
   data() {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      top: '10vh',
       selfProcessList: [],
       visible: false,
       selectedRow: null,
@@ -161,9 +144,6 @@ export default {
       ]
       return { options, columns, data: this.selfProcessList }
     },
-    getPageType() {
-      return this.receviedParams?.SELF_PROCESS_GROUP === 'SO' ? '최적화' : '회복' || ''
-    },
     searchItems() {
       return [
         {
@@ -173,7 +153,7 @@ export default {
           size: 4,
           model: 'SELF_PROCESS_TYPE',
           placeholder: '',
-          options: this.getPageType === '최적화' ? this.optimizationType : this.recoveryType,
+          options: this.receviedParams?.SELF_PROCESS_GROUP === 'SO' ? this.optimizationType : this.recoveryType,
         },
         { label: '마감종류', type: 'select', multiple: false, size: 4, model: 'CLOS_TYPE', placeholder: '', options: this.closType },
         { label: '마감상태', type: 'select', multiple: false, size: 4, model: 'CLOS_STATUS', placeholder: '', options: this.closStatus },
@@ -181,21 +161,18 @@ export default {
       ]
     },
   },
+  created () {
+    this.receviedParams = this.wdata.params
+  },
+  mounted () {
+    this.onLoadSelfProcessList()
+  },
   methods: {
-    onCreated() {
-      Modal.methods.onCreated.call(this)
-      this.domElement.maxWidth = 1000
-      this.closeOnClickModal = false
-    },
-    onOpen(params, actionMode) {
-      this.receviedParams = params
-      this.onLoadSelfProcessList()
-    },
     onClickSearch(searchModel) {
       this.onLoadSelfProcessList()
     },
-    onClickRow(rows) {
-      this.$refs.ModalSelfProcessDetail.open({ row: this._merge(rows[0], this.receviedParams) })
+    onClickRow(row) {
+      this.$refs.ModalSelfProcessDetail.open({ row: this._merge(row.data, this.receviedParams) })
     },
     async onLoadSelfProcessList() {
       const { pageSize: limit, currentPage: page } = this.paginationInfo

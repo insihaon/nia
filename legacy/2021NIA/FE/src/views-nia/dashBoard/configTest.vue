@@ -42,12 +42,16 @@
         <el-row>
           <el-col :span="12">
             <div class="font-bold text-center ip-title">장비 설정 IP정보</div>
-            <div style="height: 130px; background: #f5f7fa; border-radius: 5px; border: solid 1px" />
+            <div style="height: 130px; background: #f5f7fa; border-radius: 5px; border: solid 1px">
+              <div v-for="(if_item, index) in if_config.equip_ip" :key="index" style="color: rgb(234, 78, 78)" class="font-bold">
+                {{ if_item.ip }}
+              </div>
+            </div>
           </el-col>
           <el-col :span="12">
             <div class="font-bold text-center ip-title">이용기관 등록 IP정보</div>
             <div style="height: 130px; background: #f5f7fa; border-radius: 5px; border: solid 1px; overflow-y: auto">
-              <div v-for="agencyItem in agencyIpList" :key="agencyItem.nren_ip" style="color: rgb(234, 78, 78)" class="font-bold">
+              <div v-for="(agencyItem, index) in agencyIpList" :key="index" style="color: rgb(234, 78, 78)" class="font-bold">
                 {{ agencyItem.nren_ip }}
               </div>
             </div>
@@ -121,7 +125,7 @@ export default {
       remoteControl: '',
       remoteParam: '',
       badCrc: '',
-      if_config: { speed: '' },
+      if_config: { speed: '', equip_ip: [] },
       item: {
         nodeName: '',
         ipAddr: '',
@@ -200,7 +204,14 @@ export default {
       const { nodeName, ifname } = this.item
       try {
         const res = await apiIpsdnRequest({ servicePath: 'config/interfaces', param: `nodename=${nodeName}&ifname=${ifname}` })
-        this.if_config = res.result?.data ? res.result?.data[0] : { speed: '' }
+        this.if_config = res.result?.data ? res.result?.data[0] : { speed: '', equip_ip: [] }
+        if (res.result?.data[0].ipAddr) {
+          if (Array.isArray(res.result?.data[0].ipAddr)) {
+            Object.assign(this.if_config, { equip_ip: res.result?.data[0].ipAddr })
+          } else {
+            Object.assign(this.if_config, { equip_ip: [{ ip: res.result?.data[0].ipAddr }] })
+          }
+        }
         console.log(res)
       } catch (error) {
         this.error(error)
