@@ -83,7 +83,7 @@
               <el-select v-model="selectNode" size="mini" style="width:85%">
                 <el-option v-for="item in nodeName" :key="item.value" :label="item.label" :value="item.value" />
               </el-select>
-              <el-button size="mini" class="ml-1" round type="info" @click="handleInsertNode()">추가 </el-button>
+              <el-button size="mini" class="ml-1" round type="info" style="padding: 7px 9px;" @click="handleInsertMode()">추가 </el-button>
             </div>
           </td>
         </tr>
@@ -140,7 +140,7 @@ import {
   apiProfileRecoveryList,
   apiInsertProfileRecovery,
   apiDeleteProfileRecovery,
-  apiInsertProfileList,
+  apiInsertProfileListProc,
   apiDeleteProfileList,
   apiUpdateProfileList,
 } from '@/api/nia'
@@ -179,13 +179,13 @@ export default {
       ],
       ticketData: [],
       nodeName: [],
-      selectNode: '',
+      selectNode: ''
     }
   },
   computed: {
     ...mapState({
       viewport: (state) => state.app.viewport,
-      username: (state) => state.user.name,
+      username: (state) => state.user.name
     }),
     loginUsername() {
       const userNM = this.username ? this.username.replace(/.$/, '*') : 'UNKONWN'
@@ -227,6 +227,7 @@ export default {
         this.processing_template = this.rowInfo.processing_template
         this.auto_process_check = this.rowInfo.auto_process_check
         this.email_check = this.rowInfo.email_check
+        this.tableData = []
 
         this.autoProcTime = [this.rowInfo.auto_process_start_datetime, this.rowInfo.auto_process_end_datetime].filter((time) => time !== null)
       }
@@ -305,6 +306,7 @@ export default {
     /* 노드명 조회 */
     async onLoadNodeRecovery() {
       const param = {
+
         profile_num: this.rowInfo.profile_num,
       }
       try {
@@ -319,7 +321,14 @@ export default {
         console.error(error)
       }
     },
-    /* 노드 등록 */
+    handleInsertMode() {
+      if (this.viewType === 'profileDetail') {
+        this.handleInsertNode()
+      } else {
+        this.handleInsertApplyNode()
+      }
+    },
+    /* 노드 등록(수정 모드) */
     handleInsertNode() {
       const selectNode = this.selectNode
       if (selectNode === '') {
@@ -332,7 +341,10 @@ export default {
         type: 'info',
       }).then(async () => {
         const isNameExists = this.tableData.some((item) => item.name === selectNode)
-        if (!isNameExists) {
+        if (isNameExists) {
+          this.$message('이미 등록된 노드입니다.')
+          return
+        }
           const newNode = { name: selectNode }
           this.tableData.push(newNode)
           try {
@@ -350,9 +362,26 @@ export default {
             this.$message.error({ message: `등록에 실패했습니다.` })
             console.error(error)
           }
-        } else {
-          return false
+      })
+    },
+    handleInsertApplyNode() {
+      const selectNode = this.selectNode
+      if (selectNode === '') {
+        this.$message('노드명을 선택하세요')
+        return false
+      }
+      this.$confirm(`${this.selectNode} 노드를 등록 하시겠습니까?`, '노드 등록', {
+        confirmButtonText: '확인',
+        cancelButtonText: '취소',
+        type: 'info'
+      }).then(async () => {
+        const isNameExists = this.tableData.some((item) => item.name === selectNode)
+        if (isNameExists) {
+          this.$message('이미 등록된 노드입니다.')
+          return
         }
+        const newNode = { name: selectNode }
+        this.tableData.push(newNode)
       })
     },
     /* 노드 삭제 */
@@ -405,8 +434,9 @@ export default {
             process_type: this.process_type,
             auto_recovery: this.auto_recovery,
             email_check: this.email_check,
+            tableData: this.tableData
           }
-          const insertRes = await apiInsertProfileList(param)
+          const insertRes = await apiInsertProfileListProc(param)
           if (insertRes.success) {
             this.$message('등록 되었습니다.')
             this.$emit('systemEdit')
@@ -483,6 +513,7 @@ export default {
       this.autoProcTime = ''
       this.ticket_type = ''
       this.process_type = ''
+      this.tableData = []
     }
   },
 }

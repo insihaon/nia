@@ -1,39 +1,42 @@
 package com.codej.nia.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.web.bind.annotation.RequestBody;
-
-import java.util.Map;
-import java.util.List;
+import java.util.ArrayList;
 import java.util.HashMap;
-import com.codej.base.dto.model.ResultMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
-import com.codej.base.dto.AppDto;
-
-import com.codej.base.utils.HttpUtil;
-import com.codej.base.utils.JsonUtil;
-import com.codej.nia.utils.SSHUtil;
-import com.codej.base.dto.response.ResultResponse;
-import com.codej.base.dto.response.SingleResponse;
-import com.codej.base.exception.CHttpRelayServiceFail;
-import com.codej.nia.properties.ApiServerProperites;
-import com.codej.nia.controller.NiaApiController;
-import com.codej.nia.mapper.db2nd.NiaMapper;
-import com.codej.nia.mq.handler.NiaUiToEnginePublisher;
-import com.codej.web.service.MainService;
-import com.codej.web.service.ResponseService;
-import com.codej.base.utils.CommonUtil;
-import javax.mail.*;
+import javax.mail.Authenticator;
+import javax.mail.Message;
+import javax.mail.Session;
+import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 
-import java.util.Properties;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
+
+import com.codej.base.dto.AppDto;
+import com.codej.base.dto.model.ResultMap;
+import com.codej.base.dto.response.ResultResponse;
+import com.codej.base.dto.response.SingleResponse;
+import com.codej.base.exception.CHttpRelayServiceFail;
+import com.codej.base.utils.CommonUtil;
+import com.codej.base.utils.HttpUtil;
+import com.codej.base.utils.JsonUtil;
+import com.codej.nia.controller.NiaApiController;
+import com.codej.nia.mapper.db2nd.NiaMapper;
+import com.codej.nia.mq.handler.NiaUiToEnginePublisher;
+import com.codej.nia.properties.ApiServerProperites;
+import com.codej.nia.utils.SSHUtil;
+import com.codej.web.service.MainService;
+import com.codej.web.service.ResponseService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -217,4 +220,40 @@ public class NiaService extends MainService {
         return niaMapper.SELECT_SYSTEM_MONITORING_CURRENT();
     }
 
+    public int insertProfileList(HashMap<String, Object> param) throws Exception {
+        int result = -1;
+        int result2 = -1;
+        TransactionStatus txStatus = transactionManager.getTransaction(new DefaultTransactionDefinition());
+        try {   
+            result = niaMapper.INSERT_PROFILE_LIST(param);
+
+            List<ResultMap> profile_num = niaMapper.SELECT_MAX_PROFILE_NUM(null);
+
+            // 등록시 추가한 노드명 리스트(tableData) INSERT
+            ArrayList<HashMap<String, Object>> tableData = (ArrayList<HashMap<String, Object>>) param.get("tableData");
+            for (HashMap<String, Object> data : tableData) {
+                String node_id = (String) data.get("name");
+                ResultMap maxProfile = profile_num.get(0);
+                String maxProfileNum = String.valueOf(maxProfile.get("max_profile_num"));
+                param.put("profile_num", maxProfileNum);
+                param.put("node_id", node_id);
+    
+                result2 = niaMapper.INSERT_PROFILE_NODE_NAME_LIST(param);
+            }
+
+            if (result > 0 && result2 > 0) {
+                transactionManager.commit(txStatus);
+            } else {
+                throw new Exception(String.format("Fail insertProfileList, %s", param.toString()));
+            }
+    
+        } catch (Exception e) {
+            transactionManager.rollback(txStatus);
+            log.error(e.toString());
+            throw e;
+        }
+        return result;  
+    }
+    
+    
 }

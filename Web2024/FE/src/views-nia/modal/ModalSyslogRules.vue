@@ -1,99 +1,101 @@
 <template>
   <div>
-    <el-dialog
-      v-if="animationVisible"
-      v-el-drag-dialog
-      :visible.sync="visible"
-      :width="domElement.maxWidth + `px`"
-      :fullscreen.sync="fullscreen"
-      :modal-append-to-body="false"
-      :append-to-body="true"
-      :modal="modal"
-      :close-on-click-modal="closeOnClickModal"
-      :loading="loading"
-      class="nia-edit-dialog"
-      :class="{ [name]: true }"
-    >
-      <span slot="title">
-        <i class="el-icon-edit mr-2" style="font-size: 17px" />
-        {{ title }}
-        <hr>
-      </span>
-      <table class="basic">
-        <tr>
-          <th v-if="viewType === 'EDIT'">RULE ID</th>
-          <td v-if="viewType === 'EDIT'" class="disable">
-            <el-input v-model="syslog_rule_id" />
-          </td>
-          <th>RULE NAME</th>
-          <td :colspan="isColspan">
-            <el-input
-              v-model="syslog_rule_nm"
-              style="width: 70%; float: left"
-            />
-            <el-button size="small" style="float: right" :disabled="isDisabled" plain round type="info" @click="checkRuleName()">중복확인 </el-button>
-          </td>
-        </tr>
-        <tr>
-          <th colspan="2" class="line-class">발생</th>
-          <th colspan="2" class="line-class">제외</th>
-        </tr>
-        <tr>
-          <th>keyword1</th>
-          <td class="disable">
-            <el-input v-model="occur_str1" />
-          </td>
-          <th>keyword1</th>
-          <td class="disable">
-            <el-input v-model="occur_except_str1" />
-          </td>
-        </tr>
-        <tr>
-          <th>keyword2</th>
-          <td class="disable">
-            <el-input v-model="occur_str2" />
-          </td>
-          <th>keyword2</th>
-          <td class="disable">
-            <el-input v-model="occur_except_str2" />
-          </td>
-        </tr>
-        <tr>
-          <th>keyword3</th>
-          <td class="disable">
-            <el-input v-model="occur_str3" />
-          </td>
-          <th>keyword3</th>
-          <td class="disable">
-            <el-input v-model="occur_except_str3" />
-          </td>
-        </tr>
-        <tr>
-          <th colspan="1">사용여부</th>
-          <td colspan="3" class="disable">
-            <el-select v-model="use_yn">
-              <el-option
-                v-for="item in useMode"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+    <transition :name="animation">
+      <el-dialog
+        v-if="animationVisible"
+        v-el-drag-dialog
+        :visible.sync="visible"
+        :width="domElement.maxWidth + `px`"
+        :fullscreen.sync="fullscreen"
+        :modal-append-to-body="false"
+        :append-to-body="true"
+        :modal="modal"
+        :close-on-click-modal="closeOnClickModal"
+        :loading="loading"
+        class="nia-edit-dialog"
+        :class="{ [name]: true }"
+      >
+        <span slot="title">
+          <i class="el-icon-edit mr-2" style="font-size: 17px" />
+          {{ title }}
+          <hr>
+        </span>
+        <table class="basic">
+          <tr>
+            <th v-if="viewType === 'EDIT'">RULE ID</th>
+            <td v-if="viewType === 'EDIT'" class="disable">
+              <el-input v-model="syslog_rule_id" />
+            </td>
+            <th>RULE NAME</th>
+            <td :colspan="isColspan">
+              <el-input
+                v-model="syslog_rule_nm"
+                style="width: 70%; float: left"
               />
-            </el-select>
-          </td>
-        </tr>
-      </table>
-      <div slot="footer" class="dialog-footer">
-        <el-button size="mini" icon="el-icon-edit" @click.native="onChangeMode()">
-          {{ changeText }}
-        </el-button>
-        <el-button v-if="viewType !== 'OPEN'" icon="el-icon-delete" type="danger" size="mini" @click.native="deleteSyslogRule()">
-          삭제
-        </el-button>
-        <el-button size="mini" type="info" icon="el-icon-close" @click.native="close()">
-          {{ $t('exit') }}
-        </el-button>
-      </div>
-    </el-dialog>
+              <el-button size="mini" style="float: right; margin-top : 5px; padding : 7px 9px" :disabled="isDisabled" plain round type="info" @click="checkRuleName()">중복확인 </el-button>
+            </td>
+          </tr>
+          <tr>
+            <th colspan="2" class="line-class">발생</th>
+            <th colspan="2" class="line-class">제외</th>
+          </tr>
+          <tr>
+            <th>keyword1</th>
+            <td class="disable">
+              <el-input v-model="occur_str1" />
+            </td>
+            <th>keyword1</th>
+            <td class="disable">
+              <el-input v-model="occur_except_str1" />
+            </td>
+          </tr>
+          <tr>
+            <th>keyword2</th>
+            <td class="disable">
+              <el-input v-model="occur_str2" />
+            </td>
+            <th>keyword2</th>
+            <td class="disable">
+              <el-input v-model="occur_except_str2" />
+            </td>
+          </tr>
+          <tr>
+            <th>keyword3</th>
+            <td class="disable">
+              <el-input v-model="occur_str3" />
+            </td>
+            <th>keyword3</th>
+            <td class="disable">
+              <el-input v-model="occur_except_str3" />
+            </td>
+          </tr>
+          <tr>
+            <th colspan="1">사용여부</th>
+            <td colspan="3" class="disable">
+              <el-select v-model="use_yn">
+                <el-option
+                  v-for="item in useMode"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </td>
+          </tr>
+        </table>
+        <div slot="footer" class="dialog-footer">
+          <el-button size="mini" icon="el-icon-edit" @click.native="onChangeMode()">
+            {{ changeText }}
+          </el-button>
+          <el-button v-if="viewType !== 'OPEN'" icon="el-icon-delete" type="danger" size="mini" @click.native="deleteSyslogRule()">
+            삭제
+          </el-button>
+          <el-button size="mini" type="info" icon="el-icon-close" @click.native="close()">
+            {{ $t('exit') }}
+          </el-button>
+        </div>
+      </el-dialog>
+    </transition>
   </div>
 </template>
 <script>
@@ -151,7 +153,7 @@ export default {
     onCreated() {
       Modal.methods.onCreated.call(this)
       this.closeOnClickModal = false
-      this.domElement.maxWidth = 750
+      this.domElement.maxWidth = 900
     },
     onOpen(model) {
       this.viewType = model.type
@@ -303,8 +305,5 @@ export default {
     font-weight: bold;
     font-size: 15px;
   }
-   .el-dialog {
-    min-width: 600px !important;
-   }
 }
 </style>

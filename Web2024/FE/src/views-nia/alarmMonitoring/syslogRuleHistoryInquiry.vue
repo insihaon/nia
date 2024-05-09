@@ -8,6 +8,8 @@
       :pagination-info="paginationInfo"
       class="w-100 h-100"
       @selectedRow="(row)=> handleOpenModalDetail(row,'EDIT')"
+      @handleClickSearch="onClickSearch"
+      @searchClear="searchClear"
     >
       <template slot="add-function">
         <el-button type="info" size="mini" icon="el-icon-edit" @click="handleOpenModalDetail('', 'OPEN')">등록</el-button>
@@ -56,7 +58,7 @@ export default {
   computed: {
     authAgGrid() {
       const options = {
-        name: this.name + 'table1', rowGroupPanel: false, rowHeight: 30, rowSelection: 'multiple', rowMultiSelection: false,
+        name: this.name + 'table1', rowGroupPanel: false, rowSelection: 'multiple', rowMultiSelection: false,
       }
       const columns = [
         { type: '', prop: 'syslog_rule_id', name: 'RULE ID', minWidth: 100, flex: 0, suppressMenu: true, sortable: true },
@@ -96,7 +98,10 @@ export default {
           label: item.syslog_rule_nm,
           value: item.syslog_rule_nm,
         }))
-        this.searchItems[0].options = ruleNameData
+        const items = this.searchItems.find(item => {
+         return item.model === 'syslog_rule_nm'
+        })
+        items.options = ruleNameData
         this.paginationInfo.totalCount = res.total
         this.paginationInfo.totalPages = Math.ceil(this.paginationInfo.totalCount / this.paginationInfo.pageSize) // 전체 페이지 수 계산
       } catch (error) {
@@ -107,7 +112,10 @@ export default {
     },
     handleOpenModalDetail(rows, type) {
       this.$refs.ModalSyslogRules.open({ row: rows[0], type })
-    }
+    },
+    searchClear() {
+      this.searchModel = {}
+    },
   }
 }
 </script>
