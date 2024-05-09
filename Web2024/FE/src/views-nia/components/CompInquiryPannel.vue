@@ -109,6 +109,7 @@
         :pagination-info="paginationInfo"
         @pageChange="handlePageChange"
         @changeSelectedRows="(value)=> $emit('selectedRow', value)"
+        @rowClicked="(value)=> $emit('rowClicked', value)"
         @cellClicked="(value) => $emit('cellClicked', value)"
         @sortChanged="onSortChanged"
       />

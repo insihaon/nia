@@ -3,6 +3,7 @@
     <el-dialog
       v-if="animationVisible"
       v-el-drag-dialog
+      :top.sync="top"
       :visible.sync="visible"
       :width="domElement.maxWidth + `px`"
       :fullscreen.sync="fullscreen"
@@ -87,8 +88,8 @@
           </td>
         </tr>
         <tr>
-          <td colspan="4">
-            <el-table class="node-table" :data="tableData" style="width: 100%;">
+          <td colspan="4" class="p-0">
+            <el-table class="node-table" :data="tableData" style="width: 100%;height: 200px;overflow-y: auto;">
               <el-table-column align="center" prop="name" label="노드명" />
               <el-table-column width="100%">
                 <template slot-scope="scope">
@@ -154,6 +155,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      top: '10vh',
       viewType: '',
       title: '',
       rowInfo: {},
@@ -206,7 +208,6 @@ export default {
       }
     },
   },
-  mounted() {},
   methods: {
     onCreated() {
       Modal.methods.onCreated.call(this)
@@ -214,6 +215,7 @@ export default {
       this.domElement.maxWidth = 500
     },
     onOpen(model, actionMode) {
+      this.top = this.isMobile ? '5vh' : '10vh'
       this.viewType = model.type
       this.rowInfo = this._cloneDeep(model.row)
       if (this.viewType === 'OPEN') {
@@ -497,7 +499,6 @@ export default {
     background: rgb(217, 216, 216)
   }
   ::v-deep .el-dialog {
-    margin-top: 10vh !important;
     border: 2px solid $nia-primary;
     box-shadow: 0 1px 5px 0 rgb(0 0 0 / 27%);
     border-radius: 7px;
@@ -508,12 +509,10 @@ export default {
       border: none;
     }
     td {
+      padding: 5px;
       background: #fff;
       border-bottom: 0px;
     }
   }
-}
- ::v-deep.is-mobile.ModalProfileDetail .el-dialog {
-  margin-top: 5vh !important;
 }
 </style>

@@ -410,10 +410,10 @@
                 tpd.alarmno = #{ALARMNO}
             </when>
             <otherwise>
-                <if test="DATE_TIME != null and DATE_TYPE == 'year'">
+                <if test="DATE_TIME != null and DATE_TYPE == 'month'">
                     AND DATE_TRUNC('MONTH', tpd.OCCUR_TIME) = TO_TIMESTAMP(CONCAT(#{DATE_TIME}, '-01'), 'YYYY-MM-DD')
                 </if>
-                <if test="DATE_TIME != null and DATE_TYPE != 'year'">
+                <if test="DATE_TIME != null and DATE_TYPE != 'month'">
                     AND tpd.OCCUR_TIME <![CDATA[ >= ]]> #{DATE_TIME}::TIMESTAMP
                     AND tpd.OCCUR_TIME <![CDATA[ < ]]> #{DATE_TIME}::TIMESTAMP + ('1'||#{DATE_TYPE})::INTERVAL
                 </if>
@@ -592,7 +592,7 @@
             , ROUND(FLTBPSOUT_THRESHOLD_LOWER::NUMERIC, 2) AS OUT_THRESHOLD_LOWER
             , FLTBPSOUT_ANOMALY AS OUT_ANOMALY
         FROM    rca.tb_anomalous_ai_result AR
-        INNER JOIN resource.tb_port_mst PM ON AR.STRRESID = PM.NODE_NUM AND AR.STRIFID = PM.IF_NUM
+        INNER JOIN resource.tb_port_mst PM ON AR.STRIFID = PM.NODE_NUM AND AR.STRRESID = PM.IF_NUM
         WHERE   PM.node_id= #{START_NODE}
         AND     PM.if_id = #{START_PORT}
         AND     MEASURED_DATETIME = #{FAULT_TIME}::TIMESTAMP

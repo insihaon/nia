@@ -23,7 +23,6 @@
     <div class="chart-container">
       <CompChart :options="selfProcessOptions" class="w-100 h-100" @click="onClickChart" />
     </div>
-    <ModalSelfProcessList ref="ModalSelfProcessList" />
     <ModalSelfProcessDetail ref="ModalSelfProcessDetail" />
   </div>
 </template>
@@ -31,15 +30,16 @@
 import { Base } from '@/min/Base.min'
 import { apiSelfProcessStatistics, apiSelfProcessList } from '@/api/nia'
 import CompChart from '@/components/chart/CompChart.vue'
-import ModalSelfProcessList from '@/views-nia/modal/ModalSelfProcessList'
+import dialogOpenMixin from '@/mixin/dialogOpenMixin'
 import ModalSelfProcessDetail from '@/views-nia/modal/ModalSelfProcessDetail.vue'
 
 const routeName = 'SelfProcessingDashboard'
 export default {
   name: routeName,
   // eslint-disable-next-line vue/no-unused-components
-  components: { CompChart, ModalSelfProcessList, ModalSelfProcessDetail },
+  components: { CompChart, ModalSelfProcessDetail },
   extends: Base,
+  mixins: [dialogOpenMixin],
   data() {
     return {
       name: routeName,
@@ -177,7 +177,8 @@ export default {
         DATE_TIME: e.name,
         SELF_PROCESS_GROUP: e.seriesName.includes('최적화') ? 'SO' : 'ST'
       }
-      this.$refs.ModalSelfProcessList.open(params)
+      const pageTitle = params.SELF_PROCESS_GROUP === 'SO' ? '자가 최적화 이력조회' : '자가 회복 이력조회'
+      this.fn_openWindow('selfProcessList', params, null, pageTitle)
     },
     getSelfProDateType() {
       let type = 'date'

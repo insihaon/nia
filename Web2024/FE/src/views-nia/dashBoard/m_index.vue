@@ -57,7 +57,6 @@
       </div>
       <CompAgGrid ref="transmissionAgGrid" v-model="transmissionAgGrid" style="height: 300px" class="w-100" />
     </div>
-    <ModalSelfProcessList ref="ModalSelfProcessList" />
   </div>
 </template>
 <script>
@@ -69,7 +68,6 @@ import CompChart from '@/components/chart/CompChart.vue'
 import BaseFilterGroup from '@/filters/baseFilterGroup'
 import CellRenderAibuttons from '@/views-nia/components/cellRenderer/CellRenderAibuttons'
 import CellRenderTicketDetail from '@/views-nia/components/cellRenderer/CellRenderTicketDetail'
-import ModalSelfProcessList from '@/views-nia/modal/ModalSelfProcessList'
 import { apiIpAlarmList, apiTransmissionAlarmList, apiDashboardStatistics, apiSelfProcessStatistics } from '@/api/nia'
 import { getAlarmType } from '@/views-nia/js/commonFormat'
 import { AppOptions } from '@/class/appOptions'
@@ -79,7 +77,7 @@ const routeName = 'NiaMain'
 export default {
   name: routeName,
   // eslint-disable-next-line vue/no-unused-components
-  components: { CompAgGrid, CompChart, LeftBar, filterBar, CellRenderAibuttons, CellRenderTicketDetail, ModalSelfProcessList },
+  components: { CompAgGrid, CompChart, LeftBar, filterBar, CellRenderAibuttons, CellRenderTicketDetail },
   extends: Base,
   mixins: [dialogOpenMixin],
   data() {
@@ -349,7 +347,8 @@ export default {
         DATE_TIME: e.name,
         SELF_PROCESS_GROUP: e.seriesName.includes('최적화') ? 'SO' : 'ST',
       }
-      this.$refs.ModalSelfProcessList.open(params)
+      const pageTitle = params.SELF_PROCESS_GROUP === 'SO' ? '자가 최적화 이력조회' : '자가 회복 이력조회'
+      this.fn_openWindow('selfProcessList', params, null, pageTitle)
     },
     setIPFilterGroup() {
       const listName = 'ipNetworkList'
@@ -612,7 +611,7 @@ export default {
         this.fn_openWindow('requestForAction', row)
       } else if (type === 'ALARM') {
         // this.$refs.ModalAiResponse.open(param)
-        this.fn_openWindow('aiResponse', row)
+        this.fn_openWindow('aiResponse', { row })
       } else if (type === 'FIN') {
         // this.$refs.ModalFIN.open(param)
         this.fn_openWindow('processFin', row)
