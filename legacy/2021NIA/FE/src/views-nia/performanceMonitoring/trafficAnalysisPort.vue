@@ -97,7 +97,7 @@ export default {
         if (seconds === 0) {
           this.onLoadTrafficList()
         }
-      }, 1000)
+      }, 60000)
     },
     stopInterval() {
       clearInterval(this.alarmInterval)

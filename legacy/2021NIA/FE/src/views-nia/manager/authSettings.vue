@@ -70,7 +70,7 @@ export default {
         { type: '', prop: 'phone_number', name: 'PHONE_NUMBER', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
         { type: '', prop: 'email', name: 'EMAIL', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
         { type: '', prop: 'last_login', name: '마지막 접속시간', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
-        { type: '', prop: 'end_date', name: '권한선택', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true,
+        { type: '', prop: 'end_date', name: '권한선택', minWidth: 150, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true,
           cellRendererFramework: 'CellRenderSelectBox', cellRendererParams: { type: 'auth', name: '저장', action: this.setUserAuth.bind(this) } }
 
       ]
