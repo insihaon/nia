@@ -4,7 +4,7 @@
       <el-select v-model="authValue" multiple collapse-tags style="margin-left: 20px" filterable placeholder="권한 선택">
         <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
-      <el-button class="mx-sm-3" plain size="mini" type="info" @click="onHandleRow(params)">
+      <el-button class="mx-sm-3 auth-btn" plain size="mini" type="info" @click="onHandleRow(params)">
         {{ params.name }}
       </el-button>
     </div>
@@ -68,11 +68,11 @@ export default Vue.extend({
   .el-input__inner {
     height: 25px !important;
   }
-  .default-cell {
-    padding-top: 2px !important;
-  }
   .el-select .el-input .el-select__caret {
-    line-height: 10px !important;
+    line-height: 5px !important;
+  }
+  .auth-btn {
+    padding: 5px 8px;
   }
 }
 </style>
