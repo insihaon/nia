@@ -254,6 +254,34 @@ public class NiaService extends MainService {
         }
         return result;  
     }
+
+    public int DeleteProfileList(HashMap<String, Object> param) throws Exception {
+        int result = -1;
+        int result2 = -1;
+        TransactionStatus txStatus = transactionManager.getTransaction(new DefaultTransactionDefinition());
+        try {   
+            result = niaMapper.DELETE_PROFILE_LIST(param);
+
+
+            // 프로파일 삭제시 profile_num에 해당하는 노드명 리스트 DELETE
+            ArrayList<HashMap<String, Object>> tableData = (ArrayList<HashMap<String, Object>>) param.get("tableData");
+            for (HashMap<String, Object> data : tableData) {
+                result2 = niaMapper.DELETE_PROFILE_NODE_LIST(param);
+            }
+
+            if (result > 0 /* && result2 > 0 */) {
+                transactionManager.commit(txStatus);
+            } else {
+                throw new Exception(String.format("Fail DeleteProfileList, %s", param.toString()));
+            }
+    
+        } catch (Exception e) {
+            transactionManager.rollback(txStatus);
+            log.error(e.toString());
+            throw e;
+        }
+        return result;
+    }
     
     
 }
