@@ -115,6 +115,8 @@ public interface NiaMapper extends BaseDataMapper {
         public int INSERT_PROFILE_NODE_NAME_LIST(HashMap<String, Object> map);
 
         public int DELETE_PROFILE_NODE_NAME_LIST(HashMap<String, Object> map);
+        
+        public int DELETE_PROFILE_NODE_LIST(HashMap<String, Object> map);
 
         public List<ResultMap> SELECT_NODE_LIST(HashMap<String, Object> map);
 

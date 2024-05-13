@@ -1591,9 +1591,14 @@
     <!-- 프로파일 리커버리 리스트 삭제 -->
     <delete id="DELETE_PROFILE_NODE_NAME_LIST" parameterType="hashmap">
         DELETE FROM RESOURCE.TB_FAULT_PROCESS_IF
-        <!-- WHERE SERIAL_NUM = #{serial_num} -->
         WHERE PROFILE_NUM = #{profile_num}
               AND NODE_ID = #{node_id}
+    </delete>
+
+    <!-- 프로파일 리커버리 리스트 삭제 (프로파일 삭제시) -->
+    <delete id="DELETE_PROFILE_NODE_LIST" parameterType="hashmap">
+      DELETE FROM RESOURCE.TB_FAULT_PROCESS_IF
+            WHERE PROFILE_NUM = #{profile_num}
     </delete>
 
     <!-- 노드리스트 조회 -->

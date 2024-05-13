@@ -434,12 +434,12 @@ export function apiUpdateProfileList(params = {}) {
   })
 }
 
-export function apiDeleteProfileList(params = {}) {
+export function apiDeleteProfileListProc(params = {}) {
   return http({
     url: '/modify',
     method: 'post',
     filePath: filePath,
-    sqlId: 'DELETE_PROFILE_LIST',
+    sqlId: 'DeleteProfileList',
     data: params
   })
 }

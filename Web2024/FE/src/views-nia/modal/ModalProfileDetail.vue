@@ -141,7 +141,7 @@ import {
   apiInsertProfileRecovery,
   apiDeleteProfileRecovery,
   apiInsertProfileListProc,
-  apiDeleteProfileList,
+  apiDeleteProfileListProc,
   apiUpdateProfileList,
 } from '@/api/nia'
 
@@ -328,7 +328,7 @@ export default {
         this.handleInsertApplyNode()
       }
     },
-    /* 노드 등록(수정 모드) */
+    /* 노드 등록(프로파일 수정 모드) */
     handleInsertNode() {
       const selectNode = this.selectNode
       if (selectNode === '') {
@@ -364,6 +364,7 @@ export default {
           }
       })
     },
+    /* 노드 등록(프로파일 등록 모드) */
     handleInsertApplyNode() {
       const selectNode = this.selectNode
       if (selectNode === '') {
@@ -456,9 +457,12 @@ export default {
         cancelButtonText: 'Cancel',
         type: 'success',
       }).then(async () => {
-        const param = { profile_num: this.rowInfo.profile_num }
+        const param = {
+          profile_num: this.rowInfo.profile_num,
+          tableData: this.tableData
+        }
         try {
-          const res = await apiDeleteProfileList(param)
+          const res = await apiDeleteProfileListProc(param)
 
           if (res.success) {
             this.$message('삭제 되었습니다.')
