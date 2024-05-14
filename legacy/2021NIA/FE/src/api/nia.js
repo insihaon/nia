@@ -439,7 +439,7 @@ export function apiDeleteProfileListProc(params = {}) {
     url: '/modify',
     method: 'post',
     filePath: filePath,
-    sqlId: 'DeleteProfileList',
+    sqlId: 'deleteProfileList',
     data: params
   })
 }
