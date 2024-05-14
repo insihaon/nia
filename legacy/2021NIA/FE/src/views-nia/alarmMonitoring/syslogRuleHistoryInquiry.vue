@@ -115,6 +115,7 @@ export default {
     },
     searchClear() {
       this.searchModel = {}
+      this.onLoadSyslogRuleList()
     },
   }
 }
