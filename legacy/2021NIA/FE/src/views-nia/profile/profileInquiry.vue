@@ -13,10 +13,8 @@
       @onChangePage="(curPage) => onChangePage(curPage)"
       @searchClear="searchClear"
     >
-      <template slot="button-area">
-        <div class="button-panel">
-          <el-button class="float-right" type="info" size="mini" @click="handleOpenModalDetail('', 'OPEN')">등록</el-button>
-        </div>
+      <template slot="add-function">
+        <el-button type="info" size="mini" icon="el-icon-edit" @click="handleOpenModalDetail('', 'OPEN')">등록</el-button>
       </template>
     </CompInquiryPannel>
     <ModalProfileDetail ref="ModalProfileDetail" @systemEdit="onLoadProfileList()" />
@@ -65,16 +63,16 @@ export default {
   computed: {
     trafficAgGrid() {
       const options = {
-        name: this.name + 'table1', checkable: false, rowGroupPanel: false, rowHeight: 40, rowSelection: 'multiple', rowMultiSelection: false, suppressRowClickSelection: true,
+        name: this.name + 'table1', checkable: false, rowGroupPanel: false, rowSelection: 'multiple', rowMultiSelection: false, suppressRowClickSelection: true,
       }
       const columns = [
         { type: '', prop: 'rownum', name: '번호', minWidth: 30, flex: 0, suppressMenu: true, alignItems: 'center' },
-        { type: '', prop: 'profile_title', name: '제목', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center',
+        { type: '', prop: 'profile_title', name: '제목', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center',
           cellRendererFramework: 'CellRenderHyperlink', cellRendererParams: { type: 'profileDetail', action: this.handleOpenModalDetail.bind(this) } },
-        { type: '', prop: 'network_type', name: '네트워크', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: false },
-        { type: '', prop: 'processing_template', name: '장애대응', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
-        { type: '', prop: 'auto_process_info', name: '자동처리기간', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
-        { type: '', prop: 'chng_datetime', name: '수정일', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
+        { type: '', prop: 'network_type', name: '네트워크', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: false },
+        { type: '', prop: 'processing_template', name: '장애대응', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
+        { type: '', prop: 'auto_process_info', name: '자동처리기간', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
+        { type: '', prop: 'chng_datetime', name: '수정일', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
       ]
       return { options, columns, data: this.trafficData, getRightClickMenuItems: () => { return [] } }
     },

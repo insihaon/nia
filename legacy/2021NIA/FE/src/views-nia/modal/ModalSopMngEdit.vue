@@ -5,7 +5,6 @@
         v-if="animationVisible"
         v-el-drag-dialog
         :visible.sync="visible"
-        :width="domElement.maxWidth + `px`"
         :height="domElement.minHeight + `px`"
         :fullscreen.sync="fullscreen"
         :modal-append-to-body="true"
@@ -13,24 +12,25 @@
         :modal="modal"
         :close-on-click-modal="closeOnClickModal"
         :loading="loading"
+        :top.sync="top"
         class="nia-dialog"
         :class="{ [name]: true }"
       >
         <span slot="title">
           <i class="el-icon-document mr-2 text-base" />
-          SOP 수정
-          <hr />
+          SOP {{ processType === 'add' ? '등록' : '수정' }}
+          <hr>
         </span>
         <div class="d-flex flex-column h-100 rounded justify-center" style="border: solid 1px #1e293b">
           <el-form ref="sopEdit" :model="sopInfo" class="h-full border rounded px-3 py-4">
             <el-col>
-              <el-form-item label="등록자" class="d-flex">
-                <el-input v-model="sopInfo.USER_ID" readonly />
+              <el-form-item label="등록자" class="d-flex items-center">
+                <el-input v-model="sopInfo.USER_ID" size="mini" readonly />
               </el-form-item>
             </el-col>
             <el-col>
-              <el-form-item label="SOP구분" class="d-flex">
-                <el-select v-model="sopInfo.FAULT_GB">
+              <el-form-item label="SOP구분" class="d-flex items-center">
+                <el-select v-model="sopInfo.FAULT_GB" size="mini">
                   <el-option v-for="item in fault_gb_list" :key="item" :value="item">
                     {{ item }}
                   </el-option>
@@ -38,19 +38,19 @@
               </el-form-item>
             </el-col>
             <el-col>
-              <el-form-item label="항목" class="d-flex">
-                <el-input v-model="sopInfo.FAULT_TYPE" />
+              <el-form-item label="항목" class="d-flex items-center">
+                <el-input v-model="sopInfo.FAULT_TYPE" size="mini" />
               </el-form-item>
             </el-col>
           </el-form>
         </div>
         <div slot="footer" class="dialog-footer">
-          <hr />
-          <el-button size="small" plain class="mt-2" @click.native="onClickSopEdit()">
+          <hr>
+          <el-button size="mini" icon="el-icon-edit" @click.native="onClickSopEdit()">
             {{ textByProcessType }}
           </el-button>
-          <el-button v-if="processType === 'modify'" size="small" plain class="mt-2" @click="onClickSopDelete()"> 삭제 </el-button>
-          <el-button size="small" plain class="close-btn mt-2" @click.native="close()">
+          <el-button v-if="processType === 'modify'" size="mini" type="danger" icon="el-icon-delete" @click="onClickSopDelete()"> 삭제 </el-button>
+          <el-button size="mini" type="info" icon="el-icon-close" @click.native="close()">
             {{ $t('exit') }}
           </el-button>
         </div>
@@ -81,6 +81,7 @@ export default {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       processType: 'add',
+      top: '30vh',
       sopInfo: {
         USER_ID: '',
         FAULT_GB: '',
@@ -133,8 +134,8 @@ export default {
   methods: {
     onCreated() {
       Modal.methods.onCreated.call(this)
-      this.domElement.maxWidth = 400
       this.closeOnClickModal = false
+      // this.top = this.isMobile? '10vh':'30vh'
     },
     onOpen(model, actionMode) {
       this.processType = model.type
@@ -204,11 +205,9 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-// .ModalSopDetail ::v-deep {
-//   .el-dialog__body {
-//     height: 400px;
-//   }
-// }
+::v-deep .el-dialog {
+  width: 400px !important;
+}
 .el-select {
   width: 100%;
 }

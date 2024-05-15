@@ -1,70 +1,84 @@
 <template>
-  <div :class="{ [name]: true }" class="common-padding common-font" style="display: flex;flex-direction: column;">
+  <div :class="{ [name]: true , 'common-padding': !isModal}" class="common-font d-flex flex-column">
     <div class="search-container" :style="setContainerHeight">
       <div v-if="isSearch" class="optionBox">
         <!-- 조회 옵션상자 -->
         <el-row class="optionRow">
-          <el-col v-for="(item, index) in items" :key="index" class="optionCol" :xs="24" :sm="12" :md="12" :lg="8" :xl="6">
-            <label>
-              {{ item.label }}
-            </label>
-            <div>
-              <el-input
-                v-if="item.type === 'input'"
-                v-model="searchModel[item.model]"
-                type="text"
-                clearable
-                :placeholder="item.placeholder"
-                @keyup.native.enter="$emit('keyupEnter', searchModel)"
-              />
-
-              <CompCheckSelector
-                v-if="item.type === 'select' && item.multiple"
-                v-model="searchModel[item.model]"
-                :item="item"
-                :search-model.sync="searchModel[item.model]"
-              />
-
-              <el-select
-                v-if="item.type === 'select' && !item.multiple"
-                v-model="searchModel[item.model]"
-                collapse-tags
-                filterable
-                clearable
-                :placeholder="item.placeholder"
-                reserve-keyword
-                remote
-              >
-                <el-option
-                  v-for="(option, i) in item.options"
-                  :key="i"
-                  :label="option.label"
-                  :value="option.value"
+          <el-col v-for="(item, index) in items" :key="index" :xs="24" :sm="12" :md="12" :lg="8" :xl="6">
+            <div class="optionItem">
+              <label style="width : 100px">
+                {{ item.label }}
+              </label>
+              <div>
+                <el-input
+                  v-if="item.type === 'input'"
+                  v-model="searchModel[item.model]"
+                  type="text"
+                  size="mini"
+                  clearable
+                  :disabled="item.disabled === true"
+                  :placeholder="item.placeholder"
+                  @keyup.native.enter="$emit('keyupEnter', searchModel)"
                 />
-              </el-select>
+                <CompCheckSelector
+                  v-if="item.type === 'select' && item.multiple"
+                  v-model="searchModel[item.model]"
+                  :item="item"
+                  :search-model.sync="searchModel[item.model]"
+                />
+                <el-select
+                  v-if="item.type === 'select' && !item.multiple"
+                  v-model="searchModel[item.model]"
+                  collapse-tags
+                  filterable
+                  clearable
+                  size="mini"
+                  :placeholder="item.placeholder"
+                  reserve-keyword
+                  remote
+                >
+                  <el-option
+                    v-for="(option, i) in item.options"
+                    :key="i"
+                    :label="option.label"
+                    :value="option.value"
+                  />
+                </el-select>
 
-              <el-date-picker
-                v-if="item.type === 'date'"
-                v-model="searchModel[item.model]"
-                type="daterange"
-                start-placeholder="시작 일자"
-                end-placeholder="종료 일자"
-                :default-time="['00:00:00','23:59:59']"
-              />
+                <el-date-picker
+                  v-if="item.type === 'date'"
+                  v-model="searchModel[item.model]"
+                  type="daterange"
+                  size="mini"
+                  start-placeholder="시작 일자"
+                  end-placeholder="종료 일자"
+                  :default-time="['00:00:00','23:59:59']"
+                  :disabled="item.disabled === true"
+                />
 
-              <el-date-picker
-                v-if="item.type === 'dateTime'"
-                v-model="searchModel[item.model]"
-                type="datetimerange"
-                range-separator="to"
-                start-placeholder="Start date"
-                end-placeholder="End date"
-              />
+                <el-date-picker
+                  v-if="item.type === 'dateTime'"
+                  v-model="searchModel[item.model]"
+                  type="datetimerange"
+                  size="mini"
+                  range-separator="to"
+                  start-placeholder="Start date"
+                  end-placeholder="End date"
+                  :disabled="item.disabled === true"
+                />
+
+                <el-date-picker
+                  v-if="item.type === 'basicDate'"
+                  v-model="searchModel[item.model]"
+                  type="date"
+                  size="mini"
+                />
+              </div>
             </div>
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="24" align="center" class="searchBtnGroup">
+          <el-col :span="24" align="center" class="searchBtnGroup" :class="{'is-mobile': isMobile}">
             <el-button class="btn-r" type="info" size="mini" icon="el-icon-search" @click="onClickSearchButton">
               검색
             </el-button>
@@ -74,13 +88,13 @@
             <el-button v-if="isExcel" type="button" size="mini" class="excel-form-export" icon="el-icon-download" @click="handleExcel">
               엑셀 저장
             </el-button>
+            <slot name="add-function" />
           </el-col>
         </el-row>
       </div>
     </div>
-
     <!-- agGrid -->
-    <div v-if="Object.keys(agGrid).length > 0 " class="d-flex flex-column agGridShell" :style="{ flex: 1}">
+    <div v-if="Object.keys(agGrid).length > 0 " class="d-flex flex-column agGridShell p-1" :style="{ flex: 1}">
       <div class="d-flex flex-column w-full text-right font-bold">
         <slot name="inquireButton" />
         <span class="mr-2">검색결과 : {{ totalCount }}건 </span>
@@ -95,18 +109,17 @@
         :pagination-info="paginationInfo"
         @pageChange="handlePageChange"
         @changeSelectedRows="(value)=> $emit('selectedRow', value)"
+        @rowClicked="(value)=> $emit('rowClicked', value)"
         @cellClicked="(value) => $emit('cellClicked', value)"
         @sortChanged="onSortChanged"
       />
-      <slot name="button-area" />
     </div>
   </div>
 </template>
-
 <script>
 import { Base } from '@/min/Base.min'
 import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
-import CompCheckSelector from '@/views-dataHub/components/CompCheckSelector'
+import CompCheckSelector from '@/views-nia/components/CompCheckSelector'
 
 const routeName = 'CompInquiryPannel'
 export default {
@@ -194,8 +207,7 @@ export default {
   },
   mounted() {
   },
-  methods:
-  {
+  methods: {
     getHeight() {
       return this.$parent?.$parent?.name?.includes('Modal') || this.isModal ? '500px' : '100%'
     },
@@ -239,13 +251,16 @@ export default {
       const name = `${this.title}_${this.toStringTime(new Date(), 'YYMMDD')}`
       this.$refs.compSearchEquip.exportExcel(name)
     }
-   }
- }
+  }
+}
 </script>
-
-<style lang="scss">
-</style>
- <style lang="css" scoped>
-  @import "~@/assets/css/nia_style_main.css";
+<style lang="css" scoped>
+@import "~@/assets/css/nia_style_main.css";
+::v-deep .el-range-editor--mini.el-input__inner {
+  width: 100%;
+}
+::v-deep .is-mobile.searchBtnGroup .el-button--mini {
+  padding: 7px 10px;
+}
 </style>
 

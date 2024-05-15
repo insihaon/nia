@@ -19,23 +19,23 @@
         <span slot="title">
           <i class="el-icon-document mr-2 text-base" />
           {{ viewType }} SOP 상세보기
-          <hr />
+          <hr>
         </span>
         <div class="d-flex flex-column h-100 rounded justify-center" style="border: solid 1px #1e293b">
-          <el-form ref="sopForm" :model="updateInfo" autocomplete="on" label-position="left" style="padding-top: 10px">
+          <el-form ref="sopForm" :model="updateInfo" autocomplete="on" label-position="left">
             <el-row class="p-1">
-              <el-col v-for="(item, index) in formInfo" :key="index" :span="item.size || 12">
-                <el-form-item :ref="item.model" :label="item.label" class="d-flex items-center">
-                  <el-input v-if="viewType === 'TICKET'" v-model="sopInfo[item.model]" readonly />
-                  <el-input v-if="viewType === 'SYSLOG'" v-model="syslogInfo[item.model]" readonly />
+              <el-col v-for="(item, index) in formInfo" :key="index" :span="isMobile ? 24: 12">
+                <el-form-item :ref="item.model" :label="item.label" class="d-flex items-center m-0">
+                  <el-input v-if="viewType === 'TICKET'" v-model="sopInfo[item.model]" size="mini" readonly />
+                  <el-input v-if="viewType === 'SYSLOG'" v-model="syslogInfo[item.model]" size="mini" readonly />
                 </el-form-item>
               </el-col>
             </el-row>
-            <div class="w-100 d-flex justify-center items-center text-white font-semibold text-base rounded p-2" style="background-color: #1e293b">수정사항</div>
+            <div class="w-100 d-flex justify-center items-center text-white font-semibold text-small rounded" style="background-color: #1e293b">수정사항</div>
             <el-row class="d-flex flex-column p-1">
-              <el-col v-for="(item, index) in formUpdate" :key="index" :span="item.size || 12">
-                <el-form-item :ref="item.model" :label="item.label" class="d-flex items-center">
-                  <el-select v-model="updateInfo[item.model]" :collapse-tags="isViewport('<', 'sm')" popper-class="selectMenu-popper-option" filterable default-first-option>
+              <el-col v-for="(item, index) in formUpdate" :key="index" :span="24">
+                <el-form-item :ref="item.model" :label="item.label" class="d-flex items-center m-0">
+                  <el-select v-model="updateInfo[item.model]" :collapse-tags="isViewport('<', 'sm')" size="mini" popper-class="selectMenu-popper-option" filterable default-first-option>
                     <el-option v-for="option in item.option" :key="option.value" :label="option.value" :value="option.value" />
                   </el-select>
                 </el-form-item>
@@ -44,10 +44,10 @@
           </el-form>
         </div>
         <div slot="footer" class="dialog-footer">
-          <hr />
-          <el-button size="small" plain class="mt-2" @click.native="close()"> 수정 </el-button>
-          <el-button size="small" plain class="mt-2" @click.native="close()"> 삭제 </el-button>
-          <el-button size="small" plain class="close-btn mt-2" @click.native="close()">
+          <hr>
+          <el-button size="mini" icon="el-icon-edit" @click.native="close()">수정</el-button>
+          <el-button size="mini" icon="el-icon-delete" type="danger" @click.native="close()">삭제</el-button>
+          <el-button size="mini" icon="el-icon-close" type="info" @click.native="close()">
             {{ $t('exit') }}
           </el-button>
         </div>
@@ -177,11 +177,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.ModalSopDetail ::v-deep {
-  .el-dialog__body {
-    height: 400px;
-  }
-}
+
 ::v-deep .el-form-item__label {
   width: 90px;
   margin-left: 5px;

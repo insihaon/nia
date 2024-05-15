@@ -4,6 +4,7 @@ import Layout from '@/layout'
 import Vue from 'vue'
 import vueDebounce from 'vue-debounce'
 import Router from 'vue-router'
+import { isEmptyObject } from '@/utils'
 
 Vue.use(Router)
 Vue.use(vueDebounce, {
@@ -127,7 +128,12 @@ const createRouter = () => {
 
   const anonymousMode = JSON.parse(process.env.VUE_APP_ANONYMOUS_MODE || 'true')
   router.afterEach((to, from) => {
-    window.$route = to
+    const { meta } = to
+    if (to.name !== 'Login' && meta && isEmptyObject(meta)) {
+      window.location.href = window.location.origin
+    } else {
+      window.$route = to
+    }
   })
 
   return router

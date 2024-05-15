@@ -1,54 +1,52 @@
 <template>
   <div :class="{ [name]: true }">
-    <transition :name="animation">
-      <el-dialog
-        v-if="animationVisible"
-        v-el-drag-dialog
-        :visible.sync="visible"
-        :width="domElement.maxWidth + `px`"
-        :height="domElement.minHeight + `px`"
-        :fullscreen.sync="fullscreen"
-        :modal-append-to-body="true"
-        :append-to-body="true"
-        :modal="modal"
-        :close-on-click-modal="closeOnClickModal"
-        :loading="loading"
-        class="nia-dialog"
-        :class="{ [name]: true }"
-      >
-        <span slot="title">
-          <i class="el-icon-document mr-2 text-base" />
-          조치 SOP 관리
-          <hr />
-        </span>
-        <div class="d-flex flex-column h-100 rounded justify-center" style="border: solid 1px #1e293b">
-          <CompInquiryPannel
-            ref="inquiry"
-            :ag-grid="sopEditGrid"
-            :is-excel="true"
-            :items="searchItems"
-            :pagination-info="paginationInfo"
-            :search-model.sync="searchModel"
-            class="w-100 h-100"
-            @cellClicked="onClickCell"
-            @handleClickSearch="onLoadSopCodeList()"
-            @searchClear="searchClear"
-          />
-          <!-- @handleClickSearch="onClickSearch"
-            @onChangePage="onChangePage"
-            @searchClear="searchClear" -->
-        </div>
-        <div slot="footer" class="dialog-footer">
-          <hr />
-          <el-button size="small" plain class="mt-2" @click.native="$refs.ModalSopMngEdit.open({ type: 'add' })"> 등록 </el-button>
-          <el-button size="small" plain class="mt-2" @click.native="onClickSopDelete()"> 삭제 </el-button>
-          <el-button size="small" plain class="close-btn mt-2" @click.native="close()">
-            {{ $t('exit') }}
-          </el-button>
-        </div>
-        <ModalSopMngEdit ref="ModalSopMngEdit" @onClose="onCloseEdit" />
-      </el-dialog>
-    </transition>
+    <el-dialog
+      v-if="animationVisible"
+      v-el-drag-dialog
+      :visible.sync="visible"
+      :top.sync="top"
+      :width="domElement.maxWidth + `px`"
+      :height="domElement.minHeight + `px`"
+      :fullscreen.sync="fullscreen"
+      :modal-append-to-body="true"
+      :append-to-body="true"
+      :modal="modal"
+      :close-on-click-modal="closeOnClickModal"
+      :loading="loading"
+      class="nia-dialog"
+      :class="{ [name]: true }"
+    >
+      <span slot="title">
+        <i class="el-icon-document mr-2 text-base" />
+        조치 SOP 관리
+        <hr>
+      </span>
+      <div class="d-flex flex-column h-100 rounded justify-center" style="border: solid 1px #1e293b">
+        <CompInquiryPannel
+          ref="inquiry"
+          :ag-grid="sopEditGrid"
+          :is-excel="true"
+          :items="searchItems"
+          :pagination-info="paginationInfo"
+          :search-model.sync="searchModel"
+          class="w-100 h-100"
+          @cellClicked="onClickCell"
+          @handleClickSearch="onLoadSopCodeList()"
+          @searchClear="searchClear"
+        />
+        <!-- @handleClickSearch="onClickSearch"
+          @onChangePage="onChangePage"
+          @searchClear="searchClear" -->
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="mini" icon="el-icon-edit" @click.native="$refs.ModalSopMngEdit.open({ type: 'add' })"> 등록 </el-button>
+        <el-button size="mini" type="danger" icon="el-icon-delete" @click.native="onClickSopDelete()"> 삭제 </el-button>
+        <el-button size="mini" type="info" icon="el-icon-close" @click.native="close()">
+          {{ $t('exit') }}
+        </el-button>
+      </div>
+      <ModalSopMngEdit ref="ModalSopMngEdit" @onClose="onCloseEdit" />
+    </el-dialog>
   </div>
 </template>
 
@@ -62,7 +60,6 @@ import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
 
 import CellRenderDataSetButtons from '@/views-dataHub/components/cellRenderer/CellRenderDataSetButtons'
 import { apiSelectSopCode, apiDeleteSop } from '@/api/nia'
-import { getTicketStatus } from '@/views-nia/js/commonFormat'
 
 const routeName = 'ModalSopMng'
 
@@ -76,6 +73,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      top: '10vh',
       paginationInfo: {
         currentPage: 1, // 현재 페이지
         pageSize: 50, // 페이지당 항목 수
@@ -109,32 +107,8 @@ export default {
         { type: '', prop: 'user_id', name: '등록자', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
         { type: '', prop: 'fault_gb', name: '조치 SOP', width: 160, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
         { type: '', prop: 'fault_type', name: '항목', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
-        {
-          type: '',
-          prop: 'edit',
-          name: '편집',
-          width: 100,
-          suppressMenu: true,
-          alignItems: 'center',
-          sortable: true,
-          filterable: false,
-          cellRenderer: (params) => {
-            return `<button class='el-icon-edit' />`
-          },
-        },
-        {
-          type: '',
-          prop: 'reg_time',
-          name: '등록일',
-          width: 100,
-          suppressMenu: true,
-          alignItems: 'center',
-          sortable: true,
-          filterable: false,
-          formatter: (row) => {
-            return this.formatterTimeStamp(row.reg_time, 'YYYY/MM/DD-HH:mm:ss')
-          },
-        },
+        { type: '', prop: 'edit', name: '편집', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false, cellRenderer: (params) => { return `<button class='el-icon-edit' />` } },
+        { type: '', prop: 'reg_time', name: '등록일', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false, formatter: (row) => { return this.formatterTimeStamp(row.reg_time, 'YYYY/MM/DD-HH:mm:ss') } },
       ]
       return { options, columns, data: this.sopCodeList }
     },
@@ -144,6 +118,7 @@ export default {
       Modal.methods.onCreated.call(this)
       this.domElement.maxWidth = 1200
       this.closeOnClickModal = false
+      this.top = this.isMobile ? '2vh' : '10vh'
     },
     onOpen(model, actionMode) {
       this.onLoadSopCodeList()
@@ -204,17 +179,4 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-// .ModalSopDetail ::v-deep {
-//   .el-dialog__body {
-//     height: 400px;
-//   }
-// }
-// ::v-deep .el-form-item__label {
-//   width: 90px;
-//   margin-left: 5px;
-//   line-height: 20px;
-// }
-// ::v-deep .el-form-item__content {
-//   width: calc(100% - 90px);
-// }
 </style>

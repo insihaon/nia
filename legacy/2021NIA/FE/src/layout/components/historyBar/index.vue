@@ -1,5 +1,5 @@
 <template>
-  <div id="tags-view-container" :class="{'opend': historybar.opened}">
+  <div id="tags-view-container" :class="{'opend': historybar.opened}" :style="{'right': isMobile ? '-180px': '-170px'}">
     <div id="title-container">
       <div><i class="el-icon-reading pr-1" />방문 기록</div>
       <div><i class="el-icon-close" @click="closeHistoryBar()" /></div>
@@ -249,7 +249,8 @@ export default {
 @import "~@/styles/variables.scss";
 
 #tags-view-container.opend {
-  right: 0px;
+  right: 0px !important;
+  z-index: 1000;
   #title-container {
     display: flex;
   }
@@ -328,7 +329,7 @@ export default {
     }
     &.active {
       color: #fff;
-      background-color: $aiTemplateDefault;
+      background-color: #1e293b;
       justify-content: space-between;
       white-space: nowrap;
       display: flex;

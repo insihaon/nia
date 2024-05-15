@@ -1,70 +1,68 @@
 <template>
   <div>
-    <transition :name="animation">
-      <el-dialog
-        v-if="animationVisible"
-        v-el-drag-dialog
-        :visible.sync="visible"
-        :width="domElement.maxWidth + `px`"
-        :fullscreen.sync="fullscreen"
-        :modal-append-to-body="false"
-        :append-to-body="true"
-        :modal="modal"
-        :close-on-click-modal="closeOnClickModal"
-        :loading="loading"
-        class="nia-edit-dialog"
-        :class="{ [name]: true }"
-      >
-        <span slot="title">
-          <i class="el-icon-user mr-2" style="font-size: 17px;" />
-          {{ titleMode }}
-          <hr />
-        </span>
-        <table class="basic">
-          <th>{{ titleNameA }}</th>
-          <td v-if="viewType === 'editAgency'" class="disable">
-            <el-select v-model="agency_value">
-              <el-option
-                v-for="item in agencyList"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              />
-            </el-select>
+    <el-dialog
+      v-if="animationVisible"
+      v-el-drag-dialog
+      :visible.sync="visible"
+      :width="domElement.maxWidth + `px`"
+      :fullscreen.sync="fullscreen"
+      :modal-append-to-body="false"
+      :append-to-body="true"
+      :modal="modal"
+      :close-on-click-modal="closeOnClickModal"
+      :loading="loading"
+      class="nia-edit-dialog"
+      :class="{ [name]: true }"
+    >
+      <span slot="title">
+        <i class="el-icon-edit mr-2" style="font-size: 17px;" />
+        {{ titleMode }}
+        <hr>
+      </span>
+      <table class="basic">
+        <th>{{ titleNameA }}</th>
+        <td v-if="viewType === 'editAgency'" class="disable">
+          <el-select v-model="agency_value">
+            <el-option
+              v-for="item in agencyList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </td>
+        <td v-if="viewType === 'editApp'" class="disable">
+          <el-input v-model="protocol" />
+        </td>
+        <tr>
+          <th>{{ titleNameB }}</th>
+          <td v-if="viewType === 'editAgency'">
+            <el-input v-model="update_nren_ip" /></td>
+          <td v-if="viewType === 'editApp'">
+            <el-input v-model="port_num" /></td>
+        </tr>
+        <tr v-if="viewType === 'editApp'">
+          <th>{{ '설명' }}</th>
+          <td>
+            <el-input
+              v-model="description"
+              type="textarea"
+            />
           </td>
-          <td v-if="viewType === 'editApp'" class="disable">
-            <el-input v-model="protocol" />
-          </td>
-          <tr>
-            <th>{{ titleNameB }}</th>
-            <td v-if="viewType === 'editAgency'">
-              <el-input v-model="update_nren_ip" /></td>
-            <td v-if="viewType === 'editApp'">
-              <el-input v-model="port_num" /></td>
-          </tr>
-          <tr v-if="viewType === 'editApp'">
-            <th>{{ '설명' }}</th>
-            <td>
-              <el-input
-                v-model="description"
-                type="textarea"
-              />
-            </td>
-          </tr>
-        </table>
-        <div slot="footer" class="dialog-footer">
-          <el-button size="medium" @click.native="changeEditMode()">
-            {{ '수정' }}
-          </el-button>
-          <el-button size="medium" @click.native="changeDeleteMode()">
-            {{ '삭제' }}
-          </el-button>
-          <el-button class="exit-btn" size="medium" @click.native="close()">
-            {{ $t('exit') }}
-          </el-button>
-        </div>
-      </el-dialog>
-    </transition>
+        </tr>
+      </table>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="mini" icon="el-icon-edit" @click.native="changeEditMode()">
+          수정
+        </el-button>
+        <el-button size="mini" icon="el-icon-delete" type="danger" @click.native="changeDeleteMode()">
+          삭제
+        </el-button>
+        <el-button size="mini" icon="el-icon-close" type="info" @click.native="close()">
+          {{ $t('exit') }}
+        </el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -129,6 +127,7 @@ export default {
     onCreated() {
       Modal.methods.onCreated.call(this)
       this.closeOnClickModal = false
+      this.domElement.maxWidth = 500
     },
     onOpen(model, actionMode) {
       this.viewType = model.type
@@ -144,12 +143,10 @@ export default {
         this.selectCodeData = res.result.map(item => ({ label: item.name, value: item.id }))
         this.agencyList = this.selectCodeData
         const matchingItem = this.agencyList.find(item => item.label === this.rowInfo.nren_name)
-        this.agency_value = matchingItem.value
+        this.agency_value = matchingItem?.value
       } catch (error) {
-          console.error(error)
-        } finally {
-          // this.closeLoading(target)
-        }
+        console.error(error)
+      }
     },
      updateAgencyIpData() {
         this.confirm('수정하시겠습니까?', '이용기관 IP 수정', {

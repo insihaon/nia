@@ -10,14 +10,13 @@ var dialogOpenMixin = {
         fullscreen: false,
         center: false
       },
-
       dialogList: {
         aiResponse: {
           component: () => import('@/views-nia/dashBoard/aiResponse'),
           pageTitle: 'AI 장애대응',
           top: '2vh',
-          width: '800',
-          height: '650',
+          width: '700',
+          height: '620',
           resizeble: true,
         },
         requestForAction: {
@@ -28,12 +27,28 @@ var dialogOpenMixin = {
           height: '800',
           resizeble: true,
         },
+        processFin: {
+          component: () => import('@/views-nia/dashBoard/processFin'),
+          pageTitle: '마감 처리',
+          top: '2vh',
+          width: '500',
+          height: '475',
+          resizeble: true,
+        },
+        configTest: {
+          component: () => import('@/views-nia/dashBoard/configTest'),
+          pageTitle: '시험',
+          top: '2vh',
+          width: '750',
+          height: '660',
+          resizeble: true,
+        },
         snapShot: {
           component: () => import('@/views-nia/dashBoard/snapShot'),
           pageTitle: '데이터 스냅샷',
           top: '2vh',
           width: '600',
-          height: '280',
+          height: '300',
           resizeble: true,
         },
         sopList: {
@@ -42,6 +57,22 @@ var dialogOpenMixin = {
           top: '2vh',
           width: '1200',
           height: '800',
+          resizeble: true,
+        },
+        selfProcessList: {
+          component: () => import('@/views-nia/dashBoard/selfProcessList'),
+          pageTitle: '자가 최적화 이력조회',
+          top: '2vh',
+          width: '1000',
+          height: '800',
+          resizeble: true,
+        },
+        ticketDetail: {
+          component: () => import('@/views-nia/dashBoard/ticketDetail'),
+          pageTitle: '전표 상세내역',
+          top: '2vh',
+          width: '1200',
+          height: '770',
           resizeble: true,
         },
         jsonSettingPopup: {
@@ -63,7 +94,7 @@ var dialogOpenMixin = {
       tmpWindowData.name = this.dialogList[dialogNm]['pageTitle']
       tmpWindowData.target = this.dialogList[dialogNm]['component']
       // tmpWindowData.type = this.dialogList[dialogNm]
-      tmpWindowData.width = this.dialogList[dialogNm]['width']
+      tmpWindowData.width = this.isMobile ? window.innerWidth : this.dialogList[dialogNm]['width']
       tmpWindowData.height = this.dialogList[dialogNm]['height']
       tmpWindowData.minWidth = this.dialogList[dialogNm]['minWidth']
       tmpWindowData.minHeight = this.dialogList[dialogNm]['minHeight']
@@ -79,6 +110,9 @@ var dialogOpenMixin = {
 
       if (tmpWindowData.x < 0) {
         tmpWindowData.x = 15
+      }
+      if (this.isMobile) {
+        tmpWindowData.x = 0
       }
       if (tmpWindowData.y < 0) {
         tmpWindowData.y = 85

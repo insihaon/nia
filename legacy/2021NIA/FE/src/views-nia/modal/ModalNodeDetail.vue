@@ -16,8 +16,8 @@
     >
       <span slot="title">
         <i class="el-icon-user mr-2" style="font-size: 17px" />
-        {{ '노드 상세보기' }}
-        <hr />
+        노드 상세보기
+        <hr>
       </span>
       <table class="basic">
         <tr>
@@ -62,7 +62,7 @@
         </tr>
       </table>
       <div slot="footer" class="dialog-footer">
-        <el-button size="medium" @click.native="close()">
+        <el-button size="mini" type="info" icon="el-icon-close" @click.native="close()">
           {{ $t('exit') }}
         </el-button>
       </div>
@@ -106,6 +106,7 @@ export default {
     onCreated() {
       Modal.methods.onCreated.call(this)
       this.closeOnClickModal = false
+      this.domElement.maxWidth = 550
     },
     onOpen(model, actionMode) {
       this.viewType = model.type
@@ -127,6 +128,7 @@ export default {
   .line-class {
     font-weight: bold;
     font-size: 15px;
+    text-align: center;
   }
 }
 </style>

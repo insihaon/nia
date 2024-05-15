@@ -3,7 +3,6 @@
     <CompInquiryPannel
       ref="trafficAnalysis"
       :ag-grid="trafficAgGrid"
-      :is-button-slot="false"
       :items="searchItems"
       :search-model.sync="searchModel"
       :pagination-info="paginationInfo"
@@ -29,6 +28,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      alarmInterval: null,
       paginationInfo: {
         currentPage: 1, // 현재 페이지
         pageSize: 50, // 페이지당 항목 수
@@ -39,27 +39,27 @@ export default {
       selectedRow: [],
       trafficData: [],
       searchItems: [
-        { label: '감시방식', type: 'select', placeholder: '상태를 선택하세요', model: 'watch', setting: { allOption: { toggle: true } }, options: [
+        { label: '감시방식', type: 'select', placeholder: '상태를 선택하세요', model: 'search_type', options: [
             { label: 'OnDemand', value: 'OnDemand' },
             { label: '실시간', value: 'live' },
         ] },
-        { label: '장비', type: 'input', model: 'node_name', placeholder: '장비명을 검색하세요' },
-        { label: '인터페이스', type: 'input', model: 'if_name', placeholder: '인터페이스를 검색하세요' },
-        { label: '시작일시', type: 'date', model: 'datetime' },
-        { label: '종료일시', type: 'date', model: 'datetime' },
+        { label: '장비', type: 'input', model: 'node_name', placeholder: '장비명을 검색하세요', disabled: false },
+        { label: '인터페이스', type: 'input', model: 'if_name', placeholder: '인터페이스를 검색하세요', disabled: false },
+        { label: '시작일시', type: 'date', model: 'datetime', disabled: false },
+        { label: '종료일시', type: 'date', model: 'datetime', disabled: false },
 
       ],
       searchModel: {
+        search_type: 'OnDemand',
         node_name: '',
         if_name: '',
       }
     }
   },
-
   computed: {
     trafficAgGrid() {
       const options = {
-        name: this.name + 'table1', checkable: false, rowGroupPanel: false, rowHeight: 40, rowSelection: 'multiple', rowMultiSelection: false, suppressRowClickSelection: true,
+        name: this.name + 'table1', checkable: false, rowGroupPanel: false, rowSelection: 'multiple', rowMultiSelection: false, suppressRowClickSelection: true,
       }
       const columns = [
         { type: '', prop: 'measured_datetime', name: '수집시간', minWidth: 30, flex: 0, suppressMenu: true, alignItems: 'center' },
@@ -72,21 +72,40 @@ export default {
         { type: '', prop: 'rx_pkt_rate', name: '수신 bps', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
       ]
       return { options, columns, data: this.trafficData, getRightClickMenuItems: () => { return [] } }
-    },
+    }
+  },
+  watch: {
+   'searchModel.search_type'(n) {
+    this.searchItems.forEach(item => {
+      item.disabled = (item.model !== 'search_type') && (n === 'live')
+    })
+
+    if (n === 'live') {
+      this.startInterval()
+    } else {
+      this.stopInterval()
+    }
+  }
   },
   mounted() {
     this.onLoadTrafficList()
   },
   methods: {
-    onSortedChange(param) {
-       this.onLoadTrafficList()
+    startInterval() {
+      this.alarmInterval = setInterval(() => {
+        const seconds = new Date().getSeconds()
+        if (seconds === 0) {
+          this.onLoadTrafficList()
+        }
+      }, 60000)
+    },
+    stopInterval() {
+      clearInterval(this.alarmInterval)
     },
     onClickSearch(params) {
       this.onLoadTrafficList(params)
     },
     async onLoadTrafficList() {
-      const target = { vue: this.$refs.trafficAnalysis }
-      this.openLoading(target)
       const param = {
         node_name: this.searchModel.node_name,
         if_name: this.searchModel.if_name,
@@ -104,8 +123,6 @@ export default {
         this.paginationInfo.totalPages = Math.ceil(this.paginationInfo.totalCount / this.paginationInfo.pageSize) // 전체 페이지 수 계산
       } catch (error) {
         console.error(error)
-      } finally {
-        this.closeLoading(target)
       }
     },
     onChangePage(curPage) {
@@ -116,7 +133,7 @@ export default {
       this.searchModel = {}
       this.onLoadTrafficList()
     }
-  },
+  }
 }
 </script>
 

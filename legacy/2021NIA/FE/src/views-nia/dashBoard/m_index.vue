@@ -1,118 +1,62 @@
 <template>
   <div :class="{ [name]: true }">
-    <LeftBar class="h-full">
-      <template v-if="isViewport('>', 'sm')" slot="leftbar-container">
-        <div class="h-20 text-center mt-1" style="z-index: 1">
-          <span class="font-bold text-lg whitespace-nowrap">AI관제 시스템 처리량</span>
-          <div class="d-flex p-2 justify-center items-center">
-            <span class="font-semibold whitespace-nowrap pr-2">검색</span>
-            <el-radio-group v-model="systemChartCondition.dayType" size="mini" class="d-flex">
-              <el-radio-button label="DAY">일별</el-radio-button>
-              <el-radio-button label="MONTH">월별</el-radio-button>
-            </el-radio-group>
-            <el-date-picker v-model="systemChartCondition.date" style="width: 150px" size="mini" :type="systemChartCondition.dayType === 'DAY' ? 'date' : 'month'" />
-            <el-button icon="el-icon-search" size="mini" style="padding: 7px 7px" @click="onLoadDashboardStatistics()" />
-          </div>
+    <div class="text-center mt-1">
+      <!-- style="z-index: 1" -->
+      <span class="font-bold text-lg whitespace-nowrap">AI관제 시스템 처리량</span>
+      <div class="d-flex p-2 justify-center items-center">
+        <span class="font-semibold whitespace-nowrap pr-2">검색</span>
+        <el-radio-group v-model="systemChartCondition.dayType" size="mini" class="d-flex">
+          <el-radio-button label="DAY">일별</el-radio-button>
+          <el-radio-button label="MONTH">월별</el-radio-button>
+        </el-radio-group>
+        <el-date-picker v-model="systemChartCondition.date" style="width: 150px" size="mini" :type="systemChartCondition.dayType === 'DAY' ? 'date' : 'month'" />
+        <el-button icon="el-icon-search" size="mini" style="padding: 7px 7px" @click="onLoadDashboardStatistics()" />
+      </div>
+    </div>
+    <hr>
+    <div style="height: 700px">
+      <CompChart :options="ticketOptions" class="relative" style="height: 300px;top: -1rem" />
+      <CompChart :options="collectOptions" class="relative" style="height: 300px;top: -6rem" />
+      <CompChart :options="servingOptions" class="relative" style="height: 300px;top: -11rem" />
+    </div>
+    <hr>
+    <div class="text-center">
+      <span class="font-bold text-lg whitespace-nowrap p-2">자가 처리 현황</span>
+      <div class="d-flex p-2 justify-center items-center">
+        <span class="font-semibold whitespace-nowrap pr-2">검색</span>
+        <el-radio-group v-model="selfChartCondition.statisticsType" size="mini" class="d-flex">
+          <el-radio-button label="hour">시간별</el-radio-button>
+          <el-radio-button label="day">일별</el-radio-button>
+          <el-radio-button label="month">월별</el-radio-button>
+        </el-radio-group>
+        <el-date-picker v-model="selfChartCondition.date" style="width: 150px" size="mini" :type="getSelfProDateType()" />
+        <el-button icon="el-icon-search" size="mini" style="padding: 7px 7px" @click="onLoadSelfProcessStatistics()" />
+      </div>
+    </div>
+    <hr>
+    <div style="height: 300px">
+      <CompChart :options="selfProcessOptions" class="h-full" @click="onClickChart" />
+    </div>
+    <div class="p-2">
+      <div class="filter-container">
+        <div class="title">IP-SDN</div>
+        <div class="filter-group">
+          <span class="item-title mr-1">검색</span>
+          <el-input v-model="ipspnTextSearch" size="mini" clearable placeholder="검색어를 입력하세요" @input="(value) => onChangeTextSearch('ipsdn', value)" />
         </div>
-        <hr>
-        <div style="height: calc(70% - 5rem)">
-          <CompChart :options="ticketOptions" class="relative h-64" style="top: -2rem" />
-          <CompChart :options="collectOptions" class="relative h-72" style="top: -7rem" />
-          <CompChart :options="servingOptions" class="relative h-64" style="top: -12rem" />
+      </div>
+      <CompAgGrid ref="ipAgGrid" v-model="ipAgGrid" class="w-100" style="height: 300px" @rowClicked="selectedTicket" />
+    </div>
+    <div class="p-2">
+      <div class="filter-container">
+        <div class="title">전송망</div>
+        <div class="filter-group">
+          <span class="item-title mr-1">검색</span>
+          <el-input v-model="transTextSearch" size="mini" clearable placeholder="검색어를 입력하세요" @input="(value) => onChangeTextSearch('trans', value)" />
         </div>
-        <hr>
-        <div class="h-20 text-center">
-          <span class="font-bold text-lg whitespace-nowrap p-2">자가 처리 현황</span>
-          <div class="d-flex p-2 justify-center items-center">
-            <span class="font-semibold whitespace-nowrap pr-2">검색</span>
-            <el-radio-group v-model="selfChartCondition.statisticsType" size="mini" class="d-flex">
-              <el-radio-button label="hour">시간별</el-radio-button>
-              <el-radio-button label="day">일별</el-radio-button>
-              <el-radio-button label="month">월별</el-radio-button>
-            </el-radio-group>
-            <el-date-picker v-model="selfChartCondition.date" style="width: 150px" size="mini" :type="getSelfProDateType()" />
-            <el-button icon="el-icon-search" size="mini" style="padding: 7px 7px" @click="onLoadSelfProcessStatistics()" />
-          </div>
-        </div>
-        <hr>
-        <div style="height: calc(30% - 5rem)">
-          <CompChart :options="selfProcessOptions" class="h-full" @click="onClickChart" />
-        </div>
-      </template>
-      <template slot="top-container">
-        <filterBar position="TOP">
-          <template slot="function-container">
-            <div class="filter-container">
-              <div class="title">IP-SDN</div>
-              <div class="filter-group">
-                <div class="d-flex mr-1">
-                  <span class="item-title mr-1">검색</span>
-                  <el-input v-model="ipspnTextSearch" size="mini" clearable placeholder="검색어를 입력하세요" @input="(value) => onChangeTextSearch('ipsdn', value)" />
-                </div>
-                <template v-for="(filter, keyName) in ipFilterGroup.filters">
-                  <div v-if="keyName" :key="filter.filterTitle" class="d-flex mr-1">
-                    <div class="item-title">
-                      {{ filter.filterTitle || '' }}
-                    </div>
-                    <ul>
-                      <!-- :class="{'filterBtn': !filterIconList.includes(keyName), 'filterIcon d-flex':filterIconList.includes(keyName)}" -->
-                      <li
-                        v-for="(item, index) in filter.getArray()"
-                        :key="index"
-                        class="checkItem d-flex items-center checked ml-1"
-                        :style="{ 'background-color': item.hex, color: item.color }"
-                        @click="onClickFilterItem('ip', filter.filterName, item.code)"
-                      >
-                        <i :class="item.selected ? 'el-icon-success' : 'el-icon-circle-check'" />
-                        <div class="filter-text">{{ item.text + '(' + item.count + ')' }}</div>
-                      </li>
-                    </ul>
-                  </div>
-                </template>
-              </div>
-            </div>
-          </template>
-        </filterBar>
-        <CompAgGrid ref="ipAgGrid" v-model="ipAgGrid" class="w-100 flex-fill" @rowClicked="selectedTicket" />
-        <!-- top-container content -->
-      </template>
-      <template slot="bottom-container">
-        <filterBar position="BOTTOM">
-          <template slot="function-container">
-            <div class="filter-container">
-              <div class="title">전송망</div>
-              <div class="filter-group">
-                <div class="d-flex">
-                  <span class="item-title mr-1">검색</span>
-                  <el-input v-model="transTextSearch" size="mini" clearable placeholder="검색어를 입력하세요" @input="(value) => onChangeTextSearch('trans', value)" />
-                </div>
-                <template v-for="(filter, keyName) in transFilterGroup.filters">
-                  <div v-if="keyName" :key="filter.filterTitle" class="d-flex mr-1">
-                    <div class="item-title ml-2">
-                      {{ filter.filterTitle || '' }}
-                    </div>
-                    <ul v-if="keyName" :key="keyName">
-                      <!-- :class="{'filterBtn': !filterIconList.includes(keyName), 'filterIcon d-flex':filterIconList.includes(keyName)}" -->
-                      <li
-                        v-for="(item, index) in filter.getArray()"
-                        :key="index"
-                        class="checkItem d-flex items-center checked ml-1"
-                        :style="{ 'background-color': item.hex, color: item.color }"
-                        @click="onClickFilterItem('trans', filter.filterName, item.code)"
-                      >
-                        <i :class="item.selected ? 'el-icon-success' : 'el-icon-circle-check'" />
-                        <div class="filter-text">{{ item.text + '(' + item.count + ')' }}</div>
-                      </li>
-                    </ul>
-                  </div>
-                </template>
-              </div>
-            </div>
-          </template>
-        </filterBar>
-        <CompAgGrid ref="transmissionAgGrid" v-model="transmissionAgGrid" class="w-100 flex-fill" />
-      </template>
-    </LeftBar>
+      </div>
+      <CompAgGrid ref="transmissionAgGrid" v-model="transmissionAgGrid" style="height: 300px" class="w-100" />
+    </div>
   </div>
 </template>
 <script>
@@ -660,14 +604,19 @@ export default {
 
       const param = { row, type }
       if (type === 'SOP') {
+        // this.$refs.ModalSopList.open(param)
         this.fn_openWindow('sopList', row)
       } else if (type === 'NTF') {
+        // this.$refs.ModalNTF.open(param)
         this.fn_openWindow('requestForAction', row)
       } else if (type === 'ALARM') {
+        // this.$refs.ModalAiResponse.open(param)
         this.fn_openWindow('aiResponse', { row })
       } else if (type === 'FIN') {
+        // this.$refs.ModalFIN.open(param)
         this.fn_openWindow('processFin', row)
       } else if (type === 'CONFIG_TEST') {
+        // this.$refs.ModalConfigTest.open(param)
         this.fn_openWindow('configTest', row)
       }
     },
@@ -678,12 +627,7 @@ export default {
 @import '~@/styles/variables.scss';
 
 .NiaMain {
-  ::v-deep .splitter-pane {
-    display: flex;
-    flex-direction: column;
-  }
   .filter-container {
-    height: 100%;
     display: flex;
     align-items: center;
     .title {
@@ -697,8 +641,8 @@ export default {
       white-space: nowrap;
     }
     .filter-group {
+      width: 100%;
       display: flex;
-      flex-wrap: wrap;
       margin-left: 10px;
       .split {
         &:before {
@@ -706,15 +650,6 @@ export default {
           padding-left: 5px;
           font-weight: 700;
         }
-      }
-      ::v-deep .el-input--mini .el-input__inner {
-        height: 27px;
-        width: 300px;
-        background: #e8ecef;
-        border: solid 1px #a3a3a3;
-      }
-      ::v-deep .el-input__suffix {
-        top: -1px;
       }
       .item-title {
         display: flex;
@@ -724,9 +659,6 @@ export default {
       }
       .filter-text {
         white-space: nowrap;
-      }
-      ul {
-        display: flex;
       }
     }
   }

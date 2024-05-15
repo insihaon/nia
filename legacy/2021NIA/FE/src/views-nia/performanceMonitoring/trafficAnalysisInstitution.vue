@@ -67,15 +67,15 @@ export default {
   computed: {
     trafficAgGrid() {
       const options = {
-        name: this.name + 'table1', rowGroupPanel: false, rowHeight: 40, rowSelection: 'multiple', rowMultiSelection: false, suppressRowClickSelection: true,
+        name: this.name + 'table1', rowGroupPanel: false, rowSelection: 'multiple', rowMultiSelection: false, suppressRowClickSelection: true,
       }
       const columns = [
-        { type: '', prop: 'row_num', name: 'Rank', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center' },
-        { type: '', prop: 'src_nren_name', name: '이용기관(Soruce)', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: false },
-        { type: '', prop: 'src_ip', name: 'IP(Soruce)', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
-        { type: '', prop: 'dst_nren_name', name: '이용기관(Destination)', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
-        { type: '', prop: 'dst_ip', name: 'IP(Destination)', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
-        { type: '', prop: 'packet_bytes', name: 'Mbyte', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
+        { type: '', prop: 'row_num', name: 'Rank', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center' },
+        { type: '', prop: 'src_nren_name', name: '이용기관(Soruce)', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: false },
+        { type: '', prop: 'src_ip', name: 'IP(Soruce)', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
+        { type: '', prop: 'dst_nren_name', name: '이용기관(Destination)', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
+        { type: '', prop: 'dst_ip', name: 'IP(Destination)', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
+        { type: '', prop: 'packet_bytes', name: 'Mbyte', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
       ]
       return { options, columns, data: this.trafficData, getRightClickMenuItems: () => { return [] } }
     },

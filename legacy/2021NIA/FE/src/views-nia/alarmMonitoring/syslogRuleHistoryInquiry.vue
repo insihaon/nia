@@ -8,14 +8,14 @@
       :pagination-info="paginationInfo"
       class="w-100 h-100"
       @selectedRow="(row)=> handleOpenModalDetail(row,'EDIT')"
+      @handleClickSearch="onClickSearch"
+      @searchClear="searchClear"
     >
-      <template slot="button-area">
-        <div class="button-panel">
-          <el-button class="float-right" size="mini" type="info" @click="handleOpenModalDetail('', 'OPEN')">등록</el-button>
-        </div>
+      <template slot="add-function">
+        <el-button type="info" size="mini" icon="el-icon-edit" @click="handleOpenModalDetail('', 'OPEN')">등록</el-button>
       </template>
     </CompInquiryPannel>
-    <ModalSyslogRules ref="ModalSyslogRules" />
+    <ModalSyslogRules ref="ModalSyslogRules" @syslogRuleEdit="onLoadSyslogRuleList()" />
   </div>
 </template>
 <script>
@@ -23,9 +23,8 @@ import { Base } from '@/min/Base.min'
 import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
 import { apiSyslogRuleList } from '@/api/nia'
 import ModalSyslogRules from '@/views-nia/modal/ModalSyslogRules.vue'
-import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
 
-const routeName = 'syslogRuleHistoryInquiry'
+const routeName = 'SyslogRuleHistoryInquiry'
 export default {
   name: routeName,
   // eslint-disable-next-line vue/no-unused-components
@@ -59,18 +58,18 @@ export default {
   computed: {
     authAgGrid() {
       const options = {
-        name: this.name + 'table1', rowGroupPanel: false, rowHeight: 30, rowSelection: 'multiple', rowMultiSelection: false,
+        name: this.name + 'table1', rowGroupPanel: false, rowSelection: 'multiple', rowMultiSelection: false,
       }
       const columns = [
-        { type: '', prop: 'syslog_rule_id', name: 'RULE ID', minWidth: 30, flex: 0, suppressMenu: true, sortable: true },
-        { type: '', prop: 'syslog_rule_nm', name: 'RULE NAME', minWidth: 30, flex: 0, suppressMenu: true, sortable: true },
-        { type: '', prop: 'occur_str1', name: '발생 키워드1', minWidth: 30, flex: 0, suppressMenu: true, sortable: true },
-        { type: '', prop: 'occur_str2', name: '발생 키워드2', minWidth: 30, flex: 0, suppressMenu: true, sortable: true },
-        { type: '', prop: 'occur_str3', name: '발생 키워드3', minWidth: 30, flex: 0, suppressMenu: true, sortable: true },
-        { type: '', prop: 'occur_except_str1', name: '제외 키워드1', minWidth: 30, flex: 0, suppressMenu: true, sortable: true },
-        { type: '', prop: 'occur_except_str2', name: '제외 키워드2', minWidth: 30, flex: 0, suppressMenu: true, sortable: true },
-        { type: '', prop: 'occur_except_str3', name: '제외 키워드3', minWidth: 40, flex: 0, suppressMenu: true, sortable: true, filterable: false },
-        { type: '', prop: 'use_yn', name: '사용 여부', minWidth: 50, flex: 0, suppressMenu: true, sortable: true, filterable: true },
+        { type: '', prop: 'syslog_rule_id', name: 'RULE ID', minWidth: 100, flex: 0, suppressMenu: true, sortable: true },
+        { type: '', prop: 'syslog_rule_nm', name: 'RULE NAME', minWidth: 100, flex: 0, suppressMenu: true, sortable: true },
+        { type: '', prop: 'occur_str1', name: '발생 키워드1', minWidth: 100, flex: 0, suppressMenu: true, sortable: true },
+        { type: '', prop: 'occur_str2', name: '발생 키워드2', minWidth: 100, flex: 0, suppressMenu: true, sortable: true },
+        { type: '', prop: 'occur_str3', name: '발생 키워드3', minWidth: 100, flex: 0, suppressMenu: true, sortable: true },
+        { type: '', prop: 'occur_except_str1', name: '제외 키워드1', minWidth: 100, flex: 0, suppressMenu: true, sortable: true },
+        { type: '', prop: 'occur_except_str2', name: '제외 키워드2', minWidth: 100, flex: 0, suppressMenu: true, sortable: true },
+        { type: '', prop: 'occur_except_str3', name: '제외 키워드3', minWidth: 100, flex: 0, suppressMenu: true, sortable: true, filterable: false },
+        { type: '', prop: 'use_yn', name: '사용 여부', minWidth: 100, flex: 0, suppressMenu: true, sortable: true, filterable: true },
       ]
       return { options, columns, data: this.ruleData, getRightClickMenuItems: () => { return [] } }
     },
@@ -99,7 +98,10 @@ export default {
           label: item.syslog_rule_nm,
           value: item.syslog_rule_nm,
         }))
-        this.searchItems[0].options = ruleNameData
+        const items = this.searchItems.find(item => {
+         return item.model === 'syslog_rule_nm'
+        })
+        items.options = ruleNameData
         this.paginationInfo.totalCount = res.total
         this.paginationInfo.totalPages = Math.ceil(this.paginationInfo.totalCount / this.paginationInfo.pageSize) // 전체 페이지 수 계산
       } catch (error) {
@@ -111,13 +113,17 @@ export default {
     handleOpenModalDetail(rows, type) {
       this.$refs.ModalSyslogRules.open({ row: rows[0], type })
     },
+    searchClear() {
+      this.searchModel = {}
+      this.onLoadSyslogRuleList()
+    },
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.syslogRuleHistoryInquiry {
-  .CompAgGrid .ag-row{
+.SyslogRuleHistoryInquiry{
+   ::v-deep .ag-cell-value{
     cursor: pointer !important;
   }
 }
