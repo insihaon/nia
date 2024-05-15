@@ -1,24 +1,30 @@
 <template>
-  <div :class="{ [name]: true }">
+  <div :class="{ [name]: true, 'w-100':true }">
     <div class="common-padding">
       <div class="search-container">
-        <div class="mainWrap">
-          <div class="contentWrap subContentWrap">
-            <!-- 조회 옵션상자 -->
-            <div class="optionBox">
-              <div class="optionBoxContent">
-                <div class="optionItem" :class="{'py-2': isModal && !isShowHist}">
-                  <label> 제목 </label>
+        <div class="optionBox">
+          <!-- 조회 옵션상자 -->
+          <el-row class="optionRow" :class="{ 'd-flex flex-column': isModal }">
+            <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
+              <div class="optionItem">
+                <label> 제목 </label>
+                <div>
                   <el-input
                     v-model="registItem.title"
+                    size="mini"
                     type="text"
+                    :style="{'width': isModal? '200px': '100%'}"
                     placeholder="제목을 입력하세요"
                     clearable
                   />
                 </div>
-                <div class="optionItem" :class="{'py-2': isModal && !isShowHist}">
-                  <label> 분류 </label>
-                  <el-radio-group v-model="registItem.type" size="mini">
+              </div>
+            </el-col>
+            <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
+              <div class="optionItem">
+                <label> 분류 </label>
+                <div>
+                  <el-radio-group v-model="registItem.type" size="mini" :class="{'flex-column': isMobile}">
                     <el-radio
                       v-for="option in categoryOptions"
                       v-if="option.show"
@@ -28,27 +34,31 @@
                     >{{ option.label }}</el-radio>
                   </el-radio-group>
                 </div>
-                <div class="optionItem" :class="{'py-2': isModal && !isShowHist}">
-                  <label> 기간 </label>
+              </div>
+            </el-col>
+            <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
+              <div class="optionItem">
+                <label> 기간 </label>
+                <div>
                   <el-date-picker
                     v-model="registItem.period"
                     type="datetimerange"
+                    size="mini"
                     start-placeholder="시작 일자"
                     end-placeholder="종료 일자"
                     :default-time="['00:00:00','23:59:59']"
                   />
                 </div>
               </div>
-              <div class="optionBoxButtons" style="margin: 5px 8px 3px 3px; float: right">
-                <!-- <el-button class="btn-r" type="info" size="mini" @click="onLoadSnapShotList()">
-                  <i class="el-icon-search" />
-                </el-button> -->
-                <el-button class="btn-r" type="info" size="mini" @click="onClickSnapshot()">
-                  저장
-                </el-button>
-              </div>
-            </div>
-          </div>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="24" align="center" class="searchBtnGroup">
+              <el-button class="btn-r" type="info" size="mini" icon="el-icon-folder-opened" @click="onClickSnapshot()">
+                저장
+              </el-button>
+            </el-col>
+          </el-row>
         </div>
       </div>
       <CompInquiryPannel
@@ -57,8 +67,9 @@
         :ag-grid="snapshotAgGrid"
         :pagination-info="paginationInfo"
         class="w-100"
-        :style="{'height': isModal ? '400px':'100%' }"
+        :style="{'height': isModal ? '300px':'' }"
         :is-search="false"
+        :is-modal="true"
         @handleClickSearch="onClickSearch"
         @onChangePage="onChangePage"
       />
@@ -118,11 +129,11 @@ export default {
         name: this.name, checkable: false, rowGroupPanel: false, rowSelection: 'multiple', rowMultiSelection: false, suppressRowClickSelection: true,
       }
       const columns = [
-        { type: '', prop: 'title', name: '제목', width: 300, suppressMenu: true, alignItems: 'center' },
-        { type: '', prop: 'start_time', name: '시작 시간', width: 400, suppressMenu: true, alignItems: 'center', format: (row) => { return row.start_time ? this.formatterTimeStamp(row.start_time, 'YYYY/MM/DD-HH:mm:ss') : '' } },
-        { type: '', prop: 'end_time', name: '종료 시간', width: 400, suppressMenu: true, alignItems: 'center', format: (row) => { return row.end_time ? this.formatterTimeStamp(row.end_time, 'YYYY/MM/DD-HH:mm:ss') : '' } },
-        { type: '', prop: '', name: '다운로드', width: 200, suppressMenu: true, alignItems: 'center', cellRendererFramework: 'CellRenderSnapshot', cellRendererParams: { type: 'downroadUrl', action: this.onClickDownload.bind(this) } },
-        { type: '', prop: '', name: '삭제', width: 180, suppressMenu: true, alignItems: 'center', cellRendererFramework: 'CellRenderSnapshot', cellRendererParams: { type: 'delete', action: this.onDeleteSnapshot.bind(this) } },
+        { type: '', prop: 'title', name: '제목', width: 100, suppressMenu: true, alignItems: 'center' },
+        { type: '', prop: 'start_time', name: '시작 시간', width: 150, suppressMenu: true, alignItems: 'center', format: (row) => { return row.start_time ? this.formatterTimeStamp(row.start_time, 'YYYY/MM/DD-HH:mm:ss') : '' } },
+        { type: '', prop: 'end_time', name: '종료 시간', width: 150, suppressMenu: true, alignItems: 'center', format: (row) => { return row.end_time ? this.formatterTimeStamp(row.end_time, 'YYYY/MM/DD-HH:mm:ss') : '' } },
+        { type: '', prop: '', name: '다운로드', width: 50, suppressMenu: true, alignItems: 'center', cellRendererFramework: 'CellRenderSnapshot', cellRendererParams: { type: 'downroadUrl', action: this.onClickDownload.bind(this) } },
+        { type: '', prop: '', name: '삭제', width: 50, suppressMenu: true, alignItems: 'center', cellRendererFramework: 'CellRenderSnapshot', cellRendererParams: { type: 'delete', action: this.onDeleteSnapshot.bind(this) } },
       ]
       return { options, columns, data: this.snapshotHistList }
     },
@@ -177,7 +188,7 @@ export default {
     },
     async onLoadSnapshotList() {
       const target = { vue: this.$refs.trafficAnalysis }
-      this.openLoading(target)
+      this.isShowHist && this.openLoading(target)
       try {
         const res = await apiSelectSnapshotList({ EVENT_GB: this.registItem.type })
         this.snapshotHistList = res?.result
@@ -186,7 +197,7 @@ export default {
       } catch (error) {
         console.error(error)
       } finally {
-        this.closeLoading(target)
+        this.isShowHist && this.closeLoading(target)
       }
     },
     onClickSnapshot() {
@@ -261,39 +272,11 @@ export default {
 ::v-deep div.subContentWrap div.optionBox>div.optionBoxContent>div.optionItem>label {
   min-width: 70px;
 }
-
-// .SnapshotHistory{
-//   table.tb-class {
-//   width: 100%;
-//   font-size: 12px;
-//   text-align: left;
-//   border-collapse: collapse;
-//   border: solid 1px #1e293b;
-//   th,
-//   td {
-//     padding: 10px;
-//     border: 1px solid #bdbdbd !important;
-
-//   }
-//   th {
-//     font-weight: normal;
-//     background: #c1d3f64d;
-//     text-align: center;
-//     font-size: 14px;
-//     max-width: 15px !important;
-//   }
-//   td {
-//     font-weight: 600;
-//     max-width: 50px !important;
-//     min-width: 30px !important;
-//   }
-//   td.disable {
-//     font-weight: 600;
-//     background: #fff;
-//   }
-// }
-
-// }
-
+::v-deep .CompAgGrid {
+  height: 340px !important;
+}
+::v-deep .el-date-editor--datetimerange.el-input__inner {
+  width: 300px;
+}
 </style>
 

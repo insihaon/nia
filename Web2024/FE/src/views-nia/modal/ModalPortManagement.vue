@@ -19,7 +19,7 @@
         <span slot="title">
           <i class="el-icon-s-tools mr-2 text-base" />
           포트 관리
-          <hr />
+          <hr>
         </span>
 
         <div class="des-class mr-2">
@@ -47,7 +47,7 @@
           />
         </div>
         <div slot="footer" class="dialog-footer">
-          <el-button size="small" plain class="close-btn" @click.native="close()">
+          <el-button size="small" plain @click.native="close()">
             {{ $t('exit') }}
           </el-button>
         </div>
@@ -95,14 +95,14 @@ export default {
       const options = { name: this.name + 'table1', checkable: false, rowGroupPanel: false, rowHeight: 30, rowSelection: 'multiple', rowMultiSelection: false }
         const columns = [
           { type: '', prop: 'rownum', name: '번호', minWidth: 20, flex: 0, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
-          { type: '', prop: 'if_id', name: 'I/F_ID', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false,
+          { type: '', prop: 'if_id', name: 'I/F_ID', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false,
           cellRendererFramework: 'CellRenderHyperlink', cellRendererParams: { type: 'portEdit', action: this.handleOpenEditModal.bind(this) } },
-          { type: '', prop: 'if_nm', name: 'I/F명', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
-          { type: '', prop: 'if_type', name: 'I/F타입', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
-          { type: '', prop: 'ip_addr', name: 'IP주소', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
-          { type: '', prop: 'if_speed', name: '대역폭(Gbps)', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
-          { type: '', prop: 'if_oper_status_info', name: '사용유무', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true },
-          { type: '', prop: 'chng_datetime', name: '수정일', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true },
+          { type: '', prop: 'if_nm', name: 'I/F명', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
+          { type: '', prop: 'if_type', name: 'I/F타입', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
+          { type: '', prop: 'ip_addr', name: 'IP주소', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
+          { type: '', prop: 'if_speed', name: '대역폭(Gbps)', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
+          { type: '', prop: 'if_oper_status_info', name: '사용유무', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true },
+          { type: '', prop: 'chng_datetime', name: '수정일', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true },
         ]
         return { options, columns, data: this.portList }
     }

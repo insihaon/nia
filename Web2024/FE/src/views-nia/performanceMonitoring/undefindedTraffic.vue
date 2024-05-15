@@ -31,10 +31,8 @@
             @onChangePage="(curPage) => onChangePage(curPage, 'AGENCY')"
             @searchClear="searchClear('AGENCY')"
           >
-            <template slot="button-area">
-              <div class="button-panel">
-                <el-button class="float-right" size="mini" type="info" @click="handleOpenEditModal('','AGENCY')">등록</el-button>
-              </div>
+            <template slot="add-function">
+              <el-button type="info" size="mini" icon="el-icon-edit" @click="handleOpenEditModal('', 'AGENCY')">등록</el-button>
             </template>
           </CompInquiryPannel>
         </div>
@@ -54,10 +52,8 @@
             @onChangePage="(curPage) => onChangePage(curPage, 'APP')"
             @searchClear="searchClear('APP')"
           >
-            <template slot="button-area">
-              <div class="button-panel">
-                <el-button class="float-right" size="mini" type="info" @click="handleOpenEditModal('', 'APP')">등록</el-button>
-              </div>
+            <template slot="add-function">
+              <el-button type="info" size="mini" icon="el-icon-edit" @click="handleOpenEditModal('', 'APP')">등록</el-button>
             </template>
           </CompInquiryPannel>
         </div>
@@ -136,7 +132,7 @@ export default {
   computed: {
     nationAgGrid() {
       const options = {
-        name: this.name + 'table1', rowGroupPanel: false, rowHeight: 40, rowSelection: 'multiple', rowMultiSelection: false, suppressRowClickSelection: true,
+        name: this.name + 'table1', rowGroupPanel: false, rowSelection: 'multiple', rowMultiSelection: false, suppressRowClickSelection: true,
       }
       const columns = [
         { type: '', prop: 'country_name', name: '국가명', minWidth: 120, flex: 0, suppressMenu: true, alignItems: 'center' },
@@ -146,7 +142,7 @@ export default {
     },
      agencyAgGrid() {
       const options = {
-        name: this.name + 'table2', rowGroupPanel: false, rowHeight: 40, rowSelection: 'multiple', rowMultiSelection: false, suppressRowClickSelection: true,
+        name: this.name + 'table2', rowGroupPanel: false, rowSelection: 'multiple', rowMultiSelection: false, suppressRowClickSelection: true,
       }
       const columns = [
         { type: '', prop: 'nren_name', name: '이용기관명', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center' },
@@ -158,7 +154,7 @@ export default {
     },
     appAgGrid() {
       const options = {
-        name: this.name + 'table3', rowGroupPanel: false, rowHeight: 40, rowSelection: 'multiple', rowMultiSelection: false, suppressRowClickSelection: true,
+        name: this.name + 'table3', rowGroupPanel: false, rowSelection: 'multiple', rowMultiSelection: false, suppressRowClickSelection: true,
       }
       const columns = [
         { type: '', prop: 'protocol', name: '어플리케이션명', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center' },
@@ -268,9 +264,9 @@ export default {
     },
     handleOpenEditModal(row, type) {
       if (type === 'AGENCY' || type === 'APP') {
-          this.$refs.ModalAddTrafficData.open({ type: type })
+          this.$refs.ModalAddTrafficData.open({ type })
       } else {
-        this.$refs.ModalEditTrafficData.open({ row: row, type: type })
+        this.$refs.ModalEditTrafficData.open({ row, type })
       }
     },
     refreshData() {

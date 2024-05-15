@@ -1,6 +1,7 @@
 import Layout from '@/views-nia/layout'
+const isMobile = window.deviceInfo.mobile
 
-export const niaLogin = import('@/views-nia/login/index')
+export const niaLogin = isMobile ? import('@/views-nia/login/m_index') : import('@/views-nia/login/index')
 export const niaHome = '/dashBoard/index'
 export const niaRoute = Object.freeze([
   {
@@ -15,7 +16,7 @@ export const niaRoute = Object.freeze([
     children: [
       {
         path: 'index',
-        component: () => import('@/views-nia/dashBoard/index'),
+        component: isMobile ? () => import('@/views-nia/dashBoard/m_index') : () => import('@/views-nia/dashBoard/index'),
         name: 'NiaMain',
         meta: { title: 'DashBoard', affix: false }
       }
@@ -101,14 +102,14 @@ export const niaRoute = Object.freeze([
     component: Layout,
     hidden: false,
     disable: false,
-    redirect: '/operationStatusScreen/controlScreen',
+    redirect: '/operationStatusScreen/operationStatusStatistics',
     meta: {
       title: '운용현황 화면',
     },
     children: [
       {
         path: 'controlScreen',
-        component: () => import('@/views-nia/dashBoard/index'),
+        component: isMobile ? () => import('@/views-nia/dashBoard/m_index') : () => import('@/views-nia/dashBoard/index'),
         name: 'NiaMain',
         meta: { title: '관제화면' },
       },

@@ -49,6 +49,15 @@ export function apiTransmissionAlarmList(params = {}) {
     data: params
   })
 }
+export function apiTransmissionTicketDetail(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_TRANSMISSION_TICKET_DETAIL',
+    data: params
+  })
+}
 export function apiDashboardStatistics(params = {}) {
   return http({
     url: '/selectList',
@@ -96,7 +105,7 @@ export function apiInterfaceList(params = {}) {
 }
 export function apiSelfProcessTrafficInfo(params = {}) {
   return http({
-    url: '/selectOne',
+    url: '/selectList',
     method: 'post',
     filePath: filePath,
     sqlId: 'SELECT_SELF_PROCESS_TRAFFIC_INFO',
@@ -105,7 +114,7 @@ export function apiSelfProcessTrafficInfo(params = {}) {
 }
 export function apiSelfProcessSyslogInfo(params = {}) {
   return http({
-    url: '/selectOne',
+    url: '/selectList',
     method: 'post',
     filePath: filePath,
     sqlId: 'SELECT_SELF_PROCESS_SYSLOG_INFO',
@@ -405,12 +414,12 @@ export function apiSelectProfileList(params = {}) {
   })
 }
 
-export function apiInsertProfileList(params = {}) {
+export function apiInsertProfileListProc(params = {}) {
   return http({
     url: '/selectOne',
     method: 'post',
     filePath: filePath,
-    sqlId: 'INSERT_PROFILE_LIST',
+    sqlId: 'insertProfileList',
     data: params
   })
 }
@@ -425,12 +434,12 @@ export function apiUpdateProfileList(params = {}) {
   })
 }
 
-export function apiDeleteProfileList(params = {}) {
+export function apiDeleteProfileListProc(params = {}) {
   return http({
     url: '/modify',
     method: 'post',
     filePath: filePath,
-    sqlId: 'DELETE_PROFILE_LIST',
+    sqlId: 'deleteProfileList',
     data: params
   })
 }

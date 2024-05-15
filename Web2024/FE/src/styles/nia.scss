@@ -6,19 +6,14 @@ table.basic {
   text-align: left;
   border-collapse: collapse;
   border: solid 1px $nia-primary;
-  th,
-  td {
-    padding: 10px;
-    border: 1px solid #bdbdbd;
-    text-align: left !important;
-  }
   th {
     font-weight: normal;
-    // color: #fff;
-    background: #cfd5e28f;
-    text-align: center !important;
-    font-size: 14px;
+    background: #e8ecf091;
+    text-align: right;
+    font-size: 13px;
     max-width: 50px;
+    color: #141414;
+    font-weight: 600;
   }
   td {
     font-weight: 600;
@@ -30,53 +25,86 @@ table.basic {
     font-weight: 600;
     background: #fff;
   }
+  .el-select {
+    width: 100%;
+  }
 }
 
-.nia-dialog {
-  font-family: 'NanumSquare';
+.nia-edit-dialog, .nia-dialog {
   .el-dialog {
     height: auto;
-    // width: 1500px;
-    border-radius: 7px;
-    // margin-top: 5vh !important; // 필요한 곳에서 설정하여 사용할 것
-    border: 2px solid $nia-primary;
+    border-radius: 15px;
+    border: 2px solid #3d4048;
+    // min-width: 700px !important;
     box-shadow: 0 1px 5px 0 rgb(0 0 0 / 27%);
   }
+
   .el-dialog__header {
+    height: 38px;
+    font-size: 15px;
     background-color: white;
     color: black;
-    font-size: 16px;
-    font-family: 'NanumSquare';
-    transform: rotate(0.03deg);
     font-weight: bold;
-    border-radius: 7px;
+    border-radius: 15px 15px 0px 0px;
+    padding: 0px 15px;
+    display: flex;
+    align-items: center;
+    border-bottom: solid 1px #999999;
+    .el-dialog__headerbtn {
+      top: 8px;
+    }
   }
   .el-dialog__body {
-    padding: 0 20px 10px 20px;
-    // height: 700px;
-    background: #fff;
+    padding: 15px;
+    background-color: #f2f2f2;
   }
   .el-dialog__footer {
-    height: 60px;
-    border-radius: 7px;
+    border-radius: 0px 0px 15px 15px;
     background-color: white;
-    .close-btn{
-      background: rgb(220, 216, 216);
-      color: $nia-primary;
-    }
+    border-top: solid 1px #999999;
+    height: 50px;
+    padding: 9px;
   }
   ~ .el-select-dropdown {
     min-width: 220px !important;
   }
-  .el-button {
+  .is-checked .el-checkbox__inner,
+  .is-checked .el-radio__inner {
+    border-color: #63666a !important;
+    background: #63666a !important;
+  }
+
+  .el-checkbox__input.is-checked + .el-checkbox__label,
+  .el-radio__input.is-checked + .el-radio__label {
+    color: #000000;
+    font-weight: bold;
+  }
+  .el-button--primary {
     background: #05092e;
+    border-color: #05092e;
     color: #fff;
+    &:hover{
+      background:#535356;
+      color: #fef0f0;
+    }
   }
   .common-btn {
     background: $nia-primary;
-      color: #fff;
+    color: #fff;
+    border-color: #05092e;
   }
-  span.title {
+
+
+  .delete-btn{
+    background: #fef0f0;
+    color: #f56c6c;
+    &:hover{
+      background: #f56c6c;
+      color: #fef0f0;
+    }
+  }
+  
+   span.title {
     margin: 0px 10px;
     font-weight: 700;
     font-size: 1rem;
@@ -92,63 +120,16 @@ table.basic {
   }
 }
 
-.nia-edit-dialog {
-  .el-dialog {
-    border: 2px solid $nia-primary;
-    box-shadow: 0 1px 5px 0 rgb(0 0 0 / 27%);
-    border-radius: 7px;
-    height: auto;
-    min-width: 700px !important;
-  }
-
-  .el-dialog__header {
-    background-color: white !important;
-    color: black !important;
-    font-size: 16px;
-    font-family: 'NanumSquare';
-    transform: rotate(0.03deg);
-    font-weight: bold;
-    border-radius: 7px;
-  }
-  .el-dialog__body {
-    padding: 0 20px 10px 20px;
-    max-height: auto;
-    background: #fff;
-  }
-
-  .is-checked .el-checkbox__inner,
-  .is-checked .el-radio__inner {
-    border-color: #63666a !important;
-    background: #63666a !important;
-  }
-
-  .el-checkbox__input.is-checked + .el-checkbox__label,
-  .el-radio__input.is-checked + .el-radio__label {
-    color: #000000;
-    font-weight: bold;
-  }
-
-  .el-dialog__footer {
-    height: 70px !important;
-    background-color: white !important;
-  }
-
-  .exit-btn{
-    background: gainsboro !important;
-    color: #000000 !important;
-  }
-
-  .delete_btn{
-    background: red !important;
-    &:hover{
-      background: rgba(255, 0, 0, 0.645) !important;
-    }
-  }
+.el-input.is-disabled .el-input__inner{
+  width: -webkit-fill-available !important;
+  margin-left: 0 !important;
 }
 
 
-
 .nia, .nia-dialog {
+  .CompAgGrid .ag-cell {
+    font-size: 13px;
+  }
   .splitter-paneL, .splitter-paneR {
     transition: all 0.25s;
   }
@@ -164,11 +145,6 @@ table.basic {
   }
   .el-radio-button__inner:hover {
     color: $nia-primary;
-  }
-  .el-button:hover {
-    color: $nia-primary;
-    border-color: #1e293b9e;
-    background-color: #1e293b24;;
   }
   // custom taps
   .el-tabs {
@@ -214,6 +190,17 @@ table.basic {
     border-bottom:1px solid #999999 !important;
     background-color:#F5F7FA;
     box-shadow: 0px 1px 3px rgba(0,0,0,0.1);
+  }
+  .el-pagination .btn-prev, .el-pagination .btn-next {
+    background-color: transparent;
+  }
+  .el-pager li {
+    background-color: transparent;
+  }
+}
+.mobile .nia {
+  .el-range-editor--mini.el-input__inner {
+    width: 100%;
   }
 }
 

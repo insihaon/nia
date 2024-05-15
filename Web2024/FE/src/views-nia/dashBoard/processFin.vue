@@ -1,84 +1,82 @@
 <template>
   <div :class="{ [name]: true }">
-    <transition :name="animation">
-      <el-dialog
-        v-if="animationVisible"
-        v-el-drag-dialog
-        :visible.sync="visible"
-        :width="domElement.maxWidth + `px`"
-        :height="domElement.maxHeight + `px`"
-        :fullscreen.sync="fullscreen"
-        :modal-append-to-body="true"
-        :append-to-body="true"
-        :modal="modal"
-        :close-on-click-modal="closeOnClickModal"
-        :loading="loading"
-        class="nia-dialog"
-        :class="{ [name]: true }"
-      >
-        <span slot="title">
-          <i class="el-icon-document mr-2 text-base" />
-          마감 처리
-          <hr />
-        </span>
-        <div class="d-flex flex-column h-100 rounded justify-between p-3">
-          <div class="shadow-sm p-1 mt-2">
-            <span class="title"><i class="el-icon-tickets" />조치 SOP</span>
-            <div class="d-flex p-2">
-              <div v-for="item in actionForm" :key="item.model">
-                <el-select v-model="finSop[item.model]" :placeholder="item.label">
-                  <el-option v-for="op in item.options" :key="op.value" :label="op.label" :value="op.value" />
-                </el-select>
-              </div>
-              <el-button size="small" class="ml-1" @click.native="$refs.ModalSopMng.open()"> 편집 </el-button>
-            </div>
-            <div class="px-2 input">
-              <el-input v-model="etcContent" placeholder="기타 조치내용 입력" />
-            </div>
-          </div>
-          <div class="shadow-sm p-1 mt-3">
-            <span class="title"><i class="el-icon-tickets" />AI 결과 피드백</span>
-            <div class="p-2">
-              <el-radio v-model="aiFeedback" label="0">일치</el-radio>
-              <el-radio v-model="aiFeedback" label="1">불일치</el-radio>
-            </div>
-            <div class="p-2">
-              <el-date-picker v-model="period" type="datetimerange" range-separator="To" start-placeholder="시작 시간" end-placeholder="종료 시간" :disabled="aiFeedback === '0'" />
-            </div>
-          </div>
-          <div class="shadow-sm p-1 mt-3 input">
-            <span class="title"><i class="el-icon-tickets" />피드백 내용</span>
-            <el-input v-model="fault_type_content" :disabled="aiFeedback === '0'" placeholder="AI 결과 피드백 내용 입력" />
-          </div>
+    <div class="d-flex flex-column h-100 rounded justify-between">
+      <el-card shadow="never" :body-style="{'padding': '10px'}">
+        <div slot="header">
+          <span><i class="el-icon-document" /> 조치 SOP</span>
         </div>
-        <div slot="footer" class="dialog-footer">
-          <el-button size="small" @click.native="onClickFin()"> 마감 </el-button>
-          <el-button size="small" plain class="close-btn" @click.native="close()">
+        <el-row>
+          <el-col v-for="item in actionForm" :key="item.model" :span="7">
+            <el-select v-model="finSop[item.model]" :placeholder="item.label" size="mini">
+              <el-option v-for="op in item.options" :key="op.value" :label="op.label" :value="op.value" />
+            </el-select>
+          </el-col>
+          <el-col :span="3">
+            <el-button class="edit" size="mini" type="primary" icon="el-icon-edit-outline" @click.native="$refs.ModalSopMng.open()"> 편집 </el-button>
+          </el-col>
+        </el-row>
+        <el-row class="px-2 input">
+          <el-input v-model="etcContent" placeholder="기타 조치내용 입력" />
+        </el-row>
+      </el-card>
+      <el-card shadow="never" :body-style="{'padding': '10px'}">
+        <div slot="header">
+          <span><i class="el-icon-document" /> AI 결과 피드백</span>
+        </div>
+        <el-row class="p-2 d-flex">
+          <el-radio v-model="aiFeedback" label="0">일치</el-radio>
+          <el-radio v-model="aiFeedback" label="1">불일치</el-radio>
+        </el-row>
+        <el-row class="p-2 d-flex">
+          <el-date-picker v-model="period" type="datetimerange" range-separator="To" start-placeholder="시작 시간" end-placeholder="종료 시간" :disabled="aiFeedback === '0'" />
+        </el-row>
+      </el-card>
+      <el-card shadow="never" :body-style="{'padding': '10px'}">
+        <div slot="header">
+          <span><i class="el-icon-document" /> 피드백 내용</span>
+        </div>
+        <el-row>
+          <el-col>
+            <el-input v-model="fault_type_content" :disabled="aiFeedback === '0'" placeholder="AI 결과 피드백 내용 입력" />
+          </el-col>
+        </el-row>
+      </el-card>
+      <el-row>
+        <el-col align="right" class="mt-2">
+          <el-button size="mini" type="primary" class="el-icon-edit-outline" @click.native="onClickFin()">
+            {{ selectedRow.status == 'FIN' || selectedRow.status == 'AUTO_FIN' ? '수정' : '마감' }}
+          </el-button>
+          <el-button size="mini" type="info" icon="el-icon-close" @click.native="$emit('windowClose')">
             {{ $t('exit') }}
           </el-button>
-        </div>
-        <ModalSopMng ref="ModalSopMng" />
-      </el-dialog>
-    </transition>
+        </el-col>
+      </el-row>
+    </div>
+    <ModalSopMng ref="ModalSopMng" />
   </div>
 </template>
-
 <script>
-import elDragDialog from '@/directive/el-drag-dialog'
-import { Modal } from '@/min/Modal.min'
+import { Base } from '@/min/Base'
 import _ from 'lodash'
 import { apiSelectSopCode, apiSendMQ } from '@/api/nia'
 import ModalSopMng from '@/views-nia/modal/ModalSopMng'
 import sopHistory from '@/views-nia/alarmMonitoring/sopHistory.vue'
 
-const routeName = 'ModalFIN'
+const routeName = 'processFin'
 
 export default {
   name: routeName,
   // eslint-disable-next-line vue/no-unused-components
   components: { sopHistory, ModalSopMng },
-  directives: { elDragDialog },
-  extends: Modal,
+  extends: Base,
+  props: {
+    wdata: {
+      type: Object,
+      default() {
+        return {}
+      }
+    },
+  },
   data() {
     return {
       name: routeName,
@@ -116,19 +114,13 @@ export default {
       ]
     },
   },
+  created () {
+    this.selectedRow = this.wdata?.params
+  },
   mounted() {
     this.onLoadSopCodeList()
   },
   methods: {
-    onCreated() {
-      Modal.methods.onCreated.call(this)
-      this.domElement.maxWidth = 750
-      // this.domElement.maxHeight = 1600
-      this.closeOnClickModal = false
-    },
-    onOpen(model, actionMode) {
-      this.selectedRow = model?.row
-    },
     async onLoadSopCodeList() {
       try {
         const res = await apiSelectSopCode({ IS_OPTION: true })
@@ -218,6 +210,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+::v-deep .el-select {
+  width: 100%;
+}
+::v-deep .edit.el-button--mini {
+  padding: 6px 10px;
+}
+::v-deep .el-input.is-disabled .el-input__inner {
+  width: 100% !important;
+  margin-left: 0px !important;
+}
 .input {
   ::v-deep .el-input .el-input__inner {
     border: solid 0px;

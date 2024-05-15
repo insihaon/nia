@@ -7,14 +7,13 @@
         </div>
         <div id="systeminfo-container">
           <div id="system-name" @click="onClickHeaderLogo()">NIA KOREN</div>
-          <div id="route-name"><span>|</span> {{ activeMenuTitle }}</div>
         </div>
         <!-- only parent -->
-        <nav v-if="!isMobile" id="menu-bar" class="h-full ml-14">
+        <nav v-if="!isMobile" id="menu-bar" class="h-full">
           <el-menu class="flex h-full" :background-color="bgColor" :text-color="textColor" style="border-right: 0px">
             <el-menu-item
               v-for="route in permission_routes"
-              v-if="isHidden(route)"
+              v-if="isHidden(route) && route.meta"
               id="menu-item"
               :key="route.path"
               style="line-height: 4rem"
@@ -27,7 +26,7 @@
           </el-menu>
         </nav>
       </div>
-      <div v-if="!isMobile" id="other-container" class="flex items-center">
+      <div v-if="!isMobile && isViewport('>', 'md')" id="other-container" class="flex items-center">
         <div id="function-container">
           <svg-icon class="mr-2" type="mdi" :path="path" @click.native="toggleHistoryBar" />
         </div>
@@ -51,6 +50,20 @@
             LogOut
           </button>
         </div>
+      </div>
+      <div v-else>
+        <el-dropdown class="h-100" trigger="click" style="font-size: 26px">
+          <div class="h-100 d-flex items-center" style="margin-right:10px">
+            <i style="background: white;border-radius: 20px;padding: 5px;" class="el-icon-user" />
+          </div>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item @click.native="$refs.ModaluserSettings.open()">정보수정</el-dropdown-item>
+            <el-dropdown-item @click.native="toggleHistoryBar">방문기록</el-dropdown-item>
+            <el-dropdown-item divided @click.native="logout">
+              <span style="display:block;">Log Out</span>
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
       </div>
     </div>
     <!-- all child -->
@@ -88,14 +101,10 @@ export default {
     }
   },
   computed: {
-    activeMenuTitle() {
-      return this.$route?.meta?.title ?? ''
-    },
     isActive() {
       return this.sidebar.opened
     },
-    ...mapGetters(['permission_routes', 'sidebar',]),
-    ...mapState({}),
+    ...mapGetters(['permission_routes', 'sidebar']),
   },
   created() {
     setInterval(() => {
@@ -128,7 +137,7 @@ export default {
     },
     hasGrant(grant) {
       const userAuth = Number(this.$store.state.user.info.lvl)
-      return ((userAuth || 1) & grant) == grant
+      return ((userAuth || 1) & grant) === grant
     },
     onClickHeaderLogo() {
       this.$router.push({ path: '/dashboard/index' })
@@ -184,10 +193,14 @@ export default {
     }
   }
   #menu-bar {
-    ul,
-    li {
+    margin-left: 40px;
+    min-width: 1350px;
+    ul, li {
       transition: all 0.4s;
       letter-spacing: 1px;
+    }
+    li {
+      text-align: center;
     }
   }
   ::v-deep #other-container {
@@ -236,9 +249,9 @@ export default {
   }
   #menu-item {
     font-size: 16px;
-    padding: 0px !important;
-    margin: 0 15px;
+    min-width: 150px;
     transition: all 0.4s;
+    padding: 0px !important;
     a:after {
       position: absolute;
       top: 100%;
@@ -264,17 +277,24 @@ export default {
     z-index: 3;
     height: 0px;
     width: 100%;
-    padding-left: 330px;
+    padding-left: 170px;
     overflow: hidden;
     background-color: #eef0f3;
     transition: height, 0.25s linear;
     #top-inner {
+      min-width: 1400px;
       padding-top: 8px;
       background-color: #eef0f3;
+      li {
+        min-width: 150px;
+        text-align: center;
+        padding: 5px;
+        border-left: solid 1px #91939975;
+      }
     }
   }
   .open#sub-menu {
-    height: 300px;
+    height: 250px;
     transition: height, 0.25s linear;
     box-shadow: 0 3px 3px rgba(0, 0, 0, 0.1);
   }

@@ -1,6 +1,6 @@
 <template>
-  <li v-if="isHidden(item)" :class="[{ ['sub'+idx]: true }]">
-    <template v-if="hasOneShowingAll(item.children, item)">
+  <li v-if="isHidden(item) && item.meta" :class="[{ ['sub'+idx]: true }]">
+    <template v-if="hasOneShowingChild(item.children, item)">
       <router-link v-if="item.meta" :to="resolvePath(onlyOneChild.path)">
         {{ item.meta.title }}
       </router-link>
@@ -65,9 +65,9 @@ export default {
     },
     hasGrant(grant) {
       const userAuth = Number(this.$store.state.user.info.lvl)
-      return ((userAuth || 1) & grant) == grant
+      return ((userAuth || 1) & grant) === grant
     },
-    hasOneShowingAll(children = [], parent) {
+    hasOneShowingChild(children = [], parent) {
       const showingChildren = children.filter(item => {
         if (item.hidden) {
           return false
@@ -77,10 +77,10 @@ export default {
           return true
         }
       })
-      // When there is only one child router, the child router is displayed by default
-      if (showingChildren.length > 0) {
-        return true
-      }
+      // All
+      // if (showingChildren.length > 0) {
+      //   return true
+      // }
 
       // Show parent if there are no child router to display
       if (showingChildren.length === 0) {
@@ -116,12 +116,19 @@ export default {
     font-size: 16px;
   }
   li > ul > li {
-    margin-top: 5px;
-    padding-left: 5px;
+    padding: 5px 5px;
+    border-radius: 5px;
+    transition: all 0.25s;
     a {
       font-size: 14px;
       font-weight: 600;
       color: #141414;
+    }
+    &:hover {
+      background: #1e293bb3;
+      a {
+        color: #fff;
+      }
     }
   }
   li > ul > li > ul > li {

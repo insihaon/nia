@@ -77,6 +77,7 @@ const Modal = {
   },
   created() {
     this.onCreated()
+    this.setMaxWidth()
   },
   activated() {
     // this.trace(`Modal activated ${this.name}`)
@@ -106,8 +107,8 @@ const Modal = {
   },
   computed: {
     model: {
-      get: function() { return this.result },
-      set: function(newValue) { this.result = newValue }
+      get: function () { return this.result },
+      set: function (newValue) { this.result = newValue }
     },
     dataForm() {
       // Vue Test Utils(VTU)로 Vue 컴포넌트 단위(Unit) 테스트  시 clearValidate 값이 undefined 로 발생하는 에러 방지
@@ -128,6 +129,11 @@ const Modal = {
     }
   },
   methods: {
+    setMaxWidth() {
+      if (this.isMobile || !this.domElement.maxWidth) {
+        this.domElement.maxWidth = window.innerWidth
+      }
+    },
     bringToFront(options) {
       const fn = options.beforeClose
       return Object.assign(options, {

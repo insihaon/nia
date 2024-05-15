@@ -5,7 +5,17 @@
     <div class="main-container" :class="[{ hasTagsView: needTagsView }, AppOptions.instance.project]">
       <div :class="{ 'fixed-header': fixedHeader }">
         <NavBar ref="navbar" />
-        <AppMain v-if="!popupLayout" ref="appmain" />
+        <div
+          v-if="$route.name !== 'NiaMain'"
+          class="cur-title-container"
+          :style="{'background-color': ($route.name.includes('Monitoring')) ? '#1f335d' : '#fff', color: ($route.name.includes('Monitoring')) ? '#fff' : '#141414'}"
+        >
+          <div>
+            <span><i class="el-icon-document" />홈 > {{ getCurPageParentTitle }} > </span>
+            <span>{{ getCurPageTitle }}</span>
+          </div>
+        </div>
+        <AppMain v-if="!popupLayout" ref="appmain" :style="{height: `calc(100vh - ${$route.name === 'NiaMain' ? '110': '155'}px)`}" />
         <BottomBar ref="bottombr" />
       </div>
     </div>
@@ -24,6 +34,7 @@ import NavBar from './navBar/index'
 import SideBar from './sideBar/index'
 import BottomBar from './BottomBar'
 import WindowBase from '@/views-nia/layout/components/WindowBase'
+import ResizeMixin from '@/layout/mixin/ResizeHandler'
 
 import { mapState, mapGetters } from 'vuex'
 
@@ -41,6 +52,7 @@ export default {
     WindowBase
   },
   extends: Base,
+  mixins: [ResizeMixin],
   data() {
     return {
       name: routeName,
@@ -52,6 +64,14 @@ export default {
   },
   computed: {
     ...mapGetters(['permission_routes']),
+    getCurPageTitle() {
+      return this.$route?.meta?.title ?? ''
+    },
+    getCurPageParentTitle() {
+      const parantPath = this.$route.path.split('/')[1]
+      const parantRoute = this.permission_routes.find(v => v.path === `/${parantPath}`)
+      return parantRoute?.meta?.title ?? ''
+    },
     loginUsername() {
       const userNM = this.username ? this.username.replace(/.$/, '*') : 'UNKONWN'
       return userNM
@@ -157,9 +177,8 @@ export default {
 }
 </script>
 <style lang="scss">
-@import '~@/assets/css/style_main.css';
 .common-padding {
-  padding: 5px 15px/* var(--common-padding) */;
+  padding: 15px/* var(--common-padding) */;
   position: relative;
   height: 100%;
   width: 100%;
@@ -173,6 +192,7 @@ export default {
 <style lang="scss" scoped>
 @import '~@/styles/mixin.scss';
 @import '~@/styles/variables.scss';
+@import "~@/assets/css/nia_style_main.css";
 
 .router-link-active {
   color: #93c3ed !important;
@@ -215,6 +235,27 @@ body.el-popup-parent--hidden .fixed-header {
 .en .fixed-header {
   width: calc(100% - 250px);
 }
+.cur-title-container {
+  width: 100%;
+  height: 45px;
+  padding: 15px 20px 5px 20px;
+  div {
+    padding-bottom: 5px;
+    border-bottom: solid 1px #EEEEEE;
+    i {
+      padding-right: 5px;
+    }
+    span:nth-child(1) {
+      font-weight: 500;
+      font-size: 13px;
+    }
+    span:nth-child(2) {
+      font-weight: 600;
+      font-size: 15px;
+    }
+  }
+}
+
 .container {
   text-align: center;
   position: relative;

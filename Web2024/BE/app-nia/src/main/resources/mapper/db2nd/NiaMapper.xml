@@ -262,25 +262,72 @@
    <!-- 전송망 TICKET -->
    <select id="SELECT_TRANSMISSION_ALARM_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
         SELECT 
-            AM.ALARMNO
-            , AM.SYSNAME 
-            , TO_CHAR(AM.ALARMTIME , 'YYYY-MM-DD HH24:MI:SS') AS ALARMTIME
-            , AM.ALARMLOC
-            , AM.ALARMMSG 
-            , TC.TICKET_ID 
-            , AC.TICKET_AL_ID 
-            , TC.TICKET_TYPE
-            , TC.STATUS 
-        FROM nia.tb_alarm_mst AM
-        LEFT JOIN rca.tb_rca_ticket_al_current AC ON AM.ALARMNO = AC.TICKET_AL_ID
-        LEFT JOIN rca.tb_rca_ticket_current TC ON AC.TICKET_ID = TC.TICKET_ID
-        <if test="IS_POLLING == null">
-            WHERE ALARMTIME <![CDATA[ > ]]>  now() - INTERVAL '7' day
-        </if>
-        <if test="IS_POLLING != null and IS_POLLING == true">
-            WHERE ALARMTIME <![CDATA[ >= ]]> (CURRENT_TIMESTAMP - INTERVAL '5 minutes')
-        </if>
-        ORDER BY ALARMTIME DESC
+			ALARMNO
+			, SYSNAME
+			, EQUIPTYPE
+            , TO_CHAR(ALARMTIME , 'YYYY-MM-DD HH24:MI:SS') AS ALARMTIME
+			, RECEIVETIME
+			, ALARMLOC
+			, ALARMMSG
+			, UNIT
+			, CLEARTIME
+			, PTPNAME
+			, SLOT
+			, PORT
+			, ALARMMSG_ORIGINAL
+			, RT.TICKET_ID
+			, RT.TICKET_TYPE
+            , TO_CHAR(RT.TICKET_GENERATION_TIME , 'YYYY-MM-DD HH24:MI:SS') AS TICKET_GENERATION_TIME
+            , TO_CHAR(RT.FAULT_TIME , 'YYYY-MM-DD HH24:MI:SS') AS FAULT_TIME
+			, RT.ROOT_CAUSE_TYPE
+			, RT.ROOT_CAUSE_DOMAIN
+			, RT.TOTAL_RELATED_ALARM_CNT
+			, RT.STATUS
+			, RT.TICKET_RCA_RESULT_CODE
+			, RT.TICKET_RCA_RESULT_DTL_CODE
+            , TO_CHAR(RT.TICKET_UPDATE_TIME , 'YYYY-MM-DD HH24:MI:SS') AS TICKET_UPDATE_TIME
+        FROM rca.tb_alarm_cur_mst AC
+     	LEFT JOIN rca.tb_rca_ticket_al_current AL ON AC.ALARMNO = AL.ROOT_CAUSE_ALARM_NOA
+     	LEFT JOIN rca.tb_rca_ticket_current RT ON RT.TICKET_ID = AL.TICKET_ID 
+     	WHERE ALARMNO LIKE 'T%' 
+        <!-- AND RT.TICKET_ID IS NOT NULL -->
+            <if test="IS_POLLING == null">
+                AND ALARMTIME <![CDATA[ > ]]>  NOW() - INTERVAL '14' day
+            </if>
+            <if test="IS_POLLING != null and IS_POLLING == true">
+                AND ALARMTIME <![CDATA[ >= ]]> (CURRENT_TIMESTAMP - INTERVAL '5 minutes')
+            </if>
+     	ORDER BY ALARMTIME DESC
+   </select>
+
+   <!-- 전송망 전표 상세 내역 조회 (근원/파생 알람) -->
+   <select id="SELECT_TRANSMISSION_TICKET_DETAIL" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+        SELECT 
+       		AC.ALARMNO
+       		, AC.CLUSTERNO
+       		, AC.SYSNAME
+       		, AC.EQUIPTYPE
+       		, TO_CHAR(AC.ALARMTIME , 'YYYY-MM-DD HH24:MI:SS') AS ALARMTIME
+            , TO_CHAR(AC.RECEIVETIME , 'YYYY-MM-DD HH24:MI:SS') AS RECEIVETIME
+       		, AC.ALARMLOC
+       		, AC.ALARMMSG
+       		, AC.UNIT
+       		, AC.ALARMLEVEL
+       		, AC.CLUSTERNO_ORIGINAL
+            , TO_CHAR(AC.CLEARTIME , 'YYYY-MM-DD HH24:MI:SS') AS CLEARTIME
+       		, AC.PTPNAME
+       		, AC.SLOT
+       		, AC.PORT
+       		, AC.ALARMMSG_ORIGINAL
+       		, AL.TICKET_ID AS AL_TICKET_ID
+        FROM rca.tb_alarm_cur_mst AC
+        LEFT JOIN rca.tb_rca_ticket_al_current AL ON AC.ALARMNO = AL.ROOT_CAUSE_ALARM_NOA
+        WHERE CLUSTERNO IN (
+	        SELECT CLUSTER_NO
+	        FROM rca.tb_rca_ticket_current
+	        WHERE TICKET_ID = #{TICKET_ID}
+	    )
+	    AND ALARMTIME <![CDATA[ > ]]> NOW() - INTERVAL '1' YEAR
    </select>
 
    <!-- 시스템 현황 모니터링 -->
@@ -355,65 +402,85 @@
        	LEFT JOIN nia.tb_sop ts ON tpd.ticket_id = ts.ticket_id 
        	LEFT JOIN nia.tb_syslog_sop tss ON tpd.alarmno = tss.alarmno
        	WHERE 1=1
-        <if test="DATE_TIME != null and DATE_TYPE == 'year'">
-       	    AND DATE_TRUNC('MONTH', tpd.OCCUR_TIME) = TO_TIMESTAMP(CONCAT(#{DATE_TIME}, '-01'), 'YYYY-MM-DD')
-        </if>
-        <if test="DATE_TIME != null and DATE_TYPE != 'year'">
-       	    AND tpd.OCCUR_TIME <![CDATA[ >= ]]> #{DATE_TIME}::TIMESTAMP
-            AND tpd.OCCUR_TIME <![CDATA[ < ]]> #{DATE_TIME}::TIMESTAMP + ('1'||#{DATE_TYPE})::INTERVAL
-        </if>
-        <if test="SELF_PROCESS_GROUP != '' and SELF_PROCESS_GROUP != null">
-            AND tpd.SELF_PROCESS_GROUP = #{SELF_PROCESS_GROUP}
-        </if>
-        <if test="SELF_PROCESS_TYPE != '' and SELF_PROCESS_TYPE != null">
-            AND tpd.SELF_PROCESS_TYPE = #{SELF_PROCESS_TYPE}
-        </if>
-        <if test="CLOS_TYPE != '' and CLOS_TYPE != null">
-            AND tpd.CLOS_TYPE = #{CLOS_TYPE}
-        </if>
-        <if test="CLOS_STATUS != '' and CLOS_STATUS != null">
-            AND tpd.CLOS_STATUS = #{CLOS_STATUS}
-        </if>
+        <choose>
+            <when test="TICKET_ID != '' and TICKET_ID != null">
+                tpd.ticket_id = #{TICKET_ID}
+            </when>
+            <when test="ALARMNO != '' and ALARMNO != null">
+                tpd.alarmno = #{ALARMNO}
+            </when>
+            <otherwise>
+                <if test="DATE_TIME != null and DATE_TYPE == 'month'">
+                    AND DATE_TRUNC('MONTH', tpd.OCCUR_TIME) = TO_TIMESTAMP(CONCAT(#{DATE_TIME}, '-01'), 'YYYY-MM-DD')
+                </if>
+                <if test="DATE_TIME != null and DATE_TYPE != 'month'">
+                    AND tpd.OCCUR_TIME <![CDATA[ >= ]]> #{DATE_TIME}::TIMESTAMP
+                    AND tpd.OCCUR_TIME <![CDATA[ < ]]> #{DATE_TIME}::TIMESTAMP + ('1'||#{DATE_TYPE})::INTERVAL
+                </if>
+                <if test="SELF_PROCESS_GROUP != '' and SELF_PROCESS_GROUP != null">
+                    AND tpd.SELF_PROCESS_GROUP = #{SELF_PROCESS_GROUP}
+                </if>
+                <if test="SELF_PROCESS_TYPE != '' and SELF_PROCESS_TYPE != null">
+                    AND tpd.SELF_PROCESS_TYPE = #{SELF_PROCESS_TYPE}
+                </if>
+                <if test="CLOS_TYPE != '' and CLOS_TYPE != null">
+                    AND tpd.CLOS_TYPE = #{CLOS_TYPE}
+                </if>
+                <if test="CLOS_STATUS != '' and CLOS_STATUS != null">
+                    AND tpd.CLOS_STATUS = #{CLOS_STATUS}
+                </if>
+		    </otherwise>
+        </choose>
+
+
+
+
        	ORDER BY TPD.OCCUR_TIME DESC
         <include refid="TotalCountSuffix"/>
     </select>
 
      <!-- 자가처리/자가구성 TICKET 트래픽 정보조회 -->
-    <select id="SELECT_SELF_PROCESS_TRAFFIC_INFO"  parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+    <select id="SELECT_SELF_PROCESS_TRAFFIC_INFO"  parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
          SELECT  
-            TICKET_ID,
-            ROOT_CAUSE_SYSNAMEA,
-            ROOT_CAUSE_PORTA,
-            ROOT_CAUSE_SYSNAMEZ,
-            ROOT_CAUSE_PORTZ
-        FROM    rca.tb_rca_ticket_al_current
+            AL.TICKET_ID
+            , AL.ROOT_CAUSE_SYSNAMEA
+            , AL.ROOT_CAUSE_PORTA
+            , AL.ROOT_CAUSE_SYSNAMEZ
+            , AL.ROOT_CAUSE_PORTZ
+            , TPD.SELF_PROCESS_GROUP
+            , TPD.SELF_PROCESS_TYPE
+        FROM    rca.tb_rca_ticket_al_current AL
+        LEFT JOIN nia.tb_auto_treat_process_dtl TPD ON TPD.TICKET_ID = AL.TICKET_ID
         <where>
             <trim prefix="(" prefixOverrides="AND|OR" suffix=")" suffixOverrides="">
                 <if test="TICKET_ID != null and TICKET_ID != ''">
-                    AND TICKET_ID = #{TICKET_ID}
+                    AND AL.TICKET_ID = #{TICKET_ID}
                 </if>
             </trim>
         </where>   
     </select>
 
      <!-- 자가처리 SYSLOG ALARM 정보조회 -->
-    <select id="SELECT_SELF_PROCESS_SYSLOG_INFO"  parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+    <select id="SELECT_SELF_PROCESS_SYSLOG_INFO" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
          SELECT  
-             ALARMNO
-            , TO_CHAR(ALARMTIME, 'YYYY-MM-DD HH24:MI:SS') AS ALARMTIME
-            , NODE_NUM
-            , NODE_NM
-            , ALARMMSG
-            , ALARMLVL
-            , ETC
-            , RULE_ID
-            , ALARMLOC
-            , STATUS
-        FROM    rca.tb_syslog_alarm_mst
+             SA.ALARMNO
+            , TO_CHAR(SA.ALARMTIME, 'YYYY-MM-DD HH24:MI:SS') AS ALARMTIME
+            , SA.NODE_NUM
+            , SA.NODE_NM
+            , SA.ALARMMSG
+            , SA.ALARMLVL
+            , SA.ETC
+            , SA.RULE_ID
+            , SA.ALARMLOC
+            , SA.STATUS
+            , TPD.SELF_PROCESS_GROUP
+            , TPD.SELF_PROCESS_TYPE
+        FROM    rca.tb_syslog_alarm_mst SA
+        LEFT JOIN nia.tb_auto_treat_process_dtl TPD ON TPD.ALARMNO = SA.ALARMNO
         <where>
             <trim prefix="(" prefixOverrides="AND|OR" suffix=")" suffixOverrides="">
                 <if test="ALARMNO != null and ALARMNO != ''">
-                    AND ALARMNO = #{ALARMNO}
+                    AND SA.ALARMNO = #{ALARMNO}
                 </if>
          </trim>
         </where>   
@@ -525,7 +592,7 @@
             , ROUND(FLTBPSOUT_THRESHOLD_LOWER::NUMERIC, 2) AS OUT_THRESHOLD_LOWER
             , FLTBPSOUT_ANOMALY AS OUT_ANOMALY
         FROM    rca.tb_anomalous_ai_result AR
-        INNER JOIN resource.tb_port_mst PM ON AR.STRRESID = PM.NODE_NUM AND AR.STRIFID = PM.IF_NUM
+        INNER JOIN resource.tb_port_mst PM ON AR.STRIFID = PM.NODE_NUM AND AR.STRRESID = PM.IF_NUM
         WHERE   PM.node_id= #{START_NODE}
         AND     PM.if_id = #{START_PORT}
         AND     MEASURED_DATETIME = #{FAULT_TIME}::TIMESTAMP
@@ -590,71 +657,6 @@
         WHERE ALARMLOC IS NOT NULL
     </select>
 
-    <!-- SOP 이력 조회 bak -->
-     <select id="SELECT_SOP_HIST_LIST_BAK" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
-     <include refid="TotalCountPrefix"/>
-        SELECT  SOP.SOP_ID ,
-                SOP.TICKET_ID ,
-                SOP.TICKET_TYPE ,
-                CASE WHEN SOP.TICKET_TYPE = 'ATT2' THEN '이상 트래픽'
-                WHEN SOP.TICKET_TYPE = 'NTT' THEN '유해 트래픽'
-                WHEN SOP.TICKET_TYPE = 'NFTT' THEN '장비 과부하 장애'
-                WHEN SOP.TICKET_TYPE = 'FTT' THEN '비장애'
-                ELSE '장애' END AS TICKETTYPE,
-                SOP.TICKET_RESULT ,
-                SOP.STATUS ,
-                TO_CHAR(SOP.REQUEST_TIME, 'YYYY-MM-DD HH24:MI:SS') AS REQUEST_TIME,
-                TO_CHAR(SOP.RECEIVE_TIME, 'YYYY-MM-DD HH24:MI:SS') AS RECEIVE_TIME,
-                SOP.DETAIL ,
-                SOP.FAULT_CLASSIFY ,
-                SOP.FAULT_TYPE ,
-                SOP.FAULT_DETAIL_CONTENT ,
-                SOP.ETC_CONTENT ,
-                SOP.AI_ACCURACY ,
-                al.ROOT_CAUSE_SYSNAMEA ,
-                al.ROOT_CAUSE_SYSNAMEZ ,
-                al.ROOT_CAUSE_PORTA ,
-                al.ROOT_CAUSE_PORTZ ,
-                NODEA.IP_ADDR AS IP_ADDRA ,
-                NODEZ.IP_ADDR AS IP_ADDRZ ,
-                TC.ROOT_CAUSE_TYPE AS ROOT_CAUSE_TYPE ,
-                TO_CHAR(TC.FAULT_TIME, 'YYYY-MM-DD HH24:MI:SS') AS FAULT_TIME ,
-                SOP.HANDLING_ACK_USER AS HANDLING_ACK_USER ,
-                TO_CHAR(SOP.HANDLING_ACK_TIME, 'YYYY-MM-DD HH24:MI:SS') AS HANDLING_ACK_TIME ,
-                SOP.HANDLING_FIN_USER AS HANDLING_FIN_USER ,
-                TO_CHAR(SOP.HANDLING_FIN_TIME, 'YYYY-MM-DD HH24:MI:SS') AS HANDLING_FIN_TIME 
-        FROM    ( SELECT ticket_id,
-                        MAX(ticket_al_id) AS ticket_al_id
-                FROM    rca.tb_rca_ticket_al_current tac
-                WHERE   1=1
-                <if test="TICKET_ID != null">
-                AND     tac.TICKET_ID LIKE '%' || #{TICKET_ID} || '%'
-                </if>
-                <if test="START_DATE == null and END_DATE == null">
-                AND     tac.INSERT_TIME <![CDATA[ > ]]> now() - INTERVAL '7' day
-                </if>
-                <if test="START_DATE != null">
-                AND     tac.INSERT_TIME <![CDATA[ >= ]]> #{START_DATE}::TIMESTAMP
-                </if>
-                <if test="END_DATE != null">
-                AND     tac.INSERT_TIME <![CDATA[ <= ]]> #{END_DATE}::TIMESTAMP
-                </if>
-                GROUP BY TICKET_ID ) AL_ID
-        INNER JOIN rca.tb_rca_ticket_al_current AL ON AL.TICKET_AL_ID = AL_ID.TICKET_AL_ID
-        INNER JOIN rca.tb_rca_ticket_current TC    ON AL_ID.TICKET_ID = TC.TICKET_ID
-        INNER JOIN nia.tb_sop SOP                  ON SOP.TICKET_ID = AL_ID.TICKET_ID
-        LEFT OUTER JOIN resource.tb_node_mst NODEA ON NODEA.node_id = AL.ROOT_CAUSE_SYSNAMEA
-        LEFT OUTER JOIN resource.tb_node_mst NODEZ ON NODEZ.node_id = AL.ROOT_CAUSE_SYSNAMEZ
-        WHERE 1=1
-        <if test="TICKET_TYPE != null">
-            AND TC.TICKET_TYPE IN (#{TICKET_TYPE})
-        </if>
-        <if test="ROOT_CAUSE_SYSNAMEA != null">
-            AND al.ROOT_CAUSE_SYSNAMEA <![CDATA[ = ]]> #{ROOT_CAUSE_SYSNAMEA}
-        </if>
-        ORDER BY SOP.REQUEST_TIME DESC 
-    <include refid="TotalCountSuffix"/>
-    </select>
     <!-- SOP 이력 조회 new -->
      <select id="SELECT_SOP_HIST_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
      <include refid="TotalCountPrefix"/>
@@ -712,6 +714,7 @@
         </if>
         <if test="ROOT_CAUSE_SYSNAMEA != null">
             AND AL.ROOT_CAUSE_SYSNAMEA <![CDATA[ = ]]> #{ROOT_CAUSE_SYSNAMEA}
+            AND request_time <![CDATA[ > ]]> now() - INTERVAL '1' month
         </if>
         ORDER BY SOP.REQUEST_TIME DESC 
     <include refid="TotalCountSuffix"/>
@@ -839,18 +842,21 @@
                         ELSE '미사용'
                 END AS use_yn
         FROM    gather.tb_syslog_rule_mst tsrm
-        <!-- <where>
-                <if test="syslog_rule_nm != null">
-                syslog_rule_nm = #{syslog_rule_nm}
-                </if>
-                <if test="occur_str != null and occur_str != ''">
-                AND occur_str1 = #{occur_str}
-                </if>
-                <if test="occur_except_str != null and occur_except_str != ''">
-                AND occur_except_str1 = #{occur_except_str}
-                </if> -->
-            ORDER BY syslog_rule_id
-         <!-- </where>  -->
+        WHERE 1=1
+            <if test="syslog_rule_nm != null and syslog_rule_nm != ''">
+            AND syslog_rule_nm = #{syslog_rule_nm}
+            </if>
+            <if test="occur_str != null and occur_str != ''">
+            AND UPPER(occur_str1) LIKE '%' || UPPER(#{occur_str}) || '%'
+            OR UPPER(occur_str2) LIKE '%' || UPPER(#{occur_str}) || '%'
+            OR UPPER(occur_str3) LIKE '%' || UPPER(#{occur_str}) || '%'
+            </if>
+            <if test="occur_except_str != null and occur_except_str != ''">
+            AND UPPER(occur_except_str1) LIKE '%' || UPPER(#{occur_except_str}) || '%'
+            OR UPPER(occur_except_str2) LIKE '%' || UPPER(#{occur_except_str}) || '%'
+            OR UPPER(occur_except_str3) LIKE '%' || UPPER(#{occur_except_str}) || '%'
+            </if>
+        ORDER BY syslog_rule_id
         <include refid="TotalCountSuffix"/>
     </select>
 
@@ -924,7 +930,7 @@
     <select id="SELECT_CHECK_RULE_NAME" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
     SELECT  syslog_rule_nm, COUNT(*)
     FROM    gather.tb_syslog_rule_mst
-    WHERE   syslog_rule_nm = #{SYSLOG_RULE_NM}
+    WHERE   syslog_rule_nm = TRIM(#{syslog_rule_nm})
     GROUP BY syslog_rule_nm
     HAVING  COUNT(*) <![CDATA[ > ]]> 0
     </select>
@@ -1423,6 +1429,11 @@
         <include refid="TotalCountSuffix"/>
     </select>
 
+    <!-- 프로파일 번호 max 값  -->
+     <select id="SELECT_MAX_PROFILE_NUM" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
+     SELECT MAX(PROFILE_NUM) AS max_profile_num FROM RESOURCE.TB_FAULT_PROCESS_PROFILE;
+    </select>
+
     <!-- 조치 프로파일 리스트 추가 -->
     <insert id="INSERT_PROFILE_LIST" parameterType="java.util.HashMap">
         INSERT INTO RESOURCE.TB_FAULT_PROCESS_PROFILE
@@ -1580,9 +1591,14 @@
     <!-- 프로파일 리커버리 리스트 삭제 -->
     <delete id="DELETE_PROFILE_NODE_NAME_LIST" parameterType="hashmap">
         DELETE FROM RESOURCE.TB_FAULT_PROCESS_IF
-        <!-- WHERE SERIAL_NUM = #{serial_num} -->
         WHERE PROFILE_NUM = #{profile_num}
               AND NODE_ID = #{node_id}
+    </delete>
+
+    <!-- 프로파일 리커버리 리스트 삭제 (프로파일 삭제시) -->
+    <delete id="DELETE_PROFILE_NODE_LIST" parameterType="hashmap">
+      DELETE FROM RESOURCE.TB_FAULT_PROCESS_IF
+            WHERE PROFILE_NUM = #{profile_num}
     </delete>
 
     <!-- 노드리스트 조회 -->
