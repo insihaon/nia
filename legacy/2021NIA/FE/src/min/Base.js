@@ -1,10 +1,10 @@
 import { AppOptions } from '@/class/appOptions'
 import { Device } from '@/class/device'
 import { ModalManager } from '@/class/modalManager'
-import WebSocketManager from '@/min/webSocketManager'
 import elAdaptiveTable from '@/directive/el-table' // base on element-ui
+import WebSocketManager from '@/min/webSocketManager'
 import variables from '@/styles/variables.scss'
-import { assert, assertEquals, deepCloneFilter, getViewportArr, parseTime, simplize, toJson, wait, humanNumber } from '@/utils'
+import { assert, assertEquals, deepCloneFilter, getViewportArr, humanNumber, parseTime, simplize, toJson, wait } from '@/utils'
 import _ from 'lodash'
 import moment from 'moment'
 import Vue from 'vue'
@@ -21,6 +21,7 @@ const Base = {
       return input.length > limit ? `${input.substring(0, limit)}...` : input
     },
   },
+  confirmBtn: 'body div.el-message-box__wrapper div.el-message-box__btns .el-button--default.el-button--small.el-button--primary',
   directives: { elAdaptiveTable },
   data() {
     return {
@@ -657,3 +658,4 @@ const Base = {
 }
 
 export { Base }
+
