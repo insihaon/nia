@@ -231,17 +231,24 @@ public class NiaService extends MainService {
 
             // 등록시 추가한 노드명 리스트(tableData) INSERT
             ArrayList<HashMap<String, Object>> tableData = (ArrayList<HashMap<String, Object>>) param.get("tableData");
-            for (HashMap<String, Object> data : tableData) {
-                String node_id = (String) data.get("name");
-                ResultMap maxProfile = profile_num.get(0);
-                String maxProfileNum = String.valueOf(maxProfile.get("max_profile_num"));
-                param.put("profile_num", maxProfileNum);
-                param.put("node_id", node_id);
-    
-                result2 = niaMapper.INSERT_PROFILE_NODE_NAME_LIST(param);
+            if(tableData != null && tableData.size() > 0){
+
+                for (HashMap<String, Object> data : tableData) {
+                    String node_id = (String) data.get("name");
+                    ResultMap maxProfile = profile_num.get(0);
+                    String maxProfileNum = String.valueOf(maxProfile.get("max_profile_num"));
+                    param.put("profile_num", maxProfileNum);
+                    param.put("node_id", node_id);
+        
+                    result2 = niaMapper.INSERT_PROFILE_NODE_NAME_LIST(param);
+
+                    if(result2 < 0){
+                        throw new Exception(String.format("Failed to DELETE_PROFILE_NODE_LIST: %s", profile_num));
+                    }
+                }
             }
 
-            if (result > 0 && result2 > 0) {
+            if (result > 0) {
                 transactionManager.commit(txStatus);
             } else {
                 throw new Exception(String.format("Fail insertProfileList, %s", param.toString()));

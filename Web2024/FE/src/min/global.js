@@ -2,7 +2,7 @@ import { AppOptions } from '@/class/appOptions'
 // import { TempStore } from '@/class/tempStore'
 import { ModalManager } from '@/class/modalManager'
 import http from '@/min/http.min'
-import { exportServicelist, getLastSql, getServicelist, getApilist, resendService } from '@/min/route'
+import { exportServicelist, getApilist, getLastSql, getServicelist, resendService } from '@/min/route'
 import router from '@/router'
 import $store from '@/store'
 import { assert, assertEquals, clone, deepClone, deepCloneFilter, toJson, wait } from '@/utils'
@@ -10,7 +10,7 @@ import clip from '@/utils/clipboard'
 import hotkeys from 'hotkeys-js'
 import _ from 'lodash'
 import Vue from 'vue'
-;(function (global) {
+(function (global) {
   const helper = {
     Vue,
     $store: $store,
@@ -179,7 +179,6 @@ import Vue from 'vue'
       //   console.timeEnd(label)
       //   await wait(1000)
       // }
-
     },
     copySrc() {
       const src = global.v.src
@@ -372,6 +371,10 @@ import Vue from 'vue'
     hotkeys(`alt+5`, 'debug', function (event, handler) {
       event.preventDefault()
       global.testResponsiveView()
+    })
+
+    hotkeys(`alt+7`, 'debug', function (event, handler) {
+      this.autoTest()
     })
 
     // for (let index = 0; index < 3; index++) {
