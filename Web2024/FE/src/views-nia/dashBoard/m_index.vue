@@ -454,7 +454,7 @@ export default {
       }
     },
     onChangeSidePaneSize(val) {
-        window.helper.$store.dispatch('settings/changeSetting', {
+        window.helper?.$store.dispatch('settings/changeSetting', {
         key: 'sidePaneSize',
         value: val
       })

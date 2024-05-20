@@ -38,4 +38,7 @@ public class NiaRabbitMQProperites {
     @Value("${spring.rabbitmq.niaUiToEngine:nia.UiToEngineIndexDirectly}")
     private String niaUiToEngine;
 
+    @Value("${spring.rabbitmq.niaEngineToUi:nia.EngineToUiIndexDirectly}")
+    private String niaEngineToUi;
+
 }

@@ -12,6 +12,9 @@ spring:
     init:
       platform: postgres
       encoding: UTF-8
+  rabbitmq:
+    enabled: false # 접속 불가 환경을 위해 추가함
+    niaEngineToUi: TEST_MQ_Queue1 # 2024.05.20 운영서버 알람을 가져오지 않기 위한 임시 설정
 
 file:
   upload-dir: ./external
