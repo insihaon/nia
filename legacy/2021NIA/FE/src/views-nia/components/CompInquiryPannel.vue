@@ -89,6 +89,9 @@
               엑셀 저장
             </el-button>
             <slot name="add-function" />
+            <div id="function-container" class="mx-lg-2" @click="onDebugTest">
+              <svg-icon v-if="debugTestMode" type="mdi" class="my-xl-1" :path="path" />
+            </div>
           </el-col>
         </el-row>
       </div>
@@ -120,6 +123,7 @@
 import { Base } from '@/min/Base.min'
 import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
 import CompCheckSelector from '@/views-nia/components/CompCheckSelector'
+import { mdiBugOutline } from '@mdi/js'
 
 const routeName = 'CompInquiryPannel'
 export default {
@@ -135,7 +139,7 @@ export default {
           pageSize: 50,
           totalCount: null,
           totalPages: null,
-          pagerCount: null
+          pagerCount: null,
         }
       }
     },
@@ -171,17 +175,17 @@ export default {
       type: Object,
       default() { return {} }
     },
-
     customSearchContainerHeight: {
       type: String,
       default() { return null }
-    }
+    },
   },
   data() {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       selectedItem: [],
+      path: mdiBugOutline
     }
   },
   computed: {
@@ -201,6 +205,9 @@ export default {
     },
     totalCount() {
       return this.humanNumber(this.paginationInfo?.totalCount)
+    },
+    debugTestMode() {
+      return this.appOptions.debug
     }
   },
   watch: {
@@ -244,12 +251,12 @@ export default {
         this.$emit('onChangePage', this.paginationInfo.currentPage) // 특정 페이지로 이동할 때 데이터 다시 가져오기
       }
     },
-    refreshData() {
-      this.selectedItem = []
-    },
     handleExcel() {
       const name = `${this.title}_${this.toStringTime(new Date(), 'YYMMDD')}`
       this.$refs.compSearchEquip.exportExcel(name)
+    },
+    onDebugTest() {
+      this.$emit('onDebugTest', '')
     }
   }
 }
@@ -263,4 +270,18 @@ export default {
   padding: 7px 10px;
 }
 </style>
-
+<style lang="scss" scoped>
+    #function-container {
+      svg,
+      i {
+        background: orange;
+        border-radius: 5px;
+        transition: all 0.4s;
+        &:hover {
+          scale: 1.2;
+          font-size: 20px;
+          cursor: pointer;
+        }
+      }
+    }
+</style>

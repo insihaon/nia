@@ -189,6 +189,8 @@ div.search-container>div.optionBox{
 div.optionBox>div>div.searchBtnGroup{
   border-top: solid 1px #909399;
   padding-top: 10px;
+  display: flex; 
+  justify-content: center;
 }
 div.optionRow{
   padding: 5px 0px;

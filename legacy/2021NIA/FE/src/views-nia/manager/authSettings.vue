@@ -132,6 +132,12 @@ export default {
           console.error(error)
         }
       })
+    },
+    async autoTest() {
+      const { assert, wait, onLoadAuthList } = this
+      await onLoadAuthList()
+      assert(this.userData.length > 0)
+      await wait(1000)
     }
   },
 }

@@ -412,11 +412,7 @@ export default {
       })
     },
     /* 프로파일 등록 */
-    handleInsertProfile() {
-      if (!this.auto_process_check && this.autoProcTime.length === 0) {
-        this.$message('자동 처리 기간을 설정하세요')
-        return false
-      }
+    handleInsertProfile(mode) {
       this.confirm('등록하시겠습니까?', '조치프로파일 등록', {
         confirmButtonText: 'OK',
         cancelButtonText: 'Cancel',
@@ -437,6 +433,9 @@ export default {
             email_check: this.email_check,
             tableData: this.tableData
           }
+           if (mode) {
+             this._merge(param, { commit: false })
+           }
           const insertRes = await apiInsertProfileListProc(param)
           if (insertRes.success) {
             this.$message('등록 되었습니다.')
@@ -451,7 +450,7 @@ export default {
       })
     },
     /* 프로파일 삭제 */
-    handleDeleteProfile() {
+    handleDeleteProfile(mode) {
       this.confirm('삭제하시겠습니까?', '조치프로파일 삭제', {
         confirmButtonText: 'OK',
         cancelButtonText: 'Cancel',
@@ -459,8 +458,11 @@ export default {
       }).then(async () => {
         const param = {
           profile_num: this.rowInfo.profile_num,
-          tableData: this.tableData
+          tableData: this.tableData,
         }
+         if (mode) {
+          this._merge(param, { commit: false })
+         }
         try {
           const res = await apiDeleteProfileListProc(param)
 
@@ -476,7 +478,7 @@ export default {
       })
     },
     /* 프로파일 수정 */
-    handleUpdateProfile() {
+    handleUpdateProfile(mode) {
       this.confirm('저장하시겠습니까?', '조치프로파일 수정', {
         confirmButtonText: 'OK',
         cancelButtonText: 'Cancel',
@@ -497,6 +499,9 @@ export default {
             auto_recovery: this.auto_recovery,
             email_check: this.email_check,
           }
+           if (mode) {
+             this._merge(param, { commit: false })
+           }
           const res = await apiUpdateProfileList(param)
           if (res.success) {
             this.$message('수정 되었습니다.')

@@ -10,6 +10,7 @@
       @handleClickSearch="onClickSearch"
       @onChangePage="(curPage) => onChangePage(curPage)"
       @searchClear="searchClear"
+      @onDebugTest="autoTest"
     />
   </div>
 </template>
@@ -17,6 +18,7 @@
 import { Base } from '@/min/Base.min'
 import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
 import { apiSelectEquipAmountUsedList } from '@/api/nia'
+import { shallowMount } from '@vue/test-utils'
 
 const routeName = 'EquipmentUsage'
 
@@ -80,12 +82,21 @@ export default {
 
   mounted() {
     this.onLoadUsageList()
+    this.autoTest()
   },
+
   methods: {
+     async autoTest() {
+      const { assert, wait, onLoadUsageList, query } = this
+      query.writer = 'daejeon'
+      await onLoadUsageList()
+      assert(this.equitmentsData.length > 0)
+      await wait(1000)
+    },
     onClickSearch(params) {
       this.onLoadUsageList(params)
     },
-    async onLoadUsageList() {
+    async onLoadUsageList(vue = {}) {
       const target = { vue: this.$refs.equipmentUsage }
       this.openLoading(target)
       const param = {

@@ -299,6 +299,18 @@ export default {
     onClickRow(rows, type) {
       this.$refs.ModalSopDetail.open({ row: rows[0], type })
     },
+    async autoTest() {
+      const { assert, wait, onLoadSopHistList, onLoadSyslogHistList } = this
+        if (this.tapCurrent === 'ticket') {
+          await onLoadSopHistList()
+          await wait(1000)
+          assert(this.sopHistList.length > 0)
+        } else {
+          await onLoadSyslogHistList()
+          await wait(1000)
+          assert(this.syslogHistList.length > 0)
+        }
+      }
   },
 }
 </script>

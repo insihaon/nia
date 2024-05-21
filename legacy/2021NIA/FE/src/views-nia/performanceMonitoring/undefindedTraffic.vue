@@ -1,7 +1,7 @@
 <template>
   <div :class="{ [name]: true }">
-    <el-tabs class="h-100 common-padding" style="flex:1">
-      <el-tab-pane label="국가">
+    <el-tabs v-model="activeName" class="h-100 common-padding" style="flex:1">
+      <el-tab-pane label="국가" name="nation">
         <div class="h-100 flex-fill" sytle="height: 100%">
           <CompInquiryPannel
             ref="trafficNation"
@@ -14,10 +14,11 @@
             @handleClickSearch="onClickSearch"
             @onChangePage="(curPage) => onChangePage(curPage, 'NATION')"
             @searchClear="searchClear('NATION')"
+            @onDebugTest="autoTest"
           />
         </div>
       </el-tab-pane>
-      <el-tab-pane label="이용기관">
+      <el-tab-pane label="이용기관" name="agency">
         <div class="h-90 flex-fill" sytle="height: 100%">
           <CompInquiryPannel
             ref="trafficAgency"
@@ -30,6 +31,7 @@
             @handleClickSearch="onClickSearch"
             @onChangePage="(curPage) => onChangePage(curPage, 'AGENCY')"
             @searchClear="searchClear('AGENCY')"
+            @onDebugTest="autoTest"
           >
             <template slot="add-function">
               <el-button type="info" size="mini" icon="el-icon-edit" @click="handleOpenEditModal('', 'AGENCY')">등록</el-button>
@@ -38,7 +40,7 @@
         </div>
 
       </el-tab-pane>
-      <el-tab-pane label="어플리케이션">
+      <el-tab-pane label="어플리케이션" name="app">
         <div class="h-100 flex-fill" sytle="height: 100%">
           <CompInquiryPannel
             ref="trafficApp"
@@ -51,6 +53,7 @@
             @handleClickSearch="onClickSearch"
             @onChangePage="(curPage) => onChangePage(curPage, 'APP')"
             @searchClear="searchClear('APP')"
+            @onDebugTest="autoTest"
           >
             <template slot="add-function">
               <el-button type="info" size="mini" icon="el-icon-edit" @click="handleOpenEditModal('', 'APP')">등록</el-button>
@@ -126,6 +129,7 @@ export default {
         protocol: '',
         port_num: '',
       },
+      activeName: 'nation'
     }
   },
 
@@ -164,6 +168,13 @@ export default {
       ]
       return { options, columns, data: this.appData, getRightClickMenuItems: () => { return [] } }
     },
+  },
+  watch: {
+    'activeName'(n, o) {
+      if (n !== o) {
+        this.autoTest()
+      }
+    }
   },
   mounted() {
     this.onLoadNationList()
@@ -272,6 +283,26 @@ export default {
     refreshData() {
        this.onLoadAgencyList()
        this.onLoadAppList()
+    },
+    async autoTest() {
+      const { assert, wait, onLoadNationList, onLoadAgencyList, onLoadAppList, query } = this
+      query.writer = '숭실대학교'
+      switch (this.activeName) {
+        case 'nation':
+          await onLoadNationList()
+          await wait(1000)
+          assert(this.nationData.length > 0)
+          break
+        case 'agency':
+          await onLoadAgencyList()
+          await wait(1000)
+          assert(this.agencyData.length > 0)
+          break
+        default: await onLoadAppList()
+          await wait(1000)
+          assert(this.appData.length > 0)
+          break
+      }
     }
   },
 }

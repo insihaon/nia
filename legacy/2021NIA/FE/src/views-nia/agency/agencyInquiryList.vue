@@ -12,6 +12,7 @@
       @handleClickSearch="onClickSearch"
       @onChangePage="(curPage) => onChangePage(curPage)"
       @searchClear="searchClear"
+      @onDebugTest="autoTest"
     />
     <ModalAgencyDetail ref="ModalAgencyDetail" @systemEdit="onLoadAgencyList()" />
   </div>
@@ -113,7 +114,18 @@ export default {
     handleOpenModalDetail(row, type) {
       this.$refs.ModalAgencyDetail.open({ row, type })
     },
-  },
+    async autoTest() {
+      const { assert, wait, onLoadAgencyList } = this
+      await onLoadAgencyList()
+      assert(this.agencyData.length > 0)
+      await wait(1000)
+      window.ref.ModalAgencyDetail.open({ row: this.agencyData[2] })
+      await wait(1000)
+      window.ref.ModalAgencyDetail.updateAgencyData('test')
+      await wait(1000)
+      window.ref.ModalAgencyDetail.close()
+      document.querySelector(Base.exportExcel).click()
+    }
+  }
 }
 </script>
-l

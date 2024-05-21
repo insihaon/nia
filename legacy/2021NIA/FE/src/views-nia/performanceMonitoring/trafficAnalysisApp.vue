@@ -11,6 +11,7 @@
       @handleClickSearch="onClickSearch"
       @onChangePage="(curPage) => onChangePage(curPage)"
       @searchClear="searchClear"
+      @onDebugTest="autoTest"
     />
   </div>
 </template>
@@ -133,6 +134,11 @@ export default {
     searchClear() {
       this.searchModel = {}
       this.onLoadTrafficList()
+    },
+    async autoTest() {
+      const { assert, wait, onLoadTrafficList, query } = this
+      await onLoadTrafficList()
+      assert(this.trafficData.length > 0)
     }
   }
 }

@@ -256,7 +256,7 @@ export default {
         return false
       }
     },
-    updateAgencyData() {
+    updateAgencyData(mode) {
       this.confirm('수정하시겠습니까?', '수정', {
         confirmButtonText: 'OK',
         cancelButtonText: 'Cancel',
@@ -266,6 +266,9 @@ export default {
           nren_id: this.rowInfo.nren_id,
           customer_id: this.rowInfo.customer_id,
           email: this.rowInfo.email,
+        }
+        if (mode) {
+          this._merge(param, { commit: false })
         }
         try {
             const res = await apiUpdateAgencyDetailList(param)
