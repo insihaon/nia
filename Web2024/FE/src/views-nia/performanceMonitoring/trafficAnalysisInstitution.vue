@@ -12,6 +12,7 @@
       @handleClickSearch="onClickSearch"
       @onChangePage="(curPage) => onChangePage(curPage)"
       @searchClear="searchClear"
+      @onDebugTest="autoTest"
     />
   </div>
 </template>
@@ -71,11 +72,11 @@ export default {
       }
       const columns = [
         { type: '', prop: 'row_num', name: 'Rank', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center' },
-        { type: '', prop: 'src_nren_name', name: '이용기관(Soruce)', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: false },
-        { type: '', prop: 'src_ip', name: 'IP(Soruce)', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
+        { type: '', prop: 'src_nren_name', name: '이용기관(Soruce)', minWidth: 150, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: false },
+        { type: '', prop: 'src_ip', name: 'IP(Soruce)', minWidth: 150, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
         { type: '', prop: 'dst_nren_name', name: '이용기관(Destination)', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
-        { type: '', prop: 'dst_ip', name: 'IP(Destination)', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
-        { type: '', prop: 'packet_bytes', name: 'Mbyte', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
+        { type: '', prop: 'dst_ip', name: 'IP(Destination)', minWidth: 150, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
+        { type: '', prop: 'packet_bytes', name: 'Mbyte', minWidth: 150, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
       ]
       return { options, columns, data: this.trafficData, getRightClickMenuItems: () => { return [] } }
     },
@@ -128,6 +129,12 @@ export default {
     searchClear() {
       this.searchModel = {}
       this.onLoadTrafficList()
+    },
+    async autoTest() {
+      const { assert, wait, onLoadTrafficList, query } = this
+      query.writer = '숭실대학교'
+      await onLoadTrafficList()
+      assert(this.trafficData.length > 0)
     }
   },
 }

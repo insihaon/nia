@@ -354,7 +354,7 @@ export default {
         })
       })
     },
-    updateLinkData() {
+    updateLinkData(mode) {
       this.confirm('수정하시겠습니까?', '수정', {
         confirmButtonText: 'OK',
         cancelButtonText: 'Cancel',
@@ -370,6 +370,9 @@ export default {
           vlan: this.rowInfo.VLAN,
           tag: this.rowInfo.TAG,
         }
+        if (mode) {
+          this._merge(param, { commit: false })
+        }
         try {
           const res = await apiUpdateLinkList(param)
           if (res.success) {
@@ -383,7 +386,7 @@ export default {
         }
       })
     },
-    deleteLinkData() {
+    deleteLinkData(mode) {
       this.confirm('삭제하시겠습니까?', '삭제', {
         confirmButtonText: 'OK',
         cancelButtonText: 'Cancel',
@@ -394,6 +397,9 @@ export default {
           src_if_id: this.ipForm.src_if_id,
           dest_node_id: this.ipForm.dest_node_id,
           dest_if_id: this.ipForm.dest_if_id,
+        }
+        if (mode) {
+          this._merge(param, { commit: false })
         }
         try {
           const res = await apiDeleteLinkList(param)

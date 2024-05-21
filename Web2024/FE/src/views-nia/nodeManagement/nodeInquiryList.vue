@@ -12,6 +12,7 @@
       @handleClickSearch="onClickSearch"
       @onChangePage="(curPage) => onChangePage(curPage)"
       @searchClear="searchClear"
+      @onDebugTest="autoTest"
     />
     <ModalNodeDetail ref="ModalNodeDetail" />
     <ModalPortManagement ref="ModalPortManagement" />
@@ -138,7 +139,25 @@ export default {
         this.$refs.ModalPortManagement.open({ row: row, type: type })
       }
     },
-
+     async autoTest() {
+      const { assert, wait, onLoadTrafficList } = this
+      await onLoadTrafficList()
+      assert(this.nodeData.length > 0)
+      await wait(1000)
+      window.ref.ModalNodeDetail.open({ row: this.nodeData[3], type: 'nodeDetail' })
+      await wait(1000)
+      window.ref.ModalNodeDetail.close()
+      await wait(1000)
+      window.ref.ModalPortManagement.open({ row: this.nodeData[3] })
+      await wait(1000)
+      window.ref.ModalPortEdit.open({ row: this.nodeData[3] })
+      await wait(1000)
+      window.ref.ModalPortEdit.close()
+      await wait(1000)
+      window.ref.ModalPortManagement.close()
+      await wait(1000)
+      document.querySelector(Base.exportExcel).click()
+    }
   },
 }
 </script>

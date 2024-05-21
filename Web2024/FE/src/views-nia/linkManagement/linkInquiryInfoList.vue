@@ -11,6 +11,7 @@
       class="w-100 h-100"
       @handleClickSearch="onClickSearch"
       @onChangePage="(curPage) => onChangePage(curPage)"
+      @onDebugTest="autoTest"
       @searchClear="searchClear"
     >
       <template slot="add-function">
@@ -125,7 +126,25 @@ export default {
     handleOpenModalDetail(row, type) {
       this.$refs.ModalLinkDetail.open({ row, type })
     },
-  },
+    async autoTest() {
+     const { assert, wait, onLoadLinkList } = this
+     await onLoadLinkList()
+     assert(this.linkData.length > 0)
+     await wait(1000)
+     window.ref.ModalLinkDetail.open({ row: this.linkData[3] })
+     await wait(1000)
+     window.ref.ModalLinkDetail.updateLinkData('test')
+     await wait(1000)
+     document.querySelector(Base.confirmBtn).click()
+     await wait(1000)
+     window.ref.ModalLinkDetail.deleteLinkData('test')
+     await wait(1000)
+     document.querySelector(Base.confirmBtn).click()
+     await wait(1000)
+     window.ref.ModalLinkDetail.close()
+     await wait(1000)
+     document.querySelector(Base.exportExcel).click()
+    }
+  }
 }
 </script>
-l

@@ -22,6 +22,7 @@ const Base = {
     },
   },
   confirmBtn: 'body div.el-message-box__wrapper div.el-message-box__btns .el-button--default.el-button--small.el-button--primary',
+  exportExcel: 'button.el-button.excel-form-export.el-button--button.el-button--mini',
   directives: { elAdaptiveTable },
   data() {
     return {

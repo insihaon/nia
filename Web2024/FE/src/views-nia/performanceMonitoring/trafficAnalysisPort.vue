@@ -10,6 +10,7 @@
       @handleClickSearch="onClickSearch"
       @onChangePage="(curPage) => onChangePage(curPage)"
       @searchClear="searchClear"
+      @onDebugTest="autoTest"
     />
   </div>
 </template>
@@ -106,6 +107,8 @@ export default {
       this.onLoadTrafficList(params)
     },
     async onLoadTrafficList() {
+      const target = { vue: this.$refs.syslogRules }
+      this.openLoading(target)
       const param = {
         node_name: this.searchModel.node_name,
         if_name: this.searchModel.if_name,
@@ -123,6 +126,8 @@ export default {
         this.paginationInfo.totalPages = Math.ceil(this.paginationInfo.totalCount / this.paginationInfo.pageSize) // 전체 페이지 수 계산
       } catch (error) {
         console.error(error)
+      } finally {
+        this.closeLoading(target)
       }
     },
     onChangePage(curPage) {
@@ -132,6 +137,12 @@ export default {
     searchClear() {
       this.searchModel = {}
       this.onLoadTrafficList()
+    },
+    async autoTest() {
+      const { assert, wait, onLoadTrafficList, query } = this
+      query.writer = '숭실대학교'
+      await onLoadTrafficList()
+      assert(this.trafficData.length > 0)
     }
   }
 }

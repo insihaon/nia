@@ -179,7 +179,7 @@ export default {
 <style lang="scss" scoped>
 
 ::v-deep .el-form-item__label {
-  width: 90px;
+  width: 95px;
   margin-left: 5px;
   line-height: 20px;
 }

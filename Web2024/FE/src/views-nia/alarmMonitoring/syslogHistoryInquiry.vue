@@ -12,6 +12,7 @@
       @handleClickSearch="onClickSearch"
       @onChangePage="(curPage) => onChangePage(curPage)"
       @searchClear="searchClear"
+      @onDebugTest="autoTest"
     />
   </div>
 </template>
@@ -137,6 +138,11 @@ export default {
     searchClear() {
       this.searchModel = {}
       this.onLoadSyslogHistList()
+    },
+    async autoTest() {
+      const { assert, wait, onLoadSyslogHistList } = this
+      await onLoadSyslogHistList()
+      assert(this.ruleData.length > 0)
     }
   }
 }

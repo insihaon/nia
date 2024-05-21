@@ -10,6 +10,7 @@
       @selectedRow="(row)=> handleOpenModalDetail(row,'EDIT')"
       @handleClickSearch="onClickSearch"
       @searchClear="searchClear"
+      @onDebugTest="autoTest"
     >
       <template slot="add-function">
         <el-button type="info" size="mini" icon="el-icon-edit" @click="handleOpenModalDetail('', 'OPEN')">등록</el-button>
@@ -23,6 +24,7 @@ import { Base } from '@/min/Base.min'
 import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
 import { apiSyslogRuleList } from '@/api/nia'
 import ModalSyslogRules from '@/views-nia/modal/ModalSyslogRules.vue'
+import { global } from '@/min/global.js'
 
 const routeName = 'SyslogRuleHistoryInquiry'
 export default {
@@ -32,6 +34,7 @@ export default {
   extends: Base,
   data() {
     return {
+      global: global,
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       paginationInfo: {
@@ -117,13 +120,23 @@ export default {
       this.searchModel = {}
       this.onLoadSyslogRuleList()
     },
+    async autoTest() {
+      const { assert, wait, onLoadSyslogRuleList, query } = this
+      query.writer = 'daejeon'
+      await onLoadSyslogRuleList()
+      assert(this.ruleData.length > 0)
+      window.ref.ModalSyslogRules.open({ type: 'OPEN' })
+      await wait(1000)
+      window.ref.ModalSyslogRules.insertSyslogRule()
+      await wait(1000)
+    },
   }
 }
 </script>
 
 <style lang="scss" scoped>
 .SyslogRuleHistoryInquiry{
-   ::v-deep .ag-cell-value{
+   ::v-deep .ag-cell-value {
     cursor: pointer !important;
   }
 }
