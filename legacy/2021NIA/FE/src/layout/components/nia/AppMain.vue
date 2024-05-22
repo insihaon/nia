@@ -1,7 +1,7 @@
 <template>
   <section class="app-main common-font">
     <HistoryBar ref="historybar" />
-    <div v-if="isOpenHistorybar" class="drawer-bg" @click="handleClickOutside" />
+    <div v-if="isMobile && isOpenHistorybar" class="drawer-bg" @click="handleClickOutside" />
     <transition name="fade-transform" mode="out-in" :duration="duration">
       <keep-alive :include="cachedViews">
         <router-view :key="key" :style="{ 'padding-right': isMobile ? '0px' : getHistoryOffset }" style="transition: all 0.3s" />
