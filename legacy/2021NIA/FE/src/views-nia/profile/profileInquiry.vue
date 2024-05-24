@@ -12,6 +12,7 @@
       @handleClickSearch="onClickSearch"
       @onChangePage="(curPage) => onChangePage(curPage)"
       @searchClear="searchClear"
+      @onDebugTest="autoTest"
     >
       <template slot="add-function">
         <el-button type="info" size="mini" icon="el-icon-edit" @click="handleOpenModalDetail('', 'OPEN')">등록</el-button>
@@ -82,7 +83,7 @@ export default {
   },
   methods: {
     onSortedChange(param) {
-       this.onLoadProfileList()
+      this.onLoadProfileList()
     },
     onClickSearch(params) {
       this.onLoadProfileList(params)
@@ -118,7 +119,26 @@ export default {
     handleOpenModalDetail(row, type) {
       this.$refs.ModalProfileDetail.open({ row, type })
     },
-  },
+    async autoTest() {
+      const { assert, wait, onLoadProfileList, query } = this
+      query.writer = '대전'
+      await onLoadProfileList()
+      assert(this.trafficData.length > 0)
+      window.ref.ModalProfileDetail.open({ type: 'OPEN' })
+      await wait(1000)
+      window.ref.ModalProfileDetail.close()
+      await wait(1000)
+      window.ref.ModalProfileDetail.open({ row: this.trafficData[0], type: 'profileDetail' })
+      await wait(1000)
+      window.ref.ModalProfileDetail.handleUpdateProfile('test')
+      document.querySelector(Base.confirmBtn).click()
+      await wait(1000)
+      document.querySelector(Base.confirmBtn).click()
+      await wait(1000)
+      window.ref.ModalProfileDetail.close()
+      await wait(1000)
+    }
+  }
 }
 </script>
 
