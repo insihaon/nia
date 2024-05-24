@@ -181,14 +181,13 @@ div.headerLogOut>span{
 div.headerLogOut:hover::before{
   background-color:rgba(255,255,255,0.15);
 }
-div.search-container>div.optionBox{
-  border: 1px solid #909399;
-  padding: 10px 20px;
-  border-radius: 5px;
-}
+
+
+
 div.optionBox>div>div.searchBtnGroup{
   border-top: solid 1px #909399;
   padding-top: 10px;
+  padding-bottom: 10px;
   display: flex; 
   justify-content: center;
 }

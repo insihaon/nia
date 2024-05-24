@@ -127,7 +127,11 @@ export default {
       assert(this.ruleData.length > 0)
       window.ref.ModalSyslogRules.open({ type: 'OPEN' })
       await wait(1000)
+      window.ref.ModalSyslogRules.close()
+      await wait(1000)
       window.ref.ModalSyslogRules.insertSyslogRule()
+      await wait(1000)
+      document.querySelector(Base.confirmBtn).click()
       await wait(1000)
     },
   }

@@ -1,7 +1,8 @@
 <template>
   <div :class="{ [name]: true , 'common-padding': !isModal}" class="common-font d-flex flex-column">
     <div class="search-container" :style="setContainerHeight">
-      <div v-if="isSearch" class="optionBox">
+      <div v-if="isSearch" class="optionBox" :class="{'minizeOption': minizeOption }">
+
         <!-- 조회 옵션상자 -->
         <el-row class="optionRow">
           <el-col v-for="(item, index) in items" :key="index" :xs="24" :sm="12" :md="12" :lg="8" :xl="6">
@@ -77,6 +78,7 @@
             </div>
           </el-col>
         </el-row>
+
         <el-row>
           <el-col :span="24" align="center" class="searchBtnGroup" :class="{'is-mobile': isMobile}">
             <el-button class="btn-r" type="info" size="mini" icon="el-icon-search" @click="onClickSearchButton">
@@ -94,6 +96,11 @@
             </div>
           </el-col>
         </el-row>
+        <div class="sizeChangeBtn" @click="toggleMinizeOption">
+          <i v-show="!minizeOption" class="el-icon-close" />
+          <i v-show="minizeOption" class="el-icon-arrow-down" />
+        </div>
+
       </div>
     </div>
     <!-- agGrid -->
@@ -185,7 +192,8 @@ export default {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       selectedItem: [],
-      path: mdiBugOutline
+      path: mdiBugOutline,
+      minizeOption: false
     }
   },
   computed: {
@@ -215,6 +223,9 @@ export default {
   mounted() {
   },
   methods: {
+      toggleMinizeOption() {
+      this.minizeOption = !this.minizeOption
+    },
     getHeight() {
       return this.$parent?.$parent?.name?.includes('Modal') || this.isModal ? '500px' : '100%'
     },
@@ -284,4 +295,63 @@ export default {
         }
       }
     }
+
+   /* 검색창 collapse CSS */
+  .optionBox {
+    position: relative;
+    border: 1px solid #909399;
+    padding: 10px 20px;
+    border-radius: 5px;
+  }
+
+  .optionBox > .sizeChangeBtn {
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    background-color: #909399;
+    border-radius: 100%;
+    text-align: center;
+    line-height: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-10%);
+    user-select: none;
+    display: block;
+    opacity: 0;
+    transition: all 0.25s;
+  }
+
+  .minizeOption {
+    height: 0px;
+    padding: 0;
+    transition: all 0.25s;
+  }
+
+  .minizeOption > * {
+    display: none;
+  }
+
+  .optionBox:hover > .sizeChangeBtn,
+  .minizeOption > .sizeChangeBtn {
+    opacity: 1;
+  }
+
+  .optionBox > .sizeChangeBtn:hover {
+    transform: translateX(-50%) translateY(-10%) scale(1.4);
+    z-index: 100;
+  }
+
+  .optionBox > .sizeChangeBtn:active {
+    transition: none;
+    transform: translateX(-50%) translateY(-10%) scale(0.85);
+  }
+
+  .optionBox > .sizeChangeBtn > i {
+    color: #ffffff;
+    cursor: pointer;
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+    align-items: center;
+  }
+
 </style>
