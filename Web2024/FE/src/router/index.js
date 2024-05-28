@@ -20,6 +20,7 @@ const { dataHubHome, dataHubLogin, dataHubRoute } = require('./dataHub/index')
 // const { aiTemplateHome, aiTemplateLogin, aiTemplateRoute } = require('./aiTemplate/index')
 import { aiTemplateHome, aiTemplateLogin, aiTemplateRoute } from './aiTemplate/index'
 const { niaHome, niaLogin, niaRoute } = require('./nia/index')
+const { ipmsHome, ipmsLogin, ipmsRoute } = require('./ipms/index')
 
 let loginView
 let projectRoute
@@ -39,6 +40,11 @@ switch (project) {
     loginView = niaLogin
     projectRoute = niaRoute
     projectHome = niaHome
+    break
+  case 'ipms':
+    loginView = ipmsLogin
+    projectRoute = ipmsRoute
+    projectHome = ipmsHome
     break
   default:
     break
