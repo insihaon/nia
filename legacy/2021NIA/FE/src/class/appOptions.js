@@ -29,7 +29,7 @@ export class AppOptions extends Storage {
       dark: false,
       mobile: Device.instance.mobile ?? false,
       mock: null,
-      projectList: ['datahub', 'nia'],
+      projectList: ['datahub', 'nia', 'ipms'],
       project: APP_PROJECT?.toLowerCase(),
       baseURL: null,
       useWebsocket: this.readEnv(process.env.VUE_APP_USE_WEBSOCKET, true),

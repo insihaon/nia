@@ -306,9 +306,9 @@ export default {
 
   .optionBox > .sizeChangeBtn {
     position: absolute;
-    width: 22px;
-    height: 22px;
-    background-color: #909399;
+    width: 20px;
+    height: 20px;
+    background-color: #1e293b;
     border-radius: 100%;
     text-align: center;
     line-height: 20px;
@@ -349,6 +349,7 @@ export default {
     color: #ffffff;
     cursor: pointer;
     display: inline-block;
+    line-height: 20px;
     padding: 0;
     margin: 0;
     align-items: center;
