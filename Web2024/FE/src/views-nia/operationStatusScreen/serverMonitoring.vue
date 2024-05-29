@@ -1,19 +1,12 @@
 <template>
-  <div :class="{ [name]: true }" style="background-color: #1f335d;">
+  <div :class="{ [name]: true }" style="background-color: #1f335d">
     <div class="all-container w-100">
       <div class="sub-container">
         <div class="title">서버 자원 사용량 <i class="el-icon-refresh" @click="reloadData('resource')" /></div>
         <div class="d-flex">
           <div v-for="(item, index) in resource" :key="index" class="frame-container" :class="item.class">
             <div class="frame-title">{{ item.title }}</div>
-            <iframe
-              id="resource"
-              scrolling="yes"
-              :src="item.url"
-              width="100%"
-              height="300px"
-              frameBorder="0"
-            />
+            <iframe id="resource" scrolling="yes" :src="item.url" width="100%" height="300px" frameBorder="0" />
           </div>
         </div>
       </div>
@@ -23,27 +16,13 @@
         <div class="d-flex">
           <div v-for="(item, index) in file3Hours1" :key="index" class="frame-container" :class="item.class">
             <div class="frame-title">{{ item.title }}</div>
-            <iframe
-              id="file3Hours"
-              scrolling="yes"
-              :src="item.url"
-              width="100%"
-              height="150px"
-              frameBorder="0"
-            />
+            <iframe id="file3Hours" scrolling="yes" :src="item.url" width="100%" height="150px" frameBorder="0" />
           </div>
         </div>
         <div class="d-flex">
           <div v-for="(item, index) in file3Hours2" :key="index" class="frame-container" :class="item.class">
             <div class="frame-title">{{ item.title }}</div>
-            <iframe
-              id="file3Hours"
-              scrolling="yes"
-              :src="item.url"
-              width="100%"
-              height="150px"
-              frameBorder="0"
-            />
+            <iframe id="file3Hours" scrolling="yes" :src="item.url" width="100%" height="150px" frameBorder="0" />
           </div>
         </div>
       </div>
@@ -53,44 +32,23 @@
         <div class="d-flex">
           <div v-for="(item, index) in fileDays" :key="index" class="frame-container" :class="item.class">
             <div class="frame-title">{{ item.title }}</div>
-            <iframe
-              id="fileDays"
-              scrolling="yes"
-              :src="item.url"
-              width="100%"
-              height="150px"
-              frameBorder="0"
-            />
+            <iframe id="fileDays" scrolling="yes" :src="item.url" width="100%" height="150px" frameBorder="0" />
           </div>
         </div>
       </div>
 
       <div class="sub-container">
-        <div class="title">파일 데이터 Value 시각화 및 실시간  <i class="el-icon-refresh" @click="reloadData('fileData')" /></div>
+        <div class="title">파일 데이터 Value 시각화 및 실시간 <i class="el-icon-refresh" @click="reloadData('fileData')" /></div>
         <div class="d-flex">
           <div v-for="(item, index) in fileData1" :key="index" class="frame-container" :class="item.class">
             <div class="frame-title">{{ item.title }}</div>
-            <iframe
-              id="fileData"
-              scrolling="yes"
-              :src="item.url"
-              width="100%"
-              height="200px"
-              frameBorder="0"
-            />
+            <iframe id="fileData" scrolling="yes" :src="item.url" width="100%" height="200px" frameBorder="0" />
           </div>
         </div>
         <div class="d-flex">
           <div v-for="(item, index) in fileData2" :key="index" class="frame-container" :class="item.class">
             <div class="frame-title">{{ item.title }}</div>
-            <iframe
-              id="fileData"
-              scrolling="yes"
-              :src="item.url"
-              width="100%"
-              height="200px"
-              frameBorder="0"
-            />
+            <iframe id="fileData" scrolling="yes" :src="item.url" width="100%" height="200px" frameBorder="0" />
           </div>
         </div>
 
@@ -99,40 +57,19 @@
           <div class="d-flex">
             <div v-for="(item, index) in fileWrong1" :key="index" class="frame-container" :class="item.class">
               <div class="frame-title">{{ item.title }}</div>
-              <iframe
-                id="fileWrong"
-                scrolling="yes"
-                :src="item.url"
-                width="100%"
-                height="150px"
-                frameBorder="0"
-              />
+              <iframe id="fileWrong" scrolling="yes" :src="item.url" width="100%" height="150px" frameBorder="0" />
             </div>
           </div>
           <div class="d-flex">
             <div v-for="(item, index) in fileWrong2" :key="index" class="frame-container" :class="item.class">
               <div class="frame-title">{{ item.title }}</div>
-              <iframe
-                id="fileWrong"
-                scrolling="yes"
-                :src="item.url"
-                width="100%"
-                height="150px"
-                frameBorder="0"
-              />
+              <iframe id="fileWrong" scrolling="yes" :src="item.url" width="100%" height="150px" frameBorder="0" />
             </div>
           </div>
           <div class="d-flex">
             <div v-for="(item, index) in fileWrong3" :key="index" class="frame-container" :class="item.class">
               <div class="frame-title">{{ item.title }}</div>
-              <iframe
-                id="fileWrong"
-                scrolling="yes"
-                :src="item.url"
-                width="100%"
-                height="150px"
-                frameBorder="0"
-              />
+              <iframe id="fileWrong" scrolling="yes" :src="item.url" width="100%" height="150px" frameBorder="0" />
             </div>
           </div>
         </div>
@@ -141,17 +78,9 @@
           <div class="title">수집 데이터 <i class="el-icon-refresh" @click="reloadData('collect')" /></div>
           <div v-for="(item, index) in collect" :key="index" class="frame-container" :class="item.class">
             <div class="frame-title">{{ item.title }}</div>
-            <iframe
-              id="collect"
-              scrolling="yes"
-              :src="item.url"
-              width="100%"
-              height="220px"
-              frameBorder="0"
-            />
+            <iframe id="collect" scrolling="yes" :src="item.url" width="100%" height="220px" frameBorder="0" />
           </div>
         </div>
-
       </div>
     </div>
   </div>
@@ -175,7 +104,7 @@ export default {
       tempSrc: 'http://incodej-lab.iptime.org:3000/d-solo/XB7JYac7z/koren_data_all?orgId=1&panelId=24',
       resource: [
         { title: 'CPU 사용량', url: prefixUrl + '/LBlvJ7p7z/server_status?orgId=1&refresh=1m&panelId=14', class: 'w-50' },
-        { title: 'Memory 사용량', url: prefixUrl + '/LBlvJ7p7z/server_status?orgId=1&refresh=1m&panelId=12', class: 'w-50' }
+        { title: 'Memory 사용량', url: prefixUrl + '/LBlvJ7p7z/server_status?orgId=1&refresh=1m&panelId=12', class: 'w-50' },
       ],
       file3Hours1: [
         { title: '장비', url: prefixUrl + '/88QEOB2nz/file_size?orgId=1&refresh=1m&panelId=22', class: 'w-50' },
@@ -216,30 +145,27 @@ export default {
       fileWrong3: [
         { title: 'Sflow 트래픽', url: prefixUrl + '/88QEOB2nz/file_size?orgId=1&panelId=12', class: 'w-2/6' },
         { title: '광세기', url: prefixUrl + '/88QEOB2nz/file_size?orgId=1&panelId=6', class: 'w-2/6' },
-        { title: 'IP 트래픽', url: prefixUrl + '/88QEOB2nz/file_size?orgId=1&panelId=11', class: 'w-2/6' }
+        { title: 'IP 트래픽', url: prefixUrl + '/88QEOB2nz/file_size?orgId=1&panelId=11', class: 'w-2/6' },
       ],
       collect: [
         { title: '광세기', url: prefixUrl + '/XB7JYac7z/koren_data_all?orgId=1&panelId=14', class: 'w-100' },
         { title: '트래픽', url: prefixUrl + '/XB7JYac7z/koren_data_all?orgId=1&panelId=16', class: 'w-100' },
         { title: 'Sflow', url: prefixUrl + '/XB7JYac7z/koren_data_all?orgId=1&panelId=18', class: 'w-100' },
-      ]
+      ],
     }
   },
 
-  computed: {
-  },
-  mounted() {
-
-  },
+  computed: {},
+  mounted() {},
   methods: {
     reloadData(type) {
       const elements = document.querySelectorAll(`#${type}`)
       if (elements && elements.length > 0) {
-        elements.forEach(el => {
-          el.src = el?.src
+        elements.forEach((el) => {
+          el.src = el?.src || ''
         })
       }
-    }
+    },
   },
 }
 </script>

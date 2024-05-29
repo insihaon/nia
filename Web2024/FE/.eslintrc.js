@@ -28,15 +28,8 @@ module.exports = {
         after: true,
       },
     ],
-    "vue/html-self-closing": ["error", {
-      "html": {
-        "void": "never",
-        "normal": "always",
-        "component": "always"
-      },
-      "svg": "always",
-      "math": "always"
-    }],
+    'vue/html-self-closing': 'off',
+    'vue/no-mutating-props': 'off', // props값 변경에 대한 error
     'block-spacing': [2, 'always'],
     'brace-style': [
       2,
