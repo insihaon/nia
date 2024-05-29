@@ -7,7 +7,7 @@
       :search-model.sync="searchModel"
       :pagination-info="paginationInfo"
       class="w-100 h-100"
-      @selectedRow="(row)=> handleOpenModalDetail(row,'EDIT')"
+      @selectedRow="(row) => handleOpenModalDetail(row, 'EDIT')"
       @handleClickSearch="onClickSearch"
       @searchClear="searchClear"
       @onDebugTest="autoTest"
@@ -24,7 +24,6 @@ import { Base } from '@/min/Base.min'
 import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
 import { apiSyslogRuleList } from '@/api/nia'
 import ModalSyslogRules from '@/views-nia/modal/ModalSyslogRules.vue'
-import { global } from '@/min/global.js'
 
 const routeName = 'SyslogRuleHistoryInquiry'
 export default {
@@ -34,7 +33,6 @@ export default {
   extends: Base,
   data() {
     return {
-      global: global,
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       paginationInfo: {
@@ -42,7 +40,7 @@ export default {
         pageSize: 50, // 페이지당 항목 수
         totalCount: 0, // 총 항목 수
         totalPages: null, // 전체 페이지 수
-        pagerCount: 11
+        pagerCount: 11,
       },
       selectedRow: [],
       ruleData: [],
@@ -61,7 +59,10 @@ export default {
   computed: {
     authAgGrid() {
       const options = {
-        name: this.name + 'table1', rowGroupPanel: false, rowSelection: 'multiple', rowMultiSelection: false,
+        name: this.name + 'table1',
+        rowGroupPanel: false,
+        rowSelection: 'multiple',
+        rowMultiSelection: false,
       }
       const columns = [
         { type: '', prop: 'syslog_rule_id', name: 'RULE ID', minWidth: 100, flex: 0, suppressMenu: true, sortable: true },
@@ -74,7 +75,14 @@ export default {
         { type: '', prop: 'occur_except_str3', name: '제외 키워드3', minWidth: 100, flex: 0, suppressMenu: true, sortable: true, filterable: false },
         { type: '', prop: 'use_yn', name: '사용 여부', minWidth: 100, flex: 0, suppressMenu: true, sortable: true, filterable: true },
       ]
-      return { options, columns, data: this.ruleData, getRightClickMenuItems: () => { return [] } }
+      return {
+        options,
+        columns,
+        data: this.ruleData,
+        getRightClickMenuItems: () => {
+          return []
+        },
+      }
     },
   },
   mounted() {
@@ -101,8 +109,8 @@ export default {
           label: item.syslog_rule_nm,
           value: item.syslog_rule_nm,
         }))
-        const items = this.searchItems.find(item => {
-         return item.model === 'syslog_rule_nm'
+        const items = this.searchItems.find((item) => {
+          return item.model === 'syslog_rule_nm'
         })
         items.options = ruleNameData
         this.paginationInfo.totalCount = res.total
@@ -134,13 +142,13 @@ export default {
       document.querySelector(Base.confirmBtn).click()
       await wait(1000)
     },
-  }
+  },
 }
 </script>
 
 <style lang="scss" scoped>
-.SyslogRuleHistoryInquiry{
-   ::v-deep .ag-cell-value {
+.SyslogRuleHistoryInquiry {
+  ::v-deep .ag-cell-value {
     cursor: pointer !important;
   }
 }
