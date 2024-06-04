@@ -81,6 +81,7 @@ import { Base } from '@/min/Base.min'
 import ChildItem from './ChildItem'
 import { mdiHistory } from '@mdi/js'
 import { mapState, mapGetters } from 'vuex'
+import { isExternal } from '@/utils/validate'
 import ModaluserSettings from '@/views-nia/userManagement/ModaluserSettings'
 
 const routeName = 'NavBar'
