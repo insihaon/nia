@@ -272,7 +272,7 @@ export default {
   }
 }
 </script>
-<style lang="css" scoped>
+<style lang="scss" scoped>
 @import "~@/assets/css/nia_style_main.css";
 ::v-deep .el-range-editor--mini.el-input__inner {
   width: 100%;
@@ -280,79 +280,17 @@ export default {
 ::v-deep .is-mobile.searchBtnGroup .el-button--mini {
   padding: 7px 10px;
 }
-</style>
-<style lang="scss" scoped>
-    #function-container {
-      svg,
-      i {
-        background: orange;
-        border-radius: 5px;
-        transition: all 0.4s;
-        &:hover {
-          scale: 1.2;
-          font-size: 20px;
-          cursor: pointer;
-        }
-      }
-    }
-
-   /* 검색창 collapse CSS */
-  .optionBox {
-    position: relative;
-    border: 1px solid #909399;
-    padding: 10px 20px;
+#function-container {
+  svg,
+  i {
+    background: orange;
     border-radius: 5px;
+    transition: all 0.4s;
+    &:hover {
+      scale: 1.2;
+      font-size: 20px;
+      cursor: pointer;
+    }
   }
-
-  .optionBox > .sizeChangeBtn {
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    background-color: #1e293b;
-    border-radius: 100%;
-    text-align: center;
-    line-height: 20px;
-    left: 50%;
-    transform: translateX(-50%) translateY(-10%);
-    user-select: none;
-    display: block;
-    opacity: 0;
-    transition: all 0.25s;
-  }
-
-  .minizeOption {
-    height: 0px;
-    padding: 0;
-    transition: all 0.25s;
-  }
-
-  .minizeOption > * {
-    display: none;
-  }
-
-  .optionBox:hover > .sizeChangeBtn,
-  .minizeOption > .sizeChangeBtn {
-    opacity: 1;
-  }
-
-  .optionBox > .sizeChangeBtn:hover {
-    transform: translateX(-50%) translateY(-10%) scale(1.4);
-    z-index: 100;
-  }
-
-  .optionBox > .sizeChangeBtn:active {
-    transition: none;
-    transform: translateX(-50%) translateY(-10%) scale(0.85);
-  }
-
-  .optionBox > .sizeChangeBtn > i {
-    color: #ffffff;
-    cursor: pointer;
-    display: inline-block;
-    line-height: 20px;
-    padding: 0;
-    margin: 0;
-    align-items: center;
-  }
-
+}
 </style>

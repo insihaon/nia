@@ -1,16 +1,18 @@
 <template>
-  <div id="ipms" :class="[classObj]" class="layout-wrapper common-font" :style="setHeight">
+  <div id="ipms" :class="[classObj]" class="layout-wrapper" :style="setHeight">
     <div @click="handleClickOutside" />
-    <div class="main-container" :class="[{hasTagsView:needTagsView}, AppOptions.instance.project]">
-      <div :class="{'fixed-header':fixedHeader}" :style="{ width: `calc(100% - ${getOffsetWidth})`, 'padding-right': getHistoryOffset }" @dblclick="handleDoubleClick">
-        <AppMain v-if="!popupLayout" ref="appmain" />
-      </div>
+    <div class="main-container" :class="[{ hasTagsView: needTagsView }, AppOptions.instance.project]">
+      <NavBar ref="navbar" />
+      <CurrentPathBar ref="currentpathbar" />
+      <AppMain v-if="!popupLayout" ref="appmain" />
     </div>
   </div>
 </template>
 <script>
 import { AppOptions } from '@/class/appOptions'
-import AppMain from '@/layout/components/aiTemplate/AppMain'
+import AppMain from '@/layout/components/ipms/AppMain'
+import NavBar from '@/views-ipms/layout/navBar/index'
+import CurrentPathBar from '@/views-ipms/components/CompCurrentPathBar'
 import { Base } from '@/min/Base.min'
 import ResizeMixin from '@/layout/mixin/ResizeHandler'
 import { mapState, mapGetters } from 'vuex'
@@ -22,6 +24,8 @@ export default {
   name: routeName,
   components: {
     AppMain,
+    NavBar,
+    CurrentPathBar
   },
   extends: Base,
   mixins: [ResizeMixin],
@@ -35,52 +39,48 @@ export default {
     }
   },
   computed: {
-        ...mapState({
-          roles: state => state.user.roles,
-        }),
-        ...mapGetters([
-          // 'permission_routes',
-          // 'sidebar',
-        ]),
-        loginUsername() {
-          const userNM = this.username ? this.username.replace(/.$/, '*') : 'UNKONWN'
-          return userNM
-        },
-        activeMenu() {
-            const route = this.$route
-            const { meta, path } = route
-            // if set path, the sidebar will highlight the path you set
-            if (meta.activeMenu) {
-              return meta.activeMenu
-            }
-          return path
-        },
-        activeTitle() {
-          return this.$route?.meta?.title
-        },
+    ...mapState({
+      roles: (state) => state.user.roles,
+    }),
+    loginUsername() {
+      const userNM = this.username ? this.username.replace(/.$/, '*') : 'UNKONWN'
+      return userNM
+    },
+    activeMenu() {
+      const route = this.$route
+      const { meta, path } = route
+      // if set path, the sidebar will highlight the path you set
+      if (meta.activeMenu) {
+        return meta.activeMenu
+      }
+      return path
+    },
+    activeTitle() {
+      return this.$route?.meta?.title
+    },
     showLogo() {
       return this.$store.state.settings.sidebarLogo
     },
     ...mapState({
-      sidebar: state => state.app.sidebar,
-      historybar: state => state.app.historybar,
-      showHistorybar: state => state.app.historybar.opened,
-      screenDevice: state => state.app.screenDevice,
-      viewport: state => state.app.viewport,
-      windowSize: state => state.app.windowSize,
-      showWindowSize: state => state.app.showWindowSize,
-      showSettings: state => state.settings.showSettings,
-      showBottombar: state => state.settings.bottombar,
-      showSidebar: state => state.settings.menuType === 'LEFT',
-      needTagsView: state => state.settings.tagsView,
-      fixedHeader: state => state.settings.fixedHeader,
-      fixSide: state => state.settings.fixSide,
-      navbarOnly: state => state.settings.navbarOnly,
-      popupLayout: state => state.settings.popupLayout,
-      size: state => state.app.size,
-      username: state => state.user.name,
-      templateVariables: state => state.aamPersisted.templateVariables,
-      commonSelectListData: state => state.aamPersisted.commonSelectListData,
+      sidebar: (state) => state.app.sidebar,
+      historybar: (state) => state.app.historybar,
+      showHistorybar: (state) => state.app.historybar.opened,
+      screenDevice: (state) => state.app.screenDevice,
+      viewport: (state) => state.app.viewport,
+      windowSize: (state) => state.app.windowSize,
+      showWindowSize: (state) => state.app.showWindowSize,
+      showSettings: (state) => state.settings.showSettings,
+      showBottombar: (state) => state.settings.bottombar,
+      showSidebar: (state) => state.settings.menuType === 'LEFT',
+      needTagsView: (state) => state.settings.tagsView,
+      fixedHeader: (state) => state.settings.fixedHeader,
+      fixSide: (state) => state.settings.fixSide,
+      navbarOnly: (state) => state.settings.navbarOnly,
+      popupLayout: (state) => state.settings.popupLayout,
+      size: (state) => state.app.size,
+      username: (state) => state.user.name,
+      templateVariables: (state) => state.aamPersisted.templateVariables,
+      commonSelectListData: (state) => state.aamPersisted.commonSelectListData,
     }),
     viewSize() {
       return `${this.viewport.toUpperCase()} ${this.windowSize.width}x${this.windowSize.height}`
@@ -94,7 +94,7 @@ export default {
         navbarOnly: this.navbarOnly,
 
         [`viewport_${this.viewport}`]: false,
-        en: this.$i18n?.locale === 'en'
+        en: this.$i18n?.locale === 'en',
       }
     },
     setHeight() {
@@ -107,8 +107,8 @@ export default {
         widthPadding = 15
         heightPadding = 80
       }
-        return {
-        '--common-padding': widthPadding + 'px ' + heightPadding + 'px'
+      return {
+        '--common-padding': widthPadding + 'px ' + heightPadding + 'px',
       }
     },
     getOffsetWidth() {
@@ -121,29 +121,27 @@ export default {
     },
     getHistoryOffset() {
       return this.historybar.opened ? 'var(--historybar-width)' : '0px'
-    }
-
+    },
   },
   watch: {
     $route(to, from) {
       // if (to.path !== from.path) this.$store.dispatch('app/closeSideBar', { withoutAnimation: false })
-    }
+    },
   },
   async created() {
-    hotkeys(`alt+b`, 'debug', function(event, handler) {
+    hotkeys(`alt+b`, 'debug', function (event, handler) {
       event.preventDefault()
       window.helper.$store.dispatch('settings/changeSetting', {
         key: 'bottombar',
-        value: !window.helper.$store.state.settings.bottombar
+        value: !window.helper.$store.state.settings.bottombar,
       })
     })
   },
   mounted() {
-      this.subscribeEvent()
+    this.subscribeEvent()
   },
   methods: {
-    handleDoubleClick(event) {
-    },
+    handleDoubleClick(event) {},
     handleClickOutside() {
       // this.$store.dispatch('app/closeSideBar', { withoutAnimation: false })
     },
@@ -159,76 +157,62 @@ export default {
       const data = message.properties
 
       this.$refs.preview.open(data)
+    },
+  },
+}
+</script>
+<style lang="scss" scoped>
+@import '~@/styles/mixin.scss';
+@import '~@/styles/variables.scss';
+.main-container {
+  height: 100vh;
+}
+.router-link-active {
+  color: #93c3ed !important;
+}
+.layout-wrapper {
+  @include clearfix;
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
+body.el-popup-parent--hidden .fixed-header {
+  z-index: 1;
+}
+
+.fixed-header {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 9;
+  transition: all 0.28s;
+  ul.el-menu {
+    border-bottom: none !important;
+
+    .el-menu-item.is-active {
+      font-weight: bold; /* 활성화된 메뉴 항목의 텍스트를 굵게 표시 */
     }
   }
 }
 
-</script>
+.en .fixed-header {
+  width: calc(100% - 250px);
+}
 
-<style lang="scss">
-  .common-padding {
-    padding: var(--common-padding);
-    position: relative;
-    height: 100%;
-    width: 100%;
-  }
-
-  .common-font{
-    font-family: "NotoSansKR";
-  }
-
+.viewport-container {
+  position: fixed;
+  background: #409eff;
+  color: white;
+  right: 0;
+  bottom: 0;
+  z-index: 100;
+  opacity: 0.8;
+}
 </style>
 
 <style lang="scss" scoped>
-  @import "~@/styles/mixin.scss";
-  @import "~@/styles/variables.scss";
-
-  .router-link-active {
-    color: #93c3ed !important;
-  }
-  .layout-wrapper {
-    @include clearfix;
-    position: relative;
-    height: 100%;
-    width: 100%;
-  }
-
-  body.el-popup-parent--hidden .fixed-header {
-    z-index: 1;
-  }
-
-  .fixed-header {
-    position: fixed;
-    top: 0;
-    right: 0;
-    z-index: 9;
-    transition: all 0.28s;
-    ul.el-menu {
-      border-bottom: none !important;
-
-      .el-menu-item.is-active {
-        font-weight: bold; /* 활성화된 메뉴 항목의 텍스트를 굵게 표시 */
-      }
-    }
-  }
-
-  .en .fixed-header {
-    width: calc(100% - 250px);
-  }
-
-  .viewport-container {
-    position: fixed;
-    background: #409eff;
-    color: white;
-    right: 0;
-    bottom: 0;
-    z-index: 100;
-    opacity: 0.8;
-  }
-</style>
-
-<style lang="scss" scoped>
-@import "~@/assets/css/style_main.css";
+@import '~@/assets/css/style_main.css';
 
 .viewport-container > .el-card__body {
   padding: 5px;
@@ -239,5 +223,4 @@ export default {
     // background-color: #606364;
   }
 }
-
 </style>
