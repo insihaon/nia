@@ -1,12 +1,12 @@
 <template>
   <div :class="[{ [name]: true }]">
     <!-- leftbar/top/bottom -->
-    <split-pane :min-percent="0" :default-percent="sidePaneSize" split="vertical" @resize="(val)=> resize(val, 'sidePaneSize')">
+    <SplitPane :min-percent="0" :default-percent="sidePaneSize" split="vertical" @resize="(val)=> resize(val, 'sidePaneSize')">
       <template slot="paneL">
         <slot name="leftbar-container" />
       </template>
       <template slot="paneR">
-        <split-pane :min-percent="5" split="horizontal" :default-percent="topPaneSize" @resize="(val)=> resize(val, 'topPaneSize')">
+        <SplitPane :min-percent="5" split="horizontal" :default-percent="topPaneSize" @resize="(val)=> resize(val, 'topPaneSize')">
           <template slot="paneL" class="top-container">
             <!-- <filterBar position="TOP" /> -->
             <slot name="top-container" />
@@ -15,9 +15,9 @@
             <!-- <filterBar position="BOTTOM" /> -->
             <slot name="bottom-container" />
           </template>
-        </split-pane>
+        </SplitPane>
       </template>
-    </split-pane>
+    </SplitPane>
   </div>
 </template>
 <script>

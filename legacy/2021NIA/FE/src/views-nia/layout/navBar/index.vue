@@ -28,7 +28,7 @@
       </div>
       <div v-if="!isMobile && isViewport('>', 'md')" id="other-container" class="flex items-center">
         <div id="function-container">
-          <svg-icon class="mr-2" type="mdi" :path="path" @click.native="toggleHistoryBar" />
+          <SvgIcon class="mr-2" type="mdi" :path="path" @click.native="toggleHistoryBar" />
         </div>
         <div id="user-info">
           <div class="d-flex items-baseline">

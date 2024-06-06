@@ -1,7 +1,7 @@
 <template>
   <div @click="click">
     <el-col class="fullscreen-icon" :class="{ 'vertical' : isVertical}">
-      <svg-icon :icon-class="isFullscreen?'exit-fullscreen':'fullscreen'" />
+      <SvgIcon :icon-class="isFullscreen?'exit-fullscreen':'fullscreen'" />
     </el-col>
     <el-col><slot name="name" /></el-col>
   </div>
@@ -70,7 +70,7 @@ export default {
   height: 15px;
   line-height: 35px;
 }
-.theme-dark .fullscreen-icon .svg-icon {
+.theme-dark .fullscreen-icon .SvgIcon {
   opacity: 0.5;
   width: 1.2em;
   height: 1.2em;

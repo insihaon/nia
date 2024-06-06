@@ -35,7 +35,7 @@ import { i18n } from './i18n'
 import DomHints from 'vue-dom-hints'
 
 import splitPane from 'vue-splitpane'
-Vue.component('split-pane', splitPane)
+Vue.component('SplitPane', splitPane)
 
 import LottieVuePlayer from '@lottiefiles/vue-lottie-player'
 Vue.use(LottieVuePlayer)
@@ -45,7 +45,7 @@ import { plugin } from 'echarts-for-vue'
 Vue.use(plugin, { echarts })
 
 import SvgIcon from '@jamescoyle/vue-icon'
-Vue.component('svg-icon', SvgIcon)
+Vue.component('SvgIcon', SvgIcon)
 
 process.env.NODE_ENV === 'development' ? require('@/min/global') : require('@/min/global.min')
 
@@ -74,10 +74,10 @@ if (process.env.NODE_ENV !== 'development') {
     log: console.log,
     error: console.error
   }
-  console.info = () => {}
-  console.warn = () => {}
-  console.log = () => {}
-  console.error = () => {}
+  console.info = () => { }
+  console.warn = () => { }
+  console.log = () => { }
+  console.error = () => { }
 }
 
 const vue = new Vue({
