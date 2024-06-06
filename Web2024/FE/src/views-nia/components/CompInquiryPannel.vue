@@ -92,7 +92,7 @@
             </el-button>
             <slot name="add-function" />
             <div id="function-container" class="mx-lg-2" @click="onDebugTest">
-              <svg-icon v-if="debugTestMode" type="mdi" class="my-xl-1" :path="path" />
+              <SvgIcon v-if="debugTestMode" type="mdi" class="my-xl-1" :path="path" />
             </div>
           </el-col>
         </el-row>

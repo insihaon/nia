@@ -29,13 +29,7 @@
             </fieldset>
           </div>
           <div class="container_inner">
-            <!-- // 공지사항 //-->
-            <!-- <iframe src="main_notice.html" name="main_content" id="main_content" width="100%" scrolling="no" frameborder="no" style="height:30px;">
-        </iframe> -->
             <Notice :is-dashboard="true" />
-            <!-- // Default Tab Menu table // -->
-            <!-- <iframe src="main_content01.html" name="main_content" width="100%" height="0" scrolling="no" frameborder="no" style="min-height:1600px;">
-        </iframe> -->
             <el-tabs type="card">
               <el-tab-pane v-for="tabItem in tabList" :key="tabItem.label">
                 <span slot="label">{{ tabItem.label }}<i class="el-icon-plus"></i></span>

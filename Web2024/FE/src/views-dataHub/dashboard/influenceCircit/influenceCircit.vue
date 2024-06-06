@@ -1,66 +1,64 @@
 <template>
   <div :class="{ [name]: true }" style="height: 100%">
-    <template>
-      <div style="display:flex; flex-direction:column;" class="h-100">
-        <el-collapse
-          v-model="conditionBarOnOff"
-          class="influenceCircitCollapse common-padding"
-          style="height: auto !important"
-          @change="handleCollapse"
+    <div style="display:flex; flex-direction:column;" class="h-100">
+      <el-collapse
+        v-model="conditionBarOnOff"
+        class="influenceCircitCollapse common-padding"
+        style="height: auto !important"
+        @change="handleCollapse"
+      >
+        <el-collapse-item name="1">
+          <DataHubComponent
+            ref="selectApi"
+            :ag-grid="mainTableModel"
+            :items="searchItems"
+            :form-wrap="true"
+            :search-model.sync="searchModel"
+            :pagination-info="paginationInfoApi"
+            class="w-100"
+            style="height:100%"
+            @orgChange="orgChange"
+            @searchClear="handleApiSearchClear"
+            @handleClickSearch="onClickSearchApi"
+            @keyupEnter="onClickSearchApi"
+          />
+        </el-collapse-item>
+      </el-collapse>
+      <div style="height: 100%; width: 100%;">
+        <div
+          class="tags-view-container common-padding"
         >
-          <el-collapse-item name="1">
-            <DataHubComponent
-              ref="selectApi"
-              :ag-grid="mainTableModel"
-              :items="searchItems"
-              :form-wrap="true"
-              :search-model.sync="searchModel"
-              :pagination-info="paginationInfoApi"
-              class="w-100"
-              style="height:100%"
-              @orgChange="orgChange"
-              @searchClear="handleApiSearchClear"
-              @handleClickSearch="onClickSearchApi"
-              @keyupEnter="onClickSearchApi"
-            />
-          </el-collapse-item>
-        </el-collapse>
-        <div style="height: 100%; width: 100%;">
-          <div
-            class="tags-view-container common-padding"
-          >
-            <div class="tag-view-wrapper">
-              <el-tag
-                v-for="(tag, index) of influenceCircitTagDataList"
-                :key="index"
-                closable
-                :class="{clicked:tag.tagData.nescode === currentTagCode}"
-                :disable-transitions="false"
-                @close="closeTag(tag)"
-                @click="tagChange(tag)"
-                @click.middle.native="closeTag(tag)"
-              >
-                {{ tag.tagData.nealias }}
-              </el-tag>
-            </div>
-          </div>
-          <div
-            style="height: calc(100% - 40px)"
-            class="common-padding"
-          >
-            <influenceCircitContent
+          <div class="tag-view-wrapper">
+            <el-tag
               v-for="(tag, index) of influenceCircitTagDataList"
-              v-show="tag.tagData.nescode === currentTagCode"
-              :key="tag.tagData.nescode"
-              ref="content"
-              :content-index="index"
-              :tag="tag"
-              @e2eNodeClick="e2eNodeClick"
-            />
+              :key="index"
+              closable
+              :class="{clicked:tag.tagData.nescode === currentTagCode}"
+              :disable-transitions="false"
+              @close="closeTag(tag)"
+              @click="tagChange(tag)"
+              @click.middle.native="closeTag(tag)"
+            >
+              {{ tag.tagData.nealias }}
+            </el-tag>
           </div>
         </div>
+        <div
+          style="height: calc(100% - 40px)"
+          class="common-padding"
+        >
+          <influenceCircitContent
+            v-for="(tag, index) of influenceCircitTagDataList"
+            v-show="tag.tagData.nescode === currentTagCode"
+            :key="tag.tagData.nescode"
+            ref="content"
+            :content-index="index"
+            :tag="tag"
+            @e2eNodeClick="e2eNodeClick"
+          />
+        </div>
       </div>
-    </template>
+    </div>
   </div>
 </template>
 

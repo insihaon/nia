@@ -39,7 +39,7 @@
       </div>
       <div id="function-container" class="flex items-center">
         <MenuPopover />
-        <svg-icon type="mdi" :path="path" @click.native="toggleHistoryBar" />
+        <SvgIcon type="mdi" :path="path" @click.native="toggleHistoryBar" />
         <button
           class="button h-10 px-4 py-2 bg-transparent text-white rounded"
           :disabled="buttonDisabled"

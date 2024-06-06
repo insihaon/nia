@@ -1,7 +1,7 @@
 <template>
   <div :class="[{ [name]: true }]">
     <!-- left/right -->
-    <split-pane :min-percent="0" split="vertical" :default-percent="topPaneSize" @resize="resize">
+    <SplitPane :min-percent="0" split="vertical" :default-percent="topPaneSize" @resize="resize">
       <template slot="paneL" style="{ overflow: topPaneSize === 0? 'hidden':'auto' }">
         <filterBar position="TOP" :size-by-type="sizeByType" />
         <slot name="left-container" />
@@ -10,7 +10,7 @@
         <filterBar position="BOTTOM" :size-by-type="sizeByType" />
         <slot name="right-container" />
       </template>
-    </split-pane>
+    </SplitPane>
   </div>
 
 </template>
