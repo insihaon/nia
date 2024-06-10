@@ -1,49 +1,48 @@
 <template>
   <el-col :class="{ [name]: true }" :xs="24" :sm="12" :md="12" :lg="8" :xl="6">
-    <label>
-      IP주소
+    <label style="width : 100px">
+      작업일자
     </label>
-    <el-select
-      v-model="value"
-      collapse-tags
+    <el-date-picker
+      v-model="searchtimeModel"
+      type="daterange"
       size="mini"
-    >
-      <el-option
-        v-for="(option, i) in [
-          { label: 'IPv4', value: 'CV0001' },
-          { label: 'IPv6', value: 'CV0002' },
-        ]"
-        :key="i"
-        :label="option.label"
-        :value="option.value"
-      />
-    </el-select>
-    <el-input v-model="textValue" size="mini" />
+      start-placeholder="시작일"
+      end-placeholder="종료일"
+    />
   </el-col>
 </template>
 <script>
 import { Base } from '@/min/Base.min'
 
-const routeName = 'ComponentC'
+const routeName = 'DateRange'
 export default {
   name: routeName,
   extends: Base,
   props: {
+    value: {
+      type: String,
+      default: ''
+    },
+    exceptOptions: { /* 예외처리 option */
+      type: Object,
+      default() { return {} }
+    }
   },
   data() {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      value: 'CV0001',
-      textValue: ''
+      searchtimeModel: []
     }
   },
   methods: {
+
   }
 }
 </script>
 <style lang="scss" scoped>
-.ComponentC {
+.DateRange {
   height: auto;
   ::v-deep .el-range-editor.el-input__inner {
     width: 100%;

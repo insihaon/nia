@@ -1,54 +1,60 @@
 <template>
   <el-col :class="{ [name]: true }" :xs="24" :sm="12" :md="12" :lg="8" :xl="6">
-    <label style="width : 100px">
-      공인/사설
+    <label>
+      IP주소
     </label>
     <el-select
-      v-model="searchSelectModel"
+      v-model="value"
       collapse-tags
-      filterable
-      clearable
       size="mini"
-      reserve-keyword
-      remote
     >
       <el-option
-        v-for="(option, i) in options"
+        v-for="(option, i) in [
+          { label: 'IPv4', value: 'CV0001' },
+          { label: 'IPv6', value: 'CV0002' },
+        ]"
         :key="i"
         :label="option.label"
         :value="option.value"
       />
     </el-select>
+    <el-input v-model="textValue" size="mini" />
   </el-col>
 </template>
 <script>
 import { Base } from '@/min/Base.min'
 
-const routeName = 'ComponentA'
+const routeName = 'IpAddress'
 export default {
   name: routeName,
   extends: Base,
   props: {
+    value: {
+      type: String,
+      default: ''
+    },
+    exceptOptions: { /* 예외처리 option */
+      type: Object,
+      default() { return {} }
+    }
   },
   data() {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      searchSelectModel: '',
-      options: [
-        { label: '공인', value: 1 },
-        { label: 'Bogon', value: 2 },
-        { label: '유/무선공용', value: 3 },
-        { label: '사설', value: 4 }
-      ]
+      textValue: ''
     }
   },
   methods: {
+    // input 값에 대한 key, value는 어떻게 전달할 것인지
   }
 }
 </script>
 <style lang="scss" scoped>
-.el-select {
-  width: 100%;
+.IpAddress {
+  height: auto;
+  ::v-deep .el-range-editor.el-input__inner {
+    width: 100%;
+  }
 }
 </style>

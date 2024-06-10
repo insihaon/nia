@@ -1,6 +1,9 @@
+/* IPMS search Component Define */
 export const componentMap = {
-    componentA: () => import('@/views-ipms/components/ComponentA.vue'),
-    componentB: () => import('@/views-ipms/components/ComponentB.vue'),
-    componentC: () => import('@/views-ipms/components/ComponentC.vue'),
-    // Add more components as needed
+    // 공인/사설
+    SipCreateType: () => import('@/views-ipms/conditionComponents/SipCreateType.vue'),
+    // 일자 dateRange
+    DateRange: () => import('@/views-ipms/conditionComponents/DateRange.vue'),
+    // IP주소(key, value 두 쌍)
+    IpAddress: () => import('@/views-ipms/conditionComponents/IpAddress.vue'),
 }

@@ -2,8 +2,30 @@
   <div class="optionBox">
     <el-row class="optionRow">
       <template v-for="(component, index) in dynamicComponents">
-        <component :is="component.component" v-if="component.component" :key="index" v-bind="component.props" class="optionItem" />
+        <component
+          :is="component.component"
+          v-if="component.component"
+          :key="index"
+          v-bind="component.props"
+          class="optionItem"
+          @update-value="keyValues => onUpdateValue(keyValues)"
+        />
+        <!-- componentKeys[index].key, value -->
       </template>
+    </el-row>
+    <el-row>
+      <el-col :span="24" align="center" class="searchBtnGroup">
+        <el-button class="btn-r" type="info" size="mini" icon="el-icon-search" @click="onClickSearch()">
+          조회
+        </el-button>
+        <el-button class="btn-r" type="info" size="mini" icon="el-icon-refresh">
+          초기화
+        </el-button>
+        <!-- <el-button type="button" size="mini" class="excel-form-export" icon="el-icon-download">
+          엑셀 저장
+        </el-button> -->
+        <slot name="add-function" />
+      </el-col>
     </el-row>
   </div>
 </template>
@@ -27,6 +49,7 @@ export default {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       dynamicComponents: [],
+      requestParameter: {}
     }
   },
   watch: {
@@ -52,6 +75,21 @@ export default {
         })
       }
     }
+  },
+  methods: {
+    onClickSearch() {
+      const compKeys = this.componentKeys
+      console.log(compKeys)
+    },
+    onUpdateValue(keyValues = []) {
+      // this.$emit('update-value', key, value)
+      // ip주소는 key, value가 두 쌍임
+      if (Array.isArray(keyValues) && keyValues.length > 0) {
+        keyValues.forEach(obj => {
+          this.requestParameter[obj.key] = obj.value
+        })
+      }
+    },
   },
 }
 </script>

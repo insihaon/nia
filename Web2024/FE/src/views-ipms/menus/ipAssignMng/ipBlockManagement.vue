@@ -46,9 +46,9 @@ export default {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       componentList: [
-        { key: 'componentA', props: { someProp: 'value1', value: 'a', option: {} } },
-        { key: 'componentB', props: { someProp: 'value2' } },
-        { key: 'componentC', props: { someProp: 'value3' } },
+        { key: 'SipCreateType', props: { value: 'CT0001' } },
+        { key: 'DateRange', props: { value: '' } },
+        { key: 'IpAddress', props: { value: 'CV0001' } },
       ],
       tableColumns: [
         { prop: '', label: '공인/사설', align: 'center', sortable: true, propIsCheckBox: true, columnVisible: true, showOverflow: true },
@@ -59,36 +59,11 @@ export default {
         { prop: '', label: '끝 IP', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: '', label: '단위블록수', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: '', label: '작업일자', align: 'center', sortable: true, columnVisible: true, showOverflow: true }
-      ],
-      searchItems: [
-        { label: '공인/사설', type: 'select', multiple: false, model: 'src_nren_name',
-          options: [
-            { label: '공인', value: 10 },
-            { label: 'Bogon', value: 30 },
-            { label: '유/무선공용', value: 50 },
-          ] },
-        { label: '생성차수', type: 'select', multiple: false, model: 'src_ip',
-          options: [
-            { label: 'temp', value: 10 }
-          ] },
-        { label: 'IP주소', type: 'select', multiple: false, model: 'dst_nren_name', setting: { allOption: { toggle: true } }, options: [] },
-        { label: '서비스망', type: 'select', multiple: false, model: 'top_n',
-          options: [
-            { label: '전체', value: 'ALL' },
-            { label: '30', value: 30 },
-            { label: '50', value: 50 },
-            { label: '100', value: 100 },
-          ] },
-        { label: '작업일자', type: 'date', multiple: false, model: 'dst_ip' },
-        { label: '정렬', type: 'select', multiple: false, model: 'dst_ip',
-          options: [
-            { label: 'IP', value: 'IP' },
-            { label: 'BitMak', value: 'BitMak' },
-            { label: '작업일자', value: 'workDay' },
-          ] },
-      ],
+      ]
     }
+  },
+  methods: {
   },
 }
 </script>
-<style lang="css" scoped></style>
+<style lang="scss" scoped></style>
