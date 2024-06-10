@@ -1,7 +1,7 @@
 <template>
   <div :class="{ [name]: true }">
     <div class="search-container">
-      <div class="optionBox" :class="{'minizeOption': minizeOption }">
+      <div class="optionBox mb-xl-2" :class="{'minizeOption': minizeOption }">
         <!-- 조회 옵션상자 -->
         <el-row class="optionRow">
           <el-col v-for="(item, index) in items" :key="index" :xs="24" :sm="12" :md="12" :lg="8" :xl="6">
@@ -76,7 +76,7 @@
         <el-row>
           <el-col :span="24" align="center" class="searchBtnGroup" :class="{'is-mobile': isMobile}">
             <el-button class="btn-r" type="info" size="mini" icon="el-icon-search">
-              검색
+              조회
             </el-button>
             <el-button class="btn-r" type="info" size="mini" icon="el-icon-refresh">
               초기화
@@ -106,7 +106,7 @@ export default {
     },
     isExcel: {
       type: Boolean,
-      default: true
+      default: false
     },
     items: {
       type: Array,
@@ -138,7 +138,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .CompInquiryPannel {
-  height: 150px;
+  height: auto;
   ::v-deep .el-range-editor.el-input__inner {
     width: 100%;
   }
