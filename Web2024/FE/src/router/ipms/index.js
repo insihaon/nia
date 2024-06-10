@@ -71,7 +71,7 @@ export const ipmsRoute = Object.freeze([
     children: [
       {
         path: 'ipAllocation',
-        component: () => null,
+        component: () => import('@/views-ipms/menus/ipAllocationMng/ipAllocation'),
         name: 'IpAllocation',
         meta: { title: 'IP 할당', affix: false }
       },

@@ -103,7 +103,6 @@ export default {
     },
     showItem(index) {
       const items = document.querySelectorAll('#roll-item')
-      console.log(index)
       items.forEach((item, i) => {
           item.style.transform = `translateY(${(i - index) * 22}px)`
       })

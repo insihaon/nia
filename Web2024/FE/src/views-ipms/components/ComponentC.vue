@@ -1,7 +1,25 @@
 <template>
-  <div :class="{ [name]: true }">
-    <el-input v-model="searchInputModel" size="mini" />
-  </div>
+  <el-col :class="{ [name]: true }" :xs="24" :sm="12" :md="12" :lg="8" :xl="6">
+    <label>
+      IP주소
+    </label>
+    <el-select
+      v-model="value"
+      collapse-tags
+      size="mini"
+    >
+      <el-option
+        v-for="(option, i) in [
+          { label: 'IPv4', value: 'CV0001' },
+          { label: 'IPv6', value: 'CV0002' },
+        ]"
+        :key="i"
+        :label="option.label"
+        :value="option.value"
+      />
+    </el-select>
+    <el-input v-model="textValue" size="mini" />
+  </el-col>
 </template>
 <script>
 import { Base } from '@/min/Base.min'
@@ -16,7 +34,8 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      searchInputModel: ''
+      value: 'CV0001',
+      textValue: ''
     }
   },
   methods: {

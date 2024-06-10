@@ -1,23 +1,25 @@
 <template>
-  <div :class="{ [name]: true }">
+  <el-col :class="{ [name]: true }" :xs="24" :sm="12" :md="12" :lg="8" :xl="6">
+    <label style="width : 100px">
+      공인/사설
+    </label>
     <el-select
       v-model="searchSelectModel"
       collapse-tags
       filterable
       clearable
       size="mini"
-      :placeholder="item.placeholder"
       reserve-keyword
       remote
     >
       <el-option
-        v-for="(option, i) in item.options"
+        v-for="(option, i) in options"
         :key="i"
         :label="option.label"
         :value="option.value"
       />
     </el-select>
-  </div>
+  </el-col>
 </template>
 <script>
 import { Base } from '@/min/Base.min'
@@ -36,7 +38,8 @@ export default {
       options: [
         { label: '공인', value: 1 },
         { label: 'Bogon', value: 2 },
-        { label: '유/무선공용', value: 3 }
+        { label: '유/무선공용', value: 3 },
+        { label: '사설', value: 4 }
       ]
     }
   },
@@ -45,10 +48,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.ComponentA {
-  height: auto;
-  ::v-deep .el-range-editor.el-input__inner {
-    width: 100%;
-  }
+.el-select {
+  width: 100%;
 }
 </style>
