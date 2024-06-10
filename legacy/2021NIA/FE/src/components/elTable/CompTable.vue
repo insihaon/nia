@@ -65,12 +65,12 @@ copyright notice above does not evidence any actual or * intended publication of
       <el-pagination
         :current-page.sync="propPaginationData.currentPage"
         :total="propPaginationData.total"
-        :page-sizes="pageSizes"
         :page-size="propPaginationData.pageSize"
         layout="sizes, prev, pager, next"
         @current-change="propOnPageChange"
         @size-change="fn_onPageSizeChange"
       />
+      <!-- :page-sizes="pageSizes" -->
     </div>
     <vue-simple-context-menu ref="propTableContext" element-id="propTable" :options="propRClickOptions" @option-clicked="propOnRClick" />
   </div>

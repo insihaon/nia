@@ -1,9 +1,10 @@
 <template>
   <el-row class="w-100 h-100" :class="{'px-12': !isDashboard}">
-    <CompInquiryPannel
+    <DynamicComponentLoader :component-keys="componentList" />
+    <!-- <CompInquiryPannel
       ref="ipBlockMng"
       :items="searchItems"
-    />
+    /> -->
     <el-col :span="24">
       <compTable
         :prop-table-height="300"
@@ -26,12 +27,13 @@
 <script>
 import { Base } from '@/min/Base.min'
 import CompTable from '@/components/elTable/CompTable.vue'
-import CompInquiryPannel from '@/views-ipms/components/CompInquiryPannel.vue'
+// import CompInquiryPannel from '@/views-ipms/components/CompInquiryPannel.vue'
+import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
 const routeName = 'IpBlockManagement'
 
 export default {
   name: routeName,
-  components: { CompTable, CompInquiryPannel },
+  components: { CompTable, /* CompInquiryPannel, */ DynamicComponentLoader },
   extends: Base,
   props: {
     isDashboard: {
@@ -43,6 +45,11 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      componentList: [
+        { key: 'componentA', props: { someProp: 'value1', value: 'a', option: {} } },
+        { key: 'componentB', props: { someProp: 'value2' } },
+        { key: 'componentC', props: { someProp: 'value3' } },
+      ],
       tableColumns: [
         { prop: '', label: '공인/사설', align: 'center', sortable: true, propIsCheckBox: true, columnVisible: true, showOverflow: true },
         { prop: '', label: '생성차수', align: 'center', sortable: true, columnVisible: true, showOverflow: true },

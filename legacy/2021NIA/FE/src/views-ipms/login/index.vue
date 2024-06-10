@@ -52,8 +52,8 @@
                     show-password
                     type="password"
                     @blur="capsTooltip = false"
-                    @keyup.native="checkCapslock"
-                    @keyup.enter.native="handleLogin"
+                    @keyup="checkCapslock"
+                    @keyup.enter="handleLogin"
                   >
                 </el-form-item>
               </el-tooltip>
@@ -196,6 +196,14 @@ export default {
           this.loading = false
         }
       })
+    },
+    getOtherQuery(query) {
+      return Object.keys(query).reduce((acc, cur) => {
+        if (cur !== 'redirect') {
+          acc[cur] = query[cur]
+        }
+        return acc
+      }, {})
     },
   }
 }
