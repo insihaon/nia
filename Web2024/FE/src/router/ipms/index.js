@@ -27,15 +27,15 @@ export const ipmsRoute = Object.freeze([
     component: Layout,
     menuIdx: 0,
     disable: false,
-    redirect: '/ipAssignMng/ipBlockMng',
+    redirect: '/ipAssignMng/ipBlockManagement',
     meta: {
       title: 'IP 배정관리'
     },
     children: [
       {
-        path: 'ipBlockMng',
-        component: () => null,
-        name: 'IpBlockMnagement',
+        path: 'ipBlockMnagement',
+        component: () => import('@/views-ipms/menus/ipAssignMng/ipBlockManagement'),
+        name: 'IpBlockManagement',
         meta: { title: 'IP 블록관리', affix: false }
       },
       /* 삭제
@@ -47,14 +47,14 @@ export const ipmsRoute = Object.freeze([
       }, */
       {
         path: 'ipAssign',
-        component: () => null,
+        component: () => import('@/views-ipms/menus/ipAssignMng/ipAssign'),
         name: 'IpAssign',
         meta: { title: 'IP 배정', affix: false }
       },
       {
         path: 'ipunAllocatedStatuRs',
-        component: () => null,
-        name: 'IpAllocatedStatus',
+        component: () => import('@/views-ipms/menus/ipAssignMng/ipunAllocatedStatuRs'),
+        name: 'IpunAllocatedStatus',
         meta: { title: 'IP 미배정 현황', affix: false }
       },
     ]
@@ -71,7 +71,7 @@ export const ipmsRoute = Object.freeze([
     children: [
       {
         path: 'ipAllocation',
-        component: () => null,
+        component: () => import('@/views-ipms/menus/ipAllocationMng/ipAllocation'),
         name: 'IpAllocation',
         meta: { title: 'IP 할당', affix: false }
       },
