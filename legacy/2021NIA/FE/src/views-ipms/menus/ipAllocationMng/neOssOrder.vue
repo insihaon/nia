@@ -1,0 +1,44 @@
+<template>
+  <!-- 검색 조건 컴포넌트 추가 -->
+  <el-row class="w-100 h-100" :class="{'px-12': !isDashboard}">
+    <el-col :span="24">
+      <compTable :prop-table-height="300" :prop-column="tableColumns" :prop-is-pagination="false" :prop-is-check-box="false" prop-grid-menu-id="inputSpeed" :prop-grid-indx="1" />
+    </el-col>
+  </el-row>
+</template>
+<script>
+import { Base } from '@/min/Base.min'
+import CompTable from '@/components/elTable/CompTable.vue'
+const routeName = 'NeOssOrder'
+
+export default {
+  name: routeName,
+  components: { CompTable },
+  extends: Base,
+  props: {
+    isDashboard: {
+      type: Boolean,
+      default: false
+    }
+  },
+  data() {
+    return {
+      name: routeName,
+      src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      tableColumns: [
+        { prop: '', label: '노드국', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: '', label: '수용국', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: '', label: '오더번호', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: '', label: 'SAID', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: '', label: '전용번호', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: '', label: '접수일', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: '', label: '희망일', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: '', label: '고객명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: '', label: '상품명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: '', label: '이용목적', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+      ],
+    }
+  },
+}
+</script>
+<style lang="css" scoped></style>
