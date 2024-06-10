@@ -71,13 +71,13 @@ export const ipmsRoute = Object.freeze([
     children: [
       {
         path: 'ipAllocation',
-        component: () => import('@/views-ipms/menus/ipAllocationMng/ipAllocation'),
+        component: () => null,
         name: 'IpAllocation',
         meta: { title: 'IP 할당', affix: false }
       },
       {
         path: 'neOssOrder',
-        component: () => import('@/views-ipms/menus/ipAllocationMng/NeOssOrder'),
+        component: () => import('@/views-ipms/menus/ipAllocationMng/neOssOrder'),
         name: 'NeOssOrder',
         meta: { title: 'NeOSS오더', affix: false }
       },
@@ -221,7 +221,7 @@ export const ipmsRoute = Object.freeze([
     children: [
       {
         path: 'notice',
-        component: () => import('@/views-ipms/menus/board/Notice'),
+        component: () => import('@/views-ipms/menus/board/notice'),
         name: 'Notice',
         meta: { title: '공지사항', affix: false }
       },

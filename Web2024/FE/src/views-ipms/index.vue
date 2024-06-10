@@ -64,7 +64,7 @@
 
 <script>
 import { Base } from '@/min/Base.min'
-import Notice from '@/views-ipms/menus/board/Notice'
+import Notice from '@/views-ipms/menus/board/notice'
 
 const routeName = 'IpmsMain'
 
@@ -78,7 +78,7 @@ export default {
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       activeName: 'first',
       tabList: [
-        { label: 'NeOSS 오더', component: () => import('@/views-ipms/menus/ipAllocationMng/NeOssOrder') },
+        { label: 'NeOSS 오더', component: () => import('@/views-ipms/menus/ipAllocationMng/neOssOrder') },
         { label: 'i-FOMS Config 감사', component: () => import('@/views-ipms/components/IfomsConfig') },
         { label: '신인증 IP 최적화', component: () => import('@/views-ipms/components/NewCertificationOptimizationIP') },
         { label: '조각 IP 최적화', component: () => import('@/views-ipms/components/PieceIPOptimization') },
