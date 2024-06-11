@@ -2,8 +2,8 @@
 export const componentMap = {
     // 공인/사설
     SipCreateType: () => import('@/views-ipms/conditionComponents/SipCreateType.vue'),
-    // 일자 dateRange
+    // 작업일자, 등록기간 dateRange
     DateRange: () => import('@/views-ipms/conditionComponents/DateRange.vue'),
-    // IP주소(key, value 두 쌍)
+    // IP 주소
     IpAddress: () => import('@/views-ipms/conditionComponents/IpAddress.vue'),
 }

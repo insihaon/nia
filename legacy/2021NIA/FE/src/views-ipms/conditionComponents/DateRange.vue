@@ -4,7 +4,7 @@
       작업일자
     </label>
     <el-date-picker
-      v-model="searchtimeModel"
+      v-model="localValue"
       type="daterange"
       size="mini"
       start-placeholder="시작일"
@@ -21,8 +21,8 @@ export default {
   extends: Base,
   props: {
     value: {
-      type: String,
-      default: ''
+      type: Array,
+      default: () => { return [] }
     },
     exceptOptions: { /* 예외처리 option */
       type: Object,
@@ -33,19 +33,29 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      searchtimeModel: []
+    }
+  },
+  computed: {
+    localValue: {
+      get() {
+        return this.value
+      },
+      set(newValue) {
+        const [searchBgnDe, searchEndDe] = newValue
+        this.$emit('set-value', newValue)
+        this.$emit('update-value', [
+          { key: 'searchBgnDe', value: this.moment(searchBgnDe).format('YYYY-MM-DD') },
+          { key: 'searchEndDe', value: this.moment(searchEndDe).format('YYYY-MM-DD') }
+        ])
+      }
     }
   },
   methods: {
-
   }
 }
 </script>
 <style lang="scss" scoped>
-.DateRange {
-  height: auto;
-  ::v-deep .el-range-editor.el-input__inner {
-    width: 100%;
-  }
+::v-deep .el-range-editor.el-input__inner {
+  width: 100%;
 }
 </style>

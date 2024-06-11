@@ -8,7 +8,8 @@
           :key="index"
           v-bind="component.props"
           class="optionItem"
-          @update-value="keyValues => onUpdateValue(keyValues)"
+          @set-value="value => onUpdateOrgValue(index, value)"
+          @update-value="keyValues => onUpdateKeyValue(keyValues)"
         />
         <!-- componentKeys[index].key, value -->
       </template>
@@ -81,9 +82,10 @@ export default {
       const compKeys = this.componentKeys
       console.log(compKeys)
     },
-    onUpdateValue(keyValues = []) {
-      // this.$emit('update-value', key, value)
-      // ip주소는 key, value가 두 쌍임
+    onUpdateOrgValue(index, value) {
+      this.dynamicComponents[index].props.value = value
+    },
+    onUpdateKeyValue(keyValues = []) {
       if (Array.isArray(keyValues) && keyValues.length > 0) {
         keyValues.forEach(obj => {
           this.requestParameter[obj.key] = obj.value

@@ -4,7 +4,7 @@
       IP주소
     </label>
     <el-select
-      v-model="value"
+      v-model="localValue"
       collapse-tags
       size="mini"
     >
@@ -18,7 +18,7 @@
         :value="option.value"
       />
     </el-select>
-    <el-input v-model="textValue" size="mini" />
+    <el-input v-model="word" size="mini" clearable @change="handleChangeWord" />
   </el-col>
 </template>
 <script>
@@ -42,19 +42,26 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      textValue: ''
+      word: ''
     }
   },
+  computed: {
+    localValue: {
+      get() {
+        return this.value
+      },
+      set(newValue) {
+        this.$emit('set-value', newValue)
+        this.$emit('update-value', [{ key: 'sipVersionTypeCd', value: newValue }])
+      }
+    },
+  },
   methods: {
-    // input 값에 대한 key, value는 어떻게 전달할 것인지
+    handleChangeWord() {
+      this.$emit('update-value', [{ key: 'searchWrd', value: this.word }])
+    }
   }
 }
 </script>
 <style lang="scss" scoped>
-.IpAddress {
-  height: auto;
-  ::v-deep .el-range-editor.el-input__inner {
-    width: 100%;
-  }
-}
 </style>
