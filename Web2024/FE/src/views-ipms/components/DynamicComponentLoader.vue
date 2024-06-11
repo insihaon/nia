@@ -79,8 +79,7 @@ export default {
   },
   methods: {
     onClickSearch() {
-      const compKeys = this.componentKeys
-      console.log(compKeys)
+      this.$emit('handle-search', this.requestParameter)
     },
     onUpdateOrgValue(index, value) {
       this.dynamicComponents[index].props.value = value
