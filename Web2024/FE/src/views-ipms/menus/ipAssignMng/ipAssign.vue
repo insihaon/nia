@@ -1,8 +1,8 @@
 <template>
   <el-row class="w-100 h-100" :class="{'px-12': !isDashboard}">
-    <CompInquiryPannel
-      ref="ipAssign"
-      :items="searchItems"
+    <DynamicComponentLoader
+      :component-keys="componentList"
+      @handle-search="handleSearch"
     />
     <el-col :span="24">
       <compTable
@@ -25,12 +25,12 @@
 <script>
 import { Base } from '@/min/Base.min'
 import CompTable from '@/components/elTable/CompTable.vue'
-import CompInquiryPannel from '@/views-ipms/components/CompInquiryPannel.vue'
+import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
 const routeName = 'IpAssign'
 
 export default {
   name: routeName,
-  components: { CompTable, CompInquiryPannel },
+  components: { CompTable, DynamicComponentLoader },
   extends: Base,
   props: {
     isDashboard: {
@@ -42,6 +42,13 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      componentList: [
+        { key: 'SipCreateType', props: { value: 'CT0001' } },
+        { key: 'DateRange', props: { value: [] } },
+        { key: 'IpAddress', props: { value: 'CV0001' } },
+        { key: 'ServiceOrg', props: { value: 'ALL', exceptOptions: { multi: true } } },
+        { key: 'GenerationDegree', props: { value: 'ALL' } },
+      ],
       tableColumns: [
         { prop: '', label: '서비스망', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: '', label: '본부', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
@@ -60,33 +67,14 @@ export default {
         { prop: '', label: '분할', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: '', label: '비고', align: 'center', sortable: true, columnVisible: true, showOverflow: true }
       ],
-      tableDatas: [],
-      searchItems: [
-        { label: '계위', type: 'select', multiple: false, model: 'grade', options: [] },
-        { label: '계위2', type: 'select', multiple: false, model: 'grade2', options: [] },
-        { label: '계위3', type: 'select', multiple: false, model: 'grade3', options: [] },
-        { label: '생성차수', type: 'select', multiple: false, model: 'src_ip',
-          options: [
-            { label: 'temp', value: 10 }
-          ] },
-        { label: 'IP주소', type: 'select', multiple: false, model: 'dst_nren_name', setting: { allOption: { toggle: true } }, options: [] },
-        { label: '서비스망', type: 'select', multiple: false, model: 'top_n',
-          options: [
-            { label: '전체', value: 'ALL' },
-            { label: '30', value: 30 },
-            { label: '50', value: 50 },
-            { label: '100', value: 100 },
-          ] },
-        { label: '작업일자', type: 'date', multiple: false, model: 'dst_ip' },
-        { label: '정렬', type: 'select', multiple: false, model: 'dst_ip',
-          options: [
-            { label: 'IP', value: 'IP' },
-            { label: 'BitMak', value: 'BitMak' },
-            { label: '작업일자', value: 'workDay' },
-          ] },
-      ],
+      tableDatas: []
     }
   },
+  methods: {
+    handleSearch(requestParameter) {
+      console.log(requestParameter)
+    }
+  }
 }
 </script>
 <style lang="css" scoped></style>
