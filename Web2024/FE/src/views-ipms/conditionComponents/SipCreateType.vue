@@ -4,14 +4,8 @@
       공인/사설
     </label>
     <el-select
-      v-model="value"
-      collapse-tags
-      filterable
-      clearable
+      v-model="localValue"
       size="mini"
-      reserve-keyword
-      remote
-      @change="handleChange"
     >
       <el-option
         v-for="(option, i) in options"
@@ -51,10 +45,18 @@ export default {
       ]
     }
   },
-  methods: {
-    handleChange() {
-      this.$emit('update-value', [{ key: 'sipCreateTypeCd', value: this.value }])
+  computed: {
+    localValue: {
+      get() {
+        return this.value
+      },
+      set(newValue) {
+        this.$emit('set-value', newValue)
+        this.$emit('update-value', [{ key: 'sipCreateTypeCd', value: newValue }])
+      }
     }
+  },
+  methods: {
   }
 }
 </script>
