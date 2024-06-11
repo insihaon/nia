@@ -1,6 +1,9 @@
 <template>
   <el-row class="w-100 h-100" :class="{'px-12': !isDashboard}">
-    <DynamicComponentLoader :component-keys="componentList" />
+    <DynamicComponentLoader
+      :component-keys="componentList"
+      @handle-search="handleSearch"
+    />
     <!-- <CompInquiryPannel
       ref="ipBlockMng"
       :items="searchItems"
@@ -63,6 +66,9 @@ export default {
     }
   },
   methods: {
+    handleSearch(requestParameter) {
+      console.log(requestParameter)
+    }
   },
 }
 </script>
