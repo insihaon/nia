@@ -15,4 +15,8 @@ export const componentMap = {
     DateRange: () => import('@/views-ipms/conditionComponents/DateRange.vue'),
     // IP 주소
     IpAddress: () => import('@/views-ipms/conditionComponents/IpAddress.vue'),
+    // 생성차수
+    GenerationDegree: () => import('@/views-ipms/conditionComponents/GenerationDegree.vue'),
+    // 서비스
+    ServiceOrg: () => import('@/views-ipms/conditionComponents/ServiceOrg.vue'),
 }

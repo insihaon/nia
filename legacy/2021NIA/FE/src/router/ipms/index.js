@@ -83,13 +83,13 @@ export const ipmsRoute = Object.freeze([
       },
       {
         path: 'ipSeonbeonjang',
-        component: () => null,
+        component: () => import('@/views-ipms/menus/ipAllocationMng/ipSeonbeonjang'),
         name: 'IpSeonbeonjang',
         meta: { title: 'IP 선번장', affix: false }
       },
       {
         path: 'vpnIpStatue',
-        component: () => null,
+        component: () => import('@/views-ipms/menus/ipAllocationMng/vpnIpStatue'),
         name: 'VpnIpStatue',
         meta: { title: 'VPN IP현황', affix: false }
       },
