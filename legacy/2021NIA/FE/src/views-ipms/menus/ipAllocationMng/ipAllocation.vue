@@ -1,5 +1,9 @@
 <template>
   <el-row class="w-100 h-100" :class="{'px-12': !isDashboard}">
+    <DynamicComponentLoader
+      :component-keys="componentList"
+      @handle-search="handleSearch"
+    />
     <el-col :span="24">
       <compTable :prop-table-height="300" :prop-column="tableColumns" :prop-is-pagination="false" :prop-is-check-box="false" prop-grid-menu-id="inputSpeed" :prop-grid-indx="1" />
     </el-col>
@@ -8,11 +12,12 @@
 <script>
 import { Base } from '@/min/Base.min'
 import CompTable from '@/components/elTable/CompTable.vue'
+import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
 const routeName = 'IpAllocation'
 
 export default {
   name: routeName,
-  components: { CompTable },
+  components: { CompTable, DynamicComponentLoader },
   extends: Base,
   props: {
     isDashboard: {
@@ -24,6 +29,11 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      componentList: [
+        { key: 'SsvcLineType', props: { exceptOptions: { label: '서비스망', lvl: 3, multi: [2] } } },
+        { key: 'SortType', props: {} },
+        { key: 'SOffice', props: {} },
+      ],
       tableColumns: [
         { prop: '', label: '노드국', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: '', label: '수용국', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
@@ -38,6 +48,11 @@ export default {
       ],
     }
   },
+  methods: {
+    handleSearch(requestParameter) {
+      console.log(requestParameter)
+    }
+  },
 }
 </script>
-<style lang="css" scoped></style>
+<style lang="scss" scoped></style>

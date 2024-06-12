@@ -52,6 +52,7 @@ export default {
         { key: 'SipCreateType', props: { value: 'CT0001' } },
         { key: 'DateRange', props: { value: [] } },
         { key: 'IpAddress', props: { value: 'CV0001' } },
+        { key: 'SsvcLineType', props: { exceptOptions: { label: '서비스망' } } },
       ],
       tableColumns: [
         { prop: '', label: '공인/사설', align: 'center', sortable: true, propIsCheckBox: true, columnVisible: true, showOverflow: true },
