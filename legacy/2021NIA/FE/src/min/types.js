@@ -1,3 +1,4 @@
 export const EventType = {
-    changeLvl: 'changeLvl',
+    changeLvl1: 'changeLvl_1',
+    changeLvl2: 'changeLvl_2',
 }

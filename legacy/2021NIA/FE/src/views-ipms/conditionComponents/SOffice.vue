@@ -48,12 +48,12 @@ export default {
 
   },
   mounted () {
-    Eventbus.$on(EventType.changeLvl, (changedVal) => {
-      this.onLoadOfficeList(changedVal)
-    })
+    Eventbus.$on(EventType.changeLvl1, (params) => { this.onLoadOfficeList(params) })
+    Eventbus.$on(EventType.changeLvl2, (params) => { this.onLoadOfficeList(params) })
   },
   beforeDestroy() {
-    Eventbus.$off(EventType.changeLvl)
+    Eventbus.$off(EventType.changeLvl1)
+    Eventbus.$off(EventType.changeLvl2)
   },
   methods: {
     onLoadOfficeList(params) {
