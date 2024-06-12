@@ -33,7 +33,7 @@ export const ipmsRoute = Object.freeze([
     },
     children: [
       {
-        path: 'ipBlockMnagement',
+        path: 'ipBlockManagement',
         component: () => import('@/views-ipms/menus/ipAssignMng/ipBlockManagement'),
         name: 'IpBlockManagement',
         meta: { title: 'IP 블록관리', affix: false }

@@ -55,9 +55,6 @@ export default {
       }
       return false
     },
-    selectedColNewItem(params, type) {
-      EventBus.$emit('selectedNewCol', params, 'modalSelected')
-    },
   }
 }
 </script>
