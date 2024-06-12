@@ -47,6 +47,10 @@ export default {
         { key: 'SsvcLineType', props: { exceptOptions: { label: '서비스망', lvl: 3, multi: [2] } } },
         { key: 'SortType', props: {} },
         { key: 'SOffice', props: {} },
+        { key: 'SipCreateType', props: { value: 'CT0001' } },
+        { key: 'ServiceOrg', props: { } },
+        { key: 'IpAddress', props: { value: 'CV0001' } },
+        { key: 'DateRange', props: { value: [] } },
       ],
       tableColumns: [
         { prop: '', label: '노드국', align: 'center', sortable: true, columnVisible: true, showOverflow: true },

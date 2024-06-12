@@ -4,11 +4,12 @@
       서비스
     </label>
     <el-select
-      v-model="localValue"
+      v-model="value"
       filterable
-      :multiple="isMultiMode"
+      :multiple="isMulti"
       clearable
       size="mini"
+      @change="handleChange"
     >
       <el-option
         v-for="(option, i) in options"
@@ -21,26 +22,27 @@
 </template>
 <script>
 import { Base } from '@/min/Base.min'
+import { EventType } from '@/min/types'
+import Eventbus from '@/utils/event-bus'
 
 const routeName = 'ServiceOrg'
 export default {
   name: routeName,
   extends: Base,
   props: {
-    value: {
-      type: String,
-      default: ''
-    },
     exceptOptions: {
       type: Object,
-      default() { return {} }
+      default() {
+        return {
+          multi: true
+        }
+      }
     }
   },
   data() {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      word: '',
       options: [
         { label: '전체', value: 'ALL' },
         { label: '기업고객(고정)', value: 'agency' },
@@ -53,25 +55,34 @@ export default {
         { label: '홍콩DC구축용', value: 'hongkong' },
         { label: '대군화 시설용', value: 'cloud' },
         { label: 'Cloud', value: 'cloud' }
-      ]
+      ],
+      value: null
     }
   },
   computed: {
-    localValue: {
-      get() {
-        return this.value
-      },
-      set(newValue) {
-        this.$emit('set-value', newValue)
-        this.$emit('update-value', [{ key: 'serviceOrg', value: newValue }])
-      }
-    },
-    isMultiMode() {
-      console.log(this.exceptOptions)
-      return this.exceptOptions?.multi
+    isMulti() {
+      return this.exceptOptions?.multi ?? true
     },
   },
+  mounted() {
+    this.value = this.isMulti ? [] : ''
+    Eventbus.$on(EventType.changeLvl1, (params) => {
+      this.onLoadServiceList(params)
+    })
+  },
+  beforeDestroy() {
+    Eventbus.$off(EventType.changeLvl1)
+  },
   methods: {
+    handleChange() {
+      this.$emit('update-value', [{ key: 'sassignTypeCd', value: this.value }])
+    },
+    onLoadServiceList(params) {
+      /*
+      const res = await api(params)
+      this.options = res.result (options set)
+      */
+    }
   }
 }
 </script>

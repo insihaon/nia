@@ -46,7 +46,7 @@ export default {
         { key: 'SipCreateType', props: { value: 'CT0001' } },
         { key: 'DateRange', props: { value: [] } },
         { key: 'IpAddress', props: { value: 'CV0001' } },
-        { key: 'ServiceOrg', props: { value: 'ALL', exceptOptions: { multi: true } } },
+        { key: 'ServiceOrg', props: { } },
         { key: 'GenerationDegree', props: { value: 'ALL' } },
       ],
       tableColumns: [

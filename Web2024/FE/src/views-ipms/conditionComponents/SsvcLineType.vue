@@ -139,7 +139,7 @@ export default {
      this.resetLocalValue(key2)
      this.resetLocalValue(key3)
      this.emitEvent('ssvcLineTypeCd', key1)
-     Eventbus.$emit(EventType.changeLvl, { ssvcLineTypeCd: this.localValue[key1] })
+     Eventbus.$emit(EventType.changeLvl1, { ssvcLineTypeCd: this.localValue[key1] })
     },
     handleChangeLvl2() {
       const params = { ssvcLineTypeCd: this.localValue[key1], ssvcGroupCd: this.localValue[key2] }
@@ -150,7 +150,7 @@ export default {
       this.resetLocalValue(key3)
       const keyLvl2 = `ssvcGroupCd$ ${Array.isArray(this.localValue[key2]) ? 'Multi' : ''}`
       this.emitEvent(keyLvl2, key2)
-      Eventbus.$emit(EventType.changeLvl, { ssvcLineTypeCd: this.localValue[key1], keyLvl2: this.localValue[key2] })
+      Eventbus.$emit(EventType.changeLvl2, { ssvcLineTypeCd: this.localValue[key1], keyLvl2: this.localValue[key2] })
     },
     handleChangeLvl3() {
       this.emitEvent('ssvcObjCd', key3)
