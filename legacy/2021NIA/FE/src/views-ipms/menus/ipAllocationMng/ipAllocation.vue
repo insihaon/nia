@@ -5,7 +5,21 @@
       @handle-search="handleSearch"
     />
     <el-col :span="24">
-      <compTable :prop-table-height="300" :prop-column="tableColumns" :prop-is-pagination="false" :prop-is-check-box="false" prop-grid-menu-id="inputSpeed" :prop-grid-indx="1" />
+      <compTable
+        :prop-table-height="300"
+        :prop-column="tableColumns"
+        :prop-is-pagination="false"
+        :prop-is-check-box="false"
+        prop-grid-menu-id="inputSpeed"
+        :prop-grid-indx="1"
+      >
+
+        <template slot="text-description">
+          <span>
+            IP 할당 조회결과
+          </span>
+        </template>
+      </compTable>
     </el-col>
   </el-row>
 </template>

@@ -5,7 +5,7 @@ copyright notice above does not evidence any actual or * intended publication of
   <div v-loading="propLoading">
     <div class="tableThum">
       <div v-if="propIsPagination != false"><i class="el-icon-document" /> <slot name="text-description" /> <span class="countNum">( 총 {{ propPaginationData.total }} 건 )</span></div>
-      <div v-if="propIsPagination == false"><i class="el-icon-document" /> <span class="countNum">총 {{ propData.length }} 건 </span></div>
+      <div v-if="propIsPagination == false"><i class="el-icon-document" /> <slot name="text-description" /> <span class="countNum">총 {{ propData.length }} 건 </span></div>
     </div>
 
     <el-table

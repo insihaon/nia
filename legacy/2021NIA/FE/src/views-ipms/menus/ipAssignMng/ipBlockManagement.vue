@@ -4,10 +4,6 @@
       :component-keys="componentList"
       @handle-search="handleSearch"
     />
-    <!-- <CompInquiryPannel
-      ref="ipBlockMng"
-      :items="searchItems"
-    /> -->
     <el-col :span="24">
       <compTable
         :prop-table-height="300"
@@ -17,7 +13,6 @@
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
       >
-
         <template slot="text-description">
           <span>
             IP 블록관리 조회결과
@@ -30,13 +25,12 @@
 <script>
 import { Base } from '@/min/Base.min'
 import CompTable from '@/components/elTable/CompTable.vue'
-// import CompInquiryPannel from '@/views-ipms/components/CompInquiryPannel.vue'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
 const routeName = 'IpBlockManagement'
 
 export default {
   name: routeName,
-  components: { CompTable, /* CompInquiryPannel, */ DynamicComponentLoader },
+  components: { CompTable, DynamicComponentLoader },
   extends: Base,
   props: {
     isDashboard: {
@@ -50,9 +44,11 @@ export default {
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       componentList: [
         { key: 'SipCreateType', props: { value: 'CT0001' } },
-        { key: 'DateRange', props: { value: [] } },
+        { key: 'GenerationDegree', props: { value: 'ALL' } },
         { key: 'IpAddress', props: { value: 'CV0001' } },
         { key: 'SsvcLineType', props: { exceptOptions: { label: '서비스망' } } },
+        { key: 'DateRange', props: { value: [] } },
+        { key: 'SortType', props: { } },
       ],
       tableColumns: [
         { prop: '', label: '공인/사설', align: 'center', sortable: true, propIsCheckBox: true, columnVisible: true, showOverflow: true },

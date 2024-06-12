@@ -22,4 +22,8 @@ export const componentMap = {
     SortType: () => import('@/views-ipms/conditionComponents/SortType.vue'),
     // 수용국
     SOffice: () => import('@/views-ipms/conditionComponents/SOffice.vue'),
+    // 생성차수
+    GenerationDegree: () => import('@/views-ipms/conditionComponents/GenerationDegree.vue'),
+    // 서비스
+    ServiceOrg: () => import('@/views-ipms/conditionComponents/ServiceOrg.vue'),
 }

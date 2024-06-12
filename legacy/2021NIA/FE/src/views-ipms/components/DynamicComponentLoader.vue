@@ -53,9 +53,8 @@ export default {
       requestParameter: {}
     }
   },
-  watch: {
+    watch: {
     componentKeys: {
-      immediate: true,
       handler(newKeys) {
         this.dynamicComponents = []
         newKeys.forEach((keyObj, index) => {
@@ -74,7 +73,8 @@ export default {
             this.$set(this.dynamicComponents, index, { component: null, props })
           }
         })
-      }
+      },
+      immediate: true
     }
   },
   methods: {
