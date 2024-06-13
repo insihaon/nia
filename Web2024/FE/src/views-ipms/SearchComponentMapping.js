@@ -26,4 +26,6 @@ export const componentMap = {
     GenerationDegree: () => import('@/views-ipms/conditionComponents/GenerationDegree.vue'),
     // 서비스
     ServiceOrg: () => import('@/views-ipms/conditionComponents/ServiceOrg.vue'),
+    // INPUT 입력 componentKey로 입력값 구분
+    InputType: () => import('@/views-ipms/conditionComponents/InputType.vue'),
 }
