@@ -43,11 +43,15 @@ export default {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       componentList: [
+        { key: 'SsvcLineType', props: { label: '계위', lvl: 3, multi: [2] } },
         { key: 'SipCreateType', props: {} },
+        { key: 'GenerationDegree', props: { value: 'ALL' } },
+        { key: 'InputType', props: { label: 'BitMask', componentKey: 'BitMask' } },
         { key: 'DateRange', props: { value: [] } },
         { key: 'IpAddress', props: { value: 'CV0001' } },
-        { key: 'ServiceOrg', props: { } },
-        { key: 'GenerationDegree', props: { value: 'ALL' } },
+        { key: 'ServiceOrg', props: {} },
+        { key: 'SortType', props: {} },
+        { key: 'InputType', props: { label: '라우팅 중복 개수', componentKey: 'routing' } },
       ],
       tableColumns: [
         { prop: '', label: '서비스망', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
