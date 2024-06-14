@@ -30,10 +30,6 @@ export default {
       type: String,
       default: ''
     },
-    exceptOptions: {
-      type: Object,
-      default() { return {} }
-    }
   },
   data() {
     return {

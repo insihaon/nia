@@ -26,12 +26,8 @@ export default {
   props: {
     value: {
       type: String,
-      default: ''
+      default: 'CT0001'
     },
-    exceptOptions: { /* 예외처리 option */
-      type: Object,
-      default() { return {} }
-    }
   },
   data() {
     return {

@@ -43,7 +43,7 @@ export default {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       componentList: [
-        { key: 'SipCreateType', props: { value: 'CT0001' } },
+        { key: 'SipCreateType', props: {} },
         { key: 'DateRange', props: { value: [] } },
         { key: 'IpAddress', props: { value: 'CV0001' } },
         { key: 'ServiceOrg', props: { } },

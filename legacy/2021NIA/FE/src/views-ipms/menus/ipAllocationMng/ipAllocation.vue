@@ -44,10 +44,10 @@ export default {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       componentList: [
-        { key: 'SsvcLineType', props: { exceptOptions: { label: '서비스망', lvl: 3, multi: [2] } } },
+        { key: 'SsvcLineType', props: { label: '서비스망', lvl: 3, multi: [2] } },
         { key: 'SortType', props: {} },
         { key: 'SOffice', props: {} },
-        { key: 'SipCreateType', props: { value: 'CT0001' } },
+        { key: 'SipCreateType', props: {} },
         { key: 'ServiceOrg', props: { } },
         { key: 'IpAddress', props: { value: 'CV0001' } },
         { key: 'DateRange', props: { value: [] } },

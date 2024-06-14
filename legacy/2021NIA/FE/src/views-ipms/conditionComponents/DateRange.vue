@@ -24,10 +24,6 @@ export default {
       type: Array,
       default: () => { return [] }
     },
-    exceptOptions: { /* 예외처리 option */
-      type: Object,
-      default() { return {} }
-    }
   },
   data() {
     return {

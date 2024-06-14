@@ -30,13 +30,9 @@ export default {
   name: routeName,
   extends: Base,
   props: {
-    exceptOptions: {
-      type: Object,
-      default() {
-        return {
-          multi: true
-        }
-      }
+    multi: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
@@ -61,7 +57,7 @@ export default {
   },
   computed: {
     isMulti() {
-      return this.exceptOptions?.multi ?? true
+      return this.multi
     },
   },
   mounted() {

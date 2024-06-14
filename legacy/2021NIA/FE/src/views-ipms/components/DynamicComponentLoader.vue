@@ -5,6 +5,7 @@
         <component
           :is="component.component"
           v-if="component.component"
+          :ref="component.key"
           :key="index"
           v-bind="component.props"
           class="optionItem"

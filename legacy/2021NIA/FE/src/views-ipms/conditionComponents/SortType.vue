@@ -26,13 +26,13 @@ export default {
   name: routeName,
   extends: Base,
   props: {
-    value: {
+    sortTypeDefaultVal: {
       type: String,
-      default: ''
+      default: null
     },
-    exceptOptions: { /* 예외처리 option */
-      type: Object,
-      default() { return {} }
+    propsOptions: {
+      type: Array,
+      default: null
     }
   },
   data() {
@@ -51,6 +51,14 @@ export default {
     }
   },
   computed: {
+  },
+  created () {
+    if (this.propsOptions !== null) {
+      this.soreTypeOptions = this.propsOptions
+    }
+    if (this.sortTypeDefaultVal !== null) {
+      this.sortType = this.sortTypeDefaultVal
+    }
   },
   methods: {
     handleChangeSelect() {

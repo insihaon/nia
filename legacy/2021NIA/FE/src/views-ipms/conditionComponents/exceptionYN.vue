@@ -1,0 +1,52 @@
+<template>
+  <el-col :class="{ [name]: true }" :xs="24" :sm="12" :md="12" :lg="10" :xl="10">
+    <label>
+      예외여부
+    </label>
+    <el-select
+      v-model="value"
+      size="mini"
+      @change="handleChange"
+    >
+      <el-option
+        v-for="(option, i) in options"
+        :key="i"
+        :label="option.label"
+        :value="option.value"
+      />
+    </el-select>
+  </el-col>
+</template>
+<script>
+import { Base } from '@/min/Base.min'
+
+const routeName = 'exceptionYN'
+export default {
+  name: routeName,
+  extends: Base,
+  props: {
+  },
+  data() {
+    return {
+      name: routeName,
+      src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      value: '',
+      options: [
+        { label: '전체', value: '' },
+        { label: '예외처리', value: 'Y' },
+        { label: '예외처리 제외', value: 'N' },
+      ]
+    }
+  },
+  // sexcpt_yn
+  computed: {
+  },
+  methods: {
+    handleChange() {
+      this.$emit('update-value', [{ key: 'sexcpt_yn', value: this.value }])
+    }
+  }
+}
+</script>
+<style lang="scss" scoped>
+</style>

@@ -192,10 +192,12 @@
   }
   .optionRow {
     label {
+      min-width: 120px;
       background-image: -webkit-gradient(linear, left top, right top, from(rgba(0, 0, 0, 0.0)), to(rgba(0, 0, 0, 0.05)));
     }
     .optionItem {
       display: flex;
+      align-items: center;
     }
   }
 
