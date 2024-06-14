@@ -36,4 +36,6 @@ export const componentMap = {
     ExceptionYN: () => import('@/views-ipms/conditionComponents/ExceptionYN.vue'),
     // INPUT 입력 componentKey로 입력값 구분
     InputType: () => import('@/views-ipms/conditionComponents/InputType.vue'),
+    // 포함여부 사항 체크
+    IncludeYN: () => import('@/views-ipms/conditionComponents/IncludeYN.vue'),
 }

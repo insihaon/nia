@@ -44,7 +44,7 @@ export default {
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       componentList: [
         { key: 'SipCreateType', props: {} },
-        { key: 'GenerationDegree', props: { value: 'ALL' } },
+        { key: 'GenerationDegree', props: {} },
         { key: 'IpAddress', props: { value: 'CV0001' } },
         { key: 'SsvcLineType', props: { label: '서비스망' } },
         { key: 'DateRange', props: { value: [] } },
