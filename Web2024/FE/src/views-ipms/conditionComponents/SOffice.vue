@@ -31,10 +31,6 @@ export default {
       type: String,
       default: ''
     },
-    exceptOptions: { /* 예외처리 option */
-      type: Object,
-      default() { return {} }
-    }
   },
   data() {
     return {

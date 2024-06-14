@@ -1,7 +1,7 @@
 <template>
   <el-col :class="{ [name]: true }" :xs="24" :sm="12" :md="12" :lg="8" :xl="6">
-    <label style="width: 100px">
-      {{ exceptOptions.label }}
+    <label>
+      {{ label }}
     </label>
     <!-- LEVEL 1 -->
     <el-select
@@ -20,7 +20,7 @@
     </el-select>
     <!-- LEVEL 2 -->
     <el-select
-      v-if="[2, 3].includes(exceptOptions.lvl)"
+      v-if="[2, 3].includes(lvl)"
       v-model="localValue[key2]"
       :disabled="localValue[key1] === ''"
       :multiple="isMultiByLvl(2)"
@@ -37,7 +37,7 @@
     </el-select>
     <!-- LEVEL 3 -->
     <el-select
-      v-if="exceptOptions.lvl === 3"
+      v-if="lvl === 3"
       v-model="localValue[key3]"
       :disabled="isDisabledLvlThree"
       :multiple="isMultiByLvl(3)"
@@ -58,6 +58,7 @@
 import { Base } from '@/min/Base.min'
 import Eventbus from '@/utils/event-bus'
 import { EventType } from '@/min/types'
+import _ from 'lodash'
 
 const key1 = '1'
 const key2 = '2'
@@ -68,15 +69,25 @@ export default {
   name: routeName,
   extends: Base,
   props: {
-    exceptOptions: { /* 예외처리 option */
+    propsValueLvl1: {
+      type: String,
+      default: null
+    },
+    label: {
+      type: String,
+      default: '계위'
+    },
+    lvl: {
+      type: Number,
+      default: 1
+    },
+    multi: {
+      type: Array,
+      default() { return [] }
+    },
+    propsLvlOptions: {
       type: Object,
-      default() {
-        return {
-          label: '계위',
-          lvl: 1,
-          multi: []
-        }
-      }
+      default: null
     }
   },
   data() {
@@ -109,26 +120,50 @@ export default {
     isDisabledLvlThree() {
       let result = false
       const valueLvl2 = this.localValue[key2]
-      if (valueLvl2.length === 0 || valueLvl2.length > 1) {
-        result = true
+      if (this.isMultiByLvl(2)) {
+        if (valueLvl2.length === 0 || valueLvl2.length > 1) {
+          result = true
+        }
+      } else {
+        if (valueLvl2.length === 0) {
+          result = true
+        }
       }
       return result
     }
   },
+  created() {
+    if (this.propsLvlOptions !== null) {
+      this.lvlOptions = this.getMergedOptions(this.lvlOptions, this.propsLvlOptions)
+    }
+    if (this.propsValueLvl1 !== null) {
+      this.$set(this.localValue, 1, this.propsValueLvl1)
+    }
+  },
   mounted() {
-    if (this.exceptOptions.multi?.length > 0) {
-      const multiOp = this.exceptOptions.multi
+    if (this.multi?.length > 0) {
+      const multiOp = this.multi
       Object.keys(this.localValue).forEach(key => {
         if (multiOp.includes(key)) {
-          // this.localValue[key] = []
           this.$set(this.localValue, key, [])
         }
       })
     }
   },
   methods: {
+    getMergedOptions(orginOption, propOption) {
+      // Merge propOption into orginOption but only for matching keys
+      const result = _.mergeWith(this._cloneDeep(orginOption), propOption, (objValue, srcValue, key, object, source) => {
+        if (Object.prototype.hasOwnProperty.call(key, 'error')) {
+          return srcValue
+        }
+        return objValue
+      })
+      return result
+    },
     isMultiByLvl(lvl) {
-      return this.exceptOptions.multi?.includes(lvl)
+      const multi = this.multi ?? []
+      return multi.includes(lvl)
     },
     handleChangeLvl1() {
       const params = { ssvcLineTypeCd: this.localValue[key1] }
@@ -156,7 +191,7 @@ export default {
       this.emitEvent('ssvcObjCd', key3)
     },
     resetLocalValue(lvl) {
-      const multiOp = this.exceptOptions.multi ?? []
+      const multiOp = this.multi ?? []
       if (multiOp.length > 0 && multiOp.includes(lvl)) {
         // this.localValue[lvl] = []
         this.$set(this.localValue, lvl, [])

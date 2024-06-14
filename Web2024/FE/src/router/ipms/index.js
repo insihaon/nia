@@ -179,7 +179,7 @@ export const ipmsRoute = Object.freeze([
     children: [
       {
         path: 'ipAdressRoutingCompare',
-        component: () => null,
+        component: () => import('@/views-ipms/menus/dbMng/ipAdressRoutingCompare'),
         name: 'IpAdressRoutingCompare',
         meta: { title: 'IP주소 라우팅 비교/점검', affix: false }
       },
