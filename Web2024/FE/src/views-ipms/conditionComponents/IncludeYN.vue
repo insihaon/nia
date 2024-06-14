@@ -1,11 +1,10 @@
 <template>
   <el-col :class="{ [name]: true }" :xs="24" :sm="12" :md="12" :lg="8" :xl="6">
-    <label style="width : 100px">
-      공인/사설
+    <label>
+      {{ label }}
     </label>
     <el-select
-      v-model="value"
-      size="mini"
+      v-model="localValue"
       @change="handleChange"
     >
       <el-option
@@ -20,39 +19,47 @@
 <script>
 import { Base } from '@/min/Base.min'
 
-const routeName = 'SipCreateType'
+const routeName = 'IncludeYN'
 export default {
   name: routeName,
   extends: Base,
   props: {
+    value: {
+      type: String,
+      default: ''
+    },
+    label: {
+      type: String,
+      default: ''
+    },
+    componentKey: {
+      type: String,
+      default: null
+    }
   },
   data() {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      value: 'CT0001',
-      options: [
-        { label: '공인', value: 'CT0001' },
-        { label: 'Bogon', value: 'CT0003' },
-        { label: '유/무선공용', value: 'CT0004' },
-        { label: '사설', value: 'CT0005' }
-      ]
+       options: [
+        { label: '전체', value: 'ALL' },
+        { label: 'Y', value: 'Y' },
+        { label: 'N', value: 'N' },
+       ],
+       localValue: []
     }
   },
   computed: {
   },
-  mounted() {
-
-  },
   methods: {
     handleChange() {
-      this.$emit('update-value', [{ key: 'sipCreateTypeCd', value: this.value }])
+      this.$emit('update-value', [{ key: this.componentKey, value: this.localValue }])
     }
   }
 }
 </script>
 <style lang="scss" scoped>
-.el-select {
-  width: 100%;
-}
+  .el-select {
+    width: 100%;
+  }
 </style>

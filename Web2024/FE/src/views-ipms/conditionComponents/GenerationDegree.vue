@@ -8,6 +8,7 @@
       collapse-tags
       filterable
       size="mini"
+      @change="handleChange"
     >
       <el-option
         v-for="(option, i) in options"
@@ -28,7 +29,7 @@ export default {
   props: {
     value: {
       type: String,
-      default: ''
+      default: 'ALL'
     },
   },
   data() {
@@ -54,21 +55,16 @@ export default {
         { label: 'K199705000', value: 'K199705000' },
         { label: 'K199706000', value: 'K199706000' },
         { label: 'K199707000', value: 'K199707000' }
-      ]
+      ],
+      localValue: []
     }
   },
   computed: {
-    localValue: {
-      get() {
-        return this.value
-      },
-      set(newValue) {
-        this.$emit('set-value', newValue)
-        this.$emit('update-value', [{ key: 'degreeCd', value: newValue }])
-      }
-    },
   },
   methods: {
+    handleChange() {
+      this.$emit('update-value', [{ key: 'generationDegreeCd', value: this.localValue }])
+    },
   }
 }
 </script>

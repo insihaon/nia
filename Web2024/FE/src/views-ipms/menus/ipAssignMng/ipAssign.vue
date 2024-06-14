@@ -45,12 +45,14 @@ export default {
       componentList: [
         { key: 'SsvcLineType', props: { label: '계위', lvl: 3, multi: [2] } },
         { key: 'SipCreateType', props: {} },
-        { key: 'GenerationDegree', props: { value: 'ALL' } },
+        { key: 'GenerationDegree', props: {} },
         { key: 'InputType', props: { label: 'BitMask', componentKey: 'BitMask' } },
         { key: 'DateRange', props: { value: [] } },
         { key: 'IpAddress', props: { value: 'CV0001' } },
         { key: 'ServiceOrg', props: {} },
         { key: 'SortType', props: {} },
+        { key: 'IncludeYN', props: { label: 'Summary 포함 여부', componentKey: 'summary' } },
+        { key: 'IncludeYN', props: { label: 'DB-라우팅 일치 여부', componentKey: 'dbRouting' } },
         { key: 'InputType', props: { label: '라우팅 중복 개수', componentKey: 'routing' } },
       ],
       tableColumns: [
