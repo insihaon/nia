@@ -33,7 +33,7 @@ export const componentMap = {
     // 진행상태
     Progress: () => import('@/views-ipms/conditionComponents/Progress.vue'),
     // 예외여부
-    // ExceptionYN: () => import('@/views-ipms/conditionComponents/ExceptionYN.vue'),
+    ExceptionYN: () => import('@/views-ipms/conditionComponents/ExceptionYN.vue'),
     // INPUT 입력 componentKey로 입력값 구분
     InputType: () => import('@/views-ipms/conditionComponents/InputType.vue'),
 }

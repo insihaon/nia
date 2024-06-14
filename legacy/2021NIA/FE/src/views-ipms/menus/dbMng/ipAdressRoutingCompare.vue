@@ -71,7 +71,7 @@ export default {
           }
         },
         { key: 'Progress', props: {} },
-        { key: 'exceptionYN', props: {} }
+        { key: 'ExceptionYN', props: {} }
       ],
       tableColumns: [
         { prop: '', label: '구분', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
