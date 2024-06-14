@@ -14,10 +14,6 @@ export default {
   name: routeName,
   extends: Base,
   props: {
-    value: {
-      type: String,
-      default: ''
-    },
     label: {
       type: String,
       default: ''
@@ -33,17 +29,6 @@ export default {
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       word: ''
     }
-  },
-  computed: {
-    localValue: {
-      get() {
-        return this.value
-      },
-      set(newValue) {
-        this.$emit('set-value', newValue)
-        this.$emit('update-value', [{ key: this.componentKey, value: newValue }])
-      }
-    },
   },
   methods: {
     handleChangeWord() {
