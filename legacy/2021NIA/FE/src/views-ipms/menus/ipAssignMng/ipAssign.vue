@@ -39,10 +39,10 @@ export default {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       componentList: [
-        { key: 'SsvcLineType', props: { label: '계위', lvl: 3, multi: [2] } },
+        { key: 'SsvcLineType', props: { lvl: 3, multi: [2] } },
         { key: 'SipCreateType', props: {} },
         { key: 'GenerationDegree', props: {} },
-        { key: 'InputType', props: { label: 'BitMask', componentKey: 'BitMask' } },
+        { key: 'InputType', props: { label: 'BitMask', componentKey: 'bitMask' } },
         { key: 'DateRange', props: { value: [] } },
         { key: 'IpAddress', props: { } },
         { key: 'ServiceOrg', props: {} },

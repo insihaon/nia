@@ -40,13 +40,20 @@ export default {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       componentList: [
-        { key: 'SsvcLineType', props: { label: '서비스망', lvl: 3, multi: [2] } },
-        { key: 'SortType', props: {} },
+        { key: 'SsvcLineType', props: { lvl: 3, multi: [2] } },
         { key: 'SOffice', props: {} },
         { key: 'SipCreateType', props: {} },
-        { key: 'ServiceOrg', props: { } },
-        { key: 'IpAddress', props: { } },
-        { key: 'DateRange', props: { value: [] } },
+        { key: 'ServiceOrg', props: {} },
+        { key: 'IpAddress', props: { value: 'CV0001' } },
+        { key: 'InputType', props: { label: 'BitMask', componentKey: 'bitMask' } },
+        // 회선정보(select)
+        // 할당상태
+        { key: 'DateRange', props: { } },
+        { key: 'InputType', props: { label: '장비명', componentKey: 'equipment_nm' } },
+        { key: 'SortType', props: { } },
+        { key: 'IncludeYN', props: { label: 'Summary 포함 여부', componentKey: 'summary' } },
+        { key: 'IncludeYN', props: { label: 'DB-라우팅 일치여부' } },
+        { key: 'InputType', props: { label: '라우팅 중복 개수', componentKey: 'routing' } },
       ],
       tableColumns: [
         { prop: '', label: '노드국', align: 'center', sortable: true, columnVisible: true, showOverflow: true },

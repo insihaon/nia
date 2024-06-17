@@ -48,7 +48,7 @@ export default {
     multi: {
       type: Boolean,
       default: true
-    }
+    },
   },
   data() {
     return {
@@ -70,12 +70,13 @@ export default {
         { label: '대군화 시설용', value: 'D-agency' },
         { label: 'Cloud', value: 'cloud' }
       ],
-      localValue: []
+      localValue: [],
+      multiValue: ''
     }
   },
   computed: {
     isMulti() {
-      return this.multi
+      return this.isMultiValue
     },
     isSettingAllOption() {
       return true
@@ -95,9 +96,10 @@ export default {
     //     this.value = o
     //   }
     // }
-
-    value(n, o) {
-      // console.log(n, o)
+  },
+   created() {
+    if (this.multi !== null) {
+      this.isMultiValue = this.multi
     }
   },
   mounted() {
@@ -111,13 +113,15 @@ export default {
   },
   methods: {
     handleChange() {
-      this.$emit('update-value', [{ key: 'serviceOrdCd', value: this.localValue.filter(v => v !== 'ALL') }])
-      if (this.localValue.length === this.fullOptions.length && !this.localValue.includes('ALL')) {
-        this.localValue.push('ALL')
-      } else if (this.localValue.includes('ALL') && this.localValue.length !== this.fullOptions.length + 1) {
-        this.localValue = this.localValue.filter(value => value !== 'ALL')
-      }
       this.$emit('update-value', [{ key: 'sassignTypeCd', value: this.localValue }])
+      if (Array.isArray(this.localValue)) { // multi 모드일때
+        if (this.localValue.length === this.fullOptions.length && !this.localValue.includes('ALL')) {
+          this.localValue.push('ALL')
+        } else if (this.localValue.includes('ALL') && this.localValue.length !== this.fullOptions.length + 1) {
+          this.localValue = this.localValue.filter(value => value !== 'ALL')
+        }
+        this.$emit('update-value', [{ key: 'serviceOrdCd', value: this.localValue.filter(v => v !== 'ALL') }])
+      }
     },
     onClickAll() {
       if (this.localValue.includes('ALL')) {
