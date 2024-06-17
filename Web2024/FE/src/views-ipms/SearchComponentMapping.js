@@ -46,4 +46,6 @@ export const componentMap = {
     DetailedWorkClassification: () => import('@/views-ipms/conditionComponents/DetailedWorkClassification.vue'),
     // 조회년도
     CheckYear: () => import('@/views-ipms/conditionComponents/CheckYear.vue'),
+    // 포함여부 사항 체크
+    IncludeYN: () => import('@/views-ipms/conditionComponents/IncludeYN.vue'),
 }
