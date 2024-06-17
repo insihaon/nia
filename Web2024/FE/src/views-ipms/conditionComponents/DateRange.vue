@@ -1,7 +1,7 @@
 <template>
   <el-col :class="{ [name]: true }" :xs="24" :sm="12" :md="12" :lg="8" :xl="6">
     <label style="width : 100px">
-      작업일자
+      {{ label }}
     </label>
     <el-date-picker
       v-model="localValue"
@@ -9,6 +9,7 @@
       size="mini"
       start-placeholder="시작일"
       end-placeholder="종료일"
+      @change="handleChange"
     />
   </el-col>
 </template>
@@ -24,29 +25,37 @@ export default {
       type: Array,
       default: () => { return [] }
     },
+    label: {
+      type: String,
+      default: '작업일자'
+    },
+    componentKey: {
+      type: String,
+      default: null
+    }
   },
   data() {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      localValue: []
     }
   },
   computed: {
-    localValue: {
-      get() {
-        return this.value
-      },
-      set(newValue) {
-        const [searchBgnDe, searchEndDe] = newValue
-        this.$emit('set-value', newValue)
-        this.$emit('update-value', [
-          { key: 'searchBgnDe', value: this.moment(searchBgnDe).format('YYYY-MM-DD') },
-          { key: 'searchEndDe', value: this.moment(searchEndDe).format('YYYY-MM-DD') }
-        ])
-      }
-    }
   },
   methods: {
+   handleChange() {
+      const [searchBgnDe, searchEndDe] = this.localValue
+
+      this.$emit('set-value', this.localValue)
+      this.$emit('update-value', [{
+        key: this.componentKey,
+        value: [
+          { key: 'searchBgnDe', value: this.moment(searchBgnDe).format('YYYY-MM-DD') },
+          { key: 'searchEndDe', value: this.moment(searchEndDe).format('YYYY-MM-DD') }
+        ]
+      }])
+   }
   }
 }
 </script>

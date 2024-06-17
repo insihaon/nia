@@ -16,6 +16,8 @@ export const componentMap = {
     SsvcLineType: () => import('@/views-ipms/conditionComponents/SsvcLineType.vue'),
     // 작업일자, 등록기간 dateRange
     DateRange: () => import('@/views-ipms/conditionComponents/DateRange.vue'),
+    // 조회일자, single date
+    DatePicker: () => import('@/views-ipms/conditionComponents/DatePicker.vue'),
     // IP 주소
     IpAddress: () => import('@/views-ipms/conditionComponents/IpAddress.vue'),
     // 정렬
