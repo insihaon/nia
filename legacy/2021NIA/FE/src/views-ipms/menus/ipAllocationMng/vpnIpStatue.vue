@@ -1,5 +1,5 @@
 <template>
-  <el-row class="w-100 h-100" :class="{'px-12': !isDashboard}">
+  <el-row class="w-100 h-100">
     <el-col :span="24">
       <compTable :prop-table-height="300" :prop-column="tableColumns" :prop-is-pagination="false" :prop-is-check-box="false" prop-grid-menu-id="inputSpeed" :prop-grid-indx="1">
         <template slot="text-description">
@@ -21,10 +21,6 @@ export default {
   components: { CompTable },
   extends: Base,
   props: {
-    isDashboard: {
-      type: Boolean,
-      default: false
-    }
   },
   data() {
     return {

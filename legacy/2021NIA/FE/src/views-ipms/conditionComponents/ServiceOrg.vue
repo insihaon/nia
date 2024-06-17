@@ -8,6 +8,7 @@
       filterable
       :multiple="isMulti"
       clearable
+      collapse-tags
       size="mini"
       @change="handleChange"
     >
@@ -105,7 +106,7 @@ export default {
     // }
 
     value(n, o) {
-      console.log(n, o)
+      // console.log(n, o)
     }
   },
   mounted() {

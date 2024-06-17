@@ -28,7 +28,7 @@ export const componentMap = {
     ServiceOrg: () => import('@/views-ipms/conditionComponents/ServiceOrg.vue'),
     // Block 크기별 조건
     ConditionByBlocksize: () => import('@/views-ipms/conditionComponents/ConditionByBlocksize.vue'),
-    // IP 블록상태
+    // IP 블록상태, 할당상태
     IpBlockStatus: () => import('@/views-ipms/conditionComponents/IpBlockStatus.vue'),
     // 진행상태
     Progress: () => import('@/views-ipms/conditionComponents/Progress.vue'),
@@ -36,4 +36,14 @@ export const componentMap = {
     ExceptionYN: () => import('@/views-ipms/conditionComponents/ExceptionYN.vue'),
     // INPUT 입력 componentKey로 입력값 구분
     InputType: () => import('@/views-ipms/conditionComponents/InputType.vue'),
+    // PROTOCOL
+    Protocol: () => import('@/views-ipms/conditionComponents/Protocol.vue'),
+    // 회선정보
+    LineInformation: () => import('@/views-ipms/conditionComponents/LineInformation.vue'),
+    // 작업시스템
+    WorkSystem: () => import('@/views-ipms/conditionComponents/WorkSystem.vue'),
+    // 상세작업분류
+    DetailedWorkClassification: () => import('@/views-ipms/conditionComponents/DetailedWorkClassification.vue'),
+    // 조회년도
+    CheckYear: () => import('@/views-ipms/conditionComponents/CheckYear.vue'),
 }
