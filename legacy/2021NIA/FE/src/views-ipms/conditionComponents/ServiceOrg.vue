@@ -70,7 +70,7 @@ export default {
         { label: '대군화 시설용', value: 'D-agency' },
         { label: 'Cloud', value: 'cloud' }
       ],
-      value: null
+      localValue: []
     }
   },
   computed: {
@@ -80,17 +80,8 @@ export default {
     isSettingAllOption() {
       return true
     },
-    localValue: {
-      get() {
-        return this.value
-      },
-      set(newValue) {
-        this.value = newValue
-        this.$emit('update-value', [{ key: 'serviceOrg', value: newValue }])
-      }
-    },
     fullOptions() {
-      return this.options.map(option => option.value).filter(value => value !== 'ALL')
+      return this.options.map(option => option.value).filter(localValue => localValue !== 'ALL')
     },
     toggleAll() {
       return this.localValue.length === this.fullOptions.length
@@ -120,6 +111,7 @@ export default {
   },
   methods: {
     handleChange() {
+      this.$emit('update-value', [{ key: 'serviceOrdCd', value: this.localValue.filter(v => v !== 'ALL') }])
       if (this.localValue.length === this.fullOptions.length && !this.localValue.includes('ALL')) {
         this.localValue.push('ALL')
       } else if (this.localValue.includes('ALL') && this.localValue.length !== this.fullOptions.length + 1) {
