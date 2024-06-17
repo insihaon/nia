@@ -74,7 +74,6 @@ export default {
     // })
   },
   mounted() {
-    console.log(this.permission_routes)
   },
   methods: {
     onMouseOver(event, menuIdx) {

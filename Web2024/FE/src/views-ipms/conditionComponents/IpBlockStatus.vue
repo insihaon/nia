@@ -1,7 +1,7 @@
 <template>
   <el-col :class="{ [name]: true }" :xs="24" :sm="12" :md="12" :lg="8" :xl="6">
     <label>
-      IP 블록상태
+      {{ label }}
     </label>
     <el-select
       v-model="selectedValues"
@@ -31,6 +31,10 @@ export default {
   name: routeName,
   extends: Base,
   props: {
+    label: {
+      type: String,
+      default: 'IP 블록상태'
+    }
   },
   data() {
     return {
@@ -66,7 +70,7 @@ export default {
   // sassignLevelVd
   methods: {
     handleChange() {
-      this.$emit('update-value', [{ key: 'sassignLevelVd', value: this.selectedValues.filter(v => v !== 'ALL') }])
+      this.$emit('update-value', [{ key: 'sassignLevelCd', value: this.selectedValues.filter(v => v !== 'ALL') }])
     },
     hangleClickOption(option) {
       const tempValue = this._cloneDeep(this.isSelectedAll ? this.options.map(v => v.value) : this.model)
@@ -91,4 +95,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+.el-select {
+  width: 100%;
+}
 </style>

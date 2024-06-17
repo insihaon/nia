@@ -1,5 +1,5 @@
 <template>
-  <el-row class="w-100 h-100" :class="{'px-12': !isDashboard}">
+  <el-row class="w-100 h-100">
     <CompInquiryPannel
       ref="ipunAllocatedStatus"
       :items="searchItems"
@@ -34,10 +34,6 @@ export default {
   components: { CompTable, CompInquiryPannel },
   extends: Base,
   props: {
-    isDashboard: {
-      type: Boolean,
-      default: false
-    }
   },
   data() {
     return {

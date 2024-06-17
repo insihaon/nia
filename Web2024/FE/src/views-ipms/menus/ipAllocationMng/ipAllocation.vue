@@ -1,5 +1,5 @@
 <template>
-  <el-row class="w-100 h-100" :class="{'px-12': !isDashboard}">
+  <el-row class="w-100 h-100">
     <DynamicComponentLoader
       :component-keys="componentList"
       @handle-search="handleSearch"
@@ -34,10 +34,6 @@ export default {
   components: { CompTable, DynamicComponentLoader },
   extends: Base,
   props: {
-    isDashboard: {
-      type: Boolean,
-      default: false
-    }
   },
   data() {
     return {
@@ -49,7 +45,7 @@ export default {
         { key: 'SOffice', props: {} },
         { key: 'SipCreateType', props: {} },
         { key: 'ServiceOrg', props: { } },
-        { key: 'IpAddress', props: { value: 'CV0001' } },
+        { key: 'IpAddress', props: { } },
         { key: 'DateRange', props: { value: [] } },
       ],
       tableColumns: [
