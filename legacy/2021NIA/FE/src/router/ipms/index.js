@@ -143,25 +143,25 @@ export const ipmsRoute = Object.freeze([
     children: [
       {
         path: 'ipAddressRoutingStat',
-        component: () => null,
+        component: () => import('@/views-ipms/menus/ipStatMng/ipAddressRoutingStat'),
         name: 'IpAddressRoutingStat',
         meta: { title: 'IP주소 라우팅 비교/점검 통계 현황', affix: false }
       },
       {
         path: 'ipStatByOrgService',
-        component: () => null,
+        component: () => import('@/views-ipms/menus/ipStatMng/ipStatByOrgService'),
         name: 'IpStatByOrgService',
         meta: { title: 'IP 조직서비스별 통계 현황', affix: false }
       },
       {
         path: 'ipStatByService',
-        component: () => null,
+        component: () => import('@/views-ipms/menus/ipStatMng/ipStatByService'),
         name: 'IpStatByService',
         meta: { title: 'IP 서비스별 통계 현황', affix: false }
       },
       {
         path: 'ipStatByBlockSize',
-        component: () => null,
+        component: () => import('@/views-ipms/menus/ipStatMng/ipStatByBlockSize'),
         name: 'IpStatByBlockSize',
         meta: { title: 'IP 블록크기별 통계 현황', affix: false }
       },

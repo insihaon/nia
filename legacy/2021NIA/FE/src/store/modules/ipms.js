@@ -4,10 +4,6 @@ const state = {
     },
     tempAuthCenterList: [
         {
-            'label': '전체',
-            'value': ''
-        },
-        {
             'label': '-------',
             'value': '000000'
         },

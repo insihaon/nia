@@ -34,7 +34,7 @@ export default {
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       componentList: [
         { key: 'SsvcLineType', props: { lvl: 3 } },
-        { key: 'ServiceOrg', props: { } },
+        { key: 'ServiceOrg', props: { isMulti: false } },
         { key: 'SipCreateType', props: { } },
         { key: 'IpBlockStatus', props: { label: '할당상태' } },
         { key: 'CheckYear', props: { } },

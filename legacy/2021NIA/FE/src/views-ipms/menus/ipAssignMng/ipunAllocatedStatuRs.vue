@@ -1,9 +1,8 @@
 <template>
   <el-row class="w-100 h-100">
-    <CompInquiryPannel
-      ref="ipunAllocatedStatus"
-      :items="searchItems"
-      :is-excel="true"
+    <DynamicComponentLoader
+      ref="DynamicComponent"
+      :component-keys="componentList"
     />
     <el-col :span="24">
       <compTable
@@ -27,11 +26,12 @@
 import { Base } from '@/min/Base.min'
 import CompTable from '@/components/elTable/CompTable.vue'
 import CompInquiryPannel from '@/views-ipms/components/CompInquiryPannel.vue'
+import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
 const routeName = 'IpunAllocatedStatus'
 
 export default {
   name: routeName,
-  components: { CompTable, CompInquiryPannel },
+  components: { CompTable, DynamicComponentLoader },
   extends: Base,
   props: {
   },
@@ -46,9 +46,8 @@ export default {
         { prop: '', label: '예비배정', align: 'center', sortable: true, columnVisible: true, showOverflow: true }
       ],
       tableDatas: [],
-      searchItems: [
-        { label: '계위', type: 'select', multiple: false, model: 'grade', options: [] },
-        { label: '계위2', type: 'select', multiple: false, model: 'grade2', options: [] }
+      componentList: [
+        { key: 'SsvcLineType', props: { lvl: 2 } },
       ]
     }
   },
