@@ -4,7 +4,7 @@
       {{ label }}
     </label>
     <el-date-picker
-      v-model="localValue"
+      v-model="value"
       type="date"
       size="mini"
       @change="handleChange"
@@ -19,9 +19,9 @@ export default {
   name: routeName,
   extends: Base,
   props: {
-    value: {
-      type: Array,
-      default: () => { return [] }
+    defaultValue: {
+      type: String,
+      default: null
     },
     label: {
       type: String,
@@ -32,17 +32,12 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      localValue: ''
+      value: this.moment().subtract(1, 'd')
     }
   },
-  computed: {
-  },
   methods: {
-      handleChange() {
-        this.$emit('set-value', this.localValue)
-        this.$emit('update-value', [
-          { key: 'searchSingleDate', value: this.moment(this.localValue).format('YYYY-MM-DD') },
-        ])
+    handleChange() {
+      this.$emit('update-value', { key: 'searchSingleDate', value: this.moment(this.value).format('YYYY-MM-DD') })
    }
   }
 }

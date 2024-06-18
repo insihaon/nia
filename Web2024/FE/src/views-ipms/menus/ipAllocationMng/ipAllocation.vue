@@ -43,7 +43,7 @@ export default {
         { key: 'SsvcLineType', props: { lvl: 3, multi: [2] } },
         { key: 'SOffice', props: {} },
         { key: 'SipCreateType', props: {} },
-        { key: 'ServiceOrg', props: {} },
+        { key: 'ServiceOrg', props: { limit: 10 } },
         { key: 'IpAddress', props: { value: 'CV0001' } },
         { key: 'InputType', props: { label: 'BitMask', componentKey: 'bitMask' } },
         // 회선정보(select)

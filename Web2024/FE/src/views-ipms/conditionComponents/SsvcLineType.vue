@@ -11,6 +11,7 @@
       size="mini"
       @change="handleChangeLvl1"
     >
+      <el-option label="전체" value="ALL"><span class="w-100 h-100 d-inline-block" @click="toggleAll(1)">전체</span></el-option>
       <el-option
         v-for="(option, i) in lvlOptions[key1]"
         :key="i"
@@ -28,6 +29,7 @@
       size="mini"
       @change="handleChangeLvl2"
     >
+      <el-option label="전체" value="ALL"><span class="w-100 h-100 d-inline-block" @click="toggleAll(2)">전체</span></el-option>
       <el-option
         v-for="(option, i) in lvlOptions[key2]"
         :key="i"
@@ -58,6 +60,7 @@
 import { Base } from '@/min/Base.min'
 import Eventbus from '@/utils/event-bus'
 import { EventType } from '@/min/types'
+import { onMessagePopup } from '@/utils/index'
 import _ from 'lodash'
 
 const key1 = '1'
@@ -69,7 +72,7 @@ export default {
   name: routeName,
   extends: Base,
   props: {
-    propsValueLvl1: {
+    defaultValueLvl1: {
       type: String,
       default: null
     },
@@ -85,6 +88,10 @@ export default {
       type: Array,
       default() { return [] }
     },
+    limit: {
+      type: Object,
+      default() { return { 1: null, 2: null, 3: null } }
+    },
     propsLvlOptions: {
       type: Object,
       default: null
@@ -97,7 +104,7 @@ export default {
       key1, key2, key3,
       lvlOptions: {
         1: [
-          { label: '전체', value: '' },
+          // { label: '전체', value: '' },
           { label: 'KORNET', value: 'CL0001' },
           { label: 'PREMIUM', value: 'CL0002' },
           { label: 'MOBILE', value: 'CL0003' },
@@ -105,7 +112,7 @@ export default {
           { label: 'VPN', value: 'CL0005' },
           { label: 'ICC', value: 'CL0006' },
           { label: '미분류', value: 'CL0007' },
-          { label: 'SCHOOLNET', value: 'CL00085' }
+          { label: 'SCHOOLNET', value: 'CL0008' }
         ],
         2: this.$store.state.ipms.tempAuthCenterList,
         3: this.$store.state.ipms.tempNodeList,
@@ -136,8 +143,8 @@ export default {
     if (this.propsLvlOptions !== null) {
       this.lvlOptions = this.getMergedOptions(this.lvlOptions, this.propsLvlOptions)
     }
-    if (this.propsValueLvl1 !== null) {
-      this.$set(this.localValue, 1, this.propsValueLvl1)
+    if (this.defaultValueLvl1 !== null) {
+      this.$set(this.localValue, 1, this.defaultValueLvl1)
     }
   },
   mounted() {
@@ -154,7 +161,7 @@ export default {
     getMergedOptions(orginOption, propOption) {
       // Merge propOption into orginOption but only for matching keys
       const result = _.mergeWith(this._cloneDeep(orginOption), propOption, (objValue, srcValue, key, object, source) => {
-        if (Object.prototype.hasOwnProperty.call(key, 'error')) {
+        if (Object.hasOwn(source, key)) {
           return srcValue
         }
         return objValue
@@ -166,6 +173,8 @@ export default {
       return multi.includes(lvl)
     },
     handleChangeLvl1() {
+      const isOver = this.onChangeMultiCheck(1)
+      if (isOver) return
       const params = { ssvcLineTypeCd: this.localValue[key1] }
       /*
       const res = await api(params)
@@ -177,13 +186,16 @@ export default {
      Eventbus.$emit(EventType.changeLvl1, { ssvcLineTypeCd: this.localValue[key1] })
     },
     handleChangeLvl2() {
+      const isOver = this.onChangeMultiCheck(2)
+      if (isOver) return
+
       const params = { ssvcLineTypeCd: this.localValue[key1], ssvcGroupCd: this.localValue[key2] }
       /*
       const res = await api(params)
       this.lvlOptions[key3] = res.result
       */
       this.resetLocalValue(key3)
-      const keyLvl2 = `ssvcGroupCd$ ${Array.isArray(this.localValue[key2]) ? 'Multi' : ''}`
+      const keyLvl2 = `ssvcGroupCd${Array.isArray(this.localValue[key2]) ? 'Multi' : ''}`
       this.emitEvent(keyLvl2, key2)
       Eventbus.$emit(EventType.changeLvl2, { ssvcLineTypeCd: this.localValue[key1], keyLvl2: this.localValue[key2] })
     },
@@ -202,6 +214,30 @@ export default {
     },
     emitEvent(emitKey, lvl) {
       this.$emit(emitKey, this.localValue[lvl])
+    },
+    fullOptions(lvl) {
+      return this.lvlOptions[lvl].map(option => option.value).filter(v => v !== 'ALL')
+    },
+    toggleAll(lvl) {
+      this.$set(this.localValue, lvl, this.localValue[lvl]?.includes('ALL') ? [] : ['ALL', ...this.fullOptions(lvl)])
+      this.onCheckLimit(lvl)
+    },
+    onChangeMultiCheck(lvl) {
+      if (this.localValue[lvl].length === this.fullOptions(lvl).length && !this.localValue[lvl].includes('ALL')) {
+        this.localValue[lvl].push('ALL')
+      } else if (this.localValue[lvl].includes('ALL') && this.localValue[lvl].length !== this.fullOptions(lvl).length + 1) {
+        this.localValue[lvl] = this.localValue[lvl]?.filter(value => value !== 'ALL')
+      }
+
+      return this.onCheckLimit(lvl)
+    },
+    onCheckLimit(lvl) {
+      if (this.limit[lvl] !== null && this.localValue[lvl]?.length > this.limit[lvl]) {
+        onMessagePopup(this, `${this.label}는 최대 ${this.limit[lvl]}개까지 선택 가능합니다.`)
+        this.$set(this.localValue, lvl, [])
+        return false
+      }
+      return true
     }
   }
 }

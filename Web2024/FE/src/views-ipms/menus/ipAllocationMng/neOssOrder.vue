@@ -2,6 +2,7 @@
   <!-- 검색 조건 컴포넌트 추가 -->
   <el-row class="w-100 h-100" :class="{'px-12': !isDashboard}">
     <DynamicComponentLoader
+      v-if="!isDashboard"
       :component-keys="componentList"
       @handle-search="handleSearch"
     />

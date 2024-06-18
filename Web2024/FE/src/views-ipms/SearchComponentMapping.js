@@ -18,7 +18,7 @@ export const componentMap = {
     DateRange: () => import('@/views-ipms/conditionComponents/DateRange.vue'),
     // 조회일자, single date
     DatePicker: () => import('@/views-ipms/conditionComponents/DatePicker.vue'),
-    // IP 주소
+    // IP 주소, IP 버전
     IpAddress: () => import('@/views-ipms/conditionComponents/IpAddress.vue'),
     // 정렬
     SortType: () => import('@/views-ipms/conditionComponents/SortType.vue'),
@@ -50,4 +50,6 @@ export const componentMap = {
     CheckYear: () => import('@/views-ipms/conditionComponents/CheckYear.vue'),
     // 포함여부 사항 체크
     IncludeYN: () => import('@/views-ipms/conditionComponents/IncludeYN.vue'),
+    // Block 크기
+    BlockSize: () => import('@/views-ipms/conditionComponents/BlockSize.vue'),
 }

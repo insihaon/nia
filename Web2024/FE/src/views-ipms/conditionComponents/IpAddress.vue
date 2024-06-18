@@ -1,7 +1,7 @@
 <template>
   <el-col :class="{ [name]: true }" :xs="24" :sm="12" :md="12" :lg="8" :xl="6">
     <label>
-      IP주소
+      {{ label }}
     </label>
     <el-select
       v-model="value"
@@ -19,7 +19,7 @@
         :value="option.value"
       />
     </el-select>
-    <el-input v-model="word" size="mini" clearable @change="handleChangeWord" />
+    <el-input v-if="isShowInput" v-model="word" size="mini" clearable @change="handleChangeWord" />
   </el-col>
 </template>
 <script>
@@ -30,10 +30,18 @@ export default {
   name: routeName,
   extends: Base,
   props: {
-    propsValue: {
+    defaultValue: {
       type: String,
       default: null
     },
+    label: {
+      type: String,
+      default: 'IP주소'
+    },
+    isShowInput: {
+      type: Boolean,
+      default: true
+    }
   },
   data() {
     return {
@@ -46,8 +54,8 @@ export default {
   computed: {
   },
   mounted () {
-    if (this.propsValue !== null) {
-      this.value = this.propsValue
+    if (this.defaultValue !== null) {
+      this.value = this.defaultValue
     }
   },
   methods: {
@@ -61,4 +69,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+.el-select {
+  width: 100%;
+}
 </style>

@@ -7,24 +7,11 @@
       v-model="localValue"
       filterable
       :multiple="isMulti"
-      clearable
       collapse-tags
       size="mini"
       @change="handleChange"
     >
-      <el-option
-        v-if="isSettingAllOption"
-        label="전체"
-        value="ALL"
-      >
-        <span
-          style="width: 100%; height: 100%; display: block;"
-          @click.prevent="onClickAll"
-        >
-          전체
-        </span>
-      </el-option>
-
+      <el-option label="전체" value="ALL"><span class="w-100 h-100 d-inline-block" @click="toggleAll">전체</span></el-option>
       <el-option
         v-for="(option, i) in options"
         :key="i"
@@ -39,16 +26,21 @@
 import { Base } from '@/min/Base.min'
 import { EventType } from '@/min/types'
 import Eventbus from '@/utils/event-bus'
+import { onMessagePopup } from '@/utils/index'
 
 const routeName = 'ServiceOrg'
 export default {
   name: routeName,
   extends: Base,
   props: {
-    multi: {
+    isMulti: {
       type: Boolean,
       default: true
     },
+    limit: {
+      type: Number,
+      default: null
+    }
   },
   data() {
     return {
@@ -75,18 +67,9 @@ export default {
     }
   },
   computed: {
-    isMulti() {
-      return this.isMultiValue
-    },
-    isSettingAllOption() {
-      return true
-    },
     fullOptions() {
       return this.options.map(option => option.value).filter(localValue => localValue !== 'ALL')
     },
-    toggleAll() {
-      return this.localValue.length === this.fullOptions.length
-    }
   },
   watch: {
     /* 페이지별 선택 가능수 상이함 */
@@ -97,11 +80,6 @@ export default {
     //   }
     // }
   },
-   created() {
-    if (this.multi !== null) {
-      this.isMultiValue = this.multi
-    }
-  },
   mounted() {
     this.value = this.isMulti ? [] : ''
     Eventbus.$on(EventType.changeLvl1, (params) => {
@@ -111,31 +89,45 @@ export default {
   beforeDestroy() {
     Eventbus.$off(EventType.changeLvl1)
   },
+  // sassignTypeCd, sassignTypeCdMultiStr: SA0001;SA0002;SA0003;
   methods: {
     handleChange() {
-      this.$emit('update-value', [{ key: 'sassignTypeCd', value: this.localValue }])
-      if (Array.isArray(this.localValue)) { // multi 모드일때
-        if (this.localValue.length === this.fullOptions.length && !this.localValue.includes('ALL')) {
-          this.localValue.push('ALL')
-        } else if (this.localValue.includes('ALL') && this.localValue.length !== this.fullOptions.length + 1) {
-          this.localValue = this.localValue.filter(value => value !== 'ALL')
-        }
-        this.$emit('update-value', [{ key: 'serviceOrdCd', value: this.localValue.filter(v => v !== 'ALL') }])
+      if (this.localValue.length === this.fullOptions.length && !this.localValue.includes('ALL')) {
+        this.localValue.push('ALL')
+      } else if (this.localValue.includes('ALL') && this.localValue.length !== this.fullOptions.length + 1) {
+        this.localValue = this.localValue?.filter(value => value !== 'ALL')
       }
-    },
-    onClickAll() {
-      if (this.localValue.includes('ALL')) {
-        this.localValue = []
-      } else {
-        this.localValue = ['ALL', ...this.fullOptions]
-      }
-    },
 
+      if (this.limit !== null) {
+        this.onCheckLimit()
+      }
+
+      let key = 'sassignTypeCd'
+      let value = this.localValue
+      if (this.isMulti) {
+        key = 'sassignTypeCdMultiStr'
+        value = this.localValue.filter(v => v !== 'ALL').join(';')
+      }
+      this.$emit('update-value', [{ key, value }])
+    },
+    toggleAll() {
+      this.localValue = this.localValue.includes('ALL') ? [] : ['ALL', ...this.fullOptions]
+      if (this.limit !== null && this.localValue.length > this.limit) {
+        onMessagePopup(this, `서비스는 최대 ${this.limit}개까지 선택 가능합니다.`)
+        this.localValue = []
+      }
+    },
     onLoadServiceList(params) {
       /*
       const res = await api(params)
       this.options = res.result (options set)
       */
+    },
+    onCheckLimit() {
+      if (this.localValue.length > this.limit) {
+        onMessagePopup(this, `서비스는 최대 ${this.limit}개까지 선택 가능합니다.`)
+        this.localValue = []
+      }
     }
   }
 }

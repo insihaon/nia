@@ -41,7 +41,7 @@ export default {
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       componentList: [
         {
-          key: 'SsvcLineType', props: { lvl: 3, propsValueLvl1: 'CL0001',
+          key: 'SsvcLineType', props: { lvl: 3, defaultValueLvl1: 'CL0001',
           propsLvlOptions: {
               1: [
                 { label: 'KORNET', value: 'CL0001' },
@@ -53,7 +53,7 @@ export default {
         },
         { key: 'ConditionByBlocksize', props: {} },
         { key: 'ServiceOrg', props: {} },
-        { key: 'IpBlockStatus', props: {} },
+        { key: 'IpBlockStatus', props: { isMulti: true } },
         { key: 'SipCreateType', props: {} },
         // IP주소(input type)
         {

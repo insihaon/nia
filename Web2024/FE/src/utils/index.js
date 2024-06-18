@@ -7,10 +7,10 @@ export const _var = { moment }
 
 export function findIntersection(arr1, arr2) {
   return arr1.reduce((result, item) => {
-      if (arr2.includes(item)) {
-          result.push(item)
-      }
-      return result
+    if (arr2.includes(item)) {
+      result.push(item)
+    }
+    return result
   }, [])
 }
 
@@ -274,7 +274,7 @@ export function getTime(type) {
 export function debounce(func, wait, immediate) {
   let timeout, args, context, timestamp, result
 
-  const later = function() {
+  const later = function () {
     // 마지막 트리거 시간 간격에 따라
     const last = +new Date() - timestamp
 
@@ -291,7 +291,7 @@ export function debounce(func, wait, immediate) {
     }
   }
 
-  return function(...args) {
+  return function (...args) {
     context = this
     timestamp = +new Date()
     const callNow = immediate && !timeout
@@ -828,13 +828,13 @@ export function object_equals(x, y) {
     if (!y.hasOwnProperty(p)) return false
     // allows to compare x[ p ] and y[ p ] when set to undefined
 
-    if (x[ p ] === y[ p ]) continue
+    if (x[p] === y[p]) continue
     // if they have the same strict value or identity then they are equal
 
-    if (typeof (x[ p ]) !== 'object') return false
+    if (typeof (x[p]) !== 'object') return false
     // Numbers, Strings, Functions, Booleans must be strictly equal
 
-    if (!object_equals(x[ p ], y[ p ])) return false
+    if (!object_equals(x[p], y[p])) return false
     // Objects and Arrays must be tested recursively
   }
 
@@ -857,6 +857,17 @@ export function safeString(string) {
 
 export function safeObjcet(object) {
   return object ?? {}
+}
+
+export function onMessagePopup(parent, message) {
+  parent.$alert(`${message}`, '메시지 창', {
+    confirmButtonText: '확인',
+    dangerouslyUseHTMLString: true
+  }).then(() => {
+    setTimeout(() => {
+      parent.loading = true
+    }, 500)
+  })
 }
 
 export function exceptionLoginFail(parent) {
@@ -906,7 +917,7 @@ export function onDownloadChrome(projectName) {
   var fileName = 'ChromeStandaloneSetup'
 
   if ((navigator.userAgent.indexOf('WOW64') !== -1 ||
-  navigator.userAgent.indexOf('Win64') !== -1)) {
+    navigator.userAgent.indexOf('Win64') !== -1)) {
     fileName = fileName + '64' + '.exe'
   } else {
     fileName = fileName + '.exe'

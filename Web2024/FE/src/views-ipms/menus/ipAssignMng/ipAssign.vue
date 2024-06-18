@@ -32,8 +32,6 @@ export default {
   name: routeName,
   components: { CompTable, DynamicComponentLoader },
   extends: Base,
-  props: {
-  },
   data() {
     return {
       name: routeName,
@@ -45,7 +43,7 @@ export default {
         { key: 'InputType', props: { label: 'BitMask', componentKey: 'bitMask' } },
         { key: 'DateRange', props: { value: [] } },
         { key: 'IpAddress', props: { } },
-        { key: 'ServiceOrg', props: {} },
+        { key: 'ServiceOrg', props: { limit: 10 } },
         { key: 'SortType', props: {} },
         { key: 'IncludeYN', props: { label: 'Summary 포함 여부', componentKey: 'summary' } },
         { key: 'IncludeYN', props: { label: 'DB-라우팅 일치 여부', componentKey: 'dbRouting' } },

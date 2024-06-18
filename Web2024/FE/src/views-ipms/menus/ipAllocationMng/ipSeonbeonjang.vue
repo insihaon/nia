@@ -1,5 +1,5 @@
 <template>
-  <el-row class="w-100 h-100" :class="{'px-12': !isDashboard}">
+  <el-row class="w-100 h-100">
     <DynamicComponentLoader
       :component-keys="componentList"
       @handle-search="handleSearch"
@@ -35,7 +35,7 @@ export default {
         { key: 'SsvcLineType', props: { lvl: 3, multi: [2] } },
         { key: 'SOffice', props: {} },
         { key: 'SipCreateType', props: {} },
-        { key: 'ServiceOrg', props: { multi: false } },
+        { key: 'ServiceOrg', props: { isMulti: false } },
         { key: 'IpAddress', props: { value: 'CV0001' } },
         { key: 'InputType', props: { label: 'BitMask', componentKey: 'bitMask' } },
         // 회선정보
