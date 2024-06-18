@@ -4,28 +4,46 @@
       :component-keys="componentList"
       @handle-search="handleSearch"
     />
-    <el-col :span="24">
-      <compTable :prop-table-height="300" :prop-column="tableColumns" :prop-is-pagination="false" :prop-is-check-box="false" prop-grid-menu-id="inputSpeed" :prop-grid-indx="1">
-        <template slot="text-description">
-          <span>
-            IP 선번장 조회결과
-          </span>
-        </template>
-      </compTable>
-    </el-col>
+    <el-row :gutter="20">
+      <el-col :span="12">
+        <compTable :prop-table-height="300" :prop-column="tableColumns" :prop-is-pagination="false" :prop-is-check-box="true" prop-grid-menu-id="inputSpeed" :prop-grid-indx="1">
+          <template slot="text-description">
+            <span>
+              IP 선번장 조회결과
+            </span>
+          </template>
+        </compTable>
+      </el-col>
+      <el-col :span="12">
+        <compTable :prop-table-height="300" :prop-column="hostTableColumns" :prop-is-pagination="false" :prop-is-check-box="false" prop-grid-menu-id="inputSpeed" :prop-grid-indx="1">
+          <template slot="text-description">
+            <span>
+              HOST 관리
+            </span>
+          </template>
+        </compTable>
+      </el-col>
+    </el-row>
+    <ModalSearchDetail ref="ModalSearchDetail" />
   </el-row>
+
 </template>
 <script>
 import { Base } from '@/min/Base.min'
 import CompTable from '@/components/elTable/CompTable.vue'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
+import ModalSearchDetail from '@/views-ipms/modal/ModalSearchDetail.vue'
 const routeName = 'IpSeonbeonjang'
 
 export default {
   name: routeName,
-  components: { CompTable, DynamicComponentLoader },
+  components: { CompTable, DynamicComponentLoader, ModalSearchDetail },
   extends: Base,
   props: {
+     isDashboard: {
+      type: Boolean,
+      default: false
+    }
   },
   data() {
     return {
@@ -41,7 +59,8 @@ export default {
         // 회선정보
         { key: 'InputType', props: { label: '용도', componentKey: 'usage' } },
         { key: 'DatePicker', props: { } },
-        { key: 'InputType', props: { label: '장비명', componentKey: 'equipment_nm' } },
+        { key: 'InputSearchDetail',
+          props: { label: '장비명', modalName: 'ModalSearchDetail' } },
         { key: 'SortType', props: {} },
       ],
       tableColumns: [
@@ -51,6 +70,14 @@ export default {
         { prop: '', label: '용도', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: '', label: '분할', align: 'center', sortable: true, columnVisible: true, showOverflow: true }
       ],
+      hostTableColumns: [
+        { prop: '', label: '수용국', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: '', label: 'Host IP', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: '', label: '용도', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: '', label: 'I/F명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: '', label: '장비명', align: 'center', sortable: true, columnVisible: true, showOverflow: true }
+
+      ]
     }
   },
   methods: {

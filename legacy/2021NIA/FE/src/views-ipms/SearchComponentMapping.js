@@ -52,4 +52,7 @@ export const componentMap = {
     IncludeYN: () => import('@/views-ipms/conditionComponents/IncludeYN.vue'),
     // Block 크기
     BlockSize: () => import('@/views-ipms/conditionComponents/BlockSize.vue'),
+      // 장비명, 상품, 소속조직
+    InputSearchDetail: () => import('@/views-ipms/conditionComponents/InputSearchDetail.vue'),
+
 }
