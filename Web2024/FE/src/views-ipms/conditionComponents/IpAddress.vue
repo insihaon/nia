@@ -8,6 +8,7 @@
       v-model="value"
       collapse-tags
       size="mini"
+      :style="{'width': isShowSelecteBox ? '200px': '100%'}"
       @change="hangleChangeSelected"
     >
       <el-option
@@ -74,7 +75,4 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.el-select {
-  width: 100%;
-}
 </style>

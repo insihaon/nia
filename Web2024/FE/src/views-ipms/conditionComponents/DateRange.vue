@@ -4,7 +4,7 @@
       {{ label }}
     </label>
     <el-date-picker
-      v-model="localValue"
+      v-model="value"
       type="daterange"
       size="mini"
       start-placeholder="시작일"
@@ -21,16 +21,16 @@ export default {
   name: routeName,
   extends: Base,
   props: {
-    value: {
+    defaultValue: {
       type: Array,
-      default: () => { return [] }
+      default: null
     },
     label: {
       type: String,
       default: '작업일자'
     },
-    componentKey: {
-      type: String,
+    propsParameterKey: {
+      type: Array,
       default: null
     }
   },
@@ -38,23 +38,26 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      localValue: []
+      value: [],
+      parameterKey: ['searchBgnDe', 'searchEndDe']
     }
   },
-  computed: {
+  created () {
+    if (this.defaultValue !== null && Array.isArray(this.defaultValue)) {
+      this.value = this.defaultValue
+    }
+    if (this.propsParameterKey !== null && Array.isArray(this.propsParameterKey)) {
+      this.parameterKey = this.propsParameterKey
+    }
   },
   methods: {
-   handleChange() {
-      const [searchBgnDe, searchEndDe] = this.localValue
-
-      this.$emit('set-value', this.localValue)
-      this.$emit('update-value', [{
-        key: this.componentKey,
-        value: [
-          { key: 'searchBgnDe', value: this.moment(searchBgnDe).format('YYYY-MM-DD') },
-          { key: 'searchEndDe', value: this.moment(searchEndDe).format('YYYY-MM-DD') }
-        ]
-      }])
+    handleChange() {
+      const [searchBgnDe, searchEndDe] = this.value
+      const [bgKey, endKey] = this.parameterKey
+      this.$emit('update-value', [
+        { key: bgKey, value: this.moment(searchBgnDe).format('YYYY-MM-DD') },
+        { key: endKey, value: this.moment(searchEndDe).format('YYYY-MM-DD') }
+      ])
    }
   }
 }

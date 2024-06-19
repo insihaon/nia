@@ -5,6 +5,7 @@
     </label>
     <el-select
       v-model="value"
+      size="mini"
       @change="handleChange"
     >
       <el-option
@@ -19,18 +20,18 @@
 <script>
 import { Base } from '@/min/Base.min'
 
-const routeName = 'IncludeYN'
+const routeName = 'ApplyStatus'
 export default {
   name: routeName,
   extends: Base,
   props: {
-    defaultValue: {
-      type: String,
-      default: null
-    },
     label: {
       type: String,
-      default: ''
+      default: '상태'
+    },
+    propsOptions: {
+      type: Array,
+      default: null
     },
     parameterKey: {
       type: String,
@@ -41,22 +42,25 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-       options: [
-        { label: '전체', value: 'ALL' },
-        { label: 'Y', value: 'Y' },
-        { label: 'N', value: 'N' },
-       ],
-       value: []
+      value: '',
+      options: [
+        { label: '전체', value: '' },
+        { label: '접수', value: 'nod001' },
+        { label: '승인', value: 'nod002' },
+        { label: '반려', value: 'nod003' },
+      ]
     }
   },
+  computed: {
+  },
   created () {
-    if (this.defaultValue !== null) {
-      this.value = this.defaultValue
+    if (this.propsOptions !== null) {
+      this.options = this.propsOptions
     }
   },
   methods: {
     handleChange() {
-      if (this.parameterKey === null) return
+      if (this.parameterKey !== null) return
       this.$emit('update-value', [{ key: this.parameterKey, value: this.value }])
     }
   }

@@ -22,21 +22,30 @@
     </div>
   </div>
   <el-row v-else class="w-100 h-100 pt-4 px-12">
+    <DynamicComponentLoader
+      ref="DynamicComponent"
+      :component-keys="componentList"
+    />
     <el-col :span="24" class="h-100">
-      <CompInquiryPannel :items="searchItems" :search-model.sync="searchModel" />
-      <compTable :prop-column="tableColumns" :prop-is-pagination="false" :prop-is-check-box="false" prop-grid-menu-id="inputSpeed" :prop-grid-indx="1" />
+      <compTable :prop-column="tableColumns" :prop-is-pagination="false" :prop-is-check-box="false" prop-grid-menu-id="inputSpeed" :prop-grid-indx="1">
+        <template slot="text-description">
+          <span>
+            공지목록 조회결과
+          </span>
+        </template>
+      </compTable>
     </el-col>
   </el-row>
 </template>
 <script>
 import { Base } from '@/min/Base.min'
 import CompTable from '@/components/elTable/CompTable.vue'
-import CompInquiryPannel from '@/views-ipms/components/CompInquiryPannel'
+import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
 const routeName = 'Notice'
 
 export default {
   name: routeName,
-  components: { CompTable, CompInquiryPannel },
+  components: { CompTable, DynamicComponentLoader },
   extends: Base,
   props: {
     isDashboard: {
@@ -58,29 +67,11 @@ export default {
         { prop: '', label: '팝업게시종료일', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: '', label: '조회건수', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
       ],
-      searchItems: [
-        {
-          label: '공지구분', type: 'select', model: 'gubun', placeholder: '구분을 선택하세요', options: [
-            { label: '전체', value: 'all' },
-            { label: '일반', value: 'normal' },
-            { label: '긴급', value: 'warning' },
-          ]
-        },
-        {
-          label: '조회조건', type: 'select', model: 'condition', placeholder: '조회조건을 선택하세요', options: [
-          { label: '제목', value: 'title' },
-          { label: '내용', value: 'content' },
-          { label: '작성자', value: 'writer' },
-          ]
-        },
-        { label: '검색', type: 'input', model: 'word', placeholder: '검색어를 입력하세요' },
-        { label: '등록기간', type: 'date', model: 'period', placeholder: ' 검색하세요' },
+      componentList: [
+        { key: 'NoticeGubun', props: { } },
+        { key: 'BoardSearchCondition', props: { defaultValue: 'title' } },
+        { key: 'DateRange', props: { label: '등록기간' } },
       ],
-      searchModel: {
-        org: '',
-        user: '',
-        status: '',
-      },
       interval: null,
       notices: [
         { title: '[긴급 1] IPMS 시스템 관련공지 모두가 주목해야할 공지사항입니다.', date: '2024-06-03' },

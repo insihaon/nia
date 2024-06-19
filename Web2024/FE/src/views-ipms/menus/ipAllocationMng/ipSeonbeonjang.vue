@@ -49,9 +49,9 @@ export default {
         { key: 'SipCreateType', props: {} },
         { key: 'ServiceOrg', props: { isMulti: false } },
         { key: 'IpAddress', props: { value: 'CV0001' } },
-        { key: 'InputType', props: { label: 'BitMask', componentKey: 'bitMask' } },
+        { key: 'InputType', props: { label: 'BitMask', propsParameterKey: 'nbitmask' } },
         // 회선정보
-        { key: 'InputType', props: { label: '용도', componentKey: 'usage' } },
+        { key: 'InputType', props: { label: '용도', propsParameterKey: '' } },
         { key: 'DatePicker', props: { } },
         { key: 'InputSearchDetail',
           props: { label: '장비명', modalName: 'ModalFacilityInformation', componentKey: 'ssubscnealiasNe' } },

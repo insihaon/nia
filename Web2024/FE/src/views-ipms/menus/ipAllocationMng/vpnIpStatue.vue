@@ -38,7 +38,7 @@ export default {
         { key: 'SipCreateType', props: {} },
         // 보유
         // 상품
-        { key: 'InputType', props: { label: '계약자명', componentKey: 'contractorName' } },
+        { key: 'InputType', props: { label: '계약자명', propsParameterKey: 'scustname' } },
         { key: 'SOffice', props: {} }
       ],
       tableColumns: [

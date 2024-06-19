@@ -45,15 +45,15 @@ export default {
         { key: 'SipCreateType', props: {} },
         { key: 'ServiceOrg', props: { limit: 10 } },
         { key: 'IpAddress', props: { value: 'CV0001' } },
-        { key: 'InputType', props: { label: 'BitMask', componentKey: 'bitMask' } },
+        { key: 'InputType', props: { label: 'BitMask', propsParameterKey: 'bitMask' } },
         // 회선정보(select)
         // 할당상태
         { key: 'DateRange', props: { } },
-        { key: 'InputType', props: { label: '장비명', componentKey: 'equipment_nm' } },
+        { key: 'InputType', props: { label: '장비명', propsParameterKey: 'equipment_nm' } },
         { key: 'SortType', props: { } },
-        { key: 'IncludeYN', props: { label: 'Summary 포함 여부', componentKey: 'summary' } },
-        { key: 'IncludeYN', props: { label: 'DB-라우팅 일치여부' } },
-        { key: 'InputType', props: { label: '라우팅 중복 개수', componentKey: 'routing' } },
+        { key: 'IncludeYN', props: { label: 'Summary 포함 여부', parameterKey: 'snull0Yn' } },
+        { key: 'IncludeYN', props: { label: 'DB-라우팅 일치여부', parameterKey: 'sintgrmYn' } },
+        { key: 'InputType', props: { label: '라우팅 중복 개수', propsParameterKey: 'nsummaryCnt' } },
       ],
       tableColumns: [
         { prop: '', label: '노드국', align: 'center', sortable: true, columnVisible: true, showOverflow: true },

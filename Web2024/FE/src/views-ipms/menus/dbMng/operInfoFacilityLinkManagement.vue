@@ -40,12 +40,12 @@ export default {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       componentList: [
-        { key: 'InputType', props: { componentKey: 'searchWrd', label: '링크IP블록' } },
+        { key: 'InputType', props: { propsParameterKey: 'searchWrd', label: '링크IP블록' } },
         { key: 'SOffice', props: {} },
-        { key: 'InputType', props: { componentKey: 'smodelNm', label: '장비명' } },
-        { key: 'InputType', props: { componentKey: 'sifNm', label: 'IF명' } },
+        { key: 'InputType', props: { propsParameterKey: 'smodelNm', label: '장비명' } },
+        { key: 'InputType', props: { propsParameterKey: 'sifNm', label: 'IF명' } },
         { key: 'LineInformation', props: {} },
-        { key: 'InputType', props: { componentKey: 'sconnalias', label: '수용회선명' } },
+        { key: 'InputType', props: { propsParameterKey: 'sconnalias', label: '수용회선명' } },
         { key: 'SortType', props: { } },
       ],
       tableColumns: [
