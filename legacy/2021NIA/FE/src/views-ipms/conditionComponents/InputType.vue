@@ -18,6 +18,10 @@ export default {
       type: String,
       default: ''
     },
+    propsParameterKey: {
+      type: String,
+      default: null
+    },
     componentKey: {
       type: String,
       default: ''
@@ -27,12 +31,18 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      word: ''
+      word: '',
+      parameterKey: 'searchWrd'
+    }
+  },
+  created () {
+    if (this.propsParameterKey !== null) {
+      this.parameterKey = this.propsParameterKey
     }
   },
   methods: {
     handleChangeWord() {
-      this.$emit('update-value', [{ key: this.componentKey, value: this.word }])
+      this.$emit('update-value', [{ key: this.parameterKey, value: this.word }])
     }
   }
 }

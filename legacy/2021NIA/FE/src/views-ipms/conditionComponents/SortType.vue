@@ -1,11 +1,12 @@
 <template>
   <el-col :class="{ [name]: true }" :xs="24" :sm="12" :md="12" :lg="8" :xl="6">
     <label>
-      정렬
+      {{ label }}
     </label>
     <el-select
       v-model="sortType"
       size="mini"
+      @change="handleChangeSelect"
     >
       <el-option
         v-for="(option, i) in soreTypeOptions"
@@ -14,8 +15,8 @@
         :value="option.value"
       />
     </el-select>
-    <el-radio v-model="sortOrdr" label="ASC">오름차순</el-radio>
-    <el-radio v-model="sortOrdr" label="DESC">내림차순</el-radio>
+    <el-radio v-model="sortOrdr" label="ASC" @change="handleChangeRadio">오름차순</el-radio>
+    <el-radio v-model="sortOrdr" label="DESC" @change="handleChangeRadio">내림차순</el-radio>
   </el-col>
 </template>
 <script>
@@ -26,6 +27,10 @@ export default {
   name: routeName,
   extends: Base,
   props: {
+    label: {
+      type: String,
+      default: '정렬'
+    },
     sortTypeDefaultVal: {
       type: String,
       default: null

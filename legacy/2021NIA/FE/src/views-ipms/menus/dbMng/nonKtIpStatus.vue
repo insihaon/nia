@@ -42,10 +42,20 @@ export default {
       componentList: [
         { key: 'SOffice', props: { label: '노드국' } },
         { key: 'IpMngProgress', props: {} },
-        { key: 'InputType', props: { componentKey: 'sipBlock', label: 'IP정보' } },
-        { key: 'InputType', props: { componentKey: 'scustname', label: '고객명' } },
-        { key: 'InputType', props: { componentKey: 'sasNum', label: 'AS번호' } },
-        { key: 'LineInformation', props: { componentKey: 'sasNum', label: 'AS번호' } },
+        { key: 'InputType', props: { propsParameterKey: 'sipBlock', label: 'IP정보' } },
+        { key: 'InputType', props: { propsParameterKey: 'scustname', label: '고객명' } },
+        { key: 'InputType', props: { propsParameterKey: 'sasNum', label: 'AS번호' } },
+        { key: 'LineInformation', props: { propOptions: [
+          {
+            value: 'llnum',
+            label: '전용번호',
+          },
+          {
+            value: 'said',
+            label: 'SAID',
+          }],
+        }
+        },
       ],
       tableColumns: [
         { prop: '', label: '노드국', align: 'center', sortable: true, columnVisible: true, showOverflow: true },

@@ -27,6 +27,10 @@ export default {
   name: routeName,
   extends: Base,
   props: {
+    propOptions: {
+      type: Array,
+      default: null
+    }
   },
   data() {
     return {
@@ -47,8 +51,12 @@ export default {
           value: 'ordernum',
           label: '오더번호',
         },
-
       ],
+    }
+  },
+  created () {
+    if (this.propOptions !== null) {
+      this.options = this.propOptions
     }
   },
   // llSrchTypeCd

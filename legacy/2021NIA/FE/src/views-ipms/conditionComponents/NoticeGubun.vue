@@ -1,14 +1,18 @@
 <template>
   <el-col :class="{ [name]: true }" :xs="24" :sm="12" :md="12" :lg="8" :xl="6">
     <label>
-      {{ label }}
+      공지구분
     </label>
     <el-select
       v-model="value"
       @change="handleChange"
     >
       <el-option
-        v-for="(option, i) in options"
+        v-for="(option, i) in [
+          { label: '전체', value: '' },
+          { label: '일반', value: 'BM0001' },
+          { label: '긴급', value: 'BM0002' },
+        ]"
         :key="i"
         :label="option.label"
         :value="option.value"
@@ -19,45 +23,24 @@
 <script>
 import { Base } from '@/min/Base.min'
 
-const routeName = 'IncludeYN'
+const routeName = 'NoticeGubun'
 export default {
   name: routeName,
   extends: Base,
   props: {
-    defaultValue: {
-      type: String,
-      default: null
-    },
-    label: {
-      type: String,
-      default: ''
-    },
-    parameterKey: {
-      type: String,
-      default: null
-    }
   },
   data() {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-       options: [
-        { label: '전체', value: 'ALL' },
-        { label: 'Y', value: 'Y' },
-        { label: 'N', value: 'N' },
-       ],
-       value: []
+      value: ''
     }
   },
-  created () {
-    if (this.defaultValue !== null) {
-      this.value = this.defaultValue
-    }
+  computed: {
   },
   methods: {
     handleChange() {
-      if (this.parameterKey === null) return
-      this.$emit('update-value', [{ key: this.parameterKey, value: this.value }])
+      this.$emit('update-value', [{ key: 'sboardTypeSubCd', value: this.value }])
     }
   }
 }

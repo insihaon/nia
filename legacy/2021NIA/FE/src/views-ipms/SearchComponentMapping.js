@@ -56,5 +56,11 @@ export const componentMap = {
     BlockSize: () => import('@/views-ipms/conditionComponents/BlockSize.vue'),
     // 장비명, 상품, 소속조직
     InputSearchDetail: () => import('@/views-ipms/conditionComponents/InputSearchDetail.vue'),
+    // 공지구분
+    NoticeGubun: () => import('@/views-ipms/conditionComponents/NoticeGubun.vue'),
+    // 게시판 > 조회 조건
+    BoardSearchCondition: () => import('@/views-ipms/conditionComponents/BoardSearchCondition.vue'),
+    // 게시판 > 신청 처리 현황, 요청사항 구분, 진행상태
+    ApplyStatus: () => import('@/views-ipms/conditionComponents/ApplyStatus.vue'),
 
 }

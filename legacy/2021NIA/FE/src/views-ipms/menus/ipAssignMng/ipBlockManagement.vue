@@ -43,7 +43,7 @@ export default {
         { key: 'GenerationDegree', props: {} },
         { key: 'IpAddress', props: { } },
         { key: 'SsvcLineType', props: { label: '서비스망' } },
-        { key: 'DateRange', props: { value: [] } },
+        { key: 'DateRange', props: { } },
         { key: 'SortType', props: { } },
       ],
       tableColumns: [

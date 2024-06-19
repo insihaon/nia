@@ -227,7 +227,7 @@ export const ipmsRoute = Object.freeze([
       },
       {
         path: 'ipAdressNodeApplyTransfer',
-        component: () => null,
+        component: () => import('@/views-ipms/menus/board/ipAdressNodeApplyTransfer'),
         name: 'IpAdressNodeApplyTransfer',
         meta: { title: 'IP주소 노드 이전 신청', affix: false }
       },
@@ -240,25 +240,25 @@ export const ipmsRoute = Object.freeze([
       }, */
       {
         path: 'ipResourceAssignReturn',
-        component: () => null,
+        component: () => import('@/views-ipms/menus/board/ipResourceAssignmentApply'),
         name: 'IpResourceAssignmentApply',
         meta: { title: 'IP자원 배정 신청', affix: false }
       },
       {
         path: 'privateAssignmentrReturn',
-        component: () => null,
+        component: () => import('@/views-ipms/menus/board/privateAssignmentrReturn'),
         name: 'PrivateAssignmentrReturn',
         meta: { title: '사설AS 할당/반납 신청', affix: false }
       },
       {
         path: 'whoisInfoChange',
-        component: () => null,
+        component: () => import('@/views-ipms/menus/board/whoisInfoChange'),
         name: 'WhoisInfoChange',
         meta: { title: 'Whois정보 변경 신청', affix: false }
       },
       {
         path: 'issueDataRequest',
-        component: () => null,
+        component: () => import('@/views-ipms/menus/board/issueDataRequest'),
         name: 'IssueDataRequest',
         meta: { title: '개발/오류수정/자료 요청', affix: false }
       },

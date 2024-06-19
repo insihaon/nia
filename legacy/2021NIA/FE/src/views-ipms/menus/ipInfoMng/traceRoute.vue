@@ -26,7 +26,7 @@ export default {
       componentList: [
         { key: 'IpAddress', props: { } },
         { key: 'Protocol', props: {} },
-        { key: 'InputType', props: { label: 'PORT', componentKey: 'sportNum' } },
+        { key: 'InputType', props: { label: 'PORT', propsParameterKey: 'sportNum' } },
       ]
     }
   },

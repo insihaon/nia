@@ -1,10 +1,11 @@
 <template>
   <el-col :class="{ [name]: true }" :xs="24" :sm="12" :md="12" :lg="8" :xl="6">
     <label>
-      {{ label }}
+      조회조건
     </label>
     <el-select
       v-model="value"
+      size="mini"
       @change="handleChange"
     >
       <el-option
@@ -14,25 +15,22 @@
         :value="option.value"
       />
     </el-select>
+    <el-input v-model="word" size="mini" clearable @change="handleChangeWord" />
   </el-col>
 </template>
 <script>
 import { Base } from '@/min/Base.min'
 
-const routeName = 'IncludeYN'
+const routeName = 'BoardSearchCondition'
 export default {
   name: routeName,
   extends: Base,
   props: {
-    defaultValue: {
-      type: String,
+    propsOptions: {
+      type: Array,
       default: null
     },
-    label: {
-      type: String,
-      default: ''
-    },
-    parameterKey: {
+    defaultValue: {
       type: String,
       default: null
     }
@@ -41,29 +39,35 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-       options: [
-        { label: '전체', value: 'ALL' },
-        { label: 'Y', value: 'Y' },
-        { label: 'N', value: 'N' },
-       ],
-       value: []
+      options: [
+        { label: '제목', value: 'title' },
+        { label: '내용', value: 'content' },
+        { label: '작성자', value: 'user' },
+      ],
+      value: '',
+      word: ''
     }
   },
   created () {
+    if (this.propsOptions !== null) {
+      this.options = this.propsOptions
+    }
     if (this.defaultValue !== null) {
       this.value = this.defaultValue
     }
   },
   methods: {
     handleChange() {
-      if (this.parameterKey === null) return
-      this.$emit('update-value', [{ key: this.parameterKey, value: this.value }])
+      this.$emit('update-value', [{ key: 'searchCnd', value: this.value }])
+    },
+    handleChangeWord() {
+      this.$emit('update-value', [{ key: 'searchWrd', value: this.word }])
     }
   }
 }
 </script>
 <style lang="scss" scoped>
   .el-select {
-    width: 100%;
+    width: 200px;
   }
 </style>

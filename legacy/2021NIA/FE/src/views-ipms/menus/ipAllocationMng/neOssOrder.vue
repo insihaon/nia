@@ -27,12 +27,6 @@ export default {
   name: routeName,
   components: { CompTable, DynamicComponentLoader },
   extends: Base,
-  props: {
-    isDashboard: {
-      type: Boolean,
-      default: false
-    }
-  },
   data() {
     return {
       name: routeName,
@@ -41,9 +35,9 @@ export default {
         { key: 'SsvcLineType', props: { lvl: 3, multi: [2] } },
         { key: 'SOffice', props: {} },
         // 오더정보 (select + input)
-        { key: 'InputType', props: { label: '고객명' } },
-        { key: 'DateRange', props: { label: '접수일', componentKey: 'reception_date' } },
-        { key: 'DateRange', props: { label: '희망일', componentKey: 'desired_date' } },
+        { key: 'InputType', props: { label: '고객명', propsParameterKey: 'scustname' } },
+        { key: 'DateRange', props: { label: '접수일', propsParameterKey: ['searchRecpBgnDe', 'searchRecpEndDe'] } },
+        { key: 'DateRange', props: { label: '희망일', propsParameterKey: ['searchInstBgnDe', 'searchInstEndDe'] } },
         // 상품 (input + 팝업)
         // 이용목적
         { key: 'SortType', props: { } }

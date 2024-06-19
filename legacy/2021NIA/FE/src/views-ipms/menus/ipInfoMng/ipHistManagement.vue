@@ -39,12 +39,12 @@ export default {
         { key: 'IpBlockStatus', props: { label: '할당상태' } },
         { key: 'CheckYear', props: { } },
         { key: 'IpAddress', props: { } },
-        { key: 'InputType', props: { componentKey: 'nbitmask', label: 'BitMask' } },
+        { key: 'InputType', props: { propsParameterKey: 'nbitmask', label: 'BitMask' } },
         // 장비명
         { key: 'LineInformation', props: { } },
         { key: 'WorkSystem', props: {} },
         { key: 'DetailedWorkClassification', props: {} },
-        { key: 'InputType', props: { componentKey: 'screateId', label: '작업자' } },
+        { key: 'InputType', props: { propsParameterKey: 'screateId', label: '작업자' } },
         { key: 'DateRange', props: {} },
       ],
       ipBlockColumns: [
