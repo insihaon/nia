@@ -1,3 +1,4 @@
+import AppMain from '@/layout/components/ipms/AppMain'
 import Layout from '@/views-ipms/layout'
 
 export const ipmsLogin = import('@/views-ipms/login/index')
@@ -275,31 +276,31 @@ export const ipmsRoute = Object.freeze([
     component: Layout,
     disable: false,
     menuIdx: 6,
-    redirect: '/operInfoMng/organizationalMng/organizationalStandardsMng',
+    redirect: '/operInfoMng/organizationalMng/OrganizationalStandardsManagement',
     meta: {
       title: '운용정보관리'
     },
     children: [
       {
-        path: '/operInfoMng/organizationalMng',
-        component: Layout,
+        path: '/organizationalMng',
+        component: AppMain,
         meta: { title: '조직관리', affix: false },
         children: [
           {
-            path: 'organizationalStandardsMng',
-            component: () => import('@/views-ipms/menus/operInfoMng/OrganizationalStandardsManagement'),
+            path: 'organizationalStandardsManagement',
+            component: () => import('@/views-ipms/menus/operInfoMng/organizationalMng/organizationalStandardsManagement'),
             name: 'OrganizationalStandardsManagement',
             meta: { title: '조직기준 관리', affix: false }
           },
           {
-            path: 'rankCodeMng',
-            component: () => null,
+            path: 'rankCodeManagement',
+            component: () => import('@/views-ipms/menus/operInfoMng/organizationalMng/rankCodeManagement'),
             name: 'RankCodeManagement',
             meta: { title: '계위코드 관리', affix: false }
           },
           {
-            path: 'OrgRankInfoMng',
-            component: () => null,
+            path: 'orgRankInfoManagement',
+            component: () => import('@/views-ipms/menus/operInfoMng/organizationalMng/orgRankInfoManagement'),
             name: 'OrgRankInfoManagement',
             meta: { title: '조직계위 정보관리', affix: false }
           }
@@ -307,7 +308,7 @@ export const ipmsRoute = Object.freeze([
       },
       {
         path: '/operInfoMng/productMng',
-        component: Layout,
+        component: AppMain,
         meta: { title: '상품관리', affix: false },
         children: [
           {
@@ -332,7 +333,7 @@ export const ipmsRoute = Object.freeze([
       },
       {
         path: '/operInfoMng/userMng',
-        component: Layout,
+        component: AppMain,
         meta: { title: '사용자 관리', affix: false },
         children: [
           {
@@ -357,7 +358,7 @@ export const ipmsRoute = Object.freeze([
       },
       {
         path: '/operInfoMng/menuMng',
-        component: Layout,
+        component: AppMain,
         meta: { title: '메뉴 관리', affix: false },
         children: [
           {
@@ -382,7 +383,7 @@ export const ipmsRoute = Object.freeze([
       },
       {
         path: '/operInfoMng/thresholdManagement',
-        component: Layout,
+        component: AppMain,
         meta: { title: '임계치관리', affix: false },
         children: [
           {
@@ -395,7 +396,7 @@ export const ipmsRoute = Object.freeze([
       },
       {
         path: '/operInfoMng/privateAsMng',
-        component: Layout,
+        component: AppMain,
         meta: { title: '사설 AS관리', affix: false },
         children: [
           {
@@ -408,7 +409,7 @@ export const ipmsRoute = Object.freeze([
       },
       {
         path: '/operInfoMng/postAuditInfoMng',
-        component: Layout,
+        component: AppMain,
         meta: { title: '사후감사정보관리', affix: false },
         children: [
           {
@@ -421,7 +422,7 @@ export const ipmsRoute = Object.freeze([
       },
       {
         path: '/operInfoMng/whoIs',
-        component: Layout,
+        component: AppMain,
         meta: { title: 'WHOIS 정보공개 관리', affix: false },
         children: [
           {
@@ -434,7 +435,7 @@ export const ipmsRoute = Object.freeze([
       },
       {
         path: '/operInfoMng/linkMng',
-        component: Layout,
+        component: AppMain,
         meta: { title: '연동관리', affix: false },
         children: [
           {
@@ -465,7 +466,7 @@ export const ipmsRoute = Object.freeze([
       },
       {
         path: '/operInfoMng/tacsMng',
-        component: Layout,
+        component: AppMain,
         meta: { title: 'TACS관리', affix: false },
         children: [
           {
@@ -496,7 +497,7 @@ export const ipmsRoute = Object.freeze([
       },
       {
         path: '/operInfoMng/ipAdressRoutingCompare',
-        component: Layout,
+        component: AppMain,
         meta: { title: 'IP주소 라우팅 비교/점검', affix: false },
         children: [
           {

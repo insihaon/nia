@@ -19,17 +19,20 @@
         </el-button>
       </template>
     </el-input>
-    <ModalFacilityInformation ref="ModalFacilityInformation" />
+    <ModalFacilityInformation ref="ModalFacilityInformation" @set-value="emitData(value)" />
+    <ModalProductInformation ref="ModalProductInformation" />
   </el-col>
 </template>
 <script>
 import { Base } from '@/min/Base.min'
 import ModalFacilityInformation from '@/views-ipms/modal/ModalFacilityInformation.vue'
+import ModalProductInformation from '@/views-ipms/modal/ModalFacilityInformation.vue'
 
 const routeName = 'InputSearchDetail'
 export default {
   name: routeName,
-  components: { ModalFacilityInformation },
+  // eslint-disable-next-line vue/no-unused-components
+  components: { ModalFacilityInformation, ModalProductInformation },
   extends: Base,
   props: {
     label: {
@@ -61,11 +64,14 @@ export default {
   computed: {
   },
   methods: {
+    emitData(value) {
+      this.word = value
+    },
     handleChangeWord() {
       this.$emit('update-value', [{ key: this.componentKey, value: this.word }])
     },
     handleButtonClick() {
-      this.$refs[this.modalName].open({ row: 'row', label: this.label })
+      this.$refs[this.modalName].open({ row: 'row' })
     }
   }
 }
