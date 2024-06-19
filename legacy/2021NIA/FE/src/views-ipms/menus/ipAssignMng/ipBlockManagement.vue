@@ -1,5 +1,5 @@
 <template>
-  <el-row class="w-100 h-100">
+  <el-row class="w-100 h-100" :class="{'px-12': !isDashboard}">
     <DynamicComponentLoader
       :component-keys="componentList"
       @handle-search="handleSearch"
@@ -33,6 +33,10 @@ export default {
   components: { CompTable, DynamicComponentLoader },
   extends: Base,
   props: {
+        isDashboard: {
+      type: Boolean,
+      default: false
+    }
   },
   data() {
     return {

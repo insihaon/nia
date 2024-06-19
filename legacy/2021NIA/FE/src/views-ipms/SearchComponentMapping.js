@@ -52,6 +52,8 @@ export const componentMap = {
     CheckYear: () => import('@/views-ipms/conditionComponents/CheckYear.vue'),
     // 포함여부 사항 체크
     IncludeYN: () => import('@/views-ipms/conditionComponents/IncludeYN.vue'),
+    // 사용여부 (장비별 명령어 정보관리, 조직기준 관리)
+    UsageYN: () => import('@/views-ipms/conditionComponents/UsageYN.vue'),
     // Block 크기
     BlockSize: () => import('@/views-ipms/conditionComponents/BlockSize.vue'),
     // 장비명, 상품, 소속조직
