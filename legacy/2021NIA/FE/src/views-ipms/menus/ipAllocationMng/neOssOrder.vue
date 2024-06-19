@@ -27,6 +27,12 @@ export default {
   name: routeName,
   components: { CompTable, DynamicComponentLoader },
   extends: Base,
+  props: {
+    isDashboard: {
+      type: Boolean,
+      default: false
+    }
+  },
   data() {
     return {
       name: routeName,
