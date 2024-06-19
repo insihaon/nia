@@ -4,7 +4,7 @@
       Block 크기
     </label>
     <el-select
-      v-model="value"
+      v-model="values"
       multiple
       collapse-tags
       size="mini"
@@ -38,7 +38,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      value: [],
+      values: [],
       options: [...Array(33).keys()],
     }
   },
@@ -50,23 +50,23 @@ export default {
   // sblockSizeMulti
   methods: {
     handleChange() {
-      if (this.value.length === this.fullOptions.length && !this.value.includes('ALL')) {
-        this.value.push('ALL')
-      } else if (this.value.includes('ALL') && this.value.length !== this.fullOptions.length + 1) {
-        this.value = this.value?.filter(value => value !== 'ALL')
+      if (this.values.length === this.fullOptions.length && !this.value.includes('ALL')) {
+        this.values.push('ALL')
+      } else if (this.values.includes('ALL') && this.values.length !== this.fullOptions.length + 1) {
+        this.values = this.values?.filter(v => v !== 'ALL')
       }
       this.onCheckLimit()
 
       this.$emit('update-value', [{ key: 'sblockSizeMultiStr', value: this.value.join(';') }])
     },
     toggleAll() {
-      this.value = this.value.includes('ALL') ? [] : ['ALL', ...this.fullOptions]
+      this.value = this.values.includes('ALL') ? [] : ['ALL', ...this.fullOptions]
       this.onCheckLimit()
     },
     onCheckLimit() {
-      if (this.value.length > this.limit) {
+      if (this.values.length > this.limit) {
         onMessagePopup(this, `계위는 최대 ${this.limit}개까지 선택 가능합니다.`)
-        this.value = []
+        this.values = []
       }
     }
   }

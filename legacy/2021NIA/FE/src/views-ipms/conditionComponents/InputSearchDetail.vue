@@ -19,17 +19,17 @@
         </el-button>
       </template>
     </el-input>
-    <ModalSearchDetail ref="ModalSearchDetail" />
+    <ModalFacilityInformation ref="ModalFacilityInformation" />
   </el-col>
 </template>
 <script>
 import { Base } from '@/min/Base.min'
-import ModalSearchDetail from '@/views-ipms/modal/ModalSearchDetail.vue'
+import ModalFacilityInformation from '@/views-ipms/modal/ModalFacilityInformation.vue'
 
 const routeName = 'InputSearchDetail'
 export default {
   name: routeName,
-  components: { ModalSearchDetail },
+  components: { ModalFacilityInformation },
   extends: Base,
   props: {
     label: {

@@ -24,7 +24,6 @@
         </compTable>
       </el-col>
     </el-row>
-    <ModalSearchDetail ref="ModalSearchDetail" />
   </el-row>
 
 </template>
@@ -32,18 +31,13 @@
 import { Base } from '@/min/Base.min'
 import CompTable from '@/components/elTable/CompTable.vue'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
-import ModalSearchDetail from '@/views-ipms/modal/ModalSearchDetail.vue'
 const routeName = 'IpSeonbeonjang'
 
 export default {
   name: routeName,
-  components: { CompTable, DynamicComponentLoader, ModalSearchDetail },
+  components: { CompTable, DynamicComponentLoader },
   extends: Base,
   props: {
-     isDashboard: {
-      type: Boolean,
-      default: false
-    }
   },
   data() {
     return {
@@ -60,7 +54,7 @@ export default {
         { key: 'InputType', props: { label: '용도', componentKey: 'usage' } },
         { key: 'DatePicker', props: { } },
         { key: 'InputSearchDetail',
-          props: { label: '장비명', modalName: 'ModalSearchDetail' } },
+          props: { label: '장비명', modalName: 'ModalFacilityInformation', componentKey: 'ssubscnealiasNe' } },
         { key: 'SortType', props: {} },
       ],
       tableColumns: [

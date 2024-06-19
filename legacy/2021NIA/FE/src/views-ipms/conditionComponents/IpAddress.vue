@@ -4,6 +4,7 @@
       {{ label }}
     </label>
     <el-select
+      v-if="isShowSelecteBox"
       v-model="value"
       collapse-tags
       size="mini"
@@ -39,6 +40,10 @@ export default {
       default: 'IP주소'
     },
     isShowInput: {
+      type: Boolean,
+      default: true
+    },
+    isShowSelecteBox: {
       type: Boolean,
       default: true
     }

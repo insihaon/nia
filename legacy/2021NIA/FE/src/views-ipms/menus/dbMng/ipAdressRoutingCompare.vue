@@ -55,7 +55,8 @@ export default {
         { key: 'ServiceOrg', props: {} },
         { key: 'IpBlockStatus', props: { isMulti: true } },
         { key: 'SipCreateType', props: {} },
-        // IP주소(input type)
+        { key: 'IpAddress', props: { isShowSelecteBox: false } },
+        { key: 'InputType', props: { componentKey: 'nbitmask', label: 'BitMask' } },
         {
           key: 'SortType', props: {
             sortTypeDefaultVal: '',
