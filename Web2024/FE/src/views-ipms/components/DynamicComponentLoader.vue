@@ -23,9 +23,9 @@
         <el-button class="btn-r" type="info" size="mini" icon="el-icon-refresh">
           초기화
         </el-button>
-        <!-- <el-button type="button" size="mini" class="excel-form-export" icon="el-icon-download">
+        <el-button type="button" size="mini" class="export-excel" icon="el-icon-download">
           엑셀 저장
-        </el-button> -->
+        </el-button>
         <slot name="add-function" />
       </el-col>
     </el-row>
