@@ -19,8 +19,7 @@
         시설정보조회
         <hr>
       </span>
-      <el-row :span="24" class="w-100 h-100">
-        <!-- <div class="w-100 h-100"> -->
+      <el-row class="w-100 h-100">
         <el-col :span="24">
           <DynamicComponentLoader
             :component-keys="componentList"
@@ -36,7 +35,6 @@
             </template>
           </compTable>
         </el-col>
-      <!-- </div> -->
       </el-row>
       <div slot="footer" class="dialog-footer">
         <el-button size="mini" icon="el-icon-edit" @click="onClickData()">선택</el-button>
@@ -53,7 +51,6 @@ import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
 import CompTable from '@/components/elTable/CompTable.vue'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
-import { mapState } from 'vuex'
 
 const routeName = 'ModalFacilityInformation'
 
