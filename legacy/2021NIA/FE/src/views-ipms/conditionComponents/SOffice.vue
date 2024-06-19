@@ -1,7 +1,7 @@
 <template>
   <el-col :class="{ [name]: true }" :xs="24" :sm="12" :md="12" :lg="8" :xl="6">
     <label>
-      수용국
+      {{ label }}
     </label>
     <el-select
       v-model="localValue"
@@ -27,6 +27,10 @@ export default {
   name: routeName,
   extends: Base,
   props: {
+    label: {
+      type: String,
+      default: '수용국'
+    },
     value: {
       type: String,
       default: ''
@@ -62,4 +66,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+.el-select {
+  width: 100%;
+}
 </style>

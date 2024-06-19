@@ -34,6 +34,8 @@ export const componentMap = {
     IpBlockStatus: () => import('@/views-ipms/conditionComponents/IpBlockStatus.vue'),
     // 진행상태
     Progress: () => import('@/views-ipms/conditionComponents/Progress.vue'),
+    // 상태(Non-KT IP관리 > 신청 상태)
+    IpMngProgress: () => import('@/views-ipms/conditionComponents/IpMngProgress.vue'),
     // 예외여부
     ExceptionYN: () => import('@/views-ipms/conditionComponents/ExceptionYN.vue'),
     // INPUT 입력 componentKey로 입력값 구분
@@ -52,7 +54,7 @@ export const componentMap = {
     IncludeYN: () => import('@/views-ipms/conditionComponents/IncludeYN.vue'),
     // Block 크기
     BlockSize: () => import('@/views-ipms/conditionComponents/BlockSize.vue'),
-      // 장비명, 상품, 소속조직
+    // 장비명, 상품, 소속조직
     InputSearchDetail: () => import('@/views-ipms/conditionComponents/InputSearchDetail.vue'),
 
 }
