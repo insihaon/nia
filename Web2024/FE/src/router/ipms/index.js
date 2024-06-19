@@ -185,25 +185,25 @@ export const ipmsRoute = Object.freeze([
       },
       {
         path: 'operInfoLinkMng',
-        component: () => null,
+        component: () => import('@/views-ipms/menus/dbMng/operInfoFacilityLinkManagement'),
         name: 'OperInfoFacilityLinkManagement',
         meta: { title: '운용정보관리(링크)', affix: false }
       },
       {
         path: 'operInfoFacilityMng',
-        component: () => null,
+        component: () => import('@/views-ipms/menus/dbMng/operInfoFacilityManagement'),
         name: 'OperInfoFacilityManagement',
         meta: { title: '운용정보관리(시설)', affix: false }
       },
       {
         path: 'uploadMng',
-        component: () => null,
+        component: () => import('@/views-ipms/menus/dbMng/uploadManagement'),
         name: 'UploadManagement',
         meta: { title: '업로드 관리', affix: false }
       },
       {
         path: 'nonKtIpStatus',
-        component: () => null,
+        component: () => import('@/views-ipms/menus/dbMng/nonKtIpStatus'),
         name: 'NonKtIpStatus',
         meta: { title: 'Non-KT IP 현황', affix: false }
       },

@@ -23,7 +23,7 @@
     <el-select
       v-if="[2, 3].includes(lvl)"
       v-model="localValue[key2]"
-      :disabled="localValue[key1] === ''"
+      :disabled="localValue[key1] === '' || localValue[key1] === 'ALL'"
       :multiple="isMultiByLvl(2)"
       collapse-tags
       size="mini"

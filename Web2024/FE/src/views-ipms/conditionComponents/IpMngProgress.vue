@@ -1,13 +1,11 @@
 <template>
   <el-col :class="{ [name]: true }" :xs="24" :sm="12" :md="12" :lg="8" :xl="6">
     <label>
-      회선정보
+      상태
     </label>
     <el-select
       v-model="value"
-      collapse-tags
       size="mini"
-      @change="handleChange"
     >
       <el-option
         v-for="(option, i) in options"
@@ -16,13 +14,12 @@
         :value="option.value"
       />
     </el-select>
-    <el-input v-model="word" size="mini" clearable @change="handleChangeWord" />
   </el-col>
 </template>
 <script>
 import { Base } from '@/min/Base.min'
 
-const routeName = 'LineInformation'
+const routeName = 'IpMngProgress'
 export default {
   name: routeName,
   extends: Base,
@@ -32,38 +29,27 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      value: 'llnum',
-      word: '',
+      value: '',
       options: [
-        {
-          value: 'llnum',
-          label: '전용번호',
-        },
-        {
-          value: 'said',
-          label: 'SAID',
-        },
-        {
-          value: 'ordernum',
-          label: '오더번호',
-        },
-
-      ],
+        { label: '전체', value: '' },
+        { label: '추가 신청', value: 'Y' },
+        { label: '삭제 신청', value: 'N' },
+        { label: '처리 완료', value: 'C' },
+      ]
     }
   },
-  // llSrchTypeCd
+  // sdbIntgrmRsltCd
+  computed: {
+  },
   methods: {
-    handleChange() {
-      this.$emit('update-value', [{ key: 'llSrchTypeCd', value: this.value }])
-    },
     handleChangeWord() {
-      this.$emit('update-value', [{ key: 'llSrchVal', value: this.value }])
+      this.$emit('update-value', [{ key: 'sflag', value: this.value }])
     }
   }
 }
 </script>
 <style lang="scss" scoped>
 .el-select {
-  width: 200px;
+  width: 100%;
 }
 </style>
