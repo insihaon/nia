@@ -64,5 +64,8 @@ export const componentMap = {
     BoardSearchCondition: () => import('@/views-ipms/conditionComponents/BoardSearchCondition.vue'),
     // 게시판 > 신청 처리 현황, 요청사항 구분, 진행상태
     ApplyStatus: () => import('@/views-ipms/conditionComponents/ApplyStatus.vue'),
+    // 이용 목적
+    ExtrnLnkgs: () => import('@/views-ipms/conditionComponents/ExtrnLnkgs.vue'),
+    // 외부 연계
 
 }

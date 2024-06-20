@@ -2,39 +2,57 @@
   <el-row class="w-100 h-100">
     <div class="optionBox">
       <el-row class="optionRow">
-        <el-col class="d-flex" :span="8">
-          <label>외부연동유형</label>
+        <el-col class="d-flex" :span="6">
+          <label>사용자 접속결과</label>
           <el-select
-            v-model="linkValue"
+            v-model="connectValue"
             collapse-tags
             size="mini"
           >
             <el-option
-              v-for="(option, i) in [
-                { label: '전체', value: '' },
-                { label: '미분류', value: 'mibuntryu' },
-                { label: 'NEOSS_CODE', value: 'NEOSS_CODE' },
-                { label: 'NEOSS_DATA', value: 'NEOSS_DATA' },
-                { label: 'IFOMS_DATA', value: 'IFOMS_DATA' },
-                { label: '통합NMS_DATA', value: 'NMS_DATA' },
-                { label: '수작업데이터', value: 'data' },
-                { label: 'IDC_DATA', value: 'IDC_DATA' },
-                { label: 'IDMS_DATA', value: 'IDMS_DATA' },
-              ]"
+              v-for="(option, i) in authOptions"
               :key="i"
               :label="option.label"
               :value="option.value"
             />
           </el-select>
         </el-col>
-        <el-col class="d-flex" :span="8">
-          <label>계위명</label>
-          <el-input v-model="sipCreateValue" size="mini" clearable @change="handleChangeWord" />
+        <el-col class="d-flex" :span="6">
+          <label>소속조직</label>
+          <div class="w-100" @click="handleOpenSearchModal()">
+            <el-input
+              v-model="orgnzVal"
+              size="mini"
+              clearable
+            >
+              <template #suffix>
+                <el-button
+                  size="mini"
+                  style="font-size: larger;"
+                >
+                  <i class="el-icon-search font-weight-bolder"></i>
+                </el-button>
+              </template>
+            </el-input>
+          </div>
         </el-col>
-        <el-col class="d-flex" :span="8">
-          <label>코드명</label>
-          <el-input v-model="codeValue" size="mini" clearable @change="handleChangeWord" />
+        <el-col class="d-flex" :span="6">
+          <label>사용자명</label>
+          <el-input v-model="nameValue" size="mini" clearable />
         </el-col>
+
+        <el-col class="d-flex" :span="6">
+          <label>로그인 시간</label>
+          <el-date-picker
+            v-model="loginTime"
+            type="daterange"
+            size="mini"
+            start-placeholder="시작일"
+            end-placeholder="종료일"
+            @change="handleChange"
+          />
+        </el-col>
+
       </el-row>
       <el-row>
         <el-col :span="24" align="center" class="searchBtnGroup">
@@ -63,17 +81,19 @@
           </span>
         </template>
       </compTable>
+      <ModalOperationTeam ref="ModalOperationTeam" />
     </el-col>
   </el-row>
 </template>
 <script>
 import { Base } from '@/min/Base.min'
+import ModalOperationTeam from '@/views-ipms/modal/ModalOperationTeam.vue'
 import CompTable from '@/components/elTable/CompTable.vue'
-const routeName = 'RankCodeManagement'
+const routeName = 'UserConnectStatus'
 
 export default {
   name: routeName,
-  components: { CompTable },
+  components: { CompTable, ModalOperationTeam },
   extends: Base,
   data() {
     return {
@@ -92,12 +112,16 @@ export default {
         { key: 'InputType', props: { label: '계위명' } },
         { key: 'InputType', props: { label: '코드명' } },
       ],
-      linkValue: '',
-      sipCreateValue: '',
-      codeValue: ''
+      connectValue: '',
+      orgnzVal: '',
+      nameValue: '',
+      loginTime: []
     }
   },
   methods: {
+    handleOpenSearchModal() {
+      this.$refs.ModalOperationTeam.open({ row: 'row' })
+    },
     onClickSearch() {
       /*
       const param = {

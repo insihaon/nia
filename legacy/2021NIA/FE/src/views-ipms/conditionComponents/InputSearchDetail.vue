@@ -26,7 +26,7 @@
 <script>
 import { Base } from '@/min/Base.min'
 import ModalFacilityInformation from '@/views-ipms/modal/ModalFacilityInformation.vue'
-import ModalProductInformation from '@/views-ipms/modal/ModalFacilityInformation.vue'
+import ModalProductInformation from '@/views-ipms/modal/ModalProductInformation.vue'
 
 const routeName = 'InputSearchDetail'
 export default {

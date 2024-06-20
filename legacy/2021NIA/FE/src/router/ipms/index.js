@@ -312,21 +312,21 @@ export const ipmsRoute = Object.freeze([
         meta: { title: '상품관리', affix: false },
         children: [
           {
-            path: 'serviceNetworkMng',
-            component: null,
-            name: 'ServiceNetworkMnagement',
+            path: 'serviceNetworkManagement',
+            component: () => import('@/views-ipms/menus/operInfoMng/productMng/serviceNetworkManagement'),
+            name: 'ServiceNetworkManagement',
             meta: { title: '서비스망 관리', affix: false }
           },
           {
-            path: 'serviceCodeMng',
-            component: () => null,
+            path: 'serviceCodeManagement',
+            component: () => import('@/views-ipms/menus/operInfoMng/productMng/serviceCodeManagement'),
             name: 'ServiceCodeManagement',
             meta: { title: '서비스 코드 관리', affix: false }
           },
           {
-            path: 'productMng',
-            component: () => null,
-            name: 'productManagement',
+            path: 'productManagement',
+            component: () => import('@/views-ipms/menus/operInfoMng/productMng/productManagement'),
+            name: 'ProductManagement',
             meta: { title: '상품관리', affix: false }
           }
         ]
@@ -337,20 +337,20 @@ export const ipmsRoute = Object.freeze([
         meta: { title: '사용자 관리', affix: false },
         children: [
           {
-            path: 'userInfoMng',
-            component: () => null,
+            path: 'userInfoManagement',
+            component: () => import('@/views-ipms/menus/operInfoMng/userMng/userInfoManagement'),
             name: 'UserInfoManagement',
             meta: { title: '사용자 정보 관리', affix: false }
           },
           {
             path: 'userConnectStatus',
-            component: () => null,
+            component: () => import('@/views-ipms/menus/operInfoMng/userMng/userConnectStatus'),
             name: 'UserConnectStatus',
             meta: { title: '사용자 접속 현황', affix: false }
           },
           {
-            path: 'userAuthMng',
-            component: () => null,
+            path: 'userAuthManagement',
+            component: () => import('@/views-ipms/menus/operInfoMng/userMng/userAuthManagement'),
             name: 'UserAuthManagement',
             meta: { title: '사용자 권한 관리', affix: false }
           }
