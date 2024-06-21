@@ -362,20 +362,20 @@ export const ipmsRoute = Object.freeze([
         meta: { title: '메뉴 관리', affix: false },
         children: [
           {
-            path: 'screenMng',
-            component: () => null,
-            name: 'screenManagement',
+            path: 'screenManagement',
+            component: () => import('@/views-ipms/menus/operInfoMng/menuMng/screenManagement'),
+            name: 'ScreenManagement',
             meta: { title: '화면 관리', affix: false }
           },
           {
-            path: 'menuMng',
-            component: () => null,
+            path: 'menuManagement',
+            component: () => import('@/views-ipms/menus/operInfoMng/menuMng/menuManagement'),
             name: 'MenuManagement',
             meta: { title: '메뉴 관리', affix: false }
           },
           {
-            path: 'menuAuthMng',
-            component: () => null,
+            path: 'menuAuthManagement',
+            component: () => import('@/views-ipms/menus/operInfoMng/menuMng/menuAuthManagement'),
             name: 'MenuAuthManagement',
             meta: { title: '메뉴권한관리', affix: false }
           }
@@ -401,7 +401,7 @@ export const ipmsRoute = Object.freeze([
         children: [
           {
             path: 'privateAsUseStatus',
-            component: () => null,
+            component: () => import('@/views-ipms/menus/operInfoMng/privateAsMng/privateAsUseStatus'),
             name: 'PrivateAsUseStatus',
             meta: { title: '사설 AS 사용현황', affix: false }
           },
