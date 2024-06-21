@@ -81,19 +81,19 @@
           </span>
         </template>
       </compTable>
-      <ModalOperationTeam ref="ModalOperationTeam" />
+      <ModalOrgSearch ref="ModalOrgSearch" />
     </el-col>
   </el-row>
 </template>
 <script>
 import { Base } from '@/min/Base.min'
-import ModalOperationTeam from '@/views-ipms/modal/ModalOperationTeam.vue'
 import CompTable from '@/components/elTable/CompTable.vue'
+import ModalOrgSearch from '@/views-ipms/modal/ModalOrgSearch.vue'
 const routeName = 'UserConnectStatus'
 
 export default {
   name: routeName,
-  components: { CompTable, ModalOperationTeam },
+  components: { CompTable, ModalOrgSearch },
   extends: Base,
   data() {
     return {
@@ -120,7 +120,7 @@ export default {
   },
   methods: {
     handleOpenSearchModal() {
-      this.$refs.ModalOperationTeam.open({ row: 'row' })
+      this.$refs.ModalOrgSearch.open({ row: 'row' })
     },
     onClickSearch() {
       /*
