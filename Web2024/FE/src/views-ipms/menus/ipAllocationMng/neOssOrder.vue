@@ -1,6 +1,6 @@
 <template>
   <!-- 검색 조건 컴포넌트 추가 -->
-  <el-row class="w-100 h-100" :class="{'px-12': !isDashboard}">
+  <el-row class="w-100 h-100" :class="{'px-0': isDashboard}">
     <DynamicComponentLoader
       v-if="!isDashboard"
       :component-keys="componentList"
@@ -44,7 +44,17 @@ export default {
         { key: 'InputType', props: { label: '고객명', propsParameterKey: 'scustname' } },
         { key: 'DateRange', props: { label: '접수일', propsParameterKey: ['searchRecpBgnDe', 'searchRecpEndDe'] } },
         { key: 'DateRange', props: { label: '희망일', propsParameterKey: ['searchInstBgnDe', 'searchInstEndDe'] } },
-        // 상품 (input + 팝업)
+        {
+          key: 'InputSearchDetail',
+          props: {
+            label: '상품',
+            modalName: 'ModalProductInformation',
+            // * key 확인 필요함
+            valueName: 'A',
+            parameterKey: { sexSvcCd: 'B', sipmsSvcNm: 'C' },
+            isReadOnly: true
+          }
+        },
         // 이용목적
         { key: 'SortType', props: { } }
       ],
@@ -69,4 +79,4 @@ export default {
   },
 }
 </script>
-<style lang="css" scoped></style>
+<style lang="scss" scoped></style>

@@ -16,17 +16,25 @@
     >
       <span slot="title">
         <i class="el-icon-document mr-2" style="font-size: 17px" />
-        시설정보조회
+        운용팀 검색
         <hr>
       </span>
       <el-row class="w-100 h-100">
-        <el-col :span="24">
-          <DynamicComponentLoader
-            class="dynamic-container"
-            :component-keys="componentList"
-            @handle-search="handleSearch"
-          />
-        </el-col>
+        <div class="optionBox">
+          <el-row class="optionRow">
+            <el-col :span="20" class="d-flex">
+              <label>
+                운용조직 명
+              </label>
+              <el-input v-model="searchTxt" size="mini" clearable />
+            </el-col>
+            <el-col :span="4">
+              <el-button class="btn-r ml-2" type="info" size="mini" icon="el-icon-search" @click="handleSearch()">
+                조회
+              </el-button>
+            </el-col>
+          </el-row>
+        </div>
         <el-col :span="24">
           <compTable
             :prop-data="tableDatas"
@@ -41,7 +49,7 @@
           >
             <template slot="text-description">
               <span>
-                시설정보 조회 결과
+                운용팀 조회결과
               </span>
             </template>
           </compTable>
@@ -62,66 +70,47 @@ import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
 import CompTable from '@/components/elTable/CompTable.vue'
 import { onMessagePopup } from '@/utils/index'
-import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
 
-const routeName = 'ModalFacilityInformation'
+const routeName = 'ModalOrgSearch'
 
 export default {
   name: routeName,
-  components: { DynamicComponentLoader, CompTable },
+  components: { CompTable },
   directives: { elDragDialog },
   extends: Modal,
   data() {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      requestParameter: null,
+      searchTxt: '',
       selectedRow: null,
       componentList: [
-         { key: 'SOffice', props: { parameterKey: 'siciofficescodeNe' } },
-         { key: 'InputType', props: { label: '장비명', propsParameterKey: 'ssubscnealiasNe' } },
-         { key: 'InputType', props: { label: '장비대표IP', propsParameterKey: 'ssubscmstipNe' } },
-         { key: 'InputType', props: { label: '모델명', propsParameterKey: 'smodelnameNe' } },
+         { key: 'InputType', props: { label: '운용조직 명', } },
       ],
        tableColumns: [
-        { prop: 'sofficename', label: '수용국', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'ssubscnealias', label: '장비명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'smodelname', label: '모델명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'ssubscmstip', label: '장비대표 IP', align: 'center', sortable: true, columnVisible: true, showOverflow: true }
+        // { prop: '', label: '선택', width: 50, align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'sktOrgId', label: '운용조직 ID', width: 150, align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'sFullOrgNm', label: '운용조직 명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
       ],
       tableDatas: [
-        { sofficename: '가경국사', ssubscnealias: 'ACT-GAGYEONG', ssubscmstip: '112.188.200.127', smodelname: 'LOC_E6100', sofficecode: 'R02414' },
-        { sofficename: '가경국사1', ssubscnealias: 'ACT-GAGYEONG', ssubscmstip: '112.188.200.127', smodelname: 'LOC_E6100', sofficecode: 'R02415' }
+        { sktOrgId: '452333', sFullOrgNm: '주식회사 케이티-강남/서부1' },
+        { sktOrgId: '452334', sFullOrgNm: '주식회사 케이티-강남/서부2' }
       ]
     }
   },
-  /* row 참고
-    {
-      "sofficename": "가경국사",
-      "ssubscnealias": "ACT-GAGYEONG",
-      "ssubscmstip": "112.188.200.127",
-      "smodelname": "LOC_E6100"
-      "sofficecode": ""
-    }
-  */
   methods: {
     onCreated() {
       Modal.methods.onCreated.call(this)
       this.closeOnClickModal = false
-      this.domElement.maxWidth = 700
+      this.domElement.maxWidth = 1000
     },
     onOpen(model, actionMode) {
     },
     onClose() {
       if (this.selectedRow !== null) {
+        // const keyValues = Object.keys(this.selectedRow).map(key=>{ return { key , value: this.selectedRow[v] }})
+        // { label: this.selectedRow['sFullOrgNm'], value: this.selectedRow['sktOrgId'] }
         this.$emit('selected-value', this.selectedRow)
-      }
-    },
-    handleSearch(requestParameter) {
-      this.requestParameter = requestParameter
-      if (this.requestParameter === null || this.requestParameter['siciofficescodeNe'] === undefined) {
-        onMessagePopup(this, '수용국을 선택하시지 않으실 경우 검색값이 최소 4자리 이상이여야 합니다.')
-        return
       }
     },
     handleSelect() {
@@ -130,6 +119,9 @@ export default {
         return
       }
       this.close()
+    },
+    handleSearch(requestParameter) {
+      console.log(requestParameter)
     },
     handleClickRow(row) {
       this.selectedRow = row
@@ -142,10 +134,4 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.dynamic-container ::v-deep {
-  .optionItem {
-    width: 50% !important;
-    display: flex;
-  }
-}
 </style>

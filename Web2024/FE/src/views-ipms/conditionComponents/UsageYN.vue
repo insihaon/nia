@@ -32,6 +32,10 @@ export default {
       type: String,
       default: ''
     },
+    parameterKey: {
+      type: String,
+      default: null
+    }
   },
   data() {
     return {
@@ -49,7 +53,8 @@ export default {
   },
   methods: {
     handleChange() {
-      this.$emit('update-value', [{ key: 'usageCd', value: this.localValue }])
+      if (!this.parameterKey === null) return
+      this.$emit('update-value', [{ key: this.parameterKey, value: this.localValue }])
     }
   }
 }

@@ -265,7 +265,7 @@ export const ipmsRoute = Object.freeze([
       },
       {
         path: 'authApply',
-        component: () => null,
+        component: () => import('@/views-ipms/menus/board/authApply'),
         name: 'AuthApply',
         meta: { title: '권한 신청 게시판', affix: false }
       },

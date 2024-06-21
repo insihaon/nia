@@ -22,10 +22,6 @@ export default {
       type: String,
       default: null
     },
-    componentKey: {
-      type: String,
-      default: ''
-    },
   },
   data() {
     return {
