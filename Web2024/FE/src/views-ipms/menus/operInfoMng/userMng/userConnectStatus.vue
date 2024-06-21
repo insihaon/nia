@@ -8,6 +8,7 @@
             v-model="connectValue"
             collapse-tags
             size="mini"
+            class="w-100"
           >
             <el-option
               v-for="(option, i) in useConnResOp"

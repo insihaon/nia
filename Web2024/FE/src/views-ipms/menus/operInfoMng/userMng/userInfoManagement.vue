@@ -118,6 +118,7 @@ export default {
         { label: '휴직', value: 'US0003' },
         { label: '유급휴가', value: 'US0004' },
       ],
+      statusValue: '',
       authValue: '',
       nameValue: '',
       requestParameter: {}
