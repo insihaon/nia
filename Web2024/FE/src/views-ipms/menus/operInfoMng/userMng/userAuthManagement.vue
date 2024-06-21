@@ -29,11 +29,11 @@
         </el-col>
         <el-col class="d-flex" :span="8">
           <label>계위명</label>
-          <el-input v-model="sipCreateValue" size="mini" clearable @change="handleChangeWord" />
+          <el-input v-model="sipCreateValue" size="mini" clearable />
         </el-col>
         <el-col class="d-flex" :span="8">
           <label>코드명</label>
-          <el-input v-model="codeValue" size="mini" clearable @change="handleChangeWord" />
+          <el-input v-model="codeValue" size="mini" clearable />
         </el-col>
       </el-row>
       <el-row>
@@ -69,7 +69,7 @@
 <script>
 import { Base } from '@/min/Base.min'
 import CompTable from '@/components/elTable/CompTable.vue'
-const routeName = 'RankCodeManagement'
+const routeName = 'UserAuthManagement'
 
 export default {
   name: routeName,
@@ -88,7 +88,7 @@ export default {
         { prop: '', label: '수정', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
       ],
       componentList: [
-        { key: 'UsageYN', props: { label: '외부연동유형', parameterKey: 'sexLinkUseTypeCd' } },
+        { key: 'UsageYN', props: { label: '외부연동유형' } },
         { key: 'InputType', props: { label: '계위명' } },
         { key: 'InputType', props: { label: '코드명' } },
       ],
