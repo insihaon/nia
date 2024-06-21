@@ -95,7 +95,7 @@ export default {
     propsLvlOptions: {
       type: Object,
       default: null
-    }
+    },
   },
   data() {
     return {
@@ -183,7 +183,7 @@ export default {
      this.resetLocalValue(key2)
      this.resetLocalValue(key3)
      this.emitEvent('ssvcLineTypeCd', key1)
-     Eventbus.$emit(EventType.changeLvl1, { ssvcLineTypeCd: this.localValue[key1] })
+      Eventbus.$emit(EventType.changeLvl1, { ssvcLineTypeCd: this.localValue[key1] })
     },
     handleChangeLvl2() {
       const isOver = this.onChangeMultiCheck(2)
@@ -213,7 +213,7 @@ export default {
       }
     },
     emitEvent(emitKey, lvl) {
-      this.$emit(emitKey, this.localValue[lvl])
+      this.$emit('update-value', [{ key: emitKey, value: this.localValue[lvl] }])
     },
     fullOptions(lvl) {
       return this.lvlOptions[lvl].map(option => option.value).filter(v => v !== 'ALL')
@@ -235,9 +235,9 @@ export default {
       if (this.limit[lvl] !== null && this.localValue[lvl]?.length > this.limit[lvl]) {
         onMessagePopup(this, `${this.label}는 최대 ${this.limit[lvl]}개까지 선택 가능합니다.`)
         this.$set(this.localValue, lvl, [])
-        return false
+        return true
       }
-      return true
+      return false
     }
   }
 }

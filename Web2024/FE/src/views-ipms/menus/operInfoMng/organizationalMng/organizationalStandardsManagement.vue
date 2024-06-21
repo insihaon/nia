@@ -15,7 +15,7 @@
       >
         <template slot="text-description">
           <span>
-            조직정보
+            조직정보 조회결과
           </span>
         </template>
       </compTable>
@@ -46,6 +46,11 @@ export default {
         { key: 'UsageYN', props: { label: '조직 사용여부', parameterKey: 'sipmsOrgYn' } },
         { key: 'InputType', props: { label: '조직명' } },
       ]
+    }
+  },
+  methods: {
+    handleSearch(params) {
+      /* const res = await api(params) */
     }
   },
 }

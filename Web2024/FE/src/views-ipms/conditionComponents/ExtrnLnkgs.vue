@@ -1,7 +1,7 @@
 <template>
   <el-col :class="{ [name]: true }" :xs="24" :sm="12" :md="12" :lg="8" :xl="6">
     <label>
-      외부연계
+      {{ label }}
     </label>
     <el-select
       v-model="value"
@@ -26,6 +26,10 @@ export default {
   name: routeName,
   extends: Base,
   props: {
+    label: {
+      type: String,
+      default: '외부연계'
+    }
   },
   data() {
     return {
@@ -34,22 +38,22 @@ export default {
       value: '',
       options: [
         { value: '', label: '전체' },
-        { value: 1, label: '미분류' },
-        { value: 2, label: 'NEOSS_CODE' },
-        { value: 3, label: 'NEOSS_DATA' },
-        { value: 4, label: 'DAIMS_DATA' },
-        { value: 5, label: 'IFOMS_DATA' },
-        { value: 6, label: '통합NMS_DATA' },
-        { value: 6, label: '수작업데이터' },
-        { value: 6, label: 'IDC_DATA' },
-        { value: 6, label: 'IDMS_DATA' }
+        { value: 'CE0000', label: '미분류' },
+        { value: 'CE0001', label: 'NEOSS_CODE' },
+        { value: 'CE0002', label: 'NEOSS_DATA' },
+        { value: 'CE0003', label: 'DAIMS_DATA' },
+        { value: 'CE0004', label: 'IFOMS_DATA' },
+        { value: 'CE0005', label: '통합NMS_DATA' },
+        { value: 'CE0006', label: '수작업데이터' },
+        { value: 'CE0007', label: 'IDC_DATA' },
+        { value: 'CE0008', label: 'IDMS_DATA' }
 
       ],
     }
   },
   methods: {
     handleChange() {
-      this.$emit('update-value', [{ key: 'extrnLnkgsCd', value: this.value }])
+      this.$emit('update-value', [{ key: 'sexLinkUseTypeCd', value: this.value }])
     }
   }
 }

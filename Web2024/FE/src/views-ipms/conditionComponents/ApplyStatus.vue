@@ -60,7 +60,7 @@ export default {
   },
   methods: {
     handleChange() {
-      if (this.parameterKey !== null) return
+      if (this.parameterKey === null) return
       this.$emit('update-value', [{ key: this.parameterKey, value: this.value }])
     }
   }

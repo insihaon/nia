@@ -1,7 +1,7 @@
 <template>
   <el-col :class="{ [name]: true }" :xs="24" :sm="12" :md="12" :lg="8" :xl="6">
     <label>
-      {{ label }}
+      권한등급
     </label>
     <el-select
       v-model="value"
@@ -20,51 +20,38 @@
 <script>
 import { Base } from '@/min/Base.min'
 
-const routeName = 'IncludeYN'
+const routeName = 'AuthLevel'
 export default {
   name: routeName,
   extends: Base,
   props: {
-    defaultValue: {
-      type: String,
-      default: null
-    },
-    label: {
-      type: String,
-      default: ''
-    },
-    parameterKey: {
-      type: String,
-      default: null
-    }
   },
   data() {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-       options: [
+      value: '',
+      options: [
         { label: '전체', value: '' },
-        { label: 'Y', value: 'Y' },
-        { label: 'N', value: 'N' },
-       ],
-       value: []
+        { label: '시스템 관리자', value: 'UR0001' },
+        { label: '서비스망 관리자', value: 'UR0003' },
+        { label: '본부운용자', value: 'UR0004' },
+        { label: '노드운용자', value: 'UR0005' },
+        { label: '조회자', value: 'UR0006' },
+      ]
     }
   },
-  created () {
-    if (this.defaultValue !== null) {
-      this.value = this.defaultValue
-    }
+  computed: {
   },
   methods: {
     handleChange() {
-      if (this.parameterKey === null) return
-      this.$emit('update-value', [{ key: this.parameterKey, value: this.value }])
+      this.$emit('update-value', [{ key: 'suserGradeCd', value: this.value }])
     }
   }
 }
 </script>
 <style lang="scss" scoped>
-  .el-select {
-    width: 100%;
-  }
+.el-select {
+  width: 100%;
+}
 </style>

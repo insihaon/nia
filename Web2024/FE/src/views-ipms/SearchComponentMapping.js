@@ -62,10 +62,10 @@ export const componentMap = {
     NoticeGubun: () => import('@/views-ipms/conditionComponents/NoticeGubun.vue'),
     // 게시판 > 조회 조건
     BoardSearchCondition: () => import('@/views-ipms/conditionComponents/BoardSearchCondition.vue'),
-    // 게시판 > 신청 처리 현황, 요청사항 구분, 진행상태
+    // 게시판 > 신청 처리 현황, 요청사항 구분, 진행상태, 이용목적
     ApplyStatus: () => import('@/views-ipms/conditionComponents/ApplyStatus.vue'),
-    // 이용 목적
-    ExtrnLnkgs: () => import('@/views-ipms/conditionComponents/ExtrnLnkgs.vue'),
     // 외부 연계
-
+    ExtrnLnkgs: () => import('@/views-ipms/conditionComponents/ExtrnLnkgs.vue'),
+    // 사용자 권한등급
+    AuthLevel: () => import('@/views-ipms/conditionComponents/AuthLevel.vue'),
 }

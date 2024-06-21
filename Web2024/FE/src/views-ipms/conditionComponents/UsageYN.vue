@@ -5,6 +5,7 @@
     </label>
     <el-select
       v-model="localValue"
+      size="mini"
       @change="handleChange"
     >
       <el-option
@@ -42,7 +43,7 @@ export default {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
        options: [
-        { label: '전체', value: 'ALL' },
+        { label: '전체', value: '' },
         { label: '사용', value: 'Y' },
         { label: '미사용', value: 'N' },
        ],

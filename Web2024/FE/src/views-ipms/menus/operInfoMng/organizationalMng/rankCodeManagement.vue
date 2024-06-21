@@ -1,53 +1,9 @@
 <template>
   <el-row class="w-100 h-100">
-    <div class="optionBox">
-      <el-row class="optionRow">
-        <el-col class="d-flex" :span="8">
-          <label>외부연동유형</label>
-          <el-select
-            v-model="linkValue"
-            collapse-tags
-            size="mini"
-          >
-            <el-option
-              v-for="(option, i) in [
-                { label: '전체', value: '' },
-                { label: '미분류', value: 'mibuntryu' },
-                { label: 'NEOSS_CODE', value: 'NEOSS_CODE' },
-                { label: 'NEOSS_DATA', value: 'NEOSS_DATA' },
-                { label: 'IFOMS_DATA', value: 'IFOMS_DATA' },
-                { label: '통합NMS_DATA', value: 'NMS_DATA' },
-                { label: '수작업데이터', value: 'data' },
-                { label: 'IDC_DATA', value: 'IDC_DATA' },
-                { label: 'IDMS_DATA', value: 'IDMS_DATA' },
-              ]"
-              :key="i"
-              :label="option.label"
-              :value="option.value"
-            />
-          </el-select>
-        </el-col>
-        <el-col class="d-flex" :span="8">
-          <label>계위명</label>
-          <el-input v-model="sipCreateValue" size="mini" clearable @change="handleChangeWord" />
-        </el-col>
-        <el-col class="d-flex" :span="8">
-          <label>코드명</label>
-          <el-input v-model="codeValue" size="mini" clearable @change="handleChangeWord" />
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="24" align="center" class="searchBtnGroup">
-          <el-button class="btn-r" type="info" size="mini" icon="el-icon-search" @click="onClickSearch()">
-            조회
-          </el-button>
-          <el-button class="btn-r" type="info" size="mini" icon="el-icon-refresh">
-            초기화
-          </el-button>
-          <slot name="add-function" />
-        </el-col>
-      </el-row>
-    </div>
+    <DynamicComponentLoader
+      :component-keys="componentList"
+      @handle-search="handleSearch"
+    />
     <el-col :span="24">
       <compTable
         :prop-table-height="300"
@@ -59,7 +15,7 @@
       >
         <template slot="text-description">
           <span>
-            계위코드
+            계위코드 조회결과
           </span>
         </template>
       </compTable>
@@ -69,11 +25,13 @@
 <script>
 import { Base } from '@/min/Base.min'
 import CompTable from '@/components/elTable/CompTable.vue'
+import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
+
 const routeName = 'RankCodeManagement'
 
 export default {
   name: routeName,
-  components: { CompTable },
+  components: { CompTable, DynamicComponentLoader },
   extends: Base,
   data() {
     return {
@@ -88,28 +46,23 @@ export default {
         { prop: '', label: '수정', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
       ],
       componentList: [
-        { key: 'UsageYN', props: { label: '외부연동유형', parameterKey: 'sexLinkUseTypeCd' } },
-        { key: 'InputType', props: { label: '계위명' } },
-        { key: 'InputType', props: { label: '코드명' } },
+        { key: 'ExtrnLnkgs', props: { label: '외부연동유형' } },
+        { key: 'InputType', props: { label: '계위명', propsParameterKey: 'searchWrd' } },
+        { key: 'InputType', props: { label: '코드명', propsParameterKey: 'slvlCd' } },
       ],
-      linkValue: '',
-      sipCreateValue: '',
-      codeValue: ''
+      sexLinkUseTypeCd: '',
+      searchWrd: '',
+      slvlCd: ''
     }
   },
   methods: {
-    onClickSearch() {
+    handleSearch(params) {
       /*
-      const param = {
-         linkValue: this.linkValue,
-         sipCreateValue: this.sipCreateValue,
-         codeValue: this.codeValue,
-        }
-      const res = await api(param)
+      const res = await api(params)
       */
     }
   }
 }
 </script>
-<style lang="css" scoped>
+<style lang="scss" scoped>
 </style>

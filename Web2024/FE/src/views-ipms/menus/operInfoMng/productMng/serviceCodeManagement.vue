@@ -44,14 +44,15 @@ export default {
         { prop: '', label: '수정', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
       ],
       componentList: [
-        { key: 'IncludeYN', props: { label: 'NeOSS연동 여부' } },
-        { key: 'InputType', props: { label: '서비스', propsParameterKey: 'service' } },
-        { key: 'InputType', props: { label: '코드명', propsParameterKey: 'codeNm' } },
+        { key: 'IncludeYN', props: { label: 'NeOSS연동 여부', parameterKey: 'sneossDdYn' } },
+        { key: 'InputType', props: { label: '서비스', propsParameterKey: 'sassignTypeNm' } },
+        { key: 'InputType', props: { label: '코드명', propsParameterKey: 'sassignTypeCd' } },
       ]
     }
   },
   methods: {
-    onClickSearch() {
+    handleSearch(params) {
+      /* const res = await api(params) */
     }
   }
 }
