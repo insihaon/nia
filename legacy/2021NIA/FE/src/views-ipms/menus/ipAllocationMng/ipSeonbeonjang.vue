@@ -51,8 +51,15 @@ export default {
         // 회선정보
         { key: 'InputType', props: { label: '용도', propsParameterKey: '' } },
         { key: 'DatePicker', props: { } },
-        { key: 'InputSearchDetail',
-          props: { label: '장비명', modalName: 'ModalFacilityInformation', componentKey: 'ssubscnealiasNe' } },
+        {
+          key: 'InputSearchDetail',
+          props: {
+            label: '장비명',
+            modalName: 'ModalFacilityInformation',
+            valueName: 'ssubscnealias',
+            parameterKey: { sicisofficescodeNe: 'sofficecode', smodelnameNe: 'smodelname', ssubscmstipNe: 'ssubscmstip', ssubscnealiasNe: 'ssubscnealias' },
+          }
+        },
         { key: 'SortType', props: {} },
       ],
       tableColumns: [

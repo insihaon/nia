@@ -4,7 +4,7 @@
       ref="DynamicComponent"
       :component-keys="componentList"
     />
-    <el-col :span="24" class="h-100">
+    <el-col :span="24">
       <compTable :prop-column="tableColumns" :prop-is-pagination="false" :prop-is-check-box="false" prop-grid-menu-id="inputSpeed" :prop-grid-indx="1">
         <template slot="text-description">
           <span>
@@ -41,7 +41,6 @@ export default {
         { prop: '', label: '진행상태', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
       ],
       componentList: [
-        // 요청사항 구분 추가
         {
           key: 'ApplyStatus', props: {
           label: '요청사항 구분',

@@ -7,6 +7,7 @@
       v-model="localValue"
       collapse-tags
       size="mini"
+      @change="handleChange"
     >
       <el-option
         v-for="(option, i) in officeOptions"
@@ -35,6 +36,10 @@ export default {
       type: String,
       default: ''
     },
+    parameterKey: {
+      type: String,
+      default: 'sofficecode'
+    }
   },
   data() {
     return {
@@ -50,6 +55,7 @@ export default {
   mounted () {
     Eventbus.$on(EventType.changeLvl1, (params) => { this.onLoadOfficeList(params) })
     Eventbus.$on(EventType.changeLvl2, (params) => { this.onLoadOfficeList(params) })
+    this.onLoadOfficeList()
   },
   beforeDestroy() {
     Eventbus.$off(EventType.changeLvl1)
@@ -61,6 +67,9 @@ export default {
       const res = await api(params)
       this.officeOptions = res.result (options set)
       */
+    },
+    handleChange() {
+      this.$emit('update-value', [{ key: this.parameterKey, value: this.localValue }])
     }
   }
 }

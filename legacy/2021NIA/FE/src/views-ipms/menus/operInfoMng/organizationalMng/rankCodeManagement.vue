@@ -92,7 +92,7 @@ export default {
         { prop: '', label: '수정', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
       ],
       componentList: [
-        { key: 'UsageYN', props: { label: '외부연동유형' } },
+        { key: 'UsageYN', props: { label: '외부연동유형', parameterKey: 'sexLinkUseTypeCd' } },
         { key: 'InputType', props: { label: '계위명' } },
         { key: 'InputType', props: { label: '코드명' } },
       ],

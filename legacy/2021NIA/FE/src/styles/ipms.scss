@@ -1,4 +1,8 @@
 #ipms {
+  .el-row:first-child {
+    padding-left: 3rem;
+    padding-right: 3rem;
+  }
   #container.main {
     .container_inner {
       min-height: 495px;

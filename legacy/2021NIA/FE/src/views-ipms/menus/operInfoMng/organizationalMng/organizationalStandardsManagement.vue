@@ -43,7 +43,7 @@ export default {
         { prop: '', label: '본부조직', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
       ],
       componentList: [
-        { key: 'UsageYN', props: { label: '조직 사용여부' } },
+        { key: 'UsageYN', props: { label: '조직 사용여부', parameterKey: 'sipmsOrgYn' } },
         { key: 'InputType', props: { label: '조직명' } },
       ]
     }

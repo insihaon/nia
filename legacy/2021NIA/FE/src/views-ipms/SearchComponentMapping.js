@@ -38,7 +38,7 @@ export const componentMap = {
     IpMngProgress: () => import('@/views-ipms/conditionComponents/IpMngProgress.vue'),
     // 예외여부
     ExceptionYN: () => import('@/views-ipms/conditionComponents/ExceptionYN.vue'),
-    // INPUT 입력 componentKey로 입력값 구분
+    // INPUT 입력 propsParameterKey로 입력값 구분
     InputType: () => import('@/views-ipms/conditionComponents/InputType.vue'),
     // PROTOCOL
     Protocol: () => import('@/views-ipms/conditionComponents/Protocol.vue'),
@@ -50,7 +50,7 @@ export const componentMap = {
     DetailedWorkClassification: () => import('@/views-ipms/conditionComponents/DetailedWorkClassification.vue'),
     // 조회년도
     CheckYear: () => import('@/views-ipms/conditionComponents/CheckYear.vue'),
-    // 포함여부 사항 체크
+    // 포함여부 사항 체크, parameterKey 전달
     IncludeYN: () => import('@/views-ipms/conditionComponents/IncludeYN.vue'),
     // 사용여부 (장비별 명령어 정보관리, 조직기준 관리)
     UsageYN: () => import('@/views-ipms/conditionComponents/UsageYN.vue'),
