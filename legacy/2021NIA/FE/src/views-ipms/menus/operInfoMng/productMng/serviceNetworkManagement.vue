@@ -44,12 +44,13 @@ export default {
         { prop: '', label: '수정', align: 'center', sortable: true, columnVisible: true, showOverflow: true }
       ],
       componentList: [
-        { key: 'IncludeYN', props: { label: '사용여부' } },
+        { key: 'IncludeYN', props: { label: '사용여부', parameterKey: 'suseTypeCd' } },
       ]
     }
   },
   methods: {
-    onClickSearch(param) {
+    handleSearch(param) {
+      /* const res = await api(param) */
     }
   }
 }

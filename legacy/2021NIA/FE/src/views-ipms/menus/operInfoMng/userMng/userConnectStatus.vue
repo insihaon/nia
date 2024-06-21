@@ -10,7 +10,7 @@
             size="mini"
           >
             <el-option
-              v-for="(option, i) in authOptions"
+              v-for="(option, i) in useConnResOp"
               :key="i"
               :label="option.label"
               :value="option.value"
@@ -18,23 +18,16 @@
           </el-select>
         </el-col>
         <el-col class="d-flex" :span="6">
-          <label>소속조직</label>
-          <div class="w-100" @click="handleOpenSearchModal()">
-            <el-input
-              v-model="orgnzVal"
-              size="mini"
-              clearable
-            >
-              <template #suffix>
-                <el-button
-                  size="mini"
-                  style="font-size: larger;"
-                >
-                  <i class="el-icon-search font-weight-bolder"></i>
-                </el-button>
-              </template>
-            </el-input>
-          </div>
+          <InputSearchDetail
+            ref="searchDetail"
+            label="소속조직"
+            modal-name="ModalOrgSearch"
+            value-name="sFullOrgNm"
+            :parameter-key="{ sposDeptOrgId: 'sktOrgId', sporEdptOrgNm: 'sFullOrgNm' }"
+            :is-read-only="true"
+            class="w-100 d-flex"
+            @update-value="setParameterKey"
+          />
         </el-col>
         <el-col class="d-flex" :span="6">
           <label>사용자명</label>
@@ -45,11 +38,10 @@
           <label>로그인 시간</label>
           <el-date-picker
             v-model="loginTime"
-            type="daterange"
+            type="datetimerange"
             size="mini"
             start-placeholder="시작일"
             end-placeholder="종료일"
-            @change="handleChange"
           />
         </el-col>
 
@@ -77,63 +69,71 @@
       >
         <template slot="text-description">
           <span>
-            계위코드
+            사용자 접속현황 조회결과
           </span>
         </template>
       </compTable>
-      <ModalOrgSearch ref="ModalOrgSearch" />
     </el-col>
   </el-row>
 </template>
 <script>
 import { Base } from '@/min/Base.min'
 import CompTable from '@/components/elTable/CompTable.vue'
-import ModalOrgSearch from '@/views-ipms/modal/ModalOrgSearch.vue'
+import InputSearchDetail from '@/views-ipms/conditionComponents/InputSearchDetail.vue'
 const routeName = 'UserConnectStatus'
 
 export default {
   name: routeName,
-  components: { CompTable, ModalOrgSearch },
+  components: { CompTable, InputSearchDetail },
   extends: Base,
   data() {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       tableColumns: [
-        { prop: '', label: '코드', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: '계위명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: '구분코드', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: '외부연동 유형', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: '비고', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: '수정', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: '', label: '사용자ID', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: '', label: '사용자명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: '', label: '소속조직', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: '', label: '로그인시간', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: '', label: '로그아웃시간', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: '', label: '접속 IP주소', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: '', label: '로그인결과', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
       ],
-      componentList: [
-        { key: 'UsageYN', props: { label: '외부연동유형' } },
-        { key: 'InputType', props: { label: '계위명' } },
-        { key: 'InputType', props: { label: '코드명' } },
+      useConnResOp: [
+        { label: '전체', value: '' },
+        { label: '미분류', value: 'UC0000' },
+        { label: '성공', value: 'UC0001' },
+        { label: 'IP인증실패(단말변경 신청요망)', value: 'UC0002' },
       ],
       connectValue: '',
-      orgnzVal: '',
       nameValue: '',
-      loginTime: []
+      loginTime: [],
+      requestParameter: {}
     }
   },
   methods: {
-    handleOpenSearchModal() {
-      this.$refs.ModalOrgSearch.open({ row: 'row' })
-    },
     onClickSearch() {
-      /*
+      const [bgTime, endTime] = this.loginTime
       const param = {
-         linkValue: this.linkValue,
-         sipCreateValue: this.sipCreateValue,
-         codeValue: this.codeValue,
-        }
-      const res = await api(param)
+        searchBgnDe: '',
+        searchBgnHour: bgTime.getHours(),
+        searchBgnMinute: bgTime.getMinutes(),
+        searchEndDe: '',
+        searchEndHour: endTime.getHours(),
+        searchEndMinute: endTime.getMinutes(),
+        searchWrd: this.nameValue,
+        suserConnResultTypeCd: this.connectValue
+      }
+      Object.assign(this.requestParameter, param)
+      /*
+      const res = await api(this.requestParameter)
       */
+    },
+    setParameterKey(params) {
+      params.forEach(item => { this.requestParameter[item.key] = item.value })
     }
   }
 }
 </script>
-<style lang="css" scoped>
+<style lang="scss" scoped>
 </style>

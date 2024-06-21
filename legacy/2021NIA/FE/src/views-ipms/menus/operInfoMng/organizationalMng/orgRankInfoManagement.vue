@@ -15,7 +15,7 @@
       >
         <template slot="text-description">
           <span>
-            조직계위정보
+            조직계위정보 조회결과
           </span>
         </template>
       </compTable>
@@ -37,15 +37,40 @@ export default {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       tableColumns: [
-        { prop: '', label: '조직아이디', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: '조직명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: '상위조직', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: '본부조직', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: '', label: '서비스방', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: '', label: '본부', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: '', label: '주노드', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: '', label: '노드', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: '', label: '계위관리', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        {
+          prop: '', label: '오더계위(SON)', children: [
+            { prop: '', label: '국사수', align: 'center', columnVisible: true, showOverflow: true },
+            { prop: '', label: '관리', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+          ],
+          align: 'center',
+          columnVisible: true,
+          showOverflow: true,
+        },
+        {
+          prop: '', label: '시설계위(FM)', children: [
+            { prop: '', label: '국사수', align: 'center', columnVisible: true, showOverflow: true },
+            { prop: '', label: '관리', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+          ],
+          align: 'center',
+          columnVisible: true,
+          showOverflow: true,
+        },
+        { prop: '', label: '등록일', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
       ],
       componentList: [
-        { key: 'SsvcLineType', props: { lvl: 1, multi: [1], limit: { 1: 5, 2: null, 3: null } } },
-        { key: 'InputType', props: { label: '노드명' } },
+        { key: 'SsvcLineType', props: { lvl: 2 } },
+        { key: 'InputType', props: { label: '노드명', propsParameterKey: 'sscvObjNm' } },
       ]
+    }
+  },
+  methods: {
+    handleSearch(params) {
+      /* const res = await api(params) */
     }
   },
 }

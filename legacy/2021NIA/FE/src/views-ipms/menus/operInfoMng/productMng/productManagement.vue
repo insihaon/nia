@@ -15,7 +15,7 @@
       >
         <template slot="text-description">
           <span>
-            상품
+            상품 조회결과
           </span>
         </template>
       </compTable>
@@ -60,18 +60,26 @@ export default {
 
         ],
       componentList: [
-        { key: 'UsageYN', props: { label: '구분' } },
-        // 대분류,소분류
-        { key: 'ApplyStatus', props: { label: '이용목적' } },
+        // 구분, 대분류, 소분류
+        { key: 'ApplyStatus', props: { label: '이용목적',
+          parameterKey: 'ssvcUseTypeCd',
+          propsOptions: [
+              { label: '전체', value: '' },
+              { label: '사업용', value: 'SU0001' },
+              { label: '일반용', value: 'SU0002' },
+            ]
+          }
+        },
         { key: 'ExtrnLnkgs', props: {} },
         { key: 'ServiceOrg', props: { isMulti: false } },
-        { key: 'IncludeYN', props: { label: '사용여부' } },
+        { key: 'IncludeYN', props: { label: '사용여부', parameterKey: 'suseTypeCd' } },
         { key: 'InputType', props: { label: '상품명' } },
       ]
     }
   },
   methods: {
-    onClickSearch() {
+    handleSearch(params) {
+      /* const res = await api(params) */
     }
   }
 }

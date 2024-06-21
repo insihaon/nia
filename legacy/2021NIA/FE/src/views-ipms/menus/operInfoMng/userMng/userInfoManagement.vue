@@ -18,23 +18,16 @@
           </el-select>
         </el-col>
         <el-col class="d-flex" :span="6">
-          <label>소속조직</label>
-          <div class="w-100" @click="handleOpenSearchModal()">
-            <el-input
-              v-model="orgnzVal"
-              size="mini"
-              clearable
-            >
-              <template #suffix>
-                <el-button
-                  size="mini"
-                  style="font-size: larger;"
-                >
-                  <i class="el-icon-search font-weight-bolder"></i>
-                </el-button>
-              </template>
-            </el-input>
-          </div>
+          <InputSearchDetail
+            ref="searchDetail"
+            label="소속조직"
+            modal-name="ModalOrgSearch"
+            value-name="sFullOrgNm"
+            :parameter-key="{ sposDeptOrgId: 'sktOrgId', sporEdptOrgNm: 'sFullOrgNm' }"
+            :is-read-only="true"
+            class="w-100 d-flex"
+            @update-value="setParameterKey"
+          />
         </el-col>
 
         <el-col class="d-flex" :span="6">
@@ -81,77 +74,64 @@
       >
         <template slot="text-description">
           <span>
-            계위코드
+            사용자 정보 조회결과
           </span>
         </template>
       </compTable>
-      <ModalOrgSearch ref="ModalOrgSearch" />
     </el-col>
   </el-row>
 </template>
 <script>
 import { Base } from '@/min/Base.min'
 import CompTable from '@/components/elTable/CompTable.vue'
-import ModalOrgSearch from '@/views-ipms/modal/ModalOrgSearch.vue'
+import InputSearchDetail from '@/views-ipms/conditionComponents/InputSearchDetail.vue'
 const routeName = 'UserInfoManagement'
 
 export default {
   name: routeName,
-  components: { CompTable, ModalOrgSearch },
+  components: { CompTable, InputSearchDetail },
   extends: Base,
   data() {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       tableColumns: [
-        { prop: '', label: '코드', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: '계위명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: '구분코드', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: '외부연동 유형', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: '비고', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: '', label: '사용자명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: '', label: '소속조직', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: '', label: '재직상태', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: '', label: '권한등급', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: '', label: '수정', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-      ],
-      componentList: [
-        { key: 'UsageYN', props: { label: '외부연동유형' } },
-        { key: 'InputType', props: { label: '계위명' } },
-        { key: 'InputType', props: { label: '코드명' } },
       ],
       authOptions: [
         { label: '전체', value: '' },
-        { label: '시스템 관리자', value: 1 },
-        { label: '서비스망 관리자', value: 2 },
-        { label: '본부운용자', value: 3 },
-        { label: '노드운용자', value: 4 },
-        { label: '조회자', value: 5 },
+        { label: '시스템 관리자', value: 'UR0001' },
+        { label: '서비스망 관리자', value: 'UR0003' },
+        { label: '본부운용자', value: 'UR0004' },
+        { label: '노드운용자', value: 'UR0005' },
+        { label: '조회자', value: 'UR0006' },
       ],
       officeStatus: [
         { label: '전체', value: '' },
-        { label: '시스템 관리자', value: 1 },
-        { label: '서비스망 관리자', value: 2 },
-        { label: '본부운용자', value: 3 },
-        { label: '노드운용자', value: 4 },
-        { label: '조회자', value: 5 },
+        { label: '미분류', value: 'US0000' },
+        { label: '재직', value: 'US0001' },
+        { label: '퇴직', value: 'US0002' },
+        { label: '휴직', value: 'US0003' },
+        { label: '유급휴가', value: 'US0004' },
       ],
       authValue: '',
-      statusValue: '',
-      orgnzVal: '',
-      nameValue: ''
+      nameValue: '',
+      requestParameter: {}
     }
   },
   methods: {
-    handleOpenSearchModal() {
-      this.$refs.ModalOrgSearch.open({ row: 'row' })
-    },
     onClickSearch() {
+      Object.assign(this.requestParameter, { 'suserGradeCd': this.authValue, 'suserNm': this.nameValue })
       /*
-      const param = {
-         authValue: this.authValue,
-         statusValue: this.statusValue,
-         orgnzVal: this.orgnzVal,
-         nameValue: this.nameValue,
-        }
-      const res = await api(param)
+      const res = await api(this.requestParameter)
       */
+    },
+    setParameterKey(params) {
+      params.forEach(item => { this.requestParameter[item.key] = item.value })
     }
   }
 }
