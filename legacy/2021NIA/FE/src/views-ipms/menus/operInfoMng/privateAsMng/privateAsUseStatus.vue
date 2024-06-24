@@ -15,7 +15,7 @@
       >
         <template slot="text-description">
           <span>
-            상품 조회결과
+            사설AS 사용현황 조회결과
           </span>
         </template>
       </compTable>
