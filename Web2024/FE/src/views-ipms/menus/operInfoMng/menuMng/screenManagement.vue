@@ -53,7 +53,7 @@
         :prop-table-height="300"
         :prop-column="tableColumns"
         :prop-is-pagination="true"
-        :prop-is-check-box="false"
+        :prop-is-check-box="true"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
       >
