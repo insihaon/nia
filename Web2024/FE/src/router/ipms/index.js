@@ -388,7 +388,7 @@ export const ipmsRoute = Object.freeze([
         children: [
           {
             path: 'thresholdStandardManagement',
-            component: () => null,
+            component: () => import('@/views-ipms/menus/operInfoMng/thresholdManagement/thresholdStandardManagement'),
             name: 'ThresholdStandardManagement',
             meta: { title: '임계치 기준관리', affix: false }
           },
