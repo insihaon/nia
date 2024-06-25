@@ -1212,7 +1212,7 @@
       color: #ffffff;
       float: left;
       display: inline-block;
-      height: 17px;
+      height: 22px;
       line-height: 17px;
       padding: 1px 10px 2px;
       margin-right: 4px;
@@ -2819,4 +2819,43 @@
     background: #f0f0f0;
     border: 1px solid #808080;
   }
+  
+  /*  table  */
+  table.form {
+    table-layout: fixed;
+    width: 100%;
+    font-size: 14px;
+    text-align: left;
+    border-collapse: collapse;
+    border: solid 1px #ccc;
+    th,
+    td {
+      padding: 7px;
+      border: 1px solid #ccc;
+    }
+    th {
+      font-weight: normal;
+      color: #000;
+      background: #e5e5e5;
+      text-align: left;
+      font-size: 12px;
+      width: 20%;
+    }
+    td {
+      font-weight: 600;
+      max-width: 100px;
+      width: 80%; 
+    }
+    td.disable {
+      font-weight: 600;
+      background: #fff;
+      width: auto;
+    }
+  }
+
+  /* el-tree */
+  .el-tree-node:before, .el-tree-node:after{
+    border: none !important;
+  }
 }
+
