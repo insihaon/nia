@@ -6,7 +6,7 @@
     <el-select
       v-model="value"
       size="mini"
-      @change="handleChange"
+      @change="handleChange('searchCnd', value)"
     >
       <el-option
         v-for="(option, i) in options"
@@ -15,18 +15,20 @@
         :value="option.value"
       />
     </el-select>
-    <el-input v-model="word" size="mini" clearable @change="handleChangeWord" />
+    <el-input v-model="word" size="mini" clearable @change="handleChange('searchWrd', word)" />
   </el-col>
 </template>
 <script>
 import { Base } from '@/min/Base.min'
+import commonFunctionMixin from '@/mixin/commonFunctionMixin'
 
 const routeName = 'BoardSearchCondition'
 export default {
   name: routeName,
   extends: Base,
+  mixins: [commonFunctionMixin],
   props: {
-    propsOptions: {
+    prop_options: {
       type: Array,
       default: null
     },
@@ -48,21 +50,19 @@ export default {
       word: ''
     }
   },
-  created () {
-    if (this.propsOptions !== null) {
-      this.options = this.propsOptions
-    }
-    if (this.defaultValue !== null) {
-      this.value = this.defaultValue
-    }
-  },
   methods: {
-    handleChange() {
-      this.$emit('update-value', [{ key: 'searchCnd', value: this.value }])
+    init() {
+      if (this.prop_options !== null) {
+        this.options = this.prop_options
+      }
+      if (this.defaultValue !== null) {
+        this.value = this.defaultValue
+      }
+      this.emitEventToParent(this.getParameter())
     },
-    handleChangeWord() {
-      this.$emit('update-value', [{ key: 'searchWrd', value: this.word }])
-    }
+    handleChange(key, value) {
+      this.emitEventToParent([{ key, value }])
+    },
   }
 }
 </script>

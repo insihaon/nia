@@ -24,7 +24,7 @@
             label="소속조직"
             modal-name="ModalOrgSearch"
             value-name="sFullOrgNm"
-            :parameter-key="{ sposDeptOrgId: 'sktOrgId', sporEdptOrgNm: 'sFullOrgNm' }"
+            :prop_parameter-key="{ sposDeptOrgId: 'sktOrgId', sporEdptOrgNm: 'sFullOrgNm' }"
             :is-read-only="true"
             class="w-100 d-flex"
             @update-value="setParameterKey"
@@ -45,11 +45,10 @@
             end-placeholder="종료일"
           />
         </el-col>
-
       </el-row>
       <el-row>
         <el-col :span="24" align="center" class="searchBtnGroup">
-          <el-button class="btn-r" type="info" size="mini" icon="el-icon-search" @click="onClickSearch()">
+          <el-button class="btn-r" type="info" size="mini" icon="el-icon-search" @click="handleSearch()">
             조회
           </el-button>
           <el-button class="btn-r" type="info" size="mini" icon="el-icon-refresh">
@@ -59,9 +58,9 @@
         </el-col>
       </el-row>
     </div>
-    <el-col :span="24">
+    <el-col :span="24" style="height: calc(100% - 160px)">
       <compTable
-        :prop-table-height="300"
+        :prop-table-height="'calc(100% - 80px)'"
         :prop-column="tableColumns"
         :prop-is-pagination="true"
         :prop-is-check-box="false"
@@ -113,19 +112,20 @@ export default {
     }
   },
   methods: {
-    onClickSearch() {
+    handleSearch() {
       const [bgTime, endTime] = this.loginTime
-      const param = {
+      const params = {
         searchBgnDe: '',
-        searchBgnHour: bgTime.getHours(),
-        searchBgnMinute: bgTime.getMinutes(),
+        searchBgnHour: bgTime?.getHours() ?? '00',
+        searchBgnMinute: bgTime?.getMinutes() ?? '00',
         searchEndDe: '',
-        searchEndHour: endTime.getHours(),
-        searchEndMinute: endTime.getMinutes(),
+        searchEndHour: endTime?.getHours() ?? '00',
+        searchEndMinute: endTime?.getMinutes() ?? '00',
         searchWrd: this.nameValue,
         suserConnResultTypeCd: this.connectValue
       }
-      Object.assign(this.requestParameter, param)
+      Object.assign(this.requestParameter, params)
+      console.log(this.requestParameter)
       /*
       const res = await api(this.requestParameter)
       */

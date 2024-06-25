@@ -4,11 +4,11 @@
       생성차수
     </label>
     <el-select
-      v-model="localValue"
+      v-model="value"
       collapse-tags
       filterable
       size="mini"
-      @change="handleChange"
+      @change="handleChange()"
     >
       <el-option
         v-for="(option, i) in options"
@@ -21,24 +21,23 @@
 </template>
 <script>
 import { Base } from '@/min/Base.min'
+import commonFunctionMixin from '@/mixin/commonFunctionMixin'
 
 const routeName = 'GenerationDegree'
 export default {
   name: routeName,
   extends: Base,
+  mixins: [commonFunctionMixin],
   props: {
-    value: {
-      type: String,
-      default: 'ALL'
-    },
   },
   data() {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      word: '',
+      parameterKey: 'sipCreateSeqCd',
+      value: '',
       options: [
-        { label: '전체', value: 'ALL' },
+        { label: '전체', value: '' },
         { label: 'G202411001', value: 'G202411001' },
         { label: 'G202412000', value: 'G202412000' },
         { label: 'K199401000', value: 'K199401000' },
@@ -56,15 +55,9 @@ export default {
         { label: 'K199706000', value: 'K199706000' },
         { label: 'K199707000', value: 'K199707000' }
       ],
-      localValue: []
     }
   },
-  computed: {
-  },
   methods: {
-    handleChange() {
-      this.$emit('update-value', [{ key: 'generationDegreeCd', value: this.localValue }])
-    },
   }
 }
 </script>

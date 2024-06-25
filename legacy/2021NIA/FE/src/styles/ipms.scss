@@ -2,6 +2,12 @@
   .el-row:first-child {
     padding-left: 3rem;
     padding-right: 3rem;
+    div.el-col {
+      .compTable {
+        height: 100%;
+        padding-top: 10px;
+      }
+    }
   }
   #container.main {
     .container_inner {
@@ -771,6 +777,10 @@
               display: inline-block;
               padding: 0 15px;
               vertical-align: top;
+
+              > a:hover {
+                color: #e54545;
+              }
               
               > {
                 dt {
@@ -790,8 +800,7 @@
                     &:visited {
                       color: #111;
                     }
-                    &:hover,
-                    &:active {
+                    &:hover {
                       color: #e54545;
                     }
                   }

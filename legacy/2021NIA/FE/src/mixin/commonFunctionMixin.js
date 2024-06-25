@@ -1,0 +1,59 @@
+import { onMessagePopup } from '@/utils/index'
+var commonFunctionMixin = {
+  data() {
+    return {
+      parameterKey: null,
+      values: null,
+      options: []
+    }
+  },
+  computed: {
+    fullOptions() { /* override */
+      return []
+    }
+  },
+  mounted() {
+    this.init()
+  },
+  methods: {
+    init() { /* override */
+      if (this.prop_parameterKey && this.prop_parameterKey !== null) {
+        this.parameterKey = this.prop_parameterKey
+      }
+      if (this.prop_options && this.prop_options !== null) {
+        this.options = this.prop_options
+      }
+      this.emitEventToParent(this.getParameter())
+    },
+    handleChange() { /* override */
+      this.emitEventToParent(this.getParameter())
+    },
+    getParameter() {
+      return this.parameterKey ? [{ key: this.parameterKey, value: this.value }] : []
+    },
+    emitEventToParent(params) { /* params : [{key, value}, {}...] */
+      this.$emit('update-value', params)
+    },
+    /*
+     multi option이 있는 selectBox 처리
+    */
+    updateSelectionWithAll() {
+      if (this.values.length === this.fullOptions.length && !this.values.includes('ALL')) {
+        this.values.push('ALL')
+      } else if (this.values.includes('ALL') && this.values.length !== this.fullOptions.length + 1) {
+        this.values = this.values.filter(value => value !== 'ALL')
+      }
+    },
+    toggleAll() {
+      this.values = this.values.includes('ALL') ? [] : ['ALL', ...this.fullOptions]
+    },
+    onCheckLimit(text) {
+      if (this.limit !== null && this.values.length > this.limit) {
+        onMessagePopup(this, `${text}는 최대 ${this.limit}개까지 선택 가능합니다.`)
+        this.values = []
+      }
+    }
+  },
+}
+
+export default commonFunctionMixin

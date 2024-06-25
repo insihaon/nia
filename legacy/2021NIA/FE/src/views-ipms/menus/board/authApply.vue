@@ -1,11 +1,19 @@
 <template>
-  <el-row class="w-100 h-100">
+  <el-row ref="container" class="w-100 h-100">
     <DynamicComponentLoader
-      ref="DynamicComponent"
+      ref="searchCondition"
       :component-keys="componentList"
+      @handle-search="handleSearch"
     />
-    <el-col :span="24">
-      <compTable :prop-column="tableColumns" :prop-is-pagination="false" :prop-is-check-box="false" prop-grid-menu-id="inputSpeed" :prop-grid-indx="1">
+    <el-col ref="tableContainer" :span="24">
+      <compTable
+        :prop-table-height="'calc(100% - 80px)'"
+        :prop-column="tableColumns"
+        :prop-is-pagination="false"
+        :prop-is-check-box="false"
+        prop-grid-menu-id="inputSpeed"
+        :prop-grid-indx="1"
+      >
         <template slot="text-description">
           <span>
             사용자 권한 신청
@@ -19,12 +27,15 @@
 import { Base } from '@/min/Base.min'
 import CompTable from '@/components/elTable/CompTable.vue'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
+import tableHeightMixin from '@/mixin/tableHeightMixin'
+
 const routeName = 'AuthApply'
 
 export default {
   name: routeName,
   components: { CompTable, DynamicComponentLoader },
   extends: Base,
+  mixins: [tableHeightMixin],
   data() {
     return {
       name: routeName,
@@ -43,12 +54,12 @@ export default {
             label: '소속조직',
             modalName: 'ModalOrgSearch',
             valueName: 'sFullOrgNm',
-            parameterKey: { sposDeptOrgId: 'sktOrgId', sporEdptOrgNm: 'sFullOrgNm' },
+            prop_parameterKey: { sposDeptOrgId: 'sktOrgId', sporEdptOrgNm: 'sFullOrgNm' },
             isReadOnly: true
           }
         },
-        { key: 'InputType', props: { label: '사용자', propsParameterKey: 'suerNm' } },
-        { key: 'ApplyStatus', props: { label: '진행상태', parameterKey: 'nrequestTypeCd' } },
+        { key: 'InputType', props: { label: '사용자', prop_parameterKey: 'suerNm' } },
+        { key: 'ApplyStatus', props: { label: '진행상태', prop_parameterKey: 'nrequestTypeCd' } },
       ],
     }
   },

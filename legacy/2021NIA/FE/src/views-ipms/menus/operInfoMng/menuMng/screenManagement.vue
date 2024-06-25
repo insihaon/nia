@@ -5,8 +5,7 @@
         <el-col class="d-flex" :span="6">
           <label>화면유형</label>
           <el-select
-            v-model="channelValue"
-            collapse-tags
+            v-model="scrnType"
             size="mini"
             class="w-100"
           >
@@ -22,9 +21,9 @@
           <label>조회조건</label>
           <el-select
             v-model="inquiryValue"
-            collapse-tags
             size="mini"
             class="w-100"
+            @change="handleChangeCondition"
           >
             <el-option
               v-for="(option, i) in inquiryOptions"
@@ -33,12 +32,12 @@
               :value="option.value"
             />
           </el-select>
-          <el-input v-model="inquiryOptions2" size="mini" clearable />
+          <el-input v-model="inquiryTxt" size="mini" clearable />
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="24" align="center" class="searchBtnGroup">
-          <el-button class="btn-r" type="info" size="mini" icon="el-icon-search" @click="onClickSearch()">
+          <el-button class="btn-r" type="info" size="mini" icon="el-icon-search" @click="handleSearch()">
             조회
           </el-button>
           <el-button class="btn-r" type="info" size="mini" icon="el-icon-refresh">
@@ -48,9 +47,9 @@
         </el-col>
       </el-row>
     </div>
-    <el-col :span="24">
+    <el-col :span="24" style="height: calc(100% - 160px)">
       <compTable
-        :prop-table-height="300"
+        :prop-table-height="'calc(100% - 80px)'"
         :prop-column="tableColumns"
         :prop-is-pagination="true"
         :prop-is-check-box="false"
@@ -63,19 +62,17 @@
           </span>
         </template>
       </compTable>
-      <ModalOrgSearch ref="ModalOrgSearch" />
     </el-col>
   </el-row>
 </template>
 <script>
 import { Base } from '@/min/Base.min'
 import CompTable from '@/components/elTable/CompTable.vue'
-import ModalOrgSearch from '@/views-ipms/modal/ModalOrgSearch.vue'
 const routeName = 'ScreenManagement'
 
 export default {
   name: routeName,
-  components: { CompTable, ModalOrgSearch },
+  components: { CompTable },
   extends: Base,
   data() {
     return {
@@ -90,32 +87,36 @@ export default {
         { prop: '', label: '화면사용여부', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
       ],
       channelOptions: [
-        { label: '전체', value: 1 },
-        { label: '미분류', value: 2 },
-        { label: 'MAIN', value: 3 },
-        { label: 'SUB', value: 4 },
-        { label: 'POPUP', value: 5 },
+        { label: '전체', value: '' },
+        { label: '미분류', value: 'UD0000' },
+        { label: 'MAIN', value: 'UD0001' },
+        { label: 'SUB', value: 'UD0002' },
+        { label: 'POPUP', value: 'UD0003' },
       ],
-      channelValue: 1,
+      scrnType: '',
       inquiryOptions: [
-        { label: '화면ID', value: 1 },
-        { label: '화면명', value: 2 },
-        { label: '설계화면', value: 3 },
+        { label: '화면ID', value: 'sscrnId' },
+        { label: '화면명', value: 'sscrnNm' },
+        { label: '설계화면', value: 'sdgnScrnId' },
       ],
-      inquiryValue: 1,
-      inquiryOptions2: '',
+      inquiryValue: 'sscrnId',
+      inquiryTxt: '',
     }
   },
   methods: {
-    onClickSearch() {
+    handleSearch() {
+      const params = {
+        sscrnTypeCd: this.scrnType,
+        searchCnd: this.inquiryValue,
+        searchWrd: this.inquiryTxt,
+      }
+      console.log(params)
       /*
-      const param = {
-         channelValue: this.channelValue,
-         inquiryValue: this.inquiryValue,
-         inquiryOptions2: this.inquiryOptions2,
-        }
       const res = await api(param)
       */
+    },
+    handleChangeCondition() {
+      this.inquiryTxt = ''
     }
   }
 }

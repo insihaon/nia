@@ -1,21 +1,13 @@
 <template>
-  <el-row class="w-100 h-100">
+  <el-row ref="container" class="w-100 h-100">
     <div class="optionBox">
       <el-row class="optionRow">
         <el-col class="d-flex" :span="6">
-          <label>사용자 권한등급</label>
-          <el-select
-            v-model="authValue"
-            collapse-tags
-            size="mini"
-          >
-            <el-option
-              v-for="(option, i) in authOptions"
-              :key="i"
-              :label="option.label"
-              :value="option.value"
-            />
-          </el-select>
+          <AuthLevel
+            label="사용자 권한등급"
+            class="w-100 d-flex"
+            @update-value="setParameterKey"
+          />
         </el-col>
         <el-col class="d-flex" :span="6">
           <InputSearchDetail
@@ -23,7 +15,7 @@
             label="소속조직"
             modal-name="ModalOrgSearch"
             value-name="sFullOrgNm"
-            :parameter-key="{ sposDeptOrgId: 'sktOrgId', sporEdptOrgNm: 'sFullOrgNm' }"
+            :prop_parameter-key="{ sposDeptOrgId: 'sktOrgId', sporEdptOrgNm: 'sFullOrgNm' }"
             :is-read-only="true"
             class="w-100 d-flex"
             @update-value="setParameterKey"
@@ -63,9 +55,9 @@
         </el-col>
       </el-row>
     </div>
-    <el-col :span="24">
+    <el-col style="height: calc(100% - 160px);" :span="24">
       <compTable
-        :prop-table-height="300"
+        :prop-table-height="'calc(100% - 80px)'"
         :prop-column="tableColumns"
         :prop-is-pagination="true"
         :prop-is-check-box="false"
@@ -85,11 +77,12 @@
 import { Base } from '@/min/Base.min'
 import CompTable from '@/components/elTable/CompTable.vue'
 import InputSearchDetail from '@/views-ipms/conditionComponents/InputSearchDetail.vue'
+import AuthLevel from '@/views-ipms/conditionComponents/AuthLevel.vue'
 const routeName = 'UserInfoManagement'
 
 export default {
   name: routeName,
-  components: { CompTable, InputSearchDetail },
+  components: { CompTable, InputSearchDetail, AuthLevel },
   extends: Base,
   data() {
     return {
@@ -102,14 +95,6 @@ export default {
         { prop: '', label: '권한등급', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: '', label: '수정', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
       ],
-      authOptions: [
-        { label: '전체', value: '' },
-        { label: '시스템 관리자', value: 'UR0001' },
-        { label: '서비스망 관리자', value: 'UR0003' },
-        { label: '본부운용자', value: 'UR0004' },
-        { label: '노드운용자', value: 'UR0005' },
-        { label: '조회자', value: 'UR0006' },
-      ],
       officeStatus: [
         { label: '전체', value: '' },
         { label: '미분류', value: 'US0000' },
@@ -119,14 +104,14 @@ export default {
         { label: '유급휴가', value: 'US0004' },
       ],
       statusValue: '',
-      authValue: '',
       nameValue: '',
       requestParameter: {}
     }
   },
   methods: {
     onClickSearch() {
-      Object.assign(this.requestParameter, { 'suserGradeCd': this.authValue, 'suserNm': this.nameValue })
+      Object.assign(this.requestParameter, { 'suserSttusCd': this.statusValue, 'suserNm': this.nameValue })
+      console.log(this.requestParameter)
       /*
       const res = await api(this.requestParameter)
       */

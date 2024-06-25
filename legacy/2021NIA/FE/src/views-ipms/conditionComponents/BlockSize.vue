@@ -8,9 +8,9 @@
       multiple
       collapse-tags
       size="mini"
-      @change="handleChange"
+      @change="handleChange()"
     >
-      <el-option label="전체" value="ALL"><span class="w-100 h-100 d-inline-block" @click="toggleAll">전체</span></el-option>
+      <el-option label="전체" value="ALL"><span class="w-100 h-100 d-inline-block" @click="handleClickAll">전체</span></el-option>
       <el-option
         v-for="value in options"
         :key="value "
@@ -22,12 +22,13 @@
 </template>
 <script>
 import { Base } from '@/min/Base.min'
-import { onMessagePopup } from '@/utils/index'
+import commonFunctionMixin from '@/mixin/commonFunctionMixin'
 
 const routeName = 'BlockSize'
 export default {
   name: routeName,
   extends: Base,
+  mixins: [commonFunctionMixin],
   props: {
     limit: {
       type: Number,
@@ -38,6 +39,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      parameterKey: 'sblockSizeMultiStr',
       values: [],
       options: [...Array(33).keys()],
     }
@@ -47,27 +49,19 @@ export default {
       return this.options.map(op => op).filter(v => v !== 'ALL')
     },
   },
-  // sblockSizeMulti
   methods: {
     handleChange() {
-      if (this.values.length === this.fullOptions.length && !this.value.includes('ALL')) {
-        this.values.push('ALL')
-      } else if (this.values.includes('ALL') && this.values.length !== this.fullOptions.length + 1) {
-        this.values = this.values?.filter(v => v !== 'ALL')
-      }
-      this.onCheckLimit()
+      this.updateSelectionWithAll()
+      this.onCheckLimit('계위')
 
-      this.$emit('update-value', [{ key: 'sblockSizeMultiStr', value: this.value.join(';') }])
+      this.emitEventToParent(this.getParameter())
     },
-    toggleAll() {
-      this.value = this.values.includes('ALL') ? [] : ['ALL', ...this.fullOptions]
-      this.onCheckLimit()
+    handleClickAll() {
+      this.toggleAll()
+      this.onCheckLimit('계위')
     },
-    onCheckLimit() {
-      if (this.values.length > this.limit) {
-        onMessagePopup(this, `계위는 최대 ${this.limit}개까지 선택 가능합니다.`)
-        this.values = []
-      }
+    getParameter() {
+      return [{ key: this.parameterKey, value: this.values.join(';') }]
     }
   }
 }

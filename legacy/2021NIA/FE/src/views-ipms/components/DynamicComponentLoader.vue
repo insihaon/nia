@@ -54,7 +54,7 @@ export default {
       requestParameter: {}
     }
   },
-    watch: {
+  watch: {
     componentKeys: {
       handler(newKeys) {
         this.dynamicComponents = []

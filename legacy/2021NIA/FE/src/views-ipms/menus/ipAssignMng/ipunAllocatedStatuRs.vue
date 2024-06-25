@@ -1,12 +1,13 @@
 <template>
-  <el-row class="w-100 h-100">
+  <el-row ref="container" class="w-100 h-100">
     <DynamicComponentLoader
-      ref="DynamicComponent"
+      ref="searchCondition"
       :component-keys="componentList"
+      @handle-search="handleSearch"
     />
-    <el-col :span="24">
+    <el-col ref="tableContainer" :span="24">
       <compTable
-        :prop-table-height="300"
+        :prop-table-height="'calc(100% - 80px)'"
         :prop-data="tableDatas"
         :prop-column="tableColumns"
         :prop-is-pagination="true"
@@ -25,16 +26,15 @@
 <script>
 import { Base } from '@/min/Base.min'
 import CompTable from '@/components/elTable/CompTable.vue'
-import CompInquiryPannel from '@/views-ipms/components/CompInquiryPannel.vue'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
+import tableHeightMixin from '@/mixin/tableHeightMixin'
 const routeName = 'IpunAllocatedStatus'
 
 export default {
   name: routeName,
   components: { CompTable, DynamicComponentLoader },
   extends: Base,
-  props: {
-  },
+  mixins: [tableHeightMixin],
   data() {
     return {
       name: routeName,
@@ -51,5 +51,10 @@ export default {
       ]
     }
   },
+  methods: {
+    handleSearch(requestParameter) {
+      console.log(requestParameter)
+    }
+  }
 }
 </script>

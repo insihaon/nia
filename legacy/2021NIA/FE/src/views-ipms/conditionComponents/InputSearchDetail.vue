@@ -21,13 +21,14 @@
         </el-button>
       </template>
     </el-input>
-    <ModalFacilityInformation ref="ModalFacilityInformation" @selected-value="setParameterKey" />
-    <ModalProductInformation ref="ModalProductInformation" @selected-value="setParameterKey" />
-    <ModalOrgSearch ref="ModalOrgSearch" @selected-value="setParameterKey" />
+    <ModalFacilityInformation ref="ModalFacilityInformation" @selected-value="setSelectedRow" />
+    <ModalProductInformation ref="ModalProductInformation" @selected-value="setSelectedRow" />
+    <ModalOrgSearch ref="ModalOrgSearch" @selected-value="setSelectedRow" />
   </el-col>
 </template>
 <script>
 import { Base } from '@/min/Base.min'
+import commonFunctionMixin from '@/mixin/commonFunctionMixin'
 import ModalFacilityInformation from '@/views-ipms/modal/ModalFacilityInformation.vue'
 import ModalProductInformation from '@/views-ipms/modal/ModalProductInformation.vue'
 import ModalOrgSearch from '@/views-ipms/modal/ModalOrgSearch.vue'
@@ -38,6 +39,7 @@ export default {
   // eslint-disable-next-line vue/no-unused-components
   components: { ModalFacilityInformation, ModalProductInformation, ModalOrgSearch },
   extends: Base,
+  mixins: [commonFunctionMixin],
   props: {
     label: {
       type: String,
@@ -52,7 +54,7 @@ export default {
       key: request 요청시에 parameter key가 될 값
       value: value값을 가져올 string
      */
-    parameterKey: {
+    prop_parameterKey: {
       type: Object,
       default: null
     },
@@ -73,35 +75,33 @@ export default {
       value: '',
     }
   },
-  computed: {
-  },
   methods: {
-    emitData(value) {
-      this.value = value
-    },
     handleChangeWord() {
       if (this.parameterKey !== null) {
-        // const parameterKeys = Object.keys(this.parameterKey)
-        // parameterKeys.forEach(key => {
-        // })
-        // this.$emit('update-value', [{ key: this.parameterKey, value: this.value }])
+        const updateKey = Object.keys(this.parameterKey).find(key => {
+          if (this.parameterKey[key] === this.valueName) {
+            return key
+          }
+        })
+        this.$emit('update-value', [{ key: updateKey, value: this.value }])
       }
     },
-    handleClickButton() {
-      this.$refs[this.modalName].open({ row: 'row' })
-    },
-    setParameterKey(selectedRow) {
+    setSelectedRow(selectedRow) {
       this.value = selectedRow[this.valueName]
       this.selectedRow = selectedRow
 
-      if (this.parameterKey !== null) {
-        const keys = Object.keys(this.parameterKey)
-        const params = []
-        keys.forEach(key => {
-          params.push({ key, value: this.selectedRow[this.parameterKey[key]] })
-        })
-        this.$emit('update-value', params)
-      }
+      this.parameterKey !== null && this.emitEventToParent(this.getParameter())
+    },
+    getParameter() {
+      const keys = Object.keys(this.parameterKey)
+      const params = []
+      keys.forEach(key => {
+        params.push({ key, value: this.selectedRow ? this.selectedRow[this.parameterKey[key]] : '' })
+      })
+      return params
+    },
+    handleClickButton() {
+      this.$refs[this.modalName].open({ row: 'row' })
     },
     handleClickArea() {
       if (!this.isReadOnly) return

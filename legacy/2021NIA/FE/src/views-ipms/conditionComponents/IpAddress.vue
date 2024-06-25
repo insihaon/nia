@@ -8,8 +8,8 @@
       v-model="value"
       collapse-tags
       size="mini"
-      :style="{'width': isShowSelecteBox ? '200px': '100%'}"
-      @change="hangleChangeSelected"
+      :style="{'width': isShowInput ? '200px': '100%'}"
+      @change="()=> emitEventToParent([{ key: 'sipVersionTypeCd', value }])"
     >
       <el-option
         v-for="(option, i) in [
@@ -21,16 +21,24 @@
         :value="option.value"
       />
     </el-select>
-    <el-input v-if="isShowInput" v-model="word" size="mini" clearable @change="handleChangeWord" />
+    <el-input
+      v-if="isShowInput"
+      v-model="word"
+      size="mini"
+      clearable
+      @change="()=> emitEventToParent([{ key: 'searchWrd', value: word }])"
+    />
   </el-col>
 </template>
 <script>
 import { Base } from '@/min/Base.min'
+import commonFunctionMixin from '@/mixin/commonFunctionMixin'
 
 const routeName = 'IpAddress'
 export default {
   name: routeName,
   extends: Base,
+  mixins: [commonFunctionMixin],
   props: {
     defaultValue: {
       type: String,
@@ -57,20 +65,19 @@ export default {
       word: ''
     }
   },
-  computed: {
-  },
   mounted () {
-    if (this.defaultValue !== null) {
-      this.value = this.defaultValue
-    }
   },
   methods: {
-    hangleChangeSelected() {
-      this.$emit('update-value', [{ key: 'sipVersionTypeCd', value: this.value }])
+    init() {
+      if (this.defaultValue !== null) {
+        this.value = this.defaultValue
+      }
+      const params = [
+        { key: 'sipVersionTypeCd', value: this.value },
+        { key: 'searchWrd', value: this.word }
+      ]
+      this.emitEventToParent(params)
     },
-    handleChangeWord() {
-      this.$emit('update-value', [{ key: 'searchWrd', value: this.word }])
-    }
   }
 }
 </script>

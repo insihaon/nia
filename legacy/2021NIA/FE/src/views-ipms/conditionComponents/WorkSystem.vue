@@ -7,7 +7,7 @@
       v-model="value"
       collapse-tags
       size="mini"
-      @change="handleChange"
+      @change="handleChange()"
     >
       <el-option
         v-for="(option, i) in options"
@@ -20,17 +20,19 @@
 </template>
 <script>
 import { Base } from '@/min/Base.min'
+import commonFunctionMixin from '@/mixin/commonFunctionMixin'
 
 const routeName = 'WorkSystem'
+
 export default {
   name: routeName,
   extends: Base,
-  props: {
-  },
+  mixins: [commonFunctionMixin],
   data() {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      parameterKey: 'sworkSystem',
       value: '',
       options: [
         {
@@ -49,15 +51,10 @@ export default {
           value: 'SDN',
           label: 'SDN',
         },
-
       ],
     }
   },
-  // sworkSystem
   methods: {
-    handleChange() {
-      this.$emit('update-value', [{ key: 'sworkSystem', value: this.value }])
-    }
   }
 }
 </script>

@@ -61,16 +61,18 @@ import { Base } from '@/min/Base.min'
 import Eventbus from '@/utils/event-bus'
 import { EventType } from '@/min/types'
 import { onMessagePopup } from '@/utils/index'
+import commonFunctionMixin from '@/mixin/commonFunctionMixin'
 import _ from 'lodash'
 
-const key1 = '1'
-const key2 = '2'
-const key3 = '3'
+const key1 = 1
+const key2 = 2
+const key3 = 3
 
 const routeName = 'SsvcLineType'
 export default {
   name: routeName,
   extends: Base,
+  mixins: [commonFunctionMixin],
   props: {
     defaultValueLvl1: {
       type: String,
@@ -104,7 +106,6 @@ export default {
       key1, key2, key3,
       lvlOptions: {
         1: [
-          // { label: '전체', value: '' },
           { label: 'KORNET', value: 'CL0001' },
           { label: 'PREMIUM', value: 'CL0002' },
           { label: 'MOBILE', value: 'CL0003' },
@@ -139,25 +140,53 @@ export default {
       return result
     }
   },
-  created() {
-    if (this.propsLvlOptions !== null) {
-      this.lvlOptions = this.getMergedOptions(this.lvlOptions, this.propsLvlOptions)
-    }
-    if (this.defaultValueLvl1 !== null) {
-      this.$set(this.localValue, 1, this.defaultValueLvl1)
-    }
-  },
-  mounted() {
-    if (this.multi?.length > 0) {
-      const multiOp = this.multi
-      Object.keys(this.localValue).forEach(key => {
-        if (multiOp.includes(key)) {
-          this.$set(this.localValue, key, [])
+  // mounted() {
+  //   if (this.multi?.length > 0) {
+  //     Object.keys(this.localValue).forEach(key => {
+  //       if (this.multi.includes(key)) {
+  //         this.$set(this.localValue, key, [])
+  //       }
+  //     })
+  //   }
+  //   this.setDefaultParameterKey()
+  // },
+  methods: {
+    init() {
+      /* default options, value setting */
+      if (this.propsLvlOptions !== null) {
+        this.lvlOptions = this.getMergedOptions(this.lvlOptions, this.propsLvlOptions)
+      }
+      if (this.defaultValueLvl1 !== null) {
+        this.$set(this.localValue, 1, this.defaultValueLvl1)
+      }
+      /* multi value setting */
+      if (this.multi?.length > 0) {
+        Object.keys(this.localValue).forEach(key => {
+          if (this.multi.includes(key)) {
+            this.$set(this.localValue, key, [])
+          }
+        })
+      }
+      this.$emit('update-value', this.getParameter())
+    },
+    getParameter() {
+      const params = []
+      const lvl2Key = `ssvcGroupCd${this.multi.includes(key2) ? 'MultiStr' : ''}`
+      const parameterKeys = ['ssvcLineTypeCd', lvl2Key, 'ssvcObjCd']
+
+      parameterKeys.forEach((key, idx) => {
+        if (this.lvl >= (idx + 1)) {
+          let value = ''
+          if (Array.isArray(this.localValue[idx + 1])) {
+            value = this.localValue[idx + 1].join(';')
+          } else {
+            value = this.localValue[idx + 1] ?? ''
+          }
+          params.push({ key, value })
         }
       })
-    }
-  },
-  methods: {
+      return params
+    },
     getMergedOptions(orginOption, propOption) {
       // Merge propOption into orginOption but only for matching keys
       const result = _.mergeWith(this._cloneDeep(orginOption), propOption, (objValue, srcValue, key, object, source) => {
@@ -173,7 +202,7 @@ export default {
       return multi.includes(lvl)
     },
     handleChangeLvl1() {
-      const isOver = this.onChangeMultiCheck(1)
+      const isOver = this.updateSelectionWithAll(1)
       if (isOver) return
       const params = { ssvcLineTypeCd: this.localValue[key1] }
       /*
@@ -182,11 +211,11 @@ export default {
       */
      this.resetLocalValue(key2)
      this.resetLocalValue(key3)
-     this.emitEvent('ssvcLineTypeCd', key1)
+     this.emitEventToParent(this.getParameter())
       Eventbus.$emit(EventType.changeLvl1, { ssvcLineTypeCd: this.localValue[key1] })
     },
     handleChangeLvl2() {
-      const isOver = this.onChangeMultiCheck(2)
+      const isOver = this.updateSelectionWithAll(2)
       if (isOver) return
 
       const params = { ssvcLineTypeCd: this.localValue[key1], ssvcGroupCd: this.localValue[key2] }
@@ -195,37 +224,39 @@ export default {
       this.lvlOptions[key3] = res.result
       */
       this.resetLocalValue(key3)
-      const keyLvl2 = `ssvcGroupCd${Array.isArray(this.localValue[key2]) ? 'Multi' : ''}`
-      this.emitEvent(keyLvl2, key2)
+      // const keyLvl2 = `ssvcGroupCd${Array.isArray(this.localValue[key2]) ? 'MultiStr' : ''}`
+      this.emitEventToParent(this.getParameter())
       Eventbus.$emit(EventType.changeLvl2, { ssvcLineTypeCd: this.localValue[key1], keyLvl2: this.localValue[key2] })
     },
     handleChangeLvl3() {
-      this.emitEvent('ssvcObjCd', key3)
+      this.emitEventToParent(this.getParameter())
     },
     resetLocalValue(lvl) {
       const multiOp = this.multi ?? []
       if (multiOp.length > 0 && multiOp.includes(lvl)) {
-        // this.localValue[lvl] = []
         this.$set(this.localValue, lvl, [])
       } else {
-        // this.localValue[lvl] = ''
         this.$set(this.localValue, lvl, '')
       }
     },
-    emitEvent(emitKey, lvl) {
-      this.$emit('update-value', [{ key: emitKey, value: this.localValue[lvl] }])
-    },
-    fullOptions(lvl) {
+    getFullOptions(lvl) {
       return this.lvlOptions[lvl].map(option => option.value).filter(v => v !== 'ALL')
     },
     toggleAll(lvl) {
-      this.$set(this.localValue, lvl, this.localValue[lvl]?.includes('ALL') ? [] : ['ALL', ...this.fullOptions(lvl)])
-      this.onCheckLimit(lvl)
+      if (this.multi.includes(lvl)) {
+        this.$set(this.localValue, lvl, this.localValue[lvl]?.includes('ALL') ? [] : ['ALL', ...this.getFullOptions(lvl)])
+        this.onCheckLimit(lvl)
+      }
     },
-    onChangeMultiCheck(lvl) {
-      if (this.localValue[lvl].length === this.fullOptions(lvl).length && !this.localValue[lvl].includes('ALL')) {
+    updateSelectionWithAll(lvl) {
+      if (!this.multi.includes(lvl)) return false
+
+      const fullOptionLen = this.getFullOptions(lvl).length
+      const valueByLvlLen = this.localValue[lvl].length
+      const isIncludesAll = this.localValue[lvl].includes('ALL')
+      if (valueByLvlLen === fullOptionLen && !isIncludesAll) {
         this.localValue[lvl].push('ALL')
-      } else if (this.localValue[lvl].includes('ALL') && this.localValue[lvl].length !== this.fullOptions(lvl).length + 1) {
+      } else if (isIncludesAll && valueByLvlLen !== fullOptionLen + 1) {
         this.localValue[lvl] = this.localValue[lvl]?.filter(value => value !== 'ALL')
       }
 

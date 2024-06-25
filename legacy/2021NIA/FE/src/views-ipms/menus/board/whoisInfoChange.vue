@@ -1,11 +1,19 @@
 <template>
-  <el-row class="w-100 h-100">
+  <el-row ref="container" class="w-100 h-100">
     <DynamicComponentLoader
-      ref="DynamicComponent"
+      ref="searchCondition"
       :component-keys="componentList"
+      @handle-search="handleSearch"
     />
-    <el-col :span="24">
-      <compTable :prop-column="tableColumns" :prop-is-pagination="false" :prop-is-check-box="false" prop-grid-menu-id="inputSpeed" :prop-grid-indx="1">
+    <el-col ref="tableContainer" :span="24">
+      <compTable
+        :prop-table-height="'calc(100% - 80px)'"
+        :prop-column="tableColumns"
+        :prop-is-pagination="false"
+        :prop-is-check-box="false"
+        prop-grid-menu-id="inputSpeed"
+        :prop-grid-indx="1"
+      >
         <template slot="text-description">
           <span>
             WHOIS 정보 변경 신청 조회결과
@@ -19,12 +27,15 @@
 import { Base } from '@/min/Base.min'
 import CompTable from '@/components/elTable/CompTable.vue'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
+import tableHeightMixin from '@/mixin/tableHeightMixin'
+
 const routeName = 'WhoisInfoChange'
 
 export default {
   name: routeName,
   components: { CompTable, DynamicComponentLoader },
   extends: Base,
+  mixins: [tableHeightMixin],
   data() {
     return {
       name: routeName,
@@ -44,8 +55,8 @@ export default {
         { key: 'IpAddress', isShowSelecteBox: false },
         {
           key: 'ApplyStatus', props: {
-          parameterKey: 'searchCnd',
-          propsOptions: [
+          prop_parameterKey: 'searchCnd',
+          prop_options: [
               { label: '전체', value: '' },
               { label: '신청', value: '10' },
               { label: '승인', value: '20' },
@@ -56,7 +67,7 @@ export default {
         {
           key: 'SortType', props: {
             sortTypeDefaultVal: 'DAPPLY_DT',
-            label: '정렬조건', propsOptions: [
+            label: '정렬조건', prop_options: [
               { label: '신청일', value: 'DAPPLY_DT' },
               { label: '요청번호', value: 'NMODIFY_APPLY_SEQ' },
               { label: '처리일', value: 'DAPPROVAL_DT' },

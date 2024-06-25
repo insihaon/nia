@@ -1,19 +1,25 @@
 <template>
-  <el-row>
+  <el-row ref="container" class="w-100 h-100">
     <DynamicComponentLoader
+      ref="searchCondition"
       :component-keys="componentList"
       @handle-search="handleSearch"
     />
-    <el-col>
-      <div>IP 이력관리 조회 결과</div>
-      <CompTable
-        :prop-table-height="300"
+    <el-col ref="tableContainer" :span="24">
+      <compTable
+        :prop-table-height="'calc(100% - 80px)'"
         :prop-column="ipBlockColumns"
         :prop-is-pagination="false"
         :prop-is-check-box="false"
         prop-grid-menu-id="ipInfoList"
         :prop-grid-indx="1"
-      />
+      >
+        <template slot="text-description">
+          <span>
+            IP 이력관리 조회 결과
+          </span>
+        </template>
+      </compTable>
     </el-col>
   </el-row>
 </template>
@@ -37,14 +43,14 @@ export default {
         { key: 'ServiceOrg', props: { isMulti: false } },
         { key: 'SipCreateType', props: { } },
         { key: 'IpBlockStatus', props: { label: '할당상태' } },
-        { key: 'CheckYear', props: { } },
-        { key: 'IpAddress', props: { } },
-        { key: 'InputType', props: { propsParameterKey: 'nbitmask', label: 'BitMask' } },
+        { key: 'CheckYear', props: {} },
+        { key: 'IpAddress', props: {} },
+        { key: 'InputType', props: { prop_parameterKey: 'nbitmask', label: 'BitMask' } },
         // 장비명
         { key: 'LineInformation', props: { } },
         { key: 'WorkSystem', props: {} },
         { key: 'DetailedWorkClassification', props: {} },
-        { key: 'InputType', props: { propsParameterKey: 'screateId', label: '작업자' } },
+        { key: 'InputType', props: { prop_parameterKey: 'screateId', label: '작업자' } },
         { key: 'DateRange', props: {} },
       ],
       ipBlockColumns: [

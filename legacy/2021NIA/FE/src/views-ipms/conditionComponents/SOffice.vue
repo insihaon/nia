@@ -4,10 +4,10 @@
       {{ label }}
     </label>
     <el-select
-      v-model="localValue"
+      v-model="value"
       collapse-tags
       size="mini"
-      @change="handleChange"
+      @change="handleChange()"
     >
       <el-option
         v-for="(option, i) in officeOptions"
@@ -22,21 +22,19 @@
 import { Base } from '@/min/Base.min'
 import Eventbus from '@/utils/event-bus'
 import { EventType } from '@/min/types'
+import commonFunctionMixin from '@/mixin/commonFunctionMixin'
 
 const routeName = 'SOffice'
 export default {
   name: routeName,
   extends: Base,
+  mixins: [commonFunctionMixin],
   props: {
     label: {
       type: String,
       default: '수용국'
     },
-    value: {
-      type: String,
-      default: ''
-    },
-    parameterKey: {
+    prop_parameterKey: {
       type: String,
       default: 'sofficecode'
     }
@@ -45,12 +43,9 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      localValue: '',
+      value: '',
       officeOptions: this.$store.state.ipms.tempOfficeList
     }
-  },
-  computed: {
-
   },
   mounted () {
     Eventbus.$on(EventType.changeLvl1, (params) => { this.onLoadOfficeList(params) })
@@ -68,9 +63,6 @@ export default {
       this.officeOptions = res.result (options set)
       */
     },
-    handleChange() {
-      this.$emit('update-value', [{ key: this.parameterKey, value: this.localValue }])
-    }
   }
 }
 </script>

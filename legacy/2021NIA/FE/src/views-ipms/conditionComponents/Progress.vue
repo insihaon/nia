@@ -6,6 +6,7 @@
     <el-select
       v-model="value"
       size="mini"
+      @change="handleChange()"
     >
       <el-option
         v-for="(option, i) in options"
@@ -19,17 +20,18 @@
 </template>
 <script>
 import { Base } from '@/min/Base.min'
+import commonFunctionMixin from '@/mixin/commonFunctionMixin'
 
 const routeName = 'Progress'
 export default {
   name: routeName,
   extends: Base,
-  props: {
-  },
+  mixins: [commonFunctionMixin],
   data() {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      parameterKey: 'sdbIntgrmRsltCd',
       value: '',
       options: [
         { label: '전체', value: '' },
@@ -40,13 +42,7 @@ export default {
       ]
     }
   },
-  // sdbIntgrmRsltCd
-  computed: {
-  },
   methods: {
-    handleChangeWord() {
-      this.$emit('update-value', [{ key: 'sdbIntgrmRsltCd', value: this.value }])
-    }
   }
 }
 </script>

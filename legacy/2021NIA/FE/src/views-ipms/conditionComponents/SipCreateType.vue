@@ -6,7 +6,7 @@
     <el-select
       v-model="value"
       size="mini"
-      @change="handleChange"
+      @change="handleChange()"
     >
       <el-option
         v-for="(option, i) in options"
@@ -19,17 +19,18 @@
 </template>
 <script>
 import { Base } from '@/min/Base.min'
+import commonFunctionMixin from '@/mixin/commonFunctionMixin'
 
 const routeName = 'SipCreateType'
 export default {
   name: routeName,
   extends: Base,
-  props: {
-  },
+  mixins: [commonFunctionMixin],
   data() {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      parameterKey: 'sipCreateTypeCd',
       value: 'CT0001',
       options: [
         { label: '공인', value: 'CT0001' },
@@ -39,15 +40,7 @@ export default {
       ]
     }
   },
-  computed: {
-  },
-  mounted() {
-
-  },
   methods: {
-    handleChange() {
-      this.$emit('update-value', [{ key: 'sipCreateTypeCd', value: this.value }])
-    }
   }
 }
 </script>

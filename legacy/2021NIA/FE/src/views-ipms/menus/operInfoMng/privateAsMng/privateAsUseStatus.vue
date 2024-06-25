@@ -6,7 +6,7 @@
     />
     <el-col :span="24">
       <compTable
-        :prop-table-height="300"
+        :prop-table-height="'calc(100% - 80px)'"
         :prop-column="tableColumns"
         :prop-is-pagination="true"
         :prop-is-check-box="false"
@@ -51,8 +51,8 @@ export default {
           { prop: '', label: '최종수정일', align: 'center', columnVisible: true, showOverflow: true },
         ],
       componentList: [
-        { key: 'ApplyStatus', props: { label: '이용목적', parameterKey: 'ssvcUseTypeCd' } },
-        { key: 'UsageYN', props: { label: '상태' } },
+        { key: 'ApplyStatus', props: { label: '이용목적', prop_parameterKey: 'ssvcUseTypeCd' } },
+        { key: 'UsageYN', props: { label: '상태', prop_parameterKey: 'srequestAsTypeCd' } },
         { key: 'DateRange', props: { label: '최종수정기간' } },
       ]
     }

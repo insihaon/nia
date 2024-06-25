@@ -1,12 +1,12 @@
 <template>
   <el-col :class="{ [name]: true }" :xs="24" :sm="12" :md="12" :lg="8" :xl="6">
     <label>
-      권한등급
+      {{ label }}
     </label>
     <el-select
       v-model="value"
       size="mini"
-      @change="handleChange"
+      @change="handleChange()"
     >
       <el-option
         v-for="(option, i) in options"
@@ -19,17 +19,24 @@
 </template>
 <script>
 import { Base } from '@/min/Base.min'
+import commonFunctionMixin from '@/mixin/commonFunctionMixin'
 
 const routeName = 'AuthLevel'
 export default {
   name: routeName,
   extends: Base,
+  mixins: [commonFunctionMixin],
   props: {
+    label: {
+      type: String,
+      default: '권한등급'
+    }
   },
   data() {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      parameterKey: 'suserGradeCd',
       value: '',
       options: [
         { label: '전체', value: '' },
@@ -41,12 +48,7 @@ export default {
       ]
     }
   },
-  computed: {
-  },
   methods: {
-    handleChange() {
-      this.$emit('update-value', [{ key: 'suserGradeCd', value: this.value }])
-    }
   }
 }
 </script>

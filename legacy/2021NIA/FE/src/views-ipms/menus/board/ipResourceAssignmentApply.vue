@@ -1,10 +1,11 @@
 <template>
-  <el-row class="w-100 h-100">
+  <el-row ref="container" class="w-100 h-100">
     <DynamicComponentLoader
-      ref="DynamicComponent"
+      ref="searchCondition"
       :component-keys="componentList"
+      @handle-search="handleSearch"
     />
-    <el-col :span="24">
+    <el-col ref="tableContainer" :span="24">
       <compTable :prop-column="tableColumns" :prop-is-pagination="false" :prop-is-check-box="false" prop-grid-menu-id="inputSpeed" :prop-grid-indx="1">
         <template slot="text-description">
           <span>
@@ -19,12 +20,15 @@
 import { Base } from '@/min/Base.min'
 import CompTable from '@/components/elTable/CompTable.vue'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
+import tableHeightMixin from '@/mixin/tableHeightMixin'
+
 const routeName = 'IpResourceAssignmentApply'
 
 export default {
   name: routeName,
   components: { CompTable, DynamicComponentLoader },
   extends: Base,
+  mixins: [tableHeightMixin],
   data() {
     return {
       name: routeName,
@@ -44,8 +48,8 @@ export default {
         { key: 'SsvcLineType', props: { lvl: 3 } },
         {
           key: 'ApplyStatus', props: {
-          parameterKey: 'srequestAssignTypeCd',
-          propsOptions: [
+          prop_parameterKey: 'srequestAssignTypeCd',
+          prop_options: [
               { label: '전체', value: '' },
               { label: '신청', value: 'RS0301' },
               { label: '승인', value: 'RS0302' },

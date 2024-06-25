@@ -7,7 +7,7 @@
       v-model="value"
       collapse-tags
       size="mini"
-      @change="handleChange"
+      @change="handleChange()"
     >
       <el-option
         v-for="(option, i) in options"
@@ -20,17 +20,19 @@
 </template>
 <script>
 import { Base } from '@/min/Base.min'
+import commonFunctionMixin from '@/mixin/commonFunctionMixin'
 
 const routeName = 'DetailedWorkClassification'
+
 export default {
   name: routeName,
   extends: Base,
-  props: {
-  },
+  mixins: [commonFunctionMixin],
   data() {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      parameterKey: 'nipHistTaskCd',
       value: '',
       options: [
         { value: '', label: '전체' },
@@ -49,11 +51,7 @@ export default {
       ],
     }
   },
-  // nipHistTaskCd
   methods: {
-    handleChange() {
-      this.$emit('update-value', [{ key: 'nipHistTaskCd', value: this.value }])
-    }
   }
 }
 </script>

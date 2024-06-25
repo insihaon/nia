@@ -6,7 +6,7 @@
     <el-select
       v-model="value"
       size="mini"
-      @change="handleChange"
+      @change="handleChange()"
     >
       <el-option
         v-for="(option, i) in options"
@@ -19,21 +19,23 @@
 </template>
 <script>
 import { Base } from '@/min/Base.min'
+import commonFunctionMixin from '@/mixin/commonFunctionMixin'
 
 const routeName = 'ApplyStatus'
 export default {
   name: routeName,
   extends: Base,
+  mixins: [commonFunctionMixin],
   props: {
     label: {
       type: String,
       default: '상태'
     },
-    propsOptions: {
+    prop_options: {
       type: Array,
       default: null
     },
-    parameterKey: {
+    prop_parameterKey: {
       type: String,
       default: null
     }
@@ -51,18 +53,7 @@ export default {
       ]
     }
   },
-  computed: {
-  },
-  created () {
-    if (this.propsOptions !== null) {
-      this.options = this.propsOptions
-    }
-  },
   methods: {
-    handleChange() {
-      if (this.parameterKey === null) return
-      this.$emit('update-value', [{ key: this.parameterKey, value: this.value }])
-    }
   }
 }
 </script>

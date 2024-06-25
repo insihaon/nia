@@ -7,7 +7,7 @@
       v-model="value"
       collapse-tags
       size="mini"
-      @change="handleChange"
+      @change="handleChange()"
     >
       <el-option
         v-for="(option, i) in options"
@@ -20,11 +20,14 @@
 </template>
 <script>
 import { Base } from '@/min/Base.min'
+import commonFunctionMixin from '@/mixin/commonFunctionMixin'
 
 const routeName = 'ExtrnLnkgs'
+
 export default {
   name: routeName,
   extends: Base,
+  mixins: [commonFunctionMixin],
   props: {
     label: {
       type: String,
@@ -35,6 +38,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      parameterKey: 'sexLinkUseTypeCd',
       value: '',
       options: [
         { value: '', label: '전체' },
@@ -52,9 +56,6 @@ export default {
     }
   },
   methods: {
-    handleChange() {
-      this.$emit('update-value', [{ key: 'sexLinkUseTypeCd', value: this.value }])
-    }
   }
 }
 </script>

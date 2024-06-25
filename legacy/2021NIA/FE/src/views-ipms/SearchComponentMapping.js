@@ -1,7 +1,7 @@
 /*
     IPMS Search Component Define
     * Rule
-        - (default값이 있을 경우)최상단에서 정의하는 value와 최하위 props value의 dataType이 일치하도록 default값을 설정한다.
+        - (default값이 있을 경우)최상단에서 props: { defaultValue }를 정의하여 최하위 value값을 설정한다.
             => 최하단 컴포넌트에서는 props 단방향 변경 에러에 유의하여 computed의 get, set을 사용하여 값을 변경하고 이벤트를 상위로 전달한다.
         - 최하단 컴포넌트가 select일 때 default options이 다를 경우 최상단에서 props: { 추가할 option : 값 }을 추가하여 정의한다.
         - 최하단 컴포넌트에 label과 최상단 label이 다를 경우 props : { label }을 추가하여 정의한다.
@@ -38,7 +38,7 @@ export const componentMap = {
     IpMngProgress: () => import('@/views-ipms/conditionComponents/IpMngProgress.vue'),
     // 예외여부
     ExceptionYN: () => import('@/views-ipms/conditionComponents/ExceptionYN.vue'),
-    // INPUT 입력 propsParameterKey로 입력값 구분
+    // INPUT 입력 prop_parameterKey로 입력값 구분
     InputType: () => import('@/views-ipms/conditionComponents/InputType.vue'),
     // PROTOCOL
     Protocol: () => import('@/views-ipms/conditionComponents/Protocol.vue'),

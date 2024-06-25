@@ -1,12 +1,13 @@
 <template>
-  <el-row class="w-100 h-100">
+  <el-row ref="container" class="w-100 h-100">
     <DynamicComponentLoader
+      ref="searchCondition"
       :component-keys="componentList"
       @handle-search="handleSearch"
     />
-    <el-col :span="24">
+    <el-col ref="tableContainer" :span="24">
       <compTable
-        :prop-table-height="300"
+        :prop-table-height="'calc(100% - 80px)'"
         :prop-column="tableColumns"
         :prop-is-pagination="true"
         :prop-is-check-box="false"
@@ -26,12 +27,14 @@
 import { Base } from '@/min/Base.min'
 import CompTable from '@/components/elTable/CompTable.vue'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
+import tableHeightMixin from '@/mixin/tableHeightMixin'
 const routeName = 'IpBlockManagement'
 
 export default {
   name: routeName,
   components: { CompTable, DynamicComponentLoader },
   extends: Base,
+  mixins: [tableHeightMixin],
   data() {
     return {
       name: routeName,
@@ -39,10 +42,10 @@ export default {
       componentList: [
         { key: 'SipCreateType', props: {} },
         { key: 'GenerationDegree', props: {} },
-        { key: 'IpAddress', props: { } },
+        { key: 'IpAddress', props: {} },
         { key: 'SsvcLineType', props: { label: '서비스망' } },
-        { key: 'DateRange', props: { } },
-        { key: 'SortType', props: { } },
+        { key: 'DateRange', props: {} },
+        { key: 'SortType', props: {} },
       ],
       tableColumns: [
         { prop: '', label: '공인/사설', align: 'center', sortable: true, propIsCheckBox: true, columnVisible: true, showOverflow: true },

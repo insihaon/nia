@@ -21,13 +21,21 @@
       </div>
     </div>
   </div>
-  <el-row v-else class="w-100 h-100 pt-4 px-12">
+  <el-row v-else ref="container" class="w-100 h-100 pt-4 px-12">
     <DynamicComponentLoader
-      ref="DynamicComponent"
+      ref="searchCondition"
       :component-keys="componentList"
+      @handle-search="handleSearch"
     />
-    <el-col :span="24">
-      <compTable :prop-column="tableColumns" :prop-is-pagination="false" :prop-is-check-box="false" prop-grid-menu-id="inputSpeed" :prop-grid-indx="1">
+    <el-col ref="tableContainer" :span="24">
+      <compTable
+        :prop-table-height="'calc(100% - 80px)'"
+        :prop-column="tableColumns"
+        :prop-is-pagination="false"
+        :prop-is-check-box="false"
+        prop-grid-menu-id="inputSpeed"
+        :prop-grid-indx="1"
+      >
         <template slot="text-description">
           <span>
             공지목록 조회결과
@@ -41,12 +49,15 @@
 import { Base } from '@/min/Base.min'
 import CompTable from '@/components/elTable/CompTable.vue'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
+import tableHeightMixin from '@/mixin/tableHeightMixin'
+
 const routeName = 'Notice'
 
 export default {
   name: routeName,
   components: { CompTable, DynamicComponentLoader },
   extends: Base,
+  mixins: [tableHeightMixin],
   props: {
     isDashboard: {
       type: Boolean,
@@ -88,6 +99,9 @@ export default {
     clearInterval(this.interval) // 컴포넌트 파기 전에 setInterval 제거
   },
   methods: {
+    handleSearch(requestParameter) {
+      console.log(requestParameter)
+    },
     noticeScroll() {
       this.currentIndex = (this.currentIndex + 1) % this.notices.length // Increment currentIndex circularly
       this.showItem(this.currentIndex)
