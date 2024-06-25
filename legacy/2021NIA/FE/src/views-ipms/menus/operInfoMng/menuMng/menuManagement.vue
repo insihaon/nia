@@ -1,105 +1,111 @@
 <template>
   <el-row class="w-100 h-100" :gutter="20">
-    <el-col :span="12">
-      <span class="title-area"><i class="el-icon-share"></i> 메뉴트리</span>
-      <el-row style="border-top: 1px solid #cc2929"></el-row>
-      <el-tree
-        :data="menuData"
-        :props="defaultProps"
-        node-key="label"
-        accordion
-        @node-click="handleNodeClick"
-      ></el-tree>
-    </el-col>
-    <el-col :span="12">
-      <span class="title-area"><i class="el-icon-share"></i> 메뉴 상세정보</span>
-      <el-row style="border-top: 1px solid #cc2929"></el-row>
-      <table class="form">
-        <tr>
-          <th class="disable">메뉴ID</th>
-          <td>
-            <el-input v-model="menu_id" />
-          </td>
-        </tr>
-        <tr>
-          <th>메뉴명</th>
-          <td class="disable">
-            <el-input v-model="menu_nm" />
-          </td>
-        </tr>
-        <tr>
-          <th>메뉴레벨</th>
-          <td class="disable">
-            <el-input v-model="menu_lvl" />
-          </td>
-        </tr>
-        <tr>
-          <th>메뉴계층유형</th>
-          <td>
-            <el-radio-group v-model="menu_layer_type" size="mini" class="d-flex">
-              <el-radio label="group">그룹</el-radio>
-              <el-radio label="menu">메뉴</el-radio>
-            </el-radio-group>
-          </td>
-        </tr>
-        <tr>
-          <th>상위메뉴</th>
-          <td class="disable">
-            <el-input v-model="top_menu" />
-          </td>
-        </tr>
-        <tr>
-          <th>메뉴표시순서</th>
-          <td class="disable">
-            <el-input v-model="menu_order" />
-          </td>
-        </tr>
-        <tr>
-          <th>화면ID</th>
-          <td class="disable">
-            <el-input v-model="screen_id" />
-          </td>
-        </tr>
-        <tr>
-          <th>화면명</th>
-          <td class="disable">
-            <el-input v-model="screen_nm" />
-          </td>
-        </tr>
-        <tr>
-          <th>화면ULR</th>
-          <td class="disable">
-            <el-input v-model="screen_url" />
-          </td>
-        </tr>
-        <tr>
-          <th>메뉴사용여부</th>
-          <td>
-            <el-radio-group v-model="isScreen" size="mini" class="d-flex">
-              <el-radio label="Y">사용</el-radio>
-              <el-radio label="N">미사용</el-radio>
-            </el-radio-group>
-          </td>
-        </tr>
-        <tr>
-          <th>메뉴설명</th>
-          <td class="disable">
-            <el-input
-              v-model="menu_desc"
-              type="textarea"
-              :rows="3"
-            >
-            </el-input>
-          </td>
-        </tr>
-      </table>
-      <div class="my-1">
-        <el-button class="float-right px-0">
-          <img src="@/assets/images/ipms/content/btn_save02_off.gif" alt="저장" @click="onSaveMenu()" />
-        </el-button>
-      </div>
+    <div class="content_result">
+      <el-col :span="12">
+        <div class="section_tit">
+          <h4>메뉴트리</h4>
+        </div>
+        <el-row style="border-top: 1px solid #cc2929"></el-row>
+        <el-tree
+          :data="menuData"
+          :props="defaultProps"
+          node-key="label"
+          accordion
+          @node-click="handleNodeClick"
+        ></el-tree>
+      </el-col>
+      <el-col :span="12">
+        <div class="section_tit">
+          <h4>메뉴트리</h4>
+        </div>
+        <el-row style="border-top: 1px solid #cc2929"></el-row>
+        <table class="form">
+          <tr>
+            <th class="disable">메뉴ID</th>
+            <td>
+              <el-input v-model="menu_id" />
+            </td>
+          </tr>
+          <tr>
+            <th>메뉴명</th>
+            <td class="disable">
+              <el-input v-model="menu_nm" />
+            </td>
+          </tr>
+          <tr>
+            <th>메뉴레벨</th>
+            <td class="disable">
+              <el-input v-model="menu_lvl" />
+            </td>
+          </tr>
+          <tr>
+            <th>메뉴계층유형</th>
+            <td>
+              <el-radio-group v-model="menu_layer_type" size="mini" class="d-flex">
+                <el-radio label="group">그룹</el-radio>
+                <el-radio label="menu">메뉴</el-radio>
+              </el-radio-group>
+            </td>
+          </tr>
+          <tr>
+            <th>상위메뉴</th>
+            <td class="disable">
+              <el-input v-model="top_menu" />
+            </td>
+          </tr>
+          <tr>
+            <th>메뉴표시순서</th>
+            <td class="disable">
+              <el-input v-model="menu_order" />
+            </td>
+          </tr>
+          <tr>
+            <th>화면ID</th>
+            <td class="disable">
+              <el-input v-model="screen_id" />
+            </td>
+          </tr>
+          <tr>
+            <th>화면명</th>
+            <td class="disable">
+              <el-input v-model="screen_nm" />
+            </td>
+          </tr>
+          <tr>
+            <th>화면ULR</th>
+            <td class="disable">
+              <el-input v-model="screen_url" />
+            </td>
+          </tr>
+          <tr>
+            <th>메뉴사용여부</th>
+            <td>
+              <el-radio-group v-model="isScreen" size="mini" class="d-flex">
+                <el-radio label="Y">사용</el-radio>
+                <el-radio label="N">미사용</el-radio>
+              </el-radio-group>
+            </td>
+          </tr>
+          <tr>
+            <th>메뉴설명</th>
+            <td class="disable">
+              <el-input
+                v-model="menu_desc"
+                type="textarea"
+                :rows="3"
+              >
+              </el-input>
+            </td>
+          </tr>
+        </table>
+        <div class="my-1">
+          <el-button class="float-right px-0">
+            <img src="@/assets/images/ipms/content/btn_save02_off.gif" alt="저장" @click="onSaveMenu()" />
+          </el-button>
+        </div>
 
-    </el-col>
+      </el-col>
+    </div>
   </el-row>
 </template>
 <script>
@@ -198,10 +204,6 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-  .title-area {
-    font-size: 17px;
-  }
-
   .el-tree-node:before, .el-tree-node:after{
     border: none !important;
   }
