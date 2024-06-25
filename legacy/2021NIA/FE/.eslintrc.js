@@ -38,7 +38,12 @@ module.exports = {
         allowSingleLine: true,
       },
     ],
-    'camelcase': 'off',
+    camelcase: [
+      0,
+      {
+        properties: 'always',
+      },
+    ],
     'comma-dangle': [0, 'never'],
     'comma-spacing': [
       2,
