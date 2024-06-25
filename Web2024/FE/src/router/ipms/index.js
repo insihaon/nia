@@ -173,7 +173,7 @@ export const ipmsRoute = Object.freeze([
     component: Layout,
     disable: false,
     menuIdx: 4,
-    // redirect: '/ipAllocationMng/ipAllocation',
+    redirect: '/dbMng/ipAdressRoutingCompare',
     meta: {
       title: 'DB관리'
     },
@@ -240,7 +240,7 @@ export const ipmsRoute = Object.freeze([
         meta: { title: '사설 IP 신청', affix: false }
       }, */
       {
-        path: 'ipResourceAssignReturn',
+        path: 'ipResourceAssignmentApply',
         component: () => import('@/views-ipms/menus/board/ipResourceAssignmentApply'),
         name: 'IpResourceAssignmentApply',
         meta: { title: 'IP자원 배정 신청', affix: false }
@@ -276,7 +276,7 @@ export const ipmsRoute = Object.freeze([
     component: Layout,
     disable: false,
     menuIdx: 6,
-    redirect: '/operInfoMng/organizationalMng/OrganizationalStandardsManagement',
+    redirect: '/operInfoMng/organizationalMng/organizationalStandardsManagement',
     meta: {
       title: '운용정보관리'
     },

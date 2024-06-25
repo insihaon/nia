@@ -1,11 +1,12 @@
 <template>
-  <el-row class="w-100 h-100">
+  <el-row ref="container" class="w-100 h-100">
     <DynamicComponentLoader
+      ref="searchCondition"
       :component-keys="componentList"
       @handle-search="handleSearch"
     />
-    <el-col :span="24">
-      <compTable :prop-table-height="300" :prop-column="tableColumns" :prop-is-pagination="false" :prop-is-check-box="false" prop-grid-menu-id="inputSpeed" :prop-grid-indx="1">
+    <el-col ref="tableContainer" :span="24">
+      <compTable :prop-table-height="'calc(100% - 80px)'" :prop-column="tableColumns" :prop-is-pagination="false" :prop-is-check-box="false" prop-grid-menu-id="inputSpeed" :prop-grid-indx="1">
         <template slot="text-description">
           <span>
             IP 할당 조회결과
@@ -19,14 +20,15 @@
 import { Base } from '@/min/Base.min'
 import CompTable from '@/components/elTable/CompTable.vue'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
+import tableHeightMixin from '@/mixin/tableHeightMixin'
+
 const routeName = 'VpnIpStatue'
 
 export default {
   name: routeName,
   components: { CompTable, DynamicComponentLoader },
   extends: Base,
-  props: {
-  },
+  mixins: [tableHeightMixin],
   data() {
     return {
       name: routeName,
@@ -34,11 +36,11 @@ export default {
        componentList: [
         { key: 'SsvcLineType', props: { lvl: 3, multi: [2] } },
         { key: 'ServiceOrg', props: { multi: false } },
-        { key: 'IpAddress', props: { value: 'CV0001' } },
+        { key: 'IpAddress', props: {} },
         { key: 'SipCreateType', props: {} },
         // 보유
         // 상품
-        { key: 'InputType', props: { label: '계약자명', propsParameterKey: 'scustname' } },
+        { key: 'InputType', props: { label: '계약자명', prop_parameterKey: 'scustname' } },
         { key: 'SOffice', props: {} }
       ],
       tableColumns: [

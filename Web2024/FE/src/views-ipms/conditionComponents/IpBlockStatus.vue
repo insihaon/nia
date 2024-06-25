@@ -4,14 +4,14 @@
       {{ label }}
     </label>
     <el-select
-      v-model="selectedValues"
+      v-model="values"
       size="mini"
       :multiple="isMulti"
       collapse-tags
       placeholder="전체"
-      @change="handleChange"
+      @change="handleChange()"
     >
-      <el-option label="전체" value="ALL"><span class="w-100 h-100 d-inline-block" @click="toggleAll">전체</span></el-option>
+      <el-option label="전체" value="ALL"><span class="w-100 h-100 d-inline-block" @click="handleClickAll">전체</span></el-option>
       <el-option
         v-for="(option, i) in options"
         :key="i"
@@ -23,11 +23,13 @@
 </template>
 <script>
 import { Base } from '@/min/Base.min'
+import commonFunctionMixin from '@/mixin/commonFunctionMixin'
 
 const routeName = 'IpBlockStatus'
 export default {
   name: routeName,
   extends: Base,
+  mixins: [commonFunctionMixin],
   props: {
     label: {
       type: String,
@@ -36,13 +38,17 @@ export default {
     isMulti: {
       type: Boolean,
       default: false
+    },
+    prop_options: {
+      type: Array,
+      default: null
     }
   },
   data() {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      selectedValues: [],
+      values: [],
       options: [
         { label: '미배정', value: 'IA0001' },
         { label: '예비배정', value: 'IA0002' },
@@ -60,24 +66,33 @@ export default {
   },
   // sassignLevelVd
   methods: {
+    init() {
+      this.values = this.isMulti ? [] : ''
+      if (this.prop_options !== null) {
+        this.options = this.prop_options
+      }
+      this.emitEventToParent(this.getParameter())
+    },
     handleChange() {
-       if (this.selectedValues.length === this.fullOptions.length && !this.selectedValues.includes('ALL')) {
-        this.selectedValues.push('ALL')
-      } else if (this.selectedValues.includes('ALL') && this.selectedValues.length !== this.fullOptions.length + 1) {
-        this.selectedValues = this.selectedValues.filter(value => value !== 'ALL')
-       }
-
-       let key = 'sassignLevelCd'
-      let value = this.localValue
+      if (this.isMulti) {
+        this.updateSelectionWithAll()
+      }
+      this.emitEventToParent(this.getParameter())
+    },
+    handleClickAll() {
+      if (this.isMulti) {
+        this.toggleAll()
+      }
+    },
+    getParameter() {
+      let key = 'sassignLevelCd'
+      let value = this.values
       if (this.isMulti) {
         key = 'sassignLevelCdMultiStr'
-        value = this.selectedValues.filter(v => v !== 'ALL').join(';')
+        value = this.values.filter(v => v !== 'ALL').join(';')
       }
-      this.$emit('update-value', [{ key, value }])
-    },
-    toggleAll() {
-      this.selectedValues = this.selectedValues.includes('ALL') ? [] : ['ALL', ...this.fullOptions]
-    },
+      return [{ key, value }]
+    }
   }
 }
 </script>

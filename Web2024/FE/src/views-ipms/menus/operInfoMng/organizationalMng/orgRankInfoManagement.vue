@@ -1,12 +1,13 @@
 <template>
-  <el-row class="w-100 h-100">
+  <el-row ref="container" class="w-100 h-100">
     <DynamicComponentLoader
+      ref="searchCondition"
       :component-keys="componentList"
       @handle-search="handleSearch"
     />
-    <el-col :span="24">
+    <el-col ref="tableContainer" :span="24">
       <compTable
-        :prop-table-height="300"
+        :prop-table-height="'calc(100% - 80px)'"
         :prop-column="tableColumns"
         :prop-is-pagination="true"
         :prop-is-check-box="false"
@@ -26,12 +27,15 @@
 import { Base } from '@/min/Base.min'
 import CompTable from '@/components/elTable/CompTable.vue'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
+import tableHeightMixin from '@/mixin/tableHeightMixin'
+
 const routeName = 'OrgRankInfoManagement'
 
 export default {
   name: routeName,
   components: { CompTable, DynamicComponentLoader },
   extends: Base,
+  mixins: [tableHeightMixin],
   data() {
     return {
       name: routeName,
@@ -64,12 +68,13 @@ export default {
       ],
       componentList: [
         { key: 'SsvcLineType', props: { lvl: 2 } },
-        { key: 'InputType', props: { label: '노드명', propsParameterKey: 'sscvObjNm' } },
+        { key: 'InputType', props: { label: '노드명', prop_parameterKey: 'sscvObjNm' } },
       ]
     }
   },
   methods: {
     handleSearch(params) {
+      console.log(params)
       /* const res = await api(params) */
     }
   },

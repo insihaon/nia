@@ -2,7 +2,7 @@
 agreement with kt corp. Any redistribution or use of this * software, with or without modification shall be strictly prohibited without prior written * approval of kt corp, and the
 copyright notice above does not evidence any actual or * intended publication of such software. */
 <template>
-  <div v-loading="propLoading">
+  <div v-loading="propLoading" class="compTable">
     <div class="tableThum">
       <div v-if="propIsPagination != false"><i class="el-icon-document" /> <slot name="text-description" /> <span class="countNum">( 총 {{ propPaginationData.total }} 건 )</span></div>
       <div v-if="propIsPagination == false"><i class="el-icon-document" /> <slot name="text-description" /> <span class="countNum">총 {{ propData.length }} 건 </span></div>
@@ -125,7 +125,7 @@ export default {
         return ''
       },
     }, // 하이라이트 셀 조건과 클래스
-    propTableHeight: { type: Number, default: 500 }, //테이블 상하너비
+    propTableHeight: { type: String | Number, default: 300 }, //테이블 상하너비
     propOnDblClick: { type: Function, default: () => {} }, //더블클릭액션
     propOnClick: { type: Function, default: () => {} }, //클릭액션
     propIsRClick: { type: Boolean, default: false }, //우클릭 액션 유무

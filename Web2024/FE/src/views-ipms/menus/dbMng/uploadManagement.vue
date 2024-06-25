@@ -44,9 +44,9 @@
         </el-col>
       </el-row>
     </div>
-    <el-col :span="24">
+    <el-col style="height: calc(100% - 150px);" :span="24">
       <compTable
-        :prop-table-height="300"
+        :prop-table-height="'calc(100% - 80px)'"
         :prop-column="tableColumns"
         :prop-is-pagination="false"
         :prop-is-check-box="false"
@@ -72,8 +72,6 @@ export default {
   name: routeName,
   components: { CompTable },
   extends: Base,
-  props: {
-  },
   data() {
     return {
       name: routeName,

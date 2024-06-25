@@ -7,17 +7,19 @@
       v-model="value"
       type="date"
       size="mini"
-      @change="handleChange"
+      @change="handleChange()"
     />
   </el-col>
 </template>
 <script>
 import { Base } from '@/min/Base.min'
+import commonFunctionMixin from '@/mixin/commonFunctionMixin'
 
 const routeName = 'DatePicker'
 export default {
   name: routeName,
   extends: Base,
+  mixins: [commonFunctionMixin],
   props: {
     defaultValue: {
       type: String,
@@ -32,13 +34,14 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      parameterKey: 'searchSingleDate',
       value: this.moment().subtract(1, 'd')
     }
   },
   methods: {
-    handleChange() {
-      this.$emit('update-value', { key: 'searchSingleDate', value: this.moment(this.value).format('YYYY-MM-DD') })
-   }
+    getParameter() {
+      return [{ key: this.parameterKey, value: this.moment(this.value).format('YYYY-MM-DD') }]
+    }
   }
 }
 </script>

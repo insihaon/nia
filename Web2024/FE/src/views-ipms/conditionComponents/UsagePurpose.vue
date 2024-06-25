@@ -7,7 +7,7 @@
       v-model="value"
       collapse-tags
       size="mini"
-      @change="handleChange"
+      @change="handleChange()"
     >
       <el-option
         v-for="(option, i) in options"

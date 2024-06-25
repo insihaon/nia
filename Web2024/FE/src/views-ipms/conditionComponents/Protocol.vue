@@ -7,6 +7,7 @@
       v-model="value"
       collapse-tags
       size="mini"
+      @change="handleChange()"
     >
       <el-option
         v-for="(option, i) in [
@@ -22,27 +23,22 @@
 </template>
 <script>
 import { Base } from '@/min/Base.min'
+import commonFunctionMixin from '@/mixin/commonFunctionMixin'
 
 const routeName = 'Protocol'
 export default {
   name: routeName,
   extends: Base,
-  props: {
-  },
+  mixins: [commonFunctionMixin],
   data() {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      parameterKey: 'sprotocolTypeCd',
       value: 'I'
     }
   },
-  // sprotocolTypeCd
-  computed: {
-  },
   methods: {
-    handleChangeWord() {
-      this.$emit('update-value', [{ key: 'sprotocolTypeCd', value: this.value }])
-    }
   }
 }
 </script>

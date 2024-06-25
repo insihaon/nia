@@ -6,7 +6,7 @@
     <el-select
       v-model="targetValue"
       size="mini"
-      @change="handleChangeTarget"
+      @change="emitEventToParent([{ key: 'skindCd', value: targetValue }])"
     >
       <el-option
         v-for="(option, i) in targetOptions"
@@ -15,11 +15,11 @@
         :value="option.value"
       />
     </el-select>
-    <el-input v-model="word" size="mini" clearable style="width: 120px;" @change="handleChangeWord" />
+    <el-input v-model="word" size="mini" clearable style="width: 120px;" @change="emitEventToParent([{ key: 'ngubunCnt', value: word }])" />
     <el-select
       v-model="compareValue"
       size="mini"
-      @change="handleChangeCompare"
+      @change="emitEventToParent([{ key: 'ssign', value: compareValue }])"
     >
       <el-option
         v-for="(option, i) in compareOptions"
@@ -32,11 +32,13 @@
 </template>
 <script>
 import { Base } from '@/min/Base.min'
+import commonFunctionMixin from '@/mixin/commonFunctionMixin'
 
 const routeName = 'ConditionByBlocksize'
 export default {
   name: routeName,
   extends: Base,
+  mixins: [commonFunctionMixin],
   props: {
     value: {
       type: String,
@@ -64,18 +66,14 @@ export default {
       ]
     }
   },
-  computed: {
-  },
   // skindCd, ngubunCnt, ssign
   methods: {
-    handleChangeTarget() {
-      this.$emit('update-value', [{ key: 'skindCd', value: this.targetValue }])
-    },
-    handleChangeWord() {
-      this.$emit('update-value', [{ key: 'ngubunCnt', value: this.word }])
-    },
-    handleChangeCompare() {
-      this.$emit('update-value', [{ key: 'ssign', value: this.compareValue }])
+    getParameter() {
+      return [
+        { key: 'skindCd', value: this.targetValue },
+        { key: 'ngubunCnt', value: this.word },
+        { key: 'ssign', value: this.compareValue },
+      ]
     }
   }
 }

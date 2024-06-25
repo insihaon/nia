@@ -6,7 +6,7 @@
     <el-select
       v-model="value"
       size="mini"
-      @change="handleChange"
+      @change="handleChange()"
     >
       <el-option
         v-for="(option, i) in options"
@@ -19,11 +19,14 @@
 </template>
 <script>
 import { Base } from '@/min/Base.min'
+import commonFunctionMixin from '@/mixin/commonFunctionMixin'
 
 const routeName = 'IncludeYN'
+
 export default {
   name: routeName,
   extends: Base,
+  mixins: [commonFunctionMixin],
   props: {
     defaultValue: {
       type: String,
@@ -31,11 +34,11 @@ export default {
     },
     label: {
       type: String,
-      default: ''
+      default: '사용여부'
     },
-    parameterKey: {
+    prop_parameterKey: {
       type: String,
-      default: null
+      default: 'suseTypeCd'
     }
   },
   data() {
@@ -50,16 +53,16 @@ export default {
        value: []
     }
   },
-  created () {
-    if (this.defaultValue !== null) {
-      this.value = this.defaultValue
-    }
-  },
   methods: {
-    handleChange() {
-      if (this.parameterKey === null) return
-      this.$emit('update-value', [{ key: this.parameterKey, value: this.value }])
-    }
+    init() {
+      if (this.defaultValue !== null) {
+        this.value = this.defaultValue
+      }
+      if (this.prop_parameterKey && this.prop_parameterKey !== null) {
+        this.parameterKey = this.prop_parameterKey
+      }
+      this.emitEventToParent(this.getParameter())
+    },
   }
 }
 </script>

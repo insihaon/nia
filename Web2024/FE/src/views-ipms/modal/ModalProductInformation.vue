@@ -78,7 +78,7 @@ export default {
         // 이용 목적
          { key: 'InputType', props: { label: '상품명' } },
          { key: 'ServiceOrg', props: { } },
-         { key: 'IncludeYN', props: { label: '사용여부', } },
+         { key: 'IncludeYN', props: { } },
       ],
        tableColumns: [
         { prop: '', label: '구분', align: 'center', sortable: true, columnVisible: true, showOverflow: true },

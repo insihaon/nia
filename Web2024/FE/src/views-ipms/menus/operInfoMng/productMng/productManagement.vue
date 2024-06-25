@@ -1,12 +1,13 @@
 <template>
-  <el-row class="w-100 h-100">
+  <el-row ref="container" class="w-100 h-100">
     <DynamicComponentLoader
+      ref="searchCondition"
       :component-keys="componentList"
       @handle-search="handleSearch"
     />
-    <el-col :span="24">
+    <el-col ref="tableContainer" :span="24">
       <compTable
-        :prop-table-height="300"
+        :prop-table-height="'calc(100% - 80px)'"
         :prop-column="tableColumns"
         :prop-is-pagination="true"
         :prop-is-check-box="true"
@@ -27,12 +28,15 @@
 import { Base } from '@/min/Base.min'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
 import CompTable from '@/components/elTable/CompTable.vue'
+import tableHeightMixin from '@/mixin/tableHeightMixin'
+
 const routeName = 'ProductManagement'
 
 export default {
   name: routeName,
   components: { CompTable, DynamicComponentLoader },
   extends: Base,
+  mixins: [tableHeightMixin],
   data() {
     return {
       name: routeName,
@@ -62,8 +66,8 @@ export default {
       componentList: [
         // 구분, 대분류, 소분류
         { key: 'ApplyStatus', props: { label: '이용목적',
-          parameterKey: 'ssvcUseTypeCd',
-          propsOptions: [
+          prop_parameterKey: 'ssvcUseTypeCd',
+          prop_options: [
               { label: '전체', value: '' },
               { label: '사업용', value: 'SU0001' },
               { label: '일반용', value: 'SU0002' },
@@ -72,13 +76,14 @@ export default {
         },
         { key: 'ExtrnLnkgs', props: {} },
         { key: 'ServiceOrg', props: { isMulti: false } },
-        { key: 'IncludeYN', props: { label: '사용여부', parameterKey: 'suseTypeCd' } },
+        { key: 'IncludeYN', props: { } },
         { key: 'InputType', props: { label: '상품명' } },
       ]
     }
   },
   methods: {
     handleSearch(params) {
+      console.log(params)
       /* const res = await api(params) */
     }
   }

@@ -78,10 +78,10 @@ export default {
       requestParameter: null,
       selectedRow: null,
       componentList: [
-         { key: 'SOffice', props: { parameterKey: 'siciofficescodeNe' } },
-         { key: 'InputType', props: { label: '장비명', propsParameterKey: 'ssubscnealiasNe' } },
-         { key: 'InputType', props: { label: '장비대표IP', propsParameterKey: 'ssubscmstipNe' } },
-         { key: 'InputType', props: { label: '모델명', propsParameterKey: 'smodelnameNe' } },
+         { key: 'SOffice', props: { prop_parameterKey: 'siciofficescodeNe' } },
+         { key: 'InputType', props: { label: '장비명', prop_parameterKey: 'ssubscnealiasNe' } },
+         { key: 'InputType', props: { label: '장비대표IP', prop_parameterKey: 'ssubscmstipNe' } },
+         { key: 'InputType', props: { label: '모델명', prop_parameterKey: 'smodelnameNe' } },
       ],
        tableColumns: [
         { prop: 'sofficename', label: '수용국', align: 'center', sortable: true, columnVisible: true, showOverflow: true },

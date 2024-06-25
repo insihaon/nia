@@ -1,12 +1,13 @@
 <template>
-  <el-row class="w-100 h-100">
+  <el-row ref="container" class="w-100 h-100">
     <DynamicComponentLoader
-      ref="DynamicComponent"
+      ref="searchCondition"
       :component-keys="componentList"
+      @handle-search="handleSearch"
     />
-    <el-col :span="24">
+    <el-col ref="tableContainer" :span="24">
       <compTable
-        :prop-table-height="300"
+        :prop-table-height="'calc(100% - 80px)'"
         :prop-column="tableColumns"
         :prop-is-pagination="false"
         :prop-is-check-box="false"
@@ -26,6 +27,7 @@
 import { Base } from '@/min/Base.min'
 import CompTable from '@/components/elTable/CompTable.vue'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
+import tableHeightMixin from '@/mixin/tableHeightMixin'
 
 const routeName = 'nonKtIpStatus'
 
@@ -33,8 +35,7 @@ export default {
   name: routeName,
   components: { CompTable, DynamicComponentLoader },
   extends: Base,
-  props: {
-  },
+  mixins: [tableHeightMixin],
   data() {
     return {
       name: routeName,
@@ -42,17 +43,19 @@ export default {
       componentList: [
         { key: 'SOffice', props: { label: '노드국' } },
         { key: 'IpMngProgress', props: {} },
-        { key: 'InputType', props: { propsParameterKey: 'sipBlock', label: 'IP정보' } },
-        { key: 'InputType', props: { propsParameterKey: 'scustname', label: '고객명' } },
-        { key: 'InputType', props: { propsParameterKey: 'sasNum', label: 'AS번호' } },
-        { key: 'LineInformation', props: { propOptions: [
+        { key: 'InputType', props: { prop_parameterKey: 'sipBlock', label: 'IP정보' } },
+        { key: 'InputType', props: { prop_parameterKey: 'scustname', label: '고객명' } },
+        { key: 'InputType', props: { prop_parameterKey: 'sasNum', label: 'AS번호' } },
+        { key: 'LineInformation', props: { prop_options: [
           {
             value: 'llnum',
             label: '전용번호',
+            txtKey: 'sllnum'
           },
           {
             value: 'said',
             label: 'SAID',
+            txtKey: 'ssaid'
           }],
         }
         },
@@ -70,6 +73,11 @@ export default {
         { prop: '', label: '처리자명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: '', label: '처리일', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
       ],
+    }
+  },
+  methods: {
+    handleSearch(requestParameter) {
+      console.log(requestParameter)
     }
   },
 }

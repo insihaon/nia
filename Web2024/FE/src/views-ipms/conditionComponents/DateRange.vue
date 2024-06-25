@@ -9,17 +9,20 @@
       size="mini"
       start-placeholder="시작일"
       end-placeholder="종료일"
-      @change="handleChange"
+      @change="handleChange()"
     />
   </el-col>
 </template>
 <script>
 import { Base } from '@/min/Base.min'
+import commonFunctionMixin from '@/mixin/commonFunctionMixin'
 
 const routeName = 'DateRange'
+
 export default {
   name: routeName,
   extends: Base,
+  mixins: [commonFunctionMixin],
   props: {
     defaultValue: {
       type: Array,
@@ -29,7 +32,7 @@ export default {
       type: String,
       default: '작업일자'
     },
-    propsParameterKey: {
+    prop_parameterKey: {
       type: Array,
       default: null
     }
@@ -42,23 +45,24 @@ export default {
       parameterKey: ['searchBgnDe', 'searchEndDe']
     }
   },
-  created () {
-    if (this.defaultValue !== null && Array.isArray(this.defaultValue)) {
-      this.value = this.defaultValue
-    }
-    if (this.propsParameterKey !== null && Array.isArray(this.propsParameterKey)) {
-      this.parameterKey = this.propsParameterKey
-    }
-  },
   methods: {
-    handleChange() {
+    init() {
+      if (this.defaultValue !== null && Array.isArray(this.defaultValue)) {
+        this.value = this.defaultValue
+      }
+      if (this.prop_parameterKey !== null && Array.isArray(this.prop_parameterKey)) {
+        this.parameterKey = this.prop_parameterKey
+      }
+      this.emitEventToParent(this.getParameter())
+    },
+    getParameter() {
       const [searchBgnDe, searchEndDe] = this.value
       const [bgKey, endKey] = this.parameterKey
-      this.$emit('update-value', [
-        { key: bgKey, value: this.moment(searchBgnDe).format('YYYY-MM-DD') },
-        { key: endKey, value: this.moment(searchEndDe).format('YYYY-MM-DD') }
-      ])
-   }
+      return [
+        { key: bgKey, value: searchBgnDe ? this.moment(searchBgnDe).format('YYYY-MM-DD') : '' },
+        { key: endKey, value: searchEndDe ? this.moment(searchEndDe).format('YYYY-MM-DD') : '' }
+      ]
+    }
   }
 }
 </script>

@@ -6,10 +6,10 @@
     <el-select
       v-model="sortType"
       size="mini"
-      @change="handleChangeSelect"
+      @change="emitEventToParent([{ key: 'sortType', value: sortType }])"
     >
       <el-option
-        v-for="(option, i) in soreTypeOptions"
+        v-for="(option, i) in sortTypeOptions"
         :key="i"
         :label="option.label"
         :value="option.value"
@@ -21,11 +21,13 @@
 </template>
 <script>
 import { Base } from '@/min/Base.min'
+import commonFunctionMixin from '@/mixin/commonFunctionMixin'
 
 const routeName = 'SortType'
 export default {
   name: routeName,
   extends: Base,
+  mixins: [commonFunctionMixin],
   props: {
     label: {
       type: String,
@@ -35,7 +37,7 @@ export default {
       type: String,
       default: null
     },
-    propsOptions: {
+    prop_options: {
       type: Array,
       default: null
     }
@@ -44,7 +46,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      soreTypeOptions: [
+      sortTypeOptions: [
         // { label: '전체', value: '' },
         { label: 'IP', value: 'PIP_PREFIX' },
         { label: 'BitMask', value: 'NBITMASK' },
@@ -55,23 +57,19 @@ export default {
       sortOrdr: 'ASC'
     }
   },
-  computed: {
-  },
-  created () {
-    if (this.propsOptions !== null) {
-      this.soreTypeOptions = this.propsOptions
-    }
-    if (this.sortTypeDefaultVal !== null) {
-      this.sortType = this.sortTypeDefaultVal
-    }
-  },
   methods: {
-    handleChangeSelect() {
-      this.$emit('update-value', [{ key: 'sortType', value: this.sortType }])
+    init() {
+      if (this.prop_options !== null) {
+        this.sortTypeOptions = this.prop_options
+      }
+      if (this.sortTypeDefaultVal !== null) {
+        this.sortType = this.sortTypeDefaultVal
+      }
+      this.emitEventToParent([{ key: 'sortType', value: this.sortType }, { key: 'sortOrdr', value: this.sortOrdr }])
     },
     handleChangeRadio() {
-      this.$emit('update-value', [{ key: 'sortOrdr', value: this.sortOrdr }])
-    }
+      this.emitEventToParent([{ key: 'sortOrdr', value: this.sortOrdr }])
+    },
   }
 }
 </script>

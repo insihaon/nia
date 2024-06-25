@@ -1,12 +1,13 @@
 <template>
-  <el-row class="w-100 h-100">
+  <el-row ref="container" class="w-100 h-100">
     <DynamicComponentLoader
+      ref="searchCondition"
       :component-keys="componentList"
       @handle-search="handleSearch"
     />
-    <el-col :span="24">
+    <el-col ref="tableContainer" :span="24">
       <compTable
-        :prop-table-height="300"
+        :prop-table-height="'calc(100% - 80px)'"
         :prop-data="tableDatas"
         :prop-column="tableColumns"
         :prop-is-pagination="true"
@@ -26,12 +27,14 @@
 import { Base } from '@/min/Base.min'
 import CompTable from '@/components/elTable/CompTable.vue'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
+import tableHeightMixin from '@/mixin/tableHeightMixin'
 const routeName = 'IpAssign'
 
 export default {
   name: routeName,
   components: { CompTable, DynamicComponentLoader },
   extends: Base,
+  mixins: [tableHeightMixin],
   data() {
     return {
       name: routeName,
@@ -40,14 +43,15 @@ export default {
         { key: 'SsvcLineType', props: { lvl: 3, multi: [2] } },
         { key: 'SipCreateType', props: {} },
         { key: 'GenerationDegree', props: {} },
-        { key: 'InputType', props: { label: 'BitMask', propsParameterKey: 'nbitmask' } },
+        { key: 'InputType', props: { label: 'BitMask', prop_parameterKey: 'nbitmask' } },
         { key: 'DateRange', props: {} },
         { key: 'IpAddress', props: {} },
         { key: 'ServiceOrg', props: { limit: 10 } },
+        { key: 'IpBlockStatus', props: { label: '배정상태' } },
         { key: 'SortType', props: {} },
-        { key: 'IncludeYN', props: { label: 'Summary 포함 여부', parameterKey: 'snull0Yn' } },
-        { key: 'IncludeYN', props: { label: 'DB-라우팅 일치 여부', parameterKey: 'sintgrmYn' } },
-        { key: 'InputType', props: { label: '라우팅 중복 개수', propsParameterKey: 'nsummaryCnt' } },
+        { key: 'IncludeYN', props: { label: 'Summary 포함 여부', prop_parameterKey: 'snull0Yn' } },
+        { key: 'IncludeYN', props: { label: 'DB-라우팅 일치 여부', prop_parameterKey: 'sintgrmYn' } },
+        { key: 'InputType', props: { label: '라우팅 중복 개수', prop_parameterKey: 'nsummaryCnt' } },
       ],
       tableColumns: [
         { prop: '', label: '서비스망', align: 'center', sortable: true, columnVisible: true, showOverflow: true },

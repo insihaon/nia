@@ -3,22 +3,24 @@
     <label>
       {{ label }}
     </label>
-    <el-input v-model="word" size="mini" clearable @change="handleChangeWord" />
+    <el-input v-model="value" size="mini" clearable @change="handleChange()" />
   </el-col>
 </template>
 <script>
 import { Base } from '@/min/Base.min'
+import commonFunctionMixin from '@/mixin/commonFunctionMixin'
 
 const routeName = 'InputType'
 export default {
   name: routeName,
   extends: Base,
+  mixins: [commonFunctionMixin],
   props: {
     label: {
       type: String,
       default: ''
     },
-    propsParameterKey: {
+    prop_parameterKey: {
       type: String,
       default: null
     },
@@ -27,19 +29,11 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      word: '',
+      value: '',
       parameterKey: 'searchWrd'
     }
   },
-  created () {
-    if (this.propsParameterKey !== null) {
-      this.parameterKey = this.propsParameterKey
-    }
-  },
   methods: {
-    handleChangeWord() {
-      this.$emit('update-value', [{ key: this.parameterKey, value: this.word }])
-    }
   }
 }
 </script>

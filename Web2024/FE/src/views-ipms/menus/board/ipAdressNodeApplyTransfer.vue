@@ -1,11 +1,19 @@
 <template>
-  <el-row class="w-100 h-100">
+  <el-row ref="container" class="w-100 h-100">
     <DynamicComponentLoader
-      ref="DynamicComponent"
+      ref="searchCondition"
       :component-keys="componentList"
+      @handle-search="handleSearch"
     />
-    <el-col :span="24">
-      <compTable :prop-column="tableColumns" :prop-is-pagination="false" :prop-is-check-box="false" prop-grid-menu-id="inputSpeed" :prop-grid-indx="1">
+    <el-col ref="tableContainer" :span="24">
+      <compTable
+        :prop-table-height="'calc(100% - 80px)'"
+        :prop-column="tableColumns"
+        :prop-is-pagination="false"
+        :prop-is-check-box="false"
+        prop-grid-menu-id="inputSpeed"
+        :prop-grid-indx="1"
+      >
         <template slot="text-description">
           <span>
             조회결과
@@ -19,12 +27,15 @@
 import { Base } from '@/min/Base.min'
 import CompTable from '@/components/elTable/CompTable.vue'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
+import tableHeightMixin from '@/mixin/tableHeightMixin'
+
 const routeName = 'IpAdressNodeApplyTransfer'
 
 export default {
   name: routeName,
   components: { CompTable, DynamicComponentLoader },
   extends: Base,
+  mixins: [tableHeightMixin],
   data() {
     return {
       name: routeName,
@@ -65,12 +76,12 @@ export default {
       ],
       componentList: [
         { key: 'IpAddress', props: { isShowSelecteBox: false } },
-        { key: 'ApplyStatus', props: { parameterKey: 'progressStatus' } },
+        { key: 'ApplyStatus', props: { prop_parameterKey: 'progressStatus' } },
         {
           key: 'SortType', props: {
             label: '등록기간',
             sortTypeDefaultVal: 'dcreate_dt',
-            propsOptions: [
+            prop_options: [
               { label: '신청일', value: 'dcreate_dt' },
               { label: '신청번호', value: 'seq' },
               { label: '처리일시', value: 'dcomplete_dt' },

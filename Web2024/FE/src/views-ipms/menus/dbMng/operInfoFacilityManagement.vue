@@ -1,12 +1,13 @@
 <template>
-  <el-row class="w-100 h-100">
+  <el-row ref="container" class="w-100 h-100">
     <DynamicComponentLoader
-      ref="DynamicComponent"
+      ref="searchCondition"
       :component-keys="componentList"
+      @handle-search="handleSearch"
     />
-    <el-col :span="24">
+    <el-col ref="tableContainer" :span="24">
       <compTable
-        :prop-table-height="300"
+        :prop-table-height="'calc(100% - 80px)'"
         :prop-column="tableColumns"
         :prop-is-pagination="false"
         :prop-is-check-box="false"
@@ -26,6 +27,7 @@
 import { Base } from '@/min/Base.min'
 import CompTable from '@/components/elTable/CompTable.vue'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
+import tableHeightMixin from '@/mixin/tableHeightMixin'
 
 const routeName = 'operInfoFacilityManagement'
 
@@ -33,8 +35,7 @@ export default {
   name: routeName,
   components: { CompTable, DynamicComponentLoader },
   extends: Base,
-  props: {
-  },
+  mixins: [tableHeightMixin],
   data() {
     return {
       name: routeName,
@@ -44,10 +45,10 @@ export default {
         { key: 'SOffice', props: {} },
         { key: 'SipCreateType', props: {} },
         { key: 'IpAddress', props: {} },
-        { key: 'InputType', props: { propsParameterKey: 'smodelname', label: '모델명' } },
-        { key: 'InputType', props: { propsParameterKey: 'sipHostNm', label: '장비명' } },
-        { key: 'IncludeYN', props: { parameterKey: 'sprorityYn', label: '대표여부' } },
-        { key: 'InputType', props: { propsParameterKey: 'scomment', label: '용도' } },
+        { key: 'InputType', props: { prop_parameterKey: 'smodelname', label: '모델명' } },
+        { key: 'InputType', props: { prop_parameterKey: 'sipHostNm', label: '장비명' } },
+        { key: 'IncludeYN', props: { prop_parameterKey: 'sprorityYn', label: '대표여부' } },
+        { key: 'InputType', props: { prop_parameterKey: 'scomment', label: '용도' } },
         { key: 'SortType', props: { } },
       ],
       tableColumns: [
@@ -60,6 +61,11 @@ export default {
         { prop: '', label: '작업일자', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: '', label: '삭제', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
       ],
+    }
+  },
+  methods: {
+    handleSearch(requestParameter) {
+      console.log(requestParameter)
     }
   },
 }

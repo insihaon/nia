@@ -6,7 +6,7 @@
     <el-select
       v-model="value"
       size="mini"
-      @change="handleChange"
+      @change="handleChange()"
     >
       <el-option
         v-for="(option, i) in options"
@@ -19,17 +19,18 @@
 </template>
 <script>
 import { Base } from '@/min/Base.min'
+import commonFunctionMixin from '@/mixin/commonFunctionMixin'
 
 const routeName = 'ExceptionYN'
 export default {
   name: routeName,
   extends: Base,
-  props: {
-  },
+  mixins: [commonFunctionMixin],
   data() {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      parameterKey: 'sexcpt_yn',
       value: '',
       options: [
         { label: '전체', value: '' },
@@ -38,13 +39,7 @@ export default {
       ]
     }
   },
-  // sexcpt_yn
-  computed: {
-  },
   methods: {
-    handleChange() {
-      this.$emit('update-value', [{ key: 'sexcpt_yn', value: this.value }])
-    }
   }
 }
 </script>

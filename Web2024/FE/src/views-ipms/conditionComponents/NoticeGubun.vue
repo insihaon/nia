@@ -5,7 +5,7 @@
     </label>
     <el-select
       v-model="value"
-      @change="handleChange"
+      @change="handleChange()"
     >
       <el-option
         v-for="(option, i) in [
@@ -22,26 +22,22 @@
 </template>
 <script>
 import { Base } from '@/min/Base.min'
+import commonFunctionMixin from '@/mixin/commonFunctionMixin'
 
 const routeName = 'NoticeGubun'
 export default {
   name: routeName,
   extends: Base,
-  props: {
-  },
+  mixins: [commonFunctionMixin],
   data() {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      parameterKey: 'sboardTypeSubCd',
       value: ''
     }
   },
-  computed: {
-  },
   methods: {
-    handleChange() {
-      this.$emit('update-value', [{ key: 'sboardTypeSubCd', value: this.value }])
-    }
   }
 }
 </script>

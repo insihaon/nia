@@ -4,7 +4,7 @@
     <el-col>
       <div>IP 블록 정보</div>
       <CompTable
-        :prop-table-height="300"
+        :prop-table-height="'calc(100% - 80px)'"
         :prop-column="ipBlockColumns"
         :prop-is-pagination="false"
         :prop-is-check-box="false"

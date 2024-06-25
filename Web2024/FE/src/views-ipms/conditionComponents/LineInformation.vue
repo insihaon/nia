@@ -21,13 +21,16 @@
 </template>
 <script>
 import { Base } from '@/min/Base.min'
+import commonFunctionMixin from '@/mixin/commonFunctionMixin'
 
 const routeName = 'LineInformation'
+
 export default {
   name: routeName,
   extends: Base,
+  mixins: [commonFunctionMixin],
   props: {
-    propOptions: {
+    prop_options: {
       type: Array,
       default: null
     }
@@ -42,30 +45,44 @@ export default {
         {
           value: 'llnum',
           label: '전용번호',
+          txtKey: 'sllnum'
         },
         {
           value: 'said',
           label: 'SAID',
+          txtKey: 'ssaid'
         },
         {
           value: 'ordernum',
           label: '오더번호',
+          txtKey: 'sordernum'
         },
       ],
     }
   },
-  created () {
-    if (this.propOptions !== null) {
-      this.options = this.propOptions
-    }
-  },
   // llSrchTypeCd
   methods: {
+    init() {
+      if (this.prop_options !== null) {
+        this.options = this.prop_options
+      }
+      this.handleChange()
+      this.handleChangeWord()
+    },
     handleChange() {
-      this.$emit('update-value', [{ key: 'llSrchTypeCd', value: this.value }])
+      this.word = ''
+      this.emitEventToParent([{ key: 'llSrchTypeCd', value: this.value }])
     },
     handleChangeWord() {
-      this.$emit('update-value', [{ key: 'llSrchVal', value: this.value }])
+      const params = []
+      this.options.forEach(op => {
+        if (op.value === this.value) {
+          params.push({ key: op.txtKey, value: this.word })
+        } else {
+          params.push({ key: op.txtKey, value: '' })
+        }
+      })
+      this.emitEventToParent(params)
     }
   }
 }

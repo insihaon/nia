@@ -1,11 +1,19 @@
 <template>
-  <el-row class="w-100 h-100">
+  <el-row ref="container" class="w-100 h-100">
     <DynamicComponentLoader
-      ref="DynamicComponent"
+      ref="searchCondition"
       :component-keys="componentList"
+      @handle-search="handleSearch"
     />
-    <el-col :span="24">
-      <compTable :prop-column="tableColumns" :prop-is-pagination="false" :prop-is-check-box="false" prop-grid-menu-id="inputSpeed" :prop-grid-indx="1">
+    <el-col ref="tableContainer" :span="24">
+      <compTable
+        :prop-table-height="'calc(100% - 80px)'"
+        :prop-column="tableColumns"
+        :prop-is-pagination="false"
+        :prop-is-check-box="false"
+        prop-grid-menu-id="inputSpeed"
+        :prop-grid-indx="1"
+      >
         <template slot="text-description">
           <span>
             요구사항 조회결과
@@ -19,12 +27,15 @@
 import { Base } from '@/min/Base.min'
 import CompTable from '@/components/elTable/CompTable.vue'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
+import tableHeightMixin from '@/mixin/tableHeightMixin'
+
 const routeName = 'IssueDataRequest'
 
 export default {
   name: routeName,
   components: { CompTable, DynamicComponentLoader },
   extends: Base,
+  mixins: [tableHeightMixin],
   data() {
     return {
       name: routeName,
@@ -44,8 +55,8 @@ export default {
         {
           key: 'ApplyStatus', props: {
           label: '요청사항 구분',
-          parameterKey: 'RboardDivision',
-          propsOptions: [
+          prop_parameterKey: 'RboardDivision',
+          prop_options: [
               { label: '전체', value: '' },
               { label: '오류 버그 수정', value: 'RES001' },
               { label: '기능 개발 요청', value: 'RES002' },
@@ -58,8 +69,8 @@ export default {
         {
           key: 'ApplyStatus', props: {
           label: '진행상태',
-          parameterKey: 'RboardProgress',
-          propsOptions: [
+          prop_parameterKey: 'RboardProgress',
+          prop_options: [
               { label: '전체', value: '' },
               { label: '요청사항 접수', value: 'RES005' },
               { label: '접수 반려', value: 'RES006' },

@@ -1,19 +1,19 @@
 <template>
-  <el-row class="w-100 h-100">
+  <el-row ref="container" class="w-100 h-100">
     <DynamicComponentLoader
+      ref="searchCondition"
       :component-keys="componentList"
       @handle-search="handleSearch"
     />
-    <el-col :span="24">
+    <el-col ref="tableContainer" :span="24">
       <compTable
-        :prop-table-height="300"
+        :prop-table-height="'calc(100% - 80px)'"
         :prop-column="tableColumns"
         :prop-is-pagination="false"
         :prop-is-check-box="false"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
       >
-
         <template slot="text-description">
           <span>
             IP 할당 조회결과
@@ -27,12 +27,15 @@
 import { Base } from '@/min/Base.min'
 import CompTable from '@/components/elTable/CompTable.vue'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
+import tableHeightMixin from '@/mixin/tableHeightMixin'
+
 const routeName = 'IpAllocation'
 
 export default {
   name: routeName,
   components: { CompTable, DynamicComponentLoader },
   extends: Base,
+  mixins: [tableHeightMixin],
   data() {
     return {
       name: routeName,
@@ -42,16 +45,32 @@ export default {
         { key: 'SOffice', props: {} },
         { key: 'SipCreateType', props: {} },
         { key: 'ServiceOrg', props: { limit: 10 } },
-        { key: 'IpAddress', props: { value: 'CV0001' } },
-        { key: 'InputType', props: { label: 'BitMask', propsParameterKey: 'bitMask' } },
-        // 회선정보(select)
-        // 할당상태
+        { key: 'IpAddress', props: {} },
+        { key: 'InputType', props: { label: 'BitMask', prop_parameterKey: 'nbitMask' } },
+        { key: 'LineInformation', props: {} },
+        {
+          key: 'IpBlockStatus', props: {
+            label: '할당상태', prop_options: [
+              { label: '서비스배정[미할당]', value: 'IA0004' },
+              { label: '할당예약', value: 'IA0005' },
+              { label: '할당', value: 'IA0006' },
+            ]
+          }
+        },
         { key: 'DateRange', props: { } },
-        { key: 'InputType', props: { label: '장비명', propsParameterKey: 'equipment_nm' } },
+        {
+          key: 'InputSearchDetail',
+          props: {
+            label: '장비명',
+            modalName: 'ModalFacilityInformation',
+            valueName: 'ssubscnealias',
+            prop_parameterKey: { sicisofficescodeNe: 'sofficecode', smodelnameNe: 'smodelname', ssubscmstipNe: 'ssubscmstip', ssubscnealiasNe: 'ssubscnealias' },
+          }
+        },
         { key: 'SortType', props: { } },
-        { key: 'IncludeYN', props: { label: 'Summary 포함 여부', parameterKey: 'snull0Yn' } },
-        { key: 'IncludeYN', props: { label: 'DB-라우팅 일치여부', parameterKey: 'sintgrmYn' } },
-        { key: 'InputType', props: { label: '라우팅 중복 개수', propsParameterKey: 'nsummaryCnt' } },
+        { key: 'IncludeYN', props: { label: 'Summary 포함 여부', prop_parameterKey: 'snull0Yn' } },
+        { key: 'IncludeYN', props: { label: 'DB-라우팅 일치여부', prop_parameterKey: 'sintgrmYn' } },
+        { key: 'InputType', props: { label: '라우팅 중복 개수', prop_parameterKey: 'nsummaryCnt' } },
       ],
       tableColumns: [
         { prop: '', label: '노드국', align: 'center', sortable: true, columnVisible: true, showOverflow: true },

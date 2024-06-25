@@ -1,12 +1,20 @@
 <template>
-  <el-row class="w-100 h-100">
+  <el-row ref="container" class="w-100 h-100">
     <DynamicComponentLoader
+      ref="searchCondition"
       :component-keys="componentList"
       @handle-search="handleSearch"
     />
-    <el-row :gutter="20">
-      <el-col :span="12">
-        <compTable :prop-table-height="300" :prop-column="tableColumns" :prop-is-pagination="false" :prop-is-check-box="true" prop-grid-menu-id="inputSpeed" :prop-grid-indx="1">
+    <el-row ref="tableContainer" :gutter="20">
+      <el-col class="h-100" :span="12">
+        <compTable
+          :prop-table-height="'calc(100% - 80px)'"
+          :prop-column="tableColumns"
+          :prop-is-pagination="false"
+          :prop-is-check-box="true"
+          prop-grid-menu-id="inputSpeed"
+          :prop-grid-indx="1"
+        >
           <template slot="text-description">
             <span>
               IP 선번장 조회결과
@@ -14,8 +22,15 @@
           </template>
         </compTable>
       </el-col>
-      <el-col :span="12">
-        <compTable :prop-table-height="300" :prop-column="hostTableColumns" :prop-is-pagination="false" :prop-is-check-box="false" prop-grid-menu-id="inputSpeed" :prop-grid-indx="1">
+      <el-col class="h-100" :span="12">
+        <compTable
+          :prop-table-height="'calc(100% - 80px)'"
+          :prop-column="hostTableColumns"
+          :prop-is-pagination="false"
+          :prop-is-check-box="false"
+          prop-grid-menu-id="inputSpeed"
+          :prop-grid-indx="1"
+        >
           <template slot="text-description">
             <span>
               HOST 관리
@@ -31,12 +46,15 @@
 import { Base } from '@/min/Base.min'
 import CompTable from '@/components/elTable/CompTable.vue'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
+import tableHeightMixin from '@/mixin/tableHeightMixin'
+
 const routeName = 'IpSeonbeonjang'
 
 export default {
   name: routeName,
   components: { CompTable, DynamicComponentLoader },
   extends: Base,
+  mixins: [tableHeightMixin],
   data() {
     return {
       name: routeName,
@@ -46,10 +64,10 @@ export default {
         { key: 'SOffice', props: {} },
         { key: 'SipCreateType', props: {} },
         { key: 'ServiceOrg', props: { isMulti: false } },
-        { key: 'IpAddress', props: { value: 'CV0001' } },
-        { key: 'InputType', props: { label: 'BitMask', propsParameterKey: 'nbitmask' } },
+        { key: 'IpAddress', props: {} },
+        { key: 'InputType', props: { label: 'BitMask', prop_parameterKey: 'nbitmask' } },
         // 회선정보
-        { key: 'InputType', props: { label: '용도', propsParameterKey: '' } },
+        { key: 'InputType', props: { label: '용도', prop_parameterKey: '' } },
         { key: 'DatePicker', props: { } },
         {
           key: 'InputSearchDetail',
@@ -57,7 +75,7 @@ export default {
             label: '장비명',
             modalName: 'ModalFacilityInformation',
             valueName: 'ssubscnealias',
-            parameterKey: { sicisofficescodeNe: 'sofficecode', smodelnameNe: 'smodelname', ssubscmstipNe: 'ssubscmstip', ssubscnealiasNe: 'ssubscnealias' },
+            prop_parameterKey: { sicisofficescodeNe: 'sofficecode', smodelnameNe: 'smodelname', ssubscmstipNe: 'ssubscmstip', ssubscnealiasNe: 'ssubscnealias' },
           }
         },
         { key: 'SortType', props: {} },

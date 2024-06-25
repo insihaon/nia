@@ -4,9 +4,9 @@
       {{ label }}
     </label>
     <el-select
-      v-model="localValue"
+      v-model="value"
       size="mini"
-      @change="handleChange"
+      @change="handleChange()"
     >
       <el-option
         v-for="(option, i) in options"
@@ -19,21 +19,20 @@
 </template>
 <script>
 import { Base } from '@/min/Base.min'
+import commonFunctionMixin from '@/mixin/commonFunctionMixin'
 
 const routeName = 'UsageYN'
+
 export default {
   name: routeName,
   extends: Base,
+  mixins: [commonFunctionMixin],
   props: {
-    value: {
-      type: String,
-      default: ''
-    },
     label: {
       type: String,
       default: ''
     },
-    parameterKey: {
+    prop_parameterKey: {
       type: String,
       default: null
     }
@@ -47,16 +46,10 @@ export default {
         { label: '사용', value: 'Y' },
         { label: '미사용', value: 'N' },
        ],
-       localValue: []
+       value: []
     }
-  },
-  computed: {
   },
   methods: {
-    handleChange() {
-      if (!this.parameterKey === null) return
-      this.$emit('update-value', [{ key: this.parameterKey, value: this.localValue }])
-    }
   }
 }
 </script>
