@@ -6,19 +6,25 @@ var tableHeightMixin = {
   },
   mounted() {
     this.updateTableHeight()
-    // window.addEventListener('resize', this.updateTableHeight)
+    window.addEventListener('resize', this.updateTableHeight)
   },
   beforeDestroy() {
-    // window.removeEventListener('resize', this.updateTableHeight)
+    window.removeEventListener('resize', this.updateTableHeight)
   },
   methods: {
     updateTableHeight() {
       setTimeout(() => {
-        const searchConditionHeight = this.$refs.searchCondition.$el.offsetHeight
-        const containerHeight = this.$refs.container.$el.offsetHeight
+        const searchEl = this.$refs.searchCondition
+        const containerEl = this.$refs.container
+        const tableEl = this.$refs.tableContainer
 
-        this.tableHeight = containerHeight - searchConditionHeight - 65 // 20: (margin, padding)
-        this.$refs.tableContainer.$el.style.height = `${this.tableHeight}px`
+        const searchConditionHeight = searchEl?.$el?.offsetHeight
+        const containerHeight = containerEl?.$el?.offsetHeight
+
+        if (searchConditionHeight && containerHeight && tableEl) {
+          this.tableHeight = containerHeight - searchConditionHeight - 65 // 20: (margin, padding)
+          tableEl.$el.style.height = `${this.tableHeight}px`
+        }
       }, 0)
     },
   },

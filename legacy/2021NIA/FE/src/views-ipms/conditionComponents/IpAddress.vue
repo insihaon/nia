@@ -4,7 +4,7 @@
       {{ label }}
     </label>
     <el-select
-      v-if="isShowSelecteBox"
+      v-if="isShowSelectBox"
       v-model="value"
       collapse-tags
       size="mini"
@@ -52,7 +52,7 @@ export default {
       type: Boolean,
       default: true
     },
-    isShowSelecteBox: {
+    isShowSelectBox: {
       type: Boolean,
       default: true
     }
@@ -72,10 +72,13 @@ export default {
       if (this.defaultValue !== null) {
         this.value = this.defaultValue
       }
-      const params = [
-        { key: 'sipVersionTypeCd', value: this.value },
-        { key: 'searchWrd', value: this.word }
-      ]
+      const params = []
+      if (this.isShowSelectBox) {
+        params.push({ key: 'sipVersionTypeCd', value: this.value },)
+      }
+      if (this.isShowInput) {
+        params.push({ key: 'searchWrd', value: this.word },)
+      }
       this.emitEventToParent(params)
     },
   }

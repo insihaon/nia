@@ -28,13 +28,17 @@ export default {
     label: {
       type: String,
       default: '조회일자'
+    },
+    prop_parameterKey: {
+      type: String,
+      default: null
     }
   },
   data() {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      parameterKey: 'searchSingleDate',
+      parameterKey: 'searchBgDe', // searchSingleDate
       value: this.moment().subtract(1, 'd')
     }
   },

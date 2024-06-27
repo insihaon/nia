@@ -1,8 +1,15 @@
 <template>
   <!-- content -->
-  <el-row style="width: 100%; padding-top: 10px">
+  <el-row class="w-100 h-100 px-0">
     <el-col :span="24">
-      <compTable :prop-table-height="'calc(100% - 80px)'" :prop-column="tableColumns" :prop-is-pgination="false" :prop-is-check-box="false" prop-grid-menu-id="inputSpeed" :prop-grid-indx="1" />
+      <compTable
+        :prop-table-height="300"
+        :prop-column="tableColumns"
+        :prop-is-pgination="false"
+        :prop-is-check-box="false"
+        prop-grid-menu-id="inputSpeed"
+        :prop-grid-indx="1"
+      />
     </el-col>
   </el-row>
 </template>

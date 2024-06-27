@@ -46,7 +46,15 @@ export default {
         { key: 'CheckYear', props: {} },
         { key: 'IpAddress', props: {} },
         { key: 'InputType', props: { prop_parameterKey: 'nbitmask', label: 'BitMask' } },
-        // 장비명
+        {
+          key: 'InputSearchDetail',
+          props: {
+            label: '장비명',
+            modalName: 'ModalFacilityInformation',
+            valueName: 'ssubscnealias',
+            prop_parameterKey: { sicisofficescodeNe: 'sofficecode', smodelnameNe: 'smodelname', ssubscmstipNe: 'ssubscmstip', ssubscnealiasNe: 'ssubscnealias' },
+          }
+        },
         { key: 'LineInformation', props: { } },
         { key: 'WorkSystem', props: {} },
         { key: 'DetailedWorkClassification', props: {} },

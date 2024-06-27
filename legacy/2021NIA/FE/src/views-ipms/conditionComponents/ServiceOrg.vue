@@ -77,20 +77,24 @@ export default {
   // sassignTypeCd, sassignTypeCdMultiStr: SA0001;SA0002;SA0003;
   methods: {
     init() {
-      this.value = this.isMulti ? [] : ''
+      this.values = this.isMulti ? [] : ''
       Eventbus.$on(EventType.changeLvl1, (params) => {
         this.onLoadServiceList(params)
       })
       this.emitEventToParent(this.getParameter())
     },
     handleChange() {
-      this.updateSelectionWithAll()
-      this.limit !== null && this.onCheckLimit('서비스')
+      if (this.isMulti) {
+        this.updateSelectionWithAll()
+        this.limit !== null && this.onCheckLimit('서비스')
+      }
       this.emitEventToParent(this.getParameter())
     },
     handleClickAll() {
-      this.toggleAll()
-      this.limit !== null && this.onCheckLimit('서비스')
+      if (this.isMulti) {
+        this.toggleAll()
+        this.limit !== null && this.onCheckLimit('서비스')
+      }
     },
     onLoadServiceList(params) {
       /*

@@ -17,7 +17,7 @@
     </el-row>
     <el-row>
       <el-col :span="24" align="center" class="searchBtnGroup">
-        <el-button class="btn-r" type="info" size="mini" icon="el-icon-search" @click="onClickSearch()">
+        <el-button class="btn-r" type="info" size="mini" icon="el-icon-search" @click="handleSearch()">
           조회
         </el-button>
         <el-button class="btn-r" type="info" size="mini" icon="el-icon-refresh">
@@ -79,7 +79,7 @@ export default {
     }
   },
   methods: {
-    onClickSearch() {
+    handleSearch() {
       this.$emit('handle-search', this.requestParameter)
     },
     onUpdateOrgValue(index, value) {

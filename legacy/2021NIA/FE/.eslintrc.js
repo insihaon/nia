@@ -19,6 +19,7 @@ module.exports = {
     'vue/singleline-html-element-content-newline': 'off',
     'vue/multiline-html-element-content-newline': 'off',
     'vue/name-property-casing': ['error', 'PascalCase'],
+    'vue/prop-name-casing': [0, 'never'],
     'vue/no-v-html': 'off',
     'accessor-pairs': 2,
     'arrow-spacing': [
@@ -36,12 +37,6 @@ module.exports = {
       '1tbs',
       {
         allowSingleLine: true,
-      },
-    ],
-    camelcase: [
-      0,
-      {
-        properties: 'always',
       },
     ],
     'comma-dangle': [0, 'never'],

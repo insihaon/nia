@@ -1,8 +1,6 @@
 <template>
-  <!-- content -->
   <div id="wrap">
     <div id="container" class="main">
-      <!-- search-->
       <div class="search_result">
         <fieldset>
           <legend>검색하기</legend>
@@ -20,7 +18,6 @@
         </fieldset>
       </div>
       <el-row class="p-4">
-        <div>IP 블록 정보</div>
         <CompTable
           :prop-table-height="300"
           :prop-column="ipBlockColumns"
@@ -28,10 +25,15 @@
           :prop-is-check-box="false"
           prop-grid-menu-id="ipInfoList"
           :prop-grid-indx="1"
-        />
+        >
+          <template slot="text-description">
+            <span>
+              IP 블록 정보
+            </span>
+          </template>
+        </CompTable>
       </el-row>
-      <el-row>
-        <div>IP Host 정보</div>
+      <el-row class="p-4">
         <CompTable
           :prop-table-height="300"
           :prop-column="ipHostColumns"
@@ -39,7 +41,13 @@
           :prop-is-check-box="false"
           prop-grid-menu-id="ipInfoList"
           :prop-grid-indx="1"
-        />
+        >
+          <template slot="text-description">
+            <span>
+              IP Host 정보
+            </span>
+          </template>
+        </CompTable>
       </el-row>
     </div>
   </div>

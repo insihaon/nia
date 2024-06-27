@@ -54,7 +54,7 @@ export default {
         },
         { key: 'ServiceOrg', props: { limit: 3 } },
         { key: 'SipCreateType', props: {} },
-        // 조회일자 추가
+        { key: 'DatePicker', props: { } },
       ],
       tableColumns: [
         {
