@@ -68,4 +68,6 @@ export const componentMap = {
     ExtrnLnkgs: () => import('@/views-ipms/conditionComponents/ExtrnLnkgs.vue'),
     // 사용자 권한등급
     AuthLevel: () => import('@/views-ipms/conditionComponents/AuthLevel.vue'),
+    // 구분 (상품 관리)
+    NetworkClassification: () => import('@/views-ipms/conditionComponents/NetworkClassification.vue'),
 }

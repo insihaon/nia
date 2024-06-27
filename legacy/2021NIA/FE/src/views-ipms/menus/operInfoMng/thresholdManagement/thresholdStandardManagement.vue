@@ -58,8 +58,8 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>대상 L3 수 / 전체 L3 * 100</td>
+              <tr height="110">
+                <td> 대상 L3 수 / 전체 L3 * 100</td>
                 <td>&lt;</td>
                 <td>
                   <el-input v-model="alctn_thrsh" style="width : 80%" /> &#37;
