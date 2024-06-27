@@ -1,14 +1,14 @@
 <template>
   <el-col :class="{ [name]: true }" :xs="24" :sm="12" :md="12" :lg="8" :xl="6">
     <label>
-      회선정보
+      {{ label }}
     </label>
     <el-select
       v-model="value"
-      collapse-tags
       size="mini"
       @change="handleChange"
     >
+      <el-option v-if="isAllOption" label="전체" value="" />
       <el-option
         v-for="(option, i) in options"
         :key="i"
@@ -30,9 +30,21 @@ export default {
   extends: Base,
   mixins: [commonFunctionMixin],
   props: {
+    label: {
+      type: String,
+      default: '회선정보'
+    },
+    defaultValue: {
+      type: String,
+      default: null
+    },
     prop_options: {
       type: Array,
       default: null
+    },
+    isAllOption: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -65,6 +77,9 @@ export default {
     init() {
       if (this.prop_options !== null) {
         this.options = this.prop_options
+      }
+      if (this.defaultValue !== null) {
+        this.value = this.defaultValue
       }
       this.handleChange()
       this.handleChangeWord()

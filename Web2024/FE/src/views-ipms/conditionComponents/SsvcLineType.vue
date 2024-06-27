@@ -121,7 +121,7 @@ export default {
       localValue: { 1: '', 2: '', 3: '' },
     }
   },
-  // 1: ssvcLineTypeCd
+  // 1: ssvcLineTypeCd, ssvcLineCdMultiStr
   // 2: ssvcGroupCdMulti: 123;234;345; or ssvcGroupCd
   // 3: ssvcObjCd
   computed: {
@@ -171,8 +171,9 @@ export default {
     },
     getParameter() {
       const params = []
+      const lvl1Key = `ssvcLine${this.multi.includes(key1) ? 'CdMultiStr' : 'TypeCd'}`
       const lvl2Key = `ssvcGroupCd${this.multi.includes(key2) ? 'MultiStr' : ''}`
-      const parameterKeys = ['ssvcLineTypeCd', lvl2Key, 'ssvcObjCd']
+      const parameterKeys = [lvl1Key, lvl2Key, 'ssvcObjCd']
 
       parameterKeys.forEach((key, idx) => {
         if (this.lvl >= (idx + 1)) {

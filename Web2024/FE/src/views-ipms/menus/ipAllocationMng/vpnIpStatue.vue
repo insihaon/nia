@@ -34,14 +34,32 @@ export default {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
        componentList: [
-        { key: 'SsvcLineType', props: { lvl: 3, multi: [2] } },
+        { key: 'SsvcLineType', props: { lvl: 3 } },
         { key: 'ServiceOrg', props: { multi: false } },
         { key: 'IpAddress', props: {} },
         { key: 'SipCreateType', props: {} },
-        // 보유
-        // 상품
+        { key: 'ApplyStatus', props: {
+          prop_parameterKey: 'sAlcSrchTypeCd', label: '보유',
+          prop_options: [
+              { label: '전체', value: '' },
+              { label: 'KT', value: 'KT' },
+              { label: '고객', value: 'VPN' },
+            ]
+          }
+         },
+        {
+          key: 'InputSearchDetail',
+          props: {
+            label: '상품',
+            modalName: 'ModalProductInformation',
+            // * key 확인 필요함
+            valueName: 'A',
+            prop_parameterKey: { sexSvcCd: 'B', sipmsSvcNm: 'C', nipmsScvSeq: 'D' },
+            isReadOnly: true
+          }
+        },
         { key: 'InputType', props: { label: '계약자명', prop_parameterKey: 'scustname' } },
-        { key: 'SOffice', props: {} }
+        { key: 'SortType', props: {} },
       ],
       tableColumns: [
         { prop: '', label: '서비스망', align: 'center', sortable: true, columnVisible: true, showOverflow: true },

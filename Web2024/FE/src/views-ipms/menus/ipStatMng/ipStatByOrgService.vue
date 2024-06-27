@@ -45,7 +45,7 @@ export default {
         { key: 'IpAddress', props: { label: 'IP 버전', isShowInput: false } },
         { key: 'SipCreateType', props: {} },
         { key: 'ServiceOrg', props: { limit: 3 } },
-        { key: 'DatePicker', props: {} },
+        { key: 'DatePicker', props: { } },
       ],
       tableColumns: [
         {
@@ -104,6 +104,11 @@ export default {
           showOverflow: true,
         }
       ],
+    }
+  },
+  methods: {
+    handleSearch(params) {
+      console.log(params)
     }
   },
 }

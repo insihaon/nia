@@ -119,6 +119,11 @@ export default {
       ],
     }
   },
+  methods: {
+    handleSearch(params) {
+      console.log(params)
+    }
+  },
 }
 </script>
 <style lang="css" scoped></style>

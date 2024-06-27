@@ -16,7 +16,7 @@
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
       >
-        <template slot="text-description">
+        <template v-if="!isDashboard" slot="text-description">
           <span>
             NeOSS 조회결과
           </span>
@@ -50,7 +50,8 @@ export default {
         componentList: [
         { key: 'SsvcLineType', props: { lvl: 3, multi: [2] } },
         { key: 'SOffice', props: {} },
-        // 오더정보 (select + input)
+        { key: 'LineInformation', props: { label: '오더정보', isAllOption: true }
+        },
         { key: 'InputType', props: { label: '고객명', prop_parameterKey: 'scustname' } },
         { key: 'DateRange', props: { label: '접수일', prop_parameterKey: ['searchRecpBgnDe', 'searchRecpEndDe'] } },
         { key: 'DateRange', props: { label: '희망일', prop_parameterKey: ['searchInstBgnDe', 'searchInstEndDe'] } },
@@ -65,8 +66,26 @@ export default {
             isReadOnly: true
           }
         },
-        // 이용목적
-        { key: 'SortType', props: { } }
+        { key: 'ApplyStatus', props: { label: '이용목적',
+          prop_parameterKey: 'ssvcUseTypeCd',
+          prop_options: [
+              { label: '전체', value: '' },
+              { label: 'N/A', value: 'SU0000' },
+              { label: '사업용', value: 'SU0001' },
+              { label: '일반용', value: 'SU0002' },
+            ]
+          }
+        },
+        {
+          key: 'SortType', props: {
+            sortTypeDefaultVal: 'SODRREGDT',
+            prop_options: [
+              { label: '접수일', value: 'SODRREGDT' },
+              { label: '희망일', value: 'SODRHOPEDT' },
+              { label: '고객명', value: 'SCUSTNAME' },
+            ]
+          }
+        }
       ],
       tableColumns: [
         { prop: '', label: '노드국', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
