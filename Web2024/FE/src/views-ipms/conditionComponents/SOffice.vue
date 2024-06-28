@@ -9,7 +9,7 @@
       size="mini"
       @change="handleChange()"
     >
-      <el-option label="전체" value="ALL"><span class="w-100 h-100 d-inline-block" @click="toggleAll()">전체</span></el-option>
+      <el-option label="전체" value="" />
       <el-option
         v-for="(option, i) in officeOptions"
         :key="i"
@@ -44,7 +44,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      value: 'ALL',
+      value: '',
       officeOptions: this.$store.state.ipms.tempOfficeList
     }
   },
@@ -64,9 +64,6 @@ export default {
       this.officeOptions = res.result (options set)
       */
     },
-    toggleAll() {
-      this.value = this.value === 'ALL' ? '' : 'ALL'
-    }
   }
 }
 </script>

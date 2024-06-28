@@ -12,8 +12,8 @@
             <el-option
               v-for="(option, i) in [
                 { label: '전체', value: '' },
-                { label: '성공', value: 'success' },
-                { label: '실패', value: 'fail' },
+                { label: '성공', value: 'Y' },
+                { label: '실패', value: 'N' }
               ]"
               :key="i"
               :label="option.label"
