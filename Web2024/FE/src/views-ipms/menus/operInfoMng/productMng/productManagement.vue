@@ -64,7 +64,7 @@ export default {
 
         ],
       componentList: [
-        { key: 'NetworkClassification', props: { lvl: 3 } },
+        { key: 'NetworkClassification', props: { } },
         { key: 'ApplyStatus', props: { label: '이용목적',
           prop_parameterKey: 'ssvcUseTypeCd',
           prop_options: [
