@@ -42,7 +42,7 @@ export default {
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       componentList: [
         { key: 'InputType', props: { prop_parameterKey: 'searchWrd', label: '링크IP블록' } },
-        { key: 'SOffice', props: {} },
+        { key: 'SOffice', props: { prop_parameterKey: 'srssofficescode' } },
         { key: 'InputType', props: { prop_parameterKey: 'smodelNm', label: '장비명' } },
         { key: 'InputType', props: { prop_parameterKey: 'sifNm', label: 'IF명' } },
         { key: 'LineInformation', props: {} },
@@ -67,6 +67,12 @@ export default {
       ],
     }
   },
+  methods: {
+    handleSearch(params) {
+      console.log(params)
+      /* const res = await api(params) */
+    }
+  }
 }
 </script>
 <style lang="css" scoped></style>

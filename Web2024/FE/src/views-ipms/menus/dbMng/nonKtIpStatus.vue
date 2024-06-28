@@ -41,23 +41,26 @@ export default {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       componentList: [
-        { key: 'SOffice', props: { label: '노드국' } },
+        { key: 'SOffice', props: { prop_parameterKey: 'sicisofficescode', label: '노드국' } },
         { key: 'IpMngProgress', props: {} },
         { key: 'InputType', props: { prop_parameterKey: 'sipBlock', label: 'IP정보' } },
         { key: 'InputType', props: { prop_parameterKey: 'scustname', label: '고객명' } },
         { key: 'InputType', props: { prop_parameterKey: 'sasNum', label: 'AS번호' } },
-        { key: 'LineInformation', props: { prop_options: [
-          {
-            value: 'llnum',
-            label: '전용번호',
-            txtKey: 'sllnum'
-          },
-          {
-            value: 'said',
-            label: 'SAID',
-            txtKey: 'ssaid'
-          }],
-        }
+        { key: 'LineInformation', props: { defaultValue: 'said',
+          prop_parameterKey: 'searchCnd',
+          prop_textFixKey: 'searchWrd',
+          prop_options: [
+            {
+              value: 'llnum',
+              label: '전용번호',
+              txtKey: 'sllnum'
+            },
+            {
+              value: 'said',
+              label: 'SAID',
+              txtKey: 'ssaid'
+            }],
+          }
         },
       ],
       tableColumns: [
