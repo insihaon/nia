@@ -20,6 +20,8 @@ export const componentMap = {
     DatePicker: () => import('@/views-ipms/conditionComponents/DatePicker.vue'),
     // IP 주소, IP 버전
     IpAddress: () => import('@/views-ipms/conditionComponents/IpAddress.vue'),
+    // IP 주소 멀티검색
+    IpAddressMulti: () => import('@/views-ipms/conditionComponents/IpAddressMulti.vue'),
     // 정렬
     SortType: () => import('@/views-ipms/conditionComponents/SortType.vue'),
     // 수용국

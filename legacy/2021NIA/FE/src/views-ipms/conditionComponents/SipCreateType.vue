@@ -8,6 +8,7 @@
       size="mini"
       @change="handleChange()"
     >
+      <el-option v-if="isAllOption" value="" label="전체"></el-option>
       <el-option
         v-for="(option, i) in options"
         :key="i"
@@ -26,6 +27,12 @@ export default {
   name: routeName,
   extends: Base,
   mixins: [commonFunctionMixin],
+  props: {
+    isAllOption: {
+      type: Boolean,
+      default: false
+    }
+  },
   data() {
     return {
       name: routeName,
@@ -41,6 +48,12 @@ export default {
     }
   },
   methods: {
+    init() {
+      if (this.isAllOption) {
+        this.value = ''
+      }
+      this.emitEventToParent(this.getParameter())
+    },
   }
 }
 </script>

@@ -46,7 +46,7 @@ export default {
         { label: '내용', value: 'content' },
         { label: '작성자', value: 'user' },
       ],
-      value: '',
+      value: 'title',
       word: ''
     }
   },
@@ -63,6 +63,9 @@ export default {
     handleChange(key, value) {
       this.emitEventToParent([{ key, value }])
     },
+    getParameter() {
+      return [{ key: 'searchCnd', value: this.value }, { key: 'searchWrd', value: this.word }]
+    }
   }
 }
 </script>

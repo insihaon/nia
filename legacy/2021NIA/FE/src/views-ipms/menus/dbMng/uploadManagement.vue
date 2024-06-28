@@ -89,9 +89,10 @@ export default {
   },
   methods: {
     onClickSearch() {
+      const [searchBgDe, searchEndDe] = this.dateVal
+      const param = { sSuccessYn: this.succVal, searchBgDe: searchBgDe ? this.moment(searchBgDe).format('YYYY-MM-DD') : '', searchEndDe: searchEndDe ? this.moment(searchEndDe).format('YYYY-MM-DD') : '' }
+      console.log(param)
       /*
-      const [ searchBgDe, searchEndDe ] = dateVal
-      const param = { sSuccessYn: this.succVal, searchBgDe, searchEndDe }
       const res = await api(param)
       */
     }

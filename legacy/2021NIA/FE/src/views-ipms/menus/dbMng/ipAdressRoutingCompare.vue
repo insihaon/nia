@@ -69,7 +69,8 @@ export default {
           }
         },
         { key: 'Progress', props: {} },
-        { key: 'ExceptionYN', props: {} }
+        { key: 'ExceptionYN', props: {} },
+        { key: 'IpAddressMulti', props: {} }
       ],
       tableColumns: [
         { prop: '', label: '구분', align: 'center', sortable: true, columnVisible: true, showOverflow: true },

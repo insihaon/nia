@@ -42,9 +42,9 @@ export default {
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       componentList: [
         { key: 'SsvcLineType', props: { lvl: 3 } },
-        { key: 'SOffice', props: {} },
-        { key: 'SipCreateType', props: {} },
-        { key: 'IpAddress', props: {} },
+        { key: 'SOffice', props: { prop_parameterKey: 'srssofficescode' } },
+        { key: 'SipCreateType', props: { isAllOption: true } },
+        { key: 'IpAddress', props: { isAllOption: true, defaultValue: '' } },
         { key: 'InputType', props: { prop_parameterKey: 'smodelname', label: '모델명' } },
         { key: 'InputType', props: { prop_parameterKey: 'sipHostNm', label: '장비명' } },
         { key: 'IncludeYN', props: { prop_parameterKey: 'sprorityYn', label: '대표여부' } },
@@ -65,7 +65,9 @@ export default {
   },
   methods: {
     handleSearch(requestParameter) {
+      Object.assign(requestParameter, { sipHostTypeCd: 'HT0010' })
       console.log(requestParameter)
+      /* const res = await api(requestParameter) */
     }
   },
 }

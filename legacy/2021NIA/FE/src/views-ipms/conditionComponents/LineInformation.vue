@@ -45,12 +45,21 @@ export default {
     isAllOption: {
       type: Boolean,
       default: false
+    },
+    prop_parameterKey: {
+      type: String,
+      default: null
+    },
+    prop_textFixKey: {
+      type: String,
+      default: null
     }
   },
   data() {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      parameterKey: 'llSrchTypeCd',
       value: 'llnum',
       word: '',
       options: [
@@ -72,7 +81,6 @@ export default {
       ],
     }
   },
-  // llSrchTypeCd
   methods: {
     init() {
       if (this.prop_options !== null) {
@@ -81,22 +89,29 @@ export default {
       if (this.defaultValue !== null) {
         this.value = this.defaultValue
       }
+      if (this.prop_parameterKey !== null) {
+        this.parameterKey = this.prop_parameterKey
+      }
       this.handleChange()
       this.handleChangeWord()
     },
     handleChange() {
       this.word = ''
-      this.emitEventToParent([{ key: 'llSrchTypeCd', value: this.value }])
+      this.emitEventToParent([{ key: this.parameterKey, value: this.value }])
     },
     handleChangeWord() {
       const params = []
-      this.options.forEach(op => {
-        if (op.value === this.value) {
-          params.push({ key: op.txtKey, value: this.word })
-        } else {
-          params.push({ key: op.txtKey, value: '' })
-        }
-      })
+      if (this.prop_textFixKey !== null) {
+        params.push({ key: this.prop_textFixKey, value: this.word })
+      } else {
+        this.options.forEach(op => {
+          if (op.value === this.value) {
+            params.push({ key: op.txtKey, value: this.word })
+          } else {
+            params.push({ key: op.txtKey, value: '' })
+          }
+        })
+      }
       this.emitEventToParent(params)
     }
   }

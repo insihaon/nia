@@ -52,7 +52,7 @@ export default {
         { prop: '', label: '상태', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
       ],
       componentList: [
-        { key: 'IpAddress', isShowSelectBox: false },
+        { key: 'IpAddress', props: { isShowSelectBox: false } },
         {
           key: 'ApplyStatus', props: {
           prop_parameterKey: 'searchCnd',

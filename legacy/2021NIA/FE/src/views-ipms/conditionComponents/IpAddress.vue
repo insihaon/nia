@@ -11,6 +11,7 @@
       :style="{'width': isShowInput ? '200px': '100%'}"
       @change="()=> emitEventToParent([{ key: 'sipVersionTypeCd', value }])"
     >
+      <el-option v-if="isAllOption" value="" label="전체"></el-option>
       <el-option
         v-for="(option, i) in [
           { label: 'IPv4', value: 'CV0001' },
@@ -40,6 +41,10 @@ export default {
   extends: Base,
   mixins: [commonFunctionMixin],
   props: {
+    isAllOption: {
+      type: Boolean,
+      default: false
+    },
     defaultValue: {
       type: String,
       default: null
@@ -64,8 +69,6 @@ export default {
       value: 'CV0001',
       word: ''
     }
-  },
-  mounted () {
   },
   methods: {
     init() {
