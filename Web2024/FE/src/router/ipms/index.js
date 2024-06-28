@@ -414,7 +414,7 @@ export const ipmsRoute = Object.freeze([
         children: [
           {
             path: 'iFomsConfigInfoMng',
-            component: () => null,
+            component: () => import('@/views-ipms/menus/operInfoMng/postAuditInfoMng/iFomsConfigInfoMng'),
             name: 'IFomsConfigInfoMng',
             meta: { title: 'i-FOMS 시설 config 구성 정보관리', affix: false }
           },
@@ -427,7 +427,7 @@ export const ipmsRoute = Object.freeze([
         children: [
           {
             path: 'whoisInfoOpenMng',
-            component: () => null,
+            component: () => import('@/views-ipms/menus/operInfoMng/whoIs/whoisInfoOpenMng'),
             name: 'WhoisInfoOpenManagement',
             meta: { title: 'WHOIS 정보공개 관리', affix: false }
           },
@@ -440,13 +440,13 @@ export const ipmsRoute = Object.freeze([
         children: [
           {
             path: 'batchLinkInfo',
-            component: () => null,
+            component: () => import('@/views-ipms/menus/operInfoMng/linkMng/batchLinkInfo'),
             name: 'BatchLinkInformation',
             meta: { title: '배치 연동 정보', affix: false }
           },
           {
-            path: 'ZipCodeLinkMng',
-            component: () => null,
+            path: 'zipCodeLinkMng',
+            component: () => import('@/views-ipms/menus/operInfoMng/linkMng/zipCodeLinkMng'),
             name: 'ZipCodeLinkManagement',
             meta: { title: '우편번호 연동관리', affix: false }
           },
