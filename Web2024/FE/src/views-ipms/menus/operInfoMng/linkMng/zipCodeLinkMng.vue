@@ -44,29 +44,29 @@
         </el-col>
       </el-row>
     </div>
-    <el-col style="height: calc(100% - 150px);" :span="24">
+    <el-col :span="24">
       <compTable
         :prop-table-height="'calc(100% - 80px)'"
         :prop-column="tableColumns"
-        :prop-is-pagination="false"
-        :prop-is-check-box="false"
+        :prop-is-pagination="true"
+        :prop-is-check-box="true"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
       >
         <template slot="text-description">
           <span>
-            조회결과
+            Upload
           </span>
         </template>
       </compTable>
     </el-col>
   </el-row>
+
 </template>
 <script>
 import { Base } from '@/min/Base.min'
 import CompTable from '@/components/elTable/CompTable.vue'
-
-const routeName = 'UploadManagement'
+const routeName = 'ZipCodeLinkMng'
 
 export default {
   name: routeName,
@@ -76,27 +76,25 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      succVal: '',
-      dateVal: [],
-      tableColumns: [
-        { prop: '', label: 'No', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: 'Upload 파일명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: 'Upload 일자', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: '등록자', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: 'Upload 성공 여부', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-      ],
+        succVal: '',
+        dateVal: [],
+        tableColumns: [
+          { prop: '', label: 'Upload 파일명', align: 'center', columnVisible: true, showOverflow: true },
+          { prop: '', label: 'Upload 일자', align: 'center', columnVisible: true, showOverflow: true },
+          { prop: '', label: '등록자', align: 'center', columnVisible: true, showOverflow: true },
+          { prop: '', label: 'Upload 성공 여부', align: 'center', columnVisible: true, showOverflow: true },
+        ],
     }
   },
   methods: {
-    onClickSearch() {
-      const [searchBgDe, searchEndDe] = this.dateVal
-      const param = { sSuccessYn: this.succVal, searchBgDe: searchBgDe ? this.moment(searchBgDe).format('YYYY-MM-DD') : '', searchEndDe: searchEndDe ? this.moment(searchEndDe).format('YYYY-MM-DD') : '' }
-      console.log(param)
-      /*
+    onClickSearch(requestParameter) {
+       /*
+      const param = { status: this.succVal, searchBgDe, searchEndDe }
       const res = await api(param)
       */
     }
-  },
+  }
 }
 </script>
-<style lang="css" scoped></style>
+<style lang="css" scoped>
+</style>
