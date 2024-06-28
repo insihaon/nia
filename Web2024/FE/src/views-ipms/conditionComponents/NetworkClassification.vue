@@ -10,7 +10,7 @@
       size="mini"
       @change="handleChangeLvl1"
     >
-      <el-option label="전체" value="ALL"><span class="w-100 h-100 d-inline-block" @click="toggleAll(0)">전체</span></el-option>
+      <el-option label="전체" value="" />
       <el-option
         v-for="(option, i) in lvlOptions1"
         :key="i"
@@ -21,12 +21,12 @@
     <!-- LEVEL 2 -->
     <el-select
       v-model="localValue2"
-      :disabled="localValue1 === '' || localValue1 === 'ALL'"
+      :disabled="localValue1 === ''"
       collapse-tags
       size="mini"
       @change="handleChangeLvl2"
     >
-      <el-option label="전체" value="ALL"><span class="w-100 h-100 d-inline-block" @click="toggleAll(1)">전체</span></el-option>
+      <el-option label="전체" value="" />
       <el-option
         v-for="(option, i) in lvlOptions2"
         :key="i"
@@ -37,12 +37,12 @@
     <!-- LEVEL 3 -->
     <el-select
       v-model="localValue3"
-      :disabled="localValue2 === '' || localValue2 === 'ALL'"
+      :disabled="localValue2 === ''"
       collapse-tags
       size="mini"
       @change="handleChangeLvl3"
     >
-      <el-option label="전체" value="ALL"><span class="w-100 h-100 d-inline-block" @click="toggleAll(2)">전체</span></el-option>
+      <el-option label="전체" value="" />
       <el-option
         v-for="(option, i) in lvlOptions3"
         :key="i"
@@ -100,7 +100,7 @@ export default {
           { label: 'biz KORNET-Express 서비스', value: 'CL0016' },
           { label: 'biz KORNET-Hotline', value: 'CL0017' },
       ],
-      localValue1: 'ALL',
+      localValue1: '',
       localValue2: '',
       localValue3: ''
     }
@@ -115,17 +115,17 @@ export default {
       const params = { ssvcHgroupCd: this.localValue1 }
       /*
       const res = await api(params)
-      this.lvlOptions[key2] = res.result
+      this.lvlOptions2 = res.result
       */
      this.resetLocalValue(1)
      this.resetLocalValue(2)
      this.emitEventToParent(this.getParameter())
     },
     handleChangeLvl2() {
-      const params = { ssvcHgroupCd: this.localValue1, ssvcMainClsCode: this.localValue2 }
+      const params = { ssvcMainClsCode: this.localValue2 }
       /*
       const res = await api(params)
-      this.lvlOptions[key3] = res.result
+      this.lvlOptions3 = res.result
       */
      this.resetLocalValue(2)
      this.emitEventToParent(this.getParameter())
@@ -152,24 +152,6 @@ export default {
           break
       }
     },
-    toggleAll(lvl) {
-      switch (lvl) {
-        case 0:
-          this.localValue1 = this.localValue1 === 'ALL' ? '' : 'ALL'
-          this.localValue2 = ''
-          this.localValue3 = ''
-          break
-        case 1:
-          this.localValue2 = this.localValue2 === 'ALL' ? '' : 'ALL'
-          this.localValue3 = ''
-          break
-        case 2:
-          this.localValue3 = this.localValue3 === 'ALL' ? '' : 'ALL'
-          break
-        default:
-          break
-      }
-    }
   }
 }
 </script>
