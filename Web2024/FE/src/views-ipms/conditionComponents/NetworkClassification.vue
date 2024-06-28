@@ -5,7 +5,7 @@
     </label>
     <!-- LEVEL 1 -->
     <el-select
-      v-model="localValue[0]"
+      v-model="localValue1"
       collapse-tags
       size="mini"
       @change="handleChangeLvl1"
@@ -20,8 +20,8 @@
     </el-select>
     <!-- LEVEL 2 -->
     <el-select
-      v-model="localValue[1]"
-      :disabled="localValue[0] === '' || localValue[0] === 'ALL'"
+      v-model="localValue2"
+      :disabled="localValue1 === '' || localValue1 === 'ALL'"
       collapse-tags
       size="mini"
       @change="handleChangeLvl2"
@@ -36,8 +36,8 @@
     </el-select>
     <!-- LEVEL 3 -->
     <el-select
-      v-model="localValue[2]"
-      :disabled="localValue[1] === '' || localValue[1] === 'ALL'"
+      v-model="localValue3"
+      :disabled="localValue2 === '' || localValue2 === 'ALL'"
       collapse-tags
       size="mini"
       @change="handleChangeLvl3"
@@ -66,10 +66,6 @@ export default {
     label: {
       type: String,
       default: '구분'
-    },
-    lvl: {
-      type: Number,
-      default: 1
     }
   },
   data() {
@@ -104,20 +100,19 @@ export default {
           { label: 'biz KORNET-Express 서비스', value: 'CL0016' },
           { label: 'biz KORNET-Hotline', value: 'CL0017' },
       ],
-      localValue: { 0: 'ALL', 1: '', 2: '' },
+      localValue1: 'ALL',
+      localValue2: '',
+      localValue3: ''
     }
   },
   computed: {
-    // isDisabledLvlThree() {
-    //   return this.localValue[0] === 'ALL' || this.localValue[1] === 'ALL' || this.localValue[1] === ''
-    // }
   },
   methods: {
     init() {
       this.$emit('update-value', this.getParameter())
     },
     handleChangeLvl1() {
-      const params = { ssvcLineTypeCd: this.localValue[1] }
+      const params = { ssvcHgroupCd: this.localValue1 }
       /*
       const res = await api(params)
       this.lvlOptions[key2] = res.result
@@ -127,7 +122,7 @@ export default {
      this.emitEventToParent(this.getParameter())
     },
     handleChangeLvl2() {
-      const params = { ssvcLineTypeCd: this.localValue[1], ssvcGroupCd: this.localValue[2] }
+      const params = { ssvcHgroupCd: this.localValue1, ssvcMainClsCode: this.localValue2 }
       /*
       const res = await api(params)
       this.lvlOptions[key3] = res.result
@@ -139,35 +134,40 @@ export default {
       this.emitEventToParent(this.getParameter())
     },
      getParameter() {
-      const params = []
-      const parameterKeys = ['ssvcHgroupCd', 'ssvcMainClsCode', 'ssvcSubClsCode']
-
-      parameterKeys.forEach((key, idx) => {
-        if (this.lvl >= (idx)) {
-          let value = ''
-          if (Array.isArray(this.localValue[idx])) {
-            value = this.localValue[idx].join(';')
-          } else {
-            value = this.localValue[idx] ?? ''
-          }
-          params.push({ key, value })
-        }
-      })
-
-      return params
+      return [
+        { key: 'ssvcHgroupCd', value: this.localValue1 },
+        { key: 'ssvcMainClsCode', value: this.localValue2 },
+        { key: 'ssvcSubClsCode', value: this.localValue3 }
+      ]
     },
-
     resetLocalValue(lvl) {
-      this.$set(this.localValue, lvl, 'ALL')
-    },
-    getFullOptions(lvl) {
-      return this.lvlOptions[lvl].map(option => option.value).filter(v => v !== 'ALL')
+      switch (lvl) {
+        case 1:
+          this.localValue2 = ''
+          break
+        case 2:
+          this.localValue3 = ''
+          break
+        default:
+          break
+      }
     },
     toggleAll(lvl) {
-      if (this.localValue[lvl]?.includes('ALL')) {
-        this.$set(this.localValue, lvl, '')
-      } else {
-        this.$set(this.localValue, lvl, 'ALL')
+      switch (lvl) {
+        case 0:
+          this.localValue1 = this.localValue1 === 'ALL' ? '' : 'ALL'
+          this.localValue2 = ''
+          this.localValue3 = ''
+          break
+        case 1:
+          this.localValue2 = this.localValue2 === 'ALL' ? '' : 'ALL'
+          this.localValue3 = ''
+          break
+        case 2:
+          this.localValue3 = this.localValue3 === 'ALL' ? '' : 'ALL'
+          break
+        default:
+          break
       }
     }
   }
