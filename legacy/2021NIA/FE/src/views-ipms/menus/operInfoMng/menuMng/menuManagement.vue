@@ -103,7 +103,6 @@
             <img src="@/assets/images/ipms/content/btn_save02_off.gif" alt="저장" @click="onSaveMenu()" />
           </el-button>
         </div>
-
       </el-col>
     </div>
   </el-row>

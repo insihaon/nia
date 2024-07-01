@@ -452,13 +452,13 @@ export const ipmsRoute = Object.freeze([
           },
           {
             path: 'batchLinkHistStatus',
-            component: () => null,
+            component: () => import('@/views-ipms/menus/operInfoMng/linkMng/batchLinkHistStatus'),
             name: 'BatchLinkHistStatus',
             meta: { title: '배치 연동 이력현황', affix: false }
           },
           {
             path: 'neossLinkErrorStatus',
-            component: () => null,
+            component: () => import('@/views-ipms/menus/operInfoMng/linkMng/neossLinkErrorStatus'),
             name: 'NeossLinkErrorStatus',
             meta: { title: 'NEOSS 연동 오류 현황', affix: false }
           }
@@ -471,25 +471,25 @@ export const ipmsRoute = Object.freeze([
         children: [
           {
             path: 'tacsLinkInfoMng',
-            component: () => null,
+            component: () => import('@/views-ipms/menus/operInfoMng/tacsMng/tacsLinkInfoMng'),
             name: 'TacsLinkInfoManagement',
             meta: { title: 'TACS 연동 정보관리', affix: false }
           },
           {
             path: 'equipInfoMngByOrg',
-            component: () => null,
+            component: () => import('@/views-ipms/menus/operInfoMng/tacsMng/equipInfoMngByOrg'),
             name: 'TacsEquipInfoManagementByOrg',
             meta: { title: '조직별 장비 정보관리', affix: false }
           },
           {
             path: 'commandInfoManagementByEuip',
-            component: () => null,
+            component: () => import('@/views-ipms/menus/operInfoMng/tacsMng/commandInfoManagementByEuip'),
             name: 'TacsCommandInfoManagementByEquip',
             meta: { title: '장비별 명령어 정보관리', affix: false }
           },
           {
             path: 'tacsLinkHistStatus',
-            component: () => null,
+            component: () => import('@/views-ipms/menus/operInfoMng/tacsMng/tacsLinkHistStatus'),
             name: 'TacsLinkHistStatus',
             meta: { title: 'TACS 연동 이력현황', affix: false }
           }
