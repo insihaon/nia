@@ -27,7 +27,7 @@
 import { Base } from '@/min/Base.min'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
 import CompTable from '@/components/elTable/CompTable.vue'
-const routeName = 'BatchLinkInformation'
+const routeName = 'TacsCommandInfoManagementByEquip'
 
 export default {
   name: routeName,
@@ -49,8 +49,8 @@ export default {
             defaultValue: '',
             prop_options: [
               { label: '전체', value: '' },
-              { label: '연동 ID', value: 'sifId' },
-              { label: '시스템 명', value: 'ssystemNm' },
+              { label: '연동 ID', value: 'siId' },
+              { label: '시스템 명', value: 'credateId' },
             ]
           }
         }

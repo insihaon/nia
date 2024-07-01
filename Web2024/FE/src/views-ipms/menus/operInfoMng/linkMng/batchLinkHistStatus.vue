@@ -15,7 +15,7 @@
       >
         <template slot="text-description">
           <span>
-            배치 연동 정보 조회결과
+            배치 연동 이력 조회결과
           </span>
         </template>
       </compTable>
@@ -27,7 +27,7 @@
 import { Base } from '@/min/Base.min'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
 import CompTable from '@/components/elTable/CompTable.vue'
-const routeName = 'BatchLinkInformation'
+const routeName = 'BatchLinkHistStatus'
 
 export default {
   name: routeName,
@@ -38,22 +38,19 @@ export default {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
         tableColumns: [
-          { prop: '', label: '연동 ID', align: 'center', columnVisible: true, showOverflow: true },
-          { prop: '', label: '시스템 명', align: 'center', columnVisible: true, showOverflow: true },
-          { prop: '', label: '연동 형태', align: 'center', columnVisible: true, showOverflow: true },
-          { prop: '', label: '사용여부', align: 'center', columnVisible: true, showOverflow: true },
+          { prop: '', label: '인터페이스 ID', align: 'center', columnVisible: true, showOverflow: true },
+          { prop: '', label: '관련 시스템명', align: 'center', columnVisible: true, showOverflow: true },
+          { prop: '', label: '관련 테이블명', align: 'center', columnVisible: true, showOverflow: true },
+          { prop: '', label: '작업내역', align: 'center', columnVisible: true, showOverflow: true },
+          { prop: '', label: '작업내역 상세', align: 'center', columnVisible: true, showOverflow: true },
+          { prop: '', label: '작업 종료여부', align: 'center', columnVisible: true, showOverflow: true },
+          { prop: '', label: 'DATA 입력 시작시각', align: 'center', columnVisible: true, showOverflow: true },
+          { prop: '', label: 'DATA 입력 종료시각', align: 'center', columnVisible: true, showOverflow: true },
         ],
       componentList: [
-        {
-          key: 'BoardSearchCondition', props: {
-            defaultValue: '',
-            prop_options: [
-              { label: '전체', value: '' },
-              { label: '연동 ID', value: 'sifId' },
-              { label: '시스템 명', value: 'ssystemNm' },
-            ]
-          }
-        }
+        { key: 'InputType', props: { label: '인터페이스 ID' } },
+        { key: 'IncludeYN', props: { label: '작업 종료여부' } },
+        { key: 'DateRange', props: { label: 'DATA 입력 \n시작/종료시각' } }
       ]
     }
   },

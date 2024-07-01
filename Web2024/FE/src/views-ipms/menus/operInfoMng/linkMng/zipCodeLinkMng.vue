@@ -44,6 +44,22 @@
         </el-col>
       </el-row>
     </div>
+    <div class="content_result my-2">
+      <div class="section_tit">
+        <span>Upload</span>
+        <em> (업로드시 5분 이상 소요될 수 있습니다.) </em> </div>
+      <table class="tbl_list">
+        <thead>
+          <tr>
+            <th class="first" style="width: 20%">파일 Upload</th>
+            <th scope="col" style="text-align : left; background : none">
+              <input type="file" size="500">
+              <el-button class="float-right"> Upload</el-button>
+            </th>
+          </tr>
+        </thead>
+      </table>
+    </div>
     <el-col :span="24">
       <compTable
         :prop-table-height="'calc(100% - 80px)'"
@@ -55,7 +71,7 @@
       >
         <template slot="text-description">
           <span>
-            Upload
+            조회결과
           </span>
         </template>
       </compTable>
