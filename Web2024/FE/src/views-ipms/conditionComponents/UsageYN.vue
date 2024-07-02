@@ -32,6 +32,10 @@ export default {
       type: String,
       default: ''
     },
+    prop_options: {
+      type: Array,
+      default: null
+    },
     prop_parameterKey: {
       type: String,
       default: null
