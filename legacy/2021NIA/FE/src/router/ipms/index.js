@@ -502,31 +502,31 @@ export const ipmsRoute = Object.freeze([
         children: [
           {
             path: 'equipInfoMngByOrg',
-            component: () => null,
+            component: () => import('@/views-ipms/menus/operInfoMng/ipAdressRoutingCompare/equipInfoMngByOrg'),
             name: 'EquipInfoManagementByOrg',
             meta: { title: '조직별 장비 정보 관리', affix: false }
           },
           {
             path: 'commandInfoManagementByEuip',
-            component: () => null,
+            component: () => import('@/views-ipms/menus/operInfoMng/ipAdressRoutingCompare/commandInfoManagementByEuip'),
             name: 'CommandInfoManagementByEquip',
             meta: { title: '장비별 명령어 정보관리', affix: false }
           },
           {
             path: 'wirelessIpPriorInfoMng',
-            component: () => null,
+            component: () => import('@/views-ipms/menus/operInfoMng/ipAdressRoutingCompare/wirelessIpPriorInfoMng'),
             name: 'WirelessIpPriorInfoManagement',
             meta: { title: '무선IP 사전 정보관리', affix: false }
           },
           {
             path: 'routingLinkHistStatus',
-            component: () => null,
+            // component: () => import('@/views-ipms/menus/operInfoMng/ipAdressRoutingCompare/routingLinkHistStatus'),
             name: 'RoutingLinkHistStatus',
             meta: { title: '라우팅 연동 이력현황', affix: false }
           },
           {
             path: 'wiredIpPriorInfoMng',
-            component: () => null,
+            // component: () => import('@/views-ipms/menus/operInfoMng/ipAdressRoutingCompare/wiredIpPriorInfoMng'),
             name: 'WiredIpPriorInfoManagement',
             meta: { title: '유선IP 사전 정보관리', affix: false }
           },

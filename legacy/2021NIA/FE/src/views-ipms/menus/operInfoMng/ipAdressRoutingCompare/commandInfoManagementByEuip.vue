@@ -9,7 +9,7 @@
         :prop-table-height="'calc(100% - 80px)'"
         :prop-column="tableColumns"
         :prop-is-pagination="true"
-        :prop-is-check-box="true"
+        :prop-is-check-box="false"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
       >
@@ -27,7 +27,7 @@
 import { Base } from '@/min/Base.min'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
 import CompTable from '@/components/elTable/CompTable.vue'
-const routeName = 'TacsCommandInfoManagementByEquip'
+const routeName = 'CommandInfoManagementByEquip'
 
 export default {
   name: routeName,
@@ -40,11 +40,13 @@ export default {
         tableColumns: [
           { prop: '', label: '장비타입', align: 'center', columnVisible: true, showOverflow: true },
           { prop: '', label: '장비명령어', align: 'center', columnVisible: true, showOverflow: true },
+          { prop: '', label: '할당판단문구', align: 'center', columnVisible: true, showOverflow: true },
+          { prop: '', label: '할당가능여부', align: 'center', columnVisible: true, showOverflow: true },
           { prop: '', label: '명령어순서', align: 'center', columnVisible: true, showOverflow: true },
           { prop: '', label: '사용여부', align: 'center', columnVisible: true, showOverflow: true },
         ],
       componentList: [
-        { key: 'ApplyStatus', props: { label: '장비타입',
+        { key: 'EquipmentType', props: {
           prop_parameterKey: 'sfcltType',
             prop_options: [
               { label: '전체', value: '' },
@@ -54,19 +56,6 @@ export default {
               { label: 'KORNET_CENTER-CISCO_CRS', value: 'KORNET_CENTER-CISCO_CRS' },
               { label: 'KORNET_CENTER-NOKIA_7950XRS', value: 'KORNET_CENTER-NOKIA_7950XRS' },
               { label: 'KORNET_GHT-JUNIPER', value: 'KORNET_GHT-JUNIPER' },
-              { label: 'MOBILE-CISCO-NCS6K', value: 'MOBILE-CISCO-NCS6K' },
-              { label: 'MOBILE-CISCO_7606', value: 'MOBILE-CISCO_7606' },
-              { label: 'MOBILE-CISCO_CRS', value: 'MOBILE-CISCO_CRS' },
-              { label: 'MOBILE-CISCO_NEXUS', value: 'MOBILE-CISCO_NEXUS' },
-              { label: 'MOBILE-JUNIPER-QFX10008', value: 'MOBILE-JUNIPER-QFX10008' },
-              { label: 'MOBILE-JUNIPER-QFX10008(IER)', value: 'MOBILE-JUNIPER-QFX10008(IER)' },
-              { label: 'MOBILE-JUNIPER_MX960', value: 'MOBILE-JUNIPER_MX960' },
-              { label: 'MOBILE_SG-CISCO_ASR1009', value: 'MOBILE_SG-CISCO_ASR1009' },
-              { label: 'PREMIUM_ICOD-CISCO_NEXUS', value: 'PREMIUM_ICOD-CISCO_NEXUS' },
-              { label: 'PREMIUM_IPT-JUNIPER', value: 'PREMIUM_IPT-JUNIPER' },
-              { label: 'PREMIUM_PE-CISCO_CRS', value: 'PREMIUM_PE-CISCO_CRS' },
-              { label: 'PREMIUM_PE-JUNIPER', value: 'PREMIUM_PE-JUNIPER' },
-              { label: 'PREMIUM_iCOD-CISCO_C6500', value: 'PREMIUM_iCOD-CISCO_C6500' }
             ]
           }
         },

@@ -72,4 +72,6 @@ export const componentMap = {
     AuthLevel: () => import('@/views-ipms/conditionComponents/AuthLevel.vue'),
     // 구분 (상품 관리)
     NetworkClassification: () => import('@/views-ipms/conditionComponents/NetworkClassification.vue'),
+    // 장비 타입
+    EquipmentType: () => import('@/views-ipms/conditionComponents/EquipmentType.vue')
 }
