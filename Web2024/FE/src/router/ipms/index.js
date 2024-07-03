@@ -520,13 +520,13 @@ export const ipmsRoute = Object.freeze([
           },
           {
             path: 'routingLinkHistStatus',
-            // component: () => import('@/views-ipms/menus/operInfoMng/ipAdressRoutingCompare/routingLinkHistStatus'),
+            component: () => import('@/views-ipms/menus/operInfoMng/ipAdressRoutingCompare/routingLinkHistStatus'),
             name: 'RoutingLinkHistStatus',
             meta: { title: '라우팅 연동 이력현황', affix: false }
           },
           {
             path: 'wiredIpPriorInfoMng',
-            // component: () => import('@/views-ipms/menus/operInfoMng/ipAdressRoutingCompare/wiredIpPriorInfoMng'),
+            component: () => import('@/views-ipms/menus/operInfoMng/ipAdressRoutingCompare/wiredIpPriorInfoMng'),
             name: 'WiredIpPriorInfoManagement',
             meta: { title: '유선IP 사전 정보관리', affix: false }
           },
