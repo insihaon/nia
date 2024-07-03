@@ -20,6 +20,7 @@
     </el-select>
     <!-- LEVEL 2 -->
     <el-select
+      v-if="!prop_options"
       v-model="localValue2"
       :disabled="localValue1 === ''"
       collapse-tags
@@ -36,6 +37,7 @@
     </el-select>
     <!-- LEVEL 3 -->
     <el-select
+      v-if="!prop_options"
       v-model="localValue3"
       :disabled="localValue2 === ''"
       collapse-tags
@@ -66,7 +68,19 @@ export default {
     label: {
       type: String,
       default: '구분'
-    }
+    },
+    prop_options: {
+      type: Array,
+      default: null
+    },
+    prop_parameterKey: {
+      type: String,
+      default: null
+    },
+     defaultValue: {
+      type: String,
+      default: null
+    },
   },
   data() {
     return {
@@ -109,6 +123,9 @@ export default {
   },
   methods: {
     init() {
+      if (this.prop_options && this.prop_options !== null) {
+        this.lvlOptions1 = this.prop_options
+      }
       this.$emit('update-value', this.getParameter())
     },
     handleChangeLvl1() {
@@ -134,8 +151,14 @@ export default {
       this.emitEventToParent(this.getParameter())
     },
      getParameter() {
+      let keyName
+      if (this.prop_parameterKey && this.prop_parameterKey !== null) {
+        keyName = this.prop_parameterKey
+      } else {
+        keyName = 'ssvcHgroupCd'
+      }
       return [
-        { key: 'ssvcHgroupCd', value: this.localValue1 },
+        { key: keyName, value: this.localValue1 },
         { key: 'ssvcMainClsCode', value: this.localValue2 },
         { key: 'ssvcSubClsCode', value: this.localValue3 }
       ]
