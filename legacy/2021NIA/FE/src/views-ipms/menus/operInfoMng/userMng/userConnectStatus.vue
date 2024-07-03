@@ -24,7 +24,7 @@
             label="소속조직"
             modal-name="ModalOrgSearch"
             value-name="sFullOrgNm"
-            :prop_parameter-key="{ sposDeptOrgId: 'sktOrgId', sporEdptOrgNm: 'sFullOrgNm' }"
+            :prop_parameter-key="{ sposDeptOrgId: 'sktOrgId', sporDeptOrgNm: 'sFullOrgNm' }"
             :is-read-only="true"
             class="w-100 d-flex"
             @update-value="setParameterKey"

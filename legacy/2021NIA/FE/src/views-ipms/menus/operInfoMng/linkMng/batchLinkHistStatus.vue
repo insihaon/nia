@@ -48,8 +48,8 @@ export default {
           { prop: '', label: 'DATA 입력 종료시각', align: 'center', columnVisible: true, showOverflow: true },
         ],
       componentList: [
-        { key: 'InputType', props: { label: '인터페이스 ID' } },
-        { key: 'IncludeYN', props: { label: '작업 종료여부' } },
+        { key: 'InputType', props: { label: '인터페이스 ID', prop_parameterKey: 'sifId' } },
+        { key: 'IncludeYN', props: { label: '작업 종료여부', prop_parameterKey: 'sbatchEndYn' } },
         { key: 'DateRange', props: { label: 'DATA 입력 \n시작/종료시각' } }
       ]
     }

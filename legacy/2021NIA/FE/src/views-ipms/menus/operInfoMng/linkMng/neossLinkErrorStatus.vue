@@ -61,7 +61,7 @@ export default {
         },
         {
           key: 'BoardSearchCondition', props: {
-            defaultValue: '',
+            defaultValue: 'ipBlock',
             prop_options: [
               { label: 'IP블럭', value: 'ipBlock' },
               { label: '전용회선번호', value: 'sllnum' },

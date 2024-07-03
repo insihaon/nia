@@ -53,9 +53,9 @@ export default {
         { key: 'InputType', props: { label: 'I/F명', prop_parameterKey: 'sifNm' } },
         { key: 'InputType', props: { label: 'I/F IP', prop_parameterKey: 'sifIp' } },
         { key: 'SortType', props: {
-            sortTypeDefaultVal: 'DAPPLY_DT',
+            sortTypeDefaultVal: 'SHOST_IP',
             label: '정렬', prop_options: [
-              { label: '장비IP', value: 'DAPPLY_DT' },
+              { label: '장비IP', value: 'SHOST_IP' },
               { label: 'I/F명', value: 'SIF_NM' },
             ]
           }

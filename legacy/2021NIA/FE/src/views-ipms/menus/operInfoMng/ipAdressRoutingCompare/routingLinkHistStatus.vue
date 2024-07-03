@@ -77,8 +77,8 @@ export default {
             ]
           }
         },
-        { key: 'InputType', props: { label: '조회IP블럭', prop_parameterKey: 'pipPrifix' } },
-        { key: 'InputType', props: { label: '사용자ID', prop_parameterKey: 'screateId' } },
+        // { key: 'InputType', props: { label: '조회IP블럭', prop_parameterKey: 'pipPrifix' } },
+        // { key: 'InputType', props: { label: '사용자ID', prop_parameterKey: 'screateId' } },
       ]
     }
   },
