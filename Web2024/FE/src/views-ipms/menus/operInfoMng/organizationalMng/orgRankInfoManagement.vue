@@ -68,7 +68,7 @@ export default {
       ],
       componentList: [
         { key: 'SsvcLineType', props: { lvl: 2 } },
-        { key: 'InputType', props: { label: '노드명', prop_parameterKey: 'sscvObjNm' } },
+        { key: 'InputType', props: { label: '노드명', prop_parameterKey: 'ssvcObjNm' } },
       ]
     }
   },

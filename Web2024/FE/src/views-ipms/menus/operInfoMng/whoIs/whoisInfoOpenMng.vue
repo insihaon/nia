@@ -66,27 +66,27 @@ export default {
         ],
       componentList: [
         { key: 'SsvcLineType', props: { label: '계위 정보', lvl: 3 } },
-        { key: 'InputType', props: { label: '사용기관명', prop_parameterKey: 'shostIp' } },
+        { key: 'InputType', props: { label: '사용기관명', prop_parameterKey: 'sorgname' } },
          {
           key: 'ApplyStatus', props: {
           label: '등록현황',
-          prop_parameterKey: 'RboardProgress',
+          prop_parameterKey: 'swhoisresultCd',
           prop_options: [
               { label: '전체', value: '' },
-              { label: 'WHOIS 전송 대기(APP-Kmic간 통신오류)', value: 'RES001' },
-              { label: 'WHOIS 전송(Kmic-Whois 간 통신오류)', value: 'RES002' },
-              { label: 'WHOIS 반송', value: 'RES003' },
-              { label: 'WHOIS 등록완료', value: 'RES004' },
-              { label: 'WHOIS 전송완료(Whois 응답 수신오류)', value: 'RES005' },
+              { label: 'WHOIS 전송 대기(APP-Kmic간 통신오류)', value: '01' },
+              { label: 'WHOIS 전송(Kmic-Whois 간 통신오류)', value: '02' },
+              { label: 'WHOIS 반송', value: '03' },
+              { label: 'WHOIS 등록완료', value: '04' },
+              { label: 'WHOIS 전송완료(Whois 응답 수신오류)', value: '05' },
             ]
           }
         },
         { key: 'ServiceOrg', props: { isMulti: false, sortTypeDefaultVal: 'ALL' } },
-        { key: 'InputType', props: { label: 'IP 주소', prop_parameterKey: 'shostIp' } },
+        { key: 'InputType', props: { label: 'IP 주소', prop_parameterKey: 'searchWrd' } },
         {
           key: 'ApplyStatus', props: {
           label: '작업종류',
-          prop_parameterKey: 'RboardProgress',
+          prop_parameterKey: 'srequestCd',
           prop_options: [
               { label: '전체', value: '' },
               { label: '신규 신청서', value: 'RES001' },
@@ -97,16 +97,16 @@ export default {
           }
         },
         { key: 'DateRange', props: { label: '변경일' } },
-        { key: 'InputType', props: { label: 'I/F명', prop_parameterKey: 'sifNm' } },
-        { key: 'InputType', props: { label: 'I/F IP', prop_parameterKey: 'sifIp' } },
-        { key: 'SortType', props: {
-            sortTypeDefaultVal: 'DAPPLY_DT',
-            label: '정렬', prop_options: [
-              { label: '장비IP', value: 'DAPPLY_DT' },
-              { label: 'I/F명', value: 'SIF_NM' },
+        { key: 'ApplyStatus', props: { label: '입력구분',
+          prop_parameterKey: 'stransKind',
+          prop_options: [
+              { label: '전체', value: '' },
+              { label: '시스템 입력', value: 'SYSTEM' },
+              { label: '관리자 입력', value: 'ADMIN' },
+              { label: '사용자 입력', value: 'USER' },
             ]
           }
-        },
+        }
       ],
       tableItems: [
         { title: '전송대기', value: '275' },

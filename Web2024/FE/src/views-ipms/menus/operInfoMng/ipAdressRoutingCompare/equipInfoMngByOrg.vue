@@ -61,7 +61,7 @@ export default {
             }
           }
         },
-        { key: 'InputType', props: { label: '장비타입', prop_parameterKey: 'sfclttype' } },
+        { key: 'InputType', props: { label: '장비타입', prop_parameterKey: 'sfcltType' } },
         { key: 'UsageYN', props: { label: '사용여부', prop_parameterKey: 'suseYn',
            defaultValue: '',
             prop_options: [

@@ -8,6 +8,7 @@
       size="mini"
       @change="handleChange()"
     >
+      <el-option v-if="isAllOption" valua="" label="전체" />
       <el-option
         v-for="(option, i) in options"
         :key="i"
@@ -30,6 +31,14 @@ export default {
     label: {
       type: String,
       default: '권한등급'
+    },
+    isAllOption: {
+      type: Boolean,
+      default: true
+    },
+    defaultValue: {
+      type: String,
+      default: null
     }
   },
   data() {
@@ -39,7 +48,6 @@ export default {
       parameterKey: 'suserGradeCd',
       value: '',
       options: [
-        { label: '전체', value: '' },
         { label: '시스템 관리자', value: 'UR0001' },
         { label: '서비스망 관리자', value: 'UR0003' },
         { label: '본부운용자', value: 'UR0004' },
@@ -49,6 +57,12 @@ export default {
     }
   },
   methods: {
+    init() {
+      if (this.defaultValue !== null) {
+        this.value = this.defaultValue
+      }
+      this.emitEventToParent(this.getParameter())
+    }
   }
 }
 </script>

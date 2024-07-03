@@ -38,7 +38,7 @@ export default {
     prop_parameterKey: {
       type: String,
       default: null
-    }
+    },
   },
   data() {
     return {

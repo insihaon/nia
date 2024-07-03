@@ -48,8 +48,17 @@ export default {
           { prop: '', label: '타입', align: 'center', columnVisible: true, showOverflow: true },
         ],
       componentList: [
-        { key: 'SsvcLineType', props: { lvl: 3, defaultValueLvl1: 'ALL' } },
-        { key: 'InputType', props: { label: '장비타입', prop_parameterKey: 'sfclttype' } }
+        { key: 'SsvcLineType', props: { lvl: 3, defaultValueLvl1: 'ALL',
+          propsLvlOptions: {
+              1: [
+                { label: 'KORNET', value: 'CL0001' },
+                { label: 'PREMIUM', value: 'CL0002' },
+                { label: 'MOBILE', value: 'CL0003' }
+              ]
+            }
+          }
+        },
+        { key: 'InputType', props: { label: '장비타입', prop_parameterKey: 'sfcltType' } }
       ]
     }
   },

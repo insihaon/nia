@@ -46,8 +46,10 @@ export default {
           { prop: '', label: 'NextHop', align: 'center', columnVisible: true, showOverflow: true },
         ],
       componentList: [
-        { key: 'NetworkClassification', props: { label: '구분', prop_parameterKey: 'skindCd',
+        { key: 'ApplyStatus', props: { label: '구분', prop_parameterKey: 'skindCd',
+          defaultValue: '',
             prop_options: [
+              { label: '전체', value: '' },
               { label: 'KORNET', value: 'KORNET' },
               { label: 'PREMIUM', value: 'PREMIUM' }
             ]
