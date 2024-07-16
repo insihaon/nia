@@ -112,29 +112,18 @@ export default {
   },
   methods: {
    async onLoadIpBlockData(requestParameter) {
-       const param = {
-        searchBgnDe: requestParameter.searchBgnDe !== '' ? requestParameter.searchBgnDe : null,
-        searchEndDe: requestParameter.searchEndDe !== '' ? requestParameter.searchEndDe : null,
-        searchWrd: requestParameter.searchWrd,
-        sipCreateSeqCd: requestParameter.sipCreateSeqCd,
-        sipCreateTypeCd: requestParameter.sipCreateTypeCd,
-        sipVersionTypeCd: requestParameter.sipVersionTypeCd,
-        sortOrdr: requestParameter.sortOrdr,
-        sortType: requestParameter.sortType,
-        ssvcLineTypeCd: requestParameter.ssvcLineTypeCd,
-      }
-       try {
-        const res = await /*  */(param)
+      /* try {
+        const res = await api(requestParameter)
         this.IpBlockData = res?.result
-        } catch (error) {
-          console.error(error)
-      }
+      } catch (error) {
+        console.error(error)
+      } */
     },
     selectedRowItems(row) {
       this.selectedItems = row
     },
     handleOpenTableDetail(row) {
-      this.$refs.ModalIpBlockDetail.open({ row: row })
+      this.$refs.ModalIpBlockDetail.open({ row })
     },
   },
 }
