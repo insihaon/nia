@@ -53,8 +53,8 @@ export const ipmsRoute = Object.freeze([
         meta: { title: 'IP 배정', affix: false }
       },
       {
-        path: 'ipunAllocatedStatuRs',
-        component: () => import('@/views-ipms/menus/ipAssignMng/ipunAllocatedStatuRs'),
+        path: 'ipunAllocatedStatus',
+        component: () => import('@/views-ipms/menus/ipAssignMng/ipunAllocatedStatus'),
         name: 'IpunAllocatedStatus',
         meta: { title: 'IP 미배정 현황', affix: false }
       },
@@ -306,31 +306,31 @@ export const ipmsRoute = Object.freeze([
           }
         ]
       },
-      {
-        path: '/operInfoMng/productMng',
-        component: AppMain,
-        meta: { title: '상품관리', affix: false },
-        children: [
-          {
-            path: 'serviceNetworkManagement',
-            component: () => import('@/views-ipms/menus/operInfoMng/productMng/serviceNetworkManagement'),
-            name: 'ServiceNetworkManagement',
-            meta: { title: '서비스망 관리', affix: false }
-          },
-          {
-            path: 'serviceCodeManagement',
-            component: () => import('@/views-ipms/menus/operInfoMng/productMng/serviceCodeManagement'),
-            name: 'ServiceCodeManagement',
-            meta: { title: '서비스 코드 관리', affix: false }
-          },
-          {
-            path: 'productManagement',
-            component: () => import('@/views-ipms/menus/operInfoMng/productMng/productManagement'),
-            name: 'ProductManagement',
-            meta: { title: '상품관리', affix: false }
-          }
-        ]
-      },
+      // {
+      //   path: '/operInfoMng/productMng',
+      //   component: AppMain,
+      //   meta: { title: '상품관리', affix: false },
+      //   children: [
+      //     {
+      //       path: 'serviceNetworkManagement',
+      //       component: () => import('@/views-ipms/menus/operInfoMng/productMng/serviceNetworkManagement'),
+      //       name: 'ServiceNetworkManagement',
+      //       meta: { title: '서비스망 관리', affix: false }
+      //     },
+      //     {
+      //       path: 'serviceCodeManagement',
+      //       component: () => import('@/views-ipms/menus/operInfoMng/productMng/serviceCodeManagement'),
+      //       name: 'ServiceCodeManagement',
+      //       meta: { title: '서비스 코드 관리', affix: false }
+      //     },
+      //     {
+      //       path: 'productManagement',
+      //       component: () => import('@/views-ipms/menus/operInfoMng/productMng/productManagement'),
+      //       name: 'ProductManagement',
+      //       meta: { title: '상품관리', affix: false }
+      //     }
+      //   ]
+      // },
       {
         path: '/operInfoMng/userMng',
         component: AppMain,
@@ -381,45 +381,45 @@ export const ipmsRoute = Object.freeze([
           }
         ]
       },
-      {
-        path: '/operInfoMng/thresholdManagement',
-        component: AppMain,
-        meta: { title: '임계치관리', affix: false },
-        children: [
-          {
-            path: 'thresholdStandardManagement',
-            component: () => import('@/views-ipms/menus/operInfoMng/thresholdManagement/thresholdStandardManagement'),
-            name: 'ThresholdStandardManagement',
-            meta: { title: '임계치 기준관리', affix: false }
-          },
-        ]
-      },
-      {
-        path: '/operInfoMng/privateAsMng',
-        component: AppMain,
-        meta: { title: '사설 AS관리', affix: false },
-        children: [
-          {
-            path: 'privateAsUseStatus',
-            component: () => import('@/views-ipms/menus/operInfoMng/privateAsMng/privateAsUseStatus'),
-            name: 'PrivateAsUseStatus',
-            meta: { title: '사설 AS 사용현황', affix: false }
-          },
-        ]
-      },
-      {
-        path: '/operInfoMng/postAuditInfoMng',
-        component: AppMain,
-        meta: { title: '사후감사정보관리', affix: false },
-        children: [
-          {
-            path: 'iFomsConfigInfoMng',
-            component: () => import('@/views-ipms/menus/operInfoMng/postAuditInfoMng/iFomsConfigInfoMng'),
-            name: 'IFomsConfigInfoMng',
-            meta: { title: 'i-FOMS 시설 config 구성 정보관리', affix: false }
-          },
-        ]
-      },
+      // {
+      //   path: '/operInfoMng/thresholdManagement',
+      //   component: AppMain,
+      //   meta: { title: '임계치관리', affix: false },
+      //   children: [
+      //     {
+      //       path: 'thresholdStandardManagement',
+      //       component: () => import('@/views-ipms/menus/operInfoMng/thresholdManagement/thresholdStandardManagement'),
+      //       name: 'ThresholdStandardManagement',
+      //       meta: { title: '임계치 기준관리', affix: false }
+      //     },
+      //   ]
+      // },
+      // {
+      //   path: '/operInfoMng/privateAsMng',
+      //   component: AppMain,
+      //   meta: { title: '사설 AS관리', affix: false },
+      //   children: [
+      //     {
+      //       path: 'privateAsUseStatus',
+      //       component: () => import('@/views-ipms/menus/operInfoMng/privateAsMng/privateAsUseStatus'),
+      //       name: 'PrivateAsUseStatus',
+      //       meta: { title: '사설 AS 사용현황', affix: false }
+      //     },
+      //   ]
+      // },
+      // {
+      //   path: '/operInfoMng/postAuditInfoMng',
+      //   component: AppMain,
+      //   meta: { title: '사후감사정보관리', affix: false },
+      //   children: [
+      //     {
+      //       path: 'iFomsConfigInfoMng',
+      //       component: () => import('@/views-ipms/menus/operInfoMng/postAuditInfoMng/iFomsConfigInfoMng'),
+      //       name: 'IFomsConfigInfoMng',
+      //       meta: { title: 'i-FOMS 시설 config 구성 정보관리', affix: false }
+      //     },
+      //   ]
+      // },
       {
         path: '/operInfoMng/whoIs',
         component: AppMain,
