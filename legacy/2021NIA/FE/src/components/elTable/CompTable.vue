@@ -209,7 +209,6 @@ export default {
       this.propOnPageSizeChange(temp_pagin.currentPage)
     },
   },
-  watch: {},
 }
 </script>
 <style scoped></style>
