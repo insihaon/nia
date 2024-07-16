@@ -28,6 +28,11 @@ copyright notice above does not evidence any actual or * intended publication of
       @header-dragend="fn_headerDragend(...arguments, propGridMenuId, propGridIndx, propColumn, propSetColunm)"
     >
       <el-table-column v-if="propIsCheckBox" type="selection" align="center" width="35" />
+      <el-table-column v-if="propIsCheckRadioBox" align="center" width="35">
+        <template slot-scope="scope">
+          <el-radio v-model="radio" :label="scope.$index" @change="handleRadioChange(scope)"></el-radio>
+        </template>
+      </el-table-column>
       <el-table-column
         v-for="(item, index) in propColumn"
         v-if="item.columnVisible"
@@ -96,6 +101,7 @@ export default {
       },
     }, //데이터
     propIsCheckBox: { type: Boolean, default: false }, //체크박스 유무
+    propIsCheckRadioBox: { type: Boolean, default: false }, //체크박스(Radio) 유무
     propOnSelect: { type: Function, default: () => {} }, //체크시
     propMaxSelect: { type: Number, default: 0 }, //체크갯수 최대
     propSelected: {
@@ -147,15 +153,24 @@ export default {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       tableSelectTemp: [],
+      tableRadioCheck: {},
+      radio:''
     }
   },
   computed: {
   },
   methods: {
+    handleRadioChange(scope) {
+      const { row } = scope;
+      this.tableRadioCheck = { ...row } 
+      this.$emit('update:propRadioSelected', this.tableRadioCheck); 
+    },
+
     fn_select(all, current) {
       if (!this.propIsCheckBox) {
         return
       }
+
 
       this.propOnSelect(all, current)
 
