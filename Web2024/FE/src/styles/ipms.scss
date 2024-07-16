@@ -2804,6 +2804,14 @@
     border: 1px solid #808080;
   }
   
+
+
+  /* el-tree */
+  .el-tree-node:before, .el-tree-node:after{
+    border: none !important;
+  }
+}
+
   /*  table  */
   table.form {
     table-layout: fixed;
@@ -2837,9 +2845,8 @@
     }
   }
   /* el-tree */
-  .el-tree-node:before, .el-tree-node:after {
-    border: none !important;
-  }
+.el-tree-node:before, .el-tree-node:after {
+  border: none !important;
 }
 .ipms-dialog, #ipms {
   .el-dialog__body {
