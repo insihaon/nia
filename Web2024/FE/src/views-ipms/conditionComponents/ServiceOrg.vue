@@ -11,7 +11,7 @@
       size="mini"
       @change="handleChange()"
     >
-      <el-option label="전체" value="ALL"><span class="w-100 h-100 d-inline-block" @click="handleClickAll">전체</span></el-option>
+      <el-option v-if="isAllOption" label="전체" value="ALL"><span class="w-100 h-100 d-inline-block" @click="handleClickAll">전체</span></el-option>
       <el-option
         v-for="(option, i) in options"
         :key="i"
@@ -34,12 +34,24 @@ export default {
   extends: Base,
   mixins: [commonFunctionMixin],
   props: {
+    defaultValue: {
+      type: String,
+      default: null
+    },
     isMulti: {
+      type: Boolean,
+      default: true
+    },
+    isAllOption: {
       type: Boolean,
       default: true
     },
     limit: {
       type: Number,
+      default: null
+    },
+    prop_options: {
+      type: Array,
       default: null
     }
   },
@@ -78,6 +90,12 @@ export default {
   methods: {
     init() {
       this.values = this.isMulti ? [] : ''
+      if (this.prop_options !== null) {
+        this.options = this.prop_options
+      }
+      if (this.defaultValue !== null) {
+        this.values = this.defaultValue
+      }
       Eventbus.$on(EventType.changeLvl1, (params) => {
         this.onLoadServiceList(params)
       })

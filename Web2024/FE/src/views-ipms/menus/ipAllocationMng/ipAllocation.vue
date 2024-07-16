@@ -8,6 +8,7 @@
     <el-col ref="tableContainer" :span="24">
       <compTable
         :prop-table-height="'calc(100% - 80px)'"
+        :prop-data="tableDatas"
         :prop-column="tableColumns"
         :prop-is-pagination="false"
         :prop-is-check-box="false"
@@ -21,6 +22,7 @@
         </template>
       </compTable>
     </el-col>
+    <ModalIpBlockDivision ref="ModalIpBlockDivision" />
   </el-row>
 </template>
 <script>
@@ -28,12 +30,13 @@ import { Base } from '@/min/Base.min'
 import CompTable from '@/components/elTable/CompTable.vue'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
 import tableHeightMixin from '@/mixin/tableHeightMixin'
+import ModalIpBlockDivision from '@/views-ipms/modal/ModalIpBlockDivision.vue'
 
 const routeName = 'IpAllocation'
 
 export default {
   name: routeName,
-  components: { CompTable, DynamicComponentLoader },
+  components: { CompTable, DynamicComponentLoader, ModalIpBlockDivision },
   extends: Base,
   mixins: [tableHeightMixin],
   data() {
@@ -73,23 +76,43 @@ export default {
         { key: 'InputType', props: { label: '라우팅 중복 개수', prop_parameterKey: 'nsummaryCnt' } },
       ],
       tableColumns: [
-        { prop: '', label: '노드국', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: '수용국', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: '오더번호', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: 'SAID', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: '', label: '서비스망', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: '', label: '본부', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: '', label: '노드', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: '', label: '공인/사설', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: '', label: '서비스', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: '', label: 'IP블록', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'allocationStatus', label: '할당상태', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: '', label: '회선', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: '', label: '작업일자', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: '', label: '전용번호', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: '접수일', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: '희망일', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: '고객명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: '상품명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: '이용목적', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+
+        { prop: '', label: '장비명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: '', label: 'I/F명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: '', label: 'Summary 포함 여부', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: '', label: 'DB-라우팅 일치 여부', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: '', label: '라우팅 중복 개수', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'division', label: '분할', align: 'center', sortable: true, columnVisible: true, showOverflow: true,
+          formatter: (row, col, value, index) => {
+            return this.$createElement('el-button', {
+              class: row.allocationStatus === 'Y' ? 'red' : '',
+              on: { click: () => {
+                this.$refs.ModalIpBlockDivision.open({ row })
+            } } }, row.allocationStatus === 'Y' ? '불가' : '분할')
+          }
+        },
+        { prop: '', label: '비고', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
       ],
+      tableDatas: [
+        { allocationStatus: 'Y' },
+        { allocationStatus: 'N' },
+      ]
     }
   },
   methods: {
     handleSearch(requestParameter) {
       console.log(requestParameter)
-    }
+    },
   },
 }
 </script>

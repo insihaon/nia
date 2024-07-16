@@ -49,6 +49,10 @@ export default {
       type: String,
       default: null
     },
+    defaultWord: {
+      type: String,
+      default: null
+    },
     label: {
       type: String,
       default: 'IP주소'
@@ -74,6 +78,9 @@ export default {
     init() {
       if (this.defaultValue !== null) {
         this.value = this.defaultValue
+      }
+      if (this.defaultWord !== null) {
+        this.word = this.defaultWord
       }
       const params = []
       if (this.isShowSelectBox) {

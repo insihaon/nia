@@ -74,6 +74,13 @@ export default {
       tableDatas: []
     }
   },
+  mounted () {
+    const { ipAddress } = this.$route.query
+    if (ipAddress) {
+      const compInfo = this.componentList.find(v => v.key === 'IpAddress')
+      this.$set(compInfo.props, 'defaultWord', ipAddress)
+    }
+  },
   methods: {
     handleSearch(requestParameter) {
       console.log(requestParameter)

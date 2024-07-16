@@ -11,7 +11,7 @@
       size="mini"
       @change="handleChangeLvl1"
     >
-      <el-option label="전체" value="ALL"><span class="w-100 h-100 d-inline-block" @click="toggleAll(1)">전체</span></el-option>
+      <el-option label="전체" value=""><span class="w-100 h-100 d-inline-block" @click="toggleAll(1)">전체</span></el-option>
       <el-option
         v-for="(option, i) in lvlOptions[key1]"
         :key="i"
@@ -29,7 +29,7 @@
       size="mini"
       @change="handleChangeLvl2"
     >
-      <el-option label="전체" value="ALL"><span class="w-100 h-100 d-inline-block" @click="toggleAll(2)">전체</span></el-option>
+      <el-option label="전체" value=""><span class="w-100 h-100 d-inline-block" @click="toggleAll(2)">전체</span></el-option>
       <el-option
         v-for="(option, i) in lvlOptions[key2]"
         :key="i"

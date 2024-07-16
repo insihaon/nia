@@ -11,7 +11,7 @@
       placeholder="전체"
       @change="handleChange()"
     >
-      <el-option label="전체" value="ALL"><span class="w-100 h-100 d-inline-block" @click="handleClickAll">전체</span></el-option>
+      <el-option label="전체" value=""><span class="w-100 h-100 d-inline-block" @click="handleClickAll">전체</span></el-option>
       <el-option
         v-for="(option, i) in options"
         :key="i"

@@ -10,6 +10,7 @@
     <el-col ref="tableContainer" :span="24">
       <compTable
         :prop-table-height="isDashboard ? 300 :'calc(100% - 80px)'"
+        :prop-data="tableDatas"
         :prop-column="tableColumns"
         :prop-is-pagination="false"
         :prop-is-check-box="false"
@@ -23,6 +24,7 @@
         </template>
       </compTable>
     </el-col>
+    <ModalOrderAssignInfomation ref="ModalOrderAssignInfomation" />
   </el-row>
 </template>
 <script>
@@ -30,11 +32,13 @@ import { Base } from '@/min/Base.min'
 import CompTable from '@/components/elTable/CompTable.vue'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
 import tableHeightMixin from '@/mixin/tableHeightMixin'
+import ModalOrderAssignInfomation from '@/views-ipms/modal/ModalOrderAssignInfomation.vue'
+
 const routeName = 'NeOssOrder'
 
 export default {
   name: routeName,
-  components: { CompTable, DynamicComponentLoader },
+  components: { CompTable, DynamicComponentLoader, ModalOrderAssignInfomation },
   extends: Base,
   mixins: [tableHeightMixin],
   props: {
@@ -98,7 +102,19 @@ export default {
         { prop: '', label: '고객명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: '', label: '상품명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: '', label: '이용목적', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: '', label: '할당', align: 'center', sortable: true, columnVisible: true, showOverflow: true,
+          formatter: (row, col, value, index) => {
+            return this.$createElement('el-button', {
+              props: {
+                size: 'mini'
+              },
+              on: { click: () => {
+                  this.$refs.ModalOrderAssignInfomation.open({ row })
+              } } }, '할당')
+          }
+        },
       ],
+      tableDatas: [{ }]
     }
   },
   methods: {

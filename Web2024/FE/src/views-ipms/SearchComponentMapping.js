@@ -2,7 +2,6 @@
     IPMS Search Component Define
     * Rule
         - (default값이 있을 경우)최상단에서 props: { defaultValue }를 정의하여 최하위 value값을 설정한다.
-            => 최하단 컴포넌트에서는 props 단방향 변경 에러에 유의하여 computed의 get, set을 사용하여 값을 변경하고 이벤트를 상위로 전달한다.
         - 최하단 컴포넌트가 select일 때 default options이 다를 경우 최상단에서 props: { 추가할 option : 값 }을 추가하여 정의한다.
         - 최하단 컴포넌트에 label과 최상단 label이 다를 경우 props : { label }을 추가하여 정의한다.
         - 계위(=서비스망) 컴포넌트를 사용할 경우 props : { lvl } 옵션을 추가하여 level을 정의한다.

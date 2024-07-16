@@ -188,7 +188,7 @@
   }
   button {
     overflow: visible;
-    border: none;
+    // border: none;
     background: 0;
     vertical-align: middle;
     cursor: pointer;
@@ -205,18 +205,7 @@
       border: solid 1px #3a3a3a;
     }
   }
-  .optionRow {
-    label {
-      min-width: 120px;
-      background-image: -webkit-gradient(linear, left top, right top, from(rgba(0, 0, 0, 0.0)), to(rgba(0, 0, 0, 0.05)));
-      white-space: pre-line; 
-      overflow-wrap: break-word; 
-    }
-    .optionItem {
-      display: flex;
-      align-items: center;
-    }
-  }
+  
 
   dl,
   dt,
@@ -255,11 +244,6 @@
       color: #434343;
       text-decoration: none;
     }
-  }
-
-  hr {
-    border: 1px;
-    border-collapse: collapse;
   }
 
   legend,
@@ -872,7 +856,7 @@
     position: relative;
     float: left;
     width: 100%;
-    padding: 0px 50px;
+    padding: 0px 15px;
 
     .content_result {
       position: relative;
@@ -2852,10 +2836,50 @@
       width: auto;
     }
   }
-
   /* el-tree */
-  .el-tree-node:before, .el-tree-node:after{
+  .el-tree-node:before, .el-tree-node:after {
     border: none !important;
+  }
+}
+.ipms-dialog, #ipms {
+  .el-dialog__body {
+    padding: 15px 10px;
+  }
+  .el-table .el-table__row {
+    td .cell {
+      font-size: 13px;
+      color: #222222;
+      line-height: 23px;
+    }
+    .el-button {
+      border: none;
+      color: #3344dd;
+      background: none;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+    .red.el-button {
+      border: none;
+      color: #cc2929;
+      background: none;
+      cursor: default;
+      &:hover {
+        text-decoration: none;
+      }
+    }
+  }
+  .optionRow {
+    label {
+      min-width: 120px;
+      background-image: -webkit-gradient(linear, left top, right top, from(rgba(0, 0, 0, 0.0)), to(rgba(0, 0, 0, 0.05)));
+      white-space: pre-line; 
+      overflow-wrap: break-word; 
+    }
+    .optionItem {
+      display: flex;
+      align-items: center;
+    }
   }
 }
 
