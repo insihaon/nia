@@ -19,6 +19,7 @@ copyright notice above does not evidence any actual or * intended publication of
       :data="propData"
       :height="propTableHeight"
       :row-class-name="propHighlight"
+      @cell-click="handleCellClick"
       @row-dblclick="propOnDblClick"
       @row-click="propOnClick"
       @row-contextmenu="fn_contextmenu"
@@ -30,7 +31,7 @@ copyright notice above does not evidence any actual or * intended publication of
       <el-table-column v-if="propIsCheckBox" type="selection" align="center" width="35" />
       <el-table-column v-if="propIsCheckRadioBox" align="center" width="35">
         <template slot-scope="scope">
-          <el-radio v-model="radio" :label="scope.$index" @change="handleRadioChange(scope)"></el-radio>
+          <el-radio v-model="radio" :label="scope.$index" @change="() => handleRadioChange(scope)"></el-radio>
         </template>
       </el-table-column>
       <el-table-column
@@ -76,6 +77,9 @@ copyright notice above does not evidence any actual or * intended publication of
         @size-change="fn_onPageSizeChange"
       />
       <!-- :page-sizes="pageSizes" -->
+    </div>
+    <div class="float-right">
+      <slot name="button-container" />
     </div>
     <vue-simple-context-menu ref="propTableContext" element-id="propTable" :options="propRClickOptions" @option-clicked="propOnRClick" />
   </div>
@@ -154,24 +158,24 @@ export default {
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       tableSelectTemp: [],
       tableRadioCheck: {},
-      radio:''
+      tableColItem: {},
+      radio: 0,
+ 
     }
   },
   computed: {
   },
   methods: {
+  
     handleRadioChange(scope) {
-      const { row } = scope;
+      const { row } = scope
       this.tableRadioCheck = { ...row } 
-      this.$emit('update:propRadioSelected', this.tableRadioCheck); 
+      this.$emit('update:propRadioSelected', this.tableRadioCheck)
     },
-
     fn_select(all, current) {
       if (!this.propIsCheckBox) {
         return
       }
-
-
       this.propOnSelect(all, current)
 
       if (this.propMaxSelect == 0) {
@@ -215,6 +219,12 @@ export default {
       var contextmenu = document.querySelector('#facilContextmenu')
       contextmenu.style.left = event.clientX + 'px'
       contextmenu.style.top = event.clientY + 'px'
+    },
+    handleCellClick(row, column, cell, event){
+      const columns = this.$refs.table.columns;
+      const columnIndex = columns.findIndex(col => col.property === column.property);
+      this.$emit('update:propColIndex', columnIndex);
+      this.$emit('update:propSelectRow', row);
     },
     fn_onPageSizeChange(pageSize) {
       var temp_pagin = this.propPaginationData
