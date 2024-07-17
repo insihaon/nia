@@ -54,11 +54,33 @@
             <span v-else>{{ selectedRow.scomment }}</span>
           </td>
         </tr>
+      </table>
 
+      <h4>IP 블록 세부 정보</h4>
+      <table class="form">
+        <tr>
+          <th>시작 IP</th>
+          <td>{{ selectedRow.sipCreateTypeNm }}</td>
+          <th>끝 IP</th>
+          <td>{{ selectedRow.sipCreateSeqNm }}</td>
+        </tr>
+        <tr>
+          <th>총 IP 수</th>
+          <td>{{ selectedRow.sipServiceNetNm }}</td>
+          <th>단위블록수</th>
+          <td>{{ selectedRow.dmodifyDt }}</td>
+        </tr>
+        <tr>
+          <th>사용 IP 수</th>
+          <td>{{ selectedRow.sipVersionTypeNm }}</td>
+          <th>가용 IP 수</th>
+          <td>{{ selectedRow.pipPrefix }}</td>
+        </tr>
       </table>
 
       <div slot="footer" class="dialog-footer">
-        <el-button size="mini" icon="el-icon-edit" @click="handleEditIpBlockData()">수정</el-button>
+        <el-button v-if="type !== 'edit'" size="mini" icon="el-icon-edit" @click="onChangeMode()">수정</el-button>
+        <el-button v-if="type === 'edit'" size="mini" icon="el-icon-edit" @click="handleEditIpBlockData()">수정</el-button>
         <el-button v-if="type !== 'edit'" size="mini" icon="el-icon-edit" @click="handleDeleteIpBlockData()">삭제</el-button>
         <el-button size="mini" type="info" class="el-icon-close" @click.native="close()">
           {{ $t('exit') }}
@@ -86,8 +108,12 @@ export default {
       selectedRow: null,
       sipCreateSeqNm: '',
       scomment: '',
-      type: 'create'
+      type: 'create',
+      IpBlockDetail: []
     }
+  },
+  mounted() {
+    // this.onloadIpDetailList
   },
   methods: {
     onCreated() {
@@ -100,6 +126,19 @@ export default {
     },
     onClose() {
       this.type = 'create'
+    },
+    onChangeMode() {
+      this.type = 'edit'
+    },
+    onloadIpDetailList() {
+     /*  const { key: seq } = this.selectedRow
+      const param = seq
+      try {
+        const res = await apiSelectIpDetailList(param)
+        this.IpBlockDetail = res?.result
+      } catch (error) {
+        console.error(error)
+      } */
     },
     handleDeleteIpBlockData() {
       this.$confirm('데이터를 삭제 하시겠습니까?', '삭제 메세지', {
@@ -123,7 +162,6 @@ export default {
         })
     },
     handleEditIpBlockData(mode) {
-      // this.type = 'edit'
       this.confirm('수정하시겠습니까?', '수정 메시지', {
         confirmButtonText: 'OK',
         cancelButtonText: 'Cancel',

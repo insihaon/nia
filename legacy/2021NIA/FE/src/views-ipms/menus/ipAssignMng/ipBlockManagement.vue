@@ -7,29 +7,33 @@
     />
     <el-col ref="tableContainer" :span="24">
       <compTable
-        :prop-table-height="'calc(100% - 80px)'"
+        :prop-table-height="'calc(100% - 120px)'"
         :prop-column="tableColumns"
         :prop-is-pagination="true"
         :prop-is-check-radio-box="true"
         :prop-data="IpBlockData"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
-        :prop-on-click="handleOpenTableDetail"
+        :prop-on-click="onClcikRow"
         @update:propRadioSelected="selectedRowItems"
+        @update:propColIndex="handleColumnIndexChange"
+        @update:propSelectRow="handleRowChange"
       >
         <template slot="text-description">
           <span>
             IP 블록관리 조회결과
           </span>
         </template>
+        <template slot="button-container">
+          <el-button size="mini" icon="el-icon-document-add" @click="handleOpenTableDetail('', 'create')">신규생성</el-button>
+          <el-button size="mini" icon="el-icon-plus" @click="handleOpenTableDetail('', 'generate')">추가생성</el-button>
+          <el-button size="mini" icon="el-icon-tickets" @click="handleOpenTableDetail('', 'detail')">상세</el-button>
+          <el-button size="mini" icon="el-icon-edit-outline" @click="handleOpenTableDetail('', 'edit')">수정</el-button>
+        </template>
       </compTable>
-      <template slot="button-container">
-        <div class="my-1">
-          <el-button type="info" size="small" icon="el-icon-edit" @click="handleOpenTable('', 'create')">등록</el-button>
-        </div>
-      </template>
     </el-col>
     <ModalIpBlockDetail ref="ModalIpBlockDetail" @reloadData="onLoadIpBlockData" />
+    <ModalAddIpBlock ref="ModalAddIpBlock" @reloadData="onLoadIpBlockData" />
   </el-row>
 </template>
 <script>
@@ -38,12 +42,13 @@ import CompTable from '@/components/elTable/CompTable.vue'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
 import tableHeightMixin from '@/mixin/tableHeightMixin'
 import ModalIpBlockDetail from '@/views-ipms/modal/ModalIpBlockDetail.vue'
+import ModalAddIpBlock from '@/views-ipms/modal/ModalAddIpBlock.vue'
 // import { } from '@/api/ipms'
 const routeName = 'IpBlockManagement'
 
 export default {
   name: routeName,
-  components: { CompTable, DynamicComponentLoader, ModalIpBlockDetail },
+  components: { CompTable, DynamicComponentLoader, ModalIpBlockDetail, ModalAddIpBlock },
   extends: Base,
   mixins: [tableHeightMixin],
   data() {
@@ -104,7 +109,9 @@ export default {
           workDate: '2023-07-16'
         }
       ],
-      selectedItems: {}
+      selectedItems: {},
+       selectedColumnIndex: null,
+      selectedRow: null,
     }
   },
   mounted() {
@@ -119,12 +126,31 @@ export default {
         console.error(error)
       } */
     },
-    selectedRowItems(row) {
+    selectedRowItems(row) { // radio 클릭시 row 정보
       this.selectedItems = row
     },
-    handleOpenTableDetail(row) {
-      this.$refs.ModalIpBlockDetail.open({ row })
+     handleColumnIndexChange(columnIndex) { // cell index
+      this.selectedColumnIndex = columnIndex
     },
+    handleRowChange(row) {
+      this.selectedRow = row
+    },
+    onClcikRow(row) {
+       if (this.selectedColumnIndex === 0) {
+        return
+      }
+      this.handleOpenTableDetail(row)
+    },
+    handleOpenTableDetail(row, type) {
+      if (row === null || row === '') {
+        row = this.IpBlockData[0]
+      }
+      if (type === 'create' || type === 'generate') {
+        this.$refs.ModalAddIpBlock.open({ row, type })
+      } else {
+        this.$refs.ModalIpBlockDetail.open({ row, type })
+      }
+    }
   },
 }
 </script>
