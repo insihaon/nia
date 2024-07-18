@@ -467,9 +467,9 @@ export default {
     handleSearch(requestParameter) {
       console.log(requestParameter)
     },
-    handleClickCell(row, column) {
-      console.log(row, column)
-      this.$refs.ModalIpAllocDetail.open(row)
+    handleClickCell(params) {
+      if (params.column.label === '분할') return
+      this.$refs.ModalIpAllocDetail.open({ row: params.row })
     },
     hadleClickIpAllocDetail(row) {
       // this.$refs.ModalIpAllocDetail.open(row)
