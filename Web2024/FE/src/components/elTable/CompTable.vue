@@ -19,7 +19,7 @@ copyright notice above does not evidence any actual or * intended publication of
       :data="propData"
       :height="propTableHeight"
       :row-class-name="propHighlight"
-      @cell-click="handleCellClick"
+      @cell-click="fn_cell_click"
       @row-dblclick="propOnDblClick"
       @row-click="propOnClick"
       @row-contextmenu="fn_contextmenu"
@@ -28,12 +28,7 @@ copyright notice above does not evidence any actual or * intended publication of
       @header-contextmenu="fn_headerContextmenu(...arguments, propGridMenuId, propGridIndx, propColumn, propSetColunm)"
       @header-dragend="fn_headerDragend(...arguments, propGridMenuId, propGridIndx, propColumn, propSetColunm)"
     >
-      <el-table-column v-if="propIsCheckBox" type="selection" align="center" width="35" />
-      <el-table-column v-if="propIsCheckRadioBox" align="center" width="35">
-        <template slot-scope="scope">
-          <el-radio v-model="radio" :label="scope.$index" @change="() => handleRadioChange(scope)"></el-radio>
-        </template>
-      </el-table-column>
+      <el-table-column v-if="propIsCheckBox" :index="0" type="selection" align="center" width="35" />
       <el-table-column
         v-for="(item, index) in propColumn"
         v-if="item.columnVisible"
@@ -78,9 +73,7 @@ copyright notice above does not evidence any actual or * intended publication of
       />
       <!-- :page-sizes="pageSizes" -->
     </div>
-    <div class="float-right">
-      <slot name="button-container" />
-    </div>
+    <slot name="add-features" />
     <vue-simple-context-menu ref="propTableContext" element-id="propTable" :options="propRClickOptions" @option-clicked="propOnRClick" />
   </div>
 </template>
@@ -105,7 +98,6 @@ export default {
       },
     }, //데이터
     propIsCheckBox: { type: Boolean, default: false }, //체크박스 유무
-    propIsCheckRadioBox: { type: Boolean, default: false }, //체크박스(Radio) 유무
     propOnSelect: { type: Function, default: () => {} }, //체크시
     propMaxSelect: { type: Number, default: 0 }, //체크갯수 최대
     propSelected: {
@@ -138,6 +130,7 @@ export default {
     propTableHeight: { type: String | Number, default: 300 }, //테이블 상하너비
     propOnDblClick: { type: Function, default: () => {} }, //더블클릭액션
     propOnClick: { type: Function, default: () => {} }, //클릭액션
+    propOnCellClick: { type: Function, default: () => {} }, //셀클릭액션
     propIsRClick: { type: Boolean, default: false }, //우클릭 액션 유무
     propRClickOptions: {
       type: Array,
@@ -166,12 +159,6 @@ export default {
   computed: {
   },
   methods: {
-  
-    handleRadioChange(scope) {
-      const { row } = scope
-      this.tableRadioCheck = { ...row } 
-      this.$emit('update:propRadioSelected', this.tableRadioCheck)
-    },
     fn_select(all, current) {
       if (!this.propIsCheckBox) {
         return
@@ -209,7 +196,6 @@ export default {
       }
       this.$emit('update:propSelected', this.tableSelectTemp)
     },
-
     fn_contextmenu(row, colunm, event) {
       if (!this.propIsRClick) {
         return
@@ -220,11 +206,9 @@ export default {
       contextmenu.style.left = event.clientX + 'px'
       contextmenu.style.top = event.clientY + 'px'
     },
-    handleCellClick(row, column, cell, event){
-      const columns = this.$refs.table.columns;
-      const columnIndex = columns.findIndex(col => col.property === column.property);
-      this.$emit('update:propColIndex', columnIndex);
-      this.$emit('update:propSelectRow', row);
+    fn_cell_click(row, column, cell, event) {
+      if(column.index === 0) return
+      this.$emit('update:propCellClick', { row, column })
     },
     fn_onPageSizeChange(pageSize) {
       var temp_pagin = this.propPaginationData

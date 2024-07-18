@@ -38,7 +38,7 @@
             <strong>{{ $store.state.user.name || '' }}</strong>
           </li>
           <li>
-            <el-button>
+            <el-button style="border: none">
               <img src="@/assets/images/ipms/common/btn_logout_off.gif" alt="로그아웃" @click="$router.push({ path: '/login' })" />
             </el-button>
           </li>

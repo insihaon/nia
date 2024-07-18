@@ -186,6 +186,10 @@
   area {
     cursor: pointer;
   }
+  .el-button--primary {
+    background: #3a3a3a;
+    color: #fff;
+  }
   button {
     overflow: visible;
     // border: none;
@@ -263,6 +267,7 @@
   }
 
   textarea {
+    width: 100%;
     display: inline-block;
     line-height: 16px;
     padding: 2px 4px;
@@ -1278,7 +1283,8 @@
     tbody.top td {
       vertical-align: top;
     }
-    td.btn_text a {
+    td.btn_text .el-button {
+      border: none;
       color: #3344dd !important;
 
       &:visited {
