@@ -59,7 +59,7 @@
           </div>
           <table id="ipHostTable" class="tbl_list mt5" summary="목록">
             <caption>목록</caption>
-            <!-- <colgroup>
+            <colgroup>
               <col width="5%" />
               <col width="10%" />
               <col width="20%" />
@@ -67,7 +67,7 @@
               <col width="20%" />
               <col width="10%" />
               <col width="25%" />
-            </colgroup> -->
+            </colgroup>
             <thead>
               <tr>
                 <th class="first" scope="col"></th>
@@ -127,23 +127,6 @@
           </table>
         </div>
 
-        <div class="btn_area mt10">
-          <!-- <a href="#none" class="button_w" @click="fnUpdateSprorityYnBtnClick">
-            <span>대표IP 지정</span>
-          </a>
-          <a href="#none" class="button_w" @click="fnUpdateScommentBtnClick">
-            <span>용도 저장</span>
-          </a>
-          <span>
-            <a href="#none" @click="fnCloseBtnClick">
-              <input
-                type="image"
-                src="resources/images/content/btn_close_off.gif"
-                value="닫기"
-              />
-            </a>
-          </span> -->
-        </div>
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button size="mini">

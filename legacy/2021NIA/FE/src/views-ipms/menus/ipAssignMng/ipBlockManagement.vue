@@ -10,10 +10,11 @@
         :prop-table-height="'calc(100% - 120px)'"
         :prop-column="tableColumns"
         :prop-is-pagination="true"
-        :prop-is-check-radio-box="true"
+        :prop-is-check-box="true"
         :prop-data="IpBlockData"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
+        :prop-max-select="1"
         :prop-on-click="onClcikRow"
         @update:propRadioSelected="selectedRowItems"
         @update:propColIndex="handleColumnIndexChange"
@@ -24,11 +25,13 @@
             IP 블록관리 조회결과
           </span>
         </template>
-        <template slot="button-container">
-          <el-button size="mini" icon="el-icon-document-add" @click="handleOpenTableDetail('', 'create')">신규생성</el-button>
-          <el-button size="mini" icon="el-icon-plus" @click="handleOpenTableDetail('', 'generate')">추가생성</el-button>
-          <el-button size="mini" icon="el-icon-tickets" @click="handleOpenTableDetail('', 'detail')">상세</el-button>
-          <el-button size="mini" icon="el-icon-edit-outline" @click="handleOpenTableDetail('', 'edit')">수정</el-button>
+        <template slot="add-features">
+          <div class="float-right">
+            <el-button size="mini" icon="el-icon-document-add" @click="handleOpenTableDetail('', 'create')">신규생성</el-button>
+            <el-button size="mini" icon="el-icon-plus" @click="handleOpenTableDetail('', 'generate')">추가생성</el-button>
+            <el-button size="mini" icon="el-icon-tickets" @click="handleOpenTableDetail('', 'detail')">상세</el-button>
+            <el-button size="mini" icon="el-icon-edit-outline" @click="handleOpenTableDetail('', 'edit')">수정</el-button>
+          </div>
         </template>
       </compTable>
     </el-col>

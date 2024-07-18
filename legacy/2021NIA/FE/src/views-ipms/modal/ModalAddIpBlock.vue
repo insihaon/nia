@@ -73,10 +73,12 @@
                   IP 할당 정보
                 </span>
               </template>
-              <template slot="button-container">
-                <div class="my-1">
-                  <el-button size="mini" icon="el-icon-edit" @click="resetData()">초기화</el-button>
-                  <el-button size="mini" icon="el-icon-edit" @click="close()">등록</el-button>
+              <template slot="add-features">
+                <div class="float-right">
+                  <div class="my-1">
+                    <el-button size="mini" icon="el-icon-edit" @click="resetData()">초기화</el-button>
+                    <el-button size="mini" icon="el-icon-edit" @click="close()">등록</el-button>
+                  </div>
                 </div>
               </template>
             </compTable>
