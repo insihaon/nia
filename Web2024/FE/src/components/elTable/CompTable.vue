@@ -19,6 +19,7 @@ copyright notice above does not evidence any actual or * intended publication of
       :data="propData"
       :height="propTableHeight"
       :row-class-name="propHighlight"
+      @selection-change="handleSelectionChange"
       @cell-click="fn_cell_click"
       @row-dblclick="propOnDblClick"
       @row-click="propOnClick"
@@ -152,13 +153,20 @@ export default {
       tableSelectTemp: [],
       tableRadioCheck: {},
       tableColItem: {},
-      radio: 0,
- 
+      selectedRows: []
     }
+  },
+  mounted() {
+    // this.$nextTick(() => {
+      this.$refs.table.toggleRowSelection(this.propData[0], true);
+    // });
   },
   computed: {
   },
   methods: {
+    handleSelectionChange(val) {
+      this.selectedRows = val;
+    },
     fn_select(all, current) {
       if (!this.propIsCheckBox) {
         return
@@ -194,6 +202,7 @@ export default {
           }
         }
       }
+
       this.$emit('update:propSelected', this.tableSelectTemp)
     },
     fn_contextmenu(row, colunm, event) {
@@ -209,6 +218,9 @@ export default {
     fn_cell_click(row, column, cell, event) {
       if(column.index === 0) return
       this.$emit('update:propCellClick', { row, column })
+    },
+    handleSelectionChange(val) {
+      this.multipleSelection = val
     },
     fn_onPageSizeChange(pageSize) {
       var temp_pagin = this.propPaginationData

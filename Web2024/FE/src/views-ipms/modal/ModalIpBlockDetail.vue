@@ -35,7 +35,7 @@
         </tr>
         <tr>
           <th>서비스망</th>
-          <td>{{ selectedRow.sipServiceNetNm }}</td>
+          <td>{{ selectedRow.ssvcLineTypeNm }}</td>
           <th>작업일시</th>
           <td>{{ selectedRow.dmodifyDt }}</td>
         </tr>
@@ -60,21 +60,21 @@
       <table class="form">
         <tr>
           <th>시작 IP</th>
-          <td>{{ selectedRow.sipCreateTypeNm }}</td>
+          <td>{{ selectedRow.sfirstAddr }}</td>
           <th>끝 IP</th>
-          <td>{{ selectedRow.sipCreateSeqNm }}</td>
+          <td>{{ selectedRow.slastAddr }}</td>
         </tr>
         <tr>
           <th>총 IP 수</th>
-          <td>{{ selectedRow.sipServiceNetNm }}</td>
+          <td>{{ selectedRow.ncnt }}</td>
           <th>단위블록수</th>
-          <td>{{ selectedRow.dmodifyDt }}</td>
+          <td>{{ selectedRow.nclassCnt }}</td>
         </tr>
         <tr>
           <th>사용 IP 수</th>
-          <td>{{ selectedRow.sipVersionTypeNm }}</td>
+          <td>{{ selectedRow.nuseIpCnt }}</td>
           <th>가용 IP 수</th>
-          <td>{{ selectedRow.pipPrefix }}</td>
+          <td>{{ selectedRow.nfreeIpCnt }}</td>
         </tr>
       </table>
 
