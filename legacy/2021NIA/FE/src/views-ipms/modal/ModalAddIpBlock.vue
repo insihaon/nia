@@ -2,6 +2,7 @@
   <div>
     <el-dialog
       v-if="animationVisible"
+      id="ipms"
       v-el-drag-dialog
       :visible.sync="visible"
       :width="domElement.maxWidth + `px`"
@@ -19,78 +20,132 @@
         IP블록생성
         <hr>
       </span>
-      <el-row class="w-100 h-100">
-        <h4>IP 블록 생성</h4>
-        <table class="form">
-          <tr>
-            <th>공인/사설</th>
-            <td><el-select v-model="selectedRow.sipCreateTypeNm" :disabled="isDisabled" /></td>
-            <th>생성차수</th>
-            <td>
-              <el-select v-model="selectedRow.sipCreateSeqNm" disabled />
-            </td>
-          </tr>
-          <tr>
-            <th>서비스망</th>
-            <td>
-              <el-select v-model="selectedRow.sipServiceNetNm" />
-            </td>
-            <th>IP 버전</th>
-            <td> <el-select v-model="selectedRow.dmodifyDt" :disabled="isDisabled" /></td>
-          </tr>
-          <tr class="last">
-            <th>비고</th>
-            <td colspan="3">
-              <el-input v-model="description" type="textarea"></el-input>
-            </td>
-          </tr>
-          <tr>
-            <th>IP 주소</th>
-            <td colspan="3">
-              <el-input
-                v-model="sipCreateSeqNm"
-                style="width: 80%; float: left"
-                type="text"
-              />
-              <el-button size="small" style="float: left; margin: 3px 0 0 5px;" type="info" @click="close()"> 추가 </el-button>
-            </td>
-          </tr>
-        </table>
 
-        <el-row>
-          <el-col :span="24">
-            <compTable
-              :prop-data="tableDatas"
-              :prop-table-height="200"
-              :prop-column="tableColumns"
-              :prop-is-pagination="false"
-              :prop-is-check-box="false"
-              prop-grid-menu-id="inputSpeed"
-              :prop-grid-indx="1"
-            >
-              <template slot="text-description">
-                <span>
-                  IP 할당 정보
-                </span>
-              </template>
-              <template slot="add-features">
-                <div class="float-right">
-                  <div class="my-1">
-                    <el-button size="mini" icon="el-icon-edit" @click="resetData()">초기화</el-button>
-                    <el-button size="mini" icon="el-icon-edit" @click="close()">등록</el-button>
-                  </div>
-                </div>
-              </template>
-            </compTable>
-          </el-col>
-        </el-row>
+      <div id="content" class="layer">
+        <div class="content_result mt0">
+          <h4 class="mt5">IP 블록 생성</h4>
+          <table class="tbl_data entry mt5">
+            <colgroup>
+              <col width="15%" /><col width="35%" /><col width="15%" /><col width="35%" />
+            </colgroup>
+            <tbody>
+              <tr class="top">
+                <th class="first" scope="row">공인/사설</th>
+                <td>
+                  <select id="insertSipCreateTypeCd" :model="selectedRow.sipCreateTypeNm">
+                    <option v-for="option in sipCreateOptions" :key="option.value" :value="option.value">
+                      {{ option.label }}
+                    </option>
+                  </select>
+                </td>
+                <th scope="row">생성차수</th>
+                <td>
+                  <input id="insertSipCreateSeqCd" :model="selectedRow.sipCreateSeqCd" type="text" class="txt w95" readonly="readonly" disabled="disabled" />
+                </td>
+              </tr>
 
-        <h4>IP 블록 처리결과</h4>
-        <el-input v-model="ipBlockResult" type="textarea" />
-      </el-row>
+              <tr>
+                <th class="first" scope="row">서비스망</th>
+                <td>
+                  <select id="insertSsvcLineTypeCd" :model="selectedRow.ssvcLineTypeNm">
+                    <option v-for="option in ssvcLineOptions" :key="option.value" :value="option.value">
+                      {{ option.label }}
+                    </option>
+                  </select>
+                </td>
+                <th scope="row">IP 버전</th>
+                <td>
+                  <select id="insertSipVersionTypeCd" :model="selectedRow.sipVersionTypeNm">
+                    <option v-for="option in sipVersionOptions" :key="option.value" :value="option.value">
+                      {{ option.label }}
+                    </option>
+                  </select>
+                </td>
+              </tr>
+
+              <tr class="last">
+                <th class="first" scope="row">비고</th>
+                <td colspan="3">
+                  <textarea id="insertScomment" v-model="scomment" class="w98" rows="3" maxlength="4000"></textarea>
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+        <div class="content_result">
+          <table class="tbl_data entry">
+            <colgroup>
+              <col width="15%" />
+              <col width="85%" />
+            </colgroup>
+            <tbody>
+              <tr class="top last">
+                <th class="first" scope="row">IP 주소</th>
+                <td>
+                  <input id="insertPipPrefix" model="pipPrefix" type="text" class="txt w50" maxlength="40" width="85%" />
+                  <el-button id="appendBtn" class="mx-2" size="mini" @click="fnAppendBtnClick">추가</el-button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <table id="baseTable" class="tbl_list my-3" summary="목록">
+            <caption>목록</caption>
+            <colgroup>
+              <col width="6%" />
+              <col width="15%" />
+              <col width="15%" />
+              <col width="24%" />
+              <col width="12%" />
+              <col width="20%" />
+              <col width="8%" />
+            </colgroup>
+            <thead>
+              <tr>
+                <th class="first" scope="col">순번</th>
+                <th scope="col">IP 블록</th>
+                <th scope="col">시작 IP</th>
+                <th scope="col">끝 IP</th>
+                <th scope="col">단위블록수</th>
+                <th scope="col">총 IP수</th>
+                <th scope="col">삭제</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(item, index) in ipBlockDetailList" :key="index">
+                <td> {{ index + 1 }}</td>
+                <td> {{ item.pipPrefix }}</td>
+                <td> {{ item.sfirstAddr }}</td>
+                <td> {{ item.slastAddr }}</td>
+                <td> {{ item.nclassCnt }}</td>
+                <td> {{ item.ncnt }}</td>
+                <td> <el-button size="mini" @click="fnRemoveBtnClick()">삭제</el-button> </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="btn_area mt5">
+            <span>
+              <el-button size="mini" @click="fnInitBtnClick()"> 초기화</el-button>
+            </span>
+            <span>
+              <el-button size="mini" @click="fnSaveBtnClick()"> 등록 </el-button>
+            </span>
+          </div>
+        </div>
+
+        <div class="content_result">
+          <h4>IP 블록 처리결과</h4>
+          <div class="handling_msg">
+            <p id="resultMsg"></p>
+          </div>
+        </div>
+      </div>
+      <!-- <input id="commonMsg" type="hidden" value="${resultVo.commonMsg}"> -->
 
       <div slot="footer" class="dialog-footer">
-        <el-button size="mini" type="info" class="el-icon-close" @click.native="close()">
+        <el-button size="mini" class="el-icon-close" @click.native="close()">
           {{ $t('exit') }}
         </el-button>
       </div>
@@ -101,20 +156,40 @@
 <script>
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
-import CompTable from '@/components/elTable/CompTable.vue'
 
 const routeName = 'ModalAddIpBlock'
 
 export default {
   name: routeName,
-  components: { CompTable },
+  components: { },
   directives: { elDragDialog },
   extends: Modal,
   data() {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      selectedRow: null,
+       selectedRow: {
+        sipCreateTypeNm: '',
+        sipCreateSeqCd: '',
+        ssvcLineTypeNm: '',
+        sipVersionTypeCd: ''
+      },
+      sipCreateOptions: [
+        { label: '공인', value: 'CT0001' },
+        { label: 'Bogon', value: 'CT0003' },
+        { label: '유/무선공용', value: 'CT0004' },
+      ],
+      ssvcLineOptions: [
+        { value: 'KORNET', label: 'KORNET' },
+        { value: 'PREMIUM', label: 'PREMIUM' },
+        { value: 'MOBILE', label: 'MOBILE' },
+        { value: 'GNS', label: 'GNS' },
+        { value: 'SCHOOLNET', label: 'SCHOOLNET' }
+      ],
+      sipVersionOptions: [
+        { value: 'CV0001', label: 'IPv4' },
+        { value: 'CV0002', label: 'IPv6' },
+      ],
       sipCreateSeqNm: '',
       scomment: '',
       type: 'create',
@@ -123,14 +198,9 @@ export default {
       ipBlockResult: '',
       description: '',
       viewType: '',
-      tableColumns: [
-        { prop: 'mang', label: '순번', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'mang', label: 'IP 블록', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'mang', label: '시작 IP', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'mang', label: '끝 IP', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'mang', label: '단위블록수', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'mang', label: '총 IP수', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'mang', label: '삭제', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+      sipCreateTypeCd: '',
+      ipBlockDetailList: [
+        { pipPrefix: '112.221.217.32/32', sfirstAddr: '112.221.217.32', slastAddr: '112.221.217.32', nclassCnt: '0.00390625', ncnt: '1', deleteBtn: '삭제' }
       ]
     }
   },
@@ -149,10 +219,18 @@ export default {
       this.domElement.maxWidth = 1200
     },
     onOpen(model, actionMode) {
-     this.selectedRow = model.row
-     this.viewType = model.type
+      if (model.type === 'generate') {
+        if (model.type === null || model.type === '') {
+          this.$set(this, 'selectedRow', model.row[1])
+        } else {
+          this.$set(this, 'selectedRow', model.row)
+        }
+      } else {
+        this.selectedRow = []
+      }
+     this.viewType = this.model.type
     },
-    onClose() {},
+    onClose() { this.selectedRow = [] },
     onloadIpDetailList() {
      /*  const { key: seq } = this.selectedRow
       const param = seq
@@ -163,16 +241,25 @@ export default {
         console.error(error)
       } */
     },
-    resetData() {
-
+    fnAppendBtnClick() {
+      // ip 추가
+    },
+    fnSaveBtnClick() {
+      // ip 등록
+    },
+    fnInitBtnClick() {
+      // 초기화
+    },
+    fnRemoveBtnClick() {
+      // 블럭 삭제
     }
   },
 }
 </script>
 <style lang="scss" scoped>
-.dynamic-container ::v-deep {
-  .optionItem {
-    display: flex;
-  }
-}
+// .dynamic-container ::v-deep {
+//   .optionItem {
+//     display: flex;
+//   }
+// }
 </style>

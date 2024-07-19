@@ -16,9 +16,7 @@
         :prop-grid-indx="1"
         :prop-max-select="1"
         :prop-on-click="onClcikRow"
-        @update:propRadioSelected="selectedRowItems"
-        @update:propColIndex="handleColumnIndexChange"
-        @update:propSelectRow="handleRowChange"
+        @update:propSelected="selectedCheckItems"
       >
         <template slot="text-description">
           <span>
@@ -27,10 +25,10 @@
         </template>
         <template slot="add-features">
           <div class="float-right">
-            <el-button size="mini" icon="el-icon-document-add" @click="handleOpenTableDetail('', 'create')">신규생성</el-button>
-            <el-button size="mini" icon="el-icon-plus" @click="handleOpenTableDetail('', 'generate')">추가생성</el-button>
-            <el-button size="mini" icon="el-icon-tickets" @click="handleOpenTableDetail('', 'detail')">상세</el-button>
-            <el-button size="mini" icon="el-icon-edit-outline" @click="handleOpenTableDetail('', 'edit')">수정</el-button>
+            <el-button size="mini" icon="el-icon-document-add" @click="handleOpenAddIpBlock('', 'create')">신규생성</el-button>
+            <el-button size="mini" icon="el-icon-plus" @click="handleOpenAddIpBlock('', 'generate')">추가생성</el-button>
+            <el-button size="mini" icon="el-icon-tickets" @click="handleOpenIpBlockDetail('', 'detail')">상세</el-button>
+            <el-button size="mini" icon="el-icon-edit-outline" @click="handleOpenIpBlockDetail('', 'edit')">수정</el-button>
           </div>
         </template>
       </compTable>
@@ -69,52 +67,59 @@ export default {
       tableColumns: [
         { prop: 'nipBlockMstSeq', label: '', align: 'center', propIsCheckBox: true, columnVisible: false, showOverflow: true },
         { prop: 'sipCreateTypeNm', label: '공인/사설', align: 'center', sortable: true, propIsCheckBox: true, columnVisible: true, showOverflow: true },
-        { prop: 'sipCreateSeq', label: '생성차수', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'sipServiceNetNm', label: '서비스망', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'sipBlock', label: 'IP 블록', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'sipStartIp', label: '시작 IP', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'sipEndIp', label: '끝 IP', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'unitBlockCount', label: '단위블록수', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'workDate', label: '작업일자', align: 'center', sortable: true, columnVisible: true, showOverflow: true }
+        { prop: 'sipCreateSeqNm', label: '생성차수', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'ssvcLineTypeNm', label: '서비스망', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'pipPrefix', label: 'IP 블록', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'sfirstAddr', label: '시작 IP', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'slastAddr', label: '끝 IP', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'nclassCnt', label: '단위블록수', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'dmodifyDt', label: '작업일자', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'sipCreateSeqCd', label: '생성차수코드', align: 'center', sortable: true, columnVisible: false, showOverflow: true },
+        { prop: 'sipVersionTypeNm', label: '', align: 'center', sortable: true, columnVisible: false, showOverflow: true }
       ],
       IpBlockData: [
-        {
-          nipBlockMstSeq: '1',
-          sipCreateTypeNm: '공인',
-          sipCreateSeq: 'M2020140001',
-          sipServiceNetNm: 'MOBILE',
-          sipBlock: '192.168.0.0/24',
-          sipStartIp: '192.168.0.1',
-          sipEndIp: '192.168.0.254',
-          unitBlockCount: 256,
-          workDate: '2023-07-15'
-        },
-        {
-          nipBlockMstSeq: '2',
-          sipCreateTypeNm: '사설',
-          sipCreateSeq: 'M2020140123',
-          sipServiceNetNm: 'KORNET',
-          sipBlock: '10.0.0.0/24',
-          sipStartIp: '10.0.0.1',
-          sipEndIp: '10.0.0.254',
-          unitBlockCount: 256,
-          workDate: '2023-07-16'
-        },
-        {
-          nipBlockMstSeq: '3',
-          sipCreateTypeNm: '사설',
-          sipCreateSeq: 'M2020143258',
-          sipServiceNetNm: 'PREMIUM',
-          sipBlock: '10.0.0.0/24',
-          sipStartIp: '10.0.0.1',
-          sipEndIp: '10.0.0.254',
-          unitBlockCount: 256,
-          workDate: '2023-07-16'
-        }
-      ],
-      selectedItems: {},
-       selectedColumnIndex: null,
-      selectedRow: null,
+      {
+        nipBlockMstSeq: '1',
+        sipCreateTypeNm: '공인',
+        sipCreateSeqNm: 'M2020140001',
+        ssvcLineTypeNm: 'MOBILE',
+        pipPrefix: '192.168.0.0/24',
+        sfirstAddr: '192.168.0.1',
+        slastAddr: '192.168.0.254',
+        nclassCnt: 256,
+        dmodifyDt: '2023-07-15',
+        sipCreateSeqCd: 'M2020140123',
+        sipVersionTypeNm: 'CV0001'
+      },
+      {
+        nipBlockMstSeq: '2',
+        sipCreateTypeNm: '사설',
+        sipCreateSeqNm: 'M2020140123',
+        ssvcLineTypeNm: 'KORNET',
+        pipPrefix: '10.0.0.0/24',
+        sfirstAddr: '10.0.0.1',
+        slastAddr: '10.0.0.254',
+        nclassCnt: 256,
+        dmodifyDt: '2023-07-16',
+        sipCreateSeqCd: 'M2020140124',
+        sipVersionTypeNm: 'CV0002'
+      },
+      {
+        nipBlockMstSeq: '3',
+        sipCreateTypeNm: '사설',
+        sipCreateSeqNm: 'M2020143258',
+        ssvcLineTypeNm: 'PREMIUM',
+        pipPrefix: '10.0.0.0/24',
+        sfirstAddr: '10.0.0.1',
+        slastAddr: '10.0.0.254',
+        nclassCnt: 256,
+        dmodifyDt: '2023-07-16',
+        sipCreateSeqCd: 'M2020140125',
+        sipVersionTypeNm: 'CV0001'
+      }
+    ],
+      selectedRow: [],
+      selectedChecks: [],
     }
   },
   mounted() {
@@ -129,30 +134,30 @@ export default {
         console.error(error)
       } */
     },
-    selectedRowItems(row) { // radio 클릭시 row 정보
-      this.selectedItems = row
-    },
-     handleColumnIndexChange(columnIndex) { // cell index
-      this.selectedColumnIndex = columnIndex
-    },
-    handleRowChange(row) {
-      this.selectedRow = row
+    selectedCheckItems(row) {
+      this.selectedChecks = row
     },
     onClcikRow(row) {
-       if (this.selectedColumnIndex === 0) {
-        return
-      }
-      this.handleOpenTableDetail(row)
+      this.selectedRow = row
+      // this.handleOpenIpBlockDetail(row)
+      this.$refs.ModalIpBlockDetail.open({ row })
     },
-    handleOpenTableDetail(row, type) {
-      if (row === null || row === '') {
+      handleOpenIpBlockDetail(row, type) {
+    if (this.selectedChecks.length === 0) {
+      row = this.IpBlockData[0]
+    } else {
+      row = this.selectedChecks[1]
+    }
+      this.$refs.ModalIpBlockDetail.open({ row, type })
+    },
+    handleOpenAddIpBlock(row, type) {
+      row = this.selectedChecks
+       if (this.selectedChecks.length === 0) {
         row = this.IpBlockData[0]
-      }
-      if (type === 'create' || type === 'generate') {
-        this.$refs.ModalAddIpBlock.open({ row, type })
       } else {
-        this.$refs.ModalIpBlockDetail.open({ row, type })
+        row = this.selectedChecks[1]
       }
+      this.$refs.ModalAddIpBlock.open({ row, type })
     }
   },
 }
