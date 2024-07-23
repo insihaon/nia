@@ -32,7 +32,7 @@
               <tr class="top">
                 <th class="first" scope="row">공인/사설</th>
                 <td>
-                  <select id="insertSipCreateTypeCd" :model="selectedRow.sipCreateTypeNm">
+                  <select id="insertSipCreateTypeCd" v-model="sipCreateTypeNm" :disabled="isDisabled">
                     <option v-for="option in sipCreateOptions" :key="option.value" :value="option.value">
                       {{ option.label }}
                     </option>
@@ -40,14 +40,14 @@
                 </td>
                 <th scope="row">생성차수</th>
                 <td>
-                  <input id="insertSipCreateSeqCd" :model="selectedRow.sipCreateSeqCd" type="text" class="txt w95" readonly="readonly" disabled="disabled" />
+                  <input id="insertSipCreateSeqCd" v-model="sipCreateSeqCd" type="text" class="txt w95" readonly="readonly" disabled="disabled" />
                 </td>
               </tr>
 
               <tr>
                 <th class="first" scope="row">서비스망</th>
                 <td>
-                  <select id="insertSsvcLineTypeCd" :model="selectedRow.ssvcLineTypeNm">
+                  <select id="insertSsvcLineTypeCd" v-model="ssvcLineTypeNm" :disabled="isDisabled">
                     <option v-for="option in ssvcLineOptions" :key="option.value" :value="option.value">
                       {{ option.label }}
                     </option>
@@ -55,7 +55,7 @@
                 </td>
                 <th scope="row">IP 버전</th>
                 <td>
-                  <select id="insertSipVersionTypeCd" :model="selectedRow.sipVersionTypeNm">
+                  <select id="insertSipVersionTypeCd" v-model="sipVersionTypeNm" :disabled="isDisabled">
                     <option v-for="option in sipVersionOptions" :key="option.value" :value="option.value">
                       {{ option.label }}
                     </option>
@@ -83,7 +83,7 @@
               <tr class="top last">
                 <th class="first" scope="row">IP 주소</th>
                 <td>
-                  <input id="insertPipPrefix" model="pipPrefix" type="text" class="txt w50" maxlength="40" width="85%" />
+                  <input id="insertPipPrefix" v-model="pipPrefix" type="text" class="txt w50" maxlength="40" width="85%" />
                   <el-button id="appendBtn" class="mx-2" size="mini" @click="fnAppendBtnClick">추가</el-button>
                 </td>
               </tr>
@@ -168,16 +168,16 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-       selectedRow: {
-        sipCreateTypeNm: '',
-        sipCreateSeqCd: '',
-        ssvcLineTypeNm: '',
-        sipVersionTypeCd: ''
-      },
+      selectedRow: null,
+      sipCreateTypeNm: '',
+      sipCreateSeqCd: '',
+      ssvcLineTypeNm: '',
+      sipVersionTypeNm: '',
+      sipVersionTypeCd: '',
       sipCreateOptions: [
-        { label: '공인', value: 'CT0001' },
-        { label: 'Bogon', value: 'CT0003' },
-        { label: '유/무선공용', value: 'CT0004' },
+        { label: '공인', value: '공인' },
+        { label: 'Bogon', value: 'Bogon' },
+        { label: '유/무선공용', value: '유/무선공용' },
       ],
       ssvcLineOptions: [
         { value: 'KORNET', label: 'KORNET' },
@@ -199,6 +199,7 @@ export default {
       description: '',
       viewType: '',
       sipCreateTypeCd: '',
+      pipPrefix: '',
       ipBlockDetailList: [
         { pipPrefix: '112.221.217.32/32', sfirstAddr: '112.221.217.32', slastAddr: '112.221.217.32', nclassCnt: '0.00390625', ncnt: '1', deleteBtn: '삭제' }
       ]
@@ -219,14 +220,19 @@ export default {
       this.domElement.maxWidth = 1200
     },
     onOpen(model, actionMode) {
+      this.$set(this, 'selectedRow', model.row)
       if (model.type === 'generate') {
-        if (model.type === null || model.type === '') {
-          this.$set(this, 'selectedRow', model.row[1])
-        } else {
-          this.$set(this, 'selectedRow', model.row)
-        }
+        this.sipCreateTypeNm = this.selectedRow.sipCreateTypeNm
+        this.sipCreateSeqCd = this.selectedRow.sipCreateSeqCd
+        this.ssvcLineTypeNm = this.selectedRow.ssvcLineTypeNm
+        this.sipVersionTypeNm = this.selectedRow.sipVersionTypeNm
+        this.sipVersionTypeCd = this.selectedRow.sipVersionTypeCd
       } else {
-        this.selectedRow = []
+        this.sipCreateTypeNm = ''
+        this.sipCreateSeqCd = ''
+        this.ssvcLineTypeNm = ''
+        this.sipVersionTypeNm = ''
+        this.sipVersionTypeCd = ''
       }
      this.viewType = this.model.type
     },
@@ -241,25 +247,64 @@ export default {
         console.error(error)
       } */
     },
+    fnSaveBtnClick() {
+      // ip 등록성
+      this.confirm('등록하시겠습니까?', 'IP블록생', {
+        confirmButtonText: 'OK',
+        cancelButtonText: 'Cancel',
+        type: 'success',
+      }).then(async () => {
+        try {
+          const param = {
+            nipBlockMstSeq: this.selectedRow.nipBlockMstSeq,
+            sipCreateSeqNm: this.selectedRow.sipCreateSeqNm,
+            scomment: this.selectedRow.scomment,
+          }
+          const res = await /* apiEditIpBlockList */(param)
+          if (res.success) {
+            this.$message('IP블록 수정이 정상적으로 처리되었습니다.')
+            this.$emit('reloadData')
+          }
+        } catch (error) {
+          this.$message.error({ message: `IP블록 수정에 실패했습니다.` })
+          console.error(error)
+        }
+      })
+    },
     fnAppendBtnClick() {
       // ip 추가
-    },
-    fnSaveBtnClick() {
-      // ip 등록
+      if (this.sipCreateTypeNm === '') {
+        this.$message('공인/사설이 미분류입니다. 다시 선택해 주시기 바랍니다.')
+        return
+      }
+       if (this.ssvcLineTypeNm === '') {
+        this.$message('서비스망이 미분류입니다. 다시 선택해 주시기 바랍니다.')
+        return
+      }
+       if (this.sipVersionTypeNm === '') {
+        this.$message('IP버전이 미분류입니다. 다시 선택해 주시기 바랍니다.')
+        return
+      }
+      this.viewType = 'generate'
+        const newIp = {
+        pipPrefix: this.pipPrefix,
+        sfirstAddr: 'temp',
+        slastAddr: 'temp',
+        nclassCnt: 'temp',
+        ncnt: 'temp',
+      }
+       this.ipBlockDetailList.push(newIp)
     },
     fnInitBtnClick() {
       // 초기화
+      this.ipBlockDetailList = []
     },
-    fnRemoveBtnClick() {
+    fnRemoveBtnClick(index) {
       // 블럭 삭제
+      this.ipBlockDetailList.splice(index, 1)
     }
   },
 }
 </script>
 <style lang="scss" scoped>
-// .dynamic-container ::v-deep {
-//   .optionItem {
-//     display: flex;
-//   }
-// }
 </style>
