@@ -109,7 +109,75 @@ export default {
       sipCreateSeqNm: '',
       scomment: '',
       type: 'create',
-      IpBlockDetail: []
+      IpBlockDetail: [
+        {
+          nipBlockMstSeq: '1', //
+          commonMsg: 'SUCCESS',
+          dcreateDt: 'Date@11687',
+          dmodifyDt: '2024-07-16 16:50:10', //
+          nclassCnt: '1,024', //
+          ncnt: '262,144', //
+          nfreeIpCnt: '127,340', //
+          nlastAddr: 'BigInteger@11694',
+          nuseIpCnt: '134,804', //
+          pipPrefix: '192.168.0.0/24', //
+          scomment: '3사 전용회선 연동용 (윤완열 과장님 요청)', //
+          sfirstAddr: '18.0.0.0', //
+          sipCreateSeqCd: 'M2020140123',
+          sipCreateSeqNm: 'M2020140123', //
+          sipCreateTypeNm: '공인', //
+          sipVersionTypeCd: 'CV0001',
+          sipVersionTypeNm: 'IPv4', //
+          slastAddr: '18.255.255.255', //
+          smodifyNm: '전필권',
+          ssvcLineTypeNm: 'MOBILE', //
+        },
+         {
+          nipBlockMstSeq: '2', //
+          commonMsg: 'SUCCESS',
+          dcreateDt: 'Date@11687',
+          dmodifyDt: '2024-07-16 16:50:10', //
+          nclassCnt: '1,024', //
+          ncnt: '262,144', //
+          nfreeIpCnt: '127,340', //
+          nlastAddr: 'BigInteger@11694',
+          nuseIpCnt: '134,804', //
+          pipPrefix: '10.0.0.0/24', //
+          scomment: '3사 전용회선 연동용', //
+          sfirstAddr: '18.0.0.0', //
+          sipCreateSeqCd: 'M2020140124',
+          sipCreateSeqNm: 'M2020140124', //
+          sipCreateTypeNm: 'Bogon', //
+          sipVersionTypeCd: 'CV0001',
+          sipVersionTypeNm: 'IPv4', //
+          slastAddr: '18.255.255.255', //
+          smodifyNm: '양다은',
+          ssvcLineTypeNm: 'KORNET', //
+        },
+         {
+          nipBlockMstSeq: '3', //
+          commonMsg: 'SUCCESS',
+          dcreateDt: 'Date@11687',
+          dmodifyDt: '2024-07-16 16:50:10', //
+          nclassCnt: '1,024', //
+          ncnt: '262,144', //
+          nfreeIpCnt: '127,340', //
+          nlastAddr: 'BigInteger@11694',
+          nuseIpCnt: '134,804', //
+          pipPrefix: '10.0.0.0/24', //
+          scomment: '3사 전용회선 연동용 (윤완열 과장님 요청)', //
+          sfirstAddr: '18.0.0.0', //
+          sipCreateSeqCd: 'M2020140125',
+          sipCreateSeqNm: 'M2020140125', //
+          sipCreateTypeNm: '유/무선공용', //
+          sipVersionTypeCd: 'CV0001',
+          sipVersionTypeNm: 'IPv4', //
+          slastAddr: '18.255.255.255', //
+          smodifyNm: '홍길동',
+          ssvcLineTypeNm: 'PREMIUM', //
+        },
+      ],
+      baseContext: process.env.VUE_APP_BASE_CONTEXT,
     }
   },
   mounted() {
@@ -122,8 +190,24 @@ export default {
       this.domElement.maxWidth = 1200
     },
     onOpen(model, actionMode) {
-     this.selectedRow = model.row
+      if (model.row === '') {
+        model.row = this.IpBlockDetail[0]
+      }
+      const selectedRow = this.IpBlockDetail.find(item => item.nipBlockMstSeq === model.row.nipBlockMstSeq)
+
+      this.selectedRow = selectedRow
+
+     /*  if (this.selectedRow.nipBlockMstSeq) {
+        const tbIpBlockMstVo = { nipBlockMstSeq: this.selectedRow.nipBlockMstSeq }
+        const param = JSON.stringify(tbIpBlockMstVo)
+        const url = `${this.baseContext}ipmgmt/createmgmt/viewDetailCrtIPMst.ajax`
+
+        this.doAjaxSubmit(url, param, 'json', 'json', this.fnViewDetailCrtIPMstCallBack)
+      } */
     },
+    /* fnViewDetailCrtIPMstCallBack(response) {
+      this.IpBlockDetail = [response]
+    }, */
     onClose() {
       this.type = 'create'
     },
@@ -161,7 +245,12 @@ export default {
           }
         })
     },
-    handleEditIpBlockData(mode) {
+    handleEditIpBlockData() {
+        const sipCreateSeqNm = this.selectedRow.sipCreateSeqNm
+        if (sipCreateSeqNm.length < 10) {
+          this.$message.error('생성차수 수정정보가 잘못되었습니다.')
+          return
+        }
       this.confirm('수정하시겠습니까?', '수정 메시지', {
         confirmButtonText: 'OK',
         cancelButtonText: 'Cancel',
@@ -173,16 +262,13 @@ export default {
             sipCreateSeqNm: this.selectedRow.sipCreateSeqNm,
             scomment: this.selectedRow.scomment,
           }
-           if (mode) {
-             this._merge(param, { commit: false })
-           }
           const res = await /* apiEditIpBlockList */(param)
           if (res.success) {
-            this.$message('수정 되었습니다.')
+            this.$message('IP블록 수정이 정상적으로 처리되었습니다.')
             this.$emit('reloadData')
           }
         } catch (error) {
-          this.$message.error({ message: `수정에 실패했습니다.` })
+          this.$message.error({ message: `IP블록 수정에 실패했습니다.` })
           console.error(error)
         }
       })

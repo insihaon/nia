@@ -93,7 +93,7 @@ export default {
       },
       {
         nipBlockMstSeq: '2',
-        sipCreateTypeNm: '사설',
+        sipCreateTypeNm: 'Bogon',
         sipCreateSeqNm: 'M2020140123',
         ssvcLineTypeNm: 'KORNET',
         pipPrefix: '10.0.0.0/24',
@@ -106,7 +106,7 @@ export default {
       },
       {
         nipBlockMstSeq: '3',
-        sipCreateTypeNm: '사설',
+        sipCreateTypeNm: '유/무선공용',
         sipCreateSeqNm: 'M2020143258',
         ssvcLineTypeNm: 'PREMIUM',
         pipPrefix: '10.0.0.0/24',
@@ -142,12 +142,16 @@ export default {
       // this.handleOpenIpBlockDetail(row)
       this.$refs.ModalIpBlockDetail.open({ row })
     },
-      handleOpenIpBlockDetail(row, type) {
-    if (this.selectedChecks.length === 0) {
-      row = this.IpBlockData[0]
-    } else {
+    handleOpenIpBlockDetail(row, type) {
+    // if (this.selectedChecks.length === 0) {
+    //   row = this.IpBlockData[0]
+    // } else {
+    //   row = this.selectedChecks[1]
+    // }
       row = this.selectedChecks[1]
-    }
+      if (this.selectedChecks.length === 0) {
+      row = ''
+      }
       this.$refs.ModalIpBlockDetail.open({ row, type })
     },
     handleOpenAddIpBlock(row, type) {
