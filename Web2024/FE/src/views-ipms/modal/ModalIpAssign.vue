@@ -17,13 +17,13 @@
     >
       <span slot="title">
         <i class="el-icon-document mr-2" style="font-size: 17px" />
-        IP블록생성
+        IP블록배정
         <hr>
       </span>
 
       <div id="content" class="layer">
         <div class="content_result mt0">
-          <h4 class="mt5">IP 블록 생성</h4>
+          <h4 class="mt5">배정 정보</h4>
           <table class="tbl_data entry mt5">
             <colgroup>
               <col width="15%" /><col width="35%" /><col width="15%" /><col width="35%" />
@@ -74,20 +74,13 @@
           </table>
         </div>
         <div class="content_result">
+          <h4 class="mt5">배정 대상 정보</h4>
           <table class="tbl_data entry">
             <colgroup>
               <col width="15%" />
               <col width="85%" />
             </colgroup>
-            <tbody>
-              <tr class="top last">
-                <th class="first" scope="row">IP 주소</th>
-                <td>
-                  <input id="insertPipPrefix" v-model="pipPrefix" type="text" class="txt w50" maxlength="40" width="85%" />
-                  <el-button id="appendBtn" class="mx-2" size="mini" @click="fnAppendBtnClick">추가</el-button>
-                </td>
-              </tr>
-            </tbody>
+
           </table>
 
           <table id="baseTable" class="tbl_list my-3" summary="목록">
@@ -109,7 +102,6 @@
                 <th scope="col">끝 IP</th>
                 <th scope="col">단위블록수</th>
                 <th scope="col">총 IP수</th>
-                <th scope="col">삭제</th>
               </tr>
             </thead>
             <tbody>
@@ -120,34 +112,17 @@
                 <td> {{ item.slastAddr }}</td>
                 <td> {{ item.nclassCnt }}</td>
                 <td> {{ item.ncnt }}</td>
-                <td> <el-button size="mini" @click="fnRemoveBtnClick()">삭제</el-button> </td>
               </tr>
             </tbody>
           </table>
 
-          <div class="btn_area mt5">
-            <span>
-              <el-button size="mini" @click="fnInitBtnClick()"> 초기화</el-button>
-            </span>
-            <span>
-              <el-button size="mini" @click="fnSaveBtnClick()"> 등록 </el-button>
-            </span>
-          </div>
         </div>
 
-        <div class="content_result">
-          <h4>IP 블록 처리결과</h4>
-          <div class="handling_msg">
-            <p id="resultMsg"></p>
-          </div>
-        </div>
       </div>
-      <!-- <input id="commonMsg" type="hidden" value="${resultVo.commonMsg}"> -->
 
       <div slot="footer" class="dialog-footer">
-        <el-button size="mini" class="el-icon-close" @click.native="close()">
-          {{ $t('exit') }}
-        </el-button>
+        <el-button icon="el-icon-document-checked" style="background: #2b5890;" type="primary" size="mini" @click.native="close()">{{ '배정' }}</el-button>
+        <el-button size="mini" class="el-icon-close" @click.native="close()">{{ $t('exit') }}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -157,7 +132,7 @@
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
 
-const routeName = 'ModalAddIpBlock'
+const routeName = 'ModalIpAssign'
 
 export default {
   name: routeName,
@@ -270,30 +245,6 @@ export default {
           console.error(error)
         }
       })
-    },
-    fnAppendBtnClick() {
-      // ip 추가
-      if (this.sipCreateTypeNm === '') {
-        this.$message('공인/사설이 미분류입니다. 다시 선택해 주시기 바랍니다.')
-        return
-      }
-       if (this.ssvcLineTypeNm === '') {
-        this.$message('서비스망이 미분류입니다. 다시 선택해 주시기 바랍니다.')
-        return
-      }
-       if (this.sipVersionTypeNm === '') {
-        this.$message('IP버전이 미분류입니다. 다시 선택해 주시기 바랍니다.')
-        return
-      }
-      this.viewType = 'generate'
-        const newIp = {
-        pipPrefix: this.pipPrefix,
-        sfirstAddr: 'temp',
-        slastAddr: 'temp',
-        nclassCnt: 'temp',
-        ncnt: 'temp',
-      }
-       this.ipBlockDetailList.push(newIp)
     },
     fnInitBtnClick() {
       // 초기화

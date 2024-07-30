@@ -36,6 +36,7 @@
     <ModalIpBlockDivision ref="ModalIpBlockDivision" />
     <ModalIpAllocInsert ref="ModalIpAllocInsert" />
     <ModalIpAllocDetail ref="ModalIpAllocDetail" />
+    <ModalIpAssign ref="ModalIpAssign" />
   </el-row>
 </template>
 <script>
@@ -48,12 +49,13 @@ import ModalIpAllocInsert from '@/views-ipms/modal/alloc/ModalIpAllocInsert.vue'
 import ModalIpAllocDetail from '@/views-ipms/modal/alloc/ModalIpAllocDetail.vue'
 import ModalCheckTacsIpBlock from '@/views-ipms/modal/ModalCheckTacsIpBlock.vue'
 import ModalIpBlockDivision from '@/views-ipms/modal/ModalIpBlockDivision.vue'
+import ModalIpAssign from '@/views-ipms/modal/ModalIpAssign.vue'
 
 const routeName = 'IpAllocation'
 
 export default {
   name: routeName,
-  components: { CompTable, DynamicComponentLoader, ModalIpBlockDivision, ModalIpAllocDetail, ModalCheckTacsIpBlock, ModalIpAllocInsert },
+  components: { CompTable, DynamicComponentLoader, ModalIpBlockDivision, ModalIpAllocDetail, ModalCheckTacsIpBlock, ModalIpAllocInsert, ModalIpAssign },
   extends: Base,
   mixins: [tableHeightMixin],
   data() {

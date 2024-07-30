@@ -190,6 +190,9 @@ export default {
       this.domElement.maxWidth = 1200
     },
     onOpen(model, actionMode) {
+      if (model.type === 'edit') {
+        this.type = 'edit'
+      }
       if (model.row === '') {
         model.row = this.IpBlockDetail[0]
       }
