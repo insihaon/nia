@@ -84,10 +84,11 @@ export default {
         { prop: 'nclassCnt', label: '단위블록수', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'dmodifyDt', label: '작업일자', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'sassignLevelNm', label: '배정상태', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'nsummaryCnt', label: 'Summary 포함 여부', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'snull0Yn', label: 'DB-라우팅 일치 여부', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'sintgrmYn', label: '라우팅 중복 개수', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'snull0Yn', label: 'Summary 포함 여부', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'sintgrmYn', label: 'DB-라우팅 일치 여부', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'nsummaryCnt', label: '라우팅 중복 개수', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'nbitmask', label: '분할', align: 'center', sortable: true, columnVisible: true, showOverflow: true,
+          // nipAssignMstSeq, sipCreateTypeCd
           formatter: (row, col, value, index) => {
             const isDivisible = (row.sipVersionTypeCd === 'CV0001' && row.nbitmask < 24) ||
                                 (row.sipVersionTypeCd === 'CV0002' && row.nbitmask < 64)
@@ -107,7 +108,7 @@ export default {
             }, buttonText)
           }
         },
-        { prop: '', label: '비고', align: 'center', sortable: true, columnVisible: true, showOverflow: true }
+        { prop: 'scomment', label: '비고', align: 'center', sortable: true, columnVisible: true, showOverflow: true }
       ],
       ipAssignDatas: [
         {
@@ -132,6 +133,7 @@ export default {
           nuseIpCnt: '0',
           sipVersionTypeNm: 'IPv4',
           ssvcLineTypeCd: 'CL0003',
+          nlvlMstSeq: '1'
         },
          {
           ssvcLineTypeNm: 'MOBILE',
@@ -144,7 +146,7 @@ export default {
           slastAddr: '192.168.0.254',
           nclassCnt: '0300390625',
           dmodifyDt: '2024-06-18',
-          sassignLevelNm: '서비스배정[미할당]',
+          sassignLevelNm: '배정[미할당]',
           nsummaryCnt: 'Y',
           snull0Yn: 'Y',
           sintgrmYn: 0,
@@ -155,6 +157,7 @@ export default {
           nuseIpCnt: '0',
           sipVersionTypeNm: 'IPv4',
           ssvcLineTypeCd: 'CL0003',
+          nlvlMstSeq: '1'
         },
         {
           ssvcLineTypeNm: 'MOBILE',
@@ -178,6 +181,7 @@ export default {
           nuseIpCnt: '0',
           sipVersionTypeNm: 'IPv6',
           ssvcLineTypeCd: 'CL0003',
+          nlvlMstSeq: '3'
         },
       ],
       selectedRow: [],
@@ -226,7 +230,25 @@ export default {
       this.$refs.ModalCheckTacsIpBlock.open({ /* tacsResponse: res */ row: rows[0] })
     },
     handleClickIpAssignInsert() {
-      this.$refs.ModalIpAssign.open({ row: this.selectedRow })
+      const rows = this.selectedTable
+      if (rows.length === 0) {
+        onMessagePopup(this, '배정할 대상이 없습니다.')
+        return
+      }
+
+      const res = rows.map((row, i) => {
+        const { nlvlMstSeq } = row
+
+        for (let j = 0; j < i; j++) {
+          if (nlvlMstSeq !== rows[j].nlvlMstSeq || nlvlMstSeq !== rows[j].nlvlMstSeq) {
+            onMessagePopup(this, '선택하신 할당 대상 블록의 계위/서비스 정보가 동일하지 않습니다. 확인해주세요.')
+            return false
+          }
+        }
+        return true
+      })
+      res.every(r => r === true) && this.$refs.ModalIpAssign.open({ row: this.selectedTable })
+      // this.$refs.ModalIpAssign.open({ row: this.selectedTable })
     },
     handleClickTableCheck(all, cur) {
       this.selectedTable = all
