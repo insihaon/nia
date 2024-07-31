@@ -79,7 +79,7 @@
 
           <div class="btn_area my-1">
             <span>
-              <el-button class="el-icon-edit-outline" size="mini" @click="updateComment()"> 수정</el-button>
+              <el-button class="el-icon-edit-outline" size="mini" @click="handleEditComment()"> 수정</el-button>
             </span>
           </div>
 
@@ -134,10 +134,11 @@
       </div>
 
       <div slot="footer" class="dialog-footer">
-        <el-button size="mini" class="el-icon-document-checked" @click.native="close()">{{ '배정' }}</el-button>
+        <el-button size="mini" class="el-icon-document-checked" @click.native="handleAssignIp()">{{ '배정' }}</el-button>
         <el-button size="mini" class="el-icon-refresh-left" @click.native="handleReturnIp()">{{ '반납' }}</el-button>
         <el-button size="mini" class="el-icon-close" @click.native="close()">{{ $t('exit') }}</el-button>
       </div>
+      <ModalIpAssign ref="ModalIpAssign" />
     </el-dialog>
   </div>
 </template>
@@ -145,12 +146,13 @@
 <script>
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
+import ModalIpAssign from '@/views-ipms/modal/ModalIpAssign.vue'
 
 const routeName = 'ModalIpAssignDetail'
 
 export default {
   name: routeName,
-  components: { },
+  components: { ModalIpAssign },
   directives: { elDragDialog },
   extends: Modal,
   data() {
@@ -192,6 +194,11 @@ export default {
       } catch (error) {
         console.error(error)
       } */
+    },
+    handleAssignIp() {
+      // 새로운 모달 열기
+      this.closeOnClickModal = true
+      this.$refs.ModalIpAssign.open()
     },
      async handleReturnIp() {
         // 사용자에게 반납 확인 대화상자 표시
