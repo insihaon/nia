@@ -209,15 +209,38 @@ export default {
         })
 
         // 필요한 컬럼 값 설정
-        const ssvcLineTypeCd = this.selectedRow.ssvcLineTypeCd
-        const ssvcGroupCd = this.selectedRow.ssvcGroupCd
-        const ssvcObjCd = this.selectedRow.ssvcObjCd
-        const sipCreateTypeCd = this.selectedRow.sipCreateTypeCd
+        const { ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd, sassignLevelCd, sipCreateTypeCd } = this.selectedRow
 
-        const tbIpAssignMstComplexVo = {
+        // 조건에 따른 설정
+        if (sipCreateTypeCd === 'CT0005') {
+          this.selectedRow.ssvcGroupCd = ssvcGroupCd
+          this.selectedRow.ssvcObjCd = ssvcObjCd
+          this.selectedRow.sassignLevelCd = 'IA0001' // 미배정
+        } else {
+          if (ssvcGroupCd === '000000') { // 서비스 망만 있는 경우
+            this.selectedRow.ssvcGroupCd = ssvcGroupCd
+            this.selectedRow.ssvcObjCd = ssvcObjCd
+            this.selectedRow.sassignLevelCd = 'IA0002'
+          } else {
+            if (ssvcObjCd === '000000') { // 서비스망 / 본부까지 있는 경우
+              this.selectedRow.ssvcGroupCd = '000000'
+              this.selectedRow.ssvcObjCd = ssvcObjCd
+              this.selectedRow.sassignLevelCd = 'IA0002'
+            } else { // 서비스망 / 본부 / 노드까지 있는 경우
+              this.selectedRow.ssvcGroupCd = ssvcGroupCd
+              this.selectedRow.ssvcObjCd = '000000'
+              this.selectedRow.sassignLevelCd = 'IA0003'
+            }
+          }
+        }
+
+        const param = {
           srcIpAssignMstVo: {
             ssvcLineTypeCd: ssvcLineTypeCd,
             sassignTypeCd: 'SA0000',
+            ssvcGroupCd: this.ssvcGroupCd,
+            ssvcObjCd: this.ssvcObjCd,
+            sassignLevelCd: this.sassignLevelCd
           },
           destIpAssignMstVos: [
             {
@@ -227,31 +250,7 @@ export default {
           ]
         }
 
-        // 조건에 따른 설정
-        if (sipCreateTypeCd === 'CT0005') {
-          tbIpAssignMstComplexVo.srcIpAssignMstVo.ssvcGroupCd = ssvcGroupCd
-          tbIpAssignMstComplexVo.srcIpAssignMstVo.ssvcObjCd = ssvcObjCd
-          tbIpAssignMstComplexVo.srcIpAssignMstVo.sassignLevelCd = 'IA0001' // 미배정
-        } else {
-          if (ssvcGroupCd === '000000') { // 서비스 망만 있는 경우
-            tbIpAssignMstComplexVo.srcIpAssignMstVo.ssvcGroupCd = ssvcGroupCd
-            tbIpAssignMstComplexVo.srcIpAssignMstVo.ssvcObjCd = ssvcObjCd
-            tbIpAssignMstComplexVo.srcIpAssignMstVo.sassignLevelCd = 'IA0002'
-          } else {
-            if (ssvcObjCd === '000000') { // 서비스망 / 본부까지 있는 경우
-              tbIpAssignMstComplexVo.srcIpAssignMstVo.ssvcGroupCd = '000000'
-              tbIpAssignMstComplexVo.srcIpAssignMstVo.ssvcObjCd = ssvcObjCd
-              tbIpAssignMstComplexVo.srcIpAssignMstVo.sassignLevelCd = 'IA0002'
-            } else { // 서비스망 / 본부 / 노드까지 있는 경우
-              tbIpAssignMstComplexVo.srcIpAssignMstVo.ssvcGroupCd = ssvcGroupCd
-              tbIpAssignMstComplexVo.srcIpAssignMstVo.ssvcObjCd = '000000'
-              tbIpAssignMstComplexVo.srcIpAssignMstVo.sassignLevelCd = 'IA0003'
-            }
-          }
-        }
-
-        // 서버에 반납 요청
-        const res = await /* apiReturnIpAssignList */(tbIpAssignMstComplexVo)
+        const res = await /* apiReturnIpAssignList */(param)
         if (res.success) {
           this.$message({ message: 'IP블록 반납이 정상적으로 처리되었습니다.', type: 'success' })
           this.$emit('reloadData')
