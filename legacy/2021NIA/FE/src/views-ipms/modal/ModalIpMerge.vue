@@ -17,13 +17,13 @@
     >
       <span slot="title">
         <i class="el-icon-document mr-2" style="font-size: 17px" />
-        IP블록배정
+        IP블록병합
         <hr>
       </span>
 
       <div id="content" class="layer">
         <div class="content_result mt0">
-          <h4 class="mt5">배정 정보</h4>
+          <h4 class="mt5">배정 병합 정보</h4>
           <table class="tbl_data entry mt5">
             <colgroup>
               <col width="15%" /><col width="30%" /><col width="30%" /><col width="30%" />
@@ -31,44 +31,28 @@
             <tbody>
               <tr class="top">
                 <th class="first" scope="row">계위</th>
-                <td>
-                  <select id="updSsvcLineTypeCd" v-model="ssvcLineTypeCd">
-                    <option v-for="option in ssvcLineTypeOptions" :key="option.value" :value="option.value">
-                      {{ option.label }}
-                    </option>
-                  </select>
-                </td>
-                <td>
-                  <select id="updSsvcGroupCd" v-model="ssvcGroupCd">
-                    <option v-for="option in ssvcGroupOptions" :key="option.value" :value="option.value">
-                      {{ option.label }}
-                    </option>
-                  </select>
-                </td>
-                <td>
-                  <select id="updSsvcObjCd" v-model="ssvcObjCd">
-                    <option v-for="option in ssvcObjOptions" :key="option.value" :value="option.value">
-                      {{ option.label }}
-                    </option>
-                  </select>
+                <td colspan="3">
+                  {{ selectedRow.ssvcLineTypeCd }} - {{ selectedRow.ssvcGroupCd }} - {{ selectedRow.ssvcObjCd }}
                 </td>
               </tr>
               <tr>
                 <th class="first" scope="row">배정상태</th>
                 <td>
-                  <select id="updSassignLevelCd" v-model="sassignLevelCd">
-                    <option v-for="option in sassignTypeLevelOptions" :key="option.value" :value="option.value">
-                      {{ option.label }}
-                    </option>
-                  </select>
+                  {{ selectedRow.sassignLevelCd }}
                 </td>
                 <th scope="row">서비스</th>
                 <td>
-                  <select id="updSassignTypeCd" v-model="sassignTypeCd" :disabled="sassignLevelCd !== 'IA0004'">
-                    <option v-for="option in sassignTypeOptions" :key="option.value" :value="option.value">
-                      {{ option.label }}
-                    </option>
-                  </select>
+                  {{ selectedRow.sassignTypeCd }}
+                </td>
+              </tr>
+              <tr>
+                <th class="first" scope="row">IP 버전</th>
+                <td>
+                  {{ selectedRow.sipVersionTypeNm }}
+                </td>
+                <th scope="row">IP 주소</th>
+                <td>
+                  {{ selectedRow.pipPrefix }}
                 </td>
               </tr>
               <tr class="last">
@@ -82,7 +66,7 @@
         </div>
 
         <div class="content_result">
-          <h4 class="mt5">배정 대상 정보</h4>
+          <h4 class="mt5">병합 대상 정보</h4>
           <table class="tbl_data entry">
             <colgroup>
               <col width="15%" />
@@ -118,16 +102,15 @@
             </thead>
             <tbody>
               <tr v-for="(item, index) in ipBlockDetailList" :key="index">
-                <td> {{ item.ssvcLineTypeNm }}</td>
-                <td> {{ item.ssvcGroupNm }}</td>
-                <td> {{ item.ssvcObjNm }}</td>
-                <td> {{ item.sipCreateTypeNm }}</td>
-                <td> {{ item.sassignTypeNm }}</td>
-                <td> {{ item.pipPrefix }}</td>
-                <td> {{ item.sfirstAddr }} ~ {{ item.slastAddr }}</td>
-                <td> {{ item.nclassCnt }}</td>
-                <td> {{ item.sassignLevelNm }}</td>
-                <td class="ellipsis" :title="item.sassignLevelNm">{{ item.sassignLevelNm }}</td>
+                <td>{{ item.ssvcLineTypeNm }}</td>
+                <td>{{ item.ssvcGroupNm }}</td>
+                <td>{{ item.ssvcObjNm }}</td>
+                <td>{{ item.sipCreateTypeNm }}</td>
+                <td>{{ item.sassignTypeNm }}</td>
+                <td>{{ item.pipPrefix }}</td>
+                <td>{{ item.sfirstAddr }} ~ {{ item.slastAddr }}</td>
+                <td>{{ item.nclassCnt }}</td>
+                <td>{{ item.sassignLevelNm }}</td>
                 <td v-if="false">{{ item.nipAssignMstSeq }}</td>
                 <td v-if="false">{{ item.sassignLevelCd }}</td>
                 <td v-if="false">{{ item.sipCreateTypeCd }}</td>
@@ -139,7 +122,7 @@
       </div>
 
       <div slot="footer" class="dialog-footer">
-        <el-button icon="el-icon-document-checked" style="background: #2b5890;" type="primary" size="mini" @click.native="fnUpdateConfirmBtnClick()">{{ '배정' }}</el-button>
+        <el-button icon="el-icon-document-checked" style="background: #2b5890;" type="primary" size="mini" @click.native="fnMergeConfirmBtnClick()">{{ '병합' }}</el-button>
         <el-button size="mini" class="el-icon-close" @click.native="close()">{{ $t('exit') }}</el-button>
       </div>
     </el-dialog>
@@ -151,7 +134,7 @@ import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
 import { onMessagePopup } from '@/utils/index'
 
-const routeName = 'ModalIpAssign'
+const routeName = 'ModalIpMerge'
 
 export default {
   name: routeName,
@@ -163,43 +146,7 @@ export default {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       selectedRow: null,
-      ssvcLineTypeOptions: [
-        { label: '공인', value: '공인' },
-        { label: 'Bogon', value: 'Bogon' },
-        { label: '유/무선공용', value: '유/무선공용' },
-      ],
-      ssvcGroupOptions: [
-        { label: 'KORNET', value: 'CL0001' },
-        { label: 'PREMIUM', value: 'CL0002' },
-        { label: 'MOBILE', value: 'CL0003' },
-        { label: 'GNS', value: 'CL0004' },
-        { label: 'SCHOOLNET', value: 'CL0005' }
-      ],
-      ssvcObjOptions: [
-        { value: 'CV0001', label: 'IPv4' },
-        { value: 'CV0002', label: 'IPv6' },
-      ],
-      sassignTypeLevelOptions: [
-        { label: '미배정', value: 'IA0001' },
-        { label: '예비배정', value: 'IA0002' },
-        { label: '배정[미할당]', value: 'IA0003' },
-        { label: '서비스배정[미할당]', value: 'IA0004' },
-      ],
-      sassignTypeOptions: [
-        { label: '-------', value: '-------' },
-        { label: '공통서비스', value: '공통서비스' },
-        { label: 'KT사내망', value: 'KT사내망' },
-        { label: 'POOL-LoT(고정)', value: 'POOL-LoT(고정)' },
-        { label: 'POOL-M2M(고정)', value: 'POOL-M2M(고정)' },
-        { label: 'IMS-SYSTEM', value: 'IMS-SYSTEM' },
-      ],
-      ssvcLineTypeCd: '',
-      ssvcGroupCd: '',
-      ssvcObjCd: '',
-      sassignLevelCd: '',
-      sassignTypeCd: '',
       scomment: '',
-      ssvcLineTypeNm: '',
       ipBlockDetailList: []
     }
   },
@@ -216,17 +163,10 @@ export default {
     onOpen(model, actionMode) {
       this.$set(this, 'selectedRow', model.row)
       this.ipBlockDetailList = this.selectedRow || []
-      const { ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd, sassignLevelCd, sassignTypeCd, sipVersionTypeCd } = this.selectedRow[0] || []
-      this.ssvcLineTypeCd = ssvcLineTypeCd // 계위1
-      this.ssvcGroupCd = ssvcGroupCd // 계위2
-      this.ssvcObjCd = ssvcObjCd // 계위3
-      this.sassignLevelCd = sassignLevelCd // 배정상태
-      this.sassignTypeCd = sassignTypeCd // 서비스
-      this.sipVersionTypeCd = sipVersionTypeCd
     },
 
     /* 기존 사설(CT0004)은 유/무선 공용으로 사용, 신규 사설(CT0005)을 사설로 사용 */
-    async fnUpdateConfirmBtnClick() { // IP 블록 배정
+    async fnUpdateConfirmBtnClick() { // IP 블록 병합
       var vOrgCreateTypeFlag = 'N'
       if (this.sipCreateTypeCd === 'CT0005') {
         vOrgCreateTypeFlag = 'Y'
@@ -271,29 +211,33 @@ export default {
 
       try {
         const param = {
-          ssvcLineTypeCd: this.ssvcLineTypeCd,
-          ssvcGroupCd: this.ssvcGroupCd,
-          ssvcObjCd: this.ssvcObjCd,
-          sassignLevelCd: this.sassignLevelCd,
-          sassignTypeCd: this.sassignTypeCd,
-          nipAssignMstSeq: this.nipAssignMstSeq,
+          menuType: 'Aloc',
+          srcIpAssignMstVo: {
+          pipPrefix: this.selectedRow.pipPrefix,
+          sipVersionTypeCd: this.selectedRow.sipVersionTypeCd,
           scomment: this.scomment,
-          /* 망변경 처리 유형  */
-          typeFlag: typeFlag,
-          /* 망변경 블록 체킹을 위한 블록 및 버전 정보 */
-          pipPrefix: this.pipPrefix,
-          sipVersionTypeCd: this.sipVersionTypeCd,
+          ssvcLineTypeCd: this.selectedRow.ssvcLineTypeCd,
+          ssvcGroupCd: this.selectedRow.ssvcGroupCd,
+          ssvcObjCd: this.selectedRow.ssvcObjCd,
+          sassignLevelCd: this.selectedRow.sassignLevelCd,
+          sassignTypeCd: this.selectedRow.sassignTypeCd,
+        },
+
+        destIpAssignMstVos: this.ipBlockDetailList.map(item => ({
+          nipAssignMstSeq: item.nipAssignMstSeq,
+        })),
+
         }
 
         const res = await /* apiIpAssign */(param)
         if (res.success) {
-          this.$message('IP블록 배정이 정상적으로 처리되었습니다.')
+          this.$message('IP블록 병합이 정상적으로 처리되었습니다.')
           this.$emit('reloadData')
         } else {
-          this.$message.error({ message: `IP블록 배정에 실패했습니다.` })
+          this.$message.error({ message: `IP블록 병합에 실패했습니다.` })
         }
       } catch (error) {
-        this.$message.error({ message: `IP블록 배정에 실패했습니다.` })
+        this.$message.error({ message: `IP블록 병합에 실패했습니다.` })
         console.error(error)
       }
   },
