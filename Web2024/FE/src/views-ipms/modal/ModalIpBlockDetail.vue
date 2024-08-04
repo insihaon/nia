@@ -28,9 +28,9 @@
           <th>생성차수</th>
           <td>
             <span v-if="type === 'edit'">
-              <el-input v-model="sipCreateSeqNm"></el-input>
+              <el-input v-model="sipCreateSeqCd"></el-input>
             </span>
-            <span v-else>{{ selectedRow.sipCreateSeqNm }}</span>
+            <span v-else>{{ selectedRow.sipCreateSeqCd }}</span>
           </td>
         </tr>
         <tr>
@@ -190,6 +190,9 @@ export default {
       this.domElement.maxWidth = 1200
     },
     onOpen(model, actionMode) {
+      if (model.type === 'edit') {
+        this.type = 'edit'
+      }
       if (model.row === '') {
         model.row = this.IpBlockDetail[0]
       }
@@ -246,8 +249,8 @@ export default {
         })
     },
     handleEditIpBlockData() {
-        const sipCreateSeqNm = this.selectedRow.sipCreateSeqNm
-        if (sipCreateSeqNm.length < 10) {
+        const sipCreateSeqCd = this.selectedRow.sipCreateSeqCd
+        if (sipCreateSeqCd.length < 10) {
           this.$message.error('생성차수 수정정보가 잘못되었습니다.')
           return
         }
@@ -258,9 +261,11 @@ export default {
       }).then(async () => {
         try {
           const param = {
-            nipBlockMstSeq: this.selectedRow.nipBlockMstSeq,
-            sipCreateSeqNm: this.selectedRow.sipCreateSeqNm,
-            scomment: this.selectedRow.scomment,
+            sipCreateTypeCd: this.selectedRow.sipCreateTypeCd,
+            sipCreateSeqCd: this.selectedRow.sipCreateSeqCd,
+            sipVersionTypeCd: this.selectedRow.sipVersionTypeCd,
+            pipPrefix: this.selectedRow.pipPrefix,
+            scomment: this.scomment,
           }
           const res = await /* apiEditIpBlockList */(param)
           if (res.success) {
