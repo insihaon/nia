@@ -33,77 +33,69 @@
               <tr class="top">
                 <th class="first" scope="row">계위</th>
                 <td class="view">
-                  <template v-if="ipAllocOperMstVos">
-                    {{ ipAllocOperMstVos.ssvcLineTypeNm }} - {{ ipAllocOperMstVos.ssvcGroupNm }} - {{ ipAllocOperMstVos.ssvcObjNm }}
+                  <template v-if="ipAllocOperMstVo">
+                    {{ ipAllocOperMstVo.ssvcLineTypeNm }} - {{ ipAllocOperMstVo.ssvcGroupNm }} - {{ ipAllocOperMstVo.ssvcObjNm }}
                   </template>
                 </td>
                 <th scope="row">공인/사설</th>
                 <td class="view">
-                  <template v-if="ipAllocOperMstVos">
-                    {{ ipAllocOperMstVos.sipCreateTypeNm }}
+                  <template v-if="ipAllocOperMstVo">
+                    {{ ipAllocOperMstVo.sipCreateTypeNm }}
                   </template>
                 </td>
               </tr>
               <tr>
                 <th class="first" scope="row">할당상태</th>
                 <td class="view">
-                  <template v-if="ipAllocOperMstVos">
-                    {{ ipAllocOperMstVos.sassignLevelNm }}
+                  <template v-if="ipAllocOperMstVo">
+                    {{ ipAllocOperMstVo.sassignLevelNm }}
                   </template>
                 </td>
                 <th scope="row">서비스</th>
                 <td class="view">
-                  <template v-if="ipAllocOperMstVos">
-                    {{ ipAllocOperMstVos.sassignTypeNm }}
+                  <template v-if="ipAllocOperMstVo">
+                    {{ ipAllocOperMstVo.sassignTypeNm }}
                   </template>
                 </td>
               </tr>
               <tr>
                 <th class="first" scope="row">IP 버전</th>
                 <td class="view">
-                  <template v-if="ipAllocOperMstVos">
-                    {{ ipAllocOperMstVos.sipVersionTypeNm }}
+                  <template v-if="ipAllocOperMstVo">
+                    {{ ipAllocOperMstVo.sipVersionTypeNm }}
                   </template>
                 </td>
                 <th scope="row">IP 주소</th>
                 <td class="view">
-                  <template v-if="ipAllocOperMstVos">
-                    {{ ipAllocOperMstVos.pipPrefix }}
+                  <template v-if="ipAllocOperMstVo">
+                    {{ ipAllocOperMstVo.pipPrefix }}
                   </template>
                 </td>
               </tr>
               <tr>
                 <th class="first" scope="row">다중회선</th>
                 <td class="view">
-                  <template v-if="ipAllocOperMstVos">
-                    {{ ipAllocOperMstVos.nipAllocMstCnt }}
+                  <template v-if="ipAllocOperMstVo">
+                    {{ ipAllocOperMstVo.nipAllocMstCnt }}
                   </template>
                 </td>
                 <th scope="row">감사상태</th>
                 <td class="view">
-                  <template v-if="ipAllocOperMstVos">
-                    {{ ipAllocOperMstVos.svalidCheck }}
+                  <template v-if="ipAllocOperMstVo">
+                    {{ ipAllocOperMstVo.svalidCheck }}
                   </template>
                 </td>
               </tr>
               <tr class="last">
                 <th class="first" scope="row">비고</th>
                 <td colspan="3">
-                  <textarea v-model="ipAllocOperMstVos.scomment" class="w98" rows="3" maxlength="4000"></textarea>
+                  <textarea v-model="scomment" class="w98" rows="3" maxlength="4000"></textarea>
                 </td>
               </tr>
             </tbody>
           </table>
           <div class="btn_area mt5">
-            <!-- <a href="#none" id="updateScommentBtn" @click="fnScommentUpdateClick">
-              <input
-                type="image"
-                :src="btnModifyOffSrc"
-                alt="수정"
-                @mouseover="menuOver"
-                @mouseout="menuOut"
-              />
-            </a> -->
+            <el-button size="mini" class="mt-1" @click="fnScommentUpdateClick">수정</el-button>
           </div>
         </div>
 
@@ -120,42 +112,42 @@
               <tr class="top">
                 <th class="first" scope="row">시작 IP</th>
                 <td>
-                  <template v-if="ipAllocOperMstVos">
-                    {{ ipAllocOperMstVos.sfirstAddr }}
+                  <template v-if="ipAllocOperMstVo">
+                    {{ ipAllocOperMstVo.sfirstAddr }}
                   </template>
                 </td>
                 <th scope="row">끝 IP</th>
                 <td>
-                  <template v-if="ipAllocOperMstVos">
-                    {{ ipAllocOperMstVos.slastAddr }}
+                  <template v-if="ipAllocOperMstVo">
+                    {{ ipAllocOperMstVo.slastAddr }}
                   </template>
                 </td>
               </tr>
               <tr>
                 <th class="first" scope="row">총 IP 수</th>
                 <td>
-                  <template v-if="ipAllocOperMstVos">
-                    {{ formatNumber(ipAllocOperMstVos.ncnt) }}
+                  <template v-if="ipAllocOperMstVo">
+                    {{ formatNumber(ipAllocOperMstVo.ncnt) }}
                   </template>
                 </td>
                 <th scope="row">단위블록수</th>
                 <td>
-                  <template v-if="ipAllocOperMstVos">
-                    {{ formatNumber(ipAllocOperMstVos.nclassCnt, 0, 10) }}
+                  <template v-if="ipAllocOperMstVo">
+                    {{ formatNumber(ipAllocOperMstVo.nclassCnt, 0, 10) }}
                   </template>
                 </td>
               </tr>
               <tr class="last">
                 <th class="first" scope="row">사용 IP 수</th>
                 <td>
-                  <template v-if="ipAllocOperMstVos">
-                    {{ formatNumber(ipAllocOperMstVos.nuseIpCnt) }}
+                  <template v-if="ipAllocOperMstVo">
+                    {{ formatNumber(ipAllocOperMstVo.nuseIpCnt) }}
                   </template>
                 </td>
                 <th scope="row">가용 IP 수</th>
                 <td>
-                  <template v-if="ipAllocOperMstVos">
-                    {{ formatNumber(ipAllocOperMstVos.nfreeIpCnt) }}
+                  <template v-if="ipAllocOperMstVo">
+                    {{ formatNumber(ipAllocOperMstVo.nfreeIpCnt) }}
                   </template>
                 </td>
               </tr>
@@ -180,18 +172,18 @@
             </thead>
             <tbody>
               <tr
-                v-if="ipAllocOperMstVos.sassignLevelCd === 'IA0004' || ipAllocOperMstVos.nipAllocMstSeq === -1"
+                v-if="ipAllocOperMstVo.sassignLevelCd === 'IA0004' || ipAllocOperMstVo.nipAllocMstSeq === null"
                 class="subbg last"
               >
                 <td class="first" colspan="8">조회된 결과 목록이 존재하지 않습니다.</td>
               </tr>
               <template v-else>
                 <tr
-                  v-for="(item, index) in ipAllocOperMstVos"
+                  v-for="(item, index) in ipAllocInfoList"
                   :key="item.nipAllocMstSeq"
                   style="cursor: pointer;"
-                  :class="{'subbg': index % 2 !== 0, 'last': index === ipAllocOperMstVos.length - 1}"
-                  @click="fnViewSubDetailAlcIPMst(item.nipAllocMstSeq)"
+                  :class="{'subbg': index % 2 !== 0, 'last': index === ipAllocOperMstVo.length - 1}"
+                  @click="fnViewSubDetailAlcIPMst(item)"
                 >
                   <td class="first ellipsis" :title="item.sofficename">
                     {{ item.sofficename }}
@@ -223,10 +215,10 @@
         </div>
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button v-if="ipAllocOperMstVos" size="mini">IP블럭 중복체크</el-button>
-        <template v-if="ipAllocOperMstVos.sassignLevelCd === 'IA0004'">
-          <el-button size="mini" icon="el-icon-menu">할당</el-button>
-          <el-button size="mini" icon="el-icon-menu">반납</el-button>
+        <el-button v-if="ipAllocOperMstVo" size="mini" @click="fnViewCheckTacsIpBlock">IP블럭 중복체크</el-button>
+        <template v-if="ipAllocOperMstVo.sassignLevelCd === 'IA0004'">
+          <el-button size="mini" icon="el-icon-menu" @click="fnAlocCallBtnClick">할당</el-button>
+          <el-button size="mini" icon="el-icon-menu" @click="fnRetUpdateConfirmClick">반납</el-button>
         </template>
         <el-button size="mini" class="el-icon-close" @click="close()">
           닫기
@@ -253,7 +245,8 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      ipAllocOperMstVos: {/*
+      ipAllocOperMstVos: [],
+       ipAllocInfoList: [{
         nclassCnt: '128.0000000000',
         ncnt: '32768',
         nfreeIpCnt: '32768',
@@ -279,8 +272,14 @@ export default {
         ssvcObjNm: 'DATA망(구로)',
         ssvcGroupNm: 'DATA망',
         sassignLevelNm: '할당',
-       */}
+       }],
+       scomment: ''
     }
+  },
+  computed: {
+    // ipAllocOperMstVo() {
+    //   return this.ipAllocOperMstVos[0] ?? {}
+    // }
   },
   methods: {
     onCreated() {
@@ -290,10 +289,25 @@ export default {
     },
     onOpen(model, actionMode) {
       if (model.row) {
-        this.ipAllocOperMstVos = model.row
+        const ipBlockmstVo = { nipAssignMstSeq: model.row.nipAssignMstSeq }
+        this.loadData(ipBlockmstVo)
+        this.ipAllocOperMstVo = model.row // 임시
       }
     },
     onClose() {
+    },
+    async loadData(param) {
+      /*
+        try {
+          url : ipmgmt/allocmgmt/viewDetailAlcIPMst.model
+          const res = await api(param)
+          this.ipAllocOperMstVo = res.resultListVo.ipAllocOperMstVo
+
+          this.scomment = this.ipAllocOperMstVo[0].scomment
+        } catch (error) {
+          this.error(error)
+        }
+      */
     },
     formatNumber(value, minFractionDigits = 0, maxFractionDigits = 0) {
       return new Intl.NumberFormat('en-US', {
@@ -301,34 +315,71 @@ export default {
         maximumFractionDigits: maxFractionDigits
       }).format(value)
     },
-    menuOver(event) {
-      event.target.src = event.target.src.replace('_off', '_on')
-    },
-    menuOut(event) {
-      event.target.src = event.target.src.replace('_on', '_off')
-    },
     fnScommentUpdateClick() {
-      // Implement your update logic here
+      const tbIpAssignMstComplexVo = {
+        srcIpAssignMstVo: { scomment: this.ipAllocOperMstVo.scomment },
+        destIpAssignMstVos: { nipAssignMstSeq: this.ipAllocOperMstVos[0].nipAssignMstSeq }
+      }
+      /* try {
+        url: 'ipmgmt/allocmgmt/updateScommentAsgnIPMst.json'
+        const res = await api(tbIpAssignMstComplexVo)
+      } catch (error) {
+        this.error(error)
+      } */
     },
-    fnViewSubDetailAlcIPMst(nipAllocMstSeq) {
-      console.log(nipAllocMstSeq)
-      this.$refs.ModalIpAllocCircuitDetail.open({ nipAllocMstSeq })
-      // Implement your view detail logic here
+    fnViewSubDetailAlcIPMst(row) {
+      const { nipAllocMstSeq, nipLinkMstSeq } = row
+      const ipBlockMstVo = { nipAllocMstSeq, nipLinkMstSeq }
+      if (nipLinkMstSeq === null || nipLinkMstSeq === '') {
+        // 회선상세정보
+        this.$refs.ModalIpAllocCircuitDetail.open({ ipBlockMstVo })
+      } else {
+        // 링크마스터 상세조회
+      }
     },
     fnDeleteAlcIPMstClick(nipAllocMstSeq, nwhoisSeq) {
       // Implement your delete logic here
     },
     fnViewCheckTacsIpBlock() {
+      this.$parent?.$parent?.fnViewCheckTacsIpBlock()
       // Implement your check IP block logic here
     },
     fnAlocCallBtnClick() {
-      // Implement your allocation call button logic here
+      this.$emit('alocCallBtnClick')
+      this.close()
     },
     fnRetUpdateConfirmClick() {
-      // Implement your return update confirm logic here
-    },
-    fnCloseBtnClick() {
-      // Implement your close button logic here
+      /* sipCreateTypeCd: 기존 사설(CT0004) 은 유/무선공용으로 사용, 신규 사설(CT0005) 을 사설로 사용  */
+      const { ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd, /* sassignLevelCd, */ sipCreateTypeCd, nipAssignMstSeq } = this.ipAllocOperMstVo[0]
+      const srcIpAssignMstVo = { ssvcLineTypeCd, sassignTypeCd: 'SA0000' }
+      if (sipCreateTypeCd === 'CT0005') {
+        Object.assign(srcIpAssignMstVo, { ssvcGroupCd, ssvcObjCd, sassignLevelCd: 'IA0001' /* 미배정 */ })
+      } else {
+        if (ssvcGroupCd === '000000') { // 서비스 망만 있는 경우
+          Object.assign(srcIpAssignMstVo, { ssvcGroupCd, ssvcObjCd, sassignLevelCd: 'IA0002' })
+        } else {
+          if (ssvcObjCd === '000000') { // 서비스망 / 본부까지 있는 경우
+            Object.assign(srcIpAssignMstVo, { ssvcGroupCd: '000000', ssvcObjCd, sassignLevelCd: 'IA0002' })
+          } else { // 서비스망 / 본부 / 노드까지 있는 경우
+            Object.assign(srcIpAssignMstVo, { ssvcGroupCd: ssvcGroupCd, ssvcObjCd: '000000', sassignLevelCd: 'IA0003' })
+          }
+        }
+      }
+      const tbIpAssignMstComplexVo = {
+        srcIpAssignMstVo,
+        destIpAssignMstVos: [{ nipAssignMstSeq, typeFlag: 'return' /* 배정-반납 */, menuType: 'Aloc' }]
+      }
+      /*
+      try {
+        url : 'ipmgmt/allocmgmt/updateAsgnIPMst.json'
+        const res = await api(tbIpAssignMstComplexVo)
+        if(res.commonMsg === 'SUCCESS') {
+          onMessagePopup(this, 'IP블록 반납이 정상적으로 처리되었습니다.')
+        }
+      } catch (error) {
+        this.error(error)
+      }
+      */
     }
   },
 }
