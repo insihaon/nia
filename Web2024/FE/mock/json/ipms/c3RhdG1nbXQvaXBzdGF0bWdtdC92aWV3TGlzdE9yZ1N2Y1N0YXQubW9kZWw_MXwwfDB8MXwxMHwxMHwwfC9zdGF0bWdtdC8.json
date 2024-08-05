@@ -4878,9 +4878,9 @@
       "rowNo": 0,
       "url": "/statmgmt/ipstatmgmt/viewListOrgSvcStat.model"
     },
-    "receivedTime": "2024-08-05 10:14:15.239",
-    "duration": 1091,
+    "receivedTime": "2024-08-05 17:02:34.875",
+    "duration": 1461,
     "filename": "c3RhdG1nbXQvaXBzdGF0bWdtdC92aWV3TGlzdE9yZ1N2Y1N0YXQubW9kZWw_MXwwfDB8MXwxMHwxMHwwfC9zdGF0bWdtdC8.json",
-    "fetch": "fetch('/statmgmt/ipstatmgmt/viewListOrgSvcStat.model', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{\"pageIndex\":1,\"pageUnit\":0,\"pageSize\":0,\"firstIndex\":1,\"lastIndex\":10,\"recordCountPerPage\":10,\"rowNo\":0,\"url\":\"/statmgmt/ipstatmgmt/viewListOrgSvcStat.model\"}', 'method': 'POST' })"
+    "fetch": "success-fetch('/statmgmt/ipstatmgmt/viewListOrgSvcStat.model', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{\"pageIndex\":1,\"pageUnit\":0,\"pageSize\":0,\"firstIndex\":1,\"lastIndex\":10,\"recordCountPerPage\":10,\"rowNo\":0,\"url\":\"/statmgmt/ipstatmgmt/viewListOrgSvcStat.model\"}', 'method': 'POST' })"
   }
 }
