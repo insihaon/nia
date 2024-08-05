@@ -192,7 +192,6 @@
   }
   button {
     overflow: visible;
-    // border: none;
     background: 0;
     vertical-align: middle;
     cursor: pointer;
@@ -308,8 +307,8 @@
   input {
     &.txt {
       display: inline-block;
-      height: 16px;
-      line-height: 16px;
+      height: 21px;
+      line-height: 21px;
       padding: 2px 4px;
       border: #ccc solid 1px;
       color: #434343;

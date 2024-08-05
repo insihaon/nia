@@ -26,7 +26,7 @@
           <div class="mt-1 d-flex justify-end">
             <el-button icon="el-icon-check" type="primary" size="mini" @click="handleClickIpBlockCheck()">IP블럭 중복체크</el-button>
             <el-button icon="el-icon-document-checked" style="background: #2b5890;" type="primary" size="mini" @click="handleClickIpAssignInsert()">배정</el-button>
-            <el-button size="mini">병합</el-button>
+            <el-button size="mini" @click="handleClickMergeInsert()">병합</el-button>
           </div>
         </template>
       </comptable>
@@ -34,6 +34,7 @@
       <ModalIpAssignDetail ref="ModalIpAssignDetail" />
       <ModalIpAssign ref="ModalIpAssign" />
       <ModalCheckTacsIpBlock ref="ModalCheckTacsIpBlock" />
+      <ModalIpMerge ref="ModalIpMerge" />
     </el-col>
   </el-row>
 </template>
@@ -47,11 +48,12 @@ import ModalIpBlockDivision from '@/views-ipms/modal/ModalIpBlockDivision.vue'
 import ModalIpAssignDetail from '@/views-ipms/modal/ModalIpAssignDetail.vue'
 import ModalIpAssign from '@/views-ipms/modal/ModalIpAssign.vue'
 import ModalCheckTacsIpBlock from '@/views-ipms/modal/ModalCheckTacsIpBlock.vue'
+import ModalIpMerge from '@/views-ipms/modal/ModalIpMerge.vue'
 const routeName = 'IpAssign'
 
 export default {
   name: routeName,
-  components: { CompTable, DynamicComponentLoader, ModalIpBlockDivision, ModalIpAssignDetail, ModalCheckTacsIpBlock, ModalIpAssign },
+  components: { CompTable, DynamicComponentLoader, ModalIpBlockDivision, ModalIpAssignDetail, ModalCheckTacsIpBlock, ModalIpAssign, ModalIpMerge },
   extends: Base,
   mixins: [tableHeightMixin],
   data() {
@@ -133,7 +135,11 @@ export default {
           nuseIpCnt: '0',
           sipVersionTypeNm: 'IPv4',
           ssvcLineTypeCd: 'CL0003',
-          nlvlMstSeq: '1'
+          ssvcGroupCd: 'DATA망',
+          ssvcObjCd: 'DATA망(구로)',
+          sassignLevelCd: '미배정',
+          sassignTypeCd: '서비스배정[미할당]',
+          nlvlMstSeq: '1',
         },
          {
           ssvcLineTypeNm: 'MOBILE',
@@ -157,6 +163,10 @@ export default {
           nuseIpCnt: '0',
           sipVersionTypeNm: 'IPv4',
           ssvcLineTypeCd: 'CL0003',
+          ssvcGroupCd: 'DATA망',
+          ssvcObjCd: 'DATA망(구로)',
+          sassignLevelCd: '예비배정',
+          sassignTypeCd: '서비스배정[미할당]',
           nlvlMstSeq: '1'
         },
         {
@@ -181,6 +191,10 @@ export default {
           nuseIpCnt: '0',
           sipVersionTypeNm: 'IPv6',
           ssvcLineTypeCd: 'CL0003',
+          ssvcGroupCd: 'DATA망',
+          ssvcObjCd: 'DATA망(구로)',
+          sassignLevelCd: '미배정',
+          sassignTypeCd: '서비스배정[미할당]',
           nlvlMstSeq: '3'
         },
       ],
@@ -203,6 +217,9 @@ export default {
       } catch (error) {
         console.error(error)
       } */
+    },
+    handleClickTableCheck(all, cur) {
+      this.selectedTable = all
     },
     onClcikRow(row) {
       this.$refs.ModalIpAssignDetail.open({ row })
@@ -248,11 +265,21 @@ export default {
         return true
       })
       res.every(r => r === true) && this.$refs.ModalIpAssign.open({ row: this.selectedTable })
-      // this.$refs.ModalIpAssign.open({ row: this.selectedTable })
     },
-    handleClickTableCheck(all, cur) {
-      this.selectedTable = all
+    handleClickMergeInsert() {
+      this.$refs.ModalIpMerge.open({ row: this.selectedTable })
+
+      const rows = this.selectedTable
+
+      // if (rows.length === 0) {
+      //   onMessagePopup(this, '병합할 대상이 없습니다. 선택해주세요.')
+      //   return
+      // } else if (rows.length === 1) {
+      //   onMessagePopup(this, '병합할 대상은 최소 2개 이상 선택해 주시기 바랍니다.')
+      //   return
+      // }
     },
+
   }
 }
 </script>

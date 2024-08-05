@@ -19,7 +19,6 @@ copyright notice above does not evidence any actual or * intended publication of
       :data="propData"
       :height="propTableHeight"
       :row-class-name="propHighlight"
-      @selection-change="handleSelectionChange"
       @cell-click="fn_cell_click"
       @row-dblclick="propOnDblClick"
       @row-click="propOnClick"
@@ -132,6 +131,7 @@ export default {
     propOnDblClick: { type: Function, default: () => {} }, //더블클릭액션
     propOnClick: { type: Function, default: () => {} }, //클릭액션
     propOnCellClick: { type: Function, default: () => {} }, //셀클릭액션
+    propIsCellClickCheck: { type: Boolean, default: false },
     propIsRClick: { type: Boolean, default: false }, //우클릭 액션 유무
     propRClickOptions: {
       type: Array,
@@ -153,20 +153,13 @@ export default {
       tableSelectTemp: [],
       tableRadioCheck: {},
       tableColItem: {},
-      selectedRows: []
     }
   },
   mounted() {
-    // this.$nextTick(() => {
-      this.$refs.table.toggleRowSelection(this.propData[0], true);
-    // });
   },
   computed: {
   },
   methods: {
-    handleSelectionChange(val) {
-      this.selectedRows = val;
-    },
     fn_select(all, current) {
       if (!this.propIsCheckBox) {
         return
@@ -199,6 +192,7 @@ export default {
             })
           } else {
             this.tableSelectTemp = all
+            
           }
         }
       }
@@ -216,11 +210,12 @@ export default {
       contextmenu.style.top = event.clientY + 'px'
     },
     fn_cell_click(row, column, cell, event) {
+      if(this.propIsCellClickCheck) {
+        this.$refs.table.clearSelection()
+        this.$refs.table.selection.push(row)
+      }
       if(column.index === 0) return
       this.$emit('update:propCellClick', { row, column })
-    },
-    handleSelectionChange(val) {
-      this.multipleSelection = val
     },
     fn_onPageSizeChange(pageSize) {
       var temp_pagin = this.propPaginationData
