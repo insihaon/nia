@@ -12,12 +12,25 @@
   #container.main {
     .container_inner {
       min-height: 495px;
+      .el-tabs__header {
+        border-radius: 20px;
+        .el-tabs__nav-wrap {
+          background: #ebebeb;
+          border-radius: 20px;
+          .is-active {
+            border: solid 2px #ec161f;
+            border-radius: 20px;
+            background: #fff;
+            color: #000;
+          }
+        }
+      }
     }
     .search_result {
       position: relative;
       width: 100%;
       height: 100px;
-      background-color: #808080;
+      // background-color: #808080;
       border-bottom: 1px solid #e5e5e5;
 
       fieldset {
@@ -28,7 +41,7 @@
         .el-select {
           .el-input__inner {
             height: 33px;
-            border-radius: 0px;
+            border-radius: 20px;
             font-size: 11px;
             padding: 0px 10px;
           }
@@ -46,6 +59,7 @@
             padding: 0 9px;
             margin-right: 5px;
             border: 1px solid #666;
+            border-radius: 15px;
           }
           p {
             margin-top: 5px;
@@ -866,7 +880,6 @@
       position: relative;
       float: left;
       width: 100%;
-      margin-top: 15px;
     }
 
     .content_result_h {

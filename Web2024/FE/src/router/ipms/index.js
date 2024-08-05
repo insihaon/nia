@@ -118,12 +118,12 @@ export const ipmsRoute = Object.freeze([
         name: 'TraceRoute',
         meta: { title: 'Trace Route', affix: false }
       },
-      {
-        path: 'ipInfoMultiList',
-        component: () => import('@/views-ipms/menus/ipInfoMng/ipInfoMultiList'),
-        name: 'IpInfoMultiList',
-        meta: { title: 'IP 정보조회(멀티)', affix: false }
-      },
+      // {
+      //   path: 'ipInfoMultiList',
+      //   component: () => import('@/views-ipms/menus/ipInfoMng/ipInfoMultiList'),
+      //   name: 'IpInfoMultiList',
+      //   meta: { title: 'IP 정보조회(멀티)', affix: false }
+      // },
       {
         path: 'ipHistMng',
         component: () => import('@/views-ipms/menus/ipInfoMng/ipHistManagement'),

@@ -71,7 +71,6 @@
         </div> -->
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button size="mini" icon="el-icon-menu">병합</el-button>
         <el-button size="mini" class="el-icon-close" @click="close()">
           닫기
         </el-button>

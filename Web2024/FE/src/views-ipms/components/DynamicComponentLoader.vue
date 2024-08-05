@@ -23,7 +23,7 @@
         <el-button class="btn-r" type="info" size="mini" icon="el-icon-refresh">
           초기화
         </el-button>
-        <el-button type="button" size="mini" class="export-excel" icon="el-icon-download">
+        <el-button type="button" size="mini" class="export-excel" icon="el-icon-download" @click="handleClickExcel()">
           엑셀 저장
         </el-button>
         <slot name="add-function" />
@@ -81,6 +81,9 @@ export default {
   methods: {
     handleSearch() {
       this.$emit('handle-search', this.requestParameter)
+    },
+    handleClickExcel() {
+      this.$emit('save-excel', this.requestParameter)
     },
     onUpdateOrgValue(index, value) {
       this.dynamicComponents[index].props.value = value
