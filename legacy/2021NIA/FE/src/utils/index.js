@@ -705,16 +705,27 @@ function convertText(data) {
   return urlSafe
 }
 
+function filterNonNullValues(obj) {
+  return Object.fromEntries(
+      Object.entries(obj)
+            .filter(([key, value]) => value !== null && value !== '')
+  )
+}
+
 export function getJsonfileName2(url, config) {
-  const param = Object.assign({}, config.data)
+  let param = Object.assign({}, config.data)
 
   delete param.encrypt
   delete param._t
 
+  if (AppOptions.instance.project === 'ipms') {
+    param = filterNonNullValues(param)
+  }
+
   const param_encoding = convertText(JSON.parse(JSON.stringify(param)))
   const param_encoding_min = param_encoding.replace(/[^0-9]/g, '')
   const url_encoding = url.replace(/^(\/selectList|\/selectOne|\/modify|\/)/g, '')
-  const filename = `${convertText(url_encoding)}_${param_encoding}.json`
+  const filename = `${convertText(url_encoding)}_${param_encoding}`.substring(0, 200) + '.json'
 
   return filename
 }

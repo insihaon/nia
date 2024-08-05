@@ -88,6 +88,7 @@ import { Base } from '@/min/Base.min'
 import { AppOptions } from '@/class/appOptions'
 import { rulesUsername, rulesPassword, rulesRePassword, rulesRequire, rulesTelephone, rulesEmail } from '@/utils/validate'
 import { onDownloadChrome, exceptionLoginFail } from '@/utils/index'
+import '@/api/ipms'
 
 const routeName = 'Login'
 
