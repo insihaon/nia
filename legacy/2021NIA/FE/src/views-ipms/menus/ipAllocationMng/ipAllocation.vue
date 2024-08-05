@@ -4,6 +4,7 @@
       ref="searchCondition"
       :component-keys="componentList"
       @handle-search="handleSearch"
+      @save-excel="handleClickExcelBtn"
     />
     <el-col ref="tableContainer" :span="24">
       <compTable
@@ -59,6 +60,7 @@ import ModalDetailSummary from '@/views-ipms/modal/ModalDetailSummary.vue'
 import ModalIpAssignMerge from '@/views-ipms/modal/assign/ModalIpAssignMerge.vue'
 
 import { allocTableDatas } from './sample.js'
+import { apiModel } from '@/api/ipms'
 
 const routeName = 'IpAllocation'
 
@@ -114,7 +116,6 @@ export default {
         { prop: 'nipAllocMstCnt', label: '회선', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'dmodifyDt', label: '작업일자', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'sllnum', label: '전용번호', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-
         { prop: 'ssubscnealias', label: '장비명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'ssubsclgipportdescription', label: 'I/F명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'snull0Yn', label: 'Summary 포함 여부', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
@@ -145,7 +146,16 @@ export default {
   },
   methods: {
     handleSearch(requestParameter) {
-      console.log(requestParameter)
+      // console.log(requestParameter)
+      this.fnViewListIpAllocMst()
+    },
+    async fnViewListIpAllocMst(requestParameter) {
+      try {
+        const res = await apiModel('/ipmgmt/allocmgmt/viewListIpAllocMst', requestParameter)
+        this.tableDatas = res.result.data
+      } catch (error) {
+        this.error(error)
+      }
     },
     handleClickCell(params) {
       if (['분할', '라우팅 중복 개수'].includes(params.column.label)) return
@@ -242,26 +252,26 @@ export default {
       } else if (checkedList.length === 1) {
         validateText = '병합할 대상은 최소 2개이상 선택해 주시기 바랍니다.'
       }
-      // checkedList.forEach(row=> {
-      //   if(nipBlockMstSeq != row.nipBlockMstSeq) {
-      //     validateText = '병합할 대상 정보들의 생성 유형이 동일하지 않습니다.'
-      //   }
-      //   if(sassignLevelCd != row.sassignLevelCd) {
-      //     validateText = '병합할 대상 정보들의 작업 상태가 동일하지 않습니다.'
-      //   }
-      //   if(sassignTypeCd != row.sassignTypeCd) {
-      //     validateText = '병합할 대상 정보들의 서비스가 동일하지 않습니다.'
-      //   }
-      //   if(nlvlMstSeq != row.nlvlMstSeq) {
-      //     validateText = '병합할 대상 정보들의 계위(조직)정보가 동일하지 않습니다.'
-      //   }
-      //   if(sipCreateTypeCd != row.sipCreateTypeCd) {
-      //     validateText = '병합할 대상 정보들의 생성 유형이 동일하지 않습니다.'
-      //   }
-      //   if (row.sassignLevelCd == "IA0005" || row.sassignLevelCd == "IA0006") {
-      //     validateText = '병합할 대상 정보들의 작업 상태가 할당확정/할당예약 일 경우 병합할 수 없습니다.'
-      //   }
-      // })
+      checkedList.forEach(row => {
+        if (nipBlockMstSeq !== row.nipBlockMstSeq) {
+          validateText = '병합할 대상 정보들의 생성 유형이 동일하지 않습니다.'
+        }
+        if (sassignLevelCd !== row.sassignLevelCd) {
+          validateText = '병합할 대상 정보들의 작업 상태가 동일하지 않습니다.'
+        }
+        if (sassignTypeCd !== row.sassignTypeCd) {
+          validateText = '병합할 대상 정보들의 서비스가 동일하지 않습니다.'
+        }
+        if (nlvlMstSeq !== row.nlvlMstSeq) {
+          validateText = '병합할 대상 정보들의 계위(조직)정보가 동일하지 않습니다.'
+        }
+        if (sipCreateTypeCd !== row.sipCreateTypeCd) {
+          validateText = '병합할 대상 정보들의 생성 유형이 동일하지 않습니다.'
+        }
+        if (row.sassignLevelCd === 'IA0005' || row.sassignLevelCd === 'IA0006') {
+          validateText = '병합할 대상 정보들의 작업 상태가 할당확정/할당예약 일 경우 병합할 수 없습니다.'
+        }
+      })
       if (validateText.length > 0) {
         onMessagePopup(this, validateText)
         return
@@ -269,6 +279,49 @@ export default {
       const tbIpAssignMstListVo = { typeFlag: 'Aloc', tbIpAssignMstVos: [] }
       checkedList.forEach(row => { tbIpAssignMstListVo.tbIpAssignMstVos.push({ nipAssignMstSeq: row.nipAssignMstSeq }) })
       this.$refs.ModalIpAssignMerge.open({ tbIpAssignMstListVo })
+    },
+    async handleClickExcelBtn(params) {
+      /* legacy param
+      {
+        pageIndex: 1
+        pageUnit: 10
+        sicisofficescodeNe: XXXXXX
+        ssubscnealiasNe:
+        smodelnameNe:
+        ssubscmstipNe:
+        ssubscnnescode:
+        sllnum:
+        ssaid:
+        sordernum:
+        PageLoad:
+        ssvcLineTypeCd: CL0001
+        ssvcGroupCd:
+        ssvcGroupCdMultiStr: 383040;
+        ssvcObjCd: R00454
+        sofficecode:
+        sipCreateTypeCd: CT0001
+        sassignTypeCd:
+        sassignTypeCdMultiStr:
+        sipVersionTypeCd: CV0001
+        searchWrd:
+        nbitmask:
+        llSrchTypeCd: llnum
+        sassignLevelCd: IA0004
+        searchBgnDe:
+        searchEndDe:
+        sortType: PIP_PREFIX
+        sortOrdr: ASC
+        snull0Yn:
+        sintgrmYn:
+        nsummaryCnt:
+      }
+      /ipmgmt/allocmgmt/viewListIpAllocMstExcel.json
+      */
+      /*  try {
+        const res = await apiExcel('/ipmgmt/allocmgmt/viewListIpAllocMstExcel.json', params)
+     } catch (error) {
+        this.error(error)
+     } */
     }
    },
 }

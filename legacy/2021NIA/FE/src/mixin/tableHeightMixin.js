@@ -18,7 +18,7 @@ var tableHeightMixin = {
         const containerEl = this.$refs.container
         const tableEl = this.$refs.tableContainer
 
-        const searchConditionHeight = searchEl?.$el?.offsetHeight
+        const searchConditionHeight = searchEl?.$el?.offsetHeight || searchEl?.offsetHeight
         const containerHeight = containerEl?.$el?.offsetHeight
 
         if (searchConditionHeight && containerHeight && tableEl) {
