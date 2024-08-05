@@ -1,0 +1,17 @@
+{
+  "__body": {
+    "result": "success",
+    "commonMsg": "SUCCESS"
+  },
+  "__config": {
+    "url": "newLogin.json",
+    "param": {
+      "suserId": "10150810",
+      "sUserPw": "1"
+    },
+    "receivedTime": "2024-08-05 10:10:23.684",
+    "duration": 1355,
+    "filename": "bmV3TG9naW4uanNvbg_MTAxNTA4MTB8MQ.json",
+    "fetch": "success-fetch('newLogin.json', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{\"suserId\":\"10150810\",\"sUserPw\":\"1\"}', 'method': 'POST' })"
+  }
+}

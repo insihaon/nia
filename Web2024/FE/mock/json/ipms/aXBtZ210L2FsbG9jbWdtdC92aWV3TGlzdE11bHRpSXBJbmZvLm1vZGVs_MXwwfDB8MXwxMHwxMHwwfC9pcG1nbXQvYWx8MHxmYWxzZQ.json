@@ -1,0 +1,27 @@
+{
+  "__body": {
+    "result": {
+      "totalCount": 0,
+      "data": []
+    }
+  },
+  "__config": {
+    "url": "/ipmgmt/allocmgmt/viewListMultiIpInfo.model",
+    "param": {
+      "pageIndex": 1,
+      "pageUnit": 0,
+      "pageSize": 0,
+      "firstIndex": 1,
+      "lastIndex": 10,
+      "recordCountPerPage": 10,
+      "rowNo": 0,
+      "url": "/ipmgmt/allocmgmt/viewListMultiIpInfo.model",
+      "totalCount": 0,
+      "bUploadFlag": false
+    },
+    "receivedTime": "2024-08-05 10:11:05.356",
+    "duration": 368,
+    "filename": "aXBtZ210L2FsbG9jbWdtdC92aWV3TGlzdE11bHRpSXBJbmZvLm1vZGVs_MXwwfDB8MXwxMHwxMHwwfC9pcG1nbXQvYWx8MHxmYWxzZQ.json",
+    "fetch": "fetch('/ipmgmt/allocmgmt/viewListMultiIpInfo.model', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{\"pageIndex\":1,\"pageUnit\":0,\"pageSize\":0,\"firstIndex\":1,\"lastIndex\":10,\"recordCountPerPage\":10,\"rowNo\":0,\"url\":\"/ipmgmt/allocmgmt/viewListMultiIpInfo.model\",\"totalCount\":0,\"bUploadFlag\":false}', 'method': 'POST' })"
+  }
+}

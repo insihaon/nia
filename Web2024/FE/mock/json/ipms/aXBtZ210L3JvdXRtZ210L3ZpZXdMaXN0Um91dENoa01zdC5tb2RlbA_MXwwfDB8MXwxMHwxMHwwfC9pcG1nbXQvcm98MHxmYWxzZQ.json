@@ -1,0 +1,23 @@
+{
+  "__body": {},
+  "__config": {
+    "url": "/ipmgmt/routmgmt/viewListRoutChkMst.model",
+    "param": {
+      "pageIndex": 1,
+      "pageUnit": 0,
+      "pageSize": 0,
+      "firstIndex": 1,
+      "lastIndex": 10,
+      "recordCountPerPage": 10,
+      "rowNo": 0,
+      "url": "/ipmgmt/routmgmt/viewListRoutChkMst.model",
+      "totalCount": 0,
+      "bUploadFlag": false
+    },
+    "receivedTime": "2024-08-05 10:17:58.913",
+    "duration": 395,
+    "filename": "aXBtZ210L3JvdXRtZ210L3ZpZXdMaXN0Um91dENoa01zdC5tb2RlbA_MXwwfDB8MXwxMHwxMHwwfC9pcG1nbXQvcm98MHxmYWxzZQ.json",
+    "fetch": "error-fetch('/ipmgmt/routmgmt/viewListRoutChkMst.model', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{\"pageIndex\":1,\"pageUnit\":0,\"pageSize\":0,\"firstIndex\":1,\"lastIndex\":10,\"recordCountPerPage\":10,\"rowNo\":0,\"url\":\"/ipmgmt/routmgmt/viewListRoutChkMst.model\",\"totalCount\":0,\"bUploadFlag\":false}', 'method': 'POST' })",
+    "errorThrown": "Method Not Allowed"
+  }
+}
