@@ -16,7 +16,7 @@
     >
       <span slot="title">
         <i class="el-icon-document mr-2" style="font-size: 17px" />
-        시설정보조회
+        링크정보조회
         <hr>
       </span>
       <el-row class="w-100 h-100">
@@ -41,7 +41,7 @@
           >
             <template slot="text-description">
               <span>
-                시설정보 조회 결과
+                링크정보 조회 결과
               </span>
             </template>
           </compTable>
@@ -63,9 +63,9 @@ import { Modal } from '@/min/Modal.min'
 import CompTable from '@/components/elTable/CompTable.vue'
 import { onMessagePopup } from '@/utils/index'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
-import { facilityTableDatas } from '@/views-ipms/menus/ipAllocationMng/sample.js'
+import { linkTableDatas } from '@/views-ipms/menus/ipAllocationMng/sample.js'
 
-const routeName = 'ModalFacilityInformation'
+const routeName = 'ModalLinkInformation'
 
 export default {
   name: routeName,
@@ -76,22 +76,30 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      ipAllocOperMstVos: null,
+      ipBlockMstVo: null,
       requestParameter: null,
       selectedRow: null,
       componentList: [
-         { key: 'SOffice', props: { prop_parameterKey: 'sicisofficescodeNe' } },
-         { key: 'InputType', props: { label: '장비명', prop_parameterKey: 'ssubscnealiasNe' } },
-         { key: 'InputType', props: { label: '장비대표IP', prop_parameterKey: 'ssubscmstipNe' } },
-         { key: 'InputType', props: { label: '모델명', prop_parameterKey: 'smodelnameNe' } },
+         { key: 'SOffice', props: { label: '자국/대국 수용국', prop_parameterKey: 'sofficescodeSrch' } },
+         { key: 'InputType', props: { label: '자국/대국 장비명', prop_parameterKey: 'snealiasSrch' } },
+         { key: 'InputType', props: { label: '자국/대국 대표IP', prop_parameterKey: 'smstipSrch' } },
+         { key: 'InputType', props: { label: '자국/대국 IF', prop_parameterKey: 'sifipSrch' } },
+         { key: 'InputType', props: { label: '인터페이스 \n시리얼 IP', prop_parameterKey: 'pifSerialIpSrch' } },
+         { key: 'InputType', props: { label: '전용번호', prop_parameterKey: 'sllnumSrch' } },
       ],
        tableColumns: [
-        { prop: 'sofficename', label: '수용국', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'ssubscnealias', label: '장비명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'smodelname', label: '모델명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'ssubscmstip', label: '장비대표 IP', align: 'center', sortable: true, columnVisible: true, showOverflow: true }
+        { prop: 'pifSerialIp', label: '인터페이스 시리얼 IP', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'saofficescodeNm', label: '자국 수용국', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'sanealias', label: '자국 장비명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'samstip', label: '자국 장비IP', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'saifname', label: '자국 IF명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'szofficescodeNm', label: '대국 수용국', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'sznealias', label: '대국 장비명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'szmstip', label: '대국 장비IP', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'szifname', label: '대국 IF명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'sllnum', label: '전용번호', align: 'center', sortable: true, columnVisible: true, showOverflow: true }
       ],
-      tableDatas: facilityTableDatas
+      tableDatas: linkTableDatas
     }
   },
   /* row 참고
@@ -107,40 +115,33 @@ export default {
     onCreated() {
       Modal.methods.onCreated.call(this)
       this.closeOnClickModal = false
-      this.domElement.maxWidth = 700
+      this.domElement.maxWidth = 1400
     },
     onOpen(model, actionMode) {
-      if (model.rows) {
-        this.ipAllocOperMstVos = model.rows
+      if (model.ipBlockMstVo) {
+        this.ipBlockMstVo = model.ipBlockMstVo
       }
     },
     onClose() {
       if (this.selectedRow !== null) {
-        this.$emit('selected-value', { selectedRow: this.selectedRow, returnFlag: 'allocNe' })
+        this.$emit('selected-value', { selectedRow: this.selectedRow, returnFlag: 'allocLn' })
       }
     },
-    // \ipAlocMstVo.sicisofficescodeNe	= vOfficeCode; //수용국
-    // ipAlocMstVo.ssubscnealiasNe		= vNeAlias;//장비명
-    // ipAlocMstVo.ssubscmstipNe		= vNeMstIp;//대표IP
-    // ipAlocMstVo.smodelnameNe		= vModelNm;//모델명
     handleSearch(requestParameter) {
-      const { sicisofficescodeNe, ssubscnealiasNe, ssubscmstipNe, smodelnameNe } = requestParameter
-
-      const isCheckSearchLen = (ssubscnealiasNe.length >= 4 || ssubscmstipNe.length >= 4 || smodelnameNe.length >= 4)
-      if (sicisofficescodeNe === '' && !isCheckSearchLen) {
+      const { sofficescodeSrch, snealiasSrch, smstipSrch, sifipSrch, pifSerialIpSrch, sllnumSrch } = requestParameter
+      const isCheckSearchLen = (snealiasSrch.length >= 4 || smstipSrch.length >= 4 || sifipSrch.length >= 4 || pifSerialIpSrch.length >= 4 || sllnumSrch.length >= 4)
+      if (sofficescodeSrch === '' && !isCheckSearchLen) {
         onMessagePopup(this, '수용국을 선택하시지 않으실 경우 검색 값이 최소 4자리 이상이여야 합니다.')
         return
       }
-      if (this.ipAllocOperMstVos) {
-        const { ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd } = this.ipAllocOperMstVos[0]
+      if (this.ipBlockMstVo) {
+        const { ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd } = this.ipBlockMstVo
         this._merge(requestParameter, { ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd })
       }
-
-      // sneSrchTypeCd 추가해야함
       this.requestParameter = requestParameter
-      this.onLoadNeList()
+      this.onLoadLinkList()
     },
-    async onLoadNeList() {
+    async onLoadLinkList() {
       /*
         try {
           const res = await api(this.requestParameter)

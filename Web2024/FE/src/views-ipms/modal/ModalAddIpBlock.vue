@@ -198,7 +198,6 @@ export default {
       ipBlockResult: '',
       description: '',
       viewType: '',
-      sipCreateTypeCd: '',
       pipPrefix: '',
       ipBlockDetailList: [
         { pipPrefix: '112.221.217.32/32', sfirstAddr: '112.221.217.32', slastAddr: '112.221.217.32', nclassCnt: '0.00390625', ncnt: '1', deleteBtn: '삭제' }
@@ -247,31 +246,37 @@ export default {
         console.error(error)
       } */
     },
-    fnSaveBtnClick() {
-      // ip 등록
-      this.confirm('등록하시겠습니까?', 'IP블록생성', {
-        confirmButtonText: 'OK',
-        cancelButtonText: 'Cancel',
-        type: 'success',
-      }).then(async () => {
-        try {
+  async fnSaveBtnClick() {
+    // ip 등록 확인 대화상자
+    this.confirm('등록하시겠습니까?', 'IP블록생성', {
+      confirmButtonText: 'OK',
+      cancelButtonText: 'Cancel',
+      type: 'success',
+    }).then(async () => {
+      try {
+        for (let i = 0; i < this.ipBlockDetailList.length; i++) {
+          const ipBlock = this.ipBlockDetailList[i]
           const param = {
-            nipBlockMstSeq: this.selectedRow.nipBlockMstSeq,
-            sipCreateSeqNm: this.selectedRow.sipCreateSeqNm,
-            scomment: this.selectedRow.scomment,
+            sipCreateTypeCd: this.selectedRow.sipCreateTypeCd,
+            ssvcLineTypeCd: this.selectedRow.ssvcLineTypeCd,
+            sipCreateSeqCd: this.selectedRow.sipCreateSeqCd,
+            sipVersionTypeCd: this.selectedRow.sipVersionTypeCd,
+            pipPrefix: ipBlock.pipPrefix,
+            scomment: this.selectedRow.scomment
           }
           const res = await /* apiEditIpBlockList */(param)
           if (res.success) {
             this.$message('IP블록 수정이 정상적으로 처리되었습니다.')
             this.$emit('reloadData')
           }
-        } catch (error) {
-          this.$message.error({ message: `IP블록 수정에 실패했습니다.` })
-          console.error(error)
         }
-      })
-    },
-    fnAppendBtnClick() {
+      } catch (error) {
+        this.$message.error({ message: 'IP블록 등록에 실패했습니다.' })
+        console.error(error)
+      }
+    })
+  },
+    async fnAppendBtnClick() {
       // ip 추가
       if (this.sipCreateTypeNm === '') {
         this.$message('공인/사설이 미분류입니다. 다시 선택해 주시기 바랍니다.')
@@ -286,14 +291,29 @@ export default {
         return
       }
       this.viewType = 'generate'
-        const newIp = {
-        pipPrefix: this.pipPrefix,
-        sfirstAddr: 'temp',
-        slastAddr: 'temp',
-        nclassCnt: 'temp',
-        ncnt: 'temp',
+
+      try {
+          const param = {
+            sipCreateTypeCd: this.selectedRow.sipCreateTypeCd,
+            ssvcLineTypeCd: this.selectedRow.ssvcLineTypeCd,
+            sipCreateSeqCd: this.selectedRow.sipCreateSeqCd,
+            sipVersionTypeCd: this.selectedRow.sipVersionTypeCd,
+            pipPrefix: this.selectedRow.pipPrefix,
+          }
+          const res = await /* apiAddIpBlockList */(param)
+          if (res.success) {
+             const resultData = res?.result
+              this.ipBlockDetailList.push({
+                pipPrefix: this.pipPrefix,
+                sfirstAddr: resultData.sfirstAddr,
+                slastAddr: resultData.slastAddr,
+                nclassCnt: resultData.nclassCnt,
+                ncnt: resultData.ncnt,
+              })
+          }
+      } catch (error) {
+        console.error(error)
       }
-       this.ipBlockDetailList.push(newIp)
     },
     fnInitBtnClick() {
       // 초기화

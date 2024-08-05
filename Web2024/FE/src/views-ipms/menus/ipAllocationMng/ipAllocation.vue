@@ -7,11 +7,14 @@
     />
     <el-col ref="tableContainer" :span="24">
       <compTable
+        ref="compTable"
         :prop-table-height="'calc(100% - 80px)'"
         :prop-data="tableDatas"
         :prop-column="tableColumns"
         :prop-is-pagination="false"
         :prop-is-check-box="true"
+        :prop-is-cell-click-check="true"
+        :prop-max-select="tableDatas.length"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
         :prop-on-click="hadleClickIpAllocDetail"
@@ -25,9 +28,9 @@
         </template>
         <template slot="add-features">
           <div class="mt-1 d-flex justify-end">
-            <el-button icon="el-icon-check" type="primary" size="mini" @click="handleClickIpBlockCheck">IP블럭 중복체크</el-button>
-            <el-button icon="el-icon-thumb" style="background: #2b5890;" type="primary" size="mini" @click="handleClickIpAllocInsert">할당</el-button>
-            <el-button size="mini">병합</el-button>
+            <el-button icon="el-icon-check" type="primary" size="mini" @click="fnViewCheckTacsIpBlock">IP블럭 중복체크</el-button>
+            <el-button icon="el-icon-thumb" style="background: #2b5890;" type="primary" size="mini" @click="fnInsertAlcBtnClick">할당</el-button>
+            <el-button size="mini" @click="fnMergeBtnClick">병합</el-button>
           </div>
         </template>
       </compTable>
@@ -35,8 +38,10 @@
     <ModalCheckTacsIpBlock ref="ModalCheckTacsIpBlock" />
     <ModalIpBlockDivision ref="ModalIpBlockDivision" />
     <ModalIpAllocInsert ref="ModalIpAllocInsert" />
-    <ModalIpAllocDetail ref="ModalIpAllocDetail" />
-    <ModalIpAssign ref="ModalIpAssign" />
+    <ModalIpAllocDetail ref="ModalIpAllocDetail" @alocCallBtnClick="fnInsertAlcBtnClick" />
+    <ModalDetailSummary ref="ModalDetailSummary" />
+    <!-- IP블록병합 -->
+    <ModalIpAssignMerge ref="ModalIpAssignMerge" />
   </el-row>
 </template>
 <script>
@@ -49,13 +54,17 @@ import ModalIpAllocInsert from '@/views-ipms/modal/alloc/ModalIpAllocInsert.vue'
 import ModalIpAllocDetail from '@/views-ipms/modal/alloc/ModalIpAllocDetail.vue'
 import ModalCheckTacsIpBlock from '@/views-ipms/modal/ModalCheckTacsIpBlock.vue'
 import ModalIpBlockDivision from '@/views-ipms/modal/ModalIpBlockDivision.vue'
-import ModalIpAssign from '@/views-ipms/modal/ModalIpAssign.vue'
+import ModalDetailSummary from '@/views-ipms/modal/ModalDetailSummary.vue'
+
+import ModalIpAssignMerge from '@/views-ipms/modal/assign/ModalIpAssignMerge.vue'
+
+import { allocTableDatas } from './sample.js'
 
 const routeName = 'IpAllocation'
 
 export default {
   name: routeName,
-  components: { CompTable, DynamicComponentLoader, ModalIpBlockDivision, ModalIpAllocDetail, ModalCheckTacsIpBlock, ModalIpAllocInsert, ModalIpAssign },
+  components: { CompTable, DynamicComponentLoader, ModalIpBlockDivision, ModalIpAllocDetail, ModalCheckTacsIpBlock, ModalIpAllocInsert, ModalIpAssignMerge, ModalDetailSummary },
   extends: Base,
   mixins: [tableHeightMixin],
   data() {
@@ -110,358 +119,27 @@ export default {
         { prop: 'ssubsclgipportdescription', label: 'I/F명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'snull0Yn', label: 'Summary 포함 여부', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'sintgrmYn', label: 'DB-라우팅 일치 여부', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'nsummaryCnt', label: '라우팅 중복 개수', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'nsummaryCnt', label: '라우팅 중복 개수', align: 'center', sortable: true, columnVisible: true, showOverflow: true,
+          formatter: (row, col, value, index) => {
+            return this.$createElement('el-button', {
+              class: row.nsummaryCnt > 0 ? 'red' : '',
+              on: { click: () => {
+                this.$refs.ModalDetailSummary.open({ row })
+            } } }, row.nsummaryCnt)
+          }
+        },
         { prop: 'division', label: '분할', align: 'center', sortable: true, columnVisible: true, showOverflow: true,
           formatter: (row, col, value, index) => {
             return this.$createElement('el-button', {
               class: row.sassignLevelCd === 'IA0004' ? '' : 'red',
               on: { click: () => {
-                this.$refs.ModalIpBlockDivision.open({ row })
+                row.sassignLevelCd === 'IA0004' && this.$refs.ModalIpBlockDivision.open({ row })
             } } }, row.sassignLevelCd === 'IA0004' ? '분할' : '불가')
           }
         },
         { prop: '', label: '비고', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
       ],
-      tableDatas: [
-        // {
-        //   dmodifyDt: '2022-07-12',
-        //   sassignLevelCd: 'IA0004',
-        //   nbitMask: 26,
-        //   nipAllocMstCnt: 1,
-        //   nipAssignMstSeq: 980372,
-        //   nsummaryCnt: '0',
-        //   pipPrefix: '1.100.0.0/17',
-        //   sassignLevelNm: '할당',
-        //   sassignTypeNm: 'POOL-M2M',
-        //   scomment: null,
-        //   sintgrmYn: 'Y',
-        //   sipCreateTypeNm: '공인',
-        //   sipCreateTypeCd: 'CT0001',
-        //   sllnum: '',
-        //   snull0Yn: 'Y',
-        //   ssubsclgipportdescription: null,
-        //   ssubscnealias: 'GR_C-PGW#20',
-        //   ssvcGroupNm: 'DATA망',
-        //   ssvcLineTypeNm: 'MOBILE',
-        //   ssvcLineTypeCd: 'CL0003',
-        //   ssvcObjNm: 'DATA망(구로)',
-        //   sipVersionTypeCd: 'CV0001',
-        //   nlvlMstSeq: '20309',
-        // },
-        {
-        bUploadFlag: false,
-        commonMsg: null,
-        dcreateDt: 'Tue Jul 12 09:41:23 KST 2022',
-        dmodifyDt: 'Tue Jul 12 09:41:56 KST 2022',
-        firstIndex: 1,
-        lastIndex: 1,
-        llSrchTypeCd: null,
-        lvlMstSeqListVo: null,
-        menuType: null,
-        moveSearchWrd: '',
-        moveSipVersionTypeCd: null,
-        moveType: '',
-        nbitmask: '17',
-        nclassCnt: '128.0000000000',
-        ncnt: '32768',
-        nfirstAddr: '23330816',
-        nfreeIpCnt: '32768',
-        nipAllocMstCnt: '1',
-        nipAllocMstSeq: null,
-        nipAssignMstSeq: '980372',
-        nipBlockMstSeq: '2743',
-        nipLinkMstSeq: null,
-        nipmsSvcSeq: '0',
-        nlastAddr: '23363583',
-        nlvlMstSeq: '20306',
-        nroutingChkMstSeq: null,
-        nsubnetmask: null,
-        nsummaryCnt: '0',
-        nticketActSeq: null,
-        nuseIpCnt: '0',
-        nwhoisSeq: null,
-        pageIndex: 1,
-        pageSize: 0,
-        pageUnit: 0,
-        paramMap: null,
-        pifSerialIp: null,
-        pifSerialIpSrch: null,
-        pipPrefix: '1.100.0.0/17',
-        recordCountPerPage: 10,
-        rowNo: 1,
-        saifname: null,
-        sAlcSrchTypeCd: null,
-        salocationcode: null,
-        salocationcodeNm: null,
-        samstip: null,
-        sanealias: null,
-        saofficescode: null,
-        saofficescodeNm: null,
-        sassignLevelCd: 'IA0006',
-        sassignLevelNm: '할당',
-        sassignTypeCd: 'SA1013',
-        sassignTypeCdMultiStr: null,
-        sassignTypeCds: null,
-        sassignTypeMulti: null,
-        sassignTypeNm: 'POOL-M2M',
-        scomment: null,
-        sconnAlias: null,
-        sconnalias: null,
-        screateEmail: null,
-        screateId: '10149118',
-        screateNm: null,
-        scustName: null,
-        searchBgnCd: '',
-        searchBgnDe: '',
-        searchCnd: '',
-        searchEndCd: '',
-        searchEndDe: '',
-        searchUseYn: '',
-        searchWrd: '',
-        sexPushYn: null,
-        sexSvcCd: null,
-        sexSvcNm: null,
-        sfirstAddr: '1.100.0.0',
-        sfirstAddrBinary: '00000001011001000000000000000000',
-        sfirstAddrGwip: '1.100.0.1',
-        sfirstIpPreferred: '001.100.000.000',
-        sgatewayip: null,
-        sGubun: null,
-        sicisofficescode: null,
-        sicisofficescodeNe: null,
-        sicisofficesname: null,
-        sifipSrch: null,
-        sintgrmYn: 'Y',
-        sipAllocExTypeCd: 'AE0000',
-        sipAllocExTypeNm: null,
-        sipAssignSubNm: null,
-        sipBlock: '1.100.0.0',
-        sipCreateSeqCd: 'M202010001',
-        sipCreateSeqNm: null,
-        sipCreateTypeCd: 'CT0001',
-        sipCreateTypeNm: '공인',
-        sipmsSvcNm: null,
-        sipVersionTypeCd: 'CV0001',
-        sipVersionTypeNm: 'IPv4',
-        slacpsid: null,
-        slastAddr: '1.100.127.255',
-        slastAddrBinary: '00000001011001000111111111111111',
-        slastAddrGwip: '1.100.127.254',
-        slastIpPreferred: '001.100.127.255',
-        sllnum: '',
-        sllnumSrch: null,
-        slocationcodeNmSrch: null,
-        smodelname: null,
-        smodelnameNe: null,
-        smodifyEmail: null,
-        smodifyId: '10149118',
-        smodifyNm: null,
-        smstipSrch: null,
-        snealiasSrch: null,
-        sneossDdYn: 'N',
-        sneSrchTypeCd: null,
-        snetmask: '255.255.128.0',
-        sNextHop: null,
-        snull0Yn: 'Y',
-        sofficecode: null,
-        sofficename: null,
-        sofficescodeSrch: null,
-        sordernum: null,
-        sortOrdr: '',
-        sortType: '',
-        spageType: null,
-        sregyn: null,
-        ssaid: null,
-        sssvcMgroupNm: null,
-        ssubsclgipportdescription: null,
-        ssubsclgipportip: null,
-        ssubscmstip: null,
-        ssubscmstipNe: null,
-        ssubscnealias: 'GR_C-PGW#20',
-        ssubscnealiasNe: null,
-        ssubscnealiasType: null,
-        ssubscnescode: null,
-        ssubscnnescode: null,
-        ssubscrouterserialip: null,
-        ssvcGroupCd: 'VV0010',
-        ssvcGroupCdMulti: null,
-        ssvcGroupCdMultiStr: null,
-        ssvcGroupNm: 'DATA망',
-        ssvcLgroupNm: null,
-        ssvcLineTypeCd: 'CL0003',
-        ssvcLineTypeNm: 'MOBILE',
-        ssvcObjCd: 'VV0015',
-        ssvcObjNm: 'DATA망(구로)',
-        ssvcUseTypeCd: null,
-        ssvcUseTypeNm: null,
-        svalidCheck: null,
-        szifname: null,
-        szlocationcode: null,
-        szlocationcodeNm: null,
-        szmstip: null,
-        sznealias: null,
-        szofficescode: null,
-        szofficescodeNm: null,
-        totalCount: 0,
-        typeFlag: '',
-      }, {
-        bUploadFlag: false,
-        commonMsg: null,
-        dcreateDt: 'Mon May 29 17:56:15 KST 2023',
-        dmodifyDt: 'Mon May 29 17:56:32 KST 2023',
-        firstIndex: 1,
-        lastIndex: 1,
-        llSrchTypeCd: null,
-        lvlMstSeqListVo: null,
-        menuType: null,
-        moveSearchWrd: '',
-        moveSipVersionTypeCd: null,
-        moveType: '',
-        nbitmask: '26',
-        nclassCnt: '0.2500000000',
-        ncnt: '64',
-        nfirstAddr: '23363584',
-        nfreeIpCnt: '64',
-        nipAllocMstCnt: '0',
-        nipAllocMstSeq: null,
-        nipAssignMstSeq: '1108037',
-        nipBlockMstSeq: '2743',
-        nipLinkMstSeq: null,
-        nipmsSvcSeq: '0',
-        nlastAddr: '23363647',
-        nlvlMstSeq: '20309',
-        nroutingChkMstSeq: null,
-        nsubnetmask: null,
-        nsummaryCnt: null,
-        nticketActSeq: null,
-        nuseIpCnt: '0',
-        nwhoisSeq: null,
-        pageIndex: 1,
-        pageSize: 0,
-        pageUnit: 0,
-        paramMap: null,
-        pifSerialIp: null,
-        pifSerialIpSrch: null,
-        pipPrefix: '1.100.128.0/26',
-        recordCountPerPage: 10,
-        rowNo: 0,
-        saifname: null,
-        sAlcSrchTypeCd: null,
-        salocationcode: null,
-        salocationcodeNm: null,
-        samstip: null,
-        sanealias: null,
-        saofficescode: null,
-        saofficescodeNm: null,
-        sassignLevelCd: 'IA0004',
-        sassignLevelNm: '서비스배정[미할당]',
-        sassignTypeCd: 'SA1013',
-        sassignTypeCdMultiStr: null,
-        sassignTypeCds: null,
-        sassignTypeMulti: null,
-        sassignTypeNm: 'POOL-M2M',
-        scomment: '',
-        sconnAlias: null,
-        sconnalias: null,
-        screateEmail: null,
-        screateId: '10150810',
-        screateNm: null,
-        scustName: null,
-        searchBgnCd: '',
-        searchBgnDe: '',
-        searchCnd: '',
-        searchEndCd: '',
-        searchEndDe: '',
-        searchUseYn: '',
-        searchWrd: '',
-        sexPushYn: null,
-        sexSvcCd: null,
-        sexSvcNm: null,
-        sfirstAddr: '1.100.128.0',
-        sfirstAddrBinary: '00000001011001001000000000000000',
-        sfirstAddrGwip: '1.100.128.1',
-        sfirstIpPreferred: '001.100.128.000',
-        sgatewayip: null,
-        sGubun: null,
-        sicisofficescode: null,
-        sicisofficescodeNe: null,
-        sicisofficesname: null,
-        sifipSrch: null,
-        sintgrmYn: null,
-        sipAllocExTypeCd: 'AE0000',
-        sipAllocExTypeNm: null,
-        sipAssignSubNm: null,
-        sipBlock: '1.100.128.0',
-        sipCreateSeqCd: 'M202010001',
-        sipCreateSeqNm: null,
-        sipCreateTypeCd: 'CT0001',
-        sipCreateTypeNm: '공인',
-        sipmsSvcNm: null,
-        sipVersionTypeCd: 'CV0001',
-        sipVersionTypeNm: 'IPv4',
-        slacpsid: null,
-        slastAddr: '1.100.128.63',
-        slastAddrBinary: '00000001011001001000000000111111',
-        slastAddrGwip: '1.100.128.62',
-        slastIpPreferred: '001.100.128.063',
-        sllnum: null,
-        sllnumSrch: null,
-        slocationcodeNmSrch: null,
-        smodelname: null,
-        smodelnameNe: null,
-        smodifyEmail: null,
-        smodifyId: '10150810',
-        smodifyNm: null,
-        smstipSrch: null,
-        snealiasSrch: null,
-        sneossDdYn: 'N',
-        sneSrchTypeCd: null,
-        snetmask: '255.255.255.192',
-        sNextHop: null,
-        snull0Yn: null,
-        sofficecode: null,
-        sofficename: null,
-        sofficescodeSrch: null,
-        sordernum: null,
-        sortOrdr: '',
-        sortType: '',
-        spageType: null,
-        sregyn: null,
-        ssaid: null,
-        sssvcMgroupNm: null,
-        ssubsclgipportdescription: null,
-        ssubsclgipportip: null,
-        ssubscmstip: null,
-        ssubscmstipNe: null,
-        ssubscnealias: null,
-        ssubscnealiasNe: null,
-        ssubscnealiasType: null,
-        ssubscnescode: null,
-        ssubscnnescode: null,
-        ssubscrouterserialip: null,
-        ssvcGroupCd: 'VV0010',
-        ssvcGroupCdMulti: null,
-        ssvcGroupCdMultiStr: null,
-        ssvcGroupNm: 'DATA망',
-        ssvcLgroupNm: null,
-        ssvcLineTypeCd: 'CL0003',
-        ssvcLineTypeNm: 'MOBILE',
-        ssvcObjCd: 'VV0015',
-        ssvcObjNm: 'DATA망(구로)',
-        ssvcUseTypeCd: null,
-        ssvcUseTypeNm: null,
-        svalidCheck: null,
-        szifname: null,
-        szlocationcode: null,
-        szlocationcodeNm: null,
-        szmstip: null,
-        sznealias: null,
-        szofficescode: null,
-        szofficescodeNm: null,
-        totalCount: 0,
-        typeFlag: '',
-      }
-      ],
+      tableDatas: allocTableDatas,
       selectedRows: []
     }
   },
@@ -470,8 +148,12 @@ export default {
       console.log(requestParameter)
     },
     handleClickCell(params) {
-      if (params.column.label === '분할') return
-      this.$refs.ModalIpAllocDetail.open({ row: params.row })
+      if (['분할', '라우팅 중복 개수'].includes(params.column.label)) return
+      this.fnViewDetailAlcIpMst(params.row)
+    },
+    fnViewDetailAlcIpMst(row) {
+      this.selectedRows = [row]
+      this.$refs.ModalIpAllocDetail.open({ row })
     },
     hadleClickIpAllocDetail(row) {
       // this.$refs.ModalIpAllocDetail.open(row)
@@ -479,7 +161,7 @@ export default {
     handleClickTableCheck(all, cur) {
       this.selectedRows = all
     },
-    handleClickIpBlockCheck() {
+    fnViewCheckTacsIpBlock() {
       const rows = this.selectedRows
       if (rows.length === 0) {
         onMessagePopup(this, 'IP블럭 중복체크할 대상이 없습니다. 선택해주세요.')
@@ -501,7 +183,7 @@ export default {
       // const res = await api({ nipAssignMstSeq })
       this.$refs.ModalCheckTacsIpBlock.open({ /* tacsResponse: res */ row: rows[0] })
     },
-    handleClickIpAllocInsert() {
+    fnInsertAlcBtnClick() {
       const rows = this.selectedRows
       if (rows.length === 0) {
         onMessagePopup(this, '할당 할 대상이 없습니다.')
@@ -550,6 +232,43 @@ export default {
         return true
       })
       res.every(r => r === true) && this.$refs.ModalIpAllocInsert.open({ ipAllocOperMstVos: rows })
+    },
+    fnMergeBtnClick() {
+      const checkedList = this.selectedRows
+      const { nipBlockMstSeq, sassignLevelCd, sassignTypeCd, nlvlMstSeq, sipCreateTypeCd } = checkedList[0]
+      let validateText = ''
+      if (checkedList.length === 0) {
+        validateText = '병합할 대상이 없습니다.'
+      } else if (checkedList.length === 1) {
+        validateText = '병합할 대상은 최소 2개이상 선택해 주시기 바랍니다.'
+      }
+      // checkedList.forEach(row=> {
+      //   if(nipBlockMstSeq != row.nipBlockMstSeq) {
+      //     validateText = '병합할 대상 정보들의 생성 유형이 동일하지 않습니다.'
+      //   }
+      //   if(sassignLevelCd != row.sassignLevelCd) {
+      //     validateText = '병합할 대상 정보들의 작업 상태가 동일하지 않습니다.'
+      //   }
+      //   if(sassignTypeCd != row.sassignTypeCd) {
+      //     validateText = '병합할 대상 정보들의 서비스가 동일하지 않습니다.'
+      //   }
+      //   if(nlvlMstSeq != row.nlvlMstSeq) {
+      //     validateText = '병합할 대상 정보들의 계위(조직)정보가 동일하지 않습니다.'
+      //   }
+      //   if(sipCreateTypeCd != row.sipCreateTypeCd) {
+      //     validateText = '병합할 대상 정보들의 생성 유형이 동일하지 않습니다.'
+      //   }
+      //   if (row.sassignLevelCd == "IA0005" || row.sassignLevelCd == "IA0006") {
+      //     validateText = '병합할 대상 정보들의 작업 상태가 할당확정/할당예약 일 경우 병합할 수 없습니다.'
+      //   }
+      // })
+      if (validateText.length > 0) {
+        onMessagePopup(this, validateText)
+        return
+      }
+      const tbIpAssignMstListVo = { typeFlag: 'Aloc', tbIpAssignMstVos: [] }
+      checkedList.forEach(row => { tbIpAssignMstListVo.tbIpAssignMstVos.push({ nipAssignMstSeq: row.nipAssignMstSeq }) })
+      this.$refs.ModalIpAssignMerge.open({ tbIpAssignMstListVo })
     }
    },
 }

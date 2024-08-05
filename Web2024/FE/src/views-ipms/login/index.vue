@@ -58,7 +58,7 @@
                 </el-form-item>
               </el-tooltip>
             </div>
-            <el-button @click="handleLogin">
+            <el-button style="border: none;" @click="handleLogin">
               <img src="@/assets/images/ipms/content/btn_login_off.gif" alt="로그인" @click="handleLogin">
             </el-button>
           </el-form>

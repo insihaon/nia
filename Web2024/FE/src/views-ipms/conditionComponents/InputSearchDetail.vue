@@ -1,6 +1,6 @@
 <template>
   <el-col :class="{ [name]: true }" :xs="24" :sm="12" :md="12" :lg="8" :xl="6">
-    <label>
+    <label v-if="isShowLabel">
       {{ label }}
     </label>
     <el-input
@@ -8,13 +8,14 @@
       size="mini"
       :readonly="isReadOnly"
       clearable
+      @input="formatInput"
       @change="handleChangeWord"
       @focus="handleClickArea"
     >
       <template #suffix>
         <el-button
           size="mini"
-          style="font-size: larger;"
+          style="font-size: larger;border: none"
           @click="handleClickButton"
         >
           <i class="el-icon-search font-weight-bolder"></i>
@@ -22,6 +23,8 @@
       </template>
     </el-input>
     <ModalFacilityInformation ref="ModalFacilityInformation" @selected-value="setSelectedRow" />
+    <!-- <ModalLinkInformation ref="ModalLinkInformation" @selected-value="setSelectedRow" />
+    <ModalIpAllocCircuitDetail ref="ModalIpAllocCircuitDetail" /> -->
     <ModalProductInformation ref="ModalProductInformation" @selected-value="setSelectedRow" />
     <ModalOrgSearch ref="ModalOrgSearch" @selected-value="setSelectedRow" />
   </el-col>
@@ -30,6 +33,8 @@
 import { Base } from '@/min/Base.min'
 import commonFunctionMixin from '@/mixin/commonFunctionMixin'
 import ModalFacilityInformation from '@/views-ipms/modal/ModalFacilityInformation.vue'
+// import ModalLinkInformation from '@/views-ipms/modal/ModalLinkInformation.vue'
+// import ModalIpAllocCircuitDetail from '@/views-ipms/modal/alloc/ModalIpAllocCircuitDetail.vue'
 import ModalProductInformation from '@/views-ipms/modal/ModalProductInformation.vue'
 import ModalOrgSearch from '@/views-ipms/modal/ModalOrgSearch.vue'
 
@@ -41,6 +46,10 @@ export default {
   extends: Base,
   mixins: [commonFunctionMixin],
   props: {
+    isShowLabel: {
+      type: Boolean,
+      default: true
+    },
     label: {
       type: String,
       default: ''
@@ -56,6 +65,11 @@ export default {
      */
     prop_parameterKey: {
       type: Object,
+      default: null
+    },
+    /* modal내에서 조회시 필요한 조건이 있는 경우 */
+    prop_datas: {
+      type: Array,
       default: null
     },
     valueName: {
@@ -76,7 +90,12 @@ export default {
     }
   },
   methods: {
-    handleChangeWord() {
+    formatInput(val) {
+      if (this.label === '회선정보') {
+        this.value = val.replace(/\D/g, '')
+      }
+    },
+    handleChangeWord(val) {
       if (this.parameterKey !== null) {
         const updateKey = Object.keys(this.parameterKey).find(key => {
           if (this.parameterKey[key] === this.valueName) {
@@ -101,7 +120,7 @@ export default {
       return params
     },
     handleClickButton() {
-      this.$refs[this.modalName].open({ row: 'row' })
+      this.$refs[this.modalName].open({ rows: this.prop_datas })
     },
     handleClickArea() {
       if (!this.isReadOnly) return
