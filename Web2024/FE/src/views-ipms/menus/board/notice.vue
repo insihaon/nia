@@ -128,10 +128,14 @@ export default {
 </script>
 <style lang="scss" scoped>
 .dashboard-notice {
-  height: 40px;
+  height: 60px;
   display: flex;
+  padding: 20px;
+  margin-bottom: 20px;
   align-items: center;
   justify-content: space-between;
+  border-top: solid 1px #cbcbcb;
+  border-bottom: solid 1px #cbcbcb;
   .content-container {
     height: 22px;
     width: 650px;

@@ -115,8 +115,14 @@ export default {
           { label: '미분류', value: 'CL0007' },
           { label: 'SCHOOLNET', value: 'CL0008' }
         ],
-        2: this.$store.state.ipms.tempAuthCenterList,
-        3: this.$store.state.ipms.tempNodeList,
+        2: [{
+            'label': '-------',
+            'value': '000000'
+        }],
+        3: [{
+            'label': '-------',
+            'value': '000000'
+        }]
       },
       localValue: { 1: '', 2: '', 3: '' },
     }

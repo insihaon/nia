@@ -1,6 +1,6 @@
 <template>
   <el-row ref="container" class="w-100 h-100">
-    <div v-if="!isDashBoard" ref="searchCondition" class="optionBox">
+    <div v-if="!isDashboard" ref="searchCondition" class="optionBox">
       <el-row class="optionRow">
         <el-col class="d-flex">
           <el-select v-model="option" size="mini">
@@ -88,7 +88,7 @@ export default {
   extends: Base,
   mixins: [tableHeightMixin],
   props: {
-    isDashBoard: {
+    isDashboard: {
       type: Boolean,
       default: false
     }
@@ -97,13 +97,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      options: [
-        { value: 'CV0001', label: 'IPv4' },
-        { value: 'CV0002', label: 'IPv6' },
-        { value: 'SAID', label: 'SAID' },
-        { value: 'SLLNUM', label: '전용번호' },
-        { value: 'SCONNALIAS', label: '수용회선명' },
-      ],
+      options: [],
       option: 'CV0001',
       value: '14.32',
       ipBlockColumns: [
@@ -143,6 +137,20 @@ export default {
       // ],
     }
   },
+  watch: {
+    '$route'() {
+      if (this.ipms.toParams !== null) {
+        const { option, value } = this.ipms.toParams
+        this.option = option
+        this.value = value
+        this.$store.dispatch('ipms/setToParam', null)
+        this.fnMainSeachBtnClick()
+      }
+    }
+  },
+  created () {
+    this.options = this.CONSTANTS.ipms.ipInfoOptions
+  },
   methods: {
     onCheckValidation(val) {
       if (['IPv4', 'IPv6'].includes(this.option)) {
@@ -160,7 +168,7 @@ export default {
         Object.assign(ipInfoVo, { sfirstAddr: this.value, sipVersionTypeCd: this.option })
       } else {
         let key = ''
-        switch (key) {
+        switch (this.option) {
           case 'SAID':
             key = 'ssaid'
             break

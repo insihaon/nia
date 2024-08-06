@@ -8,6 +8,7 @@
     <el-col ref="tableContainer" :span="24">
       <compTable
         :prop-table-height="'calc(100% - 80px)'"
+        :prop-data="resultList"
         :prop-column="tableColumns"
         :prop-is-pagination="false"
         :prop-is-check-box="false"
@@ -28,6 +29,8 @@ import { Base } from '@/min/Base.min'
 import CompTable from '@/components/elTable/CompTable.vue'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
 import tableHeightMixin from '@/mixin/tableHeightMixin'
+import { getStatColumn } from '@/views-ipms/js/common-function'
+import { apiModel } from '@/api/ipms'
 
 const routeName = 'ipStatByOrgService'
 
@@ -40,6 +43,8 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      svcList: [],
+      resultList: [],
       componentList: [
         { key: 'SsvcLineType', props: { lvl: 3 } },
         { key: 'IpAddress', props: { label: 'IP 버전', isShowInput: false } },
@@ -47,68 +52,38 @@ export default {
         { key: 'ServiceOrg', props: { limit: 3 } },
         { key: 'DatePicker', props: { } },
       ],
-      tableColumns: [
-        {
-          prop: '', label: '계위', children: [
-            { prop: '', label: '서비스망', align: 'center', columnVisible: true, showOverflow: true },
-            { prop: '', label: '본부', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-            { prop: '', label: '노드', align: 'center', columnVisible: true, showOverflow: true },
-            { prop: '', label: '공인/사설', align: 'center', columnVisible: true, showOverflow: true },
-          ],
-          align: 'center',
-          columnVisible: true,
-          showOverflow: true,
-        },
-        {
-          prop: '', label: '전체', children: [
-            { prop: '', label: '총수량', align: 'center', columnVisible: true, showOverflow: true },
-            { prop: '', label: '할당', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-            { prop: '', label: '미할당', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-            { prop: '', label: '할당율', align: 'center', columnVisible: true, showOverflow: true },
-          ],
-          align: 'center',
-          columnVisible: true,
-          showOverflow: true,
-        },
-        {
-          prop: '', label: '기업고객(고정)', children: [
-            { prop: '', label: '총수량', align: 'center', columnVisible: true, showOverflow: true },
-            { prop: '', label: '할당', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-            { prop: '', label: '미할당', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-            { prop: '', label: '할당율', align: 'center', columnVisible: true, showOverflow: true },
-          ],
-          align: 'center',
-          columnVisible: true,
-          showOverflow: true,
-        },
-        {
-          prop: '', label: '홈고객(유동)', children: [
-            { prop: '', label: '총수량', align: 'center', columnVisible: true, showOverflow: true },
-            { prop: '', label: '할당', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-            { prop: '', label: '미할당', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-            { prop: '', label: '할당율', align: 'center', columnVisible: true, showOverflow: true },
-          ],
-          align: 'center',
-          columnVisible: true,
-          showOverflow: true,
-        },
-        {
-          prop: '', label: '홈고객(고정)', children: [
-            { prop: '', label: '총수량', align: 'center', columnVisible: true, showOverflow: true },
-            { prop: '', label: '할당', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-            { prop: '', label: '미할당', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-            { prop: '', label: '할당율', align: 'center', columnVisible: true, showOverflow: true },
-          ],
-          align: 'center',
-          columnVisible: true,
-          showOverflow: true,
-        }
-      ],
     }
   },
+  computed: {
+    tableColumns() {
+      const columns = getStatColumn('orgService', this.svcList)
+      return columns
+    }
+  },
+  mounted () {
+    this.fnViewListOrgSvcStat()
+  },
   methods: {
-    handleSearch(params) {
-      console.log(params)
+    handleSearch(requestParameter) {
+      this.fnViewListOrgSvcStat(requestParameter)
+    },
+    async fnViewListOrgSvcStat(params = null) {
+      const defaultParam = {
+          pageIndex: 1,
+          pageUnit: 0,
+          pageSize: 0,
+          firstIndex: 1,
+          lastIndex: 10,
+          recordCountPerPage: 10,
+          rowNo: 0,
+      }
+      try {
+        const res = await apiModel('/statmgmt/ipstatmgmt/viewListOrgSvcStat', params ?? defaultParam)
+        this.svcList = JSON.parse(res.data.svcList)
+        this.resultList = JSON.parse(res.data.result)
+      } catch (error) {
+        this.error(error)
+      }
     }
   },
 }
