@@ -135,7 +135,7 @@
 
       <div slot="footer" class="dialog-footer">
         <el-button size="mini" class="el-icon-document-checked" @click.native="handleAssignIp()">{{ '배정' }}</el-button>
-        <el-button size="mini" class="el-icon-refresh-left" @click.native="handleReturnIp()">{{ '반납' }}</el-button>
+        <el-button size="mini" :disabled="selectedRow.sassignLevelNm === '예비배정'" class="el-icon-refresh-left" @click.native="handleReturnIp()">{{ '반납' }}</el-button>
         <el-button size="mini" class="el-icon-close" @click.native="close()">{{ $t('exit') }}</el-button>
       </div>
       <ModalIpAssign ref="ModalIpAssign" />

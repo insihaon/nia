@@ -30,6 +30,7 @@ import CompTable from '@/components/elTable/CompTable.vue'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
 import tableHeightMixin from '@/mixin/tableHeightMixin'
 import ModalNotAssignDetail from '@/views-ipms/modal/ModalNotAssignDetail.vue'
+import { apiModel } from '@/api/ipms'
 const routeName = 'IpunAllocatedStatus'
 
 export default {
@@ -41,9 +42,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      tableDatas: [
-        { mang: 'KORNET', org: '------', notAssign: 65801, assign: 1015 }
-      ],
+      tableDatas: [],
       componentList: [
         { key: 'SsvcLineType', props: { lvl: 2 } },
       ]
@@ -53,34 +52,47 @@ export default {
     tableColumns() {
       const _THIS = this
       return [
-        { prop: 'mang', label: '서비스망', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'org', label: '본부', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'notAssign', label: '미배정', align: 'center', sortable: true, columnVisible: true, showOverflow: true,
-        formatter: (row, col, value, index) => {
-            if (row.notAssign > 0) {
+        { prop: 'ssvcLineTypeNm', label: '서비스망', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'ssvcGroupNm', label: '본부', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'ssvcObjNm', label: '노드', align: 'center', sortable: true, columnVisible: false, showOverflow: true },
+        { prop: 'nUnAssignBlockCnt', label: '미배정', align: 'center', sortable: true, columnVisible: true, showOverflow: true,
+          formatter: (row, col, value, index) => {
+            if (row.nUnAssignBlockCnt > 0) {
               return this.$createElement('el-button', {
                 on: { click: () => {
-                  this.$refs.ModalNotAssignDetail.open({ row })
-              } } }, row.notAssign)
+                  this.$refs.ModalNotAssignDetail.open({ row, type: '미배정' })
+                } } }, row.nUnAssignBlockCnt)
+            } else {
+              return this.$createElement('span', { class: 'txtred' }, row.nUnAssignBlockCnt)
             }
           }
         },
-        { prop: 'assign', label: '예비배정', align: 'center', sortable: true, columnVisible: true, showOverflow: true,
+        { prop: 'nReserveAssignBlockCnt', label: '예비배정', align: 'center', sortable: true, columnVisible: true, showOverflow: true,
           formatter: (row, col, value, index) => {
-            if (row.assign > 0) {
+            if (row.nReserveAssignBlockCnt > 0) {
               return this.$createElement('el-button', {
                 on: { click: () => {
-                  this.$refs.ModalNotAssignDetail.open({ row })
-              } } }, row.assign)
+                  this.$refs.ModalNotAssignDetail.open({ row, type: '예비배정' })
+                } } }, row.nReserveAssignBlockCnt)
+            } else {
+              return this.$createElement('span', { class: 'txtred' }, row.nReserveAssignBlockCnt)
             }
           }
         }
       ]
     }
   },
+  mounted() {
+    this.onLoadStatusList()
+  },
   methods: {
-    handleSearch(requestParameter) {
-      console.log(requestParameter)
+    async onLoadStatusList(requestParameter) {
+      try {
+        const res = await apiModel('/ipmgmt/assignmgmt/viewListUnAssignIP', requestParameter)
+        this.tableDatas = res?.result.data
+      } catch (error) {
+        console.error(error)
+      }
     },
   }
 }
