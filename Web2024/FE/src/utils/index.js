@@ -721,13 +721,13 @@ function extractKeyValue(obj, maxKeyLength = 5, maxValueLength = 8) {
 window.extractKeyValue = extractKeyValue
 
 // // 예시 객체
-console.log(extractKeyValue({
-  'name': '홍길동',
-  'age': 30,
-  'address': ['서울시', '부산시', '광주시'],
-  'abc123456789': 'def4567890',
-  '123abc': '456def'
-}))
+// console.log(extractKeyValue({
+//   'name': '홍길동',
+//   'age': 30,
+//   'address': ['서울시', '부산시', '광주시'],
+//   'abc123456789': 'def4567890',
+//   '123abc': '456def'
+// }))
 // 'name홍길동age30addre서울시부산시광abc12def4567123ab456def'
 
 function convertText(data) {
