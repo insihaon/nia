@@ -256,7 +256,7 @@ export default {
       try {
         for (let i = 0; i < this.ipBlockDetailList.length; i++) {
           const ipBlock = this.ipBlockDetailList[i]
-          const param = {
+          const tbIpBlockMstComplexVo = {
             sipCreateTypeCd: this.selectedRow.sipCreateTypeCd,
             ssvcLineTypeCd: this.selectedRow.ssvcLineTypeCd,
             sipCreateSeqCd: this.selectedRow.sipCreateSeqCd,
@@ -264,7 +264,7 @@ export default {
             pipPrefix: ipBlock.pipPrefix,
             scomment: this.selectedRow.scomment
           }
-          const res = await /* apiEditIpBlockList */(param)
+          const res = await /* apiEditIpBlockList */(tbIpBlockMstComplexVo)
           if (res.success) {
             this.$message('IP블록 수정이 정상적으로 처리되었습니다.')
             this.$emit('reloadData')
@@ -293,16 +293,27 @@ export default {
       this.viewType = 'generate'
 
       try {
-          const param = {
-            sipCreateTypeCd: this.selectedRow.sipCreateTypeCd,
-            ssvcLineTypeCd: this.selectedRow.ssvcLineTypeCd,
-            sipCreateSeqCd: this.selectedRow.sipCreateSeqCd,
-            sipVersionTypeCd: this.selectedRow.sipVersionTypeCd,
-            pipPrefix: this.selectedRow.pipPrefix,
+          const ipBlockCheckVo = {
+            sipCreateTypeCd: this.sipCreateTypeCd,
+            ssvcLineTypeCd: this.ssvcLineTypeCd,
+            sipCreateSeqCd: this.sipCreateSeqCd,
+            sipVersionTypeCd: this.sipVersionTypeCd,
+            pipPrefix: this.pipPrefix,
+            scomment: this.selectedRow.scomment,
+            destIpBlockMstVos: []
           }
-          const res = await /* apiAddIpBlockList */(param)
-          if (res.success) {
-             const resultData = res?.result
+          const destIpBlock = {
+            sipCreateTypeCd: this.sipCreateTypeCd,
+            ssvcLineTypeCd: this.ssvcLineTypeCd,
+            sipCreateSeqCd: this.sipCreateSeqCd,
+            sipVersionTypeCd: this.sipVersionTypeCd,
+            pipPrefix: this.pipPrefix,
+          }
+
+          ipBlockCheckVo.destIpBlockMstVos.push(destIpBlock)
+          const res = await /* apiAddIpBlockList */(ipBlockCheckVo)
+          if (res.commonMsg === 'SUCCESS') {
+             const resultData = res?.data
               this.ipBlockDetailList.push({
                 pipPrefix: this.pipPrefix,
                 sfirstAddr: resultData.sfirstAddr,
