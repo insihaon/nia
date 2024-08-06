@@ -61,6 +61,74 @@ function getSimilarFileName (dirPath, jsonFileName) {
 }
 
 /**
+ *
+ * 문자열의 특징:
+ *   오타가 많은 경우: Damerau-Levenshtein 거리
+ *   순서가 중요하지 않은 경우: LCS, Jaccard 유사도
+ *   이름이나 단어의 유사성: Jaro-Winkler 거리
+ *   발음이 비슷한 단어: Soundex
+ * 정확도:
+ *   높은 정확도가 필요한 경우: Cosine 유사도, N-gram 모델
+ * 계산 비용:
+ *   빠른 계산이 필요한 경우: Levenshtein 거리, Jaccard 유사도
+ * 문자열의 길이:
+ *   짧은 문자열: Jaccard 유사도, Jaro-Winkler 거리
+ *   긴 문자열: Levenshtein 거리, LCS
+ */
+
+/**
+ * LCS(Longest Common Subsequence)
+ * 개념: 최장 공통 부분 수열
+ * 장점: 문자열 유사도 측정: 두 문자열의 유사도를 정량적으로 측정.
+ * 단점: 문자열의 길이가 길어질수록 계산 시간이 증가.
+ *
+ * @param {*} str1
+ * @param {*} str2
+ * @returns
+ */
+function lcsAlgorithm(str1, str2) {
+  const m = str1.length
+  const n = str2.length
+
+  // 2차원 배열 생성 및 초기화
+  const dp = new Array(m + 1).fill(0).map(() => new Array(n + 1).fill(0))
+  const traceback = new Array(m + 1).fill(0).map(() => new Array(n + 1).fill('')) // 추적 배열
+
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      if (str1[i - 1] === str2[j - 1]) {
+        dp[i][j] = dp[i - 1][j - 1] + 1
+        traceback[i][j] = 'diagonal' // 대각선 방향으로 왔음을 표시
+      } else {
+        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1])
+        traceback[i][j] = dp[i - 1][j] > dp[i][j - 1] ? 'up' : 'left' // 위쪽 또는 왼쪽 방향으로 왔음을 표시
+      }
+    }
+  }
+
+  // LCS 길이
+  const length = dp[m][n]
+
+  // LCS 문자열 추출
+  let i = m; let j = n; let result = ''
+  while (i > 0 && j > 0) {
+    if (traceback[i][j] === 'diagonal') {
+      result = str1[i - 1] + result
+      i--
+      j--
+    } else if (traceback[i][j] === 'up') {
+      i--
+    } else {
+      j--
+    }
+  }
+
+  console.log({ length, subsequence: result })
+
+  return (length / Math.max(str1.length, str2.length))
+}
+
+/**
  * Levenshtein 거리 (Edit Distance)
  * 개념: 두 문자열을 서로 변환하기 위해 필요한 최소한의 편집 횟수 (삽입, 삭제, 변경)를 측정합니다. 값이 작을수록 유사도가 높습니다.
  * 장점: 간단하고 구현하기 쉽습니다.
@@ -118,6 +186,7 @@ function findSimilarityAlgorithm(list, jsonFileName) {
     const str2 = (jsonFileName + '').split('_')[1]
     const curRate = jaccardAlgorithm(str1, str2)
     // const curRate = levenshteinAlgorithm(str1, str2)
+    // const curRate = lcsAlgorithm(str1, str2)
     // console.log(curRate.toFixed(3), list[i])
     if (rate <= curRate) {
       index = i
