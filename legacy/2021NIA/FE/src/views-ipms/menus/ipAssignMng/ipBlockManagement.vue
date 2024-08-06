@@ -46,7 +46,7 @@ import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoad
 import tableHeightMixin from '@/mixin/tableHeightMixin'
 import ModalIpBlockDetail from '@/views-ipms/modal/ModalIpBlockDetail.vue'
 import ModalAddIpBlock from '@/views-ipms/modal/ModalAddIpBlock.vue'
-import { apiModel } from '@/api/ipms'
+import { ipmsModelApis, apiRequestModel } from '@/api/ipms'
 const routeName = 'IpBlockManagement'
 
 export default {
@@ -91,7 +91,7 @@ export default {
   methods: {
    async onLoadIpBlockData(requestParameter) {
       try {
-        const res = await apiModel('/ipmgmt/createmgmt/viewListCrtIPMst', requestParameter)
+        const res = await apiRequestModel(ipmsModelApis.viewListCrtIPMst, requestParameter)
         this.IpBlockData = res?.result.data
         this.requestParam = requestParameter
       } catch (error) {
