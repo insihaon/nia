@@ -51,7 +51,7 @@ import ModalIpAssign from '@/views-ipms/modal/ModalIpAssign.vue'
 import ModalCheckTacsIpBlock from '@/views-ipms/modal/ModalCheckTacsIpBlock.vue'
 import ModalIpMerge from '@/views-ipms/modal/ModalIpMerge.vue'
 import ModalDetailSummary from '@/views-ipms/modal/ModalDetailSummary.vue'
-import { apiModel } from '@/api/ipms'
+import { ipmsModelApis, apiRequestModel } from '@/api/ipms'
 const routeName = 'IpAssign'
 
 export default {
@@ -137,7 +137,7 @@ export default {
   methods: {
     async onloadIpAssign(requestParameter) {
       try {
-        const res = await apiModel('/ipmgmt/assignmgmt/viewListAsgnIPMst', requestParameter)
+        const res = await apiRequestModel(ipmsModelApis.viewListAsgnIPMst, requestParameter)
         this.ipAssignDatas = res?.result.data
       } catch (error) {
         console.error(error)
