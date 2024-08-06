@@ -12,10 +12,10 @@
         :prop-column="tableColumns"
         :prop-is-pagination="true"
         :prop-is-check-box="true"
-        :prop-on-click="onClcikRow"
         :prop-on-select="handleClickTableCheck"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
+        @update:propCellClick="handleClickItem"
       >
         <template slot="text-description">
           <span>
@@ -35,6 +35,7 @@
       <ModalIpAssign ref="ModalIpAssign" />
       <ModalCheckTacsIpBlock ref="ModalCheckTacsIpBlock" />
       <ModalIpMerge ref="ModalIpMerge" />
+      <ModalDetailSummary ref="ModalDetailSummary" />
     </el-col>
   </el-row>
 </template>
@@ -49,11 +50,13 @@ import ModalIpAssignDetail from '@/views-ipms/modal/ModalIpAssignDetail.vue'
 import ModalIpAssign from '@/views-ipms/modal/ModalIpAssign.vue'
 import ModalCheckTacsIpBlock from '@/views-ipms/modal/ModalCheckTacsIpBlock.vue'
 import ModalIpMerge from '@/views-ipms/modal/ModalIpMerge.vue'
+import ModalDetailSummary from '@/views-ipms/modal/ModalDetailSummary.vue'
+import { apiModel } from '@/api/ipms'
 const routeName = 'IpAssign'
 
 export default {
   name: routeName,
-  components: { CompTable, DynamicComponentLoader, ModalIpBlockDivision, ModalIpAssignDetail, ModalCheckTacsIpBlock, ModalIpAssign, ModalIpMerge },
+  components: { CompTable, DynamicComponentLoader, ModalIpBlockDivision, ModalIpAssignDetail, ModalCheckTacsIpBlock, ModalIpAssign, ModalIpMerge, ModalDetailSummary },
   extends: Base,
   mixins: [tableHeightMixin],
   data() {
@@ -88,9 +91,16 @@ export default {
         { prop: 'sassignLevelNm', label: '배정상태', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'snull0Yn', label: 'Summary 포함 여부', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'sintgrmYn', label: 'DB-라우팅 일치 여부', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'nsummaryCnt', label: '라우팅 중복 개수', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'nsummaryCnt', label: '라우팅 중복 개수', align: 'center', sortable: true, columnVisible: true, showOverflow: true,
+          formatter: (row, col, value, index) => {
+            return this.$createElement('el-button', {
+              class: row.nsummaryCnt > 0 ? 'red' : '',
+              on: { click: () => {
+                this.$refs.ModalDetailSummary.open({ row })
+            } } }, row.nsummaryCnt)
+          }
+        },
         { prop: 'nbitmask', label: '분할', align: 'center', sortable: true, columnVisible: true, showOverflow: true,
-          // nipAssignMstSeq, sipCreateTypeCd
           formatter: (row, col, value, index) => {
             const isDivisible = (row.sipVersionTypeCd === 'CV0001' && row.nbitmask < 24) ||
                                 (row.sipVersionTypeCd === 'CV0002' && row.nbitmask < 64)
@@ -112,97 +122,12 @@ export default {
         },
         { prop: 'scomment', label: '비고', align: 'center', sortable: true, columnVisible: true, showOverflow: true }
       ],
-      ipAssignDatas: [
-        {
-          ssvcLineTypeNm: 'MOBILE',
-          ssvcGroupNm: '미디어운용센터',
-          ssvcObjNm: '백석GMC운용팀',
-          sipCreateTypeNm: '공인',
-          sassignTypeNm: 'IPTV',
-          pipPrefix: '192.168.0.0/24',
-          sfirstAddr: '192.168.0.1',
-          slastAddr: '192.168.0.254',
-          nclassCnt: '0300390625',
-          dmodifyDt: '2024-06-18',
-          sassignLevelNm: '서비스배정[미할당]',
-          nsummaryCnt: 'Y',
-          snull0Yn: 'Y',
-          sintgrmYn: 0,
-          nbitmask: '23',
-          sipVersionTypeCd: 'CV0001',
-          ncnt: '64',
-          nfreeIpCnt: '64',
-          nuseIpCnt: '0',
-          sipVersionTypeNm: 'IPv4',
-          ssvcLineTypeCd: 'CL0003',
-          ssvcGroupCd: 'DATA망',
-          ssvcObjCd: 'DATA망(구로)',
-          sassignLevelCd: '미배정',
-          sassignTypeCd: '서비스배정[미할당]',
-          nlvlMstSeq: '1',
-        },
-         {
-          ssvcLineTypeNm: 'MOBILE',
-          ssvcGroupNm: 'DATA망',
-          ssvcObjNm: '백석GMC운용팀',
-          sipCreateTypeNm: '공인',
-          sassignTypeNm: 'IPTV',
-          pipPrefix: '192.168.0.0/24',
-          sfirstAddr: '192.168.0.1',
-          slastAddr: '192.168.0.254',
-          nclassCnt: '0300390625',
-          dmodifyDt: '2024-06-18',
-          sassignLevelNm: '배정[미할당]',
-          nsummaryCnt: 'Y',
-          snull0Yn: 'Y',
-          sintgrmYn: 0,
-          nbitmask: '65',
-          sipVersionTypeCd: 'CV0001',
-          ncnt: '64',
-          nfreeIpCnt: '64',
-          nuseIpCnt: '0',
-          sipVersionTypeNm: 'IPv4',
-          ssvcLineTypeCd: 'CL0003',
-          ssvcGroupCd: 'DATA망',
-          ssvcObjCd: 'DATA망(구로)',
-          sassignLevelCd: '예비배정',
-          sassignTypeCd: '서비스배정[미할당]',
-          nlvlMstSeq: '1'
-        },
-        {
-          ssvcLineTypeNm: 'MOBILE',
-          ssvcGroupNm: 'DATA망',
-          ssvcObjNm: '백석GMC운용팀',
-          sipCreateTypeNm: '공인',
-          sassignTypeNm: 'IPTV',
-          pipPrefix: '192.168.0.0/24',
-          sfirstAddr: '192.168.0.1',
-          slastAddr: '192.168.0.254',
-          nclassCnt: '0300390625',
-          dmodifyDt: '2024-06-18',
-          sassignLevelNm: '서비스배정[미할당]',
-          nsummaryCnt: 'Y',
-          snull0Yn: 'Y',
-          sintgrmYn: 0,
-          nbitmask: '65',
-          sipVersionTypeCd: 'CV0002',
-          ncnt: '64',
-          nfreeIpCnt: '64',
-          nuseIpCnt: '0',
-          sipVersionTypeNm: 'IPv6',
-          ssvcLineTypeCd: 'CL0003',
-          ssvcGroupCd: 'DATA망',
-          ssvcObjCd: 'DATA망(구로)',
-          sassignLevelCd: '미배정',
-          sassignTypeCd: '서비스배정[미할당]',
-          nlvlMstSeq: '3'
-        },
-      ],
-      selectedRow: [],
+      ipAssignDatas: [],
       selectedTable: []
     }
   },
   mounted () {
+    this.onloadIpAssign()
     const { ipAddress } = this.$route.query
     if (ipAddress) {
       const compInfo = this.componentList.find(v => v.key === 'IpAddress')
@@ -210,20 +135,23 @@ export default {
     }
   },
   methods: {
-    onloadIpAssign(requestParameter) {
-    /* try {
-        const res = await api(requestParameter)
-        this.ipAssignDatas = res?.result
+    async onloadIpAssign(requestParameter) {
+      try {
+        const res = await apiModel('/ipmgmt/assignmgmt/viewListAsgnIPMst', requestParameter)
+        this.ipAssignDatas = res?.result.data
       } catch (error) {
         console.error(error)
-      } */
+      }
     },
     handleClickTableCheck(all, cur) {
       this.selectedTable = all
     },
+    handleClickItem(row) {
+      if (row.column.property === 'nsummaryCnt' || row.column.property === 'nbitmask') return
+      this.onClcikRow(row.row)
+    },
     onClcikRow(row) {
       this.$refs.ModalIpAssignDetail.open({ row })
-      this.selectedRow = row
     },
     handleClickIpBlockCheck() {
       const rows = this.selectedTable
@@ -254,11 +182,21 @@ export default {
       }
 
       const res = rows.map((row, i) => {
-        const { nlvlMstSeq } = row
+        const { nlvlMstSeq, sassignLevelCd, sassignTypeCd } = row
 
         for (let j = 0; j < i; j++) {
           if (nlvlMstSeq !== rows[j].nlvlMstSeq || nlvlMstSeq !== rows[j].nlvlMstSeq) {
-            onMessagePopup(this, '선택하신 할당 대상 블록의 계위/서비스 정보가 동일하지 않습니다. 확인해주세요.')
+            onMessagePopup(this, '배정할 대상 블록의 계위 정보가 동일하지 않습니다. 확인해주세요.')
+            return false
+          }
+
+          if (sassignLevelCd !== rows[j].sassignLevelCd || sassignLevelCd !== rows[j].sassignLevelCd) {
+            onMessagePopup(this, '배정할 대상 블록의 배정 상태가 동일하지 않습니다. 확인해주세요.')
+            return false
+          }
+
+          if (sassignTypeCd !== rows[j].sassignTypeCd || sassignTypeCd !== rows[j].sassignTypeCd) {
+            onMessagePopup(this, '배정할 대상 블록의 서비스가 동일하지 않습니다. 확인해주세요.')
             return false
           }
         }
@@ -267,19 +205,44 @@ export default {
       res.every(r => r === true) && this.$refs.ModalIpAssign.open({ row: this.selectedTable })
     },
     handleClickMergeInsert() {
-      this.$refs.ModalIpMerge.open({ row: this.selectedTable })
-
       const rows = this.selectedTable
 
-      // if (rows.length === 0) {
-      //   onMessagePopup(this, '병합할 대상이 없습니다. 선택해주세요.')
-      //   return
-      // } else if (rows.length === 1) {
-      //   onMessagePopup(this, '병합할 대상은 최소 2개 이상 선택해 주시기 바랍니다.')
-      //   return
-      // }
-    },
+      if (rows.length === 0) {
+        onMessagePopup(this, '병합할 대상이 없습니다. 선택해주세요.')
+        return
+      } else if (rows.length === 1) {
+        onMessagePopup(this, '병합할 대상은 최소 2개 이상 선택해 주시기 바랍니다.')
+        return
+      }
 
+          const res = rows.map((row, i) => {
+          const { nipBlockSeq, nlvlMstSeq, sassignLevelCd, sassignTypeCd } = row
+
+          for (let j = 0; j < i; j++) {
+            if (nipBlockSeq !== rows[j].nipBlockSeq || nipBlockSeq !== rows[j].nipBlockSeq) {
+              onMessagePopup(this, '병합할 대상 정보들의 생성 유형이 동일하지 않습니다.')
+              return false
+            }
+
+            if (nlvlMstSeq !== rows[j].nlvlMstSeq || nlvlMstSeq !== rows[j].nlvlMstSeq) {
+              onMessagePopup(this, '병합할 대상 정보들의 계위 정보가 동일하지 않습니다.')
+              return false
+            }
+
+            if (sassignLevelCd !== rows[j].sassignLevelCd || sassignLevelCd !== rows[j].sassignLevelCd) {
+              onMessagePopup(this, '병합할 대상 정보들의 배정 상태가 동일하지 않습니다.')
+              return false
+            }
+
+            if (sassignTypeCd !== rows[j].sassignTypeCd || sassignTypeCd !== rows[j].sassignTypeCd) {
+              onMessagePopup(this, '병합할 대상 정보들의 서비스가 동일하지 않습니다.')
+              return false
+            }
+          }
+          return true
+        })
+        res.every(r => r === true) && this.$refs.ModalIpMerge.open({ row: this.selectedTable })
+      }
   }
 }
 </script>

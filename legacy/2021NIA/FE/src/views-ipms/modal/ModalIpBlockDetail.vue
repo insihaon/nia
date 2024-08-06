@@ -28,7 +28,7 @@
           <th>생성차수</th>
           <td>
             <span v-if="type === 'edit'">
-              <el-input v-model="sipCreateSeqCd"></el-input>
+              <input v-model="sipCreateSeqCd">
             </span>
             <span v-else>{{ selectedRow.sipCreateSeqCd }}</span>
           </td>
@@ -106,78 +106,9 @@ export default {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       selectedRow: null,
-      sipCreateSeqNm: '',
+      sipCreateSeqCd: '',
       scomment: '',
       type: 'create',
-      IpBlockDetail: [
-        {
-          nipBlockMstSeq: '1', //
-          commonMsg: 'SUCCESS',
-          dcreateDt: 'Date@11687',
-          dmodifyDt: '2024-07-16 16:50:10', //
-          nclassCnt: '1,024', //
-          ncnt: '262,144', //
-          nfreeIpCnt: '127,340', //
-          nlastAddr: 'BigInteger@11694',
-          nuseIpCnt: '134,804', //
-          pipPrefix: '192.168.0.0/24', //
-          scomment: '3사 전용회선 연동용 (윤완열 과장님 요청)', //
-          sfirstAddr: '18.0.0.0', //
-          sipCreateSeqCd: 'M2020140123',
-          sipCreateSeqNm: 'M2020140123', //
-          sipCreateTypeNm: '공인', //
-          sipVersionTypeCd: 'CV0001',
-          sipVersionTypeNm: 'IPv4', //
-          slastAddr: '18.255.255.255', //
-          smodifyNm: '전필권',
-          ssvcLineTypeNm: 'MOBILE', //
-        },
-         {
-          nipBlockMstSeq: '2', //
-          commonMsg: 'SUCCESS',
-          dcreateDt: 'Date@11687',
-          dmodifyDt: '2024-07-16 16:50:10', //
-          nclassCnt: '1,024', //
-          ncnt: '262,144', //
-          nfreeIpCnt: '127,340', //
-          nlastAddr: 'BigInteger@11694',
-          nuseIpCnt: '134,804', //
-          pipPrefix: '10.0.0.0/24', //
-          scomment: '3사 전용회선 연동용', //
-          sfirstAddr: '18.0.0.0', //
-          sipCreateSeqCd: 'M2020140124',
-          sipCreateSeqNm: 'M2020140124', //
-          sipCreateTypeNm: 'Bogon', //
-          sipVersionTypeCd: 'CV0001',
-          sipVersionTypeNm: 'IPv4', //
-          slastAddr: '18.255.255.255', //
-          smodifyNm: '양다은',
-          ssvcLineTypeNm: 'KORNET', //
-        },
-         {
-          nipBlockMstSeq: '3', //
-          commonMsg: 'SUCCESS',
-          dcreateDt: 'Date@11687',
-          dmodifyDt: '2024-07-16 16:50:10', //
-          nclassCnt: '1,024', //
-          ncnt: '262,144', //
-          nfreeIpCnt: '127,340', //
-          nlastAddr: 'BigInteger@11694',
-          nuseIpCnt: '134,804', //
-          pipPrefix: '10.0.0.0/24', //
-          scomment: '3사 전용회선 연동용 (윤완열 과장님 요청)', //
-          sfirstAddr: '18.0.0.0', //
-          sipCreateSeqCd: 'M2020140125',
-          sipCreateSeqNm: 'M2020140125', //
-          sipCreateTypeNm: '유/무선공용', //
-          sipVersionTypeCd: 'CV0001',
-          sipVersionTypeNm: 'IPv4', //
-          slastAddr: '18.255.255.255', //
-          smodifyNm: '홍길동',
-          ssvcLineTypeNm: 'PREMIUM', //
-        },
-      ],
-      baseContext: process.env.VUE_APP_BASE_CONTEXT,
     }
   },
   mounted() {
@@ -190,45 +121,33 @@ export default {
       this.domElement.maxWidth = 1200
     },
     onOpen(model, actionMode) {
+      this.$set(this, 'selectedRow', model.row)
+       const { sipCreateSeqCd, scomment } = this.selectedRow
+        this.sipCreateSeqCd = sipCreateSeqCd
+        this.scomment = scomment
+
       if (model.type === 'edit') {
         this.type = 'edit'
       }
-      if (model.row === '') {
-        model.row = this.IpBlockDetail[0]
-      }
-      const selectedRow = this.IpBlockDetail.find(item => item.nipBlockMstSeq === model.row.nipBlockMstSeq)
-
-      this.selectedRow = selectedRow
-
-     /*  if (this.selectedRow.nipBlockMstSeq) {
-        const tbIpBlockMstVo = { nipBlockMstSeq: this.selectedRow.nipBlockMstSeq }
-        const param = JSON.stringify(tbIpBlockMstVo)
-        const url = `${this.baseContext}ipmgmt/createmgmt/viewDetailCrtIPMst.ajax`
-
-        this.doAjaxSubmit(url, param, 'json', 'json', this.fnViewDetailCrtIPMstCallBack)
-      } */
     },
-    /* fnViewDetailCrtIPMstCallBack(response) {
-      this.IpBlockDetail = [response]
-    }, */
     onClose() {
       this.type = 'create'
     },
     onChangeMode() {
       this.type = 'edit'
     },
-    onloadIpDetailList() {
-     /*  const { key: seq } = this.selectedRow
+   /*  onloadIpDetailList() {
+      const { key: seq } = this.selectedRow
       const param = seq
       try {
         const res = await apiSelectIpDetailList(param)
-        this.IpBlockDetail = res?.result
+        this.IpBlockDetail = res?.result.data
       } catch (error) {
         console.error(error)
-      } */
-    },
-    handleDeleteIpBlockData() {
-      this.$confirm('데이터를 삭제 하시겠습니까?', '삭제 메세지', {
+      }
+    }, */
+    handleDeleteIpBlockData() { // IP 블럭 삭제
+      this.$confirm('IP블럭을 삭제 하시겠습니까?', '삭제 메세지', {
         confirmButtonText: '확인',
         cancelButtonText: '취소'
       }).then(async() => {
@@ -236,7 +155,7 @@ export default {
           if (this.selectedRow.length > 0) {
           const param = { nipBlockMstSeq: this.selectedRow.nipBlockMstSeq }
           const res = await /* apiDeleteIpBlockList */(param)
-           if (res.result) {
+           if (res.data.commonMsg === 'SUCCESS') {
              this.$message.success({ message: `삭제되었습니다.` })
             }
             this.selectedData = []
@@ -248,36 +167,49 @@ export default {
           }
         })
     },
-    handleEditIpBlockData() {
-        const sipCreateSeqCd = this.selectedRow.sipCreateSeqCd
-        if (sipCreateSeqCd.length < 10) {
+    async fnUpdateCrtIPMstCallback() { // IP 블럭 수정
+      const sipCreateSeqCd = this.selectedRow.sipCreateSeqCd
+      if (sipCreateSeqCd.length < 10) {
           this.$message.error('생성차수 수정정보가 잘못되었습니다.')
           return
-        }
-      this.confirm('수정하시겠습니까?', '수정 메시지', {
-        confirmButtonText: 'OK',
-        cancelButtonText: 'Cancel',
-        type: 'success',
-      }).then(async () => {
-        try {
-          const param = {
-            sipCreateTypeCd: this.selectedRow.sipCreateTypeCd,
-            sipCreateSeqCd: this.selectedRow.sipCreateSeqCd,
-            sipVersionTypeCd: this.selectedRow.sipVersionTypeCd,
-            pipPrefix: this.selectedRow.pipPrefix,
-            scomment: this.scomment,
+      }
+
+      try {
+          await this.confirm('IP블럭을 수정하시겠습니까?', '수정 메시지', {
+              confirmButtonText: 'OK',
+              cancelButtonText: 'Cancel',
+              type: 'success',
+          })
+
+          const tbIpBlockMstVo = {
+              nipBlockMstSeq: this.selectedRow.nipBlockMstSeq,
+              sipCreateTypeCd: this.selectedRow.sipCreateTypeCd,
+              sipCreateSeqCd: this.selectedRow.sipCreateSeqCd,
+              sipVersionTypeCd: this.selectedRow.sipVersionTypeCd,
+              pipPrefix: this.selectedRow.pipPrefix,
+              scomment: this.scomment,
           }
-          const res = await /* apiEditIpBlockList */(param)
-          if (res.success) {
-            this.$message('IP블록 수정이 정상적으로 처리되었습니다.')
-            this.$emit('reloadData')
+
+          // 1. 블록 정보 수정  /ipmgmt/createmgmt/selectListSipCreateSeqCd.json'
+            const res = await /* apiEditIpBlockList*/(tbIpBlockMstVo)
+            if (res.data.commonMsg === 'SUCCESS') {
+            // 2. 생성차수 수정 /ipmgmt/createmgmt/updateCrtIPMst.json'
+
+              const searchSipCreateSeqCd = tbIpBlockMstVo.sipCreateSeqCd
+
+              const res2 = await/* apiCreatSeaCd */ (searchSipCreateSeqCd)
+
+            if (res && res2) {
+              this.$message('IP블록 수정이 정상적으로 처리되었습니다.')
+              this.$emit('reloadData')
+            }
           }
-        } catch (error) {
+      } catch (error) {
           this.$message.error({ message: `IP블록 수정에 실패했습니다.` })
           console.error(error)
-        }
-      })
+      }
     }
+
   },
 }
 </script>
