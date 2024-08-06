@@ -114,14 +114,17 @@ function findSimilarityAlgorithm(list, jsonFileName) {
   let rate = 0
   let index = 0
   for (let i = 0; i < list.length; i++) {
-    const curRate = jaccardAlgorithm(jsonFileName, list[i])
-    // const curRate = levenshteinAlgorithm(jsonFileName, list[i])
+    const str1 = (list[i] + '').split('_')[1]
+    const str2 = (jsonFileName + '').split('_')[1]
+    const curRate = jaccardAlgorithm(str1, str2)
+    // const curRate = levenshteinAlgorithm(str1, str2)
     // console.log(curRate.toFixed(3), list[i])
     if (rate <= curRate) {
       index = i
       rate = curRate
     }
   }
+  // console.log(jsonFileName, list[index])
 
   return list[index]
 }
