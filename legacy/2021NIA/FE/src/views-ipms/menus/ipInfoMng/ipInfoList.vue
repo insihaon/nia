@@ -77,7 +77,7 @@ import { Base } from '@/min/Base.min'
 import CompTable from '@/components/elTable/CompTable.vue'
 import tableHeightMixin from '@/mixin/tableHeightMixin'
 import { onMessagePopup } from '@/utils'
-import { apiModel } from '@/api/ipms'
+import { ipmsModelApis, apiRequestModel } from '@/api/ipms'
 import ModalIpInfoDetail from '@/views-ipms/modal/ModalIpInfoDetail'
 
 const routeName = 'IpInfoList'
@@ -184,7 +184,7 @@ export default {
         Object.assign(ipInfoVo, { [key]: this.value })
       }
       try {
-        const res = await apiModel('/ipmgmt/allocmgmt/viewListIpAllocMstByMain', ipInfoVo)
+        const res = await apiRequestModel(ipmsModelApis.viewListIpAllocMstByMain, ipInfoVo)
         this.resultList = res?.result?.resultListVo ?? []
       } catch (error) {
         this.error(error)
@@ -217,7 +217,7 @@ export default {
     async fnViewDetailIpAlloc(row) {
       const { nipAssignMstSeq, nipAllocMstSeq } = row
       try {
-        const res = await apiModel('/ipmgmt/allocmgmt/viewDetailIpAllocMstByMain', { nipAssignMstSeq, nipAllocMstSeq })
+        const res = await apiRequestModel(ipmsModelApis.viewDetailIpAllocMstByMain, { nipAssignMstSeq, nipAllocMstSeq })
         // this.tbIpInfoVo = res.result.data
         if (res.result.data) {
           this.$refs.ModalIpInfoDetail.open({ tbIpInfoVo: res.result.data, type: 'Alloc' })

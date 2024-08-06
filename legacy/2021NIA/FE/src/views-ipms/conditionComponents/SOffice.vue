@@ -25,6 +25,8 @@ import Eventbus from '@/utils/event-bus'
 import { EventType } from '@/min/types'
 import commonFunctionMixin from '@/mixin/commonFunctionMixin'
 
+import { ipmsJsonApis, apiRequestJson } from '@/api/ipms'
+
 const routeName = 'SOffice'
 export default {
   name: routeName,
@@ -51,18 +53,23 @@ export default {
   mounted () {
     Eventbus.$on(EventType.changeLvl1, (params) => { this.onLoadOfficeList(params) })
     Eventbus.$on(EventType.changeLvl2, (params) => { this.onLoadOfficeList(params) })
+    Eventbus.$on(EventType.changeLvl3, (params) => { this.onLoadOfficeList(params) })
     this.onLoadOfficeList()
   },
   beforeDestroy() {
     Eventbus.$off(EventType.changeLvl1)
     Eventbus.$off(EventType.changeLvl2)
+    Eventbus.$off(EventType.changeLvl3)
   },
   methods: {
-    onLoadOfficeList(params) {
-      /*
-      const res = await api(params)
-      this.officeOptions = res.result (options set)
-      */
+    async onLoadOfficeList(params) {
+      this.value = ''
+      try {
+        const res = await apiRequestJson(ipmsJsonApis.selectOfficeList, params)
+        this.officeOptions = res.tbIpAssignSubVos.map(v => { return { value: v.sofficecode, label: v.sofficename } })
+      } catch (error) {
+        this.error(error)
+      }
     },
   }
 }

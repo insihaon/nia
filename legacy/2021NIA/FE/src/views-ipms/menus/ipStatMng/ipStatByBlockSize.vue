@@ -30,7 +30,7 @@ import CompTable from '@/components/elTable/CompTable.vue'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
 import tableHeightMixin from '@/mixin/tableHeightMixin'
 import { getStatColumn } from '@/views-ipms/js/common-function'
-import { apiModel } from '@/api/ipms'
+import { ipmsModelApis, apiRequestModel } from '@/api/ipms'
 
 const routeName = 'ipStatByBlockSize'
 
@@ -78,7 +78,7 @@ export default {
           rowNo: 0,
       }
       try {
-        const res = await apiModel('/statmgmt/ipstatmgmt/viewListBlockSizeStat', params ?? defaultParam)
+        const res = await apiRequestModel(ipmsModelApis.viewListBlockSizeStat, params ?? defaultParam)
         this.svcList = JSON.parse(res.data.blockSizeCdsList)
         this.resultList = JSON.parse(res.data.result)
       } catch (error) {

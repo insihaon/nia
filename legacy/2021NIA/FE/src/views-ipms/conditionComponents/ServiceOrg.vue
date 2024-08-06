@@ -28,6 +28,8 @@ import { EventType } from '@/min/types'
 import Eventbus from '@/utils/event-bus'
 import commonFunctionMixin from '@/mixin/commonFunctionMixin'
 
+import { ipmsJsonApis, apiRequestJson } from '@/api/ipms'
+
 const routeName = 'ServiceOrg'
 export default {
   name: routeName,
@@ -83,6 +85,11 @@ export default {
       return this.options.map(option => option.value).filter(values => values !== 'ALL')
     },
   },
+  mounted () {
+    Eventbus.$on(EventType.changeLvl1, (params) => {
+      this.onLoadServiceList(params)
+    })
+  },
   beforeDestroy() {
     Eventbus.$off(EventType.changeLvl1)
   },
@@ -96,9 +103,6 @@ export default {
       if (this.defaultValue !== null) {
         this.values = this.defaultValue
       }
-      Eventbus.$on(EventType.changeLvl1, (params) => {
-        this.onLoadServiceList(params)
-      })
       this.emitEventToParent(this.getParameter())
     },
     handleChange() {
@@ -114,11 +118,13 @@ export default {
         this.limit !== null && this.onCheckLimit('서비스')
       }
     },
-    onLoadServiceList(params) {
-      /*
-      const res = await api(params)
-      this.options = res.result (options set)
-      */
+    async onLoadServiceList(params) {
+      try {
+        const res = await apiRequestJson(ipmsJsonApis.selectSassignTypeCdList, params)
+        this.options = res.tbIpAllocMstVos.map(v => { return { value: v.sassignTypeCd, label: v.sassignTypeNm } })
+      } catch (error) {
+        this.error(error)
+      }
     },
     getParameter() {
       let key = 'sassignTypeCd'

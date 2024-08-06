@@ -131,7 +131,7 @@ import { Modal } from '@/min/Modal.min'
 import { onMessagePopup } from '@/utils'
 import ModelWhoInfoDetail from '@/views-ipms/modal/whois/ModelWhoInfoDetail'
 
-import { apiModel } from '@/api/ipms'
+import { ipmsModelApis, apiRequestModel } from '@/api/ipms'
 
 const routeName = 'ModalIpInfoDetail'
 
@@ -198,7 +198,7 @@ export default {
       }
       const searchVo = { query, nipAssignMstSeq }
       try {
-        const res = await apiModel('/linkmgmt/socketmgmt/viewDetailWhois', searchVo)
+        const res = await apiRequestModel(ipmsModelApis.viewDetailWhois, searchVo)
         if (res.result.resultVo.commonMsg === 'SUCCESS') {
           this.$refs.ModelWhoInfoDetail.open({ response: res })
         } else {

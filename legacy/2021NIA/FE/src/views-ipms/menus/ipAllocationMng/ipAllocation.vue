@@ -60,7 +60,7 @@ import ModalDetailSummary from '@/views-ipms/modal/ModalDetailSummary.vue'
 import ModalIpAssignMerge from '@/views-ipms/modal/assign/ModalIpAssignMerge.vue'
 
 import { allocTableDatas } from './sample.js'
-import { apiModel } from '@/api/ipms'
+import { ipmsModelApis, apiRequestModel } from '@/api/ipms'
 
 const routeName = 'IpAllocation'
 
@@ -151,7 +151,7 @@ export default {
     },
     async fnViewListIpAllocMst(requestParameter) {
       try {
-        const res = await apiModel('/ipmgmt/allocmgmt/viewListIpAllocMst', requestParameter)
+        const res = await apiRequestModel(ipmsModelApis.viewListIpAllocMst, requestParameter)
         this.tableDatas = res.result.data
       } catch (error) {
         this.error(error)

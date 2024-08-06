@@ -31,7 +31,7 @@ import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoad
 import tableHeightMixin from '@/mixin/tableHeightMixin'
 import { getStatColumn } from '@/views-ipms/js/common-function'
 
-import { apiModel } from '@/api/ipms'
+import { ipmsModelApis, apiRequestModel } from '@/api/ipms'
 
 const routeName = 'ipAddressRoutingStat'
 
@@ -88,7 +88,7 @@ export default {
           rowNo: 0,
       }
       try {
-        const res = await apiModel('/statmgmt/ipstatmgmt/viewListIntgrmSvcStat', params ?? defaultParam)
+        const res = await apiRequestModel(ipmsModelApis.viewListIntgrmSvcStat, params ?? defaultParam)
         this.svcList = JSON.parse(res.data.svcList)
         this.resultList = JSON.parse(res.data.result)
       } catch (error) {

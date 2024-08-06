@@ -6,6 +6,25 @@ const { debug, isProd } = AppOptions.instance
 
 export const filePath = __filename.replace(/\\/g, '/')
 
+export const ipmsModelApis = {
+  viewListIpAllocMst: { desc: 'IP할당 조회', url: '/ipmgmt/allocmgmt/viewListIpAllocMst' },
+  viewListSvcStat: { desc: 'IP 서비스별 통계 조회', url: '/statmgmt/ipstatmgmt/viewListSvcStat' },
+  viewListOrgSvcStat: { desc: 'IP 조직서비스별 통계 조회', url: '/statmgmt/ipstatmgmt/viewListOrgSvcStat' },
+  viewListBlockSizeStat: { desc: 'IP 블록크기별 통계 조회', url: 'statmgmt/ipstatmgmt/viewListBlockSizeStat' },
+  viewListIntgrmSvcStat: { desc: 'IP주소 라우팅 비교/점검 통계 조회', url: '/statmgmt/ipstatmgmt/viewListIntgrmSvcStat' },
+  viewListIpAllocMstByMain: { desc: 'IP 블록 정보 조회', url: '/ipmgmt/allocmgmt/viewListIpAllocMstByMain' },
+  viewDetailIpAllocMstByMain: { desc: 'IP 블록 상세정보', url: '/ipmgmt/allocmgmt/viewDetailIpAllocMstByMain' },
+  viewListIpHistoryMst: { desc: 'IP 이력관리 조회', url: '/ipmgmt/historymgmt/viewListIpHistoryMst' },
+  viewDetailIpHistMst: { desc: 'IP 이력 상세정보', url: '/ipmgmt/historymgmt/viewDetailIpHistMst' },
+  viewDetailWhois: { desc: 'whois 상세정보', url: '/linkmgmt/socketmgmt/viewDetailWhois' },
+}
+export const ipmsJsonApis = {
+  selectAuthCenterList: { desc: '센터 조회', url: '/opermgmt/orgmgmt/selectAuthCenterList' },
+  selectAuthNodeList: { desc: '노드 조회', url: '/opermgmt/orgmgmt/selectAuthNodeList' },
+  selectOfficeList: { desc: '수용국 조회', url: '/ipmgmt/linemgmt/selectOfficeList' },
+  selectSassignTypeCdList: { desc: '서비스 조회', url: '/ipmgmt/allocmgmt/selectSassignTypeCdList' },
+}
+
 export function apiTest(params) {
   return http({
     url: '/ipmgmt/allocmgmt/viewListIpAllocMst.model',
@@ -24,9 +43,17 @@ export function apiTest2(params) {
   })
 }
 
-export function apiModel(url, params) {
+export function apiRequestModel(api, params) {
   return http({
-    url: `${url}.model`,
+    url: `${api.url}.model`,
+    method: 'post',
+    filePath: filePath,
+    data: params
+  })
+}
+export function apiRequestJson(api, params) {
+  return http({
+    url: `${api.url}.json`,
     method: 'post',
     filePath: filePath,
     data: params
