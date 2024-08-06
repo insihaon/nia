@@ -2,62 +2,46 @@
   <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko" lang="ko">
     <body class="main">
       <div id="skipnavi"><a href="#gnb">주메뉴 바로가기</a><a href="#content">본문 바로가기</a></div>
-
       <!-- wrap -->
-      <div id="wrap">
-        <!-- header -->
-
-        <!-- //header -->
-
+      <div id="wrap" class="h-100">
         <!-- container -->
         <div id="container" class="main">
           <!-- search-->
           <div class="search_result">
             <fieldset>
               <legend>검색하기</legend>
-              <el-select v-model="value">
+              <el-select v-model="option" class="mr-1">
                 <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
               </el-select>
               <span>
-                <input type="text" class="txt" placeholder="IP주소 또는 회선번호, SAID를 입력해 주세요." title="검색어 입력창" />
+                <el-input
+                  v-model="value"
+                  type="text"
+                  class="txt"
+                  placeholder="IP주소 또는 회선번호, SAID를 입력해 주세요.(특수문자 입력 제외)"
+                  clearable
+                  @keyup.enter.native="handleClickIpSearch"
+                />
               </span>
               <span>
-                <el-button>
-                  <img src="@/assets/images/ipms/content/btn_main_search_off.gif" alt="검색" />
+                <el-button icon="el-icon-search" round @click="handleClickIpSearch">
+                  검색
+                  <!-- <img src="@/assets/images/ipms/content/btn_main_search_off.gif" alt="검색" /> -->
                 </el-button>
               </span>
             </fieldset>
           </div>
           <div class="container_inner">
-            <Notice :is-dashboard="true" />
+            <Notice ref="notice" :is-dashboard="true" />
             <el-tabs type="card">
               <el-tab-pane v-for="tabItem in tabList" :key="tabItem.label">
-                <span slot="label">{{ tabItem.label }}<i class="el-icon-plus"></i></span>
+                <span slot="label">{{ tabItem.label }}</span>
                 <component :is="tabItem.component" :is-dashboard="true" />
               </el-tab-pane>
             </el-tabs>
           </div>
         </div>
-        <!-- footer -->
-        <div id="footer">
-          <div class="footer_above">
-            <ul class="footer_menu">
-              <li><a href="#none">정보제공</a></li>
-              <li><a href="#none">이용약관 법적고지</a></li>
-              <li>
-                <a href="#none"><strong>개인정보취급방침</strong></a>
-              </li>
-              <li><a href="#none">이메일 무단 수집거부</a></li>
-              <li><a href="#none">상호접속협정</a></li>
-              <li class="last"><a href="#none">문의/연락처</a></li>
-            </ul>
-            <span>Copyright(c) 2014 kt IPMS. all rights reserved.</span>
-          </div>
-        </div>
-        <!-- //footer -->
       </div>
-      <!-- //wrap -->
-      <div id="return_top"><a href="#skipnavi">페이지 맨 위로 이동</a></div>
     </body>
   </html>
 </template>
@@ -83,30 +67,20 @@ export default {
         { label: '신인증 IP 최적화', component: () => import('@/views-ipms/components/NewCertificationOptimizationIP') },
         { label: '조각 IP 최적화', component: () => import('@/views-ipms/components/PieceIPOptimization') },
       ],
-      options: [
-        {
-          value: 'IPv4',
-          label: 'IPv4',
-        },
-        {
-          value: 'IPv6',
-          label: 'IPv6',
-        },
-        {
-          value: 'SAID',
-          label: 'SAID',
-        },
-        {
-          value: '전용번호',
-          label: '전용번호',
-        },
-      ],
-      value: 'IPv4',
+      options: [],
+      option: 'CV0001',
+      value: '',
     }
   },
-  computed: {},
-  mounted() {},
-  methods: {},
+  created () {
+    this.options = this.CONSTANTS.ipms.ipInfoOptions
+  },
+  methods: {
+    handleClickIpSearch() {
+      this.$store.dispatch('ipms/setToParam', { option: this.option, value: this.value })
+      this.$router.push('/ipInfoMng/ipInfoList')
+    }
+  },
 }
 </script>
 <style lang="scss" scoped>

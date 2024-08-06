@@ -75,6 +75,15 @@ export default {
       { code: 'FIN', hex: '', text: '마감', fnCount: (d) => safeString(d.status).trim() === 'FIN', fnFilter: (d) => safeString(d.status).trim() === 'FIN' },
       { code: 'AUTO_FIN', hex: '', text: '자동마감', fnCount: (d) => safeString(d.status).trim() === 'AUTO_FIN', fnFilter: (d) => safeString(d.status).trim() === 'AUTO_FIN' },
     ]
+  },
+  ipms: {
+    ipInfoOptions: [
+      { value: 'CV0001', label: 'IPv4' },
+      { value: 'CV0002', label: 'IPv6' },
+      { value: 'SAID', label: 'SAID' },
+      { value: 'SLLNUM', label: '전용번호' },
+      { value: 'SCONNALIAS', label: '수용회선명' },
+    ]
   }
 }
 

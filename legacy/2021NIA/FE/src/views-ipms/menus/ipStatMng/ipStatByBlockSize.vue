@@ -9,6 +9,7 @@
       <compTable
         :prop-table-height="'calc(100% - 80px)'"
         :prop-column="tableColumns"
+        :prop-data="resultList"
         :prop-is-pagination="false"
         :prop-is-check-box="false"
         prop-grid-menu-id="inputSpeed"
@@ -28,6 +29,8 @@ import { Base } from '@/min/Base.min'
 import CompTable from '@/components/elTable/CompTable.vue'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
 import tableHeightMixin from '@/mixin/tableHeightMixin'
+import { getStatColumn } from '@/views-ipms/js/common-function'
+import { apiModel } from '@/api/ipms'
 
 const routeName = 'ipStatByBlockSize'
 
@@ -40,6 +43,8 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      svcList: [],
+      resultList: [],
       componentList: [
         { key: 'SsvcLineType', props: { lvl: 1, multi: [1], limit: { 1: 5, 2: null, 3: null } } },
         { key: 'BlockSize', props: {} },
@@ -47,84 +52,38 @@ export default {
         { key: 'SipCreateType', props: {} },
         { key: 'DatePicker', props: {} },
       ],
-      tableColumns: [
-        {
-          prop: '', label: '', children: [
-            { prop: '', label: '서비스망', align: 'center', columnVisible: true, showOverflow: true },
-            { prop: '', label: '본부', align: 'center', columnVisible: true, showOverflow: true },
-            { prop: '', label: '노드', align: 'center', columnVisible: true, showOverflow: true },
-            { prop: '', label: '공인/사설', align: 'center', columnVisible: true, showOverflow: true },
-          ],
-          align: 'center',
-          columnVisible: true,
-          showOverflow: true,
-        },
-        {
-          prop: '', label: '전체', children: [
-            { prop: '', label: '총수량', align: 'center', columnVisible: true, showOverflow: true },
-            { prop: '', label: '할당', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-            { prop: '', label: '미할당', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-          ],
-          align: 'center',
-          columnVisible: true,
-          showOverflow: true,
-        },
-        {
-          prop: '', label: '/24', children: [
-            { prop: '', label: '총수량', align: 'center', columnVisible: true, showOverflow: true },
-            { prop: '', label: '할당', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-            { prop: '', label: '미할당', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-          ],
-          align: 'center',
-          columnVisible: true,
-          showOverflow: true,
-        },
-        {
-          prop: '', label: '/25', children: [
-            { prop: '', label: '총수량', align: 'center', columnVisible: true, showOverflow: true },
-            { prop: '', label: '할당', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-            { prop: '', label: '미할당', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-          ],
-          align: 'center',
-          columnVisible: true,
-          showOverflow: true,
-        },
-        {
-          prop: '', label: '/26', children: [
-            { prop: '', label: '총수량', align: 'center', columnVisible: true, showOverflow: true },
-            { prop: '', label: '할당', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-            { prop: '', label: '미할당', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-          ],
-          align: 'center',
-          columnVisible: true,
-          showOverflow: true,
-        },
-        {
-          prop: '', label: '/27', children: [
-            { prop: '', label: '총수량', align: 'center', columnVisible: true, showOverflow: true },
-            { prop: '', label: '할당', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-            { prop: '', label: '미할당', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-          ],
-          align: 'center',
-          columnVisible: true,
-          showOverflow: true,
-        },
-        {
-          prop: '', label: '/28', children: [
-            { prop: '', label: '총수량', align: 'center', columnVisible: true, showOverflow: true },
-            { prop: '', label: '할당', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-            { prop: '', label: '미할당', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-          ],
-          align: 'center',
-          columnVisible: true,
-          showOverflow: true,
-        }
-      ],
     }
+  },
+  computed: {
+    tableColumns() {
+      const columns = getStatColumn('blockSize', this.svcList)
+      return columns
+    }
+  },
+  mounted () {
+    this.fnViewListBlockSizeStat()
   },
   methods: {
     handleSearch(requestParameter) {
-      console.log(requestParameter)
+      this.fnViewListBlockSizeStat(requestParameter)
+    },
+    async fnViewListBlockSizeStat(params = null) {
+      const defaultParam = {
+          pageIndex: 1,
+          pageUnit: 0,
+          pageSize: 0,
+          firstIndex: 1,
+          lastIndex: 10,
+          recordCountPerPage: 10,
+          rowNo: 0,
+      }
+      try {
+        const res = await apiModel('/statmgmt/ipstatmgmt/viewListBlockSizeStat', params ?? defaultParam)
+        this.svcList = JSON.parse(res.data.blockSizeCdsList)
+        this.resultList = JSON.parse(res.data.result)
+      } catch (error) {
+        this.error(error)
+      }
     }
   },
 }
