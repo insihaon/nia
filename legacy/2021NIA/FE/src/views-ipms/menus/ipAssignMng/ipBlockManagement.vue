@@ -4,6 +4,7 @@
       ref="searchCondition"
       :component-keys="componentList"
       @handle-search="onLoadIpBlockData"
+      @handle-export-excel="exportExcel"
     />
     <el-col ref="tableContainer" :span="24">
       <compTable
@@ -39,12 +40,13 @@
 </template>
 <script>
 import { Base } from '@/min/Base.min'
+import axios from 'axios'
 import CompTable from '@/components/elTable/CompTable.vue'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
 import tableHeightMixin from '@/mixin/tableHeightMixin'
 import ModalIpBlockDetail from '@/views-ipms/modal/ModalIpBlockDetail.vue'
 import ModalAddIpBlock from '@/views-ipms/modal/ModalAddIpBlock.vue'
-// import { } from '@/api/ipms'
+import { apiModel } from '@/api/ipms'
 const routeName = 'IpBlockManagement'
 
 export default {
@@ -77,93 +79,76 @@ export default {
         { prop: 'sipCreateSeqCd', label: '생성차수코드', align: 'center', sortable: true, columnVisible: false, showOverflow: true },
         { prop: 'sipVersionTypeNm', label: '', align: 'center', sortable: true, columnVisible: false, showOverflow: true }
       ],
-      IpBlockData: [
-      {
-        nipBlockMstSeq: '1',
-        sipCreateTypeNm: '공인',
-        sipCreateSeqNm: 'M2020140001',
-        ssvcLineTypeNm: 'MOBILE',
-        pipPrefix: '192.168.0.0/24',
-        sfirstAddr: '192.168.0.1',
-        slastAddr: '192.168.0.254',
-        nclassCnt: 256,
-        dmodifyDt: '2023-07-15',
-        sipCreateSeqCd: 'M2020140123',
-        sipVersionTypeNm: 'CV0001'
-      },
-      {
-        nipBlockMstSeq: '2',
-        sipCreateTypeNm: 'Bogon',
-        sipCreateSeqNm: 'M2020140123',
-        ssvcLineTypeNm: 'KORNET',
-        pipPrefix: '10.0.0.0/24',
-        sfirstAddr: '10.0.0.1',
-        slastAddr: '10.0.0.254',
-        nclassCnt: 256,
-        dmodifyDt: '2023-07-16',
-        sipCreateSeqCd: 'M2020140124',
-        sipVersionTypeNm: 'CV0002'
-      },
-      {
-        nipBlockMstSeq: '3',
-        sipCreateTypeNm: '유/무선공용',
-        sipCreateSeqNm: 'M2020143258',
-        ssvcLineTypeNm: 'PREMIUM',
-        pipPrefix: '10.0.0.0/24',
-        sfirstAddr: '10.0.0.1',
-        slastAddr: '10.0.0.254',
-        nclassCnt: 256,
-        dmodifyDt: '2023-07-16',
-        sipCreateSeqCd: 'M2020140125',
-        sipVersionTypeNm: 'CV0001'
-      }
-    ],
+      IpBlockData: [],
       selectedRow: [],
       selectedChecks: [],
+      requestParam: null
     }
   },
   mounted() {
-    // this.onLoadIpBlockData()
+    this.onLoadIpBlockData()
   },
   methods: {
    async onLoadIpBlockData(requestParameter) {
-      /* try {
-        const res = await api(requestParameter)
-        this.IpBlockData = res?.result
+      try {
+        const res = await apiModel('/ipmgmt/createmgmt/viewListCrtIPMst', requestParameter)
+        this.IpBlockData = res?.result.data
+        this.requestParam = requestParameter
       } catch (error) {
         console.error(error)
-      } */
+      }
     },
     selectedCheckItems(row) {
-      this.selectedChecks = row
+      this.selectedChecks = row[0]
+      if (row.length === 2) {
+        this.selectedChecks = row[1]
+      }
     },
     onClcikRow(row) {
       this.selectedRow = row
-      // this.handleOpenIpBlockDetail(row)
       this.$refs.ModalIpBlockDetail.open({ row })
     },
     handleOpenIpBlockDetail(row, type) {
-    // if (this.selectedChecks.length === 0) {
-    //   row = this.IpBlockData[0]
-    // } else {
-    //   row = this.selectedChecks[1]
-    // }
-      row = this.selectedChecks[1]
       if (this.selectedChecks.length === 0) {
-      row = ''
+        this.$message('데이터를 선택해주세요')
+        return
+      } else {
+        row = this.selectedChecks
       }
       this.$refs.ModalIpBlockDetail.open({ row, type })
     },
     handleOpenAddIpBlock(row, type) {
       row = this.selectedChecks
        if (this.selectedChecks.length === 0) {
-        row = this.IpBlockData[0]
+        this.$message('데이터를 선택해주세요')
+        return
       } else {
-        row = this.selectedChecks[1]
+        row = this.selectedChecks
       }
       this.$refs.ModalAddIpBlock.open({ row, type })
-    }
-  },
+    },
+    /* async exportExcel() {
+      try {
+        const response = await axios.post(
+          `${this.baseContext}/ipmgmt/createmgmt/viewListCrtIPMstExcel.json`,
+          this.requestParam
+        )
+
+        const fileUrl = `${this.baseContext}/downloadExcelFile.excel?fileName=${response.data.fileName}`
+        const link = document.createElement('a')
+        link.href = fileUrl
+        link.download = response.data.fileName
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+
+        this.$message.info({ message: '엑셀 다운로드가 성공적으로 완료되었습니다.' })
+      } catch (error) {
+        console.error('Error exporting excel:', error)
+        this.$message.error({ message: '엑셀 다운로드 중 오류가 발생했습니다.' })
+      }
+    } */
+  }
 }
 </script>
 <style lang="scss" scoped></style>
