@@ -687,11 +687,54 @@ function toSimpleString(arr, regex) {
   // 5. 추출된 값들을 배열로 반환
   return matchingElements.join('|')
 }
+window.toSimpleString = toSimpleString
+
+/**
+ * todo 나중에 변경하도록 하자 2024.08.06
+ * 현재방식 : Object values 추출 > toSimpleString > base64 Encoding
+ * 문제점   : input 일부를 바꾸면 output 이 일부가 아닌 전체 변경된다.
+ *            이로인해 입력파라미터를 기준으로 비슷한 파일을 찾아도 입력과 무관한 데이터인 경우가 있다
+ * 변경방식 : Object 중 한글,영문,숫자에 해당하는 key n글자 value n 글자를 정규표현식 추출 (extractKeyValue)
+ */
+
+function extractKeyValue(obj, maxKeyLength = 5, maxValueLength = 8) {
+    // 정규 표현식
+    const regex = /^[가-힣a-zA-Z0-9]$/
+
+    let result = ''
+
+    // 객체의 모든 key-value 쌍 순회
+    for (const key in obj) {
+      // eslint-disable-next-line no-prototype-builtins
+      if (obj.hasOwnProperty(key)) {
+        // key와 value 각각 검사하여 조건에 맞는 문자만 추출
+        const extractedKey = key.split('').filter(char => regex.test(char)).slice(0, maxKeyLength).join('')
+        const extractedValue = (obj[key] || '').toString().split('').filter(char => regex.test(char)).slice(0, maxValueLength).join('')
+
+        // 추출된 문자열 연결
+        result += extractedKey + extractedValue
+      }
+    }
+
+    return result
+  }
+window.extractKeyValue = extractKeyValue
+
+// // 예시 객체
+// console.log(extractKeyValue({
+//   'name': '홍길동',
+//   'age': 30,
+//   'address': ['서울시', '부산시', '광주시'],
+//   'abc123456789': 'def4567890',
+//   '123abc': '456def'
+// }))
+// 'name홍길동age30addre서울시부산시광abc12def4567123ab456def'
 
 function convertText(data) {
   let json = data
   if (typeof data === 'object') {
     // console.log(JSON.stringify(data))
+
     const values = Object.values(data)
     const regex = /^(?:\S{1,10})/
     json = toSimpleString(values, regex)
@@ -704,6 +747,7 @@ function convertText(data) {
     .replace(/\//g, '_')
   return urlSafe
 }
+window.convertText = convertText
 
 function filterNonNullValues(obj) {
   return Object.fromEntries(
