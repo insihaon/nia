@@ -30,7 +30,7 @@ import CompTable from '@/components/elTable/CompTable.vue'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
 import tableHeightMixin from '@/mixin/tableHeightMixin'
 import ModalNotAssignDetail from '@/views-ipms/modal/ModalNotAssignDetail.vue'
-import { apiModel } from '@/api/ipms'
+import { ipmsModelApis, apiRequestModel } from '@/api/ipms'
 const routeName = 'IpunAllocatedStatus'
 
 export default {
@@ -88,7 +88,7 @@ export default {
   methods: {
     async onLoadStatusList(requestParameter) {
       try {
-        const res = await apiModel('/ipmgmt/assignmgmt/viewListUnAssignIP', requestParameter)
+        const res = await apiRequestModel(ipmsModelApis.viewListUnAssignIP, requestParameter)
         this.tableDatas = res?.result.data
       } catch (error) {
         console.error(error)

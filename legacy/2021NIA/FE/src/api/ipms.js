@@ -17,6 +17,9 @@ export const ipmsModelApis = {
   viewListIpHistoryMst: { desc: 'IP 이력관리 조회', url: '/ipmgmt/historymgmt/viewListIpHistoryMst' },
   viewDetailIpHistMst: { desc: 'IP 이력 상세정보', url: '/ipmgmt/historymgmt/viewDetailIpHistMst' },
   viewDetailWhois: { desc: 'whois 상세정보', url: '/linkmgmt/socketmgmt/viewDetailWhois' },
+  viewListAsgnIPMst: { desc: 'IP 배정 조회', url: '/ipmgmt/assignmgmt/viewListAsgnIPMst' },
+  viewListCrtIPMst: { desc: 'IP 블록관리 조회', url: '/ipmgmt/createmgmt/viewListCrtIPMst' },
+  viewListUnAssignIP: { desc: 'IP 미배정 조회', url: '/ipmgmt/assignmgmt/viewListUnAssignIP' },
 }
 export const ipmsJsonApis = {
   selectAuthCenterList: { desc: '센터 조회', url: '/opermgmt/orgmgmt/selectAuthCenterList' },
