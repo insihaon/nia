@@ -16,16 +16,11 @@ const getters = {
   errorLogs: (state) => state.errorLog.logs,
   serviceLogs: (state) => state.serviceLog.logs,
   filterText: (state) => state.bottombarFilter.filterText,
-  oasis: (state) => state.oasis,
-  bcn: (state) => state.bcn,
   aam: (state) => state.aam,
   aamPersisted: (state) => state.aamPersisted,
   influenceCircitStore: (state) => state.influenceCircitStore,
-  t3d: (state) => state.t3d,
-  t3dPersisted: (state) => state.t3dPersisted,
-  showHistory: (state) => state.app.showHistory,
-  pmmlte: (state) => state.pmmlte,
 
+  showHistory: (state) => state.app.showHistory,
   windows: (state) => state.mdi.windows,
   window_param: (state) => state.mdi.window_param
 }

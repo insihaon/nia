@@ -61,18 +61,14 @@ const Base = {
       errorLog: (state) => state.errorLog.logs,
       serviceLog: (state) => state.serviceLog.logs,
       serverSetting: (state) => state.app.server,
-      oasis: (state) => state.oasis,
-      untact: (state) => state.untact,
-      bcn: (state) => state.bcn,
       devt: (state) => state.devt,
       dataHub: (state) => state.dataHub,
       aam: (state) => state.aam,
       aamPersisted: (state) => state.aamPersisted,
       influenceCircitStore: (state) => state.influenceCircitStore,
-      t3d: (state) => state.t3d,
-      t3dPersisted: (state) => state.t3dPersisted,
       pmmlte: (state) => state.pmmlte,
-      nia: (state) => state.nia
+      nia: (state) => state.nia,
+      ipms: (state) => state.ipms,
     }),
     webSocketManager() {
       return null
