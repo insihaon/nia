@@ -62,6 +62,7 @@ import Eventbus from '@/utils/event-bus'
 import { EventType } from '@/min/types'
 import { onMessagePopup } from '@/utils/index'
 import commonFunctionMixin from '@/mixin/commonFunctionMixin'
+import { ipmsJsonApis, apiRequestJson } from '@/api/ipms'
 import _ from 'lodash'
 
 const key1 = 1
@@ -208,35 +209,47 @@ export default {
       const multi = this.multi ?? []
       return multi.includes(lvl)
     },
-    handleChangeLvl1() {
+    async handleChangeLvl1() {
       const isOver = this.updateSelectionWithAll(1)
       if (isOver) return
       const params = { ssvcLineTypeCd: this.localValue[key1] }
-      /*
-      const res = await api(params)
-      this.lvlOptions[key2] = res.result
-      */
+
+      const res = await apiRequestJson(ipmsJsonApis.selectAuthCenterList, params)
+      this.lvlOptions[key2] = res?.tbLvlBasVos?.filter(v => v.ssvcGroupNm !== '전체').map(v => { return { value: v.ssvcGroupCd, label: v.ssvcGroupNm } })
+
      this.resetLocalValue(key2)
      this.resetLocalValue(key3)
      this.emitEventToParent(this.getParameter())
       Eventbus.$emit(EventType.changeLvl1, { ssvcLineTypeCd: this.localValue[key1] })
     },
-    handleChangeLvl2() {
+    async handleChangeLvl2() {
       const isOver = this.updateSelectionWithAll(2)
       if (isOver) return
 
-      const params = { ssvcLineTypeCd: this.localValue[key1], ssvcGroupCd: this.localValue[key2] }
-      /*
-      const res = await api(params)
-      this.lvlOptions[key3] = res.result
-      */
-      this.resetLocalValue(key3)
-      // const keyLvl2 = `ssvcGroupCd${Array.isArray(this.localValue[key2]) ? 'MultiStr' : ''}`
+      Eventbus.$emit(EventType.changeLvl2, { ssvcLineTypeCd: this.localValue[key1], [this.getKeyLvl2()]: this.getValueLvl2() })
       this.emitEventToParent(this.getParameter())
-      Eventbus.$emit(EventType.changeLvl2, { ssvcLineTypeCd: this.localValue[key1], keyLvl2: this.localValue[key2] })
+
+      if (this.multi.includes(2) && this.localValue[key2].length > 1) return
+
+      const params = { ssvcLineTypeCd: this.localValue[key1], ssvcGroupCd: this.localValue[key2] }
+      const res = await apiRequestJson(ipmsJsonApis.selectAuthNodeList, params)
+      this.lvlOptions[key3] = res.tbLvlBasVos?.filter(v => v.ssvcGroupNm !== '전체').map(v => { return { value: v.ssvcObjCd, label: v.ssvcObjNm } })
+
+      this.resetLocalValue(key3)
     },
     handleChangeLvl3() {
       this.emitEventToParent(this.getParameter())
+      Eventbus.$emit(EventType.changeLvl3, { ssvcLineTypeCd: this.localValue[key1], [this.getKeyLvl2()]: this.getValueLvl2(), ssvcObjCd: this.localValue[key3] })
+    },
+    getKeyLvl2() {
+      return `ssvcGroupCd${Array.isArray(this.localValue[key2]) ? 'MultiStr' : ''}`
+    },
+    getValueLvl2() {
+      if (this.multi.includes(key2)) {
+        return this.localValue[key2].join(';') + ';'
+      } else {
+        return this.localValue[key2]
+      }
     },
     resetLocalValue(lvl) {
       const multiOp = this.multi ?? []

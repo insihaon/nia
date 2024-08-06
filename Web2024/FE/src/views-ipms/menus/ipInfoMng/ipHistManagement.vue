@@ -32,7 +32,7 @@ import { Base } from '@/min/Base.min'
 import CompTable from '@/components/elTable/CompTable.vue'
 import tableHeightMixin from '@/mixin/tableHeightMixin'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
-import { apiModel } from '@/api/ipms'
+import { ipmsModelApis, apiRequestModel } from '@/api/ipms'
 import ModalIpInfoDetail from '@/views-ipms/modal/ModalIpInfoDetail'
 
 const routeName = 'IpHistManagement'
@@ -98,7 +98,7 @@ export default {
     },
     async fnViewListIpHistoryMst(params) {
       try {
-        const res = await apiModel('ipmgmt/historymgmt/viewListIpHistoryMst', params)
+        const res = await apiRequestModel(ipmsModelApis.viewListIpHistoryMst, params)
         this.ipHistList = res.result.data ?? []
       } catch (error) {
         this.error(error)
@@ -113,7 +113,7 @@ export default {
           nipAllocMstSeq: nipAllocMstSeq ?? '',
           yyyy: yyyy ?? ''
         }
-        const res = await apiModel('ipmgmt/historymgmt/viewDetailIpHistMst', params)
+        const res = await apiRequestModel(ipmsModelApis.viewDetailIpHistMst, params)
         if (res.result.data) {
           // lagacy에서는 ipHistoryMstVo로 받는다.
           this.$refs.ModalIpInfoDetail.open({ tbIpInfoVo: res.result.data, type: 'Hist' })
