@@ -1,7 +1,7 @@
 {
   "__body": {
     "result": {
-      "totalCount": 401649,
+      "totalCount": 401646,
       "data": [
         {
           "searchBgnDe": "",
@@ -1606,9 +1606,9 @@
       "totalCount": 0,
       "bUploadFlag": false
     },
-    "receivedTime": "2024-08-05 10:11:41.423",
-    "duration": 12266,
+    "receivedTime": "2024-08-07 08:37:08.922",
+    "duration": 12308,
     "filename": "aXBtZ210L2FsbG9jbWdtdC92aWV3TGlzdElwQWxsb2NNc3QubW9kZWw_UElQX1BSRUZJWHxBU0N8MXwxMHwwfDF8MTB8MTB8MHwvaXBtZ210L2FsfENWMDAwMXxDVDAwMDF8WFhYWFhYfGxsbnVtfDB8ZmFsc2U.json",
-    "fetch": "fetch('/ipmgmt/allocmgmt/viewListIpAllocMst.model', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{\"sortType\":\"PIP_PREFIX\",\"sortOrdr\":\"ASC\",\"pageIndex\":1,\"pageUnit\":10,\"pageSize\":0,\"firstIndex\":1,\"lastIndex\":10,\"recordCountPerPage\":10,\"rowNo\":0,\"url\":\"/ipmgmt/allocmgmt/viewListIpAllocMst.model\",\"sipVersionTypeCd\":\"CV0001\",\"sipCreateTypeCd\":\"CT0001\",\"sicisofficescodeNe\":\"XXXXXX\",\"llSrchTypeCd\":\"llnum\",\"totalCount\":0,\"bUploadFlag\":false}', 'method': 'POST' })"
+    "fetch": "success-fetch('/ipmgmt/allocmgmt/viewListIpAllocMst.model', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{\"sortType\":\"PIP_PREFIX\",\"sortOrdr\":\"ASC\",\"pageIndex\":1,\"pageUnit\":10,\"pageSize\":0,\"firstIndex\":1,\"lastIndex\":10,\"recordCountPerPage\":10,\"rowNo\":0,\"url\":\"/ipmgmt/allocmgmt/viewListIpAllocMst.model\",\"sipVersionTypeCd\":\"CV0001\",\"sipCreateTypeCd\":\"CT0001\",\"sicisofficescodeNe\":\"XXXXXX\",\"llSrchTypeCd\":\"llnum\",\"totalCount\":0,\"bUploadFlag\":false}', 'method': 'POST' })"
   }
 }

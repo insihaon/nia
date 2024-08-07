@@ -1,0 +1,35 @@
+{
+  "__body": {
+    "result": {
+      "totalCount": 0,
+      "data": [
+        {
+          "responseCd": 99999,
+          "responseMsg": "알수 없는 에러",
+          "targetIp": "172.29.24.148",
+          "targetType": "MOBILE-JUNIPER-QFX10008",
+          "flag": "N",
+          "responseList": null
+        },
+        {
+          "responseCd": 99999,
+          "responseMsg": "알수 없는 에러",
+          "targetIp": "172.21.120.241",
+          "targetType": "MOBILE-JUNIPER_MX960",
+          "flag": "N",
+          "responseList": null
+        }
+      ]
+    }
+  },
+  "__config": {
+    "url": "/opermgmt/tacsmgmt/viewCheckTacsIpBlock.model",
+    "param": {
+      "nipAssignMstSeq": "1113852"
+    },
+    "receivedTime": "2024-08-07 10:11:07.549",
+    "duration": 44681,
+    "filename": "b3Blcm1nbXQvdGFjc21nbXQvdmlld0NoZWNrVGFjc0lwQmxvY2subW9kZWw_MTExMzg1Mg.json",
+    "fetch": "fetch('/opermgmt/tacsmgmt/viewCheckTacsIpBlock.model', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{\"nipAssignMstSeq\":\"1113852\"}', 'method': 'POST' })"
+  }
+}

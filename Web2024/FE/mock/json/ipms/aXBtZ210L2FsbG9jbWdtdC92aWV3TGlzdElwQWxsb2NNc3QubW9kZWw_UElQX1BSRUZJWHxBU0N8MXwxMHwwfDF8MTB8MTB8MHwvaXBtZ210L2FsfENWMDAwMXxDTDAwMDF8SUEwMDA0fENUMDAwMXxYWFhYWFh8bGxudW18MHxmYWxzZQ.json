@@ -1,7 +1,7 @@
 {
   "__body": {
     "result": {
-      "totalCount": 61251,
+      "totalCount": 61248,
       "data": [
         {
           "searchBgnDe": "",
@@ -1608,8 +1608,8 @@
       "totalCount": 0,
       "bUploadFlag": false
     },
-    "receivedTime": "2024-08-05 17:39:38.113",
-    "duration": 2383,
+    "receivedTime": "2024-08-07 08:44:56.752",
+    "duration": 2272,
     "filename": "aXBtZ210L2FsbG9jbWdtdC92aWV3TGlzdElwQWxsb2NNc3QubW9kZWw_UElQX1BSRUZJWHxBU0N8MXwxMHwwfDF8MTB8MTB8MHwvaXBtZ210L2FsfENWMDAwMXxDTDAwMDF8SUEwMDA0fENUMDAwMXxYWFhYWFh8bGxudW18MHxmYWxzZQ.json",
     "fetch": "success-fetch('/ipmgmt/allocmgmt/viewListIpAllocMst.model', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{\"sortType\":\"PIP_PREFIX\",\"sortOrdr\":\"ASC\",\"pageIndex\":1,\"pageUnit\":10,\"pageSize\":0,\"firstIndex\":1,\"lastIndex\":10,\"recordCountPerPage\":10,\"rowNo\":0,\"url\":\"/ipmgmt/allocmgmt/viewListIpAllocMst.model\",\"sipVersionTypeCd\":\"CV0001\",\"ssvcLineTypeCd\":\"CL0001\",\"sassignLevelCd\":\"IA0004\",\"sipCreateTypeCd\":\"CT0001\",\"sicisofficescodeNe\":\"XXXXXX\",\"llSrchTypeCd\":\"llnum\",\"totalCount\":0,\"bUploadFlag\":false}', 'method': 'POST' })"
   }
