@@ -32,22 +32,22 @@
     "url": null,
     "menuType": null,
     "paramMap": null,
-    "pipPrefix": "1.100.129.64/26",
-    "sipVersionTypeCd": "CV0001",
+    "pipPrefix": null,
+    "sipVersionTypeCd": null,
     "sipVersionTypeNm": null,
-    "sipBlock": "1.100.129.64",
-    "nbitmask": 26,
-    "snetmask": "255.255.255.192",
-    "sfirstAddr": "1.100.129.64",
-    "slastAddr": "1.100.129.127",
-    "nfirstAddr": "23,363,904",
-    "nlastAddr": "23,363,967",
-    "sfirstIpPreferred": "001.100.129.064",
-    "slastIpPreferred": "001.100.129.127",
-    "sfirstAddrBinary": "00000001011001001000000101000000",
-    "slastAddrBinary": "00000001011001001000000101111111",
-    "ncnt": "64",
-    "nclassCnt": "0.25",
+    "sipBlock": null,
+    "nbitmask": null,
+    "snetmask": null,
+    "sfirstAddr": null,
+    "slastAddr": null,
+    "nfirstAddr": null,
+    "nlastAddr": null,
+    "sfirstIpPreferred": null,
+    "slastIpPreferred": null,
+    "sfirstAddrBinary": null,
+    "slastAddrBinary": null,
+    "ncnt": null,
+    "nclassCnt": null,
     "nuseIpCnt": null,
     "nfreeIpCnt": null,
     "nsubnetmask": null,
@@ -94,26 +94,20 @@
     "nipAllocMstSeq": null
   },
   "__config": {
-    "url": "/ipmgmt/assignmgmt/appendMergeDivAsgnIPMst.json",
+    "url": "/ipmgmt/allocmgmt/updateScommentAsgnIPMst.json",
     "param": {
-      "tbIpAssignMstVos": [
+      "srcIpAssignMstVo": {
+        "scomment": "----- 최종수정시간 : 2024-08-02 16:22:24 -----\n병합TEST"
+      },
+      "destIpAssignMstVos": [
         {
-          "pipPrefix": "1.100.129.64/27",
-          "sipVersionTypeCd": "CV0001"
-        },
-        {
-          "pipPrefix": "1.100.129.96/28",
-          "sipVersionTypeCd": "CV0001"
-        },
-        {
-          "pipPrefix": "1.100.129.112/28",
-          "sipVersionTypeCd": "CV0001"
+          "nipAssignMstSeq": "1113852"
         }
       ]
     },
-    "receivedTime": "2024-08-07 11:01:07.553",
-    "duration": 384,
-    "filename": "aXBtZ210L2Fzc2lnbm1nbXQvYXBwZW5kTWVyZ2VEaXZBc2duSVBNc3QuanNvbg_W29iamVjdA.json",
-    "fetch": "success-fetch('/ipmgmt/assignmgmt/appendMergeDivAsgnIPMst.json', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{\"tbIpAssignMstVos\":[{\"pipPrefix\":\"1.100.129.64/27\",\"sipVersionTypeCd\":\"CV0001\"},{\"pipPrefix\":\"1.100.129.96/28\",\"sipVersionTypeCd\":\"CV0001\"},{\"pipPrefix\":\"1.100.129.112/28\",\"sipVersionTypeCd\":\"CV0001\"}]}', 'method': 'POST' })"
+    "receivedTime": "2024-08-07 10:15:17.461",
+    "duration": 1229,
+    "filename": "aXBtZ210L2FsbG9jbWdtdC91cGRhdGVTY29tbWVudEFzZ25JUE1zdC5qc29u_W29iamVjdHxbb2JqZWN0.json",
+    "fetch": "success-fetch('/ipmgmt/allocmgmt/updateScommentAsgnIPMst.json', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{\"srcIpAssignMstVo\":{\"scomment\":\"----- 최종수정시간 : 2024-08-02 16:22:24 -----\\n병합TEST\"},\"destIpAssignMstVos\":[{\"nipAssignMstSeq\":\"1113852\"}]}', 'method': 'POST' })"
   }
 }
