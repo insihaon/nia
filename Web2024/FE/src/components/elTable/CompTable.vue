@@ -151,7 +151,6 @@ export default {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       tableSelectTemp: [],
-      tableRadioCheck: {},
       tableColItem: {},
     }
   },

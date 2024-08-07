@@ -8,6 +8,7 @@
     />
     <el-col ref="tableContainer" :span="24">
       <compTable
+        ref="compTable"
         :prop-table-height="'calc(100% - 120px)'"
         :prop-column="tableColumns"
         :prop-is-pagination="true"
@@ -94,6 +95,9 @@ export default {
         const res = await apiRequestModel(ipmsModelApis.viewListCrtIPMst, requestParameter)
         this.IpBlockData = res?.result.data
         this.requestParam = requestParameter
+        this.$nextTick(() => {
+          this.$refs.compTable.$refs.table.selection.push(this.IpBlockData[0])
+        })
       } catch (error) {
         console.error(error)
       }
