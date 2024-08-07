@@ -24,26 +24,26 @@
       <table class="form">
         <tr>
           <th>공인/사설</th>
-          <td>{{ selectedRow.sipCreateTypeNm }}</td>
+          <td>{{ resultVo.sipCreateTypeNm }}</td>
           <th>생성차수</th>
           <td>
             <span v-if="type === 'edit'">
               <input v-model="sipCreateSeqCd">
             </span>
-            <span v-else>{{ selectedRow.sipCreateSeqCd }}</span>
+            <span v-else>{{ resultVo.sipCreateSeqCd }}</span>
           </td>
         </tr>
         <tr>
           <th>서비스망</th>
-          <td>{{ selectedRow.ssvcLineTypeNm }}</td>
+          <td>{{ resultVo.ssvcLineTypeNm }}</td>
           <th>작업일시</th>
-          <td>{{ selectedRow.dmodifyDt }}</td>
+          <td>{{ resultVo.dmodifyDt }}</td>
         </tr>
         <tr>
           <th>IP 버전</th>
-          <td>{{ selectedRow.sipVersionTypeNm }}</td>
+          <td>{{ resultVo.sipVersionTypeNm }}</td>
           <th>IP 주소</th>
-          <td>{{ selectedRow.pipPrefix }}</td>
+          <td>{{ resultVo.pipPrefix }}</td>
         </tr>
         <tr class="last">
           <th>비고</th>
@@ -51,7 +51,7 @@
             <span v-if="type === 'edit'">
               <el-input v-model="scomment" type="textarea"></el-input>
             </span>
-            <span v-else>{{ selectedRow.scomment }}</span>
+            <span v-else>{{ resultVo.scomment }}</span>
           </td>
         </tr>
       </table>
@@ -60,21 +60,21 @@
       <table class="form">
         <tr>
           <th>시작 IP</th>
-          <td>{{ selectedRow.sfirstAddr }}</td>
+          <td>{{ resultVo.sfirstAddr }}</td>
           <th>끝 IP</th>
-          <td>{{ selectedRow.slastAddr }}</td>
+          <td>{{ resultVo.slastAddr }}</td>
         </tr>
         <tr>
           <th>총 IP 수</th>
-          <td>{{ selectedRow.ncnt }}</td>
+          <td>{{ resultVo.ncnt }}</td>
           <th>단위블록수</th>
-          <td>{{ selectedRow.nclassCnt }}</td>
+          <td>{{ resultVo.nclassCnt }}</td>
         </tr>
         <tr>
           <th>사용 IP 수</th>
-          <td>{{ selectedRow.nuseIpCnt }}</td>
+          <td>{{ resultVo.nuseIpCnt }}</td>
           <th>가용 IP 수</th>
-          <td>{{ selectedRow.nfreeIpCnt }}</td>
+          <td>{{ resultVo.nfreeIpCnt }}</td>
         </tr>
       </table>
 
@@ -93,6 +93,7 @@
 <script>
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
+import { ipmsJsonApis } from '@/api/ipms'
 
 const routeName = 'ModalIpBlockDetail'
 
@@ -105,14 +106,13 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      selectedRow: null,
+      resultVo: null,
       sipCreateSeqCd: '',
       scomment: '',
       type: 'create',
     }
   },
   mounted() {
-    // this.onloadIpDetailList
   },
   methods: {
     onCreated() {
@@ -121,8 +121,8 @@ export default {
       this.domElement.maxWidth = 1200
     },
     onOpen(model, actionMode) {
-      this.$set(this, 'selectedRow', model.row)
-       const { sipCreateSeqCd, scomment } = this.selectedRow
+      this.$set(this, 'resultVo', model.row)
+       const { sipCreateSeqCd, scomment } = this.resultVo
         this.sipCreateSeqCd = sipCreateSeqCd
         this.scomment = scomment
 
@@ -136,29 +136,18 @@ export default {
     onChangeMode() {
       this.type = 'edit'
     },
-   /*  onloadIpDetailList() {
-      const { key: seq } = this.selectedRow
-      const param = seq
-      try {
-        const res = await apiSelectIpDetailList(param)
-        this.IpBlockDetail = res?.result.data
-      } catch (error) {
-        console.error(error)
-      }
-    }, */
     handleDeleteIpBlockData() { // IP 블럭 삭제
       this.$confirm('IP블럭을 삭제 하시겠습니까?', '삭제 메세지', {
         confirmButtonText: '확인',
         cancelButtonText: '취소'
       }).then(async() => {
         try {
-          if (this.selectedRow.length > 0) {
-          const param = { nipBlockMstSeq: this.selectedRow.nipBlockMstSeq }
-          const res = await /* apiDeleteIpBlockList */(param)
+          if (this.resultVo.length > 0) {
+          const param = { nipBlockMstSeq: this.resultVo.nipBlockMstSeq }
+          const res = await ipmsJsonApis(ipmsJsonApis.deleteCrtIPMst, param)
            if (res.data.commonMsg === 'SUCCESS') {
              this.$message.success({ message: `삭제되었습니다.` })
             }
-            this.selectedData = []
             this.$emit('reloadData')
           }
           } catch (error) {
@@ -168,7 +157,7 @@ export default {
         })
     },
     async fnUpdateCrtIPMstCallback() { // IP 블럭 수정
-      const sipCreateSeqCd = this.selectedRow.sipCreateSeqCd
+      const sipCreateSeqCd = this.resultVo.sipCreateSeqCd
       if (sipCreateSeqCd.length < 10) {
           this.$message.error('생성차수 수정정보가 잘못되었습니다.')
           return
@@ -182,11 +171,11 @@ export default {
           })
 
           const tbIpBlockMstVo = {
-              nipBlockMstSeq: this.selectedRow.nipBlockMstSeq,
-              sipCreateTypeCd: this.selectedRow.sipCreateTypeCd,
-              sipCreateSeqCd: this.selectedRow.sipCreateSeqCd,
-              sipVersionTypeCd: this.selectedRow.sipVersionTypeCd,
-              pipPrefix: this.selectedRow.pipPrefix,
+              nipBlockMstSeq: this.resultVo.nipBlockMstSeq,
+              sipCreateTypeCd: this.resultVo.sipCreateTypeCd,
+              sipCreateSeqCd: this.resultVo.sipCreateSeqCd,
+              sipVersionTypeCd: this.resultVo.sipVersionTypeCd,
+              pipPrefix: this.resultVo.pipPrefix,
               scomment: this.scomment,
           }
 

@@ -63,7 +63,6 @@
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
 import CompTable from '@/components/elTable/CompTable.vue'
-import { onMessagePopup } from '@/utils/index'
 
 const routeName = 'ModalNotAssignDetail'
 
@@ -78,13 +77,12 @@ export default {
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       selectedRow: null,
        tableColumns: [
-        // { prop: '', label: '선택', width: 50, align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'a', label: '생성차수', width: 150, align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'b', label: 'IP블록', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'c', label: '시작IP', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'd', label: '끝IP', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'e', label: '단위블록수', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'f', label: '배정', align: 'center', sortable: true, columnVisible: true, showOverflow: true,
+        { prop: 'sipCreateSeqCd', label: '생성차수', width: 150, align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'pipPrefix', label: 'IP블록', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'sfirstAddr', label: '시작IP', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'slastAddr', label: '끝IP', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'nclassCnt', label: '단위블록수', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: '', label: '배정', align: 'center', sortable: true, columnVisible: true, showOverflow: true,
         formatter: (row, col, value, index) => {
             return this.$createElement('el-button', {
               props: {
@@ -92,15 +90,16 @@ export default {
               },
               on: { click: () => {
                 this.close()
-                this.$router.push({ path: '/ipAssignMng/ipAssign', query: { ipAddress: row.b } })
+                this.$router.push({ path: '/ipAssignMng/ipAssign',
+                  query: {
+                    ipAddress: row.pipPrefix,
+                 } })
               }
             } }, '배정')
           }
         },
       ],
-      tableDatas: [
-        { a: 'K200013000', b: '61.74.143.0/24', c: '61.74.143.0', d: '61.74.143.255', e: '1', f: '' }
-      ]
+      tableDatas: []
     }
   },
   methods: {
@@ -110,7 +109,7 @@ export default {
       this.domElement.maxWidth = 1000
     },
     onOpen(model, actionMode) {
-      this.$set(this, 'selectedRow', model.row)
+      this.tableDatas = model.row
     },
     onClose() {
     },

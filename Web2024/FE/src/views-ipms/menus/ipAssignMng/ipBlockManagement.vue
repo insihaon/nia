@@ -3,8 +3,8 @@
     <DynamicComponentLoader
       ref="searchCondition"
       :component-keys="componentList"
-      @handle-search="onLoadIpBlockData"
-      @handle-export-excel="exportExcel"
+      @handle-search="fnViewListIpBlockMst"
+      @save-excel="exportExcel"
     />
     <el-col ref="tableContainer" :span="24">
       <compTable
@@ -12,12 +12,12 @@
         :prop-column="tableColumns"
         :prop-is-pagination="true"
         :prop-is-check-box="true"
-        :prop-data="IpBlockData"
+        :prop-data="resultListVo"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
         :prop-max-select="1"
         :prop-on-click="onClcikRow"
-        @update:propSelected="selectedCheckItems"
+        :prop-on-select="handleClickTableCheck"
       >
         <template slot="text-description">
           <span>
@@ -26,16 +26,16 @@
         </template>
         <template slot="add-features">
           <div class="float-right">
-            <el-button size="mini" icon="el-icon-document-add" @click="handleOpenAddIpBlock('', 'create')">신규생성</el-button>
-            <el-button size="mini" icon="el-icon-plus" @click="handleOpenAddIpBlock('', 'generate')">추가생성</el-button>
-            <el-button size="mini" icon="el-icon-tickets" @click="handleOpenIpBlockDetail('', 'detail')">상세</el-button>
-            <el-button size="mini" icon="el-icon-edit-outline" @click="handleOpenIpBlockDetail('', 'edit')">수정</el-button>
+            <el-button size="mini" icon="el-icon-document-add" @click="handleOpenDetailModal('create')">신규생성</el-button>
+            <el-button size="mini" icon="el-icon-plus" @click="handleOpenDetailModal('generate')">추가생성</el-button>
+            <el-button size="mini" icon="el-icon-tickets" @click="handleOpenDetailModal('detail')">상세</el-button>
+            <el-button size="mini" icon="el-icon-edit-outline" @click="handleOpenDetailModal('edit')">수정</el-button>
           </div>
         </template>
       </compTable>
     </el-col>
-    <ModalIpBlockDetail ref="ModalIpBlockDetail" @reloadData="onLoadIpBlockData" />
-    <ModalAddIpBlock ref="ModalAddIpBlock" @reloadData="onLoadIpBlockData" />
+    <ModalIpBlockDetail ref="ModalIpBlockDetail" @reloadData="fnViewListIpBlockMst" />
+    <ModalAddIpBlock ref="ModalAddIpBlock" @reloadData="fnViewListIpBlockMst" />
   </el-row>
 </template>
 <script>
@@ -79,53 +79,68 @@ export default {
         { prop: 'sipCreateSeqCd', label: '생성차수코드', align: 'center', sortable: true, columnVisible: false, showOverflow: true },
         { prop: 'sipVersionTypeNm', label: '', align: 'center', sortable: true, columnVisible: false, showOverflow: true }
       ],
-      IpBlockData: [],
-      selectedRow: [],
-      selectedChecks: [],
+      resultListVo: [],
+      selectedChecks: null,
       requestParam: null
     }
   },
+  computed: {
+  },
   mounted() {
-    this.onLoadIpBlockData()
+    this.fnViewListIpBlockMst()
+    //  this.$refs.table.toggleRowSelection(this.resultListVo[0], true)
   },
   methods: {
-   async onLoadIpBlockData(requestParameter) {
+   async fnViewListIpBlockMst(requestParameter) {
       try {
         const res = await apiRequestModel(ipmsModelApis.viewListCrtIPMst, requestParameter)
-        this.IpBlockData = res?.result.data
+        this.resultListVo = res?.result.data
         this.requestParam = requestParameter
       } catch (error) {
         console.error(error)
       }
+  },
+    async fnViewDetailClick(row, type) {
+      const { nipBlockMstSeq } = row
+      try {
+        const param = {
+          nipBlockMstSeq: nipBlockMstSeq ?? ''
+        }
+        const res = await apiRequestModel(ipmsModelApis.viewDetailCrtIPMst, param)
+        if (res.result.data) {
+          this.$refs.ModalIpBlockDetail.open({ row: res.result.data, type: type })
+        }
+      } catch (error) {
+        console.error(error)
+      }
     },
-    selectedCheckItems(row) {
-      this.selectedChecks = row[0]
-      if (row.length === 2) {
-        this.selectedChecks = row[1]
+    handleClickTableCheck(all, cur) {
+      this.selectedChecks = cur
+    },
+    handleOpenDetailModal(type) {
+      if (type === 'edit' || type === 'detail') {
+        this.fnViewDetailClick(this.selectedChecks, type)
+      } else {
+        this.viewInsertCrtIPMst(this.selectedChecks, type)
       }
     },
     onClcikRow(row) {
-      this.selectedRow = row
-      this.$refs.ModalIpBlockDetail.open({ row })
+      this.fnViewDetailClick(row, 'detail')
     },
-    handleOpenIpBlockDetail(row, type) {
-      if (this.selectedChecks.length === 0) {
-        this.$message('데이터를 선택해주세요')
-        return
-      } else {
-        row = this.selectedChecks
+    async viewInsertCrtIPMst(row, type) {
+       const { nipBlockMstSeq } = row
+      try {
+        const param = {
+          nipBlockMstSeq: nipBlockMstSeq ?? '',
+          searchUseYn: 'Y'
+        }
+        const res = await apiRequestModel(ipmsModelApis.viewInsertCrtIPMst, param)
+        if (res.result.data) {
+          this.$refs.ModalAddIpBlock.open({ row: res.result.data, type: type })
+        }
+      } catch (error) {
+        console.error(error)
       }
-      this.$refs.ModalIpBlockDetail.open({ row, type })
-    },
-    handleOpenAddIpBlock(row, type) {
-      row = this.selectedChecks
-       if (this.selectedChecks.length === 0) {
-        this.$message('데이터를 선택해주세요')
-        return
-      } else {
-        row = this.selectedChecks
-      }
-      this.$refs.ModalAddIpBlock.open({ row, type })
     },
     /* async exportExcel() {
       try {
