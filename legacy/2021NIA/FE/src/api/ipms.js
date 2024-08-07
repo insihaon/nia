@@ -20,12 +20,16 @@ export const ipmsModelApis = {
   viewListAsgnIPMst: { desc: 'IP 배정 조회', url: '/ipmgmt/assignmgmt/viewListAsgnIPMst' },
   viewListCrtIPMst: { desc: 'IP 블록관리 조회', url: '/ipmgmt/createmgmt/viewListCrtIPMst' },
   viewListUnAssignIP: { desc: 'IP 미배정 조회', url: '/ipmgmt/assignmgmt/viewListUnAssignIP' },
+  viewDetailUnAssignIP: { desc: 'IP 미배정 상세정보', url: '/ipmgmt/assignmgmt/viewDetailUnAssignIP' },
+  viewDetailCrtIPMst: { desc: 'IP 블록관리 상세정보 ', url: '/ipmgmt/createmgmt/viewDetailCrtIPMst' },
+  viewInsertCrtIPMst: { desc: 'IP 블록 추가 생성 ', url: '/ipmgmt/createmgmt/viewInsertCrtIPMst' },
 }
 export const ipmsJsonApis = {
   selectAuthCenterList: { desc: '센터 조회', url: '/opermgmt/orgmgmt/selectAuthCenterList' },
   selectAuthNodeList: { desc: '노드 조회', url: '/opermgmt/orgmgmt/selectAuthNodeList' },
   selectOfficeList: { desc: '수용국 조회', url: '/ipmgmt/linemgmt/selectOfficeList' },
   selectSassignTypeCdList: { desc: '서비스 조회', url: '/ipmgmt/allocmgmt/selectSassignTypeCdList' },
+  deleteCrtIPMst: { desc: 'IP 블록관리 삭제', url: '/ipmgmt/createmgmt/deleteCrtIPMst' },
 }
 
 export function apiTest(params) {

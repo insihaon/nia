@@ -219,7 +219,8 @@ export default {
       this.domElement.maxWidth = 1200
     },
     onOpen(model, actionMode) {
-      this.$set(this, 'selectedRow', model.row)
+      // this.$set(this, 'selectedRow', model.row)
+      this.selectedRow = model?.row
       if (model.type === 'generate') {
         this.sipCreateTypeNm = this.selectedRow.sipCreateTypeNm
         this.sipCreateSeqCd = this.selectedRow.sipCreateSeqCd
