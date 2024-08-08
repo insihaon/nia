@@ -89,7 +89,7 @@
               <tr class="last">
                 <th class="first" scope="row">비고</th>
                 <td colspan="3">
-                  <textarea v-model="scomment" class="w98" rows="3" maxlength="4000"></textarea>
+                  <textarea v-model="ipAllocOperMstVo.scomment" class="w98" rows="3" maxlength="4000"></textarea>
                 </td>
               </tr>
             </tbody>
@@ -179,32 +179,31 @@
               </tr>
               <template v-else>
                 <tr
-                  v-for="(item, index) in ipAllocInfoList"
+                  v-for="(item, index) in resultList"
                   :key="item.nipAllocMstSeq"
                   style="cursor: pointer;"
                   :class="{'subbg': index % 2 !== 0, 'last': index === ipAllocOperMstVo.length - 1}"
-                  @click="fnViewSubDetailAlcIPMst(item)"
                 >
-                  <td class="first ellipsis" :title="item.sofficename">
+                  <td class="first ellipsis" :title="item.sofficename" @click="fnViewSubDetailAlcIPMst(item)">
                     {{ item.sofficename }}
                   </td>
-                  <td class="ellipsis" :title="item.ssubscnealias">
+                  <td class="ellipsis" :title="item.ssubscnealias" @click="fnViewSubDetailAlcIPMst(item)">
                     {{ item.ssubscnealias }}
                   </td>
-                  <td class="ellipsis" :title="item.ssubscmstip">
+                  <td class="ellipsis" :title="item.ssubscmstip" @click="fnViewSubDetailAlcIPMst(item)">
                     {{ item.ssubscmstip }}
                   </td>
-                  <td class="ellipsis" :title="item.ssubsclgipportdescription">
+                  <td class="ellipsis" :title="item.ssubsclgipportdescription" @click="fnViewSubDetailAlcIPMst(item)">
                     {{ item.ssubsclgipportdescription }}
                   </td>
-                  <td class="ellipsis" :title="item.sconnAlias">
+                  <td class="ellipsis" :title="item.sconnAlias" @click="fnViewSubDetailAlcIPMst(item)">
                     {{ item.sconnAlias }}
                   </td>
-                  <td class="ellipsis" :title="item.sllnum">
+                  <td class="ellipsis" :title="item.sllnum" @click="fnViewSubDetailAlcIPMst(item)">
                     {{ item.sllnum }}
                   </td>
                   <td class="btn_text">
-                    <el-button @click="fnDeleteAlcIPMstClick(item.nipAllocMstSeq, item.nwhoisSeq)">
+                    <el-button @click="fnDeleteAlcIPMstClick(item)">
                       해지
                     </el-button>
                   </td>
@@ -233,6 +232,8 @@
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
 import ModalIpAllocCircuitDetail from '@/views-ipms/modal/alloc/ModalIpAllocCircuitDetail.vue'
+import { ipmsModelApis, apiRequestModel, apiRequestJson, ipmsJsonApis } from '@/api/ipms'
+import { onMessagePopup } from '@/utils'
 
 const routeName = 'ModalIpAllocDetail'
 
@@ -245,41 +246,11 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      ipAllocOperMstVos: [],
-       ipAllocInfoList: [{
-        nclassCnt: '128.0000000000',
-        ncnt: '32768',
-        nfreeIpCnt: '32768',
-        nipAllocMstCnt: '1',
-        nipAllocMstSeq: '865865',
-        nuseIpCnt: '0',
-        nwhoisSeq: '657555',
-        pipPrefix: '1.100.0.0/17',
-        sassignLevelCd: 'IA0006',
-        sassignTypeNm: 'POOL-M2M',
-        scomment: null,
-        sconnAlias: null,
-        sfirstAddr: '1.100.0.0',
-        sipCreateTypeNm: '공인',
-        sipVersionTypeNm: 'IPv4',
-        slastAddr: '1.100.127.255',
-        sllnum: '',
-        ssubsclgipportdescription: null,
-        ssubscmstip: '110.70.230.1',
-        ssubscnealias: 'GR_C-PGW#20',
-        ssvcLineTypeNm: 'MOBILE',
-        svalidCheck: '정상',
-        ssvcObjNm: 'DATA망(구로)',
-        ssvcGroupNm: 'DATA망',
-        sassignLevelNm: '할당',
-       }],
-       scomment: ''
+      resultList: [],
+      ipAllocOperMstVo: {}
     }
   },
   computed: {
-    // ipAllocOperMstVo() {
-    //   return this.ipAllocOperMstVos[0] ?? {}
-    // }
   },
   methods: {
     onCreated() {
@@ -289,25 +260,19 @@ export default {
     },
     onOpen(model, actionMode) {
       if (model.row) {
-        const ipBlockmstVo = { nipAssignMstSeq: model.row.nipAssignMstSeq }
-        this.loadData(ipBlockmstVo)
-        this.ipAllocOperMstVo = model.row // 임시
+        this.fnViewDetailAlcIPMst({ nipAssignMstSeq: model.row.nipAssignMstSeq })
       }
     },
     onClose() {
     },
-    async loadData(param) {
-      /*
-        try {
-          url : ipmgmt/allocmgmt/viewDetailAlcIPMst.model
-          const res = await api(param)
-          this.ipAllocOperMstVo = res.resultListVo.ipAllocOperMstVo
-
-          this.scomment = this.ipAllocOperMstVo[0].scomment
-        } catch (error) {
-          this.error(error)
-        }
-      */
+    async fnViewDetailAlcIPMst(param) {
+      try {
+        const res = await apiRequestModel(ipmsModelApis.viewDetailAlcIPMst, /* param */{ 'nipAssignMstSeq': '56711', })
+        this.resultList = res.result.data
+        this.ipAllocOperMstVo = this.resultList[0]
+      } catch (error) {
+        this.error(error)
+      }
     },
     formatNumber(value, minFractionDigits = 0, maxFractionDigits = 0) {
       return new Intl.NumberFormat('en-US', {
@@ -315,17 +280,21 @@ export default {
         maximumFractionDigits: maxFractionDigits
       }).format(value)
     },
-    fnScommentUpdateClick() {
+    async fnScommentUpdateClick() {
       const tbIpAssignMstComplexVo = {
         srcIpAssignMstVo: { scomment: this.ipAllocOperMstVo.scomment },
-        destIpAssignMstVos: { nipAssignMstSeq: this.ipAllocOperMstVos[0].nipAssignMstSeq }
+        destIpAssignMstVos: [{ nipAssignMstSeq: this.ipAllocOperMstVo.nipAssignMstSeq }]
       }
-      /* try {
-        url: 'ipmgmt/allocmgmt/updateScommentAsgnIPMst.json'
-        const res = await api(tbIpAssignMstComplexVo)
+      try {
+        const res = await apiRequestJson(ipmsJsonApis.updateScommentAsgnIPMst, tbIpAssignMstComplexVo)
+        if (res.commonMsg === 'SUCCESS') {
+          onMessagePopup(this, '비고 수정이 정상적으로 처리되었습니다.')
+        } else {
+          onMessagePopup(this, res.commonMsg)
+        }
       } catch (error) {
         this.error(error)
-      } */
+      }
     },
     fnViewSubDetailAlcIPMst(row) {
       const { nipAllocMstSeq, nipLinkMstSeq } = row
@@ -337,8 +306,55 @@ export default {
         // 링크마스터 상세조회
       }
     },
-    fnDeleteAlcIPMstClick(nipAllocMstSeq, nwhoisSeq) {
+    async fnDeleteAlcIPMstClick(delRow) {
       // Implement your delete logic here
+      // /ipmgmt/allocmgmt/deletAlcIPMst.json
+      // this.resultList = res.result.data
+      // this.ipAllocOperMstVo
+      /*
+
+      {
+    "srcIpAllocMstVo": {
+        "nipAssignMstSeq": "56711",
+        "nipAllocMstSeq": "643143"
+      },
+      "destIpAllocMstVos": [
+          {
+            "nipAssignMstSeq": "56711",
+            "nipAllocMstSeq": "643143",
+            "nwhoisSeq": "366843"
+          }
+        ]
+      }
+
+{
+    "srcIpAllocMstVo": {
+        "nipAssignMstSeq": "56711",
+        "nipAllocMstSeq": "713048"
+    },
+    "destIpAllocMstVos": [
+        {
+            "nipAssignMstSeq": "56711",
+            "nipAllocMstSeq": "713048",
+            "nwhoisSeq": "366843"
+        }
+    ]
+}
+      */
+     const srcIpAllocMstVo = { nipAssignMstSeq: delRow.nipAssignMstSeq, nipAllocMstSeq: delRow.nipAllocMstSeq }
+     const destIpAllocMstVos = [Object.assign({}, srcIpAllocMstVo, { nwhoisSeq: delRow.nwhoisSeq })]
+      try {
+        const res = await apiRequestModel(ipmsModelApis.deletAlcIPMst, { srcIpAllocMstVo, destIpAllocMstVos })
+        if (res.commonMsg === 'SUCCESS') {
+          onMessagePopup(this, '해지가 정상적으로 처리되었습니다.')
+          this.$emit('reload')
+          this.close()
+        } else {
+          onMessagePopup(this, res.result.commonMsg)
+        }
+      } catch (error) {
+        this.error(error)
+      }
     },
     fnViewCheckTacsIpBlock() {
       this.$parent?.$parent?.fnViewCheckTacsIpBlock()
@@ -350,7 +366,7 @@ export default {
     },
     fnRetUpdateConfirmClick() {
       /* sipCreateTypeCd: 기존 사설(CT0004) 은 유/무선공용으로 사용, 신규 사설(CT0005) 을 사설로 사용  */
-      const { ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd, /* sassignLevelCd, */ sipCreateTypeCd, nipAssignMstSeq } = this.ipAllocOperMstVo[0]
+      const { ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd, /* sassignLevelCd, */ sipCreateTypeCd, nipAssignMstSeq } = this.ipAllocOperMstVo
       const srcIpAssignMstVo = { ssvcLineTypeCd, sassignTypeCd: 'SA0000' }
       if (sipCreateTypeCd === 'CT0005') {
         Object.assign(srcIpAssignMstVo, { ssvcGroupCd, ssvcObjCd, sassignLevelCd: 'IA0001' /* 미배정 */ })

@@ -123,6 +123,8 @@
 <script>
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
+import { ipmsModelApis, apiRequestModel, ipmsJsonApis, apiRequestJson } from '@/api/ipms'
+import { onMessagePopup } from '@/utils'
 
 const routeName = 'ModalIpAssignMerge'
 
@@ -161,18 +163,16 @@ export default {
     onOpen(model, actionMode) {
       if (model.tbIpAssignMstListVo) {
         this.tbIpAssignMstListVo = model.tbIpAssignMstListVo
-        this.onLoadInfo(model.tbIpAssignMstListVo)
+        this.fnViewInsertMrgAsgnIPMst(model.tbIpAssignMstListVo)
       }
     },
     onClose() {
     },
-    async onLoadInfo(tbIpAssignMstListVo) {
+    async fnViewInsertMrgAsgnIPMst(tbIpAssignMstListVo) {
       try {
-        /*
-        // url: '/ipmgmt/assignmgmt/viewInsertMrgAsgnIPMst.model'
-        const res = await api(tbIpAssignMstListVo)
-        this.resultComplexVo = res.resultComplexVo
-        */
+        const res = await apiRequestModel(ipmsModelApis.viewInsertMrgAsgnIPMst, tbIpAssignMstListVo)
+        this.resultComplexVo = res.result.data
+        this.destIpAssignMstVos = res.result.data?.destIpAssignMstVos
       } catch (error) {
         this.error(error)
       }
@@ -180,7 +180,7 @@ export default {
     formatNumber(value) {
       return new Intl.NumberFormat().format(value)
     },
-    fnMergeConfirmBtnClick() {
+    async fnMergeConfirmBtnClick() {
       // 병합 버튼 클릭 이벤트 처리
       const { pipPrefix, sipVersionTypeCd, ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd, sassignLevelCd, sassignTypeCd } = this.resultComplexVo.srcIpAssignMstVo
       const srcIpAssignMstVo = { pipPrefix, sipVersionTypeCd, ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd, sassignLevelCd, sassignTypeCd, scomment: this.mrgScomment }
@@ -189,14 +189,18 @@ export default {
       this.destIpAssignMstVos.forEach(row => {
         tbIpAssignMstComplexVo.destIpAssignMstVos.push({ nipAssignMstSeq: row.nipAssignMstSeq })
       })
-      /* try {
-        url: 'ipmgmt/assignmgmt/insertMrgAsgnIPMst.json'
-        const res = await api(tbIpAssignMstComplexVo)
+      try {
+        const res = await apiRequestJson(ipmsJsonApis.insertMrgAsgnIPMst, tbIpAssignMstComplexVo)
+        if (res.commonMsg === 'SUCCESS') {
+          onMessagePopup(this, 'IP블록 병합이 정상적으로 처리되었습니다.')
+          this.$emit('reload')
+          this.close()
+        } else {
+          onMessagePopup(this, res.commonMsg)
+        }
       } catch (error) {
         this.error(error)
-      } */
-
-      // // doAjaxSubmit(url, param, "json", "json", "fnInsertMrgAlocIPMstCallback");
+      }
     },
   },
 }

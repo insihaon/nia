@@ -1,0 +1,64 @@
+{
+  "__body": {
+    "result": {
+      "data": {
+        "searchBgnDe": "",
+        "searchCnd": "",
+        "searchEndDe": "",
+        "searchWrd": "",
+        "sortType": "",
+        "sortOrdr": "",
+        "searchUseYn": "",
+        "searchBgnCd": "",
+        "searchEndCd": "",
+        "pageIndex": 1,
+        "pageUnit": 0,
+        "pageSize": 0,
+        "firstIndex": 1,
+        "lastIndex": 10,
+        "recordCountPerPage": 10,
+        "rowNo": 0,
+        "typeFlag": "",
+        "dcreateDt": "2021-04-09 16:33:39",
+        "screateId": "10061339",
+        "screateNm": "전필권",
+        "dmodifyDt": "2021-04-09 16:33:39",
+        "smodifyId": "10061339",
+        "smodifyNm": "전필권",
+        "commonMsg": null,
+        "screateEmail": "pilkwon.j***@kt.com",
+        "smodifyEmail": "pilkwon.j***@kt.com",
+        "moveType": "",
+        "moveSearchWrd": "",
+        "moveSipVersionTypeCd": null,
+        "url": null,
+        "menuType": null,
+        "paramMap": null,
+        "seq": 50,
+        "sboardTypeCd": "BH0001",
+        "sboardTypeNm": "공지",
+        "sboardTypeSubCd": "BM0001",
+        "sboardTypeSubNm": "일반",
+        "sboardTitle": "[기능추가] IP주소 라우팅 비교/점검 기능 추가 안내",
+        "sboardContents": "안녕하세요.\n\nIPMS 시스템 담당자 전필권입니다.\n\nIPMS DB와 라우팅정보를 비교하여 출력해주는 기능이 오픈되었습니다.\n\n[메뉴]\nIPMS > 현황관리 > IP주소 라우팅 비교/점검\nIPMS > IP통계관리 > IP주소 라우팅 비교/점검 통계\n\n관련 메뉴얼은 메일로 현장에 기 공유 드렸으며, 사용중 궁금한 사항은 저한테 연락주시면 안내해 드리겠습니다.\n\n감사합니다.\n",
+        "dnotiStartDt": null,
+        "dnotiEndDt": null,
+        "suseTypeCd": "CY0001",
+        "suseTypeNm": "Y",
+        "nreadCnt": 316,
+        "scrnType": null,
+        "nreplyCnt": null
+      }
+    }
+  },
+  "__config": {
+    "url": "/opermgmt/boardmgmt/viewDetailNotice.model",
+    "param": {
+      "seq": "50"
+    },
+    "receivedTime": "2024-08-08 11:26:11.546",
+    "duration": 229,
+    "filename": "b3Blcm1nbXQvYm9hcmRtZ210L3ZpZXdEZXRhaWxOb3RpY2UubW9kZWw_NTA.json",
+    "fetch": "fetch('/opermgmt/boardmgmt/viewDetailNotice.model', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{\"seq\":\"50\"}', 'method': 'POST' })"
+  }
+}

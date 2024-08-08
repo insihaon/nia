@@ -44,7 +44,7 @@
                 <td>{{ ipRow.pipPrefix }}</td>
                 <th scope="row">할당가능여부</th>
                 <td>
-                  <span v-if="resultListVo.typeFlag === 'Y'" style="color: blue; font-weight: bold;">할당가능</span>
+                  <span v-if="tacsTypeFlag === 'Y'" style="color: blue; font-weight: bold;">할당가능</span>
                   <span v-else style="color: red; font-weight: bold;">할당불가능</span>
                 </td>
               </tr>
@@ -55,7 +55,7 @@
             </tbody>
           </table>
           <el-tabs type="card" class="mt-2">
-            <el-tab-pane v-for="(item, index) in resultListVo.tacsResponse" :key="index" :label="'접속장비' + (index + 1)">
+            <el-tab-pane v-for="(item, index) in tacsResultList" :key="index" :label="'접속장비' + (index + 1)">
               <table class="tbl_data" summary="TACS 정보">
                 <colgroup>
                   <col width="15%" />
@@ -138,6 +138,7 @@
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
 import { onMessagePopup } from '@/utils/index'
+import { ipmsModelApis, apiRequestModel } from '@/api/ipms'
 
 const routeName = 'ModalCheckTacsIpBlock'
 
@@ -159,29 +160,8 @@ export default {
         pipPrefix: '',
         typeFlag: ''
       },
-      resultListVo: {
-        typeFlag: 'N',
-        tacsResponse: [
-        {
-          flag: 'N',
-          responseCd: '99999',
-          value: 99999,
-          responseList: null,
-          responseMsg: '알수 없는 에러',
-          targetIp: '172.29.24.148',
-          targetType: 'MOBILE-JUNIPER-QFX10008',
-        },
-        {
-          flag: 'N',
-          responseCd: '99999',
-          value: 99999,
-          responseList: null,
-          responseMsg: '알수 없는 에러',
-          targetIp: '172.21.120.241',
-          targetType: 'MOBILE-JUNIPER_MX960',
-        }
-        ]
-      },
+      tacsTypeFlag: 'N',
+      tacsResultList: [],
       currentTabIndex: 0
     }
   },
@@ -192,17 +172,34 @@ export default {
       this.domElement.maxWidth = 1000
     },
     onOpen(model, actionMode) {
-      if (model.tacsResponse) {
-        this.tacsResponse = model.tacsResponse
-      }
       if (model.row) {
+        this.fnViewCheckTacsIpBlock({ nipAssignMstSeq: model.row.nipAssignMstSeq })
         this._merge(this.ipRow, model.row)
       }
     },
     onClose() {
+      this.tacsTypeFlag = 'N'
+      this.tacsResultList = []
+    },
+    async fnViewCheckTacsIpBlock(param) {
+      // viewCheckTacsIpBlock
+      try {
+        const res = await apiRequestModel(ipmsModelApis.viewCheckTacsIpBlock, param)
+        if (res.result.data) {
+          const result = res.result.data
+          if (result.commonMsg === 'SUCCESS') {
+            this.tacsResultList = result.tacsResponseVos
+            this.tacsTypeFlag = result.typeFlag
+          } else {
+            onMessagePopup(this, result.commonMsg)
+          }
+        }
+      } catch (error) {
+        this.error(error)
+      }
     },
     handleClickAllockConfirm() {
-      if (this.resultListVo.typeFlag !== 'Y') {
+      if (this.typeFlag !== 'Y') {
         this.confirm('중복체크결과가 할당불가능입니다. 그래도 할당진행 하시겠습니까?', '알림', {
           confirmButtonText: '확인',
           cancelButtonText: '취소',
