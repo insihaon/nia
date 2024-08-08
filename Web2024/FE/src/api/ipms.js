@@ -42,6 +42,7 @@ export const ipmsJsonApis = {
   appendDivAsgnIPMst: { desc: '배정/할당 > IP분할 > 분할 예정 정보 요청', url: '/ipmgmt/assignmgmt/appendDivAsgnIPMst' },
   appendMergeDivAsgnIPMst: { desc: '배정/할당 > IP분할 > 분할 예정 정보 > 병합', url: '/ipmgmt/assignmgmt/appendMergeDivAsgnIPMst' },
   insertListDivAsgnIPMst: { desc: '배정/할당 > IP분할 > 분할 확정 처리', url: '/ipmgmt/assignmgmt/insertListDivAsgnIPMst' },
+  updateAsgnIPMst: { desc: '배정/할당 반납처리', url: '/ipmgmt/allocmgmt/updateAsgnIPMst' },
   insertMrgAsgnIPMst: { desc: '배정/할당 > 병합처리', url: '/ipmgmt/assignmgmt/insertMrgAsgnIPMst' },
   deleteCrtIPMst: { desc: 'IP 블록관리 삭제', url: '/ipmgmt/createmgmt/deleteCrtIPMst' },
 }
