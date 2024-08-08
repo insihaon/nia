@@ -37,12 +37,12 @@
       </compTable>
     </el-col>
     <ModalCheckTacsIpBlock ref="ModalCheckTacsIpBlock" />
-    <ModalIpBlockDivision ref="ModalIpBlockDivision" />
+    <ModalIpBlockDivision ref="ModalIpBlockDivision" @reload="fnViewListIpAllocMst($refs.searchCondition.requestParameter)" />
     <ModalIpAllocInsert ref="ModalIpAllocInsert" />
     <ModalIpAllocDetail ref="ModalIpAllocDetail" @alocCallBtnClick="fnInsertAlcBtnClick" />
     <ModalDetailSummary ref="ModalDetailSummary" />
     <!-- IP블록병합 -->
-    <ModalIpAssignMerge ref="ModalIpAssignMerge" />
+    <ModalIpAssignMerge ref="ModalIpAssignMerge" @reload="fnViewListIpAllocMst($refs.searchCondition.requestParameter)" />
   </el-row>
 </template>
 <script>
@@ -134,7 +134,9 @@ export default {
             return this.$createElement('el-button', {
               class: row.sassignLevelCd === 'IA0004' ? '' : 'red',
               on: { click: () => {
-                row.sassignLevelCd === 'IA0004' && this.$refs.ModalIpBlockDivision.open({ row })
+                if (row.sassignLevelCd === 'IA0004') {
+                  this.fnViewInsertDivAsgnIPMst(row)
+                }
             } } }, row.sassignLevelCd === 'IA0004' ? '분할' : '불가')
           }
         },
@@ -147,7 +149,7 @@ export default {
   methods: {
     handleSearch(requestParameter) {
       // console.log(requestParameter)
-      this.fnViewListIpAllocMst()
+      this.fnViewListIpAllocMst(requestParameter)
     },
     async fnViewListIpAllocMst(requestParameter) {
       try {
@@ -171,6 +173,16 @@ export default {
     handleClickTableCheck(all, cur) {
       this.selectedRows = all
     },
+    async fnViewInsertDivAsgnIPMst(row) {
+      try {
+        const res = await apiRequestModel(ipmsModelApis.viewInsertDivAsgnIPMst, { nipAssignMstSeq: row.nipAssignMstSeq, typeFlag: 'Aloc' })
+        if (res.result.data) {
+          this.$refs.ModalIpBlockDivision.open({ result: res.result.data })
+        }
+      } catch (error) {
+        this.error(error)
+      }
+    },
     fnViewCheckTacsIpBlock() {
       const rows = this.selectedRows
       if (rows.length === 0) {
@@ -191,7 +203,7 @@ export default {
         return
       }
       // const res = await api({ nipAssignMstSeq })
-      this.$refs.ModalCheckTacsIpBlock.open({ /* tacsResponse: res */ row: rows[0] })
+      this.$refs.ModalCheckTacsIpBlock.open({ row: rows[0] })
     },
     fnInsertAlcBtnClick() {
       const rows = this.selectedRows

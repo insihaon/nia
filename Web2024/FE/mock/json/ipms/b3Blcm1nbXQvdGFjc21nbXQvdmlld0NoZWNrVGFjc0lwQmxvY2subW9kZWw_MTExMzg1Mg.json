@@ -1,25 +1,42 @@
 {
   "__body": {
     "result": {
-      "totalCount": 0,
-      "data": [
-        {
-          "responseCd": 99999,
-          "responseMsg": "알수 없는 에러",
-          "targetIp": "172.29.24.148",
-          "targetType": "MOBILE-JUNIPER-QFX10008",
-          "flag": "N",
-          "responseList": null
-        },
-        {
-          "responseCd": 99999,
-          "responseMsg": "알수 없는 에러",
-          "targetIp": "172.21.120.241",
-          "targetType": "MOBILE-JUNIPER_MX960",
-          "flag": "N",
-          "responseList": null
-        }
-      ]
+      "data": {
+        "searchBgnDe": "",
+        "searchCnd": "",
+        "searchEndDe": "",
+        "searchWrd": "",
+        "sortType": "",
+        "sortOrdr": "",
+        "searchUseYn": "",
+        "searchBgnCd": "",
+        "searchEndCd": "",
+        "pageIndex": 1,
+        "pageUnit": 0,
+        "pageSize": 0,
+        "firstIndex": 1,
+        "lastIndex": 10,
+        "recordCountPerPage": 10,
+        "rowNo": 0,
+        "typeFlag": "",
+        "dcreateDt": null,
+        "screateId": null,
+        "screateNm": null,
+        "dmodifyDt": null,
+        "smodifyId": null,
+        "smodifyNm": null,
+        "commonMsg": "IP 할당정보의 데이터 조회가 실패하였습니다. 시스템관리자에게 문의하시기 바랍니다.",
+        "screateEmail": null,
+        "smodifyEmail": null,
+        "moveType": "",
+        "moveSearchWrd": "",
+        "moveSipVersionTypeCd": null,
+        "url": null,
+        "menuType": null,
+        "paramMap": null,
+        "tacsResponseVos": null,
+        "totalCount": 0
+      }
     }
   },
   "__config": {
@@ -27,8 +44,8 @@
     "param": {
       "nipAssignMstSeq": "1113852"
     },
-    "receivedTime": "2024-08-07 10:11:07.549",
-    "duration": 44681,
+    "receivedTime": "2024-08-08 11:09:28.476",
+    "duration": 648,
     "filename": "b3Blcm1nbXQvdGFjc21nbXQvdmlld0NoZWNrVGFjc0lwQmxvY2subW9kZWw_MTExMzg1Mg.json",
     "fetch": "fetch('/opermgmt/tacsmgmt/viewCheckTacsIpBlock.model', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{\"nipAssignMstSeq\":\"1113852\"}', 'method': 'POST' })"
   }

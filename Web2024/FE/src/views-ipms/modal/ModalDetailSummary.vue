@@ -47,11 +47,11 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-if="resultListVo.totalCount === 0" class="subbg last">
+              <tr v-if="totalCount === 0" class="subbg last">
                 <td class="first" colspan="7">조회된 결과 목록이 존재하지 않습니다.</td>
               </tr>
               <template v-else>
-                <tr v-for="(item, index) in resultListVo.tbIpAssignMstVos" :key="index" :class="[{ last: index === resultListVo.tbIpAssignMstVos.length - 1 }, { subbg: index % 2 !== 0 }]">
+                <tr v-for="(item, index) in resultList.tbIpAssignMstVos" :key="index" :class="[{ last: index === resultList.tbIpAssignMstVos.length - 1 }, { subbg: index % 2 !== 0 }]">
                   <td class="ellipsis" :title="item.ssvcLineTypeNm">{{ item.ssvcLineTypeNm }}</td>
                   <td class="ellipsis" :title="item.ssvcGroupNm">{{ item.ssvcGroupNm }}</td>
                   <td class="ellipsis" :title="item.ssvcHighNm">{{ item.ssvcHighNm }}</td>
@@ -81,6 +81,7 @@
 <script>
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
+import { ipmsModelApis, apiRequestModel } from '@/api/ipms'
 
 const routeName = 'ModalDetailSummary'
 
@@ -93,10 +94,8 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      resultListVo: {
-        totalCount: 0,
-        tbIpAssignMstVos: []
-      },
+      resultList: [],
+      totalCount: 0
     }
   },
   methods: {
@@ -116,26 +115,14 @@ export default {
     },
     onClose() {
     },
-    menuOver(event) {
-      // 메뉴 오버 이벤트 처리
-    },
-    menuOut(event) {
-      // 메뉴 아웃 이벤트 처리
-    },
-    loadData(tbIpAssignMstVo) {
-      /*
-      // url: 'ipmgmt/assignmgmt/viewDetailSummary.model'
-        try {
-          const res = await api(tbIpAssignMstVo)
-          this.resultListVo = res.resultListVo
-        } catch (error) {
-          this.error(error)
-        }
-      */
-      // 서버에서 데이터 로드 (예: axios 사용)
-      // axios.get('/api/data').then(response => {
-      //   this.resultListVo = response.data.resultListVo;
-      // });
+    async loadData(tbIpAssignMstVo) {
+      try {
+        const res = await apiRequestModel(ipmsModelApis.viewDetailSummary, tbIpAssignMstVo)
+        this.resultList = res.result.data
+        this.totalCount = res.result.totalCount
+      } catch (error) {
+        this.error(error)
+      }
     }
   },
 }
