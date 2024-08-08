@@ -267,7 +267,7 @@ export default {
     },
     async fnViewDetailAlcIPMst(param) {
       try {
-        const res = await apiRequestModel(ipmsModelApis.viewDetailAlcIPMst, /* param */{ 'nipAssignMstSeq': '56711', })
+        const res = await apiRequestModel(ipmsModelApis.viewDetailAlcIPMst, param)
         this.resultList = res.result.data
         this.ipAllocOperMstVo = this.resultList[0]
       } catch (error) {
@@ -313,7 +313,7 @@ export default {
       // this.ipAllocOperMstVo
       /*
 
-      {
+    {
     "srcIpAllocMstVo": {
         "nipAssignMstSeq": "56711",
         "nipAllocMstSeq": "643143"
@@ -325,9 +325,8 @@ export default {
             "nwhoisSeq": "366843"
           }
         ]
-      }
-
-{
+    }
+    {
     "srcIpAllocMstVo": {
         "nipAssignMstSeq": "56711",
         "nipAllocMstSeq": "713048"
@@ -338,8 +337,8 @@ export default {
             "nipAllocMstSeq": "713048",
             "nwhoisSeq": "366843"
         }
-    ]
-}
+      ]
+    }
       */
      const srcIpAllocMstVo = { nipAssignMstSeq: delRow.nipAssignMstSeq, nipAllocMstSeq: delRow.nipAllocMstSeq }
      const destIpAllocMstVos = [Object.assign({}, srcIpAllocMstVo, { nwhoisSeq: delRow.nwhoisSeq })]
@@ -347,7 +346,7 @@ export default {
         const res = await apiRequestModel(ipmsModelApis.deletAlcIPMst, { srcIpAllocMstVo, destIpAllocMstVos })
         if (res.commonMsg === 'SUCCESS') {
           onMessagePopup(this, '해지가 정상적으로 처리되었습니다.')
-          this.$emit('reload')
+          this.eventReload()
           this.close()
         } else {
           onMessagePopup(this, res.result.commonMsg)
@@ -364,7 +363,7 @@ export default {
       this.$emit('alocCallBtnClick')
       this.close()
     },
-    fnRetUpdateConfirmClick() {
+    async fnRetUpdateConfirmClick() {
       /* sipCreateTypeCd: 기존 사설(CT0004) 은 유/무선공용으로 사용, 신규 사설(CT0005) 을 사설로 사용  */
       const { ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd, /* sassignLevelCd, */ sipCreateTypeCd, nipAssignMstSeq } = this.ipAllocOperMstVo
       const srcIpAssignMstVo = { ssvcLineTypeCd, sassignTypeCd: 'SA0000' }
@@ -385,17 +384,19 @@ export default {
         srcIpAssignMstVo,
         destIpAssignMstVos: [{ nipAssignMstSeq, typeFlag: 'return' /* 배정-반납 */, menuType: 'Aloc' }]
       }
-      /*
       try {
-        url : 'ipmgmt/allocmgmt/updateAsgnIPMst.json'
-        const res = await api(tbIpAssignMstComplexVo)
-        if(res.commonMsg === 'SUCCESS') {
+        const res = await apiRequestJson(ipmsJsonApis.updateAsgnIPMst, tbIpAssignMstComplexVo)
+        if (res.commonMsg === 'SUCCESS') {
           onMessagePopup(this, 'IP블록 반납이 정상적으로 처리되었습니다.')
+          this.eventReload()
+          this.close()
         }
       } catch (error) {
         this.error(error)
       }
-      */
+    },
+    eventReload() {
+      this.$emit('reload')
     }
   },
 }
