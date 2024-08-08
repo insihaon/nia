@@ -29,6 +29,9 @@ export const ipmsModelApis = {
   viewCheckTacsIpBlock: { desc: 'IP블럭 중복체크', url: '/opermgmt/tacsmgmt/viewCheckTacsIpBlock' },
   viewListNotice: { desc: '공지사항 리스트', url: '/opermgmt/boardmgmt/viewListNotice' },
   viewDetailNotice: { desc: '공지사항 상세정보', url: '/opermgmt/boardmgmt/viewDetailNotice' },
+  viewDetailUnAssignIP: { desc: 'IP 미배정 상세정보', url: '/ipmgmt/assignmgmt/viewDetailUnAssignIP' },
+  viewDetailCrtIPMst: { desc: 'IP 블록관리 상세정보 ', url: '/ipmgmt/createmgmt/viewDetailCrtIPMst' },
+  viewInsertCrtIPMst: { desc: 'IP 블록 추가 생성 ', url: '/ipmgmt/createmgmt/viewInsertCrtIPMst' },
 }
 export const ipmsJsonApis = {
   selectAuthCenterList: { desc: '센터 조회', url: '/opermgmt/orgmgmt/selectAuthCenterList' },
@@ -40,6 +43,7 @@ export const ipmsJsonApis = {
   appendMergeDivAsgnIPMst: { desc: '배정/할당 > IP분할 > 분할 예정 정보 > 병합', url: '/ipmgmt/assignmgmt/appendMergeDivAsgnIPMst' },
   insertListDivAsgnIPMst: { desc: '배정/할당 > IP분할 > 분할 확정 처리', url: '/ipmgmt/assignmgmt/insertListDivAsgnIPMst' },
   insertMrgAsgnIPMst: { desc: '배정/할당 > 병합처리', url: '/ipmgmt/assignmgmt/insertMrgAsgnIPMst' },
+  deleteCrtIPMst: { desc: 'IP 블록관리 삭제', url: '/ipmgmt/createmgmt/deleteCrtIPMst' },
 }
 
 export function apiTest(params) {

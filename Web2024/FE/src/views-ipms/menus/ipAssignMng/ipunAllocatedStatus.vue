@@ -3,7 +3,7 @@
     <DynamicComponentLoader
       ref="searchCondition"
       :component-keys="componentList"
-      @handle-search="handleSearch"
+      @handle-search="fnViewListUnAssignIP"
     />
     <el-col ref="tableContainer" :span="24">
       <compTable
@@ -13,6 +13,7 @@
         :prop-is-pagination="true"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
+        :prop-on-click="onClcikRow"
       >
         <template slot="text-description">
           <span>
@@ -43,6 +44,7 @@ export default {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       tableDatas: [],
+      seletedRow: null,
       componentList: [
         { key: 'SsvcLineType', props: { lvl: 2 } },
       ]
@@ -60,7 +62,7 @@ export default {
             if (row.nUnAssignBlockCnt > 0) {
               return this.$createElement('el-button', {
                 on: { click: () => {
-                  this.$refs.ModalNotAssignDetail.open({ row, type: '미배정' })
+                  this.viewDetailCrtIPMst('미배정')
                 } } }, row.nUnAssignBlockCnt)
             } else {
               return this.$createElement('span', { class: 'txtred' }, row.nUnAssignBlockCnt)
@@ -72,7 +74,7 @@ export default {
             if (row.nReserveAssignBlockCnt > 0) {
               return this.$createElement('el-button', {
                 on: { click: () => {
-                  this.$refs.ModalNotAssignDetail.open({ row, type: '예비배정' })
+                  this.viewDetailCrtIPMst('예비배정')
                 } } }, row.nReserveAssignBlockCnt)
             } else {
               return this.$createElement('span', { class: 'txtred' }, row.nReserveAssignBlockCnt)
@@ -83,10 +85,13 @@ export default {
     }
   },
   mounted() {
-    this.onLoadStatusList()
+    this.fnViewListUnAssignIP()
   },
   methods: {
-    async onLoadStatusList(requestParameter) {
+    onClcikRow(row) {
+      this.seletedRow = row
+    },
+    async fnViewListUnAssignIP(requestParameter) {
       try {
         const res = await apiRequestModel(ipmsModelApis.viewListUnAssignIP, requestParameter)
         this.tableDatas = res?.result.data
@@ -94,6 +99,23 @@ export default {
         console.error(error)
       }
     },
+    async viewDetailCrtIPMst(type) {
+      const { nlvlMstSeq, sipVersionTypeCd, sassignLeveslCd, ssvcLineTypeNm, ssvcGroupNm } = this.seletedRow
+      try {
+        const param = {
+          nlvlMstSeq: nlvlMstSeq,
+          sipVersionTypeCd: sipVersionTypeCd,
+          sassignLeveslCd: sassignLeveslCd,
+          ssvcLineTypeNm: ssvcLineTypeNm,
+          ssvcGroupNm: ssvcGroupNm,
+        }
+        const res = await apiRequestModel(ipmsModelApis.viewDetailUnAssignIP, param)
+        this.$refs.ModalNotAssignDetail.open({ row: res?.result.data, type: type })
+      } catch (error) {
+        console.error(error)
+      }
+    },
+
   }
 }
 </script>
