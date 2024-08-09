@@ -32,27 +32,27 @@
               <tr class="top">
                 <th class="first" scope="row">계위</th>
                 <td colspan="3">
-                  {{ selectedRow.ssvcLineTypeCd }} - {{ selectedRow.ssvcGroupCd }} - {{ selectedRow.ssvcObjCd }}
+                  {{ resultComplexVo.srcIpAssignMstVo.ssvcLineTypeNm }} - {{ resultComplexVo.srcIpAssignMstVo.ssvcGroupNm }} - {{ resultComplexVo.srcIpAssignMstVo.ssvcObjNm }}
                 </td>
               </tr>
               <tr>
                 <th class="first" scope="row">배정상태</th>
                 <td>
-                  {{ selectedRow.sassignLevelCd }}
+                  {{ resultComplexVo.srcIpAssignMstVo.sassignLevelCd }}
                 </td>
                 <th scope="row">서비스</th>
                 <td>
-                  {{ selectedRow.sassignTypeCd }}
+                  {{ resultComplexVo.srcIpAssignMstVo.sassignTypeCd }}
                 </td>
               </tr>
               <tr>
                 <th class="first" scope="row">IP 버전</th>
                 <td>
-                  {{ selectedRow.sipVersionTypeNm }}
+                  {{ resultComplexVo.srcIpAssignMstVo.sipVersionTypeNm }}
                 </td>
                 <th scope="row">IP 주소</th>
                 <td>
-                  {{ selectedRow.pipPrefix }}
+                  {{ resultComplexVo.srcIpAssignMstVo.pipPrefix }}
                 </td>
               </tr>
               <tr class="last">
@@ -101,7 +101,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(item, index) in ipBlockDetailList" :key="index">
+              <tr v-for="(item, index) in destIpAssignMstVos" :key="index">
                 <td>{{ item.ssvcLineTypeNm }}</td>
                 <td>{{ item.ssvcGroupNm }}</td>
                 <td>{{ item.ssvcObjNm }}</td>
@@ -122,7 +122,7 @@
       </div>
 
       <div slot="footer" class="dialog-footer">
-        <el-button icon="el-icon-document-checked" style="background: #2b5890;" type="primary" size="mini" @click.native="fnMergeConfirmBtnClick()">{{ '병합' }}</el-button>
+        <el-button icon="el-icon-document-checked" style="background: #2b5890;" type="primary" size="mini" @click.native="fnUpdateConfirmBtnClick()">{{ '병합' }}</el-button>
         <el-button size="mini" class="el-icon-close" @click.native="close()">{{ $t('exit') }}</el-button>
       </div>
     </el-dialog>
@@ -133,6 +133,7 @@
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
 import { onMessagePopup } from '@/utils/index'
+import { ipmsModelApis, apiRequestModel, ipmsJsonApis, apiRequestJson } from '@/api/ipms'
 
 const routeName = 'ModalIpMerge'
 
@@ -147,7 +148,21 @@ export default {
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       selectedRow: null,
       scomment: '',
-      ipBlockDetailList: []
+      destIpAssignMstVos: [],
+      resultComplexVo: {
+        srcIpAssignMstVo: {
+          ssvcLineTypeNm: '',
+          ssvcGroupNm: '',
+          ssvcObjNm: '',
+          sipCreateTypeNm: '',
+          sipVersionTypeNm: '',
+          pipPrefix: '',
+          sfirstAddr: '',
+          slastAddr: ''
+       },
+      },
+      tbIpAssignMstListVo: [],
+
     }
   },
   computed: {
@@ -161,8 +176,19 @@ export default {
       this.domElement.maxWidth = 1200
     },
     onOpen(model, actionMode) {
-      this.$set(this, 'selectedRow', model.row)
-      this.ipBlockDetailList = this.selectedRow || []
+      if (model.tbIpAssignMstListVo) {
+        this.tbIpAssignMstListVo = model.tbIpAssignMstListVo
+        this.fnViewInsertMrgAsgnIPMst(model.tbIpAssignMstListVo)
+      }
+    },
+      async fnViewInsertMrgAsgnIPMst(tbIpAssignMstListVo) {
+      try {
+        const res = await apiRequestModel(ipmsModelApis.viewInsertMrgAsgnIPMst, tbIpAssignMstListVo)
+        this.resultComplexVo = res.result.data
+        this.destIpAssignMstVos = res.result.data?.destIpAssignMstVos
+      } catch (error) {
+        this.error(error)
+      }
     },
 
     /* 기존 사설(CT0004)은 유/무선 공용으로 사용, 신규 사설(CT0005)을 사설로 사용 */

@@ -156,6 +156,7 @@
 <script>
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
+import { ipmsJsonApis, apiRequestModel, ipmsModelApis } from '@/api/ipms'
 
 const routeName = 'ModalAddIpBlock'
 
@@ -201,7 +202,8 @@ export default {
       pipPrefix: '',
       ipBlockDetailList: [
         { pipPrefix: '112.221.217.32/32', sfirstAddr: '112.221.217.32', slastAddr: '112.221.217.32', nclassCnt: '0.00390625', ncnt: '1', deleteBtn: '삭제' }
-      ]
+      ],
+      resultListVo: null
     }
   },
   computed: {
@@ -210,7 +212,6 @@ export default {
     }
   },
   mounted() {
-    // this.onloadIpDetailList
   },
   methods: {
     onCreated() {
@@ -219,14 +220,14 @@ export default {
       this.domElement.maxWidth = 1200
     },
     onOpen(model, actionMode) {
-      // this.$set(this, 'selectedRow', model.row)
-      this.selectedRow = model?.row
+      this.resultListVo = model?.row
+      this.fnViewUpdateCrtIPMstCallBack(model)
       if (model.type === 'generate') {
-        this.sipCreateTypeNm = this.selectedRow.sipCreateTypeNm
-        this.sipCreateSeqCd = this.selectedRow.sipCreateSeqCd
-        this.ssvcLineTypeNm = this.selectedRow.ssvcLineTypeNm
-        this.sipVersionTypeNm = this.selectedRow.sipVersionTypeNm
-        this.sipVersionTypeCd = this.selectedRow.sipVersionTypeCd
+        this.sipCreateTypeNm = this.resultListVo.sipCreateTypeNm
+        this.sipCreateSeqCd = this.resultListVo.sipCreateSeqCd
+        this.ssvcLineTypeNm = this.resultListVo.ssvcLineTypeNm
+        this.sipVersionTypeNm = this.resultListVo.sipVersionTypeNm
+        this.sipVersionTypeCd = this.resultListVo.sipVersionTypeCd
       } else {
         this.sipCreateTypeNm = ''
         this.sipCreateSeqCd = ''
@@ -234,21 +235,24 @@ export default {
         this.sipVersionTypeNm = ''
         this.sipVersionTypeCd = ''
       }
-     this.viewType = this.model.type
-    },
-    onClose() { this.selectedRow = [] },
-    onloadIpDetailList() {
-     /*  const { key: seq } = this.selectedRow
-      const param = seq
-      try {
-        const res = await apiSelectIpDetailList(param)
-        this.IpBlockDetail = res?.result
-      } catch (error) {
-        console.error(error)
-      } */
-    },
+      this.viewType = this.model.type
+      },
+      async fnViewUpdateCrtIPMstCallBack(model) {
+        try {
+          const res = await apiRequestModel(ipmsModelApis.viewInsertCrtIPMst, model)
+          this.resultListVo = res?.result.data
+        } catch (error) {
+          console.error(error)
+        }
+      },
+
+    onClose() { this.resultListVo = [] },
   async fnSaveBtnClick() {
     // ip 등록 확인 대화상자
+    if (this.ipBlockDetailList.length === 0) {
+      this.$message('등록할 목록이 없습니다.')
+      return
+    }
     this.confirm('등록하시겠습니까?', 'IP블록생성', {
       confirmButtonText: 'OK',
       cancelButtonText: 'Cancel',
@@ -257,17 +261,14 @@ export default {
       try {
         for (let i = 0; i < this.ipBlockDetailList.length; i++) {
           const ipBlock = this.ipBlockDetailList[i]
-          const tbIpBlockMstComplexVo = {
-            sipCreateTypeCd: this.selectedRow.sipCreateTypeCd,
-            ssvcLineTypeCd: this.selectedRow.ssvcLineTypeCd,
-            sipCreateSeqCd: this.selectedRow.sipCreateSeqCd,
-            sipVersionTypeCd: this.selectedRow.sipVersionTypeCd,
-            pipPrefix: ipBlock.pipPrefix,
-            scomment: this.selectedRow.scomment
+          const tbIpBlockListVo = {
+            tbIpBlockMstVos: [
+
+            ],
           }
-          const res = await /* apiEditIpBlockList */(tbIpBlockMstComplexVo)
-          if (res.success) {
-            this.$message('IP블록 수정이 정상적으로 처리되었습니다.')
+          const res = await (ipmsJsonApis.insertListCrtIPMst, tbIpBlockListVo)
+          if (res.data.commonMsg === 'SUCCESS') {
+            this.$message('IP블록 등록이 정상적으로 처리되었습니다.')
             this.$emit('reloadData')
           }
         }
@@ -294,29 +295,21 @@ export default {
       this.viewType = 'generate'
 
       try {
-          const ipBlockCheckVo = {
-            sipCreateTypeCd: this.sipCreateTypeCd,
-            ssvcLineTypeCd: this.ssvcLineTypeCd,
-            sipCreateSeqCd: this.sipCreateSeqCd,
-            sipVersionTypeCd: this.sipVersionTypeCd,
-            pipPrefix: this.pipPrefix,
-            scomment: this.selectedRow.scomment,
-            destIpBlockMstVos: []
+          const ipBLockCheckVo = {
+            srcIpBlockMstVo: {
+              sipCreateTypeCd: this.sipCreateTypeCd,
+              ssvcLineTypeCd: this.ssvcLineTypeCd,
+              sipCreateSeqCd: this.sipCreateSeqCd,
+              sipVersionTypeCd: this.sipVersionTypeCd,
+              pipPrefix: this.pipPrefix,
+              destIpBlockMstVos: []
+            }
           }
-          const destIpBlock = {
-            sipCreateTypeCd: this.sipCreateTypeCd,
-            ssvcLineTypeCd: this.ssvcLineTypeCd,
-            sipCreateSeqCd: this.sipCreateSeqCd,
-            sipVersionTypeCd: this.sipVersionTypeCd,
-            pipPrefix: this.pipPrefix,
-          }
-
-          ipBlockCheckVo.destIpBlockMstVos.push(destIpBlock)
-          const res = await /* apiAddIpBlockList */(ipBlockCheckVo)
-          if (res.commonMsg === 'SUCCESS') {
-             const resultData = res?.data
+          const res = await (ipmsJsonApis.appendCrtIPMst, ipBLockCheckVo)
+          if (res.data.commonMsg === 'SUCCESS') {
+             const resultData = res?.result?.data
               this.ipBlockDetailList.push({
-                pipPrefix: this.pipPrefix,
+                pipPrefix: resultData.pipPrefix,
                 sfirstAddr: resultData.sfirstAddr,
                 slastAddr: resultData.slastAddr,
                 nclassCnt: resultData.nclassCnt,

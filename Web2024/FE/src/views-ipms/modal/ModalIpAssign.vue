@@ -32,21 +32,21 @@
               <tr class="top">
                 <th class="first" scope="row">계위</th>
                 <td>
-                  <select id="updSsvcLineTypeCd" v-model="ssvcLineTypeCd">
+                  <select id="updSsvcLineTypeCd" :model="tbIpAssignMstListVo[0].ssvcLineTypeCd">
                     <option v-for="option in ssvcLineTypeOptions" :key="option.value" :value="option.value">
                       {{ option.label }}
                     </option>
                   </select>
                 </td>
                 <td>
-                  <select id="updSsvcGroupCd" v-model="ssvcGroupCd">
+                  <select id="updSsvcGroupCd" :model="tbIpAssignMstListVo[0].ssvcGroupCd">
                     <option v-for="option in ssvcGroupOptions" :key="option.value" :value="option.value">
                       {{ option.label }}
                     </option>
                   </select>
                 </td>
                 <td>
-                  <select id="updSsvcObjCd" v-model="ssvcObjCd">
+                  <select id="updSsvcObjCd" :model="tbIpAssignMstListVo[0].ssvcObjCd">
                     <option v-for="option in ssvcObjOptions" :key="option.value" :value="option.value">
                       {{ option.label }}
                     </option>
@@ -56,7 +56,7 @@
               <tr>
                 <th class="first" scope="row">배정상태</th>
                 <td>
-                  <select id="updSassignLevelCd" v-model="sassignLevelCd">
+                  <select id="updSassignLevelCd" :model="tbIpAssignMstListVo[0].sassignLevelCd">
                     <option v-for="option in sassignTypeLevelOptions" :key="option.value" :value="option.value">
                       {{ option.label }}
                     </option>
@@ -64,7 +64,7 @@
                 </td>
                 <th scope="row">서비스</th>
                 <td>
-                  <select id="updSassignTypeCd" v-model="sassignTypeCd" :disabled="sassignLevelCd !== 'IA0004'">
+                  <select id="updSassignTypeCd" :model="tbIpAssignMstListVo[0].sassignTypeCd" :disabled="sassignLevelCd !== 'IA0004'">
                     <option v-for="option in sassignTypeOptions" :key="option.value" :value="option.value">
                       {{ option.label }}
                     </option>
@@ -74,7 +74,7 @@
               <tr class="last">
                 <th class="first" scope="row">비고</th>
                 <td colspan="3">
-                  <textarea id="updScomment" v-model="scomment" class="w98" rows="3" maxlength="4000"></textarea>
+                  <textarea id="updScomment" :model="tbIpAssignMstListVo[0].scomment" class="w98" rows="3" maxlength="4000"></textarea>
                 </td>
               </tr>
             </tbody>
@@ -117,7 +117,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(item, index) in ipBlockDetailList" :key="index">
+              <tr v-for="(item, index) in tbIpAssignMstListVo" :key="index">
                 <td> {{ item.ssvcLineTypeNm }}</td>
                 <td> {{ item.ssvcGroupNm }}</td>
                 <td> {{ item.ssvcObjNm }}</td>
@@ -150,6 +150,7 @@
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
 import { onMessagePopup } from '@/utils/index'
+import { apiRequestModel, ipmsModelApis, apiRequestJson, ipmsJsonApis } from '@/api/ipms'
 
 const routeName = 'ModalIpAssign'
 
@@ -164,7 +165,7 @@ export default {
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       selectedRow: null,
       ssvcLineTypeOptions: [
-        { label: '공인', value: '공인' },
+        { label: '공인', value: 'CL0003' },
         { label: 'Bogon', value: 'Bogon' },
         { label: '유/무선공용', value: '유/무선공용' },
       ],
@@ -193,6 +194,7 @@ export default {
         { label: 'POOL-M2M(고정)', value: 'POOL-M2M(고정)' },
         { label: 'IMS-SYSTEM', value: 'IMS-SYSTEM' },
       ],
+
       ssvcLineTypeCd: '',
       ssvcGroupCd: '',
       ssvcObjCd: '',
@@ -200,7 +202,9 @@ export default {
       sassignTypeCd: '',
       scomment: '',
       ssvcLineTypeNm: '',
-      ipBlockDetailList: []
+      pipPrefix: '',
+      tbIpAssignMstListVo: [],
+      srcIpAssignMstVo: null
     }
   },
   computed: {
@@ -213,20 +217,23 @@ export default {
       this.closeOnClickModal = false
       this.domElement.maxWidth = 1200
     },
+
     onOpen(model, actionMode) {
-      this.$set(this, 'selectedRow', model.row)
-      this.ipBlockDetailList = this.selectedRow || []
-      const { ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd, sassignLevelCd, sassignTypeCd, sipVersionTypeCd } = this.selectedRow[0] || []
-      this.ssvcLineTypeCd = ssvcLineTypeCd // 계위1
-      this.ssvcGroupCd = ssvcGroupCd // 계위2
-      this.ssvcObjCd = ssvcObjCd // 계위3
-      this.sassignLevelCd = sassignLevelCd // 배정상태
-      this.sassignTypeCd = sassignTypeCd // 서비스
-      this.sipVersionTypeCd = sipVersionTypeCd
+      this.tbIpAssignMstListVo = model.tbIpAssignMstListVo.tbIpAssignMstVos
+      this.fnViewUpdateAsgnIPMst(model.tbIpAssignMstListVo.tbIpAssignMstVos)
+    },
+     async fnViewUpdateAsgnIPMst(tbIpAssignMstListVo) {
+      try {
+        const res = await apiRequestModel(ipmsModelApis.viewUpdateAsgnIPMst, tbIpAssignMstListVo)
+        this.tbIpAssignMstListVo = res?.result?.data
+      } catch (error) {
+        console.error(error)
+      }
     },
 
     /* 기존 사설(CT0004)은 유/무선 공용으로 사용, 신규 사설(CT0005)을 사설로 사용 */
     async fnUpdateConfirmBtnClick() { // IP 블록 배정
+     const selectedrow = this.tbIpAssignMstListVo[0]
       var vOrgCreateTypeFlag = 'N'
       if (this.sipCreateTypeCd === 'CT0005') {
         vOrgCreateTypeFlag = 'Y'
@@ -239,7 +246,7 @@ export default {
       }
 
       /* 사설일 경우 망변경 불가 */
-      const { ssvcLineTypeCd } = this.selectedRow[0] || []
+      const { ssvcLineTypeCd } = selectedrow
       if (vOrgCreateTypeFlag === 'Y' && ssvcLineTypeCd !== this.ssvcLineTypeCd) {
         onMessagePopup(this, '배정 대상 블록 중 사설 블록은 망변경 배정을 할 수 없습니다.')
         return
@@ -262,31 +269,37 @@ export default {
       }
 
       /*  배정 처리 유형 처리 */
-      let typeFlag = null
-      if (this.sassignLevelCd === 'IA0004') {
-        typeFlag = 'svcassign' // 배정 - 서비스배정
-      } else {
-        typeFlag = 'assign' // 배정 - 일반배정
-      }
-
       try {
         const param = {
-          ssvcLineTypeCd: this.ssvcLineTypeCd,
-          ssvcGroupCd: this.ssvcGroupCd,
-          ssvcObjCd: this.ssvcObjCd,
-          sassignLevelCd: this.sassignLevelCd,
-          sassignTypeCd: this.sassignTypeCd,
-          nipAssignMstSeq: this.nipAssignMstSeq,
-          scomment: this.scomment,
-          /* 망변경 처리 유형  */
-          typeFlag: typeFlag,
-          /* 망변경 블록 체킹을 위한 블록 및 버전 정보 */
-          pipPrefix: this.pipPrefix,
-          sipVersionTypeCd: this.sipVersionTypeCd,
+          srcIpAssignMstVo: {
+            ssvcLineTypeCd: this.ssvcLineTypeCd,
+            ssvcGroupCd: this.ssvcGroupCd,
+            ssvcObjCd: this.ssvcObjCd,
+            sassignLevelCd: this.sassignLevelCd,
+            sassignTypeCd: this.sassignTypeCd,
+            typeFlag: ''
+          },
+          destIpAssignMstVos: []
         }
 
-        const res = await /* apiIpAssign */(param)
-        if (res.success) {
+            let typeFlag = null
+            if (this.sassignLevelCd === 'IA0004') {
+              typeFlag = 'svcassign' // 배정 - 서비스배정
+            } else {
+              typeFlag = 'assign' // 배정 - 일반배정
+            }
+
+        this.selectedRow.forEach(item => {
+          param.srcIpAssignMstVo.destIpAssignMstVos.push({
+            nipAssignMstSeq: item.nipAssignMstSeq,
+            pipPrefix: item.pipPrefix,
+            sipVersionTypeCd: item.sipVersionTypeCd,
+            typeFlag: typeFlag
+          })
+        })
+
+        const res = await apiRequestJson(ipmsJsonApis.updateAsgnIPMst, param)
+        if (res.data.commonMsg === 'SUCCESS') {
           this.$message('IP블록 배정이 정상적으로 처리되었습니다.')
           this.$emit('reloadData')
         } else {

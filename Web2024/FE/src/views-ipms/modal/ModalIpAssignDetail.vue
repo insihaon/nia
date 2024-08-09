@@ -181,7 +181,7 @@ export default {
       this.domElement.maxWidth = 1200
     },
     onOpen(model, actionMode) {
-     this.$set(this, 'selectedRow', model.row)
+     this.selectedRow = model.row
      this.viewType = this.model.type
     },
     onClose() { this.selectedRow = [] },

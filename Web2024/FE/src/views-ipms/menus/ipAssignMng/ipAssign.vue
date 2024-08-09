@@ -3,7 +3,7 @@
     <DynamicComponentLoader
       ref="searchCondition"
       :component-keys="componentList"
-      @handle-search="onloadIpAssign"
+      @handle-search="handleSearch"
     />
     <el-col ref="tableContainer" :span="24">
       <compTable
@@ -25,7 +25,7 @@
         <template slot="add-features">
           <div class="mt-1 d-flex justify-end">
             <el-button icon="el-icon-check" type="primary" size="mini" @click="handleClickIpBlockCheck()">IP블럭 중복체크</el-button>
-            <el-button icon="el-icon-document-checked" style="background: #2b5890;" type="primary" size="mini" @click="handleClickIpAssignInsert()">배정</el-button>
+            <el-button icon="el-icon-document-checked" style="background: #2b5890;" type="primary" size="mini" @click="fnUpdateBtnClick()">배정</el-button>
             <el-button size="mini" @click="handleClickMergeInsert()">병합</el-button>
           </div>
         </template>
@@ -34,7 +34,7 @@
       <ModalIpAssignDetail ref="ModalIpAssignDetail" />
       <ModalIpAssign ref="ModalIpAssign" />
       <ModalCheckTacsIpBlock ref="ModalCheckTacsIpBlock" />
-      <ModalIpMerge ref="ModalIpMerge" />
+      <ModalIpAssignMerge ref="ModalIpAssignMerge" @reload="fnViewListIpAllocMst($refs.searchCondition.requestParameter)" />
       <ModalDetailSummary ref="ModalDetailSummary" />
     </el-col>
   </el-row>
@@ -49,14 +49,14 @@ import ModalIpBlockDivision from '@/views-ipms/modal/ModalIpBlockDivision.vue'
 import ModalIpAssignDetail from '@/views-ipms/modal/ModalIpAssignDetail.vue'
 import ModalIpAssign from '@/views-ipms/modal/ModalIpAssign.vue'
 import ModalCheckTacsIpBlock from '@/views-ipms/modal/ModalCheckTacsIpBlock.vue'
-import ModalIpMerge from '@/views-ipms/modal/ModalIpMerge.vue'
+import ModalIpAssignMerge from '@/views-ipms/modal/assign/ModalIpAssignMerge.vue'
 import ModalDetailSummary from '@/views-ipms/modal/ModalDetailSummary.vue'
 import { ipmsModelApis, apiRequestModel } from '@/api/ipms'
 const routeName = 'IpAssign'
 
 export default {
   name: routeName,
-  components: { CompTable, DynamicComponentLoader, ModalIpBlockDivision, ModalIpAssignDetail, ModalCheckTacsIpBlock, ModalIpAssign, ModalIpMerge, ModalDetailSummary },
+  components: { CompTable, DynamicComponentLoader, ModalIpBlockDivision, ModalIpAssignDetail, ModalCheckTacsIpBlock, ModalIpAssign, ModalIpAssignMerge, ModalDetailSummary },
   extends: Base,
   mixins: [tableHeightMixin],
   data() {
@@ -120,10 +120,11 @@ export default {
             }, buttonText)
           }
         },
-        { prop: 'scomment', label: '비고', align: 'center', sortable: true, columnVisible: true, showOverflow: true }
       ],
+
       ipAssignDatas: [],
-      selectedTable: []
+      selectedTable: [],
+
     }
   },
   mounted () {
@@ -135,6 +136,9 @@ export default {
     }
   },
   methods: {
+    handleSearch(requestParameter) {
+      this.onloadIpAssign(requestParameter)
+    },
     async onloadIpAssign(requestParameter) {
       try {
         const res = await apiRequestModel(ipmsModelApis.viewListAsgnIPMst, requestParameter)
@@ -172,37 +176,39 @@ export default {
         onMessagePopup(this, 'IP블럭 중복체크는 KOREAN, PREMIUM, MOBILE망만 가능합니다.')
         return
       }
-      this.$refs.ModalCheckTacsIpBlock.open({ /* tacsResponse: res */ row: rows[0] })
+      this.$refs.ModalCheckTacsIpBlock.open({ row: rows[0] })
     },
-    handleClickIpAssignInsert() {
+    fnUpdateBtnClick() {
       const rows = this.selectedTable
       if (rows.length === 0) {
         onMessagePopup(this, '배정할 대상이 없습니다.')
         return
       }
 
-      const res = rows.map((row, i) => {
-        const { nlvlMstSeq, sassignLevelCd, sassignTypeCd } = row
+        const { nlvlMstSeq, sassignLevelCd, sassignTypeCd } = rows[0]
 
-        for (let j = 0; j < i; j++) {
-          if (nlvlMstSeq !== rows[j].nlvlMstSeq || nlvlMstSeq !== rows[j].nlvlMstSeq) {
-            onMessagePopup(this, '배정할 대상 블록의 계위 정보가 동일하지 않습니다. 확인해주세요.')
-            return false
+        for (const row of rows) {
+            if (nlvlMstSeq !== row.nlvlMstSeq) {
+              onMessagePopup(this, '배정할 대상 블록의 계위 정보가 동일하지 않습니다. 확인해주세요.')
+              return false
+            }
+
+            if (sassignLevelCd !== row.sassignLevelCd) {
+              onMessagePopup(this, '배정할 대상 블록의 배정 상태가 동일하지 않습니다. 확인해주세요.')
+              return false
+            }
+
+            if (sassignTypeCd !== row.sassignTypeCd) {
+              onMessagePopup(this, '배정할 대상 블록의 서비스가 동일하지 않습니다. 확인해주세요.')
+              return false
+            }
           }
 
-          if (sassignLevelCd !== rows[j].sassignLevelCd || sassignLevelCd !== rows[j].sassignLevelCd) {
-            onMessagePopup(this, '배정할 대상 블록의 배정 상태가 동일하지 않습니다. 확인해주세요.')
-            return false
-          }
-
-          if (sassignTypeCd !== rows[j].sassignTypeCd || sassignTypeCd !== rows[j].sassignTypeCd) {
-            onMessagePopup(this, '배정할 대상 블록의 서비스가 동일하지 않습니다. 확인해주세요.')
-            return false
-          }
-        }
-        return true
-      })
-      res.every(r => r === true) && this.$refs.ModalIpAssign.open({ row: this.selectedTable })
+        const tbIpAssignMstListVo = { tbIpAssignMstVos: [] }
+         rows.forEach(row => {
+          tbIpAssignMstListVo.tbIpAssignMstVos.push({ nipAssignMstSeq: row.nipAssignMstSeq })
+        })
+        this.$refs.ModalIpAssign.open({ tbIpAssignMstListVo })
     },
     handleClickMergeInsert() {
       const rows = this.selectedTable
@@ -215,34 +221,37 @@ export default {
         return
       }
 
-          const res = rows.map((row, i) => {
-          const { nipBlockSeq, nlvlMstSeq, sassignLevelCd, sassignTypeCd } = row
+      const { nipBlockSeq, nlvlMstSeq, sassignLevelCd, sassignTypeCd } = rows[0]
 
-          for (let j = 0; j < i; j++) {
-            if (nipBlockSeq !== rows[j].nipBlockSeq || nipBlockSeq !== rows[j].nipBlockSeq) {
-              onMessagePopup(this, '병합할 대상 정보들의 생성 유형이 동일하지 않습니다.')
-              return false
-            }
+      for (const row of rows) {
+        if (nipBlockSeq !== row.nipBlockSeq) {
+          onMessagePopup(this, '병합할 대상 정보들의 생성 유형이 동일하지 않습니다.')
+          return
+        }
 
-            if (nlvlMstSeq !== rows[j].nlvlMstSeq || nlvlMstSeq !== rows[j].nlvlMstSeq) {
-              onMessagePopup(this, '병합할 대상 정보들의 계위 정보가 동일하지 않습니다.')
-              return false
-            }
+        if (nlvlMstSeq !== row.nlvlMstSeq) {
+          onMessagePopup(this, '병합할 대상 정보들의 계위 정보가 동일하지 않습니다.')
+          return
+        }
 
-            if (sassignLevelCd !== rows[j].sassignLevelCd || sassignLevelCd !== rows[j].sassignLevelCd) {
-              onMessagePopup(this, '병합할 대상 정보들의 배정 상태가 동일하지 않습니다.')
-              return false
-            }
+        if (sassignLevelCd !== row.sassignLevelCd) {
+          onMessagePopup(this, '병합할 대상 정보들의 배정 상태가 동일하지 않습니다.')
+          return
+        }
 
-            if (sassignTypeCd !== rows[j].sassignTypeCd || sassignTypeCd !== rows[j].sassignTypeCd) {
-              onMessagePopup(this, '병합할 대상 정보들의 서비스가 동일하지 않습니다.')
-              return false
-            }
-          }
-          return true
-        })
-        res.every(r => r === true) && this.$refs.ModalIpMerge.open({ row: this.selectedTable })
+        if (sassignTypeCd !== row.sassignTypeCd) {
+          onMessagePopup(this, '병합할 대상 정보들의 서비스가 동일하지 않습니다.')
+          return
+        }
       }
+
+      const tbIpAssignMstListVo = { typeFlag: 'Aloc', tbIpAssignMstVos: [] }
+      rows.forEach(row => {
+        tbIpAssignMstListVo.tbIpAssignMstVos.push({ nipAssignMstSeq: row.nipAssignMstSeq })
+      })
+      this.$refs.ModalIpAssignMerge.open({ tbIpAssignMstListVo })
+    }
+
   }
 }
 </script>
