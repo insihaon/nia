@@ -31,25 +31,30 @@ export const ipmsModelApis = {
   viewDetailNotice: { desc: '공지사항 상세정보', url: '/opermgmt/boardmgmt/viewDetailNotice' },
   viewDetailUnAssignIP: { desc: 'IP 미배정 상세정보', url: '/ipmgmt/assignmgmt/viewDetailUnAssignIP' },
   viewDetailCrtIPMst: { desc: 'IP 블록관리 상세정보 ', url: '/ipmgmt/createmgmt/viewDetailCrtIPMst' },
-  viewInsertCrtIPMst: { desc: 'IP 블록 추가 생성 ', url: '/ipmgmt/createmgmt/viewInsertCrtIPMst' },
   viewInsertNotice: { desc: '공지사항 등록 화면 ', url: '/opermgmt/boardmgmt/viewInsertNotice' },
   viewUpdateNotice: { desc: '공지사항 수정 화면 ', url: '/opermgmt/boardmgmt/viewUpdateNotice' },
+  viewInsertCrtIPMst: { desc: 'IP 블록 생성 상세모달(신규,추가) ', url: '/ipmgmt/createmgmt/viewInsertCrtIPMst' },
+  viewUpdateAsgnIPMst: { desc: 'IP 블록관리 > IP배정 대상정보', url: '/ipmgmt/assignmgmt/viewUpdateAsgnIPMst' },
 }
 export const ipmsJsonApis = {
   selectAuthCenterList: { desc: '센터 조회', url: '/opermgmt/orgmgmt/selectAuthCenterList' },
   selectAuthNodeList: { desc: '노드 조회', url: '/opermgmt/orgmgmt/selectAuthNodeList' },
   selectOfficeList: { desc: '수용국 조회', url: '/ipmgmt/linemgmt/selectOfficeList' },
-  selectSassignTypeCdList: { desc: '서비스 조회', url: '/ipmgmt/allocmgmt/selectSassignTypeCdList' },
+  selectSassignTypeCdList: { desc: '서비스 조회', url: '/fviewInsertCrtIPMstipmgmt/allocmgmt/selectSassignTypeCdList' },
   updateScommentAsgnIPMst: { desc: '할당상세 > 비고수정', url: '/ipmgmt/allocmgmt/updateScommentAsgnIPMst' },
   appendDivAsgnIPMst: { desc: '배정/할당 > IP분할 > 분할 예정 정보 요청', url: '/ipmgmt/assignmgmt/appendDivAsgnIPMst' },
   appendMergeDivAsgnIPMst: { desc: '배정/할당 > IP분할 > 분할 예정 정보 > 병합', url: '/ipmgmt/assignmgmt/appendMergeDivAsgnIPMst' },
   insertListDivAsgnIPMst: { desc: '배정/할당 > IP분할 > 분할 확정 처리', url: '/ipmgmt/assignmgmt/insertListDivAsgnIPMst' },
-  updateAsgnIPMst: { desc: '배정/할당 반납처리', url: '/ipmgmt/allocmgmt/updateAsgnIPMst' },
+  allocUpdateAsgnIPMst: { desc: '배정/할당 반납처리', url: '/ipmgmt/allocmgmt/allocUpdateAsgnIPMst' },
   insertMrgAsgnIPMst: { desc: '배정/할당 > 병합처리', url: '/ipmgmt/assignmgmt/insertMrgAsgnIPMst' },
   deleteCrtIPMst: { desc: 'IP 블록관리 삭제', url: '/ipmgmt/createmgmt/deleteCrtIPMst' },
   insertNotice: { desc: '공지사항 등록', url: '/opermgmt/boardmgmt/insertNotice' },
   updateNotice: { desc: '공지사항 수정', url: '/opermgmt/boardmgmt/updateNotice' },
   deleteNotice: { desc: '공지사항 삭제', url: '/opermgmt/boardmgmt/deleteNotice' },
+  appendCrtIPMst: { desc: 'IP 블록관리 > IP 블록생성 > IP 주소 추가', url: '/ipmgmt/createmgmt/appendCrtIPMst' },
+  insertListCrtIPMst: { desc: 'IP 블록관리 > IP 블록생성 > IP 주소 등록', url: '/ipmgmt/createmgmt/insertListCrtIPMst' },
+  updateCrtIPMst: { desc: 'IP 블록관리  > 수정', url: '/ipmgmt/createmgmt/updateCrtIPMst' },
+  updateAsgnIPMst: { desc: 'IP 블록관리 > 배정', url: '/ipmgmt/assignmgmt/updateAsgnIPMst' },
 }
 
 export function apiTest(params) {

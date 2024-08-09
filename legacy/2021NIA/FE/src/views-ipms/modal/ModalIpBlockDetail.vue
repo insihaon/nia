@@ -80,8 +80,8 @@
 
       <div slot="footer" class="dialog-footer">
         <el-button v-if="type !== 'edit'" size="mini" icon="el-icon-edit" @click="onChangeMode()">수정</el-button>
-        <el-button v-if="type === 'edit'" size="mini" icon="el-icon-edit" @click="handleEditIpBlockData()">수정</el-button>
-        <el-button v-if="type !== 'edit'" size="mini" icon="el-icon-edit" @click="handleDeleteIpBlockData()">삭제</el-button>
+        <el-button v-if="type === 'edit'" size="mini" icon="el-icon-edit" @click="fnUpdateCrtIPMstCallback()">수정</el-button>
+        <el-button v-if="type !== 'edit'" size="mini" icon="el-icon-edit" @click="fnDeleteBtnClick()">삭제</el-button>
         <el-button size="mini" type="info" class="el-icon-close" @click.native="close()">
           {{ $t('exit') }}
         </el-button>
@@ -136,7 +136,7 @@ export default {
     onChangeMode() {
       this.type = 'edit'
     },
-    handleDeleteIpBlockData() { // IP 블럭 삭제
+    fnDeleteBtnClick() { // IP 블럭 삭제
       this.$confirm('IP블럭을 삭제 하시겠습니까?', '삭제 메세지', {
         confirmButtonText: '확인',
         cancelButtonText: '취소'
@@ -170,35 +170,27 @@ export default {
               type: 'success',
           })
 
-          const tbIpBlockMstVo = {
-              nipBlockMstSeq: this.resultVo.nipBlockMstSeq,
-              sipCreateTypeCd: this.resultVo.sipCreateTypeCd,
-              sipCreateSeqCd: this.resultVo.sipCreateSeqCd,
-              sipVersionTypeCd: this.resultVo.sipVersionTypeCd,
-              pipPrefix: this.resultVo.pipPrefix,
-              scomment: this.scomment,
+          const tbIpBlockVo = {
+            sipCreateTypeCd: this.resultVo.sipCreateTypeCd,
+            scomment: this.resultVo.scomment,
+            nipBlockMstSeq: this.resultVo.nipBlockMstSeq,
           }
 
-          // 1. 블록 정보 수정  /ipmgmt/createmgmt/selectListSipCreateSeqCd.json'
-            const res = await /* apiEditIpBlockList*/(tbIpBlockMstVo)
-            if (res.data.commonMsg === 'SUCCESS') {
-            // 2. 생성차수 수정 /ipmgmt/createmgmt/updateCrtIPMst.json'
+          /* 생성차수 수정 */
+            //  const searchSipCreateSeqCd = tbIpBlockMstVo.sipCreateSeqCd
+          // const res = await ipmsJsonApis(ipmsJsonApis.selectListSipCreateSeqCd, tbIpBlockVo)
 
-              const searchSipCreateSeqCd = tbIpBlockMstVo.sipCreateSeqCd
+          const res = await ipmsJsonApis(ipmsJsonApis.updateCrtIPMst, tbIpBlockVo)
 
-              const res2 = await/* apiCreatSeaCd */ (searchSipCreateSeqCd)
-
-            if (res && res2) {
+           if (res.data.commonMsg === 'SUCCESS') {
               this.$message('IP블록 수정이 정상적으로 처리되었습니다.')
               this.$emit('reloadData')
-            }
-          }
+           }
       } catch (error) {
           this.$message.error({ message: `IP블록 수정에 실패했습니다.` })
           console.error(error)
       }
     }
-
   },
 }
 </script>

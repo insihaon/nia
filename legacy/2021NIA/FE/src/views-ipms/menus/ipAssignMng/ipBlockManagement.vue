@@ -123,9 +123,9 @@ export default {
     },
     handleOpenDetailModal(type) {
       if (type === 'edit' || type === 'detail') {
-        this.fnViewDetailClick(this.selectedChecks, type)
+        this.fnViewDetailClick(this.selectedChecks ?? this.resultListVo[0], type)
       } else {
-        this.viewInsertCrtIPMst(this.selectedChecks, type)
+        this.viewInsertCrtIPMst(this.selectedChecks ?? this.resultListVo[0], type)
       }
     },
     onClcikRow(row) {
@@ -134,9 +134,16 @@ export default {
     async viewInsertCrtIPMst(row, type) {
        const { nipBlockMstSeq } = row
       try {
-        const param = {
-          nipBlockMstSeq: nipBlockMstSeq ?? '',
-          searchUseYn: 'Y'
+        let param
+        if (type === 'create') {
+          param = {
+            searchUseYn: 'N'
+          }
+        } else {
+          param = {
+            nipBlockMstSeq: nipBlockMstSeq ?? '',
+            searchUseYn: 'Y'
+          }
         }
         const res = await apiRequestModel(ipmsModelApis.viewInsertCrtIPMst, param)
         if (res.result.data) {

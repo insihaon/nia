@@ -13,7 +13,6 @@
         :prop-is-pagination="true"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
-        :prop-on-click="onClcikRow"
       >
         <template slot="text-description">
           <span>
@@ -44,7 +43,6 @@ export default {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       tableDatas: [],
-      seletedRow: null,
       componentList: [
         { key: 'SsvcLineType', props: { lvl: 2 } },
       ]
@@ -54,6 +52,7 @@ export default {
     tableColumns() {
       const _THIS = this
       return [
+        { prop: 'nlvlMstSeq', label: '', align: 'center', sortable: true, columnVisible: false, showOverflow: true },
         { prop: 'ssvcLineTypeNm', label: '서비스망', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'ssvcGroupNm', label: '본부', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'ssvcObjNm', label: '노드', align: 'center', sortable: true, columnVisible: false, showOverflow: true },
@@ -62,7 +61,7 @@ export default {
             if (row.nUnAssignBlockCnt > 0) {
               return this.$createElement('el-button', {
                 on: { click: () => {
-                  this.viewDetailCrtIPMst('미배정')
+                  this.viewDetailCrtIPMst(row, '미배정')
                 } } }, row.nUnAssignBlockCnt)
             } else {
               return this.$createElement('span', { class: 'txtred' }, row.nUnAssignBlockCnt)
@@ -74,7 +73,7 @@ export default {
             if (row.nReserveAssignBlockCnt > 0) {
               return this.$createElement('el-button', {
                 on: { click: () => {
-                  this.viewDetailCrtIPMst('예비배정')
+                  this.viewDetailCrtIPMst(row, '예비배정')
                 } } }, row.nReserveAssignBlockCnt)
             } else {
               return this.$createElement('span', { class: 'txtred' }, row.nReserveAssignBlockCnt)
@@ -88,9 +87,6 @@ export default {
     this.fnViewListUnAssignIP()
   },
   methods: {
-    onClcikRow(row) {
-      this.seletedRow = row
-    },
     async fnViewListUnAssignIP(requestParameter) {
       try {
         const res = await apiRequestModel(ipmsModelApis.viewListUnAssignIP, requestParameter)
@@ -99,8 +95,8 @@ export default {
         console.error(error)
       }
     },
-    async viewDetailCrtIPMst(type) {
-      const { nlvlMstSeq, sipVersionTypeCd, sassignLeveslCd, ssvcLineTypeNm, ssvcGroupNm } = this.seletedRow
+    async viewDetailCrtIPMst(row, type) {
+      const { nlvlMstSeq, sipVersionTypeCd, sassignLeveslCd, ssvcLineTypeNm, ssvcGroupNm } = row
       try {
         const param = {
           nlvlMstSeq: nlvlMstSeq,
@@ -114,8 +110,7 @@ export default {
       } catch (error) {
         console.error(error)
       }
-    },
-
+    }
   }
 }
 </script>

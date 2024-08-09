@@ -94,26 +94,35 @@
     "nipAllocMstSeq": null
   },
   "__config": {
-    "url": "/ipmgmt/allocmgmt/allocUpdateAsgnIPMst.json",
+    "url": "/ipmgmt/assignmgmt/updateAsgnIPMst.json",
     "param": {
       "srcIpAssignMstVo": {
+        "scomment": "",
         "ssvcLineTypeCd": "CL0003",
-        "sassignTypeCd": "SA0000",
         "ssvcGroupCd": "VV0010",
-        "ssvcObjCd": "000000",
-        "sassignLevelCd": "IA0003"
+        "ssvcObjCd": "VV0015",
+        "sassignLevelCd": "IA0004",
+        "sassignTypeCd": "SA1006",
+        "typeFlag": ""
       },
       "destIpAssignMstVos": [
         {
-          "nipAssignMstSeq": "1113860",
-          "typeFlag": "return",
-          "menuType": "Aloc"
+          "nipAssignMstSeq": "1107793",
+          "pipPrefix": "1.100.133.0/26",
+          "sipVersionTypeCd": "CV0001",
+          "typeFlag": "svcassign"
+        },
+        {
+          "nipAssignMstSeq": "1107794",
+          "pipPrefix": "1.100.133.64/26",
+          "sipVersionTypeCd": "CV0001",
+          "typeFlag": "svcassign"
         }
       ]
     },
-    "receivedTime": "2024-08-08 15:45:23.169",
-    "duration": 2032,
-    "filename": "aXBtZ210L2FsbG9jbWdtdC91cGRhdGVBc2duSVBNc3QuanNvbg_W29iamVjdHxbb2JqZWN0.json",
-    "fetch": "fetch('/ipmgmt/allocmgmt/allocUpdateAsgnIPMst.json', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{\"srcIpAssignMstVo\":{\"ssvcLineTypeCd\":\"CL0003\",\"sassignTypeCd\":\"SA0000\",\"ssvcGroupCd\":\"VV0010\",\"ssvcObjCd\":\"000000\",\"sassignLevelCd\":\"IA0003\"},\"destIpAssignMstVos\":[{\"nipAssignMstSeq\":\"1113860\",\"typeFlag\":\"return\",\"menuType\":\"Aloc\"}]}', 'method': 'POST' })"
+    "receivedTime": "2024-08-09 12:43:34.156",
+    "duration": 2348,
+    "filename": "aXBtZ210L2Fzc2lnbm1nbXQvdXBkYXRlQXNnbklQTXN0Lmpzb24_W29iamVjdHxbb2JqZWN0.json",
+    "fetch": "success-fetch('/ipmgmt/assignmgmt/updateAsgnIPMst.json', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{\"srcIpAssignMstVo\":{\"scomment\":\"\",\"ssvcLineTypeCd\":\"CL0003\",\"ssvcGroupCd\":\"VV0010\",\"ssvcObjCd\":\"VV0015\",\"sassignLevelCd\":\"IA0004\",\"sassignTypeCd\":\"SA1006\",\"typeFlag\":\"\"},\"destIpAssignMstVos\":[{\"nipAssignMstSeq\":\"1107793\",\"pipPrefix\":\"1.100.133.0/26\",\"sipVersionTypeCd\":\"CV0001\",\"typeFlag\":\"svcassign\"},{\"nipAssignMstSeq\":\"1107794\",\"pipPrefix\":\"1.100.133.64/26\",\"sipVersionTypeCd\":\"CV0001\",\"typeFlag\":\"svcassign\"}]}', 'method': 'POST' })"
   }
 }

@@ -22,7 +22,7 @@
         "dcreateDt": "2020-10-05 20:54:41",
         "screateId": "10061339",
         "screateNm": "전필권",
-        "dmodifyDt": "2024-08-02 13:45:15",
+        "dmodifyDt": "2024-08-08 11:18:48",
         "smodifyId": "10150810",
         "smodifyNm": "정회창",
         "commonMsg": null,
@@ -79,8 +79,8 @@
       "nipBlockMstSeq": "2743",
       "searchUseYn": "Y"
     },
-    "receivedTime": "2024-08-07 14:45:53.499",
-    "duration": 604,
+    "receivedTime": "2024-08-09 16:58:49.697",
+    "duration": 635,
     "filename": "aXBtZ210L2NyZWF0ZW1nbXQvdmlld0luc2VydENydElQTXN0Lm1vZGVs_Mjc0M3xZ.json",
     "fetch": "fetch('/ipmgmt/createmgmt/viewInsertCrtIPMst.model', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{\"nipBlockMstSeq\":\"2743\",\"searchUseYn\":\"Y\"}', 'method': 'POST' })"
   }
