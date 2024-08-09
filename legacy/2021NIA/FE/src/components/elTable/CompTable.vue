@@ -4,8 +4,10 @@ copyright notice above does not evidence any actual or * intended publication of
 <template>
   <div v-loading="propLoading" class="compTable">
     <div class="tableThum">
-      <div v-if="propIsPagination != false"><i class="el-icon-document" /> <slot name="text-description" /> <span class="countNum">( 총 {{ propPaginationData.total }} 건 )</span></div>
-      <div v-if="propIsPagination == false"><i class="el-icon-document" /> <slot name="text-description" /> <span class="countNum">총 {{ propData.length }} 건 </span></div>
+      <div><i class="el-icon-document" /> <slot name="text-description" /> <span class="countNum">( 총 {{ propIsPagination != false ? propPaginationData.total : propData.length }} 건 )</span></div>
+      <!-- <div v-if="propIsPagination != false"><i class="el-icon-document" /> <slot name="text-description" /> <span class="countNum">( 총 {{ propPaginationData.total }} 건 )</span></div>
+      <div v-if="propIsPagination == false"><i class="el-icon-document" /> <slot name="text-description" /> <span class="countNum">총 {{ propData.length }} 건 </span></div> -->
+      <slot name="add-features" />
     </div>
 
     <el-table
@@ -73,7 +75,6 @@ copyright notice above does not evidence any actual or * intended publication of
       />
       <!-- :page-sizes="pageSizes" -->
     </div>
-    <slot name="add-features" />
     <vue-simple-context-menu ref="propTableContext" element-id="propTable" :options="propRClickOptions" @option-clicked="propOnRClick" />
   </div>
 </template>
