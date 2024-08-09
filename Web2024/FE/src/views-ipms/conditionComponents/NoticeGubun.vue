@@ -5,6 +5,7 @@
     </label>
     <el-select
       v-model="value"
+      size="mini"
       @change="handleChange()"
     >
       <el-option

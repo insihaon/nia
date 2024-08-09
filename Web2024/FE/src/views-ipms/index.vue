@@ -48,7 +48,7 @@
 
 <script>
 import { Base } from '@/min/Base.min'
-import Notice from '@/views-ipms/menus/board/notice'
+import Notice from '@/views-ipms/menus/board/notice.vue'
 
 const routeName = 'IpmsMain'
 
