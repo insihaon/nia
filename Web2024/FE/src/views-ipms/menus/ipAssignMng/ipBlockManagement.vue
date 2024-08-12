@@ -89,7 +89,6 @@ export default {
   },
   mounted() {
     this.fnViewListIpBlockMst()
-    //  this.$refs.table.toggleRowSelection(this.resultListVo[0], true)
   },
   methods: {
    async fnViewListIpBlockMst(requestParameter) {

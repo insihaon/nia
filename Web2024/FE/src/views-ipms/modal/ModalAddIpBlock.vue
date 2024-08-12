@@ -32,34 +32,34 @@
               <tr class="top">
                 <th class="first" scope="row">공인/사설</th>
                 <td>
-                  <select id="insertSipCreateTypeCd" v-model="sipCreateTypeNm" :disabled="isDisabled">
-                    <option v-for="option in sipCreateOptions" :key="option.value" :value="option.value">
+                  <el-select id="insertSipCreateTypeCd" v-model="sipCreateTypeCd" size="mini" :disabled="isDisabled">
+                    <el-option v-for="option in sipCreateOptions" :key="option.value" :value="option.value">
                       {{ option.label }}
-                    </option>
-                  </select>
+                    </el-option>
+                  </el-select>
                 </td>
                 <th scope="row">생성차수</th>
                 <td>
-                  <input id="insertSipCreateSeqCd" v-model="sipCreateSeqCd" type="text" class="txt w95" readonly="readonly" disabled="disabled" />
+                  <el-input id="insertSipCreateSeqCd" v-model="sipCreateSeqCd" size="mini" type="text" class="txt w95" readonly="readonly" disabled="disabled" />
                 </td>
               </tr>
 
               <tr>
                 <th class="first" scope="row">서비스망</th>
                 <td>
-                  <select id="insertSsvcLineTypeCd" v-model="ssvcLineTypeNm" :disabled="isDisabled">
-                    <option v-for="option in ssvcLineOptions" :key="option.value" :value="option.value">
+                  <el-select id="insertSsvcLineTypeCd" v-model="ssvcLineTypeCd" size="mini" :disabled="isDisabled">
+                    <el-option v-for="option in ssvcLineOptions" :key="option.value" :value="option.value">
                       {{ option.label }}
-                    </option>
-                  </select>
+                    </el-option>
+                  </el-select>
                 </td>
                 <th scope="row">IP 버전</th>
                 <td>
-                  <select id="insertSipVersionTypeCd" v-model="sipVersionTypeNm" :disabled="isDisabled">
-                    <option v-for="option in sipVersionOptions" :key="option.value" :value="option.value">
+                  <el-select id="insertSipVersionTypeCd" v-model="sipVersionTypeNm" size="mini" :disabled="isDisabled">
+                    <el-option v-for="option in sipVersionOptions" :key="option.value" :value="option.value">
                       {{ option.label }}
-                    </option>
-                  </select>
+                    </el-option>
+                  </el-select>
                 </td>
               </tr>
 
@@ -83,7 +83,7 @@
               <tr class="top last">
                 <th class="first" scope="row">IP 주소</th>
                 <td>
-                  <input id="insertPipPrefix" v-model="pipPrefix" type="text" class="txt w50" maxlength="40" width="85%" />
+                  <el-input id="insertPipPrefix" v-model="pipPrefix" size="mini" type="text" class="txt w50" maxlength="40" style="width : 85%" />
                   <el-button id="appendBtn" class="mx-2" size="mini" @click="fnAppendBtnClick">추가</el-button>
                 </td>
               </tr>
@@ -142,21 +142,21 @@
           </div>
         </div>
       </div>
-      <!-- <input id="commonMsg" type="hidden" value="${resultVo.commonMsg}"> -->
+      <el-input id="commonMsg" v-model="commonMsg" type="hidden">
 
-      <div slot="footer" class="dialog-footer">
-        <el-button size="mini" class="el-icon-close" @click.native="close()">
-          {{ $t('exit') }}
-        </el-button>
-      </div>
-    </el-dialog>
+        <div slot="footer" class="dialog-footer">
+          <el-button size="mini" class="el-icon-close" @click.native="close()">
+            {{ $t('exit') }}
+          </el-button>
+        </div>
+      </el-input></el-dialog>
   </div>
 </template>
 
 <script>
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
-import { ipmsJsonApis, apiRequestModel, ipmsModelApis } from '@/api/ipms'
+import { apiRequestJson, ipmsJsonApis, apiRequestModel, ipmsModelApis } from '@/api/ipms'
 
 const routeName = 'ModalAddIpBlock'
 
@@ -170,9 +170,10 @@ export default {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       selectedRow: null,
+      sipCreateTypeCd: '',
       sipCreateTypeNm: '',
       sipCreateSeqCd: '',
-      ssvcLineTypeNm: '',
+      ssvcLineTypeCd: '',
       sipVersionTypeNm: '',
       sipVersionTypeCd: '',
       sipCreateOptions: [
@@ -200,10 +201,9 @@ export default {
       description: '',
       viewType: '',
       pipPrefix: '',
-      ipBlockDetailList: [
-        { pipPrefix: '112.221.217.32/32', sfirstAddr: '112.221.217.32', slastAddr: '112.221.217.32', nclassCnt: '0.00390625', ncnt: '1', deleteBtn: '삭제' }
-      ],
-      resultListVo: null
+      ipBlockDetailList: [],
+      resultListVo: null,
+      commonMsg: ''
     }
   },
   computed: {
@@ -221,21 +221,24 @@ export default {
     },
     onOpen(model, actionMode) {
       this.resultListVo = model?.row
+      this.viewType = this.model.type
       this.fnViewUpdateCrtIPMstCallBack(model)
       if (model.type === 'generate') {
-        this.sipCreateTypeNm = this.resultListVo.sipCreateTypeNm
-        this.sipCreateSeqCd = this.resultListVo.sipCreateSeqCd
-        this.ssvcLineTypeNm = this.resultListVo.ssvcLineTypeNm
-        this.sipVersionTypeNm = this.resultListVo.sipVersionTypeNm
-        this.sipVersionTypeCd = this.resultListVo.sipVersionTypeCd
+        const { sipCreateTypeCd, sipCreateTypeNm, sipCreateSeqCd, ssvcLineTypeCd, sipVersionTypeNm, sipVersionTypeCd } = this.resultListVo
+        this.sipCreateTypeCd = sipCreateTypeCd
+        this.sipCreateTypeNm = sipCreateTypeNm
+        this.sipCreateSeqCd = sipCreateSeqCd
+        this.ssvcLineTypeCd = ssvcLineTypeCd
+        this.sipVersionTypeNm = sipVersionTypeNm
+        this.sipVersionTypeCd = sipVersionTypeCd
       } else {
+        this.sipCreateTypeCd = ''
         this.sipCreateTypeNm = ''
         this.sipCreateSeqCd = ''
-        this.ssvcLineTypeNm = ''
+        this.ssvcLineTypeCd = ''
         this.sipVersionTypeNm = ''
         this.sipVersionTypeCd = ''
       }
-      this.viewType = this.model.type
       },
       async fnViewUpdateCrtIPMstCallBack(model) {
         try {
@@ -247,44 +250,61 @@ export default {
       },
 
     onClose() { this.resultListVo = [] },
-  async fnSaveBtnClick() {
-    // ip 등록 확인 대화상자
-    if (this.ipBlockDetailList.length === 0) {
-      this.$message('등록할 목록이 없습니다.')
-      return
-    }
-    this.confirm('등록하시겠습니까?', 'IP블록생성', {
-      confirmButtonText: 'OK',
-      cancelButtonText: 'Cancel',
-      type: 'success',
-    }).then(async () => {
-      try {
-        for (let i = 0; i < this.ipBlockDetailList.length; i++) {
-          const ipBlock = this.ipBlockDetailList[i]
-          const tbIpBlockListVo = {
-            tbIpBlockMstVos: [
-
-            ],
-          }
-          const res = await (ipmsJsonApis.insertListCrtIPMst, tbIpBlockListVo)
-          if (res.data.commonMsg === 'SUCCESS') {
-            this.$message('IP블록 등록이 정상적으로 처리되었습니다.')
-            this.$emit('reloadData')
-          }
-        }
-      } catch (error) {
-        this.$message.error({ message: 'IP블록 등록에 실패했습니다.' })
-        console.error(error)
+    async fnSaveBtnClick() {
+      // ip 등록
+      if (this.ipBlockDetailList.length === 0) {
+        this.$message('등록할 목록이 없습니다.')
+        return
       }
-    })
-  },
+
+      this.confirm('등록하시겠습니까?', 'IP블록생성', {
+        confirmButtonText: 'OK',
+        cancelButtonText: 'Cancel',
+        type: 'success',
+      }).then(async () => {
+        try {
+          const tbIpBlockMstVos = []
+
+          for (let i = 0; i < this.ipBlockDetailList.length; i++) {
+            const ipBlock = this.ipBlockDetailList[i]
+
+            tbIpBlockMstVos.push({
+              sipCreateTypeCd: this.sipCreateTypeCd,
+              ssvcLineTypeCd: this.ssvcLineTypeCd,
+              sipCreateSeqCd: this.sipCreateSeqCd,
+              sipVersionTypeCd: this.sipVersionTypeCd,
+              pipPrefix: ipBlock.pipPrefix,
+              scomment: this.scomment || '',
+            })
+          }
+
+          const tbIpBlockListVo = {
+            tbIpBlockMstVos: tbIpBlockMstVos,
+          }
+
+          const res = await apiRequestJson(ipmsJsonApis.insertListCrtIPMst, tbIpBlockListVo)
+
+          if (res.commonMsg === 'SUCCESS') {
+            this.$message('IP블록 등록이 정상적으로 처리되었습니다.')
+            this.commonMsg = 'IP블록이 정상적으로 등록되었습니다.'
+            this.$emit('reloadData')
+            this.close()
+          } else {
+            this.$message.error({ message: 'IP블록 등록에 실패했습니다.' })
+          }
+        } catch (error) {
+          this.$message.error({ message: 'IP블록 등록에 실패했습니다.' })
+          console.error(error)
+        }
+      })
+    },
     async fnAppendBtnClick() {
       // ip 추가
       if (this.sipCreateTypeNm === '') {
         this.$message('공인/사설이 미분류입니다. 다시 선택해 주시기 바랍니다.')
         return
       }
-       if (this.ssvcLineTypeNm === '') {
+       if (this.ssvcLineTypeCd === '') {
         this.$message('서비스망이 미분류입니다. 다시 선택해 주시기 바랍니다.')
         return
       }
@@ -302,12 +322,12 @@ export default {
               sipCreateSeqCd: this.sipCreateSeqCd,
               sipVersionTypeCd: this.sipVersionTypeCd,
               pipPrefix: this.pipPrefix,
-              destIpBlockMstVos: []
-            }
+            },
+            destIpBlockMstVos: []
           }
-          const res = await (ipmsJsonApis.appendCrtIPMst, ipBLockCheckVo)
-          if (res.data.commonMsg === 'SUCCESS') {
-             const resultData = res?.result?.data
+          const res = await apiRequestJson(ipmsJsonApis.appendCrtIPMst, ipBLockCheckVo)
+          if (res.commonMsg === 'SUCCESS') {
+             const resultData = res
               this.ipBlockDetailList.push({
                 pipPrefix: resultData.pipPrefix,
                 sfirstAddr: resultData.sfirstAddr,
@@ -332,4 +352,9 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+  .ModalAddIpBlock{
+    .el-select {
+      width: 100%;
+    }
+  }
 </style>

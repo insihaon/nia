@@ -32,49 +32,49 @@
               <tr class="top">
                 <th class="first" scope="row">계위</th>
                 <td>
-                  <select id="updSsvcLineTypeCd" :model="tbIpAssignMstListVo[0].ssvcLineTypeCd">
-                    <option v-for="option in ssvcLineTypeOptions" :key="option.value" :value="option.value">
+                  <el-select id="updSsvcLineTypeCd" v-model="ssvcLineTypeCd" size="mini">
+                    <el-option v-for="option in ssvcLineTypeOptions" :key="option.value" :value="option.value">
                       {{ option.label }}
-                    </option>
-                  </select>
+                    </el-option>
+                  </el-select>
                 </td>
                 <td>
-                  <select id="updSsvcGroupCd" :model="tbIpAssignMstListVo[0].ssvcGroupCd">
-                    <option v-for="option in ssvcGroupOptions" :key="option.value" :value="option.value">
+                  <el-select id="updSsvcGroupCd" v-model="ssvcGroupCd" size="mini">
+                    <el-option v-for="option in ssvcGroupOptions" :key="option.value" :value="option.value">
                       {{ option.label }}
-                    </option>
-                  </select>
+                    </el-option>
+                  </el-select>
                 </td>
                 <td>
-                  <select id="updSsvcObjCd" :model="tbIpAssignMstListVo[0].ssvcObjCd">
-                    <option v-for="option in ssvcObjOptions" :key="option.value" :value="option.value">
+                  <el-select id="updSsvcObjCd" v-model="ssvcObjCd" size="mini">
+                    <el-option v-for="option in ssvcObjOptions" :key="option.value" :value="option.value">
                       {{ option.label }}
-                    </option>
-                  </select>
+                    </el-option>
+                  </el-select>
                 </td>
               </tr>
               <tr>
                 <th class="first" scope="row">배정상태</th>
                 <td>
-                  <select id="updSassignLevelCd" :model="tbIpAssignMstListVo[0].sassignLevelCd">
-                    <option v-for="option in sassignTypeLevelOptions" :key="option.value" :value="option.value">
+                  <el-select id="updSassignLevelCd" v-model="sassignLevelCd" size="mini">
+                    <el-option v-for="option in sassignTypeLevelOptions" :key="option.value" :value="option.value">
                       {{ option.label }}
-                    </option>
-                  </select>
+                    </el-option>
+                  </el-select>
                 </td>
                 <th scope="row">서비스</th>
                 <td>
-                  <select id="updSassignTypeCd" :model="tbIpAssignMstListVo[0].sassignTypeCd" :disabled="sassignLevelCd !== 'IA0004'">
-                    <option v-for="option in sassignTypeOptions" :key="option.value" :value="option.value">
+                  <el-select id="updSassignTypeCd" v-model="sassignTypeCd" :disabled="sassignLevelCd !== 'IA0004'" size="mini">
+                    <el-option v-for="option in sassignTypeOptions" :key="option.value" :value="option.value">
                       {{ option.label }}
-                    </option>
-                  </select>
+                    </el-option>
+                  </el-select>
                 </td>
               </tr>
               <tr class="last">
                 <th class="first" scope="row">비고</th>
                 <td colspan="3">
-                  <textarea id="updScomment" :model="tbIpAssignMstListVo[0].scomment" class="w98" rows="3" maxlength="4000"></textarea>
+                  <textarea id="updScomment" v-model="scomment" class="w98" rows="3" maxlength="4000"></textarea>
                 </td>
               </tr>
             </tbody>
@@ -204,7 +204,7 @@ export default {
       ssvcLineTypeNm: '',
       pipPrefix: '',
       tbIpAssignMstListVo: [],
-      srcIpAssignMstVo: null
+      resultAsgnList: null
     }
   },
   computed: {
@@ -219,13 +219,27 @@ export default {
     },
 
     onOpen(model, actionMode) {
-      this.tbIpAssignMstListVo = model.tbIpAssignMstListVo.tbIpAssignMstVos
-      this.fnViewUpdateAsgnIPMst(model.tbIpAssignMstListVo.tbIpAssignMstVos)
+      if (model.type) {
+        this.tbIpAssignMstListVo = [model.row]
+        this.fnViewUpdateAsgnIPMst(this.tbIpAssignMstListVo)
+      } else {
+        this.tbIpAssignMstListVo = model.tbIpAssignMstListVo.tbIpAssignMstVos
+        this.fnViewUpdateAsgnIPMst(model.tbIpAssignMstListVo.tbIpAssignMstVos)
+      }
+
+      const { ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd, sassignLevelCd, sassignTypeCd, scomment } = this.tbIpAssignMstListVo[0]
+      this.ssvcLineTypeCd = ssvcLineTypeCd
+      this.ssvcGroupCd = ssvcGroupCd
+      this.ssvcObjCd = ssvcObjCd
+      this.sassignLevelCd = sassignLevelCd
+      this.sassignTypeCd = sassignTypeCd
+      this.scomment = scomment
     },
      async fnViewUpdateAsgnIPMst(tbIpAssignMstListVo) {
       try {
-        const res = await apiRequestModel(ipmsModelApis.viewUpdateAsgnIPMst, tbIpAssignMstListVo)
+        const res = await apiRequestModel(ipmsModelApis.viewUpdateAsgnIPMst, tbIpAssignMstListVo ?? tbIpAssignMstListVo)
         this.tbIpAssignMstListVo = res?.result?.data
+        this.resultAsgnList = this.tbIpAssignMstListVo[0]
       } catch (error) {
         console.error(error)
       }
@@ -270,27 +284,29 @@ export default {
 
       /*  배정 처리 유형 처리 */
       try {
-        const param = {
-          srcIpAssignMstVo: {
-            ssvcLineTypeCd: this.ssvcLineTypeCd,
-            ssvcGroupCd: this.ssvcGroupCd,
-            ssvcObjCd: this.ssvcObjCd,
-            sassignLevelCd: this.sassignLevelCd,
-            sassignTypeCd: this.sassignTypeCd,
-            typeFlag: ''
-          },
-          destIpAssignMstVos: []
-        }
+        const tbIpAssignMstComplexVo = {
+        srcIpAssignMstVo: {
+          ssvcLineTypeCd: this.ssvcLineTypeCd,
+          ssvcGroupCd: this.ssvcGroupCd,
+          ssvcObjCd: this.ssvcObjCd,
+          sassignLevelCd: this.sassignLevelCd,
+          sassignTypeCd: this.sassignTypeCd,
+          scomment: this.scomment,
+          typeFlag: '',
 
-            let typeFlag = null
-            if (this.sassignLevelCd === 'IA0004') {
-              typeFlag = 'svcassign' // 배정 - 서비스배정
-            } else {
-              typeFlag = 'assign' // 배정 - 일반배정
-            }
+        },
+        destIpAssignMstVos: []
+      }
 
-        this.selectedRow.forEach(item => {
-          param.srcIpAssignMstVo.destIpAssignMstVos.push({
+      let typeFlag = null
+      if (this.sassignLevelCd === 'IA0004') {
+        typeFlag = 'svcassign' // 배정 - 서비스배정
+      } else {
+        typeFlag = 'assign' // 배정 - 일반배정
+      }
+
+        this.tbIpAssignMstListVo.forEach(item => {
+          tbIpAssignMstComplexVo.destIpAssignMstVos.push({
             nipAssignMstSeq: item.nipAssignMstSeq,
             pipPrefix: item.pipPrefix,
             sipVersionTypeCd: item.sipVersionTypeCd,
@@ -298,8 +314,8 @@ export default {
           })
         })
 
-        const res = await apiRequestJson(ipmsJsonApis.updateAsgnIPMst, param)
-        if (res.data.commonMsg === 'SUCCESS') {
+        const res = await apiRequestJson(ipmsJsonApis.updateAsgnIPMst, tbIpAssignMstComplexVo)
+        if (res.commonMsg === 'SUCCESS') {
           this.$message('IP블록 배정이 정상적으로 처리되었습니다.')
           this.$emit('reloadData')
         } else {
@@ -309,10 +325,15 @@ export default {
         this.$message.error({ message: `IP블록 배정에 실패했습니다.` })
         console.error(error)
       }
-  },
+    },
     onClose() { this.selectedRow = [] },
   },
 }
 </script>
 <style lang="scss" scoped>
+  .ModalIpAssign{
+    .el-select {
+      width: 100%;
+    }
+  }
 </style>

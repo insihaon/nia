@@ -93,7 +93,7 @@
 <script>
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
-import { ipmsJsonApis } from '@/api/ipms'
+import { apiRequestJson, ipmsJsonApis } from '@/api/ipms'
 
 const routeName = 'ModalIpBlockDetail'
 
@@ -121,7 +121,7 @@ export default {
       this.domElement.maxWidth = 1200
     },
     onOpen(model, actionMode) {
-      this.$set(this, 'resultVo', model.row)
+      this.resultVo = model.row
        const { sipCreateSeqCd, scomment } = this.resultVo
         this.sipCreateSeqCd = sipCreateSeqCd
         this.scomment = scomment
@@ -145,10 +145,10 @@ export default {
           if (this.resultVo.length > 0) {
           const param = { nipBlockMstSeq: this.resultVo.nipBlockMstSeq }
           const res = await ipmsJsonApis(ipmsJsonApis.deleteCrtIPMst, param)
-           if (res.data.commonMsg === 'SUCCESS') {
-             this.$message.success({ message: `삭제되었습니다.` })
-            }
+           if (res.commonMsg === 'SUCCESS') {
+            this.$message.success({ message: `삭제되었습니다.` })
             this.$emit('reloadData')
+            }
           }
           } catch (error) {
             this.$message.error({ message: `삭제에 실패했습니다.` })
@@ -164,12 +164,6 @@ export default {
       }
 
       try {
-          await this.confirm('IP블럭을 수정하시겠습니까?', '수정 메시지', {
-              confirmButtonText: 'OK',
-              cancelButtonText: 'Cancel',
-              type: 'success',
-          })
-
           const tbIpBlockVo = {
             sipCreateTypeCd: this.resultVo.sipCreateTypeCd,
             scomment: this.resultVo.scomment,
@@ -180,11 +174,12 @@ export default {
             //  const searchSipCreateSeqCd = tbIpBlockMstVo.sipCreateSeqCd
           // const res = await ipmsJsonApis(ipmsJsonApis.selectListSipCreateSeqCd, tbIpBlockVo)
 
-          const res = await ipmsJsonApis(ipmsJsonApis.updateCrtIPMst, tbIpBlockVo)
+          const res = await apiRequestJson(ipmsJsonApis.updateCrtIPMst, tbIpBlockVo)
 
-           if (res.data.commonMsg === 'SUCCESS') {
+           if (res.commonMsg === 'SUCCESS') {
               this.$message('IP블록 수정이 정상적으로 처리되었습니다.')
               this.$emit('reloadData')
+              this.close()
            }
       } catch (error) {
           this.$message.error({ message: `IP블록 수정에 실패했습니다.` })
