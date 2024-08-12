@@ -124,6 +124,7 @@ export default {
 
       ipAssignDatas: [],
       selectedTable: [],
+      ipAssignVo: null
 
     }
   },
@@ -152,7 +153,20 @@ export default {
     },
     handleClickItem(row) {
       if (row.column.property === 'nsummaryCnt' || row.column.property === 'nbitmask') return
-      this.onClcikRow(row.row)
+      const selectedRow = row.row
+      this.fnViewDetailAsgnIPMst(selectedRow)
+    },
+    async fnViewDetailAsgnIPMst(row) {
+      try {
+        const tbIpAssignMstVo = { nipAssignMstSeq: row.nipAssignMstSeq }
+        const res = await apiRequestModel(ipmsModelApis.viewDetailAsgnIPMst, tbIpAssignMstVo)
+        this.ipAssignVo = res?.result?.data
+      } catch (error) {
+        console.error(error)
+      }
+      if (this.ipAssignVo) {
+        this.onClcikRow(this.ipAssignVo)
+      }
     },
     onClcikRow(row) {
       this.$refs.ModalIpAssignDetail.open({ row })

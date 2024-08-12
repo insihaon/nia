@@ -35,42 +35,40 @@
               <tr class="top">
                 <th class="first" scope="row">계위</th>
                 <td>
-                  <template v-if="selectedRow.ssvcLineTypeCd !== 'CL0001'">
-                    {{ selectedRow.ssvcLineTypeNm }} - {{ selectedRow.ssvcGroupNm }} - {{ selectedRow.ssvcObjNm }}
-                  </template>
+                  {{ ipAssignVo.ssvcLineTypeNm }} - {{ ipAssignVo.ssvcGroupNm }} - {{ ipAssignVo.ssvcObjNm }}
                 </td>
                 <th class="first" scope="row">공인/사설</th>
                 <td>
-                  {{ selectedRow.sipCreateTypeNm }}
+                  {{ ipAssignVo.sipCreateTypeNm }}
                 </td>
               </tr>
 
               <tr>
                 <th class="first" scope="row">배정상태</th>
                 <td>
-                  {{ selectedRow.sassignLevelNm }}
+                  {{ ipAssignVo.sassignLevelNm }}
                 </td>
                 <th scope="row">서비스</th>
                 <td>
-                  {{ selectedRow.sassignTypeNm }}
+                  {{ ipAssignVo.sassignTypeNm }}
                 </td>
               </tr>
 
               <tr>
                 <th class="first" scope="row">IP 버전</th>
                 <td>
-                  {{ selectedRow.sipVersionTypeNm }}
+                  {{ ipAssignVo.sipVersionTypeNm }}
                 </td>
                 <th scope="row">IP 주소</th>
                 <td>
-                  {{ selectedRow.pipPrefix }}
+                  {{ ipAssignVo.pipPrefix }}
                 </td>
               </tr>
 
               <tr class="last">
                 <th class="first" scope="row">비고</th>
                 <td colspan="3">
-                  <textarea id="insertScomment" v-model="scomment" class="w98" rows="3" maxlength="4000"></textarea>
+                  <textarea id="insertScomment" v-model="ipAssignVo.scomment" class="w98" rows="3" maxlength="4000"></textarea>
                 </td>
               </tr>
 
@@ -79,7 +77,7 @@
 
           <div class="btn_area my-1">
             <span>
-              <el-button class="el-icon-edit-outline" size="mini" @click="handleEditComment()"> 수정</el-button>
+              <el-button class="el-icon-edit-outline" size="mini" @click="fnScommentUpdateClick()"> 수정</el-button>
             </span>
           </div>
 
@@ -98,33 +96,33 @@
               <tr class="top">
                 <th class="first" scope="row">시작 IP</th>
                 <td>
-                  {{ selectedRow.sfirstAddr }}
+                  {{ ipAssignVo.sfirstAddr }}
                 </td>
                 <th scope="row">끝 IP</th>
                 <td>
-                  {{ selectedRow.slastAddr }}
+                  {{ ipAssignVo.slastAddr }}
                 </td>
               </tr>
 
               <tr>
                 <th class="first" scope="row">총 IP 수</th>
                 <td>
-                  {{ selectedRow.ncnt }}
+                  {{ ipAssignVo.ncnt }}
                 </td>
                 <th scope="row">단위블록수</th>
                 <td>
-                  {{ selectedRow.nclassCnt }}
+                  {{ ipAssignVo.nclassCnt }}
                 </td>
               </tr>
 
               <tr>
                 <th class="first" scope="row">사용 IP 수</th>
                 <td>
-                  {{ selectedRow.nuseIpCnt }}
+                  {{ ipAssignVo.nuseIpCnt }}
                 </td>
                 <th scope="row">가용 IP 수</th>
                 <td>
-                  {{ selectedRow.nfreeIpCnt }}
+                  {{ ipAssignVo.nfreeIpCnt }}
                 </td>
               </tr>
 
@@ -135,7 +133,7 @@
 
       <div slot="footer" class="dialog-footer">
         <el-button size="mini" class="el-icon-document-checked" @click.native="handleAssignIp()">{{ '배정' }}</el-button>
-        <el-button size="mini" :disabled="selectedRow.sassignLevelNm === '예비배정'" class="el-icon-refresh-left" @click.native="handleReturnIp()">{{ '반납' }}</el-button>
+        <el-button v-if="!disabledBtn" size="mini" class="el-icon-refresh-left" @click.native="fnRetUpdateAsgnIPMst()">{{ '반납' }}</el-button>
         <el-button size="mini" class="el-icon-close" @click.native="close()">{{ $t('exit') }}</el-button>
       </div>
       <ModalIpAssign ref="ModalIpAssign" />
@@ -147,7 +145,8 @@
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
 import ModalIpAssign from '@/views-ipms/modal/ModalIpAssign.vue'
-
+import { ipmsModelApis, apiRequestModel, apiRequestJson, ipmsJsonApis } from '@/api/ipms'
+import { onMessagePopup } from '@/utils'
 const routeName = 'ModalIpAssignDetail'
 
 export default {
@@ -159,20 +158,23 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      selectedRow: null,
+      ipAssignVo: null,
       type: 'create',
       IpBlockDetail: [],
       tableDatas: [],
       ipBlockResult: '',
       description: '',
       viewType: '',
-      scomment: ''
+      scomment: '',
+      ipAssignList: [],
     }
   },
   computed: {
+    disabledBtn() {
+      return this.ipAssignVo.sassignLevelCd === 'IA0001' || this.ipAssignVo.sassignLevelCd === 'IA0002'
+    }
   },
   mounted() {
-    // this.onloadIpDetailList
   },
   methods: {
     onCreated() {
@@ -181,112 +183,79 @@ export default {
       this.domElement.maxWidth = 1200
     },
     onOpen(model, actionMode) {
-     this.selectedRow = model.row
+    this.ipAssignVo = model.row
      this.viewType = this.model.type
     },
-    onClose() { this.selectedRow = [] },
-    onloadIpDetailList() {
-     /*  const { key: seq } = this.selectedRow
-      const param = seq
-      try {
-        const res = await apiSelectIpDetailList(param)
-        this.IpBlockDetail = res?.result
-      } catch (error) {
-        console.error(error)
-      } */
-    },
+    onClose() { this.ipAssignVo = [] },
     handleAssignIp() {
-      // 새로운 모달 열기
       this.closeOnClickModal = true
-      this.$refs.ModalIpAssign.open()
+      this.$refs.ModalIpAssign.open({ row: this.ipAssignVo, type: 'asgnRoute' })
     },
-     async handleReturnIp() {
-        // 사용자에게 반납 확인 대화상자 표시
-        this.$confirm('반납하시겠습니까?', 'IP블록반납', {
-          confirmButtonText: 'OK',
-          cancelButtonText: 'Cancel',
-          type: 'success',
-        })
-
-        // 필요한 컬럼 값 설정
-        const { ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd, sassignLevelCd, sipCreateTypeCd } = this.selectedRow
-
-        // 조건에 따른 설정
+     async fnRetUpdateAsgnIPMst() {
+        const { ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd, sassignLevelCd, sipCreateTypeCd } = this.ipAssignVo
+        const srcIpAssignMstList = { ssvcGroupCd, ssvcObjCd, sassignLevelCd, sassignTypeCd: 'SA0000' }
         if (sipCreateTypeCd === 'CT0005') {
-          this.selectedRow.ssvcGroupCd = ssvcGroupCd
-          this.selectedRow.ssvcObjCd = ssvcObjCd
-          this.selectedRow.sassignLevelCd = 'IA0001' // 미배정
+          srcIpAssignMstList.ssvcGroupCd = ssvcGroupCd
+          srcIpAssignMstList.ssvcObjCd = ssvcObjCd
+          srcIpAssignMstList.sassignLevelCd = 'IA0001' // 미배정
         } else {
           if (ssvcGroupCd === '000000') { // 서비스 망만 있는 경우
-            this.selectedRow.ssvcGroupCd = ssvcGroupCd
-            this.selectedRow.ssvcObjCd = ssvcObjCd
-            this.selectedRow.sassignLevelCd = 'IA0002'
+            srcIpAssignMstList.ssvcGroupCd = ssvcGroupCd
+            srcIpAssignMstList.ssvcObjCd = ssvcObjCd
+            srcIpAssignMstList.sassignLevelCd = 'IA0002'
           } else {
             if (ssvcObjCd === '000000') { // 서비스망 / 본부까지 있는 경우
-              this.selectedRow.ssvcGroupCd = '000000'
-              this.selectedRow.ssvcObjCd = ssvcObjCd
-              this.selectedRow.sassignLevelCd = 'IA0002'
+              srcIpAssignMstList.ssvcGroupCd = '000000'
+              srcIpAssignMstList.ssvcObjCd = ssvcObjCd
+              srcIpAssignMstList.sassignLevelCd = 'IA0002'
             } else { // 서비스망 / 본부 / 노드까지 있는 경우
-              this.selectedRow.ssvcGroupCd = ssvcGroupCd
-              this.selectedRow.ssvcObjCd = '000000'
-              this.selectedRow.sassignLevelCd = 'IA0003'
+              srcIpAssignMstList.ssvcGroupCd = ssvcGroupCd
+              srcIpAssignMstList.ssvcObjCd = '000000'
+              srcIpAssignMstList.sassignLevelCd = 'IA0003'
             }
           }
         }
 
-        const param = {
-          srcIpAssignMstVo: {
-            ssvcLineTypeCd: ssvcLineTypeCd,
-            sassignTypeCd: 'SA0000',
-            ssvcGroupCd: this.ssvcGroupCd,
-            ssvcObjCd: this.ssvcObjCd,
-            sassignLevelCd: this.sassignLevelCd
-          },
+        const srcIpAssignMstVo = Object.assign(
+          { ssvcLineTypeCd }, srcIpAssignMstList
+        )
+
+        const tbIpAssignMstComplexVo = {
+          srcIpAssignMstVo,
           destIpAssignMstVos: [
             {
-              nipAssignMstSeq: this.selectedRow.nipAssignMstSeq,
+              nipAssignMstSeq: this.ipAssignVo.nipAssignMstSeq,
               typeFlag: 'return'
             }
           ]
         }
-
-        const res = await /* apiReturnIpAssignList */(param)
-        if (res.success) {
-          this.$message({ message: 'IP블록 반납이 정상적으로 처리되었습니다.', type: 'success' })
-          this.$emit('reloadData')
-        } else {
-          this.$message.error({ message: 'IP블록 반납에 실패했습니다.' })
-        }
-    },
-    handleEditComment() {
-      // 비고란 수정
-        this.confirm('수정하시겠습니까?', 'IP블록반납', {
-        confirmButtonText: 'OK',
-        cancelButtonText: 'Cancel',
-        type: 'success',
-      }).then(async () => {
-        try {
-          const param = {
-            srcIpAssignMstVo: {
-              scomment: this.scomment
-            },
-            destIpAssignMstVos: [
-              {
-                nipAssignMstSeq: this.selectedRow.nipAssignMstSeq
-              }
-            ]
-          }
-          const res = await /* apiEditIpBlockList */(param)
-          if (res.success) {
-            this.$message('수정이 정상적으로 처리되었습니다.')
+       try {
+       const res = await apiRequestJson(ipmsJsonApis.updateAsgnIPMst, tbIpAssignMstComplexVo)
+          if (res.commonMsg === 'SUCCESS') {
+            this.$message({ message: 'IP블록 반납이 정상적으로 처리되었습니다.', type: 'success' })
             this.$emit('reloadData')
+            this.close()
           }
-        } catch (error) {
-          this.$message.error({ message: `수정에 실패했습니다.` })
-          console.error(error)
+      } catch (error) {
+        this.error(error)
+      }
+    },
+     async fnScommentUpdateClick() {
+      const tbIpAssignMstComplexVo = {
+        srcIpAssignMstVo: { scomment: this.ipAssignVo.scomment },
+        destIpAssignMstVos: [{ nipAssignMstSeq: this.ipAssignVo.nipAssignMstSeq }]
+      }
+      try {
+        const res = await apiRequestJson(ipmsJsonApis.updateScommentAsgnIPMst, tbIpAssignMstComplexVo)
+        if (res.commonMsg === 'SUCCESS') {
+          this.$message('비고 수정이 정상적으로 처리되었습니다.')
+        } else {
+          this.$message(res.commonMsg)
         }
-      })
-    }
+      } catch (error) {
+        this.error(error)
+      }
+    },
   },
 }
 </script>

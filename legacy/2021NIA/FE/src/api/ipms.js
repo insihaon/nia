@@ -35,6 +35,7 @@ export const ipmsModelApis = {
   viewUpdateNotice: { desc: '공지사항 수정 화면 ', url: '/opermgmt/boardmgmt/viewUpdateNotice' },
   viewInsertCrtIPMst: { desc: 'IP 블록 생성 상세모달(신규,추가) ', url: '/ipmgmt/createmgmt/viewInsertCrtIPMst' },
   viewUpdateAsgnIPMst: { desc: 'IP 블록관리 > IP배정 대상정보', url: '/ipmgmt/assignmgmt/viewUpdateAsgnIPMst' },
+  viewDetailAsgnIPMst: { desc: 'IP배정 상세정보', url: '/ipmgmt/assignmgmt/viewDetailAsgnIPMst' },
 }
 export const ipmsJsonApis = {
   selectAuthCenterList: { desc: '센터 조회', url: '/opermgmt/orgmgmt/selectAuthCenterList' },
