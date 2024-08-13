@@ -69,12 +69,10 @@
                   <textarea id="insertScomment" v-model="scomment" class="w98" rows="3" maxlength="4000"></textarea>
                 </td>
               </tr>
-
             </tbody>
           </table>
-        </div>
-        <div class="content_result">
-          <table class="tbl_data entry">
+
+          <table class="my-3 tbl_data entry">
             <colgroup>
               <col width="15%" />
               <col width="85%" />
@@ -89,45 +87,49 @@
               </tr>
             </tbody>
           </table>
+        </div>
 
-          <table id="baseTable" class="tbl_list my-3" summary="목록">
-            <caption>목록</caption>
-            <colgroup>
-              <col width="6%" />
-              <col width="15%" />
-              <col width="15%" />
-              <col width="24%" />
-              <col width="12%" />
-              <col width="20%" />
-              <col width="8%" />
-            </colgroup>
-            <thead>
-              <tr>
-                <th class="first" scope="col">순번</th>
-                <th scope="col">IP 블록</th>
-                <th scope="col">시작 IP</th>
-                <th scope="col">끝 IP</th>
-                <th scope="col">단위블록수</th>
-                <th scope="col">총 IP수</th>
-                <th scope="col">삭제</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(item, index) in ipBlockDetailList" :key="index">
-                <td> {{ index + 1 }}</td>
-                <td> {{ item.pipPrefix }}</td>
-                <td> {{ item.sfirstAddr }}</td>
-                <td> {{ item.slastAddr }}</td>
-                <td> {{ item.nclassCnt }}</td>
-                <td> {{ item.ncnt }}</td>
-                <td> <el-button size="mini" @click="fnRemoveBtnClick()">삭제</el-button> </td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="content_result">
+          <div class="scroll_area">
+            <table id="baseTable" class="tbl_list my-3" summary="목록">
+              <caption>목록</caption>
+              <colgroup>
+                <col width="6%" />
+                <col width="15%" />
+                <col width="15%" />
+                <col width="24%" />
+                <col width="12%" />
+                <col width="20%" />
+                <col width="8%" />
+              </colgroup>
+              <thead>
+                <tr>
+                  <th class="first" scope="col">순번</th>
+                  <th scope="col">IP 블록</th>
+                  <th scope="col">시작 IP</th>
+                  <th scope="col">끝 IP</th>
+                  <th scope="col">단위블록수</th>
+                  <th scope="col">총 IP수</th>
+                  <th scope="col">삭제</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(item, index) in ipBlockDetailList" :key="index">
+                  <td> {{ index + 1 }}</td>
+                  <td> {{ item.pipPrefix }}</td>
+                  <td> {{ item.sfirstAddr }}</td>
+                  <td> {{ item.slastAddr }}</td>
+                  <td> {{ item.nclassCnt }}</td>
+                  <td> {{ item.ncnt }}</td>
+                  <td> <el-button size="mini" @click="fnRemoveBtnClick()">삭제</el-button> </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
-          <div class="btn_area mt5">
+          <div class="p-1 btn_area mt5">
             <span>
-              <el-button size="mini" @click="fnInitBtnClick()"> 초기화</el-button>
+              <el-button class="mx-sm-1" size="mini" @click="fnInitBtnClick()"> 초기화</el-button>
             </span>
             <span>
               <el-button size="mini" @click="fnSaveBtnClick()"> 등록 </el-button>
@@ -135,21 +137,16 @@
           </div>
         </div>
 
-        <div class="content_result">
-          <h4>IP 블록 처리결과</h4>
-          <div class="handling_msg">
-            <p id="resultMsg"></p>
-          </div>
-        </div>
+        <el-input id="commonMsg" v-model="commonMsg" readonly size="mini">
+        </el-input>
       </div>
-      <el-input id="commonMsg" v-model="commonMsg" type="hidden">
 
-        <div slot="footer" class="dialog-footer">
-          <el-button size="mini" class="el-icon-close" @click.native="close()">
-            {{ $t('exit') }}
-          </el-button>
-        </div>
-      </el-input></el-dialog>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="mini" class="el-icon-close" @click.native="close()">
+          {{ $t('exit') }}
+        </el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -214,12 +211,16 @@ export default {
   mounted() {
   },
   methods: {
+    sipCreate() {
+      console.log(this.sipCreateTypeCd)
+    },
     onCreated() {
       Modal.methods.onCreated.call(this)
       this.closeOnClickModal = false
       this.domElement.maxWidth = 1200
     },
     onOpen(model, actionMode) {
+      this.commonMsg = ''
       this.resultListVo = model?.row
       this.viewType = this.model.type
       this.fnViewUpdateCrtIPMstCallBack(model)
@@ -248,12 +249,16 @@ export default {
           console.error(error)
         }
       },
+      onResetForm() {
+        this.ipBlockDetailList = []
+        this.pipPrefix = ''
+      },
 
-    onClose() { this.resultListVo = [] },
-    async fnSaveBtnClick() {
-      // ip 등록
-      if (this.ipBlockDetailList.length === 0) {
-        this.$message('등록할 목록이 없습니다.')
+      onClose() { this.resultListVo = [] },
+      async fnSaveBtnClick() {
+        // ip 등록
+        if (this.ipBlockDetailList.length === 0) {
+          this.$message('등록할 목록이 없습니다.')
         return
       }
 
@@ -287,8 +292,8 @@ export default {
           if (res.commonMsg === 'SUCCESS') {
             this.$message('IP블록 등록이 정상적으로 처리되었습니다.')
             this.commonMsg = 'IP블록이 정상적으로 등록되었습니다.'
+            this.onResetForm()
             this.$emit('reloadData')
-            this.close()
           } else {
             this.$message.error({ message: 'IP블록 등록에 실패했습니다.' })
           }
@@ -300,7 +305,7 @@ export default {
     },
     async fnAppendBtnClick() {
       // ip 추가
-      if (this.sipCreateTypeNm === '') {
+      if (this.sipCreateTypeCd === '') {
         this.$message('공인/사설이 미분류입니다. 다시 선택해 주시기 바랍니다.')
         return
       }
@@ -335,8 +340,15 @@ export default {
                 nclassCnt: resultData.nclassCnt,
                 ncnt: resultData.ncnt,
               })
+          } else {
+            this.$message({
+              message: res.commonMsg,
+              type: 'success',
+              duration: 3000
+            })
           }
       } catch (error) {
+        this.message
         console.error(error)
       }
     },
@@ -352,9 +364,18 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-  .ModalAddIpBlock{
+  .ModalAddIpBlock ::v-deep{
     .el-select {
       width: 100%;
+    }
+    .scroll_area {
+      max-height: 350px;
+      overflow-y: auto;
+
+      .tbl_list thead {
+        position: sticky;
+        top: 0;
+      }
     }
   }
 </style>

@@ -26,8 +26,8 @@
               <label>
                 계위
               </label>
-              <div v-if="selectedRow !== null">
-                {{ selectedRow.mang }} - {{ selectedRow.org }}
+              <div v-if="tbData !== null">
+                {{ tbData.ssvcLineTypeNm }} - {{ tbData.ssvcGroupNm }}
               </div>
             </el-col>
           </el-row>
@@ -99,7 +99,8 @@ export default {
           }
         },
       ],
-      tableDatas: []
+      tableDatas: [],
+      tbData: null
     }
   },
   methods: {
@@ -110,6 +111,7 @@ export default {
     },
     onOpen(model, actionMode) {
       this.tableDatas = model.row
+      this.tbData = this.tableDatas[0]
     },
     onClose() {
     },

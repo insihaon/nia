@@ -145,8 +145,7 @@
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
 import ModalIpAssign from '@/views-ipms/modal/ModalIpAssign.vue'
-import { ipmsModelApis, apiRequestModel, apiRequestJson, ipmsJsonApis } from '@/api/ipms'
-import { onMessagePopup } from '@/utils'
+import { apiRequestJson, ipmsJsonApis } from '@/api/ipms'
 const routeName = 'ModalIpAssignDetail'
 
 export default {

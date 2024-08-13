@@ -48,6 +48,7 @@ import tableHeightMixin from '@/mixin/tableHeightMixin'
 import ModalIpBlockDetail from '@/views-ipms/modal/ModalIpBlockDetail.vue'
 import ModalAddIpBlock from '@/views-ipms/modal/ModalAddIpBlock.vue'
 import { ipmsModelApis, apiRequestModel } from '@/api/ipms'
+import moment from 'moment'
 const routeName = 'IpBlockManagement'
 
 export default {
@@ -75,8 +76,14 @@ export default {
         { prop: 'pipPrefix', label: 'IP 블록', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'sfirstAddr', label: '시작 IP', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'slastAddr', label: '끝 IP', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'nclassCnt', label: '단위블록수', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'dmodifyDt', label: '작업일자', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'nclassCnt', label: '단위블록수', align: 'center', sortable: true, columnVisible: true, showOverflow: true,
+          //  formatter: (row) => {
+          //   return this.formatNumber(row.nclassCnt, 0, 10)
+          // }
+        },
+        { prop: 'dmodifyDt', label: '작업일자', align: 'center', sortable: true, columnVisible: true, showOverflow: true,
+          formatter: (row) => moment(row.dmodifyDt).format('YYYY-MM-DD')
+        },
         { prop: 'sipCreateSeqCd', label: '생성차수코드', align: 'center', sortable: true, columnVisible: false, showOverflow: true },
         { prop: 'sipVersionTypeNm', label: '', align: 'center', sortable: true, columnVisible: false, showOverflow: true }
       ],
@@ -91,6 +98,14 @@ export default {
     this.fnViewListIpBlockMst()
   },
   methods: {
+  //   formatNumber(value, minFractionDigits = 0, maxFractionDigits = 0) {
+  //   const hasDecimal = value % 1 !== 0
+
+  //   return new Intl.NumberFormat('en-US', {
+  //     minimumFractionDigits: hasDecimal ? Math.max(minFractionDigits, 2) : minFractionDigits,
+  //     maximumFractionDigits: maxFractionDigits
+  //   }).format(value)
+  // },
    async fnViewListIpBlockMst(requestParameter) {
       try {
         const res = await apiRequestModel(ipmsModelApis.viewListCrtIPMst, requestParameter)
