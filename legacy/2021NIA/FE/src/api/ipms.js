@@ -36,6 +36,8 @@ export const ipmsModelApis = {
   viewInsertCrtIPMst: { desc: 'IP 블록 생성 상세모달(신규,추가) ', url: '/ipmgmt/createmgmt/viewInsertCrtIPMst' },
   viewUpdateAsgnIPMst: { desc: 'IP 블록관리 > IP배정 대상정보', url: '/ipmgmt/assignmgmt/viewUpdateAsgnIPMst' },
   viewDetailAsgnIPMst: { desc: 'IP배정 상세정보', url: '/ipmgmt/assignmgmt/viewDetailAsgnIPMst' },
+  viewListNode: { desc: 'IP주소 노드 이전 신청 조회', url: '/opermgmt/nodemgmt/viewListNode' },
+  viewDetailNode: { desc: 'IP주소 노드 이전 신청 조회', url: '/opermgmt/nodemgmt/viewDetailNode' },
 }
 export const ipmsJsonApis = {
   selectAuthCenterList: { desc: '센터 조회', url: '/opermgmt/orgmgmt/selectAuthCenterList' },

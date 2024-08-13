@@ -96,7 +96,9 @@ export default {
       }
     },
     async viewDetailCrtIPMst(row, type) {
-      const { nlvlMstSeq, sipVersionTypeCd, sassignLeveslCd, ssvcLineTypeNm, ssvcGroupNm } = row
+      const { sipVersionTypeCd, sassignLeveslCd, ssvcLineTypeNm, ssvcGroupNm } = row
+      const nlvlMstSeq = type === '미배정' ? 'IA0001' : 'IA0002'
+
       try {
         const param = {
           nlvlMstSeq: nlvlMstSeq,

@@ -3,24 +3,32 @@
     <DynamicComponentLoader
       ref="searchCondition"
       :component-keys="componentList"
-      @handle-search="handleSearch"
+      @handle-search="fnViewListIpBlockMst"
     />
     <el-col ref="tableContainer" :span="24">
       <compTable
         :prop-table-height="'calc(100% - 80px)'"
         :prop-column="tableColumns"
+        :prop-data="resultListVo"
         :prop-is-pagination="false"
         :prop-is-check-box="false"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
+        :prop-on-click="onClcikRow"
       >
         <template slot="text-description">
           <span>
             조회결과
           </span>
         </template>
+        <template slot="add-features">
+          <div class="float-right">
+            <el-button size="mini" icon="el-icon-document-add" @click="close()">신청</el-button>
+          </div>
+        </template>
       </compTable>
     </el-col>
+    <ModalNodeTransferDetail ref="ModalNodeTransferDetail" />
   </el-row>
 </template>
 <script>
@@ -28,12 +36,15 @@ import { Base } from '@/min/Base.min'
 import CompTable from '@/components/elTable/CompTable.vue'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
 import tableHeightMixin from '@/mixin/tableHeightMixin'
+import ModalNodeTransferDetail from '@/views-ipms/modal/ModalNodeTransferDetail.vue'
+import { ipmsModelApis, apiRequestModel } from '@/api/ipms'
+import moment from 'moment'
 
 const routeName = 'IpAdressNodeApplyTransfer'
 
 export default {
   name: routeName,
-  components: { CompTable, DynamicComponentLoader },
+  components: { CompTable, DynamicComponentLoader, ModalNodeTransferDetail },
   extends: Base,
   mixins: [tableHeightMixin],
   data() {
@@ -41,15 +52,15 @@ export default {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       tableColumns: [
-        { prop: '', label: '번호', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: 'IP블록', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'seq', label: '번호', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'pipPrefix', label: 'IP블록', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         {
           prop: '',
           label: '변경전',
           children: [
-            { prop: '', label: '서비스망', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-            { prop: '', label: '본부', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-            { prop: '', label: '노드', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+            { prop: 'beforeSsvcLineTypeNm', label: '서비스망', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+            { prop: 'beforeSsvcGroupNm', label: '본부', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+            { prop: 'beforeSsvcObjCd', label: '노드', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
           ],
           align: 'center',
           sortable: true,
@@ -60,19 +71,23 @@ export default {
           prop: '',
           label: '변경후',
           children: [
-            { prop: '', label: '서비스망', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-            { prop: '', label: '본부', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-            { prop: '', label: '노드', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+            { prop: 'afterSsvcLineTypeNm', label: '서비스망', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+            { prop: 'afterSsvcGroupNm', label: '본부', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+            { prop: 'afterSsvcObjNm', label: '노드', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
           ],
           align: 'center',
           sortable: true,
           columnVisible: true,
           showOverflow: true,
         },
-        { prop: '', label: '신청자', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: '신청일시', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: '처리일시', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: '진행상태', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'sUserNm', label: '신청자', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'dCreateDt', label: '신청일시', align: 'center', sortable: true, columnVisible: true, showOverflow: true,
+          formatter: (row) => moment(row.dCreateDt).format('YYYY-MM-DD')
+        },
+        { prop: 'dCompleteDt', label: '처리일시', align: 'center', sortable: true, columnVisible: true, showOverflow: true,
+          formatter: (row) => moment(row.dCompleteDt).format('YYYY-MM-DD')
+         },
+        { prop: 'progressStatusNm', label: '진행상태', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
       ],
       componentList: [
         { key: 'IpAddress', props: { isShowSelectBox: false } },
@@ -89,12 +104,36 @@ export default {
           }
         },
       ],
+      resultListVo: []
     }
   },
+  mounted() {
+    this.fnViewListIpBlockMst()
+  },
   methods: {
-    handleSearch(requestParameter) {
-      console.log(requestParameter)
-    }
+    async fnViewListIpBlockMst(requestParameter) {
+      try {
+        const res = await apiRequestModel(ipmsModelApis.viewListNode, requestParameter)
+        this.resultListVo = res?.result.data
+      } catch (error) {
+        console.error(error)
+      }
+    },
+     onClcikRow(row) {
+       this.fnViewDetailNode(row)
+    },
+     async fnViewDetailNode(row) {
+      try {
+        const { seq } = row
+        const nodeVo = { seq }
+        const res = await apiRequestModel(ipmsModelApis.viewDetailNode, nodeVo)
+        // if (res.data) {
+          this.$refs.ModalNodeTransferDetail.open({ row: res.data })
+        // }
+      } catch (error) {
+        console.error(error)
+      }
+    },
   },
 }
 </script>
