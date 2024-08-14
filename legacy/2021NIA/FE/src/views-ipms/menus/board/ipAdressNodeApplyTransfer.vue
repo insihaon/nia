@@ -127,9 +127,9 @@ export default {
         const { seq } = row
         const nodeVo = { seq }
         const res = await apiRequestModel(ipmsModelApis.viewDetailNode, nodeVo)
-        // if (res.data) {
-          this.$refs.ModalNodeTransferDetail.open({ row: res.data })
-        // }
+        if (res.result.data) {
+          this.$refs.ModalNodeTransferDetail.open({ row: res.result.data })
+        }
       } catch (error) {
         console.error(error)
       }

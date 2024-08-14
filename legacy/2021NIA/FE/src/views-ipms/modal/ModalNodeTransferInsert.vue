@@ -17,59 +17,50 @@
     >
       <span slot="title">
         <i class="el-icon-document mr-2" style="font-size: 17px" />
-        IP블록배정
+        IP주소  노드 이전 등록
         <hr>
       </span>
 
-      <div id="content" class="layer info">
+      <div id="content" class="layer">
 
-        <div class="content_result">
-          <h4 class="mt5">조회결과(변경 전 정보)</h4>
-          <table id="contentBeforeTable" class="tbl_list mt5">
+        <div class="content_result mt5" style="padding-top: 7px;">
+          <h4>변경 전 계위정보</h4>
+          <table class="tbl_data entry" summary="변경후">
+            <caption>조회조건선택</caption>
             <colgroup>
-              <col width="10%" />
-              <col width="20%" />
-              <col width="10%" />
-              <col width="10%" />
-              <col width="20%" />
-              <col width="15%" />
-              <col width="15%" />
+              <col width="39%" /><col width="61%" />
             </colgroup>
-          </table>
-
-          <table id="baseTable" class="tbl_list my-3" summary="목록">
-            <caption>목록</caption>
-            <colgroup>
-              <col width="10%" />
-              <col width="20%" />
-              <col width="10%" />
-              <col width="10%" />
-              <col width="20%" />
-              <col width="12%" />
-              <col width="16%" />
-            </colgroup>
-            <thead>
-              <tr>
-                <th>서비스망</th>
-                <th>본부</th>
-                <th>노드</th>
-                <th>공인/사설</th>
-                <th>서비스</th>
-                <th>IP블록</th>
-                <th>배정상태</th>
-              </tr>
-            </thead>
             <tbody>
+              <tr class="top">
+                <th class="first" scope="row">IP블록</th>
+                <td>
+                  {{ pipPrefix }}
+                </td>
+              </tr>
               <tr>
-                <td> {{ resultVo.beforeSsvcLineTypeNm }}</td>
-                <td> {{ resultVo.beforeSsvcGroupNm }}</td>
-                <td> {{ resultVo.beforeSsvcObjNm }}</td>
-                <td> {{ resultVo.sipCreateTypeNm }}</td>
-                <td> {{ resultVo.sassignTypeNm }}</td>
-                <td> {{ resultVo.pipPrefix }}</td>
-                <td> {{ resultVo.sassignLevelNm }}</td>
-                <td v-if="false">{{ resultVo.sipVersionTypeCd }}</td>
-                <td v-if="false">{{ resultVo.nipAssignMstSeq }}</td>
+                <th class="first" scope="row">서비스망</th>
+                <td>
+                  <div id="ssvcLineTypeNm" class="inline-block w99"></div>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">본부</th>
+                <td>
+                  <div id="ssvcGroupNm" class="inline-block w99"></div>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">노드</th>
+                <td>
+                  <div id="ssvcObjNm" class="inline-block w99"></div>
+                </td>
+                <td id="beforeSsvcLineTypeCd" style="display: none;"></td>
+                <td id="beforeSsvcGroupCd" style="display: none;"></td>
+                <td id="beforeSsvcObjCd" style="display: none;"></td>
+                <td id="nipAssignMstSeq" style="display: none;"></td>
+                <td id="nipAllocMstSeq" style="display: none;"></td>
+                <td id="sassignLevelCd" style="display: none;"></td>
+                <td id="sassignTypeCd" style="display: none;"></td>
               </tr>
             </tbody>
           </table>
@@ -158,7 +149,7 @@ import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
 import { apiRequestModel, ipmsModelApis } from '@/api/ipms'
 
-const routeName = 'ModalNodeTransferDetail'
+const routeName = 'ModalNodeTransferInsert'
 
 export default {
   name: routeName,
@@ -173,9 +164,9 @@ export default {
     }
   },
   computed: {
-    idDisabled() {
-      return this.resultVo.progressStatus === 'nod001'
-    }
+    // idDisabled() {
+    //   return this.resultVo.progressStatus === 'nod001'
+    // }
   },
   mounted() {
   },
