@@ -142,14 +142,12 @@ export default {
         cancelButtonText: '취소'
       }).then(async() => {
         try {
-          if (this.resultVo.length > 0) {
           const param = { nipBlockMstSeq: this.resultVo.nipBlockMstSeq }
-          const res = await ipmsJsonApis(ipmsJsonApis.deleteCrtIPMst, param)
+          const res = await apiRequestJson(ipmsJsonApis.deleteCrtIPMst, param)
            if (res.commonMsg === 'SUCCESS') {
             this.$message.success({ message: `삭제되었습니다.` })
             this.$emit('reloadData')
             }
-          }
           } catch (error) {
             this.$message.error({ message: `삭제에 실패했습니다.` })
             console.log(error)

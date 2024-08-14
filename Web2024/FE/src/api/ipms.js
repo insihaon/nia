@@ -38,6 +38,8 @@ export const ipmsModelApis = {
   viewDetailAsgnIPMst: { desc: 'IP배정 상세정보', url: '/ipmgmt/assignmgmt/viewDetailAsgnIPMst' },
   viewListNode: { desc: 'IP주소 노드 이전 신청 조회', url: '/opermgmt/nodemgmt/viewListNode' },
   viewDetailNode: { desc: 'IP주소 노드 이전 신청 조회', url: '/opermgmt/nodemgmt/viewDetailNode' },
+  viewCancelNode: { desc: 'IP주소 노드 이전 반려', url: '/opermgmt/nodemgmt/viewCancelNode' },
+  confirmNode: { desc: 'IP주소 노드 이전 승인', url: '/opermgmt/nodemgmt/confirmNode' },
 }
 export const ipmsJsonApis = {
   selectAuthCenterList: { desc: '센터 조회', url: '/opermgmt/orgmgmt/selectAuthCenterList' },
