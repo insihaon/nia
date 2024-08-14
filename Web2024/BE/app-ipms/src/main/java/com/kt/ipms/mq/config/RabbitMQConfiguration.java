@@ -1,4 +1,4 @@
-package com.codej.ipms.mq.config;
+package com.kt.ipms.mq.config;
 
 
 import org.springframework.amqp.core.AcknowledgeMode;
@@ -10,9 +10,9 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.codej.ipms.mq.handler.AmqpAlarmListener;
-import com.codej.ipms.mq.properties.IpmsRabbitMQProperites;
 import com.codej.mq.config.BaseRabbitMQConfiguration;
+import com.kt.ipms.mq.handler.AmqpAlarmListener;
+import com.kt.ipms.mq.properties.IpmsRabbitMQProperites;
 
 @Configuration
 @ConditionalOnExpression("'${spring.rabbitmq.enabled:true}' == 'true'")

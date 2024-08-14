@@ -17,7 +17,7 @@ war {
     manifest{
         attributes("Implementation-Title": project.name
         ,"Implementation-Version": version
-        ,"Main-Class": "com.codej.ipms.IpmsApplication"
+        ,"Main-Class": "com.kt.ipms.IpmsApplication"
         )
     }
     archiveName("ipms.war")

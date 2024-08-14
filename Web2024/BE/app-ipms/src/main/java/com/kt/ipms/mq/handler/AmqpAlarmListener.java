@@ -1,4 +1,4 @@
-package com.codej.ipms.mq.handler;
+package com.kt.ipms.mq.handler;
 
 import java.nio.charset.StandardCharsets;
 
@@ -8,7 +8,7 @@ import org.springframework.amqp.rabbit.listener.api.ChannelAwareMessageListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.codej.ipms.mq.properties.IpmsRabbitMQProperites;
+import com.kt.ipms.mq.properties.IpmsRabbitMQProperites;
 import com.rabbitmq.client.Channel;
 
 import lombok.extern.slf4j.Slf4j;

@@ -1,4 +1,4 @@
-package com.codej.ipms.mq.properties;
+package com.kt.ipms.mq.properties;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
