@@ -1,0 +1,77 @@
+//=================================================================//
+// app-demo
+//=================================================================//
+apply plugin: 'war'
+bootJar {
+	enabled = true
+}
+jar {
+	enabled = false
+}
+bootWar {
+	archiveName("demo_bootwar.war")
+	enabled = true
+}
+
+war {
+    manifest{
+        attributes("Implementation-Title": project.name
+        ,"Implementation-Version": version
+        ,"Main-Class": "com.codej.demo.DemoApplication"
+        )
+    }
+    archiveName("demo.war")
+    webInf{from '../warconfig/nmsLink.jsp'}
+	enabled = false
+} 
+
+dependencies {
+	implementation project(':common-base')
+	implementation project(':common-web')
+	implementation project(':common-mq')
+	implementation project(':common-ws')
+
+	implementation fileTree(dir: 'libs', include: ['**/*.jar'])
+	
+	implementation 'org.springframework.boot:spring-boot-starter'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc'	
+	testImplementation 'junit:junit:4.13.2'
+	implementation 'org.springframework:spring-test'
+
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf:2.7.3'	// 404 Error Page
+
+	implementation 'javax.mail:mail:1.4.7'
+
+	implementation 'org.springframework.boot:spring-boot-starter-amqp' /* RabbitMQConfiguration */
+
+	// jsch: ssh연결을 위한 라이브러리
+	implementation 'com.jcraft:jsch:0.1.55'
+
+	// <<< h2-console                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+	runtimeOnly 'com.h2database:h2'
+	implementation 'mysql:mysql-connector-java:8.0.23' 
+	// >>> h2-console
+
+	// <<< spring.database.url 설정 필요. compileOnly 로 하면 배포시 문제됨
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc'	
+	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.2'    /* MyBatis */
+    implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'  /* MyBatis 쿼리 로그 출력 */  
+    // >>> spring.database.url 설정 필요
+
+	// Gson: JSON 직렬화/역직렬화를 위한 Java 라이브러리: HttpUtil, JsonUtil
+	implementation 'com.google.code.gson:gson'
+
+	// JSON: 간단한 JSON 처리를 위한 라이브러리
+	implementation 'org.json:json:20231013'
+}
+
+task bootJarRun(type: JavaExec) {
+	group = '_custom'
+	classpath = files(tasks.jar)
+	args = ['--spring.profiles.active=dev', '--java.net.preferIPv4Stack=true']
+	println("bootJarRun : " + tasks.jar )
+}
