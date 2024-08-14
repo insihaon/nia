@@ -1,4 +1,4 @@
-package com.codej.ipms;
+package com.kt.ipms;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

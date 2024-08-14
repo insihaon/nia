@@ -1,4 +1,4 @@
-package com.codej.ipms.mq.handler;
+package com.kt.ipms.mq.handler;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.stereotype.Service;
 
 import com.codej.base.utils.CommonUtil;
-import com.codej.ipms.mq.properties.IpmsRabbitMQProperites;
+import com.kt.ipms.mq.properties.IpmsRabbitMQProperites;
 
 import lombok.extern.slf4j.Slf4j;
 

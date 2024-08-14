@@ -1,4 +1,4 @@
-package com.codej.ipms.mapper.db2nd;
+package com.kt.ipms.mapper.db2nd;
 
 import java.util.HashMap;
 
