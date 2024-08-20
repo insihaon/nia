@@ -1,17 +1,14 @@
 package com.codej.nia.mq.handler;
 
-import com.codej.base.utils.CommonUtil;
-
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import com.codej.nia.properties.NiaRabbitMQProperites;
-import com.google.gson.JsonObject;
-import com.codej.base.utils.JsonUtil;
-
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.stereotype.Service;
+
+import com.codej.base.utils.CommonUtil;
+import com.codej.nia.properties.NiaRabbitMQProperites;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,7 +27,7 @@ public class NiaUiToEnginePublisher {
 	public void sendMessage(Object data) throws Exception {
 		try {
 
-			log.info("[MQ:{}] <<< SendPublisher {} <=====", rabbitMQProperites.getAddress(),
+			log.info("[MQ:{},{}] <<< SendPublisher {} <=====", rabbitMQProperites.getAddress(),
 					rabbitMQProperites.getNiaUiToEngine(), data.toString());
 			niaUiToEangineTemplate.convertAndSend(data);
 		} catch (Exception e) {
