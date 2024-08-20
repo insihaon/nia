@@ -33,7 +33,7 @@ subprojects {
 	apply plugin: 'idea'
 	apply plugin: 'org.springframework.boot'
 	apply plugin: 'io.spring.dependency-management'
-	apply plugin: 'com.palantir.docker'
+	// apply plugin: 'com.palantir.docker'
 	
 
 	version = ''
@@ -41,14 +41,13 @@ subprojects {
 	targetCompatibility = 1.8
 		
 	repositories {
-		mavenLocal()
+		mavenLocal()  // Maven 로컬 저장소를 사용
 		mavenCentral()
 	}
 
 	dependencies {
-		// implementation files("../libs/ADUtilSSL.jar")
 		implementation fileTree(dir: 'libs', include: ['**/*.jar'])
-		
+					
 		// developmentOnly 'org.springframework.boot:spring-boot-devtools' 주의 사용시 @Cacheable 에 ClassCastException 문제가 발생함. 
 		implementation 'org.springframework.boot:spring-boot-starter'
 		testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -62,7 +61,7 @@ subprojects {
 		testAnnotationProcessor 'org.projectlombok:lombok'
 		implementation 'org.projectlombok:lombok:1.18.22'
 		// >>> lombok
-
+			
 		// <<< Log4j2 보안취약점 대응. https://logging.apache.org/log4j/2.x/changes-report.html
 		implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.17.1'
 		implementation group: 'org.apache.logging.log4j', name: 'log4j-to-slf4j', version: '2.17.1'

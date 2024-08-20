@@ -1,5 +1,6 @@
 package com.kt.ipms.mq.handler;
 
+
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +27,9 @@ public class UiToEnginePublisher {
 
 	public void sendMessage(Object data) throws Exception {
 		try {
-
-			log.info("[MQ:{}] <<< SendPublisher {} <=====", rabbitMQProperites.getAddress(),
+			log.info("[MQ:{},{}] <<< SendPublisher {} <=====", rabbitMQProperites.getAddress(),
 					rabbitMQProperites.getUiToEngine(), data.toString());
-					uiToEangineTemplate.convertAndSend(data);
+			uiToEangineTemplate.convertAndSend(data);
 		} catch (Exception e) {
 			log.error("=====> [MQ:sendMessage] : error cause={}, stackTrace={} <=====", ExceptionUtils.getStackTrace(e),
 					e.getCause());
