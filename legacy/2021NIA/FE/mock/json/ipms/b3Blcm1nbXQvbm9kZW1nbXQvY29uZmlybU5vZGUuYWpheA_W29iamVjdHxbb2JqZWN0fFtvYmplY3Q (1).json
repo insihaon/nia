@@ -94,7 +94,7 @@
     "nipAllocMstSeq": null
   },
   "__config": {
-    "url": "/opermgmt/nodemgmt/confirmNode.model",
+    "url": "/opermgmt/nodemgmt/confirmNode.ajax",
     "param": {
       "srcIpAssignMstVo": {
         "ssvcLineTypeCd": "CL0001",
@@ -121,6 +121,6 @@
     "receivedTime": "2024-08-20 08:33:43.311",
     "duration": 2928,
     "filename": "b3Blcm1nbXQvbm9kZW1nbXQvY29uZmlybU5vZGUuYWpheA_W29iamVjdHxbb2JqZWN0fFtvYmplY3Q.json",
-    "fetch": "success-fetch('/opermgmt/nodemgmt/confirmNode.model', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{\"srcIpAssignMstVo\":{\"ssvcLineTypeCd\":\"CL0001\",\"ssvcGroupCd\":\"000000\",\"ssvcObjCd\":\"000000\",\"sassignLevelCd\":\"IA0003\",\"sassignTypeCd\":\"SA0000\",\"scomment\":\"기타\\ntest\",\"typeFlag\":\"\"},\"destIpAssignMstVos\":[{\"nipAssignMstSeq\":\"1107775\",\"pipPrefix\":\"1.100.128.128/26\",\"sipVersionTypeCd\":\"CV0001\",\"typeFlag\":\"assign\",\"menuType\":\"NodeReq\"}],\"nodeMgmtVo\":{\"seq\":\"642\"}}', 'method': 'POST' })"
+    "fetch": "success-fetch('/opermgmt/nodemgmt/confirmNode.ajax', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{\"srcIpAssignMstVo\":{\"ssvcLineTypeCd\":\"CL0001\",\"ssvcGroupCd\":\"000000\",\"ssvcObjCd\":\"000000\",\"sassignLevelCd\":\"IA0003\",\"sassignTypeCd\":\"SA0000\",\"scomment\":\"기타\\ntest\",\"typeFlag\":\"\"},\"destIpAssignMstVos\":[{\"nipAssignMstSeq\":\"1107775\",\"pipPrefix\":\"1.100.128.128/26\",\"sipVersionTypeCd\":\"CV0001\",\"typeFlag\":\"assign\",\"menuType\":\"NodeReq\"}],\"nodeMgmtVo\":{\"seq\":\"642\"}}', 'method': 'POST' })"
   }
 }

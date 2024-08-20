@@ -37,9 +37,12 @@ export const ipmsModelApis = {
   viewUpdateAsgnIPMst: { desc: 'IP 블록관리 > IP배정 대상정보', url: '/ipmgmt/assignmgmt/viewUpdateAsgnIPMst' },
   viewDetailAsgnIPMst: { desc: 'IP배정 상세정보', url: '/ipmgmt/assignmgmt/viewDetailAsgnIPMst' },
   viewListNode: { desc: 'IP주소 노드 이전 신청 조회', url: '/opermgmt/nodemgmt/viewListNode' },
-  viewDetailNode: { desc: 'IP주소 노드 이전 신청 조회', url: '/opermgmt/nodemgmt/viewDetailNode' },
+  viewDetailNode: { desc: 'IP주소 노드 이전 상세', url: '/opermgmt/nodemgmt/viewDetailNode' },
   viewCancelNode: { desc: 'IP주소 노드 이전 반려', url: '/opermgmt/nodemgmt/viewCancelNode' },
-  confirmNode: { desc: 'IP주소 노드 이전 승인', url: '/opermgmt/nodemgmt/confirmNode' },
+  viewInsertNode: { desc: 'IP주소 노드 이전 신청 > 신청 상세, IP 주소 조회', url: '/opermgmt/nodemgmt/viewInsertNode' },
+  viewfnSelectNode: { desc: 'IP주소 노드 이전 신청 > 조회 결과 선택', url: '/opermgmt/nodemgmt/viewfnSelectNode' },
+  viewListAssignApyTxn: { desc: 'IP 배정 신청 조회', url: '/opermgmt/assignmgmt/viewListAssignApyTxn' },
+  viewDetailAssignApyTxn: { desc: 'IP 배정 신청 조회 상세정보', url: '/opermgmt/assignmgmt/viewDetailAssignApyTxn' },
 }
 export const ipmsJsonApis = {
   selectAuthCenterList: { desc: '센터 조회', url: '/opermgmt/orgmgmt/selectAuthCenterList' },
@@ -60,6 +63,7 @@ export const ipmsJsonApis = {
   insertListCrtIPMst: { desc: 'IP 블록관리 > IP 블록생성 > IP 주소 등록', url: '/ipmgmt/createmgmt/insertListCrtIPMst' },
   updateCrtIPMst: { desc: 'IP 블록관리  > 수정', url: '/ipmgmt/createmgmt/updateCrtIPMst' },
   updateAsgnIPMst: { desc: 'IP 블록관리 > 배정', url: '/ipmgmt/assignmgmt/updateAsgnIPMst' },
+  confirmNode: { desc: 'IP주소 노드 이전 승인', url: '/opermgmt/nodemgmt/confirmNode' },
 }
 
 export function apiTest(params) {

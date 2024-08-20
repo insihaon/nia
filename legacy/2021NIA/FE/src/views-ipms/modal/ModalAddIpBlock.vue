@@ -82,7 +82,7 @@
                 <th class="first" scope="row">IP 주소</th>
                 <td>
                   <el-input id="insertPipPrefix" v-model="pipPrefix" size="mini" type="text" class="txt w50" maxlength="40" style="width : 85%" />
-                  <el-button id="appendBtn" class="mx-2" size="mini" @click="fnAppendBtnClick">추가</el-button>
+                  <el-button id="appendBtn" class="mx-2" size="mini" @click="fnAppendBtnClick()">추가</el-button>
                 </td>
               </tr>
             </tbody>

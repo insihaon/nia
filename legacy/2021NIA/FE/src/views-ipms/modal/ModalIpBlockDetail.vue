@@ -2,6 +2,7 @@
   <div>
     <el-dialog
       v-if="animationVisible"
+      id="ipms"
       v-el-drag-dialog
       :visible.sync="visible"
       :width="domElement.maxWidth + `px`"
@@ -20,69 +21,91 @@
         <hr>
       </span>
 
-      <h4>IP블록관리 상세정보</h4>
-      <table class="form">
-        <tr>
-          <th>공인/사설</th>
-          <td>{{ resultVo.sipCreateTypeNm }}</td>
-          <th>생성차수</th>
-          <td>
-            <span v-if="type === 'edit'">
-              <input v-model="sipCreateSeqCd">
-            </span>
-            <span v-else>{{ resultVo.sipCreateSeqCd }}</span>
-          </td>
-        </tr>
-        <tr>
-          <th>서비스망</th>
-          <td>{{ resultVo.ssvcLineTypeNm }}</td>
-          <th>작업일시</th>
-          <td>{{ resultVo.dmodifyDt }}</td>
-        </tr>
-        <tr>
-          <th>IP 버전</th>
-          <td>{{ resultVo.sipVersionTypeNm }}</td>
-          <th>IP 주소</th>
-          <td>{{ resultVo.pipPrefix }}</td>
-        </tr>
-        <tr class="last">
-          <th>비고</th>
-          <td colspan="3">
-            <span v-if="type === 'edit'">
-              <el-input v-model="scomment" type="textarea"></el-input>
-            </span>
-            <span v-else>{{ resultVo.scomment }}</span>
-          </td>
-        </tr>
-      </table>
+      <div id="content" class="layer">
+        <div class="content_result mt0">
+          <h4>IP블록관리 상세정보</h4>
+          <table class="tbl_data mt5">
+            <colgroup>
+              <col width="15%" />
+              <col width="35%" />
+              <col width="15%" />
+              <col width="35%" />
+            </colgroup>
+            <tbody>
+              <tr class="top">
+                <th class="first" scope="row">공인/사설</th>
+                <td>{{ resultVo.sipCreateTypeNm }}</td>
+                <th scope="row">생성차수</th>
+                <td>
+                  <span v-if="type === 'edit'">
+                    <el-input v-model="sipCreateSeqCd" size="mini" />
+                  </span>
+                  <span v-else>{{ resultVo.sipCreateSeqCd }}</span>
+                </td>
+              </tr>
+              <tr>
+                <th class="first" scope="row">서비스망</th>
+                <td>{{ resultVo.ssvcLineTypeNm }}</td>
+                <th scope="row">작업일시</th>
+                <td>{{ resultVo.dmodifyDt }}</td>
+              </tr>
+              <tr>
+                <th class="first" scope="row">IP 버전</th>
+                <td>{{ resultVo.sipVersionTypeNm }}</td>
+                <th scope="row">IP 주소</th>
+                <td>{{ resultVo.pipPrefix }}</td>
+              </tr>
+              <tr class="last">
+                <th class="first" scope="row">비고</th>
+                <td colspan="3">
+                  <span v-if="type === 'edit'">
+                    <el-input v-model="scomment" type="textarea"></el-input>
+                  </span>
+                  <span v-else>{{ resultVo.scomment }}</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
-      <h4>IP 블록 세부 정보</h4>
-      <table class="form">
-        <tr>
-          <th>시작 IP</th>
-          <td>{{ resultVo.sfirstAddr }}</td>
-          <th>끝 IP</th>
-          <td>{{ resultVo.slastAddr }}</td>
-        </tr>
-        <tr>
-          <th>총 IP 수</th>
-          <td>{{ resultVo.ncnt }}</td>
-          <th>단위블록수</th>
-          <td>{{ resultVo.nclassCnt }}</td>
-        </tr>
-        <tr>
-          <th>사용 IP 수</th>
-          <td>{{ resultVo.nuseIpCnt }}</td>
-          <th>가용 IP 수</th>
-          <td>{{ resultVo.nfreeIpCnt }}</td>
-        </tr>
-      </table>
+        <div class="content_result">
+          <h4>IP 블록 세부 정보</h4>
+          <table class="tbl_data mt5">
+            <colgroup>
+              <col width="15%" />
+              <col width="35%" />
+              <col width="15%" />
+              <col width="35%" />
+            </colgroup>
+            <tbody>
+              <tr class="top">
+                <th class="first" scope="row">시작 IP</th>
+                <td>{{ resultVo.sfirstAddr }}</td>
+                <th scope="row">끝 IP</th>
+                <td>{{ resultVo.slastAddr }}</td>
+              </tr>
+              <tr>
+                <th class="first" scope="row">총 IP 수</th>
+                <td>{{ resultVo.ncnt }}</td>
+                <th scope="row">단위블록수</th>
+                <td>{{ resultVo.nclassCnt }}</td>
+              </tr>
+              <tr class="last">
+                <th class="first" scope="row">사용 IP 수</th>
+                <td>{{ resultVo.nuseIpCnt }}</td>
+                <th scope="row">가용 IP 수</th>
+                <td>{{ resultVo.nfreeIpCnt }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
 
       <div slot="footer" class="dialog-footer">
         <el-button v-if="type !== 'edit'" size="mini" icon="el-icon-edit" @click="onChangeMode()">수정</el-button>
         <el-button v-if="type === 'edit'" size="mini" icon="el-icon-edit" @click="fnUpdateCrtIPMstCallback()">수정</el-button>
         <el-button v-if="type !== 'edit'" size="mini" icon="el-icon-edit" @click="fnDeleteBtnClick()">삭제</el-button>
-        <el-button size="mini" type="info" class="el-icon-close" @click.native="close()">
+        <el-button size="mini" class="el-icon-close" @click.native="close()">
           {{ $t('exit') }}
         </el-button>
       </div>
