@@ -156,7 +156,7 @@
 <script>
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
-import { apiRequestModel, ipmsModelApis } from '@/api/ipms'
+import { apiRequestModel, ipmsModelApis, ipmsJsonApis, apiRequestJson } from '@/api/ipms'
 
 const routeName = 'ModalNodeTransferDetail'
 
@@ -237,33 +237,33 @@ export default {
             }
           }
           const res = await apiRequestModel(ipmsModelApis.confirmNode, tbIpAssignMstComplexVo)
-          //  if (res.commonMsg) {
+           if (res.commonMsg) {
             this.$message.success({ message: `${res.commonMsg}` })
             this.$emit('reloadData')
-            // }
+            }
           } catch (error) {
             this.$message.error({ message: `승인에 실패했습니다.` })
             console.log(error)
           }
         })
     },
-      fnDeleteBtnClick() {
-      this.$confirm('정말 삭제 하시겠습니까?', '삭제 메세지', {
-        confirmButtonText: '확인',
-        cancelButtonText: '취소'
-      }).then(async() => {
-        try {
-          const param = { nipBlockMstSeq: this.resultVo.nipBlockMstSeq }
-          const res = await apiRequestModel(ipmsModelApis.deleteCrtIPMst, param)
-           if (res.commonMsg === 'SUCCESS') {
-            this.$message.success({ message: `노드 이전 신청이 정상적으로 삭제되었습니다.` })
-            this.$emit('reloadData')
-            }
-          } catch (error) {
-            this.$message.error({ message: `삭제에 실패했습니다.` })
-            console.log(error)
-          }
-        })
+      fnDeleteBtnClick() { // 신청취소
+      // this.$confirm('정말 삭제 하시겠습니까?', {
+      //   confirmButtonText: '확인',
+      //   cancelButtonText: '취소'
+      // }).then(async() => {
+      //   try {
+      //     const nodeVo = { seq: this.resultVo.seq }
+      //     const res = await '' /* apiRequestModel(ipmsModelApis.viewDeletenode, nodeVo) */
+      //      if (res.commonMsg === 'SUCCESS') {
+      //       this.$message.success({ message: `노드 이전 신청이 정상적으로 삭제되었습니다.` })
+      //       this.$emit('reloadData')
+      //       }
+      //     } catch (error) {
+      //       this.$message.error({ message: `삭제에 실패했습니다.` })
+      //       console.log(error)
+      //     }
+      //   })
     },
     onClose() { },
   },
