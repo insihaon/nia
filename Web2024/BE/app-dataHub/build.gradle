@@ -9,7 +9,8 @@ jar {
 	enabled = false
 }
 bootWar {
-	archiveName("dataHub_bootwar.war")
+	archiveFileName = 'dataHub_bootwar.war'
+
 	enabled = true
 }
 
@@ -20,7 +21,7 @@ war {
         ,"Main-Class": "com.codej.dataHub.dataHubApplication"
         )
     }
-    archiveName("dataHub.war")
+	archiveFileName = 'dataHub.war'
     webInf{from '../warconfig/nmsLink.jsp'}
 	enabled = false
 } 
@@ -35,7 +36,6 @@ dependencies {
 	
 	implementation 'org.springframework.boot:spring-boot-starter'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	implementation 'org.springframework.boot:spring-boot-starter-jdbc'	
 	testImplementation 'junit:junit:4.13.2'
 	implementation 'org.springframework:spring-test'
 
