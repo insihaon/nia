@@ -23,12 +23,13 @@
         </template>
         <template slot="add-features">
           <div class="float-right">
-            <el-button size="mini" icon="el-icon-document-add" @click="close()">신청</el-button>
+            <el-button size="mini" icon="el-icon-document-add" @click="fnViewInsertNode()">신청</el-button>
           </div>
         </template>
       </compTable>
     </el-col>
     <ModalNodeTransferDetail ref="ModalNodeTransferDetail" />
+    <ModalNodeTransferInsert ref="ModalNodeTransferInsert" />
   </el-row>
 </template>
 <script>
@@ -37,6 +38,7 @@ import CompTable from '@/components/elTable/CompTable.vue'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
 import tableHeightMixin from '@/mixin/tableHeightMixin'
 import ModalNodeTransferDetail from '@/views-ipms/modal/ModalNodeTransferDetail.vue'
+import ModalNodeTransferInsert from '@/views-ipms/modal/ModalNodeTransferInsert.vue'
 import { ipmsModelApis, apiRequestModel } from '@/api/ipms'
 import moment from 'moment'
 
@@ -44,7 +46,7 @@ const routeName = 'IpAdressNodeApplyTransfer'
 
 export default {
   name: routeName,
-  components: { CompTable, DynamicComponentLoader, ModalNodeTransferDetail },
+  components: { CompTable, DynamicComponentLoader, ModalNodeTransferDetail, ModalNodeTransferInsert },
   extends: Base,
   mixins: [tableHeightMixin],
   data() {
@@ -125,7 +127,7 @@ export default {
      async fnViewDetailNode(row) {
       try {
         const { seq } = row
-        const nodeVo = { seq }
+        const nodeVo = { seq: seq }
         const res = await apiRequestModel(ipmsModelApis.viewDetailNode, nodeVo)
         if (res.result.data) {
           this.$refs.ModalNodeTransferDetail.open({ row: res.result.data })
@@ -134,7 +136,22 @@ export default {
         console.error(error)
       }
     },
-  },
+    async fnViewInsertNode() {
+       try {
+        const serachVo = {
+          pageUnit: '5',
+          pageIndex: '1',
+        }
+        const res = await apiRequestModel(ipmsModelApis.viewInsertNode, serachVo)
+        if (res.result.data) {
+          this.$refs.ModalNodeTransferInsert.open({ row: res.result.data })
+        }
+      } catch (error) {
+        console.error(error)
+      }
+      this.$refs.ModalNodeTransferInsert.open()
+    },
+  }
 }
 </script>
 <style lang="scss" scoped>
