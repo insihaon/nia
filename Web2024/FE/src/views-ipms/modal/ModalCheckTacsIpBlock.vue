@@ -7,7 +7,7 @@
       :visible.sync="visible"
       :width="domElement.maxWidth + `px`"
       :fullscreen.sync="fullscreen"
-      :modal-append-to-body="false"
+      :modal-append-to-body="true"
       :append-to-body="true"
       :modal="modal"
       :close-on-click-modal="closeOnClickModal"
@@ -114,7 +114,7 @@
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button
-          v-if="ipRow.typeFlag === 'ALLOC' || ipRow.typeFlag === 'NEOSS'"
+          v-if="viewType === 'ALLOC' || viewType === 'NEOSS'"
           size="mini"
           icon="el-icon-thumb"
           style="background: #2b5890"
@@ -151,6 +151,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      viewType: '',
       ipRow: {
         ssvcLineTypeNm: '',
         ssvcGroupNm: '',
@@ -172,6 +173,9 @@ export default {
       this.domElement.maxWidth = 1000
     },
     onOpen(model, actionMode) {
+      if (model.viewType) {
+        this.viewType = model.viewType
+      }
       if (model.row) {
         this.fnViewCheckTacsIpBlock({ nipAssignMstSeq: model.row.nipAssignMstSeq })
         this._merge(this.ipRow, model.row)
@@ -179,7 +183,6 @@ export default {
     },
     onClose() {
       this.tacsTypeFlag = 'N'
-      this.tacsResultList = []
     },
     async fnViewCheckTacsIpBlock(param) {
       // viewCheckTacsIpBlock
@@ -192,6 +195,7 @@ export default {
             this.tacsTypeFlag = result.typeFlag
           } else {
             onMessagePopup(this, result.commonMsg)
+            this.close()
           }
         }
       } catch (error) {
@@ -204,20 +208,31 @@ export default {
           confirmButtonText: '확인',
           cancelButtonText: '취소',
           type: 'warning',
-        }).then(async () => {
+        }).then(() => {
+          // const _THIS = this
           const { typeFlag } = this.ipRow
-         /*
-          할당처리
-          if (typeFlag === 'ALLOC') {}
-          else if(typeFlag === 'NEOSS') {}
-          */
+          // 할당처리
+          if (this.viewType === 'ALLOC') {
+            const result = this.$parent.fnInsertConfirmBtnClick()
+            if (result) {
+              this.tacsResultList = []
+              this.close()
+            }
+          } else if (this.viewType === 'NEOSS') {
+            // fnAllocBtnClick()
+          }
         })
       } else {
-        /*
-        할당처리
-        if (typeFlag === 'ALLOC') {}
-        else if(typeFlag === 'NEOSS') {}
-        */
+        // 할당처리
+        if (this.viewType === 'ALLOC') {
+          const result = this.$parent.fnInsertConfirmBtnClick()
+          if (result) {
+              this.tacsResultList = []
+              this.close()
+            }
+        } else if (this.viewType === 'NEOSS') {
+          // fnAllocBtnClick()
+        }
       }
     },
   },

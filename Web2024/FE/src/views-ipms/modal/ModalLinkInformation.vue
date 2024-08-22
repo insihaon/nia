@@ -29,6 +29,7 @@
         </el-col>
         <el-col :span="24">
           <compTable
+            :prop-loading="tableLoading"
             :prop-data="tableDatas"
             :prop-table-height="300"
             :prop-column="tableColumns"
@@ -64,6 +65,7 @@ import CompTable from '@/components/elTable/CompTable.vue'
 import { onMessagePopup } from '@/utils/index'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
 import { linkTableDatas } from '@/views-ipms/menus/ipAllocationMng/sample.js'
+import { ipmsModelApis, apiRequestModel, ipmsJsonApis, apiRequestJson } from '@/api/ipms'
 
 const routeName = 'ModalLinkInformation'
 
@@ -79,15 +81,8 @@ export default {
       ipBlockMstVo: null,
       requestParameter: null,
       selectedRow: null,
-      componentList: [
-         { key: 'SOffice', props: { label: '자국/대국 수용국', prop_parameterKey: 'sofficescodeSrch' } },
-         { key: 'InputType', props: { label: '자국/대국 장비명', prop_parameterKey: 'snealiasSrch' } },
-         { key: 'InputType', props: { label: '자국/대국 대표IP', prop_parameterKey: 'smstipSrch' } },
-         { key: 'InputType', props: { label: '자국/대국 IF', prop_parameterKey: 'sifipSrch' } },
-         { key: 'InputType', props: { label: '인터페이스 \n시리얼 IP', prop_parameterKey: 'pifSerialIpSrch' } },
-         { key: 'InputType', props: { label: '전용번호', prop_parameterKey: 'sllnumSrch' } },
-      ],
-       tableColumns: [
+      tableLoading: false,
+      tableColumns: [
         { prop: 'pifSerialIp', label: '인터페이스 시리얼 IP', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'saofficescodeNm', label: '자국 수용국', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'sanealias', label: '자국 장비명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
@@ -99,7 +94,9 @@ export default {
         { prop: 'szifname', label: '대국 IF명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'sllnum', label: '전용번호', align: 'center', sortable: true, columnVisible: true, showOverflow: true }
       ],
-      tableDatas: linkTableDatas
+      tableDatas: [],
+      sOfficeOptions: [],
+      snealiasSrch: ''
     }
   },
   /* row 참고
@@ -111,6 +108,20 @@ export default {
       "sofficecode": ""
     }
   */
+ computed: {
+  componentList() {
+    const sOfficeOptions = this.sOfficeOptions
+    const snealiasSrch = this.snealiasSrch
+    return [
+      { key: 'SOffice', props: { label: '자국/대국 수용국', prop_parameterKey: 'sofficescodeSrch', prop_options: sOfficeOptions } },
+      { key: 'InputType', props: { label: '자국/대국 장비명', prop_parameterKey: 'snealiasSrch', defaultValue: snealiasSrch } },
+      { key: 'InputType', props: { label: '자국/대국 대표IP', prop_parameterKey: 'smstipSrch' } },
+      { key: 'InputType', props: { label: '자국/대국 IF', prop_parameterKey: 'sifipSrch' } },
+      { key: 'InputType', props: { label: '인터페이스 \n시리얼 IP', prop_parameterKey: 'pifSerialIpSrch' } },
+      { key: 'InputType', props: { label: '전용번호', prop_parameterKey: 'sllnumSrch' } },
+    ]
+  }
+ },
   methods: {
     onCreated() {
       Modal.methods.onCreated.call(this)
@@ -120,11 +131,47 @@ export default {
     onOpen(model, actionMode) {
       if (model.ipBlockMstVo) {
         this.ipBlockMstVo = model.ipBlockMstVo
+        this.fnViewSearchtLnMst()
+        // ip블록 할당modal에서 링크정보 input값
+        this.snealiasSrch = model?.inputText ?? ''
       }
     },
     onClose() {
       if (this.selectedRow !== null) {
         this.$emit('selected-value', { selectedRow: this.selectedRow, returnFlag: 'allocLn' })
+        this.tableDatas = []
+      }
+    },
+    async fnViewSearchtLnMst() {
+      const {
+        sofficescodeSrch,
+        snealiasSrch,
+        smstipSrch,
+        sifipSrch,
+        pifSerialIpSrch,
+        sllnumSrch,
+        pipPrefix: pifSerialIp,
+        ssvcLineTypeCd,
+        ssvcGroupCd,
+        ssvcObjCd
+      } = this.ipBlockMstVo
+      const params = {
+        sofficescodeSrch,
+        snealiasSrch,
+        smstipSrch,
+        sifipSrch,
+        pifSerialIpSrch,
+        sllnumSrch,
+        pifSerialIp,
+        ssvcLineTypeCd,
+        ssvcGroupCd,
+        ssvcObjCd }
+      try {
+        const res = await apiRequestModel(ipmsModelApis.viewSearchtLnMst, params)
+        const officeTemp = res.result.data
+        this.$set(this, 'sOfficeOptions', officeTemp.map(v => { return { label: v.name, value: v.code } }))
+      } catch (error) {
+        this.error(error)
       }
     },
     handleSearch(requestParameter) {
@@ -139,17 +186,19 @@ export default {
         this._merge(requestParameter, { ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd })
       }
       this.requestParameter = requestParameter
-      this.onLoadLinkList()
+      this.fnSelectSearchtLnMst()
     },
-    async onLoadLinkList() {
-      /*
-        try {
-          const res = await api(this.requestParameter)
-          this.tableDatas = res.data
-        } catch (error) {
-          this.error(error)
-        }
-      */
+    async fnSelectSearchtLnMst() {
+      const params = this.requestParameter
+      try {
+        this.tableLoading = true
+        const res = await apiRequestJson(ipmsJsonApis.selectSearchtLnMst, params)
+        this.tableDatas = res.ipAllocOperMstVos
+      } catch (error) {
+        this.error(error)
+      } finally {
+        this.tableLoading = false
+      }
     },
     handleSelect() {
       if (this.selectedRow === null) {

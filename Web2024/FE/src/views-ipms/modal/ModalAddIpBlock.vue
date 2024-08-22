@@ -368,14 +368,5 @@ export default {
     .el-select {
       width: 100%;
     }
-    .scroll_area {
-      max-height: 350px;
-      overflow-y: auto;
-
-      .tbl_list thead {
-        position: sticky;
-        top: 0;
-      }
-    }
   }
 </style>

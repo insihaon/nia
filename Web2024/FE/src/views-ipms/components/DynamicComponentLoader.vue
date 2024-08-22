@@ -63,7 +63,7 @@ export default {
           if (componentMap[key]) {
             componentMap[key]()
               .then((component) => {
-                this.$set(this.dynamicComponents, index, { component: component.default, props })
+                this.$set(this.dynamicComponents, index, { component: component.default, props, key })
               })
               .catch((error) => {
                 console.error(`Failed to load component for key ${key}:`, error)

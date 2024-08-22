@@ -9,7 +9,6 @@
       :fullscreen.sync="fullscreen"
       :modal-append-to-body="false"
       :append-to-body="true"
-      :modal="modal"
       :close-on-click-modal="closeOnClickModal"
       :loading="loading"
       class="ipms-dialog"
@@ -20,12 +19,12 @@
         IP블록 상세 정보
         <hr>
       </span>
-      <div id="content" class="layer">
+      <div id="content" class="layer  w-100 h-100">
         <div class="content_result mt0">
           <div class="tit_group">
             <h4 class="mt5">IP 블록 정보</h4>
             <div class="btn_area">
-              <span v-if="type === 'Alloc'">
+              <span v-if="type === 'Aloc'">
                 <el-button
                   size="mini"
                   type="primary"
@@ -129,7 +128,7 @@
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
 import { onMessagePopup } from '@/utils'
-import ModelWhoInfoDetail from '@/views-ipms/modal/whois/ModelWhoInfoDetail'
+import ModelWhoInfoDetail from '@/views-ipms/modal/whois/ModelWhoInfoDetail.vue'
 
 import { ipmsModelApis, apiRequestModel } from '@/api/ipms'
 
@@ -145,7 +144,7 @@ export default {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       type: '',
-      tbIpInfoVo: {
+      defaultTbIpInfoVo: {
         sfirstAddr: '',
         ssvcGroupNm: '',
         sssvcMgroupNm: '',
@@ -168,8 +167,12 @@ export default {
         sconnAlias: '',
         scustName: '',
         scomment: ''
-      }
+      },
+      tbIpInfoVo: {}
     }
+  },
+  mounted () {
+    this.tbIpInfoVo = this._cloneDeep(this.defaultTbIpInfoVo)
   },
   methods: {
     onCreated() {
@@ -184,10 +187,11 @@ export default {
       if (model?.tbIpInfoVo) {
         this.tbIpInfoVo = model?.tbIpInfoVo
       } else {
-        this.close()
+        // this.close()
       }
     },
     onClose() {
+      this.tbIpInfoVo = this._cloneDeep(this.defaultTbIpInfoVo)
     },
     async fnViewDetailWhois() {
       // Your logic for handling this function

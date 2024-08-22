@@ -186,8 +186,8 @@ export const ipmsRoute = Object.freeze([
       },
       {
         path: 'operInfoLinkMng',
-        component: () => import('@/views-ipms/menus/dbMng/operInfoFacilityLinkManagement'),
-        name: 'OperInfoFacilityLinkManagement',
+        component: () => import('@/views-ipms/menus/dbMng/operInfoLinkManagement'),
+        name: 'operInfoLinkManagement',
         meta: { title: '운용정보관리(링크)', affix: false }
       },
       {

@@ -24,6 +24,10 @@ export default {
       type: String,
       default: null
     },
+    defaultValue: {
+      type: String,
+      default: null
+    }
   },
   data() {
     return {
@@ -33,7 +37,21 @@ export default {
       parameterKey: 'searchWrd'
     }
   },
+  watch: {
+    defaultValue(nVal, oVal) {
+      debugger
+    }
+  },
   methods: {
+    init() {
+      if (this.prop_parameterKey && this.prop_parameterKey !== null) {
+        this.parameterKey = this.prop_parameterKey
+      }
+      if (this.defaultValue && this.defaultValue !== null) {
+        this.value = this.defaultValue
+      }
+      this.emitEventToParent(this.getParameter())
+    }
   }
 }
 </script>

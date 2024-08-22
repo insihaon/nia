@@ -26,6 +26,12 @@ export default {
   name: routeName,
   extends: Base,
   mixins: [commonFunctionMixin],
+  props: {
+    defaultValue: {
+      type: String,
+      default: null
+    },
+  },
   data() {
     return {
       name: routeName,
@@ -40,6 +46,12 @@ export default {
     }
   },
   methods: {
+    init() {
+      if (this.defaultValue !== null) {
+        this.value = this.defaultValue
+      }
+      this.emitEventToParent(this.getParameter())
+    }
   }
 }
 </script>

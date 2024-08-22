@@ -247,6 +247,15 @@
       border: solid 1px #3a3a3a;
     }
   }
+  .scroll_area {
+    max-height: 350px;
+    overflow-y: auto;
+
+    .tbl_list thead {
+      position: sticky;
+      top: 0;
+    }
+  }
   
 
   dl,
@@ -1418,7 +1427,7 @@
       tbody {
         tr {
           background: #fff;
-
+          width: 100%;
           &.subbg {
             background: #fbf9f9 !important;
 
@@ -2900,6 +2909,12 @@
       font-size: 13px;
       color: #222222;
       line-height: 23px;
+    }
+    .normal.el-button {
+      padding: unset;
+      font-size: 13px;
+      color: #222222;
+      text-decoration: underline;
     }
     .el-button {
       border: none;
