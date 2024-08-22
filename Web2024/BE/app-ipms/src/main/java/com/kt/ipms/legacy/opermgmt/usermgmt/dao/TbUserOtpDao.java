@@ -2,8 +2,11 @@ package com.kt.ipms.legacy.opermgmt.usermgmt.dao;
 
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Mapper;
+
 import com.kt.ipms.legacy.opermgmt.loginmgmt.vo.LoginInfoVo;
 
+@Mapper
 public interface TbUserOtpDao {
 
 	public Map<String,Object> checkTodayLogin(LoginInfoVo loginInfoVo);

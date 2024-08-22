@@ -7,40 +7,39 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.kt.framework.exception.ServiceException;
+import com.kt.ipms.legacy.cmn.service.CommonService;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
 import com.kt.ipms.legacy.cmn.util.PrintLogUtil;
-import com.kt.ipms.legacy.ipmgmt.allocmgmt.service.AllocMgmtTxService;
-import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.IpAllocOperMstVo;
 import com.kt.ipms.legacy.ipmgmt.historymgmt.adapter.HistoryMgmtAdapterService;
 import com.kt.ipms.legacy.ipmgmt.historymgmt.vo.IpHistoryMstVo;
 import com.kt.ipms.legacy.ipmgmt.routmgmt.service.RoutMgmtTxService;
 import com.kt.ipms.legacy.ipmgmt.routmgmt.vo.TbRoutChkMstVo;
-import com.kt.ipms.legacy.linkmgmt.common.vo.TbIpAlloLinkOperMstVo;
-import com.kt.ipms.legacy.linkmgmt.common.vo.TbLnkIpAllocMstVo;
-import com.kt.ipms.legacy.linkmgmt.common.vo.TbLnkIpmsSvcMstvo;
-import com.kt.ipms.legacy.linkmgmt.common.vo.TbLnkNonKtIpblockVo;
-import com.kt.ipms.legacy.linkmgmt.common.vo.TbLnkNonKtSvcMstVo;
 import com.kt.ipms.legacy.linkmgmt.common.dao.LinkIpmsMstDao;
 import com.kt.ipms.legacy.linkmgmt.common.dao.TbIpAllocNeossMstDao;
 import com.kt.ipms.legacy.linkmgmt.common.dao.TbLnkIpAllocMstDao;
+import com.kt.ipms.legacy.linkmgmt.common.dao.TbLnkIpAllocOrderMstDao;
 import com.kt.ipms.legacy.linkmgmt.common.dao.TbLnkNonKtSvcMstDao;
 import com.kt.ipms.legacy.linkmgmt.common.util.LinkUtil;
+import com.kt.ipms.legacy.linkmgmt.common.vo.TbIpAlloLinkOperMstVo;
 import com.kt.ipms.legacy.linkmgmt.common.vo.TbIpAllocNeossMstVo;
+import com.kt.ipms.legacy.linkmgmt.common.vo.TbLnkIpAllocMstVo;
+import com.kt.ipms.legacy.linkmgmt.common.vo.TbLnkIpAllocOrderMstVo;
+import com.kt.ipms.legacy.linkmgmt.common.vo.TbLnkIpmsSvcMstvo;
+import com.kt.ipms.legacy.linkmgmt.common.vo.TbLnkNonKtIpblockVo;
+import com.kt.ipms.legacy.linkmgmt.common.vo.TbLnkNonKtSvcMstVo;
 import com.kt.ipms.legacy.linkmgmt.providermgmt.neoss.vo.Nes0003IpSuggestList;
 import com.kt.ipms.legacy.linkmgmt.providermgmt.neoss.vo.Nes0006Request;
 import com.kt.ipms.legacy.linkmgmt.providermgmt.neoss.vo.Nes0007AssignedIP;
 import com.kt.ipms.legacy.linkmgmt.providermgmt.neoss.vo.Nes0007Request;
 import com.kt.ipms.legacy.linkmgmt.whois.adapter.WhoisAdapterService;
 import com.kt.ipms.legacy.linkmgmt.whois.vo.TbWhoisVo;
-import com.kt.ipms.legacy.cmn.service.CommonService;
-import com.kt.ipms.legacy.linkmgmt.common.vo.TbLnkIpAllocOrderMstVo;
-import com.kt.ipms.legacy.linkmgmt.common.dao.TbLnkIpAllocOrderMstDao;
 
 /**
  * @FileName 	: NeosstxService.java
@@ -52,35 +51,35 @@ import com.kt.ipms.legacy.linkmgmt.common.dao.TbLnkIpAllocOrderMstDao;
 @Component
 @Transactional
 public class NeosstxService {	
-	
-@Autowired
-private CommonService commonService;
-	
-	@Autowired
+
+@Lazy @Autowired
+	private CommonService commonService;
+
+	@Lazy @Autowired
 	private LinkIpmsMstDao lnkIpmsDao;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private TbIpAllocNeossMstDao tbIpAllocNeossMstDao;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private TbLnkIpAllocOrderMstDao tbLnkIpAllocOrderMstDao;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private TbLnkNonKtSvcMstDao tbLnkNonKtSvcMstDao;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private TbLnkIpAllocMstDao tbLnkIpAllocMstDao;
-	
+
 	@Autowired
 	private LinkUtil linkUtil;
 
-	@Autowired
+@Lazy @Autowired
 	private WhoisAdapterService whoisAdapterService;
 	
-	@Autowired
+@Lazy @Autowired
 	private RoutMgmtTxService routMgmtTxService;
 	
-	@Autowired
+@Lazy @Autowired
 	private HistoryMgmtAdapterService historyMgmtAdapterService;
 
 	

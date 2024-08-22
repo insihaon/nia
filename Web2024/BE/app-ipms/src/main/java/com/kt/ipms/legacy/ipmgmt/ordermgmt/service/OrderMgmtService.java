@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,31 +39,31 @@ import com.kt.ipms.legacy.ticketmgmt.ticketmgmt.vo.TbTicketMstVo;
 @Component
 @Transactional
 public class OrderMgmtService {
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private OrderMgmtTxService orderMgmtTxService;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private SvcMgmtAdapterService svcMgmtAdapterService;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private AllocMgmtAdapterService allocMgmtAdapterService;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private AssignMgmtAdapterService assignMgmtAdapterService;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private LineMgmtAdapterService lineMgmtAdapterService;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private NeOSSConsumeAdapterService neOSSConsumeAdapterService;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private TicketMgmtAdapterService ticketMgmtAdapterService;
 
-	@Autowired
+	@Lazy @Autowired
 	private HistoryMgmtAdapterService historyMgmtAdapterService;
-	
+
 	/*오더 메인 조회*/
 	@Transactional(readOnly = true)
 	public IpAllocOrderMstListVo selectListIpAllocOrderMst(IpAllocOrderMstVo ipAllocOrderMstVo){

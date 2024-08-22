@@ -1,10 +1,13 @@
 package com.kt.ipms.legacy.ipmgmt.createmgmt.dao;
 import java.util.List;
 
+import org.apache.ibatis.annotations.Mapper;
+
 import com.kt.ipms.legacy.ipmgmt.createmgmt.vo.TbIpBlockMstVo;
 
 
 /** TB_IP_BLOCK_MST DAO INTERFACE **/
+@Mapper
 public interface TbIpBlockMstDao {
 	
 	/** TB_IP_BLOCK_MST insert **/

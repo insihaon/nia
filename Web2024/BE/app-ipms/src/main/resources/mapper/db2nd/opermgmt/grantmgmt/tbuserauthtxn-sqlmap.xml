@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kt.ipms.legacy.opermgmt.grantmgmt.dao.TbUserAuthTxnDao">
+	<resultMap id="tbUserAuthTxnVoResult" type="com.kt.ipms.legacy.opermgmt.grantmgmt.vo.TbUserAuthTxnVo">
+		<result column="NUSER_AUT_SEQ" property="nuserAutSeq" jdbcType="BIGINT" />
+		<result column="SUSER_ID" property="suserId" jdbcType="VARCHAR" />
+		<result column="SUSER_NM" property="suserNm" jdbcType="VARCHAR" />
+		<result column="SUSER_GRADE_CD" property="suserGradeCd" jdbcType="CHAR" />
+		<result column="SUSER_GRADE_NM" property="suserGradeNm" jdbcType="VARCHAR" />		
+		<result column="NLVL_BAS_SEQ" property="nlvlBasSeq" jdbcType="BIGINT" />
+		<result column="DCREATE_DT" property="dcreateDt" jdbcType="TIMESTAMP" />
+		<result column="SCREATE_ID" property="screateId" jdbcType="VARCHAR" />
+		<result column="DMODIFY_DT" property="dmodifyDt" jdbcType="TIMESTAMP" />
+		<result column="SMODIFY_ID" property="smodifyId" jdbcType="VARCHAR" />
+
+		<result column="RNUM" property="rowNo" jdbcType="NUMERIC" />
+		
+		<result column="SPOS_DEPT_ORG_ID" property="sposDeptOrgId" jdbcType="VARCHAR" />
+		<result column="SPOS_DEPT_ORG_NM" property="sposDeptOrgNm" jdbcType="VARCHAR" />
+		<result column="SPOS_DEPT_FULL_NM" property="sposDeptFullNm" jdbcType="VARCHAR" />
+		
+		<result column="SSVC_LINE_TYPE_CD" property="tbLvlBasVo.ssvcLineTypeCd" jdbcType="CHAR" />
+		<result column="SSVC_LINE_TYPE_NM" property="tbLvlBasVo.ssvcLineTypeNm" jdbcType="CHAR" />
+		<result column="SSVC_GROUP_CD" property="tbLvlBasVo.ssvcGroupCd" jdbcType="CHAR" />
+		<result column="SSVC_GROUP_NM" property="tbLvlBasVo.ssvcGroupNm" jdbcType="CHAR" />
+		<result column="SSVC_OBJ_CD" property="tbLvlBasVo.ssvcObjCd" jdbcType="CHAR" />
+		<result column="SSVC_OBJ_NM" property="tbLvlBasVo.ssvcObjNm" jdbcType="CHAR" />
+		<result column="NMAX_SEQ" property="tbLvlBasVo.nmaxSeq" jdbcType="BIGINT" />
+		<result column="SLVL_BAS_LEVEL_CD" property="tbLvlBasVo.slvlBasLevelCd" jdbcType="CHAR" />
+	</resultMap>
+	
+	<resultMap id="tbLvlBasVoResult" type="com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlBasVo">
+		<result column="NLVL_BAS_SEQ" property="nlvlBasSeq" jdbcType="BIGINT" />
+		<result column="SSVC_LINE_TYPE_CD" property="ssvcLineTypeCd" jdbcType="CHAR" />
+		<result column="SSVC_LINE_TYPE_NM" property="ssvcLineTypeNm" jdbcType="CHAR" />
+		<result column="SSVC_GROUP_CD" property="ssvcGroupCd" jdbcType="CHAR" />
+		<result column="SSVC_GROUP_NM" property="ssvcGroupNm" jdbcType="CHAR" />
+		<result column="SSVC_OBJ_CD" property="ssvcObjCd" jdbcType="CHAR" />
+		<result column="SSVC_OBJ_NM" property="ssvcObjNm" jdbcType="CHAR" />
+		<result column="NMAX_SEQ" property="nmaxSeq" jdbcType="BIGINT" />
+		<result column="SLVL_BAS_LEVEL_CD" property="slvlBasLevelCd" jdbcType="CHAR" />
+		<result column="SCOMMENT" property="scomment" jdbcType="VARCHAR" />
+		<result column="DCREATE_DT" property="dcreateDt" jdbcType="TIMESTAMP" />
+		<result column="SCREATE_ID" property="screateId" jdbcType="VARCHAR" />
+		<result column="DMODIFY_DT" property="dmodifyDt" jdbcType="TIMESTAMP" />
+		<result column="SMODIFY_ID" property="smodifyId" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		A.NUSER_AUT_SEQ, A.SUSER_ID, A.SUSER_GRADE_CD, A.NLVL_BAS_SEQ
+		, A.DCREATE_DT, A.SCREATE_ID, A.DMODIFY_DT, A.SMODIFY_ID
+
+	</sql>
+	
+	<sql id="Append_Column_List">
+		,B.SUSER_NM 
+		, B.SPOS_DEPT_ORG_ID
+		, C.SORG_NM AS SPOS_DEPT_ORG_NM
+		,(SELECT STRING_AGG(SORG_NM,'-') FROM (SELECT SORG_NM FROM MST.TB_ORG_BAS AS G   START WITH G.SKT_ORG_ID = B.SPOS_DEPT_ORG_ID  CONNECT BY G.SKT_ORG_ID = PRIOR G.SUP_KT_ORG_ID ORDER BY G.SORG_PREF_ODRG) ) AS SPOS_DEPT_FULL_NM
+		, D.SSVC_LINE_TYPE_CD
+		, E.SSVC_LINE_TYPE_NM 
+		, D.SSVC_GROUP_CD
+		, D.SSVC_OBJ_CD
+		, F.SLVL_NM	AS		SSVC_GROUP_NM
+		, G.SLVL_NM	AS		SSVC_OBJ_NM	
+		, H.SUSER_GRADE_NM 
+	</sql>
+	
+	<sql id="Append_Column_List_Alias">
+		, A.SUSER_NM 
+		, A.SPOS_DEPT_ORG_ID
+		, A.SPOS_DEPT_ORG_NM
+		, A.SPOS_DEPT_FULL_NM
+		, A.SSVC_LINE_TYPE_CD
+		, A.SSVC_LINE_TYPE_NM 
+		, A.SSVC_GROUP_CD
+		, A.SSVC_OBJ_CD
+		, A.SSVC_GROUP_NM
+		, A.SSVC_OBJ_NM	
+		, A.SUSER_GRADE_NM
+	</sql>
+	
+	<sql id="Append_From_Clause">
+		, MST.TB_USER_BAS B
+		, MST.TB_ORG_BAS C
+		, MST.TB_LVL_BAS  D
+		, MST.TB_SVC_LINE_TYPE_CD E
+		, MST.TB_LVL_CD F
+		, MST.TB_LVL_CD G
+		, MST.TB_USER_GRADE_CD H
+	</sql>
+	
+	<sql id="Append_Where_Clause">
+		AND A.SUSER_ID =  B.SUSER_ID(+)
+		AND B.SPOS_DEPT_ORG_ID = C.SKT_ORG_ID(+)
+		AND A.NLVL_BAS_SEQ = D.NLVL_BAS_SEQ(+)
+		AND D.SSVC_LINE_TYPE_CD = E.SSVC_LINE_TYPE_CD(+)
+		AND D.SSVC_GROUP_CD = F.SLVL_CD  (+)
+		AND D.SSVC_OBJ_CD = G.SLVL_CD  (+)	
+		AND A.SUSER_GRADE_CD = H.SUSER_GRADE_CD(+)
+	</sql>
+	
+	<sql id="Vo_Where_Clause">
+		<trim prefix="WHERE" prefixOverrides="AND">
+			A.NUSER_AUT_SEQ = #{nuserAutSeq, jdbcType=BIGINT}
+
+		</trim>
+	</sql>
+
+	<sql id="List_Where_Clause">
+		<trim prefix="WHERE" prefixOverrides="AND">
+			1 = 1
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nuserAutSeq)">
+				AND A.NUSER_AUT_SEQ = #{nuserAutSeq, jdbcType=BIGINT}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(suserId)">
+				AND A.SUSER_ID = #{suserId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(suserGradeCd)">
+				AND A.SUSER_GRADE_CD = #{suserGradeCd, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nlvlBasSeq)">
+				AND A.NLVL_BAS_SEQ = #{nlvlBasSeq, jdbcType=BIGINT}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dcreateDt)">
+				AND A.DCREATE_DT = #{dcreateDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(screateId)">
+				AND A.SCREATE_ID = #{screateId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dmodifyDt)">
+				AND A.DMODIFY_DT = #{dmodifyDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smodifyId)">
+				AND A.SMODIFY_ID = #{smodifyId, jdbcType=VARCHAR}
+			</if>
+			
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sposDeptOrgId)">
+				AND B.SPOS_DEPT_ORG_ID = #{sposDeptOrgId, jdbcType=VARCHAR}
+			</if>
+			
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(suserNm)">
+				AND B.SUSER_NM ILIKE 	 '%' ||  #{suserNm, jdbcType=VARCHAR} || '%'			
+				
+			</if>			
+			
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbLvlBasVo)">
+				<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbLvlBasVo.ssvcLineTypeCd)">
+				AND D.SSVC_LINE_TYPE_CD =  #{tbLvlBasVo.ssvcLineTypeCd, jdbcType=CHAR}
+				</if>
+			
+				<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbLvlBasVo.ssvcGroupCd)">
+				AND D.SSVC_GROUP_CD     =  #{tbLvlBasVo.ssvcGroupCd, jdbcType=CHAR}	
+				</if>	
+			
+				<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbLvlBasVo.ssvcObjCd)">
+				AND D.SSVC_OBJ_CD     =  #{tbLvlBasVo.ssvcObjCd, jdbcType=CHAR}	
+				</if>	
+			</if>
+
+		</trim>
+	</sql>
+	
+	<insert id="insertTbUserAuthTxnVo" parameterType="com.kt.ipms.legacy.opermgmt.grantmgmt.vo.TbUserAuthTxnVo">
+		INSERT
+		INTO MST.TB_USER_AUTH_TXN (
+			NUSER_AUT_SEQ
+			,	SUSER_ID
+			,	SUSER_GRADE_CD
+			,	NLVL_BAS_SEQ
+			,	SCREATE_ID
+			,	SMODIFY_ID
+		
+		) VALUES (
+			MST.TB_USER_AUTH_TXN_NUSER_AUT_SEQ_SEQ.NEXTVAL
+			,	#{suserId, jdbcType=VARCHAR}
+			,	#{suserGradeCd, jdbcType=CHAR}
+			,	#{nlvlBasSeq, jdbcType=BIGINT}
+			,	#{screateId, jdbcType=VARCHAR}
+			,	#{smodifyId, jdbcType=VARCHAR}
+		
+		)
+	</insert>
+	
+	<update id="updateTbUserAuthTxnVo" parameterType="com.kt.ipms.legacy.opermgmt.grantmgmt.vo.TbUserAuthTxnVo">
+		UPDATE
+		MST.TB_USER_AUTH_TXN A
+		SET
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(suserId)">
+				A.SUSER_ID = #{suserId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(suserGradeCd)">
+				, A.SUSER_GRADE_CD = #{suserGradeCd, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nlvlBasSeq)">
+				, A.NLVL_BAS_SEQ = #{nlvlBasSeq, jdbcType=BIGINT}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dcreateDt)">
+				, A.DCREATE_DT = #{dcreateDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(screateId)">
+				, A.SCREATE_ID = #{screateId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dmodifyDt)">
+				, A.DMODIFY_DT = #{dmodifyDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smodifyId)">
+				, A.SMODIFY_ID = #{smodifyId, jdbcType=VARCHAR}
+			</if>
+			
+		<include refid="Vo_Where_Clause" />
+	</update>
+	
+	<delete id="deleteTbUserAuthTxnVo" parameterType="com.kt.ipms.legacy.opermgmt.grantmgmt.vo.TbUserAuthTxnVo">
+		DELETE
+		FROM MST.TB_USER_AUTH_TXN A
+		<include refid="Vo_Where_Clause" />
+	</delete>
+	
+	<delete id="deleteTbUserAuthListVo" parameterType="com.kt.ipms.legacy.opermgmt.grantmgmt.vo.TbUserAuthTxnListVo">
+			DELETE 				
+			FROM	MST.TB_USER_AUTH_TXN				
+			WHERE
+			<if test="tbUserAuthTxnVos != null">
+			NUSER_AUT_SEQ IN
+				<foreach collection="tbUserAuthTxnVos" item="item" separator="," open="(" close=")">
+					 #{item.nuserAutSeq, jdbcType=BIGINT}
+				</foreach>
+			</if>
+		
+	</delete>
+	
+	<delete id="deleteTbUserAuthByUserId" parameterType="com.kt.ipms.legacy.opermgmt.grantmgmt.vo.TbUserAuthTxnListVo">
+			DELETE 				
+			FROM	MST.TB_USER_AUTH_TXN A		
+			WHERE A.SUSER_ID = #{suserId, jdbcType=VARCHAR}		
+	</delete>
+	
+	<delete id="deleteTbUserAuthByLvlBasSeq" parameterType="com.kt.ipms.legacy.opermgmt.grantmgmt.vo.TbUserAuthTxnVo">
+			DELETE 				
+			FROM	MST.TB_USER_AUTH_TXN A		
+			WHERE A.NLVL_BAS_SEQ = #{nlvlBasSeq, jdbcType=BIGINT}		
+	</delete>
+	
+	<select id="selectTbUserAuthTxnVo" resultMap="tbUserAuthTxnVoResult" parameterType="com.kt.ipms.legacy.opermgmt.grantmgmt.vo.TbUserAuthTxnVo">
+		SELECT
+		<include refid="Base_Column_List" />
+		<include refid="Append_Column_List"/>
+		FROM MST.TB_USER_AUTH_TXN A
+		<include refid="Append_From_Clause"/>
+		<include refid="Vo_Where_Clause" />
+		<include refid="Append_Where_Clause"/>
+	</select>
+	
+	<select id="selectListTbUserAuthTxnVo" resultMap="tbUserAuthTxnVoResult" parameterType="com.kt.ipms.legacy.opermgmt.grantmgmt.vo.TbUserAuthTxnVo">
+		SELECT
+		<include refid="Base_Column_List" />
+		<include refid="Append_Column_List"/>
+		FROM MST.TB_USER_AUTH_TXN A
+		<include refid="Append_From_Clause"/>
+		<include refid="List_Where_Clause" />
+		<include refid="Append_Where_Clause"/>
+	</select>
+	
+	<select id="countListTbUserAuthTxnVo" resultType="int" parameterType="com.kt.ipms.legacy.opermgmt.grantmgmt.vo.TbUserAuthTxnVo">
+		SELECT
+			count(1) totalCount
+		FROM MST.TB_USER_AUTH_TXN A
+		<include refid="Append_From_Clause"/>
+		<include refid="List_Where_Clause" />
+		<include refid="Append_Where_Clause"/>
+	</select>
+	
+	<select id="selectListPageTbUserAuthTxnVo" resultMap="tbUserAuthTxnVoResult" parameterType="com.kt.ipms.legacy.opermgmt.grantmgmt.vo.TbUserAuthTxnVo">
+		SELECT <include refid="Base_Column_List" />
+			   <include refid="Append_Column_List_Alias"/>, A.RNUM FROM (
+			SELECT <include refid="Base_Column_List" />
+				   <include refid="Append_Column_List_Alias"/>, ROWNUM RNUM FROM (
+				SELECT
+				<include refid="Base_Column_List" />
+				<include refid="Append_Column_List"/>
+				FROM MST.TB_USER_AUTH_TXN A
+				<include refid="Append_From_Clause"/>
+				<include refid="List_Where_Clause" />
+				<include refid="Append_Where_Clause"/>
+				
+				ORDER BY B.SUSER_NM , A.SUSER_GRADE_CD , D.SSVC_LINE_TYPE_CD , F.SLVL_NM , G.SLVL_NM
+			) A WHERE ROWNUM <![CDATA[<=]]> #{lastIndex}
+		) A WHERE RNUM <![CDATA[>=]]> #{firstIndex}
+	</select>
+	
+	<select id="countListPageTbUserAuthTxnVo" resultType="int" parameterType="com.kt.ipms.legacy.opermgmt.grantmgmt.vo.TbUserAuthTxnVo">
+		SELECT
+			count(1) totalCount
+		FROM MST.TB_USER_AUTH_TXN A
+		<include refid="Append_From_Clause"/>
+		<include refid="List_Where_Clause" />
+		<include refid="Append_Where_Clause"/>
+	</select>
+	
+	<select id="selectListUserSvcLineList" resultMap="tbLvlBasVoResult" parameterType="com.kt.ipms.legacy.opermgmt.grantmgmt.vo.TbUserAuthTxnVo">
+		SELECT DISTINCT 
+			 B.SSVC_LINE_TYPE_CD 
+		   , C.SSVC_LINE_TYPE_NM 
+		FROM MST.TB_USER_AUTH_TXN A
+		    ,MST.TB_LVL_BAS B
+		    ,MST.TB_SVC_LINE_TYPE_CD C
+		    ,MST.TB_LVL_CD D
+		    ,MST.TB_LVL_CD E  		     
+		WHERE 1=1 
+		AND A.SUSER_ID  =  #{suserId, jdbcType=CHAR}
+		AND A.NLVL_BAS_SEQ = B.NLVL_BAS_SEQ
+		AND B.SSVC_LINE_TYPE_CD = C.SSVC_LINE_TYPE_CD
+		AND B.SSVC_GROUP_CD = D.SLVL_CD 
+		AND B.SSVC_OBJ_CD = E.SLVL_CD 
+		  ORDER BY B.SSVC_LINE_TYPE_CD  ASC
+	</select>
+	
+	<select id="selectListUserCenterList" resultMap="tbLvlBasVoResult" parameterType="com.kt.ipms.legacy.opermgmt.grantmgmt.vo.TbUserAuthTxnVo">
+		SELECT DISTINCT 
+			 B.SSVC_LINE_TYPE_CD 
+		   , C.SSVC_LINE_TYPE_NM 
+		   , B.SSVC_GROUP_CD 
+		   , D.SLVL_NM   AS  SSVC_GROUP_NM
+		FROM MST.TB_USER_AUTH_TXN A
+		    ,MST.TB_LVL_BAS B
+		    ,MST.TB_SVC_LINE_TYPE_CD C
+		    ,MST.TB_LVL_CD D
+		    ,MST.TB_LVL_CD E  		     
+		WHERE 1=1 
+		AND A.SUSER_ID  =  #{suserId, jdbcType=CHAR}
+		<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbLvlBasVo.ssvcLineTypeCd)">
+			AND B.SSVC_LINE_TYPE_CD =  #{tbLvlBasVo.ssvcLineTypeCd, jdbcType=CHAR}
+		</if>
+		AND A.NLVL_BAS_SEQ = B.NLVL_BAS_SEQ
+		AND B.SSVC_LINE_TYPE_CD = C.SSVC_LINE_TYPE_CD
+		AND B.SSVC_GROUP_CD = D.SLVL_CD 
+		AND B.SSVC_OBJ_CD = E.SLVL_CD 
+		 ORDER BY  B.SSVC_GROUP_CD ASC
+	</select>
+	
+	<select id="selectListUserNodeList" resultMap="tbLvlBasVoResult" parameterType="com.kt.ipms.legacy.opermgmt.grantmgmt.vo.TbUserAuthTxnVo">
+		SELECT DISTINCT 
+			 B.SSVC_LINE_TYPE_CD 
+		   , C.SSVC_LINE_TYPE_NM 
+		   , B.SSVC_GROUP_CD 
+		   , D.SLVL_NM   AS  SSVC_GROUP_NM
+		   , B.SSVC_OBJ_CD 
+		   , E.SLVL_NM   AS  SSVC_OBJ_NM
+		FROM MST.TB_USER_AUTH_TXN A
+		    ,MST.TB_LVL_BAS B
+		    ,MST.TB_SVC_LINE_TYPE_CD C
+		    ,MST.TB_LVL_CD D
+		    ,MST.TB_LVL_CD E  		     
+		WHERE 1=1 
+		AND A.SUSER_ID  =  #{suserId, jdbcType=CHAR}
+		<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbLvlBasVo.ssvcLineTypeCd)">
+			AND B.SSVC_LINE_TYPE_CD =  #{tbLvlBasVo.ssvcLineTypeCd, jdbcType=CHAR}
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(tbLvlBasVo.ssvcGroupCd)">
+			AND B.SSVC_GROUP_CD     =  #{tbLvlBasVo.ssvcGroupCd, jdbcType=CHAR}	
+		</if>	
+		AND A.NLVL_BAS_SEQ = B.NLVL_BAS_SEQ
+		AND B.SSVC_LINE_TYPE_CD = C.SSVC_LINE_TYPE_CD
+		AND B.SSVC_GROUP_CD = D.SLVL_CD 
+		AND B.SSVC_OBJ_CD = E.SLVL_CD 
+	 ORDER BY  B.SSVC_OBJ_CD  ASC
+	</select>
+	
+	<select id="selectUserGrade" resultType="String" parameterType="com.kt.ipms.legacy.opermgmt.grantmgmt.vo.TbAdmrApvTxnVo">
+		SELECT 
+			COALESCE ( 
+			  (SELECT DISTINCT SUSER_GRADE_CD FROM MST.TB_USER_AUTH_TXN
+			 WHERE SUSER_ID = #{suserId, jdbcType=VARCHAR}
+			 LIMIT 1 )
+			 , '')
+	</select>
+	
+</mapper>

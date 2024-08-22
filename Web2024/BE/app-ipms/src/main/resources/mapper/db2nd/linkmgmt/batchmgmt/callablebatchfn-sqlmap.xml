@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kt.ipms.legacy.linkmgmt.batchmgmt.dao.CallableBatchFnDao">
+	
+	<select id="callUfBatchWhois" statementType="CALLABLE" resultType="java.lang.Integer">
+		{? = CALL BIF.UF_BATCH_WHOIS()}
+	</select>
+	
+	<select id="callUfBatchWhoisNew" statementType="CALLABLE" resultType="java.lang.Integer">
+		{? = CALL BIF.UF_NEW_BATCH_WHOIS()}
+	</select>
+	
+	<select id="callUfFileMakeNTbAlloc" statementType="CALLABLE" resultType="java.lang.Integer">
+		{? = CALL BIF.UF_FILE_MAKE_N_TB_ALLOC()}
+	</select>
+	
+	<select id="callUfFileMakeNTbOthersAllocData" statementType="CALLABLE" resultType="java.lang.Integer">
+		{? = CALL BIF.UF_FILE_MAKE_N_ALLOCDATA()}
+	</select>
+	
+</mapper>
+

@@ -1,6 +1,7 @@
 package com.kt.ipms.legacy.opermgmt.srvmgmt.adapter;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,9 +13,9 @@ import com.kt.ipms.legacy.opermgmt.srvmgmt.vo.TbIpmsSvcMstVo;
 @Transactional
 public class SvcMgmtAdapterService {
 
-	@Autowired
+	@Lazy @Autowired
 	private SvcMgmtService svcMgmtService;
-	
+
 	/* 상품정보 조회 */
 	@Transactional(readOnly = true)
 	public TbIpmsSvcMstListVo selectListIpmsSvc(TbIpmsSvcMstVo tbIpmsSvcMstVo){

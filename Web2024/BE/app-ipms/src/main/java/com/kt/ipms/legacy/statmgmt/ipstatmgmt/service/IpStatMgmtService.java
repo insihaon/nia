@@ -1,10 +1,10 @@
 package com.kt.ipms.legacy.statmgmt.ipstatmgmt.service;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,12 +14,11 @@ import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.TbIpAllocMstVo;
 import com.kt.ipms.legacy.statmgmt.ipstatmgmt.vo.IpCreateStatListVo;
 import com.kt.ipms.legacy.statmgmt.ipstatmgmt.vo.IpCreateStatVo;
-import com.kt.ipms.legacy.statmgmt.ipstatmgmt.vo.IpIntgrmSvcStatListVo;
 import com.kt.ipms.legacy.statmgmt.ipstatmgmt.vo.IpIntgrmSvcStatVo;
-import com.kt.ipms.legacy.statmgmt.ipstatmgmt.vo.IpOrgStatListVo;
-import com.kt.ipms.legacy.statmgmt.ipstatmgmt.vo.IpOrgStatVo;
 import com.kt.ipms.legacy.statmgmt.ipstatmgmt.vo.IpOrgServiceStatListVo;
 import com.kt.ipms.legacy.statmgmt.ipstatmgmt.vo.IpOrgServiceStatVo;
+import com.kt.ipms.legacy.statmgmt.ipstatmgmt.vo.IpOrgStatListVo;
+import com.kt.ipms.legacy.statmgmt.ipstatmgmt.vo.IpOrgStatVo;
 import com.kt.ipms.legacy.statmgmt.ipstatmgmt.vo.IpSingleBlockStatListVo;
 import com.kt.ipms.legacy.statmgmt.ipstatmgmt.vo.IpSingleBlockStatVo;
 
@@ -27,7 +26,7 @@ import com.kt.ipms.legacy.statmgmt.ipstatmgmt.vo.IpSingleBlockStatVo;
 @Transactional
 public class IpStatMgmtService {
 	
-	@Autowired
+@Lazy @Autowired
 	private IpStatMgmtTxService ipStatMgmtTxService;
 	
 	/*1.생성차수별 IP현황 메인 조회 : 수정한것 */

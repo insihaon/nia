@@ -1,11 +1,15 @@
 package com.kt.ipms.legacy.linkmgmt.common.dao;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+
+import com.kt.ipms.legacy.linkmgmt.common.vo.TbBatchSvcBasVo;
 import com.kt.ipms.legacy.linkmgmt.common.vo.TbLnkSvcBasVo;
 import com.kt.ipms.legacy.linkmgmt.common.vo.TbWsSvcBasVo;
-import com.kt.ipms.legacy.linkmgmt.common.vo.TbBatchSvcBasVo;
 
 
 /** TB_LNK_SVC_BAS DAO INTERFACE **/
+@Mapper
 public interface TbLnkSvcBasDao {
 	
 	public List<TbBatchSvcBasVo> selectListBatchConf();

@@ -1,9 +1,13 @@
 package com.kt.ipms.legacy.opermgmt.boardmgmt.dao;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+
 import com.kt.ipms.legacy.opermgmt.boardmgmt.vo.TbBoardVo;
 
 
 /** TB_BOARD DAO INTERFACE **/
+@Mapper
 public interface TbBoardDao {
 	
 	/** TB_BOARD insert **/

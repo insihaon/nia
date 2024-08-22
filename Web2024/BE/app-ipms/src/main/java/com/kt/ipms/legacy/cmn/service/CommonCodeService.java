@@ -3,6 +3,7 @@ package com.kt.ipms.legacy.cmn.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import com.kt.ipms.legacy.cmn.dao.CommonCodeDao;
@@ -14,7 +15,7 @@ import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
 public class CommonCodeService {
 
 	
-	@Autowired
+	@Lazy @Autowired
 	private CommonCodeDao commonCodeDao;
 	
 	public List<CommonCodeVo> selectListCommonCode(String codeType, Object paramObject) {

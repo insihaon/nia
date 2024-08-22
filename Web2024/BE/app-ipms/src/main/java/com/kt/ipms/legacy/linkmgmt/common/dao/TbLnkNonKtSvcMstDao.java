@@ -2,9 +2,12 @@ package com.kt.ipms.legacy.linkmgmt.common.dao;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Mapper;
+
 import com.kt.ipms.legacy.linkmgmt.common.vo.TbLnkNonKtIpblockVo;
 import com.kt.ipms.legacy.linkmgmt.common.vo.TbLnkNonKtSvcMstVo;
 
+@Mapper
 public interface TbLnkNonKtSvcMstDao {
 	/** TB_NON_KT_IPBLOCK insertTbLnkNonKtIpblockVo **/
 	public int insertTbLnkNonKtIpblockVo(TbLnkNonKtIpblockVo tbLnkNonKtIpblockVo);

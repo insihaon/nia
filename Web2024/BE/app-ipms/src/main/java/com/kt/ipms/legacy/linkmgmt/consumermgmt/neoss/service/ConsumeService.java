@@ -9,6 +9,7 @@ import java.util.Locale;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,21 +66,21 @@ public class ConsumeService{
 	 */
 
 	
-	@Autowired
+@Lazy @Autowired
 	private CommonService commonService;
 	
 	@Autowired
 	private ConsumerUtil consumerUtil;
 	
-	@Autowired
+	@Lazy @Autowired
 	private LinkIpmsMstDao linkIpmsMstDao;
 	
-	@Autowired
+	@Lazy @Autowired
 	private TbLnkIpAllocMstDao tbLnkIpAllocMstDao;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private TbLnkIpAllocOrderMstDao tbLnkIpAllocOrderMstDao;
-	
+
 	@Autowired
 	private LinkUtil linkUtil;
 	/**

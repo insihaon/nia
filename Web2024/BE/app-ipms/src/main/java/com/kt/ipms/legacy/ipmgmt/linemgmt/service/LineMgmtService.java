@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.kt.framework.exception.ServiceException;
-import com.kt.framework.utils.StringUtils;
 import com.kt.ipms.legacy.cmn.service.IpCommonService;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
@@ -17,7 +17,6 @@ import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.IpAllocOperMstListVo;
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.IpAllocOperMstVo;
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.TbIpAllocMstVo;
-import com.kt.ipms.legacy.ipmgmt.assignmgmt.vo.TbIpAssignMstVo;
 import com.kt.ipms.legacy.ipmgmt.historymgmt.adapter.HistoryMgmtAdapterService;
 import com.kt.ipms.legacy.ipmgmt.historymgmt.vo.IpHistoryMstVo;
 import com.kt.ipms.legacy.ipmgmt.linemgmt.vo.TbIpAssignSubComplexVo;
@@ -28,13 +27,13 @@ import com.kt.ipms.legacy.ipmgmt.linemgmt.vo.TbIpAssignSubVo;
 @Transactional
 public class LineMgmtService {
 	
-	@Autowired
+@Lazy @Autowired
 	private LineMgmtTxService lineMgmtTxService;
 	
-	@Autowired
+@Lazy @Autowired
 	private IpCommonService ipCommonService;
 
-	@Autowired
+@Lazy @Autowired
 	private HistoryMgmtAdapterService historyMgmtAdapterService;
 	
 	/*할당 회선 등록*/

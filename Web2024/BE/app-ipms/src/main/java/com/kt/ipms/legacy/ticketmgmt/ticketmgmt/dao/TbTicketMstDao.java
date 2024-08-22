@@ -1,10 +1,13 @@
 package com.kt.ipms.legacy.ticketmgmt.ticketmgmt.dao;
 import java.util.List;
 
+import org.apache.ibatis.annotations.Mapper;
+
 import com.kt.ipms.legacy.ticketmgmt.ticketmgmt.vo.TbTicketMstVo;
 
 
 /** TB_TICKET_MST DAO INTERFACE **/
+@Mapper
 public interface TbTicketMstDao {
 	
 	/** TB_TICKET_MST insertTbTicketMstVo **/

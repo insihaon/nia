@@ -2,15 +2,12 @@ package com.kt.ipms.legacy.linkmgmt.whois.service;
 
 import java.math.BigInteger;
 import java.net.InetAddress;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import kr.kisa.epp.rtk.xml.epp_Response;
-import kr.kisa.epp.rtk.xml.epp_Result;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +16,6 @@ import com.kt.framework.exception.ServiceException;
 import com.kt.framework.utils.StringUtils;
 import com.kt.ipms.legacy.cmn.service.CommonService;
 import com.kt.ipms.legacy.cmn.service.ConfigPropertieService;
-import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
 import com.kt.ipms.legacy.cmn.util.PrintLogUtil;
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.TbIpAllocMstVo;
@@ -46,24 +42,24 @@ import com.kt.log4kt.utils.StringUtil;
 @Component
 public class WhoisService {
 
-	@Autowired
+	@Lazy @Autowired
 	private ConfigPropertieService configPropertieService;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private TbCmnMsgMstService tbCmnMsgMstService;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private CommonService commonService;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private WhoisTxService whoisTxService;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private WhoisMgmtTxService whoisMgmtTxService;
 
 	@Autowired
 	private LinkUtil linkUtil;
-	
+
 	/**
 	 * WHOIS 연동 관련 WHOIS 작업
 	 * @param tbWhoisVo

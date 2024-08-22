@@ -1,5 +1,8 @@
 package com.kt.ipms.legacy.cmn.dao;
 
+import org.apache.ibatis.annotations.Mapper;
+
+@Mapper
 public interface ExcelCheckDao {
 	public String selectExcelDown();
 	

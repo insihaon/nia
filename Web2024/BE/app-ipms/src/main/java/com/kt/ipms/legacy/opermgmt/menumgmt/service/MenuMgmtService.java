@@ -3,20 +3,21 @@ package com.kt.ipms.legacy.opermgmt.menumgmt.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.kt.framework.exception.ServiceException;
 import com.kt.ipms.legacy.opermgmt.menumgmt.dao.TbMenuAuthDao;
 import com.kt.ipms.legacy.opermgmt.menumgmt.dao.TbMenuBasDao;
 import com.kt.ipms.legacy.opermgmt.menumgmt.dao.TbScrnBasDao;
-import com.kt.ipms.legacy.opermgmt.menumgmt.vo.TbMenuBasVo;
+import com.kt.ipms.legacy.opermgmt.menumgmt.vo.TbMenuAuthListVo;
+import com.kt.ipms.legacy.opermgmt.menumgmt.vo.TbMenuAuthVo;
 import com.kt.ipms.legacy.opermgmt.menumgmt.vo.TbMenuBasListVo;
+import com.kt.ipms.legacy.opermgmt.menumgmt.vo.TbMenuBasVo;
 import com.kt.ipms.legacy.opermgmt.menumgmt.vo.TbScrnBasListVo;
 import com.kt.ipms.legacy.opermgmt.menumgmt.vo.TbScrnBasVo;
-import com.kt.ipms.legacy.opermgmt.menumgmt.vo.TbMenuAuthVo;
-import com.kt.ipms.legacy.opermgmt.menumgmt.vo.TbMenuAuthListVo;
-import com.kt.framework.exception.ServiceException;
 
 
 @Component
@@ -24,17 +25,18 @@ public class MenuMgmtService {
 	
 	private final static int MAX_MENU_LEVEL = 4;
 	
-	@Autowired
-	TbScrnBasDao tbScrnBasDao;
+	@Lazy @Autowired
+	private TbScrnBasDao tbScrnBasDao;
 	
-	@Autowired
-	TbMenuBasDao tbMenuBasDao;
+	@Lazy @Autowired
+	private TbMenuBasDao tbMenuBasDao;
 	
-	@Autowired
-	TbMenuAuthDao  tbMenuAuthDao;
-	
-	@Autowired
+	@Lazy @Autowired
+	private TbMenuAuthDao tbMenuAuthDao;
+
+	@Lazy @Autowired
 	private MenuMgmtTxService menuMgmtTxService;
+
 	/* ----------------------------- 화면 관리 start ------------------------------- */
 	@Transactional(readOnly = true)
 	public TbScrnBasListVo selectListPageScrnBas(TbScrnBasVo searchVo)  {

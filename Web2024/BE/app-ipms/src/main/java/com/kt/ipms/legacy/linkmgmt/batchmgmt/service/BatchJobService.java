@@ -4,6 +4,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Component;
 
@@ -19,28 +20,28 @@ import com.kt.ipms.legacy.opermgmt.whoismgmt.adapter.WhoisMgmtAdapterService;
 
 @Component
 public class BatchJobService {
-	@Autowired
+@Lazy @Autowired
 	private TbBatchSvcBasService tbBatchSvcBasService;
 	
 	@Autowired
 	private SchedulerFactoryBean batchSchedulerFactoryBean;
 	
-	@Autowired
+@Lazy @Autowired
 	private ConfigPropertieService configPropertieService;
 	
-	@Autowired
+@Lazy @Autowired
 	private NeOSSConsumeAdapterService neOSSConsumeAdapterService;
 	
-	@Autowired
+@Lazy @Autowired
 	private WhoisMgmtAdapterService whoisMgmtAdapterService;
 	
 	@Autowired
 	private ShellScriptUtil shellScriptUtil;
 	
-	@Autowired
+@Lazy @Autowired
 	private SocketMgmtAdapterService socketMgmtAdapterService;
 	
-	@Autowired
+@Lazy @Autowired
 	private CallableBatchService callableBatchService;
 	
 	@Autowired

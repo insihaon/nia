@@ -2,10 +2,12 @@ package com.kt.ipms.legacy.opermgmt.whoismgmt.dao;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Mapper;
+
 import com.kt.ipms.legacy.linkmgmt.whois.vo.TbWhoisVo;
-import com.kt.ipms.legacy.opermgmt.whoismgmt.vo.TbWhoisKeywordVo;
 import com.kt.ipms.legacy.opermgmt.whoismgmt.vo.TbWhoisModifyVo;
 
+@Mapper
 public interface TbWhoisModifyDao {
 
 	public List<TbWhoisModifyVo> selectListPageTbWhoisModifyVo(TbWhoisModifyVo tbWhoisModifyVo);

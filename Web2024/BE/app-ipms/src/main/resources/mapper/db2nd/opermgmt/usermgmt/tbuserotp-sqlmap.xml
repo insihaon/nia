@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kt.ipms.legacy.opermgmt.usermgmt.dao.TbUserOtpDao">
+	
+	<select id="checkTodayLogin"  resultType="HashMap" parameterType="com.kt.ipms.legacy.opermgmt.loginmgmt.vo.LoginInfoVo">
+		SELECT 
+			COUNT(1) AS LOGIN_CNT 
+		FROM 
+			MST.TB_USER_OTP_HIST
+		WHERE
+			SUSER_ID = #{suserId, jdbcType=VARCHAR}
+			AND SLOGIN_DT = TO_CHAR(NOW(), 'YYYYMMDD')
+			AND SSUCCES_YN = 'Y'
+	</select>
+	
+	<select id="selectUserPhoneNo" resultType="HashMap" parameterType="com.kt.ipms.legacy.opermgmt.loginmgmt.vo.LoginInfoVo">
+		SELECT
+			EMP_NO,
+			REPLACE(HANDPHONE_NO,'-','') AS handphone_no
+		FROM
+			BIF.TB_IDMSUSER
+		WHERE
+			EMP_NO = #{suserId, jdbcType=VARCHAR}
+	</select>
+	
+	<insert id="insertApiHistory" parameterType="HashMap">
+		INSERT INTO MST.TB_USER_OTP_API_HIST(
+			sapi_type,
+			screate_id,
+			smodify_id
+		) VALUES (
+			#{sapiType, jdbcType=VARCHAR},
+			#{suserId, jdbcType=VARCHAR},
+			#{suserId, jdbcType=VARCHAR}
+		)
+		
+		<selectKey keyProperty="napi_hist_mst_seq" resultType="java.math.BigInteger" order="AFTER">
+			SELECT MAX(napi_hist_mst_seq) FROM MST.TB_USER_OTP_API_HIST
+		</selectKey>
+		
+	</insert>
+	
+	<update id="updateApiHistory" parameterType="HashMap">
+		UPDATE
+			MST.TB_USER_OTP_API_HIST
+		SET
+			STRANSACTION_ID = #{transactionid, jdbcType=OTHER},
+			SSEQUENCE_NO = #{sequenceno, jdbcType=VARCHAR},
+			SRETURN_CODE = #{returncode, jdbcType=VARCHAR},
+			SRETURN_DESC = #{returndescription, jdbcType=VARCHAR},
+			SRETURN_ERROR_CODE = #{errorcode, jdbcType=VARCHAR},
+			SRETURN_ERROR_DESC = #{errordescription, jdbcType=VARCHAR},
+			DMODIFY_DT = SYSDATE,
+			SMODIFY_ID = #{suserId, jdbcType=VARCHAR}
+		WHERE
+			NAPI_HIST_MST_SEQ = #{apiHistSeq,jdbcType=INTEGER}
+	</update>
+	
+	<select id="selectOtpLogin" parameterType="HashMap" resultType="HashMap">
+		SELECT
+			COALESCE(MAX(sfail_cnt)+1,0) AS checkcount
+		FROM
+			MST.TB_USER_OTP_HIST
+		WHERE
+			SUSER_ID = #{suserId, jdbcType=VARCHAR}
+			AND SLOGIN_DT = TO_CHAR(NOW(), 'YYYYMMDD')
+	</select>
+	
+	<insert id="insertOtpLogin" parameterType="HashMap">
+		INSERT INTO MST.TB_USER_OTP_HIST (
+			SUSER_ID,
+			SLOGIN_DT,
+			SSUCCES_YN,
+			SFAIL_CNT,
+			DCREATE_DT,
+			SCREATE_ID,
+			DMODIFY_DT,
+			SMODIFY_ID
+		)VALUES(
+			#{suserId, jdbcType=VARCHAR},
+			TO_CHAR(NOW(), 'YYYYMMDD'),
+			#{ssuccessYn, jdbcType=VARCHAR},
+			#{sfailCnt, jdbcType=INTEGER},
+			NOW(),
+			#{suserId, jdbcType=VARCHAR},
+			NOW(),
+			#{suserId, jdbcType=VARCHAR}
+		)
+		ON CONFLICT ON CONSTRAINT pk_tb_user_otp_hist
+        DO NOTHING	
+	</insert>
+	
+	<update id="updateOtpLogin" parameterType="HashMap">
+		UPDATE 
+			MST.TB_USER_OTP_HIST
+		SET 
+			SSUCCES_YN = #{ssuccessYn, jdbcType=VARCHAR},
+			SFAIL_CNT = #{sfailCnt, jdbcType=INTEGER}
+		WHERE
+			SUSER_ID = #{suserId, jdbcType=VARCHAR}
+			AND SLOGIN_DT = TO_CHAR(NOW(), 'YYYYMMDD')
+	</update>
+	
+</mapper>

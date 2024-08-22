@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,17 +16,17 @@ import com.kt.ipms.legacy.opermgmt.boardmgmt.vo.TbBoardVo;
 
 @Component
 public class NoticeService {
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private TbBoardDao tbBoardDao;
-	
+
 	/**
 	 * Board Table 목록 조회
 	 * @param searchVo
 	 * @return
 	 * @
 	 */
-	public TbBoardListVo selectListNotice(TbBoardVo searchVo)  {
+	public TbBoardListVo selectListNotice(TbBoardVo searchVo) {
 		TbBoardListVo resultListVo = null;
 		if (searchVo == null) {
 			throw new ServiceException("CMN.HIGH.00001");
@@ -39,12 +40,12 @@ public class NoticeService {
 		} catch (ServiceException e) {
 			throw e;
 		} catch (Exception e) {
-			throw new ServiceException("CMN.HIGH.00023", new String[]{"공지리스트정보"});
+			throw new ServiceException("CMN.HIGH.00023", new String[] { "공지리스트정보" });
 		}
 		return resultListVo;
 	}
-	
-	public TbBoardVo selectNotice(TbBoardVo tbBoardVo)  {
+
+	public TbBoardVo selectNotice(TbBoardVo tbBoardVo) {
 		TbBoardVo resultVo = null;
 		if (tbBoardVo == null) {
 			throw new ServiceException("CMN.HIGH.00001");
@@ -55,14 +56,13 @@ public class NoticeService {
 		} catch (ServiceException e) {
 			throw e;
 		} catch (Exception e) {
-			throw new ServiceException("CMN.HIGH.00023", new String[]{"공지상세정보"});
+			throw new ServiceException("CMN.HIGH.00023", new String[] { "공지상세정보" });
 		}
 		return resultVo;
 	}
-	
-	
+
 	@Transactional(propagation = Propagation.REQUIRED)
-	public TbBoardVo insertNotice(TbBoardVo tbBoardVo)  {
+	public TbBoardVo insertNotice(TbBoardVo tbBoardVo) {
 		if (tbBoardVo == null) {
 			throw new ServiceException("CMN.HIGH.00001");
 		}
@@ -71,40 +71,38 @@ public class NoticeService {
 		} catch (ServiceException e) {
 			throw e;
 		} catch (Exception e) {
-			throw new ServiceException("CMN.HIGH.00020", new String[]{"공지"});
+			throw new ServiceException("CMN.HIGH.00020", new String[] { "공지" });
 		}
 		return tbBoardVo;
 	}
-	
-	
-	
+
 	@Transactional(propagation = Propagation.REQUIRED)
-	public void updateNreadCnt(TbBoardVo tbBoardVo)  {
+	public void updateNreadCnt(TbBoardVo tbBoardVo) {
 		try {
 			tbBoardDao.updateNreadCnt(tbBoardVo);
 		} catch (Exception e) {
-			throw new ServiceException("CMN.HIGH.00021", new String[]{"공지조회수"});
+			throw new ServiceException("CMN.HIGH.00021", new String[] { "공지조회수" });
 		}
 	}
-	
+
 	@Transactional(propagation = Propagation.REQUIRED)
-	public TbBoardVo updateNotice(TbBoardVo tbBoardVo)  {
+	public TbBoardVo updateNotice(TbBoardVo tbBoardVo) {
 		if (tbBoardVo == null) {
 			throw new ServiceException("CMN.HIGH.00001");
-		}try{
+		}
+		try {
 			tbBoardVo.setDmodifyDt(new Date());
 			tbBoardDao.updateTbBoardVo(tbBoardVo);
-		}
-		catch (ServiceException e) {
+		} catch (ServiceException e) {
 			throw e;
 		} catch (Exception e) {
-			throw new ServiceException("CMN.HIGH.00021", new String[]{"공지"});
+			throw new ServiceException("CMN.HIGH.00021", new String[] { "공지" });
 		}
 		return tbBoardVo;
 	}
-	
+
 	@Transactional(propagation = Propagation.REQUIRED)
-	public TbBoardVo deleteNotice(TbBoardVo tbBoardVo)  {
+	public TbBoardVo deleteNotice(TbBoardVo tbBoardVo) {
 		if (tbBoardVo == null) {
 			throw new ServiceException("CMN.HIGH.00001");
 		}
@@ -113,7 +111,7 @@ public class NoticeService {
 		} catch (ServiceException e) {
 			throw e;
 		} catch (Exception e) {
-			throw new ServiceException("CMN.HIGH.00022", new String[]{"공지"});
+			throw new ServiceException("CMN.HIGH.00022", new String[] { "공지" });
 		}
 		return tbBoardVo;
 	}

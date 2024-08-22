@@ -2,19 +2,18 @@ package com.kt.ipms.legacy.statmgmt.ipstatmgmt.dao;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.transaction.annotation.Transactional;
+import org.apache.ibatis.annotations.Mapper;
 
-import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
-import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.TbIpAllocMstVo;
 import com.kt.ipms.legacy.statmgmt.ipstatmgmt.vo.IpCreateStatVo;
 import com.kt.ipms.legacy.statmgmt.ipstatmgmt.vo.IpIntgrmSvcStatVo;
-import com.kt.ipms.legacy.statmgmt.ipstatmgmt.vo.IpOrgStatVo;
 import com.kt.ipms.legacy.statmgmt.ipstatmgmt.vo.IpOrgServiceStatVo;
+import com.kt.ipms.legacy.statmgmt.ipstatmgmt.vo.IpOrgStatVo;
 import com.kt.ipms.legacy.statmgmt.ipstatmgmt.vo.IpSingleBlockStatVo;
 
 
 
 /** IP_STAT_MST DAO INTERFACE **/
+@Mapper
 public interface IpStatMstDao {
 	
 	/** Create Per IP STAT selectListPageIpCreateStatVo **/

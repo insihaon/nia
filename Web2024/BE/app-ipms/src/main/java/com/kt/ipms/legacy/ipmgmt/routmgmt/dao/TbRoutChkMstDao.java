@@ -1,14 +1,15 @@
 package com.kt.ipms.legacy.ipmgmt.routmgmt.dao;
 
-import java.math.BigInteger;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
 
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.IpAllocOperMstVo;
 import com.kt.ipms.legacy.ipmgmt.routmgmt.vo.TbRoutChkMstVo;
-import com.kt.ipms.legacy.linkmgmt.whois.vo.TbWhoisVo;
 import com.kt.ipms.legacy.opermgmt.intgrmgmt.vo.TbFcltCmdMstVo;
 
 
+@Mapper
 public interface TbRoutChkMstDao {
 
 	/**

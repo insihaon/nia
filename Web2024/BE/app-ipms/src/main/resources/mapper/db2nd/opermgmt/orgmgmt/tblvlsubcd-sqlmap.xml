@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kt.ipms.legacy.opermgmt.orgmgmt.dao.TbLvlSubCdDao">
+	<resultMap id="tbLvlSubCdVoResult" type="com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlSubCdVo">
+		<result column="SSVC_LINE_TYPE_CD" property="ssvcLineTypeCd" jdbcType="CHAR" />
+		<result column="SSVC_LINE_TYPE_NM" property="ssvcLineTypeNm" jdbcType="VARCHAR" />
+		<result column="SLVL_CD" property="slvlCd" jdbcType="CHAR" />
+		<result column="SLVL_NM" property="slvlNm" jdbcType="VARCHAR" />
+		<result column="SLOFFICECODE" property="slofficecode" jdbcType="CHAR" />
+		<result column="SLOFFICNM" property="slofficeNm" jdbcType="VARCHAR" />
+		<result column="SCOMMENT" property="scomment" jdbcType="VARCHAR" />
+		<result column="DCREATE_DT" property="dcreateDt" jdbcType="TIMESTAMP" />
+		<result column="SCREATE_ID" property="screateId" jdbcType="VARCHAR" />
+		<result column="DMODIFY_DT" property="dmodifyDt" jdbcType="TIMESTAMP" />
+		<result column="SMODIFY_ID" property="smodifyId" jdbcType="VARCHAR" />
+
+		<result column="RNUM" property="rowNo" jdbcType="NUMERIC" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		A.SSVC_LINE_TYPE_CD, A.SLVL_CD, A.SLOFFICECODE, A.SCOMMENT
+		, A.DCREATE_DT, A.SCREATE_ID, A.DMODIFY_DT, A.SMODIFY_ID
+
+	</sql>
+	
+	<sql id="Append_Column_List">
+	,B.SLVL_NM AS SLOFFICNM
+	</sql>
+	
+	<sql id="Append_Column_List_Alias">
+	
+	</sql>
+	
+	<sql id="Append_From_Clause">
+	
+	</sql>
+	
+	<sql id="Append_Where_Clause">
+	
+	</sql>
+	
+	<sql id="Vo_Where_Clause">
+		<trim prefix="WHERE" prefixOverrides="AND">
+<!-- 			A.SSVC_LINE_TYPE_CD = #{ssvcLineTypeCd, jdbcType=CHAR}
+				AND A.SLVL_CD = #{slvlCd, jdbcType=CHAR}
+				AND A.SLOFFICECODE = #{slofficecode, jdbcType=CHAR} -->
+				
+				<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssvcLineTypeCd)">
+				A.SSVC_LINE_TYPE_CD = #{ssvcLineTypeCd, jdbcType=CHAR}
+				</if>
+				<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(slvlCd)">
+				AND A.SLVL_CD = #{slvlCd, jdbcType=CHAR}
+				</if>
+				<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(slofficecode)">
+				AND A.SLOFFICECODE = #{slofficecode, jdbcType=CHAR}
+				</if>
+
+		</trim>
+	</sql>
+
+	<sql id="List_Where_Clause">
+		<trim prefix="WHERE" prefixOverrides="AND">
+			1 = 1
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssvcLineTypeCd)">
+				AND A.SSVC_LINE_TYPE_CD = #{ssvcLineTypeCd, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(slvlCd)">
+				AND A.SLVL_CD = #{slvlCd, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(slofficecode)">
+				AND A.SLOFFICECODE = #{slofficecode, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(scomment)">
+				AND A.SCOMMENT = #{scomment, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dcreateDt)">
+				AND A.DCREATE_DT = #{dcreateDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(screateId)">
+				AND A.SCREATE_ID = #{screateId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dmodifyDt)">
+				AND A.DMODIFY_DT = #{dmodifyDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smodifyId)">
+				AND A.SMODIFY_ID = #{smodifyId, jdbcType=VARCHAR}
+			</if>
+
+		</trim>
+	</sql>
+	
+	<insert id="insertTbLvlSubCdVo" parameterType="com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlSubCdVo">
+		INSERT
+		INTO MST.TB_LVL_SUB_CD (
+			SSVC_LINE_TYPE_CD
+			,	SLVL_CD
+			,	SLOFFICECODE
+			,	DCREATE_DT
+			,	SCREATE_ID
+			, 	DMODIFY_DT
+			,	SMODIFY_ID
+		
+		) VALUES (
+			#{ssvcLineTypeCd, jdbcType=CHAR}
+			,	#{slvlCd, jdbcType=CHAR}
+			,	#{slofficecode, jdbcType=CHAR}
+			,	sysdate
+			,	#{smodifyId, jdbcType=VARCHAR}
+			,	sysdate
+			,	#{smodifyId, jdbcType=VARCHAR}
+		
+		)
+	</insert>
+	
+	<update id="updateTbLvlSubCdVo" parameterType="com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlSubCdVo">
+		UPDATE
+		MST.TB_LVL_SUB_CD A
+		SET
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(scomment)">
+			A.SCOMMENT = #{scomment, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dcreateDt)">
+				, A.DCREATE_DT = #{dcreateDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(screateId)">
+				, A.SCREATE_ID = #{screateId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dmodifyDt)">
+				, A.DMODIFY_DT = #{dmodifyDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smodifyId)">
+				, A.SMODIFY_ID = #{smodifyId, jdbcType=VARCHAR}
+			</if>
+
+		<include refid="Vo_Where_Clause" />
+	</update>
+	
+	<delete id="deleteTbLvlSubCdVo" parameterType="com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlSubCdVo">
+		DELETE
+		FROM MST.TB_LVL_SUB_CD A
+		<include refid="Vo_Where_Clause" />
+	</delete>
+	
+	<select id="selectTbLvlSubCdVo" resultMap="tbLvlSubCdVoResult" parameterType="com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlSubCdVo">
+		SELECT
+		<include refid="Base_Column_List" />
+		<include refid="Append_Column_List"/>
+		FROM MST.TB_LVL_SUB_CD A
+		<include refid="Append_From_Clause"/>
+		<include refid="Vo_Where_Clause" />
+		<include refid="Append_Where_Clause"/>
+	</select>
+	
+	<select id="selectListTbLvlSubCdVo" resultMap="tbLvlSubCdVoResult" parameterType="com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlSubCdVo">
+		SELECT
+		<include refid="Base_Column_List" />
+		<include refid="Append_Column_List"/>
+		FROM MST.TB_LVL_SUB_CD A, MST.TB_LVL_CD B
+		WHERE 1=1 
+		AND A.SSVC_LINE_TYPE_CD = #{ssvcLineTypeCd}
+		AND A.SLVL_CD = #{slvlCd}
+		AND A.SLOFFICECODE = B.SLVL_CD(+)
+		ORDER BY B.SLVL_NM
+	</select>
+	
+	
+	<select id="countListTbLvlSubCdVo" resultType="int" parameterType="com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlSubCdVo">
+		SELECT
+			count(1) totalCount
+		FROM MST.TB_LVL_SUB_CD A
+		<include refid="Append_From_Clause"/>
+		<include refid="List_Where_Clause" />
+		<include refid="Append_Where_Clause"/>
+	</select>
+	
+	<select id="selectListPageTbLvlSubCdVo" resultMap="tbLvlSubCdVoResult" parameterType="com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlSubCdVo">
+		SELECT <include refid="Base_Column_List" />
+			   <include refid="Append_Column_List_Alias"/>, A.RNUM FROM (
+			SELECT <include refid="Base_Column_List" />
+				   <include refid="Append_Column_List_Alias"/>, ROWNUM RNUM FROM (
+				SELECT
+				<include refid="Base_Column_List" />
+				<include refid="Append_Column_List"/>
+				FROM MST.TB_LVL_SUB_CD A
+				<include refid="Append_From_Clause"/>
+				<include refid="List_Where_Clause" />
+				<include refid="Append_Where_Clause"/>
+			) A WHERE ROWNUM <![CDATA[<=]]> #{lastIndex}
+		) A WHERE RNUM <![CDATA[>=]]> #{firstIndex}
+	</select>
+	
+	<select id="countListPageTbLvlSubCdVo" resultType="int" parameterType="com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlSubCdVo">
+		SELECT
+			count(1) totalCount
+		FROM MST.TB_LVL_SUB_CD A
+		<include refid="Append_From_Clause"/>
+		<include refid="List_Where_Clause" />
+		<include refid="Append_Where_Clause"/>
+	</select>
+	
+	
+	<select id="selectSloffice" resultType="int" parameterType="com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlSubCdVo">
+		SELECT
+			count(1) totalCount
+		FROM MST.TB_LVL_SUB_CD A
+		WHERE 1=1 
+		AND A.SSVC_LINE_TYPE_CD = #{ssvcLineTypeCd}
+		AND A.SLOFFICECODE = #{slofficecode}
+
+	</select>
+	
+	
+	
+</mapper>

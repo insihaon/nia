@@ -16,12 +16,12 @@ import java.util.Map.Entry;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLParameters;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.codec.binary.Base64;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,18 +41,18 @@ import com.kt.ipms.legacy.opermgmt.usermgmt.vo.TbUserBasVo;
 @Component
 public class LoginMgmtService {
 	
-	@Autowired
+	@Lazy @Autowired
 	private LoginMgmtTxService loginMgmtTxService;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private CommonService commonService;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private ConfigPropertieService configPropertieService;
-	
+
 	@Autowired
 	protected TbCmnMsgMstService tbCmnMstService;
-	
+
 	String sErrMsgInfo = "";
 	int failCnt = 0;
 	

@@ -3,6 +3,7 @@ package com.kt.ipms.legacy.opermgmt.srvmgmt.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,14 +19,14 @@ import com.kt.ipms.legacy.opermgmt.srvmgmt.vo.TbSvcLgroupCdVo;
 
 @Component
 public class SvcMgmtTxService {
-	@Autowired
-	TbIpmsSvcMstDao tbIpmsSvcMstDao;
-	@Autowired
-	TbAssignTypeCdDao tbAssignTypeCdDao;
-	@Autowired
-	TbIpmsSvcSubDao tbIpmsSvcSubDao;
-	@Autowired
-	TbSvcLgroupCdDao tbSvcLgroupCdDao;
+	@Lazy @Autowired
+	private TbIpmsSvcMstDao tbIpmsSvcMstDao;
+	@Lazy @Autowired
+	private TbAssignTypeCdDao tbAssignTypeCdDao;
+	@Lazy @Autowired
+	private TbIpmsSvcSubDao tbIpmsSvcSubDao;
+	@Lazy @Autowired
+	private TbSvcLgroupCdDao tbSvcLgroupCdDao;
 	
 	/* 상품 목록 리스트 조회 */
 	@Transactional(readOnly = true)

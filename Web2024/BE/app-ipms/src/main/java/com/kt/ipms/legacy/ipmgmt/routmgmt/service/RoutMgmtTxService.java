@@ -1,9 +1,9 @@
 package com.kt.ipms.legacy.ipmgmt.routmgmt.service;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,15 +11,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.IpAllocOperMstVo;
 import com.kt.ipms.legacy.ipmgmt.routmgmt.dao.TbRoutChkMstDao;
 import com.kt.ipms.legacy.ipmgmt.routmgmt.vo.TbRoutChkMstVo;
-import com.kt.ipms.legacy.linkmgmt.whois.vo.TbWhoisComplexVo;
-import com.kt.ipms.legacy.linkmgmt.whois.vo.TbWhoisVo;
 import com.kt.ipms.legacy.opermgmt.intgrmgmt.vo.TbFcltCmdMstVo;
-import com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlBasVo;
 
 @Component
 public class RoutMgmtTxService {
 	
-	@Autowired
+	@Lazy @Autowired
 	private TbRoutChkMstDao tbRoutChkMstDao;
 
 	/****************************************************************************************

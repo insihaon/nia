@@ -1,11 +1,12 @@
 package com.kt.ipms.legacy.opermgmt.assignmgmt.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 import com.kt.ipms.legacy.opermgmt.assignmgmt.dao.TbRequestAssignMstDao;
 import com.kt.ipms.legacy.opermgmt.assignmgmt.vo.TbRequestAssignMstVo;
@@ -15,8 +16,8 @@ import com.kt.ipms.legacy.opermgmt.assignmgmt.vo.TbRequestAssignMstVo;
 @Transactional
 public class AssignApyMgmtTxService {
 	
-	@Autowired
-	TbRequestAssignMstDao tbRequestAssignMstDao;
+	@Lazy @Autowired
+	private TbRequestAssignMstDao tbRequestAssignMstDao;
 	
 	@Transactional(propagation=Propagation.REQUIRED)
 	public int insertTbRequestAssignMstVo(TbRequestAssignMstVo tbRequestAssignMstVo) {

@@ -1,11 +1,14 @@
 package com.kt.ipms.legacy.opermgmt.grantmgmt.dao;
 import java.util.List;
 
+import org.apache.ibatis.annotations.Mapper;
+
 import com.kt.ipms.legacy.opermgmt.grantmgmt.vo.TbAdmrApvTxnVo;
 import com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlBasVo;
 
 
 /** TB_ADMR_APV_TXN DAO INTERFACE **/
+@Mapper
 public interface TbAdmrApvTxnDao {
 	
 	/** TB_ADMR_APV_TXN insert **/

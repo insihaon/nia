@@ -3,6 +3,7 @@ package com.kt.ipms.legacy.opermgmt.uploadmgmt.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,7 +16,7 @@ import com.kt.ipms.legacy.opermgmt.uploadmgmt.vo.TbUploadZipcodeVo;
 @Transactional
 public class UploadMgmtService {
 	
-	@Autowired
+	@Lazy @Autowired
 	private UploadMgmtTxService uploadMgmtTxService;
 	
 	public TbUploadListVo selectListPageUpload(TbUploadVo tbUploadVo){

@@ -1,21 +1,17 @@
 package com.kt.ipms.legacy.linkmgmt.whois.adapter;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.kt.framework.exception.ServiceException;
-import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.TbIpAllocMstVo;
 import com.kt.ipms.legacy.linkmgmt.common.vo.TbIpAllocNeossMstVo;
 import com.kt.ipms.legacy.linkmgmt.whois.model.WhoisInfoObj;
 import com.kt.ipms.legacy.linkmgmt.whois.service.WhoisService;
-import com.kt.ipms.legacy.linkmgmt.whois.vo.TbWhoisComplexVo;
 import com.kt.ipms.legacy.linkmgmt.whois.vo.TbWhoisVo;
 import com.kt.ipms.legacy.opermgmt.whoismgmt.vo.TbWhoisModifyVo;
 
@@ -24,7 +20,7 @@ import com.kt.ipms.legacy.opermgmt.whoismgmt.vo.TbWhoisModifyVo;
 @Transactional
 public class WhoisAdapterService {
 
-	@Autowired
+	@Lazy @Autowired
 	private WhoisService whoisService;
 
 	/**
