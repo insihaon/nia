@@ -2,10 +2,12 @@ package com.kt.ipms.legacy.ipmgmt.linkmgmt.dao;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Mapper;
+
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
-import com.kt.ipms.legacy.ipmgmt.hostmgmt.vo.TbIpHostMstVo;
 import com.kt.ipms.legacy.ipmgmt.linkmgmt.vo.TbIpLinkMstVo;
 
+@Mapper
 public interface TbIpLinkMstDao {
 
 	public List<TbIpLinkMstVo> selectListPageIpLinkMst(TbIpLinkMstVo tbIpLinkMstVo);

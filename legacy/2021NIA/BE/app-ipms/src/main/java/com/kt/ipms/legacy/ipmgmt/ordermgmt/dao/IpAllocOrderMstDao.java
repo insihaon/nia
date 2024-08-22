@@ -1,11 +1,14 @@
 package com.kt.ipms.legacy.ipmgmt.ordermgmt.dao;
 import java.util.List;
 
+import org.apache.ibatis.annotations.Mapper;
+
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.IpAllocOperMstVo;
 import com.kt.ipms.legacy.ipmgmt.ordermgmt.vo.IpAllocOrderMstVo;
 
 /** TB_IP_ALLOC_ORDER_MST DAO INTERFACE **/
+@Mapper
 public interface IpAllocOrderMstDao {
 	
 	/** TB_IP_ALLOC_ORDER_MST selectListPage **/

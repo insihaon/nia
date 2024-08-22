@@ -1,9 +1,13 @@
 package com.kt.ipms.legacy.opermgmt.srvmgmt.dao;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+
 import com.kt.ipms.legacy.opermgmt.srvmgmt.vo.TbIpmsSvcSubVo;
 
 
 /** TB_IPMS_SVC_SUB DAO INTERFACE **/
+@Mapper
 public interface TbIpmsSvcSubDao {
 	
 	/** TB_IPMS_SVC_SUB insertTbIpmsSvcSubVo **/

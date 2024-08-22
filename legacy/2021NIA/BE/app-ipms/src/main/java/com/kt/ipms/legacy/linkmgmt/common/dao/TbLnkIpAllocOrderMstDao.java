@@ -1,8 +1,11 @@
 package com.kt.ipms.legacy.linkmgmt.common.dao;
 
+import org.apache.ibatis.annotations.Mapper;
+
 import com.kt.ipms.legacy.linkmgmt.common.vo.TbLnkIpAllocOrderMstVo;
 
 /** TB_LNK_IP_ALLOC_ORDER_DAO INTERFACE **/
+@Mapper
 public interface TbLnkIpAllocOrderMstDao {
 	
 	/** TB_IP_ALLOC_ORDER_MST insert **/

@@ -1,9 +1,13 @@
 package com.kt.ipms.legacy.ticketmgmt.configmgmt.dao;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+
 import com.kt.ipms.legacy.ticketmgmt.configmgmt.vo.TbConfigLinkMstVo;
 
 
 /** TB_CONFIG_LINK_MST DAO INTERFACE **/
+@Mapper
 public interface TbConfigLinkMstDao {
 	
 	/** TB_CONFIG_LINK_MST insertTbConfigLinkMstVo **/

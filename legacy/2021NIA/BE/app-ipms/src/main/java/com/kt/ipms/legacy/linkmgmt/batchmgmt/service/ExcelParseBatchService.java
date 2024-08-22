@@ -4,15 +4,14 @@ import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,11 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.kt.framework.exception.ServiceException;
 import com.kt.ipms.legacy.cmn.service.ConfigPropertieService;
 import com.kt.ipms.legacy.cmn.service.IpCommonService;
-import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
 import com.kt.ipms.legacy.cmn.util.ExcelUtil;
 import com.kt.ipms.legacy.cmn.util.MobileHostUtil;
 import com.kt.ipms.legacy.cmn.util.PrintLogUtil;
-import com.kt.ipms.legacy.ipmgmt.hostmgmt.service.HostMgmtTxService;
 import com.kt.ipms.legacy.ipmgmt.hostmgmt.vo.TbIpHostMstVo;
 import com.kt.ipms.legacy.linkmgmt.batchmgmt.vo.TbBatchLogVo;
 
@@ -35,16 +32,16 @@ public class ExcelParseBatchService {
 	@Autowired
 	private ExcelUtil excelUtil;
 	
-	@Autowired
+@Lazy @Autowired
 	private ConfigPropertieService configPropertieService;
 	
-	@Autowired
+@Lazy @Autowired
 	private ExcelParseBatchTxService excelParseBatchTxService;
 	
-	@Autowired
+@Lazy @Autowired
 	private IpCommonService ipCommonService;
 	
-	@Autowired
+@Lazy @Autowired
 	private TbBatchLogTxService tbBatchLogTxService;
 	
 	@Transactional(propagation = Propagation.REQUIRED)

@@ -3,6 +3,7 @@ package com.kt.ipms.legacy.ticketmgmt.optmgmt.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,8 +19,7 @@ import com.kt.ipms.legacy.ticketmgmt.optmgmt.vo.TbOptimizationIpMstVo;
 @Transactional
 public class OptMgmtService {
 
-	
-	@Autowired
+	@Lazy @Autowired
 	private OptMgmtTxService optMgmtTxService;
 	
 	@Transactional(readOnly = true)

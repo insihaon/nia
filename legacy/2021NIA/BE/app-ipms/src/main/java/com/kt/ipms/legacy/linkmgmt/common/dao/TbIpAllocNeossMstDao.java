@@ -1,9 +1,13 @@
 package com.kt.ipms.legacy.linkmgmt.common.dao;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+
 import com.kt.ipms.legacy.linkmgmt.common.vo.TbIpAllocNeossMstVo;
 
 
 /** TB_IP_ALLOC_NEOSS_MST DAO INTERFACE **/
+@Mapper
 public interface TbIpAllocNeossMstDao {
 	
 	/** TB_IP_ALLOC_NEOSS_MST insert **/

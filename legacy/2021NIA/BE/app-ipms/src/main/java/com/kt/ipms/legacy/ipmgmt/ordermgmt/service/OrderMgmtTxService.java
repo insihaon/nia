@@ -3,6 +3,7 @@ package com.kt.ipms.legacy.ipmgmt.ordermgmt.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +17,7 @@ import com.kt.ipms.legacy.ipmgmt.ordermgmt.vo.IpAllocOrderMstVo;
 @Transactional
 public class OrderMgmtTxService {
 	
-	@Autowired
+	@Lazy @Autowired
 	private IpAllocOrderMstDao ipAllocOrderMstDao;
 	
 	/*오더 목록 Select*/

@@ -1,9 +1,13 @@
 package com.kt.ipms.legacy.opermgmt.orgmgmt.dao;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+
 import com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbSvcLineTypeCdVo;
 
 
 /** TB_SVC_LINE_TYPE_CD DAO INTERFACE **/
+@Mapper
 public interface TbSvcLineTypeCdDao {
 	
 	/** TB_SVC_LINE_TYPE_CD insert **/

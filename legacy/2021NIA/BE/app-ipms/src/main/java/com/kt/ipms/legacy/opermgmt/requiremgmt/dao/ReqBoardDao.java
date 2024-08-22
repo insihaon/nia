@@ -2,10 +2,13 @@ package com.kt.ipms.legacy.opermgmt.requiremgmt.dao;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Mapper;
+
 import com.kt.ipms.legacy.opermgmt.requiremgmt.vo.ReqAdminEmailVo;
 import com.kt.ipms.legacy.opermgmt.requiremgmt.vo.ReqBoardSubVo;
 import com.kt.ipms.legacy.opermgmt.requiremgmt.vo.ReqBoardVo;
 
+@Mapper
 public interface ReqBoardDao {
 	public List<ReqBoardVo> selectListPageReqBoardVo(ReqBoardVo reqBoardVo);
 	

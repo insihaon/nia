@@ -1,9 +1,13 @@
 package com.kt.ipms.legacy.opermgmt.limitmgmt.dao;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+
 import com.kt.ipms.legacy.opermgmt.limitmgmt.vo.TbAuditDhcpBasVo;
 
 
 /** TB_AUDIT_DHCP_BAS DAO INTERFACE **/
+@Mapper
 public interface TbAuditDhcpBasDao {
 	
 	/** TB_AUDIT_DHCP_BAS insertTbAuditDhcpBasVo **/

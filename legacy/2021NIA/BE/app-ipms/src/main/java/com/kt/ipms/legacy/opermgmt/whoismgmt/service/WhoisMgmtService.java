@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.irms.epp.xml.EPPResponseAction;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,25 +46,25 @@ import com.kt.ipms.legacy.opermgmt.whoismgmt.vo.WhoisStatusVo;
 @Transactional
 public class WhoisMgmtService {
 	
-	@Autowired
+@Lazy @Autowired
 	private ConfigPropertieService configPropertieService;
 	
-	@Autowired
+@Lazy @Autowired
 	private WhoisMgmtTxService whoisMgmtTxService;
 	
-	@Autowired
+@Lazy @Autowired
 	private WhoisTxService whoisTxService;
 	
-	@Autowired
+@Lazy @Autowired
 	private WhoisService whoisService;
 	
-	@Autowired
+@Lazy @Autowired
 	private CommonService commonService;
 	
 	@Autowired
 	private EPPParserUtil eppParserUtil;
 	
-	@Autowired
+@Lazy @Autowired
 	private WhoisAdapterService whoisAdapterService;
 	
 	@Transactional(readOnly = true)

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.kt.ipms.legacy.linkmgmt.batchmgmt.dao.ExcelParseBatchDao">
+
+	<select id="selectLvlNm" resultType="hashmap" parameterType="hashmap">
+		SELECT
+				A.SLVL_CD
+				, A.SLVL_NM
+				, TRIM(A.SORG_OFFICE_FLAG_YN) SORG_OFFICE_FLAG_YN
+				, A.SEX_LINK_USE_TYPE_CD
+				, B.SEX_LINK_USE_TYPE_NM
+		FROM MST.TB_LVL_CD A
+			, MST.TB_EXTERNAL_LINK_USE_TYPE_CD B
+		WHERE 1=1
+			AND   A.SEX_LINK_USE_TYPE_CD = B.SEX_LINK_USE_TYPE_CD(+)
+			AND   REPLACE(A.SLVL_NM, ' ', '') = REPLACE(#{lvlNm, jdbcType=VARCHAR}, ' ', '') 
+		ORDER BY A.SEX_LINK_USE_TYPE_CD , A.SLVL_NM
+	</select>
+	
+	<select id="countIpHostMst" resultType="int" parameterType="com.kt.ipms.legacy.ipmgmt.hostmgmt.vo.TbIpHostMstVo">
+		SELECT
+				COUNT(1) 
+		FROM MST.TB_IP_HOST_MST A
+		WHERE 1=1
+			AND   A.SIP_HOST_TYPE_CD = #{sipHostTypeCd, jdbcType=CHAR}
+			AND   A.SIP_BLOCK = #{sipBlock, jdbcType=VARCHAR}
+	</select>
+	
+	<insert id="insertIpHostMst" parameterType="com.kt.ipms.legacy.ipmgmt.hostmgmt.vo.TbIpHostMstVo">
+		INSERT
+		INTO MST.TB_IP_HOST_MST (
+			SIP_HOST_TYPE_CD
+			,	NIP_ASSIGN_MST_SEQ
+			,	NIP_ALLOC_MST_SEQ
+			,	SASSIGN_TYPE_CD
+			,	SPRORITY_YN
+			,	SPORTID
+			,	NLGIPPORTSEQ
+			,	SIP_IF_NM
+			,	SNESCODE
+			,	SIP_HOST_NM
+			,	SRSSOFFICESCODE
+			,	SSAID
+			,	SLLNUM
+			,	SEX_SVC_CD
+			,	SIP_VERSION_TYPE_CD
+			,	PIP_HOST_INET
+			,	SIP_BLOCK
+			,	SNETMASK
+			,	NFIRST_ADDR
+			,	SFIRST_IP_PREFERRED
+			,	SMODELNAME
+			,	SCOMMENT
+			,	SCREATE_ID
+			,	SMODIFY_ID
+		
+		) VALUES (
+			#{sipHostTypeCd, jdbcType=CHAR}
+			,	#{nipAssignMstSeq, jdbcType=BIGINT}
+			,	#{nipAllocMstSeq, jdbcType=BIGINT}
+			,	#{sassignTypeCd, jdbcType=CHAR}
+			,	#{sprorityYn, jdbcType=CHAR}
+			,	#{sportid, jdbcType=VARCHAR}
+			,	#{nlgipportseq, jdbcType=INTEGER}
+			,	#{sipIfNm, jdbcType=VARCHAR}
+			,	#{snescode, jdbcType=VARCHAR}
+			,	#{sipHostNm, jdbcType=VARCHAR}
+			,	#{srssofficescode, jdbcType=CHAR}
+			,	#{ssaid, jdbcType=VARCHAR}
+			,	#{sllnum, jdbcType=VARCHAR}
+			,	#{sexSvcCd, jdbcType=VARCHAR}
+			,	#{sipVersionTypeCd, jdbcType=CHAR}
+			,	#{pipHostInet, javaType=Object, jdbcType=OTHER, typeHandler=com.kt.ipms.legacy.cmn.typehandler.CIDRTypeHandler}
+			,	#{sipBlock, jdbcType=VARCHAR}
+			,	#{snetmask, jdbcType=VARCHAR}
+			,	#{nfirstAddr, jdbcType=NUMERIC}
+			,	#{sfirstIpPreferred, jdbcType=VARCHAR}
+			,	#{smodelname, jdbcType=VARCHAR}
+			,	#{scomment, jdbcType=VARCHAR}
+			,	#{screateId, jdbcType=VARCHAR}
+			,	#{smodifyId, jdbcType=VARCHAR}
+		
+		)
+	</insert>
+	
+	<update id="updateIpHostMst" parameterType="com.kt.ipms.legacy.ipmgmt.hostmgmt.vo.TbIpHostMstVo">
+		UPDATE
+		MST.TB_IP_HOST_MST A
+		SET
+			A.DMODIFY_DT = sysdate 			
+			, A.SCOMMENT = #{scomment, jdbcType=VARCHAR}
+			, A.SMODELNAME = #{smodelname, jdbcType=VARCHAR}
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nipAssignMstSeq)">
+				, A.NIP_ASSIGN_MST_SEQ = #{nipAssignMstSeq, jdbcType=BIGINT}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nipAllocMstSeq)">
+				, A.NIP_ALLOC_MST_SEQ = #{nipAllocMstSeq, jdbcType=BIGINT}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sassignTypeCd)">
+				, A.SASSIGN_TYPE_CD = #{sassignTypeCd, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sprorityYn)">
+				, A.SPRORITY_YN = #{sprorityYn, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sportid)">
+				, A.SPORTID = #{sportid, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nlgipportseq)">
+				, A.NLGIPPORTSEQ = #{nlgipportseq, jdbcType=INTEGER}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sipIfNm)">
+				, A.SIP_IF_NM = #{sipIfNm, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(snescode)">
+				, A.SNESCODE = #{snescode, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sipHostNm)">
+				, A.SIP_HOST_NM = #{sipHostNm, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(srssofficescode)">
+				, A.SRSSOFFICESCODE = #{srssofficescode, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssaid)">
+				, A.SSAID = #{ssaid, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sllnum)">
+				, A.SLLNUM = #{sllnum, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sexSvcCd)">
+				, A.SEX_SVC_CD = #{sexSvcCd, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sipVersionTypeCd)">
+				, A.SIP_VERSION_TYPE_CD = #{sipVersionTypeCd, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(pipHostInet)">
+				, A.PIP_HOST_INET = #{pipHostInet, javaType=Object, jdbcType=OTHER, typeHandler=com.kt.ipms.legacy.cmn.typehandler.CIDRTypeHandler}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sipBlock)">
+				, A.SIP_BLOCK = #{sipBlock, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(snetmask)">
+				, A.SNETMASK = #{snetmask, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nfirstAddr)">
+				, A.NFIRST_ADDR = #{nfirstAddr, jdbcType=NUMERIC}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sfirstIpPreferred)">
+				, A.SFIRST_IP_PREFERRED = #{sfirstIpPreferred, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smodifyId)">
+				, A.SMODIFY_ID = #{smodifyId, jdbcType=VARCHAR}
+			</if>
+		WHERE 1=1
+			AND A.SIP_HOST_TYPE_CD = #{sipHostTypeCd, jdbcType=CHAR}
+			AND A.SIP_BLOCK = #{sipBlock, jdbcType=VARCHAR}
+	</update>
+</mapper>

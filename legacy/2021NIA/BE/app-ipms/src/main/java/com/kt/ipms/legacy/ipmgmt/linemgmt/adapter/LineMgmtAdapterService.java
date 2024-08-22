@@ -3,6 +3,7 @@ package com.kt.ipms.legacy.ipmgmt.linemgmt.adapter;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,9 +16,9 @@ import com.kt.ipms.legacy.ipmgmt.linemgmt.vo.TbIpAssignSubVo;
 @Transactional
 public class LineMgmtAdapterService {
 
-	@Autowired
+	@Lazy @Autowired
 	private LineMgmtService lineMgmtService;
-	
+
 	/*선번장 데이터 생성(등록)*/
 	@Transactional(propagation = Propagation.REQUIRED)
 	public void insertIpAssignSub(List<TbIpAssignSubVo> tbIpAssignSubVos){

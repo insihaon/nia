@@ -3,6 +3,7 @@ package com.kt.ipms.legacy.opermgmt.tacsmgmt.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,25 +27,25 @@ import com.kt.ipms.legacy.opermgmt.tacsmgmt.vo.TbTacsFcltMstVo;
 @Component
 public class TacsMgmtTxService {
 	
-	@Autowired
+	@Lazy @Autowired
 	private TbTacsConnBasDao tbTacsConnBasDao;
 	
-	@Autowired
+	@Lazy @Autowired
 	private TbTacsFcltMstDao tbTacsFcltMstDao;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private TbTacsFcltCmdMstDao tbTacsFcltCmdMstDao;
 	
-	@Autowired
+	@Lazy @Autowired
 	private TbTacsConnHistDao tbTacsConnHistDao;
 	
-	@Autowired
+@Lazy @Autowired
 	private AssignMgmtAdapterService assignMgmtAdapterService;
 	
-	@Autowired
+@Lazy @Autowired
 	private SocketMgmtAdapterService socketMgmtAdapterService;
 	
-	@Autowired
+@Lazy @Autowired
 	private OrgMgmtAdapterService orgMgmtAdapterService;
 	
 	

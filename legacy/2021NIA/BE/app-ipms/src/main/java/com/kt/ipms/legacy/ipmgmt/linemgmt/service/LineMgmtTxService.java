@@ -3,19 +3,18 @@ package com.kt.ipms.legacy.ipmgmt.linemgmt.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.kt.framework.exception.ServiceException;
-import com.kt.framework.utils.StringUtils;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.adapter.AllocMgmtAdapterService;
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.IpAllocOperMstListVo;
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.IpAllocOperMstVo;
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.TbIpAllocMstVo;
-import com.kt.ipms.legacy.ipmgmt.assignmgmt.vo.TbIpAssignMstVo;
 import com.kt.ipms.legacy.ipmgmt.historymgmt.adapter.HistoryMgmtAdapterService;
 import com.kt.ipms.legacy.ipmgmt.historymgmt.vo.IpHistoryMstVo;
 import com.kt.ipms.legacy.ipmgmt.linemgmt.dao.TbIpAssignSubDao;
@@ -28,13 +27,13 @@ import com.kt.log4kt.utils.StringUtil;
 @Transactional
 public class LineMgmtTxService {
 	
-	@Autowired
+	@Lazy @Autowired
 	private TbIpAssignSubDao tbIpAssignSubDao;
 	
-	@Autowired
+@Lazy @Autowired
 	private AllocMgmtAdapterService allocMgmtAdapterService;
 
-	@Autowired
+@Lazy @Autowired
 	private HistoryMgmtAdapterService historyMgmtAdapterService;
 	
 	/*할당 회선 등록*/

@@ -3,6 +3,7 @@ package com.kt.ipms.legacy.ticketmgmt.dhcpmgmt.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import com.kt.framework.exception.ServiceException;
@@ -20,9 +21,9 @@ import com.kt.ipms.legacy.ticketmgmt.dhcpmgmt.vo.TbAuditDhcpMstVo;
 @Component
 public class TbAuditDhcpMstService {
 	
-	@Autowired
+	@Lazy @Autowired
 	private TbAuditDhcpMstTxService tbAuditDhcpMstTxService;
-	
+
 	//2014. 10. 24 dhcp 관리 리스트조회
 	public TbAuditDhcpMstListVo selectListTbAuditDhcpMstVo(TbAuditDhcpMstVo searchVo)   {
 		

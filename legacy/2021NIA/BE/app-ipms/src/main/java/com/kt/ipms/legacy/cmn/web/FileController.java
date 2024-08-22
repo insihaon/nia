@@ -5,12 +5,12 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -22,13 +22,13 @@ import com.kt.ipms.legacy.cmn.service.ExcelCheckService;
 import com.kt.ipms.legacy.cmn.util.FileUtil;
 import com.kt.ipms.legacy.cmn.vo.FileVo;
 
-@Controller
+@Controller("legacyFileController")
 public class FileController extends CommonController {
 	
 	@Autowired
 	private FileUtil fileUtil;
 	
-	@Autowired
+	@Lazy @Autowired
 	private FileSystemResource fileSystemResource;
 	
 	@Autowired

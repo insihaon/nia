@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +16,6 @@ import com.kt.framework.utils.StringUtils;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
 import com.kt.ipms.legacy.cmn.util.PrintLogUtil;
-import com.kt.ipms.legacy.cmn.util.SessionUtil;
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.adapter.AllocMgmtAdapterService;
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.TbIpAllocMstVo;
@@ -35,19 +35,19 @@ import com.kt.log4kt.utils.StringUtil;
 @Transactional
 public class AssignMgmtTxService {
 	
-	@Autowired
+	@Lazy @Autowired
 	private TbIpAssignMstDao tbIpAssignMstDao;
 	
-	@Autowired
+@Lazy @Autowired
 	private TicketMgmtAdapterService ticketMgmtAdapterService;
 	
-	@Autowired
+@Lazy @Autowired
 	private AllocMgmtAdapterService allocMgmtAdapterService;
 	
-	@Autowired
+@Lazy @Autowired
 	private RoutMgmtTxService routMgmtTxService;
 
-	@Autowired
+@Lazy @Autowired
 	private HistoryMgmtAdapterService historyMgmtAdapterService;
 	
 	@Transactional(readOnly = true)

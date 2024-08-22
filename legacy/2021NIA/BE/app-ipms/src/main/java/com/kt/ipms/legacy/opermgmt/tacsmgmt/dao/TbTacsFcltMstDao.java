@@ -1,9 +1,13 @@
 package com.kt.ipms.legacy.opermgmt.tacsmgmt.dao;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+
 import com.kt.ipms.legacy.opermgmt.tacsmgmt.vo.TbTacsFcltMstVo;
 
 
 /** TB_TACS_FCLT_MST DAO INTERFACE **/
+@Mapper
 public interface TbTacsFcltMstDao {
 	
 	/** TB_TACS_FCLT_MST insertTbTacsFcltMstVo **/

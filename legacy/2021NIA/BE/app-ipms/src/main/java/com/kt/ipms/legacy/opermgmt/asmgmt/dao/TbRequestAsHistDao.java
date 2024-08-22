@@ -1,9 +1,13 @@
 package com.kt.ipms.legacy.opermgmt.asmgmt.dao;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+
 import com.kt.ipms.legacy.opermgmt.asmgmt.vo.TbRequestAsHistVo;
 
 
 /** TB_REQUEST_AS_HIST DAO INTERFACE **/
+@Mapper
 public interface TbRequestAsHistDao {
 	
 	/** TB_REQUEST_AS_HIST insertTbRequestAsHistVo **/

@@ -1,6 +1,7 @@
 package com.kt.ipms.legacy.cmn.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,7 +12,7 @@ import com.kt.ipms.legacy.cmn.dao.ExcelCheckDao;
 @Transactional
 public class ExcelCheckService {
 
-	@Autowired
+	@Lazy @Autowired
 	private ExcelCheckDao excelDao;
 	
 	@Transactional(readOnly = true)

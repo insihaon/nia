@@ -1,10 +1,13 @@
 package com.kt.ipms.legacy.opermgmt.menumgmt.dao;
 import java.util.List;
 
+import org.apache.ibatis.annotations.Mapper;
+
 import com.kt.ipms.legacy.opermgmt.menumgmt.vo.TbMenuBasVo;
 
 
 /** TB_MENU_BAS DAO INTERFACE **/
+@Mapper
 public interface TbMenuBasDao {
 	
 	/** TB_MENU_BAS insert **/

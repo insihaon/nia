@@ -2,21 +2,19 @@ package com.kt.ipms.legacy.linkmgmt.socketmgmt.service;
 
 import java.net.InetAddress;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.codehaus.jackson.map.DeserializationConfig.Feature;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.kt.framework.exception.ServiceException;
-import com.kt.framework.utils.StringUtils;
 import com.kt.ipms.legacy.cmn.service.CommonService;
 import com.kt.ipms.legacy.cmn.service.ConfigPropertieService;
-import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
 import com.kt.ipms.legacy.cmn.util.PrintLogUtil;
 import com.kt.ipms.legacy.cmn.util.TACSCodeUtil.TACSErrorCodes;
@@ -24,8 +22,6 @@ import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.IpAllocOperMstVo;
 import com.kt.ipms.legacy.linkmgmt.socketmgmt.vo.SocketInfoVo;
 import com.kt.ipms.legacy.linkmgmt.socketmgmt.vo.WhoisMstVo;
 import com.kt.ipms.legacy.linkmgmt.whois.service.WhoisService;
-import com.kt.ipms.legacy.linkmgmt.whois.service.WhoisTxService;
-import com.kt.ipms.legacy.linkmgmt.whois.vo.TbWhoisUserVo;
 import com.kt.ipms.legacy.opermgmt.operstdmgmt.service.TbCmnMsgMstService;
 import com.kt.ipms.legacy.opermgmt.tacsmgmt.adapter.TacsMgmtAdapterService;
 import com.kt.ipms.legacy.opermgmt.tacsmgmt.vo.TacsRequestVo;
@@ -41,22 +37,22 @@ import com.kt.ipms.legacy.opermgmt.whoismgmt.vo.TbWhoisVo;
 @Transactional
 public class SocketMgmtService {
 	
-	@Autowired
+@Lazy @Autowired
 	private ConfigPropertieService configPropertieService;
 	
-	@Autowired
+@Lazy @Autowired
 	private SocketMgmtTxService socketMgmtTxService;
 	
-	@Autowired
+@Lazy @Autowired
 	private TbCmnMsgMstService tbCmnMsgMstService;
 	
-	@Autowired
+@Lazy @Autowired
 	private CommonService commonService;
 	
-	@Autowired
+@Lazy @Autowired
 	private TacsMgmtAdapterService tacsMgmtAdapterService;
 	
-	@Autowired
+@Lazy @Autowired
 	private WhoisService whoisService;
 	
 	@Transactional(readOnly = true)

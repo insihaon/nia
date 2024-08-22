@@ -4,12 +4,12 @@ import java.math.BigInteger;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
-import com.kt.ipms.legacy.opermgmt.asmgmt.vo.TbRequestAsApyTxnVo;
 import com.kt.ipms.legacy.opermgmt.whoismgmt.dao.TbNewZipcodeDao;
 import com.kt.ipms.legacy.opermgmt.whoismgmt.dao.TbWhoisComplexDao;
 import com.kt.ipms.legacy.opermgmt.whoismgmt.dao.TbWhoisDao;
@@ -30,25 +30,25 @@ import com.kt.ipms.legacy.opermgmt.whoismgmt.vo.WhoisStatusVo;
 @Transactional
 public class WhoisMgmtTxService {
 
-	@Autowired
+	@Lazy @Autowired
 	private TbWhoisDao tbWhoisDao;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private TbWhoisUserDao tbWhoisUserDao;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private TbZipcodeDao tbZipcodeDao;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private TbNewZipcodeDao tbNewZipcodeDao;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private TbWhoisComplexDao tbWhoisComplexDao;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private TbWhoisKeywordDao tbWhoisKeywordDao;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private TbWhoisModifyDao tbWhoisModifyDao;
 	
 	@Transactional(propagation = Propagation.REQUIRED)

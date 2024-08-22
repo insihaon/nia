@@ -1,10 +1,12 @@
 package com.kt.ipms.legacy.linkmgmt.batchmgmt.dao;
 
-import java.util.List;
 import java.util.Map;
+
+import org.apache.ibatis.annotations.Mapper;
 
 import com.kt.ipms.legacy.ipmgmt.hostmgmt.vo.TbIpHostMstVo;
 
+@Mapper
 public interface ExcelParseBatchDao {
 
 	/**

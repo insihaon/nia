@@ -1,9 +1,13 @@
 package com.kt.ipms.legacy.opermgmt.nonktipmgmt.dao;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+
 import com.kt.ipms.legacy.opermgmt.nonktipmgmt.vo.TbNonKtIpblockVo;
 
 
 /** TB_NON_KT_IPBLOCK DAO INTERFACE **/
+@Mapper
 public interface TbNonKtIpblockDao {
 	
 	/** TB_NON_KT_IPBLOCK insertTbNonKtIpblockVo **/

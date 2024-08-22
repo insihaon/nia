@@ -3,6 +3,7 @@ package com.kt.ipms.legacy.opermgmt.orgmgmt.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,22 +28,22 @@ import com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlSubCdVo;
 @Transactional
 public class OrgMgmtTxService {
 
-	@Autowired
+	@Lazy @Autowired
 	private TbLvlRoleSubDao tbLvlRoleSubDao;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private TbLvlCdDao tbLvlCdDao;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private TbLvlSubCdDao tbLvlSubCdDao;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private TbLvlBasDao tbLvlBasDao;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private TbLvlMstDao tbLvlMstDao;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private TbLvlRoleMstDao tbLvlRoleMstDao;
 
 	@Autowired

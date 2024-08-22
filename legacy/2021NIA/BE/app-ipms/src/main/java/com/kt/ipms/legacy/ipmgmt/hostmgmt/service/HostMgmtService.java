@@ -4,6 +4,7 @@ package com.kt.ipms.legacy.ipmgmt.hostmgmt.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,14 +19,13 @@ import com.kt.ipms.legacy.ipmgmt.hostmgmt.vo.TbIpHostMstVo;
 @Component
 @Transactional
 public class HostMgmtService {
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private HostMgmtTxService hostMgmtTxService;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private IpCommonService ipCommonService;
-	
-	
+
 	@Transactional(readOnly = true)	
 	public TbIpHostMstListVo selectTbIpHostInfoVo(TbIpHostMstVo tbIpHostMstVo){
 		TbIpHostMstListVo resultListVo = null;

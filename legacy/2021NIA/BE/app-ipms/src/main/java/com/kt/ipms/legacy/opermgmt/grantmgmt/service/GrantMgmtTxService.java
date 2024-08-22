@@ -2,6 +2,7 @@ package com.kt.ipms.legacy.opermgmt.grantmgmt.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,26 +15,26 @@ import com.kt.ipms.legacy.opermgmt.grantmgmt.vo.TbOperTeamAuthTxnVo;
 import com.kt.ipms.legacy.opermgmt.grantmgmt.vo.TbUserAuthTxnListVo;
 import com.kt.ipms.legacy.opermgmt.grantmgmt.vo.TbUserAuthTxnVo;
 import com.kt.ipms.legacy.opermgmt.orgmgmt.adapter.OrgMgmtAdapterService;
+import com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlBasVo;
 import com.kt.ipms.legacy.opermgmt.usermgmt.adapter.UserMgmtAdapterService;
 import com.kt.ipms.legacy.opermgmt.usermgmt.vo.TbUserBasVo;
-import com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlBasVo;
 @Component
 @Transactional
 public class GrantMgmtTxService {
 
-	@Autowired
+	@Lazy @Autowired
 	TbAdmrApvTxnDao tbAdmrApvTxnDao;
 	
-	@Autowired
+	@Lazy @Autowired
 	TbOperTeamAuthTxnDao tbOperTeamAuthTxnDao;
 	
-	@Autowired
+	@Lazy @Autowired
 	TbUserAuthTxnDao userAuthTxnDao;
 	
-	@Autowired
+	@Lazy @Autowired
 	OrgMgmtAdapterService orgMgmtAdapterService;
 	
-	@Autowired
+	@Lazy @Autowired
 	UserMgmtAdapterService  userMgmtAdapterService;
 	
 	

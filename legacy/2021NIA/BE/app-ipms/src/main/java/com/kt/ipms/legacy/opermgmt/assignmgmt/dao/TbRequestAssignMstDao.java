@@ -1,9 +1,13 @@
 package com.kt.ipms.legacy.opermgmt.assignmgmt.dao;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+
 import com.kt.ipms.legacy.opermgmt.assignmgmt.vo.TbRequestAssignMstVo;
 
 
 /** TB_REQUEST_ASSIGN_MST DAO INTERFACE **/
+@Mapper
 public interface TbRequestAssignMstDao {
 	
 	/** TB_REQUEST_ASSIGN_MST insertTbRequestAssignMstVo **/

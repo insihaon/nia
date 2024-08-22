@@ -1,6 +1,7 @@
 package com.kt.ipms.legacy.linkmgmt.batchmgmt.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,7 +11,7 @@ import com.kt.ipms.legacy.linkmgmt.batchmgmt.dao.CallableBatchFnDao;
 @Component
 public class CallableBatchTxService {
 	
-	@Autowired
+	@Lazy @Autowired
 	private CallableBatchFnDao callableBatchFnDao;
 	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)

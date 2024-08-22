@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,16 +21,16 @@ import com.kt.ipms.legacy.opermgmt.operstdmgmt.service.TbCmnMsgMstService;
 @Transactional
 public class CallableBatchService {
 	
-	@Autowired
+@Lazy @Autowired
 	private CallableBatchTxService callableBatchTxService;
 	
-	@Autowired
+@Lazy @Autowired
 	private TbBatchLogTxService tbBatchLogTxService;
 	
-	@Autowired
+@Lazy @Autowired
 	private TbCmnMsgMstService tbCmnMsgMstService;
 	
-	@Autowired
+@Lazy @Autowired
 	private CommonService commonService;
 	
 	@Transactional(propagation = Propagation.REQUIRED)

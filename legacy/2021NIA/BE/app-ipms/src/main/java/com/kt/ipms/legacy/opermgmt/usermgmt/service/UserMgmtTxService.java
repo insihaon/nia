@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,16 +23,16 @@ import com.kt.log4kt.KTLoggerFactory;
 @Component
 public class UserMgmtTxService {
 
-	@Autowired
+	@Lazy @Autowired
 	private TbUserBasDao tbUserBasDao;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private TbUserConnHistDao tbUserConnHistDao;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private TbUserHndsetApyTxnDao tbUserHndsetApyTxnDao;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private TbUserOtpDao tbUserOtpDao;
 	
 	protected KTLogger logger = KTLoggerFactory.getLogger(getClass());

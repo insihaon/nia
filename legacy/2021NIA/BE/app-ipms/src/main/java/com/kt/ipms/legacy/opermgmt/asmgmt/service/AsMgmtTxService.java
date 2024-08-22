@@ -3,6 +3,7 @@ package com.kt.ipms.legacy.opermgmt.asmgmt.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,12 +18,12 @@ import com.kt.ipms.legacy.opermgmt.asmgmt.vo.TbRequestAsMstVo;
 @Component
 public class AsMgmtTxService {
 	
-	@Autowired
-	TbRequestAsApyTxnDao tbRequestAsApyTxnDao;
-	@Autowired
-	TbRequestAsHistDao tbRequestAsHistDao;
-	@Autowired
-	TbRequestAsMstDao tbRequestAsMstDao;
+	@Lazy @Autowired
+	private TbRequestAsApyTxnDao tbRequestAsApyTxnDao;
+	@Lazy @Autowired
+	private TbRequestAsHistDao tbRequestAsHistDao;
+	@Lazy @Autowired
+	private TbRequestAsMstDao tbRequestAsMstDao;
 	
 	/*-------------------------------------- 사설AS 신청 start--------------------------------------------*/
 	@Transactional(readOnly = true)

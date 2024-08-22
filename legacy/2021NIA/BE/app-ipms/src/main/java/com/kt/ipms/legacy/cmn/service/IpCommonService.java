@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import com.kt.framework.exception.ServiceException;
@@ -26,7 +27,7 @@ public class IpCommonService {
 	@Autowired
 	private IpCalculateUtil ipCalculateUtil;
 	
-	@Autowired
+	@Lazy @Autowired
 	private CommonDao commonDao;
 	/**
 	 * IP 블럭 기준 정보 설정

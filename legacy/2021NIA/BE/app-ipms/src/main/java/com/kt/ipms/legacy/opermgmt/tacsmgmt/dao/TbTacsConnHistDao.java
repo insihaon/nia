@@ -1,9 +1,13 @@
 package com.kt.ipms.legacy.opermgmt.tacsmgmt.dao;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+
 import com.kt.ipms.legacy.opermgmt.tacsmgmt.vo.TbTacsConnHistVo;
 
 
 /** TB_TACS_CONN_HIST DAO INTERFACE **/
+@Mapper
 public interface TbTacsConnHistDao {
 	
 	/** TB_TACS_CONN_HIST insertTbTacsConnHistVo **/
