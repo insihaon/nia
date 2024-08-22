@@ -81,9 +81,9 @@
               </tr>
               <tr v-if="allocType === 'allocTel'" id="svcArea3">
                 <th class="first" scope="row">수용회선명</th>
-                <td class="view">{{ srcIpAllocMst.sconnAlias }}</td>
+                <td class="view">{{ srcIpAllocMst.sconnalias }}</td>
                 <th scope="row">고객명</th>
-                <td class="view">{{ srcIpAllocMst.scustName }}</td>
+                <td class="view">{{ srcIpAllocMst.scustname }}</td>
               </tr>
               <tr v-if="allocType === 'allocNe'" id="svcArea4">
                 <th class="first">전용번호</th>
@@ -144,61 +144,32 @@
           <div class="tit_group">
             <h4>할당 정보</h4>
           </div>
-          <table id="insertBaseTable" class="tbl_list mt5">
-            <colgroup>
-              <col width="9%" />
-              <col width="10%" />
-              <col width="9%" />
-              <col width="10%" />
-              <col width="23%" />
-              <col width="27%" />
-              <col width="12%" />
-            </colgroup>
-            <thead>
-              <tr>
-                <th class="first" scope="col">서비스망</th>
-                <th scope="col">노드</th>
-                <th scope="col">공인/사설</th>
-                <th scope="col">서비스</th>
-                <th scope="col">IP블록</th>
-                <th scope="col">GW IP</th>
-                <th scope="col" title="단위블록수(IPV4:/24, IPV6:/64)">단위블록수</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- <tr
-                v-for="(item, index) in allocTargetList"
-                :key="index"
-                :class="{ subbg: index % 2 !== 0, last: index === allocTargetList.length - 1 }"
-              >
-                <td class="first ellipsis" :title="item.ssvcLineTypeNm">{{ item.ssvcLineTypeNm }}</td>
-                <td class="ellipsis" :title="item.ssvcObjNm">{{ item.ssvcObjNm }}</td>
-                <td class="ellipsis" :title="item.sipCreateTypeNm">{{ item.sipCreateTypeNm }}</td>
-                <td class="ellipsis" :title="item.sassignTypeNm">{{ item.sassignTypeNm }}</td>
-                <td class="ellipsis" :title="item.pipPrefix">{{ item.pipPrefix }}</td>
-                <td>
-                  <div class="inline-block w33">
-                    <select v-model="item.gwipType" @change="fnSetGwip(item)">
-                      <option value="direct">직접입력</option>
-                      <option value="first">시작IP</option>
-                      <option value="last">끝IP</option>
-                    </select>
-                  </div>
-                  <div class="inline-block w60">
-                    <input
-                      v-model="item.slastAddrGwip"
-                      type="text"
-                      class="txt w95"
-                      @keyup="checkInput($event, 'IPonly')"
-                    />
-                  </div>
-                </td>
-                <td class="ellipsis" :title="formatNumber(item.nclassCnt)">
-                  {{ formatNumber(item.nclassCnt) }}
-                </td>
-              </tr> -->
-            </tbody>
-          </table>
+          <div class="scroll_area" style="max-height: 200px;">
+            <table id="insertBaseTable" class="scroll_table tbl_list mt5">
+              <thead>
+                <tr>
+                  <th class="first" scope="col">서비스망</th>
+                  <th scope="col">노드</th>
+                  <th scope="col">공인/사설</th>
+                  <th scope="col">서비스</th>
+                  <th scope="col">IP블록</th>
+                  <th scope="col">GW IP</th>
+                  <th scope="col" title="단위블록수(IPV4:/24, IPV6:/64)">단위블록수</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(item, index) in allocTargetList" :key="index">
+                  <td class="first ellipsis">{{ item.ssvcLineTypeNm }}</td>
+                  <td class="ellipsis">{{ item.ssvcObjNm }}</td>
+                  <td class="ellipsis">{{ item.sipCreateTypeNm }}</td>
+                  <td class="ellipsis">{{ item.sassignTypeNm }}</td>
+                  <td class="ellipsis">{{ item.pipPrefix }}</td>
+                  <td class="ellipsis">{{ item.sgatewayip }}</td>
+                  <td class="ellipsis"> {{ formatNumber(item.nclassCnt) }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
 
         <div id="divSvcAloArea" class="content_result">
@@ -238,7 +209,7 @@
                   </div>
                   <div class="inline-block d-flex items-center w60">
                     <!-- sfirstAddrGwip, slastAddrGwip -->
-                    <input v-model="item.addrGwip" type="text" class="txt w95" style="height: 20px" @keyup="(e)=> checkInput(e, 'IPonly')" />
+                    <input v-model="item.sgatewayip" type="text" class="txt w95" style="height: 20px" @keyup="(e)=> checkInput(e, 'IPonly')" />
                   </div>
                 </td>
                 <td class="ellipsis">{{ formatNumber(item.nclassCnt) }}</td>
@@ -255,19 +226,6 @@
               </tr>
             </tbody>
           </table>
-
-          <!-- <div class="btn_area mt10">
-            <span>
-              <a href="#none" @click="fnViewAllocCheckTacsIpBlock">
-                <input type="image" src="path_to_image/btn_delegate_off.gif" value="배정" @mouseover="menuOver" @mouseout="menuOut" />
-              </a>
-            </span>
-            <span>
-              <a href="#none" @click="fnInsertAlcCloseBtnClick">
-                <input type="image" src="path_to_image/btn_close_off.gif" value="닫기" @mouseover="menuOver" @mouseout="menuOut" />
-              </a>
-            </span>
-          </div> -->
         </div>
       </div>
       <div slot="footer" class="dialog-footer">
@@ -279,9 +237,10 @@
         </el-button>
       </div>
     </el-dialog>
+    <ModalCheckTacsIpBlock ref="ModalCheckTacsIpBlock" />
     <ModalFacilityInformation ref="ModalFacilityInformation" @selected-value="setSelectedRow" />
     <ModalLinkInformation ref="ModalLinkInformation" @selected-value="setSelectedRow" />
-    <ModalIpAllocCircuitDetail ref="ModalIpAllocCircuitDetail" @closeCircuitDetail="loadDetailSubSvcMst" />
+    <ModalIpAllocCircuitDetail ref="ModalIpAllocCircuitDetail" @selected-value="setSelectedRow" @closeCircuitDetail="loadDetailSubSvcMst" />
   </div>
 </template>
 
@@ -294,12 +253,15 @@ import { checkInput } from '@/views-ipms/js/common-function'
 import ModalFacilityInformation from '@/views-ipms/modal/ModalFacilityInformation.vue'
 import ModalLinkInformation from '@/views-ipms/modal/ModalLinkInformation.vue'
 import ModalIpAllocCircuitDetail from '@/views-ipms/modal/alloc/ModalIpAllocCircuitDetail.vue'
+import ModalCheckTacsIpBlock from '@/views-ipms/modal/ModalCheckTacsIpBlock.vue'
+
+import { ipmsJsonApis, apiRequestJson, ipmsModelApis, apiRequestModel } from '@/api/ipms'
 
 const routeName = 'ModalIpAllocInsert'
 
 export default {
   name: routeName,
-  components: { ModalFacilityInformation, ModalLinkInformation, ModalIpAllocCircuitDetail },
+  components: { ModalFacilityInformation, ModalLinkInformation, ModalIpAllocCircuitDetail, ModalCheckTacsIpBlock },
   directives: { elDragDialog },
   extends: Modal,
   data() {
@@ -309,12 +271,14 @@ export default {
       checkInput,
       // allocParam: {},
       infoValue: '',
+      menuType: 'Aloc',
       sFlgAllocType: 'N',
       vAllocType: 'allocNe',
       gwipType: 'last',
       returnFlag: null,
       allocTargetList: [], // allocTel일 경우 조회
       ipAllocOperMstVos: [], // 할당 처리할 rows 정보
+      tbRoutChkMstVo: null, // 라우팅 정보 현행화 업데이트를 위한 정보(IP주소 라우팅 비교/점검)
       srcIpAllocMst: {
         sllnum: '',
         scomment: '',
@@ -338,6 +302,7 @@ export default {
         } },
         allocLn: { label: '링크정보', modalName: 'ModalLinkInformation', valueName: 'sanealias', paramKey: {
           saofficesname: 'saofficescodeNm',
+          saofficescode: 'saofficescode',
           szaofficesname: 'szofficescodeNm',
           sanealias: 'sanealias',
           sznealias: 'sznealias',
@@ -346,11 +311,17 @@ export default {
           saifname: 'saifname',
           szifname: 'szifname',
           sllnum: 'sllnum',
-          nipLinkMstSeq: 'nipLinkMstSeq', // ssubsclgipportdescription
+          nipLinkMstSeq: 'nipLinkMstSeq',
           sconnAlias: 'sconnAlias'
         } },
         allocTel: { label: '회선정보', modalName: 'ModalIpAllocCircuitDetail', valueName: 'sllnum', paramKey: {
-          nipAllocMstSeq: 'nipAllocMstSeq'
+          nipAllocMstSeq: 'nipAllocMstSeq',
+          sofficename: 'sofficename', // 수용국
+          ssubscnealias: 'ssubscnealias', // 시설명
+          ssubscmstip: 'ssubscmstip', // 장비대표IP
+          ssubsclgipportdescription: 'ssubsclgipportdescription', // I/F 명
+          sconnalias: 'sconnalias', // 수용회선명
+          scustname: 'scustname'// 고객명
         } },
       },
       ipCheckCommonMsg: ''
@@ -379,15 +350,21 @@ export default {
     onOpen(model, actionMode) {
       if (model.ipAllocOperMstVos) {
         model.ipAllocOperMstVos.forEach(row => {
+          // GW IP내 정보 setting
           row['gwipType'] = 'last'
-          row['addrGwip'] = row.slastAddrGwip
+          row['sgatewayip'] = row.slastAddrGwip
       })
         this.ipAllocOperMstVos = model.ipAllocOperMstVos
+      }
+      if (model.tbRoutChkMstVo) {
+        this.tbRoutChkMstVo = model.tbRoutChkMstVo
+        this.menuType = model.menuType
       }
       this.init()
     },
     onClose() {
       this.infoValue = ''
+      this.menuType = 'Aloc'
     },
     init() {
       Object.keys(this.infoModalParameterKey).forEach(key => {
@@ -397,7 +374,7 @@ export default {
       const { sneossDdYn, ssvcLineTypeCd, nbitmask } = this.ipAllocOperMstVos[0]
       this.sFlgAllocType = sneossDdYn
       this.vAllocType = 'allocNe'
-      if (['CL0001', 'CL0002', 'CL0003'].includes(ssvcLineTypeCd) && ['30', '29'].includes(nbitmask)) {
+      if (['CL0001', 'CL0002', 'CL0003'].includes(ssvcLineTypeCd) && [30, 29].includes(nbitmask)) {
         this.vAllocType = 'allocLn'
       }
       if (this.sFlgAllocType !== 'N') {
@@ -426,7 +403,7 @@ export default {
         default:
           break
       }
-      item['addrGwip'] = value
+      item['sgatewayip'] = value
       // this.$set(item, 'addrGwip', value)
       this.$set(this.ipAllocOperMstVos, index, item)
       // this.$forceUpdate()
@@ -451,8 +428,8 @@ export default {
       return parseFloat(numStr)
     },
     handleClickInfoButton() {
-      const { ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd } = this.ipAllocOperMstVos[0]
-      const ipBlockMstVo = { ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd }
+      // const { ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd } = this.ipAllocOperMstVos[0]
+      const ipBlockMstVo = this.ipAllocOperMstVos[0]
 
       if (this.allocType === 'allocTel') {
         if (this.infoValue.length <= 4) {
@@ -463,18 +440,15 @@ export default {
           ipBlockMstVo[this.srhSvcTypeCd] = this.infoValue // sllnum or ssaid setting
         }
       }
-      this.$refs[this.infoModalName].open({ ipBlockMstVo })
+      this.$refs[this.infoModalName].open({ ipBlockMstVo, inputText: this.infoValue })
     },
     async loadDetailSubSvcMst() { // 회선할당정보 조회
       try {
-        // 레거시 url: ipmgmt/alloccmgmt/selectDetailSubSvcMstList.json
-        /*
         const ipBlockMstVo = { sllnum: '', ssaid: '' }
         ipBlockMstVo[this.srhSvcTypeCd] = this.infoValue
 
-        const res = await api(ipBlockMstVo)
+        const res = await apiRequestJson(ipmsJsonApis.selectDetailSubSvcMstList, ipBlockMstVo)
         this.allocTargetList = res.ipAllocOperMstVos
-         */
       } catch (error) {
         this.error(error)
       }
@@ -486,9 +460,11 @@ export default {
       this.returnFlag = returnFlag
 
       Object.keys(this.infoModalParameterKey).forEach(key => {
+        // if (selectedRow[this.infoModalParameterKey[key]] !== null) {
         this.srcIpAllocMst[key] = selectedRow[this.infoModalParameterKey[key]]
+        // }
       })
-
+      console.log()
       // this.infoModalParameterKey
     },
     async fnViewAllocCheckTacsIpBlock() {
@@ -506,29 +482,11 @@ export default {
         })
       } else {
         const { ssvcLineTypeCd, sipVersionTypeCd } = this.ipAllocOperMstVos[0]
-        if (['CL0001', 'CL0002', 'CL0003'].includes(ssvcLineTypeCd) || sipVersionTypeCd !== 'CV0001') {
+        if (!['CL0001', 'CL0002', 'CL0003'].includes(ssvcLineTypeCd) || sipVersionTypeCd !== 'CV0001') {
           this.fnInsertConfirmBtnClick()
         } else {
-          /* Tacs Ip중복 체크 api 요청
-            const { nipAssignMstSeq } = this.ipAllocOperMstVos[0]
-            try {
-              const res = await apiCheckTacsIpBlock({ nipAssignMstSeq, typeFlag: 'ALLOC' })
-              this.ipCheckCommonMsg = res.resultListVo.commonMsg
-              this.$refs.ModalCheckTacsIpBlock.open(res)
-            } catch (error) {
-              this.error(error)
-            }
-            if(this.ipCheckCommonMsg !== 'SUCCESS') {
-              this.confirm(this.ipCheckCommonMsg + '그래도 할당진행을 하시겠습니까?', '알림', {
-                confirmButtonText: '확인',
-                cancelButtonText: '취소',
-                type: 'warning',
-              }).then(() => {
-                this.fnInsertConfirmBtnClick()
-              })
-            }
-          */
-
+          // Tacs Ip중복 체크 api 요청
+          this.$refs.ModalCheckTacsIpBlock.open({ row: this.ipAllocOperMstVos[0], viewType: 'ALLOC' })
         }
       }
       /* ip블럭 중복체크 확인 */
@@ -537,48 +495,23 @@ export default {
       // Implement the function to check TACS IP block
     },
     async fnInsertConfirmBtnClick() {
-      /*
-      시설, 링크 공통
-      sicisofficescode
-      ssubscnealias // 링크: 자국장비
-      ssubscmstip // 링크: 자국 IP
-      sllnum
-      ssubsclgipportdescription
-
-      시설
-      smodelname
-      ssubscnnescode
-
-      링크
-      nipLinkMstSeq
-      sconnAlias
-
-      회선
-      nipAllocMstSeq
-
-      최종 param
-      - ipAllocMstComplexVo {
-        srcIpAllocMstVo : {}
-        destIpAllocMstVos: [ ipAllocOperMstVo, ipAllocOperMstVo ..]
-      }
-      */
     let srcIpAllocMstVo = {}
     if (this.allocType === 'allocNe' && this.allocType === this.returnFlag) { // 시설
-      const { sicisofficescode, smodelname, ssubscnealias, ssubscmstip, ssubscnnescode, sllnum } = this.srcIpAllocMst
+      const { sicisofficescode, smodelname, ssubscnealias, ssubscmstip, ssubscnnescode, sllnum, scomment } = this.srcIpAllocMst
       const ssubsclgipportdescription = this.srcIpAllocMst.ssubsclgipportdescription
 
-      srcIpAllocMstVo = { sicisofficescode, ssubscnealias, smodelname, ssubscmstip, ssubscnnescode, sllnum, ssubsclgipportdescription }
-    } else if (this.allocType === 'allocLen' && this.allocType === this.returnFlag) { // 링크
+      srcIpAllocMstVo = { sicisofficescode, ssubscnealias, smodelname, ssubscmstip, ssubscnnescode, sllnum, ssubsclgipportdescription, scomment }
+    } else if (this.allocType === 'allocLn' && this.allocType === this.returnFlag) { // 링크
       const {
-        saofficesname: sicisofficescode,
+        saofficescode: sicisofficescode,
         sanealias: ssubscnealias,
         samstip: ssubscmstip,
         saifname: ssubsclgipportdescription,
         sllnum,
         nipLinkMstSeq,
-        sconnAlias
+        sconnAlias,
+        scomment,
       } = this.srcIpAllocMst
-
       srcIpAllocMstVo = {
         sicisofficescode, // 자국수용국
         ssubscnealias, // 자국 장비명
@@ -586,16 +519,19 @@ export default {
         ssubsclgipportdescription, // 자국IF명
         sllnum, // 전용번호
         nipLinkMstSeq, // 전용번호
-        sconnAlias // 수용회선명
+        sconnAlias, // 수용회선명
+        scomment
       }
     } else if (this.allocType === 'allocTel' && this.vAllocType === this.returnFlag) {
-      srcIpAllocMstVo = { nipAllocMstSeq: this.srcIpAllocMst.nipAllocMstSeq }
+      srcIpAllocMstVo = { nipAllocMstSeq: this.srcIpAllocMst.nipAllocMstSeq, scomment: this.srcIpAllocMst.scomment }
     } else {
       onMessagePopup(this, '할당 할 회선/시설/링크 정보를 선택해주세요.')
       return
     }
 
-     let chkGwipFlag = 'N'
+    let chkGwipFlag = 'N'
+      // 데이터 확인용
+    const THIS = this
      const destIpAllocMstVos = []
 
      this.ipAllocOperMstVos.forEach(row => {
@@ -611,25 +547,76 @@ export default {
       onMessagePopup(this, 'GW IP를 입력해주세요(필수).')
       return
      }
-     const ipAllocMstComplexVo = { srcIpAllocMstVo, destIpAllocMstVos }
-     /*
+     const ipAllocMstComplexVo = { srcIpAllocMstVo, destIpAllocMstVos, menuType: this.menuType }
      try {
-      const res = await api(ipAllocMstComplexVo)
+      const res = await apiRequestJson(ipmsJsonApis.insertAlcIPMst, ipAllocMstComplexVo)
       // 레거시 url: ipmgmt/allocmgmt/insertAlcIPmst.json
-
-      if(res.ipAllocOperMstVo.commonMsg === 'SUCCESS') {
-        onMessagePopup(this, 'IP블록 할당이 정상적으로 처리되었습니다.')
-        this.close()
+      if (this.menuType === 'Rout') {
+        await this.fnUpdateStatusMst(res.ipAllocOperMstVo)
       } else {
-        onMessagePopup(this, res.ipAllocOperMstVo.commonMsg)
+        if (res.ipAllocOperMstVo.commonMsg === 'SUCCESS') {
+          onMessagePopup(this, 'IP블록 할당이 정상적으로 처리되었습니다.')
+          this.close()
+          return true
+        } else {
+          onMessagePopup(this, res.ipAllocOperMstVo.commonMsg)
+          return false
+        }
       }
      } catch (error) {
       this.error(error)
      }
-     */
+    },
+    async fnUpdateStatusMst(ipAllocOperMstVo) { // IP주소 라우팅 현황 update
+      const sdbIntgrmRsltCd = ipAllocOperMstVo.commonMsg === 'SUCCESS' ? 'DR0004' : 'DR0003'
+      const tbRoutChkMstVo = Object.assign({}, this.tbRoutChkMstVo, { sdbIntgrmRsltCd })
+      /* try {
+        // 레거시 url: ipmgmt/routmgmt/updateStatusMst.json
+        const res = await apiRequestJson(ipmsJsonApis.updateStatusMst, tbRoutChkMstVo)
+        if (res.commonMsg === 'SUCCESS') {
+          onMessagePopup(this, 'IP블록 할당이 정상적으로 처리되었습니다.')
+          this.close()
+        } else {
+          onMessagePopup(this, res.commonMsg)
+        }
+      } catch (error) {
+        this.error(error)
+      } */
     }
   },
 }
 </script>
 <style lang="scss" scoped>
+// .scroll_table {
+//   colgroup {
+//       width: 100%;
+//   }
+
+//   thead {
+//       display: table;
+//       width: 100%;
+//       table-layout: fixed;
+//   }
+
+//   tbody {
+//       display: block;
+//       max-height: 200px;
+//       overflow-y: scroll;
+//       width: 100%;
+//   }
+
+//   tbody tr {
+//       display: table;
+//       table-layout: fixed;
+//       width: 100%;
+//   }
+//   thead th, tbody td {
+//       // text-align: left;
+//       // padding: 8px;
+//       border: 1px solid #ddd;
+//       overflow: hidden; /* Ensures no text overflow */
+//       white-space: nowrap;
+//       text-overflow: ellipsis;
+//   }
+// }
 </style>

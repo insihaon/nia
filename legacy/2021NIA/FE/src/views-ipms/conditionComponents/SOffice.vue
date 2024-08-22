@@ -11,7 +11,7 @@
     >
       <el-option label="전체" value="" />
       <el-option
-        v-for="(option, i) in officeOptions"
+        v-for="(option, i) in options"
         :key="i"
         :label="option.label"
         :value="option.value"
@@ -40,21 +40,27 @@ export default {
     prop_parameterKey: {
       type: String,
       default: 'sofficecode'
-    }
+    },
+    prop_options: {
+      type: Array,
+      default: null
+    },
   },
   data() {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       value: '',
-      officeOptions: this.$store.state.ipms.tempOfficeList
+      options: this.$store.state.ipms.tempOfficeList
     }
   },
   mounted () {
+    if (this.prop_options === null) {
+      this.onLoadOfficeList()
+    }
     Eventbus.$on(EventType.changeLvl1, (params) => { this.onLoadOfficeList(params) })
     Eventbus.$on(EventType.changeLvl2, (params) => { this.onLoadOfficeList(params) })
     Eventbus.$on(EventType.changeLvl3, (params) => { this.onLoadOfficeList(params) })
-    this.onLoadOfficeList()
   },
   beforeDestroy() {
     Eventbus.$off(EventType.changeLvl1)
@@ -62,11 +68,11 @@ export default {
     Eventbus.$off(EventType.changeLvl3)
   },
   methods: {
-    async onLoadOfficeList(params) {
+    async onLoadOfficeList(params = {}) {
       this.value = ''
       try {
         const res = await apiRequestJson(ipmsJsonApis.selectOfficeList, params)
-        this.officeOptions = res.tbIpAssignSubVos.map(v => { return { value: v.sofficecode, label: v.sofficename } })
+        this.options = res.tbIpAssignSubVos.map(v => { return { value: v.sofficecode, label: v.sofficename } })
       } catch (error) {
         this.error(error)
       }

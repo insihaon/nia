@@ -1,3 +1,4 @@
+import { onMessagePopup } from '@/utils/index'
 /* text input 체크
  * example : text 속성에 onkeyup='checkInput(this,'IPonly')'
  *             형태로 사용
@@ -82,4 +83,26 @@ export function getStatColumn(type, svcList) {
         resultColumns.push(column)
     })
     return resultColumns
+}
+// IP할당 상세 > IP블록 중복 체크
+export function fnViewCheckTacsIpBlock(THIS, rows = []) {
+    if (rows.length === 0) {
+        onMessagePopup(THIS, 'IP블럭 중복체크할 대상이 없습니다. 선택해주세요.')
+        return
+    }
+    if (rows.length > 1) {
+        onMessagePopup(THIS, 'IP블럭 중복체크할 대상을 다건 선택 할 수 없습니다. 확인해주세요.')
+        return
+    }
+    const { sipVersionTypeCd, ssvcLineTypeCd, nipAssignMstSeq } = rows[0]
+    if (sipVersionTypeCd !== 'CV0001') {
+        onMessagePopup(THIS, 'IP블럭 중복체크는 IPv4만 가능합니다.')
+        return
+    }
+    if (ssvcLineTypeCd !== 'CL0001' && ssvcLineTypeCd !== 'CL0002' && ssvcLineTypeCd !== 'CL0003') {
+        onMessagePopup(THIS, 'IP블럭 중복체크는 KOREAN, PREMIUM, MOBILE망만 가능합니다.')
+        return
+    }
+    // const res = await api({ nipAssignMstSeq })
+    THIS.$refs.ModalCheckTacsIpBlock.open({ row: rows[0] })
 }

@@ -5,8 +5,6 @@ copyright notice above does not evidence any actual or * intended publication of
   <div v-loading="propLoading" class="compTable">
     <div class="tableThum">
       <div><i class="el-icon-document" /> <slot name="text-description" /> <span class="countNum">( 총 {{ propIsPagination != false ? propPaginationData.total : propData.length }} 건 )</span></div>
-      <!-- <div v-if="propIsPagination != false"><i class="el-icon-document" /> <slot name="text-description" /> <span class="countNum">( 총 {{ propPaginationData.total }} 건 )</span></div>
-      <div v-if="propIsPagination == false"><i class="el-icon-document" /> <slot name="text-description" /> <span class="countNum">총 {{ propData.length }} 건 </span></div> -->
       <slot name="add-features" />
     </div>
 
@@ -19,6 +17,7 @@ copyright notice above does not evidence any actual or * intended publication of
       fit
       highlight-current-row
       :data="propData"
+      :span-method="propSpanMethod"
       :height="propTableHeight"
       :row-class-name="propHighlight"
       @cell-click="fn_cell_click"
@@ -27,9 +26,9 @@ copyright notice above does not evidence any actual or * intended publication of
       @row-contextmenu="fn_contextmenu"
       @select="fn_select"
       @select-all="fn_select"
-      @header-contextmenu="fn_headerContextmenu(...arguments, propGridMenuId, propGridIndx, propColumn, propSetColunm)"
-      @header-dragend="fn_headerDragend(...arguments, propGridMenuId, propGridIndx, propColumn, propSetColunm)"
     >
+      <!-- @header-contextmenu="fn_headerContextmenu(...arguments, propGridMenuId, propGridIndx, propColumn, propSetColunm)"
+      @header-dragend="fn_headerDragend(...arguments, propGridMenuId, propGridIndx, propColumn, propSetColunm)" -->
       <el-table-column v-if="propIsCheckBox" :index="0" type="selection" align="center" width="35" />
       <el-table-column
         v-for="(item, index) in propColumn"
@@ -98,6 +97,7 @@ export default {
         return []
       },
     }, //데이터
+    propSpanMethod: { type: Function, default: () => {} }, // 행, 열 span 처리
     propIsCheckBox: { type: Boolean, default: false }, //체크박스 유무
     propOnSelect: { type: Function, default: () => {} }, //체크시
     propMaxSelect: { type: Number, default: 0 }, //체크갯수 최대
@@ -227,4 +227,8 @@ export default {
   },
 }
 </script>
-<style scoped></style>
+<style lang="scss" scoped>
+::v-deep .el-loading-spinner {
+  left: 50%;
+}
+</style>

@@ -64,6 +64,7 @@ import CompTable from '@/components/elTable/CompTable.vue'
 import { onMessagePopup } from '@/utils/index'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
 import { facilityTableDatas } from '@/views-ipms/menus/ipAllocationMng/sample.js'
+import { ipmsModelApis, apiRequestModel, ipmsJsonApis, apiRequestJson } from '@/api/ipms'
 
 const routeName = 'ModalFacilityInformation'
 
@@ -76,22 +77,30 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      ipAllocOperMstVos: null,
+      ipBlockMstVo: null,
       requestParameter: null,
       selectedRow: null,
-      componentList: [
-         { key: 'SOffice', props: { prop_parameterKey: 'sicisofficescodeNe' } },
-         { key: 'InputType', props: { label: '장비명', prop_parameterKey: 'ssubscnealiasNe' } },
-         { key: 'InputType', props: { label: '장비대표IP', prop_parameterKey: 'ssubscmstipNe' } },
-         { key: 'InputType', props: { label: '모델명', prop_parameterKey: 'smodelnameNe' } },
-      ],
        tableColumns: [
         { prop: 'sofficename', label: '수용국', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'ssubscnealias', label: '장비명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'smodelname', label: '모델명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'ssubscmstip', label: '장비대표 IP', align: 'center', sortable: true, columnVisible: true, showOverflow: true }
       ],
-      tableDatas: facilityTableDatas
+      tableDatas: [],
+      sOfficeOptions: [],
+      ssubscnealiasNe: ''
+    }
+  },
+  computed: {
+    componentList() {
+      const sOfficeOptions = this.sOfficeOptions
+      const ssubscnealiasNe = this.ssubscnealiasNe
+      return [
+         { key: 'SOffice', props: { prop_parameterKey: 'sicisofficescodeNe', prop_options: sOfficeOptions } },
+         { key: 'InputType', props: { label: '장비명', prop_parameterKey: 'ssubscnealiasNe', defaultValue: ssubscnealiasNe } },
+         { key: 'InputType', props: { label: '장비대표IP', prop_parameterKey: 'ssubscmstipNe' } },
+         { key: 'InputType', props: { label: '모델명', prop_parameterKey: 'smodelnameNe' } },
+      ]
     }
   },
   /* row 참고
@@ -110,19 +119,52 @@ export default {
       this.domElement.maxWidth = 700
     },
     onOpen(model, actionMode) {
-      if (model.rows) {
-        this.ipAllocOperMstVos = model.rows
+      if (model.ipBlockMstVo) {
+        this.ipBlockMstVo = model.ipBlockMstVo
+        this.fnViewSearchtNeMst()
+        // viewSearchtNeMst
+
+        this.ssubscnealiasNe = model?.inputText ?? ''
+        /*
+
+{
+    "ipBlockMstVo": {
+        "ssvcLineTypeCd": "CL0003",
+        "ssvcGroupCd": "VV0010",
+        "ssvcObjCd": "VV0015"
+    }
+}
+        */
       }
     },
     onClose() {
       if (this.selectedRow !== null) {
         this.$emit('selected-value', { selectedRow: this.selectedRow, returnFlag: 'allocNe' })
       }
+      this.tableDatas = []
+    },
+    async fnViewSearchtNeMst() {
+      const { ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd } = this.ipBlockMstVo
+      const param = {
+        ssvcLineTypeCd,
+        ssvcGroupCd,
+        ssvcObjCd,
+        sicisofficescodeNe: this.sicisofficescodeNe, // 시설 정보 input값
+        sneSrchTypeCd: '2', // 1: 할당 시설, 2: 호스트 기반 시설
+      }
+      try {
+        const res = await apiRequestModel(ipmsModelApis.viewSearchtNeMst, param)
+        const officeTemp = res.result.data
+        this.$set(this, 'sOfficeOptions', officeTemp.map(v => { return { label: v.name, value: v.code } }))
+      } catch (error) {
+        this.error(error)
+      }
     },
     // \ipAlocMstVo.sicisofficescodeNe	= vOfficeCode; //수용국
     // ipAlocMstVo.ssubscnealiasNe		= vNeAlias;//장비명
     // ipAlocMstVo.ssubscmstipNe		= vNeMstIp;//대표IP
     // ipAlocMstVo.smodelnameNe		= vModelNm;//모델명
+
     handleSearch(requestParameter) {
       const { sicisofficescodeNe, ssubscnealiasNe, ssubscmstipNe, smodelnameNe } = requestParameter
 
@@ -131,24 +173,22 @@ export default {
         onMessagePopup(this, '수용국을 선택하시지 않으실 경우 검색 값이 최소 4자리 이상이여야 합니다.')
         return
       }
-      if (this.ipAllocOperMstVos) {
-        const { ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd } = this.ipAllocOperMstVos[0]
+      if (this.ipBlockMstVo) {
+        const { ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd } = this.ipBlockMstVo
         this._merge(requestParameter, { ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd })
       }
 
-      // sneSrchTypeCd 추가해야함
       this.requestParameter = requestParameter
-      this.onLoadNeList()
+      this.fnSelectSearchtNeMst()
     },
-    async onLoadNeList() {
-      /*
-        try {
-          const res = await api(this.requestParameter)
-          this.tableDatas = res.data
-        } catch (error) {
-          this.error(error)
-        }
-      */
+    async fnSelectSearchtNeMst() {
+      const params = Object.assign({}, this.requestParameter, { sneSrchTypeCd: '2' })
+      try {
+        const res = await apiRequestJson(ipmsJsonApis.selectSearchtNeMst, params)
+        this.tableDatas = res.ipAllocOperMstVos
+      } catch (error) {
+        this.error(error)
+      }
     },
     handleSelect() {
       if (this.selectedRow === null) {

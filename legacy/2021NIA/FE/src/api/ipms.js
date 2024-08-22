@@ -7,8 +7,11 @@ const { debug, isProd } = AppOptions.instance
 export const filePath = __filename.replace(/\\/g, '/')
 
 export const ipmsModelApis = {
-  viewListIpAllocMst: { desc: 'IP할당 조회', url: '/ipmgmt/allocmgmt/viewListIpAllocMst' },
+  viewListIpAllocMst: { desc: 'IP할당 목록 조회', url: '/ipmgmt/allocmgmt/viewListIpAllocMst' },
   viewDetailAlcIPMst: { desc: 'IP할당 상세정보', url: '/ipmgmt/allocmgmt/viewDetailAlcIPMst' },
+  // viewInsertAlcIPMst: { desc: 'IP할당처리 POP', url: '/ipmgmt/allocmgmt/viewInsertAlcIPMst' },
+  viewSearchtNeMst: { desc: 'IP할당 > 시설 정보 조회 POP', url: '/ipmgmt/allocmgmt/viewSearchtNeMst' },
+  viewSearchtLnMst: { desc: 'IP할당 > 링크 정보 조회 POP', url: '/ipmgmt/allocmgmt/viewSearchtLnMst' },
   viewInsertDivAsgnIPMst: { desc: '배정/할당 > IP분할 대상정보', url: '/ipmgmt/assignmgmt/viewInsertDivAsgnIPMst' },
   viewInsertMrgAsgnIPMst: { desc: '배정/할당 > IP병합 대상정보', url: '/ipmgmt/assignmgmt/viewInsertMrgAsgnIPMst' },
   deletAlcIPMst: { desc: 'IP할당 해지', url: '/ipmgmt/allocmgmt/deletAlcIPMst' },
@@ -40,16 +43,31 @@ export const ipmsModelApis = {
   viewDetailNode: { desc: 'IP주소 노드 이전 신청 조회', url: '/opermgmt/nodemgmt/viewDetailNode' },
   viewCancelNode: { desc: 'IP주소 노드 이전 반려', url: '/opermgmt/nodemgmt/viewCancelNode' },
   confirmNode: { desc: 'IP주소 노드 이전 승인', url: '/opermgmt/nodemgmt/confirmNode' },
+  viewListRoutChkMst: { desc: 'IP주소 라우팅 비교/점검 조회', url: '/ipmgmt/routmgmt/viewListRoutChkMst' },
+  viewPopInsertAlcIPMst: { desc: 'IP주소 라우팅 비교/점검 > IP할당', url: '/ipmgmt/routmgmt/viewPopInsertAlcIPMst' },
+  viewDetailRoutChkMst: { desc: 'IP주소 라우팅 비교/점검 > IP블록 상세 정보', url: '/ipmgmt/routmgmt/viewDetailRoutChkMst' },
+  viewDetailNextHop: { desc: 'IP주소 라우팅 비교/점검 > 링크/시설/회선 상세 정보', url: '/ipmgmt/routmgmt/viewDetailNextHop' },
+  viewDetailRoutExcptMst: { desc: 'IP주소 라우팅 비교/점검 > 예외처리 상세', url: '/ipmgmt/routmgmt/viewDetailRoutExcptMst' },
+  viewPopRoutChkExceptMst: { desc: 'IP주소 라우팅 비교/점검 > 예외처리 관리(예외처리유형)', url: '/ipmgmt/routmgmt/viewPopRoutChkExceptMst' },
+  viewPopRoutServiceChkMst: { desc: 'IP주소 라우팅 비교/점검 > IP블록 (해지 후) 분할/병합 처리 전 서비스 변경 작업 ', url: '/ipmgmt/routmgmt/viewPopRoutServiceChkMst' },
+  viewPopRoutChkMst: { desc: 'IP주소 라우팅 비교/점검 > 라우팅 수집/DB 비교 처리 POP', url: '/ipmgmt/routmgmt/viewPopRoutChkMst' },
+  viewListIpLinkMst: { desc: '운용정보관리(링크) 조회', url: '/ipmgmt/linkmgmt/viewListIpLinkMst' },
+  viewDetailIPLinkMst: { desc: '운용정보관리(링크) 상세조회', url: '/ipmgmt/linkmgmt/viewDetailIPLinkMst' },
+
 }
 export const ipmsJsonApis = {
   selectAuthCenterList: { desc: '센터 조회', url: '/opermgmt/orgmgmt/selectAuthCenterList' },
   selectAuthNodeList: { desc: '노드 조회', url: '/opermgmt/orgmgmt/selectAuthNodeList' },
   selectOfficeList: { desc: '수용국 조회', url: '/ipmgmt/linemgmt/selectOfficeList' },
-  selectSassignTypeCdList: { desc: '서비스 조회', url: '/fviewInsertCrtIPMstipmgmt/allocmgmt/selectSassignTypeCdList' },
+  selectSassignTypeCdList: { desc: '서비스 조회', url: '/ipmgmt/allocmgmt/selectSassignTypeCdList' },
   updateScommentAsgnIPMst: { desc: '할당상세 > 비고수정', url: '/ipmgmt/allocmgmt/updateScommentAsgnIPMst' },
+  selectSearchtNeMst: { desc: 'IP할당 > 시설 정보조회', url: '/ipmgmt/allocmgmt/selectSearchtNeMst' },
+  selectSearchtLnMst: { desc: 'IP할당 > 링크 정보조회', url: '/ipmgmt/allocmgmt/selectSearchtLnMst' },
+  selectDetailSubSvcMstList: { desc: 'IP할당 > 회선 정보조회', url: '/ipmgmt/allocmgmt/selectDetailSubSvcMstList' },
   appendDivAsgnIPMst: { desc: '배정/할당 > IP분할 > 분할 예정 정보 요청', url: '/ipmgmt/assignmgmt/appendDivAsgnIPMst' },
   appendMergeDivAsgnIPMst: { desc: '배정/할당 > IP분할 > 분할 예정 정보 > 병합', url: '/ipmgmt/assignmgmt/appendMergeDivAsgnIPMst' },
   insertListDivAsgnIPMst: { desc: '배정/할당 > IP분할 > 분할 확정 처리', url: '/ipmgmt/assignmgmt/insertListDivAsgnIPMst' },
+  insertAlcIPMst: { desc: '할당 처리', url: '/ipmgmt/allocmgmt/insertAlcIPMst' },
   allocUpdateAsgnIPMst: { desc: '배정/할당 반납처리', url: '/ipmgmt/allocmgmt/allocUpdateAsgnIPMst' },
   insertMrgAsgnIPMst: { desc: '배정/할당 > 병합처리', url: '/ipmgmt/assignmgmt/insertMrgAsgnIPMst' },
   deleteCrtIPMst: { desc: 'IP 블록관리 삭제', url: '/ipmgmt/createmgmt/deleteCrtIPMst' },
@@ -60,6 +78,11 @@ export const ipmsJsonApis = {
   insertListCrtIPMst: { desc: 'IP 블록관리 > IP 블록생성 > IP 주소 등록', url: '/ipmgmt/createmgmt/insertListCrtIPMst' },
   updateCrtIPMst: { desc: 'IP 블록관리  > 수정', url: '/ipmgmt/createmgmt/updateCrtIPMst' },
   updateAsgnIPMst: { desc: 'IP 블록관리 > 배정', url: '/ipmgmt/assignmgmt/updateAsgnIPMst' },
+  insertListExcptMst: { desc: 'IP주소 라우팅 비교/점검 > 예외처리', url: '/ipmgmt/routmgmt/insertListExcptMst' },
+  selectCheckService: { desc: 'IP주소 라우팅 비교/점검 > IP블록 (해지 후) 분할/병합 처리 전 서비스 할당 여부 조회', url: '/ipmgmt/routmgmt/selectCheckService' },
+  updateServiceMst: { desc: 'IP주소 라우팅 비교/점검 > IP블록 (해지 후) 분할/병합 처리 전 서비스 할당 처리', url: '/ipmgmt/routmgmt/updateServiceMst' },
+  insertListIpBlockMatchMst: { desc: 'IP주소 라우팅 비교/점검 > IP블록 (해지 후) 분할/병합 처리', url: '/ipmgmt/routmgmt/insertListIpBlockMatchMst' },
+  insertListRoutChkMst: { desc: 'IP주소 라우팅 비교/점검 > 라우팅 수집/DB 비교 시작 처리 청청', url: '/ipmgmt/routmgmt/insertListRoutChkMst' },
 }
 
 export function apiTest(params) {

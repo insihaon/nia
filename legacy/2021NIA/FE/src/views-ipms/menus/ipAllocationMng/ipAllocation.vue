@@ -29,7 +29,7 @@
         </template>
         <template slot="add-features">
           <div class="mt-1 d-flex justify-end">
-            <el-button icon="el-icon-check" type="primary" size="mini" @click="fnViewCheckTacsIpBlock">IP블럭 중복체크</el-button>
+            <el-button icon="el-icon-check" type="primary" size="mini" @click="fnViewCheckTacsIpBlock_">IP블럭 중복체크</el-button>
             <el-button icon="el-icon-thumb" style="background: #2b5890;" type="primary" size="mini" @click="fnInsertAlcBtnClick">할당</el-button>
             <el-button size="mini" @click="fnMergeBtnClick">병합</el-button>
           </div>
@@ -60,6 +60,7 @@ import ModalDetailSummary from '@/views-ipms/modal/ModalDetailSummary.vue'
 import ModalIpAssignMerge from '@/views-ipms/modal/assign/ModalIpAssignMerge.vue'
 
 import { allocTableDatas } from './sample.js'
+import { fnViewCheckTacsIpBlock } from '@/views-ipms/js/common-function'
 import { ipmsModelApis, apiRequestModel } from '@/api/ipms'
 
 const routeName = 'IpAllocation'
@@ -148,7 +149,6 @@ export default {
   },
   methods: {
     handleSearch(requestParameter) {
-      // console.log(requestParameter)
       this.fnViewListIpAllocMst(requestParameter)
     },
     async fnViewListIpAllocMst(requestParameter) {
@@ -183,27 +183,8 @@ export default {
         this.error(error)
       }
     },
-    fnViewCheckTacsIpBlock() {
-      const rows = this.selectedRows
-      if (rows.length === 0) {
-        onMessagePopup(this, 'IP블럭 중복체크할 대상이 없습니다. 선택해주세요.')
-        return
-      }
-      if (rows.length > 1) {
-        onMessagePopup(this, 'IP블럭 중복체크할 대상을 다건 선택 할 수 없습니다. 확인해주세요.')
-        return
-      }
-      const { sipVersionTypeCd, ssvcLineTypeCd, nipAssignMstSeq } = rows[0]
-      if (sipVersionTypeCd !== 'CV0001') {
-        onMessagePopup(this, 'IP블럭 중복체크는 IPv4만 가능합니다.')
-        return
-      }
-      if (ssvcLineTypeCd !== 'CL0001' && ssvcLineTypeCd !== 'CL0002' && ssvcLineTypeCd !== 'CL0003') {
-        onMessagePopup(this, 'IP블럭 중복체크는 KOREAN, PREMIUM, MOBILE망만 가능합니다.')
-        return
-      }
-      // const res = await api({ nipAssignMstSeq })
-      this.$refs.ModalCheckTacsIpBlock.open({ row: rows[0] })
+    fnViewCheckTacsIpBlock_() {
+      fnViewCheckTacsIpBlock(this, this.selectedRows)
     },
     fnInsertAlcBtnClick() {
       const rows = this.selectedRows

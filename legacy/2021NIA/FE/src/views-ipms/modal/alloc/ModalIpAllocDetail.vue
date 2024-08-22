@@ -214,7 +214,7 @@
         </div>
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button v-if="ipAllocOperMstVo" size="mini" @click="fnViewCheckTacsIpBlock">IP블럭 중복체크</el-button>
+        <el-button v-if="ipAllocOperMstVo" size="mini" @click="fnViewCheckTacsIpBlock_">IP블럭 중복체크</el-button>
         <template v-if="ipAllocOperMstVo.sassignLevelCd === 'IA0004'">
           <el-button size="mini" icon="el-icon-menu" @click="fnAlocCallBtnClick">할당</el-button>
           <el-button size="mini" icon="el-icon-menu" @click="fnRetUpdateConfirmClick">반납</el-button>
@@ -223,6 +223,7 @@
           닫기
         </el-button>
       </div>
+      <ModalCheckTacsIpBlock ref="ModalCheckTacsIpBlock" />
       <ModalIpAllocCircuitDetail ref="ModalIpAllocCircuitDetail" />
     </el-dialog>
   </div>
@@ -231,23 +232,28 @@
 <script>
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
+import ModalCheckTacsIpBlock from '@/views-ipms/modal/ModalCheckTacsIpBlock.vue'
 import ModalIpAllocCircuitDetail from '@/views-ipms/modal/alloc/ModalIpAllocCircuitDetail.vue'
 import { ipmsModelApis, apiRequestModel, apiRequestJson, ipmsJsonApis } from '@/api/ipms'
 import { onMessagePopup } from '@/utils'
+import { fnViewCheckTacsIpBlock } from '@/views-ipms/js/common-function'
 
 const routeName = 'ModalIpAllocDetail'
 
 export default {
   name: routeName,
-  components: { ModalIpAllocCircuitDetail },
+  components: { ModalIpAllocCircuitDetail, ModalCheckTacsIpBlock },
   directives: { elDragDialog },
   extends: Modal,
   data() {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      menuType: 'Aloc',
+      receivedRow: null,
       resultList: [],
-      ipAllocOperMstVo: {}
+      ipAllocOperMstVo: {},
+      tbRoutChkMstVo: {}
     }
   },
   computed: {
@@ -260,13 +266,25 @@ export default {
     },
     onOpen(model, actionMode) {
       if (model.row) {
+        this.receivedRow = model.row
         this.fnViewDetailAlcIPMst({ nipAssignMstSeq: model.row.nipAssignMstSeq })
+      }
+      if (model.menuType) {
+        this.menuType = model.menuType
+        this.tbRoutChkMstVo = { nlvlMstSeq: model.row.nlvlMstSeq, nroutingChkMstSeq: model.row.nroutingChkMstSeq }
       }
     },
     onClose() {
+      this.menuType = 'Aloc'
     },
     async fnViewDetailAlcIPMst(param) {
       try {
+        /*
+        IP주소 라우팅 비교/점검 > IP해지 (/ipmgmt/routmgmt/viewPopDetailAlclPMst.model)
+
+        파라미터 및 url을 viewDetailAlcIPMst과 동일하게 처리하여도 문제 없음을 확인함
+        추후 문제 발생할 경우 화면별로 분기처리가 필요함
+        */
         const res = await apiRequestModel(ipmsModelApis.viewDetailAlcIPMst, param)
         this.resultList = res.result.data
         this.ipAllocOperMstVo = this.resultList[0]
@@ -283,7 +301,8 @@ export default {
     async fnScommentUpdateClick() {
       const tbIpAssignMstComplexVo = {
         srcIpAssignMstVo: { scomment: this.ipAllocOperMstVo.scomment },
-        destIpAssignMstVos: [{ nipAssignMstSeq: this.ipAllocOperMstVo.nipAssignMstSeq }]
+        destIpAssignMstVos: [{ nipAssignMstSeq: this.ipAllocOperMstVo.nipAssignMstSeq }],
+        menuType: this.menuType
       }
       try {
         const res = await apiRequestJson(ipmsJsonApis.updateScommentAsgnIPMst, tbIpAssignMstComplexVo)
@@ -306,7 +325,7 @@ export default {
         // 링크마스터 상세조회
       }
     },
-    async fnDeleteAlcIPMstClick(delRow) {
+    fnDeleteAlcIPMstClick(delRow) {
       // Implement your delete logic here
       // /ipmgmt/allocmgmt/deletAlcIPMst.json
       // this.resultList = res.result.data
@@ -340,24 +359,53 @@ export default {
       ]
     }
       */
-     const srcIpAllocMstVo = { nipAssignMstSeq: delRow.nipAssignMstSeq, nipAllocMstSeq: delRow.nipAllocMstSeq }
-     const destIpAllocMstVos = [Object.assign({}, srcIpAllocMstVo, { nwhoisSeq: delRow.nwhoisSeq })]
+      this.confirm('할당/예약 정보를 해지 하시겠습니까?', '알림', {
+        cancelButtonText: '취소',
+        confirmButtonText: '확인',
+      }).then(async() => {
+        const srcIpAllocMstVo = { nipAssignMstSeq: delRow.nipAssignMstSeq, nipAllocMstSeq: delRow.nipAllocMstSeq }
+        const ipAllocOperMstVo = Object.assign({}, srcIpAllocMstVo, { nwhoisSeq: delRow.nwhoisSeq })
+        if (this.menuType === 'Rout') {
+         Object.assign(ipAllocOperMstVo, { sGubun: 'ROUTMGMT' })
+        }
+        const destIpAllocMstVos = [ipAllocOperMstVo]
+         try {
+           const res = await apiRequestModel(ipmsModelApis.deletAlcIPMst, { srcIpAllocMstVo, destIpAllocMstVos, menuType: this.menuType })
+           if (this.menuType === 'Rout') {
+            this.fnUpdateStatusMst(res, delRow)
+          } else {
+             if (res.commonMsg === 'SUCCESS') {
+               onMessagePopup(this, '해지가 정상적으로 처리되었습니다.')
+               this.eventReload()
+               this.close()
+             } else {
+               onMessagePopup(this, res.result.commonMsg)
+             }
+           }
+         } catch (error) {
+           this.error(error)
+         }
+      })
+    },
+    async fnUpdateStatusMst(res, delRow) { // IP주소 라우팅 현황 update
+      const sdbIntgrmRsltCd = res.commonMsg === 'SUCCESS' ? 'DR0004' : 'DR0003'
+      const tbRoutChkMstVo = Object.assign({}, this.tbRoutChkMstVo, { sdbIntgrmRsltCd })
       try {
-        const res = await apiRequestModel(ipmsModelApis.deletAlcIPMst, { srcIpAllocMstVo, destIpAllocMstVos })
+        // 레거시 url: ipmgmt/routmgmt/updateStatusMst.json
+        const res = await apiRequestJson(ipmsJsonApis.updateStatusMst, tbRoutChkMstVo)
         if (res.commonMsg === 'SUCCESS') {
           onMessagePopup(this, '해지가 정상적으로 처리되었습니다.')
           this.eventReload()
           this.close()
         } else {
-          onMessagePopup(this, res.result.commonMsg)
+          onMessagePopup(this, res.commonMsg)
         }
       } catch (error) {
         this.error(error)
       }
     },
-    fnViewCheckTacsIpBlock() {
-      this.$parent?.$parent?.fnViewCheckTacsIpBlock()
-      // Implement your check IP block logic here
+    fnViewCheckTacsIpBlock_() {
+      fnViewCheckTacsIpBlock(this, [this.receivedRow])
     },
     fnAlocCallBtnClick() {
       this.$emit('alocCallBtnClick')
@@ -367,7 +415,7 @@ export default {
       /* sipCreateTypeCd: 기존 사설(CT0004) 은 유/무선공용으로 사용, 신규 사설(CT0005) 을 사설로 사용  */
       const { ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd, /* sassignLevelCd, */ sipCreateTypeCd, nipAssignMstSeq } = this.ipAllocOperMstVo
       const srcIpAssignMstVo = { ssvcLineTypeCd, sassignTypeCd: 'SA0000' }
-      if (sipCreateTypeCd === 'CT0005') {
+      if (sipCreateTypeCd === 'CT0005' && this.menuType === 'Aloc') {
         Object.assign(srcIpAssignMstVo, { ssvcGroupCd, ssvcObjCd, sassignLevelCd: 'IA0001' /* 미배정 */ })
       } else {
         if (ssvcGroupCd === '000000') { // 서비스 망만 있는 경우
@@ -382,7 +430,7 @@ export default {
       }
       const tbIpAssignMstComplexVo = {
         srcIpAssignMstVo,
-        destIpAssignMstVos: [{ nipAssignMstSeq, typeFlag: 'return' /* 배정-반납 */, menuType: 'Aloc' }]
+        destIpAssignMstVos: [/* tbIpAssignMstVo */{ nipAssignMstSeq, typeFlag: 'return' /* 배정-반납 */, menuType: this.menuType }]
       }
       try {
         const res = await apiRequestJson(ipmsJsonApis.updateAsgnIPMst, tbIpAssignMstComplexVo)

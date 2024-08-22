@@ -220,7 +220,7 @@ export default {
         const res = await apiRequestModel(ipmsModelApis.viewDetailIpAllocMstByMain, { nipAssignMstSeq, nipAllocMstSeq })
         // this.tbIpInfoVo = res.result.data
         if (res.result.data) {
-          this.$refs.ModalIpInfoDetail.open({ tbIpInfoVo: res.result.data, type: 'Alloc' })
+          this.$refs.ModalIpInfoDetail.open({ tbIpInfoVo: res.result.data, type: 'Aloc' })
         }
       } catch (error) {
         this.error(error)
