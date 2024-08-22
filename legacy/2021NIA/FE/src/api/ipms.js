@@ -40,7 +40,7 @@ export const ipmsModelApis = {
   viewUpdateAsgnIPMst: { desc: 'IP 블록관리 > IP배정 대상정보', url: '/ipmgmt/assignmgmt/viewUpdateAsgnIPMst' },
   viewDetailAsgnIPMst: { desc: 'IP배정 상세정보', url: '/ipmgmt/assignmgmt/viewDetailAsgnIPMst' },
   viewListNode: { desc: 'IP주소 노드 이전 신청 조회', url: '/opermgmt/nodemgmt/viewListNode' },
-  viewDetailNode: { desc: 'IP주소 노드 이전 신청 조회', url: '/opermgmt/nodemgmt/viewDetailNode' },
+  viewDetailNode: { desc: 'IP주소 노드 이전 상세', url: '/opermgmt/nodemgmt/viewDetailNode' },
   viewCancelNode: { desc: 'IP주소 노드 이전 반려', url: '/opermgmt/nodemgmt/viewCancelNode' },
   confirmNode: { desc: 'IP주소 노드 이전 승인', url: '/opermgmt/nodemgmt/confirmNode' },
   viewListRoutChkMst: { desc: 'IP주소 라우팅 비교/점검 조회', url: '/ipmgmt/routmgmt/viewListRoutChkMst' },
@@ -53,7 +53,10 @@ export const ipmsModelApis = {
   viewPopRoutChkMst: { desc: 'IP주소 라우팅 비교/점검 > 라우팅 수집/DB 비교 처리 POP', url: '/ipmgmt/routmgmt/viewPopRoutChkMst' },
   viewListIpLinkMst: { desc: '운용정보관리(링크) 조회', url: '/ipmgmt/linkmgmt/viewListIpLinkMst' },
   viewDetailIPLinkMst: { desc: '운용정보관리(링크) 상세조회', url: '/ipmgmt/linkmgmt/viewDetailIPLinkMst' },
-
+  viewInsertNode: { desc: 'IP주소 노드 이전 신청 > 신청 상세, IP 주소 조회', url: '/opermgmt/nodemgmt/viewInsertNode' },
+  viewfnSelectNode: { desc: 'IP주소 노드 이전 신청 > 조회 결과 선택', url: '/opermgmt/nodemgmt/viewfnSelectNode' },
+  viewListAssignApyTxn: { desc: 'IP 배정 신청 조회', url: '/opermgmt/assignmgmt/viewListAssignApyTxn' },
+  viewDetailAssignApyTxn: { desc: 'IP 배정 신청 조회 상세정보', url: '/opermgmt/assignmgmt/viewDetailAssignApyTxn' },
 }
 export const ipmsJsonApis = {
   selectAuthCenterList: { desc: '센터 조회', url: '/opermgmt/orgmgmt/selectAuthCenterList' },
@@ -83,6 +86,7 @@ export const ipmsJsonApis = {
   updateServiceMst: { desc: 'IP주소 라우팅 비교/점검 > IP블록 (해지 후) 분할/병합 처리 전 서비스 할당 처리', url: '/ipmgmt/routmgmt/updateServiceMst' },
   insertListIpBlockMatchMst: { desc: 'IP주소 라우팅 비교/점검 > IP블록 (해지 후) 분할/병합 처리', url: '/ipmgmt/routmgmt/insertListIpBlockMatchMst' },
   insertListRoutChkMst: { desc: 'IP주소 라우팅 비교/점검 > 라우팅 수집/DB 비교 시작 처리 청청', url: '/ipmgmt/routmgmt/insertListRoutChkMst' },
+  confirmNode: { desc: 'IP주소 노드 이전 승인', url: '/opermgmt/nodemgmt/confirmNode' },
 }
 
 export function apiTest(params) {
