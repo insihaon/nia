@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,13 +54,13 @@ import com.kt.ipms.legacy.linkmgmt.providermgmt.neoss.vo.Nes0008VPNHostAssignedI
 @Transactional
 public class NeossService{
 	
-	@Autowired
+@Lazy @Autowired
 	private CommonService commonService;
 
-	@Autowired
+@Lazy @Autowired
 	private NeosstxService neosstxService;
 		
-	@Autowired
+	@Lazy @Autowired
 	private TbIpAllocNeossMstDao tbIpAllocNeossMstDao;	
 
 	@Autowired

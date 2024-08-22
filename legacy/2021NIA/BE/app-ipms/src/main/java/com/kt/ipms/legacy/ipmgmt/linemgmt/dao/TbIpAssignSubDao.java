@@ -1,12 +1,15 @@
 package com.kt.ipms.legacy.ipmgmt.linemgmt.dao;
 import java.util.List;
 
+import org.apache.ibatis.annotations.Mapper;
+
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
 import com.kt.ipms.legacy.ipmgmt.linemgmt.vo.TbIpAssignSubListVo;
 import com.kt.ipms.legacy.ipmgmt.linemgmt.vo.TbIpAssignSubVo;
 
 
 /** TB_IP_ASSIGN_SUB DAO INTERFACE **/
+@Mapper
 public interface TbIpAssignSubDao {
 	
 	/** TB_IP_ASSIGN_SUB insert **/

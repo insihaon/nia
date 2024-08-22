@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kt.ipms.legacy.opermgmt.orgmgmt.dao.TbOrgBasDao">
+	<resultMap id="tbOrgBasVoResult" type="com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbOrgBasVo">
+		<result column="SKT_ORG_ID" property="sktOrgId" jdbcType="VARCHAR" />
+		<result column="SORG_NM" property="sorgNm" jdbcType="VARCHAR" />
+		<result column="SORG_TEL_NO" property="sorgTelNo" jdbcType="VARCHAR" />
+		<result column="SORG_FAX_NO" property="sorgFaxNo" jdbcType="VARCHAR" />
+		<result column="SUP_KT_ORG_ID" property="supKtOrgId" jdbcType="VARCHAR" />
+		<result column="SUP_KT_ORG_NM" property="supKtOrgNm" jdbcType="VARCHAR" />
+		<result column="SHQ_ORG_ID" property="shqOrgId" jdbcType="VARCHAR" />
+		<result column="SHQ_ORG_NM" property="shqOrgNm" jdbcType="VARCHAR" />
+		<result column="SORG_LAYER_NO" property="sorgLayerNo" jdbcType="VARCHAR" />
+		<result column="SORG_PREF_ODRG" property="sorgPrefOdrg" jdbcType="VARCHAR" />
+		<result column="SORG_ORGTN_ODRG" property="sorgOrgtnOdrg" jdbcType="VARCHAR" />
+		<result column="SPRSNL_ORG_TYPE_CD" property="sprsnlOrgTypeCd" jdbcType="CHAR" />
+		<result column="SORG_BCOM_TYPE_CD" property="sorgBcomTypeCd" jdbcType="CHAR" />
+		<result column="SORG_RSP_USER_ID" property="sorgRspUserId" jdbcType="VARCHAR" />
+		<result column="SORG_RSP_USER_NM" property="sorgRspUserNm" jdbcType="VARCHAR" />
+		<result column="SORG_USE_YN" property="sorgUseYn" jdbcType="VARCHAR" />
+		<result column="SVIRTL_ORG_YN" property="svirtlOrgYn" jdbcType="VARCHAR" />
+		<result column="SIPMS_ORG_YN" property="sipmsOrgYn" jdbcType="CHAR" />
+		<result column="DCREATE_DT" property="dcreateDt" jdbcType="TIMESTAMP" />
+		<result column="SCREATE_ID" property="screateId" jdbcType="VARCHAR" />
+		<result column="DMODIFY_DT" property="dmodifyDt" jdbcType="TIMESTAMP" />
+		<result column="SMODIFY_ID" property="smodifyId" jdbcType="VARCHAR" />
+		<result column="SKT_FULL_ORG_NM" property="sFullOrgNm" jdbcType="VARCHAR" />
+
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		A.SKT_ORG_ID, A.SORG_NM, A.SORG_TEL_NO, A.SORG_FAX_NO
+		, A.SUP_KT_ORG_ID, A.SHQ_ORG_ID, A.SORG_LAYER_NO, A.SORG_PREF_ODRG
+		, A.SORG_ORGTN_ODRG, A.SPRSNL_ORG_TYPE_CD, A.SORG_BCOM_TYPE_CD, A.SORG_RSP_USER_ID
+		, A.SORG_USE_YN, A.SVIRTL_ORG_YN, A.SIPMS_ORG_YN, A.DCREATE_DT
+		, A.SCREATE_ID, A.DMODIFY_DT, A.SMODIFY_ID
+	</sql>
+	
+	<sql id="Append_Column_List">
+		, B.SORG_NM AS SUP_KT_ORG_NM
+		, C.SORG_NM AS SHQ_ORG_NM
+		, D.SUSER_NM AS  SORG_RSP_USER_NM
+		,(SELECT STRING_AGG(SORG_NM,'-') FROM (SELECT SORG_NM FROM MST.TB_ORG_BAS AS E   START WITH E.SKT_ORG_ID = A.SKT_ORG_ID  CONNECT BY E.SKT_ORG_ID = PRIOR E.SUP_KT_ORG_ID ORDER BY E.SORG_PREF_ODRG) ) AS SKT_FULL_ORG_NM
+	</sql>
+	
+	<sql id="Append_Column_List_Alias">
+		, A.SUP_KT_ORG_NM
+		, A.SHQ_ORG_NM
+		, A.SORG_RSP_USER_NM
+		, A.SKT_FULL_ORG_NM
+	</sql>
+	
+	<sql id="Append_From_Clause">
+		, MST.TB_ORG_BAS B
+		, MST.TB_ORG_BAS C
+		, MST.TB_USER_BAS D 
+	</sql>
+
+	<sql id="Vo_Where_Clause">
+		<trim prefix="WHERE" prefixOverrides="AND">
+			SKT_ORG_ID = #{sktOrgId, jdbcType=VARCHAR}
+
+		</trim>
+	</sql>
+
+	<sql id="List_Where_Clause">
+		<trim prefix="WHERE" prefixOverrides="AND">
+			1 = 1
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sktOrgId)">
+				AND A.SKT_ORG_ID = #{sktOrgId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sorgNm)">
+				AND A.SORG_NM = #{sorgNm, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sorgTelNo)">
+				AND A.SORG_TEL_NO = #{sorgTelNo, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sorgFaxNo)">
+				AND A.SORG_FAX_NO = #{sorgFaxNo, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(supKtOrgId)">
+				AND A.SUP_KT_ORG_ID = #{supKtOrgId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(shqOrgId)">
+				AND A.SHQ_ORG_ID = #{shqOrgId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sorgLayerNo)">
+				AND A.SORG_LAYER_NO = #{sorgLayerNo, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sorgPrefOdrg)">
+				AND A.SORG_PREF_ODRG = #{sorgPrefOdrg, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sorgOrgtnOdrg)">
+				AND A.SORG_ORGTN_ODRG = #{sorgOrgtnOdrg, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sprsnlOrgTypeCd)">
+				AND A.SPRSNL_ORG_TYPE_CD = #{sprsnlOrgTypeCd, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sorgBcomTypeCd)">
+				AND A.SORG_BCOM_TYPE_CD = #{sorgBcomTypeCd, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sorgRspUserId)">
+				AND A.SORG_RSP_USER_ID = #{sorgRspUserId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sorgUseYn)">
+				AND A.SORG_USE_YN = #{sorgUseYn, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(svirtlOrgYn)">
+				AND A.SVIRTL_ORG_YN = #{svirtlOrgYn, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sipmsOrgYn)">
+				AND A.SIPMS_ORG_YN = #{sipmsOrgYn, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dcreateDt)">
+				AND A.DCREATE_DT = #{dcreateDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(screateId)">
+				AND A.SCREATE_ID = #{screateId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dmodifyDt)">
+				AND A.DMODIFY_DT = #{dmodifyDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smodifyId)">
+				AND A.SMODIFY_ID = #{smodifyId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(searchWrd)">
+				AND A.SORG_NM ILIKE '%' || #{searchWrd, jdbcType=VARCHAR} || '%'
+			</if>
+
+		</trim>
+	</sql>
+	
+	<sql id="Append_Where_Clause">
+	 AND   A.SUP_KT_ORG_ID = B.SKT_ORG_ID(+)
+	 AND   A.SHQ_ORG_ID  = C.SKT_ORG_ID  (+)
+	 AND   A.SORG_RSP_USER_ID = D.SUSER_ID (+)
+	</sql>
+	
+	<insert id="insertTbOrgBasVo" parameterType="com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbOrgBasVo">
+		INSERT
+			
+		INTO MST.TB_ORG_BAS (
+			SKT_ORG_ID
+			,	SORG_NM
+			,	SORG_TEL_NO
+			,	SORG_FAX_NO
+			,	SUP_KT_ORG_ID
+			,	SHQ_ORG_ID
+			,	SORG_LAYER_NO
+			,	SORG_PREF_ODRG
+			,	SORG_ORGTN_ODRG
+			,	SPRSNL_ORG_TYPE_CD
+			,	SORG_BCOM_TYPE_CD
+			,	SORG_RSP_USER_ID
+			,	DCREATE_DT
+			,	SCREATE_ID
+			,	DMODIFY_DT
+			,	SMODIFY_ID
+		
+		) VALUES (
+			#{sktOrgId, jdbcType=VARCHAR}
+			,	#{sorgNm, jdbcType=VARCHAR}
+			,	#{sorgTelNo, jdbcType=VARCHAR}
+			,	#{sorgFaxNo, jdbcType=VARCHAR}
+			,	#{supKtOrgId, jdbcType=VARCHAR}
+			,	#{shqOrgId, jdbcType=VARCHAR}
+			,	#{sorgLayerNo, jdbcType=VARCHAR}
+			,	#{sorgPrefOdrg, jdbcType=VARCHAR}
+			,	#{sorgOrgtnOdrg, jdbcType=VARCHAR}
+			,	#{sprsnlOrgTypeCd, jdbcType=CHAR}
+			,	#{sorgBcomTypeCd, jdbcType=CHAR}
+			,	#{sorgRspUserId, jdbcType=VARCHAR}
+			,	#{dcreateDt, jdbcType=TIMESTAMP}
+			,	#{screateId, jdbcType=VARCHAR}
+			,	#{dmodifyDt, jdbcType=TIMESTAMP}
+			,	#{smodifyId, jdbcType=VARCHAR}
+		
+		)
+	</insert>
+	
+	<update id="updateTbOrgBasVo" parameterType="com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbOrgBasVo">
+		UPDATE
+			
+		MST.TB_ORG_BAS
+		SET
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sorgNm)">
+			SORG_NM = #{sorgNm, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sorgTelNo)">
+			,	SORG_TEL_NO = #{sorgTelNo, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sorgFaxNo)">
+			,	SORG_FAX_NO = #{sorgFaxNo, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(supKtOrgId)">
+			,	SUP_KT_ORG_ID = #{supKtOrgId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(shqOrgId)">
+			,	SHQ_ORG_ID = #{shqOrgId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sorgLayerNo)">
+			,	SORG_LAYER_NO = #{sorgLayerNo, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sorgPrefOdrg)">
+			,	SORG_PREF_ODRG = #{sorgPrefOdrg, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sorgOrgtnOdrg)">
+			,	SORG_ORGTN_ODRG = #{sorgOrgtnOdrg, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sprsnlOrgTypeCd)">
+			,	SPRSNL_ORG_TYPE_CD = #{sprsnlOrgTypeCd, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sorgBcomTypeCd)">
+			,	SORG_BCOM_TYPE_CD = #{sorgBcomTypeCd, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sorgRspUserId)">
+			,	SORG_RSP_USER_ID = #{sorgRspUserId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sorgUseYn)">
+			,	SORG_USE_YN = #{sorgUseYn, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(svirtlOrgYn)">
+			,	SVIRTL_ORG_YN = #{svirtlOrgYn, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sipmsOrgYn)">
+			,	SIPMS_ORG_YN = #{sipmsOrgYn, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dcreateDt)">
+			,	DCREATE_DT = #{dcreateDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(screateId)">
+			,	SCREATE_ID = #{screateId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dmodifyDt)">
+			,	DMODIFY_DT = #{dmodifyDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smodifyId)">
+			,	SMODIFY_ID = #{smodifyId, jdbcType=VARCHAR}
+			</if>
+
+		<include refid="Vo_Where_Clause" />
+	</update>
+	
+	<delete id="deleteTbOrgBasVo" parameterType="com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbOrgBasVo">
+		DELETE
+			
+		FROM MST.TB_ORG_BAS
+		<include refid="Vo_Where_Clause" />
+	</delete>
+	
+	<select id="selectTbOrgBasVo" resultMap="tbOrgBasVoResult" parameterType="com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbOrgBasVo">
+		SELECT
+			
+		<include refid="Base_Column_List" />
+		FROM MST.TB_ORG_BAS
+		<include refid="Vo_Where_Clause" />
+	</select>
+	
+	<select id="selectListTbOrgBasVo" resultMap="tbOrgBasVoResult" parameterType="com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbOrgBasVo">
+		SELECT
+			
+		<include refid="Base_Column_List" />
+		<include refid="Append_Column_List" />
+		FROM MST.TB_ORG_BAS A
+		<include refid="Append_From_Clause" />
+		<include refid="List_Where_Clause" />
+		<include refid="Append_Where_Clause" />
+		
+		ORDER BY  A.SORG_NM
+	</select>
+	
+	<select id="selectListPageTbOrgBasVo" resultMap="tbOrgBasVoResult" parameterType="com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbOrgBasVo">
+		SELECT <include refid="Base_Column_List" />
+			   <include refid="Append_Column_List_Alias"/>, A.RNUM FROM (
+			SELECT <include refid="Base_Column_List" />
+			   <include refid="Append_Column_List_Alias"/>, ROWNUM RNUM FROM (
+				SELECT
+			
+		<include refid="Base_Column_List" />
+		<include refid="Append_Column_List" />
+		FROM MST.TB_ORG_BAS A
+		<include refid="Append_From_Clause" />
+		<include refid="List_Where_Clause" />
+		<include refid="Append_Where_Clause" />
+		
+		ORDER BY  A.SORG_NM
+			) A WHERE ROWNUM <![CDATA[<=]]> #{lastIndex}
+		)A WHERE RNUM <![CDATA[>=]]> #{firstIndex}
+	</select>
+	
+	<select id="countListPageTbOrgBasVo" resultType="int" parameterType="com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbOrgBasVo">
+		SELECT
+			
+			count(1) totalCount
+		FROM MST.TB_ORG_BAS A
+		<include refid="Append_From_Clause" />
+		<include refid="List_Where_Clause" />
+		<include refid="Append_Where_Clause" />
+	</select>
+	
+	
+	<update id="updateSipmsOrgYn" parameterType="com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbOrgBasListVo">
+			UPDATE
+				
+				MST.TB_ORG_BAS
+				SET
+			SIPMS_ORG_YN = #{sipmsOrgYn, jdbcType=CHAR}
+			WHERE
+			<if test="tbOrgBasVos != null">
+			SKT_ORG_ID IN
+				<foreach collection="tbOrgBasVos" item="item" separator="," open="(" close=")">
+					 #{item.sktOrgId, jdbcType=CHAR}
+				</foreach>
+			</if>
+			AND SIPMS_ORG_YN != #{sipmsOrgYn, jdbcType=CHAR}
+	</update>
+	
+</mapper>

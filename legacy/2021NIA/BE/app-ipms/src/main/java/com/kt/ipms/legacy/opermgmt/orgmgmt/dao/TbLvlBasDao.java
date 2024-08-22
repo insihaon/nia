@@ -1,11 +1,14 @@
 package com.kt.ipms.legacy.opermgmt.orgmgmt.dao;
 import java.util.List;
 
+import org.apache.ibatis.annotations.Mapper;
+
 import com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlBasVo;
 import com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlRoleMstVo;
 
 
 /** TB_LVL_BAS DAO INTERFACE **/
+@Mapper
 public interface TbLvlBasDao {
 	
 	/** TB_LVL_BAS insert **/

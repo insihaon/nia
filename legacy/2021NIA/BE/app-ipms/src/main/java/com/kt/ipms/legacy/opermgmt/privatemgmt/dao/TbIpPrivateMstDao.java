@@ -1,13 +1,14 @@
 package com.kt.ipms.legacy.opermgmt.privatemgmt.dao;
 
-import java.math.BigInteger;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
 
 import com.kt.ipms.legacy.ipmgmt.createmgmt.vo.TbIpBlockMstVo;
 import com.kt.ipms.legacy.opermgmt.privatemgmt.vo.TbIpPrivateReqMstVo;
-import com.kt.ipms.legacy.opermgmt.whoismgmt.vo.TbWhoisModifyVo;
 
 
+@Mapper
 public interface TbIpPrivateMstDao {
 	
 	public List<TbIpPrivateReqMstVo> selectListTbIpPrivateReqMst(TbIpPrivateReqMstVo tbIpPrivateReqMstVo);

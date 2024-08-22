@@ -17,6 +17,7 @@ import org.irms.epp.xml.EPPModAction;
 import org.irms.epp.xml.EPPNewAction;
 import org.irms.epp.xml.EPPRtnAction;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,13 +40,13 @@ import com.kt.ipms.legacy.opermgmt.whoismgmt.vo.TbWhoisVo;
 @Transactional
 public class SocketMgmtTxService {
 	
-	@Autowired
+@Lazy @Autowired
 	private AllocMgmtAdapterService allocMgmtAdapterService;
 	
-	@Autowired
+@Lazy @Autowired
 	private WhoisMgmtAdapterService whoisMgmtAdapterService;
 	
-	@Autowired
+@Lazy @Autowired
 	private SocketFactoryService socketFactoryService;
 		
 	@Transactional(propagation = Propagation.REQUIRED)

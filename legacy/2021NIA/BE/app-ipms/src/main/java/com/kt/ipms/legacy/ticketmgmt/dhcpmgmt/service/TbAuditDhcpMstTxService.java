@@ -4,9 +4,11 @@ package com.kt.ipms.legacy.ticketmgmt.dhcpmgmt.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
 import com.kt.ipms.legacy.opermgmt.limitmgmt.adapter.LimitMgmtAdapterService;
 import com.kt.ipms.legacy.opermgmt.limitmgmt.vo.TbAuditDhcpBasVo;
@@ -16,11 +18,11 @@ import com.kt.ipms.legacy.ticketmgmt.dhcpmgmt.vo.TbAuditDhcpMstVo;
 @Transactional
 public class TbAuditDhcpMstTxService {
 
-	@Autowired
-	TbAuditDhcpMstDao tbAuditDhcpMstDao;
+	@Lazy @Autowired
+	private TbAuditDhcpMstDao tbAuditDhcpMstDao;
 	
-	@Autowired
-	LimitMgmtAdapterService limitMgmtAdapterService;
+	@Lazy @Autowired
+	private LimitMgmtAdapterService limitMgmtAdapterService;
 	
 	@Transactional(readOnly = true)
 	public List<TbAuditDhcpMstVo> selectListTbAuditDhcpMstVo(TbAuditDhcpMstVo searchVo)  {

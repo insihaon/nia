@@ -1,11 +1,14 @@
 package com.kt.ipms.legacy.opermgmt.limitmgmt.dao;
 import java.util.List;
 
+import org.apache.ibatis.annotations.Mapper;
+
 import com.kt.ipms.legacy.opermgmt.limitmgmt.vo.TbAuditAssignBasVo;
 import com.kt.ipms.legacy.opermgmt.limitmgmt.vo.TbAuditDhcpBasVo;
 
 
 /** TB_AUDIT_ASSIGN_BAS DAO INTERFACE **/
+@Mapper
 public interface TbAuditAssignBasDao {
 	
 	/** TB_AUDIT_ASSIGN_BAS insertTbAuditAssignBasVo **/

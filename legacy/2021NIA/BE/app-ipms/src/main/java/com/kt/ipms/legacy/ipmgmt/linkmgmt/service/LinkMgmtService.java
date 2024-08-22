@@ -3,6 +3,7 @@ package com.kt.ipms.legacy.ipmgmt.linkmgmt.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.kt.framework.exception.ServiceException;
 import com.kt.ipms.legacy.cmn.service.IpCommonService;
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
-import com.kt.ipms.legacy.ipmgmt.hostmgmt.vo.TbIpHostMstVo;
 import com.kt.ipms.legacy.ipmgmt.linkmgmt.vo.TbIpLinkMstListVo;
 import com.kt.ipms.legacy.ipmgmt.linkmgmt.vo.TbIpLinkMstVo;
 
@@ -18,10 +18,10 @@ import com.kt.ipms.legacy.ipmgmt.linkmgmt.vo.TbIpLinkMstVo;
 @Transactional
 public class LinkMgmtService {
 
-	@Autowired
+	@Lazy @Autowired
 	private LinkMgmtTxService linkMgmtTxService;
 
-	@Autowired
+	@Lazy @Autowired
 	private IpCommonService ipCommonService;
 	
 	/**

@@ -14,6 +14,7 @@ import java.util.Map;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,28 +44,28 @@ import com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlBasVo;
 @Component
 public class RoutMgmtService {
 
-	@Autowired
+	@Lazy @Autowired
 	private RoutMgmtTxService routMgmtTxService;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private AssignMgmtTxService assignMgmtTxService;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private IpCommonService ipCommonService;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private AllocMgmtService allocMgmtService;
 
-	@Autowired
+	@Lazy @Autowired
 	private OrgMgmtAdapterService orgMgmtAdapterService;
 
-	@Autowired
+	@Lazy @Autowired
 	private ConfigPropertieService configPropertieService;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private AssignMgmtService assignMgmtService;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private IntgrMgmtTxService intgrMgmtTxService;
 
 	@Autowired

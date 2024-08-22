@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,19 +45,19 @@ public class SdnTxService {
 		@Autowired
 		private CommonService commonService;
 		
-		@Autowired
+		@Lazy @Autowired
 		private LinkIpmsMstDao lnkIpmsDao;
 		
-		@Autowired
+		@Lazy @Autowired
 		private TbIpAllocNeossMstDao tbIpAllocNeossMstDao;
 		
-		@Autowired
+		@Lazy @Autowired
 		private TbLnkIpAllocOrderMstDao tbLnkIpAllocOrderMstDao;
 		
-		@Autowired
+		@Lazy @Autowired
 		private TbLnkNonKtSvcMstDao tbLnkNonKtSvcMstDao;
 		
-		@Autowired
+		@Lazy @Autowired
 		private TbLnkIpAllocMstDao tbLnkIpAllocMstDao;
 		
 		@Autowired

@@ -1,7 +1,8 @@
 package com.kt.ipms.legacy.linkmgmt.whois.dao;
 
-import java.math.BigInteger;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
 
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.TbIpAllocMstVo;
 import com.kt.ipms.legacy.linkmgmt.common.vo.TbIpAllocNeossMstVo;
@@ -14,6 +15,7 @@ import com.kt.ipms.legacy.linkmgmt.whois.vo.TbWhoisVo;
  *  WHOIS 연동 관련  DB Access를 처리하는 Interface Class
  * 
  ****************************************************/
+@Mapper
 public interface WhoisDao {
 	
 	public String callUfNewWhois(TbWhoisVo tbWhoisVo);

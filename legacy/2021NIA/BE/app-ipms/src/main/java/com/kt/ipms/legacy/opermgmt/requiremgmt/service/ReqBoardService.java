@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.kt.framework.exception.ServiceException;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
-import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.TbIpAllocMstVo;
 import com.kt.ipms.legacy.opermgmt.requiremgmt.dao.ReqBoardDao;
 import com.kt.ipms.legacy.opermgmt.requiremgmt.vo.ReqAdminEmailVo;
 import com.kt.ipms.legacy.opermgmt.requiremgmt.vo.ReqBoardListVo;
@@ -22,7 +22,7 @@ import com.kt.ipms.legacy.opermgmt.requiremgmt.vo.ReqBoardVo;
 @Component
 public class ReqBoardService {
 
-	@Autowired
+	@Lazy @Autowired
 	private ReqBoardDao reqBoardDao;
 	
 	@Transactional(readOnly = true)

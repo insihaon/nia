@@ -1,19 +1,20 @@
 package com.kt.ipms.legacy.opermgmt.assignmgmt.service;
 
+import java.util.Date;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Date;
-import java.util.List;
 
 import com.kt.framework.exception.ServiceException;
 import com.kt.framework.utils.StringUtils;
 import com.kt.ipms.legacy.cmn.service.CommonService;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
-import com.kt.ipms.legacy.opermgmt.assignmgmt.vo.TbRequestAssignMstVo;
 import com.kt.ipms.legacy.opermgmt.assignmgmt.vo.TbRequestAssignMstListVo;
+import com.kt.ipms.legacy.opermgmt.assignmgmt.vo.TbRequestAssignMstVo;
 
 @Component
 @Transactional
@@ -21,10 +22,10 @@ public class AssignApyMgmtService {
 
 	@Autowired
 	AssignApyMgmtTxService assignApyMgmtTxService;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private CommonService commonService;
-	
+
 	@Transactional(readOnly = true)
 	public TbRequestAssignMstListVo selectListTbRequestAssignMst (TbRequestAssignMstVo searchVo) {
 		TbRequestAssignMstListVo resultListVo = null;

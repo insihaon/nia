@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kt.ipms.legacy.opermgmt.intgrmgmt.dao.TbRoutHistMstDao">
+
+	<resultMap id="tbRoutHistMstVoResult" type="com.kt.ipms.legacy.opermgmt.intgrmgmt.vo.TbRoutHistMstVo">
+		<result column="NROUT_HIST_MST_SEQ" property="nroutHistMstSeq" jdbcType="BIGINT" />
+		<result column="PTELNET_IP" property="ptelnetIp" jdbcType="VARCHAR" />
+		<result column="SHOST_NM" property="shostNm" jdbcType="VARCHAR" />
+		<result column="SRESULT_MSG" property="sresultMsg" jdbcType="VARCHAR" />
+		<result column="NLVL_BAS_SEQ" property="nlvlBasSeq" jdbcType="BIGINT" />
+		<result column="NLVL_MST_SEQ" property="nlvlMstSeq" jdbcType="BIGINT" />
+		<result column="SPROCESS_YN" property="sprocessYn" jdbcType="CHAR" />
+		
+		<result column="DCREATE_DT" property="dcreateDt" jdbcType="TIMESTAMP" />
+		<result column="SCREATE_ID" property="screateId" jdbcType="VARCHAR" />
+		<result column="DMODIFY_DT" property="dmodifyDt" jdbcType="TIMESTAMP" />
+		<result column="SMODIFY_ID" property="smodifyId" jdbcType="VARCHAR" />
+
+		<result column="RNUM" property="rowNo" jdbcType="NUMERIC" />
+	</resultMap>
+	
+	<!-- 라우팅 연동 이력관리 > 목록 조회 -->
+	<select id="selectListPageTbRoutHistVo" resultMap="tbRoutHistMstVoResult" parameterType="com.kt.ipms.legacy.opermgmt.intgrmgmt.vo.TbRoutHistMstVo">
+		SELECT 
+			A.NROUT_HIST_MST_SEQ	-- 라우팅 이력관리 MST SEQ
+			, A.PTELNET_IP			-- TELNET_IP
+			, A.SHOST_NM				-- 호스트명
+			, A.SRESULT_MSG			-- 결과메세지
+			, A.NLVL_BAS_SEQ		-- 계위_BAS_SEQ
+			, A.NLVL_MST_SEQ		-- 계위_Mst_seq
+			, A.SPROCESS_YN		-- 진행_여부
+			, A.DCREATE_DT
+			, A.SCREATE_ID
+			, A.DMODIFY_DT
+			, A.SMODIFY_ID			
+			, A.RNUM 
+		FROM ( 
+			SELECT 
+				A.NROUT_HIST_MST_SEQ	-- 라우팅 이력관리 MST SEQ
+				, A.PTELNET_IP			-- TELNET_IP
+				, A.SHOST_NM				-- 호스트명
+				, A.SRESULT_MSG			-- 결과메세지
+				, A.NLVL_BAS_SEQ		-- 계위_BAS_SEQ
+				, A.NLVL_MST_SEQ		-- 계위_Mst_seq
+				, A.SPROCESS_YN		-- 진행_여부
+				, A.DCREATE_DT
+				, A.SCREATE_ID
+				, A.DMODIFY_DT
+				, A.SMODIFY_ID
+				, ROWNUM RNUM 
+			FROM ( 
+				SELECT 
+					A.NROUT_HIST_MST_SEQ	-- 라우팅 이력관리 MST SEQ
+					, A.PTELNET_IP			-- TELNET_IP
+					, A.SHOST_NM				-- 호스트명
+					, A.SRESULT_MSG			-- 결과메세지
+					, A.NLVL_BAS_SEQ		-- 계위_BAS_SEQ
+					, A.NLVL_MST_SEQ		-- 계위_Mst_SEQ
+					, A.SPROCESS_YN		-- 진행_여부
+					, A.DCREATE_DT
+					, A.SCREATE_ID
+					, A.DMODIFY_DT
+					, A.SMODIFY_ID
+				FROM MST.TB_INTGRM_ROUT_HIST_MST A	-- 라우팅 이력관리 MST 
+				WHERE 1=1 
+					<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ptelnetIp)">
+						AND A.PTELNET_IP = #{ptelnetIp, javaType=Object, jdbcType=OTHER, typeHandler=com.kt.ipms.legacy.cmn.typehandler.CIDRTypeHandler}
+					</if>
+					<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(shostNm)">
+						AND A.SHOST_NM ILIKE '%' || #{shostNm, jdbcType=VARCHAR} || '%'
+					</if>
+					<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(searchBgnDe)">
+						AND TO_CHAR(A.DCREATE_DT, 'YYYY-MM-DD') <![CDATA[>= ]]> #{searchBgnDe, jdbcType=TIMESTAMP}
+					</if>
+					<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(searchEndDe)">
+						AND TO_CHAR(A.DMODIFY_DT, 'YYYY-MM-DD') <![CDATA[<= ]]> #{searchEndDe, jdbcType=TIMESTAMP}
+					</if>
+					<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sprocessYn)">
+						AND A.SPROCESS_YN = #{sprocessYn, jdbcType=CHAR}
+					</if>
+					<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sresultMsg)">
+						AND A.SRESULT_MSG ILIKE '%' || #{sresultMsg, jdbcType=VARCHAR} || '%'
+					</if>
+				ORDER BY A.NROUT_HIST_MST_SEQ DESC
+			) A 
+			WHERE ROWNUM <![CDATA[<=]]> #{lastIndex}
+		) A 
+		WHERE RNUM <![CDATA[>=]]> #{firstIndex}
+	</select>
+	
+	<!-- 라우팅 연동 이력관리 > 목록 건수 조회 -->
+	<select id="countListTbRoutHistVo" resultType="int" parameterType="com.kt.ipms.legacy.opermgmt.intgrmgmt.vo.TbRoutHistMstVo">
+		SELECT count(1) totalCount 
+		FROM MST.TB_INTGRM_ROUT_HIST_MST A	 -- 라우팅 이력관리 MST 
+		WHERE 1=1 
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ptelnetIp)">
+				AND A.PTELNET_IP = #{ptelnetIp, javaType=Object, jdbcType=OTHER, typeHandler=com.kt.ipms.legacy.cmn.typehandler.CIDRTypeHandler}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(shostNm)">
+				AND A.SHOST_NM ILIKE '%' || #{shostNm, jdbcType=VARCHAR} || '%'
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(searchBgnDe)">
+				AND TO_CHAR(A.DCREATE_DT, 'YYYY-MM-DD') <![CDATA[>= ]]> #{searchBgnDe, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(searchEndDe)">
+				AND TO_CHAR(A.DMODIFY_DT, 'YYYY-MM-DD') <![CDATA[<= ]]> #{searchEndDe, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sprocessYn)">
+				AND A.SPROCESS_YN = #{sprocessYn, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sresultMsg)">
+				AND A.SRESULT_MSG ILIKE '%' || #{sresultMsg, jdbcType=VARCHAR} || '%'
+			</if>
+	</select>
+	
+	<!-- 라우팅 연동 이력관리 > 수정  -->
+	<update id="updateRoutHistMstVo" parameterType="com.kt.ipms.legacy.opermgmt.intgrmgmt.vo.TbRoutHistMstVo">
+		UPDATE
+			MST.TB_INTGRM_ROUT_HIST_MST A
+		SET
+			A.DMODIFY_DT = SYSDATE
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(scommu)">
+				, A.SRESULT_MSG = #{sresultMsg, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sserviceNm)">
+				, A.SPROCESS_YN = #{sprocessYn, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smodifyId)">
+				, A.SMODIFY_ID = #{smodifyId, jdbcType=VARCHAR}
+			</if>
+		WHERE 1=1
+			AND A.NROUT_HIST_MST_SEQ = #{nroutHistMstSeq, jdbcType=BIGINT}
+	</update>	
+	
+	<select id="selectSresultMsg" resultType = "hashmap">
+		select DISTINCT sresult_msg  from MST.TB_INTGRM_ROUT_HIST_MST;
+	</select>
+</mapper>

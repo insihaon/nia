@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import com.kt.ipms.legacy.cmn.dao.RestApiDao;
@@ -12,7 +13,7 @@ import com.kt.ipms.legacy.cmn.dao.RestApiDao;
 @Component
 public class RestApiService {
 
-	@Autowired
+	@Lazy @Autowired
 	private RestApiDao restApiDao;
 	
 	/**

@@ -2,9 +2,11 @@ package com.kt.ipms.legacy.opermgmt.whoismgmt.dao;
 
 import java.util.List;
 
-import com.kt.ipms.legacy.opermgmt.whoismgmt.vo.TbNewZipcodeVo;
-import com.kt.ipms.legacy.opermgmt.whoismgmt.vo.TbWhoisVo;
+import org.apache.ibatis.annotations.Mapper;
 
+import com.kt.ipms.legacy.opermgmt.whoismgmt.vo.TbNewZipcodeVo;
+
+@Mapper
 public interface TbNewZipcodeDao {
 	public String selectEaddrDetail(String addrDetail);
 	

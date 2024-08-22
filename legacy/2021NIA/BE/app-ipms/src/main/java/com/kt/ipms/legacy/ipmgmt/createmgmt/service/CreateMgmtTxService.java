@@ -1,13 +1,12 @@
 package com.kt.ipms.legacy.ipmgmt.createmgmt.service;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tools.ant.types.CommandlineJava.SysProperties;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,16 +29,16 @@ import com.kt.log4kt.utils.StringUtil;
 public class CreateMgmtTxService {
 	
 	
-	@Autowired
+	@Lazy @Autowired
 	private TbIpBlockMstDao tbIpBlockMstDao;
 	
-	@Autowired
+@Lazy @Autowired
 	private AssignMgmtAdapterService assignMgmtAdapterService;
 	
-	@Autowired
+@Lazy @Autowired
 	private TicketMgmtAdapterService ticketMgmtAdapterService;
 	
-	@Autowired
+@Lazy @Autowired
 	private HistoryMgmtAdapterService historyMgmtAdapterService;
 	
 	@Transactional(readOnly = true)

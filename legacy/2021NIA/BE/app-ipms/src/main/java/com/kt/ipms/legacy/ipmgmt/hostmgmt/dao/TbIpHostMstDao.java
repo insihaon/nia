@@ -1,11 +1,14 @@
 package com.kt.ipms.legacy.ipmgmt.hostmgmt.dao;
 import java.util.List;
 
+import org.apache.ibatis.annotations.Mapper;
+
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
 import com.kt.ipms.legacy.ipmgmt.hostmgmt.vo.TbIpHostMstVo;
 
 
 /** TB_IP_HOST_MST DAO INTERFACE **/
+@Mapper
 public interface TbIpHostMstDao {
 	
 	/** TB_IP_HOST_MST insert **/

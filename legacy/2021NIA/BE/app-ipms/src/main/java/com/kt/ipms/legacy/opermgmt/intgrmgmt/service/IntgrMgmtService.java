@@ -13,24 +13,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ArrayNode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kt.framework.exception.ServiceException;
 import com.kt.ipms.legacy.cmn.service.ConfigPropertieService;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
-import com.kt.ipms.legacy.cmn.util.PrintLogUtil;
 import com.kt.ipms.legacy.ipmgmt.routmgmt.vo.TbRoutChkMstVo;
 import com.kt.ipms.legacy.opermgmt.intgrmgmt.vo.TbDefaultSvcMstListVo;
 import com.kt.ipms.legacy.opermgmt.intgrmgmt.vo.TbDefaultSvcMstVo;
@@ -47,20 +42,16 @@ import com.kt.ipms.legacy.opermgmt.intgrmgmt.vo.TbRoutHistMstVo;
 import com.kt.ipms.legacy.opermgmt.intgrmgmt.vo.TbWireMstListVo;
 import com.kt.ipms.legacy.opermgmt.intgrmgmt.vo.TbWireMstVo;
 import com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlBasVo;
-import com.kt.ipms.legacy.opermgmt.tacsmgmt.vo.TbTacsConnHistListVo;
-import com.kt.ipms.legacy.opermgmt.tacsmgmt.vo.TbTacsConnHistVo;
-import com.kt.ipms.legacy.opermgmt.whoismgmt.vo.TbWhoisVo;
-import com.kt.log4kt.utils.StringUtil;
 
 @Component
 public class IntgrMgmtService {
 
-	@Autowired
+	@Lazy @Autowired
 	private IntgrMgmtTxService intgrMgmtTxService;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private ConfigPropertieService configPropertieService;
-	
+
 	/****************************************************************************************
 	 * 조직별 장비 정보관리
 	 ****************************************************************************************/

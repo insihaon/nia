@@ -1,6 +1,7 @@
 package com.kt.ipms.legacy.linkmgmt.socketmgmt.adapter;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,7 +14,7 @@ import com.kt.ipms.legacy.opermgmt.tacsmgmt.vo.TacsResponseListVo;
 @Transactional
 public class SocketMgmtAdapterService {
 	
-	@Autowired
+@Lazy @Autowired
 	private SocketMgmtService socketMgmtService;
 	
 	@Transactional(propagation = Propagation.REQUIRED)

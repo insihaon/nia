@@ -1,9 +1,9 @@
 package com.kt.ipms.legacy.ipmgmt.allocmgmt.adapter;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,13 +13,12 @@ import com.kt.ipms.legacy.ipmgmt.allocmgmt.service.AllocMgmtService;
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.IpAllocOperMstListVo;
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.IpAllocOperMstVo;
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.TbIpAllocMstVo;
-import com.kt.ipms.legacy.ipmgmt.assignmgmt.vo.TbIpAssignMstVo;
 
 @Component
 @Transactional
 public class AllocMgmtAdapterService {
 
-	@Autowired
+@Lazy @Autowired
 	private AllocMgmtService allocMgmtService;
 	
 	@Transactional(readOnly = true)

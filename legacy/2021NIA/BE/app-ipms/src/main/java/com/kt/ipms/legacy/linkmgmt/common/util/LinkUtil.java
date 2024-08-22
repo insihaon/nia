@@ -8,6 +8,7 @@ import java.util.Locale;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import com.kt.framework.exception.ServiceException;
@@ -35,19 +36,19 @@ import com.kt.ipms.legacy.linkmgmt.common.vo.TbLnkSvcBasVo;
 @Component
 public class LinkUtil {
 	
-	@Autowired
+	@Lazy @Autowired
 	private CommonService commonService;
 	
-	@Autowired
+	@Lazy @Autowired
 	private TbLnkSvcBasDao tbLnkSvcBasDao;
 	
-	@Autowired
+	@Lazy @Autowired
 	private TbIpAllocNeossMstDao tbIpAllocNeossMstDao;
 	
-	@Autowired
+	@Lazy @Autowired
 	private TbLnkIpAllocOrderMstDao tbLnkIpAllocOrderMstDao;
 	
-	@Autowired
+	@Lazy @Autowired
 	private TbBatchLogDao tbBatchLogDao;
 	
 	/* consumer URI Selecter*/

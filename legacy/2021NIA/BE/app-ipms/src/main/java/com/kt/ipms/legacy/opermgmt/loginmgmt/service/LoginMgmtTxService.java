@@ -1,6 +1,5 @@
 package com.kt.ipms.legacy.opermgmt.loginmgmt.service;
 
-import java.math.BigInteger;
 import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.Map;
@@ -8,9 +7,8 @@ import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 
-import nets.ldap.ADUtilSSL;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,25 +29,27 @@ import com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlBasVo;
 import com.kt.ipms.legacy.opermgmt.usermgmt.adapter.UserMgmtAdapterService;
 import com.kt.ipms.legacy.opermgmt.usermgmt.vo.TbUserBasVo;
 
+import nets.ldap.ADUtilSSL;
+
 @Component
 @Transactional
 public class LoginMgmtTxService {
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private UserMgmtAdapterService userMgmtAdapterService;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private OrgMgmtAdapterService orgMgmtAdapterService;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private GrantMgmtAdapterService grantMgmtAdapterService;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private MenuMgmtAdapterService menuMgmtAdapterService;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private ConfigPropertieService configPropertieService;
-	
+
 	private final static int MAX_MENU_LEVEL = 4;
 	
 	

@@ -1,9 +1,13 @@
 package com.kt.ipms.legacy.opermgmt.srvmgmt.dao;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+
 import com.kt.ipms.legacy.opermgmt.srvmgmt.vo.TbAssignTypeCdVo;
 
 
 /** TB_ASSIGN_TYPE_CD DAO INTERFACE **/
+@Mapper
 public interface TbAssignTypeCdDao {
 	
 	/** TB_ASSIGN_TYPE_CD insertTbAssignTypeCdVo **/

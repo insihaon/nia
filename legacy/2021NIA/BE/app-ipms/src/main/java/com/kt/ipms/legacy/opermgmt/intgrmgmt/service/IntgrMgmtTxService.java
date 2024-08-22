@@ -3,6 +3,7 @@ package com.kt.ipms.legacy.opermgmt.intgrmgmt.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,33 +24,32 @@ import com.kt.ipms.legacy.opermgmt.intgrmgmt.vo.TbRoutHistMstVo;
 import com.kt.ipms.legacy.opermgmt.intgrmgmt.vo.TbWireMstVo;
 import com.kt.ipms.legacy.opermgmt.orgmgmt.adapter.OrgMgmtAdapterService;
 import com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlBasVo;
-import com.kt.ipms.legacy.opermgmt.tacsmgmt.vo.TbTacsConnHistVo;
 
 @Component
 public class IntgrMgmtTxService {
 	
-	@Autowired
+	@Lazy @Autowired
 	private TbFcltMstDao tbFcltMstDao;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private TbFcltCmdMstDao tbFcltCmdMstDao;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private TbMobileMstDao tbMobileMstDao;
 
-	@Autowired
+	@Lazy @Autowired
 	private TbMobileSummMstDao tbMobileSummMstDao;
-	
-	@Autowired
+
+@Lazy @Autowired
 	private OrgMgmtAdapterService orgMgmtAdapterService;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private TbDefaultSvcMstDao tbDefaultSvcMstDao;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private TbRoutHistMstDao tbRoutHistMstDao;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private TbWireMstDao tbWireMstDao;
 
 	/****************************************************************************************

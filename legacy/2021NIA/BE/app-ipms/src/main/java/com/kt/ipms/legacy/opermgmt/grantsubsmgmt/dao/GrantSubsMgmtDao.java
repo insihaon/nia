@@ -1,14 +1,15 @@
 package com.kt.ipms.legacy.opermgmt.grantsubsmgmt.dao;
 
-import java.math.BigInteger;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
 
 import com.kt.ipms.legacy.opermgmt.grantmgmt.vo.TbUserAuthTxnListVo;
 import com.kt.ipms.legacy.opermgmt.grantmgmt.vo.TbUserAuthTxnVo;
-import com.kt.ipms.legacy.opermgmt.grantsubsmgmt.vo.TbUserAuthTxnSubListVo;
 import com.kt.ipms.legacy.opermgmt.grantsubsmgmt.vo.TbUserAuthTxnSubVo;
 import com.kt.ipms.legacy.opermgmt.grantsubsmgmt.vo.TbUserGrantVo;
 
+@Mapper
 public interface GrantSubsMgmtDao {
 	public List<TbUserGrantVo> selectTbUserGrantList (TbUserGrantVo tbUserGrantVo);
 	

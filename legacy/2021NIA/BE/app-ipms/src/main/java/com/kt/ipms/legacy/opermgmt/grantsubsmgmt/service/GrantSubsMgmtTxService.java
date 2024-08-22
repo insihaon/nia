@@ -1,24 +1,23 @@
 package com.kt.ipms.legacy.opermgmt.grantsubsmgmt.service;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.kt.ipms.legacy.opermgmt.grantmgmt.vo.TbUserAuthTxnListVo;
 import com.kt.ipms.legacy.opermgmt.grantmgmt.vo.TbUserAuthTxnVo;
 import com.kt.ipms.legacy.opermgmt.grantsubsmgmt.dao.GrantSubsMgmtDao;
-import com.kt.ipms.legacy.opermgmt.grantsubsmgmt.vo.TbUserAuthTxnSubListVo;
 import com.kt.ipms.legacy.opermgmt.grantsubsmgmt.vo.TbUserAuthTxnSubVo;
 import com.kt.ipms.legacy.opermgmt.grantsubsmgmt.vo.TbUserGrantVo;
 
 @Component
 @Transactional
 public class GrantSubsMgmtTxService {
-	@Autowired
-	GrantSubsMgmtDao grantSubsMgmtDao;
+	@Lazy @Autowired
+	private GrantSubsMgmtDao grantSubsMgmtDao;
 	
 	@Transactional(readOnly = true)
 	public  List<TbUserGrantVo>  selectTbUserGrantList (TbUserGrantVo searchVo)  {

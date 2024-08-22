@@ -1,11 +1,14 @@
 package com.kt.ipms.legacy.ticketmgmt.dhcpmgmt.dao;
 import java.util.List;
 
+import org.apache.ibatis.annotations.Mapper;
+
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
 import com.kt.ipms.legacy.ticketmgmt.dhcpmgmt.vo.TbAuditDhcpMstVo;
 
 
 
+@Mapper
 public interface TbAuditDhcpMstDao {
 	
 

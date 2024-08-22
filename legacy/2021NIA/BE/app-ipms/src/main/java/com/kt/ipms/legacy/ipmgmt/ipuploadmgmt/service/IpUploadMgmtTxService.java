@@ -5,13 +5,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.IpAllocOperMstVo;
 import com.kt.ipms.legacy.ipmgmt.ipuploadmgmt.dao.TbIpUploadDao;
-import com.kt.ipms.legacy.ipmgmt.ipuploadmgmt.vo.TbIpUploadSubListVo;
 import com.kt.ipms.legacy.ipmgmt.ipuploadmgmt.vo.TbIpUploadSubVo;
 import com.kt.ipms.legacy.ipmgmt.ipuploadmgmt.vo.TbIpUploadVo;
 
@@ -19,7 +19,7 @@ import com.kt.ipms.legacy.ipmgmt.ipuploadmgmt.vo.TbIpUploadVo;
 @Transactional
 public class IpUploadMgmtTxService {
 
-	@Autowired
+	@Lazy @Autowired
 	private TbIpUploadDao tbIpUploadDao; 
 	
 	@Transactional(readOnly = true)

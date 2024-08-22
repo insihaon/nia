@@ -1,11 +1,14 @@
 package com.kt.ipms.legacy.opermgmt.menumgmt.dao;
 import java.util.List;
 
+import org.apache.ibatis.annotations.Mapper;
+
 import com.kt.ipms.legacy.opermgmt.menumgmt.vo.TbScrnBasListVo;
 import com.kt.ipms.legacy.opermgmt.menumgmt.vo.TbScrnBasVo;
 
 
 /** TB_SCRN_BAS DAO INTERFACE **/
+@Mapper
 public interface TbScrnBasDao {
 	
 	/** TB_SCRN_BAS insert **/

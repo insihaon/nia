@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kt.ipms.legacy.opermgmt.usermgmt.dao.TbUserBasDao">
+	<resultMap id="tbUserBasVoResult" type="com.kt.ipms.legacy.opermgmt.usermgmt.vo.TbUserBasVo">
+		<result column="SUSER_ID" property="suserId" jdbcType="VARCHAR" />
+		<result column="SUSER_NM" property="suserNm" jdbcType="VARCHAR" />
+		<result column="SUSER_TYPE_CD" property="suserTypeCd" jdbcType="VARCHAR" />
+		<result column="DUSER_REG_DATE" property="duserRegDate" jdbcType="TIMESTAMP" />
+		<result column="SUSER_TEL_NO" property="suserTelNo" jdbcType="VARCHAR" />
+		<result column="SUSER_FAX_NO" property="suserFaxNo" jdbcType="VARCHAR" />
+		<result column="SUSER_MPHON_NO" property="suserMphonNo" jdbcType="VARCHAR" />
+		<result column="SUSER_EMAIL_ADR" property="suserEmailAdr" jdbcType="VARCHAR" />
+		<result column="NLOGIN_FAIL_TMSCNT" property="nloginFailTmscnt" jdbcType="BIGINT" />
+		<result column="SCHR_MSG_RCV_YN" property="schrMsgRcvYn" jdbcType="VARCHAR" />
+		<result column="SMPHON_OTTP_YN" property="smphonOttpYn" jdbcType="VARCHAR" />
+		<result column="SUSER_STTUS_CD" property="suserSttusCd" jdbcType="VARCHAR" />
+		<result column="SPOS_DEPT_ORG_ID" property="sposDeptOrgId" jdbcType="VARCHAR" />
+		<result column="SDIBEL_UCLS_USER_ID" property="sdibelUclsUserId" jdbcType="VARCHAR" />
+		<result column="SKT_TKCG_USER_ID" property="sktTkcgUserId" jdbcType="VARCHAR" />
+		<result column="SUSER_RMARK" property="suserRmark" jdbcType="VARCHAR" />
+		<result column="SOLD_USER_ID" property="soldUserId" jdbcType="VARCHAR" />
+		<result column="SIPMS_CONN_YN" property="sipmsConnYn" jdbcType="CHAR" />
+		<result column="SIPMS_USER_YN" property="sipmsUserYn" jdbcType="CHAR" />
+		<result column="SUSER_GRADE_CD" property="suserGradeCd" jdbcType="CHAR" />
+		<result column="DCREATE_DT" property="dcreateDt" jdbcType="TIMESTAMP" />
+		<result column="SCREATE_ID" property="screateId" jdbcType="VARCHAR" />
+		<result column="DMODIFY_DT" property="dmodifyDt" jdbcType="TIMESTAMP" />
+		<result column="SMODIFY_ID" property="smodifyId" jdbcType="VARCHAR" />
+		
+		<result column="SUSER_STTUS_NM" property="suserSttusNm" jdbcType="VARCHAR" />
+		<result column="SUSER_GRADE_NM" property="suserGradeNm" jdbcType="VARCHAR" />
+		<result column="SPOS_DEPT_ORG_NM" property="sposDeptOrgNm" jdbcType="VARCHAR" />
+		<result column="SPOS_DEPT_FULL_NM" property="sposDeptFullNm" jdbcType="VARCHAR" />
+		<result column="SDIBEL_UCLS_USER_NM" property="sdibelUclsUserNm" jdbcType="VARCHAR" />
+		<result column="SKT_TKCG_USER_NM" property="sktTkcgUserNm" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		A.SUSER_ID, A.SUSER_NM, A.SUSER_TYPE_CD, A.DUSER_REG_DATE
+		, A.SUSER_TEL_NO, A.SUSER_FAX_NO, A.SUSER_MPHON_NO
+		, A.NLOGIN_FAIL_TMSCNT, A.SCHR_MSG_RCV_YN, A.SMPHON_OTTP_YN, A.SUSER_STTUS_CD
+		, A.SPOS_DEPT_ORG_ID, A.SDIBEL_UCLS_USER_ID, A.SKT_TKCG_USER_ID, A.SUSER_RMARK
+		, A.SOLD_USER_ID, A.SIPMS_CONN_YN
+		, A.DCREATE_DT, A.SCREATE_ID, A.DMODIFY_DT, A.SMODIFY_ID
+		, (CASE WHEN  STRPOS( A.SUSER_EMAIL_ADR, '@') >4  THEN SUBSTRING (SPLIT_PART(A.SUSER_EMAIL_ADR, '@' ,1 ),0 , LENGTH(SPLIT_PART(A.SUSER_EMAIL_ADR, '@' ,1 ))-2 ) || '***@' || SPLIT_PART(A.SUSER_EMAIL_ADR, '@' ,2 ) 
+          ELSE SUBSTRING (SPLIT_PART(A.SUSER_EMAIL_ADR, '@' ,1 ),0 , LENGTH(SPLIT_PART(A.SUSER_EMAIL_ADR, '@' ,1 )) ) || '*@' || SPLIT_PART(A.SUSER_EMAIL_ADR, '@' ,2 )
+          END ) AS SUSER_EMAIL_ADR
+
+	</sql>
+	<sql id="Append_Column_List">
+		,	B.SUSER_STTUS_NM	AS SUSER_STTUS_NM
+		,	(CASE WHEN C.SUSER_GRADE_NM IS NULL THEN '조회자' ELSE C.SUSER_GRADE_NM END )	AS SUSER_GRADE_NM
+		,	D.SORG_NM	AS	SPOS_DEPT_ORG_NM
+		,	E.SUSER_NM	AS SDIBEL_UCLS_USER_NM
+		,	F.SUSER_NM	AS SKT_TKCG_USER_NM
+		,(SELECT STRING_AGG(SORG_NM,'-') FROM (SELECT SORG_NM FROM MST.TB_ORG_BAS AS G   START WITH G.SKT_ORG_ID = A.SPOS_DEPT_ORG_ID  CONNECT BY G.SKT_ORG_ID = PRIOR G.SUP_KT_ORG_ID ORDER BY G.SORG_PREF_ODRG) ) AS SPOS_DEPT_FULL_NM
+		, NVL (G.SUSER_GRADE_CD , 'UR0006')  AS SUSER_GRADE_CD
+		,  (CASE WHEN G.SUSER_GRADE_CD IS NULL THEN 'N' ELSE 'Y' END) AS SIPMS_USER_YN
+	</sql>
+	
+	<sql id="Append_Column_List_Alias">
+		,	A.SUSER_STTUS_NM
+		,	A.SUSER_GRADE_NM
+		,	A.SPOS_DEPT_ORG_NM
+		,	A.SDIBEL_UCLS_USER_NM
+		,	A.SKT_TKCG_USER_NM
+		,	A.SPOS_DEPT_FULL_NM
+		,	A.SUSER_GRADE_CD
+		,	A.SIPMS_USER_YN
+	</sql>
+	
+	<sql id="Append_From_Clause">
+		,	MST.TB_USER_STTUS_CD B
+		,	MST.TB_USER_GRADE_CD C
+		,	MST.TB_ORG_BAS D
+		,	MST.TB_USER_BAS E
+		,	MST.TB_USER_BAS F
+		,	(SELECT DISTINCT SUSER_ID, SUSER_GRADE_CD FROM MST.TB_USER_AUTH_TXN) G
+	</sql>
+	
+	<sql id="Vo_Where_Clause">
+		<trim prefix="WHERE" prefixOverrides="AND">
+			A.SUSER_ID = #{suserId, jdbcType=VARCHAR}
+		</trim>
+	</sql>
+
+	<sql id="List_Where_Clause">
+		<trim prefix="WHERE" prefixOverrides="AND">
+			1 = 1
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(suserId)">
+				AND A.SUSER_ID = #{suserId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(suserNm)">
+				AND A.SUSER_NM ILIKE 	 '%' ||  #{suserNm, jdbcType=VARCHAR} || '%'			
+				
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(suserTypeCd)">
+				AND A.SUSER_TYPE_CD = #{suserTypeCd, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(duserRegDate)">
+				AND A.DUSER_REG_DATE = #{duserRegDate, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(suserTelNo)">
+				AND A.SUSER_TEL_NO = #{suserTelNo, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(suserFaxNo)">
+				AND A.SUSER_FAX_NO = #{suserFaxNo, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(suserMphonNo)">
+				AND A.SUSER_MPHON_NO = #{suserMphonNo, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(suserEmailAdr)">
+				AND A.SUSER_EMAIL_ADR = #{suserEmailAdr, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nloginFailTmscnt)">
+				AND A.NLOGIN_FAIL_TMSCNT = #{nloginFailTmscnt, jdbcType=BIGINT}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(schrMsgRcvYn)">
+				AND A.SCHR_MSG_RCV_YN = #{schrMsgRcvYn, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smphonOttpYn)">
+				AND A.SMPHON_OTTP_YN = #{smphonOttpYn, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(suserSttusCd)">
+				AND A.SUSER_STTUS_CD = #{suserSttusCd, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sposDeptOrgId)">
+				AND A.SPOS_DEPT_ORG_ID = #{sposDeptOrgId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sdibelUclsUserId)">
+				AND A.SDIBEL_UCLS_USER_ID = #{sdibelUclsUserId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sktTkcgUserId)">
+				AND A.SKT_TKCG_USER_ID = #{sktTkcgUserId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(suserRmark)">
+				AND A.SUSER_RMARK = #{suserRmark, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(soldUserId)">
+				AND A.SOLD_USER_ID = #{soldUserId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sipmsConnYn)">
+				AND A.SIPMS_CONN_YN = #{sipmsConnYn, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sipmsUserYn)">
+				AND (CASE WHEN G.SUSER_GARADE IS NULL 'N' ELSE 'Y' END) = #{sipmsUserYn, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(suserGradeCd)">
+				AND NVL (G.SUSER_GRADE_CD , 'UR0006') = #{suserGradeCd, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dcreateDt)">
+				AND A.DCREATE_DT = #{dcreateDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(screateId)">
+				AND A.SCREATE_ID = #{screateId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dmodifyDt)">
+				AND A.DMODIFY_DT = #{dmodifyDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smodifyId)">
+				AND A.SMODIFY_ID = #{smodifyId, jdbcType=VARCHAR}
+			</if>
+
+		</trim>
+	</sql>
+	
+	<sql id="Append_Where_Clause">
+		AND A.SUSER_STTUS_CD = B.SUSER_STTUS_CD(+)		
+		AND	A.SPOS_DEPT_ORG_ID = D.SKT_ORG_ID(+)
+		AND A.SDIBEL_UCLS_USER_ID = E.SUSER_ID(+)
+		AND A.SKT_TKCG_USER_ID  = F.SUSER_ID(+)
+		AND A.SUSER_ID = G.SUSER_ID(+)
+		AND G.SUSER_GRADE_CD = C.SUSER_GRADE_CD(+)
+	</sql>
+	
+	<insert id="insertTbUserBasVo" parameterType="com.kt.ipms.legacy.opermgmt.usermgmt.vo.TbUserBasVo">
+		INSERT
+			
+		INTO MST.TB_USER_BAS (
+			SUSER_ID
+			,	SUSER_NM
+			,	SUSER_TYPE_CD
+			,	DUSER_REG_DATE
+			,	SUSER_TEL_NO
+			,	SUSER_FAX_NO
+			,	SUSER_MPHON_NO
+			,	SUSER_EMAIL_ADR
+			,	SUSER_STTUS_CD
+			,	SPOS_DEPT_ORG_ID
+			,	SDIBEL_UCLS_USER_ID
+			,	SKT_TKCG_USER_ID
+			,	SUSER_RMARK
+			,	SOLD_USER_ID
+			,	SUSER_GRADE_CD
+			,	SCREATE_ID
+			,	DMODIFY_DT
+			,	SMODIFY_ID
+		
+		) VALUES (
+			#{suserId, jdbcType=VARCHAR}
+			,	#{suserNm, jdbcType=VARCHAR}
+			,	#{suserTypeCd, jdbcType=VARCHAR}
+			,	#{duserRegDate, jdbcType=TIMESTAMP}
+			,	#{suserTelNo, jdbcType=VARCHAR}
+			,	#{suserFaxNo, jdbcType=VARCHAR}
+			,	#{suserMphonNo, jdbcType=VARCHAR}
+			,	#{suserEmailAdr, jdbcType=VARCHAR}
+			,	#{suserSttusCd, jdbcType=VARCHAR}
+			,	#{sposDeptOrgId, jdbcType=VARCHAR}
+			,	#{sdibelUclsUserId, jdbcType=VARCHAR}
+			,	#{sktTkcgUserId, jdbcType=VARCHAR}
+			,	#{suserRmark, jdbcType=VARCHAR}
+			,	#{soldUserId, jdbcType=VARCHAR}
+			,	#{suserGradeCd, jdbcType=CHAR}
+			,	#{screateId, jdbcType=VARCHAR}
+			,	#{dmodifyDt, jdbcType=TIMESTAMP}
+			,	#{smodifyId, jdbcType=VARCHAR}
+		
+		)
+	</insert>
+	
+	<update id="updateTbUserBasVo" parameterType="com.kt.ipms.legacy.opermgmt.usermgmt.vo.TbUserBasVo">
+		UPDATE
+			
+		MST.TB_USER_BAS A
+		SET
+			A.DMODIFY_DT = CURRENT_TIMESTAMP
+			
+			, A.SMODIFY_ID = #{smodifyId, jdbcType=VARCHAR}
+			
+			
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(suserNm)">
+			 , A.SUSER_NM = #{suserNm, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(suserTypeCd)">
+			,	A.SUSER_TYPE_CD = #{suserTypeCd, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(duserRegDate)">
+			,	A.DUSER_REG_DATE = #{duserRegDate, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(suserTelNo)">
+			,	A.SUSER_TEL_NO = #{suserTelNo, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(suserFaxNo)">
+			,	A.SUSER_FAX_NO = #{suserFaxNo, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(suserMphonNo)">
+			,	A.SUSER_MPHON_NO = #{suserMphonNo, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(suserEmailAdr)">
+			,	A.SUSER_EMAIL_ADR = #{suserEmailAdr, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nloginFailTmscnt)">
+			,	A.NLOGIN_FAIL_TMSCNT = #{nloginFailTmscnt, jdbcType=BIGINT}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(schrMsgRcvYn)">
+			,	A.SCHR_MSG_RCV_YN = #{schrMsgRcvYn, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smphonOttpYn)">
+			,	A.SMPHON_OTTP_YN = #{smphonOttpYn, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(suserSttusCd)">
+			,	A.SUSER_STTUS_CD = #{suserSttusCd, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sposDeptOrgId)">
+			,	A.SPOS_DEPT_ORG_ID = #{sposDeptOrgId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sdibelUclsUserId)">
+			,	A.SDIBEL_UCLS_USER_ID = #{sdibelUclsUserId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sktTkcgUserId)">
+			,	A.SKT_TKCG_USER_ID = #{sktTkcgUserId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(suserRmark)">
+			,	A.SUSER_RMARK = #{suserRmark, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(soldUserId)">
+			,	A.SOLD_USER_ID = #{soldUserId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sipmsConnYn)">
+			,	A.SIPMS_CONN_YN = #{sipmsConnYn, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sipmsUserYn)">
+			,	A.SIPMS_USER_YN = #{sipmsUserYn, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(suserGradeCd)">
+			,	A.SUSER_GRADE_CD = #{suserGradeCd, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dcreateDt)">
+			,	A.DCREATE_DT = #{dcreateDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(screateId)">
+			,	A.SCREATE_ID = #{screateId, jdbcType=VARCHAR}
+			</if>
+
+		<include refid="Vo_Where_Clause" />
+	</update>
+	
+	<delete id="deleteTbUserBasVo" parameterType="com.kt.ipms.legacy.opermgmt.usermgmt.vo.TbUserBasVo">
+		DELETE
+			
+		FROM MST.TB_USER_BAS
+		<include refid="Vo_Where_Clause" />
+	</delete>
+	
+	<select id="selectTbUserBasVo" resultMap="tbUserBasVoResult" parameterType="com.kt.ipms.legacy.opermgmt.usermgmt.vo.TbUserBasVo">
+		SELECT
+			
+		<include refid="Base_Column_List" />
+		<include refid="Append_Column_List"/>
+		FROM MST.TB_USER_BAS A
+		<include refid="Append_From_Clause"/>		
+		<include refid="Vo_Where_Clause" />
+		<include refid="Append_Where_Clause"/>
+	</select>
+	
+	<select id="selectListTbUserBasVo" resultMap="tbUserBasVoResult" parameterType="com.kt.ipms.legacy.opermgmt.usermgmt.vo.TbUserBasVo">
+		SELECT
+			
+		<include refid="Base_Column_List" />
+		<include refid="Append_Column_List"/>
+		FROM MST.TB_USER_BAS A
+		<include refid="Append_From_Clause"/>
+		<include refid="List_Where_Clause" />
+		<include refid="Append_Where_Clause"/>
+		ORDER BY 	 A.SUSER_NM ,D.SORG_NM ,A.SUSER_GRADE_CD
+	</select>
+	
+	<select id="selectListPageTbUserBasVo" resultMap="tbUserBasVoResult" parameterType="com.kt.ipms.legacy.opermgmt.usermgmt.vo.TbUserBasVo">
+		SELECT <include refid="Base_Column_List" />
+			   <include refid="Append_Column_List_Alias"/>, A.RNUM FROM (
+			SELECT<include refid="Base_Column_List" />
+			   <include refid="Append_Column_List_Alias"/>, ROWNUM RNUM FROM (
+				SELECT
+					
+				<include refid="Base_Column_List" />
+				<include refid="Append_Column_List"/>
+				FROM MST.TB_USER_BAS A
+				<include refid="Append_From_Clause"/>
+				<include refid="List_Where_Clause" />
+				<include refid="Append_Where_Clause"/>
+					 ORDER BY 	 A.SUSER_NM ,D.SORG_NM ,A.SUSER_GRADE_CD
+			) A WHERE ROWNUM <![CDATA[<=]]> #{lastIndex}
+		)A WHERE RNUM <![CDATA[>=]]> #{firstIndex}
+	</select>
+	
+	<select id="countListPageTbUserBasVo" resultType="int" parameterType="com.kt.ipms.legacy.opermgmt.usermgmt.vo.TbUserBasVo">
+		SELECT
+			
+			count(1) totalCount
+		FROM MST.TB_USER_BAS A
+		<include refid="Append_From_Clause"/>
+				<include refid="List_Where_Clause" />
+				<include refid="Append_Where_Clause"/>
+	</select>
+	
+	<select id="selectEmail" resultType="java.lang.String" parameterType="com.kt.ipms.legacy.opermgmt.usermgmt.vo.TbUserBasVo">
+		SELECT
+			A.SUSER_EMAIL_ADR 
+		FROM MST.TB_USER_BAS A
+		WHERE
+			A.SUSER_ID = #{suserId, jdbcType=VARCHAR}
+	</select>
+	
+</mapper>

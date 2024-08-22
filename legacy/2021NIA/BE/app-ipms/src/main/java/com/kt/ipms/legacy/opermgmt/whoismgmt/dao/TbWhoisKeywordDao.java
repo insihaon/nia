@@ -1,9 +1,13 @@
 package com.kt.ipms.legacy.opermgmt.whoismgmt.dao;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+
 import com.kt.ipms.legacy.opermgmt.whoismgmt.vo.TbWhoisKeywordVo;
 
 
 /** TB_WHOIS_KEYWORD DAO INTERFACE **/
+@Mapper
 public interface TbWhoisKeywordDao {
 	
 	/** TB_WHOIS_KEYWORD insertTbWhoisKeywordVo **/

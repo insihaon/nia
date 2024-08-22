@@ -2,8 +2,11 @@ package com.kt.ipms.legacy.ipmgmt.historymgmt.dao;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Mapper;
+
 import com.kt.ipms.legacy.ipmgmt.historymgmt.vo.IpHistoryMstVo;
 
+@Mapper
 public interface TbIpHistoryMstDao {
 
 	

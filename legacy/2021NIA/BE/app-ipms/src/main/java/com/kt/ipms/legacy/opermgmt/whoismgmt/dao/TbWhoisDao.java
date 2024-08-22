@@ -2,14 +2,16 @@ package com.kt.ipms.legacy.opermgmt.whoismgmt.dao;
 import java.math.BigInteger;
 import java.util.List;
 
+import org.apache.ibatis.annotations.Mapper;
+
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
 import com.kt.ipms.legacy.opermgmt.whoismgmt.vo.TbWhoisComplexVo;
-import com.kt.ipms.legacy.opermgmt.whoismgmt.vo.TbWhoisUserVo;
 import com.kt.ipms.legacy.opermgmt.whoismgmt.vo.TbWhoisVo;
 import com.kt.ipms.legacy.opermgmt.whoismgmt.vo.WhoisStatusVo;
 
 
 /** TB_WHOIS DAO INTERFACE **/
+@Mapper
 public interface TbWhoisDao {
 	
 	/** TB_WHOIS insertTbWhoisVo **/
