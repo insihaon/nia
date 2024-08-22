@@ -1,10 +1,13 @@
 package com.kt.ipms.legacy.opermgmt.orgmgmt.dao;
 import java.util.List;
 
+import org.apache.ibatis.annotations.Mapper;
+
 import com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlCdVo;
 
 
 /** TB_LVL_CD DAO INTERFACE **/
+@Mapper
 public interface TbLvlCdDao {
 	
 	/** TB_LVL_CD insert **/

@@ -1,0 +1,1574 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kt.ipms.legacy.statmgmt.ipstatmgmt.dao.IpStatMstDao">
+	<resultMap id="IpStatMstVoResult" type="com.kt.ipms.legacy.statmgmt.ipstatmgmt.vo.IpStatMstVo">
+		<!-- IpVo -->
+		<result column="PIP_PREFIX" property="pipPrefix" jdbcType="VARCHAR" />
+		<result column="SIP_VERSION_TYPE_CD" property="sipVersionTypeCd" jdbcType="CHAR" />
+		<result column="SIP_VERSION_TYPE_NM" property="sipVersionTypeNm" jdbcType="VARCHAR" />
+		<result column="SIP_BLOCK" property="sipBlock" jdbcType="VARCHAR" />
+		<result column="NBITMASK" property="nbitmask" jdbcType="INTEGER" />
+		<result column="SNETMASK" property="snetmask" jdbcType="VARCHAR" />
+		<result column="SFIRST_ADDR" property="sfirstAddr" jdbcType="VARCHAR" />
+		<result column="SLAST_ADDR" property="slastAddr" jdbcType="VARCHAR" />
+		<result column="NFIRST_ADDR" property="nfirstAddr" jdbcType="NUMERIC" />
+		<result column="NLAST_ADDR" property="nlastAddr" jdbcType="NUMERIC" />
+		<result column="SFIRST_IP_PREFERRED" property="sfirstIpPreferred" jdbcType="VARCHAR" />
+		<result column="SLAST_IP_PREFERRED" property="slastIpPreferred" jdbcType="VARCHAR" />
+		<result column="SFIRST_ADDR_BINARY" property="sfirstAddrBinary" jdbcType="VARCHAR" />
+		<result column="SLAST_ADDR_BINARY" property="slastAddrBinary" jdbcType="VARCHAR" />
+		<result column="NCNT" property="ncnt" jdbcType="NUMERIC" />
+		<result column="NCLASS_CNT" property="nclassCnt" jdbcType="NUMERIC" />
+		<result column="NUSE_IP_CNT" property="nuseIpCnt" jdbcType="NUMERIC" />
+		<result column="NFREE_IP_CNT" property="nfreeIpCnt" jdbcType="NUMERIC" />
+		<result column="NSUBNETMASK" property="nsubnetmask" jdbcType="INTEGER" />
+		<!-- IpStatMstVo -->
+		<result column="SIP_CREATE_SEQ_CD" property="sipCreateSeqCd" jdbcType="VARCHAR" />
+		<result column="SIP_CREATE_TYPE_CD" property="sipCreateTypeCd" jdbcType="CHAR" />
+		<result column="SIP_CREATE_TYPE_NM" property="sipCreateTypeNm" jdbcType="VARCHAR" />
+		<result column="NCLASS_CNT_TOTAL" property="nclassCntTotal" jdbcType="NUMERIC" />
+		<result column="NCLASS_CNT_ASSIGN_TOTAL" property="nclassCntAssignTotal" jdbcType="NUMERIC" />
+		<result column="NCLASS_CNT_RESERVED_TOTAL" property="nclassCntReservedTotal" jdbcType="NUMERIC" />
+		<!-- OrgVo -->
+		<result column="SSVC_LINE_TYPE_CD" property="ssvcLineTypeCd" jdbcType="CHAR" />
+		<result column="SSVC_LINE_TYPE_NM" property="ssvcLineTypeNm" jdbcType="VARCHAR" />
+		<result column="SSVC_GROUP_CD" property="ssvcGroupCd" jdbcType="CHAR" />
+		<result column="SSVC_GROUP_NM" property="ssvcGroupNm" jdbcType="VARCHAR" />
+		<result column="SSVC_OBJ_CD" property="ssvcObjCd" jdbcType="CHAR" />
+		<result column="SSVC_OBJ_NM" property="ssvcObjNm" jdbcType="VARCHAR" />
+		<!-- 2.조직별 -->
+		<result column="NASSIGN_NCNT" property="nasssignNcnt" jdbcType="NUMERIC" />
+		<result column="NASSIGN_NCNT_24" property="nasssignNcnt24" jdbcType="NUMERIC" />
+		<result column="NASSIGN_NCNT_25" property="nasssignNcnt25" jdbcType="NUMERIC" />
+		<result column="NASSIGN_NCNT_26" property="nasssignNcnt26" jdbcType="NUMERIC" />
+		<result column="NASSIGN_NCNT_27" property="nasssignNcnt27" jdbcType="NUMERIC" />
+		<result column="NASSIGN_NCNT_28" property="nasssignNcnt28" jdbcType="NUMERIC" />
+		<result column="NASSIGN_NCNT_29" property="nasssignNcnt29" jdbcType="NUMERIC" />
+		<result column="NASSIGN_NCNT_SUM" property="nasssignNcntSum" jdbcType="NUMERIC" />
+		<result column="NASSIGN_PERCENT" property="nassignPercent" jdbcType="NUMERIC" />
+		<!-- 3.조직서비스별  -->
+		<result column="NCNT_SUM" property="ncntSum" jdbcType="NUMERIC" />
+		<result column="NCNT_ALLOC_SUM" property="ncntAllocSum" jdbcType="NUMERIC" />
+		<result column="NCNT_NON_ALLOC_SUM" property="ncntNonAllocSum" jdbcType="NUMERIC" />
+		<result column="NCNT_PERCENT" property="ncntPercent" jdbcType="NUMERIC" />
+		<result column="SUM_TYPE_CD" property="sumTypeCd" jdbcType="VARCHAR" />
+		<!-- 4.단일블록별 -->
+		<result column="SASSIGN_TYPE_CD" property="sassignTypeCd" jdbcType="CHAR" />
+		<result column="SASSIGN_TYPE_NM" property="sassignTypeNm" jdbcType="VARCHAR" />
+		<result column="NALLOC_CNT" property="nallocCnt" jdbcType="NUMERIC" />
+		<result column="NUSE_FREE_CNT" property="nuseFreeCnt" jdbcType="NUMERIC" />
+		<result column="NPERCENT" property="npercent" jdbcType="NUMERIC" />
+		<result column="NSUBNET_CNT" property="nsubnetCnt" jdbcType="BIGINT" />
+	</resultMap>
+	
+	<!-- 1. 생성차수별  로직 -->
+	<resultMap id="IpCreateStatVoResult" type="com.kt.ipms.legacy.statmgmt.ipstatmgmt.vo.IpCreateStatVo">
+		<result column="PIP_PREFIX" property="pipPrefix" jdbcType="VARCHAR" />
+		<result column="SIP_VERSION_TYPE_CD" property="sipVersionTypeCd" jdbcType="CHAR" />
+		<result column="SIP_VERSION_TYPE_NM" property="sipVersionTypeNm" jdbcType="VARCHAR" />
+		<result column="SIP_CREATE_SEQ_CD" property="sipCreateSeqCd" jdbcType="VARCHAR" />
+		<result column="SIP_CREATE_TYPE_CD" property="sipCreateTypeCd" jdbcType="CHAR" />
+		<result column="SIP_CREATE_TYPE_NM" property="sipCreateTypeNm" jdbcType="VARCHAR" />
+		<result column="NCNT_TOTAL" property="ncntTotal" jdbcType="NUMERIC" />
+		<result column="NCNT_NOT_ASSIGN" property="ncntNotAssign" jdbcType="NUMERIC" />
+		<result column="NCNT_RERS_ASSIGN" property="ncntRersAssign" jdbcType="NUMERIC" />
+		<result column="NCNT_ASSIGN" property="ncntAssign" jdbcType="NUMERIC" />
+		<result column="NCNT_SERV_ASSIGN" property="ncntServAssign" jdbcType="NUMERIC" />
+		<result column="NCNT_RERS_ALLOC" property="ncntRersAlloc" jdbcType="NUMERIC" />
+		<result column="NCNT_ALLOC" property="ncntAlloc" jdbcType="NUMERIC" />
+	</resultMap>
+	
+	<sql id="Result_Column_List_Ip_Create_Stat">
+		A.SIP_CREATE_SEQ_CD, A.SIP_VERSION_TYPE_CD, A.SIP_CREATE_TYPE_CD, A.PIP_PREFIX, A.SIP_VERSION_TYPE_NM, A.SIP_CREATE_TYPE_NM
+		, A.NCNT_TOTAL, A.NCNT_NOT_ASSIGN, A.NCNT_RERS_ASSIGN, A.NCNT_ASSIGN, A.NCNT_SERV_ASSIGN, A.NCNT_RERS_ALLOC, A.NCNT_ALLOC
+	</sql>
+	
+	<sql id="Base_Column_List_Ip_Create_Stat_Sum">
+		A.SIP_CREATE_SEQ_CD, A.SIP_VERSION_TYPE_CD, A.SIP_CREATE_TYPE_CD, A.PIP_PREFIX, B.SIP_VERSION_TYPE_NM, C.SIP_CREATE_TYPE_NM
+		, A.NCNT NCNT_TOTAL, SUM(A.NCNT_NOT_ASSIGN) NCNT_NOT_ASSIGN, SUM(A.NCNT_RERS_ASSIGN) NCNT_RERS_ASSIGN, SUM(A.NCNT_ASSIGN) NCNT_ASSIGN
+		, SUM(A.NCNT_SERV_ASSIGN) NCNT_SERV_ASSIGN, SUM(A.NCNT_RERS_ALLOC) NCNT_RERS_ALLOC, SUM(A.NCNT_ALLOC) NCNT_ALLOC
+	</sql>
+	
+	<sql id="List_Where_Clause_Ip_Create_Stat">
+		<trim prefix="WHERE" prefixOverrides="AND">
+			1 = 1
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sipCreateSeqCd)">
+				AND A.SIP_CREATE_SEQ_CD = #{sipCreateSeqCd, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sipVersionTypeCd)">
+				AND A.SIP_VERSION_TYPE_CD = #{sipVersionTypeCd, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sipCreateTypeCd)">
+				AND A.SIP_CREATE_TYPE_CD = #{sipCreateTypeCd, jdbcType=CHAR}
+			</if>
+		</trim>
+	</sql>
+	
+	<select id="selectListPageIpCreateStatVo" resultMap="IpCreateStatVoResult" parameterType="com.kt.ipms.legacy.statmgmt.ipstatmgmt.vo.IpCreateStatVo">
+		SELECT <include refid="Result_Column_List_Ip_Create_Stat" /> FROM (
+			SELECT <include refid="Result_Column_List_Ip_Create_Stat" />, ROWNUM RNUM FROM (
+				SELECT <include refid="Base_Column_List_Ip_Create_Stat_Sum" /> FROM (
+					SELECT
+						A.SIP_CREATE_SEQ_CD, A.SIP_VERSION_TYPE_CD, A.SIP_CREATE_TYPE_CD, A.PIP_PREFIX, A.NCNT, B.SASSIGN_LEVEL_CD
+						, CASE WHEN B.SASSIGN_LEVEL_CD = 'IA0001' THEN B.NCNT ELSE 0 END NCNT_NOT_ASSIGN
+						, CASE WHEN B.SASSIGN_LEVEL_CD = 'IA0002' THEN B.NCNT ELSE 0 END NCNT_RERS_ASSIGN
+						, CASE WHEN B.SASSIGN_LEVEL_CD = 'IA0003' THEN B.NCNT ELSE 0 END NCNT_ASSIGN
+						, CASE WHEN B.SASSIGN_LEVEL_CD = 'IA0004' THEN B.NCNT ELSE 0 END NCNT_SERV_ASSIGN
+						, CASE WHEN B.SASSIGN_LEVEL_CD = 'IA0005' THEN B.NCNT ELSE 0 END NCNT_RERS_ALLOC
+						, CASE WHEN B.SASSIGN_LEVEL_CD = 'IA0006' THEN B.NCNT ELSE 0 END NCNT_ALLOC
+					FROM MST.TB_IP_BLOCK_MST A, MST.TB_IP_ASSIGN_MST B
+					<include refid="List_Where_Clause_Ip_Create_Stat" />
+					AND A.NIP_BLOCK_MST_SEQ = B.NIP_BLOCK_MST_SEQ(+)
+				) A, MST.TB_IP_VERSION_TYPE_CD B, MST.TB_IP_CREATE_TYPE_CD C
+				WHERE 1=1
+				AND A.SIP_VERSION_TYPE_CD = B.SIP_VERSION_TYPE_CD
+				AND A.SIP_CREATE_TYPE_CD = C.SIP_CREATE_TYPE_CD
+				GROUP BY A.SIP_CREATE_SEQ_CD, A.SIP_VERSION_TYPE_CD, A.SIP_CREATE_TYPE_CD, A.PIP_PREFIX, A.NCNT, B.SIP_VERSION_TYPE_NM, C.SIP_CREATE_TYPE_NM
+				ORDER BY A.SIP_CREATE_SEQ_CD, B.SIP_VERSION_TYPE_NM, C.SIP_CREATE_TYPE_NM, A.PIP_PREFIX 
+			) A WHERE ROWNUM <![CDATA[<=]]> #{lastIndex}
+		) A WHERE A.RNUM <![CDATA[>=]]> #{firstIndex}
+	</select>
+	
+	<select id="countListPageIpCreateStatVo" resultType="int" parameterType="com.kt.ipms.legacy.statmgmt.ipstatmgmt.vo.IpCreateStatVo">
+		SELECT count(1) totalCount  FROM (
+			SELECT <include refid="Base_Column_List_Ip_Create_Stat_Sum" /> FROM (
+				SELECT
+					A.SIP_CREATE_SEQ_CD, A.SIP_VERSION_TYPE_CD, A.SIP_CREATE_TYPE_CD, A.PIP_PREFIX, A.NCNT, B.SASSIGN_LEVEL_CD
+					, CASE WHEN B.SASSIGN_LEVEL_CD = 'IA0001' THEN B.NCNT ELSE 0 END NCNT_NOT_ASSIGN
+					, CASE WHEN B.SASSIGN_LEVEL_CD = 'IA0002' THEN B.NCNT ELSE 0 END NCNT_RERS_ASSIGN
+					, CASE WHEN B.SASSIGN_LEVEL_CD = 'IA0003' THEN B.NCNT ELSE 0 END NCNT_ASSIGN
+					, CASE WHEN B.SASSIGN_LEVEL_CD = 'IA0004' THEN B.NCNT ELSE 0 END NCNT_SERV_ASSIGN
+					, CASE WHEN B.SASSIGN_LEVEL_CD = 'IA0005' THEN B.NCNT ELSE 0 END NCNT_RERS_ALLOC
+					, CASE WHEN B.SASSIGN_LEVEL_CD = 'IA0006' THEN B.NCNT ELSE 0 END NCNT_ALLOC
+				FROM MST.TB_IP_BLOCK_MST A, MST.TB_IP_ASSIGN_MST B
+				<include refid="List_Where_Clause_Ip_Create_Stat" />
+				AND A.NIP_BLOCK_MST_SEQ = B.NIP_BLOCK_MST_SEQ(+)
+			) A, MST.TB_IP_VERSION_TYPE_CD B, MST.TB_IP_CREATE_TYPE_CD C
+			WHERE 1=1
+			AND A.SIP_VERSION_TYPE_CD = B.SIP_VERSION_TYPE_CD
+			AND A.SIP_CREATE_TYPE_CD = C.SIP_CREATE_TYPE_CD
+			GROUP BY A.SIP_CREATE_SEQ_CD, A.SIP_VERSION_TYPE_CD, A.SIP_CREATE_TYPE_CD, A.PIP_PREFIX, A.NCNT, B.SIP_VERSION_TYPE_NM, C.SIP_CREATE_TYPE_NM
+			ORDER BY A.SIP_CREATE_SEQ_CD, B.SIP_VERSION_TYPE_NM, C.SIP_CREATE_TYPE_NM, A.PIP_PREFIX 
+		) 
+	</select>
+	
+	<!-- 2. 조직별 IP 현황 로직 수정 -->
+	<resultMap id="IpOrgStatVoResult" type="com.kt.ipms.legacy.statmgmt.ipstatmgmt.vo.IpOrgStatVo">
+		<!-- IpVo -->
+		<result column="PIP_PREFIX" property="pipPrefix" jdbcType="VARCHAR" />
+		<result column="SIP_VERSION_TYPE_CD" property="sipVersionTypeCd" jdbcType="CHAR" />
+		<result column="SIP_VERSION_TYPE_NM" property="sipVersionTypeNm" jdbcType="VARCHAR" />
+		<result column="SIP_CREATE_SEQ_CD" property="sipCreateSeqCd" jdbcType="VARCHAR" />
+		<result column="SIP_CREATE_TYPE_CD" property="sipCreateTypeCd" jdbcType="CHAR" />
+		<result column="SIP_CREATE_TYPE_NM" property="sipCreateTypeNm" jdbcType="VARCHAR" />
+		<result column="SSVC_LINE_TYPE_CD" property="ssvcLineTypeCd" jdbcType="CHAR" />
+		<result column="SSVC_LINE_TYPE_NM" property="ssvcLineTypeNm" jdbcType="VARCHAR" />
+		<result column="SSVC_GROUP_CD" property="ssvcGroupCd" jdbcType="CHAR" />
+		<result column="SSVC_GROUP_NM" property="ssvcGroupNm" jdbcType="VARCHAR" />
+		<result column="SSVC_OBJ_CD" property="ssvcObjCd" jdbcType="CHAR" />
+		<result column="SSVC_OBJ_NM" property="ssvcObjNm" jdbcType="VARCHAR" />
+		<!-- 2.조직별 -->
+		<result column="NCNT_TOTAL" property="ncntTotal" jdbcType="NUMERIC" />
+		<result column="NALLOC_CNT" property="nallocCnt" jdbcType="NUMERIC" />
+		<result column="NASSIGN_NCNT_24" property="nasssignNcnt24" jdbcType="NUMERIC" />
+		<result column="NASSIGN_NCNT_25" property="nasssignNcnt25" jdbcType="NUMERIC" />
+		<result column="NASSIGN_NCNT_26" property="nasssignNcnt26" jdbcType="NUMERIC" />
+		<result column="NASSIGN_NCNT_27" property="nasssignNcnt27" jdbcType="NUMERIC" />
+		<result column="NASSIGN_NCNT_28" property="nasssignNcnt28" jdbcType="NUMERIC" />
+		<result column="NASSIGN_NCNT_29" property="nasssignNcnt29" jdbcType="NUMERIC" />
+		<result column="NASSIGN_NCNT_SUM" property="nasssignNcntSum" jdbcType="NUMERIC" />
+		<result column="NASSIGN_PERCENT" property="nassignPercent" jdbcType="NUMERIC" />
+	</resultMap>
+	
+	<sql id="Base_Column_List_OrgPer">
+		A.SSVC_LINE_TYPE_CD, A.SSVC_LINE_TYPE_NM, A.SSVC_GROUP_CD, A.SSVC_GROUP_NM, A.SSVC_OBJ_CD, A.SSVC_OBJ_NM
+		, A.SIP_CREATE_TYPE_CD, A.SIP_CREATE_TYPE_NM, A.NCNT_TOTAL, A.NALLOC_CNT, A.NASSIGN_NCNT_24, A.NASSIGN_NCNT_25
+		, A.NASSIGN_NCNT_26, A.NASSIGN_NCNT_27, A.NASSIGN_NCNT_28, A.NASSIGN_NCNT_29, A.NASSIGN_NCNT_SUM, A.NASSIGN_PERCENT
+	</sql>
+
+	<sql id="Base_Org_Column_List_OrgPer">
+		MM.SSVC_LINE_TYPE_CD, SSVC_LINE_TYPE_NM, SSVC_GROUP_CD,	LB.SLVL_NM AS SSVC_GROUP_NM, SSVC_OBJ_CD, LO.SLVL_NM AS SSVC_OBJ_NM
+		, MM.SIP_CREATE_TYPE_CD, CT.SIP_CREATE_TYPE_NM,	SUM(NASSIGN_NCNT) AS NCNT_TOTAL, SUM(NALLOC_CNT) AS NALLOC_CNT
+		, SUM(NASSIGN_NCNT_24) AS NASSIGN_NCNT_24, SUM(NASSIGN_NCNT_25) AS NASSIGN_NCNT_25, SUM(NASSIGN_NCNT_26) AS NASSIGN_NCNT_26
+		, SUM(NASSIGN_NCNT_27) AS NASSIGN_NCNT_27, SUM(NASSIGN_NCNT_28) AS NASSIGN_NCNT_28, SUM(NASSIGN_NCNT_29) AS NASSIGN_NCNT_29
+		, SUM(NASSIGN_NCNT_24) + SUM(NASSIGN_NCNT_25) + SUM(NASSIGN_NCNT_26) + SUM(NASSIGN_NCNT_27) + SUM(NASSIGN_NCNT_28) + SUM(NASSIGN_NCNT_29) AS NASSIGN_NCNT_SUM
+		, ROUND(MST.UF_CONVERT_PERCENT((SUM(NALLOC_CNT) / SUM(NASSIGN_NCNT))),2) AS NASSIGN_PERCENT
+	</sql>
+	
+	<sql id="Base_Org_Sub_Column_List_OrgPer">
+		M.SSVC_LINE_TYPE_CD , SSVC_GROUP_CD, SSVC_OBJ_CD, SIP_CREATE_TYPE_CD
+		, CASE 
+           WHEN SIP_VERSION_TYPE_CD = 'CV0001' THEN NCNT 
+         	WHEN SIP_VERSION_TYPE_CD = 'CV0002' THEN NCNT
+         	ELSE 0 
+         	END AS NASSIGN_NCNT
+         , CASE 
+         	WHEN SASSIGN_LEVEL_CD IN ('IA0005','IA0006') AND SIP_VERSION_TYPE_CD = 'CV0001' THEN NCNT 
+         	WHEN SASSIGN_LEVEL_CD IN ('IA0005','IA0006') AND SIP_VERSION_TYPE_CD = 'CV0002' THEN NCNT 
+         	ELSE 0 
+         	END AS NALLOC_CNT 
+         , CASE 
+         	WHEN SASSIGN_LEVEL_CD IN ('IA0001','IA0002','IA0003','IA0004') AND SIP_VERSION_TYPE_CD = 'CV0001' AND NBITMASK <![CDATA[<]]> 25 THEN NCNT 
+         	WHEN SASSIGN_LEVEL_CD IN ('IA0001','IA0002','IA0003','IA0004') AND SIP_VERSION_TYPE_CD = 'CV0002' AND NBITMASK <![CDATA[<]]> 52 THEN NCNT 
+         	ELSE 0 
+         	END AS NASSIGN_NCNT_24
+         , CASE 
+           WHEN SASSIGN_LEVEL_CD IN ('IA0001','IA0002','IA0003','IA0004') AND SIP_VERSION_TYPE_CD = 'CV0001' AND NBITMASK = 25 THEN NCNT 
+           WHEN SASSIGN_LEVEL_CD IN ('IA0001','IA0002','IA0003','IA0004') AND SIP_VERSION_TYPE_CD = 'CV0002' AND NBITMASK <![CDATA[>=]]> 52 AND NBITMASK <![CDATA[<]]> 56 THEN NCNT 
+           ELSE 0 
+           END AS NASSIGN_NCNT_25
+         , CASE 
+         	WHEN SASSIGN_LEVEL_CD IN ('IA0001','IA0002','IA0003','IA0004') AND SIP_VERSION_TYPE_CD = 'CV0001' AND NBITMASK = 26 THEN NCNT 
+         	WHEN SASSIGN_LEVEL_CD IN ('IA0001','IA0002','IA0003','IA0004') AND SIP_VERSION_TYPE_CD = 'CV0002' AND NBITMASK <![CDATA[>=]]> 56 AND NBITMASK <![CDATA[<]]> 60 THEN NCNT 
+         	ELSE 0 
+         	END AS NASSIGN_NCNT_26
+         , CASE 
+         	WHEN SASSIGN_LEVEL_CD IN ('IA0001','IA0002','IA0003','IA0004') AND SIP_VERSION_TYPE_CD = 'CV0001' AND NBITMASK = 27 THEN NCNT 
+         	WHEN SASSIGN_LEVEL_CD IN ('IA0001','IA0002','IA0003','IA0004') AND SIP_VERSION_TYPE_CD = 'CV0002' AND NBITMASK <![CDATA[>=]]> 60 AND NBITMASK <![CDATA[<]]> 64 THEN NCNT 
+         	ELSE 0 
+         	END AS NASSIGN_NCNT_27
+         , CASE 
+         	WHEN SASSIGN_LEVEL_CD IN ('IA0001','IA0002','IA0003','IA0004') AND SIP_VERSION_TYPE_CD = 'CV0001' AND NBITMASK = 28 THEN NCNT 
+         	WHEN SASSIGN_LEVEL_CD IN ('IA0001','IA0002','IA0003','IA0004') AND SIP_VERSION_TYPE_CD = 'CV0002' AND NBITMASK = 64 THEN NCNT 
+         	ELSE 0 
+         	END AS NASSIGN_NCNT_28
+         , CASE 
+         	WHEN SASSIGN_LEVEL_CD IN ('IA0001','IA0002','IA0003','IA0004') AND SIP_VERSION_TYPE_CD = 'CV0001' AND NBITMASK <![CDATA[>]]> 28 THEN NCNT 
+         	WHEN SASSIGN_LEVEL_CD IN ('IA0001','IA0002','IA0003','IA0004') AND SIP_VERSION_TYPE_CD = 'CV0002' AND NBITMASK <![CDATA[>]]> 64 THEN NCNT 
+         	ELSE 0 
+         	END AS NASSIGN_NCNT_29
+	</sql>
+	
+	<sql id="GroupBy_Column_List_OrgPer">
+		MM.SSVC_LINE_TYPE_CD, SSVC_LINE_TYPE_NM, SSVC_GROUP_CD,	LB.SLVL_NM,	SSVC_OBJ_CD, LO.SLVL_NM, MM.SIP_CREATE_TYPE_CD,	CT.SIP_CREATE_TYPE_NM
+	</sql>
+	
+	<sql id="List_Where_Clause_OrgPer">
+		AND M.SSVC_LINE_TYPE_CD != 'CL0007' 
+		<if test="lvlMstSeqListVo != null and lvlMstSeqListVo.tbLvlMstVos != null">
+			AND M.NLVL_MST_SEQ IN 
+			<foreach collection="lvlMstSeqListVo.tbLvlMstVos" item="item" separator="," open="(" close=")">
+				#{item.nlvlSeq}
+			</foreach>
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sipVersionTypeCd)">
+			AND M.SIP_VERSION_TYPE_CD = #{sipVersionTypeCd, jdbcType=CHAR}
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sipCreateTypeCd)">
+			AND M.SIP_CREATE_TYPE_CD = #{sipCreateTypeCd, jdbcType=CHAR}
+		</if>
+	</sql>
+
+	<select id="selectListPageIpOrgStatVo" resultMap="IpOrgStatVoResult" parameterType="com.kt.ipms.legacy.statmgmt.ipstatmgmt.vo.IpOrgStatVo">
+		SELECT <include refid="Base_Column_List_OrgPer"/>
+		FROM ( 
+		      SELECT <include refid="Base_Column_List_OrgPer"/>
+		      , ROWNUM AS RNUM
+		      FROM(SELECT <include refid="Base_Org_Column_List_OrgPer"/>
+		      	    FROM (SELECT <include refid="Base_Org_Sub_Column_List_OrgPer"/>
+		      	          FROM MST.TB_IP_ASSIGN_MST M 
+		      	          LEFT JOIN MST.TB_LVL_MST L ON M.SSVC_LINE_TYPE_CD = L.SSVC_LINE_TYPE_CD AND M.NLVL_MST_SEQ = L.NLVL_MST_SEQ 
+		      	          WHERE 1=1 
+		      	          <include refid="List_Where_Clause_OrgPer"/>
+		      	          ) MM 
+					LEFT JOIN MST.TB_SVC_LINE_TYPE_CD LH ON MM.SSVC_LINE_TYPE_CD = LH.SSVC_LINE_TYPE_CD 
+					LEFT JOIN MST.TB_LVL_CD LB ON MM.SSVC_GROUP_CD = LB.SLVL_CD 
+					LEFT JOIN MST.TB_LVL_CD LO ON MM.SSVC_OBJ_CD = LO.SLVL_CD 
+					LEFT JOIN MST.TB_IP_CREATE_TYPE_CD CT ON MM.SIP_CREATE_TYPE_CD = CT.SIP_CREATE_TYPE_CD
+		    GROUP BY 
+					<include refid="GroupBy_Column_List_OrgPer"/>
+			ORDER BY 
+				MM.SSVC_LINE_TYPE_CD,
+				SSVC_GROUP_CD,
+				SSVC_OBJ_CD,
+				MM.SIP_CREATE_TYPE_CD
+			) A WHERE ROWNUM <![CDATA[<=]]> #{lastIndex}
+		) A WHERE A.RNUM <![CDATA[>=]]> #{firstIndex} 
+	</select>
+	
+	<select id="countListPageIpOrgStatVo" resultType="int" parameterType="com.kt.ipms.legacy.statmgmt.ipstatmgmt.vo.IpOrgStatVo">
+		SELECT COUNT(1) totalCount 
+		  FROM (SELECT <include refid="Base_Org_Column_List_OrgPer"/>
+		      	    FROM (SELECT <include refid="Base_Org_Sub_Column_List_OrgPer"/> 
+		      	          FROM MST.TB_IP_ASSIGN_MST M 
+		      	          LEFT JOIN MST.TB_LVL_MST L ON M.SSVC_LINE_TYPE_CD = L.SSVC_LINE_TYPE_CD AND M.NLVL_MST_SEQ = L.NLVL_MST_SEQ 
+		      	          WHERE 1=1 
+		      	          <include refid="List_Where_Clause_OrgPer"/>
+		      	          ) MM 
+					LEFT JOIN MST.TB_SVC_LINE_TYPE_CD LH ON MM.SSVC_LINE_TYPE_CD = LH.SSVC_LINE_TYPE_CD 
+					LEFT JOIN MST.TB_LVL_CD LB ON MM.SSVC_GROUP_CD = LB.SLVL_CD 
+					LEFT JOIN MST.TB_LVL_CD LO ON MM.SSVC_OBJ_CD = LO.SLVL_CD 
+					LEFT JOIN MST.TB_IP_CREATE_TYPE_CD CT ON MM.SIP_CREATE_TYPE_CD = CT.SIP_CREATE_TYPE_CD
+		    GROUP BY 
+					<include refid="GroupBy_Column_List_OrgPer"/>
+			) A
+	</select>
+	
+	<!-- 3. 조직서비스별 로직-->
+	<resultMap id="IpOrgServiceStatVoResult" type="com.kt.ipms.legacy.statmgmt.ipstatmgmt.vo.IpOrgServiceStatVo">
+		<result column="SIP_VERSION_TYPE_CD" property="sipVersionTypeCd" jdbcType="CHAR" />
+		<result column="SIP_VERSION_TYPE_NM" property="sipVersionTypeNm" jdbcType="VARCHAR" />
+		<result column="SIP_CREATE_TYPE_CD" property="sipCreateTypeCd" jdbcType="CHAR" />
+		<result column="SIP_CREATE_TYPE_NM" property="sipCreateTypeNm" jdbcType="VARCHAR" />
+		<result column="SSVC_LINE_TYPE_CD" property="ssvcLineTypeCd" jdbcType="CHAR" />
+		<result column="SSVC_LINE_TYPE_NM" property="ssvcLineTypeNm" jdbcType="VARCHAR" />
+		<result column="SSVC_GROUP_CD" property="ssvcGroupCd" jdbcType="CHAR" />
+		<result column="SSVC_GROUP_NM" property="ssvcGroupNm" jdbcType="VARCHAR" />
+		<result column="SSVC_OBJ_CD" property="ssvcObjCd" jdbcType="CHAR" />
+		<result column="SSVC_OBJ_NM" property="ssvcObjNm" jdbcType="VARCHAR" />
+		<result column="SASSIGN_TYPE_CD" property="sassignTypeCd" jdbcType="CHAR" />
+		<result column="SASSIGN_TYPE_NM" property="sassignTypeNm" jdbcType="VARCHAR" />
+		<result column="SUM_TYPE_CD" property="sumTypeCd" jdbcType="VARCHAR" />
+		<result column="NCNT_TOTAL" property="ncntTotal" jdbcType="NUMERIC" />
+		<result column="NCNT_NOT_ASSIGN" property="ncntNotAssign" jdbcType="NUMERIC" />
+		<result column="NCNT_RERS_ASSIGN" property="ncntRersAssign" jdbcType="NUMERIC" />
+		<result column="NCNT_ASSIGN" property="ncntAssign" jdbcType="NUMERIC" />
+		<result column="NCNT_SERV_ASSIGN" property="ncntServAssign" jdbcType="NUMERIC" />
+		<result column="NCNT_RERS_ALLOC" property="ncntRersAlloc" jdbcType="NUMERIC" />
+		<result column="NCNT_ALLOC" property="ncntAlloc" jdbcType="NUMERIC" />
+		<result column="NCNT_PERCENT" property="ncntPercent" jdbcType="NUMERIC" />
+	</resultMap>
+	
+	
+	<sql id="Result_Column_List_Ip_Org_Service_Stat">
+		A.SSVC_LINE_TYPE_CD, A.SSVC_LINE_TYPE_NM, A.SSVC_GROUP_CD, A.SSVC_GROUP_NM, A.SSVC_OBJ_CD, A.SSVC_OBJ_NM 
+		, A.SIP_VERSION_TYPE_CD, A.SIP_VERSION_TYPE_NM, A.SIP_CREATE_TYPE_CD, A.SIP_CREATE_TYPE_NM, A.SASSIGN_TYPE_CD, A.SASSIGN_TYPE_NM
+		, A.NCNT_TOTAL, A.NCNT_NOT_ASSIGN, A.NCNT_RERS_ASSIGN, A.NCNT_ASSIGN, A.NCNT_SERV_ASSIGN, A.NCNT_RERS_ALLOC, A.NCNT_ALLOC, A.NCNT_PERCENT
+		, A.SUM_TYPE_CD
+	</sql>
+	
+	<sql id="Base_Column_List_Ip_Org_Service_Stat">
+		FM.SSVC_LINE_TYPE_CD
+		, DECODE(SSVC_LINE_TYPE_NM, NULL, '총계', SSVC_LINE_TYPE_NM) AS SSVC_LINE_TYPE_NM
+		, FM.SSVC_GROUP_CD
+		, CASE WHEN SSVC_LINE_TYPE_NM IS NULL AND SASSIGN_TYPE_NM IS NULL THEN '' WHEN FM.SSVC_GROUP_CD = 'BL9999' THEN '소계' ELSE LB.SLVL_NM END AS SSVC_GROUP_NM
+		, FM.SSVC_OBJ_CD, LO.SLVL_NM AS SSVC_OBJ_NM, FM.SIP_VERSION_TYPE_CD, SIP_VERSION_TYPE_NM, FM.SIP_CREATE_TYPE_CD , SIP_CREATE_TYPE_NM, FM.SASSIGN_TYPE_CD 
+		, CASE WHEN SSVC_LINE_TYPE_NM IS NULL AND SASSIGN_TYPE_NM IS NULL THEN '' WHEN FM.SSVC_GROUP_CD = 'BL9999' THEN '' WHEN SASSIGN_TYPE_NM IS NOT NULL AND FM.SSVC_GROUP_CD != 'BL9999' THEN SASSIGN_TYPE_NM ELSE '소계' END AS SASSIGN_TYPE_NM
+		, NCNT_TOTAL, NCNT_NOT_ASSIGN, NCNT_RERS_ASSIGN, NCNT_ASSIGN, NCNT_SERV_ASSIGN, NCNT_RERS_ALLOC, NCNT_ALLOC, NCNT_PERCENT, SUM_TYPE_CD
+	</sql>
+	
+	<sql id="Sum_Column_List_Ip_Org_Service_Stat">
+		, SUM(NCNT) NCNT_TOTAL
+		, SUM(CASE SASSIGN_LEVEL_CD WHEN 'IA0001' THEN NCNT ELSE 0 END) NCNT_NOT_ASSIGN
+		, SUM(CASE SASSIGN_LEVEL_CD WHEN 'IA0002' THEN NCNT ELSE 0 END) NCNT_RERS_ASSIGN
+		, SUM(CASE SASSIGN_LEVEL_CD WHEN 'IA0003' THEN NCNT ELSE 0 END) NCNT_ASSIGN
+		, SUM(CASE SASSIGN_LEVEL_CD WHEN 'IA0004' THEN NCNT ELSE 0 END) NCNT_SERV_ASSIGN
+		, SUM(CASE SASSIGN_LEVEL_CD WHEN 'IA0005' THEN NCNT ELSE 0 END) NCNT_RERS_ALLOC
+		, SUM(CASE SASSIGN_LEVEL_CD WHEN 'IA0006' THEN NCNT ELSE 0 END) NCNT_ALLOC
+		, ROUND(MST.UF_CONVERT_PERCENT(SUM(CASE SASSIGN_LEVEL_CD WHEN 'IA0005' THEN NCLASS_CNT WHEN 'IA0006' THEN NCNT ELSE 0 END ) / SUM(NCNT)),1) NCNT_PERCENT
+	</sql>
+	
+	<sql id="List_Where_Clause_Ip_Org_Service_Stat">
+		WHERE 1=1
+		AND M.SSVC_LINE_TYPE_CD != 'CL0007' 
+		<if test="lvlMstSeqListVo != null and lvlMstSeqListVo.tbLvlMstVos != null">
+			AND M.NLVL_MST_SEQ IN 
+			<foreach collection="lvlMstSeqListVo.tbLvlMstVos" item="item" separator="," open="(" close=")">
+				#{item.nlvlSeq}
+			</foreach>
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sipVersionTypeCd)">
+			AND M.SIP_VERSION_TYPE_CD = #{sipVersionTypeCd, jdbcType=CHAR}
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sassignTypeCd)">
+			AND M.SASSIGN_TYPE_CD = #{sassignTypeCd, jdbcType=CHAR}
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sipCreateTypeCd)">
+			AND M.SIP_CREATE_TYPE_CD = #{sipCreateTypeCd, jdbcType=CHAR}
+		</if>
+	</sql>
+	
+	<select id="selectListPageIpOrgServiceStatVo" resultMap="IpOrgServiceStatVoResult" parameterType="com.kt.ipms.legacy.statmgmt.ipstatmgmt.vo.IpOrgServiceStatVo">
+		SELECT <include refid="Result_Column_List_Ip_Org_Service_Stat"/> FROM (
+			SELECT <include refid="Base_Column_List_Ip_Org_Service_Stat"/> FROM (
+				SELECT 
+					LV.SSVC_LINE_TYPE_CD, LV.SSVC_GROUP_CD , LV.SSVC_OBJ_CD , SIP_VERSION_TYPE_CD , SIP_CREATE_TYPE_CD , SASSIGN_TYPE_CD, 'TOT_LIST_ORGSVC' SUM_TYPE_CD
+					<include refid="Sum_Column_List_Ip_Org_Service_Stat"/>
+				FROM MST.TB_IP_ASSIGN_MST M
+				LEFT JOIN MST.TB_LVL_MST LV ON M.NLVL_MST_SEQ = LV.NLVL_MST_SEQ
+				<include refid="List_Where_Clause_Ip_Org_Service_Stat"/>
+				GROUP BY LV.SSVC_GROUP_CD, LV.SSVC_OBJ_CD, LV.SSVC_LINE_TYPE_CD, SIP_VERSION_TYPE_CD, SIP_CREATE_TYPE_CD,SASSIGN_TYPE_CD
+				
+				UNION
+				SELECT 
+					LV.SSVC_LINE_TYPE_CD, LV.SSVC_GROUP_CD , LV.SSVC_OBJ_CD , SIP_VERSION_TYPE_CD , SIP_CREATE_TYPE_CD , 'SA9999' SASSIGN_TYPE_CD, 'TOT_LIST_ORG' SUM_TYPE_CD
+					<include refid="Sum_Column_List_Ip_Org_Service_Stat"/>
+				FROM MST.TB_IP_ASSIGN_MST M
+				LEFT JOIN MST.TB_LVL_MST LV ON M.NLVL_MST_SEQ = LV.NLVL_MST_SEQ
+				<include refid="List_Where_Clause_Ip_Org_Service_Stat"/>
+				GROUP BY LV.SSVC_GROUP_CD, LV.SSVC_OBJ_CD, LV.SSVC_LINE_TYPE_CD, SIP_VERSION_TYPE_CD, SIP_CREATE_TYPE_CD
+				
+				UNION
+				SELECT 
+					LV.SSVC_LINE_TYPE_CD, 'BL9999' SSVC_GROUP_CD, '' SSVC_OBJ_CD , '' SIP_VERSION_TYPE_CD , '' SIP_CREATE_TYPE_CD , '' SASSIGN_TYPE_CD , 'TOT_LIST_LINE' SUM_TYPE_CD
+					<include refid="Sum_Column_List_Ip_Org_Service_Stat"/>
+				FROM MST.TB_IP_ASSIGN_MST M
+				LEFT JOIN MST.TB_LVL_MST LV ON M.NLVL_MST_SEQ = LV.NLVL_MST_SEQ
+				<include refid="List_Where_Clause_Ip_Org_Service_Stat"/>
+				GROUP BY LV.SSVC_LINE_TYPE_CD
+				
+				UNION
+				SELECT 
+					'CL9999' SSVC_LINE_TYPE_CD , '' AS SSVC_GROUP_CD, '' SSVC_OBJ_CD, '' SIP_VERSION_TYPE_CD, '' SIP_CREATE_TYPE_CD, '' SASSIGN_TYPE_CD, 'TOT_LIST_ALL' SUM_TYPE_CD
+				<include refid="Sum_Column_List_Ip_Org_Service_Stat"/>
+				FROM MST.TB_IP_ASSIGN_MST M
+				LEFT JOIN MST.TB_LVL_MST LV ON M.NLVL_MST_SEQ = LV.NLVL_MST_SEQ
+				<include refid="List_Where_Clause_Ip_Org_Service_Stat"/>	
+			) FM 
+			LEFT JOIN MST.TB_LVL_CD LB ON FM.SSVC_GROUP_CD = LB.SLVL_CD 
+			LEFT JOIN MST.TB_LVL_CD LO ON FM.SSVC_OBJ_CD = LO.SLVL_CD 
+			LEFT JOIN MST.TB_SVC_LINE_TYPE_CD SL ON FM.SSVC_LINE_TYPE_CD = SL.SSVC_LINE_TYPE_CD 
+			LEFT JOIN MST.TB_IP_VERSION_TYPE_CD IV ON FM.SIP_VERSION_TYPE_CD = IV.SIP_VERSION_TYPE_CD 
+			LEFT JOIN MST.TB_IP_CREATE_TYPE_CD IT ON FM.SIP_CREATE_TYPE_CD = IT.SIP_CREATE_TYPE_CD 
+			LEFT JOIN MST.TB_ASSIGN_TYPE_CD AT ON FM.SASSIGN_TYPE_CD = AT.SASSIGN_TYPE_CD 
+			ORDER BY FM.SSVC_LINE_TYPE_CD, LB.SLVL_NM, LO.SLVL_NM, FM.SIP_VERSION_TYPE_CD, FM.SIP_CREATE_TYPE_CD, SASSIGN_TYPE_CD
+		) A
+	</select>
+	
+	<select id="countListPageIpOrgServiceStatVo" resultType="int" parameterType="com.kt.ipms.legacy.statmgmt.ipstatmgmt.vo.IpOrgServiceStatVo">
+		SELECT count(1) totalCount FROM (
+			SELECT <include refid="Base_Column_List_Ip_Org_Service_Stat"/> FROM (
+				SELECT 
+					LV.SSVC_LINE_TYPE_CD, LV.SSVC_GROUP_CD , LV.SSVC_OBJ_CD , SIP_VERSION_TYPE_CD , SIP_CREATE_TYPE_CD , SASSIGN_TYPE_CD, 'TOT_LIST_ORGSVC' SUM_TYPE_CD
+					<include refid="Sum_Column_List_Ip_Org_Service_Stat"/>
+				FROM MST.TB_IP_ASSIGN_MST M
+				LEFT JOIN MST.TB_LVL_MST LV ON M.NLVL_MST_SEQ = LV.NLVL_MST_SEQ
+				<include refid="List_Where_Clause_Ip_Org_Service_Stat"/>
+				GROUP BY LV.SSVC_GROUP_CD, LV.SSVC_OBJ_CD, LV.SSVC_LINE_TYPE_CD, SIP_VERSION_TYPE_CD, SIP_CREATE_TYPE_CD, SASSIGN_TYPE_CD
+				
+				UNION
+				SELECT 
+					LV.SSVC_LINE_TYPE_CD, LV.SSVC_GROUP_CD , LV.SSVC_OBJ_CD , SIP_VERSION_TYPE_CD , SIP_CREATE_TYPE_CD , 'SA9999' SASSIGN_TYPE_CD, 'TOT_LIST_ORG' SUM_TYPE_CD
+					<include refid="Sum_Column_List_Ip_Org_Service_Stat"/>
+				FROM MST.TB_IP_ASSIGN_MST M
+				LEFT JOIN MST.TB_LVL_MST LV ON M.NLVL_MST_SEQ = LV.NLVL_MST_SEQ
+				<include refid="List_Where_Clause_Ip_Org_Service_Stat"/>
+				GROUP BY LV.SSVC_GROUP_CD, LV.SSVC_OBJ_CD, LV.SSVC_LINE_TYPE_CD, SIP_VERSION_TYPE_CD, SIP_CREATE_TYPE_CD
+				
+				UNION
+				SELECT 
+					LV.SSVC_LINE_TYPE_CD, 'BL9999' SSVC_GROUP_CD, '' SSVC_OBJ_CD , '' SIP_VERSION_TYPE_CD , '' SIP_CREATE_TYPE_CD , '' SASSIGN_TYPE_CD , 'TOT_LIST_LINE' SUM_TYPE_CD
+					<include refid="Sum_Column_List_Ip_Org_Service_Stat"/>
+				FROM MST.TB_IP_ASSIGN_MST M
+				LEFT JOIN MST.TB_LVL_MST LV ON M.NLVL_MST_SEQ = LV.NLVL_MST_SEQ
+				<include refid="List_Where_Clause_Ip_Org_Service_Stat"/>
+				GROUP BY LV.SSVC_LINE_TYPE_CD
+				
+				UNION
+				SELECT 
+					'CL9999' SSVC_LINE_TYPE_CD , '' AS SSVC_GROUP_CD, '' SSVC_OBJ_CD, '' SIP_VERSION_TYPE_CD, '' SIP_CREATE_TYPE_CD, '' SASSIGN_TYPE_CD, 'TOT_LIST_ALL' SUM_TYPE_CD
+				<include refid="Sum_Column_List_Ip_Org_Service_Stat"/>
+				FROM MST.TB_IP_ASSIGN_MST M
+				LEFT JOIN MST.TB_LVL_MST LV ON M.NLVL_MST_SEQ = LV.NLVL_MST_SEQ
+				<include refid="List_Where_Clause_Ip_Org_Service_Stat"/>	
+			) FM 
+			LEFT JOIN MST.TB_LVL_CD LB ON FM.SSVC_GROUP_CD = LB.SLVL_CD 
+			LEFT JOIN MST.TB_LVL_CD LO ON FM.SSVC_OBJ_CD = LO.SLVL_CD 
+			LEFT JOIN MST.TB_SVC_LINE_TYPE_CD SL ON FM.SSVC_LINE_TYPE_CD = SL.SSVC_LINE_TYPE_CD 
+			LEFT JOIN MST.TB_IP_VERSION_TYPE_CD IV ON FM.SIP_VERSION_TYPE_CD = IV.SIP_VERSION_TYPE_CD 
+			LEFT JOIN MST.TB_IP_CREATE_TYPE_CD IT ON FM.SIP_CREATE_TYPE_CD = IT.SIP_CREATE_TYPE_CD 
+			LEFT JOIN MST.TB_ASSIGN_TYPE_CD AT ON FM.SASSIGN_TYPE_CD = AT.SASSIGN_TYPE_CD 
+			ORDER BY FM.SSVC_LINE_TYPE_CD, LB.SLVL_NM, LO.SLVL_NM, FM.SIP_VERSION_TYPE_CD, FM.SIP_CREATE_TYPE_CD, SASSIGN_TYPE_CD
+		) A
+	</select>
+
+	<!-- 4. 단위블록별 수정--> 
+	<resultMap id="IpSingleBlockStatVoResult" type="com.kt.ipms.legacy.statmgmt.ipstatmgmt.vo.IpSingleBlockStatVo">
+		<result column="SSVC_LINE_TYPE_CD" property="ssvcLineTypeCd" jdbcType="CHAR" />
+		<result column="SSVC_LINE_TYPE_NM" property="ssvcLineTypeNm" jdbcType="VARCHAR" />
+		<result column="SSVC_GROUP_CD" property="ssvcGroupCd" jdbcType="CHAR" />
+		<result column="SSVC_GROUP_NM" property="ssvcGroupNm" jdbcType="VARCHAR" />
+		<result column="SSVC_OBJ_CD" property="ssvcObjCd" jdbcType="CHAR" />
+		<result column="SSVC_OBJ_NM" property="ssvcObjNm" jdbcType="VARCHAR" />
+		<result column="SIP_CREATE_TYPE_CD" property="sipCreateTypeCd" jdbcType="CHAR" />
+		<result column="SIP_CREATE_TYPE_NM" property="sipCreateTypeNm" jdbcType="VARCHAR" />
+		<result column="SIP_VERSION_TYPE_CD" property="sipVersionTypeCd" jdbcType="CHAR" />
+		<result column="SIP_VERSION_TYPE_NM" property="sipVersionTypeNm" jdbcType="VARCHAR" />
+		<result column="SASSIGN_TYPE_NM" property="sassignTypeNm" jdbcType="VARCHAR" />
+		<result column="PIP_PREFIX" property="pipPrefix" jdbcType="VARCHAR" />
+		<result column="NALLOC_CNT" property="nallocCnt" jdbcType="NUMERIC" />
+		<result column="NUSE_FREE_CNT" property="nuseFreeCnt" jdbcType="NUMERIC" />
+		<result column="NPERCENT" property="npercent" jdbcType="NUMERIC" />
+		<result column="NSUBNET_CNT" property="nsubnetCnt" jdbcType="BIGINT" />
+	</resultMap>
+	
+	<sql id="Base_Column_List_SingleBlock">
+		A.SSVC_LINE_TYPE_CD, A.SSVC_LINE_TYPE_NM, A.SSVC_GROUP_CD, A.SSVC_GROUP_NM , A.SSVC_OBJ_CD, A.SSVC_OBJ_NM
+		, A.SIP_CREATE_TYPE_CD, A.SIP_CREATE_TYPE_NM, A.SIP_VERSION_TYPE_CD, A.SIP_VERSION_TYPE_NM, A.SASSIGN_TYPE_NM
+		, A.PIP_PREFIX, A.NALLOC_CNT, A.NUSE_FREE_CNT, A.NPERCENT, A.NSUBNET_CNT
+	</sql>
+	
+	<sql id="Base_Org_Column_List_SingleBlock">
+		MM.SSVC_LINE_TYPE_CD, ILL.SSVC_LINE_TYPE_NM, IL.SSVC_GROUP_CD, IB.SLVL_NM AS SSVC_GROUP_NM, IL.SSVC_OBJ_CD, IO.SLVL_NM AS SSVC_OBJ_NM, MM.SIP_CREATE_TYPE_CD
+		, SIP_CREATE_TYPE_NM, MM.SIP_VERSION_TYPE_CD, SIP_VERSION_TYPE_NM, PIP_PREFIX
+	</sql>
+	
+	<sql id="Base_Org_Sub_Column_List_SingleBlock">
+		SSVC_LINE_TYPE_CD, NLVL_MST_SEQ, SIP_CREATE_TYPE_CD, SIP_VERSION_TYPE_CD, SASSIGN_TYPE_CD
+		, CASE 
+			WHEN SIP_VERSION_TYPE_CD = 'CV0001' AND NBITMASK <![CDATA[<=]]> 24 THEN PIP_PREFIX
+			WHEN SIP_VERSION_TYPE_CD = 'CV0002' AND NBITMASK <![CDATA[<=]]> 64 THEN PIP_PREFIX
+			WHEN SIP_VERSION_TYPE_CD = 'CV0001' AND NBITMASK <![CDATA[>]]> 24 THEN CIDR(INET(SIP_BLOCK || '/24'))
+			WHEN SIP_VERSION_TYPE_CD = 'CV0002' AND NBITMASK <![CDATA[>]]> 64 THEN CIDR(INET(SIP_BLOCK || '/64'))
+			ELSE '0.0.0.0/0'
+		END AS PIP_PREFIX
+		, CASE 
+			WHEN SIP_VERSION_TYPE_CD = 'CV0001' AND SASSIGN_LEVEL_CD IN ('IA0005', 'IA0006') THEN NCNT
+			WHEN SIP_VERSION_TYPE_CD = 'CV0002' AND SASSIGN_LEVEL_CD IN ('IA0005', 'IA0006') THEN NCLASS_CNT
+			ELSE 0 
+			END AS NALLOC_CNT	
+		, CASE 
+			WHEN SIP_VERSION_TYPE_CD = 'CV0001' AND SASSIGN_LEVEL_CD IN ('IA0003', 'IA0004') THEN NCNT
+			WHEN SIP_VERSION_TYPE_CD = 'CV0002' AND SASSIGN_LEVEL_CD IN ('IA0003', 'IA0004') THEN NCLASS_CNT
+			ELSE 0 
+			END AS NUSE_FREE_CNT
+		, CASE WHEN SIP_VERSION_TYPE_CD = 'CV0001' THEN NCNT ELSE NCLASS_CNT END AS NIP_CNT
+		, NIP_ASSIGN_MST_SEQ
+	</sql>
+	
+	<sql id="GroupBy_Column_List_SingleBlock">
+		MM.SSVC_LINE_TYPE_CD, ILL.SSVC_LINE_TYPE_NM, IL.SSVC_GROUP_CD, IB.SLVL_NM, IL.SSVC_OBJ_CD, IO.SLVL_NM, MM.SIP_CREATE_TYPE_CD
+		, SIP_CREATE_TYPE_NM, MM.SIP_VERSION_TYPE_CD, SIP_VERSION_TYPE_NM, PIP_PREFIX
+	</sql>
+	
+	<sql id="List_Where_Clause_SingleBlock">
+		<if test="lvlMstSeqListVo != null and lvlMstSeqListVo.tbLvlMstVos != null">
+			AND A.NLVL_MST_SEQ IN 
+			<foreach collection="lvlMstSeqListVo.tbLvlMstVos" item="item" separator="," open="(" close=")">
+				#{item.nlvlSeq}
+			</foreach>
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sipVersionTypeCd)">
+			AND A.SIP_VERSION_TYPE_CD = #{sipVersionTypeCd, jdbcType=CHAR}
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(searchWrd)">
+			AND ((
+				A.NFIRST_ADDR <![CDATA[>=]]> (SELECT BIF.UF_SEARCH_IP_TO_NUMBER(#{searchWrd}, 'Y') FROM DUAL)
+				AND A.NLAST_ADDR <![CDATA[<=]]> (SELECT BIF.UF_SEARCH_IP_TO_NUMBER(#{searchWrd}, 'N') FROM DUAL)
+				) OR (
+				A.NFIRST_ADDR <![CDATA[<=]]> (SELECT BIF.UF_SEARCH_IP_TO_NUMBER(#{searchWrd}, 'Y') FROM DUAL)
+				AND A.NLAST_ADDR <![CDATA[>=]]> (SELECT BIF.UF_SEARCH_IP_TO_NUMBER(#{searchWrd}, 'N') FROM DUAL)
+				)
+			)
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sassignTypeCd)">
+			AND A.SASSIGN_TYPE_CD = #{sassignTypeCd, jdbcType=CHAR}
+		</if>
+		
+		<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sipCreateTypeCd)">
+			AND A.SIP_CREATE_TYPE_CD = #{sipCreateTypeCd, jdbcType=CHAR}
+		</if>
+	</sql>
+	
+	<select id="selectListPageSingleBlockIpStatMstVo" resultMap="IpSingleBlockStatVoResult" parameterType="com.kt.ipms.legacy.statmgmt.ipstatmgmt.vo.IpSingleBlockStatVo">
+		SELECT <include refid="Base_Column_List_SingleBlock"/> 
+		 FROM (
+			SELECT 
+			<include refid="Base_Column_List_SingleBlock"/>
+			, ROWNUM AS RNUM
+			FROM(
+				SELECT 
+					<include refid="Base_Org_Column_List_SingleBlock"/>
+					, MIN(SASSIGN_TYPE_NM) AS SASSIGN_TYPE_NM
+					, ROUND(SUM(NALLOC_CNT),2) AS NALLOC_CNT
+					, ROUND(SUM(NUSE_FREE_CNT),2) AS NUSE_FREE_CNT
+					, ROUND(MST.UF_CONVERT_PERCENT(SUM(NALLOC_CNT) / SUM(NIP_CNT)),2) AS NPERCENT
+					, COUNT(NIP_ASSIGN_MST_SEQ) AS NSUBNET_CNT
+				FROM (
+					SELECT <include refid="Base_Org_Sub_Column_List_SingleBlock"/>
+					FROM MST.TB_IP_ASSIGN_MST A
+					WHERE 1=1
+					AND SASSIGN_LEVEL_CD IN ('IA0003', 'IA0004', 'IA0005', 'IA0006')
+					<include refid="List_Where_Clause_SingleBlock"/>
+					) MM
+					LEFT JOIN MST.TB_SVC_LINE_TYPE_CD ILL ON MM.SSVC_LINE_TYPE_CD = ILL.SSVC_LINE_TYPE_CD
+					LEFT JOIN MST.TB_LVL_MST IL ON MM.SSVC_LINE_TYPE_CD = IL.SSVC_LINE_TYPE_CD AND MM.NLVL_MST_SEQ = IL.NLVL_MST_SEQ
+					LEFT JOIN MST.TB_LVL_CD IB ON IL.SSVC_GROUP_CD = IB.SLVL_CD
+					LEFT JOIN MST.TB_LVL_CD IO ON IL.SSVC_OBJ_CD = IO.SLVL_CD
+					LEFT JOIN MST.TB_IP_VERSION_TYPE_CD IV ON MM.SIP_VERSION_TYPE_CD = IV.SIP_VERSION_TYPE_CD
+					LEFT JOIN MST.TB_IP_CREATE_TYPE_CD IT ON MM.SIP_CREATE_TYPE_CD = IT.SIP_CREATE_TYPE_CD
+					LEFT JOIN MST.TB_ASSIGN_TYPE_CD AT ON MM.SASSIGN_TYPE_CD = AT.SASSIGN_TYPE_CD
+				GROUP BY 
+					<include refid="GroupBy_Column_List_SingleBlock"/>
+				ORDER BY 
+					MM.SSVC_LINE_TYPE_CD
+					, ILL.SSVC_LINE_TYPE_NM
+					, IL.SSVC_GROUP_CD
+					, IB.SLVL_NM
+					, IL.SSVC_OBJ_CD
+					, IO.SLVL_NM
+					, MM.SIP_CREATE_TYPE_CD
+					, SIP_CREATE_TYPE_NM
+					, MM.SIP_VERSION_TYPE_CD
+					, SIP_VERSION_TYPE_NM
+					, PIP_PREFIX
+			) A WHERE ROWNUM <![CDATA[<=]]> #{lastIndex}
+		) A WHERE A.RNUM <![CDATA[>=]]> #{firstIndex} 
+	</select>
+	
+	<select id="countListPageSingleBlockIpStatMstVo" resultType="int" parameterType="com.kt.ipms.legacy.statmgmt.ipstatmgmt.vo.IpSingleBlockStatVo">
+		SELECT COUNT(1) totalCount 
+		  FROM (
+			SELECT
+				<include refid="Base_Org_Column_List_SingleBlock"/>
+				, MIN(SASSIGN_TYPE_NM) AS SASSIGN_TYPE_NM
+				, ROUND(SUM(NALLOC_CNT),2) AS NALLOC_CNT
+				, ROUND(SUM(NUSE_FREE_CNT),2) AS NUSE_FREE_CNT
+				, ROUND(MST.UF_CONVERT_PERCENT(SUM(NALLOC_CNT) / SUM(NIP_CNT)),2) AS NPERCENT
+				, COUNT(NIP_ASSIGN_MST_SEQ) AS NSUBNET_CNT
+			FROM (
+				SELECT <include refid="Base_Org_Sub_Column_List_SingleBlock"/>
+				FROM MST.TB_IP_ASSIGN_MST A
+				WHERE 1=1
+				AND SASSIGN_LEVEL_CD IN ('IA0003', 'IA0004', 'IA0005', 'IA0006')
+				<include refid="List_Where_Clause_SingleBlock"/>
+				) MM
+				LEFT JOIN MST.TB_SVC_LINE_TYPE_CD ILL ON MM.SSVC_LINE_TYPE_CD = ILL.SSVC_LINE_TYPE_CD
+				LEFT JOIN MST.TB_LVL_MST IL ON MM.SSVC_LINE_TYPE_CD = IL.SSVC_LINE_TYPE_CD AND MM.NLVL_MST_SEQ = IL.NLVL_MST_SEQ
+				LEFT JOIN MST.TB_LVL_CD IB ON IL.SSVC_GROUP_CD = IB.SLVL_CD
+				LEFT JOIN MST.TB_LVL_CD IO ON IL.SSVC_OBJ_CD = IO.SLVL_CD
+				LEFT JOIN MST.TB_IP_VERSION_TYPE_CD IV ON MM.SIP_VERSION_TYPE_CD = IV.SIP_VERSION_TYPE_CD
+				LEFT JOIN MST.TB_IP_CREATE_TYPE_CD IT ON MM.SIP_CREATE_TYPE_CD = IT.SIP_CREATE_TYPE_CD
+				LEFT JOIN MST.TB_ASSIGN_TYPE_CD AT ON MM.SASSIGN_TYPE_CD = AT.SASSIGN_TYPE_CD
+			GROUP BY 
+				<include refid="GroupBy_Column_List_SingleBlock"/>
+			) A
+	</select>
+	
+	<!-- IP 현행화 통계 현황 > 서비스 콤보박스 조회   -->
+	<select id="selectIntgrmSassignTypeCdList" resultType="String" parameterType="com.kt.ipms.legacy.statmgmt.ipstatmgmt.vo.IpIntgrmSvcStatVo">
+		SELECT DISTINCT M.SASSIGN_TYPE_CD 
+		  FROM MST.TB_ASSIGN_TYPE_CD M 
+		     , MST.TB_IPMS_SVC_MST SM 
+		     , MST.TB_IPMS_SVC_SUB SS 
+		     , MST.TB_LVL_MST LV 
+		 WHERE 1=1
+		   AND M.SASSIGN_TYPE_CD = SM.SASSIGN_TYPE_CD(+) 
+		   AND SM.NIPMS_SVC_SEQ = SS.NIPMS_SVC_MST_SEQ(+) 
+		   AND SS.SSVC_LINE_TYPE_CD = LV.SSVC_LINE_TYPE_CD(+) 
+			<if test="lvlMstSeqListVo != null and lvlMstSeqListVo.tbLvlMstVos != null">
+			   AND LV.NLVL_MST_SEQ IN
+					<foreach collection="lvlMstSeqListVo.tbLvlMstVos" item="item" separator="," open="(" close=")">
+					#{item.nlvlSeq}
+					</foreach>
+			</if>
+			<if test="chkSvcList != null">
+			   AND M.SASSIGN_TYPE_CD IN
+					<foreach collection="chkSvcList" item="item" separator="," open="(" close=")">
+						#{item.sassignTypeCd}
+					</foreach>
+			</if>
+		ORDER BY M.SASSIGN_TYPE_CD
+	</select>
+	
+	<!-- IP 현행화 통계 현황 > 목록 조회  -->
+	<select id="selectListPageIntgrmSvcStatVo" resultType="hashmap" parameterType="com.kt.ipms.legacy.statmgmt.ipstatmgmt.vo.IpIntgrmSvcStatVo">
+		WITH T1 AS (
+			SELECT 
+				A.SSVC_LINE_TYPE_CD
+				, A.SSVC_GROUP_CD
+				, A.SSVC_OBJ_CD
+				, A.NLVL_MST_SEQ
+				, A.SASSIGN_TYPE_CD
+				, A.SASSIGN_TYPE_NM
+				, A.NIP_ALL_CNT 
+				, A.NIP_MATCH_CNT 
+				, A.NIP_UNMATCH_CNT
+				, A.SIP_CREATE_TYPE_CD
+				, A.NIP_ALL_CNT_ALL
+				, A.NIP_MATCH_CNT_ALL
+				, A.NIP_UNMATCH_CNT_ALL
+				, (CASE WHEN NVL(A.NIP_ALL_CNT_ALL,0) = 0 OR NVL(A.NIP_MATCH_CNT_ALL,0) = 0 THEN  '0%'
+					 	   ELSE  NVL(ROUND(MST.UF_CONVERT_PERCENT(NVL(A.NIP_MATCH_CNT_ALL,0) / NVL(A.NIP_ALL_CNT_ALL,0) ),2),0) || '%'  END) AS NIP_MATCH_PER_ALL
+			FROM (
+				SELECT 
+					C.SSVC_LINE_TYPE_CD
+					, C.SSVC_GROUP_CD
+					, C.SSVC_OBJ_CD
+					, C.NLVL_MST_SEQ
+					, A.SASSIGN_TYPE_CD
+					, A.SASSIGN_TYPE_NM
+					, NVL(B.SIP_CREATE_TYPE_CD, #{sipCreateTypeCd, jdbcType=CHAR}) AS SIP_CREATE_TYPE_CD
+					, B.NIP_ALL_CNT 
+					, B.NIP_MATCH_CNT 
+					, B.NIP_UNMATCH_CNT
+					, SUM(NVL(B.NIP_ALL_CNT,0)) OVER(PARTITION BY C.SSVC_LINE_TYPE_CD, C.SSVC_GROUP_CD, C.SSVC_OBJ_CD, C.NLVL_MST_SEQ) AS NIP_ALL_CNT_ALL
+					, SUM(NVL(B.NIP_MATCH_CNT,0)) OVER(PARTITION BY C.SSVC_LINE_TYPE_CD, C.SSVC_GROUP_CD, C.SSVC_OBJ_CD, C.NLVL_MST_SEQ) AS NIP_MATCH_CNT_ALL
+					, SUM(NVL(B.NIP_UNMATCH_CNT,0)) OVER(PARTITION BY C.SSVC_LINE_TYPE_CD, C.SSVC_GROUP_CD, C.SSVC_OBJ_CD, C.NLVL_MST_SEQ) AS NIP_UNMATCH_CNT_ALL
+				FROM (
+						SELECT DISTINCT 
+								M.SASSIGN_TYPE_CD  
+					     		, M.SASSIGN_TYPE_NM  
+					     		, LV.SSVC_LINE_TYPE_CD
+					     		, LV.NLVL_MST_SEQ
+					     		, LV.SSVC_GROUP_CD
+					     		, LV.SSVC_OBJ_CD
+					    FROM MST.TB_ASSIGN_TYPE_CD M 
+					     , MST.TB_IPMS_SVC_MST SM 
+					     , MST.TB_IPMS_SVC_SUB SS 
+					     , MST.TB_LVL_MST LV 
+					 	WHERE 1=1
+						   AND M.SASSIGN_TYPE_CD = SM.SASSIGN_TYPE_CD(+) 
+						   AND SM.NIPMS_SVC_SEQ = SS.NIPMS_SVC_MST_SEQ(+) 
+						   AND SS.SSVC_LINE_TYPE_CD = LV.SSVC_LINE_TYPE_CD(+)
+						UNION  
+						SELECT 
+							'SA0000' as SASSIGN_TYPE_CD ,
+							'----------' as SASSIGN_TYPE_NM ,
+							A.SSVC_LINE_TYPE_CD ,
+							A.NLVL_MST_SEQ ,
+							B.SSVC_GROUP_CD ,
+							B.SSVC_OBJ_CD
+						FROM MST.TB_INTGRM_ROUTING_STATS_MST A,
+							MST.TB_LVL_MST B 
+						WHERE 1=1
+							AND B.NLVL_MST_SEQ = A.NLVL_MST_SEQ 
+							AND A.SASSIGN_TYPE_CD = 'SA0000'
+						GROUP BY A.SSVC_LINE_TYPE_CD ,
+							A.NLVL_MST_SEQ,
+							B.SSVC_GROUP_CD ,
+							B.SSVC_OBJ_CD
+					) A
+					, (
+						SELECT
+							SCOLLECT_DT
+						 	, SSVC_LINE_TYPE_CD
+						 	, NLVL_MST_SEQ 
+							, SIP_CREATE_TYPE_CD 
+							, SASSIGN_TYPE_CD
+							, NIP_ALL_CNT
+							, NIP_MATCH_CNT
+							, NIP_UNMATCH_CNT
+					FROM MST.TB_INTGRM_ROUTING_STATS_MST 
+					WHERE 1=1
+						<choose>
+							<when test ="@org.apache.commons.lang.StringUtils@isNotEmpty(searchBgnDe)">
+								AND SCOLLECT_DT = #{searchBgnDe, jdbcType=VARCHAR}
+							</when>
+							<otherwise>
+								AND (SCOLLECT_DT) IN (
+													SELECT MAX(SCOLLECT_DT)
+													FROM MST.TB_INTGRM_ROUTING_STATS_MST
+													WHERE 1=1 
+								)
+							</otherwise>
+						</choose>
+						<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sipCreateTypeCd)">
+							AND SIP_CREATE_TYPE_CD =  #{sipCreateTypeCd, jdbcType=CHAR}
+						</if>
+					) B
+					, MST.TB_LVL_MST C
+				WHERE 1=1
+					AND B.SSVC_LINE_TYPE_CD(+) = A.SSVC_LINE_TYPE_CD
+					AND B.NLVL_MST_SEQ(+) = A.NLVL_MST_SEQ
+				 	AND B.SASSIGN_TYPE_CD(+) = A.SASSIGN_TYPE_CD
+				 	AND C.SSVC_LINE_TYPE_CD(+) = A.SSVC_LINE_TYPE_CD
+					AND C.SSVC_GROUP_CD(+) = A.SSVC_GROUP_CD
+					AND C.SSVC_OBJ_CD(+) = A.SSVC_OBJ_CD
+					AND C.SSVC_LINE_TYPE_CD IN ('CL0001', 'CL0002', 'CL0003')
+					<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssvcLineTypeCd)">
+						AND A.SSVC_LINE_TYPE_CD = #{ssvcLineTypeCd, jdbcType=CHAR}
+					</if>
+					<if test="lvlMstSeqListVo != null and lvlMstSeqListVo.tbLvlMstVos != null">
+						AND A.NLVL_MST_SEQ IN 
+						<foreach collection="lvlMstSeqListVo.tbLvlMstVos" item="item" separator="," open="(" close=")">
+							#{item.nlvlSeq}
+						</foreach>
+					</if>
+				ORDER BY 
+					A.SASSIGN_TYPE_CD
+			) A
+		)
+		SELECT 
+			A.SSVC_LINE_TYPE_CD
+			, A.SSVC_LINE_TYPE_NM
+			, A.SSVC_GROUP_CD
+			, A.SSVC_GROUP_NM
+			, A.SSVC_OBJ_CD
+			, A.SSVC_OBJ_NM
+			, A.SIP_CREATE_TYPE_NM
+			, A.NIP_ALL_CNT_ALL
+			, A.NIP_MATCH_CNT_ALL
+			, A.NIP_UNMATCH_CNT_ALL
+			, A.NIP_MATCH_PER_ALL
+			<if test="chkSvcList != null">
+				<foreach collection="chkSvcList" item="item" index="index" >
+					 , NVL(TO_CHAR(MIN(CASE A.SASSIGN_TYPE_CD WHEN #{item.code} THEN A.NIP_ALL_CNT END)),'0') AS NIP_ALL_CNT_${item.code}
+					 , NVL(TO_CHAR(MIN(CASE A.SASSIGN_TYPE_CD WHEN #{item.code} THEN A.NIP_MATCH_CNT END)), '0') AS NIP_MATCH_CNT_${item.code}
+					 , NVL(TO_CHAR(MIN(CASE A.SASSIGN_TYPE_CD WHEN #{item.code} THEN A.NIP_UNMATCH_CNT END)), '0') AS NIP_UNMATCH_CNT_${item.code}
+					 , (CASE WHEN NVL(TO_CHAR(MIN(CASE A.SASSIGN_TYPE_CD WHEN #{item.code} THEN A.NIP_ALL_CNT END)), '0') = '0' 
+					 					 OR NVL(TO_CHAR(MIN(CASE A.SASSIGN_TYPE_CD WHEN #{item.code} THEN A.NIP_MATCH_CNT END)), '0') = '0' THEN  '0%'
+					 			 ELSE  NVL(ROUND(MST.UF_CONVERT_PERCENT(NVL(MIN(CASE A.SASSIGN_TYPE_CD WHEN #{item.code} THEN A.NIP_MATCH_CNT END),0) / NVL(MIN(CASE A.SASSIGN_TYPE_CD WHEN #{item.code} THEN A.NIP_ALL_CNT END),0) ),2),0) || '%' END) 
+					 			 AS NIP_MATCH_PER_${item.code}
+				</foreach>
+			</if>
+		FROM (
+			SELECT 
+				T1.SSVC_LINE_TYPE_CD
+				, A.SSVC_LINE_TYPE_NM
+				, T1.SSVC_GROUP_CD
+				, T1.SSVC_OBJ_CD
+				, C.SLVL_NM AS SSVC_GROUP_NM
+				, T1.NLVL_MST_SEQ
+				, D.SLVL_NM AS SSVC_OBJ_NM
+				, T1.SASSIGN_TYPE_CD
+				, T1.SASSIGN_TYPE_NM
+				, E.SIP_CREATE_TYPE_NM
+				, T1.NIP_ALL_CNT
+				, T1.NIP_MATCH_CNT
+				, T1.NIP_UNMATCH_CNT
+				, T1.NIP_ALL_CNT_ALL
+				, T1.NIP_MATCH_CNT_ALL
+				, T1.NIP_UNMATCH_CNT_ALL
+				, T1.NIP_MATCH_PER_ALL
+			FROM T1
+				, MST.TB_SVC_LINE_TYPE_CD A
+				, MST.TB_LVL_MST B
+				, MST.TB_LVL_CD C
+				, MST.TB_LVL_CD D
+				, MST.TB_IP_CREATE_TYPE_CD E
+			WHERE 1=1
+				AND A.SSVC_LINE_TYPE_CD(+) = T1.SSVC_LINE_TYPE_CD
+				AND B.NLVL_MST_SEQ = T1.NLVL_MST_SEQ
+				AND C.SLVL_CD(+) = B.SSVC_GROUP_CD
+				AND D.SLVL_CD(+) = B.SSVC_OBJ_CD
+				AND E.SIP_CREATE_TYPE_CD(+) = T1.SIP_CREATE_TYPE_CD
+				<if test="chkSvcList != null">
+					<if test="chkSvcList.size() > 0">
+						AND T1.SASSIGN_TYPE_CD IN
+						<foreach collection="chkSvcList" item="item" separator="," open="(" close=")">
+							#{item.code}
+						</foreach>
+					</if>
+				</if>
+				
+				<if test="sassignTypeMulti != null">
+					<if test="sassignTypeMulti.size() > 0">
+						AND T1.SASSIGN_TYPE_CD IN
+						<foreach collection="sassignTypeMulti" item="item" separator="," open="(" close=")">
+							#{item}
+						</foreach>
+					</if>
+				</if>
+		) A
+		GROUP BY A.SSVC_LINE_TYPE_CD
+					, A.SSVC_LINE_TYPE_NM
+					, A.SSVC_GROUP_CD
+					, A.SSVC_GROUP_NM
+					, A.SSVC_OBJ_CD
+					, A.SSVC_OBJ_NM
+					, A.SIP_CREATE_TYPE_NM
+					, A.NIP_ALL_CNT_ALL
+					, A.NIP_MATCH_CNT_ALL
+					, A.NIP_UNMATCH_CNT_ALL
+					, A.NIP_MATCH_PER_ALL
+		ORDER BY A.SSVC_LINE_TYPE_CD
+					, A.SSVC_GROUP_CD
+					, A.SSVC_OBJ_CD
+	</select>
+	
+	<!-- IP 조직서비스별 통계 현황 > 목록 조회  -->
+	<select id="selectListPageOrgSvcStatVo" resultType="hashmap" parameterType="com.kt.ipms.legacy.statmgmt.ipstatmgmt.vo.IpIntgrmSvcStatVo">
+		WITH T1 AS (
+			SELECT 
+				A.SSVC_LINE_TYPE_CD
+				, A.SSVC_GROUP_CD
+				, A.SSVC_OBJ_CD
+				, A.NLVL_MST_SEQ
+				, A.SASSIGN_TYPE_CD
+				, A.SASSIGN_TYPE_NM
+				, A.SIP_CREATE_TYPE_CD
+				, A.SIP_VERSION_TYPE_CD
+				, SUM(A.NALL_CNT) AS NALL_CNT
+				, SUM(A.NALLOC_CNT) AS NALLOC_CNT
+				, SUM(A.NASSIGN_CNT) AS NASSIGN_CNT
+				, A.NALL_CNT_ALL
+				, A.NALLOC_CNT_ALL
+				, A.NASSIGN_CNT_ALL
+			FROM (
+				SELECT 
+					C.SSVC_LINE_TYPE_CD
+					, C.SSVC_GROUP_CD
+					, C.SSVC_OBJ_CD
+					, C.NLVL_MST_SEQ
+					, A.SASSIGN_TYPE_CD
+					, A.SASSIGN_TYPE_NM
+					, NVL(B.SIP_CREATE_TYPE_CD, #{sipCreateTypeCd, jdbcType=CHAR}) AS SIP_CREATE_TYPE_CD
+				    , NVL(B.SIP_VERSION_TYPE_CD, #{sipVersionTypeCd, jdbcType=CHAR}) AS SIP_VERSION_TYPE_CD
+					, NVL(B.NALL_CNT,0) AS NALL_CNT
+					, NVL(B.NALLOC_CNT,0) AS NALLOC_CNT 
+					, NVL(B.NASSIGN_CNT,0) AS NASSIGN_CNT
+					, SUM(NVL(B.NALL_CNT,0)) OVER(PARTITION BY C.SSVC_LINE_TYPE_CD, C.SSVC_GROUP_CD, C.SSVC_OBJ_CD, C.NLVL_MST_SEQ) AS NALL_CNT_ALL
+					, SUM(NVL(B.NALLOC_CNT,0)) OVER(PARTITION BY C.SSVC_LINE_TYPE_CD, C.SSVC_GROUP_CD, C.SSVC_OBJ_CD, C.NLVL_MST_SEQ) AS NALLOC_CNT_ALL
+					, SUM(NVL(B.NASSIGN_CNT,0)) OVER(PARTITION BY C.SSVC_LINE_TYPE_CD, C.SSVC_GROUP_CD, C.SSVC_OBJ_CD, C.NLVL_MST_SEQ) AS NASSIGN_CNT_ALL
+				FROM (
+						SELECT 
+							A.SSVC_LINE_TYPE_CD
+							, C.SSVC_GROUP_CD
+							, C.SSVC_OBJ_CD
+							, C.NLVL_MST_SEQ
+							, B.SASSIGN_TYPE_CD
+							, B.SASSIGN_TYPE_NM
+						FROM MST.TB_SVC_LINE_TYPE_CD A
+							, (
+								SELECT M.SASSIGN_TYPE_CD 
+								     , M.SASSIGN_TYPE_NM 
+								  FROM MST.TB_ASSIGN_TYPE_CD M 
+								     , MST.TB_IPMS_SVC_MST SM 
+								     , MST.TB_IPMS_SVC_SUB SS 
+								     , MST.TB_LVL_MST LV 
+								 WHERE 1=1
+								   AND M.SASSIGN_TYPE_CD = SM.SASSIGN_TYPE_CD(+) 
+								   AND SM.NIPMS_SVC_SEQ = SS.NIPMS_SVC_MST_SEQ(+) 
+								   AND SS.SSVC_LINE_TYPE_CD = LV.SSVC_LINE_TYPE_CD(+) 
+								GROUP BY M.SASSIGN_TYPE_CD 
+								     , M.SASSIGN_TYPE_NM
+							) B
+							, MST.TB_LVL_MST C
+						WHERE 1=1
+							AND C.SSVC_LINE_TYPE_CD(+) = A.SSVC_LINE_TYPE_CD
+					) A
+					, (
+						SELECT
+								SHIST_DT
+							 	, SSVC_LINE_TYPE_CD
+							 	, NLVL_MST_SEQ 
+								, SASSIGN_TYPE_CD
+							 	, SIP_CREATE_TYPE_CD 
+								, SIP_VERSION_TYPE_CD
+								, NALL_CNT
+								, NALLOC_CNT
+								, NASSIGN_CNT
+						FROM MST.TB_ORG_SVC_STATS_MST  
+						WHERE 1=1
+							AND SHIST_DT = #{searchBgnDe, jdbcType=VARCHAR}
+							<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssvcLineTypeCd)">
+								AND SSVC_LINE_TYPE_CD = #{ssvcLineTypeCd, jdbcType=CHAR}
+							</if>	
+							<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sipVersionTypeCd)">
+								AND SIP_VERSION_TYPE_CD =  #{sipVersionTypeCd, jdbcType=CHAR}
+							</if>
+							<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sipCreateTypeCd)">
+								AND SIP_CREATE_TYPE_CD =  #{sipCreateTypeCd, jdbcType=CHAR}
+							</if>
+					) B
+					, MST.TB_LVL_MST C
+				WHERE 1=1
+					AND B.SSVC_LINE_TYPE_CD(+) = A.SSVC_LINE_TYPE_CD
+					AND B.NLVL_MST_SEQ(+) = A.NLVL_MST_SEQ
+				 	AND B.SASSIGN_TYPE_CD(+) = A.SASSIGN_TYPE_CD
+				 	AND C.SSVC_LINE_TYPE_CD(+) = A.SSVC_LINE_TYPE_CD
+					AND C.SSVC_GROUP_CD(+) = A.SSVC_GROUP_CD
+					AND C.SSVC_OBJ_CD(+) = A.SSVC_OBJ_CD
+					<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssvcLineTypeCd)">
+						AND A.SSVC_LINE_TYPE_CD = #{ssvcLineTypeCd, jdbcType=CHAR}
+					</if>
+					<if test="lvlMstSeqListVo != null and lvlMstSeqListVo.tbLvlMstVos != null">
+						AND C.NLVL_MST_SEQ IN 
+						<foreach collection="lvlMstSeqListVo.tbLvlMstVos" item="item" separator="," open="(" close=")">
+							#{item.nlvlSeq}
+						</foreach>
+					</if>
+				ORDER BY 
+					A.SASSIGN_TYPE_CD
+			) A
+			GROUP BY
+				A.SSVC_LINE_TYPE_CD ,
+				A.SSVC_GROUP_CD ,
+				A.SSVC_OBJ_CD ,
+				A.NLVL_MST_SEQ ,
+				A.SASSIGN_TYPE_CD ,
+				A.SASSIGN_TYPE_NM ,
+				A.SIP_CREATE_TYPE_CD ,
+				A.SIP_VERSION_TYPE_CD ,
+				A.NALL_CNT_ALL ,
+				A.NALLOC_CNT_ALL ,
+				A.NASSIGN_CNT_ALL
+		)
+		SELECT
+			CASE WHEN GROUPING(t.SSVC_LINE_TYPE_CD) = 1 THEN '소계' ELSE MAX(t.SSVC_LINE_TYPE_CD) END AS SSVC_LINE_TYPE_CD
+			, CASE WHEN GROUPING(t.SSVC_LINE_TYPE_CD) = 1 THEN '소계' ELSE MAX(t.SSVC_LINE_TYPE_NM) END AS SSVC_LINE_TYPE_NM
+			, CASE WHEN GROUPING(t.SSVC_GROUP_CD) = 1 THEN '소계' ELSE MAX(t.SSVC_GROUP_CD) END AS SSVC_GROUP_CD
+			, CASE WHEN GROUPING(t.SSVC_GROUP_CD) = 1 THEN '소계' ELSE MAX(t.SSVC_GROUP_NM) END AS SSVC_GROUP_NM
+			, CASE WHEN GROUPING(t.SSVC_OBJ_CD) = 1 THEN '소계' ELSE MAX(t.SSVC_OBJ_CD) END AS SSVC_OBJ_CD
+			, CASE WHEN GROUPING(t.SSVC_OBJ_CD) = 1 THEN '소계' ELSE MAX(t.SSVC_OBJ_NM) END AS SSVC_OBJ_NM
+			, MAX(t.SIP_CREATE_TYPE_NM) AS SIP_CREATE_TYPE_NM
+			, MAX(t.SIP_VERSION_TYPE_NM) AS SIP_CREATE_TYPE_NM
+			, SUM(t.NALL_CNT_ALL) AS NALL_CNT_ALL
+			, SUM(t.NALLOC_CNT_ALL) AS NALLOC_CNT_ALL
+			, SUM(t.NASSIGN_CNT_ALL) AS NASSIGN_CNT_ALL
+			, CASE WHEN SUM(t.NALL_CNT_ALL) = 0 then 0 else ROUND((SUM(t.NALLOC_CNT_ALL)/SUM(t.NALL_CNT_ALL)*100),2) end as NALL_CNT_ALL_RATE
+			<if test="chkSvcList != null">
+				<foreach collection="chkSvcList" item="item" index="index" >
+					 , SUM(NALL_CNT_${item.code}) AS NALL_CNT_${item.code}
+					 , SUM(NALLOC_CNT_${item.code}) AS NALLOC_CNT_${item.code}
+					 , SUM(NASSIGN_CNT_${item.code}) AS NASSIGN_CNT_${item.code}
+					 , CASE WHEN SUM(t.NALL_CNT_${item.code}) = 0 then 0 else ROUND((SUM(t.NALLOC_CNT_${item.code})/SUM(t.NALL_CNT_${item.code})*100),2) end as NALL_CNT_${item.code}_RATE
+				</foreach>
+			</if>
+		FROM (
+			SELECT
+				A.SSVC_LINE_TYPE_CD 
+				, A.SSVC_LINE_TYPE_NM
+				, A.SSVC_GROUP_CD
+				, A.SSVC_GROUP_NM
+				, A.SSVC_OBJ_CD
+				, A.SSVC_OBJ_NM
+				, A.SIP_CREATE_TYPE_NM
+				, A.SIP_VERSION_TYPE_NM
+				, A.NALL_CNT_ALL
+				, A.NALLOC_CNT_ALL
+				, A.NASSIGN_CNT_ALL
+				<if test="chkSvcList != null">
+					<foreach collection="chkSvcList" item="item" index="index" >
+						 , NVL(TO_CHAR(MIN(CASE A.SASSIGN_TYPE_CD WHEN #{item.code} THEN A.NALL_CNT END)),'0') AS NALL_CNT_${item.code}
+						 , NVL(TO_CHAR(MIN(CASE A.SASSIGN_TYPE_CD WHEN #{item.code} THEN A.NALLOC_CNT END)), '0') AS NALLOC_CNT_${item.code}
+						 , NVL(TO_CHAR(MIN(CASE A.SASSIGN_TYPE_CD WHEN #{item.code} THEN A.NASSIGN_CNT END)), '0') AS NASSIGN_CNT_${item.code}
+					</foreach>
+				</if>
+			FROM (
+				SELECT 
+					T1.SSVC_LINE_TYPE_CD
+					, A.SSVC_LINE_TYPE_NM
+					, T1.SSVC_GROUP_CD
+					, T1.SSVC_OBJ_CD
+					, C.SLVL_NM AS SSVC_GROUP_NM
+					, T1.NLVL_MST_SEQ
+					, D.SLVL_NM AS SSVC_OBJ_NM
+					, T1.SASSIGN_TYPE_CD
+					, T1.SASSIGN_TYPE_NM
+					, E.SIP_CREATE_TYPE_NM
+					, F.SIP_VERSION_TYPE_NM
+					, T1.NALL_CNT
+					, T1.NALLOC_CNT
+					, T1.NASSIGN_CNT
+					, T1.NALL_CNT_ALL
+					, T1.NALLOC_CNT_ALL
+					, T1.NASSIGN_CNT_ALL
+				FROM T1
+					, MST.TB_SVC_LINE_TYPE_CD A
+					, MST.TB_LVL_MST B
+					, MST.TB_LVL_CD C
+					, MST.TB_LVL_CD D
+					, MST.TB_IP_CREATE_TYPE_CD E
+					, MST.TB_IP_VERSION_TYPE_CD F
+				WHERE 1=1
+					AND A.SSVC_LINE_TYPE_CD(+) = T1.SSVC_LINE_TYPE_CD
+					AND B.NLVL_MST_SEQ = T1.NLVL_MST_SEQ
+					AND C.SLVL_CD(+) = B.SSVC_GROUP_CD
+					AND D.SLVL_CD(+) = B.SSVC_OBJ_CD
+					AND E.SIP_CREATE_TYPE_CD(+) = T1.SIP_CREATE_TYPE_CD
+					AND F.SIP_VERSION_TYPE_CD(+) = T1.SIP_VERSION_TYPE_CD
+					<if test="chkSvcList != null">
+						<if test="chkSvcList.size() > 0">
+							AND T1.SASSIGN_TYPE_CD IN
+							<foreach collection="chkSvcList" item="item" separator="," open="(" close=")">
+								#{item.code}
+							</foreach>
+						</if>
+					</if>
+					
+					<if test="sassignTypeMulti != null">
+						<if test="sassignTypeMulti.size() > 0">
+							AND T1.SASSIGN_TYPE_CD IN
+							<foreach collection="sassignTypeMulti" item="item" separator="," open="(" close=")">
+								#{item}
+							</foreach>
+						</if>
+					</if>
+			) A
+			GROUP BY A.SSVC_LINE_TYPE_CD 
+						, A.SSVC_LINE_TYPE_NM
+						, A.SSVC_GROUP_CD
+						, A.SSVC_GROUP_NM
+						, A.SSVC_OBJ_CD
+						, A.SSVC_OBJ_NM
+						, A.SIP_CREATE_TYPE_NM
+						, A.SIP_VERSION_TYPE_NM
+						, A.NALL_CNT_ALL
+						, A.NALLOC_CNT_ALL
+						, A.NASSIGN_CNT_ALL
+			ORDER BY A.SSVC_LINE_TYPE_CD
+						, A.SSVC_GROUP_CD
+						, A.SSVC_OBJ_CD
+		) t
+		GROUP BY 
+		ROLLUP(
+			t.SSVC_LINE_TYPE_CD
+			, t.SSVC_GROUP_CD
+			, t.SSVC_OBJ_CD
+		)
+	</select>
+	
+	<!-- IP 서비스별 통계 현황 > 목록 조회  -->
+	<select id="selectListPageSvcStatVoBak" resultType="hashmap" parameterType="com.kt.ipms.legacy.statmgmt.ipstatmgmt.vo.IpIntgrmSvcStatVo">
+		WITH T1 AS (
+			SELECT 
+				A.SSVC_LINE_TYPE_CD
+				, A.SASSIGN_TYPE_CD
+				, A.SASSIGN_TYPE_NM
+				, A.SIP_CREATE_TYPE_CD
+				, A.SIP_VERSION_TYPE_CD
+				, A.NALL_CNT 
+				, A.NALLOC_CNT 
+				, A.NASSIGN_CNT
+				, A.NALL_CNT_ALL
+				, A.NALLOC_CNT_ALL
+				, A.NASSIGN_CNT_ALL
+			FROM (
+				SELECT 
+					C.SSVC_LINE_TYPE_CD
+					, A.SASSIGN_TYPE_CD
+					, A.SASSIGN_TYPE_NM
+					, NVL(B.SIP_CREATE_TYPE_CD, #{sipCreateTypeCd, jdbcType=CHAR}) AS SIP_CREATE_TYPE_CD
+				    , NVL(B.SIP_VERSION_TYPE_CD, #{sipVersionTypeCd, jdbcType=CHAR}) AS SIP_VERSION_TYPE_CD
+					, NVL(B.NALL_CNT,0) AS NALL_CNT
+					, NVL(B.NALLOC_CNT,0) AS NALLOC_CNT 
+					, NVL(B.NASSIGN_CNT,0) AS NASSIGN_CNT
+					, SUM(NVL(B.NALL_CNT,0)) OVER(PARTITION BY A.SSVC_LINE_TYPE_CD, A.SASSIGN_TYPE_CD) AS NALL_CNT_ALL
+					, SUM(NVL(B.NALLOC_CNT,0)) OVER(PARTITION BY A.SSVC_LINE_TYPE_CD, A.SASSIGN_TYPE_CD) AS NALLOC_CNT_ALL
+					, SUM(NVL(B.NASSIGN_CNT,0)) OVER(PARTITION BY A.SSVC_LINE_TYPE_CD, A.SASSIGN_TYPE_CD) AS NASSIGN_CNT_ALL
+				FROM (
+						SELECT 
+							A.SSVC_LINE_TYPE_CD
+							, C.SSVC_GROUP_CD
+							, C.SSVC_OBJ_CD
+							, C.NLVL_MST_SEQ
+							, B.SASSIGN_TYPE_CD
+							, B.SASSIGN_TYPE_NM
+						FROM MST.TB_SVC_LINE_TYPE_CD A
+							, (
+								SELECT M.SASSIGN_TYPE_CD 
+								     , M.SASSIGN_TYPE_NM 
+								  FROM MST.TB_ASSIGN_TYPE_CD M 
+								     , MST.TB_IPMS_SVC_MST SM 
+								     , MST.TB_IPMS_SVC_SUB SS 
+								     , MST.TB_LVL_MST LV 
+								 WHERE 1=1
+								   AND M.SASSIGN_TYPE_CD = SM.SASSIGN_TYPE_CD(+) 
+								   AND SM.NIPMS_SVC_SEQ = SS.NIPMS_SVC_MST_SEQ(+) 
+								   AND SS.SSVC_LINE_TYPE_CD = LV.SSVC_LINE_TYPE_CD(+) 
+								GROUP BY M.SASSIGN_TYPE_CD 
+								     , M.SASSIGN_TYPE_NM
+							) B
+							, MST.TB_LVL_MST C
+						WHERE 1=1
+							AND C.SSVC_LINE_TYPE_CD(+) = A.SSVC_LINE_TYPE_CD
+					) A
+					, (
+						SELECT
+								SHIST_DT
+							 	, SSVC_LINE_TYPE_CD
+							 	, NLVL_MST_SEQ 
+								, SASSIGN_TYPE_CD
+							 	, SIP_CREATE_TYPE_CD 
+								, SIP_VERSION_TYPE_CD
+								, NALL_CNT
+								, NALLOC_CNT
+								, NASSIGN_CNT
+						FROM MST.TB_ORG_SVC_STATS_MST  
+						WHERE 1=1
+							AND SHIST_DT = #{searchBgnDe, jdbcType=VARCHAR}
+							<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssvcLineTypeCd)">
+								AND SSVC_LINE_TYPE_CD = #{ssvcLineTypeCd, jdbcType=CHAR}
+							</if>	
+							<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sipVersionTypeCd)">
+								AND SIP_VERSION_TYPE_CD =  #{sipVersionTypeCd, jdbcType=CHAR}
+							</if>
+							<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sipCreateTypeCd)">
+								AND SIP_CREATE_TYPE_CD =  #{sipCreateTypeCd, jdbcType=CHAR}
+							</if>
+					) B
+					, MST.TB_LVL_MST C
+				WHERE 1=1
+					AND B.SSVC_LINE_TYPE_CD(+) = A.SSVC_LINE_TYPE_CD
+					AND B.NLVL_MST_SEQ(+) = A.NLVL_MST_SEQ
+				 	AND B.SASSIGN_TYPE_CD(+) = A.SASSIGN_TYPE_CD
+				 	AND C.SSVC_LINE_TYPE_CD(+) = A.SSVC_LINE_TYPE_CD
+					AND C.SSVC_GROUP_CD(+) = A.SSVC_GROUP_CD
+					AND C.SSVC_OBJ_CD(+) = A.SSVC_OBJ_CD
+					<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssvcLineTypeCd)">
+						AND A.SSVC_LINE_TYPE_CD = #{ssvcLineTypeCd, jdbcType=CHAR}
+					</if>
+					<if test="lvlMstSeqListVo != null and lvlMstSeqListVo.tbLvlMstVos != null">
+						AND C.NLVL_MST_SEQ IN 
+						<foreach collection="lvlMstSeqListVo.tbLvlMstVos" item="item" separator="," open="(" close=")">
+							#{item.nlvlSeq}
+						</foreach>
+					</if>
+				ORDER BY 
+					A.SASSIGN_TYPE_CD
+			) A
+		)
+		SELECT
+			A.SSVC_LINE_TYPE_CD 
+			, A.SSVC_LINE_TYPE_NM
+			, A.SASSIGN_TYPE_CD
+			, A.SASSIGN_TYPE_NM
+			, A.SIP_CREATE_TYPE_NM
+			, A.SIP_VERSION_TYPE_NM
+			, A.NALL_CNT_ALL
+			, A.NALLOC_CNT_ALL
+			, A.NASSIGN_CNT_ALL
+			<if test="chkSvcList != null">
+				<foreach collection="chkSvcList" item="item" index="index" >
+					 , NVL(TO_CHAR(MIN(CASE A.SSVC_LINE_TYPE_CD WHEN #{item.code} THEN A.NALL_CNT END)),'0') AS NALL_CNT_${item.code}
+					 , NVL(TO_CHAR(MIN(CASE A.SSVC_LINE_TYPE_CD WHEN #{item.code} THEN A.NALLOC_CNT END)), '0') AS NALLOC_CNT_${item.code}
+					 , NVL(TO_CHAR(MIN(CASE A.SSVC_LINE_TYPE_CD WHEN #{item.code} THEN A.NASSIGN_CNT END)), '0') AS NASSIGN_CNT_${item.code}
+				</foreach>
+			</if>
+		FROM (
+			SELECT 
+				T1.SSVC_LINE_TYPE_CD
+				, A.SSVC_LINE_TYPE_NM
+				, T1.SASSIGN_TYPE_CD
+				, T1.SASSIGN_TYPE_NM
+				, E.SIP_CREATE_TYPE_NM
+				, F.SIP_VERSION_TYPE_NM
+				, T1.NALL_CNT
+				, T1.NALLOC_CNT
+				, T1.NASSIGN_CNT
+				, T1.NALL_CNT_ALL
+				, T1.NALLOC_CNT_ALL
+				, T1.NASSIGN_CNT_ALL
+			FROM T1
+				, MST.TB_SVC_LINE_TYPE_CD A
+				, MST.TB_IP_CREATE_TYPE_CD E
+				, MST.TB_IP_VERSION_TYPE_CD F
+			WHERE 1=1
+				AND A.SSVC_LINE_TYPE_CD(+) = T1.SSVC_LINE_TYPE_CD
+				AND E.SIP_CREATE_TYPE_CD(+) = T1.SIP_CREATE_TYPE_CD
+				AND F.SIP_VERSION_TYPE_CD(+) = T1.SIP_VERSION_TYPE_CD
+				<if test="chkSvcList != null">
+					<if test="chkSvcList.size() > 0">
+						AND T1.SSVC_LINE_TYPE_CD IN
+						<foreach collection="chkSvcList" item="item" separator="," open="(" close=")">
+							#{item.code}
+						</foreach>
+					</if>
+				</if>
+				
+				<if test="sassignTypeMulti != null">
+					<if test="sassignTypeMulti.size() > 0">
+						AND T1.SSVC_LINE_TYPE_CD IN
+						<foreach collection="sassignTypeMulti" item="item" separator="," open="(" close=")">
+							#{item}
+						</foreach>
+					</if>
+				</if>
+		) A
+		GROUP BY A.SSVC_LINE_TYPE_CD 
+					, A.SSVC_LINE_TYPE_NM
+					, A.SASSIGN_TYPE_CD
+					, A.SASSIGN_TYPE_NM
+					, A.SIP_CREATE_TYPE_NM
+					, A.SIP_VERSION_TYPE_NM
+					, A.NALL_CNT_ALL
+					, A.NALLOC_CNT_ALL
+					, A.NASSIGN_CNT_ALL
+		ORDER BY A.SSVC_LINE_TYPE_CD
+					, A.SASSIGN_TYPE_CD
+	</select>
+	
+	<select id="selectListPageSvcStatVo"  resultType="hashmap" parameterType="com.kt.ipms.legacy.statmgmt.ipstatmgmt.vo.IpIntgrmSvcStatVo">
+		WITH T1 AS (
+			SELECT 
+				A.SSVC_LINE_TYPE_CD
+				, A.SASSIGN_TYPE_CD
+				, A.SASSIGN_TYPE_NM
+				, A.SIP_CREATE_TYPE_CD
+				, A.SIP_VERSION_TYPE_CD
+				, SUM(A.NALL_CNT) AS NALL_CNT
+				, SUM(A.NALLOC_CNT) AS NALLOC_CNT
+				, SUM(A.NASSIGN_CNT) AS NASSIGN_CNT
+				, A.NALL_CNT_ALL
+				, A.NALLOC_CNT_ALL
+				, A.NASSIGN_CNT_ALL
+			FROM (
+				SELECT 
+					A.SSVC_LINE_TYPE_CD
+					, A.SASSIGN_TYPE_CD
+					, A.SASSIGN_TYPE_NM
+					, NVL(B.SIP_CREATE_TYPE_CD, #{sipCreateTypeCd, jdbcType=CHAR}) AS SIP_CREATE_TYPE_CD
+				    , NVL(B.SIP_VERSION_TYPE_CD, #{sipVersionTypeCd, jdbcType=CHAR}) AS SIP_VERSION_TYPE_CD
+					, NVL(B.NALL_CNT,0) AS NALL_CNT
+					, NVL(B.NALLOC_CNT,0) AS NALLOC_CNT 
+					, NVL(B.NASSIGN_CNT,0) AS NASSIGN_CNT
+					, SUM(NVL(B.NALL_CNT,0)) OVER(PARTITION BY A.SASSIGN_TYPE_CD) AS NALL_CNT_ALL
+					, SUM(NVL(B.NALLOC_CNT,0)) OVER(PARTITION BY A.SASSIGN_TYPE_CD) AS NALLOC_CNT_ALL
+					, SUM(NVL(B.NASSIGN_CNT,0)) OVER(PARTITION BY A.SASSIGN_TYPE_CD) AS NASSIGN_CNT_ALL
+				FROM (
+						SELECT 
+							A.SSVC_LINE_TYPE_CD
+							, C.SSVC_GROUP_CD
+							, C.SSVC_OBJ_CD
+							, C.NLVL_MST_SEQ
+							, B.SASSIGN_TYPE_CD
+							, B.SASSIGN_TYPE_NM
+						FROM MST.TB_SVC_LINE_TYPE_CD A
+							, (
+								SELECT M.SASSIGN_TYPE_CD 
+								     , M.SASSIGN_TYPE_NM 
+								  FROM MST.TB_ASSIGN_TYPE_CD M 
+								     , MST.TB_IPMS_SVC_MST SM 
+								     , MST.TB_IPMS_SVC_SUB SS 
+								     , MST.TB_LVL_MST LV 
+								 WHERE 1=1
+								   AND M.SASSIGN_TYPE_CD = SM.SASSIGN_TYPE_CD(+) 
+								   AND SM.NIPMS_SVC_SEQ = SS.NIPMS_SVC_MST_SEQ(+) 
+								   AND SS.SSVC_LINE_TYPE_CD = LV.SSVC_LINE_TYPE_CD(+) 
+								GROUP BY M.SASSIGN_TYPE_CD 
+								     , M.SASSIGN_TYPE_NM
+							) B
+							, MST.TB_LVL_MST C
+						WHERE 1=1
+							AND C.SSVC_LINE_TYPE_CD(+) = A.SSVC_LINE_TYPE_CD
+					) A
+					, (
+						SELECT
+								SHIST_DT
+							 	, SSVC_LINE_TYPE_CD
+							 	, NLVL_MST_SEQ 
+								, SASSIGN_TYPE_CD
+							 	, SIP_CREATE_TYPE_CD 
+								, SIP_VERSION_TYPE_CD
+								, NALL_CNT
+								, NALLOC_CNT
+								, NASSIGN_CNT
+						FROM MST.TB_ORG_SVC_STATS_MST  
+						WHERE 1=1
+							AND SHIST_DT = #{searchBgnDe, jdbcType=VARCHAR}
+							<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sipVersionTypeCd)">
+								AND SIP_VERSION_TYPE_CD =  #{sipVersionTypeCd, jdbcType=CHAR}
+							</if>
+							<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sipCreateTypeCd)">
+								AND SIP_CREATE_TYPE_CD =  #{sipCreateTypeCd, jdbcType=CHAR}
+							</if>
+					) B
+				WHERE 1=1
+					AND B.SSVC_LINE_TYPE_CD(+) = A.SSVC_LINE_TYPE_CD
+					AND B.NLVL_MST_SEQ(+) = A.NLVL_MST_SEQ
+				 	AND B.SASSIGN_TYPE_CD(+) = A.SASSIGN_TYPE_CD
+				ORDER BY 
+					A.SASSIGN_TYPE_CD
+			) A
+			GROUP BY
+				A.SSVC_LINE_TYPE_CD ,
+				A.SASSIGN_TYPE_CD ,
+				A.SASSIGN_TYPE_NM ,
+				A.SIP_CREATE_TYPE_CD ,
+				A.SIP_VERSION_TYPE_CD ,
+				A.NALL_CNT_ALL ,
+				A.NALLOC_CNT_ALL ,
+				A.NASSIGN_CNT_ALL
+		)
+		SELECT
+			 A.SASSIGN_TYPE_CD
+			, A.SASSIGN_TYPE_NM
+			, A.SIP_CREATE_TYPE_NM
+			, A.SIP_VERSION_TYPE_NM
+			, A.NALL_CNT_ALL
+			, A.NALLOC_CNT_ALL
+			, A.NASSIGN_CNT_ALL
+			<if test="chkSvcLineList != null">
+				<foreach collection="chkSvcLineList" item="item" index="index" >
+					 , NVL(TO_CHAR(MIN(CASE A.SSVC_LINE_TYPE_CD WHEN #{item.code} THEN A.NALL_CNT END)),'0') AS NALL_CNT_${item.code}
+					 , NVL(TO_CHAR(MIN(CASE A.SSVC_LINE_TYPE_CD WHEN #{item.code} THEN A.NALLOC_CNT END)), '0') AS NALLOC_CNT_${item.code}
+					 , NVL(TO_CHAR(MIN(CASE A.SSVC_LINE_TYPE_CD WHEN #{item.code} THEN A.NASSIGN_CNT END)), '0') AS NASSIGN_CNT_${item.code}
+				</foreach>
+			</if>
+		FROM (
+			SELECT 
+				T1.SSVC_LINE_TYPE_CD
+				, A.SSVC_LINE_TYPE_NM
+				, T1.SASSIGN_TYPE_CD
+				, T1.SASSIGN_TYPE_NM
+				, E.SIP_CREATE_TYPE_NM
+				, F.SIP_VERSION_TYPE_NM
+				, T1.NALL_CNT
+				, T1.NALLOC_CNT
+				, T1.NASSIGN_CNT
+				, T1.NALL_CNT_ALL
+				, T1.NALLOC_CNT_ALL
+				, T1.NASSIGN_CNT_ALL
+			FROM T1
+				, MST.TB_SVC_LINE_TYPE_CD A
+				, MST.TB_IP_CREATE_TYPE_CD E
+				, MST.TB_IP_VERSION_TYPE_CD F
+			WHERE 1=1
+				AND A.SSVC_LINE_TYPE_CD(+) = T1.SSVC_LINE_TYPE_CD
+				AND E.SIP_CREATE_TYPE_CD(+) = T1.SIP_CREATE_TYPE_CD
+				AND F.SIP_VERSION_TYPE_CD(+) = T1.SIP_VERSION_TYPE_CD
+				<if test="chkSvcLineList != null">
+					AND T1.SSVC_LINE_TYPE_CD IN
+					<foreach collection="chkSvcLineList" item="item" separator="," open="(" close=")">
+						#{item.code}
+					</foreach>
+				</if>
+		) A
+		GROUP BY A.SASSIGN_TYPE_CD
+				, A.SASSIGN_TYPE_NM
+				, A.SIP_CREATE_TYPE_NM
+				, A.SIP_VERSION_TYPE_NM
+				, A.NALL_CNT_ALL
+				, A.NALLOC_CNT_ALL
+				, A.NASSIGN_CNT_ALL
+		ORDER BY A.SASSIGN_TYPE_CD
+	</select>
+	
+	<select id="selectListBlockSizeStatMst" resultType="hashmap" parameterType="com.kt.ipms.legacy.statmgmt.ipstatmgmt.vo.IpIntgrmSvcStatVo">
+		WITH T1 AS (
+			SELECT 
+				A.SSVC_LINE_TYPE_NM
+				, A.SSVC_LINE_TYPE_CD
+				, A.SSVC_GROUP_NM
+				, A.SSVC_GROUP_CD
+				, A.SSVC_OBJ_NM
+				, A.SSVC_OBJ_CD
+				, A.SIP_CREATE_TYPE_NM
+				, A.SIP_VERSION_TYPE_NM
+				, A.NBLOCK_SIZE
+				, NVL(A.NALL_CNT,0) AS NALL_CNT
+				, NVL(A.NALLOC_CNT,0) AS NALLOC_CNT
+				, NVL(A.NASSIGN_CNT,0) AS NASSIGN_CNT
+				, SUM(NVL(A.NALL_CNT, 0)) OVER(PARTITION BY A.SSVC_LINE_TYPE_CD,A.SSVC_GROUP_CD,A.SSVC_OBJ_CD,A.SIP_CREATE_TYPE_CD,A.SIP_VERSION_TYPE_CD) AS NALL_CNT_ALL
+			 	, SUM(NVL(A.NALLOC_CNT, 0)) OVER(PARTITION BY A.SSVC_LINE_TYPE_CD,A.SSVC_GROUP_CD,A.SSVC_OBJ_CD,A.SIP_CREATE_TYPE_CD,A.SIP_VERSION_TYPE_CD) AS NALLOC_CNT_ALL
+			 	, SUM(NVL(A.NASSIGN_CNT, 0)) OVER(PARTITION BY A.SSVC_LINE_TYPE_CD,A.SSVC_GROUP_CD,A.SSVC_OBJ_CD,A.SIP_CREATE_TYPE_CD,A.SIP_VERSION_TYPE_CD) AS NASSIGN_CNT_ALL
+			FROM (
+				SELECT 
+					A.SSVC_LINE_TYPE_CD,
+					A.SSVC_LINE_TYPE_NM,
+					A.NLVL_MST_SEQ ,
+					C.SLVL_CD AS SSVC_GROUP_CD,
+					C.SLVL_NM AS SSVC_GROUP_NM,
+					D.SLVL_CD AS SSVC_OBJ_CD,
+					D.SLVL_NM AS SSVC_OBJ_NM,
+					E.SIP_CREATE_TYPE_CD ,
+					E.SIP_CREATE_TYPE_NM ,
+					F.SIP_VERSION_TYPE_CD ,
+					F.SIP_VERSION_TYPE_NM ,
+					B.NLVL_MST_SEQ ,
+					B.NBLOCK_SIZE ,
+					B.NALL_CNT ,
+					B.NASSIGN_CNT ,
+					B.NALLOC_CNT 
+				FROM (
+					SELECT 
+						A.SSVC_LINE_TYPE_CD
+						, A.SSVC_LINE_TYPE_NM
+						, C.SSVC_GROUP_CD
+						, C.SSVC_OBJ_CD
+						, C.NLVL_MST_SEQ
+					FROM MST.TB_SVC_LINE_TYPE_CD A
+						, MST.TB_LVL_MST C
+					WHERE 1=1
+						AND C.SSVC_LINE_TYPE_CD(+) = A.SSVC_LINE_TYPE_CD
+				) A
+				, (
+					SELECT 
+						SHIST_DT
+						, SSVC_LINE_TYPE_CD
+						, NLVL_MST_SEQ
+						, SIP_CREATE_TYPE_CD 
+						, SIP_VERSION_TYPE_CD
+						, NBLOCK_SIZE
+						, NALL_CNT
+						, NASSIGN_CNT
+						, NALLOC_CNT 
+					FROM MST.TB_ORG_BLOCK_STATS_MST
+					WHERE 1=1
+						AND SHIST_DT = #{searchBgnDe, jdbcType=VARCHAR}
+						<if test="ssvcLineTypeCd != null">
+							<if test="ssvcLineTypeCd != ''">
+								AND SSVC_LINE_TYPE_CD = #{ssvcLineTypeCd, jdbcType=CHAR}
+							</if>
+						</if>
+						<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sipVersionTypeCd)">
+							AND SIP_VERSION_TYPE_CD =  #{sipVersionTypeCd, jdbcType=CHAR}
+						</if>
+						<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sipCreateTypeCd)">
+							AND SIP_CREATE_TYPE_CD =  #{sipCreateTypeCd, jdbcType=CHAR}
+						</if>
+				) B
+				, MST.TB_LVL_CD C
+				, MST.TB_LVL_CD D
+				, MST.TB_IP_CREATE_TYPE_CD E
+				, MST.TB_IP_VERSION_TYPE_CD F
+				WHERE 1=1
+					AND B.SSVC_LINE_TYPE_CD(+) = A.SSVC_LINE_TYPE_CD
+					AND B.NLVL_MST_SEQ(+) = A.NLVL_MST_SEQ
+					AND C.SLVL_CD(+) = A.SSVC_GROUP_CD
+					AND D.SLVL_CD(+) = A.SSVC_OBJ_CD
+					AND E.SIP_CREATE_TYPE_CD(+) = NVL(B.SIP_CREATE_TYPE_CD, #{sipCreateTypeCd, jdbcType=CHAR})
+					AND F.SIP_VERSION_TYPE_CD(+) = NVL(B.SIP_VERSION_TYPE_CD, #{sipVersionTypeCd, jdbcType=CHAR})
+				ORDER BY
+					A.SSVC_LINE_TYPE_CD
+					, A.SSVC_GROUP_CD
+					, A.SSVC_OBJ_CD		
+			) A
+		)
+		SELECT 
+			A.SSVC_LINE_TYPE_CD 
+			, A.SSVC_LINE_TYPE_NM
+			, A.SSVC_GROUP_CD
+			, A.SSVC_GROUP_NM
+			, A.SSVC_OBJ_CD
+			, A.SSVC_OBJ_NM
+			, A.SIP_CREATE_TYPE_NM
+			, A.SIP_VERSION_TYPE_NM
+			, A.NALL_CNT_ALL
+			, A.NALLOC_CNT_ALL
+			, A.NASSIGN_CNT_ALL
+			<if test="chkBlockSizeList != null">
+				<foreach collection="chkBlockSizeList" item="item" index="index" >
+					, NVL(TO_CHAR(MIN(CASE A.NBLOCK_SIZE WHEN #{item.code} THEN A.NALL_CNT END)),'0') AS NALL_CNT_${item.code}
+					, NVL(TO_CHAR(MIN(CASE A.NBLOCK_SIZE WHEN #{item.code} THEN A.NALLOC_CNT END)), '0') AS NALLOC_CNT_${item.code}
+					, NVL(TO_CHAR(MIN(CASE A.NBLOCK_SIZE WHEN #{item.code} THEN A.NASSIGN_CNT END)), '0') AS NASSIGN_CNT_${item.code}
+				</foreach>
+			</if>
+		FROM (
+			SELECT 
+				T1.SSVC_LINE_TYPE_NM
+				, T1.SSVC_LINE_TYPE_CD
+				, T1.SSVC_GROUP_NM
+				, T1.SSVC_GROUP_CD
+				, T1.SSVC_OBJ_NM
+				, T1.SSVC_OBJ_CD
+				, T1.SIP_CREATE_TYPE_NM
+				, T1.SIP_VERSION_TYPE_NM
+				, T1.NBLOCK_SIZE
+				, NVL(T1.NALL_CNT,0) AS NALL_CNT
+				, NVL(T1.NALLOC_CNT,0) AS NALLOC_CNT
+				, NVL(T1.NASSIGN_CNT,0) AS NASSIGN_CNT
+				, T1.NALL_CNT_ALL
+			 	, T1.NALLOC_CNT_ALL
+			 	, T1.NASSIGN_CNT_ALL
+			FROM T1
+		)  A
+		WHERE 1=1
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssvcLineTypeCd)">
+				AND A.SSVC_LINE_TYPE_CD =  #{ssvcLineTypeCd, jdbcType=CHAR}
+			</if>
+		GROUP BY A.SSVC_LINE_TYPE_CD 
+					, A.SSVC_LINE_TYPE_NM
+					, A.SSVC_GROUP_CD
+					, A.SSVC_GROUP_NM
+					, A.SSVC_OBJ_CD
+					, A.SSVC_OBJ_NM
+					, A.SIP_CREATE_TYPE_NM
+					, A.SIP_VERSION_TYPE_NM
+					, A.NALL_CNT_ALL
+					, A.NALLOC_CNT_ALL
+					, A.NASSIGN_CNT_ALL
+		ORDER BY A.SSVC_LINE_TYPE_CD
+					, A.SSVC_GROUP_CD
+					, A.SSVC_OBJ_CD
+	</select>
+	
+	<select id="selectListSvcLineList" resultType="hashmap" >
+		SELECT * FROM MST.TB_SVC_LINE_TYPE_CD A
+	</select>
+	
+</mapper>

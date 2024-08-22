@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +17,7 @@ import com.kt.ipms.legacy.ipmgmt.assignmgmt.vo.TbIpAssignMstVo;
 @Transactional
 public class AssignMgmtAdapterService {
 
-	@Autowired
+	@Lazy @Autowired
 	private AssignMgmtService assignMgmtService;
 	
 	@Transactional(propagation = Propagation.REQUIRED)

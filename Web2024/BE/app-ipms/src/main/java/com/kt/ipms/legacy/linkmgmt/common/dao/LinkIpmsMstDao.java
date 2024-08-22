@@ -1,14 +1,15 @@
 package com.kt.ipms.legacy.linkmgmt.common.dao;
 
-import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
 
 import com.kt.ipms.legacy.linkmgmt.common.vo.TbIpAlloLinkOperMstVo;
 import com.kt.ipms.legacy.linkmgmt.common.vo.TbIpAllocNeossMstVo;
 import com.kt.ipms.legacy.linkmgmt.common.vo.TbLnkIpmsSvcMstvo;
-import com.kt.ipms.legacy.opermgmt.whoismgmt.vo.TbWhoisVo;
 
+@Mapper
 public interface LinkIpmsMstDao {
 
 	/**

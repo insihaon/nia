@@ -1,12 +1,15 @@
 package com.kt.ipms.legacy.opermgmt.operstdmgmt.dao;
 import java.util.List;
 
-import com.kt.ipms.legacy.opermgmt.operstdmgmt.vo.TbCmnMsgMstVo;
+import org.apache.ibatis.annotations.Mapper;
+
 import com.kt.ipms.legacy.opermgmt.operstdmgmt.vo.TbCmnMsgLvlCdVo;
+import com.kt.ipms.legacy.opermgmt.operstdmgmt.vo.TbCmnMsgMstVo;
 import com.kt.ipms.legacy.opermgmt.operstdmgmt.vo.TbCmnMsgTypeCdVo;
 
 
 /** TB_CMN_MSG_CD_MST DAO INTERFACE **/
+@Mapper
 public interface TbCmnMsgMstDao {
 	
 	/** TB_CMN_MSG_CD_MST insert **/

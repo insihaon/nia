@@ -1,0 +1,676 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kt.ipms.legacy.opermgmt.whoismgmt.dao.TbWhoisUserDao">
+	<resultMap id="tbWhoisUserVoResult" type="com.kt.ipms.legacy.opermgmt.whoismgmt.vo.TbWhoisUserVo">
+		<result column="SSAID" property="ssaid" jdbcType="VARCHAR" />
+		<result column="SNETNAME" property="snetname" jdbcType="VARCHAR" />
+		<result column="SORGNAME" property="sorgname" jdbcType="VARCHAR" />
+		<result column="SADDR" property="saddr" jdbcType="VARCHAR" />
+		<result column="SADDR_DETAIL" property="saddrDetail" jdbcType="VARCHAR" />
+		<result column="SZIPCODE" property="szipcode" jdbcType="VARCHAR" />
+		<result column="SEORGNAME" property="seorgname" jdbcType="VARCHAR" />
+		<result column="SEADDR" property="seaddr" jdbcType="VARCHAR" />
+		<result column="SEADDR_DETAIL" property="seaddrDetail" jdbcType="VARCHAR" />
+		<result column="SADM_NAME" property="sadmName" jdbcType="VARCHAR" />
+		<result column="SADM_ORGNAME" property="sadmOrgname" jdbcType="VARCHAR" />
+		<result column="SADM_ADDR" property="sadmAddr" jdbcType="VARCHAR" />
+		<result column="SADM_ADDR_DETAIL" property="sadmAddrDetail" jdbcType="VARCHAR" />
+		<result column="SADM_ZIPCODE" property="sadmZipcode" jdbcType="VARCHAR" />
+		<result column="SADM_ENAME" property="sadmEname" jdbcType="VARCHAR" />
+		<result column="SADM_EORGNAME" property="sadmEorgname" jdbcType="VARCHAR" />
+		<result column="SADM_EADDR" property="sadmEaddr" jdbcType="VARCHAR" />
+		<result column="SADM_EADDR_DETAIL" property="sadmEaddrDetail" jdbcType="VARCHAR" />
+		<result column="SADM_PHONE" property="sadmPhone" jdbcType="VARCHAR" />
+		<result column="SADM_DPPHONE" property="sadmDpphone" jdbcType="VARCHAR" />
+		<result column="SADM_FAX" property="sadmFax" jdbcType="VARCHAR" />
+		<result column="SADM_EMAIL" property="sadmEmail" jdbcType="VARCHAR" />
+		<result column="SFLAG" property="sflag" jdbcType="VARCHAR" />
+		<result column="SADDRSEQ" property="saddrseq" jdbcType="NUMERIC" />
+		<result column="SSERIALNO" property="sserialno" jdbcType="VARCHAR" />
+		<result column="SADM_SERIALNO" property="sadmSerialno" jdbcType="VARCHAR" />
+		<result column="SCITY" property="scity" jdbcType="VARCHAR" />
+		<result column="SECITY" property="secity" jdbcType="VARCHAR" />
+		<result column="SORGTYPE" property="sorgtype" jdbcType="VARCHAR" />
+		<result column="SCUSTNAME" property="scustname" jdbcType="VARCHAR" />
+		<result column="DCREATE_DT" property="dcreateDt" jdbcType="TIMESTAMP" />
+		<result column="SCREATE_ID" property="screateId" jdbcType="VARCHAR" />
+		<result column="DMODIFY_DT" property="dmodifyDt" jdbcType="TIMESTAMP" />
+		<result column="SMODIFY_ID" property="smodifyId" jdbcType="VARCHAR" />
+
+		<result column="RNUM" property="rowNo" jdbcType="NUMERIC" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		A.SSAID, A.SNETNAME, A.SORGNAME, A.SADDR
+		, A.SADDR_DETAIL, A.SZIPCODE, A.SEORGNAME, A.SEADDR
+		, A.SEADDR_DETAIL, A.SADM_NAME, A.SADM_ORGNAME, A.SADM_ADDR
+		, A.SADM_ADDR_DETAIL, A.SADM_ZIPCODE, A.SADM_ENAME, A.SADM_EORGNAME
+		, A.SADM_EADDR, A.SADM_EADDR_DETAIL, A.SADM_PHONE, A.SADM_DPPHONE
+		, A.SADM_FAX, A.SADM_EMAIL, A.SFLAG, A.SADDRSEQ
+		, A.SSERIALNO, A.SADM_SERIALNO, A.SCITY, A.SECITY
+		, A.SORGTYPE, A.SCUSTNAME, A.DCREATE_DT, A.SCREATE_ID
+		, A.DMODIFY_DT, A.SMODIFY_ID
+
+	</sql>
+	
+	<sql id="Append_Column_List">
+	
+	</sql>
+	
+	<sql id="Append_Column_List_Alias">
+	
+	</sql>
+	
+	<sql id="Append_From_Clause">
+	
+	</sql>
+	
+	<sql id="Append_Where_Clause">
+	
+	</sql>
+	
+	<sql id="Vo_Where_Clause">
+		<trim prefix="WHERE" prefixOverrides="AND">
+			A.SSAID = #{ssaid, jdbcType=VARCHAR}
+
+		</trim>
+	</sql>
+
+	<sql id="List_Where_Clause">
+		<trim prefix="WHERE" prefixOverrides="AND">
+			1 = 1
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssaid)">
+				AND A.SSAID = #{ssaid, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(snetname)">
+				AND A.SNETNAME = #{snetname, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sorgname)">
+				AND A.SORGNAME = #{sorgname, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(saddr)">
+				AND A.SADDR = #{saddr, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(saddrDetail)">
+				AND A.SADDR_DETAIL = #{saddrDetail, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(szipcode)">
+				AND A.SZIPCODE = #{szipcode, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(seorgname)">
+				AND A.SEORGNAME = #{seorgname, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(seaddr)">
+				AND A.SEADDR = #{seaddr, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(seaddrDetail)">
+				AND A.SEADDR_DETAIL = #{seaddrDetail, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sadmName)">
+				AND A.SADM_NAME = #{sadmName, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sadmOrgname)">
+				AND A.SADM_ORGNAME = #{sadmOrgname, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sadmAddr)">
+				AND A.SADM_ADDR = #{sadmAddr, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sadmAddrDetail)">
+				AND A.SADM_ADDR_DETAIL = #{sadmAddrDetail, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sadmZipcode)">
+				AND A.SADM_ZIPCODE = #{sadmZipcode, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sadmEname)">
+				AND A.SADM_ENAME = #{sadmEname, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sadmEorgname)">
+				AND A.SADM_EORGNAME = #{sadmEorgname, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sadmEaddr)">
+				AND A.SADM_EADDR = #{sadmEaddr, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sadmEaddrDetail)">
+				AND A.SADM_EADDR_DETAIL = #{sadmEaddrDetail, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sadmPhone)">
+				AND A.SADM_PHONE = #{sadmPhone, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sadmDpphone)">
+				AND A.SADM_DPPHONE = #{sadmDpphone, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sadmFax)">
+				AND A.SADM_FAX = #{sadmFax, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sadmEmail)">
+				AND A.SADM_EMAIL = #{sadmEmail, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sflag)">
+				AND A.SFLAG = #{sflag, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(saddrseq)">
+				AND A.SADDRSEQ = #{saddrseq, jdbcType=NUMERIC}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sserialno)">
+				AND A.SSERIALNO = #{sserialno, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sadmSerialno)">
+				AND A.SADM_SERIALNO = #{sadmSerialno, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(scity)">
+				AND A.SCITY = #{scity, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(secity)">
+				AND A.SECITY = #{secity, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sorgtype)">
+				AND A.SORGTYPE = #{sorgtype, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(scustname)">
+				AND A.SCUSTNAME = #{scustname, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dcreateDt)">
+				AND A.DCREATE_DT = #{dcreateDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(screateId)">
+				AND A.SCREATE_ID = #{screateId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dmodifyDt)">
+				AND A.DMODIFY_DT = #{dmodifyDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smodifyId)">
+				AND A.SMODIFY_ID = #{smodifyId, jdbcType=VARCHAR}
+			</if>
+
+		</trim>
+	</sql>
+	
+	<insert id="insertTbWhoisUserVo" parameterType="com.kt.ipms.legacy.opermgmt.whoismgmt.vo.TbWhoisUserVo">
+		INSERT
+		INTO BIF.TB_WHOIS_USER (
+			SSAID
+			,	SNETNAME
+			,	SORGNAME
+			,	SADDR
+			,	SADDR_DETAIL
+			,	SZIPCODE
+			,	SEORGNAME
+			,	SEADDR
+			,	SEADDR_DETAIL
+			,	SADM_NAME
+			,	SADM_ORGNAME
+			,	SADM_ADDR
+			,	SADM_ADDR_DETAIL
+			,	SADM_ZIPCODE
+			,	SADM_ENAME
+			,	SADM_EORGNAME
+			,	SADM_EADDR
+			,	SADM_EADDR_DETAIL
+			,	SADM_PHONE
+			,	SADM_DPPHONE
+			,	SADM_FAX
+			,	SADM_EMAIL
+			,	SFLAG
+			,	SADDRSEQ
+			,	SSERIALNO
+			,	SADM_SERIALNO
+			,	SCITY
+			,	SECITY
+			,	SORGTYPE
+			,	SCUSTNAME
+			,	SCREATE_ID
+			,	SMODIFY_ID
+		
+		) VALUES (
+			#{ssaid, jdbcType=VARCHAR}
+			,	#{snetname, jdbcType=VARCHAR}
+			,	#{sorgname, jdbcType=VARCHAR}
+			,	#{saddr, jdbcType=VARCHAR}
+			,	#{saddrDetail, jdbcType=VARCHAR}
+			,	#{szipcode, jdbcType=VARCHAR}
+			,	#{seorgname, jdbcType=VARCHAR}
+			,	#{seaddr, jdbcType=VARCHAR}
+			,	#{seaddrDetail, jdbcType=VARCHAR}
+			,	#{sadmName, jdbcType=VARCHAR}
+			,	#{sadmOrgname, jdbcType=VARCHAR}
+			,	#{sadmAddr, jdbcType=VARCHAR}
+			,	#{sadmAddrDetail, jdbcType=VARCHAR}
+			,	#{sadmZipcode, jdbcType=VARCHAR}
+			,	#{sadmEname, jdbcType=VARCHAR}
+			,	#{sadmEorgname, jdbcType=VARCHAR}
+			,	#{sadmEaddr, jdbcType=VARCHAR}
+			,	#{sadmEaddrDetail, jdbcType=VARCHAR}
+			,	#{sadmPhone, jdbcType=VARCHAR}
+			,	#{sadmDpphone, jdbcType=VARCHAR}
+			,	#{sadmFax, jdbcType=VARCHAR}
+			,	#{sadmEmail, jdbcType=VARCHAR}
+			,	#{sflag, jdbcType=VARCHAR}
+			,	#{saddrseq, jdbcType=NUMERIC}
+			,	#{sserialno, jdbcType=VARCHAR}
+			,	#{sadmSerialno, jdbcType=VARCHAR}
+			,	#{scity, jdbcType=VARCHAR}
+			,	#{secity, jdbcType=VARCHAR}
+			,	#{sorgtype, jdbcType=VARCHAR}
+			,	#{scustname, jdbcType=VARCHAR}
+			,	#{screateId, jdbcType=VARCHAR}
+			,	#{smodifyId, jdbcType=VARCHAR}
+		
+		)
+	</insert>
+	
+	<update id="updateTbWhoisUserVo" parameterType="com.kt.ipms.legacy.opermgmt.whoismgmt.vo.TbWhoisUserVo">
+		UPDATE
+		BIF.TB_WHOIS_USER A
+		SET
+			A.SMODIFY_ID = #{smodifyId, jdbcType=VARCHAR}
+			, A.DMODIFY_DT = CURRENT_TIMESTAMP
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sadmName)">
+				, A.SADM_NAME = #{sadmName, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(snetname)">
+				, A.SNETNAME = #{snetname, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sorgname)">
+				, A.SORGNAME = #{sorgname, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(saddr)">
+				, A.SADDR = #{saddr, jdbcType=VARCHAR}
+			</if>
+			, A.SADDR_DETAIL = #{saddrDetail, jdbcType=VARCHAR}
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(szipcode)">
+				, A.SZIPCODE = #{szipcode, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(seorgname)">
+				, A.SEORGNAME = #{seorgname, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(seaddr)">
+				, A.SEADDR = #{seaddr, jdbcType=VARCHAR}
+			</if>
+			, A.SEADDR_DETAIL = #{seaddrDetail, jdbcType=VARCHAR}
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sadmOrgname)">
+				, A.SADM_ORGNAME = #{sadmOrgname, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sadmAddr)">
+				, A.SADM_ADDR = #{sadmAddr, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sadmAddrDetail)">
+				, A.SADM_ADDR_DETAIL = #{sadmAddrDetail, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sadmZipcode)">
+				, A.SADM_ZIPCODE = #{sadmZipcode, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sadmEname)">
+				, A.SADM_ENAME = #{sadmEname, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sadmEorgname)">
+				, A.SADM_EORGNAME = #{sadmEorgname, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sadmEaddr)">
+				, A.SADM_EADDR = #{sadmEaddr, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sadmEaddrDetail)">
+				, A.SADM_EADDR_DETAIL = #{sadmEaddrDetail, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sadmPhone)">
+				, A.SADM_PHONE = #{sadmPhone, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sadmDpphone)">
+				, A.SADM_DPPHONE = #{sadmDpphone, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sadmFax)">
+				, A.SADM_FAX = #{sadmFax, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sadmEmail)">
+				, A.SADM_EMAIL = #{sadmEmail, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sflag)">
+				, A.SFLAG = #{sflag, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(saddrseq)">
+				, A.SADDRSEQ = #{saddrseq, jdbcType=NUMERIC}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sserialno)">
+				, A.SSERIALNO = #{sserialno, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sadmSerialno)">
+				, A.SADM_SERIALNO = #{sadmSerialno, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(scity)">
+				, A.SCITY = #{scity, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(secity)">
+				, A.SECITY = #{secity, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sorgtype)">
+				, A.SORGTYPE = #{sorgtype, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(scustname)">
+				, A.SCUSTNAME = #{scustname, jdbcType=VARCHAR}
+			</if>
+		<include refid="Vo_Where_Clause" />
+	</update>
+	
+	<delete id="deleteTbWhoisUserVo" parameterType="com.kt.ipms.legacy.opermgmt.whoismgmt.vo.TbWhoisUserVo">
+		DELETE
+		FROM BIF.TB_WHOIS_USER A
+		<include refid="Vo_Where_Clause" />
+	</delete>
+	
+	<select id="selectTbWhoisUserVo" resultMap="tbWhoisUserVoResult" parameterType="com.kt.ipms.legacy.opermgmt.whoismgmt.vo.TbWhoisUserVo">
+		SELECT
+		<include refid="Base_Column_List" />
+		<include refid="Append_Column_List"/>
+		FROM BIF.TB_WHOIS_USER A
+		<include refid="Append_From_Clause"/>
+		<include refid="Vo_Where_Clause" />
+		<include refid="Append_Where_Clause"/>
+	</select>
+	
+	<select id="selectListTbWhoisUserVo" resultMap="tbWhoisUserVoResult" parameterType="com.kt.ipms.legacy.opermgmt.whoismgmt.vo.TbWhoisUserVo">
+		SELECT
+		<include refid="Base_Column_List" />
+		<include refid="Append_Column_List"/>
+		FROM BIF.TB_WHOIS_USER A
+		<include refid="Append_From_Clause"/>
+		<include refid="List_Where_Clause" />
+		<include refid="Append_Where_Clause"/>
+	</select>
+	
+	<select id="countListTbWhoisUserVo" resultType="int" parameterType="com.kt.ipms.legacy.opermgmt.whoismgmt.vo.TbWhoisUserVo">
+		SELECT
+			count(1) totalCount
+		FROM BIF.TB_WHOIS_USER A
+		<include refid="Append_From_Clause"/>
+		<include refid="List_Where_Clause" />
+		<include refid="Append_Where_Clause"/>
+	</select>
+	
+	<select id="selectListPageTbWhoisUserVo" resultMap="tbWhoisUserVoResult" parameterType="com.kt.ipms.legacy.opermgmt.whoismgmt.vo.TbWhoisUserVo">
+		SELECT <include refid="Base_Column_List" />
+			   <include refid="Append_Column_List_Alias"/>, A.RNUM FROM (
+			SELECT <include refid="Base_Column_List" />
+				   <include refid="Append_Column_List_Alias"/>, ROWNUM RNUM FROM (
+				SELECT
+				<include refid="Base_Column_List" />
+				<include refid="Append_Column_List"/>
+				FROM BIF.TB_WHOIS_USER A
+				<include refid="Append_From_Clause"/>
+				<include refid="List_Where_Clause" />
+				<include refid="Append_Where_Clause"/>
+			) A WHERE ROWNUM <![CDATA[<=]]> #{lastIndex}
+		) A WHERE RNUM <![CDATA[>=]]> #{firstIndex}
+	</select>
+	
+	<select id="countListPageTbWhoisUserVo" resultType="int" parameterType="com.kt.ipms.legacy.opermgmt.whoismgmt.vo.TbWhoisUserVo">
+		SELECT
+			count(1) totalCount
+		FROM BIF.TB_WHOIS_USER A
+		<include refid="Append_From_Clause"/>
+		<include refid="List_Where_Clause" />
+		<include refid="Append_Where_Clause"/>
+	</select>
+	
+	<update id="updateTbWhoisUserNewVo" parameterType="com.kt.ipms.legacy.opermgmt.whoismgmt.vo.TbWhoisUserVo">
+		UPDATE
+		BIF.TB_WHOIS_USER A
+		SET
+			A.SMODIFY_ID = #{smodifyId, jdbcType=VARCHAR}
+			, A.DMODIFY_DT = CURRENT_TIMESTAMP
+			, A.STRANSKIND = #{stransKind, jdbcType=VARCHAR}
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sorgname)">
+				, A.SORGNAME = #{sorgname, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(seorgname)">
+				, A.SEORGNAME = #{seorgname, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(saddr)">
+				, A.SADDR = #{saddr, jdbcType=VARCHAR}
+			</if>
+			, A.SADDR_DETAIL = #{saddrDetail, jdbcType=VARCHAR}
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(szipcode)">
+				, A.SZIPCODE = #{szipcode, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(seaddr)">
+				, A.SEADDR = #{seaddr, jdbcType=VARCHAR}
+			</if>
+			, A.SEADDR_DETAIL = #{seaddrDetail, jdbcType=VARCHAR}
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sadmAddr)">
+				, A.SADM_ADDR = #{sadmAddr, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sadmAddrDetail)">
+				, A.SADM_ADDR_DETAIL = #{sadmAddrDetail, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sadmZipcode)">
+				, A.SADM_ZIPCODE = #{sadmZipcode, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sadmEorgname)">
+				, A.SADM_EORGNAME = #{sadmEorgname, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sadmEaddr)">
+				, A.SADM_EADDR = #{sadmEaddr, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sadmEaddrDetail)">
+				, A.SADM_EADDR_DETAIL = #{sadmEaddrDetail, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sadmDpphone)">
+				, A.SADM_DPPHONE = #{sadmDpphone, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sadmEmail)">
+				, A.SADM_EMAIL = #{sadmEmail, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(saddr)">
+				, A.SCITY = CASE WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '서울' THEN '서울'
+									WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '인천' THEN '인천'
+									WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '부산' THEN '부산'
+									WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '대전' THEN '대전'
+									WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '광주' THEN '광주'
+									WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '울산' THEN '울산'
+									WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '제주' THEN '제주'
+									WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '강원' THEN '강원'
+									WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '대구' THEN '대구'
+									WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '경기' THEN '경기'
+									WHEN LEFT(#{saddr, jdbcType=VARCHAR},4) = '충청북도' THEN '충북'
+									WHEN LEFT(#{saddr, jdbcType=VARCHAR},4) = '충청남도' THEN '충남'
+									WHEN LEFT(#{saddr, jdbcType=VARCHAR},4) = '경상남도' THEN '경남'
+									WHEN LEFT(#{saddr, jdbcType=VARCHAR},4) = '경상북도' THEN '경북'
+									WHEN LEFT(#{saddr, jdbcType=VARCHAR},4) = '전라남도' THEN '전북'
+									WHEN LEFT(#{saddr, jdbcType=VARCHAR},4) = '전라북도' THEN '전남'
+									ELSE '경기'
+									END 
+			</if>			 
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(saddr)">
+				, A.SECITY = UPPER(bif.uf_convert_han_to_eng(CASE WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '서울' THEN '서울'
+																								WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '인천' THEN '인천'
+																								WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '부산' THEN '부산'
+																								WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '대전' THEN '대전'
+																								WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '광주' THEN '광주'
+																								WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '울산' THEN '울산'
+																								WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '제주' THEN '제주'
+																								WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '강원' THEN '강원'
+																								WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '대구' THEN '대구'
+																								WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '경기' THEN '경기'
+																								WHEN LEFT(#{saddr, jdbcType=VARCHAR},4) = '충청북도' THEN '충북'
+																								WHEN LEFT(#{saddr, jdbcType=VARCHAR},4) = '충청남도' THEN '충남'
+																								WHEN LEFT(#{saddr, jdbcType=VARCHAR},4) = '경상남도' THEN '경남'
+																								WHEN LEFT(#{saddr, jdbcType=VARCHAR},4) = '경상북도' THEN '경북'
+																								WHEN LEFT(#{saddr, jdbcType=VARCHAR},4) = '전라남도' THEN '전북'
+																								WHEN LEFT(#{saddr, jdbcType=VARCHAR},4) = '전라북도' THEN '전남'
+																								ELSE '경기'
+																								END , 'Y'))
+			</if> 
+		WHERE
+			A.SSAID = #{ssaid, jdbcType=VARCHAR}
+	</update>
+	
+	<update id="updateKtInfoVo" parameterType="com.kt.ipms.legacy.opermgmt.whoismgmt.vo.TbWhoisUserVo">
+		UPDATE
+		BIF.TB_WHOIS_USER A
+		SET
+			A.SMODIFY_ID = #{smodifyId, jdbcType=VARCHAR}
+			, A.DMODIFY_DT = CURRENT_TIMESTAMP
+			, A.SADDR = #{saddr, jdbcType=VARCHAR}
+			, A.SADDR_DETAIL = #{saddrDetail, jdbcType=VARCHAR}
+			, A.SZIPCODE = #{szipcode, jdbcType=VARCHAR}
+			, A.SEADDR = #{seaddr, jdbcType=VARCHAR}
+			, A.SEADDR_DETAIL = #{seaddrDetail, jdbcType=VARCHAR}
+			, A.SADM_ADDR = #{sadmAddr, jdbcType=VARCHAR}
+			, A.SADM_ADDR_DETAIL = #{sadmAddrDetail, jdbcType=VARCHAR}
+			, A.SADM_ZIPCODE = #{sadmZipcode, jdbcType=VARCHAR}
+			, A.SADM_EORGNAME = #{sadmEorgname, jdbcType=VARCHAR}
+			, A.SADM_EADDR = #{sadmEaddr, jdbcType=VARCHAR}
+			, A.SADM_EADDR_DETAIL = #{sadmEaddrDetail, jdbcType=VARCHAR}
+			, A.SADM_DPPHONE = #{sadmDpphone, jdbcType=VARCHAR}
+			, A.SADM_EMAIL = #{sadmEmail, jdbcType=VARCHAR}
+			, A.SCITY =  CASE WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '서울' THEN '서울'
+										WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '인천' THEN '인천'
+										WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '부산' THEN '부산'
+										WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '대전' THEN '대전'
+										WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '광주' THEN '광주'
+										WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '울산' THEN '울산'
+										WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '제주' THEN '제주'
+										WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '강원' THEN '강원'
+										WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '대구' THEN '대구'
+										WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '경기' THEN '경기'
+										WHEN LEFT(#{saddr, jdbcType=VARCHAR},4) = '충청북도' THEN '충북'
+										WHEN LEFT(#{saddr, jdbcType=VARCHAR},4) = '충청남도' THEN '충남'
+										WHEN LEFT(#{saddr, jdbcType=VARCHAR},4) = '경상남도' THEN '경남'
+										WHEN LEFT(#{saddr, jdbcType=VARCHAR},4) = '경상북도' THEN '경북'
+										WHEN LEFT(#{saddr, jdbcType=VARCHAR},4) = '전라남도' THEN '전북'
+										WHEN LEFT(#{saddr, jdbcType=VARCHAR},4) = '전라북도' THEN '전남'
+										ELSE '경기'
+										END  
+			, A.SECITY = UPPER(bif.uf_convert_han_to_eng(CASE WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '서울' THEN '서울'
+											WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '인천' THEN '인천'
+											WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '부산' THEN '부산'
+											WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '대전' THEN '대전'
+											WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '광주' THEN '광주'
+											WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '울산' THEN '울산'
+											WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '제주' THEN '제주'
+											WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '강원' THEN '강원'
+											WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '대구' THEN '대구'
+											WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '경기' THEN '경기'
+											WHEN LEFT(#{saddr, jdbcType=VARCHAR},4) = '충청북도' THEN '충북'
+											WHEN LEFT(#{saddr, jdbcType=VARCHAR},4) = '충청남도' THEN '충남'
+											WHEN LEFT(#{saddr, jdbcType=VARCHAR},4) = '경상남도' THEN '경남'
+											WHEN LEFT(#{saddr, jdbcType=VARCHAR},4) = '경상북도' THEN '경북'
+											WHEN LEFT(#{saddr, jdbcType=VARCHAR},4) = '전라남도' THEN '전북'
+											WHEN LEFT(#{saddr, jdbcType=VARCHAR},4) = '전라북도' THEN '전남'
+											ELSE '경기'
+											END, 'Y'))
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sadmName)">
+				, A.SADM_NAME = #{sadmName, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(snetname)">
+				, A.SNETNAME = #{snetname, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sorgname)">
+				, A.SORGNAME = #{sorgname, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(seorgname)">
+				, A.SEORGNAME = #{seorgname, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sadmOrgname)">
+				, A.SADM_ORGNAME = #{sadmOrgname, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sadmEname)">
+				, A.SADM_ENAME = #{sadmEname, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sadmPhone)">
+				, A.SADM_PHONE = #{sadmPhone, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sadmFax)">
+				, A.SADM_FAX = #{sadmFax, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sflag)">
+				, A.SFLAG = #{sflag, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(saddrseq)">
+				, A.SADDRSEQ = #{saddrseq, jdbcType=NUMERIC}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sserialno)">
+				, A.SSERIALNO = #{sserialno, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sadmSerialno)">
+				, A.SADM_SERIALNO = #{sadmSerialno, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sorgtype)">
+				, A.SORGTYPE = #{sorgtype, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(scustname)">
+				, A.SCUSTNAME = #{scustname, jdbcType=VARCHAR}
+			</if>
+		WHERE
+			A.SSAID = #{ssaid, jdbcType=VARCHAR}
+	</update>
+	
+	<update id="updateTbWhoisUserTrans" parameterType="com.kt.ipms.legacy.opermgmt.whoismgmt.vo.TbWhoisUserVo">
+		UPDATE BIF.TB_WHOIS_USER A SET
+			A.SMODIFY_ID = #{smodifyId, jdbcType=VARCHAR}
+			, A.DMODIFY_DT = CURRENT_TIMESTAMP
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(stransKind)">
+				, A.STRANSKIND = #{stransKind, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sorgname)">
+				, A.SORGNAME = #{sorgname, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(saddr)">
+				, A.SADDR = #{saddr, jdbcType=VARCHAR}
+			</if>
+			, A.SADDR_DETAIL = #{saddrDetail, jdbcType=VARCHAR}
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(szipcode)">
+				, A.SZIPCODE = #{szipcode, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(seorgname)">
+				, A.SEORGNAME = #{sorgname, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(seaddr)">
+				, A.SEADDR = #{seaddr, jdbcType=VARCHAR}
+			</if>
+			, A.SEADDR_DETAIL = #{seaddrDetail, jdbcType=VARCHAR}
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(saddr)">
+				, A.SCITY = CASE WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '서울' THEN '서울'
+									WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '인천' THEN '인천'
+									WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '부산' THEN '부산'
+									WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '대전' THEN '대전'
+									WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '광주' THEN '광주'
+									WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '울산' THEN '울산'
+									WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '제주' THEN '제주'
+									WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '강원' THEN '강원'
+									WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '대구' THEN '대구'
+									WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '경기' THEN '경기'
+									WHEN LEFT(#{saddr, jdbcType=VARCHAR},4) = '충청북도' THEN '충북'
+									WHEN LEFT(#{saddr, jdbcType=VARCHAR},4) = '충청남도' THEN '충남'
+									WHEN LEFT(#{saddr, jdbcType=VARCHAR},4) = '경상남도' THEN '경남'
+									WHEN LEFT(#{saddr, jdbcType=VARCHAR},4) = '경상북도' THEN '경북'
+									WHEN LEFT(#{saddr, jdbcType=VARCHAR},4) = '전라남도' THEN '전북'
+									WHEN LEFT(#{saddr, jdbcType=VARCHAR},4) = '전라북도' THEN '전남'
+									ELSE '경기'
+									END 
+			</if>			 
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(saddr)">
+				, A.SECITY = UPPER(bif.uf_convert_han_to_eng(CASE WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '서울' THEN '서울'
+																								WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '인천' THEN '인천'
+																								WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '부산' THEN '부산'
+																								WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '대전' THEN '대전'
+																								WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '광주' THEN '광주'
+																								WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '울산' THEN '울산'
+																								WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '제주' THEN '제주'
+																								WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '강원' THEN '강원'
+																								WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '대구' THEN '대구'
+																								WHEN LEFT(#{saddr, jdbcType=VARCHAR},2) = '경기' THEN '경기'
+																								WHEN LEFT(#{saddr, jdbcType=VARCHAR},4) = '충청북도' THEN '충북'
+																								WHEN LEFT(#{saddr, jdbcType=VARCHAR},4) = '충청남도' THEN '충남'
+																								WHEN LEFT(#{saddr, jdbcType=VARCHAR},4) = '경상남도' THEN '경남'
+																								WHEN LEFT(#{saddr, jdbcType=VARCHAR},4) = '경상북도' THEN '경북'
+																								WHEN LEFT(#{saddr, jdbcType=VARCHAR},4) = '전라남도' THEN '전북'
+																								WHEN LEFT(#{saddr, jdbcType=VARCHAR},4) = '전라북도' THEN '전남'
+																								ELSE '경기'
+																								END , 'Y'))
+			</if> 
+		WHERE
+			A.SSAID = #{ssaid, jdbcType=VARCHAR}
+	</update>
+	
+</mapper>

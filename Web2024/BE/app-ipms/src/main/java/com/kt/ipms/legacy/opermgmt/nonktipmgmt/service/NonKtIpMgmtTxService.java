@@ -3,6 +3,7 @@ package com.kt.ipms.legacy.opermgmt.nonktipmgmt.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,9 +17,9 @@ import com.kt.ipms.legacy.opermgmt.nonktipmgmt.vo.TbNonKtSvcMstVo;
 
 @Component
 public class NonKtIpMgmtTxService {
-	@Autowired
+	@Lazy @Autowired
 	private TbNonKtSvcMstDao tbNonKtSvcMstDao;
-	@Autowired
+	@Lazy @Autowired
 	private TbNonKtIpblockDao tbNonKtIpblockDao;
 	
 	/* Non-KT IP Mst 목록 리스트 조회 */

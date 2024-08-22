@@ -4,11 +4,13 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Mapper;
+
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.IpAllocOperMstVo;
-import com.kt.ipms.legacy.ipmgmt.ipuploadmgmt.vo.TbIpUploadSubListVo;
 import com.kt.ipms.legacy.ipmgmt.ipuploadmgmt.vo.TbIpUploadSubVo;
 import com.kt.ipms.legacy.ipmgmt.ipuploadmgmt.vo.TbIpUploadVo;
 
+@Mapper
 public interface TbIpUploadDao {
 
 	/* 기본 페이지 로드 */

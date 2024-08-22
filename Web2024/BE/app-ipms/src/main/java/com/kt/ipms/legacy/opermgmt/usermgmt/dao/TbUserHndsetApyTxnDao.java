@@ -1,9 +1,13 @@
 package com.kt.ipms.legacy.opermgmt.usermgmt.dao;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+
 import com.kt.ipms.legacy.opermgmt.usermgmt.vo.TbUserHndsetApyTxnVo;
 
 
 /** TB_USER_HNDSET_APY_TXN DAO INTERFACE **/
+@Mapper
 public interface TbUserHndsetApyTxnDao {
 	
 	/** TB_USER_HNDSET_APY_TXN insert **/

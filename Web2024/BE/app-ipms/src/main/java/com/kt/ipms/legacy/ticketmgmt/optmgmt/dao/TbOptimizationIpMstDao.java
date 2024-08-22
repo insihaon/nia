@@ -1,9 +1,13 @@
 package com.kt.ipms.legacy.ticketmgmt.optmgmt.dao;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+
 import com.kt.ipms.legacy.ticketmgmt.optmgmt.vo.TbOptimizationIpMstVo;
 
 
 /** TB_OPTIMIZATION_IP_MST DAO INTERFACE **/
+@Mapper
 public interface TbOptimizationIpMstDao {
 	
 	/** TB_OPTIMIZATION_IP_MST insertTbOptimizationIpMstVo **/

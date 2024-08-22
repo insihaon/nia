@@ -1,9 +1,9 @@
 package com.kt.ipms.legacy.linkmgmt.batchmgmt.service;
 
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,7 +14,7 @@ import com.kt.ipms.legacy.linkmgmt.batchmgmt.dao.ExcelParseBatchDao;
 @Component
 public class ExcelParseBatchTxService {
 
-	@Autowired
+	@Lazy @Autowired
 	private ExcelParseBatchDao excelParseBatchDao;
 	
 	/**

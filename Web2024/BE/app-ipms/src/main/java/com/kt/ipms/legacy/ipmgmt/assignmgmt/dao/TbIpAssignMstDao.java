@@ -1,11 +1,14 @@
 package com.kt.ipms.legacy.ipmgmt.assignmgmt.dao;
 import java.util.List;
 
+import org.apache.ibatis.annotations.Mapper;
+
 import com.kt.ipms.legacy.ipmgmt.assignmgmt.vo.TbIpAssignMstListVo;
 import com.kt.ipms.legacy.ipmgmt.assignmgmt.vo.TbIpAssignMstVo;
 
 
 /** TB_IP_ASSIGN_MST DAO INTERFACE **/
+@Mapper
 public interface TbIpAssignMstDao {
 	
 	/** TB_IP_ASSIGN_MST insert **/

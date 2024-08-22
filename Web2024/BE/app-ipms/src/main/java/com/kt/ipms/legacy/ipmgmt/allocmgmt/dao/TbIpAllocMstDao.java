@@ -2,14 +2,16 @@ package com.kt.ipms.legacy.ipmgmt.allocmgmt.dao;
 import java.math.BigInteger;
 import java.util.List;
 
+import org.apache.ibatis.annotations.Mapper;
+
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.IpAllocOperMstListVo;
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.IpAllocOperMstVo;
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.IpmsSvcVo;
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.TbIpAllocMstVo;
 
-
 /** TB_IP_ALLOC_MST DAO INTERFACE **/
+@Mapper
 public interface TbIpAllocMstDao {
 	
 	/** TB_IP_ALLOC_MST insert **/

@@ -1,14 +1,11 @@
 package com.kt.ipms.legacy.opermgmt.privatemgmt.service;
 
 import java.math.BigInteger;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,33 +13,26 @@ import org.springframework.transaction.annotation.Transactional;
 import com.kt.framework.exception.ServiceException;
 import com.kt.ipms.legacy.cmn.service.IpCommonService;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
-import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.IpAllocOperMstListVo;
-import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.IpAllocOperMstVo;
 import com.kt.ipms.legacy.ipmgmt.createmgmt.service.CreateMgmtService;
-import com.kt.ipms.legacy.ipmgmt.createmgmt.vo.TbIpBlockMstComplexVo;
 import com.kt.ipms.legacy.ipmgmt.createmgmt.vo.TbIpBlockMstListVo;
 import com.kt.ipms.legacy.ipmgmt.createmgmt.vo.TbIpBlockMstVo;
 import com.kt.ipms.legacy.opermgmt.privatemgmt.vo.TbIpPrivateReqMstComplexVo;
 import com.kt.ipms.legacy.opermgmt.privatemgmt.vo.TbIpPrivateReqMstListVo;
 import com.kt.ipms.legacy.opermgmt.privatemgmt.vo.TbIpPrivateReqMstVo;
-import com.kt.ipms.legacy.opermgmt.whoismgmt.vo.TbWhoisModifyVo;
-import com.kt.ipms.legacy.opermgmt.whoismgmt.vo.TbWhoisUserVo;
-import com.kt.ipms.legacy.opermgmt.whoismgmt.vo.TbWhoisVo;
 
 @Component
 @Transactional
 public class PrivateMgmtService {
 
-	@Autowired
+	@Lazy @Autowired
 	private PrivateMgmtTxService privateMgmtTxService;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private IpCommonService ipCommonService;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private CreateMgmtService createMgmtService;
-	
-	
+
 	/**
 	 * 사설IP신청 목록 조회
 	 * @param tbIpPrivateReqMstVo

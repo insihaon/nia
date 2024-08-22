@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,10 +24,10 @@ import com.kt.ipms.legacy.linkmgmt.socketmgmt.adapter.SocketMgmtAdapterService;
 @Transactional
 public class TraceMgmtTxService {
 	
-	@Autowired
+@Lazy @Autowired
 	private SocketMgmtAdapterService socketMgmtAdapterService;
 	
-	@Autowired
+	@Lazy @Autowired
 	private TbTraceIPHostMstDao tbTraceIPHostMstDao;
 	
 	@Autowired

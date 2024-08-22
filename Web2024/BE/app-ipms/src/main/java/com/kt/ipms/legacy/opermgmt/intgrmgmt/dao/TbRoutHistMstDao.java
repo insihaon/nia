@@ -2,9 +2,11 @@ package com.kt.ipms.legacy.opermgmt.intgrmgmt.dao;
 
 import java.util.List;
 
-import com.kt.ipms.legacy.ipmgmt.routmgmt.vo.TbRoutChkMstVo;
+import org.apache.ibatis.annotations.Mapper;
+
 import com.kt.ipms.legacy.opermgmt.intgrmgmt.vo.TbRoutHistMstVo;
 
+@Mapper
 public interface TbRoutHistMstDao {
 
 

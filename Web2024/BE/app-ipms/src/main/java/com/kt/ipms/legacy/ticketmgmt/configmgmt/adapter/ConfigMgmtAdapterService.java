@@ -1,6 +1,7 @@
 package com.kt.ipms.legacy.ticketmgmt.configmgmt.adapter;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,9 +16,9 @@ import com.kt.ipms.legacy.ticketmgmt.configmgmt.vo.TbConfigRouteMstVo;
 @Transactional
 public class ConfigMgmtAdapterService {
 
-	@Autowired
+	@Lazy @Autowired
 	private ConfigMgmtService configMgmtService;
-	
+
 	@Transactional(readOnly = true)
 	public TbConfigInterfaceMstListVo selectListPageConfigInterfaceMst(TbConfigInterfaceMstVo tbConfigInterfaceMstVo) {
 		return configMgmtService.selectListPageConfigInterfaceMst(tbConfigInterfaceMstVo);

@@ -21,6 +21,7 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,25 +54,25 @@ import com.kt.log4kt.utils.StringUtil;
 @Transactional
 public class IpUploadMgmtService {
 
-	@Autowired
+	@Lazy @Autowired
 	private IpUploadMgmtTxService ipUploadMgmtTxService;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private AssignMgmtTxService assignMgmtTxService;
-	
+
 	@Autowired
 	protected CommonCodeService commonCodeService;
-	
+
 	@Autowired
 	private IpCalculateUtil ipCalculateUtil;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private IpCommonService ipCommonService;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private AllocMgmtService allocMgmtService;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private AssignMgmtService assignMgmtService;
 
 	@Transactional(readOnly = true)

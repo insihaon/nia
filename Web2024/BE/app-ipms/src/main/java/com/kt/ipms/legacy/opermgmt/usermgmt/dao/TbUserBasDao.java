@@ -1,10 +1,13 @@
 package com.kt.ipms.legacy.opermgmt.usermgmt.dao;
 import java.util.List;
 
+import org.apache.ibatis.annotations.Mapper;
+
 import com.kt.ipms.legacy.opermgmt.usermgmt.vo.TbUserBasVo;
 
 
 /** TB_USER_BAS DAO INTERFACE **/
+@Mapper
 public interface TbUserBasDao {
 	
 	/** TB_USER_BAS insert **/

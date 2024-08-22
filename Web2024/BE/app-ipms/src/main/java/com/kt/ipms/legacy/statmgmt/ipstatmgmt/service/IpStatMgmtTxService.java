@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,18 +14,18 @@ import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.TbIpAllocMstVo;
 import com.kt.ipms.legacy.statmgmt.ipstatmgmt.dao.IpStatMstDao;
 import com.kt.ipms.legacy.statmgmt.ipstatmgmt.vo.IpCreateStatVo;
 import com.kt.ipms.legacy.statmgmt.ipstatmgmt.vo.IpIntgrmSvcStatVo;
-import com.kt.ipms.legacy.statmgmt.ipstatmgmt.vo.IpOrgStatVo;
 import com.kt.ipms.legacy.statmgmt.ipstatmgmt.vo.IpOrgServiceStatVo;
+import com.kt.ipms.legacy.statmgmt.ipstatmgmt.vo.IpOrgStatVo;
 import com.kt.ipms.legacy.statmgmt.ipstatmgmt.vo.IpSingleBlockStatVo;
 
 @Component
 @Transactional
 public class IpStatMgmtTxService {
 	
-	@Autowired
+	@Lazy @Autowired
 	private IpStatMstDao ipStatMstDao;
 	
-	@Autowired
+@Lazy @Autowired
 	private AllocMgmtAdapterService allocMgmtAdapterService;
 	
 	/* 통계-생성차수별 IP현황 Select Page */

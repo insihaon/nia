@@ -1,9 +1,13 @@
 package com.kt.ipms.legacy.ticketmgmt.configmgmt.dao;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+
 import com.kt.ipms.legacy.ticketmgmt.configmgmt.vo.TbConfigRouteMstVo;
 
 
 /** TB_CONFIG_ROUTE_MST DAO INTERFACE **/
+@Mapper
 public interface TbConfigRouteMstDao {
 	
 	/** TB_CONFIG_ROUTE_MST insertTbConfigRouteMstVo **/

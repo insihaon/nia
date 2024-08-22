@@ -1,6 +1,7 @@
 package com.kt.ipms.legacy.opermgmt.whoismgmt.adapter;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,9 +15,9 @@ import com.kt.ipms.legacy.opermgmt.whoismgmt.vo.TbWhoisVo;
 @Transactional
 public class WhoisMgmtAdapterService {
 
-	@Autowired
+	@Lazy @Autowired
 	private WhoisMgmtService whoisMgmtService;
-	
+
 	@Transactional(readOnly = true)
 	public TbWhoisComplexListVo selectListStandByWhois(TbWhoisComplexVo tbWhoisComplexVo) {
 		return whoisMgmtService.selectListBatchWhoisComplex(tbWhoisComplexVo);

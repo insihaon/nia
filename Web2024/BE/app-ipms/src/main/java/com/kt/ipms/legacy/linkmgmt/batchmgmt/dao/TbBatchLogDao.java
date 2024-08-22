@@ -2,10 +2,12 @@ package com.kt.ipms.legacy.linkmgmt.batchmgmt.dao;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Mapper;
+
 import com.kt.ipms.legacy.linkmgmt.batchmgmt.vo.TbBatchLogVo;
 import com.kt.ipms.legacy.linkmgmt.common.vo.TbBatchSvcBasVo;
-import com.kt.ipms.legacy.opermgmt.intgrmgmt.vo.TbRoutHistMstVo;
 
+@Mapper
 public interface TbBatchLogDao {
 	
 	public List<TbBatchLogVo> selectListTbBatchLog(TbBatchLogVo tbBatchLogVo);

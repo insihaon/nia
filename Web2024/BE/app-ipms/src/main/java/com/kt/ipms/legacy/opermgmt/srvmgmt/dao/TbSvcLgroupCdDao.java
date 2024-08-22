@@ -1,10 +1,13 @@
 package com.kt.ipms.legacy.opermgmt.srvmgmt.dao;
 import java.util.List;
 
+import org.apache.ibatis.annotations.Mapper;
+
 import com.kt.ipms.legacy.opermgmt.srvmgmt.vo.TbSvcLgroupCdVo;
 
 
 /** TB_SVC_LGROUP_CD DAO INTERFACE **/
+@Mapper
 public interface TbSvcLgroupCdDao {
 	
 	/** TB_SVC_LGROUP_CD insert **/

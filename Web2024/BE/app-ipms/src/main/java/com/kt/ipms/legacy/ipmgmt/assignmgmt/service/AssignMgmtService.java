@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,22 +15,20 @@ import com.kt.framework.exception.ServiceException;
 import com.kt.ipms.legacy.cmn.service.IpCommonService;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
-import com.kt.ipms.legacy.cmn.util.PrintLogUtil;
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.TbIpAllocMstVo;
 import com.kt.ipms.legacy.ipmgmt.assignmgmt.vo.TbIpAssignMstComplexVo;
 import com.kt.ipms.legacy.ipmgmt.assignmgmt.vo.TbIpAssignMstListVo;
 import com.kt.ipms.legacy.ipmgmt.assignmgmt.vo.TbIpAssignMstVo;
-import com.kt.ipms.legacy.ipmgmt.routmgmt.vo.TbRoutChkMstVo;
 
 @Component
 @Transactional
 public class AssignMgmtService {
 	
-	@Autowired
+@Lazy @Autowired
 	private AssignMgmtTxService assignMgmtTxService;
 	
-	@Autowired
+@Lazy @Autowired
 	private IpCommonService ipCommonService;
 	
 	@Transactional(propagation = Propagation.REQUIRED)

@@ -2,9 +2,12 @@ package com.kt.ipms.legacy.opermgmt.asmgmt.dao;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Mapper;
+
 import com.kt.ipms.legacy.opermgmt.asmgmt.vo.TbRequestAsApyTxnVo;
 
 /** TB_REQUEST_AS_APY_TXN DAO INTERFACE **/
+@Mapper
 public interface TbRequestAsApyTxnDao {
 	
 	/** TB_REQUEST_AS_APY_TXN insert **/

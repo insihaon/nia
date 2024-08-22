@@ -3,6 +3,7 @@ package com.kt.ipms.legacy.opermgmt.usermgmt.adapter;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,10 +14,10 @@ import com.kt.ipms.legacy.opermgmt.usermgmt.vo.TbUserBasVo;
 
 @Component
 public class UserMgmtAdapterService {
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private UserMgmtService userMgmtService;
-	
+
 	@Transactional(readOnly = true)
 	public TbUserBasVo selectTbuserBas(TbUserBasVo searchVo) {
 		return userMgmtService.selectTbuserBas(searchVo);

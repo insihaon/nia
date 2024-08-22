@@ -3,6 +3,7 @@ package com.kt.ipms.legacy.ticketmgmt.configmgmt.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,16 +22,16 @@ import com.kt.ipms.legacy.ticketmgmt.configmgmt.vo.TbConfigRouteMstVo;
 @Transactional
 public class ConfigMgmtTxService {
 	
-	@Autowired
+	@Lazy @Autowired
 	private TbConfigInterfaceMstDao tbConfigInterfaceMstDao;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private TbConfigLinkMstDao tbConfigLinkMstDao;
-	
-	@Autowired
+
+	@Lazy @Autowired
 	private TbConfigRouteMstDao tbConfigRouteMstDao;
 	
-	@Autowired
+@Lazy @Autowired
 	private AllocMgmtAdapterService allocMgmtAdapterService;
 	
 	@Transactional(readOnly = true)

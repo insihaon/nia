@@ -1,0 +1,1207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kt.ipms.legacy.ipmgmt.historymgmt.dao.TbIpHistoryMstDao">	
+
+	<resultMap id="tbIpHistoryMstResult" type="com.kt.ipms.legacy.ipmgmt.historymgmt.vo.IpHistoryMstVo">
+		
+		<result column="tableNm" property="tableNm" jdbcType="VARCHAR" />
+		<result column="yyyy" property="yyyy" jdbcType="NUMERIC" />
+		
+		<result column="NIP_HIST_MST_SEQ" property="nipHistMstSeq" jdbcType="BIGINT" />
+		<result column="SWORK_SYSTEM" property="sworkSystem" jdbcType="VARCHAR" />
+		<result column="SMENU_ID" property="smenuId" jdbcType="VARCHAR" />
+		<result column="SMENU_NM" property="smenuNm" jdbcType="VARCHAR" />
+		<result column="SMENU_HIST_CD" property="sMenuHistCd" jdbcType="VARCHAR" />
+		<result column="NIP_HIST_TASK_CD" property="nipHistTaskCd" jdbcType="BIGINT" />
+		<result column="SIP_HIST_TASK_NM" property="sipHistTaskNm" jdbcType="VARCHAR" />
+		<result column="NIP_BLOCK_MST_SEQ" property="nipBlockMstSeq" jdbcType="BIGINT" />
+		<result column="NIP_ASSIGN_MST_SEQ" property="nipAssignMstSeq" jdbcType="BIGINT" />
+		<result column="NIP_ALLOC_MST_SEQ" property="nipAllocMstSeq" jdbcType="BIGINT" />
+		<result column="SSVC_LINE_TYPE_CD" property="ssvcLineTypeCd" jdbcType="CHAR" />
+		<result column="SSVC_LINE_TYPE_NM" property="ssvcLineTypeNm" jdbcType="VARCHAR" />
+		<result column="SSVC_GROUP_CD" property="ssvcGroupCd" jdbcType="CHAR" />
+		<result column="SSVC_GROUP_NM" property="ssvcGroupNm" jdbcType="VARCHAR" />
+		<result column="SSVC_OBJ_CD" property="ssvcObjCd" jdbcType="CHAR" />
+		<result column="SSVC_OBJ_NM" property="ssvcObjNm" jdbcType="VARCHAR" />
+		<result column="SASSIGN_LEVEL_CD" property="sassignLevelCd" jdbcType="CHAR" />
+		<result column="SASSIGN_LEVEL_NM" property="sassignLevelNm" jdbcType="VARCHAR" />
+		<result column="SASSIGN_TYPE_CD" property="sassignTypeCd" jdbcType="CHAR" />
+		<result column="SASSIGN_TYPE_NM" property="sassignTypeNm" jdbcType="VARCHAR" />
+		<result column="SIP_ALLOC_EX_TYPE_CD" property="sipAllocExTypeCd" jdbcType="CHAR" />
+		<result column="SIP_ALLOC_EX_TYPE_NM" property="sipAllocExTypeNm" jdbcType="VARCHAR" />
+		<result column="NIPMS_SVC_SEQ" property="nipmsSvcSeq" jdbcType="BIGINT" />
+		<result column="SIPMS_SVC_NM" property="sipmsSvcNm" jdbcType="VARCHAR" />
+		<result column="SEX_SVC_CD" property="sexSvcCd" jdbcType="CHAR" />
+		<result column="SSVC_USE_TYPE_CD" property="ssvcUseTypeCd" jdbcType="CHAR" />
+		<result column="SSVC_USE_TYPE_NM" property="ssvcUseTypeNm" jdbcType="VARCHAR" />
+		<result column="SIP_CREATE_TYPE_CD" property="sipCreateTypeCd" jdbcType="CHAR" />
+		<result column="SIP_CREATE_TYPE_NM" property="sipCreateTypeNm" jdbcType="VARCHAR" />
+		<result column="SIP_VERSION_TYPE_CD" property="sipVersionTypeCd" jdbcType="CHAR" />
+		<result column="SIP_VERSION_TYPE_NM" property="sipVersionTypeNm" jdbcType="VARCHAR" />
+		<result column="PIP_PREFIX" property="pipPrefix" jdbcType="VARCHAR" />
+		<result column="SIP_BLOCK" property="sipBlock" jdbcType="VARCHAR" />
+		<result column="NBITMASK" property="nbitmask" jdbcType="INTEGER" />
+		<result column="SNETMASK" property="snetmask" jdbcType="VARCHAR" />
+		<result column="SFIRST_ADDR" property="sfirstAddr" jdbcType="VARCHAR" />
+		<result column="SLAST_ADDR" property="slastAddr" jdbcType="VARCHAR" />
+		<result column="NFIRST_ADDR" property="nfirstAddr" jdbcType="BIGINT" />
+		<result column="NLAST_ADDR" property="nlastAddr" jdbcType="BIGINT" />
+		<result column="SFIRST_IP_PREFERRED" property="sfirstIpPreferred" jdbcType="VARCHAR" />
+		<result column="SLAST_IP_PREFERRED" property="slastIpPreferred" jdbcType="VARCHAR" />
+		<result column="SFIRST_ADDR_BINARY" property="sfirstAddrBinary" jdbcType="VARCHAR" />
+		<result column="SLAST_ADDR_BINARY" property="slastAddrBinary" jdbcType="VARCHAR" />
+		<result column="NCNT" property="ncnt" jdbcType="BIGINT" />
+		<result column="NCLASS_CNT" property="nclassCnt" jdbcType="BIGINT" />
+		
+		
+		<result column="NIP_ALLOC_NEOSS_SEQ" property="nipAllocNeossSeq" jdbcType="BIGINT" />
+		<result column="SORDERNUM" property="sordernum" jdbcType="VARCHAR" />
+		<result column="SREGYN" property="sregyn" jdbcType="VARCHAR" />
+		<result column="SODR_CLOSE_TYPE_CD" property="sodrCloseTypeCd" jdbcType="VARCHAR" />
+		<result column="SODR_CLOSE_TYPE_NM" property="sodrCloseTypeNm" jdbcType="VARCHAR" />
+		<result column="SSAID" property="ssaid" jdbcType="VARCHAR" />
+		<result column="SLLNUM" property="sllnum" jdbcType="VARCHAR" />
+		<result column="SICISOFFICESCODE" property="sicisofficescode" jdbcType="VARCHAR" />
+		<result column="SICISOFFICESNAME" property="sicisofficesname" jdbcType="VARCHAR" />
+		
+		<result column="SLACPSID" property="slacpsid" jdbcType="VARCHAR" />
+		<result column="SSUBSCNESCODE" property="ssubscnescode" jdbcType="VARCHAR" />
+		<result column="SSUBSCMSTIP" property="ssubscmstip" jdbcType="VARCHAR" />
+		<result column="SSUBSCLGIPPORTSEQ" property="ssubsclgipportseq" jdbcType="VARCHAR" />
+		<result column="SSUBSCLGIPPORTDESCRIPTION" property="ssubsclgipportdescription" jdbcType="VARCHAR" />
+		<result column="SSUBSCLGIPPORTIP" property="ssubsclgipportip" jdbcType="VARCHAR" />
+		<result column="SSUBSCROUTERSERIALIP" property="ssubscrouterserialip" jdbcType="VARCHAR" />
+		<result column="SSUBSCNEALIAS" property="ssubscnealias" jdbcType="VARCHAR" />
+		<result column="SCONNALIAS" property="sconnalias" jdbcType="VARCHAR" />
+		<result column="SMODELNAME" property="smodelname" jdbcType="VARCHAR" />
+		<result column="SCUSTNAME" property="scustname" jdbcType="VARCHAR" />
+		
+		<result column="SCOMMENT" property="scomment" jdbcType="VARCHAR" />
+		
+		<result column="DCREATE_DT" property="dcreateDt" jdbcType="TIMESTAMP" />
+		<result column="SCREATE_ID" property="screateId" jdbcType="VARCHAR" />
+		<result column="SCREATE_NM" property="screateNm" jdbcType="VARCHAR" />
+		<result column="NLVL_MST_SEQ" property="nlvlMstSeq" jdbcType="BIGINT" />
+		
+		<result column="SGATEWAYIP" property="sgatewayip" jdbcType="VARCHAR" />
+		<result column="SINSTALLADDRESS" property="sinstalladdress" jdbcType="VARCHAR" />
+		<result column="SINSTALLROADADDRESS" property="sinstallroadaddress" jdbcType="VARCHAR" />
+		<result column="SEX_PUSH_YN" property="sexPushYn" jdbcType="CHAR" />
+		<result column="SODRHOPEDT" property="sodrhopedt" jdbcType="VARCHAR" />
+		<result column="SODRREGDT" property="sodrregdt" jdbcType="VARCHAR" />
+		<result column="SOFFICECODE" property="sofficecode" jdbcType="VARCHAR" />
+		<result column="SOFFICENAME" property="sofficename" jdbcType="VARCHAR" />
+		
+		<result column="SSVC_MGROUP_NM" property="sssvcMgroupNm" jdbcType="VARCHAR" />
+		<result column="SSVC_LGROUP_NM" property="ssvcLgroupNm" jdbcType="VARCHAR" />
+		
+		<result column="NIP_LINK_MST_SEQ" property="nipLinkMstSeq" jdbcType="BIGINT" />
+		<result column="NPRIORITY" property="npriority" jdbcType="INTEGER" />
+		<result column="VALIDATIONCHECK" property="svalidCheck" jdbcType="VARCHAR" />
+		
+	</resultMap>
+
+
+	<select id="selectListPageIpHistoryMstVo" resultMap="tbIpHistoryMstResult" parameterType="com.kt.ipms.legacy.ipmgmt.historymgmt.vo.IpHistoryMstVo">
+		SELECT
+			 A.NIP_HIST_MST_SEQ
+			, A.SWORK_SYSTEM
+			, A.SMENU_NM
+			, A.NIP_HIST_TASK_CD			
+			, A.SIP_HIST_TASK_NM		-- 이력_TASK_명
+			, A.NIP_BLOCK_MST_SEQ		-- IP블록MST_SEQ
+			, A.NIP_ASSIGN_MST_SEQ		-- IP배정MST_SEQ
+			, A.NIP_ALLOC_MST_SEQ
+			, A.NLVL_MST_SEQ
+			, A.SSVC_LINE_TYPE_CD		-- 서비스망_유형_CD
+			, A.SSVC_LINE_TYPE_NM
+			, A.SSVC_GROUP_CD			-- 센터/본부_CD
+			, A.SSVC_GROUP_NM
+			, A.SSVC_OBJ_CD				-- 노드_CD
+			, A.SSVC_OBJ_NM
+			, A.SASSIGN_LEVEL_CD		-- 배정/할당상태
+			, A.SASSIGN_LEVEL_NM
+			, A.SASSIGN_TYPE_CD			-- IPMS_서비스_유형_CD
+			, A.SASSIGN_TYPE_NM
+			, A.SIP_ALLOC_EX_TYPE_CD  	-- 할당_연동_유형_CD
+			, A.SIP_ALLOC_EX_TYPE_NM	-- 할당_연동_유형_명
+			, A.NIPMS_SVC_SEQ			-- 상품MST_SEQ
+			, A.SIPMS_SVC_NM			-- 상품MST_명
+			, A.SEX_SVC_CD				-- NEOSS_상품코드_CD
+			, A.SSVC_USE_TYPE_CD		-- 서비스_이용_목적_CD
+			, A.SSVC_USE_TYPE_NM
+			, A.SIP_CREATE_TYPE_CD		-- 생성유형
+			, A.SIP_CREATE_TYPE_NM
+			, A.SIP_VERSION_TYPE_CD		-- IP버전_유형_CD
+			, A.SIP_VERSION_TYPE_NM
+			, A.PIP_PREFIX				-- IP_BLOCK_IP형_CIDR
+			, A.SIP_BLOCK				-- IP_BLOCK_문자열
+			, A.NBITMASK				-- BITMASK
+			, A.SNETMASK
+			, A.SFIRST_ADDR
+			, A.SLAST_ADDR
+			, A.NFIRST_ADDR
+			, A.NLAST_ADDR
+			, A.SFIRST_IP_PREFERRED
+			, A.SLAST_IP_PREFERRED
+			, A.SFIRST_ADDR_BINARY
+			, A.SLAST_ADDR_BINARY
+			, A.NCNT					-- 총IP수
+			, A.NCLASS_CNT				-- CLASS수
+			, A.SCOMMENT				-- 비고
+			, A.DCREATE_DT				-- 등록일자
+			, A.SCREATE_ID				-- 등록자
+			, A.SCREATE_NM
+			, A.SLLNUM 
+			, A.SSUBSCNEALIAS 
+			, A.SSUBSCLGIPPORTDESCRIPTION
+			, A.yyyy
+		FROM 
+		(
+			SELECT
+				ROWNUM AS RNUM
+				, A.SWORK_SYSTEM
+				, A.NIP_HIST_MST_SEQ
+				, A.SMENU_NM
+				, A.NIP_HIST_TASK_CD			
+				, A.SIP_HIST_TASK_NM		-- 이력_TASK_명
+				, A.NIP_BLOCK_MST_SEQ		-- IP블록MST_SEQ
+				, A.NIP_ASSIGN_MST_SEQ		-- IP배정MST_SEQ
+				, A.NIP_ALLOC_MST_SEQ
+				, A.NLVL_MST_SEQ
+				, A.SSVC_LINE_TYPE_CD		-- 서비스망_유형_CD
+				, A.SSVC_LINE_TYPE_NM
+				, A.SSVC_GROUP_CD			-- 센터/본부_CD
+				, A.SSVC_GROUP_NM
+				, A.SSVC_OBJ_CD				-- 노드_CD
+				, A.SSVC_OBJ_NM
+				, A.SASSIGN_LEVEL_CD		-- 배정/할당상태
+				, A.SASSIGN_LEVEL_NM
+				, A.SASSIGN_TYPE_CD			-- IPMS_서비스_유형_CD
+				, A.SASSIGN_TYPE_NM
+				, A.SIP_ALLOC_EX_TYPE_CD  	-- 할당_연동_유형_CD
+				, A.SIP_ALLOC_EX_TYPE_NM	-- 할당_연동_유형_명
+				, A.NIPMS_SVC_SEQ			-- 상품MST_SEQ
+				, A.SIPMS_SVC_NM			-- 상품MST_명
+				, A.SEX_SVC_CD				-- NEOSS_상품코드_CD
+				, A.SSVC_USE_TYPE_CD		-- 서비스_이용_목적_CD
+				, A.SSVC_USE_TYPE_NM
+				, A.SIP_CREATE_TYPE_CD		-- 생성유형
+				, A.SIP_CREATE_TYPE_NM
+				, A.SIP_VERSION_TYPE_CD		-- IP버전_유형_CD
+				, A.SIP_VERSION_TYPE_NM
+				, A.PIP_PREFIX				-- IP_BLOCK_IP형_CIDR
+				, A.SIP_BLOCK				-- IP_BLOCK_문자열
+				, A.NBITMASK				-- BITMASK
+				, A.SNETMASK
+				, A.SFIRST_ADDR
+				, A.SLAST_ADDR
+				, A.NFIRST_ADDR
+				, A.NLAST_ADDR
+				, A.SFIRST_IP_PREFERRED
+				, A.SLAST_IP_PREFERRED
+				, A.SFIRST_ADDR_BINARY
+				, A.SLAST_ADDR_BINARY
+				, A.NCNT					-- 총IP수
+				, A.NCLASS_CNT				-- CLASS수
+				, A.SCOMMENT				-- 비고
+				, A.DCREATE_DT				-- 등록일자
+				, A.SCREATE_ID				-- 등록자
+				, A.SCREATE_NM
+				, A.SLLNUM 
+				, A.SSUBSCNEALIAS 
+				, A.SSUBSCLGIPPORTDESCRIPTION
+				, A.yyyy
+			FROM 
+			(
+				SELECT
+					A.NIP_HIST_MST_SEQ
+					, (CASE WHEN A.SMENU_NM = 'NeOSS' THEN 'NeOSS'
+							   WHEN A.SMENU_NM = 'SDN' THEN 'SDN'
+						 	   ELSE 'IPMS' END) AS SWORK_SYSTEM
+					, A.SMENU_NM
+					, A.NIP_HIST_TASK_CD			
+					, B.SIP_HIST_TASK_NM		-- 이력_TASK_명
+					, A.NIP_BLOCK_MST_SEQ		-- IP블록MST_SEQ
+					, A.NIP_ASSIGN_MST_SEQ		-- IP배정MST_SEQ
+					, A.NIP_ALLOC_MST_SEQ
+					, A.NLVL_MST_SEQ
+					, A.SSVC_LINE_TYPE_CD		-- 서비스망_유형_CD
+					, D.SSVC_LINE_TYPE_NM
+					, A.SSVC_GROUP_CD			-- 센터/본부_CD
+					, E.SLVL_NM  AS SSVC_GROUP_NM
+					, A.SSVC_OBJ_CD				-- 노드_CD
+					, F.SLVL_NM  AS SSVC_OBJ_NM   
+					, A.SASSIGN_LEVEL_CD		-- 배정/할당상태
+					, G.SASSIGN_LEVEL_NM
+					, A.SASSIGN_TYPE_CD			-- IPMS_서비스_유형_CD
+					, H.SASSIGN_TYPE_NM
+					, A.SIP_ALLOC_EX_TYPE_CD  	-- 할당_연동_유형_CD
+					, C.SIP_ALLOC_EX_TYPE_NM	-- 할당_연동_유형_명
+					, A.NIPMS_SVC_SEQ			-- 상품MST_SEQ
+					, A.SIPMS_SVC_NM			-- 상품MST_명
+					, A.SEX_SVC_CD				-- NEOSS_상품코드_CD
+					, A.SSVC_USE_TYPE_CD		-- 서비스_이용_목적_CD
+					, I.SSVC_USE_TYPE_NM
+					, A.SIP_CREATE_TYPE_CD		-- 생성유형
+					, J.SIP_CREATE_TYPE_NM
+					, A.SIP_VERSION_TYPE_CD		-- IP버전_유형_CD
+					, K.SIP_VERSION_TYPE_NM
+					, A.PIP_PREFIX				-- IP_BLOCK_IP형_CIDR
+					, A.SIP_BLOCK				-- IP_BLOCK_문자열
+					, A.NBITMASK				-- BITMASK
+					, A.SNETMASK
+					, A.SFIRST_ADDR
+					, A.SLAST_ADDR
+					, A.NFIRST_ADDR
+					, A.NLAST_ADDR
+					, A.SFIRST_IP_PREFERRED
+					, A.SLAST_IP_PREFERRED
+					, A.SFIRST_ADDR_BINARY
+					, A.SLAST_ADDR_BINARY
+					, A.NCNT					-- 총IP수
+					, A.NCLASS_CNT				-- CLASS수
+					, A.SCOMMENT				-- 비고
+					, A.DCREATE_DT				-- 등록일자
+					, A.SCREATE_ID				-- 등록자
+					, (CASE WHEN A.SCREATE_ID = 'NeOSS' OR A.SCREATE_ID = 'SDN' THEN A.SCREATE_ID
+	 	   				       ELSE NVL(NVL(L.SUSER_NM, M.SUSER_NM), A.SCREATE_ID) END) AS SCREATE_NM
+					, DECODE(COUNT(1),1,MAX(A.SLLNUM),0,'',MAX(A.SLLNUM)) AS SLLNUM 
+					, DECODE(COUNT(1),1,MAX(A.SSUBSCNEALIAS),0,'','·····') AS SSUBSCNEALIAS 
+					, DECODE(COUNT(1),1,MAX(A.SSUBSCLGIPPORTDESCRIPTION),0,'','·····') AS SSUBSCLGIPPORTDESCRIPTION
+					, date_part('year', A.DCREATE_DT) AS yyyy
+				FROM LOG.${tableNm} A
+					LEFT OUTER JOIN LOG.TB_IP_HIST_TASK_CD B
+						ON  B.NIP_HIST_TASK_CD = A.NIP_HIST_TASK_CD
+					LEFT OUTER JOIN MST.TB_IP_ALLOC_EX_TYPE_CD C
+						ON  C.SIP_ALLOC_EX_TYPE_CD = A.SIP_ALLOC_EX_TYPE_CD
+					LEFT OUTER JOIN MST.TB_SVC_LINE_TYPE_CD D
+						ON  D.SSVC_LINE_TYPE_CD = A.SSVC_LINE_TYPE_CD
+					LEFT OUTER JOIN MST.TB_LVL_CD E
+						ON  E.SLVL_CD = A.SSVC_GROUP_CD
+					LEFT OUTER JOIN MST.TB_LVL_CD F
+						ON  F.SLVL_CD = A.SSVC_OBJ_CD
+					LEFT OUTER JOIN MST.TB_ASSIGN_LEVEL_CD G
+						ON  G.SASSIGN_LEVEL_CD = A.SASSIGN_LEVEL_CD
+					LEFT OUTER JOIN MST.TB_ASSIGN_TYPE_CD H
+						ON  H.SASSIGN_TYPE_CD = A.SASSIGN_TYPE_CD
+					LEFT OUTER JOIN MST.TB_SVC_USE_TYPE_CD I
+						ON  I.SSVC_USE_TYPE_CD = A.SSVC_USE_TYPE_CD
+					LEFT OUTER JOIN MST.TB_IP_CREATE_TYPE_CD J
+						ON  J.SIP_CREATE_TYPE_CD = A.SIP_CREATE_TYPE_CD
+					LEFT OUTER JOIN MST.TB_IP_VERSION_TYPE_CD K
+						ON  K.SIP_VERSION_TYPE_CD = A.SIP_VERSION_TYPE_CD
+					LEFT OUTER JOIN MST.TB_USER_BAS L
+						ON L.SUSER_ID = A.SCREATE_ID
+					LEFT OUTER JOIN MST.TB_USER_BAS M
+						ON M.SOLD_USER_ID = A.SCREATE_ID
+				WHERE 1=1
+					<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssvcLineTypeCd)">
+						AND A.SSVC_LINE_TYPE_CD = #{ssvcLineTypeCd, jdbcType=CHAR}
+					</if>
+				     <if test="lvlMstSeqListVo != null and lvlMstSeqListVo.tbLvlMstVos != null">
+						AND (A.NLVL_MST_SEQ IN 
+						<foreach collection="lvlMstSeqListVo.tbLvlMstVos" item="item" separator="," open="(" close=")">
+							#{item.nlvlSeq}
+						</foreach>
+						)
+					</if>
+					<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sassignTypeCd)">
+						AND A.SASSIGN_TYPE_CD = #{sassignTypeCd, jdbcType=CHAR}
+					</if>
+					<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sipCreateTypeCd)">
+						AND A.SIP_CREATE_TYPE_CD = #{sipCreateTypeCd, jdbcType=CHAR}
+					</if>
+					<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sassignLevelCd)">
+						AND A.SASSIGN_LEVEL_CD = #{sassignLevelCd, jdbcType=CHAR}
+					</if>
+					<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sipVersionTypeCd)">
+						AND A.SIP_VERSION_TYPE_CD = #{sipVersionTypeCd, jdbcType=CHAR}
+					</if>
+					<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(searchWrd)">
+						AND ((
+							A.NFIRST_ADDR <![CDATA[>=]]> (SELECT BIF.UF_SEARCH_IP_TO_NUMBER(#{searchWrd}, 'Y') FROM DUAL)
+							AND A.NLAST_ADDR <![CDATA[<=]]> (SELECT BIF.UF_SEARCH_IP_TO_NUMBER(#{searchWrd}, 'N') FROM DUAL)
+							) OR (
+							A.NFIRST_ADDR <![CDATA[<=]]> (SELECT BIF.UF_SEARCH_IP_TO_NUMBER(#{searchWrd}, 'Y') FROM DUAL)
+							AND A.NLAST_ADDR <![CDATA[>=]]> (SELECT BIF.UF_SEARCH_IP_TO_NUMBER(#{searchWrd}, 'N') FROM DUAL)
+							)
+						)
+					</if>
+					<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(pipPrefix)">
+						AND A.PIP_PREFIX = #{pipPrefix, javaType=Object, jdbcType=OTHER, typeHandler=com.kt.ipms.legacy.cmn.typehandler.CIDRTypeHandler}
+					</if>
+					<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sipBlock)">
+						AND A.SIP_BLOCK = #{sipBlock, jdbcType=VARCHAR}
+					</if>
+					<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nbitmask)">
+						AND A.NBITMASK = #{nbitmask, jdbcType=INTEGER}
+					</if>
+					<choose>
+						<when test="@org.apache.commons.lang.StringUtils@isEmpty(llSrchTypeCd)">
+							<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssaid) and @org.apache.commons.lang.StringUtils@isNotEmpty(sllnum)">
+								AND ( A.SSAID ILIKE '%' || #{ssaid, jdbcType=VARCHAR} || '%'
+								<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sordernum)">
+									OR A.SORDERNUM ILIKE '%' || #{sordernum, jdbcType=VARCHAR} || '%' 
+								</if> 
+								OR A.SLLNUM ILIKE '%' || #{sllnum, jdbcType=VARCHAR} || '%' 
+								)
+							</if>
+						</when>
+						<when test="llSrchTypeCd=='llnum'">
+							<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sllnum)">
+								AND A.SLLNUM ILIKE '%' || #{sllnum, jdbcType=VARCHAR} || '%'
+							</if>
+						</when>
+						<when test="llSrchTypeCd=='said'">
+							<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssaid)">
+								AND A.SSAID ILIKE '%' || #{ssaid, jdbcType=VARCHAR} || '%'
+							</if>
+						</when>
+						<when test="llSrchTypeCd=='ordernum'">
+							<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sordernum)">
+								AND A.SORDERNUM ILIKE '%' || #{sordernum, jdbcType=VARCHAR} || '%'
+							</if>
+						</when>
+					</choose>
+					 <if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssubscnealiasNe)">
+						AND A.SSUBSCNEALIAS ILIKE '%' || #{ssubscnealiasNe, jdbcType=VARCHAR} || '%'
+					</if>
+					<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssubsclgipportdescription)">
+						AND A.SSUBSCLGIPPORTDESCRIPTION ILIKE '%' || #{ssubsclgipportdescription, jdbcType=VARCHAR} || '%'
+					</if>
+					<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(screateId)">
+						AND (A.SCREATE_ID ILIKE '%' || #{screateId, jdbcType=VARCHAR} || '%'
+								OR L.SUSER_ID   ILIKE '%' ||  #{screateId, jdbcType=VARCHAR} || '%'
+								OR L.SUSER_NM   ILIKE '%' ||  #{screateId, jdbcType=VARCHAR} || '%'
+								OR M.SUSER_ID   ILIKE '%' ||  #{screateId, jdbcType=VARCHAR} || '%'
+								OR M.SOLD_USER_ID   ILIKE '%' ||  #{screateId, jdbcType=VARCHAR} || '%'
+								OR M.SUSER_NM   ILIKE '%' ||  #{screateId, jdbcType=VARCHAR} || '%'
+						)
+					</if>
+					<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(searchBgnDe) and @org.apache.commons.lang.StringUtils@isNotEmpty(searchEndDe)">
+						AND A.DCREATE_DT BETWEEN #{searchBgnDe, jdbcType=TIMESTAMP} AND #{searchEndDe} || ' 23:59:59'
+					</if>
+					<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sworkSystem)">
+						AND (CASE WHEN A.SMENU_NM = 'NeOSS' THEN 'NeOSS'
+									   WHEN A.SMENU_NM = 'SDN' THEN 'SDN'
+								 	   ELSE 'IPMS' END) = #{sworkSystem, jdbcType=VARCHAR}
+					</if>
+					<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sworkSystem)">
+						AND (CASE WHEN A.SMENU_NM = 'NeOSS' THEN 'NeOSS'
+									   WHEN A.SMENU_NM = 'SDN' THEN 'SDN'
+								 	   ELSE 'IPMS' END) = #{sworkSystem, jdbcType=VARCHAR}
+					</if>
+					<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nipHistTaskCd)">
+						AND A.NIP_HIST_TASK_CD = #{nipHistTaskCd, jdbcType=BIGINT}
+					</if> 
+				GROUP BY 
+					A.NIP_HIST_MST_SEQ
+					, (CASE WHEN A.SMENU_NM = 'NeOSS' THEN 'NeOSS'
+							   WHEN A.SMENU_NM = 'SDN' THEN 'SDN'
+						 	   ELSE 'IPMS' END)
+					, A.SMENU_NM
+					, A.NIP_HIST_TASK_CD			
+					, B.SIP_HIST_TASK_NM		-- 이력_TASK_명
+					, A.NIP_BLOCK_MST_SEQ		-- IP블록MST_SEQ
+					, A.NIP_ASSIGN_MST_SEQ		-- IP배정MST_SEQ
+					, A.NIP_ALLOC_MST_SEQ
+					, A.NLVL_MST_SEQ
+					, A.SSVC_LINE_TYPE_CD		-- 서비스망_유형_CD
+					, D.SSVC_LINE_TYPE_NM
+					, A.SSVC_GROUP_CD			-- 센터/본부_CD
+					, E.SLVL_NM
+					, A.SSVC_OBJ_CD				-- 노드_CD
+					, F.SLVL_NM
+					, A.SASSIGN_LEVEL_CD		-- 배정/할당상태
+					, G.SASSIGN_LEVEL_NM
+					, A.SASSIGN_TYPE_CD			-- IPMS_서비스_유형_CD
+					, H.SASSIGN_TYPE_NM
+					, A.SIP_ALLOC_EX_TYPE_CD  	-- 할당_연동_유형_CD
+					, C.SIP_ALLOC_EX_TYPE_NM	-- 할당_연동_유형_명
+					, A.NIPMS_SVC_SEQ			-- 상품MST_SEQ
+					, A.SIPMS_SVC_NM			-- 상품MST_명
+					, A.SEX_SVC_CD				-- NEOSS_상품코드_CD
+					, A.SSVC_USE_TYPE_CD		-- 서비스_이용_목적_CD
+					, I.SSVC_USE_TYPE_NM
+					, A.SIP_CREATE_TYPE_CD		-- 생성유형
+					, J.SIP_CREATE_TYPE_NM
+					, A.SIP_VERSION_TYPE_CD		-- IP버전_유형_CD
+					, K.SIP_VERSION_TYPE_NM
+					, A.PIP_PREFIX				-- IP_BLOCK_IP형_CIDR
+					, A.SIP_BLOCK				-- IP_BLOCK_문자열
+					, A.NBITMASK				-- BITMASK
+					, A.SNETMASK
+					, A.SFIRST_ADDR
+					, A.SLAST_ADDR
+					, A.NFIRST_ADDR
+					, A.NLAST_ADDR
+					, A.SFIRST_IP_PREFERRED
+					, A.SLAST_IP_PREFERRED
+					, A.SFIRST_ADDR_BINARY
+					, A.SLAST_ADDR_BINARY
+					, A.NCNT					-- 총IP수
+					, A.NCLASS_CNT				-- CLASS수
+					, A.SCOMMENT				-- 비고
+					, A.DCREATE_DT				-- 등록일자
+					, A.SCREATE_ID				-- 등록자 
+					, (CASE WHEN A.SCREATE_ID = 'NeOSS' OR A.SCREATE_ID = 'SDN' THEN A.SCREATE_ID
+	 	   				        ELSE NVL(NVL(L.SUSER_NM, M.SUSER_NM), A.SCREATE_ID) END)
+				ORDER BY A.NIP_HIST_MST_SEQ DESC, A.DCREATE_DT DESC
+			)  A
+			WHERE ROWNUM <![CDATA[<=]]> #{lastIndex}
+		)  A
+		WHERE A.RNUM <![CDATA[>=]]> #{firstIndex}
+	</select>
+
+	<select id="countListPageIpHistoryMstVo" resultType="int" parameterType="com.kt.ipms.legacy.ipmgmt.historymgmt.vo.IpHistoryMstVo">
+		SELECT COUNT(*) totalCount
+		FROM 
+		(
+			SELECT
+				A.NIP_HIST_MST_SEQ
+				, (CASE WHEN A.SMENU_NM = 'NeOSS' THEN 'NeOSS'
+							   WHEN A.SMENU_NM = 'SDN' THEN 'SDN'
+						 	   ELSE 'IPMS' END) AS SWORK_SYSTEM
+				, A.SMENU_NM
+				, A.NIP_HIST_TASK_CD			
+				, B.SIP_HIST_TASK_NM		-- 이력_TASK_명
+				, A.NIP_BLOCK_MST_SEQ		-- IP블록MST_SEQ
+				, A.NIP_ASSIGN_MST_SEQ		-- IP배정MST_SEQ
+				, A.NIP_ALLOC_MST_SEQ
+				, A.NLVL_MST_SEQ
+				, A.SSVC_LINE_TYPE_CD		-- 서비스망_유형_CD
+				, D.SSVC_LINE_TYPE_NM
+				, A.SSVC_GROUP_CD			-- 센터/본부_CD
+				, E.SLVL_NM  AS SSVC_GROUP_NM
+				, A.SSVC_OBJ_CD				-- 노드_CD
+				, F.SLVL_NM  AS SSVC_OBJ_NM   
+				, A.SASSIGN_LEVEL_CD		-- 배정/할당상태
+				, G.SASSIGN_LEVEL_NM
+				, A.SASSIGN_TYPE_CD			-- IPMS_서비스_유형_CD
+				, H.SASSIGN_TYPE_NM
+				, A.SIP_ALLOC_EX_TYPE_CD  	-- 할당_연동_유형_CD
+				, C.SIP_ALLOC_EX_TYPE_NM	-- 할당_연동_유형_명
+				, A.NIPMS_SVC_SEQ			-- 상품MST_SEQ
+				, A.SIPMS_SVC_NM			-- 상품MST_명
+				, A.SEX_SVC_CD				-- NEOSS_상품코드_CD
+				, A.SSVC_USE_TYPE_CD		-- 서비스_이용_목적_CD
+				, I.SSVC_USE_TYPE_NM
+				, A.SIP_CREATE_TYPE_CD		-- 생성유형
+				, J.SIP_CREATE_TYPE_NM
+				, A.SIP_VERSION_TYPE_CD		-- IP버전_유형_CD
+				, K.SIP_VERSION_TYPE_NM
+				, A.PIP_PREFIX				-- IP_BLOCK_IP형_CIDR
+				, A.SIP_BLOCK				-- IP_BLOCK_문자열
+				, A.NBITMASK				-- BITMASK
+				, A.SNETMASK
+				, A.SFIRST_ADDR
+				, A.SLAST_ADDR
+				, A.NFIRST_ADDR
+				, A.NLAST_ADDR
+				, A.SFIRST_IP_PREFERRED
+				, A.SLAST_IP_PREFERRED
+				, A.SFIRST_ADDR_BINARY
+				, A.SLAST_ADDR_BINARY
+				, A.NCNT					-- 총IP수
+				, A.NCLASS_CNT				-- CLASS수
+				, A.SCOMMENT				-- 비고
+				, A.DCREATE_DT				-- 등록일자
+				, A.SCREATE_ID				-- 등록자
+			FROM LOG.${tableNm} A
+				LEFT OUTER JOIN LOG.TB_IP_HIST_TASK_CD B
+					ON  B.NIP_HIST_TASK_CD = A.NIP_HIST_TASK_CD
+				LEFT OUTER JOIN MST.TB_IP_ALLOC_EX_TYPE_CD C
+					ON  C.SIP_ALLOC_EX_TYPE_CD = A.SIP_ALLOC_EX_TYPE_CD
+				LEFT OUTER JOIN MST.TB_SVC_LINE_TYPE_CD D
+					ON  D.SSVC_LINE_TYPE_CD = A.SSVC_LINE_TYPE_CD
+				LEFT OUTER JOIN MST.TB_LVL_CD E
+					ON  E.SLVL_CD = A.SSVC_GROUP_CD
+				LEFT OUTER JOIN MST.TB_LVL_CD F
+					ON  F.SLVL_CD = A.SSVC_OBJ_CD
+				LEFT OUTER JOIN MST.TB_ASSIGN_LEVEL_CD G
+					ON  G.SASSIGN_LEVEL_CD = A.SASSIGN_LEVEL_CD
+				LEFT OUTER JOIN MST.TB_ASSIGN_TYPE_CD H
+					ON  H.SASSIGN_TYPE_CD = A.SASSIGN_TYPE_CD
+				LEFT OUTER JOIN MST.TB_SVC_USE_TYPE_CD I
+					ON  I.SSVC_USE_TYPE_CD = A.SSVC_USE_TYPE_CD
+				LEFT OUTER JOIN MST.TB_IP_CREATE_TYPE_CD J
+					ON  J.SIP_CREATE_TYPE_CD = A.SIP_CREATE_TYPE_CD
+				LEFT OUTER JOIN MST.TB_IP_VERSION_TYPE_CD K
+					ON  K.SIP_VERSION_TYPE_CD = A.SIP_VERSION_TYPE_CD
+				LEFT OUTER JOIN MST.TB_USER_BAS L
+						ON L.SUSER_ID = A.SCREATE_ID
+					LEFT OUTER JOIN MST.TB_USER_BAS M
+						ON M.SOLD_USER_ID = A.SCREATE_ID
+			WHERE 1=1
+				<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssvcLineTypeCd)">
+					AND A.SSVC_LINE_TYPE_CD = #{ssvcLineTypeCd, jdbcType=CHAR}
+				</if>
+			    <if test="lvlMstSeqListVo != null and lvlMstSeqListVo.tbLvlMstVos != null">
+					AND (A.NLVL_MST_SEQ IN 
+					<foreach collection="lvlMstSeqListVo.tbLvlMstVos" item="item" separator="," open="(" close=")">
+						#{item.nlvlSeq}
+					</foreach>
+					)
+				</if>
+				<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sassignTypeCd)">
+					AND A.SASSIGN_TYPE_CD = #{sassignTypeCd, jdbcType=CHAR}
+				</if>
+				<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sipCreateTypeCd)">
+					AND A.SIP_CREATE_TYPE_CD = #{sipCreateTypeCd, jdbcType=CHAR}
+				</if>
+				<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sassignLevelCd)">
+					AND A.SASSIGN_LEVEL_CD = #{sassignLevelCd, jdbcType=CHAR}
+				</if>
+				<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sipVersionTypeCd)">
+					AND A.SIP_VERSION_TYPE_CD = #{sipVersionTypeCd, jdbcType=CHAR}
+				</if>
+				<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(searchWrd)">
+					AND ((
+						A.NFIRST_ADDR <![CDATA[>=]]> (SELECT BIF.UF_SEARCH_IP_TO_NUMBER(#{searchWrd}, 'Y') FROM DUAL)
+						AND A.NLAST_ADDR <![CDATA[<=]]> (SELECT BIF.UF_SEARCH_IP_TO_NUMBER(#{searchWrd}, 'N') FROM DUAL)
+						) OR (
+						A.NFIRST_ADDR <![CDATA[<=]]> (SELECT BIF.UF_SEARCH_IP_TO_NUMBER(#{searchWrd}, 'Y') FROM DUAL)
+						AND A.NLAST_ADDR <![CDATA[>=]]> (SELECT BIF.UF_SEARCH_IP_TO_NUMBER(#{searchWrd}, 'N') FROM DUAL)
+						)
+					)
+				</if>
+				<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(pipPrefix)">
+					AND A.PIP_PREFIX = #{pipPrefix, javaType=Object, jdbcType=OTHER, typeHandler=com.kt.ipms.legacy.cmn.typehandler.CIDRTypeHandler}
+				</if>
+				<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sipBlock)">
+					AND A.SIP_BLOCK = #{sipBlock, jdbcType=VARCHAR}
+				</if>
+				<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nbitmask)">
+					AND A.NBITMASK = #{nbitmask, jdbcType=INTEGER}
+				</if>
+				<choose>
+					<when test="@org.apache.commons.lang.StringUtils@isEmpty(llSrchTypeCd)">
+						<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssaid) and @org.apache.commons.lang.StringUtils@isNotEmpty(sllnum)">
+							AND ( A.SSAID ILIKE '%' || #{ssaid, jdbcType=VARCHAR} || '%'
+							<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sordernum)">
+								OR A.SORDERNUM ILIKE '%' || #{sordernum, jdbcType=VARCHAR} || '%' 
+							</if> 
+							OR A.SLLNUM ILIKE '%' || #{sllnum, jdbcType=VARCHAR} || '%' 
+							)
+						</if>
+					</when>
+					<when test="llSrchTypeCd=='llnum'">
+						<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sllnum)">
+							AND A.SLLNUM ILIKE '%' || #{sllnum, jdbcType=VARCHAR} || '%'
+						</if>
+					</when>
+					<when test="llSrchTypeCd=='said'">
+						<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssaid)">
+							AND A.SSAID ILIKE '%' || #{ssaid, jdbcType=VARCHAR} || '%'
+						</if>
+					</when>
+					<when test="llSrchTypeCd=='ordernum'">
+						<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sordernum)">
+							AND A.SORDERNUM ILIKE '%' || #{sordernum, jdbcType=VARCHAR} || '%'
+						</if>
+					</when>
+				</choose>
+				 <if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssubscnealiasNe)">
+					AND A.SSUBSCNEALIAS ILIKE '%' || #{ssubscnealiasNe, jdbcType=VARCHAR} || '%'
+				</if>
+				<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssubsclgipportdescription)">
+					AND A.SSUBSCLGIPPORTDESCRIPTION = #{ssubsclgipportdescription, jdbcType=VARCHAR}
+				</if>
+				<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(screateId)">
+					AND (A.SCREATE_ID ILIKE '%' || #{screateId, jdbcType=VARCHAR} || '%'
+							OR L.SUSER_ID   ILIKE '%' ||  #{screateId, jdbcType=VARCHAR} || '%'
+							OR L.SUSER_NM   ILIKE '%' ||  #{screateId, jdbcType=VARCHAR} || '%'
+							OR M.SUSER_ID   ILIKE '%' ||  #{screateId, jdbcType=VARCHAR} || '%'
+							OR M.SOLD_USER_ID   ILIKE '%' ||  #{screateId, jdbcType=VARCHAR} || '%'
+							OR M.SUSER_NM   ILIKE '%' ||  #{screateId, jdbcType=VARCHAR} || '%'
+					)
+				</if>
+				<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(searchBgnDe) and @org.apache.commons.lang.StringUtils@isNotEmpty(searchEndDe)">
+					AND A.DCREATE_DT BETWEEN #{searchBgnDe, jdbcType=TIMESTAMP} AND #{searchEndDe} || ' 23:59:59'
+				</if>
+				<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sworkSystem)">
+						AND (CASE WHEN A.SMENU_NM = 'NeOSS' THEN 'NeOSS'
+									   WHEN A.SMENU_NM = 'SDN' THEN 'SDN'
+								 	   ELSE 'IPMS' END) = #{sworkSystem, jdbcType=VARCHAR}
+					</if>
+					<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nipHistTaskCd)">
+						AND A.NIP_HIST_TASK_CD = #{nipHistTaskCd, jdbcType=BIGINT}
+					</if> 
+			GROUP BY 
+				A.NIP_HIST_MST_SEQ
+				, (CASE WHEN A.SMENU_NM = 'NeOSS' THEN 'NeOSS'
+							   WHEN A.SMENU_NM = 'SDN' THEN 'SDN'
+						 	   ELSE 'IPMS' END)
+				, A.SMENU_NM
+				, A.NIP_HIST_TASK_CD			
+				, B.SIP_HIST_TASK_NM		-- 이력_TASK_명
+				, A.NIP_BLOCK_MST_SEQ		-- IP블록MST_SEQ
+				, A.NIP_ASSIGN_MST_SEQ		-- IP배정MST_SEQ
+				, A.NIP_ALLOC_MST_SEQ
+				, A.NLVL_MST_SEQ
+				, A.SSVC_LINE_TYPE_CD		-- 서비스망_유형_CD
+				, D.SSVC_LINE_TYPE_NM
+				, A.SSVC_GROUP_CD			-- 센터/본부_CD
+				, E.SLVL_NM
+				, A.SSVC_OBJ_CD				-- 노드_CD
+				, F.SLVL_NM
+				, A.SASSIGN_LEVEL_CD		-- 배정/할당상태
+				, G.SASSIGN_LEVEL_NM
+				, A.SASSIGN_TYPE_CD			-- IPMS_서비스_유형_CD
+				, H.SASSIGN_TYPE_NM
+				, A.SIP_ALLOC_EX_TYPE_CD  	-- 할당_연동_유형_CD
+				, C.SIP_ALLOC_EX_TYPE_NM	-- 할당_연동_유형_명
+				, A.NIPMS_SVC_SEQ			-- 상품MST_SEQ
+				, A.SIPMS_SVC_NM			-- 상품MST_명
+				, A.SEX_SVC_CD				-- NEOSS_상품코드_CD
+				, A.SSVC_USE_TYPE_CD		-- 서비스_이용_목적_CD
+				, I.SSVC_USE_TYPE_NM
+				, A.SIP_CREATE_TYPE_CD		-- 생성유형
+				, J.SIP_CREATE_TYPE_NM
+				, A.SIP_VERSION_TYPE_CD		-- IP버전_유형_CD
+				, K.SIP_VERSION_TYPE_NM
+				, A.PIP_PREFIX				-- IP_BLOCK_IP형_CIDR
+				, A.SIP_BLOCK				-- IP_BLOCK_문자열
+				, A.NBITMASK				-- BITMASK
+				, A.SNETMASK
+				, A.SFIRST_ADDR
+				, A.SLAST_ADDR
+				, A.NFIRST_ADDR
+				, A.NLAST_ADDR
+				, A.SFIRST_IP_PREFERRED
+				, A.SLAST_IP_PREFERRED
+				, A.SFIRST_ADDR_BINARY
+				, A.SLAST_ADDR_BINARY
+				, A.NCNT					-- 총IP수
+				, A.NCLASS_CNT				-- CLASS수
+				, A.SCOMMENT				-- 비고
+				, A.DCREATE_DT				-- 등록일자
+				, A.SCREATE_ID				-- 등록자  
+				, (CASE WHEN A.SCREATE_ID = 'NeOSS' OR A.SCREATE_ID = 'SDN' THEN A.SCREATE_ID
+	 	   				        ELSE NVL(L.SUSER_NM, M.SUSER_NM) END)
+		)  A
+	</select>
+
+	<insert id="insertTbIpHistoryMstVo" parameterType="com.kt.ipms.legacy.ipmgmt.historymgmt.vo.IpHistoryMstVo">
+		INSERT INTO LOG.${tableNm}
+		(
+			SMENU_ID
+			, SMENU_NM
+			, NIP_HIST_TASK_CD
+			, NIP_BLOCK_MST_SEQ
+			, NIP_ASSIGN_MST_SEQ
+			, NIP_ALLOC_MST_SEQ
+			
+			, NLVL_MST_SEQ
+			, SSVC_LINE_TYPE_CD
+			, SSVC_GROUP_CD
+			, SSVC_OBJ_CD
+			, SASSIGN_LEVEL_CD
+			, SASSIGN_TYPE_CD
+			, SIP_ALLOC_EX_TYPE_CD
+			, NIPMS_SVC_SEQ
+			, SIPMS_SVC_NM
+			, SEX_SVC_CD
+			, SSVC_USE_TYPE_CD
+			, SIP_CREATE_TYPE_CD
+			, SIP_VERSION_TYPE_CD
+			, PIP_PREFIX
+			, SIP_BLOCK
+			, NBITMASK
+			, SNETMASK
+			, SFIRST_ADDR
+			, SLAST_ADDR
+			, NFIRST_ADDR
+			, NLAST_ADDR
+			, SFIRST_IP_PREFERRED
+			, SLAST_IP_PREFERRED
+			, SFIRST_ADDR_BINARY
+			, SLAST_ADDR_BINARY
+			
+			, NIP_ALLOC_NEOSS_SEQ
+			, SORDERNUM
+			, SREGYN
+			, SODR_CLOSE_TYPE_CD
+			, SSAID
+			, SLLNUM
+			, SICISOFFICESCODE
+			, SLACPSID
+			, SSUBSCNESCODE
+			, SSUBSCMSTIP
+			, SSUBSCLGIPPORTSEQ
+			, SSUBSCLGIPPORTDESCRIPTION
+			, SSUBSCLGIPPORTIP
+			, SSUBSCROUTERSERIALIP
+			, SSUBSCNEALIAS
+			, SCONNALIAS
+			, SMODELNAME
+			, SCUSTNAME
+			
+			, NCNT
+			, NCLASS_CNT
+			
+			, SGATEWAYIP
+			, SINSTALLADDRESS
+			, SINSTALLROADADDRESS
+			, SEX_PUSH_YN
+			, SODRHOPEDT
+			, SODRREGDT
+			, SOFFICECODE
+			, NIP_LINK_MST_SEQ
+			, NPRIORITY
+			, SCOMMENT
+			, DCREATE_DT
+			, SCREATE_ID   
+		)
+		VALUES 
+		(
+			<choose>
+				<when test="sMenuHistCd == 'NeOSS' ">
+					#{sMenuHistCd, jdbcType=VARCHAR}
+				</when>
+				<when test="sMenuHistCd == 'SDN' ">
+					#{sMenuHistCd, jdbcType=VARCHAR}
+				</when>
+				<otherwise>
+					(SELECT SMENU_ID FROM MST.TB_MENU_BAS WHERE SMENU_HIST_CD = #{sMenuHistCd, jdbcType=VARCHAR} LIMIT 1)
+				</otherwise>
+			</choose>
+			
+			<choose>
+				<when test="sMenuHistCd == 'NeOSS' ">
+					, #{sMenuHistCd, jdbcType=VARCHAR}
+				</when>
+				<when test="sMenuHistCd == 'SDN' ">
+					, #{sMenuHistCd, jdbcType=VARCHAR}
+				</when>
+				<otherwise>
+					, (SELECT SMENU_NM FROM MST.TB_MENU_BAS WHERE SMENU_HIST_CD = #{sMenuHistCd, jdbcType=VARCHAR} LIMIT 1)
+				</otherwise>
+			</choose>
+			, #{nipHistTaskCd, jdbcType=BIGINT}
+			, #{nipBlockMstSeq, jdbcType=BIGINT}
+			, #{nipAssignMstSeq, jdbcType=BIGINT}
+			, #{nipAllocMstSeq, jdbcType=BIGINT}
+			
+			, #{nlvlMstSeq, jdbcType=BIGINT}
+			, #{ssvcLineTypeCd, jdbcType=CHAR}
+			, #{ssvcGroupCd, jdbcType=CHAR}
+			, #{ssvcObjCd, jdbcType=CHAR}
+			, #{sassignLevelCd, jdbcType=CHAR}
+			, #{sassignTypeCd, jdbcType=CHAR}
+			, #{sipAllocExTypeCd, jdbcType=CHAR}
+			, #{nipmsSvcSeq, jdbcType=BIGINT}
+			<choose>
+				<when test="@org.apache.commons.lang.StringUtils@isNotEmpty(sipmsSvcNm)">
+					, #{sipmsSvcNm, jdbcType=CHAR}
+				</when>
+				<otherwise>
+					, (SELECT SIPMS_SVC_NM FROM MST.TB_IPMS_SVC_MST WHERE NIPMS_SVC_SEQ = #{nipmsSvcSeq, jdbcType=BIGINT})	
+				</otherwise>
+			</choose>
+			, #{sexSvcCd, jdbcType=CHAR}
+			, #{ssvcUseTypeCd, jdbcType=CHAR}
+			, #{sipCreateTypeCd, jdbcType=CHAR}
+			, #{sipVersionTypeCd, jdbcType=CHAR}
+			, #{pipPrefix, javaType=Object, jdbcType=OTHER, typeHandler=com.kt.ipms.legacy.cmn.typehandler.CIDRTypeHandler}
+			, #{sipBlock, jdbcType=VARCHAR}
+			, #{nbitmask, jdbcType=INTEGER}
+			
+			, #{snetmask, jdbcType=VARCHAR}
+			, #{sfirstAddr, jdbcType=VARCHAR}
+			, #{slastAddr, jdbcType=VARCHAR}
+			, #{nfirstAddr, jdbcType=NUMERIC}
+			, #{nlastAddr, jdbcType=NUMERIC}
+			, #{sfirstIpPreferred, jdbcType=VARCHAR}
+			, #{slastIpPreferred, jdbcType=VARCHAR}
+			, #{sfirstAddrBinary, jdbcType=VARCHAR}
+			, #{slastAddrBinary, jdbcType=VARCHAR}
+			
+			,	#{nipAllocNeossSeq, jdbcType=BIGINT}
+			,	#{sordernum, jdbcType=VARCHAR}
+			,	#{sregyn, jdbcType=VARCHAR}
+			,	#{sodrCloseTypeCd, jdbcType=VARCHAR}
+			,	#{ssaid, jdbcType=VARCHAR}
+			,	#{sllnum, jdbcType=VARCHAR}
+			,	#{sicisofficescode, jdbcType=VARCHAR}
+			,	#{slacpsid, jdbcType=VARCHAR}
+			,	#{ssubscnescode, jdbcType=VARCHAR}
+			,	#{ssubscmstip, jdbcType=VARCHAR}
+			,	#{ssubsclgipportseq, jdbcType=VARCHAR}
+			,	#{ssubsclgipportdescription, jdbcType=VARCHAR}
+			,	#{ssubsclgipportip, jdbcType=VARCHAR}
+			,	#{ssubscrouterserialip, jdbcType=VARCHAR}
+			,	#{ssubscnealias, jdbcType=VARCHAR}
+			,	#{sconnalias, jdbcType=VARCHAR}
+			,	#{smodelname, jdbcType=VARCHAR}
+			,	#{scustname, jdbcType=VARCHAR}
+			
+			,   #{ncnt, jdbcType=NUMERIC}
+			,   #{nclassCnt, jdbcType=NUMERIC}
+			
+			,	#{sgatewayip, jdbcType=VARCHAR}
+			,	#{sinstalladdress, jdbcType=VARCHAR}
+			,	#{sinstallroadaddress, jdbcType=VARCHAR}
+			,	#{sexPushYn, jdbcType=VARCHAR}
+			,	#{sodrhopedt, jdbcType=VARCHAR}
+			,	#{sodrregdt, jdbcType=VARCHAR}
+			,	#{sofficecode, jdbcType=VARCHAR}
+			,   #{nipLinkMstSeq, jdbcType=BIGINT}
+			,   #{npriority, jdbcType=INTEGER}
+			
+			, #{scomment, jdbcType=VARCHAR}
+			, NOW()
+			<choose>
+				<when test="sMenuHistCd == 'NeOSS' ">
+					, (CASE WHEN #{screateId, jdbcType=VARCHAR} IS NULL OR #{screateId, jdbcType=VARCHAR} = '' THEN  'NeOSS' ELSE #{screateId, jdbcType=VARCHAR} END)
+				</when>
+				<when test="sMenuHistCd == 'SDN' ">
+					, (CASE WHEN #{screateId, jdbcType=VARCHAR} IS NULL OR #{screateId, jdbcType=VARCHAR} = '' THEN  'SDN' ELSE #{screateId, jdbcType=VARCHAR} END)
+				</when>
+				<otherwise>
+					, #{screateId, jdbcType=VARCHAR}
+				</otherwise>
+			</choose>
+		)
+	
+	</insert>
+	
+	<select id="selectTableYear" resultMap="tbIpHistoryMstResult" parameterType="com.kt.ipms.legacy.ipmgmt.historymgmt.vo.IpHistoryMstVo">
+		SELECT 
+			tablename AS tableNm, SPLIT_PART(tablename, '_', 5) as yyyy
+		FROM pg_catalog.pg_tables
+		WHERE SCHEMANAME = 'log'
+		AND TABLENAME LIKE 'tb_ip_hist_mst_%'  
+		AND SPLIT_PART(tablename, '_', 5) <![CDATA[<=]]>  to_char(now(), 'YYYY')
+		ORDER BY SPLIT_PART(tablename, '_', 5) DESC
+	</select>
+	
+	<select id="selectAllocIpInfoList" resultMap="tbIpHistoryMstResult" parameterType="com.kt.ipms.legacy.ipmgmt.historymgmt.vo.IpHistoryMstVo">
+		SELECT 
+			A.SSVC_LINE_TYPE_CD
+			, B.SSVC_LINE_TYPE_NM
+			, D.SLVL_CD AS SSVC_GROUP_CD
+			, D.SLVL_NM AS SSVC_GROUP_NM
+			, E.SLVL_CD AS SSVC_OBJ_CD 
+			, E.SLVL_NM AS SSVC_OBJ_NM 
+			, A.NIP_BLOCK_MST_SEQ
+			, A.NLVL_MST_SEQ
+			, A.NIP_ASSIGN_MST_SEQ 
+			, A.NIP_ALLOC_MST_CNT
+			, A.SASSIGN_LEVEL_CD
+			, I.SASSIGN_LEVEL_NM AS SASSIGN_LEVEL_NM 
+			, A.SIP_CREATE_SEQ_CD
+			, A.SIP_VERSION_TYPE_CD 
+			, F.SIP_VERSION_TYPE_NM AS SIP_VERSION_TYPE_NM 
+			, A.PIP_PREFIX
+			, A.SIP_BLOCK
+			, A.NBITMASK
+			, A.SNETMASK 
+			, A.SFIRST_ADDR
+			, A.SLAST_ADDR
+			, A.NFIRST_ADDR
+			, A.NLAST_ADDR 
+			, A.SFIRST_ADDR_BINARY
+			, A.SLAST_ADDR_BINARY
+			, A.SFIRST_IP_PREFERRED
+			, A.SLAST_IP_PREFERRED 
+			, A.NCNT
+			, A.NUSE_IP_CNT
+			, A.NFREE_IP_CNT
+			, A.NCLASS_CNT 
+			, A.SASSIGN_TYPE_CD
+			, H.SASSIGN_TYPE_NM AS SASSIGN_TYPE_NM
+			, A.SIP_CREATE_TYPE_CD
+			, G.SIP_CREATE_TYPE_NM AS SIP_CREATE_TYPE_NM
+			, A.SIP_ALLOC_EX_TYPE_CD
+			, A.NPRIORITY
+			, J.NIP_ALLOC_MST_SEQ
+			, J.NIP_ALLOC_NEOSS_SEQ
+			, J.SORDERNUM
+			, J.SREGYN
+			, J.SODR_CLOSE_TYPE_CD
+			, J.SSAID
+			, J.SLLNUM
+			, J.SICISOFFICESCODE
+			, J.SLACPSID
+			, J.SSUBSCNESCODE
+			, J.SSUBSCMSTIP
+			, J.SSUBSCLGIPPORTSEQ
+			, J.SSUBSCLGIPPORTDESCRIPTION
+			, J.SSUBSCLGIPPORTIP
+			, J.SSUBSCROUTERSERIALIP
+			, J.SSUBSCNEALIAS
+			, J.SCONNALIAS
+			, J.SMODELNAME
+			, J.SCUSTNAME
+			, NVL(J.SCOMMENT, A.SCOMMENT) AS  SCOMMENT
+			, NVL(J.SEX_SVC_CD, A.SEX_SVC_CD) AS SEX_SVC_CD
+			, J.SSVC_USE_TYPE_CD
+			, NVL(J.NIPMS_SVC_SEQ, A.NIPMS_SVC_SEQ) AS NIPMS_SVC_SEQ
+			, (SELECT SIPMS_SVC_NM FROM MST.TB_IPMS_SVC_MST WHERE NVL(J.NIPMS_SVC_SEQ, A.NIPMS_SVC_SEQ) = NIPMS_SVC_SEQ LIMIT 1) AS SIPMS_SVC_NM
+			
+			, J.SGATEWAYIP
+			, J.SINSTALLADDRESS
+			, J.SINSTALLROADADDRESS
+			, J.SEX_PUSH_YN
+			, J.SODRHOPEDT
+			, J.SODRREGDT
+			, J.SOFFICECODE
+			, J.NIP_LINK_MST_SEQ
+		FROM MST.TB_IP_ASSIGN_MST A
+			LEFT OUTER JOIN MST.TB_SVC_LINE_TYPE_CD B 
+				ON B.SSVC_LINE_TYPE_CD = A.SSVC_LINE_TYPE_CD
+			LEFT OUTER JOIN MST.TB_LVL_MST C 
+				ON C.NLVL_MST_SEQ  = A.NLVL_MST_SEQ 
+			LEFT OUTER JOIN MST.TB_LVL_CD D 
+				ON D.SLVL_CD = C.SSVC_GROUP_CD
+			LEFT OUTER JOIN MST.TB_LVL_CD E 
+				ON E.SLVL_CD = C.SSVC_OBJ_CD  
+			LEFT OUTER JOIN MST.TB_IP_VERSION_TYPE_CD F
+				ON F.SIP_VERSION_TYPE_CD  = A.SIP_VERSION_TYPE_CD 
+			LEFT OUTER JOIN MST.TB_IP_CREATE_TYPE_CD G 
+				ON G.SIP_CREATE_TYPE_CD = A.SIP_CREATE_TYPE_CD
+			LEFT OUTER JOIN MST.TB_ASSIGN_TYPE_CD H
+				ON H.SASSIGN_TYPE_CD = A.SASSIGN_TYPE_CD
+			LEFT OUTER JOIN MST.TB_ASSIGN_LEVEL_CD I 
+				ON I.SASSIGN_LEVEL_CD = A.SASSIGN_LEVEL_CD
+			LEFT OUTER JOIN MST.TB_IP_ALLOC_MST J 	
+				ON J.NIP_ASSIGN_MST_SEQ = A.NIP_ASSIGN_MST_SEQ 
+		WHERE A.NIP_ASSIGN_MST_SEQ = #{nipAssignMstSeq, jdbcType=BIGINT}
+		<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nipAllocMstSeq)">
+			AND J.NIP_ALLOC_MST_SEQ = #{nipAllocMstSeq, jdbcType=BIGINT}
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssaid)">
+			AND J.SSAID = #{ssaid, jdbcType=VARCHAR}
+		</if>
+	</select>
+	
+	<select id="selectAllocIpInfo" resultMap="tbIpHistoryMstResult" parameterType="com.kt.ipms.legacy.ipmgmt.historymgmt.vo.IpHistoryMstVo">
+		SELECT 
+			A.SSVC_LINE_TYPE_CD
+			, B.SSVC_LINE_TYPE_NM
+			, D.SLVL_CD AS SSVC_GROUP_CD
+			, D.SLVL_NM AS SSVC_GROUP_NM
+			, E.SLVL_CD AS SSVC_OBJ_CD 
+			, E.SLVL_NM AS SSVC_OBJ_NM 
+			, A.NIP_BLOCK_MST_SEQ
+			, A.NLVL_MST_SEQ
+			, A.NIP_ASSIGN_MST_SEQ 
+			, A.NIP_ALLOC_MST_CNT
+			, A.SASSIGN_LEVEL_CD
+			, I.SASSIGN_LEVEL_NM AS SASSIGN_LEVEL_NM 
+			, A.SIP_CREATE_SEQ_CD
+			, A.SIP_VERSION_TYPE_CD 
+			, F.SIP_VERSION_TYPE_NM AS SIP_VERSION_TYPE_NM 
+			, A.PIP_PREFIX
+			, A.SIP_BLOCK
+			, A.NBITMASK
+			, A.SNETMASK 
+			, A.SFIRST_ADDR
+			, A.SLAST_ADDR
+			, A.NFIRST_ADDR
+			, A.NLAST_ADDR 
+			, A.SFIRST_ADDR_BINARY
+			, A.SLAST_ADDR_BINARY
+			, A.SFIRST_IP_PREFERRED
+			, A.SLAST_IP_PREFERRED 
+			, A.NCNT
+			, A.NUSE_IP_CNT
+			, A.NFREE_IP_CNT
+			, A.NCLASS_CNT 
+			, A.SASSIGN_TYPE_CD
+			, H.SASSIGN_TYPE_NM AS SASSIGN_TYPE_NM
+			, A.SIP_CREATE_TYPE_CD
+			, G.SIP_CREATE_TYPE_NM AS SIP_CREATE_TYPE_NM
+			, A.SIP_ALLOC_EX_TYPE_CD
+			, A.NPRIORITY
+			, J.NIP_ALLOC_MST_SEQ
+			, J.NIP_ALLOC_NEOSS_SEQ
+			, J.SORDERNUM
+			, J.SREGYN
+			, J.SODR_CLOSE_TYPE_CD
+			, J.SSAID
+			, J.SLLNUM
+			, J.SICISOFFICESCODE
+			, J.SLACPSID
+			, J.SSUBSCNESCODE
+			, J.SSUBSCMSTIP
+			, J.SSUBSCLGIPPORTSEQ
+			, J.SSUBSCLGIPPORTDESCRIPTION
+			, J.SSUBSCLGIPPORTIP
+			, J.SSUBSCROUTERSERIALIP
+			, J.SSUBSCNEALIAS
+			, J.SCONNALIAS
+			, J.SMODELNAME
+			, J.SCUSTNAME
+			, NVL(J.SCOMMENT, A.SCOMMENT) AS  SCOMMENT
+			, NVL(J.SEX_SVC_CD, A.SEX_SVC_CD) AS SEX_SVC_CD
+			, J.SSVC_USE_TYPE_CD
+			, NVL(J.NIPMS_SVC_SEQ, A.NIPMS_SVC_SEQ) AS NIPMS_SVC_SEQ
+			, (SELECT SIPMS_SVC_NM FROM MST.TB_IPMS_SVC_MST WHERE NVL(J.NIPMS_SVC_SEQ, A.NIPMS_SVC_SEQ) = NIPMS_SVC_SEQ LIMIT 1) AS SIPMS_SVC_NM
+			
+			, J.SGATEWAYIP
+			, J.SINSTALLADDRESS
+			, J.SINSTALLROADADDRESS
+			, J.SEX_PUSH_YN
+			, J.SODRHOPEDT
+			, J.SODRREGDT
+			, J.SOFFICECODE
+			, J.NIP_LINK_MST_SEQ
+		FROM MST.TB_IP_ASSIGN_MST A
+			LEFT OUTER JOIN MST.TB_SVC_LINE_TYPE_CD B 
+				ON B.SSVC_LINE_TYPE_CD = A.SSVC_LINE_TYPE_CD
+			LEFT OUTER JOIN MST.TB_LVL_MST C 
+				ON C.NLVL_MST_SEQ  = A.NLVL_MST_SEQ 
+			LEFT OUTER JOIN MST.TB_LVL_CD D 
+				ON D.SLVL_CD = C.SSVC_GROUP_CD
+			LEFT OUTER JOIN MST.TB_LVL_CD E 
+				ON E.SLVL_CD = C.SSVC_OBJ_CD  
+			LEFT OUTER JOIN MST.TB_IP_VERSION_TYPE_CD F
+				ON F.SIP_VERSION_TYPE_CD  = A.SIP_VERSION_TYPE_CD 
+			LEFT OUTER JOIN MST.TB_IP_CREATE_TYPE_CD G 
+				ON G.SIP_CREATE_TYPE_CD = A.SIP_CREATE_TYPE_CD
+			LEFT OUTER JOIN MST.TB_ASSIGN_TYPE_CD H
+				ON H.SASSIGN_TYPE_CD = A.SASSIGN_TYPE_CD
+			LEFT OUTER JOIN MST.TB_ASSIGN_LEVEL_CD I 
+				ON I.SASSIGN_LEVEL_CD = A.SASSIGN_LEVEL_CD
+			LEFT OUTER JOIN MST.TB_IP_ALLOC_MST J 	
+				ON J.NIP_ASSIGN_MST_SEQ = A.NIP_ASSIGN_MST_SEQ 
+		WHERE A.NIP_ASSIGN_MST_SEQ = #{nipAssignMstSeq, jdbcType=BIGINT}
+		<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nipAllocMstSeq)">
+			AND J.NIP_ALLOC_MST_SEQ = #{nipAllocMstSeq, jdbcType=BIGINT}
+		</if>
+		<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssaid)">
+			AND J.SSAID = #{ssaid, jdbcType=VARCHAR}
+		</if>
+	</select>
+	
+	<select id="selectBlockIpInfo" resultMap="tbIpHistoryMstResult" parameterType="com.kt.ipms.legacy.ipmgmt.historymgmt.vo.IpHistoryMstVo">
+		SELECT 
+			A.SSVC_LINE_TYPE_CD
+			, B.SSVC_LINE_TYPE_NM
+			, D.SLVL_CD AS SSVC_GROUP_CD
+			, D.SLVL_NM AS SSVC_GROUP_NM
+			, E.SLVL_CD AS SSVC_OBJ_CD 
+			, E.SLVL_NM AS SSVC_OBJ_NM 
+			, A.NIP_BLOCK_MST_SEQ
+			, A.NLVL_MST_SEQ
+			, A.NIP_ASSIGN_MST_SEQ 
+			, A.NIP_ALLOC_MST_CNT
+			, A.SASSIGN_LEVEL_CD
+			, I.SASSIGN_LEVEL_NM AS SASSIGN_LEVEL_NM 
+			, A.SIP_CREATE_SEQ_CD
+			, A.SIP_VERSION_TYPE_CD 
+			, F.SIP_VERSION_TYPE_NM AS SIP_VERSION_TYPE_NM 
+			, A.PIP_PREFIX
+			, A.SIP_BLOCK
+			, A.NBITMASK
+			, A.SNETMASK 
+			, A.SFIRST_ADDR
+			, A.SLAST_ADDR
+			, A.NFIRST_ADDR
+			, A.NLAST_ADDR 
+			, A.SFIRST_ADDR_BINARY
+			, A.SLAST_ADDR_BINARY
+			, A.SFIRST_IP_PREFERRED
+			, A.SLAST_IP_PREFERRED 
+			, A.NCNT
+			, A.NUSE_IP_CNT
+			, A.NFREE_IP_CNT
+			, A.NCLASS_CNT 
+			, A.DCREATE_DT
+			, A.SCREATE_ID
+			, A.DMODIFY_DT 
+			, A.SMODIFY_ID
+			, A.NIPMS_SVC_SEQ
+			, A.SASSIGN_TYPE_CD
+			, H.SASSIGN_TYPE_NM AS SASSIGN_TYPE_NM
+			, A.SEX_SVC_CD 
+			, A.SIP_CREATE_TYPE_CD
+			, G.SIP_CREATE_TYPE_NM AS SIP_CREATE_TYPE_NM
+			, A.SIP_ALLOC_EX_TYPE_CD
+			, A.NPRIORITY
+			, J.NLVL_MST_SEQ
+			, J.SCOMMENT
+			, (SELECT SIPMS_SVC_NM FROM MST.TB_IPMS_SVC_MST WHERE A.NIPMS_SVC_SEQ = NIPMS_SVC_SEQ LIMIT 1) AS SIPMS_SVC_NM
+		FROM MST.TB_IP_ASSIGN_MST A
+			LEFT OUTER JOIN MST.TB_SVC_LINE_TYPE_CD B 
+				ON B.SSVC_LINE_TYPE_CD = A.SSVC_LINE_TYPE_CD
+			LEFT OUTER JOIN MST.TB_LVL_MST C 
+				ON C.NLVL_MST_SEQ  = A.NLVL_MST_SEQ 
+			LEFT OUTER JOIN MST.TB_LVL_CD D 
+				ON D.SLVL_CD = C.SSVC_GROUP_CD
+			LEFT OUTER JOIN MST.TB_LVL_CD E 
+				ON E.SLVL_CD = C.SSVC_OBJ_CD  
+			LEFT OUTER JOIN MST.TB_IP_VERSION_TYPE_CD F
+				ON F.SIP_VERSION_TYPE_CD  = A.SIP_VERSION_TYPE_CD 
+			LEFT OUTER JOIN MST.TB_IP_CREATE_TYPE_CD G 
+				ON G.SIP_CREATE_TYPE_CD = A.SIP_CREATE_TYPE_CD
+			LEFT OUTER JOIN MST.TB_ASSIGN_TYPE_CD H
+				ON H.SASSIGN_TYPE_CD = A.SASSIGN_TYPE_CD
+			LEFT OUTER JOIN MST.TB_ASSIGN_LEVEL_CD I 
+				ON I.SASSIGN_LEVEL_CD = A.SASSIGN_LEVEL_CD
+			INNER JOIN MST.TB_IP_BLOCK_MST J 
+				ON J.NIP_BLOCK_MST_SEQ  = A.NIP_BLOCK_MST_SEQ
+		WHERE J.NIP_BLOCK_MST_SEQ = #{nipBlockMstSeq, jdbcType=BIGINT}
+
+	</select>
+	
+	<select id="selectMainIpInfoMst" resultMap="tbIpHistoryMstResult" parameterType="com.kt.ipms.legacy.ipmgmt.historymgmt.vo.IpHistoryMstVo">
+		SELECT
+		 	A.SFIRST_ADDR
+		 	, A.SLAST_ADDR
+		 	, A.NBITMASK
+		 	, A.SIP_CREATE_TYPE_CD
+		 	, G.SIP_CREATE_TYPE_NM
+		 	, A.SSVC_LINE_TYPE_CD
+		 	, C.SSVC_LINE_TYPE_NM 
+		 	, A.SASSIGN_LEVEL_CD
+		 	, H.SASSIGN_LEVEL_NM
+		 	, CASE WHEN A.NPRIORITY = 9 THEN 'DHCP 감사대상'::VARCHAR(10) WHEN A.NPRIORITY = 10 THEN 'CONFIG 감사대상'::VARCHAR(10) ELSE '정상'::VARCHAR(10) END AS VALIDATIONCHECK
+		 	, A.SSVC_GROUP_CD
+		 	, D.SLVL_NM AS SSVC_GROUP_NM
+		 	, A.SSVC_OBJ_CD
+		 	, E.SLVL_NM AS SSVC_OBJ_NM
+		 	, F.SLVL_NM AS SICISOFFICESNAME		-- 수용국
+		 	, A.SSUBSCNEALIAS		-- 장비명
+		 	, A.SMODELNAME			-- 모델명
+		 	, A.SSUBSCLGIPPORTDESCRIPTION -- I/F명
+		 	, A.SCONNALIAS	-- 수용회선명
+		 	, I.SSVC_MGROUP_NM 	-- 서비스대분류
+		 	, J.SSVC_LGROUP_NM	-- 상품명
+		 	, K.SSVC_USE_TYPE_NM
+		 	, L.SASSIGN_TYPE_NM
+		 	, A.SLLNUM
+		 	, A.SSAID
+		 	, A.SCUSTNAME
+		 	, A.SCOMMENT
+		 FROM LOG.${tableNm} A
+		 	LEFT OUTER JOIN MST.TB_LVL_MST B
+		 		ON  B.NLVL_MST_SEQ = A.NLVL_MST_SEQ
+		 	LEFT OUTER JOIN MST.TB_SVC_LINE_TYPE_CD C
+		 		ON  C.SSVC_LINE_TYPE_CD = B.SSVC_LINE_TYPE_CD
+		 	LEFT OUTER JOIN MST.TB_LVL_CD D
+		 		ON  D.SLVL_CD = B.SSVC_GROUP_CD
+		 	LEFT OUTER JOIN MST.TB_LVL_CD E
+		 		ON  E.SLVL_CD = B.SSVC_OBJ_CD
+		 	LEFT OUTER JOIN MST.TB_LVL_CD F
+		 		ON  F.SLVL_CD = A.SOFFICECODE
+		 	LEFT OUTER JOIN MST.TB_IP_CREATE_TYPE_CD G
+		 		ON  G.SIP_CREATE_TYPE_CD = A.SIP_CREATE_TYPE_CD
+		 	LEFT OUTER JOIN MST.TB_ASSIGN_LEVEL_CD H
+		 		ON  H.SASSIGN_LEVEL_CD = A.SASSIGN_LEVEL_CD
+		 	LEFT OUTER JOIN MST.TB_SVC_MGROUP_CD I
+		 		ON  I.SSVC_MGROUP_CD = LEFT(A.SEX_SVC_CD, 6)
+		 	LEFT OUTER JOIN MST.TB_SVC_LGROUP_CD J
+		 		ON  J.SSVC_LGROUP_CD = RIGHT(A.SEX_SVC_CD, 6)
+		 	LEFT OUTER JOIN MST.TB_SVC_USE_TYPE_CD K
+		 		ON  K.SSVC_USE_TYPE_CD = A.SSVC_USE_TYPE_CD
+		 	LEFT OUTER JOIN MST.TB_ASSIGN_TYPE_CD L
+		 		ON  L.SASSIGN_TYPE_CD = A.SASSIGN_TYPE_CD
+		 WHERE A.NIP_HIST_MST_SEQ = #{nipHistMstSeq, jdbcType=BIGINT}
+	</select>
+	
+</mapper>

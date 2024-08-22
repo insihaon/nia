@@ -3,6 +3,7 @@ package com.kt.ipms.legacy.linkmgmt.batchmgmt.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,14 +12,12 @@ import com.kt.framework.utils.StringUtils;
 import com.kt.ipms.legacy.linkmgmt.batchmgmt.vo.TbBatchLogListVo;
 import com.kt.ipms.legacy.linkmgmt.batchmgmt.vo.TbBatchLogVo;
 import com.kt.ipms.legacy.linkmgmt.common.vo.TbBatchSvcBasVo;
-import com.kt.ipms.legacy.opermgmt.intgrmgmt.vo.TbRoutHistMstListVo;
-import com.kt.ipms.legacy.opermgmt.intgrmgmt.vo.TbRoutHistMstVo;
 
 @Component
 @Transactional
 public class TbBatchLogService {
 	
-	@Autowired
+@Lazy @Autowired
 	private TbBatchLogTxService tbBatchLogTxService;
 	
 	@Transactional(readOnly = true)

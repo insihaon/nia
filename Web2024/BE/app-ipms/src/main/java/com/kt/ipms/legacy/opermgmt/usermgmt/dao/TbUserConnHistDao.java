@@ -1,11 +1,14 @@
 package com.kt.ipms.legacy.opermgmt.usermgmt.dao;
 import java.util.List;
 
-import com.kt.ipms.legacy.opermgmt.usermgmt.vo.TbUserConnHistVo;
+import org.apache.ibatis.annotations.Mapper;
+
 import com.kt.ipms.legacy.opermgmt.loginmgmt.vo.LoginInfoVo;
+import com.kt.ipms.legacy.opermgmt.usermgmt.vo.TbUserConnHistVo;
 
 
 /** TB_USER_CONN_HIST DAO INTERFACE **/
+@Mapper
 public interface TbUserConnHistDao {
 	
 	/** TB_USER_CONN_HIST insert **/

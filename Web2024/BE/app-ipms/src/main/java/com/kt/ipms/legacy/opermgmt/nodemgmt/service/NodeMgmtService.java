@@ -3,9 +3,8 @@ package com.kt.ipms.legacy.opermgmt.nodemgmt.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,30 +17,26 @@ import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.IpAllocOperMstListVo;
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.IpAllocOperMstVo;
 import com.kt.ipms.legacy.ipmgmt.assignmgmt.dao.TbIpAssignMstDao;
 import com.kt.ipms.legacy.ipmgmt.assignmgmt.vo.TbIpAssignMstVo;
-import com.kt.ipms.legacy.opermgmt.grantmgmt.vo.TbUserAuthTxnVo;
-import com.kt.ipms.legacy.opermgmt.loginmgmt.vo.LoginInfoVo;
 import com.kt.ipms.legacy.opermgmt.nodemgmt.dao.NodeMgmtDao;
 import com.kt.ipms.legacy.opermgmt.nodemgmt.vo.NodeMgmtListVo;
 import com.kt.ipms.legacy.opermgmt.nodemgmt.vo.NodeMgmtVo;
 import com.kt.ipms.legacy.opermgmt.orgmgmt.adapter.OrgMgmtAdapterService;
-import com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlBasListVo;
-import com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlBasVo;
 
 @Component
 public class NodeMgmtService {
 	
-	@Autowired
+	@Lazy @Autowired
 	private NodeMgmtDao nodeMgmtDao; 
 	
-	@Autowired
+@Lazy @Autowired
 	private AllocMgmtService allocMgmtService;
 	
-	@Autowired
+@Lazy @Autowired
 	private OrgMgmtAdapterService orgMgmtAdapterService;
 	
-	@Autowired
+	@Lazy @Autowired
 	private TbIpAssignMstDao tbIpAssignMstDao;
-	
+
 	@Transactional(readOnly = true)
 	public NodeMgmtListVo selectListNodeMgmt(NodeMgmtVo searchVo){
 		NodeMgmtListVo resultListVo = null;
