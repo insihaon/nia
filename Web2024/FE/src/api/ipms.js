@@ -57,6 +57,8 @@ export const ipmsModelApis = {
   viewfnSelectNode: { desc: 'IP주소 노드 이전 신청 > 조회 결과 선택', url: '/opermgmt/nodemgmt/viewfnSelectNode' },
   viewListAssignApyTxn: { desc: 'IP 배정 신청 조회', url: '/opermgmt/assignmgmt/viewListAssignApyTxn' },
   viewDetailAssignApyTxn: { desc: 'IP 배정 신청 조회 상세정보', url: '/opermgmt/assignmgmt/viewDetailAssignApyTxn' },
+  viewListPrivateAs: { desc: '사설AS 신청 조회', url: '/opermgmt/asmgmt/viewListPrivateAs' },
+  viewDetailPrivateAs: { desc: '사설AS 신청 상세정보', url: '/opermgmt/asmgmt/viewDetailPrivateAs' },
 }
 export const ipmsJsonApis = {
   selectAuthCenterList: { desc: '센터 조회', url: '/opermgmt/orgmgmt/selectAuthCenterList' },
@@ -87,6 +89,10 @@ export const ipmsJsonApis = {
   insertListIpBlockMatchMst: { desc: 'IP주소 라우팅 비교/점검 > IP블록 (해지 후) 분할/병합 처리', url: '/ipmgmt/routmgmt/insertListIpBlockMatchMst' },
   insertListRoutChkMst: { desc: 'IP주소 라우팅 비교/점검 > 라우팅 수집/DB 비교 시작 처리 청청', url: '/ipmgmt/routmgmt/insertListRoutChkMst' },
   confirmNode: { desc: 'IP주소 노드 이전 승인', url: '/opermgmt/nodemgmt/confirmNode' },
+  insertNode: { desc: 'IP주소 노드 이전 신청 > 등록', url: '/opermgmt/nodemgmt/insertNode' },
+  updateAssignApyTxn: { desc: 'IP 배정신청 상세정보 > 배정, 승인, 반송, 처리내용 수정', url: '/opermgmt/assignmgmt/updateAssignApyTxn' },
+  insertAssignApyTxn: { desc: 'IP 배정신청 상세정보 > 배정 신청 등록', url: '/opermgmt/assignmgmt/insertAssignApyTxn' },
+  updatePrivateAs: { desc: '사설AS 신청 > 수정', url: '/opermgmt/asmgmt/updatePrivateAs' },
 }
 
 export function apiTest(params) {
