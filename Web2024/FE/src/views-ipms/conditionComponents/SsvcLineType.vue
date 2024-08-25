@@ -217,7 +217,8 @@ export default {
     },
     async handleChangeLvl1() {
       const isOver = this.updateSelectionWithAll(1)
-      this.localLabel[key1] = this.lvlOptions[key1].find(v => v.value === this.localValue[key1]).label
+      const lvlOptions = this.lvlOptions
+      this.localLabel[key1] = this.lvlOptions[key1].find(v => v.value === this.localValue[key1])?.label ?? ''
       if (isOver) return
       const params = { ssvcLineTypeCd: this.localValue[key1] }
 
@@ -231,7 +232,7 @@ export default {
     },
     async handleChangeLvl2() {
       const isOver = this.updateSelectionWithAll(2)
-      this.localLabel[key2] = this.lvlOptions[key2].find(v => v.value === this.localValue[key2]).label
+      this.localLabel[key2] = this.lvlOptions[key2].find(v => v.value === this.localValue[key2])?.label ?? ''
       if (isOver) return
 
       Eventbus.$emit(EventType.changeLvl2, { ssvcLineTypeCd: this.localValue[key1], [this.getKeyLvl2()]: this.getValueLvl2() })
@@ -247,7 +248,7 @@ export default {
     },
     handleChangeLvl3() {
       this.emitEventToParent(this.getParameter())
-      this.localLabel[key3] = this.lvlOptions[key3].find(v => v.value === this.localValue[key3]).label
+      this.localLabel[key3] = this.lvlOptions[key3].find(v => v.value === this.localValue[key3])?.label ?? ''
       Eventbus.$emit(EventType.changeLvl3, { ssvcLineTypeCd: this.localValue[key1], [this.getKeyLvl2()]: this.getValueLvl2(), ssvcObjCd: this.localValue[key3] })
     },
     getKeyLvl2() {

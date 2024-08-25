@@ -364,7 +364,7 @@
       vertical-align: middle;
     }
 
-    &:focus.txt {
+    &:focus.txt, .el-input__inner:focus {
       border: 1px solid #cc2929 !important;
     }
 
@@ -2248,7 +2248,7 @@
   /* ---------- input size in tbl_data ---------- */
 
   table.tbl_data input.txt {
-    width: 90%;
+    width: 100%;
   }
 
 

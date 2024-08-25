@@ -3,7 +3,7 @@
     <label>
       {{ label }}
     </label>
-    <el-input v-model="value" size="mini" clearable @change="handleChange()" />
+    <el-input v-model="value" size="mini" clearable @change="handleChange()" @input="onChangeInput" />
   </el-col>
 </template>
 <script>
@@ -27,6 +27,10 @@ export default {
     defaultValue: {
       type: String,
       default: null
+    },
+    valueType: {
+      type: String,
+      default: null
     }
   },
   data() {
@@ -35,11 +39,6 @@ export default {
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       value: '',
       parameterKey: 'searchWrd'
-    }
-  },
-  watch: {
-    defaultValue(nVal, oVal) {
-      debugger
     }
   },
   methods: {
@@ -51,6 +50,11 @@ export default {
         this.value = this.defaultValue
       }
       this.emitEventToParent(this.getParameter())
+    },
+    onChangeInput(val) {
+      if (this.valueType === 'number') {
+        this.value = val.replace(/\D/g, '')
+      }
     }
   }
 }

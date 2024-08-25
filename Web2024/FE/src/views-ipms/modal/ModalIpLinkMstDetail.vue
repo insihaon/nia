@@ -76,12 +76,11 @@
         </div>
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button size="mini" class="el-icon-close">수정</el-button> <!-- btnUpdateLinkInfo -->
-        <el-button size="mini" class="el-icon-close">삭제</el-button> <!-- btnDeleteLinkInfo -->
+        <el-button size="mini" class="el-icon-edit" @click="handleClickUpdate"> 수정</el-button> <!-- btnUpdateLinkInfo -->
+        <el-button size="mini" class="el-icon-delete" @click="fnDeleteLinkIpMst"> 삭제</el-button> <!-- btnDeleteLinkInfo -->
         <el-button size="mini" class="el-icon-close" @click.native="close()">{{ $t('exit') }}</el-button>
       </div>
     </el-dialog>
-    <ModelWhoInfoDetail ref="ModelWhoInfoDetail" />
   </div>
 </template>
 
@@ -89,15 +88,14 @@
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
 import { onMessagePopup } from '@/utils'
-import ModelWhoInfoDetail from '@/views-ipms/modal/whois/ModelWhoInfoDetail.vue'
 
-import { ipmsModelApis, apiRequestModel } from '@/api/ipms'
+import { ipmsModelApis, apiRequestModel, apiRequestJson, ipmsJsonApis } from '@/api/ipms'
 
 const routeName = 'ModalIpLinkMstDetail'
 
 export default {
   name: routeName,
-  components: { ModelWhoInfoDetail },
+  components: { },
   directives: { elDragDialog },
   extends: Modal,
   data() {
@@ -137,7 +135,6 @@ export default {
       }
     },
     onClose() {
-      this.resultVo = this._cloneDeep(this.defaultResultVo)
     },
     async fnViewDetailIPLinkMst(nipLinkMstSeq) {
       try {
@@ -147,6 +144,38 @@ export default {
        this.error(error)
       }
     },
+    handleClickUpdate() {
+      this.$emit('reOpenUpdate', this.resultVo.nipLinkMstSeq)
+      this.close()
+    },
+    async fnDeleteLinkIpMst() {
+      const row = this.resultVo
+      if (row.allocCnt > 0) {
+        onMessagePopup(this, `해당 정보로 할당 테이블에 ${row.allocCnt}건이 링크 할당이 되어 있으므로 삭제 불가합니다.`)
+        return
+      }
+      this.confirm('해당 운용정보를 삭제 하시겠습니까?', '확인', {
+        confirmButtonText: '확인',
+        cancelButtonText: '취소',
+        type: 'success'
+      }).then(async () => {
+        try {
+          const res = await apiRequestJson(ipmsJsonApis.deleteLinkIpMst, { nipLinkMstSeq: row.nipLinkMstSeq })
+          if (res.commonMsg === 'SUCCESS') {
+            onMessagePopup(this, '운용 정보가 정상적으로 삭제 되었습니다.')
+            this.$emit('reload')
+            this.resultVo = this._cloneDeep(this.defaultResultVo)
+            this.close()
+          } else {
+            onMessagePopup(this, res.commonMsg)
+          }
+        } catch (error) {
+          this.error(error)
+        }
+      })
+      .catch(action => {
+      })
+    }
   },
 }
 </script>
