@@ -13,7 +13,7 @@ import com.kt.ipms.legacy.cmn.typehandler.CIDRTypeHandler;
 @Configuration
 @EnableTransactionManagement
 @ConditionalOnExpression("'${spring.datasource2nd.enabled:true}' == 'true'")
-@MapperScan(value="com.kt.ipms.mapper.db2nd", basePackages = "${spring.datasource2nd.mapper-packages:}", sqlSessionFactoryRef="db2ndSqlSessionFactory")
+@MapperScan(basePackages = "${spring.datasource2nd.mapper-packages:}", sqlSessionFactoryRef="db2ndSqlSessionFactory")
 public class DatabaseConfiguration2ndEx extends DatabaseConfiguration2nd{
 
     @Override

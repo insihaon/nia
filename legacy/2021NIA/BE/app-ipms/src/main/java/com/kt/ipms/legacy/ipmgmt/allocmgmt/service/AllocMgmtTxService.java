@@ -37,7 +37,7 @@ public class AllocMgmtTxService {
 	
 	@Lazy @Autowired
 	private HistoryMgmtAdapterService historyMgmtAdapterService;
-	
+
 	@Transactional(readOnly = true)
 	public List<IpAllocOperMstVo> selectListPageIpAllocMst(IpAllocOperMstVo ipAllocOperMstVo){
 		return tbIpAllocMstDao.selectListPageIpAllocOperMstVo(ipAllocOperMstVo);
