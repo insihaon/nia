@@ -53,6 +53,9 @@ export const ipmsModelApis = {
   viewPopRoutChkMst: { desc: 'IP주소 라우팅 비교/점검 > 라우팅 수집/DB 비교 처리 POP', url: '/ipmgmt/routmgmt/viewPopRoutChkMst' },
   viewListIpLinkMst: { desc: '운용정보관리(링크) 조회', url: '/ipmgmt/linkmgmt/viewListIpLinkMst' },
   viewDetailIPLinkMst: { desc: '운용정보관리(링크) 상세조회', url: '/ipmgmt/linkmgmt/viewDetailIPLinkMst' },
+  viewUpdateIPLinkMst: { desc: '운용정보관리(링크) 수정POP', url: '/ipmgmt/linkmgmt/viewUpdateIPLinkMst' },
+  viewListIpHostMst: { desc: '운용정보관리(시설) 조회', url: '/ipmgmt/hostmgmt/viewListIpHostMst' },
+  viewDetailIPHostMst: { desc: '운용정보관리(시설) 상세조회', url: '/ipmgmt/hostmgmt/viewDetailIPHostMst' },
   viewInsertNode: { desc: 'IP주소 노드 이전 신청 > 신청 상세, IP 주소 조회', url: '/opermgmt/nodemgmt/viewInsertNode' },
   viewfnSelectNode: { desc: 'IP주소 노드 이전 신청 > 조회 결과 선택', url: '/opermgmt/nodemgmt/viewfnSelectNode' },
   viewListAssignApyTxn: { desc: 'IP 배정 신청 조회', url: '/opermgmt/assignmgmt/viewListAssignApyTxn' },
@@ -62,6 +65,7 @@ export const ipmsJsonApis = {
   selectAuthCenterList: { desc: '센터 조회', url: '/opermgmt/orgmgmt/selectAuthCenterList' },
   selectAuthNodeList: { desc: '노드 조회', url: '/opermgmt/orgmgmt/selectAuthNodeList' },
   selectOfficeList: { desc: '수용국 조회', url: '/ipmgmt/linemgmt/selectOfficeList' },
+  selectSearchLvlCd: { desc: '운용팀 조회', url: 'opermgmt/orgmgmt/selectSearchLvlCd' },
   selectSassignTypeCdList: { desc: '서비스 조회', url: '/ipmgmt/allocmgmt/selectSassignTypeCdList' },
   updateScommentAsgnIPMst: { desc: '할당상세 > 비고수정', url: '/ipmgmt/allocmgmt/updateScommentAsgnIPMst' },
   selectSearchtNeMst: { desc: 'IP할당 > 시설 정보조회', url: '/ipmgmt/allocmgmt/selectSearchtNeMst' },
@@ -87,6 +91,12 @@ export const ipmsJsonApis = {
   insertListIpBlockMatchMst: { desc: 'IP주소 라우팅 비교/점검 > IP블록 (해지 후) 분할/병합 처리', url: '/ipmgmt/routmgmt/insertListIpBlockMatchMst' },
   insertListRoutChkMst: { desc: 'IP주소 라우팅 비교/점검 > 라우팅 수집/DB 비교 시작 처리 청청', url: '/ipmgmt/routmgmt/insertListRoutChkMst' },
   confirmNode: { desc: 'IP주소 노드 이전 승인', url: '/opermgmt/nodemgmt/confirmNode' },
+  insertLinkIPMst: { desc: '운용정보등록(링크)', url: '/ipmgmt/linkmgmt/insertLinkIPMst' },
+  updateLinkIPMst: { desc: '운용정보수정(링크)', url: '/ipmgmt/linkmgmt/updateLinkIPMst' },
+  deleteLinkIpMst: { desc: '운용정보삭제(링크)', url: '/ipmgmt/linkmgmt/deleteLinkIPMst' },
+  insertHostIPMst: { desc: '운용정보등록(시설)', url: '/ipmgmt/hostmgmt/insertHostIPMst' },
+  updateHostIPMst: { desc: '운용정보수정(시설)', url: '/ipmgmt/hostmgmt/updateHostIPMst' },
+  deleteHostIPMst: { desc: '운용정보삭제(시설)', url: '/ipmgmt/hostmgmt/deleteHostIPMst' },
 }
 
 export function apiTest(params) {
@@ -118,6 +128,14 @@ export function apiRequestModel(api, params) {
 export function apiRequestJson(api, params) {
   return http({
     url: `${api.url}.json`,
+    method: 'post',
+    filePath: filePath,
+    data: params
+  })
+}
+export function apiRequestOffice(urlPath, params) {
+  return http({
+    url: `${urlPath}/selectOfficeList.json`,
     method: 'post',
     filePath: filePath,
     data: params

@@ -16,7 +16,7 @@
     >
       <span slot="title">
         <i class="el-icon-document mr-2" style="font-size: 17px" />
-        운용팀 검색
+        {{ viewTitle }} 검색
         <hr>
       </span>
       <el-row class="w-100 h-100">
@@ -24,12 +24,17 @@
           <el-row class="optionRow">
             <el-col :span="20" class="d-flex">
               <label>
-                운용조직 명
+                {{ viewTitle === '수용국' ? viewTitle : '운용조직' }} 명
               </label>
-              <el-input v-model="searchTxt" size="mini" clearable />
+              <el-input
+                v-model="searchTxt"
+                size="mini"
+                clearable
+                @keyup.enter.native="handleClickSearch()"
+              />
             </el-col>
             <el-col :span="4">
-              <el-button class="btn-r ml-2" type="info" size="mini" icon="el-icon-search" @click="handleSearch()">
+              <el-button class="btn-r ml-2" type="info" size="mini" icon="el-icon-search" @click="handleClickSearch()">
                 조회
               </el-button>
             </el-col>
@@ -41,7 +46,8 @@
             :prop-table-height="300"
             :prop-column="tableColumns"
             :prop-is-pagination="false"
-            :prop-is-check-box="false"
+            :prop-is-check-box="true"
+            :prop-is-cell-click-check="true"
             prop-grid-menu-id="inputSpeed"
             :prop-grid-indx="1"
             :prop-on-click="handleClickRow"
@@ -70,6 +76,7 @@ import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
 import CompTable from '@/components/elTable/CompTable.vue'
 import { onMessagePopup } from '@/utils/index'
+import { ipmsJsonApis, apiRequestJson } from '@/api/ipms'
 
 const routeName = 'ModalOrgSearch'
 
@@ -82,19 +89,23 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      viewTitle: '운용팀',
+      typeByAZ: null,
       searchTxt: '',
       selectedRow: null,
-      componentList: [
-         { key: 'InputType', props: { label: '운용조직 명', } },
-      ],
-       tableColumns: [
-        // { prop: '', label: '선택', width: 50, align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'sktOrgId', label: '운용조직 ID', width: 150, align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'sFullOrgNm', label: '운용조직 명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-      ],
-      tableDatas: [
-        { sktOrgId: '452333', sFullOrgNm: '주식회사 케이티-강남/서부1' },
-        { sktOrgId: '452334', sFullOrgNm: '주식회사 케이티-강남/서부2' }
+      tableDatas: []
+    }
+  },
+  computed: {
+    tableColumns() {
+      let labelFrifix = '운용조직'
+      if (this.viewTitle === '수용국') {
+        labelFrifix = '수용국'
+      }
+      return [
+        // { prop: '', label: '선택', width: 50, align: 'center', sortable: true, columnVisible: true, showOverflow: true, type: 'selection' },
+        { prop: labelFrifix === '수용국' ? 'slvlCd' : 'sktOrgId', label: `${labelFrifix} ID`, width: 150, align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: labelFrifix === '수용국' ? 'slvlNm' : 'sFullOrgNm', label: `${labelFrifix} 명`, align: 'center', sortable: true, columnVisible: true, showOverflow: true },
       ]
     }
   },
@@ -105,12 +116,23 @@ export default {
       this.domElement.maxWidth = 1000
     },
     onOpen(model, actionMode) {
+      if (model.viewTitle) {
+        this.viewTitle = model.viewTitle
+        this.typeByAZ = model.type
+      }
     },
     onClose() {
       if (this.selectedRow !== null) {
         // const keyValues = Object.keys(this.selectedRow).map(key=>{ return { key , value: this.selectedRow[v] }})
         // { label: this.selectedRow['sFullOrgNm'], value: this.selectedRow['sktOrgId'] }
-        this.$emit('selected-value', this.selectedRow)
+        if (this.typeByAZ !== null) {
+          this.$emit('selected-value', { row: this.selectedRow, type: this.typeByAZ })
+        } else {
+          this.$emit('selected-value', this.selectedRow)
+        }
+        this.searchTxt = ''
+        this.tableDatas = []
+        this.selectedRow = null
       }
     },
     handleSelect() {
@@ -120,8 +142,24 @@ export default {
       }
       this.close()
     },
-    handleSearch(requestParameter) {
-      console.log(requestParameter)
+    handleClickSearch() {
+      if (this.viewTitle === '수용국') {
+        this.fnSelectSearchLvlCd()
+      } else {
+        this.fnSelectSearchOrgCd()
+      }
+    },
+    async fnSelectSearchLvlCd() {
+      const param = { searchWrd: this.searchTxt, sorgOfficeFlagYn: 'N' }
+      try {
+        const res = await apiRequestJson(ipmsJsonApis.selectSearchLvlCd, param)
+        this.tableDatas = res.tbLvlCdVos
+      } catch (error) {
+        this.error(error)
+      }
+    },
+    fnSelectSearchOrgCd() {
+
     },
     handleClickRow(row) {
       this.selectedRow = row

@@ -250,8 +250,8 @@ import { Modal } from '@/min/Modal.min'
 import { onMessagePopup } from '@/utils/index'
 import { checkInput } from '@/views-ipms/js/common-function'
 
-import ModalFacilityInformation from '@/views-ipms/modal/ModalFacilityInformation.vue'
-import ModalLinkInformation from '@/views-ipms/modal/ModalLinkInformation.vue'
+import ModalFacilityInformation from '@/views-ipms/modal/search/ModalFacilityInformation.vue'
+import ModalLinkInformation from '@/views-ipms/modal/search/ModalLinkInformation.vue'
 import ModalIpAllocCircuitDetail from '@/views-ipms/modal/alloc/ModalIpAllocCircuitDetail.vue'
 import ModalCheckTacsIpBlock from '@/views-ipms/modal/ModalCheckTacsIpBlock.vue'
 

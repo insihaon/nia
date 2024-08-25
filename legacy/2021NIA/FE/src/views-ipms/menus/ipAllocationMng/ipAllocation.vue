@@ -18,7 +18,7 @@
         :prop-max-select="tableDatas.length"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
-        :prop-on-click="hadleClickIpAllocDetail"
+        :prop-on-dbl-click="hadleClickIpAllocDetail"
         :prop-on-select="handleClickTableCheck"
         @update:propCellClick="handleClickCell"
       >
@@ -76,7 +76,8 @@ export default {
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       componentList: [
         { key: 'SsvcLineType', props: { lvl: 3, multi: [2] } },
-        { key: 'SOffice', props: {} },
+
+        { key: 'SOffice', props: { apiPath: '/ipmgmt/linemgmt', voName: 'tbIpAssignSubVos', valueKey: { cd: 'sofficecode', nm: 'sofficename' } } },
         { key: 'SipCreateType', props: {} },
         { key: 'ServiceOrg', props: { limit: 10 } },
         { key: 'IpAddress', props: {} },
@@ -160,15 +161,15 @@ export default {
       }
     },
     handleClickCell(params) {
-      if (['분할', '라우팅 중복 개수'].includes(params.column.label)) return
-      this.fnViewDetailAlcIpMst(params.row)
+      // if (['분할', '라우팅 중복 개수'].includes(params.column.label)) return
+      // this.fnViewDetailAlcIpMst(params.row)
     },
     fnViewDetailAlcIpMst(row) {
       this.selectedRows = [row]
       this.$refs.ModalIpAllocDetail.open({ row })
     },
     hadleClickIpAllocDetail(row) {
-      // this.$refs.ModalIpAllocDetail.open(row)
+      this.fnViewDetailAlcIpMst(row)
     },
     handleClickTableCheck(all, cur) {
       this.selectedRows = all

@@ -13,8 +13,8 @@
       <el-option
         v-for="(option, i) in options"
         :key="i"
-        :label="option.label"
-        :value="option.value"
+        :label="option.name"
+        :value="option.code"
       />
     </el-select>
   </el-col>
@@ -24,8 +24,7 @@ import { Base } from '@/min/Base.min'
 import Eventbus from '@/utils/event-bus'
 import { EventType } from '@/min/types'
 import commonFunctionMixin from '@/mixin/commonFunctionMixin'
-
-import { ipmsJsonApis, apiRequestJson } from '@/api/ipms'
+import { apiRequestOffice } from '@/api/ipms'
 
 const routeName = 'SOffice'
 export default {
@@ -45,6 +44,20 @@ export default {
       type: Array,
       default: null
     },
+    apiPath: {
+      type: String,
+      default: '/ipmgmt/linemgmt'
+    },
+    voName: {
+      type: String,
+      default: null
+    },
+    valueKey: {
+      type: Object,
+      default: () => {
+        return { cd: 'sofficecode', nm: 'sofficename' }
+      }
+    }
   },
   data() {
     return {
@@ -69,10 +82,18 @@ export default {
   },
   methods: {
     async onLoadOfficeList(params = {}) {
+      if (!this.voName) {
+        this.error('Non VoName')
+        return
+      }
       this.value = ''
+      const apiPath = this.apiPath
+      const voName = this.voName
+      const cd = this.valueKey.cd
+      const nm = this.valueKey.nm
       try {
-        const res = await apiRequestJson(ipmsJsonApis.selectOfficeList, params)
-        this.options = res.tbIpAssignSubVos.map(v => { return { value: v.sofficecode, label: v.sofficename } })
+        const res = await apiRequestOffice(apiPath, params)
+        this.options = res[voName].map(v => { return { code: v[cd], name: v[nm] } })
       } catch (error) {
         this.error(error)
       }
