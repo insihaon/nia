@@ -29,7 +29,7 @@ import com.zaxxer.hikari.HikariDataSource;
 @Configuration
 @EnableTransactionManagement
 @ConditionalOnExpression("'${spring.datasource5th.enabled:true}' == 'true'")
-@MapperScan(value="com.codej.web.mapper.db5th", basePackages = "${spring.datasource5th.mapper-packages:}", sqlSessionFactoryRef="db5thSqlSessionFactory")
+@MapperScan(basePackages = "${spring.datasource5th.mapper-packages:}", sqlSessionFactoryRef="db5thSqlSessionFactory")
 public class DatabaseConfiguration5th {
 
     @Autowired
