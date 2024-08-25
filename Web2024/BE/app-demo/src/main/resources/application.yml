@@ -23,7 +23,7 @@ server:
 
 
 spring:
-  application.name: ipms-web
+  application.name: demo-web
   config.use-legacy-processing: true  # 스프링 부트 2.4 이전 레거시 구동방식 유지
   main.allow-bean-definition-overriding: true
 
@@ -60,7 +60,9 @@ spring:
     username: ENC(8Fi3mfw4UUT/4sIfuw71gKaNJQnbCn7y)
     password: ENC(qth6L1xxsdq5xTajX4jkKmlJQ9ieFYm6)
     dataSource-name: ENC(+24YoukpnVKZAmX8g5jOtw==)
-    mapper-packages: com.codej.nia.mapper.db2nd # 공백없이 ','로 구분된 맵퍼 패키지들
+    mapper-packages: >
+      com.codej.demo.mapper.db2nd,
+      com.codej.demo.test.dao
 
   datasource3rd:
   #   driver-class-name: oracle.jdbc.driver.OracleDriver

@@ -265,6 +265,11 @@
 	<sql id="Append_Where_Clause">
 	
 	</sql>
+
+
+	<select id="SELECT_NOW" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+			SELECT now()
+	</select>
 	
 	<insert id="insertTbIpAllocMstVo" parameterType="com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.TbIpAllocMstVo">
 		INSERT

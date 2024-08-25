@@ -60,7 +60,9 @@ spring:
     username: ENC(8Fi3mfw4UUT/4sIfuw71gKaNJQnbCn7y)
     password: ENC(qth6L1xxsdq5xTajX4jkKmlJQ9ieFYm6)
     dataSource-name: ENC(+24YoukpnVKZAmX8g5jOtw==)
-    mapper-packages: com.kt.ipms.mapper.db2nd,com.kt.ipms.mapper.db2nd.cmn # 공백없이 ','로 구분된 맵퍼 패키지들
+    mapper-packages: >
+      com.kt.ipms.mapper.db2nd,
+      com.kt.ipms.legacy
 
   datasource3rd:
   #   driver-class-name: oracle.jdbc.driver.OracleDriver

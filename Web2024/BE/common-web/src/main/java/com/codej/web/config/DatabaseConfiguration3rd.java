@@ -29,7 +29,7 @@ import com.zaxxer.hikari.HikariDataSource;
 @Configuration
 @EnableTransactionManagement
 @ConditionalOnExpression("'${spring.datasource3rd.enabled:true}' == 'true'")
-@MapperScan(value="com.codej.web.mapper.db3rd", basePackages = "${spring.datasource3rd.mapper-packages:}", sqlSessionFactoryRef="db3rdSqlSessionFactory")
+@MapperScan(basePackages = "${spring.datasource3rd.mapper-packages:}", sqlSessionFactoryRef="db3rdSqlSessionFactory")
 public class DatabaseConfiguration3rd {
 
     @Autowired

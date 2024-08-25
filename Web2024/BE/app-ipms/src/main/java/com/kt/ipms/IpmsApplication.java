@@ -19,9 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @SpringBootApplication(scanBasePackages = {"com.codej", "com.kt.ipms"}, exclude = { SecurityAutoConfiguration.class})
-@ComponentScan(basePackages = {"com.codej", "com.kt.ipms"})
-// @SpringBootApplication(scanBasePackages = {"com.codej"}, exclude = { SecurityAutoConfiguration.class })
-// @ComponentScan(basePackages = {"com.codej"})
+@ComponentScan(basePackages = {"com.codej", "com.kt.ipms", "com.kt.ipms.legacy.ipmgmt.allocmgmt.dao"})
 @EnableCaching
 @EnableWebSecurity
 @EnableAsync
