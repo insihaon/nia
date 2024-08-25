@@ -21,8 +21,15 @@
             IP 배정신청 조회결과
           </span>
         </template>
+        <template slot="add-features">
+          <div class="float-right">
+            <el-button size="mini" icon="el-icon-plus" @click="fnViewIPAssignApyPre()">배정신청</el-button>
+          </div>
+        </template>
       </compTable>
     </el-col>
+    <ModalAssignApyDetail ref="ModalAssignApyDetail" />
+    <ModalAssignApyInsert ref="ModalAssignApyInsert" />
   </el-row>
 </template>
 <script>
@@ -31,12 +38,14 @@ import CompTable from '@/components/elTable/CompTable.vue'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
 import tableHeightMixin from '@/mixin/tableHeightMixin'
 import { ipmsModelApis, apiRequestModel } from '@/api/ipms'
+import ModalAssignApyDetail from '@/views-ipms/modal/ModalAssignApyDetail.vue'
+import ModalAssignApyInsert from '@/views-ipms/modal/ModalAssignApyInsert.vue'
 
 const routeName = 'IpResourceAssignmentApply'
 
 export default {
   name: routeName,
-  components: { CompTable, DynamicComponentLoader },
+  components: { CompTable, DynamicComponentLoader, ModalAssignApyDetail, ModalAssignApyInsert },
   extends: Base,
   mixins: [tableHeightMixin],
   data() {
@@ -94,11 +103,14 @@ export default {
         const TbRequestAssignMstVo = { nrequestAssignSeq: nrequestAssignSeq }
         const res = await apiRequestModel(ipmsModelApis.viewDetailAssignApyTxn, TbRequestAssignMstVo)
         if (res.result.data) {
-          // this.$refs.ModalNodeTransferDetail.open({ row: res.result.data })
+          this.$refs.ModalAssignApyDetail.open({ row: res.result.data })
         }
       } catch (error) {
         console.error(error)
       }
+    },
+    fnViewIPAssignApyPre() {
+      this.$refs.ModalAssignApyInsert.open()
     }
   },
 }
