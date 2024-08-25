@@ -7,6 +7,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.ModelMap;
 
+import com.codej.base.controller.BaseController;
 import com.kt.ipms.legacy.cmn.service.CommonCodeService;
 import com.kt.ipms.legacy.cmn.service.ConfigPropertieService;
 import com.kt.ipms.legacy.cmn.util.ExcelUtil;
@@ -19,7 +20,7 @@ import com.kt.log4kt.KTLoggerFactory;
 
 import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
 
-public class CommonController {
+public class CommonController extends BaseController {
 	
 	@Autowired
 	protected ConfigPropertieService propertieService;

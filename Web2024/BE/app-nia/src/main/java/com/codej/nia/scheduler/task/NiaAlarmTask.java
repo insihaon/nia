@@ -2,13 +2,14 @@ package com.codej.nia.scheduler.task;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 
 import com.codej.base.dto.Channel.EmChannel;
 import com.codej.base.dto.SocketMessage;
@@ -30,6 +31,13 @@ public class NiaAlarmTask {
     @Autowired
     @Lazy
     private WebsocketService websocketService;
+
+    @PostConstruct
+    void test() {
+        List<ResultMap> list = (List<ResultMap>) niaService.selectSystemMonitoringCur();
+        if (list == null || list.size() == 0)
+            return;
+    }
 
     @Scheduled(cron = "0 */5 * * * *") /* 5분주기 */
     // @Scheduled(cron = "*/30 * * * * *") /* 30초 주기 */

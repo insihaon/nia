@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.codej.web.mapper.db1st.BaseDataMapper;
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.IpAllocOperMstListVo;
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.IpAllocOperMstVo;
@@ -12,8 +13,8 @@ import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.TbIpAllocMstVo;
 
 /** TB_IP_ALLOC_MST DAO INTERFACE **/
 @Mapper
-public interface TbIpAllocMstDao {
-	
+public interface TbIpAllocMstDao extends BaseDataMapper {
+
 	/** TB_IP_ALLOC_MST insert **/
 	public int insertTbIpAllocMstVo(TbIpAllocMstVo tbIpAllocMstVo);
 	
