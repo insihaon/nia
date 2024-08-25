@@ -84,13 +84,13 @@
   "__config": {
     "url": "/opermgmt/assignmgmt/updateAssignApyTxn.json",
     "param": {
-      "nrequestAssignSeq": "616",
-      "strtContents": "동진주국사내 INFRA, 고정, 시설용 IP 확인해주시고,\n부산/경남 IP망기술부에서 대군화IP, 유동 IP 배정 먼저 검토해주십시요",
+      "nrequestAssignSeq": "622",
+      "strtContents": "TEST",
       "smodifyId": "10150810"
     },
-    "receivedTime": "2024-08-05 10:14:00.798",
-    "duration": 188,
-    "filename": "b3Blcm1nbXQvYXNzaWdubWdtdC91cGRhdGVBc3NpZ25BcHlUeG4uanNvbg_NjE2fOuPmeynhOyjvOq1reyCrOuCtHwxMDE1MDgxMA.json",
-    "fetch": "fetch('/opermgmt/assignmgmt/updateAssignApyTxn.json', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{\"nrequestAssignSeq\":\"616\",\"strtContents\":\"동진주국사내 INFRA, 고정, 시설용 IP 확인해주시고,\\n부산/경남 IP망기술부에서 대군화IP, 유동 IP 배정 먼저 검토해주십시요\",\"smodifyId\":\"10150810\"}', 'method': 'POST' })"
+    "receivedTime": "2024-08-22 13:27:48.936",
+    "duration": 532,
+    "filename": "b3Blcm1nbXQvYXNzaWdubWdtdC91cGRhdGVBc3NpZ25BcHlUeG4uanNvbg_NjIyfFRFU1R8MTAxNTA4MTA.json",
+    "fetch": "success-fetch('/opermgmt/assignmgmt/updateAssignApyTxn.json', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{\"nrequestAssignSeq\":\"622\",\"strtContents\":\"TEST\",\"smodifyId\":\"10150810\"}', 'method': 'POST' })"
   }
 }

@@ -48,7 +48,7 @@
                       </el-select>
                     </span>
                     <span>
-                      <el-input v-model="InsertSearchWrd" size="mini" type="text" class="txt w-80" title="IP 주소 입력창" maxlength="43" />
+                      <el-input v-model="InsertSearchWrd" size="mini" type="text" class="txt w-80" title="IP 주소 입력창" maxlength="43" @input="chkCharCode()" />
                     </span>
                   </td>
                 </tr>
@@ -190,7 +190,8 @@
                 <th class="first" scope="row">서비스망</th>
                 <td>
                   <div class="inline-block w99 w-100">
-                    <el-select id="updSsvcLineTypeCd" v-model="updSsvcLineTypeCd" name="ssvcLineTypeCd" size="mini">
+                    <el-select id="updSsvcLineTypeCd" v-model="updSsvcLineTypeCd" class="w-100" name="ssvcLineTypeCd" size="mini" @change="handleChangeLvl1()">
+                      <el-option label="전체" value=""><span class="w-100 h-100 d-inline-block" @click="toggleAll()">전체</span></el-option>
                       <el-option
                         v-for="item in ssvcLineTypeNmOp"
                         :key="item.value"
@@ -205,7 +206,7 @@
                 <th scope="row">본부</th>
                 <td>
                   <div class="inline-block w99 w-100">
-                    <el-select id="updSsvcGroupCd" v-model="updSsvcGroupCd" name="ssvcGroupCd" size="mini">
+                    <el-select id="updSsvcGroupCd" v-model="updSsvcGroupCd" class="w-100" :disabled="isDisabled" name="ssvcGroupCd" size="mini" @change="handleChangeLvl2()">
                       <el-option
                         v-for="item in ssvcGroupNmOp"
                         :key="item.value"
@@ -220,7 +221,7 @@
                 <th scope="row">노드</th>
                 <td>
                   <div class="inline-block w99 w-100">
-                    <el-select id="updSsvcObjCd" v-model="updSsvcObjCd" name="ssvcObjCd" size="mini">
+                    <el-select id="updSsvcObjCd" v-model="updSsvcObjCd" class="w-100" :disabled="isDisabled" name="ssvcObjCd" size="mini">
                       <el-option
                         v-for="item in ssvcObjNmOp"
                         :key="item.value"
@@ -283,8 +284,7 @@
 <script>
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
-import { apiRequestModel, ipmsModelApis } from '@/api/ipms'
-import { menuType } from '@/settings'
+import { apiRequestModel, ipmsModelApis, apiRequestJson, ipmsJsonApis } from '@/api/ipms'
 
 const routeName = 'ModalNodeTransferInsert'
 
@@ -342,8 +342,14 @@ export default {
         { label: '미분류', value: 'CL0007' },
         { label: 'SCHOOLNET', value: 'CL0008' }
       ],
-      ssvcGroupNmOp: [],
-      ssvcObjNmOp: [],
+      ssvcGroupNmOp: [{
+        label: '-------',
+        value: '000000'
+      }],
+      ssvcObjNmOp: [{
+        label: '-------',
+        value: '000000'
+      }],
       sComment: '',
       sCommentType: '',
       updSsvcLineTypeCd: '',
@@ -352,6 +358,9 @@ export default {
     }
   },
   computed: {
+    isDisabled() {
+      return this.updSsvcLineTypeCd === '' ?? true
+    }
   },
   mounted() {
   },
@@ -363,7 +372,10 @@ export default {
     },
     onOpen(model, actionMode) {
       // this.fnSelectListPage()
-      this.resultVo ?? ''
+    },
+    chkCharCode() {
+      const regExp = /[^0-9]/g
+      this.InsertSearchWrd = this.InsertSearchWrd.replace(regExp, '')
     },
     async selectNode(row) {
       if (row.sassignLevelCd === 'IA0006') {
@@ -431,27 +443,70 @@ export default {
       }
     },
     fnInsertNode() {
-       this.$confirm('등록 하시겠습니까?', '노드 이전 승인', {
+      if (this.resultVo.pipPrifix === '') {
+        this.$message('변경 전 데이터가 선택되지 않았습니다.')
+        return
+      }
+      if (this.resultVo.ssvcLineTypeNm === '') {
+        this.$message('변경 후 서비스망을 선택해 주시길 바랍니다.')
+        return
+      }
+      if (this.resultVo.sCommentType === '') {
+        this.$message('변경 사유를 선택해 주시길 바랍니다.')
+        return
+      }
+      if (this.resultVo.sCommentType === 'typ006' && this.resultVo.sComment === '') {
+        this.$message('세부 사유를 입력해 주시길 바랍니다.')
+        return
+      }
+
+      this.$confirm('등록 하시겠습니까?', '노드 이전 승인', {
         confirmButtonText: '확인',
         cancelButtonText: '취소'
       }).then(async() => {
         try {
-          // const { ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd, nipAssignMstSeq, pipPrefix, sipVersionTypeCd, seq, sCommentType, sComment } = this.resultVo
+          const { pipPrefix, beforeSsvcLineTypeCd, beforeSsvcGroupCd, nipAssignMstSeq, afterSsvcLineTypeCd, afterSsvcGroupCd, afterSsvcObjCd, sassignTypeCd, sassignLevelCd, sCommentType, sComment } = this.resultVo
           const tbIpAssignMstComplexVo = {
-
+            pipPrefix: pipPrefix,
+            beforeSsvcLineTypeCd: beforeSsvcLineTypeCd,
+            beforeSsvcGroupCd: beforeSsvcGroupCd,
+            nipAssignMstSeq: nipAssignMstSeq,
+            afterSsvcLineTypeCd: afterSsvcLineTypeCd,
+            afterSsvcGroupCd: afterSsvcGroupCd,
+            afterSsvcObjCd: afterSsvcObjCd,
+            sassignTypeCd: sassignTypeCd,
+            sassignLevelCd: sassignLevelCd,
+            sCommentType: sCommentType,
+            sComment: sComment
           }
-          const res = await apiRequestModel(ipmsModelApis.confirmNode, tbIpAssignMstComplexVo)
-           if (res.commonMsg) {
+          const res = await apiRequestJson(ipmsJsonApis.insertNode, tbIpAssignMstComplexVo)
+           if (res.commonMsg === 'SUCCESS') {
             this.$message.success({ message: `${res.commonMsg}` })
             this.$emit('reloadData')
             }
           } catch (error) {
-            this.$message.error({ message: `승인에 실패했습니다.` })
+            this.$message.error({ message: `등록에 실패했습니다.` })
             console.log(error)
           }
         })
     },
-
+    async handleChangeLvl1() {
+      const tbLvlBasVo = { ssvcLineTypeCd: this.updSsvcLineTypeCd }
+      const res = await apiRequestJson(ipmsJsonApis.selectAuthCenterList, tbLvlBasVo)
+      this.ssvcGroupNmOp = res?.tbLvlBasVos?.filter(v => v.ssvcGroupNm !== '전체').map(v => { return { value: v.ssvcGroupCd, label: v.ssvcGroupNm } })
+    },
+    async handleChangeLvl2() {
+      const tbLvlBasVo = {
+        ssvcLineTypeCd: this.updSsvcLineTypeCd,
+        ssvcGroupCd: this.updSsvcGroupCd,
+      }
+      const res = await apiRequestJson(ipmsJsonApis.selectAuthNodeList, tbLvlBasVo)
+      this.ssvcObjNmOp = res?.tbLvlBasVos?.filter(v => v.ssvcObjCd !== '전체').map(v => { return { value: v.ssvcObjCd, label: v.ssvcObjNm } })
+    },
+    toggleAll() {
+      this.updSsvcGroupCd = ''
+      this.updSsvcObjCd = ''
+    },
     onClose() { },
   },
 }
