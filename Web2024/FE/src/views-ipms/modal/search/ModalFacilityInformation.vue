@@ -77,6 +77,16 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      defaultVo: {
+        sicisofficescodeNe: 'XXXXXX',
+        ssubscnealiasNe: '',
+        smodelnameNe: '',
+        ssubscmstipNe: '',
+        sneSrchTypeCd: '1',
+        ssvcLineTypeCd: '',
+        ssvcGroupCd: null,
+        ssvcObjCd: null,
+      },
       ipBlockMstVo: null,
       requestParameter: null,
       selectedRow: null,
@@ -121,21 +131,9 @@ export default {
     onOpen(model, actionMode) {
       if (model.ipBlockMstVo) {
         this.ipBlockMstVo = model.ipBlockMstVo
-        this.fnViewSearchtNeMst()
-        // viewSearchtNeMst
-
         this.ssubscnealiasNe = model?.inputText ?? ''
-        /*
-
-{
-    "ipBlockMstVo": {
-        "ssvcLineTypeCd": "CL0003",
-        "ssvcGroupCd": "VV0010",
-        "ssvcObjCd": "VV0015"
-    }
-}
-        */
       }
+      this.fnViewSearchtNeMst()
     },
     onClose() {
       if (this.selectedRow !== null) {
@@ -144,18 +142,22 @@ export default {
       this.tableDatas = []
     },
     async fnViewSearchtNeMst() {
-      const { ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd } = this.ipBlockMstVo
-      const param = {
-        ssvcLineTypeCd,
-        ssvcGroupCd,
-        ssvcObjCd,
-        sicisofficescodeNe: this.sicisofficescodeNe, // 시설 정보 input값
-        sneSrchTypeCd: '2', // 1: 할당 시설, 2: 호스트 기반 시설
+      let params = {}
+      if (this.ipBlockMstVo !== null) {
+        const { ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd } = this.ipBlockMstVo
+        params = {
+          ssvcLineTypeCd,
+          ssvcGroupCd,
+          ssvcObjCd,
+          sicisofficescodeNe: this.sicisofficescodeNe, // 시설 정보 input값
+          sneSrchTypeCd: '2', // 1: 할당 시설, 2: 호스트 기반 시설
+        }
+      } else {
+        params = this.defaultVo
       }
       try {
-        const res = await apiRequestModel(ipmsModelApis.viewSearchtNeMst, param)
+        const res = await apiRequestModel(ipmsModelApis.viewSearchtNeMst, params)
         const offices = res?.result?.data ?? []
-        // officeTemp.map(v => { return { label: v.name, value: v.code } })
         this.$set(this, 'sOfficeOptions', offices)
       } catch (error) {
         this.error(error)
@@ -165,7 +167,6 @@ export default {
     // ipAlocMstVo.ssubscnealiasNe		= vNeAlias;//장비명
     // ipAlocMstVo.ssubscmstipNe		= vNeMstIp;//대표IP
     // ipAlocMstVo.smodelnameNe		= vModelNm;//모델명
-
     handleSearch(requestParameter) {
       const { sicisofficescodeNe, ssubscnealiasNe, ssubscmstipNe, smodelnameNe } = requestParameter
 
@@ -183,7 +184,7 @@ export default {
       this.fnSelectSearchtNeMst()
     },
     async fnSelectSearchtNeMst() {
-      const params = Object.assign({}, this.requestParameter, { sneSrchTypeCd: '2' })
+      const params = Object.assign({}, this.requestParameter, { sneSrchTypeCd: this.ipBlockMstVo ? '2' : '1' })
       try {
         const res = await apiRequestJson(ipmsJsonApis.selectSearchtNeMst, params)
         this.tableDatas = res.ipAllocOperMstVos

@@ -23,7 +23,6 @@
         </template>
         <template slot="add-features">
           <div class="float-right">
-            <!-- @click="handleClickRoutChk" -->
             <el-button size="mini" @click="handleClickEditBtn('insert')">운용정보등록</el-button>
           </div>
         </template>
