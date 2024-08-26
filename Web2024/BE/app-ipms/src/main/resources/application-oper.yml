@@ -1,0 +1,30 @@
+server:
+  port: 8080
+
+spring:
+  profiles:
+    active: oper
+    dev: false
+
+  h2:
+    console:
+      enabled: true
+      settings.web-allow-others: true
+
+  datasource2nd:
+    enabled: true
+    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+    url: jdbc:log4jdbc:postgresql://147.6.97.110:5444/ipms?allowMultiQueries=true
+    username: ipms_user
+    password: tjsgkdb!@#
+    mapper-packages: >
+      com.kt.ipms.mapper.db2nd,
+      com.kt.ipms.legacy
+
+  sql:
+    init:
+      platform: postgres
+      encoding: UTF-8
+
+file:
+  upload-dir: ./external
