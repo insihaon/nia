@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.kt.ipms.legacy.cmn.dao.RestApiDao">
+
+	<!-- /* 기존 사설(CT0004) 은 유/무선공용으로 사용, 신규 사설(CT0005) 을 사설로 사용  */ -->
+	<select id="selectIpInfo" resultType="hashmap" parameterType="hashmap">
+		 SELECT 
+				A.SCOLLECT_DT		-- 수집일자
+				, A.PIP_PREFIX
+				, A.NBITMASK
+				, A.SCOLLECT_DT_ORIGIN 
+				, A.NROUTING_CHK_MST_SEQ 		-- 라우팅_비교_결과_SEQ
+				, A.SSVC_LINE_TYPE_CD		-- 서비스망_유형_CD
+				, A.SSVC_LINE_TYPE_NM
+				, A.SSVC_GROUP_CD			-- 본부/국사_CD
+				, A.SSVC_GROUP_NM
+				, A.SSVC_OBJ_CD				-- 노드_CD
+				, A.SSVC_OBJ_NM
+				, A.NLVL_MST_SEQ			-- 계위_MST_SEQ
+				, A.NIP_ASSIGN_MST_SEQ		-- IP_배정_MST_SEQ
+				, A.NIP_ALLOC_MST_SEQ		-- IP_할당_MST_SEQ
+				, A.PIPMS_IP_PREFIX			-- IPMS_IP
+				, A.SIPMS_IP_BLOCK			-- IPMS_IP_블록
+				, A.NIPMS_IP_BITMASK		-- IPMS_IP_비트마스크
+				, A.NIP_ALLOC_MST_CNT		-- 회선 CNT
+				, A.PROUTING_IP_PREFIX		-- 라우팅_IP
+				, A.SROUTING_IP_BLOCK		-- 라우팅_IP_블록
+				, A.NROUTING_IP_BITMASK		-- 라우팅_IP_비트마스크
+				, A.SROUTING_USE_YN			-- 라우팅_사용_여부
+				, A.SIP_NEXTHOP				-- NEXTHOP
+				, A.SCOMMUNITY				-- COMMUNITY
+				, A.SUSE_ROUTING			-- 사용장비
+				, A.SDB_INTGRM_RSLT_CD		-- DB현행화_결과
+				, A.SSUMMARY_MATCH_YN		-- SUMMARY_일치_여부 
+				, A.SIP_CREATE_TYPE_CD 		-- IP_생성_유형_CD
+				, A.SASSIGN_TYPE_CD			-- IPMS_서비스_유형_타입_CD
+				, A.SASSIGN_LEVEL_CD
+				, A.SIPMS_USE_YN
+			FROM ( 
+				SELECT
+					A.SCOLLECT_DT AS 	SCOLLECT_DT	-- 수집일자 
+					, B.PIP_PREFIX
+					, B.NBITMASK
+					, A.SCOLLECT_DT AS SCOLLECT_DT_ORIGIN
+					, A.NROUTING_CHK_MST_SEQ 		-- 라우팅_비교_결과_SEQ
+					, A.SSVC_LINE_TYPE_CD		-- 서비스망_유형_CD
+					, G.SSVC_LINE_TYPE_NM
+					, D.SSVC_GROUP_CD			-- 본부/국사_CD
+					, E.SLVL_NM AS SSVC_GROUP_NM
+					, D.SSVC_OBJ_CD				-- 노드_CD
+					, F.SLVL_NM AS SSVC_OBJ_NM
+					, A.NLVL_MST_SEQ			-- 계위_MST_SEQ
+					, NVL(A.NIP_CHG_ASSIGN_MST_SEQ, A.NIP_ASSIGN_MST_SEQ) AS NIP_ASSIGN_MST_SEQ		-- IP_배정_MST_SEQ
+					, (CASE WHEN A.NIP_CHG_ASSIGN_MST_SEQ IS NOT NULL THEN A.NIP_CHG_ALLOC_MST_SEQ ELSE A.NIP_ALLOC_MST_SEQ END) AS NIP_ALLOC_MST_SEQ 	-- IP_할당_MST_SEQ
+					, (CASE WHEN A.NIP_CHG_ASSIGN_MST_SEQ IS NOT NULL THEN B.PIP_PREFIX ELSE A.PIPMS_IP_PREFIX END) AS PIPMS_IP_PREFIX			-- IPMS_IP
+					, (CASE WHEN A.NIP_CHG_ASSIGN_MST_SEQ IS NOT NULL THEN B.SIP_BLOCK ELSE A.SIPMS_IP_BLOCK END) AS SIPMS_IP_BLOCK			-- IPMS_IP_블록
+					, (CASE WHEN A.NIP_CHG_ASSIGN_MST_SEQ IS NOT NULL THEN B.NBITMASK ELSE A.NIPMS_IP_BITMASK END)  AS NIPMS_IP_BITMASK		-- IPMS_IP_비트마스크
+					, B.NIP_ALLOC_MST_CNT		-- 회선 CNT
+					, A.PROUTING_IP_PREFIX		-- 라우팅_IP
+					, A.SROUTING_IP_BLOCK		-- 라우팅_IP_블록
+					, A.NROUTING_IP_BITMASK		-- 라우팅_IP_비트마스크
+					, A.SROUTING_USE_YN		-- 라우팅_사용_여부
+					, A.SIP_NEXTHOP			-- NEXTHOP
+					, A.SCOMMUNITY				-- COMMUNITY
+					, A.SUSE_ROUTING			-- 사용장비
+					, A.SDB_INTGRM_RSLT_CD
+					, A.SSUMMARY_MATCH_YN		-- SUMMARY_일치_여부 
+					, A.SCOMPARE_CD	-- 비교_구분(ASSIGN/ALLOC)
+					, B.SIP_CREATE_TYPE_CD 		-- IP_생성_유형_CD
+					, B.SASSIGN_TYPE_CD			-- IPMS_서비스_유형_타입_CD
+					, B.SASSIGN_LEVEL_CD
+					, (CASE WHEN B.SASSIGN_LEVEL_CD = 'IA0005' OR B.SASSIGN_LEVEL_CD = 'IA0006' THEN 'Y' ELSE 'N' END) AS SIPMS_USE_YN
+				FROM MST.TB_INTGRM_ROUTING_CHK_MST A	-- 라우팅_비교_결과_MST
+						, MST.TB_IP_ASSIGN_MST B 					-- IP_배정_MST
+						, MST.TB_IP_ALLOC_MST C					-- IP_할당_MST
+						, MST.TB_LVL_MST D							-- 계위_MST_수동계위포함
+						, MST.TB_LVL_CD E								-- 국사/조직코드_수동포함
+						, MST.TB_LVL_CD F								-- 국사/조직코드_수동포함
+						, MST.TB_SVC_LINE_TYPE_CD G				-- 서비스_망_유형_CD
+				WHERE 1=1
+					AND (A.SCOLLECT_DT, A.NLVL_MST_SEQ) IN (
+								SELECT MAX(SCOLLECT_DT), NLVL_MST_SEQ
+								FROM MST.TB_INTGRM_ROUTING_CHK_MST
+								WHERE 1=1 
+								GROUP BY NLVL_MST_SEQ)
+					AND B.NIP_ASSIGN_MST_SEQ(+) = NVL(A.NIP_CHG_ASSIGN_MST_SEQ, A.NIP_ASSIGN_MST_SEQ)
+					AND C.NIP_ASSIGN_MST_SEQ(+) = NVL(A.NIP_CHG_ASSIGN_MST_SEQ, A.NIP_ASSIGN_MST_SEQ)
+					AND C.NIP_ALLOC_MST_SEQ(+) = NVL(A.NIP_CHG_ALLOC_MST_SEQ, A.NIP_ALLOC_MST_SEQ)
+					AND D.NLVL_MST_SEQ = A.NLVL_MST_SEQ
+					AND E.SLVL_CD(+) = D.SSVC_GROUP_CD
+					AND F.SLVL_CD(+) = D.SSVC_OBJ_CD
+					AND G.SSVC_LINE_TYPE_CD(+) = D.SSVC_LINE_TYPE_CD
+					AND A.SSVC_LINE_TYPE_CD = 'CL0003'
+					AND (A.PIPMS_IP_PREFIX <![CDATA[>>=]]> (SELECT BIF.UF_SEARCH_IP_TO_ADDRESS(#{ipblock, jdbcType=VARCHAR}) AS SIP FROM DUAL)
+				  				OR A.PIPMS_IP_PREFIX <![CDATA[<<=]]> (SELECT BIF.UF_SEARCH_IP_TO_ADDRESS(#{ipblock, jdbcType=VARCHAR}) AS SIP FROM DUAL) )
+					AND B.SIP_CREATE_TYPE_CD = (CASE WHEN #{type, jdbcType=VARCHAR} = 'public' THEN 'CT0001'
+																		WHEN #{type, jdbcType=VARCHAR} = 'private' THEN 'CT0005' ELSE 'XXX' END)
+			) A
+			GROUP BY 
+					A.SCOLLECT_DT		-- 수집일자
+					, A.PIP_PREFIX
+					, A.NBITMASK
+					, A.SCOLLECT_DT_ORIGIN 
+					, A.NROUTING_CHK_MST_SEQ 		-- 라우팅_비교_결과_SEQ
+					, A.SSVC_LINE_TYPE_CD		-- 서비스망_유형_CD
+					, A.SSVC_LINE_TYPE_NM
+					, A.SSVC_GROUP_CD			-- 본부/국사_CD
+					, A.SSVC_GROUP_NM
+					, A.SSVC_OBJ_CD				-- 노드_CD
+					, A.SSVC_OBJ_NM
+					, A.NLVL_MST_SEQ			-- 계위_MST_SEQ
+					, A.NIP_ASSIGN_MST_SEQ		-- IP_배정_MST_SEQ
+					, A.NIP_ALLOC_MST_SEQ		-- IP_할당_MST_SEQ
+					, A.PIPMS_IP_PREFIX			-- IPMS_IP
+					, A.SIPMS_IP_BLOCK			-- IPMS_IP_블록
+					, A.NIPMS_IP_BITMASK		-- IPMS_IP_비트마스크
+					, A.NIP_ALLOC_MST_CNT		-- 회선 CNT
+					, A.PROUTING_IP_PREFIX		-- 라우팅_IP
+					, A.SROUTING_IP_BLOCK		-- 라우팅_IP_블록
+					, A.NROUTING_IP_BITMASK		-- 라우팅_IP_비트마스크
+					, A.SROUTING_USE_YN			-- 라우팅_사용_여부
+					, A.SIP_NEXTHOP				-- NEXTHOP
+					, A.SCOMMUNITY				-- COMMUNITY
+					, A.SUSE_ROUTING			-- 사용장비
+					, A.SDB_INTGRM_RSLT_CD		-- DB현행화_결과
+					, A.SSUMMARY_MATCH_YN		-- SUMMARY_일치_여부 
+					, A.SIP_CREATE_TYPE_CD 		-- IP_생성_유형_CD
+					, A.SASSIGN_TYPE_CD			-- IPMS_서비스_유형_타입_CD
+					, A.SASSIGN_LEVEL_CD 
+					, A.SIPMS_USE_YN
+	</select>
+	
+</mapper>

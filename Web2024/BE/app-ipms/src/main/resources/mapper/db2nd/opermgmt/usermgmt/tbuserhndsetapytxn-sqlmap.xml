@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kt.ipms.legacy.opermgmt.usermgmt.dao.TbUserHndsetApyTxnDao">
+	<resultMap id="tbUserHndsetApyTxnVoResult" type="com.kt.ipms.legacy.opermgmt.usermgmt.vo.TbUserHndsetApyTxnVo">
+		<result column="SUSER_ID" property="suserId" jdbcType="VARCHAR" />
+		<result column="NHNDSET_APY_SEQ" property="nhndsetApySeq" jdbcType="INTEGER" />
+		<result column="SUSER_HNDSET_ID" property="suserHndsetId" jdbcType="VARCHAR" />
+		<result column="SHNDSET_USE_STTUS_CD" property="shndsetUseSttusCd" jdbcType="CHAR" />
+		<result column="SHNDSET_USE_STTUS_NM" property="shndsetUseSttusNm" jdbcType="VARCHAR" />
+		<result column="SHNDSET_APV_USER_ID" property="shndsetApvUserId" jdbcType="VARCHAR" />
+		<result column="SCOMMENT" property="scomment" jdbcType="VARCHAR" />
+		<result column="DCREATE_DT" property="dcreateDt" jdbcType="TIMESTAMP" />
+		<result column="SCREATE_ID" property="screateId" jdbcType="VARCHAR" />
+		<result column="DMODIFY_DT" property="dmodifyDt" jdbcType="TIMESTAMP" />
+		<result column="SMODIFY_ID" property="smodifyId" jdbcType="VARCHAR" />
+
+		<result column="RNUM" property="rowNo" jdbcType="NUMERIC" />
+		
+		<result column="SUSER_NM" property="suserNm" jdbcType="VARCHAR" />
+		<result column="SHNDSET_APV_USER_NM" property="shndsetApvUserNm" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		A.SUSER_ID, A.NHNDSET_APY_SEQ, A.SUSER_HNDSET_ID, A.SHNDSET_USE_STTUS_CD
+		, A.SHNDSET_APV_USER_ID, A.SCOMMENT, A.DCREATE_DT, A.SCREATE_ID
+		, A.DMODIFY_DT, A.SMODIFY_ID
+	</sql>
+	
+	<sql id="Append_Column_List">
+		, B.SUSER_NM
+		, C.SUSER_NM AS  SHNDSET_APV_USER_NM
+		, D.SHNDSET_USE_STTUS_NM
+	</sql>
+	
+	
+	<sql id="Append_Column_List_Alias">
+		, A.SUSER_NM
+		, A.SHNDSET_APV_USER_NM
+		, A.SHNDSET_USE_STTUS_NM
+	</sql>
+	
+	<sql id="Append_From_Clause">
+	,	MST.TB_USER_BAS B
+    ,	MST.TB_USER_BAS C
+    , 	MST.TB_HNDSET_USE_STTUS_CD D
+	</sql>
+	
+	<sql id="Vo_Where_Clause">
+		<trim prefix="WHERE" prefixOverrides="AND">
+			A.SUSER_ID = #{suserId, jdbcType=VARCHAR}
+				AND A.NHNDSET_APY_SEQ = #{nhndsetApySeq, jdbcType=INTEGER}
+
+		</trim>
+	</sql>
+
+	<sql id="List_Where_Clause">
+		<trim prefix="WHERE" prefixOverrides="AND">
+			1 = 1
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(suserId)">
+				AND A.SUSER_ID = #{suserId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nhndsetApySeq)">
+				AND A.NHNDSET_APY_SEQ = #{nhndsetApySeq, jdbcType=INTEGER}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(suserHndsetId)">
+				AND A.SUSER_HNDSET_ID = #{suserHndsetId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(shndsetUseSttusCd)">
+				AND A.SHNDSET_USE_STTUS_CD = #{shndsetUseSttusCd, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(shndsetApvUserId)">
+				AND A.SHNDSET_APV_USER_ID = #{shndsetApvUserId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(scomment)">
+				AND A.SCOMMENT = #{scomment, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dcreateDt)">
+				AND A.DCREATE_DT = #{dcreateDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(screateId)">
+				AND A.SCREATE_ID = #{screateId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dmodifyDt)">
+				AND A.DMODIFY_DT = #{dmodifyDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smodifyId)">
+				AND A.SMODIFY_ID = #{smodifyId, jdbcType=VARCHAR}
+			</if>
+
+		</trim>
+	</sql>
+	
+	<sql id="Append_Where_Clause">
+		AND	A.SUSER_ID = B.SUSER_ID(+)
+		AND	A.SHNDSET_APV_USER_ID =  C.SUSER_ID(+)
+		AND	A.SHNDSET_USE_STTUS_CD =  D.SHNDSET_USE_STTUS_CD(+)
+	</sql>
+	
+	<insert id="insertTbUserHndsetApyTxnVo" parameterType="com.kt.ipms.legacy.opermgmt.usermgmt.vo.TbUserHndsetApyTxnVo">
+		INSERT
+			
+		INTO MST.TB_USER_HNDSET_APY_TXN (
+				SUSER_ID
+			,	NHNDSET_APY_SEQ
+			,	SUSER_HNDSET_ID
+			,	SHNDSET_USE_STTUS_CD
+			,	SHNDSET_APV_USER_ID
+			,	SCOMMENT
+			,	SCREATE_ID
+			,	SMODIFY_ID
+			,	DMODIFY_DT
+		
+		) VALUES (
+			#{suserId, jdbcType=VARCHAR}
+			,	(SELECT COALESCE((SELECT MAX (NHNDSET_APY_SEQ)FROM MST.TB_USER_HNDSET_APY_TXN WHERE SUSER_ID = #{suserId, jdbcType=VARCHAR} ),0) +1) 	
+			,	#{suserHndsetId, jdbcType=VARCHAR}
+			,	#{shndsetUseSttusCd, jdbcType=CHAR}
+			,	#{shndsetApvUserId, jdbcType=VARCHAR}
+			,	#{scomment, jdbcType=VARCHAR}
+			,	#{screateId, jdbcType=VARCHAR}
+			,	#{smodifyId, jdbcType=VARCHAR}
+			, CURRENT_TIMESTAMP
+		
+		)
+	</insert>
+	
+	<update id="updateTbUserHndsetApyTxnVo" parameterType="com.kt.ipms.legacy.opermgmt.usermgmt.vo.TbUserHndsetApyTxnVo">
+		UPDATE
+			
+		MST.TB_USER_HNDSET_APY_TXN A
+		SET
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(suserHndsetId)">
+			A.SUSER_HNDSET_ID = #{suserHndsetId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(shndsetUseSttusCd)">
+				, A.SHNDSET_USE_STTUS_CD = #{shndsetUseSttusCd, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(shndsetApvUserId)">
+				, A.SHNDSET_APV_USER_ID = #{shndsetApvUserId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(scomment)">
+				, A.SCOMMENT = #{scomment, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dcreateDt)">
+				, A.DCREATE_DT = #{dcreateDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(screateId)">
+				, A.SCREATE_ID = #{screateId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dmodifyDt)">
+				, A.DMODIFY_DT = #{dmodifyDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smodifyId)">
+				, A.SMODIFY_ID = #{smodifyId, jdbcType=VARCHAR}
+			</if>
+
+		<include refid="Vo_Where_Clause" />
+	</update>
+	
+	<delete id="deleteTbUserHndsetApyTxnVo" parameterType="com.kt.ipms.legacy.opermgmt.usermgmt.vo.TbUserHndsetApyTxnVo">
+		DELETE
+			
+		FROM MST.TB_USER_HNDSET_APY_TXN A
+		<include refid="Vo_Where_Clause" />
+	</delete>
+	
+	<select id="selectTbUserHndsetApyTxnVo" resultMap="tbUserHndsetApyTxnVoResult" parameterType="com.kt.ipms.legacy.opermgmt.usermgmt.vo.TbUserHndsetApyTxnVo">
+		SELECT
+			
+		<include refid="Base_Column_List" />
+		<include refid="Append_Column_List"/>
+		FROM TB_USER_HNDSET_APY_TXN A
+		<include refid="Append_From_Clause"/>
+		<include refid="Vo_Where_Clause" />
+		<include refid="Append_Where_Clause"/>
+	</select>
+	
+	<select id="selectListTbUserHndsetApyTxnVo" resultMap="tbUserHndsetApyTxnVoResult" parameterType="com.kt.ipms.legacy.opermgmt.usermgmt.vo.TbUserHndsetApyTxnVo">
+		SELECT
+			
+		<include refid="Base_Column_List" />
+		<include refid="Append_Column_List"/>
+		FROM MST.TB_USER_HNDSET_APY_TXN A
+		<include refid="Append_From_Clause"/>
+		<include refid="List_Where_Clause" />
+		<include refid="Append_Where_Clause"/>
+	</select>
+	
+	<select id="selectListPageTbUserHndsetApyTxnVo" resultMap="tbUserHndsetApyTxnVoResult" parameterType="com.kt.ipms.legacy.opermgmt.usermgmt.vo.TbUserHndsetApyTxnVo">
+		SELECT <include refid="Base_Column_List" />
+			   <include refid="Append_Column_List_Alias"/>, A.RNUM FROM (
+			SELECT <include refid="Base_Column_List" />
+			   <include refid="Append_Column_List_Alias"/>, ROWNUM RNUM FROM (
+				SELECT
+					
+				<include refid="Base_Column_List" />
+				<include refid="Append_Column_List"/>
+				FROM MST.TB_USER_HNDSET_APY_TXN A
+				<include refid="Append_From_Clause"/>
+				<include refid="List_Where_Clause" />
+				<include refid="Append_Where_Clause"/>
+			) A WHERE ROWNUM <![CDATA[<=]]> #{lastIndex}
+		)A WHERE RNUM <![CDATA[>=]]> #{firstIndex}
+	</select>
+	
+	<select id="countListPageTbUserHndsetApyTxnVo" resultType="int" parameterType="com.kt.ipms.legacy.opermgmt.usermgmt.vo.TbUserHndsetApyTxnVo">
+		SELECT
+			
+			count(1) totalCount
+		FROM MST.TB_USER_HNDSET_APY_TXN A
+		<include refid="Append_From_Clause"/>
+		<include refid="List_Where_Clause" />
+		<include refid="Append_Where_Clause"/>
+	</select>
+	
+</mapper>

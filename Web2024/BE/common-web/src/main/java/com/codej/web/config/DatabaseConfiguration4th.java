@@ -29,7 +29,7 @@ import com.zaxxer.hikari.HikariDataSource;
 @Configuration
 @EnableTransactionManagement
 @ConditionalOnExpression("'${spring.datasource4th.enabled:true}' == 'true'")
-@MapperScan(value="com.codej.web.mapper.db4th", basePackages = "${spring.datasource4th.mapper-packages:}", sqlSessionFactoryRef="db4thSqlSessionFactory")
+@MapperScan(basePackages = "${spring.datasource4th.mapper-packages:}", sqlSessionFactoryRef="db4thSqlSessionFactory")
 public class DatabaseConfiguration4th {
 
     @Autowired

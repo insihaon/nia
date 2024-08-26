@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kt.ipms.legacy.opermgmt.menumgmt.dao.TbMenuBasDao">
+	<resultMap id="tbMenuBasVoResult" type="com.kt.ipms.legacy.opermgmt.menumgmt.vo.TbMenuBasVo">
+		<result column="SMENU_ID" property="smenuId" jdbcType="VARCHAR" />
+		<result column="SUP_MENU_ID" property="sUpMenuId" jdbcType="VARCHAR" />		
+		<result column="SUP_MENU_NM" property="sUpMenuNm" jdbcType="VARCHAR" />
+		<result column="SMENU_NM" property="smenuNm" jdbcType="VARCHAR" />
+		<result column="SMENU_HIER_TYPE_CD" property="smenuHierTypeCd" jdbcType="CHAR" />
+		<result column="NMENU_LVL_SEQ" property="nmenuLvlSeq" jdbcType="INTEGER" />
+		<result column="NMENU_INDC_ODRG" property="nmenuIndcOdrg" jdbcType="INTEGER" />
+		<result column="SMENU_DESC_SBST" property="smenuDescSbst" jdbcType="VARCHAR" />
+		<result column="SSCRN_ID" property="sscrnId" jdbcType="VARCHAR" />
+		<result column="SSCRN_NM" property="sscrnNm" jdbcType="VARCHAR" />
+		<result column="SSCRN_URL_ADR" property="sscrnUrlAdr" jdbcType="VARCHAR" />
+		<result column="SSCRN_USE_YN" property="sscrnUseYn" jdbcType="VARCHAR" />
+		<result column="SMENU_GROUP_ID" property="smenuGroupId" jdbcType="VARCHAR" />
+		<result column="SMENU_USE_YN" property="smenuUseYn" jdbcType="CHAR" />
+		<result column="DCREATE_DT" property="dcreateDt" jdbcType="TIMESTAMP" />
+		<result column="SCREATE_ID" property="screateId" jdbcType="VARCHAR" />
+		<result column="DMODIFY_DT" property="dmodifyDt" jdbcType="TIMESTAMP" />
+		<result column="SMODIFY_ID" property="smodifyId" jdbcType="VARCHAR" />
+		<result column="SCOMMENT" property="scomment" jdbcType="VARCHAR" />
+
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		A.SMENU_ID, A.SUP_MENU_ID ,A.SMENU_NM, A.SMENU_HIER_TYPE_CD, A.NMENU_LVL_SEQ
+		, A.NMENU_INDC_ODRG, A.SMENU_DESC_SBST, A.SSCRN_ID, A.SMENU_GROUP_ID
+		, A.SMENU_USE_YN, A.DCREATE_DT, A.SCREATE_ID, A.DMODIFY_DT
+		, A.SMODIFY_ID , A.SCOMMENT
+
+	</sql>
+	
+	<sql id="Append_Column_List">
+	,B.SSCRN_NM   AS SSCRN_NM
+	,B.SSCRN_URL_ADR  AS SSCRN_URL_ADR
+	,B.SSCRN_USE_YN AS   SSCRN_USE_YN
+	,C.SMENU_NM 	AS	SUP_MENU_NM
+	</sql>
+	
+	<sql id="Append_Column_List_Alias">
+		,	A.SSCRN_NM
+		,	A.SSCRN_URL_ADR
+		,	A.SSCRN_USE_YN
+		,	A.SUP_MENU_NM
+	</sql>
+	
+	
+	<sql id="Append_From_Clause">
+		,	MST.TB_SCRN_BAS B
+		,	MST.TB_MENU_BAS C
+	</sql>
+
+	<sql id="Vo_Where_Clause">
+		<trim prefix="WHERE" prefixOverrides="AND">
+			A.SMENU_ID = #{smenuId, jdbcType=VARCHAR}
+
+		</trim>
+	</sql>
+
+	<sql id="List_Where_Clause">
+		<trim prefix="WHERE" prefixOverrides="AND">
+			1 = 1
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smenuId)">
+				AND A.SMENU_ID = #{smenuId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smenuNm)">
+				AND A.SMENU_NM = #{smenuNm, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smenuHierTypeCd)">
+				AND A.SMENU_HIER_TYPE_CD = #{smenuHierTypeCd, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nmenuLvlSeq)">
+				AND A.NMENU_LVL_SEQ = #{nmenuLvlSeq, jdbcType=INTEGER}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nmenuIndcOdrg)">
+				AND A.NMENU_INDC_ODRG = #{nmenuIndcOdrg, jdbcType=INTEGER}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smenuDescSbst)">
+				AND A.SMENU_DESC_SBST = #{smenuDescSbst, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sscrnId)">
+				AND A.SSCRN_ID = #{sscrnId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smenuGroupId)">
+				AND A.SMENU_GROUP_ID = #{smenuGroupId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smenuUseYn)">
+				AND A.SMENU_USE_YN = #{smenuUseYn, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dcreateDt)">
+				AND A.DCREATE_DT = #{dcreateDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(screateId)">
+				AND A.SCREATE_ID = #{screateId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dmodifyDt)">
+				AND A.DMODIFY_DT = #{dmodifyDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smodifyId)">
+				AND A.SMODIFY_ID = #{smodifyId, jdbcType=VARCHAR}
+			</if>
+			
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(suserGradeCd)">
+				AND  A.SMENU_ID  IN (
+						SELECT SMENU_ID  
+						FROM MST.TB_MENU_AUTH 
+						WHERE SUSER_GRADE_CD =  #{suserGradeCd, jdbcType=VARCHAR}
+				)
+			</if>
+
+		</trim>
+	</sql>
+	
+	<sql id="Append_Where_Clause">
+		AND A.SSCRN_ID = B.SSCRN_ID(+)
+		AND A.SUP_MENU_ID = C.SMENU_ID(+)
+	</sql>
+	
+	<insert id="insertTbMenuBasVo" parameterType="com.kt.ipms.legacy.opermgmt.menumgmt.vo.TbMenuBasVo">
+		INSERT
+			
+		INTO MST.TB_MENU_BAS (
+			SMENU_ID
+			,	SMENU_NM
+			,	SMENU_HIER_TYPE_CD
+			,	SMENU_DESC_SBST
+			,	SSCRN_ID
+			,	SMENU_GROUP_ID
+			,	SMENU_USE_YN
+			,	SCREATE_ID
+			,	DMODIFY_DT
+			,	SMODIFY_ID
+		
+		) VALUES (
+			#{smenuId, jdbcType=VARCHAR}
+			,	#{smenuNm, jdbcType=VARCHAR}
+			,	#{smenuHierTypeCd, jdbcType=CHAR}
+			,	#{smenuDescSbst, jdbcType=VARCHAR}
+			,	#{sscrnId, jdbcType=VARCHAR}
+			,	#{smenuGroupId, jdbcType=VARCHAR}
+			,	#{smenuUseYn, jdbcType=CHAR}
+			,	#{screateId, jdbcType=VARCHAR}
+			,	#{dmodifyDt, jdbcType=TIMESTAMP}
+			,	#{smodifyId, jdbcType=VARCHAR}
+		
+		)
+	</insert>
+	
+	<update id="updateTbMenuBasVo" parameterType="com.kt.ipms.legacy.opermgmt.menumgmt.vo.TbMenuBasVo">
+		UPDATE
+			
+		MST.TB_MENU_BAS A
+		SET
+			A.DMODIFY_DT =  CURRENT_TIMESTAMP
+			
+			,	A.SMODIFY_ID = #{smodifyId, jdbcType=CHAR}
+			
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smenuNm)">
+			, A.SMENU_NM = #{smenuNm, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smenuHierTypeCd)">
+			,	A.SMENU_HIER_TYPE_CD = #{smenuHierTypeCd, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nmenuLvlSeq)">
+			,	A.NMENU_LVL_SEQ = #{nmenuLvlSeq, jdbcType=INTEGER}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nmenuIndcOdrg)">
+			,	A.NMENU_INDC_ODRG = #{nmenuIndcOdrg, jdbcType=INTEGER}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smenuDescSbst)">
+			,	A.SMENU_DESC_SBST = #{smenuDescSbst, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sscrnId)">
+			,	A.SSCRN_ID = #{sscrnId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smenuGroupId)">
+			,	A.SMENU_GROUP_ID = #{smenuGroupId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smenuUseYn)">
+			,	A.SMENU_USE_YN = #{smenuUseYn, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dcreateDt)">
+			,	A.DCREATE_DT = #{dcreateDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(screateId)">
+			,	A.SCREATE_ID = #{screateId, jdbcType=VARCHAR}
+			</if>
+			
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(scomment)">
+			,	A.SCOMMENT = #{scomment, jdbcType=VARCHAR}
+			</if>
+
+		<include refid="Vo_Where_Clause" />
+	</update>
+	
+	<delete id="deleteTbMenuBasVo" parameterType="com.kt.ipms.legacy.opermgmt.menumgmt.vo.TbMenuBasVo">
+		DELETE
+			
+		FROM MST.TB_MENU_BAS A
+		<include refid="Vo_Where_Clause" />
+	</delete>
+	
+	<select id="selectTbMenuBasVo" resultMap="tbMenuBasVoResult" parameterType="com.kt.ipms.legacy.opermgmt.menumgmt.vo.TbMenuBasVo">
+		SELECT
+			
+		<include refid="Base_Column_List" />
+		<include refid="Append_Column_List"/>
+		FROM MST.TB_MENU_BAS A
+		<include refid="Append_From_Clause"/>
+		<include refid="Vo_Where_Clause" />	
+		<include refid="Append_Where_Clause"/>
+	</select>
+	
+	<select id="selectListTbMenuBasVo" resultMap="tbMenuBasVoResult" parameterType="com.kt.ipms.legacy.opermgmt.menumgmt.vo.TbMenuBasVo">
+		SELECT
+			
+		<include refid="Base_Column_List" />
+		<include refid="Append_Column_List"/>
+		FROM MST.TB_MENU_BAS A
+		<include refid="Append_From_Clause"/>
+		<include refid="List_Where_Clause" />	
+		<include refid="Append_Where_Clause"/>
+		
+		ORDER BY A.NMENU_INDC_ODRG  ASC
+	</select>
+	
+	<select id="selectListPageTbMenuBasVo" resultMap="tbMenuBasVoResult" parameterType="com.kt.ipms.legacy.opermgmt.menumgmt.vo.TbMenuBasVo">
+		SELECT <include refid="Base_Column_List" />
+			   <include refid="Append_Column_List_Alias"/>, A.RNUM FROM (
+			SELECT <include refid="Base_Column_List" />
+			   <include refid="Append_Column_List_Alias"/>, A.RNUM, ROWNUM RNUM FROM (
+				SELECT
+					
+				<include refid="Base_Column_List" />
+				FROM MST.TB_MENU_BAS A
+				<include refid="List_Where_Clause" />
+			) A WHERE ROWNUM <![CDATA[<=]]> #{lastIndex}
+		)A WHERE RNUM <![CDATA[>=]]> #{firstIndex}
+	</select>
+	
+	<select id="countListPageTbMenuBasVo" resultType="int" parameterType="com.kt.ipms.legacy.opermgmt.menumgmt.vo.TbMenuBasVo">
+		SELECT
+			
+			count(1) totalCount
+		FROM MST.TB_MENU_BAS A
+		<include refid="Append_From_Clause"/>
+		<include refid="List_Where_Clause" />
+		<include refid="Append_Where_Clause"/>
+	</select>
+	
+</mapper>
