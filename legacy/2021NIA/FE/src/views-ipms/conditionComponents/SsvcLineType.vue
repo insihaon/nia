@@ -221,14 +221,16 @@ export default {
       this.localLabel[key1] = this.lvlOptions[key1].find(v => v.value === this.localValue[key1])?.label ?? ''
       if (isOver) return
       const params = { ssvcLineTypeCd: this.localValue[key1] }
-
-      const res = await apiRequestJson(ipmsJsonApis.selectAuthCenterList, params)
-      this.lvlOptions[key2] = res?.tbLvlBasVos?.filter(v => v.ssvcGroupNm !== '전체').map(v => { return { value: v.ssvcGroupCd, label: v.ssvcGroupNm } })
-
-     this.resetLocalValue(key2)
-     this.resetLocalValue(key3)
-     this.emitEventToParent(this.getParameter())
-      Eventbus.$emit(EventType.changeLvl1, { ssvcLineTypeCd: this.localValue[key1] })
+      try {
+        const res = await apiRequestJson(ipmsJsonApis.selectAuthCenterList, params)
+        this.lvlOptions[key2] = res?.tbLvlBasVos?.filter(v => v.ssvcGroupNm !== '전체').map(v => { return { value: v.ssvcGroupCd, label: v.ssvcGroupNm } })
+        this.resetLocalValue(key2)
+        this.resetLocalValue(key3)
+        this.emitEventToParent(this.getParameter())
+         Eventbus.$emit(EventType.changeLvl1, { ssvcLineTypeCd: this.localValue[key1] })
+      } catch (error) {
+        this.error(error)
+      }
     },
     async handleChangeLvl2() {
       const isOver = this.updateSelectionWithAll(2)
@@ -241,10 +243,13 @@ export default {
       if (this.multi.includes(2) && this.localValue[key2].length > 1) return
 
       const params = { ssvcLineTypeCd: this.localValue[key1], ssvcGroupCd: this.localValue[key2] }
-      const res = await apiRequestJson(ipmsJsonApis.selectAuthNodeList, params)
-      this.lvlOptions[key3] = res.tbLvlBasVos?.filter(v => v.ssvcGroupNm !== '전체').map(v => { return { value: v.ssvcObjCd, label: v.ssvcObjNm } })
-
-      this.resetLocalValue(key3)
+      try {
+        const res = await apiRequestJson(ipmsJsonApis.selectAuthNodeList, params)
+        this.lvlOptions[key3] = res.tbLvlBasVos?.filter(v => v.ssvcGroupNm !== '전체').map(v => { return { value: v.ssvcObjCd, label: v.ssvcObjNm } })
+        this.resetLocalValue(key3)
+      } catch (error) {
+        this.error(error)
+      }
     },
     handleChangeLvl3() {
       this.emitEventToParent(this.getParameter())
