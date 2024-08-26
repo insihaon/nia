@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kt.ipms.legacy.opermgmt.menumgmt.dao.TbMenuAuthDao">
+	<resultMap id="tbMenuAuthVoResult" type="com.kt.ipms.legacy.opermgmt.menumgmt.vo.TbMenuAuthVo">
+		<result column="SUSER_GRADE_CD" property="suserGradeCd" jdbcType="VARCHAR" />
+		<result column="SMENU_ID" property="smenuId" jdbcType="VARCHAR" />
+		<result column="SMENU_NM" property="smenuNm" jdbcType="VARCHAR" />
+		<result column="SMENU_AUT_USE_YN" property="smenuAutUseYn" jdbcType="CHAR" />
+		<result column="DCREATE_DT" property="dcreateDt" jdbcType="TIMESTAMP" />
+		<result column="SCREATE_ID" property="screateId" jdbcType="VARCHAR" />
+		<result column="DMODIFY_DT" property="dmodifyDt" jdbcType="TIMESTAMP" />
+		<result column="SMODIFY_ID" property="smodifyId" jdbcType="VARCHAR" />
+		
+		<result column="SSCRN_ID" property="sscrnId" jdbcType="VARCHAR" />
+		<result column="SSCRN_URL_ADR" property="sscrnUrlAdr" jdbcType="VARCHAR" />
+
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		SUSER_GRADE_CD, SMENU_ID, SMENU_AUT_USE_YN, DCREATE_DT
+		, SCREATE_ID, DMODIFY_DT, SMODIFY_ID
+
+	</sql>
+
+	<sql id="Vo_Where_Clause">
+		<trim prefix="WHERE" prefixOverrides="AND">
+			SUSER_GRADE_CD = #{suserGradeCd, jdbcType=VARCHAR}
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smenuId)">
+				AND SMENU_ID = #{smenuId, jdbcType=VARCHAR}
+			</if>
+
+		</trim>
+	</sql>
+
+	<sql id="List_Where_Clause">
+		<trim prefix="WHERE" prefixOverrides="AND">
+			1 = 1
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(suserGradeCd)">
+				AND SUSER_GRADE_CD = #{suserGradeCd, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smenuId)">
+				AND SMENU_ID = #{smenuId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smenuAutUseYn)">
+				AND SMENU_AUT_USE_YN = #{smenuAutUseYn, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dcreateDt)">
+				AND DCREATE_DT = #{dcreateDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(screateId)">
+				AND SCREATE_ID = #{screateId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dmodifyDt)">
+				AND DMODIFY_DT = #{dmodifyDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smodifyId)">
+				AND SMODIFY_ID = #{smodifyId, jdbcType=VARCHAR}
+			</if>
+
+		</trim>
+	</sql>
+	
+	<insert id="insertTbMenuAuthVo" parameterType="com.kt.ipms.legacy.opermgmt.menumgmt.vo.TbMenuAuthVo">
+		INSERT
+			
+		INTO MST.TB_MENU_AUTH (
+			SUSER_GRADE_CD
+			,	SMENU_ID
+			,	SCREATE_ID
+			,	DMODIFY_DT
+			,	SMODIFY_ID
+		
+		) VALUES (
+			#{suserGradeCd, jdbcType=VARCHAR}
+			,	#{smenuId, jdbcType=VARCHAR}
+			,	#{screateId, jdbcType=VARCHAR}
+			,	#{dmodifyDt, jdbcType=TIMESTAMP}
+			,	#{smodifyId, jdbcType=VARCHAR}
+		
+		)
+	</insert>
+	
+	<update id="updateTbMenuAuthVo" parameterType="com.kt.ipms.legacy.opermgmt.menumgmt.vo.TbMenuAuthVo">
+		UPDATE
+			
+		MST.TB_MENU_AUTH
+		SET
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smenuAutUseYn)">
+			SMENU_AUT_USE_YN = #{smenuAutUseYn, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dcreateDt)">
+			,	DCREATE_DT = #{dcreateDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(screateId)">
+			,	SCREATE_ID = #{screateId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dmodifyDt)">
+			,	DMODIFY_DT = #{dmodifyDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smodifyId)">
+			,	SMODIFY_ID = #{smodifyId, jdbcType=VARCHAR}
+			</if>
+
+		<include refid="Vo_Where_Clause" />
+	</update>
+	
+	<delete id="deleteTbMenuAuthVo" parameterType="com.kt.ipms.legacy.opermgmt.menumgmt.vo.TbMenuAuthVo">
+		DELETE
+			
+		FROM MST.TB_MENU_AUTH
+		<include refid="Vo_Where_Clause" />
+	</delete>
+	
+	<select id="selectTbMenuAuthVo" resultMap="tbMenuAuthVoResult" parameterType="com.kt.ipms.legacy.opermgmt.menumgmt.vo.TbMenuAuthVo">
+		SELECT
+			
+		<include refid="Base_Column_List" />
+		FROM MST.TB_MENU_AUTH
+		<include refid="Vo_Where_Clause" />
+	</select>
+	
+	<select id="selectListTbMenuAuthVo" resultMap="tbMenuAuthVoResult" parameterType="com.kt.ipms.legacy.opermgmt.menumgmt.vo.TbMenuAuthVo">
+		SELECT
+			
+		<include refid="Base_Column_List" />
+		FROM MST.TB_MENU_AUTH
+		<include refid="List_Where_Clause" />
+	</select>
+	
+	<select id="selectListPageTbMenuAuthVo" resultMap="tbMenuAuthVoResult" parameterType="com.kt.ipms.legacy.opermgmt.menumgmt.vo.TbMenuAuthVo">
+		SELECT 
+				A.SMENU_ID 
+				,A.SMENU_NM 
+				,A.SSCRN_ID  
+				,A.SSCRN_URL_ADR  
+				, A.SMENU_AUT_USE_YN  
+				, A.RNUM FROM (
+			SELECT  A.SMENU_ID 
+						,A.SMENU_NM 
+						,A.SSCRN_ID  
+						,A.SSCRN_URL_ADR  
+						, A.SMENU_AUT_USE_YN  
+						, ROWNUM RNUM FROM (
+						
+				SELECT  DISTINCT
+						A.SMENU_ID 
+						,A.SMENU_NM 
+						,A.SSCRN_ID  
+						,B.SSCRN_URL_ADR  
+						,(CASE	#{suserGradeCd,	jdbcType=VARCHAR}	WHEN	'UR0001'	THEN	'Y' 
+							ELSE
+								(	CASE	C.SUSER_GRADE_CD	WHEN	#{suserGradeCd, jdbcType=VARCHAR}	THEN 'Y' ELSE 'N' END )
+						END)	AS	SMENU_AUT_USE_YN  
+				FROM MST.TB_MENU_BAS A 
+				, MST.TB_SCRN_BAS B 
+				,(SELECT SMENU_ID, SUSER_GRADE_CD 
+					FROM  MST.TB_MENU_AUTH
+					WHERE SUSER_GRADE_CD = #{suserGradeCd, jdbcType=VARCHAR}) C
+				WHERE A.SSCRN_ID = B.SSCRN_ID(+)
+				  AND A.SMENU_ID = C.SMENU_ID (+)
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(searchCnd)">
+				<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(searchWrd)">
+					<if test= 'searchCnd == "smenuId"'>
+						AND A.SMENU_ID = #{searchWrd, jdbcType=VARCHAR}
+					</if>
+					<if test= 'searchCnd == "smenuNm"'>
+						AND A.SMENU_NM	ILIKE '%' || #{searchWrd, jdbcType=VARCHAR} || '%'
+					</if>						
+				</if>
+			</if>
+			
+			ORDER BY A.SMENU_ID
+			) A WHERE ROWNUM <![CDATA[<=]]> #{lastIndex}
+		)A WHERE RNUM <![CDATA[>=]]> #{firstIndex}
+	</select>
+	
+	<select id="countListPageTbMenuAuthVo" resultType="int" parameterType="com.kt.ipms.legacy.opermgmt.menumgmt.vo.TbMenuAuthVo">
+		SELECT
+			
+			count(1) totalCount
+		FROM (
+				SELECT  DISTINCT
+						A.SMENU_ID 
+						,A.SMENU_NM 
+						,A.SSCRN_ID  
+						,B.SSCRN_URL_ADR  
+						,(CASE	#{suserGradeCd,	jdbcType=VARCHAR}	WHEN	'UR0001'	THEN	'Y' 
+							ELSE
+								(	CASE	C.SUSER_GRADE_CD	WHEN	#{suserGradeCd, jdbcType=VARCHAR}	THEN 'Y' ELSE 'N' END )
+						END)	AS	SMENU_AUT_USE_YN  
+				FROM MST.TB_MENU_BAS A , MST.TB_SCRN_BAS B 
+				,(SELECT SMENU_ID, SUSER_GRADE_CD 
+					FROM  MST.TB_MENU_AUTH
+					WHERE SUSER_GRADE_CD = #{suserGradeCd, jdbcType=VARCHAR}) C
+				WHERE A.SSCRN_ID = B.SSCRN_ID(+)
+				  AND A.SMENU_ID = C.SMENU_ID (+)
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(searchCnd)">
+				<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(searchWrd)">
+					<if test= 'searchCnd == "smenuId"'>
+						AND A.SMENU_ID = #{searchWrd, jdbcType=VARCHAR}
+					</if>
+					<if test= 'searchCnd == "smenuNm"'>
+						AND A.SMENU_NM	ILIKE '%' || #{searchWrd, jdbcType=VARCHAR} || '%'
+					</if>						
+				</if>
+			</if>
+			) A
+	</select>
+	
+	<insert id="insertMenuAuthUseYn" parameterType="com.kt.ipms.legacy.opermgmt.menumgmt.vo.TbMenuAuthVo">
+		INSERT
+			
+		INTO MST.TB_MENU_AUTH (
+			SUSER_GRADE_CD
+			,	SMENU_ID
+			,   SMENU_AUT_USE_YN
+			,   DCREATE_DT
+			,	SCREATE_ID
+			,	DMODIFY_DT
+			,	SMODIFY_ID
+		
+		) VALUES (
+	
+			#{suserGradeCd, jdbcType=VARCHAR}		
+			,	#{smenuId, jdbcType=VARCHAR}	
+			,	#{smenuAutUseYn, jdbcType=VARCHAR}
+			,	current_timestamp
+			,	#{screateId, jdbcType=VARCHAR}	
+			,	current_timestamp
+			,	#{smodifyId, jdbcType=VARCHAR}
+		
+		)
+	</insert>
+	
+	
+	
+	<delete id="deleteAuthUseYn" parameterType="com.kt.ipms.legacy.opermgmt.menumgmt.vo.TbMenuAuthVo">
+		DELETE
+			
+		FROM MST.TB_MENU_AUTH
+		WHERE SUSER_GRADE_CD = #{suserGradeCd, jdbcType=VARCHAR}
+		AND SMENU_ID = #{smenuId, jdbcType=VARCHAR}
+	</delete>
+	
+	
+	
+</mapper>

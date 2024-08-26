@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kt.ipms.legacy.opermgmt.requiremgmt.dao.ReqBoardDao">
+	<resultMap id="ReqBoardVoResult" type="com.kt.ipms.legacy.opermgmt.requiremgmt.vo.ReqBoardVo">
+		<result column="seq" property="seq" jdbcType="BIGINT" />
+		<result column="rboard_division" property="rboardDivision" jdbcType="VARCHAR" />
+		<result column="rboard_title" property="rboardTitle" jdbcType="VARCHAR" />
+		<result column="rboard_desire_date" property="rboardDesireDate" jdbcType="TIMESTAMP" />
+		<result column="rboard_purpose_request" property="rboardPurposeRequest" jdbcType="VARCHAR" />
+		<result column="rboard_importance" property="rboardImportance" jdbcType="VARCHAR" />
+		<result column="rboard_content" property="rboardContent" jdbcType="VARCHAR" />
+		<result column="dcreate_dt" property="rboardDcreateDt" jdbcType="TIMESTAMP" />
+		<result column="screate_id" property="rboardScreateId" jdbcType="VARCHAR" />
+		<result column="smodify_id" property="rboardSModifyId" jdbcType="VARCHAR" />
+		<result column="susernm" property="sUserNm" jdbcType="VARCHAR" />
+		<result column="rboard_action_detail" property="rboardActionDetail" jdbcType="VARCHAR" />
+		<result column="rboard_progress" property="rboardProgress" jdbcType="VARCHAR" />
+		<result column="rboard_expected_date" property="rboardExpectedDate" jdbcType="TIMESTAMP" />
+		<result column="rboard_file_seq" property="rboardFileSeq" jdbcType="TIMESTAMP" />
+		<result column="rboard_seq" property="rboardSeq" jdbcType="TIMESTAMP" />
+		<result column="rboard_file_origin_name" property="rboardFileOriginName" jdbcType="TIMESTAMP" />
+		<result column="rboard_file_save_name" property="rboardFileSaveName" jdbcType="TIMESTAMP" />
+		<result column="rboard_file_path" property="rboardFilePath" jdbcType="TIMESTAMP" />
+		<result column="rboard_file_size" property="rboardFileSize" jdbcType="TIMESTAMP" />
+		<result column="RNUM" property="rowNo" jdbcType="NUMERIC" />
+	</resultMap>
+	
+	<resultMap id="ReqBoardSubVo" type="com.kt.ipms.legacy.opermgmt.requiremgmt.vo.ReqBoardSubVo">
+		<result column="rboard_type_sub_cd" property="rboardTypeSubCd" jdbcType="VARCHAR" />
+		<result column="rboard_type_cd" property="rboardTypeCd" jdbcType="VARCHAR" />
+		<result column="rboard_type_sub_nm" property="rboardTypeSubnm" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<resultMap id="ReqAdminEmailVo" type="com.kt.ipms.legacy.opermgmt.requiremgmt.vo.ReqAdminEmailVo">
+		<result column="suser_id" property="sUserId" jdbcType="VARCHAR" />
+		<result column="suser_nm" property="sUserNm" jdbcType="VARCHAR" />
+		<result column="suser_email" property="sUserEmail" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<sql id="List_Where_Clause">
+		<trim prefix="WHERE" prefixOverrides="AND">
+			1 = 1
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(seq)">
+				AND A.seq = #{seq, jdbcType=BIGINT}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(rboardDivision)">
+				AND A.rboard_division = #{rboardDivision, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(rboardTitle)">
+				AND A.rboard_title = #{rboardTitle, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(rboardDesireDate)">
+				AND A.rboard_desire_date = #{rboardDesireDate, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(rboardPurposeRequest)">
+				AND A.rboard_purpose_request = #{rboardPurposeRequest, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(rboardImportance)">
+				AND A.rboard_importance = #{rboardImportance, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(rboardContent)">
+				AND A.rboard_content = #{rboardContent, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(rboardDcreateDt)">
+				AND A.dcreate_dt = #{rboardDcreateDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(rboardScreateId)">
+				AND A.screate_id = #{rboardScreateId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sUserNm)">
+				AND A.susernm = #{sUserNm, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(rboardActionDetail)">
+				AND B.rboard_action_detail = #{rboardActionDetail, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(rboardProgress)">
+				AND B.rboard_progress = #{rboardProgress, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(rboardExpectedDate)">
+				AND B.rboard_expected_date = #{rboardExpectedDate, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(searchCnd)">
+				<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(searchWrd)">
+					<if test= 'searchCnd == "title"'>
+						AND A.rboard_title ILIKE '%' || #{searchWrd, jdbcType=VARCHAR} || '%'
+					</if>
+					<if test= 'searchCnd == "content"'>
+						AND A.rboard_content	ILIKE '%' || #{searchWrd, jdbcType=VARCHAR} || '%'
+					</if>	
+					<if test= 'searchCnd == "user"'>
+						AND A.susernm ILIKE '%' || #{searchWrd, jdbcType=VARCHAR} || '%'
+					</if>
+				</if>
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(searchBgnDe)">
+				<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(searchEndDe)">
+					AND A.DCREATE_DT BETWEEN #{searchBgnDe, jdbcType=TIMESTAMP} AND #{searchEndDe} || ' 23:59:59'
+				</if>
+			</if>
+		</trim>
+	</sql>
+	
+	<select id="selectListPageReqBoardVo" resultMap="ReqBoardVoResult" parameterType="com.kt.ipms.legacy.opermgmt.requiremgmt.vo.ReqBoardVo">
+		SELECT 
+			A.seq as seq, 
+			(select rboard_type_sub_nm from mst.tb_req_board_type_sub trbts  where rboard_type_sub_cd  = A.rboard_division) as rboard_division, 
+			A.rboard_title as rboard_title, 
+			A.rboard_desire_date as rboard_desire_date, 
+			A.rboard_purpose_request as rboard_purpose_request, 
+			A.rboard_importance as rboard_importance, 
+			A.rboard_content as rboard_content, 
+			A.dcreate_dt as dcreate_dt, 
+			A.screate_id as screate_id, 
+			A.dmodify_dt as dmodify_dt, 
+			A.smodify_id as smodify_id, 
+			A.susernm as susernm,
+			A.rboard_action_detail as rboard_action_detail, 
+			(select rboard_type_sub_nm from mst.tb_req_board_type_sub trbts  where rboard_type_sub_cd  = A.rboard_progress) as rboard_progress, 
+			A.rboard_expected_date as rboard_expected_date,
+			A.RNUM
+		FROM (
+			SELECT 
+				A.seq, A.rboard_division, A.rboard_title, A.rboard_desire_date, A.rboard_purpose_request, A.rboard_importance, A.rboard_content, A.dcreate_dt, A.screate_id, A.dmodify_dt, A.smodify_id, A.susernm,
+				A.rboard_action_detail, A.rboard_progress, A.rboard_expected_date, ROWNUM RNUM
+			FROM (
+				SELECT 
+					A.seq, A.rboard_division, A.rboard_title, A.rboard_desire_date, A.rboard_purpose_request, A.rboard_importance, A.rboard_content, A.dcreate_dt, A.screate_id, A.dmodify_dt, A.smodify_id, A.susernm, 
+					B.rboard_action_detail, B.rboard_progress, B.rboard_expected_date
+				FROM mst.tb_req_board A
+				LEFT JOIN mst.tb_req_board_reply B
+				ON A.seq = B.rboard_seq 
+				<include refid="List_Where_Clause" />
+				order by A.seq desc
+			) A WHERE ROWNUM <![CDATA[<=]]> #{lastIndex}
+		) A WHERE RNUM <![CDATA[>=]]> #{firstIndex}
+	</select>
+	
+	<select id="countListPageReqBoardVo" resultType="int" parameterType="com.kt.ipms.legacy.opermgmt.requiremgmt.vo.ReqBoardVo">
+		SELECT 
+			count(1)
+		FROM mst.tb_req_board A
+		LEFT JOIN mst.tb_req_board_reply B
+		ON A.seq = B.rboard_seq 
+		<include refid="List_Where_Clause" />
+	</select>
+	
+	<select id="selectListReqSubVo" resultMap="ReqBoardSubVo" parameterType="com.kt.ipms.legacy.opermgmt.requiremgmt.vo.ReqBoardSubVo">
+		select * from mst.tb_req_board_type_sub where rboard_type_cd = #{rboardTypeCd, jdbcType=VARCHAR}
+	</select>
+	
+	<select id="selectReqBoard" resultMap="ReqBoardVoResult" parameterType="com.kt.ipms.legacy.opermgmt.requiremgmt.vo.ReqBoardVo">
+		SELECT
+	   		A.seq, 
+	   		A.rboard_division, 
+	   		A.rboard_title, 
+	   		A.rboard_desire_date, 
+	   		A.rboard_purpose_request, 
+	   		A.rboard_importance, 
+	   		A.rboard_content, 
+	   		A.dcreate_dt, 
+	   		A.screate_id, 
+	   		A.dmodify_dt, 
+	   		A.smodify_id, 
+	   		A.susernm,
+			B.rboard_action_detail, 
+			B.rboard_progress, 
+			B.rboard_expected_date,
+			C.seq as rboard_file_seq,
+			concat(C.rboard_file_path , '\', C.rboard_file_save_name) as rboard_file_path,
+			C.rboard_file_origin_name
+		FROM 
+			mst.tb_req_board A
+		LEFT JOIN
+			mst.tb_req_board_reply B
+		ON 
+			A.seq = B.rboard_seq 
+		Left JOIN
+			mst.tb_req_board_upload C
+		ON A.seq = C.rboard_seq
+		WHERE A.seq = #{seq, jdbcType=BIGINT}
+	</select>
+	
+	<select id="selectReqBoardUploadCount" resultType="_int" parameterType="com.kt.ipms.legacy.opermgmt.requiremgmt.vo.ReqBoardVo">
+		SELECT 
+			count(1)
+		FROM
+			mst.tb_req_board_upload
+		WHERE
+		 <choose>
+			<when test="@org.apache.commons.lang.StringUtils@isNotEmpty(rboardSeq)">
+				rboard_seq = #{rboardSeq, jdbcType=BIGINT}
+			</when>
+			<otherwise>
+				seq = #{seq, jdbcType=BIGINT}
+			</otherwise>
+         </choose>
+	</select>
+	
+	<select id="selectReqBoardUpload" resultMap="ReqBoardVoResult" parameterType="com.kt.ipms.legacy.opermgmt.requiremgmt.vo.ReqBoardVo">
+		SELECT 
+			rboard_file_origin_name,
+			concat(rboard_file_path , '\', rboard_file_save_name) as rboard_file_path
+		FROM
+			mst.tb_req_board_upload
+		WHERE
+		 <choose>
+			<when test="@org.apache.commons.lang.StringUtils@isNotEmpty(rboardSeq)">
+				rboard_seq = #{rboardSeq, jdbcType=BIGINT}
+			</when>
+			<otherwise>
+				seq = #{seq, jdbcType=BIGINT}
+			</otherwise>
+         </choose>
+	</select>
+	
+	<insert id="insertReqBoardVo" parameterType="com.kt.ipms.legacy.opermgmt.requiremgmt.vo.ReqBoardVo" useGeneratedKeys="true" keyProperty="seq" keyColumn="seq">
+		<selectKey keyProperty="seq" resultType="BigInteger" order="BEFORE"> 
+			select NEXTVAL('mst.tb_req_board_seq') 
+		</selectKey>
+		insert into mst.tb_req_board(
+			seq,
+			rboard_division, 
+			rboard_title, 
+			rboard_desire_date, 
+			rboard_purpose_request, 
+			rboard_importance, 
+			rboard_content,
+			screate_id,
+			smodify_id,
+			susernm
+			)
+		values(
+			#{seq, jdbcType=BIGINT},
+			#{rboardDivision, jdbcType=VARCHAR},
+			#{rboardTitle, jdbcType=VARCHAR},
+			#{rboardDesireDate, jdbcType=TIMESTAMP},
+			#{rboardPurposeRequest, jdbcType=VARCHAR},
+			#{rboardImportance, jdbcType=VARCHAR},
+			#{rboardContent, jdbcType=VARCHAR},
+			#{rboardScreateId, jdbcType=VARCHAR},
+			#{rboardSModifyId, jdbcType=VARCHAR},
+			#{sUserNm, jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	<insert id="insertReqBoardReply" parameterType="com.kt.ipms.legacy.opermgmt.requiremgmt.vo.ReqBoardVo">
+		insert into mst.tb_req_board_reply(
+			rboard_seq,
+			rboard_progress,
+			screate_id,
+			smodify_id
+			)
+		values(
+			#{rboardSeq, jdbcType=BIGINT},
+			'RES005',
+			#{rboardScreateId, jdbcType=VARCHAR},
+			#{rboardSModifyId, jdbcType=VARCHAR}
+			
+		)
+	</insert>
+	
+	<insert id="insertReqBoardUpload" parameterType="com.kt.ipms.legacy.opermgmt.requiremgmt.vo.ReqBoardVo">
+		insert into mst.tb_req_board_upload(
+			rboard_seq,
+			rboard_file_origin_name,
+			rboard_file_save_name,
+			rboard_file_path,
+			screate_id,
+			smodify_id
+			)
+		values(
+			#{rboardSeq, jdbcType=BIGINT},
+			#{rboardFileOriginName, jdbcType=VARCHAR},
+			#{rboardFileSaveName, jdbcType=VARCHAR},
+			#{rboardFilePath, jdbcType=VARCHAR},
+			#{rboardScreateId, jdbcType=VARCHAR},
+			#{rboardSModifyId, jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	
+	<delete id="deleteReqBoardVo" parameterType="com.kt.ipms.legacy.opermgmt.requiremgmt.vo.ReqBoardVo">
+		DELETE
+		FROM mst.tb_req_board A
+		<include refid="List_Where_Clause" />
+	</delete>
+	
+	<update id="updateReqBoardVo" parameterType="com.kt.ipms.legacy.opermgmt.requiremgmt.vo.ReqBoardVo">
+		UPDATE
+			mst.tb_req_board A
+		SET
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(rboardTitle)">
+				A.rboard_title = #{rboardTitle, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(rboardDivision)">
+				,A.rboard_division = #{rboardDivision, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(rboardDesireDate)">
+				,A.rboard_desire_date = #{rboardDesireDate, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(rboardPurposeRequest)">
+				,A.rboard_purpose_request = #{rboardPurposeRequest, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(rboardImportance)">
+				,A.rboard_importance = #{rboardImportance, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(rboardContent)">
+				,A.rboard_content = #{rboardContent, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(rboardDcreateDt)">
+				,A.dcreate_dt = #{rboardDcreateDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(rboardScreateId)">
+				,A.screate_id = #{rboardScreateId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(rboardSModifyId)">
+				,A.smodify_id = #{rboardSModifyId, jdbcType=TIMESTAMP}
+			</if>
+			,A.dmodify_dt = sysdate
+		WHERE
+			A.seq = #{seq, jdbcType=BIGINT}
+	</update>
+		
+	<update id="updateReqBoardReply" parameterType="com.kt.ipms.legacy.opermgmt.requiremgmt.vo.ReqBoardVo">
+		UPDATE
+			mst.tb_req_board_reply B
+		SET
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(rboardProgress)">
+				B.rboard_progress = #{rboardProgress, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(rboardActionDetail)">
+				,B.rboard_action_detail = #{rboardActionDetail, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(rboardExpectedDate)">
+				,B.rboard_expected_date = #{rboardExpectedDate, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(rboardSModifyId)">
+				,B.smodify_id = #{rboardSModifyId, jdbcType=TIMESTAMP}
+			</if>
+			,B.dmodify_dt = sysdate
+		WHERE
+			B.rboard_seq = #{rboardSeq, jdbcType=BIGINT}
+	</update>
+	
+	<update id="updateReqBoardUpload" parameterType="com.kt.ipms.legacy.opermgmt.requiremgmt.vo.ReqBoardVo">
+		UPDATE
+			mst.tb_req_board_upload
+		SET
+			rboard_file_origin_name = #{rboardFileOriginName, jdbcType=VARCHAR},
+			rboard_file_save_name = #{rboardFileSaveName, jdbcType=VARCHAR},
+			rboard_file_path = #{rboardFilePath, jdbcType=VARCHAR},
+			smodify_id = #{rboardSModifyId, jdbcType=VARCHAR},
+			dmodify_dt = sysdate
+		WHERE
+			rboard_seq = #{rboardSeq, jdbcType=BIGINT}
+			
+	</update>
+	
+	<delete id="deleteReqBoardReply" parameterType="com.kt.ipms.legacy.opermgmt.requiremgmt.vo.ReqBoardVo">
+		DELETE
+		FROM mst.tb_req_board_reply
+		WHERE rboard_seq = #{seq, jdbcType=BIGINT}
+	</delete>
+	
+	<delete id="deleteReqBoardUpload" parameterType="com.kt.ipms.legacy.opermgmt.requiremgmt.vo.ReqBoardVo">
+		DELETE
+		FROM mst.tb_req_board_upload 
+		WHERE rboard_seq = #{seq, jdbcType=BIGINT}
+	</delete>
+	
+	<select id="selectEmailContent" resultMap="ReqBoardVoResult" parameterType="com.kt.ipms.legacy.opermgmt.requiremgmt.vo.ReqBoardVo">
+		SELECT
+	   		A.seq, 
+	   		(select rboard_type_sub_nm from mst.tb_req_board_type_sub trbts  where rboard_type_sub_cd  = A.rboard_division) as rboard_division, 
+	   		A.rboard_title, 
+	   		A.rboard_desire_date, 
+	   		A.rboard_purpose_request, 
+	   		A.rboard_importance, 
+	   		A.rboard_content, 
+	   		A.dcreate_dt, 
+	   		A.screate_id, 
+	   		A.dmodify_dt, 
+	   		A.smodify_id, 
+			B.rboard_action_detail, 
+			(select rboard_type_sub_nm from mst.tb_req_board_type_sub trbts  where rboard_type_sub_cd  = B.rboard_progress) as rboard_progress, 
+			B.rboard_expected_date,
+			A.susernm
+		FROM 
+			mst.tb_req_board A
+		LEFT JOIN
+			mst.tb_req_board_reply B
+		ON 
+			A.seq = B.rboard_seq 
+		WHERE A.seq = #{seq, jdbcType=BIGINT}
+	</select>
+	
+	<select id="selectAdminEmailList" resultMap="ReqAdminEmailVo" parameterType="com.kt.ipms.legacy.opermgmt.requiremgmt.vo.ReqAdminEmailVo">
+		SELECT
+			suser_id, suser_nm, suser_email
+		FROM 
+			mst.tb_req_admin_email
+	</select>
+</mapper>

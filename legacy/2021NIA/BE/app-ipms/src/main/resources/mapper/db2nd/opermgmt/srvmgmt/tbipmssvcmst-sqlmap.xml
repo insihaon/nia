@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kt.ipms.legacy.opermgmt.srvmgmt.dao.TbIpmsSvcMstDao">
+	<resultMap id="tbIpmsSvcMstVoResult" type="com.kt.ipms.legacy.opermgmt.srvmgmt.vo.TbIpmsSvcMstVo">
+		<result column="NIPMS_SVC_SEQ" property="nipmsSvcSeq" jdbcType="BIGINT" />
+		<result column="SIPMS_SVC_NM" property="sipmsSvcNm" jdbcType="VARCHAR" />
+		<result column="SASSIGN_TYPE_CD" property="sassignTypeCd" jdbcType="VARCHAR" />
+		<result column="SASSIGN_TYPE_NM" property="sassignTypeNm" jdbcType="VARCHAR" />
+		<result column="SSVC_HGROUP_CD" property="ssvcHgroupCd" jdbcType="CHAR" />
+		<result column="SSVC_HGROUP_NM" property="ssvcHgroupNm" jdbcType="VARCHAR" />
+		<result column="SSVC_MGROUP_CD" property="ssvcMgroupCd" jdbcType="CHAR" />
+		<result column="SSVC_MGROUP_NM" property="ssvcMgroupNm" jdbcType="VARCHAR" />
+		<result column="SSVCMAINCLSCODE" property="ssvcMainClsCode" jdbcType="CHAR" />
+		<result column="SSVC_MGROUP_NM1" property="ssvcMgroupNm1" jdbcType="VARCHAR" />
+		<result column="SSVCSUBCLSCODE" property="ssvcSubClsCode" jdbcType="CHAR" />
+		<result column="SSVC_LGROUP_CD" property="ssvcLgroupCd" jdbcType="CHAR" />
+		<result column="SSVC_LGROUP_NM" property="ssvcLgroupNm" jdbcType="VARCHAR" />
+		<result column="SEX_SVC_CD" property="sexSvcCd" jdbcType="CHAR" />
+		<result column="SEX_SVC_NM" property="sexSvcNm" jdbcType="VARCHAR" />
+		<result column="SEX_LINK_USE_TYPE_CD" property="sexLinkUseTypeCd" jdbcType="CHAR" />
+		<result column="SEX_LINK_USE_TYPE_NM" property="sexLinkUseTypeNm" jdbcType="VARCHAR" />
+		<result column="SSVC_USE_TYPE_CD" property="ssvcUseTypeCd" jdbcType="CHAR" />
+		<result column="SSVC_USE_TYPE_NM" property="ssvcUseTypeNm" jdbcType="VARCHAR" />
+		<result column="SUSE_TYPE_CD" property="suseTypeCd" jdbcType="CHAR" />
+		<result column="SUSE_TYPE_NM" property="suseTypeNm" jdbcType="VARCHAR" />
+		<result column="SCOMMENT" property="scomment" jdbcType="VARCHAR" />
+		<result column="DCREATE_DT" property="dcreateDt" jdbcType="TIMESTAMP" />
+		<result column="SCREATE_ID" property="screateId" jdbcType="VARCHAR" />
+		<result column="DMODIFY_DT" property="dmodifyDt" jdbcType="TIMESTAMP" />
+		<result column="SMODIFY_ID" property="smodifyId" jdbcType="VARCHAR" />
+
+		<result column="RNUM" property="rowNo" jdbcType="NUMERIC" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		A.NIPMS_SVC_SEQ, A.SIPMS_SVC_NM, A.SASSIGN_TYPE_CD, A.SSVC_HGROUP_CD
+		, A.SSVC_MGROUP_CD, A.SSVC_LGROUP_CD, A.SEX_SVC_CD, A.SSVC_USE_TYPE_CD
+		, A.SUSE_TYPE_CD, A.SCOMMENT, A.DCREATE_DT, A.SCREATE_ID
+		, A.DMODIFY_DT, A.SMODIFY_ID
+
+	</sql>
+	
+	<sql id="Append_Column_List">
+		, B.SSVC_HGROUP_NM AS SSVC_HGROUP_NM
+		, C.SSVC_MGROUP_NM AS SSVC_MGROUP_NM
+		, C.SSVC_MGROUP_NM1 AS SSVC_MGROUP_NM1
+		, D.SSVC_LGROUP_NM AS SSVC_LGROUP_NM
+		, E.SSVC_USE_TYPE_NM AS SSVC_USE_TYPE_NM
+		, F.SASSIGN_TYPE_NM AS SASSIGN_TYPE_NM
+		, G.SEX_LINK_USE_TYPE_CD AS SEX_LINK_USE_TYPE_CD
+		, G.SEX_LINK_USE_TYPE_NM AS SEX_LINK_USE_TYPE_NM
+		, H.SUSE_TYPE_NM AS SUSE_TYPE_NM
+	</sql>
+	
+	<sql id="Append_Column_List_Alias">
+		, A.SSVC_HGROUP_NM
+		, A.SSVC_MGROUP_NM
+		, A.SSVC_MGROUP_NM1
+		, A.SSVC_LGROUP_NM
+		, A.SSVC_USE_TYPE_NM
+		, A.SASSIGN_TYPE_NM
+		, A.SEX_LINK_USE_TYPE_CD
+		, A.SEX_LINK_USE_TYPE_NM
+		, A.SUSE_TYPE_NM
+	</sql>
+	
+	
+	<sql id="Append_From_Clause">
+  		, MST.TB_SVC_HGROUP_CD B 
+  		, MST.TB_SVC_MGROUP_CD C	
+  		, MST.TB_SVC_LGROUP_CD D
+  		, MST.TB_SVC_USE_TYPE_CD E
+  		, MST.TB_ASSIGN_TYPE_CD F
+  		, MST.TB_EXTERNAL_LINK_USE_TYPE_CD G
+  		, MST.TB_USE_TYPE_CD H
+	</sql>
+	
+	<sql id="Vo_Where_Clause">
+		<trim prefix="WHERE" prefixOverrides="AND">
+			A.NIPMS_SVC_SEQ = #{nipmsSvcSeq, jdbcType=BIGINT}
+
+		</trim>
+	</sql>
+
+	<sql id="List_Where_Clause">
+		<trim prefix="WHERE" prefixOverrides="AND">
+			1 = 1
+			AND A.SSVC_HGROUP_CD != 'SH0000'
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nipmsSvcSeq)">
+				AND A.NIPMS_SVC_SEQ = #{nipmsSvcSeq, jdbcType=BIGINT}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sipmsSvcNm)">
+				AND A.SIPMS_SVC_NM = #{sipmsSvcNm, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sassignTypeCd)">
+				AND A.SASSIGN_TYPE_CD = #{sassignTypeCd, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssvcHgroupCd)">
+				AND A.SSVC_HGROUP_CD = #{ssvcHgroupCd, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssvcMgroupCd)">
+				AND A.SSVC_MGROUP_CD = #{ssvcMgroupCd, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssvcLgroupCd)">
+				AND A.SSVC_LGROUP_CD = #{ssvcLgroupCd, jdbcType=CHAR}
+			</if>
+			<choose>
+				<when test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssvcSubClsCode)">
+					<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssvcMainClsCode)">
+						AND A.SSVC_MGROUP_CD = #{ssvcMainClsCode, jdbcType=CHAR} || #{ssvcSubClsCode, jdbcType=CHAR}
+					</if>
+				</when>
+				<otherwise>
+					<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssvcMainClsCode)">
+						AND A.SSVC_MGROUP_CD  ILIKE  #{ssvcMainClsCode, jdbcType=CHAR}  ||'%'
+					</if>
+				</otherwise>
+			</choose>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sexLinkUseTypeCd)">
+				AND G.SEX_LINK_USE_TYPE_CD = #{sexLinkUseTypeCd, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sexSvcCd)">
+				AND A.SEX_SVC_CD = #{sexSvcCd, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssvcUseTypeCd)">
+				AND A.SSVC_USE_TYPE_CD = #{ssvcUseTypeCd, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(suseTypeCd)">
+				AND A.SUSE_TYPE_CD = #{suseTypeCd, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(scomment)">
+				AND A.SCOMMENT = #{scomment, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dcreateDt)">
+				AND A.DCREATE_DT = #{dcreateDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(screateId)">
+				AND A.SCREATE_ID = #{screateId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dmodifyDt)">
+				AND A.DMODIFY_DT = #{dmodifyDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smodifyId)">
+				AND A.SMODIFY_ID = #{smodifyId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(searchWrd)">
+				AND A.SIPMS_SVC_NM ILIKE '%' || #{searchWrd, jdbcType=TIMESTAMP} || '%'
+			</if>
+		</trim>
+	</sql>
+	
+	<sql id="Append_Where_Clause">
+		AND A.SSVC_HGROUP_CD = B.SSVC_HGROUP_CD(+)
+		AND A.SSVC_MGROUP_CD = C.SSVC_MGROUP_CD(+)
+		AND A.SSVC_LGROUP_CD = D.SSVC_LGROUP_CD(+)
+		AND A.SSVC_USE_TYPE_CD = E.SSVC_USE_TYPE_CD(+)
+		AND A.SASSIGN_TYPE_CD = F.SASSIGN_TYPE_CD(+)
+		AND D.SEX_LINK_USE_TYPE_CD = G.SEX_LINK_USE_TYPE_CD(+)
+		AND A.SUSE_TYPE_CD = H.SUSE_TYPE_CD(+) 
+	</sql>
+	
+	<insert id="insertTbIpmsSvcMstVo" parameterType="com.kt.ipms.legacy.opermgmt.srvmgmt.vo.TbIpmsSvcMstVo">
+		INSERT
+			
+		INTO MST.TB_IPMS_SVC_MST (
+				SIPMS_SVC_NM
+			,	SASSIGN_TYPE_CD
+			,	SSVC_HGROUP_CD
+			,	SSVC_MGROUP_CD
+			,	SSVC_LGROUP_CD
+			,	SEX_SVC_CD
+			,	SSVC_USE_TYPE_CD
+			,	suse_type_cd
+			,	SCOMMENT
+			,	SCREATE_ID
+			,	SMODIFY_ID
+		
+		) VALUES (
+				#{sipmsSvcNm, jdbcType=VARCHAR}
+			,	#{sassignTypeCd, jdbcType=VARCHAR}
+			,	#{ssvcHgroupCd, jdbcType=CHAR}
+			,	#{ssvcMgroupCd, jdbcType=CHAR}
+			,	#{ssvcLgroupCd, jdbcType=CHAR}
+			,	#{sexSvcCd, jdbcType=CHAR}
+			,	#{ssvcUseTypeCd, jdbcType=CHAR}
+			,	#{suseTypeCd, jdbcType=CHAR}
+			,	#{scomment, jdbcType=VARCHAR}
+			,	#{screateId, jdbcType=VARCHAR}
+			,	#{smodifyId, jdbcType=VARCHAR}
+		
+		)
+	</insert>
+	
+	<update id="updateTbIpmsSvcMstVo" parameterType="com.kt.ipms.legacy.opermgmt.srvmgmt.vo.TbIpmsSvcMstVo">
+		UPDATE
+			
+		MST.TB_IPMS_SVC_MST A
+		SET
+			A.DMODIFY_DT = current_timestamp
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sipmsSvcNm)">
+				, A.SIPMS_SVC_NM = #{sipmsSvcNm, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sassignTypeCd)">
+				, A.SASSIGN_TYPE_CD = #{sassignTypeCd, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssvcHgroupCd)">
+				, A.SSVC_HGROUP_CD = #{ssvcHgroupCd, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssvcMgroupCd)">
+				, A.SSVC_MGROUP_CD = #{ssvcMgroupCd, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssvcLgroupCd)">
+				, A.SSVC_LGROUP_CD = #{ssvcLgroupCd, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sexSvcCd)">
+				, A.SEX_SVC_CD = #{sexSvcCd, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssvcUseTypeCd)">
+				, A.SSVC_USE_TYPE_CD = #{ssvcUseTypeCd, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(suseTypeCd)">
+				, A.SUSE_TYPE_CD = #{suseTypeCd, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(scomment)">
+				, A.SCOMMENT = #{scomment, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dcreateDt)">
+				, A.DCREATE_DT = #{dcreateDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(screateId)">
+				, A.SCREATE_ID = #{screateId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smodifyId)">
+				, A.SMODIFY_ID = #{smodifyId, jdbcType=VARCHAR}
+			</if>
+
+		<include refid="Vo_Where_Clause" />
+	</update>
+	
+	<delete id="deleteTbIpmsSvcMstVo" parameterType="com.kt.ipms.legacy.opermgmt.srvmgmt.vo.TbIpmsSvcMstVo">
+		DELETE
+			
+		FROM MST.TB_IPMS_SVC_MST A
+		<include refid="Vo_Where_Clause" />
+	</delete>
+	
+	<select id="selectTbIpmsSvcMstVo" resultMap="tbIpmsSvcMstVoResult" parameterType="com.kt.ipms.legacy.opermgmt.srvmgmt.vo.TbIpmsSvcMstVo">
+		SELECT
+			
+		<include refid="Base_Column_List" />
+		<include refid="Append_Column_List"/>
+		FROM MST.TB_IPMS_SVC_MST A
+		<include refid="Append_From_Clause"/>
+		<include refid="Vo_Where_Clause" />
+		<include refid="Append_Where_Clause"/>
+	</select>
+	
+	<select id="selectListTbIpmsSvcMstVo" resultMap="tbIpmsSvcMstVoResult" parameterType="com.kt.ipms.legacy.opermgmt.srvmgmt.vo.TbIpmsSvcMstVo">
+		SELECT
+			
+		<include refid="Base_Column_List" />
+		<include refid="Append_Column_List"/>
+		FROM MST.TB_IPMS_SVC_MST A
+		<include refid="Append_From_Clause"/>
+		<include refid="List_Where_Clause" />
+		<include refid="Append_Where_Clause"/>
+	</select>
+	
+	<select id="selectListPageTbIpmsSvcMstVo" resultMap="tbIpmsSvcMstVoResult" parameterType="com.kt.ipms.legacy.opermgmt.srvmgmt.vo.TbIpmsSvcMstVo">
+		SELECT <include refid="Base_Column_List" />
+			   <include refid="Append_Column_List_Alias"/>, A.RNUM FROM (
+			SELECT  <include refid="Base_Column_List" />
+			   <include refid="Append_Column_List_Alias"/>, ROWNUM RNUM FROM (
+				SELECT
+					
+				<include refid="Base_Column_List" />
+				<include refid="Append_Column_List"/>
+				FROM MST.TB_IPMS_SVC_MST A
+				<include refid="Append_From_Clause"/>
+				<include refid="List_Where_Clause" />
+				<include refid="Append_Where_Clause"/>
+				ORDER BY A.SSVC_HGROUP_CD ASC, C.SEX_LINK_USE_TYPE_CD DESC, C.SSVC_MGROUP_NM ASC, C.SSVC_MGROUP_NM1 ASC, A.SIPMS_SVC_NM ASC, A.SASSIGN_TYPE_CD ASC
+			) A WHERE ROWNUM <![CDATA[<=]]> #{lastIndex}
+		)A WHERE RNUM <![CDATA[>=]]> #{firstIndex}
+	</select> 
+	
+	<select id="countListPageTbIpmsSvcMstVo" resultType="int" parameterType="com.kt.ipms.legacy.opermgmt.srvmgmt.vo.TbIpmsSvcMstVo">
+		SELECT
+			count(1) totalCount
+		FROM MST.TB_IPMS_SVC_MST A
+		<include refid="Append_From_Clause"/>
+		<include refid="List_Where_Clause" />
+		<include refid="Append_Where_Clause"/>
+	</select>
+	
+	<select id="selectListSvcMgroupNmCd" resultMap="tbIpmsSvcMstVoResult" parameterType="com.kt.ipms.legacy.opermgmt.srvmgmt.vo.TbIpmsSvcMstVo">
+		SELECT SSVC_MGROUP_CD , SSVC_MGROUP_NM
+		FROM
+		(
+		SELECT '' AS SSVC_MGROUP_CD , '전체' AS SSVC_MGROUP_NM, '0' AS ORD_SEQ
+ 		UNION ALL
+		SELECT DISTINCT SUBSTR(SSVC_MGROUP_CD ,0,4) , SSVC_MGROUP_NM, '1' AS ORD_SEQ
+		FROM MST.TB_SVC_MGROUP_CD
+		<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssvcHgroupCd)">
+			WHERE  SSVC_HGROUP_CD = #{ssvcHgroupCd, jdbcType=CHAR}
+		</if>
+		)
+		ORDER BY ORD_SEQ, SSVC_MGROUP_NM
+	</select>
+	
+	<select id="selectListSvcMgroupNm1Cd" resultMap="tbIpmsSvcMstVoResult" parameterType="com.kt.ipms.legacy.opermgmt.srvmgmt.vo.TbIpmsSvcMstVo">
+		SELECT SSVC_MGROUP_CD, SSVC_MGROUP_NM1
+		FROM
+		(
+		SELECT '' AS SSVC_MGROUP_CD , '전체' AS SSVC_MGROUP_NM1, '0' as ORD_SEQ
+		UNION ALL
+		SELECT DISTINCT SUBSTR(SSVC_MGROUP_CD ,5,2) , SSVC_MGROUP_NM1 , '1' as ORD_SEQ
+		FROM MST.TB_SVC_MGROUP_CD
+		<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssvcMainClsCode)">
+			WHERE  SSVC_MGROUP_CD ILIKE	#{ssvcMainClsCode, jdbcType=CHAR} || '%'
+		</if>
+		)
+		ORDER BY ORD_SEQ, SSVC_MGROUP_NM1
+	</select>
+	
+	<select id="selectListSvcMgroup" resultMap="tbIpmsSvcMstVoResult" parameterType="com.kt.ipms.legacy.opermgmt.srvmgmt.vo.TbIpmsSvcMstVo">
+		SELECT SSVC_MGROUP_CD, SSVC_MGROUP_NM, SSVC_MGROUP_NM1, SEX_LINK_USE_TYPE_CD
+		FROM MST.TB_SVC_MGROUP_CD
+		<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssvcHgroupCd)">
+			WHERE  SSVC_HGROUP_CD = #{ssvcHgroupCd, jdbcType=CHAR}
+		</if>
+	</select>
+	
+	<select id="selectListSvcLgroup" resultMap="tbIpmsSvcMstVoResult" parameterType="com.kt.ipms.legacy.opermgmt.srvmgmt.vo.TbIpmsSvcMstVo">
+		SELECT SSVC_LGROUP_CD, SSVC_LGROUP_NM 
+		FROM MST.TB_SVC_LGROUP_CD
+		<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssvcHgroupCd)">
+			WHERE SSVC_HGROUP_CD = #{ssvcHgroupCd, jdbcType=CHAR} AND SSVC_MGROUP_CD = #{ssvcMgroupCd, jdbcType=CHAR}
+		</if>
+	</select>
+	
+	<select id="selectSexLinkUseTypeCd" resultMap="tbIpmsSvcMstVoResult" parameterType="com.kt.ipms.legacy.opermgmt.srvmgmt.vo.TbIpmsSvcMstVo">
+		SELECT SEX_LINK_USE_TYPE_CD 
+		FROM MST.TB_SVC_MGROUP_CD
+		WHERE SSVC_HGROUP_CD = #{ssvcHgroupCd, jdbcType=CHAR} AND SSVC_MGROUP_CD = #{ssvcMgroupCd, jdbcType=CHAR}
+	</select>
+	
+</mapper>

@@ -1,0 +1,618 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kt.ipms.legacy.ticketmgmt.dhcpmgmt.dao.TbAuditDhcpMstDao">
+	<resultMap id="tbAuditDhcpMstVoResult" type="com.kt.ipms.legacy.ticketmgmt.dhcpmgmt.vo.TbAuditDhcpMstVo">
+		<result column="NAUDIT_DHCP_MST_SEQ" property="nauditDhcpMstSeq" jdbcType="BIGINT" />
+		<result column="SSVC_LINE_TYPE_CD" property="ssvcLineTypeCd" jdbcType="CHAR" />
+		<result column="SSVC_LINE_TYPE_NM" property="ssvcLineTypeNm" jdbcType="VARCHAR" />
+		<result column="NLVL_MST_SEQ" property="nlvlMstSeq" jdbcType="BIGINT" />
+		<result column="STOP_NODE_CD" property="stopNodeCd" jdbcType="CHAR" />
+		<result column="STOP_NODE_NM" property="stopNodeNm" jdbcType="VARCHAR" />
+		<result column="SOFFICE_CD" property="sofficeCd" jdbcType="CHAR" />
+		<result column="SOFFICE_NM" property="sofficeNm" jdbcType="VARCHAR" />
+		<result column="SSVC_GROUP_NM" property="ssvcGroupNm" jdbcType="VARCHAR" />
+		<result column="SSVC_OBJ_NM" property="ssvcObjNm" jdbcType="VARCHAR" />
+		<result column="SL3_NESCODE" property="sl3Nescode" jdbcType="VARCHAR" />
+		<result column="SL3_EQUIP_ALIAS" property="sl3EquipAlias" jdbcType="VARCHAR" />
+		<result column="SL3_MSTIP" property="sl3Mstip" jdbcType="VARCHAR" />
+		<result column="SSAID" property="ssaid" jdbcType="VARCHAR" />
+		<result column="SLLNUM" property="sllnum" jdbcType="VARCHAR" />
+		<result column="NIP_BLOCK_CNT" property="nipBlockCnt" jdbcType="NUMERIC" />
+		<result column="NIP_CNT" property="nipCnt" jdbcType="NUMERIC" />
+		<result column="NMAX_PEAK" property="nmaxPeak" jdbcType="INTEGER" />
+		<result column="NMIN_PEAK" property="nminPeak" jdbcType="INTEGER" />
+		<result column="NAUDIT_VALUE" property="nauditValue" jdbcType="INTEGER" />
+		<result column="NOPIMIZE_VALUE" property="nopimizeValue" jdbcType="INTEGER" />
+		<result column="NDHCP_MIN_IP_BLOCK_CNT_OVER" property="ndhcpMinIpBlockCntOver" jdbcType="INTEGER" />
+		<result column="NDHCP_MIN_IP_CNT_OVER" property="ndhcpMinIpCntOver" jdbcType="INTEGER" />
+		<result column="NDHCP_RANGE_DAYS" property="ndhcpRangeDays" jdbcType="INTEGER" />
+		<result column="BAUDIT_YN" property="bauditYn" jdbcType="CHAR" />
+		<result column="BOPTIMIZE_YN" property="boptimizeYn" jdbcType="CHAR" />
+		<result column="BAUDIT_NM" property="bauditNm" jdbcType="CHAR" />
+		<result column="BOPTIMIZE_NM" property="boptimizeNm" jdbcType="CHAR" />
+		<result column="DAUDIT_CHECK_DT" property="dauditCheckDt" jdbcType="TIMESTAMP" />
+		<result column="DAUDIT_PROCESS_DT" property="dauditProcessDt" jdbcType="TIMESTAMP" />
+		<result column="NOPTIMIZE_CHECK_DT" property="noptimizeCheckDt" jdbcType="TIMESTAMP" />
+		<result column="DOPTIMIZE_PROCESS_DT" property="doptimizeProcessDt" jdbcType="TIMESTAMP" />
+		<result column="SUSE_STATUS_CD" property="suseStatusCd" jdbcType="CHAR" />
+		<result column="SUSE_STATUS_NM" property="suseStatusNm" jdbcType="VARCHAR" />
+		<result column="BFALG" property="bfalg" jdbcType="CHAR" />
+		<result column="BFALG_NM" property="bfalgNm" jdbcType="CHAR" />
+		<result column="SCOMMENT" property="scomment" jdbcType="VARCHAR" />
+		<result column="DCREATE_DT" property="dcreateDt" jdbcType="TIMESTAMP" />
+		<result column="SCREATE_ID" property="screateId" jdbcType="VARCHAR" />
+		<result column="DMODIFY_DT" property="dmodifyDt" jdbcType="TIMESTAMP" />
+		<result column="SMODIFY_ID" property="smodifyId" jdbcType="VARCHAR" />
+		<result column="RNUM" property="rowNo" jdbcType="NUMERIC" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		A.NAUDIT_DHCP_MST_SEQ, A.SSVC_LINE_TYPE_CD, A.NLVL_MST_SEQ, A.STOP_NODE_CD
+		, A.SOFFICE_CD, A.SL3_NESCODE, A.SL3_EQUIP_ALIAS, A.SL3_MSTIP
+		, A.SSAID, A.SLLNUM, A.NIP_BLOCK_CNT, A.NIP_CNT
+		, A.NMAX_PEAK, A.NMIN_PEAK, A.NAUDIT_VALUE, A.NOPIMIZE_VALUE
+		, A.NDHCP_MIN_IP_BLOCK_CNT_OVER, A.NDHCP_MIN_IP_CNT_OVER, A.NDHCP_RANGE_DAYS, A.BAUDIT_YN
+		, A.BOPTIMIZE_YN, A.DAUDIT_CHECK_DT, A.DAUDIT_PROCESS_DT, A.NOPTIMIZE_CHECK_DT
+		, A.DOPTIMIZE_PROCESS_DT, A.SUSE_STATUS_CD, A.BFALG, A.SCOMMENT
+		, A.DCREATE_DT, A.SCREATE_ID, A.DMODIFY_DT, A.SMODIFY_ID
+	</sql>
+	
+	
+	<sql id="Base_Page_List">
+		 A.NAUDIT_DHCP_MST_SEQ, A.SSVC_LINE_TYPE_CD, A.NLVL_MST_SEQ, A.STOP_NODE_CD ,
+		 A.SOFFICE_CD, A.SL3_NESCODE, A.SL3_EQUIP_ALIAS, A.SL3_MSTIP , A.SSAID, A.SLLNUM, A.NIP_BLOCK_CNT, A.NIP_CNT , A.NMAX_PEAK,
+		 A.NMIN_PEAK, A.NAUDIT_VALUE, A.NOPIMIZE_VALUE , A.NDHCP_MIN_IP_BLOCK_CNT_OVER, 
+		 A.NDHCP_MIN_IP_CNT_OVER, A.NDHCP_RANGE_DAYS, A.BAUDIT_YN , A.BOPTIMIZE_YN, A.DAUDIT_CHECK_DT,
+		 A.DAUDIT_PROCESS_DT, A.NOPTIMIZE_CHECK_DT , A.DOPTIMIZE_PROCESS_DT, A.SUSE_STATUS_CD, A.BFALG, A.SCOMMENT ,
+		 A.DCREATE_DT, A.SCREATE_ID, A.DMODIFY_DT, A.SMODIFY_ID , A.SSVC_LINE_TYPE_NM , A.SSVC_GROUP_NM , 
+		 A.STOP_NODE_NM , A.SOFFICE_NM , A.BAUDIT_NM , A.BOPTIMIZE_NM , A.BFALG_NM, A.SSVC_OBJ_NM ,
+	</sql>
+	
+	
+	<sql id="Append_Column_List">
+		, B.SSVC_LINE_TYPE_NM 
+	    , E.SLVL_NM  AS SSVC_GROUP_NM
+	    , F.SLVL_NM AS SSVC_OBJ_NM 
+	    , G.SLVL_NM  AS SOFFICE_NM
+	    , H.SLVL_NM  AS STOP_NODE_NM
+	    , (CASE A.BAUDIT_YN WHEN 'R' THEN '미발생' WHEN 'Y' THEN '발생' ELSE '해제' END) AS BAUDIT_NM
+		, (CASE A.BOPTIMIZE_YN WHEN 'R' THEN '미발생' WHEN 'Y' THEN '발생' ELSE '해제' END) AS BOPTIMIZE_NM
+		, (CASE A.BFALG WHEN 'Y' THEN '자동' ELSE '수동' END) AS BFALG_NM
+	</sql>
+	
+	<sql id="Append_From_Clause">
+		, MST.TB_SVC_LINE_TYPE_CD B
+   		, MST.TB_LVL_MST C
+   	 	, MST.TB_SVC_LINE_TYPE_CD D
+    	, MST.TB_LVL_CD E
+    	, MST.TB_LVL_CD F
+    	, MST.TB_LVL_CD G
+    	, MST.TB_LVL_CD H
+	</sql>
+	
+	<sql id="Vo_Where_Clause">
+		<trim prefix="WHERE" prefixOverrides="AND">
+			A.NAUDIT_DHCP_MST_SEQ = #{nauditDhcpMstSeq, jdbcType=BIGINT}
+
+		</trim>
+	</sql>
+
+	<sql id="List_Where_Clause">
+		<trim prefix="WHERE" prefixOverrides="AND">
+			1 = 1
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nauditDhcpMstSeq)">
+				AND A.NAUDIT_DHCP_MST_SEQ = #{nauditDhcpMstSeq, jdbcType=BIGINT}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssvcLineTypeCd)">
+				AND A.SSVC_LINE_TYPE_CD = #{ssvcLineTypeCd, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nlvlMstSeq)">
+				AND A.NLVL_MST_SEQ = #{nlvlMstSeq, jdbcType=BIGINT}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(stopNodeCd)">
+				AND A.STOP_NODE_CD = #{stopNodeCd, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sicisofficescode)">
+				AND A.SOFFICE_CD = #{sicisofficescode, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sl3Nescode)">
+				AND A.SL3_NESCODE = #{sl3Nescode, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sl3EquipAlias)">
+				AND A.SL3_EQUIP_ALIAS ILIKE '%'  ||  #{sl3EquipAlias, jdbcType=VARCHAR}  || '%'	
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sl3Mstip)">
+				AND A.SL3_MSTIP ILIKE '%'  ||  #{sl3Mstip, jdbcType=VARCHAR}  || '%'	
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(llSrchTypeCd) and llSrchTypeCd == 'said'">
+				AND A.SSAID ILIKE '%'  ||  #{llsrchVal, jdbcType=VARCHAR}  || '%'	
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(llSrchTypeCd) and llSrchTypeCd == 'sllnum'">
+				AND A.SLLNUM ILIKE '%'  ||  #{llsrchVal, jdbcType=VARCHAR} ||  '%'	
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nipBlockCnt)">
+				AND A.NIP_BLOCK_CNT = #{nipBlockCnt, jdbcType=NUMERIC}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nipCnt)">
+				AND A.NIP_CNT = #{nipCnt, jdbcType=NUMERIC}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nmaxPeak)">
+				AND A.NMAX_PEAK = #{nmaxPeak, jdbcType=INTEGER}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nminPeak)">
+				AND A.NMIN_PEAK = #{nminPeak, jdbcType=INTEGER}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nauditValue)">
+				AND A.NAUDIT_VALUE = #{nauditValue, jdbcType=INTEGER}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nopimizeValue)">
+				AND A.NOPIMIZE_VALUE = #{nopimizeValue, jdbcType=INTEGER}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ndhcpMinIpBlockCntOver)">
+				AND A.NDHCP_MIN_IP_BLOCK_CNT_OVER = #{ndhcpMinIpBlockCntOver, jdbcType=INTEGER}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ndhcpMinIpCntOver)">
+				AND A.NDHCP_MIN_IP_CNT_OVER = #{ndhcpMinIpCntOver, jdbcType=INTEGER}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ndhcpRangeDays)">
+				AND A.NDHCP_RANGE_DAYS = #{ndhcpRangeDays, jdbcType=INTEGER}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(bauditYn)">
+				AND A.BAUDIT_YN = #{bauditYn, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(boptimizeYn)">
+				AND A.BOPTIMIZE_YN = #{boptimizeYn, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dauditCheckDt)">
+				AND A.DAUDIT_CHECK_DT = #{dauditCheckDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dauditProcessDt)">
+				AND A.DAUDIT_PROCESS_DT = #{dauditProcessDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(noptimizeCheckDt)">
+				AND A.NOPTIMIZE_CHECK_DT = #{noptimizeCheckDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(doptimizeProcessDt)">
+				AND A.DOPTIMIZE_PROCESS_DT = #{doptimizeProcessDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(suseStatusCd)">
+				AND A.SUSE_STATUS_CD = #{suseStatusCd, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(bfalg)">
+				AND A.BFALG = #{bfalg, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(scomment)">
+				AND A.SCOMMENT = #{scomment, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dcreateDt)">
+				AND A.DCREATE_DT = #{dcreateDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(screateId)">
+				AND A.SCREATE_ID = #{screateId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dmodifyDt)">
+				AND A.DMODIFY_DT = #{dmodifyDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smodifyId)">
+				AND A.SMODIFY_ID = #{smodifyId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(searchBgnDe) and @org.apache.commons.lang.StringUtils@isNotEmpty(searchEndDe) and scDateTypeCd == '' ">
+				AND A.DMODIFY_DT BETWEEN #{searchBgnDe, jdbcType=TIMESTAMP} AND #{searchEndDe} || ' 23:59:59'
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(searchBgnDe) and @org.apache.commons.lang.StringUtils@isNotEmpty(searchEndDe) and scDateTypeCd == 'maxAlertCtDate'">
+				AND A.DAUDIT_CHECK_DT BETWEEN #{searchBgnDe, jdbcType=TIMESTAMP} AND #{searchEndDe} || ' 23:59:59'
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(searchBgnDe) and @org.apache.commons.lang.StringUtils@isNotEmpty(searchEndDe) and scDateTypeCd == 'maxAlertRelDate'">
+				AND A.DAUDIT_PROCESS_DT BETWEEN #{searchBgnDe, jdbcType=TIMESTAMP} AND #{searchEndDe} || ' 23:59:59'
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(searchBgnDe) and @org.apache.commons.lang.StringUtils@isNotEmpty(searchEndDe) and scDateTypeCd == 'lowAlertCtDate'">
+				AND A.NOPTIMIZE_CHECK_DT BETWEEN #{searchBgnDe, jdbcType=TIMESTAMP} AND #{searchEndDe} || ' 23:59:59'
+			</if>
+				<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(searchBgnDe) and @org.apache.commons.lang.StringUtils@isNotEmpty(searchEndDe) and scDateTypeCd == 'lowAlertRelDate'">
+				AND A.DOPTIMIZE_PROCESS_DT BETWEEN #{searchBgnDe, jdbcType=TIMESTAMP} AND #{searchEndDe} || ' 23:59:59'
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(typeFlag) and typeFlag == 'MAIN'">
+				AND (A.BAUDIT_YN = 'Y' OR A.BOPTIMIZE_YN = 'Y')
+			</if>
+		</trim>
+	</sql>
+	
+	<sql id="Append_OrderBy_Clause">
+		<choose>
+			<when test="sortType == 'NIP_BLOCK_CNT'">
+				ORDER BY A.NIP_BLOCK_CNT
+				<choose>
+					<when test="sortOrdr == 'ASC'">
+						ASC
+					</when>
+					<when test="sortOrdr == 'DESC'">
+						DESC
+					</when>
+					<otherwise>
+						ASC
+					</otherwise>
+				</choose>
+			</when>
+			<when test="sortType == 'NIP_CNT'">
+				ORDER BY A.NIP_CNT
+				<choose>
+					<when test="sortOrdr == 'ASC'">
+						ASC
+					</when>
+					<when test="sortOrdr == 'DESC'">
+						DESC
+					</when>
+					<otherwise>
+						ASC
+					</otherwise>
+				</choose>
+			</when>
+			<when test="sortType == 'NMAX_PEAK'">
+				ORDER BY A.NMAX_PEAK
+				<choose>
+					<when test="sortOrdr == 'ASC'">
+						ASC
+					</when>
+					<when test="sortOrdr == 'DESC'">
+						DESC
+					</when>
+					<otherwise>
+						ASC
+					</otherwise>
+				</choose>
+			</when>
+			<when test="sortType == 'NMIN_PEAK'">
+				ORDER BY A.NMIN_PEAK 
+				<choose>
+					<when test="sortOrdr == 'ASC'">
+						ASC
+					</when>
+					<when test="sortOrdr == 'DESC'">
+						DESC
+					</when>
+					<otherwise>
+						ASC
+					</otherwise>
+				</choose>
+			</when>
+			<when test="sortType == 'DMODIFY_DT'">
+				ORDER BY A.DMODIFY_DT 
+				<choose>
+					<when test="sortOrdr == 'ASC'">
+						ASC
+					</when>
+					<when test="sortOrdr == 'DESC'">
+						DESC
+					</when>
+					<otherwise>
+						ASC
+					</otherwise>
+				</choose>
+			</when>
+		</choose>
+	</sql>
+	
+	<insert id="insertTbAuditDhcpMstVo" parameterType="com.kt.ipms.legacy.ticketmgmt.dhcpmgmt.vo.TbAuditDhcpMstVo">
+		INSERT
+		INTO MST.TB_AUDIT_DHCP_MST (
+			SSVC_LINE_TYPE_CD
+			,	NLVL_MST_SEQ
+			,	STOP_NODE_CD
+			,	SOFFICE_CD
+			,	SL3_NESCODE
+			,	SL3_EQUIP_ALIAS
+			,	SL3_MSTIP
+			,	SSAID
+			,	SLLNUM
+			,	NIP_BLOCK_CNT
+			,	NIP_CNT
+			,	NMAX_PEAK
+			,	NMIN_PEAK
+			,	DAUDIT_CHECK_DT
+			,	DAUDIT_PROCESS_DT
+			,	NOPTIMIZE_CHECK_DT
+			,	DOPTIMIZE_PROCESS_DT
+			,	SUSE_STATUS_CD
+			,	SCOMMENT
+			,	SCREATE_ID
+			,	SMODIFY_ID
+		
+		) VALUES (
+			#{ssvcLineTypeCd, jdbcType=CHAR}
+			,	#{nlvlMstSeq, jdbcType=BIGINT}
+			,	#{stopNodeCd, jdbcType=CHAR}
+			,	#{sofficeCd, jdbcType=CHAR}
+			,	#{sl3Nescode, jdbcType=VARCHAR}
+			,	#{sl3EquipAlias, jdbcType=VARCHAR}
+			,	#{sl3Mstip, jdbcType=VARCHAR}
+			,	#{ssaid, jdbcType=VARCHAR}
+			,	#{sllnum, jdbcType=VARCHAR}
+			,	#{nipBlockCnt, jdbcType=NUMERIC}
+			,	#{nipCnt, jdbcType=NUMERIC}
+			,	#{nmaxPeak, jdbcType=INTEGER}
+			,	#{nminPeak, jdbcType=INTEGER}
+			,	#{dauditCheckDt, jdbcType=TIMESTAMP}
+			,	#{dauditProcessDt, jdbcType=TIMESTAMP}
+			,	#{noptimizeCheckDt, jdbcType=TIMESTAMP}
+			,	#{doptimizeProcessDt, jdbcType=TIMESTAMP}
+			,	#{suseStatusCd, jdbcType=CHAR}
+			,	#{scomment, jdbcType=VARCHAR}
+			,	#{screateId, jdbcType=VARCHAR}
+			,	#{smodifyId, jdbcType=VARCHAR}
+		
+		)
+	</insert>
+	
+	<update id="updateTbAuditDhcpMstVo" parameterType="com.kt.ipms.legacy.ticketmgmt.dhcpmgmt.vo.TbAuditDhcpMstVo">
+		UPDATE
+		MST.TB_AUDIT_DHCP_MST A
+		SET
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smodifyId)">
+				A.SMODIFY_ID = #{smodifyId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nipBlockCnt)">
+				 ,A.NIP_BLOCK_CNT = #{nipBlockCnt, jdbcType=NUMERIC}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nipCnt)">
+				, A.NIP_CNT = #{nipCnt, jdbcType=NUMERIC}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nmaxPeak)">
+				, A.NMAX_PEAK = #{nmaxPeak, jdbcType=INTEGER}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nminPeak)">
+				, A.NMIN_PEAK = #{nminPeak, jdbcType=INTEGER}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ndhcpRangeDays)">
+				, A.NDHCP_RANGE_DAYS = #{ndhcpRangeDays, jdbcType=INTEGER}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(bfalg)">
+				, A.BFALG = #{bfalg, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(scomment)">
+				, A.SCOMMENT = #{scomment, jdbcType=VARCHAR}
+			</if>
+			<!-- <if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssvcLineTypeCd)">
+			A.SSVC_LINE_TYPE_CD = #{ssvcLineTypeCd, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nlvlMstSeq)">
+				, A.NLVL_MST_SEQ = #{nlvlMstSeq, jdbcType=BIGINT}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(stopNodeCd)">
+				, A.STOP_NODE_CD = #{stopNodeCd, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sofficeCd)">
+				, A.SOFFICE_CD = #{sofficeCd, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sl3Nescode)">
+				, A.SL3_NESCODE = #{sl3Nescode, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sl3EquipAlias)">
+				, A.SL3_EQUIP_ALIAS = #{sl3EquipAlias, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sl3Mstip)">
+				, A.SL3_MSTIP = #{sl3Mstip, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssaid)">
+				, A.SSAID = #{ssaid, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sllnum)">
+				, A.SLLNUM = #{sllnum, jdbcType=VARCHAR}
+			</if> 
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nauditValue)">
+				, A.NAUDIT_VALUE = #{nauditValue, jdbcType=INTEGER}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nopimizeValue)">
+				, A.NOPIMIZE_VALUE = #{nopimizeValue, jdbcType=INTEGER}
+			</if> -->
+			<!-- <if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ndhcpMinIpBlockCntOver)">
+				, A.NDHCP_MIN_IP_BLOCK_CNT_OVER = #{ndhcpMinIpBlockCntOver, jdbcType=INTEGER}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ndhcpMinIpCntOver)">
+				, A.NDHCP_MIN_IP_CNT_OVER = #{ndhcpMinIpCntOver, jdbcType=INTEGER}
+			</if>
+		    <if test="@org.apache.commons.lang.StringUtils@isNotEmpty(bauditYn)">
+				, A.BAUDIT_YN = #{bauditYn, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(boptimizeYn)">
+				, A.BOPTIMIZE_YN = #{boptimizeYn, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dauditCheckDt)">
+				, A.DAUDIT_CHECK_DT = #{dauditCheckDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dauditProcessDt)">
+				, A.DAUDIT_PROCESS_DT = #{dauditProcessDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(noptimizeCheckDt)">
+				, A.NOPTIMIZE_CHECK_DT = #{noptimizeCheckDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(doptimizeProcessDt)">
+				, A.DOPTIMIZE_PROCESS_DT = #{doptimizeProcessDt, jdbcType=TIMESTAMP}
+			</if> 
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(suseStatusCd)">
+				, A.SUSE_STATUS_CD = #{suseStatusCd, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dcreateDt)">
+				, A.DCREATE_DT = #{dcreateDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(screateId)">
+				, A.SCREATE_ID = #{screateId, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dmodifyDt)">
+				, A.DMODIFY_DT = #{dmodifyDt, jdbcType=TIMESTAMP}
+			</if> -->
+		
+			, A.DMODIFY_DT = sysdate
+		WHERE A.NAUDIT_DHCP_MST_SEQ = #{nauditDhcpMstSeq, jdbcType=BIGINT}
+	</update>
+	
+	<update id="updateTbAuditDhcpMstBflagY" parameterType="com.kt.ipms.legacy.ticketmgmt.dhcpmgmt.vo.TbAuditDhcpMstVo">
+		UPDATE
+		MST.TB_AUDIT_DHCP_MST A
+		SET
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(bfalg)">
+				 A.BFALG = #{bfalg, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dmodifyDt)">
+				, A.DMODIFY_DT = #{dmodifyDt, jdbcType=TIMESTAMP}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(smodifyId)">
+				, A.SMODIFY_ID = #{smodifyId, jdbcType=VARCHAR}
+			</if>
+			, A.DMODIFY_DT = sysdate
+		WHERE A.NAUDIT_DHCP_MST_SEQ = #{nauditDhcpMstSeq, jdbcType=BIGINT}
+	</update>
+	
+	<delete id="deleteTbAuditDhcpMstVo" parameterType="com.kt.ipms.legacy.ticketmgmt.dhcpmgmt.vo.TbAuditDhcpMstVo">
+		DELETE
+		FROM MST.TB_AUDIT_DHCP_MST A
+		<include refid="Vo_Where_Clause" />
+	</delete>
+	
+	
+	
+	<select id="selectTbAuditDhcpMstVo" resultMap="tbAuditDhcpMstVoResult" parameterType="com.kt.ipms.legacy.ticketmgmt.dhcpmgmt.vo.TbAuditDhcpMstVo">
+		SELECT
+		<include refid="Base_Column_List" />
+		<include refid="Append_Column_List"/>
+		FROM MST.TB_AUDIT_DHCP_MST A	
+		<include refid="Append_From_Clause"/>
+		WHERE A.SSVC_LINE_TYPE_CD =  B.SSVC_LINE_TYPE_CD(+)
+				  AND A.NLVL_MST_SEQ = C.NLVL_MST_SEQ(+)
+				  AND C.SSVC_LINE_TYPE_CD =  D.SSVC_LINE_TYPE_CD(+)
+				  AND C.SSVC_GROUP_CD  =  E.SLVL_CD(+)
+				  AND C.SSVC_OBJ_CD  = F.SLVL_CD(+)
+				  AND A.SSVC_LINE_TYPE_CD =  B.SSVC_LINE_TYPE_CD(+)
+				  AND A.SOFFICE_CD =  G.SLVL_CD(+)
+				  AND A.STOP_NODE_CD =  H.SLVL_CD(+)
+			 	  AND A.NAUDIT_DHCP_MST_SEQ = #{nauditDhcpMstSeq}	
+	</select>
+	
+	
+	
+	<select id="selectListTbAuditDhcpMstVo" resultMap="tbAuditDhcpMstVoResult" parameterType="com.kt.ipms.legacy.ticketmgmt.dhcpmgmt.vo.TbAuditDhcpMstVo">
+		SELECT
+		<include refid="Base_Column_List" />
+		<include refid="Append_Column_List"/>
+		,A.NDCHP_RANGE_DAYS AS NDHCP_RANGE_DAYS
+		FROM MST.TB_AUDIT_DHCP_MST A
+		<include refid="Append_From_Clause"/>
+		WHERE A.SSVC_LINE_TYPE_CD =  B.SSVC_LINE_TYPE_CD(+)
+				  AND A.NLVL_MST_SEQ = C.NLVL_MST_SEQ(+)
+				  AND C.SSVC_LINE_TYPE_CD =  D.SSVC_LINE_TYPE_CD(+)
+				  AND C.SSVC_GROUP_CD  =  E.SLVL_CD(+)
+				  AND C.SSVC_OBJ_CD  = F.SLVL_CD(+)
+				  AND A.SSVC_LINE_TYPE_CD =  B.SSVC_LINE_TYPE_CD(+)
+				  AND A.SOFFICE_CD =  G.SLVL_CD(+)
+				  AND A.STOP_NODE_CD =  I.SLVL_CD(+)
+			 	  AND A.NAUDIT_DHCP_MST_SEQ = #{item.nauditDhcpMstSeq}	
+	</select>
+	
+	
+	
+	
+	<select id="selectListPageTbAuditDhcpMstVo" resultMap="tbAuditDhcpMstVoResult" parameterType="com.kt.ipms.legacy.ticketmgmt.dhcpmgmt.vo.TbAuditDhcpMstVo">
+		SELECT 
+		<include refid="Base_Page_List" />
+		A.RNUM
+		FROM (
+			SELECT
+			<include refid="Base_Page_List" />
+			ROWNUM RNUM 
+			FROM (
+				SELECT
+				<include refid="Base_Column_List" />
+				<include refid="Append_Column_List"/>
+				FROM MST.TB_AUDIT_DHCP_MST A
+				<include refid="Append_From_Clause"/>
+				<include refid="List_Where_Clause"/>
+					  AND A.SSVC_LINE_TYPE_CD =  B.SSVC_LINE_TYPE_CD(+)
+					  AND A.NLVL_MST_SEQ = C.NLVL_MST_SEQ(+)
+					  AND C.SSVC_LINE_TYPE_CD =  D.SSVC_LINE_TYPE_CD(+)
+					  AND C.SSVC_GROUP_CD  =  E.SLVL_CD(+)
+					  AND C.SSVC_OBJ_CD  = F.SLVL_CD(+)
+					  AND A.SSVC_LINE_TYPE_CD =  B.SSVC_LINE_TYPE_CD(+)
+					  AND A.SOFFICE_CD =  G.SLVL_CD(+)
+					  AND A.STOP_NODE_CD =  H.SLVL_CD(+)
+				<if test="lvlMstSeqListVo != null and lvlMstSeqListVo.tbLvlMstVos != null">
+				AND A.NLVL_MST_SEQ IN 
+				<foreach collection="lvlMstSeqListVo.tbLvlMstVos" item="item" separator="," open="(" close=")">
+					#{item.nlvlSeq}
+				</foreach>
+				</if>			
+			GROUP BY 
+				<include refid="Base_Column_List" />
+				,SSVC_GROUP_NM
+				,STOP_NODE_NM 
+			    ,B.SSVC_LINE_TYPE_NM 		 
+			 	,SOFFICE_NM
+			 	,BAUDIT_NM
+			 	,BOPTIMIZE_NM
+			 	,BFALG_NM
+			 	,SSVC_OBJ_NM		 	
+				<include refid="Append_OrderBy_Clause" />	
+			) A WHERE ROWNUM <![CDATA[<=]]> #{lastIndex}
+		) A WHERE RNUM <![CDATA[>=]]> #{firstIndex}
+	</select>
+	
+	<select id="countListPageTbAuditDhcpMstVo" resultType="int" parameterType="com.kt.ipms.legacy.ticketmgmt.dhcpmgmt.vo.TbAuditDhcpMstVo">
+		SELECT
+			count(1) totalCount
+		FROM MST.TB_AUDIT_DHCP_MST A
+		<include refid="List_Where_Clause"/>
+		<if test="lvlMstSeqListVo != null and lvlMstSeqListVo.tbLvlMstVos != null">
+			AND A.NLVL_MST_SEQ IN 
+			<foreach collection="lvlMstSeqListVo.tbLvlMstVos" item="item" separator="," open="(" close=")">
+				#{item.nlvlSeq}
+			</foreach>
+		</if>
+	
+	</select>
+
+	<select id="selectOrderSofficeList" resultType="com.kt.ipms.legacy.cmn.vo.CommonCodeVo" parameterType="com.kt.ipms.legacy.ipmgmt.ordermgmt.vo.IpAllocOrderMstVo">
+		SELECT
+			A.SOFFICE_CD AS code
+			, B.SLVL_NM as name
+		FROM MST.TB_AUDIT_DHCP_MST A
+		      , MST.TB_LVL_CD B
+		WHERE 1=1
+		AND A.SOFFICE_CD = B.SLVL_CD(+)
+		AND A.SOFFICE_CD IN ( SELECT SSVC_OFFICE_CD  FROM MST.TB_LVL_ROLE_SUB  WHERE SLVL_CD IN (SELECT SSVC_OBJ_CD FROM MST.TB_LVL_MST WHERE 1=1
+		<if test="lvlMstSeqListVo != null and lvlMstSeqListVo.tbLvlMstVos != null">
+		AND NLVL_MST_SEQ IN
+		<foreach collection="lvlMstSeqListVo.tbLvlMstVos" item="item" separator="," open="(" close=")">
+		#{item.nlvlSeq}
+		</foreach>
+		</if>
+		))
+		GROUP BY A.SOFFICE_CD, B.SLVL_NM
+		ORDER BY B.SLVL_NM
+	</select>
+	
+	
+	<select id="selectSetOrderOfficeList" resultMap="tbAuditDhcpMstVoResult" parameterType="com.kt.ipms.legacy.ipmgmt.ordermgmt.vo.IpAllocOrderMstVo">
+		SELECT
+			A.SOFFICE_CD AS sofficeCd
+			, B.SLVL_NM as sofficeNm
+		FROM MST.TB_AUDIT_DHCP_MST A
+		      , MST.TB_LVL_CD B
+		WHERE 1=1
+		AND A.SOFFICE_CD = B.SLVL_CD(+)
+		AND A.SOFFICE_CD IN ( SELECT SSVC_OFFICE_CD  FROM MST.TB_LVL_ROLE_SUB  WHERE SLVL_CD IN (SELECT SSVC_OBJ_CD FROM MST.TB_LVL_MST WHERE 1=1
+		<if test="lvlMstSeqListVo != null and lvlMstSeqListVo.tbLvlMstVos != null">
+		AND NLVL_MST_SEQ IN
+		<foreach collection="lvlMstSeqListVo.tbLvlMstVos" item="item" separator="," open="(" close=")">
+		#{item.nlvlSeq}
+		</foreach>
+		</if>
+		))
+		GROUP BY A.SOFFICE_CD, B.SLVL_NM
+		ORDER BY B.SLVL_NM
+	</select>
+	
+
+	
+</mapper>
+
+

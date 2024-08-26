@@ -9,7 +9,7 @@ jar {
 	enabled = false
 }
 bootWar {
-	archiveName("demo_bootwar.war")
+	archiveFileName = 'demo_bootwar.war'
 	enabled = true
 }
 
@@ -20,7 +20,7 @@ war {
         ,"Main-Class": "com.codej.demo.DemoApplication"
         )
     }
-    archiveName("demo.war")
+    archiveFileName = 'demo.war'
     webInf{from '../warconfig/nmsLink.jsp'}
 	enabled = false
 } 
@@ -35,7 +35,6 @@ dependencies {
 	
 	implementation 'org.springframework.boot:spring-boot-starter'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	implementation 'org.springframework.boot:spring-boot-starter-jdbc'	
 	testImplementation 'junit:junit:4.13.2'
 	implementation 'org.springframework:spring-test'
 
