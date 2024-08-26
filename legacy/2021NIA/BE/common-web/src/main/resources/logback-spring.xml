@@ -39,6 +39,7 @@
     </appender>
 
     <logger name="org.springframework" level="INFO"/>
+    <logger name="com.codej.base" level="DEBUG"/>
     <logger name="com.codej.web" level="DEBUG"/>
     <logger name="com.codej.web.Intercepts" level="DEBUG"/>
 
