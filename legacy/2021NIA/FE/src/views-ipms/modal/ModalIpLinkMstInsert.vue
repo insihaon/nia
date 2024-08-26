@@ -39,6 +39,7 @@
                     class="txt w30"
                     maxlength="43"
                     title="IP 주소 입력창"
+                    @input="onChangeInput"
                   />
                   <select v-model="resultVo.insertNbitMask" class="w15">
                     <option value="/30">/30</option>
@@ -257,6 +258,9 @@ export default {
       }
     },
     onClose() {
+    },
+    onChangeInput(val) {
+      this.$set(this.resultVo, 'insertPifSerialIp', val.replace(/\D/g, ''))
     },
     async fnViewUpdateIPLinkMst(nipLinkMstSeq) {
       try {

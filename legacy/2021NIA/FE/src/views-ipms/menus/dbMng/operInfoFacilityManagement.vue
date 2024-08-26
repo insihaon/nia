@@ -72,15 +72,16 @@ export default {
         { prop: 'scomment', label: '용도', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'sprorityYn', label: '대표여부', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'dmodifyDt', label: '작업일자', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: '삭제', align: 'center', sortable: true, columnVisible: true, showOverflow: true,
+        { prop: '', label: '삭제', width: 80, align: 'center', sortable: true, columnVisible: true, showOverflow: true,
           formatter: (row, col, value, index) => {
             return this.$createElement('el-button', {
-            on: { click: () => {
-                this.fnDeleteLinkIpMst(row)
+              on: { click: () => {
+                  this.fnDeleteHostIpMst(row)
+                }
               }
+            }, '삭제')
           }
-        }, '삭제')
-} },
+        },
       ],
       tableDatas: [],
     }
@@ -104,24 +105,24 @@ export default {
     },
     async fnDeleteHostIpMst(row) {
       this.confirm('해당 운용정보를 삭제 하시겠습니까?', '확인', {
-          confirmButtonText: '확인',
-          cancelButtonText: '취소',
-          type: 'success'
-        }).then(async () => {
-          try {
-            const res = await apiRequestJson(ipmsJsonApis.deleteHostIPMst, { nipHostMstSeq: row.nipHostMstSeq })
-            if (res.commonMsg === 'SUCCESS') {
-              onMessagePopup(this, '운용 정보가 정상적으로 삭제 되었습니다.')
-              this.fnViewListIpHostMst()
-            } else {
-              onMessagePopup(this, res.commonMsg)
-            }
-          } catch (error) {
-            this.error(error)
+        confirmButtonText: '확인',
+        cancelButtonText: '취소',
+        type: 'success'
+      }).then(async () => {
+        try {
+          const res = await apiRequestJson(ipmsJsonApis.deleteHostIPMst, { nipHostMstSeq: row.nipHostMstSeq })
+          if (res.commonMsg === 'SUCCESS') {
+            onMessagePopup(this, '운용 정보가 정상적으로 삭제 되었습니다.')
+            this.fnViewListIpHostMst()
+          } else {
+            onMessagePopup(this, res.commonMsg)
           }
-        })
-        .catch(action => {
-        })
+        } catch (error) {
+          this.error(error)
+        }
+      })
+      .catch(action => {
+      })
     }
   },
 }
