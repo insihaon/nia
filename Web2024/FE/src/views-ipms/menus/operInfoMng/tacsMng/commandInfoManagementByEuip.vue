@@ -1,86 +1,123 @@
 <template>
-  <el-row class="w-100 h-100">
+  <el-row ref="container" class="w-100 h-100">
     <DynamicComponentLoader
+      ref="searchCondition"
       :component-keys="componentList"
-      @handle-search="handleSearch"
+      @handle-search="fnViewListTacsFcltCmdMst"
     />
-    <el-col :span="24">
+    <el-col ref="tableContainer" :span="24">
       <compTable
+        ref="compTable"
         :prop-table-height="'calc(100% - 80px)'"
+        :prop-data="tableDatas"
         :prop-column="tableColumns"
         :prop-is-pagination="true"
         :prop-is-check-box="true"
+        :prop-is-cell-click-check="true"
+        :prop-max-select="1"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
+        :prop-on-click="handleClickCell"
       >
         <template slot="text-description">
           <span>
             장비별 명령어 조회결과
           </span>
         </template>
+        <template slot="add-features">
+          <div class="float-right">
+            <el-button size="mini" icon="el-icon-plus" @click="handleClickProcessBtn('insert')">신규생성</el-button>
+            <el-button size="mini" @click="handleClickProcessBtn('update')">수정</el-button>
+          </div>
+        </template>
       </compTable>
     </el-col>
+    <ModalFcltCmdMstInsert ref="ModalFcltCmdMstInsert" />
   </el-row>
-
 </template>
 <script>
 import { Base } from '@/min/Base.min'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
+import ModalFcltCmdMstInsert from '@/views-ipms/modal/interlink/ModalFcltCmdMstInsert.vue'
 import CompTable from '@/components/elTable/CompTable.vue'
+import tableHeightMixin from '@/mixin/tableHeightMixin'
+
+import { ipmsModelApis, apiRequestModel, ipmsJsonApis, apiRequestJson } from '@/api/ipms'
+
 const routeName = 'TacsCommandInfoManagementByEquip'
 
 export default {
   name: routeName,
-  components: { CompTable, DynamicComponentLoader },
+  components: { CompTable, DynamicComponentLoader, ModalFcltCmdMstInsert },
   extends: Base,
+  mixins: [tableHeightMixin],
   data() {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
         tableColumns: [
-          { prop: '', label: '장비타입', align: 'center', columnVisible: true, showOverflow: true },
-          { prop: '', label: '장비명령어', align: 'center', columnVisible: true, showOverflow: true },
-          { prop: '', label: '명령어순서', align: 'center', columnVisible: true, showOverflow: true },
-          { prop: '', label: '사용여부', align: 'center', columnVisible: true, showOverflow: true },
+          { prop: 'sfcltType', label: '장비타입', align: 'center', columnVisible: true, showOverflow: true },
+          { prop: 'sfcltCmd', label: '장비명령어', align: 'center', columnVisible: true, showOverflow: true },
+          { prop: 'sparseContent', label: '할당판단문구', align: 'center', columnVisible: true, showOverflow: true },
+          { prop: 'suseYn', label: '할당가능여부', align: 'center', columnVisible: true, showOverflow: true },
+          { prop: 'npriority', label: '명령어순서', align: 'center', columnVisible: true, showOverflow: true },
+          { prop: 'suseYn', label: '사용여부', align: 'center', columnVisible: true, showOverflow: true },
         ],
-      componentList: [
-        { key: 'ApplyStatus', props: { label: '장비타입',
-          prop_parameterKey: 'sfcltType',
-            prop_options: [
-              { label: '전체', value: '' },
-              { label: 'ACCESS-UBIQUOSS_TEST', value: 'ACCESS-UBIQUOSS_TEST' },
-              { label: 'KORNET-CISCO_CRS', value: 'KORNET-CISCO_CRS' },
-              { label: 'KORNET-JUNIPER', value: 'KORNET-JUNIPER' },
-              { label: 'KORNET_CENTER-CISCO_CRS', value: 'KORNET_CENTER-CISCO_CRS' },
-              { label: 'KORNET_CENTER-NOKIA_7950XRS', value: 'KORNET_CENTER-NOKIA_7950XRS' },
-              { label: 'KORNET_GHT-JUNIPER', value: 'KORNET_GHT-JUNIPER' },
-              { label: 'MOBILE-CISCO-NCS6K', value: 'MOBILE-CISCO-NCS6K' },
-              { label: 'MOBILE-CISCO_7606', value: 'MOBILE-CISCO_7606' },
-              { label: 'MOBILE-CISCO_CRS', value: 'MOBILE-CISCO_CRS' },
-              { label: 'MOBILE-CISCO_NEXUS', value: 'MOBILE-CISCO_NEXUS' },
-              { label: 'MOBILE-JUNIPER-QFX10008', value: 'MOBILE-JUNIPER-QFX10008' },
-              { label: 'MOBILE-JUNIPER-QFX10008(IER)', value: 'MOBILE-JUNIPER-QFX10008(IER)' },
-              { label: 'MOBILE-JUNIPER_MX960', value: 'MOBILE-JUNIPER_MX960' },
-              { label: 'MOBILE_SG-CISCO_ASR1009', value: 'MOBILE_SG-CISCO_ASR1009' },
-              { label: 'PREMIUM_ICOD-CISCO_NEXUS', value: 'PREMIUM_ICOD-CISCO_NEXUS' },
-              { label: 'PREMIUM_IPT-JUNIPER', value: 'PREMIUM_IPT-JUNIPER' },
-              { label: 'PREMIUM_PE-CISCO_CRS', value: 'PREMIUM_PE-CISCO_CRS' },
-              { label: 'PREMIUM_PE-JUNIPER', value: 'PREMIUM_PE-JUNIPER' },
-              { label: 'PREMIUM_iCOD-CISCO_C6500', value: 'PREMIUM_iCOD-CISCO_C6500' }
-            ]
-          }
-        },
+        tableDatas: [],
+        sfcltTypes: [],
+        selectedRow: null
+    }
+  },
+  computed: {
+    componentList() {
+      return [
+        { key: 'ApplyStatus', props: { label: '장비타입', prop_parameterKey: 'sfcltType', prop_options: this.sfcltTypes } },
         { key: 'InputType', props: { label: '장비명령어' } },
         { key: 'UsageYN', props: { label: '사용여부', prop_parameterKey: 'suseYn' } }
       ]
     }
   },
+  mounted () {
+    this.fnTacsSelectListCommonCode()
+    this.fnViewListTacsFcltCmdMst()
+  },
   methods: {
-      handleSearch(requestParameter) {
-      console.log(requestParameter)
+    async fnTacsSelectListCommonCode() {
+      try {
+        const res = await apiRequestJson(ipmsJsonApis.selectListCommonCode, {})
+        let sfcltTypeTemp = res.result.data
+        sfcltTypeTemp = sfcltTypeTemp.map(v => { return { value: v.code, label: v.name } })
+        sfcltTypeTemp.unshift({ label: '전체', value: '' })
+        this.$set(this, 'sfcltTypes', sfcltTypeTemp)
+      } catch (error) {
+        this.error(error)
+      }
+    },
+    async fnViewListTacsFcltCmdMst(requestParameter) {
+      const params = requestParameter ?? this.$refs?.searchCondition?.requestParameter
+      try {
+        const res = await apiRequestModel(ipmsModelApis.viewListTacsFcltCmdMst, params)
+        this.tableDatas = res.result.data
+        setTimeout(() => {
+          this.$refs?.compTable?.$refs?.table?.selection.push(this.tableDatas[0])
+          this.selectedRow = this.tableDatas[0]
+        }, 10)
+      } catch (error) {
+        this.error(error)
+      }
+    },
+    handleClickCell(row) {
+      this.selectedRow = row
+    },
+    handleClickProcessBtn(type) {
+      const params = { fnType: type }
+      if (type === 'update') {
+        Object.assign(params, { row: this.selectedRow })
+      }
+      this.$refs.ModalFcltCmdMstInsert.open(params)
     }
   }
 }
 </script>
-<style lang="css" scoped>
+<style lang="scss" scoped>
 </style>

@@ -96,22 +96,6 @@
             </table>
           </form>
         </div>
-
-        <!-- <div class="btn_area mt10">
-          <a href="#none" id="closeBtn" @click="handleClose">
-            <input type="image" :src="getImageUrl('/resources/images/content/btn_close_off.gif')" value="다운로드" @mouseover="menuOver" @mouseout="menuOut" />
-          </a>
-
-          <a href="#none" class="button_w" id="downTextBtn">
-            <span>텍스트 양식 다운로드</span>
-          </a>
-          <a href="#none" class="button_w" id="downBtn">
-            <span>엑셀 양식 다운로드</span>
-          </a>
-          <a href="#none" class="button_w" id="uploadBtn" @click="handleUpload">
-            <span>Upload</span>
-          </a>
-        </div> -->
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button icon="el-icon-download" size="mini" @click="downloadFormat('txt')">텍스트 양식 다운로드</el-button>

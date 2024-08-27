@@ -1,15 +1,19 @@
 <template>
-  <el-row class="w-100 h-100">
+  <el-row ref="container" class="w-100 h-100">
     <DynamicComponentLoader
+      ref="searchCondition"
       :component-keys="componentList"
-      @handle-search="handleSearch"
+      @handle-search="fnViewListTacsConnHist"
     />
-    <el-col :span="24">
+    <el-col ref="tableContainer" :span="24">
       <compTable
+        ref="compTable"
         :prop-table-height="'calc(100% - 80px)'"
+        :prop-data="tableDatas"
         :prop-column="tableColumns"
         :prop-is-pagination="true"
         :prop-is-check-box="false"
+        :prop-highlight-cell="onCheckSavailYn"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
       >
@@ -27,31 +31,47 @@
 import { Base } from '@/min/Base.min'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
 import CompTable from '@/components/elTable/CompTable.vue'
+import tableHeightMixin from '@/mixin/tableHeightMixin'
+import { ipmsModelApis, apiRequestModel, ipmsJsonApis, apiRequestJson } from '@/api/ipms'
 const routeName = 'TacsLinkHistStatus'
 
 export default {
   name: routeName,
   components: { CompTable, DynamicComponentLoader },
   extends: Base,
+  mixins: [tableHeightMixin],
   data() {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-        tableColumns: [
-          { prop: '', label: '장비IP', align: 'center', columnVisible: true, showOverflow: true },
-          { prop: '', label: '장비프롬프트명', align: 'center', columnVisible: true, showOverflow: true },
-          { prop: '', label: '조회IP블럭', align: 'center', columnVisible: true, showOverflow: true },
-          { prop: '', label: 'IP중복여부', align: 'center', columnVisible: true, showOverflow: true },
-          { prop: '', label: '결과메세지', align: 'center', columnVisible: true, showOverflow: true },
-          { prop: '', label: '사용자ID', align: 'center', columnVisible: true, showOverflow: true },
-          { prop: '', label: '접속일시', align: 'center', columnVisible: true, showOverflow: true },
-        ],
-      componentList: [
+      tableColumns: [
+          { prop: 'pipFcltInet', label: '장비IP', align: 'center', columnVisible: true, showOverflow: true },
+          { prop: 'sfcltPromptNm', label: '장비프롬프트명', align: 'center', columnVisible: true, showOverflow: true },
+          { prop: 'pipPrefix', label: '조회IP블럭', align: 'center', columnVisible: true, showOverflow: true },
+          { prop: 'savailYn', label: 'IP중복여부', align: 'center', columnVisible: true, showOverflow: true,
+            formatter: (row) => {
+              if (row?.savailYn === '' || row?.savailYn === null) {
+                return ''
+              } else {
+                return row.savailYn === 'Y' ? '중복' : '중복아님'
+              }
+            }
+          },
+          { prop: 'sresultMsg', label: '결과메세지', align: 'center', columnVisible: true, showOverflow: true, },
+          { prop: 'smodifyId', label: '사용자ID', align: 'center', columnVisible: true, showOverflow: true },
+          { prop: 'dcreateDt', label: '접속일시', align: 'center', columnVisible: true, showOverflow: true },
+      ],
+      tableDatas: [],
+      sresultMsgOptions: [],
+    }
+  },
+  computed: {
+    componentList() {
+      return [
         { key: 'InputType', props: { label: '장비 IP', prop_parameterKey: 'pipFcltInet' } },
         { key: 'InputType', props: { label: '장비프롬프트명', prop_parameterKey: 'sfcltPromptNm' } },
         { key: 'InputType', props: { label: '조회IP블럭', prop_parameterKey: 'pipPrifix' } },
         { key: 'ApplyStatus', props: { label: 'IP중복여부', prop_parameterKey: 'savailYn',
-          defaultValue: '',
             prop_options: [
               { label: '전체', value: '' },
               { label: '중복 아님', value: 'Y' },
@@ -65,26 +85,56 @@ export default {
           key: 'ApplyStatus', props: {
             label: '결과메시지',
             prop_parameterKey: 'sresultMsg',
-            defaultValue: '',
-            prop_options: [
-              { label: '전체', value: '' },
-              { label: '요청 실패(릴레이가 없거나 망문제)', value: '요청 실패(릴레이가 없거나 망문제)' },
-              { label: '로그인 실패', value: '로그인 실패' },
-              { label: '등록된 장비가 없음', value: '등록된 장비가 없음' },
-              { label: '알수 없는 에러', value: '알수 없는 에러' },
-              { label: '성공적으로 처리되었습니다.', value: '성공적으로 처리되었습니다.' },
-            ]
+            prop_options: this.sresultMsgOptions
           }
         }
       ]
     }
   },
+  mounted () {
+    this.fnSelectSresultMsg()
+    this.fnViewListTacsConnHist()
+  },
   methods: {
-      handleSearch(requestParameter) {
-      console.log(requestParameter)
+    async fnSelectSresultMsg(requestParameter) {
+      const params = requestParameter ?? this.$refs?.searchCondition?.requestParameter
+      try {
+        const res = await apiRequestJson(ipmsJsonApis.selectSresultMsg, params)
+        this.$set(this, 'sresultMsgOptions', res.result.data.map(v => { return { label: v.sresult_msg, value: v.sresult_msg } }))
+      } catch (error) {
+        this.error(error)
+      }
+    },
+    async fnViewListTacsConnHist(requestParameter) {
+      const params = requestParameter ?? this.$refs?.searchCondition?.requestParameter
+      try {
+        const res = await apiRequestModel(ipmsModelApis.viewListTacsConnHist, params)
+        this.tableDatas = res.result.data
+      } catch (error) {
+        this.error(error)
+      }
+    },
+    onCheckSavailYn({ row, column, rowIndex, columnIndex }) {
+      if (column.property === 'savailYn') {
+        if (row.savailYn === 'Y') { // 중복아님
+          return 'highlight_blue_color'
+        } else if (row.savailYn === 'N') { // 중복
+          return 'highlight_red_color'
+        }
+      }
     }
   }
 }
 </script>
-<style lang="css" scoped>
+<style lang="scss" scoped>
+::v-deep .highlight_red_color {
+  .cell {
+    color: red !important;
+  }
+}
+.highlight_blue_color {
+  .cell {
+    color: blue !important;
+  }
+}
 </style>

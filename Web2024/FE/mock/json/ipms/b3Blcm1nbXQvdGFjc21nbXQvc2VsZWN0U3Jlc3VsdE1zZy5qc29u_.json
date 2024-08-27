@@ -1,0 +1,32 @@
+{
+  "__body": {
+    "result": {
+      "totalCount": 5,
+      "data": [
+        {
+          "sresult_msg": "요청 실패 (릴레이가 없거나 망문제)"
+        },
+        {
+          "sresult_msg": "로그인 실패"
+        },
+        {
+          "sresult_msg": "등록된 장비가 없음"
+        },
+        {
+          "sresult_msg": "알수 없는 에러"
+        },
+        {
+          "sresult_msg": "성공적으로 처리되었습니다."
+        }
+      ]
+    }
+  },
+  "__config": {
+    "url": "/opermgmt/tacsmgmt/selectSresultMsg.json",
+    "param": {},
+    "receivedTime": "2024-08-27 15:51:30.380",
+    "duration": 1030,
+    "filename": "b3Blcm1nbXQvdGFjc21nbXQvc2VsZWN0U3Jlc3VsdE1zZy5qc29u_.json",
+    "fetch": "fetch('/opermgmt/tacsmgmt/selectSresultMsg.json', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{}', 'method': 'POST' })"
+  }
+}

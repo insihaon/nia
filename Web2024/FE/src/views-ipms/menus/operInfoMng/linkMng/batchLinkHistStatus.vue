@@ -1,12 +1,14 @@
 <template>
-  <el-row class="w-100 h-100">
+  <el-row ref="container" class="w-100 h-100">
     <DynamicComponentLoader
+      ref="searchCondition"
       :component-keys="componentList"
-      @handle-search="handleSearch"
+      @handle-search="fnViewListBatchHistMst"
     />
-    <el-col :span="24">
+    <el-col ref="tableContainer" :span="24">
       <compTable
         :prop-table-height="'calc(100% - 80px)'"
+        :prop-data="tableDatas"
         :prop-column="tableColumns"
         :prop-is-pagination="true"
         :prop-is-check-box="false"
@@ -27,36 +29,50 @@
 import { Base } from '@/min/Base.min'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
 import CompTable from '@/components/elTable/CompTable.vue'
+import tableHeightMixin from '@/mixin/tableHeightMixin'
+import { ipmsModelApis, apiRequestModel } from '@/api/ipms'
 const routeName = 'BatchLinkHistStatus'
 
 export default {
   name: routeName,
   components: { CompTable, DynamicComponentLoader },
   extends: Base,
+  mixins: [tableHeightMixin],
   data() {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-        tableColumns: [
-          { prop: '', label: '인터페이스 ID', align: 'center', columnVisible: true, showOverflow: true },
-          { prop: '', label: '관련 시스템명', align: 'center', columnVisible: true, showOverflow: true },
-          { prop: '', label: '관련 테이블명', align: 'center', columnVisible: true, showOverflow: true },
-          { prop: '', label: '작업내역', align: 'center', columnVisible: true, showOverflow: true },
-          { prop: '', label: '작업내역 상세', align: 'center', columnVisible: true, showOverflow: true },
-          { prop: '', label: '작업 종료여부', align: 'center', columnVisible: true, showOverflow: true },
-          { prop: '', label: 'DATA 입력 시작시각', align: 'center', columnVisible: true, showOverflow: true },
-          { prop: '', label: 'DATA 입력 종료시각', align: 'center', columnVisible: true, showOverflow: true },
-        ],
       componentList: [
         { key: 'InputType', props: { label: '인터페이스 ID', prop_parameterKey: 'sifId' } },
         { key: 'IncludeYN', props: { label: '작업 종료여부', prop_parameterKey: 'sbatchEndYn' } },
         { key: 'DateRange', props: { label: 'DATA 입력 \n시작/종료시각' } }
+      ],
+      tableDatas: []
+    }
+  },
+  computed: {
+    tableColumns() {
+      return [
+        { prop: 'sifId', label: '인터페이스 ID', align: 'center', columnVisible: true, showOverflow: true },
+        { prop: 'ssysNm', label: '관련 시스템명', align: 'center', columnVisible: true, showOverflow: true },
+        { prop: 'stbNm', label: '관련 테이블명', align: 'center', columnVisible: true, showOverflow: true },
+        { prop: 'scomment', label: '작업내역', align: 'center', columnVisible: true, showOverflow: true },
+        { prop: 'sstepStatus', label: '작업내역 상세', align: 'center', columnVisible: true, showOverflow: true },
+        { prop: 'sbatchEndYn', label: '작업 종료여부', align: 'center', columnVisible: true, showOverflow: true },
+        { prop: 'dstartDt', label: 'DATA 입력 시작시각', align: 'center', columnVisible: true, showOverflow: true, formatter: (row) => { return row?.dstartDt ? this.moment(row.dstartDt).format('YYYY-MM-DD HH:mm:ss') : '' } },
+        { prop: 'dendDt', label: 'DATA 입력 종료시각', align: 'center', columnVisible: true, showOverflow: true, formatter: (row) => { return row?.dendDt ? this.moment(row.dendDt).format('YYYY-MM-DD HH:mm:ss') : '' } },
       ]
     }
   },
   methods: {
-      handleSearch(requestParameter) {
-      console.log(requestParameter)
+    async fnViewListBatchHistMst(requestParameter) {
+      const params = requestParameter ?? this.$refs.searchCondition.requestParameter
+      try {
+        const res = await apiRequestModel(ipmsModelApis.viewListBatchHistMst, params)
+        this.tableDatas = res.result.data
+      } catch (error) {
+        this.error(error)
+      }
     }
   }
 }
