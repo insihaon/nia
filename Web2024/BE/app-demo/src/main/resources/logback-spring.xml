@@ -3,7 +3,7 @@
 <configuration>
 	<include resource="org/springframework/boot/logging/logback/defaults.xml" />
 	<include resource="org/springframework/boot/logging/logback/base.xml"/>
-    <property name="APP_NAME" value="app-nia"/>
+    <property name="APP_NAME" value="app-demo"/>
 	<appender name="infoLog"
 		class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<prudent>true</prudent>
@@ -43,7 +43,7 @@
     <logger name="com.codej.web" level="DEBUG"/>
     <logger name="com.codej.web.Intercepts" level="DEBUG"/>
     <logger name="com.codej.web.domain.common" level="DEBUG"/>
-    <logger name="com.codej.nia" level="DEBUG"/>
+    <logger name="com.codej.demo" level="DEBUG"/>
 
     <!-- 
     <logger name="jdbc" level="OFF"/>
