@@ -64,6 +64,13 @@ export const ipmsModelApis = {
   viewDetailAssignApyTxn: { desc: 'IP 배정 신청 조회 상세정보', url: '/opermgmt/assignmgmt/viewDetailAssignApyTxn' },
   viewListPrivateAs: { desc: '사설AS 신청 조회', url: '/opermgmt/asmgmt/viewListPrivateAs' },
   viewDetailPrivateAs: { desc: '사설AS 신청 상세정보', url: '/opermgmt/asmgmt/viewDetailPrivateAs' },
+  // 운용정보관리(관리자 기능)
+  viewListBatchHistMst: { desc: '운용정보관리 > 연동관리 > 배치 연동 이력현황', url: '/linkmgmt/batchmgmt/viewListBatchHistMst' },
+  viewTacsConnBas: { desc: '운용정보관리 > TACS관리 > TACS 연동정보관리 조회', url: '/opermgmt/tacsmgmt/viewTacsConnBas' },
+  viewListTacsFcltMst: { desc: '운용정보관리 > TACS관리 > 조직별 장비 정보관리 조회', url: '/opermgmt/tacsmgmt/viewListTacsFcltMst' },
+  viewInsertTacsFcltMst: { desc: '운용정보관리 > TACS관리 > 조직별 장비 정보관리 > 신규생성POP(결과:장비타입)', url: '/opermgmt/tacsmgmt/viewInsertTacsFcltMst' },
+  viewListTacsFcltCmdMst: { desc: '운용정보관리 > TACS관리 > TACS 연동 이력현황', url: '/opermgmt/tacsmgmt/viewListTacsFcltCmdMst' },
+  viewListTacsConnHist: { desc: '운용정보관리 > TACS관리 > 장비별 명령어 정보관리 조회', url: '/opermgmt/tacsmgmt/viewListTacsConnHist' },
 }
 export const ipmsJsonApis = {
   selectAuthCenterList: { desc: '센터 조회', url: '/opermgmt/orgmgmt/selectAuthCenterList' },
@@ -106,6 +113,16 @@ export const ipmsJsonApis = {
   updateAssignApyTxn: { desc: 'IP 배정신청 상세정보 > 배정, 승인, 반송, 처리내용 수정', url: '/opermgmt/assignmgmt/updateAssignApyTxn' },
   insertAssignApyTxn: { desc: 'IP 배정신청 상세정보 > 배정 신청 등록', url: '/opermgmt/assignmgmt/insertAssignApyTxn' },
   updatePrivateAs: { desc: '사설AS 신청 > 수정', url: '/opermgmt/asmgmt/updatePrivateAs' },
+  // 운용정보관리(관리자 기능)
+  updateTacsConnBas: { desc: '운용정보관리 > TACS관리 > TACS 연동정보관리 수정', url: '/opermgmt/tacsmgmt/updateTacsConnBas' },
+  insertTacsFcltMst: { desc: '운용정보관리 > TACS관리 > 조직별 장비 정보관리 등록', url: '/opermgmt/tacsmgmt/insertTacsFcltMst' },
+  updateTacsFcltMst: { desc: '운용정보관리 > TACS관리 > 조직별 장비 정보관리 수정', url: '/opermgmt/tacsmgmt/updateTacsFcltMst' },
+  deleteTacsFcltMst: { desc: '운용정보관리 > TACS관리 > 조직별 장비 정보관리 삭제', url: '/opermgmt/tacsmgmt/deleteTacsFcltMst' },
+  selectListCommonCode: { desc: '운용정보관리 > TACS관리 > 장비별 명령어 정보관리 장비타입 조회', url: '/opermgmt/tacsmgmt/selectListCommonCode' },
+  insertTacsFcltCmdMst: { desc: '운용정보관리 > TACS관리 > 장비별 명령어 정보관리 등록', url: '/opermgmt/tacsmgmt/insertTacsFcltCmdMst' },
+  updateTacsFcltCmdMst: { desc: '운용정보관리 > TACS관리 > 장비별 명령어 정보관리 수정', url: '/opermgmt/tacsmgmt/updateTacsFcltCmdMst' },
+  selectSresultMsg: { desc: '운용정보관리 > TACS관리 > TACS 연동 이력현황 결과메시지 조회', url: '/opermgmt/tacsmgmt/selectSresultMsg' },
+
 }
 
 export function apiTest(params) {

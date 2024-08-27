@@ -52,11 +52,6 @@
             </table>
           </form>
         </div>
-        <!-- <div class="btn_area mt10">
-          <a href="#none" id="closeBtn" @click="handleClose">
-            <input type="image" :src="getImageUrl('/resources/images/content/btn_close_off.gif')" value="닫기" @mouseover="menuOver" @mouseout="menuOut" />
-          </a>
-        </div> -->
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button size="mini" class="el-icon-close" @click.native="close()">{{ $t('exit') }}</el-button>

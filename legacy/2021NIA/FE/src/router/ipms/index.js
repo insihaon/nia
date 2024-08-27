@@ -477,7 +477,7 @@ export const ipmsRoute = Object.freeze([
           },
           {
             path: 'equipInfoMngByOrg',
-            component: () => import('@/views-ipms/menus/operInfoMng/tacsMng/equipInfoMngByOrg'),
+            component: () => import('@/views-ipms/menus/operInfoMng/tacsMng/tacsEquipInfoMngByOrg'),
             name: 'TacsEquipInfoManagementByOrg',
             meta: { title: '조직별 장비 정보관리', affix: false }
           },

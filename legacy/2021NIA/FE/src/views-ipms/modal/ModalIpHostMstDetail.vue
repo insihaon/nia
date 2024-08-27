@@ -199,7 +199,7 @@ export default {
       this.domElement.maxWidth = 1200
     },
     onOpen(model, actionMode) {
-      if (model.fnType) {
+      if (model?.fnType) {
         this.fnType = model.fnType
       }
       if (model?.nipHostMstSeq) {

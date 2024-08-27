@@ -12,7 +12,7 @@
         :prop-table-height="'calc(100% - 80px)'"
         :prop-data="tableDatas"
         :prop-column="tableColumns"
-        :prop-is-pagination="false"
+        :prop-is-pagination="true"
         :prop-is-check-box="true"
         :prop-is-cell-click-check="true"
         :prop-max-select="tableDatas.length"
