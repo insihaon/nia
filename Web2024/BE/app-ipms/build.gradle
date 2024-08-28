@@ -45,7 +45,7 @@ dependencies {
 	implementation project(':common-ws')
 
     // implementation files("libs/ADUtilSSL.jar")
-	// implementation fileTree(dir: 'libs', include: ['**/*.jar'])
+	implementation fileTree(dir: 'libs', include: ['**/*.jar'])
 	
 	implementation 'org.springframework.boot:spring-boot-starter'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -138,14 +138,14 @@ dependencies {
     // }
 
     // KT Logger
-    implementation "com.kt:log4kt:1.7"
+    // implementation "com.kt:log4kt:1.7"
 
     // KT Framework
-    implementation "com.kt:kt-framework:1.1.18"	
+    // implementation "com.kt:kt-framework:1.1.18"	
 
 
     // LDAP
-    implementation "nets.ldap:ADUtilSSL:1"
+    // implementation "nets.ldap:ADUtilSSL:1"
     
     // Injection
     implementation "javax.inject:javax.inject:1"
