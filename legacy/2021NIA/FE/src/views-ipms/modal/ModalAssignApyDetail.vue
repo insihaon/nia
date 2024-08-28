@@ -145,7 +145,7 @@
         <el-button size="mini" @click="fnApproveIpAssignApy()">{{ $t('승인') }}</el-button>
         <el-button size="mini" @click="fnRejectIpAssignApy()">{{ $t('반송') }}</el-button>
 
-        <el-button size="mini" class="el-icon-edit-outline" @click="close()">{{ $t('수정') }}</el-button>
+        <el-button size="mini" class="el-icon-edit-outline" @click="fnUpdateStrtContents()">{{ $t('수정') }}</el-button>
         <el-button size="mini" class="el-icon-delete" @click="fnDeleteIpAssignApy()">{{ $t('삭제') }}</el-button>
         <el-button size="mini" @click="fnUpdateStrtContents()">{{ $t('처리내용 수정') }}</el-button>
         <el-button size="mini" class="el-icon-close" @click="close()">{{ $t('exit') }}</el-button>
@@ -289,7 +289,7 @@ export default {
             sassigncontents: this.sassigncontents,
             nassignIpCnt: this.nassignIpCnt,
           }
-          const res = await apiRequestModel(ipmsModelApis.updateAssignApyTxn, TbRequestAssignMstVo)
+          const res = await apiRequestJson(ipmsJsonApis.updateAssignApyTxn, TbRequestAssignMstVo)
            if (res.commonMsg === 'SUCCESS') {
             this.$message.success({ message: `정상적으로 반송되었습니다.` })
             this.$emit('reloadData')
@@ -317,7 +317,7 @@ export default {
             sassigncontents: this.sassigncontents,
             nassignIpCnt: this.nassignIpCnt,
           }
-          const res = await apiRequestModel(ipmsModelApis.updateAssignApyTxn, TbRequestAssignMstVo)
+          const res = await apiRequestJson(ipmsJsonApis.updateAssignApyTxn, TbRequestAssignMstVo)
            if (res.commonMsg === 'SUCCESS') {
             this.$message.success({ message: `처리내용이 정상적으로 수정되었습니다.` })
             this.$emit('reloadData')
@@ -337,7 +337,7 @@ export default {
           const TbRequestAssignMstVo = {
             nrequestAssignSeq: this.resultVo.nrequestAssignSeq,
           }
-          const res = await apiRequestModel(ipmsModelApis.updateAssignApyTxn, TbRequestAssignMstVo)
+          const res = await apiRequestJson(ipmsJsonApis.updateAssignApyTxn, TbRequestAssignMstVo)
            if (res.commonMsg === 'SUCCESS') {
             this.$message.success({ message: `배정신청을 정상적으로 삭제 하였습니다.` })
             this.$emit('reloadData')
