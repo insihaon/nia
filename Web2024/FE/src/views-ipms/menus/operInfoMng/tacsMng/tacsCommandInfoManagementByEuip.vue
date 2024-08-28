@@ -32,7 +32,7 @@
         </template>
       </compTable>
     </el-col>
-    <ModalFcltCmdMstInsert ref="ModalFcltCmdMstInsert" />
+    <ModalFcltCmdMstInsert ref="ModalFcltCmdMstInsert" @reload="fnViewListTacsFcltCmdMst" />
   </el-row>
 </template>
 <script>
@@ -55,17 +55,17 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-        tableColumns: [
-          { prop: 'sfcltType', label: '장비타입', align: 'center', columnVisible: true, showOverflow: true },
-          { prop: 'sfcltCmd', label: '장비명령어', align: 'center', columnVisible: true, showOverflow: true },
-          { prop: 'sparseContent', label: '할당판단문구', align: 'center', columnVisible: true, showOverflow: true },
-          { prop: 'suseYn', label: '할당가능여부', align: 'center', columnVisible: true, showOverflow: true },
-          { prop: 'npriority', label: '명령어순서', align: 'center', columnVisible: true, showOverflow: true },
-          { prop: 'suseYn', label: '사용여부', align: 'center', columnVisible: true, showOverflow: true },
-        ],
-        tableDatas: [],
-        sfcltTypes: [],
-        selectedRow: null
+      tableColumns: [
+        { prop: 'sfcltType', label: '장비타입', align: 'center', columnVisible: true, showOverflow: true },
+        { prop: 'sfcltCmd', label: '장비명령어', align: 'center', columnVisible: true, showOverflow: true },
+        { prop: 'sparseContent', label: '할당판단문구', align: 'center', columnVisible: true, showOverflow: true },
+        { prop: 'suseYn', label: '할당가능여부', align: 'center', columnVisible: true, showOverflow: true },
+        { prop: 'npriority', label: '명령어순서', align: 'center', columnVisible: true, showOverflow: true },
+        { prop: 'suseYn', label: '사용여부', align: 'center', columnVisible: true, showOverflow: true },
+      ],
+      tableDatas: [],
+      sfcltTypes: [],
+      selectedRow: null
     }
   },
   computed: {
@@ -84,7 +84,7 @@ export default {
   methods: {
     async fnTacsSelectListCommonCode() {
       try {
-        const res = await apiRequestJson(ipmsJsonApis.selectListCommonCode, {})
+        const res = await apiRequestJson(ipmsJsonApis.selectListTacsSfcltTypes, {})
         let sfcltTypeTemp = res.result.data
         sfcltTypeTemp = sfcltTypeTemp.map(v => { return { value: v.code, label: v.name } })
         sfcltTypeTemp.unshift({ label: '전체', value: '' })
@@ -108,9 +108,10 @@ export default {
     },
     handleClickCell(row) {
       this.selectedRow = row
+      this.$refs.ModalFcltCmdMstInsert.open({ viewType: 'tacsMng', fnType: 'update', row })
     },
     handleClickProcessBtn(type) {
-      const params = { fnType: type }
+      const params = { viewType: 'tacsMng', fnType: type }
       if (type === 'update') {
         Object.assign(params, { row: this.selectedRow })
       }

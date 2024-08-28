@@ -1,0 +1,41 @@
+{
+  "__body": {
+    "result": {
+      "totalCount": 8,
+      "data": [
+        {
+          "sresult_msg": "(TACS)알수 없는 에러"
+        },
+        {
+          "sresult_msg": "진행중인 작업이 있어서 중지되었습니다."
+        },
+        {
+          "sresult_msg": "(IPMS-CHECK) 데이터가 없습니다."
+        },
+        {
+          "sresult_msg": "라우팅 정보 수집 중"
+        },
+        {
+          "sresult_msg": "알수없는 에러"
+        },
+        {
+          "sresult_msg": "(TACS)로그인 실패"
+        },
+        {
+          "sresult_msg": "성공"
+        },
+        {
+          "sresult_msg": "(TACS)등록된 장비가 없음"
+        }
+      ]
+    }
+  },
+  "__config": {
+    "url": "/opermgmt/intgrmgmt/selectSresultMsg.json",
+    "param": {},
+    "receivedTime": "2024-08-28 14:50:12.045",
+    "duration": 116,
+    "filename": "b3Blcm1nbXQvaW50Z3JtZ210L3NlbGVjdFNyZXN1bHRNc2cuanNvbg_.json",
+    "fetch": "fetch('/opermgmt/intgrmgmt/selectSresultMsg.json', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{}', 'method': 'POST' })"
+  }
+}

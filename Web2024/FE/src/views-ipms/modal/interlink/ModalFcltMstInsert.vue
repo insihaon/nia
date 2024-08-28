@@ -58,8 +58,8 @@
               </tr>
               <tr>
                 <th scope="row">장비타입</th>
-                <td colspan="3">
-                  <select v-model="formData.sfcltType" name="insertSfcltType" class="w99">
+                <td :colspan="viewType === 'tacsMng' ?'3': '1'">
+                  <select v-model="formData.sfcltType" class="w99">
                     <option value="">선택</option>
                     <option
                       v-for="(item, index) in sfcltTypes"
@@ -69,6 +69,20 @@
                     />
                   </select>
                 </td>
+                <template v-if="viewType === 'ipRouting'">
+                  <th scope="row">사용여부</th>
+                  <td>
+                    <select v-model="formData.suseYn" class="w99">
+                      <option value="">선택</option>
+                      <option
+                        v-for="(item, index) in [{ code: 'Y', name: 'Y' }, { code: 'N', name: 'N' }]"
+                        :key="index"
+                        :value="item.code"
+                        :label="item.name"
+                      />
+                    </select>
+                  </td>
+                </template>
               </tr>
               <tr>
                 <th class="first" scope="row">장비IP</th>
@@ -91,6 +105,30 @@
                   </select>
                 </td>
               </tr>
+              <tr v-if="viewType === 'ipRouting'">
+                <th class="first" scope="row">상위장비IP</th>
+                <td>
+                  <input
+                    v-model="formData.pipUpperFclt"
+                    type="text"
+                    class="txt w96"
+                    name="insertPipFcltInet"
+                    title="IP 주소 입력창"
+                    maxlength="43"
+                  />
+                </td>
+                <th scope="row">PEER장비IP</th>
+                <td>
+                  <input
+                    v-model="formData.pipPeerFclt"
+                    type="text"
+                    class="txt w96"
+                    name="insertPipFcltInet"
+                    title="IP 주소 입력창"
+                    maxlength="43"
+                  />
+                </td>
+              </tr>
               <tr class="last">
                 <th class="first" scope="row">장비프롬프트명</th>
                 <td>
@@ -106,8 +144,8 @@
         </div>
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button v-if="fnType === 'insert'" icon="el-icon-edit-outline" type="primary" size="mini" @click="fnInsertTacsFcltMst">등록</el-button>
-        <el-button v-if="fnType === 'update'" icon="el-icon-edit-outline" type="primary" size="mini" @click="fnUpdateTacsFcltMst">수정</el-button>
+        <el-button v-if="fnType === 'insert'" icon="el-icon-edit-outline" type="primary" size="mini" @click="fnInsertFcltMst">등록</el-button>
+        <el-button v-if="fnType === 'update'" icon="el-icon-edit-outline" type="primary" size="mini" @click="fnUpdateFcltMst">수정</el-button>
         <el-button size="mini" class="el-icon-close" @click.native="close()">{{ $t('exit') }}</el-button>
       </div>
     </el-dialog>
@@ -132,16 +170,20 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      viewType: 'tacsMng', // tacsMng or ipRouting
       fnType: 'insert',
       defaultFormData: {
         ssvcLineTypeCd: '',
         ssvcGroupCd: '',
         ssvcObjCd: '',
         pipFcltInet: '',
+        pipUpperFclt: '',
+        pipPeerFclt: '',
         nportFclt: '',
         sfcltType: '',
         sfcltPromptNm: '',
-        sfcltModelNm: ''
+        sfcltModelNm: '',
+        suseYn: ''
       },
       formData: {},
       sfcltTypes: []
@@ -155,10 +197,15 @@ export default {
     },
     onOpen(model, actionMode) {
       this.formData = this._cloneDeep(this.defaultFormData)
-      this.fnViewInsertTacsFcltMst()
+      this.viewType = model.viewType
       this.fnType = model.fnType
+      this.fnViewInsertTacsFcltMst()
       if (this.fnType === 'update') {
         this.formData = this._cloneDeep(model.row)
+        if (this.viewType === 'ipRouting') {
+          this.formData['pipFcltInet'] = model.row.ptelnetIp
+          this.formData['sfcltPromptNm'] = model.row.shostNm
+        }
       }
     },
     onClose() { },
@@ -167,27 +214,44 @@ export default {
     },
     async fnViewInsertTacsFcltMst() {
       try {
-        const res = await apiRequestModel(ipmsModelApis.viewInsertTacsFcltMst, {})
+        const apiStr = this.viewType === 'ipRouting' ? 'viewInsertFcltMst' : 'viewInsertTacsFcltMst'
+        const res = await apiRequestModel(ipmsModelApis[apiStr], {})
         this.sfcltTypes = res.sfcltTypes
       } catch (error) {
         this.error(error)
       }
     },
-    async fnInsertTacsFcltMst() {
-      if (!this.fnCheckValidate('insert')) return
-      const { ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd, pipFcltInet, nportFclt, sfcltType, sfcltPromptNm, sfcltModelNm } = this.formData
+    getParameterByType() {
+      const { ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd, pipFcltInet, nportFclt, sfcltType, sfcltPromptNm, sfcltModelNm, suseYn, pipUpperFclt, pipPeerFclt } = this.formData
       const params = {
-        ssvcLineTypeCd,
-        ssvcGroupCd,
-        ssvcObjCd,
-        pipFcltInet,
+        [this.viewType === 'tacsMng' ? 'pipFcltInet' : 'ptelnetIp']: pipFcltInet,
         nportFclt,
         sfcltType,
-        sfcltPromptNm,
+        [this.viewType === 'tacsMng' ? 'sfcltPromptNm' : 'shostNm']: sfcltPromptNm,
         sfcltModelNm
       }
+      if (this.viewType === 'ipRouting') {
+        Object.assign(params, { pipUpperFclt, pipPeerFclt, suseYn })
+      }
+      if (this.fnType === 'insert') {
+        Object.assign(params, { ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd })
+      }
+      if (this.fnType === 'update') {
+        if (this.formData.ntacsFcltMstSeq !== '' && this.formData.ntacsFcltMstSeq !== null) {
+          Object.assign(params, { ntacsFcltMstSeq: this.formData.ntacsFcltMstSeq })
+        }
+        if (this.formData.nfcltMstSeq !== '' && this.formData.nfcltMstSeq !== null) {
+          Object.assign(params, { nfcltMstSeq: this.formData.nfcltMstSeq })
+        }
+        Object.assign(params, { nlvlBasSeq: this.formData.nlvlBasSeq })
+      }
+      return params
+    },
+    async fnInsertFcltMst() {
+      if (!this.fnCheckValidate('insert')) return
       try {
-        const res = await apiRequestJson(ipmsJsonApis.insertTacsFcltMst, params)
+        const apiStr = this.viewType === 'ipRouting' ? 'insertFcltMst' : 'insertTacsFcltMst'
+        const res = await apiRequestJson(ipmsJsonApis[apiStr], this.getParameterByType())
         if (res.commonMsg === 'SUCCESS') {
           onMessagePopup(this, '조직 장비 등록이 정상적으로 처리되었습니다')
           this.formData = this._cloneDeep(this.defaultFormData)
@@ -200,23 +264,11 @@ export default {
         this.error(error)
       }
     },
-    async fnUpdateTacsFcltMst() {
+    async fnUpdateFcltMst() {
       if (!this.fnCheckValidate('update')) return
-      const { ntacsFcltMstSeq, nlvlBasSeq, ssvcLineTypeCd, pipFcltInet, nportFclt, sfcltType, sfcltPromptNm, sfcltModelNm } = this.formData
-      const params = {
-        nlvlBasSeq,
-        ssvcLineTypeCd,
-        pipFcltInet,
-        nportFclt,
-        sfcltType,
-        sfcltPromptNm,
-        sfcltModelNm
-      }
-      if (ntacsFcltMstSeq !== '' && ntacsFcltMstSeq !== null) {
-        Object.assign(params, { ntacsFcltMstSeq })
-      }
       try {
-        const res = await apiRequestJson(ipmsJsonApis.updateTacsFcltMst, params)
+        const apiStr = this.viewType === 'ipRouting' ? 'updateFcltMst' : 'updateTacsFcltMst'
+        const res = await apiRequestJson(ipmsJsonApis[apiStr], this.getParameterByType())
         if (res.commonMsg === 'SUCCESS') {
           onMessagePopup(this, '조직 장비 수정이 정상적으로 처리되었습니다')
           this.formData = this._cloneDeep(this.defaultFormData)
@@ -230,7 +282,7 @@ export default {
       }
     },
     fnCheckValidate(type) {
-      const { ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd, pipFcltInet, nportFclt, sfcltType, sfcltPromptNm, sfcltModelNm } = this.formData
+      const { ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd, pipFcltInet, nportFclt, sfcltType, sfcltPromptNm, sfcltModelNm, suseYn, pipUpperFclt, pipPeerFclt } = this.formData
       if (type === 'insert' && (ssvcLineTypeCd === null || ssvcLineTypeCd === '')) {
         onMessagePopup(this, '서비스망을 선택하세요')
         return false
@@ -243,17 +295,31 @@ export default {
         onMessagePopup(this, '노드를 선택하세요')
         return false
       }
-      if (pipFcltInet === null || pipFcltInet === '') {
-        onMessagePopup(this, '장비IP를 입력하세요')
-        return false
-      }
       if (sfcltType === null || sfcltType === '') {
         onMessagePopup(this, '장비타입을 선택하세요')
+        return false
+      }
+      if (this.viewType === 'ipRouting' && suseYn === null || suseYn === '') {
+        onMessagePopup(this, '사용여부를 선택하세요')
+        return false
+      }
+      if (pipFcltInet === null || pipFcltInet === '') {
+        onMessagePopup(this, '장비IP를 입력하세요')
         return false
       }
       if (nportFclt === null || nportFclt === '') {
         onMessagePopup(this, '장비PORT을 선택하세요')
         return false
+      }
+      if (this.viewType === 'ipRouting') {
+        if (pipUpperFclt === null || pipUpperFclt === '') {
+          onMessagePopup(this, '상위장비IP를 입력하세요')
+          return false
+        }
+        if (pipPeerFclt === null || pipPeerFclt === '') {
+          onMessagePopup(this, 'PEER장비IP를 입력하세요')
+          return false
+        }
       }
       if (sfcltPromptNm === null || sfcltPromptNm === '') {
         onMessagePopup(this, '장비프롬프트명을 입력하세요')
