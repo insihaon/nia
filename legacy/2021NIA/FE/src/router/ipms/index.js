@@ -483,7 +483,7 @@ export const ipmsRoute = Object.freeze([
           },
           {
             path: 'commandInfoManagementByEuip',
-            component: () => import('@/views-ipms/menus/operInfoMng/tacsMng/commandInfoManagementByEuip'),
+            component: () => import('@/views-ipms/menus/operInfoMng/tacsMng/tacsCommandInfoManagementByEuip'),
             name: 'TacsCommandInfoManagementByEquip',
             meta: { title: '장비별 명령어 정보관리', affix: false }
           },
@@ -504,13 +504,13 @@ export const ipmsRoute = Object.freeze([
             path: 'equipInfoMngByOrg',
             component: () => import('@/views-ipms/menus/operInfoMng/ipAdressRoutingCompare/equipInfoMngByOrg'),
             name: 'EquipInfoManagementByOrg',
-            meta: { title: '조직별 장비 정보 관리', affix: false }
+            meta: { title: '조직별 장비 정보관리', subTitle: '(IP주소 라우팅 비교/점검)', affix: false }
           },
           {
             path: 'commandInfoManagementByEuip',
             component: () => import('@/views-ipms/menus/operInfoMng/ipAdressRoutingCompare/commandInfoManagementByEuip'),
             name: 'CommandInfoManagementByEquip',
-            meta: { title: '장비별 명령어 정보관리', affix: false }
+            meta: { title: '장비별 명령어 정보관리', subTitle: '(IP주소 라우팅 비교/점검)', affix: false }
           },
           {
             path: 'wirelessIpPriorInfoMng',

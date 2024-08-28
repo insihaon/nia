@@ -33,7 +33,7 @@
         </template>
       </compTable>
     </el-col>
-    <ModalFcltMstInsert ref="ModalFcltMstInsert" />
+    <ModalFcltMstInsert ref="ModalFcltMstInsert" @reload="fnViewListTacsFcltMst" />
   </el-row>
 </template>
 <script>
@@ -103,9 +103,10 @@ export default {
     },
     handleClickCell(row) {
       this.selectedRow = row
+      this.$refs.ModalFcltMstInsert.open({ viewType: 'tacsMng', fnType: 'update', row: this.selectedRow })
     },
     handleClickProcessBtn(type) {
-      const params = { fnType: type }
+      const params = { viewType: 'tacsMng', fnType: type }
       if (type === 'update') {
         Object.assign(params, { row: this.selectedRow })
       }

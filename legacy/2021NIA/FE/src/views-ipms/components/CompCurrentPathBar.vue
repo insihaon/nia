@@ -5,7 +5,7 @@
       id="content"
     >
       <div class="page_tit">
-        <h2>{{ getCurPageTitle }}</h2>
+        <h2>{{ getCurPageSubTitle }}{{ getCurPageTitle }}</h2>
         <p class="path">
           <span class="home">HOME</span>
           <span>{{ getCurPageParentTitle }}</span>
@@ -39,6 +39,9 @@ export default {
     },
     getCurPageTitle() {
       return this.$route?.meta?.title ?? ''
+    },
+    getCurPageSubTitle() {
+      return this.$route?.meta?.subTitle ?? ''
     },
     getCurPageParentTitle() {
       const parantPath = this.$route.path.split('/')[1]

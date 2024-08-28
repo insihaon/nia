@@ -68,9 +68,13 @@ export const ipmsModelApis = {
   viewListBatchHistMst: { desc: '운용정보관리 > 연동관리 > 배치 연동 이력현황', url: '/linkmgmt/batchmgmt/viewListBatchHistMst' },
   viewTacsConnBas: { desc: '운용정보관리 > TACS관리 > TACS 연동정보관리 조회', url: '/opermgmt/tacsmgmt/viewTacsConnBas' },
   viewListTacsFcltMst: { desc: '운용정보관리 > TACS관리 > 조직별 장비 정보관리 조회', url: '/opermgmt/tacsmgmt/viewListTacsFcltMst' },
-  viewInsertTacsFcltMst: { desc: '운용정보관리 > TACS관리 > 조직별 장비 정보관리 > 신규생성POP(결과:장비타입)', url: '/opermgmt/tacsmgmt/viewInsertTacsFcltMst' },
-  viewListTacsFcltCmdMst: { desc: '운용정보관리 > TACS관리 > TACS 연동 이력현황', url: '/opermgmt/tacsmgmt/viewListTacsFcltCmdMst' },
-  viewListTacsConnHist: { desc: '운용정보관리 > TACS관리 > 장비별 명령어 정보관리 조회', url: '/opermgmt/tacsmgmt/viewListTacsConnHist' },
+  viewInsertTacsFcltMst: { desc: '운용정보관리 > TACS관리 > 조직별 장비 정보관리 > 신규생성POP(장비타입 조회)', url: '/opermgmt/tacsmgmt/viewInsertTacsFcltMst' },
+  viewListTacsFcltCmdMst: { desc: '운용정보관리 > TACS관리 >  장비별 명령어 정보관리 조회', url: '/opermgmt/tacsmgmt/viewListTacsFcltCmdMst' },
+  viewListTacsConnHist: { desc: '운용정보관리 > TACS관리 > TACS 연동 이력현황', url: '/opermgmt/tacsmgmt/viewListTacsConnHist' },
+  viewListFcltMst: { desc: '운용정보관리 > IP주소 라우팅 비교/점검 > 조직별 장비 정보관리 조회', url: '/opermgmt/intgrmgmt/viewListFcltMst' },
+  viewInsertFcltMst: { desc: '운용정보관리 > IP주소 라우팅 비교/점검 > 조직별 장비 정보관리 > 신규생성POP(장비타입 조회)', url: '/opermgmt/intgrmgmt/viewInsertFcltMst' },
+  viewListFcltCmdMst: { desc: '운용정보관리 > IP주소 라우팅 비교/점검 > 장비멸 명령어 정보관리 조회', url: '/opermgmt/intgrmgmt/viewListFcltCmdMst' },
+  viewListRoutHistMst: { desc: '운용정보관리 > IP주소 라우팅 비교/점검 > 라우팅 연동 이력현황', url: '/opermgmt/intgrmgmt/viewListRoutHistMst' },
 }
 export const ipmsJsonApis = {
   selectAuthCenterList: { desc: '센터 조회', url: '/opermgmt/orgmgmt/selectAuthCenterList' },
@@ -118,11 +122,18 @@ export const ipmsJsonApis = {
   insertTacsFcltMst: { desc: '운용정보관리 > TACS관리 > 조직별 장비 정보관리 등록', url: '/opermgmt/tacsmgmt/insertTacsFcltMst' },
   updateTacsFcltMst: { desc: '운용정보관리 > TACS관리 > 조직별 장비 정보관리 수정', url: '/opermgmt/tacsmgmt/updateTacsFcltMst' },
   deleteTacsFcltMst: { desc: '운용정보관리 > TACS관리 > 조직별 장비 정보관리 삭제', url: '/opermgmt/tacsmgmt/deleteTacsFcltMst' },
-  selectListCommonCode: { desc: '운용정보관리 > TACS관리 > 장비별 명령어 정보관리 장비타입 조회', url: '/opermgmt/tacsmgmt/selectListCommonCode' },
+  selectListTacsSfcltTypes: { desc: '운용정보관리 > TACS관리 > 장비별 명령어 정보관리 장비타입 조회', url: '/opermgmt/tacsmgmt/selectListCommonCode' },
   insertTacsFcltCmdMst: { desc: '운용정보관리 > TACS관리 > 장비별 명령어 정보관리 등록', url: '/opermgmt/tacsmgmt/insertTacsFcltCmdMst' },
   updateTacsFcltCmdMst: { desc: '운용정보관리 > TACS관리 > 장비별 명령어 정보관리 수정', url: '/opermgmt/tacsmgmt/updateTacsFcltCmdMst' },
-  selectSresultMsg: { desc: '운용정보관리 > TACS관리 > TACS 연동 이력현황 결과메시지 조회', url: '/opermgmt/tacsmgmt/selectSresultMsg' },
-
+  selectTacsSresultMsg: { desc: '운용정보관리 > TACS관리 > TACS 연동 이력현황 결과메시지 조회', url: '/opermgmt/tacsmgmt/selectSresultMsg' },
+  selectListSfcltTypes: { desc: '운용정보관리 > IP주소 라우팅 비교/점검 > 장비별 명령어 정보관리 장비타입 조회', url: '/opermgmt/intgrmgmt/selectListCommonCode' },
+  insertFcltMst: { desc: '운용정보관리 > IP주소 라우팅 비교/점검 > 조직별 장비 정보관리 등록', url: '/opermgmt/intgrmgmt/insertFcltMst' },
+  updateFcltMst: { desc: '운용정보관리 > IP주소 라우팅 비교/점검 > 조직별 장비 정보관리 수정', url: '/opermgmt/intgrmgmt/updateFcltMst' },
+  deleteFcltMst: { desc: '운용정보관리 > IP주소 라우팅 비교/점검 > 조직별 장비 정보관리 삭제', url: '/opermgmt/intgrmgmt/deleteFcltMst' },
+  insertFcltCmdMst: { desc: '운용정보관리 > IP주소 라우팅 비교/점검 > 장비별 명령어 정보관리 등록', url: '/opermgmt/intgrmgmt/insertFcltCmdMst' },
+  updateFcltCmdMst: { desc: '운용정보관리 > IP주소 라우팅 비교/점검 > 장비별 명령어 정보관리 수정', url: '/opermgmt/intgrmgmt/updateFcltCmdMst' },
+  deleteFcltCmdMst: { desc: '운용정보관리 > IP주소 라우팅 비교/점검 > 장비별 명령어 정보관리 삭제', url: '/opermgmt/intgrmgmt/deleteFcltCmdMst' },
+  selectSresultMsg: { desc: '운용정보관리 > IP주소 라우팅 비교/점검 > 라우팅 연동 이력현황 결과메시지 조회', url: '/opermgmt/intgrmgmt/selectSresultMsg' },
 }
 
 export function apiTest(params) {

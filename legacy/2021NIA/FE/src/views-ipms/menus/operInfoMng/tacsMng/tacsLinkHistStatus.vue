@@ -96,11 +96,12 @@ export default {
     this.fnViewListTacsConnHist()
   },
   methods: {
-    async fnSelectSresultMsg(requestParameter) {
-      const params = requestParameter ?? this.$refs?.searchCondition?.requestParameter
+    async fnSelectSresultMsg() {
       try {
-        const res = await apiRequestJson(ipmsJsonApis.selectSresultMsg, params)
-        this.$set(this, 'sresultMsgOptions', res.result.data.map(v => { return { label: v.sresult_msg, value: v.sresult_msg } }))
+        const res = await apiRequestJson(ipmsJsonApis.selectTacsSresultMsg, {})
+        const options = res.result.data.map(v => { return { label: v.sresult_msg, value: v.sresult_msg } })
+        options.unshift({ label: '전체', value: '' })
+        this.$set(this, 'sresultMsgOptions', options)
       } catch (error) {
         this.error(error)
       }
