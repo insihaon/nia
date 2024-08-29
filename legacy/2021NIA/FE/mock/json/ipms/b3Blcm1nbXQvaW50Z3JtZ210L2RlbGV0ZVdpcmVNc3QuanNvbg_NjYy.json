@@ -1,0 +1,60 @@
+{
+  "__body": {
+    "searchBgnDe": "",
+    "searchCnd": "",
+    "searchEndDe": "",
+    "searchWrd": "",
+    "sortType": "",
+    "sortOrdr": "",
+    "searchUseYn": "",
+    "searchBgnCd": "",
+    "searchEndCd": "",
+    "pageIndex": 1,
+    "pageUnit": 0,
+    "pageSize": 0,
+    "firstIndex": 1,
+    "lastIndex": 10,
+    "recordCountPerPage": 10,
+    "rowNo": 0,
+    "typeFlag": "",
+    "dcreateDt": null,
+    "screateId": null,
+    "screateNm": null,
+    "dmodifyDt": null,
+    "smodifyId": null,
+    "smodifyNm": null,
+    "commonMsg": "SUCCESS",
+    "screateEmail": null,
+    "smodifyEmail": null,
+    "moveType": "",
+    "moveSearchWrd": "",
+    "moveSipVersionTypeCd": null,
+    "url": null,
+    "menuType": null,
+    "paramMap": null,
+    "nwireIpCommuSeq": null,
+    "skindCd": null,
+    "scommunity": null,
+    "snexthop": null,
+    "nlvlBasSeq": null,
+    "ssvcLineTypeCd": null,
+    "ssvcLineTypeNm": null,
+    "ssvcGroupCd": null,
+    "ssvcGroupNm": null,
+    "ssvcObjCd": null,
+    "ssvcObjNm": null,
+    "delList": null
+  },
+  "__config": {
+    "url": "/opermgmt/intgrmgmt/deleteWireMst.json",
+    "param": {
+      "delList": [
+        "662"
+      ]
+    },
+    "receivedTime": "2024-08-28 15:37:28.630",
+    "duration": 223,
+    "filename": "b3Blcm1nbXQvaW50Z3JtZ210L2RlbGV0ZVdpcmVNc3QuanNvbg_NjYy.json",
+    "fetch": "success-fetch('/opermgmt/intgrmgmt/deleteWireMst.json', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{\"delList\":[\"662\"]}', 'method': 'POST' })"
+  }
+}
