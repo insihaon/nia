@@ -140,7 +140,7 @@ export default {
       }
       const tbRoutChkMstVo = this.ssvcCds
       try {
-        const res = await apiRequestJson(ipmsJsonApis.insertListRoutChkMst, tbRoutChkMstVo)
+        const res = await apiRequestJson(ipmsJsonApis.routInsertListRoutChkMst, tbRoutChkMstVo)
         if (res.commonMsg === 'SUCCESS') {
           onMessagePopup(this, '라우팅 수집/DB 비교가 정상적으로 처리되었습니다.')
           this.$emit('reload')

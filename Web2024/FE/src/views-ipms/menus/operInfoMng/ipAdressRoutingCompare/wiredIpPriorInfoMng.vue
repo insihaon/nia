@@ -96,13 +96,13 @@ export default {
       this.delRows = rows
     },
     handleClickCell(row) {
-      this.$refs.ModalWireMstInsert.open({ fnType: 'update', row })
+      this.$refs.ModalWireMstInsert.open({ viewType: 'wire', fnType: 'update', row })
     },
     handleClickRegist() {
-      this.$refs.ModalWireMstInsert.open({ fnType: 'insert' })
+      this.$refs.ModalWireMstInsert.open({ viewType: 'wire', fnType: 'insert' })
     },
     async fnDeleteWireMst() {
-      if (this.delRows.length === 0) {
+      if (this.delRows === null || this.delRows.length === 0) {
         onMessagePopup(this, '삭제할 정보를 선택 후 삭제 가능합니다.')
       }
       const delList = []

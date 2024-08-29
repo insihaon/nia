@@ -67,7 +67,6 @@ export const ipmsModelApis = {
   viewListWhoisModReq: { desc: 'Whois 정보 변경 신청 조회', url: '/opermgmt/whoismgmt/viewListWhoisModReq' },
   viewDetailWhoisModReq: { desc: 'Whois 정보 변경 신청 상세정보', url: '/opermgmt/whoismgmt/viewDetailWhoisModReq' },
   viewRegWhoisModReq: { desc: 'Whois 정보 변경 신청 > 등록 > IP주소 조회', url: '/opermgmt/whoismgmt/viewRegWhoisModReq' },
-
   // 운용정보관리(관리자 기능)
   viewListBatchHistMst: { desc: '운용정보관리 > 연동관리 > 배치 연동 이력현황', url: '/linkmgmt/batchmgmt/viewListBatchHistMst' },
   viewTacsConnBas: { desc: '운용정보관리 > TACS관리 > TACS 연동정보관리 조회', url: '/opermgmt/tacsmgmt/viewTacsConnBas' },
@@ -79,8 +78,9 @@ export const ipmsModelApis = {
   viewInsertFcltMst: { desc: '운용정보관리 > IP주소 라우팅 비교/점검 > 조직별 장비 정보관리 > 신규생성POP(장비타입 조회)', url: '/opermgmt/intgrmgmt/viewInsertFcltMst' },
   viewListFcltCmdMst: { desc: '운용정보관리 > IP주소 라우팅 비교/점검 > 장비멸 명령어 정보관리 조회', url: '/opermgmt/intgrmgmt/viewListFcltCmdMst' },
   viewListRoutHistMst: { desc: '운용정보관리 > IP주소 라우팅 비교/점검 > 라우팅 연동 이력현황', url: '/opermgmt/intgrmgmt/viewListRoutHistMst' },
-  //
   viewListWireMst: { desc: '운용정보관리 > IP주소 라우팅 비교/점검 > 유선IP 사전 정보관리 조회', url: '/opermgmt/intgrmgmt/viewListWireMst' },
+  viewListMobileMst: { desc: '운용정보관리 > IP주소 라우팅 비교/점검 > 무선IP 사전 정보관리 조회', url: '/opermgmt/intgrmgmt/viewListMobileMst' },
+  viewPopSummaryMst: { desc: 'IP주소 라우팅 비교/점검 > 무선IP 사전 정보관리 > 무선IP summary 정보관리 조회', url: '/opermgmt/intgrmgmt/viewPopSummaryMst' },
 }
 export const ipmsJsonApis = {
   selectAuthCenterList: { desc: '센터 조회', url: '/opermgmt/orgmgmt/selectAuthCenterList' },
@@ -108,7 +108,7 @@ export const ipmsJsonApis = {
   selectCheckService: { desc: 'IP주소 라우팅 비교/점검 > IP블록 (해지 후) 분할/병합 처리 전 서비스 할당 여부 조회', url: '/ipmgmt/routmgmt/selectCheckService' },
   updateServiceMst: { desc: 'IP주소 라우팅 비교/점검 > IP블록 (해지 후) 분할/병합 처리 전 서비스 할당 처리', url: '/ipmgmt/routmgmt/updateServiceMst' },
   insertListIpBlockMatchMst: { desc: 'IP주소 라우팅 비교/점검 > IP블록 (해지 후) 분할/병합 처리', url: '/ipmgmt/routmgmt/insertListIpBlockMatchMst' },
-  insertListRoutChkMst: { desc: 'IP주소 라우팅 비교/점검 > 라우팅 수집/DB 비교 시작 처리 청청', url: '/ipmgmt/routmgmt/insertListRoutChkMst' },
+  routInsertListRoutChkMst: { desc: 'IP주소 라우팅 비교/점검 > 라우팅 수집/DB 비교 시작 처리 요청', url: '/ipmgmt/routmgmt/insertListRoutChkMst' },
   confirmNode: { desc: 'IP주소 노드 이전 승인', url: '/opermgmt/nodemgmt/confirmNode' },
   insertLinkIPMst: { desc: '운용정보등록(링크)', url: '/ipmgmt/linkmgmt/insertLinkIPMst' },
   updateLinkIPMst: { desc: '운용정보수정(링크)', url: '/ipmgmt/linkmgmt/updateLinkIPMst' },
@@ -134,7 +134,6 @@ export const ipmsJsonApis = {
   viewUpdateWhoisModReqVo: { desc: 'Whois 정보 변경 신청 > 수정 ', url: '/opermgmt/whoismgmt/viewUpdateWhoisModReqVo' },
   selectSearchWhoisInfo: { desc: 'Whois 정보 변경 신청 > 등록 > IP주소 조회 ', url: '/opermgmt/whoismgmt/selectSearchWhoisInfo' },
   sendMail: { desc: 'Whois 정보 변경 신청 > 등록 > 관리자에게 메일 보내기(IP주소) ', url: '/opermgmt/uploadmgmt/sendMail' },
-
   // 운용정보관리(관리자 기능)
   updateTacsConnBas: { desc: '운용정보관리 > TACS관리 > TACS 연동정보관리 수정', url: '/opermgmt/tacsmgmt/updateTacsConnBas' },
   insertTacsFcltMst: { desc: '운용정보관리 > TACS관리 > 조직별 장비 정보관리 등록', url: '/opermgmt/tacsmgmt/insertTacsFcltMst' },
@@ -152,10 +151,15 @@ export const ipmsJsonApis = {
   updateFcltCmdMst: { desc: '운용정보관리 > IP주소 라우팅 비교/점검 > 장비별 명령어 정보관리 수정', url: '/opermgmt/intgrmgmt/updateFcltCmdMst' },
   deleteFcltCmdMst: { desc: '운용정보관리 > IP주소 라우팅 비교/점검 > 장비별 명령어 정보관리 삭제', url: '/opermgmt/intgrmgmt/deleteFcltCmdMst' },
   selectSresultMsg: { desc: '운용정보관리 > IP주소 라우팅 비교/점검 > 라우팅 연동 이력현황 결과메시지 조회', url: '/opermgmt/intgrmgmt/selectSresultMsg' },
-  //
   insertWireMst: { desc: '운용정보관리 > IP주소 라우팅 비교/점검 > 유선IP 사전 정보관리 community 등록', url: '/opermgmt/intgrmgmt/insertWireMst' },
   updateWireMst: { desc: '운용정보관리 > IP주소 라우팅 비교/점검 > 유선IP 사전 정보관리 수정', url: '/opermgmt/intgrmgmt/updateWireMst' },
   deleteWireMst: { desc: '운용정보관리 > IP주소 라우팅 비교/점검 > 유선IP 사전 정보관리 삭제', url: '/opermgmt/intgrmgmt/deleteWireMst' },
+  insertMobileMst: { desc: '운용정보관리 > IP주소 라우팅 비교/점검 > 무선IP 사전 정보관리 community 등록', url: '/opermgmt/intgrmgmt/insertMobileMst' },
+  updateMobileMst: { desc: '운용정보관리 > IP주소 라우팅 비교/점검 > 무선IP 사전 정보관리 수정', url: '/opermgmt/intgrmgmt/updateMobileMst' },
+  deleteMobileMst: { desc: '운용정보관리 > IP주소 라우팅 비교/점검 > 무선IP 사전 정보관리 삭제', url: '/opermgmt/intgrmgmt/deleteMobileMst' },
+  intgrInsertListRoutChkMst: { desc: 'IP주소 라우팅 비교/점검 > 무선IP 사전 정보관리 > 무선 전체 라우팅 수집', url: '/opermgmt/intgrmgmt/insertListRoutChkMst' },
+  insertMobileSummMst: { desc: 'IP주소 라우팅 비교/점검 > 무선IP 사전 정보관리 > Summury관리 > 등록', url: '/opermgmt/intgrmgmt/insertMobileSummMst' },
+  deleteMobileSummMst: { desc: 'IP주소 라우팅 비교/점검 > 무선IP 사전 정보관리 > Summury관리 > 삭제', url: '/opermgmt/intgrmgmt/deleteMobileSummMst' },
 }
 
 export function apiTest(params) {
