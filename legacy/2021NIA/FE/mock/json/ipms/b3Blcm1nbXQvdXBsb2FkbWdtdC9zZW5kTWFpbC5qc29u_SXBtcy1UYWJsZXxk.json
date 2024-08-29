@@ -1,0 +1,61 @@
+{
+  "__body": {
+    "smtpVo": {
+      "searchBgnDe": "",
+      "searchCnd": "",
+      "searchEndDe": "",
+      "searchWrd": "",
+      "sortType": "",
+      "sortOrdr": "",
+      "searchUseYn": "",
+      "searchBgnCd": "",
+      "searchEndCd": "",
+      "pageIndex": 1,
+      "pageUnit": 0,
+      "pageSize": 0,
+      "firstIndex": 1,
+      "lastIndex": 10,
+      "recordCountPerPage": 10,
+      "rowNo": 0,
+      "typeFlag": "",
+      "dcreateDt": null,
+      "screateId": null,
+      "screateNm": null,
+      "dmodifyDt": null,
+      "smodifyId": null,
+      "smodifyNm": null,
+      "commonMsg": "SUCCESS",
+      "screateEmail": null,
+      "smodifyEmail": null,
+      "moveType": "",
+      "moveSearchWrd": "",
+      "moveSipVersionTypeCd": null,
+      "url": null,
+      "menuType": null,
+      "paramMap": null,
+      "mailType": null,
+      "fromEmail": "kornet_ip@kt.com",
+      "toEmail": "asdf@kt.com",
+      "subject": "[개발테스트] [알림] Whois 정보 변경 신청시 IPMS DB 미등록 IP 조회 발생 알림",
+      "message": "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\"><html><head>    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />    <title>KT</title></head><body>    <div style=\"padding: 20px; background-color: #f4f4f4; font-family: 'Malgun Gothic', '맑은 고딕', dotum, '돋움', sans-serif; line-height: 1.5; font-size: 13px; letter-spacing: -0.6px; color: #222;\">        <div style=\"max-width: 800px; background-color: #fff; margin: 0 auto;\">            <div style=\"position: relative; padding: 15px 25px;\">                <h1 style=\"margin: 0; font-size: 18px; font-weight: bold;\"><span style=\"color: #E54545;\">IPMS</span></h1>            </div>            <div style=\"position: relative; padding: 10px 25px; background-color: #333;\">                <h1 style=\"margin: 0; font-size: 15px; font-weight: bold; color: #fff;\">[알림] Whois 정보 변경 신청시 IPMS DB 미등록 IP 조회 발생 알림</h1>            </div>            <div style=\"padding: 20px; padding-top: 5px;\">                <div style=\"padding: 5px 5px 10px; white-space: pre-line;\">                \t<p>아래와 같이 Whois정보변경 신청시 IPMS DB 미등록 IP 조회 오류가 접수되었습니다.                \t <br> IPMS에서 IP주소 정보 확인 및 조치  하시기 바랍니다.</p>                    <table style=\"width:100%; border-spacing: 0; border-collapse: collapse; table-layout: inherit; font-size: 1em;\">                    \t<tbody>                    \t\t<tr style=\"display: table-row;  border-top: 1px solid #B3B3B3;\">\t\t\t\t\t\t\t\t<th rowspan=\"4\" style=\"width:150px; color: #333; padding: 3px 4px; text-align: center; background: #E5E5E5; border-bottom: double;\">요청자 정보</th></tr>                    \t\t<tr>\t\t\t\t\t\t\t<th style=\"width: 100px; color: #333; border-left: 1px solid #B3B3B3; border-top: 1px solid #B3B3B3; padding: 3px 4px; text-align: center; background: #E5E5E5; border-bottom: 1px solid #B3B3B3;\">이름</th>                    \t\t\t <td style=\"color: #333; border-left: 1px solid #B3B3B3; border-top: 1px solid #B3B3B3; padding: 3px 11px; text-align: left; border-bottom: 1px solid #B3B3B3;\">정회창</td></tr>                    \t\t<tr><th style=\"color: #333; border-left: 1px solid #B3B3B3; border-top: 1px solid #B3B3B3; padding: 3px 4px; text-align: center; background: #E5E5E5; border-bottom: 1px solid #B3B3B3;\">소속</th>                    \t\t\t\t<td style=\"color: #333; border-left: 1px solid #B3B3B3; border-top: 1px solid #B3B3B3; padding: 3px 11px; text-align: left; border-bottom: 1px solid #B3B3B3;\">IP망관제팀</td></tr>                    \t\t<tr><th style=\"color: #333; border-left: 1px solid #B3B3B3; border-top: 1px solid #B3B3B3; padding: 3px 4px; text-align: center; background: #E5E5E5; border-bottom: 1px solid #B3B3B3; border-bottom: double;\">이메일</th>                    \t\t<td style=\"color: #333; border-left: 1px solid #B3B3B3; border-top: 1px solid #B3B3B3; padding: 3px 11px; text-align: left; border-bottom: 1px solid #B3B3B3; border-bottom: double;\">hoechang.jeong@kt.com</td></tr>                    \t\t<tr><th colspan=\"2\" style=\"color: #333; border-left: 1px solid #E5E5E5; border-top: 1px solid #B3B3B3; padding: 3px 4px; text-align: center; background: #E5E5E5; border-bottom: 1px solid #B3B3B3;\">IP 주소 검색 내용</th>                    \t\t\t<td style=\"color: #333; border-left: 1px solid #B3B3B3; border-top: 1px solid #B3B3B3; padding: 3px 11px; text-align: left; border-bottom: 1px solid #B3B3B3;\">d</td></tr>                    \t\t                    \t</tbody>                    </table>                </div>\t\t\t\t<div style=\"position: relative; padding: 11px; background-color: #f0f0f0; color: #666;\">\t                <div style=\" display: inline-block;\">\t               \t\t<p style=\"margin: 0;\"> ※ 본 메일은 발신전용이므로 답장이 되지 않습니다.</p>\t    \t\t\t</div>            \t</div>            </div>        </div>    </div></body></html>",
+      "sendDate": null,
+      "result": "com.sun.mail.smtp.SMTPSendFailedException: 550 5.7.1 Access denied by ACL\n;\n  nested exception is:\n\tcom.sun.mail.smtp.SMTPSenderFailedException: 550 5.7.1 Access denied by ACL\n",
+      "userID": "10150810",
+      "searchIp": null,
+      "searchFirstIp": null,
+      "searchLastIp": null,
+      "whoisRtnMsg": null
+    }
+  },
+  "__config": {
+    "url": "/opermgmt/uploadmgmt/sendMail.json",
+    "param": {
+      "mailType": "Ipms-Table-Error",
+      "searchIp": "d"
+    },
+    "receivedTime": "2024-08-28 15:30:39.638",
+    "duration": 1086,
+    "filename": "b3Blcm1nbXQvdXBsb2FkbWdtdC9zZW5kTWFpbC5qc29u_SXBtcy1UYWJsZXxk.json",
+    "fetch": "success-fetch('/opermgmt/uploadmgmt/sendMail.json', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{\"mailType\":\"Ipms-Table-Error\",\"searchIp\":\"d\"}', 'method': 'POST' })"
+  }
+}

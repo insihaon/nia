@@ -21,6 +21,11 @@
             사설AS 조회결과
           </span>
         </template>
+        <template slot="add-features">
+          <div class="float-right">
+            <el-button size="mini" icon="el-icon-document-add" @click="fnViewDetailPrvAs('', 'create')">신청</el-button>
+          </div>
+        </template>
       </compTable>
     </el-col>
     <ModalDetailPrivateAs ref="ModalDetailPrivateAs" />
@@ -107,20 +112,24 @@ export default {
       }
     },
     onClcikRow(row) {
-      this.fnViewDetailPrvAs(row)
+      this.fnViewDetailPrvAs(row, 'detail')
     },
-    async fnViewDetailPrvAs(row) {
-      if (row.nrequestAsApyTxnSeq === null || row.nrequestAsApyTxnSeq === '') {
-        return
-      }
-      try {
-        const tbRequestAsApyTxnVo = {
-          nrequestAsApyTxnSeq: row.nrequestAsApyTxnSeq
+    async fnViewDetailPrvAs(row, type) {
+      if (type === 'detail') {
+        if (row.nrequestAsApyTxnSeq === null || row.nrequestAsApyTxnSeq === '') {
+          return
         }
-        const res = await apiRequestModel(ipmsModelApis.viewDetailPrivateAs, tbRequestAsApyTxnVo)
-        this.$refs.ModalDetailPrivateAs.open({ row: res.result.data })
-      } catch (error) {
-        console.error(error)
+        try {
+          const tbRequestAsApyTxnVo = {
+            nrequestAsApyTxnSeq: row.nrequestAsApyTxnSeq
+          }
+          const res = await apiRequestModel(ipmsModelApis.viewDetailPrivateAs, tbRequestAsApyTxnVo)
+          this.$refs.ModalDetailPrivateAs.open({ row: res.result.data, type: type })
+        } catch (error) {
+          console.error(error)
+        }
+      } else {
+        this.$refs.ModalDetailPrivateAs.open({ type: type })
       }
     }
   },
