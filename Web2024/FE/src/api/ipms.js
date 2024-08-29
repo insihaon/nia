@@ -64,6 +64,10 @@ export const ipmsModelApis = {
   viewDetailAssignApyTxn: { desc: 'IP 배정 신청 조회 상세정보', url: '/opermgmt/assignmgmt/viewDetailAssignApyTxn' },
   viewListPrivateAs: { desc: '사설AS 신청 조회', url: '/opermgmt/asmgmt/viewListPrivateAs' },
   viewDetailPrivateAs: { desc: '사설AS 신청 상세정보', url: '/opermgmt/asmgmt/viewDetailPrivateAs' },
+  viewListWhoisModReq: { desc: 'Whois 정보 변경 신청 조회', url: '/opermgmt/whoismgmt/viewListWhoisModReq' },
+  viewDetailWhoisModReq: { desc: 'Whois 정보 변경 신청 상세정보', url: '/opermgmt/whoismgmt/viewDetailWhoisModReq' },
+  viewRegWhoisModReq: { desc: 'Whois 정보 변경 신청 > 등록 > IP주소 조회', url: '/opermgmt/whoismgmt/viewRegWhoisModReq' },
+
   // 운용정보관리(관리자 기능)
   viewListBatchHistMst: { desc: '운용정보관리 > 연동관리 > 배치 연동 이력현황', url: '/linkmgmt/batchmgmt/viewListBatchHistMst' },
   viewTacsConnBas: { desc: '운용정보관리 > TACS관리 > TACS 연동정보관리 조회', url: '/opermgmt/tacsmgmt/viewTacsConnBas' },
@@ -119,6 +123,18 @@ export const ipmsJsonApis = {
   updateAssignApyTxn: { desc: 'IP 배정신청 상세정보 > 배정, 승인, 반송, 처리내용 수정', url: '/opermgmt/assignmgmt/updateAssignApyTxn' },
   insertAssignApyTxn: { desc: 'IP 배정신청 상세정보 > 배정 신청 등록', url: '/opermgmt/assignmgmt/insertAssignApyTxn' },
   updatePrivateAs: { desc: '사설AS 신청 > 수정', url: '/opermgmt/asmgmt/updatePrivateAs' },
+  insertPrivateAs: { desc: '사설AS 신청 > 등록', url: '/opermgmt/asmgmt/insertPrivateAs' },
+  selectMinNrequestAsSeq: { desc: '사설AS 신청 > 등록(사설AS 번호 조회)', url: '/opermgmt/asmgmt/selectMinNrequestAsSeq' },
+  updateNrequestAsSeqYn: { desc: '사설AS 신청 > 등록, 반려, 반납(TbRequestAsApyTxn 할당처리) ', url: '/opermgmt/asmgmt/updateNrequestAsSeqYn' },
+  updateTbRequestAsMst: { desc: '사설AS 신청 > 등록, 반납(TbRequestAsMstVo 할당처리) ', url: '/opermgmt/asmgmt/updateTbRequestAsMst' },
+  insertAsHist: { desc: '사설AS 신청 > 할당/반납시 이력저장', url: '/opermgmt/asmgmt/insertAsHist' },
+  deletePrivateAs: { desc: '사설AS 신청 > 신청취소 ', url: '/opermgmt/asmgmt/deletePrivateAs' },
+  updateWhoisModReqAppr: { desc: 'Whois 정보 변경 신청 > 승인 , 반려 ', url: '/opermgmt/whoismgmt/updateWhoisModReqAppr' },
+  viewDeleteWhoisModReq: { desc: 'Whois 정보 변경 신청 > 변경신청취소 ', url: '/opermgmt/whoismgmt/viewDeleteWhoisModReq' },
+  viewUpdateWhoisModReqVo: { desc: 'Whois 정보 변경 신청 > 수정 ', url: '/opermgmt/whoismgmt/viewUpdateWhoisModReqVo' },
+  selectSearchWhoisInfo: { desc: 'Whois 정보 변경 신청 > 등록 > IP주소 조회 ', url: '/opermgmt/whoismgmt/selectSearchWhoisInfo' },
+  sendMail: { desc: 'Whois 정보 변경 신청 > 등록 > 관리자에게 메일 보내기(IP주소) ', url: '/opermgmt/uploadmgmt/sendMail' },
+
   // 운용정보관리(관리자 기능)
   updateTacsConnBas: { desc: '운용정보관리 > TACS관리 > TACS 연동정보관리 수정', url: '/opermgmt/tacsmgmt/updateTacsConnBas' },
   insertTacsFcltMst: { desc: '운용정보관리 > TACS관리 > 조직별 장비 정보관리 등록', url: '/opermgmt/tacsmgmt/insertTacsFcltMst' },
