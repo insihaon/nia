@@ -75,6 +75,8 @@ export const ipmsModelApis = {
   viewInsertFcltMst: { desc: '운용정보관리 > IP주소 라우팅 비교/점검 > 조직별 장비 정보관리 > 신규생성POP(장비타입 조회)', url: '/opermgmt/intgrmgmt/viewInsertFcltMst' },
   viewListFcltCmdMst: { desc: '운용정보관리 > IP주소 라우팅 비교/점검 > 장비멸 명령어 정보관리 조회', url: '/opermgmt/intgrmgmt/viewListFcltCmdMst' },
   viewListRoutHistMst: { desc: '운용정보관리 > IP주소 라우팅 비교/점검 > 라우팅 연동 이력현황', url: '/opermgmt/intgrmgmt/viewListRoutHistMst' },
+  //
+  viewListWireMst: { desc: '운용정보관리 > IP주소 라우팅 비교/점검 > 유선IP 사전 정보관리 조회', url: '/opermgmt/intgrmgmt/viewListWireMst' },
 }
 export const ipmsJsonApis = {
   selectAuthCenterList: { desc: '센터 조회', url: '/opermgmt/orgmgmt/selectAuthCenterList' },
@@ -134,6 +136,10 @@ export const ipmsJsonApis = {
   updateFcltCmdMst: { desc: '운용정보관리 > IP주소 라우팅 비교/점검 > 장비별 명령어 정보관리 수정', url: '/opermgmt/intgrmgmt/updateFcltCmdMst' },
   deleteFcltCmdMst: { desc: '운용정보관리 > IP주소 라우팅 비교/점검 > 장비별 명령어 정보관리 삭제', url: '/opermgmt/intgrmgmt/deleteFcltCmdMst' },
   selectSresultMsg: { desc: '운용정보관리 > IP주소 라우팅 비교/점검 > 라우팅 연동 이력현황 결과메시지 조회', url: '/opermgmt/intgrmgmt/selectSresultMsg' },
+  //
+  insertWireMst: { desc: '운용정보관리 > IP주소 라우팅 비교/점검 > 유선IP 사전 정보관리 community 등록', url: '/opermgmt/intgrmgmt/insertWireMst' },
+  updateWireMst: { desc: '운용정보관리 > IP주소 라우팅 비교/점검 > 유선IP 사전 정보관리 수정', url: '/opermgmt/intgrmgmt/updateWireMst' },
+  deleteWireMst: { desc: '운용정보관리 > IP주소 라우팅 비교/점검 > 유선IP 사전 정보관리 삭제', url: '/opermgmt/intgrmgmt/deleteWireMst' },
 }
 
 export function apiTest(params) {
