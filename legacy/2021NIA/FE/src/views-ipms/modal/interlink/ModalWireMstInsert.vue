@@ -18,7 +18,7 @@
       <!-- TACS관리 / IP주소 라우팅 비교/점검 > 장비별 명령어 정보관리 > 신규생성 -->
       <span slot="title">
         <i class="el-icon-document mr-2" style="font-size: 17px" />
-        장비 명령어 {{ fnType === 'insert' ? '등록' : '수정' }}
+        {{ isViewWire ? '유선' : '무선' }}IP Community {{ fnType === 'insert' ? '등록' : '수정' }}
         <hr>
       </span>
       <div id="content" class="layer">
@@ -31,7 +31,7 @@
               <col width="30%" />
             </colgroup>
             <tbody>
-              <tr class="top">
+              <tr v-if="isViewWire" class="top">
                 <th class="first" scope="row">계위</th>
                 <td v-if="fnType === 'update'">
                   {{ formData.ssvcLineTypeNm }} - {{ formData.ssvcGroupNm }} - {{ formData.ssvcObjNm }}
@@ -59,37 +59,45 @@
               <tr class="top">
                 <th class="first" scope="row">구분</th>
                 <td colspan="3">
-                  <select v-model="formData.skindCd" name="insertSKind" class="w30">
-                    <option value="">전체</option>
-                    <option value="KORNET">Community</option>
-                    <option value="PREMIUM">Nexthop</option>
+                  <select v-model="formData.skindCd" class="w-30" :disabled="fnType === 'update'">
+                    <option v-for="item in skindCdOptions" :key="item.value" :value="item.value">
+                      {{ item.label }}
+                    </option>
                   </select>
                 </td>
               </tr>
               <tr>
                 <th scope="row">Community</th>
                 <td>
-                  <input v-model="formData.scommunity" type="text" class="txt w80" maxlength="300" :disabled="formData.skindCd !== 'KORNET'" />
+                  <input
+                    v-model="formData.scommunity"
+                    type="text"
+                    class="txt w80"
+                    maxlength="300"
+                    :disabled="(isViewWire && formData.skindCd !== 'KORNET') || (!isViewWire && formData.skindCd !== 'COMMU')"
+                  />
                 </td>
-                <th scope="row">Nexthop</th>
-                <td>
-                  <input v-model="formData.snexthop" type="text" class="txt w80" maxlength="250" :disabled="formData.skindCd !== 'PREMIUM'" />
+                <template v-if="isViewWire">
+                  <th scope="row">Nexthop</th>
+                  <td>
+                    <input v-model="formData.snexthop" type="text" class="txt w80" maxlength="250" :disabled="formData.skindCd !== 'PREMIUM'" />
+                  </td>
+                </template>
+                <template v-else>
+                  <th scope="row">IP블록</th>
+                  <td>
+                    <input v-model="formData.pipPrefix" type="text" class="txt w80" maxlength="250" :disabled="formData.skindCd !== 'NOCOMMU'" />
+                  </td>
+                </template>
+              </tr>
+              <tr v-if="!isViewWire" class="last">
+                <th class="first" scope="row">서비스</th>
+                <td colspan="3">
+                  <input v-model="formData.sserviceNm" type="text" class="txt w-100" maxlength="250" />
                 </td>
               </tr>
             </tbody>
           </table>
-          <!-- <div class="btn_area mt10">
-            <span>
-              <a href="#none" @click.prevent="fnInsertBtnClick">
-                <input type="image" :src="saveButtonSrc" value="등록" @mouseover="menuOver" @mouseout="menuOut" />
-              </a>
-            </span>
-            <span>
-              <a href="#none" @click.prevent="fnCloseBtnClick">
-                <input type="image" :src="closeButtonSrc" value="닫기" @mouseover="menuOver" @mouseout="menuOut" />
-              </a>
-            </span>
-          </div> -->
         </div>
       </div>
       <div slot="footer" class="dialog-footer">
@@ -119,6 +127,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      viewType: 'wire',
       fnType: 'insert',
       svcLineListVo: {
         tbLvlBasVos: [], // Placeholder for your items data
@@ -130,8 +139,32 @@ export default {
         skindCd: '',
         scommunity: '',
         snexthop: '',
+        sserviceNm: '',
+        pipPrefix: ''
       },
-      formData: { }
+      formData: { },
+    }
+  },
+  computed: {
+    isViewWire() {
+      return this.viewType === 'wire'
+    },
+    skindCdOptions() {
+      if (this.viewType === 'wire') {
+        return [
+          { label: '전체', value: '' },
+          { label: 'Community', value: 'KORNET' },
+          { label: 'Nexthop', value: 'PREMIUM' },
+        ]
+      } else if (this.viewType === 'mobile') {
+        return [
+          { label: '전체', value: '' },
+          { label: 'Community', value: 'COMMU' },
+          { label: 'No-Community', value: 'NOCOMMU' },
+        ]
+      } else {
+        return []
+      }
     }
   },
   methods: {
@@ -142,24 +175,52 @@ export default {
     },
     onOpen(model, actionMode) {
       this.formData = this._cloneDeep(this.defaultFormData)
+      this.viewType = model.viewType
       this.fnType = model.fnType
       if (this.fnType === 'update') {
         this.formData = this._cloneDeep(model.row)
+        if (this.viewType === 'mobile') {
+          this.formData['scommunity'] = model.row.scommu
+        }
       }
     },
     onClose() { },
     onChangeSsvcLineType(ssvcArr) {
       ssvcArr.forEach(v => { this.$set(this.formData, v.key, v.value) })
     },
+    getInsertParam() {
+      let params = {}
+      if (this.isViewWire) {
+        const { skindCd, ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd, scommunity, snexthop } = this.formData
+        params = { skindCd, ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd }
+        Object.assign(params, { [skindCd === 'KORNET' ? 'scommunity' : 'snexthop']: skindCd === 'KORNET' ? scommunity : snexthop })
+      } else {
+        const { skindCd, scommunity, sserviceNm, pipPrefix } = this.formData
+        const skindNm = this.skindCdOptions.filter(item => item.value === skindCd).label
+        params = { skindCd, scommu: scommunity, sserviceNm, skindNm }
+        Object.assign(params, { [skindCd === 'COMMU' ? 'scommu' : 'pipPrefix']: skindCd === 'KORNET' ? scommunity : pipPrefix })
+      }
+      return params
+    },
+    getUpdateParam() {
+      let params = {}
+      if (this.isViewWire) {
+        const { nwireIpCommuSeq, skindCd, scommunity, snexthop } = this.formData
+        params = { nwireIpCommuSeq, skindCd }
+        Object.assign(params, { [skindCd === 'KORNET' ? 'scommunity' : 'snexthop']: skindCd === 'KORNET' ? scommunity : snexthop })
+      } else {
+        const { nmobileIpCommuSeq, skindCd, scommunity, sserviceNm, pipPrefix } = this.formData
+        const skindNm = this.skindCdOptions.filter(item => item.value === skindCd).label
+        params = { nmobileIpCommuSeq, skindCd, sserviceNm, skindNm }
+        Object.assign(params, { [skindCd === 'COMMU' ? 'scommu' : 'pipPrefix']: skindCd === 'KORNET' ? scommunity : pipPrefix })
+      }
+    },
     async fnInsertWireMst() {
       if (!this.fnCheckValidate()) return
       try {
-        const { skindCd, ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd, scommunity, snexthop } = this.formData
-        const params = { skindCd, ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd }
-        Object.assign(params, { [skindCd === 'KORNET' ? 'scommunity' : 'snexthop']: skindCd === 'KORNET' ? scommunity : snexthop })
-        const res = await apiRequestJson(ipmsJsonApis.insertWireMst, params)
+        const res = await apiRequestJson(ipmsJsonApis.insertWireMst, this.getInsertParam())
         if (res.commonMsg === 'SUCCESS') {
-          onMessagePopup(this, '유선IP 사전 정보 등록이 정상적으로 처리되었습니다')
+          onMessagePopup(this, `${this.isViewWire ? '유선' : '무선'}IP 사전 정보 등록이 정상적으로 처리되었습니다`)
           this.formData = this._cloneDeep(this.defaultFormData)
           this.$emit('reload')
           this.close()
@@ -173,12 +234,9 @@ export default {
     async fnUpdateWireMst() {
       if (!this.fnCheckValidate()) return
       try {
-        const { nwireIpCommuSeq, skindCd, scommunity, snexthop } = this.formData
-        const params = { nwireIpCommuSeq, skindCd }
-        Object.assign(params, { [skindCd === 'KORNET' ? 'scommunity' : 'Y']: skindCd === 'KORNET' ? scommunity : snexthop })
-        const res = await apiRequestJson(ipmsJsonApis.updateWireMst, params)
+        const res = await apiRequestJson(ipmsJsonApis.updateWireMst, this.getUpdateParam())
         if (res.commonMsg === 'SUCCESS') {
-          onMessagePopup(this, '유선IP 사전 정보 수정이 정상적으로 처리되었습니다')
+          onMessagePopup(this, `${this.isViewWire ? '유선' : '무선'}IP 사전 정보 수정이 정상적으로 처리되었습니다`)
           this.formData = this._cloneDeep(this.defaultFormData)
           this.$emit('reload')
           this.close()
