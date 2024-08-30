@@ -128,7 +128,7 @@
               </tr>
               <tr>
                 <th class="first" scope="row">한글주소</th>
-                <td>{{ sAftOrgAddr }}</td>
+                <td>{{ sAftOrgAddr }} <span>  <el-button size="mini" @click="fnViewSeachAddrPop('viewRegWhoisModReq')"> 주소검색 </el-button> </span></td>
               </tr>
               <tr>
                 <th class="first" scope="row">한글상세주소</th>
@@ -160,6 +160,7 @@
         <el-button size="mini" class="el-icon-edit" @click="fnInsertRegWhoisModReqSubmit()">{{ $t('변경 신청') }}</el-button>
         <el-button size="mini" class="el-icon-close" @click="close()">{{ $t('exit') }}</el-button>
       </div>
+      <ModalSearchZipCode ref="ModalSearchZipCode" />
 
     </el-dialog>
   </div>
@@ -168,6 +169,7 @@
 <script>
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
+import ModalSearchZipCode from '@/views-ipms/modal/notice/ModalSearchZipCode.vue'
 import { apiRequestModel, ipmsModelApis, ipmsJsonApis, apiRequestJson } from '@/api/ipms'
 
 const routeName = 'ModalRegWhoisModReq'
@@ -175,7 +177,7 @@ const routeName = 'ModalRegWhoisModReq'
 export default {
 
   name: routeName,
-  components: { },
+  components: { ModalSearchZipCode },
   directives: { elDragDialog },
   extends: Modal,
   data() {
@@ -208,6 +210,8 @@ export default {
       sAftEOrgName: '',
       sAftEOrgAddr: '',
       sAftEOrgAddrDetail: '',
+      searchVoItem: {},
+      resultSearchWhois: null
     }
   },
   computed: {
@@ -225,6 +229,14 @@ export default {
       this.domElement.maxWidth = 1200
     },
     onOpen(model, actionMode) {
+    },
+   fnViewSeachAddrPop(type) { /* 주소검색 on Popup */
+      if (this.resultSearchWhois === null) {
+        this.$message('Whois 정보 조회 후 수정 가능합니다.')
+        return
+      }
+        // this.closeOnClickModal = true
+        this.$refs.ModalSearchZipCode.open({ type: type })
     },
     async fnviewRegWhoisModReq() { /* IP주소 조회 */
       if (this.txtSearchIp === '' || this.txtSearchIp === null) {
@@ -252,34 +264,77 @@ export default {
         console.error(error)
       }
     },
-    async fnInsertRegWhoisModReqSubmit() { /* 변경신청 */
+    async fnSearchWhois(sfirstAddr, slastAddr, swhoisrequestid, pip_prefix, nwhoisseq, snettype) { /* IP주소 Whois 조회 */
       try {
-         const tbWhoisModifyVo = {
-          ssearchIp: this.txtSearchIp
+        const searchVo = {
+          ssearchIp: null,
+          sfirstAddr: sfirstAddr,
+          slastAddr: slastAddr,
+          swhoisrequestid: swhoisrequestid,
+          pip_prefix: pip_prefix,
+          nwhoisseq: nwhoisseq,
+          snettype: snettype,
         }
-        const res = await apiRequestModel(ipmsModelApis.insertRegWhoisModReq, tbWhoisModifyVo)
+
+        this.searchVoItem = searchVo
+
+        const res = await apiRequestJson(ipmsJsonApis.selectSearchWhoisInfo, searchVo)
+        this.resultSearchWhois = res.tbWhoisModifyVo
+        if (res.tbWhoisModifyVo.commonMsg === 'SUCCESS') {
+          if (!res.tbWhoisModifyVo.infoObj.rtnMsg) {
+            const {
+              sBefOrgName, sBefOrgAddr, sBefZipCode, sBefEOrgName, sBefEOrgAddr,
+              sAftOrgName, sAftOrgAddr, sAftOrgAddrDetail, sAftZipCode, sAftEOrgName,
+              sAftEOrgAddr, sAftEOrgAddrDetail
+            } = res.tbWhoisModifyVo
+
+            this.sBefOrgName = sBefOrgName
+            this.sBefOrgAddr = sBefOrgAddr
+            this.sBefZipCode = sBefZipCode
+            this.sBefEOrgName = sBefEOrgName
+            this.sBefEOrgAddr = sBefEOrgAddr
+
+            this.sAftOrgName = sAftOrgName
+            this.sAftOrgAddr = sAftOrgAddr
+            this.sAftOrgAddrDetail = sAftOrgAddrDetail
+            this.sAftZipCode = sAftZipCode
+            this.sAftEOrgName = sAftEOrgName
+            this.sAftEOrgAddr = sAftEOrgAddr
+            this.sAftEOrgAddrDetail = sAftEOrgAddrDetail
+          } else {
+            const mailObj = {
+              mailType: 'Kisa-Table-Error',
+              searchFirstIp: sfirstAddr,
+              searchLastIp: slastAddr,
+              rtnMsg: res.tbWhoisModifyVo.infoObj.rtnMsg,
+            }
+            this.fnSendMail(mailObj)
+          }
+        } else {
+          this.$message('조회에 실패했습니다.')
+          return false
+        }
       } catch (error) {
         console.error(error)
       }
     },
     fnSendMail(mailObj) { /* 관리자에게 메일 전송 */
       const onSendMailAdmin = '[관리자에게 메일 보내기]'
-      let msg
-      const msgDB = `IP주소관리시스템 DB에서 해당 IP주소가 검색되지 않습니다.
-      IP주소를 다시 확인하시고 조회해 보시기 바랍니다.
-      IP주소를 정확하게 입력했는데도 불구하고 조회되지 않는 경우
-      아래 ${onSendMailAdmin} 버튼을 누르시면 관리자가 조회 불가 사유를 확인하여 연락드리도록 하겠습니다.`
-
-      const msgKISA = `IP주소관리시스템 DB에서 해당 IP주소가 검색되지 않습니다.
-      IP주소를 다시 확인하시고 조회해 보시기 바랍니다.
-      IP주소를 정확하게 입력했는데도 불구하고 조회되지 않는 경우
-      아래 ${onSendMailAdmin} 버튼을 누르시면 관리자가 조회 불가 사유를 확인하여 연락드리도록 하겠습니다.`
+      const msgDB = `IP주소관리시스템 DB에서 해당 IP주소가 검색되지 않습니다.`
+      const msgKISA = `KISA Whois에 등록된 IP주소가 아닙니다.`
+      let msgType
 
       if (mailObj.mailType === 'Ipms-Table-Error') {
-        msg = msgDB
-      } else {
-        msg = msgKISA
+        msgType = msgDB
+      } else if (mailObj.mailType === 'Kisa-Table-Error') {
+        msgType = msgKISA
       }
+
+      const msg =
+      `${msgType}
+      IP주소를 다시 확인하시고 조회해 보시기 바랍니다
+      IP주소를 정확하게 입력했는데도 불구하고 조회되지 않는 경우
+      아래 ${onSendMailAdmin} 버튼을 누르시면 관리자가 조회 불가 사유를 확인하여 연락드리도록 하겠습니다.`
 
       this.$confirm(msg, '알림', {
         confirmButtonText: '관리자에게 메일보내기',
@@ -291,7 +346,6 @@ export default {
         }
         try {
           let smtpVo
-
           if (mailObj.mailType === 'Ipms-Table-Error') {
             smtpVo = {
               searchIp: mailObj.txtSearchIp
@@ -313,74 +367,13 @@ export default {
         }
       })
     },
-    async fnSearchWhois(sfirstAddr, slastAddr, swhoisrequestid, pip_prefix, nwhoisseq, snettype) { /* IP주소 Whois 조회 */
-      try {
-        const searchVo = {
-          ssearchIp: null,
-          sfirstAddr: sfirstAddr,
-          slastAddr: slastAddr,
-          swhoisrequestid: swhoisrequestid,
-          pip_prefix: pip_prefix,
-          nwhoisseq: nwhoisseq,
-          snettype: snettype,
-        }
-        const res = await apiRequestJson(ipmsJsonApis.selectSearchWhoisInfo, searchVo)
-        if (res.tbWhoisModifyVo.commonMsg === 'SUCCESS') {
-          if (!res.tbWhoisModifyVo.infoObj.rtnMsg) {
-            const {
-              sBefOrgName, sBefOrgAddr, sBefZipCode, sBefEOrgName, sBefEOrgAddr,
-              sAftOrgName, sAftOrgAddr, sAftOrgAddrDetail, sAftZipCode, sAftEOrgName, sAftEOrgAddr, sAftEOrgAddrDetail } = res.tbWhoisModifyVo
-            this.sBefOrgName = sBefOrgName
-            this.sBefOrgAddr = sBefOrgAddr
-            this.sBefZipCode = sBefZipCode
-            this.sBefEOrgName = sBefEOrgName
-            this.sBefEOrgAddr = sBefEOrgAddr
+    async fnInsertRegWhoisModReqSubmit() { /* 변경신청 */
+    if (this.sBefOrgName === '' || this.sBefOrgName === null) {
+      this.$message('IP주소 정보가 조회되지 않았기 때문에 변경신청이 불가합니다.')
+      return
+    }
 
-            this.sAftOrgName = sAftOrgName
-            this.sAftOrgAddr = sAftOrgAddr
-            this.sAftOrgAddrDetail = sAftOrgAddrDetail
-            this.sAftZipCode = sAftZipCode
-            this.sAftEOrgName = sAftEOrgName
-            this.sAftEOrgAddr = sAftEOrgAddr
-            this.sAftEOrgAddrDetail = sAftEOrgAddrDetail
-          } else {
-            /*  */
-            this.fnSendMail()
-          }
-        } else {
-          return false
-        }
-      } catch (error) {
-        console.error(error)
-      }
-    },
-    fnSetAddr(type) {
-      if (type === 'reset') {
-        this.sAftOrgName = this.resultVo.sAftOrgName
-        this.sAftOrgAddr = this.resultVo.sAftOrgAddr
-        this.sAftOrgAddrDetail = this.resultVo.sAftOrgAddrDetail
-        this.sAftEOrgName = this.resultVo.sAftEOrgName
-        this.sAftEOrgAddr = this.resultVo.sAftEOrgAddr
-        this.sAftEOrgAddrDetail = this.resultVo.sAftEOrgAddrDetail
-      } else if (type === 'toKT') {
-        this.sAftOrgName = this.ktInfoVo.sorgname
-        this.sAftOrgAddr = this.ktInfoVo.sadmAddr
-        this.sAftOrgAddrDetail = this.ktInfoVo.sadmAddrDetail
-        this.sAftEOrgName = this.ktInfoVo.sadmEorgname
-        this.sAftEOrgAddr = this.ktInfoVo.sadmEaddr
-        this.sAftEOrgAddrDetail = this.ktInfoVo.sadmEaddrDetail
-      }
-    },
-
-    /* ----------------- */
-
-   async fnUpdateRegWhoisModReqSubmit() { /* 수정(등록) */
-     if (this.resultVo.transyn === 'N') {
-        this.$message('이미 해지된 IP 주소이므로 수정이 불가합니다.')
-        return
-     }
-
-     if (this.sAftOrgName === '' || this.sAftOrgName === null) {
+    if (this.sAftOrgName === '' || this.sAftOrgName === null) {
         this.$message('한글기관명을 입력하세요.')
         return
      }
@@ -391,7 +384,7 @@ export default {
      }
 
      if (this.sAftZipCode === '' || this.sAftZipCode === null) {
-        this.$message('우편주소를 입력하세요.')
+        this.$message('우편번호를 입력하세요.')
         return
      }
 
@@ -406,14 +399,25 @@ export default {
      }
 
       const regExp = /[가-힣ㄱ-ㅎㅏ-ㅣ]/
-        if (regExp.test(this.sAftEOrgName)) {
-          this.$message('영문기관명은 한글입력이 불가합니다.')
-          return
-        }
+      if (regExp.test(this.sAftEOrgName)) {
+        this.$message('영문기관명은 한글입력이 불가합니다.')
+        return
+      }
+let res
+      try {
+         const tbWhoisModifyVo = {
+          sfirstAddr: this.searchVoItem.sfirstAddr,
+          slastAddr: this.searchVoItem.slastAddr,
+          pip_prefix: this.searchVoItem.pip_prefix,
+          swhoisrequestid: this.searchVoItem.swhoisrequestid,
+          nwhoisseq: this.searchVoItem.nwhoisseq,
 
-     try {
-        const tbWhoisModifyVo = {
-          nmodify_apply_seq: this.resultVo.nmodify_apply_seq,
+          sBefOrgName: this.txtSearchIp,
+          sBefOrgAddr: this.txtSearchIp,
+          sBefZipCode: this.txtSearchIp,
+          sBefEOrgName: this.txtSearchIp,
+          sBefEOrgAddr: this.txtSearchIp,
+
           sAftOrgName: this.sAftOrgName,
           sAftOrgAddr: this.sAftOrgAddr,
           sAftOrgAddrDetail: this.sAftOrgAddrDetail,
@@ -421,14 +425,44 @@ export default {
           sAftEOrgName: this.sAftEOrgName,
           sAftEOrgAddr: this.sAftEOrgAddr,
           sAftEOrgAddrDetail: this.sAftEOrgAddrDetail,
+          sStatCd: '10'
         }
-        const res = await apiRequestJson(ipmsJsonApis.viewUpdateWhoisModReqVo, tbWhoisModifyVo)
-        if (res.tbWhoisModifyVo.commonMsg === 'SUCCESS') {
-          this.$message.success('WHOIS 정보 변경 신청 내역이 정상적으로 수정되었습니다.')
-          this.close()
+
+        if (this.searchVoItem.snettype === 'INFRA') {
+          this.$message('네트워크 유형이 인프라인 경우엔 기관정보를 수정하실 수 없습니다.')
+          return
         }
+
+        //  res = await apiRequestModel(ipmsModelApis.insertRegWhoisModReq, tbWhoisModifyVo)
+        // if (res.commonMsg === 'SUCCESS') {
+        //  this.$message.success({ message: `${res.commonMsg}` })
+        // this.$emit('reload')
+        // this.close()
+        // }
       } catch (error) {
-        console.log(error)
+        this.$message.error({ message: `${res.commonMsg}` })
+        console.error(error)
+      }
+    },
+
+    fnSetAddr(type) {
+      if (this.resultVo === '' || this.resultVo === null) {
+        return
+      }
+      if (type === 'reset') {
+        this.sAftOrgName = this.resultVo.sAftOrgName
+        this.sAftOrgAddr = this.resultVo.sAftOrgAddr
+        this.sAftOrgAddrDetail = this.resultVo.sAftOrgAddrDetail
+        this.sAftEOrgName = this.resultVo.sAftEOrgName
+        this.sAftEOrgAddr = this.resultVo.sAftEOrgAddr
+        this.sAftEOrgAddrDetail = this.resultVo.sAftEOrgAddrDetail
+      } else if (type === 'toKT') {
+        this.sAftOrgName = this.ktInfoVo.sorgname
+        this.sAftOrgAddr = this.ktInfoVo.sadmAddr
+        this.sAftOrgAddrDetail = this.ktInfoVo.sadmAddrDetail
+        this.sAftEOrgName = this.ktInfoVo.sadmEorgname
+        this.sAftEOrgAddr = this.ktInfoVo.sadmEaddr
+        this.sAftEOrgAddrDetail = this.ktInfoVo.sadmEaddrDetail
       }
     },
     onClose() { },

@@ -82,17 +82,13 @@
     "nassignIpCnt": null
   },
   "__config": {
-    "url": "/opermgmt/assignmgmt/updateAssignApyTxn.json",
+    "url": "/opermgmt/assignmgmt/deleteAssignApyTxn.json",
     "param": {
-      "nrequestAssignSeq": "621",
-      "strtContents": "TEST",
-      "smodifyId": "10150810",
-      "sassigncontents": "TEST",
-      "nassignIpCnt": "12"
+      "nrequestAssignSeq": "625"
     },
-    "receivedTime": "2024-08-22 09:25:01.754",
-    "duration": 151,
-    "filename": "b3Blcm1nbXQvYXNzaWdubWdtdC91cGRhdGVBc3NpZ25BcHlUeG4uanNvbg_NjIxfFRFU1R8MTAxNTA4MTB8VEVTVHwxMg.json",
-    "fetch": "success-fetch('/opermgmt/assignmgmt/updateAssignApyTxn.json', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{\"nrequestAssignSeq\":\"621\",\"strtContents\":\"TEST\",\"smodifyId\":\"10150810\",\"sassigncontents\":\"TEST\",\"nassignIpCnt\":\"12\"}', 'method': 'POST' })"
+    "receivedTime": "2024-08-30 08:49:18.097",
+    "duration": 147,
+    "filename": "b3Blcm1nbXQvYXNzaWdubWdtdC9kZWxldGVBc3NpZ25BcHlUeG4uanNvbg_NjI1.json",
+    "fetch": "success-fetch('/opermgmt/assignmgmt/deleteAssignApyTxn.json', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{\"nrequestAssignSeq\":\"625\"}', 'method': 'POST' })"
   }
 }

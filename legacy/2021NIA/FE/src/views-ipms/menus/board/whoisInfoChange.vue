@@ -27,8 +27,8 @@
           </div>
         </template>
       </compTable>
-      <ModalDetailWhoisMod ref="ModalDetailWhoisMod" />
-      <ModalRegWhoisModReq ref="ModalRegWhoisModReq" />
+      <ModalDetailWhoisMod ref="ModalDetailWhoisMod" @reload="fnViewListWhoisModReq()" />
+      <ModalRegWhoisModReq ref="ModalRegWhoisModReq" @reload="fnViewListWhoisModReq()" />
     </el-col>
   </el-row>
 </template>

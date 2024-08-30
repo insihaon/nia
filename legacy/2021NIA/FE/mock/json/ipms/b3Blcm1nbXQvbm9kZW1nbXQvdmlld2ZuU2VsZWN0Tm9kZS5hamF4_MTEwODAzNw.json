@@ -32,7 +32,7 @@
     "url": null,
     "menuType": null,
     "paramMap": null,
-    "pipPrefix": null,
+    "pipPrefix": "123.123.123.123",
     "sipVersionTypeCd": null,
     "sipVersionTypeNm": null,
     "sipBlock": null,
