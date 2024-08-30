@@ -294,6 +294,7 @@ export default {
             this.commonMsg = 'IP블록이 정상적으로 등록되었습니다.'
             this.onResetForm()
             this.$emit('reloadData')
+            this.close()
           } else {
             this.$message.error({ message: 'IP블록 등록에 실패했습니다.' })
           }
@@ -318,7 +319,7 @@ export default {
         return
       }
       this.viewType = 'generate'
-
+      let res
       try {
           const ipBLockCheckVo = {
             srcIpBlockMstVo: {
@@ -330,7 +331,7 @@ export default {
             },
             destIpBlockMstVos: []
           }
-          const res = await apiRequestJson(ipmsJsonApis.appendCrtIPMst, ipBLockCheckVo)
+           res = await apiRequestJson(ipmsJsonApis.appendCrtIPMst, ipBLockCheckVo)
           if (res.commonMsg === 'SUCCESS') {
              const resultData = res
               this.ipBlockDetailList.push({
@@ -340,15 +341,9 @@ export default {
                 nclassCnt: resultData.nclassCnt,
                 ncnt: resultData.ncnt,
               })
-          } else {
-            this.$message({
-              message: res.commonMsg,
-              type: 'success',
-              duration: 3000
-            })
           }
       } catch (error) {
-        this.message
+        this.$message.error({ message: `${res.commonMsg}` })
         console.error(error)
       }
     },

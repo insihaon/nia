@@ -17,7 +17,7 @@
     >
       <span slot="title">
         <i class="el-icon-document mr-2" style="font-size: 17px" />
-        IP블록배정
+        노드이전상세
         <hr>
       </span>
 
@@ -140,12 +140,12 @@
       </div>
 
       <div slot="footer" class="dialog-footer">
-        <!-- 승인, 반려 : adminYn !== 'Y' &&  ownerYn === 'Y' -->
-        <!-- 신청취소 : adminYn !== 'Y' && ownerYn === 'Y' -->
-        <template v-if="true"> <!-- ownerYnownerYn === Y -->
-          <el-button size="mini" class="el-icon-close" @click="fnCancelBtnClick()">{{ $t('반려') }}</el-button>
-          <el-button size="mini" class="el-icon-close" @click="fnUpdateconfirmBtnClick()">{{ $t('승인') }}</el-button>
-          <el-button size="mini" class="el-icon-close" @click="fnDeleteBtnClick()">{{ $t('신청취소') }}</el-button>
+        <template v-if="ownerYn === 'Y'">
+          <template v-if="adminYn === 'Y'">
+            <el-button v-if="isShowBtn" size="mini" @click="fnCancelBtnClick()">{{ $t('반려') }}</el-button>
+            <el-button v-if="isShowBtn" size="mini" @click="fnUpdateconfirmBtnClick()">{{ $t('승인') }}</el-button>
+          </template>
+          <el-button v-if="isShowBtn" size="mini" @click="fnDeleteBtnClick()">{{ $t('신청취소') }}</el-button>
         </template>
         <el-button size="mini" class="el-icon-close" @click="close()">{{ $t('exit') }}</el-button>
       </div>
@@ -156,7 +156,8 @@
 <script>
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
-import { apiRequestModel, ipmsModelApis, ipmsJsonApis, apiRequestJson } from '@/api/ipms'
+import { apiRequestModel, ipmsModelApis } from '@/api/ipms'
+import { mapState } from 'vuex'
 
 const routeName = 'ModalNodeTransferDetail'
 
@@ -173,7 +174,11 @@ export default {
     }
   },
   computed: {
-    idDisabled() {
+    ...mapState({
+      adminYn: state => state.ipms.adminYn,
+      ownerYn: state => state.ipms.ownerYn,
+    }),
+    isShowBtn() { /* 신청취소 disabled */
       return this.resultVo.progressStatus === 'nod001'
     }
   },
@@ -193,15 +198,17 @@ export default {
         confirmButtonText: '확인',
         cancelButtonText: '취소'
       }).then(async() => {
+        let res
         try {
           const param = { seq: this.resultVo.seq }
-          const res = await apiRequestModel(ipmsModelApis.viewCancelNode, param)
+          res = await apiRequestModel(ipmsModelApis.viewCancelNode, param)
            if (res.commonMsg === 'SUCCESS') {
             this.$message.success({ message: `노드 이전 신청이 정상적으로 반려되었습니다.` })
-            this.$emit('reloadData')
+            this.$emit('reload')
+            this.close()
             }
           } catch (error) {
-            this.$message.error({ message: `반려 실패했습니다.` })
+            this.$message.error({ message: `${res.commonMsg}` })
             console.log(error)
           }
         })
@@ -211,8 +218,10 @@ export default {
         confirmButtonText: '확인',
         cancelButtonText: '취소'
       }).then(async() => {
+        let res
         try {
-          const { ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd, nipAssignMstSeq, pipPrefix, sipVersionTypeCd, seq, sCommentType, sComment } = this.resultVo
+          const { ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd, nipAssignMstSeq,
+          pipPrefix, sipVersionTypeCd, seq, sCommentType, sComment } = this.resultVo
           const tbIpAssignMstComplexVo = {
             srcIpAssignMstVo: {
               ssvcLineTypeCd: ssvcLineTypeCd,
@@ -236,13 +245,14 @@ export default {
               seq: seq
             }
           }
-          const res = await apiRequestModel(ipmsModelApis.confirmNode, tbIpAssignMstComplexVo)
+           res = await apiRequestModel(ipmsModelApis.confirmNode, tbIpAssignMstComplexVo)
            if (res.commonMsg) {
             this.$message.success({ message: `${res.commonMsg}` })
-            this.$emit('reloadData')
+            this.$emit('reload')
+            this.close()
             }
           } catch (error) {
-            this.$message.error({ message: `승인에 실패했습니다.` })
+            this.$message.error({ message: `${res.commonMsg}` })
             console.log(error)
           }
         })
@@ -257,7 +267,8 @@ export default {
       //     const res = await '' /* apiRequestModel(ipmsModelApis.viewDeletenode, nodeVo) */
       //      if (res.commonMsg === 'SUCCESS') {
       //       this.$message.success({ message: `노드 이전 신청이 정상적으로 삭제되었습니다.` })
-      //       this.$emit('reloadData')
+      //         this.$emit('reload')
+      //          this.close()
       //       }
       //     } catch (error) {
       //       this.$message.error({ message: `삭제에 실패했습니다.` })

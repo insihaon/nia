@@ -28,8 +28,8 @@
         </template>
       </compTable>
     </el-col>
-    <ModalNodeTransferDetail ref="ModalNodeTransferDetail" />
-    <ModalNodeTransferInsert ref="ModalNodeTransferInsert" />
+    <ModalNodeTransferDetail ref="ModalNodeTransferDetail" @reload="fnViewListIpBlockMst()" />
+    <ModalNodeTransferInsert ref="ModalNodeTransferInsert" @reload="fnViewListIpBlockMst()" />
   </el-row>
 </template>
 <script>

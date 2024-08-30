@@ -23,7 +23,7 @@
     "dmodifyDt": null,
     "smodifyId": null,
     "smodifyNm": null,
-    "commonMsg": "SUCCESS",
+    "commonMsg": "com.sun.mail.smtp.SMTPSendFailedException: 550 5.7.1 Access denied by ACL\n;\n  nested exception is:\n\tcom.sun.mail.smtp.SMTPSenderFailedException: 550 5.7.1 Access denied by ACL\n",
     "screateEmail": null,
     "smodifyEmail": null,
     "moveType": "",
@@ -84,13 +84,16 @@
   "__config": {
     "url": "/opermgmt/assignmgmt/updateAssignApyTxn.json",
     "param": {
-      "nrequestAssignSeq": "622",
-      "strtContents": "TEST",
-      "smodifyId": "10150810"
+      "nrequestAssignSeq": "624",
+      "srequestAssignTypeCd": "RS0302",
+      "strtContents": "test",
+      "strtUserId": "10150810",
+      "smodifyId": "10150810",
+      "screateId": "10150810"
     },
-    "receivedTime": "2024-08-22 13:27:48.936",
-    "duration": 532,
-    "filename": "b3Blcm1nbXQvYXNzaWdubWdtdC91cGRhdGVBc3NpZ25BcHlUeG4uanNvbg_NjIyfFRFU1R8MTAxNTA4MTA.json",
-    "fetch": "success-fetch('/opermgmt/assignmgmt/updateAssignApyTxn.json', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{\"nrequestAssignSeq\":\"622\",\"strtContents\":\"TEST\",\"smodifyId\":\"10150810\"}', 'method': 'POST' })"
+    "receivedTime": "2024-08-30 08:45:37.813",
+    "duration": 1224,
+    "filename": "b3Blcm1nbXQvYXNzaWdubWdtdC91cGRhdGVBc3NpZ25BcHlUeG4uanNvbg_NjI0fFJTMDMwMnx0ZXN0fDEwMTUwODEwfDEwMTUwODEwfDEwMTUwODEw.json",
+    "fetch": "success-fetch('/opermgmt/assignmgmt/updateAssignApyTxn.json', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{\"nrequestAssignSeq\":\"624\",\"srequestAssignTypeCd\":\"RS0302\",\"strtContents\":\"test\",\"strtUserId\":\"10150810\",\"smodifyId\":\"10150810\",\"screateId\":\"10150810\"}', 'method': 'POST' })"
   }
 }

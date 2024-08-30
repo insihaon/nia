@@ -22,6 +22,9 @@ const getters = {
 
   showHistory: (state) => state.app.showHistory,
   windows: (state) => state.mdi.windows,
-  window_param: (state) => state.mdi.window_param
+  window_param: (state) => state.mdi.window_param,
+
+  adminYn: (state) => state.ipms.adminYn,
+  ownerYn: (state) => state.ipms.ownerYn,
 }
 export default getters

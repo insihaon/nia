@@ -164,7 +164,7 @@
 <script>
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
-import { apiRequestModel, ipmsModelApis, ipmsJsonApis, apiRequestJson } from '@/api/ipms'
+import { ipmsJsonApis, apiRequestJson } from '@/api/ipms'
 
 const routeName = 'ModalDetailWhoisMod'
 
@@ -282,6 +282,7 @@ export default {
           const res = await apiRequestJson(ipmsJsonApis.updateWhoisModReqAppr, tbWhoisModfiyVo)
             if (res.tbWhoisModifyVo.commonMsg === 'SUCCESS') {
               this.$message.success(`WHOIS 정보 변경 신청 내역이 정상적으로 ${typeNm} 되었습니다.`)
+              this.$emit('reload')
               this.close()
             }
           } catch (error) {
@@ -341,6 +342,7 @@ export default {
         const res = await apiRequestJson(ipmsJsonApis.viewUpdateWhoisModReqVo, tbWhoisModifyVo)
         if (res.tbWhoisModifyVo.commonMsg === 'SUCCESS') {
           this.$message.success('WHOIS 정보 변경 신청 내역이 정상적으로 수정되었습니다.')
+          this.$emit('reload')
           this.close()
         }
       } catch (error) {
@@ -359,6 +361,8 @@ export default {
           const res = await apiRequestJson(ipmsJsonApis.viewDeleteWhoisModReq, tbWhoisModfiyVo)
           if (res.tbWhoisModifyVo.commonMsg === 'SUCCESS') {
             this.$message.success(`WHOIS 정보 변경 신청 내역이 정상적으로 취소 되었습니다.`)
+            this.$emit('reload')
+            this.close()
           }
         } catch (error) {
           console.log(error)

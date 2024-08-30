@@ -3,24 +3,32 @@
     <DynamicComponentLoader
       ref="searchCondition"
       :component-keys="componentList"
-      @handle-search="handleSearch"
+      @handle-search="fnViewListReq"
     />
     <el-col ref="tableContainer" :span="24">
       <compTable
         :prop-table-height="'calc(100% - 80px)'"
         :prop-column="tableColumns"
+        :prop-data="resultListVo"
         :prop-is-pagination="false"
         :prop-is-check-box="false"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
+        :prop-on-click="onClcikRow"
       >
         <template slot="text-description">
           <span>
             요구사항 조회결과
           </span>
         </template>
+        <template slot="add-features">
+          <div class="float-right">
+            <el-button size="mini" icon="el-icon-document-add" @click="fnViewDetailReq('', 'create')">글쓰기</el-button>
+          </div>
+        </template>
       </compTable>
     </el-col>
+    <ModalReqDetail ref="ModalReqDetail" />
   </el-row>
 </template>
 <script>
@@ -28,12 +36,14 @@ import { Base } from '@/min/Base.min'
 import CompTable from '@/components/elTable/CompTable.vue'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
 import tableHeightMixin from '@/mixin/tableHeightMixin'
+import ModalReqDetail from '@/views-ipms/modal/notice/ModalReqDetail.vue'
+import { ipmsModelApis, apiRequestModel } from '@/api/ipms'
 
 const routeName = 'IssueDataRequest'
 
 export default {
   name: routeName,
-  components: { CompTable, DynamicComponentLoader },
+  components: { CompTable, DynamicComponentLoader, ModalReqDetail },
   extends: Base,
   mixins: [tableHeightMixin],
   data() {
@@ -41,15 +51,15 @@ export default {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       tableColumns: [
-        { prop: '', label: '번호', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: '요청사항구분', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: '제목', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: '등록자', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: '등록일', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: '희망완료일', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: '완료예정일', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: '중요도', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: '진행상태', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'seq', label: '번호', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'rboardDivision', label: '요청사항구분', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'rboardTitle', label: '제목', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'sUserNm', label: '등록자', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'rboardDcreateDt', label: '등록일', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'rboardDesireDate', label: '희망완료일', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'rboardExpectedDate', label: '완료예정일', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'rboardImportance', label: '중요도', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'rboardProgress', label: '진행상태', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
       ],
       componentList: [
         {
@@ -81,11 +91,30 @@ export default {
         },
         { key: 'DateRange', props: { label: '등록기간' } },
       ],
+      resultListVo: []
     }
   },
+  mounted() {
+    this.fnViewListReq()
+  },
   methods: {
-    handleSearch(requestParameter) {
-      console.log(requestParameter)
+    async fnViewListReq(requestParameter) {
+      try {
+        const res = await apiRequestModel(ipmsModelApis.viewListReq, requestParameter)
+        this.resultListVo = res?.result.data
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    onClcikRow(row, type) {
+     this.fnViewDetailReq(row, 'detail')
+    },
+    fnViewDetailReq(type) {
+      if (type === 'detail') {
+        this.$refs.ModalReqDetail.open()
+      } else {
+        this.$refs.ModalReqDetail.open()
+      }
     }
   },
 }

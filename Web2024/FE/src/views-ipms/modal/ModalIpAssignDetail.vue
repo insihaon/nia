@@ -232,7 +232,7 @@ export default {
        const res = await apiRequestJson(ipmsJsonApis.updateAsgnIPMst, tbIpAssignMstComplexVo)
           if (res.commonMsg === 'SUCCESS') {
             this.$message({ message: 'IP블록 반납이 정상적으로 처리되었습니다.', type: 'success' })
-            this.$emit('reloadData')
+            this.$emit('reload')
             this.close()
           }
       } catch (error) {
@@ -248,6 +248,8 @@ export default {
         const res = await apiRequestJson(ipmsJsonApis.updateScommentAsgnIPMst, tbIpAssignMstComplexVo)
         if (res.commonMsg === 'SUCCESS') {
           this.$message('비고 수정이 정상적으로 처리되었습니다.')
+          this.$emit('reload')
+          this.close()
         } else {
           this.$message(res.commonMsg)
         }
