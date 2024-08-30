@@ -27,7 +27,7 @@
           <div class="float-right">
             <el-button size="mini" @click="fnRoutingCollectMst">무선 전체 라우팅 수집</el-button>
             <el-button size="mini" @click="handleClickSummaryMng">Summary 관리</el-button>
-            <el-button size="mini">텍스트 파일 업로드</el-button>
+            <el-button size="mini" @click="$refs.ModalUploadMst.open()" @reload="fnViewListMobileMst">텍스트 파일 업로드</el-button>
             <el-button size="mini" icon="el-icon-plus" @click="handleClickRegist">Community 개별 등록</el-button>
             <el-button size="mini" @click="fnDeleteMobileMst()">삭제</el-button>
           </div>
@@ -36,6 +36,7 @@
     </el-col>
     <ModalWireMstInsert ref="ModalWireMstInsert" />
     <ModalSummaryMst ref="ModalSummaryMst" />
+    <ModalUploadMst ref="ModalUploadMst" />
   </el-row>
 </template>
 <script>
@@ -43,6 +44,7 @@ import { Base } from '@/min/Base.min'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
 import ModalWireMstInsert from '@/views-ipms/modal/interlink/ModalWireMstInsert.vue'
 import ModalSummaryMst from '@/views-ipms/modal/interlink/ModalSummaryMst.vue'
+import ModalUploadMst from '@/views-ipms/modal/interlink/ModalUploadMst.vue'
 import CompTable from '@/components/elTable/CompTable.vue'
 import tableHeightMixin from '@/mixin/tableHeightMixin'
 import { ipmsModelApis, apiRequestModel, ipmsJsonApis, apiRequestJson } from '@/api/ipms'
@@ -52,7 +54,7 @@ const routeName = 'WirelessIpPriorInfoManagement'
 
 export default {
   name: routeName,
-  components: { CompTable, DynamicComponentLoader, ModalWireMstInsert, ModalSummaryMst },
+  components: { CompTable, DynamicComponentLoader, ModalWireMstInsert, ModalSummaryMst, ModalUploadMst },
   extends: Base,
   mixins: [tableHeightMixin],
   data() {
