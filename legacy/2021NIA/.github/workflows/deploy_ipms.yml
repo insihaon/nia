@@ -26,11 +26,9 @@ jobs:
       - name: Build FE
         run: |
           cd FE
-          npm install --legacy-peer-deps
+          npm install --force 
           npm run build:ipms
           
-        # npm install --force 
-
       - name: Set up JDK 8
         uses: actions/setup-java@v2
         with:
