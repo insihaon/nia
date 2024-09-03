@@ -35,15 +35,15 @@ jobs:
           java-version: '8'
           distribution: 'temurin'  
 
-       - name: Install Gradle
+      - name: Install Gradle
         run: |
           wget https://services.gradle.org/distributions/gradle-7.6-bin.zip
           unzip gradle-7.6-bin.zip
           sudo mv gradle-7.6 /opt/gradle
           sudo ln -s /opt/gradle/bin/gradle /usr/bin/gradle
 
-      - name: Verify gradlew file
-        run: ls -l BE/app-ipms/gradlew
+      - name: Verify Gradle installation
+        run: gradle -v
 
       - name: Build BE
         run: |
