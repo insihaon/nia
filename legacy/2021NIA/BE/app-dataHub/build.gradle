@@ -9,8 +9,6 @@ jar {
 	enabled = false
 }
 bootWar {
-	archiveFileName = 'dataHub_bootwar.war'
-
 	enabled = true
 }
 

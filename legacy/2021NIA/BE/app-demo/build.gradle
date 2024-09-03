@@ -9,7 +9,6 @@ jar {
 	enabled = false
 }
 bootWar {
-	archiveFileName = 'demo_bootwar.war'
 	enabled = true
 }
 
