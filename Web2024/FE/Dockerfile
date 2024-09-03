@@ -11,7 +11,7 @@ RUN npm install -g npm@8.5.4
 
 # 패키지 파일 복사 및 종속성 설치
 COPY package*.json ./
-RUN npm install
+RUN npm install --force
 
 # 애플리케이션 소스 코드 복사
 COPY . .
