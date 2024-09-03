@@ -183,7 +183,7 @@
         <el-button size="mini" class="float-left" @click="fnReturnAsTxmSubmit()">{{ $t('반납') }}</el-button>
         <el-button size="mini" class="float-left" @click="fnRejectPrvAsSubmit()">{{ $t('반려') }}</el-button>
 
-        <template v-if="resultVo.screateId === resultVo.screateId">
+        <template v-if="resultVo.screateId === userId">
           <el-button size="mini" @click="fnDeletePrvAsSubmit()">{{ $t('신청 취소') }}</el-button>
           <template v-if="viewType === 'detail'">
             <el-button size="mini" class="el-icon-edit" @click="onChangeMode()">{{ $t('수정') }}</el-button>
@@ -205,7 +205,7 @@
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
 import { apiRequestModel, ipmsModelApis, ipmsJsonApis, apiRequestJson } from '@/api/ipms'
-
+import { mapState } from 'vuex'
 const routeName = 'ModalDetailPrivateAs'
 
 export default {
@@ -241,6 +241,10 @@ export default {
     }
   },
   computed: {
+    ...mapState({
+      adminYn: state => state.ipms.adminYn,
+      userId: state => state.user.info.Uid
+    }),
     isReadOnly() {
       return !(this.viewType === 'create' || this.viewType === 'edit')
     },

@@ -267,6 +267,7 @@ export default {
         cancelButtonText: 'Cancel',
         type: 'success',
       }).then(async () => {
+        let res
         try {
           const tbIpBlockMstVos = []
 
@@ -287,7 +288,7 @@ export default {
             tbIpBlockMstVos: tbIpBlockMstVos,
           }
 
-          const res = await apiRequestJson(ipmsJsonApis.insertListCrtIPMst, tbIpBlockListVo)
+           res = await apiRequestJson(ipmsJsonApis.insertListCrtIPMst, tbIpBlockListVo)
 
           if (res.commonMsg === 'SUCCESS') {
             this.$message('IP블록 등록이 정상적으로 처리되었습니다.')
@@ -299,7 +300,7 @@ export default {
             this.$message.error({ message: 'IP블록 등록에 실패했습니다.' })
           }
         } catch (error) {
-          this.$message.error({ message: 'IP블록 등록에 실패했습니다.' })
+          this.$message.error({ message: `${res.commonMsg}` })
           console.error(error)
         }
       })

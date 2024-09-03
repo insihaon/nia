@@ -28,7 +28,7 @@
         </template>
       </compTable>
     </el-col>
-    <ModalReqDetail ref="ModalReqDetail" />
+    <ModalReqDetail ref="ModalReqDetail" @reload="fnViewListReq" />
   </el-row>
 </template>
 <script>
@@ -109,11 +109,19 @@ export default {
     onClcikRow(row, type) {
      this.fnViewDetailReq(row, 'detail')
     },
-    fnViewDetailReq(type) {
+    async fnViewDetailReq(row, type) {
       if (type === 'detail') {
-        this.$refs.ModalReqDetail.open()
+        try {
+           const ReqBoardVo = {
+              seq: row.seq
+           }
+          const res = await apiRequestModel(ipmsModelApis.viewDetailReq, ReqBoardVo)
+          this.$refs.ModalReqDetail.open({ row: res.result.data, type: type })
+        } catch (error) {
+          console.error(error)
+        }
       } else {
-        this.$refs.ModalReqDetail.open()
+        this.$refs.ModalReqDetail.open({ type: type })
       }
     }
   },
