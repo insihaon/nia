@@ -7,7 +7,7 @@
       :visible.sync="visible"
       :width="domElement.maxWidth + `px`"
       :fullscreen.sync="fullscreen"
-      :modal-append-to-body="false"
+      :modal-append-to-body="true"
       :append-to-body="true"
       :modal="modal"
       :close-on-click-modal="closeOnClickModal"
@@ -17,7 +17,7 @@
     >
       <span slot="title">
         <i class="el-icon-document mr-2" style="font-size: 17px" />
-        Whois 정보 변경 {{ onChangetitle }}
+        주소 검색
         <hr>
       </span>
 
@@ -35,7 +35,7 @@
                 <td>
                   <div class="search w99">
                     <el-input id="txtInputDongNm" v-model="txtInputDongNm" type="text" size="mini" class="w-90" value="" title="search" placeholder="SEARCH" @click="fnSearchEnter()" />
-                    <el-button size="mini" class="sc_btn_addr" @click="fnSelectZipcode()">
+                    <el-button size="mini" class="sc_btn_addr" @keyup.enter="fnSelectZipcode()" @click="fnSelectZipcode()">
                       <i class="el-icon-zoom-in"></i>
                     </el-button>
                   </div>
@@ -44,11 +44,11 @@
               <tr class="last">
                 <th class="first" scope="row">상세주소</th>
                 <td>
-                  <input id="txtZipcodePrefix" type="hidden" value="" />
+                  <!-- <input id="txtZipcodePrefix" type="hidden" value="" />
                   <input id="txtZipcodeSuffix" type="hidden" value="" />
-                  <input id="txtEaddress" type="hidden" value="" />
-                  <input id="txtAddress" type="text" class="txt" value="" title="" disabled="disabled" />
-                  <input id="detailAddress" type="text" class="txt" value="" title="상세주소" onkeypress="fnSaveEnter();" />
+                  <el-input id="txtEaddress" v-model="txtEaddress" size="mini" type="hidden" /> -->
+                  <el-input v-model="txtAddress" type="text" size="mini" title="" disabled="disabled" />
+                  <el-input v-model="detailAddress" type="text" size="mini" title="상세주소" />
                 </td>
               </tr>
             </tbody>
@@ -70,28 +70,38 @@
                 </tr>
               </thead>
               <tbody>
-                <c:if test="${resultListVo.totalCount == 0}">
-                  <tr class="subbg last">
-                    <td class="first" colspan="10">조회된 결과 목록이 존재하지 않습니다.</td>
-                  </tr>
-                </c:if>
+                <tr v-if="resultListVo.length === 0" class="subbg last">
+                  <td class="first" colspan="10">조회된 결과 목록이 존재하지 않습니다.</td>
+                </tr>
 
-                <!--  -->
+                <tr v-for="(item, index) in resultListVo" v-else :key="index">
+                  <td class="first">
+                    <a @click="fnZipcodeSelected(item.zipcode, item.newkaddr, item.eaddr)">
+                      {{ item.zipcode }}
+                    </a>
+                  </td>
+                  <td>
+                    <a @click="fnZipcodeSelected(item.zipcode, item.newkaddr, item.eaddr)">
+                      {{ item.newkaddr }}
+                      <br>
+                      {{ item.pastkaddr }}
+                    </a>
+                  </td>
+                </tr>
               </tbody>
             </table>
 
-            <div class="page_num">
+            <!-- <div class="page_num">
               <ul>
                 <ui:pagination pagination-info="${paginationInfo}" type="image" js-function="fnSelectListPageInPop" />
               </ul>
-            </div>
+            </div> -->
           </div>
         </template>
 
       </div>
-
       <div slot="footer" class="dialog-footer">
-        <el-button size="mini" class="el-icon-check" @click="fnApprRegWhoisModReqSubmit('R')">{{ $t('저장') }}</el-button>
+        <el-button size="mini" class="el-icon-check" @click="btnSaveSearchAddr()">{{ $t('저장') }}</el-button>
         <el-button size="mini" class="el-icon-close" @click="close()">{{ $t('exit') }}</el-button>
       </div>
 
@@ -119,10 +129,13 @@ export default {
       resultVo: null,
       resultListVo: [],
       txtInputDongNm: '',
-      viewType: ''
+      viewType: '',
+      txtAddress: '',
+      detailAddress: '',
+      zipcodePrefix: '',
+      searchAddrVo: {}
+
     }
-  },
-  computed: {
   },
   mounted() {
   },
@@ -137,6 +150,7 @@ export default {
     },
    async fnSelectZipcode() { /* 주소 검색 */
       if (this.txtInputDongNm === '') {
+        this.$message('검색할 주소를 입력하세요.')
         return
       }
       try {
@@ -150,30 +164,22 @@ export default {
         console.log(error)
       }
     },
+    fnZipcodeSelected(zipcode, newkaddr, eaddr) { /* 주소 클릭  */
+    this.txtAddress = newkaddr
 
-    /* ---------------------- */
-    fnSearchEnter() {
-
+      this.searchAddrVo = {
+        zipcode: zipcode,
+        newkaddr: newkaddr,
+        eaddr: eaddr,
+      }
     },
-    fnApprRegWhoisModReqSubmit() { /* 주소 저장 */
-      this.$confirm('신청정보가 삭제됩니다. 정말 신청취소 하시겠습니까?', '변경신청취소', {
-        confirmButtonText: '확인',
-        cancelButtonText: '취소'
-      }).then(async() => {
-        try {
-          const tbWhoisModfiyVo = {
-            nmodify_apply_seq: this.resultVo.nmodify_apply_seq,
-          }
-          const res = await apiRequestJson(ipmsJsonApis.viewDeleteWhoisModReq, tbWhoisModfiyVo)
-          if (res.tbWhoisModifyVo.commonMsg === 'SUCCESS') {
-            this.$message.success(`WHOIS 정보 변경 신청 내역이 정상적으로 취소 되었습니다.`)
-          }
-        } catch (error) {
-          console.log(error)
-        }
-      })
+    btnSaveSearchAddr() {
+      this.close()
     },
-
+    onClose() {
+      this._merge(this.searchAddrVo, { detailAddress: this.detailAddress })
+      this.$emit('setAddrForm', this.searchAddrVo)
+    }
   },
 }
 </script>

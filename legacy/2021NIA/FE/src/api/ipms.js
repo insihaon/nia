@@ -69,6 +69,9 @@ export const ipmsModelApis = {
   viewRegWhoisModReq: { desc: 'Whois 정보 변경 신청 > 등록 > IP주소 조회', url: '/opermgmt/whoismgmt/viewRegWhoisModReq' },
   viewSearchZipCode: { desc: 'Whois 정보 변경 신청 > 등록 > 주소 검색', url: '/opermgmt/whoismgmt/viewSearchZipCode' },
   viewListReq: { desc: '요구사항 조회', url: '/opermgmt/requiremgmt/viewListReq' },
+  viewDetailReq: { desc: '요구사항 조회 상세조회', url: '/opermgmt/requiremgmt/viewDetailReq' },
+  viewListUserAuthSubs: { desc: '사용자 권한 신청 조회', url: '/opermgmt/grantsubsmgmt/viewListUserAuthSubs' },
+  viewDetailUserAuthSubs: { desc: '사용자 권한 신청 상세정보', url: '/opermgmt/grantsubsmgmt/viewDetailUserAuthSubs' },
 
   // 운용정보관리(관리자 기능)
   viewListBatchHistMst: { desc: '운용정보관리 > 연동관리 > 배치 연동 이력현황', url: '/linkmgmt/batchmgmt/viewListBatchHistMst' },
@@ -139,6 +142,7 @@ export const ipmsJsonApis = {
   selectSearchWhoisInfo: { desc: 'Whois 정보 변경 신청 > 등록 > IP주소 조회 ', url: '/opermgmt/whoismgmt/selectSearchWhoisInfo' },
   sendMail: { desc: 'Whois 정보 변경 신청 > 등록 > 관리자에게 메일 보내기(IP주소) ', url: '/opermgmt/uploadmgmt/sendMail' },
     // insertRegWhoisModReq: { desc: 'Whois 정보 변경 신청 > 변경 신청  ', url: '/opermgmt/uploadmgmt/insertRegWhoisModReq' },
+  deleteReq: { desc: '요구사항 삭제', url: '/opermgmt/requiremgmt/deleteReq' },
   // 운용정보관리(관리자 기능)
   updateTacsConnBas: { desc: '운용정보관리 > TACS관리 > TACS 연동정보관리 수정', url: '/opermgmt/tacsmgmt/updateTacsConnBas' },
   insertTacsFcltMst: { desc: '운용정보관리 > TACS관리 > 조직별 장비 정보관리 등록', url: '/opermgmt/tacsmgmt/insertTacsFcltMst' },

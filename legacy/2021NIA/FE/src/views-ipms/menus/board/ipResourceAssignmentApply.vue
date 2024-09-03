@@ -29,7 +29,8 @@
       </compTable>
       <ModalAssignApyDetail ref="ModalAssignApyDetail" @reload="fnViewListAssignApyTxn()" />
       <ModalAssignApyInsert ref="ModalAssignApyInsert" @reload="fnViewListAssignApyTxn()" />
-    </el-col></el-row>
+    </el-col>
+  </el-row>
 </template>
 <script>
 import { Base } from '@/min/Base.min'

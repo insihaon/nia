@@ -143,12 +143,15 @@
       </div>
 
       <div slot="footer" class="dialog-footer">
-        <!-- 배정 resultVo.srequestAssignTypeCd === 'RS0301' -->
-        <el-button size="mini" class="el-icon-document-checked float-left" @click="fnIpAssign()">{{ $t('배정') }}</el-button>
-        <el-button size="mini" @click="fnApproveIpAssignApy()">{{ $t('승인') }}</el-button>
-        <el-button size="mini" @click="fnRejectIpAssignApy()">{{ $t('반송') }}</el-button>
-        <el-button v-if="isViewType !== 'edit'" size="mini" class="el-icon-edit-outline" @click="onEditMode()">{{ $t('수정') }}</el-button>
-        <el-button size="mini" class="el-icon-delete" @click="fnDeleteIpAssignApy()">{{ $t('삭제') }}</el-button>
+        <template v-if="suserGradedCd === 'UR0001'">
+          <el-button v-if="resultVo.srequestAssignTypeCd !== 'RS0303' || resultVo.srequestAssignTypeCd !== 'RS0304'" size="mini" class="el-icon-document-checked float-left" @click="fnIpAssign()">{{ $t('배정') }}</el-button>
+          <el-button size="mini" @click="fnApproveIpAssignApy()">{{ $t('승인') }}</el-button>
+          <el-button size="mini" @click="fnRejectIpAssignApy()">{{ $t('반송') }}</el-button>
+        </template>
+        <template v-if="resultVo.sapyUserID !== userId">
+          <el-button v-if="isViewType !== 'edit'" size="mini" class="el-icon-edit-outline" @click="onEditMode()">{{ $t('수정') }}</el-button>
+          <el-button size="mini" class="el-icon-delete" @click="fnDeleteIpAssignApy()">{{ $t('삭제') }}</el-button>
+        </template>
         <el-button size="mini" @click="fnUpdateStrtContents()">{{ $t('처리내용 수정') }}</el-button>
         <el-button v-if="isViewType === 'edit'" size="mini" class="el-icon-edit-outline" style="background-color:#2e3574; color : #fff" @click="fnUpdateStrtContents()">{{ $t('등록') }}</el-button>
         <el-button size="mini" class="el-icon-close" @click="close()">{{ $t('exit') }}</el-button>
@@ -161,6 +164,7 @@
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
 import { ipmsJsonApis, apiRequestJson } from '@/api/ipms'
+import { mapState } from 'vuex'
 
 const routeName = 'ModalAssignApyDetail'
 
@@ -188,9 +192,14 @@ export default {
     }
   },
   computed: {
+    ...mapState({
+      adminYn: state => state.ipms.adminYn,
+      suserId: state => state.user.info.Uid,
+      suserGradedCd: state => state.ipms.suserGradedCd,
+    }),
     isTitle() {
       return this.isViewType === 'detail' ? 'IP 배정신청 상세정보' : 'IP 배정신청 상세정보 수정'
-    }
+    },
   },
   mounted() {
 

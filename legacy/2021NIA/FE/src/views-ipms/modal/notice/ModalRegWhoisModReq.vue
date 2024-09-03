@@ -160,7 +160,7 @@
         <el-button size="mini" class="el-icon-edit" @click="fnInsertRegWhoisModReqSubmit()">{{ $t('변경 신청') }}</el-button>
         <el-button size="mini" class="el-icon-close" @click="close()">{{ $t('exit') }}</el-button>
       </div>
-      <ModalSearchZipCode ref="ModalSearchZipCode" />
+      <ModalSearchZipCode ref="ModalSearchZipCode" @setAddrForm="setAddrForm" />
 
     </el-dialog>
   </div>
@@ -187,7 +187,7 @@ export default {
       sreject_rsn: '',
       viewType: '',
       txtSearchIp: '',
-      resultVo: {},
+      resultVo: null,
       ktInfoVo: {
         sorgname: '(주) 케이티',
         sadmAddr: '경기도 성남시 분당구 불정로 90',
@@ -229,13 +229,30 @@ export default {
       this.domElement.maxWidth = 1200
     },
     onOpen(model, actionMode) {
+      this.onInitValue()
+    },
+    onInitValue() {
+      this.txtSearchIp = ''
+      this.sAftOrgAddr = ''
+      this.sAftOrgAddrDetail = ''
+      this.sAftZipCode = ''
+      this.sBefOrgName = ''
+      this.sAftEOrgAddr = ''
+      this.sAftEOrgName = ''
+      this.resultVo = null
+    },
+    setAddrForm(Addr) {
+      console.log(Addr)
+      this.sAftOrgAddr = Addr.newkaddr
+      this.sAftZipCode = Addr.zipcode
+      this.sAftEOrgAddr = Addr.eaddr
+      this.sAftOrgAddrDetail = Addr.detailAddress
     },
    fnViewSeachAddrPop(type) { /* 주소검색 on Popup */
       if (this.resultSearchWhois === null) {
         this.$message('Whois 정보 조회 후 수정 가능합니다.')
         return
       }
-        // this.closeOnClickModal = true
         this.$refs.ModalSearchZipCode.open({ type: type })
     },
     async fnviewRegWhoisModReq() { /* IP주소 조회 */
@@ -403,7 +420,7 @@ export default {
         this.$message('영문기관명은 한글입력이 불가합니다.')
         return
       }
-let res
+      let res
       try {
          const tbWhoisModifyVo = {
           sfirstAddr: this.searchVoItem.sfirstAddr,
@@ -453,6 +470,7 @@ let res
         this.sAftOrgName = this.resultVo.sAftOrgName
         this.sAftOrgAddr = this.resultVo.sAftOrgAddr
         this.sAftOrgAddrDetail = this.resultVo.sAftOrgAddrDetail
+        this.sAftZipCode = this.resultVo.sAftZipCode
         this.sAftEOrgName = this.resultVo.sAftEOrgName
         this.sAftEOrgAddr = this.resultVo.sAftEOrgAddr
         this.sAftEOrgAddrDetail = this.resultVo.sAftEOrgAddrDetail
