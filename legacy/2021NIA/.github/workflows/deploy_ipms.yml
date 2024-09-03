@@ -5,12 +5,6 @@ on:
   push:
     branches:
       - main
-	  
-# main 브랜치에 코드가 푸시될 때마다 프론트엔드와 백엔드가 빌드되고 Docker Compose를 통해 배포
-#on:
-#  push:
-#	branches:
-#	  - main
 
 jobs:
   build:
