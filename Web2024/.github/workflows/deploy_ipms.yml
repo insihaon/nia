@@ -19,8 +19,8 @@ jobs:
         with:
           node-version: '14'
 
-      - name: Install npm 22.4.0
-        run: npm install -g npm@22.4.0
+      - name: Install npm 8.5.4
+        run: npm install -g npm@8.5.4
 
       - name: Build frontend
         run: |

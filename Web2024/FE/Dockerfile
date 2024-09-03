@@ -6,8 +6,8 @@ FROM node:14 AS build
 # 작업 디렉토리 설정
 WORKDIR /app
 
-# npm 버전 22.4.0으로 업데이트
-RUN npm install -g npm@22.4.0
+# npm 버전 8.5.4으로 업데이트
+RUN npm install -g npm@8.5.4
 
 # 패키지 파일 복사 및 종속성 설치
 COPY package*.json ./
