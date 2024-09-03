@@ -7,7 +7,8 @@
     "dev": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "build:datahub": "vue-cli-service build --mode datahub",
-    "build:nia": "vue-cli-service build --mode nia"
+    "build:nia": "vue-cli-service build --mode nia",
+    "build:ipms": "vue-cli-service build --mode ipms"
   },
   "dependencies": {
     "@babel/eslint-parser": "^7.24.6",
