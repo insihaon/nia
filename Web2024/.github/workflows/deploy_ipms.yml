@@ -48,7 +48,7 @@ jobs:
       - name: Build BE
         run: |
           cd BE/app-ipms
-          ./gradle bootJar
+          gradle bootJar
 
       - name: Build Docker images
         run: docker-compose build
