@@ -121,7 +121,7 @@ dependencies {
     implementation "org.aspectj:aspectjweaver:${org_aspectj_version}"
     
     // EPP XML Generator
-    implementation "org.irms.epp:epp:1.0.0"
+    // implementation "org.irms.epp:epp:1.0.0"
     
     // Xerces
     implementation "xerces:xercesImpl:2.11.0"
@@ -195,7 +195,7 @@ dependencies {
     // implementation "com.edb:edb-jdbc16:1.0"
     
     // eGov Framework
-    implementation "egovframework.rte:egovframework.rte.ptl.mvc:3.0.0"
+    // implementation "egovframework.rte:egovframework.rte.ptl.mvc:3.0.0"
     
     // Sitemesh
     implementation "org.sitemesh:sitemesh:3.0.0"
