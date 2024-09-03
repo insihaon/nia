@@ -36,7 +36,7 @@ jobs:
           distribution: 'temurin'  
 
       - name: Verify gradlew file
-        run: ls -l BE/app-ipms/gradlew
+        run: ls -l BE/app-ipms
 
       - name: Build BE
         run: |
