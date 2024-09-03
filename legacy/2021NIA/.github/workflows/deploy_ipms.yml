@@ -27,7 +27,7 @@ jobs:
         run: |
           cd FE
           npm install
-          npm run build
+          npm run build:ipms
 
       - name: Set up JDK 8
         uses: actions/setup-java@v2
