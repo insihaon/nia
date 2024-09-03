@@ -23,8 +23,8 @@ services:
       - "8009:8009"
     networks:
       - webnet
-    # depends_on:
-    #   - web
+    depends_on:
+      - web
 
 networks:
   webnet:
