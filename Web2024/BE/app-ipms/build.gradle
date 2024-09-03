@@ -22,7 +22,6 @@ jar {
 	enabled = false
 }
 bootWar {
-	archiveFileName = 'ipms_bootwar.war'
 	enabled = true
 }
 
