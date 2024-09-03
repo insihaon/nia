@@ -26,7 +26,7 @@ jobs:
       - name: Build FE
         run: |
           cd FE
-          npm install
+          npm install --force
           npm run build:ipms
 
       - name: Set up JDK 8
