@@ -18,13 +18,14 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '22.4.0'
+          # node-version: '14'
 
       - name: Install npm 8.5.4
         run: npm install -g npm@8.5.4
 
-      - name: Build frontend
+      - name: Build FE
         run: |
-          cd frontend
+          cd FE
           npm install
           npm run build
 
@@ -33,9 +34,9 @@ jobs:
         with:
           java-version: '8'
 
-      - name: Build backend
+      - name: Build BE
         run: |
-          cd backend
+          cd BE/app-ipms
           ./gradlew bootJar
 
       - name: Build Docker images
