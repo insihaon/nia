@@ -35,13 +35,6 @@ jobs:
           java-version: '8'
           distribution: 'temurin'  
 
-      # - name: Install Gradle
-      #   run: |
-      #     wget https://services.gradle.org/distributions/gradle-7.6-bin.zip
-      #     unzip gradle-7.6-bin.zip
-      #     sudo mv gradle-7.6 /opt/gradle
-      #     sudo ln -s /opt/gradle/bin/gradle /usr/bin/gradle
-
       - name: Verify Gradle installation
         run: gradle -v
 

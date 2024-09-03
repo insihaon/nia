@@ -6,8 +6,8 @@ FROM node:14 AS build
 # 작업 디렉토리 설정
 WORKDIR /app
 
-# npm 버전 8.5.4으로 업데이트
-RUN npm install -g npm@8.5.4
+# npm 버전 업데이트
+RUN npm install -g npm@9.6.7
 
 # 패키지 파일 복사 및 종속성 설치
 COPY package*.json ./
@@ -23,7 +23,7 @@ RUN npm run build:ipms
 FROM nginx:alpine
 
 # 빌드된 앱을 Nginx의 기본 경로로 복사
-COPY --from=build /app/build /usr/share/nginx/html
+COPY --from=build ../BE/app-ipms/src/main/resources/static /usr/share/nginx/html
 
 # Nginx 설정 파일 복사
 COPY nginx.conf /etc/nginx/nginx.conf
