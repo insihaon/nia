@@ -1,7 +1,7 @@
 {
-  "name": "datahub",
+  "name": "web_2024",
   "version": "4.4.0",
-  "description": "KT Network Datahub System",
+  "description": "KT Network Monitoring System",
   "author": "dimmby<dimmby@codejone.com>",
   "scripts": {
     "dev": "vue-cli-service serve",
