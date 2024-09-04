@@ -68,6 +68,8 @@ export const ipmsModelApis = {
   viewDetailWhoisModReq: { desc: 'Whois 정보 변경 신청 상세정보', url: '/opermgmt/whoismgmt/viewDetailWhoisModReq' },
   viewRegWhoisModReq: { desc: 'Whois 정보 변경 신청 > 등록 > IP주소 조회', url: '/opermgmt/whoismgmt/viewRegWhoisModReq' },
   // 운용정보관리(관리자 기능)
+  viewListTbBatchSvcBas: { desc: '운용정보관리 > 연동관리 > 배치 연동정보 조회', url: '/linkmgmt/batchmgmt/viewListTbBatchSvcBas' },
+  uploadView: { desc: '운용정보관리 > 연동관리 > 우편번호 연동관리', url: '/opermgmt/uploadmgmt/uploadView' },
   viewListBatchHistMst: { desc: '운용정보관리 > 연동관리 > 배치 연동 이력현황', url: '/linkmgmt/batchmgmt/viewListBatchHistMst' },
   viewTacsConnBas: { desc: '운용정보관리 > TACS관리 > TACS 연동정보관리 조회', url: '/opermgmt/tacsmgmt/viewTacsConnBas' },
   viewListTacsFcltMst: { desc: '운용정보관리 > TACS관리 > 조직별 장비 정보관리 조회', url: '/opermgmt/tacsmgmt/viewListTacsFcltMst' },
@@ -135,6 +137,7 @@ export const ipmsJsonApis = {
   selectSearchWhoisInfo: { desc: 'Whois 정보 변경 신청 > 등록 > IP주소 조회 ', url: '/opermgmt/whoismgmt/selectSearchWhoisInfo' },
   sendMail: { desc: 'Whois 정보 변경 신청 > 등록 > 관리자에게 메일 보내기(IP주소) ', url: '/opermgmt/uploadmgmt/sendMail' },
   // 운용정보관리(관리자 기능)
+  updateTbBatchSvcBas: { desc: '운용정보관리 > 연동관리 > 배치 연동 정보 수정', url: '/linkmgmt/batchmgmt/updateTbBatchSvcBas' },
   updateTacsConnBas: { desc: '운용정보관리 > TACS관리 > TACS 연동정보관리 수정', url: '/opermgmt/tacsmgmt/updateTacsConnBas' },
   insertTacsFcltMst: { desc: '운용정보관리 > TACS관리 > 조직별 장비 정보관리 등록', url: '/opermgmt/tacsmgmt/insertTacsFcltMst' },
   updateTacsFcltMst: { desc: '운용정보관리 > TACS관리 > 조직별 장비 정보관리 수정', url: '/opermgmt/tacsmgmt/updateTacsFcltMst' },

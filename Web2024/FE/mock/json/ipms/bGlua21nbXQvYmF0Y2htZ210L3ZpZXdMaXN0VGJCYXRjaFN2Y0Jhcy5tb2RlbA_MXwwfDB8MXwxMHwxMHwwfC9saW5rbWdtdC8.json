@@ -508,9 +508,9 @@
       "rowNo": 0,
       "url": "/linkmgmt/batchmgmt/viewListTbBatchSvcBas.model"
     },
-    "receivedTime": "2024-08-05 10:14:08.308",
-    "duration": 164,
+    "receivedTime": "2024-08-30 13:47:07.468",
+    "duration": 242,
     "filename": "bGlua21nbXQvYmF0Y2htZ210L3ZpZXdMaXN0VGJCYXRjaFN2Y0Jhcy5tb2RlbA_MXwwfDB8MXwxMHwxMHwwfC9saW5rbWdtdC8.json",
-    "fetch": "fetch('/linkmgmt/batchmgmt/viewListTbBatchSvcBas.model', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{\"pageIndex\":1,\"pageUnit\":0,\"pageSize\":0,\"firstIndex\":1,\"lastIndex\":10,\"recordCountPerPage\":10,\"rowNo\":0,\"url\":\"/linkmgmt/batchmgmt/viewListTbBatchSvcBas.model\"}', 'method': 'POST' })"
+    "fetch": "success-fetch('/linkmgmt/batchmgmt/viewListTbBatchSvcBas.model', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{\"pageIndex\":1,\"pageUnit\":0,\"pageSize\":0,\"firstIndex\":1,\"lastIndex\":10,\"recordCountPerPage\":10,\"rowNo\":0,\"url\":\"/linkmgmt/batchmgmt/viewListTbBatchSvcBas.model\"}', 'method': 'POST' })"
   }
 }
