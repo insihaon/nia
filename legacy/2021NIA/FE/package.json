@@ -1,13 +1,14 @@
 {
-  "name": "datahub",
+  "name": "web_2024",
   "version": "4.4.0",
-  "description": "KT Network Datahub System",
+  "description": "KT Network Monitoring System",
   "author": "dimmby<dimmby@codejone.com>",
   "scripts": {
     "dev": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "build:datahub": "vue-cli-service build --mode datahub",
-    "build:nia": "vue-cli-service build --mode nia"
+    "build:nia": "vue-cli-service build --mode nia",
+    "build:ipms": "vue-cli-service build --mode ipms"
   },
   "dependencies": {
     "@babel/eslint-parser": "^7.24.6",
@@ -16,7 +17,6 @@
     "@lottiefiles/vue-lottie-player": "^1.1.0",
     "@quasar/extras": "^1.0.0",
     "@riophae/vue-treeselect": "^0.4.0",
-    "@vue/composition-api": "^1.7.2",
     "ag-grid-community": "^28.2.0",
     "ag-grid-enterprise": "^28.2.0",
     "ag-grid-vue": "^28.2.0",

@@ -28,7 +28,7 @@
         </template>
       </compTable>
     </el-col>
-    <ModalDetailPrivateAs ref="ModalDetailPrivateAs" />
+    <ModalDetailPrivateAs ref="ModalDetailPrivateAs" @reload="fnViewListPrivateAs()" />
   </el-row>
 </template>
 <script>

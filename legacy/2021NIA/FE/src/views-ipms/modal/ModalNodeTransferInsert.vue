@@ -241,7 +241,8 @@
           <table class="tbl_data entry" summary="변경후">
             <caption>변경사유 선택</caption>
             <colgroup>
-              <col width="39%" /><col width="70%" />
+              <!-- <col width="39%" /><col width="70%" /> -->
+              <col width="39%" /><col width="61%" />
             </colgroup>
             <tbody>
               <tr class="top">
@@ -274,7 +275,7 @@
       </div>
 
       <div slot="footer" class="dialog-footer">
-        <el-button size="mini" class="el-icon-close" @click="fnInsertNode()">{{ $t('등록') }}</el-button>
+        <el-button size="mini" @click="fnInsertNode()">{{ $t('등록') }}</el-button>
         <el-button size="mini" class="el-icon-close" @click="close()">{{ $t('exit') }}</el-button>
       </div>
     </el-dialog>
@@ -384,7 +385,7 @@ export default {
       }
       try {
         const tbIpAssignMstVo = {
-          nipAssignMstSeq: row.nipAssignMstSeq
+          nipAssignMstSeq: `${row.nipAssignMstSeq}`
         }
         const res = await apiRequestModel(ipmsModelApis.viewfnSelectNode, tbIpAssignMstVo)
         if (res.data) {
@@ -402,7 +403,11 @@ export default {
               cancelButtonText: 'Cancel',
               type: 'warning'
           }).then(() => {
-            this.resultVo = row
+            const { pipPrifix, ssvcLineTypeNm, ssvcGroupNm, ssvcObjNm } = row
+            this.resultVo.pipPrifix = pipPrifix
+            this.resultVo.ssvcLineTypeNm = ssvcLineTypeNm
+            this.resultVo.ssvcGroupNm = ssvcGroupNm
+            this.resultVo.ssvcObjNm = ssvcObjNm
           }).catch(() => {
             /*  */
           })
@@ -411,17 +416,18 @@ export default {
       }
     },
     async fnDeleteAlcIPMstClick(row) { // 해지
+       let res
        try {
         const ipAllocOperMstVo = {
           nipAssignMstSeq: row.nipAssignMstSeq,
           menuType: 'NodeReq'
         }
-        const res = await apiRequestModel(ipmsModelApis.viewfnDeleteAlcIPMst, ipAllocOperMstVo)
+         res = await apiRequestModel(ipmsModelApis.viewfnDeleteAlcIPMst, ipAllocOperMstVo)
         if (res.commonMsg) {
           this.fnSelectListPage()
         }
       } catch (error) {
-        this.$message.error({ message: `해지에 실패했습니다.` })
+        this.$message.error({ message: `${res.commonMsg}` })
         console.error(error)
       }
     },
@@ -464,6 +470,7 @@ export default {
         confirmButtonText: '확인',
         cancelButtonText: '취소'
       }).then(async() => {
+        let res
         try {
           const { pipPrefix, beforeSsvcLineTypeCd, beforeSsvcGroupCd, nipAssignMstSeq, afterSsvcLineTypeCd, afterSsvcGroupCd, afterSsvcObjCd, sassignTypeCd, sassignLevelCd, sCommentType, sComment } = this.resultVo
           const tbIpAssignMstComplexVo = {
@@ -479,30 +486,46 @@ export default {
             sCommentType: sCommentType,
             sComment: sComment
           }
-          const res = await apiRequestJson(ipmsJsonApis.insertNode, tbIpAssignMstComplexVo)
+           res = await apiRequestJson(ipmsJsonApis.insertNode, tbIpAssignMstComplexVo)
            if (res.commonMsg === 'SUCCESS') {
             this.$message.success({ message: `${res.commonMsg}` })
-            this.$emit('reloadData')
+            this.$emit('reload')
+            this.close()
             }
           } catch (error) {
-            this.$message.error({ message: `등록에 실패했습니다.` })
+            this.$message.error({ message: `${res.commonMsg}` })
             console.log(error)
           }
         })
     },
     async handleChangeLvl1() {
-      const tbLvlBasVo = { ssvcLineTypeCd: this.updSsvcLineTypeCd }
-      const res = await apiRequestJson(ipmsJsonApis.selectAuthCenterList, tbLvlBasVo)
-      this.ssvcGroupNmOp = res?.tbLvlBasVos?.filter(v => v.ssvcGroupNm !== '전체').map(v => { return { value: v.ssvcGroupCd, label: v.ssvcGroupNm } })
-    },
-    async handleChangeLvl2() {
-      const tbLvlBasVo = {
-        ssvcLineTypeCd: this.updSsvcLineTypeCd,
-        ssvcGroupCd: this.updSsvcGroupCd,
-      }
-      const res = await apiRequestJson(ipmsJsonApis.selectAuthNodeList, tbLvlBasVo)
-      this.ssvcObjNmOp = res?.tbLvlBasVos?.filter(v => v.ssvcObjCd !== '전체').map(v => { return { value: v.ssvcObjCd, label: v.ssvcObjNm } })
-    },
+    const tbLvlBasVo = { ssvcLineTypeCd: this.updSsvcLineTypeCd }
+
+    this.updSsvcGroupCd = null
+    this.updSsvcObjCd = null
+
+    const res = await apiRequestJson(ipmsJsonApis.selectAuthCenterList, tbLvlBasVo)
+    this.ssvcGroupNmOp = res?.tbLvlBasVos?.filter(v => v.ssvcGroupNm !== '전체').map(v => {
+      return { value: v.ssvcGroupCd, label: v.ssvcGroupNm }
+    })
+
+    this.ssvcObjNmOp = []
+  },
+
+  async handleChangeLvl2() {
+    const tbLvlBasVo = {
+      ssvcLineTypeCd: this.updSsvcLineTypeCd,
+      ssvcGroupCd: this.updSsvcGroupCd,
+    }
+
+    this.updSsvcObjCd = null
+
+    // 노드 옵션을 불러옴
+    const res = await apiRequestJson(ipmsJsonApis.selectAuthNodeList, tbLvlBasVo)
+    this.ssvcObjNmOp = res?.tbLvlBasVos?.filter(v => v.ssvcObjCd !== '전체').map(v => {
+      return { value: v.ssvcObjCd, label: v.ssvcObjNm }
+    })
+  },
     toggleAll() {
       this.updSsvcGroupCd = ''
       this.updSsvcObjCd = ''

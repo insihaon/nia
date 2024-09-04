@@ -27,9 +27,9 @@
           </div>
         </template>
       </compTable>
+      <ModalAssignApyDetail ref="ModalAssignApyDetail" @reload="fnViewListAssignApyTxn()" />
+      <ModalAssignApyInsert ref="ModalAssignApyInsert" @reload="fnViewListAssignApyTxn()" />
     </el-col>
-    <ModalAssignApyDetail ref="ModalAssignApyDetail" />
-    <ModalAssignApyInsert ref="ModalAssignApyInsert" />
   </el-row>
 </template>
 <script>
@@ -95,15 +95,15 @@ export default {
       }
     },
     onClcikRow(row) {
-      this.fnViewDetailIpAssignApy(row)
+      this.fnViewDetailIpAssignApy(row, 'detail')
     },
-    async fnViewDetailIpAssignApy(row) {
+    async fnViewDetailIpAssignApy(row, type) {
       try {
         const { nrequestAssignSeq } = row
         const TbRequestAssignMstVo = { nrequestAssignSeq: nrequestAssignSeq }
         const res = await apiRequestModel(ipmsModelApis.viewDetailAssignApyTxn, TbRequestAssignMstVo)
         if (res.result.data) {
-          this.$refs.ModalAssignApyDetail.open({ row: res.result.data })
+          this.$refs.ModalAssignApyDetail.open({ row: res.result.data, type: type })
         }
       } catch (error) {
         console.error(error)

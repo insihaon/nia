@@ -17,7 +17,7 @@
     >
       <span slot="title">
         <i class="el-icon-document mr-2" style="font-size: 17px" />
-        IP블록관리 상세정보
+        {{ isTitle }}
         <hr>
       </span>
 
@@ -103,9 +103,9 @@
 
       <div slot="footer" class="dialog-footer">
         <el-button v-if="type !== 'edit'" size="mini" icon="el-icon-edit" @click="onChangeMode()">수정</el-button>
-        <el-button v-if="type === 'edit'" size="mini" icon="el-icon-edit" @click="fnUpdateCrtIPMstCallback()">수정</el-button>
+        <el-button v-if="type === 'edit'" size="mini" class="el-icon-edit-outline" style="background-color:#2e3574; color : #fff" @click="fnUpdateCrtIPMstCallback()">저장</el-button>
         <el-button v-if="type !== 'edit'" size="mini" icon="el-icon-edit" @click="fnDeleteBtnClick()">삭제</el-button>
-        <el-button size="mini" class="el-icon-close" @click.native="close()">
+        <el-button size="mini" class="el-icon-close" @click.native="isClose()">
           {{ $t('exit') }}
         </el-button>
       </div>
@@ -133,6 +133,11 @@ export default {
       sipCreateSeqCd: '',
       scomment: '',
       type: 'create',
+    }
+  },
+  computed: {
+    isTitle() {
+      return this.type === 'edit' ? 'IP블록관리 상세정보 수정' : 'IP블록관리 상세정보'
     }
   },
   mounted() {
@@ -164,15 +169,17 @@ export default {
         confirmButtonText: '확인',
         cancelButtonText: '취소'
       }).then(async() => {
+        let res
         try {
           const param = { nipBlockMstSeq: this.resultVo.nipBlockMstSeq }
-          const res = await apiRequestJson(ipmsJsonApis.deleteCrtIPMst, param)
+           res = await apiRequestJson(ipmsJsonApis.deleteCrtIPMst, param)
            if (res.commonMsg === 'SUCCESS') {
             this.$message.success({ message: `삭제되었습니다.` })
-            this.$emit('reloadData')
+            this.$emit('reload')
+            this.close()
             }
           } catch (error) {
-            this.$message.error({ message: `삭제에 실패했습니다.` })
+            this.$message.error({ message: `${res.commonMsg}` })
             console.log(error)
           }
         })
@@ -183,7 +190,7 @@ export default {
           this.$message.error('생성차수 수정정보가 잘못되었습니다.')
           return
       }
-
+      let res
       try {
           const tbIpBlockVo = {
             sipCreateTypeCd: this.resultVo.sipCreateTypeCd,
@@ -195,18 +202,32 @@ export default {
             //  const searchSipCreateSeqCd = tbIpBlockMstVo.sipCreateSeqCd
           // const res = await ipmsJsonApis(ipmsJsonApis.selectListSipCreateSeqCd, tbIpBlockVo)
 
-          const res = await apiRequestJson(ipmsJsonApis.updateCrtIPMst, tbIpBlockVo)
+         res = await apiRequestJson(ipmsJsonApis.updateCrtIPMst, tbIpBlockVo)
 
            if (res.commonMsg === 'SUCCESS') {
               this.$message('IP블록 수정이 정상적으로 처리되었습니다.')
-              this.$emit('reloadData')
+              this.$emit('reload')
               this.close()
            }
-      } catch (error) {
-          this.$message.error({ message: `IP블록 수정에 실패했습니다.` })
-          console.error(error)
+        } catch (error) {
+            this.$message.error({ message: `${res.commonMsg}` })
+            console.error(error)
+        }
+    },
+    isClose() {
+        if (this.type === 'edit') {
+          this.$confirm('작성한 정보가 삭제됩니다. 팝업창을 닫겠습니까?', '신청 정보 저장 알림', {
+            confirmButtonText: '확인',
+            cancelButtonText: '취소'
+          }).then(async () => {
+            this.close() // 확인 버튼을 누르면 모달을 닫음
+          }).catch(() => {
+
+          })
+        } else {
+          this.close()
+        }
       }
-    }
   },
 }
 </script>
