@@ -70,8 +70,11 @@ export const ipmsModelApis = {
   viewSearchZipCode: { desc: 'Whois 정보 변경 신청 > 등록 > 주소 검색', url: '/opermgmt/whoismgmt/viewSearchZipCode' },
   viewListReq: { desc: '요구사항 조회', url: '/opermgmt/requiremgmt/viewListReq' },
   viewDetailReq: { desc: '요구사항 조회 상세조회', url: '/opermgmt/requiremgmt/viewDetailReq' },
+  // updateReq: { desc: '요구사항 조회 > 수정', url: '/opermgmt/requiremgmt/updateReq' },
+  // deleteReq: { desc: '요구사항 조회 > 등록', url: '/opermgmt/requiremgmt/deleteReq' },
   viewListUserAuthSubs: { desc: '사용자 권한 신청 조회', url: '/opermgmt/grantsubsmgmt/viewListUserAuthSubs' },
   viewDetailUserAuthSubs: { desc: '사용자 권한 신청 상세정보', url: '/opermgmt/grantsubsmgmt/viewDetailUserAuthSubs' },
+  viewInsertUserAuthSubs: { desc: '사용자 권한 신청 > 등록 화면', url: '/opermgmt/grantsubsmgmt/viewInsertUserAuthSubs' },
 
   // 운용정보관리(관리자 기능)
   viewListTbBatchSvcBas: { desc: '운용정보관리 > 연동관리 > 배치 연동정보 조회', url: '/linkmgmt/batchmgmt/viewListTbBatchSvcBas' },
