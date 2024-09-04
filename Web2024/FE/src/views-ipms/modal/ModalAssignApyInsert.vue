@@ -219,7 +219,6 @@ export default {
         cancelButtonText: '취소'
       }).then(async() => {
         try {
-          // const sessionUserId = sessionScope.user.suserId
           const TbRequestAssignMstVo = {
             stitle: this.txtStitle,
             napyIpCnt: this.txtApyIpCnt,
@@ -227,10 +226,10 @@ export default {
             ssvcLineTypeCd: this.updSsvcLineTypeCd,
             ssvcGroupCd: this.updSsvcGroupCd,
             ssvcObjCd: this.updSsvcObjCd,
-            // sapyUserId: this.sessionUserId,
+            sapyUserId: this.$store.state.user.info.Uid,
             srequestAssignTypeCd: 'RS0301',
-            // screateId: this.sessionUserId,
-            // smodifyId: this.sessionUserId,
+            screateId: this.$store.state.user.info.Uid,
+            smodifyId: this.$store.state.user.info.Uid,
           }
           const res = await apiRequestJson(ipmsJsonApis.insertAssignApyTxn, TbRequestAssignMstVo)
            if (res.commonMsg === 'SUCCESS') {
@@ -243,7 +242,6 @@ export default {
           }
         })
     },
-
     onClose() { },
   },
 }

@@ -17,7 +17,7 @@
     >
       <span slot="title">
         <i class="el-icon-document mr-2" style="font-size: 17px" />
-        IP 배정신청 상세정보
+        {{ isTitle }}
         <hr>
       </span>
 
@@ -82,55 +82,58 @@
                   <textarea v-model="resultVo.scontents" size="mini" type="textarea" rows="10" readonly></textarea>
                 </td>
               </tr>
-              <tr class="view">
-                <th class="first" scope="row">처리일시</th>
-                <td colspan="5">
-                  <el-date-picker v-model="resultVo.dtrtDt" size="mini" type="datetime" readonly format="yyyy-MM-dd HH:mm:ss" />
-                </td>
-              </tr>
 
-              <!-- <template v-if="sessionScope.user.suserGradeCd === 'UR0001'"> -->
-              <template v-if="['RS0301', 'RS0302', 'RS0303', 'RS0304'].includes(resultVo.srequestAssignTypeCd)">
-                <tr>
-                  <th class="first" scope="row">처리내용</th>
+              <template v-if="isViewType !== 'edit'">
+                <tr class="view">
+                  <th class="first" scope="row">처리일시</th>
                   <td colspan="5">
-                    <textarea id="txtAssignIpCnt" v-model="strtContents" rows="6" />
+                    <el-date-picker v-model="resultVo.dtrtDt" size="mini" type="datetime" readonly format="yyyy-MM-dd HH:mm:ss" />
                   </td>
                 </tr>
-                <tr>
-                  <th class="first" scope="row">배정 IP</th>
-                  <td colspan="5">
-                    <textarea v-model="sassigncontents" rows="5" />
-                  </td>
-                </tr>
-                <tr class="last">
-                  <th class="first" scope="row">배정 IP개수 (/24)</th>
-                  <td colspan="5">
-                    <textarea v-model="nassignIpCnt" class="w-90" @input="validateNumberInput" /> 개(/24 단위)
-                  </td>
-                </tr>
-              </template>
-              <!-- </template> -->
 
-              <template v-else>
-                <tr>
-                  <th class="first" scope="row">처리내용</th>
-                  <td colspan="5">
-                    <textarea id="txtAssignIpCnt" v-model="strtContents" type="textarea" rows="6" />
-                  </td>
-                </tr>
-                <tr>
-                  <th class="first" scope="row">배정 IP</th>
-                  <td colspan="5">
-                    <textarea v-model="sassigncontents" type="textarea" rows="5" />
+                <!-- <template v-if="sessionScope.user.suserGradeCd === 'UR0001'"> -->
+                <template v-if="['RS0301', 'RS0302', 'RS0303', 'RS0304'].includes(resultVo.srequestAssignTypeCd)">
+                  <tr>
+                    <th class="first" scope="row">처리내용</th>
+                    <td colspan="5">
+                      <textarea id="txtAssignIpCnt" v-model="strtContents" rows="6" />
+                    </td>
+                  </tr>
+                  <tr>
+                    <th class="first" scope="row">배정 IP</th>
+                    <td colspan="5">
+                      <textarea v-model="sassigncontents" rows="5" />
+                    </td>
+                  </tr>
+                  <tr class="last">
+                    <th class="first" scope="row">배정 IP개수 (/24)</th>
+                    <td colspan="5">
+                      <textarea v-model="nassignIpCnt" class="w-90" @input="validateNumberInput" /> 개(/24 단위)
+                    </td>
+                  </tr>
+                </template>
+                <!-- </template> -->
 
-                  </td></tr>
-                <tr class="last">
-                  <th class="first" scope="row">배정 IP개수 (/24)</th>
-                  <td colspan="5">
-                    <textarea v-model="nassignIpCnt" maxlength="5" class="w-90" @input="validateNumberInput" />
-                  </td>
-                </tr>
+                <template v-else>
+                  <tr>
+                    <th class="first" scope="row">처리내용</th>
+                    <td colspan="5">
+                      <textarea id="txtAssignIpCnt" v-model="strtContents" type="textarea" rows="6" />
+                    </td>
+                  </tr>
+                  <tr>
+                    <th class="first" scope="row">배정 IP</th>
+                    <td colspan="5">
+                      <textarea v-model="sassigncontents" type="textarea" rows="5" />
+
+                    </td></tr>
+                  <tr class="last">
+                    <th class="first" scope="row">배정 IP개수 (/24)</th>
+                    <td colspan="5">
+                      <textarea v-model="nassignIpCnt" maxlength="5" class="w-90" @input="validateNumberInput" />
+                    </td>
+                  </tr>
+                </template>
               </template>
 
               <el-input id="sapyUserId" type="hidden" :value="resultVo.sapyUserId" />
@@ -140,14 +143,17 @@
       </div>
 
       <div slot="footer" class="dialog-footer">
-        <!-- 배정 resultVo.srequestAssignTypeCd === 'RS0301' -->
-        <el-button size="mini" class="el-icon-document-checked float-left" @click="fnIpAssign()">{{ $t('배정') }}</el-button>
-        <el-button size="mini" @click="fnApproveIpAssignApy()">{{ $t('승인') }}</el-button>
-        <el-button size="mini" @click="fnRejectIpAssignApy()">{{ $t('반송') }}</el-button>
-
-        <el-button size="mini" class="el-icon-edit-outline" @click="fnUpdateStrtContents()">{{ $t('수정') }}</el-button>
-        <el-button size="mini" class="el-icon-delete" @click="fnDeleteIpAssignApy()">{{ $t('삭제') }}</el-button>
+        <template v-if="suserGradedCd === 'UR0001'">
+          <el-button v-if="resultVo.srequestAssignTypeCd !== 'RS0303' || resultVo.srequestAssignTypeCd !== 'RS0304'" size="mini" class="el-icon-document-checked float-left" @click="fnIpAssign()">{{ $t('배정') }}</el-button>
+          <el-button size="mini" @click="fnApproveIpAssignApy()">{{ $t('승인') }}</el-button>
+          <el-button size="mini" @click="fnRejectIpAssignApy()">{{ $t('반송') }}</el-button>
+        </template>
+        <template v-if="resultVo.sapyUserID !== userId">
+          <el-button v-if="isViewType !== 'edit'" size="mini" class="el-icon-edit-outline" @click="onEditMode()">{{ $t('수정') }}</el-button>
+          <el-button size="mini" class="el-icon-delete" @click="fnDeleteIpAssignApy()">{{ $t('삭제') }}</el-button>
+        </template>
         <el-button size="mini" @click="fnUpdateStrtContents()">{{ $t('처리내용 수정') }}</el-button>
+        <el-button v-if="isViewType === 'edit'" size="mini" class="el-icon-edit-outline" style="background-color:#2e3574; color : #fff" @click="fnUpdateStrtContents()">{{ $t('등록') }}</el-button>
         <el-button size="mini" class="el-icon-close" @click="close()">{{ $t('exit') }}</el-button>
       </div>
     </el-dialog>
@@ -157,7 +163,8 @@
 <script>
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
-import { apiRequestModel, ipmsModelApis, ipmsJsonApis, apiRequestJson } from '@/api/ipms'
+import { ipmsJsonApis, apiRequestJson } from '@/api/ipms'
+import { mapState } from 'vuex'
 
 const routeName = 'ModalAssignApyDetail'
 
@@ -180,14 +187,27 @@ export default {
       strtContents: '',
       sassigncontents: '',
       nassignIpCnt: '',
+      isViewType: '',
+
     }
   },
   computed: {
-
+    ...mapState({
+      adminYn: state => state.ipms.adminYn,
+      suserId: state => state.user.info.Uid,
+      suserGradedCd: state => state.ipms.suserGradedCd,
+    }),
+    isTitle() {
+      return this.isViewType === 'detail' ? 'IP 배정신청 상세정보' : 'IP 배정신청 상세정보 수정'
+    },
   },
   mounted() {
+
   },
   methods: {
+    onEditMode() {
+      this.isViewType = 'edit'
+    },
     validateNumberInput() {
       const regExp = /[^0-9]/g
       this.nassignIpCnt = this.nassignIpCnt.replace(regExp, '')
@@ -198,6 +218,7 @@ export default {
       this.domElement.maxWidth = 1200
     },
     onOpen(model, actionMode) {
+      this.isViewType = model.type
       this.resultVo = model.row
       const { strtContents, sassigncontents, nassignIpCnt } = this.resultVo
        this.strtContents = strtContents
@@ -214,24 +235,24 @@ export default {
         confirmButtonText: '확인',
         cancelButtonText: '취소'
       }).then(async() => {
+        let res
         try {
-          var sessionUserId = this.sessionScope.user.suserId
           const { nrequestAssignSeq, strtUserId, smodifyId } = this.resultVo
           const TbRequestAssignMstVo = {
             nrequestAssignSeq: nrequestAssignSeq,
             srequestAssignTypeCd: 'RS0304',
             strtContents: this.strtContents,
-            // strtUserId: sessionUserId,
-            // smodifyId: sessionUserId,
+            strtUserId: this.$store.state.user.info.Uid,
+            smodifyId: this.$store.state.user.info.Uid,
           }
-          const res = await apiRequestJson(ipmsJsonApis.updateAssignApyTxn, TbRequestAssignMstVo)
+           res = await apiRequestJson(ipmsJsonApis.updateAssignApyTxn, TbRequestAssignMstVo)
           if (res.commonMsg === 'SUCCESS') {
             this.$message.success({ message: `배정에 성공했습니다.` })
             // 미배정현황 page route
-            this.$$router.push({ path: '/ipAssignMng/ipunAllocatedStatus' })
+            this.$router.push({ path: '/ipAssignMng/ipunAllocatedStatus' })
           }
         } catch (error) {
-          this.$message.error({ message: `배정에 실패했습니다.` })
+          this.$message.error({ message: `${res.commonMsg}` })
           console.log(error)
         }
       })
@@ -247,26 +268,27 @@ export default {
         confirmButtonText: '확인',
         cancelButtonText: '취소'
       }).then(async() => {
+        let res
         try {
-          var sessionUserId = this.sessionScope.user.suserId
-          const { nrequestAssignSeq, strtContents, strtUserId, smodifyId, screateId, } = this.resultVo
+          const { nrequestAssignSeq, screateId } = this.resultVo
           const TbRequestAssignMstVo = {
             nrequestAssignSeq: nrequestAssignSeq,
             srequestAssignTypeCd: 'RS0302',
             strtContents: this.strtContents,
-            // strtUserId: sessionUserId,
-            // smodifyId: sessionUserId,
+            strtUserId: this.$store.state.user.info.Uid,
+            smodifyId: this.$store.state.user.info.Uid,
             screateId: screateId,
             sassigncontents: this.sassigncontents,
             nassignIpCnt: this.nassignIpCnt,
           }
-          const res = await apiRequestJson(ipmsJsonApis.updateAssignApyTxn, TbRequestAssignMstVo)
+           res = await apiRequestJson(ipmsJsonApis.updateAssignApyTxn, TbRequestAssignMstVo)
           if (res.commonMsg === 'SUCCESS') {
-            this.$message.success({ message: `승인되었습니다.` })
-            this.$emit('reloadData')
+            this.$message.success({ message: `${res.commonMsg}` })
+            this.$emit('reload')
+            this.close()
           }
         } catch (error) {
-          this.$message.error({ message: `승인에 실패했습니다.` })
+          this.$message.error({ message: `${res.commonMsg}` })
           console.log(error)
         }
       })
@@ -276,26 +298,27 @@ export default {
         confirmButtonText: '확인',
         cancelButtonText: '취소'
       }).then(async() => {
+        let res
         try {
-          var sessionUserId = this.sessionScope.user.suserId
           const { nrequestAssignSeq, strtUserId, smodifyId, screateId } = this.resultVo
           const TbRequestAssignMstVo = {
             nrequestAssignSeq: nrequestAssignSeq,
             srequestAssignTypeCd: 'RS0303',
             strtContents: this.strtContents,
-            // strtUserId: sessionUserId,
-            // smodifyId: sessionUserId,
+            strtUserId: this.$store.state.user.info.Uid,
+            smodifyId: this.$store.state.user.info.Uid,
             screateId: screateId,
             sassigncontents: this.sassigncontents,
             nassignIpCnt: this.nassignIpCnt,
           }
-          const res = await apiRequestJson(ipmsJsonApis.updateAssignApyTxn, TbRequestAssignMstVo)
+          res = await apiRequestJson(ipmsJsonApis.updateAssignApyTxn, TbRequestAssignMstVo)
            if (res.commonMsg === 'SUCCESS') {
-            this.$message.success({ message: `정상적으로 반송되었습니다.` })
-            this.$emit('reloadData')
+             this.$message.success({ message: `${res.commonMsg}` })
+            this.$emit('reload')
+            this.close()
             }
           } catch (error) {
-            this.$message.error({ message: `반송에 실패했습니다.` })
+            this.$message.error({ message: `${res.commonMsg}` })
             console.log(error)
           }
         })
@@ -307,23 +330,24 @@ export default {
         return
       }
 
+      let res
       try {
-          var sessionUserId = this.sessionScope.user.suserId
-          const { nrequestAssignSeq, strtUserId, smodifyId, screateId } = this.resultVo
+          const { nrequestAssignSeq } = this.resultVo
           const TbRequestAssignMstVo = {
             nrequestAssignSeq: nrequestAssignSeq,
             strtContents: this.strtContents,
-            // smodifyId: sessionUserId,
+            smodifyId: this.$store.state.user.info.Uid,
             sassigncontents: this.sassigncontents,
             nassignIpCnt: this.nassignIpCnt,
           }
-          const res = await apiRequestJson(ipmsJsonApis.updateAssignApyTxn, TbRequestAssignMstVo)
+           res = await apiRequestJson(ipmsJsonApis.updateAssignApyTxn, TbRequestAssignMstVo)
            if (res.commonMsg === 'SUCCESS') {
             this.$message.success({ message: `처리내용이 정상적으로 수정되었습니다.` })
-            this.$emit('reloadData')
+            this.$emit('reload')
+            this.close()
             }
           } catch (error) {
-            this.$message.error({ message: `반송에 실패했습니다.` })
+            this.$message.error({ message: `${res.commonMsg}` })
             console.log(error)
           }
     },
@@ -332,23 +356,26 @@ export default {
         confirmButtonText: '확인',
         cancelButtonText: '취소'
       }).then(async() => {
+        let res
         try {
-          var sessionUserId = this.sessionScope.user.suserId
           const TbRequestAssignMstVo = {
             nrequestAssignSeq: this.resultVo.nrequestAssignSeq,
           }
-          const res = await apiRequestJson(ipmsJsonApis.updateAssignApyTxn, TbRequestAssignMstVo)
+           res = await apiRequestJson(ipmsJsonApis.deleteAssignApyTxn, TbRequestAssignMstVo)
            if (res.commonMsg === 'SUCCESS') {
-            this.$message.success({ message: `배정신청을 정상적으로 삭제 하였습니다.` })
-            this.$emit('reloadData')
+            this.$message.success('배정신청을 정상적으로 삭제 하였습니다.')
+            this.$emit('reload')
+            this.close()
             }
           } catch (error) {
-            this.$message.error({ message: `삭제에 실패했습니다.` })
+            this.$message.error({ message: `${res.commonMsg}` })
             console.log(error)
           }
         })
     },
-    onClose() { },
+    onClose() {
+      this.strtContents = ''
+    },
   },
 }
 </script>

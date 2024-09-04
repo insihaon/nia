@@ -17,7 +17,7 @@
     >
       <span slot="title">
         <i class="el-icon-document mr-2" style="font-size: 17px" />
-        사설AS 상세
+        {{ isTitle }}
         <hr>
       </span>
 
@@ -183,15 +183,18 @@
         <el-button size="mini" class="float-left" @click="fnReturnAsTxmSubmit()">{{ $t('반납') }}</el-button>
         <el-button size="mini" class="float-left" @click="fnRejectPrvAsSubmit()">{{ $t('반려') }}</el-button>
 
-        <el-button size="mini" @click="fnDeletePrvAsSubmit()">{{ $t('신청 취소') }}</el-button>
-        <template v-if="viewType === 'detail'">
-          <el-button size="mini" class="el-icon-edit" @click="onChangeMode()">{{ $t('수정') }}</el-button>
+        <template v-if="resultVo.screateId === userId">
+          <el-button size="mini" @click="fnDeletePrvAsSubmit()">{{ $t('신청 취소') }}</el-button>
+          <template v-if="viewType === 'detail'">
+            <el-button size="mini" class="el-icon-edit" @click="onChangeMode()">{{ $t('수정') }}</el-button>
+          </template>
         </template>
+
         <template v-if="viewType === 'edit'">
           <el-button size="mini" class="el-icon-edit-outline" style="background-color:#2e3574; color : #fff" @click="fnUpdatePrvAsSubmit()">{{ $t('수정') }}</el-button>
         </template>
         <el-button v-if="viewType === 'create'" size="mini" class="el-icon-edit-outline" @click="fnViewInsertPrvAs()">{{ $t('등록') }}</el-button>
-        <el-button size="mini" class="el-icon-close" @click="close()">{{ $t('exit') }}</el-button>
+        <el-button size="mini" class="el-icon-close" @click="isClose()">{{ $t('exit') }}</el-button>
       </div>
 
     </el-dialog>
@@ -202,7 +205,7 @@
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
 import { apiRequestModel, ipmsModelApis, ipmsJsonApis, apiRequestJson } from '@/api/ipms'
-
+import { mapState } from 'vuex'
 const routeName = 'ModalDetailPrivateAs'
 
 export default {
@@ -238,9 +241,16 @@ export default {
     }
   },
   computed: {
+    ...mapState({
+      adminYn: state => state.ipms.adminYn,
+      userId: state => state.user.info.Uid
+    }),
     isReadOnly() {
       return !(this.viewType === 'create' || this.viewType === 'edit')
     },
+    isTitle() {
+      return this.viewType === 'edit' ? '사설AS 상세 수정' : '사설AS 상세'
+    }
   },
    watch: {
     nexistSales(val) {
@@ -272,10 +282,12 @@ export default {
     },
     onOpen(model, actionMode) {
       this.viewType = model.type
-      if (model.type === 'detail') {
-        this.resultVo = model.row
+      this.resultVo = model.row
+      this.onSetValue()
+    },
+    onSetValue() {
+      if (this.viewType === 'detail') {
         const { srequestAsCtm, dcreateDt, dapvDt, srequestAsObjNm1, srequestAsObjNm2, srequestAsObjLlnum1, srequestAsObjLlnum2, drequestAsObjOpenDt1, drequestAsObjOpenDt2, scomment, sasTpicNm, sasTpicOrg, sexistSpLine, saltSpLine, nexistSales, naltSales } = this.resultVo
-
         this.srequestAsCtm = srequestAsCtm
         this.dcreateDt = dcreateDt
         this.dapvDt = dapvDt
@@ -293,7 +305,22 @@ export default {
         this.nexistSales = nexistSales
         this.naltSales = naltSales
       } else {
-        this.resultVo = {}
+        this.srequestAsCtm = ''
+        this.dcreateDt = ''
+        this.dapvDt = ''
+        this.srequestAsObjNm1 = ''
+        this.srequestAsObjNm2 = ''
+        this.srequestAsObjLlnum1 = ''
+        this.srequestAsObjLlnum2 = ''
+        this.drequestAsObjOpenDt1 = ''
+        this.drequestAsObjOpenDt2 = ''
+        this.scomment = ''
+        this.sasTpicNm = ''
+        this.sasTpicOrg = ''
+        this.sexistSpLine = ''
+        this.saltSpLine = ''
+        this.nexistSales = ''
+        this.naltSales = ''
       }
     },
      onChangeMode() {
@@ -324,7 +351,7 @@ export default {
         this.$message('기존 속도/가입 회선 수를 입력하세요')
         return
       }
-
+      let res
       try {
           const tbRequestAsApyTxnVo = {
             nrequestAsApyTxnSeq: this.resultVo.nrequestAsApyTxnSeq,
@@ -346,13 +373,14 @@ export default {
             ...(this.drequestAsObjOpenDt1 !== '' && { drequestAsObjOpenDt1: this.drequestAsObjOpenDt1 }),
             ...(this.drequestAsObjOpenDt2 !== '' && { drequestAsObjOpenDt2: this.drequestAsObjOpenDt2 }),
           }
-        const res = await apiRequestJson(ipmsJsonApis.updatePrivateAs, tbRequestAsApyTxnVo)
+         res = await apiRequestJson(ipmsJsonApis.updatePrivateAs, tbRequestAsApyTxnVo)
           if (res.tbRequestAsApyTxnVo.commonMsg === 'SUCCESS') {
           this.$message.success({ message: `사설 AS정보가 정상적으로 수정 되었습니다.` })
-          this.$emit('reloadData')
+          this.$emit('reload')
+          this.close()
           }
         } catch (error) {
-          this.$message.error({ message: `수정에 실패했습니다.` })
+          this.$message.error({ message: `${res.commonMsg}` })
           console.log(error)
         }
     },
@@ -365,14 +393,13 @@ export default {
           const tbRequestAsApyTxnVo = {
             nrequestAsApyTxnSeq: this.resultVo.nrequestAssignSeq,
             srequestAsTypeCd: 'RS0204',
-            sapvuserId: 'suserId'
+            sapvuserId: this.$store.state.user.info.Uid
           }
           const res = await apiRequestJson(ipmsJsonApis.updateNrequestAsSeqYn, tbRequestAsApyTxnVo)
             if (res.tbRequestAsApyTxnVo.commonMsg === 'SUCCESS') {
              this.fnReturnAsMstSubmit(this.resultVo.nrequestAsSeq)
             }
           } catch (error) {
-            this.$message.error({ message: `삭제에 실패했습니다.` })
             console.log(error)
           }
         })
@@ -383,7 +410,7 @@ export default {
           nrequestAsSeq: nrequestAsSeq,
           srequestAsTypeCd: 'N',
           srequestAsTypeNm: '미사용',
-          smodifyId: 'suserId'
+          smodifyId: this.$store.state.user.info.Uid
         }
         const res = await apiRequestJson(ipmsJsonApis.updateTbRequestAsMst, tbRequestAsMstVo)
         if (res.tbRequestAsMstVo.commonMsg === 'SUCCESS') {
@@ -421,7 +448,7 @@ export default {
           nrequestAsApyTcnSeq: nrequestAsApyTxnSeq,
           nrequestAsSeq: serNrequestAsSeq,
           srequestAsTypeCd: 'RS0202',
-          sapvuserId: 'suserID',
+          sapvuserId: this.$store.state.user.info.Uid,
           screateId: this.resultVo.screateId,
         }
         const res = await apiRequestJson(ipmsJsonApis.updateNrequestAsSeqYn, TbRequestAsApyTxnVo)
@@ -438,7 +465,7 @@ export default {
           nrequestAsSeq: serNrequestAsSeq,
           srequestAsTypeCd: 'Y',
           srequestAsTypeNm: '사용',
-          smodifyId: 'suserId',
+          smodifyId: this.$store.state.user.info.Uid
         }
         const res = await apiRequestJson(ipmsJsonApis.updateTbRequestAsMst, tbRequestAsMstVo)
         if (res.tbRequestAsMstVo.commonMsg === 'SUCCESS') {
@@ -456,6 +483,8 @@ export default {
       const res = await apiRequestJson(ipmsJsonApis.insertAsHist, tbRequestAsApyTxnVo)
         if (res.tbRequestAsApyTxnVo.commonMsg === 'SUCCESS') {
           this.$message('사설AS 상태가 정상적으로 변경되었습니다.')
+          this.$emit('reload')
+          this.close()
         }
       } catch (error) {
         console.log(error)
@@ -489,10 +518,9 @@ export default {
       }
 
       try {
-        // const sessionUserId = this.sessionScope.user.suserId
           const tbRequestAsApyTxnVo = {
-            smodifyId: 'userId',
-            screateId: 'userId',
+            smodifyId: this.$store.state.user.info.Uid,
+            screateId: this.$store.state.user.info.Uid,
             srequestAsCtm: this.srequestAsCtm,
             srequestAsObjNm1: this.srequestAsObjNm1,
             srequestAsObjLlnum1: this.srequestAsObjLlnum1,
@@ -514,7 +542,8 @@ export default {
         const res = await apiRequestJson(ipmsJsonApis.insertPrivateAs, tbRequestAsApyTxnVo)
         if (res.tbRequestAsApyTxnVo.commonMsg === 'SUCCESS') {
           this.$message('사설AS정보가 정상적으로 등록되었습니다.')
-          this.$emit('reloadData')
+          this.$emit('reload')
+          this.close()
         }
       } catch (error) {
         this.$message.error({ message: '등록에 실패했습니다.' })
@@ -530,12 +559,14 @@ export default {
         const tbRequestAsApyTxnVo = {
           nrequestAsApyTxnSeq: this.resultVo.nrequestAsApyTxnSeq,
           srequestAsTypeCd: 'RS0203',
-          sapvuserId: 'suserId',
+          sapvuserId: this.$store.state.user.info.Uid,
           screateId: this.resultVo.createId,
         }
         const res = await apiRequestJson(ipmsJsonApis.updateNrequestAsSeqYn, tbRequestAsApyTxnVo)
         if (res.tbRequestAsApyTxnVo.commonMsg === 'SUCCESS') {
           this.$message('사설AS정보가 정상적으로 반려되었습니다.')
+          this.$emit('reload')
+          this.close()
         }
         } catch (error) {
           this.$message.error({ message: '반려에 실패했습니다.' })
@@ -544,7 +575,7 @@ export default {
       })
     },
     fnDeletePrvAsSubmit() { /* 신청취소 */
-      this.$confirm('신청정보가 삭제됩니다. 정말 신청취소 하시겠습니까?', '신청정보가 삭제', {
+      this.$confirm('신청정보가 삭제됩니다. 정말 신청취소 하시겠습니까?', '신청 정보 저장 알림', {
           confirmButtonText: '확인',
           cancelButtonText: '취소'
         }).then(async() => {
@@ -555,6 +586,8 @@ export default {
           const res = await apiRequestJson(ipmsJsonApis.deletePrivateAs, tbRequestAsApyTxnVo)
             if (res.tbRequestAsApyTxnVo.commonMsg === 'SUCCESS') {
              this.$message('사설AS정보가 정상적으로 취소되었습니다.')
+             this.$emit('reload')
+             this.close()
             }
           } catch (error) {
             this.$message.error({ message: '취소에 실패했습니다.' })
@@ -562,7 +595,20 @@ export default {
           }
         })
       },
-    onClose() { },
+    isClose() {
+        if (this.viewType === 'edit') {
+          this.$confirm('작성한 정보가 삭제됩니다. 팝업창을 닫겠습니까?', '신청 정보 저장 알림', {
+            confirmButtonText: '확인',
+            cancelButtonText: '취소'
+          }).then(async () => {
+            this.close()
+          }).catch(() => {
+            return
+          })
+        } else {
+          this.close()
+        }
+      }
   },
 }
 </script>

@@ -83,7 +83,7 @@ function getOutputDir() {
       dir = '../BE/app-nia/src/main/resources/static'
         break
     case 'ipms':
-      dir = '../BE/app-nia/src/main/resources/static' // 임시설정
+      dir = '../BE/app-ipms/src/main/resources/static' // 임시설정
         break
   }
   console.log(`OutputDir=${dir}`)

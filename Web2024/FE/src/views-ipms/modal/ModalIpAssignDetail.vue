@@ -228,15 +228,16 @@ export default {
             }
           ]
         }
+        let res
        try {
-       const res = await apiRequestJson(ipmsJsonApis.updateAsgnIPMst, tbIpAssignMstComplexVo)
+        res = await apiRequestJson(ipmsJsonApis.updateAsgnIPMst, tbIpAssignMstComplexVo)
           if (res.commonMsg === 'SUCCESS') {
             this.$message({ message: 'IP블록 반납이 정상적으로 처리되었습니다.', type: 'success' })
-            this.$emit('reloadData')
+            this.$emit('reload')
             this.close()
           }
       } catch (error) {
-        this.error(error)
+        this.$message.error({ message: `${res.commonMsg}` })
       }
     },
      async fnScommentUpdateClick() {
@@ -244,15 +245,16 @@ export default {
         srcIpAssignMstVo: { scomment: this.ipAssignVo.scomment },
         destIpAssignMstVos: [{ nipAssignMstSeq: this.ipAssignVo.nipAssignMstSeq }]
       }
+      let res
       try {
-        const res = await apiRequestJson(ipmsJsonApis.updateScommentAsgnIPMst, tbIpAssignMstComplexVo)
+         res = await apiRequestJson(ipmsJsonApis.updateScommentAsgnIPMst, tbIpAssignMstComplexVo)
         if (res.commonMsg === 'SUCCESS') {
           this.$message('비고 수정이 정상적으로 처리되었습니다.')
-        } else {
-          this.$message(res.commonMsg)
+          this.$emit('reload')
+          this.close()
         }
       } catch (error) {
-        this.error(error)
+        this.$message.error({ message: `${res.commonMsg}` })
       }
     },
   },

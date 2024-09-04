@@ -3,7 +3,7 @@
     <DynamicComponentLoader
       ref="searchCondition"
       :component-keys="componentList"
-      @handle-search="handleSearch"
+      @handle-search="onloadIpAssign"
     />
     <el-col ref="tableContainer" :span="24">
       <compTable
@@ -30,9 +30,9 @@
           </div>
         </template>
       </comptable>
-      <ModalIpBlockDivision ref="ModalIpBlockDivision" />
-      <ModalIpAssignDetail ref="ModalIpAssignDetail" />
-      <ModalIpAssign ref="ModalIpAssign" />
+      <ModalIpBlockDivision ref="ModalIpBlockDivision" @reload="onloadIpAssign()" />
+      <ModalIpAssignDetail ref="ModalIpAssignDetail" @reload="onloadIpAssign()" />
+      <ModalIpAssign ref="ModalIpAssign" @reload="onloadIpAssign()" />
       <ModalCheckTacsIpBlock ref="ModalCheckTacsIpBlock" />
       <ModalIpAssignMerge ref="ModalIpAssignMerge" @reload="fnViewListIpAllocMst($refs.searchCondition.requestParameter)" />
       <ModalDetailSummary ref="ModalDetailSummary" />
@@ -137,9 +137,6 @@ export default {
     }
   },
   methods: {
-    handleSearch(requestParameter) {
-      this.onloadIpAssign(requestParameter)
-    },
     async onloadIpAssign(requestParameter) {
       try {
         const res = await apiRequestModel(ipmsModelApis.viewListAsgnIPMst, requestParameter)

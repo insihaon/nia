@@ -35,8 +35,8 @@
         </template>
       </compTable>
     </el-col>
-    <ModalIpBlockDetail ref="ModalIpBlockDetail" @reloadData="fnViewListIpBlockMst" />
-    <ModalAddIpBlock ref="ModalAddIpBlock" @reloadData="fnViewListIpBlockMst" />
+    <ModalIpBlockDetail ref="ModalIpBlockDetail" @reload="fnViewListIpBlockMst()" />
+    <ModalAddIpBlock ref="ModalAddIpBlock" @reload="fnViewListIpBlockMst()" />
   </el-row>
 </template>
 <script>

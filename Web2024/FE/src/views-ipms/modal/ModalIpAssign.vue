@@ -317,7 +317,7 @@ export default {
         const res = await apiRequestJson(ipmsJsonApis.updateAsgnIPMst, tbIpAssignMstComplexVo)
         if (res.commonMsg === 'SUCCESS') {
           this.$message('IP블록 배정이 정상적으로 처리되었습니다.')
-          this.$emit('reloadData')
+          this.$emit('reload')
           this.close()
         } else {
           this.$message.error({ message: `IP블록 배정에 실패했습니다.` })
