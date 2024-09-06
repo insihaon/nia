@@ -5,7 +5,7 @@ const state = {
     toParams: null,
     adminYn: 'Y',
     ownerYn: 'Y',
-    suserGradedCd: 'UR0001'
+    suserGradeCd: 'UR0001'
 }
 
 const mutations = {
@@ -21,8 +21,8 @@ const mutations = {
         state.ownerYn = value
     },
 
-    SET_SUSER_GRADED_CD(state, value) {
-        state.suserGradedCd = value
+    SET_SUSER_GRADE_CD(state, value) {
+        state.suserGradeCd = value
     }
 
 }

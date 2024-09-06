@@ -20,12 +20,18 @@
       >
         <template slot="text-description">
           <span>
-            사용자 권한 신청
+            사용자 권한 신청 정보 조회결과
           </span>
+        </template>
+        <template slot="add-features">
+          <div class="float-right">
+            <el-button size="mini" icon="el-icon-document-add" @click="fnViewDetailGrant('', 'create')">등록</el-button>
+          </div>
         </template>
       </compTable>
     </el-col>
     <ModalDetailUserAuth ref="ModalDetailUserAuth" @reload="fnViewListUserAuthSubs()" />
+    <ModalInsertUserAuth ref="ModalInsertUserAuth" @reload="fnViewListUserAuthSubs()" />
   </el-row>
 </template>
 <script>
@@ -35,12 +41,13 @@ import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoad
 import tableHeightMixin from '@/mixin/tableHeightMixin'
 import { ipmsModelApis, apiRequestModel } from '@/api/ipms'
 import ModalDetailUserAuth from '@/views-ipms/modal/notice/ModalDetailUserAuth.vue'
+import ModalInsertUserAuth from '@/views-ipms/modal/notice/ModalInsertUserAuth.vue'
 
 const routeName = 'AuthApply'
 
 export default {
   name: routeName,
-  components: { CompTable, DynamicComponentLoader, ModalDetailUserAuth },
+  components: { CompTable, DynamicComponentLoader, ModalDetailUserAuth, ModalInsertUserAuth },
   extends: Base,
   mixins: [tableHeightMixin],
   data() {
@@ -87,22 +94,37 @@ export default {
       this.fnViewDetailGrant(row, 'detail')
     },
     async fnViewDetailGrant(row, type) {
-       try {
-        const { suserId, grantSeq } = row
-        const tbUserAuthVo = {
+      if (type === 'detail') {
+        try {
+         const { suserId, grantSeq } = row
+         const tbUserAuthVo = {
             suserId: suserId,
             grantSeq: grantSeq
-        }
-        const res = await apiRequestModel(ipmsModelApis.viewDetailUserAuthSubs, tbUserAuthVo)
-        if (res.result.data) {
-          this.$refs.ModalDetailUserAuth.open({ row: res.result.data, type: type })
-        }
-      } catch (error) {
-        console.error(error)
+         }
+         const res = await apiRequestModel(ipmsModelApis.viewDetailUserAuthSubs, tbUserAuthVo)
+         if (res.result.data) {
+           this.$refs.ModalDetailUserAuth.open({ row: res.result.data, type: type })
+         }
+       } catch (error) {
+         console.error(error)
+       }
+      } else {
+        try {
+         const { suserId } = row
+         const tbUserAuthVo = {
+            suserId: suserId,
+            typeFlag: 'U'
+         }
+         const res = await apiRequestModel(ipmsModelApis.viewInsertUserAuthSubs, tbUserAuthVo)
+         if (res.result.data) {
+           this.$refs.ModalInsertUserAuth.open({ row: res.result.data, type: type })
+         }
+       } catch (error) {
+         console.error(error)
+       }
       }
     }
   },
 }
 </script>
-<style lang="scss" scoped>
-</style>
+

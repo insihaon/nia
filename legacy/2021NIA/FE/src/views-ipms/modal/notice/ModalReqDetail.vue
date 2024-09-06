@@ -17,7 +17,7 @@
     >
       <span slot="title">
         <i class="el-icon-document mr-2" style="font-size: 17px" />
-        요구사항 상세
+        {{ title }}
         <hr>
       </span>
 
@@ -97,8 +97,9 @@
                   class="upload-demo w-80"
                   action="https://jsonplaceholder.typicode.com/posts/"
                   :auto-upload="false"
+                  :on-change="handleFileChange"
                 >
-                  <el-button slot="trigger" size="small" style="font-size: larger; border: none; float: right" icon="el-icon-search" class="font-weight-bolder"></el-button>
+                  <el-button v-if="viewType !== 'detail'" slot="trigger" size="small" style="font-size: larger; border: none; float: right" icon="el-icon-search" class="font-weight-bolder"></el-button>
                 </el-upload>
               </td>
 
@@ -136,7 +137,7 @@
           <el-button size="mini" @click="fnUpdateSubmit()">{{ $t('수정') }}</el-button>
         </template>
         <template v-if="viewType === 'create'">
-          <el-button size="mini" @click="fnUpdateSubmit()">{{ $t('등록') }}</el-button>
+          <el-button size="mini" @click="fnInsertSubmit()">{{ $t('등록') }}</el-button>
         </template>
         <el-button size="mini" class="el-icon-close" @click="close()">{{ $t('exit') }}</el-button>
       </div>
@@ -149,6 +150,7 @@
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
 import { apiRequestModel, ipmsModelApis, ipmsJsonApis, apiRequestJson } from '@/api/ipms'
+import { mapState } from 'vuex'
 
 const routeName = 'ModalReqDetail'
 
@@ -172,6 +174,7 @@ export default {
         rboardContent: '',
         rboardProgress: '',
         rboardExpectedDate: '',
+        sUserNm: ''
       },
       actionContents: '',
       viewType: null,
@@ -188,10 +191,17 @@ export default {
         { label: '접수 반려', value: 'RES006' },
         { label: '조치 진행 중', value: 'RES006' },
         { label: '조치 완료', value: 'RES007' },
-      ]
+      ],
+      selectedFile: ''
     }
   },
   computed: {
+    ...mapState({
+      adminYn: state => state.ipms.adminYn,
+    }),
+    title() {
+      return this.viewType === 'detail' ? '요구사항 상세' : '요구사항 등록'
+    }
   },
   mounted() {
   },
@@ -208,8 +218,17 @@ export default {
        this.resultVo = {}
       }
     },
-    submitUpload() {
-      this.$refs.upload.submit()
+    handleFileChange(file, fileList) {
+      const allowedExtensions = ['pdf', 'jpg', 'png', 'txt', 'doc', 'ppt', 'xls', 'hwp', 'xlsx', 'pptx']
+      const fileName = file.raw.name
+      const fileExtension = fileName.split('.').pop().toLowerCase()
+
+      if (!allowedExtensions.includes(fileExtension)) {
+        this.$message.error('등록 할 수 없는 파일명입니다.')
+        this.$refs.upload.clearFiles()
+        return
+      }
+      this.selectedFile = file.raw
     },
    async fnUpdateSubmit() {
       if (this.resultVo.rboardTitle === '' || this.resultVo.rboardTitle === null) {
@@ -244,9 +263,25 @@ export default {
       let res
       try {
         const formData = {
-
+            file: this.selectedFile,
+            seq: this.resultVo.seq,
+            rboardTitle: this.resultVo.rboardTitle,
+            rboardDivision: this.resultVo.rboardDivision,
+            rboardDesireDate: this.resultVo.rboardDesireDate,
+            rboardPurposeRequest: this.resultVo.rboardPurposeRequest,
+            rboardImportance: this.resultVo.rboardImportance,
+            rboardContent: this.resultVo.rboardContent,
+            sUserNm: this.resultVo.sUserNm,
+            mail_type: 'Req-Update',
         }
-        res = await apiRequestJson(ipmsJsonApis.updateReq, formData)
+        if (this.adminYn === 'Y') {
+          this._merge(formData, {
+            actionContents: this.actionContents,
+            rboardProgress: this.resultVo.rboardProgress,
+            rboardExpectedDate: this.resultVo.actionContents
+          })
+        }
+        res = await apiRequestModel(ipmsModelApis.updateReq, formData)
         if (res.commonMsg) {
           this.$message('요구사항이 정상적으로 수정되었습니다.')
         }
@@ -254,7 +289,7 @@ export default {
         this.$message.error({ message: `${res.commonMsg}` })
         console.log(error)
       }
-    },
+   },
     fnDeleteSubmit() {
       this.$confirm('정말 삭제 하시겠습니까?', '요구사항 삭제', {
         confirmButtonText: '확인',
@@ -277,15 +312,67 @@ export default {
           }
         })
     },
+    async fnInsertSubmit() {
+       if (this.resultVo.rboardTitle === '' || this.resultVo.rboardTitle === null) {
+        this.$message('요청제목이 입력되지 않았습니다.')
+        return
+      }
+
+       if (this.resultVo.rboardDivision === '' || this.resultVo.rboardDivision === null) {
+        this.$message('요청사항 구분이 선택되지 않았습니다.')
+        return
+      }
+
+       if (this.resultVo.rboardDesireDate === '' || this.resultVo.rboardDesireDate === null) {
+        this.$message('희망완료일자가 입력되지 않았습니다.')
+        return
+      }
+
+       if (this.resultVo.rboardPurposeRequest === '' || this.resultVo.rboardPurposeRequest === null) {
+        this.$message('요청목적이 입력되지 않았습니다.')
+        return
+      }
+
+       if (this.resultVo.rboardImportance === '' || this.resultVo.rboardImportance === null) {
+        this.$message('중요도가 선택되지 않았습니다.')
+        return
+      }
+
+       if (this.resultVo.rboardContent === '' || this.resultVo.rboardContent === null) {
+        this.$message('요청내용이 입력되지 않았습니다.')
+        return
+      }
+      let res
+      try {
+        const formData = {
+            file: this.selectedFile,
+            rboardTitle: this.resultVo.rboardTitle,
+            rboardDivision: this.resultVo.rboardDivision,
+            rboardDesireDate: this.resultVo.rboardDesireDate,
+            rboardPurposeRequest: this.resultVo.rboardPurposeRequest,
+            rboardImportance: this.resultVo.rboardImportance,
+            rboardContent: this.resultVo.rboardContent,
+            sUserNm: this.resultVo.sUserNm,
+            mail_type: 'Req-Insert',
+        }
+        res = await apiRequestModel(ipmsModelApis.insertReq, formData)
+        if (res.commonMsg) {
+          this.$message('요구사항이 정상적으로 등록되었습니다.')
+        }
+      } catch (error) {
+        this.$message.error({ message: `${res.commonMsg}` })
+        console.log(error)
+      }
+    },
     isClose() {
         if (this.viewType === 'edit') {
           this.$confirm('신청정보가 삭제됩니다. 정말 신청취소 하시겠습니까?', '신청정보가 삭제', {
             confirmButtonText: '확인',
             cancelButtonText: '취소'
           }).then(async () => {
-            this.close() // 확인 버튼을 누르면 모달을 닫음
+            this.close()
           }).catch(() => {
-            // 취소 버튼을 누르면 아무 일도 일어나지 않음
+            /*  */
           })
         } else {
           this.close()

@@ -520,7 +520,6 @@ export default {
 
     this.updSsvcObjCd = null
 
-    // 노드 옵션을 불러옴
     const res = await apiRequestJson(ipmsJsonApis.selectAuthNodeList, tbLvlBasVo)
     this.ssvcObjNmOp = res?.tbLvlBasVos?.filter(v => v.ssvcObjCd !== '전체').map(v => {
       return { value: v.ssvcObjCd, label: v.ssvcObjNm }
