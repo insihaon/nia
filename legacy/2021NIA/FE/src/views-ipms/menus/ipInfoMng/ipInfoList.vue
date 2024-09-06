@@ -36,8 +36,9 @@
       </el-row>
     </div>
     <el-col ref="tableContainer">
-      <CompTable
+      <compTable
         ref="compTable"
+        :prop-name="name"
         :prop-table-height="'calc(100% - 80px)'"
         :prop-column="ipBlockColumns"
         :prop-data="resultList"
@@ -53,22 +54,6 @@
         </template>
       </CompTable>
     </el-col>
-    <!-- <el-row class="p-4">
-      <CompTable
-        :prop-table-height="300"
-        :prop-column="ipHostColumns"
-        :prop-is-pagination="false"
-        :prop-is-check-box="false"
-        prop-grid-menu-id="ipInfoList"
-        :prop-grid-indx="1"
-      >
-        <template slot="text-description">
-          <span>
-            IP Host 정보
-          </span>
-        </template>
-      </CompTable>
-    </el-row> -->
     <ModalIpInfoDetail ref="ModalIpInfoDetail" />
   </el-row>
 </template>
@@ -113,7 +98,7 @@ export default {
         { prop: 'ssaid', label: 'SAID', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'sllnum', label: '전용번호', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'sconnAlias', label: '수용회선명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: '상세', align: 'center', sortable: true, columnVisible: true, showOverflow: true,
+        { prop: '_detail', label: '상세', align: 'center', sortable: true, columnVisible: true, showOverflow: true,
           formatter: (row, col, value, index) => {
             return this.$createElement('el-button', {
               on: { click: () => {
@@ -125,16 +110,6 @@ export default {
         },
       ],
       resultList: []
-      // ipBlockColumns: [
-      //   { prop: '', label: 'IP 정보', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-      //   { prop: '', label: '시설 정보', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-      //   { prop: '', label: '회선 정보', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-      // ],
-      // ipHostColumns: [
-      //   { prop: '', label: 'IP 정보', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-      //   { prop: '', label: '시설 정보', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-      //   { prop: '', label: '회선 정보', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-      // ],
     }
   },
   watch: {

@@ -26,6 +26,8 @@
         />
         <el-col ref="tableContainer" :span="24">
           <compTable
+            ref="compTable"
+            :prop-name="name"
             :prop-table-height="300"
             :prop-data="tableDatas"
             :prop-column="tableColumns"

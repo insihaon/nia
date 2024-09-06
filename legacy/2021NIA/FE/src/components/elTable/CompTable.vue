@@ -4,17 +4,21 @@ copyright notice above does not evidence any actual or * intended publication of
 <template>
   <div v-loading="propLoading" class="compTable">
     <div class="tableThum">
-      <div><i class="el-icon-document" /> <slot name="text-description" /> <span class="countNum">( 총 {{ propIsPagination != false ? propPaginationData.total : propData.length }} 건 )</span></div>
+      <div class="d-flex items-baseline">
+        <i class="el-icon-document mr-1" />
+        <slot name="text-description" />
+        <span class="countNum">( 총 {{ propIsPagination != false ? propPaginationData.total : propData.length }} 건 )</span>
+        <i class="el-icon-s-tools ml-1 mt-1" @click="fn_click_settings" />
+      </div>
       <slot name="add-features" />
     </div>
-
     <el-table
       ref="table"
       class="cursor_pointer"
       size="mini"
       :cell-class-name="propHighlightCell"
-      border
       fit
+      border
       highlight-current-row
       :data="propData"
       :span-method="propSpanMethod"
@@ -26,16 +30,17 @@ copyright notice above does not evidence any actual or * intended publication of
       @row-contextmenu="fn_contextmenu"
       @select="fn_select"
       @select-all="fn_select"
+      @header-dragend="headerDragend"
     >
       <!-- @header-contextmenu="fn_headerContextmenu(...arguments, propGridMenuId, propGridIndx, propColumn, propSetColunm)"
       @header-dragend="fn_headerDragend(...arguments, propGridMenuId, propGridIndx, propColumn, propSetColunm)" -->
       <el-table-column v-if="propIsCheckBox" :index="0" type="selection" align="center" width="35" />
       <el-table-column
-        v-for="(item, index) in propColumn"
+        v-for="(item, index) in columnDefs"
         v-if="item.columnVisible"
         :key="index"
         :type="item.type"
-        :width="item.width + 30"
+        :width="item.width"
         :align="item.align"
         :prop="item.prop"
         :label="item.label"
@@ -62,7 +67,6 @@ copyright notice above does not evidence any actual or * intended publication of
         </template>
       </el-table-column>
     </el-table>
-
     <div v-if="propIsPagination != false" style="text-align: center; margin-top: 10px">
       <el-pagination
         :current-page.sync="propPaginationData.currentPage"
@@ -75,12 +79,16 @@ copyright notice above does not evidence any actual or * intended publication of
       <!-- :page-sizes="pageSizes" -->
     </div>
     <vue-simple-context-menu ref="propTableContext" element-id="propTable" :options="propRClickOptions" @option-clicked="propOnRClick" />
+    <SettingTableOptions ref="SettingTableOptions" :prop_name="propName" :prop_columns="propColumn" />
   </div>
 </template>
 
 <script>
 /* eslint-disable */
+import { Base } from '@/min/Base.min'
 import 'vue-simple-context-menu/dist/vue-simple-context-menu.css'
+import { array_equals } from '@/utils'
+import SettingTableOptions from '@/components/elTable/SettingTableOptions'
 
 const routeName = 'CompTable'
 
@@ -88,8 +96,11 @@ export default {
   name: routeName,
   components: {
     VueSimpleContextMenu: () => import('vue-simple-context-menu'),
+    SettingTableOptions
   },
+  extends: Base,
   props: {
+    propName: { type: String, default: '' },
     propColumn: { type: Array, default: [{ prop: '-', label: '-' }] }, //컬럼
     propData: {
       type: Array,
@@ -152,14 +163,78 @@ export default {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       tableSelectTemp: [],
-      tableColItem: {},
+      columnDefs: null,
+      savedColumnState: null,
+      resizeObserver: null
     }
   },
-  mounted() {
+  watch: {
+    propColumn(n, o) {
+      if(array_equals(n, o)) return
+
+      const THIS = this
+      setTimeout(() => {
+        THIS.updateColumnDefs()
+      }, 100)
+    }
   },
-  computed: {
+  mounted () {
+    setTimeout(() => {
+      this.init()
+    }, 10)
+    setTimeout(() => {
+      this.setDefaultWidth()
+    }, 100)
   },
   methods: {
+    headerDragend(newWidth, oldWidth, column, event) {
+      let savedColumnState
+      const name = this.propName
+      if(name) {
+        savedColumnState = JSON.parse(window.localStorage['savedColumnState'] || '{}')
+      }
+      const currentState = savedColumnState[name] ? savedColumnState[name] : this.propColumn
+      currentState.forEach(col => {
+        if(col.prop === column.property) {
+          col.width = newWidth
+        }
+        if(col.children) {
+          col.children.forEach(chCol => {
+            if(chCol.prop === column.property) {
+              chCol.width = newWidth
+            }
+          }) 
+        }
+      })
+      savedColumnState[name] = currentState
+      window.localStorage['savedColumnState'] = JSON.stringify(savedColumnState)
+    },
+    init() {
+      this.updateColumnDefs()
+    },
+    setDefaultWidth(){
+      this.$refs.table.columns.forEach(col => {
+        const el = document.querySelector(`th.${col.id}`)
+        if(el) {
+          this.headerDragend(el.clientWidth, null, col)
+        }
+      })
+    },
+    updateColumnDefs() {
+      const name = this.propName
+      let savedColumnState
+      if(name) {
+        savedColumnState = JSON.parse(window.localStorage['savedColumnState'] || '{}')[name]
+      }
+      if (!savedColumnState) {
+        savedColumnState = this.propColumn
+      }
+      if (!savedColumnState || !name) {
+        this.error('no order and visibility state to restore by, you must save order and visibility state first')
+        return
+      }
+      this.columnDefs = savedColumnState
+    },
     fn_select(all, current) {
       if (!this.propIsCheckBox) {
         return
@@ -196,7 +271,6 @@ export default {
           }
         }
       }
-
       this.$emit('update:propSelected', this.tableSelectTemp)
     },
     fn_contextmenu(row, colunm, event) {
@@ -224,11 +298,18 @@ export default {
       this.$emit('update:propPaginationData', temp_pagin)
       this.propOnPageSizeChange(temp_pagin.currentPage)
     },
+    fn_click_settings() {
+      this.$refs.SettingTableOptions.open()
+    },
   },
 }
 </script>
 <style lang="scss" scoped>
 ::v-deep .el-loading-spinner {
   left: 50%;
+}
+.el-icon-s-tools:hover {
+  opacity: 0.6;
+  cursor: pointer;
 }
 </style>

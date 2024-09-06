@@ -8,6 +8,7 @@
     <el-col ref="tableContainer" :span="24">
       <compTable
         ref="compTable"
+        :prop-name="name"
         :prop-table-height="'calc(100% - 80px)'"
         :prop-data="tableDatas"
         :prop-span-method="spanByIpmsIpblock"
@@ -117,7 +118,7 @@ export default {
       const ssvcLineTypeCd = this.ssvcLineTypeCd ?? 'CL0001'
       return [
         {
-          prop: '', label: '계위', children: [
+          prop: 'level', label: '계위', children: [
             { prop: 'ssvcLineTypeNm', label: '서비스망', align: 'center', columnVisible: true, showOverflow: true },
             { prop: 'ssvcGroupNm', label: '본부', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
             { prop: 'ssvcObjNm', label: '노드', align: 'center', columnVisible: true, showOverflow: true },
@@ -126,7 +127,7 @@ export default {
           ], align: 'center', columnVisible: true, showOverflow: true,
           },
         {
-          prop: '', label: 'IPMS', children: [
+          prop: 'ipms', label: 'IPMS', children: [
             { prop: 'pipmsIpPrefix', label: 'IP블록', align: 'center', columnVisible: true, showOverflow: true,
                 formatter: (row, col, value, index) => {
                   return this.$createElement('el-button', {
@@ -143,8 +144,8 @@ export default {
           ], align: 'center', columnVisible: true, showOverflow: true,
         },
         {
-          prop: '', label: '실제 라우팅 장비', children: [
-            { prop: '', label: 'IP블록', align: 'center', columnVisible: true, showOverflow: true,
+          prop: 'routing', label: '실제 라우팅 장비', children: [
+            { prop: 'pipmsIpPrefix', label: 'IP블록', align: 'center', columnVisible: true, showOverflow: true,
               formatter: (row, col, value, index) => {
                 if ([30, 29].includes(row.nroutingIpBitmask) && row.sneossDdYn === 'N') {
                   return this.$createElement('el-button', {
@@ -178,7 +179,7 @@ export default {
             { prop: 'sroutingUseYn', label: '사용여부', align: 'center', columnVisible: true, showOverflow: true },
           ], align: 'center', columnVisible: true, showOverflow: true,
         },
-        { prop: 'check', label: '', align: 'center', sortable: false, columnVisible: true, showOverflow: true, type: 'selection' },
+        { prop: 'check', label: '체크박스', align: 'center', sortable: false, columnVisible: true, showOverflow: true, type: 'selection' },
         { prop: 'ntargetCnt', label: '분할/병합 건수', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'scollect_dt', label: '장비수집일자', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'sexcpt_yn', label: '예외처리여부', align: 'center', sortable: true, columnVisible: true, showOverflow: true,
@@ -196,7 +197,7 @@ export default {
             }
           }
         },
-        { prop: '', label: 'IP할당/해지', align: 'center', sortable: true, columnVisible: true, showOverflow: true,
+        { prop: '_sallocGubun', label: 'IP할당/해지', align: 'center', sortable: true, columnVisible: true, showOverflow: true,
           formatter: (row, col, value, index) => {
             let btnLabel = '-'
             if (row.sallocGubun === 'ALLOC') {

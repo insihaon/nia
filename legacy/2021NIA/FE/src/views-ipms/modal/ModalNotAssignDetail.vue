@@ -34,6 +34,8 @@
         </div>
         <el-col :span="24">
           <compTable
+            ref="compTable"
+            :prop-name="name"
             :prop-data="tableDatas"
             :prop-table-height="300"
             :prop-column="tableColumns"

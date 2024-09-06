@@ -47,6 +47,9 @@ Vue.use(plugin, { echarts })
 import SvgIcon from '@jamescoyle/vue-icon'
 Vue.component('SvgIcon', SvgIcon)
 
+import ElTableDraggable from 'el-table-draggable'
+Vue.component('ElTableDraggable', ElTableDraggable)
+
 process.env.NODE_ENV === 'development' ? require('@/min/global') : require('@/min/global.min')
 
 Vue.use(LoadScript)
