@@ -91,28 +91,28 @@
                   </td>
                 </tr>
 
-                <!-- <template v-if="sessionScope.user.suserGradeCd === 'UR0001'"> -->
-                <template v-if="['RS0301', 'RS0302', 'RS0303', 'RS0304'].includes(resultVo.srequestAssignTypeCd)">
-                  <tr>
-                    <th class="first" scope="row">처리내용</th>
-                    <td colspan="5">
-                      <textarea id="txtAssignIpCnt" v-model="strtContents" rows="6" />
-                    </td>
-                  </tr>
-                  <tr>
-                    <th class="first" scope="row">배정 IP</th>
-                    <td colspan="5">
-                      <textarea v-model="sassigncontents" rows="5" />
-                    </td>
-                  </tr>
-                  <tr class="last">
-                    <th class="first" scope="row">배정 IP개수 (/24)</th>
-                    <td colspan="5">
-                      <textarea v-model="nassignIpCnt" class="w-90" @input="validateNumberInput" /> 개(/24 단위)
-                    </td>
-                  </tr>
+                <template v-if="suserGradeCd === 'UR0001'">
+                  <template v-if="['RS0301', 'RS0302', 'RS0303', 'RS0304'].includes(resultVo.srequestAssignTypeCd)">
+                    <tr>
+                      <th class="first" scope="row">처리내용</th>
+                      <td colspan="5">
+                        <textarea id="txtAssignIpCnt" v-model="strtContents" rows="6" />
+                      </td>
+                    </tr>
+                    <tr>
+                      <th class="first" scope="row">배정 IP</th>
+                      <td colspan="5">
+                        <textarea v-model="sassigncontents" rows="5" />
+                      </td>
+                    </tr>
+                    <tr class="last">
+                      <th class="first" scope="row">배정 IP개수 (/24)</th>
+                      <td colspan="5">
+                        <textarea v-model="nassignIpCnt" class="w-90" @input="validateNumberInput" /> 개(/24 단위)
+                      </td>
+                    </tr>
+                  </template>
                 </template>
-                <!-- </template> -->
 
                 <template v-else>
                   <tr>
@@ -143,7 +143,7 @@
       </div>
 
       <div slot="footer" class="dialog-footer">
-        <template v-if="suserGradedCd === 'UR0001'">
+        <template v-if="suserGradeCd === 'UR0001'">
           <el-button v-if="resultVo.srequestAssignTypeCd !== 'RS0303' || resultVo.srequestAssignTypeCd !== 'RS0304'" size="mini" class="el-icon-document-checked float-left" @click="fnIpAssign()">{{ $t('배정') }}</el-button>
           <el-button size="mini" @click="fnApproveIpAssignApy()">{{ $t('승인') }}</el-button>
           <el-button size="mini" @click="fnRejectIpAssignApy()">{{ $t('반송') }}</el-button>
@@ -195,7 +195,7 @@ export default {
     ...mapState({
       adminYn: state => state.ipms.adminYn,
       suserId: state => state.user.info.Uid,
-      suserGradedCd: state => state.ipms.suserGradedCd,
+      suserGradeCd: state => state.ipms.suserGradeCd,
     }),
     isTitle() {
       return this.isViewType === 'detail' ? 'IP 배정신청 상세정보' : 'IP 배정신청 상세정보 수정'
