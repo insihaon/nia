@@ -63,6 +63,7 @@
     <el-col ref="tableContainer" :span="24">
       <compTable
         ref="compTable"
+        :prop-name="name"
         :prop-table-height="'calc(100% - 80px)'"
         :prop-data="tableDatas"
         :prop-column="tableColumns"

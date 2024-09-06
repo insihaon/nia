@@ -3,6 +3,8 @@
   <el-row class="w-100 h-100 px-0">
     <el-col :span="24">
       <compTable
+        ref="compTable"
+        :prop-name="name"
         :prop-table-height="300"
         :prop-column="tableColumns"
         :prop-is-pgination="false"

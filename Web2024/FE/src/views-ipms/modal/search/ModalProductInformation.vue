@@ -27,6 +27,8 @@
         />
         <el-col :span="24">
           <compTable
+            ref="compTable"
+            :prop-name="name"
             :prop-table-height="300"
             :prop-column="tableColumns"
             :prop-is-pagination="false"

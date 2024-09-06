@@ -7,6 +7,8 @@
     />
     <el-col ref="tableContainer" :span="24">
       <compTable
+        ref="compTable"
+        :prop-name="name"
         :prop-table-height="'calc(100% - 80px)'"
         :prop-column="tableColumns"
         :prop-is-pagination="true"
@@ -47,7 +49,7 @@ export default {
         { prop: '', label: '노드', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: '', label: '계위관리', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         {
-          prop: '', label: '오더계위(SON)', children: [
+          prop: 'son'/* 컬럼 설정시 필요함 빈 값으로 두지마세요 */, label: '오더계위(SON)', children: [
             { prop: '', label: '국사수', align: 'center', columnVisible: true, showOverflow: true },
             { prop: '', label: '관리', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
           ],
@@ -56,7 +58,7 @@ export default {
           showOverflow: true,
         },
         {
-          prop: '', label: '시설계위(FM)', children: [
+          prop: 'fm'/* 컬럼 설정시 필요함 빈 값으로 두지마세요 */, label: '시설계위(FM)', children: [
             { prop: '', label: '국사수', align: 'center', columnVisible: true, showOverflow: true },
             { prop: '', label: '관리', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
           ],
