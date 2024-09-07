@@ -108,7 +108,7 @@ myconf:
     url: /ws-stomp
     heartbeat.enabled: false 
   auth:
-    use: false #auth.use
+    use: true #auth.use
     otp: 
       use: false #otp.use
     single-only: false
