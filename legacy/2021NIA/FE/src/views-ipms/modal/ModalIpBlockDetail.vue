@@ -169,16 +169,17 @@ export default {
         confirmButtonText: '확인',
         cancelButtonText: '취소'
       }).then(async() => {
+        let res
         try {
           const param = { nipBlockMstSeq: this.resultVo.nipBlockMstSeq }
-          const res = await apiRequestJson(ipmsJsonApis.deleteCrtIPMst, param)
+           res = await apiRequestJson(ipmsJsonApis.deleteCrtIPMst, param)
            if (res.commonMsg === 'SUCCESS') {
             this.$message.success({ message: `삭제되었습니다.` })
             this.$emit('reload')
             this.close()
             }
           } catch (error) {
-            this.$message.error({ message: `삭제에 실패했습니다.` })
+            this.$message.error({ message: `${res.commonMsg}` })
             console.log(error)
           }
         })
@@ -189,7 +190,7 @@ export default {
           this.$message.error('생성차수 수정정보가 잘못되었습니다.')
           return
       }
-
+      let res
       try {
           const tbIpBlockVo = {
             sipCreateTypeCd: this.resultVo.sipCreateTypeCd,
@@ -201,17 +202,17 @@ export default {
             //  const searchSipCreateSeqCd = tbIpBlockMstVo.sipCreateSeqCd
           // const res = await ipmsJsonApis(ipmsJsonApis.selectListSipCreateSeqCd, tbIpBlockVo)
 
-          const res = await apiRequestJson(ipmsJsonApis.updateCrtIPMst, tbIpBlockVo)
+         res = await apiRequestJson(ipmsJsonApis.updateCrtIPMst, tbIpBlockVo)
 
            if (res.commonMsg === 'SUCCESS') {
               this.$message('IP블록 수정이 정상적으로 처리되었습니다.')
               this.$emit('reload')
               this.close()
            }
-      } catch (error) {
-          this.$message.error({ message: `IP블록 수정에 실패했습니다.` })
-          console.error(error)
-      }
+        } catch (error) {
+            this.$message.error({ message: `${res.commonMsg}` })
+            console.error(error)
+        }
     },
     isClose() {
         if (this.type === 'edit') {

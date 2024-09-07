@@ -7,6 +7,8 @@
     />
     <el-col ref="tableContainer" :span="24">
       <compTable
+        ref="compTable"
+        :prop-name="name"
         :prop-table-height="'calc(100% - 80px)'"
         :prop-data="resultList"
         :prop-column="tableColumns"
@@ -32,7 +34,7 @@ import tableHeightMixin from '@/mixin/tableHeightMixin'
 import { getStatColumn } from '@/views-ipms/js/common-function'
 import { ipmsModelApis, apiRequestModel } from '@/api/ipms'
 
-const routeName = 'ipStatByService'
+const routeName = 'IpStatByService'
 
 export default {
   name: routeName,
@@ -87,4 +89,5 @@ export default {
   },
 }
 </script>
-<style lang="css" scoped></style>
+<style lang="scss" scoped>
+</style>

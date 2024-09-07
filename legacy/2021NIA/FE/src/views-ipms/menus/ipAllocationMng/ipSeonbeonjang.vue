@@ -9,6 +9,7 @@
       <el-col class="h-100" :span="12">
         <compTable
           ref="seonbeonjangTable"
+          :prop-name="name"
           :prop-table-height="'calc(100% - 80px)'"
           :prop-data="tableDatas"
           :prop-column="tableColumns"
@@ -38,6 +39,7 @@
         <compTable
           v-if="tableDatas.length > 0"
           ref="hostTable"
+          :prop-name="name"
           :prop-table-height="'calc(100% - 80px)'"
           :prop-data="hostTableDatas"
           :prop-column="hostTableColumns"

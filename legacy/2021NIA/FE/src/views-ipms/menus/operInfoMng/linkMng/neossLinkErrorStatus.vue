@@ -6,6 +6,8 @@
     />
     <el-col :span="24">
       <compTable
+        ref="compTable"
+        :prop-name="name"
         :prop-table-height="'calc(100% - 80px)'"
         :prop-column="tableColumns"
         :prop-is-pagination="true"

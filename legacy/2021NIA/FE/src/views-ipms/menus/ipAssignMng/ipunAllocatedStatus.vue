@@ -7,6 +7,8 @@
     />
     <el-col ref="tableContainer" :span="24">
       <compTable
+        ref="compTable"
+        :prop-name="name"
         :prop-table-height="'calc(100% - 80px)'"
         :prop-data="tableDatas"
         :prop-column="tableColumns"
@@ -52,10 +54,10 @@ export default {
     tableColumns() {
       const _THIS = this
       return [
-        { prop: 'nlvlMstSeq', label: '', align: 'center', sortable: true, columnVisible: false, showOverflow: true },
+        // { prop: 'nlvlMstSeq', label: '', align: 'center', sortable: true, columnVisible: false, showOverflow: true },
         { prop: 'ssvcLineTypeNm', label: '서비스망', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'ssvcGroupNm', label: '본부', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'ssvcObjNm', label: '노드', align: 'center', sortable: true, columnVisible: false, showOverflow: true },
+        // { prop: 'ssvcObjNm', label: '노드', align: 'center', sortable: true, columnVisible: false, showOverflow: true },
         { prop: 'nUnAssignBlockCnt', label: '미배정', align: 'center', sortable: true, columnVisible: true, showOverflow: true,
           formatter: (row, col, value, index) => {
             if (row.nUnAssignBlockCnt > 0) {

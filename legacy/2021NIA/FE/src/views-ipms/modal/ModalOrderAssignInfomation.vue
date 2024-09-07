@@ -33,6 +33,8 @@
         <el-row>
           <el-col :span="24">
             <compTable
+              ref="compTable"
+              :prop-name="name"
               :prop-data="tableDatas"
               :prop-table-height="200"
               :prop-column="tableColumns"

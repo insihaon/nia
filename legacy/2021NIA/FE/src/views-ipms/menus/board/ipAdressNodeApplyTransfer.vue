@@ -7,6 +7,8 @@
     />
     <el-col ref="tableContainer" :span="24">
       <compTable
+        ref="compTable"
+        :prop-name="name"
         :prop-table-height="'calc(100% - 80px)'"
         :prop-column="tableColumns"
         :prop-data="resultListVo"
@@ -57,7 +59,7 @@ export default {
         { prop: 'seq', label: '번호', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'pipPrefix', label: 'IP블록', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         {
-          prop: '',
+          prop: 'defore',
           label: '변경전',
           children: [
             { prop: 'beforeSsvcLineTypeNm', label: '서비스망', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
@@ -70,7 +72,7 @@ export default {
           showOverflow: true,
         },
         {
-          prop: '',
+          prop: 'after',
           label: '변경후',
           children: [
             { prop: 'afterSsvcLineTypeNm', label: '서비스망', align: 'center', sortable: true, columnVisible: true, showOverflow: true },

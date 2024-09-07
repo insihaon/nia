@@ -5,6 +5,7 @@ const state = {
     toParams: null,
     adminYn: 'Y',
     ownerYn: 'Y',
+    suserGradeCd: 'UR0001'
 }
 
 const mutations = {
@@ -18,6 +19,10 @@ const mutations = {
 
     SET_OWNER_YN(state, value) {
         state.ownerYn = value
+    },
+
+    SET_SUSER_GRADE_CD(state, value) {
+        state.suserGradeCd = value
     }
 
 }
@@ -34,6 +39,7 @@ const actions = {
     setOwnerYn({ commit }, value) {
         commit('SET_OWNER_YN', value)
     }
+
 }
 
 export default {

@@ -36,14 +36,14 @@ export function getStatColumn(type, svcList) {
     /* type : routing, orgService, service, blockSize */
     const resultColumns = type === 'service' ? [
         {
-            prop: '', label: '', children: [
+            prop: 'level', label: '계위', children: [
                 { prop: 'sassign_type_nm', label: '서비스', align: 'center', columnVisible: true, showOverflow: true },
                 { prop: 'sip_create_type_nm', label: '공인/사설', align: 'center', columnVisible: true, showOverflow: true },
             ], align: 'center', columnVisible: true, showOverflow: true,
         },
     ] : [
         {
-            prop: '', label: '계위', children: [
+            prop: 'level', label: '계위', children: [
                 { prop: 'ssvc_line_type_nm', label: '서비스망', align: 'center', columnVisible: true, showOverflow: true },
                 { prop: 'ssvc_group_nm', label: '본부', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
                 { prop: 'ssvc_obj_nm', label: '노드', align: 'center', columnVisible: true, showOverflow: true },
@@ -79,7 +79,8 @@ export function getStatColumn(type, svcList) {
                 prop: rateProp, label: childrenPropByLabel[propKey[3]], align: 'center', columnVisible: ['routing', 'orgService'].includes(type), showOverflow: true, formatter: (row, col, value, index) => { return typeof value === 'number' ? value + '%' : value }
             },
         ]
-        const column = { prop: '', label: svc.code !== 'all' && type === 'blockSize' ? '/' + svc.name : svc.name, children, align: 'center', columnVisible: true, showOverflow: true }
+        const label = svc.code !== 'all' && type === 'blockSize' ? '/' + svc.name : svc.name
+        const column = { prop: label, label: label, children, align: 'center', columnVisible: true, showOverflow: true }
         resultColumns.push(column)
     })
     return resultColumns

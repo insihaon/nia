@@ -9,6 +9,7 @@
     <el-col ref="tableContainer" :span="24">
       <compTable
         ref="compTable"
+        :prop-name="name"
         :prop-table-height="'calc(100% - 120px)'"
         :prop-column="tableColumns"
         :prop-is-pagination="true"
@@ -69,7 +70,7 @@ export default {
         { key: 'SortType', props: {} },
       ],
       tableColumns: [
-        { prop: 'nipBlockMstSeq', label: '', align: 'center', propIsCheckBox: true, columnVisible: false, showOverflow: true },
+        // { prop: 'nipBlockMstSeq', label: '', align: 'center', propIsCheckBox: true, columnVisible: false, showOverflow: true },
         { prop: 'sipCreateTypeNm', label: '공인/사설', align: 'center', sortable: true, propIsCheckBox: true, columnVisible: true, showOverflow: true },
         { prop: 'sipCreateSeqNm', label: '생성차수', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'ssvcLineTypeNm', label: '서비스망', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
@@ -84,8 +85,8 @@ export default {
         { prop: 'dmodifyDt', label: '작업일자', align: 'center', sortable: true, columnVisible: true, showOverflow: true,
           formatter: (row) => moment(row.dmodifyDt).format('YYYY-MM-DD')
         },
-        { prop: 'sipCreateSeqCd', label: '생성차수코드', align: 'center', sortable: true, columnVisible: false, showOverflow: true },
-        { prop: 'sipVersionTypeNm', label: '', align: 'center', sortable: true, columnVisible: false, showOverflow: true }
+        // { prop: 'sipCreateSeqCd', label: '생성차수코드', align: 'center', sortable: true, columnVisible: false, showOverflow: true },
+        // { prop: 'sipVersionTypeNm', label: '', align: 'center', sortable: true, columnVisible: false, showOverflow: true }
       ],
       resultListVo: [],
       selectedChecks: null,
@@ -112,7 +113,7 @@ export default {
         this.resultListVo = res?.result.data
         this.requestParam = requestParameter
         this.$nextTick(() => {
-          this.$refs.compTable.$refs.table.selection.push(this.IpBlockData[0])
+          this.$refs.compTable.$refs.table.selection.push(this.resultListVo[0])
         })
       } catch (error) {
         console.error(error)

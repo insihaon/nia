@@ -7,6 +7,8 @@
     />
     <el-col ref="tableContainer" :span="24">
       <compTable
+        ref="compTable"
+        :prop-name="name"
         :prop-table-height="'calc(100% - 80px)'"
         :prop-column="tableColumns"
         :prop-is-pagination="false"
@@ -29,7 +31,8 @@
       </compTable>
       <ModalAssignApyDetail ref="ModalAssignApyDetail" @reload="fnViewListAssignApyTxn()" />
       <ModalAssignApyInsert ref="ModalAssignApyInsert" @reload="fnViewListAssignApyTxn()" />
-    </el-col></el-row>
+    </el-col>
+  </el-row>
 </template>
 <script>
 import { Base } from '@/min/Base.min'

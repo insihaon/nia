@@ -499,18 +499,32 @@ export default {
         })
     },
     async handleChangeLvl1() {
-      const tbLvlBasVo = { ssvcLineTypeCd: this.updSsvcLineTypeCd }
-      const res = await apiRequestJson(ipmsJsonApis.selectAuthCenterList, tbLvlBasVo)
-      this.ssvcGroupNmOp = res?.tbLvlBasVos?.filter(v => v.ssvcGroupNm !== '전체').map(v => { return { value: v.ssvcGroupCd, label: v.ssvcGroupNm } })
-    },
-    async handleChangeLvl2() {
-      const tbLvlBasVo = {
-        ssvcLineTypeCd: this.updSsvcLineTypeCd,
-        ssvcGroupCd: this.updSsvcGroupCd,
-      }
-      const res = await apiRequestJson(ipmsJsonApis.selectAuthNodeList, tbLvlBasVo)
-      this.ssvcObjNmOp = res?.tbLvlBasVos?.filter(v => v.ssvcObjCd !== '전체').map(v => { return { value: v.ssvcObjCd, label: v.ssvcObjNm } })
-    },
+    const tbLvlBasVo = { ssvcLineTypeCd: this.updSsvcLineTypeCd }
+
+    this.updSsvcGroupCd = null
+    this.updSsvcObjCd = null
+
+    const res = await apiRequestJson(ipmsJsonApis.selectAuthCenterList, tbLvlBasVo)
+    this.ssvcGroupNmOp = res?.tbLvlBasVos?.filter(v => v.ssvcGroupNm !== '전체').map(v => {
+      return { value: v.ssvcGroupCd, label: v.ssvcGroupNm }
+    })
+
+    this.ssvcObjNmOp = []
+  },
+
+  async handleChangeLvl2() {
+    const tbLvlBasVo = {
+      ssvcLineTypeCd: this.updSsvcLineTypeCd,
+      ssvcGroupCd: this.updSsvcGroupCd,
+    }
+
+    this.updSsvcObjCd = null
+
+    const res = await apiRequestJson(ipmsJsonApis.selectAuthNodeList, tbLvlBasVo)
+    this.ssvcObjNmOp = res?.tbLvlBasVos?.filter(v => v.ssvcObjCd !== '전체').map(v => {
+      return { value: v.ssvcObjCd, label: v.ssvcObjNm }
+    })
+  },
     toggleAll() {
       this.updSsvcGroupCd = ''
       this.updSsvcObjCd = ''

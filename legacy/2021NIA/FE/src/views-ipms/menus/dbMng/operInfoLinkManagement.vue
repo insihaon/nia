@@ -7,6 +7,8 @@
     />
     <el-col ref="tableContainer" :span="24">
       <compTable
+        ref="compTable"
+        :prop-name="name"
         :prop-table-height="'calc(100% - 80px)'"
         :prop-data="tableDatas"
         :prop-column="tableColumns"
@@ -42,7 +44,7 @@ import tableHeightMixin from '@/mixin/tableHeightMixin'
 import { ipmsModelApis, apiRequestModel, apiRequestJson, ipmsJsonApis } from '@/api/ipms'
 import { onMessagePopup } from '@/utils'
 
-const routeName = 'operInfoLinkManagement'
+const routeName = 'OperInfoLinkManagement'
 
 export default {
   name: routeName,
@@ -67,7 +69,7 @@ export default {
         { prop: 'sllnum', label: '전용번호', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'sconnalias', label: '수용회선명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'dmodifyDt', label: '작업일자', align: 'center', sortable: true, columnVisible: true, showOverflow: true, formatter: (row) => { return row?.dmodifyDt ? this.moment(row.dmodifyDt).format('YYYY-MM-DD') : '' } },
-        { prop: '', label: '삭제', align: 'center', sortable: true, columnVisible: true, showOverflow: true,
+        { prop: 'del', label: '삭제', align: 'center', sortable: true, columnVisible: true, showOverflow: true,
           formatter: (row, col, value, index) => {
             return this.$createElement('el-button', {
             on: { click: () => {

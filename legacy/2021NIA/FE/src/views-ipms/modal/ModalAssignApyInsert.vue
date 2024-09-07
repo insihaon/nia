@@ -166,22 +166,40 @@ export default {
         if (num) {
           ssvcLineTypeCd = num
         } else {
-         ssvcLineTypeCd = this.updSsvcLineTypeCd
+          ssvcLineTypeCd = this.updSsvcLineTypeCd
         }
+
+        this.updSsvcGroupCd = null
+        this.updSsvcObjCd = null
+
         const tbLvlBasVo = { ssvcLineTypeCd: ssvcLineTypeCd }
         const res = await apiRequestJson(ipmsJsonApis.selectAuthCenterList, tbLvlBasVo)
-        this.ssvcGroupNmOp = res?.tbLvlBasVos?.filter(v => v.ssvcGroupNm !== '전체').map(v => { return { value: v.ssvcGroupCd, label: v.ssvcGroupNm } })
-        } catch (error) {
-          console.log(error)
-       }
-    },
-    async handleChangeLvl2() {
-      const tbLvlBasVo = {
-        ssvcLineTypeCd: this.updSsvcLineTypeCd,
-        ssvcGroupCd: this.updSsvcGroupCd,
+        this.ssvcGroupNmOp = res?.tbLvlBasVos?.filter(v => v.ssvcGroupNm !== '전체').map(v => {
+          return { value: v.ssvcGroupCd, label: v.ssvcGroupNm }
+        })
+
+        this.ssvcObjNmOp = []
+      } catch (error) {
+        console.log(error)
       }
-      const res = await apiRequestJson(ipmsJsonApis.selectAuthNodeList, tbLvlBasVo)
-      this.ssvcObjNmOp = res?.tbLvlBasVos?.filter(v => v.ssvcObjNm !== '전체').map(v => { return { value: v.ssvcObjCd, label: v.ssvcObjNm } })
+    },
+
+    async handleChangeLvl2() {
+      try {
+        this.updSsvcObjCd = null
+
+        const tbLvlBasVo = {
+          ssvcLineTypeCd: this.updSsvcLineTypeCd,
+          ssvcGroupCd: this.updSsvcGroupCd,
+        }
+
+        const res = await apiRequestJson(ipmsJsonApis.selectAuthNodeList, tbLvlBasVo)
+        this.ssvcObjNmOp = res?.tbLvlBasVos?.filter(v => v.ssvcObjNm !== '전체').map(v => {
+          return { value: v.ssvcObjCd, label: v.ssvcObjNm }
+        })
+      } catch (error) {
+        console.log(error)
+      }
     },
     fnInsertIpAssignApy() {
       if (this.txtStitle === null || this.txtStitle === '') {
