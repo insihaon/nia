@@ -25,7 +25,9 @@
       </el-row>
     </div>
     <el-col style="height: calc(100% - 75px)">
-      <CompTable
+      <compTable
+        ref="compTable"
+        :prop-name="name"
         :prop-table-height="'calc(100% - 80px)'"
         :prop-column="ipBlockColumns"
         :prop-is-pagination="false"

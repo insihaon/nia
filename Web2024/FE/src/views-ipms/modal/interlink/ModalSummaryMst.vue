@@ -101,6 +101,7 @@
         <div class="content_result">
           <compTable
             ref="compTable"
+            :prop-name="name"
             :prop-table-height="350"
             :prop-is-check-box="true"
             :prop-data="resultList"

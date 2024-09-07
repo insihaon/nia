@@ -6,7 +6,16 @@
       @handle-search="handleSearch"
     />
     <el-col ref="tableContainer" :span="24">
-      <compTable :prop-table-height="'calc(100% - 80px)'" :prop-column="tableColumns" :prop-is-pagination="false" :prop-is-check-box="false" prop-grid-menu-id="inputSpeed" :prop-grid-indx="1">
+      <compTable
+        ref="compTable"
+        :prop-name="name"
+        :prop-table-height="'calc(100% - 80px)'"
+        :prop-column="tableColumns"
+        :prop-is-pagination="false"
+        :prop-is-check-box="false"
+        prop-grid-menu-id="inputSpeed"
+        :prop-grid-indx="1"
+      >
         <template slot="text-description">
           <span>
             IP 할당 조회결과

@@ -29,6 +29,7 @@
     "codemirror": "^5.62.0",
     "crypto-js": "^4.1.1",
     "echarts-for-vue": "^1.4.1",
+    "el-table-draggable": "^1.4.12",
     "element-ui": "2.13.2",
     "eslint-plugin-html": "^8.1.1",
     "eslint-plugin-vue": "^7.5.0",

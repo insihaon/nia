@@ -179,13 +179,14 @@
       </div>
 
       <div slot="footer" class="dialog-footer">
-        <el-button size="mini" class="el-icon-document-checked float-left" @click="fnSelectMinNrequestAsSeq('N')">{{ $t('할당') }}</el-button>
-        <el-button size="mini" class="float-left" @click="fnReturnAsTxmSubmit()">{{ $t('반납') }}</el-button>
-        <el-button size="mini" class="float-left" @click="fnRejectPrvAsSubmit()">{{ $t('반려') }}</el-button>
+        <template v-if="isSuserGrade"></template>
+        <el-button v-if="isCreated" size="mini" class="el-icon-document-checked float-left" @click="fnSelectMinNrequestAsSeq('N')">{{ $t('할당') }}</el-button>
+        <el-button v-if="isCreated" size="mini" class="float-left" @click="fnRejectPrvAsSubmit()">{{ $t('반려') }}</el-button>
+        <el-button v-if="resultVo.srequestAsTypeCd === 'RS0202'" size="mini" class="float-left" @click="fnReturnAsTxmSubmit()">{{ $t('반납') }}</el-button>
 
-        <template v-if="resultVo.screateId === resultVo.screateId">
-          <el-button size="mini" @click="fnDeletePrvAsSubmit()">{{ $t('신청 취소') }}</el-button>
-          <template v-if="viewType === 'detail'">
+        <template v-if="resultVo.screateId === userId">
+          <el-button v-if="isCreated" size="mini" @click="fnDeletePrvAsSubmit()">{{ $t('신청 취소') }}</el-button>
+          <template v-if="viewType === 'detail' && isCreated">
             <el-button size="mini" class="el-icon-edit" @click="onChangeMode()">{{ $t('수정') }}</el-button>
           </template>
         </template>
@@ -205,7 +206,7 @@
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
 import { apiRequestModel, ipmsModelApis, ipmsJsonApis, apiRequestJson } from '@/api/ipms'
-
+import { mapState } from 'vuex'
 const routeName = 'ModalDetailPrivateAs'
 
 export default {
@@ -241,6 +242,17 @@ export default {
     }
   },
   computed: {
+    isCreated() {
+      return this.resultVo.srequestAsTypeCd === 'RS0201'
+    },
+    isSuserGrade() {
+      return this.suserGradeCd === 'UR0001'
+    },
+    ...mapState({
+      adminYn: state => state.ipms.adminYn,
+      userId: state => state.user.info.Uid,
+      suserGradeCd: state => state.ipms.suserGradeCd,
+    }),
     isReadOnly() {
       return !(this.viewType === 'create' || this.viewType === 'edit')
     },
@@ -257,7 +269,6 @@ export default {
     },
   },
   mounted() {
-
   },
   methods: {
     handleInput(field, event) {
@@ -278,12 +289,18 @@ export default {
     },
     onOpen(model, actionMode) {
       this.viewType = model.type
-      this.resultVo = model.row
+      this.resultVo = model.row || {}
+      if (this.viewType === 'create') {
+        this.resultVo.screateId = this.resultVo.screateId || ''
+      }
+
       this.onSetValue()
     },
     onSetValue() {
       if (this.viewType === 'detail') {
-        const { srequestAsCtm, dcreateDt, dapvDt, srequestAsObjNm1, srequestAsObjNm2, srequestAsObjLlnum1, srequestAsObjLlnum2, drequestAsObjOpenDt1, drequestAsObjOpenDt2, scomment, sasTpicNm, sasTpicOrg, sexistSpLine, saltSpLine, nexistSales, naltSales } = this.resultVo
+        const { srequestAsCtm, dcreateDt, dapvDt, srequestAsObjNm1, srequestAsObjNm2,
+        srequestAsObjLlnum1, srequestAsObjLlnum2, drequestAsObjOpenDt1,
+        drequestAsObjOpenDt2, scomment, sasTpicNm, sasTpicOrg, sexistSpLine, saltSpLine, nexistSales, naltSales } = this.resultVo
         this.srequestAsCtm = srequestAsCtm
         this.dcreateDt = dcreateDt
         this.dapvDt = dapvDt

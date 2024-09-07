@@ -29,6 +29,8 @@
         </el-col>
         <el-col :span="24">
           <compTable
+            ref="compTable"
+            :prop-name="name"
             :prop-loading="tableLoading"
             :prop-data="tableDatas"
             :prop-table-height="300"
