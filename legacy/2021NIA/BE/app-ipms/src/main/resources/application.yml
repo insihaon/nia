@@ -108,19 +108,12 @@ myconf:
     url: /ws-stomp
     heartbeat.enabled: false 
   auth:
-    use: false #auth.use
+    use: true #auth.use
     otp: 
       use: false #otp.use
     single-only: false
     expired-seconds: 86400  # 60*60*24
     login: false
-  
-  api-server:
-    kong: http://127.0.0.1:8000
-    kong-admin: http://127.0.0.1:8001
-    kong-use: true
-    grafana-url: http://incodej.iptime.org:22330 
-    hub-api: http://127.0.0.1:8070/dh
   
 file:
   access-Url: /external/**

@@ -9,7 +9,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,7 +18,6 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -85,17 +83,17 @@ public class LoginMgmtController  extends CommonController{
 	@Autowired
 	private LoginMgmtTxService loginMgmtTxService;
 	
-	@RequestMapping(value = "/", method ={ RequestMethod.GET,  RequestMethod.POST })
-	public String home(Locale locale, Model model , HttpServletRequest request, HttpServletResponse response)  {
+	// @RequestMapping(value = "/", method ={ RequestMethod.GET,  RequestMethod.POST })
+	// public String home(Locale locale, Model model , HttpServletRequest request, HttpServletResponse response)  {
 		
-		/*
-		if(!request.isSecure())
-		{
-		return "redirect:https"+request.getRequestURL().toString().replace("http","");
-		}
-		*/
-		return "viewLogin";
-	}
+	// 	/*
+	// 	if(!request.isSecure())
+	// 	{
+	// 	return "redirect:https"+request.getRequestURL().toString().replace("http","");
+	// 	}
+	// 	*/
+	// 	return "viewLogin";
+	// }
 	
 //	@RequestMapping(value = "/login.json", method =   { RequestMethod.GET,  RequestMethod.POST })
 //	@ResponseBody
