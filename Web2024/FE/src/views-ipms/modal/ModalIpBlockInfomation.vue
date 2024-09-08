@@ -21,6 +21,7 @@
       <el-row ref="container" class="w-100 h-100">
         <DynamicComponentLoader
           ref="searchCondition"
+          :is-show-profile="false"
           :component-keys="componentList"
           @handle-search="handleSearch"
         />

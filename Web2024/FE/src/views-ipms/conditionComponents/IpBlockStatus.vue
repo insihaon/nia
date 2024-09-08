@@ -61,7 +61,7 @@ export default {
   },
   computed: {
     fullOptions() {
-      return this.options.map(option => option.value).filter(v => v !== 'ALL')
+      return this.options.map(option => option.value).filter(v => v !== '')
     },
   },
   // sassignLevelVd
@@ -89,9 +89,16 @@ export default {
       let value = this.values
       if (this.isMulti) {
         key = 'sassignLevelCdMultiStr'
-        value = this.values.filter(v => v !== 'ALL').join(';')
+        value = this.values.filter(v => v !== '').join(';')
       }
       return [{ key, value }]
+    },
+    setParameter(params) {
+      if (this.isMulti) {
+        this.values = params?.sassignLevelCdMultiStr?.split(';') ?? ''
+      } else {
+        this.values = params?.sassignLevelCd ?? ''
+      }
     }
   }
 }

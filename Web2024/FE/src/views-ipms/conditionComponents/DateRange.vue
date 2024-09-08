@@ -62,6 +62,10 @@ export default {
         { key: bgKey, value: searchBgnDe ? this.moment(searchBgnDe).format('YYYY-MM-DD') : '' },
         { key: endKey, value: searchEndDe ? this.moment(searchEndDe).format('YYYY-MM-DD') : '' }
       ]
+    },
+    setParameter(params) {
+      const [bgKey, endKey] = this.parameterKey
+      this.value = [params[bgKey], params[endKey]]
     }
   }
 }

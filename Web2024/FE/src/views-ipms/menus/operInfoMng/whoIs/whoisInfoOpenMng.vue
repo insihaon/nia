@@ -15,6 +15,7 @@
     </div>
 
     <DynamicComponentLoader
+      :prop-name="name"
       :component-keys="componentList"
       @handle-search="handleSearch"
     />

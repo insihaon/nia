@@ -45,7 +45,7 @@ export default {
   methods: {
     getParameter() {
       return [{ key: this.parameterKey, value: this.moment(this.value).format('YYYY-MM-DD') }]
-    }
+    },
   }
 }
 </script>
