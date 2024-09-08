@@ -59,14 +59,14 @@ jobs:
       - name: Deploy services
         run: docker-compose up -d
 
-      - name: Check network
-        run: |
-          docker network ls
+      # - name: Check network
+      #   run: |
+      #     docker network ls
 
-      - name: Check service status
-        run: |
-          docker-compose ps
+      # - name: Check service status
+      #   run: |
+      #     docker-compose ps
 
-      - name: Shut down Docker Compose
-        run: |
-          docker-compose down
+      # - name: Shut down Docker Compose
+      #   run: |
+      #     docker-compose down

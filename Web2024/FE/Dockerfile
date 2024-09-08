@@ -28,6 +28,8 @@ COPY --from=build ../BE/app-ipms/src/main/resources/static /usr/share/nginx/html
 # Nginx 설정 파일 복사
 COPY nginx.conf /etc/nginx/nginx.conf
 
+# RUN nginx -t
+
 # 컨테이너가 노출할 포트 지정
 EXPOSE 80
 
