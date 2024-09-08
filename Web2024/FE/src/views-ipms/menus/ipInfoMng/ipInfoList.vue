@@ -113,14 +113,17 @@ export default {
     }
   },
   watch: {
-    '$route'() {
-      if (this.ipms.toParams !== null) {
-        const { option, value } = this.ipms.toParams
-        this.option = option
-        this.value = value
-        this.$store.dispatch('ipms/setToParam', null)
-        this.fnMainSeachBtnClick()
-      }
+    $route: {
+      handler: function(route) {
+        if (this.ipms.toParams !== null) {
+          const { option, value } = this.ipms.toParams
+          this.option = option
+          this.value = value
+          this.$store.dispatch('ipms/setToParam', null)
+          this.fnMainSeachBtnClick()
+        }
+      },
+      immediate: true
     }
   },
   created () {

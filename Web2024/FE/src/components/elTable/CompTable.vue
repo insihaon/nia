@@ -225,9 +225,21 @@ export default {
       let savedColumnState
       if(name) {
         savedColumnState = JSON.parse(window.localStorage['savedColumnState'] || '{}')[name]
+        savedColumnState && this.propColumn.forEach((col, index) => {
+          if(!!col?.formatter) {
+            savedColumnState[index]['formatter'] = col.formatter
+          }
+          if(col?.children) {
+            col.children.forEach((chCol, chIndex) => {
+              if(!!chCol?.formatter) {
+                savedColumnState[index].children[chIndex]['formatter'] = chCol.formatter
+              }
+            })
+          }
+        })
       }
       if (!savedColumnState) {
-        savedColumnState = this.propColumn
+        savedColumnState = [...this.propColumn]
       }
       if (!savedColumnState || !name) {
         this.error('no order and visibility state to restore by, you must save order and visibility state first')
