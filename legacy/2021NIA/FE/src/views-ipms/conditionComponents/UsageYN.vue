@@ -50,7 +50,7 @@ export default {
         { label: '사용', value: 'Y' },
         { label: '미사용', value: 'N' },
        ],
-       value: []
+       value: ''
     }
   },
   methods: {

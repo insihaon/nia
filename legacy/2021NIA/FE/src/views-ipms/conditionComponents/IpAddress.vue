@@ -74,6 +74,13 @@ export default {
       word: ''
     }
   },
+  watch: {
+    defaultWord(n, o) {
+      if (n !== o) {
+        this.init()
+      }
+    }
+  },
   methods: {
     init() {
       if (this.defaultValue !== null) {
@@ -91,6 +98,14 @@ export default {
       }
       this.emitEventToParent(params)
     },
+    setParameter(params) {
+      if (this.isShowSelectBox) {
+        this.value = params?.sipVersionTypeCd ?? ''
+      }
+      if (this.isShowInput) {
+        this.word = params.searchWrd ?? ''
+      }
+    }
   }
 }
 </script>
