@@ -67,18 +67,22 @@ export default {
       options: this.$store.state.ipms.tempOfficeList
     }
   },
-  mounted () {
+  async mounted () {
     if (this.prop_options === null) {
       this.onLoadOfficeList()
     }
-    Eventbus.$on(EventType.changeLvl1, (params) => { this.onLoadOfficeList(params) })
-    Eventbus.$on(EventType.changeLvl2, (params) => { this.onLoadOfficeList(params) })
-    Eventbus.$on(EventType.changeLvl3, (params) => { this.onLoadOfficeList(params) })
+    await Eventbus.$on(EventType.changeLvl1, (params) => { this.onLoadOfficeList(params) })
+    await Eventbus.$on(EventType.changeLvl2, (params) => { this.onLoadOfficeList(params) })
+    await Eventbus.$on(EventType.changeLvl3, (params) => { this.onLoadOfficeList(params) })
+    await Eventbus.$on(EventType.setSavedParameter, (params) => {
+      this.setParameter(params)
+    })
   },
   beforeDestroy() {
     Eventbus.$off(EventType.changeLvl1)
     Eventbus.$off(EventType.changeLvl2)
     Eventbus.$off(EventType.changeLvl3)
+    Eventbus.$off(EventType.setSavedParameter)
   },
   methods: {
     async onLoadOfficeList(params = {}) {
@@ -98,6 +102,11 @@ export default {
         this.error(error)
       }
     },
+    setParameter(params) {
+      setTimeout(() => {
+        this.value = params[this.prop_parameterKey] ?? ''
+      }, 100)
+    }
   }
 }
 </script>

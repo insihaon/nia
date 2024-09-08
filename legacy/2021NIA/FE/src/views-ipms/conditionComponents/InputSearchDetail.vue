@@ -105,11 +105,19 @@ export default {
         this.$emit('update-value', [{ key: updateKey, value: this.value }])
       }
     },
-    setSelectedRow(selectedRow) {
-      this.value = selectedRow[this.valueName]
-      this.selectedRow = selectedRow
+    setSelectedRow(params /* { returnFlag, selectedRow } */) {
+      this.value = params.selectedRow[this.valueName]
+      this.selectedRow = params.selectedRow
 
       this.parameterKey !== null && this.emitEventToParent(this.getParameter())
+    },
+    setParameter(params) {
+      const keys = Object.keys(this.parameterKey)
+      keys.forEach(key => {
+        if (this.parameterKey[key] === this.valueName) {
+          this.value = params[key]
+        }
+      })
     },
     getParameter() {
       const keys = Object.keys(this.parameterKey)

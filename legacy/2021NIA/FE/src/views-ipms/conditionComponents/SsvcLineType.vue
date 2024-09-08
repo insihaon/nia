@@ -152,16 +152,6 @@ export default {
       return result
     }
   },
-  // mounted() {
-  //   if (this.multi?.length > 0) {
-  //     Object.keys(this.localValue).forEach(key => {
-  //       if (this.multi.includes(key)) {
-  //         this.$set(this.localValue, key, [])
-  //       }
-  //     })
-  //   }
-  //   this.setDefaultParameterKey()
-  // },
   methods: {
     init() {
       /* default options, value setting */
@@ -181,6 +171,13 @@ export default {
         })
       }
       this.$emit('update-value', this.getParameter())
+    },
+    async setParameter(params) {
+      this.$set(this.localValue, key1, this.multi.includes(key1) ? params.ssvcLineCdMultiStr.split(';') : params.ssvcLineTypeCd)
+      this.$set(this.localValue, key2, this.multi.includes(key2) ? params.ssvcGroupCdMultiStr.split(';') : params.ssvcGroupCd)
+      this.$set(this.localValue, key3, params.ssvcObjCd)
+      await this.handleChangeLvl1(false)
+      await this.handleChangeLvl2(false)
     },
     getParameter() {
       const params = []
@@ -215,7 +212,7 @@ export default {
       const multi = this.multi ?? []
       return multi.includes(lvl)
     },
-    async handleChangeLvl1() {
+    async handleChangeLvl1(isReset = true) {
       const isOver = this.updateSelectionWithAll(1)
       const lvlOptions = this.lvlOptions
       this.localLabel[key1] = this.lvlOptions[key1].find(v => v.value === this.localValue[key1])?.label ?? ''
@@ -224,15 +221,17 @@ export default {
       try {
         const res = await apiRequestJson(ipmsJsonApis.selectAuthCenterList, params)
         this.lvlOptions[key2] = res?.tbLvlBasVos?.filter(v => v.ssvcGroupNm !== '전체').map(v => { return { value: v.ssvcGroupCd, label: v.ssvcGroupNm } })
-        this.resetLocalValue(key2)
-        this.resetLocalValue(key3)
+        if (isReset) {
+          this.resetLocalValue(key2)
+          this.resetLocalValue(key3)
+        }
         this.emitEventToParent(this.getParameter())
-         Eventbus.$emit(EventType.changeLvl1, { ssvcLineTypeCd: this.localValue[key1] })
+        Eventbus.$emit(EventType.changeLvl1, { ssvcLineTypeCd: this.localValue[key1] })
       } catch (error) {
         this.error(error)
       }
     },
-    async handleChangeLvl2() {
+    async handleChangeLvl2(isReset = true) {
       const isOver = this.updateSelectionWithAll(2)
       this.localLabel[key2] = this.lvlOptions[key2].find(v => v.value === this.localValue[key2])?.label ?? ''
       if (isOver) return
@@ -246,7 +245,9 @@ export default {
       try {
         const res = await apiRequestJson(ipmsJsonApis.selectAuthNodeList, params)
         this.lvlOptions[key3] = res.tbLvlBasVos?.filter(v => v.ssvcGroupNm !== '전체').map(v => { return { value: v.ssvcObjCd, label: v.ssvcObjNm } })
-        this.resetLocalValue(key3)
+        if (isReset) {
+          this.resetLocalValue(key3)
+        }
       } catch (error) {
         this.error(error)
       }
@@ -275,11 +276,11 @@ export default {
       }
     },
     getFullOptions(lvl) {
-      return this.lvlOptions[lvl].map(option => option.value).filter(v => v !== 'ALL')
+      return this.lvlOptions[lvl].map(option => option.value).filter(v => v !== '')
     },
     toggleAll(lvl) {
       if (this.multi.includes(lvl)) {
-        this.$set(this.localValue, lvl, this.localValue[lvl]?.includes('ALL') ? [] : ['ALL', ...this.getFullOptions(lvl)])
+        this.$set(this.localValue, lvl, this.localValue[lvl]?.includes('') ? [] : ['', ...this.getFullOptions(lvl)])
         this.onCheckLimit(lvl)
       }
     },
@@ -288,11 +289,11 @@ export default {
 
       const fullOptionLen = this.getFullOptions(lvl).length
       const valueByLvlLen = this.localValue[lvl].length
-      const isIncludesAll = this.localValue[lvl].includes('ALL')
+      const isIncludesAll = this.localValue[lvl].includes('')
       if (valueByLvlLen === fullOptionLen && !isIncludesAll) {
-        this.localValue[lvl].push('ALL')
+        this.localValue[lvl].push('')
       } else if (isIncludesAll && valueByLvlLen !== fullOptionLen + 1) {
-        this.localValue[lvl] = this.localValue[lvl]?.filter(value => value !== 'ALL')
+        this.localValue[lvl] = this.localValue[lvl]?.filter(value => value !== '')
       }
 
       return this.onCheckLimit(lvl)

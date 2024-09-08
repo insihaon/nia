@@ -2,6 +2,7 @@
   <el-row class="w-100 h-100">
     <DynamicComponentLoader
       ref="searchCondition"
+      :prop-name="name"
       :component-keys="componentList"
       @handle-search="handleSearch"
     />

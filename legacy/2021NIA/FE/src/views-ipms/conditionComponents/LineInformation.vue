@@ -113,6 +113,16 @@ export default {
         })
       }
       this.emitEventToParent(params)
+    },
+    setParameter(params) {
+      this.value = params[this.parameterKey] ?? 'llnum'
+      let txtKey
+      if (this.prop_textFixKey !== null) {
+        txtKey = this.prop_textFixKey
+      } else {
+        txtKey = this.options.find(v => v.value === this.value).txtKey
+      }
+      this.word = params[txtKey] ?? ''
     }
   }
 }
