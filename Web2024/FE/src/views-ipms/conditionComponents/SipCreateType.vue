@@ -53,7 +53,7 @@ export default {
         this.value = ''
       }
       this.emitEventToParent(this.getParameter())
-    },
+    }
   }
 }
 </script>

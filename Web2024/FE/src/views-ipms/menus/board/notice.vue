@@ -25,6 +25,7 @@
   <el-row v-else ref="container" class="w-100 h-100 pt-4 px-12">
     <DynamicComponentLoader
       ref="searchCondition"
+      :prop-name="name"
       :component-keys="componentList"
       @handle-search="handleSearch"
     />

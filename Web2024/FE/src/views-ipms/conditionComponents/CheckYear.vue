@@ -39,6 +39,11 @@ export default {
       value: '2024'
     }
   },
+  methods: {
+    setParameter(params) {
+      this.value = params[this.parameterKey] ?? '2024'
+    }
+  },
 }
 </script>
 <style lang="scss" scoped>

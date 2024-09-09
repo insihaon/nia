@@ -39,6 +39,9 @@ export default {
     }
   },
   methods: {
+    setParameter(params) {
+      this.value = params[this.parameterKey] ?? 'I'
+    }
   }
 }
 </script>

@@ -2,6 +2,7 @@
   <el-row ref="container" class="w-100 h-100">
     <DynamicComponentLoader
       ref="searchCondition"
+      :prop-name="name"
       :component-keys="componentList"
       @handle-search="onloadIpAssign"
     />
@@ -71,7 +72,7 @@ export default {
         { key: 'GenerationDegree', props: {} },
         { key: 'InputType', props: { label: 'BitMask', prop_parameterKey: 'nbitmask' } },
         { key: 'DateRange', props: {} },
-        { key: 'IpAddress', props: {} },
+        { key: 'IpAddress', props: { defaultWord: '' } },
         { key: 'ServiceOrg', props: { limit: 10 } },
         { key: 'IpBlockStatus', props: { label: '배정상태' } },
         { key: 'SortType', props: {} },
@@ -130,18 +131,34 @@ export default {
 
     }
   },
-  mounted () {
-    this.onloadIpAssign()
-    const { ipAddress } = this.$route.query
-    if (ipAddress) {
-      const compInfo = this.componentList.find(v => v.key === 'IpAddress')
-      this.$set(compInfo.props, 'defaultWord', ipAddress)
+  watch: {
+    $route: {
+      handler: function(route) {
+        if (this.ipms.toParams !== null) {
+          const { value } = this.ipms.toParams
+          if (value) {
+            const compInfo = this.componentList.find(v => v.key === 'IpAddress')
+            this.$set(compInfo.props, 'defaultWord', value)
+          }
+          this.$store.dispatch('ipms/setToParam', null)
+          setTimeout(() => {
+            this.onloadIpAssign()
+          }, 10)
+        }
+      },
+      immediate: true
     }
+  },
+  mounted () {
+    // this.$nextTick(() => {
+    //   this.onloadIpAssign()
+    // })
   },
   methods: {
     async onloadIpAssign(requestParameter) {
+      const params = requestParameter ?? this.$refs.searchCondition.requestParameter
       try {
-        const res = await apiRequestModel(ipmsModelApis.viewListAsgnIPMst, requestParameter)
+        const res = await apiRequestModel(ipmsModelApis.viewListAsgnIPMst, params)
         this.ipAssignDatas = res?.result.data
       } catch (error) {
         console.error(error)
