@@ -74,6 +74,11 @@ export default {
         { key: 'ngubunCnt', value: this.word },
         { key: 'ssign', value: this.compareValue },
       ]
+    },
+    setParameter(params) {
+      this.targetValue = params['skindCd'] ?? ''
+      this.compareValue = params['ssign'] ?? ''
+      this.ngubunCnt = params['word'] ?? ''
     }
   }
 }

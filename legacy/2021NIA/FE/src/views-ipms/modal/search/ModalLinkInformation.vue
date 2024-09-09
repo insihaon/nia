@@ -23,6 +23,7 @@
         <el-col :span="24">
           <DynamicComponentLoader
             class="dynamic-container"
+            :is-show-profile="false"
             :component-keys="componentList"
             @handle-search="handleSearch"
           />

@@ -92,10 +92,8 @@ export default {
               },
               on: { click: () => {
                 this.close()
-                this.$router.push({ path: '/ipAssignMng/ipAssign',
-                  query: {
-                    ipAddress: row.pipPrefix,
-                 } })
+                this.$store.dispatch('ipms/setToParam', { value: row.pipPrefix })
+                this.$router.push('/ipAssignMng/ipAssign')
               }
             } }, '배정')
           }

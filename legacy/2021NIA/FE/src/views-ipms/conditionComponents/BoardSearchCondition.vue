@@ -65,6 +65,10 @@ export default {
     },
     getParameter() {
       return [{ key: 'searchCnd', value: this.value }, { key: 'searchWrd', value: this.word }]
+    },
+    setParameter(params) {
+      this.value = params['searchCnd'] ?? ''
+      this.word = params['searchWrd'] ?? ''
     }
   }
 }

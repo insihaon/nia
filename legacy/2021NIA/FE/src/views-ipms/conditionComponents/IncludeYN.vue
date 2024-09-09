@@ -50,7 +50,7 @@ export default {
         { label: 'Y', value: 'Y' },
         { label: 'N', value: 'N' },
        ],
-       value: []
+       value: ''
     }
   },
   methods: {

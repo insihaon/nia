@@ -10,7 +10,7 @@
       size="mini"
       @change="handleChange()"
     >
-      <el-option label="전체" value="ALL"><span class="w-100 h-100 d-inline-block" @click="handleClickAll">전체</span></el-option>
+      <el-option label="전체" value=""><span class="w-100 h-100 d-inline-block" @click="handleClickAll">전체</span></el-option>
       <el-option
         v-for="value in options"
         :key="value "
@@ -46,7 +46,7 @@ export default {
   },
   computed: {
     fullOptions() {
-      return this.options.map(op => op).filter(v => v !== 'ALL')
+      return this.options.map(op => op).filter(v => v !== '')
     },
   },
   methods: {
@@ -62,7 +62,11 @@ export default {
     },
     getParameter() {
       return [{ key: this.parameterKey, value: this.values.join(';') }]
+    },
+    setParameter(params) {
+      this.values = params[this.parameterKey]?.split(';') ?? []
     }
+
   }
 }
 </script>

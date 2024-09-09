@@ -24,6 +24,7 @@
           <DynamicComponentLoader
             class="dynamic-container"
             :component-keys="componentList"
+            :is-show-profile="false"
             @handle-search="handleSearch"
           />
         </el-col>

@@ -70,6 +70,10 @@ export default {
     handleChangeRadio() {
       this.emitEventToParent([{ key: 'sortOrdr', value: this.sortOrdr }])
     },
+    setParameter(params) {
+      this.sortType = params?.sortType ?? ''
+      this.sortOrdr = params?.sortOrdr ?? ''
+    }
   }
 }
 </script>

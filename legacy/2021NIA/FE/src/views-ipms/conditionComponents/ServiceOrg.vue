@@ -11,7 +11,7 @@
       size="mini"
       @change="handleChange()"
     >
-      <el-option v-if="isAllOption" label="전체" value="ALL"><span class="w-100 h-100 d-inline-block" @click="handleClickAll">전체</span></el-option>
+      <el-option v-if="isAllOption" label="전체" value=""><span class="w-100 h-100 d-inline-block" @click="handleClickAll">전체</span></el-option>
       <el-option
         v-for="(option, i) in options"
         :key="i"
@@ -119,6 +119,7 @@ export default {
       }
     },
     async onLoadServiceList(params) {
+      this.values = this.isMulti ? [] : ''
       try {
         const res = await apiRequestJson(ipmsJsonApis.selectSassignTypeCdList, params)
         this.options = res.tbIpAllocMstVos.map(v => { return { value: v.sassignTypeCd, label: v.sassignTypeNm } })
@@ -134,6 +135,15 @@ export default {
         value = this.values.filter(v => v !== 'ALL').join(';')
       }
       return [{ key, value }]
+    },
+    setParameter(params) {
+      setTimeout(() => {
+        if (this.isMulti) {
+          this.values = params?.sassignTypeCdMultiStr?.split(';') ?? []
+        } else {
+          this.values = params?.sassignTypeCd ?? ''
+        }
+      }, 30)
     }
   }
 }
