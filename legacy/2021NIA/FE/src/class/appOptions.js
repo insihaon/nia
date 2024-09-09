@@ -29,7 +29,7 @@ export class AppOptions extends Storage {
       dark: false,
       mobile: Device.instance.mobile ?? false,
       mock: null,
-      projectList: ['datahub', 'nia', 'ipms'],
+      projectList: ['datahub', 'demo', 'nia', 'ipms'],
       project: APP_PROJECT?.toLowerCase(),
       baseURL: null,
       useWebsocket: this.readEnv(process.env.VUE_APP_USE_WEBSOCKET, true),
@@ -104,7 +104,7 @@ export class AppOptions extends Storage {
   }
 
   _getDefaultBaseUrl = function () {
-    const { baseURL, baseURLs, baseURLIndex } = this
+    const { baseURL, baseURLs, baseURLIndex, project } = this
 
     if (!baseURLs.includes('/mock')) {
       baseURLs.push('/mock')
@@ -123,7 +123,7 @@ export class AppOptions extends Storage {
       url = `//${host}`
     }
 
-    return `${url.replace(/\/+$/, '')}${process.env.BASE_URL}`
+    return `${url.replace(/\/+$/, '')}${process.env.BASE_URL || ''}${process.env.URL_PREFIX || ''}`
   }
 
   get blackDtlList() {
