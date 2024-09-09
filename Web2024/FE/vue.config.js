@@ -51,18 +51,27 @@ function getPlugIns() {
   var commands = []
   var dir = getOutputDir()
 
-  commands = [...commands, ...[
-    // [for window]
-    `echo BUILD-TIME : %date% %time% > ${dir}/version.txt`,
-    `echo BUILD-USER : %username% >> ${dir}/version.txt`,
-    `echo BUILD-HOST : %userdomain% >> ${dir}/version.txt`,
-    `echo publicPath : ${getBaseUrl()} >> ${dir}/version.txt`,
-    `type ${dir}/version.txt`
-    // [for linux]
-    // 'date > ' + dir + '/version.txt',
-    // 'whoami >> ' + dir + '/version.txt',
-    // 'cat ' + dir + '/version.txt',
-  ]]
+  var version = []
+  if (process.platform === 'win32') {
+    console.log('Windows 환경입니다.')
+    version = [
+      `echo BUILD-TIME : %date% %time% > ${dir}/version.txt`,
+      `echo BUILD-USER : %username% >> ${dir}/version.txt`,
+      `echo BUILD-HOST : %userdomain% >> ${dir}/version.txt`,
+      `echo publicPath : ${getBaseUrl()} >> ${dir}/version.txt`,
+      `type ${dir}/version.txt`
+    ]
+  } else {
+    // dir = '.'
+    console.log('Windows 환경이 아닙니다.')
+    version = [
+      // 'date > ' + dir + '/version.txt',
+      // 'whoami >> ' + dir + '/version.txt',
+      // 'cat ' + dir + '/version.txt',
+    ]
+  }
+
+  commands = [...commands, ...version]
 
   plugins.push(
     new WebpackShellPlugin({
@@ -79,11 +88,14 @@ function getOutputDir() {
     case 'datahub':
       dir = '../BE/app-dataHub/src/main/resources/static'
       break
+    case 'demo':
+      dir = '../BE/app-demo/src/main/resources/static'
+        break
     case 'nia':
       dir = '../BE/app-nia/src/main/resources/static'
         break
     case 'ipms':
-      dir = '../BE/app-ipms/src/main/resources/static' // 임시설정
+      dir = '../BE/app-ipms/src/main/resources/static'
         break
   }
   console.log(`OutputDir=${dir}`)
