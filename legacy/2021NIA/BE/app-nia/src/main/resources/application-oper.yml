@@ -20,7 +20,7 @@ spring:
 
   rabbitmq:
     enabled: true
-    address: 116.89.191.47
+    address: 116.89.191.47 # incodej-lab.iptime.org
     port: 6786
 
 myconf:

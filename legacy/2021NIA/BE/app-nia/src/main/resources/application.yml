@@ -93,7 +93,7 @@ spring:
   rabbitmq:
     enabled: false # 접속 불가 환경을 위해 추가함
     address: incodej-lab.iptime.org # incodej.iptime.org
-    port: 6786 # 15123
+    port: 41072 # 15123
     username: niaadmin
     password: niaadmin12#$
     niaEngineToUi: nia.EngineToUiIndexDirectly
