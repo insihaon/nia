@@ -123,7 +123,10 @@ export class AppOptions extends Storage {
       url = `//${host}`
     }
 
-    return `${url.replace(/\/+$/, '')}${process.env.BASE_URL || ''}${process.env.URL_PREFIX || ''}`
+    const baseUrl = process.env.BASE_URL || ''
+    const urlPrefix = process.env.VUE_APP_URL_PREFIX || ''
+
+    return `${url.replace(/\/+$/, '')}${baseUrl}${urlPrefix}`.replaceAll(/(?<!^)\/{2,}/g, '/')
   }
 
   get blackDtlList() {

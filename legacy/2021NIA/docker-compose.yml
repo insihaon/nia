@@ -15,7 +15,9 @@ services:
       context: ./BE
       dockerfile: Dockerfile
     environment:
-      - JAVA_OPTS=-Dserver.port=8080
+      - |
+        JAVA_OPTS=-Dserver.port=8080 \
+        -Dspring.profiles.active=pubdev
       - SERVER_PORT=8080
       - AJP_PORT=8009
     ports:

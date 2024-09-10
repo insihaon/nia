@@ -25,6 +25,10 @@ FROM nginx:alpine
 
 ENV NODE_ENV=production
 
+
+
+### AJP(8009) -> 리버스프록시(8080) 로 변경함 <<< 
+
 # # Alpine Linux 기반에서 필요한 빌드 도구 및 라이브러리 설치
 # RUN apk add --no-cache \
 #     wget \
@@ -64,6 +68,9 @@ ENV NODE_ENV=production
 #     --with-openssl=/usr/local/src/openssl-1.1.1k
 # RUN make
 # RUN make install
+
+### AJP 사용 >>>
+
 
 
 
