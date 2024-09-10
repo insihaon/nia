@@ -1847,15 +1847,36 @@
 				AND A.SIP_VERSION_TYPE_CD = #{sipVersionTypeCd, jdbcType=CHAR}
 			</if>
 				
-			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sllnum)">
+			<!-- <if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sllnum)">
 				AND J.SLLNUM ILIKE '%'  ||  #{sllnum, jdbcType=VARCHAR} ||  '%'
-			</if>					
-			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssaid)">
+			</if> -->
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sllnums)">
+				AND (
+					<foreach collection="sllnums" item="sllnum" open="(" separator=" OR " close=")">
+						J.SLLNUM ILIKE '%' || #{sllnum, jdbcType=VARCHAR} || '%'
+					</foreach>
+				)
+			</if>		
+			<!-- <if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssaid)">
 				AND J.SSAID ILIKE '%'  ||  #{ssaid, jdbcType=VARCHAR}  || '%'
+			</if> -->
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(ssaids)">
+				AND (
+					<foreach collection="ssaids" item="ssaid" open="(" separator=" OR " close=")">
+						J.SSAID ILIKE '%' || #{ssaid, jdbcType=VARCHAR} || '%'
+					</foreach>
+				)
 			</if>
-			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sconnAlias)">
+			<!-- <if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sconnAlias)">
 				AND J.SCONNALIAS ILIKE '%'  ||  #{sconnAlias, jdbcType=VARCHAR}  || '%'
-			</if>
+			</if> -->
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sconnAliass)">
+				AND (
+					<foreach collection="sconnAliass" item="sconnAlias" open="(" separator=" OR " close=")">
+						J.SSAID ILIKE '%' || #{sconnAlias, jdbcType=VARCHAR} || '%'
+					</foreach>
+				)
+			</if>	
 					
 					AND A.NIP_ASSIGN_MST_SEQ = J.NIP_ASSIGN_MST_SEQ(+)
 					AND A.SSVC_LINE_TYPE_CD = B.SSVC_LINE_TYPE_CD(+)
