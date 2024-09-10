@@ -1,8 +1,7 @@
 server:
   servlet:
     context-path: 
-    # /datahub/portal
-
+    
 spring:
   profiles:
     active: local
