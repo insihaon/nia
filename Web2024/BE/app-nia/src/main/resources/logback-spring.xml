@@ -8,7 +8,7 @@
 		class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<prudent>true</prudent>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>../logs/${APP_NAME}_info.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>./logs/${APP_NAME}_info.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
             <totalSizeCap>3GB</totalSizeCap>
         </rollingPolicy>
@@ -25,7 +25,7 @@
         class="ch.qos.logback.core.rolling.RollingFileAppender">
         <prudent>true</prudent>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>../logs/${APP_NAME}_error.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>./logs/${APP_NAME}_error.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
             <totalSizeCap>3GB</totalSizeCap>
         </rollingPolicy>

@@ -23,10 +23,10 @@
     <div v-if="['year', 'month'].includes(period)" class="d-flex items-center ml-1">
       <el-select v-model="day" size="mini" @change="onEmitValue">
         <el-option
-          v-for="day in dayOptions"
-          :key="day"
-          :label="day"
-          :value="day"
+          v-for="dayOp in dayOptions"
+          :key="dayOp"
+          :label="dayOp"
+          :value="dayOp"
         />
       </el-select>
       일
@@ -34,10 +34,10 @@
     <div v-if="['year', 'month', 'day'].includes(period)" class="d-flex items-center ml-1">
       <el-select v-model="hour" size="mini" @change="onEmitValue">
         <el-option
-          v-for="hour in hourOptions"
-          :key="hour"
-          :label="hour"
-          :value="hour"
+          v-for="hourOp in hourOptions"
+          :key="hourOp"
+          :label="hourOp"
+          :value="hourOp"
         />
       </el-select>
       <span>:</span>
@@ -45,10 +45,10 @@
     <div v-if="['year', 'month', 'day', 'hour'].includes(period)" class="d-flex items-center ml-1">
       <el-select v-model="minute" size="mini" @change="onEmitValue">
         <el-option
-          v-for="minute in minuteOptions"
-          :key="minute"
-          :label="minute"
-          :value="minute"
+          v-for="minuteOp in minuteOptions"
+          :key="minuteOp"
+          :label="minuteOp"
+          :value="minuteOp"
         />
       </el-select>
       <span v-if="period === 'hour'">분</span>
