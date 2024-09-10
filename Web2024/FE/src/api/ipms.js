@@ -25,6 +25,7 @@ export const ipmsModelApis = {
   viewListBlockSizeStat: { desc: 'IP 블록크기별 통계 조회', url: 'statmgmt/ipstatmgmt/viewListBlockSizeStat' },
   viewListIntgrmSvcStat: { desc: 'IP주소 라우팅 비교/점검 통계 조회', url: '/statmgmt/ipstatmgmt/viewListIntgrmSvcStat' },
   viewListIpAllocMstByMain: { desc: 'IP 블록 정보 조회', url: '/ipmgmt/allocmgmt/viewListIpAllocMstByMain' },
+  viewListMultiIpInfo: { desc: 'IP 블록 정보 조회(multi)', url: '/ipmgmt/allocmgmt/viewListMultiIpInfo' },
   viewDetailIpAllocMstByMain: { desc: 'IP 블록 상세정보', url: '/ipmgmt/allocmgmt/viewDetailIpAllocMstByMain' },
   viewListIpHistoryMst: { desc: 'IP 이력관리 조회', url: '/ipmgmt/historymgmt/viewListIpHistoryMst' },
   viewDetailIpHistMst: { desc: 'IP 이력 상세정보', url: '/ipmgmt/historymgmt/viewDetailIpHistMst' },
@@ -146,7 +147,7 @@ export const ipmsJsonApis = {
   viewUpdateWhoisModReqVo: { desc: 'Whois 정보 변경 신청 > 수정 ', url: '/opermgmt/whoismgmt/viewUpdateWhoisModReqVo' },
   selectSearchWhoisInfo: { desc: 'Whois 정보 변경 신청 > 등록 > IP주소 조회 ', url: '/opermgmt/whoismgmt/selectSearchWhoisInfo' },
   sendMail: { desc: 'Whois 정보 변경 신청 > 등록 > 관리자에게 메일 보내기(IP주소) ', url: '/opermgmt/uploadmgmt/sendMail' },
-    // insertRegWhoisModReq: { desc: 'Whois 정보 변경 신청 > 변경 신청  ', url: '/opermgmt/uploadmgmt/insertRegWhoisModReq' },
+  // insertRegWhoisModReq: { desc: 'Whois 정보 변경 신청 > 변경 신청  ', url: '/opermgmt/uploadmgmt/insertRegWhoisModReq' },
   deleteReq: { desc: '요구사항 삭제', url: '/opermgmt/requiremgmt/deleteReq' },
   // 운용정보관리(관리자 기능)
   updateTbBatchSvcBas: { desc: '운용정보관리 > 연동관리 > 배치 연동 정보 수정', url: '/linkmgmt/batchmgmt/updateTbBatchSvcBas' },

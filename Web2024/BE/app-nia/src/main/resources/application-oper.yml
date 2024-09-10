@@ -1,7 +1,7 @@
 server:
-  port: 8080
+  port: 8070
   servlet:
-    context-path: /nia/portal
+    context-path:
 
 spring:
   profiles:
@@ -20,7 +20,7 @@ spring:
 
   rabbitmq:
     enabled: true
-    address: 116.89.191.47
+    address: 116.89.191.47 # incodej-lab.iptime.org
     port: 6786
 
 myconf:
