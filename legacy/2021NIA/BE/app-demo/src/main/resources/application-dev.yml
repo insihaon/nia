@@ -1,15 +1,7 @@
-server:
-  port: 8080
-  servlet:
-    context-path: 
-    # /datahub/portal
-
-  error.redirect: https://ktnms.kt.com/nms/errorPage.html
-    
 spring:
   profiles:
-    active: oper
-    dev: false
+    active: dev
+    dev: true
 
   h2:
     console:
@@ -24,7 +16,6 @@ spring:
     dataSource-name: datahub
     enabled: true
 
-
   sql:
     init:
       platform: postgres
@@ -32,14 +23,13 @@ spring:
 
 myconf:
   api-server:
-    kong: ENC(84Z1sHnW4pQBxXR7c5HzCI9DFTJ8xjEtYKndkrpawU7rfYRK3JIF8g==) 
-    kong-admin: ENC(rtySWfcTU78pXNqzPEvjpj7Ed54qivRLJIRvTHV9JmViFskT3ksDpA==) 
+    kong: ENC(84Z1sHnW4pQBxXR7c5HzCI9DFTJ8xjEtYKndkrpawU7rfYRK3JIF8g==)
+    kong-admin: ENC(rtySWfcTU78pXNqzPEvjpj7Ed54qivRLJIRvTHV9JmViFskT3ksDpA==)
     kong-use: true
     grafana-url: ENC(xraTW2CYr0s+mWBJqMINIxaa7Xc6wBYLNhIpTD0OoF4+7zWpsJzx7YSEqdmhvP31)
-    hub-api: ENC(wNxGQ47lJwguxyBJVKyg3epEQNBbnZHp2iJqOHxF4XaWh+40Ww6cKg==) 
+    hub-api: ENC(wNxGQ47lJwguxyBJVKyg3epEQNBbnZHp2iJqOHxF4XaWh+40Ww6cKg==)
   dhub:
     auth-url: ENC(miADMTitM56pXljUvTnxzItAK1ZNHO4NWy/7vr0L8d/nXEP9CmIt73YIshXki0NsM7cvVbO3AoI=)
 
 file:
   upload-dir: ./external
-
