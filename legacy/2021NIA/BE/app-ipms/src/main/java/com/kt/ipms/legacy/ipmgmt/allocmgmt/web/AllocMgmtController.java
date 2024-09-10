@@ -970,7 +970,9 @@ public class AllocMgmtController extends CommonController {
 	@RequestMapping(value = "/ipmgmt/allocmgmt/viewListIpAllocMstByMain.model", method = RequestMethod.POST)
 	public ModelMap selectListIpAllocMstByMain(@RequestBody IpAllocOperMstVo searchVo, ModelMap model,
 	HttpServletRequest request) {
-		IpAllocOperMstListVo resultListVo = allocMgmtService.selectListPageMainIpAssignMst(searchVo);
+		ModelMap builtModel = selectListIpAllocMstByMainModelMap(searchVo, request);
+		IpAllocOperMstListVo resultListVo = (IpAllocOperMstListVo)builtModel.get("resultListVo");
+		
 		return createResultList(resultListVo.getIpAllocOperMstVos(), resultListVo.getTotalCount());
 	}
 

@@ -1,6 +1,6 @@
 server:
   servlet:
-    context-path: /nia/portal
+    context-path:
 
 spring:
   profiles.active: local

@@ -3,23 +3,35 @@
     <div v-if="!isDashboard" ref="searchCondition" class="optionBox">
       <el-row class="optionRow">
         <el-col class="d-flex">
-          <el-select v-model="option" size="mini">
+          <el-select v-model="option" size="mini" @change="searchTagArr = []">
             <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
-          <el-input
-            v-model="value"
-            placeholder="IP주소 또는 회선번호, SAID를 입력해 주세요."
-            clearable
-            size="mini"
-            @change="onCheckValidation"
-          />
+          <div class="search-wrapper" @click="$refs.input.focus()">
+            <div
+              v-for="(tag, index) in searchTagArr"
+              :key="index"
+              class="tag-item"
+            >
+              <div>{{ tag }}</div>
+              <i class="el-icon-close ml-1" style="font-size: 13px;" @click="removeSearchTag(index)" />
+            </div>
+            <input
+              ref="input"
+              v-model="searchTagStr"
+              class="input-tag"
+              type="text"
+              @input="onCheckValidation"
+              @keyup.space="onKeyUpSpace"
+              @keyup.delete="onKeyUpBackspace"
+            />
+          </div>
           <el-button
             class="btn-r ml-1"
             type="info"
             size="mini"
             icon="el-icon-search"
             style="background-color: #3a3a3a;"
-            @click="fnMainSeachBtnClick()"
+            @click="handleClickSearch()"
           >
             조회
           </el-button>
@@ -83,8 +95,10 @@ export default {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       options: [],
-      option: 'CV0001',
+      searchTagArr: [],
+      searchTagStr: '',
       value: '14.32',
+      option: 'CV0001',
       ipBlockColumns: [
         { prop: 'pipPrefix', label: 'IP블록', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'sfirstAddr', label: '시작 IP', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
@@ -120,7 +134,7 @@ export default {
           this.option = option
           this.value = value
           this.$store.dispatch('ipms/setToParam', null)
-          this.fnMainSeachBtnClick()
+          this.fnViewListIpAllocMstByMain()
         }
       },
       immediate: true
@@ -131,41 +145,80 @@ export default {
   },
   methods: {
     onCheckValidation(val) {
-      if (['IPv4', 'IPv6'].includes(this.option)) {
-        const reVal = val.replace(/[^0-9\\.]/g, '')
-        this.value = reVal
+      if (['CV0001', 'CV0002'].includes(this.option)) {
+        const reVal = this.searchTagStr.replace(/[^0-9\\.]/g, '')
+        this.searchTagStr = reVal
       }
     },
-    async fnMainSeachBtnClick() {
+    handleClickSearch() {
+      if (['CV0001', 'CV0002'].includes(this.option) && this.searchTagArr.length > 1) {
+        this.fnMultiIpInfo()
+      } else {
+        this.fnViewListIpAllocMstByMain()
+      }
+    },
+    async fnMultiIpInfo() {
+      try {
+        const searchWrd = this.searchTagArr.toString()
+        const res = await apiRequestModel(ipmsModelApis.viewListMultiIpInfo, { searchWrd })
+        this.resultList = res?.result?.data ?? []
+      } catch (error) {
+        this.error(error)
+      }
+    },
+    async fnViewListIpAllocMstByMain() {
       if (this.value === '') {
         onMessagePopup(this, '검색어를  입력하세요.')
         return
       }
       const ipInfoVo = { pageIndex: 1, pageUnit: '10', searchWrd: this.option }
       if (this.option === 'CV0001' || this.option === 'CV0002') {
-        Object.assign(ipInfoVo, { sfirstAddr: this.value, sipVersionTypeCd: this.option })
+        Object.assign(ipInfoVo, { sfirstAddr: this.searchTagArr[0] ?? this.searchTagStr, sipVersionTypeCd: this.option })
       } else {
         let key = ''
         switch (this.option) {
           case 'SAID':
-            key = 'ssaid'
+            // key = 'ssaid'
+            key = 'ssaids'
             break
           case 'SLLNUM':
-          key = 'sllnum'
+          // key = 'sllnum'
+          key = 'sllnums'
             break
           case 'SCONNALIAS':
-          key = 'sconnAlias'
+          // key = 'sconnAlias'
+          key = 'sconnAliass'
             break
           default:
             break
         }
-        Object.assign(ipInfoVo, { [key]: this.value })
+        // Object.assign(ipInfoVo, { [key]: this.value })
+        Object.assign(ipInfoVo, { [key]: this.searchTagArr })
       }
       try {
         const res = await apiRequestModel(ipmsModelApis.viewListIpAllocMstByMain, ipInfoVo)
         this.resultList = res?.result?.resultListVo ?? []
       } catch (error) {
         this.error(error)
+      }
+    },
+    onKeyUpSpace() {
+      const str = this.searchTagStr.replaceAll(' ', '')
+      if (!this.searchTagArr.includes(str) && str.length > 0) {
+        this.searchTagArr.push(str)
+      }
+      // this.value = this.searchTagArr.toString()
+      this.searchTagStr = ''
+    },
+    onKeyUpBackspace() {
+      if (this.searchTagStr.length === 0) {
+        this.searchTagArr.pop()
+      }
+    },
+    removeSearchTag(index) {
+      this.searchTagArr
+      if (index >= 0 && index < this.searchTagArr.length) {
+        this.searchTagArr.splice(index, 1)
       }
     },
     async handleClickExcelBtn() {
@@ -207,4 +260,37 @@ export default {
   },
 }
 </script>
-<style lang="css" scoped></style>
+<style lang="scss" scoped>
+.is-tag.el-input__inner ::v-deep {
+  border-left: 0px;
+}
+.el-input-group__prepend {
+  background-color: #fff;
+}
+.search-wrapper {
+  border-radius: 5px;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  border: solid 1px #dddfe6;
+  .tag-item {
+    display: flex;
+    font-weight: 700;
+    color: #e31818;
+    padding: 0px 3px;
+    margin-left: 4px;
+    border-radius: 2px;
+    width: fit-content;
+    align-items: baseline;
+    background: #e3181829;
+    justify-content: space-between;
+    i:hover {
+      color: black;
+      cursor: pointer;
+    }
+  }
+  input {
+    outline-color: #fff !important;
+  }
+}
+</style>
