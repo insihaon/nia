@@ -2,9 +2,6 @@ server:
   port: 8080
   servlet:
     context-path: 
-    # /datahub/portal
-
-  error.redirect: https://ktnms.kt.com/nms/errorPage.html
     
 spring:
   profiles:

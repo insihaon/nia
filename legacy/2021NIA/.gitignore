@@ -9,7 +9,7 @@ BE/gradle/wrapper/gradle-wrapper.jar
 BE*/**/build/
 BE*/**/logs
 BE*/**/bin
-BE*/**/src/main/resources/static
+BE*/**/src/main/resources/static*
 BE*/**/uploads
 BE*/**/rabbitmq
 FE/.DS_Store
