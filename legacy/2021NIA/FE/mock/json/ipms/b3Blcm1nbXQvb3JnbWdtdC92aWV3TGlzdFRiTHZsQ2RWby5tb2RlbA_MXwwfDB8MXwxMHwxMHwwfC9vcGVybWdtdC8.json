@@ -239,7 +239,7 @@
           "slvlCd": "R00780",
           "slvlNm": "가평국사",
           "sorgOfficeFlagYn": "N",
-          "sexLinkUseTypeCd": "CE0001",
+          "sexLinkUseTypeCd": "CE0006",
           "sexLinkUseTypeNm": "NEOSS_CODE",
           "scomment": "등록일시 : 2014-10-24 04:10:18"
         },
@@ -359,7 +359,7 @@
           "slvlCd": "R03485",
           "slvlNm": "강릉국사",
           "sorgOfficeFlagYn": "N",
-          "sexLinkUseTypeCd": "CE0001",
+          "sexLinkUseTypeCd": "CE0006",
           "sexLinkUseTypeNm": "NEOSS_CODE",
           "scomment": "등록일시 : 2014-10-24 04:10:18"
         },
