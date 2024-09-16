@@ -27,6 +27,8 @@ spring:
       platform: postgres
       encoding: UTF-8
 
+myconf:
+  ajp.use: true
 file:
   upload-dir: ./external
 
