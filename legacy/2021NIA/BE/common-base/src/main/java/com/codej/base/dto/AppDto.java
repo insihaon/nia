@@ -108,6 +108,9 @@ public class AppDto {
     @Value("${myconf.auth.use:true}") // false: 인증을 사용하지 않는다
     private Boolean authUse;
 
+    @Value("${myconf.ajp.use:false}") // false: AJP 통신 사용하지 않는다
+    private Boolean ajpUse;
+
     @Value("${myconf.auth.single-only:false}") // false: 다중사용자를 허용한다.
     private Boolean authSingleOnly;
 

@@ -20,10 +20,32 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class AuthInterceptor extends HandlerInterceptorAdapter {
 
+	public String getClientIp(HttpServletRequest request) {
+		String[] headers = {
+			"X-Forwarded-For",
+			"Proxy-Client-IP",
+			"WL-Proxy-Client-IP",
+			"HTTP_CLIENT_IP",
+			"HTTP_X_FORWARDED_FOR",
+			"X-Real-IP"
+		};
+	
+		for (String header : headers) {
+			String ip = request.getHeader(header);
+			// log.debug("Header['{}']{}", header, ip);
+			if (ip != null && ip.length() != 0 && !"unknown".equalsIgnoreCase(ip)) {
+				return ip.split(",")[0].trim();  // 여러 IP가 있을 경우 첫 번째 IP 반환
+			}
+		}
+	
+		return request.getRemoteAddr();  // 헤더에서 IP를 찾지 못하면 기본 IP 반환
+	}
+
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
-		log.debug("controller call: {} => {}", request.getRequestURL(), handler.toString());
+				
+		log.debug("요청({}): {} => {}", getClientIp(request), request.getRequestURL(), handler.toString());
 		try {
 			if (handler instanceof HandlerMethod) {
 				// HandlerMethod 는 후에 실행할 컨트롤러의 메소드 입니다.

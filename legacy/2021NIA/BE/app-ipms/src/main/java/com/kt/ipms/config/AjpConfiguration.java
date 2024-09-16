@@ -2,12 +2,14 @@ package com.kt.ipms.config;
 
 import org.apache.catalina.connector.Connector;
 import org.apache.coyote.ajp.AbstractAjpProtocol;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-// @Configuration
-// 리버스프록시로 대체
+@Configuration
+@ConditionalOnExpression("'${myconf.ajp.use:false}' == 'true'")
 public class AjpConfiguration {
 
     @Bean
