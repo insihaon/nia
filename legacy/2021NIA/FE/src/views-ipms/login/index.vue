@@ -59,7 +59,7 @@
               </el-tooltip>
             </div>
             <el-button style="border: none;" @click="handleLogin">
-              <img src="@/assets/images/ipms/content/btn_login_off.gif" alt="로그인" @click="handleLogin">
+              <img src="@/assets/images/ipms/content/btn_login_off.gif" alt="로그인">
             </el-button>
           </el-form>
           <p class="txtblue">* 아이디, 비밀번호는 kate/NeOSS와 동일합니다.</p>
