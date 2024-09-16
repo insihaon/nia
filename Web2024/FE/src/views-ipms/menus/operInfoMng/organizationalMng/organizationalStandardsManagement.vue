@@ -4,7 +4,7 @@
       ref="searchCondition"
       :prop-name="name"
       :component-keys="componentList"
-      @handle-search="handleSearch"
+      @handle-search="fnViewListOrgBas"
     />
     <el-col ref="tableContainer" :span="24">
       <compTable
@@ -12,6 +12,7 @@
         :prop-name="name"
         :prop-table-height="'calc(100% - 80px)'"
         :prop-column="tableColumns"
+        :prop-data="resultListVo"
         :prop-is-pagination="true"
         :prop-is-check-box="false"
         prop-grid-menu-id="inputSpeed"
@@ -31,6 +32,7 @@ import { Base } from '@/min/Base.min'
 import CompTable from '@/components/elTable/CompTable.vue'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
 import tableHeightMixin from '@/mixin/tableHeightMixin'
+import { ipmsModelApis, apiRequestModel } from '@/api/ipms'
 
 const routeName = 'OrganizationalStandardsManagement'
 
@@ -44,24 +46,31 @@ export default {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       tableColumns: [
-        { prop: '', label: '조직아이디', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: '조직명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: '상위조직', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: '본부조직', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'sktOrgId', label: '조직아이디', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'sFullOrgNm', label: '조직명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'supKtOrgNm', label: '상위조직', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'shqOrgNm', label: '본부조직', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'sipmsOrgYn', label: '조직 사용여부', align: 'center', sortable: true, columnVisible: false, showOverflow: true },
       ],
       componentList: [
         { key: 'UsageYN', props: { label: '조직 사용여부', prop_parameterKey: 'sipmsOrgYn' } },
         { key: 'InputType', props: { label: '조직명' } },
-      ]
+      ],
+      resultListVo: []
     }
   },
+  mounted() {
+    this.fnViewListOrgBas()
+  },
   methods: {
-    handleSearch(params) {
-      console.log(params)
-      /* const res = await api(params) */
-    }
+    async fnViewListOrgBas(requestParameter) {
+      try {
+        const res = await apiRequestModel(ipmsModelApis.viewListOrgBas, requestParameter)
+        this.resultListVo = res?.result.data
+      } catch (error) {
+        console.error(error)
+      }
+    },
   },
 }
 </script>
-<style lang="css" scoped>
-</style>
