@@ -297,10 +297,11 @@ export default {
           this.$message('정상처리 되었습니다.')
           this.$emit('reload')
           this.close()
+         } else {
+           this.$message.error({ message: `${res.message}` })
          }
       } catch (error) {
         console.error(error)
-        this.$message.error({ message: `${res.message}` })
       }
     },
     onClose() {

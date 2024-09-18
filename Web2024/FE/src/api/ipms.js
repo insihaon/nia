@@ -98,6 +98,11 @@ export const ipmsModelApis = {
   viewUpdateTbLvlCdVo: { desc: '계위코드 관리 조회 > 수정 화면', url: '/opermgmt/orgmgmt/viewUpdateTbLvlCdVo' },
   viewListLvlBas: { desc: '조직계위 정보관리 조회', url: '/opermgmt/orgmgmt/viewListLvlBas' },
   viewUdateLvlBas: { desc: '조직계위 정보관리 > 조직계위정보 이동 화면', url: '/opermgmt/orgmgmt/viewUdateLvlBas' },
+  viewInsertLvlSonMgmtPop: { desc: '조직계위 정보관리 > 오더 노드국 관리 조회 화면', url: '/opermgmt/orgmgmt/viewInsertLvlSonMgmtPop' },
+  viewInsertLvlRoleSub: { desc: '조직계위 정보관리 > 시설 수용국 관리 조회 화면', url: '/opermgmt/orgmgmt/viewInsertLvlRoleSub' },
+  viewListTbUserBas: { desc: '조직계위 정보관리 > 시설 수용국 관리 조회 화면', url: '/opermgmt/usermgmt/viewListTbUserBas' },
+  viewListUserHndSetTxn: { desc: '사용자 정보관리 > 사용자 상세정보 > 사용자 접속 IP변경', url: '/opermgmt/usermgmt/viewListUserHndSetTxn' },
+
 }
 export const ipmsJsonApis = {
   selectAuthCenterList: { desc: '센터 조회', url: '/opermgmt/orgmgmt/selectAuthCenterList' },
@@ -105,6 +110,7 @@ export const ipmsJsonApis = {
   selectOfficeList: { desc: '수용국 조회', url: '/ipmgmt/linemgmt/selectOfficeList' },
   selectSearchLvlCd: { desc: '운용팀 조회', url: 'opermgmt/orgmgmt/selectSearchLvlCd' },
   selectSassignTypeCdList: { desc: '서비스 조회', url: '/ipmgmt/allocmgmt/selectSassignTypeCdList' },
+  selectSearchOrgBas: { desc: '운용조직 검색', url: '/opermgmt/orgmgmt/selectSearchOrgBas' },
   //
   appendCrtIPMst: { desc: 'IP 블록관리 > IP 블록생성 > IP 주소 추가', url: '/ipmgmt/createmgmt/appendCrtIPMst' },
   insertListCrtIPMst: { desc: 'IP 블록관리 > IP 블록생성 > IP 주소 등록', url: '/ipmgmt/createmgmt/insertListCrtIPMst' },
@@ -188,6 +194,12 @@ export const ipmsJsonApis = {
   insertTbLvlBas: { desc: '조직 계위 정보 관리 > 조직계위등록 > 등록', url: 'opermgmt/orgmgmt/insertTbLvlBas' },
   validTbLvlBas: { desc: '조직 계위 정보 관리 > 조직계위정보 이동 > 유효성검사', url: 'opermgmt/orgmgmt/validTbLvlBas' },
   updateTbLvlMove: { desc: '조직 계위 정보 관리 > 조직계위정보 이동 > 등록', url: 'opermgmt/orgmgmt/updateTbLvlMove' },
+  deleteTbLvlSubCd: { desc: '조직계위 정보관리 > 오더 노드국 관리 > 노드국 목록 삭제', url: '/opermgmt/orgmgmt/deleteTbLvlSubCd' },
+  selectSloffice: { desc: '조직계위 정보관리 > 오더 노드국 관리 > 유효성 검사', url: '/opermgmt/orgmgmt/selectSloffice' },
+  insertTbLvlSubCd: { desc: '조직계위 정보관리 > 오더 노드국 관리 > 등록', url: '/opermgmt/orgmgmt/insertTbLvlSubCd' },
+  deleteLvlRoleSub: { desc: '조직계위 정보관리 > 시설 수용국 관리 > 노드국 목록 삭제', url: '/opermgmt/orgmgmt/deleteLvlRoleSub' },
+  insertLvlRoleSub: { desc: '조직계위 정보관리 > 시설 수용국 관리 > 등록', url: '/opermgmt/orgmgmt/insertLvlRoleSub' },
+  updateTbUserBas: { desc: '사용자 정보관리 > 수정 > 비밀번호 실패횟수 초기화', url: '/opermgmt/usermgmt/updateTbUserBas' },
 }
 
 export function apiTest(params) {

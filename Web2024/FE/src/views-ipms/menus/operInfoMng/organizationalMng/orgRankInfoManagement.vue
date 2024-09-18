@@ -164,11 +164,41 @@ export default {
       }
      this.$refs.ModalUpdateLvlBas.open({ row: row /* legacy :  res?.result?.nodeListVo */ })
     },
-    fnViewInsertLvlSon() { /* 오더계위 관리 */
-      this.$refs.ModalInsertLvlSonMgmt.open()
+    async fnViewInsertLvlSon(row) { /* 오더계위 관리 */
+     let res
+     try {
+       const TbLvlSubCdVo = {
+          ssvcLineTypeCd: row.ssvcLineTypeCd,
+          ssvcLineTypeNm: row.ssvcLineTypeNm,
+          ssvcObjCd: row.ssvcObjCd,
+          ssvcObjNm: row.ssvcObjNm,
+          ssvcGroupCd: row.ssvcGroupCd,
+          ssvcGroupNm: row.ssvcGroupNm,
+          ssvchighObjCd: row.ssvchighObjCd,
+          ssvchighObjNm: row.ssvchighObjNm,
+          nlvlBasSeq: row.nlvlBasSeq,
+        }
+         res = await apiRequestModel(ipmsModelApis.viewInsertLvlSonMgmtPop, TbLvlSubCdVo)
+     } catch (error) {
+       console.error(error)
+     }
+      this.$refs.ModalInsertLvlSonMgmt.open({ row: res.result, })
     },
-    fnViewInsertLvlRoleSub() { /* 시설계위 관리 */
-      this.$refs.ModalInsertLvlRoleSub.open()
+    async fnViewInsertLvlRoleSub(row) { /* 시설계위 관리 */
+      try {
+        const TbLvlRoleSubVo = {
+         ssvcLineTypeCd: row.ssvcLineTypeCd,
+         ssvcLineTypeNm: row.ssvcLineTypeNm,
+         ssvcObjCd: row.ssvcObjCd,
+         ssvcObjNm: row.ssvcObjNm,
+         ssvcGroupNm: row.ssvcGroupNm,
+         ssvchighObjNm: row.ssvchighObjNm,
+        }
+        const res = await apiRequestModel(ipmsModelApis.viewInsertLvlRoleSub, TbLvlRoleSubVo) /* viewInsertLvlRoleSub */
+        this.$refs.ModalInsertLvlRoleSub.open({ row: res.result })
+      } catch (error) {
+        console.error(error)
+      }
     }
   },
 }
