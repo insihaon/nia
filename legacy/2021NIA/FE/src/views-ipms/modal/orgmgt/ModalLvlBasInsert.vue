@@ -268,9 +268,10 @@ export default {
           this.$message('조직계위등록이 정상처리 되었습니다.')
           this.$emit('reload')
           this.close()
+        } else {
+          this.$message.error({ message: `${res.commonMsg}` })
         }
       } catch (error) {
-        this.$message.error({ message: `${res.commonMsg}` })
         console.error(error)
       }
     },
