@@ -17,7 +17,8 @@
     >
       <span slot="title">
         <i class="el-icon-document mr-2" style="font-size: 17px" />
-        사용자 권한 등록
+
+        {{ title }}
         <hr>
       </span>
 
@@ -35,14 +36,28 @@
                   <el-input v-show="false" v-model="resultListVo.suserId" size="mini" onchange="fnUserIdChange();" />
                   <el-input v-show="false" v-model="resultListVo.suserGradeCd" size="mini" />
                   <div class="search w98">
-                    <el-input v-model="resultListVo.suserNm" size="mini" type="text" class="txt w-100" readonly="readonly" />
+                    <el-input v-model="suserNm" size="mini" type="text" class="txt w-100" readonly="readonly">
+                      <template v-if="viewType === 'I'" #suffix>
+                        <el-button
+                          slot="trigger"
+                          size="small"
+                          style="font-size: larger; border: none; float: right"
+                          icon="el-icon-search"
+                          class="font-weight-bolder"
+                          @click="fnViewSearchUser()"
+                        />
+                      </template>
+                    </el-input>
                   </div>
                 </td>
               </tr>
             </tbody>
           </table>
-
+          <el-button v-if="viewType === 'I'" class="float-right" size="mini" @click="fnSelectUserAuth()">
+            조회
+          </el-button>
         </div>
+
         <div class="content_result">
           <h4>권한상세</h4>
           <table id="authTable" class="tbl_list mt5" summary="목록">
@@ -64,7 +79,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-if="resultListDetailVo === 0" class="subbg last">
+              <tr v-if="resultListDetailVo === ''" class="subbg last">
                 <td class="first" colspan="5">조회된 결과 목록이 존재하지 않습니다.</td>
               </tr>
               <template v-else>
@@ -82,9 +97,9 @@
                   <td class="ellipsis" :title="item.ssvcGroupNm">{{ item.ssvcGroupNm }}</td>
                   <td class="ellipsis" :title="item.ssvcObjNm">{{ item.ssvcObjNm }}</td>
                   <!-- 추후에 레거시 코드로 반영 -->
-                  <!-- <td class="ellipsis" :title="item.tbLvlBasVo.ssvcLineTypeNm">{{ item.tbLvlBasVo.ssvcLineTypeNm }}</td>
-                  <td class="ellipsis" :title="item.tbLvlBasVo.ssvcGroupNm">{{ item.tbLvlBasVo.ssvcGroupNm }}</td>
-                  <td class="ellipsis" :title="item.tbLvlBasVo.ssvcObjNm">{{ item.tbLvlBasVo.ssvcObjNm }}</td> -->
+                  <!-- <td class="ellipsis" :title="item.tbLvlBasVo.ssvcLineTypeNm">{{ item?.tbLvlBasVo?.ssvcLineTypeNm }}</td>
+                  <td class="ellipsis" :title="item.tbLvlBasVo.ssvcGroupNm">{{ item?.tbLvlBasVo?.ssvcGroupNm }}</td>
+                  <td class="ellipsis" :title="item.tbLvlBasVo.ssvcObjNm">{{ item?.tbLvlBasVo?.ssvcObjNm }}</td> -->
                 </tr>
               </template>
             </tbody>
@@ -153,7 +168,7 @@
             </tbody>
           </table>
           <div class="btn_area mt5">
-            <el-button size="mini" @click="fnUserAuthDupCheck()">추가</el-button>
+            <el-button v-if="resultListRegistVo.length > 0" size="mini" @click="fnUserAuthDupCheck()">추가</el-button>
           </div>
         </div>
 
@@ -183,11 +198,11 @@
             </thead>
             <tbody>
               <tr
-                v-for="(item, index) in resultListVo.tbUserAuthTxnVos"
+                v-for="(item, index) in resultListRegistVo"
                 :key="index"
                 :class="{
-                  last: index === resultListVo.tbUserAuthTxnVos.length - 1,
-                  subbg: (index % 2) !== 0 || index === resultListVo.tbUserAuthTxnVos.length - 1
+                  last: index === resultListRegistVo.length - 1,
+                  subbg: (index % 2) !== 0 || index === resultListRegistVo.length - 1
                 }"
               >
                 <td class="first">{{ item.suserNm }}</td>
@@ -215,6 +230,7 @@
           {{ $t('exit') }}
         </el-button>
       </div>
+      <ModalSearchUserId ref="ModalSearchUserId" @selected-value="setSelectedRow" />
     </el-dialog>
   </div>
 </template>
@@ -223,14 +239,15 @@
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
 import { apiRequestJson, ipmsJsonApis, apiRequestModel, ipmsModelApis } from '@/api/ipms'
+import ModalSearchUserId from '@/views-ipms/modal/grantmgmt/ModalSearchUserId.vue'
 import { mapState } from 'vuex'
 import _ from 'lodash'
 
-const routeName = 'ModalInsertUserAuth.'
+const routeName = 'ModalMngUserAuth.'
 
 export default {
   name: routeName,
-  components: { },
+  components: { ModalSearchUserId },
   directives: { elDragDialog },
   extends: Modal,
   data() {
@@ -271,13 +288,19 @@ export default {
       addTableData: false,
       resultListDetailVo: [],
       viewModel: null,
-      isDeleteMode: false
+      isDeleteMode: false,
+      viewType: '',
+      suserNm: '',
+      suserId: ''
     }
   },
   computed: {
    ...mapState({
       username: (state) => state.user.name,
     }),
+    title() {
+      return this.viewType === 'U' ? '사용자 권한 정보 등록' : '사용자 권한 등록'
+    },
     isDisabledLvl1() {
       return this.suserGradeCode === 'UR0001'
     },
@@ -293,27 +316,31 @@ export default {
       this.updateDisabledStates()
       this.selectedUserAuth.suserGradeNm = this.userGradeOp.find(
         (item) => item.value === this.suserGradeCode
-      ).label
+      )?.label ?? ''
     },
     ssvcLineTypeCd(newVal) {
       this.selectedUserAuth.ssvcLineTypeNm = this.ssvcLineTypeNmOp.find(/* get value of selected label */
           (item) => item.value === this.ssvcLineTypeCd
-      )?.label
+      )?.label ?? ''
     },
     ssvcGroupCd(newVal) {
       this.selectedUserAuth.ssvcGroupNm = this.ssvcGroupNmOp.find(/* get value of selected label */
         (item) => item.value === this.ssvcGroupCd
-      )?.label
+      )?.label ?? ''
     },
     ssvcObjCd(newVal) {
        this.selectedUserAuth.ssvcObjNm = this.ssvcObjNmOp.find(/* get value of selected label */
         (item) => item.value === this.ssvcObjCd
-      )?.label
+      )?.label ?? ''
     }
   },
   mounted() {
   },
   methods: {
+    setSelectedRow(row) {
+      this.suserNm = row?.suserNm
+      this.suserId = row?.suserId
+    },
     updateDisabledStates() {
       if (this.suserGradeCd === 'UR0001') {
         this.ssvcLineTypeCd = ''
@@ -328,19 +355,29 @@ export default {
         // v-model 값 유지
       }
     },
+    sipCreate() {
+      console.log(this.sipCreateTypeCd)
+    },
     onCreated() {
       Modal.methods.onCreated.call(this)
       this.closeOnClickModal = false
       this.domElement.maxWidth = 1200
     },
     onOpen(model, actionMode) {
-      this.viewModel = model.row
+      this.viewType = model.type
+      if (model.type === 'U') {
+        this.viewModel = model.row
+      } else {
+        this.viewModel = ''
+      }
       this.onSetValue()
     },
     onSetValue() {
-      this.resultListVo = _.cloneDeep(this.viewModel.resultListVo)
-      this.resultListDetailVo = _.cloneDeep(this.viewModel.resultListVo.tbUserAuthTxnVos)
-      this.suserGradeCode = _.cloneDeep(this.viewModel.resultListVo.suserGradeCd)
+      this.resultListVo = _.cloneDeep(this.viewModel?.resultListVo) ?? ''
+      this.suserNm = this.resultListVo.suserNm ?? ''
+      this.resultListDetailVo = _.cloneDeep(this.viewModel?.resultListVo?.tbUserAuthTxnVos) ?? ''
+      this.resultListRegistVo = _.cloneDeep(this.viewModel?.resultListVo?.tbUserAuthTxnVos) ?? ''
+      this.suserGradeCode = _.cloneDeep(this.viewModel?.resultListVo?.suserGradeCd) ?? ''
     },
     async handleChangeLvl1() {
       const tbLvlBasVo = { ssvcLineTypeCd: this.ssvcLineTypeCd }
@@ -369,88 +406,72 @@ export default {
       })
     },
 
-    fnUserAuthDupCheck() { /* 권한 추가 */
-    if (this.resultListVo.tbUserAuthTxnVos.length === 0) {
-         const selectResultVal = this.resultListVo.tbUserAuthTxnVos.forEach(v => {
-            v.suserGradeNm = this.selectedUserAuth.suserGradeNm
-            v.ssvcLineTypeNm = this.selectedUserAuth.ssvcLineTypeNm
-            v.ssvcGroupNm = this.selectedUserAuth.ssvcGroupNm
-            v.ssvcObjNm = this.selectedUserAuth.ssvcObjNm
-      })
-    } else {
-       if (this.suserGradeCode === 'UR0003') {
-          if (this.ssvcLineTypeCd === '' || this.ssvcLineTypeCd === null) {
-            this.$message('서비스망을 입력하세요')
-            return
-          }
-        } else if (this.suserGradeCode === 'UR0004') {
-          if (this.ssvcLineTypeCd === '' || this.ssvcLineTypeCd === null) {
-            this.$message('서비스망을 입력하세요')
-            return
-          }
-
-          if (this.ssvcGroupCd === '' || this.ssvcGroupCd === null) {
-            this.$message('본부를 입력하세요')
-            return
-          }
-        } else if (this.suserGradeCode === 'UR0005') {
-          if (this.ssvcLineTypeCd === '' || this.ssvcLineTypeCd === null) {
-            this.$message('서비스망을 입력하세요')
-            return
-          }
-
-          if (this.ssvcGroupCd === '' || this.ssvcGroupCd === null) {
-            this.$message('본부를 입력하세요')
-            return
-          }
-
-          if (this.ssvcObjCd === '' || this.ssvcObjCd === null) {
-            this.$message('노드를 입력하세요')
-            return
-          }
-        }
-
-        const isCheck = this.resultListVo.tbUserAuthTxnVos.every(v =>
-          (v.suserGradeCd ?? null) === (this.suserGradeCode ?? null) &&
-          (v.ssvcLineTypeCd ?? null) === (this.ssvcLineTypeCd ?? null) &&
-          (v.ssvcGroupCd ?? null) === (this.ssvcGroupCd ?? null) &&
-          (v.ssvcObjCd ?? null) === (this.ssvcObjCd ?? null)
-        )
-
-        if (isCheck) {
-          this.$message('기존에 추가된 권한입니다. 다시 선택하여 추가하세요.')
+    fnUserAuthDupCheck() {
+      // 권한 추가 로직
+      if (this.suserGradeCode === 'UR0003') {
+        if (!this.ssvcLineTypeCd) {
+          this.$message('서비스망을 입력하세요')
           return
         }
-    }
-
-    if (this.resultListVo.suserGradeCd !== this.suserGradeCode) {
-      this.$confirm(
-        `선택한 권한등급이 이전 권한등급과 다릅니다.
-        다른 권한등급 선택 시 이전 권한이 모두 삭제됩니다.
-        변경하시겠습니까?`,
-        '확인',
-        {
-          confirmButtonText: '확인',
-          cancelButtonText: '취소',
+      } else if (this.suserGradeCode === 'UR0004') {
+        if (!this.ssvcLineTypeCd) {
+          this.$message('서비스망을 입력하세요')
+          return
         }
-        ).then(async () => {
-          const selectResultVal = this.resultListVo.tbUserAuthTxnVos.forEach(v => {
-            v.suserGradeNm = this.selectedUserAuth.suserGradeNm
-            v.ssvcLineTypeNm = this.selectedUserAuth.ssvcLineTypeNm
-            v.ssvcGroupNm = this.selectedUserAuth.ssvcGroupNm
-            v.ssvcObjNm = this.selectedUserAuth.ssvcObjNm
-          })
-        }).catch(() => {
-          return false
-        })
+        if (!this.ssvcGroupCd) {
+          this.$message('본부를 입력하세요')
+          return
+        }
+      } else if (this.suserGradeCode === 'UR0005') {
+        if (!this.ssvcLineTypeCd) {
+          this.$message('서비스망을 입력하세요')
+          return
+        }
+        if (!this.ssvcGroupCd) {
+          this.$message('본부를 입력하세요')
+          return
+        }
+        if (!this.ssvcObjCd) {
+          this.$message('노드를 입력하세요')
+          return
+        }
       }
+
+      const isCheck = this.resultListRegistVo.every(v =>
+        v.suserGradeCd === this.suserGradeCode &&
+        v.ssvcLineTypeCd === this.ssvcLineTypeCd &&
+        v.ssvcGroupCd === this.ssvcGroupCd &&
+        v.ssvcObjCd === this.ssvcObjCd
+      )
+
+      if (isCheck) {
+        this.$message('기존에 추가된 권한입니다. 다시 선택하여 추가하세요.')
+        return
+      }
+
+      /* 추가 데이터 */
+      const newUserAuth = {
+        suserNm: this.suserNm,
+        suserGradeNm: this.userGradeOp.find(item => item.value === this.suserGradeCode)?.label ?? '',
+        ssvcLineTypeNm: this.ssvcLineTypeNmOp.find(item => item.value === this.ssvcLineTypeCd)?.label ?? '',
+        ssvcGroupNm: this.ssvcGroupNmOp.find(item => item.value === this.ssvcGroupCd)?.label ?? '',
+        ssvcObjNm: this.ssvcObjNmOp.find(item => item.value === this.ssvcObjCd)?.label ?? '',
+        suserGradeCd: this.suserGradeCode,
+        ssvcLineTypeCd: this.ssvcLineTypeCd,
+        ssvcGroupCd: this.ssvcGroupCd,
+        ssvcObjCd: this.ssvcObjCd
+      }
+
+        this.$set(this.resultListRegistVo, 0, newUserAuth)
+
+      this.$message('권한이 추가되었습니다.')
     },
     fnDeleteUserAuthPrev(index) { /* 등록예정 권한 정보 삭제 */
-      // this.resultListVo.tbUserAuthTxnVos.splice(index, 1)
+      this.resultListRegistVo.splice(index, 1)
       this.isDeleteMode = true
     },
     async fnUserAuthSave() { /* 등록 */
-      if (this.resultListVo.tbUserAuthTxnVos.length === 0) {
+      if (this.resultListRegistVo.length === 0) {
         this.$message('등록할 대상이 없습니다.')
         return
       }
@@ -462,7 +483,7 @@ export default {
           suserGradeCd: this.resultListVo.suserGradeCd
         }
 
-      this.resultListVo.tbUserAuthTxnVos.forEach((item) => {
+      this.resultListRegistVo.forEach((item) => {
         const tbUserAuthVo = {
           suserNm: this.resultListVo.suserNm,
           suserId: this.resultListVo.suserId,
@@ -481,24 +502,82 @@ export default {
 
       tbUserAuthListVo.tbUserAuthTxnVos.push(tbUserAuthVo)
     })
-        res = await apiRequestJson(ipmsJsonApis.insertUserAuthTxnSub, tbUserAuthListVo)
+        res = await apiRequestJson(ipmsJsonApis.insertUserAuthTxn, tbUserAuthListVo)
         if (res.commonMsg === 'SUCCESS') {
           this.$message('권한 신청이 정상적으로 등록되었습니다.')
           this.$emit('reload')
           this.close()
+        } else {
+          this.$message.error({ message: `${res.commonMsg}` })
         }
       } catch (error) {
-        this.$message.error({ message: `${res.commonMsg}` })
+        console.error(error)
+      }
+    },
+    fnViewSearchUser() { /* 유저 찾기 */
+     this.$refs.ModalSearchUserId.open()
+    },
+    async fnSelectUserAuth() {
+      if (this.suserNm === '') {
+        this.$message('운용자를 먼저 선택하세요')
+        return
+      }
+
+      const tbuserAuthVo = {
+        suserId: this.suserId,
+      }
+      try {
+        const res = await apiRequestModel(ipmsModelApis.viewInsertUserAuth, tbuserAuthVo)
+
+        // if (res.commonMsg === 'SUCCESS') {
+          this.resultListDetailVo = res.result.data.map((v) => {
+            return {
+              suserNm: this.suserNm,
+              suserGradeNm: v.suserGradeNm ?? '',
+              ssvcLineTypeNm: v.ssvcLineTypeNm ?? '',
+              ssvcGroupNm: v.ssvcGroupNm ?? '',
+              ssvcObjNm: v.ssvcObjNm ?? '',
+            }
+          })
+
+          this.resultListRegistVo = res.result.data.map((v) => {
+              return {
+                suserNm: this.suserNm,
+                suserGradeNm: v.suserGradeNm ?? '',
+                ssvcLineTypeNm: v.ssvcLineTypeNm ?? '',
+                ssvcGroupNm: v.ssvcGroupNm ?? '',
+                ssvcObjNm: v.ssvcObjNm ?? '',
+              }
+            })
+
+            this.suserGradeCode = this.userGradeOp.find((option) => option.label === res.result.data[0]?.suserGradeNm)?.value ?? ''
+
+            this.ssvcLineTypeCd = this.ssvcLineTypeNmOp.find((option) => option.label === res.result.data[0]?.ssvcLineTypeNm)?.value ?? ''
+
+            this.ssvcGroupCd = this.ssvcGroupNmOp.find((option) => option.label === res.result.data[0]?.ssvcGroupNm)?.value ?? ''
+
+            this.ssvcObjCd = this.ssvcObjNmOp.find((option) => option.label === res.result.data[0]?.ssvcObjNm)?.value ?? ''
+
+          this.$message('데이터가 성공적으로 조회되었습니다.')
+            // } else {
+              // this.$message(`${res.commonMsg}`)
+            // }
+      } catch (error) {
         console.error(error)
       }
     },
     onClose() {
+      this.ssvcLineTypeCd = ''
+      this.ssvcGroupCd = ''
+      this.ssvcGroupNmOp = []
+      this.ssvcObjCd = ''
+      this.ssvcObjNmOp = []
     },
   }
 }
 </script>
 <style lang="scss" scoped>
-  .ModalDetailUserAuth ::v-deep{
+  .ModalMngUserAuth ::v-deep{
     .el-select {
       width: 100%;
     }

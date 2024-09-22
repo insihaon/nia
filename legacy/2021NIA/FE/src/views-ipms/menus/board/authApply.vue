@@ -123,7 +123,7 @@ export default {
          if (type === 'U') {
            this._merge(tbUserAuthVo, { suserId: suserId })
          }
-         const res = await apiRequestModel(ipmsModelApis.viewDetailUserAuthSubs, tbUserAuthVo) /* viewInsertUserAuthSubs */
+         const res = await apiRequestModel(ipmsModelApis.viewInsertUserAuthSubs, tbUserAuthVo) /* viewInsertUserAuthSubs */
          if (res) {
            this.$refs.ModalInsertUserAuth.open({ row: res, type: type })
          }
