@@ -1,0 +1,64 @@
+{
+  "__body": {
+    "result": {
+      "totalCount": 1,
+      "data": [
+        {
+          "searchBgnDe": "",
+          "searchCnd": "",
+          "searchEndDe": "",
+          "searchWrd": "",
+          "sortType": "",
+          "sortOrdr": "",
+          "searchUseYn": "",
+          "searchBgnCd": "",
+          "searchEndCd": "",
+          "pageIndex": 1,
+          "pageUnit": 0,
+          "pageSize": 0,
+          "firstIndex": 1,
+          "lastIndex": 10,
+          "recordCountPerPage": 10,
+          "rowNo": 0,
+          "typeFlag": "",
+          "dcreateDt": "2024-09-19 09:56:19",
+          "screateId": "10150810",
+          "screateNm": null,
+          "dmodifyDt": "2024-09-19 09:56:19",
+          "smodifyId": "10150810",
+          "smodifyNm": null,
+          "commonMsg": null,
+          "screateEmail": null,
+          "smodifyEmail": null,
+          "moveType": "",
+          "moveSearchWrd": "",
+          "moveSipVersionTypeCd": null,
+          "url": null,
+          "menuType": null,
+          "paramMap": null,
+          "nuserAutSeq": 4623,
+          "suserId": "10150810",
+          "suserNm": "정회창",
+          "suserGradeCd": "UR0001",
+          "suserGradeNm": "시스템 관리자",
+          "sposDeptOrgId": "481422",
+          "sposDeptOrgNm": "IP망관제팀",
+          "sposDeptFullNm": "주식회사 케이티-네트워크부문-네트워크관제본부-네트워크관제1센터-IP망관제팀",
+          "nlvlBasSeq": null,
+          "tbLvlBasVo": null,
+          "grantSeq": null
+        }
+      ]
+    }
+  },
+  "__config": {
+    "url": "/opermgmt/grantmgmt/viewInsertUserAuth.model",
+    "param": {
+      "suserId": "10150810"
+    },
+    "receivedTime": "2024-09-19 13:38:16.250",
+    "duration": 381,
+    "filename": "b3Blcm1nbXQvZ3JhbnRtZ210L3ZpZXdJbnNlcnRVc2VyQXV0aC5tb2RlbA_MTAxNTA4MTA.json",
+    "fetch": "fetch('/opermgmt/grantmgmt/viewInsertUserAuth.model', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{\"suserId\":\"10150810\"}', 'method': 'POST' })"
+  }
+}

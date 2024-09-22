@@ -48,7 +48,7 @@
       </el-row>
       <el-row>
         <el-col :span="24" align="center" class="searchBtnGroup">
-          <el-button class="btn-r" type="info" size="mini" icon="el-icon-search" @click="handleSearch()">
+          <el-button class="btn-r" type="info" size="mini" icon="el-icon-search" @click="fnViewListTbUserConnHist()">
             조회
           </el-button>
           <el-button class="btn-r" type="info" size="mini" icon="el-icon-refresh">
@@ -64,6 +64,7 @@
         :prop-name="name"
         :prop-table-height="'calc(100% - 80px)'"
         :prop-column="tableColumns"
+        :prop-data="resultListVo"
         :prop-is-pagination="true"
         :prop-is-check-box="false"
         prop-grid-menu-id="inputSpeed"
@@ -82,6 +83,9 @@
 import { Base } from '@/min/Base.min'
 import CompTable from '@/components/elTable/CompTable.vue'
 import InputSearchDetail from '@/views-ipms/conditionComponents/InputSearchDetail.vue'
+import moment from 'moment'
+import { ipmsModelApis, apiRequestModel } from '@/api/ipms'
+
 const routeName = 'UserConnectStatus'
 
 export default {
@@ -93,13 +97,13 @@ export default {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       tableColumns: [
-        { prop: '', label: '사용자ID', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: '사용자명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: '소속조직', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: '로그인시간', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: '로그아웃시간', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: '접속 IP주소', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: '로그인결과', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'suserId', label: '사용자ID', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'suserNm', label: '사용자명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'sposDeptOrgNm', label: '소속조직', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'dloginDt', label: '로그인시간', align: 'center', sortable: true, columnVisible: true, showOverflow: true, formatter: (row) => moment(row.dmodifyDt).format('YYYY-MM-DD') },
+        { prop: 'dlogoutDt', label: '로그아웃시간', align: 'center', sortable: true, columnVisible: true, showOverflow: true, formatter: (row) => moment(row.dmodifyDt).format('YYYY-MM-DD') },
+        { prop: 'suserHndsetId', label: '접속 IP주소', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'suserConnResltTypeNm', label: '로그인결과', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
       ],
       useConnResOp: [
         { label: '전체', value: '' },
@@ -110,11 +114,15 @@ export default {
       connectValue: '',
       nameValue: '',
       loginTime: [],
-      requestParameter: {}
+      requestParameter: {},
+      resultListVo: []
     }
   },
+  mounted() {
+    this.fnViewListTbUserConnHist()
+  },
   methods: {
-    handleSearch() {
+    async fnViewListTbUserConnHist() {
       const [bgTime, endTime] = this.loginTime
       const params = {
         searchBgnDe: '',
@@ -127,10 +135,12 @@ export default {
         suserConnResultTypeCd: this.connectValue
       }
       Object.assign(this.requestParameter, params)
-      console.log(this.requestParameter)
-      /*
-      const res = await api(this.requestParameter)
-      */
+      try {
+        const res = await apiRequestModel(ipmsModelApis.viewListTbUserConnHist, this.requestParameter)
+        this.resultListVo = res?.result?.data
+      } catch (error) {
+        console.error(error)
+      }
     },
     setParameterKey(params) {
       params.forEach(item => { this.requestParameter[item.key] = item.value })

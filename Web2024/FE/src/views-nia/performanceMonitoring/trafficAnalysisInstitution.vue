@@ -55,9 +55,9 @@ export default {
           ], }
       ],
       searchModel: {
-        src_nren_name: [],
+        src_nren_name: '',
         src_ip: '',
-        dst_nren_name: [],
+        dst_nren_name: '',
         dst_ip: '',
         top_n: '',
       },
@@ -71,12 +71,12 @@ export default {
         name: this.name + 'table1', rowGroupPanel: false, rowSelection: 'multiple', rowMultiSelection: false, suppressRowClickSelection: true,
       }
       const columns = [
-        { type: '', prop: 'row_num', name: 'Rank', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center' },
-        { type: '', prop: 'src_nren_name', name: '이용기관(Soruce)', minWidth: 150, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: false },
-        { type: '', prop: 'src_ip', name: 'IP(Soruce)', minWidth: 150, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
-        { type: '', prop: 'dst_nren_name', name: '이용기관(Destination)', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
-        { type: '', prop: 'dst_ip', name: 'IP(Destination)', minWidth: 150, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
-        { type: '', prop: 'packet_bytes', name: 'Mbyte', minWidth: 150, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
+        { type: '', model: 'row_num', prop: 'row_num', name: 'Rank', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center' },
+        { type: '', model: 'src_nren_name', prop: 'src_nren_name', name: '이용기관(Soruce)', minWidth: 150, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: false },
+        { type: '', model: 'src_ip', prop: 'src_ip', name: 'IP(Soruce)', minWidth: 150, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
+        { type: '', model: 'dst_nren_name', prop: 'dst_nren_name', name: '이용기관(Destination)', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
+        { type: '', model: 'dst_ip', prop: 'dst_ip', name: 'IP(Destination)', minWidth: 150, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
+        { type: '', model: 'packet_bytes', prop: 'packet_bytes', name: 'Mbyte', minWidth: 150, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
       ]
       return { options, columns, data: this.trafficData, getRightClickMenuItems: () => { return [] } }
     },
@@ -115,7 +115,9 @@ export default {
     async onloadAgencyCodeList() {
       try {
         const res = await apiSelectAgencyCodeList()
-        this.selectCodeData = res.result.map(item => ({ label: item.name, value: item.id }))
+        this.selectCodeData = res.result.map(item => ({
+          label: item.name, value: item.id
+        }))
         this.searchItems[0].options = this.selectCodeData
         this.searchItems[2].options = this.selectCodeData
       } catch (error) {

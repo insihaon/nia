@@ -75,7 +75,7 @@ export const ipmsModelApis = {
   // deleteReq: { desc: '요구사항 조회 > 등록', url: '/opermgmt/requiremgmt/deleteReq' },
   viewListUserAuthSubs: { desc: '사용자 권한 신청 조회', url: '/opermgmt/grantsubsmgmt/viewListUserAuthSubs' },
   viewDetailUserAuthSubs: { desc: '사용자 권한 신청 상세정보', url: '/opermgmt/grantsubsmgmt/viewDetailUserAuthSubs' },
-  // viewInsertUserAuthSubs: { desc: '사용자 권한 신청 > 등록 화면', url: '/opermgmt/grantsubsmgmt/viewInsertUserAuthSubs' },
+  viewInsertUserAuthSubs: { desc: '사용자 권한 신청 > 등록 화면', url: '/opermgmt/grantsubsmgmt/viewInsertUserAuthSubs' },
 
   // 운용정보관리(관리자 기능)
   viewListTbBatchSvcBas: { desc: '운용정보관리 > 연동관리 > 배치 연동정보 조회', url: '/linkmgmt/batchmgmt/viewListTbBatchSvcBas' },
@@ -102,6 +102,9 @@ export const ipmsModelApis = {
   viewInsertLvlRoleSub: { desc: '조직계위 정보관리 > 시설 수용국 관리 조회 화면', url: '/opermgmt/orgmgmt/viewInsertLvlRoleSub' },
   viewListTbUserBas: { desc: '조직계위 정보관리 > 시설 수용국 관리 조회 화면', url: '/opermgmt/usermgmt/viewListTbUserBas' },
   viewListUserHndSetTxn: { desc: '사용자 정보관리 > 사용자 상세정보 > 사용자 접속 IP변경', url: '/opermgmt/usermgmt/viewListUserHndSetTxn' },
+  viewListTbUserConnHist: { desc: '사용자 접속 현황 조회', url: '/opermgmt/usermgmt/viewListTbUserConnHist' },
+  viewListUserAuth: { desc: '사용자 권한 관리 조회', url: '/opermgmt/grantmgmt/viewListUserAuth' },
+  viewInsertUserAuth: { desc: '사용자 권한 관리 > 권한 정보 등록 화면', url: '/opermgmt/grantmgmt/viewInsertUserAuth' },
 
 }
 export const ipmsJsonApis = {
@@ -200,6 +203,9 @@ export const ipmsJsonApis = {
   deleteLvlRoleSub: { desc: '조직계위 정보관리 > 시설 수용국 관리 > 노드국 목록 삭제', url: '/opermgmt/orgmgmt/deleteLvlRoleSub' },
   insertLvlRoleSub: { desc: '조직계위 정보관리 > 시설 수용국 관리 > 등록', url: '/opermgmt/orgmgmt/insertLvlRoleSub' },
   updateTbUserBas: { desc: '사용자 정보관리 > 수정 > 비밀번호 실패횟수 초기화', url: '/opermgmt/usermgmt/updateTbUserBas' },
+  selectSearchTbUserBas: { desc: '사용자 권한 등록 > 운용자 검색 ', url: '/opermgmt/usermgmt/selectSearchTbUserBas' },
+  deleteUserAuthTxn: { desc: '사용자 권한 관리> 권한정보 삭제', url: '/opermgmt/grantmgmt/deleteUserAuthTxn' },
+  insertUserAuthTxn: { desc: '사용자 권한 관리> 사용자 권한 등록', url: '/opermgmt/grantmgmt/insertUserAuthTxn' },
 }
 
 export function apiTest(params) {
