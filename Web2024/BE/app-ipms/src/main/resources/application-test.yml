@@ -3,8 +3,7 @@ server:
 
 spring:
   config:
-    import: "classpath:/properties/config.test.properties"
-    # additional-location: "classpath:/properties/config.test.properties"
+    import: "classpath:/properties/config.test"
   profiles:
     active: test
     dev: false
