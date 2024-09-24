@@ -1,0 +1,67 @@
+{
+  "__body": {
+    "result": {
+      "totalCount": 1,
+      "data": [
+        {
+          "searchBgnDe": "",
+          "searchCnd": "",
+          "searchEndDe": "",
+          "searchWrd": "",
+          "sortType": "",
+          "sortOrdr": "",
+          "searchUseYn": "",
+          "searchBgnCd": "",
+          "searchEndCd": "",
+          "pageIndex": 1,
+          "pageUnit": 0,
+          "pageSize": 0,
+          "firstIndex": 1,
+          "lastIndex": 10,
+          "recordCountPerPage": 10,
+          "rowNo": 0,
+          "typeFlag": "",
+          "dcreateDt": "2014-10-08 11:51:25",
+          "screateId": "91070202",
+          "screateNm": null,
+          "dmodifyDt": "2014-10-08 11:51:25",
+          "smodifyId": "91070202",
+          "smodifyNm": null,
+          "commonMsg": null,
+          "screateEmail": null,
+          "smodifyEmail": null,
+          "moveType": "",
+          "moveSearchWrd": "",
+          "moveSipVersionTypeCd": null,
+          "url": null,
+          "menuType": null,
+          "paramMap": null,
+          "ssvcLineTypeCd": "CL0001",
+          "ssvcLineTypeNm": null,
+          "slvlCd": "R00430",
+          "slvlNm": null,
+          "slofficecode": "R00430",
+          "scomment": "등록일시 : 2014-10-08 11:10:25",
+          "slvlHighNm": null,
+          "slvlGroupNm": null,
+          "slofficeNm": "강북국사"
+        }
+      ]
+    }
+  },
+  "__config": {
+    "url": "/opermgmt/orgmgmt/viewInsertLvlSonMgmtPop.model",
+    "param": {
+      "ssvcLineTypeCd": "CL0001",
+      "slvlCd": "R00430",
+      "slvlGroupNm": "강북/강원NW운용본부",
+      "slvlHighNm": "강북국사",
+      "slvlNm": "강북국사",
+      "ssvcLineTypeNm": "KORNET"
+    },
+    "receivedTime": "2024-09-11 14:58:48.514",
+    "duration": 698,
+    "filename": "b3Blcm1nbXQvb3JnbWdtdC92aWV3SW5zZXJ0THZsU29uTWdtdFBvcC5tb2RlbA_Q0wwMDAxfFIwMDQzMHzqsJXrtoEv6rCV7JuQTlfsmrTsmqnrs7h86rCV67aB6rWt7IKsfOqwleu2geq1reyCrHxLT1JORVQ.json",
+    "fetch": "fetch('/opermgmt/orgmgmt/viewInsertLvlSonMgmtPop.model', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{\"ssvcLineTypeCd\":\"CL0001\",\"slvlCd\":\"R00430\",\"slvlGroupNm\":\"강북/강원NW운용본부\",\"slvlHighNm\":\"강북국사\",\"slvlNm\":\"강북국사\",\"ssvcLineTypeNm\":\"KORNET\"}', 'method': 'POST' })"
+  }
+}

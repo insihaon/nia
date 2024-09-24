@@ -160,8 +160,14 @@ export default {
         this.error(error)
       }
     },
-    fnSelectSearchOrgCd() {
-
+    async fnSelectSearchOrgCd() {
+       const param = { searchWrd: this.searchTxt, sorgOfficeFlagYn: 'N' }
+      try {
+        const res = await apiRequestJson(ipmsJsonApis.selectSearchLvlCd, param)
+        this.tableDatas = res.tbLvlCdVos
+      } catch (error) {
+        this.error(error)
+      }
     },
     handleClickRow(row) {
       this.selectedRow = row

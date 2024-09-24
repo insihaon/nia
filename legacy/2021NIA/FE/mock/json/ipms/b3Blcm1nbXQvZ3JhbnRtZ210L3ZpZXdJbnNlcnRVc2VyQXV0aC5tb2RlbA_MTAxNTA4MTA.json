@@ -21,11 +21,11 @@
           "recordCountPerPage": 10,
           "rowNo": 0,
           "typeFlag": "",
-          "dcreateDt": "2023-05-26 16:05:31",
-          "screateId": "10061339",
+          "dcreateDt": "2024-09-19 09:56:19",
+          "screateId": "10150810",
           "screateNm": null,
-          "dmodifyDt": "2023-05-26 16:05:31",
-          "smodifyId": "10061339",
+          "dmodifyDt": "2024-09-19 09:56:19",
+          "smodifyId": "10150810",
           "smodifyNm": null,
           "commonMsg": null,
           "screateEmail": null,
@@ -36,7 +36,7 @@
           "url": null,
           "menuType": null,
           "paramMap": null,
-          "nuserAutSeq": 4598,
+          "nuserAutSeq": 4623,
           "suserId": "10150810",
           "suserNm": "정회창",
           "suserGradeCd": "UR0001",
@@ -52,14 +52,13 @@
     }
   },
   "__config": {
-    "url": "/opermgmt/grantsubsmgmt/viewInsertUserAuthSubs.model",
+    "url": "/opermgmt/grantmgmt/viewInsertUserAuth.model",
     "param": {
-      "typeFlag": "U",
       "suserId": "10150810"
     },
-    "receivedTime": "2024-09-04 14:16:52.693",
-    "duration": 428,
-    "filename": "b3Blcm1nbXQvZ3JhbnRzdWJzbWdtdC92aWV3SW5zZXJ0VXNlckF1dGhTdWJzLm1vZGVs_VXwxMDE1MDgxMA.json",
-    "fetch": "fetch('/opermgmt/grantsubsmgmt/viewInsertUserAuthSubs.model', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{\"typeFlag\":\"U\",\"suserId\":\"10150810\"}', 'method': 'POST' })"
+    "receivedTime": "2024-09-19 13:38:16.250",
+    "duration": 381,
+    "filename": "b3Blcm1nbXQvZ3JhbnRtZ210L3ZpZXdJbnNlcnRVc2VyQXV0aC5tb2RlbA_MTAxNTA4MTA.json",
+    "fetch": "fetch('/opermgmt/grantmgmt/viewInsertUserAuth.model', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{\"suserId\":\"10150810\"}', 'method': 'POST' })"
   }
 }

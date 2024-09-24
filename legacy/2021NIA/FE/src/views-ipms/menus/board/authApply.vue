@@ -26,7 +26,7 @@
         </template>
         <template slot="add-features">
           <div class="float-right">
-            <el-button size="mini" icon="el-icon-document-add" @click="fnViewDetailGrant('', 'create')">등록</el-button>
+            <el-button size="mini" icon="el-icon-document-add" @click="fnViewDetailGrant('', 'U')">등록</el-button>
           </div>
         </template>
       </compTable>
@@ -103,8 +103,12 @@ export default {
             grantSeq: grantSeq
          }
          const res = await apiRequestModel(ipmsModelApis.viewDetailUserAuthSubs, tbUserAuthVo)
-         if (res.result.data) {
-           this.$refs.ModalDetailUserAuth.open({ row: res.result.data, type: type })
+         if (res) {
+           const resultData = {
+            ...res,
+            grantSeq: grantSeq
+           }
+          this.$refs.ModalDetailUserAuth.open({ row: resultData, type: type })
          }
        } catch (error) {
          console.error(error)
@@ -113,12 +117,15 @@ export default {
         try {
          const { suserId } = row
          const tbUserAuthVo = {
-            suserId: suserId,
-            typeFlag: 'U'
+           typeFlag: type
          }
-         const res = await apiRequestModel(ipmsModelApis.viewInsertUserAuthSubs, tbUserAuthVo)
-         if (res.result.data) {
-           this.$refs.ModalInsertUserAuth.open({ row: res.result.data, type: type })
+
+         if (type === 'U') {
+           this._merge(tbUserAuthVo, { suserId: suserId })
+         }
+         const res = await apiRequestModel(ipmsModelApis.viewInsertUserAuthSubs, tbUserAuthVo) /* viewInsertUserAuthSubs */
+         if (res) {
+           this.$refs.ModalInsertUserAuth.open({ row: res, type: type })
          }
        } catch (error) {
          console.error(error)
