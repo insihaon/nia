@@ -240,6 +240,9 @@ import Vue from 'vue'
         })
       }
     },
+    env() {
+      console.log(process.env)
+    }
   }
 
   function registHotkey() {
@@ -468,6 +471,7 @@ import Vue from 'vue'
 
     setTimeout(() => {
       global.help()
+      global.env()
     }, 800)
   }
 

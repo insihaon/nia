@@ -4,6 +4,7 @@
       <el-row class="optionRow">
         <el-col class="d-flex" :span="6">
           <AuthLevel
+            v-model="authLevelValue"
             label="사용자 권한등급"
             class="w-100 d-flex"
             @update-value="setParameterKey"
@@ -12,6 +13,7 @@
         <el-col class="d-flex" :span="6">
           <InputSearchDetail
             ref="searchDetail"
+            v-model="orgValue"
             label="소속조직"
             modal-name="ModalOrgSearch"
             value-name="sFullOrgNm"
@@ -45,7 +47,7 @@
       </el-row>
       <el-row>
         <el-col :span="24" align="center" class="searchBtnGroup">
-          <el-button class="btn-r" type="info" size="mini" icon="el-icon-search" @click="onClickSearch()">
+          <el-button class="btn-r" type="info" size="mini" icon="el-icon-search" @click="fnViewListSvcLineType()">
             조회
           </el-button>
           <el-button class="btn-r" type="info" size="mini" icon="el-icon-refresh">
@@ -61,6 +63,7 @@
         :prop-name="name"
         :prop-table-height="'calc(100% - 80px)'"
         :prop-column="tableColumns"
+        :prop-data="resultListVo"
         :prop-is-pagination="true"
         :prop-is-check-box="false"
         prop-grid-menu-id="inputSpeed"
@@ -72,6 +75,7 @@
           </span>
         </template>
       </compTable>
+      <ModalDetailTbUserBas ref="ModalDetailTbUserBas" @reload="fnViewListSvcLineType" />
     </el-col>
   </el-row>
 </template>
@@ -80,22 +84,31 @@ import { Base } from '@/min/Base.min'
 import CompTable from '@/components/elTable/CompTable.vue'
 import InputSearchDetail from '@/views-ipms/conditionComponents/InputSearchDetail.vue'
 import AuthLevel from '@/views-ipms/conditionComponents/AuthLevel.vue'
+import { ipmsModelApis, apiRequestModel } from '@/api/ipms'
+import ModalDetailTbUserBas from '@/views-ipms/modal/usermgmt/ModalDetailTbUserBas.vue'
 const routeName = 'UserInfoManagement'
 
 export default {
   name: routeName,
-  components: { CompTable, InputSearchDetail, AuthLevel },
+  components: { CompTable, InputSearchDetail, AuthLevel, ModalDetailTbUserBas },
   extends: Base,
   data() {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       tableColumns: [
-        { prop: '', label: '사용자명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: '소속조직', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: '재직상태', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: '권한등급', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: '수정', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'suserNm', label: '사용자명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'sposDeptFullNm', label: '소속조직', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'suserSttusNm', label: '재직상태', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'suserGradeCd', label: '권한등급', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: '', label: '수정', align: 'center', sortable: true, columnVisible: true, showOverflow: true,
+          formatter: (row, col, value, index) => {
+            return this.$createElement('el-button', {
+              on: { click: () => {
+                this.fnViewUpdateUserBas(row)
+              } } }, '수정')
+            }
+        },
       ],
       officeStatus: [
         { label: '전체', value: '' },
@@ -107,19 +120,34 @@ export default {
       ],
       statusValue: '',
       nameValue: '',
-      requestParameter: {}
+      requestParameter: {},
+      resultListVo: [],
+      authLevelValue: '',
+      orgValue: ''
     }
   },
+  mounted() {
+   this.fnViewListSvcLineType()
+  },
   methods: {
-    onClickSearch() {
-      Object.assign(this.requestParameter, { 'suserSttusCd': this.statusValue, 'suserNm': this.nameValue })
-      console.log(this.requestParameter)
-      /*
-      const res = await api(this.requestParameter)
-      */
+    async fnViewListSvcLineType() {
+      Object.assign(this.requestParameter, {
+        'suserSttusCd': this.statusValue,
+        'suserNm': this.nameValue,
+        'suserGradeCd': this.authLevelValue,
+      })
+      try {
+        const res = await apiRequestModel(ipmsModelApis.viewListTbUserBas, this.requestParameter)
+        this.resultListVo = res?.result?.data
+      } catch (error) {
+        console.error(error)
+      }
     },
     setParameterKey(params) {
       params.forEach(item => { this.requestParameter[item.key] = item.value })
+    },
+    async fnViewUpdateUserBas(row) {
+      this.$refs.ModalDetailTbUserBas.open({ row: row })
     }
   }
 }

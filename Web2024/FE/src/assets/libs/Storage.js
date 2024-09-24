@@ -10,7 +10,7 @@ const STORAGE = NODE_ENV_DEV ? window.localStorage : window.sessionStorage
 
 function getEnv(key, defalutValue) {
   try {
-    return JSON.parse(key) ?? defalutValue
+    return  JSON.parse(key) || defalutValue
   } catch (error) {
     return defalutValue
   }
