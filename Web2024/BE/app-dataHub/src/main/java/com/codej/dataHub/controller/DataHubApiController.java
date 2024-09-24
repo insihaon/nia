@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codej.base.dto.response.BaseResponse;
-import com.codej.base.provider.JwtTokenProvider;
+import com.codej.base.provider.BaseJwtTokenProvider;
 import com.codej.base.utils.CryptUtil;
 import com.codej.base.utils.JsonUtil;
 import com.codej.dataHub.service.DataHubService;
@@ -52,7 +52,7 @@ public class DataHubApiController extends AbsDataController {
     protected DataHubService dataHubService;
 
     @Autowired
-    private JwtTokenProvider jwtTokenProvider;
+    private BaseJwtTokenProvider baseJwtTokenProvider;
 
     @Override
     protected Object getService() {
@@ -94,7 +94,7 @@ public class DataHubApiController extends AbsDataController {
         log.info("jsonNode={}", jsonNode.toString());
 
         // List<String> roles = Arrays.asList(new String[]{"ROLE_ADMIN", "ROLE_USER"});
-        // String token = jwtTokenProvider.createToken(uid,roles, null);
+        // String token = baseJwtTokenProvider.createToken(uid,roles, null);
         // if(token != null && jsonNode != null) {
         //     ObjectNode objectNode = (ObjectNode) jsonNode;
         //     objectNode.put("accessToken", token);

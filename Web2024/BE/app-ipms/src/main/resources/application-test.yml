@@ -1,7 +1,10 @@
 server:
-  port: 8080
+  port: 8070
 
 spring:
+  config:
+    import: "classpath:/properties/config.test.properties"
+    # additional-location: "classpath:/properties/config.test.properties"
   profiles:
     active: test
     dev: false

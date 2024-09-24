@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.codej.base.dto.AppDto;
 import com.codej.base.dto.BaseUser;
 import com.codej.base.dto.DbUser;
-import com.codej.base.provider.JwtTokenProvider;
+import com.codej.base.provider.BaseJwtTokenProvider;
 import com.codej.base.utils.JsonUtil;
 import com.codej.web.controller.AbsAuthController;
 import com.codej.web.service.ResponseService;
@@ -33,7 +33,7 @@ public class AuthController extends AbsAuthController {
     @Autowired
     private UserService userService;
     @Autowired
-    private JwtTokenProvider jwtTokenProvider;
+    private BaseJwtTokenProvider baseJwtTokenProvider;
     @Autowired
     private ResponseService responseService;
     @Autowired

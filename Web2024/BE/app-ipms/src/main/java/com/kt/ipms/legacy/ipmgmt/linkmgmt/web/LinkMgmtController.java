@@ -200,7 +200,7 @@ public class LinkMgmtController extends CommonController{
 			searchSeqVo.setSsvcGroupCd(searchVo.getSsvcGroupCd());
 			searchSeqVo.setSsvcObjCd(searchVo.getSsvcObjCd());
 			
-			TbLvlMstListVo resultSeqList = sessionUtil.getLvlSeqList(request, searchSeqVo);
+			TbLvlMstListVo resultSeqList = jwtUtil.getLvlSeqList(request, searchSeqVo);
 			searchVo.setLvlMstSeqListVo(resultSeqList);
 			
 			resultListVo =  linkMgmtService.selectOfficeList(searchVo);
@@ -340,7 +340,7 @@ public class LinkMgmtController extends CommonController{
 	public TbIpLinkMstVo insertLinkIPMst(@RequestBody TbIpLinkMstVo tbIpLinkMstVo, HttpServletRequest request, HttpServletResponse response){
 		TbIpLinkMstVo resultVo = null;
 		try {
-			tbIpLinkMstVo.setSmodifyId(sessionUtil.getUserId(request));
+			tbIpLinkMstVo.setSmodifyId(jwtUtil.getUserId(request));
 			linkMgmtService.insertIpLinkMst(tbIpLinkMstVo);
 			resultVo = new TbIpLinkMstVo();
 			resultVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
@@ -536,7 +536,7 @@ public class LinkMgmtController extends CommonController{
 	public TbIpLinkMstVo updateHostIPMst(@RequestBody TbIpLinkMstVo tbIpLinkMstVo, HttpServletRequest request, HttpServletResponse response){
 		TbIpLinkMstVo resultVo = null;
 		try {
-			tbIpLinkMstVo.setSmodifyId(sessionUtil.getUserId(request));
+			tbIpLinkMstVo.setSmodifyId(jwtUtil.getUserId(request));
 			linkMgmtService.updateTbIpLinkMstVo(tbIpLinkMstVo);
 			resultVo = new TbIpLinkMstVo();
 			resultVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);

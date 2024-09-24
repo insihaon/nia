@@ -76,17 +76,17 @@ public class EmailMgmtController extends CommonController {
 		String searchFirstIp = "";	// 시작IP
 		String searchLastIp = "";	// 끝IP
 		
-		String sessionId = sessionUtil.getUserId(request);
+		String sessionId = jwtUtil.getUserId(request);
 		Map<String,Object> map = new HashMap<String,Object>();
 		
 		try {
 		
 			mailType = smtpVo.getMailType();
 			
-			userName = sessionUtil.getUserNm(request);
-			userOrg = sessionUtil.getUserDeptOrgNm(request);
+			userName = jwtUtil.getUserNm(request);
+			userOrg = jwtUtil.getUserDeptOrgNm(request);
 			TbUserBasVo searchVo = new TbUserBasVo();
-			searchVo.setSuserId(sessionUtil.getUserId(request));
+			searchVo.setSuserId(jwtUtil.getUserId(request));
 			userEmail = userMgmtService.selectEmail(searchVo);
 			map.put("MAIL_TYPE", mailType);
 			

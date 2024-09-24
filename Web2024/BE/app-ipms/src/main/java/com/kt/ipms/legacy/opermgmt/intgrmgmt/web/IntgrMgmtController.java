@@ -109,21 +109,21 @@ public class IntgrMgmtController  extends CommonController{
 		TbFcltMstListVo resultListVo = null;
 		try {
 			/** 계위 정보 설정 **/
-			TbLvlBasListVo svcLineListVo = sessionUtil.getSvcLineList(request);
+			TbLvlBasListVo svcLineListVo = jwtUtil.getSvcLineList(request);
 			TbLvlBasListVo centerListVo = null;
 			TbLvlBasListVo nodeListVo = null;
 			if (StringUtils.hasText(searchVo.getSsvcLineTypeCd())) {
 				TbLvlBasVo searchCenterVo = new TbLvlBasVo();
 				searchCenterVo.setSsvcLineTypeCd(searchVo.getSsvcLineTypeCd());
-				centerListVo = sessionUtil.getCenterList(request, searchCenterVo);
+				centerListVo = jwtUtil.getCenterList(request, searchCenterVo);
 				if (StringUtils.hasText(searchVo.getSsvcGroupCd())) {
 					searchCenterVo.setSsvcGroupCd(searchVo.getSsvcGroupCd());
-					nodeListVo = sessionUtil.getNodeList(request, searchCenterVo);
+					nodeListVo = jwtUtil.getNodeList(request, searchCenterVo);
 				} else {
 					if (StringUtils.hasText(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd())) {
 						searchVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
 						searchCenterVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
-						nodeListVo = sessionUtil.getNodeList(request, searchCenterVo);
+						nodeListVo = jwtUtil.getNodeList(request, searchCenterVo);
 						if (StringUtils.hasText(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd())) {
 							searchVo.setSsvcObjCd(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd());
 						}
@@ -136,11 +136,11 @@ public class IntgrMgmtController  extends CommonController{
 					TbLvlBasVo searchCenterVo = new TbLvlBasVo();
 					searchCenterVo.setSsvcLineTypeCd(svcLineListVo.getTbLvlBasVos().get(0).getSsvcLineTypeCd());
 					searchVo.setSsvcLineTypeCd(svcLineListVo.getTbLvlBasVos().get(0).getSsvcLineTypeCd());
-					centerListVo = sessionUtil.getCenterList(request, searchCenterVo);
+					centerListVo = jwtUtil.getCenterList(request, searchCenterVo);
 					if (StringUtils.hasText(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd())) {
 						searchVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
 						searchCenterVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
-						nodeListVo = sessionUtil.getNodeList(request, searchCenterVo);
+						nodeListVo = jwtUtil.getNodeList(request, searchCenterVo);
 						if (StringUtils.hasText(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd())) {
 							searchVo.setSsvcObjCd(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd());
 						}
@@ -215,7 +215,7 @@ public class IntgrMgmtController  extends CommonController{
 		try {
 			/** 계위 정보 설정 **/
 			
-			TbLvlBasListVo svcLineListVo = sessionUtil.getSvcLineList(request);
+			TbLvlBasListVo svcLineListVo = jwtUtil.getSvcLineList(request);
 			TbLvlBasListVo centerListVo = new TbLvlBasListVo();
 			TbLvlBasListVo nodeListVo = new TbLvlBasListVo();
 			model.addAttribute("svcLineListVo", svcLineListVo);
@@ -254,7 +254,7 @@ public class IntgrMgmtController  extends CommonController{
 	public TbFcltMstVo insertFcltMst(@RequestBody TbFcltMstVo insertVo, HttpServletRequest request, HttpServletResponse response) {
 		TbFcltMstVo resultVo = null;
 		try {
-			String userId = sessionUtil.getUserId(request);
+			String userId = jwtUtil.getUserId(request);
 			insertVo.setScreateId(userId);
 			insertVo.setSmodifyId(userId);
 			intgrMgmtService.insertFcltMst(insertVo);
@@ -351,7 +351,7 @@ public class IntgrMgmtController  extends CommonController{
 	public TbFcltMstVo updateFcltMst(@RequestBody TbFcltMstVo updateVo, HttpServletRequest request, HttpServletResponse response) {
 		TbFcltMstVo resultVo = null;
 		try {
-			String userId = sessionUtil.getUserId(request);
+			String userId = jwtUtil.getUserId(request);
 			updateVo.setSmodifyId(userId);
 			intgrMgmtService.updateFcltMst(updateVo);
 			resultVo = new TbFcltMstVo();
@@ -409,21 +409,21 @@ public class IntgrMgmtController  extends CommonController{
 		FileVo resultVo = new FileVo();
 		try{
 			/** 계위 정보 설정 **/
-			TbLvlBasListVo svcLineListVo = sessionUtil.getSvcLineList(request);
+			TbLvlBasListVo svcLineListVo = jwtUtil.getSvcLineList(request);
 			TbLvlBasListVo centerListVo = null;
 			TbLvlBasListVo nodeListVo = null;
 			if (StringUtils.hasText(searchVo.getSsvcLineTypeCd())) {
 				TbLvlBasVo searchCenterVo = new TbLvlBasVo();
 				searchCenterVo.setSsvcLineTypeCd(searchVo.getSsvcLineTypeCd());
-				centerListVo = sessionUtil.getCenterList(request, searchCenterVo);
+				centerListVo = jwtUtil.getCenterList(request, searchCenterVo);
 				if (StringUtils.hasText(searchVo.getSsvcGroupCd())) {
 					searchCenterVo.setSsvcGroupCd(searchVo.getSsvcGroupCd());
-					nodeListVo = sessionUtil.getNodeList(request, searchCenterVo);
+					nodeListVo = jwtUtil.getNodeList(request, searchCenterVo);
 				} else {
 					if (StringUtils.hasText(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd())) {
 						searchVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
 						searchCenterVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
-						nodeListVo = sessionUtil.getNodeList(request, searchCenterVo);
+						nodeListVo = jwtUtil.getNodeList(request, searchCenterVo);
 						if (StringUtils.hasText(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd())) {
 							searchVo.setSsvcObjCd(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd());
 						}
@@ -436,11 +436,11 @@ public class IntgrMgmtController  extends CommonController{
 					TbLvlBasVo searchCenterVo = new TbLvlBasVo();
 					searchCenterVo.setSsvcLineTypeCd(svcLineListVo.getTbLvlBasVos().get(0).getSsvcLineTypeCd());
 					searchVo.setSsvcLineTypeCd(svcLineListVo.getTbLvlBasVos().get(0).getSsvcLineTypeCd());
-					centerListVo = sessionUtil.getCenterList(request, searchCenterVo);
+					centerListVo = jwtUtil.getCenterList(request, searchCenterVo);
 					if (StringUtils.hasText(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd())) {
 						searchVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
 						searchCenterVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
-						nodeListVo = sessionUtil.getNodeList(request, searchCenterVo);
+						nodeListVo = jwtUtil.getNodeList(request, searchCenterVo);
 						if (StringUtils.hasText(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd())) {
 							searchVo.setSsvcObjCd(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd());
 						}
@@ -579,7 +579,7 @@ public class IntgrMgmtController  extends CommonController{
 	public TbFcltCmdMstVo insertFcltCmdMst(@RequestBody TbFcltCmdMstVo insertVo, HttpServletRequest request, HttpServletResponse response) {
 		TbFcltCmdMstVo resultVo = null;
 		try {
-			String userId = sessionUtil.getUserId(request);
+			String userId = jwtUtil.getUserId(request);
 			insertVo.setSmodifyId(userId);
 			insertVo.setScreateId(userId);
 			intgrMgmtService.insertFcltCmdMst(insertVo);
@@ -661,7 +661,7 @@ public class IntgrMgmtController  extends CommonController{
 	public TbFcltCmdMstVo updateFcltCmdMst(@RequestBody TbFcltCmdMstVo updateVo, HttpServletRequest request, HttpServletResponse response) {
 		TbFcltCmdMstVo resultVo = null;
 		try {
-			String userId = sessionUtil.getUserId(request);
+			String userId = jwtUtil.getUserId(request);
 			updateVo.setSmodifyId(userId);
 			intgrMgmtService.updateFcltCmdMst(updateVo);
 			resultVo = new TbFcltCmdMstVo();
@@ -839,7 +839,7 @@ public class IntgrMgmtController  extends CommonController{
 	public TbMobileMstVo insertMobileMst(@RequestBody TbMobileMstVo insertVo, HttpServletRequest request, HttpServletResponse response) {
 		TbMobileMstVo resultVo = null;
 		try {
-			String userId = sessionUtil.getUserId(request);
+			String userId = jwtUtil.getUserId(request);
 			insertVo.setSmodifyId(userId);
 			insertVo.setScreateId(userId);
 			intgrMgmtService.insertMobileMst(insertVo);
@@ -921,7 +921,7 @@ public class IntgrMgmtController  extends CommonController{
 	public TbMobileMstVo updateMobileMst(@RequestBody TbMobileMstVo updateVo, HttpServletRequest request, HttpServletResponse response) {
 		TbMobileMstVo resultVo = null;
 		try {
-			String userId = sessionUtil.getUserId(request);
+			String userId = jwtUtil.getUserId(request);
 			updateVo.setSmodifyId(userId);
 			intgrMgmtService.updateMobileMst(updateVo);
 			resultVo = new TbMobileMstVo();
@@ -1020,7 +1020,7 @@ public class IntgrMgmtController  extends CommonController{
 		Map<String,String> result = null;
 		try {
 			
-			tbRoutChkMstVo.setSmodifyId(sessionUtil.getUserId(request));
+			tbRoutChkMstVo.setSmodifyId(jwtUtil.getUserId(request));
 			result = intgrMgmtService.insertListRoutChkMst(tbRoutChkMstVo);
 			
 			String resultCd = result.get("resultCd");
@@ -1119,7 +1119,7 @@ public class IntgrMgmtController  extends CommonController{
 	public TbMobileSummMstVo insertMobileSummMst(@RequestBody TbMobileSummMstVo insertVo, HttpServletRequest request, HttpServletResponse response) {
 		TbMobileSummMstVo resultVo = null;
 		try {
-			String userId = sessionUtil.getUserId(request);
+			String userId = jwtUtil.getUserId(request);
 			insertVo.setSmodifyId(userId);
 			insertVo.setScreateId(userId);
 			intgrMgmtService.insertMobileSummMst(insertVo);
@@ -1198,7 +1198,7 @@ public class IntgrMgmtController  extends CommonController{
 			MultipartFile file =  request.getFile("file");
 			String sKindCd = request.getParameter("kind");
 		
-			String userId = sessionUtil.getUserId(request);
+			String userId = jwtUtil.getUserId(request);
 			
 			intgrMgmtService.uploadMobileMst(file, sKindCd, userId);
 			
@@ -1262,7 +1262,7 @@ public class IntgrMgmtController  extends CommonController{
 		TbDefaultSvcMstListVo resultListVo = null;
 		try {
 			/** 계위 정보 설정 **/
-			TbLvlBasListVo svcLineListVo = sessionUtil.getSvcLineList(request);
+			TbLvlBasListVo svcLineListVo = jwtUtil.getSvcLineList(request);
 			
 			model.addAttribute("svcLineListVo", svcLineListVo);
 			
@@ -1309,7 +1309,7 @@ public class IntgrMgmtController  extends CommonController{
 			for(int i=0; i<tbDefaultSvcMstVos.size(); i++) {
 				tbDefaultSvcMstVos.get(i).getSsvcLineTypeCd();
 				
-				String userId = sessionUtil.getUserId(request);
+				String userId = jwtUtil.getUserId(request);
 				tbDefaultSvcMstVos.get(i).setScreateId(userId);
 				tbDefaultSvcMstVos.get(i).setSmodifyId(userId);
 				
@@ -1506,7 +1506,7 @@ public class IntgrMgmtController  extends CommonController{
 		try {
 			/** 계위 정보 설정 **/
 			
-			TbLvlBasListVo svcLineListVo = sessionUtil.getSvcLineList(request);
+			TbLvlBasListVo svcLineListVo = jwtUtil.getSvcLineList(request);
 			TbLvlBasListVo centerListVo = new TbLvlBasListVo();
 			TbLvlBasListVo nodeListVo = new TbLvlBasListVo();
 			model.addAttribute("svcLineListVo", svcLineListVo);
@@ -1542,7 +1542,7 @@ public class IntgrMgmtController  extends CommonController{
 		TbWireMstVo resultVo = null;
 		
 		try {
-			String userId = sessionUtil.getUserId(request);
+			String userId = jwtUtil.getUserId(request);
 			
 			insertVo.setScreateId(userId);
 			insertVo.setSmodifyId(userId);
@@ -1626,7 +1626,7 @@ public class IntgrMgmtController  extends CommonController{
 		TbWireMstVo resultVo = null;
 		
 		try {
-			String userId = sessionUtil.getUserId(request);
+			String userId = jwtUtil.getUserId(request);
 			
 			updateVo.setScreateId(userId);
 			updateVo.setSmodifyId(userId);

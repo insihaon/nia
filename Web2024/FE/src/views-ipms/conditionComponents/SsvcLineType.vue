@@ -213,23 +213,23 @@ export default {
       return multi.includes(lvl)
     },
     async handleChangeLvl1(isReset = true) {
-      const isOver = this.updateSelectionWithAll(1)
-      const lvlOptions = this.lvlOptions
-      this.localLabel[key1] = this.lvlOptions[key1].find(v => v.value === this.localValue[key1])?.label ?? ''
-      if (isOver) return
-      const params = { ssvcLineTypeCd: this.localValue[key1] }
-      try {
-        const res = await apiRequestJson(ipmsJsonApis.selectAuthCenterList, params)
-        this.lvlOptions[key2] = res?.tbLvlBasVos?.filter(v => v.ssvcGroupNm !== '전체').map(v => { return { value: v.ssvcGroupCd, label: v.ssvcGroupNm } })
-        if (isReset) {
-          this.resetLocalValue(key2)
-          this.resetLocalValue(key3)
+        const isOver = this.updateSelectionWithAll(1)
+        const lvlOptions = this.lvlOptions
+        this.localLabel[key1] = this.lvlOptions[key1].find(v => v.value === this.localValue[key1])?.label ?? ''
+        if (isOver) return
+        const params = { ssvcLineTypeCd: this.localValue[key1] }
+        try {
+          const res = await apiRequestJson(ipmsJsonApis.selectAuthCenterList, params)
+          this.lvlOptions[key2] = res?.tbLvlBasVos?.filter(v => v.ssvcGroupNm !== '전체').map(v => { return { value: v.ssvcGroupCd, label: v.ssvcGroupNm } })
+          if (isReset) {
+            this.resetLocalValue(key2)
+            this.resetLocalValue(key3)
+          }
+          this.emitEventToParent(this.getParameter())
+          Eventbus.$emit(EventType.changeLvl1, { ssvcLineTypeCd: this.localValue[key1] })
+        } catch (error) {
+          this.error(error)
         }
-        this.emitEventToParent(this.getParameter())
-        Eventbus.$emit(EventType.changeLvl1, { ssvcLineTypeCd: this.localValue[key1] })
-      } catch (error) {
-        this.error(error)
-      }
     },
     async handleChangeLvl2(isReset = true) {
       const isOver = this.updateSelectionWithAll(2)
@@ -241,7 +241,7 @@ export default {
 
       if (this.multi.includes(2) && this.localValue[key2].length > 1) return
 
-      const params = { ssvcLineTypeCd: this.localValue[key1], ssvcGroupCd: this.localValue[key2] }
+      const params = { ssvcLineTypeCd: this.localValue[key1], ssvcGroupCd: this.localValue[key2][0] || '' }
       try {
         const res = await apiRequestJson(ipmsJsonApis.selectAuthNodeList, params)
         this.lvlOptions[key3] = res.tbLvlBasVos?.filter(v => v.ssvcGroupNm !== '전체').map(v => { return { value: v.ssvcObjCd, label: v.ssvcObjNm } })

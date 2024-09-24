@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import com.codej.nia.service.NiaUserService;
 
 @Service
-@Qualifier("niaUserDetailServiceImpl")
+@Qualifier("niaUserDetailsServiceImpl")
 public class NiaUserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired

@@ -1,17 +1,23 @@
 package com.kt.ipms.legacy.opermgmt.loginmgmt.vo;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
+
+import org.springframework.security.core.GrantedAuthority;
 
 import com.kt.ipms.legacy.opermgmt.usermgmt.vo.TbUserBasVo;
+import com.codej.base.dto.BaseUser;
 import com.kt.ipms.legacy.opermgmt.menumgmt.vo.TbMenuBasListVo;
 import com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlBasListVo;
 
-public class LoginInfoVo  extends TbUserBasVo  implements Serializable{
+public class LoginInfoVo  extends TbUserBasVo  implements Serializable {
 	
 	/** MEMBER VARIABLE DECLARATION START **/
 	private static final long serialVersionUID = 8641525113975177595L;
 	
 	
+	// private String sUserId;   //  사용자 PW
 	private String sUserPw;   //  사용자 PW
 	private String sConnIP;	  //  접속 IP 
 	private Date dloginDt;   // 로그인 시간
@@ -26,6 +32,12 @@ public class LoginInfoVo  extends TbUserBasVo  implements Serializable{
 	private TbLvlBasListVo userAuthListVo ;
 	/** MEMBER VARIABLE DECLARATION END **/	
 
+	// public String getsUserId() {
+	// 	return sUserId;
+	// }
+	// public void setsUserId(String sUserId) {
+	// 	this.sUserId = sUserId;
+	// }
 	public String getsUserPw() {
 		return sUserPw;
 	}

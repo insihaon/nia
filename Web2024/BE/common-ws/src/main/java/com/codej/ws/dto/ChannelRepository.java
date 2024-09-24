@@ -21,7 +21,7 @@
 // public class ChannelRepository {
 
 //     @Autowired
-//     private JwtTokenProvider jwtTokenProvider;
+//     private BaseJwtTokenProvider baseJwtTokenProvider;
 
 //     // Redis CacheKeys
 //     private static final String CHANNELS = "CHANNELS"; // 채널 저장
@@ -61,7 +61,7 @@
 //     }
 
 //     public void setSessionUser(String sessionId, String jwtToken) {
-//         User user = jwtTokenProvider.getUser(jwtToken);
+//         User user = baseJwtTokenProvider.getUser(jwtToken);
 //         hashOpsSessionUser.put(USER_INFO, sessionId, user);
 //     }
 

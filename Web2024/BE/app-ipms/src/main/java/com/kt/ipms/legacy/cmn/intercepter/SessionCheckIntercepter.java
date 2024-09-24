@@ -9,7 +9,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.kt.framework.utils.StringUtils;
 import com.kt.ipms.legacy.cmn.service.ConfigPropertieService;
-import com.kt.ipms.legacy.cmn.util.SessionUtil;
+import com.kt.ipms.legacy.cmn.util.JwtUtil;
 import com.kt.ipms.legacy.opermgmt.loginmgmt.vo.LoginInfoVo;
 
 
@@ -20,7 +20,7 @@ public class SessionCheckIntercepter extends HandlerInterceptorAdapter {
 	
 	
 	@Autowired
-	private SessionUtil sessionUtil;
+	private JwtUtil jwtUtil;
 	
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
 		boolean result = false;
@@ -33,7 +33,7 @@ public class SessionCheckIntercepter extends HandlerInterceptorAdapter {
 		String referedUrl = request.getHeader("referer");
 		try {
 			if (checkReferer && (referedUrl == null || (referedUrl.indexOf("http://" + allowUrl) == -1 && referedUrl.indexOf("https://" + allowUrl) == -1))) {
-				sessionUtil.invalidSession(request);			
+				jwtUtil.invalidSession(request);			
 			}
 			
 			HttpSession session = request.getSession(false);

@@ -1,7 +1,9 @@
 package com.codej.web.config;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.access.expression.SecurityExpressionHandler;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
@@ -35,14 +37,15 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Configuration
+// @ConditionalOnExpression("'${myconf.project:dev}' != 'ipms'")
 public class BaseSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    private final UserDetailsServiceImpl userDetailsServiceImpl;
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private final FileStorageProperties fileStorage;
-    private final AppDto appDto;
-    private static final String corsUrlPattern = "/**";
-    private static final String dataUrlPattern = "/data/**";
+    protected final UserDetailsServiceImpl userDetailsServiceImpl;
+    protected final JwtAuthenticationFilter jwtAuthenticationFilter;
+    protected final FileStorageProperties fileStorage;
+    protected final AppDto appDto;
+    protected static final String corsUrlPattern = "/**";
+    protected static final String dataUrlPattern = "/data/**";
     
     @Override
     protected void configure(HttpSecurity http) throws Exception { // http에 대한 보안 설정

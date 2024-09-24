@@ -228,8 +228,8 @@ public class NodeMgmtController extends CommonController{
 		NodeMgmtVo resultVo = null;
 		int result = 0;
 		try {
-			String userId = sessionUtil.getUserId(request);
-			String userNm = sessionUtil.getUserNm(request);
+			String userId = jwtUtil.getUserId(request);
+			String userNm = jwtUtil.getUserNm(request);
 			nodeMgmtVo.setsCreateId(userId);
 			nodeMgmtVo.setsUserNm(userNm);
 			NodeMgmtVo tempVo = new NodeMgmtVo();
@@ -293,12 +293,12 @@ public class NodeMgmtController extends CommonController{
 		String adminYn = null;
 		String ownerYn = null;
 		try {
-			String usrGradeCd = sessionUtil.getUserGradeCd(request);
+			String usrGradeCd = jwtUtil.getUserGradeCd(request);
 			if(usrGradeCd != null && usrGradeCd.equals("UR0001")){
 				adminYn = "Y";
 			}
 			resultVo = nodeMgmtService.selectNode(searchVo);
-			String userId = sessionUtil.getUserId(request);
+			String userId = jwtUtil.getUserId(request);
 //			if(adminYn == "Y"){ //Codeeyes-Urgent-객체 비교시 == , != 사용제한
 			if(adminYn.equals("Y")){
 				ownerYn = "Y";
@@ -330,7 +330,7 @@ public class NodeMgmtController extends CommonController{
 			resultListVo = allocMgmtService.selectListIpAllocDetail(searchVo);
 			IpAllocMstComplexVo tempObject = new IpAllocMstComplexVo();
 			tempObject.setSrcIpAllocMstVo(searchVo);
-			String userId = sessionUtil.getUserId(request);
+			String userId = jwtUtil.getUserId(request);
 			tempObject.setMenuType(searchVo.getMenuType());
 			tempObject.setScreateId(userId);
 			tempObject.setSmodifyId(userId);
@@ -356,7 +356,7 @@ public class NodeMgmtController extends CommonController{
 		NodeMgmtVo resultVo = null;
 		int result = 0;
 		try {
-			searchVo.setsModifyId(sessionUtil.getUserId(request));
+			searchVo.setsModifyId(jwtUtil.getUserId(request));
 			result = nodeMgmtService.deleteNode(searchVo);
 			if(result != 1) {
 				throw new ServiceException("CMN.HIGH.00001");
@@ -381,7 +381,7 @@ public class NodeMgmtController extends CommonController{
 		NodeMgmtVo resultVo = null;
 		int result = 0;
 		try {
-			searchVo.setsModifyId(sessionUtil.getUserId(request));
+			searchVo.setsModifyId(jwtUtil.getUserId(request));
 			result = nodeMgmtService.cancelNode(searchVo);
 			if(result != 1) {
 				throw new ServiceException("CMN.HIGH.00001");
@@ -425,15 +425,15 @@ public class NodeMgmtController extends CommonController{
 				tbLvlBasVo.setSsvcLineTypeCd(srcIpAssignMstVo.getSsvcLineTypeCd());
 				tbLvlBasVo.setSsvcGroupCd(srcIpAssignMstVo.getSsvcGroupCd());
 				tbLvlBasVo.setSsvcObjCd(srcIpAssignMstVo.getSsvcObjCd());
-				BigInteger nlvlMstSeq = sessionUtil.getLvlMstSeq(request, tbLvlBasVo);
+				BigInteger nlvlMstSeq = jwtUtil.getLvlMstSeq(request, tbLvlBasVo);
 				srcIpAssignMstVo.setNlvlMstSeq(nlvlMstSeq);
-				srcIpAssignMstVo.setSmodifyId(sessionUtil.getUserId(request));
-				tbIpAssignMstComplexVo.setScreateId(sessionUtil.getUserId(request));
-				tbIpAssignMstComplexVo.setSmodifyId(sessionUtil.getUserId(request));
+				srcIpAssignMstVo.setSmodifyId(jwtUtil.getUserId(request));
+				tbIpAssignMstComplexVo.setScreateId(jwtUtil.getUserId(request));
+				tbIpAssignMstComplexVo.setSmodifyId(jwtUtil.getUserId(request));
 				allocMgmtService.updateListAsgnIPMst(tbIpAssignMstComplexVo);
 				resultVo = new TbIpAssignMstVo();
 				resultVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
-				tbIpAssignMstComplexVo.getNodeMgmtVo().setsModifyId(sessionUtil.getUserId(request));
+				tbIpAssignMstComplexVo.getNodeMgmtVo().setsModifyId(jwtUtil.getUserId(request));
 				nodeMgmtService.comfirmDcompleteDate(tbIpAssignMstComplexVo.getNodeMgmtVo());
 				Map<String,Object> map = RequireMgmtController.domainToMap(tempNodeVo);
 				map.put("MAIL_TYPE","Node-Delete");
@@ -472,7 +472,7 @@ public class NodeMgmtController extends CommonController{
 		tempLvlBasVo.setSsvcLineTypeCd(tempNodeVo.getBeforeSsvcLineTypeCd());
 		tempLvlBasVo.setSsvcGroupCd(tempNodeVo.getBeforeSsvcGroupCd());
 		tempLvlBasVo.setSsvcObjCd(tempNodeVo.getBeforeSsvcObjCd());
-		BigInteger tempnlvlMstSeq = sessionUtil.getLvlMstSeq(request, tempLvlBasVo);
+		BigInteger tempnlvlMstSeq = jwtUtil.getLvlMstSeq(request, tempLvlBasVo);
 		
 		if(!resultVo.getNlvlMstSeq().equals(tempnlvlMstSeq)){
 			result = false;
@@ -510,7 +510,7 @@ public class NodeMgmtController extends CommonController{
 			//set smtpvo
 			smtpVo.setToEmail(userEmail);
 			smtpVo.setMessage(content);
-			smtpVo.setUserID(sessionUtil.getUserId(request));
+			smtpVo.setUserID(jwtUtil.getUserId(request));
 			smtpUtil.sendMail(smtpVo);
 			
 			//get Admin email
@@ -610,7 +610,7 @@ public class NodeMgmtController extends CommonController{
 			
 			/** 계위 Seq 목록 조회 **/
 			TbLvlMstVo searchSeqVo = new TbLvlMstVo();
-			TbLvlMstListVo resultSeqList = sessionUtil.getLvlSeqList(request, searchSeqVo);
+			TbLvlMstListVo resultSeqList = jwtUtil.getLvlSeqList(request, searchSeqVo);
 			List<TbLvlMstVo> tbLvlMstVo = resultSeqList.getTbLvlMstVos();
 			
 			resultVo = new TbIpAssignMstVo();

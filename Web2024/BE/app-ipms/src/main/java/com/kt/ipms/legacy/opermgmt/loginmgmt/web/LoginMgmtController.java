@@ -29,6 +29,7 @@ import com.kt.framework.exception.ServiceException;
 import com.kt.ipms.legacy.cmn.service.ConfigPropertieService;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
+import com.kt.ipms.legacy.cmn.util.JwtUtil;
 import com.kt.ipms.legacy.cmn.util.PrintLogUtil;
 import com.kt.ipms.legacy.cmn.vo.CommonVo;
 import com.kt.ipms.legacy.cmn.web.CommonController;
@@ -111,7 +112,7 @@ public class LoginMgmtController  extends CommonController{
 //			}
 //			else
 //			{
-//				sessionUtil.setNewSession(request, loginVo);
+//				jwtUtil.setNewSession(request, loginVo);
 //				resultLoginVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
 //			}
 //		} catch(ServiceException e)	{
@@ -135,7 +136,7 @@ public class LoginMgmtController  extends CommonController{
 			fileIn = new FileInputStream("login.ser");
 			in = new ObjectInputStream(fileIn);
 			loginVo = (LoginInfoVo) in.readObject();
-			sessionUtil.setNewSession(request, loginVo);
+			jwtUtil.setNewSession(request, loginVo);
 		} catch (Exception e) {
 			// 예외처리
 		} finally {
@@ -150,7 +151,7 @@ public class LoginMgmtController  extends CommonController{
 	
 	@RequestMapping(value = "/newLogin.json", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String,Object> newLogin(@RequestBody LoginInfoVo loginVo, HttpServletRequest request, HttpServletResponse response) throws JsonGenerationException, JsonMappingException, IOException{
+	public Map<String,Object> newLogin(@RequestBody LoginInfoVo loginVo, HttpServletRequest request) throws JsonGenerationException, JsonMappingException, IOException{
 		
 		Map<String,Object> retMap = new HashMap<String,Object>();		
 		LoginInfoVo resultLoginVo = null;
@@ -205,11 +206,11 @@ public class LoginMgmtController  extends CommonController{
 							Map<String,Object> otpRetMap = loginMgmtService.callOtpSend(request,loginVo);					
 							retMap.putAll(otpRetMap);
 						}else{
-							sessionUtil.setNewSession(request, loginVo);
+							// jwtUtil.setNewSession(request, loginVo);
 							retMap.put("result", "success");
 						}
 					}else{
-						sessionUtil.setNewSession(request, loginVo);
+						// jwtUtil.setNewSession(request, loginVo);
 						retMap.put("result", "success");
 					}
 				}
@@ -266,7 +267,7 @@ public class LoginMgmtController  extends CommonController{
 		/*OTP 컨펌 로직 추가*/
 		retMap = loginMgmtService.callOtpConfirm(request, loginInfoVo, reqMap);
 		if(retMap.get("result").equals("success")){
-			sessionUtil.setNewSession(request, loginInfoVo);
+			jwtUtil.setNewSession(request, loginInfoVo);
 		}
 		return retMap;
 	}
@@ -296,7 +297,7 @@ public class LoginMgmtController  extends CommonController{
 				String msgDesc = tbCmnMstService.selectMsgDesc(e);
 				resultLoginVo.setCommonMsg(msgDesc);
 			} else {
-				sessionUtil.setNewSession(request, loginVo);
+				// jwtUtil.setNewSession(request, loginVo);
 				resultLoginVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
 				url = "redirect:/main/viewMain.do";
 				return url;
@@ -318,7 +319,7 @@ public class LoginMgmtController  extends CommonController{
 	public String logout(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			
-			LoginInfoVo  logoutVo  =  sessionUtil.getSessionVO(request);
+			LoginInfoVo  logoutVo  =  jwtUtil.getSessionVO(request);
 			if (logoutVo != null) {
 				loginMgmtService.logout(logoutVo);
 			}
@@ -326,7 +327,7 @@ public class LoginMgmtController  extends CommonController{
 			PrintLogUtil.printError(e);
 		} finally {
 			try {
-				sessionUtil.invalidSession(request);
+				jwtUtil.invalidSession(request);
 			} catch (Exception e) {
 				PrintLogUtil.printError(e);
 			}
@@ -412,7 +413,7 @@ public class LoginMgmtController  extends CommonController{
 			/** 조각 IP 최적화 현황 목록 **/
 			TbOptimizationIpMstListVo mainOptListVo = null;
 			
-			String userGradeCd = sessionUtil.getUserGradeCd(request);
+			String userGradeCd = jwtUtil.getUserGradeCd(request);
 			
 			try {
 				mainNotiListVo = boardMgmtAdapterService.selectListTbBoardByMain();
@@ -444,7 +445,7 @@ public class LoginMgmtController  extends CommonController{
 				mainOptListVo = new TbOptimizationIpMstListVo();
 				mainOptListVo.setTotalCount(0);
 			} else {
-				TbLvlMstListVo tbLvlMstListVo = sessionUtil.getLvlSeqList(request, new TbLvlMstVo());
+				TbLvlMstListVo tbLvlMstListVo = jwtUtil.getLvlSeqList(request, new TbLvlMstVo());
 				try {
 					IpAllocOrderMstVo searchVo = new IpAllocOrderMstVo();
 					searchVo.setLvlMstSeqListVo(tbLvlMstListVo);

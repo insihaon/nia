@@ -5,6 +5,9 @@ spring:
   profiles:
     active: oper
     dev: false
+  
+  config:
+    import: classpath:/properties/config.prod
 
   h2:
     console:

@@ -10,11 +10,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
-import com.codej.base.provider.JwtTokenProvider;
+import com.codej.base.dto.AppDto;
+import com.codej.base.provider.BaseJwtTokenProvider;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,10 +25,13 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @RequiredArgsConstructor
 @Slf4j
+// @ConditionalOnExpression("'${myconf.project:dev}' != 'ipms'")
 public class JwtAuthenticationFilter extends GenericFilterBean {
 
-    private final JwtTokenProvider jwtTokenProvider;
+
+    private final BaseJwtTokenProvider baseJwtTokenProvider;
     private final AuthUserService authUserService;
+
 
     private void response(ServletRequest request, ServletResponse response, int status, int code, String message ) throws IOException {
         HttpServletRequest httpRequest = (HttpServletRequest)request;
@@ -41,20 +47,20 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         httpResponse.getWriter().write(json.toString());
     }
 
-    // Request로 들어오는 Jwt Token의 유효성을 검증(jwtTokenProvider.validateToken)하는 filter를 filterChain에 등록합니다.
+    // Request로 들어오는 Jwt Token의 유효성을 검증(baseJwtTokenProvider.validateToken)하는 filter를 filterChain에 등록합니다.
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
         try {
             HttpServletRequest httpRequest = (HttpServletRequest) request;
-            String token = jwtTokenProvider.resolveToken(httpRequest);
+            String token = baseJwtTokenProvider.resolveToken(httpRequest);
             String requestURI = httpRequest.getRequestURI();
 
             if ("/mock".equals(requestURI)) {
                 throw new Exception("JwtAuthenticationFilter PASS");
             }
             
-            boolean isBanned = token != null && jwtTokenProvider.isBannedTocken(token, true);
-            boolean validate = token != null && jwtTokenProvider.validateToken(token, "JwtAuthenticationFilter");
+            boolean isBanned = token != null && baseJwtTokenProvider.isBannedTocken(token, true);
+            boolean validate = token != null && baseJwtTokenProvider.validateToken(token, "JwtAuthenticationFilter");
             if (isBanned) {
                 JSONObject entity = new JSONObject();
                 entity.put("result", "kickout");
@@ -64,7 +70,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
             }
 
             if (validate) {
-                Authentication auth = jwtTokenProvider.getAuthentication(token);
+                Authentication auth = baseJwtTokenProvider.getAuthentication(token);
                 authUserService.setAuthentication(auth);
             } else {
                 // com.codej.web.Intercepts.AuthInterceptor 에서 처리하도록 수정 2023.10.13

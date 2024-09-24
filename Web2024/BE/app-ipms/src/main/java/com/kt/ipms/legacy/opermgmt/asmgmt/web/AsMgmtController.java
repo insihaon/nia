@@ -108,8 +108,8 @@ public class AsMgmtController extends CommonController{
 			List<CommonCodeVo> srequestAsTypeCds = commonCodeService.selectListCommonCode(CommonCodeUtil.SREQUEST_AS_TYPE_CD, searchVo);
 			model.addAttribute("srequestAsTypeCds", srequestAsTypeCds);
 			
-			String userGrade  = sessionUtil.getUserGradeCd(request);
-			String userId  =  sessionUtil.getUserId(request);
+			String userGrade  = jwtUtil.getUserGradeCd(request);
+			String userId  =  jwtUtil.getUserId(request);
 			//AS관리 목록 리스트 표기시 관리자제외 모든 사용자는 자신글만 조회
 			if(!userGrade.equals(CommonCodeUtil.USER_GRADE_A)) {
 				searchVo.setScreateId(userId);
@@ -152,8 +152,8 @@ public class AsMgmtController extends CommonController{
 		try{
 			
 			
-			String userGrade  = sessionUtil.getUserGradeCd(request);
-			String userId  =  sessionUtil.getUserId(request);
+			String userGrade  = jwtUtil.getUserGradeCd(request);
+			String userId  =  jwtUtil.getUserId(request);
 			//AS관리 목록 리스트 표기시 관리자제외 모든 사용자는 자신글만 조회
 			if(!userGrade.equals(CommonCodeUtil.USER_GRADE_A)) {
 				searchVo.setScreateId(userId);
@@ -718,8 +718,8 @@ public class AsMgmtController extends CommonController{
 			userEmail = userMgmtService.selectEmail(searchVo);					// 요청자 메일주소
 			List<ReqAdminEmailVo> reqAdminEmailVoList = reqBoardService.selectAdminEmailList(); //담당자 주소
 			
-			userName = sessionUtil.getUserNm(request);
-			userOrg = sessionUtil.getUserDeptOrgNm(request);
+			userName = jwtUtil.getUserNm(request);
+			userOrg = jwtUtil.getUserDeptOrgNm(request);
 			
 			Boolean isRun = configPropertieService.getBoolean("Mail.isRun");
 			
@@ -733,7 +733,7 @@ public class AsMgmtController extends CommonController{
 			
 				smtpVo.setSubject(subject);
 				smtpVo.setMessage(content);
-				smtpVo.setUserID(sessionUtil.getUserId(request));
+				smtpVo.setUserID(jwtUtil.getUserId(request));
 				if(isRun) {
 					toEmail = userEmail;
 					smtpVo.setToEmail(toEmail);
@@ -758,7 +758,7 @@ public class AsMgmtController extends CommonController{
 				
 				smtpVo.setSubject(subject);
 				smtpVo.setMessage(content);
-				smtpVo.setUserID(sessionUtil.getUserId(request));
+				smtpVo.setUserID(jwtUtil.getUserId(request));
 				
 				for (int i = 0; i < reqAdminEmailVoList.size(); i++) {
 					toEmail = reqAdminEmailVoList.get(i).getsUserEmail();
@@ -784,7 +784,7 @@ public class AsMgmtController extends CommonController{
 				
 				smtpVo.setSubject(subject);
 				smtpVo.setMessage(content);
-				smtpVo.setUserID(sessionUtil.getUserId(request));
+				smtpVo.setUserID(jwtUtil.getUserId(request));
 				if(isRun) {
 					toEmail = userEmail;	
 					smtpVo.setToEmail(toEmail);
@@ -812,7 +812,7 @@ public class AsMgmtController extends CommonController{
 				
 				smtpVo.setSubject(subject);
 				smtpVo.setMessage(content);
-				smtpVo.setUserID(sessionUtil.getUserId(request));
+				smtpVo.setUserID(jwtUtil.getUserId(request));
 				if(isRun) {
 					toEmail = userEmail;
 					smtpVo.setToEmail(toEmail);

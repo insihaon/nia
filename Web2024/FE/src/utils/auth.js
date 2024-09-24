@@ -5,8 +5,7 @@ import { AppOptions } from '@/class/appOptions'
 const TOKEN_KEY = 'X-AUTH-TOKEN'
 const IPSDN_TOKEN_KEY = 'X-AUTH-IP-TOKEN'
 const INFO_KEY = 'X-AUTH-INFO'
-const isUseCookie = process.env.VUE_USE_AUTH_COOKIE ?? true
-
+const isUseCookie = process.env.VUE_USE_AUTH_COOKIE ?? false
 export function getToken() {
   const data = isUseCookie ? Cookies.get(TOKEN_KEY) : window.sessionStorage.getItem(TOKEN_KEY)
   if (data) {
@@ -15,6 +14,7 @@ export function getToken() {
     return ''
   }
 }
+
 export function getIpsdnToken() {
   const data = isUseCookie ? Cookies.get(IPSDN_TOKEN_KEY) : window.sessionStorage.getItem(IPSDN_TOKEN_KEY)
   if (data) {
@@ -38,7 +38,7 @@ export function removeToken() {
 }
 
 export function getInfo() {
-  const data = Cookies.get(INFO_KEY)
+  const data = isUseCookie ? Cookies.get(INFO_KEY) : window.sessionStorage.getItem(INFO_KEY)
   if (data) {
     const raw = data.startsWith('{')
     const info = raw ? JSON.parse(data) : Encrypt.toDecrypt(data)
@@ -52,7 +52,8 @@ export function getInfo() {
 }
 
 export function setInfo(info) {
-  return Cookies.set(INFO_KEY, AppOptions.instance.debug ? info : Encrypt.toEncrypt(info))
+  info = AppOptions.instance.debug ? JSON.stringify(info) : Encrypt.toEncrypt(info)
+  isUseCookie ? Cookies.set(INFO_KEY, info) : window.sessionStorage.setItem(INFO_KEY, info)
 }
 
 export function removeInfo() {

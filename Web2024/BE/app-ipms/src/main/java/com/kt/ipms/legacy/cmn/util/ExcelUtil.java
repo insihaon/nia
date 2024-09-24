@@ -48,7 +48,7 @@ public class ExcelUtil {
 	private FileSystemResource fileSystemResource;
 	
 	@Autowired
-	private SessionUtil sessionUtil;
+	private JwtUtil jwtUtil;
 	
 	@Autowired
 	private FileUtil fileUtil;
@@ -93,7 +93,7 @@ public class ExcelUtil {
 			
 			fileName.append(DateUtils.getCurrentDateTime());
 			fileName.append("_EXCEL_FILE_");
-			fileName.append(sessionUtil.getUserId(request));
+			fileName.append(jwtUtil.getUserId(request));
 			fileName.append(".xlsx");
 			
 			File excelFile = fileUtil.getFile(fileSystemResource.getPath() + File.separator + fileName.toString());
@@ -431,7 +431,7 @@ public class ExcelUtil {
 			/** EXCEL FILE CREATE **/
 			fileName.append(DateUtils.getCurrentDateTime());
 			fileName.append("_EXCEL_FILE_");
-			fileName.append(sessionUtil.getUserId(request));
+			fileName.append(jwtUtil.getUserId(request));
 			fileName.append(".xlsx");
 			
 			File excelFile = fileUtil.getFile(fileSystemResource.getPath() + File.separator + fileName.toString());
@@ -462,7 +462,7 @@ public class ExcelUtil {
 		try{
 			fileName.append(DateUtils.getCurrentDateTime());
 			fileName.append("_TEXT_FILE_");
-			fileName.append(sessionUtil.getUserId(request));
+			fileName.append(jwtUtil.getUserId(request));
 			fileName.append(".txt");
 			File textFile = fileUtil.getFile(fileSystemResource.getPath() + File.separator + fileName.toString());
 			br = new BufferedWriter(new FileWriter(textFile, true));

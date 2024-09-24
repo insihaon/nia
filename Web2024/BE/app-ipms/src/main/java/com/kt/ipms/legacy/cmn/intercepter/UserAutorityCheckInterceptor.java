@@ -8,12 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
-import com.kt.ipms.legacy.cmn.util.SessionUtil;
+import com.kt.ipms.legacy.cmn.util.JwtUtil;
 
 public class UserAutorityCheckInterceptor extends HandlerInterceptorAdapter {
 
 	@Autowired
-	private SessionUtil sessionUtil;
+	private JwtUtil jwtUtil;
 	
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -22,9 +22,9 @@ public class UserAutorityCheckInterceptor extends HandlerInterceptorAdapter {
 		String requestUrl = request.getRequestURL().toString();
 		String urlPattern = requestUrl.substring(requestUrl.lastIndexOf(".") + 1, requestUrl.length());
 		try {
-			String userGradeCd = sessionUtil.getUserGradeCd(request);
+			String userGradeCd = jwtUtil.getUserGradeCd(request);
 			if (!CommonCodeUtil.USER_GRADE_A.equals(userGradeCd)) {
-				sessionUtil.invalidSession(request);
+				jwtUtil.invalidSession(request);
 			}
 			HttpSession session = request.getSession(false);
 			if (session == null) {

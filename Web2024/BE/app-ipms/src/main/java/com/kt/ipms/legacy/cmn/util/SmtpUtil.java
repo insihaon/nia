@@ -44,7 +44,7 @@ public class SmtpUtil {
 	private ConfigPropertieService configPropertieService;
 	
 	@Autowired
-	private SessionUtil sessionUtil;
+	private JwtUtil jwtUtil;
 	
 	@Autowired
 	private CommonService commonService;

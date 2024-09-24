@@ -105,21 +105,21 @@ public class AssignApyMgmtController extends CommonController{
 			model.addAttribute("requestAssignTypeCds", requestAssignTypeCds);
 			
 			/** 계위 정보 설정 **/
-			TbLvlBasListVo svcLineListVo = sessionUtil.getSvcLineList(request);
+			TbLvlBasListVo svcLineListVo = jwtUtil.getSvcLineList(request);
 			TbLvlBasListVo centerListVo = null;
 			TbLvlBasListVo nodeListVo = null;
 			if (StringUtils.hasText(searchVo.getSsvcLineTypeCd())) {
 				TbLvlBasVo searchCenterVo = new TbLvlBasVo();
 				searchCenterVo.setSsvcLineTypeCd(searchVo.getSsvcLineTypeCd());
-				centerListVo = sessionUtil.getCenterList(request, searchCenterVo);
+				centerListVo = jwtUtil.getCenterList(request, searchCenterVo);
 				if (StringUtils.hasText(searchVo.getSsvcGroupCd())) {
 					searchCenterVo.setSsvcGroupCd(searchVo.getSsvcGroupCd());
-					nodeListVo = sessionUtil.getNodeList(request, searchCenterVo);
+					nodeListVo = jwtUtil.getNodeList(request, searchCenterVo);
 				} else {
 					if (StringUtils.hasText(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd())) {
 						searchVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
 						searchCenterVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
-						nodeListVo = sessionUtil.getNodeList(request, searchCenterVo);
+						nodeListVo = jwtUtil.getNodeList(request, searchCenterVo);
 						if (StringUtils.hasText(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd())) {
 							searchVo.setSsvcObjCd(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd());
 						}
@@ -132,11 +132,11 @@ public class AssignApyMgmtController extends CommonController{
 					TbLvlBasVo searchCenterVo = new TbLvlBasVo();
 					searchCenterVo.setSsvcLineTypeCd(svcLineListVo.getTbLvlBasVos().get(0).getSsvcLineTypeCd());
 					searchVo.setSsvcLineTypeCd(svcLineListVo.getTbLvlBasVos().get(0).getSsvcLineTypeCd());
-					centerListVo = sessionUtil.getCenterList(request, searchCenterVo);
+					centerListVo = jwtUtil.getCenterList(request, searchCenterVo);
 					if (StringUtils.hasText(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd())) {
 						searchVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
 						searchCenterVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
-						nodeListVo = sessionUtil.getNodeList(request, searchCenterVo);
+						nodeListVo = jwtUtil.getNodeList(request, searchCenterVo);
 						if (StringUtils.hasText(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd())) {
 							searchVo.setSsvcObjCd(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd());
 						}
@@ -157,7 +157,7 @@ public class AssignApyMgmtController extends CommonController{
 			searchSeqVo.setSsvcLineTypeCd(searchVo.getSsvcLineTypeCd());
 			searchSeqVo.setSsvcGroupCd(searchVo.getSsvcGroupCd());
 			searchSeqVo.setSsvcObjCd(searchVo.getSsvcObjCd());
-			TbLvlMstListVo resultSeqList = sessionUtil.getLvlSeqList(request, searchSeqVo);
+			TbLvlMstListVo resultSeqList = jwtUtil.getLvlSeqList(request, searchSeqVo);
 			searchVo.setLvlMstSeqListVo(resultSeqList);
 			
 			setPagination(searchVo);
@@ -191,21 +191,21 @@ public class AssignApyMgmtController extends CommonController{
 		try{
 			
 			/** 계위 정보 설정 **/
-			TbLvlBasListVo svcLineListVo = sessionUtil.getSvcLineList(request);
+			TbLvlBasListVo svcLineListVo = jwtUtil.getSvcLineList(request);
 			TbLvlBasListVo centerListVo = null;
 			TbLvlBasListVo nodeListVo = null;
 			if (StringUtils.hasText(searchVo.getSsvcLineTypeCd())) {
 				TbLvlBasVo searchCenterVo = new TbLvlBasVo();
 				searchCenterVo.setSsvcLineTypeCd(searchVo.getSsvcLineTypeCd());
-				centerListVo = sessionUtil.getCenterList(request, searchCenterVo);
+				centerListVo = jwtUtil.getCenterList(request, searchCenterVo);
 				if (StringUtils.hasText(searchVo.getSsvcGroupCd())) {
 					searchCenterVo.setSsvcGroupCd(searchVo.getSsvcGroupCd());
-					nodeListVo = sessionUtil.getNodeList(request, searchCenterVo);
+					nodeListVo = jwtUtil.getNodeList(request, searchCenterVo);
 				} else {
 					if (StringUtils.hasText(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd())) {
 						searchVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
 						searchCenterVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
-						nodeListVo = sessionUtil.getNodeList(request, searchCenterVo);
+						nodeListVo = jwtUtil.getNodeList(request, searchCenterVo);
 						if (StringUtils.hasText(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd())) {
 							searchVo.setSsvcObjCd(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd());
 						}
@@ -218,11 +218,11 @@ public class AssignApyMgmtController extends CommonController{
 					TbLvlBasVo searchCenterVo = new TbLvlBasVo();
 					searchCenterVo.setSsvcLineTypeCd(svcLineListVo.getTbLvlBasVos().get(0).getSsvcLineTypeCd());
 					searchVo.setSsvcLineTypeCd(svcLineListVo.getTbLvlBasVos().get(0).getSsvcLineTypeCd());
-					centerListVo = sessionUtil.getCenterList(request, searchCenterVo);
+					centerListVo = jwtUtil.getCenterList(request, searchCenterVo);
 					if (StringUtils.hasText(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd())) {
 						searchVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
 						searchCenterVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
-						nodeListVo = sessionUtil.getNodeList(request, searchCenterVo);
+						nodeListVo = jwtUtil.getNodeList(request, searchCenterVo);
 						if (StringUtils.hasText(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd())) {
 							searchVo.setSsvcObjCd(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd());
 						}
@@ -243,7 +243,7 @@ public class AssignApyMgmtController extends CommonController{
 			searchSeqVo.setSsvcLineTypeCd(searchVo.getSsvcLineTypeCd());
 			searchSeqVo.setSsvcGroupCd(searchVo.getSsvcGroupCd());
 			searchSeqVo.setSsvcObjCd(searchVo.getSsvcObjCd());
-			TbLvlMstListVo resultSeqList = sessionUtil.getLvlSeqList(request, searchSeqVo);
+			TbLvlMstListVo resultSeqList = jwtUtil.getLvlSeqList(request, searchSeqVo);
 			searchVo.setLvlMstSeqListVo(resultSeqList);
 			
 			
@@ -351,11 +351,11 @@ public class AssignApyMgmtController extends CommonController{
 		TbRequestAssignMstListVo resultListVo = null;
 		try{
 			
-			String userGrade = sessionUtil.getUserGradeCd(request);
+			String userGrade = jwtUtil.getUserGradeCd(request);
 			
 			if(userGrade.equals(CommonCodeUtil.USER_GRADE_N) || userGrade.equals(CommonCodeUtil.USER_GRADE_C) || userGrade.equals(CommonCodeUtil.USER_GRADE_O)){
 				TbLvlMstVo searchSeqVo = new TbLvlMstVo();		
-				TbLvlMstListVo resultSeqList = sessionUtil.getLvlSeqList(request, searchSeqVo);
+				TbLvlMstListVo resultSeqList = jwtUtil.getLvlSeqList(request, searchSeqVo);
 				searchVo.setLvlMstSeqListVo(resultSeqList);
 			}
 			
@@ -404,16 +404,16 @@ public class AssignApyMgmtController extends CommonController{
 		TbRequestAssignMstVo resultVo = null;
 		try{
 			/** 계위 정보 설정 **/
-			TbLvlBasListVo svcLineListVo = sessionUtil.getSvcLineList(request);
+			TbLvlBasListVo svcLineListVo = jwtUtil.getSvcLineList(request);
 			TbLvlBasListVo centerListVo = null;
 			TbLvlBasListVo nodeListVo = null;
 			if (StringUtils.hasText(svcLineListVo.getTbLvlBasVos().get(0).getSsvcLineTypeCd())) {
 				TbLvlBasVo searchCenterVo = new TbLvlBasVo();
 				searchCenterVo.setSsvcLineTypeCd(svcLineListVo.getTbLvlBasVos().get(0).getSsvcLineTypeCd());
-				centerListVo = sessionUtil.getCenterList(request, searchCenterVo);
+				centerListVo = jwtUtil.getCenterList(request, searchCenterVo);
 				if (StringUtils.hasText(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd())) {
 					searchCenterVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
-					nodeListVo = sessionUtil.getNodeList(request, searchCenterVo);
+					nodeListVo = jwtUtil.getNodeList(request, searchCenterVo);
 				} else {
 					nodeListVo = new TbLvlBasListVo();
 				}
@@ -452,7 +452,7 @@ public class AssignApyMgmtController extends CommonController{
 			tbLvlBasVo.setSsvcLineTypeCd(tbRequestAssignMstVo.getSsvcLineTypeCd());
 			tbLvlBasVo.setSsvcGroupCd(tbRequestAssignMstVo.getSsvcGroupCd());
 			tbLvlBasVo.setSsvcObjCd(tbRequestAssignMstVo.getSsvcObjCd());
-			BigInteger nlvlMstSeq = sessionUtil.getLvlMstSeq(request, tbLvlBasVo);
+			BigInteger nlvlMstSeq = jwtUtil.getLvlMstSeq(request, tbLvlBasVo);
 			tbRequestAssignMstVo.setNlvlMstSeq(nlvlMstSeq);
 			
 			assignApyMgmtService.insertTbRequestAssignMst(tbRequestAssignMstVo);
@@ -600,8 +600,8 @@ public class AssignApyMgmtController extends CommonController{
 			userEmail = userMgmtService.selectEmail(searchVo);					// 요청자 메일주소
 			List<ReqAdminEmailVo> reqAdminEmailVoList = reqBoardService.selectAdminEmailList(); //담당자 주소
 			
-			userName = sessionUtil.getUserNm(request);
-			userOrg = sessionUtil.getUserDeptOrgNm(request);
+			userName = jwtUtil.getUserNm(request);
+			userOrg = jwtUtil.getUserDeptOrgNm(request);
 			
 			Boolean isRun = configPropertieService.getBoolean("Mail.isRun");
 			
@@ -615,7 +615,7 @@ public class AssignApyMgmtController extends CommonController{
 				content = smtpUtil.parseHtml(map, request);
 				smtpVo.setSubject(subject);
 				smtpVo.setMessage(content);
-				smtpVo.setUserID(sessionUtil.getUserId(request));
+				smtpVo.setUserID(jwtUtil.getUserId(request));
 				if(isRun) {
 					toEmail = userEmail;	
 					smtpVo.setToEmail(toEmail);
@@ -639,7 +639,7 @@ public class AssignApyMgmtController extends CommonController{
 				
 				smtpVo.setSubject(subject);
 				smtpVo.setMessage(content);
-				smtpVo.setUserID(sessionUtil.getUserId(request));
+				smtpVo.setUserID(jwtUtil.getUserId(request));
 				
 				for (int i = 0; i < reqAdminEmailVoList.size(); i++) {
 					toEmail = reqAdminEmailVoList.get(i).getsUserEmail();
@@ -664,7 +664,7 @@ public class AssignApyMgmtController extends CommonController{
 				
 				smtpVo.setSubject(subject);
 				smtpVo.setMessage(content);
-				smtpVo.setUserID(sessionUtil.getUserId(request));
+				smtpVo.setUserID(jwtUtil.getUserId(request));
 				if(isRun) {
 					toEmail = userEmail;	
 					smtpVo.setToEmail(toEmail);
@@ -698,7 +698,7 @@ public class AssignApyMgmtController extends CommonController{
 				
 				smtpVo.setSubject(subject);
 				smtpVo.setMessage(content);
-				smtpVo.setUserID(sessionUtil.getUserId(request));
+				smtpVo.setUserID(jwtUtil.getUserId(request));
 				if(isRun) {
 					toEmail = userEmail;	
 					smtpVo.setToEmail(toEmail);

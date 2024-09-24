@@ -143,14 +143,14 @@ public class BoardController extends CommonController{
 			
 			
 			// 2015. 5. 18 모의해킹 관련 반영
-			String usrGradeCd = sessionUtil.getUserGradeCd(request);
+			String usrGradeCd = jwtUtil.getUserGradeCd(request);
 			if(usrGradeCd != null && usrGradeCd.equals("UR0001")){
 				adminYn = "Y";
 			}
 			else{
 				if(resultVo != null){
 					String txtcreateId = resultVo.getScreateId();
-					String userId = sessionUtil.getUserId(request);
+					String userId = jwtUtil.getUserId(request);
 					
 					if(txtcreateId.equals(userId)){
 						adminYn = "Y";
@@ -241,7 +241,7 @@ public class BoardController extends CommonController{
 		TbBoardVo resultVo = null;
 		
 		//모의해킹괄련 적용 2015. 05 .19
-		String userId = sessionUtil.getUserId(request);
+		String userId = jwtUtil.getUserId(request);
 		insertVo.setSmodifyId(userId);
 		insertVo.setScreateId(userId);
 		

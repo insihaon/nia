@@ -7,7 +7,7 @@ import org.springframework.stereotype.Controller;
 
 import com.codej.base.controller.BaseController;
 import com.codej.base.dto.SocketMessage;
-import com.codej.base.provider.JwtTokenProvider;
+import com.codej.base.provider.BaseJwtTokenProvider;
 import com.codej.ws.service.ChannelService;
 import com.codej.ws.service.WebsocketService;
 
@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 @ConditionalOnProperty(name="myconf.websocket.enabled", havingValue="true")
 public class WebSocketController extends BaseController {
 
-    private final JwtTokenProvider jwtTokenProvider;
+    private final BaseJwtTokenProvider baseJwtTokenProvider;
     private final ChannelService channelService;
     private final WebsocketService websocketService;
 
@@ -31,7 +31,7 @@ public class WebSocketController extends BaseController {
     public void emit(SocketMessage message, @Header("token") String token) {
         String userId;
         try {
-            userId = jwtTokenProvider.getUserNameFromJwt(token);
+            userId = baseJwtTokenProvider.getUserNameFromJwt(token);
             log.info("MessageMapping /pub/emit: userId={}, message={}", userId, message.toString());
             // 로그인 회원 정보로 대화명 설정
             message.setSender(userId);

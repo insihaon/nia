@@ -117,21 +117,21 @@ public class PrivateMgmtController extends CommonController {
 			model.addAttribute("ssvcLineTypeCds", ssvcLineTypeCds);
 			
 			/** 계위 정보 설정 **/
-			TbLvlBasListVo svcLineListVo = sessionUtil.getSvcLineList(request);
+			TbLvlBasListVo svcLineListVo = jwtUtil.getSvcLineList(request);
 			TbLvlBasListVo centerListVo = null;
 			TbLvlBasListVo nodeListVo = null;
 			if (StringUtils.hasText(searchVo.getSsvcLineTypeCd())) {
 				TbLvlBasVo searchCenterVo = new TbLvlBasVo();
 				searchCenterVo.setSsvcLineTypeCd(searchVo.getSsvcLineTypeCd());
-				centerListVo = sessionUtil.getCenterList(request, searchCenterVo);
+				centerListVo = jwtUtil.getCenterList(request, searchCenterVo);
 				if (StringUtils.hasText(searchVo.getSsvcGroupCd())) {
 					searchCenterVo.setSsvcGroupCd(searchVo.getSsvcGroupCd());
-					nodeListVo = sessionUtil.getNodeList(request, searchCenterVo);
+					nodeListVo = jwtUtil.getNodeList(request, searchCenterVo);
 				} else {
 					if (StringUtils.hasText(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd())) {
 						searchVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
 						searchCenterVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
-						nodeListVo = sessionUtil.getNodeList(request, searchCenterVo);
+						nodeListVo = jwtUtil.getNodeList(request, searchCenterVo);
 						if (StringUtils.hasText(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd())) {
 							searchVo.setSsvcObjCd(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd());
 						}
@@ -144,11 +144,11 @@ public class PrivateMgmtController extends CommonController {
 					TbLvlBasVo searchCenterVo = new TbLvlBasVo();
 					searchCenterVo.setSsvcLineTypeCd(svcLineListVo.getTbLvlBasVos().get(0).getSsvcLineTypeCd());
 					searchVo.setSsvcLineTypeCd(svcLineListVo.getTbLvlBasVos().get(0).getSsvcLineTypeCd());
-					centerListVo = sessionUtil.getCenterList(request, searchCenterVo);
+					centerListVo = jwtUtil.getCenterList(request, searchCenterVo);
 					if (StringUtils.hasText(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd())) {
 						searchVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
 						searchCenterVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
-						nodeListVo = sessionUtil.getNodeList(request, searchCenterVo);
+						nodeListVo = jwtUtil.getNodeList(request, searchCenterVo);
 						if (StringUtils.hasText(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd())) {
 							searchVo.setSsvcObjCd(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd());
 						}
@@ -170,7 +170,7 @@ public class PrivateMgmtController extends CommonController {
 			searchSeqVo.setSsvcGroupCd(searchVo.getSsvcGroupCd());
 			searchSeqVo.setSsvcObjCd(searchVo.getSsvcObjCd());
 			
-			TbLvlMstListVo resultSeqList = sessionUtil.getLvlSeqList(request, searchSeqVo);
+			TbLvlMstListVo resultSeqList = jwtUtil.getLvlSeqList(request, searchSeqVo);
 			searchVo.setLvlMstSeqListVo(resultSeqList);
 			
 			/** 목록 조회 **/
@@ -213,7 +213,7 @@ public class PrivateMgmtController extends CommonController {
 				resultListVo = privateMgmtService.selectListTbIpPrivateReqMst(searchVo);
 			}
 			
-			userGrade = sessionUtil.getUserGradeCd(request);
+			userGrade = jwtUtil.getUserGradeCd(request);
 			
 			resultListVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
 		} catch (ServiceException e) {
@@ -252,21 +252,21 @@ public class PrivateMgmtController extends CommonController {
 		try {
 			
 			/** 계위 정보 설정 **/
-			TbLvlBasListVo svcLineListVo = sessionUtil.getSvcLineList(request);
+			TbLvlBasListVo svcLineListVo = jwtUtil.getSvcLineList(request);
 			TbLvlBasListVo centerListVo = null;
 			TbLvlBasListVo nodeListVo = null;
 			if (StringUtils.hasText(searchVo.getSsvcLineTypeCd())) {
 				TbLvlBasVo searchCenterVo = new TbLvlBasVo();
 				searchCenterVo.setSsvcLineTypeCd(searchVo.getSsvcLineTypeCd());
-				centerListVo = sessionUtil.getCenterList(request, searchCenterVo);
+				centerListVo = jwtUtil.getCenterList(request, searchCenterVo);
 				if (StringUtils.hasText(searchVo.getSsvcGroupCd())) {
 					searchCenterVo.setSsvcGroupCd(searchVo.getSsvcGroupCd());
-					nodeListVo = sessionUtil.getNodeList(request, searchCenterVo);
+					nodeListVo = jwtUtil.getNodeList(request, searchCenterVo);
 				} else {
 					if (StringUtils.hasText(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd())) {
 						searchVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
 						searchCenterVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
-						nodeListVo = sessionUtil.getNodeList(request, searchCenterVo);
+						nodeListVo = jwtUtil.getNodeList(request, searchCenterVo);
 						if (StringUtils.hasText(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd())) {
 							searchVo.setSsvcObjCd(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd());
 						}
@@ -279,11 +279,11 @@ public class PrivateMgmtController extends CommonController {
 					TbLvlBasVo searchCenterVo = new TbLvlBasVo();
 					searchCenterVo.setSsvcLineTypeCd(svcLineListVo.getTbLvlBasVos().get(0).getSsvcLineTypeCd());
 					searchVo.setSsvcLineTypeCd(svcLineListVo.getTbLvlBasVos().get(0).getSsvcLineTypeCd());
-					centerListVo = sessionUtil.getCenterList(request, searchCenterVo);
+					centerListVo = jwtUtil.getCenterList(request, searchCenterVo);
 					if (StringUtils.hasText(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd())) {
 						searchVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
 						searchCenterVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
-						nodeListVo = sessionUtil.getNodeList(request, searchCenterVo);
+						nodeListVo = jwtUtil.getNodeList(request, searchCenterVo);
 						if (StringUtils.hasText(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd())) {
 							searchVo.setSsvcObjCd(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd());
 						}
@@ -302,7 +302,7 @@ public class PrivateMgmtController extends CommonController {
 			searchSeqVo.setSsvcGroupCd(searchVo.getSsvcGroupCd());
 			searchSeqVo.setSsvcObjCd(searchVo.getSsvcObjCd());
 			
-			TbLvlMstListVo resultSeqList = sessionUtil.getLvlSeqList(request, searchSeqVo);
+			TbLvlMstListVo resultSeqList = jwtUtil.getLvlSeqList(request, searchSeqVo);
 			searchVo.setLvlMstSeqListVo(resultSeqList);
 			
 			if (!StringUtils.hasText(searchVo.getSortType())) {
@@ -392,8 +392,8 @@ public class PrivateMgmtController extends CommonController {
 		String userId = null;
 		
 		try {
-			userGrade = sessionUtil.getUserGradeCd(request);
-			userId = sessionUtil.getUserId(request);
+			userGrade = jwtUtil.getUserGradeCd(request);
+			userId = jwtUtil.getUserId(request);
 			
 			resultVo = privateMgmtService.selectPrivateIPMst(tbIpPrivateReqMst);
 			resultVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
@@ -460,21 +460,21 @@ public class PrivateMgmtController extends CommonController {
 			model.addAttribute("sipVersionTypeCds", sipVersionTypeCds);
 			
 			/** 계위 정보 설정 **/
-			TbLvlBasListVo svcLineListVo = sessionUtil.getSvcLineList(request);
+			TbLvlBasListVo svcLineListVo = jwtUtil.getSvcLineList(request);
 			TbLvlBasListVo centerListVo = null;
 			TbLvlBasListVo nodeListVo = null;
 			if (StringUtils.hasText(searchVo.getSsvcLineTypeCd())) {
 				TbLvlBasVo searchCenterVo = new TbLvlBasVo();
 				searchCenterVo.setSsvcLineTypeCd(searchVo.getSsvcLineTypeCd());
-				centerListVo = sessionUtil.getCenterList(request, searchCenterVo);
+				centerListVo = jwtUtil.getCenterList(request, searchCenterVo);
 				if (StringUtils.hasText(searchVo.getSsvcGroupCd())) {
 					searchCenterVo.setSsvcGroupCd(searchVo.getSsvcGroupCd());
-					nodeListVo = sessionUtil.getNodeList(request, searchCenterVo);
+					nodeListVo = jwtUtil.getNodeList(request, searchCenterVo);
 				} else {
 					if (StringUtils.hasText(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd())) {
 						searchVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
 						searchCenterVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
-						nodeListVo = sessionUtil.getNodeList(request, searchCenterVo);
+						nodeListVo = jwtUtil.getNodeList(request, searchCenterVo);
 						if (StringUtils.hasText(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd())) {
 							searchVo.setSsvcObjCd(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd());
 						}
@@ -487,11 +487,11 @@ public class PrivateMgmtController extends CommonController {
 					TbLvlBasVo searchCenterVo = new TbLvlBasVo();
 					searchCenterVo.setSsvcLineTypeCd(svcLineListVo.getTbLvlBasVos().get(0).getSsvcLineTypeCd());
 					searchVo.setSsvcLineTypeCd(svcLineListVo.getTbLvlBasVos().get(0).getSsvcLineTypeCd());
-					centerListVo = sessionUtil.getCenterList(request, searchCenterVo);
+					centerListVo = jwtUtil.getCenterList(request, searchCenterVo);
 					if (StringUtils.hasText(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd())) {
 						searchVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
 						searchCenterVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
-						nodeListVo = sessionUtil.getNodeList(request, searchCenterVo);
+						nodeListVo = jwtUtil.getNodeList(request, searchCenterVo);
 						if (StringUtils.hasText(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd())) {
 							searchVo.setSsvcObjCd(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd());
 						}
@@ -544,7 +544,7 @@ public class PrivateMgmtController extends CommonController {
 			tbLvlBasVo.setSsvcLineTypeCd(srcIpPrivateReqMstVo.getSsvcLineTypeCd());
 			tbLvlBasVo.setSsvcGroupCd(srcIpPrivateReqMstVo.getSsvcGroupCd());
 			tbLvlBasVo.setSsvcObjCd(srcIpPrivateReqMstVo.getSsvcObjCd());
-			BigInteger nlvlMstSeq = sessionUtil.getLvlMstSeq(request, tbLvlBasVo);
+			BigInteger nlvlMstSeq = jwtUtil.getLvlMstSeq(request, tbLvlBasVo);
 			
 			srcIpPrivateReqMstVo.setNlvlMstSeq(nlvlMstSeq);
 			
@@ -579,14 +579,14 @@ public class PrivateMgmtController extends CommonController {
 		
 		try {
 			for (TbIpPrivateReqMstVo tbIpPrivateReqMstVo : tbIpPrivateReqMstListVo.getTbIpPrivateReqMstVos()) {
-				tbIpPrivateReqMstVo.setScreateId(sessionUtil.getUserId(request));
-				tbIpPrivateReqMstVo.setSmodifyId(sessionUtil.getUserId(request));
+				tbIpPrivateReqMstVo.setScreateId(jwtUtil.getUserId(request));
+				tbIpPrivateReqMstVo.setSmodifyId(jwtUtil.getUserId(request));
 			}
 			TbLvlBasVo tbLvlBasVo = new TbLvlBasVo();
 			tbLvlBasVo.setSsvcLineTypeCd(tbIpPrivateReqMstListVo.getTbIpPrivateReqMstVos().get(0).getSsvcLineTypeCd());
 			tbLvlBasVo.setSsvcGroupCd(tbIpPrivateReqMstListVo.getTbIpPrivateReqMstVos().get(0).getSsvcGroupCd());
 			tbLvlBasVo.setSsvcObjCd(tbIpPrivateReqMstListVo.getTbIpPrivateReqMstVos().get(0).getSsvcObjCd());
-			BigInteger nlvlMstSeq = sessionUtil.getLvlMstSeq(request, tbLvlBasVo);
+			BigInteger nlvlMstSeq = jwtUtil.getLvlMstSeq(request, tbLvlBasVo);
 			
 			privateMgmtService.insertListIpPrivateReqMst(tbIpPrivateReqMstListVo, nlvlMstSeq);
 			resultVo = new TbIpPrivateReqMstVo();
@@ -594,7 +594,7 @@ public class PrivateMgmtController extends CommonController {
 			
 			tbIpPrivateReqMstListVo.setsRequestTypeCd(CommonCodeUtil.REQUEST_TYPE01);  // 신규신청
 			tbIpPrivateReqMstListVo.setsRequestTypeNm(CommonCodeUtil.REQUEST_TYPE01_NM);  // 신규신청
-			tbIpPrivateReqMstListVo.setScreateId(sessionUtil.getUserId(request));
+			tbIpPrivateReqMstListVo.setScreateId(jwtUtil.getUserId(request));
 			
 			/* */
 			commonMsg = SendMail("PrivateIP-Req-User", tbIpPrivateReqMstListVo, request);			// 사설IP신청 등록시(요청자)
@@ -627,7 +627,7 @@ public class PrivateMgmtController extends CommonController {
 	public TbIpPrivateReqMstVo deleteCrtIPMst(@RequestBody TbIpPrivateReqMstVo delVo, HttpServletRequest request, HttpServletResponse response) {
 		TbIpPrivateReqMstVo resultVo = null;
 		try {
-			delVo.setScreateId(sessionUtil.getUserId(request));
+			delVo.setScreateId(jwtUtil.getUserId(request));
 			resultVo = privateMgmtService.deletePrivateIPMst(delVo);
 			resultVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
 		} catch (ServiceException e) {
@@ -658,7 +658,7 @@ public class PrivateMgmtController extends CommonController {
 		String userId = null;
 		try {
 			
-			userId = sessionUtil.getUserId(request);
+			userId = jwtUtil.getUserId(request);
 			updateVo.setSapproveId(userId);
 			updateVo.setSmodifyId(userId);
 			
@@ -677,7 +677,7 @@ public class PrivateMgmtController extends CommonController {
 				tbIpPrivateReqMstListVo.setsRequestStatCd(updateVo.getSrequestStatCd());
 				tbIpPrivateReqMstListVo.setSipPrivateReqMstSeqCd(updateVo.getSipPrivateReqMstSeqCd());
 				tbIpPrivateReqMstListVo.setNipPrivateReqMstSeq(updateVo.getNipPrivateReqMstSeq());
-				tbIpPrivateReqMstListVo.setScreateId(sessionUtil.getUserId(request));
+				tbIpPrivateReqMstListVo.setScreateId(jwtUtil.getUserId(request));
 				
 				/**/
 				if(CommonCodeUtil.REQUEST_STAT02.equals(updateVo.getSrequestStatCd())) { 			// 승인
@@ -717,7 +717,7 @@ public class PrivateMgmtController extends CommonController {
 		String userId = null;
 		try {
 			
-			userId = sessionUtil.getUserId(request);
+			userId = jwtUtil.getUserId(request);
 			updateVo.setSapproveId(userId);
 			updateVo.setSmodifyId(userId);
 			
@@ -749,7 +749,7 @@ public class PrivateMgmtController extends CommonController {
 					tbIpPrivateReqMstListVo.setsRequestStatCd(updateVo.getSrequestStatCd());
 					tbIpPrivateReqMstListVo.setnChkList(nchkList);
 					tbIpPrivateReqMstListVo.setSipPrivateReqMstSeqCd(strRequestSeqCd);
-					tbIpPrivateReqMstListVo.setScreateId(sessionUtil.getUserId(request));
+					tbIpPrivateReqMstListVo.setScreateId(jwtUtil.getUserId(request));
 					tbIpPrivateReqMstListVo.setSreject_rsn(updateVo.getSreject_rsn());
 					 
 					commonMsg = SendMail(mailType, tbIpPrivateReqMstListVo, request);
@@ -874,21 +874,21 @@ public class PrivateMgmtController extends CommonController {
 			model.addAttribute("sipVersionTypeCds", sipVersionTypeCds);
 			
 			/** 계위 정보 설정 **/
-			TbLvlBasListVo svcLineListVo = sessionUtil.getSvcLineList(request);
+			TbLvlBasListVo svcLineListVo = jwtUtil.getSvcLineList(request);
 			TbLvlBasListVo centerListVo = null;
 			TbLvlBasListVo nodeListVo = null;
 			if (StringUtils.hasText(searchVo.getSsvcLineTypeCd())) {
 				TbLvlBasVo searchCenterVo = new TbLvlBasVo();
 				searchCenterVo.setSsvcLineTypeCd(searchVo.getSsvcLineTypeCd());
-				centerListVo = sessionUtil.getCenterList(request, searchCenterVo);
+				centerListVo = jwtUtil.getCenterList(request, searchCenterVo);
 				if (StringUtils.hasText(searchVo.getSsvcGroupCd())) {
 					searchCenterVo.setSsvcGroupCd(searchVo.getSsvcGroupCd());
-					nodeListVo = sessionUtil.getNodeList(request, searchCenterVo);
+					nodeListVo = jwtUtil.getNodeList(request, searchCenterVo);
 				} else {
 					if (StringUtils.hasText(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd())) {
 						searchVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
 						searchCenterVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
-						nodeListVo = sessionUtil.getNodeList(request, searchCenterVo);
+						nodeListVo = jwtUtil.getNodeList(request, searchCenterVo);
 						if (StringUtils.hasText(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd())) {
 							searchVo.setSsvcObjCd(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd());
 						}
@@ -901,11 +901,11 @@ public class PrivateMgmtController extends CommonController {
 					TbLvlBasVo searchCenterVo = new TbLvlBasVo();
 					searchCenterVo.setSsvcLineTypeCd(svcLineListVo.getTbLvlBasVos().get(0).getSsvcLineTypeCd());
 					searchVo.setSsvcLineTypeCd(svcLineListVo.getTbLvlBasVos().get(0).getSsvcLineTypeCd());
-					centerListVo = sessionUtil.getCenterList(request, searchCenterVo);
+					centerListVo = jwtUtil.getCenterList(request, searchCenterVo);
 					if (StringUtils.hasText(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd())) {
 						searchVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
 						searchCenterVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
-						nodeListVo = sessionUtil.getNodeList(request, searchCenterVo);
+						nodeListVo = jwtUtil.getNodeList(request, searchCenterVo);
 						if (StringUtils.hasText(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd())) {
 							searchVo.setSsvcObjCd(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd());
 						}
@@ -929,7 +929,7 @@ public class PrivateMgmtController extends CommonController {
 			searchSeqVo.setSsvcGroupCd(searchVo.getSsvcGroupCd());
 			searchSeqVo.setSsvcObjCd(searchVo.getSsvcObjCd());
 			
-			TbLvlMstListVo resultSeqList = sessionUtil.getLvlSeqList(request, searchSeqVo);
+			TbLvlMstListVo resultSeqList = jwtUtil.getLvlSeqList(request, searchSeqVo);
 			searchVo.setLvlMstSeqListVo(resultSeqList);
 			
 			if (!StringUtils.hasText(searchVo.getSipVersionTypeCd())) {
@@ -983,8 +983,8 @@ public class PrivateMgmtController extends CommonController {
 		TbIpPrivateReqMstVo resultVo = null;
 		String commonMsg = "";
 		try {
-			tbIpPrivateReqMstVo.setScreateId(sessionUtil.getUserId(request));
-			tbIpPrivateReqMstVo.setSmodifyId(sessionUtil.getUserId(request));
+			tbIpPrivateReqMstVo.setScreateId(jwtUtil.getUserId(request));
+			tbIpPrivateReqMstVo.setSmodifyId(jwtUtil.getUserId(request));
 			
 			privateMgmtService.insertListIpPrivateDelReqMst(tbIpPrivateReqMstVo);
 			resultVo = new TbIpPrivateReqMstVo();
@@ -1043,8 +1043,8 @@ public class PrivateMgmtController extends CommonController {
 			userEmail = userMgmtService.selectEmail(searchVo);					// 요청자 메일주소
 			List<ReqAdminEmailVo> reqAdminEmailVoList = reqBoardService.selectAdminEmailList(); //담당자 주소
 			
-			userName = sessionUtil.getUserNm(request);
-			userOrg = sessionUtil.getUserDeptOrgNm(request);
+			userName = jwtUtil.getUserNm(request);
+			userOrg = jwtUtil.getUserDeptOrgNm(request);
 			
 			Boolean isRun = configPropertieService.getBoolean("Mail.isRun");
 			
@@ -1060,7 +1060,7 @@ public class PrivateMgmtController extends CommonController {
 			
 				smtpVo.setSubject(subject);
 				smtpVo.setMessage(content);
-				smtpVo.setUserID(sessionUtil.getUserId(request));
+				smtpVo.setUserID(jwtUtil.getUserId(request));
 				if(isRun) {
 					toEmail = userEmail;
 					smtpVo.setToEmail(toEmail);
@@ -1089,7 +1089,7 @@ public class PrivateMgmtController extends CommonController {
 				
 				smtpVo.setSubject(subject);
 				smtpVo.setMessage(content);
-				smtpVo.setUserID(sessionUtil.getUserId(request));
+				smtpVo.setUserID(jwtUtil.getUserId(request));
 				
 				
 				for (int i = 0; i < reqAdminEmailVoList.size(); i++) {
@@ -1194,7 +1194,7 @@ public class PrivateMgmtController extends CommonController {
 					
 					smtpVo.setSubject(subject);
 					smtpVo.setMessage(content);
-					smtpVo.setUserID(sessionUtil.getUserId(request));
+					smtpVo.setUserID(jwtUtil.getUserId(request));
 					if(isRun) {
 						toEmail = userEmail;
 						smtpVo.setToEmail(toEmail);
@@ -1310,7 +1310,7 @@ public class PrivateMgmtController extends CommonController {
 					
 					smtpVo.setSubject(subject);
 					smtpVo.setMessage(content);
-					smtpVo.setUserID(sessionUtil.getUserId(request));
+					smtpVo.setUserID(jwtUtil.getUserId(request));
 					if(isRun) {
 						toEmail = userEmail;
 						smtpVo.setToEmail(toEmail);
