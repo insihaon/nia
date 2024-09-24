@@ -90,21 +90,21 @@ public class OrderMgmtController extends CommonController {
 			List<CommonCodeVo> svcUseTypeCd = commonCodeService.selectListCommonCode(CommonCodeUtil.SVC_USE_TYPE_CD, null);
 			
 			/** 계위 정보 설정 **/
-			TbLvlBasListVo svcLineListVo = sessionUtil.getSvcLineList(request);
+			TbLvlBasListVo svcLineListVo = jwtUtil.getSvcLineList(request);
 			TbLvlBasListVo centerListVo = null;
 			TbLvlBasListVo nodeListVo = null;
 			if (StringUtils.hasText(searchVo.getSsvcLineTypeCd())) {
 				TbLvlBasVo searchCenterVo = new TbLvlBasVo();
 				searchCenterVo.setSsvcLineTypeCd(searchVo.getSsvcLineTypeCd());
-				centerListVo = sessionUtil.getCenterList(request, searchCenterVo);
+				centerListVo = jwtUtil.getCenterList(request, searchCenterVo);
 				if (StringUtils.hasText(searchVo.getSsvcGroupCd())) {
 					searchCenterVo.setSsvcGroupCd(searchVo.getSsvcGroupCd());
-					nodeListVo = sessionUtil.getNodeList(request, searchCenterVo);
+					nodeListVo = jwtUtil.getNodeList(request, searchCenterVo);
 				} else {
 					if (StringUtils.hasText(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd())) {
 						searchVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
 						searchCenterVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
-						nodeListVo = sessionUtil.getNodeList(request, searchCenterVo);
+						nodeListVo = jwtUtil.getNodeList(request, searchCenterVo);
 						if (StringUtils.hasText(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd())) {
 							searchVo.setSsvcObjCd(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd());
 						}
@@ -117,11 +117,11 @@ public class OrderMgmtController extends CommonController {
 					TbLvlBasVo searchCenterVo = new TbLvlBasVo();
 					searchCenterVo.setSsvcLineTypeCd(svcLineListVo.getTbLvlBasVos().get(0).getSsvcLineTypeCd());
 					searchVo.setSsvcLineTypeCd(svcLineListVo.getTbLvlBasVos().get(0).getSsvcLineTypeCd());
-					centerListVo = sessionUtil.getCenterList(request, searchCenterVo);
+					centerListVo = jwtUtil.getCenterList(request, searchCenterVo);
 					if (StringUtils.hasText(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd())) {
 						searchVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
 						searchCenterVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
-						nodeListVo = sessionUtil.getNodeList(request, searchCenterVo);
+						nodeListVo = jwtUtil.getNodeList(request, searchCenterVo);
 						if (StringUtils.hasText(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd())) {
 							searchVo.setSsvcObjCd(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd());
 						}
@@ -145,7 +145,7 @@ public class OrderMgmtController extends CommonController {
 			searchSeqVo.setSsvcGroupCd(searchVo.getSsvcGroupCd());
 			searchSeqVo.setSsvcObjCd(searchVo.getSsvcObjCd());
 			
-			TbLvlMstListVo resultSeqList = sessionUtil.getLvlSeqList(request, searchSeqVo);
+			TbLvlMstListVo resultSeqList = jwtUtil.getLvlSeqList(request, searchSeqVo);
 			searchVo.setLvlMstSeqListVo(resultSeqList);
 			
 			/** 수용국 코드 설정 **/
@@ -207,21 +207,21 @@ public class OrderMgmtController extends CommonController {
 		FileVo resultVo = new FileVo();
 		try {
 			/** 계위 정보 설정 **/
-			TbLvlBasListVo svcLineListVo = sessionUtil.getSvcLineList(request);
+			TbLvlBasListVo svcLineListVo = jwtUtil.getSvcLineList(request);
 			TbLvlBasListVo centerListVo = null;
 			TbLvlBasListVo nodeListVo = null;
 			if (StringUtils.hasText(searchVo.getSsvcLineTypeCd())) {
 				TbLvlBasVo searchCenterVo = new TbLvlBasVo();
 				searchCenterVo.setSsvcLineTypeCd(searchVo.getSsvcLineTypeCd());
-				centerListVo = sessionUtil.getCenterList(request, searchCenterVo);
+				centerListVo = jwtUtil.getCenterList(request, searchCenterVo);
 				if (StringUtils.hasText(searchVo.getSsvcGroupCd())) {
 					searchCenterVo.setSsvcGroupCd(searchVo.getSsvcGroupCd());
-					nodeListVo = sessionUtil.getNodeList(request, searchCenterVo);
+					nodeListVo = jwtUtil.getNodeList(request, searchCenterVo);
 				} else {
 					if (StringUtils.hasText(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd())) {
 						searchVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
 						searchCenterVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
-						nodeListVo = sessionUtil.getNodeList(request, searchCenterVo);
+						nodeListVo = jwtUtil.getNodeList(request, searchCenterVo);
 						if (StringUtils.hasText(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd())) {
 							searchVo.setSsvcObjCd(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd());
 						}
@@ -234,11 +234,11 @@ public class OrderMgmtController extends CommonController {
 					TbLvlBasVo searchCenterVo = new TbLvlBasVo();
 					searchCenterVo.setSsvcLineTypeCd(svcLineListVo.getTbLvlBasVos().get(0).getSsvcLineTypeCd());
 					searchVo.setSsvcLineTypeCd(svcLineListVo.getTbLvlBasVos().get(0).getSsvcLineTypeCd());
-					centerListVo = sessionUtil.getCenterList(request, searchCenterVo);
+					centerListVo = jwtUtil.getCenterList(request, searchCenterVo);
 					if (StringUtils.hasText(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd())) {
 						searchVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
 						searchCenterVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
-						nodeListVo = sessionUtil.getNodeList(request, searchCenterVo);
+						nodeListVo = jwtUtil.getNodeList(request, searchCenterVo);
 						if (StringUtils.hasText(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd())) {
 							searchVo.setSsvcObjCd(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd());
 						}
@@ -257,7 +257,7 @@ public class OrderMgmtController extends CommonController {
 			searchSeqVo.setSsvcGroupCd(searchVo.getSsvcGroupCd());
 			searchSeqVo.setSsvcObjCd(searchVo.getSsvcObjCd());
 			
-			TbLvlMstListVo resultSeqList = sessionUtil.getLvlSeqList(request, searchSeqVo);
+			TbLvlMstListVo resultSeqList = jwtUtil.getLvlSeqList(request, searchSeqVo);
 			searchVo.setLvlMstSeqListVo(resultSeqList);
 			
 			/** 오더 목록 조회 **/
@@ -519,21 +519,21 @@ public class OrderMgmtController extends CommonController {
 			model.addAttribute("sassignLevelCds", sassignLevelCds);
 			
 			/** 계위 정보 설정 **/
-			TbLvlBasListVo svcLineListVo = sessionUtil.getSvcLineList(request);
+			TbLvlBasListVo svcLineListVo = jwtUtil.getSvcLineList(request);
 			TbLvlBasListVo centerListVo = null;
 			TbLvlBasListVo nodeListVo = null;
 			if (StringUtils.hasText(searchVo.getSsvcLineTypeCd())) {
 				TbLvlBasVo searchCenterVo = new TbLvlBasVo();
 				searchCenterVo.setSsvcLineTypeCd(searchVo.getSsvcLineTypeCd());
-				centerListVo = sessionUtil.getCenterList(request, searchCenterVo);
+				centerListVo = jwtUtil.getCenterList(request, searchCenterVo);
 				if (StringUtils.hasText(searchVo.getSsvcGroupCd())) {
 					searchCenterVo.setSsvcGroupCd(searchVo.getSsvcGroupCd());
-					nodeListVo = sessionUtil.getNodeList(request, searchCenterVo);
+					nodeListVo = jwtUtil.getNodeList(request, searchCenterVo);
 				} else {
 					if (StringUtils.hasText(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd())) {
 						searchVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
 						searchCenterVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
-						nodeListVo = sessionUtil.getNodeList(request, searchCenterVo);
+						nodeListVo = jwtUtil.getNodeList(request, searchCenterVo);
 						if (StringUtils.hasText(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd())) {
 							searchVo.setSsvcObjCd(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd());
 						}
@@ -546,11 +546,11 @@ public class OrderMgmtController extends CommonController {
 					TbLvlBasVo searchCenterVo = new TbLvlBasVo();
 					searchCenterVo.setSsvcLineTypeCd(svcLineListVo.getTbLvlBasVos().get(0).getSsvcLineTypeCd());
 					searchVo.setSsvcLineTypeCd(svcLineListVo.getTbLvlBasVos().get(0).getSsvcLineTypeCd());
-					centerListVo = sessionUtil.getCenterList(request, searchCenterVo);
+					centerListVo = jwtUtil.getCenterList(request, searchCenterVo);
 					if (StringUtils.hasText(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd())) {
 						searchVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
 						searchCenterVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
-						nodeListVo = sessionUtil.getNodeList(request, searchCenterVo);
+						nodeListVo = jwtUtil.getNodeList(request, searchCenterVo);
 						if (StringUtils.hasText(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd())) {
 							searchVo.setSsvcObjCd(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd());
 						}
@@ -572,7 +572,7 @@ public class OrderMgmtController extends CommonController {
 			searchSeqVo.setSsvcGroupCd(searchVo.getSsvcGroupCd());
 			searchSeqVo.setSsvcObjCd(searchVo.getSsvcObjCd());
 			
-			TbLvlMstListVo resultSeqList = sessionUtil.getLvlSeqList(request, searchSeqVo);
+			TbLvlMstListVo resultSeqList = jwtUtil.getLvlSeqList(request, searchSeqVo);
 			searchVo.setLvlMstSeqListVo(resultSeqList);
 			
 			/** 할당 목록 조회 **/
@@ -629,8 +629,8 @@ public class OrderMgmtController extends CommonController {
 				throw new ServiceException("CMN.HIGH.00001");
 			}
 			IpAllocOrderMstVo srcIpAllocOrderMstVo = ipAllocOrderMstComplexVo.getSrcIpAllocOrderMstVo();
-			srcIpAllocOrderMstVo.setScreateId(sessionUtil.getUserId(request));
-			ipAllocOrderMstComplexVo.setScreateId(sessionUtil.getUserId(request));
+			srcIpAllocOrderMstVo.setScreateId(jwtUtil.getUserId(request));
+			ipAllocOrderMstComplexVo.setScreateId(jwtUtil.getUserId(request));
 			orderMgmtService.insertListOrderAlcIPMst(ipAllocOrderMstComplexVo);
 			resultVo = new IpAllocOrderMstVo();
 			resultVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
@@ -667,7 +667,7 @@ public class OrderMgmtController extends CommonController {
 			searchSeqVo.setSsvcGroupCd(searchVo.getSsvcGroupCd());
 			searchSeqVo.setSsvcObjCd(searchVo.getSsvcObjCd());
 			
-			TbLvlMstListVo resultSeqList = sessionUtil.getLvlSeqList(request, searchSeqVo);
+			TbLvlMstListVo resultSeqList = jwtUtil.getLvlSeqList(request, searchSeqVo);
 			searchVo.setLvlMstSeqListVo(resultSeqList);
 			
 			resultListVo = orderMgmtService.selectSetOrderOfficeList(searchVo);

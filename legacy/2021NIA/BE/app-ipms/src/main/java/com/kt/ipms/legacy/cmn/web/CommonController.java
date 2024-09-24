@@ -11,6 +11,7 @@ import com.codej.base.controller.BaseController;
 import com.kt.ipms.legacy.cmn.service.CommonCodeService;
 import com.kt.ipms.legacy.cmn.service.ConfigPropertieService;
 import com.kt.ipms.legacy.cmn.util.ExcelUtil;
+import com.kt.ipms.legacy.cmn.util.JwtUtil;
 import com.kt.ipms.legacy.cmn.util.SessionUtil;
 import com.kt.ipms.legacy.cmn.util.SmtpUtil;
 import com.kt.ipms.legacy.cmn.vo.CommonVo;
@@ -33,6 +34,9 @@ public class CommonController extends BaseController {
 	
 	@Autowired
 	protected SessionUtil sessionUtil;
+
+	@Autowired
+	protected JwtUtil jwtUtil;
 	
 	@Autowired
 	protected ExcelUtil excelUtil;

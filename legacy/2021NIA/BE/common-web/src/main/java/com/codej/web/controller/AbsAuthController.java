@@ -27,7 +27,7 @@ import com.codej.base.dto.response.BaseResponse;
 import com.codej.base.dto.response.SingleResponse;
 import com.codej.base.exception.CSigninFailedException;
 import com.codej.base.property.GlobalConstants;
-import com.codej.base.provider.JwtTokenProvider;
+import com.codej.base.provider.BaseJwtTokenProvider;
 import com.codej.base.utils.Base64;
 import com.codej.base.utils.JsonUtil;
 import com.codej.base.utils.cipher.rsa.RSA;
@@ -49,7 +49,7 @@ public abstract class AbsAuthController extends BaseController {
     @Autowired
     private UserService userService;
     @Autowired
-    private JwtTokenProvider jwtTokenProvider;
+    private BaseJwtTokenProvider baseJwtTokenProvider;
     @Autowired
     private ResponseService responseService;
     @Autowired
@@ -163,7 +163,7 @@ public abstract class AbsAuthController extends BaseController {
         user.setPassword(null);
         user.setIpAddress(address);
 
-        String token = jwtTokenProvider.createToken(user, address);
+        String token = baseJwtTokenProvider.createToken(user, address);
 
         // User 정보와 토큰 정보를 반환
         HashMap<String, Object> mapUser = JsonUtil.convertObjectToMap(user);
@@ -237,8 +237,8 @@ public abstract class AbsAuthController extends BaseController {
     @PostMapping(value = "/signout")
     public SingleResponse<Map<String, Object>> signout(
             @RequestHeader HashMap<String, Object> header) throws Exception {
-        String token = jwtTokenProvider.resolveToken(header);
-        jwtTokenProvider.removeToken(token);
+        String token = baseJwtTokenProvider.resolveToken(header);
+        baseJwtTokenProvider.removeToken(token);
         Data data = new Data();
         return responseService.createSingleDataResponse(data);
     }
@@ -252,7 +252,7 @@ public abstract class AbsAuthController extends BaseController {
         DbUser user = (DbUser) getService().findUserByUidAndProvider(String.valueOf(profile.getId()), provider);
         user.setIpAddress(address);
         return responseService.createSingleResponse(
-                jwtTokenProvider.createToken(user, address));
+                baseJwtTokenProvider.createToken(user, address));
     }
 
     /**
@@ -400,13 +400,13 @@ public abstract class AbsAuthController extends BaseController {
     public void putKickout(
             @PathVariable String uid)
             throws Exception {
-        jwtTokenProvider.putKickout(uid);
+        baseJwtTokenProvider.putKickout(uid);
     }
 
     @PostMapping(value = "/kickout/pop/{uid}")
     public void popKickout(
             @PathVariable String uid)
             throws Exception {
-        jwtTokenProvider.popKickout(uid);
+        baseJwtTokenProvider.popKickout(uid);
     }
 }

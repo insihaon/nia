@@ -167,7 +167,7 @@ public class RequireMgmtController extends CommonController{
 		String adminYn = null;
 		String ownerYn = null;
 		try {
-			String usrGradeCd = sessionUtil.getUserGradeCd(request);
+			String usrGradeCd = jwtUtil.getUserGradeCd(request);
 			if(usrGradeCd != null && usrGradeCd.equals("UR0001")){
 				adminYn = "Y";
 			}
@@ -181,7 +181,7 @@ public class RequireMgmtController extends CommonController{
 			model.addAttribute("progressType",progressType);
 			
 			resultVo = reqBoardService.selectReqBoard(searchVo);
-			String userId = sessionUtil.getUserId(request);
+			String userId = jwtUtil.getUserId(request);
 			// System.out.println(adminYn);  //Codeeyes-Critical-sysout
 //			if(adminYn == "Y"){ //Codeeyes-Urgent-객체 비교시 == , != 사용제한
 			if(adminYn.equals("Y")){
@@ -254,11 +254,11 @@ public class RequireMgmtController extends CommonController{
 			List<ReqBoardSubVo> progressType = reqBoardService.selectListReqBoardSub(reqBoardSubVo);
 			model.addAttribute("progressType",progressType);
 			
-			String usrGradeCd = sessionUtil.getUserGradeCd(request);
+			String usrGradeCd = jwtUtil.getUserGradeCd(request);
 			if(usrGradeCd != null && usrGradeCd.equals("UR0001")){
 				adminYn = "Y";
 			}
-			String userNm = sessionUtil.getUserNm(request);
+			String userNm = jwtUtil.getUserNm(request);
 			model.addAttribute("userNm",userNm);
 		} catch (ServiceException e) {
 			e.printStackTrace();
@@ -274,7 +274,7 @@ public class RequireMgmtController extends CommonController{
 	public ReqBoardVo insertReq(ModelMap model,MultipartHttpServletRequest request, HttpServletResponse response)  {
 		ReqBoardVo resultVo = new ReqBoardVo();
 		try {
-			String userId = sessionUtil.getUserId(request);
+			String userId = jwtUtil.getUserId(request);
 			MultipartFile file = request.getFile("file");
 			String uploadPath = request.getSession().getServletContext().getRealPath("/").concat("resources") + "\\upload";
 
@@ -330,11 +330,11 @@ public class RequireMgmtController extends CommonController{
 		ReqBoardVo resultVo = null;
 		String adminYn = null;
 		try {
-			String usrGradeCd = sessionUtil.getUserGradeCd(request);
+			String usrGradeCd = jwtUtil.getUserGradeCd(request);
 			if(usrGradeCd != null && usrGradeCd.equals("UR0001")){
 				adminYn = "Y";
 			}
-			String userId = sessionUtil.getUserId(request);
+			String userId = jwtUtil.getUserId(request);
 			MultipartFile file = request.getFile("file");
 			String uploadPath = request.getSession().getServletContext().getRealPath("/").concat("resources") + "\\upload";
 			
@@ -512,7 +512,7 @@ public class RequireMgmtController extends CommonController{
 			//set smtpvo
 			smtpVo.setToEmail(userEmail);
 			smtpVo.setMessage(content);
-			smtpVo.setUserID(sessionUtil.getUserId(request));
+			smtpVo.setUserID(jwtUtil.getUserId(request));
 			smtpUtil.sendMail(smtpVo);
 			
 			//get Admin email
@@ -527,7 +527,7 @@ public class RequireMgmtController extends CommonController{
 			userEmail = "91295753@ktfriend.com"; 
 			smtpVo.setToEmail(userEmail);
 			smtpVo.setMessage(content);
-			smtpVo.setUserID(sessionUtil.getUserId(request));
+			smtpVo.setUserID(jwtUtil.getUserId(request));
 			smtpUtil.sendMail(smtpVo);
 			
 		} catch (IOException e) {

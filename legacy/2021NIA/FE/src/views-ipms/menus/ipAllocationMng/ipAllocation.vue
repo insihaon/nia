@@ -155,11 +155,15 @@ export default {
       this.fnViewListIpAllocMst(requestParameter)
     },
     async fnViewListIpAllocMst(requestParameter) {
+      const target = ({ vue: this.$refs.compTable })
       try {
+        this.openLoading(target)
         const res = await apiRequestModel(ipmsModelApis.viewListIpAllocMst, requestParameter)
         this.tableDatas = res.result.data
       } catch (error) {
         this.error(error)
+      } finally {
+        this.closeLoading(target)
       }
     },
     handleClickCell(params) {

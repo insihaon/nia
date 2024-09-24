@@ -41,7 +41,7 @@ public class NoticeController extends CommonController {
 	 * @return
 	 * @
 	 */
-	@RequestMapping(value = "/opermgmt/boardmgmt/viewListNotice.model", method = RequestMethod.POST)
+	@RequestMapping(value = "/opermgmt/boardmgmt/viewListNotice.model", method = {RequestMethod.POST, RequestMethod.GET})
 	@ResponseBody
 	public ModelMap selectListTbBoard(@RequestBody TbBoardVo searchVo, ModelMap model,
 			HttpServletRequest request)  {
@@ -77,7 +77,7 @@ public class NoticeController extends CommonController {
 			List<CommonCodeVo> boardTypeSubCds = commonCodeService.selectListCommonCode(CommonCodeUtil.BOARD_TYPE_SUB_CD, searchVo);
 		
 			// 2015. 5. 18 모의해킹 관련 반영
-			String usrGradeCd = sessionUtil.getUserGradeCd(request);
+			String usrGradeCd = jwtUtil.getUserGradeCd(request);
 			if(usrGradeCd != null && usrGradeCd.equals("UR0001")){
 				adminYn = "Y";
 			}
@@ -151,7 +151,7 @@ public class NoticeController extends CommonController {
 			resultVo.setScrnType(tbBoardVo.getScrnType());
 			resultVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
 			// 2015. 5. 18 모의해킹 관련 반영
-			String usrGradeCd = sessionUtil.getUserGradeCd(request);
+			String usrGradeCd = jwtUtil.getUserGradeCd(request);
 			if(usrGradeCd != null && usrGradeCd.equals("UR0001")){
 				adminYn = "Y";
 				
@@ -301,10 +301,10 @@ public class NoticeController extends CommonController {
 		TbBoardVo resultVo = null;
 		try {
 			//모의해킹괄련 적용 2015. 05 .19
-			String userCd = sessionUtil.getUserGradeCd(request);
+			String userCd = jwtUtil.getUserGradeCd(request);
 			
 			if(userCd.equals(CommonCodeUtil.USER_GRADE_A)){		
-				String userId = sessionUtil.getUserId(request);
+				String userId = jwtUtil.getUserId(request);
 				insertVo.setSmodifyId(userId);
 				insertVo.setScreateId(userId);
 				
@@ -344,7 +344,7 @@ public class NoticeController extends CommonController {
 		try {
 			
 			//모의해킹괄련 적용 2015. 05 .19
-			String userCd = sessionUtil.getUserGradeCd(request);
+			String userCd = jwtUtil.getUserGradeCd(request);
 		
 			if(userCd.equals(CommonCodeUtil.USER_GRADE_A)){
 				resultVo = noticeService.deleteNotice(deleteVo);
@@ -443,7 +443,7 @@ public class NoticeController extends CommonController {
 		TbBoardVo resultVo = new TbBoardVo();
 		try{
 			//모의해킹괄련 적용 2015. 05 .19
-			String userCd = sessionUtil.getUserGradeCd(request);
+			String userCd = jwtUtil.getUserGradeCd(request);
 		
 			if(userCd.equals(CommonCodeUtil.USER_GRADE_A)){
 				resultVo = noticeService.updateNotice(updateVo);

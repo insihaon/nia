@@ -103,7 +103,7 @@ public class GrantSubsMgmtController  extends CommonController {
 			
 			List<CommonCodeVo> userGradeCds = commonCodeService.selectListCommonCode(CommonCodeUtil.USER_GRADE_CD, null);
 			model.addAttribute("userGradeCds", userGradeCds);
-			String userId = sessionUtil.getUserId(request);
+			String userId = jwtUtil.getUserId(request);
 			model.addAttribute("userId", userId);
 			setPagination(searchVo);
 			resultListVo = grantSubsMgmtService.selectTbUserGrantList(searchVo);
@@ -272,8 +272,8 @@ public class GrantSubsMgmtController  extends CommonController {
 		try {		
 			resultListVo = new TbUserAuthTxnListVo();
 			grant_seq = searchVo.getGrantSeq();
-			String userId = sessionUtil.getUserId(request);
-			String usrGradeCd = sessionUtil.getUserGradeCd(request);
+			String userId = jwtUtil.getUserId(request);
+			String usrGradeCd = jwtUtil.getUserGradeCd(request);
 			if(usrGradeCd != null && usrGradeCd.equals("UR0001")){
 				adminYn = "Y";
 			}
@@ -338,7 +338,7 @@ public class GrantSubsMgmtController  extends CommonController {
 		TbUserGrantVo resultVo = null;
 		int result = 0;
 		try {
-			searchVo.setsModifyId(sessionUtil.getUserId(request));
+			searchVo.setsModifyId(jwtUtil.getUserId(request));
 			result = grantSubsMgmtService.deleteGrant(searchVo);
 			if(result != 1) {
 				throw new ServiceException("CMN.HIGH.00001");
@@ -428,7 +428,7 @@ public class GrantSubsMgmtController  extends CommonController {
 			//set smtpvo
 			smtpVo.setToEmail(userEmail);
 			smtpVo.setMessage(content);
-			smtpVo.setUserID(sessionUtil.getUserId(request));
+			smtpVo.setUserID(jwtUtil.getUserId(request));
 			smtpUtil.sendMail(smtpVo);
 			
 			//get Admin email

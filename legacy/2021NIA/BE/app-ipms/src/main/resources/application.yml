@@ -28,6 +28,9 @@ spring:
   config.use-legacy-processing: true  # 스프링 부트 2.4 이전 레거시 구동방식 유지
   main.allow-bean-definition-overriding: true
 
+  config:
+    import: classpath:/properties/config.properties
+
   servlet.multipart:
     max-file-size: 5GB
     max-request-size: 5GB

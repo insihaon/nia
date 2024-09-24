@@ -42,24 +42,31 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class JwtTokenProvider { // JWT 토큰을 생성 및 검증 모듈
+public class BaseJwtTokenProvider<T> { // JWT 토큰을 생성 및 검증 모듈
 
     @Autowired
-    private AppDto appDto;
+    protected AppDto appDto;
 
     @Value("${spring.jwt.secret:jwtsecret12#$}")
-    private String secretKey;
+    protected String secretKey;
 
     @Value("${myconf.auth.expired-seconds:86400}")
-    private long tokenValidSecond; // 토큰유효시간, default: 24hours
+    protected long tokenValidSecond; // 토큰유효시간, default: 24hours
 
     @Autowired
     @Qualifier("userDetailServiceImpl")
     private final UserDetailsService userDetailsService;
 
-    @Autowired(required = false)
-    @Qualifier("niaUserDetailServiceImpl")
-    private final UserDetailsService niaUserDetailsService;
+    
+
+    // @Autowired(required = false)
+    // @Qualifier("niaUserDetailServiceImpl") 
+    // private final NiaUserDetailsServiceImpl niaUserDetailsService;
+
+    public BaseJwtTokenProvider() {
+        this.userDetailsService = null;
+        // this.niaUserDetailsService = null;
+    }
 
     @PostConstruct
     protected void init() {
@@ -67,11 +74,7 @@ public class JwtTokenProvider { // JWT 토큰을 생성 및 검증 모듈
     }
 
     private UserDetailsService getDetailService() {
-        if(appDto.getProject().equals("nia")) {
-            return niaUserDetailsService;
-        } else {
-            return userDetailsService;
-        }
+        return userDetailsService;
     }
 
     // Jwt 토큰 생성
@@ -138,7 +141,6 @@ public class JwtTokenProvider { // JWT 토큰을 생성 및 검증 모듈
         */
         // UserDetails userDetails = userDetailsService.loadUserByUsername(pk);
         UserDetails userDetails = getUserDetails(token);
-
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
@@ -252,7 +254,7 @@ public class JwtTokenProvider { // JWT 토큰을 생성 및 검증 모듈
         }
     }
 
-    private String getAddress(String jwtToken) {
+    protected String getAddress(String jwtToken) {
         try {
             return (String) this.getClaims(jwtToken).get("address");
         } catch (Exception e) {

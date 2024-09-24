@@ -88,7 +88,7 @@ public class ErrorMgmtController extends CommonController{
 	public ErrorMgmtVo updateErrorMgmt(HttpServletRequest request,@RequestBody ErrorMgmtListVo errorMgmtListVo){
 		ErrorMgmtVo resultVo = new ErrorMgmtVo();
 		try {
-			errorMgmtListVo.setsModifyId(sessionUtil.getUserId(request));
+			errorMgmtListVo.setsModifyId(jwtUtil.getUserId(request));
 			int resultcode = errorMgmtService.updateTbNeossErrorManage(errorMgmtListVo);
 			System.out.println("resultcode == "+resultcode);
 			if(resultcode != 0){

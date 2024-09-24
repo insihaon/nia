@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import com.codej.base.dto.DbUser;
 import com.codej.base.dto.model.ResultMap;
 import com.codej.base.property.GlobalConstants;
-import com.codej.base.provider.JwtTokenProvider;
+import com.codej.base.provider.BaseJwtTokenProvider;
 import com.codej.base.utils.EncryptUtil;
 import com.codej.base.utils.JsonUtil;
 import com.codej.web.mapper.db1st.DbUserMapper;
@@ -21,7 +21,7 @@ import com.codej.web.mapper.db1st.MainMapper;
 public class MainService extends BaseDataService {
     @Autowired DbUserMapper userMapper;
     @Autowired MainMapper mainMapper;
-    @Autowired JwtTokenProvider jwtTokenProvider;
+    @Autowired BaseJwtTokenProvider baseJwtTokenProvider;
     @Autowired PasswordEncoder passwordEncoder;
 
     public Object SELECT_LOGINDATA(HashMap<String, Object> map) throws Exception {
@@ -29,7 +29,7 @@ public class MainService extends BaseDataService {
             put(GlobalConstants.Common.UID, map.get("id"));
         }};
         DbUser user = (DbUser) userMapper.SELECT_LOGIN_USER(param);
-        String token = jwtTokenProvider.createToken(user, null);
+        String token = baseJwtTokenProvider.createToken(user, null);
 
         // User 정보와 토큰 정보를 반환
         HashMap<String, Object> mapUser = JsonUtil.convertObjectToMap(user);

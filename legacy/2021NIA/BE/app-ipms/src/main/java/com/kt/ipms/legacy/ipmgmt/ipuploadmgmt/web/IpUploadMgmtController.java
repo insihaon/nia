@@ -134,8 +134,8 @@ public class IpUploadMgmtController extends CommonController {
 		
 			TbIpUploadVo insertVo = new TbIpUploadVo();
 			insertVo.setsFileNm(fileName);
-			insertVo.setScreateId(sessionUtil.getUserId(request));
-			insertVo.setSmodifyId(sessionUtil.getUserId(request));
+			insertVo.setScreateId(jwtUtil.getUserId(request));
+			insertVo.setSmodifyId(jwtUtil.getUserId(request));
 			
 			// Step1 . 엑셀 파싱
 			List<Map<String,Object>> parseList = new ArrayList<Map<String,Object>>();
@@ -162,7 +162,7 @@ public class IpUploadMgmtController extends CommonController {
 			tbLvlMstVo.setSsvcGroupCd(pSvcGroupCd);
 			tbLvlMstVo.setSsvcObjCd(pSvcObjCd);
 			 
-			TbLvlMstListVo tbLvlMstListVo = sessionUtil.getLvlSeqList(request,tbLvlMstVo);
+			TbLvlMstListVo tbLvlMstListVo = jwtUtil.getLvlSeqList(request,tbLvlMstVo);
 			tbLvlBasVo.setLvlMstSeqListVo(tbLvlMstListVo);
 			
 			TbIpAllocMstVo searchasTypeVo = new TbIpAllocMstVo();
@@ -184,8 +184,8 @@ public class IpUploadMgmtController extends CommonController {
 			// 데이터 검증
 			List<Map<String,Object>> retList = ipUploadMgmtService.validSetUploadFile(request, insertVo, parseList, sipCreateTypeCds, sipVersionTypeCds, svcLineTypeCds, sLvlSubvCds, sassignTypeCds);
 			
-			insertVo.setScreateId(sessionUtil.getUserId(request));
-			insertVo.setSmodifyId(sessionUtil.getUserId(request));
+			insertVo.setScreateId(jwtUtil.getUserId(request));
+			insertVo.setSmodifyId(jwtUtil.getUserId(request));
 			
 			// Step3. IpUploadSub 등록
 			ipUploadMgmtService.insertIpUploadSub(request,parseList,insertVo);
@@ -270,21 +270,21 @@ public class IpUploadMgmtController extends CommonController {
 		try {
 			
 			/** 계위 정보 설정 **/
-			TbLvlBasListVo svcLineListVo = sessionUtil.getSvcLineList(request);
+			TbLvlBasListVo svcLineListVo = jwtUtil.getSvcLineList(request);
 			TbLvlBasListVo centerListVo = null;
 			TbLvlBasListVo nodeListVo = null;
 			if (StringUtils.hasText(searchVo.getSsvcLineTypeCd())) {
 				TbLvlBasVo searchCenterVo = new TbLvlBasVo();
 				searchCenterVo.setSsvcLineTypeCd(searchVo.getSsvcLineTypeCd());
-				centerListVo = sessionUtil.getCenterList(request, searchCenterVo);
+				centerListVo = jwtUtil.getCenterList(request, searchCenterVo);
 				if (StringUtils.hasText(searchVo.getSsvcGroupCd())) {
 					searchCenterVo.setSsvcGroupCd(searchVo.getSsvcGroupCd());
-					nodeListVo = sessionUtil.getNodeList(request, searchCenterVo);
+					nodeListVo = jwtUtil.getNodeList(request, searchCenterVo);
 				} else {
 					if (StringUtils.hasText(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd())) {
 						searchVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
 						searchCenterVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
-						nodeListVo = sessionUtil.getNodeList(request, searchCenterVo);
+						nodeListVo = jwtUtil.getNodeList(request, searchCenterVo);
 						if (StringUtils.hasText(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd())) {
 							searchVo.setSsvcObjCd(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd());
 						}
@@ -297,11 +297,11 @@ public class IpUploadMgmtController extends CommonController {
 					TbLvlBasVo searchCenterVo = new TbLvlBasVo();
 					searchCenterVo.setSsvcLineTypeCd(svcLineListVo.getTbLvlBasVos().get(0).getSsvcLineTypeCd());
 					searchVo.setSsvcLineTypeCd(svcLineListVo.getTbLvlBasVos().get(0).getSsvcLineTypeCd());
-					centerListVo = sessionUtil.getCenterList(request, searchCenterVo);
+					centerListVo = jwtUtil.getCenterList(request, searchCenterVo);
 					if (StringUtils.hasText(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd())) {
 						searchVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
 						searchCenterVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
-						nodeListVo = sessionUtil.getNodeList(request, searchCenterVo);
+						nodeListVo = jwtUtil.getNodeList(request, searchCenterVo);
 						if (StringUtils.hasText(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd())) {
 							searchVo.setSsvcObjCd(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd());
 						}
@@ -333,7 +333,7 @@ public class IpUploadMgmtController extends CommonController {
 			resultVo.setCommonMsg(msgDesc);
 		}
 		model.addAttribute("resultVo", resultVo);
-		model.addAttribute("suserID", sessionUtil.getSessionVO(request).getSuserId());
+		model.addAttribute("suserID", jwtUtil.getSessionVO(request).getSuserId());
 		return model;
 	}
 	
@@ -428,7 +428,7 @@ public class IpUploadMgmtController extends CommonController {
 			tbLvlMstVo.setSsvcGroupCd(searchVo.getSsvcGroupCd());
 			tbLvlMstVo.setSsvcObjCd(searchVo.getSsvcObjCd());
 			 
-			TbLvlMstListVo tbLvlMstListVo = sessionUtil.getLvlSeqList(request,tbLvlMstVo);
+			TbLvlMstListVo tbLvlMstListVo = jwtUtil.getLvlSeqList(request,tbLvlMstVo);
 			tbLvlBasVo.setLvlMstSeqListVo(tbLvlMstListVo);
 			
 			TbIpAllocMstVo searchasTypeVo = new TbIpAllocMstVo();
@@ -888,7 +888,7 @@ public class IpUploadMgmtController extends CommonController {
 		tbLvlMstVo.setSsvcObjCd(searchVo.getSsvcObjCd());
 		 
 		
-		TbLvlMstListVo tbLvlMstListVo = sessionUtil.getLvlSeqList(request,tbLvlMstVo);
+		TbLvlMstListVo tbLvlMstListVo = jwtUtil.getLvlSeqList(request,tbLvlMstVo);
 		tbLvlBasVo.setLvlMstSeqListVo(tbLvlMstListVo);
 		
 		TbIpAllocMstVo searchasTypeVo = new TbIpAllocMstVo();
@@ -931,7 +931,7 @@ public class IpUploadMgmtController extends CommonController {
 //			tbLvlMstVo.setSsvcGroupCd(searchVo.getSsvcGroupCd());
 //			tbLvlMstVo.setSsvcObjCd(searchVo.getSsvcObjCd());
 //			 
-//			TbLvlMstListVo tbLvlMstListVo = sessionUtil.getLvlSeqList(request,tbLvlMstVo);
+//			TbLvlMstListVo tbLvlMstListVo = jwtUtil.getLvlSeqList(request,tbLvlMstVo);
 //			tbLvlBasVo.setLvlMstSeqListVo(tbLvlMstListVo);
 //			
 //			TbIpAllocMstVo searchasTypeVo = new TbIpAllocMstVo();
@@ -1106,7 +1106,7 @@ public class IpUploadMgmtController extends CommonController {
 //			tbLvlMstVo.setSsvcGroupCd(searchVo.getSsvcGroupCd());
 //			tbLvlMstVo.setSsvcObjCd(searchVo.getSsvcObjCd());
 //			 
-//			TbLvlMstListVo tbLvlMstListVo = sessionUtil.getLvlSeqList(request,tbLvlMstVo);
+//			TbLvlMstListVo tbLvlMstListVo = jwtUtil.getLvlSeqList(request,tbLvlMstVo);
 //			tbLvlBasVo.setLvlMstSeqListVo(tbLvlMstListVo);
 //			
 //			TbIpAllocMstVo searchasTypeVo = new TbIpAllocMstVo();
@@ -1358,7 +1358,7 @@ public class IpUploadMgmtController extends CommonController {
 //			tbLvlMstVo.setSsvcGroupCd(searchVo.getSsvcGroupCd());
 //			tbLvlMstVo.setSsvcObjCd(searchVo.getSsvcObjCd());
 //			 
-//			TbLvlMstListVo tbLvlMstListVo = sessionUtil.getLvlSeqList(request,tbLvlMstVo);
+//			TbLvlMstListVo tbLvlMstListVo = jwtUtil.getLvlSeqList(request,tbLvlMstVo);
 //			tbLvlBasVo.setLvlMstSeqListVo(tbLvlMstListVo);
 //			
 //			TbIpAllocMstVo searchasTypeVo = new TbIpAllocMstVo();
@@ -1370,7 +1370,7 @@ public class IpUploadMgmtController extends CommonController {
 //			tbLvlBasVo.setSsvcLineTypeCd(searchVo.getSsvcLineTypeCd());
 //			tbLvlBasVo.setSsvcGroupCd(searchVo.getSsvcGroupCd());
 //			tbLvlBasVo.setSsvcObjCd(searchVo.getSsvcObjCd());
-//			BigInteger nlvlMstSeq = sessionUtil.getLvlMstSeq(request, tbLvlBasVo);
+//			BigInteger nlvlMstSeq = jwtUtil.getLvlMstSeq(request, tbLvlBasVo);
 //			searchVo.setNlvlMstSeq(nlvlMstSeq);
 //			
 //			// 수용국 조회
@@ -1534,8 +1534,8 @@ public class IpUploadMgmtController extends CommonController {
 //		
 //			TbIpUploadVo insertVo = new TbIpUploadVo();
 //			insertVo.setsFileNm(fileName);
-//			insertVo.setScreateId(sessionUtil.getUserId(request));
-//			insertVo.setSmodifyId(sessionUtil.getUserId(request));
+//			insertVo.setScreateId(jwtUtil.getUserId(request));
+//			insertVo.setSmodifyId(jwtUtil.getUserId(request));
 //			
 //			// Step1 . 엑셀 파싱
 //			List<Map<String,Object>> parseList = ipUploadMgmtService.parseUploadFile(request, insertVo, convFile);
@@ -1556,7 +1556,7 @@ public class IpUploadMgmtController extends CommonController {
 //			tbLvlMstVo.setSsvcGroupCd(pSvcGroupCd);
 //			tbLvlMstVo.setSsvcObjCd(pSvcObjCd);
 //			 
-//			TbLvlMstListVo tbLvlMstListVo = sessionUtil.getLvlSeqList(request,tbLvlMstVo);
+//			TbLvlMstListVo tbLvlMstListVo = jwtUtil.getLvlSeqList(request,tbLvlMstVo);
 //			tbLvlBasVo.setLvlMstSeqListVo(tbLvlMstListVo);
 //			
 //			TbIpAllocMstVo searchasTypeVo = new TbIpAllocMstVo();
@@ -1578,8 +1578,8 @@ public class IpUploadMgmtController extends CommonController {
 //			// 데이터 검증
 //			List<Map<String,Object>> retList = ipUploadMgmtService.validSetUploadFile(request, insertVo, parseList, sipCreateTypeCds, sipVersionTypeCds, svcLineTypeCds, sLvlSubvCds, sassignTypeCds);
 //			
-//			insertVo.setScreateId(sessionUtil.getUserId(request));
-//			insertVo.setSmodifyId(sessionUtil.getUserId(request));
+//			insertVo.setScreateId(jwtUtil.getUserId(request));
+//			insertVo.setSmodifyId(jwtUtil.getUserId(request));
 //			
 //			// Step3. IpUploadSub 등록
 //			ipUploadMgmtService.insertIpUploadSub(request,parseList,insertVo);

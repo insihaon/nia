@@ -173,6 +173,7 @@ export default {
       this.domElement.maxWidth = 1000
     },
     onOpen(model, actionMode) {
+      this.loading = true
       if (model.viewType) {
         this.viewType = model.viewType
       }
@@ -186,6 +187,7 @@ export default {
     },
     async fnViewCheckTacsIpBlock(param) {
       // viewCheckTacsIpBlock
+      // this.loading = true
       try {
         const res = await apiRequestModel(ipmsModelApis.viewCheckTacsIpBlock, param)
         if (res.result.data) {
@@ -200,6 +202,8 @@ export default {
         }
       } catch (error) {
         this.error(error)
+      } finally {
+        // this.loading = false
       }
     },
     handleClickAllockConfirm() {

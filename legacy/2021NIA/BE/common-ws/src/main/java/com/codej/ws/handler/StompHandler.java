@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 import com.codej.base.dto.AppDto;
 import com.codej.base.dto.Channel;
 import com.codej.base.dto.DbUser;
-import com.codej.base.provider.JwtTokenProvider;
+import com.codej.base.provider.BaseJwtTokenProvider;
 import com.codej.ws.dto.SessionUser;
 import com.codej.ws.service.ChannelService;
 import com.codej.ws.service.WebsocketService;
@@ -31,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 @ConditionalOnProperty(name = "myconf.websocket.enabled", havingValue = "true")
 public class StompHandler implements ChannelInterceptor {
 
-    private final JwtTokenProvider jwtTokenProvider;
+    private final BaseJwtTokenProvider baseJwtTokenProvider;
     private final ChannelService channelRepository;
     private final WebsocketService websocketService;
     private final AppDto appDto;
@@ -54,13 +54,13 @@ public class StompHandler implements ChannelInterceptor {
                 String sessionId = (String) message.getHeaders().get("simpSessionId");
 
                 // Header의 jwt token 검증
-                if (jwtTokenProvider.validateToken(jwtToken, "StompHandler")) {
+                if (baseJwtTokenProvider.validateToken(jwtToken, "StompHandler")) {
                     SessionUser sessionUser = null;
                     if (appDto.getWsCanAccessUser() == true) {
-                        DbUser user = (DbUser) jwtTokenProvider.getUserDetails(jwtToken);
+                        DbUser user = (DbUser) baseJwtTokenProvider.getUserDetails(jwtToken);
                         sessionUser = new SessionUser(user);
                     } else {
-                        Claims claims = jwtTokenProvider.getClaims(jwtToken);
+                        Claims claims = baseJwtTokenProvider.getClaims(jwtToken);
                         sessionUser = new SessionUser(claims);
                     }
 

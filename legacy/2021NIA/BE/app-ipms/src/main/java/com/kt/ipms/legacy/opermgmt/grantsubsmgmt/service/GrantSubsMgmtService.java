@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.kt.framework.exception.ServiceException;
-import com.kt.ipms.legacy.cmn.util.SessionUtil;
+import com.kt.ipms.legacy.cmn.util.JwtUtil;
 import com.kt.ipms.legacy.opermgmt.grantmgmt.service.GrantMgmtTxService;
 import com.kt.ipms.legacy.opermgmt.grantmgmt.vo.TbOperTeamAuthTxnListVo;
 import com.kt.ipms.legacy.opermgmt.grantmgmt.vo.TbOperTeamAuthTxnVo;

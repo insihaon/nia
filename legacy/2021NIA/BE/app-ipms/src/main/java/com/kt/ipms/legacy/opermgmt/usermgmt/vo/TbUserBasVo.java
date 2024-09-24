@@ -1,11 +1,30 @@
 package com.kt.ipms.legacy.opermgmt.usermgmt.vo;
 import java.io.Serializable;
+
+import com.codej.base.dto.BaseUser;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.kt.ipms.legacy.cmn.vo.CommonVo;
+
+import lombok.Builder;
+
 import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 
-public class TbUserBasVo extends CommonVo implements Serializable {
+
+public class TbUserBasVo extends CommonVo implements BaseUser {
 	/** MEMBER VARIABLE DECLARATION START **/
 	private static final long serialVersionUID = -3120592476274800085L;
 
@@ -14,7 +33,7 @@ public class TbUserBasVo extends CommonVo implements Serializable {
 	private String suserNm;
 
 	private String suserTypeCd;
-	
+
 	private String suserTypeNm;
 
 	private Date duserRegDate;
@@ -34,21 +53,21 @@ public class TbUserBasVo extends CommonVo implements Serializable {
 	private String smphonOttpYn;
 
 	private String suserSttusCd;
-	
+
 	private String suserSttusNm;
 
 	private String sposDeptOrgId;
-	
+
 	private String sposDeptOrgNm;
-	
+
 	private String sposDeptFullNm;
 
 	private String sdibelUclsUserId;
-	
+
 	private String sdibelUclsUserNm; 
 
 	private String sktTkcgUserId;
-	
+
 	private String sktTkcgUserNm;
 
 	private String suserRmark;
@@ -60,8 +79,29 @@ public class TbUserBasVo extends CommonVo implements Serializable {
 	private String sipmsUserYn;
 
 	private String suserGradeCd;
-	
+
 	private String suserGradeNm;
+	
+	private String password;
+	private String ipAddress;
+
+	@Builder.Default
+	@JsonProperty("roles")
+    private String roles = "ROLE_USER";
+
+	@Override
+	@JsonIgnore
+	public List<String> getRolesList() {
+        return Arrays.asList(this.roles.split(","));
+    }
+	@JsonIgnore
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        List<SimpleGrantedAuthority> authorities = getRolesList().stream()
+            .map(SimpleGrantedAuthority::new)
+            .collect(Collectors.toList());
+        return authorities;
+    }
 	
 	/** MEMBER VARIABLE DECLARATION END **/
 	
@@ -281,6 +321,50 @@ public class TbUserBasVo extends CommonVo implements Serializable {
 
 	public void setSktTkcgUserNm(String sktTkcgUserNm) {
 		this.sktTkcgUserNm = sktTkcgUserNm;
+	}
+
+	public String getPassword() {
+		return null;
+	}
+
+	@Override
+	public String getUsername() {
+		return null;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return true;
+	}
+
+	@Override
+	public void setPassword(String pw) {
+		this.password = pw;
+	}
+
+	@Override
+	public void setIpAddress(String ip) {
+		this.ipAddress = ip;
+	}
+
+	@Override
+	public String getIpAddress() {
+		return this.ipAddress;
 	}
 	
 	

@@ -149,21 +149,21 @@ public class TacsMgmtController extends CommonController {
 		TbTacsFcltMstListVo resultListVo = null;
 		try {
 			/** 계위 정보 설정 **/
-			TbLvlBasListVo svcLineListVo = sessionUtil.getSvcLineList(request);
+			TbLvlBasListVo svcLineListVo = jwtUtil.getSvcLineList(request);
 			TbLvlBasListVo centerListVo = null;
 			TbLvlBasListVo nodeListVo = null;
 			if (StringUtils.hasText(searchVo.getSsvcLineTypeCd())) {
 				TbLvlBasVo searchCenterVo = new TbLvlBasVo();
 				searchCenterVo.setSsvcLineTypeCd(searchVo.getSsvcLineTypeCd());
-				centerListVo = sessionUtil.getCenterList(request, searchCenterVo);
+				centerListVo = jwtUtil.getCenterList(request, searchCenterVo);
 				if (StringUtils.hasText(searchVo.getSsvcGroupCd())) {
 					searchCenterVo.setSsvcGroupCd(searchVo.getSsvcGroupCd());
-					nodeListVo = sessionUtil.getNodeList(request, searchCenterVo);
+					nodeListVo = jwtUtil.getNodeList(request, searchCenterVo);
 				} else {
 					if (StringUtils.hasText(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd())) {
 						searchVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
 						searchCenterVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
-						nodeListVo = sessionUtil.getNodeList(request, searchCenterVo);
+						nodeListVo = jwtUtil.getNodeList(request, searchCenterVo);
 						if (StringUtils.hasText(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd())) {
 							searchVo.setSsvcObjCd(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd());
 						}
@@ -176,11 +176,11 @@ public class TacsMgmtController extends CommonController {
 					TbLvlBasVo searchCenterVo = new TbLvlBasVo();
 					searchCenterVo.setSsvcLineTypeCd(svcLineListVo.getTbLvlBasVos().get(0).getSsvcLineTypeCd());
 					searchVo.setSsvcLineTypeCd(svcLineListVo.getTbLvlBasVos().get(0).getSsvcLineTypeCd());
-					centerListVo = sessionUtil.getCenterList(request, searchCenterVo);
+					centerListVo = jwtUtil.getCenterList(request, searchCenterVo);
 					if (StringUtils.hasText(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd())) {
 						searchVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
 						searchCenterVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
-						nodeListVo = sessionUtil.getNodeList(request, searchCenterVo);
+						nodeListVo = jwtUtil.getNodeList(request, searchCenterVo);
 						if (StringUtils.hasText(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd())) {
 							searchVo.setSsvcObjCd(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd());
 						}
@@ -247,7 +247,7 @@ public class TacsMgmtController extends CommonController {
 		try {
 			/** 계위 정보 설정 **/
 			
-			TbLvlBasListVo svcLineListVo = sessionUtil.getSvcLineList(request);
+			TbLvlBasListVo svcLineListVo = jwtUtil.getSvcLineList(request);
 			TbLvlBasListVo centerListVo = new TbLvlBasListVo();
 			TbLvlBasListVo nodeListVo = new TbLvlBasListVo();
 			model.addAttribute("svcLineListVo", svcLineListVo);
@@ -280,7 +280,7 @@ public class TacsMgmtController extends CommonController {
 			HttpServletRequest request, HttpServletResponse response) {
 		TbTacsFcltMstVo resultVo = null;
 		try {
-			String userId = sessionUtil.getUserId(request);
+			String userId = jwtUtil.getUserId(request);
 			insertVo.setScreateId(userId);
 			insertVo.setSmodifyId(userId);
 			tacsMgmtService.insertTacsFcltMst(insertVo);
@@ -382,7 +382,7 @@ public class TacsMgmtController extends CommonController {
 			HttpServletRequest request, HttpServletResponse response) {
 		TbTacsFcltMstVo resultVo = null;
 		try {
-			String userId = sessionUtil.getUserId(request);
+			String userId = jwtUtil.getUserId(request);
 			updateVo.setSmodifyId(userId);
 			tacsMgmtService.updateTacsFcltMst(updateVo);
 			resultVo = new TbTacsFcltMstVo();
@@ -466,7 +466,7 @@ public class TacsMgmtController extends CommonController {
 			HttpServletRequest request, HttpServletResponse response) {
 		TbTacsFcltCmdMstVo resultVo = null;
 		try {
-			String userId = sessionUtil.getUserId(request);
+			String userId = jwtUtil.getUserId(request);
 			insertVo.setSmodifyId(userId);
 			insertVo.setScreateId(userId);
 			tacsMgmtService.insertTacsFcltCmdMst(insertVo);
@@ -537,7 +537,7 @@ public class TacsMgmtController extends CommonController {
 			HttpServletRequest request, HttpServletResponse response) {
 		TbTacsFcltCmdMstVo resultVo = null;
 		try {
-			String userId = sessionUtil.getUserId(request);
+			String userId = jwtUtil.getUserId(request);
 			updateVo.setSmodifyId(userId);
 			tacsMgmtService.updateTacsFcltCmdMst(updateVo);
 			resultVo = new TbTacsFcltCmdMstVo();
@@ -586,7 +586,7 @@ public class TacsMgmtController extends CommonController {
 		ModelMap model = new ModelMap();
 		TacsResponseListVo resultListVo = null;
 		try {
-			String userId = sessionUtil.getUserId(request);
+			String userId = jwtUtil.getUserId(request);
 			TbIpAssignMstVo resultIpVo = tacsMgmtService.selectIpAssignMst(searchVo);
 			resultIpVo.setTypeFlag(searchVo.getTypeFlag());
 			model.addAttribute("resultIpVo", resultIpVo);

@@ -54,7 +54,7 @@ public class UserAuthorityCheckFilter implements Filter {
 //		ServletContext servletContext = filterConfig.getServletContext();
 //		WebApplicationContext webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(servletContext);
 //		AutowireCapableBeanFactory autowireCapableBeanFactory = webApplicationContext.getAutowireCapableBeanFactory();
-//		sessionUtil = autowireCapableBeanFactory.getBean(SessionUtil.class);
+//		sessionUtil = autowireCapableBeanFactory.getBean(jwtUtil.class);
 	}
 	
 	private void invalidSession(HttpServletRequest request)  {

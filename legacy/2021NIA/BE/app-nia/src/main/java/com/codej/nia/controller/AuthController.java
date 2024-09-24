@@ -21,7 +21,7 @@ import com.codej.base.dto.response.SingleResponse;
 import com.codej.base.exception.CSigninFailedException;
 import com.codej.base.utils.JsonUtil;
 import com.codej.web.controller.AbsAuthController;
-import com.codej.base.provider.JwtTokenProvider;
+import com.codej.base.provider.BaseJwtTokenProvider;
 import com.codej.web.service.ResponseService;
 import com.codej.nia.service.NiaUserService;
 import com.codej.nia.service.NiaService;
@@ -46,7 +46,7 @@ public class AuthController extends AbsAuthController {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private JwtTokenProvider jwtTokenProvider;
+    private BaseJwtTokenProvider baseJwtTokenProvider;
 
     @Autowired
     private AppDto appDto;
@@ -81,7 +81,7 @@ public class AuthController extends AbsAuthController {
         user.setPassword(null);
         user.setIpAddress(address);
 
-        String token = jwtTokenProvider.createToken(user, address);
+        String token = baseJwtTokenProvider.createToken(user, address);
 
         // User 정보와 토큰 정보를 반환
         HashMap<String, Object> mapUser = JsonUtil.convertObjectToMap(user);
@@ -111,8 +111,8 @@ public class AuthController extends AbsAuthController {
         
         try {
             JsonObject json = decryptRequestParameter(body);
-            String token = jwtTokenProvider.resolveToken(request);
-            DbUser currentUser = jwtTokenProvider.getUserDetails(token);
+            String token = baseJwtTokenProvider.resolveToken(request);
+            DbUser currentUser = baseJwtTokenProvider.getUserDetails(token);
             BaseUser dbUser = getService().loginFromDb(currentUser.getUid(), currentUser.getPassword());
             
             String orgPassword = json.get("orgpassword").getAsString();

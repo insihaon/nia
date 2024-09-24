@@ -20,6 +20,7 @@ import com.kt.framework.exception.ServiceException;
 import com.kt.framework.utils.StringUtils;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
+import com.kt.ipms.legacy.cmn.util.JwtUtil;
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
 import com.kt.ipms.legacy.cmn.vo.CommonVo;
 import com.kt.ipms.legacy.cmn.web.CommonController;
@@ -796,20 +797,20 @@ public class OrgMgmtController extends CommonController {
 			resultListVo = orgMgmtService.selectListLvlBas(searchVo);
 			resultListVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
 			
-			//TbLvlBasListVo tbSvcLineList  = sessionUtil.getSvcLineList(request);
+			//TbLvlBasListVo tbSvcLineList  = jwtUtil.getSvcLineList(request);
 		    //model.addAttribute("svcLineList", tbSvcLineList);
 		    
 		  //  searchVo.setSsvcLineTypeCd("CL0001");
-		   // TbLvlBasListVo tbCenterList = sessionUtil.getCenterList(request, searchVo);
+		   // TbLvlBasListVo tbCenterList = jwtUtil.getCenterList(request, searchVo);
 		  //  model.addAttribute("centerList", tbCenterList);
 			
-			TbLvlBasListVo tbSvcLineList  = sessionUtil.getSvcLineList(request);
+			TbLvlBasListVo tbSvcLineList  = jwtUtil.getSvcLineList(request);
 			TbLvlBasListVo centerListVo = null;
 			
 			if(StringUtils.hasText(searchVo.getSsvcLineTypeCd())){
 				TbLvlBasVo searchCenterVo = new TbLvlBasVo();
 				searchCenterVo.setSsvcLineTypeCd(searchVo.getSsvcLineTypeCd());
-				centerListVo = sessionUtil.getCenterList(request, searchCenterVo);
+				centerListVo = jwtUtil.getCenterList(request, searchCenterVo);
 				}
 			else {
 					if (StringUtils.hasText(tbSvcLineList.getTbLvlBasVos().get(0).getSsvcLineTypeCd())) {
@@ -817,7 +818,7 @@ public class OrgMgmtController extends CommonController {
 						TbLvlBasVo searchCenterVo = new TbLvlBasVo();
 						searchCenterVo.setSsvcLineTypeCd(tbSvcLineList.getTbLvlBasVos().get(0).getSsvcLineTypeCd());
 						searchVo.setSsvcLineTypeCd(tbSvcLineList.getTbLvlBasVos().get(0).getSsvcLineTypeCd());
-						centerListVo = sessionUtil.getCenterList(request, searchCenterVo);
+						centerListVo = jwtUtil.getCenterList(request, searchCenterVo);
 						
 						if (StringUtils.hasText(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd())) {
 							searchVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
@@ -858,7 +859,7 @@ public class OrgMgmtController extends CommonController {
 	public TbLvlBasListVo selectAuthSvcLineList(@RequestBody TbLvlBasVo searchVo, HttpServletRequest request, HttpServletResponse response)  {
 		TbLvlBasListVo resultListVo = null;
 		try{
-			resultListVo = sessionUtil.getSvcLineList(request);
+			resultListVo = jwtUtil.getSvcLineList(request);
 			resultListVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
 		} catch (ServiceException e) {
 			resultListVo = new TbLvlBasListVo();
@@ -877,7 +878,7 @@ public class OrgMgmtController extends CommonController {
 	public TbLvlBasListVo selectAuthCenterList(@RequestBody TbLvlBasVo searchVo, HttpServletRequest request, HttpServletResponse response)  {
 		TbLvlBasListVo resultListVo = null;
 		try{
-			resultListVo = sessionUtil.getCenterList(request, searchVo);
+			resultListVo = jwtUtil.getCenterList(request, searchVo);
 			resultListVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
 		} catch (ServiceException e) {
 			resultListVo = new TbLvlBasListVo();
@@ -896,7 +897,7 @@ public class OrgMgmtController extends CommonController {
 	public TbLvlBasListVo selectAuthNodeList(@RequestBody TbLvlBasVo searchVo, HttpServletRequest request, HttpServletResponse response)  {
 		TbLvlBasListVo resultListVo = null;
 		try{
-			resultListVo = sessionUtil.getNodeList(request, searchVo);
+			resultListVo = jwtUtil.getNodeList(request, searchVo);
 			resultListVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
 		} catch (ServiceException e) {
 			resultListVo = new TbLvlBasListVo();

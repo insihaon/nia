@@ -115,21 +115,21 @@ public class WhoisMgmtController extends CommonController {
 		
 		try {
 			/** 계위 정보 설정 **/
-			TbLvlBasListVo svcLineListVo = sessionUtil.getSvcLineList(request);
+			TbLvlBasListVo svcLineListVo = jwtUtil.getSvcLineList(request);
 			TbLvlBasListVo centerListVo = null;
 			TbLvlBasListVo nodeListVo = null;
 			if (StringUtils.hasText(searchVo.getSsvcLineTypeCd())) {
 				TbLvlBasVo searchCenterVo = new TbLvlBasVo();
 				searchCenterVo.setSsvcLineTypeCd(searchVo.getSsvcLineTypeCd());
-				centerListVo = sessionUtil.getCenterList(request, searchCenterVo);
+				centerListVo = jwtUtil.getCenterList(request, searchCenterVo);
 				if (StringUtils.hasText(searchVo.getSsvcGroupCd())) {
 					searchCenterVo.setSsvcGroupCd(searchVo.getSsvcGroupCd());
-					nodeListVo = sessionUtil.getNodeList(request, searchCenterVo);
+					nodeListVo = jwtUtil.getNodeList(request, searchCenterVo);
 				} else {
 					if (StringUtils.hasText(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd())) {
 						searchVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
 						searchCenterVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
-						nodeListVo = sessionUtil.getNodeList(request, searchCenterVo);
+						nodeListVo = jwtUtil.getNodeList(request, searchCenterVo);
 						if (StringUtils.hasText(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd())) {
 							searchVo.setSsvcObjCd(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd());
 						}
@@ -142,11 +142,11 @@ public class WhoisMgmtController extends CommonController {
 					TbLvlBasVo searchCenterVo = new TbLvlBasVo();
 					searchCenterVo.setSsvcLineTypeCd(svcLineListVo.getTbLvlBasVos().get(0).getSsvcLineTypeCd());
 					searchVo.setSsvcLineTypeCd(svcLineListVo.getTbLvlBasVos().get(0).getSsvcLineTypeCd());
-					centerListVo = sessionUtil.getCenterList(request, searchCenterVo);
+					centerListVo = jwtUtil.getCenterList(request, searchCenterVo);
 					if (StringUtils.hasText(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd())) {
 						searchVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
 						searchCenterVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
-						nodeListVo = sessionUtil.getNodeList(request, searchCenterVo);
+						nodeListVo = jwtUtil.getNodeList(request, searchCenterVo);
 						if (StringUtils.hasText(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd())) {
 							searchVo.setSsvcObjCd(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd());
 						}
@@ -167,7 +167,7 @@ public class WhoisMgmtController extends CommonController {
 			searchSeqVo.setSsvcLineTypeCd(searchVo.getSsvcLineTypeCd());
 			searchSeqVo.setSsvcGroupCd(searchVo.getSsvcGroupCd());
 			searchSeqVo.setSsvcObjCd(searchVo.getSsvcObjCd());
-			TbLvlMstListVo resultSeqList = sessionUtil.getLvlSeqList(request, searchSeqVo);
+			TbLvlMstListVo resultSeqList = jwtUtil.getLvlSeqList(request, searchSeqVo);
 			searchVo.setLvlMstSeqListVo(resultSeqList);
 			
 			setPagination(searchVo);
@@ -392,7 +392,7 @@ public class WhoisMgmtController extends CommonController {
 		try {
 			resultVo = new TbWhoisUserVo();
 			ktInfoVo.setSsaid("00000000000");
-			ktInfoVo.setSmodifyId(sessionUtil.getUserId(request));
+			ktInfoVo.setSmodifyId(jwtUtil.getUserId(request));
 			
 			int result = whoisService.updateWhoisUser(ktInfoVo);
 			if(result == 1) {
@@ -641,7 +641,7 @@ public class WhoisMgmtController extends CommonController {
 		TbWhoisKeywordVo resultVo = null;
 		
 		try {
-			tbWhoisKeywordVo.setScreateId(sessionUtil.getUserId(request));
+			tbWhoisKeywordVo.setScreateId(jwtUtil.getUserId(request));
 			int count = whoisService.insertWhoisKeywordNewVo(tbWhoisKeywordVo);
 			String commonMsg;
 			if(count != 1) {
@@ -783,8 +783,8 @@ public class WhoisMgmtController extends CommonController {
 		TbWhoisComplexVo resultVo = new TbWhoisComplexVo();
 		int result = 0;
 		try {
-			tbWhoisComplexVo.getTbWhoisVo().setSmodifyId(sessionUtil.getUserId(request));
-			tbWhoisComplexVo.getTbWhoisUserVo().setSmodifyId(sessionUtil.getUserId(request));
+			tbWhoisComplexVo.getTbWhoisVo().setSmodifyId(jwtUtil.getUserId(request));
+			tbWhoisComplexVo.getTbWhoisUserVo().setSmodifyId(jwtUtil.getUserId(request));
 			
 			if(tbWhoisComplexVo.getTbWhoisVo().getType().equals("ADD_NETNAME_ERROR")) {		// 추가신청서 - 네트워크명 오류
 				result = whoisService.updateWhoisComplexNew2(tbWhoisComplexVo);
@@ -882,8 +882,8 @@ public class WhoisMgmtController extends CommonController {
 		TbWhoisModifyListVo resultListVo = null;
 		try{
 			
-			String userGrade  = sessionUtil.getUserGradeCd(request);
-			String userId  =  sessionUtil.getUserId(request);
+			String userGrade  = jwtUtil.getUserGradeCd(request);
+			String userId  =  jwtUtil.getUserId(request);
 			
 			// WHOIS정보변경신청 목록 리스트 표기시 관리자제외 모든 사용자는 자신글만 조회
 			if(!userGrade.equals(CommonCodeUtil.USER_GRADE_A)) {
@@ -935,8 +935,8 @@ public class WhoisMgmtController extends CommonController {
 		try{
 			
 			
-			String userGrade  = sessionUtil.getUserGradeCd(request);
-			String userId  =  sessionUtil.getUserId(request);
+			String userGrade  = jwtUtil.getUserGradeCd(request);
+			String userId  =  jwtUtil.getUserId(request);
 			// WHOIS정보변경신청 목록 리스트 표기시 관리자제외 모든 사용자는 자신글만 조회
 			if(!userGrade.equals(CommonCodeUtil.USER_GRADE_A)) {
 				searchVo.setsApplyId(userId);
@@ -1016,7 +1016,7 @@ public class WhoisMgmtController extends CommonController {
 		TbWhoisModifyVo resultVo = null;
 		String userGrade = null;
 		try {
-			userGrade = sessionUtil.getUserGradeCd(request);
+			userGrade = jwtUtil.getUserGradeCd(request);
 			resultVo = whoisService.selectTbWhoisModifyVo(tbWhoisModifyVo);
 			resultVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
 		} catch (ServiceException e) {
@@ -1157,8 +1157,8 @@ public class WhoisMgmtController extends CommonController {
 	public TbWhoisModifyVo insertRegWhoisModReqVo(@RequestBody TbWhoisModifyVo tbWhoisModifyVo, HttpServletRequest request, HttpServletResponse response) {
 		TbWhoisModifyVo resultVo = null;
 		try {
-			tbWhoisModifyVo.setsApplyId(sessionUtil.getUserId(request));
-			tbWhoisModifyVo.setsCreateId(sessionUtil.getUserId(request));
+			tbWhoisModifyVo.setsApplyId(jwtUtil.getUserId(request));
+			tbWhoisModifyVo.setsCreateId(jwtUtil.getUserId(request));
 			
 			int count = whoisService.insertWhoisModifyVo(tbWhoisModifyVo);
 			String commonMsg;
@@ -1254,7 +1254,7 @@ public class WhoisMgmtController extends CommonController {
 	public TbWhoisModifyVo viewUpdateWhoisModReqVo(@RequestBody TbWhoisModifyVo updateVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
 		TbWhoisModifyVo resultVo = null;
 		try {
-			updateVo.setsModifyId(sessionUtil.getUserId(request));
+			updateVo.setsModifyId(jwtUtil.getUserId(request));
 			
 			resultVo = whoisService.updateWhoisModReqVo(updateVo);
 			resultVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
@@ -1312,9 +1312,9 @@ public class WhoisMgmtController extends CommonController {
 		String commonMsg;
 		TbWhoisModifyVo tbWhoisModifiyVo = new TbWhoisModifyVo();
 		try {
-			updateVo.setsApprovalId(sessionUtil.getUserId(request));
-			updateVo.setsCreateId(sessionUtil.getUserId(request));
-			updateVo.setsModifyId(sessionUtil.getUserId(request));
+			updateVo.setsApprovalId(jwtUtil.getUserId(request));
+			updateVo.setsCreateId(jwtUtil.getUserId(request));
+			updateVo.setsModifyId(jwtUtil.getUserId(request));
 			int count= whoisService.updateWhoisModReqAppr(updateVo);
 
 			if(count !=1) {
@@ -1424,8 +1424,8 @@ public class WhoisMgmtController extends CommonController {
 		String commonMsg;
 		try {
 			
-			matchVo.setScreateId(sessionUtil.getUserId(request));
-			matchVo.setSmodifyId(sessionUtil.getUserId(request));
+			matchVo.setScreateId(jwtUtil.getUserId(request));
+			matchVo.setSmodifyId(jwtUtil.getUserId(request));
 			String result = whoisService.matchTbWhoisVo("LIST", matchVo);
 			
 			resultVo = new TbWhoisVo();
@@ -1457,8 +1457,8 @@ public class WhoisMgmtController extends CommonController {
 		String commonMsg;
 		try {
 			
-			matchVo.setScreateId(sessionUtil.getUserId(request));
-			matchVo.setSmodifyId(sessionUtil.getUserId(request));
+			matchVo.setScreateId(jwtUtil.getUserId(request));
+			matchVo.setSmodifyId(jwtUtil.getUserId(request));
 			String result = whoisService.matchTbWhoisVo("POPUP", matchVo);
 			
 			resultVo = new TbWhoisVo();
@@ -1506,8 +1506,8 @@ public class WhoisMgmtController extends CommonController {
 			userEmail = userMgmtService.selectEmail(searchVo);					// 요청자 메일주소
 			List<ReqAdminEmailVo> reqAdminEmailVoList = reqBoardService.selectAdminEmailList(); //담당자 주소
 			
-			userName = sessionUtil.getUserNm(request);
-			userOrg = sessionUtil.getUserDeptOrgNm(request);
+			userName = jwtUtil.getUserNm(request);
+			userOrg = jwtUtil.getUserDeptOrgNm(request);
 			
 			Boolean isRun = configPropertieService.getBoolean("Mail.isRun");
 			
@@ -1536,7 +1536,7 @@ public class WhoisMgmtController extends CommonController {
 				content = smtpUtil.parseHtml(map, request);
 				smtpVo.setSubject(subject);
 				smtpVo.setMessage(content);
-				smtpVo.setUserID(sessionUtil.getUserId(request));
+				smtpVo.setUserID(jwtUtil.getUserId(request));
 				
 				if(isRun) {
 					toEmail = userEmail;	
@@ -1581,7 +1581,7 @@ public class WhoisMgmtController extends CommonController {
 				
 				smtpVo.setSubject(subject);
 				smtpVo.setMessage(content);
-				smtpVo.setUserID(sessionUtil.getUserId(request));
+				smtpVo.setUserID(jwtUtil.getUserId(request));
 				
 				for (int i = 0; i < reqAdminEmailVoList.size(); i++) {
 					toEmail = reqAdminEmailVoList.get(i).getsUserEmail();
@@ -1614,7 +1614,7 @@ public class WhoisMgmtController extends CommonController {
 				
 				smtpVo.setSubject(subject);
 				smtpVo.setMessage(content);
-				smtpVo.setUserID(sessionUtil.getUserId(request));
+				smtpVo.setUserID(jwtUtil.getUserId(request));
 				
 				if(isRun) {
 					toEmail = userEmail;
@@ -1656,7 +1656,7 @@ public class WhoisMgmtController extends CommonController {
 				
 				smtpVo.setSubject(subject);
 				smtpVo.setMessage(content);
-				smtpVo.setUserID(sessionUtil.getUserId(request));
+				smtpVo.setUserID(jwtUtil.getUserId(request));
 				
 				if(isRun) {
 					toEmail = userEmail;
@@ -1697,21 +1697,21 @@ public class WhoisMgmtController extends CommonController {
 		FileVo resultVo = new FileVo();
 		try{
 			/** 계위 정보 설정 **/
-			TbLvlBasListVo svcLineListVo = sessionUtil.getSvcLineList(request);
+			TbLvlBasListVo svcLineListVo = jwtUtil.getSvcLineList(request);
 			TbLvlBasListVo centerListVo = null;
 			TbLvlBasListVo nodeListVo = null;
 			if (StringUtils.hasText(searchVo.getSsvcLineTypeCd())) {
 				TbLvlBasVo searchCenterVo = new TbLvlBasVo();
 				searchCenterVo.setSsvcLineTypeCd(searchVo.getSsvcLineTypeCd());
-				centerListVo = sessionUtil.getCenterList(request, searchCenterVo);
+				centerListVo = jwtUtil.getCenterList(request, searchCenterVo);
 				if (StringUtils.hasText(searchVo.getSsvcGroupCd())) {
 					searchCenterVo.setSsvcGroupCd(searchVo.getSsvcGroupCd());
-					nodeListVo = sessionUtil.getNodeList(request, searchCenterVo);
+					nodeListVo = jwtUtil.getNodeList(request, searchCenterVo);
 				} else {
 					if (StringUtils.hasText(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd())) {
 						searchVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
 						searchCenterVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
-						nodeListVo = sessionUtil.getNodeList(request, searchCenterVo);
+						nodeListVo = jwtUtil.getNodeList(request, searchCenterVo);
 						if (StringUtils.hasText(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd())) {
 							searchVo.setSsvcObjCd(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd());
 						}
@@ -1724,11 +1724,11 @@ public class WhoisMgmtController extends CommonController {
 					TbLvlBasVo searchCenterVo = new TbLvlBasVo();
 					searchCenterVo.setSsvcLineTypeCd(svcLineListVo.getTbLvlBasVos().get(0).getSsvcLineTypeCd());
 					searchVo.setSsvcLineTypeCd(svcLineListVo.getTbLvlBasVos().get(0).getSsvcLineTypeCd());
-					centerListVo = sessionUtil.getCenterList(request, searchCenterVo);
+					centerListVo = jwtUtil.getCenterList(request, searchCenterVo);
 					if (StringUtils.hasText(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd())) {
 						searchVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
 						searchCenterVo.setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
-						nodeListVo = sessionUtil.getNodeList(request, searchCenterVo);
+						nodeListVo = jwtUtil.getNodeList(request, searchCenterVo);
 						if (StringUtils.hasText(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd())) {
 							searchVo.setSsvcObjCd(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd());
 						}
@@ -1746,7 +1746,7 @@ public class WhoisMgmtController extends CommonController {
 			searchSeqVo.setSsvcLineTypeCd(searchVo.getSsvcLineTypeCd());
 			searchSeqVo.setSsvcGroupCd(searchVo.getSsvcGroupCd());
 			searchSeqVo.setSsvcObjCd(searchVo.getSsvcObjCd());
-			TbLvlMstListVo resultSeqList = sessionUtil.getLvlSeqList(request, searchSeqVo);
+			TbLvlMstListVo resultSeqList = jwtUtil.getLvlSeqList(request, searchSeqVo);
 			searchVo.setLvlMstSeqListVo(resultSeqList);
 			
 			setPagination(searchVo);
