@@ -1,110 +1,118 @@
 <template>
   <el-row class="w-100 h-100" :gutter="20">
     <div class="content_result">
+
       <el-col :span="12">
-        <div class="section_tit">
-          <h4>메뉴트리</h4>
+        <div class="content_result_h">
+          <div class="section_tit">
+            <h3>메뉴트리</h3>
+          </div>
+          <el-row style="border-top: 1px solid #cc2929"></el-row>
+          <el-tree
+            :data="menuData"
+            :props="defaultProps"
+            node-key="label"
+            accordion
+            @node-click="handleNodeClick"
+          >
+          </el-tree>
         </div>
-        <el-row style="border-top: 1px solid #cc2929"></el-row>
-        <el-tree
-          :data="menuData"
-          :props="defaultProps"
-          node-key="label"
-          accordion
-          @node-click="handleNodeClick"
-        ></el-tree>
       </el-col>
+
       <el-col :span="12">
-        <div class="section_tit">
-          <h4>메뉴트리</h4>
+        <div class="content_result_h fr">
+          <div class="section_tit">
+            <h3>메뉴 상세정보</h3>
+          </div>
+          <table class="tbl_data entry mt5" summary="조회조건선택">
+            <caption>조회조건선택</caption>
+            <colgroup>
+              <col width="25%" />
+              <col width="80%" />
+            </colgroup>
+            <tbody>
+              <tr class="top">
+                <th class="first" scope="row">메뉴 ID</th>
+                <td class="view">{{ menuData.menuId }}</td>
+              </tr>
+              <tr>
+                <th class="first" scope="row">메뉴명</th>
+                <td><input v-model="menuData.menuName" type="text" class="txt w98" disabled /></td>
+              </tr>
+              <tr>
+                <th class="first" scope="row">메뉴레벨</th>
+                <td><input v-model="menuData.menuLevel" type="text" class="txt w98" disabled /></td>
+              </tr>
+              <tr>
+                <th class="first" scope="row">메뉴계층유형</th>
+                <td class="view">
+                  <span>
+                    <el-radio v-model="menuData.menuType" label="UH0001">그룹</el-radio>
+                  </span>
+                  <span class="ml10">
+                    <el-radio v-model="menuData.menuType" label="UH0002">메뉴</el-radio>
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <th class="first" scope="row">상위메뉴</th>
+                <td class="view">{{ menuData.parentMenuName }}</td>
+              </tr>
+              <tr>
+                <th class="first" scope="row">메뉴표시순서</th>
+                <td><input v-model="menuData.menuOrder" type="text" class="txt w98" disabled /></td>
+              </tr>
+              <tr>
+                <th class="first" scope="row">화면 ID</th>
+                <td><input v-model="menuData.screenId" type="text" class="txt w98" disabled /></td>
+              </tr>
+              <tr>
+                <th class="first" scope="row">화면명</th>
+                <td>
+                  <div class="search">
+                    <input v-model="menuData.screenName" type="text" class="txt w473" disabled />
+                    <a href="javascript:void(0)" @click="searchScreen">
+                      <img
+                        src="/resources/images/content/btn_data_search_disabled_off.gif"
+                        alt="search"
+                        class="sc_btn"
+                        @mouseover="menuOver"
+                        @mouseout="menuOut"
+                      />
+                    </a>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <th class="first" scope="row">화면 URL</th>
+                <td><input v-model="menuData.screenUrl" type="text" class="txt w98" disabled /></td>
+              </tr>
+              <tr>
+                <th class="first" scope="row">메뉴사용여부</th>
+                <td class="view">
+                  <span>
+                    <el-radio v-model="menuData.menuUseYn" label="Y">사용</el-radio>
+                  </span>
+                  <span class="ml10">
+                    <el-radio v-model="menuData.menuUseYn" label="N">미사용</el-radio>
+                  </span>
+                </td>
+              </tr>
+              <tr class="last">
+                <th class="first" scope="row">메뉴설명</th>
+                <td><textarea v-model="menuData.menuDesc" class="w98 h60" rows="6"></textarea></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-        <el-row style="border-top: 1px solid #cc2929"></el-row>
-        <table class="form">
-          <tr>
-            <th class="disable">메뉴ID</th>
-            <td>
-              <el-input v-model="menu_id" />
-            </td>
-          </tr>
-          <tr>
-            <th>메뉴명</th>
-            <td class="disable">
-              <el-input v-model="menu_nm" />
-            </td>
-          </tr>
-          <tr>
-            <th>메뉴레벨</th>
-            <td class="disable">
-              <el-input v-model="menu_lvl" />
-            </td>
-          </tr>
-          <tr>
-            <th>메뉴계층유형</th>
-            <td>
-              <el-radio-group v-model="menu_layer_type" size="mini" class="d-flex">
-                <el-radio label="group">그룹</el-radio>
-                <el-radio label="menu">메뉴</el-radio>
-              </el-radio-group>
-            </td>
-          </tr>
-          <tr>
-            <th>상위메뉴</th>
-            <td class="disable">
-              <el-input v-model="top_menu" />
-            </td>
-          </tr>
-          <tr>
-            <th>메뉴표시순서</th>
-            <td class="disable">
-              <el-input v-model="menu_order" />
-            </td>
-          </tr>
-          <tr>
-            <th>화면ID</th>
-            <td class="disable">
-              <el-input v-model="screen_id" />
-            </td>
-          </tr>
-          <tr>
-            <th>화면명</th>
-            <td class="disable">
-              <el-input v-model="screen_nm" />
-            </td>
-          </tr>
-          <tr>
-            <th>화면ULR</th>
-            <td class="disable">
-              <el-input v-model="screen_url" />
-            </td>
-          </tr>
-          <tr>
-            <th>메뉴사용여부</th>
-            <td>
-              <el-radio-group v-model="isScreen" size="mini" class="d-flex">
-                <el-radio label="Y">사용</el-radio>
-                <el-radio label="N">미사용</el-radio>
-              </el-radio-group>
-            </td>
-          </tr>
-          <tr>
-            <th>메뉴설명</th>
-            <td class="disable">
-              <el-input
-                v-model="menu_desc"
-                type="textarea"
-                :rows="3"
-              >
-              </el-input>
-            </td>
-          </tr>
-        </table>
-        <div class="my-1">
-          <el-button class="float-right px-0">
-            <img src="@/assets/images/ipms/content/btn_save02_off.gif" alt="저장" @click="onSaveMenu()" />
+        <div class="float-right">
+          <el-button size="small" @click="onSaveMenu()">
+            저장
           </el-button>
         </div>
       </el-col>
     </div>
+
   </el-row>
 </template>
 <script>
@@ -119,17 +127,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      menu_id: '',
-      menu_nm: '',
-      menu_lvl: '',
-      menu_layer_type: 'group',
-      top_menu: '',
-      menu_order: '',
-      screen_id: '',
-      screen_nm: '',
-      screen_url: '',
-      isScreen: 'Y',
-      menu_desc: '',
+
      menuData: [
         {
           label: 'IP 배정관리',
@@ -150,7 +148,9 @@ export default {
             { label: 'VPN IP현황' },
             {
               label: '타 서비스 관리',
-              children: []
+              children: [
+                { label: 'HOST 유형 관리' },
+              ]
             }
           ]
         },
@@ -175,7 +175,7 @@ export default {
           children: []
         }
       ],
-           defaultProps: {
+        defaultProps: {
           children: 'children',
           label: 'label'
         }
