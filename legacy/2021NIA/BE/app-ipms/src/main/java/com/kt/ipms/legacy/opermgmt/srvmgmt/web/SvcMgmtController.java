@@ -204,6 +204,7 @@ public class SvcMgmtController extends CommonController{
 	}
 	/* 상품 등록 화면 */
 	@RequestMapping(value = "/opermgmt/srvmgmt/viewInsertIpmsSvcMst.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewInsertIpmsSvcMst(TbIpmsSvcMstVo tbIpmsSvcMstVo, ModelMap model, HttpServletRequest request) {
 		ModelMap resultModel = new ModelMap();
 
@@ -435,6 +436,7 @@ public class SvcMgmtController extends CommonController{
 	
 	/* 상품 수정 화면 */
 	@RequestMapping(value = "/opermgmt/srvmgmt/viewUpdateIpmsSvcMst.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewUpdateIpmsSvcMst(@RequestBody TbIpmsSvcMstVo tbIpmsSvcMstVo, ModelMap model, HttpServletRequest request) {
 		TbIpmsSvcMstVo resultVo = svcMgmtService.selectTbIpmsSvcMstVo(tbIpmsSvcMstVo);
 		return createResult(resultVo);
@@ -488,6 +490,7 @@ public class SvcMgmtController extends CommonController{
 	
 	/* 서비스망 관리 화면(popup) */
 	@RequestMapping(value = "/opermgmt/srvmgmt/viewSearchSvcLine.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewSearchSvcLine(@RequestBody TbIpmsSvcMstVo tbIpmsSvcMstVo, ModelMap model, HttpServletRequest request) {
 		TbIpmsSvcMstVo resultVo = svcMgmtService.selectTbIpmsSvcMstVo(tbIpmsSvcMstVo);
 		return createResult(resultVo);
@@ -699,6 +702,7 @@ public class SvcMgmtController extends CommonController{
 	
 	/* 서비스코드 수정 화면 */
 	@RequestMapping(value = "opermgmt/srvmgmt/viewUpdateAssignTypeCd.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewUpdateAssignTypeCd(@RequestBody TbAssignTypeCdVo tbAssignTypeCdVo, ModelMap model, HttpServletRequest request) {
 		TbAssignTypeCdVo resultVo = svcMgmtService.selectTbAssignTypeCdVo(tbAssignTypeCdVo);
 		return createResult(resultVo);

@@ -113,6 +113,7 @@ public class FaqController extends CommonController{
 	 * @
 	 */
 	@RequestMapping(value = "/opermgmt/boardmgmt/viewDetailFaq.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap selectFaq(@RequestBody TbBoardVo tbBoardVo, ModelMap model, HttpServletRequest request)  {
 		TbBoardVo resultVo = faqService.selectFaq(tbBoardVo);
 		return createResult(resultVo);
@@ -175,6 +176,7 @@ public class FaqController extends CommonController{
 	 * @
 	 */
 	@RequestMapping(value = "/opermgmt/boardmgmt/viewInsertFaq.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewInsertFaq(TbBoardVo tbBoardVo, ModelMap model, HttpServletRequest request)  {
 		tbBoardVo.setSboardTypeCd("BH0003");
 		List<CommonCodeVo> boardTypeSubCds = commonCodeService.selectListCommonCode(CommonCodeUtil.BOARD_TYPE_SUB_CD, tbBoardVo);
@@ -269,6 +271,7 @@ public class FaqController extends CommonController{
 	 * @
 	 */
 	@RequestMapping(value = "/opermgmt/boardmgmt/viewUpdateFaq.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewUpdateFaq(@RequestBody TbBoardVo tbBoardVo, ModelMap model, HttpServletRequest request)  {
 		TbBoardVo resultVo = faqService.selectFaq(tbBoardVo);
 		return createResult(resultVo);

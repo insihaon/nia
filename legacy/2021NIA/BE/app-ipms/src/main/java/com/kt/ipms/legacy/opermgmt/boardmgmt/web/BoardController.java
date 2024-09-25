@@ -110,6 +110,7 @@ public class BoardController extends CommonController{
 	 * @
 	 */
 	@RequestMapping(value = "/opermgmt/boardmgmt/viewDetailBoard.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap selectBoard(@RequestBody TbBoardVo tbBoardVo, ModelMap model, HttpServletRequest request) {
 		TbBoardVo resultVo = boardService.selectBoard(tbBoardVo);
 		return createResult(resultVo);
@@ -185,6 +186,7 @@ public class BoardController extends CommonController{
 	 * @
 	 */
 	@RequestMapping(value = "/opermgmt/boardmgmt/viewInsertBoard.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewInsertBoard(TbBoardVo tbBoardVo, ModelMap model, HttpServletRequest request) {
 		tbBoardVo.setSboardTypeCd("BH0002");
 		List<CommonCodeVo> boardTypeSubCds = commonCodeService.selectListCommonCode(CommonCodeUtil.BOARD_TYPE_SUB_CD, tbBoardVo);
@@ -274,6 +276,7 @@ public class BoardController extends CommonController{
 	 * @
 	 */
 	@RequestMapping(value = "/opermgmt/boardmgmt/viewUpdateBoard.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewUpdateBoard(@RequestBody TbBoardVo tbBoardVo, ModelMap model, HttpServletRequest request) {
 		TbBoardVo resultVo = boardService.selectBoard(tbBoardVo);
 		return createResult(resultVo);

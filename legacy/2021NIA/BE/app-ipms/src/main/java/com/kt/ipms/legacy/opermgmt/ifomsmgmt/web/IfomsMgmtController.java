@@ -98,6 +98,7 @@ public class IfomsMgmtController extends CommonController {
 	}
 	
 	@RequestMapping(value="/opermgmt/ifomsmgmt/viewInsertIFomsMst.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewInsertIFomsMst(ModelMap model, 
 			HttpServletRequest request) {
 		TbConfigInterfaceMstVo resultVo = new TbConfigInterfaceMstVo();
@@ -167,6 +168,7 @@ public class IfomsMgmtController extends CommonController {
 	}
 	
 	@RequestMapping(value="/opermgmt/ifomsmgmt/viewUpdateIFomsMst.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewUpdateIFomsMst(@RequestBody TbConfigInterfaceMstVo searchVo, ModelMap model, 
 			HttpServletRequest request) {
 		TbConfigInterfaceMstVo resultVo = ifomsMgmtService.selectConfigInterfaceMst(searchVo);

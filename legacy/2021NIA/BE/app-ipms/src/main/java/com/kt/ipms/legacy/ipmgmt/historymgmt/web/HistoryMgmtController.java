@@ -408,6 +408,7 @@ public class HistoryMgmtController extends CommonController {
 	}
 	
 	@RequestMapping(value = "/ipmgmt/historymgmt/viewDetailIpHistMst.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewDetailIpHistMst(@RequestBody IpHistoryMstVo searchVo, ModelMap model, HttpServletRequest request){
 		IpHistoryMstVo resultVo = historyMgmtService.selectMainIpInfoMst(searchVo);
 		return createResult(resultVo);

@@ -133,6 +133,7 @@ public class RequireMgmtController extends CommonController{
 	 * @
 	 */
 	@RequestMapping(value = "/opermgmt/requiremgmt/viewDetailReq.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap selectReqBoard(@RequestBody ReqBoardVo searchVo, ModelMap model, HttpServletRequest request)  {
 		ReqBoardVo resultVo = reqBoardService.selectReqBoard(searchVo);
 		return createResult(resultVo);
@@ -206,6 +207,7 @@ public class RequireMgmtController extends CommonController{
 	}
 	
 	@RequestMapping(value = "/opermgmt/requiremgmt/viewInsertReq.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewinsertReq( ModelMap model, HttpServletRequest request)  {
 		List<ReqBoardSubVo> requestType = (List<ReqBoardSubVo>)model.get("requestType");
 		List<ReqBoardSubVo> progressType = (List<ReqBoardSubVo>)model.get("progressType");

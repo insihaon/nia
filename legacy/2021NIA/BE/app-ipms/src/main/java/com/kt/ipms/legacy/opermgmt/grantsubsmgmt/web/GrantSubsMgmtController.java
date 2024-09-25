@@ -63,6 +63,7 @@ public class GrantSubsMgmtController  extends CommonController {
 	private ReqBoardService reqBoardService;
 	
 	@RequestMapping(value = "/opermgmt/grantsubsmgmt/viewListUserAuthSubs.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewListUserAuth(
 			@ModelAttribute("searchVo") TbUserGrantVo searchVo,
 			ModelMap model,
@@ -129,6 +130,7 @@ public class GrantSubsMgmtController  extends CommonController {
 	}
 	
 	@RequestMapping(value = "/opermgmt/grantsubsmgmt/viewInsertUserAuthSubs.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewInsertUserAuth(@RequestBody TbUserAuthTxnVo searchVo, ModelMap model,
 			HttpServletRequest request)  {
 		TbUserAuthTxnListVo resultListVo = grantMgmtService.selectDetailUserAuthTxn(searchVo);
@@ -230,6 +232,7 @@ public class GrantSubsMgmtController  extends CommonController {
 	}
 	
 	@RequestMapping(value = "/opermgmt/grantsubsmgmt/viewDetailUserAuthSubs.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewDetailUserAuth(@RequestBody TbUserAuthTxnVo searchVo, ModelMap model,
 			HttpServletRequest request)  {
 		TbUserAuthTxnListVo resultListVo = null;

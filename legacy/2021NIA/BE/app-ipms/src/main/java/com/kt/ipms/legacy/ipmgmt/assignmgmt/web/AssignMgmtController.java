@@ -368,6 +368,7 @@ public class AssignMgmtController extends CommonController {
 	}
 
 	@RequestMapping(value = "/ipmgmt/assignmgmt/viewInsertDivAsgnIPMst.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewInsertDivAsgnIPMst(@RequestBody TbIpAssignMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		TbIpAssignMstVo resultVo = assignMgmtService.selectIpAssignMst(searchVo);
@@ -486,6 +487,7 @@ public class AssignMgmtController extends CommonController {
 		return resultVo;
 	}
 	@RequestMapping(value = "/ipmgmt/assignmgmt/viewInsertMrgAsgnIPMst.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewInsertMrgAsgnIPMst(@RequestBody TbIpAssignMstListVo tbIpAssignMstListVo, ModelMap model,
 			HttpServletRequest request) {
 		TbIpAssignMstComplexVo resultComplexVo = assignMgmtService.validateMrgAsgnIPMst(tbIpAssignMstListVo);
@@ -617,6 +619,7 @@ public class AssignMgmtController extends CommonController {
 	}
 
 	@RequestMapping(value = "/ipmgmt/assignmgmt/viewUpdateAsgnIPMst.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewUpdateAsgnIPMst(@RequestBody TbIpAssignMstListVo tbIpAssignMstListVo, ModelMap model,
 			HttpServletRequest request) {
 		TbIpAssignMstListVo resultListVo = assignMgmtService.selectListAsgnIPMstViaInMstSeq(tbIpAssignMstListVo);
@@ -788,6 +791,7 @@ public class AssignMgmtController extends CommonController {
 	}
 
 	@RequestMapping(value = "/ipmgmt/assignmgmt/viewDetailAsgnIPMst.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewDetailAsgnIPMst(@RequestBody TbIpAssignMstVo tbIpAssignMstVo, ModelMap model,
 			HttpServletRequest request) {
 		TbIpAssignMstVo resultVo = assignMgmtService.selectIpAssignMst(tbIpAssignMstVo);
@@ -1053,6 +1057,7 @@ public class AssignMgmtController extends CommonController {
 		return resultVo;
 	}
 	@RequestMapping(value = "/ipmgmt/assignmgmt/viewDetailUnAssignIP.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewDetailUnAssignIP(@RequestBody TbIpAssignMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		TbIpAssignMstListVo resultListVo = assignMgmtService.selectListIpAssignMst(searchVo);
@@ -1118,6 +1123,7 @@ public class AssignMgmtController extends CommonController {
 	 */
 	
 	@RequestMapping(value = "/ipmgmt/assignmgmt/viewDetailSummary.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewDetailSummaryMst(@RequestBody TbIpAssignMstVo tbIpAssignMstVo, HttpServletRequest request) {
 		ModelMap model =  viewDetailSummaryMstModel(tbIpAssignMstVo, request);
 		TbIpAssignMstListVo resultListVo = (TbIpAssignMstListVo)model.get("resultListVo");

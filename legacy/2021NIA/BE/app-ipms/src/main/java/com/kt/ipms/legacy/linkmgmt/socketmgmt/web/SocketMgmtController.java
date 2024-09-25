@@ -33,6 +33,7 @@ public class SocketMgmtController extends CommonController {
 	private CallableBatchService callableBatchService;
 	
 	@RequestMapping(value = "/linkmgmt/socketmgmt/viewDetailWhois.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewDetailWhois(@RequestBody WhoisMstVo searchVo, ModelMap model,
 			HttpServletRequest request)  {
 		WhoisMstVo resultVo = socketMgmtService.getWhoisMstVo(searchVo.getQuery());
