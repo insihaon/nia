@@ -207,6 +207,7 @@ public class AsMgmtController extends CommonController{
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "opermgmt/asmgmt/viewDetailPrivateAs.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewDetailPrivateAs(@RequestBody TbRequestAsApyTxnVo tbRequestAsApyTxnVo, ModelMap model, HttpServletRequest request) {
 		TbRequestAsApyTxnVo resultVo = asMgmtService.viewDetailPrivateAS(tbRequestAsApyTxnVo);
 		return createResult(resultVo);
@@ -307,6 +308,7 @@ public class AsMgmtController extends CommonController{
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "opermgmt/asmgmt/viewUpdatePrivateAs.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewUpdatePrivateAs(@RequestBody TbRequestAsApyTxnVo tbRequestAsApyTxnVo, ModelMap model, HttpServletRequest request) {
 		TbRequestAsApyTxnVo resultVo = asMgmtService.viewDetailPrivateAS(tbRequestAsApyTxnVo);
 		return createResult(resultVo);
@@ -581,6 +583,7 @@ public class AsMgmtController extends CommonController{
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/opermgmt/asmgmt/viewDetailAsHist.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewDetailAsHist(@RequestBody TbRequestAsHistVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		TbRequestAsHistListVo resultListVo = asMgmtService.viewDetailASHist(searchVo);

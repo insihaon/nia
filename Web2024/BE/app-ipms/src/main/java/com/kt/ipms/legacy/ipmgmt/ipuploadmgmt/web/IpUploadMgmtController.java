@@ -239,6 +239,7 @@ public class IpUploadMgmtController extends CommonController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value="/ipmgmt/ipuploadmgmt/viewCreFormatMst.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewInsertCrtIPMst(@RequestBody TbIpBlockMstVo searchVo, ModelMap model, HttpServletRequest request) {
 		TbIpBlockMstVo resultVo = new TbIpBlockMstVo();
 		return createResult(resultVo);
@@ -349,6 +350,7 @@ public class IpUploadMgmtController extends CommonController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value="/ipmgmt/ipuploadmgmt/viewDetailIpMst.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewDetailIpMst(@RequestBody TbIpUploadVo searchVo, ModelMap model, HttpServletRequest request) {
 		TbIpUploadSubListVo resultVo = ipUploadMgmtService.selectUploadDetail(searchVo);
 		return createResult(resultVo);

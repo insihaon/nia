@@ -35,6 +35,7 @@ public class TbBatchLogController extends CommonController{
 	private BatchJobService batchJobService;
 
 	@RequestMapping(value = "/linkmgmt/batchmgmt/viewListTbBatchLog.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewListTbBatchLogVo(@RequestBody TbBatchLogVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		TbBatchLogListVo resultListVo = tbBatchLogService.selectListTbBatchLogVo(searchVo);

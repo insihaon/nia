@@ -78,6 +78,7 @@ public class NodeMgmtController extends CommonController{
 	private OrgMgmtAdapterService orgMgmtAdapterService;
 	
 	@RequestMapping(value = "/opermgmt/nodemgmt/viewListNode.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap selectListReq( @ModelAttribute("searchVo") NodeMgmtVo searchVo, ModelMap model, HttpServletRequest request){
 		NodeMgmtListVo resultListVo = nodeMgmtService.selectListNodeMgmt(searchVo);
 		return createResultList(resultListVo.getNodeMgmtVos(), resultListVo.getTotalCount());
@@ -132,6 +133,7 @@ public class NodeMgmtController extends CommonController{
 	}
 	
 	@RequestMapping(value = "/opermgmt/nodemgmt/viewInsertNode.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewinsertNode(HttpServletRequest request, @RequestBody TbIpAssignMstVo searchVo)  {
 		TbIpAssignMstListVo resultListVo = assignMgmtService.selectListIpAssignMst(searchVo);
 		return createResultList(resultListVo.getTbIpAssignMstVos(), resultListVo.getTotalCount());
@@ -264,6 +266,7 @@ public class NodeMgmtController extends CommonController{
 	}
 
 	@RequestMapping(value = "/opermgmt/nodemgmt/viewDetailNode.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap selectNode(@RequestBody NodeMgmtVo searchVo, ModelMap model, HttpServletRequest request)  {
 		NodeMgmtVo resultVo = nodeMgmtService.selectNode(searchVo);
 		return createResult(resultVo);

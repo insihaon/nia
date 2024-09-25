@@ -30,6 +30,7 @@ public class ErrorMgmtController extends CommonController{
 	private ErrorMgmtService errorMgmtService;
 	
 	@RequestMapping(value = "/linkmgmt/erromgmt/viewListError.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap selectListReq( @ModelAttribute("searchVo") ErrorMgmtVo searchVo, ModelMap model, HttpServletRequest request){
 		ErrorMgmtListVo resultListVo = errorMgmtService.selectListErrorMgmt(searchVo);
 		return createResultList(resultListVo.getErrorMgmtVos(), resultListVo.getTotalCount());

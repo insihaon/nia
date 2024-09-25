@@ -129,6 +129,7 @@ public class OrgMgmtController extends CommonController {
 	 * @
 	 */
 	@RequestMapping(value = "/opermgmt/orgmgmt/viewUpdateTbLvlCdVo.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewUPdateTbLvlCdVo(@RequestBody TbLvlCdVo searchVo, ModelMap model,
 			HttpServletRequest request)  {
 		TbLvlCdVo resultVo = orgMgmtService.selectTbLvlCdVo(searchVo);
@@ -188,6 +189,7 @@ public class OrgMgmtController extends CommonController {
 	 * @
 	 */
 	@RequestMapping(value = "/opermgmt/orgmgmt/viewInsertTbLvlCdVo.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewInsertTbLvlCdVo(@RequestBody TbLvlCdVo requestVo, ModelMap model,
 			HttpServletRequest request)  {
 		List<CommonCodeVo> resultList = commonCodeService.selectListCommonCode(CommonCodeUtil.EXTERNAL_LINK_USE_TYPE_CD, null);
@@ -497,6 +499,7 @@ public class OrgMgmtController extends CommonController {
 	 * @
 	 */
 	@RequestMapping(value = "opermgmt/orgmgmt/viewUpdateSvcLineType.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewUpdateSvcLineType(@RequestBody TbSvcLineTypeCdVo tbSvcLineTypeCdVo, ModelMap model, HttpServletRequest request)  {
 		TbSvcLineTypeCdVo resultVo = orgMgmtService.selectLineType(tbSvcLineTypeCdVo);
 		return createResult(resultVo);
@@ -926,6 +929,7 @@ public class OrgMgmtController extends CommonController {
 	 * @
 	 */
 	@RequestMapping(value = "/opermgmt/orgmgmt/viewInsertLvlRoleSub.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewInsertLvlRoleSub(@RequestBody TbLvlRoleSubVo searchVo, ModelMap model,
 			HttpServletRequest request)  {
 		TbLvlRoleSubListVo resultListVo = orgMgmtService.selectListLvlRoleSub(searchVo);
@@ -1068,6 +1072,7 @@ public class OrgMgmtController extends CommonController {
 	 * @
 	 */
 	@RequestMapping(value = "opermgmt/orgmgmt/viewInsertLvlSonMgmtPop.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewInsertLvlSon(@RequestBody TbLvlSubCdVo searchVo, ModelMap model,
 			HttpServletRequest request)  {
 		TbLvlSubCdListVo resultListVo = orgMgmtService.selectListLvlSubCd(searchVo);
@@ -1261,6 +1266,7 @@ public class OrgMgmtController extends CommonController {
 	 * @
 	 */
 	@RequestMapping(value = "/opermgmt/orgmgmt/viewUdateLvlBas.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewUdateLvlBas(@RequestBody TbLvlBasVo searchVo, ModelMap model,
 			HttpServletRequest request)  {
 		ModelMap resultModel = new ModelMap();
@@ -1452,6 +1458,7 @@ public class OrgMgmtController extends CommonController {
 	 * 
 	 */
 	@RequestMapping(value = "/opermgmt/orgmgmt/viewInsertLvlBas.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewInsertLvlBas(ModelMap model,
 			HttpServletRequest request)  {
 		TbLvlBasListVo resultListVo = orgMgmtService.selectListSvcLineAll() ;

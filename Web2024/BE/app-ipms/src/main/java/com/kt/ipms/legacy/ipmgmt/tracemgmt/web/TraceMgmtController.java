@@ -33,6 +33,7 @@ public class TraceMgmtController extends CommonController {
 	@Autowired
 	TraceMgmtService traceMgmtService;
 	@RequestMapping(value = "/ipmgmt/tracemgmt/viewTraceRouteMst.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewMainTraceRoute(ModelMap model, HttpServletRequest request) {
 		TbTraceIPVo resultVo = new TbTraceIPVo();
 		return createResult(resultVo);
@@ -110,6 +111,7 @@ public class TraceMgmtController extends CommonController {
 	}
 	
 	@RequestMapping(value = "/ipmgmt/tracemgmt/viewDetailHost.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewDetailHost(@RequestBody TbTraceIPVo searchVo, ModelMap model, HttpServletRequest request) {
 		TbTraceIpHostMstVo resultVo = traceMgmtService.selectHostDetailInfo(searchVo);
 		TbTraceIpAssignMstVo resultAsgnVo = traceMgmtService.selectAssignDetailInfo(searchVo);

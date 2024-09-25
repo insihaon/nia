@@ -157,6 +157,7 @@ public class OptMgmtController extends CommonController {
 	}
 	
 	@RequestMapping(value = "/ticketmgmt/optmgmt/viewListOptIPTarget.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewListOptIPTarget(@RequestBody TbIpAssignMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		TbIpAssignMstListVo resultListVo = optMgmtService.selectListOptimizeIpTarget(searchVo);
@@ -206,6 +207,7 @@ public class OptMgmtController extends CommonController {
 	}
 	
 	@RequestMapping(value = "/ticketmgmt/optmgmt/viewListOptIPRecommend.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewListOptIPRecommend(@RequestBody TbIpAssignMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		TbIpAssignMstListVo resultListVo = optMgmtService.selectListOptimizeIpRecommend(searchVo);
@@ -277,6 +279,7 @@ public class OptMgmtController extends CommonController {
 	}
 	
 	@RequestMapping(value = "/ticketmgmt/optmgmt/viewListOptIPResult.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewListOptIPResult(@RequestBody TbOptimizationIpMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		TbOptimizationIpMstListVo resultListVo = optMgmtService.selectListOptimizeIpResult(searchVo);

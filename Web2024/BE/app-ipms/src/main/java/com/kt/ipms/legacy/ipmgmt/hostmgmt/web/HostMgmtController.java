@@ -42,6 +42,7 @@ public class HostMgmtController extends CommonController {
 	private HostMgmtService hostMgmtService;
 
 	@RequestMapping(value="/ipmgmt/hostmgmt/viewListHostIPMst.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewListHostIPMst(@RequestBody TbIpHostMstVo searchVo, ModelMap model,
 			HttpServletRequest request){
 		TbIpHostMstListVo resultListVo = hostMgmtService.selectListIpHostMst(searchVo);
@@ -128,6 +129,7 @@ public class HostMgmtController extends CommonController {
 	}
 
 	@RequestMapping(value="/ipmgmt/hostmgmt/viewDetailHostIPMst.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewDetailHostIPMst(@RequestBody TbIpHostMstVo searchVo, ModelMap model,
 			HttpServletRequest request){
 		TbIpHostMstListVo resultListVo = hostMgmtService.selectListIpHostMstViaIpInfo(searchVo);
@@ -385,6 +387,7 @@ public class HostMgmtController extends CommonController {
 	}
 
 	@RequestMapping(value="/ipmgmt/hostmgmt/viewInsertIpHostMst.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewInsertIpHostMst(@RequestBody TbIpHostMstVo searchVo, ModelMap model,
 			HttpServletRequest request){
 		TbIpHostMstListVo resultListVo = new TbIpHostMstListVo();
@@ -479,6 +482,7 @@ public class HostMgmtController extends CommonController {
 	}
 	
 	@RequestMapping(value="/ipmgmt/hostmgmt/viewDetailIPHostMst.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewDetailIPHostMst(@RequestBody TbIpHostMstVo searchVo, ModelMap model,
 			HttpServletRequest request){
 		TbIpHostMstVo resultVo = hostMgmtService.selectTbIpHostMstVo(searchVo);
@@ -525,6 +529,7 @@ public class HostMgmtController extends CommonController {
 	}
 	
 	@RequestMapping(value="/ipmgmt/hostmgmt/viewUpdateIPHostMst.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewUpdateIPHostMst(@RequestBody TbIpHostMstVo searchVo, ModelMap model,
 			HttpServletRequest request){
 		TbIpHostMstVo resultVo = hostMgmtService.selectTbIpHostMstVo(searchVo);
