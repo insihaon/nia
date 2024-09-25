@@ -1,0 +1,60 @@
+{
+  "__body": {
+    "result": {
+      "data": {
+        "searchBgnDe": "",
+        "searchCnd": "",
+        "searchEndDe": "",
+        "searchWrd": "",
+        "sortType": "",
+        "sortOrdr": "",
+        "searchUseYn": "",
+        "searchBgnCd": "",
+        "searchEndCd": "",
+        "pageIndex": 1,
+        "pageUnit": 0,
+        "pageSize": 0,
+        "firstIndex": 1,
+        "lastIndex": 10,
+        "recordCountPerPage": 10,
+        "rowNo": 0,
+        "typeFlag": "",
+        "dcreateDt": "2014-10-24 14:40:46",
+        "screateId": "91070207",
+        "screateNm": null,
+        "dmodifyDt": "2014-10-24 14:40:46",
+        "smodifyId": "91070207",
+        "smodifyNm": null,
+        "commonMsg": null,
+        "screateEmail": null,
+        "smodifyEmail": null,
+        "moveType": "",
+        "moveSearchWrd": "",
+        "moveSipVersionTypeCd": null,
+        "url": null,
+        "menuType": null,
+        "paramMap": null,
+        "sscrnId": "S00003",
+        "sscrnNm": "게시판",
+        "sscrnTypeCd": "UD0001",
+        "sscrnTypeNm": "MAIN",
+        "sscrnUrlTypeCd": "UU0000",
+        "sscrnUrlTypeNm": "미분류",
+        "sscrnUrlAdr": "opermgmt/boardmgmt/viewListBoard.do",
+        "scomnWrkjobScrnYn": "N",
+        "sdgnScrnId": "none",
+        "sscrnUseYn": "Y"
+      }
+    }
+  },
+  "__config": {
+    "url": "/opermgmt/menumgmt/viewDetailScrnBas.model",
+    "param": {
+      "sscrnId": "S00003"
+    },
+    "receivedTime": "2024-09-25 11:22:50.462",
+    "duration": 150,
+    "filename": "b3Blcm1nbXQvbWVudW1nbXQvdmlld0RldGFpbFNjcm5CYXMubW9kZWw_UzAwMDAz.json",
+    "fetch": "fetch('/opermgmt/menumgmt/viewDetailScrnBas.model', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{\"sscrnId\":\"S00003\"}', 'method': 'POST' })"
+  }
+}
