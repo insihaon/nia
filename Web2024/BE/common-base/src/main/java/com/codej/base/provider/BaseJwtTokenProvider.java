@@ -57,15 +57,8 @@ public class BaseJwtTokenProvider<T> { // JWT 토큰을 생성 및 검증 모듈
     @Qualifier("userDetailServiceImpl")
     private final UserDetailsService userDetailsService;
 
-    
-
-    // @Autowired(required = false)
-    // @Qualifier("niaUserDetailServiceImpl") 
-    // private final NiaUserDetailsServiceImpl niaUserDetailsService;
-
     public BaseJwtTokenProvider() {
         this.userDetailsService = null;
-        // this.niaUserDetailsService = null;
     }
 
     @PostConstruct

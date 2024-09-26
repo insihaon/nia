@@ -86,11 +86,27 @@ export default {
     },
   },
   mounted() {
-    this.onLoadSyslogRuleList()
+    this.$nextTick(() => {
+      this.loadRuleOptions()
+      this.onLoadSyslogRuleList()
+    })
   },
   methods: {
     onClickSearch(params) {
       this.onLoadSyslogRuleList(params)
+    },
+    async loadRuleOptions() {
+      try {
+        const res = await apiSyslogRuleList({})
+        const ruleOp = res.result.map((item) => ({ label: item.syslog_rule_nm, value: item.syslog_rule_nm }))
+        this.searchItems.forEach(item => {
+          if (item.model === 'syslog_rule_nm') {
+            item.options = ruleOp
+          }
+        })
+      } catch (error) {
+        console.error(error)
+      }
     },
     async onLoadSyslogRuleList() {
       const target = { vue: this.$refs.syslogRules }
@@ -105,14 +121,6 @@ export default {
       try {
         const res = await apiSyslogRuleList(param)
         this.ruleData = res?.result
-        const ruleNameData = res.result.map((item) => ({
-          label: item.syslog_rule_nm,
-          value: item.syslog_rule_nm,
-        }))
-        const items = this.searchItems.find((item) => {
-          return item.model === 'syslog_rule_nm'
-        })
-        items.options = ruleNameData
         this.paginationInfo.totalCount = res.total
         this.paginationInfo.totalPages = Math.ceil(this.paginationInfo.totalCount / this.paginationInfo.pageSize) // 전체 페이지 수 계산
       } catch (error) {
