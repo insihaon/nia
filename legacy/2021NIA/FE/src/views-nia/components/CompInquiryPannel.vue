@@ -19,7 +19,7 @@
                   clearable
                   :disabled="item.disabled === true"
                   :placeholder="item.placeholder"
-                  @keyup.native.enter="$emit('keyupEnter', searchModel)"
+                  @keyup.native.enter="onClickSearchButton"
                 />
                 <CompCheckSelector
                   v-if="item.type === 'select' && item.multiple"

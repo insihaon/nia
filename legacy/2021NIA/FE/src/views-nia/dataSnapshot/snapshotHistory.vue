@@ -20,11 +20,11 @@
                 </div>
               </div>
             </el-col>
-            <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
+            <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="12">
               <div class="optionItem">
                 <label> 분류 </label>
                 <div>
-                  <el-radio-group v-model="registItem.type" size="mini" :class="{'flex-column': isMobile}">
+                  <el-radio-group v-model="registItem.type" size="mini" :class="{'flex-column': isMobile}" style="flex-wrap: wrap">
                     <el-radio
                       v-for="option in categoryOptions"
                       v-if="option.show"
@@ -36,7 +36,7 @@
                 </div>
               </div>
             </el-col>
-            <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
+            <el-col :xs="24" :sm="12" :md="12" :lg="24" :xl="6">
               <div class="optionItem">
                 <label> 기간 </label>
                 <div>

@@ -260,10 +260,10 @@ div.optionRow label{
   color: #141414;
   padding: 4px 0px 4px 10px;
   margin-right: 10px;
-  border-right: solid 2px #909399;
   white-space: nowrap;
   display: flex;
   align-items: center;
+  justify-content: flex-end;
 }
 div.optionRow>div>div.optionItem {
   margin-bottom: 5px;

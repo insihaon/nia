@@ -6,6 +6,8 @@
           ref="ticketSearch"
           :ag-grid="sopAgGrid"
           :is-button-slot="false"
+          title="SOP 리스트"
+          :is-excel="true"
           :items="searchSopItems"
           :is-grid-loading="loading"
           :pagination-info="sopPaginationInfo"

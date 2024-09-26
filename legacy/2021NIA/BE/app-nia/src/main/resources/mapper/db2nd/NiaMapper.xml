@@ -48,7 +48,7 @@
                 AND U.AGENCY_NAME LIKE '%' || #{AGENCY_NAME} || '%'
             </if>
             <if test="NAME != null and NAME != ''">
-                AND UPPER(U.NAME) LIKE '%' || UPPER(#{name}) || '%'
+                AND UPPER(U.NAME) LIKE '%' || UPPER(#{NAME}) || '%'
             </if>
             <if test="LVL_VALUE != null and !LVL_VALUE.isEmpty()">
                 AND CAST(U.LVL AS VARCHAR) IN
@@ -624,6 +624,9 @@
                 <if test="ISHISTORY == null or ISHISTORY == false">
                     AND SYSLOG.ALARMTIME <![CDATA[ > ]]> NOW() - INTERVAL '1' MONTH
                 </if>
+                <!-- <if test="ISHISTORY != null or ISHISTORY == true">
+                    AND SOP.HANDLING_FIN_TIME <![CDATA[ > ]]> NOW() - INTERVAL '1' MONTH
+                </if> -->
                 <if test="NODE_NM != null and NODE_NM != ''">
                     AND SYSLOG.NODE_NM = #{NODE_NM}
                 </if>
@@ -743,7 +746,7 @@
         <where>
             <trim prefix="(" prefixOverrides="AND|OR" suffix=")" suffixOverrides="">
                 <if test="TICKET_ID != null and TICKET_ID != ''">
-                    AND TC.TICKET_ID = #{TICKET_ID}
+                    AND TC.TICKET_ID LIKE '%' || #{TICKET_ID} || '%'
                 </if>
                 <if test="TICKET_TYPE != null and TICKET_TYPE != ''">
                     AND TC.TICKET_TYPE = #{TICKET_TYPE}

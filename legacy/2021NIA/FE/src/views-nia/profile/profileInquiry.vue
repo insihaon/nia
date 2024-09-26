@@ -71,7 +71,7 @@ export default {
         { type: '', prop: 'profile_title', name: '제목', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center',
           cellRendererFramework: 'CellRenderHyperlink', cellRendererParams: { type: 'profileDetail', action: this.handleOpenModalDetail.bind(this) } },
         { type: '', prop: 'network_type', name: '네트워크', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: false },
-        { type: '', prop: 'processing_template', name: '장애대응', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
+        { type: '', prop: 'processing_template', name: '장애대응', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true, formatter: this.formatterProcessing },
         { type: '', prop: 'auto_process_info', name: '자동처리기간', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
         { type: '', prop: 'chng_datetime', name: '수정일', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
       ]
@@ -118,6 +118,14 @@ export default {
     },
     handleOpenModalDetail(row, type) {
       this.$refs.ModalProfileDetail.open({ row, type })
+    },
+    formatterProcessing(row, col, value, index) {
+      if (row.processing_template === 'recovery') {
+        return '자가회복'
+      }
+      if (row.processing_template === 'construction') {
+        return '공사'
+      }
     },
     async autoTest() {
       const { assert, wait, onLoadProfileList, query } = this
