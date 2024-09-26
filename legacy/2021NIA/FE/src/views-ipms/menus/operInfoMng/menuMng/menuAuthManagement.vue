@@ -4,7 +4,7 @@
       ref="searchCondition"
       :prop-name="name"
       :component-keys="componentList"
-      @handle-search="handleSearch"
+      @handle-search="fnViewListAuthMng"
     />
     <el-col :span="24">
       <compTable
@@ -12,6 +12,7 @@
         :prop-name="name"
         :prop-table-height="'calc(100% - 80px)'"
         :prop-column="tableColumns"
+        :prop-data="resultListVo"
         :prop-is-pagination="true"
         :prop-is-check-box="true"
         prop-grid-menu-id="inputSpeed"
@@ -30,6 +31,7 @@
 import { Base } from '@/min/Base.min'
 import CompTable from '@/components/elTable/CompTable.vue'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
+import { ipmsModelApis, apiRequestModel } from '@/api/ipms'
 
 const routeName = 'MenuAuthManagement'
 
@@ -42,10 +44,10 @@ export default {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       tableColumns: [
-        { prop: '', label: '메뉴명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: '메뉴 ID', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: '화면 URL', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: '메뉴권한 여부', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'smenuNm', label: '메뉴명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'smenuId', label: '메뉴 ID', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'sscrnUrlAdr', label: '화면 URL', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'smenuAutUseYn', label: '메뉴권한 여부', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
       ],
       componentList: [
       { key: 'AuthLevel', props: { isAllOption: false, defaultValue: 'UR0001' } },
@@ -54,11 +56,20 @@ export default {
         { label: '메뉴ID', value: 'smenuId' },
         ] }
       }],
+      resultListVo: []
     }
   },
+  mounted() {
+    this.fnViewListAuthMng()
+  },
   methods: {
-    handleSearch(requestParameter) {
-      console.log(requestParameter)
+    async fnViewListAuthMng(requestParameter) {
+       try {
+        const res = await apiRequestModel(ipmsModelApis.viewListMenuAuth, requestParameter)
+        this.resultListVo = res?.result?.data
+      } catch (error) {
+        console.error(error)
+      }
     }
   }
 }
