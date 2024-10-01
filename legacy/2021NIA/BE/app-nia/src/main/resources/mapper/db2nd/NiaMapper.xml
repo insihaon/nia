@@ -804,13 +804,13 @@
                 AND sysDialog.alarmtime <![CDATA[ <= ]]> #{end_date}::timestamp 
                 </if>
                 <if test="alarmno != null and alarmno != ''">
-                AND sysDialog.alarmno = #{alarmno}
+                AND sysDialog.alarmno LIKE '%' || #{alarmno} || '%'
                 </if>
                 <if test="node_nm != null and node_nm != ''">
-                AND sysDialog.node_nm = #{node_nm}
+                AND sysDialog.node_nm LIKE '%' || #{node_nm} || '%'
                 </if>
                 <if test="node_num != null and node_num != ''">
-                AND sysDialog.node_num = #{node_num}
+                AND sysDialog.node_num LIKE '%' || #{node_num} || '%'
                 </if>
                 <if test="alarmmsg != null and alarmmsg != ''">
                 AND UPPER(sysDialog.alarmmsg) LIKE '%' || UPPER(#{alarmmsg}) || '%'

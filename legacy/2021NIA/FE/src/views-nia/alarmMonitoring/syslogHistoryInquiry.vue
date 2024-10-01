@@ -4,6 +4,7 @@
       ref="syslogHist"
       :ag-grid="syslogAgGrid"
       :is-excel="true"
+      :is-excel-save-server="true"
       :title="titleName"
       :items="searchItems"
       :search-model.sync="searchModel"
@@ -13,6 +14,12 @@
       @onChangePage="(curPage) => onChangePage(curPage)"
       @searchClear="searchClear"
       @onDebugTest="autoTest"
+      @savedExcel="onSaveExcel"
+    />
+    <CompAgGrid
+      v-show="false"
+      ref="excelGrid"
+      v-model="excelGrid"
     />
   </div>
 </template>
@@ -57,10 +64,16 @@ export default {
         alarmmsg: '',
         start_date: '',
         end_date: ''
-      }
+      },
+      excelList: []
     }
   },
   computed: {
+    excelGrid() {
+      const grid = this._cloneDeep(this.syslogAgGrid)
+      grid.data = this.excelList
+      return grid
+    },
     syslogAgGrid() {
       const options = {
         name: this.name + 'table1', rowGroupPanel: false, rowHeight: 30, rowSelection: 'multiple', rowMultiSelection: false, suppressRowClickSelection: true,
@@ -107,10 +120,8 @@ export default {
         console.error(error)
       }
     },
-    async onLoadSyslogHistList() {
-      const target = { vue: this.$refs.syslogHist }
-      this.openLoading(target)
-      const param = {
+    getSyslogHistParam() {
+      return {
         start_date: this.searchModel.start_date !== '' ? this.searchModel.start_date : null,
         end_date: this.searchModel.end_date !== '' ? this.searchModel.end_date : null,
         alarmno: this.searchModel.alarmno,
@@ -120,6 +131,11 @@ export default {
         limit: this.paginationInfo.pageSize,
         page: this.paginationInfo.currentPage,
       }
+    },
+    async onLoadSyslogHistList() {
+      const target = { vue: this.$refs.syslogHist }
+      this.openLoading(target)
+      const param = this.getSyslogHistParam()
       try {
         const res = await apiSyslogHistList(param)
         this.syslogData = res?.result
@@ -139,6 +155,37 @@ export default {
       this.searchModel = {}
       this.onLoadSyslogHistList()
     },
+    async onSaveExcel() {
+      let limit = this.paginationInfo.totalCount
+      if (limit > 50000) {
+        await this.$confirm('데이터가 50,000건을 초과하였습니다. <br/> 50,000건 까지만 출력합니다.', '메시지 창', {
+          confirmButtonText: '확인',
+          dangerouslyUseHTMLString: true,
+          type: 'info'
+        }).then(async() => {
+          limit = 50000
+          await this.exportExcel(limit)
+        }).catch((action) => {
+        })
+      } else {
+        await this.exportExcel(limit)
+      }
+    },
+    async exportExcel(limit) {
+      const param = Object.assign(this.getSyslogHistParam(), { limit, page: 1 })
+      const target = ({ vue: this })
+      try {
+        this.openLoading(target, { text: '다운로드 중입니다.' })
+        const res = await apiSyslogHistList(param)
+        this.excelList = res?.result
+        setTimeout(() => {
+          this.$refs.excelGrid.exportExcel(`SYSLOG_${this.toStringTime(new Date(), 'YYMMDD')}`)
+          this.closeLoading(target)
+        }, 10)
+      } catch (error) {
+        this.error(error)
+      }
+    },
     async autoTest() {
       const { assert, wait, onLoadSyslogHistList } = this
       await onLoadSyslogHistList()
@@ -147,3 +194,9 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+::v-deep .el-loading-spinner {
+  flex-direction: column;
+  align-items: center;
+}
+</style>
