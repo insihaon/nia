@@ -88,13 +88,27 @@ export default {
     onClickSearch(params) {
       this.onLoadProfileList(params)
     },
+    convertProcessingTemplateDescToValue(desc) {
+      if (!desc) return ''
+
+      const templates = [
+        { value: 'recovery', display_name: '자가회복' },
+        { value: 'construction', display_name: '공사' }
+      ]
+
+      // 검색어가 포함된 display_name을 찾아 해당 value 값을 반환
+      return templates
+        .filter(template => template.display_name.includes(desc)) // 부분 일치하는 항목 찾기
+        .map(template => template.value) // 일치하는 value 값을 배열로 반환
+        .join(',') // 여러 값이 있으면 콤마로 연결해 반환
+    },
     async onLoadProfileList() {
       const target = { vue: this.$refs.trafficAnalysis }
       this.openLoading(target)
       const param = {
         profile_title: this.searchModel.profile_title,
         network_type: this.searchModel.network_type,
-        processing_template: this.searchModel.processing_template,
+        processing_template: this.convertProcessingTemplateDescToValue(this.searchModel.processing_template),
         limit: this.paginationInfo.pageSize,
         page: this.paginationInfo.currentPage,
       }
