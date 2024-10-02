@@ -53,9 +53,9 @@ export default {
         { label: '대표 IP', type: 'input', model: 'ip_addr', placeholder: 'IP를 검색하세요' },
         { label: '사용여부', type: 'select', placeholder: '사용여부를 선택하세요', model: 'admin_yn', setting: { allOption: { toggle: true } },
           options: [
-            { label: '전체', value: 'all' },
-            { label: '사용', value: 'up' },
-            { label: '미사용', value: 'down' },
+            { label: '전체', value: '' },
+            { label: '사용', value: 'W' },
+            { label: '미사용', value: 'N' },
         ] },
         { label: '날짜', type: 'dateTime', model: 'datetime' },
 
@@ -78,7 +78,7 @@ export default {
         { type: '', prop: 'rownum', name: '번호', minWidth: 20, flex: 0, suppressMenu: true, alignItems: 'center' },
         { type: '', prop: 'node_nm', name: '노드명', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center',
           cellRendererFramework: 'CellRenderHyperlink', cellRendererParams: { type: 'nodeDetail', action: this.handleOpenModalDetail.bind(this) } },
-        { type: '', prop: 'model_id', name: '모델명', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: false },
+        { type: '', prop: 'code_nm', name: '모델명', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: false },
         { type: '', prop: 'mac_addr', name: '맥주소', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
         { type: '', prop: 'ip_addr', name: '대표IP', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
         { type: '', prop: 'admin_yn_info', name: '사용여부', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
@@ -103,8 +103,8 @@ export default {
       const target = { vue: this.$refs.nodeList }
       this.openLoading(target)
       const param = {
-        node_nm: this.searchModel.node_name,
-        model_id: this.searchModel.if_name,
+        node_nm: this.searchModel.node_nm,
+        model_id: this.searchModel.model_id,
         ip_addr: this.searchModel.ip_addr,
         admin_yn: this.searchModel.admin_yn,
         limit: this.paginationInfo.pageSize,

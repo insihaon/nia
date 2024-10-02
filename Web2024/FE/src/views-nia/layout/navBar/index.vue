@@ -1,6 +1,7 @@
 <template>
   <el-header id="header-menu" class="dark bg-slate-900 flex h-20 p-0 w-full items-center">
-    <div class="flex w-full h-full justify-between">
+    <div class="flex w-full h-full justify-between flex-nowrap">
+      <!-- style="position: fixed;display: inline-flex;left: 0;" -->
       <div class="flex items-center h-full" :class="{ 'headerWrapLogo': !isMobile }">
         <div v-if="isMobile" id="hamburger-container" class="d-flex" :class="{ 'justify-center': isActive, 'justify-end': !isActive }" @click="toggleSideBar">
           <i :class="{ 'el-icon-s-unfold': isActive, 'el-icon-s-fold': !isActive }" />
@@ -9,6 +10,7 @@
           <div id="system-name" @click="onClickHeaderLogo()">NIA KOREN</div>
         </div>
         <!-- only parent -->
+        <!-- <el-scrollbar ref="scrollHeader" wrap-class="scrollbar-wrapper" :vertical="false" @wheel.native="handleScroll"> -->
         <nav v-if="!isMobile" id="menu-bar" class="h-full">
           <el-menu class="flex h-full" :background-color="bgColor" :text-color="textColor" style="border-right: 0px">
             <el-menu-item
@@ -25,8 +27,9 @@
             </el-menu-item>
           </el-menu>
         </nav>
+        <!-- </el-scrollbar> -->
       </div>
-      <div v-if="!isMobile && isViewport('>', 'md')" id="other-container" class="flex items-center">
+      <div v-if="!isMobile" id="other-container" class="flex items-center">
         <div id="function-container">
           <SvgIcon class="mr-2" type="mdi" :path="path" @click.native="toggleHistoryBar" />
         </div>
@@ -106,6 +109,9 @@ export default {
       return this.sidebar.opened
     },
     ...mapGetters(['permission_routes', 'sidebar']),
+    scrollWrapper() {
+      return this.$refs.scrollHeader.$refs.wrap
+    }
   },
   created() {
     setInterval(() => {
@@ -136,6 +142,11 @@ export default {
         return !route.hidden
       }
     },
+    handleScroll(e) { // horizon scroll event
+      const eventDelta = e.wheelDelta
+      const $scrollWrapper = this.scrollWrapper
+      $scrollWrapper.scrollLeft = $scrollWrapper.scrollLeft + eventDelta / 4
+    },
     hasGrant(grant) {
       const userAuth = Number(this.$store.state.user.info.lvl)
       return ((userAuth || 1) & grant) === grant
@@ -158,10 +169,25 @@ export default {
 
 <style lang="scss" scoped>
 @import '~@/styles/variables.scss';
-
+.el-scrollbar ::v-deep {
+  width: 1400px;
+  .el-scrollbar__wrap {
+    overflow: hidden !important;
+  }
+  .is-vertical {
+    display: none;
+  }
+  .is-horizontal {
+    height: 3px;
+  }
+}
+.is-horizontal ::v-deep {
+  display: none;
+}
 #header-menu {
   transition: all 0.4s;
   background-color: rgb(30 41 59);
+
   #hamburger-container {
     color: white;
     font-size: 20px;
@@ -194,8 +220,11 @@ export default {
     }
   }
   #menu-bar {
-    margin-left: 40px;
-    min-width: 1350px;
+    margin-left: 10px;
+    // min-width: 1350px;
+    ul {
+      flex-wrap: nowrap;
+    }
     ul, li {
       transition: all 0.4s;
       letter-spacing: 1px;
@@ -205,6 +234,8 @@ export default {
     }
   }
   ::v-deep #other-container {
+    flex-wrap: nowrap;
+    min-width: 280px;
     #user-info {
       height: 60px;
       width: 190px;
@@ -278,8 +309,10 @@ export default {
     z-index: 3;
     height: 0px;
     width: 100%;
-    padding-left: 170px;
+    padding-left: 140px;
     overflow: hidden;
+    // position: fixed;
+    // top: 60px;
     background-color: #eef0f3;
     transition: height, 0.25s linear;
     #top-inner {
