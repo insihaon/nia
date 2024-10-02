@@ -15,7 +15,7 @@
           class="w-100 h-100"
           @handleClickSearch="() => onClickSearch('TICKET')"
           @onChangePage="(curPage) => onChangePage(curPage, 'TICKET')"
-          @selectedRow="(row) => onClickRow(row, 'TICKET')"
+          @rowClicked="(row) => onClickRow(row, 'TICKET')"
           @searchClear="() => onLoadSopHistList()"
           @savedExcel="onSaveExcel"
         />
@@ -32,7 +32,7 @@
           class="w-100 h-100"
           @handleClickSearch="() => onClickSearch('SYSLOG')"
           @onChangePage="(curPage) => onChangePage(curPage, 'SYSLOG')"
-          @selectedRow="(row) => onClickRow(row, 'SYSLOG')"
+          @rowClicked="(row) => onClickRow(row, 'SYSLOG')"
           @searchClear="() => onLoadSyslogHistList()"
         />
       </el-tab-pane>
@@ -42,7 +42,7 @@
       ref="excelGrid"
       v-model="excelGrid"
     />
-    <ModalSopDetail ref="ModalSopDetail" />
+    <ModalSopDetail ref="ModalSopDetail" @reload="onReload" />
   </div>
 </template>
 <script>
@@ -266,6 +266,7 @@ export default {
       return param
     },
     async onLoadSopHistList() {
+      const THIS = this
       const param = this.getSopHistParam()
       try {
         this.loading = true
@@ -300,6 +301,13 @@ export default {
         this.syslogLoading = false
       }
     },
+    onReload(type) {
+      if (type === 'TICKET') {
+        this.onLoadSopHistList()
+      } else {
+        this.onLoadSyslogHistList()
+      }
+    },
     onChangePage(curPage, type) {
       if (type === 'TICKET') {
         this.sopPaginationInfo.currentPage = curPage
@@ -316,8 +324,8 @@ export default {
         this.onLoadSyslogHistList()
       }
     },
-    onClickRow(rows, type) {
-      this.$refs.ModalSopDetail.open({ row: rows[0], type })
+    onClickRow(row, type) {
+      this.$refs.ModalSopDetail.open({ row: row.data, type })
     },
     async onSaveExcel() {
       let limit = this.sopPaginationInfo.totalCount

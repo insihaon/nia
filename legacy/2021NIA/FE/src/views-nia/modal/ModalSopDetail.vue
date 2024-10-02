@@ -45,8 +45,8 @@
         </div>
         <div slot="footer" class="dialog-footer">
           <hr>
-          <el-button size="mini" icon="el-icon-edit" @click.native="close()">수정</el-button>
-          <el-button size="mini" icon="el-icon-delete" type="danger" @click.native="close()">삭제</el-button>
+          <el-button size="mini" icon="el-icon-edit" @click.native="handleClickUpdate()">수정</el-button>
+          <el-button size="mini" icon="el-icon-delete" type="danger" @click.native="handleClickDelete()">삭제</el-button>
           <el-button size="mini" icon="el-icon-close" type="info" @click.native="close()">
             {{ $t('exit') }}
           </el-button>
@@ -63,8 +63,9 @@ import _ from 'lodash'
 import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
 import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
 import CellRenderDataSetButtons from '@/views-dataHub/components/cellRenderer/CellRenderDataSetButtons'
-import { apiSelectSopCode } from '@/api/nia'
+import { apiSelectSopCode, apiUpdateSopHist, apiDeleteSopHist, apiUpdateSyslogHist, apiDeleteSyslogHist } from '@/api/nia'
 import { getTicketStatus } from '@/views-nia/js/commonFormat'
+import { onMessagePopup } from '@/utils/index'
 
 const routeName = 'ModalSopDetail'
 
@@ -82,11 +83,11 @@ export default {
       viewType: 'TICKET',
       sopCodeList: [],
       visible: false,
-      codeKeys: { gubun: '장애구분', type: '장애유형', content: '조치내용' },
+      codeKeys: { fault_classify: '장애구분', fault_type: '장애유형', fault_detail_content: '조치내용' },
       selectOption: {
-        gubun: [],
-        type: [],
-        content: [],
+        fault_classify: [],
+        fault_type: [],
+        fault_detail_content: [],
       },
       sopInfo: {
         ticket_id: '',
@@ -102,9 +103,9 @@ export default {
         status: '',
       },
       updateInfo: {
-        gubun: '',
-        type: '',
-        content: '',
+        fault_classify: '',
+        fault_type: '',
+        fault_detail_content: '',
       },
     }
   },
@@ -132,9 +133,9 @@ export default {
     },
     formUpdate() {
       return [
-        { label: '장애구분', model: 'gubun', option: this.selectOption.gubun },
-        { label: '장애유형', model: 'type', option: this.selectOption.type },
-        { label: '조치내용', model: 'content', option: this.selectOption.content },
+        { label: '장애구분', model: 'fault_classify', option: this.selectOption.fault_classify },
+        { label: '장애유형', model: 'fault_type', option: this.selectOption.fault_type },
+        { label: '조치내용', model: 'fault_detail_content', option: this.selectOption.fault_detail_content },
       ]
     },
   },
@@ -145,7 +146,10 @@ export default {
       this.closeOnClickModal = false
     },
     onOpen(model, actionMode) {
+      this.updateInfo = { fault_classify: '', fault_type: '', fault_detail_content: '' }
       this.selectedRow = model?.row
+      const { fault_classify, fault_type, fault_detail_content } = this.selectedRow
+      this._merge(this.updateInfo, { fault_classify: fault_classify ?? '', fault_type: fault_type ?? '', fault_detail_content: fault_detail_content ?? '' })
       this.viewType = model?.type
 
       this.syslogInfo['_status'] = getTicketStatus(null, null, this.selectedRow.status)
@@ -170,6 +174,65 @@ export default {
         })
       })
     },
+    handleClickUpdate() {
+      this.confirm('수정하시겠습니까?', '알림', {
+        confirmButtonText: '확인',
+        cancelButtonText: '취소',
+        type: 'warning'
+      }).then(async () => {
+        const { fault_classify: FAULT_CLASSIFY, fault_type: FAULT_TYPE, fault_detail_content: FAULT_DETAIL_CONTENT } = this.updateInfo
+        const params = { FAULT_CLASSIFY, FAULT_TYPE, FAULT_DETAIL_CONTENT }
+        if (this.viewType === 'TICKET') {
+          Object.assign(params, { TICKET_ID: this.selectedRow.ticket_id })
+        } else {
+          Object.assign(params, { ALARMNO: this.selectedRow.alarmno })
+        }
+        try {
+          let res
+          if (this.viewType === 'TICKET') {
+            res = await apiUpdateSopHist(params)
+          } else {
+            res = await apiUpdateSyslogHist(params)
+          }
+          if (res.success) {
+            onMessagePopup(this, `${this.viewType === 'TICKET' ? 'SOP' : 'SYSLOG'} 이력 수정되었습니다.`)
+            this.$emit('reload', this.viewType)
+            this.close()
+          }
+          console.log(res)
+        } catch (error) {
+          this.error(error)
+        }
+      })
+      .catch((action) => {
+      })
+    },
+    handleClickDelete() {
+      this.confirm('삭제하시겠습니까?', '알림', {
+        confirmButtonText: '확인',
+        cancelButtonText: '취소',
+        type: 'warning'
+      }).then(async () => {
+        try {
+          let res
+          if (this.viewType === 'TICKET') {
+            res = await apiDeleteSopHist({ TICKET_ID: this.selectedRow.ticket_id })
+          } else {
+            res = await apiDeleteSyslogHist({ ALARMNO: this.selectedRow.alarmno })
+          }
+          console.log(res)
+          if (res.success) {
+            onMessagePopup(this, `${this.viewType === 'TICKET' ? 'SOP' : 'SYSLOG'} 이력 삭제되었습니다.`)
+            this.$emit('reload', this.viewType)
+            this.close()
+          }
+        } catch (error) {
+          this.error(error)
+        }
+      })
+      .catch((action) => {
+      })
+    },
     onClose() {
       /* for Override */
     },
@@ -179,7 +242,7 @@ export default {
 <style lang="scss" scoped>
 
 ::v-deep .el-form-item__label {
-  width: 95px;
+  width: 96px;
   margin-left: 5px;
   line-height: 20px;
 }

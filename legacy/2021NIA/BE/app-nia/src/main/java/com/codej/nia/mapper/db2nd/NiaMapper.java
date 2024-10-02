@@ -39,12 +39,16 @@ public interface NiaMapper extends BaseDataMapper {
         public List<ResultMap> SELECT_AI_DETECTION_INFO(HashMap<String, Object> map);
 
         public List<ResultMap> SELECT_SOP_SYSLOG_HIST_LIST(HashMap<String, Object> map);
+        public int UPDATE_SYSLOG_HIST(HashMap<String, Object> map);
+        public int DELETE_SYSLOG_HIST(HashMap<String, Object> map);
 
         public List<ResultMap> SELECT_EQUIPMENT_LIST(HashMap<String, Object> map);
 
         public List<ResultMap> SELECT_INTERFACE_LIST(HashMap<String, Object> map);
 
         public List<ResultMap> SELECT_SOP_HIST_LIST(HashMap<String, Object> map);
+        public int UPDATE_SOP_HIST(HashMap<String, Object> map);
+        public int DELETE_SOP_HIST(HashMap<String, Object> map);
 
         public List<ResultMap> SELECT_ALARM_CURRENT_HISTORY_LIST(HashMap<String, Object> map);
 

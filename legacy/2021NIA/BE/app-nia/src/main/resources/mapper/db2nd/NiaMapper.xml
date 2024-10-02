@@ -592,7 +592,7 @@
             , ROUND(FLTBPSOUT_THRESHOLD_LOWER::NUMERIC, 2) AS OUT_THRESHOLD_LOWER
             , FLTBPSOUT_ANOMALY AS OUT_ANOMALY
         FROM    rca.tb_anomalous_ai_result AR
-        INNER JOIN resource.tb_port_mst PM ON AR.STRIFID = PM.NODE_NUM AND AR.STRRESID = PM.IF_NUM
+        INNER JOIN resource.tb_port_mst PM ON AR.STRIFID = PM.IF_NUM AND AR.STRRESID = PM.NODE_NUM
         WHERE   PM.node_id= #{START_NODE}
         AND     PM.if_id = #{START_PORT}
         AND     MEASURED_DATETIME = #{FAULT_TIME}::TIMESTAMP
@@ -647,6 +647,27 @@
         ORDER BY SYSLOG.ALARMTIME DESC
         <include refid="TotalCountSuffix"/>
     </select>
+
+    <update id="UPDATE_SYSLOG_HIST" parameterType="java.util.HashMap">
+        UPDATE nia.tb_syslog_sop
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="FAULT_CLASSIFY != null">
+                fault_classify = #{FAULT_CLASSIFY},
+            </if>
+            <if test="FAULT_TYPE != null">
+                fault_type = #{FAULT_TYPE},
+            </if>
+            <if test="FAULT_DETAIL_CONTENT != null">
+                fault_detail_content = #{FAULT_DETAIL_CONTENT}
+            </if>
+        </trim>
+        WHERE  alarmno = #{ALARMNO}
+    </update>
+    
+     <delete id="DELETE_SYSLOG_HIST" parameterType="java.util.HashMap">
+        DELETE from nia.tb_syslog_sop
+        WHERE alarmno = #{ALARMNO}
+    </delete>
 
     <select id="SELECT_EQUIPMENT_LIST" parameterType="hashmap" resultType="hashmap">
         SELECT  DISTINCT NODE_NM AS VALUE
@@ -722,6 +743,27 @@
         ORDER BY SOP.REQUEST_TIME DESC 
     <include refid="TotalCountSuffix"/>
     </select>
+
+    <update id="UPDATE_SOP_HIST" parameterType="java.util.HashMap">
+        UPDATE nia.tb_sop
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="FAULT_CLASSIFY != null">
+                fault_classify = #{FAULT_CLASSIFY},
+            </if>
+            <if test="FAULT_TYPE != null">
+                fault_type = #{FAULT_TYPE},
+            </if>
+            <if test="FAULT_DETAIL_CONTENT != null">
+                fault_detail_content = #{FAULT_DETAIL_CONTENT}
+            </if>
+        </trim>
+        WHERE ticket_id = #{TICKET_ID}
+    </update>
+
+    <delete id="DELETE_SOP_HIST" parameterType="java.util.HashMap">
+        DELETE FROM nia.tb_sop
+        WHERE ticket_id = #{TICKET_ID}
+    </delete>
 
     <!-- 장애 현황 및 이력 -->
     <select id="SELECT_ALARM_CURRENT_HISTORY_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
