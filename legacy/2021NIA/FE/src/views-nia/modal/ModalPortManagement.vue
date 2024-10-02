@@ -110,7 +110,7 @@ export default {
   methods: {
     onCreated() {
       Modal.methods.onCreated.call(this)
-      this.domElement.maxHeight = 1600
+      this.domElement.maxWidth = 1200
       this.closeOnClickModal = false
     },
     onOpen(model, actionMode) {

@@ -41,9 +41,6 @@
                 , U.PHONE_NUMBER
         FROM nia.tb_user U
         <where>
-            <if test="NAME != null">
-                U.NAME LIKE '%' || #{NAME} || '%'
-            </if>
             <if test="AGENCY_NAME != null">
                 AND U.AGENCY_NAME LIKE '%' || #{AGENCY_NAME} || '%'
             </if>
@@ -1684,16 +1681,16 @@
                 FROM RESOURCE.TB_NODE_MST TNM
                 LEFT OUTER JOIN RESOURCE.TB_CODE CODE ON (TNM.MODEL_ID = CODE.CODE_ID)
                 WHERE 1=1
-                <if test="NODE_NM != null and node_nm != ''">
+                <if test="node_nm != null and node_nm != ''">
                     AND tnm.NODE_NM like '%' || #{node_nm} || '%'
                 </if>
-                <if test="MODEL_ID != null and model_id != ''">
+                <if test="model_id != null and model_id != ''">
                     AND code.CODE_NM like '%' || #{model_id} || '%'
                 </if>
-                <if test="IP_ADDR != null and ip_addr != ''">
+                <if test="ip_addr != null and ip_addr != ''">
                     AND tnm.IP_ADDR like '%' || #{ip_addr} || '%'
                 </if>
-                <if test="ADMIN_YN != null">
+                <if test="admin_yn != null">
                     AND tnm.ADMIN_YN like '%' || #{admin_yn} || '%'
                 </if>
                 <if test="start_date != null and end_date != null">
@@ -1786,19 +1783,19 @@
         LEFT OUTER JOIN RESOURCE.TB_PORT_MST DP ON DP.NODE_ID = BL.DEST_NODE_ID AND DP.IF_ID = BL.DEST_IF_ID
         WHERE 1=1
             <if test="src_node_id != null and src_node_id != ''">
-                AND UPPER(BL.SRC_NODE_ID) LIKE '%' || UPPER(#{src_node_id}) || '%'
+                AND BL.src_node_id LIKE '%' || #{src_node_id} || '%'
+            </if>
+            <if test="src_if_id != null and src_if_id != ''">
+                AND BL.src_if_id LIKE '%' || #{src_if_id} || '%'
             </if>
             <if test="dest_node_id != null and dest_node_id != ''">
-                AND UPPER(BL.DEST_NODE_ID) LIKE '%' || UPPER(#{dest_node_id}) || '%'
+                AND BL.dest_node_id LIKE '%' || #{dest_node_id} || '%'
             </if>
-            <if test="src_if_name != null and src_if_name != ''">
-                AND UPPER(SP.IF_NM) LIKE '%' || UPPER(#{src_if_name}) || '%'
-            </if>
-            <if test="dest_if_name != null and dest_if_name != ''">
-                AND UPPER(DP.IF_NM) LIKE '%' || UPPER(#{dest_if_name}) || '%'
+            <if test="dest_if_id != null and dest_if_id != ''">
+                AND BL.dest_if_id LIKE '%' || #{dest_if_id} || '%'
             </if>
             <if test="link_desc != null and link_desc != ''">
-                AND UPPER(BL.LINK_DESC) LIKE '%' || UPPER(#{link_desc}) || '%'
+                AND BL.link_desc LIKE '%' || #{link_desc} || '%'
             </if>
         ) AS link
     </select>

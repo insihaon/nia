@@ -27,6 +27,9 @@ div.headerWrap span.menuTitle{
 }
 
 div.headerWrapLogo{
+  min-width: 1500px;
+  flex-direction: row;
+
   background-image: url("../images/nia/header_logo2.png");
   background-repeat: no-repeat;
   background-position: 10px center;
