@@ -1146,7 +1146,8 @@
         SELECT 
             NREN_NAME AS NAME, 
             NREN_ID AS ID 
-        FROM RESOURCE.TB_USER_ORGAN TCC 
+        FROM RESOURCE.TB_USER_ORGAN TCC
+        WHERE NREN_ID IS NOT NULL 
         ORDER BY NREN_NAME
     </select>
 
@@ -1432,31 +1433,35 @@
      <select id="SELECT_PROFILE_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
         <include refid="TotalCountPrefix"/>
         SELECT
-            PROFILE_NUM,
-            PROFILE_TITLE,
-            PROFILE_DESC,
-            NETWORK_TYPE,
-            PROCESSING_TEMPLATE,
-            CONSTRUCTION_CHECK,
-            AUTO_PROCESS_CHECK,
-            TICKET_TYPE,
-            PROCESS_TYPE,
-            AUTO_RECOVERY,
-            EMAIL_CHECK,
-            TO_CHAR(AUTO_PROCESS_START_DATETIME, 'YYYY-MM-DD HH:MI:SS') AS AUTO_PROCESS_START_DATETIME,
-            TO_CHAR(AUTO_PROCESS_END_DATETIME, 'YYYY-MM-DD HH:MI:SS') AS AUTO_PROCESS_END_DATETIME,
-            CASE
-                WHEN AUTO_PROCESS_CHECK = 'true' THEN '상시'
-                ELSE 
-                    CASE
-                        WHEN AUTO_PROCESS_START_DATETIME IS NOT NULL AND AUTO_PROCESS_END_DATETIME IS NOT NULL THEN 
-                            AUTO_PROCESS_START_DATETIME || ' ~ ' || AUTO_PROCESS_END_DATETIME
-                        ELSE NULL 
-                    END
-            END AS AUTO_PROCESS_INFO,
-            TO_CHAR(CHNG_DATETIME, 'YYYY-MM-DD HH:MI:SS') AS CHNG_DATETIME,
-            ROW_NUMBER() OVER (ORDER BY PROFILE_NUM) AS ROWNUM
-        FROM RESOURCE.TB_FAULT_PROCESS_PROFILE
+        PROFILE_NUM,
+        PROFILE_TITLE,
+        PROFILE_DESC,
+        NETWORK_TYPE,
+        PROCESSING_TEMPLATE,
+        <!-- CASE 
+            WHEN PROCESSING_TEMPLATE = 'recovery' THEN '자가회복'
+            WHEN PROCESSING_TEMPLATE = 'construction' THEN '공사'
+        END AS PROCESSING_TEMPLATE_DESC, -->
+        CONSTRUCTION_CHECK,
+        AUTO_PROCESS_CHECK,
+        TICKET_TYPE,
+        PROCESS_TYPE,
+        AUTO_RECOVERY,
+        EMAIL_CHECK,
+        TO_CHAR(AUTO_PROCESS_START_DATETIME, 'YYYY-MM-DD HH:MI:SS') AS AUTO_PROCESS_START_DATETIME,
+        TO_CHAR(AUTO_PROCESS_END_DATETIME, 'YYYY-MM-DD HH:MI:SS') AS AUTO_PROCESS_END_DATETIME,
+        CASE
+            WHEN AUTO_PROCESS_CHECK = 'true' THEN '상시'
+            ELSE 
+                CASE
+                    WHEN AUTO_PROCESS_START_DATETIME IS NOT NULL AND AUTO_PROCESS_END_DATETIME IS NOT NULL THEN 
+                        AUTO_PROCESS_START_DATETIME || ' ~ ' || AUTO_PROCESS_END_DATETIME
+                    ELSE NULL 
+                END
+        END AS AUTO_PROCESS_INFO,
+        TO_CHAR(CHNG_DATETIME, 'YYYY-MM-DD HH:MI:SS') AS CHNG_DATETIME,
+        ROW_NUMBER() OVER (ORDER BY PROFILE_NUM) AS ROWNUM
+    FROM RESOURCE.TB_FAULT_PROCESS_PROFILE
         WHERE 1=1
         <if test="profile_title != null and profile_title != ''">
             AND PROFILE_TITLE LIKE '%' || #{profile_title} || '%'
@@ -1690,7 +1695,7 @@
                 <if test="ip_addr != null and ip_addr != ''">
                     AND tnm.IP_ADDR like '%' || #{ip_addr} || '%'
                 </if>
-                <if test="admin_yn != null">
+                <if test="admin_yn != null and admin_yn != ''">
                     AND tnm.ADMIN_YN like '%' || #{admin_yn} || '%'
                 </if>
                 <if test="start_date != null and end_date != null">
