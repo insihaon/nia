@@ -47,12 +47,15 @@
             <if test="NAME != null and NAME != ''">
                 AND UPPER(U.NAME) LIKE '%' || UPPER(#{NAME}) || '%'
             </if>
-            <if test="LVL_VALUE != null and !LVL_VALUE.isEmpty()">
+            <if test="LVL_VALUE != null">
+                AND U.lvl <![CDATA[ & ]]> #{LVL_VALUE}!= 0
+            </if>
+            <!-- <if test="LVL_VALUE != null and !LVL_VALUE.isEmpty()">
                 AND CAST(U.LVL AS VARCHAR) IN
                 <foreach item="LEVEL" collection="LVL_VALUE" open="(" separator="," close=")">
                     #{LEVEL}
                 </foreach>
-            </if>
+            </if> -->
         </where>
         <if test="IS_ALL == true">
             ORDER BY LAST_LOGIN DESC
@@ -621,9 +624,9 @@
                 <if test="ISHISTORY == null or ISHISTORY == false">
                     AND SYSLOG.ALARMTIME <![CDATA[ > ]]> NOW() - INTERVAL '1' MONTH
                 </if>
-                <!-- <if test="ISHISTORY != null or ISHISTORY == true">
+                <if test="ISHISTORY != null or ISHISTORY == true">
                     AND SOP.HANDLING_FIN_TIME <![CDATA[ > ]]> NOW() - INTERVAL '1' MONTH
-                </if> -->
+                </if>
                 <if test="NODE_NM != null and NODE_NM != ''">
                     AND SYSLOG.NODE_NM = #{NODE_NM}
                 </if>
@@ -721,9 +724,9 @@
         <if test="TICKET_ID != null">
             AND SOP.TICKET_ID LIKE '%' || #{TICKET_ID} || '%'
         </if>
-        <!-- <if test="START_DATE == null and END_DATE == null">
+        <if test="START_DATE == null and END_DATE == null">
             AND AL.INSERT_TIME <![CDATA[ > ]]> now() - INTERVAL '7' day
-        </if> -->
+        </if>
         <if test="START_DATE != null">
             AND AL.INSERT_TIME <![CDATA[ >= ]]> #{START_DATE}::TIMESTAMP
         </if>
