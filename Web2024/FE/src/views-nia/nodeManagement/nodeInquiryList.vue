@@ -93,9 +93,6 @@ export default {
     this.onLoadTrafficList()
   },
   methods: {
-    onSortedChange(param) {
-       this.onLoadTrafficList()
-    },
     onClickSearch(params) {
       this.onLoadTrafficList(params)
     },
