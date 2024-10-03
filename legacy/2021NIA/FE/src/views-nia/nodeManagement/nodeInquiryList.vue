@@ -4,6 +4,7 @@
       ref="nodeList"
       :ag-grid="trafficAgGrid"
       :is-excel="true"
+      :is-excel-save-server="true"
       :title="titleName"
       :items="searchItems"
       :search-model.sync="searchModel"
@@ -12,10 +13,16 @@
       @handleClickSearch="onClickSearch"
       @onChangePage="(curPage) => onChangePage(curPage)"
       @searchClear="searchClear"
+      @savedExcel="onSaveExcel"
       @onDebugTest="autoTest"
     />
     <ModalNodeDetail ref="ModalNodeDetail" />
     <ModalPortManagement ref="ModalPortManagement" />
+    <CompAgGrid
+      v-show="false"
+      ref="excelGrid"
+      v-model="excelGrid"
+    />
   </div>
 </template>
 <script>
@@ -26,12 +33,13 @@ import ModalPortManagement from '@/views-nia/modal/ModalPortManagement'
 import CellRenderAibuttons from '@/views-nia/components/cellRenderer/CellRenderAibuttons'
 import CellRenderHyperlink from '@/views-nia/components/cellRenderer/CellRenderHyperlink'
 import { apiSelectNodeList } from '@/api/nia'
+import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
 
 const routeName = 'NodeInquiryList'
 export default {
   name: routeName,
   // eslint-disable-next-line vue/no-unused-components
-  components: { CompInquiryPannel, ModalPortManagement, ModalNodeDetail, CellRenderAibuttons, CellRenderHyperlink },
+  components: { CompInquiryPannel, ModalPortManagement, ModalNodeDetail, CellRenderAibuttons, CellRenderHyperlink, CompAgGrid },
   extends: Base,
   data() {
     return {
@@ -70,9 +78,26 @@ export default {
   },
 
   computed: {
+    excelGrid() {
+      const grid = this._cloneDeep(this.trafficAgGrid)
+      grid.columns = [
+        { type: '', prop: 'rownum', name: '번호', minWidth: 20, flex: 0, suppressMenu: true, alignItems: 'center' },
+        { type: '', prop: 'node_nm', name: '장비ID', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center' },
+        { type: '', prop: 'code_nm', name: '장비이름', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: false },
+        { type: '', prop: 'netconf_type', name: '장비타입', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: false },
+        { type: '', prop: 'model_id', name: '모델이름', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: false },
+        { type: '', prop: 'latitude', name: '위도', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: false },
+        { type: '', prop: 'longitude', name: '경도', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: false },
+        { type: '', prop: 'mac_addr', name: '맥주소', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
+        { type: '', prop: 'ip_addr', name: '마스터IP', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
+        { type: '', prop: 'admin_yn', name: '사용여부', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
+        { type: '', prop: 'chng_datetime', name: '수정일', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
+      ]
+      return grid
+    },
     trafficAgGrid() {
       const options = {
-        name: this.name + 'table1', checkable: false, rowGroupPanel: false, rowSelection: 'multiple', rowMultiSelection: false, suppressRowClickSelection: true,
+        name: this.name, checkable: false, rowGroupPanel: false, rowSelection: 'multiple', rowMultiSelection: false, suppressRowClickSelection: true,
       }
       const columns = [
         { type: '', prop: 'rownum', name: '번호', minWidth: 20, flex: 0, suppressMenu: true, alignItems: 'center' },
@@ -128,6 +153,9 @@ export default {
     },
     searchClear() {
       this.searchModel = {}
+    },
+    onSaveExcel() {
+      this.$refs.excelGrid.exportExcel(`노드관리_${this.toStringTime(new Date(), 'YYMMDD')}`)
     },
     handleOpenModalDetail(row, type) {
       if (type === 'nodeDetail') {
