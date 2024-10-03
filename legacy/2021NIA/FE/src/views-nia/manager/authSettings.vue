@@ -45,9 +45,9 @@ export default {
         { label: '권한 설정', type: 'select', multiple: true, model: 'lvl_value', icon: 'el-icon-setting',
           options:
           [
-            { label: '사용자', value: '1' },
-            { label: '담당자', value: '3' },
-            { label: '관리자', value: '7' },
+            { label: '사용자', value: 1 },
+            { label: '담당자', value: 2 },
+            { label: '관리자', value: 4 },
           ],
         },
       ],
@@ -70,7 +70,7 @@ export default {
         { type: '', prop: 'phone_number', name: 'PHONE_NUMBER', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
         { type: '', prop: 'email', name: 'EMAIL', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
         { type: '', prop: 'last_login', name: '마지막 접속시간', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
-        { type: '', prop: 'end_date', name: '권한선택', width: 200, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true,
+        { type: '', prop: 'end_date', name: '권한선택', width: 350, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true,
           cellRendererFramework: 'CellRenderSelectBox', cellRendererParams: { type: 'auth', name: '저장', action: this.setUserAuth.bind(this) } }
 
       ]
@@ -89,12 +89,18 @@ export default {
     },
     async onLoadAuthList() {
      const { pageSize: limit, currentPage: page } = this.paginationInfo
-       const param = {
+
+      const param = {
         NAME: this.searchModel.name,
-        LVL_VALUE: this.searchModel.lvl_value,
         pageSize: limit,
         currentPage: page
-       }
+      }
+      if (this.searchModel.lvl_value.length > 0) {
+        const lvl_value = this.searchModel.lvl_value.reduce((accum, current) => {
+           return accum + current
+        })
+        Object.assign(param, { LVL_VALUE: lvl_value })
+      }
       try {
         const res = await apiSelectUserList(param)
         this.userData = res?.result

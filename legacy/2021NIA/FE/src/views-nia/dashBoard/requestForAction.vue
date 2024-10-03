@@ -47,6 +47,7 @@
                 v-for="col in defineTicketDetailTable"
                 :key="col.prop"
                 :prop="col.prop"
+                :formatter="col.formatter"
                 :label="col.name"
                 :width="col.width"
               />
@@ -295,7 +296,7 @@ export default {
       ticketInfo: [],
       defineSyslogDetailTable: [
         { type: '', prop: 'alarmno', name: '알람번호', width: 100 },
-        { type: '', prop: 'alarmtime', name: '발생시간', width: 140, },
+        { type: '', prop: 'alarmtime', name: '발생시간', width: 140, formatter: (row) => { return this.formatterTimeStamp(row.request_time, 'YYYY/MM/DD-HH:mm:ss') } },
         { type: '', prop: 'node_num', name: '장비번호', width: 100, },
         { type: '', prop: 'node_nm', name: '장비명', width: 100, },
         { type: '', prop: 'alarmloc', name: '인터페이스', width: 100, },
@@ -304,7 +305,7 @@ export default {
       ],
       defineTicketDetailTable: [
         { type: '', prop: 'ticket_id', name: '티켓번호', width: 100 },
-        { type: '', prop: 'fault_time', name: '처리시간', width: 140, },
+        { type: '', prop: 'fault_time', name: '처리시간', width: 140, formatter: (row) => { return this.formatterTimeStamp(row.request_time, 'YYYY/MM/DD-HH:mm:ss') } },
         { type: '', prop: 'clos_time', name: '마감시간', width: 140, },
         { type: '', prop: 'ticket_type', name: '티켓유형', width: 100 },
         { type: '', prop: 'ticket_result', name: '장애내용', width: 120, },
