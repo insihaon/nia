@@ -71,12 +71,22 @@ export default {
   computed: {
     excelGrid() {
       const grid = this._cloneDeep(this.syslogAgGrid)
+      grid.columns = [
+        { type: '', prop: 'alarmno', name: '알람 번호', minWidth: 50, flex: 0, suppressMenu: true, sortable: false, filterable: false },
+        { type: '', prop: 'syslog_alarmtime', name: '알람 시간', minWidth: 50, flex: 0, suppressMenu: true, },
+        { type: '', prop: 'node_num', name: '장비 ID', minWidth: 50, flex: 0, suppressMenu: true, sortable: false, filterable: false },
+        { type: '', prop: 'node_nm', name: '장비명', minWidth: 50, flex: 0, suppressMenu: true, sortable: false, filterable: false },
+        { type: '', prop: 'alarmmsg', name: '알람메시지', minWidth: 50, flex: 0, suppressMenu: true, sortable: false, filterable: false },
+        { type: '', prop: 'alarmlvl', name: '알람레벨', minWidth: 50, flex: 0, suppressMenu: true, sortable: false, filterable: false },
+        { type: '', prop: 'etc', name: '원본 메시지', minWidth: 50, flex: 0, suppressMenu: true, sortable: false, filterable: false },
+        { type: '', prop: 'rule_id', name: 'syslog rule id', minWidth: 50, flex: 0, suppressMenu: true, sortable: false, filterable: true },
+      ]
       grid.data = this.excelList
       return grid
     },
     syslogAgGrid() {
       const options = {
-        name: this.name + 'table1', rowGroupPanel: false, rowHeight: 30, rowSelection: 'multiple', rowMultiSelection: false, suppressRowClickSelection: true,
+        name: this.name, rowGroupPanel: false, rowHeight: 30, rowSelection: 'multiple', rowMultiSelection: false, suppressRowClickSelection: true,
       }
       const columns = [
         { type: '', prop: 'syslog_alarmtime', name: '경보 발생 시간', minWidth: 50, flex: 0, suppressMenu: true, },
