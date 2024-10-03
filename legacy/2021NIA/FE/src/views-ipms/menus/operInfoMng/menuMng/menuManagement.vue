@@ -33,177 +33,257 @@
             <tbody>
               <tr class="top">
                 <th class="first" scope="row">메뉴 ID</th>
-                <td class="view">{{ menuData.menuId }}</td>
+                <td class="view">{{ resultDetailVos.smenuId }}</td>
               </tr>
               <tr>
                 <th class="first" scope="row">메뉴명</th>
-                <td><input v-model="menuData.menuName" type="text" class="txt w98" disabled /></td>
+                <td><el-input v-model="resultDetailVos.smenuNm" size="mini" type="text" class="txt w98" disabled /></td>
               </tr>
               <tr>
                 <th class="first" scope="row">메뉴레벨</th>
-                <td><input v-model="menuData.menuLevel" type="text" class="txt w98" disabled /></td>
+                <td><el-input v-model="resultDetailVos.nmenuLvlSeq" size="mini" type="text" class="txt w98" disabled /></td>
               </tr>
               <tr>
                 <th class="first" scope="row">메뉴계층유형</th>
                 <td class="view">
                   <span>
-                    <el-radio v-model="menuData.menuType" label="UH0001">그룹</el-radio>
+                    <el-radio v-model="resultDetailVos.smenuHierTypeCd" label="UH0001">그룹</el-radio>
                   </span>
                   <span class="ml10">
-                    <el-radio v-model="menuData.menuType" label="UH0002">메뉴</el-radio>
+                    <el-radio v-model="resultDetailVos.smenuHierTypeCd" label="UH0002">메뉴</el-radio>
                   </span>
                 </td>
               </tr>
               <tr>
                 <th class="first" scope="row">상위메뉴</th>
-                <td class="view">{{ menuData.parentMenuName }}</td>
+                <td class="view">{{ resultDetailVos.sUpMenuNm }}</td>
               </tr>
               <tr>
                 <th class="first" scope="row">메뉴표시순서</th>
-                <td><input v-model="menuData.menuOrder" type="text" class="txt w98" disabled /></td>
+                <td><el-input v-model="resultDetailVos.nmenuIndcOdrg" size="mini" type="text" class="txt w98" disabled /></td>
               </tr>
               <tr>
                 <th class="first" scope="row">화면 ID</th>
-                <td><input v-model="menuData.screenId" type="text" class="txt w98" disabled /></td>
+                <td><el-input v-model="resultDetailVos.sscrnId" type="text" size="mini" class="txt w98" disabled /></td>
               </tr>
               <tr>
                 <th class="first" scope="row">화면명</th>
                 <td>
-                  <div class="search">
-                    <input v-model="menuData.screenName" type="text" class="txt w473" disabled />
-                    <a href="javascript:void(0)" @click="searchScreen">
-                      <img
-                        src="/resources/images/content/btn_data_search_disabled_off.gif"
-                        alt="search"
-                        class="sc_btn"
-                        @mouseover="menuOver"
-                        @mouseout="menuOut"
+
+                  <el-input v-model="resultDetailVos.sscrnNm" class="txt w-100" size="mini" disabled>
+                    <template #suffix>
+                      <el-button
+                        slot="trigger"
+                        size="small"
+                        style="font-size: larger; border: none; float: right"
+                        icon="el-icon-search"
+                        class="font-weight-bolder"
+                        @click="fnViewSearchScrnId()"
                       />
-                    </a>
-                  </div>
+                    </template>
+                  </el-input>
                 </td>
               </tr>
               <tr>
                 <th class="first" scope="row">화면 URL</th>
-                <td><input v-model="menuData.screenUrl" type="text" class="txt w98" disabled /></td>
+                <td><el-input v-model="resultDetailVos.sscrnUrlAdr" size="mini" type="text" class="txt w98" disabled /></td>
               </tr>
               <tr>
                 <th class="first" scope="row">메뉴사용여부</th>
                 <td class="view">
                   <span>
-                    <el-radio v-model="menuData.menuUseYn" label="Y">사용</el-radio>
+                    <el-radio v-model="resultDetailVos.smenuUseYn" label="Y">사용</el-radio>
                   </span>
                   <span class="ml10">
-                    <el-radio v-model="menuData.menuUseYn" label="N">미사용</el-radio>
+                    <el-radio v-model="resultDetailVos.smenuUseYn" label="N">미사용</el-radio>
                   </span>
                 </td>
               </tr>
               <tr class="last">
                 <th class="first" scope="row">메뉴설명</th>
-                <td><textarea v-model="menuData.menuDesc" class="w98 h60" rows="6"></textarea></td>
+                <td><textarea v-model="resultDetailVos.scomment" class="w98 h60" rows="6"></textarea></td>
               </tr>
             </tbody>
           </table>
         </div>
         <div class="float-right">
-          <el-button size="small" @click="onSaveMenu()">
+          <el-button size="small" @click="fnUpdateTbMenuBas()">
             저장
           </el-button>
         </div>
       </el-col>
+      <ModalSearchTbScrnBas ref="ModalSearchTbScrnBas" @selected-value="onSetScrnNm" />
     </div>
 
   </el-row>
 </template>
 <script>
 import { Base } from '@/min/Base.min'
+import { ipmsModelApis, apiRequestModel, apiRequestJson, ipmsJsonApis } from '@/api/ipms'
+import ModalSearchTbScrnBas from '@/views-ipms/modal/search/ModalSearchTbScrnBas.vue'
 const routeName = 'MenuManagement'
 
 export default {
   name: routeName,
-  components: { },
+  components: { ModalSearchTbScrnBas },
   extends: Base,
   data() {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-
-     menuData: [
+      resultDetailVos: {
+        smenuId: '',
+        smenuNm: '',
+        nmenuLvlSeq: '',
+        smenuHierTypeCd: '',
+        sUpMenuNm: '',
+        nmenuIndcOdrg: '',
+        sscrnId: '',
+        sscrnNm: '',
+        sscrnUrlAdr: '',
+        smenuUseYn: '',
+        scomment: '',
+      },
+      resultListVos: null,
+      nodeClickVo: null,
+      menuData: [
         {
-          label: 'IP 배정관리',
-          children: [
-            { label: 'IP 블록관리' },
-            { label: 'IP 블록관리(사설)' },
-            { label: 'IP 배정' },
-            { label: 'IP 선배정' },
-            { label: 'IP 미배정 현황' }
-          ]
-        },
-        {
-          label: 'IP 할당관리',
-          children: [
-            { label: 'IP 할당' },
-            { label: 'NeOSS오더' },
-            { label: 'IP 선번장' },
-            { label: 'VPN IP현황' },
-            {
-              label: '타 서비스 관리',
-              children: [
-                { label: 'HOST 유형 관리' },
-              ]
-            }
-          ]
-        },
-        {
-          label: 'IP 정보관리',
+          title: 'IP 배정관리',
+          isFolder: true,
+          isLazy: true,
+          upperFolder: '/',
+          nmenuLvlSeq: 1,
+          key: 'M00001',
           children: []
         },
         {
-          label: 'IP 통계관리',
+          title: 'IP 할당관리',
+          isFolder: true,
+          isLazy: true,
+          upperFolder: '/',
+          nmenuLvlSeq: 1,
+          key: 'M00002',
           children: []
         },
         {
-          label: 'DB관리',
+          title: 'IP 정보관리',
+          isFolder: true,
+          isLazy: true,
+          upperFolder: '/',
+          nmenuLvlSeq: 1,
+          key: 'M00003',
           children: []
         },
         {
-          label: '게시판',
-          children: []
+          title: 'IP 통계관리',
+          isFolder: true,
+          isLazy: true,
+          upperFolder: '/',
+          nmenuLvlSeq: 1,
+          key: 'M00004',
+           children: []
         },
         {
-          label: '운용정보관리',
-          children: []
+          title: 'DB관리',
+          isFolder: true,
+          isLazy: true,
+          upperFolder: '/',
+          nmenuLvlSeq: 1,
+          key: 'M00090',
+           children: []
+        },
+        {
+          title: '게시판',
+          isFolder: true,
+          isLazy: true,
+          upperFolder: '/',
+          nmenuLvlSeq: 1,
+          key: 'M00086',
+           children: []
+        },
+        {
+          title: '운용정보관리',
+          isFolder: true,
+          isLazy: true,
+          upperFolder: '/',
+          nmenuLvlSeq: 1,
+          key: 'M00005',
+           children: []
         }
       ],
-        defaultProps: {
-          children: 'children',
-          label: 'label'
-        }
+      defaultProps: {
+        children: 'children', // 하위 메뉴 필드
+        label: 'title', // 메뉴에 표시할 이름
+      }
     }
   },
   methods: {
-    onClickSearch() {
-      /*
+    handleNodeClick(param) {
+     console.log(param)
+     this.nodeClickVo = param
+     this.fnSelectDetailMenuBas(this.nodeClickVo)
+     this.fnSelectLisMenuBas(this.nodeClickVo)
+    },
+    async fnSelectDetailMenuBas(nodeClickVo) { /* 메뉴 상세 */
       const param = {
-         channelValue: this.channelValue,
-         inquiryValue: this.inquiryValue,
-         inquiryOptions2: this.inquiryOptions2,
-        }
-      const res = await api(param)
-      */
+        smenuId: nodeClickVo.key
+      }
+      const res = await apiRequestJson(ipmsJsonApis.selectDetailMenuBas, param)
+      this.resultDetailVos = res
     },
-    handleNodeClick(data) {
-      console.log(data)
-      this.menu_nm = data.label
+     async fnSelectLisMenuBas(nodeClickVo) { /* 메뉴 하위 리스트 */
+      const param = {
+        smenuId: nodeClickVo.key,
+        nmenuLvlSeq: nodeClickVo.nmenuLvlSeq
+      }
+      const res = await apiRequestJson(ipmsJsonApis.selectListMenuBas, param)
+      this.resultListVos = res
     },
-    onSaveMenu() {
+    fnViewSearchScrnId() { /* 화면 검색 */
+      this.$refs.ModalSearchTbScrnBas.open()
+    },
+    onSetScrnNm(param) {
+      this.resultDetailVos.sscrnNm = param.scrnNm
+    },
+    async fnUpdateTbMenuBas() { /* 메뉴 저장 */
+      if (this.resultDetailVos.sscrnId === '' || this.resultDetailVos.sscrnId === null) {
+        this.$message('변경할 메뉴를 선택 후 변경이 가능합니다. 메뉴를 선택하세요.')
+        return
+      }
 
+      if (this.resultDetailVos.smenuHierTypeCd === 'UH0002') {
+        if (this.resultDetailVos.sscrnId === '' || this.resultDetailVos.sscrnId === null) {
+          this.$message('메뉴 계층 유형이 메뉴일때 화면을 입력해야 합니다. 화면을 선택하세요.')
+          return
+        }
+      } else {
+        this.resultDetailVos.sscrnId = 'S00000'
+      }
+
+      try {
+        const menuBasVo = {
+          smenuId: this.resultDetailVos.smenuId,
+          sscrnId: this.resultDetailVos.sscrnId,
+          smenuHierTypeCd: this.resultDetailVos.smenuHierTypeCd,
+          smenuUseYn: this.resultDetailVos.smenuUseYn,
+          scomment: this.resultDetailVos.scomment,
+          smodify: this.$store.state.user.info.Uid
+        }
+        const res = await apiRequestJson(ipmsJsonApis.updateTbMenuBasVo, menuBasVo)
+        if (res.commonMsg === 'SUCCESS') {
+          this.$message('메뉴를 정상적으로 변경 하였습니다.')
+        } else {
+          this.$message(`${res.commonMsg}`)
+        }
+      } catch (error) {
+        console.error(error)
+      }
     }
   }
 }
 </script>
 <style lang="scss" scoped>
-  .el-tree-node:before, .el-tree-node:after{
-    border: none !important;
-  }
+  // .el-tree-node:before, .el-tree-node:after{
+  //   border: none !important;
+  // }
 </style>
