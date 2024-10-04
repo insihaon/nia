@@ -28,7 +28,7 @@ export class AppOptions extends Storage {
       isOnlyFront: this.readEnv(process.env.VUE_APP_ONLY_FE, false),
       dark: false,
       mobile: Device.instance.mobile ?? false,
-      mock: 'FE',
+      mock: null,
       projectList: ['datahub', 'demo', 'nia', 'ipms'],
       project: APP_PROJECT?.toLowerCase(),
       baseURL: null,
