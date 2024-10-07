@@ -17,7 +17,13 @@
       <div v-if="isViewport('>', 'sm')" class="alarm-count-list flex flex-nowrap ml-4 pt-1 text-base">
         <div class="pt-1 font-bold text-base">시스템 현황 모니터링</div>
         <div class="ml-2 d-flex font-bold items-center gap-x-2">
-          <div v-for="system in niaProcess" :key="system.name" :style="{ color: system.status === 'Y' ? 'lime' : 'red' }" :class="{ blinking: system.status === 'N' }">
+          <div
+            v-for="system in niaProcess"
+            :key="system.name"
+            :style="{ color: system.status === 'Y' ? 'lime' : 'red' }"
+            :class="{ blinking: system.status === 'N' }"
+            style="border-right: solid 1px #ffffff82;padding-right: 5px;"
+          >
             {{ system.name }}
           </div>
         </div>
@@ -61,6 +67,7 @@
 import { Base } from '@/min/Base.min'
 const routeName = 'BottomBar'
 import { AppOptions } from '@/class/appOptions'
+import { apiSystemMonitoring } from '@/api/nia'
 
 export default {
   name: routeName,
@@ -80,20 +87,33 @@ export default {
         { name: 'MINOR', count: 11, color: 'yellow' },
         { name: 'WARNING', count: 20, color: 'skyblue' },
       ],
+
       niaProcess: {
-        ipsdn_linkage_status: { name: 'IPSDN_LINK', status: 'Y' },
-        linkage_ai_status: { name: 'LINK_AI', status: 'Y' },
-        engine_status: { name: 'ENGINE', status: 'Y' },
-        ipsdn_sflow_linkage_status: { name: 'IPSDN_SFLOW', status: 'Y' },
-        ipsdn_linkage_ai_status: { name: 'IPSDN_AI', status: 'Y' },
-        sflow_linkage_status: { name: 'SFLOW', status: 'Y' },
-        ipsdn_syslog_status: { name: 'SYSLOG', status: 'Y' },
-        ai_traffic_status: { name: 'TRAFFIC', status: 'N' },
+        /*
+          실시간 포함 5분 미만 스케줄링 -> max 5분
+          5분주기 스케줄링 -> max 10분
+          수집 주기 max초과 시 연동이상
+
+        */
+        aiIpSdnTrafficeKey: { name: 'IP_SDN_TRAFFICE', status: 'N', cycle: 1 /* * 60 * 1000 */ }, // 연동 주기 1분
+        aiIpSdnSflowKey: { name: 'IPSDN_SFLOW', status: 'N', cycle: 1 /* * 60 * 1000 */ },
+        aiIpSdnSyslogKey: { name: 'IPSDN_SYSLOG', status: 'N', cycle: 1 /* * 60 * 1000 */ },
+        aiIpSdnNodeFactorKey: { name: 'IPSDN_NODE_FACTOR', status: 'N', cycle: 1 /* * 60 * 1000 */ },
+        aiTrafficResultKey: { name: 'TRAFFIC', status: 'N', cycle: 1 /* * 60 * 1000 */ },
+        aiIpPerfKey: { name: 'IP_PERF', status: 'N', cycle: 5 /* * 60 * 1000 */ }, // 연동 주기 5분
+        aiIpResourceIfKey: { name: 'IP_RESOURCE_IF', status: 'N', cycle: this.moment().set({ hour: 2, minute: 40, second: 0, millisecond: 0 }) }, // 매일 2시 40분
+        aiIpResourceKey: { name: 'IP_RESOURCE', status: 'N', cycle: this.moment().set({ hour: 2, minute: 30, second: 0, millisecond: 0 }) }, // 매일 2시 30분
       },
+      monitoringInterval: null
     }
   },
   mounted() {
+    this.initProcess()
+    this.subscribeEvent()
     window.bbar = Object.assign(window.bbar || {}, { header: this })
+  },
+  beforeDestroy() {
+    clearInterval(this.monitoringInterval)
   },
   methods: {
     subscribeEvent() {
@@ -104,9 +124,44 @@ export default {
 
       const data = JSON.parse(socketMessage.message)
       AppOptions.instance.useWsLog && this.log('RECEIVED SIBSCRIBE SYSTEM_MONITORING EVENT: ', data)
+      this.setCurrentProcess(data)
     },
-    handleChangeExpandType(param) {
-      this.$emit('changeSize', param)
+    async initProcess() {
+      try {
+        const res = await apiSystemMonitoring()
+        this.setCurrentProcess(res.result)
+      } catch (error) {
+        this.error(error)
+      }
+    },
+    setCurrentProcess(processList) {
+      processList.forEach(d => { this.niaProcess[d.key_name]['collectionTime'] = d.yd_date })
+      const monitoringKeys = Object.keys(this.niaProcess)
+      monitoringKeys.forEach(key => {
+        this.niaProcess[key].status = this.checkKeyStatus(this.niaProcess[key])
+      })
+      console.log()
+    },
+    checkKeyStatus(processObj) {
+      const { cycle, collectionTime: lastCollectedTime } = processObj
+      const currentTime = new Date()
+      const collectionTime = new Date(lastCollectedTime)
+
+      const timeDifference = currentTime - collectionTime
+
+      if (typeof cycle !== 'number') {
+        const dayDiff = cycle.diff(lastCollectedTime, 'days')
+        const miniteDiff = cycle.diff(lastCollectedTime, 'minutes')
+        return dayDiff > 1 || miniteDiff > 10 ? 'N' : 'Y'
+      } else if (cycle < 5) {
+        const minuteThreshold = 5 * 60 * 1000 // 5 minutes
+        return timeDifference > minuteThreshold ? 'N' : 'Y'
+      } else if (cycle >= 5) {
+        const dailyThreshold = 10 * 60 * 1000 // 10 minutes
+        return timeDifference > dailyThreshold ? 'N' : 'Y'
+      }
+
+      return 'Y'
     },
     windowSelection(window) {
       if (window.windowState === 'minimize') {

@@ -4,6 +4,15 @@ const { debug, isProd } = AppOptions.instance
 
 export const filePath = __filename.replace(/\\/g, '/')
 
+export function apiSystemMonitoring(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_SYSTEM_MONITORING_CURRENT',
+    data: params
+  })
+}
 export function apiSendMQ(serviceName, params = {}) {
   return http({
     url: `/nia/send/${serviceName}`,
