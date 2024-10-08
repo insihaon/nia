@@ -17,7 +17,7 @@
     <DynamicComponentLoader
       :prop-name="name"
       :component-keys="componentList"
-      @handle-search="handleSearch"
+      @handle-search="fnViewListWhois"
     />
     <el-col :span="24">
       <compTable
@@ -25,17 +25,30 @@
         :prop-name="name"
         :prop-table-height="'calc(100% - 80px)'"
         :prop-column="tableColumns"
+        :prop-data="resultListVo"
         :prop-is-pagination="true"
         :prop-is-check-box="true"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
+        :prop-on-click="onClcikRow"
+        :prop-on-select="handleClickTableCheck"
       >
         <template slot="text-description">
           <span>
             조회 결과
           </span>
         </template>
+        <template slot="add-features">
+          <div class="float-right">
+            <el-button size="mini" @click="fnVieListWhoisKeywordMst1()">이용기관 관리</el-button>
+            <el-button size="mini" @click="fnVieListWhoisKeywordMst2()">대체 키워드 관리</el-button>
+            <el-button size="mini" @click="fnViewUpdateKtInfo()">KT 대체 정보 관리</el-button>
+            <el-button size="mini" @click="fnDbMatch()">DB 현행화 전송</el-button>
+            <el-button size="mini" class="el-icon-delete" @click="fnDeleteListWhois()">삭제</el-button>
+          </div>
+        </template>
       </compTable>
+      <ModalRegWhois ref="ModalRegWhois" />
     </el-col>
   </el-row>
 
@@ -44,28 +57,30 @@
 import { Base } from '@/min/Base.min'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
 import CompTable from '@/components/elTable/CompTable.vue'
+import ModalRegWhois from '@/views-ipms/modal/whois/ModalRegWhois.vue'
+import { ipmsModelApis, apiRequestModel, apiRequestJson, ipmsJsonApis } from '@/api/ipms'
 const routeName = 'WhoisInfoOpenManagement'
 
 export default {
   name: routeName,
-  components: { CompTable, DynamicComponentLoader },
+  components: { CompTable, DynamicComponentLoader, ModalRegWhois },
   extends: Base,
   data() {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
         tableColumns: [
-          { prop: '', label: 'No', align: 'center', columnVisible: true, showOverflow: true },
-          { prop: '', label: '시작 IP', align: 'center', columnVisible: true, showOverflow: true },
-          { prop: '', label: '마지막 IP', align: 'center', columnVisible: true, showOverflow: true },
-          { prop: '', label: '노드', align: 'center', columnVisible: true, showOverflow: true },
-          { prop: '', label: '서비스', align: 'center', columnVisible: true, showOverflow: true },
-          { prop: '', label: '기관명', align: 'center', columnVisible: true, showOverflow: true },
-          { prop: '', label: '네트워크이름', align: 'center', columnVisible: true, showOverflow: true },
-          { prop: '', label: '작업종류', align: 'center', columnVisible: true, showOverflow: true },
-          { prop: '', label: '변경일시', align: 'center', columnVisible: true, showOverflow: true },
-          { prop: '', label: '등록현황', align: 'center', columnVisible: true, showOverflow: true },
-          { prop: '', label: '입력구분', align: 'center', columnVisible: true, showOverflow: true },
+          { prop: 'rowNo', label: 'No', align: 'center', columnVisible: true, showOverflow: true },
+          { prop: 'sfirstAddr', label: '시작 IP', align: 'center', columnVisible: true, showOverflow: true },
+          { prop: 'slastAddr', label: '마지막 IP', align: 'center', columnVisible: true, showOverflow: true },
+          { label: '노드', align: 'center', columnVisible: true, showOverflow: true, formatter: (row, col, value, index) => this.formatNode(row) },
+          { prop: 'sassignTypeNm', label: '서비스', align: 'center', columnVisible: true, showOverflow: true },
+          { prop: 'sorgname', label: '기관명', align: 'center', columnVisible: true, showOverflow: true },
+          { prop: 'snetNm', label: '네트워크이름', align: 'center', columnVisible: true, showOverflow: true },
+          { prop: 'swhoisRequestTypeNm', label: '작업종류', align: 'center', columnVisible: true, showOverflow: true },
+          { prop: 'dmodifyDt', label: '변경일시', align: 'center', columnVisible: true, showOverflow: true },
+          { prop: 'swhoisTranStatusNm', label: '등록현황', align: 'center', columnVisible: true, showOverflow: true },
+          { prop: 'stransKind', label: '입력구분', align: 'center', columnVisible: true, showOverflow: true },
         ],
       componentList: [
         { key: 'SsvcLineType', props: { label: '계위 정보', lvl: 3 } },
@@ -117,13 +132,71 @@ export default {
         { title: '전송완료', value: '0' },
         { title: '반송', value: '9' },
         { title: '등록완료', value: '287091' }
-      ]
+      ],
+      resultListVo: null,
+      selectedChecks: [],
+      selectedChecksItem: null,
     }
   },
+  mounted() {
+    this.fnViewListWhois()
+  },
   methods: {
-      handleSearch(requestParameter) {
-      console.log(requestParameter)
-    }
+    async fnViewListWhois(requestParameter) {
+       try {
+        const res = await apiRequestModel(ipmsModelApis.viewListWhois, requestParameter)
+        this.resultListVo = res?.result?.data
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    formatNode(row) {
+     return `${row.ssvcLineTypeNm || ''} - ${row.ssvcGroupNm || ''} - ${row.ssvcObjNm || ''}`
+    },
+    onClcikRow(row) {
+      this.fnViewRegWhois(row)
+    },
+    fnViewRegWhois(row) {
+      this.$refs.ModalRegWhois.open({ row: row })
+    },
+    handleClickTableCheck(all, cur) {
+      this.selectedChecksItem = cur
+      this.selectedChecks = all
+    },
+    fnVieListWhoisKeywordMst1() {
+
+    },
+    fnVieListWhoisKeywordMst2() {
+
+    },
+    fnViewUpdateKtInfo() {
+
+    },
+    fnDbMatch() {
+
+    },
+    fnDeleteListWhois() {
+      this.$confirm('삭제 하시겠습니까?', 'WHO IS 정보 삭제', {
+        confirmButtonText: '확인',
+        cancelButtonText: '취소'
+      }).then(async() => {
+        let res
+        try {
+          const TbRequestAssignMstVo = {
+            nrequestAssignSeq: this.resultVo.nrequestAssignSeq,
+          }
+           res = await apiRequestJson(ipmsJsonApis.deleteAssignApyTxn, TbRequestAssignMstVo)
+           if (res.commonMsg === 'SUCCESS') {
+            this.$message.success('배정신청을 정상적으로 삭제 하였습니다.')
+            this.$emit('reload')
+            this.close()
+            }
+          } catch (error) {
+            this.$message.error({ message: `${res.commonMsg}` })
+            console.log(error)
+          }
+        })
+    },
   }
 }
 </script>

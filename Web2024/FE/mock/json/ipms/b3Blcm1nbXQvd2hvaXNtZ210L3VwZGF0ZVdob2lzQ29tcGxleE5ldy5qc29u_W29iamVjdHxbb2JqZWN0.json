@@ -67,7 +67,7 @@
       "paramMap": null,
       "tbWhoisVos": null,
       "totalCount": 0,
-      "nwhoisSeq": 699249,
+      "nwhoisSeq": 699319,
       "ssvcLineTypeCd": null,
       "ssvcLineTypeNm": null,
       "nlvlMstSeq": null,
@@ -83,7 +83,7 @@
       "ncnt": null,
       "srequestCd": null,
       "srequestNm": null,
-      "swhoisresultCd": "01",
+      "swhoisresultCd": "04",
       "swhoisresultNm": null,
       "swhoisresultMsg": null,
       "skrnicmemberId": null,
@@ -143,43 +143,43 @@
       "sTargetYn": null
     },
     "tbWhoisUserVo": null,
-    "nullTbWhoisVo": false,
-    "nullTbWhoisUserVo": true
+    "nullTbWhoisUserVo": true,
+    "nullTbWhoisVo": false
   },
   "__config": {
     "url": "/opermgmt/whoismgmt/updateWhoisComplexNew.json",
     "param": {
       "tbWhoisUserVo": {
-        "ssaid": "60043037120-000000257157",
-        "sorgname": "서울예술대학",
-        "saddr": "경기도 안산시 단원구",
-        "saddrDetail": " 0",
-        "szipcode": "425906",
-        "seorgname": "Seoulyesuldaehak",
-        "seaddr": "Danwon-Gu Ansan-Si Gyeonggi-Do",
-        "seaddrDetail": " 0",
+        "ssaid": "24580414950-000001091087",
+        "sorgname": "(주) 케이티",
+        "saddr": "경기도 성남시 분당구 불정로 90",
+        "saddrDetail": "",
+        "szipcode": "13606",
+        "seorgname": "Korea Telecom",
+        "seaddr": "90 Buljeongro Bundang-Gu Seongnam-Si Gyeonggi-Do",
+        "seaddrDetail": "",
         "sadmDpphone": "+82-2-500-6630",
         "sadmEmail": "kornet_ip@kt.com",
         "stransKind": "ADMIN"
       },
       "tbWhoisVo": {
         "swhoisresultCd": "01",
-        "ssaid": "60043037120-000000257157",
-        "sfirstAddr": "211.221.199.224",
-        "slastAddr": "211.221.199.231",
-        "snetNm": "KORNET-60043037120-000000098876",
+        "ssaid": "24580414950-000001091087",
+        "sfirstAddr": "121.141.8.32",
+        "slastAddr": "121.141.8.63",
+        "snetNm": "KORNET-24580414950-000001091087",
         "suserorggb": "APT_HOME",
         "scity": "경기",
-        "nwhoisSeq": "699249",
+        "nwhoisSeq": "699319",
         "ssvccommnet": "고객용",
         "stransKind": "ADMIN",
         "type": "DEFAULT",
-        "srequestCd": "02"
+        "srequestCd": "01"
       }
     },
-    "receivedTime": "2024-08-05 10:13:41.055",
-    "duration": 22357,
+    "receivedTime": "2024-10-07 18:34:35.929",
+    "duration": 22589,
     "filename": "b3Blcm1nbXQvd2hvaXNtZ210L3VwZGF0ZVdob2lzQ29tcGxleE5ldy5qc29u_W29iamVjdHxbb2JqZWN0.json",
-    "fetch": "fetch('/opermgmt/whoismgmt/updateWhoisComplexNew.json', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{\"tbWhoisUserVo\":{\"ssaid\":\"60043037120-000000257157\",\"sorgname\":\"서울예술대학\",\"saddr\":\"경기도 안산시 단원구\",\"saddrDetail\":\" 0\",\"szipcode\":\"425906\",\"seorgname\":\"Seoulyesuldaehak\",\"seaddr\":\"Danwon-Gu Ansan-Si Gyeonggi-Do\",\"seaddrDetail\":\" 0\",\"sadmDpphone\":\"+82-2-500-6630\",\"sadmEmail\":\"kornet_ip@kt.com\",\"stransKind\":\"ADMIN\"},\"tbWhoisVo\":{\"swhoisresultCd\":\"01\",\"ssaid\":\"60043037120-000000257157\",\"sfirstAddr\":\"211.221.199.224\",\"slastAddr\":\"211.221.199.231\",\"snetNm\":\"KORNET-60043037120-000000098876\",\"suserorggb\":\"APT_HOME\",\"scity\":\"경기\",\"nwhoisSeq\":\"699249\",\"ssvccommnet\":\"고객용\",\"stransKind\":\"ADMIN\",\"type\":\"DEFAULT\",\"srequestCd\":\"02\"}}', 'method': 'POST' })"
+    "fetch": "success-fetch('/opermgmt/whoismgmt/updateWhoisComplexNew.json', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{\"tbWhoisUserVo\":{\"ssaid\":\"24580414950-000001091087\",\"sorgname\":\"(주) 케이티\",\"saddr\":\"경기도 성남시 분당구 불정로 90\",\"saddrDetail\":\"\",\"szipcode\":\"13606\",\"seorgname\":\"Korea Telecom\",\"seaddr\":\"90 Buljeongro Bundang-Gu Seongnam-Si Gyeonggi-Do\",\"seaddrDetail\":\"\",\"sadmDpphone\":\"+82-2-500-6630\",\"sadmEmail\":\"kornet_ip@kt.com\",\"stransKind\":\"ADMIN\"},\"tbWhoisVo\":{\"swhoisresultCd\":\"01\",\"ssaid\":\"24580414950-000001091087\",\"sfirstAddr\":\"121.141.8.32\",\"slastAddr\":\"121.141.8.63\",\"snetNm\":\"KORNET-24580414950-000001091087\",\"suserorggb\":\"APT_HOME\",\"scity\":\"경기\",\"nwhoisSeq\":\"699319\",\"ssvccommnet\":\"고객용\",\"stransKind\":\"ADMIN\",\"type\":\"DEFAULT\",\"srequestCd\":\"01\"}}', 'method': 'POST' })"
   }
 }
