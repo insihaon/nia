@@ -51,15 +51,15 @@ export default {
       searchItems: [
          { label: '시작점노드', type: 'input', model: 'src_node_id', placeholder: '노드를 검색하세요' },
          { label: '끝점 노드', type: 'input', model: 'dest_node_id', placeholder: '노드를 검색하세요' },
-         { label: '시작점 I/F명', type: 'input', model: 'src_if_name', placeholder: '노드를 검색하세요' },
-         { label: '끝점 I/F명', type: 'input', model: 'dest_if_name', placeholder: '노드를 검색하세요' },
+         { label: '시작점 I/F명', type: 'input', model: 'src_if_id', placeholder: '노드를 검색하세요' },
+         { label: '끝점 I/F명', type: 'input', model: 'dest_if_id', placeholder: '노드를 검색하세요' },
          { label: '링크 용도', type: 'input', model: 'link_desc', placeholder: '노드를 검색하세요' },
       ],
       searchModel: {
        src_node_id: '',
        dest_node_id: '',
-       src_if_name: '',
-       dest_if_name: '',
+       src_if_id: '',
+       dest_if_id: '',
        link_desc: ''
       },
     }
@@ -99,8 +99,8 @@ export default {
       const param = {
         src_node_id: this.searchModel.src_node_id,
         dest_node_id: this.searchModel.dest_node_id,
-        src_if_name: this.searchModel.src_if_name,
-        dest_if_name: this.searchModel.dest_if_name,
+        src_if_id: this.searchModel.src_if_id,
+        dest_if_id: this.searchModel.dest_if_id,
         link_desc: this.searchModel.link_desc,
         limit: this.paginationInfo.pageSize,
         page: this.paginationInfo.currentPage,
@@ -122,6 +122,7 @@ export default {
     },
     searchClear() {
       this.searchModel = {}
+      this.onLoadLinkList()
     },
     handleOpenModalDetail(row, type) {
       this.$refs.ModalLinkDetail.open({ row, type })

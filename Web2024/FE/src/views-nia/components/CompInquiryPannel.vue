@@ -19,7 +19,7 @@
                   clearable
                   :disabled="item.disabled === true"
                   :placeholder="item.placeholder"
-                  @keyup.native.enter="$emit('keyupEnter', searchModel)"
+                  @keyup.native.enter="onClickSearchButton"
                 />
                 <CompCheckSelector
                   v-if="item.type === 'select' && item.multiple"
@@ -174,6 +174,10 @@ export default {
       type: Boolean,
       default: false
     },
+    isExcelSaveServer: {
+      type: Boolean,
+      default: false
+    },
     items: {
       type: Array,
       default() { return [] }
@@ -263,8 +267,12 @@ export default {
       }
     },
     handleExcel() {
-      const name = `${this.title}_${this.toStringTime(new Date(), 'YYMMDD')}`
-      this.$refs.compSearchEquip.exportExcel(name)
+      if (this.isExcelSaveServer) {
+        this.$emit('savedExcel')
+      } else {
+        const name = `${this.title}_${this.toStringTime(new Date(), 'YYMMDD')}`
+        this.$refs.compSearchEquip.exportExcel(name)
+      }
     },
     onDebugTest() {
       this.$emit('onDebugTest', '')

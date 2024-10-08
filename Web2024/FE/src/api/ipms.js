@@ -104,7 +104,10 @@ export const ipmsModelApis = {
   viewListTbUserConnHist: { desc: '사용자 접속 현황 조회', url: '/opermgmt/usermgmt/viewListTbUserConnHist' },
   viewListUserAuth: { desc: '사용자 권한 관리 조회', url: '/opermgmt/grantmgmt/viewListUserAuth' },
   viewInsertUserAuth: { desc: '사용자 권한 관리 > 권한 정보 등록 화면', url: '/opermgmt/grantmgmt/viewInsertUserAuth' },
-
+  viewListScrnBas: { desc: '화면 관리 조회', url: '/opermgmt/menumgmt/viewListScrnBas' },
+  viewDetailScrnBas: { desc: '화면 관리 조회 > 수정 화면', url: '/opermgmt/menumgmt/viewDetailScrnBas' },
+  viewListMenuAuth: { desc: '메뉴권한관리 조회', url: '/opermgmt/menumgmt/viewListMenuAuth' },
+  viewListWhois: { desc: 'WHOIS 정보공개 관리 조회', url: '/opermgmt/whoismgmt/viewListWhois' },
 }
 export const ipmsJsonApis = {
   selectAuthCenterList: { desc: '센터 조회', url: '/opermgmt/orgmgmt/selectAuthCenterList' },
@@ -206,6 +209,13 @@ export const ipmsJsonApis = {
   selectSearchTbUserBas: { desc: '사용자 권한 등록 > 운용자 검색 ', url: '/opermgmt/usermgmt/selectSearchTbUserBas' },
   deleteUserAuthTxn: { desc: '사용자 권한 관리> 권한정보 삭제', url: '/opermgmt/grantmgmt/deleteUserAuthTxn' },
   insertUserAuthTxn: { desc: '사용자 권한 관리> 사용자 권한 등록', url: '/opermgmt/grantmgmt/insertUserAuthTxn' },
+  insertScrnBas: { desc: '화면관리 > 화면정보 등록', url: '/opermgmt/menumgmt/insertScrnBas' },
+  updateScrnBas: { desc: '화면관리 > 화면정보 수정', url: '/opermgmt/menumgmt/updateScrnBas' },
+  updateScrnUseYn: { desc: '화면관리 > 사용/미사용 수정', url: '/opermgmt/menumgmt/updateScrnUseYn' },
+  selectDetailMenuBas: { desc: '화면관리 > 사용/미사용 수정', url: '/opermgmt/menumgmt/selectDetailMenuBas' },
+  selectListMenuBas: { desc: '메뉴관리 > 하위 메뉴 조회', url: '/opermgmt/menumgmt/selectListMenuBas' },
+  selectSearchScrnBas: { desc: '메뉴관리 > 화면명 검색', url: '/opermgmt/menumgmt/selectSearchScrnBas' },
+  updateTbMenuBasVo: { desc: '메뉴관리 > 화면명 저장', url: '/opermgmt/menumgmt/updateTbMenuBasVo' },
 }
 
 export function apiTest(params) {

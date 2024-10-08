@@ -32,7 +32,7 @@
               <tr class="top last">
                 <th class="first" scope="row">운용자</th>
                 <td>
-                  <el-input v-show="false" v-model="resultListVo.suserId" size="mini" onchange="fnUserIdChange();" />
+                  <el-input v-show="false" v-model="resultListVo.suserId" size="mini" />
                   <el-input v-show="false" v-model="resultListVo.suserGradeCd" size="mini" />
                   <div class="search w98">
                     <el-input v-model="resultListVo.suserNm" size="mini" type="text" class="txt w-100" readonly="readonly" />

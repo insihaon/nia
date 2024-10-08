@@ -4,6 +4,7 @@
       ref="nodeList"
       :ag-grid="trafficAgGrid"
       :is-excel="true"
+      :is-excel-save-server="true"
       :title="titleName"
       :items="searchItems"
       :search-model.sync="searchModel"
@@ -12,10 +13,16 @@
       @handleClickSearch="onClickSearch"
       @onChangePage="(curPage) => onChangePage(curPage)"
       @searchClear="searchClear"
+      @savedExcel="onSaveExcel"
       @onDebugTest="autoTest"
     />
     <ModalNodeDetail ref="ModalNodeDetail" />
     <ModalPortManagement ref="ModalPortManagement" />
+    <CompAgGrid
+      v-show="false"
+      ref="excelGrid"
+      v-model="excelGrid"
+    />
   </div>
 </template>
 <script>
@@ -26,12 +33,13 @@ import ModalPortManagement from '@/views-nia/modal/ModalPortManagement'
 import CellRenderAibuttons from '@/views-nia/components/cellRenderer/CellRenderAibuttons'
 import CellRenderHyperlink from '@/views-nia/components/cellRenderer/CellRenderHyperlink'
 import { apiSelectNodeList } from '@/api/nia'
+import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
 
 const routeName = 'NodeInquiryList'
 export default {
   name: routeName,
   // eslint-disable-next-line vue/no-unused-components
-  components: { CompInquiryPannel, ModalPortManagement, ModalNodeDetail, CellRenderAibuttons, CellRenderHyperlink },
+  components: { CompInquiryPannel, ModalPortManagement, ModalNodeDetail, CellRenderAibuttons, CellRenderHyperlink, CompAgGrid },
   extends: Base,
   data() {
     return {
@@ -53,9 +61,9 @@ export default {
         { label: '대표 IP', type: 'input', model: 'ip_addr', placeholder: 'IP를 검색하세요' },
         { label: '사용여부', type: 'select', placeholder: '사용여부를 선택하세요', model: 'admin_yn', setting: { allOption: { toggle: true } },
           options: [
-            { label: '전체', value: 'all' },
-            { label: '사용', value: 'up' },
-            { label: '미사용', value: 'down' },
+            { label: '전체', value: '' },
+            { label: '사용', value: 'W' },
+            { label: '미사용', value: 'N' },
         ] },
         { label: '날짜', type: 'dateTime', model: 'datetime' },
 
@@ -70,15 +78,32 @@ export default {
   },
 
   computed: {
+    excelGrid() {
+      const grid = this._cloneDeep(this.trafficAgGrid)
+      grid.columns = [
+        { type: '', prop: 'rownum', name: '번호', minWidth: 20, flex: 0, suppressMenu: true, alignItems: 'center' },
+        { type: '', prop: 'node_nm', name: '장비ID', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center' },
+        { type: '', prop: 'code_nm', name: '장비이름', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: false },
+        { type: '', prop: 'netconf_type', name: '장비타입', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: false },
+        { type: '', prop: 'model_id', name: '모델이름', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: false },
+        { type: '', prop: 'latitude', name: '위도', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: false },
+        { type: '', prop: 'longitude', name: '경도', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: false },
+        { type: '', prop: 'mac_addr', name: '맥주소', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
+        { type: '', prop: 'ip_addr', name: '마스터IP', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
+        { type: '', prop: 'admin_yn', name: '사용여부', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
+        { type: '', prop: 'chng_datetime', name: '수정일', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
+      ]
+      return grid
+    },
     trafficAgGrid() {
       const options = {
-        name: this.name + 'table1', checkable: false, rowGroupPanel: false, rowSelection: 'multiple', rowMultiSelection: false, suppressRowClickSelection: true,
+        name: this.name, checkable: false, rowGroupPanel: false, rowSelection: 'multiple', rowMultiSelection: false, suppressRowClickSelection: true,
       }
       const columns = [
         { type: '', prop: 'rownum', name: '번호', minWidth: 20, flex: 0, suppressMenu: true, alignItems: 'center' },
         { type: '', prop: 'node_nm', name: '노드명', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center',
           cellRendererFramework: 'CellRenderHyperlink', cellRendererParams: { type: 'nodeDetail', action: this.handleOpenModalDetail.bind(this) } },
-        { type: '', prop: 'model_id', name: '모델명', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: false },
+        { type: '', prop: 'code_nm', name: '모델명', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: false },
         { type: '', prop: 'mac_addr', name: '맥주소', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
         { type: '', prop: 'ip_addr', name: '대표IP', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
         { type: '', prop: 'admin_yn_info', name: '사용여부', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
@@ -93,9 +118,6 @@ export default {
     this.onLoadTrafficList()
   },
   methods: {
-    onSortedChange(param) {
-       this.onLoadTrafficList()
-    },
     onClickSearch(params) {
       this.onLoadTrafficList(params)
     },
@@ -103,8 +125,8 @@ export default {
       const target = { vue: this.$refs.nodeList }
       this.openLoading(target)
       const param = {
-        node_nm: this.searchModel.node_name,
-        model_id: this.searchModel.if_name,
+        node_nm: this.searchModel.node_nm,
+        model_id: this.searchModel.model_id,
         ip_addr: this.searchModel.ip_addr,
         admin_yn: this.searchModel.admin_yn,
         limit: this.paginationInfo.pageSize,
@@ -131,6 +153,9 @@ export default {
     },
     searchClear() {
       this.searchModel = {}
+    },
+    onSaveExcel() {
+      this.$refs.excelGrid.exportExcel(`노드관리_${this.toStringTime(new Date(), 'YYMMDD')}`)
     },
     handleOpenModalDetail(row, type) {
       if (type === 'nodeDetail') {

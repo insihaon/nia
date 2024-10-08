@@ -12,6 +12,7 @@
       @handleClickSearch="()=> onLoadAlarmCurHistList()"
       @sortChanged="onChangeSort"
       @searchClear="()=> onLoadAlarmCurHistList()"
+      @onChangePage="onChangePage"
     />
   </div>
 </template>
@@ -81,6 +82,10 @@ export default {
   methods: {
     onChangeSort(param) {
        this.onLoadAlarmCurHistList()
+    },
+    onChangePage(curPage) {
+      this.paginationInfo.currentPage = curPage
+      this.onLoadAlarmCurHistList()
     },
     async onLoadAlarmCurHistList() {
       const { pageSize: limit, currentPage: page } = this.paginationInfo

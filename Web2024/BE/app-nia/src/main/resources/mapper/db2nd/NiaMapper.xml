@@ -41,21 +41,21 @@
                 , U.PHONE_NUMBER
         FROM nia.tb_user U
         <where>
-            <if test="NAME != null">
-                U.NAME LIKE '%' || #{NAME} || '%'
-            </if>
             <if test="AGENCY_NAME != null">
                 AND U.AGENCY_NAME LIKE '%' || #{AGENCY_NAME} || '%'
             </if>
             <if test="NAME != null and NAME != ''">
-                AND UPPER(U.NAME) LIKE '%' || UPPER(#{name}) || '%'
+                AND UPPER(U.NAME) LIKE '%' || UPPER(#{NAME}) || '%'
             </if>
-            <if test="LVL_VALUE != null and !LVL_VALUE.isEmpty()">
+            <if test="LVL_VALUE != null">
+                AND U.lvl <![CDATA[ & ]]> #{LVL_VALUE}!= 0
+            </if>
+            <!-- <if test="LVL_VALUE != null and !LVL_VALUE.isEmpty()">
                 AND CAST(U.LVL AS VARCHAR) IN
                 <foreach item="LEVEL" collection="LVL_VALUE" open="(" separator="," close=")">
                     #{LEVEL}
                 </foreach>
-            </if>
+            </if> -->
         </where>
         <if test="IS_ALL == true">
             ORDER BY LAST_LOGIN DESC
@@ -333,12 +333,17 @@
    <!-- 시스템 현황 모니터링 -->
    <select id="SELECT_SYSTEM_MONITORING_CURRENT" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
         SELECT 
-            CODE
-            , NAME
-            , RESULT
-            , TO_CHAR(UPDATE_TIME , 'YYYY-MM-DD HH24:MI:SS') AS UPDATE_TIME
-            , DESCRIPTION
-        FROM rca.tb_rca_monitoring
+            KEY_NAME, YD_DATE
+        FROM NIA.TB_LINKAGE_SEQ
+        WHERE KEY_NAME IN (
+            'aiIpSdnTrafficeKey',
+            'aiIpSdnSflowKey',
+            'aiIpSdnSyslogKey',
+            'aiIpSdnNodeFactorKey',
+            'aiTrafficResultKey',
+            'aiIpPerfKey',
+            'aiIpResourceIfKey',
+            'aiIpResourceKey')
    </select>
 
    <!-- AI관제 시스템 처리량 -->
@@ -592,7 +597,7 @@
             , ROUND(FLTBPSOUT_THRESHOLD_LOWER::NUMERIC, 2) AS OUT_THRESHOLD_LOWER
             , FLTBPSOUT_ANOMALY AS OUT_ANOMALY
         FROM    rca.tb_anomalous_ai_result AR
-        INNER JOIN resource.tb_port_mst PM ON AR.STRIFID = PM.NODE_NUM AND AR.STRRESID = PM.IF_NUM
+        INNER JOIN resource.tb_port_mst PM ON AR.STRIFID = PM.IF_NUM AND AR.STRRESID = PM.NODE_NUM
         WHERE   PM.node_id= #{START_NODE}
         AND     PM.if_id = #{START_PORT}
         AND     MEASURED_DATETIME = #{FAULT_TIME}::TIMESTAMP
@@ -624,6 +629,9 @@
                 <if test="ISHISTORY == null or ISHISTORY == false">
                     AND SYSLOG.ALARMTIME <![CDATA[ > ]]> NOW() - INTERVAL '1' MONTH
                 </if>
+                <if test="ISHISTORY != null or ISHISTORY == true">
+                    AND SOP.HANDLING_FIN_TIME <![CDATA[ > ]]> NOW() - INTERVAL '1' MONTH
+                </if>
                 <if test="NODE_NM != null and NODE_NM != ''">
                     AND SYSLOG.NODE_NM = #{NODE_NM}
                 </if>
@@ -644,6 +652,27 @@
         ORDER BY SYSLOG.ALARMTIME DESC
         <include refid="TotalCountSuffix"/>
     </select>
+
+    <update id="UPDATE_SYSLOG_HIST" parameterType="java.util.HashMap">
+        UPDATE nia.tb_syslog_sop
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="FAULT_CLASSIFY != null">
+                fault_classify = #{FAULT_CLASSIFY},
+            </if>
+            <if test="FAULT_TYPE != null">
+                fault_type = #{FAULT_TYPE},
+            </if>
+            <if test="FAULT_DETAIL_CONTENT != null">
+                fault_detail_content = #{FAULT_DETAIL_CONTENT}
+            </if>
+        </trim>
+        WHERE  alarmno = #{ALARMNO}
+    </update>
+    
+     <delete id="DELETE_SYSLOG_HIST" parameterType="java.util.HashMap">
+        DELETE from nia.tb_syslog_sop
+        WHERE alarmno = #{ALARMNO}
+    </delete>
 
     <select id="SELECT_EQUIPMENT_LIST" parameterType="hashmap" resultType="hashmap">
         SELECT  DISTINCT NODE_NM AS VALUE
@@ -700,9 +729,9 @@
         <if test="TICKET_ID != null">
             AND SOP.TICKET_ID LIKE '%' || #{TICKET_ID} || '%'
         </if>
-        <!-- <if test="START_DATE == null and END_DATE == null">
+        <if test="START_DATE == null and END_DATE == null">
             AND AL.INSERT_TIME <![CDATA[ > ]]> now() - INTERVAL '7' day
-        </if> -->
+        </if>
         <if test="START_DATE != null">
             AND AL.INSERT_TIME <![CDATA[ >= ]]> #{START_DATE}::TIMESTAMP
         </if>
@@ -719,6 +748,27 @@
         ORDER BY SOP.REQUEST_TIME DESC 
     <include refid="TotalCountSuffix"/>
     </select>
+
+    <update id="UPDATE_SOP_HIST" parameterType="java.util.HashMap">
+        UPDATE nia.tb_sop
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="FAULT_CLASSIFY != null">
+                fault_classify = #{FAULT_CLASSIFY},
+            </if>
+            <if test="FAULT_TYPE != null">
+                fault_type = #{FAULT_TYPE},
+            </if>
+            <if test="FAULT_DETAIL_CONTENT != null">
+                fault_detail_content = #{FAULT_DETAIL_CONTENT}
+            </if>
+        </trim>
+        WHERE ticket_id = #{TICKET_ID}
+    </update>
+
+    <delete id="DELETE_SOP_HIST" parameterType="java.util.HashMap">
+        DELETE FROM nia.tb_sop
+        WHERE ticket_id = #{TICKET_ID}
+    </delete>
 
     <!-- 장애 현황 및 이력 -->
     <select id="SELECT_ALARM_CURRENT_HISTORY_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
@@ -743,7 +793,7 @@
         <where>
             <trim prefix="(" prefixOverrides="AND|OR" suffix=")" suffixOverrides="">
                 <if test="TICKET_ID != null and TICKET_ID != ''">
-                    AND TC.TICKET_ID = #{TICKET_ID}
+                    AND TC.TICKET_ID LIKE '%' || #{TICKET_ID} || '%'
                 </if>
                 <if test="TICKET_TYPE != null and TICKET_TYPE != ''">
                     AND TC.TICKET_TYPE = #{TICKET_TYPE}
@@ -801,13 +851,13 @@
                 AND sysDialog.alarmtime <![CDATA[ <= ]]> #{end_date}::timestamp 
                 </if>
                 <if test="alarmno != null and alarmno != ''">
-                AND sysDialog.alarmno = #{alarmno}
+                AND sysDialog.alarmno LIKE '%' || #{alarmno} || '%'
                 </if>
                 <if test="node_nm != null and node_nm != ''">
-                AND sysDialog.node_nm = #{node_nm}
+                AND sysDialog.node_nm LIKE '%' || #{node_nm} || '%'
                 </if>
                 <if test="node_num != null and node_num != ''">
-                AND sysDialog.node_num = #{node_num}
+                AND sysDialog.node_num LIKE '%' || #{node_num} || '%'
                 </if>
                 <if test="alarmmsg != null and alarmmsg != ''">
                 AND UPPER(sysDialog.alarmmsg) LIKE '%' || UPPER(#{alarmmsg}) || '%'
@@ -1104,7 +1154,8 @@
         SELECT 
             NREN_NAME AS NAME, 
             NREN_ID AS ID 
-        FROM RESOURCE.TB_USER_ORGAN TCC 
+        FROM RESOURCE.TB_USER_ORGAN TCC
+        WHERE NREN_ID IS NOT NULL 
         ORDER BY NREN_NAME
     </select>
 
@@ -1390,31 +1441,35 @@
      <select id="SELECT_PROFILE_LIST" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
         <include refid="TotalCountPrefix"/>
         SELECT
-            PROFILE_NUM,
-            PROFILE_TITLE,
-            PROFILE_DESC,
-            NETWORK_TYPE,
-            PROCESSING_TEMPLATE,
-            CONSTRUCTION_CHECK,
-            AUTO_PROCESS_CHECK,
-            TICKET_TYPE,
-            PROCESS_TYPE,
-            AUTO_RECOVERY,
-            EMAIL_CHECK,
-            TO_CHAR(AUTO_PROCESS_START_DATETIME, 'YYYY-MM-DD HH:MI:SS') AS AUTO_PROCESS_START_DATETIME,
-            TO_CHAR(AUTO_PROCESS_END_DATETIME, 'YYYY-MM-DD HH:MI:SS') AS AUTO_PROCESS_END_DATETIME,
-            CASE
-                WHEN AUTO_PROCESS_CHECK = 'true' THEN '상시'
-                ELSE 
-                    CASE
-                        WHEN AUTO_PROCESS_START_DATETIME IS NOT NULL AND AUTO_PROCESS_END_DATETIME IS NOT NULL THEN 
-                            AUTO_PROCESS_START_DATETIME || ' ~ ' || AUTO_PROCESS_END_DATETIME
-                        ELSE NULL 
-                    END
-            END AS AUTO_PROCESS_INFO,
-            TO_CHAR(CHNG_DATETIME, 'YYYY-MM-DD HH:MI:SS') AS CHNG_DATETIME,
-            ROW_NUMBER() OVER (ORDER BY PROFILE_NUM) AS ROWNUM
-        FROM RESOURCE.TB_FAULT_PROCESS_PROFILE
+        PROFILE_NUM,
+        PROFILE_TITLE,
+        PROFILE_DESC,
+        NETWORK_TYPE,
+        PROCESSING_TEMPLATE,
+        <!-- CASE 
+            WHEN PROCESSING_TEMPLATE = 'recovery' THEN '자가회복'
+            WHEN PROCESSING_TEMPLATE = 'construction' THEN '공사'
+        END AS PROCESSING_TEMPLATE_DESC, -->
+        CONSTRUCTION_CHECK,
+        AUTO_PROCESS_CHECK,
+        TICKET_TYPE,
+        PROCESS_TYPE,
+        AUTO_RECOVERY,
+        EMAIL_CHECK,
+        TO_CHAR(AUTO_PROCESS_START_DATETIME, 'YYYY-MM-DD HH:MI:SS') AS AUTO_PROCESS_START_DATETIME,
+        TO_CHAR(AUTO_PROCESS_END_DATETIME, 'YYYY-MM-DD HH:MI:SS') AS AUTO_PROCESS_END_DATETIME,
+        CASE
+            WHEN AUTO_PROCESS_CHECK = 'true' THEN '상시'
+            ELSE 
+                CASE
+                    WHEN AUTO_PROCESS_START_DATETIME IS NOT NULL AND AUTO_PROCESS_END_DATETIME IS NOT NULL THEN 
+                        AUTO_PROCESS_START_DATETIME || ' ~ ' || AUTO_PROCESS_END_DATETIME
+                    ELSE NULL 
+                END
+        END AS AUTO_PROCESS_INFO,
+        TO_CHAR(CHNG_DATETIME, 'YYYY-MM-DD HH:MI:SS') AS CHNG_DATETIME,
+        ROW_NUMBER() OVER (ORDER BY PROFILE_NUM) AS ROWNUM
+    FROM RESOURCE.TB_FAULT_PROCESS_PROFILE
         WHERE 1=1
         <if test="profile_title != null and profile_title != ''">
             AND PROFILE_TITLE LIKE '%' || #{profile_title} || '%'
@@ -1639,16 +1694,16 @@
                 FROM RESOURCE.TB_NODE_MST TNM
                 LEFT OUTER JOIN RESOURCE.TB_CODE CODE ON (TNM.MODEL_ID = CODE.CODE_ID)
                 WHERE 1=1
-                <if test="NODE_NM != null and node_nm != ''">
+                <if test="node_nm != null and node_nm != ''">
                     AND tnm.NODE_NM like '%' || #{node_nm} || '%'
                 </if>
-                <if test="MODEL_ID != null and model_id != ''">
+                <if test="model_id != null and model_id != ''">
                     AND code.CODE_NM like '%' || #{model_id} || '%'
                 </if>
-                <if test="IP_ADDR != null and ip_addr != ''">
+                <if test="ip_addr != null and ip_addr != ''">
                     AND tnm.IP_ADDR like '%' || #{ip_addr} || '%'
                 </if>
-                <if test="ADMIN_YN != null">
+                <if test="admin_yn != null and admin_yn != ''">
                     AND tnm.ADMIN_YN like '%' || #{admin_yn} || '%'
                 </if>
                 <if test="start_date != null and end_date != null">
@@ -1741,19 +1796,19 @@
         LEFT OUTER JOIN RESOURCE.TB_PORT_MST DP ON DP.NODE_ID = BL.DEST_NODE_ID AND DP.IF_ID = BL.DEST_IF_ID
         WHERE 1=1
             <if test="src_node_id != null and src_node_id != ''">
-                AND UPPER(BL.SRC_NODE_ID) LIKE '%' || UPPER(#{src_node_id}) || '%'
+                AND BL.src_node_id LIKE '%' || #{src_node_id} || '%'
+            </if>
+            <if test="src_if_id != null and src_if_id != ''">
+                AND BL.src_if_id LIKE '%' || #{src_if_id} || '%'
             </if>
             <if test="dest_node_id != null and dest_node_id != ''">
-                AND UPPER(BL.DEST_NODE_ID) LIKE '%' || UPPER(#{dest_node_id}) || '%'
+                AND BL.dest_node_id LIKE '%' || #{dest_node_id} || '%'
             </if>
-            <if test="src_if_name != null and src_if_name != ''">
-                AND UPPER(SP.IF_NM) LIKE '%' || UPPER(#{src_if_name}) || '%'
-            </if>
-            <if test="dest_if_name != null and dest_if_name != ''">
-                AND UPPER(DP.IF_NM) LIKE '%' || UPPER(#{dest_if_name}) || '%'
+            <if test="dest_if_id != null and dest_if_id != ''">
+                AND BL.dest_if_id LIKE '%' || #{dest_if_id} || '%'
             </if>
             <if test="link_desc != null and link_desc != ''">
-                AND UPPER(BL.LINK_DESC) LIKE '%' || UPPER(#{link_desc}) || '%'
+                AND BL.link_desc LIKE '%' || #{link_desc} || '%'
             </if>
         ) AS link
     </select>

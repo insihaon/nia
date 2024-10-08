@@ -1,31 +1,18 @@
 package com.kt.ipms.provider;
 
-import java.util.Base64;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
-import com.codej.base.dto.AppDto;
-import com.codej.base.dto.BaseUser;
-import com.codej.base.dto.DbUser;
-import com.codej.base.exception.CAuthenticationException;
 import com.codej.base.provider.BaseJwtTokenProvider;
-import com.codej.base.utils.EncryptUtil;
 import com.codej.base.utils.JsonUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.kt.ipms.legacy.opermgmt.loginmgmt.vo.LoginInfoVo;
@@ -33,13 +20,8 @@ import com.kt.ipms.legacy.opermgmt.usermgmt.vo.TbUserBasVo;
 import com.kt.ipms.security.IpmsUserDetailsServiceImpl;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.SignatureException;
-import io.jsonwebtoken.UnsupportedJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

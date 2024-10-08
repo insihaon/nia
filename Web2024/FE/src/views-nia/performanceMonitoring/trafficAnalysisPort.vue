@@ -3,6 +3,7 @@
     <CompInquiryPannel
       ref="trafficAnalysis"
       :ag-grid="trafficAgGrid"
+      :is-grid-loading="loading"
       :items="searchItems"
       :search-model.sync="searchModel"
       :pagination-info="paginationInfo"
@@ -30,6 +31,7 @@ export default {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       alarmInterval: null,
+      loading: false,
       paginationInfo: {
         currentPage: 1, // 현재 페이지
         pageSize: 50, // 페이지당 항목 수
@@ -46,14 +48,14 @@ export default {
         ] },
         { label: '장비', type: 'input', model: 'node_name', placeholder: '장비명을 검색하세요', disabled: false },
         { label: '인터페이스', type: 'input', model: 'if_name', placeholder: '인터페이스를 검색하세요', disabled: false },
-        { label: '시작일시', type: 'date', model: 'datetime', disabled: false },
-        { label: '종료일시', type: 'date', model: 'datetime', disabled: false },
-
+        { label: '시작-종료 일시', type: 'date', model: 'datetime', disabled: false },
       ],
+      search_type: 'OnDemand',
       searchModel: {
         search_type: 'OnDemand',
         node_name: '',
         if_name: '',
+        datetime: []
       }
     }
   },
@@ -80,6 +82,7 @@ export default {
     this.searchItems.forEach(item => {
       item.disabled = (item.model !== 'search_type') && (n === 'live')
     })
+    this.search_type = n
 
     if (n === 'live') {
       this.startInterval()
@@ -89,7 +92,9 @@ export default {
   }
   },
   mounted() {
-    this.onLoadTrafficList()
+    this.$nextTick(() => {
+      this.onLoadTrafficList()
+    })
   },
   methods: {
     startInterval() {
@@ -107,8 +112,6 @@ export default {
       this.onLoadTrafficList(params)
     },
     async onLoadTrafficList() {
-      const target = { vue: this.$refs.syslogRules }
-      this.openLoading(target)
       const param = {
         node_name: this.searchModel.node_name,
         if_name: this.searchModel.if_name,
@@ -120,6 +123,7 @@ export default {
         this._merge(param, { start_date: dateTime[0], end_date: dateTime[1] })
       }
       try {
+        this.loading = true
         const res = await apiSelectInOutTrafficList(param)
         this.trafficData = res?.result
         this.paginationInfo.totalCount = res.total // 총 항목 수 설정
@@ -127,7 +131,7 @@ export default {
       } catch (error) {
         console.error(error)
       } finally {
-        this.closeLoading(target)
+        this.loading = false
       }
     },
     onChangePage(curPage) {
@@ -135,7 +139,7 @@ export default {
       this.onLoadTrafficList()
     },
     searchClear() {
-      this.searchModel = {}
+      this._merge(this.searchModel, { search_type: this.search_type, node_name: '', if_name: '' })
       this.onLoadTrafficList()
     },
     async autoTest() {
