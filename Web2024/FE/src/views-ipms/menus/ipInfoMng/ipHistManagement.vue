@@ -12,13 +12,16 @@
         ref="compTable"
         :prop-name="name"
         :prop-table-height="'calc(100% - 80px)'"
+        :prop-data="pagination.data"
+        :prop-pagination-data.sync="pagination"
         :prop-column="ipBlockColumns"
-        :prop-data="ipHistList"
-        :prop-is-pagination="false"
+        :prop-is-pagination="true"
         :prop-is-check-box="false"
         prop-grid-menu-id="ipInfoList"
         :prop-grid-indx="1"
         :prop-on-click="handleClickRow"
+        :prop-on-page-change="handleChangeCurPage"
+        :prop-on-page-size-change="handleChangeCurPage"
       >
         <template slot="text-description">
           <span>
@@ -49,6 +52,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      pagination: this.setDefaultPagination(),
       componentList: [
         { key: 'SsvcLineType', props: { lvl: 3 } },
         { key: 'ServiceOrg', props: { isMulti: false } },
@@ -89,23 +93,35 @@ export default {
         { prop: 'ssubscnealias', label: '장비명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'ssubsclgipportdescription', label: 'I/F명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
       ],
-      ipHistList: []
     }
   },
   methods: {
     handleSearch(requestParameter) {
+      this.pagination.currentPage = 1
       this.fnViewListIpHistoryMst(requestParameter)
     },
     handleClickRow(row) {
       this.fnViewDetailIPMst(row)
     },
-    async fnViewListIpHistoryMst(params) {
+    async fnViewListIpHistoryMst(requestParameter = null) {
+      const parameter = requestParameter ?? this.$refs.searchCondition.requestParameter
+      const target = ({ vue: this.$refs.compTable })
+      const { pageSize: pageUnit, currentPage: pageIndex } = this.pagination
+      Object.assign(parameter, { pageUnit, pageIndex })
       try {
-        const res = await apiRequestModel(ipmsModelApis.viewListIpHistoryMst, params)
-        this.ipHistList = res.result.data ?? []
+        this.openLoading(target)
+        const res = await apiRequestModel(ipmsModelApis.viewListIpHistoryMst, parameter)
+        this.pagination.data = res.result.data ?? []
+        this.pagination.total = res.result.totalCount
       } catch (error) {
         this.error(error)
+      } finally {
+        this.closeLoading(target)
       }
+    },
+    handleChangeCurPage(v) {
+      if (v) this.pagination.currentPage = v
+      this.fnViewListIpHistoryMst()
     },
     async fnViewDetailIPMst(row) {
       const { nipHistMstSeq, nipAssignMstSeq, nipAllocMstSeq, yyyy } = row

@@ -488,8 +488,8 @@ export default {
           suserNm: this.resultListVo.suserNm,
           suserId: this.resultListVo.suserId,
           suserGradeCd: item.suserGradeCd,
-          smodifyId: this.$store.state.user.info.Uid,
-          screateId: this.$store.state.user.info.Uid
+          smodifyId: this.$store.state.user.info.suserId,
+          screateId: this.$store.state.user.info.suserId
         }
 
         if (this.suserGradeCd !== 'UR0001') {

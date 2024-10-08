@@ -9,7 +9,7 @@
       :multiple="isMultiByLvl(1)"
       collapse-tags
       size="mini"
-      @change="handleChangeLvl1"
+      @change="()=> handleChangeLvl1(true)"
     >
       <el-option v-if="isAllLvl1" label="전체" value=""><span class="w-100 h-100 d-inline-block" @click="toggleAll(1)">전체</span></el-option>
       <el-option
@@ -134,7 +134,7 @@ export default {
     }
   },
   // 1: ssvcLineTypeCd, ssvcLineCdMultiStr
-  // 2: ssvcGroupCdMulti: 123;234;345; or ssvcGroupCd
+  // 2: ssvcGroupCdMultiStr: 123;234;345; / ssvcGroupCdMulti: [] or ssvcGroupCd
   // 3: ssvcObjCd
   computed: {
     isDisabledLvlThree() {
@@ -181,18 +181,19 @@ export default {
     },
     getParameter() {
       const params = []
-      const lvl1Key = `ssvcLine${this.multi.includes(key1) ? 'CdMultiStr' : 'TypeCd'}`
-      const lvl2Key = `ssvcGroupCd${this.multi.includes(key2) ? 'MultiStr' : ''}`
+      const lvl1Key = `ssvcLine${this.multi.includes(key1) ? 'CdMulti' : 'TypeCd'}`
+      const lvl2Key = `ssvcGroupCd${this.multi.includes(key2) ? 'Multi' : ''}`
+      //  ssvcGroupCdMulti: this.localValue[key2],
       const parameterKeys = [lvl1Key, lvl2Key, 'ssvcObjCd']
 
       parameterKeys.forEach((key, idx) => {
         if (this.lvl >= (idx + 1)) {
           let value = ''
           if (Array.isArray(this.localValue[idx + 1])) {
-            value = this.localValue[idx + 1].join(';')
-          } else {
-            value = this.localValue[idx + 1] ?? ''
+            params.push({ key: `${key}Str`, value: this.localValue[idx + 1].join(';') })
+            // value = this.localValue[idx + 1].join(';')
           }
+          value = this.localValue[idx + 1] ?? ''
           params.push({ key, value })
         }
       })
@@ -222,9 +223,9 @@ export default {
           const res = await apiRequestJson(ipmsJsonApis.selectAuthCenterList, params)
           this.lvlOptions[key2] = res?.tbLvlBasVos?.filter(v => v.ssvcGroupNm !== '전체').map(v => { return { value: v.ssvcGroupCd, label: v.ssvcGroupNm } })
           if (isReset) {
-            this.resetLocalValue(key2)
-            this.resetLocalValue(key3)
-          }
+          this.resetLocalValue(key2)
+          this.resetLocalValue(key3)
+        }
           this.emitEventToParent(this.getParameter())
           Eventbus.$emit(EventType.changeLvl1, { ssvcLineTypeCd: this.localValue[key1] })
         } catch (error) {
@@ -235,19 +236,16 @@ export default {
       const isOver = this.updateSelectionWithAll(2)
       this.localLabel[key2] = this.lvlOptions[key2].find(v => v.value === this.localValue[key2])?.label ?? ''
       if (isOver) return
-
-      Eventbus.$emit(EventType.changeLvl2, { ssvcLineTypeCd: this.localValue[key1], [this.getKeyLvl2()]: this.getValueLvl2() })
-      this.emitEventToParent(this.getParameter())
-
       if (this.multi.includes(2) && this.localValue[key2].length > 1) return
-
-      const params = { ssvcLineTypeCd: this.localValue[key1], ssvcGroupCd: this.localValue[key2][0] || '' }
+      const params = { ssvcLineTypeCd: this.localValue[key1], ssvcGroupCd: Array.isArray(this.localValue[key2]) ? this.localValue[key2][0] : this.localValue[key2] || '' }
       try {
         const res = await apiRequestJson(ipmsJsonApis.selectAuthNodeList, params)
         this.lvlOptions[key3] = res.tbLvlBasVos?.filter(v => v.ssvcGroupNm !== '전체').map(v => { return { value: v.ssvcObjCd, label: v.ssvcObjNm } })
         if (isReset) {
           this.resetLocalValue(key3)
         }
+        this.emitEventToParent(this.getParameter())
+        Eventbus.$emit(EventType.changeLvl2, { ssvcLineTypeCd: this.localValue[key1], [this.getKeyLvl2()]: this.getValueLvl2() })
       } catch (error) {
         this.error(error)
       }
@@ -255,7 +253,11 @@ export default {
     handleChangeLvl3() {
       this.emitEventToParent(this.getParameter())
       this.localLabel[key3] = this.lvlOptions[key3].find(v => v.value === this.localValue[key3])?.label ?? ''
-      Eventbus.$emit(EventType.changeLvl3, { ssvcLineTypeCd: this.localValue[key1], [this.getKeyLvl2()]: this.getValueLvl2(), ssvcObjCd: this.localValue[key3] })
+      Eventbus.$emit(EventType.changeLvl3, {
+        ssvcLineTypeCd: this.localValue[key1],
+        [this.getKeyLvl2()]: this.getValueLvl2(),
+        ssvcObjCd: this.localValue[key3]
+      })
     },
     getKeyLvl2() {
       return `ssvcGroupCd${Array.isArray(this.localValue[key2]) ? 'MultiStr' : ''}`

@@ -7,7 +7,7 @@ copyright notice above does not evidence any actual or * intended publication of
       <div class="d-flex items-baseline">
         <i class="el-icon-document mr-1" />
         <slot name="text-description" />
-        <span class="countNum">( 총 {{ propIsPagination != false ? propPaginationData.total : propData.length }} 건 )</span>
+        <span class="countNum">( <slot name="add-count" /> 총 {{ propIsPagination != false ? propPaginationData.total.toLocaleString() : propData.length }} 건 )</span>
         <i class="el-icon-s-tools ml-1 mt-1" @click="fn_click_settings" />
       </div>
       <slot name="add-features" />
@@ -222,30 +222,35 @@ export default {
     },
     updateColumnDefs() {
       const name = this.propName
-      let savedColumnState
+      let savedColumnState = JSON.parse(window.localStorage['savedColumnState'] || '{}')
+      if (!savedColumnState[name] || savedColumnState[name]?.length !== this.propColumn.length) {
+        savedColumnState[name] = [...this.propColumn]
+      }
       if(name) {
-        savedColumnState = JSON.parse(window.localStorage['savedColumnState'] || '{}')[name]
-        savedColumnState && this.propColumn.forEach((col, index) => {
+        savedColumnState[name] && this.propColumn.forEach((col, index) => {
           if(!!col?.formatter) {
-            savedColumnState[index]['formatter'] = col.formatter
+            savedColumnState[name][index]['formatter'] = col.formatter
           }
           if(col?.children) {
             col.children.forEach((chCol, chIndex) => {
               if(!!chCol?.formatter) {
-                savedColumnState[index].children[chIndex]['formatter'] = chCol.formatter
+                Object.assign(savedColumnState[name][index].children[chIndex], { formatter: chCol.formatter })
+                // savedColumnState[index].children[chIndex]['formatter'] = chCol.formatter
               }
             })
           }
         })
       }
-      if (!savedColumnState) {
-        savedColumnState = [...this.propColumn]
-      }
-      if (!savedColumnState || !name) {
+      // if (!savedColumnState) {
+      //   savedColumnState = [...this.propColumn]
+      // }
+      if (!savedColumnState[name] || !name) {
         this.error('no order and visibility state to restore by, you must save order and visibility state first')
         return
       }
-      this.columnDefs = savedColumnState
+      this.columnDefs = savedColumnState[name]
+      window.localStorage['savedColumnState'] = JSON.stringify(savedColumnState)
+
     },
     fn_select(all, current) {
       if (!this.propIsCheckBox) {
@@ -317,9 +322,6 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-::v-deep .el-loading-spinner {
-  left: 50%;
-}
 .el-icon-s-tools:hover {
   opacity: 0.6;
   cursor: pointer;

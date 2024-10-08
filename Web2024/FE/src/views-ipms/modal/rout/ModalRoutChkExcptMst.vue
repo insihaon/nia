@@ -19,7 +19,7 @@
         예외 처리 관리
         <hr>
       </span>
-      <div id="content" class="layer">
+      <div id="content" v-loading="loading" class="layer">
         <div class="content_result" style="margin-top: 0px;">
           <div class="section_tit">
             <h3>예외처리</h3>
@@ -55,7 +55,7 @@
         </div>
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button size="mini" type="primary" @click="fninsertListExcptMst()">예외처리</el-button>
+        <el-button size="mini" type="primary" @click="fnInsertListExcptMst()">예외처리</el-button>
         <el-button size="mini" class="el-icon-close" @click.native="close()">{{ $t('exit') }}</el-button>
       </div>
     </el-dialog>
@@ -128,6 +128,7 @@ export default {
         sexcpt_rsn: this.sexcptRsn
       }
       try {
+        this.loading = true
         const res = await apiRequestJson(ipmsJsonApis.insertListExcptMst, tbRoutChkMstVo)
         if (res.commonMsg === 'SUCCESS') {
           onMessagePopup(this, '예외처리가 정상적으로 처리되었습니다.')
@@ -138,6 +139,8 @@ export default {
         }
       } catch (error) {
         this.error(error)
+      } finally {
+        this.loading = false
       }
     }
   },

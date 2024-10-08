@@ -185,7 +185,7 @@ export default {
       let res
       try {
         const TbLvlRoleSubVo = {
-          smodifyId: this.$store.state.user.info.Uid,
+          smodifyId: this.$store.state.user.info.suserId,
           ssvcLineType: item.ssvcLineTypeCd,
           ssvcObjCd: item.ssvcObjCd,
           ssvcLineTypeCd: item.ssvcLineTypeCd
@@ -219,7 +219,7 @@ export default {
       let res
       try {
         const TbLvlRoleSubVo = {
-          smodifyId: this.$store.state.user.info.Uid,
+          smodifyId: this.$store.state.user.info.suserId,
           ssvcObjCd: this.resultListVo[0].ssvcObjCd,
           ssvcLineTypeCd: this.resultListVo[0].ssvcLineTypeCd,
           ssvcOfficeCd: this.ssvcObjCd,

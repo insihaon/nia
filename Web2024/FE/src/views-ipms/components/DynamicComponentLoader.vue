@@ -24,7 +24,7 @@
           <el-button class="btn-r" type="info" size="mini" icon="el-icon-search" @click="handleSearch()">
             조회
           </el-button>
-          <el-button class="btn-r" type="info" size="mini" icon="el-icon-refresh">
+          <el-button class="btn-r" type="info" size="mini" icon="el-icon-refresh" @click="handleRefresh()">
             초기화
           </el-button>
           <el-button type="button" size="mini" class="export-excel" icon="el-icon-download" @click="handleClickExcel()">
@@ -101,7 +101,15 @@ export default {
   beforeDestroy() {
     Eventbus.$off(EventType.setSavedParameter)
   },
+  destroyed() {
+    // view키별로 구분해서 값 셋팅해야함 (modal이랑 중첩될 때 버그)
+    // this.$store.dispatch('ipms/resetCurrentCondition')
+  },
   methods: {
+    handleRefresh() {
+      // 초기화 코드 추가
+      console.log()
+    },
     handleSearch() {
       this.$emit('handle-search', this.requestParameter)
     },
@@ -116,7 +124,7 @@ export default {
         keyValues.forEach(obj => {
           this.requestParameter[obj.key] = obj.value
         })
-        // this.$store.dispatch('ipms/setCurProfileByVue', { key: this.propName, profileName: '' })
+        this.$store.dispatch('ipms/mergeCurrentCondition', this.requestParameter)
       }
     },
     setParameter(parameter) {

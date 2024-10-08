@@ -24,45 +24,47 @@
           <div class="tit_group">
             <h4 class="mt5">라우팅 중복 상세정보</h4>
           </div>
-          <table id="contentTable" class="tbl_list mt5" summary="조회결과">
-            <caption>조회결과</caption>
-            <colgroup>
-              <col width="8%" />
-              <col width="9%" />
-              <col width="9%" />
-              <col width="9%" />
-              <col width="9%" />
-              <col width="9%" />
-              <col width="15%" />
-            </colgroup>
-            <thead>
-              <tr>
-                <th scope="col">서비스망</th>
-                <th scope="col">본부</th>
-                <th scope="col">주노드</th>
-                <th scope="col">노드</th>
-                <th scope="col">IP블록</th>
-                <th scope="col">As-Path</th>
-                <th scope="col">Community</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-if="totalCount === 0" class="subbg last">
-                <td class="first" colspan="7">조회된 결과 목록이 존재하지 않습니다.</td>
-              </tr>
-              <template v-else>
-                <tr v-for="(item, index) in resultList.tbIpAssignMstVos" :key="index" :class="[{ last: index === resultList.tbIpAssignMstVos.length - 1 }, { subbg: index % 2 !== 0 }]">
-                  <td class="ellipsis" :title="item.ssvcLineTypeNm">{{ item.ssvcLineTypeNm }}</td>
-                  <td class="ellipsis" :title="item.ssvcGroupNm">{{ item.ssvcGroupNm }}</td>
-                  <td class="ellipsis" :title="item.ssvcHighNm">{{ item.ssvcHighNm }}</td>
-                  <td class="ellipsis" :title="item.ssvcObjNm">{{ item.ssvcObjNm }}</td>
-                  <td class="ellipsis" :title="item.pipPrefix">{{ item.pipPrefix }}</td>
-                  <td class="ellipsis" :title="item.asPath">{{ item.asPath }}</td>
-                  <td class="ellipsis" :title="item.scommunity">{{ item.scommunity }}</td>
+          <div v-loading="loading" class="scroll_area" style="max-height: 300px;">
+            <table id="contentTable" class="tbl_list mt5" summary="조회결과" style="height: 100px">
+              <caption>조회결과</caption>
+              <colgroup>
+                <col width="8%" />
+                <col width="9%" />
+                <col width="9%" />
+                <col width="9%" />
+                <col width="9%" />
+                <col width="9%" />
+                <col width="15%" />
+              </colgroup>
+              <thead>
+                <tr>
+                  <th scope="col">서비스망</th>
+                  <th scope="col">본부</th>
+                  <th scope="col">주노드</th>
+                  <th scope="col">노드</th>
+                  <th scope="col">IP블록</th>
+                  <th scope="col">As-Path</th>
+                  <th scope="col">Community</th>
                 </tr>
-              </template>
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                <tr v-if="totalCount === 0" class="subbg last">
+                  <td class="first" colspan="7">조회된 결과 목록이 존재하지 않습니다.</td>
+                </tr>
+                <template v-else>
+                  <tr v-for="(item, index) in resultList" :key="index" :class="[{ last: index === resultList.length - 1 }, { subbg: index % 2 !== 0 }]">
+                    <td class="ellipsis" :title="item.ssvcLineTypeNm">{{ item.ssvcLineTypeNm }}</td>
+                    <td class="ellipsis" :title="item.ssvcGroupNm">{{ item.ssvcGroupNm }}</td>
+                    <td class="ellipsis" :title="item.ssvcHighNm">{{ item.ssvcHighNm }}</td>
+                    <td class="ellipsis" :title="item.ssvcObjNm">{{ item.ssvcObjNm }}</td>
+                    <td class="ellipsis" :title="item.pipPrefix">{{ item.pipPrefix }}</td>
+                    <td class="ellipsis" :title="item.asPath">{{ item.asPath }}</td>
+                    <td class="ellipsis" :title="item.scommunity">{{ item.scommunity }}</td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+          </div>
         </div>
         <!-- <div class="btn_area mt10">
           <a href="#">
@@ -94,6 +96,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      loading: false,
       resultList: [],
       totalCount: 0
     }
@@ -114,14 +117,18 @@ export default {
       }
     },
     onClose() {
+      this.resultList = []
     },
     async loadData(tbIpAssignMstVo) {
       try {
+        this.loading = true
         const res = await apiRequestModel(ipmsModelApis.viewDetailSummary, tbIpAssignMstVo)
         this.resultList = res.result.data
         this.totalCount = res.result.totalCount
       } catch (error) {
         this.error(error)
+      } finally {
+        this.loading = false
       }
     }
   },

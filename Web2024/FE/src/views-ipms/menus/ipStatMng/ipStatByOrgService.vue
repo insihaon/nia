@@ -10,8 +10,11 @@
       <compTable
         ref="compTable"
         :prop-name="name"
+        :prop-loading.sync="loading"
+        :prop-highlight="rowHighlight"
         :prop-table-height="'calc(100% - 80px)'"
         :prop-data="resultList"
+        :prop-span-method="spanBySum"
         :prop-column="tableColumns"
         :prop-is-pagination="false"
         :prop-is-check-box="false"
@@ -46,6 +49,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      loading: false,
       svcList: [],
       resultList: [],
       componentList: [
@@ -53,43 +57,79 @@ export default {
         { key: 'IpAddress', props: { label: 'IP 버전', isShowInput: false } },
         { key: 'SipCreateType', props: {} },
         { key: 'ServiceOrg', props: { limit: 3 } },
-        { key: 'DatePicker', props: { } },
+        { key: 'DatePicker', props: { prop_parameterKey: 'searchBgnDe' } },
       ],
+      columns: []
     }
   },
   computed: {
     tableColumns() {
-      const columns = getStatColumn('orgService', this.svcList)
-      return columns
+      return this.columns
     }
   },
   mounted () {
-    this.fnViewListOrgSvcStat()
+    setTimeout(async() => {
+      this.fnViewListOrgSvcStat()
+    }, 10)
   },
   methods: {
     handleSearch(requestParameter) {
       this.fnViewListOrgSvcStat(requestParameter)
     },
-    async fnViewListOrgSvcStat(params = null) {
-      const defaultParam = {
-          pageIndex: 1,
-          pageUnit: 0,
-          pageSize: 0,
-          firstIndex: 1,
-          lastIndex: 10,
-          recordCountPerPage: 10,
-          rowNo: 0,
-      }
+    async fnViewListOrgSvcStat(requestParameter = null) {
+      const parameter = requestParameter ?? this.$refs.searchCondition.requestParameter
       try {
-        const res = await apiRequestModel(ipmsModelApis.viewListOrgSvcStat, params ?? defaultParam)
-        this.svcList = JSON.parse(res.data.svcList)
-        this.resultList = JSON.parse(res.data.result)
+        this.loading = true
+        const res = await apiRequestModel(ipmsModelApis.viewListOrgSvcStat, parameter)
+        if (res.data.resultStatus === 'SUCCESS') {
+          this.svcList = JSON.parse(res.data.svcList)
+          this.resultList = JSON.parse(res.data.result)
+          this.columns = [].concat(...getStatColumn('orgService', this.svcList))
+        }
       } catch (error) {
         this.error(error)
+      } finally {
+        this.loading = false
+      }
+    },
+    rowHighlight({ row, rowIndex }) {
+      if (row.ssvc_line_type_nm === '소계') {
+        return 'skyblue-row'
+      }
+      if (row.ssvc_group_nm === '소계') {
+        return 'yellow-row'
+      }
+      if (row.ssvc_obj_nm === '소계') {
+        return 'gray-row'
+      }
+    },
+    spanBySum({ row, column, rowIndex, columnIndex }) {
+      const isSumMang = row.ssvc_line_type_nm === '소계'
+      const isSumOrg = row.ssvc_group_nm === '소계'
+      const isSameMangOrg = row.ssvc_line_type_nm === row.ssvc_group_nm
+      const isSameOrgNode = row.ssvc_group_nm === row.ssvc_obj_nm
+      if (columnIndex === 0 && isSumMang && isSameMangOrg) {
+        return { rowspan: 1, colspan: 3 }
+      } else if ((columnIndex === 1 || columnIndex === 2) && isSumMang && isSameMangOrg) {
+          return { rowspan: 0, colspan: 0 } /* 데이터가 밀리는 col을 지워줌. */
+      } else if (columnIndex === 1 && isSumOrg && isSameOrgNode) {
+          return { rowspan: 1, colspan: 2 }
+      } else if (columnIndex === 2 && isSumOrg && isSameOrgNode) {
+          return { rowspan: 0, colspan: 0 }
       }
     }
   },
 }
 </script>
 <style lang="scss" scoped>
+::v-deep .gray-row {
+  background: #F9F9F9;
+}
+::v-deep .yellow-row {
+  background: #FFFBE5;
+}
+::v-deep .skyblue-row {
+  font-weight: bold;
+  background: #F0F9FC;
+}
 </style>

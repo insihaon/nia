@@ -22,6 +22,7 @@
       <el-row class="w-100 h-100">
         <el-col :span="24">
           <DynamicComponentLoader
+            ref="searchCondition"
             class="dynamic-container"
             :component-keys="componentList"
             :is-show-profile="false"
@@ -94,10 +95,10 @@ export default {
       requestParameter: null,
       selectedRow: null,
        tableColumns: [
-        { prop: 'sofficename', label: '수용국', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'ssubscnealias', label: '장비명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'smodelname', label: '모델명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'ssubscmstip', label: '장비대표 IP', align: 'center', sortable: true, columnVisible: true, showOverflow: true }
+        { prop: 'sofficename', label: '수용국', width: 105, align: 'center', sortable: false, columnVisible: true, showOverflow: true },
+        { prop: 'ssubscnealias', label: '장비명', width: 155, align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'smodelname', label: '모델명', width: 195, align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'ssubscmstip', label: '장비대표 IP', width: 200, align: 'center', sortable: true, columnVisible: true, showOverflow: true }
       ],
       tableDatas: [],
       sOfficeOptions: [],
@@ -136,7 +137,9 @@ export default {
         this.ipBlockMstVo = model.ipBlockMstVo
         this.ssubscnealiasNe = model?.inputText ?? ''
       }
-      this.fnViewSearchtNeMst()
+      this.$nextTick(() => {
+        this.fnViewSearchtNeMst()
+      })
     },
     onClose() {
       if (this.selectedRow !== null) {
@@ -144,7 +147,16 @@ export default {
       }
       this.tableDatas = []
     },
-    async fnViewSearchtNeMst() {
+    // async loadOfficeList() {
+    //   const params = {}
+    //   try {
+    //     const res = await apiRequestModel(ipmsModelApis.viewSearchtNeMst, params)
+    //     const sOfficeOptions = res?.result?.data ?? []
+    //   } catch (error) {
+    //     this.error(error)
+    //   }
+    // }
+    async fnViewSearchtNeMst() { // 수용국 조회
       let params = {}
       if (this.ipBlockMstVo !== null) {
         const { ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd } = this.ipBlockMstVo
@@ -155,15 +167,26 @@ export default {
           sicisofficescodeNe: this.sicisofficescodeNe, // 시설 정보 input값
           sneSrchTypeCd: '2', // 1: 할당 시설, 2: 호스트 기반 시설
         }
+      } else if (Object.keys(this.ipms.currentCondition).length !== 0) {
+        const groupKey = this.ipms.currentCondition.ssvcGroupCd ? 'ssvcGroupCd' : 'ssvcGroupCdMultiStr'
+        Object.assign(params, this.defaultVo, {
+          ssvcLineTypeCd: this.ipms.currentCondition.ssvcLineTypeCd,
+          [groupKey]: this.ipms.currentCondition[groupKey],
+          ssvcObjCd: this.ipms.currentCondition.ssvcObjCd
+        })
       } else {
         params = this.defaultVo
       }
+      const target = ({ vue: this.$refs.searchCondition })
       try {
+        this.openLoading(target)
         const res = await apiRequestModel(ipmsModelApis.viewSearchtNeMst, params)
         const offices = res?.result?.data ?? []
         this.$set(this, 'sOfficeOptions', offices)
       } catch (error) {
         this.error(error)
+      } finally {
+        this.closeLoading(target)
       }
     },
     // \ipAlocMstVo.sicisofficescodeNe	= vOfficeCode; //수용국
@@ -187,12 +210,23 @@ export default {
       this.fnSelectSearchtNeMst()
     },
     async fnSelectSearchtNeMst() {
+      const target = ({ vue: this.$refs.compTable })
       const params = Object.assign({}, this.requestParameter, { sneSrchTypeCd: this.ipBlockMstVo ? '2' : '1' })
+      if (Object.keys(this.ipms.currentCondition).length !== 0) {
+        Object.assign(params, {
+          ssvcLineTypeCd: this.ipms.currentCondition?.ssvcLineTypeCd ?? '',
+          ssvcGroupCd: this.ipms.currentCondition?.ssvcGroupCd ?? '',
+          ssvcObjCd: this.ipms.currentCondition?.ssvcObjCd ?? ''
+        })
+      }
       try {
+        this.openLoading(target)
         const res = await apiRequestJson(ipmsJsonApis.selectSearchtNeMst, params)
         this.tableDatas = res.ipAllocOperMstVos
       } catch (error) {
         this.error(error)
+      } finally {
+          this.closeLoading(target)
       }
     },
     handleSelect() {

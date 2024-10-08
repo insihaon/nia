@@ -406,7 +406,7 @@ export default {
           const tbRequestAsApyTxnVo = {
             nrequestAsApyTxnSeq: this.resultVo.nrequestAssignSeq,
             srequestAsTypeCd: 'RS0204',
-            sapvuserId: this.$store.state.user.info.Uid
+            sapvuserId: this.$store.state.user.info.suserId
           }
           const res = await apiRequestJson(ipmsJsonApis.updateNrequestAsSeqYn, tbRequestAsApyTxnVo)
             if (res.tbRequestAsApyTxnVo.commonMsg === 'SUCCESS') {
@@ -423,7 +423,7 @@ export default {
           nrequestAsSeq: nrequestAsSeq,
           srequestAsTypeCd: 'N',
           srequestAsTypeNm: '미사용',
-          smodifyId: this.$store.state.user.info.Uid
+          smodifyId: this.$store.state.user.info.suserId
         }
         const res = await apiRequestJson(ipmsJsonApis.updateTbRequestAsMst, tbRequestAsMstVo)
         if (res.tbRequestAsMstVo.commonMsg === 'SUCCESS') {
@@ -461,7 +461,7 @@ export default {
           nrequestAsApyTcnSeq: nrequestAsApyTxnSeq,
           nrequestAsSeq: serNrequestAsSeq,
           srequestAsTypeCd: 'RS0202',
-          sapvuserId: this.$store.state.user.info.Uid,
+          sapvuserId: this.$store.state.user.info.suserId,
           screateId: this.resultVo.screateId,
         }
         const res = await apiRequestJson(ipmsJsonApis.updateNrequestAsSeqYn, TbRequestAsApyTxnVo)
@@ -478,7 +478,7 @@ export default {
           nrequestAsSeq: serNrequestAsSeq,
           srequestAsTypeCd: 'Y',
           srequestAsTypeNm: '사용',
-          smodifyId: this.$store.state.user.info.Uid
+          smodifyId: this.$store.state.user.info.suserId
         }
         const res = await apiRequestJson(ipmsJsonApis.updateTbRequestAsMst, tbRequestAsMstVo)
         if (res.tbRequestAsMstVo.commonMsg === 'SUCCESS') {
@@ -532,8 +532,8 @@ export default {
 
       try {
           const tbRequestAsApyTxnVo = {
-            smodifyId: this.$store.state.user.info.Uid,
-            screateId: this.$store.state.user.info.Uid,
+            smodifyId: this.$store.state.user.info.suserId,
+            screateId: this.$store.state.user.info.suserId,
             srequestAsCtm: this.srequestAsCtm,
             srequestAsObjNm1: this.srequestAsObjNm1,
             srequestAsObjLlnum1: this.srequestAsObjLlnum1,
@@ -572,7 +572,7 @@ export default {
         const tbRequestAsApyTxnVo = {
           nrequestAsApyTxnSeq: this.resultVo.nrequestAsApyTxnSeq,
           srequestAsTypeCd: 'RS0203',
-          sapvuserId: this.$store.state.user.info.Uid,
+          sapvuserId: this.$store.state.user.info.suserId,
           screateId: this.resultVo.createId,
         }
         const res = await apiRequestJson(ipmsJsonApis.updateNrequestAsSeqYn, tbRequestAsApyTxnVo)

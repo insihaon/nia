@@ -11,18 +11,24 @@
         ref="compTable"
         :prop-name="name"
         :prop-table-height="'calc(100% - 80px)'"
-        :prop-data="tableDatas"
+        :prop-data="pagination.data"
+        :prop-pagination-data.sync="pagination"
         :prop-span-method="spanByIpmsIpblock"
         :prop-column="tableColumns"
-        :prop-is-pagination="false"
+        :prop-is-pagination="true"
         :prop-is-check-box="false"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
+        :prop-on-page-change="handleChangeCurPage"
+        :prop-on-page-size-change="handleChangeCurPage"
       >
         <template slot="text-description">
           <span>
             IP주소 라우팅 비교/점검
           </span>
+        </template>
+        <template slot="add-count">
+          IPMS DB 기준 건수 : {{ totalCount3.toLocaleString() }} 건 / 체크박스 기준 건수 : {{ totalCount2.toLocaleString() }} 건 /
         </template>
         <template slot="add-features">
           <div class="float-right">
@@ -40,7 +46,7 @@
     <ModalRoutChkExcptMst ref="ModalRoutChkExcptMst" @reload="fnViewListRoutChkMst($refs.searchCondition.requestParameter)" />
     <ModalRoutExcptMstDetail ref="ModalRoutExcptMstDetail" />
     <ModalRoutServiceChkMst ref="ModalRoutServiceChkMst" @reload="fnViewListRoutChkMst($refs.searchCondition.requestParameter)" />
-    <ModalRoutChkMst ref="ModalRoutChkMst" />
+    <ModalRoutChkMst ref="ModalRoutChkMst" @reload="fnViewListRoutChkMst($refs.searchCondition.requestParameter)" />
   </el-row>
 </template>
 <script>
@@ -73,6 +79,9 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      pagination: this.setDefaultPagination(),
+      totalCount2: 0,
+      totalCount3: 0,
       componentList: [
         {
           key: 'SsvcLineType', props: { isAllLvl1: false, lvl: 3, defaultValueLvl1: 'CL0001',
@@ -106,7 +115,6 @@ export default {
         { key: 'ExceptionYN', props: { defaultValue: 'N' } },
         { key: 'IpAddressMulti', props: {} }
       ],
-      tableDatas: [],
       isShowRoutMngBtn: true,
       // columnVisible 여부처리를 위한 computed 감지 변수, IP블록 분할/병합 처리 시 서비스 변경작업에 필요한 값
       ssvcLineTypeCd: 'CL0001',
@@ -229,6 +237,9 @@ export default {
   },
   mounted () {
     Eventbus.$on(EventType.changeLvl1, (params) => { this.isShowRoutMngBtn = !(params.ssvcLineTypeCd === 'CL0003') })
+    setTimeout(() => {
+      this.fnViewListRoutChkMst()
+    }, 200)
   },
   beforeDestroy() {
     Eventbus.$off(EventType.changeLvl1)
@@ -245,13 +256,27 @@ export default {
     fnViewExcptDetail(nipAssignMstSeq) {
       this.$refs.ModalRoutExcptMstDetail.open({ nipAssignMstSeq })
     },
-    async fnViewListRoutChkMst(params) {
+    async fnViewListRoutChkMst(requestParameter = null) {
+      const parameter = requestParameter ?? this.$refs.searchCondition.requestParameter
+      const target = ({ vue: this.$refs.compTable })
+      const { pageSize: pageUnit, currentPage: pageIndex } = this.pagination
+      Object.assign(parameter, { pageUnit, pageIndex })
       try {
-        const res = await apiRequestModel(ipmsModelApis.viewListRoutChkMst, params)
-        this.tableDatas = res.result.data
+        this.openLoading(target)
+        const res = await apiRequestModel(ipmsModelApis.viewListRoutChkMst, parameter)
+        this.pagination.data = res.result.data ?? []
+        this.pagination.total = res.result.totalCount
+        this.totalCount2 = res.result.totalCount2
+        this.totalCount3 = res.result.totalCount3
       } catch (error) {
         this.error(error)
+      } finally {
+        this.closeLoading(target)
       }
+    },
+    handleChangeCurPage(v) {
+      if (v) this.pagination.currentPage = v
+      this.fnViewListRoutChkMst()
     },
     async fnViewDetailRoutChkMst(nipAssignMstSeq) {
       try {
@@ -452,7 +477,7 @@ export default {
         onMessagePopup(this, '선택하신 건들의 분할/병합 건수가 30건 초과면 1개의 대상만 선택 후 IP블록 (해지 후) 분할/병합이 가능합니다.')
         return
       }
-      this.fnSelectCheckService({ tbRoutChkMstVo: { chkListStr: checkedList } })
+      this.fnSelectCheckService({ chkListStr: checkedList })
     },
     async fnSelectCheckService(param) { // IP블록 현행화 전 서비스 조회
       try {
@@ -503,18 +528,18 @@ export default {
       }
     },
     spanByIpmsIpblock({ row, column, rowIndex, columnIndex }) {
+      const tableDatas = this.pagination.data
       const sameIpList = []
       let pass = false
-
       for (let index = 0; index < rowIndex; index++) {
-        if (this.tableDatas[index].pipmsIpPrefix === row.pipmsIpPrefix) {
+        if (tableDatas[index].pipmsIpPrefix === row.pipmsIpPrefix) {
           pass = true
           break
         }
       }
-      for (let index = rowIndex + 1; index < this.tableDatas.length; index++) {
-        if (this.tableDatas[index].pipmsIpPrefix === row.pipmsIpPrefix) {
-          sameIpList.push(this.tableDatas[index])
+      for (let index = rowIndex + 1; index < tableDatas.length; index++) {
+        if (tableDatas[index].pipmsIpPrefix === row.pipmsIpPrefix) {
+          sameIpList.push(tableDatas[index])
         }
       }
       if (![8, 9, 10].includes(columnIndex)) {

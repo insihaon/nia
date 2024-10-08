@@ -19,7 +19,7 @@
         운용정보 상세정보
         <hr>
       </span>
-      <div id="content" class="layer">
+      <div id="content" v-loading="loading" class="layer">
         <div class="content_result mt0">
           <div class="tit_group">
             <h4 class="mt5">상세정보</h4>
@@ -102,6 +102,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      loading: false,
       defaultResultVo: {
         pifSerialIp: '',
         saofficescodeNm: '',
@@ -138,10 +139,13 @@ export default {
     },
     async fnViewDetailIPLinkMst(nipLinkMstSeq) {
       try {
+        this.loading = true
         const res = await apiRequestModel(ipmsModelApis.viewDetailIPLinkMst, { nipLinkMstSeq })
         this.resultVo = res.result.data
       } catch (error) {
        this.error(error)
+      } finally {
+        this.loading = false
       }
     },
     handleClickUpdate() {
@@ -160,9 +164,11 @@ export default {
         type: 'success'
       }).then(async () => {
         try {
+          this.loading = true
           const res = await apiRequestJson(ipmsJsonApis.deleteLinkIpMst, { nipLinkMstSeq: row.nipLinkMstSeq })
           if (res.commonMsg === 'SUCCESS') {
             onMessagePopup(this, '운용 정보가 정상적으로 삭제 되었습니다.')
+            this.loading = true
             this.$emit('reload')
             this.resultVo = this._cloneDeep(this.defaultResultVo)
             this.close()

@@ -249,7 +249,7 @@ export default {
     },
     async fnInsertSubmit() {
       const { insertShostNm, insertIpHostInet, insertOfficeCd, sBitMask, insertModelNm, insertComment, insertIpVersion } = this.resultVo
-      // const userId = this.$store.state.user.info.Uid
+      // const userId = this.$store.state.user.info.suserId
       if (insertShostNm === null || insertShostNm === '') {
         onMessagePopup(this, '호스트 명을 입력하세요.')
         return
@@ -270,8 +270,8 @@ export default {
         smodelname: insertModelNm,
         scomment: insertComment,
         sipVersionTypeCd: insertIpVersion,
-        // screateId: userId,
-        // smodifyId: userId
+        screateId: this.$store.state.user.info.suserId,
+        smodifyId: this.$store.state.user.info.suserId
       }
       try {
         const res = await apiRequestJson(ipmsJsonApis.insertHostIPMst, tbIpHostMstVo)

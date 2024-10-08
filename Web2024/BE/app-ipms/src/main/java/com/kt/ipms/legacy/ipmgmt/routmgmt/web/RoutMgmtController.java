@@ -74,8 +74,22 @@ public class RoutMgmtController extends CommonController{
 	@RequestMapping(value = "/ipmgmt/routmgmt/viewListRoutChkMst.model", method = RequestMethod.POST)
 	@ResponseBody
 	public ModelMap viewListRoutChkMst(@RequestBody TbRoutChkMstVo searchVo, ModelMap model, HttpServletRequest request) {
-		TbRoutChkMstListVo resultListVo = routMgmtService.selectListRoutChkMst(searchVo);
-		return createResultList(resultListVo.getTbRoutChkMstVos(), resultListVo.getTotalCount());
+		// setPagination(searchVo);
+		// TbRoutChkMstListVo resultListVo = routMgmtService.selectListRoutChkMst(searchVo);
+		ModelMap builtModel = viewListRoutChkMstModel(searchVo, request);
+		TbRoutChkMstListVo resultListVo = (TbRoutChkMstListVo)builtModel.get("resultListVo");
+
+		ModelMap resultModel = new ModelMap();
+		HashMap<String, Object> map = new HashMap<String, Object>();
+
+		map.put("data", resultListVo.getTbRoutChkMstVos());
+		map.put("totalCount", resultListVo.getTotalCount());
+		map.put("totalCount2", resultListVo.getTotalCount2());
+		map.put("totalCount3", resultListVo.getTotalCount3());
+
+		resultModel.addAttribute("result",map);
+
+		return resultModel;
 	}
 	@RequestMapping(value = "/ipmgmt/routmgmt/viewListRoutChkMst.do", method = RequestMethod.POST)
 	public String viewListRoutChkMst(@ModelAttribute("searchVo") TbRoutChkMstVo searchVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
@@ -928,8 +942,8 @@ public class RoutMgmtController extends CommonController{
 	@RequestMapping(value = "/ipmgmt/routmgmt/viewPopRoutChkExceptMst.model", method = RequestMethod.POST)
 	@ResponseBody
 	public ModelMap viewPopRoutChkExceptMst(@RequestBody TbRoutChkMstVo searchVo, ModelMap model, HttpServletRequest request) {
-		TbRoutChkMstListVo resultListVo = new TbRoutChkMstListVo();
-		return createResultList(resultListVo.getTbRoutChkMstVos(), resultListVo.getTotalCount());
+		List<CommonCodeVo> exceptCds = commonCodeService.selectListCommonCode(CommonCodeUtil.ROUTING_EXCEPT_CD, null);
+		return createResultList(exceptCds, exceptCds.size());
 	}
 	@RequestMapping(value = "/ipmgmt/routmgmt/viewPopRoutChkExceptMst.ajax", method = RequestMethod.POST)
 	public String viewPopRoutChkExceptMst(@RequestBody TbRoutChkMstVo searchVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {

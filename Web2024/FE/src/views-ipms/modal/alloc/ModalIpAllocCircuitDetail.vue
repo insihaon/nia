@@ -167,18 +167,17 @@ export default {
       this.$emit('closeCircuitDetail')
     },
     async fnViewDetailSubSvcMst(ipBlockMstVo = null) {
-      // /ipmgmt/allocmgmt/viewDetailSubSvcMst.model
       if (ipBlockMstVo === null) return
-      /*
-      레거시 url: ipmgmt/allocmgmt/viewDetailSubSvcMst.ajax
-      회선정보조회
-        case 1. 할당상세pop
-          ipBlockMstVo: { nipAllocMstSeq , nipLinkMstSeq }
-        case 2. 할당처리pop > 회선 정보
-          ipBlockMstVo: { sllnum, ssaid, ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd }
-      */
+     let params
+     if (ipBlockMstVo?.nipAllocMstSeq || ipBlockMstVo?.nipLinkMstSeq) { /* case 1. 할당상세pop */
+      const { nipAllocMstSeq, nipLinkMstSeq } = ipBlockMstVo
+      params = { nipAllocMstSeq, nipLinkMstSeq }
+     } else { /* case 2. 할당처리pop > 회선 정보 */
+      const { sllnum, ssaid, ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd } = ipBlockMstVo
+      params = { sllnum, ssaid, ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd }
+     }
       try {
-        const res = await apiRequestModel(ipmsModelApis.viewDetailSubSvcMst, ipBlockMstVo)
+        const res = await apiRequestModel(ipmsModelApis.viewDetailSubSvcMst, params)
         this.resultVo = res.result.data
       } catch (error) {
         this.error(error)

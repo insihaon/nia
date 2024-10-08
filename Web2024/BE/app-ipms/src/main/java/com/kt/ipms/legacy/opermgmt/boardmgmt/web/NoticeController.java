@@ -45,6 +45,7 @@ public class NoticeController extends CommonController {
 	@ResponseBody
 	public ModelMap selectListTbBoard(@RequestBody TbBoardVo searchVo, ModelMap model,
 			HttpServletRequest request)  {
+		setPagination(searchVo);
 		TbBoardListVo resultListVo = noticeService.selectListNotice(searchVo);
 		return createResultList(resultListVo.getTbBoardVos(), resultListVo.getTotalCount());
 	}
