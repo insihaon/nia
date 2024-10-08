@@ -214,6 +214,7 @@ public class WhoisMgmtController extends CommonController {
 	}
 	
 	@RequestMapping(value="opermgmt/whoismgmt/viewRegWhois.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewRegWhois(@RequestBody TbWhoisVo tbWhoisVo, ModelMap model, HttpServletRequest request) {
 		TbWhoisVo resultVo = whoisService.selectWhois(tbWhoisVo);
 		return createResult(resultVo);
@@ -276,6 +277,7 @@ public class WhoisMgmtController extends CommonController {
 	}
 	
 	@RequestMapping(value="opermgmt/whoismgmt/viewSearchZipCode.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewSearchZipCode(@RequestBody TbNewZipcodeVo tbZipcodeVo, ModelMap model, HttpServletRequest request) {
 		TbNewZipcodeListVo resultListVo = whoisService.selectListPageTbNewZipcode(tbZipcodeVo);
 		return createResultList(resultListVo.getTbZipcodeVos(), resultListVo.getTotalCount());
@@ -698,6 +700,7 @@ public class WhoisMgmtController extends CommonController {
 	 * @return
 	 */
 	@RequestMapping(value="opermgmt/whoismgmt/viewRegWhoisNew.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewRegWhoisNew(@RequestBody TbWhoisVo tbWhoisVo, ModelMap model, HttpServletRequest request) {
 		TbWhoisVo resultVo = whoisService.selectWhois(tbWhoisVo);
 		return createResult(resultVo);
@@ -988,6 +991,7 @@ public class WhoisMgmtController extends CommonController {
 	 * @return
 	 */
 	@RequestMapping(value = "opermgmt/whoismgmt/viewDetailWhoisModReq.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewDetailWhoisModReq(@RequestBody TbWhoisModifyVo tbWhoisModifyVo, ModelMap model, HttpServletRequest request) {
 		TbWhoisModifyVo resultVo = whoisService.selectTbWhoisModifyVo(tbWhoisModifyVo);
 		return createResult(resultVo);
@@ -1041,6 +1045,7 @@ public class WhoisMgmtController extends CommonController {
 	 * @return
 	 */
 	@RequestMapping(value = "/opermgmt/whoismgmt/viewRegWhoisModReq.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap _viewRegWhoisModReq(@RequestBody TbWhoisModifyVo searchVo, ModelMap model, HttpServletRequest request) {
 		TbWhoisModifyListVo resultListVo = whoisService.selectListTbWhoisModReqIp(searchVo);
 		return createResultList(resultListVo.getTbWhoisModifyVos(), resultListVo.getTotalCount());
@@ -1192,6 +1197,7 @@ public class WhoisMgmtController extends CommonController {
 	 * @return
 	 */
 	@RequestMapping(value = "/opermgmt/whoismgmt/viewUpdateWhoisModReq.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewUpdateWhoisModReq(@RequestBody TbWhoisModifyVo tbWhoisModifyVo, ModelMap model, HttpServletRequest request) {
 		TbWhoisModifyVo resultVo = whoisService.selectTbWhoisModifyVo(tbWhoisModifyVo);
 		return createResult(resultVo);
@@ -1790,6 +1796,7 @@ public class WhoisMgmtController extends CommonController {
 	 * @return
 	 */
 	@RequestMapping(value="opermgmt/whoismgmt/viewSearchKisa.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewSearchKisa(@RequestBody TbWhoisVo searchVo, ModelMap model, HttpServletRequest request) {
 		TbWhoisComplexVo resultVo = whoisService.selectListTbWhoisControl(searchVo);
 		return createResult(resultVo);

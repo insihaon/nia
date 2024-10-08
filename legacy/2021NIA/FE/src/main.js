@@ -70,6 +70,16 @@ Vue.config.devtools = process.env.NODE_ENV !== 'production'
 Vue.config.performance = false
 Vue.config.productionTip = false
 
+Vue.prototype.setDefaultPagination = () => {
+  var defaultOpt = {
+    total: 0,
+    currentPage: 1,
+    pageSize: 10,
+    data: []
+  }
+  return defaultOpt
+}
+
 if (process.env.NODE_ENV !== 'development') {
   console._ = {
     info: console.info,

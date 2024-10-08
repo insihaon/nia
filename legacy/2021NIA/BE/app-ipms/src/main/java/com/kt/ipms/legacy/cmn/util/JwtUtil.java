@@ -21,6 +21,7 @@ import com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlBasListVo;
 import com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlMstVo;
 import com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlMstListVo;
 import com.kt.ipms.legacy.opermgmt.grantmgmt.vo.TbUserAuthTxnVo;
+import com.kt.ipms.legacy.opermgmt.loginmgmt.service.LoginMgmtTxService;
 
 @Component
 public class JwtUtil {
@@ -29,6 +30,8 @@ public class JwtUtil {
 	private IpmsJwtTokenProvider  ipmsJwtTokenProvider;
 	@Autowired
 	private GrantMgmtAdapterService  grantMgmtAdapterService;
+	@Autowired
+	private LoginMgmtTxService  loginMgmtTxService;
 	
 	@Autowired
 	private OrgMgmtAdapterService orgMgmtAdapterService;
@@ -106,7 +109,11 @@ public class JwtUtil {
 	
 	public TbLvlBasListVo getSvcLineList (HttpServletRequest request)  {
 		LoginInfoVo sessionVO = getSessionVO(request);
-		if (sessionVO != null) return sessionVO.getUserAuthListVo();
+		if(sessionVO != null) {
+			loginMgmtTxService.setGradeLevelInfo(sessionVO);
+			return sessionVO.getUserAuthListVo();
+		}
+		// if (sessionVO != null) return sessionVO.getUserAuthListVo();
 		else return null;
 	}
 	

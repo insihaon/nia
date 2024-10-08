@@ -107,6 +107,7 @@ public class GrantMgmtController  extends CommonController {
 	}
 	
 	@RequestMapping(value = "/opermgmt/usermgmt/viewInsertAdmrTxn.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewInsertTbLvlCdVo(@RequestBody TbAdmrApvTxnVo searchVo, ModelMap model,
 			HttpServletRequest request)  {
 		TbAdmrApvTxnVo resultVo = new TbAdmrApvTxnVo();
@@ -463,6 +464,7 @@ public class GrantMgmtController  extends CommonController {
 	}
 	
 	@RequestMapping(value = "/opermgmt/grantmgmt/viewInsertUserAuth.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewInsertUserAuth(@RequestBody TbUserAuthTxnVo searchVo, 
 			HttpServletRequest request)  {
 		TbUserAuthTxnListVo resultListVo = grantMgmtService.selectDetailUserAuthTxn(searchVo);

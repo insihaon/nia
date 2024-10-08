@@ -45,6 +45,7 @@ public class NoticeController extends CommonController {
 	@ResponseBody
 	public ModelMap selectListTbBoard(@RequestBody TbBoardVo searchVo, ModelMap model,
 			HttpServletRequest request)  {
+		setPagination(searchVo);
 		TbBoardListVo resultListVo = noticeService.selectListNotice(searchVo);
 		return createResultList(resultListVo.getTbBoardVos(), resultListVo.getTotalCount());
 	}
@@ -116,6 +117,7 @@ public class NoticeController extends CommonController {
 	 * @
 	 */
 	@RequestMapping(value = "/opermgmt/boardmgmt/viewDetailNotice.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap selectNotice(@RequestBody TbBoardVo tbBoardVo, ModelMap model,
 			HttpServletRequest request)  {
 		TbBoardVo resultVo = noticeService.selectNotice(tbBoardVo);
@@ -245,6 +247,7 @@ public class NoticeController extends CommonController {
 	 * @
 	 */
 	@RequestMapping(value = "/opermgmt/boardmgmt/viewInsertNotice.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewInsertNotice(TbBoardVo tbBoardVo, ModelMap model, HttpServletRequest request)  {
 		tbBoardVo.setSboardTypeCd("BH0001");
 		List<CommonCodeVo> boardTypeSubCds = commonCodeService.selectListCommonCode(CommonCodeUtil.BOARD_TYPE_SUB_CD, tbBoardVo);
@@ -376,6 +379,7 @@ public class NoticeController extends CommonController {
 	 * @
 	 */
 	@RequestMapping(value = "/opermgmt/boardmgmt/viewUpdateNotice.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewUpdateNotice(@RequestBody TbBoardVo tbBoardVo, ModelMap model,
 			HttpServletRequest request)  {
 		TbBoardVo resultVo = noticeService.selectNotice(tbBoardVo);

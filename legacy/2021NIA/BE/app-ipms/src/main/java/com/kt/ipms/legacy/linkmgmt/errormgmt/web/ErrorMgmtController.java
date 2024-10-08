@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kt.framework.exception.ServiceException;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
@@ -30,6 +31,7 @@ public class ErrorMgmtController extends CommonController{
 	private ErrorMgmtService errorMgmtService;
 	
 	@RequestMapping(value = "/linkmgmt/erromgmt/viewListError.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap selectListReq( @ModelAttribute("searchVo") ErrorMgmtVo searchVo, ModelMap model, HttpServletRequest request){
 		ErrorMgmtListVo resultListVo = errorMgmtService.selectListErrorMgmt(searchVo);
 		return createResultList(resultListVo.getErrorMgmtVos(), resultListVo.getTotalCount());

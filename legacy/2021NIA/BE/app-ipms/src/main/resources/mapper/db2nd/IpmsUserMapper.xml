@@ -61,7 +61,7 @@
 		AND G.SUSER_GRADE_CD = C.SUSER_GRADE_CD(+)
 	</sql>
 
-   <select id="SELECT_LOGIN_USER" parameterType="hashmap" resultType="com.kt.ipms.legacy.opermgmt.usermgmt.vo.TbUserBasVo">
+   <select id="SELECT_LOGIN_USER" parameterType="hashmap" resultType="com.kt.ipms.legacy.opermgmt.loginmgmt.vo.LoginInfoVo">
         SELECT
 		<include refid="Base_Column_List" />
 		<include refid="Append_Column_List"/>

@@ -33,14 +33,17 @@
       <compTable
         ref="compTable"
         :prop-name="name"
-        :prop-table-height="'calc(100% - 80px)'"
+        :prop-table-height="'calc(100% - 110px)'"
         :prop-column="tableColumns"
-        :prop-data="noticeList"
-        :prop-is-pagination="false"
+        :prop-data="pagination.data"
+        :prop-pagination-data.sync="pagination"
+        :prop-is-pagination="true"
         :prop-is-check-box="false"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
         :prop-on-click="hadleClickNoticeDetail"
+        :prop-on-page-change="handleChangeCurPage"
+        :prop-on-page-size-change="handleChangeCurPage"
       >
         <template slot="text-description">
           <span>
@@ -84,12 +87,13 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      pagination: this.setDefaultPagination(),
       tableColumns: [
         { prop: 'seq', label: 'SEQ', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'sboardTypeSubNm', label: '유형', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'sboardTitle', label: '제목', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'smodifyNm', label: '등록자', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'dcreateDt', label: '등록일', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'dcreateDt', label: '등록일', align: 'center', sortable: true, columnVisible: true, showOverflow: true, formatter: (row) => { return row.dcreateDt ? this.moment(row.dcreateDt).format('YYYY-MM-DD HH:mm:ss') : '' } },
         { prop: 'dnotiStartDt', label: '팝업게시시작일', align: 'center', sortable: true, columnVisible: true, showOverflow: true, formatter: (row) => { return row.dnotiStartDt ? this.moment(row.dnotiStartDt).format('YYYY-MM-DD HH:mm:ss') : '' } },
         { prop: 'dnotiEndDt', label: '팝업게시종료일', align: 'center', sortable: true, columnVisible: true, showOverflow: true, formatter: (row) => { return row.dnotiEndDt ? this.moment(row.dnotiEndDt).format('YYYY-MM-DD HH:mm:ss') : '' } },
         { prop: 'nreadCnt', label: '조회건수', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
@@ -100,7 +104,6 @@ export default {
         { key: 'DateRange', props: { label: '등록기간' } },
       ],
       interval: null,
-      noticeList: [],
       currentIndex: 0
     }
   },
@@ -110,7 +113,9 @@ export default {
     }
   },
   mounted() {
-    this.interval = setInterval(this.noticeScroll, 3000)
+    if (this.isDashboard) {
+      this.interval = setInterval(this.noticeScroll, 3000)
+    }
     this.$nextTick(() => {
       this.fnViewListNotice()
     })
@@ -126,23 +131,35 @@ export default {
     hadleClickNoticeDetail(row) {
       this.handleClickNoticeDetail(row.seq)
     },
-    async fnViewListNotice() {
-      const param = this.$refs.searchCondition?.requestParameter ?? {
-        'searchCnd': 'title',
-        'pageIndex': 1,
-        'pageUnit': 10,
-        'pageSize': 0,
-        'firstIndex': 1,
-        'lastIndex': 10,
-        'recordCountPerPage': 10,
-        'rowNo': 0,
-      }
+    async fnViewListNotice(requestParameter = null) {
+      const parameter = requestParameter ?? this.$refs.searchCondition.requestParameter
+      // const param = this.$refs.searchCondition?.requestParameter ?? {
+      //   searchCnd: 'title',
+      //   pageIndex: 1,
+      //   pageUnit: 10,
+      //   pageSize: 0,
+      //   firstIndex: 1,
+      //   lastIndex: 10,
+      //   recordCountPerPage: 10,
+      //   rowNo: 0,
+      // }
+      const target = ({ vue: this.$refs.compTable })
+      const { pageSize: pageUnit, currentPage: pageIndex } = this.pagination
+      Object.assign(parameter, { pageUnit, pageIndex })
       try {
-        const res = await apiRequestModel(ipmsModelApis.viewListNotice, param)
-        this.noticeList = res.result.data
+        this.openLoading(target)
+        const res = await apiRequestModel(ipmsModelApis.viewListNotice, parameter)
+        this.pagination.data = res.result.data ?? []
+        this.pagination.total = res.result.totalCount
       } catch (error) {
         this.error(error)
+      } finally {
+        this.closeLoading(target)
       }
+    },
+    handleChangeCurPage(v) {
+      if (v) this.pagination.currentPage = v
+      this.fnViewListNotice()
     },
     fnViewInsertNotice() {
       this.$refs.ModalNoticeInsert.open()

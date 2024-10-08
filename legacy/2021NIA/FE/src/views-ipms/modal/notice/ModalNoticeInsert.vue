@@ -20,7 +20,7 @@
         공지사항 등록
         <hr>
       </span>
-      <div id="content" class="layer info">
+      <div id="content" v-loading="loading" class="layer info">
         <table class="tbl_data entry">
           <colgroup>
             <col width="14%" />
@@ -103,6 +103,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      loading: false,
       viewType: 'I',
       boardTypes: [],
       sboardTypeSubCd: '',
@@ -128,7 +129,7 @@ export default {
       this.domElement.maxWidth = 1000
     },
     onOpen(model, actionMode) {
-      this.notice.screateNm = this.$store.state.user.info.Uid
+      this.notice.screateNm = this.$store.state.user.info.suserId
       this.notice.screateEmail = this.$store.state.user.info.Email
       this.loadOptions()
       this.viewType = model?.viewType ?? 'I'
@@ -150,6 +151,7 @@ export default {
     async loadUpdateInfo(seq = null) {
       if (seq === null) return
       try {
+        this.loading = true
         const res = await apiRequestModel(ipmsModelApis.viewUpdateNotice, { seq })
         this._merge(this.notice, res.result.data)
         const dnotiStartDt = this.moment(this.notice.dnotiStartDt).format('YYYY-MM-DD HH:mm:ss')
@@ -157,6 +159,8 @@ export default {
         this.notice.popup_date = [dnotiStartDt, dnotiEndDt]
       } catch (error) {
        this.error(error)
+      } finally {
+        this.loading = false
       }
     },
     async loadOptions() {
@@ -164,7 +168,8 @@ export default {
         const res = await apiRequestModel(ipmsModelApis.viewInsertNotice, {})
         this.boardTypes = res.result.data.map(d => { return { label: d.name, value: d.code } })
         this.sboardTypeSubCd = this.boardTypes[0].value
-        this.sboardTypeCd = res.tbBoardVo.sboardTypeCd
+
+        this.sboardTypeCd = res.result.data
       } catch (error) {
        this.error(error)
       }
@@ -184,6 +189,7 @@ export default {
     async fnProcessNotice(apiKey, resMsg) {
       if (!Object.keys(ipmsJsonApis).includes(apiKey)) return
       try {
+        this.loading = true
         const res = await apiRequestJson(ipmsJsonApis[apiKey], this.getParameterByProcessType(apiKey))
         if (res.commonMsg === 'SUCCESS') {
           onMessagePopup(this, `공지사항이 정상적으로 ${resMsg}되었습니다.`)
@@ -194,6 +200,8 @@ export default {
         }
       } catch (error) {
        this.error(error)
+      } finally {
+        this.loading = false
       }
     },
     getParameterByProcessType(process) {
@@ -213,7 +221,10 @@ export default {
           break
       }
       if (process !== 'deleteNotice' && this.notice.popup_date !== null) {
-        Object.assign(param, { dnotiStartDt: this.notice.popup_date[0], dnotiEndDt: this.notice.popup_date[1] })
+        Object.assign(param, {
+          dnotiStartDt: this.moment(this.notice.popup_date[0]).format('YYYY-MM-DD HH:mm:ss'),
+          dnotiEndDt: this.moment(this.notice.popup_date[1].format('YYYY-MM-DD HH:mm:ss'))
+        })
       }
       return param
     }

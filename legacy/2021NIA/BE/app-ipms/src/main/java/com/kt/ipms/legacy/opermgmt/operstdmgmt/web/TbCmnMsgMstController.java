@@ -82,6 +82,7 @@ public class TbCmnMsgMstController extends CommonController {
 	}
 	
 	@RequestMapping(value = "/opermgmt/operstdmgmt/viewInsertTbCmnMsgCd.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewInsertTbCmnMsgCd(HttpServletRequest request)  {
 		ModelMap resultModel = new ModelMap();
 
@@ -176,6 +177,7 @@ public class TbCmnMsgMstController extends CommonController {
 		return resultVo;
 	}
 	@RequestMapping(value = "/opermgmt/operstdmgmt/viewDetailTbCmnMsgCd.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewDetailTbCmnMsg(@RequestBody TbCmnMsgMstVo tbCmnMsgCdVo, ModelMap model, HttpServletRequest request)  {
 		TbCmnMsgMstVo resultVo = tbCmnMstService.selectTbCmnMsgMstVo(tbCmnMsgCdVo);
 		return createResult(resultVo);
@@ -219,6 +221,7 @@ public class TbCmnMsgMstController extends CommonController {
 	}
 	
 	@RequestMapping(value = "opermgmt/operstdmgmt/viewUpdateTbCmnMsgCd.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewUpdateTbCmnMsgCd(@RequestBody TbCmnMsgMstVo tbCmnMsgCdVo, ModelMap model, HttpServletRequest request)  {
 		TbCmnMsgMstVo resultVo = tbCmnMstService.selectTbCmnMsgMstVo(tbCmnMsgCdVo);
 		return createResult(resultVo);

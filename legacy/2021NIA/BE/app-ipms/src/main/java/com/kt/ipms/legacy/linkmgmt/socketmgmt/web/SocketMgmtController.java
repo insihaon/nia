@@ -11,6 +11,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kt.framework.exception.ServiceException;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
@@ -33,6 +34,7 @@ public class SocketMgmtController extends CommonController {
 	private CallableBatchService callableBatchService;
 	
 	@RequestMapping(value = "/linkmgmt/socketmgmt/viewDetailWhois.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewDetailWhois(@RequestBody WhoisMstVo searchVo, ModelMap model,
 			HttpServletRequest request)  {
 		WhoisMstVo resultVo = socketMgmtService.getWhoisMstVo(searchVo.getQuery());

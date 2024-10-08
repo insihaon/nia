@@ -4,20 +4,23 @@
       ref="searchCondition"
       :prop-name="name"
       :component-keys="componentList"
-      @handle-search="fnViewListIpHostMst"
+      @handle-search="handleSearch"
     />
     <el-col ref="tableContainer" :span="24">
       <compTable
         ref="compTable"
         :prop-name="name"
         :prop-table-height="'calc(100% - 80px)'"
-        :prop-data="tableDatas"
+        :prop-data="pagination.data"
+        :prop-pagination-data.sync="pagination"
         :prop-column="tableColumns"
-        :prop-is-pagination="false"
+        :prop-is-pagination="true"
         :prop-is-check-box="false"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
         :prop-on-dbl-click="handleDbClickRow"
+        :prop-on-page-change="handleChangeCurPage"
+        :prop-on-page-size-change="handleChangeCurPage"
       >
         <template slot="text-description">
           <span>
@@ -32,7 +35,7 @@
       </compTable>
     </el-col>
     <ModalIpHostMstInsert ref="ModalIpHostMstInsert" />
-    <ModalIpHostMstDetail ref="ModalIpHostMstDetail" />
+    <ModalIpHostMstDetail ref="ModalIpHostMstDetail" @reload="fnViewListIpHostMst()" />
   </el-row>
 </template>
 <script>
@@ -56,6 +59,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      pagination: this.setDefaultPagination(),
       componentList: [
         { key: 'SsvcLineType', props: { lvl: 3 } },
         { key: 'SOffice', props: { prop_parameterKey: 'srssofficescode', apiPath: '/ipmgmt/hostmgmt', voName: 'tbIpHostMstVos', valueKey: { cd: 'srssofficescode', nm: 'srssofficesNm' } } },
@@ -74,7 +78,7 @@ export default {
         { prop: 'smodelname', label: '모델명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'scomment', label: '용도', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'sprorityYn', label: '대표여부', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'dmodifyDt', label: '작업일자', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'dmodifyDt', label: '작업일자', align: 'center', sortable: true, columnVisible: true, showOverflow: true, formatter: (row) => this.moment(row.dmodifyDt).format('YYYY-MM-DD') },
         { prop: '', label: '삭제', width: 80, align: 'center', sortable: true, columnVisible: true, showOverflow: true,
           formatter: (row, col, value, index) => {
             return this.$createElement('el-button', {
@@ -86,19 +90,38 @@ export default {
           }
         },
       ],
-      tableDatas: [],
     }
   },
+  mounted() {
+    setTimeout(() => {
+      this.fnViewListIpHostMst()
+    }, 100)
+  },
   methods: {
-    async fnViewListIpHostMst(requestParameter) {
-      const params = requestParameter ?? this.$refs.searchCondition.requestParameter
-      Object.assign(params, { sipHostTypeCd: 'HT0010' })
+    handleSearch(requestParameter) {
+      this.pagination.currentPage = 1
+      this.fnViewListIpHostMst(requestParameter)
+    },
+    async fnViewListIpHostMst(requestParameter = null) {
+      const parameter = requestParameter ?? this.$refs.searchCondition.requestParameter
+      Object.assign(parameter, { sipHostTypeCd: 'HT0010' })
+      const { pageSize: pageUnit, currentPage: pageIndex } = this.pagination
+      const target = ({ vue: this.$refs.compTable })
+      Object.assign(parameter, { pageUnit, pageIndex })
       try {
-        const res = await apiRequestModel(ipmsModelApis.viewListIpHostMst, params)
-        this.tableDatas = res.result.data
+        this.openLoading(target)
+        const res = await apiRequestModel(ipmsModelApis.viewListIpHostMst, parameter)
+        this.pagination.data = res.result.data ?? []
+        this.pagination.total = res.result.totalCount
       } catch (error) {
         this.error(error)
+      } finally {
+        this.closeLoading(target)
       }
+    },
+    handleChangeCurPage(v) {
+      if (v) this.pagination.currentPage = v
+      this.fnViewListIpHostMst()
     },
     handleDbClickRow(row) {
       this.$refs.ModalIpHostMstDetail.open({ fnType: 'detail', nipHostMstSeq: row.nipHostMstSeq })
@@ -110,9 +133,11 @@ export default {
       this.confirm('해당 운용정보를 삭제 하시겠습니까?', '확인', {
         confirmButtonText: '확인',
         cancelButtonText: '취소',
-        type: 'success'
+        type: 'info'
       }).then(async () => {
+        const target = ({ vue: this.$refs.compTable })
         try {
+          this.openLoading(target)
           const res = await apiRequestJson(ipmsJsonApis.deleteHostIPMst, { nipHostMstSeq: row.nipHostMstSeq })
           if (res.commonMsg === 'SUCCESS') {
             onMessagePopup(this, '운용 정보가 정상적으로 삭제 되었습니다.')
@@ -122,6 +147,8 @@ export default {
           }
         } catch (error) {
           this.error(error)
+        } finally {
+          this.closeLoading(target)
         }
       })
       .catch(action => {

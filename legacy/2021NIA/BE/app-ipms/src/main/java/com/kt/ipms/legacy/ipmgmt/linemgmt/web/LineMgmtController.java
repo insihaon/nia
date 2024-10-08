@@ -327,6 +327,7 @@ public class LineMgmtController extends CommonController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/ipmgmt/linemgmt/viewInsertDivAsgnIPSub.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewInsertDivAsgnIPSub(@RequestBody TbIpAssignSubVo searchVo, ModelMap model,
 			HttpServletRequest request){
 		TbIpAssignSubVo resultVo = lineMgmtService.selectIpAssignSub(searchVo);
@@ -465,6 +466,7 @@ public class LineMgmtController extends CommonController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/ipmgmt/linemgmt/viewInsertMrgAsgnIPSub.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewInsertMrgAsgnIPSub(@RequestBody TbIpAssignSubListVo tbIpAssignSubListVo, ModelMap model,
 			HttpServletRequest request){
 		TbIpAssignSubComplexVo resultComplexVo = lineMgmtService.validateMrgAsgnIPSub(tbIpAssignSubListVo);
@@ -551,6 +553,7 @@ public class LineMgmtController extends CommonController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/ipmgmt/linemgmt/viewDetailAsgnIPSub.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewDetailAsgnIPSub(@RequestBody TbIpAssignSubVo searchVo, ModelMap model,
 			HttpServletRequest request){
 		TbIpAssignSubVo resultVo = lineMgmtService.selectIpAssignSub(searchVo);

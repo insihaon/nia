@@ -19,7 +19,7 @@
         IP할당 상세정보
         <hr>
       </span>
-      <div id="content" class="layer w-100 h-100">
+      <div id="content" ref="content" class="layer w-100 h-100">
         <div class="content_result mt0">
           <h4>IP 블록 정보</h4>
           <table class="tbl_data entry mt5">
@@ -265,19 +265,22 @@ export default {
       this.domElement.maxWidth = 1000
     },
     onOpen(model, actionMode) {
-      if (model.row) {
-        this.receivedRow = model.row
-        this.fnViewDetailAlcIPMst({ nipAssignMstSeq: model.row.nipAssignMstSeq })
-      }
-      if (model.menuType) {
-        this.menuType = model.menuType
-        this.tbRoutChkMstVo = { nlvlMstSeq: model.row.nlvlMstSeq, nroutingChkMstSeq: model.row.nroutingChkMstSeq }
-      }
+      this.$nextTick(() => {
+        if (model.row) {
+          this.receivedRow = model.row
+          this.fnViewDetailAlcIPMst({ nipAssignMstSeq: model.row.nipAssignMstSeq })
+        }
+        if (model.menuType) {
+          this.menuType = model.menuType
+          this.tbRoutChkMstVo = { nlvlMstSeq: model.row.nlvlMstSeq, nroutingChkMstSeq: model.row.nroutingChkMstSeq }
+        }
+      })
     },
     onClose() {
       this.menuType = 'Aloc'
     },
     async fnViewDetailAlcIPMst(param) {
+      const target = ({ vue: this.$refs.content })
       try {
         /*
         IP주소 라우팅 비교/점검 > IP해지 (/ipmgmt/routmgmt/viewPopDetailAlclPMst.model)
@@ -285,11 +288,14 @@ export default {
         파라미터 및 url을 viewDetailAlcIPMst과 동일하게 처리하여도 문제 없음을 확인함
         추후 문제 발생할 경우 화면별로 분기처리가 필요함
         */
+       this.openLoading(target)
         const res = await apiRequestModel(ipmsModelApis.viewDetailAlcIPMst, param)
         this.resultList = res.result.data
         this.ipAllocOperMstVo = this.resultList[0]
       } catch (error) {
         this.error(error)
+      } finally {
+        this.closeLoading(target)
       }
     },
     formatNumber(value, minFractionDigits = 0, maxFractionDigits = 0) {
@@ -370,7 +376,7 @@ export default {
         }
         const destIpAllocMstVos = [ipAllocOperMstVo]
          try {
-           const res = await apiRequestModel(ipmsModelApis.deletAlcIPMst, { srcIpAllocMstVo, destIpAllocMstVos, menuType: this.menuType })
+           const res = await apiRequestJson(ipmsJsonApis.deletAlcIPMst, { srcIpAllocMstVo, destIpAllocMstVos, menuType: this.menuType })
            if (this.menuType === 'Rout') {
             this.fnUpdateStatusMst(res, delRow)
           } else {

@@ -112,6 +112,7 @@ public class TbBatchSvcBasController extends CommonController{
 	}
 	
 	@RequestMapping(value = "/linkmgmt/batchmgmt/viewDetailTbBatchSvcBas.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap selectDetailTbBatchLog(@RequestBody TbBatchSvcBasVo tbBatchSvcBasVo, ModelMap model,
 			HttpServletRequest request) throws ServiceException {
 		TbBatchSvcBasVo resultVo = tbBatchSvcBasService.selectTbBatchSvcBasVo(tbBatchSvcBasVo);
@@ -153,6 +154,7 @@ public class TbBatchSvcBasController extends CommonController{
 	}
 	
 	@RequestMapping(value = "/linkmgmt/batchmgmt/viewUpdateTbBatchSvcBas.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewUpdateTbBatchLog(@RequestBody TbBatchSvcBasVo tbBatchSvcBasVo, ModelMap model,
 			HttpServletRequest request) throws ServiceException {
 		TbBatchSvcBasVo resultVo = tbBatchSvcBasService.selectTbBatchSvcBasVo(tbBatchSvcBasVo);

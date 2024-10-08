@@ -297,6 +297,7 @@ public class TbAuditDhcpMstController extends CommonController {
 
 	
 	@RequestMapping(value="/ticketmgmt/dhcpmgmt/viewListDhcpAuditModpop.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewListDhcpAuditModpop(@RequestBody TbAuditDhcpMstVo searchVo, ModelMap model,
 			HttpServletRequest request)  {
 		TbAuditDhcpMstVo resultVo = tbAuditDhcpMstService.selectTbAuditDhcpMstVo(searchVo);;

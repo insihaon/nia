@@ -361,6 +361,7 @@ public class PrivateMgmtController extends CommonController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value="/opermgmt/privatemgmt/viewDetailPrivateIPMst.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewDetailCrtIPMst(@RequestBody TbIpPrivateReqMstVo tbIpPrivateReqMst, ModelMap model, HttpServletRequest request) {
 		TbIpPrivateReqMstVo resultVo = privateMgmtService.selectPrivateIPMst(tbIpPrivateReqMst);
 		return createResult(resultVo);
@@ -425,6 +426,7 @@ public class PrivateMgmtController extends CommonController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value="/opermgmt/privatemgmt/viewInsertPrivateIPMst.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewInsertCrtIPMst(@RequestBody TbIpPrivateReqMstVo searchVo, ModelMap model, HttpServletRequest request) {
 		TbIpPrivateReqMstVo resultVo = searchVo;
 		return createResult(resultVo);
@@ -781,6 +783,7 @@ public class PrivateMgmtController extends CommonController {
 	 * @return
 	 */
 	@RequestMapping(value = "/opermgmt/privatemgmt/viewPopPrivateIPMst.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewPopPrivateIPMst(@RequestBody TbIpPrivateReqMstVo tbIpPrivateReqMstVo, ModelMap model, HttpServletRequest request){
 		TbIpPrivateReqMstVo resultVo = tbIpPrivateReqMstVo;
 		return createResult(resultVo);
@@ -838,6 +841,7 @@ public class PrivateMgmtController extends CommonController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value="/opermgmt/privatemgmt/viewInsertPrivateDelIPMst.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewInsertPrivateDelIPMst(@RequestBody TbIpPrivateReqMstVo searchVo, ModelMap model, HttpServletRequest request) {
 		TbIpPrivateReqMstListVo resultListVo = privateMgmtService.selectListTbIpPrivateDelReq(searchVo);
 		return createResultList(resultListVo.getTbIpPrivateReqMstVos(), resultListVo.getTotalCount());

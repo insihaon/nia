@@ -278,6 +278,7 @@ public class AssignApyMgmtController extends CommonController{
 	}
 	
 	@RequestMapping(value = "/opermgmt/assignmgmt/viewDetailAssignApyTxn.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewDetailAssignApyTxn(@RequestBody TbRequestAssignMstVo searchVo, ModelMap model, HttpServletRequest request) {
 		TbRequestAssignMstVo resultVo = assignApyMgmtService.selectTbRequestAssignMst(searchVo);
 		return createResult(resultVo);
@@ -321,6 +322,7 @@ public class AssignApyMgmtController extends CommonController{
 	}
 	
 	@RequestMapping(value = "/opermgmt/assignmgmt/viewAssignIpApyPreCheck.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewAssignIpApyPreCheck(@RequestBody TbRequestAssignMstVo searchVo, ModelMap model, HttpServletRequest request) {
 		TbRequestAssignMstListVo resultListVo = assignApyMgmtService.selectListPreApyAssign(searchVo);	
 		return createResultList(resultListVo.getTbRequestAssignMstVos(), resultListVo.getTotalCount());
@@ -376,6 +378,7 @@ public class AssignApyMgmtController extends CommonController{
 	}
 	
 	@RequestMapping(value = "/opermgmt/assignmgmt/viewInsertAssignApyTxn.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewInsertAssignApyTxn(@RequestBody TbRequestAssignMstVo tbRequestAssignMstVo, ModelMap model, HttpServletRequest request) {
 		TbRequestAssignMstVo resultVo = new TbRequestAssignMstVo();
 		return createResult(resultVo);
@@ -475,6 +478,7 @@ public class AssignApyMgmtController extends CommonController{
 	}
 	
 	@RequestMapping(value = "/opermgmt/assignmgmt/viewUpdateAssignApyTxn.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewUpdateAssignApyTxn(@RequestBody TbRequestAssignMstVo searchVo, ModelMap model, HttpServletRequest request) {
 		TbRequestAssignMstVo resultVo = assignApyMgmtService.selectTbRequestAssignMst(searchVo);
 		return createResult(resultVo);

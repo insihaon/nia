@@ -19,7 +19,7 @@
         라우팅 수집/DB 비교 시작
         <hr>
       </span>
-      <div id="content" class="layer">
+      <div id="content" v-loading="loading" class="layer">
         <div class="content_result" style="margin-top: 0px;">
           <div style="padding-bottom: 10px;">
             <span style="font-size: 20px; font-weight: bold;">
@@ -87,6 +87,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      loading: false,
       ssvcCds: {
         ssvcLineTypeCd: '',
         ssvcGroupCd: '',
@@ -109,7 +110,7 @@ export default {
     onCreated() {
       Modal.methods.onCreated.call(this)
       this.closeOnClickModal = false
-      this.domElement.maxWidth = 1500
+      this.domElement.maxWidth = 1300
     },
     onOpen(model, actionMode) {
       if (model.ssvcCds) {
@@ -127,10 +128,13 @@ export default {
       const { ssvcLineTypeNm, ssvcGroupNm, ssvcObjNm } = this.ssvcNms
       const param = { ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd, ssvcLineTypeNm, ssvcGroupNm, ssvcObjNm }
       try {
+        this.loading = true
         const res = await apiRequestModel(ipmsModelApis.viewPopRoutChkMst, param)
         this.tbFcltCmdMstVos = res.result.data ?? []
       } catch (error) {
         this.error(error)
+      } finally {
+        this.loading = false
       }
     },
     async fnInsertListRoutChkMst() {
@@ -140,16 +144,19 @@ export default {
       }
       const tbRoutChkMstVo = this.ssvcCds
       try {
+        this.loading = true
+        this.$emit('reload')
         const res = await apiRequestJson(ipmsJsonApis.routInsertListRoutChkMst, tbRoutChkMstVo)
         if (res.commonMsg === 'SUCCESS') {
           onMessagePopup(this, '라우팅 수집/DB 비교가 정상적으로 처리되었습니다.')
-          this.$emit('reload')
-          this.close()
         } else {
           onMessagePopup(this, res.commonMsg)
         }
+        this.close()
       } catch (error) {
         this.error(error)
+      } finally {
+        this.loading = false
       }
     },
   },

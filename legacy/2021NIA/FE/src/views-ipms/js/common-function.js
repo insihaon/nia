@@ -44,7 +44,7 @@ export function getStatColumn(type, svcList) {
     ] : [
         {
             prop: 'level', label: '계위', children: [
-                { prop: 'ssvc_line_type_nm', label: '서비스망', align: 'center', columnVisible: true, showOverflow: true },
+                { prop: 'ssvc_line_type_nm', label: '서비스망', align: 'center', columnVisible: true, showOverflow: true, formatter: (row) => { return row.ssvc_line_type_nm === '소계' ? '총계' : row.ssvc_line_type_nm } },
                 { prop: 'ssvc_group_nm', label: '본부', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
                 { prop: 'ssvc_obj_nm', label: '노드', align: 'center', columnVisible: true, showOverflow: true },
                 { prop: 'sip_create_type_nm', label: '공인/사설', align: 'center', columnVisible: true, showOverflow: true },

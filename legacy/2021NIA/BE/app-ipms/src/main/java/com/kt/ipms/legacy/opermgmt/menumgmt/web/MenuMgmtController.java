@@ -114,6 +114,7 @@ public class MenuMgmtController extends CommonController{
 	 * @
 	 */
 	@RequestMapping(value = "/opermgmt/menumgmt/viewDetailScrnBas.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap selectScrnBas(@RequestBody TbScrnBasVo tbScrnBasVo, ModelMap model, HttpServletRequest request)  {
 		TbScrnBasVo resultVo = menuMgmtService.selectScrnBas(tbScrnBasVo);
 		return createResult(resultVo);
@@ -167,6 +168,7 @@ public class MenuMgmtController extends CommonController{
 	 * @
 	 */
 	@RequestMapping(value = "/opermgmt/menumgmt/viewInsertScrnBas.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewInsertScrnBas(@ModelAttribute("tbScrnBasVo") TbScrnBasVo tbScrnBasVo, ModelMap model, HttpServletRequest request)  {
 		TbScrnBasVo resultVo = new TbScrnBasVo();
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -255,6 +257,7 @@ public class MenuMgmtController extends CommonController{
 	 * @
 	 */
 	@RequestMapping(value = "/opermgmt/menumgmt/viewUpdateScrnBas.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewUpdateScrnBas(@RequestBody TbScrnBasVo tbScrnBasVo, ModelMap model, HttpServletRequest request)  {
 		TbScrnBasVo resultVo = menuMgmtService.selectScrnBas(tbScrnBasVo);
 		return createResult(resultVo);
@@ -419,6 +422,7 @@ public class MenuMgmtController extends CommonController{
 	}
 	
 	@RequestMapping(value = "/opermgmt/menumgmt/viewInsertGroupName.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap insertViewGroupName(@RequestBody TbMenuBasVo tbMenuBasVo, ModelMap model, HttpServletRequest request)  {
 		TbMenuBasVo resultVo =new TbMenuBasVo();
 		return createResult(resultVo);
@@ -462,6 +466,7 @@ public class MenuMgmtController extends CommonController{
 	}
 
 	@RequestMapping(value = "/opermgmt/menumgmt/viewInsertMenuName.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap insertViewMenuName(@RequestBody TbMenuBasVo tbMenuBasVo, ModelMap model, HttpServletRequest request)  {
 		TbMenuBasVo resultVo = new TbMenuBasVo();
 		return createResult(resultVo);

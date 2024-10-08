@@ -20,7 +20,7 @@
         공지사항 상세
         <hr>
       </span>
-      <div id="content" class="layer info">
+      <div id="content" v-loading="loading" class="layer info">
         <div class="data_view">
           <div class="data_tit">
             <h3 :title="notiDetail.sboardTitle">
@@ -99,6 +99,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      loading: false,
       isDashBoard: false,
       dateFormat: 'YYYY-MM-DD HH:mm:ss',
       notiDetail: {
@@ -144,10 +145,13 @@ export default {
     },
     async fnViewDetailNotice(param) {
       try {
+        this.loading = true
         const res = await apiRequestModel(ipmsModelApis.viewDetailNotice, param)
         this.notiDetail = res.result.data
       } catch (error) {
        this.error(error)
+      } finally {
+        this.loading = false
       }
     },
     fnDeleteNotice(param) {

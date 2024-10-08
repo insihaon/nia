@@ -49,6 +49,7 @@ public class TacsMgmtController extends CommonController {
 	
 
 	@RequestMapping(value="/opermgmt/tacsmgmt/viewTacsConnBas.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewTacsConnBas(ModelMap model, HttpServletRequest request) {
 		TbTacsConnBasVo resultVo = tacsMgmtService.selectTbTacsConnBas();
 		return createResult(resultVo);
@@ -218,6 +219,7 @@ public class TacsMgmtController extends CommonController {
 	}
 	
 	@RequestMapping(value = "/opermgmt/tacsmgmt/viewInsertTacsFcltMst.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewInsertTacsFcltMst(ModelMap model, HttpServletRequest request) {
 		TbTacsFcltMstVo resultVo = new TbTacsFcltMstVo();
 		return createResult(resultVo);
@@ -321,6 +323,7 @@ public class TacsMgmtController extends CommonController {
 	}
 	
 	@RequestMapping(value = "/opermgmt/tacsmgmt/viewUpdateTacsFcltMst.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewUpdateTacsFcltMst(@RequestBody TbTacsFcltMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		TbTacsFcltMstVo resultVo = tacsMgmtService.selectTacsFcltMst(searchVo);
@@ -485,6 +488,7 @@ public class TacsMgmtController extends CommonController {
 	}
 	
 	@RequestMapping(value = "/opermgmt/tacsmgmt/viewUpdateTacsFcltCmdMst.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewUpdateTacsFcltCmdMst(@RequestBody TbTacsFcltCmdMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		TbTacsFcltCmdMstVo resultVo = tacsMgmtService.selectTacsFcltCmdMst(searchVo);
@@ -555,6 +559,7 @@ public class TacsMgmtController extends CommonController {
 	}
 	
 	@RequestMapping(value = "/opermgmt/tacsmgmt/viewCheckTacsIpBlock.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewCheckTacsIpBlock(@RequestBody TbIpAssignMstVo searchVo,
 			HttpServletRequest request) {
 		ModelMap model = viewCheckTacsIpBlockModel(searchVo, request);

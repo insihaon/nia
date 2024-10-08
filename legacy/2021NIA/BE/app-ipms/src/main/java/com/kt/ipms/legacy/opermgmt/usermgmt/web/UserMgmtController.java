@@ -134,6 +134,7 @@ public class UserMgmtController extends CommonController {
 	}
 	
 	@RequestMapping(value = "/opermgmt/usermgmt/viewSearchTbUserBas.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap searchViewTbUserBas(@RequestBody TbUserBasVo searchVo, ModelMap model,
 			HttpServletRequest request)  {
 		TbUserBasListVo resultListVo = new TbUserBasListVo();
@@ -195,6 +196,7 @@ public class UserMgmtController extends CommonController {
 	 * @
 	 */
 	@RequestMapping(value = "/opermgmt/usermgmt/viewDetailTbUserBas.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap selectTbUserBas(@RequestBody TbUserBasVo searchVo, ModelMap model,
 			HttpServletRequest request)  {
 		TbUserBasVo resultVo = userMgmtService.selectTbuserBas(searchVo);
@@ -343,6 +345,7 @@ public class UserMgmtController extends CommonController {
 	}
 	
 	@RequestMapping(value = "/opermgmt/usermgmt/viewListUserHndSetTxn.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewListUserHndSetTxn(@RequestBody TbUserHndsetApyTxnVo searchVo, ModelMap model,
 			HttpServletRequest request)  {
 		TbUserHndsetApyTxnListVo resultListVo = userMgmtService.selectListTbUserHndsetApyTxnVo(searchVo);
@@ -391,6 +394,7 @@ public class UserMgmtController extends CommonController {
 	}
 	
 	@RequestMapping(value = "/opermgmt/usermgmt/viewInsertUserHndSetTxn.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewInsertUserHndSetTxn(@RequestBody TbUserHndsetApyTxnVo tbUserHndsetApyTxnVo, ModelMap model,
 			HttpServletRequest request)  {
 		TbUserHndsetApyTxnListVo resultListVo = userMgmtService.insertTbUserHndsetApyTxnVo(tbUserHndsetApyTxnVo);
@@ -449,6 +453,7 @@ public class UserMgmtController extends CommonController {
 	}
 	
 	@RequestMapping(value = "/opermgmt/usermgmt/viewDeleteUserHndSetTxn.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewDeleteUserHndSetTxn(@RequestBody TbUserHndsetApyTxnVo tbUserHndsetApyTxnVo, ModelMap model,
 			HttpServletRequest request)  {
 		TbUserHndsetApyTxnListVo resultListVo = userMgmtService.deleteTbUserHndsetApyTxnVo(tbUserHndsetApyTxnVo);

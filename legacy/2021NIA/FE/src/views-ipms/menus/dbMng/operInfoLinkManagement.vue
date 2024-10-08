@@ -4,20 +4,23 @@
       ref="searchCondition"
       :prop-name="name"
       :component-keys="componentList"
-      @handle-search="fnViewListIpLinkMst"
+      @handle-search="handleSearch"
     />
     <el-col ref="tableContainer" :span="24">
       <compTable
         ref="compTable"
         :prop-name="name"
         :prop-table-height="'calc(100% - 80px)'"
-        :prop-data="tableDatas"
+        :prop-data="pagination.data"
+        :prop-pagination-data.sync="pagination"
         :prop-column="tableColumns"
-        :prop-is-pagination="false"
+        :prop-is-pagination="true"
         :prop-is-check-box="false"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
         :prop-on-dbl-click="handleDbClickRow"
+        :prop-on-page-change="handleChangeCurPage"
+        :prop-on-page-size-change="handleChangeCurPage"
       >
         <template slot="text-description">
           <span>
@@ -56,6 +59,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      pagination: this.setDefaultPagination(),
       tableColumns: [
         { prop: 'pifSerialIp', label: '링크IP블록', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'saofficescodeNm', label: '자국 수용국명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
@@ -87,7 +91,7 @@ export default {
   computed: {
     componentList() {
       return [
-        { key: 'InputType', props: { prop_parameterKey: 'searchWrd', label: '링크IP블록', valueType: 'number' } },
+        { key: 'InputType', props: { prop_parameterKey: 'searchWrd', label: '링크IP블록', valueType: 'ip' } },
         { key: 'SOffice', props: { prop_parameterKey: 'srssofficescode', apiPath: '/ipmgmt/linkmgmt', voName: 'tbIpLinkMstVos', valueKey: { cd: 'srssofficescode', nm: 'srssofficesNm' } } },
         { key: 'InputType', props: { prop_parameterKey: 'smodelNm', label: '장비명' } },
         { key: 'InputType', props: { prop_parameterKey: 'sifNm', label: 'IF명' } },
@@ -98,16 +102,34 @@ export default {
     }
   },
   mounted () {
+    setTimeout(() => {
+      this.fnViewListIpLinkMst()
+    }, 100)
   },
   methods: {
+    handleSearch(requestParameter) {
+      this.pagination.currentPage = 1
+      this.fnViewListIpLinkMst(requestParameter)
+    },
     async fnViewListIpLinkMst(requestParameter = null) {
-      const params = requestParameter ?? this.$refs.searchCondition.requestParameter
+      const parameter = requestParameter ?? this.$refs.searchCondition.requestParameter
+      const { pageSize: pageUnit, currentPage: pageIndex } = this.pagination
+      Object.assign(parameter, { pageUnit, pageIndex })
+      const target = ({ vue: this.$refs.compTable })
       try {
-        const res = await apiRequestModel(ipmsModelApis.viewListIpLinkMst, params)
-        this.tableDatas = res.result.data
+        this.openLoading(target)
+        const res = await apiRequestModel(ipmsModelApis.viewListIpLinkMst, parameter)
+        this.pagination.data = res.result.data ?? []
+        this.pagination.total = res.result.totalCount
       } catch (error) {
         this.error(error)
-      }
+      } finally {
+          this.closeLoading(target)
+        }
+    },
+    handleChangeCurPage(v) {
+      if (v) this.pagination.currentPage = v
+      this.fnViewListIpLinkMst()
     },
     handleDbClickRow(row) {
       this.$refs.ModalIpLinkMstDetail.open({ nipLinkMstSeq: row.nipLinkMstSeq })

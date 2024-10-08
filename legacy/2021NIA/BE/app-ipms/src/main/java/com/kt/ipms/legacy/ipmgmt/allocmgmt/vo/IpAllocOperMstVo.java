@@ -65,6 +65,7 @@ public class IpAllocOperMstVo extends IpVo implements Serializable {
 	
 	/*회선정보 추가*/
 	private String sllnum;	//전용회선번호
+	private List<String> sllnums;	// 전용회선번호 multi
 	
 	private String ssubscnealias;	//장비별칭명
 	
@@ -85,6 +86,7 @@ public class IpAllocOperMstVo extends IpVo implements Serializable {
 	private String svalidCheck;  // 감사여부 
 	
 	private String sconnAlias; // 수용회선명
+	private List<String> sconnAliass; // 수용회선명
 	
 	private BigInteger nipAllocMstSeq;
 	
@@ -113,6 +115,7 @@ public class IpAllocOperMstVo extends IpVo implements Serializable {
 	private String ssvcUseTypeNm; // 사업용여부 
 	
 	private String ssaid;  // 서비스 계약 번호
+	private List<String> ssaids;  // 서비스 계약 번호 multi
 	
 	private String scustName;  // 고객명 
 	
@@ -488,6 +491,13 @@ public class IpAllocOperMstVo extends IpVo implements Serializable {
 	public void setSllnum(String sllnum) {
 		this.sllnum = sllnum;
 	}
+	public List<String> getSllnums() {
+		return sllnums;
+	}
+
+	public void setSllnums(List<String> sllnums) {
+		this.sllnums = sllnums;
+	}
 
 	public String getSsubscnealias() {
 		return ssubscnealias;
@@ -568,6 +578,13 @@ public class IpAllocOperMstVo extends IpVo implements Serializable {
 	public void setSconnAlias(String sconnAlias) {
 		this.sconnAlias = sconnAlias;
 	}
+	public List<String> getSconnAliass() {
+		return sconnAliass;
+	}
+
+	public void setSconnAliass(List<String> sconnAliass) {
+		this.sconnAliass = sconnAliass;
+	}
 
 	public String getSssvcMgroupNm() {
 		return sssvcMgroupNm;
@@ -599,6 +616,13 @@ public class IpAllocOperMstVo extends IpVo implements Serializable {
 
 	public void setSsaid(String ssaid) {
 		this.ssaid = ssaid;
+	}
+	public List<String> getSsaids() {
+		return ssaids;
+	}
+
+	public void setSsaids(List<String> ssaids) {
+		this.ssaids = ssaids;
 	}
 
 	public String getScustName() {
