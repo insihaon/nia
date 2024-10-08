@@ -19,7 +19,7 @@
         IP블록병합
         <hr>
       </span>
-      <div id="content" class="layer">
+      <div id="content" v-loading="loading" class="layer">
         <div class="content_result mt0">
           <h4>할당 병합 정보</h4>
           <table class="tbl_data entry mt5">
@@ -137,6 +137,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      loading: false,
       resultComplexVo: {
         srcIpAssignMstVo: {
         ssvcLineTypeNm: '',
@@ -170,11 +171,14 @@ export default {
     },
     async fnViewInsertMrgAsgnIPMst(tbIpAssignMstListVo) {
       try {
+        this.loading = true
         const res = await apiRequestModel(ipmsModelApis.viewInsertMrgAsgnIPMst, tbIpAssignMstListVo)
         this.resultComplexVo = res.result.data
         this.destIpAssignMstVos = res.result.data?.destIpAssignMstVos
       } catch (error) {
         this.error(error)
+      } finally {
+        this.loading = false
       }
     },
     formatNumber(value) {

@@ -12,16 +12,19 @@
         ref="compTable"
         :prop-name="name"
         :prop-table-height="'calc(100% - 80px)'"
-        :prop-data="tableDatas"
+        :prop-data="pagination.data"
+        :prop-pagination-data.sync="pagination"
         :prop-column="tableColumns"
         :prop-is-pagination="true"
         :prop-is-check-box="true"
         :prop-is-cell-click-check="true"
-        :prop-max-select="tableDatas.length"
+        :prop-max-select="pagination.data.length"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
         :prop-on-dbl-click="hadleClickIpAllocDetail"
         :prop-on-select="handleClickTableCheck"
+        :prop-on-page-change="handleChangeCurPage"
+        :prop-on-page-size-change="handleChangeCurPage"
         @update:propCellClick="handleClickCell"
       >
         <template slot="text-description">
@@ -39,9 +42,13 @@
       </compTable>
     </el-col>
     <ModalCheckTacsIpBlock ref="ModalCheckTacsIpBlock" />
+    <!-- 분할 -->
     <ModalIpBlockDivision ref="ModalIpBlockDivision" @reload="fnViewListIpAllocMst($refs.searchCondition.requestParameter)" />
-    <ModalIpAllocInsert ref="ModalIpAllocInsert" />
+    <!-- 할당 처리 -->
+    <ModalIpAllocInsert ref="ModalIpAllocInsert" @reload="fnViewListIpAllocMst($refs.searchCondition.requestParameter)" />
+    <!-- 할당 상세 -->
     <ModalIpAllocDetail ref="ModalIpAllocDetail" @alocCallBtnClick="fnInsertAlcBtnClick" />
+    <!-- 라우팅 중복 개수 -->
     <ModalDetailSummary ref="ModalDetailSummary" />
     <!-- IP블록병합 -->
     <ModalIpAssignMerge ref="ModalIpAssignMerge" @reload="fnViewListIpAllocMst($refs.searchCondition.requestParameter)" />
@@ -76,6 +83,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      pagination: this.setDefaultPagination(),
       componentList: [
         { key: 'SsvcLineType', props: { lvl: 3, multi: [2] } },
 
@@ -146,29 +154,36 @@ export default {
         },
         { prop: 'scomment', label: '비고', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
       ],
-      tableDatas: allocTableDatas,
       selectedRows: []
     }
   },
   methods: {
     handleSearch(requestParameter) {
+      this.pagination.currentPage = 1
       this.fnViewListIpAllocMst(requestParameter)
     },
-    async fnViewListIpAllocMst(requestParameter) {
+    async fnViewListIpAllocMst(requestParameter = null) {
+      const parameter = requestParameter ?? this.$refs.searchCondition.requestParameter
       const target = ({ vue: this.$refs.compTable })
+      const { pageSize: pageUnit, currentPage: pageIndex } = this.pagination
+      Object.assign(parameter, { pageUnit, pageIndex })
       try {
         this.openLoading(target)
-        const res = await apiRequestModel(ipmsModelApis.viewListIpAllocMst, requestParameter)
-        this.tableDatas = res.result.data
+        const res = await apiRequestModel(ipmsModelApis.viewListIpAllocMst, parameter)
+        this.pagination.data = res.result.data ?? []
+        this.pagination.total = res.result.totalCount
       } catch (error) {
         this.error(error)
       } finally {
         this.closeLoading(target)
       }
     },
+    handleChangeCurPage(v) {
+      if (v) this.pagination.currentPage = v
+      this.fnViewListIpAllocMst()
+    },
     handleClickCell(params) {
-      // if (['분할', '라우팅 중복 개수'].includes(params.column.label)) return
-      // this.fnViewDetailAlcIpMst(params.row)
+      this.selectedRows = [params?.row] || []
     },
     fnViewDetailAlcIpMst(row) {
       this.selectedRows = [row]

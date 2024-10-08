@@ -260,7 +260,7 @@ export default {
     onClose() {
     },
     onChangeInput(val) {
-      this.$set(this.resultVo, 'insertPifSerialIp', val.replace(/\D/g, ''))
+      this.$set(this.resultVo, 'insertPifSerialIp', val.replace(/[^0-9.]+/g, ''))
     },
     async fnViewUpdateIPLinkMst(nipLinkMstSeq) {
       try {
@@ -373,7 +373,7 @@ export default {
         sllnum,
         sconnalias
       } = this.resultVo
-      // const userId = this.$store.state.user.info.Uid
+      // const userId = this.$store.state.user.info.suserId
       const tbIpLinkMstVo = {
         sanealias: sanealias ?? '',
         samstip: samstip ?? '',
@@ -387,9 +387,9 @@ export default {
         szofficescode: szofficescode ?? '',
         ssaid: ssaid ?? '',
         sllnum: sllnum ?? '',
-        sconnalias: sconnalias ?? ''
-        // screateId: userId,
-        // smodifyId: userId
+        sconnalias: sconnalias ?? '',
+        screateId: this.$store.state.user.info.suserId,
+        smodifyId: this.$store.state.user.info.suserId
       }
       if (fnType === 'insert') {
         Object.assign(tbIpLinkMstVo, { pifSerialIp: insertPifSerialIp + insertNbitMask })

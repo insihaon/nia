@@ -225,7 +225,11 @@ public class HostMgmtController extends CommonController {
 	@ResponseBody
 	public ModelMap viewListIpHostMst(@RequestBody TbIpHostMstVo searchVo, ModelMap model,
 		HttpServletRequest request){
-		TbIpHostMstListVo resultListVo = hostMgmtService.selectListVirtualIpHostMst(searchVo);
+		ModelMap builtModel = viewListIpHostMstModel(searchVo, request);
+		TbIpHostMstListVo resultListVo = (TbIpHostMstListVo)builtModel.get("resultListVo");
+		// total count 다른이유 ??
+		// setPagination(searchVo);
+		// TbIpHostMstListVo resultListVo = hostMgmtService.selectListVirtualIpHostMst(searchVo);
 		return createResultList(resultListVo.getTbIpHostMstVos(), resultListVo.getTotalCount());
 	}
 	@RequestMapping(value="/ipmgmt/hostmgmt/viewListIpHostMst.do", method = RequestMethod.POST)

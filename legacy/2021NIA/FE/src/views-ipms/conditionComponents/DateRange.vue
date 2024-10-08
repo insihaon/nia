@@ -9,7 +9,6 @@
       size="mini"
       start-placeholder="시작일"
       end-placeholder="종료일"
-      @change="handleChange()"
     />
   </el-col>
 </template>

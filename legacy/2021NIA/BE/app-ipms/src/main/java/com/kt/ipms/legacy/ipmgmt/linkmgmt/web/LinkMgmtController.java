@@ -52,6 +52,7 @@ public class LinkMgmtController extends CommonController{
 	@RequestMapping(value="/ipmgmt/linkmgmt/viewListIpLinkMst.model", method = RequestMethod.POST)
 	@ResponseBody
 	public ModelMap viewListIpLinkMst(@RequestBody TbIpLinkMstVo searchVo, ModelMap model, HttpServletRequest request){
+		setPagination(searchVo);
 		TbIpLinkMstListVo resultListVo = linkMgmtService.selectListIpLinkMst(searchVo);
 		return createResultList(resultListVo.getTbIpLinkMstVos(), resultListVo.getTotalCount());
 	}

@@ -242,8 +242,8 @@ export default {
             nrequestAssignSeq: nrequestAssignSeq,
             srequestAssignTypeCd: 'RS0304',
             strtContents: this.strtContents,
-            strtUserId: this.$store.state.user.info.Uid,
-            smodifyId: this.$store.state.user.info.Uid,
+            strtUserId: this.$store.state.user.info.suserId,
+            smodifyId: this.$store.state.user.info.suserId,
           }
            res = await apiRequestJson(ipmsJsonApis.updateAssignApyTxn, TbRequestAssignMstVo)
           if (res.commonMsg === 'SUCCESS') {
@@ -275,8 +275,8 @@ export default {
             nrequestAssignSeq: nrequestAssignSeq,
             srequestAssignTypeCd: 'RS0302',
             strtContents: this.strtContents,
-            strtUserId: this.$store.state.user.info.Uid,
-            smodifyId: this.$store.state.user.info.Uid,
+            strtUserId: this.$store.state.user.info.suserId,
+            smodifyId: this.$store.state.user.info.suserId,
             screateId: screateId,
             sassigncontents: this.sassigncontents,
             nassignIpCnt: this.nassignIpCnt,
@@ -305,8 +305,8 @@ export default {
             nrequestAssignSeq: nrequestAssignSeq,
             srequestAssignTypeCd: 'RS0303',
             strtContents: this.strtContents,
-            strtUserId: this.$store.state.user.info.Uid,
-            smodifyId: this.$store.state.user.info.Uid,
+            strtUserId: this.$store.state.user.info.suserId,
+            smodifyId: this.$store.state.user.info.suserId,
             screateId: screateId,
             sassigncontents: this.sassigncontents,
             nassignIpCnt: this.nassignIpCnt,
@@ -336,7 +336,7 @@ export default {
           const TbRequestAssignMstVo = {
             nrequestAssignSeq: nrequestAssignSeq,
             strtContents: this.strtContents,
-            smodifyId: this.$store.state.user.info.Uid,
+            smodifyId: this.$store.state.user.info.suserId,
             sassigncontents: this.sassigncontents,
             nassignIpCnt: this.nassignIpCnt,
           }

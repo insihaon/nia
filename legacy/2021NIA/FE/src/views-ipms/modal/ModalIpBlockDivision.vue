@@ -74,7 +74,7 @@
               <tr class="top">
                 <th class="first" scope="row">분할단위</th>
                 <td>
-                  <input v-model="baseBitmask" type="text" class="txt" style="width: 30%" maxlength="3" />
+                  <input v-model="baseBitmask" type="text" class="txt" style="width: 100px;height: 21px;" maxlength="3" />
                   <span class="ml-2" style="font-weight: 600;">BitMask</span>
                   <span class="ml-2">
                     <el-button size="mini" @click="fnAppendDivAsgnIPMst()">분할</el-button>
@@ -125,7 +125,7 @@
                 <td class="ellipsis">{{ info.slastAddr }}</td>
                 <td class="ellipsis">{{ info.nclassCnt }}</td>
                 <td class="ellipsis">{{ info.nbitmask }}</td>
-                <td><input v-model="info.nsubnetmask" type="text" class="txt" maxlength="3" /></td>
+                <td><input v-model="info.nsubnetmask" type="text" class="txt" maxlength="3" style="width: 100px;height: 21px;" /></td>
                 <td class="btn_text">
                   <el-button size="mini" @click.prevent="fnAppendSubDivAlocIPMst(info)">분할</el-button>
                 </td>
@@ -271,17 +271,8 @@ export default {
         return
       }
       const tbIpAssignMstVo = { pipPrefix, sipVersionTypeCd, nsubnetmask }
-      try {
-        const res = await apiRequestJson(ipmsJsonApis.appendDivAsgnIPMst, tbIpAssignMstVo)
-        const divInfo = res.tbIpAssignMstVos
-        divInfo.forEach(row => {
-          row['nsubnetmask'] = row.nbitmask + 1
-          // row['selected'] = false
-        })
-        this.divisionInfo = divInfo
-      } catch (error) {
-        this.error(error)
-      }
+      const divInfo = await this.getMergeNsubnetmask(tbIpAssignMstVo)
+      this.divisionInfo = this._cloneDeep(divInfo)
     },
     async fnAppendSubDivAlocIPMst(subRow) {
       const nsubnetmask = parseInt(subRow.nsubnetmask)
@@ -290,26 +281,34 @@ export default {
         return
       }
       const tbIpAssignMstVo = { pipPrefix, sipVersionTypeCd, nsubnetmask }
-      try {
-        const res = await apiRequestJson(ipmsJsonApis.appendDivAsgnIPMst, tbIpAssignMstVo)
-        const divInfo = res.tbIpAssignMstVos
-        divInfo.forEach(row => {
-          row['nsubnetmask'] = row.nbitmask + 1
-          // row['selected'] = false
-        })
-
-        const cloneDivisionInfo = this._cloneDeep(this.divisionInfo)
-        const chkRowindex = cloneDivisionInfo.findIndex(orgRow => orgRow.pipPrefix === subRow.pipPrefix)
+      const divInfo = await this.getMergeNsubnetmask(tbIpAssignMstVo)
+      const cloneDivisionInfo = this._cloneDeep(this.divisionInfo)
+      const chkRowindex = cloneDivisionInfo.findIndex(orgRow => orgRow.pipPrefix === subRow.pipPrefix)
 
         if (chkRowindex !== -1) {
           cloneDivisionInfo.splice(chkRowindex, 1, ...divInfo)
         }
         this.divisionInfo = cloneDivisionInfo
+    },
+    /* nsubnetmask 셋하는 부분 공통화 */
+    async getMergeNsubnetmask(tbIpAssignMstVo) {
+      let divInfo
+      try {
+        const res = await apiRequestJson(ipmsJsonApis.appendDivAsgnIPMst, tbIpAssignMstVo)
+        divInfo = res.tbIpAssignMstVos
+        divInfo.forEach(row => {
+          if (row.sipVersionTypeCd === 'CV0001') {
+            row['nsubnetmask'] = (row.nbitmask + 1) >= 32 ? 32 : row.nbitmask + 1
+          } else if (row.sipVersionTypeCd === 'CV0002') {
+            row['nsubnetmask'] = (row.nbitmask + 1) >= 128 ? 128 : row.nbitmask + 1
+          }
+        })
       } catch (error) {
         this.error(error)
       }
+      return divInfo
     },
-    async fnDivMergeBtnClick() {
+     async fnDivMergeBtnClick() {
       const mergedList = this.divisionInfo.filter(row => row.selected)
       if (mergedList.length === 0) {
         onMessagePopup(this, '병합할 대상이 없습니다.')
@@ -358,14 +357,17 @@ export default {
       }
       const { nipAssignMstSeq, nlvlMstSeq, sipVersionTypeCd, sassignLevelCd } = this.resultVo
       const tbIpAssignMstComplexVo = {
-        srcIpAssignMstVo: { nipAssignMstSeq, nlvlMstSeq, sipVersionTypeCd, sassignLevelCd }, destIpAssignMstVos: [] }
+        menuType: 'Aloc',
+        srcIpAssignMstVo: { nipAssignMstSeq, nlvlMstSeq, sipVersionTypeCd, sassignLevelCd },
+        destIpAssignMstVos: []
+      }
         confirmList.forEach(row => {
           const { pipPrefix, sipVersionTypeCd } = row
           tbIpAssignMstComplexVo.destIpAssignMstVos.push({
             pipPrefix,
             sipVersionTypeCd,
-            screateId: this.$store.state.user.info.Uid,
-            smodifyId: this.$store.state.user.info.Uid,
+            screateId: this.$store.state.user.info.suserId,
+            smodifyId: this.$store.state.user.info.suserId,
             scomment: this.divScomment
           })
         })

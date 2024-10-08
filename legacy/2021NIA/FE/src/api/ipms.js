@@ -19,10 +19,9 @@ export const ipmsModelApis = {
   viewSearchtLnMst: { desc: 'IP할당 > 링크 정보 조회 POP', url: '/ipmgmt/allocmgmt/viewSearchtLnMst' },
   viewInsertDivAsgnIPMst: { desc: '배정/할당 > IP분할 대상정보', url: '/ipmgmt/assignmgmt/viewInsertDivAsgnIPMst' },
   viewInsertMrgAsgnIPMst: { desc: '배정/할당 > IP병합 대상정보', url: '/ipmgmt/assignmgmt/viewInsertMrgAsgnIPMst' },
-  deletAlcIPMst: { desc: 'IP할당 해지', url: '/ipmgmt/allocmgmt/deletAlcIPMst' },
   viewListSvcStat: { desc: 'IP 서비스별 통계 조회', url: '/statmgmt/ipstatmgmt/viewListSvcStat' },
   viewListOrgSvcStat: { desc: 'IP 조직서비스별 통계 조회', url: '/statmgmt/ipstatmgmt/viewListOrgSvcStat' },
-  viewListBlockSizeStat: { desc: 'IP 블록크기별 통계 조회', url: 'statmgmt/ipstatmgmt/viewListBlockSizeStat' },
+  viewListBlockSizeStat: { desc: 'IP 블록크기별 통계 조회', url: '/statmgmt/ipstatmgmt/viewListBlockSizeStat' },
   viewListIntgrmSvcStat: { desc: 'IP주소 라우팅 비교/점검 통계 조회', url: '/statmgmt/ipstatmgmt/viewListIntgrmSvcStat' },
   viewListIpAllocMstByMain: { desc: 'IP 블록 정보 조회', url: '/ipmgmt/allocmgmt/viewListIpAllocMstByMain' },
   viewListMultiIpInfo: { desc: 'IP 블록 정보 조회(multi)', url: '/ipmgmt/allocmgmt/viewListMultiIpInfo' },
@@ -75,7 +74,7 @@ export const ipmsModelApis = {
   // deleteReq: { desc: '요구사항 조회 > 등록', url: '/opermgmt/requiremgmt/deleteReq' },
   viewListUserAuthSubs: { desc: '사용자 권한 신청 조회', url: '/opermgmt/grantsubsmgmt/viewListUserAuthSubs' },
   viewDetailUserAuthSubs: { desc: '사용자 권한 신청 상세정보', url: '/opermgmt/grantsubsmgmt/viewDetailUserAuthSubs' },
-  viewInsertUserAuthSubs: { desc: '사용자 권한 신청 > 등록 화면', url: '/opermgmt/grantsubsmgmt/viewInsertUserAuthSubs' },
+  viewInsertUserAuthSubs: { desc: '사용자 권한 신청 > 등록 화면', url: '/opermgmt/grantsubsmgmt/viewInsesrtUserAuthSubs' },
 
   // 운용정보관리(관리자 기능)
   viewListTbBatchSvcBas: { desc: '운용정보관리 > 연동관리 > 배치 연동정보 조회', url: '/linkmgmt/batchmgmt/viewListTbBatchSvcBas' },
@@ -123,6 +122,7 @@ export const ipmsJsonApis = {
   appendDivAsgnIPMst: { desc: '배정/할당 > IP분할 > 분할 예정 정보 요청', url: '/ipmgmt/assignmgmt/appendDivAsgnIPMst' },
   appendMergeDivAsgnIPMst: { desc: '배정/할당 > IP분할 > 분할 예정 정보 > 병합', url: '/ipmgmt/assignmgmt/appendMergeDivAsgnIPMst' },
   insertListDivAsgnIPMst: { desc: '배정/할당 > IP분할 > 분할 확정 처리', url: '/ipmgmt/assignmgmt/insertListDivAsgnIPMst' },
+  deletAlcIPMst: { desc: 'IP할당 해지처리', url: '/ipmgmt/allocmgmt/deletAlcIPMst' },
   allocUpdateAsgnIPMst: { desc: '배정/할당 반납처리', url: '/ipmgmt/allocmgmt/allocUpdateAsgnIPMst' },
   insertMrgAsgnIPMst: { desc: '배정/할당 > 병합처리', url: '/ipmgmt/assignmgmt/insertMrgAsgnIPMst' },
   updateScommentAsgnIPMst: { desc: '할당상세 > 비고수정', url: '/ipmgmt/allocmgmt/updateScommentAsgnIPMst' },

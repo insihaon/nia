@@ -10,6 +10,7 @@
       <compTable
         ref="compTable"
         :prop-name="name"
+        :prop-loading.sync="loading"
         :prop-table-height="'calc(100% - 80px)'"
         :prop-data="resultList"
         :prop-column="tableColumns"
@@ -46,6 +47,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      loading: false,
       svcList: [],
       resultList: [],
       componentList: [
@@ -54,37 +56,37 @@ export default {
         { key: 'SipCreateType', props: {} },
         { key: 'DatePicker', props: {} },
       ],
+      columns: []
     }
   },
   computed: {
     tableColumns() {
-      const columns = getStatColumn('service', this.svcList)
-      return columns
+      return this.columns
     }
   },
   mounted () {
-    this.fnViewListSvcStat()
+    setTimeout(async() => {
+      this.fnViewListSvcStat()
+    }, 10)
   },
   methods: {
     handleSearch(requestParameter) {
       this.fnViewListSvcStat(requestParameter)
     },
-    async fnViewListSvcStat(params = null) {
-      const defaultParam = {
-          pageIndex: 1,
-          pageUnit: 0,
-          pageSize: 0,
-          firstIndex: 1,
-          lastIndex: 10,
-          recordCountPerPage: 10,
-          rowNo: 0,
-      }
+    async fnViewListSvcStat(requestParameter = null) {
+      const parameter = requestParameter ?? this.$refs.searchCondition.requestParameter
       try {
-        const res = await apiRequestModel(ipmsModelApis.viewListSvcStat, params ?? defaultParam)
-        this.svcList = JSON.parse(res.data.svcLineList)
-        this.resultList = JSON.parse(res.data.result)
+        this.loading = true
+        const res = await apiRequestModel(ipmsModelApis.viewListSvcStat, parameter)
+        if (res.data.resultStatus === 'SUCCESS') {
+          this.svcList = JSON.parse(res.data.svcLineList)
+          this.resultList = JSON.parse(res.data.result)
+          this.columns = [].concat(...getStatColumn('service', this.svcList))
+        }
       } catch (error) {
         this.error(error)
+      } finally {
+        this.loading = false
       }
     }
   },

@@ -19,7 +19,7 @@
         운용정보 상세 정보
         <hr>
       </span>
-      <div id="content" class="layer">
+      <div id="content" v-loading="loading" class="layer">
         <!-- 공통항목 Section -->
         <div class="content_result bottom_dotted mt0">
           <h4 class="mt5">공통항목</h4>
@@ -167,6 +167,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      loading: false,
       fnType: 'detail',
       defaultResultVo: {
         nipHostMstSeq: '',
@@ -209,11 +210,14 @@ export default {
     onClose() {
     },
     async fnViewDetailIPHostMst(nipHostMstSeq) {
+      this.loading = true
       try {
         const res = await apiRequestModel(ipmsModelApis.viewDetailIPHostMst, { nipHostMstSeq })
         this.resultVo = res.result.data
       } catch (error) {
        this.error(error)
+      } finally {
+        this.loading = false
       }
     },
     fnSearchOfficeList() { // 수용국 검색 같은 modal 사용
@@ -245,13 +249,14 @@ export default {
         smodelname,
         scomment,
         sprorityYn,
-        // smodifyId: this.$store.state.user.info.Uid,
+        // smodifyId: this.$store.state.user.info.suserId,
       }
       this.confirm('운용정보를 변경 하시겠습니까?', '확인', {
         cancelButtonText: '취소',
         confirmButtonText: '확인',
       }).then(async() => {
         try {
+          this.loading = true
           const res = await apiRequestJson(ipmsJsonApis.updateHostIPMst, tbIpHostMstVo)
           if (res.commonMsg === 'SUCCESS') {
             onMessagePopup(this, '운용정보 변경이 정상적으로 처리되었습니다.')
@@ -263,6 +268,8 @@ export default {
           }
         } catch (error) {
           this.error(error)
+        } finally {
+          this.loading = false
         }
       })
       .catch(action => {

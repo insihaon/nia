@@ -3,6 +3,7 @@
     <el-dialog
       v-if="animationVisible"
       id="ipms"
+      ref="allocInsertModal"
       v-el-drag-dialog
       :visible.sync="visible"
       :width="domElement.maxWidth + `px`"
@@ -199,7 +200,7 @@
                 <td class="ellipsis">{{ item.sipCreateTypeNm }}</td>
                 <td class="ellipsis">{{ item.sassignTypeNm }}</td>
                 <td class="ellipsis">{{ item.pipPrefix }}</td>
-                <td>
+                <td class="d-flex">
                   <div class="inline-block w33">
                     <select v-model="item.gwipType" @change="fnSetGwip(item, index)">
                       <option value="direct">직접입력</option>
@@ -486,7 +487,7 @@ export default {
           this.fnInsertConfirmBtnClick()
         } else {
           // Tacs Ip중복 체크 api 요청
-          this.$refs.ModalCheckTacsIpBlock.open({ row: this.ipAllocOperMstVos[0], viewType: 'ALLOC' })
+          this.$refs.ModalCheckTacsIpBlock.open({ row: this.ipAllocOperMstVos[0], typeFlag: 'ALLOC' })
         }
       }
       /* ip블럭 중복체크 확인 */
@@ -548,23 +549,29 @@ export default {
       return
      }
      const ipAllocMstComplexVo = { srcIpAllocMstVo, destIpAllocMstVos, menuType: this.menuType }
+     const target = ({ vue: this.$refs.allocInsertModal })
      try {
-      const res = await apiRequestJson(ipmsJsonApis.insertAlcIPMst, ipAllocMstComplexVo)
-      // 레거시 url: ipmgmt/allocmgmt/insertAlcIPmst.json
+      this.openLoading(target, { text: '할당 처리 중입니다.' })
+      const res = { commonMsg: 'SUCCESS' }
+      await apiRequestJson(ipmsJsonApis.insertAlcIPMst, ipAllocMstComplexVo)
       if (this.menuType === 'Rout') {
         await this.fnUpdateStatusMst(res.ipAllocOperMstVo)
       } else {
-        if (res.ipAllocOperMstVo.commonMsg === 'SUCCESS') {
+        if (res.commonMsg === 'SUCCESS') {
           onMessagePopup(this, 'IP블록 할당이 정상적으로 처리되었습니다.')
+          this.$emit('reload')
           this.close()
           return true
         } else {
-          onMessagePopup(this, res.ipAllocOperMstVo.commonMsg)
+          onMessagePopup(this, res.commonMsg)
           return false
         }
       }
+      return res
      } catch (error) {
       this.error(error)
+     } finally {
+      this.closeLoading(target)
      }
     },
     async fnUpdateStatusMst(ipAllocOperMstVo) { // IP주소 라우팅 현황 update
@@ -587,6 +594,10 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+::v-deep .el-loading-spinner {
+  flex-direction: column;
+  align-items: center;
+}
 // .scroll_table {
 //   colgroup {
 //       width: 100%;

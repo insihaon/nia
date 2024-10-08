@@ -148,7 +148,7 @@ export default {
       try {
         const tbLvlCdVo = {
           slvlCd: this.resultVo.slvlCd,
-          smodifyId: this.$store.state.user.info.Uid,
+          smodifyId: this.$store.state.user.info.suserId,
           slvlNm: this.resultVo.slvlNm,
           sorgOfficeFlagYn: this.resultVo.sorgOfficeFlagYn,
           scomment: this.resultVo.scomment,
@@ -178,8 +178,8 @@ export default {
       let res
       try {
         const tbLvlCdVo = {
-          smodifyId: this.$store.state.user.info.Uid,
-          screateId: this.$store.state.user.info.Uid,
+          smodifyId: this.$store.state.user.info.suserId,
+          screateId: this.$store.state.user.info.suserId,
           slvlNm: this.resultVo.slvlNm,
           sexLinkUseTypeCd: 'CE0006',
           sorgOfficeFlagYn: this.resultVo.sorgOfficeFlagYn,

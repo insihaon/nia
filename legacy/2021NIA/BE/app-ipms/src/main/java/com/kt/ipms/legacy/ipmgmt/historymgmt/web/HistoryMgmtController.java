@@ -57,7 +57,12 @@ public class HistoryMgmtController extends CommonController {
 	@RequestMapping(value="/ipmgmt/historymgmt/viewListIpHistoryMst.model", method = RequestMethod.POST)
 	@ResponseBody
 	public ModelMap selectListIpHistoryMst(@RequestBody IpHistoryMstVo searchVo, ModelMap model, HttpServletRequest request){
-		IpHistoryMstListVo resultListVo = historyMgmtService.selectListIpHistMst(searchVo);
+		ModelMap builtModel = selectListIpHistoryMstModel(searchVo, request);
+		// IpHistoryMstListVo resultListVo = historyMgmtService.selectListIpHistMst(searchVo);
+		IpHistoryMstListVo resultListVo = (IpHistoryMstListVo)builtModel.get("resultListVo");
+		// return createResultList(resultListVo.getIpHistoryMstVos(), resultListVo.getTotalCount());
+		// setPagination(searchVo);
+		// IpHistoryMstListVo resultListVo = historyMgmtService.selectListIpHistMst(searchVo);
 		return createResultList(resultListVo.getIpHistoryMstVos(), resultListVo.getTotalCount());
 	}
 	

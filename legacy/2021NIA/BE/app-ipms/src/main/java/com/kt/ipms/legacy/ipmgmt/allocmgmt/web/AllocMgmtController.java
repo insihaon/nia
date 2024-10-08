@@ -71,6 +71,7 @@ public class AllocMgmtController extends CommonController {
 		TbLvlMstListVo resultSeqList = jwtUtil.getLvlSeqList(request, searchSeqVo);
 		searchVo.setLvlMstSeqListVo(resultSeqList);
 
+		setPagination(searchVo);
 		IpAllocOperMstListVo resultListVo = allocMgmtService.selectListIpAllocMst(searchVo);
 		return createResultList(resultListVo.getIpAllocOperMstVos(), resultListVo.getTotalCount());
 	}
@@ -437,8 +438,50 @@ public class AllocMgmtController extends CommonController {
 	public ModelMap viewSearchtNeMst(@RequestBody IpAllocOperMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 
-		ModelMap builtModel = searchtNeMstModel(searchVo, request);
-		List<CommonCodeVo> sLvlSubvCds = (List<CommonCodeVo>)builtModel.get("sLvlSubvCds");
+		// ModelMap builtModel = searchtNeMstModel(searchVo, request);
+		List<CommonCodeVo> sLvlSubvCds = new ArrayList<CommonCodeVo>();
+		IpAllocOperMstListVo resultListVo = null;
+
+		try {
+			/** 계위 Seq 목록 조회 **/
+			TbLvlMstVo searchSeqVo = new TbLvlMstVo();
+			searchSeqVo.setSsvcLineTypeCd(searchVo.getSsvcLineTypeCd());
+			searchSeqVo.setSsvcGroupCd(searchVo.getSsvcGroupCd());
+
+			if (null != searchVo.getSsvcGroupCdMultiStr() && !"".equals(searchVo.getSsvcGroupCdMultiStr())) {
+				List<String> listString = new ArrayList<String>();
+				String[] ssvcGroupCdMulti = searchVo.getSsvcGroupCdMultiStr().split(";");
+				for (int i = 0; i < ssvcGroupCdMulti.length; i++) {
+					listString.add(ssvcGroupCdMulti[i]);
+				}
+				searchSeqVo.setSsvcGroupCdMulti(listString);
+			}
+
+			searchSeqVo.setSsvcObjCd(searchVo.getSsvcObjCd());
+
+			TbLvlMstListVo resultSeqList = jwtUtil.getLvlSeqList(request, searchSeqVo);
+			searchVo.setLvlMstSeqListVo(resultSeqList);
+
+			String sSrchTypeCd = searchVo.getSneSrchTypeCd();
+			/** 수용국 코드 설정 **/
+			// 수용국 조회 시 할당 기준인지 호스트 기준인지의 처리
+			if (sSrchTypeCd.equals("1")) {// 1. ALLOC 할당기준, 2.HOST 수용국
+				/** 수용국 코드 설정 **/
+				sLvlSubvCds = allocMgmtService.selectLoadOfficeList(searchVo);
+				model.addAttribute("sLvlSubvCds", sLvlSubvCds);
+			} else {
+				sLvlSubvCds = allocMgmtService.selectHostSofficeList(searchVo);
+				model.addAttribute("sLvlSubvCds", sLvlSubvCds);
+			}
+		} catch (ServiceException e) {
+			resultListVo = new IpAllocOperMstListVo();
+			String msgDesc = tbCmnMstService.selectMsgDesc(e);
+			resultListVo.setCommonMsg(msgDesc);
+		} catch (Exception e) {
+			resultListVo = new IpAllocOperMstListVo();
+			String msgDesc = tbCmnMstService.selectMsgDesc(new ServiceException("CMN.HIGH.00000"));
+			resultListVo.setCommonMsg(msgDesc);
+		}
 		
 		return createResultList(sLvlSubvCds, sLvlSubvCds.size());
 	}
@@ -709,6 +752,7 @@ public class AllocMgmtController extends CommonController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/ipmgmt/allocmgmt/viewDetailAlcIPMst.model", method = RequestMethod.POST)
+	@ResponseBody
 
 	public ModelMap viewDetailAlcIPMst(@RequestBody IpAllocOperMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
@@ -855,6 +899,7 @@ public class AllocMgmtController extends CommonController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/ipmgmt/allocmgmt/insertAlcIPMst.json", method = RequestMethod.POST)
+	@ResponseBody
 	public IpAllocOperMstVo insertAlcIPMst(@RequestBody IpAllocMstComplexVo ipAllocMstComplexVo,
 			HttpServletRequest request, HttpServletResponse response) {
 		IpAllocOperMstVo resultVo = null;
@@ -888,6 +933,7 @@ public class AllocMgmtController extends CommonController {
 
 	/* 해지 처리 */
 	@RequestMapping(value = "/ipmgmt/allocmgmt/deletAlcIPMst.json", method = RequestMethod.POST)
+	@ResponseBody
 	public IpAllocOperMstVo deleteAlcIPMst(@RequestBody IpAllocMstComplexVo ipAllocMstComplexVo,
 			HttpServletRequest request, HttpServletResponse response) {
 		IpAllocOperMstVo resultVo = null;

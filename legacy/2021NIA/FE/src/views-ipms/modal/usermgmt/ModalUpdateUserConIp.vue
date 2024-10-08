@@ -152,9 +152,9 @@ export default {
           suserHndsetId: this.txtUserHndSetId,
           scomment: this.txtHndSetComment,
           shndsetUseSttusCd: 'UI0002',
-          shndsetApvUserId: this.$store.state.user.info.Uid,
-          screateId: this.$store.state.user.info.Uid,
-          smodifyId: this.$store.state.user.info.Uid,
+          shndsetApvUserId: this.$store.state.user.info.suserId,
+          screateId: this.$store.state.user.info.suserId,
+          smodifyId: this.$store.state.user.info.suserId,
         }
         const res = await apiRequestJson(ipmsJsonApis.viewInsertUserHndSetTxn, hndSetVo)
         if (res.commonMsg === this.resultListVo.commonMsg) {
