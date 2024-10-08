@@ -4,6 +4,15 @@ const { debug, isProd } = AppOptions.instance
 
 export const filePath = __filename.replace(/\\/g, '/')
 
+export function apiSystemMonitoring(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_SYSTEM_MONITORING_CURRENT',
+    data: params
+  })
+}
 export function apiSendMQ(serviceName, params = {}) {
   return http({
     url: `/nia/send/${serviceName}`,
@@ -157,12 +166,50 @@ export function apiSopSyslogHistList(params = {}) {
     data: params
   })
 }
+/*  */
+export function apiUpdateSyslogHist(params = {}) {
+  return http({
+    url: '/selectOne',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'UPDATE_SYSLOG_HIST',
+    data: params
+  })
+}
+export function apiDeleteSyslogHist(params = {}) {
+  return http({
+    url: '/selectOne',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'DELETE_SYSLOG_HIST',
+    data: params
+  })
+}
+/*  */
 export function apiSelectSopHistList(params = {}) {
   return http({
     url: '/selectList',
     method: 'post',
     filePath: filePath,
     sqlId: 'SELECT_SOP_HIST_LIST',
+    data: params
+  })
+}
+export function apiUpdateSopHist(params = {}) {
+  return http({
+    url: '/selectOne',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'UPDATE_SOP_HIST',
+    data: params
+  })
+}
+export function apiDeleteSopHist(params = {}) {
+  return http({
+    url: '/selectOne',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'DELETE_SOP_HIST',
     data: params
   })
 }

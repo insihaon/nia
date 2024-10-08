@@ -216,8 +216,8 @@ public class NiaService extends MainService {
         return niaMapper.SELECT_TRANSMISSION_ALARM_LIST(map);
     }
 
-    public List<ResultMap> selectSystemMonitoringCur() {
-        return niaMapper.SELECT_SYSTEM_MONITORING_CURRENT();
+    public List<ResultMap> selectSystemMonitoringCur(HashMap<String, Object> map) {
+        return niaMapper.SELECT_SYSTEM_MONITORING_CURRENT(map);
     }
 
     public int insertProfileList(HashMap<String, Object> param) throws Exception {

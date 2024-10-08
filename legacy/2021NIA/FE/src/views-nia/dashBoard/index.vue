@@ -6,7 +6,7 @@
           <span class="font-bold text-lg whitespace-nowrap">AI관제 시스템 처리량</span>
           <div class="d-flex p-2 justify-center items-center">
             <span class="font-semibold whitespace-nowrap pr-2">검색</span>
-            <el-radio-group v-model="systemChartCondition.dayType" size="mini" class="d-flex">
+            <el-radio-group v-model="systemChartCondition.dayType" size="mini" class="d-flex" @change="onLoadDashboardStatistics()">
               <el-radio-button label="DAY">일별</el-radio-button>
               <el-radio-button label="MONTH">월별</el-radio-button>
             </el-radio-group>
@@ -25,7 +25,7 @@
           <span class="font-bold text-lg whitespace-nowrap p-2">자가 처리 현황</span>
           <div class="d-flex p-2 justify-center items-center">
             <span class="font-semibold whitespace-nowrap pr-2">검색</span>
-            <el-radio-group v-model="selfChartCondition.statisticsType" size="mini" class="d-flex">
+            <el-radio-group v-model="selfChartCondition.statisticsType" size="mini" class="d-flex" @change="onLoadSelfProcessStatistics()">
               <el-radio-button label="hour">시간별</el-radio-button>
               <el-radio-button label="day">일별</el-radio-button>
               <el-radio-button label="month">월별</el-radio-button>

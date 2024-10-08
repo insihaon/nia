@@ -37,7 +37,7 @@
         </div>
         <el-row>
           <el-col>
-            <el-input v-model="fault_type_content" :disabled="aiFeedback === '0'" placeholder="AI 결과 피드백 내용 입력" />
+            <el-input v-model="fault_type_content" :rows="3" type="textarea" :disabled="aiFeedback === '0'" placeholder="AI 결과 피드백 내용 입력" />
           </el-col>
         </el-row>
       </el-card>
@@ -162,6 +162,25 @@ export default {
       })
     },
     getFinParam() {
+      /* TICKET 마감처리 참고 파라미터 (레거시)
+      {
+        "service": "rca",
+        "action": "CHANGE_TICKET_STATUS",
+        "eventType": "REQUEST_CHANGE_TICKET_STATUS",
+        "ticket_id": "85207",
+        "status": "FIN",
+        "ticket_type": "RT",
+        "ai_accuracy": "0",
+        "fault_classify": "",
+        "fault_type": "",
+        "fault_detail_content": "",
+        "etc_content": "",
+        "fault_type_content": null,
+        "start_time": null,
+        "end_time": null,
+        "handling_fin_user": "NIA ADMIN"
+      }
+      */
       const finType = this.selectedRow.ticket_type === 'SYSLOG' ? 'SYSLOG' : 'TICKET'
       const param = {
         eventType: `REQUEST_CHANGE_${finType}_STATUS`,

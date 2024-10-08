@@ -27,6 +27,9 @@ div.headerWrap span.menuTitle{
 }
 
 div.headerWrapLogo{
+  min-width: 1500px;
+  flex-direction: row;
+
   background-image: url("../images/nia/header_logo2.png");
   background-repeat: no-repeat;
   background-position: 10px center;
@@ -260,10 +263,10 @@ div.optionRow label{
   color: #141414;
   padding: 4px 0px 4px 10px;
   margin-right: 10px;
-  border-right: solid 2px #909399;
   white-space: nowrap;
   display: flex;
   align-items: center;
+  justify-content: flex-end;
 }
 div.optionRow>div>div.optionItem {
   margin-bottom: 5px;

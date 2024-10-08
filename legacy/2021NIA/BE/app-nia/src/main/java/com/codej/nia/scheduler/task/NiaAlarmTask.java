@@ -34,16 +34,16 @@ public class NiaAlarmTask {
 
     @PostConstruct
     void test() {
-        List<ResultMap> list = (List<ResultMap>) niaService.selectSystemMonitoringCur();
+        List<ResultMap> list = (List<ResultMap>) niaService.selectSystemMonitoringCur(new HashMap<>());
         if (list == null || list.size() == 0)
             return;
     }
 
-    @Scheduled(cron = "0 */5 * * * *") /* 5분주기 */
+    @Scheduled(cron = "0 */3 * * * *") /* 3분주기 */
     // @Scheduled(cron = "*/30 * * * * *") /* 30초 주기 */
     private void sendSystemMonitoring() throws Exception {
         try {
-            List<ResultMap> list = (List<ResultMap>) niaService.selectSystemMonitoringCur();
+            List<ResultMap> list = (List<ResultMap>) niaService.selectSystemMonitoringCur(new HashMap<>());
             if (list == null || list.size() == 0)
                 return;
 

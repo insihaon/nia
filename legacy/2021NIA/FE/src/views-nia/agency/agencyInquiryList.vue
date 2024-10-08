@@ -110,6 +110,7 @@ export default {
     },
       searchClear() {
       this.searchModel = {}
+      this.onLoadAgencyList()
     },
     handleOpenModalDetail(row, type) {
       this.$refs.ModalAgencyDetail.open({ row, type })
