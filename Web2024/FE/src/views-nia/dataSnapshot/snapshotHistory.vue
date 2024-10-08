@@ -146,7 +146,7 @@ export default {
       { value: 'ticket-nftt', label: '장비부하 장애', show: true },
       { value: 'perf', label: '광신호이상', show: isTicketNull },
       { value: 'resources', label: '시설', show: isTicketNull },
-      { value: 'test', label: '시험', show: isTicketNull }
+      { value: 'test', label: '시험데이터', show: isTicketNull }
     ]
   }
   },
