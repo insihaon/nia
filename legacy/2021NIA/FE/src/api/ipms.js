@@ -216,6 +216,7 @@ export const ipmsJsonApis = {
   selectListMenuBas: { desc: '메뉴관리 > 하위 메뉴 조회', url: '/opermgmt/menumgmt/selectListMenuBas' },
   selectSearchScrnBas: { desc: '메뉴관리 > 화면명 검색', url: '/opermgmt/menumgmt/selectSearchScrnBas' },
   updateTbMenuBasVo: { desc: '메뉴관리 > 화면명 저장', url: '/opermgmt/menumgmt/updateTbMenuBasVo' },
+  updateWhoisComplexNew: { desc: 'WHOIS 정보공개관리 > WHOIS 신청서 수정 ', url: '/opermgmt/whoismgmt/updateWhoisComplexNew' },
 }
 
 export function apiTest(params) {
