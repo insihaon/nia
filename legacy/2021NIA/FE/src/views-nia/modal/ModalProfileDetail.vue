@@ -173,9 +173,9 @@ export default {
       email_check: false,
       tableData: [],
       procOptions: [
-        { value: 'ACK', label: '인지' },
+        // { value: 'ACK', label: '인지' },
         { value: 'FIN', label: '마감' },
-        { value: 'AUTO_FIN', label: '자동마감' },
+        // { value: 'AUTO_FIN', label: '자동마감' },
       ],
       ticketData: [],
       nodeName: [],
@@ -227,6 +227,7 @@ export default {
         this.processing_template = this.rowInfo.processing_template
         this.auto_process_check = this.rowInfo.auto_process_check
         this.email_check = this.rowInfo.email_check
+        this.auto_recovery = this.rowInfo.auto_recovery
         this.tableData = []
 
         this.autoProcTime = [this.rowInfo.auto_process_start_datetime, this.rowInfo.auto_process_end_datetime].filter((time) => time !== null)

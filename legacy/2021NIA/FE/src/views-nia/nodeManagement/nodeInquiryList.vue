@@ -68,6 +68,7 @@ export default {
         { label: '날짜', type: 'dateTime', model: 'datetime' },
 
       ],
+      admin_yn_orgin: '',
       searchModel: {
         node_nm: '',
         model_id: '',
@@ -114,6 +115,11 @@ export default {
       return { options, columns, data: this.nodeData, getRightClickMenuItems: () => { return [] } }
     },
   },
+  watch: {
+    'searchModel.admin_yn' (nVal) {
+      this.admin_yn_orgin = nVal
+    }
+  },
   mounted() {
     this.onLoadTrafficList()
   },
@@ -151,8 +157,9 @@ export default {
       this.paginationInfo.currentPage = curPage
       this.onLoadTrafficList()
     },
-    searchClear() {
-      this.searchModel = {}
+    searchClear(searchModel) {
+      this.searchModel = Object.assign(searchModel, { admin_yn: this.admin_yn_orgin })
+      this.onLoadTrafficList()
     },
     onSaveExcel() {
       this.$refs.excelGrid.exportExcel(`노드관리_${this.toStringTime(new Date(), 'YYMMDD')}`)

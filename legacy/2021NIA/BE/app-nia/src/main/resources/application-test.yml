@@ -22,7 +22,26 @@ spring:
     niaEngineToUi: TEST_MQ_Queue1 # 2024.05.20 운영서버 알람을 가져오지 않기 위한 임시 설정
 
 myconf:
+  websocket:
+    enabled: true
   api-server:
+  # mail:
+  #   host: smtp.gmail.com
+  #   port: 587
+  #   sender: codej@koren.kr
+  #   password: zgpi wyws mnko mokj
+  # ssh:
+  #   host: incodej-lab.iptime.org
+  #   port: 16891
+  #   user: codej8888
+  #   password: zhfps!
+  # api-server:
+  #   ipsdn: http://incodej-lab.iptime.org:18088
+  #   user: codej
+  #   pw: codej!@#
+  # aimonitor-Url: http://incodej-lab.iptime.org:82
+  # servermonitor-Url: http://incodej-lab.iptime:3000
+  # snapshot-Url: http://incodej-lab.iptime.org:24888/download/
     
 file:
   upload-dir: ./external

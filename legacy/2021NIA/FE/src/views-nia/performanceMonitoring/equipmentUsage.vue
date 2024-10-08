@@ -45,46 +45,54 @@ export default {
       selectedRow: [],
       equitmentsData: [],
       searchItems: [
-        { label: '감시방식', type: 'select', multiple: true, placeholder: '상태를 선택하세요', model: 'monitoring_type', setting: { allOption: { toggle: true } },
+        { label: '감시방식', type: 'select', placeholder: '상태를 선택하세요', model: 'monitoring_type',
         options: [
             { label: 'OnDemand', value: 'OnDemand' },
             { label: '실시간', value: 'live' },
         ] },
-        { label: '장비', type: 'input', model: 'node_nm', placeholder: '장비명을 검색하세요' },
-        { label: 'CPU >=', type: 'input', model: 'cpu_usage' },
-        { label: 'Memory >=', type: 'input', model: 'mem_usage' },
-        { label: '수집기간', type: 'dateTime', model: 'date_time' },
+        { label: '장비', type: 'input', model: 'node_nm', placeholder: '장비명을 검색하세요', disabled: false },
+        { label: 'CPU >=', type: 'input', model: 'cpu_usage', disabled: false },
+        { label: 'Memory >=', type: 'input', model: 'mem_usage', disabled: false },
+        { label: '수집기간', type: 'dateTime', model: 'date_time', disabled: false },
       ],
+      monitoring_type: 'OnDemand',
       searchModel: {
-        monitoring_type: [],
+        monitoring_type: 'OnDemand',
         node_nm: '',
         cpu_usage: '',
         mem_usage: '',
       },
     }
   },
-
   computed: {
-  usageAgGrid() {
-    const options = {
-      name: this.name + 'table1', rowGroupPanel: false, rowSelection: 'multiple', rowMultiSelection: false, suppressRowClickSelection: true,
+    usageAgGrid() {
+      const options = {
+        name: this.name + 'table1', rowGroupPanel: false, rowSelection: 'multiple', rowMultiSelection: false, suppressRowClickSelection: true,
+      }
+      const columns = [
+        { type: '', prop: 'measured_datetime', name: '수집기간', minWidth: 80, flex: 0, suppressMenu: true, alignItems: 'center' },
+        { type: '', prop: 'node_nm', name: '장비명', minWidth: 80, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: false },
+        { type: '', prop: 'cpu_usage', name: 'CPU 사용량', minWidth: 80, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true, format: getFilterValue },
+        { type: '', prop: 'mem_usage', name: 'MEM 사용량', minWidth: 80, flex: 0, suppressMenu: true, alignItems: 'center', valueFormatter: this.formatPercentage, format: getFilterValue },
+      ]
+
+      return { options, columns, data: this.equitmentsData, getRightClickMenuItems: () => { return [] } }
     }
-    const columns = [
-      { type: '', prop: 'measured_datetime', name: '수집기간', minWidth: 80, flex: 0, suppressMenu: true, alignItems: 'center' },
-      { type: '', prop: 'node_nm', name: '장비명', minWidth: 80, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: false },
-      { type: '', prop: 'cpu_usage', name: 'CPU 사용량', minWidth: 80, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true, format: getFilterValue },
-      { type: '', prop: 'mem_usage', name: 'MEM 사용량', minWidth: 80, flex: 0, suppressMenu: true, alignItems: 'center', valueFormatter: this.formatPercentage, format: getFilterValue },
-    ]
-
-    return { options, columns, data: this.equitmentsData, getRightClickMenuItems: () => { return [] } }
-  }
-},
-
+  },
+  watch: {
+    'searchModel.monitoring_type'(nVal) {
+      // this.searchItems.forEach(item => {
+      //   if(item.model !== 'search_type') {
+      //     item.disabled = (nVal === 'OnDemand')
+      //   }
+      // })
+      this.monitoring_type = nVal
+    }
+  },
   mounted() {
     this.onLoadUsageList()
     this.autoTest()
   },
-
   methods: {
      async autoTest() {
       const { assert, wait, onLoadUsageList, query } = this
@@ -125,8 +133,8 @@ export default {
       this.paginationInfo.currentPage = curPage
       this.onLoadUsageList()
     },
-    searchClear() {
-      this.searchModel = {}
+    searchClear(searchModel) {
+      this.searchModel = Object.assign(searchModel, { monitoring_type: this.monitoring_type })
       this.onLoadUsageList()
     }
   },

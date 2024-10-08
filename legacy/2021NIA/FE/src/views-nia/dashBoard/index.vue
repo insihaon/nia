@@ -10,8 +10,15 @@
               <el-radio-button label="DAY">일별</el-radio-button>
               <el-radio-button label="MONTH">월별</el-radio-button>
             </el-radio-group>
-            <el-date-picker v-model="systemChartCondition.date" style="width: 150px" size="mini" :type="systemChartCondition.dayType === 'DAY' ? 'date' : 'month'" />
+            <el-date-picker
+              v-model="systemChartCondition.date"
+              style="width: 150px"
+              size="mini"
+              :picker-options="pickerOptions"
+              :type="systemChartCondition.dayType === 'DAY' ? 'date' : 'month'"
+            />
             <el-button icon="el-icon-search" size="mini" style="padding: 7px 7px" @click="onLoadDashboardStatistics()" />
+            <el-button icon="el-icon-refresh-right" size="mini" style="padding: 7px 7px;margin-left:0px" @click="onLoadDashboardStatistics(true)" />
           </div>
         </div>
         <hr>
@@ -150,6 +157,11 @@ export default {
       systemChartCondition: {
         dayType: 'DAY',
         date: this.moment().subtract(1, 'd').format('YYYY-MM-DD'),
+      },
+      pickerOptions: {
+        disabledDate(time) {
+            return time.getTime() > Date.now()
+          },
       },
       selfChartCondition: {
         statisticsType: 'hour',
@@ -473,8 +485,15 @@ export default {
         this.error(error)
       }
     },
-    async onLoadDashboardStatistics() {
+    async onLoadDashboardStatistics(reset = false) {
       const { dayType: DATE_TYPE, date } = this.systemChartCondition
+      let cloneDate = this._cloneDeep(date)
+      if (this.systemChartCondition.dayType === 'MONTH') {
+        cloneDate = this.moment().subtract(1, 'M').format('YYYY-MM')
+      }
+      if (reset) {
+        cloneDate = this.moment().subtract(1, 'd').format('YYYY-MM-DD')
+      }
       const formatStr = DATE_TYPE === 'DAY' ? 'YYYY-MM-DD' : 'YYYY-MM'
       const defaultSt = {
         trans_alarm_cnt: 0,
@@ -493,7 +512,7 @@ export default {
         link_trans_perf_cnt: 0,
       }
       try {
-        const res = await apiDashboardStatistics({ DATE_TYPE, SEARCH_DATE: this.moment(date).format(formatStr) })
+        const res = await apiDashboardStatistics({ DATE_TYPE, SEARCH_DATE: this.moment(cloneDate).format(formatStr) })
         this.statistics = res.result[0] ?? defaultSt
       } catch (error) {
         this.error(error)

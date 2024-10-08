@@ -195,17 +195,17 @@ public class AppDto {
     @Value("${myconf.aimonitor-Url:http://incodej-lab.iptime.org:82/download/}")
     private String aiMonitorUrl;
 
-    @Value("${myconf.ssh.host:incodej-lab.iptime.org}")
+    @Value("${myconf.ssh.host:127.0.0.1}")
 
     private String sshHost;
 
-    @Value("${myconf.ssh.port:16891}")
+    @Value("${myconf.ssh.port:22}")
     private int sshPort;
 
-    @Value("${myconf.ssh.user:codej8888}")
+    @Value("${myconf.ssh.user:}")
     private String sshUser;
 
-    @Value("${myconf.ssh.password:zhfps!}")
+    @Value("${myconf.ssh.password:}")
     private String sshPassword;
 
     private Object time;
