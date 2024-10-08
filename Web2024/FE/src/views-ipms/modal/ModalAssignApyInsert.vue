@@ -244,10 +244,10 @@ export default {
             ssvcLineTypeCd: this.updSsvcLineTypeCd,
             ssvcGroupCd: this.updSsvcGroupCd,
             ssvcObjCd: this.updSsvcObjCd,
-            sapyUserId: this.$store.state.user.info.Uid,
+            sapyUserId: this.$store.state.user.info.suserId,
             srequestAssignTypeCd: 'RS0301',
-            screateId: this.$store.state.user.info.Uid,
-            smodifyId: this.$store.state.user.info.Uid,
+            screateId: this.$store.state.user.info.suserId,
+            smodifyId: this.$store.state.user.info.suserId,
           }
           const res = await apiRequestJson(ipmsJsonApis.insertAssignApyTxn, TbRequestAssignMstVo)
            if (res.commonMsg === 'SUCCESS') {

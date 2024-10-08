@@ -184,8 +184,8 @@ export default {
       let res
       try {
         const tbLvlCdVo = {
-          smodifyId: this.$store.state.user.info.Uid,
-          screateId: this.$store.state.user.info.Uid,
+          smodifyId: this.$store.state.user.info.suserId,
+          screateId: this.$store.state.user.info.suserId,
           slvlNm: this.resultVo.slvlNm,
           sexLinkUseTypeCd: 'CE0006',
           sorgOfficeFlagYn: this.resultVo.sorgOfficeFlagYn,
@@ -261,7 +261,7 @@ export default {
           ssvcGroupCd: this.ssvcGroupCd,
           ssvcObjCd: this.ssvcObjCd,
           ssvchighCd: this.ssvchighObjCd,
-          smodifyId: this.$store.state.user.info.Uid,
+          smodifyId: this.$store.state.user.info.suserId,
         }
         res = await apiRequestJson(ipmsJsonApis.insertTbLvlBas, TbLvlRoleMstVo)
         if (res.commonMsg === 'SUCCESS') {

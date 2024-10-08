@@ -23,6 +23,7 @@
               @input="onCheckValidation"
               @keyup.space="onKeyUpSpace"
               @keyup.delete="onKeyUpBackspace"
+              @keyup.enter="fnViewListIpAllocMstByMain()"
             />
           </div>
           <el-button
@@ -53,11 +54,14 @@
         :prop-name="name"
         :prop-table-height="'calc(100% - 80px)'"
         :prop-column="ipBlockColumns"
-        :prop-data="resultList"
-        :prop-is-pagination="false"
+        :prop-data="pagination.data"
+        :prop-pagination-data.sync="pagination"
+        :prop-is-pagination="true"
         :prop-is-check-box="false"
         prop-grid-menu-id="ipInfoList"
         :prop-grid-indx="1"
+        :prop-on-page-change="handleChangeCurPage"
+        :prop-on-page-size-change="handleChangeCurPage"
       >
         <template slot="text-description">
           <span>
@@ -97,7 +101,7 @@ export default {
       options: [],
       searchTagArr: [],
       searchTagStr: '',
-      value: '14.32',
+      value: '',
       option: 'CV0001',
       ipBlockColumns: [
         { prop: 'pipPrefix', label: 'IP블록', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
@@ -123,7 +127,7 @@ export default {
           }
         },
       ],
-      resultList: []
+      pagination: this.setDefaultPagination()
     }
   },
   watch: {
@@ -132,7 +136,8 @@ export default {
         if (this.ipms.toParams !== null) {
           const { option, value } = this.ipms.toParams
           this.option = option
-          this.value = value
+          // this.value = value
+          this.searchTagStr = value
           this.$store.dispatch('ipms/setToParam', null)
           this.fnViewListIpAllocMstByMain()
         }
@@ -167,11 +172,13 @@ export default {
       }
     },
     async fnViewListIpAllocMstByMain() {
-      if (this.value === '') {
+      const THIS = this
+      if (this.searchTagStr === '' && this.searchTagArr.length === 0) {
         onMessagePopup(this, '검색어를  입력하세요.')
         return
       }
-      const ipInfoVo = { pageIndex: 1, pageUnit: '10', searchWrd: this.option }
+      const { pageSize: pageUnit, currentPage: pageIndex } = this.pagination
+      const ipInfoVo = { pageIndex, pageUnit, searchWrd: this.option }
       if (this.option === 'CV0001' || this.option === 'CV0002') {
         Object.assign(ipInfoVo, { sfirstAddr: this.searchTagArr[0] ?? this.searchTagStr, sipVersionTypeCd: this.option })
       } else {
@@ -192,22 +199,35 @@ export default {
           default:
             break
         }
-        // Object.assign(ipInfoVo, { [key]: this.value })
-        Object.assign(ipInfoVo, { [key]: this.searchTagArr })
+        Object.assign(ipInfoVo, { [key]: this.searchTagArr.length > 1 ? this.searchTagArr : [this.searchTagStr] })
       }
+      const target = ({ vue: this.$refs.compTable })
       try {
+        this.openLoading(target)
         const res = await apiRequestModel(ipmsModelApis.viewListIpAllocMstByMain, ipInfoVo)
-        this.resultList = res?.result?.resultListVo ?? []
+        this.pagination.data = res?.result?.data ?? []
+        this.pagination.total = res.result.totalCount
       } catch (error) {
         this.error(error)
+      } finally {
+        this.closeLoading(target)
       }
     },
+    handleChangeCurPage(v) {
+      if (v) this.pagination.currentPage = v
+      this.fnViewListIpAllocMstByMain()
+    },
     onKeyUpSpace() {
-      const str = this.searchTagStr.replaceAll(' ', '')
+      let str = this._cloneDeep(this.searchTagStr)
+      if (this.option === 'SCONNALIAS') return
+      if (['CV0001', 'CV0002'].includes(this.option)) {
+        str = this.searchTagStr.replaceAll(' ', '')
+      } else {
+        str = this.searchTagStr.replaceAll(/[^0-9]/g, '')
+      }
       if (!this.searchTagArr.includes(str) && str.length > 0) {
         this.searchTagArr.push(str)
       }
-      // this.value = this.searchTagArr.toString()
       this.searchTagStr = ''
     },
     onKeyUpBackspace() {

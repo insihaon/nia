@@ -55,6 +55,9 @@ export default {
       if (this.valueType === 'number') {
         this.value = val.replace(/\D/g, '')
       }
+      if (this.valueType === 'ip') {
+        this.value = val.replace(/[^0-9.]+/g, '')
+      }
     }
   }
 }

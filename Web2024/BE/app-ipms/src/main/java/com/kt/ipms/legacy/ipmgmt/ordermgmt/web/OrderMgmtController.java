@@ -313,6 +313,7 @@ public class OrderMgmtController extends CommonController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value="/ipmgmt/ordermgmt/viewSearchNeossSvcMst.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewSearchNeossSvcMst(@RequestBody TbIpmsSvcMstVo searchVo, ModelMap model,
 			HttpServletRequest request){
 		TbIpmsSvcMstListVo resultListVo = orderMgmtService.selectListIpmsSvc(searchVo);
@@ -398,6 +399,7 @@ public class OrderMgmtController extends CommonController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/ipmgmt/ordermgmt/viewDetailNeossMst.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewDetailSubSvcMst(@RequestBody IpAllocOrderMstVo searchVo, ModelMap model,
 			HttpServletRequest request){
 		IpAllocOrderMstListVo resultListVo = orderMgmtService.selectListIpAllocOrderMst(searchVo);
@@ -456,6 +458,7 @@ public class OrderMgmtController extends CommonController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value="/ipmgmt/ordermgmt/viewSearchAssignMst.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewSearchAssignMst(@RequestBody IpAllocOperMstVo searchVo, ModelMap model,
 			HttpServletRequest request){
 		IpAllocOperMstListVo resultListVo = orderMgmtService.selectListIpAllocMst(searchVo);

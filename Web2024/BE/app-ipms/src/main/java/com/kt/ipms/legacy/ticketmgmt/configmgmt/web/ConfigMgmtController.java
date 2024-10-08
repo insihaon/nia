@@ -168,6 +168,7 @@ public class ConfigMgmtController extends CommonController {
 	}
 	
 	@RequestMapping(value = "/ticketmgmt/configmgmt/viewListRouteMst.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewListRouteMst(@RequestBody TbConfigRouteMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		TbConfigRouteMstListVo resultListVo = configMgmtService.selectListPageRouteMst(searchVo);
@@ -256,6 +257,7 @@ public class ConfigMgmtController extends CommonController {
 	}
 	
 	@RequestMapping(value = "/ticketmgmt/configmgmt/viewDetailRouteMst.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewDetailRouteMst(@RequestBody TbConfigRouteMstVo searchVo, ModelMap model,
 			HttpServletRequest request){
 		TbConfigRouteMstVo resultVo = configMgmtService.selectConfigRouteMst(searchVo);

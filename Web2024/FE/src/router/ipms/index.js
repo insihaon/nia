@@ -185,16 +185,16 @@ export const ipmsRoute = Object.freeze([
         meta: { title: 'IP주소 라우팅 비교/점검', affix: false }
       },
       {
-        path: 'operInfoLinkMng',
-        component: () => import('@/views-ipms/menus/dbMng/operInfoLinkManagement'),
-        name: 'OperInfoLinkManagement',
-        meta: { title: '운용정보관리(링크)', affix: false }
-      },
-      {
         path: 'operInfoFacilityMng',
         component: () => import('@/views-ipms/menus/dbMng/operInfoFacilityManagement'),
         name: 'OperInfoFacilityManagement',
         meta: { title: '운용정보관리(시설)', affix: false }
+      },
+      {
+        path: 'operInfoLinkMng',
+        component: () => import('@/views-ipms/menus/dbMng/operInfoLinkManagement'),
+        name: 'OperInfoLinkManagement',
+        meta: { title: '운용정보관리(링크)', affix: false }
       },
       {
         path: 'uploadMng',

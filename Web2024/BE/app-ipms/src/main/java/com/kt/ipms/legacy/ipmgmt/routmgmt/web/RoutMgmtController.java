@@ -74,8 +74,22 @@ public class RoutMgmtController extends CommonController{
 	@RequestMapping(value = "/ipmgmt/routmgmt/viewListRoutChkMst.model", method = RequestMethod.POST)
 	@ResponseBody
 	public ModelMap viewListRoutChkMst(@RequestBody TbRoutChkMstVo searchVo, ModelMap model, HttpServletRequest request) {
-		TbRoutChkMstListVo resultListVo = routMgmtService.selectListRoutChkMst(searchVo);
-		return createResultList(resultListVo.getTbRoutChkMstVos(), resultListVo.getTotalCount());
+		// setPagination(searchVo);
+		// TbRoutChkMstListVo resultListVo = routMgmtService.selectListRoutChkMst(searchVo);
+		ModelMap builtModel = viewListRoutChkMstModel(searchVo, request);
+		TbRoutChkMstListVo resultListVo = (TbRoutChkMstListVo)builtModel.get("resultListVo");
+
+		ModelMap resultModel = new ModelMap();
+		HashMap<String, Object> map = new HashMap<String, Object>();
+
+		map.put("data", resultListVo.getTbRoutChkMstVos());
+		map.put("totalCount", resultListVo.getTotalCount());
+		map.put("totalCount2", resultListVo.getTotalCount2());
+		map.put("totalCount3", resultListVo.getTotalCount3());
+
+		resultModel.addAttribute("result",map);
+
+		return resultModel;
 	}
 	@RequestMapping(value = "/ipmgmt/routmgmt/viewListRoutChkMst.do", method = RequestMethod.POST)
 	public String viewListRoutChkMst(@ModelAttribute("searchVo") TbRoutChkMstVo searchVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
@@ -717,6 +731,7 @@ public class RoutMgmtController extends CommonController{
 	 * @return
 	 */
 	@RequestMapping(value = "/ipmgmt/routmgmt/viewPopRoutChkMst.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewPopRoutChkMst(@RequestBody TbRoutChkMstVo searchVo, ModelMap model, HttpServletRequest request) {
 		TbFcltCmdMstListVo resultListVo = routMgmtService.selectListFcltOrgCmdMst(searchVo);
 		return createResultList(resultListVo.getTbFcltCmdMstVos(), resultListVo.getTotalCount());
@@ -789,6 +804,7 @@ public class RoutMgmtController extends CommonController{
 	 * @return
 	 */
 	@RequestMapping(value = "/ipmgmt/routmgmt/viewDetailRoutChkMst.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewDetailRoutChkMst(@RequestBody IpAllocOperMstVo searchVo, ModelMap model, HttpServletRequest request){
 		IpAllocOperMstVo resultVo = allocMgmtService.selectMainIpInfoMst(searchVo);
 		return createResult(resultVo);
@@ -844,6 +860,7 @@ public class RoutMgmtController extends CommonController{
 	 * @return
 	 */
 	@RequestMapping(value = "/ipmgmt/routmgmt/viewDetailNextHop.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewDetailNextHop(@RequestBody IpAllocOperMstVo searchVo, ModelMap model, HttpServletRequest request){
 		IpAllocOperMstVo resultVo = null;
 		if(searchVo.getSpageType().equals("link")) {
@@ -923,9 +940,10 @@ public class RoutMgmtController extends CommonController{
 	 * @return
 	 */
 	@RequestMapping(value = "/ipmgmt/routmgmt/viewPopRoutChkExceptMst.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewPopRoutChkExceptMst(@RequestBody TbRoutChkMstVo searchVo, ModelMap model, HttpServletRequest request) {
-		TbRoutChkMstListVo resultListVo = new TbRoutChkMstListVo();
-		return createResultList(resultListVo.getTbRoutChkMstVos(), resultListVo.getTotalCount());
+		List<CommonCodeVo> exceptCds = commonCodeService.selectListCommonCode(CommonCodeUtil.ROUTING_EXCEPT_CD, null);
+		return createResultList(exceptCds, exceptCds.size());
 	}
 	@RequestMapping(value = "/ipmgmt/routmgmt/viewPopRoutChkExceptMst.ajax", method = RequestMethod.POST)
 	public String viewPopRoutChkExceptMst(@RequestBody TbRoutChkMstVo searchVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
@@ -1021,6 +1039,7 @@ public class RoutMgmtController extends CommonController{
 	 * @return
 	 */
 	@RequestMapping(value = "/ipmgmt/routmgmt/viewDetailRoutExcptMst.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewDetailRoutExcptMst(@RequestBody TbRoutChkMstVo searchVo, ModelMap model, HttpServletRequest request){
 		TbRoutChkMstListVo resultListVo = routMgmtService.selectListPageRoutExcptMstVo(searchVo);
 		TbRoutChkMstVo resultVo = resultListVo.getTbRoutChkMstVos().get(0);
@@ -1152,6 +1171,7 @@ public class RoutMgmtController extends CommonController{
 	 * @return
 	 */
 	@RequestMapping(value = "/ipmgmt/routmgmt/viewPopRoutServiceChkMst.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewPopRoutServiceChkMst(@RequestBody TbRoutChkMstVo searchVo, HttpServletRequest request){
 		ModelMap model = viewPopRoutServiceChkMstModel(searchVo, request);
 		TbRoutChkMstListVo resultListVo = (TbRoutChkMstListVo)model.get("resultListVo");
@@ -1343,6 +1363,7 @@ public class RoutMgmtController extends CommonController{
 	 * @return
 	 */
 	@RequestMapping(value = "/ipmgmt/routmgmt/viewPopInsertAlcIPMst.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewInsertAlcIPMst(@RequestBody IpAllocOperMstListVo ipAllocOperMstListVo, ModelMap model, HttpServletRequest request){
 		IpAllocOperMstListVo resultListVo = allocMgmtService.selectListAlcIPMstViaInMstSeq2(ipAllocOperMstListVo);
 		return createResultList(resultListVo.getIpAllocOperMstVos(), resultListVo.getTotalCount());
@@ -1398,6 +1419,7 @@ public class RoutMgmtController extends CommonController{
 	 * @return
 	 */
 	@RequestMapping(value = "/ipmgmt/routmgmt/viewPopDetailAlcIPMst.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewDetailAlcIPMst(@RequestBody IpAllocOperMstVo searchVo, ModelMap model, HttpServletRequest request){
 		IpAllocOperMstListVo resultListVo = allocMgmtService.selectListIpAllocDetail(searchVo);
 		return createResultList(resultListVo.getIpAllocOperMstVos(), resultListVo.getTotalCount());

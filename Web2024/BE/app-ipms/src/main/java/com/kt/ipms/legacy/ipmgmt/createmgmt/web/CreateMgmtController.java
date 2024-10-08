@@ -235,6 +235,7 @@ public class CreateMgmtController extends CommonController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value="/ipmgmt/createmgmt/viewDetailCrtIPMst.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewDetailCrtIPMst(@RequestBody TbIpBlockMstVo tbIpBlockMstVo, ModelMap model,
 			HttpServletRequest request) {
 		TbIpBlockMstVo resultVo = createMgmtService.selectIpBlockMst(tbIpBlockMstVo);
@@ -280,6 +281,7 @@ public class CreateMgmtController extends CommonController {
 	}
 	
 	@RequestMapping(value="/ipmgmt/createmgmt/viewInsertCrtIPMst.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewInsertCrtIPMst(@RequestBody TbIpBlockMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		TbIpBlockMstVo resultVo = createMgmtService.selectIpBlockMst(searchVo);
@@ -460,6 +462,7 @@ public class CreateMgmtController extends CommonController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/ipmgmt/createmgmt/viewUpdateCrtIPMst.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewUpdateCrtIPMst(@RequestBody TbIpBlockMstVo searchVo, ModelMap model, 
 			HttpServletRequest request) {
 		TbIpBlockMstVo resultVo = createMgmtService.selectIpBlockMst(searchVo);
@@ -767,6 +770,7 @@ public class CreateMgmtController extends CommonController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value="/ipmgmt/createmgmt/viewDetailCrtPrivateIPMst.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewDetailCrtPrivateIPMst(@RequestBody TbIpBlockMstVo tbIpBlockMstVo, ModelMap model, HttpServletRequest request) {
 		TbIpBlockMstVo resultVo = createMgmtService.selectIpBlockMst(tbIpBlockMstVo);
 		return createResult(resultVo);

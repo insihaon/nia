@@ -15,8 +15,10 @@ import com.codej.base.exception.CUserNotFoundException;
 import com.codej.base.dto.BaseUser;
 import com.codej.base.dto.DbUser;
 import com.kt.ipms.legacy.opermgmt.loginmgmt.vo.LoginInfoVo;
+import com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlBasListVo;
 import com.kt.ipms.legacy.opermgmt.usermgmt.vo.TbUserBasVo;
 import com.kt.ipms.mapper.db2nd.IpmsUserMapper;
+
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -49,19 +51,20 @@ public class IpmsUserService extends BaseUserService {
 
     @Override
     @Cacheable(value = CustomCacheKey.USER, key = "#uid", unless = "#result == null")
-    public TbUserBasVo findUserByUid(String uid) throws Exception {
-        TbUserBasVo user = getUser(uid);
+    public LoginInfoVo findUserByUid(String uid) throws Exception {
+        LoginInfoVo user = getUser(uid);
         return Optional.ofNullable(user).orElseThrow(CUserNotFoundException::new);
     }
     
 
     @Override
-    public TbUserBasVo getUser(String uid) throws Exception {
-        TbUserBasVo searchUserBasVo = new TbUserBasVo();
+    public LoginInfoVo getUser(String uid) throws Exception {
+        LoginInfoVo searchUserBasVo = new LoginInfoVo();
         searchUserBasVo.setSuserId(uid);
-        TbUserBasVo user = (TbUserBasVo)getDatasource().SELECT_LOGIN_USER(searchUserBasVo);
+        LoginInfoVo user = (LoginInfoVo)getDatasource().SELECT_LOGIN_USER(searchUserBasVo);
         return user;
     }
+
     @Override
     public HashMap<String, Object> getUserParam(String uid) {
         Data param = new Data();

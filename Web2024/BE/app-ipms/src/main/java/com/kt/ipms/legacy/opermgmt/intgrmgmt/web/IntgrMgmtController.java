@@ -186,6 +186,7 @@ public class IntgrMgmtController  extends CommonController{
 	 * @return
 	 */
 	@RequestMapping(value = "/opermgmt/intgrmgmt/viewInsertFcltMst.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewInsertFcltMst(ModelMap model, HttpServletRequest request) {
 		TbFcltMstVo resultVo = new TbFcltMstVo();
 		return createResult(resultVo);
@@ -281,6 +282,7 @@ public class IntgrMgmtController  extends CommonController{
 	 * @return
 	 */
 	@RequestMapping(value = "/opermgmt/intgrmgmt/viewUpdateFcltMst.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewUpdateFcltMst(@RequestBody TbFcltMstVo searchVo, ModelMap model, HttpServletRequest request) {
 		TbFcltMstVo resultVo = null;
 		if (searchVo.getNfcltMstSeq() != null) {
@@ -606,6 +608,7 @@ public class IntgrMgmtController  extends CommonController{
 	 * @return
 	 */
 	@RequestMapping(value = "/opermgmt/intgrmgmt/viewUpdateFcltCmdMst.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewUpdateFcltCmdMst(@RequestBody TbFcltCmdMstVo searchVo, ModelMap model, HttpServletRequest request) {
 		TbFcltCmdMstVo resultVo = intgrMgmtService.selectFcltCmdMst(searchVo);
 		return createResult(resultVo);
@@ -866,6 +869,7 @@ public class IntgrMgmtController  extends CommonController{
 	 * @return
 	 */
 	@RequestMapping(value = "/opermgmt/intgrmgmt/viewUpdateMobileMst.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewUpdateMobileMst(@RequestBody TbMobileMstVo searchVo, ModelMap model, HttpServletRequest request) {
 		TbMobileMstVo resultVo = intgrMgmtService.selectMobileMst(searchVo);
 		return createResult(resultVo);
@@ -1059,6 +1063,7 @@ public class IntgrMgmtController  extends CommonController{
 	 * @return
 	 */
 	@RequestMapping(value = "/opermgmt/intgrmgmt/viewPopSummaryMst.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewPopSummaryMst(@RequestBody TbMobileSummMstVo searchVo, ModelMap model, HttpServletRequest request) {
 		TbMobileSummMstListVo resultListVo = intgrMgmtService.selectListMobileSummMst(searchVo);
 		return createResultList(resultListVo.getTbMobileSummMstVos(), resultListVo.getTotalCount());
@@ -1477,6 +1482,7 @@ public class IntgrMgmtController  extends CommonController{
 	 * @return
 	 */
 	@RequestMapping(value = "/opermgmt/intgrmgmt/viewInsertWireMst.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewInsertWireMst(ModelMap model, HttpServletRequest request) {
 		TbWireMstVo resultVo = new TbWireMstVo();
 		return createResult(resultVo);
@@ -1576,6 +1582,7 @@ public class IntgrMgmtController  extends CommonController{
 	 * @return
 	 */
 	@RequestMapping(value = "/opermgmt/intgrmgmt/viewUpdateWireMst.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewUpdateWireMst(@RequestBody TbWireMstVo tbWireMstVo, ModelMap model, HttpServletRequest request) {
 		TbWireMstVo resultVo = intgrMgmtService.selectWireMst(tbWireMstVo);
 		return createResult(resultVo);

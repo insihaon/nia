@@ -52,6 +52,7 @@ public class LinkMgmtController extends CommonController{
 	@RequestMapping(value="/ipmgmt/linkmgmt/viewListIpLinkMst.model", method = RequestMethod.POST)
 	@ResponseBody
 	public ModelMap viewListIpLinkMst(@RequestBody TbIpLinkMstVo searchVo, ModelMap model, HttpServletRequest request){
+		setPagination(searchVo);
 		TbIpLinkMstListVo resultListVo = linkMgmtService.selectListIpLinkMst(searchVo);
 		return createResultList(resultListVo.getTbIpLinkMstVos(), resultListVo.getTotalCount());
 	}
@@ -226,6 +227,7 @@ public class LinkMgmtController extends CommonController{
 	 * @return
 	 */
 	@RequestMapping(value="/ipmgmt/linkmgmt/viewDetailIPLinkMst.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewDetailIPLinkMst(@RequestBody TbIpLinkMstVo searchVo, ModelMap model, HttpServletRequest request){
 		TbIpLinkMstVo resultVo = linkMgmtService.selectTbIpLinkMstVo(searchVo);
 		return createResult(resultVo);
@@ -279,6 +281,7 @@ public class LinkMgmtController extends CommonController{
 	 * @return
 	 */
 	@RequestMapping(value="/ipmgmt/linkmgmt/viewInsertIpLinkMst.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewInsertIpLinkMst(@RequestBody TbIpLinkMstVo searchVo, ModelMap model, HttpServletRequest request){
 		TbIpLinkMstListVo resultListVo = new TbIpLinkMstListVo();
 		return createResultList(resultListVo.getTbIpLinkMstVos(), resultListVo.getTotalCount());
@@ -480,6 +483,7 @@ public class LinkMgmtController extends CommonController{
 	 * @return
 	 */
 	@RequestMapping(value="/ipmgmt/linkmgmt/viewUpdateIPLinkMst.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewUpdateIPLinkMst(@RequestBody TbIpLinkMstVo searchVo, ModelMap model, HttpServletRequest request){
 		TbIpLinkMstVo resultVo = linkMgmtService.selectTbIpLinkMstVo(searchVo);
 		return createResult(resultVo);

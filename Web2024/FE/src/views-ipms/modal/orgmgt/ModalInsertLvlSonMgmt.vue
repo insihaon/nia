@@ -233,7 +233,7 @@ export default {
       try {
         const TbLvlSubCdVo = {
           slofficecode: this.ssvcObjCd,
-          smodifyId: this.$store.state.user.info.Uid,
+          smodifyId: this.$store.state.user.info.suserId,
           ssvcLineTypeCd: resultListVo.ssvcLineTypeCd,
           slvlCd: resultListVo.slvlCd,
         }

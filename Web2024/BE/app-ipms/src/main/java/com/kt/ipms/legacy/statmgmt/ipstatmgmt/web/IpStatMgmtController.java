@@ -975,8 +975,13 @@ public class IpStatMgmtController extends CommonController {
 	@RequestMapping(value="/statmgmt/ipstatmgmt/viewListIntgrmSvcStat.model", method = RequestMethod.POST)
 	@ResponseBody
 	public ModelMap viewListIntgrmSvcStat(@RequestBody IpIntgrmSvcStatVo searchVo, HttpServletRequest request){
-		List<Map<String,String>> resultList = ipStatMgmtService.selectListIntgrmSvcStatMst(searchVo);
-		return createResultList(resultList, resultList.size());
+		ModelMap resultModel = new ModelMap();
+		ModelMap model = viewListIntgrmSvcStatModel(searchVo, request);
+		
+		Map<String,Object> resultMap = (Map<String,Object>)model.get("result");
+		resultModel.addAttribute("data", resultMap);
+		
+		return resultModel;
 	}
 	@RequestMapping(value="/statmgmt/ipstatmgmt/viewListIntgrmSvcStat.do", method = RequestMethod.POST)
 	public String viewListIntgrmSvcStat(@ModelAttribute("searchVo") IpIntgrmSvcStatVo searchVo, ModelMap model, HttpServletRequest request, HttpServletResponse response){
@@ -1316,9 +1321,14 @@ public class IpStatMgmtController extends CommonController {
 	 */
 	@RequestMapping(value="/statmgmt/ipstatmgmt/viewListOrgSvcStat.model", method = RequestMethod.POST)
 	@ResponseBody
-	public ModelMap viewListOrgSvcStat(@RequestBody IpIntgrmSvcStatVo searchVo, ModelMap model, HttpServletRequest request){
-		List<Map<String,String>> resultList = ipStatMgmtService.selectListOrgSvcStatMst(searchVo);
-		return createResultList(resultList, resultList.size());
+	public ModelMap viewListOrgSvcStat(@RequestBody IpIntgrmSvcStatVo searchVo, HttpServletRequest request){
+		ModelMap resultModel = new ModelMap();
+		ModelMap model = viewListOrgSvcStatModel(searchVo, request);
+		
+		Map<String,Object> resultMap = (Map<String,Object>)model.get("result");
+		resultModel.addAttribute("data", resultMap);
+		
+		return resultModel;
 	}
 	@RequestMapping(value="/statmgmt/ipstatmgmt/viewListOrgSvcStat.do", method = RequestMethod.POST)
 	public String viewListOrgSvcStat(@ModelAttribute("searchVo") IpIntgrmSvcStatVo searchVo, ModelMap model, HttpServletRequest request, HttpServletResponse response){
@@ -1659,9 +1669,14 @@ public class IpStatMgmtController extends CommonController {
 	 */
 	@RequestMapping(value="/statmgmt/ipstatmgmt/viewListSvcStat.model", method = RequestMethod.POST)
 	@ResponseBody
-	public ModelMap viewListSvcStat(@RequestBody IpIntgrmSvcStatVo searchVo, ModelMap model, HttpServletRequest request){
-		List<Map<String,String>> resultList = ipStatMgmtService.selectListSvcStatMst(searchVo);
-		return createResultList(resultList, resultList.size());
+	public ModelMap viewListSvcStat(@RequestBody IpIntgrmSvcStatVo searchVo, HttpServletRequest request){
+		ModelMap resultModel = new ModelMap();
+		ModelMap model = viewListSvcStatModel(searchVo, request);
+		
+		Map<String,Object> resultMap = (Map<String,Object>)model.get("result");
+		resultModel.addAttribute("data", resultMap);
+		
+		return resultModel;
 	}
 	@RequestMapping(value="/statmgmt/ipstatmgmt/viewListSvcStat.do", method = RequestMethod.POST)
 	public String viewListSvcStat(@ModelAttribute("searchVo") IpIntgrmSvcStatVo searchVo, ModelMap model, HttpServletRequest request, HttpServletResponse response){
@@ -1970,9 +1985,14 @@ public class IpStatMgmtController extends CommonController {
 	 */
 	@RequestMapping(value="/statmgmt/ipstatmgmt/viewListBlockSizeStat.model", method = RequestMethod.POST)
 	@ResponseBody
-	public ModelMap viewListBlockSizeStat(@RequestBody IpIntgrmSvcStatVo searchVo, ModelMap model, HttpServletRequest request){
-		List<Map<String,String>> resultList = ipStatMgmtService.selectListBlockSizeStatMst(searchVo);
-		return createResultList(resultList, resultList.size());
+	public ModelMap viewListBlockSizeStat(@RequestBody IpIntgrmSvcStatVo searchVo, HttpServletRequest request){
+		ModelMap resultModel = new ModelMap();
+		ModelMap model = viewListBlockSizeStatModel(searchVo, request);
+		
+		Map<String,Object> resultMap = (Map<String,Object>)model.get("result");
+		resultModel.addAttribute("data", resultMap);
+		
+		return resultModel;
 	}
 	@RequestMapping(value="/statmgmt/ipstatmgmt/viewListBlockSizeStat.do", method = RequestMethod.POST)
 	public String viewListBlockSizeStat(@ModelAttribute("searchVo") IpIntgrmSvcStatVo searchVo, ModelMap model, HttpServletRequest request, HttpServletResponse response){

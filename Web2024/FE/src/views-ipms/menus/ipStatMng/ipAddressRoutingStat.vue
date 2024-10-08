@@ -10,7 +10,8 @@
       <compTable
         ref="compTable"
         :prop-name="name"
-        :prop-table-height="'calc(100% - 80px)'"
+        :prop-loading.sync="loading"
+        :prop-table-height="'calc(100% - 40px)'"
         :prop-column="tableColumns"
         :prop-data="resultList"
         :prop-is-pagination="false"
@@ -47,11 +48,12 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      loading: false,
       svcList: [],
       resultList: [],
       componentList: [
         {
-          key: 'SsvcLineType', props: { lvl: 3, defaultValueLvl1: 'CL0001',
+          key: 'SsvcLineType', props: { isAllLvl1: false, lvl: 3, defaultValueLvl1: 'CL0001',
           propsLvlOptions: {
               1: [
                 { label: 'KORNET', value: 'CL0001' },
@@ -64,40 +66,50 @@ export default {
         { key: 'ServiceOrg', props: { limit: 3 } },
         { key: 'SipCreateType', props: {} },
         { key: 'DatePicker', props: { } },
-      ]
+      ],
+      columns: []
     }
   },
   computed: {
     tableColumns() {
-      const columns = getStatColumn('routing', this.svcList)
-      return columns
+      // const columns = getStatColumn('routing', this.svcList)
+      return this.columns
     }
   },
   mounted () {
-    this.fnviewListIntgrmSvcStat()
+    setTimeout(async() => {
+      await this.fnviewListIntgrmSvcStat()
+    }, 10)
   },
   methods: {
     handleSearch(requestParameter) {
       this.fnviewListIntgrmSvcStat(requestParameter)
     },
-    async fnviewListIntgrmSvcStat(params = null) {
-      const defaultParam = {
-          pageIndex: 1,
-          pageUnit: 0,
-          pageSize: 0,
-          firstIndex: 1,
-          lastIndex: 10,
-          recordCountPerPage: 10,
-          rowNo: 0,
-      }
+    async fnviewListIntgrmSvcStat(requestParameter = null) {
+      const parameter = requestParameter ?? this.$refs.searchCondition.requestParameter
+      /*
+      ssvcLineTypeCd: CL0001
+      ssvcGroupCd:
+      sassignTypeCd:
+      sassignTypeCdMultiStr:
+      sipCreateTypeCd: CT0001
+      searchBgnDe: 2024-09-29
+      hidDate: 2024-09-29
+      */
       try {
-        const res = await apiRequestModel(ipmsModelApis.viewListIntgrmSvcStat, params ?? defaultParam)
-        this.svcList = JSON.parse(res.data.svcList)
-        this.resultList = JSON.parse(res.data.result)
+        this.loading = true
+        const res = await apiRequestModel(ipmsModelApis.viewListIntgrmSvcStat, parameter)
+        if (res.data.resultStatus === 'SUCCESS') {
+          this.svcList = JSON.parse(res.data.svcList)
+          this.resultList = JSON.parse(res.data.result)
+          this.columns = [].concat(...getStatColumn('routing', this.svcList))
+        }
       } catch (error) {
         this.error(error)
+      } finally {
+        this.loading = false
       }
-    }
+    },
   },
 }
 </script>

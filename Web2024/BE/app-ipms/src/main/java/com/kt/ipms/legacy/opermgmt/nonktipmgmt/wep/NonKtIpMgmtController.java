@@ -107,6 +107,7 @@ public class NonKtIpMgmtController extends CommonController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/opermgmt/nonktipmgmt/viewDetailNonKtIpSvcMst.model", method = RequestMethod.POST)
+	@ResponseBody
 	public ModelMap viewDetailNonKtIpSvcMst(@RequestBody TbNonKtSvcMstVo tbNonKtSvcMstVo, ModelMap model, HttpServletRequest request) {
 		TbNonKtSvcMstVo resultVo = nonKtIpMgmtService.viewDetailNonKtIpSvcMst(tbNonKtSvcMstVo);
 		return createResult(resultVo);

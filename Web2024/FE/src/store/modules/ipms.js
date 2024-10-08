@@ -1,9 +1,11 @@
+import _ from 'lodash'
 const state = {
     curProfileByVue: {/* [viewName]: curProfileName ... */ },
     toParams: null,
     adminYn: 'Y',
     ownerYn: 'Y',
-    suserGradeCd: 'UR0001'
+    suserGradeCd: 'UR0001',
+    currentCondition: {}
 }
 
 const mutations = {
@@ -21,6 +23,13 @@ const mutations = {
     },
     SET_SUSER_GRADE_CD(state, value) {
         state.suserGradeCd = value
+    },
+    RESET_CURRENT_CONDITION(state) {
+        state.currentCondition = {}
+    },
+    MERGE_CURRENT_CONDITION(state, value) {
+        /* value = requestParameter */
+        _.merge(state.currentCondition, value)
     }
 }
 const actions = {
@@ -35,6 +44,12 @@ const actions = {
     },
     setOwnerYn({ commit }, value) {
         commit('SET_OWNER_YN', value)
+    },
+    resetCurrentCondition({ commit }, value) {
+        commit('RESET_CURRENT_CONDITION')
+    },
+    mergeCurrentCondition({ commit }, value) {
+        commit('MERGE_CURRENT_CONDITION', value)
     }
 }
 
