@@ -17,6 +17,7 @@
           <template slot="title">IP배정관리</template>
           <el-menu-item index="1-1">IP블록관리</el-menu-item>
           <el-menu-item index="1-2">IP배정관리2</el-menu-item>
+          <el-menu-item index="1-3">팝업샘플</el-menu-item>
         </el-submenu>
         <el-submenu index="2">
           <template slot="title">IP할당관리</template>
@@ -99,6 +100,9 @@ export default {
       switch(item){
         case "1-1" :
           this.$router.push({ path: '/page_1' })
+          break;
+        case "1-3" :
+          this.$router.push({ path: '/page_popup' })
           break;
       }
     },

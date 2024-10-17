@@ -32,6 +32,17 @@ export const constantRoutes = [
       component: () => import('@/pages/Page_1')
     }]
   },
+  {
+    path: '/page_popup',
+    component: Layout,
+    redirect: '/Page_popup',
+    children: [{
+      path: '/Page_popup',
+      name: 'Page_popup',
+      component: () => import('@/pages/Page_popup')
+    }]
+  },
+  
 ]
 
 const createRouter = () => new Router({

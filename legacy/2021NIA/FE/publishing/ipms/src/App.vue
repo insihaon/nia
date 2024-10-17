@@ -224,4 +224,131 @@ div.tableListWrap>div.tableListPaging>div.pagingNumber>span:hover{
 div.tableListWrap>div.tableListPaging>div.rightBtns{
   margin-left:auto;
 }
+/**************************************************************************************************/
+div.popupContentTableTitle{
+  margin-top:30px; margin-bottom:10px;
+  font-size:15px;
+  display: flex;
+  align-items: center;
+  gap:5px;
+  margin-left:10px;
+}
+div.popupContentTableTitle::before{
+  display: inline-block;
+  content:"";
+  width:12px;
+  height:12px;
+  border:3px solid #00d9ff66;
+  border-radius: 100%;
+  box-sizing: border-box;
+}
+/* 팝업창 컨텐츠 테이블 */
+div.popupContentTable>table{
+  width:100%; border-collapse: collapse;
+}
+div.popupContentTable>table th{
+  border-top:1px solid #134d65; padding: 5px;
+  border-bottom:1px solid #134d65;
+}
+div.popupContentTable>table td{
+  border-top:1px solid #134d65; padding: 10px;
+  border-bottom:1px solid #134d65;
+}
+div.popupContentTable>table th{
+  background-color:rgba(49,51,64,0.75); font-size:14px; font-weight: 500; color:#00d9ff;
+  padding: 10px 20px 10px 20px; white-space: nowrap;
+}
+div.popupContentTable>table th.flex,
+div.popupContentTable>table td.flex{
+  display: flex;
+  justify-content: space-between;
+  gap:5px;
+  align-items: center;
+}
+div.popupContentTable>table th>span{
+  color:#FFFFFF;
+  font-size:15px;
+  white-space: nowrap;
+  display: flex;
+  gap:10px;
+  align-content: center;
+  font-weight: 200;
+  justify-content: space-around;
+}
+div.popupContentTable>table th>span.tableSubject{
+  font-weight: 500;
+  font-size:16px;
+}
+div.popupContentTable>table th>span>span{
+  color:#00d9ff;
+  font-size:13px;
+  white-space: nowrap;
+  font-weight: 400;
+  display: inline-block;
+  padding-right:10px;
+  border-right:1px solid #00d9ff66;
+}
+div.popupContentTable>table td>textarea{
+  padding: 20px;
+  width:100%;
+  box-sizing: border-box;
+  background-color: transparent;
+  color:#FFFFFF;
+  font-size:15px;
+  border:none;
+  resize: none;
+  min-height:200px;
+}
+div.popupContentTable>table td.textcenter{
+  text-align: center;
+}
+div.popupContentTableBottom{
+  text-align: center;
+  padding: 20px 10px 0px 10px;
+  box-sizing: border-box;
+}
+ul.popupContentTableDes>li{
+  line-height:140%; font-size:16px; font-weight: 500;
+}
+ul.popupContentTableDes>li>ul>li{
+  font-size:14px; font-weight: 500; color:#0099ff;
+}
+ul.popupContentTableDes>li>ul>li>span{
+  font-weight: 200; color:#FFFFFF;
+}
+div.popupContentBox{
+  border:1px solid #134d65;
+  box-sizing: border-box;
+  padding: 10px;
+}
+.el-dialog__title{
+  color:#FFFFFF !important;
+  padding-left:10px !important;
+  display: flex;
+  align-items: center;
+  gap:10px;
+  position:relative;
+}
+.el-dialog__title::before{
+  display: inline-block;
+  content:"";
+  width:16px; height:16px;
+  border:3px solid #00d9ff99;
+  border-radius: 100%;
+  box-sizing: border-box;
+}
+.el-dialog__title::after{
+  position:absolute;
+  display: inline-block;
+  content:"";
+  width:6px; height:6px;
+  background-color: #00d9ff;
+  border-radius: 100%;
+  box-sizing: border-box;
+  left:15px;
+}
+
+.el-dialog__body{
+  padding: 10px 20px 20px 20px !important;
+}
 </style>
