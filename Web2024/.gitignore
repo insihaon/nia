@@ -14,6 +14,7 @@ BE*/**/uploads
 BE*/**/rabbitmq
 FE/.DS_Store
 FE/**/node_modules/
+FE/publishing/**/package-lock.json
 FE/dist/
 FE/npm-debug.log*
 FE/yarn-debug.log*
