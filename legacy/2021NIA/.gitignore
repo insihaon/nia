@@ -13,7 +13,7 @@ BE*/**/src/main/resources/static*
 BE*/**/uploads
 BE*/**/rabbitmq
 FE/.DS_Store
-FE/node_modules/
+FE/**/node_modules/
 FE/dist/
 FE/npm-debug.log*
 FE/yarn-debug.log*
