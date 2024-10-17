@@ -1,0 +1,623 @@
+{
+    "topologyData": {
+        "workOrderNum": null,
+        "resultCode": 0,
+        "resultMsg": "SUCC",
+        "candidateList": [
+            {
+                "candidateNum": 1,
+                "connectionOrderList": [
+                    {
+                        "orderNum": 2711,
+                        "workOrderNum": 835,
+                        "crctId": null,
+                        "crctName": "PMW1_DAE_508HK__S03P2__PMW1_GDAN_5__S03BP1__4M__MBCN__PW0003",
+                        "ccOpCode": "PW-A",
+                        "opMode": null,
+                        "opCode": "CREATE",
+                        "operatorId": "admin_tsdn",
+                        "protectionStatus": "PROTECTED",
+                        "processingStatus": "RESERVE",
+                        "requestDate": null,
+                        "endDate": null,
+                        "elpasedTime": null,
+                        "trailNum": 1,
+                        "routeNum": 1,
+                        "cir": "4",
+                        "pir": "4",
+                        "meTypea": "APN200",
+                        "asideAstId": "635",
+                        "ptpLayerTypea": "10G",
+                        "ptpNamea": "S03-P2",
+                        "ctpNamea": null,
+                        "stdTimeslota": null,
+                        "subnetworkNamea": null,
+                        "pTrailMapIda": null,
+                        "sVlanIda": null,
+                        "meTypez": "APN200",
+                        "zsideAstId": "635",
+                        "ptpLayerTypez": "10G",
+                        "ptpNamez": "S04-P1",
+                        "ctpNamez": null,
+                        "stdTimeslotz": null,
+                        "subnetworkNamez": "TU",
+                        "pTrailMapIdz": "PLW1_GDAN_5__S5P2__PMW1_DAE_508HK__S4P1__300M__CES__TU0005",
+                        "sVlanIdz": null,
+                        "dcrDt": "2024-01-25 20:10:36.606331"
+                    },
+                    {
+                        "orderNum": 2713,
+                        "workOrderNum": 835,
+                        "crctId": null,
+                        "crctName": "PMW1_DAE_508HK__S03P2__PMW1_GDAN_5__S03BP1__4M__MBCN__PW0003",
+                        "ccOpCode": "PW-XC",
+                        "opMode": null,
+                        "opCode": "CREATE",
+                        "operatorId": "admin_tsdn",
+                        "protectionStatus": "PROTECTED",
+                        "processingStatus": "RESERVE",
+                        "requestDate": null,
+                        "endDate": null,
+                        "elpasedTime": null,
+                        "trailNum": 1,
+                        "routeNum": 2,
+                        "cir": "4",
+                        "pir": "4",
+                        "meTypea": "OPN3100",
+                        "asideAstId": "645",
+                        "ptpLayerTypea": "10G",
+                        "ptpNamea": "S05-P2",
+                        "ctpNamea": null,
+                        "stdTimeslota": null,
+                        "subnetworkNamea": "TU",
+                        "pTrailMapIda": "PLW1_GDAN_5__S5P2__PMW1_DAE_508HK__S4P1__300M__CES__TU0005",
+                        "sVlanIda": null,
+                        "meTypez": "OPN3100",
+                        "zsideAstId": "645",
+                        "ptpLayerTypez": "10G",
+                        "ptpNamez": "S05-P1",
+                        "ctpNamez": null,
+                        "stdTimeslotz": null,
+                        "subnetworkNamez": "TU",
+                        "pTrailMapIdz": "PLW1_GDAN_5__S5P1__PMW1_GDAN_5__S4P1__300M__CES__TU0006",
+                        "sVlanIdz": null,
+                        "dcrDt": "2024-01-25 20:10:36.722873"
+                    },
+                    {
+                        "orderNum": 2715,
+                        "workOrderNum": 835,
+                        "crctId": null,
+                        "crctName": "PMW1_DAE_508HK__S03P2__PMW1_GDAN_5__S03BP1__4M__MBCN__PW0003",
+                        "ccOpCode": "PW-Z",
+                        "opMode": null,
+                        "opCode": "CREATE",
+                        "operatorId": "admin_tsdn",
+                        "protectionStatus": "PROTECTED",
+                        "processingStatus": "RESERVE",
+                        "requestDate": null,
+                        "endDate": null,
+                        "elpasedTime": null,
+                        "trailNum": 1,
+                        "routeNum": 3,
+                        "cir": "4",
+                        "pir": "4",
+                        "meTypea": "APN200",
+                        "asideAstId": "641",
+                        "ptpLayerTypea": "10G",
+                        "ptpNamea": "S04-P1",
+                        "ctpNamea": null,
+                        "stdTimeslota": null,
+                        "subnetworkNamea": "TU",
+                        "pTrailMapIda": "PLW1_GDAN_5__S5P1__PMW1_GDAN_5__S4P1__300M__CES__TU0006",
+                        "sVlanIda": null,
+                        "meTypez": "APN200",
+                        "zsideAstId": "641",
+                        "ptpLayerTypez": "1G",
+                        "ptpNamez": "S03-BP1",
+                        "ctpNamez": null,
+                        "stdTimeslotz": null,
+                        "subnetworkNamez": null,
+                        "pTrailMapIdz": null,
+                        "sVlanIdz": null,
+                        "dcrDt": "2024-01-25 20:10:36.756359"
+                    }
+                ],
+                "protectedLinkList": [
+                    {
+                        "network": "ptn",
+                        "linkId": "PLW1_GDAN_5__S5P2__PMW1_DAE_508HK__S4P1__300M__CES__TU0005",
+                        "linkName": "PLW1_GDAN_5__S5P2__PMW1_DAE_508HK__S4P1__300M__CES__TU0005",
+                        "linkType": "PTN-TUNNEL",
+                        "protectionStatus": "PROTECTED",
+                        "label": null,
+                        "usedRate": 2,
+                        "nodeList": [
+                            {
+                                "network": "ptn",
+                                "vendorId": "WR",
+                                "nodeId": "635",
+                                "nodeName": "PMW1_DAE_508HK",
+                                "unitId": "41",
+                                "unitName": "AR971",
+                                "eqpmntType": "APN200",
+                                "asidePortId": "S03-P2",
+                                "zsidePortId": "S04-P1"
+                            },
+                            {
+                                "network": "ptn",
+                                "vendorId": "WR",
+                                "nodeId": "645",
+                                "nodeName": "PLW1_GDAN_5",
+                                "unitId": "41",
+                                "unitName": "AR971",
+                                "eqpmntType": "OPN3100",
+                                "asidePortId": "S05-P2",
+                                "zsidePortId": "S05-P1"
+                            }
+                        ],
+                        "parentLinkList": [
+                            {
+                                "network": "ptn",
+                                "linkId": "PLW1_GDAN_5-S05-P2/PMW1_DAE_508HK-S04-P1",
+                                "linkName": "PLW1_GDAN_5-S05-P2/PMW1_DAE_508HK-S04-P1",
+                                "linkType": "PTN-LINK",
+                                "protectionStatus": "PROTECTED",
+                                "label": null,
+                                "usedRate": 8,
+                                "nodeList": [
+                                    {
+                                        "network": "ptn",
+                                        "vendorId": "WR",
+                                        "nodeId": "635",
+                                        "nodeName": "PMW1_DAE_508HK",
+                                        "unitId": "41",
+                                        "unitName": "AR971",
+                                        "eqpmntType": "APN200",
+                                        "asidePortId": "S03-P2",
+                                        "zsidePortId": "S04-P1"
+                                    },
+                                    {
+                                        "network": "ptn",
+                                        "vendorId": "WR",
+                                        "nodeId": "645",
+                                        "nodeName": "PLW1_GDAN_5",
+                                        "unitId": "41",
+                                        "unitName": "AR971",
+                                        "eqpmntType": "OPN3100",
+                                        "asidePortId": "S05-P2",
+                                        "zsidePortId": "S05-P1"
+                                    }
+                                ],
+                                "parentLinkList": []
+                            }
+                        ]
+                    },
+                    {
+                        "network": "ptn",
+                        "linkId": "PLW1_GDAN_5__S5P1__PMW1_GDAN_5__S4P1__300M__CES__TU0006",
+                        "linkName": "PLW1_GDAN_5__S5P1__PMW1_GDAN_5__S4P1__300M__CES__TU0006",
+                        "linkType": "PTN-TUNNEL",
+                        "protectionStatus": "PROTECTED",
+                        "label": null,
+                        "usedRate": 2,
+                        "nodeList": [
+                            {
+                                "network": "ptn",
+                                "vendorId": "WR",
+                                "nodeId": "645",
+                                "nodeName": "PLW1_GDAN_5",
+                                "unitId": "41",
+                                "unitName": "AR971",
+                                "eqpmntType": "OPN3100",
+                                "asidePortId": "S05-P2",
+                                "zsidePortId": "S05-P1"
+                            },
+                            {
+                                "network": "ptn",
+                                "vendorId": "WR",
+                                "nodeId": "641",
+                                "nodeName": "PMW1_GDAN_5",
+                                "unitId": "158",
+                                "unitName": "AF938",
+                                "eqpmntType": "APN200",
+                                "asidePortId": "S04-P1",
+                                "zsidePortId": "S03-BP1"
+                            }
+                        ],
+                        "parentLinkList": [
+                            {
+                                "network": "ptn",
+                                "linkId": "PLW1_GDAN_5-S05-P1/PMW1_GDAN_5-S04-P1",
+                                "linkName": "PLW1_GDAN_5-S05-P1/PMW1_GDAN_5-S04-P1",
+                                "linkType": "PTN-LINK",
+                                "protectionStatus": "PROTECTED",
+                                "label": null,
+                                "usedRate": 12,
+                                "nodeList": [
+                                    {
+                                        "network": "ptn",
+                                        "vendorId": "WR",
+                                        "nodeId": "645",
+                                        "nodeName": "PLW1_GDAN_5",
+                                        "unitId": "41",
+                                        "unitName": "AR971",
+                                        "eqpmntType": "OPN3100",
+                                        "asidePortId": "S05-P2",
+                                        "zsidePortId": "S05-P1"
+                                    },
+                                    {
+                                        "network": "ptn",
+                                        "vendorId": "WR",
+                                        "nodeId": "641",
+                                        "nodeName": "PMW1_GDAN_5",
+                                        "unitId": "158",
+                                        "unitName": "AF938",
+                                        "eqpmntType": "APN200",
+                                        "asidePortId": "S04-P1",
+                                        "zsidePortId": "S03-BP1"
+                                    }
+                                ],
+                                "parentLinkList": [
+                                    {
+                                        "network": "otn",
+                                        "linkId": "ARBB_TR_ON_1_01_ARTP_TR_ON_1_01_10G_S2P1_S2P1_PW0001",
+                                        "linkName": "ARBB_TR_ON_1_01_ARTP_TR_ON_1_01_10G_S2P1_S2P1_PW0001",
+                                        "linkType": "OTN-LINK",
+                                        "protectionStatus": "PROTECTED",
+                                        "label": null,
+                                        "usedRate": 0,
+                                        "nodeList": [
+                                            {
+                                                "network": "OTN",
+                                                "vendorId": "Nokia",
+                                                "nodeId": "689",
+                                                "nodeName": "ARBB_TR_RN_01",
+                                                "unitId": "41",
+                                                "unitName": "AR971",
+                                                "eqpmntType": "1830 PSS-12X",
+                                                "asidePortId": "20AX200-2-2-1",
+                                                "zsidePortId": "-"
+                                            },
+                                            {
+                                                "network": "OTN",
+                                                "vendorId": "Nokia",
+                                                "nodeId": "685",
+                                                "nodeName": "ARTP_TR_RN_01",
+                                                "unitId": "158",
+                                                "unitName": "AF938",
+                                                "eqpmntType": "1830 PSS-12X",
+                                                "asidePortId": "-",
+                                                "zsidePortId": "20AX200-2-2-1"
+                                            }
+                                        ],
+                                        "parentLinkList": []
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                "protectionLinkList": [
+                    {
+                        "network": "ptn",
+                        "linkId": "PLW1_GDAN_5__S5P2__PMW1_DAE_508HK__S4P1__300M__CES__TU0005_P",
+                        "linkName": "PLW1_GDAN_5__S5P2__PMW1_DAE_508HK__S4P1__300M__CES__TU0005_P",
+                        "linkType": "PTN-TUNNEL",
+                        "protectionStatus": "PROTECTION",
+                        "label": null,
+                        "usedRate": 2,
+                        "nodeList": [
+                            {
+                                "network": "ptn",
+                                "vendorId": "WR",
+                                "nodeId": "635",
+                                "nodeName": "PMW1_DAE_508HK",
+                                "unitId": "41",
+                                "unitName": "AR971",
+                                "eqpmntType": "APN200",
+                                "asidePortId": "S03-P2",
+                                "zsidePortId": "S05-P1"
+                            },
+                            {
+                                "network": "ptn",
+                                "vendorId": "WR",
+                                "nodeId": "637",
+                                "nodeName": "PMW2_DAE_508HK",
+                                "unitId": "41",
+                                "unitName": "AR971",
+                                "eqpmntType": "APN200",
+                                "asidePortId": "S04-P1",
+                                "zsidePortId": "S05-P1"
+                            },
+                            {
+                                "network": "ptn",
+                                "vendorId": "WR",
+                                "nodeId": "647",
+                                "nodeName": "PLW2_GDAN_5",
+                                "unitId": "41",
+                                "unitName": "AR971",
+                                "eqpmntType": "OPN3100",
+                                "asidePortId": "S05-P2",
+                                "zsidePortId": "S06-P2"
+                            },
+                            {
+                                "network": "ptn",
+                                "vendorId": "WR",
+                                "nodeId": "645",
+                                "nodeName": "PLW1_GDAN_5",
+                                "unitId": "41",
+                                "unitName": "AR971",
+                                "eqpmntType": "OPN3100",
+                                "asidePortId": "S06-P2",
+                                "zsidePortId": "S06-P1"
+                            }
+                        ],
+                        "parentLinkList": [
+                            {
+                                "network": "ptn",
+                                "linkId": "PMW1_DAE_508HK-S05-P1/PMW2_DAE_508HK-S04-P1",
+                                "linkName": "PMW1_DAE_508HK-S05-P1/PMW2_DAE_508HK-S04-P1",
+                                "linkType": "PTN-LINK",
+                                "protectionStatus": "PROTECTED",
+                                "label": null,
+                                "usedRate": 8,
+                                "nodeList": [
+                                    {
+                                        "network": "ptn",
+                                        "vendorId": "WR",
+                                        "nodeId": "635",
+                                        "nodeName": "PMW1_DAE_508HK",
+                                        "unitId": "41",
+                                        "unitName": "AR971",
+                                        "eqpmntType": "APN200",
+                                        "asidePortId": "S03-P2",
+                                        "zsidePortId": "S05-P1"
+                                    },
+                                    {
+                                        "network": "ptn",
+                                        "vendorId": "WR",
+                                        "nodeId": "637",
+                                        "nodeName": "PMW2_DAE_508HK",
+                                        "unitId": "41",
+                                        "unitName": "AR971",
+                                        "eqpmntType": "APN200",
+                                        "asidePortId": "S04-P1",
+                                        "zsidePortId": "S05-P1"
+                                    }
+                                ],
+                                "parentLinkList": []
+                            },
+                            {
+                                "network": "ptn",
+                                "linkId": "PLW2_GDAN_5-S05-P2/PMW2_DAE_508HK-S05-P1",
+                                "linkName": "PLW2_GDAN_5-S05-P2/PMW2_DAE_508HK-S05-P1",
+                                "linkType": "PTN-LINK",
+                                "protectionStatus": "PROTECTED",
+                                "label": null,
+                                "usedRate": 8,
+                                "nodeList": [
+                                    {
+                                        "network": "ptn",
+                                        "vendorId": "WR",
+                                        "nodeId": "637",
+                                        "nodeName": "PMW2_DAE_508HK",
+                                        "unitId": "41",
+                                        "unitName": "AR971",
+                                        "eqpmntType": "APN200",
+                                        "asidePortId": "S04-P1",
+                                        "zsidePortId": "S05-P1"
+                                    },
+                                    {
+                                        "network": "ptn",
+                                        "vendorId": "WR",
+                                        "nodeId": "647",
+                                        "nodeName": "PLW2_GDAN_5",
+                                        "unitId": "41",
+                                        "unitName": "AR971",
+                                        "eqpmntType": "OPN3100",
+                                        "asidePortId": "S05-P2",
+                                        "zsidePortId": "S06-P2"
+                                    }
+                                ],
+                                "parentLinkList": []
+                            },
+                            {
+                                "network": "ptn",
+                                "linkId": "PLW1_GDAN_5-S06-P2/PLW2_GDAN_5-S06-P2",
+                                "linkName": "PLW1_GDAN_5-S06-P2/PLW2_GDAN_5-S06-P2",
+                                "linkType": "PTN-LINK",
+                                "protectionStatus": "PROTECTED",
+                                "label": null,
+                                "usedRate": 8,
+                                "nodeList": [
+                                    {
+                                        "network": "ptn",
+                                        "vendorId": "WR",
+                                        "nodeId": "647",
+                                        "nodeName": "PLW2_GDAN_5",
+                                        "unitId": "41",
+                                        "unitName": "AR971",
+                                        "eqpmntType": "OPN3100",
+                                        "asidePortId": "S05-P2",
+                                        "zsidePortId": "S06-P2"
+                                    },
+                                    {
+                                        "network": "ptn",
+                                        "vendorId": "WR",
+                                        "nodeId": "645",
+                                        "nodeName": "PLW1_GDAN_5",
+                                        "unitId": "41",
+                                        "unitName": "AR971",
+                                        "eqpmntType": "OPN3100",
+                                        "asidePortId": "S06-P2",
+                                        "zsidePortId": "S06-P1"
+                                    }
+                                ],
+                                "parentLinkList": []
+                            }
+                        ]
+                    },
+                    {
+                        "network": "ptn",
+                        "linkId": "PLW1_GDAN_5__S5P1__PMW1_GDAN_5__S4P1__300M__CES__TU0006_P",
+                        "linkName": "PLW1_GDAN_5__S5P1__PMW1_GDAN_5__S4P1__300M__CES__TU0006_P",
+                        "linkType": "PTN-TUNNEL",
+                        "protectionStatus": "PROTECTION",
+                        "label": null,
+                        "usedRate": 2,
+                        "nodeList": [
+                            {
+                                "network": "ptn",
+                                "vendorId": "WR",
+                                "nodeId": "645",
+                                "nodeName": "PLW1_GDAN_5",
+                                "unitId": "41",
+                                "unitName": "AR971",
+                                "eqpmntType": "OPN3100",
+                                "asidePortId": "S06-P2",
+                                "zsidePortId": "S06-P1"
+                            },
+                            {
+                                "network": "ptn",
+                                "vendorId": "WR",
+                                "nodeId": "647",
+                                "nodeName": "PLW2_GDAN_5",
+                                "unitId": "41",
+                                "unitName": "AR971",
+                                "eqpmntType": "OPN3100",
+                                "asidePortId": "S06-P1",
+                                "zsidePortId": "S05-P1"
+                            },
+                            {
+                                "network": "ptn",
+                                "vendorId": "WR",
+                                "nodeId": "643",
+                                "nodeName": "PMW2_GDAN_5",
+                                "unitId": "158",
+                                "unitName": "AF938",
+                                "eqpmntType": "APN200",
+                                "asidePortId": "S05-P1",
+                                "zsidePortId": "S04-P1"
+                            },
+                            {
+                                "network": "ptn",
+                                "vendorId": "WR",
+                                "nodeId": "641",
+                                "nodeName": "PMW1_GDAN_5",
+                                "unitId": "158",
+                                "unitName": "AF938",
+                                "eqpmntType": "APN200",
+                                "asidePortId": "S05-P1",
+                                "zsidePortId": "S03-BP1"
+                            }
+                        ],
+                        "parentLinkList": [
+                            {
+                                "network": "ptn",
+                                "linkId": "PLW1_GDAN_5-S06-P1/PLW2_GDAN_5-S06-P1",
+                                "linkName": "PLW1_GDAN_5-S06-P1/PLW2_GDAN_5-S06-P1",
+                                "linkType": "PTN-LINK",
+                                "protectionStatus": "PROTECTED",
+                                "label": null,
+                                "usedRate": 12,
+                                "nodeList": [
+                                    {
+                                        "network": "ptn",
+                                        "vendorId": "WR",
+                                        "nodeId": "645",
+                                        "nodeName": "PLW1_GDAN_5",
+                                        "unitId": "41",
+                                        "unitName": "AR971",
+                                        "eqpmntType": "OPN3100",
+                                        "asidePortId": "S06-P2",
+                                        "zsidePortId": "S06-P1"
+                                    },
+                                    {
+                                        "network": "ptn",
+                                        "vendorId": "WR",
+                                        "nodeId": "647",
+                                        "nodeName": "PLW2_GDAN_5",
+                                        "unitId": "41",
+                                        "unitName": "AR971",
+                                        "eqpmntType": "OPN3100",
+                                        "asidePortId": "S06-P1",
+                                        "zsidePortId": "S05-P1"
+                                    }
+                                ],
+                                "parentLinkList": []
+                            },
+                            {
+                                "network": "ptn",
+                                "linkId": "PLW2_GDAN_5-S05-P1/PMW2_GDAN_5-S05-P1",
+                                "linkName": "PLW2_GDAN_5-S05-P1/PMW2_GDAN_5-S05-P1",
+                                "linkType": "PTN-LINK",
+                                "protectionStatus": "PROTECTED",
+                                "label": null,
+                                "usedRate": 12,
+                                "nodeList": [
+                                    {
+                                        "network": "ptn",
+                                        "vendorId": "WR",
+                                        "nodeId": "647",
+                                        "nodeName": "PLW2_GDAN_5",
+                                        "unitId": "41",
+                                        "unitName": "AR971",
+                                        "eqpmntType": "OPN3100",
+                                        "asidePortId": "S06-P1",
+                                        "zsidePortId": "S05-P1"
+                                    },
+                                    {
+                                        "network": "ptn",
+                                        "vendorId": "WR",
+                                        "nodeId": "643",
+                                        "nodeName": "PMW2_GDAN_5",
+                                        "unitId": "158",
+                                        "unitName": "AF938",
+                                        "eqpmntType": "APN200",
+                                        "asidePortId": "S05-P1",
+                                        "zsidePortId": "S04-P1"
+                                    }
+                                ],
+                                "parentLinkList": []
+                            },
+                            {
+                                "network": "ptn",
+                                "linkId": "PMW1_GDAN_5-S05-P1/PMW2_GDAN_5-S04-P1",
+                                "linkName": "PMW1_GDAN_5-S05-P1/PMW2_GDAN_5-S04-P1",
+                                "linkType": "PTN-LINK",
+                                "protectionStatus": "PROTECTED",
+                                "label": null,
+                                "usedRate": 12,
+                                "nodeList": [
+                                    {
+                                        "network": "ptn",
+                                        "vendorId": "WR",
+                                        "nodeId": "643",
+                                        "nodeName": "PMW2_GDAN_5",
+                                        "unitId": "158",
+                                        "unitName": "AF938",
+                                        "eqpmntType": "APN200",
+                                        "asidePortId": "S05-P1",
+                                        "zsidePortId": "S04-P1"
+                                    },
+                                    {
+                                        "network": "ptn",
+                                        "vendorId": "WR",
+                                        "nodeId": "641",
+                                        "nodeName": "PMW1_GDAN_5",
+                                        "unitId": "158",
+                                        "unitName": "AF938",
+                                        "eqpmntType": "APN200",
+                                        "asidePortId": "S05-P1",
+                                        "zsidePortId": "S03-BP1"
+                                    }
+                                ],
+                                "parentLinkList": []
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}
