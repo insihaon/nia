@@ -4,7 +4,7 @@
       ref="searchCondition"
       :prop-name="name"
       :component-keys="componentList"
-      @handle-search="fnViewListAssignApyTxn"
+      @handle-search="handleSearch"
     />
     <el-col ref="tableContainer" :span="24">
       <compTable
@@ -12,12 +12,15 @@
         :prop-name="name"
         :prop-table-height="'calc(100% - 80px)'"
         :prop-column="tableColumns"
-        :prop-is-pagination="false"
-        :prop-data="resultListVo"
+        :prop-data="pagination.data"
+        :prop-pagination-data.sync="pagination"
+        :prop-is-pagination="true"
         :prop-is-check-box="false"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
         :prop-on-click="onClcikRow"
+        :prop-on-page-change="handleChangeCurPage"
+        :prop-on-page-size-change="handleChangeCurPage"
       >
         <template slot="text-description">
           <span>
@@ -30,8 +33,8 @@
           </div>
         </template>
       </compTable>
-      <ModalAssignApyDetail ref="ModalAssignApyDetail" @reload="fnViewListAssignApyTxn()" />
-      <ModalAssignApyInsert ref="ModalAssignApyInsert" @reload="fnViewListAssignApyTxn()" />
+      <ModalAssignApyDetail ref="ModalAssignApyDetail" @reload="fnViewListAssignApyTxn" />
+      <ModalAssignApyInsert ref="ModalAssignApyInsert" @reload="fnViewListAssignApyTxn" />
     </el-col>
   </el-row>
 </template>
@@ -55,6 +58,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      pagination: this.setDefaultPagination(),
       tableColumns: [
         { prop: 'nrequestAssignSeq', label: '번호', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'ssvcLineTypeNm', label: '서비스망', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
@@ -62,9 +66,9 @@ export default {
         { prop: 'ssvcObjNm', label: '노드', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'stitle', label: '제목', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'sapyUserNm', label: '신청자', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'dapyDt', label: '신청일시', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'dapyDt', label: '신청일시', align: 'center', sortable: true, columnVisible: true, showOverflow: true, formatter: (row) => this.moment(row.dapyDt).format('YYYY-MM-DD') },
         { prop: 'srequestAssignTypeNm', label: '상태', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'dtrtDt', label: '처리일시', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'dtrtDt', label: '처리일시', align: 'center', sortable: true, columnVisible: true, showOverflow: true, formatter: (row) => row.dtrtDt ? this.moment(row.dtrtDt).format('YYYY-MM-DD') : '' },
       ],
       componentList: [
         { key: 'SsvcLineType', props: { lvl: 3 } },
@@ -89,13 +93,29 @@ export default {
     this.fnViewListAssignApyTxn()
   },
   methods: {
-    async fnViewListAssignApyTxn(requestParameter) {
+    handleSearch(requestParameter) {
+      this.pagination.currentPage = 1
+      this.fnViewListAssignApyTxn(requestParameter)
+    },
+    async fnViewListAssignApyTxn(requestParameter = null) {
+      const parameter = requestParameter ?? this.$refs.searchCondition.requestParameter
+      const target = ({ vue: this.$refs.compTable })
+      const { pageSize: pageUnit, currentPage: pageIndex } = this.pagination
+      Object.assign(parameter, { pageUnit, pageIndex })
       try {
-        const res = await apiRequestModel(ipmsModelApis.viewListAssignApyTxn, requestParameter)
-        this.resultListVo = res?.result.data
+        this.openLoading(target)
+        const res = await apiRequestModel(ipmsModelApis.viewListAssignApyTxn, parameter)
+        this.pagination.data = res.result.data ?? []
+        this.pagination.total = res.result.totalCount
       } catch (error) {
         console.error(error)
+      } finally {
+        this.closeLoading(target)
       }
+    },
+    handleChangeCurPage(v) {
+      if (v) this.pagination.currentPage = v
+      this.fnViewListAssignApyTxn()
     },
     onClcikRow(row) {
       this.fnViewDetailIpAssignApy(row, 'detail')

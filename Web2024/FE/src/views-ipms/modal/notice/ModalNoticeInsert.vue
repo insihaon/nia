@@ -116,11 +116,14 @@ export default {
         screateEmail: '',
         sboardTitle: '',
         sboardTypeSubCd: '',
-        popup_date: '',
+        popup_date: [null, null],
         sboardContents: '',
         sboardTypeCd: ''
       },
     }
+  },
+  mounted() {
+    this.loadOptions()
   },
   methods: {
     onCreated() {
@@ -130,8 +133,7 @@ export default {
     },
     onOpen(model, actionMode) {
       this.notice.screateNm = this.$store.state.user.info.suserId
-      this.notice.screateEmail = this.$store.state.user.info.Email
-      this.loadOptions()
+      this.notice.screateEmail = this.$store.state.user.info.suserEmailAdr
       this.viewType = model?.viewType ?? 'I'
       if (model?.notiSeq) {
         this.loadUpdateInfo(model.notiSeq)
@@ -143,7 +145,7 @@ export default {
         screateEmail: '',
         sboardTitle: '',
         sboardTypeSubCd: '',
-        popup_date: '',
+        popup_date: [null, null],
         sboardContents: '',
         sboardTypeCd: ''
       }
@@ -154,8 +156,8 @@ export default {
         this.loading = true
         const res = await apiRequestModel(ipmsModelApis.viewUpdateNotice, { seq })
         this._merge(this.notice, res.result.data)
-        const dnotiStartDt = this.moment(this.notice.dnotiStartDt).format('YYYY-MM-DD HH:mm:ss')
-        const dnotiEndDt = this.moment(this.notice.dnotiEndDt).format('YYYY-MM-DD HH:mm:ss')
+        const dnotiStartDt = this.notice.dnotiStartDt ? this.moment(this.notice.dnotiStartDt).format('YYYY-MM-DD HH:mm:ss') : null
+        const dnotiEndDt = this.notice.dnotiEndDt ? this.moment(this.notice.dnotiEndDt).format('YYYY-MM-DD HH:mm:ss') : null
         this.notice.popup_date = [dnotiStartDt, dnotiEndDt]
       } catch (error) {
        this.error(error)
@@ -189,27 +191,29 @@ export default {
     async fnProcessNotice(apiKey, resMsg) {
       if (!Object.keys(ipmsJsonApis).includes(apiKey)) return
       try {
-        this.loading = true
-        const res = await apiRequestJson(ipmsJsonApis[apiKey], this.getParameterByProcessType(apiKey))
+        // this.loading = true
+        const params = this.getParameterByProcessType(apiKey)
+        const res = await apiRequestJson(ipmsJsonApis[apiKey], params)
         if (res.commonMsg === 'SUCCESS') {
           onMessagePopup(this, `공지사항이 정상적으로 ${resMsg}되었습니다.`)
           this.$emit('reload')
           this.close()
         } else {
           onMessagePopup(this, res.commonMsg)
+          this.close()
         }
       } catch (error) {
        this.error(error)
       } finally {
-        this.loading = false
+        // this.loading = false
       }
     },
     getParameterByProcessType(process) {
       let param = {}
-      const { seq, sboardTypeSubCd, sboardTitle, sboardContents, sboardTypeCds } = this.notice
+      const { seq, sboardTypeSubCd, sboardTitle, sboardContents, sboardTypeCd } = this.notice
       switch (process) {
         case 'insertNotice':
-          param = { suseTypeCd: 'CY0001', sboardTitle, sboardContents, sboardTypeSubCd, sboardTypeCds }
+          param = { suseTypeCd: 'CY0001', sboardTitle, sboardContents, sboardTypeSubCd, sboardTypeCd }
           break
         case 'updateNotice':
           param = { seq, sboardTypeSubCd, sboardTitle, sboardContents }
@@ -220,7 +224,7 @@ export default {
         default:
           break
       }
-      if (process !== 'deleteNotice' && this.notice.popup_date !== null) {
+      if (process !== 'deleteNotice' && this.notice.popup_date[0] !== null && this.notice.popup_date[1] !== null) {
         Object.assign(param, {
           dnotiStartDt: this.moment(this.notice.popup_date[0]).format('YYYY-MM-DD HH:mm:ss'),
           dnotiEndDt: this.moment(this.notice.popup_date[1].format('YYYY-MM-DD HH:mm:ss'))

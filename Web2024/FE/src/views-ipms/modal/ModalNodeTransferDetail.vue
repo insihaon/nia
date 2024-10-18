@@ -7,7 +7,7 @@
       :visible.sync="visible"
       :width="domElement.maxWidth + `px`"
       :fullscreen.sync="fullscreen"
-      :modal-append-to-body="false"
+      :modal-append-to-body="true"
       :append-to-body="true"
       :modal="modal"
       :close-on-click-modal="closeOnClickModal"
@@ -21,8 +21,7 @@
         <hr>
       </span>
 
-      <div id="content" class="layer info">
-
+      <div id="content" v-loading="isLoading" class="layer info">
         <div class="content_result">
           <h4 class="mt5">조회결과(변경 전 정보)</h4>
           <table id="contentBeforeTable" class="tbl_list mt5">
@@ -115,13 +114,13 @@
                 <th class="first" scope="row">변경 사유</th>
                 <td>
                   <div class="inline-block w-100">
-                    <el-select id="sCommentType" v-model="resultVo.sCommentType" class="w-100" size="mini" name="sCommentType" disabled>
-                      <el-option value="typ001">기업고객 설변에 따른 노드 이전</el-option>
-                      <el-option value="typ002">기업고객 해지에 원소속 노드 반납</el-option>
-                      <el-option value="typ003">DB 정비에 따른 조치</el-option>
-                      <el-option value="typ004">IP주소 재분배/조정</el-option>
-                      <el-option value="typ005">단순 반납 실수</el-option>
-                      <el-option value="typ006">기타</el-option>
+                    <el-select v-model="resultVo.sCommentType" class="w-100" size="mini" disabled>
+                      <el-option
+                        v-for="item in sCommentOptions"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      />
                     </el-select>
                   </div>
                 </td>
@@ -130,7 +129,7 @@
                 <th scope="row">세부 사유</th>
                 <td>
                   <div class="inline-block w-100">
-                    <textarea id="sComment" v-model="resultVo.sComment" size="mini" rows="2" type="textarea" class="w98" disabled></textarea>
+                    <textarea id="sComment" v-model="resultVo.sComment" size="mini" rows="2" type="textarea" class="w98" readonly></textarea>
                   </div>
                 </td>
               </tr>
@@ -142,10 +141,10 @@
       <div slot="footer" class="dialog-footer">
         <template v-if="ownerYn === 'Y'">
           <template v-if="adminYn === 'Y'">
-            <el-button v-if="isShowBtn" size="mini" @click="fnCancelBtnClick()">{{ $t('반려') }}</el-button>
-            <el-button v-if="isShowBtn" size="mini" @click="fnUpdateconfirmBtnClick()">{{ $t('승인') }}</el-button>
+            <el-button v-if="isShowBtn" size="mini" @click="fnCancelBtnClick()">반려</el-button>
+            <el-button v-if="isShowBtn" size="mini" @click="fnUpdateconfirmBtnClick()">승인</el-button>
           </template>
-          <el-button v-if="isShowBtn" size="mini" @click="fnDeleteBtnClick()">{{ $t('신청취소') }}</el-button>
+          <el-button v-if="isShowBtn" size="mini" @click="fnDeleteBtnClick()">신청취소</el-button>
         </template>
         <el-button size="mini" class="el-icon-close" @click="close()">{{ $t('exit') }}</el-button>
       </div>
@@ -156,7 +155,8 @@
 <script>
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
-import { apiRequestModel, ipmsModelApis } from '@/api/ipms'
+import { onMessagePopup } from '@/utils/index'
+import { apiRequestModel, ipmsModelApis, apiRequestJson, ipmsJsonApis } from '@/api/ipms'
 import { mapState } from 'vuex'
 
 const routeName = 'ModalNodeTransferDetail'
@@ -170,7 +170,16 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      resultVo: null
+      resultVo: null,
+      isLoading: false,
+      sCommentOptions: [
+        { value: 'typ001', label: '기업고객 설변에 따른 노드 이전' },
+        { value: 'typ002', label: '기업고객 해지에 원소속 노드 반납' },
+        { value: 'typ003', label: 'DB 정비에 따른 조치' },
+        { value: 'typ004', label: 'IP주소 재분배/조정' },
+        { value: 'typ005', label: '단순 반납 실수' },
+        { value: 'typ006', label: '기타' }
+      ],
     }
   },
   computed: {
@@ -194,39 +203,40 @@ export default {
       this.resultVo = model.row
     },
     fnCancelBtnClick() {
-      this.$confirm('반려 하시겠습니까?', '반려 메세지', {
+      this.$confirm('반려 하시겠습니까?', '알림', {
         confirmButtonText: '확인',
         cancelButtonText: '취소'
       }).then(async() => {
-        let res
-        try {
           const param = { seq: this.resultVo.seq }
-          res = await apiRequestModel(ipmsModelApis.viewCancelNode, param)
+          try {
+            this.isLoading = true
+           const res = await apiRequestJson(ipmsJsonApis.viewCancelNode, param)
            if (res.commonMsg === 'SUCCESS') {
-            this.$message.success({ message: `노드 이전 신청이 정상적으로 반려되었습니다.` })
-            this.$emit('reload')
-            this.close()
+              onMessagePopup(this, '노드 이전 신청이 정상적으로 반려되었습니다.')
+              this.$emit('reload')
+              this.close()
+            } else {
+              onMessagePopup(this, res.commonMsg)
             }
           } catch (error) {
-            this.$message.error({ message: `${res.commonMsg}` })
-            console.log(error)
+            this.error(error)
+          } finally {
+            this.isLoading = false
           }
         })
     },
     fnUpdateconfirmBtnClick() {
-       this.$confirm('승인 하시겠습니까?', '노드 이전 승인', {
+       this.$confirm('승인 하시겠습니까?', '알림', {
         confirmButtonText: '확인',
         cancelButtonText: '취소'
       }).then(async() => {
-        let res
-        try {
           const { ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd, nipAssignMstSeq,
           pipPrefix, sipVersionTypeCd, seq, sCommentType, sComment } = this.resultVo
           const tbIpAssignMstComplexVo = {
             srcIpAssignMstVo: {
-              ssvcLineTypeCd: ssvcLineTypeCd,
-              ssvcGroupCd: ssvcGroupCd,
-              ssvcObjCd: ssvcObjCd,
+              ssvcLineTypeCd,
+              ssvcGroupCd,
+              ssvcObjCd,
               sassignLevelCd: 'IA0003',
               sassignTypeCd: 'SA0000',
               scomment: `${sCommentType}\n${sComment}`,
@@ -234,9 +244,9 @@ export default {
             },
             destIpAssignMstVos: [
               {
-                nipAssignMstSeq: nipAssignMstSeq,
-                pipPrefix: pipPrefix,
-                sipVersionTypeCd: sipVersionTypeCd,
+                nipAssignMstSeq,
+                pipPrefix,
+                sipVersionTypeCd,
                 typeFlag: 'assign',
                 menuType: 'NodeReq'
               }
@@ -245,36 +255,44 @@ export default {
               seq: seq
             }
           }
-           res = await apiRequestModel(ipmsModelApis.confirmNode, tbIpAssignMstComplexVo)
-           if (res.commonMsg) {
-            this.$message.success({ message: `${res.commonMsg}` })
-            this.$emit('reload')
-            this.close()
+          try {
+            this.isLoading = true
+            const res = await apiRequestJson(ipmsJsonApis.confirmNode, tbIpAssignMstComplexVo)
+            if (res.commonMsg === 'SUCCESS') {
+              onMessagePopup(this, 'IP블록 배정이 정상적으로 처리되었습니다.')
+              this.$emit('reload')
+              this.close()
+            } else {
+              onMessagePopup(this, res.commonMsg)
             }
           } catch (error) {
-            this.$message.error({ message: `${res.commonMsg}` })
-            console.log(error)
+            this.error(error)
+          } finally {
+            this.isLoading = false
           }
         })
     },
       fnDeleteBtnClick() { // 신청취소
-      // this.$confirm('정말 삭제 하시겠습니까?', {
-      //   confirmButtonText: '확인',
-      //   cancelButtonText: '취소'
-      // }).then(async() => {
-      //   try {
-      //     const nodeVo = { seq: this.resultVo.seq }
-      //     const res = await '' /* apiRequestModel(ipmsModelApis.viewDeletenode, nodeVo) */
-      //      if (res.commonMsg === 'SUCCESS') {
-      //       this.$message.success({ message: `노드 이전 신청이 정상적으로 삭제되었습니다.` })
-      //         this.$emit('reload')
-      //          this.close()
-      //       }
-      //     } catch (error) {
-      //       this.$message.error({ message: `삭제에 실패했습니다.` })
-      //       console.log(error)
-      //     }
-      //   })
+      this.$confirm('신청취소 하시겠습니까?', '알림', {
+        confirmButtonText: '확인',
+        cancelButtonText: '취소'
+      }).then(async() => {
+        try {
+          this.isLoading = true
+          const res = await apiRequestJson(ipmsJsonApis.viewDeleteNode, { seq: this.resultVo.seq })
+           if (res.commonMsg === 'SUCCESS') {
+              onMessagePopup(this, '노드 이전 신청이 정상적으로 삭제되었습니다.')
+              this.$emit('reload')
+              this.close()
+            } else {
+              onMessagePopup(this, res.commonMsg)
+            }
+          } catch (error) {
+            this.error(error)
+          } finally {
+            this.isLoading = false
+          }
+        })
     },
     onClose() { },
   },

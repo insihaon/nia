@@ -150,12 +150,12 @@ export default {
         const params = { batMstSeq, sopstate, scomment, speriod }
         const res = await apiRequestJson(ipmsJsonApis.updateTbBatchSvcBas, params)
         // URL: opermgmt/intgrmgmt/uploadMobileMst.ajax
-        if (res.tbBatchSvcBasVo.commonMsg === 'SUCCESS') {
+        if (res.commonMsg === 'SUCCESS') {
           onMessagePopup(this, '연동정보가 정상적으로 수정되었습니다.')
           this.$emit('reload')
           this.close()
         } else {
-          onMessagePopup(this, res.tbBatchSvcBasVo.commonMsg)
+          onMessagePopup(this, res.commonMsg)
         }
       } catch (error) {
         this.error(error)

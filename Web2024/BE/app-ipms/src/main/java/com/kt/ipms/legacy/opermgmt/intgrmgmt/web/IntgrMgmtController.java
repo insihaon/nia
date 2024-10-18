@@ -82,6 +82,7 @@ public class IntgrMgmtController  extends CommonController{
 	@RequestMapping(value = "/opermgmt/intgrmgmt/viewListFcltMst.model", method = {RequestMethod.POST, RequestMethod.GET})
 	@ResponseBody
 	public ModelMap viewListFcltMst(@RequestBody TbFcltMstVo searchVo, ModelMap model, HttpServletRequest request) {
+		setPagination(searchVo);
 		TbFcltMstListVo resultListVo = intgrMgmtService.selectListFcltMst(searchVo);
 		return createResultList(resultListVo.getTbFcltMstVos(), resultListVo.getTotalCount());
 	}
@@ -188,8 +189,14 @@ public class IntgrMgmtController  extends CommonController{
 	@RequestMapping(value = "/opermgmt/intgrmgmt/viewInsertFcltMst.model", method = RequestMethod.POST)
 	@ResponseBody
 	public ModelMap viewInsertFcltMst(ModelMap model, HttpServletRequest request) {
-		TbFcltMstVo resultVo = new TbFcltMstVo();
-		return createResult(resultVo);
+		ModelMap builtModel = new ModelMap();
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+
+		paramMap.put("suseYn", "Y");
+		List<CommonCodeVo> sfcltTypes = commonCodeService.selectListCommonCode(CommonCodeUtil.FLCT_TYPE_CD, paramMap);
+		builtModel.addAttribute("sfcltTypes", sfcltTypes);
+
+		return builtModel;
 	}
 	@RequestMapping(value = "/opermgmt/intgrmgmt/viewInsertFcltMst.ajax", method = RequestMethod.POST)
 	public String viewInsertFcltMst(@RequestBody CommonVo searchVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
@@ -493,7 +500,22 @@ public class IntgrMgmtController  extends CommonController{
 	/****************************************************************************************
 	 * 장비별 명령어 정보관리
 	 ****************************************************************************************/
-	
+	/**
+	 * 장비별 명령어 정보관리 > 장비타입 조회
+	 * @param searchVo
+	 * @param model
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/opermgmt/intgrmgmt/selectListCommonCode.json", method = RequestMethod.POST)
+	@ResponseBody
+	public ModelMap selectListCommonCode(@RequestBody TbFcltCmdMstVo searchVo, ModelMap model, HttpServletRequest request) {
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("suseYn", "Y");
+		List<CommonCodeVo> sfcltTypes = commonCodeService.selectListCommonCode(CommonCodeUtil.FLCT_TYPE_CD, paramMap);
+		return createResultList(sfcltTypes, sfcltTypes.size());
+	}
 	/**
 	 * 장비별 명령어 정보관리 > 목록 조회
 	 * @param searchVo
@@ -505,6 +527,7 @@ public class IntgrMgmtController  extends CommonController{
 	@RequestMapping(value = "/opermgmt/intgrmgmt/viewListFcltCmdMst.model", method = RequestMethod.POST)
 	@ResponseBody
 	public ModelMap viewListFcltCmdMst(@RequestBody TbFcltCmdMstVo searchVo, ModelMap model, HttpServletRequest request) {
+		setPagination(searchVo);
 		TbFcltCmdMstListVo resultListVo = intgrMgmtService.selectListFcltCmdMst(searchVo);
 		return createResultList(resultListVo.getTbFcltCmdMstVos(), resultListVo.getTotalCount());
 	}
@@ -763,6 +786,7 @@ public class IntgrMgmtController  extends CommonController{
 	@RequestMapping(value = "/opermgmt/intgrmgmt/viewListMobileMst.model", method = RequestMethod.POST)
 	@ResponseBody
 	public ModelMap viewListMobileMst(@RequestBody TbMobileMstVo searchVo, ModelMap model, HttpServletRequest request) {
+		setPagination(searchVo);
 		TbMobileMstListVo resultListVo = intgrMgmtService.selectListMobileMst(searchVo);
 		return createResultList(resultListVo.getTbMobileMstVos(), resultListVo.getTotalCount());
 	}
@@ -1065,6 +1089,7 @@ public class IntgrMgmtController  extends CommonController{
 	@RequestMapping(value = "/opermgmt/intgrmgmt/viewPopSummaryMst.model", method = RequestMethod.POST)
 	@ResponseBody
 	public ModelMap viewPopSummaryMst(@RequestBody TbMobileSummMstVo searchVo, ModelMap model, HttpServletRequest request) {
+		setPagination(searchVo);
 		TbMobileSummMstListVo resultListVo = intgrMgmtService.selectListMobileSummMst(searchVo);
 		return createResultList(resultListVo.getTbMobileSummMstVos(), resultListVo.getTotalCount());
 	}
@@ -1240,6 +1265,7 @@ public class IntgrMgmtController  extends CommonController{
 	@RequestMapping(value = "/opermgmt/intgrmgmt/viewListDefaultSvcMst.model", method = RequestMethod.POST)
 	@ResponseBody
 	public ModelMap viewListDefaultSvcMst(@RequestBody TbDefaultSvcMstVo searchVo, ModelMap model, HttpServletRequest request) {
+		setPagination(searchVo);
 		TbDefaultSvcMstListVo resultListVo = intgrMgmtService.selectListDefaultSvcMst(searchVo);
 		return createResultList(resultListVo.getTbDefaultSvcMstVos(), resultListVo.getTotalCount());
 	}
@@ -1341,6 +1367,17 @@ public class IntgrMgmtController  extends CommonController{
 	 ****************************************************************************************/
 	
 	/**
+	 * 라우팅 연동 이력관리 > 검색조건 결과메시지 조회
+	 * @return
+	 */
+	@RequestMapping(value = "/opermgmt/intgrmgmt/selectSresultMsg.json", method = RequestMethod.POST)
+	@ResponseBody
+	public ModelMap selectSresultMsg() {
+		List<?> sresultMsg = intgrMgmtService.selectSresultMsg();
+		return createResultList(sresultMsg, sresultMsg.size());
+	}
+	
+	/**
 	 * 라우팅 연동 이력관리 > 목록 조회
 	 * @param searchVo
 	 * @param model
@@ -1351,6 +1388,7 @@ public class IntgrMgmtController  extends CommonController{
 	@RequestMapping(value = "/opermgmt/intgrmgmt/viewListRoutHistMst.model", method = RequestMethod.POST)
 	@ResponseBody
 	public ModelMap viewListRoutHistMst(@RequestBody TbRoutHistMstVo searchVo, ModelMap model, HttpServletRequest request) {
+		setPagination(searchVo);
 		TbRoutHistMstListVo resultListVo = intgrMgmtService.selectListRoutHistMst(searchVo);
 		return createResultList(resultListVo.getTbRoutHistMstVos(), resultListVo.getTotalCount());
 	}
@@ -1422,6 +1460,7 @@ public class IntgrMgmtController  extends CommonController{
 	@RequestMapping(value = "/opermgmt/intgrmgmt/viewListWireMst.model", method = RequestMethod.POST)
 	@ResponseBody
 	public ModelMap viewListWireMst(@RequestBody TbWireMstVo searchVo, ModelMap model, HttpServletRequest request) {
+		setPagination(searchVo);
 		TbWireMstListVo resultListVo = intgrMgmtService.selectListWireMst(searchVo);
 		return createResultList(resultListVo.getTbWireMstVos(), resultListVo.getTotalCount());
 	}

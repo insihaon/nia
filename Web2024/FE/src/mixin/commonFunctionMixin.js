@@ -20,11 +20,16 @@ var commonFunctionMixin = {
     Eventbus.$on(EventType.setSavedParameter, (params) => {
       this.setParameter(params)
     })
+    Eventbus.$on(EventType.resetCondition, () => { this.onResetParameter() })
   },
   beforeDestroy() {
     Eventbus.$off(EventType.setSavedParameter)
+    Eventbus.$off(EventType.resetCondition)
   },
   methods: {
+    onResetParameter() { /* override */
+      this.value = ''
+    },
     init() { /* override */
       if (this.prop_parameterKey && this.prop_parameterKey !== null) {
         this.parameterKey = this.prop_parameterKey

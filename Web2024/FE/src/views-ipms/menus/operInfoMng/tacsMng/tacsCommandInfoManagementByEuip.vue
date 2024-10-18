@@ -4,14 +4,15 @@
       ref="searchCondition"
       :prop-name="name"
       :component-keys="componentList"
-      @handle-search="fnViewListTacsFcltCmdMst"
+      @handle-search="handleSearch"
     />
     <el-col ref="tableContainer" :span="24">
       <compTable
         ref="compTable"
         :prop-name="name"
         :prop-table-height="'calc(100% - 80px)'"
-        :prop-data="tableDatas"
+        :prop-data="pagination.data"
+        :prop-pagination-data.sync="pagination"
         :prop-column="tableColumns"
         :prop-is-pagination="true"
         :prop-is-check-box="true"
@@ -20,6 +21,8 @@
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
         :prop-on-click="handleClickCell"
+        :prop-on-page-change="handleChangeCurPage"
+        :prop-on-page-size-change="handleChangeCurPage"
       >
         <template slot="text-description">
           <span>
@@ -57,6 +60,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      pagination: this.setDefaultPagination(),
       tableColumns: [
         { prop: 'sfcltType', label: '장비타입', align: 'center', columnVisible: true, showOverflow: true },
         { prop: 'sfcltCmd', label: '장비명령어', align: 'center', columnVisible: true, showOverflow: true },
@@ -65,7 +69,6 @@ export default {
         { prop: 'npriority', label: '명령어순서', align: 'center', columnVisible: true, showOverflow: true },
         { prop: 'suseYn', label: '사용여부', align: 'center', columnVisible: true, showOverflow: true },
       ],
-      tableDatas: [],
       sfcltTypes: [],
       selectedRow: null
     }
@@ -81,9 +84,15 @@ export default {
   },
   mounted () {
     this.fnTacsSelectListCommonCode()
-    this.fnViewListTacsFcltCmdMst()
+    setTimeout(() => {
+      this.fnViewListTacsFcltCmdMst()
+    })
   },
   methods: {
+    handleSearch(requestParameter) {
+      this.pagination.currentPage = 1
+      this.fnViewListTacsFcltCmdMst(requestParameter)
+    },
     async fnTacsSelectListCommonCode() {
       try {
         const res = await apiRequestJson(ipmsJsonApis.selectListTacsSfcltTypes, {})
@@ -95,18 +104,29 @@ export default {
         this.error(error)
       }
     },
-    async fnViewListTacsFcltCmdMst(requestParameter) {
-      const params = requestParameter ?? this.$refs?.searchCondition?.requestParameter
+    async fnViewListTacsFcltCmdMst(requestParameter = null) {
+      const parameter = requestParameter ?? this.$refs?.searchCondition?.requestParameter
+      const target = ({ vue: this.$refs.compTable })
+      const { pageSize: pageUnit, currentPage: pageIndex } = this.pagination
+      Object.assign(parameter, { pageUnit, pageIndex })
       try {
-        const res = await apiRequestModel(ipmsModelApis.viewListTacsFcltCmdMst, params)
-        this.tableDatas = res.result.data
+        this.openLoading(target)
+        const res = await apiRequestModel(ipmsModelApis.viewListTacsFcltCmdMst, parameter)
+        this.pagination.data = res.result.data ?? []
+        this.pagination.total = res.result.totalCount
         setTimeout(() => {
           this.$refs?.compTable?.$refs?.table?.selection.push(this.tableDatas[0])
-          this.selectedRow = this.tableDatas[0]
+          this.selectedRow = this.pagination.data[0]
         }, 10)
       } catch (error) {
         this.error(error)
+      } finally {
+        this.closeLoading(target)
       }
+    },
+    handleChangeCurPage(v) {
+      if (v) this.pagination.currentPage = v
+      this.fnViewListTacsFcltCmdMst()
     },
     handleClickCell(row) {
       this.selectedRow = row

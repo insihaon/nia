@@ -11,13 +11,16 @@
         ref="compTable"
         :prop-name="name"
         :prop-table-height="'calc(100% - 80px)'"
-        :prop-data="tableDatas"
+        :prop-data="pagination.data"
+        :prop-pagination-data.sync="pagination"
         :prop-column="tableColumns"
         :prop-is-pagination="true"
         :prop-is-check-box="true"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
         :prop-on-click="handleClickCell"
+        :prop-on-page-change="handleChangeCurPage"
+        :prop-on-page-size-change="handleChangeCurPage"
         @update:propSelected="handleClickCheck"
       >
         <template slot="text-description">
@@ -33,7 +36,7 @@
         </template>
       </compTable>
     </el-col>
-    <ModalWireMstInsert ref="ModalWireMstInsert" />
+    <ModalWireMstInsert ref="ModalWireMstInsert" @reload="fnViewListWireMst" />
   </el-row>
 </template>
 <script>
@@ -56,6 +59,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      pagination: this.setDefaultPagination(),
       tableColumns: [
         { prop: 'skindCd', label: '서비스망', align: 'center', columnVisible: true, showOverflow: true },
         { prop: 'ssvcGroupNm', label: '본부', align: 'center', columnVisible: true, showOverflow: true },
@@ -85,14 +89,29 @@ export default {
     this.fnViewListWireMst()
   },
   methods: {
-    async fnViewListWireMst(requestParameter) {
-      const params = requestParameter ?? this.$refs?.searchCondition?.requestParameter
+    handleSearch(requestParameter) {
+      this.pagination.currentPage = 1
+      this.fnViewListWireMst(requestParameter)
+    },
+    async fnViewListWireMst(requestParameter = null) {
+      const parameter = requestParameter ?? this.$refs?.searchCondition?.requestParameter
+      const target = ({ vue: this.$refs.compTable })
+      const { pageSize: pageUnit, currentPage: pageIndex } = this.pagination
+      Object.assign(parameter, { pageUnit, pageIndex })
       try {
-        const res = await apiRequestModel(ipmsModelApis.viewListWireMst, params)
-        this.tableDatas = res.result.data
+        this.openLoading(target)
+        const res = await apiRequestModel(ipmsModelApis.viewListWireMst, parameter)
+        this.pagination.data = res.result.data ?? []
+        this.pagination.total = res.result.totalCount
       } catch (error) {
         this.error(error)
+      } finally {
+        this.closeLoading(target)
       }
+    },
+    handleChangeCurPage(v) {
+      if (v) this.pagination.currentPage = v
+      this.fnViewListWireMst()
     },
     handleClickCheck(rows) {
       this.delRows = rows

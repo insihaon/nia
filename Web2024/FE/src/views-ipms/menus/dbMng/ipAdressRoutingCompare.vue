@@ -100,7 +100,7 @@ export default {
         { key: 'IpBlockStatus', props: { isMulti: true } },
         { key: 'SipCreateType', props: {} },
         { key: 'IpAddress', props: { isShowSelectBox: false } },
-        { key: 'InputType', props: { prop_parameterKey: 'nbitmask', label: 'BitMask' } },
+        { key: 'InputType', props: { prop_parameterKey: 'nbitmask', label: 'BitMask', valueType: 'number' } },
         {
           key: 'SortType', props: {
             sortTypeDefaultVal: '',

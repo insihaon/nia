@@ -50,7 +50,7 @@ public class TacsMgmtController extends CommonController {
 
 	@RequestMapping(value="/opermgmt/tacsmgmt/viewTacsConnBas.model", method = RequestMethod.POST)
 	@ResponseBody
-	public ModelMap viewTacsConnBas(ModelMap model, HttpServletRequest request) {
+	public ModelMap viewTacsConnBas(@RequestBody CommonVo searchVo, ModelMap model, HttpServletRequest request) {
 		TbTacsConnBasVo resultVo = tacsMgmtService.selectTbTacsConnBas();
 		return createResult(resultVo);
 	}
@@ -121,6 +121,7 @@ public class TacsMgmtController extends CommonController {
 	@ResponseBody
 	public ModelMap viewListTacsFcltMst(@RequestBody TbTacsFcltMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
+		setPagination(searchVo);
 		TbTacsFcltMstListVo resultListVo = tacsMgmtService.selectListTacsFcltMst(searchVo);
 		return createResultList(resultListVo.getTbTacsFcltMstVos(), resultListVo.getTotalCount());
 	}
@@ -221,8 +222,12 @@ public class TacsMgmtController extends CommonController {
 	@RequestMapping(value = "/opermgmt/tacsmgmt/viewInsertTacsFcltMst.model", method = RequestMethod.POST)
 	@ResponseBody
 	public ModelMap viewInsertTacsFcltMst(ModelMap model, HttpServletRequest request) {
-		TbTacsFcltMstVo resultVo = new TbTacsFcltMstVo();
-		return createResult(resultVo);
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("suseYn", "Y");
+		List<CommonCodeVo> sfcltTypes = commonCodeService.selectListCommonCode(CommonCodeUtil.TACS_FLCT_TYPE_CD, paramMap);
+		ModelMap builtModel = new ModelMap();
+		builtModel.addAttribute("sfcltTypes", sfcltTypes);
+		return builtModel;
 	}
 	@RequestMapping(value = "/opermgmt/tacsmgmt/viewInsertTacsFcltMst.ajax", method = RequestMethod.POST)
 	public String viewInsertTacsFcltMst(@RequestBody CommonVo searchVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
@@ -401,11 +406,19 @@ public class TacsMgmtController extends CommonController {
 		}
 		return resultVo;
 	}
+
+	@RequestMapping(value = "/opermgmt/tacsmgmt/selectListCommonCode.json", method = RequestMethod.POST)
+	@ResponseBody
+	public ModelMap selectListCommonCode() {
+		List<CommonCodeVo> sfcltTypes = commonCodeService.selectListCommonCode(CommonCodeUtil.TACS_FLCT_TYPE_CD, null);
+		return createResultList(sfcltTypes, sfcltTypes.size());
+	}
 	
 	@RequestMapping(value = "/opermgmt/tacsmgmt/viewListTacsFcltCmdMst.model", method = RequestMethod.POST)
 	@ResponseBody
 	public ModelMap viewListTacsFcltCmdMst(@RequestBody TbTacsFcltCmdMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
+		setPagination(searchVo);
 		TbTacsFcltCmdMstListVo resultListVo = tacsMgmtService.selectListTacsFcltCmdMst(searchVo);
 		return createResultList(resultListVo.getTbTacsFcltCmdMstVos(), resultListVo.getTotalCount());
 	}
@@ -611,11 +624,18 @@ public class TacsMgmtController extends CommonController {
 		model.addAttribute("resultListVo", resultListVo);
 		return model;
 	}
+	@RequestMapping(value = "/opermgmt/tacsmgmt/selectSresultMsg.json", method = RequestMethod.POST)
+	@ResponseBody
+	public ModelMap selectSresultMsg() {
+		List<?> sresultMsg = tacsMgmtService.selectSresultMsg();
+		return createResultList(sresultMsg, sresultMsg.size());
+	}
 	
 	@RequestMapping(value = "/opermgmt/tacsmgmt/viewListTacsConnHist.model", method = RequestMethod.POST)
 	@ResponseBody
 	public ModelMap viewListTacsConnHist(@RequestBody TbTacsConnHistVo searchVo, ModelMap model,
 			HttpServletRequest request) {
+		setPagination(searchVo);
 		TbTacsConnHistListVo resultListVo = tacsMgmtService.selectListTacsConnHist(searchVo);
 		return createResultList(resultListVo.getTbTacsConnHistVos(), resultListVo.getTotalCount());
 	}

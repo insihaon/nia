@@ -41,7 +41,9 @@
 	</sql>
 	
 	<sql id="AppendBT_From_Clause">
-	
+		<trim prefix="WHERE" prefixOverrides="AND">
+			1 = 1
+		</trim>
 	</sql>
 	
 	<sql id="VoBT_Where_Clause">
@@ -274,6 +276,7 @@
 		SELECT
 			count(1) totalCount
 		FROM BIF.TB_BATCH_SVC_BAS A
+		<include refid="AppendBT_From_Clause"/>
 		<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sifId)">
 			AND A.SIF_ID LIKE '%' || #{sifId, jdbcType=VARCHAR} || '%'
 		</if>

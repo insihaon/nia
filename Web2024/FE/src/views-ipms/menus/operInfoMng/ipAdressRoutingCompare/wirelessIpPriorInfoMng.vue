@@ -4,20 +4,23 @@
       ref="searchCondition"
       :prop-name="name"
       :component-keys="componentList"
-      @handle-search="fnViewListMobileMst"
+      @handle-search="handleSearch"
     />
     <el-col ref="tableContainer" :span="24">
       <compTable
         ref="compTable"
         :prop-name="name"
         :prop-table-height="'calc(100% - 80px)'"
-        :prop-data="tableDatas"
+        :prop-data="pagination.data"
+        :prop-pagination-data.sync="pagination"
         :prop-column="tableColumns"
         :prop-is-pagination="true"
         :prop-is-check-box="true"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
         :prop-on-click="handleClickCell"
+        :prop-on-page-change="handleChangeCurPage"
+        :prop-on-page-size-change="handleChangeCurPage"
         @update:propSelected="handleClickCheck"
       >
         <template slot="text-description">
@@ -36,7 +39,7 @@
         </template>
       </compTable>
     </el-col>
-    <ModalWireMstInsert ref="ModalWireMstInsert" />
+    <ModalWireMstInsert ref="ModalWireMstInsert" @reload="fnViewListMobileMst" />
     <ModalSummaryMst ref="ModalSummaryMst" />
     <ModalUploadMst ref="ModalUploadMst" />
   </el-row>
@@ -63,6 +66,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      pagination: this.setDefaultPagination(),
       tableColumns: [
         { prop: 'skindNm', label: '구분', align: 'center', columnVisible: true, showOverflow: true },
         { prop: 'sserviceNm', label: '서비스', align: 'center', columnVisible: true, showOverflow: true },
@@ -82,7 +86,6 @@ export default {
         { key: 'InputType', props: { label: 'Community/IP블록', prop_parameterKey: 'scommu' } },
         { key: 'InputType', props: { label: '서비스', prop_parameterKey: 'sserviceNm' } },
       ],
-      tableDatas: [],
       delRows: null
     }
   },
@@ -90,14 +93,29 @@ export default {
     this.fnViewListMobileMst()
   },
   methods: {
+    handleSearch(requestParameter) {
+      this.pagination.currentPage = 1
+      this.fnViewListMobileMst(requestParameter)
+    },
     async fnViewListMobileMst(requestParameter) {
-      const params = requestParameter ?? this.$refs?.searchCondition?.requestParameter
+      const parameter = requestParameter ?? this.$refs?.searchCondition?.requestParameter
+      const target = ({ vue: this.$refs.compTable })
+      const { pageSize: pageUnit, currentPage: pageIndex } = this.pagination
+      Object.assign(parameter, { pageUnit, pageIndex })
       try {
-        const res = await apiRequestModel(ipmsModelApis.viewListMobileMst, params)
-        this.tableDatas = res.result.data
+        this.openLoading(target)
+        const res = await apiRequestModel(ipmsModelApis.viewListMobileMst, parameter)
+        this.pagination.data = res.result.data ?? []
+        this.pagination.total = res.result.totalCount
       } catch (error) {
         this.error(error)
+      } finally {
+        this.closeLoading(target)
       }
+    },
+    handleChangeCurPage(v) {
+      if (v) this.pagination.currentPage = v
+      this.fnViewListMobileMst()
     },
     handleClickCheck(rows) {
       this.delRows = rows
@@ -139,11 +157,19 @@ export default {
         cancelButtonText: '취소',
         type: 'warnning'
       }).then(async () => {
-        const res = await apiRequestJson(ipmsJsonApis.intgrInsertListRoutChkMst)
-        if (res.commonMsg === 'SUCCESS') {
-          onMessagePopup(this, '라우팅 수집/DB 비교가 정상적으로 처리되었습니다.')
-        } else {
-          onMessagePopup(this, res.commonMsg)
+        const target = ({ vue: this })
+        try {
+          this.openLoading(target)
+          const res = await apiRequestJson(ipmsJsonApis.intgrInsertListRoutChkMst)
+          if (res.commonMsg === 'SUCCESS') {
+            onMessagePopup(this, '라우팅 수집/DB 비교가 정상적으로 처리되었습니다.')
+          } else {
+            onMessagePopup(this, res.commonMsg)
+          }
+        } catch (error) {
+          this.error(error)
+        } finally {
+          this.closeLoading(target)
         }
       })
     },

@@ -66,6 +66,9 @@ export default {
   },
   // sassignLevelVd
   methods: {
+    onResetParameter() {
+      this.values = this.isMulti ? [] : ''
+    },
     init() {
       this.values = this.isMulti ? [] : ''
       if (this.prop_options !== null) {

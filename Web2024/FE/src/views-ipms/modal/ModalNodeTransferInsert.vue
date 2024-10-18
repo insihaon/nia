@@ -7,7 +7,7 @@
       :visible.sync="visible"
       :width="domElement.maxWidth + `px`"
       :fullscreen.sync="fullscreen"
-      :modal-append-to-body="false"
+      :modal-append-to-body="true"
       :append-to-body="true"
       :modal="modal"
       :close-on-click-modal="closeOnClickModal"
@@ -48,94 +48,49 @@
                       </el-select>
                     </span>
                     <span>
-                      <el-input v-model="InsertSearchWrd" size="mini" type="text" class="txt w-80" title="IP 주소 입력창" maxlength="43" @input="chkCharCode()" />
+                      <el-input
+                        v-model="searchWrd"
+                        size="mini"
+                        type="text"
+                        class="txt w-80"
+                        maxlength="43"
+                        @input="chkCharCode"
+                        @keyup.enter="fnSelectListIpAssignMst()"
+                      />
                     </span>
                   </td>
                 </tr>
               </tbody>
             </table>
             <div class="float-right">
-              <el-button size="mini" icon="el-icon-document-add" @click="fnSelectListPage()">조회</el-button>
+              <el-button size="mini" icon="el-icon-search" @click="fnSelectListIpAssignMst()">조회</el-button>
             </div>
           </form>
         </div>
-
         <div class="content_result">
-          <h4>조회결과</h4>
-          <table id="contentTable" class="tbl_list mt5" summary="조회결과">
-            <caption>조회결과</caption>
-            <colgroup>
-              <col width="8%" /><col width="8%" /><col width="15%" />
-              <col width="8%" /><col width="8%" /><col width="13%" />
-              <col width="10%" /><col width="12%" /><col width="10%" />
-              <col width="8%" />
-            </colgroup>
-            <thead>
-              <tr>
-                <th class="first" scope="col">선택</th>
-                <th class="first" scope="col">서비스망</th>
-                <th scope="col">본부</th>
-                <th scope="col">노드</th>
-                <th scope="col">공인/사설</th>
-                <th scope="col">서비스</th>
-                <th scope="col">IP블록</th>
-                <th scope="col">배정상태</th>
-                <th scope="col">라우팅중복개수</th>
-                <th scope="col">해지</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- 조회 결과가 없는 경우 -->
-              <template v-if="tbIpAssignMstVos.totalCount === 0">
-                <tr class="subbg last">
-                  <td class="first" colspan="10">조회된 결과 목록이 존재하지 않습니다.</td>
-                </tr>
-              </template>
-              <!-- 조회 결과가 있는 경우 -->
-              <template v-else>
-                <tr
-                  v-for="(item, index) in tbIpAssignMstVos"
-                  :key="item.nipAssignMstSeq"
-                  :class="{
-                    last: index === tbIpAssignMstVos.length - 1,
-                    subbg: index % 2 !== 0
-                  }"
-                >
-                  <td class="first">
-                    <el-button size="mini" @click="selectNode(tbIpAssignMstVos[index])">선택</el-button>
-                  </td>
-                  <td class="ellipsis" :title="item.ssvcLineTypeNm">{{ item.ssvcLineTypeNm }}</td>
-                  <td class="ellipsis" :title="item.ssvcGroupNm">{{ item.ssvcGroupNm }}</td>
-                  <td class="ellipsis" :title="item.ssvcObjNm">{{ item.ssvcObjNm }}</td>
-                  <td class="ellipsis" :title="item.sipCreateTypeNm">{{ item.sipCreateTypeNm }}</td>
-                  <td class="ellipsis" :title="item.sassignTypeNm">{{ item.sassignTypeNm }}</td>
-                  <td class="ellipsis">{{ item.pipPrefix }}</td>
-                  <td class="ellipsis" :title="item.sassignLevelNm">{{ item.sassignLevelNm }}</td>
-                  <td class="ellipsis" :title="item.nsummaryCnt" style="text-decoration: underline;">
-                    <template v-if="['CL0001', 'CL0002', 'CL0003'].includes(item.ssvcLineTypeCd)">
-                      <span v-if="item.nsummaryCnt != '0'">{{ item.nsummaryCnt }}</span>
-                      <span v-else>{{ item.nsummaryCnt }}</span>
-                    </template>
-                    <span v-else>-</span>
-                  </td>
-                  <td>
-                    <template v-if="['IA0006', 'IA0005'].includes(item.sassignLevelCd)" class="btn_area" style="float: none;">
-                      <el-button size="mini" @click="fnDeleteAlcIPMstClick(item.nipAssignMstSeq)">해지</el-button>
-                    </template>
-                  </td>
-                  <td v-if="false">{{ item.ssvcLineTypeCd }}</td>
-                  <td v-if="false">{{ item.ssvcGroupCd }}</td>
-                  <td v-if="false">{{ item.ssvcObjCd }}</td>
-                  <td v-if="false">{{ item.nipAssignMstSeq }}</td>
-                  <td v-if="false">{{ item.nipAllocMstSeq }}</td>
-                  <td v-if="false">{{ item.sassignLevelCd }}</td>
-                  <td v-if="false">{{ item.sassignTypeCd }}</td>
-                </tr>
-              </template>
-            </tbody>
-          </table>
+          <compTable
+            ref="compTable"
+            :prop-name="name"
+            :prop-table-height="150"
+            :prop-data="pagination.data"
+            :prop-pagination-data.sync="pagination"
+            :prop-column="tableColumns"
+            :prop-is-pagination="true"
+            prop-pagination-layout="prev, pager, next"
+            :prop-is-check-box="false"
+            :prop-max-select="pagination.data.length"
+            prop-grid-menu-id="inputSpeed"
+            :prop-grid-indx="1"
+            :prop-on-page-change="handleChangeCurPage"
+            :prop-on-page-size-change="handleChangeCurPage"
+          >
+            <template slot="text-description">
+              <span>
+                조회결과
+              </span>
+            </template>
+          </compTable>
         </div>
-
         <div class="content_result mt5" style="padding-top: 7px;">
           <h4>변경 전 계위정보</h4>
           <table class="tbl_data entry" summary="변경후">
@@ -146,33 +101,19 @@
             <tbody>
               <tr class="top">
                 <th class="first" scope="row">IP블록</th>
-                <td>
-                  {{ resultVo.pipPrifix }}
-                </td>
+                <td>{{ resultVo.pipPrefix }}</td>
               </tr>
               <tr>
                 <th class="first" scope="row">서비스망</th>
-                <td>
-                  {{ resultVo.ssvcLineTypeNm }}
-                </td>
+                <td>{{ resultVo.ssvcLineTypeNm }}</td>
               </tr>
               <tr>
                 <th scope="row">본부</th>
-                <td>
-                  {{ resultVo.ssvcGroupNm }}
-                </td>
+                <td>{{ resultVo.ssvcGroupNm }}</td>
               </tr>
               <tr>
                 <th scope="row">노드</th>
-                <td>
-                  {{ resultVo.ssvcObjNm }}
-                </td>
-                <td v-if="false"> {{ resultVo.beforeSsvcGroupCd }}</td>
-                <td v-if="false"> {{ resultVo.beforeSsvcObjCd }}</td>
-                <td v-if="false"> {{ resultVo.nipAssignMstSeq }}</td>
-                <td v-if="false"> {{ resultVo.nipAllocMstSeq }}</td>
-                <td v-if="false"> {{ resultVo.sassignLevelCd }}</td>
-                <td v-if="false"> {{ resultVo.sassignTypeCd }}</td>
+                <td>{{ resultVo.ssvcObjNm }}</td>
               </tr>
             </tbody>
           </table>
@@ -191,7 +132,7 @@
                 <td>
                   <div class="inline-block w99 w-100">
                     <el-select id="updSsvcLineTypeCd" v-model="updSsvcLineTypeCd" class="w-100" name="ssvcLineTypeCd" size="mini" @change="handleChangeLvl1()">
-                      <el-option label="전체" value=""><span class="w-100 h-100 d-inline-block" @click="toggleAll()">전체</span></el-option>
+                      <el-option label="전체" value=""><span class="w-100 h-100 d-inline-block">전체</span></el-option>
                       <el-option
                         v-for="item in ssvcLineTypeNmOp"
                         :key="item.value"
@@ -275,7 +216,7 @@
       </div>
 
       <div slot="footer" class="dialog-footer">
-        <el-button size="mini" @click="fnInsertNode()">{{ $t('등록') }}</el-button>
+        <el-button size="mini" type="primary" icon="el-icon-edit" @click="fnInsertNode()">등록</el-button>
         <el-button size="mini" class="el-icon-close" @click="close()">{{ $t('exit') }}</el-button>
       </div>
     </el-dialog>
@@ -285,45 +226,58 @@
 <script>
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
+import { onMessagePopup } from '@/utils/index'
+import CompTable from '@/components/elTable/CompTable.vue'
 import { apiRequestModel, ipmsModelApis, apiRequestJson, ipmsJsonApis } from '@/api/ipms'
 
 const routeName = 'ModalNodeTransferInsert'
 
 export default {
   name: routeName,
-  components: { },
+  components: { CompTable },
   directives: { elDragDialog },
   extends: Modal,
   data() {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      resultVo: {
-        pipPrifix: '',
-        ssvcLineTypeNm: '',
-        ssvcGroupNm: '',
-        ssvcObjNm: '',
-      },
+      pagination: this.setDefaultPagination(),
+      resultVo: { pipPrefix: '', ssvcLineTypeNm: '', ssvcGroupNm: '', ssvcObjNm: '' },
       tableColumns: [
-        { prop: 'nipBlockMstSeq', label: '', align: 'center', propIsCheckBox: true, columnVisible: false, showOverflow: true },
-        { prop: 'sipCreateTypeNm', label: '공인/사설', align: 'center', sortable: true, propIsCheckBox: true, columnVisible: true, showOverflow: true },
-        { prop: 'sipCreateSeqNm', label: '생성차수', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'ssvcLineTypeNm', label: '서비스망', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'pipPrefix', label: 'IP 블록', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'sfirstAddr', label: '시작 IP', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: '', label: '선택', align: 'center', width: 50, propIsCheckBox: true, columnVisible: true, showOverflow: true,
+          formatter: (row, col, value, index) => {
+            return this.$createElement('el-button', {
+              on: { click: () => {
+                this.selectNode(row)
+            } } }, '선택')
+          }
+         },
+        { prop: 'ssvcLineTypeNm', label: '서비스망', align: 'center', propIsCheckBox: true, columnVisible: false, showOverflow: true },
+        { prop: 'ssvcGroupNm', label: '본부', align: 'center', sortable: true, propIsCheckBox: true, columnVisible: true, showOverflow: true },
+        { prop: 'ssvcObjNm', label: '노드', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'sipCreateTypeNm', label: '공인/사설', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'sassignTypeNm', label: '서비스', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'pipPrefix', label: 'IP블록', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'sassignLevelNm', label: '배정상태', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'nsummaryCnt', label: '라우팅중복개수', align: 'center', width: 165, sortable: true, columnVisible: true, showOverflow: true },
+        { prop: '', label: '해지', align: 'center', columnVisible: true, showOverflow: true, width: 50,
+          formatter: (row, col, value, index) => {
+            if (row.sassignLevelCd === 'IA0005' || row.sassignLevelCd === 'IA0006') {
+              return this.$createElement('el-button', {
+                on: { click: () => {
+                  this.fnDeleteAlcIPMstClick(row)
+              } } }, '해지')
+            } else {
+              return ''
+            }
+          }
+         },
       ],
       resultListVo: [],
       tbIpAssignMstVos: [],
-      sipVersionTypeCd: '',
-      sipVerCdOptions: [{
-          value: 'CV0001',
-          label: 'IPv4'
-        },
-        {
-          value: 'CV0002',
-          label: 'IPv6'
-      }],
-      InsertSearchWrd: '',
+      sipVersionTypeCd: 'CV0001',
+      sipVerCdOptions: [{ value: 'CV0001', label: 'IPv4' }, { value: 'CV0002', label: 'IPv6' }],
+      searchWrd: '',
       sCommentOptions: [
         { value: 'typ001', label: '기업고객 설변에 따른 노드 이전' },
         { value: 'typ002', label: '기업고객 해지에 원소속 노드 반납' },
@@ -332,7 +286,6 @@ export default {
         { value: 'typ005', label: '단순 반납 실수' },
         { value: 'typ006', label: '기타' }
       ],
-      upSsvcCdOptions: [],
       ssvcLineTypeNmOp: [
         { label: 'KORNET', value: 'CL0001' },
         { label: 'PREMIUM', value: 'CL0002' },
@@ -343,14 +296,8 @@ export default {
         { label: '미분류', value: 'CL0007' },
         { label: 'SCHOOLNET', value: 'CL0008' }
       ],
-      ssvcGroupNmOp: [{
-        label: '-------',
-        value: '000000'
-      }],
-      ssvcObjNmOp: [{
-        label: '-------',
-        value: '000000'
-      }],
+      ssvcGroupNmOp: [{ label: '-------', value: '000000' }],
+      ssvcObjNmOp: [{ label: '-------', value: '000000' }],
       sComment: '',
       sCommentType: '',
       updSsvcLineTypeCd: '',
@@ -364,6 +311,7 @@ export default {
     }
   },
   mounted() {
+    this.pagination.pageSize = 5
   },
   methods: {
     onCreated() {
@@ -372,35 +320,44 @@ export default {
       this.domElement.maxWidth = 1200
     },
     onOpen(model, actionMode) {
-      // this.fnSelectListPage()
     },
-    chkCharCode() {
-      const regExp = /[^0-9]/g
-      this.InsertSearchWrd = this.InsertSearchWrd.replace(regExp, '')
+    onClose() { },
+    async fnSelectListIpAssignMst() {
+      const parameter = { sipVersionTypeCd: this.sipVersionTypeCd ?? '', searchWrd: this.searchWrd ?? '', sortType: 'PIP_PREFIX', }
+      const { pageSize: pageUnit, currentPage: pageIndex } = this.pagination
+      Object.assign(parameter, { pageUnit, pageIndex })
+      const target = ({ vue: this.$refs.compTable })
+      try {
+        this.openLoading(target)
+        const res = await apiRequestModel(ipmsModelApis.selectListIpAssignMst, parameter)
+        this.pagination.data = res.result.data ?? []
+        this.pagination.total = res.result.totalCount
+      } catch (error) {
+        console.error(error)
+      } finally {
+        this.closeLoading(target)
+      }
+    },
+    handleChangeCurPage(v) {
+      if (v) this.pagination.currentPage = v
+      this.fnSelectListIpAssignMst()
+    },
+    chkCharCode(val) {
+      this.searchWrd = val.replace(/[^0-9.]+/g, '')
     },
     async selectNode(row) {
       if (row.sassignLevelCd === 'IA0006') {
-        this.$message('선택한 대상이 할당(할당예약)상태 입니다.')
+        onMessagePopup(this, '선택한 대상이 할당(할당예약)상태 입니다.')
         return
       }
-      try {
-        const tbIpAssignMstVo = {
-          nipAssignMstSeq: `${row.nipAssignMstSeq}`
-        }
-        const res = await apiRequestModel(ipmsModelApis.viewfnSelectNode, tbIpAssignMstVo)
-        if (res.data) {
-          this.fnSelectNodeCallBack(res.data)
-        }
-      } catch (error) {
-        console.error(error)
-      }
+      this.resultVo = this._cloneDeep(row)
     },
     fnSelectNodeCallback(row) {
       const successMsg = 'SUCCESS'
       if (row.commonMsg === successMsg) {
-          this.$confirm('현재 운용자의 권한범위 외 IP블록입니다. 계속 진행하시겠습니까?', '확인', {
-              confirmButtonText: 'OK',
-              cancelButtonText: 'Cancel',
+          this.$confirm('현재 운용자의 권한범위 외 IP블록입니다. 계속 진행하시겠습니까?', '알림', {
+              confirmButtonText: '확인',
+              cancelButtonText: '취소',
               type: 'warning'
           }).then(() => {
             const { pipPrifix, ssvcLineTypeNm, ssvcGroupNm, ssvcObjNm } = row
@@ -408,128 +365,112 @@ export default {
             this.resultVo.ssvcLineTypeNm = ssvcLineTypeNm
             this.resultVo.ssvcGroupNm = ssvcGroupNm
             this.resultVo.ssvcObjNm = ssvcObjNm
-          }).catch(() => {
-            /*  */
+          }).catch((error) => {
+            this.error(error)
           })
       } else {
           this.resultVo = row
       }
     },
     async fnDeleteAlcIPMstClick(row) { // 해지
-       let res
        try {
         const ipAllocOperMstVo = {
           nipAssignMstSeq: row.nipAssignMstSeq,
           menuType: 'NodeReq'
         }
-         res = await apiRequestModel(ipmsModelApis.viewfnDeleteAlcIPMst, ipAllocOperMstVo)
-        if (res.commonMsg) {
-          this.fnSelectListPage()
+        const res = await apiRequestJson(ipmsJsonApis.viewfnDeleteAlcIPMst, ipAllocOperMstVo)
+        if (res.commonMsg === 'SUCCESS') {
+          this.fnSelectListIpAssignMst()
+        } else {
+          onMessagePopup(this, res.commonMsg)
         }
       } catch (error) {
-        this.$message.error({ message: `${res.commonMsg}` })
-        console.error(error)
-      }
-    },
-    async fnSelectListPage() {
-      try {
-        const searchVo = {
-          sortType: 'PIP_PREFIX',
-          pageIndex: 1,
-          pageUnit: 5,
-          sipVersionTypeCd: this.sipVersionTypeCd ?? '',
-          InsertSearchWrd: this.InsertSearchWrd ?? ''
-        }
-        const res = await apiRequestModel(ipmsModelApis.viewInsertNode, searchVo)
-        if (res.result.data) {
-          this.tbIpAssignMstVos = res.result.data
-        }
-      } catch (error) {
-        console.error(error)
+        this.error(error)
       }
     },
     fnInsertNode() {
-      if (this.resultVo.pipPrifix === '') {
-        this.$message('변경 전 데이터가 선택되지 않았습니다.')
+      if (this.resultVo.pipPrefix === '') {
+        onMessagePopup(this, '변경 전 데이터가 선택되지 않았습니다.')
         return
       }
       if (this.resultVo.ssvcLineTypeNm === '') {
-        this.$message('변경 후 서비스망을 선택해 주시길 바랍니다.')
+        onMessagePopup(this, '변경 후 서비스망을 선택해 주시길 바랍니다.')
         return
       }
       if (this.resultVo.sCommentType === '') {
-        this.$message('변경 사유를 선택해 주시길 바랍니다.')
+        onMessagePopup(this, '변경 사유를 선택해 주시길 바랍니다.')
         return
       }
       if (this.resultVo.sCommentType === 'typ006' && this.resultVo.sComment === '') {
-        this.$message('세부 사유를 입력해 주시길 바랍니다.')
+        onMessagePopup(this, '세부 사유를 입력해 주시길 바랍니다.')
         return
       }
-
-      this.$confirm('등록 하시겠습니까?', '노드 이전 승인', {
+      this.$confirm('IP노드 이전 신청 하시겠습니까?', '알림', {
         confirmButtonText: '확인',
         cancelButtonText: '취소'
       }).then(async() => {
         let res
         try {
-          const { pipPrefix, beforeSsvcLineTypeCd, beforeSsvcGroupCd, nipAssignMstSeq, afterSsvcLineTypeCd, afterSsvcGroupCd, afterSsvcObjCd, sassignTypeCd, sassignLevelCd, sCommentType, sComment } = this.resultVo
+          /* before */
+          const { pipPrefix, nipAssignMstSeq, ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd, sassignTypeCd, sassignLevelCd } = this.resultVo
           const tbIpAssignMstComplexVo = {
             pipPrefix: pipPrefix,
-            beforeSsvcLineTypeCd: beforeSsvcLineTypeCd,
-            beforeSsvcGroupCd: beforeSsvcGroupCd,
+            beforeSsvcLineTypeCd: ssvcLineTypeCd,
+            beforeSsvcGroupCd: ssvcGroupCd,
+            beforeSsvcObjCd: ssvcObjCd,
             nipAssignMstSeq: nipAssignMstSeq,
-            afterSsvcLineTypeCd: afterSsvcLineTypeCd,
-            afterSsvcGroupCd: afterSsvcGroupCd,
-            afterSsvcObjCd: afterSsvcObjCd,
+            afterSsvcLineTypeCd: this.updSsvcLineTypeCd,
+            afterSsvcGroupCd: this.updSsvcGroupCd,
+            afterSsvcObjCd: this.updSsvcObjCd,
             sassignTypeCd: sassignTypeCd,
             sassignLevelCd: sassignLevelCd,
-            sCommentType: sCommentType,
-            sComment: sComment
+            sCommentType: this.sCommentType,
+            sComment: this.sComment
           }
            res = await apiRequestJson(ipmsJsonApis.insertNode, tbIpAssignMstComplexVo)
            if (res.commonMsg === 'SUCCESS') {
-            this.$message.success({ message: `${res.commonMsg}` })
-            this.$emit('reload')
-            this.close()
+              onMessagePopup(this, 'IP노드 이전 신청이 정상적으로 등록되었습니다.')
+              this.$emit('reload')
+              this.close()
+            } else if (res.commonMsg === 'duplicate') {
+              onMessagePopup(this, '이미 등록된 이전 신청입니다')
+            } else {
+              onMessagePopup(this, res.commonMsg)
             }
           } catch (error) {
-            this.$message.error({ message: `${res.commonMsg}` })
-            console.log(error)
+            this.log(error)
           }
         })
     },
-    async handleChangeLvl1() {
-    const tbLvlBasVo = { ssvcLineTypeCd: this.updSsvcLineTypeCd }
-
-    this.updSsvcGroupCd = null
-    this.updSsvcObjCd = null
-
-    const res = await apiRequestJson(ipmsJsonApis.selectAuthCenterList, tbLvlBasVo)
-    this.ssvcGroupNmOp = res?.tbLvlBasVos?.filter(v => v.ssvcGroupNm !== '전체').map(v => {
-      return { value: v.ssvcGroupCd, label: v.ssvcGroupNm }
-    })
-
-    this.ssvcObjNmOp = []
-  },
-
-  async handleChangeLvl2() {
-    const tbLvlBasVo = {
-      ssvcLineTypeCd: this.updSsvcLineTypeCd,
-      ssvcGroupCd: this.updSsvcGroupCd,
-    }
-
-    this.updSsvcObjCd = null
-
-    const res = await apiRequestJson(ipmsJsonApis.selectAuthNodeList, tbLvlBasVo)
-    this.ssvcObjNmOp = res?.tbLvlBasVos?.filter(v => v.ssvcObjCd !== '전체').map(v => {
-      return { value: v.ssvcObjCd, label: v.ssvcObjNm }
-    })
-  },
-    toggleAll() {
-      this.updSsvcGroupCd = ''
-      this.updSsvcObjCd = ''
+    handleChangeLvl1() {
+      if (this.updSsvcLineTypeCd === '') {
+        this.updSsvcGroupCd = ''
+        this.updSsvcObjCd = ''
+        return
+      }
+      this.loadCenterList()
+      this.loadNodeList()
     },
-    onClose() { },
+    handleChangeLvl2() {
+      this.loadNodeList()
+    },
+    async loadCenterList() {
+      const tbLvlBasVo = { ssvcLineTypeCd: this.updSsvcLineTypeCd }
+      const res = await apiRequestJson(ipmsJsonApis.selectAuthCenterList, tbLvlBasVo)
+      this.ssvcGroupNmOp = res?.tbLvlBasVos?.filter(v => v.ssvcGroupNm !== '전체').map(v => { return { value: v.ssvcGroupCd, label: v.ssvcGroupNm } })
+      this.updSsvcGroupCd = '000000'
+      this.updSsvcObjCd = '000000'
+      this.ssvcObjNmOp = [{ label: '-------', value: '000000' }]
+    },
+    async loadNodeList() {
+      const tbLvlBasVo = {
+        ssvcLineTypeCd: this.updSsvcLineTypeCd,
+        ssvcGroupCd: this.updSsvcGroupCd,
+      }
+      const res = await apiRequestJson(ipmsJsonApis.selectAuthNodeList, tbLvlBasVo)
+      this.ssvcObjNmOp = res?.tbLvlBasVos?.filter(v => v.ssvcObjNm !== '전체').map(v => { return { value: v.ssvcObjCd, label: v.ssvcObjNm } })
+      this.updSsvcObjCd = '000000'
+    }
   },
 }
 </script>

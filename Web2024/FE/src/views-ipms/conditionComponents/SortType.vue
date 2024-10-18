@@ -37,6 +37,10 @@ export default {
       type: String,
       default: null
     },
+    sortOrdrDefaultVal: {
+      type: String,
+      default: 'null'
+    },
     prop_options: {
       type: Array,
       default: null
@@ -54,16 +58,23 @@ export default {
         { label: 'I/F명', value: 'SSUBSCLGIPPORTDESCRIPTION' },
       ],
       sortType: 'PIP_PREFIX',
-      sortOrdr: 'ASC'
+      sortOrdr: 'DESC'
     }
   },
   methods: {
+    onResetParameter() {
+      this.sortType = this.sortTypeDefaultVal ?? 'PIP_PREFIX'
+      this.sortOrdr = this.sortOrdrDefaultVal ?? 'DESC'
+    },
     init() {
       if (this.prop_options !== null) {
         this.sortTypeOptions = this.prop_options
       }
       if (this.sortTypeDefaultVal !== null) {
         this.sortType = this.sortTypeDefaultVal
+      }
+      if (this.sortOrdrDefaultVal !== null) {
+        this.sortOrdr = this.sortOrdrDefaultVal
       }
       this.emitEventToParent([{ key: 'sortType', value: this.sortType }, { key: 'sortOrdr', value: this.sortOrdr }])
     },
@@ -72,7 +83,7 @@ export default {
     },
     setParameter(params) {
       this.sortType = params?.sortType ?? ''
-      this.sortOrdr = params?.sortOrdr ?? ''
+      this.sortOrdr = params?.sortOrdr ?? 'DESC'
     }
   }
 }

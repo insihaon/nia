@@ -4,20 +4,23 @@
       ref="searchCondition"
       :prop-name="name"
       :component-keys="componentList"
-      @handle-search="fnViewListTacsConnHist"
+      @handle-search="handleSearch"
     />
     <el-col ref="tableContainer" :span="24">
       <compTable
         ref="compTable"
         :prop-name="name"
         :prop-table-height="'calc(100% - 80px)'"
-        :prop-data="tableDatas"
+        :prop-data="pagination.data"
+        :prop-pagination-data.sync="pagination"
         :prop-column="tableColumns"
         :prop-is-pagination="true"
         :prop-is-check-box="false"
         :prop-highlight-cell="onCheckSavailYn"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
+        :prop-on-page-change="handleChangeCurPage"
+        :prop-on-page-size-change="handleChangeCurPage"
       >
         <template slot="text-description">
           <span>
@@ -46,6 +49,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      pagination: this.setDefaultPagination(),
       tableColumns: [
           { prop: 'pipFcltInet', label: '장비IP', align: 'center', columnVisible: true, showOverflow: true },
           { prop: 'sfcltPromptNm', label: '장비프롬프트명', align: 'center', columnVisible: true, showOverflow: true },
@@ -55,7 +59,7 @@ export default {
               if (row?.savailYn === '' || row?.savailYn === null) {
                 return ''
               } else {
-                return row.savailYn === 'Y' ? '중복' : '중복아님'
+                return row.savailYn === 'N' ? '중복' : '중복아님'
               }
             }
           },
@@ -72,7 +76,7 @@ export default {
       return [
         { key: 'InputType', props: { label: '장비 IP', prop_parameterKey: 'pipFcltInet' } },
         { key: 'InputType', props: { label: '장비프롬프트명', prop_parameterKey: 'sfcltPromptNm' } },
-        { key: 'InputType', props: { label: '조회IP블럭', prop_parameterKey: 'pipPrifix' } },
+        { key: 'InputType', props: { label: '조회IP블럭', prop_parameterKey: 'pipPrefix' } },
         { key: 'ApplyStatus', props: { label: 'IP중복여부', prop_parameterKey: 'savailYn',
             prop_options: [
               { label: '전체', value: '' },
@@ -95,9 +99,15 @@ export default {
   },
   mounted () {
     this.fnSelectSresultMsg()
-    this.fnViewListTacsConnHist()
+    setTimeout(() => {
+      this.fnViewListTacsConnHist()
+    }, 100)
   },
   methods: {
+    handleSearch(requestParameter) {
+      this.pagination.currentPage = 1
+      this.fnViewListTacsConnHist(requestParameter)
+    },
     async fnSelectSresultMsg() {
       try {
         const res = await apiRequestJson(ipmsJsonApis.selectTacsSresultMsg, {})
@@ -108,14 +118,25 @@ export default {
         this.error(error)
       }
     },
-    async fnViewListTacsConnHist(requestParameter) {
-      const params = requestParameter ?? this.$refs?.searchCondition?.requestParameter
+    async fnViewListTacsConnHist(requestParameter = null) {
+      const parameter = requestParameter ?? this.$refs?.searchCondition?.requestParameter
+      const target = ({ vue: this.$refs.compTable })
+      const { pageSize: pageUnit, currentPage: pageIndex } = this.pagination
+      Object.assign(parameter, { pageUnit, pageIndex })
       try {
-        const res = await apiRequestModel(ipmsModelApis.viewListTacsConnHist, params)
-        this.tableDatas = res.result.data
+        this.openLoading(target)
+        const res = await apiRequestModel(ipmsModelApis.viewListTacsConnHist, parameter)
+        this.pagination.data = res.result.data ?? []
+        this.pagination.total = res.result.totalCount
       } catch (error) {
         this.error(error)
+      } finally {
+        this.closeLoading(target)
       }
+    },
+    handleChangeCurPage(v) {
+      if (v) this.pagination.currentPage = v
+      this.fnViewListTacsConnHist()
     },
     onCheckSavailYn({ row, column, rowIndex, columnIndex }) {
       if (column.property === 'savailYn') {
@@ -135,7 +156,7 @@ export default {
     color: red !important;
   }
 }
-.highlight_blue_color {
+::v-deep  .highlight_blue_color {
   .cell {
     color: blue !important;
   }

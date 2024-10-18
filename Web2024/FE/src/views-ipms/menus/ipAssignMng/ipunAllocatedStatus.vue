@@ -86,16 +86,44 @@ export default {
       ]
     }
   },
+  watch: {
+    $route: {
+      handler: function(route) {
+        if (this.ipms.toParams !== null) {
+          const { value } = this.ipms.toParams
+          if (value) {
+            const compInfo = this.componentList.find(v => v.key === 'SsvcLineType')
+            this.$set(compInfo.props, 'defaultValueLvl1', value.ssvcLineTypeCd)
+            setTimeout(() => {
+              const levelElement = this.$refs.searchCondition.$refs.SsvcLineType[0]
+              // this.$set(levelElement.localValue, 1, value.ssvcLineTypeCd)
+              this.$set(levelElement.localValue, 2, value.ssvcGroupCd)
+              this.$store.dispatch('ipms/setToParam', null)
+            }, 200)
+            setTimeout(() => {
+              this.fnViewListUnAssignIP()
+            }, 250)
+          }
+        }
+      },
+      immediate: true
+    }
+  },
   mounted() {
     this.fnViewListUnAssignIP()
   },
   methods: {
-    async fnViewListUnAssignIP(requestParameter) {
+    async fnViewListUnAssignIP(requestParameter = null) {
+      const parameter = requestParameter ?? this.$refs.searchCondition.requestParameter
+      const target = ({ vue: this.$refs.compTable })
       try {
-        const res = await apiRequestModel(ipmsModelApis.viewListUnAssignIP, requestParameter)
+        this.openLoading(target)
+        const res = await apiRequestModel(ipmsModelApis.viewListUnAssignIP, parameter)
         this.tableDatas = res?.result.data
       } catch (error) {
-        console.error(error)
+        this.error(error)
+      } finally {
+        this.closeLoading(target)
       }
     },
     async viewDetailCrtIPMst(row, type) {
@@ -113,7 +141,7 @@ export default {
         const res = await apiRequestModel(ipmsModelApis.viewDetailUnAssignIP, param)
         this.$refs.ModalNotAssignDetail.open({ row: res?.result.data, type: type })
       } catch (error) {
-        console.error(error)
+        this.error(error)
       }
     }
   }

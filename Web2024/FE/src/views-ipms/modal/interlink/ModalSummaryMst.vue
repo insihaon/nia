@@ -57,7 +57,7 @@
             </tbody>
           </table>
           <div class="btn_area mt-2">
-            <el-button size="mini" type="primary" @click="fnSelectSummuryList">조회</el-button>
+            <el-button size="mini" type="primary" @click="handleSearch">조회</el-button>
           </div>
         </div>
         <!-- 등록 Section -->
@@ -102,11 +102,14 @@
           <compTable
             ref="compTable"
             :prop-name="name"
-            :prop-table-height="350"
+            :prop-table-height="300"
+            :prop-data="pagination.data"
+            :prop-pagination-data.sync="pagination"
             :prop-is-check-box="true"
-            :prop-data="resultList"
             :prop-is-pagination="true"
             :prop-column="tableColumns"
+            :prop-on-page-change="handleChangeCurPage"
+            :prop-on-page-size-change="handleChangeCurPage"
             @update:propSelected="handleClickCheck"
           >
             <template slot="text-description">
@@ -150,11 +153,11 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      pagination: this.setDefaultPagination(),
       searchSkind: '',
       searchSIpBlock: '',
       insertSkind: 'public',
       insertSIpBlock: '',
-      resultList: [],
       tableColumns: [
         { prop: 'skindNm', label: '구분', align: 'center', columnVisible: true, showOverflow: true },
         { prop: 'pipPrefix', label: 'IP 블록', align: 'center', columnVisible: true, showOverflow: true },
@@ -169,17 +172,34 @@ export default {
       this.domElement.maxWidth = 1000
     },
     onOpen(model, actionMode) {
-      this.fnSelectSummuryList()
+      setTimeout(() => {
+        this.fnSelectSummuryList()
+      }, 10)
     },
     onClose() { },
     async fnSelectSummuryList() {
-      const params = { pageIndex: 1, pageUnit: 10, sKindCd: this.searchSkind, pipPrefix: this.searchSIpBlock }
+      const params = { skindCd: this.searchSkind, pipPrefix: this.searchSIpBlock }
+      const { pageSize: pageUnit, currentPage: pageIndex } = this.pagination
+      Object.assign(params, { pageUnit, pageIndex })
+      const target = ({ vue: this.$refs.compTable })
       try {
+        this.openLoading(target)
         const res = await apiRequestModel(ipmsModelApis.viewPopSummaryMst, params)
-        this.resultList = res.result.data
+        this.pagination.data = res.result.data ?? []
+        this.pagination.total = res.result.totalCount
       } catch (error) {
         this.error(error)
+      } finally {
+        this.closeLoading(target)
       }
+    },
+     handleChangeCurPage(v) {
+      if (v) this.pagination.currentPage = v
+      this.fnSelectSummuryList()
+    },
+    handleSearch() {
+      this.pagination.currentPage = 1
+      this.fnSelectSummuryList()
     },
     async fnInsertBtnClick() {
       const params = { skindCd: this.insertSkind, skindNm: this.insertSkind, pipPrefix: this.insertSIpBlock }

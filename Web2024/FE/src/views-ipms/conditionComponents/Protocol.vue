@@ -39,6 +39,9 @@ export default {
     }
   },
   methods: {
+    onResetParameter() {
+      this.value = 'I'
+    },
     setParameter(params) {
       this.value = params[this.parameterKey] ?? 'I'
     }

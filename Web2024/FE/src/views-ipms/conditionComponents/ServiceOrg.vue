@@ -95,6 +95,12 @@ export default {
   },
   // sassignTypeCd, sassignTypeCdMultiStr: SA0001;SA0002;SA0003;
   methods: {
+    onResetParameter() {
+      if (this.defaultValue !== null) {
+        this.values = this.defaultValue
+      }
+      this.values = this.isMulti ? [] : ''
+    },
     init() {
       this.values = this.isMulti ? [] : ''
       if (this.prop_options !== null) {

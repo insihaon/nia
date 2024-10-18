@@ -18,7 +18,7 @@
       <!-- TACS관리 / IP주소 라우팅 비교/점검 > 조직별 장비 정보관리 > 신규생성 -->
       <span slot="title">
         <i class="el-icon-document mr-2" style="font-size: 17px" />
-        조직 장비 등록
+        조직 장비 {{ fnType === 'insert' ? '등록': '수정' }}
         <hr>
       </span>
       <div id="content" class="layer">
@@ -299,7 +299,7 @@ export default {
         onMessagePopup(this, '장비타입을 선택하세요')
         return false
       }
-      if (this.viewType === 'ipRouting' && suseYn === null || suseYn === '') {
+      if (this.viewType === 'ipRouting' && (suseYn === null || suseYn === '')) {
         onMessagePopup(this, '사용여부를 선택하세요')
         return false
       }

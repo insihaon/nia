@@ -54,6 +54,9 @@ export default {
     }
   },
   methods: {
+    onResetParameter() {
+      this.value = this.defaultValue ?? ''
+    },
     init() {
       if (this.defaultValue !== null) {
         this.value = this.defaultValue

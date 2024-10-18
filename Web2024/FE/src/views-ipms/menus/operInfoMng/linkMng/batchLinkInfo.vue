@@ -4,20 +4,23 @@
       ref="searchCondition"
       :prop-name="name"
       :component-keys="componentList"
-      @handle-search="fnViewListTbBatchSvcBas"
+      @handle-search="handleSearch"
     />
     <el-col ref="tableContainer" :span="24">
       <compTable
         ref="compTable"
         :prop-name="name"
         :prop-table-height="'calc(100% - 80px)'"
-        :prop-data="tableDatas"
+        :prop-data="pagination.data"
+        :prop-pagination-data.sync="pagination"
         :prop-column="tableColumns"
         :prop-is-pagination="true"
         :prop-is-check-box="false"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
         :prop-on-click="handleClickCell"
+        :prop-on-page-change="handleChangeCurPage"
+        :prop-on-page-size-change="handleChangeCurPage"
       >
         <template slot="text-description">
           <span>
@@ -48,6 +51,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      pagination: this.setDefaultPagination(),
         tableColumns: [
           { prop: 'sifId', label: '연동 ID', align: 'center', columnVisible: true, showOverflow: true },
           { prop: 'ssystemNm', label: '시스템 명', align: 'center', columnVisible: true, showOverflow: true },
@@ -62,29 +66,42 @@ export default {
               { label: '전체', value: '' },
               { label: '연동 ID', value: 'sifId' },
               { label: '시스템 명', value: 'ssystemNm' },
-            ]
+            ],
+            prop_disabled_condition: (value) => {
+              return value === ''
+            }
           }
         }
       ],
-      tableDatas: [],
     }
   },
   // 수정: updateTbBatchSvcBas
   mounted () {
-    this.fnViewListTbBatchSvcBas()
+    setTimeout(() => {
+      this.fnViewListTbBatchSvcBas()
+    }, 100)
   },
   methods: {
+    handleSearch(requestParameter) {
+      this.pagination.currentPage = 1
+      this.fnViewListTbBatchSvcBas(requestParameter)
+    },
     async fnViewListTbBatchSvcBas(requestParameter) {
       const params = requestParameter ?? this.$refs?.searchCondition?.requestParameter
       try {
         const res = await apiRequestModel(ipmsModelApis.viewListTbBatchSvcBas, params)
-        this.tableDatas = res.result.data
+        this.pagination.data = res.result.data ?? []
+        this.pagination.total = res.result.totalCount
       } catch (error) {
         this.error(error)
       }
     },
     handleClickCell(row) {
       this.$refs.ModalTbBatchSvcBasDetail.open({ viewType: 'mobile', fnType: 'update', row })
+    },
+    handleChangeCurPage(v) {
+      if (v) this.pagination.currentPage = v
+      this.fnViewListTbBatchSvcBas()
     },
   }
 }

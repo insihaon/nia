@@ -7,7 +7,7 @@ copyright notice above does not evidence any actual or * intended publication of
       <div class="d-flex items-baseline">
         <i class="el-icon-document mr-1" />
         <slot name="text-description" />
-        <span class="countNum">( <slot name="add-count" /> 총 {{ propIsPagination != false ? propPaginationData.total.toLocaleString() : propData.length }} 건 )</span>
+        <span class="countNum">( <slot name="add-count" /> 총 {{ propIsPagination != false ? (propPaginationData.total || 0).toLocaleString() : propData.length }} 건 )</span>
         <i class="el-icon-s-tools ml-1 mt-1" @click="fn_click_settings" />
       </div>
       <slot name="add-features" />
@@ -67,12 +67,13 @@ copyright notice above does not evidence any actual or * intended publication of
         </template>
       </el-table-column>
     </el-table>
+    <!--  && propIsPageSize -->
     <div v-if="propIsPagination != false" style="text-align: center; margin-top: 10px">
       <el-pagination
         :current-page.sync="propPaginationData.currentPage"
         :total="propPaginationData.total"
         :page-size="propPaginationData.pageSize"
-        layout="sizes, prev, pager, next"
+        :layout="propPaginationLayout"
         @current-change="propOnPageChange"
         @size-change="fn_onPageSizeChange"
       />
@@ -119,6 +120,7 @@ export default {
       },
     }, //체크된 데이터
     propIsPagination: { type: Boolean, default: false }, //페이징 유무
+    propPaginationLayout: { type: String, default: 'sizes, prev, pager, next' }, // 페이지 사이즈 변경 show 유무
     propPaginationData: {
       type: Object,
       default: () => {

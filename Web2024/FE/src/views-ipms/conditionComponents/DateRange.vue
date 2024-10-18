@@ -9,6 +9,7 @@
       size="mini"
       start-placeholder="시작일"
       end-placeholder="종료일"
+      @change="handleChange()"
     />
   </el-col>
 </template>
@@ -45,6 +46,9 @@ export default {
     }
   },
   methods: {
+    onResetParameter() {
+      this.value = []
+    },
     init() {
       if (this.defaultValue !== null && Array.isArray(this.defaultValue)) {
         this.value = this.defaultValue
