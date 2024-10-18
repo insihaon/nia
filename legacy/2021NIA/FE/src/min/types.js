@@ -3,4 +3,5 @@ export const EventType = {
     changeLvl2: 'changeLvl_2',
     changeLvl3: 'changeLvl_3',
     setSavedParameter: 'setSavedParameter',
+    resetCondition: 'resetCondition',
 }

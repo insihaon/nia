@@ -4,20 +4,23 @@
       ref="searchCondition"
       :prop-name="name"
       :component-keys="componentList"
-      @handle-search="fnViewListPrivateAs"
+      @handle-search="handleSearch"
     />
     <el-col ref="tableContainer" :span="24">
       <compTable
         ref="compTable"
         :prop-name="name"
         :prop-table-height="'calc(100% - 80px)'"
+        :prop-data="pagination.data"
+        :prop-pagination-data.sync="pagination"
         :prop-column="tableColumns"
-        :prop-data="resultListVo"
-        :prop-is-pagination="false"
+        :prop-is-pagination="true"
         :prop-is-check-box="false"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
         :prop-on-click="onClcikRow"
+        :prop-on-page-change="handleChangeCurPage"
+        :prop-on-page-size-change="handleChangeCurPage"
       >
         <template slot="text-description">
           <span>
@@ -53,16 +56,17 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      pagination: this.setDefaultPagination(),
       tableColumns: [
         { prop: 'nrequestAsSeq', label: 'AS번호', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'srequestAsCtm', label: '고객명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'dcreateDt', label: '신청일', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'dcreateDt', label: '신청일', align: 'center', sortable: true, columnVisible: true, showOverflow: true, formatter: (row) => { return this.moment(row.dcreateDt).format('YYYY-MM-DD HH:mm:ss') } },
         { prop: 'screateNm', label: '요청자', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'srequestAsObjNm1', label: '노드1 명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'srequestAsObjLlnum1', label: '노드1 전용번호', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'srequestAsObjNm2', label: '노드2 명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'srequestAsObjLlnum2', label: '노드2 전용번호', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'dapvDt', label: '처리일시', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'dapvDt', label: '처리일시', align: 'center', sortable: true, columnVisible: true, showOverflow: true, formatter: (row) => { return row.dapvDt ? this.moment(row.dapvDt).format('YYYY-MM-DD HH:mm:ss') : '' } },
         { prop: 'srequestAsTypeNm', label: '신청', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
       ],
       componentList: [
@@ -91,6 +95,7 @@ export default {
         {
           key: 'SortType', props: {
             sortTypeDefaultVal: 'DCREATE_DT',
+            sortOrdrDefaultVal: 'DESC',
             label: '정렬조건', prop_options: [
               { label: '신청일', value: 'DCREATE_DT' },
               { label: 'AS번호', value: 'NREQUEST_AS_SEQ' },
@@ -99,20 +104,37 @@ export default {
           }
         },
       ],
-      resultListVo: []
     }
   },
   mounted() {
-    this.fnViewListPrivateAs()
+    setTimeout(() => {
+      this.fnViewListPrivateAs()
+    }, 100)
   },
   methods: {
-   async fnViewListPrivateAs(requestParameter) {
+    handleSearch(requestParameter) {
+      this.pagination.currentPage = 1
+      this.fnViewListPrivateAs(requestParameter)
+    },
+   async fnViewListPrivateAs(requestParameter = null) {
+      const parameter = requestParameter ?? this.$refs.searchCondition.requestParameter
+      const target = ({ vue: this.$refs.compTable })
+      const { pageSize: pageUnit, currentPage: pageIndex } = this.pagination
+      Object.assign(parameter, { pageUnit, pageIndex })
       try {
-        const res = await apiRequestModel(ipmsModelApis.viewListPrivateAs, requestParameter)
-        this.resultListVo = res?.result.data
+        this.openLoading(target)
+        const res = await apiRequestModel(ipmsModelApis.viewListPrivateAs, parameter)
+        this.pagination.data = res.result.data ?? []
+        this.pagination.total = res.result.totalCount
       } catch (error) {
-        console.error(error)
+        this.error(error)
+      } finally {
+        this.closeLoading(target)
       }
+    },
+    handleChangeCurPage(v) {
+      if (v) this.pagination.currentPage = v
+      this.fnViewListPrivateAs()
     },
     onClcikRow(row) {
       this.fnViewDetailPrvAs(row, 'detail')

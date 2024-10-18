@@ -220,6 +220,24 @@
 
 		<include refid="Vo_Where_Clause" />
 	</update>
+
+	<update id="updateTbBoardVo" parameterType="com.kt.ipms.legacy.opermgmt.boardmgmt.vo.TbBoardVo">
+		UPDATE
+			
+		MST.TB_BOARD A
+		SET
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sboardTypeSubCd)">
+			A.SBOARD_TYPE_SUB_CD = #{sboardTypeSubCd, jdbcType=CHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sboardTitle)">
+			,	A.SBOARD_TITLE = #{sboardTitle, jdbcType=VARCHAR}
+			</if>
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sboardContents)">
+			,	A.SBOARD_CONTENTS = #{sboardContents, jdbcType=VARCHAR}
+			</if>
+
+		<include refid="Vo_Where_Clause" />
+	</update>
 	
 	<delete id="deleteTbBoardVo" parameterType="com.kt.ipms.legacy.opermgmt.boardmgmt.vo.TbBoardVo">
 		DELETE

@@ -20,79 +20,89 @@
         IP 배정신청
         <hr>
       </span>
-
-      <div class="content_result mt0">
-        <table class="tbl_data entry">
-          <colgroup>
-            <col width="14%" /><col width="20%" />
-            <col width="13%" /><col width="20%" />
-            <col width="13%" /><col width="20%" />
-          </colgroup>
-          <tbody>
-            <tr class="top">
-              <th class="first" scope="row">제목</th>
-              <td colspan="5">
-                <el-input id="txtStitle" v-model="txtStitle" size="mini" type="text" class="txt w98" maxlength="30" /></td>
-            </tr>
-            <tr>
-              <th class="first" scope="row">서비스망</th>
-              <td>
-                <el-select v-model="updSsvcLineTypeCd" class="w-100" size="mini" name="selInsertSvcLine" @change="handleChangeLvl1()">
-                  <el-option
-                    v-for="item in ssvcLineTypeNmOp"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
+      <div id="content" class="layer">
+        <div class="content_result mt0">
+          <table class="tbl_data entry">
+            <colgroup>
+              <col width="14%" />
+              <col width="20%" />
+              <col width="13%" />
+              <col width="20%" />
+              <col width="13%" />
+              <col width="20%" />
+            </colgroup>
+            <tbody>
+              <tr class="top">
+                <th class="first" scope="row">제목</th>
+                <td colspan="5">
+                  <input
+                    v-model="stitle"
+                    type="text"
+                    class="txt w98"
+                    maxlength="30"
                   />
-                </el-select>
-              </td>
-              <th scope="row">본부</th>
-              <td>
-                <el-select v-model="updSsvcGroupCd" class="w-100" size="mini" name="selInsertSvcLine" @change="handleChangeLvl2()">
-                  <el-option
-                    v-for="item in ssvcGroupNmOp"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
+                </td>
+              </tr>
+              <tr>
+                <th class="first" scope="row">서비스망</th>
+                <td>
+                  <select v-model="ssvcLineTypeCd" @change="handleChangeLvl1">
+                    <option v-for="item in svcLineList" :key="item.ssvcLineTypeCd" :value="item.value">
+                      {{ item.label }}
+                    </option>
+                  </select>
+                </td>
+                <th scope="row">본부</th>
+                <td>
+                  <select v-model="ssvcGroupCd" @change="handleChangeLvl2">
+                    <option v-for="item in centerList" :key="item.ssvcGroupCd" :value="item.ssvcGroupCd">
+                      {{ item.ssvcGroupNm }}
+                    </option>
+                  </select>
+                </td>
+                <th scope="row">노드</th>
+                <td>
+                  <select v-model="ssvcObjCd" class="w98">
+                    <option v-for="item in nodeList" :key="item.ssvcObjCd" :value="item.ssvcObjCd">
+                      {{ item.ssvcObjNm }}
+                    </option>
+                  </select>
+                </td>
+              </tr>
+              <tr class="view">
+                <th class="first" scope="row">신청자</th>
+                <td>{{ userInfo.suserNm }}</td>
+                <th scope="row">소속부서</th>
+                <td colspan="3">{{ userInfo.sposDeptOrgNm }}</td>
+              </tr>
+              <tr>
+                <th class="first" scope="row">요청 IP개수 (/24)</th>
+                <td colspan="5">
+                  <input
+                    v-model="napyIpCnt"
+                    type="text"
+                    style="width: 80%"
+                    maxlength="5"
                   />
-                </el-select>
-              </td>
-              <th scope="row">노드</th>
-              <td>
-                <el-select v-model="updSsvcObjCd" class="w-100" size="mini" name="selInsertSvcLine">
-                  <el-option
-                    v-for="item in ssvcObjNmOp"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  />
-                </el-select>
-
-              </td>
-            </tr>
-            <tr class="view">
-              <th class="first" scope="row">신청자</th>
-              <td><!-- {{sessionScope.user.suserNm}} --></td>
-              <th scope="row">소속부서</th>
-              <td colspan="3"><!-- {{ sessionScope.user.sposDeptOrgNm }} --></td>
-            </tr>
-            <tr>
-              <th class="first" scope="row">요청 IP개수 (/24)</th>
-              <td colspan="5">
-                <el-input id="txtApyIpCnt" v-model="txtApyIpCnt" size="mini" type="text" class="txt w-90" maxlength="5" @input="validateNumberInput" /> 개(/24 단위)</td>
-            </tr>
-            <tr class="last">
-              <th class="first" scope="row">신청내용</th>
-              <td colspan="5">
-                <textarea id="txtApyContents" v-model="txtApyContents" rows="10" class="w98" /></td>
-            </tr>
-
-          </tbody>
-        </table>
+                  개(/24 단위)
+                </td>
+              </tr>
+              <tr class="last">
+                <th class="first" scope="row">신청내용</th>
+                <td colspan="5">
+                  <textarea
+                    v-model="scontents"
+                    rows="10"
+                    class="w98"
+                  ></textarea>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-
       <div slot="footer" class="dialog-footer">
-        <el-button size="mini" class="el-icon-check" @click="fnInsertIpAssignApy()">{{ $t('등록') }}</el-button>
+        <el-button size="mini" class="el-icon-check" @click="fnInsertIpAssignApy()">등록</el-button>
         <el-button size="mini" class="el-icon-close" @click="close()">{{ $t('exit') }}</el-button>
       </div>
     </el-dialog>
@@ -102,7 +112,9 @@
 <script>
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
+import { mapState } from 'vuex'
 import { apiRequestModel, ipmsModelApis, ipmsJsonApis, apiRequestJson } from '@/api/ipms'
+import { onMessagePopup } from '@/utils'
 
 const routeName = 'ModalAssignApyInsert'
 
@@ -115,9 +127,13 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      resultVo: null,
-      ssvcLineTypeCd: '',
-      ssvcLineTypeNmOp: [
+      stitle: '',
+      ssvcLineTypeCd: '000000',
+      ssvcGroupCd: '000000',
+      ssvcObjCd: '000000',
+      napyIpCnt: '',
+      scontents: '',
+      svcLineList: [
         { label: '-------', value: '000000' },
         { label: 'KORNET', value: 'CL0001' },
         { label: 'PREMIUM', value: 'CL0002' },
@@ -128,21 +144,14 @@ export default {
         { label: '미분류', value: 'CL0007' },
         { label: 'SCHOOLNET', value: 'CL0008' }
       ],
-      updSsvcLineTypeCd: '',
-      ssvcGroupNmOp: [
-       { label: '-------', value: '000000' }
-      ],
-      updSsvcGroupCd: '',
-      ssvcObjNmOp: [
-       { label: '-------', value: '000000' }
-      ],
-      updSsvcObjCd: '',
-      txtApyIpCnt: '',
-      txtApyContents: '',
-      txtStitle: ''
+      centerList: [{ ssvcGroupNm: '-------', ssvcGroupCd: '000000' }],
+      nodeList: [{ ssvcObjNm: '-------', ssvcObjCd: '000000' }],
     }
   },
   computed: {
+    ...mapState({
+      userInfo: state => state.user.info
+    }),
 
   },
   mounted() {
@@ -154,111 +163,92 @@ export default {
       this.domElement.maxWidth = 1200
     },
     onOpen(model, actionMode) {
-      this.handleChangeLvl1('000000')
     },
     validateNumberInput() {
       const regExp = /[^0-9a-zA-Z]/g // 숫자만 허용하고 그 외의 모든 문자 제거 (유니코드 플래그 추가)
-      this.txtApyIpCnt = this.txtApyIpCnt.replace(regExp, '')
+      this.napyIpCnt = this.napyIpCnt.replace(regExp, '')
     },
-    async handleChangeLvl1(num) {
+    async handleChangeLvl1() {
+      this.ssvcGroupCd = '000000'
+      this.ssvcObjCd = '000000'
       try {
-        let ssvcLineTypeCd
-        if (num) {
-          ssvcLineTypeCd = num
-        } else {
-          ssvcLineTypeCd = this.updSsvcLineTypeCd
-        }
-
-        this.updSsvcGroupCd = null
-        this.updSsvcObjCd = null
-
-        const tbLvlBasVo = { ssvcLineTypeCd: ssvcLineTypeCd }
+        const tbLvlBasVo = { ssvcLineTypeCd: this.ssvcLineTypeCd }
         const res = await apiRequestJson(ipmsJsonApis.selectAuthCenterList, tbLvlBasVo)
-        this.ssvcGroupNmOp = res?.tbLvlBasVos?.filter(v => v.ssvcGroupNm !== '전체').map(v => {
-          return { value: v.ssvcGroupCd, label: v.ssvcGroupNm }
-        })
-
-        this.ssvcObjNmOp = []
+        this.centerList = res?.tbLvlBasVos?.filter(v => v.ssvcGroupNm !== '전체')
+        this.nodeList = [{ ssvcObjNm: '-------', ssvcObjCd: '000000' }]
       } catch (error) {
-        console.log(error)
+        this.error(error)
       }
     },
-
     async handleChangeLvl2() {
+      this.ssvcObjCd = '000000'
       try {
-        this.updSsvcObjCd = null
-
-        const tbLvlBasVo = {
-          ssvcLineTypeCd: this.updSsvcLineTypeCd,
-          ssvcGroupCd: this.updSsvcGroupCd,
-        }
-
+        const tbLvlBasVo = { ssvcLineTypeCd: this.ssvcLineTypeCd, ssvcGroupCd: this.ssvcGroupCd }
         const res = await apiRequestJson(ipmsJsonApis.selectAuthNodeList, tbLvlBasVo)
-        this.ssvcObjNmOp = res?.tbLvlBasVos?.filter(v => v.ssvcObjNm !== '전체').map(v => {
-          return { value: v.ssvcObjCd, label: v.ssvcObjNm }
-        })
+        this.nodeList = res?.tbLvlBasVos?.filter(v => v.ssvcObjNm !== '전체')
       } catch (error) {
-        console.log(error)
+        this.error(error)
       }
     },
     fnInsertIpAssignApy() {
-      if (this.txtStitle === null || this.txtStitle === '') {
-        this.$message('제목을 입력 하세요')
+      if (this.stitle === null || this.stitle === '') {
+        onMessagePopup(this, '제목을 입력 하세요')
         return
       }
 
-      if (this.txtApyIpCnt === null || this.txtApyIpCnt === '') {
-        this.$message('요청 IP개수를 입력 하세요.')
+      if (this.napyIpCnt === null || this.napyIpCnt === '') {
+        onMessagePopup(this, '요청 IP개수를 입력 하세요.')
         return
       }
 
-      if (this.txtApyContents === null || this.txtApyContents === '') {
-        this.$message('신청 내용을 입력 하세요.')
+      if (this.scontents === null || this.scontents === '') {
+        onMessagePopup(this, '신청 내용을 입력 하세요.')
         return
       }
 
-      if (this.updSsvcLineTypeCd === '000000' || this.updSsvcLineTypeCd === '') {
-        this.$message('서비스망을 선택해 주세요.')
+      if (this.ssvcLineTypeCd === '000000' || this.ssvcLineTypeCd === '') {
+        onMessagePopup(this, '서비스망을 선택해 주세요.')
         return
       }
 
-      if (this.updSsvcGroupCd === '000000' || this.updSsvcGroupCd === '') {
-        this.$message('본부를 선택해 주세요')
+      if (this.ssvcGroupCd === '000000' || this.ssvcGroupCd === '') {
+        onMessagePopup(this, '본부를 선택해 주세요')
         return
       }
 
-      if (this.updSsvcObjCd === '000000' || this.updSsvcObjCd === '') {
-        this.$message('노드를 선택해 주세요')
+      if (this.ssvcObjCd === '000000' || this.ssvcObjCd === '') {
+        onMessagePopup(this, '노드를 선택해 주세요')
         return
       }
-
       this.$confirm('배정 신청 하시겠습니까?', '배정 메세지', {
         confirmButtonText: '확인',
         cancelButtonText: '취소'
       }).then(async() => {
         try {
           const TbRequestAssignMstVo = {
-            stitle: this.txtStitle,
-            napyIpCnt: this.txtApyIpCnt,
-            scontents: this.txtApyContents,
-            ssvcLineTypeCd: this.updSsvcLineTypeCd,
-            ssvcGroupCd: this.updSsvcGroupCd,
-            ssvcObjCd: this.updSsvcObjCd,
+            stitle: this.stitle,
+            napyIpCnt: this.napyIpCnt,
+            scontents: this.scontents,
+            ssvcLineTypeCd: this.ssvcLineTypeCd,
+            ssvcGroupCd: this.ssvcGroupCd,
+            ssvcObjCd: this.ssvcObjCd,
             sapyUserId: this.$store.state.user.info.suserId,
             srequestAssignTypeCd: 'RS0301',
             screateId: this.$store.state.user.info.suserId,
             smodifyId: this.$store.state.user.info.suserId,
           }
           const res = await apiRequestJson(ipmsJsonApis.insertAssignApyTxn, TbRequestAssignMstVo)
-           if (res.commonMsg === 'SUCCESS') {
-            this.$message.success({ message: `IP 배정 신청 내용을 정상적으로 등록 하였습니다.` })
-            this.$emit('reloadData')
-            }
-          } catch (error) {
-            this.$message.error({ message: `배정 신청에 실패했습니다.` })
-            console.log(error)
+          if (res.commonMsg === 'SUCCESS') {
+            onMessagePopup(this, 'IP 배정 신청 내용을 정상적으로 등록 하였습니다.')
+            this.$emit('reload')
+            this.close()
+          } else {
+            onMessagePopup(this, res.commonMsg)
           }
-        })
+        } catch (error) {
+          this.error(error)
+        }
+      })
     },
     onClose() { },
   },

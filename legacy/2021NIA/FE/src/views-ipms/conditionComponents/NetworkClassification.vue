@@ -108,6 +108,11 @@ export default {
   computed: {
   },
   methods: {
+    onResetParameter() {
+      this.localValue1 = ''
+      this.localValue2 = ''
+      this.localValue3 = ''
+    },
     init() {
       this.$emit('update-value', this.getParameter())
     },

@@ -153,6 +153,14 @@ export default {
     }
   },
   methods: {
+    onResetParameter() {
+      this.localValue = { 1: '', 2: '', 3: '' }
+      this.localLabel = { 1: '', 2: '', 3: '' }
+      if (this.defaultValueLvl1 !== null) {
+        this.$set(this.localValue, 1, this.defaultValueLvl1)
+        this.handleChangeLvl1()
+      }
+    },
     init() {
       /* default options, value setting */
       if (this.propsLvlOptions !== null) {

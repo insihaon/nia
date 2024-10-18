@@ -79,7 +79,8 @@ public class NodeMgmtController extends CommonController{
 	
 	@RequestMapping(value = "/opermgmt/nodemgmt/viewListNode.model", method = RequestMethod.POST)
 	@ResponseBody
-	public ModelMap selectListReq( @ModelAttribute("searchVo") NodeMgmtVo searchVo, ModelMap model, HttpServletRequest request){
+	public ModelMap selectListReq(@RequestBody NodeMgmtVo searchVo, ModelMap model, HttpServletRequest request){
+		setPagination(searchVo);
 		NodeMgmtListVo resultListVo = nodeMgmtService.selectListNodeMgmt(searchVo);
 		return createResultList(resultListVo.getNodeMgmtVos(), resultListVo.getTotalCount());
 	}
@@ -132,9 +133,10 @@ public class NodeMgmtController extends CommonController{
 		return model;
 	}
 	
-	@RequestMapping(value = "/opermgmt/nodemgmt/viewInsertNode.model", method = RequestMethod.POST)
+	@RequestMapping(value = "/opermgmt/nodemgmt/selectListIpAssignMst.model", method = RequestMethod.POST)
 	@ResponseBody
-	public ModelMap viewinsertNode(HttpServletRequest request, @RequestBody TbIpAssignMstVo searchVo)  {
+	public ModelMap selectListIpAssignMst(HttpServletRequest request, @RequestBody TbIpAssignMstVo searchVo)  {
+		setPagination(searchVo);
 		TbIpAssignMstListVo resultListVo = assignMgmtService.selectListIpAssignMst(searchVo);
 		return createResultList(resultListVo.getTbIpAssignMstVos(), resultListVo.getTotalCount());
 	}
@@ -325,7 +327,7 @@ public class NodeMgmtController extends CommonController{
 	}
 	
 	
-	@RequestMapping(value="/opermgmt/nodemgmt/viewfnDeleteAlcIPMst.ajax", method=RequestMethod.POST)
+	@RequestMapping(value="/opermgmt/nodemgmt/viewfnDeleteAlcIPMst.json", method=RequestMethod.POST)
 	@ResponseBody
 	public IpAllocOperMstListVo deleteAlcIPMst(HttpServletRequest request,@RequestBody IpAllocOperMstVo searchVo){
 		IpAllocOperMstListVo resultListVo = null;
@@ -353,7 +355,7 @@ public class NodeMgmtController extends CommonController{
 		return resultListVo;
 	}
 	
-	@RequestMapping(value="/opermgmt/nodemgmt/viewDeleteNode.ajax", method=RequestMethod.POST)
+	@RequestMapping(value="/opermgmt/nodemgmt/viewDeleteNode.json", method=RequestMethod.POST)
 	@ResponseBody
 	public NodeMgmtVo deleteNode(HttpServletRequest request, @RequestBody NodeMgmtVo searchVo){
 		NodeMgmtVo resultVo = null;
@@ -378,7 +380,7 @@ public class NodeMgmtController extends CommonController{
 		return resultVo;
 	}
 	
-	@RequestMapping(value="/opermgmt/nodemgmt/viewCancelNode.ajax", method=RequestMethod.POST)
+	@RequestMapping(value="/opermgmt/nodemgmt/viewCancelNode.json", method=RequestMethod.POST)
 	@ResponseBody
 	public NodeMgmtVo cancelNode(HttpServletRequest request, @RequestBody NodeMgmtVo searchVo){
 		NodeMgmtVo resultVo = null;
@@ -407,7 +409,7 @@ public class NodeMgmtController extends CommonController{
 		return resultVo;
 	}
 	
-	@RequestMapping(value = "/opermgmt/nodemgmt/confirmNode.ajax", method = RequestMethod.POST)
+	@RequestMapping(value = "/opermgmt/nodemgmt/confirmNode.json", method = RequestMethod.POST)
 	@ResponseBody
 	public TbIpAssignMstVo confirmNode(@RequestBody TbIpAssignMstComplexVo tbIpAssignMstComplexVo, 
 			HttpServletRequest request, HttpServletResponse response){

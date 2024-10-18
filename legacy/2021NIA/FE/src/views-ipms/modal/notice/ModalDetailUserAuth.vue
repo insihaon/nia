@@ -236,7 +236,7 @@ export default {
         }
          res = await apiRequestJson(ipmsJsonApis.viewDeleteGrant, tbUserGrantVo)
          // legacy URL : /opermgmt/grantsubsmgmt/viewDeleteGrant.ajax
-        if (res.tbRequestAsApyTxnVo.commonMsg === 'SUCCESS') {
+        if (res.commonMsg === 'SUCCESS') {
           this.$message('권한 신청이 정상적으로 삭제되었습니다.')
           this.$emit('reload')
           this.close()

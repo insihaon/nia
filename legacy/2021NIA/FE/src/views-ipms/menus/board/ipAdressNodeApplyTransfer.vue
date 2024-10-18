@@ -4,20 +4,23 @@
       ref="searchCondition"
       :prop-name="name"
       :component-keys="componentList"
-      @handle-search="fnViewListIpBlockMst"
+      @handle-search="handleSearch"
     />
     <el-col ref="tableContainer" :span="24">
       <compTable
         ref="compTable"
         :prop-name="name"
         :prop-table-height="'calc(100% - 80px)'"
+        :prop-data="pagination.data"
+        :prop-pagination-data.sync="pagination"
         :prop-column="tableColumns"
-        :prop-data="resultListVo"
-        :prop-is-pagination="false"
+        :prop-is-pagination="true"
         :prop-is-check-box="false"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
         :prop-on-click="onClcikRow"
+        :prop-on-page-change="handleChangeCurPage"
+        :prop-on-page-size-change="handleChangeCurPage"
       >
         <template slot="text-description">
           <span>
@@ -31,8 +34,8 @@
         </template>
       </compTable>
     </el-col>
-    <ModalNodeTransferDetail ref="ModalNodeTransferDetail" @reload="fnViewListIpBlockMst()" />
-    <ModalNodeTransferInsert ref="ModalNodeTransferInsert" @reload="fnViewListIpBlockMst()" />
+    <ModalNodeTransferDetail ref="ModalNodeTransferDetail" @reload="fnViewListIpBlockMst" />
+    <ModalNodeTransferInsert ref="ModalNodeTransferInsert" @reload="fnViewListIpBlockMst" />
   </el-row>
 </template>
 <script>
@@ -43,7 +46,6 @@ import tableHeightMixin from '@/mixin/tableHeightMixin'
 import ModalNodeTransferDetail from '@/views-ipms/modal/ModalNodeTransferDetail.vue'
 import ModalNodeTransferInsert from '@/views-ipms/modal/ModalNodeTransferInsert.vue'
 import { ipmsModelApis, apiRequestModel } from '@/api/ipms'
-import moment from 'moment'
 
 const routeName = 'IpAdressNodeApplyTransfer'
 
@@ -56,6 +58,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      pagination: this.setDefaultPagination(),
       tableColumns: [
         { prop: 'seq', label: '번호', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'pipPrefix', label: 'IP블록', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
@@ -65,7 +68,7 @@ export default {
           children: [
             { prop: 'beforeSsvcLineTypeNm', label: '서비스망', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
             { prop: 'beforeSsvcGroupNm', label: '본부', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-            { prop: 'beforeSsvcObjCd', label: '노드', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+            { prop: 'beforeSsvcObjNm', label: '노드', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
           ],
           align: 'center',
           sortable: true,
@@ -87,10 +90,10 @@ export default {
         },
         { prop: 'sUserNm', label: '신청자', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'dCreateDt', label: '신청일시', align: 'center', sortable: true, columnVisible: true, showOverflow: true,
-          formatter: (row) => moment(row.dCreateDt).format('YYYY-MM-DD')
+          formatter: (row) => this.moment(row.dCreateDt).format('YYYY-MM-DD')
         },
         { prop: 'dCompleteDt', label: '처리일시', align: 'center', sortable: true, columnVisible: true, showOverflow: true,
-          formatter: (row) => moment(row.dCompleteDt).format('YYYY-MM-DD')
+          formatter: (row) => row.dCompleteDt ? this.moment(row.dCompleteDt).format('YYYY-MM-DD') : ''
          },
         { prop: 'progressStatusNm', label: '진행상태', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
       ],
@@ -101,6 +104,7 @@ export default {
           key: 'SortType', props: {
             label: '등록기간',
             sortTypeDefaultVal: 'dcreate_dt',
+            sortOrdrDefaultVal: 'DESC',
             prop_options: [
               { label: '신청일', value: 'dcreate_dt' },
               { label: '신청번호', value: 'seq' },
@@ -113,16 +117,34 @@ export default {
     }
   },
   mounted() {
-    this.fnViewListIpBlockMst()
+    setTimeout(() => {
+      this.fnViewListIpBlockMst()
+    }, 100)
   },
   methods: {
-    async fnViewListIpBlockMst(requestParameter) {
+    handleSearch(requestParameter) {
+      this.pagination.currentPage = 1
+      this.fnViewListIpBlockMst(requestParameter)
+    },
+    async fnViewListIpBlockMst(requestParameter = null) {
+      const parameter = requestParameter ?? this.$refs.searchCondition.requestParameter
+      const target = ({ vue: this.$refs.compTable })
+      const { pageSize: pageUnit, currentPage: pageIndex } = this.pagination
+      Object.assign(parameter, { pageUnit, pageIndex })
       try {
-        const res = await apiRequestModel(ipmsModelApis.viewListNode, requestParameter)
-        this.resultListVo = res?.result.data
+        this.openLoading(target)
+        const res = await apiRequestModel(ipmsModelApis.viewListNode, parameter)
+        this.pagination.data = res.result.data ?? []
+        this.pagination.total = res.result.totalCount
       } catch (error) {
         console.error(error)
+      } finally {
+        this.closeLoading(target)
       }
+    },
+     handleChangeCurPage(v) {
+      if (v) this.pagination.currentPage = v
+      this.fnViewListIpBlockMst()
     },
      onClcikRow(row) {
        this.fnViewDetailNode(row)
@@ -139,19 +161,7 @@ export default {
         console.error(error)
       }
     },
-    async fnViewInsertNode() {
-       try {
-        const serachVo = {
-          pageUnit: '5',
-          pageIndex: '1',
-        }
-        const res = await apiRequestModel(ipmsModelApis.viewInsertNode, serachVo)
-        if (res.result.data) {
-          this.$refs.ModalNodeTransferInsert.open({ row: res.result.data })
-        }
-      } catch (error) {
-        console.error(error)
-      }
+    fnViewInsertNode() {
       this.$refs.ModalNodeTransferInsert.open()
     },
   }

@@ -197,6 +197,7 @@ public class TbBatchSvcBasController extends CommonController{
 	
 	
 	@RequestMapping(value = "/linkmgmt/batchmgmt/updateTbBatchSvcBas.json", method = RequestMethod.POST)
+	@ResponseBody
 	public TbBatchSvcBasVo updateTbBatchSvcBas(@RequestBody TbBatchSvcBasVo updateVo, HttpServletRequest request, HttpServletResponse response) throws ServiceException {
 		TbBatchSvcBasVo resultVo = null;
 		try {

@@ -194,11 +194,11 @@ export default {
         const { skindCd, ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd, scommunity, snexthop } = this.formData
         params = { skindCd, ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd }
         Object.assign(params, { [skindCd === 'KORNET' ? 'scommunity' : 'snexthop']: skindCd === 'KORNET' ? scommunity : snexthop })
-      } else {
+      } else { // wireless
         const { skindCd, scommunity, sserviceNm, pipPrefix } = this.formData
-        const skindNm = this.skindCdOptions.filter(item => item.value === skindCd).label
+        const skindNm = this.skindCdOptions.find(item => item.value === skindCd).label
         params = { skindCd, scommu: scommunity, sserviceNm, skindNm }
-        Object.assign(params, { [skindCd === 'COMMU' ? 'scommu' : 'pipPrefix']: skindCd === 'KORNET' ? scommunity : pipPrefix })
+        Object.assign(params, { [skindCd === 'COMMU' ? 'scommu' : 'pipPrefix']: skindCd === 'COMMU' ? scommunity : pipPrefix })
       }
       return params
     },
@@ -209,16 +209,17 @@ export default {
         params = { nwireIpCommuSeq, skindCd }
         Object.assign(params, { [skindCd === 'KORNET' ? 'scommunity' : 'snexthop']: skindCd === 'KORNET' ? scommunity : snexthop })
       } else {
-        const { nmobileIpCommuSeq, skindCd, scommunity, sserviceNm, pipPrefix } = this.formData
-        const skindNm = this.skindCdOptions.filter(item => item.value === skindCd).label
-        params = { nmobileIpCommuSeq, skindCd, sserviceNm, skindNm }
-        Object.assign(params, { [skindCd === 'COMMU' ? 'scommu' : 'pipPrefix']: skindCd === 'KORNET' ? scommunity : pipPrefix })
+        const { nmobileIpCommuSeq, skindCd, skindNm, scommunity, sserviceNm, pipPrefix } = this.formData
+        params = { nmobileIpCommuSeq, skindCd, skindNm, sserviceNm }
+        Object.assign(params, { [skindCd === 'COMMU' ? 'scommu' : 'pipPrefix']: skindCd === 'COMMU' ? scommunity : pipPrefix })
       }
+      return params
     },
     async fnInsertWireMst() {
       if (!this.fnCheckValidate()) return
       try {
-        const res = await apiRequestJson(ipmsJsonApis.insertWireMst, this.getInsertParam())
+        const apiKey = this.isViewWire ? 'insertWireMst' : 'insertMobileMst'
+        const res = await apiRequestJson(ipmsJsonApis[apiKey], this.getInsertParam())
         if (res.commonMsg === 'SUCCESS') {
           onMessagePopup(this, `${this.isViewWire ? '유선' : '무선'}IP 사전 정보 등록이 정상적으로 처리되었습니다`)
           this.formData = this._cloneDeep(this.defaultFormData)
@@ -234,7 +235,8 @@ export default {
     async fnUpdateWireMst() {
       if (!this.fnCheckValidate()) return
       try {
-        const res = await apiRequestJson(ipmsJsonApis.updateWireMst, this.getUpdateParam())
+        const apiKey = this.isViewWire ? 'updateWireMst' : 'updateMobileMst'
+        const res = await apiRequestJson(ipmsJsonApis[apiKey], this.getUpdateParam())
         if (res.commonMsg === 'SUCCESS') {
           onMessagePopup(this, `${this.isViewWire ? '유선' : '무선'}IP 사전 정보 수정이 정상적으로 처리되었습니다`)
           this.formData = this._cloneDeep(this.defaultFormData)

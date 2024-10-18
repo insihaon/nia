@@ -82,6 +82,10 @@ export default {
     }
   },
   methods: {
+    onResetParameter() {
+      this.value = this.defaultValue ?? 'llnum'
+      this.word = ''
+    },
     init() {
       if (this.prop_options !== null) {
         this.options = this.prop_options

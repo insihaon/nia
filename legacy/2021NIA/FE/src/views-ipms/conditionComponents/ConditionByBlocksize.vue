@@ -15,7 +15,7 @@
         :value="option.value"
       />
     </el-select>
-    <el-input v-model="word" size="mini" clearable style="width: 120px;" @change="emitEventToParent([{ key: 'ngubunCnt', value: word }])" />
+    <el-input v-model="word" size="mini" clearable style="width: 120px;" @change="emitEventToParent([{ key: 'ngubunCnt', value: word }])" @input="onChangeInput" />
     <el-select
       v-model="compareValue"
       size="mini"
@@ -68,6 +68,11 @@ export default {
   },
   // skindCd, ngubunCnt, ssign
   methods: {
+    onResetParameter() {
+      this.word = ''
+      this.targetValue = ''
+      this.compareValue = ''
+    },
     getParameter() {
       return [
         { key: 'skindCd', value: this.targetValue },
@@ -79,6 +84,9 @@ export default {
       this.targetValue = params['skindCd'] ?? ''
       this.compareValue = params['ssign'] ?? ''
       this.ngubunCnt = params['word'] ?? ''
+    },
+    onChangeInput(val) {
+      this.word = val.replace(/\D/g, '')
     }
   }
 }

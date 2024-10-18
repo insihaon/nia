@@ -48,6 +48,9 @@ export default {
     }
   },
   methods: {
+    onResetParameter() {
+      this.value = 'CT0001'
+    },
     init() {
       if (this.isAllOption) {
         this.value = ''

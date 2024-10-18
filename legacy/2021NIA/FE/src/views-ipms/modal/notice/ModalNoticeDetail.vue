@@ -57,24 +57,11 @@
             <textarea v-model="notiDetail.sboardContents" readonly />
           </div>
         </div>
-        <!-- <div class="btn_area mt10">
-          <template v-if="adminYn === 'Y'">
-            <a href="#none">
-              <img src="/resources/images/content/btn_modify_off.gif" alt="수정" @mouseover="menuOver" @mouseout="menuOut" />
-            </a>
-            <a href="#none">
-              <img src="/resources/images/content/btn_delete_off.gif" alt="삭제" @mouseover="menuOver" @mouseout="menuOut" />
-            </a>
-          </template>
-          <a href="#none">
-            <img src="/resources/images/content/btn_close_off.gif" alt="닫기" @mouseover="menuOver" @mouseout="menuOut" />
-          </a>
-        </div> -->
       </div>
       <div slot="footer" class="dialog-footer">
         <template v-if="!isDashBoard">
           <el-button size="mini" class="el-icon-edit" @click="handleClickUpdate">수정</el-button>
-          <el-button size="mini" class="el-icon-delete" @click="fnDeleteNotice">삭제</el-button>
+          <el-button size="mini" class="el-icon-delete" @click="fnDeleteNotice(notiDetail.seq)">삭제</el-button>
         </template>
         <el-button size="mini" class="el-icon-close" @click.native="close()">{{ $t('exit') }}</el-button>
       </div>
@@ -154,19 +141,20 @@ export default {
         this.loading = false
       }
     },
-    fnDeleteNotice(param) {
+    fnDeleteNotice(seq) {
+      const THIS = this
       this.confirm('정말로 삭제 하시겠습니까?', '알림', {
           confirmButtonText: '확인',
           cancelButtonText: '취소',
       }).then(async() => {
         try {
-          const res = await apiRequestJson(ipmsJsonApis.deleteNotice, param)
+          const res = await apiRequestJson(ipmsJsonApis.deleteNotice, { seq })
           if (res.commonMsg === 'SUCCESS') {
-            onMessagePopup(this, `공지사항이 정상적으로 삭제되었습니다.`)
-            this.$emit('reload')
-            this.close()
+            THIS.$emit('reload')
+            onMessagePopup(THIS, `공지사항이 정상적으로 삭제되었습니다.`)
+            THIS.close()
           } else {
-            onMessagePopup(this, res.commonMsg)
+            onMessagePopup(THIS, res.commonMsg)
           }
         } catch (error) {
           this.error(error)

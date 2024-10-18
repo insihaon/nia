@@ -43,6 +43,9 @@ export default {
     }
   },
   methods: {
+    onResetParameter() {
+      this.value = this.moment().subtract(1, 'd')
+    },
     getParameter() {
       return [{ key: this.parameterKey, value: this.moment(this.value).format('YYYY-MM-DD') }]
     },

@@ -115,7 +115,7 @@ export default {
         { key: 'SortType', props: { } },
         { key: 'IncludeYN', props: { label: 'Summary 포함 여부', prop_parameterKey: 'snull0Yn' } },
         { key: 'IncludeYN', props: { label: 'DB-라우팅 일치여부', prop_parameterKey: 'sintgrmYn' } },
-        { key: 'InputType', props: { label: '라우팅 중복 개수', prop_parameterKey: 'nsummaryCnt' } },
+        { key: 'InputType', props: { label: '라우팅 중복 개수', prop_parameterKey: 'nsummaryCnt', valueType: 'number' } },
       ],
       tableColumns: [
         { prop: 'ssvcLineTypeNm', label: '서비스망', align: 'center', sortable: true, columnVisible: true, showOverflow: true },

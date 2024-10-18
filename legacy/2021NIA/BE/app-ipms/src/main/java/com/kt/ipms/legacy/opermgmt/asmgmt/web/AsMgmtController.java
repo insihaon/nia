@@ -79,6 +79,7 @@ public class AsMgmtController extends CommonController{
 	@RequestMapping(value = "/opermgmt/asmgmt/viewListPrivateAs.model", method = RequestMethod.POST)
 	@ResponseBody
 	public ModelMap viewListPrivateAs(@RequestBody TbRequestAsApyTxnVo searchVo, ModelMap model, HttpServletRequest request) {
+		setPagination(searchVo);
 		TbRequestAsApyTxnListVo resultListVo = asMgmtService.viewListPrivateAs(searchVo);
 		return createResultList(resultListVo.getTbRequestAsApyTxnVos(), resultListVo.getTotalCount());
 	}
@@ -275,6 +276,7 @@ public class AsMgmtController extends CommonController{
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/opermgmt/asmgmt/insertPrivateAs.json", method = RequestMethod.POST)
+	@ResponseBody
 	public TbRequestAsApyTxnVo insertPrivateAs(@RequestBody TbRequestAsApyTxnVo insertVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
 		TbRequestAsApyTxnVo resultVo = null;
 		String msgDesc = null;
@@ -362,6 +364,7 @@ public class AsMgmtController extends CommonController{
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/opermgmt/asmgmt/updatePrivateAs.json", method = RequestMethod.POST)
+	@ResponseBody
 	public TbRequestAsApyTxnVo updatePrivateAs(@RequestBody TbRequestAsApyTxnVo updateVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
 		TbRequestAsApyTxnVo resultVo = null;
 		try {
@@ -390,6 +393,7 @@ public class AsMgmtController extends CommonController{
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/opermgmt/asmgmt/deletePrivateAs.json", method = RequestMethod.POST)
+	@ResponseBody
 	public TbRequestAsApyTxnVo deletePrivateAs(@RequestBody TbRequestAsApyTxnVo deleteVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
 		TbRequestAsApyTxnVo resultVo = null;
 		try{
@@ -417,6 +421,7 @@ public class AsMgmtController extends CommonController{
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/opermgmt/asmgmt/updateNrequestAsSeqYn.json", method = RequestMethod.POST)
+	@ResponseBody
 	public TbRequestAsApyTxnVo updateNrequestAsSeqYn(@RequestBody TbRequestAsApyTxnVo updateVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
 		TbRequestAsApyTxnVo resultVo = null;
 		String msgDesc = null;
@@ -453,6 +458,7 @@ public class AsMgmtController extends CommonController{
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/opermgmt/asmgmt/insertAsHist.json", method = RequestMethod.POST)
+	@ResponseBody
 	public TbRequestAsApyTxnVo insertAsHist(@RequestBody TbRequestAsApyTxnVo insertVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
 		TbRequestAsApyTxnVo resultVo = null;
 		try {
@@ -645,6 +651,7 @@ public class AsMgmtController extends CommonController{
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "opermgmt/asmgmt/selectMinNrequestAsSeq.json", method = RequestMethod.POST)
+	@ResponseBody
 	public TbRequestAsMstVo selectMinNrequestAsSeq(@RequestBody TbRequestAsMstVo tbRequestAsMstVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
 		TbRequestAsMstVo resultVo =null;
 		try {
@@ -673,6 +680,7 @@ public class AsMgmtController extends CommonController{
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/opermgmt/asmgmt/updateTbRequestAsMst.json", method = RequestMethod.POST)
+	@ResponseBody
 	public TbRequestAsMstVo updateTbRequestAsMst(@RequestBody TbRequestAsMstVo updateVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
 		TbRequestAsMstVo resultVo = null;
 		try {

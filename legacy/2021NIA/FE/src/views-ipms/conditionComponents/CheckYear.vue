@@ -40,6 +40,9 @@ export default {
     }
   },
   methods: {
+    onResetParameter() {
+      this.value = '2024'
+    },
     setParameter(params) {
       this.value = params[this.parameterKey] ?? '2024'
     }

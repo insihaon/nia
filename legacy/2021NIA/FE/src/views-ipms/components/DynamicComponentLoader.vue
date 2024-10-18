@@ -7,7 +7,7 @@
           v-if="component.component"
           :ref="component.key"
           :key="index"
-          v-bind="component.props"
+          v-bind.sync="component.props"
           class="optionItem"
           @set-value="value => onUpdateOrgValue(index, value)"
           @update-value="keyValues => onUpdateKeyValue(keyValues)"
@@ -68,7 +68,9 @@ export default {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       dynamicComponents: [],
-      requestParameter: {}
+      defaultRequestParameter: {},
+      requestParameter: {},
+      loopUpdateValueCount: 0
     }
   },
   watch: {
@@ -107,8 +109,9 @@ export default {
   },
   methods: {
     handleRefresh() {
-      // 초기화 코드 추가
-      console.log()
+      Eventbus.$emit(EventType.resetCondition)
+      this.requestParameter = this._cloneDeep(this.defaultRequestParameter)
+      this.$emit('handle-search', this.requestParameter)
     },
     handleSearch() {
       this.$emit('handle-search', this.requestParameter)
@@ -125,6 +128,13 @@ export default {
           this.requestParameter[obj.key] = obj.value
         })
         this.$store.dispatch('ipms/mergeCurrentCondition', this.requestParameter)
+        if (this.loopUpdateValueCount !== null) {
+          this.loopUpdateValueCount += 1
+        }
+      }
+      if (this.loopUpdateValueCount !== null && this.loopUpdateValueCount === this.componentKeys.length) {
+        this.defaultRequestParameter = this._cloneDeep(this.requestParameter)
+        this.loopUpdateValueCount = null
       }
     },
     setParameter(parameter) {

@@ -4,19 +4,22 @@
       ref="searchCondition"
       :prop-name="name"
       :component-keys="componentList"
-      @handle-search="fnViewListRoutHistMst"
+      @handle-search="handleSearch"
     />
     <el-col ref="tableContainer" :span="24">
       <compTable
         ref="compTable"
         :prop-name="name"
         :prop-table-height="'calc(100% - 80px)'"
-        :prop-data="tableDatas"
+        :prop-data="pagination.data"
+        :prop-pagination-data.sync="pagination"
         :prop-column="tableColumns"
         :prop-is-pagination="true"
         :prop-is-check-box="false"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
+        :prop-on-page-change="handleChangeCurPage"
+        :prop-on-page-size-change="handleChangeCurPage"
       >
         <template slot="text-description">
           <span>
@@ -46,25 +49,25 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      pagination: this.setDefaultPagination(),
       tableColumns: [
         { prop: 'ptelnetIp', label: '장비IP', align: 'center', columnVisible: true, showOverflow: true },
         { prop: 'shostNm', label: '장비프롬프트명', align: 'center', columnVisible: true, showOverflow: true },
         { prop: 'sprocessYn', label: '진행여부', align: 'center', columnVisible: true, showOverflow: true },
         { prop: 'sresultMsg', label: '결과메세지', align: 'center', columnVisible: true, showOverflow: true },
         { prop: 'screateId', label: '요청ID', align: 'center', columnVisible: true, showOverflow: true },
-        { prop: 'dcreateDt', label: '요청일시', align: 'center', columnVisible: true, showOverflow: true },
+        { prop: 'dcreateDt', label: '요청일시', align: 'center', columnVisible: true, showOverflow: true, formatter: (row) => this.moment(row.dcreateDt).format('YYYY-MM-DD HH:mm:ss') },
         { prop: 'smodifyId', label: '완료ID', align: 'center', columnVisible: true, showOverflow: true },
-        { prop: 'dmodifyDt', label: '완료일시', align: 'center', columnVisible: true, showOverflow: true },
+        { prop: 'dmodifyDt', label: '완료일시', align: 'center', columnVisible: true, showOverflow: true, formatter: (row) => this.moment(row.dmodifyDt).format('YYYY-MM-DD HH:mm:ss') },
       ],
 
-      tableDatas: [],
       sresultMsgOptions: [],
     }
   },
   computed: {
     componentList() {
       return [
-        { key: 'InputType', props: { label: '장비 IP', valueType: 'number', prop_parameterKey: 'ptelnetIp' } },
+        { key: 'InputType', props: { label: '장비 IP', valueType: 'ip', prop_parameterKey: 'ptelnetIp' } },
         { key: 'InputType', props: { label: '장비프롬프트명', prop_parameterKey: 'shostNm' } },
         { key: 'UsageYN', props: { label: '진행여부', prop_parameterKey: 'sprocessYn',
           defaultValue: '',
@@ -85,6 +88,10 @@ export default {
     this.fnViewListRoutHistMst()
   },
   methods: {
+    handleSearch(requestParameter) {
+      this.pagination.currentPage = 1
+      this.fnViewListRoutHistMst(requestParameter)
+    },
     async fnSelectSresultMsg() {
       try {
         const res = await apiRequestJson(ipmsJsonApis.selectSresultMsg, {})
@@ -95,15 +102,26 @@ export default {
         this.error(error)
       }
     },
-    async fnViewListRoutHistMst(requestParameter) {
-      const params = requestParameter ?? this.$refs?.searchCondition?.requestParameter
+    async fnViewListRoutHistMst(requestParameter = null) {
+      const parameter = requestParameter ?? this.$refs?.searchCondition?.requestParameter
+      const target = ({ vue: this.$refs.compTable })
+      const { pageSize: pageUnit, currentPage: pageIndex } = this.pagination
+      Object.assign(parameter, { pageUnit, pageIndex })
       try {
-        const res = await apiRequestModel(ipmsModelApis.viewListRoutHistMst, params)
-        this.tableDatas = res.result.data
+        this.openLoading(target)
+        const res = await apiRequestModel(ipmsModelApis.viewListRoutHistMst, parameter)
+        this.pagination.data = res.result.data ?? []
+        this.pagination.total = res.result.totalCount
       } catch (error) {
         this.error(error)
+      } finally {
+        this.closeLoading(target)
       }
-    }
+    },
+    handleChangeCurPage(v) {
+      if (v) this.pagination.currentPage = v
+      this.fnViewListRoutHistMst()
+    },
   }
 }
 </script>

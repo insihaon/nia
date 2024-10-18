@@ -116,9 +116,9 @@ export default {
     if (this.isDashboard) {
       this.interval = setInterval(this.noticeScroll, 3000)
     }
-    this.$nextTick(() => {
+    setTimeout(() => {
       this.fnViewListNotice()
-    })
+    }, 100)
   },
   beforeDestroy() {
     clearInterval(this.interval) // 컴포넌트 파기 전에 setInterval 제거

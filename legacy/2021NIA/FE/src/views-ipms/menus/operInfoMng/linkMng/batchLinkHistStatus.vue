@@ -4,19 +4,22 @@
       ref="searchCondition"
       :prop-name="name"
       :component-keys="componentList"
-      @handle-search="fnViewListBatchHistMst"
+      @handle-search="handleSearch"
     />
     <el-col ref="tableContainer" :span="24">
       <compTable
         ref="compTable"
         :prop-name="name"
         :prop-table-height="'calc(100% - 80px)'"
-        :prop-data="tableDatas"
+        :prop-data="pagination.data"
+        :prop-pagination-data.sync="pagination"
         :prop-column="tableColumns"
         :prop-is-pagination="true"
         :prop-is-check-box="false"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
+        :prop-on-page-change="handleChangeCurPage"
+        :prop-on-page-size-change="handleChangeCurPage"
       >
         <template slot="text-description">
           <span>
@@ -45,12 +48,12 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      pagination: this.setDefaultPagination(),
       componentList: [
         { key: 'InputType', props: { label: '인터페이스 ID', prop_parameterKey: 'sifId' } },
         { key: 'IncludeYN', props: { label: '작업 종료여부', prop_parameterKey: 'sbatchEndYn' } },
         { key: 'DateRange', props: { label: 'DATA 입력 \n시작/종료시각' } }
       ],
-      tableDatas: []
     }
   },
   computed: {
@@ -67,16 +70,30 @@ export default {
       ]
     }
   },
+  mounted() {
+    setTimeout(() => {
+      this.fnViewListBatchHistMst()
+    }, 100)
+  },
   methods: {
-    async fnViewListBatchHistMst(requestParameter) {
+    handleSearch(requestParameter) {
+      this.pagination.currentPage = 1
+      this.fnViewListBatchHistMst(requestParameter)
+    },
+    async fnViewListBatchHistMst(requestParameter = null) {
       const params = requestParameter ?? this.$refs.searchCondition.requestParameter
       try {
         const res = await apiRequestModel(ipmsModelApis.viewListBatchHistMst, params)
-        this.tableDatas = res.result.data
+        this.pagination.data = res.result.data ?? []
+        this.pagination.total = res.result.totalCount
       } catch (error) {
         this.error(error)
       }
-    }
+    },
+    handleChangeCurPage(v) {
+      if (v) this.pagination.currentPage = v
+      this.fnViewListBatchHistMst()
+    },
   }
 }
 </script>

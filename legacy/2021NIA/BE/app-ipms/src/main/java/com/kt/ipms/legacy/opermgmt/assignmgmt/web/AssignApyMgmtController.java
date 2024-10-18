@@ -72,6 +72,14 @@ public class AssignApyMgmtController extends CommonController{
 	@ResponseBody
 	public ModelMap viewListAssignApyTxn(@RequestBody TbRequestAssignMstVo searchVo, ModelMap model, 
 			HttpServletRequest request) {
+			/** 계위 Seq 목록 조회 **/
+		TbLvlMstVo searchSeqVo = new TbLvlMstVo();
+		searchSeqVo.setSsvcLineTypeCd(searchVo.getSsvcLineTypeCd());
+		searchSeqVo.setSsvcGroupCd(searchVo.getSsvcGroupCd());
+		searchSeqVo.setSsvcObjCd(searchVo.getSsvcObjCd());
+		TbLvlMstListVo resultSeqList = jwtUtil.getLvlSeqList(request, searchSeqVo);
+		searchVo.setLvlMstSeqListVo(resultSeqList);
+		setPagination(searchVo);
 		TbRequestAssignMstListVo resultListVo = assignApyMgmtService.selectListTbRequestAssignMst(searchVo);
 		return createResultList(resultListVo.getTbRequestAssignMstVos(), resultListVo.getTotalCount());
 	}

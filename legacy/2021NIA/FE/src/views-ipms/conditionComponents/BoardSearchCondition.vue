@@ -15,7 +15,7 @@
         :value="option.value"
       />
     </el-select>
-    <el-input v-model="word" size="mini" clearable @change="handleChange('searchWrd', word)" />
+    <el-input v-model="word" size="mini" :disabled="prop_disabled_condition(value)" clearable @change="handleChange('searchWrd', word)" />
   </el-col>
 </template>
 <script>
@@ -35,6 +35,10 @@ export default {
     defaultValue: {
       type: String,
       default: null
+    },
+    prop_disabled_condition: {
+      type: Function,
+      default: () => {}
     }
   },
   data() {
@@ -51,6 +55,10 @@ export default {
     }
   },
   methods: {
+    onResetParameter() {
+      this.value = this.defaultValue ?? 'title'
+      this.word = ''
+    },
     init() {
       if (this.prop_options !== null) {
         this.options = this.prop_options

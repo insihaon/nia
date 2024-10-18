@@ -27,6 +27,7 @@
       v-model="word"
       size="mini"
       clearable
+      @input="onChangeInput"
       @change="()=> emitEventToParent([{ key: 'searchWrd', value: word }])"
     />
   </el-col>
@@ -82,6 +83,10 @@ export default {
     }
   },
   methods: {
+    onResetParameter() {
+      this.value = 'CV0001'
+      this.word = ''
+    },
     init() {
       if (this.defaultValue !== null) {
         this.value = this.defaultValue
@@ -105,6 +110,9 @@ export default {
       if (this.isShowInput) {
         this.word = params.searchWrd ?? ''
       }
+    },
+    onChangeInput(val) {
+      this.word = val.replace(/[^0-9.]+/g, '')
     }
   }
 }
