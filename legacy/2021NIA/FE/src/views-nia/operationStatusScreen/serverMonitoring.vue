@@ -108,12 +108,12 @@ export default {
       ],
       file3Hours1: [
         { title: '장비', url: prefixUrl + '/88QEOB2nz/file_size?orgId=1&refresh=1m&panelId=22', class: 'w-50' },
-        { title: '경로', url: prefixUrl + '/LBlvJ7p7z/server_status?orgId=1&refresh=1m&panelId=12', class: 'w-50' },
+        { title: '경로', url: prefixUrl + '/88QEOB2nz/file_size?orgId=1&refresh=1m&panelId=21', class: 'w-50' },
       ],
       file3Hours2: [
-        { title: 'ipSdnSflow', url: prefixUrl + '/LBlvJ7p7z/server_status?orgId=1&refresh=1m&panelId=12', class: 'w-2/6' },
-        { title: 'ipSdnSyslog', url: prefixUrl + '/LBlvJ7p7z/server_status?orgId=1&refresh=1m&panelId=12', class: 'w-2/6' },
-        { title: 'ipSdnSyslogAlarm', url: prefixUrl + '/LBlvJ7p7z/server_status?orgId=1&refresh=1m&panelId=12', class: 'w-2/6' },
+        { title: 'ipSdnSflow', url: prefixUrl + '/88QEOB2nz/file_size?orgId=1&refresh=1m&panelId=32', class: 'w-2/6' },
+        { title: 'ipSdnSyslog', url: prefixUrl + '/88QEOB2nz/file_size?orgId=1&refresh=1m&panelId=34', class: 'w-2/6' },
+        { title: 'ipSdnSyslogAlarm', url: prefixUrl + '/88QEOB2nz/file_size?orgId=1&refresh=1m&panelId=36', class: 'w-2/6' },
       ],
       fileDays: [
         { title: 'link', url: prefixUrl + '/1edhLePnk/file_size_week?orgId=1&refresh=1h&panelId=18', class: 'w-2/6' },
