@@ -10,9 +10,15 @@ spring:
     dev: false
 
   datasource2nd:
-    url: jdbc:log4jdbc:postgresql://incodej-lab.iptime.org:41544/niadb?allowMultiQueries=true
-    username: ENC(nEDs/lC9Tk5WpCugaKnCO2HbY1b88bnH)
-    password: ENC(aDtzf6fHV2dJdOeI5IWQ+C3vz3ly6Klm)
+    # 개발 DB
+    # url: jdbc:log4jdbc:postgresql://incodej-lab.iptime.org:41544/niadb?allowMultiQueries=true
+    # username: ENC(nEDs/lC9Tk5WpCugaKnCO2HbY1b88bnH)
+    # password: ENC(aDtzf6fHV2dJdOeI5IWQ+C3vz3ly6Klm)
+    # 운영 DB
+    url: jdbc:log4jdbc:postgresql://incodej-lab.iptime.org:6544/niadb?allowMultiQueries=true
+    username: ENC(8Fi3mfw4UUT/4sIfuw71gKaNJQnbCn7y)
+    password: ENC(qth6L1xxsdq5xTajX4jkKmlJQ9ieFYm6)
+    
   rabbitmq:
     enabled: true # 접속 불가 환경을 위해 추가함
     address: incodej-lab.iptime.org
@@ -23,7 +29,7 @@ spring:
 
 myconf:
   websocket:
-    enabled: true
+    enabled: false
   api-server:
   # mail:
   #   host: smtp.gmail.com
