@@ -11,13 +11,19 @@
     <!-- 페이지 로케이션 -->
     <!-- <breadcrumb class="breadcrumb-container" /> -->
 
-    <div class="left-menu">
+    <div class="top-nav-menu">
       <el-menu class="top-menu" mode="horizontal" background-color="transparent" text-color="#00839b" active-text-color="#FFFFFF" @select="menuSelectHandler">
         <el-submenu index="1">
           <template slot="title">IP배정관리</template>
           <el-menu-item index="1-1">IP블록관리</el-menu-item>
           <el-menu-item index="1-2">IP배정관리2</el-menu-item>
           <el-menu-item index="1-3">팝업샘플</el-menu-item>
+          <el-submenu index="1-4">
+            <template slot="title">2차메뉴샘플</template>
+            <el-menu-item index="1-4-1">2차메뉴-1</el-menu-item>
+            <el-menu-item index="1-4-2">2차메뉴-2</el-menu-item>
+            <el-menu-item index="1-4-3">2차메뉴-3</el-menu-item>
+          </el-submenu>
         </el-submenu>
         <el-submenu index="2">
           <template slot="title">IP할당관리</template>
@@ -165,7 +171,7 @@ export default {
   .breadcrumb-container {
     float: left;
   }
-  .left-menu{
+  .top-nav-menu{
     height:70px;
     width:100%;
     line-height: 70px;
@@ -254,13 +260,13 @@ export default {
   top:-5px !important;
   padding:10px 0px 20px 0px !important;
   border-radius: 0px 0px 24px 24px !important;
-  overflow: hidden;
+  /* overflow: hidden; */
   /* background:linear-gradient(rgba(60,60,120,1), rgba(60,60,120,0)) !important; */
   background-color:#252531 !important;
   /* filter:drop-shadow(0px 20px 10px rgba(60,60,120,0.2)); */
   box-shadow: none !important;
 }
-.left-menu div.el-submenu__title{
+.top-nav-menu div.el-submenu__title{
   font-size:18px;
   padding-top:0;
   padding-bottom:0;
@@ -268,25 +274,27 @@ export default {
   line-height:70px !important;
   border:none !important;
 }
-.left-menu div.el-submenu__title>i{
-  display: none !important;
+.top-nav-menu div.el-submenu__title>i{
+  /* 메뉴우측 화살표 아이콘 감추기 */
+  display: none !important; 
 }
-.left-menu div.el-submenu__title i.menuIcon{
+.top-nav-menu div.el-submenu__title i.menuIcon{
   color:#FFFFFF; position:relative; top:-1px; font-size:20px; opacity: 0.75; font-weight: 200;
 }
-.left-menu div.el-submenu__title:hover i.menuIcon{
+.top-nav-menu div.el-submenu__title:hover i.menuIcon{
   opacity: 1;
 }
-.left-menu div.el-submenu__title:hover{
+.top-nav-menu div.el-submenu__title:hover{
   background-color:transparent !important;
   color:#FFFFFF !important;
 }
-.left-menu li.is-opened div.el-submenu__title i.menuIcon{
+.top-nav-menu li.is-opened div.el-submenu__title i.menuIcon{
   opacity: 1 !important;
 }
-.left-menu div.el-submenu__title:hover i{
+.top-nav-menu div.el-submenu__title:hover i{
   color:#FFFFFF !important;
 }
+
 .top-menu{
   height:70px; border:none !important;
   display: flex; flex-wrap: nowrap;
@@ -295,21 +303,25 @@ export default {
   height:70px;
   padding:0 10px;
 }
-li.el-menu-item{
-  font-size:15px !important;
-  text-align:center !important;
-  text-indent: 0px !important;
-  border-radius:20px !important;
-  margin-left:10px; margin-right:10px;
-  background-color:transparent !important;
-}
-li.el-menu-item:hover{
-  /* background-color:#3c3c77 !important; */
-  background:#FFFFFF !important;
-  /* linear-gradient( 90deg, rgba(60,60,119,0), rgba(60,60,119,1), rgba(60,60,119,1), rgba(60,60,119,0)) !important; */
-  color:#3c3c77 !important;
-}
-div.el-submenu__title{
+/* 1차 메뉴 */
+div.top-nav-menu>ul.top-menu>li.el-submenu>div.el-submenu__title{
   font-size:18px !important; 
+}
+/* 2차 메뉴 */
+div.el-menu--horizontal>ul.el-menu>li.el-menu-item,
+div.el-menu--horizontal>ul.el-menu>li.el-submenu>div.el-submenu__title{
+  font-size:15px !important;
+  text-align: center !important;
+  font-weight: 500 !important;
+  text-indent: 0px !important;
+  margin-left:10px;
+  margin-right:10px;
+  background-color:transparent !important;
+  border-radius:20px !important;
+}
+div.el-menu--horizontal>ul.el-menu>li.el-menu-item:hover,
+div.el-menu--horizontal>ul.el-menu>li.el-submenu>div.el-submenu__title:hover{
+  background:#FFFFFF !important;
+  color:#3c3c77 !important;
 }
 </style>
