@@ -1,22 +1,24 @@
 <template>
-  <el-col :class="{ [name]: true }" :xs="24" :sm="12" :md="12" :lg="8" :xl="6">
-    <label>
+  <fragment>
+    <th>
       조회조건
-    </label>
-    <el-select
-      v-model="value"
-      size="mini"
-      @change="handleChange('searchCnd', value)"
-    >
-      <el-option
-        v-for="(option, i) in options"
-        :key="i"
-        :label="option.label"
-        :value="option.value"
-      />
-    </el-select>
-    <el-input v-model="word" size="mini" :disabled="prop_disabled_condition(value)" clearable @change="handleChange('searchWrd', word)" />
-  </el-col>
+    </th>
+    <td class="textflex">
+      <el-select
+        v-model="value"
+        size="small"
+        @change="handleChange('searchCnd', value)"
+      >
+        <el-option
+          v-for="(option, i) in options"
+          :key="i"
+          :label="option.label"
+          :value="option.value"
+        />
+      </el-select>
+      <el-input v-model="word" size="small" :disabled="prop_disabled_condition(value)" clearable @change="handleChange('searchWrd', word)" />
+    </td>
+  </fragment>
 </template>
 <script>
 import { Base } from '@/min/Base.min'

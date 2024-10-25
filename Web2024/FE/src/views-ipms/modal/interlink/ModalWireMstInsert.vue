@@ -1,112 +1,104 @@
 <template>
-  <div>
-    <el-dialog
-      v-if="animationVisible"
-      id="ipms"
-      v-el-drag-dialog
-      :visible.sync="visible"
-      :width="domElement.maxWidth + `px`"
-      :fullscreen.sync="fullscreen"
-      :modal-append-to-body="false"
-      :append-to-body="true"
-      :modal="modal"
-      :close-on-click-modal="closeOnClickModal"
-      :loading="loading"
-      class="ipms-dialog"
-      :class="{ [name]: true }"
-    >
-      <!-- TACS관리 / IP주소 라우팅 비교/점검 > 장비별 명령어 정보관리 > 신규생성 -->
-      <span slot="title">
-        <i class="el-icon-document mr-2" style="font-size: 17px" />
-        {{ isViewWire ? '유선' : '무선' }}IP Community {{ fnType === 'insert' ? '등록' : '수정' }}
-        <hr>
-      </span>
-      <div id="content" class="layer">
-        <div class="content_result mt0">
-          <table class="tbl_data entry">
-            <colgroup>
-              <col width="20%" />
-              <col width="30%" />
-              <col width="20%" />
-              <col width="30%" />
-            </colgroup>
-            <tbody>
-              <tr v-if="isViewWire" class="top">
-                <th class="first" scope="row">계위</th>
-                <td v-if="fnType === 'update'">
-                  {{ formData.ssvcLineTypeNm }} - {{ formData.ssvcGroupNm }} - {{ formData.ssvcObjNm }}
-                </td>
-                <td v-else colspan="3">
-                  <ul>
-                    <SsvcLineType
-                      ref="ssvcLineType"
-                      class="SsvcLineType"
-                      label=""
-                      :lvl="3"
-                      :is-all-lvl1="false"
-                      :props-lvl-options="{
-                        1: [
-                          { label: 'KORNET', value: 'CL0001' },
-                          { label: 'PREMIUM', value: 'CL0002' },
-                          { label: 'MOBILE', value: 'CL0003' }
-                        ]
-                      }"
-                      @update-value="onChangeSsvcLineType"
-                    />
-                  </ul>
-                </td>
-              </tr>
-              <tr class="top">
-                <th class="first" scope="row">구분</th>
-                <td colspan="3">
-                  <select v-model="formData.skindCd" class="w-30" :disabled="fnType === 'update'">
-                    <option v-for="item in skindCdOptions" :key="item.value" :value="item.value">
-                      {{ item.label }}
-                    </option>
-                  </select>
-                </td>
-              </tr>
-              <tr>
-                <th scope="row">Community</th>
-                <td>
-                  <input
-                    v-model="formData.scommunity"
-                    type="text"
-                    class="txt w80"
-                    maxlength="300"
-                    :disabled="(isViewWire && formData.skindCd !== 'KORNET') || (!isViewWire && formData.skindCd !== 'COMMU')"
-                  />
-                </td>
-                <template v-if="isViewWire">
-                  <th scope="row">Nexthop</th>
-                  <td>
-                    <input v-model="formData.snexthop" type="text" class="txt w80" maxlength="250" :disabled="formData.skindCd !== 'PREMIUM'" />
-                  </td>
-                </template>
-                <template v-else>
-                  <th scope="row">IP블록</th>
-                  <td>
-                    <input v-model="formData.pipPrefix" type="text" class="txt w80" maxlength="250" :disabled="formData.skindCd !== 'NOCOMMU'" />
-                  </td>
-                </template>
-              </tr>
-              <tr v-if="!isViewWire" class="last">
-                <th class="first" scope="row">서비스</th>
-                <td colspan="3">
-                  <input v-model="formData.sserviceNm" type="text" class="txt w-100" maxlength="250" />
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button v-if="fnType === 'insert'" icon="el-icon-edit-outline" type="primary" size="mini" @click="fnInsertWireMst">등록</el-button>
-        <el-button v-if="fnType === 'update'" icon="el-icon-edit-outline" type="primary" size="mini" @click="fnUpdateWireMst">수정</el-button>
-        <el-button size="mini" class="el-icon-close" @click.native="close()">{{ $t('exit') }}</el-button>
-      </div>
-    </el-dialog>
-  </div>
+  <el-dialog
+    v-if="animationVisible"
+    id="ipms"
+    v-el-drag-dialog
+    :title="`${isViewWire ? '유선' : '무선'} IP Community ${fnType === 'insert' ? '등록' : '수정'}`"
+    :visible.sync="visible"
+    :width="domElement.maxWidth + `px`"
+    :fullscreen.sync="fullscreen"
+    :modal-append-to-body="false"
+    :append-to-body="true"
+    :modal="modal"
+    :close-on-click-modal="closeOnClickModal"
+    :loading="loading"
+    class="ipms-dialog"
+    :class="{ [name]: true }"
+  >
+    <!-- TACS관리 / IP주소 라우팅 비교/점검 > 장비별 명령어 정보관리 > 신규생성 -->
+    <div class="popupContentTable">
+      <table v-if="isViewWire && fnType === 'insert'">
+        <colgroup>
+          <col width="20%" />
+          <col width="80%" />
+        </colgroup>
+        <tr>
+          <SsvcLineType
+            ref="ssvcLineType"
+            class="SsvcLineType"
+            :lvl="3"
+            :is-all-lvl1="false"
+            :props-lvl-options="{
+              1: [
+                { label: 'KORNET', value: 'CL0001' },
+                { label: 'PREMIUM', value: 'CL0002' },
+                { label: 'MOBILE', value: 'CL0003' }
+              ]
+            }"
+            @update-value="onChangeSsvcLineType"
+          />
+        </tr>
+      </table>
+      <table>
+        <colgroup>
+          <col width="20%" />
+          <col width="30%" />
+          <col width="20%" />
+          <col width="30%" />
+        </colgroup>
+        <tbody>
+          <tr v-if="isViewWire">
+            <th>계위</th>
+            <td v-if="fnType === 'update'">
+              {{ formData.ssvcLineTypeNm }} - {{ formData.ssvcGroupNm }} - {{ formData.ssvcObjNm }}
+            </td>
+          </tr>
+          <tr>
+            <th>구분</th>
+            <td colspan="3">
+              <el-select v-model="formData.skindCd" class="w-30" :disabled="fnType === 'update'">
+                <el-option v-for="item in skindCdOptions" :key="item.value" :value="item.value" :label="item.label" />
+              </el-select>
+            </td>
+          </tr>
+          <tr>
+            <th>Community</th>
+            <td>
+              <el-input
+                v-model="formData.scommunity"
+                type="text"
+                maxlength="300"
+                :disabled="(isViewWire && formData.skindCd !== 'KORNET') || (!isViewWire && formData.skindCd !== 'COMMU')"
+              />
+            </td>
+            <template v-if="isViewWire">
+              <th>Nexthop</th>
+              <td>
+                <el-input v-model="formData.snexthop" type="text" maxlength="250" :disabled="formData.skindCd !== 'PREMIUM'" />
+              </td>
+            </template>
+            <template v-else>
+              <th>IP블록</th>
+              <td>
+                <el-input v-model="formData.pipPrefix" type="text" maxlength="250" :disabled="formData.skindCd !== 'NOCOMMU'" />
+              </td>
+            </template>
+          </tr>
+          <tr v-if="!isViewWire">
+            <th>서비스</th>
+            <td colspan="3">
+              <el-input v-model="formData.sserviceNm" type="text" class="txt w-100" maxlength="250" />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="popupContentTableBottom">
+      <el-button v-if="fnType === 'insert'" icon="el-icon-document-add" type="primary" size="small" round @click="fnInsertWireMst">등록</el-button>
+      <el-button v-if="fnType === 'update'" icon="el-icon-edit" type="primary" size="small" round @click="fnUpdateWireMst">수정</el-button>
+      <el-button type="primary" size="small" icon="el-icon-close" round @click.native="close()">{{ $t('exit') }}</el-button>
+    </div>
+  </el-dialog>
 </template>
 
 <script>

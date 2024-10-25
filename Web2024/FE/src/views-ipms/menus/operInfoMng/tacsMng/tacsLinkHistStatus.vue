@@ -9,8 +9,9 @@
     <el-col ref="tableContainer" :span="24">
       <compTable
         ref="compTable"
+        style="height: calc(100% - 80px)"
         :prop-name="name"
-        :prop-table-height="'calc(100% - 80px)'"
+        :prop-table-height="'100%'"
         :prop-data="pagination.data"
         :prop-pagination-data.sync="pagination"
         :prop-column="tableColumns"
@@ -153,12 +154,14 @@ export default {
 <style lang="scss" scoped>
 ::v-deep .highlight_red_color {
   .cell {
-    color: red !important;
+    font-weight: bold;
+    color: #ff4646 !important;
   }
 }
 ::v-deep  .highlight_blue_color {
   .cell {
-    color: blue !important;
+    font-weight: bold;
+    color: #009aff !important;
   }
 }
 </style>

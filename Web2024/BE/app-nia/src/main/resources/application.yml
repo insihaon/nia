@@ -140,7 +140,7 @@ myconf:
     user: codej
     pw: codej!@#
   aimonitor-Url: http://incodej-lab.iptime.org:82
-  servermonitor-Url: http://incodej-lab.iptime:3000
+  servermonitor-Url: http://incodej-lab.iptime.org:3000
   snapshot-Url: http://incodej-lab.iptime.org:24888/download/
 
 file:

@@ -1,149 +1,135 @@
 <template>
-  <div>
-    <el-dialog
-      v-if="animationVisible"
-      id="ipms"
-      v-el-drag-dialog
-      :visible.sync="visible"
-      :width="domElement.maxWidth + `px`"
-      :fullscreen.sync="fullscreen"
-      :modal-append-to-body="false"
-      :append-to-body="true"
-      :modal="modal"
-      :close-on-click-modal="closeOnClickModal"
-      :loading="loading"
-      class="ipms-dialog"
-      :class="{ [name]: true }"
-    >
-      <span slot="title">
-        <i class="el-icon-document mr-2" style="font-size: 17px" />
-        {{ title }}
-        <hr>
-      </span>
+  <el-dialog
+    v-if="animationVisible"
+    id="ipms"
+    v-el-drag-dialog
+    :title="title"
+    :visible.sync="visible"
+    :width="domElement.maxWidth + `px`"
+    :fullscreen.sync="fullscreen"
+    :modal-append-to-body="false"
+    :append-to-body="true"
+    :modal="modal"
+    :close-on-click-modal="closeOnClickModal"
+    :loading="loading"
+    class="ipms-dialog"
+    :class="{ [name]: true }"
+  >
+    <div class="popupContentTable">
+      <table>
+        <colgroup>
+          <col width="20%" /><col width="30%" /><col width="20%" /><col width="30%" />
+        </colgroup>
+        <tbody>
+          <tr>
+            <th>요청제목</th>
+            <td colspan="4">
+              <el-input v-model="resultVo.rboardTitle" name="sboardTitle" size="small" />
+            </td>
+          </tr>
+          <tr>
+            <th>요청 목적</th>
+            <td colspan="4">
+              <el-input v-model="resultVo.rboardPurposeRequest" type="text" name="sRequestPurpose" size="small" />
+            </td>
+          </tr>
+          <tr>
+            <th>요청사항 구분</th>
+            <td>
+              <el-select v-model="resultVo.rboardDivision" size="small">
+                <el-option
+                  v-for="(option, i) in divisionOptions"
+                  :key="i"
+                  :label="option.label"
+                  :value="option.value"
+                />
+              </el-select>
+            </td>
+            <th>중요도</th>
+            <td>
+              <el-select v-model="resultVo.rboardImportance" size="small">
+                <el-option value="상">상</el-option>
+                <el-option value="중">중</el-option>
+                <el-option value="하">하</el-option>
+              </el-select>
+            </td>
+          </tr>
+          <tr>
+            <th>작성자</th>
+            <td>
+              <el-input v-model="resultVo.rboardScreateId" size="small" disabled />
+            </td>
+            <th>희망완료일</th>
+            <td>
+              <el-date-picker
+                v-model="resultVo.rboardDesireDate"
+                type="date"
+                size="small"
+              />
+            </td>
+          </tr>
+          <tr>
+            <th>요청내용</th>
+            <td colspan="3">
+              <el-input v-model="resultVo.rboardContent" type="textarea" rows="4" size="small" />
+            </td>
+          </tr>
+          <tr>
+            <template v-if="viewType === 'detail'">
+              <th>조치 내용</th>
+              <td colspan="3">
+                <el-input v-model="actionContents" type="textarea" rows="4" size="small" />
+              </td>
+            </template>
+          </tr>
+          <tr>
+            <th>첨부파일</th>
+            <td colspan="3">
+              <el-upload
+                ref="upload"
+                class="upload-demo w-80"
+                action="https://jsonplaceholder.typicode.com/posts/"
+                :auto-upload="false"
+                :on-change="handleFileChange"
+              >
+                <el-button v-if="viewType !== 'detail'" size="small" type="primary">파일선택</el-button>
+              </el-upload>
+            </td>
 
-      <div id="content" class="layer info">
-        <table class="tbl_data entry">
-          <colgroup>
-            <col width="20%" /><col width="30%" /><col width="20%" /><col width="30%" />
-          </colgroup>
-          <tbody>
-            <tr class="top">
-              <th class="first" scope="row">요청제목</th>
-              <td class="view" colspan="4">
-                <el-input v-model="resultVo.rboardTitle" class="txt w98" name="sboardTitle" size="mini" />
-              </td>
-            </tr>
+          </tr>
+          <template v-if="viewType === 'detail'">
             <tr>
-              <th class="first" scope="row">요청 목적</th>
-              <td class="view" colspan="4">
-                <el-input v-model="resultVo.rboardPurposeRequest" type="text" class="txt w98" name="sRequestPurpose" size="mini" />
-              </td>
-            </tr>
-            <tr>
-              <th class="first" scope="row">요청사항 구분</th>
+              <th>진행상태</th>
               <td>
-                <el-select v-model="resultVo.rboardDivision" class="w-100" size="mini">
+                <el-select v-model="resultVo.rboardProgress" size="small">
                   <el-option
-                    v-for="(option, i) in divisionOptions"
+                    v-for="(option, i) in progressOptions"
                     :key="i"
                     :label="option.label"
                     :value="option.value"
                   />
                 </el-select>
               </td>
-              <th scope="row">중요도</th>
+              <th>완료예정일</th>
               <td>
-                <el-select v-model="resultVo.rboardImportance" class="w-100" size="mini">
-                  <el-option value="상">상</el-option>
-                  <el-option value="중">중</el-option>
-                  <el-option value="하">하</el-option>
-                </el-select>
+                <el-date-picker v-model="resultVo.rboardExpectedDate" type="date" size="small" />
               </td>
             </tr>
-            <tr>
-              <th scope="row">작성자</th>
-              <td class="view">
-                <el-input v-model="resultVo.rboardScreateId" class="txt w98" size="mini" disabled />
-              </td>
-              <th scope="row">희망완료일</th>
-              <td>
-                <el-date-picker
-                  v-model="resultVo.rboardDesireDate"
-                  type="date"
-                  size="mini"
-                />
-              </td>
-            </tr>
-            <tr>
-              <th class="first" scope="row">요청내용</th>
-              <td colspan="3">
-                <el-input v-model="resultVo.rboardContent" type="textarea" rows="20" class="w98" name="sboardContents" size="mini" />
-              </td>
-            </tr>
-            <tr>
-              <template v-if="viewType === 'detail'">
-                <th class="first" scope="row">조치 내용</th>
-                <td colspan="3">
-                  <el-input v-model="actionContents" type="textarea" rows="10" class="w98" size="mini" />
-                </td>
-              </template>
-            </tr>
-            <tr class="last">
-              <th class="first" scope="row">첨부파일</th>
-              <td colspan="3">
-
-                <el-upload
-                  ref="upload"
-                  class="upload-demo w-80"
-                  action="https://jsonplaceholder.typicode.com/posts/"
-                  :auto-upload="false"
-                  :on-change="handleFileChange"
-                >
-                  <el-button v-if="viewType !== 'detail'" slot="trigger" size="small" style="font-size: larger; border: none; float: right" icon="el-icon-search" class="font-weight-bolder"></el-button>
-                </el-upload>
-              </td>
-
-            </tr>
-            <template v-if="viewType === 'detail'">
-              <tr class="last">
-                <th class="first" scope="row">진행상태</th>
-                <td>
-                  <el-select v-model="resultVo.rboardProgress" class="w-100" size="mini">
-                    <el-option
-                      v-for="(option, i) in progressOptions"
-                      :key="i"
-                      :label="option.label"
-                      :value="option.value"
-                    />
-                  </el-select>
-                </td>
-                <th scope="row">완료예정일</th>
-                <td>
-                  <el-date-picker
-                    v-model="resultVo.rboardExpectedDate"
-                    type="date"
-                    size="mini"
-                  />
-                </td>
-              </tr>
-            </template>
-          </tbody>
-        </table>
-      </div>
-
-      <div slot="footer" class="dialog-footer">
-        <template v-if="viewType === 'detail'">
-          <el-button size="mini" @click="fnDeleteSubmit()">{{ $t('삭제') }}</el-button>
-          <el-button size="mini" @click="fnUpdateSubmit()">{{ $t('수정') }}</el-button>
-        </template>
-        <template v-if="viewType === 'create'">
-          <el-button size="mini" @click="fnInsertSubmit()">{{ $t('등록') }}</el-button>
-        </template>
-        <el-button size="mini" class="el-icon-close" @click="close()">{{ $t('exit') }}</el-button>
-      </div>
-
-    </el-dialog>
-  </div>
+          </template>
+        </tbody>
+      </table>
+    </div>
+    <div class="popupContentTableBottom">
+      <template v-if="viewType === 'detail'">
+        <el-button type="primary" size="small" icon="el-icon-delete" round @click="fnDeleteSubmit()">삭제</el-button>
+        <el-button type="primary" size="small" icon="el-icon-edit" round @click="fnUpdateSubmit()">수정</el-button>
+      </template>
+      <template v-if="viewType === 'create'">
+        <el-button type="primary" size="small" icon="el-icon-document-add" round @click="fnInsertSubmit()">등록</el-button>
+      </template>
+      <el-button type="primary" size="small" icon="el-icon-close" round @click="close()">{{ $t('exit') }}</el-button>
+    </div>
+  </el-dialog>
 </template>
 
 <script>
@@ -209,7 +195,7 @@ export default {
     onCreated() {
       Modal.methods.onCreated.call(this)
       this.closeOnClickModal = false
-      this.domElement.maxWidth = 1200
+      this.domElement.maxWidth = 900
     },
     onOpen(model, actionMode) {
       this.viewType = model.type
@@ -383,10 +369,5 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.ModalReqDetail{
-  .el-input {
-    width: 100%;
-  }
-}
 
 </style>

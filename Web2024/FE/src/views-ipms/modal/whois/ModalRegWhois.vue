@@ -1,336 +1,320 @@
 <template>
-  <div>
-    <el-dialog
-      v-if="animationVisible"
-      id="ipms"
-      v-el-drag-dialog
-      :visible.sync="visible"
-      :width="domElement.maxWidth + `px`"
-      :fullscreen.sync="fullscreen"
-      :modal-append-to-body="false"
-      :append-to-body="true"
-      :modal="modal"
-      :close-on-click-modal="closeOnClickModal"
-      :loading="loading"
-      class="ipms-dialog"
-      :class="{ [name]: true }"
-    >
-      <span slot="title">
-        <i class="el-icon-document mr-2" style="font-size: 17px" />
-        Whois 신청서 수정
-        <hr>
-      </span>
+  <el-dialog
+    v-if="animationVisible"
+    id="ipms"
+    v-el-drag-dialog
+    title="Whois 신청서 수정"
+    :visible.sync="visible"
+    :width="domElement.maxWidth + `px`"
+    :fullscreen.sync="fullscreen"
+    :modal-append-to-body="false"
+    :append-to-body="true"
+    :modal="modal"
+    :close-on-click-modal="closeOnClickModal"
+    :loading="loading"
+    class="ipms-dialog"
+    :class="{ [name]: true }"
+  >
+    <div class="popupContentTable">
+      <div class="popupContentTableTitle">처리상태</div>
+      <table>
+        <colgroup>
+          <col width="24%" /><col width="76%" />
+        </colgroup>
+        <tbody>
+          <tr>
+            <th>처리상태</th>
+            <td>{{ resultVo.swhoisTranStatusNm }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div><!-- popupContentTable END -->
 
-      <div id="content" class="layer">
-        <div class="content_result mb-3">
-          <table class="tbl_data" summary="처리상태">
-            <caption>처리상태</caption>
-            <colgroup>
-              <col width="22%" /><col width="78%" />
-            </colgroup>
-            <tbody>
-              <tr class="top last">
-                <th class="first" scope="row">처리상태</th>
-                <td>{{ resultVo.swhoisTranStatusNm }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div><!-- content_result END -->
+    <div class="popupContentTable">
+      <div class="popupContentTableTitle">기본정보</div>
+      <table>
+        <colgroup>
+          <col width="4%" /><col width="18%" /><col width="78%" />
+        </colgroup>
+        <tbody>
+          <tr>
+            <th>h0</th>
+            <th>신청서이름</th>
+            <td>{{ resultVo.sapplicationname }}</td>
+          </tr>
+          <tr>
+            <th>h1</th>
+            <th>구분</th>
+            <td>{{ resultVo.swhoisRequestTypeNm }}</td>
+          </tr>
+          <tr class="last">
+            <th>h2</th>
+            <th>KRNIC 회원ID</th>
+            <td>{{ resultVo.skrnicmemberId }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div><!-- popupContentTable END -->
+    <div class="popupContentTableBottom">
+      <el-button type="primary" size="small" round @click="fnSetAddr('toKT')">KT 정보대체</el-button>
+      <el-button type="primary" size="small" round @click="fnSetAddr('reset')">초기화</el-button>
+    </div>
 
-        <div class="content_result">
-          <table class="tbl_data" summary="기본정보">
-            <caption>기본정보</caption>
-            <colgroup>
-              <col width="4%" /><col width="18%" /><col width="78%" />
-            </colgroup>
-            <tbody>
-              <tr class="top">
-                <th class="first" scope="row">h0</th>
-                <th class="first" scope="row">신청서이름</th>
-                <td>{{ resultVo.sapplicationname }}</td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">h1</th>
-                <th class="first" scope="row">구분</th>
-                <td>{{ resultVo.swhoisRequestTypeNm }}</td>
-              </tr>
-              <tr class="last">
-                <th class="first" scope="row">h2</th>
-                <th class="first" scope="row">KRNIC 회원ID</th>
-                <td>{{ resultVo.skrnicmemberId }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div><!-- content_result END -->
+    <div v-if="resultVo.dbMatchYn === 'N'" id="allocDiv" class="popupContentTable">
+      <div class="popupContentTableTitle">할당 테이블 고객정보</div>
+      <table>
+        <colgroup>
+          <col width="20%" /><col width="80%" />
+        </colgroup>
+        <tbody>
+          <tr>
+            <th>고객명</th>
+            <td>
+              <span id="custName">{{ customerName }}</span>
+            </td>
+          </tr>
+          <tr>
+            <th>주소</th>
+            <td>
+              <span id="custAddr">{{ customerAddr }}</span>
+            </td>
+          </tr>
+          <tr>
+            <th>우편 번호</th>
+            <td>
+              <span id="custZipcode">{{ customerZipcode }}</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-        <div class="my-1 float-right">
-          <el-button size="mini" @click="fnSetAddr('toKT')">{{ $t('KT 정보대체') }}</el-button>
-          <el-button size="mini" class="el-icon-refresh-right" @click="fnSetAddr('reset')">{{ $t('초기화') }}</el-button>
-        </div>
+    <div class="popupContentTable">
+      <div class="popupContentTableTitle">1. IP 주소 사용기관 (필수)</div>
+      <table>
+        <colgroup>
+          <col width="4%" /><col width="18%" /><col width="78%" />
+        </colgroup>
+        <tbody>
+          <tr>
+            <th>1a</th>
+            <th>한글 기관명(한 단어)</th>
+            <td>
+              <el-input v-model="userVo.sorgname" size="small" class="txt w50" maxlength="200" />
+            </td>
+          </tr>
+          <tr>
+            <th>1b</th>
+            <th>한글 주소</th>
+            <td>
+              <el-input v-model="userVo.saddr" size="small" class="w-80" disabled maxlength="200" />
+              <el-button type="primary" size="small" round @click="searchAddr()">주소검색</el-button>
+            </td>
+          </tr>
+          <tr>
+            <th>1c</th>
+            <th>한글 상세 주소</th>
+            <td>
+              <el-input v-model="userVo.saddrDetail" size="small" class="txt w98" disabled maxlength="200" />
+            </td>
+          </tr>
+          <tr>
+            <th>1d</th>
+            <th>우편 번호</th>
+            <td>
+              <el-input v-model="userVo.szipcode" size="small" class="txt w10" disabled />
+            </td>
+          </tr>
+          <tr>
+            <th>1e</th>
+            <th>영문 기관명</th>
+            <td>
+              <el-input v-model="userVo.seorgname" size="small" class="txt w50" maxlength="200" />
+            </td>
+          </tr>
+          <tr>
+            <th>1f</th>
+            <th>영문 주소</th>
+            <td>
+              <el-input v-model="userVo.seaddr" size="small" class="txt w98" disabled maxlength="200" />
+            </td>
+          </tr>
+          <tr>
+            <th>1g</th>
+            <th>영문 상세 주소</th>
+            <td>
+              <el-input v-model="userVo.seaddrDetail" size="small" class="txt w98" disabled maxlength="200" />
+            </td>
+          </tr>
+          <tr>
+            <th>1h</th>
+            <th>전화번호</th>
+            <td>
+              <span class="ml3">+ 82</span>
+              <span class="ml5 mr5">-</span>
+              <el-input v-model="userVo.dcreateDt" class="w-70" size="small" maxlength="50" placeholder="2-222-2222" />
+            </td>
+          </tr>
+          <tr>
+            <th>1i</th>
+            <th>전자우편주소</th>
+            <td>
+              <el-input v-model="userVo.sadmEmail" class="txt w98" size="small" maxlength="100" />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-        <div v-if="resultVo.dbMatchYn === 'N'" id="allocDiv" class="content_result  mt5">
-          <h4>할당 테이블 고객정보</h4>
-          <table class="tbl_data entry" summary="할당 테이블 고객정보">
-            <caption>IP 주소 사용기관</caption>
-            <colgroup>
-              <col width="20%" /><col width="80%" />
-            </colgroup>
-            <tbody>
-              <tr class="top">
-                <th class="first" scope="row">고객명</th>
-                <td>
-                  <span id="custName">{{ customerName }}</span>
-                </td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">주소</th>
-                <td>
-                  <span id="custAddr">{{ customerAddr }}</span>
-                </td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">우편 번호</th>
-                <td>
-                  <span id="custZipcode">{{ customerZipcode }}</span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+    <div class="popupContentTable">
+      <div class="popupContentTableTitle">2. 네트워크 정보 (필수)</div>
+      <table>
+        <colgroup>
+          <col width="4%" /><col width="18%" /><col width="78%" />
+        </colgroup>
+        <tbody>
+          <tr>
+            <th>2a</th>
+            <th>IP 주소(ISP만 기재)</th>
+            <td>
+              <span>Start Address</span>
+              <el-input v-model="resultVo.sfirstAddr" size="small" class="w-30" disabled />
+              <span>-</span>
+              <span>End Address</span>
+              <el-input v-model="resultVo.slastAddr" size="small" class="w-30" disabled />
+            </td>
+          </tr>
+          <tr>
+            <th>2b</th>
+            <th>네트워크 이름(한 단어)</th>
+            <td>
+              <el-input v-model="resultVo.snetNm" size="small" class="txt w50" disabled />
+            </td>
+          </tr>
 
-        <div class="content_result  mt5">
-          <h4>1. IP 주소 사용기관 (필수)</h4>
-          <table class="tbl_data entry" summary="IP 주소 사용기관">
-            <caption>IP 주소 사용기관</caption>
-            <colgroup>
-              <col width="4%" /><col width="18%" /><col width="78%" />
-            </colgroup>
-            <tbody>
-              <tr class="top">
-                <th class="first" scope="row">1a</th>
-                <th class="first" scope="row">한글 기관명(한 단어)</th>
-                <td>
-                  <el-input v-model="userVo.sorgname" size="mini" class="txt w50" maxlength="200" />
-                </td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">1b</th>
-                <th class="first" scope="row">한글 주소</th>
-                <td>
-                  <el-input v-model="userVo.saddr" size="mini" class="w-80" disabled maxlength="200" />
-                  <el-button size="mini" @click="searchAddr()">주소검색</el-button>
-                </td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">1c</th>
-                <th class="first" scope="row">한글 상세 주소</th>
-                <td>
-                  <el-input v-model="userVo.saddrDetail" size="mini" class="txt w98" disabled maxlength="200" />
-                </td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">1d</th>
-                <th class="first" scope="row">우편 번호</th>
-                <td>
-                  <el-input v-model="userVo.szipcode" size="mini" class="txt w10" disabled />
-                </td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">1e</th>
-                <th class="first" scope="row">영문 기관명</th>
-                <td>
-                  <el-input v-model="userVo.seorgname" size="mini" class="txt w50" maxlength="200" />
-                </td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">1f</th>
-                <th class="first" scope="row">영문 주소</th>
-                <td>
-                  <el-input v-model="userVo.seaddr" size="mini" class="txt w98" disabled maxlength="200" />
-                </td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">1g</th>
-                <th class="first" scope="row">영문 상세 주소</th>
-                <td>
-                  <el-input v-model="userVo.seaddrDetail" size="mini" class="txt w98" disabled maxlength="200" />
-                </td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">1h</th>
-                <th class="first" scope="row">전화번호</th>
-                <td>
-                  <span class="ml3">+ 82</span>
-                  <span class="ml5 mr5">-</span>
-                  <el-input v-model="userVo.dcreateDt" class="w-70" size="mini" maxlength="50" placeholder="2-222-2222" />
-                </td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">1i</th>
-                <th class="first" scope="row">전자우편주소</th>
-                <td>
-                  <el-input v-model="userVo.sadmEmail" class="txt w98" size="mini" maxlength="100" />
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+          <tr>
+            <th>2c</th>
+            <th>네트워크분류</th>
+            <td class="view">{{ resultVo.snettype }}</td>
+          </tr>
+          <tr>
+            <th>2d</th>
+            <th>인터넷서비스분류</th>
+            <td class="view">{{ resultVo.sservicegb }}</td>
+          </tr>
+          <tr>
+            <th>2e</th>
+            <th>이용기관분류</th>
+            <td>
+              <el-select v-model="resultVo.suserorggb" size="small" class="w15">
+                <el-option label="일반기업" value="CORPORATION"></el-option>
+                <el-option label="공공기관" value="PUBLIC_INSTITUTION"></el-option>
+                <el-option label="아파트/가정" value="APT_HOME"></el-option>
+                <el-option label="대학" value="CAMPUS"></el-option>
+                <el-option label="병원" value="HOSPITAL"></el-option>
+                <el-option label="PC방" value="PCROOM"></el-option>
+                <el-option label="기타" value="OTHERS"></el-option>
+                <el-option label="INFRA" value="INFRA"></el-option>
+              </el-select>
+            </td>
+          </tr>
+          <tr>
+            <th>2f</th>
+            <th>서비스지역</th>
+            <td>
+              <el-select v-model="resultVo.scity" size="small" class="w15">
+                <el-option label="서울" value="서울"></el-option>
+                <el-option label="경기" value="경기"></el-option>
+                <el-option label="인천" value="인천"></el-option>
+                <el-option label="강원" value="강원"></el-option>
+                <el-option label="충북" value="충북"></el-option>
+                <el-option label="대전" value="대전"></el-option>
+                <el-option label="충남" value="충남"></el-option>
+                <el-option label="경북" value="경북"></el-option>
+                <el-option label="대구" value="대구"></el-option>
+                <el-option label="경남" value="경남"></el-option>
+                <el-option label="울산" value="울산"></el-option>
+                <el-option label="부산" value="부산"></el-option>
+                <el-option label="전북" value="전북"></el-option>
+                <el-option label="전남" value="전남"></el-option>
+                <el-option label="광주" value="광주"></el-option>
+                <el-option label="제주" value="제주"></el-option>
+              </el-select>
+            </td>
+          </tr>
+          <tr>
+            <th>2g</th>
+            <th>IP분류</th>
+            <td>{{ resultVo.siptype }}</td>
+          </tr>
+          <tr class="last">
+            <th>2h</th>
+            <th>연결 날짜</th>
+            <td>
+              <el-input v-model="formattedDate" size="small" class="w-60" disabled />
+              <span style="font-size:12px;color:#b5b5b5">(예: 2014.01.01)</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-        <div class="content_result">
-          <h4>2. 네트워크 정보 (필수)</h4>
-          <table class="tbl_data entry" summary="네트워크 정보">
-            <caption>네트워크 정보</caption>
-            <colgroup>
-              <col width="4%" /><col width="18%" /><col width="78%" />
-            </colgroup>
-            <tbody>
-              <tr class="top">
-                <th class="first" scope="row">2a</th>
-                <th class="first" scope="row">IP 주소(ISP만 기재)</th>
-                <td>
-                  <span>Start Address</span>
-                  <el-input v-model="resultVo.sfirstAddr" size="mini" class="w-30" disabled />
-                  <span>-</span>
-                  <span>End Address</span>
-                  <el-input v-model="resultVo.slastAddr" size="mini" class="w-30" disabled />
-                </td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">2b</th>
-                <th class="first" scope="row">네트워크 이름(한 단어)</th>
-                <td>
-                  <el-input v-model="resultVo.snetNm" size="mini" class="txt w50" disabled />
-                </td>
-              </tr>
+    <div class="popupContentTable">
+      <div class="popupContentTableTitle">3. 추가사항(Comment)</div>
+      <table class="tbl_data entry" summary="추가사항">
+        <colgroup>
+          <col width="22%" /><col width="78%" />
+        </colgroup>
+        <tbody>
+          <tr>
+            <th>추가사항 내용</th>
+            <td>
+              <el-input v-model="resultVo.ssvccommnet" size="small" type="textarea" class="w98" rows="3" maxlength="1500" />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div><!-- popupContentTable END -->
 
-              <tr>
-                <th class="first" scope="row">2c</th>
-                <th class="first" scope="row">네트워크분류</th>
-                <td class="view">{{ resultVo.snettype }}</td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">2d</th>
-                <th class="first" scope="row">인터넷서비스분류</th>
-                <td class="view">{{ resultVo.sservicegb }}</td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">2e</th>
-                <th class="first" scope="row">이용기관분류</th>
-                <td>
-                  <el-select v-model="resultVo.suserorggb" size="mini" class="w15">
-                    <el-option label="일반기업" value="CORPORATION"></el-option>
-                    <el-option label="공공기관" value="PUBLIC_INSTITUTION"></el-option>
-                    <el-option label="아파트/가정" value="APT_HOME"></el-option>
-                    <el-option label="대학" value="CAMPUS"></el-option>
-                    <el-option label="병원" value="HOSPITAL"></el-option>
-                    <el-option label="PC방" value="PCROOM"></el-option>
-                    <el-option label="기타" value="OTHERS"></el-option>
-                    <el-option label="INFRA" value="INFRA"></el-option>
-                  </el-select>
-                </td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">2f</th>
-                <th class="first" scope="row">서비스지역</th>
-                <td>
-                  <el-select v-model="resultVo.scity" size="mini" class="w15">
-                    <el-option label="서울" value="서울"></el-option>
-                    <el-option label="경기" value="경기"></el-option>
-                    <el-option label="인천" value="인천"></el-option>
-                    <el-option label="강원" value="강원"></el-option>
-                    <el-option label="충북" value="충북"></el-option>
-                    <el-option label="대전" value="대전"></el-option>
-                    <el-option label="충남" value="충남"></el-option>
-                    <el-option label="경북" value="경북"></el-option>
-                    <el-option label="대구" value="대구"></el-option>
-                    <el-option label="경남" value="경남"></el-option>
-                    <el-option label="울산" value="울산"></el-option>
-                    <el-option label="부산" value="부산"></el-option>
-                    <el-option label="전북" value="전북"></el-option>
-                    <el-option label="전남" value="전남"></el-option>
-                    <el-option label="광주" value="광주"></el-option>
-                    <el-option label="제주" value="제주"></el-option>
-                  </el-select>
-                </td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">2g</th>
-                <th class="first" scope="row">IP분류</th>
-                <td>{{ resultVo.siptype }}</td>
-              </tr>
-              <tr class="last">
-                <th class="first" scope="row">2h</th>
-                <th class="first" scope="row">연결 날짜</th>
-                <td>
-                  <el-input v-model="formattedDate" size="mini" class="w-60" disabled />
-                  <em>(예: 2014.01.01)</em>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+    <div class="popupContentTable">
+      <div class="popupContentTableTitle">4. KRNIC 회신</div>
+      <table>
+        <colgroup>
+          <col width="22%" /><col width="78%" />
+        </colgroup>
+        <tbody>
+          <tr>
+            <th>결과 메세지</th>
+            <td>
+              <el-input v-model="resultVo.swhoisresultMsg" size="small" type="textarea" class="view w98" rows="5" readonly />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-        <div class="content_result">
-          <h4>3. 추가사항(Comment)</h4>
-          <table class="tbl_data entry" summary="추가사항">
-            <caption>추가사항</caption>
-            <colgroup>
-              <col width="22%" /><col width="78%" />
-            </colgroup>
-            <tbody>
-              <tr class="top last">
-                <th class="first" scope="row">추가사항 내용</th>
-                <td>
-                  <el-input v-model="resultVo.ssvccommnet" size="mini" type="textarea" class="w98" rows="3" maxlength="1500" />
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div><!-- content_result END -->
-
-        <div class="content_result">
-          <h4>4. KRNIC 회신</h4>
-          <table class="tbl_data" summary="KRNIC 회신">
-            <caption>KRNIC 회신</caption>
-            <colgroup>
-              <col width="22%" /><col width="78%" />
-            </colgroup>
-            <tbody>
-              <tr class="top last">
-                <th class="first" scope="row">결과 메세지</th>
-                <td>
-                  <el-input v-model="resultVo.swhoisresultMsg" size="mini" type="textarea" class="view w98" rows="5" readonly />
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div slot="footer" class="dialog-footer">
-        <el-button v-if="resultVo.dbMatchYn === 'N'" size="mini" @click.native="fnSaveRegWhoisSubmit()">
-          DB 현행화 전송
+    <div class="popupContentTableBottom">
+      <el-button v-if="resultVo.dbMatchYn === 'N'" type="primary" size="small" round @click.native="fnSaveRegWhoisSubmit()">
+        DB 현행화 전송
+      </el-button>
+      <template v-if="resultVo.swhoisresultCd === '03'">
+        <el-button v-if="resultVo.delyn === 'N'" type="primary" size="small" round @click.native="fnSaveRegWhoisSubmit()">
+          변경
         </el-button>
-        <template v-if="resultVo.swhoisresultCd === '03'">
-          <el-button v-if="resultVo.delyn === 'N'" size="mini" @click.native="fnSaveRegWhoisSubmit()">
-            변경
-          </el-button>
-          <el-button v-if="resultVo.delyn === 'Y'" size="mini" @click.native="fnSaveRegWhoisSubmit()">
-            삭제
-          </el-button>
-
-        </template>
-        <template v-else>
-          <el-button v-if="resultVo.delyn === 'N'" size="mini" @click.native="fnSaveRegWhoisSubmit()">
-            변경
-          </el-button>
-        </template>
-        <el-button size="mini" class="el-icon-close" @click.native="close()">
-          닫기
+        <el-button v-if="resultVo.delyn === 'Y'" type="primary" size="small" round @click.native="fnSaveRegWhoisSubmit()">
+          삭제
         </el-button>
-      </div>
-    </el-dialog>
-  </div>
+      </template>
+      <template v-else>
+        <el-button v-if="resultVo.delyn === 'N'" type="primary" size="small" round @click.native="fnSaveRegWhoisSubmit()">
+          변경
+        </el-button>
+      </template>
+      <el-button type="primary" size="small" icon="el-icon-close" round @click.native="close()">
+        닫기
+      </el-button>
+    </div>
+  </el-dialog>
 </template>
 
 <script>

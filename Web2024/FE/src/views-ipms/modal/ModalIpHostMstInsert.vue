@@ -1,175 +1,124 @@
 <template>
-  <div>
-    <el-dialog
-      v-if="animationVisible"
-      id="ipms"
-      v-el-drag-dialog
-      :visible.sync="visible"
-      :width="domElement.maxWidth + `px`"
-      :fullscreen.sync="fullscreen"
-      :modal-append-to-body="true"
-      :append-to-body="true"
-      :close-on-click-modal="closeOnClickModal"
-      :loading="loading"
-      class="ipms-dialog"
-      :class="{ [name]: true }"
-    >
-      <span slot="title">
-        <i class="el-icon-document mr-2" style="font-size: 17px" />
-        운용정보 등록
-        <hr>
-      </span>
-      <div id="content" class="layer">
-        <div class="content_result mt0">
-          <table class="tbl_data entry">
-            <colgroup>
-              <col width="15%" />
-              <col width="85%" />
-            </colgroup>
-            <tbody>
-              <tr class="top">
-                <th class="first" scope="row">장비명</th>
-                <td>
-                  <input
-                    id="insertShostNm"
-                    v-model="resultVo.insertShostNm"
-                    type="text"
-                    class="txt w98"
-                    name="insertShostNm"
-                    title="장비명"
-                    maxlength="25"
+  <el-dialog
+    v-if="animationVisible"
+    id="ipms"
+    v-el-drag-dialog
+    title="운용정보 등록"
+    :visible.sync="visible"
+    :width="domElement.maxWidth + `px`"
+    :fullscreen.sync="fullscreen"
+    :modal-append-to-body="true"
+    :append-to-body="true"
+    :close-on-click-modal="closeOnClickModal"
+    :loading="loading"
+    class="ipms-dialog"
+    :class="{ [name]: true }"
+  >
+    <div class="popupContentTable">
+      <table>
+        <colgroup>
+          <col width="15%" />
+          <col width="85%" />
+        </colgroup>
+        <tbody>
+          <tr>
+            <th>장비명</th>
+            <td>
+              <el-input
+                v-model="resultVo.insertShostNm"
+                type="text"
+                size="mini"
+                name="insertShostNm"
+                title="장비명"
+                maxlength="25"
+              />
+            </td>
+          </tr>
+          <tr>
+            <th>수용국</th>
+            <td class="textflex">
+              <el-input
+                v-model="resultVo.insertOfficeNm"
+                size="mini"
+                readonly
+              >
+                <template #suffix>
+                  <el-button
+                    size="mini"
+                    icon="el-icon-search"
+                    style="background: none;border: unset;"
+                    @click="fnSearchOfficeList()"
                   />
-                </td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">수용국</th>
-                <td>
-                  <div class="search w99">
-                    <el-input
-                      v-model="resultVo.insertOfficeNm"
-                      size="mini"
-                      readonly
-                    >
-                      <template #suffix>
-                        <el-button
-                          size="mini"
-                          icon="el-icon-search"
-                          class="font-weight-bolder"
-                          style="font-size: larger;border: none;padding: 0;top: -6px;position: relative;"
-                          @click="fnSearchOfficeList()"
-                        />
-                      </template>
-                    </el-input>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">IP 정보</th>
-                <td class="d-flex">
-                  <el-select id="insertIpVersion" v-model="resultVo.insertIpVersion" class="w15" name="insertIpVersion" @change="onChangeIpVersion">
-                    <el-option
-                      v-for="item in [{ code: 'CV0001', name: 'IPv4' }, { code: 'CV0002', name: 'IPv6' }]"
-                      v-if="item.code !== 'CV0000'"
-                      :key="item.code"
-                      :value="item.code"
-                      :label="item.name"
-                    />
-                  </el-select>
-
-                  <input
-                    id="insertIpHostInet"
-                    v-model="resultVo.insertIpHostInet"
-                    type="text"
-                    class="txt w69"
-                    name="insertIpHostInet"
-                    title="IP 주소 입력창"
-                    maxlength="43"
-                  />
-
-                  <input
-                    id="sBitMask"
-                    v-model="resultVo.sBitMask"
-                    type="text"
-                    class="txt w10"
-                    name="sBitMask"
-                    title="BitMask"
-                    maxlength="43"
-                    style="width: 80px"
-                    disabled="disabled"
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">모델명</th>
-                <td>
-                  <input
-                    id="insertModelNm"
-                    v-model="resultVo.insertModelNm"
-                    type="text"
-                    class="txt w98"
-                    name="insertModelNm"
-                    title="모델명"
-                    maxlength="30"
-                  />
-                </td>
-              </tr>
-              <tr class="last">
-                <th class="first" scope="row">용도</th>
-                <td>
-                  <input
-                    id="insertComment"
-                    v-model="resultVo.insertComment"
-                    type="text"
-                    class="txt w98"
-                    name="insertComment"
-                    title="용도"
-                    maxlength="1000"
-                  />
-                </td>
-              </tr>
-            </tbody>
-          </table>
-
-          <!-- Buttons Section -->
-          <!-- <div class="btn_area mt10">
-            <span>
-              <a href="#none">
-                <input
-                  type="image"
-                  :src="getImageUrl('/resources/images/content/btn_save_off.gif')"
-                  value="등록"
-                  name="btnInsertSubmit"
-                  id="btnInsertHostSubmit"
-                  @mouseover="menuOver"
-                  @mouseout="menuOut"
-                  @click="handleSubmit"
+                </template>
+              </el-input>
+            </td>
+          </tr>
+          <tr>
+            <th>IP 정보</th>
+            <td class="textflex">
+              <el-select v-model="resultVo.insertIpVersion" size="mini" @change="onChangeIpVersion">
+                <el-option
+                  v-for="item in [{ code: 'CV0001', name: 'IPv4' }, { code: 'CV0002', name: 'IPv6' }]"
+                  v-if="item.code !== 'CV0000'"
+                  :key="item.code"
+                  :value="item.code"
+                  :label="item.name"
                 />
-              </a>
-            </span>
-            <span>
-              <a href="#none">
-                <input
-                  type="image"
-                  :src="getImageUrl('/resources/images/content/btn_close_off.gif')"
-                  value="닫기"
-                  name="btnInsertHostCls"
-                  id="btnInsertHostCls"
-                  @mouseover="menuOver"
-                  @mouseout="menuOut"
-                  @click="handleClose"
-                />
-              </a>
-            </span>
-          </div> -->
-        </div>
-      </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button size="mini" class="el-icon-edit" @click="handleClickSubmit">등록</el-button> <!-- btnUpdateLinkInfo -->
-        <el-button size="mini" class="el-icon-close" @click.native="close()">{{ $t('exit') }}</el-button>
-      </div>
-    </el-dialog>
+              </el-select>
+              <el-input
+                v-model="resultVo.insertIpHostInet"
+                type="text"
+                size="mini"
+                name="insertIpHostInet"
+                title="IP 주소 입력창"
+                maxlength="43"
+              />
+              <el-input
+                v-model="resultVo.sBitMask"
+                type="text"
+                size="mini"
+                name="sBitMask"
+                title="BitMask"
+                maxlength="43"
+                style="width: 80px"
+                disabled="disabled"
+              />
+            </td>
+          </tr>
+          <tr>
+            <th>모델명</th>
+            <td>
+              <el-input
+                v-model="resultVo.insertModelNm"
+                type="text"
+                size="mini"
+                name="insertModelNm"
+                maxlength="30"
+              />
+            </td>
+          </tr>
+          <tr>
+            <th>용도</th>
+            <td>
+              <el-input
+                v-model="resultVo.insertComment"
+                type="text"
+                size="mini"
+                class="txt w98"
+                name="insertComment"
+                maxlength="1000"
+              />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="popupContentTableBottom">
+      <el-button type="primary" size="small" icon="el-icon-edit" round @click="handleClickSubmit">등록</el-button> <!-- btnUpdateLinkInfo -->
+      <el-button type="primary" size="small" icon="el-icon-close" round @click.native="close()">{{ $t('exit') }}</el-button>
+    </div>
     <ModalOrgSearch ref="ModalOrgSearch" @selected-value="setSelectedRow" />
-  </div>
+  </el-dialog>
 </template>
 
 <script>
@@ -291,22 +240,4 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-::v-deep .el-input {
-  input {
-    display: inline-block;
-    height: 22px;
-    line-height: 21px;
-    padding: 2px 4px;
-    border: #ccc solid 1px;
-    color: #434343;
-    font-size: 1em;
-    vertical-align: middle;
-  }
-}
-::v-deep .el-input__inner:focus {
-  border: solid 2px #cc2929;
-}
-::v-deep .el-input__suffix {
-  top: 8px;
-}
 </style>

@@ -1,28 +1,30 @@
 <template>
-  <div v-if="isDashboard" class="dashboard-notice">
-    <div class="content-container d-flex">
-      <h3 class="noti-title">공지사항</h3>
-      <div id="rolling" class="rolling">
-        <template v-for="(noti, index) in notice">
-          <div id="roll-item" :key="index" class="roll-item" :style="{'transform':`translateY(${index * 22}px)`}" @click="handleClickNoticeDetail(noti.seq)">
-            <span class="date">{{ noti.dcreateDt.split(' ')[0] }}</span>
-            <span class="content-title">{{ noti.sboardTitle }}</span>
-          </div>
-        </template>
-      </div>
+  <div v-if="isDashboard" class="notice-wrap">
+    <div class="notice-title">
+      <span>공지사항</span>
+      <div class="notice-link-btn" @click="$router.push({ path: '/board/notice' })" />
     </div>
-    <div class="d-flex">
-      <div class="btn-container">
-        <img src="@/assets/images/ipms/content/btn_noti_up_off.gif" alt="이전글" title="이전글" @click="showPrevItem()" />
-        <img src="@/assets/images/ipms/content/btn_noti_down_off.gif" alt="다음글" title="다음글" @click="showNextItem()" />
-      </div>
-      <div class="more">
-        <i class="el-icon-plus" style="font-size: 16px;" @click="$router.push({ path: '/board/notice' })" />
-      </div>
+    <div class="notice-content">
+      <el-carousel
+        height="34px"
+        direction="vertical"
+        :autoplay="true"
+        :interval="3000"
+        indicator-position="none"
+        arrow="always"
+      >
+        <el-carousel-item v-for="noti in notice" :key="noti.seq">
+          <div class="notice-content-item" @click="handleClickNoticeDetail(noti.seq)">
+            <span>[ {{ noti.sboardTypeSubNm }} ]</span>
+            <span>{{ noti.dcreateDt.split(' ')[0] }}</span>
+            <span>{{ noti.sboardTitle }}</span>
+          </div>
+        </el-carousel-item>
+      </el-carousel>
     </div>
     <ModalNoticeDetail ref="ModalNoticeDetail" />
   </div>
-  <el-row v-else ref="container" class="w-100 h-100 pt-4 px-12">
+  <el-row v-else ref="container" class="w-100 h-100">
     <DynamicComponentLoader
       ref="searchCondition"
       :prop-name="name"
@@ -32,8 +34,9 @@
     <el-col ref="tableContainer" :span="24">
       <compTable
         ref="compTable"
+        style="height: calc(100% - 80px)"
         :prop-name="name"
-        :prop-table-height="'calc(100% - 110px)'"
+        :prop-table-height="'100%'"
         :prop-column="tableColumns"
         :prop-data="pagination.data"
         :prop-pagination-data.sync="pagination"
@@ -51,8 +54,8 @@
           </span>
         </template>
         <template slot="add-features">
-          <div class="float-right">
-            <el-button size="mini" icon="el-icon-document-add" @click="fnViewInsertNotice()">글쓰기</el-button>
+          <div style="margin-top: 10px">
+            <el-button icon="el-icon-document-add" type="primary" size="mini" round @click="fnViewInsertNotice()">글쓰기</el-button>
           </div>
         </template>
       </compTable>
@@ -104,7 +107,8 @@ export default {
         { key: 'DateRange', props: { label: '등록기간' } },
       ],
       interval: null,
-      currentIndex: 0
+      currentIndex: 0,
+      noticeList: []
     }
   },
   computed: {
@@ -113,9 +117,9 @@ export default {
     }
   },
   mounted() {
-    if (this.isDashboard) {
-      this.interval = setInterval(this.noticeScroll, 3000)
-    }
+    // if (this.isDashboard) {
+    //   this.interval = setInterval(this.noticeScroll, 3000)
+    // }
     setTimeout(() => {
       this.fnViewListNotice()
     }, 100)
@@ -132,17 +136,8 @@ export default {
       this.handleClickNoticeDetail(row.seq)
     },
     async fnViewListNotice(requestParameter = null) {
-      const parameter = requestParameter ?? this.$refs.searchCondition.requestParameter
-      // const param = this.$refs.searchCondition?.requestParameter ?? {
-      //   searchCnd: 'title',
-      //   pageIndex: 1,
-      //   pageUnit: 10,
-      //   pageSize: 0,
-      //   firstIndex: 1,
-      //   lastIndex: 10,
-      //   recordCountPerPage: 10,
-      //   rowNo: 0,
-      // }
+      /* 대시보드 공지사항 조회 조건 확인필요함 */
+      const parameter = requestParameter ?? this.$refs?.searchCondition?.requestParameter ?? { searchCnd: 'title', sboardTypeSubCd: 'BM0002' }
       const target = ({ vue: this.$refs.compTable })
       const { pageSize: pageUnit, currentPage: pageIndex } = this.pagination
       Object.assign(parameter, { pageUnit, pageIndex })
@@ -150,6 +145,7 @@ export default {
         this.openLoading(target)
         const res = await apiRequestModel(ipmsModelApis.viewListNotice, parameter)
         this.pagination.data = res.result.data ?? []
+        this.noticeList = res.result.data ?? []
         this.pagination.total = res.result.totalCount
       } catch (error) {
         this.error(error)
@@ -173,7 +169,7 @@ export default {
       }, 100)
     },
     noticeScroll() {
-      this.currentIndex = (this.currentIndex + 1) % this.noticeList.length // Increment currentIndex circularly
+      this.currentIndex = (this.currentIndex + 1) % (this.noticeList.length || 0) // Increment currentIndex circularly
       this.showItem(this.currentIndex)
     },
     showItem(index) {
@@ -197,82 +193,82 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.dashboard-notice {
-  height: 60px;
-  display: flex;
-  padding: 20px;
-  margin-bottom: 20px;
-  align-items: center;
-  justify-content: space-between;
-  border-top: solid 1px #cbcbcb;
-  border-bottom: solid 1px #cbcbcb;
-  .content-container {
-    height: 22px;
-    width: 800px;
-    overflow: hidden;
-    position: relative;
-    .noti-title {
-      width: 100px;
-    }
-    .rolling {
-      height: 22px;
-      width: 100%;
-      overflow: hidden;
-      position: relative;
-      .roll-item {
-        width: 100%;
-        position: absolute;
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
-        top: 0;
-        left: 0;
-        height: 22px;
-        transition: transform 0.5s ease-in-out;
-        &:hover {
-          .content-title {
-            text-decoration: underline;
-          }
-        }
-      }
-    }
-  }
-  .content-title {
-    font-size: 15px;
-    font-weight: bold;
-    padding: 0px 10px;
-  }
-  .date {
-    font-size: 15px;
-    font-weight: bold;
-    padding: 0px 10px;
-  }
-  .btn-container {
-    display: flex;
-    align-items: flex-start;
-    padding: 0px 8px;
-    img {
-      padding: 0px 3px;
-      &:hover {
-        cursor: pointer;
-        filter: grayscale(1);
-      }
-    }
-  }
-  .more {
-    i {
-      width: 20px;
-      height: 20px;
-      display: flex;
-      border: solid 1px;
-      align-items: center;
-      justify-content: center;
-      &:hover {
-        cursor: pointer;
-        color: red;
-      }
-    }
-  }
-}
+// .dashboard-notice {
+//   height: 60px;
+//   display: flex;
+//   padding: 20px;
+//   margin-bottom: 20px;
+//   align-items: center;
+//   justify-content: space-between;
+//   border-top: solid 1px #cbcbcb;
+//   border-bottom: solid 1px #cbcbcb;
+//   .content-container {
+//     height: 22px;
+//     width: 800px;
+//     overflow: hidden;
+//     position: relative;
+//     .noti-title {
+//       width: 100px;
+//     }
+//     .rolling {
+//       height: 22px;
+//       width: 100%;
+//       overflow: hidden;
+//       position: relative;
+//       .roll-item {
+//         width: 100%;
+//         position: absolute;
+//         display: flex;
+//         justify-content: flex-start;
+//         align-items: center;
+//         top: 0;
+//         left: 0;
+//         height: 22px;
+//         transition: transform 0.5s ease-in-out;
+//         &:hover {
+//           .content-title {
+//             text-decoration: underline;
+//           }
+//         }
+//       }
+//     }
+//   }
+//   .content-title {
+//     font-size: 15px;
+//     font-weight: bold;
+//     padding: 0px 10px;
+//   }
+//   .date {
+//     font-size: 15px;
+//     font-weight: bold;
+//     padding: 0px 10px;
+//   }
+//   .btn-container {
+//     display: flex;
+//     align-items: flex-start;
+//     padding: 0px 8px;
+//     img {
+//       padding: 0px 3px;
+//       &:hover {
+//         cursor: pointer;
+//         filter: grayscale(1);
+//       }
+//     }
+//   }
+//   .more {
+//     i {
+//       width: 20px;
+//       height: 20px;
+//       display: flex;
+//       border: solid 1px;
+//       align-items: center;
+//       justify-content: center;
+//       &:hover {
+//         cursor: pointer;
+//         color: red;
+//       }
+//     }
+//   }
+// }
 
 </style>

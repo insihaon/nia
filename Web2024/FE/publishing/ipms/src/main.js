@@ -18,6 +18,7 @@ Vue.prototype.$http = axios
 
 Vue.config.productionTip = true
 
+
 new Vue({
   el: '#app',
   router,

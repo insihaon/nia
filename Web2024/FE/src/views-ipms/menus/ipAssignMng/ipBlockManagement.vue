@@ -10,8 +10,9 @@
     <el-col ref="tableContainer" :span="24">
       <compTable
         ref="compTable"
+        style="height: calc(100% - 80px)"
         :prop-name="name"
-        :prop-table-height="'calc(100% - 120px)'"
+        :prop-table-height="'100%'"
         :prop-column="tableColumns"
         :prop-is-pagination="true"
         :prop-is-check-box="true"
@@ -28,11 +29,11 @@
           </span>
         </template>
         <template slot="add-features">
-          <div class="float-right">
-            <el-button size="mini" icon="el-icon-document-add" @click="handleOpenDetailModal('create')">신규생성</el-button>
-            <el-button size="mini" icon="el-icon-plus" @click="handleOpenDetailModal('generate')">추가생성</el-button>
-            <el-button size="mini" icon="el-icon-tickets" @click="handleOpenDetailModal('detail')">상세</el-button>
-            <el-button size="mini" icon="el-icon-edit-outline" @click="handleOpenDetailModal('edit')">수정</el-button>
+          <div style="margin-top: 10px">
+            <el-button icon="el-icon-document-add" type="primary" size="mini" round @click="handleOpenDetailModal('create')">신규생성</el-button>
+            <el-button icon="el-icon-plus" type="primary" size="mini" round @click="handleOpenDetailModal('generate')">추가생성</el-button>
+            <el-button icon="el-icon-tickets" type="primary" size="mini" round @click="handleOpenDetailModal('detail')">상세</el-button>
+            <el-button icon="el-icon-edit-outline" type="primary" size="mini" round @click="handleOpenDetailModal('edit')">수정</el-button>
           </div>
         </template>
       </compTable>

@@ -5,7 +5,8 @@
         v-for="item in profileList"
         :key="item.name"
         closable
-        :type="ipms.curProfileByVue[propName] === item.name ? 'danger': 'info'"
+        effect="plain"
+        :type="ipms.curProfileByVue[propName] === item.name ? 'danger': 'primary'"
         @click="handleClickApply(item)"
         @close="handleClickRemove(item.name)"
       >
@@ -13,7 +14,7 @@
       </el-tag>
     </div>
     <div class="ml-1">
-      <el-button icon="el-icon-document-add" size="mini" @click="handleClickSave">프로파일 저장</el-button>
+      <el-button type="info" icon="el-icon-document-add" size="mini" round plain @click="handleClickSave">프로파일 저장</el-button>
     </div>
   </div>
 </template>
@@ -109,7 +110,10 @@ export default {
 .el-tag {
   cursor: pointer;
 }
-.profile-container {
-  display: flex;
+div.profile-container {
+  width: 100%;display: flex;justify-content: space-between;
+}
+div.profile-container>div.list {
+  display: flex;gap:10px;
 }
 </style>

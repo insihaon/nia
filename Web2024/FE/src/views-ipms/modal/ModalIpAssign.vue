@@ -1,149 +1,128 @@
 <template>
-  <div>
-    <el-dialog
-      v-if="animationVisible"
-      id="ipms"
-      v-el-drag-dialog
-      :visible.sync="visible"
-      :width="domElement.maxWidth + `px`"
-      :fullscreen.sync="fullscreen"
-      :modal-append-to-body="false"
-      :append-to-body="true"
-      :modal="modal"
-      :close-on-click-modal="closeOnClickModal"
-      :loading="loading"
-      class="ipms-dialog"
-      :class="{ [name]: true }"
-    >
-      <span slot="title">
-        <i class="el-icon-document mr-2" style="font-size: 17px" />
-        IP블록배정
-        <hr>
-      </span>
+  <el-dialog
+    v-if="animationVisible"
+    id="ipms"
+    v-el-drag-dialog
+    title="IP블록배정"
+    :visible.sync="visible"
+    :width="domElement.maxWidth + `px`"
+    :fullscreen.sync="fullscreen"
+    :modal-append-to-body="false"
+    :append-to-body="true"
+    :modal="modal"
+    :close-on-click-modal="closeOnClickModal"
+    :loading="loading"
+    class="ipms-dialog"
+    :class="{ [name]: true }"
+  >
+    <div class="popupContentTable">
+      <div class="popupContentTableTitle">배정 정보</div>
+      <table>
+        <colgroup>
+          <col width="15%" /><col width="30%" /><col width="30%" /><col width="30%" />
+        </colgroup>
+        <tbody>
+          <tr>
+            <th>계위</th>
+            <td>
+              <el-select id="updSsvcLineTypeCd" v-model="ssvcLineTypeCd" size="mini">
+                <el-option v-for="option in ssvcLineTypeOptions" :key="option.value" :value="option.value">
+                  {{ option.label }}
+                </el-option>
+              </el-select>
+            </td>
+            <td>
+              <el-select id="updSsvcGroupCd" v-model="ssvcGroupCd" size="mini">
+                <el-option v-for="option in ssvcGroupOptions" :key="option.value" :value="option.value">
+                  {{ option.label }}
+                </el-option>
+              </el-select>
+            </td>
+            <td>
+              <el-select id="updSsvcObjCd" v-model="ssvcObjCd" size="mini">
+                <el-option v-for="option in ssvcObjOptions" :key="option.value" :value="option.value">
+                  {{ option.label }}
+                </el-option>
+              </el-select>
+            </td>
+          </tr>
+          <tr>
+            <th>배정상태</th>
+            <td>
+              <el-select id="updSassignLevelCd" v-model="sassignLevelCd" size="mini">
+                <el-option v-for="option in sassignTypeLevelOptions" :key="option.value" :value="option.value">
+                  {{ option.label }}
+                </el-option>
+              </el-select>
+            </td>
+            <th>서비스</th>
+            <td>
+              <el-select id="updSassignTypeCd" v-model="sassignTypeCd" :disabled="sassignLevelCd !== 'IA0004'" size="mini">
+                <el-option v-for="option in sassignTypeOptions" :key="option.value" :value="option.value">
+                  {{ option.label }}
+                </el-option>
+              </el-select>
+            </td>
+          </tr>
+          <tr>
+            <th>비고</th>
+            <td colspan="3">
+              <textarea id="updScomment" v-model="scomment" class="w98" rows="3" maxlength="4000"></textarea>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-      <div id="content" class="layer">
-        <div class="content_result mt0">
-          <h4 class="mt5">배정 정보</h4>
-          <table class="tbl_data entry mt5">
-            <colgroup>
-              <col width="15%" /><col width="30%" /><col width="30%" /><col width="30%" />
-            </colgroup>
-            <tbody>
-              <tr class="top">
-                <th class="first" scope="row">계위</th>
-                <td>
-                  <el-select id="updSsvcLineTypeCd" v-model="ssvcLineTypeCd" size="mini">
-                    <el-option v-for="option in ssvcLineTypeOptions" :key="option.value" :value="option.value">
-                      {{ option.label }}
-                    </el-option>
-                  </el-select>
-                </td>
-                <td>
-                  <el-select id="updSsvcGroupCd" v-model="ssvcGroupCd" size="mini">
-                    <el-option v-for="option in ssvcGroupOptions" :key="option.value" :value="option.value">
-                      {{ option.label }}
-                    </el-option>
-                  </el-select>
-                </td>
-                <td>
-                  <el-select id="updSsvcObjCd" v-model="ssvcObjCd" size="mini">
-                    <el-option v-for="option in ssvcObjOptions" :key="option.value" :value="option.value">
-                      {{ option.label }}
-                    </el-option>
-                  </el-select>
-                </td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">배정상태</th>
-                <td>
-                  <el-select id="updSassignLevelCd" v-model="sassignLevelCd" size="mini">
-                    <el-option v-for="option in sassignTypeLevelOptions" :key="option.value" :value="option.value">
-                      {{ option.label }}
-                    </el-option>
-                  </el-select>
-                </td>
-                <th scope="row">서비스</th>
-                <td>
-                  <el-select id="updSassignTypeCd" v-model="sassignTypeCd" :disabled="sassignLevelCd !== 'IA0004'" size="mini">
-                    <el-option v-for="option in sassignTypeOptions" :key="option.value" :value="option.value">
-                      {{ option.label }}
-                    </el-option>
-                  </el-select>
-                </td>
-              </tr>
-              <tr class="last">
-                <th class="first" scope="row">비고</th>
-                <td colspan="3">
-                  <textarea id="updScomment" v-model="scomment" class="w98" rows="3" maxlength="4000"></textarea>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="content_result">
-          <h4 class="mt5">배정 대상 정보</h4>
-          <table class="tbl_data entry">
-            <colgroup>
-              <col width="15%" />
-              <col width="85%" />
-            </colgroup>
-          </table>
-
-          <table id="baseTable" class="tbl_list my-3" summary="목록">
-            <caption>목록</caption>
-            <colgroup>
-              <col width="10%" />
-              <col width="10%" />
-              <col width="10%" />
-              <col width="10%" />
-              <col width="10%" />
-              <col width="12%" />
-              <col width="16%" />
-              <col width="12%" />
-              <col width="10%" />
-            </colgroup>
-            <thead>
-              <tr>
-                <th class="first" scope="col">서비스망</th>
-                <th scope="col">본부</th>
-                <th scope="col">노드</th>
-                <th scope="col">공인/사설</th>
-                <th scope="col">서비스</th>
-                <th scope="col">IP블록</th>
-                <th scope="col">배정범위</th>
-                <th scope="col">단위블록수</th>
-                <th scope="col">배정상태</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(item, index) in tbIpAssignMstListVo" :key="index">
-                <td> {{ item.ssvcLineTypeNm }}</td>
-                <td> {{ item.ssvcGroupNm }}</td>
-                <td> {{ item.ssvcObjNm }}</td>
-                <td> {{ item.sipCreateTypeNm }}</td>
-                <td> {{ item.sassignTypeNm }}</td>
-                <td> {{ item.pipPrefix }}</td>
-                <td> {{ item.sfirstAddr }} ~ {{ item.slastAddr }}</td>
-                <td> {{ item.nclassCnt }}</td>
-                <td> {{ item.sassignLevelNm }}</td>
-                <td class="ellipsis" :title="item.sassignLevelNm">{{ item.sassignLevelNm }}</td>
-                <td v-if="false">{{ item.nipAssignMstSeq }}</td>
-                <td v-if="false">{{ item.sassignLevelCd }}</td>
-                <td v-if="false">{{ item.sipCreateTypeCd }}</td>
-                <td v-if="false">{{ item.sipVersionTypeCd }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+    <div class="popupContentTable">
+      <div class="popupContentTableTitle">배정 대상 정보</div>
+      <div>
+        <table id="baseTable" class="tbl_list my-3" summary="목록">
+          <colgroup>
+            <col width="10%" />
+            <col width="10%" />
+            <col width="10%" />
+            <col width="10%" />
+            <col width="10%" />
+            <col width="12%" />
+            <col width="16%" />
+            <col width="12%" />
+            <col width="10%" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th class="first" scope="col">서비스망</th>
+              <th scope="col">본부</th>
+              <th scope="col">노드</th>
+              <th scope="col">공인/사설</th>
+              <th scope="col">서비스</th>
+              <th scope="col">IP블록</th>
+              <th scope="col">배정범위</th>
+              <th scope="col">단위블록수</th>
+              <th scope="col">배정상태</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(item, index) in tbIpAssignMstListVo" :key="index">
+              <td> {{ item.ssvcLineTypeNm }}</td>
+              <td> {{ item.ssvcGroupNm }}</td>
+              <td> {{ item.ssvcObjNm }}</td>
+              <td> {{ item.sipCreateTypeNm }}</td>
+              <td> {{ item.sassignTypeNm }}</td>
+              <td> {{ item.pipPrefix }}</td>
+              <td> {{ item.sfirstAddr }} ~ {{ item.slastAddr }}</td>
+              <td> {{ item.nclassCnt }}</td>
+              <td> {{ item.sassignLevelNm }}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-
-      <div slot="footer" class="dialog-footer">
-        <el-button icon="el-icon-document-checked" style="background: #2b5890;" type="primary" size="mini" @click.native="fnUpdateConfirmBtnClick()">{{ '배정' }}</el-button>
-        <el-button size="mini" class="el-icon-close" @click.native="close()">{{ $t('exit') }}</el-button>
-      </div>
-    </el-dialog>
-  </div>
+    </div>
+    <div class="popupContentTableBottom">
+      <el-button type="primary" size="small" icon="el-icon-document-checked" round @click.native="fnUpdateConfirmBtnClick()">배정</el-button>
+      <el-button type="primary" size="small" icon="el-icon-close" round @click.native="close()">{{ $t('exit') }}</el-button>
+    </div>
+  </el-dialog>
 </template>
 
 <script>

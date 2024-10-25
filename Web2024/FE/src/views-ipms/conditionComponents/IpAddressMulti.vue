@@ -1,17 +1,19 @@
 <template>
-  <el-col :class="{ [name]: true }" :span="24">
-    <label>
+  <fragment>
+    <th>
       IP주소(멀티검색)
-    </label>
-    <el-input
-      v-model="value"
-      size="mini"
-      type="textarea"
-      class="mt-1"
-      clearable
-      @change="handleChange()"
-    />
-  </el-col>
+    </th>
+    <td>
+      <el-input
+        v-model="value"
+        size="small"
+        type="textarea"
+        class="mt-1"
+        clearable
+        @change="handleChange()"
+      />
+    </td>
+  </fragment>
 </template>
 <script>
 import { Base } from '@/min/Base.min'

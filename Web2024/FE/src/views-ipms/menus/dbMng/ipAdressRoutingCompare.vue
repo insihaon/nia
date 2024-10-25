@@ -9,8 +9,9 @@
     <el-col ref="tableContainer" :span="24">
       <compTable
         ref="compTable"
+        style="height: calc(100% - 80px)"
         :prop-name="name"
-        :prop-table-height="'calc(100% - 80px)'"
+        :prop-table-height="'100%'"
         :prop-data="pagination.data"
         :prop-pagination-data.sync="pagination"
         :prop-span-method="spanByIpmsIpblock"
@@ -28,13 +29,13 @@
           </span>
         </template>
         <template slot="add-count">
-          IPMS DB 기준 건수 : {{ totalCount3.toLocaleString() }} 건 / 체크박스 기준 건수 : {{ totalCount2.toLocaleString() }} 건 /
+          IPMS DB 기준 건수 : {{ (totalCount3 || 0).toLocaleString() }} 건 / 체크박스 기준 건수 : {{ (totalCount2 || 0).toLocaleString() }} 건 /
         </template>
         <template slot="add-features">
-          <div class="float-right">
-            <el-button v-if="isShowRoutMngBtn" size="mini" @click="handleClickRoutChk">라우팅 수집/DB 비교 시작</el-button>
-            <el-button size="mini" @click="handleClickRoutExcptMng">예외처리 관리</el-button>
-            <el-button size="mini" @click="handleClickDivMerge">IP블록 (해지 후) 분할/병합</el-button>
+          <div style="margin-top: 10px">
+            <el-button v-if="isShowRoutMngBtn" type="primary" size="mini" round @click="handleClickRoutChk">라우팅 수집/DB 비교 시작</el-button>
+            <el-button type="primary" size="mini" round @click="handleClickRoutExcptMng">예외처리 관리</el-button>
+            <el-button type="primary" size="mini" round @click="handleClickDivMerge">IP블록 (해지 후) 분할/병합</el-button>
           </div>
         </template>
       </compTable>
@@ -140,7 +141,12 @@ export default {
             { prop: 'pipmsIpPrefix', label: 'IP블록', align: 'center', columnVisible: true, showOverflow: true,
                 formatter: (row, col, value, index) => {
                   return this.$createElement('el-button', {
-                    class: 'normal',
+                    attrs: {
+                      round: true, // Adding the round option
+                      plain: true,
+                      type: 'primary',
+                      size: 'mini'
+                    },
                     on: { click: () => {
                       this.fnViewDetailRoutChkMst(row.nipAssignMstSeq)
                     }
@@ -158,7 +164,12 @@ export default {
               formatter: (row, col, value, index) => {
                 if ([30, 29].includes(row.nroutingIpBitmask) && row.sneossDdYn === 'N') {
                   return this.$createElement('el-button', {
-                    class: 'normal',
+                    attrs: {
+                      round: true, // Adding the round option
+                      plain: true,
+                      type: 'primary',
+                      size: 'mini'
+                    },
                     on: { click: () => {
                       // 링크 상세 정보
                       // param: sipNexthop, ssvcLineTypeCd, proutingIpPrefix, nroutingIpBitmask
@@ -173,7 +184,12 @@ export default {
               formatter: (row, col, value, index) => {
                 if (row.sipNexthop !== '-') {
                   return this.$createElement('el-button', {
-                    class: 'normal',
+                    attrs: {
+                      round: true, // Adding the round option
+                      plain: true,
+                      type: 'primary',
+                      size: 'mini'
+                    },
                     on: { click: () => {
                       // 시설 상세 정보
                       this.fnViewDetailNexthop(row, 'host')
@@ -195,7 +211,12 @@ export default {
           formatter: (row, col, value, index) => {
             if (row.sexcptYnOrigin === 'Y') {
               return this.$createElement('el-button', {
-                class: 'normal',
+                attrs: {
+                  round: true, // Adding the round option
+                  plain: true,
+                  type: 'primary',
+                  size: 'mini'
+                },
                 on: { click: () => {
                   // 예외 상세 정보
                   this.fnViewExcptDetail(row.nipAssignMstSeq)
@@ -215,6 +236,12 @@ export default {
               btnLabel = 'IP 해지'
             }
             return this.$createElement('el-button', {
+              attrs: {
+                round: true, // Adding the round option
+                plain: true,
+                type: 'primary',
+                size: 'mini'
+              },
               on: { click: () => {
                 if (row.sallocGubun === 'ALLOC') {
                   this.fnAlloc(row)
@@ -238,7 +265,7 @@ export default {
   mounted () {
     Eventbus.$on(EventType.changeLvl1, (params) => { this.isShowRoutMngBtn = !(params.ssvcLineTypeCd === 'CL0003') })
     setTimeout(() => {
-      this.fnViewListRoutChkMst()
+      // this.fnViewListRoutChkMst()
     }, 200)
   },
   beforeDestroy() {
@@ -510,6 +537,7 @@ export default {
           } else if (res.commonMsg === 'SUCCESS02') {
             this.$refs.ModalRoutServiceChkMst.open({ tbRoutChkMstVo })
           }
+        }).catch(action => {
         })
       } catch (error) {
         this.error(error)
@@ -565,7 +593,4 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-::v-deep a {
-  text-decoration: underline !important;
-}
 </style>

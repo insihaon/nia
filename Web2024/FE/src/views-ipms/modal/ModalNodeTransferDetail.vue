@@ -1,155 +1,104 @@
 <template>
-  <div>
-    <el-dialog
-      v-if="animationVisible"
-      id="ipms"
-      v-el-drag-dialog
-      :visible.sync="visible"
-      :width="domElement.maxWidth + `px`"
-      :fullscreen.sync="fullscreen"
-      :modal-append-to-body="true"
-      :append-to-body="true"
-      :modal="modal"
-      :close-on-click-modal="closeOnClickModal"
-      :loading="loading"
-      class="ipms-dialog"
-      :class="{ [name]: true }"
-    >
-      <span slot="title">
-        <i class="el-icon-document mr-2" style="font-size: 17px" />
-        노드이전상세
-        <hr>
-      </span>
+  <el-dialog
+    v-if="animationVisible"
+    id="ipms"
+    v-el-drag-dialog
+    title="노드이전상세"
+    :visible.sync="visible"
+    :width="domElement.maxWidth + `px`"
+    :fullscreen.sync="fullscreen"
+    :modal-append-to-body="true"
+    :append-to-body="true"
+    :modal="modal"
+    :close-on-click-modal="closeOnClickModal"
+    :loading="loading"
+    class="ipms-dialog"
+    :class="{ [name]: true }"
+  >
+    <div class="popupContentTable textcenter">
+      <div class="popupContentTableTitle">조회결과(변경 전 정보)</div>
+      <table>
+        <thead>
+          <tr>
+            <th>서비스망</th>
+            <th>본부</th>
+            <th>노드</th>
+            <th>공인/사설</th>
+            <th>서비스</th>
+            <th>IP블록</th>
+            <th>배정상태</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td> {{ resultVo.beforeSsvcLineTypeNm }}</td>
+            <td> {{ resultVo.beforeSsvcGroupNm }}</td>
+            <td> {{ resultVo.beforeSsvcObjNm }}</td>
+            <td> {{ resultVo.sipCreateTypeNm }}</td>
+            <td> {{ resultVo.sassignTypeNm }}</td>
+            <td> {{ resultVo.pipPrefix }}</td>
+            <td> {{ resultVo.sassignLevelNm }}</td>
+            <td v-if="false">{{ resultVo.sipVersionTypeCd }}</td>
+            <td v-if="false">{{ resultVo.nipAssignMstSeq }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-      <div id="content" v-loading="isLoading" class="layer info">
-        <div class="content_result">
-          <h4 class="mt5">조회결과(변경 전 정보)</h4>
-          <table id="contentBeforeTable" class="tbl_list mt5">
-            <colgroup>
-              <col width="10%" />
-              <col width="20%" />
-              <col width="10%" />
-              <col width="10%" />
-              <col width="20%" />
-              <col width="15%" />
-              <col width="15%" />
-            </colgroup>
-          </table>
-
-          <table id="baseTable" class="tbl_list my-3" summary="목록">
-            <caption>목록</caption>
-            <colgroup>
-              <col width="10%" />
-              <col width="20%" />
-              <col width="10%" />
-              <col width="10%" />
-              <col width="20%" />
-              <col width="12%" />
-              <col width="16%" />
-            </colgroup>
-            <thead>
-              <tr>
-                <th>서비스망</th>
-                <th>본부</th>
-                <th>노드</th>
-                <th>공인/사설</th>
-                <th>서비스</th>
-                <th>IP블록</th>
-                <th>배정상태</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td> {{ resultVo.beforeSsvcLineTypeNm }}</td>
-                <td> {{ resultVo.beforeSsvcGroupNm }}</td>
-                <td> {{ resultVo.beforeSsvcObjNm }}</td>
-                <td> {{ resultVo.sipCreateTypeNm }}</td>
-                <td> {{ resultVo.sassignTypeNm }}</td>
-                <td> {{ resultVo.pipPrefix }}</td>
-                <td> {{ resultVo.sassignLevelNm }}</td>
-                <td v-if="false">{{ resultVo.sipVersionTypeCd }}</td>
-                <td v-if="false">{{ resultVo.nipAssignMstSeq }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="content_result">
-          <h4>변경 후 계위 정보</h4>
-          <table id="contentAfterTable" class="tbl_list mt5" summary="조회결과">
-            <colgroup>
-              <col width="33%" />
-              <col width="33%" />
-              <col width="33%" />
-            </colgroup>
-            <thead>
-              <th>서비스망</th>
-              <th>본부</th>
-              <th>노드</th>
-            </thead>
-            <tbody>
-              <tr>
-                <td> {{ resultVo.afterSsvcLineTypeNm }}</td>
-                <td> {{ resultVo.afterSsvcGroupNm }}</td>
-                <td> {{ resultVo.afterSsvcObjNm }}</td>
-                <td v-if="false"> {{ resultVo.updSsvcLineTypeCd }}</td>
-                <td v-if="false"> {{ resultVo.updSsvcGroupCd }}</td>
-                <td v-if="false"> {{ resultVo.updSsvcObjCd }}</td>
-                <td v-if="false"> {{ resultVo.updSassignLevelCd }}</td>
-                <td v-if="false"> {{ resultVo.updSassignTypeCd }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="content_result mt5" style="padding-top: 7px;">
-          <h4>변경 사유</h4>
-          <table class="tbl_data entry" summary="변경후">
-            <caption>변경사유 선택</caption>
-            <colgroup>
-              <col width="39%" /><col width="70%" />
-            </colgroup>
-            <tbody>
-              <tr class="top">
-                <th class="first" scope="row">변경 사유</th>
-                <td>
-                  <div class="inline-block w-100">
-                    <el-select v-model="resultVo.sCommentType" class="w-100" size="mini" disabled>
-                      <el-option
-                        v-for="item in sCommentOptions"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                      />
-                    </el-select>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <th scope="row">세부 사유</th>
-                <td>
-                  <div class="inline-block w-100">
-                    <textarea id="sComment" v-model="resultVo.sComment" size="mini" rows="2" type="textarea" class="w98" readonly></textarea>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div slot="footer" class="dialog-footer">
-        <template v-if="ownerYn === 'Y'">
-          <template v-if="adminYn === 'Y'">
-            <el-button v-if="isShowBtn" size="mini" @click="fnCancelBtnClick()">반려</el-button>
-            <el-button v-if="isShowBtn" size="mini" @click="fnUpdateconfirmBtnClick()">승인</el-button>
-          </template>
-          <el-button v-if="isShowBtn" size="mini" @click="fnDeleteBtnClick()">신청취소</el-button>
+    <div class="popupContentTable textcenter">
+      <div class="popupContentTableTitle">변경 후 계위 정보</div>
+      <table>
+        <thead>
+          <th>서비스망</th>
+          <th>본부</th>
+          <th>노드</th>
+        </thead>
+        <tbody>
+          <tr>
+            <td> {{ resultVo.afterSsvcLineTypeNm }}</td>
+            <td> {{ resultVo.afterSsvcGroupNm }}</td>
+            <td> {{ resultVo.afterSsvcObjNm }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="popupContentTable textcenter">
+      <div class="popupContentTableTitle">변경 사유</div>
+      <table>
+        <tbody>
+          <tr>
+            <th>변경 사유</th>
+            <td class="flex">
+              <el-select v-model="resultVo.sCommentType" size="small" disabled>
+                <el-option
+                  v-for="item in sCommentOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </td>
+          </tr>
+          <tr>
+            <th>세부 사유</th>
+            <td class="flex">
+              <textarea v-model="resultVo.sComment" size="small" rows="2" type="textarea" readonly></textarea>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="popupContentTableBottom">
+      <template v-if="ownerYn === 'Y'">
+        <template v-if="adminYn === 'Y'">
+          <el-button v-if="isShowBtn" type="primary" size="small" round @click="fnCancelBtnClick()">반려</el-button>
+          <el-button v-if="isShowBtn" type="primary" size="small" round @click="fnUpdateconfirmBtnClick()">승인</el-button>
         </template>
-        <el-button size="mini" class="el-icon-close" @click="close()">{{ $t('exit') }}</el-button>
-      </div>
-    </el-dialog>
-  </div>
+        <el-button v-if="isShowBtn" type="primary" size="small" round @click="fnDeleteBtnClick()">신청취소</el-button>
+      </template>
+      <el-button type="primary" size="small" icon="el-icon-close" round @click="close()">{{ $t('exit') }}</el-button>
+    </div>
+  </el-dialog>
 </template>
 
 <script>
@@ -299,5 +248,4 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-
 </style>

@@ -1,130 +1,103 @@
 <template>
-  <div>
-    <el-dialog
-      v-if="animationVisible"
-      id="ipms"
-      v-el-drag-dialog
-      :visible.sync="visible"
-      :width="domElement.maxWidth + `px`"
-      :fullscreen.sync="fullscreen"
-      :modal-append-to-body="false"
-      :append-to-body="true"
-      :modal="modal"
-      :close-on-click-modal="closeOnClickModal"
-      :loading="loading"
-      class="ipms-dialog"
-      :class="{ [name]: true }"
-    >
-      <!-- TACS관리 / IP주소 라우팅 비교/점검 > 장비별 명령어 정보관리 > 신규생성 -->
-      <span slot="title">
-        <i class="el-icon-document mr-2" style="font-size: 17px" />
-        장비 명령어 {{ fnType === 'insert' ? '등록' : '수정' }}
-        <hr>
-      </span>
-      <div id="content" class="layer">
-        <div class="content_result mt0">
-          <table class="tbl_data entry">
-            <colgroup>
-              <col width="20%" />
-              <col width="30%" />
-              <col width="20%" />
-              <col width="30%" />
-            </colgroup>
-            <tbody>
-              <tr class="top">
-                <th class="first" scope="row">장비타입</th>
-                <td colspan="3">
-                  <input
-                    v-model="formData.sfcltType"
-                    :disabled="fnType === 'update'"
-                    type="text"
-                    class="txt w50"
-                    maxlength="50"
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">장비명령어</th>
-                <td colspan="3">
-                  <input
-                    v-model="formData.sfcltCmd"
-                    type="text"
-                    class="txt w97"
-                    maxlength="250"
-                  />
-                </td>
-              </tr>
-              <template v-if="viewType === 'tacsMng'">
-                <tr class="last">
-                  <th class="first" scope="row">할당판단문구</th>
-                  <td>
-                    <input
-                      v-model="formData.sparseContent"
-                      type="text"
-                      class="txt w97"
-                      maxlength="250"
-                    />
-                  </td>
-                  <th scope="row">할당가능여부</th>
-                  <td>
-                    <select
-                      v-model="formData.savailYn"
-                      class="w99"
-                    >
-                      <option value="">선택</option>
-                      <option value="Y">할당가능</option>
-                      <option value="N">할당불가능</option>
-                    </select>
-                  </td>
-                </tr>
-                <tr v-if="fnType === 'update'" class="last">
-                  <th class="first" scope="row">사용여부</th>
-                  <td colspan="3">
-                    <select
-                      v-model="formData.suseYn"
-                      style="width: 30%"
-                    >
-                      <option value="Y">사용</option>
-                      <option value="N">미사용</option>
-                    </select>
-                  </td>
-                </tr>
-              </template>
-              <template v-else>
-                <tr class="last">
-                  <th class="first" scope="row">순서</th>
-                  <td>
-                    <input
-                      v-model="formData.npriority"
-                      type="text"
-                      class="txt w97"
-                      maxlength="250"
-                    />
-                  </td>
-                  <th scope="row">사용여부</th>
-                  <td>
-                    <select
-                      v-model="formData.suseYn"
-                      class="w99"
-                    >
-                      <option value="">선택</option>
-                      <option value="Y">Y</option>
-                      <option value="N">N</option>
-                    </select>
-                  </td>
-                </tr>
-              </template>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button v-if="fnType === 'insert'" icon="el-icon-edit-outline" type="primary" size="mini" @click="fnInsertFcltMst">등록</el-button>
-        <el-button v-if="fnType === 'update'" icon="el-icon-edit-outline" type="primary" size="mini" @click="fnUpdateFcltMst">수정</el-button>
-        <el-button size="mini" class="el-icon-close" @click.native="close()">{{ $t('exit') }}</el-button>
-      </div>
-    </el-dialog>
-  </div>
+  <el-dialog
+    v-if="animationVisible"
+    id="ipms"
+    v-el-drag-dialog
+    :title="'장비 명령어'+(fnType === 'insert' ? '등록' : '수정')"
+    :visible.sync="visible"
+    :width="domElement.maxWidth + `px`"
+    :fullscreen.sync="fullscreen"
+    :modal-append-to-body="false"
+    :append-to-body="true"
+    :modal="modal"
+    :close-on-click-modal="closeOnClickModal"
+    :loading="loading"
+    class="ipms-dialog"
+    :class="{ [name]: true }"
+  >
+    <!-- TACS관리 / IP주소 라우팅 비교/점검 > 장비별 명령어 정보관리 > 신규생성 -->
+    <div class="popupContentTable">
+      <table>
+        <tbody>
+          <tr>
+            <th>장비타입</th>
+            <td colspan="3">
+              <el-input
+                v-model="formData.sfcltType"
+                :disabled="fnType === 'update'"
+                type="text"
+                maxlength="50"
+              />
+            </td>
+          </tr>
+          <tr>
+            <th>장비명령어</th>
+            <td colspan="3">
+              <el-input
+                v-model="formData.sfcltCmd"
+                type="text"
+                maxlength="250"
+              />
+            </td>
+          </tr>
+          <template v-if="viewType === 'tacsMng'">
+            <tr>
+              <th>할당판단문구</th>
+              <td>
+                <el-input
+                  v-model="formData.sparseContent"
+                  type="text"
+                  maxlength="250"
+                />
+              </td>
+              <th>할당가능여부</th>
+              <td>
+                <el-select v-model="formData.savailYn">
+                  <el-option value="" label="선택" />
+                  <el-option value="Y" label="할당가능" />
+                  <el-option value="N" label="할당불가능" />
+                </el-select>
+              </td>
+            </tr>
+            <tr v-if="fnType === 'update'">
+              <th>사용여부</th>
+              <td colspan="3">
+                <el-select v-model="formData.suseYn" style="width: 30%">
+                  <el-option value="Y" label="사용" />
+                  <el-option value="N" label="미사용" />
+                </el-select>
+              </td>
+            </tr>
+          </template>
+          <template v-else>
+            <tr>
+              <th>순서</th>
+              <td>
+                <el-input
+                  v-model="formData.npriority"
+                  type="text"
+                  maxlength="250"
+                />
+              </td>
+              <th>사용여부</th>
+              <td>
+                <el-select v-model="formData.suseYn">
+                  <el-option value="" label="선택" />
+                  <el-option value="Y" label="Y" />
+                  <el-option value="N" label="N" />
+                </el-select>
+              </td>
+            </tr>
+          </template>
+        </tbody>
+      </table>
+    </div>
+    <div class="popupContentTableBottom">
+      <el-button v-if="fnType === 'insert'" type="primary" size="small" icon="el-icon-document-add" round @click="fnInsertFcltMst">등록</el-button>
+      <el-button v-if="fnType === 'update'" type="primary" size="small" icon="el-icon-edit" round @click="fnUpdateFcltMst">수정</el-button>
+      <el-button type="primary" size="small" icon="el-icon-close" round @click.native="close()">{{ $t('exit') }}</el-button>
+    </div>
+  </el-dialog>
 </template>
 
 <script>

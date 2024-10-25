@@ -1,9 +1,11 @@
 <template>
   <el-row class="w-100 h-100">
-    <div class="optionBox">
-      <el-row class="optionRow">
-        <el-col class="d-flex" :span="6">
+    <div class="searchOptionWrap">
+      <table>
+        <th>
           <label>사용자 접속결과</label>
+        </th>
+        <td>
           <el-select
             v-model="connectValue"
             collapse-tags
@@ -17,26 +19,27 @@
               :value="option.value"
             />
           </el-select>
-        </el-col>
-        <el-col class="d-flex" :span="6">
-          <InputSearchDetail
-            ref="searchDetail"
-            label="소속조직"
-            modal-name="ModalOrgSearch"
-            value-name="sFullOrgNm"
-            :prop_parameter-key="{ sposDeptOrgId: 'sktOrgId', sporDeptOrgNm: 'sFullOrgNm' }"
-            :is-read-only="true"
-            class="w-100 d-flex"
-            @update-value="setParameterKey"
-          />
-        </el-col>
-        <el-col class="d-flex" :span="6">
+        </td>
+        <InputSearchDetail
+          ref="searchDetail"
+          label="소속조직"
+          modal-name="ModalOrgSearch"
+          value-name="sFullOrgNm"
+          :prop_parameter-key="{ sposDeptOrgId: 'sktOrgId', sporDeptOrgNm: 'sFullOrgNm' }"
+          :is-read-only="true"
+          class="w-100 d-flex"
+          @update-value="setParameterKey"
+        />
+        <th>
           <label>사용자명</label>
+        </th>
+        <td>
           <el-input v-model="nameValue" size="mini" clearable />
-        </el-col>
-
-        <el-col class="d-flex" :span="6">
+        </td>
+        <th>
           <label>로그인 시간</label>
+        </th>
+        <td>
           <el-date-picker
             v-model="loginTime"
             type="datetimerange"
@@ -44,39 +47,37 @@
             start-placeholder="시작일"
             end-placeholder="종료일"
           />
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="24" align="center" class="searchBtnGroup">
-          <el-button class="btn-r" type="info" size="mini" icon="el-icon-search" @click="fnViewListTbUserConnHist()">
-            조회
-          </el-button>
-          <el-button class="btn-r" type="info" size="mini" icon="el-icon-refresh">
-            초기화
-          </el-button>
-          <slot name="add-function" />
-        </el-col>
-      </el-row>
+        </td>
+        <td colspan="8">
+          <div class="searchBtnWrap">
+            <el-button type="info" size="mini" icon="el-icon-refresh" round>
+              초기화
+            </el-button>
+            <el-button type="primary" size="mini" icon="el-icon-search" round @click="fnViewListTbUserConnHist()">
+              조회
+            </el-button>
+          </div>
+        </td>
+      </table>
     </div>
-    <el-col :span="24" style="height: calc(100% - 160px)">
-      <compTable
-        ref="compTable"
-        :prop-name="name"
-        :prop-table-height="'calc(100% - 80px)'"
-        :prop-column="tableColumns"
-        :prop-data="resultListVo"
-        :prop-is-pagination="true"
-        :prop-is-check-box="false"
-        prop-grid-menu-id="inputSpeed"
-        :prop-grid-indx="1"
-      >
-        <template slot="text-description">
-          <span>
-            사용자 접속현황 조회결과
-          </span>
-        </template>
-      </compTable>
-    </el-col>
+    <compTable
+      ref="compTable"
+      style="height: calc(100% - 120px)"
+      :prop-name="name"
+      :prop-table-height="'100%'"
+      :prop-column="tableColumns"
+      :prop-data="resultListVo"
+      :prop-is-pagination="true"
+      :prop-is-check-box="false"
+      prop-grid-menu-id="inputSpeed"
+      :prop-grid-indx="1"
+    >
+      <template slot="text-description">
+        <span>
+          사용자 접속현황 조회결과
+        </span>
+      </template>
+    </compTable>
   </el-row>
 </template>
 <script>

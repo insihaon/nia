@@ -9,8 +9,9 @@
     <el-col ref="tableContainer" :span="24">
       <compTable
         ref="compTable"
+        style="height: calc(100% - 80px)"
         :prop-name="name"
-        :prop-table-height="'calc(100% - 80px)'"
+        :prop-table-height="'100%'"
         :prop-column="tableColumns"
         :prop-data="resultListVo"
         :prop-is-pagination="true"
@@ -24,8 +25,8 @@
           </span>
         </template>
         <template slot="add-features">
-          <div class="float-right">
-            <el-button size="mini" icon="el-icon-document-add" @click="fnViewInsertLvlBas()">조직계위등록</el-button>
+          <div style="margin-top: 10px">
+            <el-button icon="el-icon-document-add" type="primary" size="mini" round @click="fnViewInsertLvlBas()">조직계위등록</el-button>
           </div>
         </template>
       </compTable>
@@ -72,6 +73,12 @@ export default {
            formatter: (row, col, value, index) => {
             if (row.slvlBasLevelCd !== 'LL0003') {
               return this.$createElement('el-button', {
+                attrs: {
+                  round: true,
+                  plain: true,
+                  type: 'primary',
+                  size: 'mini'
+                },
                 on: { click: () => {
                   this.fnViewUpdateLvlBas(row)
                 } } }, '관리')
@@ -87,6 +94,12 @@ export default {
                formatter: (row, col, value, index) => {
                 if (row.slvlBasLevelCd !== 'LL0003') {
                   return this.$createElement('el-button', {
+                    attrs: {
+                      round: true, // Adding the round option
+                      plain: true,
+                      type: 'primary',
+                      size: 'mini'
+                    },
                     on: { click: () => {
                       this.fnViewInsertLvlSon(row)
                     } } }, '관리')
@@ -107,6 +120,12 @@ export default {
               formatter: (row, col, value, index) => {
                 if (row.slvlBasLevelCd !== 'LL0003') {
                   return this.$createElement('el-button', {
+                    attrs: {
+                      round: true,
+                      plain: true,
+                      type: 'primary',
+                      size: 'mini'
+                    },
                     on: { click: () => {
                       this.fnViewInsertLvlRoleSub(row)
                     } } }, '관리')

@@ -1,240 +1,213 @@
 <template>
-  <div>
-    <el-dialog
-      v-if="animationVisible"
-      id="ipms"
-      v-el-drag-dialog
-      :visible.sync="visible"
-      :width="domElement.maxWidth + `px`"
-      :fullscreen.sync="fullscreen"
-      :modal-append-to-body="true"
-      :append-to-body="true"
-      :modal="modal"
-      :close-on-click-modal="closeOnClickModal"
-      :loading="loading"
-      class="ipms-dialog"
-      :class="{ [name]: true }"
-    >
-      <span slot="title">
-        <i class="el-icon-document mr-2" style="font-size: 17px" />
-        IP주소 노드 이전 등록
-        <hr>
-      </span>
-
-      <div id="content" class="layer">
-
-        <div class="content_result">
-          <form id="insertsearchForm" name="insertsearchForm" method="POST" onsubmit="return false">
-            <table class="tbl_data entry" summary="IP주소 검색">
-              <caption>조회조건선택</caption>
-              <colgroup>
-                <col width="39%" />
-                <col width="61%" />
-              </colgroup>
-              <tbody class="top last">
-                <tr>
-                  <th scope="row">IP 주소</th>
-                  <td class="ip_add">
-                    <span>
-                      <el-select id="sipVersionTypeCd" v-model="sipVersionTypeCd" class="w-20" size="mini">
-                        <!-- options =>  sipVersionTypeCd !== 'CV0000' -->
-                        <el-option
-                          v-for="item in sipVerCdOptions"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value"
-                        >
-                        </el-option>
-                      </el-select>
-                    </span>
-                    <span>
-                      <el-input
-                        v-model="searchWrd"
-                        size="mini"
-                        type="text"
-                        class="txt w-80"
-                        maxlength="43"
-                        @input="chkCharCode"
-                        @keyup.enter="fnSelectListIpAssignMst()"
-                      />
-                    </span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <div class="float-right">
-              <el-button size="mini" icon="el-icon-search" @click="fnSelectListIpAssignMst()">조회</el-button>
-            </div>
-          </form>
-        </div>
-        <div class="content_result">
-          <compTable
-            ref="compTable"
-            :prop-name="name"
-            :prop-table-height="150"
-            :prop-data="pagination.data"
-            :prop-pagination-data.sync="pagination"
-            :prop-column="tableColumns"
-            :prop-is-pagination="true"
-            prop-pagination-layout="prev, pager, next"
-            :prop-is-check-box="false"
-            :prop-max-select="pagination.data.length"
-            prop-grid-menu-id="inputSpeed"
-            :prop-grid-indx="1"
-            :prop-on-page-change="handleChangeCurPage"
-            :prop-on-page-size-change="handleChangeCurPage"
-          >
-            <template slot="text-description">
-              <span>
-                조회결과
-              </span>
-            </template>
-          </compTable>
-        </div>
-        <div class="content_result mt5" style="padding-top: 7px;">
-          <h4>변경 전 계위정보</h4>
-          <table class="tbl_data entry" summary="변경후">
-            <caption>조회조건선택</caption>
-            <colgroup>
-              <col width="39%" /><col width="61%" />
-            </colgroup>
-            <tbody>
-              <tr class="top">
-                <th class="first" scope="row">IP블록</th>
-                <td>{{ resultVo.pipPrefix }}</td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">서비스망</th>
-                <td>{{ resultVo.ssvcLineTypeNm }}</td>
-              </tr>
-              <tr>
-                <th scope="row">본부</th>
-                <td>{{ resultVo.ssvcGroupNm }}</td>
-              </tr>
-              <tr>
-                <th scope="row">노드</th>
-                <td>{{ resultVo.ssvcObjNm }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="content_result mt5" style="padding-top: 7px;">
-          <h4>변경 후 계위정보</h4>
-          <table class="tbl_data entry" summary="변경후">
-            <caption>조회조건선택</caption>
-            <colgroup>
-              <col width="39%" /><col width="61%" />
-            </colgroup>
-            <tbody>
-              <tr class="top">
-                <th class="first" scope="row">서비스망</th>
-                <td>
-                  <div class="inline-block w99 w-100">
-                    <el-select id="updSsvcLineTypeCd" v-model="updSsvcLineTypeCd" class="w-100" name="ssvcLineTypeCd" size="mini" @change="handleChangeLvl1()">
-                      <el-option label="전체" value=""><span class="w-100 h-100 d-inline-block">전체</span></el-option>
-                      <el-option
-                        v-for="item in ssvcLineTypeNmOp"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                      />
-                    </el-select>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <th scope="row">본부</th>
-                <td>
-                  <div class="inline-block w99 w-100">
-                    <el-select id="updSsvcGroupCd" v-model="updSsvcGroupCd" class="w-100" :disabled="isDisabled" name="ssvcGroupCd" size="mini" @change="handleChangeLvl2()">
-                      <el-option
-                        v-for="item in ssvcGroupNmOp"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                      />
-                    </el-select>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <th scope="row">노드</th>
-                <td>
-                  <div class="inline-block w99 w-100">
-                    <el-select id="updSsvcObjCd" v-model="updSsvcObjCd" class="w-100" :disabled="isDisabled" name="ssvcObjCd" size="mini">
-                      <el-option
-                        v-for="item in ssvcObjNmOp"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                      />
-                    </el-select>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="content_result mt5" style="padding-top: 7px;">
-          <h4>변경 사유</h4>
-          <table class="tbl_data entry" summary="변경후">
-            <caption>변경사유 선택</caption>
-            <colgroup>
-              <!-- <col width="39%" /><col width="70%" /> -->
-              <col width="39%" /><col width="61%" />
-            </colgroup>
-            <tbody>
-              <tr class="top">
-                <th class="first" scope="row">변경 사유</th>
-                <td>
-                  <div class="inline-block w-100">
-                    <el-select id="sCommentType" v-model="sCommentType" class="w-100" size="mini">
-                      <el-option
-                        v-for="item in sCommentOptions"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                      >
-                      </el-option>
-                    </el-select>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <th scope="row">세부 사유</th>
-                <td>
-                  <div class="inline-block w-100">
-                    <textarea id="sComment" v-model="sComment" size="mini" rows="2" type="textarea" class="w98"></textarea>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+  <el-dialog
+    v-if="animationVisible"
+    id="ipms"
+    v-el-drag-dialog
+    title="IP주소 노드 이전 등록"
+    :visible.sync="visible"
+    :width="domElement.maxWidth + `px`"
+    :fullscreen.sync="fullscreen"
+    :modal-append-to-body="true"
+    :append-to-body="true"
+    :modal="modal"
+    :close-on-click-modal="closeOnClickModal"
+    :loading="loading"
+    class="ipms-dialog"
+    :class="{ [name]: true }"
+  >
+    <div class="popupContentTable">
+      <div class="popupContentTableTitle">조회조건 선택</div>
+      <table>
+        <tbody>
+          <colgroup>
+            <col width="30%" /><col width="70%" />
+          </colgroup>
+          <tr>
+            <th>IP 주소</th>
+            <td class="textflex">
+              <el-select v-model="sipVersionTypeCd" size="small">
+                <!-- options =>  sipVersionTypeCd !== 'CV0000' -->
+                <el-option
+                  v-for="item in sipVerCdOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option>
+              </el-select>
+              <el-input
+                v-model="searchWrd"
+                size="small"
+                type="text"
+                maxlength="43"
+                @input="chkCharCode"
+                @keyup.enter="fnSelectListIpAssignMst()"
+              />
+            </td>
+            <td>
+              <el-button type="primary" size="small" icon="el-icon-search" round @click="fnSelectListIpAssignMst()">조회</el-button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="popupContentTable">
+      <table style="margin: 10px 0">
+        <tr>
+          <th>선택</th>
+          <th>서비스망</th>
+          <th>본부</th>
+          <th>노드</th>
+          <th>공인/사설</th>
+          <th>서비스</th>
+          <th>IP블록</th>
+          <th>배정상태</th>
+          <th>라우팅중복개수</th>
+          <th>해지</th>
+        </tr>
+        <tr v-if="pagination.data.length === 0">
+          <td class="textcenter" colspan="10">조회된 결과 목록이 존재하지 않습니다.</td>
+        </tr>
+        <template v-else>
+          <tr v-for="(row, index) in pagination.data" :key="index">
+            <td class="textcenter">
+              <el-button type="primary" size="small" round @click="selectNode(row)">선택</el-button>
+            </td>
+            <td>{{ row.ssvcLineTypeNm }}</td>
+            <td>{{ row.ssvcGroupNm }}</td>
+            <td>{{ row.ssvcObjNm }}</td>
+            <td>{{ row.sipCreateTypeNm }}/사설</td>
+            <td>{{ row.sassignTypeNm }}</td>
+            <td>{{ row.pipPrefix }}</td>
+            <td>{{ row.sassignLevelNm }}</td>
+            <td>{{ row.ssvcLnsummaryCntineTypeNm }}</td>
+            <td>
+              <template v-if="row.sassignLevelCd === 'IA0005' || row.sassignLevelCd === 'IA0006'">
+                <el-button type="primary" size="small" round @click="fnDeleteAlcIPMstClick(row)">해지</el-button>
+              </template>
+            </td>
+          </tr>
+        </template>
+      </table>
+      <div v-if="pagination.data.length > 0" class="tableListWrap">
+        <div class="tableListPaging" style="justify-content: center;">
+          <el-button icon="el-icon-d-arrow-left" type="text" @click="handleChangeCurPage(pagination.currentPage - 1)" />
+          <el-button icon="el-icon-arrow-left" type="text" @click="handleChangeCurPage(pagination.currentPage - 1)" />
+          <div class="pagingNumber">
+            <span v-for="page in getPageCount" :key="page" :class="{'active': page === pagination.currentPage }">
+              {{ page }}
+            </span>
+          </div>
+          <el-button icon="el-icon-arrow-right" type="text" @click="handleChangeCurPage(pagination.currentPage + 1)" />
+          <el-button icon="el-icon-d-arrow-right" type="text" @click="handleChangeCurPage(getPageCount)" />
         </div>
       </div>
-
-      <div slot="footer" class="dialog-footer">
-        <el-button size="mini" type="primary" icon="el-icon-edit" @click="fnInsertNode()">등록</el-button>
-        <el-button size="mini" class="el-icon-close" @click="close()">{{ $t('exit') }}</el-button>
-      </div>
-    </el-dialog>
-  </div>
+    </div>
+    <div class="popupContentTable">
+      <div class="popupContentTableTitle">변경 전 계위정보</div>
+      <table>
+        <tr>
+          <th>IP블록</th>
+          <td>{{ resultVo.pipPrefix }}</td>
+          <th>서비스망</th>
+          <td>{{ resultVo.ssvcLineTypeNm }}</td>
+        </tr>
+        <tr>
+          <th>본부</th>
+          <td>{{ resultVo.ssvcGroupNm }}</td>
+          <th>노드</th>
+          <td>{{ resultVo.ssvcObjNm }}</td>
+        </tr>
+      </table>
+    </div>
+    <div class="popupContentTable">
+      <div class="popupContentTableTitle">변경 후 계위정보</div>
+      <table>
+        <tr>
+          <th>서비스망</th>
+          <td class="flex">
+            <el-select v-model="updSsvcLineTypeCd" class="w-100" name="ssvcLineTypeCd" size="small" @change="handleChangeLvl1()">
+              <el-option label="전체" value=""><span class="w-100 h-100 d-inline-block">전체</span></el-option>
+              <el-option
+                v-for="item in ssvcLineTypeNmOp"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </td>
+          <th>본부</th>
+          <td>
+            <el-select v-model="updSsvcGroupCd" class="w-100" :disabled="isDisabled" name="ssvcGroupCd" size="small" @change="handleChangeLvl2()">
+              <el-option
+                v-for="item in ssvcGroupNmOp"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </td>
+          <th>노드</th>
+          <td>
+            <el-select v-model="updSsvcObjCd" class="w-100" :disabled="isDisabled" name="ssvcObjCd" size="small">
+              <el-option
+                v-for="item in ssvcObjNmOp"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <div class="popupContentTable">
+      <div class="popupContentTableTitle">변경 사유</div>
+      <table>
+        <colgroup>
+          <col width="30%" /><col width="70%" />
+        </colgroup>
+        <tbody>
+          <tr>
+            <th>변경 사유</th>
+            <td>
+              <el-select v-model="sCommentType" size="small">
+                <el-option
+                  v-for="item in sCommentOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option>
+              </el-select>
+            </td>
+          </tr>
+          <tr>
+            <th>세부 사유(기타 선택시 필수 입력)</th>
+            <td>
+              <textarea v-model="sComment" size="small" rows="2" type="textarea"></textarea>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="popupContentTableBottom">
+      <el-button type="primary" size="small" icon="el-icon-edit" round @click="fnInsertNode()">등록</el-button>
+      <el-button type="primary" size="small" icon="el-icon-close" round @click="close()">{{ $t('exit') }}</el-button>
+    </div>
+  </el-dialog>
 </template>
 
 <script>
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
 import { onMessagePopup } from '@/utils/index'
-import CompTable from '@/components/elTable/CompTable.vue'
 import { apiRequestModel, ipmsModelApis, apiRequestJson, ipmsJsonApis } from '@/api/ipms'
 
 const routeName = 'ModalNodeTransferInsert'
 
 export default {
   name: routeName,
-  components: { CompTable },
   directives: { elDragDialog },
   extends: Modal,
   data() {
@@ -244,7 +217,7 @@ export default {
       pagination: this.setDefaultPagination(),
       resultVo: { pipPrefix: '', ssvcLineTypeNm: '', ssvcGroupNm: '', ssvcObjNm: '' },
       tableColumns: [
-        { prop: '', label: '선택', align: 'center', width: 50, propIsCheckBox: true, columnVisible: true, showOverflow: true,
+        { prop: '', label: '선택', align: 'center', width: 50, propIsCheckBox: true, columnVisible: true, showOverflow: false,
           formatter: (row, col, value, index) => {
             return this.$createElement('el-button', {
               on: { click: () => {
@@ -308,6 +281,11 @@ export default {
   computed: {
     isDisabled() {
       return this.updSsvcLineTypeCd === '' ?? true
+    },
+    getPageCount() {
+      const { total, pageSize } = this.pagination
+      // return (total%pageSize) > 0 ? (total/pageSize) + 1 : (total/pageSize)
+      return 10
     }
   },
   mounted() {
@@ -317,7 +295,7 @@ export default {
     onCreated() {
       Modal.methods.onCreated.call(this)
       this.closeOnClickModal = false
-      this.domElement.maxWidth = 1200
+      this.domElement.maxWidth = 1000
     },
     onOpen(model, actionMode) {
     },

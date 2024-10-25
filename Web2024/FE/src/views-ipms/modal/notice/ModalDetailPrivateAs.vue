@@ -1,216 +1,202 @@
 <template>
-  <div>
-    <el-dialog
-      v-if="animationVisible"
-      id="ipms"
-      v-el-drag-dialog
-      :visible.sync="visible"
-      :width="domElement.maxWidth + `px`"
-      :fullscreen.sync="fullscreen"
-      :modal-append-to-body="false"
-      :append-to-body="true"
-      :modal="modal"
-      :close-on-click-modal="closeOnClickModal"
-      :loading="loading"
-      class="ipms-dialog"
-      :class="{ [name]: true }"
-    >
-      <span slot="title">
-        <i class="el-icon-document mr-2" style="font-size: 17px" />
-        사설 AS {{ getTitleType }}
-        <hr>
-      </span>
+  <el-dialog
+    v-if="animationVisible"
+    id="ipms"
+    v-el-drag-dialog
+    :title="'사설 AS '+getTitleType"
+    :visible.sync="visible"
+    :width="domElement.maxWidth + `px`"
+    :fullscreen.sync="fullscreen"
+    :modal-append-to-body="false"
+    :append-to-body="true"
+    :modal="modal"
+    :close-on-click-modal="closeOnClickModal"
+    :loading="loading"
+    class="ipms-dialog"
+    :class="{ [name]: true }"
+  >
+    <div class="popupContentTable">
+      <div class="popupContentTableTitle">AS번호 사용기관 정보</div>
+      <table>
+        <colgroup>
+          <col width="15%" />
+          <col width="85%" />
+        </colgroup>
+        <tbody>
+          <tr>
+            <th>고객명</th>
+            <td v-if="!isReadOnly"><el-input v-model="resultVo.srequestAsCtm" size="small" /></td>
+            <td v-else>{{ resultVo.srequestAsCtm }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="popupContentTable">
+      <div class="popupContentTableTitle">AS번호 정보</div>
+      <template v-if="viewType !== 'create' && (viewType === 'detail' || viewType === 'edit')">
+        <table>
+          <colgroup>
+            <col width="15%" />
+            <col width="20%" />
+            <col width="15%" />
+            <col width="15%" />
+            <col width="15%" />
+            <col width="20%" />
+          </colgroup>
+          <tbody>
+            <tr>
+              <th>상태</th>
+              <td>{{ resultVo.srequestAsTypeNm }}</td>
+              <th>요청자</th>
+              <td>{{ resultVo.screateNm }}</td>
+              <th>요청일</th>
+              <td>
+                {{ resultVo.dcreateDt }}
+              </td>
+            </tr>
+            <tr>
+              <th>처리자</th>
+              <td colspan="1">{{ resultVo.sapvuserNm }}</td>
+              <th>처리일</th>
+              <td colspan="3">
+                {{ resultVo.dapvDt ? moment(resultVo.dapvDt).format('YYYY-MM-DD HH:mm:ss') : '' }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </template>
+      <table>
+        <colgroup>
+          <col width="15%" />
+          <col width="42.5%" />
+          <col width="42.5%" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th></th>
+            <th>노드1</th>
+            <th>노드2</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>노드</th>
+            <td v-if="isReadOnly" class="textcenter"> {{ resultVo.srequestAsObjNm1 }}</td>
+            <td v-else> <el-input v-model="resultVo.srequestAsObjNm1" size="small" /></td>
+            <td v-if="isReadOnly" class="textcenter"> {{ resultVo.srequestAsObjNm2 }}</td>
+            <td v-else> <el-input v-model="resultVo.srequestAsObjNm2" size="small" /></td>
+          </tr>
+          <tr>
+            <th>전용번호</th>
+            <td v-if="isReadOnly" class="textcenter">{{ resultVo.srequestAsObjLlnum1 }}</td>
+            <td v-else><el-input v-model="resultVo.srequestAsObjLlnum1" size="small" /></td>
+            <td v-if="isReadOnly" class="textcenter">{{ resultVo.srequestAsObjLlnum2 }}</td>
+            <td v-else><el-input v-model="resultVo.srequestAsObjLlnum2" size="small" /></td>
+          </tr>
+          <tr>
+            <th>개통일</th>
+            <td v-if="isReadOnly" class="textcenter">{{ resultVo.drequestAsObjOpenDt1 ? moment(resultVo.drequestAsObjOpenDt1).format('YYYY-MM-DD') : '' }}</td>
+            <td v-else>
+              <el-date-picker v-model="resultVo.drequestAsObjOpenDt1" type="date" size="small" format="yyyy-MM-dd" />
+            </td>
+            <td v-if="isReadOnly" class="textcenter">{{ resultVo.drequestAsObjOpenDt2 ? moment(resultVo.drequestAsObjOpenDt2).format('YYYY-MM-DD') : '' }}</td>
+            <td v-else>
+              <el-date-picker v-model="resultVo.drequestAsObjOpenDt2" type="date" size="small" format="yyyy-MM-dd" />
+            </td>
+          </tr>
+          <tr>
+            <th>보유IP 주소 블록</th>
+            <td v-if="isReadOnly" class="textcenter">{{ resultVo.srequestAsObjIpBlock1 }}</td>
+            <td v-else><el-input v-model="resultVo.srequestAsObjIpBlock1" size="small" /></td>
+            <td v-if="isReadOnly" class="textcenter">{{ resultVo.srequestAsObjIpBlock2 }}</td>
+            <td v-else><el-input v-model="resultVo.srequestAsObjIpBlock2" size="small" /></td>
+          </tr>
+          <tr>
+            <th>기타사항</th>
+            <td colspan="2">
+              <textarea
+                v-model="resultVo.scomment"
+                :readonly="isReadOnly"
+              />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="popupContentTable">
+      <div class="popupContentTableTitle">고객측 AS 담당자 정보</div>
+      <table>
+        <colgroup>
+          <col width="15%" />
+          <col width="35%" />
+          <col width="15%" />
+          <col width="35%" />
+        </colgroup>
+        <tbody>
+          <tr>
+            <th>이름</th>
+            <td v-if="isReadOnly">{{ resultVo.sasTpicNm }}</td>
+            <td v-else><el-input v-model="resultVo.sasTpicNm" size="small" /></td>
+            <th>기관명</th>
+            <td v-if="isReadOnly">{{ resultVo.sasTpicOrg }}</td>
+            <td v-else><el-input v-model="resultVo.sasTpicOrg" size="small" /></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="popupContentTable">
+      <div class="popupContentTableTitle">매출 효과</div>
+      <table>
+        <colgroup>
+          <col width="15%" />
+          <col width="42.5%" />
+          <col width="42.5%" />
+        </colgroup>
 
-      <div id="content" class="layer">
-        <div class="content_result mt0">
-          <h4>AS번호 사용기관 정보</h4>
-          <table class="tbl_data entry mt5">
-            <colgroup>
-              <col width="15%" />
-              <col width="85%" />
-            </colgroup>
-            <tbody>
-              <tr class="top last">
-                <th scope="row">고객명</th>
-                <td v-if="!isReadOnly"><el-input v-model="resultVo.srequestAsCtm" size="mini" /></td>
-                <td v-else>{{ resultVo.srequestAsCtm }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="content_result">
-          <h4>AS번호 정보</h4>
-          <template v-if="viewType !== 'create'">
-            <template v-if="viewType === 'detail' || viewType === 'edit'">
-              <table class="tbl_data">
-                <colgroup>
-                  <col width="15%" />
-                  <col width="20%" />
-                  <col width="15%" />
-                  <col width="15%" />
-                  <col width="15%" />
-                  <col width="20%" />
-                </colgroup>
-                <tbody>
-                  <tr class="view top">
-                    <th class="first" scope="row">상태</th>
-                    <td>{{ resultVo.srequestAsTypeNm }}</td>
-                    <th scope="row">요청자</th>
-                    <td>{{ resultVo.screateNm }}</td>
-                    <th scope="row">요청일</th>
-                    <td>
-                      {{ resultVo.dcreateDt }}
-                    </td>
-                  </tr>
-                  <tr class="last">
-                    <th class="first" scope="row">처리자</th>
-                    <td colspan="1">{{ resultVo.sapvuserNm }}</td>
-                    <th scope="row">처리일</th>
-                    <td colspan="3">
-                      {{ resultVo.dapvDt }}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </template>
-          </template>
-
-          <table class="tbl_list entry mt5 node_info my-1">
-            <colgroup>
-              <col width="15%" />
-              <col width="42.5%" />
-              <col width="42.5%" />
-            </colgroup>
-            <thead>
-              <tr>
-                <th class="first" scope="col"></th>
-                <th scope="col">노드1</th>
-                <th scope="col">노드2</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th class="first" scope="row">노드</th>
-                <td v-if="isReadOnly"> {{ resultVo.srequestAsObjNm1 }}</td>
-                <td v-else> <el-input v-model="resultVo.srequestAsObjNm1" size="mini" /></td>
-                <td v-if="isReadOnly"> {{ resultVo.srequestAsObjNm2 }}</td>
-                <td v-else> <el-input v-model="resultVo.srequestAsObjNm2" size="mini" /></td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">전용번호</th>
-                <td v-if="isReadOnly">{{ resultVo.srequestAsObjLlnum1 }}</td>
-                <td v-else><el-input v-model="resultVo.srequestAsObjLlnum1" size="mini" /></td>
-                <td v-if="isReadOnly">{{ resultVo.srequestAsObjLlnum2 }}</td>
-                <td v-else><el-input v-model="resultVo.srequestAsObjLlnum2" size="mini" /></td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">개통일</th>
-                <td v-if="isReadOnly">{{ resultVo.drequestAsObjOpenDt1 ? moment(resultVo.drequestAsObjOpenDt1).format('YYYY-MM-DD') : '' }}</td>
-                <td v-else>
-                  <el-date-picker v-model="resultVo.drequestAsObjOpenDt1" type="date" size="mini" format="yyyy-MM-dd" />
-                </td>
-                <td v-if="isReadOnly">{{ resultVo.drequestAsObjOpenDt2 ? moment(resultVo.drequestAsObjOpenDt2).format('YYYY-MM-DD') : '' }}</td>
-                <td v-else>
-                  <el-date-picker v-model="resultVo.drequestAsObjOpenDt2" type="date" size="mini" format="yyyy-MM-dd" />
-                </td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">보유IP 주소 블록</th>
-                <td v-if="isReadOnly">{{ resultVo.srequestAsObjIpBlock1 }}</td>
-                <td v-else><el-input v-model="resultVo.srequestAsObjIpBlock1" size="mini" /></td>
-                <td v-if="isReadOnly">{{ resultVo.srequestAsObjIpBlock2 }}</td>
-                <td v-else><el-input v-model="resultVo.srequestAsObjIpBlock2" size="mini" /></td>
-              </tr>
-              <tr class="last">
-                <th class="first" scope="row">기타사항</th>
-                <td colspan="2">
-                  <textarea
-                    v-model="resultVo.scomment"
-                    rows="5"
-                    class="w98"
-                    :readonly="isReadOnly"
-                  />
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="content_result">
-          <h4>고객측 AS 담당자 정보</h4>
-          <table class="tbl_data entry mt5 d">
-            <colgroup>
-              <col width="15%" />
-              <col width="35%" />
-              <col width="15%" />
-              <col width="35%" />
-            </colgroup>
-            <tbody>
-              <tr class="top last">
-                <th class="first" scope="row">이름</th>
-                <td v-if="isReadOnly">{{ resultVo.sasTpicNm }}</td>
-                <td v-else><el-input v-model="resultVo.sasTpicNm" size="mini" /></td>
-                <th scope="row">기관명</th>
-                <td v-if="isReadOnly">{{ resultVo.sasTpicOrg }}</td>
-                <td v-else><el-input v-model="resultVo.sasTpicOrg" size="mini" /></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="content_result">
-          <h4>매출 효과</h4>
-          <table class="tbl_list mt5">
-            <colgroup>
-              <col width="15%" />
-              <col width="42.5%" />
-              <col width="42.5%" />
-            </colgroup>
-            <thead>
-              <tr>
-                <th class="first" scope="col"></th>
-                <th scope="col">기존</th>
-                <th scope="col">변경</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th class="first" scope="row">속도/가입 회선 수</th>
-                <td v-if="isReadOnly">{{ resultVo.sexistSpLine }}</td>
-                <td v-else><el-input v-model="resultVo.sexistSpLine" size="mini" /></td>
-                <td v-if="isReadOnly">{{ resultVo.saltSpLine }}</td>
-                <td v-else><el-input v-model="resultVo.saltSpLine" size="mini" /></td>
-              </tr>
-              <tr class="last">
-                <th class="first" scope="row">매출액 (단위:만원)</th>
-                <td v-if="isReadOnly">{{ resultVo.nexistSales }}</td>
-                <td v-else><el-input v-model="resultVo.nexistSales" size="mini" @input="handleInput('nexistSales', $event)" /></td>
-                <td v-if="isReadOnly">{{ resultVo.naltSales }}</td>
-                <td v-else><el-input v-model="resultVo.naltSales" size="mini" @input="handleInput('naltSales', $event)" /></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div slot="footer" class="dialog-footer">
-        <template v-if="isSuserGrade"></template>
-        <el-button v-if="isCreated && viewType !== 'edit'" size="mini" class="el-icon-document-checked float-left" @click="fnSelectMinNrequestAsSeq('N')">할당</el-button>
-        <el-button v-if="isCreated && viewType !== 'edit'" size="mini" class="float-left" @click="fnRejectPrvAsSubmit()">반려</el-button>
-        <el-button v-if="resultVo.srequestAsTypeCd === 'RS0202'" size="mini" class="float-left" @click="fnReturnAsTxmSubmit()">반납</el-button>
-        <template v-if="resultVo.screateId === userId">
-          <el-button v-if="isCreated && viewType !== 'edit'" size="mini" @click="fnDeletePrvAsSubmit()">신청 취소</el-button>
-          <template v-if="viewType === 'detail' && isCreated">
-            <el-button size="mini" class="el-icon-edit" @click="onChangeMode()">수정</el-button>
-          </template>
+        <thead>
+          <tr>
+            <th></th>
+            <th>기존</th>
+            <th>변경</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>속도/가입 회선 수</th>
+            <td v-if="isReadOnly" class="textcenter">{{ resultVo.sexistSpLine }}</td>
+            <td v-else><el-input v-model="resultVo.sexistSpLine" size="small" /></td>
+            <td v-if="isReadOnly" class="textcenter">{{ resultVo.saltSpLine }}</td>
+            <td v-else><el-input v-model="resultVo.saltSpLine" size="small" /></td>
+          </tr>
+          <tr>
+            <th>매출액 (단위:만원)</th>
+            <td v-if="isReadOnly" class="textcenter">{{ resultVo.nexistSales }}</td>
+            <td v-else><el-input v-model="resultVo.nexistSales" size="small" @input="handleInput('nexistSales', $event)" /></td>
+            <td v-if="isReadOnly" class="textcenter">{{ resultVo.naltSales }}</td>
+            <td v-else><el-input v-model="resultVo.naltSales" size="small" @input="handleInput('naltSales', $event)" /></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="popupContentTableBottom">
+      <template v-if="isSuserGrade"></template>
+      <el-button v-if="isCreated && viewType !== 'edit'" type="primary" size="small" icon="el-icon-document-checked" round class="float-left" @click="fnSelectMinNrequestAsSeq('N')">할당</el-button>
+      <el-button v-if="isCreated && viewType !== 'edit'" type="primary" size="small" class="float-left" round @click="fnRejectPrvAsSubmit()">반려</el-button>
+      <el-button v-if="resultVo.srequestAsTypeCd === 'RS0202'" type="primary" size="small" round @click="fnReturnAsTxmSubmit()">반납</el-button>
+      <template v-if="resultVo.screateId === userId">
+        <el-button v-if="isCreated && viewType !== 'edit'" type="primary" size="small" round @click="fnDeletePrvAsSubmit()">신청 취소</el-button>
+        <template v-if="viewType === 'detail' && isCreated">
+          <el-button type="primary" size="small" icon="el-icon-edit" round @click="onChangeMode()">수정</el-button>
         </template>
-        <template v-if="viewType === 'edit'">
-          <el-button size="mini" class="el-icon-edit-outline" type="primary" @click="fnUpdatePrvAsSubmit()">수정</el-button>
-        </template>
-        <el-button v-if="viewType === 'create'" size="mini" type="primary" class="el-icon-edit-outline" @click="fnViewInsertPrvAs()">등록</el-button>
-        <el-button size="mini" class="el-icon-close" @click="isClose()">{{ $t('exit') }}</el-button>
-      </div>
+      </template>
+      <template v-if="viewType === 'edit'">
+        <el-button type="primary" size="small" icon="el-icon-edit-outline" round @click="fnUpdatePrvAsSubmit()">수정</el-button>
+      </template>
+      <el-button v-if="viewType === 'create'" type="primary" size="small" icon="el-icon-edit-outline" round @click="fnViewInsertPrvAs()">등록</el-button>
+      <el-button type="primary" size="small" icon="el-icon-close" round @click="isClose()">{{ $t('exit') }}</el-button>
+    </div>
 
-    </el-dialog>
-  </div>
+  </el-dialog>
 </template>
 
 <script>
@@ -283,7 +269,7 @@ export default {
     onCreated() {
       Modal.methods.onCreated.call(this)
       this.closeOnClickModal = false
-      this.domElement.maxWidth = 1200
+      this.domElement.maxWidth = 900
     },
     onOpen(model, actionMode) {
       this.viewType = model.type
@@ -668,11 +654,5 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.ModalDetailPrivateAs{
-
-  .el-input {
-    width: 100%;
-  }
-}
 
 </style>

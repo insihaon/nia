@@ -1,151 +1,131 @@
 <template>
-  <div>
-    <el-dialog
-      v-if="animationVisible"
-      id="ipms"
-      v-el-drag-dialog
-      :visible.sync="visible"
-      :width="domElement.maxWidth + `px`"
-      :fullscreen.sync="fullscreen"
-      :modal-append-to-body="true"
-      :append-to-body="true"
-      :close-on-click-modal="closeOnClickModal"
-      :loading="loading"
-      class="ipms-dialog"
-      :class="{ [name]: true }"
-    >
-      <span slot="title">
-        <i class="el-icon-document mr-2" style="font-size: 17px" />
-        운용정보 상세 정보
-        <hr>
-      </span>
-      <div id="content" v-loading="loading" class="layer">
-        <!-- 공통항목 Section -->
-        <div class="content_result bottom_dotted mt0">
-          <h4 class="mt5">공통항목</h4>
-          <table class="tbl_data entry mt5" summary="공통항목">
-            <caption>공통항목</caption>
-            <!-- <colgroup>
-              <col width="10%" />
-              <col width="35%" />
-              <col width="10%" />
-              <col width="25%" />
-              <col width="10%" />
-              <col width="10%" />
-            </colgroup> -->
-            <tbody>
-              <tr class="top last">
-                <th class="first" scope="row">IP</th>
-                <td class="view">{{ resultVo.pipHostInet }}</td>
-                <th scope="row">용도</th>
-                <td class="view">{{ resultVo.scomment }}</td>
-                <th scope="row">IP 버전</th>
-                <td class="view">{{ resultVo.sipVersionTypeNm }}</td>
-                <template v-if="fnType === 'update'">
-                  <th scope="row">대표여부</th>
-                  <td class="view">
-                    <select id="updateSprorityYno" v-model="resultVo.sprorityYn">
-                      <option value="Y">Y</option>
-                      <option value="N">N</option>
-                    </select>
-                  </td>
-                </template>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+  <el-dialog
+    v-if="animationVisible"
+    id="ipms"
+    v-el-drag-dialog
+    title="운용정보 상세 정보"
+    :visible.sync="visible"
+    :width="domElement.maxWidth + `px`"
+    :fullscreen.sync="fullscreen"
+    :modal-append-to-body="true"
+    :append-to-body="true"
+    :close-on-click-modal="closeOnClickModal"
+    :loading="loading"
+    class="ipms-dialog"
+    :class="{ [name]: true }"
+  >
+    <!-- 공통항목 Section -->
+    <div class="popupContentTable">
+      <div class="popupContentTableTitle">공통항목</div>
+      <table>
+        <tbody>
+          <tr class="top last">
+            <th>IP</th>
+            <td>{{ resultVo.pipHostInet }}</td>
+            <th>용도</th>
+            <td>{{ resultVo.scomment }}</td>
+            <th>IP 버전</th>
+            <td>{{ resultVo.sipVersionTypeNm }}</td>
+            <template v-if="fnType === 'update'">
+              <th>대표여부</th>
+              <td>
+                <select id="updateSprorityYno" v-model="resultVo.sprorityYn">
+                  <option value="Y">Y</option>
+                  <option value="N">N</option>
+                </select>
+              </td>
+            </template>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-        <!-- 세부항목 Section -->
-        <div class="content_result">
-          <div class="tit_group">
-            <h4 class="mt5">세부항목</h4>
-          </div>
-          <table id="ipHostTable" class="tbl_list mt5" summary="목록">
-            <caption>목록</caption>
-            <colgroup>
-              <col width="15%" />
-              <col width="20%" />
-              <col width="10%" />
-              <col width="20%" />
-              <col width="10%" />
-              <col width="25%" />
-            </colgroup>
-            <thead>
-              <tr>
-                <th class="first" scope="col" colspan="2">기본 정보</th>
-                <th scope="col" colspan="2">시설 정보</th>
-                <th scope="col" colspan="2">회선 정보</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th class="first" scope="row">수용국</th>
-                <td v-if="fnType === 'detail'" class="view">{{ resultVo.srssofficesNm }}</td>
-                <td v-else class="view">
-                  <!-- {{ resultVo.srssofficesNm }} -->
-                  <el-input
-                    v-model="resultVo.srssofficesNm"
+    <!-- 세부항목 Section -->
+    <div class="popupContentTable">
+      <div class="popupContentTableTitle">세부항목</div>
+      <table>
+        <colgroup>
+          <col width="15%" />
+          <col width="20%" />
+          <col width="10%" />
+          <col width="20%" />
+          <col width="10%" />
+          <col width="25%" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th colspan="2">기본 정보</th>
+            <th colspan="2">시설 정보</th>
+            <th colspan="2">회선 정보</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>수용국</th>
+            <td v-if="fnType === 'detail'">{{ resultVo.srssofficesNm }}</td>
+            <td v-else>
+              <!-- {{ resultVo.srssofficesNm }} -->
+              <el-input
+                v-model="resultVo.srssofficesNm"
+                size="mini"
+                readonly
+              >
+                <template #suffix>
+                  <el-button
                     size="mini"
-                    readonly
-                  >
-                    <template #suffix>
-                      <el-button
-                        size="mini"
-                        icon="el-icon-search"
-                        class="font-weight-bolder"
-                        style="font-size: larger;border: none"
-                        @click="fnSearchOfficeList()"
-                      />
-                    </template>
-                  </el-input>
-                </td>
-                <th scope="row">I/F명</th>
-                <td class="view">{{ resultVo.sipIfNm }}</td>
-                <th scope="row">서비스</th>
-                <td class="view">{{ resultVo.sassignTypeNm }}</td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">HOST유형</th>
-                <td class="view">{{ resultVo.sipHostTypeNm }}</td>
-                <th scope="row">장비명</th>
-                <td v-if="fnType === 'detail'" class="view">{{ resultVo.sipHostNm }}</td>
-                <td v-else class="view">
-                  <el-input v-model="resultVo.sipHostNm" />
-                </td>
-                <th scope="row">상품명</th>
-                <td class="view">{{ resultVo.sexSvcNm }}</td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">외부연동</th>
-                <td class="view">{{ resultVo.sexLinkUseTypeNm }}</td>
-                <th scope="row">모델명</th>
-                <td v-if="fnType === 'detail'" class="view">{{ resultVo.smodelname }}</td>
-                <td v-else class="view">
-                  <el-input v-model="resultVo.smodelname" />
-                </td>
-                <th scope="row">SAID</th>
-                <td class="view">{{ resultVo.ssaid }}</td>
-              </tr>
-              <tr class="last">
-                <th class="first" scope="row"></th>
-                <td></td>
-                <th scope="row"></th>
-                <td></td>
-                <th scope="row">전용회선</th>
-                <td class="view">{{ resultVo.sllnum }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button size="mini" class="el-icon-edit" @click="fnUpdateHostIpMst">{{ fnType === 'update'? '등록' : '수정' }}</el-button>
-        <el-button v-if="fnType === 'detail'" size="mini" class="el-icon-edit" @click="fnDeleteHostIpMst">삭제</el-button>
-        <el-button size="mini" class="el-icon-close" @click.native="close()">{{ $t('exit') }}</el-button>
-      </div>
-    </el-dialog>
+                    icon="el-icon-search"
+                    class="font-weight-bolder"
+                    style="font-size: larger;border: none"
+                    @click="fnSearchOfficeList()"
+                  />
+                </template>
+              </el-input>
+            </td>
+            <th>I/F명</th>
+            <td>{{ resultVo.sipIfNm }}</td>
+            <th>서비스</th>
+            <td>{{ resultVo.sassignTypeNm }}</td>
+          </tr>
+          <tr>
+            <th>HOST유형</th>
+            <td>{{ resultVo.sipHostTypeNm }}</td>
+            <th>장비명</th>
+            <td v-if="fnType === 'detail'">{{ resultVo.sipHostNm }}</td>
+            <td v-else>
+              <el-input v-model="resultVo.sipHostNm" />
+            </td>
+            <th>상품명</th>
+            <td>{{ resultVo.sexSvcNm }}</td>
+          </tr>
+          <tr>
+            <th>외부연동</th>
+            <td>{{ resultVo.sexLinkUseTypeNm }}</td>
+            <th>모델명</th>
+            <td v-if="fnType === 'detail'">{{ resultVo.smodelname }}</td>
+            <td v-else>
+              <el-input v-model="resultVo.smodelname" />
+            </td>
+            <th>SAID</th>
+            <td>{{ resultVo.ssaid }}</td>
+          </tr>
+          <tr>
+            <th></th>
+            <td></td>
+            <th></th>
+            <td></td>
+            <th>전용회선</th>
+            <td>{{ resultVo.sllnum }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="popupContentTableBottom">
+      <el-button type="primary" size="small" class="el-icon-edit" round @click="fnUpdateHostIpMst">{{ fnType === 'update'? '등록' : '수정' }}</el-button>
+      <el-button v-if="fnType === 'detail'" type="primary" size="small" icon="el-icon-delete" round @click="fnDeleteHostIpMst">삭제</el-button>
+      <el-button type="primary" size="small" class="el-icon-close" round @click.native="close()">{{ $t('exit') }}</el-button>
+    </div>
     <ModalOrgSearch ref="ModalOrgSearch" @selected-value="setSelectedRow" />
-  </div>
+  </el-dialog>
 </template>
 
 <script>

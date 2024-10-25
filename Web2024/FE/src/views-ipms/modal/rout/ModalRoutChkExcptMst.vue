@@ -1,65 +1,54 @@
 <template>
-  <div>
-    <el-dialog
-      v-if="animationVisible"
-      id="ipms"
-      v-el-drag-dialog
-      :visible.sync="visible"
-      :width="domElement.maxWidth + `px`"
-      :fullscreen.sync="fullscreen"
-      :modal-append-to-body="true"
-      :append-to-body="true"
-      :close-on-click-modal="closeOnClickModal"
-      :loading="loading"
-      class="ipms-dialog"
-      :class="{ [name]: true }"
-    >
-      <span slot="title">
-        <i class="el-icon-document mr-2" style="font-size: 17px" />
-        예외 처리 관리
-        <hr>
-      </span>
-      <div id="content" v-loading="loading" class="layer">
-        <div class="content_result" style="margin-top: 0px;">
-          <div class="section_tit">
-            <h3>예외처리</h3>
-          </div>
-          <table class="tbl_list mt5" summary="Except">
-            <caption>예외처리</caption>
-            <colgroup>
-              <col width="20%" />
-              <col width="80%" />
-            </colgroup>
-            <tbody>
-              <tr class="top">
-                <th scope="row">예외처리 유형</th>
-                <td>
-                  <select v-model="sexcptCd">
-                    <option value="">전체</option>
-                    <option v-for="(item, index) in exceptionTypes" :key="index" :value="item.value">
-                      {{ item.label }}
-                    </option>
-                  </select>
-                </td>
-              </tr>
-              <tr class="last">
-                <th class="first" scope="row">
-                  예외처리<br />세부사유
-                </th>
-                <td colspan="14">
-                  <textarea id="sexcptRsn" v-model="sexcptRsn" rows="3" class="w99"></textarea>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button size="mini" type="primary" @click="fnInsertListExcptMst()">예외처리</el-button>
-        <el-button size="mini" class="el-icon-close" @click.native="close()">{{ $t('exit') }}</el-button>
-      </div>
-    </el-dialog>
-  </div>
+  <el-dialog
+    v-if="animationVisible"
+    id="ipms"
+    v-el-drag-dialog
+    title="예외 처리 관리"
+    :visible.sync="visible"
+    :width="domElement.maxWidth + `px`"
+    :fullscreen.sync="fullscreen"
+    :modal-append-to-body="true"
+    :append-to-body="true"
+    :close-on-click-modal="closeOnClickModal"
+    :loading="loading"
+    class="ipms-dialog"
+    :class="{ [name]: true }"
+  >
+    <div class="popupContentTable">
+      <div class="popupContentTableTitle">예외처리</div>
+      <table>
+        <colgroup>
+          <col width="20%" />
+          <col width="80%" />
+        </colgroup>
+        <tbody>
+          <tr>
+            <th>예외처리 유형</th>
+            <td class="text-left">
+              <el-select v-model="sexcptCd">
+                <el-option value="">전체</el-option>
+                <el-option v-for="(item, index) in exceptionTypes" :key="index" :value="item.value">
+                  {{ item.label }}
+                </el-option>
+              </el-select>
+            </td>
+          </tr>
+          <tr>
+            <th>
+              예외처리<br />세부사유
+            </th>
+            <td colspan="14">
+              <textarea id="sexcptRsn" v-model="sexcptRsn" rows="3"></textarea>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="popupContentTableBottom">
+      <el-button type="primary" size="small" icon="el-icon-warning-outline" round @click="fnInsertListExcptMst()">예외처리</el-button>
+      <el-button type="primary" size="small" icon="el-icon-close" round @click.native="close()">{{ $t('exit') }}</el-button>
+    </div>
+  </el-dialog>
 </template>
 
 <script>

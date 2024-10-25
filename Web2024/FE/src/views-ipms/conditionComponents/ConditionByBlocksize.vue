@@ -1,34 +1,36 @@
 <template>
-  <el-col :class="{ [name]: true }" :xs="24" :sm="12" :md="12" :lg="8" :xl="6">
-    <label>
+  <fragment>
+    <th>
       Block 크기별 조건
-    </label>
-    <el-select
-      v-model="targetValue"
-      size="mini"
-      @change="emitEventToParent([{ key: 'skindCd', value: targetValue }])"
-    >
-      <el-option
-        v-for="(option, i) in targetOptions"
-        :key="i"
-        :label="option.label"
-        :value="option.value"
-      />
-    </el-select>
-    <el-input v-model="word" size="mini" clearable style="width: 120px;" @change="emitEventToParent([{ key: 'ngubunCnt', value: word }])" @input="onChangeInput" />
-    <el-select
-      v-model="compareValue"
-      size="mini"
-      @change="emitEventToParent([{ key: 'ssign', value: compareValue }])"
-    >
-      <el-option
-        v-for="(option, i) in compareOptions"
-        :key="i"
-        :label="option.label"
-        :value="option.value"
-      />
-    </el-select>
-  </el-col>
+    </th>
+    <td class="textflex">
+      <el-select
+        v-model="targetValue"
+        size="small"
+        @change="emitEventToParent([{ key: 'skindCd', value: targetValue }])"
+      >
+        <el-option
+          v-for="(option, i) in targetOptions"
+          :key="i"
+          :label="option.label"
+          :value="option.value"
+        />
+      </el-select>
+      <el-input v-model="word" size="small" clearable style="width: 120px;" @change="emitEventToParent([{ key: 'ngubunCnt', value: word }])" @input="onChangeInput" />
+      <el-select
+        v-model="compareValue"
+        size="small"
+        @change="emitEventToParent([{ key: 'ssign', value: compareValue }])"
+      >
+        <el-option
+          v-for="(option, i) in compareOptions"
+          :key="i"
+          :label="option.label"
+          :value="option.value"
+        />
+      </el-select>
+    </td>
+  </fragment>
 </template>
 <script>
 import { Base } from '@/min/Base.min'

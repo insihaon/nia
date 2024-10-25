@@ -340,7 +340,9 @@
             'aiIpSdnSflowKey',
             'aiIpSdnSyslogKey',
             'aiIpSdnNodeFactorKey',
-            'aiTrafficResultKey',
+            <!-- 'aiTrafficResultKey', -->
+            'aiTrafficNoxKey',
+            'aiTrafficAnoKey',
             'aiIpPerfKey',
             'aiIpResourceIfKey',
             'aiIpResourceKey')

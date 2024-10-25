@@ -1,9 +1,11 @@
 <template>
   <el-row class="w-100 h-100">
-    <div class="optionBox">
-      <el-row class="optionRow">
-        <el-col class="d-flex" :span="6">
+    <div class="searchOptionWrap">
+      <table>
+        <th>
           <label>화면유형</label>
+        </th>
+        <td>
           <el-select
             v-model="scrnType"
             size="mini"
@@ -16,9 +18,11 @@
               :value="option.value"
             />
           </el-select>
-        </el-col>
-        <el-col class="d-flex" :span="6">
+        </td>
+        <th>
           <label>조회조건</label>
+        </th>
+        <td class="textflex">
           <el-select
             v-model="inquiryValue"
             size="mini"
@@ -33,25 +37,25 @@
             />
           </el-select>
           <el-input v-model="inquiryTxt" size="mini" clearable />
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="24" align="center" class="searchBtnGroup">
-          <el-button class="btn-r" type="info" size="mini" icon="el-icon-search" @click="handleSearch()">
-            조회
-          </el-button>
-          <el-button class="btn-r" type="info" size="mini" icon="el-icon-refresh">
-            초기화
-          </el-button>
-          <slot name="add-function" />
-        </el-col>
-      </el-row>
+        </td>
+        <td colspan="4">
+          <div class="searchBtnWrap">
+            <el-button type="info" size="mini" icon="el-icon-refresh" round>
+              초기화
+            </el-button>
+            <el-button type="primary" size="mini" icon="el-icon-search" round @click="handleSearch()">
+              조회
+            </el-button>
+          </div>
+        </td>
+      </table>
     </div>
-    <el-col :span="24" style="height: calc(100% - 160px)">
+    <el-col :span="24">
       <compTable
         ref="compTable"
+        style="height: calc(100% - 80px)"
         :prop-name="name"
-        :prop-table-height="'calc(100% - 80px)'"
+        :prop-table-height="'100%'"
         :prop-column="tableColumns"
         :prop-data="resultListVo"
         :prop-is-pagination="true"
@@ -67,10 +71,10 @@
           </span>
         </template>
         <template slot="add-features">
-          <div class="float-right">
-            <el-button size="mini" icon="el-icon-document-add" @click="fnInsertScrnBas('insert')">등록</el-button>
-            <el-button size="mini" icon="el-icon-success" @click="fnUpdateSscrnUseYn('Y')">사용</el-button>
-            <el-button size="mini" icon="el-icon-remove" @click="fnUpdateSscrnUseYn('N')">미사용</el-button>
+          <div style="margin-top: 10px;">
+            <el-button type="primary" icon="el-icon-document-add" size="mini" round @click="fnInsertScrnBas('insert')">등록</el-button>
+            <el-button type="primary" icon="el-icon-success" size="mini" round @click="fnUpdateSscrnUseYn('Y')">사용</el-button>
+            <el-button type="primary" icon="el-icon-remove" size="mini" round @click="fnUpdateSscrnUseYn('N')">미사용</el-button>
           </div>
         </template>
       </compTable>
@@ -117,7 +121,7 @@ export default {
       inquiryValue: 'sscrnId',
       inquiryTxt: '',
       resultListVo: [],
-      selectedChecks: null,
+      selectedChecks: [],
     }
   },
   mounted() {

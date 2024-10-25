@@ -1,72 +1,55 @@
 <template>
-  <div>
-    <el-dialog
-      v-if="animationVisible"
-      id="ipms"
-      v-el-drag-dialog
-      :visible.sync="visible"
-      :width="domElement.maxWidth + `px`"
-      :fullscreen.sync="fullscreen"
-      :modal-append-to-body="false"
-      :append-to-body="true"
-      :modal="modal"
-      :close-on-click-modal="closeOnClickModal"
-      :loading="loading"
-      class="ipms-dialog"
-      :class="{ [name]: true }"
-    >
-      <span slot="title">
-        <i class="el-icon-document mr-2" style="font-size: 17px" />
-        공지사항 상세
-        <hr>
-      </span>
-      <div id="content" v-loading="loading" class="layer info">
-        <div class="data_view">
-          <div class="data_tit">
-            <h3 :title="notiDetail.sboardTitle">
-              <span>[{{ notiDetail.sboardTypeSubNm }}]</span>{{ notiDetail.sboardTitle }}
-            </h3>
-            <dl>
-              <dt>작성자 :</dt>
-              <dd>
-                <ul>
-                  <li>{{ notiDetail.screateNm }}<span>({{ notiDetail.screateEmail }})</span></li>
-                </ul>
-              </dd>
-            </dl>
-          </div>
-          <div id="notiDate" class="data_tit_sub">
-            <dl class="fl">
-              <dt>팝업게시기간 :</dt>
-              <dd>{{ moment(notiDetail.dnotiStartDt).format(dateFormat) }} ~ {{ moment(notiDetail.dnotiEndDt).format(dateFormat) }}</dd>
-            </dl>
-          </div>
-          <div class="data_tit_sub last">
-            <dl class="fl">
-              <dt>등록일 :</dt>
-              <dd>{{ moment(notiDetail.dcreateDt).format(dateFormat) }}</dd>
-              <dt class="ml15">수정일 :</dt>
-              <dd>{{ moment(notiDetail.dmodifyDt).format(dateFormat) }}</dd>
-            </dl>
-            <dl class="unit_fr">
-              <dt>조회수 :</dt>
-              <dd>{{ notiDetail.nreadCnt }}</dd>
-            </dl>
-          </div>
-          <div class="data_con w-100">
-            <textarea v-model="notiDetail.sboardContents" readonly />
-          </div>
-        </div>
-      </div>
-      <div slot="footer" class="dialog-footer">
-        <template v-if="!isDashBoard">
-          <el-button size="mini" class="el-icon-edit" @click="handleClickUpdate">수정</el-button>
-          <el-button size="mini" class="el-icon-delete" @click="fnDeleteNotice(notiDetail.seq)">삭제</el-button>
-        </template>
-        <el-button size="mini" class="el-icon-close" @click.native="close()">{{ $t('exit') }}</el-button>
-      </div>
-    </el-dialog>
-  </div>
+  <el-dialog
+    v-if="animationVisible"
+    id="ipms"
+    v-el-drag-dialog
+    title="공지사항 상세"
+    :visible.sync="visible"
+    :width="domElement.maxWidth + `px`"
+    :fullscreen.sync="fullscreen"
+    :modal-append-to-body="true"
+    :append-to-body="true"
+    :modal="modal"
+    :close-on-click-modal="closeOnClickModal"
+    :loading="loading"
+    class="ipms-dialog"
+    :class="{ [name]: true }"
+  >
+    <div class="popupContentTable">
+      <table>
+        <tr>
+          <th class="flex">
+            <span class="tableSubject">[[{{ notiDetail.sboardTypeSubNm }}]{{ notiDetail.sboardTitle }}</span>
+            <span><span>작성자</span>{{ notiDetail.screateNm }}({{ notiDetail.screateEmail }})</span>
+          </th>
+        </tr>
+        <tr>
+          <th class="flex">
+            <span><span>팝업게시기간</span>{{ moment(notiDetail.dnotiStartDt).format(dateFormat) }} ~ {{ moment(notiDetail.dnotiEndDt).format(dateFormat) }}</span>
+          </th>
+        </tr>
+        <tr>
+          <th class="flex">
+            <span><span>등록일</span>{{ moment(notiDetail.dcreateDt).format(dateFormat) }}</span>
+            <span><span>수정일</span>{{ moment(notiDetail.dmodifyDt).format(dateFormat) }}</span>
+            <span><span>조회수</span>{{ notiDetail.nreadCnt }}</span>
+          </th>
+        </tr>
+        <tr>
+          <td>
+            <textarea v-model="notiDetail.sboardContents" style="min-height: 360px;" readonly />
+          </td>
+        </tr>
+      </table>
+    </div>
+    <div class="popupContentTableBottom">
+      <template v-if="!isDashBoard">
+        <el-button type="primary" size="small" icon="el-icon-edit" round @click="handleClickUpdate">수정</el-button>
+        <el-button type="primary" size="small" icon="el-icon-delete" round @click="fnDeleteNotice(notiDetail.seq)">삭제</el-button>
+      </template>
+      <el-button type="primary" size="small" icon="el-icon-close" round @click.native="close()">{{ $t('exit') }}</el-button>
+    </div>
+  </el-dialog>
 </template>
 
 <script>

@@ -1,16 +1,15 @@
 <template>
   <transition name="fade-transform" mode="out-in" :duration="duration">
-    <div
-      v-if="$route.name !== 'IpmsMain'"
-      id="content"
-    >
-      <div class="page_tit">
-        <h2>{{ getCurPageSubTitle }}{{ getCurPageTitle }}</h2>
-        <p class="path">
-          <span class="home">HOME</span>
+    <div v-if="$route.name !== 'IpmsMain'" style="padding: 0px 30px 0px 30px;">
+      <div class="page-title-wrap">
+        <div class="page-title">
+          <span>{{ getCurPageSubTitle }}{{ getCurPageTitle }}</span>
+        </div>
+        <div class="page-loc">
+          <i class="el-icon-s-home" />
           <span>{{ getCurPageParentTitle }}</span>
-          <strong>{{ getCurPageTitle }}</strong>
-        </p>
+          <span>{{ getCurPageTitle }}</span>
+        </div>
       </div>
     </div>
   </transition>
@@ -51,4 +50,5 @@ export default {
   },
 }
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+</style>

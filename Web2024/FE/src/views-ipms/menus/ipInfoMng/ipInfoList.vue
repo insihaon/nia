@@ -1,8 +1,11 @@
 <template>
-  <el-row ref="container" class="w-100 h-100">
-    <div v-if="!isDashboard" ref="searchCondition" class="optionBox">
-      <el-row class="optionRow">
-        <el-col class="d-flex">
+  <div ref="container" class="w-100 h-100">
+    <div v-if="!isDashboard" ref="searchCondition" class="searchOptionWrap">
+      <table>
+        <th>
+          IP주소
+        </th>
+        <td class="textflex">
           <el-select v-model="option" size="mini" @change="searchTagArr = []">
             <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
@@ -15,44 +18,36 @@
               <div>{{ tag }}</div>
               <i class="el-icon-close ml-1" style="font-size: 13px;" @click="removeSearchTag(index)" />
             </div>
-            <input
+            <el-input
               ref="input"
               v-model="searchTagStr"
-              class="input-tag"
               type="text"
               @input="onCheckValidation"
-              @keyup.space="onKeyUpSpace"
-              @keyup.delete="onKeyUpBackspace"
-              @keyup.enter="fnViewListIpAllocMstByMain()"
+              @keyup.space.native="onKeyUpSpace"
+              @keyup.delete.native="onKeyUpBackspace"
+              @keyup.enter.native="fnViewListIpAllocMstByMain()"
             />
           </div>
+        </td>
+        <td class="textcenter">
           <el-button
-            class="btn-r ml-1"
-            type="info"
-            size="mini"
+            type="primary"
+            size="small"
             icon="el-icon-search"
-            style="background-color: #3a3a3a;"
+            round
             @click="handleClickSearch()"
           >
             조회
           </el-button>
-          <el-button
-            type="button"
-            size="mini"
-            class="export-excel"
-            icon="el-icon-download"
-            @click="handleClickExcelBtn"
-          >
-            엑셀 저장
-          </el-button>
-        </el-col>
-      </el-row>
+        </td>
+      </table>
     </div>
-    <el-col ref="tableContainer">
+    <div ref="tableContainer">
       <compTable
         ref="compTable"
+        style="height: calc(100% - 80px)"
         :prop-name="name"
-        :prop-table-height="'calc(100% - 80px)'"
+        :prop-table-height="'100%'"
         :prop-column="ipBlockColumns"
         :prop-data="pagination.data"
         :prop-pagination-data.sync="pagination"
@@ -69,9 +64,9 @@
           </span>
         </template>
       </CompTable>
-    </el-col>
+    </div>
     <ModalIpInfoDetail ref="ModalIpInfoDetail" />
-  </el-row>
+  </div>
 </template>
 <script>
 import { Base } from '@/min/Base.min'
@@ -98,27 +93,34 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      pagination: this.setDefaultPagination(),
       options: [],
       searchTagArr: [],
       searchTagStr: '',
       value: '',
       option: 'CV0001',
       ipBlockColumns: [
-        { prop: 'pipPrefix', label: 'IP블록', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'sfirstAddr', label: '시작 IP', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'slastAddr', label: '끝 IP', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'nbitmask', label: 'BitMask', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'sassignLevelNm', label: '할당상태', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'ssvcLineTypeNm', label: '서비스망', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'ssvcGroupNm', label: '본부', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'ssvcObjNm', label: '노드', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'sassignTypeNm', label: '서비스', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'ssaid', label: 'SAID', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'sllnum', label: '전용번호', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'sconnAlias', label: '수용회선명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '_detail', label: '상세', align: 'center', sortable: true, columnVisible: true, showOverflow: true,
+        { prop: 'pipPrefix', label: 'IP블록', align: 'center', width: 135, sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'sfirstAddr', label: '시작 IP', align: 'center', width: 135, sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'slastAddr', label: '끝 IP', align: 'center', width: 135, sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'nbitmask', label: 'BitMask', align: 'center', width: 135, sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'sassignLevelNm', label: '할당상태', align: 'center', width: 135, sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'ssvcLineTypeNm', label: '서비스망', align: 'center', width: 135, sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'ssvcGroupNm', label: '본부', align: 'center', width: 135, sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'ssvcObjNm', label: '노드', align: 'center', width: 135, sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'sassignTypeNm', label: '서비스', align: 'center', width: 135, sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'ssaid', label: 'SAID', align: 'center', width: 135, sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'sllnum', label: '전용번호', align: 'center', width: 135, sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'sconnAlias', label: '수용회선명', align: 'center', width: 135, sortable: true, columnVisible: true, showOverflow: true },
+        { prop: '_detail', label: '상세', align: 'center', width: 135, sortable: true, columnVisible: true, showOverflow: true,
           formatter: (row, col, value, index) => {
             return this.$createElement('el-button', {
+              attrs: {
+                round: true, // Adding the round option
+                plain: true,
+                type: 'primary',
+                size: 'mini'
+              },
               on: { click: () => {
                 this.fnViewDetailIpAlloc(row)
                 // ipmgmt/allocmgmt/viewDetailIpAllocMstByMain.model
@@ -127,7 +129,6 @@ export default {
           }
         },
       ],
-      pagination: this.setDefaultPagination()
     }
   },
   watch: {
@@ -165,8 +166,10 @@ export default {
     async fnMultiIpInfo() {
       try {
         const searchWrd = this.searchTagArr.toString()
-        const res = await apiRequestModel(ipmsModelApis.viewListMultiIpInfo, { searchWrd })
-        this.resultList = res?.result?.data ?? []
+        const { pageSize: pageUnit, currentPage: pageIndex } = this.pagination
+        const res = await apiRequestModel(ipmsModelApis.viewListMultiIpInfo, { pageIndex, pageUnit, searchWrd })
+        this.pagination.data = res?.result?.resultListVo ?? []
+        this.pagination.total = res.result.resultListTotalCount
       } catch (error) {
         this.error(error)
       }
@@ -205,8 +208,8 @@ export default {
       try {
         this.openLoading(target)
         const res = await apiRequestModel(ipmsModelApis.viewListIpAllocMstByMain, ipInfoVo)
-        this.pagination.data = res?.result?.data ?? []
-        this.pagination.total = res.result.totalCount
+        this.pagination.data = res?.result?.resultListVo ?? []
+        this.pagination.total = res.result.resultListTotalCount
       } catch (error) {
         this.error(error)
       } finally {
@@ -291,26 +294,29 @@ export default {
   border-radius: 5px;
   display: flex;
   width: 100%;
+  // height: 28px;
   align-items: center;
   border: solid 1px #dddfe6;
   .tag-item {
     display: flex;
     font-weight: 700;
-    color: #e31818;
+    color: #fff;
     padding: 0px 3px;
     margin-left: 4px;
     border-radius: 2px;
     width: fit-content;
     align-items: baseline;
-    background: #e3181829;
+    background: #ff020261;
     justify-content: space-between;
     i:hover {
       color: black;
       cursor: pointer;
     }
   }
-  input {
-    outline-color: #fff !important;
+  ::v-deep.el-input .el-input__inner {
+    border: 0px;
+    outline: none;
+    background: none;
   }
 }
 </style>

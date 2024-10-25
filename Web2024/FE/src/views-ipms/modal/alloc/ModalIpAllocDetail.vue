@@ -1,234 +1,213 @@
 <template>
-  <div>
-    <el-dialog
-      v-if="animationVisible"
-      id="ipms"
-      v-el-drag-dialog
-      :visible.sync="visible"
-      :width="domElement.maxWidth + `px`"
-      :fullscreen.sync="fullscreen"
-      :modal-append-to-body="false"
-      :append-to-body="true"
-      :close-on-click-modal="closeOnClickModal"
-      :loading="loading"
-      class="ipms-dialog"
-      :class="{ [name]: true }"
-    >
-      <span slot="title">
-        <i class="el-icon-document mr-2" style="font-size: 17px" />
-        IP할당 상세정보
-        <hr>
-      </span>
-      <div id="content" ref="content" class="layer w-100 h-100">
-        <div class="content_result mt0">
-          <h4>IP 블록 정보</h4>
-          <table class="tbl_data entry mt5">
-            <colgroup>
-              <col width="15%" />
-              <col width="35%" />
-              <col width="15%" />
-              <col width="35%" />
-            </colgroup>
-            <tbody>
-              <tr class="top">
-                <th class="first" scope="row">계위</th>
-                <td class="view">
-                  <template v-if="ipAllocOperMstVo">
-                    {{ ipAllocOperMstVo.ssvcLineTypeNm }} - {{ ipAllocOperMstVo.ssvcGroupNm }} - {{ ipAllocOperMstVo.ssvcObjNm }}
-                  </template>
-                </td>
-                <th scope="row">공인/사설</th>
-                <td class="view">
-                  <template v-if="ipAllocOperMstVo">
-                    {{ ipAllocOperMstVo.sipCreateTypeNm }}
-                  </template>
-                </td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">할당상태</th>
-                <td class="view">
-                  <template v-if="ipAllocOperMstVo">
-                    {{ ipAllocOperMstVo.sassignLevelNm }}
-                  </template>
-                </td>
-                <th scope="row">서비스</th>
-                <td class="view">
-                  <template v-if="ipAllocOperMstVo">
-                    {{ ipAllocOperMstVo.sassignTypeNm }}
-                  </template>
-                </td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">IP 버전</th>
-                <td class="view">
-                  <template v-if="ipAllocOperMstVo">
-                    {{ ipAllocOperMstVo.sipVersionTypeNm }}
-                  </template>
-                </td>
-                <th scope="row">IP 주소</th>
-                <td class="view">
-                  <template v-if="ipAllocOperMstVo">
-                    {{ ipAllocOperMstVo.pipPrefix }}
-                  </template>
-                </td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">다중회선</th>
-                <td class="view">
-                  <template v-if="ipAllocOperMstVo">
-                    {{ ipAllocOperMstVo.nipAllocMstCnt }}
-                  </template>
-                </td>
-                <th scope="row">감사상태</th>
-                <td class="view">
-                  <template v-if="ipAllocOperMstVo">
-                    {{ ipAllocOperMstVo.svalidCheck }}
-                  </template>
-                </td>
-              </tr>
-              <tr class="last">
-                <th class="first" scope="row">비고</th>
-                <td colspan="3">
-                  <textarea v-model="ipAllocOperMstVo.scomment" class="w98" rows="3" maxlength="4000"></textarea>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <div class="btn_area mt5">
-            <el-button size="mini" class="mt-1" @click="fnScommentUpdateClick">수정</el-button>
-          </div>
-        </div>
-
-        <div class="content_result">
-          <h4>IP 블록 세부 정보</h4>
-          <table class="tbl_data mt5">
-            <colgroup>
-              <col width="15%" />
-              <col width="35%" />
-              <col width="15%" />
-              <col width="35%" />
-            </colgroup>
-            <tbody>
-              <tr class="top">
-                <th class="first" scope="row">시작 IP</th>
-                <td>
-                  <template v-if="ipAllocOperMstVo">
-                    {{ ipAllocOperMstVo.sfirstAddr }}
-                  </template>
-                </td>
-                <th scope="row">끝 IP</th>
-                <td>
-                  <template v-if="ipAllocOperMstVo">
-                    {{ ipAllocOperMstVo.slastAddr }}
-                  </template>
-                </td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">총 IP 수</th>
-                <td>
-                  <template v-if="ipAllocOperMstVo">
-                    {{ formatNumber(ipAllocOperMstVo.ncnt) }}
-                  </template>
-                </td>
-                <th scope="row">단위블록수</th>
-                <td>
-                  <template v-if="ipAllocOperMstVo">
-                    {{ formatNumber(ipAllocOperMstVo.nclassCnt, 0, 10) }}
-                  </template>
-                </td>
-              </tr>
-              <tr class="last">
-                <th class="first" scope="row">사용 IP 수</th>
-                <td>
-                  <template v-if="ipAllocOperMstVo">
-                    {{ formatNumber(ipAllocOperMstVo.nuseIpCnt) }}
-                  </template>
-                </td>
-                <th scope="row">가용 IP 수</th>
-                <td>
-                  <template v-if="ipAllocOperMstVo">
-                    {{ formatNumber(ipAllocOperMstVo.nfreeIpCnt) }}
-                  </template>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="content_result">
-          <h4>IP 할당 정보</h4>
-          <table class="tbl_list mt5" summary="IP 할당 정보">
-            <caption>IP 할당 정보</caption>
-            <thead>
-              <tr>
-                <th class="first" scope="col">수용국</th>
-                <th scope="col">장비명</th>
-                <th scope="col">대표 IP</th>
-                <th scope="col">I/F명</th>
-                <th scope="col">수용회선명</th>
-                <th scope="col">전용번호</th>
-                <th scope="col">해지</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                v-if="ipAllocOperMstVo.sassignLevelCd === 'IA0004' || ipAllocOperMstVo.nipAllocMstSeq === null"
-                class="subbg last"
-              >
-                <td class="first" colspan="8">조회된 결과 목록이 존재하지 않습니다.</td>
-              </tr>
-              <template v-else>
-                <tr
-                  v-for="(item, index) in resultList"
-                  :key="item.nipAllocMstSeq"
-                  style="cursor: pointer;"
-                  :class="{'subbg': index % 2 !== 0, 'last': index === ipAllocOperMstVo.length - 1}"
-                >
-                  <td class="first ellipsis" :title="item.sofficename" @click="fnViewSubDetailAlcIPMst(item)">
-                    {{ item.sofficename }}
-                  </td>
-                  <td class="ellipsis" :title="item.ssubscnealias" @click="fnViewSubDetailAlcIPMst(item)">
-                    {{ item.ssubscnealias }}
-                  </td>
-                  <td class="ellipsis" :title="item.ssubscmstip" @click="fnViewSubDetailAlcIPMst(item)">
-                    {{ item.ssubscmstip }}
-                  </td>
-                  <td class="ellipsis" :title="item.ssubsclgipportdescription" @click="fnViewSubDetailAlcIPMst(item)">
-                    {{ item.ssubsclgipportdescription }}
-                  </td>
-                  <td class="ellipsis" :title="item.sconnAlias" @click="fnViewSubDetailAlcIPMst(item)">
-                    {{ item.sconnAlias }}
-                  </td>
-                  <td class="ellipsis" :title="item.sllnum" @click="fnViewSubDetailAlcIPMst(item)">
-                    {{ item.sllnum }}
-                  </td>
-                  <td class="btn_text">
-                    <el-button @click="fnDeleteAlcIPMstClick(item)">
-                      해지
-                    </el-button>
-                  </td>
-                </tr>
+  <el-dialog
+    v-if="animationVisible"
+    id="ipms"
+    v-el-drag-dialog
+    title="IP할당 상세정보"
+    :visible.sync="visible"
+    :width="domElement.maxWidth + `px`"
+    :fullscreen.sync="fullscreen"
+    :modal-append-to-body="false"
+    :append-to-body="true"
+    :close-on-click-modal="closeOnClickModal"
+    :loading="loading"
+    class="ipms-dialog"
+    :class="{ [name]: true }"
+  >
+    <div class="popupContentTable">
+      <div class="popupContentTableTitle">IP 블록 정보</div>
+      <table>
+        <colgroup>
+          <col width="15%" />
+          <col width="35%" />
+          <col width="15%" />
+          <col width="35%" />
+        </colgroup>
+        <tr>
+          <th>계위</th>
+          <td>
+            <template v-if="ipAllocOperMstVo">
+              {{ ipAllocOperMstVo.ssvcLineTypeNm }} - {{ ipAllocOperMstVo.ssvcGroupNm }} - {{ ipAllocOperMstVo.ssvcObjNm }}
+            </template>
+          </td>
+          <th>공인/사설</th>
+          <td>
+            <template v-if="ipAllocOperMstVo">
+              {{ ipAllocOperMstVo.sipCreateTypeNm }}
+            </template>
+          </td>
+        </tr>
+        <tr>
+          <th>할당상태</th>
+          <td>
+            <template v-if="ipAllocOperMstVo">
+              {{ ipAllocOperMstVo.sassignLevelNm }}
+            </template>
+          </td>
+          <th>서비스</th>
+          <td>
+            <template v-if="ipAllocOperMstVo">
+              {{ ipAllocOperMstVo.sassignTypeNm }}
+            </template>
+          </td>
+        </tr>
+        <tr>
+          <th>IP 버전</th>
+          <td>
+            <template v-if="ipAllocOperMstVo">
+              {{ ipAllocOperMstVo.sipVersionTypeNm }}
+            </template>
+          </td>
+          <th>IP 주소</th>
+          <td>
+            <template v-if="ipAllocOperMstVo">
+              {{ ipAllocOperMstVo.pipPrefix }}
+            </template>
+          </td>
+        </tr>
+        <tr>
+          <th>다중회선</th>
+          <td>
+            <template v-if="ipAllocOperMstVo">
+              {{ ipAllocOperMstVo.nipAllocMstCnt }}
+            </template>
+          </td>
+          <th>감사상태</th>
+          <td>
+            <template v-if="ipAllocOperMstVo">
+              {{ ipAllocOperMstVo.svalidCheck }}
+            </template>
+          </td>
+        </tr>
+        <tr class="last">
+          <th>비고</th>
+          <td colspan="3">
+            <textarea v-model="ipAllocOperMstVo.scomment" style="min-height: 50px" rows="3" maxlength="4000"></textarea>
+          </td>
+        </tr>
+      </table>
+      <div class="popupContentTableBottom">
+        <el-button type="primary" size="small" icon="el-icon-edit" round @click="fnScommentUpdateClick">수정</el-button>
+      </div>
+      <div class="popupContentTableTitle">IP 블록 세부 정보</div>
+      <table>
+        <colgroup>
+          <col width="15%" />
+          <col width="35%" />
+          <col width="15%" />
+          <col width="35%" />
+        </colgroup>
+        <tbody>
+          <tr>
+            <th>시작 IP</th>
+            <td>
+              <template v-if="ipAllocOperMstVo">
+                {{ ipAllocOperMstVo.sfirstAddr }}
               </template>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button v-if="ipAllocOperMstVo" size="mini" @click="fnViewCheckTacsIpBlock_">IP블럭 중복체크</el-button>
-        <template v-if="ipAllocOperMstVo.sassignLevelCd === 'IA0004'">
-          <el-button size="mini" icon="el-icon-menu" @click="fnAlocCallBtnClick">할당</el-button>
-          <el-button size="mini" icon="el-icon-menu" @click="fnRetUpdateConfirmClick">반납</el-button>
-        </template>
-        <el-button size="mini" class="el-icon-close" @click="close()">
-          닫기
-        </el-button>
-      </div>
-      <ModalCheckTacsIpBlock ref="ModalCheckTacsIpBlock" />
-      <ModalIpAllocCircuitDetail ref="ModalIpAllocCircuitDetail" />
-    </el-dialog>
-  </div>
+            </td>
+            <th>끝 IP</th>
+            <td>
+              <template v-if="ipAllocOperMstVo">
+                {{ ipAllocOperMstVo.slastAddr }}
+              </template>
+            </td>
+          </tr>
+          <tr>
+            <th>총 IP 수</th>
+            <td>
+              <template v-if="ipAllocOperMstVo">
+                {{ formatNumber(ipAllocOperMstVo.ncnt) }}
+              </template>
+            </td>
+            <th>단위블록수</th>
+            <td>
+              <template v-if="ipAllocOperMstVo">
+                {{ formatNumber(ipAllocOperMstVo.nclassCnt, 0, 10) }}
+              </template>
+            </td>
+          </tr>
+          <tr>
+            <th>사용 IP 수</th>
+            <td>
+              <template v-if="ipAllocOperMstVo">
+                {{ formatNumber(ipAllocOperMstVo.nuseIpCnt) }}
+              </template>
+            </td>
+            <th>가용 IP 수</th>
+            <td>
+              <template v-if="ipAllocOperMstVo">
+                {{ formatNumber(ipAllocOperMstVo.nfreeIpCnt) }}
+              </template>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="popupContentTableTitle">IP 할당 정보</div>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">수용국</th>
+            <th scope="col">장비명</th>
+            <th scope="col">대표 IP</th>
+            <th scope="col">I/F명</th>
+            <th scope="col">수용회선명</th>
+            <th scope="col">전용번호</th>
+            <th scope="col">해지</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-if="ipAllocOperMstVo.sassignLevelCd === 'IA0004' || ipAllocOperMstVo.nipAllocMstSeq === null">
+            <td colspan="8">조회된 결과 목록이 존재하지 않습니다.</td>
+          </tr>
+          <template v-else>
+            <tr
+              v-for="(item, index) in resultList"
+              :key="item.nipAllocMstSeq"
+              style="cursor: pointer;"
+              :class="{'subbg': index % 2 !== 0, 'last': index === ipAllocOperMstVo.length - 1}"
+            >
+              <td class="first ellipsis" :title="item.sofficename" @click="fnViewSubDetailAlcIPMst(item)">
+                {{ item.sofficename }}
+              </td>
+              <td class="ellipsis" :title="item.ssubscnealias" @click="fnViewSubDetailAlcIPMst(item)">
+                {{ item.ssubscnealias }}
+              </td>
+              <td class="ellipsis" :title="item.ssubscmstip" @click="fnViewSubDetailAlcIPMst(item)">
+                {{ item.ssubscmstip }}
+              </td>
+              <td class="ellipsis" :title="item.ssubsclgipportdescription" @click="fnViewSubDetailAlcIPMst(item)">
+                {{ item.ssubsclgipportdescription }}
+              </td>
+              <td class="ellipsis" :title="item.sconnAlias" @click="fnViewSubDetailAlcIPMst(item)">
+                {{ item.sconnAlias }}
+              </td>
+              <td class="ellipsis" :title="item.sllnum" @click="fnViewSubDetailAlcIPMst(item)">
+                {{ item.sllnum }}
+              </td>
+              <td class="btn_text">
+                <el-button @click="fnDeleteAlcIPMstClick(item)">
+                  해지
+                </el-button>
+              </td>
+            </tr>
+          </template>
+        </tbody>
+      </table>
+    </div>
+    <div class="popupContentTableBottom">
+      <el-button v-if="ipAllocOperMstVo" type="primary" icon="el-icon-check" size="small" round @click="fnViewCheckTacsIpBlock_">IP블럭 중복체크</el-button>
+      <template v-if="ipAllocOperMstVo.sassignLevelCd === 'IA0004'">
+        <el-button type="primary" size="small" icon="el-icon-menu" round @click="fnAlocCallBtnClick">할당</el-button>
+        <el-button type="primary" size="small" icon="el-icon-menu" round @click="fnRetUpdateConfirmClick">반납</el-button>
+      </template>
+      <el-button type="primary" icon="el-icon-close" size="small" round @click="close()">
+        닫기
+      </el-button>
+    </div>
+    <ModalCheckTacsIpBlock ref="ModalCheckTacsIpBlock" />
+    <ModalIpAllocCircuitDetail ref="ModalIpAllocCircuitDetail" />
+  </el-dialog>
 </template>
-
 <script>
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'

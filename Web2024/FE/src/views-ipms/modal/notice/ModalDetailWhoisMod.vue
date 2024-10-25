@@ -1,164 +1,132 @@
 <template>
-  <div>
-    <el-dialog
-      v-if="animationVisible"
-      id="ipms"
-      v-el-drag-dialog
-      :visible.sync="visible"
-      :width="domElement.maxWidth + `px`"
-      :fullscreen.sync="fullscreen"
-      :modal-append-to-body="false"
-      :append-to-body="true"
-      :modal="modal"
-      :close-on-click-modal="closeOnClickModal"
-      :loading="loading"
-      class="ipms-dialog"
-      :class="{ [name]: true }"
-    >
-      <span slot="title">
-        <i class="el-icon-document mr-2" style="font-size: 17px" />
-        Whois 정보 변경 {{ onChangetitle }}
-        <hr>
-      </span>
-
-      <div id="content" class="layer">
-        <template v-if="viewType === 'detail'">
-          <div class="content_result mt5">
-            <h4>IP 정보</h4>
-            <table class="tbl_data" summary="IP정보">
-              <caption>IP정보</caption>
-              <colgroup>
-                <col width="20%" /><col width="30%" /><col width="20%" /><col width="30%" />
-              </colgroup>
-              <tbody>
-                <tr class="top last">
-                  <th class="first" scope="row">시작 IP</th>
-                  <td><span id="befOrgName">{{ resultVo.sfirstAddr }}</span></td>
-                  <th class="last" scope="row">끝 IP</th>
-                  <td><span id="befOrgName">{{ resultVo.slastAddr }}</span></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </template>
-
-        <div class="content_result">
-          <h4>KISA WHOIS - IP 주소 사용기관 정보 (변경 전)</h4>
-          <table class="tbl_data" summary="변경전">
-            <caption>변경전</caption>
-            <colgroup>
-              <col width="20%" /><col width="80%" />
-            </colgroup>
-            <tbody>
-              <tr class="top">
-                <th class="first" scope="row">한글기관명</th>
-                <td><span id="befOrgName">{{ resultVo.sBefOrgName }}</span></td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">한글주소</th>
-                <td><span id="befOrgAddr">{{ resultVo.sBefOrgAddr }}</span></td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">우편번호</th>
-                <td><span id="befOrgPost"> {{ resultVo.sBefZipCode }}</span></td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">영문기관명</th>
-                <td><span id="befEOrgName"> {{ resultVo.sBefEOrgName }} </span></td>
-              </tr>
-              <tr class="last">
-                <th class="first" scope="row">영문주소</th>
-                <td><span id="befEOrgAddr">{{ resultVo.sBefEOrgAddr }} </span></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <template v-if="viewType === 'edit'">
-          <div class="my-1 float-right">
-            <el-button size="mini" @click="fnSetAddr('toKT')">{{ $t('KT 정보대체') }}</el-button>
-            <el-button size="mini" class="el-icon-refresh-right" @click="fnSetAddr('reset')">{{ $t('초기화') }}</el-button>
-          </div>
-        </template>
-
-        <div class="content_result mt5" style="padding-top: 7px;">
-          <h4>KISA WHOIS - IP 주소 사용기관 정보 (변경 후)</h4>
-          <table class="tbl_data" summary="변경후">
-            <caption>변경 후</caption>
-            <colgroup>
-              <col width="20%" /><col width="80%" />
-            </colgroup>
-            <tbody>
-              <tr class="top">
-                <th class="first" scope="row">한글기관명</th>
-                <td>{{ sAftOrgName }}</td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">한글주소</th>
-                <td>{{ sAftOrgAddr }}</td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">한글상세주소</th>
-                <td>{{ sAftOrgAddrDetail }}</td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">우편번호</th>
-                <td>{{ sAftZipCode }}</td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">영문기관명</th>
-                <td>{{ sAftEOrgName }}</td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">영문주소</th>
-                <td>{{ sAftEOrgAddr }}</td>
-              </tr>
-              <tr class="last">
-                <th class="first" scope="row">영문상세주소</th>
-                <td>{{ sAftEOrgAddrDetail }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- <template v-if="userGrade 관리자"> -->
-        <div id="divRejectRsn" class="content_result mt5" style="padding-top: 7px;">
-          <h4>반려사유</h4>
-          <table class="tbl_data" summary="반려사유">
-            <tbody>
-              <tr class="top last">
-                <td>
-                  <textarea
-                    id="txtRejectRsn"
-                    v-model="sreject_rsn"
-                    style="height: 100px; width:99%; resize: none;"
-                    maxlength="5000"
-                  />
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <!-- </template> -->
-
-      </div>
-
-      <div slot="footer" class="dialog-footer">
-        <!-- 관리자 : 신청 -> 변경신청취소, 수정, 승인/반려  | 사용자 - 신청 -> 변경신청취소, 수정 -->
-        <el-button size="mini" class="float-left" @click="fnApprRegWhoisModReqSubmit('A')">{{ $t('승인') }}</el-button>
-        <el-button size="mini" class="float-left" @click="fnApprRegWhoisModReqSubmit('R')">{{ $t('반려') }}</el-button>
-        <el-button size="mini" @click="fnDeleteRegWhoisModReqSubmit()">{{ $t('변경신청취소') }}</el-button>
-        <template v-if="viewType === 'detail'">
-          <el-button size="mini" class="el-icon-edit" @click="onChangeMode()">{{ $t('수정') }}</el-button>
-        </template>
-        <template v-if="viewType === 'edit'">
-          <el-button size="mini" class="el-icon-edit-outline" style="background-color:#2e3574; color : #fff" @click="fnUpdateRegWhoisModReqSubmit()">{{ $t('저장') }}</el-button>
-        </template>
-        <el-button size="mini" class="el-icon-close" @click="close()">{{ $t('exit') }}</el-button>
-      </div>
-
-    </el-dialog>
-  </div>
+  <el-dialog
+    v-if="animationVisible"
+    id="ipms"
+    v-el-drag-dialog
+    :title="'Whois 정보 변경 '+onChangetitle"
+    :visible.sync="visible"
+    :width="domElement.maxWidth + `px`"
+    :fullscreen.sync="fullscreen"
+    :modal-append-to-body="false"
+    :append-to-body="true"
+    :modal="modal"
+    :close-on-click-modal="closeOnClickModal"
+    :loading="loading"
+    class="ipms-dialog"
+    :class="{ [name]: true }"
+  >
+    <div v-if="viewType === 'detail'" class="popupContentTable">
+      <div class="popupContentTableTitle">IP 정보</div>
+      <table>
+        <colgroup>
+          <col width="20%" /><col width="30%" /><col width="20%" /><col width="30%" />
+        </colgroup>
+        <tbody>
+          <tr>
+            <th>시작 IP</th>
+            <td>{{ resultVo.sfirstAddr }}</td>
+            <th>끝 IP</th>
+            <td>{{ resultVo.slastAddr }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="popupContentTable">
+      <div class="popupContentTableTitle">KISA WHOIS - IP 주소 사용기관 정보 (변경 전)</div>
+      <table>
+        <colgroup>
+          <col width="20%" /><col width="80%" />
+        </colgroup>
+        <tbody>
+          <tr>
+            <th>한글기관명</th>
+            <td>{{ resultVo.sBefOrgName }}</td>
+          </tr>
+          <tr>
+            <th>한글주소</th>
+            <td>{{ resultVo.sBefOrgAddr }}</td>
+          </tr>
+          <tr>
+            <th>우편번호</th>
+            <td>{{ resultVo.sBefZipCode }}</td>
+          </tr>
+          <tr>
+            <th>영문기관명</th>
+            <td>{{ resultVo.sBefEOrgName }}</td>
+          </tr>
+          <tr class="last">
+            <th>영문주소</th>
+            <td>{{ resultVo.sBefEOrgAddr }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div v-if="viewType === 'edit'" class="popupContentTableBottom">
+      <el-button type="primary" size="small" round @click="fnSetAddr('toKT')">{{ $t('KT 정보대체') }}</el-button>
+      <el-button type="primary" size="small" icon="el-icon-refresh-right" round @click="fnSetAddr('reset')">{{ $t('초기화') }}</el-button>
+    </div>
+    <div class="popupContentTable">
+      <div class="popupContentTableTitle">KISA WHOIS - IP 주소 사용기관 정보 (변경 후)</div>
+      <table>
+        <colgroup>
+          <col width="20%" /><col width="80%" />
+        </colgroup>
+        <tbody>
+          <tr>
+            <th>한글기관명</th>
+            <td>{{ sAftOrgName }}</td>
+          </tr>
+          <tr>
+            <th>한글주소</th>
+            <td>{{ sAftOrgAddr }}</td>
+          </tr>
+          <tr>
+            <th>한글상세주소</th>
+            <td>{{ sAftOrgAddrDetail }}</td>
+          </tr>
+          <tr>
+            <th>우편번호</th>
+            <td>{{ sAftZipCode }}</td>
+          </tr>
+          <tr>
+            <th>영문기관명</th>
+            <td>{{ sAftEOrgName }}</td>
+          </tr>
+          <tr>
+            <th>영문주소</th>
+            <td>{{ sAftEOrgAddr }}</td>
+          </tr>
+          <tr class="last">
+            <th>영문상세주소</th>
+            <td>{{ sAftEOrgAddrDetail }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- <template v-if="userGrade 관리자"> -->
+    <div class="popupContentTable">
+      <div class="popupContentTableTitle">반려사유</div>
+      <table>
+        <tbody>
+          <tr>
+            <td>
+              <textarea v-model="sreject_rsn" maxlength="5000" />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- </template> -->
+    <div class="popupContentTableBottom">
+      <!-- 관리자 : 신청 -> 변경신청취소, 수정, 승인/반려  | 사용자 - 신청 -> 변경신청취소, 수정 -->
+      <el-button type="primary" size="small" icon="float-left" round @click="fnApprRegWhoisModReqSubmit('A')">{{ $t('승인') }}</el-button>
+      <el-button type="primary" size="small" icon="float-left" round @click="fnApprRegWhoisModReqSubmit('R')">{{ $t('반려') }}</el-button>
+      <el-button type="primary" size="small" round @click="fnDeleteRegWhoisModReqSubmit()">{{ $t('변경신청취소') }}</el-button>
+      <el-button v-if="viewType === 'detail'" type="primary" size="small" icon="el-icon-edit" round @click="onChangeMode()">{{ $t('수정') }}</el-button>
+      <el-button v-if="viewType === 'edit'" type="primary" size="small" icon="el-icon-edit-outline" round @click="fnUpdateRegWhoisModReqSubmit()">{{ $t('저장') }}</el-button>
+      <el-button type="primary" size="small" icon="el-icon-close" round @click="close()">{{ $t('exit') }}</el-button>
+    </div>
+  </el-dialog>
 </template>
 
 <script>
@@ -211,7 +179,7 @@ export default {
     onCreated() {
       Modal.methods.onCreated.call(this)
       this.closeOnClickModal = false
-      this.domElement.maxWidth = 1200
+      this.domElement.maxWidth = 900
     },
     onOpen(model, actionMode) {
       this.viewType = model.type
@@ -374,10 +342,5 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.ModalDetailWhoisMod{
-  .el-input {
-    width: 100%;
-  }
-}
 
 </style>

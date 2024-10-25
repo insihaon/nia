@@ -4,13 +4,15 @@ copyright notice above does not evidence any actual or * intended publication of
 <template>
   <div v-loading="propLoading" class="compTable">
     <div class="tableThum">
-      <div class="d-flex items-baseline">
-        <i class="el-icon-document mr-1" />
-        <slot name="text-description" />
-        <span class="countNum">( <slot name="add-count" /> 총 {{ propIsPagination != false ? (propPaginationData.total || 0).toLocaleString() : propData.length }} 건 )</span>
-        <i class="el-icon-s-tools ml-1 mt-1" @click="fn_click_settings" />
+      <div class="d-flex mb-1 justify-between items-baseline">
+        <div>
+          <i class="el-icon-document mr-1" />
+          <slot name="text-description" />
+          <span class="countNum">( <slot name="add-count" /> 총 {{ propIsPagination != false ? (propPaginationData.total || 0).toLocaleString() : propData.length }} 건 )</span>
+          <i class="el-icon-s-tools ml-1 mt-1" @click="fn_click_settings" />
+        </div>
+        <el-button type="info" size="mini" icon="el-icon-download" round @click="$emit('savedExcel')">엑셀 파일로 저장</el-button>
       </div>
-      <slot name="add-features" />
     </div>
     <el-table
       ref="table"
@@ -68,16 +70,22 @@ copyright notice above does not evidence any actual or * intended publication of
       </el-table-column>
     </el-table>
     <!--  && propIsPageSize -->
-    <div v-if="propIsPagination != false" style="text-align: center; margin-top: 10px">
-      <el-pagination
-        :current-page.sync="propPaginationData.currentPage"
-        :total="propPaginationData.total"
-        :page-size="propPaginationData.pageSize"
-        :layout="propPaginationLayout"
-        @current-change="propOnPageChange"
-        @size-change="fn_onPageSizeChange"
-      />
-      <!-- :page-sizes="pageSizes" -->
+    <div class="d-flex justify-between">
+      <div style="width: 33%"></div>
+      <div v-if="propIsPagination != false" style="text-align: center; margin-top: 10px">
+        <el-pagination
+          :current-page.sync="propPaginationData.currentPage"
+          :total="propPaginationData.total"
+          :page-size="propPaginationData.pageSize"
+          :layout="propPaginationLayout"
+          @current-change="propOnPageChange"
+          @size-change="fn_onPageSizeChange"
+        />
+        <!-- :page-sizes="pageSizes" -->
+      </div>
+      <div style="width: 33%" class="d-flex justify-end">
+        <slot name="add-features" />
+      </div>
     </div>
     <vue-simple-context-menu ref="propTableContext" element-id="propTable" :options="propRClickOptions" @option-clicked="propOnRClick" />
     <SettingTableOptions ref="SettingTableOptions" :prop_name="propName" :prop_columns="propColumn" />
@@ -215,12 +223,12 @@ export default {
       this.updateColumnDefs()
     },
     setDefaultWidth(){
-      this.$refs.table.columns.forEach(col => {
-        const el = document.querySelector(`th.${col.id}`)
-        if(el) {
-          this.headerDragend(el.clientWidth, null, col)
-        }
-      })
+      // this.$refs.table.columns.forEach(col => {
+      //   const el = document.querySelector(`th.${col.id}`)
+      //   if(el) {
+      //     this.headerDragend(el.clientWidth, null, col)
+      //   }
+      // })
     },
     updateColumnDefs() {
       const name = this.propName

@@ -1,166 +1,131 @@
 <template>
-  <div>
-    <el-dialog
-      v-if="animationVisible"
-      id="ipms"
-      v-el-drag-dialog
-      :visible.sync="visible"
-      :width="domElement.maxWidth + `px`"
-      :fullscreen.sync="fullscreen"
-      :modal-append-to-body="false"
-      :append-to-body="true"
-      :close-on-click-modal="closeOnClickModal"
-      :loading="loading"
-      class="ipms-dialog"
-      :class="{ [name]: true }"
-    >
-      <span slot="title">
-        <i class="el-icon-document mr-2" style="font-size: 17px" />
-        IP블록분할
-        <hr>
-      </span>
-      <div id="content" class="layer w-100 h-100">
-        <div class="content_result mt0">
-          <h4>IP 블록 기본 정보</h4>
-          <table class="tbl_data mt5">
-            <colgroup>
-              <col width="15%" />
-              <col width="35%" />
-              <col width="15%" />
-              <col width="35%" />
-            </colgroup>
-            <tbody>
-              <tr class="top">
-                <th class="first" scope="row">계위</th>
-                <td>{{ resultVo.ssvcLineTypeNm }} - {{ resultVo.ssvcGroupNm }} - {{ resultVo.ssvcObjNm }}</td>
-                <th scope="row">할당상태</th>
-                <td>{{ resultVo.sassignLevelNm }}</td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">IP 버전</th>
-                <td>{{ resultVo.sipVersionTypeNm }}</td>
-                <th scope="row">IP 주소</th>
-                <td>{{ resultVo.pipPrefix }}</td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">시작 IP</th>
-                <td>{{ resultVo.sfirstAddr }}</td>
-                <th scope="row">끝 IP</th>
-                <td>{{ resultVo.slastAddr }}</td>
-              </tr>
-              <tr class="last">
-                <th class="first" scope="row">총 IP 수</th>
-                <td>{{ formattedNcnt }}</td>
-                <th scope="row">단위블록수</th>
-                <td>{{ formattedNclassCnt }}</td>
-              </tr>
-            </tbody>
-          </table>
-          <!-- <input type="hidden" id="baseNipAssignMstSeq" :value="resultVo.nipAssignMstSeq" />
-          <input type="hidden" id="baseNlvlMstSeq" :value="resultVo.nlvlMstSeq" />
-          <input type="hidden" id="baseSipVersionTypeCd" :value="resultVo.sipVersionTypeCd" />
-          <input type="hidden" id="basePipPrefix" :value="resultVo.pipPrefix" />
-          <input type="hidden" id="baseSassignLevelCd" :value="resultVo.sassignLevelCd" /> -->
-        </div>
+  <el-dialog
+    v-if="animationVisible"
+    id="ipms"
+    v-el-drag-dialog
+    title="IP블록분할"
+    :visible.sync="visible"
+    :width="domElement.maxWidth + `px`"
+    :fullscreen.sync="fullscreen"
+    :modal-append-to-body="false"
+    :append-to-body="true"
+    :close-on-click-modal="closeOnClickModal"
+    :loading="loading"
+    class="ipms-dialog"
+    :class="{ [name]: true }"
+  >
+    <div class="popupContentTable">
+      <div class="popupContentTableTitle">IP 블록 기본 정보</div>
+      <table>
+        <colgroup>
+          <col width="15%" />
+          <col width="35%" />
+          <col width="15%" />
+          <col width="35%" />
+        </colgroup>
+        <tbody>
+          <tr>
+            <th>계위</th>
+            <td>{{ resultVo.ssvcLineTypeNm }} - {{ resultVo.ssvcGroupNm }} - {{ resultVo.ssvcObjNm }}</td>
+            <th>할당상태</th>
+            <td>{{ resultVo.sassignLevelNm }}</td>
+          </tr>
+          <tr>
+            <th>IP 버전</th>
+            <td>{{ resultVo.sipVersionTypeNm }}</td>
+            <th>IP 주소</th>
+            <td>{{ resultVo.pipPrefix }}</td>
+          </tr>
+          <tr>
+            <th>시작 IP</th>
+            <td>{{ resultVo.sfirstAddr }}</td>
+            <th>끝 IP</th>
+            <td>{{ resultVo.slastAddr }}</td>
+          </tr>
+          <tr>
+            <th>총 IP 수</th>
+            <td>{{ formattedNcnt }}</td>
+            <th>단위블록수</th>
+            <td>{{ formattedNclassCnt }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="popupContentTable">
+      <div class="popupContentTableTitle">분할 정보</div>
+      <table>
+        <colgroup>
+          <col width="15%" />
+          <col width="85%" />
+        </colgroup>
+        <tbody>
+          <tr>
+            <th>분할단위</th>
+            <td class="textflex align-left">
+              <el-input v-model="baseBitmask" type="text" size="small" round maxlength="3" style="width: 200px" />
+              <span style="font-weight: 600;"> BitMask</span>
+              <el-button type="primary" size="small" round class="ml-1" @click="fnAppendDivAsgnIPMst()">분할</el-button>
+            </td>
+          </tr>
+          <tr>
+            <th>비고</th>
+            <td>
+              <textarea v-model="divScomment" rows="3" maxlength="4000"></textarea>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-        <div class="content_result">
-          <h4>분할 정보</h4>
-          <table class="tbl_data entry mt5">
-            <colgroup>
-              <col width="15%" />
-              <col width="85%" />
-            </colgroup>
-            <tbody>
-              <tr class="top">
-                <th class="first" scope="row">분할단위</th>
-                <td>
-                  <input v-model="baseBitmask" type="text" class="txt" style="width: 100px;height: 21px;" maxlength="3" />
-                  <span class="ml-2" style="font-weight: 600;">BitMask</span>
-                  <span class="ml-2">
-                    <el-button size="mini" @click="fnAppendDivAsgnIPMst()">분할</el-button>
-                  </span>
-                </td>
-              </tr>
-              <tr class="last">
-                <th class="first" scope="row">비고</th>
-                <td>
-                  <textarea v-model="divScomment" class="w98" rows="3" maxlength="4000"></textarea>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="content_result">
-          <h4>분할 예정 정보</h4>
-          <table id="baseTable" class="tbl_list mt5" summary="분할 예정 정보">
-            <caption>분할 예정 정보</caption>
-            <colgroup>
-              <col width="6%" />
-              <col width="15%" />
-              <col width="15%" />
-              <col width="20%" />
-              <col width="12%" />
-              <col width="10%" />
-              <col width="12%" />
-              <col width="10%" />
-            </colgroup>
-            <thead>
-              <tr>
-                <th class="first" scope="col"><input v-model="selectAll" type="checkbox" class="check" @change="toggleAll" /></th>
-                <th scope="col">IP블록</th>
-                <th scope="col">시작 IP</th>
-                <th scope="col">끝 IP</th>
-                <th scope="col" title="단위블록수(IPV4:/24, IPV6:/64)">단위블록수</th>
-                <th scope="col">BitMask</th>
-                <th scope="col">분할단위</th>
-                <th scope="col">분할</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(info, index) in divisionInfo" :key="index">
-                <td class="first"><input v-model="info.selected" type="checkbox" class="check" /></td>
-                <td class="ellipsis">{{ info.pipPrefix }}</td>
-                <td class="ellipsis">{{ info.sfirstAddr }}</td>
-                <td class="ellipsis">{{ info.slastAddr }}</td>
-                <td class="ellipsis">{{ info.nclassCnt }}</td>
-                <td class="ellipsis">{{ info.nbitmask }}</td>
-                <td><input v-model="info.nsubnetmask" type="text" class="txt" maxlength="3" style="width: 100px;height: 21px;" /></td>
-                <td class="btn_text">
-                  <el-button size="mini" @click.prevent="fnAppendSubDivAlocIPMst(info)">분할</el-button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-
-          <!-- <div class="btn_area mt10">
-            <span>
-              <a href="#none" @click.prevent="mergeDivision">
-                <input type="image" src="/resources/images/content/btn_merge_off.gif" alt="병합" />
-              </a>
-            </span>
-            <span>
-              <a href="#none" @click.prevent="confirmDivision">
-                <input type="image" src="/resources/images/content/btn_psubmit_off.gif" alt="분할확정" />
-              </a>
-            </span>
-            <span>
-              <a href="#none" @click.prevent="closeDivision">
-                <input type="image" src="/resources/images/content/btn_close_off.gif" alt="닫기" />
-              </a>
-            </span>
-          </div> -->
-        </div>
+    <div class="popupContentTable textcenter">
+      <div class="popupContentTableTitle">분할 예정 정보</div>
+      <div>
+        <table>
+          <!-- <colgroup>
+            <col width="6%" />
+            <col width="15%" />
+            <col width="15%" />
+            <col width="20%" />
+            <col width="12%" />
+            <col width="10%" />
+            <col width="12%" />
+            <col width="10%" />
+          </colgroup> -->
+          <thead>
+            <tr>
+              <th><el-checkbox v-model="selectAll" @change="toggleAll" /></th>
+              <th>IP블록</th>
+              <th>시작 IP</th>
+              <th>끝 IP</th>
+              <th title="단위블록수(IPV4:/24, IPV6:/64)">단위블록수</th>
+              <th>BitMask</th>
+              <th>분할단위</th>
+              <th>분할</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(info, index) in divisionInfo" :key="index">
+              <td><el-checkbox v-model="info.selected" /></td>
+              <td>{{ info.pipPrefix }}</td>
+              <td>{{ info.sfirstAddr }}</td>
+              <td>{{ info.slastAddr }}</td>
+              <td>{{ info.nclassCnt }}</td>
+              <td>{{ info.nbitmask }}</td>
+              <td><el-input v-model="info.nsubnetmask" type="text" class="txt" maxlength="3" style="width: 100px;height: 21px;" /></td>
+              <td>
+                <el-button type="danger" size="small" icon="el-icon-scissors" circle @click.prevent="fnAppendSubDivAlocIPMst(info)" />
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button size="mini" @click="fnDivMergeBtnClick">병합</el-button>
-        <el-button size="mini" icon="el-icon-menu" @click="fnInsertListDivAsgnIPMst">분할확정</el-button>
-        <el-button size="mini" type="primary" class="el-icon-close" @click.native="close()">
-          닫기
-        </el-button>
-      </div>
-    </el-dialog>
-  </div>
+    </div>
+    <div class="popupContentTableBottom">
+      <el-button type="primary" size="small" icon="el-icon-menu" round @click="fnDivMergeBtnClick">병합</el-button>
+      <el-button type="primary" size="small" icon="el-icon-menu" round @click="fnInsertListDivAsgnIPMst">분할확정</el-button>
+      <el-button type="primary" size="small" icon="el-icon-close" round @click.native="close()">닫기</el-button>
+    </div>
+  </el-dialog>
 </template>
 
 <script>
@@ -216,7 +181,7 @@ export default {
     onCreated() {
       Modal.methods.onCreated.call(this)
       this.closeOnClickModal = false
-      this.domElement.maxWidth = 1000
+      this.domElement.maxWidth = 900
     },
     onOpen(model, actionMode) {
       this.isViewTypeSeonbeonjang = model.isSeonbeonjang ?? false

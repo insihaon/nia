@@ -1,87 +1,76 @@
 <template>
-  <div>
-    <el-dialog
-      v-if="animationVisible"
-      id="ipms"
-      v-el-drag-dialog
-      :visible.sync="visible"
-      :width="domElement.maxWidth + `px`"
-      :fullscreen.sync="fullscreen"
-      :modal-append-to-body="false"
-      :append-to-body="true"
-      :close-on-click-modal="closeOnClickModal"
-      :loading="loading"
-      class="ipms-dialog"
-      :class="{ [name]: true }"
-    >
-      <span slot="title">
-        <i class="el-icon-document mr-2" style="font-size: 17px" />
-        운용정보 상세정보
-        <hr>
-      </span>
-      <div id="content" v-loading="loading" class="layer">
-        <div class="content_result mt0">
-          <div class="tit_group">
-            <h4 class="mt5">상세정보</h4>
-          </div>
-          <table class="tbl_data mt5" summary="링크 정보">
-            <caption>링크 정보</caption>
-            <colgroup>
-              <col width="20%" />
-              <col width="27%" />
-              <col width="23%" />
-              <col width="30%" />
-            </colgroup>
-            <tbody>
-              <tr class="top">
-                <th class="first" scope="row">링크IP블록</th>
-                <td colspan="3">{{ resultVo.pifSerialIp }}</td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">자국 수용국</th>
-                <td>{{ resultVo.saofficescodeNm }}</td>
-                <th scope="row">대국 수용국</th>
-                <td>{{ resultVo.szofficescodeNm }}</td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">자국 장비명</th>
-                <td>{{ resultVo.sanealias }}</td>
-                <th scope="row">대국 장비명</th>
-                <td>{{ resultVo.sznealias }}</td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">자국 장비IP</th>
-                <td>{{ resultVo.samstip }}</td>
-                <th scope="row">대국 장비IP</th>
-                <td>{{ resultVo.szmstip }}</td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">자국 IF명</th>
-                <td>{{ resultVo.saifname }}</td>
-                <th scope="row">대국 IF명</th>
-                <td>{{ resultVo.szifname }}</td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">SAID</th>
-                <td>{{ resultVo.ssaid }}</td>
-                <th class="first" scope="row">전용번호</th>
-                <td>{{ resultVo.sllnum }}</td>
-              </tr>
-              <tr class="last">
-                <th class="first" scope="row">수용회선명</th>
-                <td colspan="3">{{ resultVo.sconnalias }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button size="mini" class="el-icon-edit" @click="handleClickUpdate"> 수정</el-button> <!-- btnUpdateLinkInfo -->
-        <el-button size="mini" class="el-icon-delete" @click="fnDeleteLinkIpMst"> 삭제</el-button> <!-- btnDeleteLinkInfo -->
-        <el-button size="mini" class="el-icon-close" @click.native="close()">{{ $t('exit') }}</el-button>
-      </div>
-    </el-dialog>
-  </div>
+  <el-dialog
+    v-if="animationVisible"
+    id="ipms"
+    v-el-drag-dialog
+    title="운용정보 상세정보"
+    :visible.sync="visible"
+    :width="domElement.maxWidth + `px`"
+    :fullscreen.sync="fullscreen"
+    :modal-append-to-body="false"
+    :append-to-body="true"
+    :close-on-click-modal="closeOnClickModal"
+    :loading="loading"
+    class="ipms-dialog"
+    :class="{ [name]: true }"
+  >
+    <div class="popupContentTable">
+      <div class="popupContentTableTitle">링크정보</div>
+      <table>
+        <colgroup>
+          <col width="20%" />
+          <col width="27%" />
+          <col width="23%" />
+          <col width="30%" />
+        </colgroup>
+        <tbody>
+          <tr>
+            <th>링크IP블록</th>
+            <td colspan="3">{{ resultVo.pifSerialIp }}</td>
+          </tr>
+          <tr>
+            <th>자국 수용국</th>
+            <td>{{ resultVo.saofficescodeNm }}</td>
+            <th>대국 수용국</th>
+            <td>{{ resultVo.szofficescodeNm }}</td>
+          </tr>
+          <tr>
+            <th>자국 장비명</th>
+            <td>{{ resultVo.sanealias }}</td>
+            <th>대국 장비명</th>
+            <td>{{ resultVo.sznealias }}</td>
+          </tr>
+          <tr>
+            <th>자국 장비IP</th>
+            <td>{{ resultVo.samstip }}</td>
+            <th>대국 장비IP</th>
+            <td>{{ resultVo.szmstip }}</td>
+          </tr>
+          <tr>
+            <th>자국 IF명</th>
+            <td>{{ resultVo.saifname }}</td>
+            <th>대국 IF명</th>
+            <td>{{ resultVo.szifname }}</td>
+          </tr>
+          <tr>
+            <th>SAID</th>
+            <td>{{ resultVo.ssaid }}</td>
+            <th>전용번호</th>
+            <td>{{ resultVo.sllnum }}</td>
+          </tr>
+          <tr>
+            <th>수용회선명</th>
+            <td colspan="3">{{ resultVo.sconnalias }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="popupContentTableBottom">
+      <el-button type="primary" size="small" icon="el-icon-edit" round @click="handleClickUpdate"> 수정</el-button> <!-- btnUpdateLinkInfo -->
+      <el-button type="primary" size="small" icon="el-icon-delete" round @click="fnDeleteLinkIpMst"> 삭제</el-button> <!-- btnDeleteLinkInfo -->
+      <el-button type="primary" size="small" icon="el-icon-close" round @click.native="close()">{{ $t('exit') }}</el-button>
+    </div>
+  </el-dialog>
 </template>
 
 <script>

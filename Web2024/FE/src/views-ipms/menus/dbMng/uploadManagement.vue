@@ -1,9 +1,11 @@
 <template>
   <el-row class="w-100 h-100">
-    <div class="optionBox">
-      <el-row class="optionRow">
-        <el-col class="d-flex" :span="12">
+    <div class="searchOptionWrap">
+      <table>
+        <th>
           <label>Upload 성공 여부</label>
+        </th>
+        <td>
           <el-select
             v-model="succVal"
             collapse-tags
@@ -20,9 +22,11 @@
               :value="option.value"
             />
           </el-select>
-        </el-col>
-        <el-col class="d-flex" :span="12">
+        </td>
+        <th>
           <label>Upload 일자</label>
+        </th>
+        <td>
           <el-date-picker
             v-model="dateVal"
             type="daterange"
@@ -30,25 +34,25 @@
             start-placeholder="시작일"
             end-placeholder="종료일"
           />
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="24" align="center" class="searchBtnGroup">
-          <el-button class="btn-r" type="info" size="mini" icon="el-icon-search" @click="fnViewIpUploadMst()">
-            조회
-          </el-button>
-          <el-button class="btn-r" type="info" size="mini" icon="el-icon-refresh">
-            초기화
-          </el-button>
-          <slot name="add-function" />
-        </el-col>
-      </el-row>
+        </td>
+        <td>
+          <div class="searchBtnWrap">
+            <el-button type="primary" size="mini" icon="el-icon-search" round @click="fnViewIpUploadMst()">
+              조회
+            </el-button>
+            <el-button type="info" size="mini" icon="el-icon-refresh" round>
+              초기화
+            </el-button>
+          </div>
+        </td>
+      </table>
     </div>
     <el-col style="height: calc(100% - 150px);" :span="24">
       <compTable
         ref="compTable"
+        style="height: calc(100% - 100px);"
         :prop-name="name"
-        :prop-table-height="'calc(100% - 80px)'"
+        :prop-table-height="'100%'"
         :prop-data="tableDatas"
         :prop-column="tableColumns"
         :prop-is-pagination="false"
@@ -63,8 +67,8 @@
           </span>
         </template>
         <template slot="add-features">
-          <div class="float-right">
-            <el-button size="mini" @click="$refs.ModalUploadInsert.open()">양식 다운로드 및 업로드</el-button>
+          <div style="margin-top: 10px;">
+            <el-button type="primary" size="mini" round @click="$refs.ModalUploadInsert.open()">양식 다운로드 및 업로드</el-button>
           </div>
         </template>
       </compTable>
@@ -93,7 +97,7 @@ export default {
       succVal: '',
       dateVal: [],
       tableColumns: [
-        { prop: 'rowNo', label: 'No', width: 40, align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'rowNo', label: 'No', width: 40, align: 'center', sortable: false, columnVisible: true, showOverflow: true },
         { prop: 'sFileNm', label: 'Upload 파일명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'dmodifyDt', label: 'Upload 일자', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'screateId', label: '등록자', align: 'center', sortable: true, columnVisible: true, showOverflow: true },

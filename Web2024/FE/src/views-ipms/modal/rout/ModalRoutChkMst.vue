@@ -1,74 +1,63 @@
 <template>
-  <div>
-    <el-dialog
-      v-if="animationVisible"
-      id="ipms"
-      v-el-drag-dialog
-      :visible.sync="visible"
-      :width="domElement.maxWidth + `px`"
-      :fullscreen.sync="fullscreen"
-      :modal-append-to-body="true"
-      :append-to-body="true"
-      :close-on-click-modal="closeOnClickModal"
-      :loading="loading"
-      class="ipms-dialog"
-      :class="{ [name]: true }"
-    >
-      <span slot="title">
-        <i class="el-icon-document mr-2" style="font-size: 17px" />
-        라우팅 수집/DB 비교 시작
-        <hr>
-      </span>
-      <div id="content" v-loading="loading" class="layer">
-        <div class="content_result" style="margin-top: 0px;">
-          <div style="padding-bottom: 10px;">
-            <span style="font-size: 20px; font-weight: bold;">
-              아래 [시작] 버튼을 클릭하시고 창을 닫지 말고 잠시 기다려 주십시오.(1~3분 소요)
-            </span>
-          </div>
-          <h4>
-            [ {{ searchVo.ssvcLineTypeNm }} - {{ searchVo.ssvcGroupNm }} - {{ searchVo.ssvcObjNm }} ] 라우팅 수집/DB 비교 시작
-          </h4>
-          <table class="tbl_list mt5">
-            <caption>조직별 장비별 명령어</caption>
-            <colgroup>
-              <col width="20%" />
-              <col width="10%" />
-              <col width="70%" />
-            </colgroup>
-            <thead>
-              <tr>
-                <th class="first" scope="col">장비타입</th>
-                <th scope="col">명령어순서</th>
-                <th scope="col">장비명령어</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-if="tbFcltCmdMstVos.length === 0" class="subbg last">
-                <td class="first" colspan="5">조회된 결과 목록이 존재하지 않습니다.</td>
-              </tr>
-              <template v-else>
-                <tr
-                  v-for="(item, index) in tbFcltCmdMstVos"
-                  :key="index"
-                >
-                  <td class="first" :title="item.sfcltType">{{ item.sfcltType }}</td>
-                  <td class="first" :title="item.npriority">{{ item.npriority }}</td>
-                  <td class="first" :title="item.sfcltCmd">{{ item.sfcltCmd }}</td>
-                </tr>
-              </template>
-            </tbody>
-          </table>
-        </div>
+  <el-dialog
+    v-if="animationVisible"
+    id="ipms"
+    v-el-drag-dialog
+    title="라우팅 수집/DB 비교 시작"
+    :visible.sync="visible"
+    :width="domElement.maxWidth + `px`"
+    :fullscreen.sync="fullscreen"
+    :modal-append-to-body="true"
+    :append-to-body="true"
+    :close-on-click-modal="closeOnClickModal"
+    :loading="loading"
+    class="ipms-dialog"
+    :class="{ [name]: true }"
+  >
+    <div class="popupContentTable">
+      <div style="padding-bottom: 10px;">
+        <span style="font-size: 20px; font-weight: bold;">
+          아래 [시작] 버튼을 클릭하시고 창을 닫지 말고 잠시 기다려 주십시오.(1~3분 소요)
+        </span>
       </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button size="mini" type="primary" @click="fnInsertListRoutChkMst">시작</el-button>
-        <el-button size="mini" class="el-icon-close" @click.native="close()">{{ $t('exit') }}</el-button>
-      </div>
-    </el-dialog>
-  </div>
+      <div class="popupContentTableTitle">[ {{ ssvcNms.ssvcLineTypeNm }} - {{ ssvcNms.ssvcGroupNm }} - {{ ssvcNms.ssvcObjNm }} ] 라우팅 수집/DB 비교 시작</div>
+      <table>
+        <caption>조직별 장비별 명령어</caption>
+        <colgroup>
+          <col width="20%" />
+          <col width="10%" />
+          <col width="70%" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th>장비타입</th>
+            <th>명령어순서</th>
+            <th>장비명령어</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-if="tbFcltCmdMstVos.length === 0" class="subbg last">
+            <td colspan="5">조회된 결과 목록이 존재하지 않습니다.</td>
+          </tr>
+          <template v-else>
+            <tr
+              v-for="(item, index) in tbFcltCmdMstVos"
+              :key="index"
+            >
+              <td :title="item.sfcltType">{{ item.sfcltType }}</td>
+              <td :title="item.npriority">{{ item.npriority }}</td>
+              <td :title="item.sfcltCmd">{{ item.sfcltCmd }}</td>
+            </tr>
+          </template>
+        </tbody>
+      </table>
+    </div>
+    <div class="popupContentTableBottom">
+      <el-button type="primary" size="small" icon="el-icon-video-play" round @click="fnInsertListRoutChkMst">시작</el-button>
+      <el-button type="primary" size="small" icon="el-icon-close" round @click.native="close()">{{ $t('exit') }}</el-button>
+    </div>
+  </el-dialog>
 </template>
-
 <script>
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
@@ -94,11 +83,6 @@ export default {
         ssvcObjCd: ''
       },
       ssvcNms: {
-        ssvcLineTypeNm: '',
-        ssvcGroupNm: '',
-        ssvcObjNm: ''
-      },
-      searchVo: {
         ssvcLineTypeNm: '',
         ssvcGroupNm: '',
         ssvcObjNm: ''

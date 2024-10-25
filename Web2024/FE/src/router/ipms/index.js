@@ -30,14 +30,14 @@ export const ipmsRoute = Object.freeze([
     disable: false,
     redirect: '/ipAssignMng/ipBlockManagement',
     meta: {
-      title: 'IP 배정관리'
+      title: 'IP배정관리'
     },
     children: [
       {
         path: 'ipBlockManagement',
         component: () => import('@/views-ipms/menus/ipAssignMng/ipBlockManagement'),
         name: 'IpBlockManagement',
-        meta: { title: 'IP 블록관리', affix: false }
+        meta: { title: 'IP블록관리', affix: false }
       },
       /* 삭제
       {
@@ -67,14 +67,14 @@ export const ipmsRoute = Object.freeze([
     menuIdx: 1,
     redirect: '/ipAllocationMng/ipAllocation',
     meta: {
-      title: 'IP 할당관리'
+      title: 'IP할당관리'
     },
     children: [
       {
         path: 'ipAllocation',
         component: () => import('@/views-ipms/menus/ipAllocationMng/ipAllocation'),
         name: 'IpAllocation',
-        meta: { title: 'IP 할당', affix: false }
+        meta: { title: 'IP할당', affix: false }
       },
       {
         path: 'neOssOrder',
@@ -86,7 +86,7 @@ export const ipmsRoute = Object.freeze([
         path: 'ipSeonbeonjang',
         component: () => import('@/views-ipms/menus/ipAllocationMng/ipSeonbeonjang'),
         name: 'IpSeonbeonjang',
-        meta: { title: 'IP 선번장', affix: false }
+        meta: { title: 'IP선번장', affix: false }
       },
       {
         path: 'vpnIpStatue',
@@ -103,7 +103,7 @@ export const ipmsRoute = Object.freeze([
     menuIdx: 2,
     redirect: '/ipInfoMng/ipInfoList',
     meta: {
-      title: 'IP 정보관리'
+      title: 'IP정보관리'
     },
     children: [
       {
@@ -139,7 +139,7 @@ export const ipmsRoute = Object.freeze([
     menuIdx: 3,
     redirect: '/ipStatMng/ipAddressRoutingStat',
     meta: {
-      title: 'IP 통계관리'
+      title: 'IP통계관리'
     },
     children: [
       {

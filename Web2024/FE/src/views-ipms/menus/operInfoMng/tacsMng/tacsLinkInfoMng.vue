@@ -1,35 +1,31 @@
 <template>
   <el-row class="w-100 h-100">
-    <div class="content_result">
-      <div class="section_tit">
-        <h3>TACS 연동 정보</h3>
-      </div>
-      <table class="tbl_data entry">
-        <tbody>
-          <tr class="top">
-            <th scope="row" class="first">연결 ID</th>
-            <td> <input :value="resultVo.connId" class="txt" type="text"></td>
-            <th scope="row">연결 PW</th>
-            <td> <input :value="resultVo.connPw" class="txt" type="text"></td>
-          </tr>
-          <tr>
-            <th scope="row" class="first">연결 OGW IP</th>
-            <td> <input :value="resultVo.connOgwIp" class="txt" type="text"></td>
-            <th scope="row">연결 OGW PORT</th>
-            <td> <input :value="resultVo.connOgwPort" class="txt" type="password"></td>
-          </tr>
-          <tr>
-            <th class="first" scope="row">연결 MAC 주소</th>
-            <td colspan="3"> <input :value="resultVo.connMacAddr" class="txt" type="text"></td>
-          </tr>
-          <tr>
-            <th class="last" scope="row">이메일주소</th>
-            <td colspan="3"> <input :value="resultVo.smailAddress" class="txt" type="text"></td>
-          </tr>
-        </tbody>
+    <div class="searchOptionWrap">
+      <div class="popupContentTableTitle">TACS 연동 정보</div>
+      <table>
+        <tr class="top">
+          <th>연결 ID</th>
+          <td> <el-input v-model="resultVo.connId" type="text" /></td>
+          <th>연결 PW</th>
+          <td> <el-input v-model="resultVo.connPw" type="text" /></td>
+        </tr>
+        <tr>
+          <th>연결 OGW IP</th>
+          <td> <el-input v-model="resultVo.connOgwIp" type="text" /></td>
+          <th>연결 OGW PORT</th>
+          <td> <el-input v-model="resultVo.connOgwPort" type="password" /></td>
+        </tr>
+        <tr>
+          <th>연결 MAC 주소</th>
+          <td colspan="3"> <el-input v-model="resultVo.connMacAddr" type="text" /></td>
+        </tr>
+        <tr>
+          <th>이메일주소</th>
+          <td colspan="3"> <el-input v-model="resultVo.smailAddress" type="text" /></td>
+        </tr>
       </table>
-      <div class="btn_area float-right my-1">
-        <el-button icon="el-icon-edit-outline" size="mini" @click="fnUpdateTacsConnBas">수정</el-button>
+      <div class="float-right mt-2">
+        <el-button icon="el-icon-edit-outline" type="primary" size="mini" round @click="fnUpdateTacsConnBas">수정</el-button>
       </div>
     </div>
   </el-row>

@@ -1,16 +1,14 @@
 <template>
   <el-row ref="container" class="w-100 h-100">
-    <div class="optionBox">
-      <el-row class="optionRow">
-        <el-col class="d-flex" :span="6">
+    <div class="searchOptionWrap">
+      <table>
+        <tr>
           <AuthLevel
             v-model="authLevelValue"
             label="사용자 권한등급"
             class="w-100 d-flex"
             @update-value="setParameterKey"
           />
-        </el-col>
-        <el-col class="d-flex" :span="6">
           <InputSearchDetail
             ref="searchDetail"
             v-model="orgValue"
@@ -22,46 +20,50 @@
             class="w-100 d-flex"
             @update-value="setParameterKey"
           />
-        </el-col>
-
-        <el-col class="d-flex" :span="6">
-          <label>재직상태</label>
-          <el-select
-            v-model="statusValue"
-            collapse-tags
-            size="mini"
-          >
-            <el-option
-              v-for="(option, i) in officeStatus"
-              :key="i"
-              :label="option.label"
-              :value="option.value"
-            />
-          </el-select>
-        </el-col>
-        <el-col class="d-flex" :span="6">
-          <label>사용자명</label>
-          <el-input v-model="nameValue" size="mini" clearable />
-        </el-col>
-
-      </el-row>
-      <el-row>
-        <el-col :span="24" align="center" class="searchBtnGroup">
-          <el-button class="btn-r" type="info" size="mini" icon="el-icon-search" @click="fnViewListSvcLineType()">
-            조회
-          </el-button>
-          <el-button class="btn-r" type="info" size="mini" icon="el-icon-refresh">
-            초기화
-          </el-button>
-          <slot name="add-function" />
-        </el-col>
-      </el-row>
+          <td>
+            <label>재직상태</label>
+          </td>
+          <th>
+            <el-select
+              v-model="statusValue"
+              collapse-tags
+              size="mini"
+            >
+              <el-option
+                v-for="(option, i) in officeStatus"
+                :key="i"
+                :label="option.label"
+                :value="option.value"
+              />
+            </el-select>
+          </th>
+          <th>
+            <label>사용자명</label>
+          </th>
+          <td>
+            <el-input v-model="nameValue" size="mini" clearable />
+          </td>
+        </tr>
+        <tr>
+          <td colspan="8">
+            <div class="searchBtnWrap">
+              <el-button type="info" icon="el-icon-refresh" size="mini" round>
+                초기화
+              </el-button>
+              <el-button type="primary" icon="el-icon-search" size="mini" round @click="fnViewListSvcLineType()">
+                조회
+              </el-button>
+            </div>
+          </td>
+        </tr>
+      </table>
     </div>
     <el-col style="height: calc(100% - 160px);" :span="24">
       <compTable
         ref="compTable"
+        style="height: calc(100% - 80px)"
         :prop-name="name"
-        :prop-table-height="'calc(100% - 80px)'"
+        :prop-table-height="'100%'"
         :prop-column="tableColumns"
         :prop-data="resultListVo"
         :prop-is-pagination="true"
@@ -104,6 +106,12 @@ export default {
         { prop: '', label: '수정', align: 'center', sortable: true, columnVisible: true, showOverflow: true,
           formatter: (row, col, value, index) => {
             return this.$createElement('el-button', {
+              attrs: {
+                round: true, // Adding the round option
+                plain: true,
+                type: 'primary',
+                size: 'mini'
+              },
               on: { click: () => {
                 this.fnViewUpdateUserBas(row)
               } } }, '수정')

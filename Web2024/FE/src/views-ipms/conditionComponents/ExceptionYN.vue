@@ -1,21 +1,23 @@
 <template>
-  <el-col :class="{ [name]: true }" :xs="24" :sm="12" :md="12" :lg="10" :xl="10">
-    <label>
+  <fragment>
+    <th>
       예외여부
-    </label>
-    <el-select
-      v-model="value"
-      size="mini"
-      @change="handleChange()"
-    >
-      <el-option
-        v-for="(option, i) in options"
-        :key="i"
-        :label="option.label"
-        :value="option.value"
-      />
-    </el-select>
-  </el-col>
+    </th>
+    <td>
+      <el-select
+        v-model="value"
+        size="small"
+        @change="handleChange()"
+      >
+        <el-option
+          v-for="(option, i) in options"
+          :key="i"
+          :label="option.label"
+          :value="option.value"
+        />
+      </el-select>
+    </td>
+  </fragment>
 </template>
 <script>
 import { Base } from '@/min/Base.min'

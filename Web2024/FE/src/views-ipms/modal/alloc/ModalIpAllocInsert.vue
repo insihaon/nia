@@ -1,248 +1,220 @@
 <template>
-  <div>
-    <el-dialog
-      v-if="animationVisible"
-      id="ipms"
-      ref="allocInsertModal"
-      v-el-drag-dialog
-      :visible.sync="visible"
-      :width="domElement.maxWidth + `px`"
-      :fullscreen.sync="fullscreen"
-      :modal-append-to-body="true"
-      :append-to-body="true"
-      :close-on-click-modal="closeOnClickModal"
-      :loading="loading"
-      class="ipms-dialog"
-      :class="{ [name]: true }"
-    >
-      <span slot="title">
-        <i class="el-icon-document mr-2" style="font-size: 17px" />
-        IP블록할당
-        <hr>
-      </span>
-      <div id="content" class="layer w-100 h-100">
-        <div class="content_result mt0">
-          <h4>할당 정보</h4>
-          <table class="tbl_data entry mt5">
-            <colgroup>
-              <col width="15%" />
-              <col width="35%" />
-              <col width="15%" />
-              <col width="35%" />
-            </colgroup>
-            <tbody>
-              <tr class="top">
-                <th class="first" scope="row">할당구분</th>
-                <td class="view">
-                  <el-radio-group v-model="allocType" size="mini">
-                    <el-radio v-show="sFlgAllocType === 'N' && vAllocType !=='allocTel'" label="allocNe">시설</el-radio>
-                    <el-radio v-show="sFlgAllocType === 'N' && vAllocType !=='allocNe'" label="allocLn">링크</el-radio>
-                    <el-radio v-show="sFlgAllocType !== 'N' && vAllocType ==='allocTel'" label="allocTel">회선</el-radio>
-                  </el-radio-group>
-                </td>
-                <th class="first">{{ infoLabel }}</th>
-                <td class="view d-flex">
-                  <el-select
-                    v-if="allocType === 'allocTel'"
-                    v-model="srhSvcTypeCd"
-                    size="mini"
-                    style="width: 120px"
-                  >
-                    <el-option label="전용번호" value="sllnum" />
-                    <el-option label="SAID" value="ssaid" />
-                  </el-select>
-                  <el-input
-                    v-model="infoValue"
-                    size="mini"
-                    @input="formatInput"
-                  >
-                    <template #suffix>
-                      <el-button
-                        size="mini"
-                        icon="el-icon-search"
-                        class="font-weight-bolder"
-                        style="font-size: larger;border: none"
-                        @click="handleClickInfoButton"
-                      />
-                    </template>
-                  </el-input>
-                </td>
-              </tr>
-              <tr v-if="allocType !== 'allocLn'" id="svcArea1">
-                <th class="first">수용국</th>
-                <td class="view">{{ srcIpAllocMst.sofficename }}</td>
-                <th class="first">{{ allocType === 'allocNe' ? '장비': '시설' }}명</th>
-                <td class="view">{{ srcIpAllocMst.ssubscnealias }}</td>
-              </tr>
-              <tr v-if="allocType === 'allocTel'" id="svcArea2">
-                <th class="first">장비대표 IP</th>
-                <td class="view">{{ srcIpAllocMst.ssubscmstip }}</td>
-                <th class="first">I/F명</th>
-                <td class="view">{{ srcIpAllocMst.ssubsclgipportdescription }}</td>
-              </tr>
-              <tr v-if="allocType === 'allocTel'" id="svcArea3">
-                <th class="first" scope="row">수용회선명</th>
-                <td class="view">{{ srcIpAllocMst.sconnalias }}</td>
-                <th scope="row">고객명</th>
-                <td class="view">{{ srcIpAllocMst.scustname }}</td>
-              </tr>
-              <tr v-if="allocType === 'allocNe'" id="svcArea4">
-                <th class="first">전용번호</th>
-                <td class="view">
-                  <el-input v-model="srcIpAllocMst.sllnum" size="mini" />
-                </td>
-                <th class="first">모델명</th>
-                <td class="view">{{ srcIpAllocMst.smodelname }}</td>
-              </tr>
-              <tr v-if="allocType === 'allocNe'" id="svcArea5">
-                <th class="first">I/F명</th>
-                <td colspan="3" class="view">
-                  <el-input v-model="srcIpAllocMst.ssubsclgipportdescription" size="mini" />
-                </td>
-              </tr>
-              <template v-if="allocType === 'allocLn'">
-                <tr id="linkArea1">
-                  <th class="first" scope="row">자국 수용국</th>
-                  <td class="view">{{ srcIpAllocMst.saofficesname }}</td>
-                  <th scope="row">대국 수용국</th>
-                  <td class="view">{{ srcIpAllocMst.szaofficesname }}</td>
-                </tr>
-                <tr id="linkArea2">
-                  <th class="first" scope="row">자국 장비명</th>
-                  <td class="view">{{ srcIpAllocMst.sanealias }}</td>
-                  <th scope="row">대국 장비명</th>
-                  <td class="view">{{ srcIpAllocMst.sznealias }}</td>
-                </tr>
-                <tr id="linkArea3">
-                  <th class="first" scope="row">자국 IP</th>
-                  <td class="view">{{ srcIpAllocMst.samstip }}</td>
-                  <th scope="row">대국 IP</th>
-                  <td class="view">{{ srcIpAllocMst.szmstip }}</td>
-                </tr>
-                <tr id="linkArea4">
-                  <th class="first" scope="row">자국 IF명</th>
-                  <td class="view">{{ srcIpAllocMst.saifname }}</td>
-                  <th scope="row">대국 IF명</th>
-                  <td class="view">{{ srcIpAllocMst.szifname }}</td>
-                </tr>
-                <tr id="linkArea5">
-                  <th class="first" scope="row">전용번호</th>
-                  <td id="tdSllnum" colspan="3" class="view">{{ srcIpAllocMst.sllnum }}</td>
-                </tr>
-              </template>
-              <tr>
-                <th class="first">비고</th>
-                <td colspan="3" class="view">
-                  <textarea v-model="srcIpAllocMst.scomment" class="w98" rows="3" maxlength="4000" />
-                </td>
-              </tr>
-              <!-- Add the rest of the table rows here following the same pattern -->
-            </tbody>
-          </table>
-        </div>
-
-        <div v-if="allocType === 'allocTel'" class="content_result">
-          <div class="tit_group">
-            <h4>할당 정보</h4>
-          </div>
-          <div class="scroll_area" style="max-height: 200px;">
-            <table id="insertBaseTable" class="scroll_table tbl_list mt5">
-              <thead>
-                <tr>
-                  <th class="first" scope="col">서비스망</th>
-                  <th scope="col">노드</th>
-                  <th scope="col">공인/사설</th>
-                  <th scope="col">서비스</th>
-                  <th scope="col">IP블록</th>
-                  <th scope="col">GW IP</th>
-                  <th scope="col" title="단위블록수(IPV4:/24, IPV6:/64)">단위블록수</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(item, index) in allocTargetList" :key="index">
-                  <td class="first ellipsis">{{ item.ssvcLineTypeNm }}</td>
-                  <td class="ellipsis">{{ item.ssvcObjNm }}</td>
-                  <td class="ellipsis">{{ item.sipCreateTypeNm }}</td>
-                  <td class="ellipsis">{{ item.sassignTypeNm }}</td>
-                  <td class="ellipsis">{{ item.pipPrefix }}</td>
-                  <td class="ellipsis">{{ item.sgatewayip }}</td>
-                  <td class="ellipsis"> {{ formatNumber(item.nclassCnt) }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div id="divSvcAloArea" class="content_result">
-          <h4>할당 대상 정보</h4>
-          <table id="baseTable" class="tbl_list mt5" summary="할당 대상 정보">
-            <colgroup>
-              <col width="9%" /><col width="10%" /><col width="9%" /><col width="10%" /><col width="23%" /><col width="27%" /><col width="12%" />
-            </colgroup>
-            <thead>
-              <tr>
-                <th class="first" scope="col">서비스망</th>
-                <th scope="col">노드</th>
-                <th scope="col">공인/사설</th>
-                <th scope="col">서비스</th>
-                <th scope="col">IP블록</th>
-                <th scope="col">GW IP</th>
-                <th scope="col">단위블록수</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-if="!ipAllocOperMstVos.length">
-                <td class="first" colspan="8">조회된 결과 목록이 존재하지 않습니다.</td>
-              </tr>
-              <tr v-for="(item, index) in ipAllocOperMstVos" :key="index" :class="{'subbg': index % 2 !== 0, 'last': index === ipAllocOperMstVos.length - 1}">
-                <td class="first ellipsis">{{ item.ssvcLineTypeNm }}</td>
-                <td class="ellipsis">{{ item.ssvcObjNm }}</td>
-                <td class="ellipsis">{{ item.sipCreateTypeNm }}</td>
-                <td class="ellipsis">{{ item.sassignTypeNm }}</td>
-                <td class="ellipsis">{{ item.pipPrefix }}</td>
-                <td class="d-flex">
-                  <div class="inline-block w33">
-                    <select v-model="item.gwipType" @change="fnSetGwip(item, index)">
-                      <option value="direct">직접입력</option>
-                      <option value="first">시작IP</option>
-                      <option value="last">끝IP</option>
-                    </select>
-                  </div>
-                  <div class="inline-block d-flex items-center w60">
-                    <!-- sfirstAddrGwip, slastAddrGwip -->
-                    <input v-model="item.sgatewayip" type="text" class="txt w95" style="height: 20px" @keyup="(e)=> checkInput(e, 'IPonly')" />
-                  </div>
-                </td>
-                <td class="ellipsis">{{ formatNumber(item.nclassCnt) }}</td>
-                <!-- <td style="display: none;">{{ item.nipAssignMstSeq }}</td>
-                <td style="display: none;">{{ item.sassignTypeCd }}</td>
-                <td style="display: none;">{{ item.sipCreateTypeCd }}</td>
-                <td style="display: none;">{{ item.ssvcLineTypeCd }}</td>
-                <td style="display: none;">{{ item.nlvlMstSeq }}</td>
-                <td style="display: none;">{{ item.nipAllocMstCnt }}</td>
-                <td style="display: none;">{{ item.slastAddrGwip }}</td>
-                <td style="display: none;">{{ item.sfirstAddrGwip }}</td>
-                <td style="display: none;">{{ item.nipmsSvcSeq }}</td>
-                <td style="display: none;">{{ item.sipVersionTypeCd }}</td> -->
-              </tr>
-            </tbody>
-          </table>
-        </div>
+  <el-dialog
+    v-if="animationVisible"
+    id="ipms"
+    ref="allocInsertModal"
+    v-el-drag-dialog
+    title="IP블록할당"
+    :visible.sync="visible"
+    :width="domElement.maxWidth + `px`"
+    :fullscreen.sync="fullscreen"
+    :modal-append-to-body="true"
+    :append-to-body="true"
+    :close-on-click-modal="closeOnClickModal"
+    :loading="loading"
+    class="ipms-dialog"
+    :class="{ [name]: true }"
+  >
+    <div class="popupContentTable">
+      <div class="popupContentTableTitle">할당 정보</div>
+      <table>
+        <colgroup>
+          <col width="15%" />
+          <col width="35%" />
+          <col width="15%" />
+          <col width="35%" />
+        </colgroup>
+        <tbody>
+          <tr>
+            <th scope="row">할당구분</th>
+            <td>
+              <el-radio-group v-model="allocType" size="small">
+                <el-radio v-show="sFlgAllocType === 'N' && vAllocType !=='allocTel'" label="allocNe">시설</el-radio>
+                <el-radio v-show="sFlgAllocType === 'N' && vAllocType !=='allocNe'" label="allocLn">링크</el-radio>
+                <el-radio v-show="sFlgAllocType !== 'N' && vAllocType ==='allocTel'" label="allocTel">회선</el-radio>
+              </el-radio-group>
+            </td>
+            <th>{{ infoLabel }}</th>
+            <td class="d-flex">
+              <el-select
+                v-if="allocType === 'allocTel'"
+                v-model="srhSvcTypeCd"
+                size="small"
+                style="width: 120px"
+              >
+                <el-option label="전용번호" value="sllnum" />
+                <el-option label="SAID" value="ssaid" />
+              </el-select>
+              <el-input
+                v-model="infoValue"
+                size="small"
+                @input="formatInput"
+              >
+                <template #suffix>
+                  <el-button
+                    size="small"
+                    icon="el-icon-search"
+                    class="font-weight-bolder"
+                    style="font-size: larger;border: none;background: none;"
+                    @click="handleClickInfoButton"
+                  />
+                </template>
+              </el-input>
+            </td>
+          </tr>
+          <tr v-if="allocType !== 'allocLn'">
+            <th>수용국</th>
+            <td>{{ srcIpAllocMst.sofficename }}</td>
+            <th>{{ allocType === 'allocNe' ? '장비': '시설' }}명</th>
+            <td>{{ srcIpAllocMst.ssubscnealias }}</td>
+          </tr>
+          <tr v-if="allocType === 'allocTel'">
+            <th>장비대표 IP</th>
+            <td>{{ srcIpAllocMst.ssubscmstip }}</td>
+            <th>I/F명</th>
+            <td>{{ srcIpAllocMst.ssubsclgipportdescription }}</td>
+          </tr>
+          <tr v-if="allocType === 'allocTel'">
+            <th scope="row">수용회선명</th>
+            <td>{{ srcIpAllocMst.sconnalias }}</td>
+            <th scope="row">고객명</th>
+            <td>{{ srcIpAllocMst.scustname }}</td>
+          </tr>
+          <tr v-if="allocType === 'allocNe'">
+            <th>전용번호</th>
+            <td>
+              <el-input v-model="srcIpAllocMst.sllnum" size="small" />
+            </td>
+            <th>모델명</th>
+            <td>{{ srcIpAllocMst.smodelname }}</td>
+          </tr>
+          <tr v-if="allocType === 'allocNe'">
+            <th>I/F명</th>
+            <td colspan="3">
+              <el-input v-model="srcIpAllocMst.ssubsclgipportdescription" size="small" />
+            </td>
+          </tr>
+          <template v-if="allocType === 'allocLn'">
+            <tr id="linkArea1">
+              <th scope="row">자국 수용국</th>
+              <td>{{ srcIpAllocMst.saofficesname }}</td>
+              <th scope="row">대국 수용국</th>
+              <td>{{ srcIpAllocMst.szaofficesname }}</td>
+            </tr>
+            <tr id="linkArea2">
+              <th scope="row">자국 장비명</th>
+              <td>{{ srcIpAllocMst.sanealias }}</td>
+              <th scope="row">대국 장비명</th>
+              <td>{{ srcIpAllocMst.sznealias }}</td>
+            </tr>
+            <tr id="linkArea3">
+              <th scope="row">자국 IP</th>
+              <td>{{ srcIpAllocMst.samstip }}</td>
+              <th scope="row">대국 IP</th>
+              <td>{{ srcIpAllocMst.szmstip }}</td>
+            </tr>
+            <tr id="linkArea4">
+              <th scope="row">자국 IF명</th>
+              <td>{{ srcIpAllocMst.saifname }}</td>
+              <th scope="row">대국 IF명</th>
+              <td>{{ srcIpAllocMst.szifname }}</td>
+            </tr>
+            <tr id="linkArea5">
+              <th scope="row">전용번호</th>
+              <td id="tdSllnum" colspan="3">{{ srcIpAllocMst.sllnum }}</td>
+            </tr>
+          </template>
+          <tr>
+            <th>비고</th>
+            <td colspan="3">
+              <textarea v-model="srcIpAllocMst.scomment" class="w98" rows="3" maxlength="4000" />
+            </td>
+          </tr>
+          <!-- Add the rest of the table rows here following the same pattern -->
+        </tbody>
+      </table>
+    </div>
+    <div v-if="allocType === 'allocTel'" class="popupContentTable textcenter">
+      <div class="popupContentTableTitle">할당 정보</div>
+      <div class="scroll_area">
+        <table>
+          <thead>
+            <tr>
+              <th>서비스망</th>
+              <th>노드</th>
+              <th>공인/사설</th>
+              <th>서비스</th>
+              <th>IP블록</th>
+              <th>GW IP</th>
+              <th title="단위블록수(IPV4:/24, IPV6:/64)">단위블록수</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(item, index) in allocTargetList" :key="index">
+              <td>{{ item.ssvcLineTypeNm }}</td>
+              <td>{{ item.ssvcObjNm }}</td>
+              <td>{{ item.sipCreateTypeNm }}</td>
+              <td>{{ item.sassignTypeNm }}</td>
+              <td>{{ item.pipPrefix }}</td>
+              <td>{{ item.sgatewayip }}</td>
+              <td> {{ formatNumber(item.nclassCnt) }}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button size="mini" @click="fnViewAllocCheckTacsIpBlock()">
-          할당
-        </el-button>
-        <el-button size="mini" class="el-icon-close" @click="close()">
-          닫기
-        </el-button>
+    </div>
+    <div class="popupContentTable textcenter">
+      <div class="popupContentTableTitle">할당 대상 정보</div>
+      <div>
+        <table>
+          <!-- <colgroup>
+                <col width="9%" /><col width="10%" /><col width="9%" /><col width="10%" /><col width="23%" /><col width="27%" /><col width="12%" />
+              </colgroup> -->
+          <thead>
+            <tr>
+              <th>서비스망</th>
+              <th>노드</th>
+              <th>공인/사설</th>
+              <th>서비스</th>
+              <th>IP블록</th>
+              <th>GW IP</th>
+              <th>단위블록수</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-if="!ipAllocOperMstVos.length">
+              <td colspan="8">조회된 결과 목록이 존재하지 않습니다.</td>
+            </tr>
+            <tr v-for="(item, index) in ipAllocOperMstVos" :key="index" :class="{'subbg': index % 2 !== 0, 'last': index === ipAllocOperMstVos.length - 1}">
+              <td>{{ item.ssvcLineTypeNm }}</td>
+              <td>{{ item.ssvcObjNm }}</td>
+              <td>{{ item.sipCreateTypeNm }}</td>
+              <td>{{ item.sassignTypeNm }}</td>
+              <td>{{ item.pipPrefix }}</td>
+              <td class="textflex">
+                <el-select v-model="item.gwipType" size="mini" style="width: 90px" @change="fnSetGwip(item, index)">
+                  <el-option value="direct" label="직접입력" />
+                  <el-option value="first" label="시작IP" />
+                  <el-option value="last" label="끝IP" />
+                </el-select>
+                <!-- sfirstAddrGwip, slastAddrGwip -->
+                <el-input v-model="item.sgatewayip" size="mini" type="text" @keyup="(e)=> checkInput(e, 'IPonly')" />
+              </td>
+              <td>{{ formatNumber(item.nclassCnt) }}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-    </el-dialog>
+    </div>
+    <div class="popupContentTableBottom">
+      <el-button type="primary" size="small" icon="el-icon-thumb" round @click="fnViewAllocCheckTacsIpBlock()">할당</el-button>
+      <el-button type="primary" size="small" icon="el-icon-close" round @click="close()">닫기</el-button>
+    </div>
     <ModalCheckTacsIpBlock ref="ModalCheckTacsIpBlock" />
     <ModalFacilityInformation ref="ModalFacilityInformation" @selected-value="setSelectedRow" />
     <ModalLinkInformation ref="ModalLinkInformation" @selected-value="setSelectedRow" />
     <ModalIpAllocCircuitDetail ref="ModalIpAllocCircuitDetail" @selected-value="setSelectedRow" @closeCircuitDetail="loadDetailSubSvcMst" />
-  </div>
+  </el-dialog>
 </template>
 
 <script>

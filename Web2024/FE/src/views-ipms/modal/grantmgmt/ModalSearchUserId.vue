@@ -1,76 +1,62 @@
 <template>
-  <div>
-    <el-dialog
-      v-if="animationVisible"
-      v-el-drag-dialog
-      :visible.sync="visible"
-      :width="domElement.maxWidth + `px`"
-      :fullscreen.sync="fullscreen"
-      :modal-append-to-body="true"
-      :append-to-body="true"
-      :modal="modal"
-      :close-on-click-modal="closeOnClickModal"
-      :loading="loading"
-      class="ipms-dialog"
-      :class="{ [name]: true }"
+  <el-dialog
+    v-if="animationVisible"
+    id="ipms"
+    v-el-drag-dialog
+    title="사용자 검색"
+    :visible.sync="visible"
+    :width="domElement.maxWidth + `px`"
+    :fullscreen.sync="fullscreen"
+    :modal-append-to-body="true"
+    :append-to-body="true"
+    :modal="modal"
+    :close-on-click-modal="closeOnClickModal"
+    :loading="loading"
+    class="ipms-dialog"
+    :class="{ [name]: true }"
+  >
+    <div class="popupContentTable mb-2">
+      <table>
+        <tr>
+          <th>
+            <label>
+              사용자명
+            </label>
+          </th>
+          <td>
+            <el-input v-model="searchTxt" size="small" clearable @keyup.enter.native="fnSearchUser()" />
+          </td>
+          <td>
+            <el-button type="primary" size="small" icon="el-icon-search" round @click="fnSearchUser()">조회</el-button>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <compTable
+      ref="compTable"
+      :prop-name="name"
+      :prop-data="tableDatas"
+      :prop-table-height="300"
+      :prop-column="tableColumns"
+      :prop-is-pagination="false"
+      :prop-is-check-box="true"
+      :prop-is-cell-click-check="true"
+      prop-grid-menu-id="inputSpeed"
+      :prop-grid-indx="1"
+      :prop-on-click="handleClickRow"
+      :prop-on-dbl-click="handleDbClickRow"
     >
-      <span slot="title">
-        <i class="el-icon-document mr-2" style="font-size: 17px" />
-        사용자 검색
-        <hr>
-      </span>
-      <el-row class="w-100 h-100">
-        <div class="optionBox">
-          <el-row class="optionRow">
-            <el-col :span="20" class="d-flex">
-              <label>
-                사용자명
-              </label>
-              <el-input
-                v-model="searchTxt"
-                size="mini"
-                clearable
-                @keyup.enter.native="fnSearchUser()"
-              />
-            </el-col>
-            <el-col :span="4">
-              <el-button class="btn-r ml-2" type="info" size="mini" icon="el-icon-search" @click="fnSearchUser()">
-                조회
-              </el-button>
-            </el-col>
-          </el-row>
-        </div>
-        <el-col :span="24">
-          <compTable
-            ref="compTable"
-            :prop-name="name"
-            :prop-data="tableDatas"
-            :prop-table-height="300"
-            :prop-column="tableColumns"
-            :prop-is-pagination="false"
-            :prop-is-check-box="true"
-            :prop-is-cell-click-check="true"
-            prop-grid-menu-id="inputSpeed"
-            :prop-grid-indx="1"
-            :prop-on-click="handleClickRow"
-            :prop-on-dbl-click="handleDbClickRow"
-          >
-            <template slot="text-description">
-              <span>
-                사용자 정보 조회결과
-              </span>
-            </template>
-          </compTable>
-        </el-col>
-      </el-row>
-      <div slot="footer" class="dialog-footer">
-        <el-button size="mini" icon="el-icon-edit" @click="handleSelect()">선택</el-button>
-        <el-button size="mini" type="info" class="el-icon-close" @click.native="close()">
-          {{ $t('exit') }}
-        </el-button>
-      </div>
-    </el-dialog>
-  </div>
+      <template slot="text-description">
+        <span>
+          사용자 정보 조회결과
+        </span>
+      </template>
+    </compTable>
+    <div class="popupContentTableBottom">
+      <el-button type="primary" size="small" icon="el-icon-edit" round @click="handleSelect()">선택</el-button>
+      <el-button type="primary" size="small" icon="el-icon-close" round @click.native="close()">{{ $t('exit') }}</el-button>
+    </div>
+  </el-dialog>
 </template>
 
 <script>

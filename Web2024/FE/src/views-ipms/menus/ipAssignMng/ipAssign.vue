@@ -9,8 +9,9 @@
     <el-col ref="tableContainer" :span="24">
       <compTable
         ref="compTable"
+        style="height: calc(100% - 80px)"
         :prop-name="name"
-        :prop-table-height="'calc(100% - 120px)'"
+        :prop-table-height="'100%'"
         :prop-data="ipAssignDatas"
         :prop-column="tableColumns"
         :prop-is-pagination="true"
@@ -26,18 +27,23 @@
           </span>
         </template>
         <template slot="add-features">
-          <div class="mt-1 d-flex justify-end">
-            <el-button icon="el-icon-check" type="primary" size="mini" @click="handleClickIpBlockCheck()">IP블럭 중복체크</el-button>
-            <el-button icon="el-icon-document-checked" style="background: #2b5890;" type="primary" size="mini" @click="fnUpdateBtnClick()">배정</el-button>
-            <el-button size="mini" @click="handleClickMergeInsert()">병합</el-button>
+          <div style="margin-top: 10px">
+            <el-button icon="el-icon-check" type="primary" size="mini" round @click="handleClickIpBlockCheck()">IP블럭 중복체크</el-button>
+            <el-button icon="el-icon-document-checked" type="primary" size="mini" round @click="fnUpdateBtnClick()">배정</el-button>
+            <el-button icon="el-icon-menu" type="primary" size="mini" round @click="handleClickMergeInsert()">병합</el-button>
           </div>
         </template>
       </comptable>
+      <!-- 분할 -->
       <ModalIpBlockDivision ref="ModalIpBlockDivision" @reload="onloadIpAssign()" />
+      <!-- 배정 상세 -->
       <ModalIpAssignDetail ref="ModalIpAssignDetail" @reload="onloadIpAssign()" />
+      <!-- 배정 처리 -->
       <ModalIpAssign ref="ModalIpAssign" @reload="onloadIpAssign()" />
       <ModalCheckTacsIpBlock ref="ModalCheckTacsIpBlock" />
+      <!-- IP블록병합 -->
       <ModalIpAssignMerge ref="ModalIpAssignMerge" @reload="fnViewListIpAllocMst($refs.searchCondition.requestParameter)" />
+      <!-- 라우팅 중복 개수 -->
       <ModalDetailSummary ref="ModalDetailSummary" />
     </el-col>
   </el-row>
@@ -97,7 +103,12 @@ export default {
         { prop: 'nsummaryCnt', label: '라우팅 중복 개수', align: 'center', sortable: true, columnVisible: true, showOverflow: true,
           formatter: (row, col, value, index) => {
             return this.$createElement('el-button', {
-              class: row.nsummaryCnt > 0 ? 'red' : '',
+              // class: row.nsummaryCnt > 0 ? 'red' : '',
+              attrs: {
+                round: true, // Adding the round option
+                plain: true,
+                type: row.nsummaryCnt > 0 ? 'danger' : 'primary'
+              },
               on: { click: () => {
                 this.$refs.ModalDetailSummary.open({ row })
             } } }, row.nsummaryCnt)
@@ -105,14 +116,14 @@ export default {
         },
         { prop: 'nbitmask', label: '분할', align: 'center', sortable: true, columnVisible: true, showOverflow: true,
           formatter: (row, col, value, index) => {
-            const isDivisible = (row.sipVersionTypeCd === 'CV0001' && row.nbitmask < 24) ||
-                                (row.sipVersionTypeCd === 'CV0002' && row.nbitmask < 64)
-
-            const buttonText = isDivisible ? '분할' : '불가'
-            const buttonClass = isDivisible ? '' : 'red'
-
+            const isDivisible = (row.sipVersionTypeCd === 'CV0001' && row.nbitmask < 24) || (row.sipVersionTypeCd === 'CV0002' && row.nbitmask < 64)
             return this.$createElement('el-button', {
-              class: buttonClass,
+              // class: isDivisible ? '' : 'red',
+              attrs: {
+                round: true, // Adding the round option
+                plain: true,
+                type: isDivisible ? 'primary' : 'danger'
+              },
               on: {
                 click: () => {
                   if (isDivisible) {
@@ -120,7 +131,7 @@ export default {
                   }
                 }
               }
-            }, buttonText)
+            }, isDivisible ? '분할' : '불가')
           }
         },
       ],

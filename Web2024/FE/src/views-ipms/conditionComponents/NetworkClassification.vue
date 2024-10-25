@@ -1,56 +1,58 @@
 <template>
-  <el-col :class="{ [name]: true }" :xs="24" :sm="12" :md="12" :lg="8" :xl="6">
-    <label>
+  <fragment>
+    <th>
       {{ label }}
-    </label>
-    <!-- LEVEL 1 -->
-    <el-select
-      v-model="localValue1"
-      collapse-tags
-      size="mini"
-      @change="handleChangeLvl1"
-    >
-      <el-option label="전체" value="" />
-      <el-option
-        v-for="(option, i) in lvlOptions1"
-        :key="i"
-        :label="option.label"
-        :value="option.value"
-      />
-    </el-select>
-    <!-- LEVEL 2 -->
-    <el-select
-      v-model="localValue2"
-      :disabled="localValue1 === ''"
-      collapse-tags
-      size="mini"
-      @change="handleChangeLvl2"
-    >
-      <el-option label="전체" value="" />
-      <el-option
-        v-for="(option, i) in lvlOptions2"
-        :key="i"
-        :label="option.label"
-        :value="option.value"
-      />
-    </el-select>
-    <!-- LEVEL 3 -->
-    <el-select
-      v-model="localValue3"
-      :disabled="localValue2 === ''"
-      collapse-tags
-      size="mini"
-      @change="handleChangeLvl3"
-    >
-      <el-option label="전체" value="" />
-      <el-option
-        v-for="(option, i) in lvlOptions3"
-        :key="i"
-        :label="option.label"
-        :value="option.value"
-      />
-    </el-select>
-  </el-col>
+    </th>
+    <td>
+      <!-- LEVEL 1 -->
+      <el-select
+        v-model="localValue1"
+        collapse-tags
+        size="small"
+        @change="handleChangeLvl1"
+      >
+        <el-option label="전체" value="" />
+        <el-option
+          v-for="(option, i) in lvlOptions1"
+          :key="i"
+          :label="option.label"
+          :value="option.value"
+        />
+      </el-select>
+      <!-- LEVEL 2 -->
+      <el-select
+        v-model="localValue2"
+        :disabled="localValue1 === ''"
+        collapse-tags
+        size="small"
+        @change="handleChangeLvl2"
+      >
+        <el-option label="전체" value="" />
+        <el-option
+          v-for="(option, i) in lvlOptions2"
+          :key="i"
+          :label="option.label"
+          :value="option.value"
+        />
+      </el-select>
+      <!-- LEVEL 3 -->
+      <el-select
+        v-model="localValue3"
+        :disabled="localValue2 === ''"
+        collapse-tags
+        size="small"
+        @change="handleChangeLvl3"
+      >
+        <el-option label="전체" value="" />
+        <el-option
+          v-for="(option, i) in lvlOptions3"
+          :key="i"
+          :label="option.label"
+          :value="option.value"
+        />
+      </el-select>
+    </td>
+  </fragment>
 </template>
 <script>
 import { Base } from '@/min/Base.min'

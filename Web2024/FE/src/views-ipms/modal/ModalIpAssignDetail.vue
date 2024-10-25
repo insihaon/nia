@@ -1,144 +1,122 @@
 <template>
-  <div>
-    <el-dialog
-      v-if="animationVisible"
-      id="ipms"
-      v-el-drag-dialog
-      :visible.sync="visible"
-      :width="domElement.maxWidth + `px`"
-      :fullscreen.sync="fullscreen"
-      :modal-append-to-body="false"
-      :append-to-body="true"
-      :modal="modal"
-      :close-on-click-modal="closeOnClickModal"
-      :loading="loading"
-      class="ipms-dialog"
-      :class="{ [name]: true }"
-    >
-      <span slot="title">
-        <i class="el-icon-document mr-2" style="font-size: 17px" />
-        IP배정 상세정보
-        <hr>
-      </span>
-
-      <div id="content" class="layer">
-        <div class="content_result mt0">
-          <h4 class="mt5">IP배정 상세정보</h4>
-          <table class="tbl_data entry mt5">
-            <colgroup>
-              <col width="15%" />
-              <col width="35%" />
-              <col width="15%" />
-              <col width="35%" />
-            </colgroup>
-            <tbody>
-              <tr class="top">
-                <th class="first" scope="row">계위</th>
-                <td>
-                  {{ ipAssignVo.ssvcLineTypeNm }} - {{ ipAssignVo.ssvcGroupNm }} - {{ ipAssignVo.ssvcObjNm }}
-                </td>
-                <th class="first" scope="row">공인/사설</th>
-                <td>
-                  {{ ipAssignVo.sipCreateTypeNm }}
-                </td>
-              </tr>
-
-              <tr>
-                <th class="first" scope="row">배정상태</th>
-                <td>
-                  {{ ipAssignVo.sassignLevelNm }}
-                </td>
-                <th scope="row">서비스</th>
-                <td>
-                  {{ ipAssignVo.sassignTypeNm }}
-                </td>
-              </tr>
-
-              <tr>
-                <th class="first" scope="row">IP 버전</th>
-                <td>
-                  {{ ipAssignVo.sipVersionTypeNm }}
-                </td>
-                <th scope="row">IP 주소</th>
-                <td>
-                  {{ ipAssignVo.pipPrefix }}
-                </td>
-              </tr>
-
-              <tr class="last">
-                <th class="first" scope="row">비고</th>
-                <td colspan="3">
-                  <textarea id="insertScomment" v-model="ipAssignVo.scomment" class="w98" rows="3" maxlength="4000"></textarea>
-                </td>
-              </tr>
-
-            </tbody>
-          </table>
-
-          <div class="btn_area my-1">
-            <span>
-              <el-button class="el-icon-edit-outline" size="mini" @click="fnScommentUpdateClick()"> 수정</el-button>
-            </span>
-          </div>
-
-        </div>
-
-        <div class="content_result mt0">
-          <h4 class="mt5">IP 블록 세부 정보</h4>
-          <table class="tbl_data entry mt5">
-            <colgroup>
-              <col width="15%" />
-              <col width="35%" />
-              <col width="15%" />
-              <col width="35%" />
-            </colgroup>
-            <tbody>
-              <tr class="top">
-                <th class="first" scope="row">시작 IP</th>
-                <td>
-                  {{ ipAssignVo.sfirstAddr }}
-                </td>
-                <th scope="row">끝 IP</th>
-                <td>
-                  {{ ipAssignVo.slastAddr }}
-                </td>
-              </tr>
-
-              <tr>
-                <th class="first" scope="row">총 IP 수</th>
-                <td>
-                  {{ ipAssignVo.ncnt }}
-                </td>
-                <th scope="row">단위블록수</th>
-                <td>
-                  {{ ipAssignVo.nclassCnt }}
-                </td>
-              </tr>
-
-              <tr>
-                <th class="first" scope="row">사용 IP 수</th>
-                <td>
-                  {{ ipAssignVo.nuseIpCnt }}
-                </td>
-                <th scope="row">가용 IP 수</th>
-                <td>
-                  {{ ipAssignVo.nfreeIpCnt }}
-                </td>
-              </tr>
-
-            </tbody>
-          </table>
-        </div>
+  <el-dialog
+    v-if="animationVisible"
+    id="ipms"
+    v-el-drag-dialog
+    title="IP배정 상세정보"
+    :visible.sync="visible"
+    :width="domElement.maxWidth + `px`"
+    :fullscreen.sync="fullscreen"
+    :modal-append-to-body="false"
+    :append-to-body="true"
+    :modal="modal"
+    :close-on-click-modal="closeOnClickModal"
+    :loading="loading"
+    class="ipms-dialog"
+    :class="{ [name]: true }"
+  >
+    <div class="popupContentTable">
+      <div class="popupContentTableTitle">IP배정 상세정보</div>
+      <table>
+        <colgroup>
+          <col width="15%" />
+          <col width="35%" />
+          <col width="15%" />
+          <col width="35%" />
+        </colgroup>
+        <tbody>
+          <tr class="top">
+            <th>계위</th>
+            <td>
+              {{ ipAssignVo.ssvcLineTypeNm }} - {{ ipAssignVo.ssvcGroupNm }} - {{ ipAssignVo.ssvcObjNm }}
+            </td>
+            <th>공인/사설</th>
+            <td>
+              {{ ipAssignVo.sipCreateTypeNm }}
+            </td>
+          </tr>
+          <tr>
+            <th>배정상태</th>
+            <td>
+              {{ ipAssignVo.sassignLevelNm }}
+            </td>
+            <th scope="row">서비스</th>
+            <td>
+              {{ ipAssignVo.sassignTypeNm }}
+            </td>
+          </tr>
+          <tr>
+            <th>IP 버전</th>
+            <td>
+              {{ ipAssignVo.sipVersionTypeNm }}
+            </td>
+            <th scope="row">IP 주소</th>
+            <td>
+              {{ ipAssignVo.pipPrefix }}
+            </td>
+          </tr>
+          <tr>
+            <th>비고</th>
+            <td colspan="3">
+              <textarea id="insertScomment" v-model="ipAssignVo.scomment" class="w98" rows="3" maxlength="4000"></textarea>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="popupContentTableBottom">
+        <el-button type="primary" size="small" icon="el-icon-edit-outline" round @click="fnScommentUpdateClick()">수정</el-button>
       </div>
-
-      <div slot="footer" class="dialog-footer">
-        <el-button size="mini" class="el-icon-document-checked" @click.native="handleAssignIp()">{{ '배정' }}</el-button>
-        <el-button v-if="!disabledBtn" size="mini" class="el-icon-refresh-left" @click.native="fnRetUpdateAsgnIPMst()">{{ '반납' }}</el-button>
-        <el-button size="mini" class="el-icon-close" @click.native="close()">{{ $t('exit') }}</el-button>
-      </div>
-      <ModalIpAssign ref="ModalIpAssign" />
-    </el-dialog>
-  </div>
+    </div>
+    <div class="popupContentTable">
+      <div class="popupContentTableTitle">IP 블록 세부 정보</div>
+      <table>
+        <colgroup>
+          <col width="15%" />
+          <col width="35%" />
+          <col width="15%" />
+          <col width="35%" />
+        </colgroup>
+        <tbody>
+          <tr>
+            <th>시작 IP</th>
+            <td>
+              {{ ipAssignVo.sfirstAddr }}
+            </td>
+            <th scope="row">끝 IP</th>
+            <td>
+              {{ ipAssignVo.slastAddr }}
+            </td>
+          </tr>
+          <tr>
+            <th>총 IP 수</th>
+            <td>
+              {{ ipAssignVo.ncnt }}
+            </td>
+            <th scope="row">단위블록수</th>
+            <td>
+              {{ ipAssignVo.nclassCnt }}
+            </td>
+          </tr>
+          <tr>
+            <th>사용 IP 수</th>
+            <td>
+              {{ ipAssignVo.nuseIpCnt }}
+            </td>
+            <th scope="row">가용 IP 수</th>
+            <td>
+              {{ ipAssignVo.nfreeIpCnt }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="popupContentTableBottom">
+      <el-button type="primary" size="small" icon="el-icon-document-checked" round @click.native="handleAssignIp()">{{ '배정' }}</el-button>
+      <el-button v-if="!disabledBtn" type="primary" size="small" icon="el-icon-refresh-left" round @click.native="fnRetUpdateAsgnIPMst()">{{ '반납' }}</el-button>
+      <el-button type="primary" size="small" icon="el-icon-close" round @click.native="close()">{{ $t('exit') }}</el-button>
+    </div>
+    <ModalIpAssign ref="ModalIpAssign" />
+  </el-dialog>
 </template>
 
 <script>
@@ -179,7 +157,7 @@ export default {
     onCreated() {
       Modal.methods.onCreated.call(this)
       this.closeOnClickModal = false
-      this.domElement.maxWidth = 1200
+      this.domElement.maxWidth = 800
     },
     onOpen(model, actionMode) {
     this.ipAssignVo = model.row

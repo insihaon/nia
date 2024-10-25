@@ -1,193 +1,172 @@
 <template>
-  <div>
-    <el-dialog
-      v-if="animationVisible"
-      id="ipms"
-      v-el-drag-dialog
-      :visible.sync="visible"
-      :width="domElement.maxWidth + `px`"
-      :fullscreen.sync="fullscreen"
-      :modal-append-to-body="true"
-      :append-to-body="true"
-      :close-on-click-modal="closeOnClickModal"
-      :loading="loading"
-      class="ipms-dialog"
-      :class="{ [name]: true }"
-    >
-      <span slot="title">
-        <i class="el-icon-document mr-2" style="font-size: 17px" />
-        {{ spageType !== 'link' ? 'Nexthop 상세 정보' : '링크 상세 정보' }}
-        <hr>
-      </span>
-      <div id="content" class="layer">
-        <!-- 시설/회선 정보 -->
-        <div v-if="tbIpInfoVo.ssubscnealiasType === 'SE' && spageType === 'link'" id="div01" class="content_result mt0">
-          <div class="tit_group">
-            <h4 class="mt5">시설/회선 정보</h4>
-          </div>
-          <table class="tbl_list mt5" summary="조회결과">
-            <caption>조회결과</caption>
-            <colgroup>
-              <col width="13%" /><col width="20%" />
-              <col width="13%" /><col width="20%" />
-            </colgroup>
-            <thead>
-              <tr>
-                <th class="first" scope="col" colspan="2">시설 정보</th>
-                <th scope="col" colspan="2">회선 정보</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th class="first" scope="row">본부</th>
-                <td>{{ tbIpInfoVo.ssvcGroupNm }}</td>
-                <th scope="row">서비스대분류</th>
-                <td>{{ tbIpInfoVo.sssvcMgroupNm }}</td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">노드국</th>
-                <td>{{ tbIpInfoVo.ssvcObjNm }}</td>
-                <th scope="row">상품명</th>
-                <td>{{ tbIpInfoVo.ssvcLgroupNm }}</td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">수용국</th>
-                <td>{{ tbIpInfoVo.sofficename }}</td>
-                <th scope="row">사업용여부</th>
-                <td>{{ tbIpInfoVo.ssvcUseTypeNm }}</td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">장비명</th>
-                <td>{{ tbIpInfoVo.ssubscnealias }}</td>
-                <th scope="row">전용번호</th>
-                <td>{{ tbIpInfoVo.sllnum }}</td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">모델명</th>
-                <td>{{ tbIpInfoVo.smodelname }}</td>
-                <th scope="row">SAID</th>
-                <td>{{ tbIpInfoVo.ssaid }}</td>
-              </tr>
-              <tr class="last">
-                <th class="first" scope="row"></th>
-                <td></td>
-                <th scope="row">고객명</th>
-                <td>{{ tbIpInfoVo.scustName }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- 시설 정보 -->
-        <div v-if="tbIpInfoVo.ssubscnealiasType !== 'SE' && spageType !== 'link'" id="div03" class="content_result mt0">
-          <div class="tit_group">
-            <h4 class="mt5">시설 정보</h4>
-          </div>
-          <table class="tbl_list mt5" summary="조회결과">
-            <caption>조회결과</caption>
-            <colgroup>
-              <col width="13%" /><col width="20%" />
-            </colgroup>
-            <thead>
-              <tr>
-                <th class="first" scope="col" colspan="2">시설 정보</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th class="first" scope="row">본부</th>
-                <td>{{ tbIpInfoVo.ssvcGroupNm }}</td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">노드국</th>
-                <td>{{ tbIpInfoVo.ssvcObjNm }}</td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">수용국</th>
-                <td>{{ tbIpInfoVo.sofficename }}</td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">장비명</th>
-                <td>{{ tbIpInfoVo.ssubscnealias }}</td>
-              </tr>
-              <tr class="last">
-                <th class="first" scope="row">모델명</th>
-                <td>{{ tbIpInfoVo.smodelname }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- 링크 정보 -->
-        <div v-if="spageType === 'link'" id="div02" class="content_result mt0">
-          <div class="tit_group">
-            <h4 class="mt5">링크 정보</h4>
-          </div>
-          <table class="tbl_list mt5" summary="조회결과">
-            <caption>조회결과</caption>
-            <colgroup>
-              <col width="13%" /><col width="20%" />
-              <col width="13%" /><col width="20%" />
-            </colgroup>
-            <thead>
-              <tr>
-                <th class="first" scope="col" colspan="2">자국 링크 정보</th>
-                <th scope="col" colspan="2">대국 링크 정보</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th class="first" scope="row">장비명</th>
-                <td>{{ tbIpInfoVo.sanealias }}</td>
-                <th scope="row">장비명</th>
-                <td>{{ tbIpInfoVo.sznealias }}</td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">장비IP</th>
-                <td>{{ tbIpInfoVo.samstip }}</td>
-                <th scope="row">장비IP</th>
-                <td>{{ tbIpInfoVo.szmstip }}</td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">IF명</th>
-                <td>{{ tbIpInfoVo.saifname }}</td>
-                <th scope="row">IF명</th>
-                <td>{{ tbIpInfoVo.szifname }}</td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">수용국명</th>
-                <td>{{ tbIpInfoVo.saofficescodeNm }}</td>
-                <th scope="row">수용국명</th>
-                <td>{{ tbIpInfoVo.szofficescodeNm }}</td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">SAID</th>
-                <td colspan="3">{{ tbIpInfoVo.ssaid }}</td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">전용번호</th>
-                <td colspan="3">{{ tbIpInfoVo.sllnum }}</td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">수용회선명</th>
-                <td colspan="3">{{ tbIpInfoVo.sconnAlias }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button size="mini" class="el-icon-close" @click.native="close()">{{ $t('exit') }}</el-button>
-      </div>
-    </el-dialog>
-  </div>
+  <el-dialog
+    v-if="animationVisible"
+    id="ipms"
+    v-el-drag-dialog
+    :title="spageType !== 'link' ? 'Nexthop 상세 정보' : '링크 상세 정보'"
+    :visible.sync="visible"
+    :width="domElement.maxWidth + `px`"
+    :fullscreen.sync="fullscreen"
+    :modal-append-to-body="true"
+    :append-to-body="true"
+    :close-on-click-modal="closeOnClickModal"
+    :loading="loading"
+    class="ipms-dialog"
+    :class="{ [name]: true }"
+  >
+    <!-- 시설/회선 정보 -->
+    <div v-if="tbIpInfoVo.ssubscnealiasType === 'SE' && spageType === 'link'" class="popupContentTable">
+      <div class="popupContentTableTitle">시설/회선 정보</div>
+      <table>
+        <colgroup>
+          <col width="13%" /><col width="20%" />
+          <col width="13%" /><col width="20%" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th colspan="2">시설 정보</th>
+            <th colspan="2">회선 정보</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>본부</th>
+            <td>{{ tbIpInfoVo.ssvcGroupNm }}</td>
+            <th>서비스대분류</th>
+            <td>{{ tbIpInfoVo.sssvcMgroupNm }}</td>
+          </tr>
+          <tr>
+            <th>노드국</th>
+            <td>{{ tbIpInfoVo.ssvcObjNm }}</td>
+            <th>상품명</th>
+            <td>{{ tbIpInfoVo.ssvcLgroupNm }}</td>
+          </tr>
+          <tr>
+            <th>수용국</th>
+            <td>{{ tbIpInfoVo.sofficename }}</td>
+            <th>사업용여부</th>
+            <td>{{ tbIpInfoVo.ssvcUseTypeNm }}</td>
+          </tr>
+          <tr>
+            <th>장비명</th>
+            <td>{{ tbIpInfoVo.ssubscnealias }}</td>
+            <th>전용번호</th>
+            <td>{{ tbIpInfoVo.sllnum }}</td>
+          </tr>
+          <tr>
+            <th>모델명</th>
+            <td>{{ tbIpInfoVo.smodelname }}</td>
+            <th>SAID</th>
+            <td>{{ tbIpInfoVo.ssaid }}</td>
+          </tr>
+          <tr>
+            <th></th>
+            <td></td>
+            <th>고객명</th>
+            <td>{{ tbIpInfoVo.scustName }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- 시설 정보 -->
+    <div v-if="tbIpInfoVo.ssubscnealiasType !== 'SE' && spageType !== 'link'" class="popupContentTable">
+      <div class="popupContentTableTitle">시설 정보</div>
+      <table>
+        <colgroup>
+          <col width="13%" /><col width="20%" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th colspan="2">시설 정보</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>본부</th>
+            <td>{{ tbIpInfoVo.ssvcGroupNm }}</td>
+          </tr>
+          <tr>
+            <th>노드국</th>
+            <td>{{ tbIpInfoVo.ssvcObjNm }}</td>
+          </tr>
+          <tr>
+            <th>수용국</th>
+            <td>{{ tbIpInfoVo.sofficename }}</td>
+          </tr>
+          <tr>
+            <th>장비명</th>
+            <td>{{ tbIpInfoVo.ssubscnealias }}</td>
+          </tr>
+          <tr>
+            <th>모델명</th>
+            <td>{{ tbIpInfoVo.smodelname }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- 링크 정보 -->
+    <div v-if="spageType === 'link'" class="popupContentTable">
+      <div class="popupContentTableTitle">링크 정보</div>
+      <table>
+        <colgroup>
+          <col width="13%" /><col width="20%" />
+          <col width="13%" /><col width="20%" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th colspan="2">자국 링크 정보</th>
+            <th colspan="2">대국 링크 정보</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>장비명</th>
+            <td>{{ tbIpInfoVo.sanealias }}</td>
+            <th>장비명</th>
+            <td>{{ tbIpInfoVo.sznealias }}</td>
+          </tr>
+          <tr>
+            <th>장비IP</th>
+            <td>{{ tbIpInfoVo.samstip }}</td>
+            <th>장비IP</th>
+            <td>{{ tbIpInfoVo.szmstip }}</td>
+          </tr>
+          <tr>
+            <th>IF명</th>
+            <td>{{ tbIpInfoVo.saifname }}</td>
+            <th>IF명</th>
+            <td>{{ tbIpInfoVo.szifname }}</td>
+          </tr>
+          <tr>
+            <th>수용국명</th>
+            <td>{{ tbIpInfoVo.saofficescodeNm }}</td>
+            <th>수용국명</th>
+            <td>{{ tbIpInfoVo.szofficescodeNm }}</td>
+          </tr>
+          <tr>
+            <th>SAID</th>
+            <td colspan="3">{{ tbIpInfoVo.ssaid }}</td>
+          </tr>
+          <tr>
+            <th>전용번호</th>
+            <td colspan="3">{{ tbIpInfoVo.sllnum }}</td>
+          </tr>
+          <tr>
+            <th>수용회선명</th>
+            <td colspan="3">{{ tbIpInfoVo.sconnAlias }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div slot="footer" class="dialog-footer">
+      <el-button size="mini" class="el-icon-close" @click.native="close()">{{ $t('exit') }}</el-button>
+    </div>
+  </el-dialog>
 </template>
 
 <script>
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
-import { onMessagePopup } from '@/utils'
-
 import { ipmsModelApis, apiRequestModel } from '@/api/ipms'
 
 const routeName = 'ModalNextHopDetail'

@@ -1,133 +1,113 @@
 <template>
-  <div>
-    <el-dialog
-      v-if="animationVisible"
-      id="ipms"
-      v-el-drag-dialog
-      :visible.sync="visible"
-      :width="domElement.maxWidth + `px`"
-      :fullscreen.sync="fullscreen"
-      :modal-append-to-body="true"
-      :append-to-body="true"
-      :modal="modal"
-      :close-on-click-modal="closeOnClickModal"
-      :loading="loading"
-      class="ipms-dialog"
-      :class="{ [name]: true }"
-    >
-      <span slot="title">
-        <i class="el-icon-document mr-2" style="font-size: 17px" />
-        시설 수용국 관리(FM)
-        <hr>
-      </span>
+  <el-dialog
+    v-if="animationVisible"
+    id="ipms"
+    v-el-drag-dialog
+    title="시설 수용국 관리(FM)"
+    :visible.sync="visible"
+    :width="domElement.maxWidth + `px`"
+    :fullscreen.sync="fullscreen"
+    :modal-append-to-body="true"
+    :append-to-body="true"
+    :modal="modal"
+    :close-on-click-modal="closeOnClickModal"
+    :loading="loading"
+    class="ipms-dialog"
+    :class="{ [name]: true }"
+  >
+    <div class="popupContentTable textcenter">
+      <div class="popupContentTableTitle">조직계위</div>
+      <table>
+        <colgroup>
+          <col width="25%" /><col width="25%" /><col width="25%" /><col width="25%" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th>서비스망</th>
+            <th>센터/지연본부</th>
+            <th>주노드</th>
+            <th>노드</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{{ resultListVo[0].ssvcLineTypeNm }}</td>
+            <td>{{ resultListVo[0].slvlGroupNm }}</td>
+            <td>{{ resultListVo[0].slvlHighNm }}</td>
+            <td>{{ resultListVo[0].slvlNm }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="popupContentTable">
+      <div class="popupContentTableTitle">조회결과</div>
+      <table>
+        <tbody>
+          <tr>
+            <th>국사선택</th>
+            <td class="textflex">
+              <el-input v-model="ssvcObjNm" readonly size="small">
+                <template #suffix>
+                  <el-button
+                    size="small"
+                    icon="el-icon-search"
+                    @click="fnViewSearchCenterLvlCd()"
+                  />
+                </template>
+              </el-input>
+              <el-button type="primary" size="small" round @click="fnInsertFmBtnClick()">추가</el-button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
 
-      <div id="content" class="layer">
-        <div class="content_result mt0">
-          <h4>조직계위</h4>
-          <table class="tbl_list mt5" summary="조회결과">
-            <colgroup>
-              <col width="25%" /><col width="25%" /><col width="25%" /><col width="25%" />
-            </colgroup>
-            <thead>
-              <tr>
-                <th scope="col">서비스망</th>
-                <th scope="col">센터/지연본부</th>
-                <th scope="col">주노드</th>
-                <th scope="col">노드</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>{{ resultListVo[0].ssvcLineTypeNm }}</td>
-                <td>{{ resultListVo[0].slvlGroupNm }}</td>
-                <td>{{ resultListVo[0].slvlHighNm }}</td>
-                <td>{{ resultListVo[0].slvlNm }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+    </div>
+    <div class="popupContentTable textcenter">
+      <div class="popupContentTableTitle">노드국 목록</div>
+      <table>
+        <caption>조직계위정보 목록</caption>
+        <colgroup>
+          <col width="12%" />
+          <col width="12%" />
+          <col width="12%" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th>계위코드</th>
+            <th>국사명</th>
+            <th>삭제</th>
+          </tr>
+        </thead>
 
-        <div class="content_result">
-          <table class="tbl_data entry" summary="조회결과">
-            <colgroup>
-              <col width="20%" /><col width="60%" /><col width="20%" />
-            </colgroup>
-            <tbody>
-              <tr class="top">
-                <th class="first" scope="row">국사선택</th>
-                <td>
-                  <el-input v-model="ssvcObjNm" readonly size="mini" class="txt w-80">
-                    <template #suffix>
-                      <el-button
-                        slot="trigger"
-                        size="small"
-                        style="font-size: larger; border: none; float: right"
-                        icon="el-icon-search"
-                        class="font-weight-bolder"
-                        @click="fnViewSearchCenterLvlCd()"
-                      />
-                    </template>
-                  </el-input>
-                  <el-button size="mini" @click="fnInsertFmBtnClick()">추가</el-button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-
-        </div>
-
-        <div class="content_result">
-          <h4>노드국 목록</h4>
-
-          <table id="orgTable" class="tbl_list mt5" summary="서비스망목록">
-            <caption>조직계위정보 목록</caption>
-            <colgroup>
-              <col width="12%" />
-              <col width="12%" />
-              <col width="12%" />
-            </colgroup>
-            <thead>
-              <tr>
-                <th class="first" scope="col">계위코드</th>
-                <th scope="col">국사명</th>
-                <th scope="col"></th>
-              </tr>
-            </thead>
-
-            <tbody>
-              <!-- 조회된 결과 목록이 없을 때 -->
-              <template v-if="resultVo.totalCount === 0">
-                <tr class="subbg last">
-                  <td class="first" colspan="3">조회된 결과 목록이 존재하지 않습니다.</td>
-                </tr>
-              </template>
-
-              <!-- 조회된 결과 목록이 있을 때 -->
-              <template v-if="resultVo.totalCount > 0">
-                <tr
-                  v-for="(item, index) in resultListNodeVo"
-                  :key="index"
-                  :class="{'subbg': index % 2 !== 0, 'last': index === resultListNodeVo.length - 1}"
-                >
-                  <td class="ellipsis" :title="item.slofficecode">{{ item.ssvcOfficeCd }}</td>
-                  <td class="ellipsis" :title="item.slofficeNm">{{ item.ssvcOfficeNm }}</td>
-                  <td>
-                    <el-button size="mini" @click="fnDeleteRoleSub(item)">삭제</el-button>
-                  </td>
-                </tr>
-              </template>
-            </tbody>
-          </table>
-        </div>
-
-      </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button size="mini" class="el-icon-close" @click="close()">{{ $t('exit') }}</el-button>
-      </div>
-      <ModalEntireOrgSearch ref="ModalEntireOrgSearch" @selected-value="setSelectedRow" />
-
-    </el-dialog>
-  </div>
+        <tbody>
+          <!-- 조회된 결과 목록이 없을 때 -->
+          <template v-if="resultVo.totalCount === 0">
+            <tr>
+              <td colspan="3" class="textcenter">조회된 결과 목록이 존재하지 않습니다.</td>
+            </tr>
+          </template>
+          <!-- 조회된 결과 목록이 있을 때 -->
+          <template v-if="resultVo.totalCount > 0">
+            <tr
+              v-for="(item, index) in resultListNodeVo"
+              :key="index"
+              :class="{'subbg': index % 2 !== 0, 'last': index === resultListNodeVo.length - 1}"
+            >
+              <td :title="item.slofficecode">{{ item.ssvcOfficeCd }}</td>
+              <td :title="item.slofficeNm">{{ item.ssvcOfficeNm }}</td>
+              <td>
+                <el-button type="danger" size="small" icon="el-icon-delete" circle @click="fnDeleteRoleSub(item)" />
+              </td>
+            </tr>
+          </template>
+        </tbody>
+      </table>
+    </div>
+    <div class="popupContentTableBottom">
+      <el-button type="primary" size="small" icon="el-icon-close" round @click="close()">{{ $t('exit') }}</el-button>
+    </div>
+    <ModalEntireOrgSearch ref="ModalEntireOrgSearch" @selected-value="setSelectedRow" />
+  </el-dialog>
 </template>
 
 <script>

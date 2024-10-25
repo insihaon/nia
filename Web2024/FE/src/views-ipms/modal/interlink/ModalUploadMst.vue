@@ -1,82 +1,83 @@
 <template>
-  <div>
-    <el-dialog
-      v-if="animationVisible"
-      id="ipms"
-      v-el-drag-dialog
-      :visible.sync="visible"
-      :width="domElement.maxWidth + `px`"
-      :fullscreen.sync="fullscreen"
-      :modal-append-to-body="false"
-      :append-to-body="true"
-      :modal="modal"
-      :close-on-click-modal="closeOnClickModal"
-      :loading="loading"
-      class="ipms-dialog"
-      :class="{ [name]: true }"
-    >
-      <span slot="title">
-        <i class="el-icon-document mr-2" style="font-size: 17px" />
-        텍스트 파일 업로드
-        <hr>
+  <el-dialog
+    v-if="animationVisible"
+    id="ipms"
+    v-el-drag-dialog
+    title="텍스트 파일 업로드"
+    :visible.sync="visible"
+    :width="domElement.maxWidth + `px`"
+    :fullscreen.sync="fullscreen"
+    :modal-append-to-body="false"
+    :append-to-body="true"
+    :modal="modal"
+    :close-on-click-modal="closeOnClickModal"
+    :loading="loading"
+    class="ipms-dialog"
+    :class="{ [name]: true }"
+  >
+    <div class="popupContentTable">
+      <div class="popupContentTableTitle">Upload ( 무선 IP-Checker 에 등록되어 있는 txt 파일만 업로드 )</div>
+      <table>
+        <colgroup>
+          <col width="20%" />
+          <col width="80%" />
+        </colgroup>
+        <tbody>
+          <tr>
+            <th>파일 Upload</th>
+            <td class="textflex">
+              <el-select v-model="selectedOption" size="small">
+                <el-option
+                  v-for="item in uploadOptions"
+                  :key="item.value"
+                  :value="item.value"
+                  :label="item.label"
+                >
+                </el-option>
+              </el-select>
+              <el-upload
+                action="https://www.typicode.com/posts/"
+                :on-preview="handlePreview"
+                :on-remove="handleRemove"
+                :before-remove="beforeRemove"
+                multiple
+                :limit="3"
+                :on-exceed="handleExceed"
+                :file-list="fileList"
+                @change="handleFileUpload"
+              >
+                <el-button size="small" type="primary" plain>파일선택</el-button>
+                <div slot="tip" class="el-upload__tip">선택된 파일 없음</div>
+              </el-upload>
+            </td>
+            <td>
+              <el-button size="small" type="primary" round @click="uploadAjax">
+                Upload
+              </el-button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- <div class="btn_area mt10">
+      <span>
+        <a href="#none">
+          <input
+            type="image"
+            :src="closeButtonImage"
+            value="닫기"
+            id="btnClose"
+            @mouseover="menuOver"
+            @mouseout="menuOut"
+            @click="handleClose"
+          />
+        </a>
       </span>
-      <div id="content" class="layer">
-        <div class="content_result">
-          <h4>Upload ( 무선 IP-Checker 에 등록되어 있는 txt 파일만 업로드 )</h4>
-          <table class="tbl_data entry" summary="Summary">
-            <caption>Summary</caption>
-            <colgroup>
-              <col width="20%" />
-              <col width="80%" />
-            </colgroup>
-            <tbody>
-              <tr class="top last">
-                <th scope="col">파일 Upload</th>
-                <td>
-                  <el-select
-                    v-model="selectedOption"
-                    size="mini"
-                  >
-                    <el-option
-                      v-for="item in uploadOptions"
-                      :key="item.value"
-                      :value="item.value"
-                      :label="item.label"
-                    >
-                    </el-option>
-                  </el-select>
-                  <input id="insertFile" type="file" class="ml-2" size="500" @change="handleFileUpload" />
-                  <div class="btn_area">
-                    <el-button size="mini" type="primary" @click="uploadAjax">
-                      Upload
-                    </el-button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <!-- <div class="btn_area mt10">
-          <span>
-            <a href="#none">
-              <input
-                type="image"
-                :src="closeButtonImage"
-                value="닫기"
-                id="btnClose"
-                @mouseover="menuOver"
-                @mouseout="menuOut"
-                @click="handleClose"
-              />
-            </a>
-          </span>
-        </div> -->
-      </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button size="mini" class="el-icon-close" @click.native="close()">{{ $t('exit') }}</el-button>
-      </div>
-    </el-dialog>
-  </div>
+    </div> -->
+    <div class="popupContentTableBottom">
+      <el-button type="primary" size="small" icon="el-icon-close" round @click.native="close()">{{ $t('exit') }}</el-button>
+    </div>
+  </el-dialog>
 </template>
 
 <script>
@@ -109,7 +110,7 @@ export default {
     onCreated() {
       Modal.methods.onCreated.call(this)
       this.closeOnClickModal = false
-      this.domElement.maxWidth = 1000
+      this.domElement.maxWidth = 600
     },
     onOpen(model, actionMode) {
     },

@@ -1,81 +1,67 @@
 <template>
-  <div>
-    <el-dialog
-      v-if="animationVisible"
-      id="ipms"
-      v-el-drag-dialog
-      :visible.sync="visible"
-      :width="domElement.maxWidth + `px`"
-      :fullscreen.sync="fullscreen"
-      :modal-append-to-body="false"
-      :append-to-body="true"
-      :modal="modal"
-      :close-on-click-modal="closeOnClickModal"
-      :loading="loading"
-      class="ipms-dialog"
-      :class="{ [name]: true }"
-    >
-      <span slot="title">
-        <i class="el-icon-document mr-2" style="font-size: 17px" />
-        {{ isTitle }}
-        <hr>
-      </span>
-
-      <div id="content" class="layer">
-        <div class="content_result mt0">
-          <table class="tbl_data entry">
-            <colgroup>
-              <col width="30%" /><col width="70%" />
-            </colgroup>
-            <tbody>
-              <tr class="top">
-                <th class="first" scope="row">계위코드</th>
-                <td> {{ resultVo.slvlCd }} </td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">계위명</th>
-                <td><el-input v-model="resultVo.slvlNm" type="text" size="mini" class="txt w-100" /></td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">계위구분</th>
-                <td>
-                  <el-select v-model="resultVo.sorgOfficeFlagYn" class="w-100" size="mini">
-                    <el-option
-                      v-for="item in [
-                        { label : '국사' , value: 'N'},
-                        { label : '조직' , value: 'Y'}
-                      ]"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </el-select>
-                </td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">외부연동코드</th>
-                <td><el-input type="text" size="mini" class="txt w-100" value="수작업데이터" disabled="disabled" /></td>
-              </tr>
-              <tr class="last">
-                <th class="first" scope="row">비고</th>
-                <td><el-input v-model="resultVo.scomment" size="mini" type="text" class="txt w-100" name="scomment" /></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div slot="footer" class="dialog-footer">
-        <el-button v-if="isViewType === 'edit'" size="mini" @click="fnApproveIpAssignApy()">
-          {{ $t('저장') }}
-        </el-button>
-        <el-button v-else size="mini" @click="fnInsertSubmit()">
-          {{ $t('등록') }}
-        </el-button>
-        <el-button size="mini" class="el-icon-close" @click="close()">{{ $t('exit') }}</el-button>
-      </div>
-    </el-dialog>
-  </div>
+  <el-dialog
+    v-if="animationVisible"
+    id="ipms"
+    v-el-drag-dialog
+    :title="isTitle"
+    :visible.sync="visible"
+    :width="domElement.maxWidth + `px`"
+    :fullscreen.sync="fullscreen"
+    :modal-append-to-body="false"
+    :append-to-body="true"
+    :modal="modal"
+    :close-on-click-modal="closeOnClickModal"
+    :loading="loading"
+    class="ipms-dialog"
+    :class="{ [name]: true }"
+  >
+    <div class="popupContentTable">
+      <table>
+        <colgroup>
+          <col width="30%" /><col width="70%" />
+        </colgroup>
+        <tbody>
+          <tr>
+            <th>계위코드</th>
+            <td> {{ resultVo.slvlCd }} </td>
+          </tr>
+          <tr>
+            <th>계위명</th>
+            <td><el-input v-model="resultVo.slvlNm" size="small" /></td>
+          </tr>
+          <tr>
+            <th>계위구분</th>
+            <td>
+              <el-select v-model="resultVo.sorgOfficeFlagYn" size="small" class="w-100">
+                <el-option
+                  v-for="item in [
+                    { label : '국사' , value: 'N'},
+                    { label : '조직' , value: 'Y'}
+                  ]"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </td>
+          </tr>
+          <tr>
+            <th>외부연동코드</th>
+            <td><el-input size="small" value="수작업데이터" disabled /></td>
+          </tr>
+          <tr class="last">
+            <th>비고</th>
+            <td><el-input v-model="resultVo.scomment" size="small" /></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="popupContentTableBottom">
+      <el-button v-if="isViewType === 'edit'" type="primary" size="small" icon="el-icon-save" round @click="fnApproveIpAssignApy()">저장</el-button>
+      <el-button v-else type="primary" size="small" icon="el-icon-document-add" round @click="fnInsertSubmit()">등록</el-button>
+      <el-button type="primary" size="small" icon="el-icon-close" round @click="close()">{{ $t('exit') }}</el-button>
+    </div>
+  </el-dialog>
 </template>
 
 <script>

@@ -1,110 +1,99 @@
 <template>
-  <div>
-    <el-dialog
-      v-if="animationVisible"
-      id="ipms"
-      v-el-drag-dialog
-      :visible.sync="visible"
-      :width="domElement.maxWidth + `px`"
-      :fullscreen.sync="fullscreen"
-      :modal-append-to-body="false"
-      :append-to-body="true"
-      :modal="modal"
-      :close-on-click-modal="closeOnClickModal"
-      :loading="loading"
-      class="ipms-dialog"
-      :class="{ [name]: true }"
-    >
-      <span slot="title">
-        <i class="el-icon-document mr-2" style="font-size: 17px" />
-        업로드
-        <hr>
-      </span>
-      <div id="content" class="layer">
-        <div class="content_result mt0">
-          <form id="inputForm" name="inputForm">
-            <h4>양식 다운로드 및 업로드</h4>
-            <h4 style="color:red;">주의사항</h4>
-            <p style="padding-left: 20px;">
-              <span style="color:blue; font-weight:bold;">*&nbsp;양식 다운로드&nbsp;</span>: 계위 선택 및 수용국까지 선택하셔야 합니다.
-            </p>
-            <p style="padding-left: 20px;">
-              <span style="color:blue; font-weight:bold;">*&nbsp;Upload&nbsp;</span>: 계위 선택을 하셔야 하며 선택한 계위로 엑셀 데이터가 등록됩니다.
-            </p>
-            <p style="padding-left: 81px;">
-              업로드 성공 또는 실패시 경고창이 나타납니다. 그 전까지 새로고침 혹은 페이지를 벗어나지 마세요.
-            </p>
-            <table class="tbl_data entry mt5">
-              <colgroup>
-                <col width="15%" />
-                <col width="35%" />
-                <col width="15%" />
-                <col width="35%" />
-              </colgroup>
-              <tbody>
-                <tr class="top">
-                  <th class="first" scope="row">계위</th>
-                  <td colspan="3">
-                    <ul class="min_flow">
-                      <SsvcLineType
-                        ref="SsvcLineType"
-                        class="SsvcLineType"
-                        label=""
-                        :lvl="3"
-                        @update-value="onChangeSsvcLineType"
-                      />
-                    </ul>
-                  </td>
-                </tr>
-                <tr>
-                  <th class="first" scope="row">수용국</th>
-                  <td colspan="3">
-                    <ul class="min_flow">
-                      <el-select
-                        v-model="formData.sicisofficescodeNe"
-                        size="mini"
-                        :disabled="disabledOffice"
-                      >
-                        <el-option
-                          v-for="(option, i) in sOfficeOptions"
-                          :key="i"
-                          :label="option.name"
-                          :value="option.code"
-                        />
-                      </el-select>
-                      <!-- <SOffice
-                        ref="SOffice"
-                        class="SOffice"
-                        label=""
-                        api-path="ipmgmt/ipuploadmgmt"
-                        list-name="selectSearchHostList"
-                        vo-name=""
-                        :valueKey="{ cd: 'code', nm: 'name' }"
-                      /> -->
-                      <!-- <select id="sicisofficescodeNe" name="sicisofficescodeNe" v-model="formData.sicisofficescodeNe" /> -->
-                    </ul>
-                  </td>
-                </tr>
-                <!-- Conditional input for MIG_PIP_PREFIX_RANGE -->
-                <tr>
-                  <th class="first" scope="col">파일 Upload</th>
-                  <td scope="col" colspan="3">
-                    <input id="input_file" type="file" size="500" @change="handleFileUpload" />
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </form>
-        </div>
-      </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button icon="el-icon-download" size="mini" @click="downloadFormat('txt')">텍스트 양식 다운로드</el-button>
-        <el-button icon="el-icon-download" size="mini" @click="downloadFormat('excel')">엑셀 양식 다운로드</el-button>
-        <el-button icon="el-icon-upload2" type="primary" size="mini" @click="fnUpload">Upload</el-button>
-        <el-button size="mini" class="el-icon-close" @click.native="close()">{{ $t('exit') }}</el-button>
-      </div>
-    </el-dialog>
-  </div>
+  <el-dialog
+    v-if="animationVisible"
+    id="ipms"
+    v-el-drag-dialog
+    title="업로드"
+    :visible.sync="visible"
+    :width="domElement.maxWidth + `px`"
+    :fullscreen.sync="fullscreen"
+    :modal-append-to-body="false"
+    :append-to-body="true"
+    :modal="modal"
+    :close-on-click-modal="closeOnClickModal"
+    :loading="loading"
+    class="ipms-dialog"
+    :class="{ [name]: true }"
+  >
+    <div class="popupContentTable">
+      <ul class="popupContentTableDes">
+        <li>양식 다운로드 및 업로드</li>
+        <li>
+          주의사항
+          <ul>
+            <li>※ 양식 다운로드 : <span>계위 선택 및 수용국까지 선택하셔야합니다.</span></li>
+            <li>※ Upload : <span>계위 선택을 하셔야하며 선택한 계위로 엑셀 데이터가 등록됩니다.<br>업로드 성공 또는 실패시 경고창이 나타납니다. 그 전까지 새로고침 혹은 페이지를 벗어나지 마세요.</span></li>
+          </ul>
+        </li>
+      </ul>
+      <table>
+        <!-- <colgroup>
+          <col width="15%" />
+          <col width="35%" />
+          <col width="15%" />
+          <col width="35%" />
+        </colgroup> -->
+        <tr>
+          <SsvcLineType
+            ref="SsvcLineType"
+            class="SsvcLineType"
+            label="계위"
+            :lvl="3"
+            @update-value="onChangeSsvcLineType"
+          />
+        </tr>
+        <tr>
+          <th>수용국</th>
+          <td class="flex">
+            <el-select v-model="formData.sicisofficescodeNe" :disabled="disabledOffice">
+              <el-option
+                v-for="(option, i) in sOfficeOptions"
+                :key="i"
+                :label="option.name"
+                :value="option.code"
+              />
+            </el-select>
+            <!-- <SOffice
+              ref="SOffice"
+              class="SOffice"
+              label=""
+              api-path="ipmgmt/ipuploadmgmt"
+              list-name="selectSearchHostList"
+              vo-name=""
+              :valueKey="{ cd: 'code', nm: 'name' }"
+            /> -->
+            <!-- <select id="sicisofficescodeNe" name="sicisofficescodeNe" v-model="formData.sicisofficescodeNe" /> -->
+          </td>
+        </tr>
+        <!-- Conditional input for MIG_PIP_PREFIX_RANGE -->
+        <tr>
+          <th>파일 Upload</th>
+          <td class="flex">
+            <el-upload
+              action="https://www.typicode.com/posts/"
+              :on-preview="handlePreview"
+              :on-remove="handleRemove"
+              :before-remove="beforeRemove"
+              multiple
+              :limit="3"
+              :on-exceed="handleExceed"
+              :file-list="fileList"
+              @change="handleFileUpload"
+            >
+              <el-button size="small" type="primary" plain>파일선택</el-button>
+              <div slot="tip" class="el-upload__tip">선택된 파일 없음</div>
+            </el-upload>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <div class="popupContentTableBottom">
+      <el-button type="primary" size="small" icon="el-icon-download" round @click="downloadFormat('txt')">텍스트 양식 다운로드</el-button>
+      <el-button type="primary" size="small" icon="el-icon-download" round @click="downloadFormat('excel')">엑셀 양식 다운로드</el-button>
+      <el-button type="primary" size="small" icon="el-icon-upload2" round @click="fnUpload">Upload</el-button>
+      <el-button type="primary" size="small" icon="el-icon-close" round @click.native="close()">{{ $t('exit') }}</el-button>
+    </div>
+  </el-dialog>
 </template>
 
 <script>
@@ -133,14 +122,15 @@ export default {
         sicisofficescodeNe: '',
       },
       sOfficeOptions: [],
-      files: []
+      files: [],
+      fileList: []
     }
   },
   methods: {
     onCreated() {
       Modal.methods.onCreated.call(this)
       this.closeOnClickModal = false
-      this.domElement.maxWidth = 1200
+      this.domElement.maxWidth = 800
     },
     onOpen(model, actionMode) {
       this.$set(this.formData, 'sicisofficescodeNe', '')
@@ -198,6 +188,16 @@ export default {
     },
     handleFileUpload(e) {
       this.files = e.target.files
+    },
+    handleRemove(file, fileList) {
+      console.log(file, fileList)
+    },
+    handlePreview(file) {
+      console.log(file)
+    },
+    handleExceed(files, fileList) {
+    },
+    beforeRemove(file, fileList) {
     },
     fnUpload() {
       if (this.files.length === 0) {
