@@ -92,14 +92,15 @@ export default {
         /*
           실시간 포함 5분 미만 스케줄링 -> max 5분
           5분주기 스케줄링 -> max 10분
-          수집 주기 max초과 시 연동이상
-
+          수집 주기 max초과 시 연동이상으로 판단한다.
         */
         aiIpSdnTrafficeKey: { name: 'IP_SDN_TRAFFICE', status: 'N', cycle: 1 /* * 60 * 1000 */ }, // 연동 주기 1분
         aiIpSdnSflowKey: { name: 'IPSDN_SFLOW', status: 'N', cycle: 1 /* * 60 * 1000 */ },
         aiIpSdnSyslogKey: { name: 'IPSDN_SYSLOG', status: 'N', cycle: 1 /* * 60 * 1000 */ },
         aiIpSdnNodeFactorKey: { name: 'IPSDN_NODE_FACTOR', status: 'N', cycle: 1 /* * 60 * 1000 */ },
-        aiTrafficResultKey: { name: 'TRAFFIC', status: 'N', cycle: 1 /* * 60 * 1000 */ },
+        // aiTrafficResultKey: { name: 'TRAFFIC', status: 'N', cycle: 1 /* * 60 * 1000 */ },
+        aiTrafficNoxKey: { name: '유해 TRAFFIC', status: 'N', cycle: 1 /* * 60 * 1000 */ },
+        aiTrafficAnoKey: { name: '이상 TRAFFIC', status: 'N', cycle: 1 /* * 60 * 1000 */ },
         aiIpPerfKey: { name: 'IP_PERF', status: 'N', cycle: 5 /* * 60 * 1000 */ }, // 연동 주기 5분
         aiIpResourceIfKey: { name: 'IP_RESOURCE_IF', status: 'N', cycle: this.moment().set({ hour: 2, minute: 40, second: 0, millisecond: 0 }) }, // 매일 2시 40분
         aiIpResourceKey: { name: 'IP_RESOURCE', status: 'N', cycle: this.moment().set({ hour: 2, minute: 30, second: 0, millisecond: 0 }) }, // 매일 2시 30분
