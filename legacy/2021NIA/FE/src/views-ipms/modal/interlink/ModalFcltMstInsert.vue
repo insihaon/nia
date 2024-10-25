@@ -1,155 +1,132 @@
 <template>
-  <div>
-    <el-dialog
-      v-if="animationVisible"
-      id="ipms"
-      v-el-drag-dialog
-      :visible.sync="visible"
-      :width="domElement.maxWidth + `px`"
-      :fullscreen.sync="fullscreen"
-      :modal-append-to-body="false"
-      :append-to-body="true"
-      :modal="modal"
-      :close-on-click-modal="closeOnClickModal"
-      :loading="loading"
-      class="ipms-dialog"
-      :class="{ [name]: true }"
-    >
-      <!-- TACS관리 / IP주소 라우팅 비교/점검 > 조직별 장비 정보관리 > 신규생성 -->
-      <span slot="title">
-        <i class="el-icon-document mr-2" style="font-size: 17px" />
-        조직 장비 {{ fnType === 'insert' ? '등록': '수정' }}
-        <hr>
-      </span>
-      <div id="content" class="layer">
-        <div class="content_result mt0">
-          <table class="tbl_data entry">
-            <colgroup>
-              <col width="15%" />
-              <col width="35%" />
-              <col width="15%" />
-              <col width="35%" />
-            </colgroup>
-            <tbody>
-              <tr class="top">
-                <th class="first" scope="row">계위</th>
-                <td v-if="fnType === 'update'" colspan="3">
-                  {{ formData.ssvcLineTypeNm }} - {{ formData.ssvcGroupNm }} - {{ formData.ssvcObjNm }}
-                </td>
-                <td v-else colspan="3">
-                  <ul>
-                    <SsvcLineType
-                      ref="ssvcLineType"
-                      class="SsvcLineType"
-                      label=""
-                      :lvl="3"
-                      :is-all-lvl1="false"
-                      :props-lvl-options="{
-                        1: [
-                          { label: 'KORNET', value: 'CL0001' },
-                          { label: 'PREMIUM', value: 'CL0002' },
-                          { label: 'MOBILE', value: 'CL0003' }
-                        ]
-                      }"
-                      @update-value="onChangeSsvcLineType"
-                    />
-                  </ul>
-                </td>
-              </tr>
-              <tr>
-                <th scope="row">장비타입</th>
-                <td :colspan="viewType === 'tacsMng' ?'3': '1'">
-                  <select v-model="formData.sfcltType" class="w99">
-                    <option value="">선택</option>
-                    <option
-                      v-for="(item, index) in sfcltTypes"
-                      :key="index"
-                      :value="item.code"
-                      :label="item.name"
-                    />
-                  </select>
-                </td>
-                <template v-if="viewType === 'ipRouting'">
-                  <th scope="row">사용여부</th>
-                  <td>
-                    <select v-model="formData.suseYn" class="w99">
-                      <option value="">선택</option>
-                      <option
-                        v-for="(item, index) in [{ code: 'Y', name: 'Y' }, { code: 'N', name: 'N' }]"
-                        :key="index"
-                        :value="item.code"
-                        :label="item.name"
-                      />
-                    </select>
-                  </td>
-                </template>
-              </tr>
-              <tr>
-                <th class="first" scope="row">장비IP</th>
-                <td>
-                  <input
-                    v-model="formData.pipFcltInet"
-                    type="text"
-                    class="txt w96"
-                    name="insertPipFcltInet"
-                    title="IP 주소 입력창"
-                    maxlength="43"
+  <el-dialog
+    v-if="animationVisible"
+    id="ipms"
+    v-el-drag-dialog
+    :title="'조직 장비 '+(fnType === 'insert' ? '등록': '수정')"
+    :visible.sync="visible"
+    :width="domElement.maxWidth + `px`"
+    :fullscreen.sync="fullscreen"
+    :modal-append-to-body="false"
+    :append-to-body="true"
+    :modal="modal"
+    :close-on-click-modal="closeOnClickModal"
+    :loading="loading"
+    class="ipms-dialog"
+    :class="{ [name]: true }"
+  >
+    <!-- TACS관리 / IP주소 라우팅 비교/점검 > 조직별 장비 정보관리 > 신규생성 -->
+    <div class="popupContentTable">
+      <table v-if="fnType === 'insert'">
+        <colgroup>
+          <col width="15%" />
+          <col width="85%" />
+        </colgroup>
+        <tr>
+          <SsvcLineType
+            ref="ssvcLineType"
+            class="SsvcLineType"
+            :lvl="3"
+            prop-colspan="3"
+            :is-all-lvl1="false"
+            :props-lvl-options="{
+              1: [
+                { label: 'KORNET', value: 'CL0001' },
+                { label: 'PREMIUM', value: 'CL0002' },
+                { label: 'MOBILE', value: 'CL0003' }
+              ]
+            }"
+            @update-value="onChangeSsvcLineType"
+          />
+        </tr>
+      </table>
+      <table>
+        <colgroup>
+          <col width="15%" />
+          <col width="35%" />
+          <col width="15%" />
+          <col width="35%" />
+        </colgroup>
+        <tbody>
+          <tr>
+            <template v-if="fnType === 'update'">
+              <th>계위</th>
+              <td colspan="3">
+                {{ formData.ssvcLineTypeNm }} - {{ formData.ssvcGroupNm }} - {{ formData.ssvcObjNm }}
+              </td>
+            </template>
+          </tr>
+          <tr>
+            <th>장비타입</th>
+            <td :colspan="viewType === 'tacsMng' ?'3': '1'">
+              <el-select v-model="formData.sfcltType">
+                <el-option value="">선택</el-option>
+                <el-option
+                  v-for="(item, index) in sfcltTypes"
+                  :key="index"
+                  :value="item.code"
+                  :label="item.name"
+                />
+              </el-select>
+            </td>
+            <template v-if="viewType === 'ipRouting'">
+              <th>사용여부</th>
+              <td>
+                <el-select v-model="formData.suseYn">
+                  <el-option value="">선택</el-option>
+                  <el-option
+                    v-for="(item, index) in [{ code: 'Y', name: 'Y' }, { code: 'N', name: 'N' }]"
+                    :key="index"
+                    :value="item.code"
+                    :label="item.name"
                   />
-                </td>
-                <th scope="row">장비PORT</th>
-                <td>
-                  <select v-model="formData.nportFclt" class="w99">
-                    <option value="">선택</option>
-                    <option value="23">TELNET(23)</option>
-                    <option value="22">SSH(22)</option>
-                  </select>
-                </td>
-              </tr>
-              <tr v-if="viewType === 'ipRouting'">
-                <th class="first" scope="row">상위장비IP</th>
-                <td>
-                  <input
-                    v-model="formData.pipUpperFclt"
-                    type="text"
-                    class="txt w96"
-                    name="insertPipFcltInet"
-                    title="IP 주소 입력창"
-                    maxlength="43"
-                  />
-                </td>
-                <th scope="row">PEER장비IP</th>
-                <td>
-                  <input
-                    v-model="formData.pipPeerFclt"
-                    type="text"
-                    class="txt w96"
-                    name="insertPipFcltInet"
-                    title="IP 주소 입력창"
-                    maxlength="43"
-                  />
-                </td>
-              </tr>
-              <tr class="last">
-                <th class="first" scope="row">장비프롬프트명</th>
-                <td>
-                  <input v-model="formData.sfcltPromptNm" type="text" class="txt w96" />
-                </td>
-                <th scope="row">장비모델명</th>
-                <td>
-                  <input v-model="formData.sfcltModelNm" type="text" class="txt w96" />
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button v-if="fnType === 'insert'" icon="el-icon-edit-outline" type="primary" size="mini" @click="fnInsertFcltMst">등록</el-button>
-        <el-button v-if="fnType === 'update'" icon="el-icon-edit-outline" type="primary" size="mini" @click="fnUpdateFcltMst">수정</el-button>
-        <el-button size="mini" class="el-icon-close" @click.native="close()">{{ $t('exit') }}</el-button>
-      </div>
-    </el-dialog>
-  </div>
+                </el-select>
+              </td>
+            </template>
+          </tr>
+          <tr>
+            <th>장비IP</th>
+            <td>
+              <el-input v-model="formData.pipFcltInet" type="text" maxlength="43" />
+            </td>
+            <th>장비PORT</th>
+            <td>
+              <el-select v-model="formData.nportFclt">
+                <el-option value="">선택</el-option>
+                <el-option :value="23" label="TELNET(23)" />
+                <el-option :value="22" label="SSH(22)" />
+              </el-select>
+            </td>
+          </tr>
+          <tr v-if="viewType === 'ipRouting'">
+            <th>상위장비IP</th>
+            <td>
+              <el-input v-model="formData.pipUpperFclt" type="text" maxlength="43" />
+            </td>
+            <th>PEER장비IP</th>
+            <td>
+              <el-input v-model="formData.pipPeerFclt" type="text" maxlength="43" />
+            </td>
+          </tr>
+          <tr>
+            <th>장비프롬프트명</th>
+            <td>
+              <el-input v-model="formData.sfcltPromptNm" type="text" />
+            </td>
+            <th>장비모델명</th>
+            <td>
+              <el-input v-model="formData.sfcltModelNm" type="text" />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="popupContentTableBottom">
+      <el-button v-if="fnType === 'insert'" icon="el-icon-document-add" type="primary" size="small" round @click="fnInsertFcltMst">등록</el-button>
+      <el-button v-if="fnType === 'update'" icon="el-icon-edit" type="primary" size="small" round @click="fnUpdateFcltMst">수정</el-button>
+      <el-button type="primary" size="small" icon="el-icon-close" round @click.native="close()">{{ $t('exit') }}</el-button>
+    </div>
+  </el-dialog>
 </template>
 
 <script>

@@ -1,36 +1,38 @@
 <template>
-  <el-col :class="{ [name]: true }" :xs="24" :sm="12" :md="12" :lg="8" :xl="6">
-    <label>
+  <fragment>
+    <th>
       {{ label }}
-    </label>
-    <el-select
-      v-if="isShowSelectBox"
-      v-model="value"
-      collapse-tags
-      size="mini"
-      :style="{'width': isShowInput ? '200px': '100%'}"
-      @change="()=> emitEventToParent([{ key: 'sipVersionTypeCd', value }])"
-    >
-      <el-option v-if="isAllOption" value="" label="전체"></el-option>
-      <el-option
-        v-for="(option, i) in [
-          { label: 'IPv4', value: 'CV0001' },
-          { label: 'IPv6', value: 'CV0002' },
-        ]"
-        :key="i"
-        :label="option.label"
-        :value="option.value"
+    </th>
+    <td class="textflex">
+      <el-select
+        v-if="isShowSelectBox"
+        v-model="value"
+        collapse-tags
+        size="small"
+        :style="{'width': isShowInput ? '200px': '100%'}"
+        @change="()=> emitEventToParent([{ key: 'sipVersionTypeCd', value }])"
+      >
+        <el-option v-if="isAllOption" value="" label="전체"></el-option>
+        <el-option
+          v-for="(option, i) in [
+            { label: 'IPv4', value: 'CV0001' },
+            { label: 'IPv6', value: 'CV0002' },
+          ]"
+          :key="i"
+          :label="option.label"
+          :value="option.value"
+        />
+      </el-select>
+      <el-input
+        v-if="isShowInput"
+        v-model="word"
+        size="small"
+        clearable
+        @input="onChangeInput"
+        @change="()=> emitEventToParent([{ key: 'searchWrd', value: word }])"
       />
-    </el-select>
-    <el-input
-      v-if="isShowInput"
-      v-model="word"
-      size="mini"
-      clearable
-      @input="onChangeInput"
-      @change="()=> emitEventToParent([{ key: 'searchWrd', value: word }])"
-    />
-  </el-col>
+    </td>
+  </fragment>
 </template>
 <script>
 import { Base } from '@/min/Base.min'

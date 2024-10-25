@@ -9,8 +9,9 @@
     <el-col ref="tableContainer" :span="24">
       <compTable
         ref="compTable"
+        style="height: calc(100% - 80px)"
         :prop-name="name"
-        :prop-table-height="'calc(100% - 80px)'"
+        :prop-table-height="'100%'"
         :prop-data="pagination.data"
         :prop-pagination-data.sync="pagination"
         :prop-column="tableColumns"
@@ -29,9 +30,9 @@
           </span>
         </template>
         <template slot="add-features">
-          <div class="float-right">
-            <el-button size="mini" icon="el-icon-plus" @click="handleClickRegist()">Community 등록</el-button>
-            <el-button size="mini" @click="fnDeleteWireMst()">삭제</el-button>
+          <div style="margin-top: 10px">
+            <el-button icon="el-icon-document-add" type="primary" size="mini" round @click="handleClickRegist()">Community 등록</el-button>
+            <el-button icon="el-icon-document-delete" type="primary" size="mini" round @click="fnDeleteWireMst()">삭제</el-button>
           </div>
         </template>
       </compTable>

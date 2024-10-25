@@ -9,8 +9,9 @@
     <el-col ref="tableContainer" :span="24">
       <compTable
         ref="compTable"
+        style="height: calc(100% - 80px)"
         :prop-name="name"
-        :prop-table-height="'calc(100% - 80px)'"
+        :prop-table-height="'100%'"
         :prop-data="pagination.data"
         :prop-pagination-data.sync="pagination"
         :prop-column="tableColumns"
@@ -28,8 +29,8 @@
           </span>
         </template>
         <template slot="add-features">
-          <div class="float-right">
-            <el-button size="mini" @click="handleClickEditBtn('insert')">운용정보등록</el-button>
+          <div style="margin-top: 10px">
+            <el-button icon="el-icon-document-add" type="primary" size="mini" round @click="handleClickEditBtn('insert')">운용정보등록</el-button>
           </div>
         </template>
       </compTable>
@@ -77,11 +78,18 @@ export default {
         { prop: 'del', label: '삭제', align: 'center', sortable: true, columnVisible: true, showOverflow: true,
           formatter: (row, col, value, index) => {
             return this.$createElement('el-button', {
-            on: { click: () => {
-                this.fnDeleteLinkIpMst(row)
+              attrs: {
+                round: true, // Adding the round option
+                plain: true,
+                type: 'primary',
+                size: 'mini'
+              },
+              on: { click: () => {
+                  this.fnDeleteLinkIpMst(row)
+                }
               }
-          } }, '삭제')
-}
+            }, '삭제')
+          }
         },
       ],
       tableDatas: [],

@@ -12,8 +12,6 @@
 import { Base } from '@/min/Base.min'
 import { AppOptions } from '@/class/appOptions'
 import { mapState } from 'vuex'
-import EventBus from '@/utils/event-bus'
-
 export default {
   name: 'AppMain',
   components: { },
@@ -59,6 +57,54 @@ export default {
 }
 </script>
 
+<style scoped>
+@import "../../../assets/fonts/pretendard/pretendard-gov.css";
+.app-main {
+  height: calc(100% - 50px);
+  position: relative;
+  padding: 0px 30px 30px 30px;
+  box-sizing: border-box;
+  border: none;
+  overflow: auto;
+  transition:all 0.25s !important;
+}
+.app-main::-webkit-scrollbar {
+  width: 20px; height:20px;
+}
+.app-main::-webkit-scrollbar-thumb {
+  background-color: rgba(0,0,0,0.1);
+  border-radius: 10px;
+  background-clip: padding-box;
+  border: 6px solid transparent;
+  transition: all 0.25s;
+}
+.app-main::-webkit-scrollbar-thumb:hover{
+  background-color:#406AFF;
+}
+.app-main::-webkit-scrollbar-track {
+  background-color: transparent;
+  border-radius: 5px;
+}
+.fixed-header+.app-main {
+  padding-top: 70px;
+}
+.externalMenuShow{
+  /* padding-top : calc(70px + 70px); */
+  transition:all 0.25s !important;
+}
+</style>
+
+<style lang="scss">
+// fix css style bug in open el-dialog
+.el-popup-parent--hidden {
+  .fixed-header {
+    padding-right: 15px;
+  }
+}
+.el-table::before{
+  z-index:0;
+}
+</style>
 <style lang="scss">
 @import "~@/styles/variables.scss";
 
@@ -81,25 +127,5 @@ export default {
   .fixed-header {
     padding-right: 10px;
   }
-}
-</style>
-
-<style lang="scss" scoped>
-.app-main {
-  font-family: "NotoSansKR";
-  width: 100%;
-  height: calc(100% - 50px);
-  // padding: 0px 50px;
-  position: relative;
-  overflow: hidden;
-
-  &>* {
-    height: 100%;
-    overflow: auto;
-    width: 100%;
-  }
-}
-body.el-popup-parent--hidden .app-main {
-  z-index: 1;
 }
 </style>

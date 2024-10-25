@@ -1,33 +1,35 @@
 <template>
-  <el-col :class="{ [name]: true }" :xs="24" :sm="12" :md="12" :lg="8" :xl="6">
-    <label v-if="isShowLabel">
+  <fragment>
+    <th v-if="isShowLabel">
       {{ label }}
-    </label>
-    <el-input
-      v-model="value"
-      size="mini"
-      :readonly="isReadOnly"
-      clearable
-      @input="formatInput"
-      @change="handleChangeWord"
-      @focus="handleClickArea"
-    >
-      <template #suffix>
-        <el-button
-          size="mini"
-          style="font-size: larger;border: none"
-          @click="handleClickButton"
-        >
-          <i class="el-icon-search font-weight-bolder"></i>
-        </el-button>
-      </template>
-    </el-input>
-    <ModalFacilityInformation ref="ModalFacilityInformation" @selected-value="setSelectedRow" />
+    </th>
+    <td>
+      <el-input
+        v-model="value"
+        size="small"
+        :readonly="isReadOnly"
+        clearable
+        @input="formatInput"
+        @change="handleChangeWord"
+        @focus="handleClickArea"
+      >
+        <template #suffix>
+          <el-button
+            size="mini"
+            style="font-size: larger;border: none;background:none;"
+            @click="handleClickButton"
+          >
+            <i class="el-icon-search font-weight-bolder"></i>
+          </el-button>
+        </template>
+      </el-input>
+    </td>
+    <ModalFacilityInformation v-show="false" ref="ModalFacilityInformation" @selected-value="setSelectedRow" />
     <!-- <ModalLinkInformation ref="ModalLinkInformation" @selected-value="setSelectedRow" />
     <ModalIpAllocCircuitDetail ref="ModalIpAllocCircuitDetail" /> -->
-    <ModalProductInformation ref="ModalProductInformation" @selected-value="setSelectedRow" />
-    <ModalOrgSearch ref="ModalOrgSearch" @selected-value="setSelectedRow" />
-  </el-col>
+    <ModalProductInformation v-show="false" ref="ModalProductInformation" @selected-value="setSelectedRow" />
+    <ModalOrgSearch v-show="false" ref="ModalOrgSearch" @selected-value="setSelectedRow" />
+  </fragment>
 </template>
 <script>
 import { Base } from '@/min/Base.min'

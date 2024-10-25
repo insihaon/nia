@@ -1,115 +1,95 @@
 <template>
-  <div>
-    <el-dialog
-      v-if="animationVisible"
-      id="ipms"
-      v-el-drag-dialog
-      :visible.sync="visible"
-      :width="domElement.maxWidth + `px`"
-      :fullscreen.sync="fullscreen"
-      :modal-append-to-body="true"
-      :append-to-body="true"
-      :modal="modal"
-      :close-on-click-modal="closeOnClickModal"
-      :loading="loading"
-      class="ipms-dialog"
-      :class="{ [name]: true }"
-    >
-      <span slot="title">
-        <i class="el-icon-document mr-2" style="font-size: 17px" />
-        조직계위 등록
-        <hr>
-      </span>
+  <el-dialog
+    v-if="animationVisible"
+    id="ipms"
+    v-el-drag-dialog
+    title="조직계위 등록"
+    :visible.sync="visible"
+    :width="domElement.maxWidth + `px`"
+    :fullscreen.sync="fullscreen"
+    :modal-append-to-body="true"
+    :append-to-body="true"
+    :modal="modal"
+    :close-on-click-modal="closeOnClickModal"
+    :loading="loading"
+    class="ipms-dialog"
+    :class="{ [name]: true }"
+  >
+    <div class="popupContentTable">
+      <div class="popupContentTableTitle">조직계위</div>
+      <table>
+        <colgroup>
+          <col width="30%" /><col width="70%" />
+        </colgroup>
+        <tbody>
+          <tr>
+            <th>서비스망</th>
+            <!-- <td>KORNET - 강북운용단 - 혜화지사</td> -->
+            <td>
+              <el-select v-model="ssvcLineTypeCd" size="small" class="w-100">
+                <el-option
+                  v-for="item in ssvcLineTypeCdOp"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </td>
+          </tr>
+          <tr>
+            <th>센터/지역본부</th>
+            <td>
+              <el-input v-model="ssvcGroupNm" size="small" readonly>
+                <template #suffix>
+                  <el-button
+                    size="small"
+                    icon="el-icon-search"
+                    @click="fnViewSearchCenterLvlCd('센터/지역본부')"
+                  />
+                </template>
+              </el-input>
+            </td>
 
-      <div id="content" class="layer">
-        <div class="content_result mt0">
-          <h4>조직계위</h4>
-          <table class="tbl_data entry" summary="조회결과">
-            <colgroup>
-              <col width="30%" /><col width="70%" />
-            </colgroup>
-            <tbody>
-              <tr class="top">
-                <th class="first" scope="row">서비스망</th>
-                <!-- <td>KORNET - 강북운용단 - 혜화지사</td> -->
-                <td>
-                  <el-select v-model="ssvcLineTypeCd" size="mini" class="w-100">
-                    <el-option
-                      v-for="item in ssvcLineTypeCdOp"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </el-select>
-                </td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">센터/지역본부</th>
-                <td>
-                  <el-input v-model="ssvcGroupNm" size="mini" type="text" class="txt w95" readonly="readonly">
-                    <template #suffix>
-                      <el-button
-                        slot="trigger"
-                        size="small"
-                        style="font-size: larger; border: none; float: right"
-                        icon="el-icon-search"
-                        class="font-weight-bolder"
-                        @click="fnViewSearchCenterLvlCd('센터/지역본부')"
-                      />
-                    </template>
-                  </el-input>
-                </td>
-
-              </tr>
-              <tr>
-                <th class="first" scope="row">노드</th>
-                <td>
-                  <el-input v-model="ssvcObjNm" size="mini" type="text" class="txt w95" readonly="readonly">
-                    <template #suffix>
-                      <el-button
-                        slot="trigger"
-                        size="small"
-                        style="font-size: larger; border: none; float: right"
-                        icon="el-icon-search"
-                        class="font-weight-bolder"
-                        @click="fnViewSearchCenterLvlCd('노드')"
-                      />
-                    </template>
-                  </el-input>
-                </td>
-              </tr>
-              <tr class="last">
-                <th class="first" scope="row">주노드</th>
-                <td>
-                  <el-input v-model="ssvchighObjNm" size="mini" type="text" class="txt w95" readonly="readonly">
-                    <template #suffix>
-                      <el-button
-                        slot="trigger"
-                        size="small"
-                        style="font-size: larger; border: none; float: right"
-                        icon="el-icon-search"
-                        class="font-weight-bolder"
-                        @click="fnViewSearchCenterLvlCd('주노드')"
-                      />
-                    </template>
-                  </el-input>
-                </td>
-              </tr>
-
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button size="mini" @click="fnInsertValidTbLvlBas()">
-          {{ $t('등록') }}
-        </el-button>
-        <el-button size="mini" class="el-icon-close" @click="close()">{{ $t('exit') }}</el-button>
-      </div>
-      <ModalEntireOrgSearch ref="ModalEntireOrgSearch" @selected-value="setSelectedRow" />
-
-    </el-dialog>
-  </div>
+          </tr>
+          <tr>
+            <th>노드</th>
+            <td>
+              <el-input v-model="ssvcObjNm" size="small" readonly>
+                <template #suffix>
+                  <el-button
+                    slot="trigger"
+                    size="small"
+                    icon="el-icon-search"
+                    @click="fnViewSearchCenterLvlCd('노드')"
+                  />
+                </template>
+              </el-input>
+            </td>
+          </tr>
+          <tr>
+            <th>주노드</th>
+            <td>
+              <el-input v-model="ssvchighObjNm" size="small" readonly>
+                <template #suffix>
+                  <el-button
+                    slot="trigger"
+                    size="small"
+                    icon="el-icon-search"
+                    @click="fnViewSearchCenterLvlCd('주노드')"
+                  />
+                </template>
+              </el-input>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="popupContentTableBottom">
+      <el-button type="primary" size="small" icon="el-icon-document-add" round @click="fnInsertValidTbLvlBas()">등록</el-button>
+      <el-button type="primary" size="small" icon="el-icon-close" round @click="close()">{{ $t('exit') }}</el-button>
+    </div>
+    <ModalEntireOrgSearch ref="ModalEntireOrgSearch" @selected-value="setSelectedRow" />
+  </el-dialog>
 </template>
 
 <script>

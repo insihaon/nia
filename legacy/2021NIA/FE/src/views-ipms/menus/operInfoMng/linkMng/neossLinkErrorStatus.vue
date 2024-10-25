@@ -7,8 +7,9 @@
     <el-col :span="24">
       <compTable
         ref="compTable"
+        style="height: calc(100% - 80px)"
         :prop-name="name"
-        :prop-table-height="'calc(100% - 80px)'"
+        :prop-table-height="'100%'"
         :prop-column="tableColumns"
         :prop-is-pagination="true"
         :prop-is-check-box="true"

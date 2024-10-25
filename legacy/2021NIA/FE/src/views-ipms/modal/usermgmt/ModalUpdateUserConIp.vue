@@ -1,101 +1,81 @@
 <template>
-  <div>
-    <el-dialog
-      v-if="animationVisible"
-      id="ipms"
-      v-el-drag-dialog
-      :visible.sync="visible"
-      :width="domElement.maxWidth + `px`"
-      :fullscreen.sync="fullscreen"
-      :modal-append-to-body="true"
-      :append-to-body="true"
-      :modal="modal"
-      :close-on-click-modal="closeOnClickModal"
-      :loading="loading"
-      class="ipms-dialog"
-      :class="{ [name]: true }"
-    >
-      <span slot="title">
-        <i class="el-icon-document mr-2" style="font-size: 17px" />
-        사용자 단말 관리
-        <hr>
-      </span>
+  <el-dialog
+    v-if="animationVisible"
+    id="ipms"
+    v-el-drag-dialog
+    title="사용자 단말 관리"
+    :visible.sync="visible"
+    :width="domElement.maxWidth + `px`"
+    :fullscreen.sync="fullscreen"
+    :modal-append-to-body="true"
+    :append-to-body="true"
+    :modal="modal"
+    :close-on-click-modal="closeOnClickModal"
+    :loading="loading"
+    class="ipms-dialog"
+    :class="{ [name]: true }"
+  >
+    <div class="popupContentTable textcenter">
+      <div class="popupContentTableTitle">IP 승인 현황</div>
+      <table>
+        <thead>
+          <tr>
+            <th>상태</th>
+            <th>단말고유정보</th>
+            <th>승인자</th>
+            <th>승인일</th>
+            <th>삭제</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-if="tbUserBasVo.totalCount === 0">
+            <td colspan="7">조회된 결과 목록이 존재하지 않습니다.</td>
+          </tr>
+          <template v-else>
+            <tr v-for="(item, index) in tbUserBasVoList" :key="index">
+              <td>{{ item.shndsetUseSttusNm }}</td>
+              <td>{{ item.suserHndsetId }}</td>
+              <td>{{ item.shndsetApvUserNm }}</td>
+              <td>{{ item.dmodifyDt }}</td>
+              <td>
+                <el-button type="danger" size="small" icon="el-icon-delete" circle @click="fnDeleteUserHndSet(item.suserId, item.nhndsetApySeq, index)" />
+              </td>
+            </tr>
+          </template>
+        </tbody>
+      </table>
+    </div>
 
-      <div id="content" class="layer">
-        <div class="content_result mt0">
-          <h4>IP 승인 현황</h4>
-          <table class="tbl_list mt5">
-            <caption>IP 승인 현황</caption>
-            <colgroup>
-              <col width="10%" /><col width="40%" /><col width="15%" /><col width="20%" />
-              <col width="15%" />
-            </colgroup>
-            <thead>
-              <tr>
-                <th class="first" scope="col">상태</th>
-                <th scope="col">단말고유정보</th>
-                <th scope="col">승인자</th>
-                <th scope="col">승인일</th>
-                <th scope="col">삭제</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-if="tbUserBasVo.totalCount === 0" class="subbg last">
-                <td class="first" colspan="7">조회된 결과 목록이 존재하지 않습니다.</td>
-              </tr>
-              <tr
-                v-for="(item, index) in tbUserBasVoList"
-                v-else
-                :key="index"
-                :class="index % 2 === 0 ? '' : 'subbg last'"
-              >
-                <td class="first">{{ item.shndsetUseSttusNm }}</td>
-                <td class="left">{{ item.suserHndsetId }}</td>
-                <td>{{ item.shndsetApvUserNm }}</td>
-                <td>{{ item.dmodifyDt }}</td>
-                <td class="btn_text">
-                  <a @click="fnDeleteUserHndSet(item.suserId, item.nhndsetApySeq, index)">삭제</a>
-                </td>
-                <td style="display: none;">{{ item.suserId }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="content_result">
-          <h4>
-            IP 등록
-            <span class="tbl_info ml10 mt5">다중 IP 신청이 가능한 사용자는 승인된 IP가 3개 이상이 되는 경우, 기존 내역 중 일부를 삭제한 후에만 등록이 가능합니다.</span>
-          </h4>
-          <table class="tbl_data entry">
-            <colgroup>
-              <col width="15%" /><col width="85%" />
-            </colgroup>
-            <tbody>
-              <tr class="top">
-                <th class="first" scope="row">등록 IP</th>
-                <td>
-                  <el-input v-model="txtUserHndSetId" placeholder="등록할 IP를 입력하세요" class="w-100" />
-                </td>
-              </tr>
-              <tr class="last">
-                <th class="first" scope="row">변경사유</th>
-                <td>
-                  <el-input v-model="txtHndSetComment" class="w-100" />
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+    <div class="popupContentTable">
+      <div class="popupContentTableTitle">
+        IP 등록<br />
+        <span style="font-size: 13px;color: #b0b0b0;"> ※ 다중 IP 신청이 가능한 사용자는 승인된 IP가 3개 이상이 되는 경우, 기존 내역 중 일부를 삭제한 후에만 등록이 가능합니다.</span>
       </div>
-
-      <div slot="footer" class="dialog-footer">
-        <el-button size="mini" @click="fnUserHndSetInsert()">{{ '등록' }}</el-button>
-        <el-button size="mini" class="el-icon-close" @click="close()">{{ $t('exit') }}</el-button>
-      </div>
-
-    </el-dialog>
-  </div>
+      <table>
+        <colgroup>
+          <col width="15%" /><col width="85%" />
+        </colgroup>
+        <tbody>
+          <tr>
+            <th>등록 IP</th>
+            <td>
+              <el-input v-model="txtUserHndSetId" placeholder="등록할 IP를 입력하세요" class="w-100" />
+            </td>
+          </tr>
+          <tr>
+            <th>변경사유</th>
+            <td>
+              <el-input v-model="txtHndSetComment" class="w-100" />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="popupContentTableBottom">
+      <el-button type="primary" size="small" icon="el-icon-document-add" round @click="fnUserHndSetInsert()">등록</el-button>
+      <el-button type="primary" size="small" icon="el-icon-close" round @click="close()">{{ $t('exit') }}</el-button>
+    </div>
+  </el-dialog>
 </template>
 
 <script>

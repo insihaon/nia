@@ -1,238 +1,179 @@
 <template>
-  <div>
-    <el-dialog
-      v-if="animationVisible"
-      id="ipms"
-      v-el-drag-dialog
-      :visible.sync="visible"
-      :width="domElement.maxWidth + `px`"
-      :fullscreen.sync="fullscreen"
-      :modal-append-to-body="false"
-      :append-to-body="true"
-      :modal="modal"
-      :close-on-click-modal="closeOnClickModal"
-      :loading="loading"
-      class="ipms-dialog"
-      :class="{ [name]: true }"
-    >
-      <span slot="title">
-        <i class="el-icon-document mr-2" style="font-size: 17px" />
+  <el-dialog
+    v-if="animationVisible"
+    id="ipms"
+    v-el-drag-dialog
+    :title="title"
+    :visible.sync="visible"
+    :width="domElement.maxWidth + `px`"
+    :fullscreen.sync="fullscreen"
+    :modal-append-to-body="false"
+    :append-to-body="true"
+    :modal="modal"
+    :close-on-click-modal="closeOnClickModal"
+    :loading="loading"
+    class="ipms-dialog"
+    :class="{ [name]: true }"
+  >
 
-        {{ title }}
-        <hr>
-      </span>
-
-      <div id="content" class="layer">
-        <div class="content_result mt0">
-          <table class="tbl_data entry" summary="조회조건선택">
-            <caption>조회조건선택</caption>
-            <colgroup>
-              <col width="15%" /><col width="85%" />
-            </colgroup>
-            <tbody>
-              <tr class="top last">
-                <th class="first" scope="row">운용자</th>
-                <td>
-                  <el-input v-show="false" v-model="resultListVo.suserId" size="mini" onchange="fnUserIdChange();" />
-                  <el-input v-show="false" v-model="resultListVo.suserGradeCd" size="mini" />
-                  <div class="search w98">
-                    <el-input v-model="suserNm" size="mini" type="text" class="txt w-100" readonly="readonly">
-                      <template v-if="viewType === 'I'" #suffix>
-                        <el-button
-                          slot="trigger"
-                          size="small"
-                          style="font-size: larger; border: none; float: right"
-                          icon="el-icon-search"
-                          class="font-weight-bolder"
-                          @click="fnViewSearchUser()"
-                        />
-                      </template>
-                    </el-input>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <el-button v-if="viewType === 'I'" class="float-right" size="mini" @click="fnSelectUserAuth()">
-            조회
-          </el-button>
-        </div>
-
-        <div class="content_result">
-          <h4>권한상세</h4>
-          <table id="authTable" class="tbl_list mt5" summary="목록">
-            <caption>목록</caption>
-            <colgroup>
-              <col width="20%" />
-              <col width="20%" />
-              <col width="20%" />
-              <col width="20%" />
-              <col width="20%" />
-            </colgroup>
-            <thead>
-              <tr>
-                <th class="first" scope="col">사용자명</th>
-                <th scope="col">권한등급</th>
-                <th scope="col">서비스망</th>
-                <th scope="col">본부</th>
-                <th scope="col">노드</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-if="resultListDetailVo === ''" class="subbg last">
-                <td class="first" colspan="5">조회된 결과 목록이 존재하지 않습니다.</td>
-              </tr>
-              <template v-else>
-                <tr
-                  v-for="(item, index) in resultListDetailVo"
-                  :key="index"
-                  :class="{
-                    last: index === resultListDetailVo - 1,
-                    subbg: (index % 2) !== 0 || index === resultListDetailVo - 1
-                  }"
-                >
-                  <td class="first">{{ item.suserNm }}</td>
-                  <td class="ellipsis" :title="item.suserGradeNm">{{ item.suserGradeNm }}</td>
-                  <td class="ellipsis" :title="item.ssvcLineTypeNm">{{ item.ssvcLineTypeNm }}</td>
-                  <td class="ellipsis" :title="item.ssvcGroupNm">{{ item.ssvcGroupNm }}</td>
-                  <td class="ellipsis" :title="item.ssvcObjNm">{{ item.ssvcObjNm }}</td>
-                  <!-- 추후에 레거시 코드로 반영 -->
-                  <!-- <td class="ellipsis" :title="item.tbLvlBasVo.ssvcLineTypeNm">{{ item?.tbLvlBasVo?.ssvcLineTypeNm }}</td>
-                  <td class="ellipsis" :title="item.tbLvlBasVo.ssvcGroupNm">{{ item?.tbLvlBasVo?.ssvcGroupNm }}</td>
-                  <td class="ellipsis" :title="item.tbLvlBasVo.ssvcObjNm">{{ item?.tbLvlBasVo?.ssvcObjNm }}</td> -->
-                </tr>
-              </template>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="content_result">
-          <h4>권한입력</h4>
-          <table class="tbl_data entry mt5">
-            <colgroup>
-              <col width="15%" />
-              <col width="15%" />
-              <col width="12%" />
-              <col width="58%" />
-            </colgroup>
-            <tbody>
-              <tr class="top last">
-                <th class="first" scope="row">권한등급</th>
-                <td>
-                  <el-select v-model="suserGradeCode" class="w-100" size="mini">
-                    <el-option
-                      v-for="item in userGradeOp"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </el-select>
-                </td>
-                <th scope="row">계위</th>
-                <td>
-                  <ul>
-                    <li>
-                      <el-select v-model="ssvcLineTypeCd" :disabled="isDisabledLvl1" size="mini" @change="handleChangeLvl1()">
-                        <el-option label="전체" value=""><span class="w-100 h-100 d-inline-block">전체</span></el-option>
-                        <el-option
-                          v-for="item in ssvcLineTypeNmOp"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value"
-                        />
-                      </el-select>
-                    </li>
-                    <li>
-                      <el-select v-model="ssvcGroupCd" :disabled="isDisabledLvl2" name="ssvcGroupCd" size="mini" @change="handleChangeLvl2()">
-                        <el-option
-                          v-for="item in ssvcGroupNmOp"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value"
-                        />
-                      </el-select>
-                    </li>
-                    <li>
-                      <el-select v-model="ssvcObjCd" :disabled="isDisabledLvl3" size="mini">
-                        <el-option
-                          v-for="item in ssvcObjNmOp"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value"
-                        />
-                      </el-select>
-                    </li>
-                  </ul>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <div class="btn_area mt5">
-            <el-button v-if="resultListRegistVo.length > 0" size="mini" @click="fnUserAuthDupCheck()">추가</el-button>
-          </div>
-        </div>
-
-        <div class="content_result mt20">
-          <div class="tit_group">
-            <h4 class="mt5">등록예정 권한 정보</h4>
-          </div>
-
-          <table id="insertTable" class="tbl_list mt5" summary="등록예정정보">
-            <caption>등록 예정 정보</caption>
-            <colgroup>
-              <col width="20%" />
-              <col width="15%" />
-              <col width="15%" />
-              <col width="20%" />
-              <col width="15%" />
-            </colgroup>
-            <thead>
-              <tr>
-                <th class="first" scope="col">사용자명</th>
-                <th scope="col">권한등급</th>
-                <th scope="col">서비스망</th>
-                <th scope="col">본부</th>
-                <th scope="col">노드</th>
-                <th scope="col">삭제</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                v-for="(item, index) in resultListRegistVo"
-                :key="index"
-                :class="{
-                  last: index === resultListRegistVo.length - 1,
-                  subbg: (index % 2) !== 0 || index === resultListRegistVo.length - 1
-                }"
-              >
-                <td class="first">{{ item.suserNm }}</td>
-                <td class="ellipsis" :title="item.suserGradeNm">{{ item.suserGradeNm }}</td>
-                <td class="ellipsis" :title="item.ssvcLineTypeNm">{{ item.ssvcLineTypeNm }}</td>
-                <td class="ellipsis" :title="item.ssvcGroupNm">{{ item.ssvcGroupNm }}</td>
-                <td class="ellipsis" :title="item.ssvcObjNm">{{ item.ssvcObjNm }}</td>
-                <!-- <td class="ellipsis" :title="item.ssvcLineTypeNm">{{ item?.tbLvlBasVo?.ssvcLineTypeNm }}</td>
-                <td class="ellipsis" :title="item.ssvcGroupNm">{{ item?.tbLvlBasVo?.ssvcGroupNm }}</td>
-                <td class="ellipsis" :title="item.ssvcObjNm">{{ item?.tbLvlBasVo?.ssvcObjNm }}</td> -->
-                <td class="ellipsis" :title="item.ssvcObjNm"> <el-button size="mini" @click="fnDeleteUserAuthPrev(index)">삭제</el-button> </td>
-                <td v-show="false">{{ item.suserGradeCd }}</td>
-                <!-- <td v-show="false">{{ item?.tbLvlBasVo?.ssvcLineTypeCd }}</td>
-                <td v-show="false">{{ item?.tbLvlBasVo?.ssvcGroupCd }}</td>
-                <td v-show="false">{{ item?.tbLvlBasVo?.ssvcObjCd }}</td> -->
-              </tr>
-            </tbody>
-          </table>
-        </div>
+    <div class="popupContentTable">
+      <div class="popupContentTableTitle">조회조건선택</div>
+      <table>
+        <colgroup>
+          <col width="15%" /><col width="85%" />
+        </colgroup>
+        <tbody>
+          <tr class="top last">
+            <th>운용자</th>
+            <td>
+              <el-input v-show="false" v-model="resultListVo.suserId" size="small" @change="fnUserIdChange()" />
+              <el-input v-show="false" v-model="resultListVo.suserGradeCd" size="small" />
+              <div>
+                <el-input v-model="suserNm" size="small" type="text" readonly>
+                  <template v-if="viewType === 'I'" #suffix>
+                    <el-button size="small" icon="el-icon-search" @click="fnViewSearchUser()" />
+                  </template>
+                </el-input>
+              </div>
+            </td>
+            <td>
+              <el-button v-if="viewType === 'I'" type="primary" size="small" round @click="fnSelectUserAuth()">조회</el-button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="popupContentTable textcenter">
+      <div class="popupContentTableTitle">권한상세</div>
+      <table>
+        <colgroup>
+          <col width="20%" />
+          <col width="20%" />
+          <col width="20%" />
+          <col width="20%" />
+          <col width="20%" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th>사용자명</th>
+            <th>권한등급</th>
+            <th>서비스망</th>
+            <th>본부</th>
+            <th>노드</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-if="resultListDetailVo.length === 0">
+            <td colspan="5" class="textcenter">조회된 결과 목록이 존재하지 않습니다.</td>
+          </tr>
+          <template v-else>
+            <tr v-for="(item, index) in resultListDetailVo" :key="index">
+              <td>{{ item.suserNm }}</td>
+              <td>{{ item.suserGradeNm }}</td>
+              <td>{{ item.ssvcLineTypeNm }}</td>
+              <td>{{ item.ssvcGroupNm }}</td>
+              <td>{{ item.ssvcObjNm }}</td>
+              <!-- 추후에 레거시 코드로 반영 -->
+              <!-- <td o.ssvcLineTypeNm">{{ item?.tbLvlBasVo?.ssvcLineTypeNm }}</td>
+              <td o.ssvcGroupNm">{{ item?.tbLvlBasVo?.ssvcGroupNm }}</td>
+              <td o.ssvcObjNm">{{ item?.tbLvlBasVo?.ssvcObjNm }}</td> -->
+            </tr>
+          </template>
+        </tbody>
+      </table>
+    </div>
+    <div class="popupContentTable">
+      <div class="popupContentTableTitle">권한입력</div>
+      <table>
+        <tbody>
+          <tr>
+            <th>권한등급</th>
+            <td>
+              <el-select v-model="suserGradeCode" class="w-100" size="small">
+                <el-option
+                  v-for="item in userGradeOp"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </td>
+            <th>계위</th>
+            <td class="textflex">
+              <el-select v-model="ssvcLineTypeCd" :disabled="isDisabledLvl1" size="small" @change="handleChangeLvl1()">
+                <el-option label="전체" value=""><span class="w-100 h-100 d-inline-block">전체</span></el-option>
+                <el-option
+                  v-for="item in ssvcLineTypeNmOp"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+              <el-select v-model="ssvcGroupCd" :disabled="isDisabledLvl2" name="ssvcGroupCd" size="small" @change="handleChangeLvl2()">
+                <el-option
+                  v-for="item in ssvcGroupNmOp"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+              <el-select v-model="ssvcObjCd" :disabled="isDisabledLvl3" size="small">
+                <el-option
+                  v-for="item in ssvcObjNmOp"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div>
+        <el-button v-if="resultListRegistVo.length > 0" size="small" @click="fnUserAuthDupCheck()">추가</el-button>
       </div>
-
-      <div slot="footer" class="dialog-footer">
-        <el-button size="mini" @click.native="fnUserAuthSave()"> {{ $t('등록') }}  </el-button>
-        <el-button size="mini" class="el-icon-close" @click.native="close()">
-          {{ $t('exit') }}
-        </el-button>
-      </div>
-      <ModalSearchUserId ref="ModalSearchUserId" @selected-value="setSelectedRow" />
-    </el-dialog>
-  </div>
+    </div>
+    <div class="popupContentTable textcenter">
+      <div class="popupContentTableTitle">등록예정 권한 정보</div>
+      <table>
+        <colgroup>
+          <col width="20%" />
+          <col width="15%" />
+          <col width="15%" />
+          <col width="20%" />
+          <col width="15%" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th>사용자명</th>
+            <th>권한등급</th>
+            <th>서비스망</th>
+            <th>본부</th>
+            <th>노드</th>
+            <th>삭제</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(item, index) in resultListRegistVo" :key="index">
+            <td>{{ item.suserNm }}</td>
+            <td>{{ item.suserGradeNm }}</td>
+            <td>{{ item.ssvcLineTypeNm }}</td>
+            <td>{{ item.ssvcGroupNm }}</td>
+            <td>{{ item.ssvcObjNm }}</td>
+            <!-- <td>{{ item?.tbLvlBasVo?.ssvcLineTypeNm }}</td>
+            <td >{{ item?.tbLvlBasVo?.ssvcGroupNm }}</td>
+            <td >{{ item?.tbLvlBasVo?.ssvcObjNm }}</td> -->
+            <td><el-button type="danger" icon="el-icon-delete" size="small" circle @click="fnDeleteUserAuthPrev(index)" /></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="popupContentTableBottom">
+      <el-button type="primary" size="small" icon="el-icon-document-add" round @click.native="fnUserAuthSave()">등록</el-button>
+      <el-button type="primary" size="small" icon="el-icon-close" round @click.native="close()">{{ $t('exit') }}</el-button>
+    </div>
+    <ModalSearchUserId ref="ModalSearchUserId" @selected-value="setSelectedRow" />
+  </el-dialog>
 </template>
 
 <script>
@@ -375,8 +316,8 @@ export default {
     onSetValue() {
       this.resultListVo = _.cloneDeep(this.viewModel?.resultListVo) ?? ''
       this.suserNm = this.resultListVo.suserNm ?? ''
-      this.resultListDetailVo = _.cloneDeep(this.viewModel?.resultListVo?.tbUserAuthTxnVos) ?? ''
-      this.resultListRegistVo = _.cloneDeep(this.viewModel?.resultListVo?.tbUserAuthTxnVos) ?? ''
+      this.resultListDetailVo = _.cloneDeep(this.viewModel?.resultListVo?.tbUserAuthTxnVos) ?? []
+      this.resultListRegistVo = _.cloneDeep(this.viewModel?.resultListVo?.tbUserAuthTxnVos) ?? []
       this.suserGradeCode = _.cloneDeep(this.viewModel?.resultListVo?.suserGradeCd) ?? ''
     },
     async handleChangeLvl1() {

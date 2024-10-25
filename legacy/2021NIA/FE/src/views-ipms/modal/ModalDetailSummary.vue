@@ -1,84 +1,66 @@
 <template>
-  <div>
-    <el-dialog
-      v-if="animationVisible"
-      id="ipms"
-      v-el-drag-dialog
-      :visible.sync="visible"
-      :width="domElement.maxWidth + `px`"
-      :fullscreen.sync="fullscreen"
-      :modal-append-to-body="false"
-      :append-to-body="true"
-      :close-on-click-modal="closeOnClickModal"
-      :loading="loading"
-      class="ipms-dialog"
-      :class="{ [name]: true }"
-    >
-      <span slot="title">
-        <i class="el-icon-document mr-2" style="font-size: 17px" />
-        라우팅 중복 상세정보
-        <hr>
-      </span>
-      <div id="content" class="layer">
-        <div id="div01" class="content_result mt0">
-          <div class="tit_group">
-            <h4 class="mt5">라우팅 중복 상세정보</h4>
-          </div>
-          <div v-loading="loading" class="scroll_area" style="max-height: 300px;">
-            <table id="contentTable" class="tbl_list mt5" summary="조회결과" style="height: 100px">
-              <caption>조회결과</caption>
-              <colgroup>
-                <col width="8%" />
-                <col width="9%" />
-                <col width="9%" />
-                <col width="9%" />
-                <col width="9%" />
-                <col width="9%" />
-                <col width="15%" />
-              </colgroup>
-              <thead>
-                <tr>
-                  <th scope="col">서비스망</th>
-                  <th scope="col">본부</th>
-                  <th scope="col">주노드</th>
-                  <th scope="col">노드</th>
-                  <th scope="col">IP블록</th>
-                  <th scope="col">As-Path</th>
-                  <th scope="col">Community</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-if="totalCount === 0" class="subbg last">
-                  <td class="first" colspan="7">조회된 결과 목록이 존재하지 않습니다.</td>
-                </tr>
-                <template v-else>
-                  <tr v-for="(item, index) in resultList" :key="index" :class="[{ last: index === resultList.length - 1 }, { subbg: index % 2 !== 0 }]">
-                    <td class="ellipsis" :title="item.ssvcLineTypeNm">{{ item.ssvcLineTypeNm }}</td>
-                    <td class="ellipsis" :title="item.ssvcGroupNm">{{ item.ssvcGroupNm }}</td>
-                    <td class="ellipsis" :title="item.ssvcHighNm">{{ item.ssvcHighNm }}</td>
-                    <td class="ellipsis" :title="item.ssvcObjNm">{{ item.ssvcObjNm }}</td>
-                    <td class="ellipsis" :title="item.pipPrefix">{{ item.pipPrefix }}</td>
-                    <td class="ellipsis" :title="item.asPath">{{ item.asPath }}</td>
-                    <td class="ellipsis" :title="item.scommunity">{{ item.scommunity }}</td>
-                  </tr>
-                </template>
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <!-- <div class="btn_area mt10">
-          <a href="#">
-            <input type="image" :src="closeButtonImageSrc" value="닫기" id="btnIpAllocDetCls" @mouseover="menuOver" @mouseout="menuOut" />
-          </a>
-        </div> -->
+  <el-dialog
+    v-if="animationVisible"
+    id="ipms"
+    v-el-drag-dialog
+    title="라우팅 중복 상세정보"
+    :visible.sync="visible"
+    :width="domElement.maxWidth + `px`"
+    :fullscreen.sync="fullscreen"
+    :modal-append-to-body="false"
+    :append-to-body="true"
+    :close-on-click-modal="closeOnClickModal"
+    :loading="loading"
+    class="ipms-dialog"
+    :class="{ [name]: true }"
+  >
+    <div class="popupContentTable">
+      <div class="popupContentTableTitle">라우팅 중복 상세정보</div>
+      <div v-loading="loading">
+        <table>
+          <colgroup>
+            <col width="8%" />
+            <col width="9%" />
+            <col width="9%" />
+            <col width="9%" />
+            <col width="9%" />
+            <col width="9%" />
+            <col width="15%" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th>서비스망</th>
+              <th>본부</th>
+              <th>주노드</th>
+              <th>노드</th>
+              <th>IP블록</th>
+              <th>As-Path</th>
+              <th>Community</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-if="totalCount === 0">
+              <td class="text-center" colspan="7">조회된 결과 목록이 존재하지 않습니다.</td>
+            </tr>
+            <template v-else>
+              <tr v-for="(item, index) in resultList" :key="index" :class="[{ last: index === resultList.length - 1 }, { subbg: index % 2 !== 0 }]">
+                <td class="ellipsis">{{ item.ssvcLineTypeNm }}</td>
+                <td class="ellipsis">{{ item.ssvcGroupNm }}</td>
+                <td class="ellipsis">{{ item.ssvcHighNm }}</td>
+                <td class="ellipsis">{{ item.ssvcObjNm }}</td>
+                <td class="ellipsis">{{ item.pipPrefix }}</td>
+                <td class="ellipsis">{{ item.asPath }}</td>
+                <td class="ellipsis">{{ item.scommunity }}</td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
       </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button size="mini" class="el-icon-close" @click="close()">
-          닫기
-        </el-button>
-      </div>
-    </el-dialog>
-  </div>
+    </div>
+    <div class="popupContentTableBottom">
+      <el-button type="primary" size="small" icon="el-icon-close" round @click="close()">닫기</el-button>
+    </div>
+  </el-dialog>
 </template>
 <script>
 import elDragDialog from '@/directive/el-drag-dialog'

@@ -1,23 +1,25 @@
 <template>
-  <el-col :class="{ [name]: true }" :xs="24" :sm="12" :md="12" :lg="8" :xl="6">
-    <label>
+  <fragment>
+    <th>
       {{ label }}
-    </label>
-    <el-select
-      v-model="value"
-      collapse-tags
-      size="mini"
-      @change="handleChange()"
-    >
-      <el-option label="전체" value="" />
-      <el-option
-        v-for="(option, i) in options"
-        :key="i"
-        :label="option.name"
-        :value="option.code"
-      />
-    </el-select>
-  </el-col>
+    </th>
+    <td>
+      <el-select
+        v-model="value"
+        collapse-tags
+        size="small"
+        @change="handleChange()"
+      >
+        <el-option label="전체" value="" />
+        <el-option
+          v-for="(option, i) in options"
+          :key="i"
+          :label="option.name"
+          :value="option.code"
+        />
+      </el-select>
+    </td>
+  </fragment>
 </template>
 <script>
 import { Base } from '@/min/Base.min'

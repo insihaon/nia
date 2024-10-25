@@ -1,17 +1,19 @@
 <template>
-  <el-col :class="{ [name]: true }" :xs="24" :sm="12" :md="12" :lg="8" :xl="6">
-    <label style="width : 100px">
+  <fragment>
+    <th>
       {{ label }}
-    </label>
-    <el-date-picker
-      v-model="value"
-      type="daterange"
-      size="mini"
-      start-placeholder="시작일"
-      end-placeholder="종료일"
-      @change="handleChange()"
-    />
-  </el-col>
+    </th>
+    <td>
+      <el-date-picker
+        v-model="value"
+        type="daterange"
+        size="small"
+        start-placeholder="시작일"
+        end-placeholder="종료일"
+        @change="handleChange()"
+      />
+    </td>
+  </fragment>
 </template>
 <script>
 import { Base } from '@/min/Base.min'

@@ -1,73 +1,65 @@
 <template>
-  <div>
-    <el-dialog
-      v-if="animationVisible"
-      id="ipms"
-      v-el-drag-dialog
-      :visible.sync="visible"
-      :width="domElement.maxWidth + `px`"
-      :fullscreen.sync="fullscreen"
-      :modal-append-to-body="false"
-      :append-to-body="true"
-      :modal="modal"
-      :close-on-click-modal="closeOnClickModal"
-      :loading="loading"
-      class="ipms-dialog"
-      :class="{ [name]: true }"
-    >
-      <span slot="title">
-        <i class="el-icon-document mr-2" style="font-size: 17px" />
-        사용자 상세정보
-        <hr>
-      </span>
+  <el-dialog
+    v-if="animationVisible"
+    id="ipms"
+    v-el-drag-dialog
+    title="사용자 상세정보"
+    :visible.sync="visible"
+    :width="domElement.maxWidth + `px`"
+    :fullscreen.sync="fullscreen"
+    :modal-append-to-body="false"
+    :append-to-body="true"
+    :modal="modal"
+    :close-on-click-modal="closeOnClickModal"
+    :loading="loading"
+    class="ipms-dialog"
+    :class="{ [name]: true }"
+  >
+    <div class="popupContentTable">
+      <table>
+        <colgroup>
+          <col width="20%" /><col width="30%" /><col width="20%" /><col width="30%" />
+        </colgroup>
+        <tbody>
+          <tr>
+            <th>이름</th>
+            <td>{{ tbUserBasVo.suserNm }}</td>
+            <th>이메일</th>
+            <td> {{ tbUserBasVo.suserEmailAdr }}</td>
+          </tr>
+          <tr>
+            <th>소속부서</th>
+            <td>{{ tbUserBasVo.sposDeptOrgNm }}</td>
+            <th>직속상급자 명</th>
+            <td>{{ tbUserBasVo.sdibelUclsUserNm }} </td>
+          </tr>
 
-      <div id="content" class="layer">
-        <div class="content_result mt0">
-          <table class="tbl_data">
-            <colgroup>
-              <col width="20%" /><col width="30%" /><col width="20%" /><col width="30%" />
-            </colgroup>
-            <tbody>
-              <tr class="top">
-                <th class="first" scope="row">이름</th>
-                <td>{{ tbUserBasVo.suserNm }}</td>
-                <th scope="row">이메일</th>
-                <td> {{ tbUserBasVo.suserEmailAdr }}</td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">소속부서</th>
-                <td>{{ tbUserBasVo.sposDeptOrgNm }}</td>
-                <th scope="row">직속상급자 명</th>
-                <td>{{ tbUserBasVo.sdibelUclsUserNm }} </td>
-              </tr>
-
-              <tr>
-                <th class="first" scope="row">사용자권한등급</th>
-                <td colspan="3">
-                  {{ tbUserBasVo.suserGradeNm }}
-                </td>
-              </tr>
-              <tr class="last">
-                <th class="first" scope="row">비고</th>
-                <td colspan="3"> {{ tbUserBasVo.suserRmark }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div slot="footer" class="dialog-footer">
-        <el-button size="mini" class="float-left" @click="fnLoginFailInit()">
+          <tr>
+            <th>사용자권한등급</th>
+            <td colspan="3">
+              {{ tbUserBasVo.suserGradeNm }}
+            </td>
+          </tr>
+          <tr>
+            <th>비고</th>
+            <td colspan="3"> {{ tbUserBasVo.suserRmark }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="popupContentTableBottom d-flex justify-between">
+      <div>
+        <el-button type="primary" size="small" round @click="fnLoginFailInit()">
           비밀번호 실패횟수 초기화
         </el-button>
-        <el-button size="mini" class="float-left" @click="fnViewUserHndSetList()">
+        <el-button type="primary" size="small" round @click="fnViewUserHndSetList()">
           사용자 접속 IP 변경
         </el-button>
-        <el-button size="mini" class="el-icon-close" @click="close()">{{ $t('exit') }}</el-button>
       </div>
-      <ModalUpdateUserConIp ref="ModalUpdateUserConIp" />
-    </el-dialog>
-  </div>
+      <el-button type="primary" size="small" icon="el-icon-close" round @click="close()">{{ $t('exit') }}</el-button>
+    </div>
+    <ModalUpdateUserConIp ref="ModalUpdateUserConIp" />
+  </el-dialog>
 </template>
 
 <script>
@@ -117,12 +109,12 @@ export default {
         console.error(error)
       }
     },
-    async fnLoginFailInit(tbUserBasVo) { /* 비밀번호 초기화 */
-      if (tbUserBasVo.suserId === '' || tbUserBasVo.suserId === null) {
+    async fnLoginFailInit() { /* 비밀번호 초기화 */
+      if (this.tbUserBasVo.suserId === '' || this.tbUserBasVo.suserId === null) {
         return
       }
       const userBasVo = {
-        suserId: tbUserBasVo.suserId,
+        suserId: this.tbUserBasVo.suserId,
         nloginFailTmscnt: 0,
         smodifyId: this.$store.state.user.Uid,
       }

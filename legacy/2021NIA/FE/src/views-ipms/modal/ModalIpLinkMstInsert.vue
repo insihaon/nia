@@ -1,197 +1,189 @@
 <template>
-  <div>
-    <el-dialog
-      v-if="animationVisible"
-      id="ipms"
-      v-el-drag-dialog
-      :visible.sync="visible"
-      :width="domElement.maxWidth + `px`"
-      :fullscreen.sync="fullscreen"
-      :modal-append-to-body="true"
-      :append-to-body="true"
-      :close-on-click-modal="closeOnClickModal"
-      :loading="loading"
-      class="ipms-dialog"
-      :class="{ [name]: true }"
-    >
-      <span slot="title">
-        <i class="el-icon-document mr-2" style="font-size: 17px" />
-        운용정보 등록
-        <hr>
-      </span>
-      <div id="content" class="layer">
-        <div class="content_result mt0">
-          <table class="tbl_data entry">
-            <caption>링크 정보</caption>
-            <colgroup>
-              <col width="20%" />
-              <col width="27%" />
-              <col width="23%" />
-              <col width="30%" />
-            </colgroup>
-            <tbody>
-              <tr class="top">
-                <th class="first" scope="row">링크IP블록</th>
-                <td v-if="fnType === 'insert'" colspan="3" class="d-flex">
-                  <el-input
-                    v-model="resultVo.insertPifSerialIp"
-                    type="text"
-                    class="txt w30"
-                    maxlength="43"
-                    title="IP 주소 입력창"
-                    @input="onChangeInput"
-                  />
-                  <select v-model="resultVo.insertNbitMask" class="w15">
-                    <option value="/30">/30</option>
-                    <option value="/29">/29</option>
-                  </select>
-                </td>
-                <td v-else>
-                  {{ resultVo.pifSerialIp }}
-                </td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">자국 수용국</th>
-                <td>
-                  <el-input
-                    v-model="resultVo.saofficescodeNm"
+  <el-dialog
+    v-if="animationVisible"
+    id="ipms"
+    v-el-drag-dialog
+    title="운용정보 등록"
+    :visible.sync="visible"
+    :width="domElement.maxWidth + `px`"
+    :fullscreen.sync="fullscreen"
+    :modal-append-to-body="true"
+    :append-to-body="true"
+    :close-on-click-modal="closeOnClickModal"
+    :loading="loading"
+    class="ipms-dialog"
+    :class="{ [name]: true }"
+  >
+    <div class="popupContentTable">
+      <div class="popupContentTableTitle">링크 정보</div>
+      <table>
+        <colgroup>
+          <col width="20%" />
+          <col width="27%" />
+          <col width="23%" />
+          <col width="30%" />
+        </colgroup>
+        <tbody>
+          <tr>
+            <th>링크IP블록</th>
+            <td v-if="fnType === 'insert'" colspan="3" class="textflex">
+              <el-input
+                v-model="resultVo.insertPifSerialIp"
+                type="text"
+                size="mini"
+                maxlength="43"
+                title="IP 주소 입력창"
+                @input="onChangeInput"
+              />
+              <el-select v-model="resultVo.insertNbitMask" size="mini">
+                <el-option value="/30">/30</el-option>
+                <el-option value="/29">/29</el-option>
+              </el-select>
+            </td>
+            <td v-else>
+              {{ resultVo.pifSerialIp }}
+            </td>
+          </tr>
+          <tr>
+            <th>자국 수용국</th>
+            <td>
+              <el-input
+                v-model="resultVo.saofficescodeNm"
+                size="mini"
+                readonly
+              >
+                <template #suffix>
+                  <el-button
                     size="mini"
-                    readonly
-                  >
-                    <template #suffix>
-                      <el-button
-                        size="mini"
-                        icon="el-icon-search"
-                        class="font-weight-bolder"
-                        style="font-size: larger;border: none"
-                        @click="fnSearchOfficeList('a')"
-                      />
-                    </template>
-                  </el-input>
-                </td>
-                <th scope="row">대국 수용국</th>
-                <td>
-                  <el-input
-                    v-model="resultVo.szofficescodeNm"
+                    icon="el-icon-search"
+                    class="font-weight-bolder"
+                    style="font-size: larger;border: none;background: none;"
+                    @click="fnSearchOfficeList('a')"
+                  />
+                </template>
+              </el-input>
+            </td>
+            <th>대국 수용국</th>
+            <td>
+              <el-input
+                v-model="resultVo.szofficescodeNm"
+                size="mini"
+                readonly
+              >
+                <template #suffix>
+                  <el-button
                     size="mini"
-                    readonly
-                  >
-                    <template #suffix>
-                      <el-button
-                        size="mini"
-                        icon="el-icon-search"
-                        class="font-weight-bolder"
-                        style="font-size: larger;border: none"
-                        @click="fnSearchOfficeList('z')"
-                      />
-                    </template>
-                  </el-input>
-                </td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">자국 장비명</th>
-                <td>
-                  <input
-                    v-model="resultVo.sanealias"
-                    type="text"
-                    class="txt w97"
-                    maxlength="200"
-                    title="장비명"
+                    icon="el-icon-search"
+                    class="font-weight-bolder"
+                    style="font-size: larger;border: none;background: none;"
+                    @click="fnSearchOfficeList('z')"
                   />
-                </td>
-                <th scope="row">대국 장비명</th>
-                <td>
-                  <input
-                    v-model="resultVo.sznealias"
-                    type="text"
-                    class="txt w97"
-                    maxlength="200"
-                    title="장비명"
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">자국 장비IP</th>
-                <td>
-                  <input
-                    v-model="resultVo.samstip"
-                    type="text"
-                    class="txt w97"
-                    maxlength="43"
-                  />
-                </td>
-                <th scope="row">대국 장비IP</th>
-                <td>
-                  <input
-                    v-model="resultVo.szmstip"
-                    type="text"
-                    class="txt w97"
-                    maxlength="43"
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">자국 IF명</th>
-                <td>
-                  <input
-                    v-model="resultVo.saifname"
-                    type="text"
-                    class="txt w97"
-                    maxlength="300"
-                  />
-                </td>
-                <th scope="row">대국 IF명</th>
-                <td>
-                  <input
-                    v-model="resultVo.szifname"
-                    type="text"
-                    class="txt w97"
-                    maxlength="300"
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">SAID</th>
-                <td>
-                  <input
-                    v-model="resultVo.ssaid"
-                    type="text"
-                    class="txt w97"
-                    maxlength="30"
-                  />
-                </td>
-                <th scope="row">전용번호</th>
-                <td>
-                  <input
-                    v-model="resultVo.sllnum"
-                    type="text"
-                    class="txt w97"
-                    maxlength="30"
-                  />
-                </td>
-              </tr>
-              <tr class="last">
-                <th class="first" scope="row">수용회선명</th>
-                <td colspan="3">
-                  <input
-                    v-model="resultVo.sconnalias"
-                    type="text"
-                    class="txt w99"
-                    maxlength="1000"
-                  />
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button size="mini" class="el-icon-edit" @click="handleClickSubmit">등록</el-button> <!-- btnUpdateLinkInfo -->
-        <el-button size="mini" class="el-icon-close" @click.native="close()">{{ $t('exit') }}</el-button>
-      </div>
-    </el-dialog>
+                </template>
+              </el-input>
+            </td>
+          </tr>
+          <tr>
+            <th>자국 장비명</th>
+            <td>
+              <el-input
+                v-model="resultVo.sanealias"
+                type="text"
+                size="mini"
+                maxlength="200"
+                title="장비명"
+              />
+            </td>
+            <th>대국 장비명</th>
+            <td>
+              <el-input
+                v-model="resultVo.sznealias"
+                type="text"
+                size="mini"
+                maxlength="200"
+                title="장비명"
+              />
+            </td>
+          </tr>
+          <tr>
+            <th>자국 장비IP</th>
+            <td>
+              <el-input
+                v-model="resultVo.samstip"
+                type="text"
+                size="mini"
+                maxlength="43"
+              />
+            </td>
+            <th>대국 장비IP</th>
+            <td>
+              <el-input
+                v-model="resultVo.szmstip"
+                type="text"
+                size="mini"
+                maxlength="43"
+              />
+            </td>
+          </tr>
+          <tr>
+            <th>자국 IF명</th>
+            <td>
+              <el-input
+                v-model="resultVo.saifname"
+                type="text"
+                size="mini"
+                maxlength="300"
+              />
+            </td>
+            <th>대국 IF명</th>
+            <td>
+              <el-input
+                v-model="resultVo.szifname"
+                type="text"
+                size="mini"
+                maxlength="300"
+              />
+            </td>
+          </tr>
+          <tr>
+            <th>SAID</th>
+            <td>
+              <el-input
+                v-model="resultVo.ssaid"
+                type="text"
+                size="mini"
+                maxlength="30"
+              />
+            </td>
+            <th>전용번호</th>
+            <td>
+              <el-input
+                v-model="resultVo.sllnum"
+                type="text"
+                size="mini"
+                maxlength="30"
+              />
+            </td>
+          </tr>
+          <tr>
+            <th>수용회선명</th>
+            <td colspan="3">
+              <el-input
+                v-model="resultVo.sconnalias"
+                type="text"
+                size="mini"
+                maxlength="1000"
+              />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="popupContentTableBottom">
+      <el-button type="primary" size="small" icon="el-icon-edit" round @click="handleClickSubmit">등록</el-button> <!-- btnUpdateLinkInfo -->
+      <el-button type="primary" size="small" icon="el-icon-close" round @click.native="close()">{{ $t('exit') }}</el-button>
+    </div>
     <ModalOrgSearch ref="ModalOrgSearch" @selected-value="setSelectedRow" />
-  </div>
+  </el-dialog>
 </template>
 
 <script>
@@ -402,22 +394,4 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-::v-deep .el-input {
-  input {
-    display: inline-block;
-    height: 22px;
-    line-height: 21px;
-    padding: 2px 4px;
-    border: #ccc solid 1px;
-    color: #434343;
-    font-size: 1em;
-    vertical-align: middle;
-  }
-}
-::v-deep .el-input__inner:focus {
-  border: solid 2px #cc2929;
-}
-::v-deep .el-input__suffix {
-  top: -3px;
-}
 </style>

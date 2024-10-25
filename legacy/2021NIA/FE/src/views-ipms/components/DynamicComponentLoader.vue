@@ -1,39 +1,30 @@
 <template>
-  <div class="optionBox">
-    <el-row class="optionRow">
-      <template v-for="(component, index) in dynamicComponents">
-        <component
-          :is="component.component"
-          v-if="component.component"
-          :ref="component.key"
-          :key="index"
-          v-bind.sync="component.props"
-          class="optionItem"
-          @set-value="value => onUpdateOrgValue(index, value)"
-          @update-value="keyValues => onUpdateKeyValue(keyValues)"
-        />
-        <!-- componentKeys[index].key, value -->
-      </template>
-    </el-row>
-    <el-row>
-      <el-col :span="24" class="searchBtnGroup">
-        <div v-if="isShowProfile">
-          <SearchConditionSaver ref="SearchConditionSaver" :parameter="requestParameter" :prop-name="propName" />
-        </div>
-        <div>
-          <el-button class="btn-r" type="info" size="mini" icon="el-icon-search" @click="handleSearch()">
-            조회
-          </el-button>
-          <el-button class="btn-r" type="info" size="mini" icon="el-icon-refresh" @click="handleRefresh()">
-            초기화
-          </el-button>
-          <el-button type="button" size="mini" class="export-excel" icon="el-icon-download" @click="handleClickExcel()">
-            엑셀 저장
-          </el-button>
-        </div>
-        <slot name="add-function" />
-      </el-col>
-    </el-row>
+  <div class="searchOptionWrap">
+    <table>
+      <tr v-for="(componentRow, index) in chunkedList" :key="index">
+        <template v-for="(component, itemIndex) in componentRow">
+          <component
+            :is="component.component"
+            v-if="component.component"
+            :ref="component.key"
+            :key="itemIndex"
+            v-bind.sync="component.props"
+            @set-value="value => onUpdateOrgValue(index, value)"
+            @update-value="keyValues => onUpdateKeyValue(keyValues)"
+          />
+        </template>
+        <td v-if="(index + 1) === chunkedList.length && getEmptyColNum > 0" :colspan="getEmptyColNum * 2"></td>
+      </tr>
+      <tr>
+        <td colspan="6">
+          <div class="searchBtnWrap">
+            <SearchConditionSaver v-if="isShowProfile" ref="SearchConditionSaver" :parameter="requestParameter" :prop-name="propName" />
+            <el-button type="info" icon="el-icon-refresh" size="mini" style="margin-left:0px" round @click="handleRefresh()">초기화</el-button>
+            <el-button type="primary" icon="el-icon-search" size="mini" round @click="handleSearch()">조회</el-button>
+          </div>
+        </td>
+      </tr>
+    </table>
   </div>
 </template>
 <script>
@@ -70,7 +61,25 @@ export default {
       dynamicComponents: [],
       defaultRequestParameter: {},
       requestParameter: {},
-      loopUpdateValueCount: 0
+      loopUpdateValueCount: 0,
+      columnsPerRow: 3
+    }
+  },
+  computed: {
+    chunkedList() {
+      // Function to split colList into chunks of 3 items
+      const chunkedArray = []
+      for (let i = 0; i < this.dynamicComponents.length; i += this.columnsPerRow) {
+        chunkedArray.push(this.dynamicComponents.slice(i, i + this.columnsPerRow))
+      }
+      return chunkedArray
+    },
+    getEmptyColNum() {
+      if (this.dynamicComponents.length !== 1 && (this.dynamicComponents.length % this.columnsPerRow !== 0)) {
+        return this.columnsPerRow - (this.dynamicComponents.length % this.columnsPerRow)
+      } else {
+        return 0
+      }
     }
   },
   watch: {

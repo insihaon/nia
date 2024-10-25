@@ -1,112 +1,101 @@
 <template>
-  <div>
-    <el-dialog
-      v-if="animationVisible"
-      id="ipms"
-      v-el-drag-dialog
-      :visible.sync="visible"
-      :width="domElement.maxWidth + `px`"
-      :fullscreen.sync="fullscreen"
-      :modal-append-to-body="false"
-      :append-to-body="true"
-      :modal="modal"
-      :close-on-click-modal="closeOnClickModal"
-      :loading="loading"
-      class="ipms-dialog"
-      :class="{ [name]: true }"
-    >
-      <span slot="title">
-        <i class="el-icon-document mr-2" style="font-size: 17px" />
-        IP 배정신청
-        <hr>
-      </span>
-      <div id="content" class="layer">
-        <div class="content_result mt0">
-          <table class="tbl_data entry">
-            <colgroup>
-              <col width="14%" />
-              <col width="20%" />
-              <col width="13%" />
-              <col width="20%" />
-              <col width="13%" />
-              <col width="20%" />
-            </colgroup>
-            <tbody>
-              <tr class="top">
-                <th class="first" scope="row">제목</th>
-                <td colspan="5">
-                  <input
-                    v-model="stitle"
-                    type="text"
-                    class="txt w98"
-                    maxlength="30"
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">서비스망</th>
-                <td>
-                  <select v-model="ssvcLineTypeCd" @change="handleChangeLvl1">
-                    <option v-for="item in svcLineList" :key="item.ssvcLineTypeCd" :value="item.value">
-                      {{ item.label }}
-                    </option>
-                  </select>
-                </td>
-                <th scope="row">본부</th>
-                <td>
-                  <select v-model="ssvcGroupCd" @change="handleChangeLvl2">
-                    <option v-for="item in centerList" :key="item.ssvcGroupCd" :value="item.ssvcGroupCd">
-                      {{ item.ssvcGroupNm }}
-                    </option>
-                  </select>
-                </td>
-                <th scope="row">노드</th>
-                <td>
-                  <select v-model="ssvcObjCd" class="w98">
-                    <option v-for="item in nodeList" :key="item.ssvcObjCd" :value="item.ssvcObjCd">
-                      {{ item.ssvcObjNm }}
-                    </option>
-                  </select>
-                </td>
-              </tr>
-              <tr class="view">
-                <th class="first" scope="row">신청자</th>
-                <td>{{ userInfo.suserNm }}</td>
-                <th scope="row">소속부서</th>
-                <td colspan="3">{{ userInfo.sposDeptOrgNm }}</td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">요청 IP개수 (/24)</th>
-                <td colspan="5">
-                  <input
-                    v-model="napyIpCnt"
-                    type="text"
-                    style="width: 80%"
-                    maxlength="5"
-                  />
-                  개(/24 단위)
-                </td>
-              </tr>
-              <tr class="last">
-                <th class="first" scope="row">신청내용</th>
-                <td colspan="5">
-                  <textarea
-                    v-model="scontents"
-                    rows="10"
-                    class="w98"
-                  ></textarea>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button size="mini" class="el-icon-check" @click="fnInsertIpAssignApy()">등록</el-button>
-        <el-button size="mini" class="el-icon-close" @click="close()">{{ $t('exit') }}</el-button>
-      </div>
-    </el-dialog>
-  </div>
+  <el-dialog
+    v-if="animationVisible"
+    id="ipms"
+    v-el-drag-dialog
+    title="IP 배정신청"
+    :visible.sync="visible"
+    :width="domElement.maxWidth + `px`"
+    :fullscreen.sync="fullscreen"
+    :modal-append-to-body="false"
+    :append-to-body="true"
+    :modal="modal"
+    :close-on-click-modal="closeOnClickModal"
+    :loading="loading"
+    class="ipms-dialog"
+    :class="{ [name]: true }"
+  >
+    <div class="popupContentTable">
+      <table>
+        <colgroup>
+          <col width="14%" />
+          <col width="20%" />
+          <col width="13%" />
+          <col width="20%" />
+          <col width="13%" />
+          <col width="20%" />
+        </colgroup>
+        <tbody>
+          <tr>
+            <th>제목</th>
+            <td colspan="5">
+              <input
+                v-model="stitle"
+                type="text"
+                maxlength="30"
+              />
+            </td>
+          </tr>
+          <tr>
+            <th>서비스망</th>
+            <td>
+              <el-select v-model="ssvcLineTypeCd" @change="handleChangeLvl1">
+                <el-option v-for="item in svcLineList" :key="item.ssvcLineTypeCd" :value="item.value">
+                  {{ item.label }}
+                </el-option>
+              </el-select>
+            </td>
+            <th>본부</th>
+            <td>
+              <el-select v-model="ssvcGroupCd" @change="handleChangeLvl2">
+                <el-option v-for="item in centerList" :key="item.ssvcGroupCd" :value="item.ssvcGroupCd">
+                  {{ item.ssvcGroupNm }}
+                </el-option>
+              </el-select>
+            </td>
+            <th>노드</th>
+            <td>
+              <el-select v-model="ssvcObjCd">
+                <el-option v-for="item in nodeList" :key="item.ssvcObjCd" :value="item.ssvcObjCd">
+                  {{ item.ssvcObjNm }}
+                </el-option>
+              </el-select>
+            </td>
+          </tr>
+          <tr>
+            <th>신청자</th>
+            <td>{{ userInfo.suserNm }}</td>
+            <th>소속부서</th>
+            <td colspan="3">{{ userInfo.sposDeptOrgNm }}</td>
+          </tr>
+          <tr>
+            <th>요청 IP개수 (/24)</th>
+            <td colspan="5">
+              <input
+                v-model="napyIpCnt"
+                type="text"
+                maxlength="5"
+              />
+              개(/24 단위)
+            </td>
+          </tr>
+          <tr>
+            <th>신청내용</th>
+            <td colspan="5">
+              <textarea
+                v-model="scontents"
+                rows="10"
+              ></textarea>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="popupContentTableBottom">
+      <el-button type="primary" size="small" icon="el-icon-check" round @click="fnInsertIpAssignApy()">등록</el-button>
+      <el-button type="primary" size="small" icon="el-icon-close" round @click="close()">{{ $t('exit') }}</el-button>
+    </div>
+  </el-dialog>
 </template>
 
 <script>

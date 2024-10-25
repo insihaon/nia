@@ -1,138 +1,120 @@
 <template>
-  <div>
-    <el-dialog
-      v-if="animationVisible"
-      id="ipms"
-      v-el-drag-dialog
-      :visible.sync="visible"
-      :width="domElement.maxWidth + `px`"
-      :fullscreen.sync="fullscreen"
-      :modal-append-to-body="false"
-      :append-to-body="true"
-      :modal="modal"
-      :close-on-click-modal="closeOnClickModal"
-      :loading="loading"
-      class="ipms-dialog"
-      :class="{ [name]: true }"
-    >
-      <!-- TACS관리 / IP주소 라우팅 비교/점검 > 장비별 명령어 정보관리 > 신규생성 -->
-      <span slot="title">
-        <i class="el-icon-document mr-2" style="font-size: 17px" />
-        무선IP Summary 정보 관리
-        <hr>
-      </span>
-      <div id="content" class="layer">
-        <!-- 조회 Section -->
-        <div class="content_result mt0">
-          <h4>조회</h4>
-          <table class="tbl_data entry" summary="Summary">
-            <caption>Summary</caption>
-            <colgroup>
-              <col width="15%" />
-              <col width="35%" />
-              <col width="15%" />
-              <col width="35%" />
-            </colgroup>
-            <tbody>
-              <tr class="top last">
-                <th scope="row">구분</th>
-                <td>
-                  <select v-model="searchSkind" class="w60">
-                    <option value="">전체</option>
-                    <option value="public">public</option>
-                    <option value="private">private</option>
-                    <option value="both">both</option>
-                  </select>
-                </td>
-                <th scope="row">IP 블록</th>
-                <td>
-                  <input
-                    v-model="searchSIpBlock"
-                    type="text"
-                    class="txt w80"
-                    maxlength="250"
-                  />
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <div class="btn_area mt-2">
-            <el-button size="mini" type="primary" @click="handleSearch">조회</el-button>
-          </div>
-        </div>
-        <!-- 등록 Section -->
-        <div class="content_result mt0">
-          <h4>등록</h4>
-          <table class="tbl_data entry" summary="Summary">
-            <caption>Summary</caption>
-            <colgroup>
-              <col width="15%" />
-              <col width="35%" />
-              <col width="15%" />
-              <col width="35%" />
-            </colgroup>
-            <tbody>
-              <tr class="top last">
-                <th scope="row">구분</th>
-                <td>
-                  <select v-model="insertSkind" class="w60">
-                    <option value="public">public</option>
-                    <option value="private">private</option>
-                    <option value="both">both</option>
-                  </select>
-                </td>
-                <th scope="row">IP 블록</th>
-                <td>
-                  <input
-                    v-model="insertSIpBlock"
-                    type="text"
-                    class="txt w80"
-                    maxlength="250"
-                  />
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="btn_area mt-2">
-          <el-button size="mini" type="primary" @click="fnInsertBtnClick">저장</el-button>
-        </div>
-        <!-- 조회결과 Section -->
-        <div class="content_result">
-          <compTable
-            ref="compTable"
-            :prop-name="name"
-            :prop-table-height="300"
-            :prop-data="pagination.data"
-            :prop-pagination-data.sync="pagination"
-            :prop-is-check-box="true"
-            :prop-is-pagination="true"
-            :prop-column="tableColumns"
-            :prop-on-page-change="handleChangeCurPage"
-            :prop-on-page-size-change="handleChangeCurPage"
-            @update:propSelected="handleClickCheck"
-          >
-            <template slot="text-description">
-              <span>
-                조회결과
-              </span>
-            </template>
-          </compTable>
-        </div>
-        <!-- <div class="page_num">
-          <ul>
-            <li v-for="page in paginationInfo.totalPages" :key="page">
-              <a href="#none" @click="changePage(page)">{{ page }}</a>
-            </li>
-          </ul>
-        </div> -->
-      </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" size="mini" @click="fnDeleteBtnClick">삭제</el-button>
-        <el-button size="mini" class="el-icon-close" @click.native="close()">{{ $t('exit') }}</el-button>
-      </div>
-    </el-dialog>
-  </div>
+  <el-dialog
+    v-if="animationVisible"
+    id="ipms"
+    v-el-drag-dialog
+    title="무선IP Summary 정보 관리"
+    :visible.sync="visible"
+    :width="domElement.maxWidth + `px`"
+    :fullscreen.sync="fullscreen"
+    :modal-append-to-body="false"
+    :append-to-body="true"
+    :modal="modal"
+    :close-on-click-modal="closeOnClickModal"
+    :loading="loading"
+    class="ipms-dialog"
+    :class="{ [name]: true }"
+  >
+    <!-- TACS관리 / IP주소 라우팅 비교/점검 > 장비별 명령어 정보관리 > 신규생성 -->
+    <!-- 조회 Section -->
+    <div class="popupContentTable">
+      <div class="popupContentTableTitle">조회</div>
+      <table>
+        <colgroup>
+          <col width="15%" />
+          <col width="35%" />
+          <col width="15%" />
+          <col width="35%" />
+        </colgroup>
+        <tbody>
+          <tr>
+            <th>구분</th>
+            <td>
+              <el-select v-model="searchSkind">
+                <el-option value="" label="전체" />
+                <el-option value="public" label="public" />
+                <el-option value="private" label="private" />
+                <el-option value="both" label="both" />
+              </el-select>
+            </td>
+            <th>IP 블록</th>
+            <td>
+              <el-input v-model="searchSIpBlock" type="text" maxlength="250" />
+            </td>
+            <td><el-button type="primary" size="small" round @click="handleSearch">조회</el-button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- 등록 Section -->
+    <div class="popupContentTable">
+      <div class="popupContentTableTitle">등록</div>
+      <table>
+        <colgroup>
+          <col width="15%" />
+          <col width="35%" />
+          <col width="15%" />
+          <col width="35%" />
+        </colgroup>
+        <tbody>
+          <tr>
+            <th>구분</th>
+            <td>
+              <el-select v-model="insertSkind">
+                <el-option value="public" label="public" />
+                <el-option value="private" label="private" />
+                <el-option value="both" label="both" />
+              </el-select>
+            </td>
+            <th>IP 블록</th>
+            <td>
+              <el-input
+                v-model="insertSIpBlock"
+                type="text"
+                maxlength="250"
+              />
+            </td>
+            <td>
+              <el-button type="primary" size="small" round @click="fnInsertBtnClick">저장</el-button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- 조회결과 Section -->
+    <div class="popupContentTable">
+      <compTable
+        ref="compTable"
+        :prop-name="name"
+        :prop-table-height="300"
+        :prop-data="pagination.data"
+        :prop-pagination-data.sync="pagination"
+        :prop-is-check-box="true"
+        :prop-is-pagination="true"
+        :prop-column="tableColumns"
+        :prop-on-page-change="handleChangeCurPage"
+        :prop-on-page-size-change="handleChangeCurPage"
+        @update:propSelected="handleClickCheck"
+      >
+        <template slot="text-description">
+          <span>
+            조회결과
+          </span>
+        </template>
+      </compTable>
+    </div>
+    <!-- <div class="page_num">
+      <ul>
+        <li v-for="page in paginationInfo.totalPages" :key="page">
+          <a href="#none" @click="changePage(page)">{{ page }}</a>
+        </li>
+      </ul>
+    </div> -->
+    <div class="popupContentTableBottom">
+      <el-button type="primary" size="small" icon="el-icon-delete" round @click="fnDeleteBtnClick">삭제</el-button>
+      <el-button type="primary" size="small" icon="el-icon-close" round @click="close()">{{ $t('exit') }}</el-button>
+    </div>
+  </el-dialog>
 </template>
 
 <script>

@@ -9,8 +9,9 @@
     <el-col ref="tableContainer" :span="24">
       <compTable
         ref="compTable"
+        style="height: calc(100% - 80px)"
         :prop-name="name"
-        :prop-table-height="'calc(100% - 80px)'"
+        :prop-table-height="'100%'"
         :prop-data="tableDatas"
         :prop-column="tableColumns"
         :prop-is-pagination="true"
@@ -63,9 +64,15 @@ export default {
           formatter: (row, col, value, index) => {
             if (row.nUnAssignBlockCnt > 0) {
               return this.$createElement('el-button', {
-                on: { click: () => {
-                  this.viewDetailCrtIPMst(row, '미배정')
-                } } }, row.nUnAssignBlockCnt)
+              attrs: {
+                round: true, // Adding the round option
+                plain: true,
+                type: row.nUnAssignBlockCnt > 0 ? 'primary' : ''
+              },
+              on: { click: () => {
+                this.viewDetailCrtIPMst(row, '미배정')
+              } }
+            }, row.nUnAssignBlockCnt)
             } else {
               return this.$createElement('span', { class: 'txtred' }, row.nUnAssignBlockCnt)
             }
@@ -75,9 +82,15 @@ export default {
           formatter: (row, col, value, index) => {
             if (row.nReserveAssignBlockCnt > 0) {
               return this.$createElement('el-button', {
-                on: { click: () => {
-                  this.viewDetailCrtIPMst(row, '예비배정')
-                } } }, row.nReserveAssignBlockCnt)
+              attrs: {
+                round: true, // Adding the round option
+                plain: true,
+                type: row.nReserveAssignBlockCnt > 0 ? 'primary' : ''
+              },
+              on: { click: () => {
+                this.viewDetailCrtIPMst(row, '예비배정')
+              } }
+            }, row.nReserveAssignBlockCnt)
             } else {
               return this.$createElement('span', { class: 'txtred' }, row.nReserveAssignBlockCnt)
             }

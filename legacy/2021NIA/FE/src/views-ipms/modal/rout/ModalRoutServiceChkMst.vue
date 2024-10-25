@@ -1,168 +1,130 @@
 <template>
-  <div>
-    <el-dialog
-      v-if="animationVisible"
-      id="ipms"
-      v-el-drag-dialog
-      :visible.sync="visible"
-      :width="domElement.maxWidth + `px`"
-      :fullscreen.sync="fullscreen"
-      :modal-append-to-body="true"
-      :append-to-body="true"
-      :close-on-click-modal="closeOnClickModal"
-      :loading="loading"
-      class="ipms-dialog"
-      :class="{ [name]: true }"
-    >
-      <span slot="title">
-        <i class="el-icon-document mr-2" style="font-size: 17px" />
-        서비스 변경 작업
-        <hr>
-      </span>
-      <div id="content" class="layer">
-        <div class="content_result" style="margin-top: 0px;">
-          <table id="contentTablePop" class="tbl_list mt5">
-            <caption>조회결과</caption>
-            <colgroup>
-              <col width="5%" />
-              <col width="6%" />
-              <col width="6%" />
-              <col width="4%" />
-              <col width="10%" />
-              <col width="10%" />
-              <col width="4%" />
-              <col width="8%" />
-              <col width="11%" />
-              <col width="11%" />
-              <col width="5%" />
-              <col width="6%" />
-              <col width="11%" />
-              <col width="11%" />
-            </colgroup>
-            <thead>
-              <tr>
-                <th scope="col" colspan="5">계위</th>
-                <th scope="col" colspan="3">IPMS</th>
-                <th scope="col" colspan="3">실제 라우팅 장비</th>
-                <th scope="col" rowspan="2">분할/병합<br />건수</th>
-                <th scope="col" rowspan="2">장비수집일자</th>
-                <th scope="col" rowspan="2">서비스</th>
-              </tr>
-              <tr>
-                <th scope="col">서비스망</th>
-                <th scope="col">본부</th>
-                <th scope="col">노드</th>
-                <th scope="col">공인<br />/사설</th>
-                <th scope="col">서비스</th>
+  <el-dialog
+    v-if="animationVisible"
+    id="ipms"
+    v-el-drag-dialog
+    title="서비스 변경 작업"
+    :visible.sync="visible"
+    :width="domElement.maxWidth + `px`"
+    :fullscreen.sync="fullscreen"
+    :modal-append-to-body="true"
+    :append-to-body="true"
+    :close-on-click-modal="closeOnClickModal"
+    :loading="loading"
+    class="ipms-dialog"
+    :class="{ [name]: true }"
+  >
+    <div class="popupContentTable">
+      <div class="popupContentTableTitle">조회결과</div>
+      <table>
+        <colgroup>
+          <col width="5%" />
+          <col width="6%" />
+          <col width="6%" />
+          <col width="4%" />
+          <col width="10%" />
+          <col width="10%" />
+          <col width="4%" />
+          <col width="8%" />
+          <col width="11%" />
+          <col width="11%" />
+          <col width="5%" />
+          <col width="6%" />
+          <col width="11%" />
+          <col width="11%" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th colspan="5">계위</th>
+            <th colspan="3">IPMS</th>
+            <th colspan="3">실제 라우팅 장비</th>
+            <th rowspan="2">분할/병합<br />건수</th>
+            <th rowspan="2">장비수집일자</th>
+            <th rowspan="2">서비스</th>
+          </tr>
+          <tr>
+            <th>서비스망</th>
+            <th>본부</th>
+            <th>노드</th>
+            <th>공인<br />/사설</th>
+            <th>서비스</th>
 
-                <th scope="col">IP블록</th>
-                <th scope="col">회선</th>
-                <th scope="col">IP블록상태</th>
+            <th>IP블록</th>
+            <th>회선</th>
+            <th>IP블록상태</th>
 
-                <th scope="col">IP블록</th>
-                <th scope="col">Nexthop</th>
-                <th scope="col">사용여부</th>
-              </tr>
-            </thead>
-            <tbody id="tbodyPop01">
-              <tr v-if="tbRoutChkMstVos.length === 0" class="subbg last">
-                <td class="first" colspan="14">조회된 결과 목록이 존재하지 않습니다.</td>
-              </tr>
-              <tr
-                v-for="(item, index) in tbRoutChkMstVos"
-                :key="index"
+            <th>IP블록</th>
+            <th>Nexthop</th>
+            <th>사용여부</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-if="tbRoutChkMstVos.length === 0">
+            <td class="first" colspan="14">조회된 결과 목록이 존재하지 않습니다.</td>
+          </tr>
+          <tr v-for="(item, index) in tbRoutChkMstVos" :key="index">
+            <td v-if="shouldRenderRowspan(index)" :rowspan="getRowSpan(item, index)" class="first ellipsis merge" :title="item.ssvcLineTypeNm">
+              {{ item.ssvcLineTypeNm }}
+            </td>
+            <td v-if="shouldRenderRowspan(index)" :rowspan="getRowSpan(item, index)" class="ellipsis merge pripPipPrefixPop" :title="item.ssvcGroupNm">
+              {{ item.ssvcGroupNm }}
+            </td>
+            <td v-if="shouldRenderRowspan(index)" :rowspan="getRowSpan(item, index)" class="ellipsis merge pripPipPrefixPop" :title="item.ssvcObjNm">
+              {{ item.ssvcObjNm }}
+            </td>
+            <td v-if="shouldRenderRowspan(index)" :rowspan="getRowSpan(item, index)" class="ellipsis merge pripPipPrefixPop" :title="item.sipCreateTypeNm">
+              {{ item.sipCreateTypeNm }}
+            </td>
+            <td v-if="shouldRenderRowspan(index)" :rowspan="getRowSpan(item, index)" class="ellipsis merge pripPipPrefixPop" :title="item.sassignTypeNm">
+              {{ item.sassignTypeNm }}
+            </td>
+            <td
+              v-if="shouldRenderRowspan(index)"
+              class="ellipsis merge pripPipPrefixPop dataAssignSeqPop"
+              :rowspan="getRowSpan(item, index)"
+            >
+              {{ item.pipmsIpPrefix }}
+            </td>
+            <td v-if="shouldRenderRowspan(index)" :rowspan="getRowSpan(item, index)" class="ellipsis merge pripPipPrefixPop" :title="item.nipAllocMstCnt">
+              {{ item.nipAllocMstCnt }}
+            </td>
+            <td v-if="shouldRenderRowspan(index)" :rowspan="getRowSpan(item, index)" class="ellipsis merge pripPipPrefixPop" :title="item.sassignLevelNm">
+              {{ item.sassignLevelNm }}
+            </td>
+
+            <td class="ellipsis merge pripAssignSeqPop dataPipPrefixPop">
+              {{ item.proutingIpPrefix }}
+            </td>
+            <td class="ellipsis merge pripAssignSeqPop" :title="item.sipNexthop">
+              {{ item.sipNexthop }}
+            </td>
+            <td class="ellipsis merge pripAssignSeqPop" :title="item.sroutingUseYn">
+              {{ item.sroutingUseYn }}
+            </td>
+            <td v-if="shouldRenderRowspan(index)" :rowspan="getRowSpan(item, index)" class="ellipsis merge" :title="item.ntargetCnt">
+              {{ item.ntargetCnt }}
+            </td>
+            <td v-if="shouldRenderRowspan(index)" :rowspan="getRowSpan(item, index)" class="ellipsis merge" :title="item.scollect_dt">
+              {{ item.scollect_dt }}
+            </td>
+            <td v-if="shouldRenderRowspan(index)" :rowspan="getRowSpan(item, index)" class="ellipsis merge">
+              <el-select
+                v-model="item['selectedService']"
+                name="sassignTypeCdPop"
               >
-                <td v-if="shouldRenderRowspan(index)" :rowspan="getRowSpan(item, index)" class="first ellipsis merge" :title="item.ssvcLineTypeNm">
-                  {{ item.ssvcLineTypeNm }}
-                </td>
-                <td v-if="shouldRenderRowspan(index)" :rowspan="getRowSpan(item, index)" class="ellipsis merge pripPipPrefixPop" :title="item.ssvcGroupNm">
-                  {{ item.ssvcGroupNm }}
-                </td>
-                <td v-if="shouldRenderRowspan(index)" :rowspan="getRowSpan(item, index)" class="ellipsis merge pripPipPrefixPop" :title="item.ssvcObjNm">
-                  {{ item.ssvcObjNm }}
-                </td>
-                <td v-if="shouldRenderRowspan(index)" :rowspan="getRowSpan(item, index)" class="ellipsis merge pripPipPrefixPop" :title="item.sipCreateTypeNm">
-                  {{ item.sipCreateTypeNm }}
-                </td>
-                <td v-if="shouldRenderRowspan(index)" :rowspan="getRowSpan(item, index)" class="ellipsis merge pripPipPrefixPop" :title="item.sassignTypeNm">
-                  {{ item.sassignTypeNm }}
-                </td>
-                <td
-                  v-if="shouldRenderRowspan(index)"
-                  class="ellipsis merge pripPipPrefixPop dataAssignSeqPop"
-                  :rowspan="getRowSpan(item, index)"
-                >
-                  {{ item.pipmsIpPrefix }}
-                </td>
-                <td v-if="shouldRenderRowspan(index)" :rowspan="getRowSpan(item, index)" class="ellipsis merge pripPipPrefixPop" :title="item.nipAllocMstCnt">
-                  {{ item.nipAllocMstCnt }}
-                </td>
-                <td v-if="shouldRenderRowspan(index)" :rowspan="getRowSpan(item, index)" class="ellipsis merge pripPipPrefixPop" :title="item.sassignLevelNm">
-                  {{ item.sassignLevelNm }}
-                </td>
-
-                <td class="ellipsis merge pripAssignSeqPop dataPipPrefixPop">
-                  {{ item.proutingIpPrefix }}
-                </td>
-                <td class="ellipsis merge pripAssignSeqPop" :title="item.sipNexthop">
-                  {{ item.sipNexthop }}
-                </td>
-                <td class="ellipsis merge pripAssignSeqPop" :title="item.sroutingUseYn">
-                  {{ item.sroutingUseYn }}
-                </td>
-                <td v-if="shouldRenderRowspan(index)" :rowspan="getRowSpan(item, index)" class="ellipsis merge" :title="item.ntargetCnt">
-                  {{ item.ntargetCnt }}
-                </td>
-                <td v-if="shouldRenderRowspan(index)" :rowspan="getRowSpan(item, index)" class="ellipsis merge" :title="item.scollect_dt">
-                  {{ item.scollect_dt }}
-                </td>
-
-                <td v-if="shouldRenderRowspan(index)" :rowspan="getRowSpan(item, index)" class="ellipsis merge">
-                  <select
-                    :id="`sassignTypeCd_${item.scollectDtOrigin}_${item.nlvlMstSeq}_${item.proutingIpPrefix}`"
-                    v-model="item['selectedService']"
-                    name="sassignTypeCdPop"
-                  >
-                    <option value="">전체</option>
-                    <option
-                      v-for="type in sassignTypeCds"
-                      :key="type.value"
-                      :value="type.value"
-                    >
-                      {{ type.label }}
-                    </option>
-                  </select>
-                </td>
-
-                <!-- <td class="merge excelNone" style="display: none;">
-                  {{ item.nroutingChkMstSeq }}
-                </td>
-                <td class="merge excelNone" style="display: none;">
-                  {{ item.ssvcLineTypeCd }}
-                </td>
-                <td class="merge excelNone" style="display: none;">
-                  {{ item.ssvcGroupCd }}
-                </td>
-                <td class="merge excelNone" style="display: none;">
-                  {{ item.ssvcObjCd }}
-                </td>
-                <td class="merge excelNone" style="display: none;">
-                  {{ item.sassignLevelCd }}
-                </td>
-                <td class="merge excelNone" style="display: none;">
-                  {{ item.nipAssignMstSeq }}
-                </td> -->
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button size="mini" type="primary" @click="fnUpdateServiceMst">서비스변경</el-button>
-        <el-button size="mini" class="el-icon-close" @click.native="close()">{{ $t('exit') }}</el-button>
-      </div>
-    </el-dialog>
-  </div>
+                <el-option value="" label="전체" />
+                <el-option v-for="type in sassignTypeCds" :key="type.value" :value="type.value" :label="type.label" />
+              </el-select>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="popupContentTableBottom">
+      <el-button type="primary" size="small" round @click="fnUpdateServiceMst">서비스변경</el-button>
+      <el-button type="primary" size="small" icon="el-icon-close" round @click.native="close()">{{ $t('exit') }}</el-button>
+    </div>
+  </el-dialog>
 </template>
 
 <script>

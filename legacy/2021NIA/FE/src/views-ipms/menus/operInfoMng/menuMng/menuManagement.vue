@@ -1,13 +1,9 @@
 <template>
-  <el-row class="w-100 h-100" :gutter="20">
-    <div class="content_result">
-
-      <el-col :span="12">
-        <div class="content_result_h">
-          <div class="section_tit">
-            <h3>메뉴트리</h3>
-          </div>
-          <el-row style="border-top: 1px solid #cc2929"></el-row>
+  <el-row class="w-100 h-100">
+    <div class="d-flex">
+      <div class="searchOptionWrap">
+        <div class="popupContentTableTitle">메뉴트리</div>
+        <table class="content_resut_h">
           <el-tree
             :data="menuData"
             :props="defaultProps"
@@ -16,105 +12,86 @@
             @node-click="handleNodeClick"
           >
           </el-tree>
-        </div>
-      </el-col>
-
-      <el-col :span="12">
-        <div class="content_result_h fr">
-          <div class="section_tit">
-            <h3>메뉴 상세정보</h3>
-          </div>
-          <table class="tbl_data entry mt5" summary="조회조건선택">
-            <caption>조회조건선택</caption>
-            <colgroup>
-              <col width="25%" />
-              <col width="80%" />
-            </colgroup>
-            <tbody>
-              <tr class="top">
-                <th class="first" scope="row">메뉴 ID</th>
-                <td class="view">{{ resultDetailVos.smenuId }}</td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">메뉴명</th>
-                <td><el-input v-model="resultDetailVos.smenuNm" size="mini" type="text" class="txt w98" disabled /></td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">메뉴레벨</th>
-                <td><el-input v-model="resultDetailVos.nmenuLvlSeq" size="mini" type="text" class="txt w98" disabled /></td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">메뉴계층유형</th>
-                <td class="view">
-                  <span>
-                    <el-radio v-model="resultDetailVos.smenuHierTypeCd" label="UH0001">그룹</el-radio>
-                  </span>
-                  <span class="ml10">
-                    <el-radio v-model="resultDetailVos.smenuHierTypeCd" label="UH0002">메뉴</el-radio>
-                  </span>
-                </td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">상위메뉴</th>
-                <td class="view">{{ resultDetailVos.sUpMenuNm }}</td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">메뉴표시순서</th>
-                <td><el-input v-model="resultDetailVos.nmenuIndcOdrg" size="mini" type="text" class="txt w98" disabled /></td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">화면 ID</th>
-                <td><el-input v-model="resultDetailVos.sscrnId" type="text" size="mini" class="txt w98" disabled /></td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">화면명</th>
-                <td>
-
-                  <el-input v-model="resultDetailVos.sscrnNm" class="txt w-100" size="mini" disabled>
-                    <template #suffix>
-                      <el-button
-                        slot="trigger"
-                        size="small"
-                        style="font-size: larger; border: none; float: right"
-                        icon="el-icon-search"
-                        class="font-weight-bolder"
-                        @click="fnViewSearchScrnId()"
-                      />
-                    </template>
-                  </el-input>
-                </td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">화면 URL</th>
-                <td><el-input v-model="resultDetailVos.sscrnUrlAdr" size="mini" type="text" class="txt w98" disabled /></td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">메뉴사용여부</th>
-                <td class="view">
-                  <span>
-                    <el-radio v-model="resultDetailVos.smenuUseYn" label="Y">사용</el-radio>
-                  </span>
-                  <span class="ml10">
-                    <el-radio v-model="resultDetailVos.smenuUseYn" label="N">미사용</el-radio>
-                  </span>
-                </td>
-              </tr>
-              <tr class="last">
-                <th class="first" scope="row">메뉴설명</th>
-                <td><textarea v-model="resultDetailVos.scomment" class="w98 h60" rows="6"></textarea></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="float-right">
-          <el-button size="small" @click="fnUpdateTbMenuBas()">
-            저장
-          </el-button>
-        </div>
-      </el-col>
-      <ModalSearchTbScrnBas ref="ModalSearchTbScrnBas" @selected-value="onSetScrnNm" />
+        </table>
+      </div>
+      <div class="searchOptionWrap">
+        <div class="popupContentTableTitle">메뉴 상세정보</div>
+        <table>
+          <tbody>
+            <tr class="top">
+              <th>메뉴 ID</th>
+              <td class="view">{{ resultDetailVos.smenuId }}</td>
+            </tr>
+            <tr>
+              <th>메뉴명</th>
+              <td><el-input v-model="resultDetailVos.smenuNm" size="small" type="text" disabled /></td>
+            </tr>
+            <tr>
+              <th>메뉴레벨</th>
+              <td><el-input v-model="resultDetailVos.nmenuLvlSeq" size="small" type="text" disabled /></td>
+            </tr>
+            <tr>
+              <th>메뉴계층유형</th>
+              <td>
+                <el-radio v-model="resultDetailVos.smenuHierTypeCd" label="UH0001">그룹</el-radio>
+                <el-radio v-model="resultDetailVos.smenuHierTypeCd" label="UH0002">메뉴</el-radio>
+              </td>
+            </tr>
+            <tr>
+              <th>상위메뉴</th>
+              <td class="view">{{ resultDetailVos.sUpMenuNm }}</td>
+            </tr>
+            <tr>
+              <th>메뉴표시순서</th>
+              <td><el-input v-model="resultDetailVos.nmenuIndcOdrg" size="small" type="text" disabled /></td>
+            </tr>
+            <tr>
+              <th>화면 ID</th>
+              <td><el-input v-model="resultDetailVos.sscrnId" type="text" size="small" disabled /></td>
+            </tr>
+            <tr>
+              <th>화면명</th>
+              <td>
+                <el-input v-model="resultDetailVos.sscrnNm" size="small" disabled>
+                  <template #suffix>
+                    <el-button
+                      slot="trigger"
+                      type="primary"
+                      size="small"
+                      icon="el-icon-search"
+                      class="font-weight-bolder"
+                      round
+                      @click="fnViewSearchScrnId()"
+                    />
+                  </template>
+                </el-input>
+              </td>
+            </tr>
+            <tr>
+              <th>화면 URL</th>
+              <td><el-input v-model="resultDetailVos.sscrnUrlAdr" size="small" type="text" disabled /></td>
+            </tr>
+            <tr>
+              <th>메뉴사용여부</th>
+              <td>
+                <el-radio v-model="resultDetailVos.smenuUseYn" label="Y">사용</el-radio>
+                <el-radio v-model="resultDetailVos.smenuUseYn" label="N">미사용</el-radio>
+              </td>
+            </tr>
+            <tr>
+              <th>메뉴설명</th>
+              <td><textarea v-model="resultDetailVos.scomment" rows="6"></textarea></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
-
+    <div class="float-right">
+      <el-button type="primary" icon="el-icon-check" size="small" round @click="fnUpdateTbMenuBas()">
+        저장
+      </el-button>
+    </div>
+    <ModalSearchTbScrnBas ref="ModalSearchTbScrnBas" @selected-value="onSetScrnNm" />
   </el-row>
 </template>
 <script>
@@ -283,7 +260,8 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-  // .el-tree-node:before, .el-tree-node:after{
-  //   border: none !important;
-  // }
+.popupContentTableTitle {
+  padding: 10px;
+  border-bottom: solid 1px #00d9ff;
+}
 </style>

@@ -9,8 +9,9 @@
     <el-col ref="tableContainer" :span="24">
       <compTable
         ref="compTable"
+        style="height: calc(100% - 80px)"
         :prop-name="name"
-        :prop-table-height="'calc(100% - 80px)'"
+        :prop-table-height="'100%'"
         :prop-data="pagination.data"
         :prop-pagination-data.sync="pagination"
         :prop-column="tableColumns"
@@ -29,12 +30,12 @@
           </span>
         </template>
         <template slot="add-features">
-          <div class="float-right">
-            <el-button size="mini" @click="fnRoutingCollectMst">무선 전체 라우팅 수집</el-button>
-            <el-button size="mini" @click="handleClickSummaryMng">Summary 관리</el-button>
-            <el-button size="mini" @click="$refs.ModalUploadMst.open()" @reload="fnViewListMobileMst">텍스트 파일 업로드</el-button>
-            <el-button size="mini" icon="el-icon-plus" @click="handleClickRegist">Community 개별 등록</el-button>
-            <el-button size="mini" @click="fnDeleteMobileMst()">삭제</el-button>
+          <div style="margin-top: 10px">
+            <el-button type="primary" size="mini" round @click="fnRoutingCollectMst">무선 전체 라우팅 수집</el-button>
+            <el-button type="primary" size="mini" round @click="handleClickSummaryMng">Summary 관리</el-button>
+            <el-button type="primary" size="mini" round @click="$refs.ModalUploadMst.open()" @reload="fnViewListMobileMst">텍스트 파일 업로드</el-button>
+            <el-button icon="el-icon-document-add" type="primary" size="mini" round @click="handleClickRegist">Community 개별 등록</el-button>
+            <el-button icon="el-icon-document-delete" type="primary" size="mini" round @click="fnDeleteMobileMst()">삭제</el-button>
           </div>
         </template>
       </compTable>

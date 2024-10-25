@@ -1,23 +1,25 @@
 <template>
-  <el-col :class="{ [name]: true }" :xs="24" :sm="12" :md="12" :lg="8" :xl="6">
-    <label>
+  <fragment>
+    <th>
       {{ label }}
-    </label>
-    <el-select
-      v-model="sortType"
-      size="mini"
-      @change="emitEventToParent([{ key: 'sortType', value: sortType }])"
-    >
-      <el-option
-        v-for="(option, i) in sortTypeOptions"
-        :key="i"
-        :label="option.label"
-        :value="option.value"
-      />
-    </el-select>
-    <el-radio v-model="sortOrdr" label="ASC" @change="handleChangeRadio">오름차순</el-radio>
-    <el-radio v-model="sortOrdr" label="DESC" @change="handleChangeRadio">내림차순</el-radio>
-  </el-col>
+    </th>
+    <td class="textflex">
+      <el-select
+        v-model="sortType"
+        size="small"
+        @change="emitEventToParent([{ key: 'sortType', value: sortType }])"
+      >
+        <el-option
+          v-for="(option, i) in sortTypeOptions"
+          :key="i"
+          :label="option.label"
+          :value="option.value"
+        />
+      </el-select>
+      <el-radio v-model="sortOrdr" label="ASC" @change="handleChangeRadio">오름차순</el-radio>
+      <el-radio v-model="sortOrdr" label="DESC" @change="handleChangeRadio">내림차순</el-radio>
+    </td>
+  </fragment>
 </template>
 <script>
 import { Base } from '@/min/Base.min'
@@ -39,7 +41,7 @@ export default {
     },
     sortOrdrDefaultVal: {
       type: String,
-      default: 'null'
+      default: 'DESC'
     },
     prop_options: {
       type: Array,

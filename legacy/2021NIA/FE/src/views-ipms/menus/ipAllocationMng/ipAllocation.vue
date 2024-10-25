@@ -10,8 +10,9 @@
     <el-col ref="tableContainer" :span="24">
       <compTable
         ref="compTable"
+        style="height: calc(100% - 80px)"
         :prop-name="name"
-        :prop-table-height="'calc(100% - 80px)'"
+        :prop-table-height="'100%'"
         :prop-data="pagination.data"
         :prop-pagination-data.sync="pagination"
         :prop-column="tableColumns"
@@ -33,10 +34,10 @@
           </span>
         </template>
         <template slot="add-features">
-          <div class="mt-1 d-flex justify-end">
-            <el-button icon="el-icon-check" type="primary" size="mini" @click="fnViewCheckTacsIpBlock_">IP블럭 중복체크</el-button>
-            <el-button icon="el-icon-thumb" style="background: #2b5890;" type="primary" size="mini" @click="fnInsertAlcBtnClick">할당</el-button>
-            <el-button size="mini" @click="fnMergeBtnClick">병합</el-button>
+          <div style="margin-top: 10px">
+            <el-button icon="el-icon-check" type="primary" size="mini" round @click="fnViewCheckTacsIpBlock_">IP블럭 중복체크</el-button>
+            <el-button icon="el-icon-thumb" type="primary" size="mini" round @click="fnInsertAlcBtnClick">할당</el-button>
+            <el-button icon="el-icon-menu" type="primary" size="mini" round @click="fnMergeBtnClick">병합</el-button>
           </div>
         </template>
       </compTable>
@@ -118,12 +119,12 @@ export default {
         { key: 'InputType', props: { label: '라우팅 중복 개수', prop_parameterKey: 'nsummaryCnt', valueType: 'number' } },
       ],
       tableColumns: [
-        { prop: 'ssvcLineTypeNm', label: '서비스망', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'ssvcGroupNm', label: '본부', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'ssvcObjNm', label: '노드', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'sipCreateTypeNm', label: '공인/사설', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'sassignTypeNm', label: '서비스', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'pipPrefix', label: 'IP블록', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'ssvcLineTypeNm', label: '서비스망', align: 'center', sortable: false, columnVisible: true, showOverflow: true },
+        { prop: 'ssvcGroupNm', label: '본부', align: 'center', sortable: false, columnVisible: true, showOverflow: true },
+        { prop: 'ssvcObjNm', label: '노드', align: 'center', sortable: false, columnVisible: true, showOverflow: true },
+        { prop: 'sipCreateTypeNm', label: '공인/사설', align: 'center', sortable: false, columnVisible: true, showOverflow: true },
+        { prop: 'sassignTypeNm', label: '서비스', align: 'center', sortable: false, columnVisible: true, showOverflow: true },
+        { prop: 'pipPrefix', label: 'IP블록', align: 'center', sortable: false, columnVisible: true, showOverflow: true },
         { prop: 'sassignLevelNm', label: '할당상태', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'nipAllocMstCnt', label: '회선', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'dmodifyDt', label: '작업일자', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
@@ -135,7 +136,12 @@ export default {
         { prop: 'nsummaryCnt', label: '라우팅 중복 개수', align: 'center', sortable: true, columnVisible: true, showOverflow: true,
           formatter: (row, col, value, index) => {
             return this.$createElement('el-button', {
-              class: row.nsummaryCnt > 0 ? 'red' : '',
+              attrs: {
+                round: true, // Adding the round option
+                plain: true,
+                type: row.nsummaryCnt > 0 ? 'danger' : 'primary'
+              },
+              // class: row.nsummaryCnt > 0 ? 'red' : '',
               on: { click: () => {
                 this.$refs.ModalDetailSummary.open({ row })
             } } }, row.nsummaryCnt)
@@ -144,7 +150,12 @@ export default {
         { prop: 'division', label: '분할', align: 'center', sortable: true, columnVisible: true, showOverflow: true,
           formatter: (row, col, value, index) => {
             return this.$createElement('el-button', {
-              class: row.sassignLevelCd === 'IA0004' ? '' : 'red',
+              // class: row.sassignLevelCd === 'IA0004' ? '' : 'red',
+              attrs: {
+                round: true, // Adding the round option
+                plain: true,
+                type: row.sassignLevelCd === 'IA0004' ? 'danger' : 'primary'
+              },
               on: { click: () => {
                 if (row.sassignLevelCd === 'IA0004') {
                   this.fnViewInsertDivAsgnIPMst(row)

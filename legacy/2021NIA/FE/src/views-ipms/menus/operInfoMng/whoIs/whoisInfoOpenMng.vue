@@ -13,7 +13,6 @@
         </tbody>
       </table>
     </div>
-
     <DynamicComponentLoader
       :prop-name="name"
       :component-keys="componentList"
@@ -22,8 +21,9 @@
     <el-col :span="24">
       <compTable
         ref="compTable"
+        style="height: calc(100% - 80px)"
         :prop-name="name"
-        :prop-table-height="'calc(100% - 80px)'"
+        :prop-table-height="'100%'"
         :prop-column="tableColumns"
         :prop-data="resultListVo"
         :prop-is-pagination="true"
@@ -39,12 +39,12 @@
           </span>
         </template>
         <template slot="add-features">
-          <div class="float-right">
-            <el-button size="mini" @click="fnVieListWhoisKeywordMst1()">이용기관 관리</el-button>
-            <el-button size="mini" @click="fnVieListWhoisKeywordMst2()">대체 키워드 관리</el-button>
-            <el-button size="mini" @click="fnViewUpdateKtInfo()">KT 대체 정보 관리</el-button>
-            <el-button size="mini" @click="fnDbMatch()">DB 현행화 전송</el-button>
-            <el-button size="mini" class="el-icon-delete" @click="fnDeleteListWhois()">삭제</el-button>
+          <div style="margin-top: 10px">
+            <el-button type="primary" size="mini" round @click="fnVieListWhoisKeywordMst1()">이용기관 관리</el-button>
+            <el-button type="primary" size="mini" round @click="fnVieListWhoisKeywordMst2()">대체 키워드 관리</el-button>
+            <el-button type="primary" size="mini" round @click="fnViewUpdateKtInfo()">KT 대체 정보 관리</el-button>
+            <el-button type="primary" size="mini" round @click="fnDbMatch()">DB 현행화 전송</el-button>
+            <el-button type="primary" size="mini" icon="el-icon-delete" round @click="fnDeleteListWhois()">삭제</el-button>
           </div>
         </template>
       </compTable>

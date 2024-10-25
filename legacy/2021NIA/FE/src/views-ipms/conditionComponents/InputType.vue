@@ -1,10 +1,12 @@
 <template>
-  <el-col :class="{ [name]: true }" :xs="24" :sm="12" :md="12" :lg="8" :xl="6">
-    <label>
+  <fragment>
+    <th>
       {{ label }}
-    </label>
-    <el-input v-model="value" size="mini" clearable @change="handleChange()" @input="onChangeInput" />
-  </el-col>
+    </th>
+    <td>
+      <el-input v-model="value" size="small" clearable @change="handleChange()" @input="onChangeInput" />
+    </td>
+  </fragment>
 </template>
 <script>
 import { Base } from '@/min/Base.min'

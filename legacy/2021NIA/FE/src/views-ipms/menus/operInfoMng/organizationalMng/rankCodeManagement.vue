@@ -9,8 +9,9 @@
     <el-col ref="tableContainer" :span="24">
       <compTable
         ref="compTable"
+        style="height: calc(100% - 80px)"
         :prop-name="name"
-        :prop-table-height="'calc(100% - 80px)'"
+        :prop-table-height="'100%'"
         :prop-column="tableColumns"
         :prop-data="resultListVo"
         :prop-is-pagination="true"
@@ -24,8 +25,8 @@
           </span>
         </template>
         <template slot="add-features">
-          <div class="float-right">
-            <el-button size="mini" @click="fnViewupdateLvlCd('', 'create')">가상 국사/조직등록</el-button>
+          <div style="margin-top: 10px">
+            <el-button icon="el-icon-document-add" type="primary" size="mini" round @click="fnViewupdateLvlCd('', 'create')">가상 국사/조직등록</el-button>
           </div>
         </template>
       </compTable>
@@ -62,14 +63,20 @@ export default {
           formatter: (row, col, value, index) => {
             if (row.sexLinkUseTypeCd === 'CE0006') {
               return this.$createElement('el-button', {
+                attrs: {
+                  round: true, // Adding the round option
+                  plain: true,
+                  type: 'primary',
+                  size: 'mini'
+                },
                 on: { click: () => {
                   this.fnViewupdateLvlCd(row.slvlCd, 'edit')
                 } } }, '수정')
             } else {
-              return this.$createElement('span', { class: 'txtred' }, '불가')
+              return this.$createElement('span', { style: 'color: red' }, '불가')
             }
           }
-         },
+        },
       ],
       componentList: [
         { key: 'ExtrnLnkgs', props: { label: '외부연동유형' } },

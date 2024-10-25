@@ -1,25 +1,27 @@
 <template>
-  <el-col :class="{ [name]: true }" :xs="24" :sm="12" :md="12" :lg="8" :xl="6">
-    <label style="width : 100px">
+  <fragment>
+    <th>
       PROTOCOL
-    </label>
-    <el-select
-      v-model="value"
-      collapse-tags
-      size="mini"
-      @change="handleChange()"
-    >
-      <el-option
-        v-for="(option, i) in [
-          { label: 'ICMP', value: 'I' },
-          { label: 'TCP', value: 'T' },
-        ]"
-        :key="i"
-        :label="option.label"
-        :value="option.value"
-      />
-    </el-select>
-  </el-col>
+    </th>
+    <td class="textflex">
+      <el-select
+        v-model="value"
+        collapse-tags
+        size="small"
+        @change="handleChange()"
+      >
+        <el-option
+          v-for="(option, i) in [
+            { label: 'ICMP', value: 'I' },
+            { label: 'TCP', value: 'T' },
+          ]"
+          :key="i"
+          :label="option.label"
+          :value="option.value"
+        />
+      </el-select>
+    </td>
+  </fragment>
 </template>
 <script>
 import { Base } from '@/min/Base.min'

@@ -1,140 +1,122 @@
 <template>
-  <div>
-    <el-dialog
-      v-if="animationVisible"
-      id="ipms"
-      v-el-drag-dialog
-      :visible.sync="visible"
-      :width="domElement.maxWidth + `px`"
-      :fullscreen.sync="fullscreen"
-      :modal-append-to-body="true"
-      :append-to-body="true"
-      :modal="modal"
-      :close-on-click-modal="closeOnClickModal"
-      :loading="loading"
-      class="ipms-dialog"
-      :class="{ [name]: true }"
-    >
-      <span slot="title">
-        <i class="el-icon-document mr-2" style="font-size: 17px" />
-        조직계위정보 이동
-        <hr>
-      </span>
+  <el-dialog
+    v-if="animationVisible"
+    id="ipms"
+    v-el-drag-dialog
+    title="조직계위정보 이동"
+    :visible.sync="visible"
+    :width="domElement.maxWidth + `px`"
+    :fullscreen.sync="fullscreen"
+    :modal-append-to-body="true"
+    :append-to-body="true"
+    :modal="modal"
+    :close-on-click-modal="closeOnClickModal"
+    :loading="loading"
+    class="ipms-dialog"
+    :class="{ [name]: true }"
+  >
+    <div class="popupContentTable">
+      <div class="popupContentTableTitle">변경 전 조직계위</div>
+      <table>
+        <colgroup>
+          <col width="30%" /><col width="70%" />
+        </colgroup>
+        <tbody>
+          <tr>
+            <th>서비스망</th>
+            <td>{{ resultVo.ssvcLineTypeNm }}</td>
+          </tr>
+          <tr>
+            <th>센터/지역본부</th>
+            <td>{{ resultVo.ssvcGroupNm }}</td>
+          </tr>
+          <tr>
+            <th>노드</th>
+            <td>{{ resultVo.ssvcObjNm }}</td>
+          </tr>
+          <tr class="last">
+            <th>주노드</th>
+            <td>{{ resultVo.ssvchighObjNm }}</td>
 
-      <div id="content" class="layer">
-        <div class="content_result mt0">
-          <h4>변경전 조직계위</h4>
-          <table class="tbl_data entry">
-            <colgroup>
-              <col width="30%" /><col width="70%" />
-            </colgroup>
-            <tbody>
-              <tr class="top">
-                <th class="first" scope="row">서비스망</th>
-                <td>{{ resultVo.ssvcLineTypeNm }}</td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">센터/지역본부</th>
-                <td>{{ resultVo.ssvcGroupNm }}</td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">노드</th>
-                <td>{{ resultVo.ssvcObjNm }}</td>
-              </tr>
-              <tr class="last">
-                <th class="first" scope="row">주노드</th>
-                <td>{{ resultVo.ssvchighObjNm }}</td>
-
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="content_result">
-          <h4>변경후 조직계위</h4>
-          <table class="tbl_data entry">
-            <colgroup>
-              <col width="30%" />
-              <col width="70%" />
-            </colgroup>
-            <tbody>
-              <tr class="top">
-                <th class="first" scope="row">서비스망</th>
-                <td>
-                  <el-select v-model="ssvcLineTypeCd" class="w-100" size="mini" @change="handleChangeLvl1()">
-                    <el-option
-                      v-for="item in ssvcLineTypeCdOp"
-                      :key="item.value"
-                      :value="item.value"
-                      :label="item.label "
-                    >
-                    </el-option>
-                  </el-select>
-                </td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">센터/지역본부</th>
-                <td>
-                  <el-select v-model="ssvcGroupCd" :disabled="isDisabledCt" class="w-100" size="mini" @change="handleChangeLvl2()">
-                    <el-option
-                      v-for="item in ssvcGroupCdOp"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </el-select>
-                </td>
-              </tr>
-              <tr>
-                <th class="first" scope="row">노드</th>
-                <td>
-                  <el-select v-model="ssvcObjCd" class="w-100" :disabled="isDisabledNd" size="mini">
-                    <el-option
-                      v-for="item in ssvcObjCdOp"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </el-select>
-                </td>
-              </tr>
-              <tr class="last">
-                <th class="first" scope="row">주노드</th>
-                <td>
-                  <div class="search w98">
-                    <el-input
-                      v-model="ssvchighObjNm"
-                      size="mini"
-                      readonly
-                    >
-                      <template #suffix>
-                        <el-button
-                          size="mini"
-                          icon="el-icon-search"
-                          class="font-weight-bolder"
-                          style="font-size: larger;border: none"
-                          @click="fnViewSearchCenterLvlCd()"
-                        />
-                      </template>
-                    </el-input>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-      </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button size="mini" @click="fnValidationLvlValue()">
-          {{ $t('등록') }}
-        </el-button>
-        <el-button size="mini" class="el-icon-close" @click="close()">{{ $t('exit') }}</el-button>
-      </div>
-      <ModalEntireOrgSearch ref="ModalEntireOrgSearch" @selected-value="setSelectedRow" />
-
-    </el-dialog>
-  </div>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="popupContentTable">
+      <div class="popupContentTableTitle">변경 후 조직계위</div>
+      <table class="tbl_data entry">
+        <colgroup>
+          <col width="30%" />
+          <col width="70%" />
+        </colgroup>
+        <tbody>
+          <tr class="top">
+            <th>서비스망</th>
+            <td>
+              <el-select v-model="ssvcLineTypeCd" class="w-100" size="small" @change="handleChangeLvl1()">
+                <el-option
+                  v-for="item in ssvcLineTypeCdOp"
+                  :key="item.value"
+                  :value="item.value"
+                  :label="item.label "
+                >
+                </el-option>
+              </el-select>
+            </td>
+          </tr>
+          <tr>
+            <th>센터/지역본부</th>
+            <td>
+              <el-select v-model="ssvcGroupCd" :disabled="isDisabledCt" class="w-100" size="small" @change="handleChangeLvl2()">
+                <el-option
+                  v-for="item in ssvcGroupCdOp"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </td>
+          </tr>
+          <tr>
+            <th>노드</th>
+            <td>
+              <el-select v-model="ssvcObjCd" class="w-100" :disabled="isDisabledNd" size="small">
+                <el-option
+                  v-for="item in ssvcObjCdOp"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </td>
+          </tr>
+          <tr>
+            <th>주노드</th>
+            <td>
+              <el-input
+                v-model="ssvchighObjNm"
+                size="small"
+                readonly
+              >
+                <template #suffix>
+                  <el-button
+                    size="small"
+                    icon="el-icon-search"
+                    @click="fnViewSearchCenterLvlCd()"
+                  />
+                </template>
+              </el-input>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div slot="footer" class="dialog-footer">
+      <el-button type="primary" size="small" icon="el-icon-document-add" round @click="fnValidationLvlValue()">등록</el-button>
+      <el-button type="primary" size="small" icon="el-icon-close" round @click="close()">{{ $t('exit') }}</el-button>
+    </div>
+    <ModalEntireOrgSearch ref="ModalEntireOrgSearch" @selected-value="setSelectedRow" />
+  </el-dialog>
 </template>
 
 <script>

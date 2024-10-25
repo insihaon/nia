@@ -1,5 +1,5 @@
 <template>
-  <div id="app" :class="appClass">
+  <div id="app" :class="[appClass, appProject]">
     <RouterView />
   </div>
 </template>
@@ -20,10 +20,15 @@ export default {
   computed: {
     ...mapState({
       outline: (state) => state.app.outline,
-      expire: (state) => state.app.expire
+      expire: (state) => state.app.expire,
     }),
     appClass() {
       return this.outline ? 'outline' : ''
+    },
+    appProject() {
+      const { AppOptions } = require('@/class/appOptions')
+      const { project } = AppOptions.instance
+      return project
     }
 
   },
@@ -67,3 +72,5 @@ export default {
   }
 }
 </script>
+<style>
+</style>

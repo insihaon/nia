@@ -1,23 +1,25 @@
 <template>
-  <el-col :class="{ [name]: true }" :xs="24" :sm="12" :md="12" :lg="8" :xl="6">
-    <label>
+  <fragment>
+    <th>
       {{ label }}
-    </label>
-    <el-select
-      v-model="value"
-      size="mini"
-      @change="handleChange"
-    >
-      <el-option v-if="isAllOption" label="전체" value="" />
-      <el-option
-        v-for="(option, i) in options"
-        :key="i"
-        :label="option.label"
-        :value="option.value"
-      />
-    </el-select>
-    <el-input v-model="word" size="mini" clearable @change="handleChangeWord" />
-  </el-col>
+    </th>
+    <td class="textflex">
+      <el-select
+        v-model="value"
+        size="small"
+        @change="handleChange"
+      >
+        <el-option v-if="isAllOption" label="전체" value="" />
+        <el-option
+          v-for="(option, i) in options"
+          :key="i"
+          :label="option.label"
+          :value="option.value"
+        />
+      </el-select>
+      <el-input v-model="word" size="small" clearable @change="handleChangeWord" />
+    </td>
+  </fragment>
 </template>
 <script>
 import { Base } from '@/min/Base.min'

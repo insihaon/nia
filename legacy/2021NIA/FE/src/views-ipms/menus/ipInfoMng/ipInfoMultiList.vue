@@ -27,8 +27,9 @@
     <el-col style="height: calc(100% - 75px)">
       <compTable
         ref="compTable"
+        style="height: calc(100% - 80px)"
         :prop-name="name"
-        :prop-table-height="'calc(100% - 80px)'"
+        :prop-table-height="'100%'"
         :prop-column="ipBlockColumns"
         :prop-is-pagination="false"
         :prop-is-check-box="false"

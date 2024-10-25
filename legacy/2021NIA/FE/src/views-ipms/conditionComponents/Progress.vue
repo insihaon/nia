@@ -1,22 +1,25 @@
 <template>
-  <el-col :class="{ [name]: true }" :xs="24" :sm="12" :md="12" :lg="10" :xl="10">
-    <label>
+  <fragment>
+    <th>
       진행상태
-    </label>
-    <el-select
-      v-model="value"
-      size="mini"
-      @change="handleChange()"
-    >
-      <el-option
-        v-for="(option, i) in options"
-        :key="i"
-        :label="option.label"
-        :value="option.value"
-      />
-    </el-select>
-    &nbsp;※ 라우팅 수집을 새로하면 기존 진행상태가 초기화 됩니다.
-  </el-col>
+    </th>
+    <td>
+      <el-select
+        v-model="value"
+        size="small"
+        @change="handleChange()"
+      >
+        <el-option
+          v-for="(option, i) in options"
+          :key="i"
+          :label="option.label"
+          :value="option.value"
+        />
+      </el-select>
+      <!-- ※ 라우팅 수집을 새로하면 기존 진행상태가 초기화 됩니다. -->
+      <!-- 위 문구로인해 다른 레이아웃이 깨짐 임시 주석처리 -->
+    </td>
+  </fragment>
 </template>
 <script>
 import { Base } from '@/min/Base.min'

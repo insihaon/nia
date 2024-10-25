@@ -1,100 +1,85 @@
 <template>
-  <div>
-    <el-dialog
-      v-if="animationVisible"
-      id="ipms"
-      v-el-drag-dialog
-      :visible.sync="visible"
-      :width="domElement.maxWidth + `px`"
-      :fullscreen.sync="fullscreen"
-      :modal-append-to-body="false"
-      :append-to-body="true"
-      :modal="modal"
-      :close-on-click-modal="closeOnClickModal"
-      :loading="loading"
-      class="ipms-dialog"
-      :class="{ [name]: true }"
-    >
-      <span slot="title">
-        <i class="el-icon-document mr-2" style="font-size: 17px" />
-        연동 정보 {{ viewType === 'detail' ? '상세' : '수정' }}
-        <hr>
-      </span>
-      <div id="content" class="layer">
-        <table class="tbl_data entry">
-          <caption></caption>
-          <colgroup>
-            <col width="13%" />
-            <col width="34%" />
-            <col width="13%" />
-            <col width="12%" />
-            <col width="13%" />
-            <col width="15%" />
-          </colgroup>
-          <tbody>
-            <tr class="top">
-              <th class="first">인터페이스 ID</th>
-              <td colspan="3" class="view">{{ resultVo.sifId }}</td>
-              <th>시스템명</th>
-              <td class="view">{{ resultVo.ssystemNm }}</td>
-            </tr>
-            <tr>
-              <th class="first">스크립트 명</th>
-              <td colspan="3" class="view">{{ resultVo.sscriptNm }}</td>
-              <th>제공 시스템</th>
-              <td class="view">{{ resultVo.sproviderSys }}</td>
-            </tr>
-            <tr>
-              <th class="first">테이블 이름</th>
-              <td class="view">{{ resultVo.stableNm }}</td>
-              <th>연동형태</th>
-              <td class="view">{{ resultVo.linktype }}</td>
-              <th>사용 여부</th>
-              <td v-if="viewType === 'detail'">
-                {{ resultVo.sopstate }}
-              </td>
-              <td v-if="viewType === 'update'">
-                <select v-model="resultVo.sopstate">
-                  <option value="U">사용</option>
-                  <option value="N">미사용</option>
-                </select>
-              </td>
-            </tr>
-            <tr>
-              <th class="first">연동 주기</th>
-              <td v-if="viewType === 'detail'" colspan="5">
-                <div id="cronBatch" class="cron">{{ resultVo.speriod }}</div>
-              </td>
-              <td v-if="viewType === 'update'" colspan="5">
-                <div id="cronBatch" class="cron">
-                  <CompCron ref="compCron" :speriod="resultVo.speriod" @updateCron="onUpdateCron" />
-                </div>
-              </td>
-            </tr>
-            <tr class="last">
-              <th class="first">비고</th>
-              <td v-if="viewType === 'detail'" colspan="5">
-                {{ resultVo.scomment }}
-              </td>
-              <td v-if="viewType === 'update'" colspan="5">
-                <textarea
-                  id="updateScomment"
-                  v-model="resultVo.scomment"
-                  class="w98"
-                  rows="3"
-                ></textarea>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button v-if="viewType === 'detail'" size="mini" class="el-icon-edit-outline" @click="viewType = 'update'">수정</el-button>
-        <el-button v-else-if="viewType === 'update'" size="mini" class="el-icon-edit-outline" @click="fnUpdateTbBatchSvcBas">등록</el-button>
-        <el-button size="mini" class="el-icon-close" @click.native="close()">{{ $t('exit') }}</el-button>
-      </div>
-    </el-dialog>
-  </div>
+  <el-dialog
+    v-if="animationVisible"
+    id="ipms"
+    v-el-drag-dialog
+    :title="'연동 정보'+(viewType === 'detail' ? '상세' : '수정')"
+    :visible.sync="visible"
+    :width="domElement.maxWidth + `px`"
+    :fullscreen.sync="fullscreen"
+    :modal-append-to-body="false"
+    :append-to-body="true"
+    :modal="modal"
+    :close-on-click-modal="closeOnClickModal"
+    :loading="loading"
+    class="ipms-dialog"
+    :class="{ [name]: true }"
+  >
+    <div class="popupContentTable">
+      <table>
+        <tbody>
+          <tr>
+            <th>인터페이스 ID</th>
+            <td colspan="3">{{ resultVo.sifId }}</td>
+            <th>시스템명</th>
+            <td>{{ resultVo.ssystemNm }}</td>
+          </tr>
+          <tr>
+            <th>스크립트 명</th>
+            <td colspan="3">{{ resultVo.sscriptNm }}</td>
+            <th>제공 시스템</th>
+            <td>{{ resultVo.sproviderSys }}</td>
+          </tr>
+          <tr>
+            <th>테이블 이름</th>
+            <td>{{ resultVo.stableNm }}</td>
+            <th>연동형태</th>
+            <td>{{ resultVo.linktype }}</td>
+            <th>사용 여부</th>
+            <td v-if="viewType === 'detail'">
+              {{ resultVo.sopstate }}
+            </td>
+            <td v-if="viewType === 'update'">
+              <el-select v-model="resultVo.sopstate" size="small">
+                <el-option value="U">사용</el-option>
+                <el-option value="N">미사용</el-option>
+              </el-select>
+            </td>
+          </tr>
+          <tr>
+            <th>연동 주기</th>
+            <td v-if="viewType === 'detail'" colspan="5">
+              <div>{{ resultVo.speriod }}</div>
+            </td>
+            <td v-if="viewType === 'update'" colspan="5">
+              <div>
+                <CompCron ref="compCron" :speriod="resultVo.speriod" @updateCron="onUpdateCron" />
+              </div>
+            </td>
+          </tr>
+          <tr class="last">
+            <th>비고</th>
+            <td v-if="viewType === 'detail'" colspan="5">
+              {{ resultVo.scomment }}
+            </td>
+            <td v-if="viewType === 'update'" colspan="5">
+              <textarea
+                id="updateScomment"
+                v-model="resultVo.scomment"
+                class="w98"
+                rows="3"
+              ></textarea>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="popupContentTableBottom">
+      <el-button v-if="viewType === 'detail'" type="primary" size="small" icon="el-icon-edit" round @click="viewType = 'update'">수정</el-button>
+      <el-button v-else-if="viewType === 'update'" type="primary" size="small" icon="el-icon-document-add" round @click="fnUpdateTbBatchSvcBas">등록</el-button>
+      <el-button type="primary" size="small" icon="el-icon-close" round @click.native="close()">{{ $t('exit') }}</el-button>
+    </div>
+  </el-dialog>
 </template>
 
 <script>

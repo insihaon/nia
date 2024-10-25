@@ -1,60 +1,53 @@
 <template>
-  <div>
-    <el-dialog
-      v-if="animationVisible"
-      v-el-drag-dialog
-      :visible.sync="visible"
-      :width="domElement.maxWidth + `px`"
-      :fullscreen.sync="fullscreen"
-      :modal-append-to-body="false"
-      :append-to-body="true"
-      :modal="modal"
-      :close-on-click-modal="closeOnClickModal"
-      :loading="loading"
-      class="ipms-dialog"
-      :class="{ [name]: true }"
+  <el-dialog
+    v-if="animationVisible"
+    id="ipms"
+    v-el-drag-dialog
+    title="상품정보조회"
+    :visible.sync="visible"
+    :width="domElement.maxWidth + `px`"
+    :fullscreen.sync="fullscreen"
+    :modal-append-to-body="false"
+    :append-to-body="true"
+    :modal="modal"
+    :close-on-click-modal="closeOnClickModal"
+    :loading="loading"
+    class="ipms-dialog"
+    :class="{ [name]: true }"
+  >
+    <div class="popupContentTable mb-1">
+      <DynamicComponentLoader
+        class="dynamic-container"
+        :is-show-profile="false"
+        :component-keys="componentList"
+        @handle-search="handleSearch"
+      />
+    </div>
+    <compTable
+      ref="compTable"
+      :prop-name="name"
+      :prop-table-height="300"
+      :prop-column="tableColumns"
+      :prop-is-pagination="false"
+      :prop-is-check-box="false"
+      prop-grid-menu-id="inputSpeed"
+      :prop-grid-indx="1"
+      :prop-on-click="handleClickRow"
+      :prop-on-dbl-click="handleDbClickRow"
     >
-      <span slot="title">
-        <i class="el-icon-document mr-2" style="font-size: 17px" />
-        상품정보조회
-        <hr>
-      </span>
-      <el-row class="w-100 h-100">
-        <DynamicComponentLoader
-          class="dynamic-container"
-          :is-show-profile="false"
-          :component-keys="componentList"
-          @handle-search="handleSearch"
-        />
-        <el-col :span="24">
-          <compTable
-            ref="compTable"
-            :prop-name="name"
-            :prop-table-height="300"
-            :prop-column="tableColumns"
-            :prop-is-pagination="false"
-            :prop-is-check-box="false"
-            prop-grid-menu-id="inputSpeed"
-            :prop-grid-indx="1"
-            :prop-on-click="handleClickRow"
-            :prop-on-dbl-click="handleDbClickRow"
-          >
-            <template slot="text-description">
-              <span>
-                상품 목록
-              </span>
-            </template>
-          </compTable>
-        </el-col>
-      </el-row>
-      <div slot="footer" class="dialog-footer">
-        <el-button size="mini" icon="el-icon-edit" @click="handleSelect()">선택</el-button>
-        <el-button size="mini" type="info" class="el-icon-close" @click.native="close()">
-          {{ $t('exit') }}
-        </el-button>
-      </div>
-    </el-dialog>
-  </div>
+      <template slot="text-description">
+        <span>
+          상품 목록
+        </span>
+      </template>
+    </compTable>
+    <div class="popupContentTableBottom">
+      <el-button type="primary" size="small" icon="el-icon-edit" round @click="handleSelect()">선택</el-button>
+      <el-button type="primary" size="small" icon="el-icon-close" round @click.native="close()">
+        {{ $t('exit') }}
+      </el-button>
+    </div>
+  </el-dialog>
 </template>
 
 <script>

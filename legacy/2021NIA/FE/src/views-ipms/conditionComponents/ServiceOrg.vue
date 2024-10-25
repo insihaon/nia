@@ -1,25 +1,27 @@
 <template>
-  <el-col :class="{ [name]: true }" :xs="24" :sm="12" :md="12" :lg="8" :xl="6">
-    <label style="width : 100px">
+  <fragment>
+    <th>
       서비스
-    </label>
-    <el-select
-      v-model="values"
-      filterable
-      :multiple="isMulti"
-      collapse-tags
-      size="mini"
-      @change="handleChange()"
-    >
-      <el-option v-if="isAllOption" label="전체" value=""><span class="w-100 h-100 d-inline-block" @click="handleClickAll">전체</span></el-option>
-      <el-option
-        v-for="(option, i) in options"
-        :key="i"
-        :label="option.label"
-        :value="option.value"
-      />
-    </el-select>
-  </el-col>
+    </th>
+    <td>
+      <el-select
+        v-model="values"
+        filterable
+        :multiple="isMulti"
+        collapse-tags
+        size="small"
+        @change="handleChange()"
+      >
+        <el-option v-if="isAllOption" label="전체" value=""><span class="w-100 h-100 d-inline-block" @click="handleClickAll">전체</span></el-option>
+        <el-option
+          v-for="(option, i) in options"
+          :key="i"
+          :label="option.label"
+          :value="option.value"
+        />
+      </el-select>
+    </td>
+  </fragment>
 </template>
 
 <script>

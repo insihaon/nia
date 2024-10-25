@@ -9,10 +9,11 @@
     <el-col ref="tableContainer" :span="24">
       <compTable
         ref="compTable"
+        style="height: calc(100% - 40px)"
         :prop-name="name"
+        :prop-table-height="'100%'"
         :prop-loading.sync="loading"
         :prop-highlight="rowHighlight"
-        :prop-table-height="'calc(100% - 80px)'"
         :prop-data="resultList"
         :prop-span-method="spanBySum"
         :prop-column="tableColumns"

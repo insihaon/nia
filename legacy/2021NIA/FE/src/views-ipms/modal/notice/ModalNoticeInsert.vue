@@ -1,89 +1,76 @@
 <template>
-  <div>
-    <el-dialog
-      v-if="animationVisible"
-      id="ipms"
-      v-el-drag-dialog
-      :visible.sync="visible"
-      :width="domElement.maxWidth + `px`"
-      :fullscreen.sync="fullscreen"
-      :modal-append-to-body="false"
-      :append-to-body="true"
-      :modal="modal"
-      :close-on-click-modal="closeOnClickModal"
-      :loading="loading"
-      class="ipms-dialog"
-      :class="{ [name]: true }"
-    >
-      <span slot="title">
-        <i class="el-icon-document mr-2" style="font-size: 17px" />
-        공지사항 등록
-        <hr>
-      </span>
-      <div id="content" v-loading="loading" class="layer info">
-        <table class="tbl_data entry">
-          <colgroup>
-            <col width="14%" />
-            <col width="17%" />
-            <col width="14%" />
-            <col width="55%" />
-          </colgroup>
-          <tbody>
-            <tr class="top">
-              <th class="first" scope="row">등록자</th>
-              <td class="view">{{ notice.screateNm }}</td>
-              <th scope="row">이메일</th>
-              <td class="view">{{ notice.screateEmail }}</td>
-            </tr>
-            <tr>
-              <th class="first" scope="row">제목</th>
-              <td colspan="3">
-                <input v-model="notice.sboardTitle" type="text" class="txt" />
-              </td>
-            </tr>
-            <tr>
-              <th class="first" scope="row">공지유형</th>
-              <td>
-                <el-select v-model="notice.sboardTypeSubCd" size="mini" :disabled="viewType === 'U'">
-                  <el-option
-                    v-for="(typeItem, index) in boardTypes"
-                    :key="index"
-                    :label="typeItem.label"
-                    :value="typeItem.value"
-                  />
-                </el-select>
-              </td>
-              <th class="first" scope="row">팝업게시기간</th>
-              <td>
-                <el-date-picker
-                  v-model="notice.popup_date"
-                  :default-time="['00:00:00', '23:59:59']"
-                  size="mini"
-                  :disabled="notice.sboardTypeSubCd === 'BM0001'"
-                  type="datetimerange"
-                  range-separator="~"
-                  start-placeholder="시작"
-                  end-placeholder="종료"
-                />
-              </td>
-            </tr>
-            <tr class="last">
-              <th class="first" scope="row">내용</th>
-              <td colspan="3">
-                <textarea v-model="notice.sboardContents" class="w98" rows="20"></textarea>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button v-if="viewType === 'I'" size="mini" class="el-icon-edit" @click="handleClickNoticeProcess('insertNotice')"> 등록</el-button>
-        <el-button v-if="viewType === 'U'" size="mini" class="el-icon-edit" @click="handleClickNoticeProcess('updateNotice')"> 수정</el-button>
-        <el-button v-if="viewType === 'U'" size="mini" class="el-icon-delete" @click="handleClickNoticeProcess('deleteNotice')"> 삭제</el-button>
-        <el-button size="mini" class="el-icon-close" @click.native="close()">{{ $t('exit') }}</el-button>
-      </div>
-    </el-dialog>
-  </div>
+  <el-dialog
+    v-if="animationVisible"
+    id="ipms"
+    v-el-drag-dialog
+    title="공지사항 등록"
+    :visible.sync="visible"
+    :width="domElement.maxWidth + `px`"
+    :fullscreen.sync="fullscreen"
+    :modal-append-to-body="false"
+    :append-to-body="true"
+    :modal="modal"
+    :close-on-click-modal="closeOnClickModal"
+    :loading="loading"
+    class="ipms-dialog"
+    :class="{ [name]: true }"
+  >
+    <div v-loading="viewLoading" class="popupContentTable">
+      <table>
+        <tr>
+          <th>등록자</th>
+          <td>{{ notice.screateNm }}</td>
+          <th>이메일</th>
+          <td>{{ notice.screateEmail }}</td>
+        </tr>
+        <tr>
+          <th>제목</th>
+          <td colspan="3">
+            <el-input v-model="notice.sboardTitle" size="mini" type="text" />
+          </td>
+        </tr>
+        <tr>
+          <th>공지유형</th>
+          <td class="textflex">
+            <el-select v-model="notice.sboardTypeSubCd" size="mini" :disabled="viewType === 'U'">
+              <el-option
+                v-for="(typeItem, index) in boardTypes"
+                :key="index"
+                :label="typeItem.label"
+                :value="typeItem.value"
+              />
+            </el-select>
+          </td>
+          <th>팝업게시기간</th>
+          <td>
+            <el-date-picker
+              v-model="notice.popup_date"
+              popper-class="noti-popper"
+              :default-time="['00:00:00', '23:59:59']"
+              size="mini"
+              :disabled="notice.sboardTypeSubCd === 'BM0001'"
+              type="datetimerange"
+              range-separator="~"
+              start-placeholder="시작"
+              end-placeholder="종료"
+            />
+          </td>
+        </tr>
+        <tr>
+          <th>내용</th>
+          <td colspan="3">
+            <textarea v-model="notice.sboardContents" rows="15"></textarea>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <div class="popupContentTableBottom">
+      <el-button v-if="viewType === 'I'" type="primary" size="small" icon="el-icon-edit" round @click="handleClickNoticeProcess('insertNotice')"> 등록</el-button>
+      <el-button v-if="viewType === 'U'" type="primary" size="small" icon="el-icon-edit" round @click="handleClickNoticeProcess('updateNotice')"> 수정</el-button>
+      <el-button v-if="viewType === 'U'" type="primary" size="small" icon="el-icon-delete" round @click="handleClickNoticeProcess('deleteNotice')"> 삭제</el-button>
+      <el-button type="primary" size="small" icon="el-icon-close" round @click.native="close()">{{ $t('exit') }}</el-button>
+    </div>
+  </el-dialog>
 </template>
 
 <script>
@@ -103,7 +90,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      loading: false,
+      viewLoading: false,
       viewType: 'I',
       boardTypes: [],
       sboardTypeSubCd: '',
@@ -116,7 +103,7 @@ export default {
         screateEmail: '',
         sboardTitle: '',
         sboardTypeSubCd: '',
-        popup_date: [null, null],
+        popup_date: [],
         sboardContents: '',
         sboardTypeCd: ''
       },
@@ -138,6 +125,10 @@ export default {
       if (model?.notiSeq) {
         this.loadUpdateInfo(model.notiSeq)
       }
+      if (this.viewType === 'I') {
+        const today = this.moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
+        this.notice.popup_date = [today, today]
+      }
     },
     onClose() {
       this.notice = {
@@ -153,7 +144,7 @@ export default {
     async loadUpdateInfo(seq = null) {
       if (seq === null) return
       try {
-        this.loading = true
+        this.viewLoading = true
         const res = await apiRequestModel(ipmsModelApis.viewUpdateNotice, { seq })
         this._merge(this.notice, res.result.data)
         const dnotiStartDt = this.notice.dnotiStartDt ? this.moment(this.notice.dnotiStartDt).format('YYYY-MM-DD HH:mm:ss') : null
@@ -162,7 +153,7 @@ export default {
       } catch (error) {
        this.error(error)
       } finally {
-        this.loading = false
+        this.viewLoading = false
       }
     },
     async loadOptions() {
@@ -191,7 +182,7 @@ export default {
     async fnProcessNotice(apiKey, resMsg) {
       if (!Object.keys(ipmsJsonApis).includes(apiKey)) return
       try {
-        // this.loading = true
+        // this.viewLoading = true
         const params = this.getParameterByProcessType(apiKey)
         const res = await apiRequestJson(ipmsJsonApis[apiKey], params)
         if (res.commonMsg === 'SUCCESS') {
@@ -205,7 +196,7 @@ export default {
       } catch (error) {
        this.error(error)
       } finally {
-        // this.loading = false
+        // this.viewLoading = false
       }
     },
     getParameterByProcessType(process) {
@@ -227,7 +218,7 @@ export default {
       if (process !== 'deleteNotice' && this.notice.popup_date[0] !== null && this.notice.popup_date[1] !== null) {
         Object.assign(param, {
           dnotiStartDt: this.moment(this.notice.popup_date[0]).format('YYYY-MM-DD HH:mm:ss'),
-          dnotiEndDt: this.moment(this.notice.popup_date[1].format('YYYY-MM-DD HH:mm:ss'))
+          dnotiEndDt: this.moment(this.notice.popup_date[1]).format('YYYY-MM-DD HH:mm:ss')
         })
       }
       return param
@@ -235,8 +226,12 @@ export default {
   },
 }
 </script>
-<style lang="scss" scoped>
-.el-select {
-  width: 100%
+<style lang="scss">
+.noti-popper {
+  .el-picker-panel__body {
+    .el-input {
+      width: 140px;
+    }
+  }
 }
 </style>
