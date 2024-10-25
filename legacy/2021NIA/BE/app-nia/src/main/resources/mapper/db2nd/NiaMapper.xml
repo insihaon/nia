@@ -896,17 +896,17 @@
         FROM    gather.tb_syslog_rule_mst tsrm
         WHERE 1=1
             <if test="syslog_rule_nm != null and syslog_rule_nm != ''">
-            AND syslog_rule_nm = #{syslog_rule_nm}
+                AND syslog_rule_nm = #{syslog_rule_nm}
             </if>
             <if test="occur_str != null and occur_str != ''">
-            AND UPPER(occur_str1) LIKE '%' || UPPER(#{occur_str}) || '%'
-            OR UPPER(occur_str2) LIKE '%' || UPPER(#{occur_str}) || '%'
-            OR UPPER(occur_str3) LIKE '%' || UPPER(#{occur_str}) || '%'
+                AND (UPPER(occur_str1) LIKE '%' || UPPER(#{occur_str}) || '%'
+                OR UPPER(occur_str2) LIKE '%' || UPPER(#{occur_str}) || '%'
+                OR UPPER(occur_str3) LIKE '%' || UPPER(#{occur_str}) || '%')
             </if>
             <if test="occur_except_str != null and occur_except_str != ''">
-            AND UPPER(occur_except_str1) LIKE '%' || UPPER(#{occur_except_str}) || '%'
-            OR UPPER(occur_except_str2) LIKE '%' || UPPER(#{occur_except_str}) || '%'
-            OR UPPER(occur_except_str3) LIKE '%' || UPPER(#{occur_except_str}) || '%'
+                AND (UPPER(occur_except_str1) LIKE '%' || UPPER(#{occur_except_str}) || '%'
+                OR UPPER(occur_except_str2) LIKE '%' || UPPER(#{occur_except_str}) || '%'
+                OR UPPER(occur_except_str3) LIKE '%' || UPPER(#{occur_except_str}) || '%')
             </if>
         ORDER BY syslog_rule_id
         <include refid="TotalCountSuffix"/>
@@ -1242,10 +1242,10 @@
                     AND LT.MEASURED_DATETIME <![CDATA[ <= ]]> #{end_date}::timestamp 
                     </if>
                     <if test="node_name != null and node_name != ''">
-                        AND nm.NODE_NM = #{node_name}
+                        AND nm.NODE_NM LIKE '%' || #{node_name} || '%'
                     </if>
                     <if test="if_name != null and if_name != ''">
-                        AND I.IF_NAME = #{if_name}
+                        AND I.IF_NAME LIKE '%' || #{if_name} || '%'
                     </if>
                 )
         SELECT  T.NODE_NUM, 
