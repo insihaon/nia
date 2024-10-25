@@ -2,7 +2,7 @@
   <div :class="{ [name]: true }">
     <LeftBar class="h-full">
       <template v-if="isViewport('>', 'sm')" slot="leftbar-container">
-        <div class="h-20 text-center mt-1" style="z-index: 1">
+        <div class="h-20 text-center mt-1">
           <span class="font-bold text-lg whitespace-nowrap">AI관제 시스템 처리량</span>
           <div class="d-flex p-2 justify-center items-center">
             <span class="font-semibold whitespace-nowrap pr-2">검색</span>
@@ -18,18 +18,17 @@
               :type="systemChartCondition.dayType === 'DAY' ? 'date' : 'month'"
             />
             <el-button icon="el-icon-search" size="mini" style="padding: 7px 7px" @click="onLoadDashboardStatistics()" />
-            <el-button icon="el-icon-refresh-right" size="mini" style="padding: 7px 7px;margin-left:0px" @click="onLoadDashboardStatistics(true)" />
           </div>
         </div>
         <hr>
         <div style="height: calc(70% - 5rem)">
-          <CompChart :options="ticketOptions" class="relative h-64" style="top: -2rem" />
+          <CompChart :options="ticketOptions" class="relative h-64" style="top: -1rem" />
           <CompChart :options="collectOptions" class="relative h-72" style="top: -7rem" />
           <CompChart :options="servingOptions" class="relative h-64" style="top: -12rem" />
         </div>
         <hr>
         <div class="h-20 text-center">
-          <span class="font-bold text-lg whitespace-nowrap p-2">자가 처리 현황</span>
+          <div class="font-bold text-lg whitespace-nowrap mt-2">자가 처리 현황</div>
           <div class="d-flex p-2 justify-center items-center">
             <span class="font-semibold whitespace-nowrap pr-2">검색</span>
             <el-radio-group v-model="selfChartCondition.statisticsType" size="mini" class="d-flex" @change="onLoadSelfProcessStatistics()">
@@ -54,7 +53,7 @@
               <div class="filter-group">
                 <div class="d-flex mr-1">
                   <span class="item-title mr-1">검색</span>
-                  <el-input v-model="ipspnTextSearch" size="mini" clearable placeholder="검색어를 입력하세요" @input="(value) => onChangeTextSearch('ipsdn', value)" />
+                  <el-input v-model="ipspnTextSearch" size="mini" clearable placeholder="테이블내의 내용을 검색합니다." @input="(value) => onChangeTextSearch('ipsdn', value)" />
                 </div>
                 <template v-for="(filter, keyName) in ipFilterGroup.filters">
                   <div v-if="keyName" :key="filter.filterTitle" class="d-flex mr-1">
@@ -489,7 +488,7 @@ export default {
       const { dayType: DATE_TYPE, date } = this.systemChartCondition
       let cloneDate = this._cloneDeep(date)
       if (this.systemChartCondition.dayType === 'MONTH') {
-        cloneDate = this.moment().subtract(1, 'M').format('YYYY-MM')
+        cloneDate = this.moment(cloneDate).subtract(1, 'M').format('YYYY-MM')
       }
       if (reset) {
         cloneDate = this.moment().subtract(1, 'd').format('YYYY-MM-DD')
@@ -700,6 +699,13 @@ export default {
   ::v-deep .splitter-pane {
     display: flex;
     flex-direction: column;
+  }
+  ::v-deep .el-date-picker {
+    position: absolute;
+    z-index: 1;
+  }
+  ::v-deep.splitter-pane-resizer {
+    z-index: 0;
   }
   .filter-container {
     height: 100%;

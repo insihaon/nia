@@ -50,7 +50,7 @@ export default {
       searchItems: [
         { label: 'Application(S)', type: 'select', multiple: false, placeholder: '', model: 'src_protocol', setting: { allOption: { toggle: true } }, options: [] },
         { label: 'Port (S)', type: 'input', model: 'src_port', placeholder: '' },
-        { label: 'Application(S)', type: 'select', model: 'dst_protocol', placeholder: '', setting: { allOption: { toggle: true } }, options: [] },
+        { label: 'Application(D)', type: 'select', model: 'dst_protocol', placeholder: '', setting: { allOption: { toggle: true } }, options: [] },
         { label: 'Port (D)', type: 'input', multiple: false, placeholder: '', model: 'dst_port', setting: { allOption: { toggle: true } }, options: [] },
         { label: 'Top N', type: 'select', multiple: false, placeholder: '', model: 'top_n', icon: 'el-icon-warning', setting: { allOption: { toggle: true } },
           options: [
