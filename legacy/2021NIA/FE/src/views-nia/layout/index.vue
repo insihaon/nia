@@ -16,7 +16,7 @@
           </div>
         </div>
         <AppMain v-if="!popupLayout" ref="appmain" :style="{height: `calc(100vh - ${$route.name === 'NiaMain' ? '110': '155'}px)`}" />
-        <BottomBar ref="bottombr" />
+        <BottomBar ref="bottombar" />
       </div>
     </div>
     <el-card v-if="showWindowSize" class="viewport-container" shadow="always">
