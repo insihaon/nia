@@ -333,7 +333,8 @@
    <!-- 시스템 현황 모니터링 -->
    <select id="SELECT_SYSTEM_MONITORING_CURRENT" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
         SELECT 
-            KEY_NAME, YD_DATE
+            KEY_NAME
+            , TO_CHAR(YD_DATE, 'YYYY-MM-DD HH24:MI:SS') AS YD_DATE
         FROM NIA.TB_LINKAGE_SEQ
         WHERE KEY_NAME IN (
             'aiIpSdnTrafficeKey',

@@ -93,9 +93,9 @@
 <script>
 import { Base } from '@/min/Base'
 import _ from 'lodash'
+import { onMessagePopup } from '@/utils/index'
+
 import { apiIpsdnRequest, apiSelectAgencyIpList, apiRemote } from '@/api/nia'
-import axios from 'axios'
-import { AppOptions } from '@/class/appOptions'
 
 const routeName = 'ConfigTest'
 
@@ -175,7 +175,6 @@ export default {
     },
   },
   created() {
-    this.onFetchProfile()
     this.selectedRow = this.wdata?.params
   },
   mounted() {
@@ -194,16 +193,6 @@ export default {
     this.onLoadAgencyIpList()
   },
   methods: {
-    onFetchProfile() {
-      axios.get(`${AppOptions.instance.baseURL}api/profile`)
-        .then(response => {
-          this.activeProfile = response.data
-          console.log('active 확인 ======> ' + this.activeProfile)
-        })
-        .catch(error => {
-          console.error('프로필 데이터를 가져오는 중 오류 발생:', error)
-        })
-    },
     async onLoadCRC() {
       const { nodeName, ifname } = this.item
       try {
@@ -246,11 +235,9 @@ export default {
       }
     },
     async onClickRemote() {
-      if (['shoutdown', 'noshut'].includes(this.remoteControl)) {
-        if (this.activeProfile !== 'oper') /* only oper */ {
-          this.$message.error('해당 기능은 운영서버일때만 테스트가 가능합니다.')
-          return false
-        }
+      if (['shoutdown', 'noshut'].includes(this.remoteControl) && this.$store.state.app.server.profile !== 'oper') {
+        onMessagePopup(this, '해당 기능은 운영서버일때만 테스트가 가능합니다.')
+        return
       }
 
       this.isShowFrame = true
