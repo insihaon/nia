@@ -164,3 +164,4 @@ export class AppOptions extends Storage {
     return baseURLs[index]
   }
 }
+
