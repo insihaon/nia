@@ -8,23 +8,26 @@ const NODE_ENV = process.env.NODE_ENV
 const NODE_ENV_DEV = NODE_ENV === 'development'
 const STORAGE = NODE_ENV_DEV ? window.localStorage : window.sessionStorage
 
-function getEnv(key, defalutValue) {
-  try {
-    return  JSON.parse(key) || defalutValue
-  } catch (error) {
-    return defalutValue
-  }
-}
-
 export class Storage {
   reloadProperties = 'dark,project,baseURL'.split(/[\s,]+/)
   _data = {}
   constructor() {
+    const uuidKey = 'uuid'
+    const uuid = STORAGE.getItem(uuidKey) || `${String(Date.now())} ${generateUUID()}`
+    const [d, u] = uuid.split(' ')
+    if (Date.now() - Number(d) > 1000 * 60 * 60) {
+      STORAGE.removeItem(uuidKey)
+    } else {
+      this.uuid = u
+      STORAGE.setItem(uuidKey, uuid)
+    }
+    !!this.uuid && (window[`.${this.uuid}`] = this)
+
     const className = this.constructor.name
     const varName = className.replace(/^\w/, (c) => c.toLowerCase())
     if (APP_DEV) {
       window[varName] = this
-    }
+    } 
 
     this.self = this
     this._data = {
@@ -114,4 +117,23 @@ export class Storage {
   readEnv(key, defalutValue) {
     return getEnv(key, defalutValue)
   }
+}
+
+function getEnv(key, defalutValue) {
+  try {
+    return  JSON.parse(key) || defalutValue
+  } catch (error) {
+    return defalutValue
+  }
+}
+
+function generateUUID() {
+  var d = new Date().getTime()
+  var uuid = 'xxxxxxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+      var r = (d + Math.random() * 16) % 16 | 0
+      d = Math.floor(d / 16)
+      var randomChar = (c === 'x' ? r : (r & 0x7) | 0x8).toString(16)
+      return Math.random() > 0.5 ? randomChar.toUpperCase() : randomChar
+  })
+  return uuid
 }

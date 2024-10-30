@@ -1,5 +1,5 @@
 <template>
-  <div id="app" :class="[appClass, appProject]">
+  <div id="app" :class="[appClass, appProject, uuid]">
     <RouterView />
   </div>
 </template>
@@ -29,6 +29,11 @@ export default {
       const { AppOptions } = require('@/class/appOptions')
       const { project } = AppOptions.instance
       return project
+    },
+    uuid() {
+      const { AppOptions } = require('@/class/appOptions')
+      const { uuid } = AppOptions.instance
+      return uuid
     }
 
   },
