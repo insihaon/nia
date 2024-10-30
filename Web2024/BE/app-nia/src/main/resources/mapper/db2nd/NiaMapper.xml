@@ -137,7 +137,7 @@
       	, ALARMLOC
       	, TICKET_TYPE
         , TO_CHAR(ALARMTIME , 'YYYY-MM-DD HH24:MI:SS') AS ALARMTIME
-        , FAULT_TIME
+        , TO_CHAR(FAULT_TIME , 'YYYY-MM-DD HH24:MI:SS') AS FAULT_TIME
       	, ALARMMSG
       	, PORT
       	, ALARMMSG_ORIGINAL
@@ -335,6 +335,7 @@
         SELECT 
             KEY_NAME
             , TO_CHAR(YD_DATE, 'YYYY-MM-DD HH24:MI:SS') AS YD_DATE
+            , YD_DATE AS YD_DATE1
         FROM NIA.TB_LINKAGE_SEQ
         WHERE KEY_NAME IN (
             'aiIpSdnTrafficeKey',
@@ -587,7 +588,7 @@
     </select>
 
     <!-- 이상트래픽(ATT2) - AI탐지정보 -->
-    <select id="SELECT_AI_DETECTION_INFO" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+    <select id="SELECT_AI_DETECTION_INFO" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
         SELECT  
             FLTBPSIN AS IN_BPS
             , ROUND(FLTBPSIN_PREDICT::NUMERIC , 2) AS IN_PREDICT
