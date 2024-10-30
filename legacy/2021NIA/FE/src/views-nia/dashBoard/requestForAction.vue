@@ -157,13 +157,13 @@
 
                 <div v-if="sendItem.ticket_type === 'ATT2' || sendItem.ticket_type === 'NTT'">
                   <span class="font-semibold">&nbsp;&nbsp;&middot;장애 유무 판단 확률</span><br>
-                  &nbsp;&nbsp;&nbsp;- 유효 확률 : {{ ((1 - sendItem.zero1_entropy) * 100).toFixed(1) + '%' }}<br>
-                  &nbsp;&nbsp;&nbsp;- 무효 확률 : {{ (sendItem.zero1_entropy * 100).toFixed(1) + '%' }}
+                  &nbsp;&nbsp;&nbsp;- 유효 확률 : {{ sendItem.zero1_entropy ? ((1 - sendItem.zero1_entropy) * 100).toFixed(1) + '%' : '' }}<br>
+                  &nbsp;&nbsp;&nbsp;- 무효 확률 : {{ sendItem.zero1_entropy ? (sendItem.zero1_entropy * 100).toFixed(1) + '%' : '' }}
                 </div>
                 FTT(비장애)
                 <div v-if="sendItem.ticket_type === 'FTT'">
-                  &nbsp;&nbsp;- 장애 확률 : {{ (sendItem.zero1_entropy * 100).toFixed(1) + '%' }}<br>
-                  &nbsp;&nbsp;- 비장애 확률 : {{ ((1 - sendItem.zero1_entropy) * 100).toFixed(1) + '%' }}
+                  &nbsp;&nbsp;- 장애 확률 : {{ sendItem.zero1_entropy ? (sendItem.zero1_entropy * 100).toFixed(1) + '%' : '' }}<br>
+                  &nbsp;&nbsp;- 비장애 확률 : {{ sendItem.zero1_entropy ? ((1 - sendItem.zero1_entropy) * 100).toFixed(1) + '%' : '' }}
                 </div>
 
                 NFTT
@@ -511,6 +511,7 @@ export default {
       if (!TICKET_ID) {
         return
       }
+      const row = this.selectedRow
       const param = { TICKET_ID, START_NODE, START_PORT, FAULT_TIME }
       try {
         const res = await apiSelectAiDetectionInfo(param)
