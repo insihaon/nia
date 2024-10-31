@@ -47,6 +47,7 @@
     "postcss": "^7.0.39",
     "quasar": "^1.15.21",
     "screenfull": "4.2.0",
+    "sheetjs-style": "^0.15.8",
     "splitpanes": "^2.4.1",
     "stompjs": "^2.3.3",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.17",
