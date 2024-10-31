@@ -77,7 +77,7 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   response => {
     debugLog(`response=`, { ...response })
-    const res = response.data
+    const res = response.data instanceof ArrayBuffer ? response : response.data
 
     Encrypt.decryptHttp(res)
 

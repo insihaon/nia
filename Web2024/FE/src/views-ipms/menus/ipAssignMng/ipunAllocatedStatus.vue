@@ -17,6 +17,7 @@
         :prop-is-pagination="true"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
+        @savedExcel="handleClickExcelDownloadBtn"
       >
         <template slot="text-description">
           <span>
@@ -35,6 +36,8 @@ import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoad
 import tableHeightMixin from '@/mixin/tableHeightMixin'
 import ModalNotAssignDetail from '@/views-ipms/modal/ModalNotAssignDetail.vue'
 import { ipmsModelApis, apiRequestModel } from '@/api/ipms'
+import { downloadExcel } from '@/views-ipms/js/common-function'
+
 const routeName = 'IpunAllocatedStatus'
 
 export default {
@@ -156,6 +159,9 @@ export default {
       } catch (error) {
         this.error(error)
       }
+    },
+    handleClickExcelDownloadBtn() {
+      downloadExcel(this, 'viewListUnAssignIPExcel')
     }
   }
 }

@@ -23,6 +23,7 @@
         :prop-on-page-change="handleChangeCurPage"
         :prop-on-page-size-change="handleChangeCurPage"
         @update:propSelected="handleClickCheck"
+        @savedExcel="handleClickExcelDownloadBtn"
       >
         <template slot="text-description">
           <span>
@@ -48,6 +49,7 @@ import CompTable from '@/components/elTable/CompTable.vue'
 import tableHeightMixin from '@/mixin/tableHeightMixin'
 import { ipmsModelApis, apiRequestModel, ipmsJsonApis, apiRequestJson } from '@/api/ipms'
 import { onMessagePopup } from '@/utils'
+import { downloadExcel } from '@/views-ipms/js/common-function'
 
 const routeName = 'WiredIpPriorInfoManagement'
 
@@ -147,6 +149,9 @@ export default {
           this.error(error)
         }
       })
+    },
+    handleClickExcelDownloadBtn() {
+      downloadExcel(this, 'viewListWireMstExcel')
     }
   }
 }

@@ -218,6 +218,30 @@ export const ipmsJsonApis = {
   selectSearchScrnBas: { desc: '메뉴관리 > 화면명 검색', url: '/opermgmt/menumgmt/selectSearchScrnBas' },
   updateTbMenuBasVo: { desc: '메뉴관리 > 화면명 저장', url: '/opermgmt/menumgmt/updateTbMenuBasVo' },
   updateWhoisComplexNew: { desc: 'WHOIS 정보공개관리 > WHOIS 신청서 수정 ', url: '/opermgmt/whoismgmt/updateWhoisComplexNew' },
+  // 엑셀 저장
+  viewListCrtIPMstExcel: { desc: 'IP블록관리 엑셀저장', url: 'ipmgmt/createmgmt/viewListCrtIPMstExcel' },
+  viewListAsgnIPMstExcel: { desc: 'IP배정 엑셀저장', url: 'ipmgmt/assignmgmt/viewListAsgnIPMstExcel' },
+  viewListUnAssignIPExcel: { desc: 'IP미배정 현황 엑셀저장', url: 'ipmgmt/assignmgmt/viewListUnAssignIPExcel' },
+  viewListIpAllocMstExcel: { desc: 'IP할당 엑셀저장', url: 'ipmgmt/allocmgmt/viewListIpAllocMstExcel' },
+  viewListIpAllocMstByMainExcel: { desc: 'IP정보조회 엑셀저장', url: 'ipmgmt/allocmgmt/viewListIpAllocMstByMainExcel' },
+  viewListMultiIpInfoExcel: { desc: 'IP정보조회(멀티) 엑셀저장', url: 'ipmgmt/allocmgmt/viewListMultiIpInfoExcel' },
+  viewListIpHistoryMstExcel: { desc: 'IP이력관리 엑셀저장', url: 'ipmgmt/historymgmt/viewListIpHistoryMstExcel' },
+  viewListRoutChkMstExcel: { desc: 'IP주소 라우팅 비교/점검 엑셀저장', url: 'ipmgmt/routmgmt/viewListRoutChkMstExcel' },
+  viewListVirtualHostInfoExcel: { desc: '운용정보관리(사설) 엑셀저장', url: 'ipmgmt/hostmgmt/viewListVirtualHostInfoExcel' },
+  viewListIpLinkMstExcel: { desc: '운용정보관리(링크) 엑셀저장', url: 'ipmgmt/linkmgmt/viewListIpLinkMstExcel' },
+  viewListNodeExcel: { desc: 'IP주소 노드 이전 신청 엑셀저장', url: 'ipmgmt/nodemgmt/viewListNodeExcel' },
+  viewListAssignApyTxnExcel: { desc: 'IP배정 신청 엑셀저장', url: 'opermgmt/assignmgmt/viewListAssignApyTxnExcel' },
+  viewListPrivateAsExcel: { desc: '사설AS 신청 엑셀저장', url: 'opermgmt/asmgmt/viewListPrivateAsExcel' },
+  viewListWhoisModReqExcel: { desc: 'WHOIS 정보 변경 신청 엑셀저장', url: 'opermgmt/whoismgmt/viewListWhoisModReqExcel' },
+  viewListReqExcel: { desc: '개발/오류수정/자료 요청 엑셀저장', url: 'ipmgmt/requiremgmt/viewListReqExcel' },
+  // viewListAssignTypeCdExcel: { desc: '운용정보관리 > 서비스 코드 관리 엑셀저장', url: 'opermgmt/srvmgmt/viewListAssignTypeCdExcel' },
+  // selectListIpmsSvcMstExcel: { desc: '운용정보관리 > 상품 관리 엑셀저장', url: 'opermgmt/srvmgmt/selectListIpmsSvcMstExcel' },
+  // viewListAsHistExcel: { desc: '운용정보관리 > 사설 AS 사용현황 엑셀저장', url: 'opermgmt/asmgmt/viewListAsHistExcel' },
+  viewListWhoisExcel: { desc: '운용정보관리 > WHOIS 정보공개 관리 엑셀저장', url: 'opermgmt/whoismgmt/viewListWhoisExcel' },
+  viewListFcltMstExcel: { desc: '운용정보관리 > (IP주소 라우팅 비교/점검) 조직별 장비 정보관리 엑셀저장', url: 'opermgmt/intgrmgmt/viewListFcltMstExcel' },
+  viewListFcltCmdMstExcel: { desc: '운용정보관리 > (IP주소 라우팅 비교/점검) 장비별 명령어 정보관리 엑셀저장', url: 'opermgmt/intgrmgmt/viewListFcltCmdMstExcel' },
+  viewListMobileMstExcel: { desc: '운용정보관리 > (IP주소 라우팅 비교/점검) 무선IP 사전 정보관리 엑셀저장', url: 'opermgmt/intgrmgmt/viewListMobileMstExcel' },
+  viewListWireMstExcel: { desc: '운용정보관리 > (IP주소 라우팅 비교/점검) 유선IP 사전 정보관리 엑셀저장', url: 'opermgmt/intgrmgmt/viewListWireMstExcel' },
 }
 
 export function apiTest(params) {
@@ -260,6 +284,38 @@ export function apiRequestOffice(urlPath, params, listName = 'selectOfficeList',
     method: 'post',
     filePath: filePath,
     data: params
+  })
+}
+export function apiRequestExcel(api, params) {
+  return http.post(`${AppOptions.instance.baseURL}${api.url}.json`, params, { responseType: 'arraybuffer' })
+  .then(response => {
+    const contentDisposition = response.headers['content-disposition']
+    let fileName = 'downloadedFile' // Default name in case the header is not set
+    if (contentDisposition === undefined) {
+      const decoder = new TextDecoder('utf-8')
+      const jsonString = decoder.decode(response.data)
+      return JSON.parse(jsonString)
+    }
+
+    if (contentDisposition && contentDisposition.includes('filename=')) {
+      // Extract filename from header
+      const fileNameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/)
+      if (fileNameMatch) {
+        fileName = fileNameMatch[1].replace(/['"]/g, '')
+      }
+    }
+    var blob = new Blob([response.data])
+
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = fileName // Name of the file to be downloaded
+    document.body.appendChild(a)
+    a.click()
+
+    // Clean up by revoking the object URL and removing the link
+    URL.revokeObjectURL(url)
+    document.body.removeChild(a)
   })
 }
 

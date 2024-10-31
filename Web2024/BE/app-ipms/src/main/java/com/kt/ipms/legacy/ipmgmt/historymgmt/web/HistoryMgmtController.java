@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -262,7 +264,7 @@ public class HistoryMgmtController extends CommonController {
 	 */
 	@RequestMapping(value="/ipmgmt/historymgmt/viewListIpHistoryMstExcel.json", method = RequestMethod.POST)
 	@ResponseBody
-	public FileVo selectListIpHistoryMstExcel(@ModelAttribute("searchVo") IpHistoryMstVo searchVo, ModelMap model, HttpServletRequest request, HttpServletResponse response){
+	public ResponseEntity<?> selectListIpHistoryMstExcel(@RequestBody IpHistoryMstVo searchVo, ModelMap model, HttpServletRequest request, HttpServletResponse response){
 
 		FileVo resultVo = new FileVo();
 		
@@ -365,13 +367,7 @@ public class HistoryMgmtController extends CommonController {
 			mappingList.add("장비명|getSsubscnealias");
 			mappingList.add("I/F명|getSsubsclgipportdescription");
 			
-			String fileName = excelUtil.createExcelFile(resultListVo.getIpHistoryMstVos(), mappingList, request);
-			if (StringUtils.hasText(fileName)) {
-				resultVo.setFileName(fileName);
-				resultVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
-			} else {
-				throw new ServiceException("CMN.HIGH.00050");
-			}
+			return excelDownloadService.generateAndDownloadExcel(resultListVo.getIpHistoryMstVos(), mappingList, request);
 			
 		} catch (ServiceException e) {
 			String msgDesc = tbCmnMstService.selectMsgDesc(e);
@@ -381,7 +377,7 @@ public class HistoryMgmtController extends CommonController {
 			resultVo.setCommonMsg(msgDesc);
 		}
 		
-		return resultVo;
+		return new ResponseEntity<>(resultVo, HttpStatus.OK);
 	}
 	
 	/**

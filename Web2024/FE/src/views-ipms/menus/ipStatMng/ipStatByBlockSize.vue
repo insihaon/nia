@@ -19,6 +19,7 @@
         :prop-is-check-box="false"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
+        @savedExcel="handleClickExcelDownloadBtn"
       >
         <template slot="text-description">
           <span>
@@ -85,6 +86,16 @@ export default {
           this.resultList = JSON.parse(res.data.result)
           this.columns = [].concat(...getStatColumn('blockSize', this.svcList))
         }
+      } catch (error) {
+        this.error(error)
+      } finally {
+        this.loading = false
+      }
+    },
+    handleClickExcelDownloadBtn() {
+      try {
+        this.loading = true
+        this.exportExcelByElementId('element-table', 'IP블록크기별통계현황')
       } catch (error) {
         this.error(error)
       } finally {

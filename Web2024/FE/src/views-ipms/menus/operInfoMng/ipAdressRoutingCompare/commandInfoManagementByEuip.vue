@@ -23,6 +23,7 @@
         :prop-on-page-change="handleChangeCurPage"
         :prop-on-page-size-change="handleChangeCurPage"
         @update:propSelected="handleClickCheck"
+        @savedExcel="handleClickExcelDownloadBtn"
       >
         <template slot="text-description">
           <span>
@@ -47,6 +48,7 @@ import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoad
 import ModalFcltCmdMstInsert from '@/views-ipms/modal/interlink/ModalFcltCmdMstInsert.vue'
 import CompTable from '@/components/elTable/CompTable.vue'
 import tableHeightMixin from '@/mixin/tableHeightMixin'
+import { downloadExcel } from '@/views-ipms/js/common-function'
 
 import { ipmsModelApis, apiRequestModel, ipmsJsonApis, apiRequestJson } from '@/api/ipms'
 
@@ -158,6 +160,9 @@ export default {
           this.error(error)
         }
       })
+    },
+    handleClickExcelDownloadBtn() {
+      downloadExcel(this, 'viewListFcltCmdMstExcel')
     }
   }
 }

@@ -22,6 +22,7 @@
         :prop-grid-indx="1"
         :prop-on-page-change="handleChangeCurPage"
         :prop-on-page-size-change="handleChangeCurPage"
+        @savedExcel="handleClickExcelDownloadBtn"
       >
         <template slot="text-description">
           <span>
@@ -66,8 +67,9 @@ import ModalRoutChkMst from '@/views-ipms/modal/rout/ModalRoutChkMst'
 
 import { EventType } from '@/min/types'
 import Eventbus from '@/utils/event-bus'
-import { ipmsModelApis, ipmsJsonApis, apiRequestModel, apiRequestJson } from '@/api/ipms'
+import { ipmsModelApis, ipmsJsonApis, apiRequestModel, apiRequestJson, apiRequestExcel } from '@/api/ipms'
 import { onMessagePopup } from '@/utils'
+import { downloadExcel } from '@/views-ipms/js/common-function'
 
 const routeName = 'IpAdressRoutingCompare'
 
@@ -554,6 +556,9 @@ export default {
       } catch (error) {
         this.error(error)
       }
+    },
+    handleClickExcelDownloadBtn() {
+      downloadExcel(this, 'viewListRoutChkMstExcel')
     },
     spanByIpmsIpblock({ row, column, rowIndex, columnIndex }) {
       const tableDatas = this.pagination.data

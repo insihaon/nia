@@ -109,7 +109,7 @@ public class BaseSecurityConfiguration extends WebSecurityConfigurerAdapter {
         // configuration.addAllowedMethod(HttpMethod.GET.name());
         // configuration.addAllowedMethod(HttpMethod.POST.name());
         // configuration.addAllowedMethod(HttpMethod.OPTIONS.name());
-        configuration.addExposedHeader("Client-Addr"); 
+        configuration.addExposedHeader("Client-Addr, Content-Disposition"); 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration(corsUrlPattern, configuration);
         return source; 

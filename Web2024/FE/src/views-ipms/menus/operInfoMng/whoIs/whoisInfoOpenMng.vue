@@ -32,6 +32,7 @@
         :prop-grid-indx="1"
         :prop-on-click="onClcikRow"
         :prop-on-select="handleClickTableCheck"
+        @savedExcel="handleClickExcelDownloadBtn"
       >
         <template slot="text-description">
           <span>
@@ -59,6 +60,8 @@ import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoad
 import CompTable from '@/components/elTable/CompTable.vue'
 import ModalRegWhois from '@/views-ipms/modal/whois/ModalRegWhois.vue'
 import { ipmsModelApis, apiRequestModel, apiRequestJson, ipmsJsonApis } from '@/api/ipms'
+import { downloadExcel } from '@/views-ipms/js/common-function'
+
 const routeName = 'WhoisInfoOpenManagement'
 
 export default {
@@ -197,6 +200,9 @@ export default {
           }
         })
     },
+    handleClickExcelDownloadBtn() {
+      downloadExcel(this, 'viewListWhoisExcel')
+    }
   }
 }
 </script>

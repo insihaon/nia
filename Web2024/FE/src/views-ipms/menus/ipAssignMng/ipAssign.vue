@@ -20,6 +20,7 @@
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
         @update:propCellClick="handleClickItem"
+        @savedExcel="handleClickExcelDownloadBtn"
       >
         <template slot="text-description">
           <span>
@@ -61,6 +62,8 @@ import ModalCheckTacsIpBlock from '@/views-ipms/modal/ModalCheckTacsIpBlock.vue'
 import ModalIpAssignMerge from '@/views-ipms/modal/assign/ModalIpAssignMerge.vue'
 import ModalDetailSummary from '@/views-ipms/modal/ModalDetailSummary.vue'
 import { ipmsModelApis, apiRequestModel } from '@/api/ipms'
+import { downloadExcel } from '@/views-ipms/js/common-function'
+
 const routeName = 'IpAssign'
 
 export default {
@@ -291,8 +294,10 @@ export default {
         tbIpAssignMstListVo.tbIpAssignMstVos.push({ nipAssignMstSeq: row.nipAssignMstSeq })
       })
       this.$refs.ModalIpAssignMerge.open({ tbIpAssignMstListVo })
+    },
+    handleClickExcelDownloadBtn() {
+      downloadExcel(this, 'viewListAsgnIPMstExcel')
     }
-
   }
 }
 </script>

@@ -22,6 +22,7 @@
         :prop-on-click="onClcikRow"
         :prop-on-page-change="handleChangeCurPage"
         :prop-on-page-size-change="handleChangeCurPage"
+        @savedExcel="handleClickExcelDownloadBtn"
       >
         <template slot="text-description">
           <span>
@@ -47,6 +48,7 @@ import tableHeightMixin from '@/mixin/tableHeightMixin'
 import ModalNodeTransferDetail from '@/views-ipms/modal/ModalNodeTransferDetail.vue'
 import ModalNodeTransferInsert from '@/views-ipms/modal/ModalNodeTransferInsert.vue'
 import { ipmsModelApis, apiRequestModel } from '@/api/ipms'
+import { downloadExcel } from '@/views-ipms/js/common-function'
 
 const routeName = 'IpAdressNodeApplyTransfer'
 
@@ -165,6 +167,9 @@ export default {
     fnViewInsertNode() {
       this.$refs.ModalNodeTransferInsert.open()
     },
+    handleClickExcelDownloadBtn() {
+      downloadExcel(this, 'viewListNodeExcel')
+    }
   }
 }
 </script>

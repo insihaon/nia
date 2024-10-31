@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -185,7 +187,7 @@ public class CreateMgmtController extends CommonController {
 	
 	@RequestMapping(value="/ipmgmt/createmgmt/viewListCrtIPMstExcel.json", method = RequestMethod.POST)
 	@ResponseBody
-	public FileVo viewListCrtIPMstExcel(@ModelAttribute("searchVo") TbIpBlockMstVo searchVo, ModelMap model,
+	public ResponseEntity<?> viewListCrtIPMstExcel(@RequestBody TbIpBlockMstVo searchVo, ModelMap model,
 			HttpServletRequest request, HttpServletResponse response) {
 		FileVo resultVo = new FileVo();
 		try {
@@ -208,13 +210,8 @@ public class CreateMgmtController extends CommonController {
 			mappingList.add("종료 IP|getSlastAddr");
 			mappingList.add("단위블록수|getNclassCnt");
 			mappingList.add("작업일자|getDmodifyDt");
-			String fileName = excelUtil.createExcelFile(resultListVo.getTbIpBlockMstVos(), mappingList, request);
-			if (StringUtils.hasText(fileName)) {
-				resultVo.setFileName(fileName);
-				resultVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
-			} else {
-				throw new ServiceException("CMN.HIGH.00050");
-			}
+
+			return excelDownloadService.generateAndDownloadExcel(resultListVo.getTbIpBlockMstVos(), mappingList, request);
 		} catch (ServiceException e) {
 			String msgDesc = tbCmnMstService.selectMsgDesc(e);
 			resultVo.setCommonMsg(msgDesc);
@@ -222,7 +219,7 @@ public class CreateMgmtController extends CommonController {
 			String msgDesc = tbCmnMstService.selectMsgDesc(new ServiceException("CMN.HIGH.00000"));
 			resultVo.setCommonMsg(msgDesc);
 		}
-		return resultVo;
+		return new ResponseEntity<>(resultVo, HttpStatus.OK);
 	}
 	
 	/**
@@ -719,7 +716,7 @@ public class CreateMgmtController extends CommonController {
 	 */
 	@RequestMapping(value="/ipmgmt/createmgmt/viewListCrtPrivateIPMstExcel.json", method = RequestMethod.POST)
 	@ResponseBody
-	public FileVo viewListCrtPrivateIPMstExcel(@ModelAttribute("searchVo") TbIpBlockMstVo searchVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
+	public ResponseEntity<?> viewListCrtPrivateIPMstExcel(@RequestBody TbIpBlockMstVo searchVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
 		FileVo resultVo = new FileVo();
 		try {
 			if (!StringUtils.hasText(searchVo.getSortType())) {
@@ -743,13 +740,8 @@ public class CreateMgmtController extends CommonController {
 			mappingList.add("종료 IP|getSlastAddr");
 			mappingList.add("단위블록수|getNclassCnt");
 			mappingList.add("작업일자|getDmodifyDt");
-			String fileName = excelUtil.createExcelFile(resultListVo.getTbIpBlockMstVos(), mappingList, request);
-			if (StringUtils.hasText(fileName)) {
-				resultVo.setFileName(fileName);
-				resultVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
-			} else {
-				throw new ServiceException("CMN.HIGH.00050");
-			}
+
+			return excelDownloadService.generateAndDownloadExcel(resultListVo.getTbIpBlockMstVos(), mappingList, request);
 		} catch (ServiceException e) {
 			String msgDesc = tbCmnMstService.selectMsgDesc(e);
 			resultVo.setCommonMsg(msgDesc);
@@ -757,7 +749,7 @@ public class CreateMgmtController extends CommonController {
 			String msgDesc = tbCmnMstService.selectMsgDesc(new ServiceException("CMN.HIGH.00000"));
 			resultVo.setCommonMsg(msgDesc);
 		}
-		return resultVo;
+		return new ResponseEntity<>(resultVo, HttpStatus.OK);
 	}
 	
 	/**

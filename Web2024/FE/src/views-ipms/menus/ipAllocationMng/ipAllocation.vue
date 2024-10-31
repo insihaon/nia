@@ -5,7 +5,6 @@
       :prop-name="name"
       :component-keys="componentList"
       @handle-search="handleSearch"
-      @save-excel="handleClickExcelBtn"
     />
     <el-col ref="tableContainer" :span="24">
       <compTable
@@ -27,6 +26,7 @@
         :prop-on-page-change="handleChangeCurPage"
         :prop-on-page-size-change="handleChangeCurPage"
         @update:propCellClick="handleClickCell"
+        @savedExcel="handleClickExcelDownloadBtn"
       >
         <template slot="text-description">
           <span>
@@ -66,12 +66,11 @@ import ModalIpAllocDetail from '@/views-ipms/modal/alloc/ModalIpAllocDetail.vue'
 import ModalCheckTacsIpBlock from '@/views-ipms/modal/ModalCheckTacsIpBlock.vue'
 import ModalIpBlockDivision from '@/views-ipms/modal/ModalIpBlockDivision.vue'
 import ModalDetailSummary from '@/views-ipms/modal/ModalDetailSummary.vue'
-
 import ModalIpAssignMerge from '@/views-ipms/modal/assign/ModalIpAssignMerge.vue'
 
-import { allocTableDatas } from './sample.js'
 import { fnViewCheckTacsIpBlock } from '@/views-ipms/js/common-function'
-import { ipmsModelApis, apiRequestModel } from '@/api/ipms'
+import { ipmsModelApis, apiRequestModel, ipmsJsonApis, apiRequestExcel } from '@/api/ipms'
+import { downloadExcel } from '@/views-ipms/js/common-function'
 
 const routeName = 'IpAllocation'
 
@@ -127,7 +126,7 @@ export default {
         { prop: 'pipPrefix', label: 'IP블록', align: 'center', sortable: false, columnVisible: true, showOverflow: true },
         { prop: 'sassignLevelNm', label: '할당상태', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'nipAllocMstCnt', label: '회선', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'dmodifyDt', label: '작업일자', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'dmodifyDt', label: '작업일자', align: 'center', sortable: true, columnVisible: true, showOverflow: true, formatter: (row) => { return row.dmodifyDt ? this.moment(row.dmodifyDt).format('YYYY-MM-DD HH:mm:ss') : '' } },
         { prop: 'sllnum', label: '전용번호', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'ssubscnealias', label: '장비명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'ssubsclgipportdescription', label: 'I/F명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
@@ -154,7 +153,7 @@ export default {
               attrs: {
                 round: true, // Adding the round option
                 plain: true,
-                type: row.sassignLevelCd === 'IA0004' ? 'danger' : 'primary'
+                type: row.sassignLevelCd === 'IA0004' ? 'primary' : 'danger'
               },
               on: { click: () => {
                 if (row.sassignLevelCd === 'IA0004') {
@@ -306,48 +305,8 @@ export default {
       checkedList.forEach(row => { tbIpAssignMstListVo.tbIpAssignMstVos.push({ nipAssignMstSeq: row.nipAssignMstSeq }) })
       this.$refs.ModalIpAssignMerge.open({ tbIpAssignMstListVo })
     },
-    async handleClickExcelBtn(params) {
-      /* legacy param
-      {
-        pageIndex: 1
-        pageUnit: 10
-        sicisofficescodeNe: XXXXXX
-        ssubscnealiasNe:
-        smodelnameNe:
-        ssubscmstipNe:
-        ssubscnnescode:
-        sllnum:
-        ssaid:
-        sordernum:
-        PageLoad:
-        ssvcLineTypeCd: CL0001
-        ssvcGroupCd:
-        ssvcGroupCdMultiStr: 383040;
-        ssvcObjCd: R00454
-        sofficecode:
-        sipCreateTypeCd: CT0001
-        sassignTypeCd:
-        sassignTypeCdMultiStr:
-        sipVersionTypeCd: CV0001
-        searchWrd:
-        nbitmask:
-        llSrchTypeCd: llnum
-        sassignLevelCd: IA0004
-        searchBgnDe:
-        searchEndDe:
-        sortType: PIP_PREFIX
-        sortOrdr: ASC
-        snull0Yn:
-        sintgrmYn:
-        nsummaryCnt:
-      }
-      /ipmgmt/allocmgmt/viewListIpAllocMstExcel.json
-      */
-      /*  try {
-        const res = await apiExcel('/ipmgmt/allocmgmt/viewListIpAllocMstExcel.json', params)
-     } catch (error) {
-        this.error(error)
-     } */
+    handleClickExcelDownloadBtn() {
+      downloadExcel(this, 'viewListIpAllocMstExcel')
     }
    },
 }

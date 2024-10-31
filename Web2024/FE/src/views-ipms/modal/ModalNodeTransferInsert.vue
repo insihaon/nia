@@ -45,14 +45,14 @@
               />
             </td>
             <td>
-              <el-button type="primary" size="small" icon="el-icon-search" round @click="fnSelectListIpAssignMst()">조회</el-button>
+              <el-button type="primary" size="small" round @click="fnSelectListIpAssignMst()">조회</el-button>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
-    <div class="popupContentTable">
-      <table style="margin: 10px 0">
+    <div class="popupContentTable textcenter">
+      <table v-loading="tableLoading" style="margin: 10px 0">
         <tr>
           <th>선택</th>
           <th>서비스망</th>
@@ -80,7 +80,9 @@
             <td>{{ row.sassignTypeNm }}</td>
             <td>{{ row.pipPrefix }}</td>
             <td>{{ row.sassignLevelNm }}</td>
-            <td>{{ row.ssvcLnsummaryCntineTypeNm }}</td>
+            <td style="text-decoration: underline;">
+              {{ row.nsummaryCnt }}
+            </td>
             <td>
               <template v-if="row.sassignLevelCd === 'IA0005' || row.sassignLevelCd === 'IA0006'">
                 <el-button type="primary" size="small" round @click="fnDeleteAlcIPMstClick(row)">해지</el-button>
@@ -215,37 +217,8 @@ export default {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       pagination: this.setDefaultPagination(),
+      tableLoading: false,
       resultVo: { pipPrefix: '', ssvcLineTypeNm: '', ssvcGroupNm: '', ssvcObjNm: '' },
-      tableColumns: [
-        { prop: '', label: '선택', align: 'center', width: 50, propIsCheckBox: true, columnVisible: true, showOverflow: false,
-          formatter: (row, col, value, index) => {
-            return this.$createElement('el-button', {
-              on: { click: () => {
-                this.selectNode(row)
-            } } }, '선택')
-          }
-         },
-        { prop: 'ssvcLineTypeNm', label: '서비스망', align: 'center', propIsCheckBox: true, columnVisible: false, showOverflow: true },
-        { prop: 'ssvcGroupNm', label: '본부', align: 'center', sortable: true, propIsCheckBox: true, columnVisible: true, showOverflow: true },
-        { prop: 'ssvcObjNm', label: '노드', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'sipCreateTypeNm', label: '공인/사설', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'sassignTypeNm', label: '서비스', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'pipPrefix', label: 'IP블록', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'sassignLevelNm', label: '배정상태', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'nsummaryCnt', label: '라우팅중복개수', align: 'center', width: 165, sortable: true, columnVisible: true, showOverflow: true },
-        { prop: '', label: '해지', align: 'center', columnVisible: true, showOverflow: true, width: 50,
-          formatter: (row, col, value, index) => {
-            if (row.sassignLevelCd === 'IA0005' || row.sassignLevelCd === 'IA0006') {
-              return this.$createElement('el-button', {
-                on: { click: () => {
-                  this.fnDeleteAlcIPMstClick(row)
-              } } }, '해지')
-            } else {
-              return ''
-            }
-          }
-         },
-      ],
       resultListVo: [],
       tbIpAssignMstVos: [],
       sipVersionTypeCd: 'CV0001',
@@ -284,8 +257,11 @@ export default {
     },
     getPageCount() {
       const { total, pageSize } = this.pagination
-      // return (total%pageSize) > 0 ? (total/pageSize) + 1 : (total/pageSize)
-      return 10
+      if (total <= pageSize) {
+        return 1
+      } else {
+        return (total % pageSize) > 0 ? parseInt(total / pageSize) + 1 : parseInt(total / pageSize)
+      }
     }
   },
   mounted() {
@@ -295,7 +271,7 @@ export default {
     onCreated() {
       Modal.methods.onCreated.call(this)
       this.closeOnClickModal = false
-      this.domElement.maxWidth = 1000
+      this.domElement.maxWidth = 1200
     },
     onOpen(model, actionMode) {
     },
@@ -304,16 +280,15 @@ export default {
       const parameter = { sipVersionTypeCd: this.sipVersionTypeCd ?? '', searchWrd: this.searchWrd ?? '', sortType: 'PIP_PREFIX', }
       const { pageSize: pageUnit, currentPage: pageIndex } = this.pagination
       Object.assign(parameter, { pageUnit, pageIndex })
-      const target = ({ vue: this.$refs.compTable })
       try {
-        this.openLoading(target)
+        this.tableLoading = true
         const res = await apiRequestModel(ipmsModelApis.selectListIpAssignMst, parameter)
         this.pagination.data = res.result.data ?? []
         this.pagination.total = res.result.totalCount
       } catch (error) {
-        console.error(error)
+        this.error(error)
       } finally {
-        this.closeLoading(target)
+        this.tableLoading = false
       }
     },
     handleChangeCurPage(v) {
@@ -321,7 +296,7 @@ export default {
       this.fnSelectListIpAssignMst()
     },
     chkCharCode(val) {
-      this.searchWrd = val.replace(/[^0-9.]+/g, '')
+      this.searchWrd = val.replace(/[^0-9.\/]+/g, '')
     },
     async selectNode(row) {
       if (row.sassignLevelCd === 'IA0006') {
