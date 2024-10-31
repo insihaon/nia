@@ -12,7 +12,8 @@ import { mapState } from 'vuex'
 import XLSX from 'xlsx'
 import xxtea from 'xxtea'
 import CONSTANTS from './constants'
-
+// eslint-disable-next-line no-import-assign
+XLSX = require('sheetjs-style')
 export const _var = { CONSTANTS, xxtea }
 
 const Base = {
@@ -576,6 +577,21 @@ const Base = {
       const formatted_date = new Date().toJSON().slice(0, 10).replace(/-/g, '/')
       XLSX.writeFile(workbook, `${prefix}_${formatted_date}.xlsx`)
     },
+    exportExcelByElementId(elementId = null, fileName = '') {
+      if (elementId === null) return
+      const excelData = XLSX.utils.table_to_sheet(document.getElementById(elementId)) // table id를 넣어주면된다
+      for (const i in excelData) {
+        if (typeof (excelData[i]) !== 'object') continue // object가 아니면 style 적용 안됨
+        if (i.includes('1') || i.includes('2')) {
+          excelData[i].s = { alignment: { horizontal: 'center' }, font: { sz: 10, bold: true, name: '맑은 고딕' } }
+        } else {
+          excelData[i].s = { font: { sz: 10, name: '맑은 고딕' } }
+        }
+      }
+      const workBook = XLSX.utils.book_new()
+      XLSX.utils.book_append_sheet(workBook, excelData, 'Sheet') // 시트 명명, 데이터 지정
+      XLSX.writeFile(workBook, `${fileName}.xls`) // 엑셀파일 만듬
+    },
     importExcel(event) {
       return new Promise((resolve, reject) => {
         const file = event.target.files[0]
@@ -655,4 +671,3 @@ const Base = {
 }
 
 export { Base }
-
