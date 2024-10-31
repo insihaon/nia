@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -933,7 +935,7 @@ public class WhoisMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/opermgmt/whoismgmt/viewListWhoisModReqExcel.json", method = RequestMethod.POST)
 	@ResponseBody
-	public FileVo viewListWhoisModReqExcel(@ModelAttribute("searchVo") TbWhoisModifyVo searchVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
+	public ResponseEntity<?> viewListWhoisModReqExcel(@RequestBody TbWhoisModifyVo searchVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
 		FileVo resultVo = new FileVo();
 		try{
 			
@@ -965,13 +967,8 @@ public class WhoisMgmtController extends CommonController {
 			mappingList.add("신청일시|getdApplyDt");
 			mappingList.add("처리일시|getdApprovalDt");
 			mappingList.add("상태|getsStatNm");
-			String fileName = excelUtil.createExcelFile(resultListVo.getTbWhoisModifyVos(), mappingList, request);
-			if (StringUtils.hasText(fileName)) {
-				resultVo.setFileName(fileName);
-				resultVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
-			} else {
-				throw new ServiceException("CMN.HIGH.00050");
-			}
+
+			return excelDownloadService.generateAndDownloadExcel(resultListVo.getTbWhoisModifyVos(), mappingList, request);
 		}catch (ServiceException e) {
 			String msgDesc = tbCmnMstService.selectMsgDesc(e);
 			resultVo.setCommonMsg(msgDesc);
@@ -979,7 +976,7 @@ public class WhoisMgmtController extends CommonController {
 			String msgDesc = tbCmnMstService.selectMsgDesc(new ServiceException("CMN.HIGH.00000"));
 			resultVo.setCommonMsg(msgDesc);
 		}
-		return resultVo;
+		return new ResponseEntity<>(resultVo, HttpStatus.OK);
 	}
 	
 	/**
@@ -1699,7 +1696,7 @@ public class WhoisMgmtController extends CommonController {
 	 */
 	@RequestMapping(value="/opermgmt/whoismgmt/viewListWhoisExcel.json", method = RequestMethod.POST)
 	@ResponseBody
-	public FileVo viewListWhoisExcel(@ModelAttribute("searchVo") TbWhoisVo searchVo, HttpServletRequest request, HttpServletResponse response){
+	public ResponseEntity<?> viewListWhoisExcel(@RequestBody TbWhoisVo searchVo, HttpServletRequest request, HttpServletResponse response){
 		FileVo resultVo = new FileVo();
 		try{
 			/** 계위 정보 설정 **/
@@ -1770,13 +1767,8 @@ public class WhoisMgmtController extends CommonController {
 			mappingList.add("변경일시|getSmodifyDt");
 			mappingList.add("등록현황|getSwhoisTranStatusNm");
 			mappingList.add("입력구분|getStransKind");
-			String fileName = excelUtil.createExcelFile(resultListVo.getTbWhoisVos(), mappingList, request);
-			if (StringUtils.hasText(fileName)) {
-				resultVo.setFileName(fileName);
-				resultVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
-			} else {
-				throw new ServiceException("CMN.HIGH.00050");
-			}
+			
+			return excelDownloadService.generateAndDownloadExcel(resultListVo.getTbWhoisVos(), mappingList, request);
 		}catch (ServiceException e) {
 			String msgDesc = tbCmnMstService.selectMsgDesc(e);
 			resultVo.setCommonMsg(msgDesc);
@@ -1784,7 +1776,7 @@ public class WhoisMgmtController extends CommonController {
 			String msgDesc = tbCmnMstService.selectMsgDesc(new ServiceException("CMN.HIGH.00000"));
 			resultVo.setCommonMsg(msgDesc);
 		}
-		return resultVo;
+		return new ResponseEntity<>(resultVo, HttpStatus.OK);
 	}
 	
 	/**

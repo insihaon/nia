@@ -24,6 +24,7 @@
         :prop-on-page-change="handleChangeCurPage"
         :prop-on-page-size-change="handleChangeCurPage"
         @update:propSelected="handleClickCheck"
+        @savedExcel="handleClickExcelDownloadBtn"
       >
         <template slot="text-description">
           <span>
@@ -49,6 +50,7 @@ import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoad
 import ModalFcltMstInsert from '@/views-ipms/modal/interlink/ModalFcltMstInsert'
 import CompTable from '@/components/elTable/CompTable.vue'
 import tableHeightMixin from '@/mixin/tableHeightMixin'
+import { downloadExcel } from '@/views-ipms/js/common-function'
 
 const routeName = 'EquipInfoManagementByOrg'
 
@@ -173,6 +175,9 @@ export default {
           this.error(error)
         }
       })
+    },
+    handleClickExcelDownloadBtn() {
+      downloadExcel(this, 'viewListFcltMstExcel')
     }
   }
 }

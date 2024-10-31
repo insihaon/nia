@@ -15,6 +15,7 @@ copyright notice above does not evidence any actual or * intended publication of
       </div>
     </div>
     <el-table
+      id="element-table"
       ref="table"
       class="cursor_pointer"
       size="mini"

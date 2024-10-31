@@ -22,6 +22,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -449,7 +451,7 @@ public class RequireMgmtController extends CommonController{
 	
 	@RequestMapping(value = "/ipmgmt/requiremgmt/viewListReqExcel.json", method = RequestMethod.POST)
 	@ResponseBody
-	public FileVo selectListReqExcel(@ModelAttribute("searchVo") ReqBoardVo searchVo ,HttpServletRequest request, HttpServletResponse response)  {
+	public ResponseEntity<?> selectListReqExcel(@RequestBody ReqBoardVo searchVo ,HttpServletRequest request, HttpServletResponse response)  {
 		FileVo resultVo = new FileVo();
 		try {
 			setPagination(searchVo);
@@ -465,20 +467,14 @@ public class RequireMgmtController extends CommonController{
 			mappingList.add("완료예정일|getRboardExpectedDate");
 			mappingList.add("중요도|getRboardImportance");
 			mappingList.add("진행상태|getRboardProgress");
-			String fileName = excelUtil.createExcelFile(resultListVo.getReqBoardVos(), mappingList, request);
-			
-			if (org.springframework.util.StringUtils.hasText(fileName)) {
-				resultVo.setFileName(fileName);
-				resultVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
-			} else {
-				throw new ServiceException("CMN.HIGH.00050");
-			}
+
+			return excelDownloadService.generateAndDownloadExcel(resultListVo.getReqBoardVos(), mappingList, request);
 		} catch (ServiceException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return resultVo;
+		return new ResponseEntity<>(resultVo, HttpStatus.OK);
 	}	
 	
 	public void reqMailSend(Map<String,Object> map, MultipartHttpServletRequest request){

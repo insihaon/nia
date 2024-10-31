@@ -19,6 +19,7 @@
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
         :prop-on-click="onClcikRow"
+        @savedExcel="handleClickExcelDownloadBtn"
       >
         <template slot="text-description">
           <span>
@@ -42,6 +43,7 @@ import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoad
 import tableHeightMixin from '@/mixin/tableHeightMixin'
 import ModalReqDetail from '@/views-ipms/modal/notice/ModalReqDetail.vue'
 import { ipmsModelApis, apiRequestModel } from '@/api/ipms'
+import { downloadExcel } from '@/views-ipms/js/common-function'
 
 const routeName = 'IssueDataRequest'
 
@@ -127,6 +129,9 @@ export default {
       } else {
         this.$refs.ModalReqDetail.open({ type: type })
       }
+    },
+    handleClickExcelDownloadBtn() {
+      downloadExcel(this, 'viewListReqExcel')
     }
   },
 }

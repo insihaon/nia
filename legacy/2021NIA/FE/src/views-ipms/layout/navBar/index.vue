@@ -42,7 +42,7 @@
     <div class="right-menu">
       <div class="right-menu-item userInfo flex-h">
         <i class="el-icon-user-solid" />
-        <span>{{ $store.state.user.name || '' }}님으로 로그인 되었습니다.</span>
+        <span>{{ $store.state.user.info.suserNm || '' }}님으로 로그인 되었습니다.</span>
       </div>
       <div class="right-menu-item logout flex-v" @click="logout">
         <i class="el-icon-lock" />

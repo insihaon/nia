@@ -61,7 +61,6 @@ import { Modal } from '@/min/Modal.min'
 import CompTable from '@/components/elTable/CompTable.vue'
 import { onMessagePopup } from '@/utils/index'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
-import { facilityTableDatas } from '@/views-ipms/menus/ipAllocationMng/sample.js'
 import { ipmsModelApis, apiRequestModel, ipmsJsonApis, apiRequestJson } from '@/api/ipms'
 
 const routeName = 'ModalFacilityInformation'

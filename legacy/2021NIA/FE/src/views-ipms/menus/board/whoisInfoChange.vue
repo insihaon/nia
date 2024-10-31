@@ -19,6 +19,7 @@
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
         :prop-on-click="onClcikRow"
+        @savedExcel="handleClickExcelDownloadBtn"
       >
         <template slot="text-description">
           <span>
@@ -44,6 +45,7 @@ import tableHeightMixin from '@/mixin/tableHeightMixin'
 import ModalDetailWhoisMod from '@/views-ipms/modal/notice/ModalDetailWhoisMod.vue'
 import ModalRegWhoisModReq from '@/views-ipms/modal/notice/ModalRegWhoisModReq.vue'
 import { ipmsModelApis, apiRequestModel } from '@/api/ipms'
+import { downloadExcel } from '@/views-ipms/js/common-function'
 
 const routeName = 'WhoisInfoChange'
 
@@ -126,6 +128,9 @@ export default {
       } else {
         this.$refs.ModalRegWhoisModReq.open()
       }
+    },
+    handleClickExcelDownloadBtn() {
+      downloadExcel(this, 'viewListWhoisModReqExcel')
     }
   },
 }

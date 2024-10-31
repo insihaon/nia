@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -236,7 +238,7 @@ public class AssignMgmtController extends CommonController {
 	
 	@RequestMapping(value = "/ipmgmt/assignmgmt/viewListAsgnIPMstExcel.json", method = RequestMethod.POST)
 	@ResponseBody
-	public FileVo viewListAsgnIPMstExcel(@ModelAttribute("searchVo") TbIpAssignMstVo searchVo,
+	public ResponseEntity<?> viewListAsgnIPMstExcel(@RequestBody TbIpAssignMstVo searchVo,
 			HttpServletRequest request, HttpServletResponse response) {
 		FileVo resultVo = new FileVo();
 		try {
@@ -349,14 +351,8 @@ public class AssignMgmtController extends CommonController {
 			mappingList.add("작업일자|getDmodifyDt");
 			mappingList.add("배정상태|getSassignLevelNm");
 			mappingList.add("비고|getScomment");
-			String fileName = excelUtil.createExcelFile(resultListVo.getTbIpAssignMstVos(), mappingList, request);
-			if (StringUtils.hasText(fileName)) {
-				resultVo.setFileName(fileName);
-				resultVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
-			} else {
-				throw new ServiceException("CMN.HIGH.00050");
-			}
-			
+
+			return excelDownloadService.generateAndDownloadExcel(resultListVo.getTbIpAssignMstVos(), mappingList, request);
 		} catch (ServiceException e) {
 			String msgDesc = tbCmnMstService.selectMsgDesc(e);
 			resultVo.setCommonMsg(msgDesc);
@@ -364,7 +360,7 @@ public class AssignMgmtController extends CommonController {
 			String msgDesc = tbCmnMstService.selectMsgDesc(new ServiceException("CMN.HIGH.00000"));
 			resultVo.setCommonMsg(msgDesc);
 		}
-		return resultVo;
+		return new ResponseEntity<>(resultVo, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/ipmgmt/assignmgmt/viewInsertDivAsgnIPMst.model", method = RequestMethod.POST)
@@ -983,7 +979,7 @@ public class AssignMgmtController extends CommonController {
 	
 	@RequestMapping(value = "/ipmgmt/assignmgmt/viewListUnAssignIPExcel.json", method = RequestMethod.POST)
 	@ResponseBody
-	public FileVo viewListUnAssignIPExcel(@ModelAttribute("searchVo") TbIpAssignMstVo searchVo,
+	public ResponseEntity<?> viewListUnAssignIPExcel(@RequestBody TbIpAssignMstVo searchVo,
 			HttpServletRequest request, HttpServletResponse response) {
 		FileVo resultVo = new FileVo();
 		try {
@@ -1039,14 +1035,8 @@ public class AssignMgmtController extends CommonController {
 			mappingList.add("본부|getSsvcGroupNm");
 			mappingList.add("미배정|getnUnAssignBlockCnt");
 			mappingList.add("예비배정|getnReserveAssignBlockCnt");
-			String fileName = excelUtil.createExcelFile(resultListVo.getTbIpAssignMstVos(), mappingList, request);
-			if (StringUtils.hasText(fileName)) {
-				resultVo.setFileName(fileName);
-				resultVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
-			} else {
-				throw new ServiceException("CMN.HIGH.00050");
-			}
-			
+
+			return excelDownloadService.generateAndDownloadExcel(resultListVo.getTbIpAssignMstVos(), mappingList, request);
 		} catch (ServiceException e) {
 			String msgDesc = tbCmnMstService.selectMsgDesc(e);
 			resultVo.setCommonMsg(msgDesc);
@@ -1054,7 +1044,7 @@ public class AssignMgmtController extends CommonController {
 			String msgDesc = tbCmnMstService.selectMsgDesc(new ServiceException("CMN.HIGH.00000"));
 			resultVo.setCommonMsg(msgDesc);
 		}
-		return resultVo;
+		return new ResponseEntity<>(resultVo, HttpStatus.OK);
 	}
 	@RequestMapping(value = "/ipmgmt/assignmgmt/viewDetailUnAssignIP.model", method = RequestMethod.POST)
 	@ResponseBody

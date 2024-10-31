@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -148,7 +150,7 @@ public class AsMgmtController extends CommonController{
 	
 	@RequestMapping(value = "/opermgmt/asmgmt/viewListPrivateAsExcel.json", method = RequestMethod.POST)
 	@ResponseBody
-	public FileVo viewListPrivateAsExcel(@ModelAttribute("searchVo") TbRequestAsApyTxnVo searchVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
+	public ResponseEntity<?> viewListPrivateAsExcel(@RequestBody TbRequestAsApyTxnVo searchVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
 		FileVo resultVo = new FileVo();
 		try{
 			
@@ -181,13 +183,8 @@ public class AsMgmtController extends CommonController{
 			mappingList.add("노드2 전용회선번호|getSrequestAsObjLlnum2");
 			mappingList.add("처리일시|getDapvDt");
 			mappingList.add("상태|getSrequestAsTypeNm");
-			String fileName = excelUtil.createExcelFile(resultListVo.getTbRequestAsApyTxnVos(), mappingList, request);
-			if (StringUtils.hasText(fileName)) {
-				resultVo.setFileName(fileName);
-				resultVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
-			} else {
-				throw new ServiceException("CMN.HIGH.00050");
-			}
+
+			return excelDownloadService.generateAndDownloadExcel(resultListVo.getTbRequestAsApyTxnVos(), mappingList, request);
 		}catch (ServiceException e) {
 			String msgDesc = tbCmnMstService.selectMsgDesc(e);
 			resultVo.setCommonMsg(msgDesc);
@@ -195,7 +192,7 @@ public class AsMgmtController extends CommonController{
 			String msgDesc = tbCmnMstService.selectMsgDesc(new ServiceException("CMN.HIGH.00000"));
 			resultVo.setCommonMsg(msgDesc);
 		}
-		return resultVo;
+		return new ResponseEntity<>(resultVo, HttpStatus.OK);
 	}
 	
 	/**
@@ -543,7 +540,7 @@ public class AsMgmtController extends CommonController{
 	
 	@RequestMapping(value = "/opermgmt/asmgmt/viewListAsHistExcel.json", method = RequestMethod.POST)
 	@ResponseBody
-	public FileVo viewListAsHistExcel(@ModelAttribute("searchVo") TbRequestAsMstVo searchVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
+	public ResponseEntity<?> viewListAsHistExcel(@RequestBody TbRequestAsMstVo searchVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
 		FileVo resultVo = new FileVo();
 		try{
 			
@@ -561,14 +558,8 @@ public class AsMgmtController extends CommonController{
 			
 			mappingList.add("최종수정자|getSmodifyNm");
 			mappingList.add("최종수정일|getDmodifyDt");
-			
-			String fileName = excelUtil.createExcelFile(resultListVo.getTbRequestAsMstVos(), mappingList, request);
-			if (StringUtils.hasText(fileName)) {
-				resultVo.setFileName(fileName);
-				resultVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
-			} else {
-				throw new ServiceException("CMN.HIGH.00050");
-			}
+
+			return excelDownloadService.generateAndDownloadExcel(resultListVo.getTbRequestAsMstVos(), mappingList, request);
 		} catch (ServiceException e) {
 			String msgDesc = tbCmnMstService.selectMsgDesc(e);
 			resultVo.setCommonMsg(msgDesc);
@@ -576,7 +567,7 @@ public class AsMgmtController extends CommonController{
 			String msgDesc = tbCmnMstService.selectMsgDesc(new ServiceException("CMN.HIGH.00000"));
 			resultVo.setCommonMsg(msgDesc);
 		}
-		return resultVo;
+		return new ResponseEntity<>(resultVo, HttpStatus.OK);
 	}
 	
 	/**

@@ -21,6 +21,7 @@
         :prop-is-check-box="false"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
+        @savedExcel="handleClickExcelDownloadBtn"
       >
         <template slot="text-description">
           <span>
@@ -95,10 +96,10 @@ export default {
     },
     rowHighlight({ row, rowIndex }) {
       if (row.ssvc_line_type_nm === '소계') {
-        return 'skyblue-row'
+        return 'black-row'
       }
       if (row.ssvc_group_nm === '소계') {
-        return 'yellow-row'
+        return 'darkgray-row'
       }
       if (row.ssvc_obj_nm === '소계') {
         return 'gray-row'
@@ -118,19 +119,29 @@ export default {
       } else if (columnIndex === 2 && isSumOrg && isSameOrgNode) {
           return { rowspan: 0, colspan: 0 }
       }
+    },
+    handleClickExcelDownloadBtn() {
+      try {
+        this.loading = true
+        this.exportExcelByElementId('element-table', 'IP조직서비스별통계현황')
+      } catch (error) {
+        this.error(error)
+      } finally {
+        this.loading = false
+      }
     }
   },
 }
 </script>
 <style lang="scss" scoped>
 ::v-deep .gray-row {
-  background: #F9F9F9;
+  background: #5f5f5f;
 }
-::v-deep .yellow-row {
-  background: #FFFBE5;
+::v-deep .darkgray-row {
+  background: #434343;
 }
-::v-deep .skyblue-row {
+::v-deep .black-row {
   font-weight: bold;
-  background: #F0F9FC;
+  background: #1c1c1c;
 }
 </style>

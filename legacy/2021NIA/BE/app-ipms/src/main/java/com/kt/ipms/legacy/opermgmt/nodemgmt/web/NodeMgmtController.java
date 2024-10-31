@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -531,7 +533,7 @@ public class NodeMgmtController extends CommonController{
 	}
 	@RequestMapping(value = "/ipmgmt/nodemgmt/viewListNodeExcel.json", method = RequestMethod.POST)
 	@ResponseBody
-	public FileVo selectListNodeExcel(@ModelAttribute("searchVo") NodeMgmtVo searchVo ,HttpServletRequest request, HttpServletResponse response)  {
+	public ResponseEntity<?> selectListNodeExcel(@RequestBody NodeMgmtVo searchVo ,HttpServletRequest request, HttpServletResponse response)  {
 		FileVo resultVo = new FileVo();
 		try {
 			setPagination(searchVo);
@@ -550,21 +552,14 @@ public class NodeMgmtController extends CommonController{
 			mappingList.add("신청일시|getdCreateDt");
 			mappingList.add("처리일시|getdCompleteDt");
 			mappingList.add("진행상태|getProgressStatusNm");
-			
-			String fileName = excelUtil.createExcelFile(resultListVo.getNodeMgmtVos(), mappingList, request);
-			
-			if (org.springframework.util.StringUtils.hasText(fileName)) {
-				resultVo.setFileName(fileName);
-				resultVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
-			} else {
-				throw new ServiceException("CMN.HIGH.00050");
-			}
+
+			return excelDownloadService.generateAndDownloadExcel(resultListVo.getNodeMgmtVos(), mappingList, request);
 		} catch (ServiceException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return resultVo;
+		return new ResponseEntity<>(resultVo, HttpStatus.OK);
 	}
 	
 	@RequestMapping(value = "opermgmt/nodemgmt/selectAuthCenterList.json", method = RequestMethod.POST)

@@ -22,6 +22,7 @@
         :prop-on-dbl-click="handleDbClickRow"
         :prop-on-page-change="handleChangeCurPage"
         :prop-on-page-size-change="handleChangeCurPage"
+        @savedExcel="handleClickExcelDownloadBtn"
       >
         <template slot="text-description">
           <span>
@@ -48,6 +49,7 @@ import ModalIpHostMstDetail from '@/views-ipms/modal/ModalIpHostMstDetail.vue'
 import tableHeightMixin from '@/mixin/tableHeightMixin'
 import { ipmsModelApis, apiRequestModel, apiRequestJson, ipmsJsonApis } from '@/api/ipms'
 import { onMessagePopup } from '@/utils'
+import { downloadExcel } from '@/views-ipms/js/common-function'
 
 const routeName = 'operInfoFacilityManagement'
 
@@ -160,6 +162,9 @@ export default {
       })
       .catch(action => {
       })
+    },
+    handleClickExcelDownloadBtn() {
+      downloadExcel(this, 'viewListVirtualHostInfoExcel')
     }
   },
 }

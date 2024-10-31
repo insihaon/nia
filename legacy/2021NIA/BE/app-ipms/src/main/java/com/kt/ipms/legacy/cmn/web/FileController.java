@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.codej.base.property.FileStorageProperties;
 import com.kt.framework.exception.ServiceException;
 import com.kt.ipms.legacy.cmn.service.ExcelCheckService;
 import com.kt.ipms.legacy.cmn.util.FileUtil;
@@ -30,6 +31,9 @@ public class FileController extends CommonController {
 	
 	@Lazy @Autowired
 	private FileSystemResource fileSystemResource;
+
+	@Autowired
+    private FileStorageProperties fileStorageProperties;
 	
 	@Autowired
 	private ExcelCheckService excelCheckService;
@@ -37,7 +41,7 @@ public class FileController extends CommonController {
 	@RequestMapping(value = "/downloadExcelFile.excel", method = RequestMethod.POST)
 	public void downloadExcelFile(@ModelAttribute("fileVo") FileVo fileVo, 
 		HttpServletRequest request, HttpServletResponse response) {
-        if((request.getParameter("fileName").indexOf(".."))!= -1 || (request.getParameter("fileName").indexOf("./"))!=-1 || (request.getParameter("fileName").indexOf(".\\"))!=-1 || (request.getParameter("fileName").indexOf(":"))!=-1){
+        if((fileVo.getFileName().indexOf(".."))!= -1 || (fileVo.getFileName().indexOf("./"))!=-1 || (fileVo.getFileName().indexOf(".\\"))!=-1 || (fileVo.getFileName().indexOf(":"))!=-1){
         	excelCheckService.updateExcelDown("N");
         	throw new ServiceException("CMN.HIGH.00000");
 		}
@@ -46,7 +50,7 @@ public class FileController extends CommonController {
 		File excelFile = null;
 		try {
 			
-			String filePath = fileSystemResource.getPath() + File.separator +  fileVo.getFileName();
+			String filePath = fileStorageProperties.getAccessUrl().replace("**", "") + File.separator +  fileVo.getFileName();
 			if (fileUtil.isExist(filePath)) {
 				//IE8 SSL 다운로드 불가 현상 조치-START
 				response.setHeader("Cache-Control", "");

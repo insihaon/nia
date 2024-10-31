@@ -5,7 +5,6 @@
       :prop-name="name"
       :component-keys="componentList"
       @handle-search="handleSearch"
-      @save-excel="handleClickExcelBtn"
     />
     <el-col ref="tableContainer" :span="24">
       <compTable
@@ -23,6 +22,7 @@
         :prop-on-click="handleClickRow"
         :prop-on-page-change="handleChangeCurPage"
         :prop-on-page-size-change="handleChangeCurPage"
+        @savedExcel="handleClickExcelDownloadBtn"
       >
         <template slot="text-description">
           <span>
@@ -36,11 +36,13 @@
 </template>
 <script>
 import { Base } from '@/min/Base.min'
+import { onMessagePopup } from '@/utils/index'
 import CompTable from '@/components/elTable/CompTable.vue'
 import tableHeightMixin from '@/mixin/tableHeightMixin'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
 import { ipmsModelApis, apiRequestModel } from '@/api/ipms'
 import ModalIpInfoDetail from '@/views-ipms/modal/ModalIpInfoDetail'
+import { downloadExcel } from '@/views-ipms/js/common-function'
 
 const routeName = 'IpHistManagement'
 
@@ -142,69 +144,8 @@ export default {
         this.error(error)
       }
     },
-    async handleClickExcelBtn(params) {
-      console.log(params)
-      /* legacy param
-      {
-        pageIndex: 1
-        pageUnit: 10
-        sicisofficescodeNe: XXXXXX
-        ssubscnealiasNe:
-        smodelnameNe:
-        ssubscmstipNe:
-        ssubscnnescode: --
-        sllnum:
-        ssaid:
-        sordernum:
-        PageLoad:
-        ssvcLineTypeCd: CL0001
-        ssvcGroupCd:
-        sassignTypeCd:
-        sipCreateTypeCd: CT0001
-        sassignLevelCd:
-        yyyy: 2024
-        sipVersionTypeCd: CV0001
-        searchWrd:
-        nbitmask:
-        llSrchTypeCd: llnum
-        sworkSystem:
-        nipHistTaskCd:
-        screateId:
-        searchBgnDe:
-        searchEndDe:
-      }
-      /ipmgmt/allocmgmt/viewListIpAllocMstExcel.json
-      */
-     /*  try {
-        param: {
-          "ssvcLineTypeCd": "",
-          "ssvcGroupCd": "",
-          "ssvcObjCd": "",
-          "sassignTypeCd": "",
-          "sipCreateTypeCd": "CT0001",
-          "sassignLevelCd": "",
-          "yyyy": "2024",
-          "sipVersionTypeCd": "CV0001",
-          "searchWrd": "",
-          "nbitmask": "",
-          "sicisofficescodeNe": "",
-          "smodelnameNe": "",
-          "ssubscmstipNe": "",
-          "ssubscnealiasNe": "",
-          "llSrchTypeCd": "llnum",
-          "sllnum": "",
-          "ssaid": "",
-          "sordernum": "",
-          "sworkSystem": "",
-          "nipHistTaskCd": "",
-          "screateId": "",
-          "searchBgnDe": "",
-          "searchEndDe": ""
-        }
-        const res = await apiExcel('/ipmgmt/historymgmt/viewListIpHistoryMstExcel.json', params)
-     } catch (error) {
-        this.error(error)
-     } */
+    handleClickExcelDownloadBtn() {
+      downloadExcel(this, 'viewListIpHistoryMstExcel')
     }
   },
 }

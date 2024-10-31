@@ -5,7 +5,6 @@
       :prop-name="name"
       :component-keys="componentList"
       @handle-search="fnViewListIpBlockMst"
-      @save-excel="exportExcel"
     />
     <el-col ref="tableContainer" :span="24">
       <compTable
@@ -22,6 +21,7 @@
         :prop-max-select="1"
         :prop-on-click="onClcikRow"
         :prop-on-select="handleClickTableCheck"
+        @savedExcel="handleClickExcelDownloadBtn"
       >
         <template slot="text-description">
           <span>
@@ -51,6 +51,7 @@ import tableHeightMixin from '@/mixin/tableHeightMixin'
 import ModalIpBlockDetail from '@/views-ipms/modal/ModalIpBlockDetail.vue'
 import ModalAddIpBlock from '@/views-ipms/modal/ModalAddIpBlock.vue'
 import { ipmsModelApis, apiRequestModel } from '@/api/ipms'
+import { downloadExcel } from '@/views-ipms/js/common-function'
 import moment from 'moment'
 const routeName = 'IpBlockManagement'
 
@@ -170,27 +171,9 @@ export default {
         console.error(error)
       }
     },
-    /* async exportExcel() {
-      try {
-        const response = await axios.post(
-          `${this.baseContext}/ipmgmt/createmgmt/viewListCrtIPMstExcel.json`,
-          this.requestParam
-        )
-
-        const fileUrl = `${this.baseContext}/downloadExcelFile.excel?fileName=${response.data.fileName}`
-        const link = document.createElement('a')
-        link.href = fileUrl
-        link.download = response.data.fileName
-        document.body.appendChild(link)
-        link.click()
-        document.body.removeChild(link)
-
-        this.$message.info({ message: '엑셀 다운로드가 성공적으로 완료되었습니다.' })
-      } catch (error) {
-        console.error('Error exporting excel:', error)
-        this.$message.error({ message: '엑셀 다운로드 중 오류가 발생했습니다.' })
-      }
-    } */
+    handleClickExcelDownloadBtn() {
+      downloadExcel(this, 'viewListCrtIPMstExcel')
+    }
   }
 }
 </script>

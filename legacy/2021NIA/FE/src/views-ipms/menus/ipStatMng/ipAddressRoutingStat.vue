@@ -18,6 +18,7 @@
         :prop-is-check-box="false"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
+        @savedExcel="handleClickExcelDownloadBtn"
       >
         <template slot="text-description">
           <span>
@@ -86,7 +87,6 @@ export default {
       this.fnviewListIntgrmSvcStat(requestParameter)
     },
     async fnviewListIntgrmSvcStat(requestParameter = null) {
-      const parameter = requestParameter ?? this.$refs.searchCondition.requestParameter
       /*
       ssvcLineTypeCd: CL0001
       ssvcGroupCd:
@@ -96,6 +96,7 @@ export default {
       searchBgnDe: 2024-09-29
       hidDate: 2024-09-29
       */
+     const parameter = requestParameter ?? this.$refs.searchCondition.requestParameter
       try {
         this.loading = true
         const res = await apiRequestModel(ipmsModelApis.viewListIntgrmSvcStat, parameter)
@@ -110,6 +111,16 @@ export default {
         this.loading = false
       }
     },
+    handleClickExcelDownloadBtn() {
+      try {
+        this.loading = true
+        this.exportExcelByElementId('element-table', 'IP주소 라우팅 비교_점검 통계 현황')
+      } catch (error) {
+        this.error(error)
+      } finally {
+        this.loading = false
+      }
+    }
   },
 }
 </script>

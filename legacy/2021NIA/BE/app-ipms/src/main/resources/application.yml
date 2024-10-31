@@ -120,7 +120,8 @@ myconf:
     login: false
   
 file:
-  access-Url: /external/**
+  access-Url: external/**
+  excel-upload-dir: excelFiles
 
 # Log4j2 보안취약점 대응 (version 2.10 ~ 2.14.1)
 log4j2.formatMsgNoLookups: true
