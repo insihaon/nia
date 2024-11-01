@@ -4,7 +4,7 @@
       ref="searchCondition"
       :prop-name="name"
       :component-keys="componentList"
-      @handle-search="fnViewListWhoisModReq"
+      @handle-search="handleSearch"
     />
     <el-col ref="tableContainer" :span="24">
       <compTable
@@ -12,13 +12,15 @@
         style="height: calc(100% - 80px)"
         :prop-name="name"
         :prop-table-height="'100%'"
+        :prop-data="pagination.data"
+        :prop-pagination-data.sync="pagination"
         :prop-column="tableColumns"
-        :prop-data="resultListVo"
-        :prop-is-pagination="false"
-        :prop-is-check-box="false"
+        :prop-is-pagination="true"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
-        :prop-on-click="onClcikRow"
+        :prop-on-dbl-click="fnViewDbClickWhoisMod"
+        :prop-on-page-change="handleChangeCurPage"
+        :prop-on-page-size-change="handleChangeCurPage"
         @savedExcel="handleClickExcelDownloadBtn"
       >
         <template slot="text-description">
@@ -32,8 +34,8 @@
           </div>
         </template>
       </compTable>
-      <ModalDetailWhoisMod ref="ModalDetailWhoisMod" @reload="fnViewListWhoisModReq()" />
-      <ModalRegWhoisModReq ref="ModalRegWhoisModReq" @reload="fnViewListWhoisModReq()" />
+      <ModalDetailWhoisMod ref="ModalDetailWhoisMod" @reload="fnViewListWhoisModReq($refs.searchCondition.requestParameter)" />
+      <ModalRegWhoisModReq ref="ModalRegWhoisModReq" @reload="fnViewListWhoisModReq($refs.searchCondition.requestParameter)" />
     </el-col>
   </el-row>
 </template>
@@ -58,6 +60,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      pagination: this.setDefaultPagination(),
       tableColumns: [
         { prop: 'nmodify_apply_seq', label: '신청번호', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'sfirstAddr', label: '시작IP', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
@@ -93,40 +96,44 @@ export default {
           }
         },
       ],
-      resultListVo: []
     }
   },
   mounted() {
     this.fnViewListWhoisModReq()
   },
   methods: {
-   async fnViewListWhoisModReq(requestParameter) {
+    handleSearch(requestParameter) {
+      this.pagination.currentPage = 1
+      this.fnViewListWhoisModReq(requestParameter)
+    },
+    async fnViewListWhoisModReq(requestParameter = null) {
+      const parameter = requestParameter ?? this.$refs.searchCondition.requestParameter
+      const target = ({ vue: this.$refs.compTable })
+      const { pageSize: pageUnit, currentPage: pageIndex } = this.pagination
+      Object.assign(parameter, { pageUnit, pageIndex })
       try {
-        const res = await apiRequestModel(ipmsModelApis.viewListWhoisModReq, requestParameter)
-        this.resultListVo = res?.result.data
+        this.openLoading(target)
+        const res = await apiRequestModel(ipmsModelApis.viewListWhoisModReq, parameter)
+        this.pagination.data = res.result.data ?? []
+        this.pagination.total = res.result.totalCount
       } catch (error) {
         console.error(error)
+      } finally {
+        this.closeLoading(target)
       }
     },
-    onClcikRow(row, type) {
+    handleChangeCurPage(v) {
+      if (v) this.pagination.currentPage = v
+      this.fnViewListWhoisModReq()
+    },
+    fnViewDbClickWhoisMod(row) {
       this.fnViewDetailWhoisMod(row, 'detail')
     },
     async fnViewDetailWhoisMod(row, type) {
       if (type === 'detail') {
-        try {
-          if (row.nmodify_apply_seq === '' || row.nmodify_apply_seq === null) {
-            return
-          }
-            const tbWhoisModifyVo = {
-              nmodify_apply_seq: row.nmodify_apply_seq
-            }
-            const res = await apiRequestModel(ipmsModelApis.viewDetailWhoisModReq, tbWhoisModifyVo)
-            this.$refs.ModalDetailWhoisMod.open({ row: res.result.data, type: type })
-          } catch (error) {
-            console.error(error)
-        }
+        this.$refs.ModalDetailWhoisMod.open({ row: row, type: type })
       } else {
-        this.$refs.ModalRegWhoisModReq.open()
+        this.$refs.ModalRegWhoisModReq.open() // 컨트롤러 메소드 호출
       }
     },
     handleClickExcelDownloadBtn() {
