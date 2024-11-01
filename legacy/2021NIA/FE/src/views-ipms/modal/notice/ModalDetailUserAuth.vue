@@ -26,7 +26,7 @@
         </tr>
       </table>
     </div>
-    <div class="popupContentTable textcenter">
+    <div ref="content" class="popupContentTable textcenter">
       <div class="popupContentTableTitle">권한상세</div>
       <table>
         <tr>
@@ -36,7 +36,7 @@
           <th>본부</th>
           <th>노드</th>
         </tr>
-        <tr v-if="resultListVo.totalCount === 0">
+        <tr v-if="totalCount === 0">
           <td colspan="5">조회된 결과 목록이 존재하지 않습니다.</td>
         </tr>
         <template v-else>
@@ -44,8 +44,8 @@
             v-for="(item, index) in resultListVo.tbUserAuthTxnVos"
             :key="index"
             :class="{
-              last: index === resultListVo.length - 1,
-              subbg: (index % 2) !== 0 || index === resultListVo.length - 1
+              last: index === resultSubListVo.tbUserAuthTxnSubVos.length - 1,
+              subbg: (index % 2) !== 0 || index === resultSubListVo.tbUserAuthTxnSubVos.length - 1
             }"
           >
             <td>{{ item.suserNm }}</td>
@@ -53,10 +53,6 @@
             <td :title="item.ssvcLineTypeNm">{{ item.ssvcLineTypeNm }}</td>
             <td :title="item.ssvcGroupNm">{{ item.ssvcGroupNm }}</td>
             <td :title="item.ssvcObjNm">{{ item.ssvcObjNm }}</td>
-            <!-- 추후 레거시 코드로 반영 -->
-            <!-- <td :title="item.tbLvlBasVo.ssvcLineTypeNm">{{ item.tbLvlBasVo.ssvcLineTypeNm }}</td>
-            <td :title="item.tbLvlBasVo.ssvcGroupNm">{{ item.tbLvlBasVo.ssvcGroupNm }}</td>
-            <td :title="item.tbLvlBasVo.ssvcObjNm">{{ item.tbLvlBasVo.ssvcObjNm }}</td> -->
           </tr>
         </template>
       </table>
@@ -74,18 +70,18 @@
         <tr v-for="(item, index) in resultSubListVo.tbUserAuthTxnSubVos" :key="index">
           <td>{{ item.suserNm }}</td>
           <td :title="item.suserGradeNm">{{ item.suserGradeNm }}</td>
-          <td :title="item.tbLvlBasVo.ssvcLineTypeNm">{{ item.tbLvlBasVo.ssvcLineTypeNm }}</td>
-          <td :title="item.tbLvlBasVo.ssvcGroupNm">{{ item.tbLvlBasVo.ssvcGroupNm }}</td>
-          <td :title="item.tbLvlBasVo.ssvcObjNm">{{ item.tbLvlBasVo.ssvcObjNm }}</td>
+          <td :title="item.ssvcLineTypeNm">{{ item.ssvcLineTypeNm }}</td>
+          <td :title="item.ssvcGroupNm">{{ item.ssvcGroupNm }}</td>
+          <td :title="item.ssvcObjNm">{{ item.ssvcObjNm }}</td>
         </tr>
       </table>
     </div>
     <div class="popupContentTableBottom">
-      <!-- <template v-if="isCheckGrade"> -->
-      <el-button v-if="isAdmin" type="primary" size="small" round @click.native="fnCancelBtnClick()">반려</el-button>
-      <el-button v-if="isAdmin" type="primary" size="small" round @click.native="fnUpdateConfirmBtnClick()">승인</el-button>
-      <el-button v-if="adminYn === 'Y' || ownerYn === 'Y'" type="primary" size="small" round @click.native="fnDeleteBtnClick()">신청취소</el-button>
-      <!-- </template> -->
+      <template v-if="isCheckGrade">
+        <el-button v-if="isAdmin" type="primary" size="small" round @click.native="fnCancelBtnClick()">반려</el-button>
+        <el-button v-if="isAdmin" type="primary" size="small" round @click.native="fnUpdateConfirmBtnClick()">승인</el-button>
+        <el-button v-if="adminYn === 'Y' || ownerYn === 'Y'" type="primary" size="small" round @click.native="fnDeleteBtnClick()">신청취소</el-button>
+      </template>
       <el-button type="primary" size="small" icon="el-icon-close" round @click.native="close()">{{ $t('exit') }}</el-button>
     </div>
   </el-dialog>
@@ -95,7 +91,7 @@
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
 import { apiRequestJson, ipmsJsonApis, apiRequestModel, ipmsModelApis } from '@/api/ipms'
-import { mapState } from 'vuex'
+import { onMessagePopup } from '@/utils/index'
 
 const routeName = 'ModalDetailUserAuth'
 
@@ -111,17 +107,16 @@ export default {
       selectedRow: null,
       resultListVo: {},
       resultSubListVo: {},
-      rowGrantSeq: ''
-
+      totalCount: 0,
+      rowGrantSeq: '',
+      adminYn: '',
+      ownerYn: ''
     }
   },
   computed: {
-   ...mapState({
-      adminYn: state => state.ipms.adminYn,
-      ownerYn: state => state.ipms.ownerYn,
-    }),
+
     isCheckGrade() {
-      return this.resultListVo.nrequestTypeCd === 'nod001'
+      return this.resultSubListVo.nrequestTypeCd === 'nod001'
     },
     isAdmin() {
       return this.adminYn === 'Y'
@@ -139,56 +134,90 @@ export default {
       this.domElement.maxWidth = 800
     },
     onOpen(model, actionMode) {
-      this.resultListVo = model.row.resultListVo
-      this.resultSubListVo = model.row.resultSubListVo
-      this.rowGrantSeq = model.row.grantSeq
+      setTimeout(() => {
+        if (model.row) {
+         this.fnViewDetailGrant(model.row)
+        }
+      }, 10)
+    },
+    async fnViewDetailGrant(row) {
+      const target = ({ vue: this.$refs.content })
+      try {
+         this.openLoading(target)
+         const { suserId, grantSeq } = row
+         const tbUserAuthVo = {
+            suserId: suserId,
+            grantSeq: grantSeq
+         }
+         const res = await apiRequestModel(ipmsModelApis.viewDetailUserAuthSubs, tbUserAuthVo)
+            this.resultListVo = res.resultListVo
+            this.totalCount = res.totalCount
+            this.resultSubListVo = res.resultSubListVo
+            this.rowGrantSeq = res.grant_seq
+            this.adminYn = res.adminYn
+            this.ownerYn = res.ownerYn
+       } catch (error) {
+         console.error(error)
+       } finally {
+         this.closeLoading(target)
+       }
     },
     async fnCancelBtnClick() { /* 반려 */
       let res
+      const target = ({ vue: this.$refs.content })
       try {
-          const tbUserAuthTxnListVo = {
-            srcIpBlockMstVo: {
-              nrequestTypeCd: 'node003',
-              grantSeq: this.rowGrantSeq,
-            }
+        this.openLoading(target)
+        const tbUserAuthTxnListVo = {
+          srcIpBlockMstVo: {
+            nrequestTypeCd: 'node003',
+            grantSeq: this.rowGrantSeq,
           }
-         res = await apiRequestJson(ipmsJsonApis.confirmGrantSub, tbUserAuthTxnListVo)
-          // URL : /opermgmt/grantsubsmgmt/confirmGrantSub.ajax
-          if (res.commonMsg === 'SUCCESS') {
-           this.$message('권한 신청이 정상적으로 처리되었습니다.')
-          }
+        }
+        res = await apiRequestModel(ipmsModelApis.confirmGrantSub, tbUserAuthTxnListVo)
+        if (res.commonMsg === 'SUCCESS') {
+          onMessagePopup(this, '권한 신청이 정상적으로 처리되었습니다.')
+        } else {
+          onMessagePopup(this, res.commonMsg)
+        }
       } catch (error) {
-        this.$message.error({ message: `${res.commonMsg}` })
         console.error(error)
+      } finally {
+         this.closeLoading(target)
       }
     },
     fnDeleteBtnClick() { /* 신청취소 */
         this.$confirm('정말 삭제 하시겠습니까?', '신청취소 메세지', {
         confirmButtonText: '확인',
         cancelButtonText: '취소'
-      }).then(async() => {
+        }).then(async () => {
+        const target = ({ vue: this.$refs.content })
         let res
         try {
+          this.openLoading(target)
         const tbUserGrantVo = {
           grantSeq: this.rowGrantSeq
         }
-         res = await apiRequestJson(ipmsJsonApis.viewDeleteGrant, tbUserGrantVo)
-         // legacy URL : /opermgmt/grantsubsmgmt/viewDeleteGrant.ajax
-        if (res.commonMsg === 'SUCCESS') {
-          this.$message('권한 신청이 정상적으로 삭제되었습니다.')
-          this.$emit('reload')
-          this.close()
-        }
+         res = await apiRequestModel(ipmsModelApis.viewDeleteGrant, tbUserGrantVo)
+          if (res.commonMsg === 'SUCCESS') {
+            onMessagePopup(this, '권한 신청이 정상적으로 삭제되었습니다.')
+            this.$emit('reload')
+            this.close()
+          } else {
+            onMessagePopup(this, res.commonMsg)
+          }
         } catch (error) {
-          this.$message.error({ message: `${res.commonMsg}` })
           console.log(error)
-        }
+        } finally {
+         this.closeLoading(target)
+       }
       })
     },
     async fnUpdateConfirmBtnClick() { /* 승인 */
       let rCnt = 0
       let res
+      const target = ({ vue: this.$refs.content })
       try {
+        this.openLoading(target)
        const tbUserAuthTxnListVo = {
         suserId: this.resultListVo.suserId,
         suserGradeCd: this.resultListVo.suserGradeCd,
@@ -218,18 +247,20 @@ export default {
        rCnt++
 
        if (rCnt === 0) {
-        this.$message('등록 할 대상이 없습니다.')
+        onMessagePopup(this, '등록 할 대상이 없습니다.')
         return
        }
 
-       res = await apiRequestJson(ipmsJsonApis.confirmGrantSub, tbUserAuthTxnListVo)
-       // legacy URL : /opermgmt/grantsubsmgmt/confirmGrantSub.ajax
+       res = await apiRequestModel(ipmsModelApis.confirmGrantSub, tbUserAuthTxnListVo)
        if (res.commonMsg === 'SUCCESS') {
-        this.$message('권한 신청이 정상적으로 처리되었습니다.')
+        onMessagePopup(this, '권한 신청이 정상적으로 처리되었습니다.')
+       } else {
+         onMessagePopup(this, res.commonMsg)
        }
       } catch (error) {
-          this.$message.error({ message: `${res.commonMsg}` })
-          console.log(error)
+        console.log(error)
+      } finally {
+        this.closeLoading(target)
       }
     }
   },

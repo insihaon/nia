@@ -103,28 +103,64 @@
         </tbody>
       </table>
     </div>
-    <!-- <template v-if="userGrade 관리자"> -->
-    <div class="popupContentTable">
-      <div class="popupContentTableTitle">반려사유</div>
-      <table>
-        <tbody>
-          <tr>
-            <td>
-              <textarea v-model="sreject_rsn" maxlength="5000" />
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <!-- </template> -->
+
+    <template v-if="suserGradeCd === 'UR0001'">
+      <div v-if="sStatCd === '10' || sStatCd === '30'" class="popupContentTable">
+        <div class="popupContentTableTitle">반려사유</div>
+        <table>
+          <tbody>
+            <tr>
+              <td>
+                <textarea
+                  v-model="sreject_rsn"
+                  style="height: 100px; width:99%; resize: none;"
+                  maxlength="5000"
+                  :disabled="sStatCd === '30'"
+                />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </template>
+
     <div class="popupContentTableBottom">
       <!-- 관리자 : 신청 -> 변경신청취소, 수정, 승인/반려  | 사용자 - 신청 -> 변경신청취소, 수정 -->
-      <el-button type="primary" size="small" icon="float-left" round @click="fnApprRegWhoisModReqSubmit('A')">{{ $t('승인') }}</el-button>
-      <el-button type="primary" size="small" icon="float-left" round @click="fnApprRegWhoisModReqSubmit('R')">{{ $t('반려') }}</el-button>
-      <el-button type="primary" size="small" round @click="fnDeleteRegWhoisModReqSubmit()">{{ $t('변경신청취소') }}</el-button>
-      <el-button v-if="viewType === 'detail'" type="primary" size="small" icon="el-icon-edit" round @click="onChangeMode()">{{ $t('수정') }}</el-button>
-      <el-button v-if="viewType === 'edit'" type="primary" size="small" icon="el-icon-edit-outline" round @click="fnUpdateRegWhoisModReqSubmit()">{{ $t('저장') }}</el-button>
-      <el-button type="primary" size="small" icon="el-icon-close" round @click="close()">{{ $t('exit') }}</el-button>
+      <template v-if="sStatCd === '10'">
+        <template v-if="suserGradeCd === 'UR0001'">
+          <el-button type="primary" size="small" round @click="fnDeleteRegWhoisModReqSubmit()"> 변경신청취소 </el-button>
+          <el-button v-if="viewType === 'detail'" type="primary" size="small" round class="el-icon-edit" @click="onChangeMode()">수정 </el-button>
+          <el-button
+            v-if="viewType === 'edit'"
+            type="primary"
+            size="small"
+            round
+            class="el-icon-edit-outline"
+            style="background-color:#2e3574; color: #fff"
+            @click="fnUpdateRegWhoisModReqSubmit()"
+          >저장</el-button>
+          <el-button type="primary" size="small" round class="float-left" @click="fnApprRegWhoisModReqSubmit('A')"> 승인 </el-button>
+          <el-button type="primary" size="small" round class="float-left" @click="fnApprRegWhoisModReqSubmit('R')">반려 </el-button>
+        </template>
+
+        <template v-else>
+          <el-button type="primary" size="small" round @click="fnDeleteRegWhoisModReqSubmit()"> 변경신청취소 </el-button>
+          <el-button v-if="viewType === 'detail'" type="primary" size="small" round class="el-icon-edit" @click="onChangeMode()">수정 </el-button>
+          <el-button
+            v-if="viewType === 'edit'"
+            type="primary"
+            size="small"
+            round
+            class="el-icon-edit-outline"
+            style="background-color:#2e3574; color: #fff"
+            @click="fnUpdateRegWhoisModReqSubmit()"
+          >저장</el-button>
+        </template>
+      </template>
+
+      <el-button type="primary" size="small" round class="el-icon-close" @click="close()">
+        {{ $t('exit') }}
+      </el-button>
     </div>
   </el-dialog>
 </template>
@@ -132,8 +168,9 @@
 <script>
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
-import { ipmsJsonApis, apiRequestJson } from '@/api/ipms'
-
+import { mapState } from 'vuex'
+import { apiRequestModel, ipmsModelApis, ipmsJsonApis, apiRequestJson } from '@/api/ipms'
+import { onMessagePopup } from '@/utils/index'
 const routeName = 'ModalDetailWhoisMod'
 
 export default {
@@ -165,9 +202,15 @@ export default {
       sAftEOrgName: '',
       sAftEOrgAddr: '',
       sAftEOrgAddrDetail: '',
+      sStatCd: ''
     }
   },
   computed: {
+    ...mapState({
+      adminYn: state => state.ipms.adminYn,
+      userId: state => state.user.info.suserId,
+      suserGradeCd: state => state.user.info.suserGradeCd,
+    }),
     onChangetitle() {
       return this.viewType === 'detail' ? '신청 상세' : '수정'
     }
@@ -183,7 +226,33 @@ export default {
     },
     onOpen(model, actionMode) {
       this.viewType = model.type
-      this.resultVo = model.row
+
+      if (model.row) {
+        setTimeout(() => {
+         this.fnViewDetailWhoisMod(model.row)
+        }, 10)
+      }
+    },
+    async fnViewDetailWhoisMod(row) {
+      const target = ({ vue: this.$refs.content })
+      if (row.nmodify_apply_seq === '' || row.nmodify_apply_seq === null) {
+        return
+      }
+      try {
+        this.openLoading(target)
+        const tbWhoisModifyVo = {
+          nmodify_apply_seq: row.nmodify_apply_seq
+        }
+          const res = await apiRequestModel(ipmsModelApis.viewDetailWhoisModReq, tbWhoisModifyVo)
+          this.resultVo = res.result.data
+          this.onSetValue()
+        } catch (error) {
+          console.error(error)
+        } finally {
+          this.closeLoading(target)
+        }
+    },
+    onSetValue() {
       const { sreject_rsn, sAftOrgName, sAftOrgAddr, sAftOrgAddrDetail, sAftZipCode, sAftEOrgName, sAftEOrgAddr, sAftEOrgAddrDetail } = this.resultVo
       this.sreject_rsn = sreject_rsn
       this.sAftOrgName = sAftOrgName
@@ -193,6 +262,8 @@ export default {
       this.sAftEOrgName = sAftEOrgName
       this.sAftEOrgAddr = sAftEOrgAddr
       this.sAftEOrgAddrDetail = sAftEOrgAddrDetail
+
+      this.sStatCd = this.resultVo.sStatCd
     },
     onChangeMode() {
       this.viewType = 'edit'
@@ -230,16 +301,18 @@ export default {
       }).then(async() => {
         if (typeNm === '반려') {
           if (this.sreject_rsn === '' || this.sreject_rsn === null) {
-            this.$message('반려시에는 반려사유를 입력해야 합니다.')
+             onMessagePopup(this, '반려시에는 반려사유를 입력해야 합니다.')
             return
           }
         } else if (typeNm === '승인') {
           if (this.resultVo.transyn === 'N') {
-            this.$message('이미 해지된 IP주소이므로 승인이 불가합니다 <br> 반려 혹은 변경신청취소만 가능합니다.')
+             onMessagePopup(this, `이미 해지된 IP주소이므로 승인이 불가합니다. 반려 혹은 변경신청취소만 가능합니다.`)
             return
           }
         }
+        const target = ({ vue: this.$refs.content })
         try {
+          this.openLoading(target)
           const tbWhoisModfiyVo = {
             nmodify_apply_seq: `${this.resultVo.nmodify_apply_seq}`,
             sStatCd: stat,
@@ -249,50 +322,53 @@ export default {
           }
           const res = await apiRequestJson(ipmsJsonApis.updateWhoisModReqAppr, tbWhoisModfiyVo)
             if (res.tbWhoisModifyVo.commonMsg === 'SUCCESS') {
-              this.$message.success(`WHOIS 정보 변경 신청 내역이 정상적으로 ${typeNm} 되었습니다.`)
+              onMessagePopup(this, `WHOIS 정보 변경 신청 내역이 정상적으로 ${typeNm} 되었습니다.`)
               this.$emit('reload')
               this.close()
+            } else {
+              onMessagePopup(this, res.commonMsg)
             }
           } catch (error) {
-            this.$message.error({ message: `${typeNm}에 실패했습니다.` })
             console.log(error)
+        } finally {
+            this.closeLoading(target)
           }
         })
     },
    async fnUpdateRegWhoisModReqSubmit() { /* 수정(등록) */
      if (this.resultVo.transyn === 'N') {
-        this.$message('이미 해지된 IP 주소이므로 수정이 불가합니다.')
+         onMessagePopup(this, '이미 해지된 IP 주소이므로 수정이 불가합니다.')
         return
      }
 
      if (this.sAftOrgName === '' || this.sAftOrgName === null) {
-        this.$message('한글기관명을 입력하세요.')
+         onMessagePopup(this, '한글기관명을 입력하세요.')
         return
      }
 
      if (this.sAftOrgAddr === '' || this.sAftOrgAddr === null) {
-        this.$message('한글주소를 입력하세요.')
+         onMessagePopup(this, '한글주소를 입력하세요.')
         return
      }
 
      if (this.sAftZipCode === '' || this.sAftZipCode === null) {
-        this.$message('우편주소를 입력하세요.')
+         onMessagePopup(this, '우편주소를 입력하세요.')
         return
      }
 
      if (this.sAftEOrgName === '' || this.sAftEOrgName === null) {
-        this.$message('영문기관명을 입력하세요.')
+         onMessagePopup(this, '영문기관명을 입력하세요.')
         return
      }
 
      if (this.sAftEOrgAddr === '' || this.sAftEOrgAddr === null) {
-        this.$message('영문주소를 입력하세요.')
+         onMessagePopup(this, '영문주소를 입력하세요.')
         return
      }
 
       const regExp = /[가-힣ㄱ-ㅎㅏ-ㅣ]/
         if (regExp.test(this.sAftEOrgName)) {
-          this.$message('영문기관명은 한글입력이 불가합니다.')
+           onMessagePopup(this, '영문기관명은 한글입력이 불가합니다.')
           return
         }
 
@@ -309,9 +385,11 @@ export default {
         }
         const res = await apiRequestJson(ipmsJsonApis.viewUpdateWhoisModReqVo, tbWhoisModifyVo)
         if (res.tbWhoisModifyVo.commonMsg === 'SUCCESS') {
-          this.$message.success('WHOIS 정보 변경 신청 내역이 정상적으로 수정되었습니다.')
+          onMessagePopup(this, 'WHOIS 정보 변경 신청 내역이 정상적으로 수정되었습니다.')
           this.$emit('reload')
           this.close()
+        } else {
+          onMessagePopup(this, res.commonMsg)
         }
       } catch (error) {
         console.log(error)
@@ -328,9 +406,11 @@ export default {
           }
           const res = await apiRequestJson(ipmsJsonApis.viewDeleteWhoisModReq, tbWhoisModfiyVo)
           if (res.tbWhoisModifyVo.commonMsg === 'SUCCESS') {
-            this.$message.success(`WHOIS 정보 변경 신청 내역이 정상적으로 취소 되었습니다.`)
+            onMessagePopup(this`WHOIS 정보 변경 신청 내역이 정상적으로 취소 되었습니다.`)
             this.$emit('reload')
             this.close()
+          } else {
+            onMessagePopup(this, res.commonMsg)
           }
         } catch (error) {
           console.log(error)

@@ -4,7 +4,7 @@
       ref="searchCondition"
       :prop-name="name"
       :component-keys="componentList"
-      @handle-search="fnViewListReq"
+      @handle-search="handleSearch"
     />
     <el-col ref="tableContainer" :span="24">
       <compTable
@@ -12,12 +12,15 @@
         style="height: calc(100% - 80px)"
         :prop-name="name"
         :prop-table-height="'100%'"
+        :prop-data="pagination.data"
+        :prop-pagination-data.sync="pagination"
         :prop-column="tableColumns"
-        :prop-data="resultListVo"
-        :prop-is-pagination="false"
+        :prop-is-pagination="true"
         :prop-is-check-box="false"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
+        :prop-on-page-change="handleChangeCurPage"
+        :prop-on-page-size-change="handleChangeCurPage"
         :prop-on-click="onClcikRow"
         @savedExcel="handleClickExcelDownloadBtn"
       >
@@ -33,7 +36,7 @@
         </template>
       </compTable>
     </el-col>
-    <ModalReqDetail ref="ModalReqDetail" @reload="fnViewListReq" />
+    <ModalReqDetail ref="ModalReqDetail" @reload="fnViewListReq($refs.searchCondition.requestParameter)" />
   </el-row>
 </template>
 <script>
@@ -56,6 +59,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      pagination: this.setDefaultPagination(),
       tableColumns: [
         { prop: 'seq', label: '번호', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'rboardDivision', label: '요청사항구분', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
@@ -97,19 +101,34 @@ export default {
         },
         { key: 'DateRange', props: { label: '등록기간' } },
       ],
-      resultListVo: []
     }
   },
   mounted() {
     this.fnViewListReq()
   },
   methods: {
-    async fnViewListReq(requestParameter) {
+    handleSearch(requestParameter) {
+      this.pagination.currentPage = 1
+      this.fnViewListReq(requestParameter)
+    },
+    handleChangeCurPage(v) {
+      if (v) this.pagination.currentPage = v
+      this.fnViewListReq()
+    },
+    async fnViewListReq(requestParameter = null) {
+      const parameter = requestParameter ?? this.$refs.searchCondition.requestParameter
+      const target = ({ vue: this.$refs.compTable })
+      const { pageSize: pageUnit, currentPage: pageIndex } = this.pagination
+      Object.assign(parameter, { pageUnit, pageIndex })
       try {
-        const res = await apiRequestModel(ipmsModelApis.viewListReq, requestParameter)
-        this.resultListVo = res?.result.data
+        this.openLoading(target)
+        const res = await apiRequestModel(ipmsModelApis.viewListReq, parameter)
+        this.pagination.data = res.result.data ?? []
+        this.pagination.total = res.result.totalCount
       } catch (error) {
         console.error(error)
+      } finally {
+        this.closeLoading(target)
       }
     },
     onClcikRow(row, type) {
@@ -117,15 +136,7 @@ export default {
     },
     async fnViewDetailReq(row, type) {
       if (type === 'detail') {
-        try {
-           const ReqBoardVo = {
-              seq: row.seq
-           }
-          const res = await apiRequestModel(ipmsModelApis.viewDetailReq, ReqBoardVo)
-          this.$refs.ModalReqDetail.open({ row: res.result.data, type: type })
-        } catch (error) {
-          console.error(error)
-        }
+        this.$refs.ModalReqDetail.open({ row: row, type: type })
       } else {
         this.$refs.ModalReqDetail.open({ type: type })
       }

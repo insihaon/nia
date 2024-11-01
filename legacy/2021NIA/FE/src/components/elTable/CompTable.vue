@@ -4,7 +4,7 @@ copyright notice above does not evidence any actual or * intended publication of
 <template>
   <div v-loading="propLoading" class="compTable">
     <div class="tableThum">
-      <div class="d-flex mb-1 justify-between items-baseline">
+      <div v-if="textDes" class="d-flex mb-1 justify-between items-baseline">
         <div>
           <i class="el-icon-document mr-1" />
           <slot name="text-description" />
@@ -110,6 +110,7 @@ export default {
   },
   extends: Base,
   props: {
+    textDes: { type: Boolean, default: true }, // slot 유무 
     propName: { type: String, default: '' },
     propColumn: { type: Array, default: [{ prop: '-', label: '-' }] }, //컬럼
     propData: {

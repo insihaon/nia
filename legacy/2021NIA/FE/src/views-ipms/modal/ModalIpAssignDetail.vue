@@ -16,7 +16,7 @@
     :class="{ [name]: true }"
   >
     <div class="popupContentTable">
-      <div class="popupContentTableTitle">IP배정 상세정보</div>
+      <div ref="content" class="popupContentTableTitle">IP배정 상세정보</div>
       <table>
         <colgroup>
           <col width="15%" />
@@ -111,19 +111,21 @@
       </table>
     </div>
     <div class="popupContentTableBottom">
-      <el-button type="primary" size="small" icon="el-icon-document-checked" round @click.native="handleAssignIp()">{{ '배정' }}</el-button>
-      <el-button v-if="!disabledBtn" type="primary" size="small" icon="el-icon-refresh-left" round @click.native="fnRetUpdateAsgnIPMst()">{{ '반납' }}</el-button>
+      <el-button type="primary" size="small" icon="el-icon-document-checked" round @click.native="handleAssignIp()">배정</el-button>
+      <el-button v-if="!disabledBtn" type="primary" size="small" icon="el-icon-refresh-left" round @click.native="fnRetUpdateAsgnIPMst()">반납</el-button>
       <el-button type="primary" size="small" icon="el-icon-close" round @click.native="close()">{{ $t('exit') }}</el-button>
     </div>
-    <ModalIpAssign ref="ModalIpAssign" />
+    <ModalIpAssign ref="ModalIpAssign" @reload="close()" />
   </el-dialog>
 </template>
 
 <script>
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
+import { onMessagePopup } from '@/utils/index'
+
 import ModalIpAssign from '@/views-ipms/modal/ModalIpAssign.vue'
-import { apiRequestJson, ipmsJsonApis } from '@/api/ipms'
+import { ipmsModelApis, apiRequestModel, apiRequestJson, ipmsJsonApis } from '@/api/ipms'
 const routeName = 'ModalIpAssignDetail'
 
 export default {
@@ -135,7 +137,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      ipAssignVo: null,
+      ipAssignVo: {},
       type: 'create',
       IpBlockDetail: [],
       tableDatas: [],
@@ -148,7 +150,7 @@ export default {
   },
   computed: {
     disabledBtn() {
-      return this.ipAssignVo.sassignLevelCd === 'IA0001' || this.ipAssignVo.sassignLevelCd === 'IA0002'
+      return this.ipAssignVo?.sassignLevelCd === 'IA0001' || this.ipAssignVo?.sassignLevelCd === 'IA0002'
     }
   },
   mounted() {
@@ -160,10 +162,27 @@ export default {
       this.domElement.maxWidth = 800
     },
     onOpen(model, actionMode) {
-    this.ipAssignVo = model.row
-     this.viewType = this.model.type
+      this.$nextTick(() => {
+        if (model.row) {
+          this.fnViewDetailAsgnIPMst(model.row)
+        }
+        this.viewType = this.model.type
+      })
     },
-    onClose() { this.ipAssignVo = [] },
+    async fnViewDetailAsgnIPMst(row) {
+      const target = ({ vue: this.$refs.content })
+        try {
+          this.openLoading(target)
+          const tbIpAssignMstVo = { nipAssignMstSeq: row.nipAssignMstSeq }
+          const res = await apiRequestModel(ipmsModelApis.viewDetailAsgnIPMst, tbIpAssignMstVo)
+          this.ipAssignVo = res?.result?.data
+        } catch (error) {
+          console.error(error)
+        } finally {
+          this.closeLoading(target)
+        }
+    },
+    onClose() { /* this.ipAssignVo = []  */ },
     handleAssignIp() {
       this.closeOnClickModal = true
       this.$refs.ModalIpAssign.open({ row: this.ipAssignVo, type: 'asgnRoute' })
@@ -210,12 +229,14 @@ export default {
        try {
         res = await apiRequestJson(ipmsJsonApis.updateAsgnIPMst, tbIpAssignMstComplexVo)
           if (res.commonMsg === 'SUCCESS') {
-            this.$message({ message: 'IP블록 반납이 정상적으로 처리되었습니다.', type: 'success' })
+            onMessagePopup(this, 'IP블록 반납이 정상적으로 처리되었습니다.')
             this.$emit('reload')
             this.close()
+          } else {
+            onMessagePopup(this, res.commonMsg)
           }
-      } catch (error) {
-        this.$message.error({ message: `${res.commonMsg}` })
+       } catch (error) {
+        console.error(error)
       }
     },
      async fnScommentUpdateClick() {
@@ -227,12 +248,14 @@ export default {
       try {
          res = await apiRequestJson(ipmsJsonApis.updateScommentAsgnIPMst, tbIpAssignMstComplexVo)
         if (res.commonMsg === 'SUCCESS') {
-          this.$message('비고 수정이 정상적으로 처리되었습니다.')
+          onMessagePopup(this, '비고 수정이 정상적으로 처리되었습니다.')
           this.$emit('reload')
           this.close()
+        } else {
+           onMessagePopup(this, res.commonMsg)
         }
       } catch (error) {
-        this.$message.error({ message: `${res.commonMsg}` })
+        console.error(error)
       }
     },
   },
