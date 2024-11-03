@@ -5,56 +5,58 @@
     </th>
     <!-- LEVEL 1 -->
     <td class="textflex">
-      <el-select
-        v-model="localValue[key1]"
-        :multiple="isMultiByLvl(1)"
-        collapse-tags
-        size="small"
-        @change="()=> handleChangeLvl1(true)"
-      >
-        <el-option v-if="isAllLvl1" label="전체" value=""><span class="w-100 h-100 d-inline-block" @click="toggleAll(1)">전체</span></el-option>
-        <el-option
-          v-for="(option, i) in lvlOptions[key1]"
-          :key="i"
-          :label="option.label"
-          :value="option.value"
-        />
-      </el-select>
-      <!-- LEVEL 2 -->
-      <el-select
-        v-if="[2, 3].includes(lvl)"
-        v-model="localValue[key2]"
-        :disabled="localValue[key1] === '' || localValue[key1] === 'ALL'"
-        :multiple="isMultiByLvl(2)"
-        collapse-tags
-        size="small"
-        @change="handleChangeLvl2"
-      >
-        <el-option label="전체" value=""><span class="w-100 h-100 d-inline-block" @click="toggleAll(2)">전체</span></el-option>
-        <el-option
-          v-for="(option, i) in lvlOptions[key2]"
-          :key="i"
-          :label="option.label"
-          :value="option.value"
-        />
-      </el-select>
-      <!-- LEVEL 3 -->
-      <el-select
-        v-if="lvl === 3"
-        v-model="localValue[key3]"
-        :disabled="isDisabledLvlThree"
-        :multiple="isMultiByLvl(3)"
-        collapse-tags
-        size="small"
-        @change="handleChangeLvl3"
-      >
-        <el-option
-          v-for="(option, i) in lvlOptions[key3]"
-          :key="i"
-          :label="option.label"
-          :value="option.value"
-        />
-      </el-select>
+      <div>
+        <el-select
+          v-model="localValue[key1]"
+          :multiple="isMultiByLvl(1)"
+          collapse-tags
+          size="small"
+          @change="()=> handleChangeLvl1(true)"
+        >
+          <el-option v-if="isAllLvl1" label="전체" value=""><span class="w-100 h-100 d-inline-block" @click="toggleAll(1)">전체</span></el-option>
+          <el-option
+            v-for="(option, i) in lvlOptions[key1]"
+            :key="i"
+            :label="option.label"
+            :value="option.value"
+          />
+        </el-select>
+        <!-- LEVEL 2 -->
+        <el-select
+          v-if="[2, 3].includes(lvl)"
+          v-model="localValue[key2]"
+          :disabled="localValue[key1] === '' || localValue[key1] === 'ALL'"
+          :multiple="isMultiByLvl(2)"
+          collapse-tags
+          size="small"
+          @change="handleChangeLvl2"
+        >
+          <el-option label="전체" value=""><span class="w-100 h-100 d-inline-block" @click="toggleAll(2)">전체</span></el-option>
+          <el-option
+            v-for="(option, i) in lvlOptions[key2]"
+            :key="i"
+            :label="option.label"
+            :value="option.value"
+          />
+        </el-select>
+        <!-- LEVEL 3 -->
+        <el-select
+          v-if="lvl === 3"
+          v-model="localValue[key3]"
+          :disabled="isDisabledLvlThree"
+          :multiple="isMultiByLvl(3)"
+          collapse-tags
+          size="small"
+          @change="handleChangeLvl3"
+        >
+          <el-option
+            v-for="(option, i) in lvlOptions[key3]"
+            :key="i"
+            :label="option.label"
+            :value="option.value"
+          />
+        </el-select>
+      </div>
     </td>
   </fragment>
 </template>

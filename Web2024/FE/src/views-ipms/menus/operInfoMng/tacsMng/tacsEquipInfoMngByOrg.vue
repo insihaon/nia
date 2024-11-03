@@ -21,6 +21,7 @@
         :prop-max-select="1"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
+        :prop-enabled-excel-down="false"
         :prop-on-click="handleClickCell"
         :prop-on-page-change="handleChangeCurPage"
         :prop-on-page-size-change="handleChangeCurPage"

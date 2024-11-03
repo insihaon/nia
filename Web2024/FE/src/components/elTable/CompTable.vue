@@ -11,7 +11,7 @@ copyright notice above does not evidence any actual or * intended publication of
           <span class="countNum">( <slot name="add-count" /> 총 {{ propIsPagination != false ? (propPaginationData.total || 0).toLocaleString() : propData.length }} 건 )</span>
           <i class="el-icon-s-tools ml-1 mt-1" @click="fn_click_settings" />
         </div>
-        <el-button type="info" size="mini" icon="el-icon-download" round @click="$emit('savedExcel')">엑셀 파일로 저장</el-button>
+        <el-button v-if="propEnabledExcelDown" type="info" size="mini" icon="el-icon-download" round @click="$emit('savedExcel')">엑셀 파일로 저장</el-button>
       </div>
     </div>
     <el-table
@@ -168,6 +168,7 @@ export default {
     propGridMenuId: { type: String, default: '' },
     propGridIndx: { type: Number, default: 1 },
     propSetColunm: { type: Boolean, default: false },
+    propEnabledExcelDown: { type: Boolean, default: true },
   },
   data() {
     return {

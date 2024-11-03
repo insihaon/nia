@@ -4,20 +4,22 @@
       {{ label }}
     </th>
     <td>
-      <el-select
-        v-model="value"
-        collapse-tags
-        size="small"
-        @change="handleChange()"
-      >
-        <el-option label="전체" value="" />
-        <el-option
-          v-for="(option, i) in options"
-          :key="i"
-          :label="option.name"
-          :value="option.code"
-        />
-      </el-select>
+      <div>
+        <el-select
+          v-model="value"
+          collapse-tags
+          size="small"
+          @change="handleChange()"
+        >
+          <el-option label="전체" value="" />
+          <el-option
+            v-for="(option, i) in options"
+            :key="i"
+            :label="option.name"
+            :value="option.code"
+          />
+        </el-select>
+      </div>
     </td>
   </fragment>
 </template>

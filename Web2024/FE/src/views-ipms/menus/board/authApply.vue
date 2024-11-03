@@ -19,6 +19,7 @@
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
         :prop-on-click="onClcikRow"
+        :prop-enabled-excel-down="false"
       >
         <template slot="text-description">
           <span>

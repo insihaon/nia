@@ -20,10 +20,10 @@
             class="w-100 d-flex"
             @update-value="setParameterKey"
           />
-          <td>
-            <label>재직상태</label>
-          </td>
           <th>
+            <label>재직상태</label>
+          </th>
+          <td>
             <el-select
               v-model="statusValue"
               collapse-tags
@@ -36,7 +36,7 @@
                 :value="option.value"
               />
             </el-select>
-          </th>
+          </td>
           <th>
             <label>사용자명</label>
           </th>
@@ -70,6 +70,7 @@
         :prop-is-check-box="false"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
+        :prop-enabled-excel-down="false"
       >
         <template slot="text-description">
           <span>
