@@ -20,6 +20,7 @@
         :prop-grid-indx="1"
         :prop-on-click="onClcikRow"
         :prop-on-select="handleClickTableCheck"
+        :prop-enabled-excel-down="false"
       >
         <template slot="text-description">
           <span>

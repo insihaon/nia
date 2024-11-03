@@ -1,31 +1,53 @@
 <template>
-  <div class="searchOptionWrap">
-    <table>
-      <tr v-for="(componentRow, index) in chunkedList" :key="index">
-        <template v-for="(component, itemIndex) in componentRow">
-          <component
-            :is="component.component"
-            v-if="component.component"
-            :ref="component.key"
-            :key="itemIndex"
-            v-bind.sync="component.props"
-            @set-value="value => onUpdateOrgValue(index, value)"
-            @update-value="keyValues => onUpdateKeyValue(keyValues)"
-          />
-        </template>
-        <td v-if="(index + 1) === chunkedList.length && getEmptyColNum > 0" :colspan="getEmptyColNum * 2"></td>
-      </tr>
-      <tr>
-        <td colspan="6">
-          <div class="searchBtnWrap">
-            <SearchConditionSaver v-if="isShowProfile" ref="SearchConditionSaver" :parameter="requestParameter" :prop-name="propName" />
-            <el-button type="info" icon="el-icon-refresh" size="mini" style="margin-left:0px" round @click="handleRefresh()">초기화</el-button>
-            <el-button type="primary" icon="el-icon-search" size="mini" round @click="handleSearch()">조회</el-button>
-          </div>
-        </td>
-      </tr>
-    </table>
-  </div>
+  <table class="searchTable">
+    <tr :class="{ 'active': isEnabledCondition }">
+      <td>
+        <div class="searchOptionWrap">
+          <table>
+            <tr v-for="(componentRow, index) in chunkedList" :key="index">
+              <template v-for="(component, itemIndex) in componentRow">
+                <component
+                  :is="component.component"
+                  v-if="component.component"
+                  :ref="component.key"
+                  :key="itemIndex"
+                  v-bind.sync="component.props"
+                  @set-value="value => onUpdateOrgValue(index, value)"
+                  @update-value="keyValues => onUpdateKeyValue(keyValues)"
+                />
+              </template>
+              <td v-if="(index + 1) === chunkedList.length && getEmptyColNum > 0" :colspan="getEmptyColNum * 2"></td>
+            </tr>
+          </table>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div class="searchBtnWrap" :style="{'border-top': isEnabledCondition ? '0px': '1px solid #134d65' }">
+          <SearchConditionSaver v-if="isShowProfile" ref="SearchConditionSaver" :parameter="requestParameter" :prop-name="propName" />
+          <el-button type="info" icon="el-icon-refresh" size="mini" style="margin-left:0px" round @click="handleRefresh()">초기화</el-button>
+          <el-button type="primary" icon="el-icon-search" size="mini" round @click="handleSearch()">조회</el-button>
+          <el-button
+            :class="{ 'slideUp': isEnabledCondition, 'slideDown': !isEnabledCondition }"
+            class="expandToggleBtn"
+            size="small"
+            type="warning"
+            plain
+            round
+            @click="isEnabledCondition = !isEnabledCondition"
+          >
+            <i class="mr-1" :class="{ 'el-icon-arrow-up':isEnabledCondition, 'el-icon-arrow-down': !isEnabledCondition }" />
+            <div style="display: grid;min-height: 12px;">
+              <div class="reduce">접기</div>
+              <div class="expand">펼치기</div>
+            </div>
+            <!-- {{ isEnabledCondition ? '접기' : '펼치기' }} -->
+          </el-button>
+        </div>
+      </td>
+    </tr>
+  </table>
 </template>
 <script>
 import { Base } from '@/min/Base.min'
@@ -58,6 +80,8 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      show: false,
+      isEnabledCondition: true,
       dynamicComponents: [],
       defaultRequestParameter: {},
       requestParameter: {},
@@ -75,7 +99,7 @@ export default {
       return chunkedArray
     },
     getEmptyColNum() {
-      if (this.dynamicComponents.length !== 1 && (this.dynamicComponents.length % this.columnsPerRow !== 0)) {
+      if (this.dynamicComponents.length > this.columnsPerRow && (this.dynamicComponents.length % this.columnsPerRow !== 0)) {
         return this.columnsPerRow - (this.dynamicComponents.length % this.columnsPerRow)
       } else {
         return 0
@@ -152,4 +176,44 @@ export default {
   },
 }
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.reduce/* 접기 */ {
+  min-width:31px;display: inline-block;transition: all .6s;
+}
+.expand/* 펼치기 */{
+  min-width:31px;display: inline-block;transform: translateY(20px);transition: all .6s;
+}
+.expandToggleBtn.el-button{
+  min-width: 80px;display: flex;justify-content: center;
+}
+::v-deep.expandToggleBtn.el-button span{
+  display: flex;
+}
+.el-button.slideUp{
+  .reduce{
+    transform: translateY(0px);opacity: 1;
+  }
+  .expand{
+    position: absolute;transform: translateY(20px);opacity: 0;
+  }
+}
+.el-button.slideDown {
+  .reduce{
+    position: absolute;transform: translateY(-20px);opacity:0;
+  }
+  .expand{
+    transform: translateY(0px);opacity:1;
+  }
+}
+.searchOptionWrap {
+  max-height: 0px;
+  overflow: hidden;
+  box-sizing: border-box;
+  transition: max-height 0.5s ease, overflow 0.5s;
+
+}
+.active .searchOptionWrap {
+  max-height: 400px;
+  transition: max-height 1s ease, overflow 0.8s;
+}
+</style>

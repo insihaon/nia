@@ -4,19 +4,21 @@
       공인/사설
     </th>
     <td>
-      <el-select
-        v-model="value"
-        size="small"
-        @change="handleChange()"
-      >
-        <el-option v-if="isAllOption" value="" label="전체"></el-option>
-        <el-option
-          v-for="(option, i) in options"
-          :key="i"
-          :label="option.label"
-          :value="option.value"
-        />
-      </el-select>
+      <div>
+        <el-select
+          v-model="value"
+          size="small"
+          @change="handleChange()"
+        >
+          <el-option v-if="isAllOption" value="" label="전체"></el-option>
+          <el-option
+            v-for="(option, i) in options"
+            :key="i"
+            :label="option.label"
+            :value="option.value"
+          />
+        </el-select>
+      </div>
     </td>
   </fragment>
 </template>
