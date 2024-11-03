@@ -4,7 +4,7 @@
       ref="searchCondition"
       :prop-name="name"
       :component-keys="componentList"
-      @handle-search="onloadIpAssign"
+      @handle-search="handleSearch"
     />
     <el-col ref="tableContainer" :span="24">
       <compTable
@@ -12,14 +12,18 @@
         style="height: calc(100% - 80px)"
         :prop-name="name"
         :prop-table-height="'100%'"
-        :prop-data="ipAssignDatas"
+        :prop-data="pagination.data"
+        :prop-pagination-data.sync="pagination"
         :prop-column="tableColumns"
         :prop-is-pagination="true"
         :prop-is-check-box="true"
         :prop-on-select="handleClickTableCheck"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
-        @update:propCellClick="handleClickItem"
+        :prop-max-select="pagination.data.length"
+        :prop-on-page-change="handleChangeCurPage"
+        :prop-on-page-size-change="handleChangeCurPage"
+        :prop-on-dbl-click="fnViewClickAsgnIPMst"
         @savedExcel="handleClickExcelDownloadBtn"
       >
         <template slot="text-description">
@@ -35,18 +39,13 @@
           </div>
         </template>
       </comptable>
-      <!-- 분할 -->
-      <ModalIpBlockDivision ref="ModalIpBlockDivision" @reload="onloadIpAssign()" />
-      <!-- 배정 상세 -->
-      <ModalIpAssignDetail ref="ModalIpAssignDetail" @reload="onloadIpAssign()" />
-      <!-- 배정 처리 -->
-      <ModalIpAssign ref="ModalIpAssign" @reload="onloadIpAssign()" />
-      <ModalCheckTacsIpBlock ref="ModalCheckTacsIpBlock" />
-      <!-- IP블록병합 -->
-      <ModalIpAssignMerge ref="ModalIpAssignMerge" @reload="fnViewListIpAllocMst($refs.searchCondition.requestParameter)" />
-      <!-- 라우팅 중복 개수 -->
-      <ModalDetailSummary ref="ModalDetailSummary" />
     </el-col>
+    <ModalIpBlockDivision ref="ModalIpBlockDivision" @reload="onloadIpAssign($refs.searchCondition.requestParameter)" />
+    <ModalIpAssignDetail ref="ModalIpAssignDetail" @reload="onloadIpAssign($refs.searchCondition.requestParameter)" />
+    <ModalIpAssign ref="ModalIpAssign" @reload="onloadIpAssign($refs.searchCondition.requestParameter)" />
+    <ModalCheckTacsIpBlock ref="ModalCheckTacsIpBlock" />
+    <ModalIpAssignMerge ref="ModalIpAssignMerge" @reload="fnViewListIpAllocMst($refs.searchCondition.requestParameter)" />
+    <ModalDetailSummary ref="ModalDetailSummary" />
   </el-row>
 </template>
 <script>
@@ -75,6 +74,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      pagination: this.setDefaultPagination(),
       componentList: [
         { key: 'SsvcLineType', props: { lvl: 3, multi: [2] } },
         { key: 'SipCreateType', props: {} },
@@ -140,9 +140,7 @@ export default {
       ],
 
       ipAssignDatas: [],
-      selectedTable: [],
-      ipAssignVo: null
-
+      selectedRows: [],
     }
   },
   watch: {
@@ -164,45 +162,47 @@ export default {
     }
   },
   mounted () {
-    // this.$nextTick(() => {
-    //   this.onloadIpAssign()
-    // })
   },
   methods: {
-    async onloadIpAssign(requestParameter) {
-      const params = requestParameter ?? this.$refs.searchCondition.requestParameter
+    handleSearch(requestParameter) {
+      this.pagination.currentPage = 1
+      this.onloadIpAssign(requestParameter)
+    },
+    async onloadIpAssign(requestParameter = null) {
+      const parameter = requestParameter ?? this.$refs.searchCondition.requestParameter
+      const target = ({ vue: this.$refs.compTable })
+      const { pageSize: pageUnit, currentPage: pageIndex } = this.pagination
+      Object.assign(parameter, { pageUnit, pageIndex })
       try {
-        const res = await apiRequestModel(ipmsModelApis.viewListAsgnIPMst, params)
-        this.ipAssignDatas = res?.result.data
+        this.openLoading(target)
+        const res = await apiRequestModel(ipmsModelApis.viewListAsgnIPMst, parameter)
+        this.pagination.data = res.result.data ?? []
+        this.pagination.total = res.result.totalCount
       } catch (error) {
         console.error(error)
+      } finally {
+        this.closeLoading(target)
       }
+    },
+    handleChangeCurPage(v) {
+      if (v) this.pagination.currentPage = v
+      this.onloadIpAssign()
     },
     handleClickTableCheck(all, cur) {
-      this.selectedTable = all
+      this.selectedRows = all
     },
-    handleClickItem(row) {
-      if (row.column.property === 'nsummaryCnt' || row.column.property === 'nbitmask') return
-      const selectedRow = row.row
-      this.fnViewDetailAsgnIPMst(selectedRow)
+    //  handleClickCell(params) { /* 더블클릭시 this.selectedRow 저장되는 이슈로 임시 주석처리 */
+    //   this.selectedRows = [params?.row] || []
+    // },
+    fnViewClickAsgnIPMst(row, column) {
+      if (column?.property === 'nsummaryCnt' || column?.property === 'nbitmask') return
+      this.fnViewDetailAsgnIPMst(row)
     },
     async fnViewDetailAsgnIPMst(row) {
-      try {
-        const tbIpAssignMstVo = { nipAssignMstSeq: row.nipAssignMstSeq }
-        const res = await apiRequestModel(ipmsModelApis.viewDetailAsgnIPMst, tbIpAssignMstVo)
-        this.ipAssignVo = res?.result?.data
-      } catch (error) {
-        console.error(error)
-      }
-      if (this.ipAssignVo) {
-        this.onClcikRow(this.ipAssignVo)
-      }
-    },
-    onClcikRow(row) {
       this.$refs.ModalIpAssignDetail.open({ row })
     },
     handleClickIpBlockCheck() {
-      const rows = this.selectedTable
+      const rows = this.selectedRows
       if (rows.length === 0) {
         onMessagePopup(this, 'IP블럭 중복체크할 대상이 없습니다. 선택해주세요.')
         return
@@ -223,7 +223,7 @@ export default {
       this.$refs.ModalCheckTacsIpBlock.open({ row: rows[0] })
     },
     fnUpdateBtnClick() {
-      const rows = this.selectedTable
+      const rows = this.selectedRows
       if (rows.length === 0) {
         onMessagePopup(this, '배정할 대상이 없습니다.')
         return
@@ -250,12 +250,12 @@ export default {
 
         const tbIpAssignMstListVo = { tbIpAssignMstVos: [] }
          rows.forEach(row => {
-          tbIpAssignMstListVo.tbIpAssignMstVos.push({ nipAssignMstSeq: row.nipAssignMstSeq })
+          tbIpAssignMstListVo.tbIpAssignMstVos.push({ ...row })
         })
         this.$refs.ModalIpAssign.open({ tbIpAssignMstListVo })
     },
     handleClickMergeInsert() {
-      const rows = this.selectedTable
+      const rows = this.selectedRows
 
       if (rows.length === 0) {
         onMessagePopup(this, '병합할 대상이 없습니다. 선택해주세요.')

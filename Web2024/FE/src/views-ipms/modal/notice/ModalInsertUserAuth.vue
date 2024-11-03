@@ -173,6 +173,7 @@ import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
 import { apiRequestJson, ipmsJsonApis, apiRequestModel, ipmsModelApis } from '@/api/ipms'
 import { mapState } from 'vuex'
+import { onMessagePopup } from '@/utils/index'
 import _ from 'lodash'
 
 const routeName = 'ModalInsertUserAuth.'
@@ -187,7 +188,8 @@ export default {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       selectedRow: null,
-      resultListVo: {},
+      resultListVo: [],
+      resultDetailListVo: [],
       ssvcLineTypeNmOp: [
         { label: 'KORNET', value: 'CL0001' },
         { label: 'PREMIUM', value: 'CL0002' },
@@ -210,7 +212,7 @@ export default {
         { label: '노드운용자', value: 'UR0005' },
       ],
        selectedUserAuth: {
-        suserNm: '', // 사용자명
+        suserNm: this.$store.state.user.info.suserNm, // 사용자명
         suserGradeNm: '', // 권한등급
         ssvcLineTypeNm: '', // 계위
         ssvcGroupNm: '', // 본부
@@ -220,7 +222,8 @@ export default {
       addTableData: false,
       resultListDetailVo: [],
       viewModel: null,
-      isDeleteMode: false
+      isDeleteMode: false,
+      totalCount: 0
     }
   },
   computed: {
@@ -283,13 +286,32 @@ export default {
       this.domElement.maxWidth = 1000
     },
     onOpen(model, actionMode) {
+       setTimeout(() => {
+        if (model.type) {
+         this.fnViewInsertGrant(model.row)
+        }
+      }, 10)
+
       this.viewModel = model.row
-      this.onSetValue()
     },
-    onSetValue() {
-      this.resultListVo = _.cloneDeep(this.viewModel.resultListVo)
-      this.resultListDetailVo = _.cloneDeep(this.viewModel.resultListVo.tbUserAuthTxnVos)
-      this.suserGradeCode = _.cloneDeep(this.viewModel.resultListVo.suserGradeCd)
+    async fnViewInsertGrant(row) {
+      const target = ({ vue: this.$refs.content })
+      try {
+        this.openLoading(target)
+         const tbUserAuthVo = {
+            suserId: this.$store.state.user.info.suserId,
+            typeFlag: 'U'
+         }
+         const res = await apiRequestModel(ipmsModelApis.viewInsertUserAuthSubs, tbUserAuthVo)
+          this.resultListVo = res.result.data
+          this.resultDetailListVo = res.result.data
+          this.totalCount = res.result.totalCount
+          this.suserGradeCode = res.result.data[0].suserGradeCd
+       } catch (error) {
+         console.error(error)
+       } finally {
+         this.closeLoading(target)
+       }
     },
     async handleChangeLvl1() {
       const tbLvlBasVo = { ssvcLineTypeCd: this.ssvcLineTypeCd }
@@ -318,128 +340,163 @@ export default {
       })
     },
 
-    fnUserAuthDupCheck() { /* 권한 추가 */
-    if (this.resultListVo.tbUserAuthTxnVos.length === 0) {
-         const selectResultVal = this.resultListVo.tbUserAuthTxnVos.forEach(v => {
-            v.suserGradeNm = this.selectedUserAuth.suserGradeNm
-            v.ssvcLineTypeNm = this.selectedUserAuth.ssvcLineTypeNm
-            v.ssvcGroupNm = this.selectedUserAuth.ssvcGroupNm
-            v.ssvcObjNm = this.selectedUserAuth.ssvcObjNm
-      })
-    } else {
-       if (this.suserGradeCode === 'UR0003') {
-          if (this.ssvcLineTypeCd === '' || this.ssvcLineTypeCd === null) {
-            this.$message('서비스망을 입력하세요')
-            return
-          }
-        } else if (this.suserGradeCode === 'UR0004') {
-          if (this.ssvcLineTypeCd === '' || this.ssvcLineTypeCd === null) {
-            this.$message('서비스망을 입력하세요')
-            return
-          }
-
-          if (this.ssvcGroupCd === '' || this.ssvcGroupCd === null) {
-            this.$message('본부를 입력하세요')
-            return
-          }
-        } else if (this.suserGradeCode === 'UR0005') {
-          if (this.ssvcLineTypeCd === '' || this.ssvcLineTypeCd === null) {
-            this.$message('서비스망을 입력하세요')
-            return
-          }
-
-          if (this.ssvcGroupCd === '' || this.ssvcGroupCd === null) {
-            this.$message('본부를 입력하세요')
-            return
-          }
-
-          if (this.ssvcObjCd === '' || this.ssvcObjCd === null) {
-            this.$message('노드를 입력하세요')
-            return
-          }
+   fnUserAuthDupCheck() {
+    // 1. 테이블에 항목이 없는 경우
+    if (this.resultListVo.length === 0) {
+      const newRow = {
+            suserNm: this.selectedUserAuth.suserNm,
+            suserGradeNm: this.selectedUserAuth.suserGradeNm,
+            ssvcLineTypeNm: this.selectedUserAuth.ssvcLineTypeNm,
+            ssvcGroupNm: this.selectedUserAuth.ssvcGroupNm,
+            ssvcObjNm: this.selectedUserAuth.ssvcObjNm,
+            suserGradeCd: this.suserGradeCode
         }
+        this.resultListVo.push(newRow)
+        return
+    }
 
-        const isCheck = this.resultListVo.tbUserAuthTxnVos.every(v =>
-          (v.suserGradeCd ?? null) === (this.suserGradeCode ?? null) &&
-          (v.ssvcLineTypeCd ?? null) === (this.ssvcLineTypeCd ?? null) &&
-          (v.ssvcGroupCd ?? null) === (this.ssvcGroupCd ?? null) &&
-          (v.ssvcObjCd ?? null) === (this.ssvcObjCd ?? null)
-        )
-
-        if (isCheck) {
-          this.$message('기존에 추가된 권한입니다. 다시 선택하여 추가하세요.')
-          return
+    // 2. 권한에 따른 필수 항목 체크
+    if (this.suserGradeCode === 'UR0003' && !this.ssvcLineTypeCd) {
+        onMessagePopup(this, '서비스망을 입력하세요')
+        return
+    } else if (this.suserGradeCode === 'UR0004') {
+        if (!this.ssvcLineTypeCd) {
+            onMessagePopup(this, '서비스망을 입력하세요')
+            return
+        }
+        if (!this.ssvcGroupCd) {
+            onMessagePopup(this, '본부를 입력하세요')
+            return
+        }
+    } else if (this.suserGradeCode === 'UR0005') {
+        if (!this.ssvcLineTypeCd) {
+            onMessagePopup(this, '서비스망을 입력하세요')
+            return
+        }
+        if (!this.ssvcGroupCd) {
+            onMessagePopup(this, '본부를 입력하세요')
+            return
+        }
+        if (!this.ssvcObjCd) {
+            onMessagePopup(this, '노드를 입력하세요')
+            return
         }
     }
 
-    if (this.resultListVo.suserGradeCd !== this.suserGradeCode) {
-      this.$confirm(
-        `선택한 권한등급이 이전 권한등급과 다릅니다.
-        다른 권한등급 선택 시 이전 권한이 모두 삭제됩니다.
-        변경하시겠습니까?`,
-        '확인',
-        {
-          confirmButtonText: '확인',
-          cancelButtonText: '취소',
-        }
-        ).then(async () => {
-          const selectResultVal = this.resultListVo.tbUserAuthTxnVos.forEach(v => {
-            v.suserGradeNm = this.selectedUserAuth.suserGradeNm
-            v.ssvcLineTypeNm = this.selectedUserAuth.ssvcLineTypeNm
-            v.ssvcGroupNm = this.selectedUserAuth.ssvcGroupNm
-            v.ssvcObjNm = this.selectedUserAuth.ssvcObjNm
-          })
+    // 3. 중복 확인
+    const isCheck = this.resultListVo.some(v =>
+        (v.suserGradeCd ?? null) === (this.suserGradeCode ?? null) &&
+        (v.ssvcLineTypeCd ?? null) === (this.ssvcLineTypeCd ?? null) &&
+        (v.ssvcGroupCd ?? null) === (this.ssvcGroupCd ?? null) &&
+        (v.ssvcObjCd ?? null) === (this.ssvcObjCd ?? null)
+    )
+
+    if (isCheck) {
+        onMessagePopup(this, '기존에 추가된 권한입니다. 다시 선택하여 추가하세요.')
+        return
+    }
+
+    // 4. 권한 등급이 다를 경우 사용자에게 확인
+    if (this.resultDetailListVo[0].suserGradeCd !== this.suserGradeCode) {
+        this.$confirm(
+            `선택한 권한등급이 이전 권한등급과 다릅니다.
+            다른 권한등급 선택 시 이전 권한이 모두 삭제됩니다.
+            변경하시겠습니까?`,
+            '확인',
+            {
+              confirmButtonText: '확인',
+              cancelButtonText: '취소',
+            }
+        ).then(() => {
+          this.resultListVo = []
+           const newRow = {
+              suserNm: this.selectedUserAuth.suserNm,
+              suserGradeNm: this.selectedUserAuth.suserGradeNm,
+              ssvcLineTypeNm: this.selectedUserAuth.ssvcLineTypeNm,
+              ssvcGroupNm: this.selectedUserAuth.ssvcGroupNm,
+              ssvcObjNm: this.selectedUserAuth.ssvcObjNm,
+              suserGradeCd: this.suserGradeCode
+            }
+            this.resultListVo.push(newRow)
         }).catch(() => {
-          return false
+            return
         })
-      }
-    },
+    } else {
+        // 권한 등급이 동일할 경우 바로 row 추가
+        const newRow = {
+          suserNm: this.selectedUserAuth.suserNm,
+          suserGradeNm: this.selectedUserAuth.suserGradeNm,
+          ssvcLineTypeNm: this.selectedUserAuth.ssvcLineTypeNm,
+          ssvcGroupNm: this.selectedUserAuth.ssvcGroupNm,
+          ssvcObjNm: this.selectedUserAuth.ssvcObjNm,
+          suserGradeCd: this.suserGradeCode
+        }
+        this.resultListVo.push(newRow)
+    }
+},
     fnDeleteUserAuthPrev(index) { /* 등록예정 권한 정보 삭제 */
-      // this.resultListVo.tbUserAuthTxnVos.splice(index, 1)
+      this.resultListVo.splice(index, 1)
       this.isDeleteMode = true
     },
     async fnUserAuthSave() { /* 등록 */
-      if (this.resultListVo.tbUserAuthTxnVos.length === 0) {
-        this.$message('등록할 대상이 없습니다.')
+      if (this.resultListVo.length === 0) {
+        onMessagePopup(this, '등록할 대상이 없습니다.')
         return
       }
+      const target = ({ vue: this.$refs.content })
       let res
       try {
+        this.openLoading(target)
          const tbUserAuthListVo = {
           tbUserAuthTxnVos: [],
           suserId: this.resultListVo.suserId,
           suserGradeCd: this.resultListVo.suserGradeCd
         }
 
-      this.resultListVo.tbUserAuthTxnVos.forEach((item) => {
+      this.resultListVo.forEach((item) => {
         const tbUserAuthVo = {
-          suserNm: this.resultListVo.suserNm,
-          suserId: this.resultListVo.suserId,
+          suserNm: this.$store.state.user.info.suserNm,
+          suserId: this.$store.state.user.info.suserId,
           suserGradeCd: item.suserGradeCd,
           smodifyId: this.$store.state.user.info.suserId,
           screateId: this.$store.state.user.info.suserId
         }
 
-        if (this.suserGradeCd !== 'UR0001') {
+        // if (this.suserGradeCd !== 'UR0001') {
           tbUserAuthVo.tbLvlBasVo = {
-            ssvcLineTypeCd: this.ssvcLineTypeCd ?? '000000',
-            ssvcGroupCd: this.ssvcGroupCd ?? '000000',
-            ssvcObjCd: this.ssvcObjCd ?? '000000'
+            /* 추가한 row value set */
+            // ssvcLineTypeCd: this.ssvcLineTypeNmOp.find((item) => item.value === this.resultListVo[0].ssvcLineTypeNm
+            // )?.value ?? '000000',
+            // 각 항목을 찾아 값이 없을 경우 기본값 '000000'으로 설정
+             ssvcLineTypeCd: this.ssvcLineTypeNmOp.find(
+                (item) => item.label === this.resultListVo[0].ssvcLineTypeNm
+            )?.value ?? '000000',
+
+             ssvcGroupCd: this.ssvcGroupNmOp.find(
+                (item) => item.label === this.resultListVo[0].ssvcGroupNm
+            )?.value ?? '000000',
+
+             ssvcObjCd: this.ssvcObjNmOp.find(
+                (item) => item.label === this.resultListVo[0].ssvcObjNm
+            )?.value ?? '000000'
           }
-        }
+        // }
 
       tbUserAuthListVo.tbUserAuthTxnVos.push(tbUserAuthVo)
     })
         res = await apiRequestJson(ipmsJsonApis.insertUserAuthTxnSub, tbUserAuthListVo)
         if (res.commonMsg === 'SUCCESS') {
-          this.$message('권한 신청이 정상적으로 등록되었습니다.')
+          onMessagePopup(this, '권한 신청이 정상적으로 등록되었습니다.')
           this.$emit('reload')
           this.close()
+        } else {
+          onMessagePopup(this, res.commonMsg)
         }
       } catch (error) {
-        this.$message.error({ message: `${res.commonMsg}` })
         console.error(error)
-      }
+      } finally {
+         this.closeLoading(target)
+       }
     },
     onClose() {
     },
