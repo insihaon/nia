@@ -15,7 +15,7 @@
     class="ipms-dialog"
     :class="{ [name]: true }"
   >
-    <div class="popupContentTable">
+    <div ref="content" class="popupContentTable">
       <table>
         <colgroup>
           <col width="20%" /><col width="30%" /><col width="20%" /><col width="30%" />
@@ -57,7 +57,7 @@
           <tr>
             <th>작성자</th>
             <td>
-              <el-input v-model="resultVo.rboardScreateId" size="small" disabled />
+              <el-input v-model="resultVo.sUserNm" class="txt w98" size="mini" readonly />
             </td>
             <th>희망완료일</th>
             <td>
@@ -137,6 +137,7 @@ import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
 import { apiRequestModel, ipmsModelApis, ipmsJsonApis, apiRequestJson } from '@/api/ipms'
 import { mapState } from 'vuex'
+import { onMessagePopup } from '@/utils'
 
 const routeName = 'ModalReqDetail'
 
@@ -175,8 +176,8 @@ export default {
         { label: '전체', value: '' },
         { label: '요청사항 접수', value: 'RES005' },
         { label: '접수 반려', value: 'RES006' },
-        { label: '조치 진행 중', value: 'RES006' },
-        { label: '조치 완료', value: 'RES007' },
+        { label: '조치 진행 중', value: 'RES007' },
+        { label: '조치 완료', value: 'RES008' },
       ],
       selectedFile: ''
     }
@@ -199,10 +200,29 @@ export default {
     },
     onOpen(model, actionMode) {
       this.viewType = model.type
-      this.resultVo = model.row
-      if (this.viewType === 'create') {
-       this.resultVo = {}
+      if (model.row) {
+         setTimeout(() => {
+           this.fnViewDetailReq(model.row)
+         }, 10)
+      } else {
+        this.resultVo = {}
+        this.resultVo.sUserNm = this.$store.state.user.info.suserNm
       }
+    },
+    async fnViewDetailReq(row) {
+      const target = ({ vue: this.$refs.content })
+      const ReqBoardVo = {
+      seq: row.seq
+      }
+        try {
+          this.openLoading(target)
+          const res = await apiRequestModel(ipmsModelApis.viewDetailReq, ReqBoardVo)
+          this.resultVo = res.result.data
+        } catch (error) {
+          console.error(error)
+        } finally {
+          this.closeLoading(target)
+        }
     },
     handleFileChange(file, fileList) {
       const allowedExtensions = ['pdf', 'jpg', 'png', 'txt', 'doc', 'ppt', 'xls', 'hwp', 'xlsx', 'pptx']
@@ -210,70 +230,76 @@ export default {
       const fileExtension = fileName.split('.').pop().toLowerCase()
 
       if (!allowedExtensions.includes(fileExtension)) {
-        this.$message.error('등록 할 수 없는 파일명입니다.')
+        onMessagePopup(this, '등록 할 수 없는 파일명입니다.')
         this.$refs.upload.clearFiles()
         return
       }
       this.selectedFile = file.raw
     },
-   async fnUpdateSubmit() {
+    async fnUpdateSubmit() {
+     const target = ({ vue: this.$refs.content })
       if (this.resultVo.rboardTitle === '' || this.resultVo.rboardTitle === null) {
-        this.$message('요청제목이 입력되지 않았습니다.')
+        onMessagePopup(this, '요청제목이 입력되지 않았습니다.')
         return
       }
 
        if (this.resultVo.rboardDivision === '' || this.resultVo.rboardDivision === null) {
-        this.$message('요청사항 구분이 선택되지 않았습니다.')
+        onMessagePopup(this, '요청사항 구분이 선택되지 않았습니다.')
         return
       }
 
        if (this.resultVo.rboardDesireDate === '' || this.resultVo.rboardDesireDate === null) {
-        this.$message('희망완료일자가 입력되지 않았습니다.')
+        onMessagePopup(this, '희망완료일자가 입력되지 않았습니다.')
         return
       }
 
        if (this.resultVo.rboardPurposeRequest === '' || this.resultVo.rboardPurposeRequest === null) {
-        this.$message('요청목적이 입력되지 않았습니다.')
+        onMessagePopup(this, '요청목적이 입력되지 않았습니다.')
         return
       }
 
        if (this.resultVo.rboardImportance === '' || this.resultVo.rboardImportance === null) {
-        this.$message('중요도가 선택되지 않았습니다.')
+        onMessagePopup(this, '중요도가 선택되지 않았습니다.')
         return
       }
 
        if (this.resultVo.rboardContent === '' || this.resultVo.rboardContent === null) {
-        this.$message('요청내용이 입력되지 않았습니다.')
+        onMessagePopup(this, '요청내용이 입력되지 않았습니다.')
         return
       }
       let res
       try {
+        this.openLoading(target)
         const formData = {
             file: this.selectedFile,
             seq: this.resultVo.seq,
             rboardTitle: this.resultVo.rboardTitle,
             rboardDivision: this.resultVo.rboardDivision,
-            rboardDesireDate: this.resultVo.rboardDesireDate,
+            rboardDesireDate: this.moment(this.resultVo.rboardDesireDate).format('YYYY-MM-DD'),
+
             rboardPurposeRequest: this.resultVo.rboardPurposeRequest,
             rboardImportance: this.resultVo.rboardImportance,
             rboardContent: this.resultVo.rboardContent,
             sUserNm: this.resultVo.sUserNm,
             mail_type: 'Req-Update',
         }
-        if (this.adminYn === 'Y') {
+        // if (this.adminYn === 'Y') {
           this._merge(formData, {
-            actionContents: this.actionContents,
+            rboardActionDetail: '',
             rboardProgress: this.resultVo.rboardProgress,
-            rboardExpectedDate: this.resultVo.actionContents
+            rboardExpectedDate: this.moment(this.resultVo.rboardExpectedDate).format('YYYY-MM-DD'),
           })
-        }
+        // }
         res = await apiRequestModel(ipmsModelApis.updateReq, formData)
-        if (res.commonMsg) {
-          this.$message('요구사항이 정상적으로 수정되었습니다.')
+        if (res.commonMsg === 'SUCCESS') {
+          onMessagePopup(this, '요구사항이 정상적으로 수정되었습니다.')
+        } else {
+          onMessagePopup(this, res.commonMsg)
         }
       } catch (error) {
-        this.$message.error({ message: `${res.commonMsg}` })
         console.log(error)
+      } finally {
+        this.closeLoading(target)
       }
    },
     fnDeleteSubmit() {
@@ -288,44 +314,45 @@ export default {
           }
            res = await apiRequestJson(ipmsJsonApis.deleteReq, ReqboardVo)
             if (res.commonMsg === 'SUCCESS') {
-              this.$message('요구사항이 정상적으로 삭제되었습니다.')
+              onMessagePopup(this, '요구사항이 정상적으로 삭제되었습니다.')
               this.$emit('reload')
               this.close()
+            } else {
+              onMessagePopup(this, res.commonMsg)
             }
           } catch (error) {
-            this.$message.error({ message: `${res.commonMsg}` })
             console.log(error)
           }
         })
     },
     async fnInsertSubmit() {
        if (this.resultVo.rboardTitle === '' || this.resultVo.rboardTitle === null) {
-        this.$message('요청제목이 입력되지 않았습니다.')
+         onMessagePopup(this, '요청제목이 입력되지 않았습니다.')
         return
       }
 
        if (this.resultVo.rboardDivision === '' || this.resultVo.rboardDivision === null) {
-        this.$message('요청사항 구분이 선택되지 않았습니다.')
+        onMessagePopup(this, '요청사항 구분이 선택되지 않았습니다.')
         return
       }
 
        if (this.resultVo.rboardDesireDate === '' || this.resultVo.rboardDesireDate === null) {
-        this.$message('희망완료일자가 입력되지 않았습니다.')
+        onMessagePopup(this, '희망완료일자가 입력되지 않았습니다.')
         return
       }
 
        if (this.resultVo.rboardPurposeRequest === '' || this.resultVo.rboardPurposeRequest === null) {
-        this.$message('요청목적이 입력되지 않았습니다.')
+        onMessagePopup(this, '요청목적이 입력되지 않았습니다.')
         return
       }
 
        if (this.resultVo.rboardImportance === '' || this.resultVo.rboardImportance === null) {
-        this.$message('중요도가 선택되지 않았습니다.')
+        onMessagePopup(this, '중요도가 선택되지 않았습니다.')
         return
       }
 
        if (this.resultVo.rboardContent === '' || this.resultVo.rboardContent === null) {
-        this.$message('요청내용이 입력되지 않았습니다.')
+        onMessagePopup(this, '요청내용이 입력되지 않았습니다.')
         return
       }
       let res
@@ -334,19 +361,20 @@ export default {
             file: this.selectedFile,
             rboardTitle: this.resultVo.rboardTitle,
             rboardDivision: this.resultVo.rboardDivision,
-            rboardDesireDate: this.resultVo.rboardDesireDate,
+            rboardDesireDate: this.moment(this.resultVo.rboardDesireDate).format('YYYY-MM-DD'),
             rboardPurposeRequest: this.resultVo.rboardPurposeRequest,
             rboardImportance: this.resultVo.rboardImportance,
             rboardContent: this.resultVo.rboardContent,
-            sUserNm: this.resultVo.sUserNm,
+            sUserNm: this.$store.state.user.info.suserNm,
             mail_type: 'Req-Insert',
         }
         res = await apiRequestModel(ipmsModelApis.insertReq, formData)
         if (res.commonMsg) {
-          this.$message('요구사항이 정상적으로 등록되었습니다.')
+          onMessagePopup(this, '요구사항이 정상적으로 등록되었습니다.')
+        } else {
+          onMessagePopup(this, res.commonMsg)
         }
       } catch (error) {
-        this.$message.error({ message: `${res.commonMsg}` })
         console.log(error)
       }
     },
