@@ -3,6 +3,7 @@
     v-if="animationVisible"
     id="ipms"
     v-el-drag-dialog
+    title="주소 검색"
     :visible.sync="visible"
     :width="domElement.maxWidth + `px`"
     :fullscreen.sync="fullscreen"
@@ -14,38 +15,24 @@
     class="ipms-dialog"
     :class="{ [name]: true }"
   >
-    <span slot="title">
-      <i class="el-icon-document mr-2" style="font-size: 17px" />
-      주소 검색
-      <hr>
-    </span>
-
-    <div id="content" class="layer">
-
-      <div class="content_result mt0">
-        <table class="tbl_data entry" summary="주소입력">
-          <caption>주소입력</caption>
+    <div v-loading="viewLoading">
+      <div class="popupContentTable">
+        <div class="popupContentTableTitle">주소입력</div>
+        <table>
           <colgroup>
             <col width="22%" /><col width="78%" />
           </colgroup>
           <tbody>
-            <tr class="top">
-              <th class="first" scope="row">주소 찾기</th>
-              <td>
-                <div class="search w99">
-                  <el-input id="txtInputDongNm" v-model="txtInputDongNm" type="text" size="mini" class="w-90" value="" title="search" placeholder="SEARCH" @click="fnSearchEnter()" />
-                  <el-button size="mini" class="sc_btn_addr" @keyup.enter="fnSelectZipcode()" @click="fnSelectZipcode()">
-                    <i class="el-icon-zoom-in"></i>
-                  </el-button>
-                </div>
+            <tr>
+              <th>주소 찾기</th>
+              <td class="textflex">
+                <el-input v-model="txtInputDongNm" type="text" size="small" title="search" placeholder="SEARCH" @click="fnSearchEnter()" />
+                <el-button type="primary" size="small" icon="el-icon-search" round @keyup.enter.native="fnSelectZipcode()" @click="fnSelectZipcode()" />
               </td>
             </tr>
-            <tr class="last">
-              <th class="first" scope="row">상세주소</th>
+            <tr>
+              <th>상세주소</th>
               <td>
-                <!-- <input id="txtZipcodePrefix" type="hidden" value="" />
-                <input id="txtZipcodeSuffix" type="hidden" value="" />
-                <el-input id="txtEaddress" v-model="txtEaddress" size="mini" type="hidden" /> -->
                 <el-input v-model="txtAddress" type="text" size="mini" title="" disabled="disabled" />
                 <el-input v-model="detailAddress" type="text" size="mini" title="상세주소" />
               </td>
@@ -53,66 +40,73 @@
           </tbody>
         </table>
       </div>
-
-      <template v-if="resultListVo.length > 0">
-        <div id="searchResult" class="content_result">
-          <h4>조회결과</h4>
-          <table class="tbl_list mt5" summary="조회결과">
-            <caption>조회결과</caption>
-            <colgroup>
-              <col width="20%" /><col width="80%" />
-            </colgroup>
-            <thead>
-              <tr>
-                <th class="first" scope="col">우편번호</th>
-                <th scope="col">주소</th>
+      <div v-if="pagination.data.length > 0" class="popupContentTable textcenter">
+        <div class="popupContentTableTitle">조회결과</div>
+        <table>
+          <colgroup>
+            <col width="20%" /><col width="80%" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th>우편번호</th>
+              <th>주소</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-if="pagination.data.length === 0">
+              <td colspan="10">조회된 결과 목록이 존재하지 않습니다.</td>
+            </tr>
+            <template v-else-if="pagination.data.length > 0">
+              <tr v-for="(row, index) in pagination.data" :key="index">
+                <td>
+                  <a @click="fnZipcodeSelected(row.zipcode, row.newkaddr, row.eaddr)">
+                    {{ row.zipcode }}
+                  </a>
+                </td>
+                <td>
+                  <a @click="fnZipcodeSelected(row.zipcode, row.newkaddr, row.eaddr)">
+                    {{ row.newkaddr }}
+                    <br>
+                    {{ row.pastkaddr }}
+                  </a>
+                </td>
               </tr>
-            </thead>
-            <tbody>
-
-              <tr v-if="resultListVo.length === 0" class="subbg last">
-                <td class="first" colspan="10">조회된 결과 목록이 존재하지 않습니다.</td>
-              </tr>
-              <template v-else-if="resultListVo.length > 0">
-                <tr v-for="(item, index) in resultListVo" :key="index">
-                  <td class="first">
-                    <a @click="fnZipcodeSelected(item.zipcode, item.newkaddr, item.eaddr)">
-                      {{ item.zipcode }}
-                    </a>
-                  </td>
-                  <td>
-                    <a @click="fnZipcodeSelected(item.zipcode, item.newkaddr, item.eaddr)">
-                      {{ item.newkaddr }}
-                      <br>
-                      {{ item.pastkaddr }}
-                    </a>
-                  </td>
-                </tr>
-              </template>
-            </tbody>
-          </table>
-
-          <!-- <div class="page_num">
-            <ul>
-              <ui:pagination pagination-info="${paginationInfo}" type="image" js-function="fnSelectListPageInPop" />
-            </ul>
-          </div> -->
+            </template>
+          </tbody>
+        </table>
+        <div v-if="pagination.data.length > 0" class="tableListWrap">
+          <div class="tableListPaging" style="justify-content: center;">
+            <el-button icon="el-icon-d-arrow-left" type="text" @click="handleChangeCurPage(pagination.currentPage - 1)" />
+            <el-button icon="el-icon-arrow-left" type="text" @click="handleChangeCurPage(pagination.currentPage - 1)" />
+            <div class="pagingNumber">
+              <span v-for="page in getPageCount" :key="page" :class="{'active': page === pagination.currentPage }">
+                {{ page }}
+              </span>
+            </div>
+            <el-button icon="el-icon-arrow-right" type="text" @click="handleChangeCurPage(pagination.currentPage + 1)" />
+            <el-button icon="el-icon-d-arrow-right" type="text" @click="handleChangeCurPage(getPageCount)" />
+          </div>
         </div>
-      </template>
-
+        <!-- <div class="page_num">
+          <ul>
+            <ui:pagination pagination-info="${paginationInfo}" type="image" js-function="fnSelectListPageInPop" />
+          </ul>
+        </div> -->
+      </div>
     </div>
-    <div slot="footer" class="dialog-footer">
-      <el-button size="mini" class="el-icon-check" @click="btnSaveSearchAddr()">{{ $t('저장') }}</el-button>
-      <el-button size="mini" class="el-icon-close" @click="close()">{{ $t('exit') }}</el-button>
+    <div class="popupContentTableBottom">
+      <el-button type="primary" size="small" icon="el-icon-check" round @click="btnSaveSearchAddr()">저장</el-button>
+      <el-button type="primary" size="small" icon="el-icon-close" round @click="close()">
+        {{ $t('exit') }}
+      </el-button>
     </div>
-
   </el-dialog>
 </template>
-
 <script>
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
 import { apiRequestModel, ipmsModelApis, ipmsJsonApis, apiRequestJson } from '@/api/ipms'
+import { onMessagePopup } from '@/utils'
 
 const routeName = 'ModalSearchZipCode'
 
@@ -126,43 +120,57 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      resultVo: null,
-      resultListVo: [],
+      pagination: this.setDefaultPagination(),
+      viewLoading: false,
       txtInputDongNm: '',
       viewType: '',
       txtAddress: '',
       detailAddress: '',
       zipcodePrefix: '',
       searchAddrVo: {}
-
     }
   },
-  mounted() {
+  computed: {
+    getPageCount() {
+      const { total, pageSize } = this.pagination
+      if (total <= pageSize) {
+        return 1
+      } else {
+        return (total % pageSize) > 0 ? parseInt(total / pageSize) + 1 : parseInt(total / pageSize)
+      }
+    }
   },
   methods: {
     onCreated() {
       Modal.methods.onCreated.call(this)
       this.closeOnClickModal = false
-      this.domElement.maxWidth = 1200
+      this.domElement.maxWidth = 800
     },
     onOpen(model, actionMode) {
+      this.txtInputDongNm = ''
       this.viewType = model.type
     },
    async fnSelectZipcode() { /* 주소 검색 */
       if (this.txtInputDongNm === '') {
-        this.$message('검색할 주소를 입력하세요.')
+        onMessagePopup(this, '검색할 주소를 입력하세요.')
         return
       }
+      const { pageSize: pageUnit, currentPage: pageIndex } = this.pagination
+      const searchVo = { dong: this.txtInputDongNm.replace(' ', '%'), pageType: this.viewType, pageUnit, pageIndex }
       try {
-        const searchVo = {
-        dong: this.txtInputDongNm.replace(' ', '%'),
-        pageType: this.viewType
-      }
-       const res = await apiRequestModel(ipmsModelApis.viewSearchZipCode, searchVo)
-       this.resultListVo = res.result.data
+        this.viewLoading = true
+        const res = await apiRequestModel(ipmsModelApis.viewSearchZipCode, searchVo)
+        this.pagination.data = res.result.data ?? []
+        this.pagination.total = res.result.totalCount
       } catch (error) {
-        console.log(error)
+        this.error(error)
+      } finally {
+        this.viewLoading = false
       }
+    },
+    handleChangeCurPage(v) {
+      if (v) this.pagination.currentPage = v
+      this.fnSelectListIpAssignMst()
     },
     fnZipcodeSelected(zipcode, newkaddr, eaddr) { /* 주소 클릭  */
     this.txtAddress = newkaddr

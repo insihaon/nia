@@ -65,7 +65,8 @@
         style="height: calc(100% - 80px)"
         :prop-name="name"
         :prop-table-height="'100%'"
-        :prop-data="tableDatas"
+        :prop-data="pagination.data"
+        :prop-pagination-data.sync="pagination"
         :prop-column="tableColumns"
         :prop-is-pagination="true"
         :prop-is-check-box="true"
@@ -79,7 +80,7 @@
         </template>
         <template slot="add-features">
           <div style="margin-top: 10px">
-            <el-button icon="el-icon-download" type="primary" size="mini" round>우체국 데이터 다운로드</el-button>
+            <el-button icon="el-icon-download" type="primary" size="mini" round @click="fnDownloadData">우체국 데이터 다운로드</el-button>
           </div>
         </template>
       </compTable>
@@ -94,6 +95,10 @@ import tableHeightMixin from '@/mixin/tableHeightMixin'
 import { ipmsModelApis, apiRequestModel, ipmsJsonApis, apiRequestJson } from '@/api/ipms'
 import { onMessagePopup } from '@/utils'
 
+import { getToken } from '@/utils/auth'
+import { AppOptions } from '@/class/appOptions'
+import axios from 'axios'
+
 const routeName = 'ZipCodeLinkMng'
 
 export default {
@@ -105,16 +110,16 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-        succVal: '',
-        dateVal: [],
-        file: null,
-        tableColumns: [
-          { prop: 'file_name', label: 'Upload 파일명', align: 'center', columnVisible: true, showOverflow: true },
-          { prop: '', label: 'Upload 일자', align: 'center', columnVisible: true, showOverflow: true, formatter: (row) => { return row.regist_date ? this.moment(row.regist_date).format('YYYY-MM-DD HH:mm:ss') : '' } },
-          { prop: 'regist_id', label: '등록자', align: 'center', columnVisible: true, showOverflow: true },
-          { prop: 'status', label: 'Upload 성공 여부', align: 'center', columnVisible: true, showOverflow: true },
-        ],
-        tableDatas: [],
+      pagination: this.setDefaultPagination(),
+      succVal: '',
+      dateVal: [],
+      uploadFile: null,
+      tableColumns: [
+        { prop: 'file_name', label: 'Upload 파일명', align: 'center', columnVisible: true, showOverflow: true },
+        { prop: '', label: 'Upload 일자', align: 'center', columnVisible: true, showOverflow: true, formatter: (row) => { return row.regist_date ? this.moment(row.regist_date).format('YYYY-MM-DD HH:mm:ss') : '' } },
+        { prop: 'regist_id', label: '등록자', align: 'center', columnVisible: true, showOverflow: true },
+        { prop: 'status', label: 'Upload 성공 여부', align: 'center', columnVisible: true, showOverflow: true },
+      ],
     }
   },
   mounted () {
@@ -123,31 +128,46 @@ export default {
   methods: {
     async fnUploadView() {
       const [searchBgDe, searchEndDe] = this.dateVal
-      const param = { status: this.succVal, searchBgDe: searchBgDe ? this.moment(searchBgDe).format('YYYY-MM-DD') : '', searchEndDe: searchEndDe ? this.moment(searchEndDe).format('YYYY-MM-DD') : '' }
+      const { pageSize: pageUnit, currentPage: pageIndex } = this.pagination
+      const param = {
+        status: this.succVal,
+        searchBgDe: searchBgDe ? this.moment(searchBgDe).format('YYYY-MM-DD') : '',
+        searchEndDe: searchEndDe ? this.moment(searchEndDe).format('YYYY-MM-DD') : '',
+        pageUnit,
+        pageIndex
+        }
       try {
         const res = await apiRequestModel(ipmsModelApis.uploadView, param)
-        this.tableDatas = res?.result?.data ?? []
+        this.pagination.data = res?.result?.data ?? []
+        this.pagination.total = res.result.totalCount
       } catch (error) {
         this.error(error)
       }
     },
+    fnDownloadData() {
+      const url = 'http://www.epost.go.kr/search/zipcode/areacdAddressDown.jsp'
+      window.open(url)
+    },
     async uploadAjax() {
-      if (this.file === null) {
+      // opermgmt/uploadmgmt/upload.ajax
+      if (this.uploadFile === null) {
         onMessagePopup(this, '선택된 파일이 없습니다.')
         return
       }
-      try {
-        // opermgmt/uploadmgmt/upload.ajax
-        const res = await apiRequestJson(ipmsJsonApis.upload, { file: this.file })
-        if (res.commonMsg === 'SUCCESS') {
-          this.fnUploadView()
-        }
+      const formData = new FormData()
+      formData.append('file', this.uploadFile)
+       try {
+        // opermgmt/uploadmgmt/upload
+        // 오류남 컨트롤러 내부로직 확인필요함
+        const res = await apiRequestJson(ipmsJsonApis.uploadmgmtUpload, formData)
+        console.log(res)
+        this.fnUploadView()
       } catch (error) {
         this.error(error)
       }
     },
     handleFileUpload(e) {
-      this.file = e.target.files[0]
+      this.uploadFile = e.target.files[0]
     }
   }
 }

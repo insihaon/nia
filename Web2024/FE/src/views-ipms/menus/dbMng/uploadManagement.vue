@@ -99,7 +99,7 @@ export default {
       tableColumns: [
         { prop: 'rowNo', label: 'No', width: 40, align: 'center', sortable: false, columnVisible: true, showOverflow: true },
         { prop: 'sFileNm', label: 'Upload 파일명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'dmodifyDt', label: 'Upload 일자', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'dmodifyDt', label: 'Upload 일자', align: 'center', sortable: true, columnVisible: true, showOverflow: true, formatter: (row) => { return row.dmodifyDt ? this.moment(row.dmodifyDt).format('YYYY-MM-DD HH:mm:ss') : '' } },
         { prop: 'screateId', label: '등록자', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'sSsucessYn', label: 'Upload 성공 여부', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
       ],

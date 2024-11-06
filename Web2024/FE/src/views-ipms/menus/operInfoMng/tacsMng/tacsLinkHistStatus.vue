@@ -66,7 +66,7 @@ export default {
           },
           { prop: 'sresultMsg', label: '결과메세지', align: 'center', columnVisible: true, showOverflow: true, },
           { prop: 'smodifyId', label: '사용자ID', align: 'center', columnVisible: true, showOverflow: true },
-          { prop: 'dcreateDt', label: '접속일시', align: 'center', columnVisible: true, showOverflow: true },
+          { prop: 'dcreateDt', label: '접속일시', align: 'center', columnVisible: true, showOverflow: true, formatter: (row) => { return row.dcreateDt ? this.moment(row.dcreateDt).format('YYYY-MM-DD HH:mm:ss') : '' } },
       ],
       tableDatas: [],
       sresultMsgOptions: [],

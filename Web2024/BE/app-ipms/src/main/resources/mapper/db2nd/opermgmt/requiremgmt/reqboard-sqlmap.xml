@@ -23,6 +23,7 @@
 		<result column="rboard_file_origin_name" property="rboardFileOriginName" jdbcType="TIMESTAMP" />
 		<result column="rboard_file_save_name" property="rboardFileSaveName" jdbcType="TIMESTAMP" />
 		<result column="rboard_file_path" property="rboardFilePath" jdbcType="TIMESTAMP" />
+		<result column="rboard_download_path" property="rboardDownloadPath" jdbcType="TIMESTAMP" />
 		<result column="rboard_file_size" property="rboardFileSize" jdbcType="TIMESTAMP" />
 		<result column="RNUM" property="rowNo" jdbcType="NUMERIC" />
 	</resultMap>
@@ -168,6 +169,7 @@
 			B.rboard_progress, 
 			B.rboard_expected_date,
 			C.seq as rboard_file_seq,
+			C.rboard_file_path as rboard_download_path,
 			concat(C.rboard_file_path , '\', C.rboard_file_save_name) as rboard_file_path,
 			C.rboard_file_origin_name
 		FROM 
@@ -201,6 +203,7 @@
 	<select id="selectReqBoardUpload" resultMap="ReqBoardVoResult" parameterType="com.kt.ipms.legacy.opermgmt.requiremgmt.vo.ReqBoardVo">
 		SELECT 
 			rboard_file_origin_name,
+			rboard_file_path as rboard_download_path,
 			concat(rboard_file_path , '\', rboard_file_save_name) as rboard_file_path
 		FROM
 			mst.tb_req_board_upload

@@ -58,6 +58,7 @@ public class EmailMgmtController extends CommonController {
 	 * @return
 	 */
 	@RequestMapping(value = "/opermgmt/uploadmgmt/sendMail.json", method = RequestMethod.POST)
+	@ResponseBody
 	public SmtpVo sendMail(@RequestBody SmtpVo smtpVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
 		SmtpVo resultVo = new SmtpVo();
 		String commonMsg;

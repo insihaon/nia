@@ -139,7 +139,7 @@ export default {
           columnVisible: true,
           showOverflow: true,
         },
-        { prop: 'dcreateDt', label: '등록일', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'dcreateDt', label: '등록일', align: 'center', sortable: true, columnVisible: true, showOverflow: true, formatter: (row) => { return row.dcreateDt ? this.moment(row.dcreateDt).format('YYYY-MM-DD') : '' } },
       ],
       componentList: [
         { key: 'SsvcLineType', props: { lvl: 2 } },

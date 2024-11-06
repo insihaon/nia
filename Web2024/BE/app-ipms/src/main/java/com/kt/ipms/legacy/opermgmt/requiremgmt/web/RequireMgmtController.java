@@ -49,6 +49,9 @@ import com.kt.ipms.legacy.opermgmt.requiremgmt.vo.ReqBoardVo;
 import com.kt.ipms.legacy.opermgmt.tacsmgmt.service.TacsMgmtService;
 import com.kt.ipms.legacy.opermgmt.usermgmt.service.UserMgmtService;
 import com.kt.ipms.legacy.opermgmt.usermgmt.vo.TbUserBasVo;
+import com.codej.base.dto.response.UploadFileResponse;
+import com.codej.base.property.FileStorageProperties;
+import com.codej.web.controller.FileController;
 
 import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
 
@@ -60,6 +63,12 @@ public class RequireMgmtController extends CommonController{
 	private UserMgmtService userMgmtService;
 	@Autowired
 	private TacsMgmtService tacsMgmtService;
+	@Autowired
+	private FileStorageProperties fileStorageProperties;
+	@Autowired
+	private FileController fileController;
+
+
 	
 	@RequestMapping(value = "/opermgmt/requiremgmt/viewListReq.model", method = RequestMethod.POST)
 	@ResponseBody
@@ -136,9 +145,38 @@ public class RequireMgmtController extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/requiremgmt/viewDetailReq.model", method = RequestMethod.POST)
 	@ResponseBody
-	public ModelMap selectReqBoard(@RequestBody ReqBoardVo searchVo, ModelMap model, HttpServletRequest request)  {
-		ReqBoardVo resultVo = reqBoardService.selectReqBoard(searchVo);
-		return createResult(resultVo);
+	public ModelMap selectReqBoard(@RequestBody ReqBoardVo searchVo, HttpServletRequest request)  {
+		ModelMap model = new ModelMap();
+		ReqBoardVo resultVo = null;
+		String adminYn = null;
+		String ownerYn = null;
+		try {
+			String usrGradeCd = jwtUtil.getUserGradeCd(request);
+			if(usrGradeCd != null && usrGradeCd.equals("UR0001")){
+				adminYn = "Y";
+			}
+			resultVo = reqBoardService.selectReqBoard(searchVo);
+			String userId = jwtUtil.getUserId(request);
+
+			if(adminYn != null && adminYn.equals("Y")){
+				ownerYn = "Y";
+			}else{
+				if(resultVo.getRboardScreateId().equals(userId)){
+					ownerYn = "Y";
+				}else{
+					ownerYn = "N";
+				}
+			}
+			model.addAttribute("ownerYn",ownerYn);
+			
+		} catch (ServiceException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		model.addAttribute("resultVo", resultVo);
+		model.addAttribute("adminYn", adminYn);
+		return model;
 	}
 	@RequestMapping(value = "/opermgmt/requiremgmt/viewDetailReq.ajax", method = RequestMethod.POST)
 	public String selectReqBoard(@RequestBody ReqBoardVo searchVo, ModelMap model, HttpServletRequest request, HttpServletResponse response)  {
@@ -211,8 +249,9 @@ public class RequireMgmtController extends CommonController{
 	@RequestMapping(value = "/opermgmt/requiremgmt/viewInsertReq.model", method = RequestMethod.POST)
 	@ResponseBody
 	public ModelMap viewinsertReq( ModelMap model, HttpServletRequest request)  {
-		List<ReqBoardSubVo> requestType = (List<ReqBoardSubVo>)model.get("requestType");
-		List<ReqBoardSubVo> progressType = (List<ReqBoardSubVo>)model.get("progressType");
+		ModelMap builtModel = viewinsertReqModel(request);
+		List<ReqBoardSubVo> requestType = (List<ReqBoardSubVo>)builtModel.get("requestType");
+		List<ReqBoardSubVo> progressType = (List<ReqBoardSubVo>)builtModel.get("progressType");
 
 		ModelMap resultModel = new ModelMap();
 		HashMap<String, Object> map = new HashMap<String, Object>();
@@ -273,14 +312,21 @@ public class RequireMgmtController extends CommonController{
 	}
 	
 	
-	@RequestMapping(value = "/opermgmt/requiremgmt/insertReq.ajax", method = RequestMethod.POST)
+	@RequestMapping(value = "/opermgmt/requiremgmt/insertReq.json", method = RequestMethod.POST)
 	@ResponseBody
 	public ReqBoardVo insertReq(ModelMap model,MultipartHttpServletRequest request, HttpServletResponse response)  {
 		ReqBoardVo resultVo = new ReqBoardVo();
 		try {
 			String userId = jwtUtil.getUserId(request);
 			MultipartFile file = request.getFile("file");
-			String uploadPath = request.getSession().getServletContext().getRealPath("/").concat("resources") + "\\upload";
+			String uploadPath = null;
+			// String uploadPath = request.getSession().getServletContext().getRealPath("/").concat("resources") + "\\upload";
+			if(file != null) {
+				UploadFileResponse fileResponse = fileController.uploadFile(file);
+				uploadPath = fileResponse.getDownloadUrl() ;
+			}
+
+			// String filePath = fileResponse.getDownloadUrl().substring(0, fileResponse.getDownloadUrl().lastIndexOf("/"));
 
 			//setVo
 			ReqBoardVo reqBoardVo = new ReqBoardVo();
@@ -296,13 +342,13 @@ public class RequireMgmtController extends CommonController{
 			reqBoardVo.setsUserNm(request.getParameter("sUserNm"));
 			reqBoardVo.setRboardFilePath(uploadPath);
 			resultVo = reqBoardService.insertReq(reqBoardVo, file);
+			
 			//send mail
 			ReqBoardVo tempVo = reqBoardService.selectEmailContent(resultVo);
 			Map<String,Object> map = domainToMap(tempVo);
 			map.put("MAIL_TYPE",request.getParameter("mail_type"));
 			map.put("TITLE", map.get("rboardTitle").toString());
 			reqMailSend(map, request);
-			
 			
 			resultVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
 		} catch (ServiceException e) {
@@ -328,9 +374,9 @@ public class RequireMgmtController extends CommonController{
 		return resultVo;
 	}
 	
-	@RequestMapping(value = "/opermgmt/requiremgmt/updateReq.ajax", method = RequestMethod.POST)
+	@RequestMapping(value = "/opermgmt/requiremgmt/updateReq.json", method = RequestMethod.POST)
 	@ResponseBody
-	public ReqBoardVo updateReq(ModelMap model,MultipartHttpServletRequest request, HttpServletResponse response)  {
+	public ReqBoardVo updateReq(ModelMap model, MultipartHttpServletRequest request, HttpServletResponse response)  {
 		ReqBoardVo resultVo = null;
 		String adminYn = null;
 		try {
@@ -340,9 +386,13 @@ public class RequireMgmtController extends CommonController{
 			}
 			String userId = jwtUtil.getUserId(request);
 			MultipartFile file = request.getFile("file");
-			String uploadPath = request.getSession().getServletContext().getRealPath("/").concat("resources") + "\\upload";
-			
-			//setVo
+			String uploadPath = null;
+			// String uploadPath = request.getSession().getServletContext().getRealPath("/").concat("resources") + "\\upload";
+			if(file != null) {
+				UploadFileResponse fileResponse = fileController.uploadFile(file);
+				uploadPath = fileResponse.getDownloadUrl() ;
+			}
+			//setVos
 			ReqBoardVo reqBoardVo = new ReqBoardVo();
 			reqBoardVo.setSeq(new BigInteger(request.getParameter("seq")));
 			reqBoardVo.setRboardSeq(new BigInteger(request.getParameter("seq")));
@@ -354,7 +404,7 @@ public class RequireMgmtController extends CommonController{
 			reqBoardVo.setRboardImportance(request.getParameter("rboardImportance"));
 			reqBoardVo.setRboardContent(request.getParameter("rboardContent"));
 //			if(adminYn == "Y"){ //Codeeyes-Urgent-객체 비교시 == , != 사용제한
-			if(adminYn.equals("Y")){
+			if(adminYn != null && adminYn.equals("Y")){
 				reqBoardVo.setRboardActionDetail(request.getParameter("rboardActionDetail"));
 				reqBoardVo.setRboardProgress(request.getParameter("rboardProgress"));
 				if(!request.getParameter("rboardExpectedDate").equals("")){

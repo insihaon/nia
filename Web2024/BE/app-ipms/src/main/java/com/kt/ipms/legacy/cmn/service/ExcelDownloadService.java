@@ -42,6 +42,30 @@ public class ExcelDownloadService {
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
+    public ResponseEntity<Resource> generateAndDownloadIpUploadExcel(List<List<?>> voList, List<List<String>> mappingList, List<String> sheetName, HttpServletRequest request) {
+        try {
+            String fileName = excelUtil.createIpUploadExcelFile(voList, mappingList, sheetName, request);
+            if(!StringUtils.hasText(fileName)) {
+                throw new ServiceException("CMN.HIGH.00050");
+            }
+            return fileController.downloadFile(excelUploadDir, fileName, request);
+        } catch (Exception e) {
+            log.error(e.toString());
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+    public ResponseEntity<Resource> generateAndDownloadTxt(HttpServletRequest request) {
+        try {
+            String fileName = excelUtil.createIpUploadTextFile(request);
+            if(!StringUtils.hasText(fileName)) {
+                throw new ServiceException("CMN.HIGH.00050");
+            }
+            return fileController.downloadFile(excelUploadDir, fileName, request);
+        } catch (Exception e) {
+            log.error(e.toString());
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
 }
 

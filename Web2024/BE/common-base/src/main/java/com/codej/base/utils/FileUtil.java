@@ -5,6 +5,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class FileUtil {
 
@@ -50,6 +52,16 @@ public class FileUtil {
 		return file;
 	}
 
+	public static boolean deleteFile(String pathname) {
+		try {
+			File file = new File(pathname);
+			if(file.delete()) {
+				return true;
+			}
+		} catch (Exception e) {
+		}
+		return false;
+	}
 	public static void DeleteOldFiles(String directory) {
 
         if(directory == null)
@@ -101,6 +113,21 @@ public class FileUtil {
 
 	public static Path getCurrentPath() {
 		return Paths.get(getCurrentDir());
+	}
+
+	public static String getDownloadPathToFilePath(String downloadUrl) {
+		// example: http://localhost:8070/downloadFile/20241106/a.png
+		Pattern regex = Pattern.compile("/downloadFile/([0-9]+)");
+		Matcher matcher = regex.matcher(downloadUrl);
+		if (matcher.find()) {
+			String dirDate = matcher.group(1);
+			String dir = FileUtil.getCurrentDir();
+			String fileName = downloadUrl.substring(downloadUrl.lastIndexOf("/")+1);
+			String path = FileUtil.combine(dir, "uploads", dirDate, fileName);
+			
+			return path;
+		}
+		return null;
 	}
 
 }
