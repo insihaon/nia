@@ -4,7 +4,7 @@
       ref="searchCondition"
       :prop-name="name"
       :component-keys="componentList"
-      @handle-search="fnViewListWhoisModReq"
+      @handle-search="handleSearch"
     />
     <el-col ref="tableContainer" :span="24">
       <compTable
@@ -13,12 +13,15 @@
         :prop-name="name"
         :prop-table-height="'100%'"
         :prop-column="tableColumns"
-        :prop-data="resultListVo"
-        :prop-is-pagination="false"
+        :prop-data="pagination.data"
+        :prop-pagination-data.sync="pagination"
+        :prop-is-pagination="true"
         :prop-is-check-box="false"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
-        :prop-on-click="onClcikRow"
+        :prop-on-click="onClickRow"
+        :prop-on-page-change="handleChangeCurPage"
+        :prop-on-page-size-change="handleChangeCurPage"
         @savedExcel="handleClickExcelDownloadBtn"
       >
         <template slot="text-description">
@@ -58,6 +61,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      pagination: this.setDefaultPagination(),
       tableColumns: [
         { prop: 'nmodify_apply_seq', label: '신청번호', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'sfirstAddr', label: '시작IP', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
@@ -65,8 +69,8 @@ export default {
         { prop: 'sBefOrgName', label: '기관명(변경전)', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'sAftOrgName', label: '기관명(변경후)', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'sApplyNm', label: '신청자', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'dApplyDt', label: '신청일시', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'dApprovalDt', label: '처리일시', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'dApplyDt', label: '신청일시', align: 'center', sortable: true, columnVisible: true, showOverflow: true, formatter: (row) => { return row.dApplyDt ? this.moment(row.dApplyDt).format('YYYY-MM-DD HH:mm:ss') : '' } },
+        { prop: 'dApprovalDt', label: '처리일시', align: 'center', sortable: true, columnVisible: true, showOverflow: true, formatter: (row) => { return row.dApprovalDt ? this.moment(row.dApprovalDt).format('YYYY-MM-DD HH:mm:ss') : '' } },
         { prop: 'sStatNm', label: '상태', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
       ],
       componentList: [
@@ -97,18 +101,30 @@ export default {
     }
   },
   mounted() {
-    this.fnViewListWhoisModReq()
+    setTimeout(() => {
+      this.fnViewListWhoisModReq()
+    }, 100)
   },
   methods: {
+     handleSearch(requestParameter) {
+      this.pagination.currentPage = 1
+      this.fnViewListWhoisModReq(requestParameter)
+    },
    async fnViewListWhoisModReq(requestParameter) {
+      const parameter = requestParameter ?? this.$refs.searchCondition.requestParameter
       try {
-        const res = await apiRequestModel(ipmsModelApis.viewListWhoisModReq, requestParameter)
-        this.resultListVo = res?.result.data
+        const res = await apiRequestModel(ipmsModelApis.viewListWhoisModReq, parameter)
+        this.pagination.data = res.result.data ?? []
+        this.pagination.total = res.result.totalCount
       } catch (error) {
         console.error(error)
       }
     },
-    onClcikRow(row, type) {
+    handleChangeCurPage(v) {
+      if (v) this.pagination.currentPage = v
+      this.fnViewListWhoisModReq()
+    },
+    onClickRow(row, type) {
       this.fnViewDetailWhoisMod(row, 'detail')
     },
     async fnViewDetailWhoisMod(row, type) {

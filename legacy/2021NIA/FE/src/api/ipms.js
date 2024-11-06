@@ -64,12 +64,11 @@ export const ipmsModelApis = {
   viewDetailPrivateAs: { desc: '사설AS 신청 상세정보', url: '/opermgmt/asmgmt/viewDetailPrivateAs' },
   viewListWhoisModReq: { desc: 'Whois 정보 변경 신청 조회', url: '/opermgmt/whoismgmt/viewListWhoisModReq' },
   viewDetailWhoisModReq: { desc: 'Whois 정보 변경 신청 상세정보', url: '/opermgmt/whoismgmt/viewDetailWhoisModReq' },
-  viewRegWhoisModReq: { desc: 'Whois 정보 변경 신청 > 등록 > IP주소 조회', url: '/opermgmt/whoismgmt/viewRegWhoisModReq' },
+  viewRegWhoisModReq: { desc: 'Whois 정보 변경 신청 > 등록 > IP주소/ktInfoVo 조회', url: '/opermgmt/whoismgmt/viewRegWhoisModReq' },
   viewSearchZipCode: { desc: 'Whois 정보 변경 신청 > 등록 > 주소 검색', url: '/opermgmt/whoismgmt/viewSearchZipCode' },
-  viewListReq: { desc: '요구사항 조회', url: '/opermgmt/requiremgmt/viewListReq' },
+  viewListReq: { desc: '개발/오류수정/자료 요청 조회', url: '/opermgmt/requiremgmt/viewListReq' },
+  viewInsertReq: { desc: '개발/오류수정/자료 요청pop(요청사항 구분 조건조회) ', url: '/opermgmt/requiremgmt/viewInsertReq' },
   viewDetailReq: { desc: '요구사항 조회 상세조회', url: '/opermgmt/requiremgmt/viewDetailReq' },
-  // updateReq: { desc: '요구사항 조회 > 수정', url: '/opermgmt/requiremgmt/updateReq' },
-  // deleteReq: { desc: '요구사항 조회 > 등록', url: '/opermgmt/requiremgmt/deleteReq' },
   viewListUserAuthSubs: { desc: '사용자 권한 신청 조회', url: '/opermgmt/grantsubsmgmt/viewListUserAuthSubs' },
   viewDetailUserAuthSubs: { desc: '사용자 권한 신청 상세정보', url: '/opermgmt/grantsubsmgmt/viewDetailUserAuthSubs' },
   viewInsertUserAuthSubs: { desc: '사용자 권한 신청 > 등록 화면', url: '/opermgmt/grantsubsmgmt/viewInsertUserAuthSubs' },
@@ -142,6 +141,7 @@ export const ipmsJsonApis = {
   insertHostIPMst: { desc: '운용정보등록(시설)', url: '/ipmgmt/hostmgmt/insertHostIPMst' },
   updateHostIPMst: { desc: '운용정보수정(시설)', url: '/ipmgmt/hostmgmt/updateHostIPMst' },
   deleteHostIPMst: { desc: '운용정보삭제(시설)', url: '/ipmgmt/hostmgmt/deleteHostIPMst' },
+  ipuploadmgmtUpload: { desc: '업로드 관리 > 업로드', url: '/ipmgmt/ipuploadmgmt/upload' },
   insertNotice: { desc: '공지사항 등록', url: '/opermgmt/boardmgmt/insertNotice' },
   updateNotice: { desc: '공지사항 수정', url: '/opermgmt/boardmgmt/updateNotice' },
   deleteNotice: { desc: '공지사항 삭제', url: '/opermgmt/boardmgmt/deleteNotice' },
@@ -166,7 +166,9 @@ export const ipmsJsonApis = {
   selectSearchWhoisInfo: { desc: 'Whois 정보 변경 신청 > 등록 > IP주소 조회 ', url: '/opermgmt/whoismgmt/selectSearchWhoisInfo' },
   sendMail: { desc: 'Whois 정보 변경 신청 > 등록 > 관리자에게 메일 보내기(IP주소) ', url: '/opermgmt/uploadmgmt/sendMail' },
   // insertRegWhoisModReq: { desc: 'Whois 정보 변경 신청 > 변경 신청  ', url: '/opermgmt/uploadmgmt/insertRegWhoisModReq' },
-  deleteReq: { desc: '요구사항 삭제', url: '/opermgmt/requiremgmt/deleteReq' },
+  insertReq: { desc: '개발/오류수정/자료 요청 > 등록', url: '/opermgmt/requiremgmt/insertReq' },
+  updateReq: { desc: '개발/오류수정/자료 요청 > 수정', url: '/opermgmt/requiremgmt/updateReq' },
+  deleteReq: { desc: '개발/오류수정/자료 요청 > 삭제', url: '/opermgmt/requiremgmt/deleteReq' },
   insertUserAuthTxnSub: { desc: '사용자 권한 신청 > 등록', url: '/opermgmt/grantsubsmgmt/insertUserAuthTxnSub' },
   // 운용정보관리(관리자 기능)
   updateTbBatchSvcBas: { desc: '운용정보관리 > 연동관리 > 배치 연동 정보 수정', url: '/linkmgmt/batchmgmt/updateTbBatchSvcBas' },
@@ -218,6 +220,7 @@ export const ipmsJsonApis = {
   selectSearchScrnBas: { desc: '메뉴관리 > 화면명 검색', url: '/opermgmt/menumgmt/selectSearchScrnBas' },
   updateTbMenuBasVo: { desc: '메뉴관리 > 화면명 저장', url: '/opermgmt/menumgmt/updateTbMenuBasVo' },
   updateWhoisComplexNew: { desc: 'WHOIS 정보공개관리 > WHOIS 신청서 수정 ', url: '/opermgmt/whoismgmt/updateWhoisComplexNew' },
+  uploadmgmtUpload: { desc: '연동관리 > 우편번호 연동관리 업로드', url: '/opermgmt/uploadmgmt/upload' },
   // 엑셀 저장
   viewListCrtIPMstExcel: { desc: 'IP블록관리 엑셀저장', url: 'ipmgmt/createmgmt/viewListCrtIPMstExcel' },
   viewListAsgnIPMstExcel: { desc: 'IP배정 엑셀저장', url: 'ipmgmt/assignmgmt/viewListAsgnIPMstExcel' },
@@ -242,6 +245,8 @@ export const ipmsJsonApis = {
   viewListFcltCmdMstExcel: { desc: '운용정보관리 > (IP주소 라우팅 비교/점검) 장비별 명령어 정보관리 엑셀저장', url: 'opermgmt/intgrmgmt/viewListFcltCmdMstExcel' },
   viewListMobileMstExcel: { desc: '운용정보관리 > (IP주소 라우팅 비교/점검) 무선IP 사전 정보관리 엑셀저장', url: 'opermgmt/intgrmgmt/viewListMobileMstExcel' },
   viewListWireMstExcel: { desc: '운용정보관리 > (IP주소 라우팅 비교/점검) 유선IP 사전 정보관리 엑셀저장', url: 'opermgmt/intgrmgmt/viewListWireMstExcel' },
+  downloadtextformat: { desc: 'DB관리 > 업로드 관리/양식 다운로드 및 업로드 > 텍스트 양식 다운로드', url: 'ipmgmt/ipuploadmgmt/downloadtextformat' },
+  downloadformat: { desc: 'DB관리 > 업로드 관리/양식 다운로드 및 업로드 > 엑셀 양식 다운로드', url: 'ipmgmt/ipuploadmgmt/downloadformat' },
 }
 
 export function apiTest(params) {

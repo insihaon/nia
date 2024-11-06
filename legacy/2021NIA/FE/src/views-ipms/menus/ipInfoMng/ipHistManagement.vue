@@ -91,7 +91,7 @@ export default {
         { prop: 'sassignTypeNm', label: '서비스', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'sassignLevelNm', label: '할당상태', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'screateNm', label: '작업자', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'dcreateDt', label: '작업일자', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'dcreateDt', label: '작업일자', align: 'center', sortable: true, columnVisible: true, showOverflow: true, formatter: (row) => { return row.dcreateDt ? this.moment(row.dcreateDt).format('YYYY-MM-DD HH:mm:ss') : '' } },
         { prop: 'sllnum', label: '전용번호', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'ssubscnealias', label: '장비명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'ssubsclgipportdescription', label: 'I/F명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },

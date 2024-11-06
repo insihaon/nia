@@ -439,7 +439,8 @@ public class ExcelUtil {
 			fileName.append(jwtUtil.getUserId(request));
 			fileName.append(".xlsx");
 			
-			File excelFile = fileUtil.getFile(fileSystemResource.getPath() + File.separator + fileName.toString());
+			// File excelFile = fileUtil.getFile(fileSystemResource.getPath() + File.separator + fileName.toString());
+			File excelFile = fileUtil.getFile(fileStorageProperties.getExcelUploadDir() + File.separator + fileName.toString());
 			bos = new BufferedOutputStream(new FileOutputStream(excelFile));
 			
 			workbook.write(bos);
@@ -469,7 +470,9 @@ public class ExcelUtil {
 			fileName.append("_TEXT_FILE_");
 			fileName.append(jwtUtil.getUserId(request));
 			fileName.append(".txt");
-			File textFile = fileUtil.getFile(fileSystemResource.getPath() + File.separator + fileName.toString());
+
+			// File textFile = fileUtil.getFile(fileSystemResource.getPath() + File.separator + fileName.toString());
+			File textFile = fileUtil.getFile(fileStorageProperties.getExcelUploadDir() + File.separator + fileName.toString());
 			br = new BufferedWriter(new FileWriter(textFile, true));
 			br.write(retStr);
 			br.flush();

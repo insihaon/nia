@@ -1043,9 +1043,32 @@ public class WhoisMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/opermgmt/whoismgmt/viewRegWhoisModReq.model", method = RequestMethod.POST)
 	@ResponseBody
-	public ModelMap _viewRegWhoisModReq(@RequestBody TbWhoisModifyVo searchVo, ModelMap model, HttpServletRequest request) {
-		TbWhoisModifyListVo resultListVo = whoisService.selectListTbWhoisModReqIp(searchVo);
-		return createResultList(resultListVo.getTbWhoisModifyVos(), resultListVo.getTotalCount());
+	public ModelMap _viewRegWhoisModReq(@RequestBody TbWhoisModifyVo searchVo, HttpServletRequest request) {
+		ModelMap model = new ModelMap();
+		TbWhoisModifyListVo resultListVo = null;
+		TbWhoisUserVo ktInfoVo = null;
+		try {
+			setPagination(searchVo);
+			resultListVo = whoisService.selectListTbWhoisModReqIp(searchVo);
+			ktInfoVo = new TbWhoisUserVo();
+			ktInfoVo.setSsaid("00000000000");
+			ktInfoVo = whoisService.selectWhoisUser(ktInfoVo);
+		} catch(ServiceException e){
+			resultListVo = new TbWhoisModifyListVo();
+			ktInfoVo = new TbWhoisUserVo();
+			String commonMsg = tbCmnMstService.selectMsgDesc(e);
+			resultListVo.setCommonMsg(commonMsg);
+		} catch(Exception e) {
+			resultListVo = new TbWhoisModifyListVo();
+			ktInfoVo = new TbWhoisUserVo();
+			String commonMsg = tbCmnMstService.selectMsgDesc(new ServiceException("CMN.HIGH.00000"));
+			resultListVo.setCommonMsg(commonMsg);
+		}
+		model.addAttribute("resultListVo", resultListVo.getTbWhoisModifyVos());
+		model.addAttribute("resultListVoTotalCount", resultListVo.getTotalCount());
+		model.addAttribute("ktInfoVo", ktInfoVo);
+		
+		return model;
 	}
 	@RequestMapping(value = "/opermgmt/whoismgmt/viewRegWhoisModReq.ajax", method = RequestMethod.POST)
 	public String viewRegWhoisModReq(@RequestBody TbWhoisModifyVo searchVo, ModelMap model, HttpServletRequest request) {
@@ -1108,6 +1131,7 @@ public class WhoisMgmtController extends CommonController {
 	 * @return
 	 */
 	@RequestMapping(value = "/opermgmt/whoismgmt/selectSearchWhoisInfo.json", method = RequestMethod.POST)
+	@ResponseBody
 	public TbWhoisModifyVo selectSearchWhoisInfo(@RequestBody TbWhoisModifyVo searchVo,  HttpServletRequest request, HttpServletResponse response){
 		
 		TbWhoisModifyVo resultVo = null;

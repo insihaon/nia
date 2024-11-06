@@ -134,8 +134,8 @@ export default {
       } catch (error) {
         this.error(error)
       } finally {
-          this.closeLoading(target)
-        }
+        this.closeLoading(target)
+      }
     },
     handleChangeCurPage(v) {
       if (v) this.pagination.currentPage = v

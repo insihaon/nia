@@ -61,9 +61,9 @@ export default {
         { prop: 'rboardDivision', label: '요청사항구분', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'rboardTitle', label: '제목', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'sUserNm', label: '등록자', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'rboardDcreateDt', label: '등록일', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'rboardDesireDate', label: '희망완료일', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'rboardExpectedDate', label: '완료예정일', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'rboardDcreateDt', label: '등록일', align: 'center', sortable: true, columnVisible: true, showOverflow: true, formatter: (row) => { return row.rboardDcreateDt ? this.moment(row.rboardDcreateDt).format('YYYY-MM-DD') : '' } },
+        { prop: 'rboardDesireDate', label: '희망완료일', align: 'center', sortable: true, columnVisible: true, showOverflow: true, formatter: (row) => { return row.rboardDesireDate ? this.moment(row.rboardDesireDate).format('YYYY-MM-DD') : '' } },
+        { prop: 'rboardExpectedDate', label: '완료예정일', align: 'center', sortable: true, columnVisible: true, showOverflow: true, formatter: (row) => { return row.rboardExpectedDate ? this.moment(row.rboardExpectedDate).format('YYYY-MM-DD') : '' } },
         { prop: 'rboardImportance', label: '중요도', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'rboardProgress', label: '진행상태', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
       ],
@@ -101,34 +101,32 @@ export default {
     }
   },
   mounted() {
-    this.fnViewListReq()
+    setTimeout(() => {
+      this.fnViewListReq()
+    }, 100)
   },
   methods: {
     async fnViewListReq(requestParameter) {
+      const target = ({ vue: this.$refs.compTable })
       try {
+        this.openLoading(target)
         const res = await apiRequestModel(ipmsModelApis.viewListReq, requestParameter)
         this.resultListVo = res?.result.data
       } catch (error) {
         console.error(error)
+      } finally {
+        this.closeLoading(target)
       }
     },
     onClcikRow(row, type) {
      this.fnViewDetailReq(row, 'detail')
     },
-    async fnViewDetailReq(row, type) {
+    fnViewDetailReq(row, type) {
+      const params = { type }
       if (type === 'detail') {
-        try {
-           const ReqBoardVo = {
-              seq: row.seq
-           }
-          const res = await apiRequestModel(ipmsModelApis.viewDetailReq, ReqBoardVo)
-          this.$refs.ModalReqDetail.open({ row: res.result.data, type: type })
-        } catch (error) {
-          console.error(error)
-        }
-      } else {
-        this.$refs.ModalReqDetail.open({ type: type })
+        Object.assign(params, { seq: row.seq })
       }
+      this.$refs.ModalReqDetail.open(params)
     },
     handleClickExcelDownloadBtn() {
       downloadExcel(this, 'viewListReqExcel')

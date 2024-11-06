@@ -103,27 +103,28 @@
         </tbody>
       </table>
     </div>
-    <!-- <template v-if="userGrade 관리자"> -->
-    <div class="popupContentTable">
+    <div v-if="(isStatApply && isMng) || resultVo.sStatCd === '30'" class="popupContentTable">
       <div class="popupContentTableTitle">반려사유</div>
       <table>
         <tbody>
           <tr>
             <td>
-              <textarea v-model="sreject_rsn" maxlength="5000" />
+              <textarea v-model="sreject_rsn" maxlength="5000" :readonly="resultVo.sStatCd === '30'" />
             </td>
           </tr>
         </tbody>
       </table>
     </div>
-    <!-- </template> -->
     <div class="popupContentTableBottom">
-      <!-- 관리자 : 신청 -> 변경신청취소, 수정, 승인/반려  | 사용자 - 신청 -> 변경신청취소, 수정 -->
-      <el-button type="primary" size="small" icon="float-left" round @click="fnApprRegWhoisModReqSubmit('A')">{{ $t('승인') }}</el-button>
-      <el-button type="primary" size="small" icon="float-left" round @click="fnApprRegWhoisModReqSubmit('R')">{{ $t('반려') }}</el-button>
-      <el-button type="primary" size="small" round @click="fnDeleteRegWhoisModReqSubmit()">{{ $t('변경신청취소') }}</el-button>
-      <el-button v-if="viewType === 'detail'" type="primary" size="small" icon="el-icon-edit" round @click="onChangeMode()">{{ $t('수정') }}</el-button>
-      <el-button v-if="viewType === 'edit'" type="primary" size="small" icon="el-icon-edit-outline" round @click="fnUpdateRegWhoisModReqSubmit()">{{ $t('저장') }}</el-button>
+      <template v-if="isStatApply && isMng">
+        <el-button type="primary" size="small" round @click="fnApprRegWhoisModReqSubmit('A')">승인</el-button>
+        <el-button type="primary" size="small" round @click="fnApprRegWhoisModReqSubmit('R')">반려</el-button>
+      </template>
+      <template v-if="isStatApply">
+        <el-button type="primary" size="small" round @click="fnDeleteRegWhoisModReqSubmit()">변경신청취소</el-button>
+        <el-button v-if="viewType === 'detail'" type="primary" size="small" icon="el-icon-edit" round @click="onChangeMode()">수정</el-button>
+      </template>
+      <el-button v-if="viewType === 'edit'" type="primary" size="small" icon="el-icon-edit-outline" round @click="fnUpdateRegWhoisModReqSubmit()">저장</el-button>
       <el-button type="primary" size="small" icon="el-icon-close" round @click="close()">{{ $t('exit') }}</el-button>
     </div>
   </el-dialog>
@@ -133,6 +134,7 @@
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
 import { ipmsJsonApis, apiRequestJson } from '@/api/ipms'
+import { mapState } from 'vuex'
 
 const routeName = 'ModalDetailWhoisMod'
 
@@ -170,6 +172,15 @@ export default {
   computed: {
     onChangetitle() {
       return this.viewType === 'detail' ? '신청 상세' : '수정'
+    },
+    ...mapState({
+      suserGradeCd: state => state.ipms.suserGradeCd,
+    }),
+    isStatApply() { // 신청상태
+      return this.resultVo.sStatCd === '10'
+    },
+    isMng() { // 관리자
+      return this.suserGradeCd === 'UR0001'
     }
   },
   mounted() {

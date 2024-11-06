@@ -81,7 +81,7 @@ export default {
           { prop: 'sorgname', label: '기관명', align: 'center', columnVisible: true, showOverflow: true },
           { prop: 'snetNm', label: '네트워크이름', align: 'center', columnVisible: true, showOverflow: true },
           { prop: 'swhoisRequestTypeNm', label: '작업종류', align: 'center', columnVisible: true, showOverflow: true },
-          { prop: 'dmodifyDt', label: '변경일시', align: 'center', columnVisible: true, showOverflow: true },
+          { prop: 'dmodifyDt', label: '변경일시', align: 'center', columnVisible: true, showOverflow: true, formatter: (row) => { return row.dmodifyDt ? this.moment(row.dmodifyDt).format('YYYY-MM-DD HH:mm:ss') : '' } },
           { prop: 'swhoisTranStatusNm', label: '등록현황', align: 'center', columnVisible: true, showOverflow: true },
           { prop: 'stransKind', label: '입력구분', align: 'center', columnVisible: true, showOverflow: true },
         ],
