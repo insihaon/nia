@@ -16,7 +16,7 @@ var dialogOpenMixin = {
           pageTitle: 'AI 장애대응',
           top: '2vh',
           width: '700',
-          height: '620',
+          height: '650',
           resizeble: true,
         },
         requestForAction: {
@@ -24,15 +24,15 @@ var dialogOpenMixin = {
           pageTitle: '조치 요청서',
           top: '2vh',
           width: '1200',
-          height: '800',
+          height: '900',
           resizeble: true,
         },
         processFin: {
           component: () => import('@/views-nia/dashBoard/processFin'),
           pageTitle: '마감 처리',
           top: '2vh',
-          width: '500',
-          height: '475',
+          width: '600',
+          height: '500',
           resizeble: true,
         },
         configTest: {

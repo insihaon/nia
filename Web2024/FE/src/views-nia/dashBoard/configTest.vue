@@ -1,7 +1,7 @@
 <template>
-  <div :class="{ [name]: true }">
+  <div :class="{ [name]: true, 'h-100': true }">
     <div class="d-flex flex-column h-100 rounded justify-between">
-      <el-card shadow="never" :body-style="{ padding: '10px' }">
+      <el-card shadow="never" style="height: 30%" :body-style="{ padding: '10px' }">
         <div slot="header">
           <span><i class="el-icon-document" /> 기본 정보</span>
         </div>
@@ -20,7 +20,7 @@
           </el-col>
         </el-row>
       </el-card>
-      <el-card shadow="never" :body-style="{ padding: '10px' }">
+      <el-card shadow="never" style="height: 30%" :body-style="{ padding: '10px' }">
         <div slot="header">
           <span><i class="el-icon-document" />CRC/SPEED 체크</span>
         </div>
@@ -35,7 +35,7 @@
           </el-col>
         </el-row>
       </el-card>
-      <el-card shadow="never" :body-style="{ padding: '10px' }">
+      <el-card shadow="never" style="height: 50%" :body-style="{ padding: '10px' }">
         <div slot="header">
           <span><i class="el-icon-document" /> IP 불일치 체크</span>
         </div>
@@ -58,7 +58,7 @@
           </el-col>
         </el-row>
       </el-card>
-      <el-card shadow="never" :body-style="{ padding: '10px' }">
+      <el-card shadow="never" style="height: 25%" :body-style="{ padding: '10px' }">
         <div slot="header">
           <span><i class="el-icon-document" />원격제어</span>
         </div>

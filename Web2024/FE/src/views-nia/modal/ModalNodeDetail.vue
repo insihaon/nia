@@ -28,7 +28,7 @@
         </tr>
         <tr>
           <th>모델명</th>
-          <td class="disable">{{ rowInfo.model_id }}</td>
+          <td class="disable">{{ rowInfo.code_nm }}</td>
           <th>대표IP</th>
           <td class="disable">{{ rowInfo.ip_addr }}</td>
         </tr>

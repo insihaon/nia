@@ -1,7 +1,7 @@
 <template>
-  <div :class="{ [name]: true }">
+  <div :class="{ [name]: true }" style="height : 100%">
     <div class="d-flex flex-column h-100 rounded justify-between">
-      <el-card shadow="never" :body-style="{'padding': '10px'}">
+      <el-card shadow="never" style="height : 85%" :body-style="{'padding': '10px'}">
         <div slot="header">
           <span><i class="el-icon-document" /> 조치 SOP</span>
         </div>
@@ -19,7 +19,7 @@
           <el-input v-model="etcContent" placeholder="기타 조치내용 입력" />
         </el-row>
       </el-card>
-      <el-card shadow="never" :body-style="{'padding': '10px'}">
+      <el-card shadow="never" style="height : 90%" :body-style="{'padding': '10px'}">
         <div slot="header">
           <span><i class="el-icon-document" /> AI 결과 피드백</span>
         </div>
@@ -31,7 +31,7 @@
           <el-date-picker v-model="period" type="datetimerange" range-separator="To" start-placeholder="시작 시간" end-placeholder="종료 시간" :disabled="aiFeedback === '0'" />
         </el-row>
       </el-card>
-      <el-card shadow="never" :body-style="{'padding': '10px'}">
+      <el-card shadow="never" class="h-100" :body-style="{'padding': '10px'}">
         <div slot="header">
           <span><i class="el-icon-document" /> 피드백 내용</span>
         </div>
@@ -191,6 +191,7 @@ export default {
         start_time: this.ai_accuracy === 1 ? this.period[0] : null,
         end_time: this.ai_accuracy === 1 ? this.period[1] : null,
         handling_fin_user: this.$store.state.user.name,
+        aiFeedback: this.aiFeedback
       }
       Object.assign(param, this.finSop)
 
@@ -230,8 +231,13 @@ export default {
 
 <style lang="scss" scoped>
 ::v-deep .el-select {
-  width: 100%;
+  width: 100% !important;
 }
+
+::v-deep .el-date-editor {
+  width: 100% !important;
+}
+
 ::v-deep .edit.el-button--mini {
   padding: 6px 10px;
 }

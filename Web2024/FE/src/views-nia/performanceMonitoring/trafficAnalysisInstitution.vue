@@ -19,6 +19,7 @@
 <script>
 import { Base } from '@/min/Base.min'
 import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
+import { getFormatByte } from '@/views-nia/js/commonFormat'
 import { apiTrafficAgencyList, apiSelectAgencyCodeList } from '@/api/nia'
 
 const routeName = 'TrafficAnalysisInstitution'
@@ -76,7 +77,7 @@ export default {
         { type: '', model: 'src_ip', prop: 'src_ip', name: 'IP(Soruce)', minWidth: 150, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
         { type: '', model: 'dst_nren_name', prop: 'dst_nren_name', name: '이용기관(Destination)', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
         { type: '', model: 'dst_ip', prop: 'dst_ip', name: 'IP(Destination)', minWidth: 150, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
-        { type: '', model: 'packet_bytes', prop: 'packet_bytes', name: 'Mbyte', minWidth: 150, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
+        { type: '', model: 'packet_bytes', prop: 'packet_bytes', name: 'Mbyte', minWidth: 150, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true, formatter: getFormatByte },
       ]
       return { options, columns, data: this.trafficData, getRightClickMenuItems: () => { return [] } }
     },
