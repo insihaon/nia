@@ -26,8 +26,8 @@
             <tr>
               <th>주소 찾기</th>
               <td class="textflex">
-                <el-input v-model="txtInputDongNm" type="text" size="small" title="search" placeholder="SEARCH" @click="fnSearchEnter()" />
-                <el-button type="primary" size="small" icon="el-icon-search" round @keyup.enter.native="fnSelectZipcode()" @click="fnSelectZipcode()" />
+                <el-input v-model="txtInputDongNm" type="text" size="small" placeholder="SEARCH" @keyup.enter.native="fnSelectZipcode()" />
+                <el-button type="primary" size="small" icon="el-icon-search" round @click="fnSelectZipcode()" />
               </td>
             </tr>
             <tr>
@@ -76,15 +76,14 @@
         </table>
         <div v-if="pagination.data.length > 0" class="tableListWrap">
           <div class="tableListPaging" style="justify-content: center;">
-            <el-button icon="el-icon-d-arrow-left" type="text" @click="handleChangeCurPage(pagination.currentPage - 1)" />
-            <el-button icon="el-icon-arrow-left" type="text" @click="handleChangeCurPage(pagination.currentPage - 1)" />
-            <div class="pagingNumber">
-              <span v-for="page in getPageCount" :key="page" :class="{'active': page === pagination.currentPage }">
-                {{ page }}
-              </span>
-            </div>
-            <el-button icon="el-icon-arrow-right" type="text" @click="handleChangeCurPage(pagination.currentPage + 1)" />
-            <el-button icon="el-icon-d-arrow-right" type="text" @click="handleChangeCurPage(getPageCount)" />
+            <el-pagination
+              :current-page.sync="pagination.currentPage"
+              :total="pagination.total"
+              :page-size="pagination.pageSize"
+              layout="prev, pager, next"
+              @current-change="handleChangeCurPage"
+              @size-change="handleChangeCurPage"
+            />
           </div>
         </div>
         <!-- <div class="page_num">
@@ -140,7 +139,7 @@ export default {
       }
     }
   },
-  methods: {
+   methods: {
     onCreated() {
       Modal.methods.onCreated.call(this)
       this.closeOnClickModal = false
@@ -170,7 +169,7 @@ export default {
     },
     handleChangeCurPage(v) {
       if (v) this.pagination.currentPage = v
-      this.fnSelectListIpAssignMst()
+      this.fnSelectZipcode()
     },
     fnZipcodeSelected(zipcode, newkaddr, eaddr) { /* 주소 클릭  */
     this.txtAddress = newkaddr

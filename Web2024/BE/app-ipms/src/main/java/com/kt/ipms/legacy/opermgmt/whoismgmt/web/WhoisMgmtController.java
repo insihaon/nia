@@ -281,6 +281,7 @@ public class WhoisMgmtController extends CommonController {
 	@RequestMapping(value="opermgmt/whoismgmt/viewSearchZipCode.model", method = RequestMethod.POST)
 	@ResponseBody
 	public ModelMap viewSearchZipCode(@RequestBody TbNewZipcodeVo tbZipcodeVo, ModelMap model, HttpServletRequest request) {
+		setPagination(tbZipcodeVo);
 		TbNewZipcodeListVo resultListVo = whoisService.selectListPageTbNewZipcode(tbZipcodeVo);
 		return createResultList(resultListVo.getTbZipcodeVos(), resultListVo.getTotalCount());
 	}
