@@ -45,7 +45,7 @@ import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
 
 @Controller
 public class AssignMgmtController extends CommonController {
-	
+
 	@Autowired
 	private AssignMgmtService assignMgmtService;
 
@@ -53,9 +53,13 @@ public class AssignMgmtController extends CommonController {
 	@ResponseBody
 	public ModelMap viewListAsgnIPMst(@RequestBody TbIpAssignMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
-		TbIpAssignMstListVo resultListVo = assignMgmtService.selectListIpAssignMst(searchVo);
+		ModelMap builtModel = viewListAsgnIPMstModel(searchVo, request);
+		setPagination(searchVo);
+		TbIpAssignMstListVo resultListVo = (TbIpAssignMstListVo) builtModel.get("resultListVo");
+
 		return createResultList(resultListVo.getTbIpAssignMstVos(), resultListVo.getTotalCount());
 	}
+
 	@RequestMapping(value = "/ipmgmt/assignmgmt/viewListAsgnIPMst.do", method = RequestMethod.POST)
 	public String viewListAsgnIPMst(@ModelAttribute("searchVo") TbIpAssignMstVo searchVo, ModelMap model,
 			HttpServletRequest request, HttpServletResponse response) {
@@ -71,24 +75,28 @@ public class AssignMgmtController extends CommonController {
 		}
 		ModelMap builtModel = viewListAsgnIPMstModel(searchVo, request);
 		model.addAllAttributes(builtModel);
-		
+
 		searchVoClone.setUrl("/ipmgmt/assignmgmt/viewListAsgnIPMst.model");
 		model.addAttribute("searchVoJson", searchVoJson(searchVoClone));
 		return "ipmgmt/assignmgmt/viewListAsgnIPMst";
 	}
 
-	private ModelMap viewListAsgnIPMstModel(@ModelAttribute("searchVo") TbIpAssignMstVo searchVo, HttpServletRequest request) {
+	private ModelMap viewListAsgnIPMstModel(@ModelAttribute("searchVo") TbIpAssignMstVo searchVo,
+			HttpServletRequest request) {
 		ModelMap model = new ModelMap();
 		TbIpAssignMstListVo resultListVo = null;
-		String sloadFlg = "T"; //메뉴 호출 시 조회를 처리하지 않기 위한 예외값 로직 추가(2014.12.24 전필권 과장님 요청)
+		String sloadFlg = "T"; // 메뉴 호출 시 조회를 처리하지 않기 위한 예외값 로직 추가(2014.12.24 전필권 과장님 요청)
 		try {
-			List<CommonCodeVo> sipCreateTypeCds = commonCodeService.selectListCommonCode(CommonCodeUtil.IP_CREATE_TYPE_CD, null);
-			List<CommonCodeVo> sipCreateSeqCds = commonCodeService.selectListCommonCode(CommonCodeUtil.IP_CREATE_SEQ_CD, null);
-			List<CommonCodeVo> sipVersionTypeCds = commonCodeService.selectListCommonCode(CommonCodeUtil.IP_VERSION_TYPE_CD, null);
+			List<CommonCodeVo> sipCreateTypeCds = commonCodeService
+					.selectListCommonCode(CommonCodeUtil.IP_CREATE_TYPE_CD, null);
+			List<CommonCodeVo> sipCreateSeqCds = commonCodeService.selectListCommonCode(CommonCodeUtil.IP_CREATE_SEQ_CD,
+					null);
+			List<CommonCodeVo> sipVersionTypeCds = commonCodeService
+					.selectListCommonCode(CommonCodeUtil.IP_VERSION_TYPE_CD, null);
 			model.addAttribute("sipCreateTypeCds", sipCreateTypeCds);
 			model.addAttribute("sipCreateSeqCds", sipCreateSeqCds);
 			model.addAttribute("sipVersionTypeCds", sipVersionTypeCds);
-			
+
 			/** 계위 정보 설정 **/
 			TbLvlBasListVo svcLineListVo = jwtUtil.getSvcLineList(request);
 			TbLvlBasListVo centerListVo = null;
@@ -136,12 +144,11 @@ public class AssignMgmtController extends CommonController {
 			model.addAttribute("svcLineListVo", svcLineListVo);
 			model.addAttribute("centerListVo", centerListVo);
 			model.addAttribute("nodeListVo", nodeListVo);
-			
-			
-			if(null != searchVo.getSsvcGroupCdMultiStr() && !"".equals(searchVo.getSsvcGroupCdMultiStr())){
+
+			if (null != searchVo.getSsvcGroupCdMultiStr() && !"".equals(searchVo.getSsvcGroupCdMultiStr())) {
 				List<String> listString = new ArrayList<String>();
 				String[] ssvcGroupCdMulti = searchVo.getSsvcGroupCdMultiStr().split(";");
-				for(int i=0;i<ssvcGroupCdMulti.length;i++){
+				for (int i = 0; i < ssvcGroupCdMulti.length; i++) {
 					listString.add(ssvcGroupCdMulti[i]);
 				}
 				searchVo.setSsvcGroupCdMulti(listString);
@@ -153,43 +160,44 @@ public class AssignMgmtController extends CommonController {
 			searchSeqVo.setSsvcObjCd(searchVo.getSsvcObjCd());
 			TbLvlMstListVo resultSeqList = jwtUtil.getLvlSeqList(request, searchSeqVo);
 			searchVo.setLvlMstSeqListVo(resultSeqList);
-			
+
 			/** 조직별 서비스 유형 셋팅(2014.12.04) **/
 			TbIpAllocMstVo searchasTypeVo = new TbIpAllocMstVo();
 			searchasTypeVo.setLvlMstSeqListVo(resultSeqList);
 			List<CommonCodeVo> sassignTypeCds = assignMgmtService.selectOrgSassignTypeCdList(searchasTypeVo);
 			model.addAttribute("sassignTypeCds", sassignTypeCds);
-			
+
 			/** 계위별 배정 레벨 목록 조회 **/
 			Map<String, String> assignLevelCdParamMap = new HashMap<String, String>();
 			String gradeCd = jwtUtil.getUserGradeCd(request);
 			if (gradeCd.equals(CommonCodeUtil.USER_GRADE_A) || gradeCd.equals(CommonCodeUtil.USER_GRADE_S)) {
 				assignLevelCdParamMap.put("startCd", "IA0001");
 			} else if (gradeCd.equals(CommonCodeUtil.USER_GRADE_N)) {
-				assignLevelCdParamMap.put("startCd", "IA0001"); //2015-01-08 망관리잗ㅎ 미배정 보이도록 요청
+				assignLevelCdParamMap.put("startCd", "IA0001"); // 2015-01-08 망관리잗ㅎ 미배정 보이도록 요청
 			} else {
 				assignLevelCdParamMap.put("startCd", "IA0003");
 			}
 			assignLevelCdParamMap.put("endCd", "IA0004");
-			List<CommonCodeVo> sassignLevelCds = commonCodeService.selectListCommonCode(CommonCodeUtil.ASSIGN_LEVEL_CD, assignLevelCdParamMap);
+			List<CommonCodeVo> sassignLevelCds = commonCodeService.selectListCommonCode(CommonCodeUtil.ASSIGN_LEVEL_CD,
+					assignLevelCdParamMap);
 			model.addAttribute("sassignLevelCds", sassignLevelCds);
-			
+
 			// 멀티셀렉트
-			if(null != searchVo.getSassignTypeCdMultiStr() && !"".equals(searchVo.getSassignTypeCdMultiStr())){
+			if (null != searchVo.getSassignTypeCdMultiStr() && !"".equals(searchVo.getSassignTypeCdMultiStr())) {
 				List<String> listString = new ArrayList<String>();
 				String[] sAssignTypeMulti = searchVo.getSassignTypeCdMultiStr().split(";");
-				for(int i=0;i<sAssignTypeMulti.length;i++){
+				for (int i = 0; i < sAssignTypeMulti.length; i++) {
 					listString.add(sAssignTypeMulti[i]);
 				}
-				
+
 				searchVo.setSassignTypeMulti(listString);
 			}
-			
+
 			/** 배정 목록 조회 **/
 			if (!StringUtils.hasText(searchVo.getSortType())) {
 				searchVo.setSortType(CommonCodeUtil.SORT_TYPE_PIP_PREFIX);
 				sloadFlg = "T";
-			}else{
+			} else {
 				sloadFlg = "F";
 			}
 			if (!StringUtils.hasText(searchVo.getSortOrdr())) {
@@ -200,7 +208,7 @@ public class AssignMgmtController extends CommonController {
 			}
 			if (!StringUtils.hasText(searchVo.getSassignLevelCd())) {
 				searchVo.setSearchBgnCd(sassignLevelCds.get(0).getCode());
-				searchVo.setSearchEndCd(sassignLevelCds.get(sassignLevelCds.size()-1).getCode());
+				searchVo.setSearchEndCd(sassignLevelCds.get(sassignLevelCds.size() - 1).getCode());
 			} else {
 				searchVo.setSearchBgnCd("");
 				searchVo.setSearchEndCd("");
@@ -209,10 +217,11 @@ public class AssignMgmtController extends CommonController {
 				searchVo.setSipCreateTypeCd("CT0001");
 			}
 			setPagination(searchVo);
-			if (sloadFlg.equals("T")){
+			if (sloadFlg.equals("T")) {
 				resultListVo = new TbIpAssignMstListVo();
 				resultListVo.setTotalCount(0);
-			}else{
+			} else {
+				setPagination(searchVo);
 				resultListVo = assignMgmtService.selectListIpAssignMst(searchVo);
 			}
 			resultListVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
@@ -234,8 +243,7 @@ public class AssignMgmtController extends CommonController {
 		return model;
 
 	}
-	
-	
+
 	@RequestMapping(value = "/ipmgmt/assignmgmt/viewListAsgnIPMstExcel.json", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<?> viewListAsgnIPMstExcel(@RequestBody TbIpAssignMstVo searchVo,
@@ -277,17 +285,17 @@ public class AssignMgmtController extends CommonController {
 							searchVo.setSsvcObjCd(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd());
 						}
 					}
-				} 
+				}
 			}
-			if(null != searchVo.getSsvcGroupCdMultiStr() && !"".equals(searchVo.getSsvcGroupCdMultiStr())){
+			if (null != searchVo.getSsvcGroupCdMultiStr() && !"".equals(searchVo.getSsvcGroupCdMultiStr())) {
 				List<String> listString = new ArrayList<String>();
 				String[] ssvcGroupCdMulti = searchVo.getSsvcGroupCdMultiStr().split(";");
-				for(int i=0;i<ssvcGroupCdMulti.length;i++){
+				for (int i = 0; i < ssvcGroupCdMulti.length; i++) {
 					listString.add(ssvcGroupCdMulti[i]);
 				}
 				searchVo.setSsvcGroupCdMulti(listString);
 			}
-			
+
 			/** 계위 Seq 목록 조회 **/
 			TbLvlMstVo searchSeqVo = new TbLvlMstVo();
 			searchSeqVo.setSsvcLineTypeCd(searchVo.getSsvcLineTypeCd());
@@ -295,7 +303,7 @@ public class AssignMgmtController extends CommonController {
 			searchSeqVo.setSsvcObjCd(searchVo.getSsvcObjCd());
 			TbLvlMstListVo resultSeqList = jwtUtil.getLvlSeqList(request, searchSeqVo);
 			searchVo.setLvlMstSeqListVo(resultSeqList);
-			
+
 			/** 계위별 배정 레벨 목록 조회 **/
 			Map<String, String> assignLevelCdParamMap = new HashMap<String, String>();
 			String gradeCd = jwtUtil.getUserGradeCd(request);
@@ -307,8 +315,9 @@ public class AssignMgmtController extends CommonController {
 				assignLevelCdParamMap.put("startCd", "IA0003");
 			}
 			assignLevelCdParamMap.put("endCd", "IA0004");
-			List<CommonCodeVo> sassignLevelCds = commonCodeService.selectListCommonCode(CommonCodeUtil.ASSIGN_LEVEL_CD, assignLevelCdParamMap);
-			
+			List<CommonCodeVo> sassignLevelCds = commonCodeService.selectListCommonCode(CommonCodeUtil.ASSIGN_LEVEL_CD,
+					assignLevelCdParamMap);
+
 			/** 배정 목록 조회 **/
 			if (!StringUtils.hasText(searchVo.getSortType())) {
 				searchVo.setSortType(CommonCodeUtil.SORT_TYPE_PIP_PREFIX);
@@ -321,22 +330,22 @@ public class AssignMgmtController extends CommonController {
 			}
 			if (!StringUtils.hasText(searchVo.getSassignLevelCd())) {
 				searchVo.setSearchBgnCd(sassignLevelCds.get(0).getCode());
-				searchVo.setSearchEndCd(sassignLevelCds.get(sassignLevelCds.size()-1).getCode());
+				searchVo.setSearchEndCd(sassignLevelCds.get(sassignLevelCds.size() - 1).getCode());
 			} else {
 				searchVo.setSearchBgnCd("");
 				searchVo.setSearchEndCd("");
 			}
-			
-			if(null != searchVo.getSassignTypeCdMultiStr() && !"".equals(searchVo.getSassignTypeCdMultiStr())){
+
+			if (null != searchVo.getSassignTypeCdMultiStr() && !"".equals(searchVo.getSassignTypeCdMultiStr())) {
 				List<String> listString = new ArrayList<String>();
 				String[] sAssignTypeMulti = searchVo.getSassignTypeCdMultiStr().split(";");
-				for(int i=0;i<sAssignTypeMulti.length;i++){
+				for (int i = 0; i < sAssignTypeMulti.length; i++) {
 					listString.add(sAssignTypeMulti[i]);
 				}
-				
+
 				searchVo.setSassignTypeMulti(listString);
 			}
-			
+
 			TbIpAssignMstListVo resultListVo = assignMgmtService.selectListIpAssignMstExcel(searchVo);
 			List<String> mappingList = new ArrayList<String>();
 			mappingList.add("서비스망|getSsvcLineTypeNm");
@@ -352,7 +361,8 @@ public class AssignMgmtController extends CommonController {
 			mappingList.add("배정상태|getSassignLevelNm");
 			mappingList.add("비고|getScomment");
 
-			return excelDownloadService.generateAndDownloadExcel(resultListVo.getTbIpAssignMstVos(), mappingList, request);
+			return excelDownloadService.generateAndDownloadExcel(resultListVo.getTbIpAssignMstVos(), mappingList,
+					request);
 		} catch (ServiceException e) {
 			String msgDesc = tbCmnMstService.selectMsgDesc(e);
 			resultVo.setCommonMsg(msgDesc);
@@ -370,6 +380,7 @@ public class AssignMgmtController extends CommonController {
 		TbIpAssignMstVo resultVo = assignMgmtService.selectIpAssignMst(searchVo);
 		return createResult(resultVo);
 	}
+
 	@RequestMapping(value = "/ipmgmt/assignmgmt/viewInsertDivAsgnIPMst.ajax", method = RequestMethod.POST)
 	public String viewInsertDivAsgnIPMst(@RequestBody TbIpAssignMstVo searchVo, ModelMap model,
 			HttpServletRequest request, HttpServletResponse response) {
@@ -415,12 +426,10 @@ public class AssignMgmtController extends CommonController {
 		model.addAttribute("resultVo", resultVo);
 		return model;
 	}
-	
-	
-	
+
 	@RequestMapping(value = "/ipmgmt/assignmgmt/appendDivAsgnIPMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbIpAssignMstListVo appendDivAsgnIPMst(@RequestBody TbIpAssignMstVo tbIpAssignMstVo, 
+	public TbIpAssignMstListVo appendDivAsgnIPMst(@RequestBody TbIpAssignMstVo tbIpAssignMstVo,
 			HttpServletRequest request, HttpServletResponse response) {
 		TbIpAssignMstListVo resultListVo = null;
 		try {
@@ -437,12 +446,12 @@ public class AssignMgmtController extends CommonController {
 		}
 		return resultListVo;
 	}
-	
+
 	@RequestMapping(value = "/ipmgmt/assignmgmt/appendMergeDivAsgnIPMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbIpAssignMstVo appendMergeDivAsgnIPMst(@RequestBody TbIpAssignMstListVo tbIpAssignMstListVo, 
+	public TbIpAssignMstVo appendMergeDivAsgnIPMst(@RequestBody TbIpAssignMstListVo tbIpAssignMstListVo,
 			HttpServletRequest request, HttpServletResponse response) {
-		
+
 		TbIpAssignMstVo resultVo = null;
 		try {
 			resultVo = assignMgmtService.appendMergeDivIpAssignMst(tbIpAssignMstListVo);
@@ -458,7 +467,7 @@ public class AssignMgmtController extends CommonController {
 		}
 		return resultVo;
 	}
-	
+
 	@RequestMapping(value = "/ipmgmt/assignmgmt/insertListDivAsgnIPMst.json", method = RequestMethod.POST)
 	@ResponseBody
 	public TbIpAssignMstVo insertListDivAsgnIPMst(@RequestBody TbIpAssignMstComplexVo tbIpAssignMstComplexVo,
@@ -479,9 +488,10 @@ public class AssignMgmtController extends CommonController {
 			String msgDesc = tbCmnMstService.selectMsgDesc(new ServiceException("CMN.HIGH.00000"));
 			resultVo.setCommonMsg(msgDesc);
 		}
-		
+
 		return resultVo;
 	}
+
 	@RequestMapping(value = "/ipmgmt/assignmgmt/viewInsertMrgAsgnIPMst.model", method = RequestMethod.POST)
 	@ResponseBody
 	public ModelMap viewInsertMrgAsgnIPMst(@RequestBody TbIpAssignMstListVo tbIpAssignMstListVo, ModelMap model,
@@ -489,6 +499,7 @@ public class AssignMgmtController extends CommonController {
 		TbIpAssignMstComplexVo resultComplexVo = assignMgmtService.validateMrgAsgnIPMst(tbIpAssignMstListVo);
 		return createResult(resultComplexVo);
 	}
+
 	@RequestMapping(value = "/ipmgmt/assignmgmt/viewInsertMrgAsgnIPMst.ajax", method = RequestMethod.POST)
 	public String viewInsertMrgAsgnIPMst(@RequestBody TbIpAssignMstListVo tbIpAssignMstListVo, ModelMap model,
 			HttpServletRequest request, HttpServletResponse response) {
@@ -508,7 +519,8 @@ public class AssignMgmtController extends CommonController {
 		ModelMap builtModel = viewInsertMrgAsgnIPMstModel(tbIpAssignMstListVo, request);
 		model.addAllAttributes(builtModel);
 		String retPage = "";
-		if (!StringUtils.hasText(tbIpAssignMstListVo.getTypeFlag()) || tbIpAssignMstListVo.getTypeFlag().equals("Asgn")) {
+		if (!StringUtils.hasText(tbIpAssignMstListVo.getTypeFlag())
+				|| tbIpAssignMstListVo.getTypeFlag().equals("Asgn")) {
 			retPage = "ipmgmt/assignmgmt/viewInsertMrgAsgnIPMst";
 		} else {
 			retPage = "ipmgmt/allocmgmt/viewInsertMrgAlcIPMst";
@@ -516,12 +528,15 @@ public class AssignMgmtController extends CommonController {
 		return retPage;
 	}
 
-	private ModelMap viewInsertMrgAsgnIPMstModel(@RequestBody TbIpAssignMstListVo tbIpAssignMstListVo, HttpServletRequest request) {
+	private ModelMap viewInsertMrgAsgnIPMstModel(@RequestBody TbIpAssignMstListVo tbIpAssignMstListVo,
+			HttpServletRequest request) {
 		ModelMap model = new ModelMap();
 		TbIpAssignMstComplexVo resultComplexVo = null;
 		try {
-			if (!StringUtils.hasText(tbIpAssignMstListVo.getTypeFlag()) || tbIpAssignMstListVo.getTypeFlag().equals("Asgn")) {
-				List<CommonCodeVo> sassignTypeCds = commonCodeService.selectListCommonCode(CommonCodeUtil.ASSIGN_TYPE_CD, null);
+			if (!StringUtils.hasText(tbIpAssignMstListVo.getTypeFlag())
+					|| tbIpAssignMstListVo.getTypeFlag().equals("Asgn")) {
+				List<CommonCodeVo> sassignTypeCds = commonCodeService
+						.selectListCommonCode(CommonCodeUtil.ASSIGN_TYPE_CD, null);
 				model.addAttribute("sassignTypeCds", sassignTypeCds);
 				/** 계위 정보 설정 **/
 				TbLvlBasListVo svcLineListVo = jwtUtil.getSvcLineList(request);
@@ -544,7 +559,7 @@ public class AssignMgmtController extends CommonController {
 				model.addAttribute("svcLineListVo", svcLineListVo);
 				model.addAttribute("centerListVo", centerListVo);
 				model.addAttribute("nodeListVo", nodeListVo);
-				
+
 				/** 계위별 배정 레벨 목록 조회 **/
 				Map<String, String> assignLevelCdParamMap = new HashMap<String, String>();
 				String gradeCd = jwtUtil.getUserGradeCd(request);
@@ -556,8 +571,9 @@ public class AssignMgmtController extends CommonController {
 					assignLevelCdParamMap.put("startCd", "IA0003");
 				}
 				assignLevelCdParamMap.put("endCd", "IA0004");
-				
-				List<CommonCodeVo> sassignLevelCds = commonCodeService.selectListCommonCode(CommonCodeUtil.ASSIGN_LEVEL_CD, assignLevelCdParamMap);
+
+				List<CommonCodeVo> sassignLevelCds = commonCodeService
+						.selectListCommonCode(CommonCodeUtil.ASSIGN_LEVEL_CD, assignLevelCdParamMap);
 				model.addAttribute("sassignLevelCds", sassignLevelCds);
 			}
 			resultComplexVo = assignMgmtService.validateMrgAsgnIPMst(tbIpAssignMstListVo);
@@ -574,17 +590,16 @@ public class AssignMgmtController extends CommonController {
 		model.addAttribute("resultComplexVo", resultComplexVo);
 		return model;
 	}
-	
-	
-	
+
 	@RequestMapping(value = "/ipmgmt/assignmgmt/insertMrgAsgnIPMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbIpAssignMstVo insertMrgAsgnIPMst(@RequestBody TbIpAssignMstComplexVo tbIpAssignMstComplexVo, 
+	public TbIpAssignMstVo insertMrgAsgnIPMst(@RequestBody TbIpAssignMstComplexVo tbIpAssignMstComplexVo,
 			HttpServletRequest request, HttpServletResponse response) {
 		TbIpAssignMstVo resultVo = null;
 		try {
-			if (tbIpAssignMstComplexVo == null || tbIpAssignMstComplexVo.getSrcIpAssignMstVo() == null 
-				|| tbIpAssignMstComplexVo.getDestIpAssignMstVos() == null || tbIpAssignMstComplexVo.getDestIpAssignMstVos().size() == 0) {
+			if (tbIpAssignMstComplexVo == null || tbIpAssignMstComplexVo.getSrcIpAssignMstVo() == null
+					|| tbIpAssignMstComplexVo.getDestIpAssignMstVos() == null
+					|| tbIpAssignMstComplexVo.getDestIpAssignMstVos().size() == 0) {
 				throw new ServiceException("CMN.HIGH.00001");
 			}
 			TbIpAssignMstVo srcIpAssignMstVo = tbIpAssignMstComplexVo.getSrcIpAssignMstVo();
@@ -592,7 +607,7 @@ public class AssignMgmtController extends CommonController {
 			tbLvlBasVo.setSsvcLineTypeCd(srcIpAssignMstVo.getSsvcLineTypeCd());
 			tbLvlBasVo.setSsvcGroupCd(srcIpAssignMstVo.getSsvcGroupCd());
 			tbLvlBasVo.setSsvcObjCd(srcIpAssignMstVo.getSsvcObjCd());
-			
+
 			BigInteger nlvlMstSeq = jwtUtil.getLvlMstSeq(request, tbLvlBasVo);
 			srcIpAssignMstVo.setNlvlMstSeq(nlvlMstSeq);
 			srcIpAssignMstVo.setScreateId(jwtUtil.getUserId(request));
@@ -618,9 +633,21 @@ public class AssignMgmtController extends CommonController {
 	@ResponseBody
 	public ModelMap viewUpdateAsgnIPMst(@RequestBody TbIpAssignMstListVo tbIpAssignMstListVo, ModelMap model,
 			HttpServletRequest request) {
-		TbIpAssignMstListVo resultListVo = assignMgmtService.selectListAsgnIPMstViaInMstSeq(tbIpAssignMstListVo);
-		return createResultList(resultListVo.getTbIpAssignMstVos(), resultListVo.getTotalCount());
+		ModelMap builtModel = viewUpdateAsgnIPMstModel(tbIpAssignMstListVo, request);
+		TbIpAssignMstListVo resultListVo = (TbIpAssignMstListVo) builtModel.get("resultListVo");
+
+		ModelMap finalModel = createResultList(resultListVo.getTbIpAssignMstVos(), resultListVo.getTotalCount());
+
+		finalModel.addAttribute("svcLineListVo", builtModel.get("svcLineListVo"));
+		finalModel.addAttribute("centerListVo", builtModel.get("centerListVo"));
+		finalModel.addAttribute("nodeListVo", builtModel.get("nodeListVo"));
+		finalModel.addAttribute("disabledMap", builtModel.get("disabledMap"));
+		finalModel.addAttribute("sassignLevelCds", builtModel.get("sassignLevelCds"));
+		finalModel.addAttribute("sassignTypeCds", builtModel.get("sassignTypeCds"));
+
+		return finalModel;
 	}
+
 	@RequestMapping(value = "/ipmgmt/assignmgmt/viewUpdateAsgnIPMst.ajax", method = RequestMethod.POST)
 	public String viewUpdateAsgnIPMst(@RequestBody TbIpAssignMstListVo tbIpAssignMstListVo, ModelMap model,
 			HttpServletRequest request, HttpServletResponse response) {
@@ -642,14 +669,15 @@ public class AssignMgmtController extends CommonController {
 		return "ipmgmt/assignmgmt/viewUpdateAsgnIPMst";
 	}
 
-	private ModelMap viewUpdateAsgnIPMstModel(@RequestBody TbIpAssignMstListVo tbIpAssignMstListVo, HttpServletRequest request) {
+	private ModelMap viewUpdateAsgnIPMstModel(@RequestBody TbIpAssignMstListVo tbIpAssignMstListVo,
+			HttpServletRequest request) {
 		ModelMap model = new ModelMap();
 		TbIpAssignMstListVo resultListVo = null;
 		try {
 			String gradeCd = jwtUtil.getUserGradeCd(request);
 			/** 목록 조회 **/
 			resultListVo = assignMgmtService.selectListAsgnIPMstViaInMstSeq(tbIpAssignMstListVo);
-			
+
 			/** 계위 정보 설정 **/
 			TbLvlBasListVo svcLineListVo = jwtUtil.getSvcLineList(request);
 			TbLvlBasListVo centerListVo = null;
@@ -659,7 +687,7 @@ public class AssignMgmtController extends CommonController {
 			String ssvcGroupCd = resultVo.getSsvcGroupCd();
 			String ssvcObjCd = resultVo.getSsvcObjCd();
 			Map<String, Object> disabledMap = new HashMap<String, Object>();
-			
+
 			for (TbLvlBasVo itemVo : svcLineListVo.getTbLvlBasVos()) {
 				if (itemVo.getSsvcLineTypeCd().equals(ssvcLineTypeCd)) {
 					itemVo.setTypeFlag("selected");
@@ -708,7 +736,7 @@ public class AssignMgmtController extends CommonController {
 			model.addAttribute("centerListVo", centerListVo);
 			model.addAttribute("nodeListVo", nodeListVo);
 			model.addAttribute("disabledMap", disabledMap);
-			
+
 			/** 계위별 배정 레벨 목록 조회 **/
 			Map<String, String> assignLevelCdParamMap = new HashMap<String, String>();
 			if (gradeCd.equals(CommonCodeUtil.USER_GRADE_A) || gradeCd.equals(CommonCodeUtil.USER_GRADE_S)) {
@@ -719,8 +747,9 @@ public class AssignMgmtController extends CommonController {
 				assignLevelCdParamMap.put("startCd", "IA0003");
 			}
 			assignLevelCdParamMap.put("endCd", "IA0004");
-			
-			List<CommonCodeVo> sassignLevelCds = commonCodeService.selectListCommonCode(CommonCodeUtil.ASSIGN_LEVEL_CD, assignLevelCdParamMap);
+
+			List<CommonCodeVo> sassignLevelCds = commonCodeService.selectListCommonCode(CommonCodeUtil.ASSIGN_LEVEL_CD,
+					assignLevelCdParamMap);
 			for (CommonCodeVo itemVo : sassignLevelCds) {
 				if (itemVo.getCode().equals("IA0004")) {
 					itemVo.setTypeFlag("selected");
@@ -729,15 +758,16 @@ public class AssignMgmtController extends CommonController {
 				}
 			}
 			model.addAttribute("sassignLevelCds", sassignLevelCds);
-			
+
 			/** 서비스 목록 조회(망코드 분류) **/
 			Map<String, Object> assignTypeCdParamMap = new HashMap<String, Object>();
 			assignTypeCdParamMap.put("ssvcLineTypeCd", ssvcLineTypeCd);
-			List<CommonCodeVo> sassignTypeCds = commonCodeService.selectListCommonCode(CommonCodeUtil.ASSIGN_TYPE_CD, assignTypeCdParamMap);
+			List<CommonCodeVo> sassignTypeCds = commonCodeService.selectListCommonCode(CommonCodeUtil.ASSIGN_TYPE_CD,
+					assignTypeCdParamMap);
 			model.addAttribute("sassignTypeCds", sassignTypeCds);
 
 			resultListVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
-			
+
 		} catch (ServiceException e) {
 			resultListVo = new TbIpAssignMstListVo();
 			String msgDesc = tbCmnMstService.selectMsgDesc(e);
@@ -750,17 +780,16 @@ public class AssignMgmtController extends CommonController {
 		model.addAttribute("resultListVo", resultListVo);
 		return model;
 	}
-	
-	
-	
+
 	@RequestMapping(value = "/ipmgmt/assignmgmt/updateAsgnIPMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbIpAssignMstVo updateAsgnIPMst(@RequestBody TbIpAssignMstComplexVo tbIpAssignMstComplexVo, 
+	public TbIpAssignMstVo updateAsgnIPMst(@RequestBody TbIpAssignMstComplexVo tbIpAssignMstComplexVo,
 			HttpServletRequest request, HttpServletResponse response) {
 		TbIpAssignMstVo resultVo = null;
 		try {
-			if (tbIpAssignMstComplexVo == null || tbIpAssignMstComplexVo.getSrcIpAssignMstVo() == null 
-				|| tbIpAssignMstComplexVo.getDestIpAssignMstVos() == null || tbIpAssignMstComplexVo.getDestIpAssignMstVos().size() == 0) {
+			if (tbIpAssignMstComplexVo == null || tbIpAssignMstComplexVo.getSrcIpAssignMstVo() == null
+					|| tbIpAssignMstComplexVo.getDestIpAssignMstVos() == null
+					|| tbIpAssignMstComplexVo.getDestIpAssignMstVos().size() == 0) {
 				throw new ServiceException("CMN.HIGH.00001");
 			}
 			TbIpAssignMstVo srcIpAssignMstVo = tbIpAssignMstComplexVo.getSrcIpAssignMstVo();
@@ -793,6 +822,7 @@ public class AssignMgmtController extends CommonController {
 		TbIpAssignMstVo resultVo = assignMgmtService.selectIpAssignMst(tbIpAssignMstVo);
 		return createResult(resultVo);
 	}
+
 	@RequestMapping(value = "/ipmgmt/assignmgmt/viewDetailAsgnIPMst.ajax", method = RequestMethod.POST)
 	public String viewDetailAsgnIPMst(@RequestBody TbIpAssignMstVo tbIpAssignMstVo, ModelMap model,
 			HttpServletRequest request, HttpServletResponse response) {
@@ -813,8 +843,9 @@ public class AssignMgmtController extends CommonController {
 		model.addAttribute("searchVoJson", searchVoJson(searchVoClone));
 		return "ipmgmt/assignmgmt/viewDetailAsgnIPMst";
 	}
-	
-	private ModelMap viewDetailAsgnIPMstModel(@RequestBody TbIpAssignMstVo tbIpAssignMstVo, HttpServletRequest request) {
+
+	private ModelMap viewDetailAsgnIPMstModel(@RequestBody TbIpAssignMstVo tbIpAssignMstVo,
+			HttpServletRequest request) {
 		ModelMap model = new ModelMap();
 		TbIpAssignMstVo resultVo = null;
 		try {
@@ -832,24 +863,24 @@ public class AssignMgmtController extends CommonController {
 		model.addAttribute("resultVo", resultVo);
 		return model;
 	}
-	
-	
-	/*비고 수정 처리*/
+
+	/* 비고 수정 처리 */
 	@RequestMapping(value = "/ipmgmt/assignmgmt/updateScommentAsgnIPMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbIpAssignMstVo updateScommentAsgnIPMst(@RequestBody TbIpAssignMstComplexVo tbIpAssignMstComplexVo, 
+	public TbIpAssignMstVo updateScommentAsgnIPMst(@RequestBody TbIpAssignMstComplexVo tbIpAssignMstComplexVo,
 			HttpServletRequest request, HttpServletResponse response) {
 		TbIpAssignMstVo resultVo = null;
 		try {
-			if (tbIpAssignMstComplexVo == null || tbIpAssignMstComplexVo.getSrcIpAssignMstVo() == null 
-				|| tbIpAssignMstComplexVo.getDestIpAssignMstVos() == null || tbIpAssignMstComplexVo.getDestIpAssignMstVos().size() == 0) {
+			if (tbIpAssignMstComplexVo == null || tbIpAssignMstComplexVo.getSrcIpAssignMstVo() == null
+					|| tbIpAssignMstComplexVo.getDestIpAssignMstVos() == null
+					|| tbIpAssignMstComplexVo.getDestIpAssignMstVos().size() == 0) {
 				throw new ServiceException("CMN.HIGH.00001");
 			}
-			
+
 			TbIpAssignMstVo srcIpAssignMstVo = tbIpAssignMstComplexVo.getSrcIpAssignMstVo();
 			srcIpAssignMstVo.setSmodifyId(jwtUtil.getUserId(request));
 			tbIpAssignMstComplexVo.setSrcIpAssignMstVo(srcIpAssignMstVo);
-			
+
 			assignMgmtService.updateListScommentAsgnIPMst(tbIpAssignMstComplexVo);
 			resultVo = new TbIpAssignMstVo();
 			resultVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
@@ -864,15 +895,29 @@ public class AssignMgmtController extends CommonController {
 		}
 		return resultVo;
 	}
-	
-	/****************************** 미배정 현황 Start ****************************************/
+
+	/******************************
+	 * 미배정 현황 Start
+	 ****************************************/
 	@RequestMapping(value = "/ipmgmt/assignmgmt/viewListUnAssignIP.model", method = RequestMethod.POST)
 	@ResponseBody
 	public ModelMap viewListUnAssignIP(@RequestBody TbIpAssignMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
+
+		/** 계위 Seq 목록 조회 **/
+		TbLvlMstVo searchSeqVo = new TbLvlMstVo();
+		searchSeqVo.setSsvcLineTypeCd(searchVo.getSsvcLineTypeCd());
+		searchSeqVo.setSsvcGroupCd(searchVo.getSsvcGroupCd());
+		searchSeqVo.setSsvcObjCd("000000");
+
+		TbLvlMstListVo resultSeqList = jwtUtil.getLvlSeqList(request, searchSeqVo);
+		searchVo.setLvlMstSeqListVo(resultSeqList);
+
+		setPagination(searchVo);
 		TbIpAssignMstListVo resultListVo = assignMgmtService.selectListUnAssignBlock(searchVo);
 		return createResultList(resultListVo.getTbIpAssignMstVos(), resultListVo.getTotalCount());
 	}
+
 	@RequestMapping(value = "/ipmgmt/assignmgmt/viewListUnAssignIP.do", method = RequestMethod.POST)
 	public String viewListUnAssignIP(@ModelAttribute("searchVo") TbIpAssignMstVo searchVo, ModelMap model,
 			HttpServletRequest request, HttpServletResponse response) {
@@ -893,7 +938,9 @@ public class AssignMgmtController extends CommonController {
 		model.addAttribute("searchVoJson", searchVoJson(searchVoClone));
 		return "ipmgmt/assignmgmt/viewListUnAssignIP";
 	}
-	private ModelMap viewListUnAssignIPModel(@ModelAttribute("searchVo") TbIpAssignMstVo searchVo, HttpServletRequest request) {
+
+	private ModelMap viewListUnAssignIPModel(@ModelAttribute("searchVo") TbIpAssignMstVo searchVo,
+			HttpServletRequest request) {
 		ModelMap model = new ModelMap();
 		TbIpAssignMstListVo resultListVo = null;
 		try {
@@ -944,7 +991,7 @@ public class AssignMgmtController extends CommonController {
 			model.addAttribute("svcLineListVo", svcLineListVo);
 			model.addAttribute("centerListVo", centerListVo);
 			model.addAttribute("nodeListVo", nodeListVo);
-			
+
 			/** 계위 Seq 목록 조회 **/
 			TbLvlMstVo searchSeqVo = new TbLvlMstVo();
 			searchSeqVo.setSsvcLineTypeCd(searchVo.getSsvcLineTypeCd());
@@ -952,11 +999,10 @@ public class AssignMgmtController extends CommonController {
 			searchSeqVo.setSsvcObjCd("000000");
 			TbLvlMstListVo resultSeqList = jwtUtil.getLvlSeqList(request, searchSeqVo);
 			searchVo.setLvlMstSeqListVo(resultSeqList);
-			
-			
+
 			setPagination(searchVo);
 			resultListVo = assignMgmtService.selectListUnAssignBlock(searchVo);
-			
+
 			resultListVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
 		} catch (ServiceException e) {
 			resultListVo = new TbIpAssignMstListVo();
@@ -975,8 +1021,7 @@ public class AssignMgmtController extends CommonController {
 		model.addAttribute("paginationInfo", paginationInfo);
 		return model;
 	}
-	
-	
+
 	@RequestMapping(value = "/ipmgmt/assignmgmt/viewListUnAssignIPExcel.json", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<?> viewListUnAssignIPExcel(@RequestBody TbIpAssignMstVo searchVo,
@@ -1018,9 +1063,9 @@ public class AssignMgmtController extends CommonController {
 							searchVo.setSsvcObjCd(nodeListVo.getTbLvlBasVos().get(0).getSsvcObjCd());
 						}
 					}
-				} 
+				}
 			}
-			
+
 			/** 계위 Seq 목록 조회 **/
 			TbLvlMstVo searchSeqVo = new TbLvlMstVo();
 			searchSeqVo.setSsvcLineTypeCd(searchVo.getSsvcLineTypeCd());
@@ -1036,7 +1081,8 @@ public class AssignMgmtController extends CommonController {
 			mappingList.add("미배정|getnUnAssignBlockCnt");
 			mappingList.add("예비배정|getnReserveAssignBlockCnt");
 
-			return excelDownloadService.generateAndDownloadExcel(resultListVo.getTbIpAssignMstVos(), mappingList, request);
+			return excelDownloadService.generateAndDownloadExcel(resultListVo.getTbIpAssignMstVos(), mappingList,
+					request);
 		} catch (ServiceException e) {
 			String msgDesc = tbCmnMstService.selectMsgDesc(e);
 			resultVo.setCommonMsg(msgDesc);
@@ -1046,14 +1092,16 @@ public class AssignMgmtController extends CommonController {
 		}
 		return new ResponseEntity<>(resultVo, HttpStatus.OK);
 	}
+
 	@RequestMapping(value = "/ipmgmt/assignmgmt/viewDetailUnAssignIP.model", method = RequestMethod.POST)
 	@ResponseBody
 	public ModelMap viewDetailUnAssignIP(@RequestBody TbIpAssignMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
+		setPagination(searchVo);
 		TbIpAssignMstListVo resultListVo = assignMgmtService.selectListIpAssignMst(searchVo);
 		return createResultList(resultListVo.getTbIpAssignMstVos(), resultListVo.getTotalCount());
 	}
-	
+
 	@RequestMapping(value = "/ipmgmt/assignmgmt/viewDetailUnAssignIP.ajax", method = RequestMethod.POST)
 	public String viewDetailUnAssignIP(@RequestBody TbIpAssignMstVo searchVo, ModelMap model,
 			HttpServletRequest request, HttpServletResponse response) {
@@ -1074,7 +1122,6 @@ public class AssignMgmtController extends CommonController {
 		model.addAttribute("searchVoJson", searchVoJson(searchVoClone));
 		return "ipmgmt/assignmgmt/viewDetailUnAssignIP";
 	}
-	
 
 	private ModelMap viewDetailUnAssignIPModel(@RequestBody TbIpAssignMstVo searchVo, HttpServletRequest request) {
 		ModelMap model = new ModelMap();
@@ -1099,29 +1146,32 @@ public class AssignMgmtController extends CommonController {
 		model.addAttribute("searchVo", searchVo);
 		return model;
 	}
-	
-	
-	/****************************** 미배정 현황 End ****************************************/
-	
+
+	/******************************
+	 * 미배정 현황 End
+	 ****************************************/
+
 	/**
 	 * Summary 상세조회
+	 * 
 	 * @param tbIpAssignMstVo
 	 * @param model
 	 * @param request
 	 * @param response
 	 * @return
 	 */
-	
+
 	@RequestMapping(value = "/ipmgmt/assignmgmt/viewDetailSummary.model", method = RequestMethod.POST)
 	@ResponseBody
 	public ModelMap viewDetailSummaryMst(@RequestBody TbIpAssignMstVo tbIpAssignMstVo, HttpServletRequest request) {
-		ModelMap model =  viewDetailSummaryMstModel(tbIpAssignMstVo, request);
-		TbIpAssignMstListVo resultListVo = (TbIpAssignMstListVo)model.get("resultListVo");
+		ModelMap model = viewDetailSummaryMstModel(tbIpAssignMstVo, request);
+		TbIpAssignMstListVo resultListVo = (TbIpAssignMstListVo) model.get("resultListVo");
 		return createResultList(resultListVo.getTbIpAssignMstVos(), resultListVo.getTotalCount());
 	}
 
 	@RequestMapping(value = "/ipmgmt/assignmgmt/viewDetailSummary.ajax", method = RequestMethod.POST)
-	public String viewDetailSummaryMst(@RequestBody TbIpAssignMstVo tbIpAssignMstVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
+	public String viewDetailSummaryMst(@RequestBody TbIpAssignMstVo tbIpAssignMstVo, ModelMap model,
+			HttpServletRequest request, HttpServletResponse response) {
 		TbIpAssignMstVo searchVoClone = new TbIpAssignMstVo();
 		try {
 			CloneUtil.copyObjectInformation(tbIpAssignMstVo, searchVoClone);
@@ -1139,28 +1189,30 @@ public class AssignMgmtController extends CommonController {
 		model.addAttribute("searchVoJson", searchVoJson(searchVoClone));
 		return "ipmgmt/assignmgmt/viewDetailSummary";
 	}
-	private ModelMap viewDetailSummaryMstModel(@RequestBody TbIpAssignMstVo tbIpAssignMstVo, HttpServletRequest request) {
+
+	private ModelMap viewDetailSummaryMstModel(@RequestBody TbIpAssignMstVo tbIpAssignMstVo,
+			HttpServletRequest request) {
 		ModelMap model = new ModelMap();
 		TbIpAssignMstListVo resultListVo = null;
 		try {
-			
-			if(tbIpAssignMstVo.getSsvcLineTypeCd().equals("CL0001")) {
-				resultListVo = assignMgmtService.selectSummaryDetailKornet(tbIpAssignMstVo);	
-			} else if(tbIpAssignMstVo.getSsvcLineTypeCd().equals("CL0002")) {
+
+			if (tbIpAssignMstVo.getSsvcLineTypeCd().equals("CL0001")) {
+				resultListVo = assignMgmtService.selectSummaryDetailKornet(tbIpAssignMstVo);
+			} else if (tbIpAssignMstVo.getSsvcLineTypeCd().equals("CL0002")) {
 				resultListVo = assignMgmtService.selectSummaryDetailPremium(tbIpAssignMstVo);
-			} else if(tbIpAssignMstVo.getSsvcLineTypeCd().equals("CL0003")) {
+			} else if (tbIpAssignMstVo.getSsvcLineTypeCd().equals("CL0003")) {
 				// resultListVo = assignMgmtService.selectSummaryDetail(tbIpAssignMstVo);
-				PrintLogUtil.printLog(""); //Codeeyes-Urgent-빈 If문 사용 제한
-			} else if(tbIpAssignMstVo.getSsvcLineTypeCd().equals("CL0004")) {
-				 resultListVo = assignMgmtService.selectSummaryDetailKornet(tbIpAssignMstVo);
-			} else if(tbIpAssignMstVo.getSsvcLineTypeCd().equals("CL0005")) {
-				 resultListVo = assignMgmtService.selectSummaryDetailKornet(tbIpAssignMstVo);
-			} else if(tbIpAssignMstVo.getSsvcLineTypeCd().equals("CL0006")) {
-				 resultListVo = assignMgmtService.selectSummaryDetailKornet(tbIpAssignMstVo);
-			}else {
-				throw new ServiceException("CMN.INFO.00054", new String[]{"Summary 정보가 없습니다."});
-			} 
-			
+				PrintLogUtil.printLog(""); // Codeeyes-Urgent-빈 If문 사용 제한
+			} else if (tbIpAssignMstVo.getSsvcLineTypeCd().equals("CL0004")) {
+				resultListVo = assignMgmtService.selectSummaryDetailKornet(tbIpAssignMstVo);
+			} else if (tbIpAssignMstVo.getSsvcLineTypeCd().equals("CL0005")) {
+				resultListVo = assignMgmtService.selectSummaryDetailKornet(tbIpAssignMstVo);
+			} else if (tbIpAssignMstVo.getSsvcLineTypeCd().equals("CL0006")) {
+				resultListVo = assignMgmtService.selectSummaryDetailKornet(tbIpAssignMstVo);
+			} else {
+				throw new ServiceException("CMN.INFO.00054", new String[] { "Summary 정보가 없습니다." });
+			}
+
 			resultListVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
 		} catch (ServiceException e) {
 			e.printStackTrace();
@@ -1173,7 +1225,7 @@ public class AssignMgmtController extends CommonController {
 			String msgDesc = tbCmnMstService.selectMsgDesc(new ServiceException("CMN.HIGH.00000"));
 			resultListVo.setCommonMsg(msgDesc);
 		}
-		
+
 		model.addAttribute("resultListVo", resultListVo);
 		return model;
 	}

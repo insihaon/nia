@@ -4,22 +4,24 @@
       서비스
     </th>
     <td>
-      <el-select
-        v-model="values"
-        filterable
-        :multiple="isMulti"
-        collapse-tags
-        size="small"
-        @change="handleChange()"
-      >
-        <el-option v-if="isAllOption" label="전체" value=""><span class="w-100 h-100 d-inline-block" @click="handleClickAll">전체</span></el-option>
-        <el-option
-          v-for="(option, i) in options"
-          :key="i"
-          :label="option.label"
-          :value="option.value"
-        />
-      </el-select>
+      <div>
+        <el-select
+          v-model="values"
+          filterable
+          :multiple="isMulti"
+          collapse-tags
+          size="small"
+          @change="handleChange()"
+        >
+          <el-option v-if="isAllOption" label="전체" value=""><span class="w-100 h-100 d-inline-block" @click="handleClickAll">전체</span></el-option>
+          <el-option
+            v-for="(option, i) in options"
+            :key="i"
+            :label="option.label"
+            :value="option.value"
+          />
+        </el-select>
+      </div>
     </td>
   </fragment>
 </template>

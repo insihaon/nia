@@ -83,13 +83,19 @@ body .ipms{
     color:#FFFFFF;
   }
   /* 공통 검색옵션 스타일 시트 */
-  div.searchOptionWrap{
-    width:100%; margin-bottom: 30px;
+  table.searchTable{
+    width:100%;margin-bottom: 30px;padding: 5px 5px;
   }
-  div.searchOptionWrap>table td>div.searchBtnWrap{
+  table.searchTable td>div.searchBtnWrap{
+    border:1px solid #134d65; padding: 5px 5px;
+  }
+  div.searchOptionWrap{
+    width:100%; //margin-bottom: 30px;
+  }
+  table td>div.searchBtnWrap{
     display: flex;justify-content: flex-end;align-items: center;gap: 10px;
   }
-  div.searchOptionWrap>table td>div.searchBtnWrap>.el-button{
+  table td>div.searchBtnWrap>.el-button{
     margin-left:0px;
   }
   div.searchOptionWrap>table{

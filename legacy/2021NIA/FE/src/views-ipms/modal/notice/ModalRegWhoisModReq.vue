@@ -166,9 +166,9 @@
 <script>
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
+import { onMessagePopup } from '@/utils'
 import ModalSearchZipCode from '@/views-ipms/modal/notice/ModalSearchZipCode.vue'
 import { apiRequestModel, ipmsModelApis, ipmsJsonApis, apiRequestJson } from '@/api/ipms'
-import { onMessagePopup } from '@/utils'
 
 const routeName = 'ModalRegWhoisModReq'
 
@@ -236,6 +236,7 @@ export default {
     },
     onOpen(model, actionMode) {
       this.onInitValue()
+      this.pagination.data = []
     },
     onInitValue() {
       this.txtSearchIp = ''
@@ -261,13 +262,14 @@ export default {
       }
       Object.assign(this.afterInfo, addrObj)
     },
-   fnViewSeachAddrPop(type) { /* 주소검색 on Popup */
+    fnViewSeachAddrPop(type) { /* 주소검색 on Popup */
       if (this.resultSearchWhois === null) {
         onMessagePopup(this, 'Whois 정보 조회 후 수정 가능합니다.')
         return
       }
         this.$refs.ModalSearchZipCode.open({ type: type })
     },
+
     async fnviewRegWhoisModReq() { /* IP주소 조회 */
       if (this.txtSearchIp === '' || this.txtSearchIp === null) {
         onMessagePopup(this, '검색할 IP주소를 먼저 입력하세요.')
@@ -361,6 +363,7 @@ export default {
           let smtpVo
           if (mailObj.mailType === 'Ipms-Table-Error') {
             smtpVo = {
+              mailType: 'Ipms-Table-Error',
               searchIp: mailObj.txtSearchIp
             }
           } else if (mailObj.mailType === 'Kisa-Table-Error') {
@@ -433,6 +436,8 @@ export default {
         if (this.searchVoItem.snettype === 'INFRA') {
           onMessagePopup(this, '네트워크 유형이 인프라인 경우엔 기관정보를 수정하실 수 없습니다.')
           return
+        } else {
+          onMessagePopup(this, res.commonMsg)
         }
         const res = await apiRequestModel(ipmsModelApis.insertRegWhoisModReq, tbWhoisModifyVo)
         if (res.commonMsg === 'SUCCESS') {

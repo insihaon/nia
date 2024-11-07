@@ -86,11 +86,6 @@
             />
           </div>
         </div>
-        <!-- <div class="page_num">
-          <ul>
-            <ui:pagination pagination-info="${paginationInfo}" type="image" js-function="fnSelectListPageInPop" />
-          </ul>
-        </div> -->
       </div>
     </div>
     <div class="popupContentTableBottom">
@@ -112,7 +107,6 @@ const routeName = 'ModalSearchZipCode'
 export default {
 
   name: routeName,
-  components: { },
   directives: { elDragDialog },
   extends: Modal,
   data() {
@@ -130,14 +124,6 @@ export default {
     }
   },
   computed: {
-    getPageCount() {
-      const { total, pageSize } = this.pagination
-      if (total <= pageSize) {
-        return 1
-      } else {
-        return (total % pageSize) > 0 ? parseInt(total / pageSize) + 1 : parseInt(total / pageSize)
-      }
-    }
   },
    methods: {
     onCreated() {
@@ -148,8 +134,18 @@ export default {
     onOpen(model, actionMode) {
       this.txtInputDongNm = ''
       this.viewType = model.type
+      this.txtInputDongNm = ''
     },
-   async fnSelectZipcode() { /* 주소 검색 */
+     handlePageChange(page) {
+      this.pagination.currentPage = page
+      this.setPageData() // 페이지에 맞는 데이터 설정
+    },
+    setPageData() {
+       const startIndex = (this.pagination.currentPage - 1) * this.pagination.pageSize
+    const endIndex = startIndex + this.pagination.pageSize
+    this.pagination.data = this.resultListVo.slice(startIndex, endIndex)
+    },
+    async fnSelectZipcode() { /* 주소 검색 */
       if (this.txtInputDongNm === '') {
         onMessagePopup(this, '검색할 주소를 입력하세요.')
         return
@@ -191,4 +187,10 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+.ModalSearchZipCode{
+  .el-input {
+    width: 100%;
+  }
+}
+
 </style>
