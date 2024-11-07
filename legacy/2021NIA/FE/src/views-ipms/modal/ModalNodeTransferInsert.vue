@@ -41,7 +41,7 @@
                 type="text"
                 maxlength="43"
                 @input="chkCharCode"
-                @keyup.enter="fnSelectListIpAssignMst()"
+                @keyup.enter.native="fnSelectListIpAssignMst()"
               />
             </td>
             <td>
@@ -71,7 +71,7 @@
         <template v-else>
           <tr v-for="(row, index) in pagination.data" :key="index">
             <td class="textcenter">
-              <el-button type="primary" size="small" round @click="selectNode(row)">선택</el-button>
+              <el-button type="primary" size="mini" round @click="selectNode(row)">선택</el-button>
             </td>
             <td>{{ row.ssvcLineTypeNm }}</td>
             <td>{{ row.ssvcGroupNm }}</td>
@@ -93,15 +93,14 @@
       </table>
       <div v-if="pagination.data.length > 0" class="tableListWrap">
         <div class="tableListPaging" style="justify-content: center;">
-          <el-button icon="el-icon-d-arrow-left" type="text" @click="handleChangeCurPage(pagination.currentPage - 1)" />
-          <el-button icon="el-icon-arrow-left" type="text" @click="handleChangeCurPage(pagination.currentPage - 1)" />
-          <div class="pagingNumber">
-            <span v-for="page in getPageCount" :key="page" :class="{'active': page === pagination.currentPage }">
-              {{ page }}
-            </span>
-          </div>
-          <el-button icon="el-icon-arrow-right" type="text" @click="handleChangeCurPage(pagination.currentPage + 1)" />
-          <el-button icon="el-icon-d-arrow-right" type="text" @click="handleChangeCurPage(getPageCount)" />
+          <el-pagination
+            :current-page.sync="pagination.currentPage"
+            :total="pagination.total"
+            :page-size="pagination.pageSize"
+            layout="prev, pager, next"
+            @current-change="handleChangeCurPage"
+            @size-change="handleChangeCurPage"
+          />
         </div>
       </div>
     </div>
@@ -254,14 +253,6 @@ export default {
   computed: {
     isDisabled() {
       return this.updSsvcLineTypeCd === '' ?? true
-    },
-    getPageCount() {
-      const { total, pageSize } = this.pagination
-      if (total <= pageSize) {
-        return 1
-      } else {
-        return (total % pageSize) > 0 ? parseInt(total / pageSize) + 1 : parseInt(total / pageSize)
-      }
     }
   },
   mounted() {

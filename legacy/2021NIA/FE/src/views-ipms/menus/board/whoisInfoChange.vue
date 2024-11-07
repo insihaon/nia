@@ -111,13 +111,17 @@ export default {
       this.fnViewListWhoisModReq(requestParameter)
     },
    async fnViewListWhoisModReq(requestParameter) {
+      const target = ({ vue: this.$refs.compTable })
       const parameter = requestParameter ?? this.$refs.searchCondition.requestParameter
       try {
+        this.openLoading(target)
         const res = await apiRequestModel(ipmsModelApis.viewListWhoisModReq, parameter)
         this.pagination.data = res.result.data ?? []
         this.pagination.total = res.result.totalCount
       } catch (error) {
         console.error(error)
+      } finally {
+        this.closeLoading(target)
       }
     },
     handleChangeCurPage(v) {
