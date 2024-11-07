@@ -79,3 +79,36 @@ export function getTicketStatus(row, col, value, index) {
   }
   return result
 }
+
+export function getSopAiAccuracy(row, col, value, index) {
+  let result = '-'
+  switch (value) {
+    case '0':
+      result = '일치'
+      break
+    case '1':
+      result = '불일치'
+      break
+    case null:
+      result = '-'
+      break
+  }
+  return result
+}
+
+export function getFormatByte(row, col, value, index) {
+  const packetBytesInMbyte = value / (1024 * 1024) // set byte to Mbyte
+  return Math.round(packetBytesInMbyte * 100) / 100
+}
+
+export function getFormatGbyte(row, col, value, index) { // set Gbyte
+  const packetBytesInGbyte = value / (1024 * 1024 * 1024)
+  const roundedGbyte = Math.round(packetBytesInGbyte * 100) / 100
+  return roundedGbyte.toLocaleString()
+}
+
+export function getDecimalCalc(row, col, value, index) { // set Decimal point
+  const packetPerSeconds = value.toLocaleString()
+  return packetPerSeconds
+}
+

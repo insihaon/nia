@@ -1,6 +1,6 @@
 <template>
   <el-header id="header-menu" class="dark bg-slate-900 flex h-20 p-0 w-full items-center">
-    <div class="flex w-full h-full justify-between flex-nowrap">
+    <div class="flex w-full h-full justify-between flex-nowrap" style="min-width : 1200px">
       <!-- style="position: fixed;display: inline-flex;left: 0;" -->
       <div class="flex items-center h-full" :class="{ 'headerWrapLogo': !isMobile }">
         <div v-if="isMobile" id="hamburger-container" class="d-flex" :class="{ 'justify-center': isActive, 'justify-end': !isActive }" @click="toggleSideBar">
@@ -12,7 +12,7 @@
         <!-- only parent -->
         <!-- <el-scrollbar ref="scrollHeader" wrap-class="scrollbar-wrapper" :vertical="false" @wheel.native="handleScroll"> -->
         <nav v-if="!isMobile" id="menu-bar" class="h-full">
-          <el-menu class="flex h-full" :background-color="bgColor" :text-color="textColor" style="border-right: 0px">
+          <el-menu class="flex h-full" :background-color="bgColor" :text-color="textColor" style="border-right: 0px; margin-left : 10px">
             <el-menu-item
               v-for="route in permission_routes"
               v-if="isHidden(route) && route.meta"
@@ -29,7 +29,7 @@
         </nav>
         <!-- </el-scrollbar> -->
       </div>
-      <div v-if="!isMobile" id="other-container" class="flex items-center">
+      <div v-if="!isMobile" id="other-container" style="min-width : 200px" class="flex items-center">
         <div id="function-container">
           <SvgIcon class="mr-2" type="mdi" :path="path" @click.native="toggleHistoryBar" />
         </div>
@@ -71,7 +71,7 @@
     </div>
     <!-- all child -->
     <div id="sub-menu">
-      <el-menu id="top-inner" class="flex h-full text-white" style="border-right: 0px">
+      <el-menu id="top-inner" class="flex h-full text-white" style="border-right: 0px;">
         <child-item v-for="(route, index) in permission_routes" :key="route.path" :base-path="route.path" :item="route" :idx="index.toString()" />
       </el-menu>
     </div>
@@ -220,7 +220,7 @@ export default {
     }
   }
   #menu-bar {
-    margin-left: 10px;
+    margin-left: 120px;
     // min-width: 1350px;
     ul {
       flex-wrap: nowrap;
@@ -282,13 +282,14 @@ export default {
   #menu-item {
     font-size: 16px;
     min-width: 150px;
+    width: 153px;
     transition: all 0.4s;
     padding: 0px !important;
     a:after {
       position: absolute;
       top: 100%;
-      left: 0;
-      width: 100%;
+      left: 20px;
+      width: 73%;
       height: 1px;
       background: $aiTemplateDefault;
       content: '';
@@ -316,6 +317,7 @@ export default {
     background-color: #eef0f3;
     transition: height, 0.25s linear;
     #top-inner {
+      margin-left: 59px;
       min-width: 1400px;
       padding-top: 8px;
       background-color: #eef0f3;

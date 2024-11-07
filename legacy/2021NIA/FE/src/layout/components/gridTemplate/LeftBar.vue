@@ -45,9 +45,15 @@ export default {
   },
   methods: {
     resize(val, key) {
+      let value
+      if (val < 25) {
+        value = 25
+      } else {
+        value = val
+      }
         window.helper.$store.dispatch('settings/changeSetting', {
         key: key,
-        value: val
+        value: value
       })
     }
   },
