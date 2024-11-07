@@ -71,6 +71,8 @@ export const ipmsModelApis = {
   viewDetailReq: { desc: '요구사항 조회 상세조회', url: '/opermgmt/requiremgmt/viewDetailReq' },
   viewListUserAuthSubs: { desc: '사용자 권한 신청 조회', url: '/opermgmt/grantsubsmgmt/viewListUserAuthSubs' },
   viewDetailUserAuthSubs: { desc: '사용자 권한 신청 상세정보', url: '/opermgmt/grantsubsmgmt/viewDetailUserAuthSubs' },
+  confirmGrantSub: { desc: '사용자 권한 신청 승인/반려', url: '/opermgmt/grantsubsmgmt/confirmGrantSub' },
+  viewDeleteGrant: { desc: '사용자 권한 신청 삭제', url: '/opermgmt/grantsubsmgmt/viewDeleteGrant' },
   viewInsertUserAuthSubs: { desc: '사용자 권한 신청 > 등록 화면', url: '/opermgmt/grantsubsmgmt/viewInsertUserAuthSubs' },
 
   // 운용정보관리(관리자 기능)
@@ -116,6 +118,7 @@ export const ipmsJsonApis = {
   //
   appendCrtIPMst: { desc: 'IP 블록관리 > IP 블록생성 > IP 주소 추가', url: '/ipmgmt/createmgmt/appendCrtIPMst' },
   insertListCrtIPMst: { desc: 'IP 블록관리 > IP 블록생성 > IP 주소 등록', url: '/ipmgmt/createmgmt/insertListCrtIPMst' },
+  selectListSipCreateSeqCd: { desc: 'IP 블록관리  >  생성차수 조회', url: '/ipmgmt/createmgmt/selectListSipCreateSeqCd' },
   updateCrtIPMst: { desc: 'IP 블록관리  > 수정', url: '/ipmgmt/createmgmt/updateCrtIPMst' },
   updateAsgnIPMst: { desc: 'IP 블록관리 > 배정', url: '/ipmgmt/assignmgmt/updateAsgnIPMst' },
   deleteCrtIPMst: { desc: 'IP 블록관리 삭제', url: '/ipmgmt/createmgmt/deleteCrtIPMst' },
@@ -293,35 +296,35 @@ export function apiRequestOffice(urlPath, params, listName = 'selectOfficeList',
 }
 export function apiRequestExcel(api, params) {
   return http.post(`${AppOptions.instance.baseURL}${api.url}.json`, params, { responseType: 'arraybuffer' })
-  .then(response => {
-    const contentDisposition = response.headers['content-disposition']
-    let fileName = 'downloadedFile' // Default name in case the header is not set
-    if (contentDisposition === undefined) {
-      const decoder = new TextDecoder('utf-8')
-      const jsonString = decoder.decode(response.data)
-      return JSON.parse(jsonString)
-    }
-
-    if (contentDisposition && contentDisposition.includes('filename=')) {
-      // Extract filename from header
-      const fileNameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/)
-      if (fileNameMatch) {
-        fileName = fileNameMatch[1].replace(/['"]/g, '')
+    .then(response => {
+      const contentDisposition = response.headers['content-disposition']
+      let fileName = 'downloadedFile' // Default name in case the header is not set
+      if (contentDisposition === undefined) {
+        const decoder = new TextDecoder('utf-8')
+        const jsonString = decoder.decode(response.data)
+        return JSON.parse(jsonString)
       }
-    }
-    var blob = new Blob([response.data])
 
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = fileName // Name of the file to be downloaded
-    document.body.appendChild(a)
-    a.click()
+      if (contentDisposition && contentDisposition.includes('filename=')) {
+        // Extract filename from header
+        const fileNameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/)
+        if (fileNameMatch) {
+          fileName = fileNameMatch[1].replace(/['"]/g, '')
+        }
+      }
+      var blob = new Blob([response.data])
 
-    // Clean up by revoking the object URL and removing the link
-    URL.revokeObjectURL(url)
-    document.body.removeChild(a)
-  })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = fileName // Name of the file to be downloaded
+      document.body.appendChild(a)
+      a.click()
+
+      // Clean up by revoking the object URL and removing the link
+      URL.revokeObjectURL(url)
+      document.body.removeChild(a)
+    })
 }
 
 window.apiTest = apiTest

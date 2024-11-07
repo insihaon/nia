@@ -4,7 +4,7 @@
       ref="searchCondition"
       :prop-name="name"
       :component-keys="componentList"
-      @handle-search="fnViewListReq"
+      @handle-search="handleSearch"
     />
     <el-col ref="tableContainer" :span="24">
       <compTable
@@ -12,12 +12,15 @@
         style="height: calc(100% - 80px)"
         :prop-name="name"
         :prop-table-height="'100%'"
+        :prop-data="pagination.data"
+        :prop-pagination-data.sync="pagination"
         :prop-column="tableColumns"
-        :prop-data="resultListVo"
-        :prop-is-pagination="false"
+        :prop-is-pagination="true"
         :prop-is-check-box="false"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
+        :prop-on-page-change="handleChangeCurPage"
+        :prop-on-page-size-change="handleChangeCurPage"
         :prop-on-click="onClcikRow"
         @savedExcel="handleClickExcelDownloadBtn"
       >
@@ -33,7 +36,7 @@
         </template>
       </compTable>
     </el-col>
-    <ModalReqDetail ref="ModalReqDetail" @reload="fnViewListReq" />
+    <ModalReqDetail ref="ModalReqDetail" @reload="fnViewListReq($refs.searchCondition.requestParameter)" />
   </el-row>
 </template>
 <script>
@@ -56,6 +59,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      pagination: this.setDefaultPagination(),
       tableColumns: [
         { prop: 'seq', label: '번호', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'rboardDivision', label: '요청사항구분', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
@@ -97,7 +101,6 @@ export default {
         },
         { key: 'DateRange', props: { label: '등록기간' } },
       ],
-      resultListVo: []
     }
   },
   mounted() {

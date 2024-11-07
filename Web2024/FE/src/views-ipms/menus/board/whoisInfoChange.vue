@@ -12,9 +12,9 @@
         style="height: calc(100% - 80px)"
         :prop-name="name"
         :prop-table-height="'100%'"
-        :prop-column="tableColumns"
         :prop-data="pagination.data"
         :prop-pagination-data.sync="pagination"
+        :prop-column="tableColumns"
         :prop-is-pagination="true"
         :prop-is-check-box="false"
         prop-grid-menu-id="inputSpeed"
@@ -35,8 +35,8 @@
           </div>
         </template>
       </compTable>
-      <ModalDetailWhoisMod ref="ModalDetailWhoisMod" @reload="fnViewListWhoisModReq()" />
-      <ModalRegWhoisModReq ref="ModalRegWhoisModReq" @reload="fnViewListWhoisModReq()" />
+      <ModalDetailWhoisMod ref="ModalDetailWhoisMod" @reload="fnViewListWhoisModReq($refs.searchCondition.requestParameter)" />
+      <ModalRegWhoisModReq ref="ModalRegWhoisModReq" @reload="fnViewListWhoisModReq($refs.searchCondition.requestParameter)" />
     </el-col>
   </el-row>
 </template>
@@ -97,7 +97,6 @@ export default {
           }
         },
       ],
-      resultListVo: []
     }
   },
   mounted() {
@@ -133,20 +132,9 @@ export default {
     },
     async fnViewDetailWhoisMod(row, type) {
       if (type === 'detail') {
-        try {
-          if (row.nmodify_apply_seq === '' || row.nmodify_apply_seq === null) {
-            return
-          }
-            const tbWhoisModifyVo = {
-              nmodify_apply_seq: row.nmodify_apply_seq
-            }
-            const res = await apiRequestModel(ipmsModelApis.viewDetailWhoisModReq, tbWhoisModifyVo)
-            this.$refs.ModalDetailWhoisMod.open({ row: res.result.data, type: type })
-          } catch (error) {
-            console.error(error)
-        }
+        this.$refs.ModalDetailWhoisMod.open({ row: row, type: type })
       } else {
-        this.$refs.ModalRegWhoisModReq.open()
+        this.$refs.ModalRegWhoisModReq.open() // 컨트롤러 메소드 호출
       }
     },
     handleClickExcelDownloadBtn() {
@@ -156,4 +144,3 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-</style>

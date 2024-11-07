@@ -213,16 +213,16 @@ export default {
           this.resultVo = res.resultVo
           if (res.resultVo.rboardFileSeq) {
             this.files = [{
-              name: res.resultVo.rboardFileOriginName,
-              downloadUrl: res.resultVo.rboardDownloadPath, // changeDownloadFileHost(res.resultVo.rboardDownloadPath),
-              previewUrl: res.resultVo.rboardDownloadPath
-            }]
-          }
-        } catch (error) {
-          console.error(error)
-        } finally {
-          this.viewLoading = false
+            name: res.resultVo.rboardFileOriginName,
+            downloadUrl: res.resultVo.rboardDownloadPath, // changeDownloadFileHost(res.resultVo.rboardDownloadPath),
+            previewUrl: res.resultVo.rboardDownloadPath
+          }]
         }
+      } catch (error) {
+        console.error(error)
+      } finally {
+        this.viewLoading = false
+      }
     },
     onCreated() {
       Modal.methods.onCreated.call(this)
@@ -268,17 +268,17 @@ export default {
           formData.append('rboardProgress', this.resultVo.rboardProgress)
           formData.append('rboardExpectedDate', this.moment(this.resultVo.rboardExpectedDate).format('YYYY-MM-DD'))
         }
+        formData.append('file', this.files[0])
+        formData.append('rboardTitle', rboardTitle)
+        formData.append('rboardDivision', rboardDivision)
+        formData.append('rboardDesireDate', this.moment(rboardDesireDate).format('YYYY-MM-DD'))
+        formData.append('rboardPurposeRequest', rboardPurposeRequest)
+        formData.append('rboardImportance', rboardImportance)
+        formData.append('rboardContent', rboardContent)
+        formData.append('sUserNm', sUserNm)
+        formData.append('mail_type', 'Req-Insert')
+        return formData
       }
-      formData.append('file', this.files[0])
-      formData.append('rboardTitle', rboardTitle)
-      formData.append('rboardDivision', rboardDivision)
-      formData.append('rboardDesireDate', this.moment(rboardDesireDate).format('YYYY-MM-DD'))
-      formData.append('rboardPurposeRequest', rboardPurposeRequest)
-      formData.append('rboardImportance', rboardImportance)
-      formData.append('rboardContent', rboardContent)
-      formData.append('sUserNm', sUserNm)
-      formData.append('mail_type', 'Req-Insert')
-      return formData
     },
     downloadReqFile(seq) {
       // 파일 다운로드
@@ -304,7 +304,7 @@ export default {
         console.log(error)
       }
     },
-   async fnUpdateSubmit() {
+    async fnUpdateSubmit() {
       if (!this.fnCheckValidate()) return
       try {
         const res = await apiRequestJson(ipmsJsonApis.updateReq, this.getParameter('update'))
@@ -318,7 +318,7 @@ export default {
       } catch (error) {
         console.log(error)
       }
-   },
+    },
     fnDeleteSubmit() {
       this.$confirm('정말 삭제 하시겠습니까?', '요구사항 삭제', {
         confirmButtonText: '확인',
@@ -376,22 +376,7 @@ export default {
         return false
       }
       return true
-    },
-    isClose() {
-        if (this.viewType === 'edit') {
-          this.$confirm('신청정보가 삭제됩니다. 정말 신청취소 하시겠습니까?', '신청정보가 삭제', {
-            confirmButtonText: '확인',
-            cancelButtonText: '취소'
-          }).then(async () => {
-            this.close()
-          }).catch((error) => {
-            this.error(error)
-          })
-        } else {
-          this.close()
-        }
-      },
-    onClose() { },
+    }
   },
 }
 </script>

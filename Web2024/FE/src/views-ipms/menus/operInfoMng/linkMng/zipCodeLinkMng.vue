@@ -72,6 +72,7 @@
         :prop-is-check-box="true"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
+        :prop-enabled-excel-down="false"
       >
         <template slot="text-description">
           <span>
