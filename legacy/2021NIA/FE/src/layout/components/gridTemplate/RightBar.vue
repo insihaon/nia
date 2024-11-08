@@ -47,7 +47,7 @@ export default {
   },
   methods: {
     resize(val, key) {
-      window.helper.$store.dispatch('settings/changeSetting', {
+      this.$store.dispatch('settings/changeSetting', {
         key,
         value: val
       })

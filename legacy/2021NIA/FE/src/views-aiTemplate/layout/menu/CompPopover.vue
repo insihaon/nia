@@ -94,7 +94,7 @@ export default {
   },
   methods: {
     onChangeSettings(changeVal, key) {
-      window.helper.$store.dispatch('settings/changeSetting', {
+      this.$store.dispatch('settings/changeSetting', {
         key,
         value: changeVal
       })

@@ -51,7 +51,7 @@ export default {
       } else {
         value = val
       }
-        window.helper.$store.dispatch('settings/changeSetting', {
+        this.$store.dispatch('settings/changeSetting', {
         key: key,
         value: value
       })

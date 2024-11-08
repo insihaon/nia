@@ -54,7 +54,7 @@ export default {
   methods: {
     onChangeSettings(changeType) {
       const changeVal = this.sizeByType[this.position][changeType]
-      window.helper.$store.dispatch('settings/changeSetting', {
+      this.$store.dispatch('settings/changeSetting', {
         key: 'topPaneSize',
         value: changeVal,
       })
