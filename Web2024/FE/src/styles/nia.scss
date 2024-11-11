@@ -30,10 +30,6 @@ table.basic {
   }
 }
 
-  .el-table th {
-    background: #e8ecf091 !important;
-  }
-
 .nia-edit-dialog, .nia-dialog {
   .el-dialog {
     height: auto;
@@ -133,6 +129,9 @@ table.basic {
 .nia, .nia-dialog {
   .CompAgGrid .ag-cell {
     font-size: 13px;
+  }
+  .el-table th {
+    background: #e8ecf091 !important;
   }
 
   .ag-header-row{
