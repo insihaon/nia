@@ -38,7 +38,7 @@ export default {
   },
   methods: {
     resize(val) {
-        window.helper.$store.dispatch('settings/changeSetting', {
+        this.$store.dispatch('settings/changeSetting', {
         key: 'topPaneSize',
         value: val
       })

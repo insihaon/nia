@@ -18,6 +18,7 @@
 <script>
 import { Base } from '@/min/Base.min'
 import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
+import { getDecimalCalc } from '@/views-nia/js/commonFormat'
 import { apiSelectInOutTrafficList } from '@/api/nia'
 
 const routeName = 'TrafficAnalysisPort'
@@ -69,10 +70,10 @@ export default {
         { type: '', prop: 'node_name', name: '장비명', minWidth: 30, flex: 0, suppressMenu: true, alignItems: 'center' },
         { type: '', prop: 'if_name', name: '인터페이스명', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: false },
         { type: '', prop: 'if_num', name: '인터페이스 번호', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
-        { type: '', prop: 'tx_bit_rate', name: '발신 bps', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
-        { type: '', prop: 'rx_bit_rate', name: '수신 bps', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
-        { type: '', prop: 'tx_pkt_rate', name: '발신 bps', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
-        { type: '', prop: 'rx_pkt_rate', name: '수신 bps', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
+        { type: '', prop: 'tx_bit_rate', name: '발신 mbps', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true, formatter: getDecimalCalc },
+        { type: '', prop: 'rx_bit_rate', name: '수신 mbps', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true, formatter: getDecimalCalc },
+        { type: '', prop: 'tx_pkt_rate', name: '발신 pps', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true, formatter: getDecimalCalc },
+        { type: '', prop: 'rx_pkt_rate', name: '수신 pps', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true, formatter: getDecimalCalc },
       ]
       return { options, columns, data: this.trafficData, getRightClickMenuItems: () => { return [] } }
     }
