@@ -109,17 +109,29 @@ export default {
     }, 100)
   },
   methods: {
-    async fnViewListReq(requestParameter) {
+    handleSearch(requestParameter) {
+      this.pagination.currentPage = 1
+      this.fnViewListReq(requestParameter)
+    },
+    async fnViewListReq(requestParameter = null) {
+      const parameter = requestParameter ?? this.$refs.searchCondition.requestParameter
       const target = ({ vue: this.$refs.compTable })
+      const { pageSize: pageUnit, currentPage: pageIndex } = this.pagination
+      Object.assign(parameter, { pageUnit, pageIndex })
       try {
         this.openLoading(target)
-        const res = await apiRequestModel(ipmsModelApis.viewListReq, requestParameter)
-        this.resultListVo = res?.result.data
+        const res = await apiRequestModel(ipmsModelApis.viewListReq, parameter)
+        this.pagination.data = res.result.data ?? []
+        this.pagination.total = res.result.totalCount
       } catch (error) {
         console.error(error)
       } finally {
         this.closeLoading(target)
       }
+    },
+    handleChangeCurPage(v) {
+      if (v) this.pagination.currentPage = v
+      this.fnViewListReq()
     },
     onClcikRow(row, type) {
      this.fnViewDetailReq(row, 'detail')

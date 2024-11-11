@@ -187,7 +187,7 @@ export default {
 
       const THIS = this
       setTimeout(() => {
-        THIS.updateColumnDefs()
+        THIS.updateColumnDefs(n)
       }, 100)
     }
   },
@@ -233,10 +233,12 @@ export default {
       //   }
       // })
     },
-    updateColumnDefs() {
+    updateColumnDefs(updateCol = null) {
       const name = this.propName
       let savedColumnState = JSON.parse(window.localStorage['savedColumnState'] || '{}')
-      if (!savedColumnState[name] || savedColumnState[name]?.length !== this.propColumn.length) {
+      if(updateCol !== null) {
+        savedColumnState[name] = [...updateCol]
+      } else if (!savedColumnState[name] || savedColumnState[name]?.length !== this.propColumn.length) {
         savedColumnState[name] = [...this.propColumn]
       }
       if(name) {

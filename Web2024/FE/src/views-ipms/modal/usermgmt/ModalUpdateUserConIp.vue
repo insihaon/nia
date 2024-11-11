@@ -27,25 +27,24 @@
             <th>삭제</th>
           </tr>
         </thead>
-        <tbody>
-          <tr v-if="tbUserBasVo.totalCount === 0">
+        <tbody v-loading="tableLoading">
+          <tr v-if="resultListVo.length === 0">
             <td colspan="7">조회된 결과 목록이 존재하지 않습니다.</td>
           </tr>
           <template v-else>
-            <tr v-for="(item, index) in tbUserBasVoList" :key="index">
-              <td>{{ item.shndsetUseSttusNm }}</td>
-              <td>{{ item.suserHndsetId }}</td>
-              <td>{{ item.shndsetApvUserNm }}</td>
-              <td>{{ item.dmodifyDt }}</td>
+            <tr v-for="(row, index) in resultListVo" :key="index">
+              <td>{{ row.shndsetUseSttusNm }}</td>
+              <td>{{ row.suserHndsetId }}</td>
+              <td>{{ row.shndsetApvUserNm }}</td>
+              <td>{{ moment(row.dmodifyDt).format('YYYY-MM-DD HH:mm:ss') }}</td>
               <td>
-                <el-button type="danger" size="small" icon="el-icon-delete" circle @click="fnDeleteUserHndSet(item.suserId, item.nhndsetApySeq, index)" />
+                <el-button type="danger" size="small" icon="el-icon-delete" circle @click="fnDeleteUserHndSet(row.suserId, row.nhndsetApySeq)" />
               </td>
             </tr>
           </template>
         </tbody>
       </table>
     </div>
-
     <div class="popupContentTable">
       <div class="popupContentTableTitle">
         IP 등록<br />
@@ -59,7 +58,7 @@
           <tr>
             <th>등록 IP</th>
             <td>
-              <el-input v-model="txtUserHndSetId" placeholder="등록할 IP를 입력하세요" class="w-100" />
+              <el-input v-model="txtUserHndSetId" class="w-100" />
             </td>
           </tr>
           <tr>
@@ -81,8 +80,9 @@
 <script>
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
-import { ipmsJsonApis, apiRequestJson } from '@/api/ipms'
+import { ipmsJsonApis, apiRequestJson, ipmsModelApis, apiRequestModel } from '@/api/ipms'
 import _ from 'lodash'
+import { onMessagePopup } from '@/utils'
 
 const routeName = 'ModalUpdateUserConIp'
 
@@ -95,8 +95,9 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      tbUserBasVo: {},
-      tbUserBasVoList: [],
+      tableLoading: false,
+      resultVo: {},
+      resultListVo: [],
       txtUserHndSetId: '',
       txtHndSetComment: '',
     }
@@ -109,69 +110,84 @@ export default {
     onCreated() {
       Modal.methods.onCreated.call(this)
       this.closeOnClickModal = false
-      this.domElement.maxWidth = 800
+      this.domElement.maxWidth = 1000
     },
     onOpen(model, actionMode) {
-      this.tbUserBasVo = _.cloneDeep(model.row)
-      this.tbUserBasVoList = _.cloneDeep(model.row.data)
+      this.resultVo = _.cloneDeep(model.tbUserBasVo)
+      this.fnViewUserHndSetList()
+    },
+    async fnViewUserHndSetList() { /* IP 승인 현황 조회 */
+      try {
+        this.tableLoading = true
+        const res = await apiRequestModel(ipmsModelApis.viewListUserHndSetTxn, { suserId: this.resultVo.suserId })
+        this.resultListVo = res.result?.data ?? []
+      } catch (error) {
+        this.error(error)
+      } finally {
+        this.tableLoading = false
+      }
     },
     async fnUserHndSetInsert() { /* 등록 */
-      if (this.tbUserBasVoList.length >= 3) {
-        this.$message('허용 가능 IP개수는 3개 입니다.<br> 현재 등록되어 있는 IP를 삭제 후 등록 해주세요.')
+      if (this.resultListVo.length >= 3) {
+        onMessagePopup(this, '허용 가능 IP개수는 3개 입니다.<br> 현재 등록되어 있는 IP를 삭제 후 등록 해주세요.')
         return
       }
 
       if (this.txtUserHndSetId === '' || this.txtUserHndSetId === null) {
-        this.$message('등록 IP를 입력하세요.')
+        onMessagePopup(this, '등록 IP를 입력하세요.')
         return
       }
-
-      try {
-        const hndSetVo = {
-          suserId: this.tbUserBasVoList[0].suserId,
+      const userId = this.$store.state.user.info.suserId
+      const hndSetVo = {
+          suserId: this.resultVo.suserId,
           suserHndsetId: this.txtUserHndSetId,
           scomment: this.txtHndSetComment,
           shndsetUseSttusCd: 'UI0002',
-          shndsetApvUserId: this.$store.state.user.info.suserId,
-          screateId: this.$store.state.user.info.suserId,
-          smodifyId: this.$store.state.user.info.suserId,
+          shndsetApvUserId: userId,
+          screateId: userId,
+          smodifyId: userId,
         }
-        const res = await apiRequestJson(ipmsJsonApis.viewInsertUserHndSetTxn, hndSetVo)
-        if (res.commonMsg === this.resultListVo.commonMsg) {
-          this.$message('사용자 접속 IP를 정상적으로 등록했습니다.')
-        } else if (res.commonMsg === 'DUP') {
-          this.$message(`${this.resultListVo.scomment}`)
+      try {
+        this.tableLoading = true
+        const res = await apiRequestModel(ipmsModelApis.viewInsertUserHndSetTxn, hndSetVo)
+        const commonMsg = res.result.data.commonMsg
+        if (commonMsg === 'SUCCESS') {
+          onMessagePopup(this, '사용자 접속 IP를 정상적으로 등록했습니다.')
+          this.resultListVo = res.result.data.tbUserHndsetApyTxnVos ?? []
+        } else if (commonMsg === 'DUP') {
+          onMessagePopup(this, res.result.data.sComment)
         } else {
-          this.$message(`${res.commonMsg}`)
+          onMessagePopup(this, commonMsg)
           this.close()
         }
       } catch (error) {
         console.error(error)
+      } finally {
+        this.tableLoading = false
+        this.txtUserHndSetId = ''
+        this.txtHndSetComment = ''
       }
     },
-    async fnDeleteUserHndSet(suserId, nhndsetApySeq, index) { /* 삭제 */
+    async fnDeleteUserHndSet(suserId, nhndsetApySeq) { /* 삭제 */
       if (suserId === '' || suserId === null) {
         return
       }
-
       if (nhndsetApySeq === '' || nhndsetApySeq === null) {
         return
       }
-      const hndSetVo = {
-        suserId: suserId,
-        nhndsetApySeq: nhndsetApySeq
-      }
       try {
-        const res = await apiRequestJson(ipmsJsonApis.viewDeleteUserHndSetTxn, hndSetVo)
-        if (res.commonMsg === 'SUCCESS') {
-         this.$message('사용자 접속 IP를 정상적으로 삭제 했습니다.')
-         this.tbUserBasVoList.splice(index, 1)
+        this.tableLoading = true
+        const res = await apiRequestModel(ipmsModelApis.viewDeleteUserHndSetTxn, { suserId, nhndsetApySeq })
+        if (res.result.data.commonMsg === 'SUCCESS') {
+         onMessagePopup(this, '사용자 접속 IP를 정상적으로 삭제 했습니다.')
+         this.resultListVo = res.result.data.tbUserHndsetApyTxnVos ?? []
         } else {
-          this.$message(`${res.commonMsg}`)
-          this.close()
+          onMessagePopup(this, res.commonMsg)
         }
       } catch (error) {
-        console.error(error)
+        this.error(error)
+      } finally {
+        this.tableLoading = false
       }
     },
     onClose() {

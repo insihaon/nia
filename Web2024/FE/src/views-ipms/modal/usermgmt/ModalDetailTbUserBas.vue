@@ -52,7 +52,7 @@
         <el-button type="primary" size="small" round @click="fnLoginFailInit()">
           비밀번호 실패횟수 초기화
         </el-button>
-        <el-button type="primary" size="small" round @click="fnViewUserHndSetList()">
+        <el-button type="primary" size="small" round @click="onOpenModalUserHndSet()">
           사용자 접속 IP 변경
         </el-button>
       </div>
@@ -65,9 +65,10 @@
 <script>
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
-import { ipmsJsonApis, apiRequestJson, ipmsModelApis, apiRequestModel } from '@/api/ipms'
+import { ipmsJsonApis, apiRequestJson } from '@/api/ipms'
 import _ from 'lodash'
 import ModalUpdateUserConIp from '@/views-ipms/modal/usermgmt/ModalUpdateUserConIp.vue'
+import { onMessagePopup } from '@/utils'
 
 const routeName = 'ModalDetailTbUserBas'
 
@@ -84,10 +85,6 @@ export default {
       tbUserBasVo: {},
     }
   },
-  computed: {
-  },
-  mounted() {
-  },
   methods: {
     onCreated() {
       Modal.methods.onCreated.call(this)
@@ -98,16 +95,8 @@ export default {
       // this.isViewType = model.type
       this.tbUserBasVo = _.cloneDeep(model.row)
     },
-    async fnViewUserHndSetList() { /* 사용자 접속 IP 변경 */
-      try {
-        const hndSetVo = {
-          suserId: this.tbUserBasVo.suserId
-        }
-        const res = await apiRequestModel(ipmsModelApis.viewListUserHndSetTxn, hndSetVo)
-        this.$refs.ModalUpdateUserConIp.open({ row: res.result })
-      } catch (error) {
-        console.error(error)
-      }
+    onOpenModalUserHndSet() { /* 사용자 접속 IP 변경 */
+    this.$refs.ModalUpdateUserConIp.open({ tbUserBasVo: this.tbUserBasVo })
     },
     async fnLoginFailInit() { /* 비밀번호 초기화 */
       if (this.tbUserBasVo.suserId === '' || this.tbUserBasVo.suserId === null) {
@@ -116,18 +105,18 @@ export default {
       const userBasVo = {
         suserId: this.tbUserBasVo.suserId,
         nloginFailTmscnt: 0,
-        smodifyId: this.$store.state.user.Uid,
+        smodifyId: this.$store.state.user.info.suserId,
       }
 
       try {
        const res = await apiRequestJson(ipmsJsonApis.updateTbUserBas, userBasVo)
        if (res.commonMsg === 'SUCCESS') {
-        this.$message('로그인 실패 횟수를 초기화 하였습니다.')
+        onMessagePopup(this, '로그인 실패 횟수를 초기화 하였습니다.')
        } else {
-        this.$message(res.commonMsg)
+        onMessagePopup(this, res.commonMsg)
        }
       } catch (error) {
-        console.error(error)
+        this.error(error)
       }
     },
 

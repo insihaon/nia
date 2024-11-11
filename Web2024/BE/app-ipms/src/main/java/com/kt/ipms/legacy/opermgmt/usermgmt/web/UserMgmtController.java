@@ -54,6 +54,7 @@ public class UserMgmtController extends CommonController {
 	@ResponseBody
 	public ModelMap selectListTbUserBas(@RequestBody TbUserBasVo searchVo, ModelMap model,
 	HttpServletRequest request)  {
+		setPagination(searchVo);
 		TbUserBasListVo resultListVo = userMgmtService.selectListTbUserBas(searchVo);
 		return createResultList(resultListVo.getTbUserBasVos(), resultListVo.getTotalCount());
 	}
@@ -278,6 +279,13 @@ public class UserMgmtController extends CommonController {
 		return resultVo;
 	}
 	
+	@RequestMapping(value = "/opermgmt/usermgmt/selectListUserConnResultCds.json", method = RequestMethod.POST)
+	@ResponseBody
+	public ModelMap selectListUserConnResultCds(@RequestBody TbUserConnHistVo searchVo, ModelMap model,
+			HttpServletRequest request)  {
+		List<CommonCodeVo> userConnResultCds = commonCodeService.selectListCommonCode(CommonCodeUtil.USER_CONN_RESLT_TYPE_CD, null);
+		return createResultList(userConnResultCds, userConnResultCds.size());
+	}
 	/**
 	 * 사용자접속 현황 리스트 목록
 	 * @param searchVo
@@ -291,6 +299,7 @@ public class UserMgmtController extends CommonController {
 	@ResponseBody
 	public ModelMap selectListTbUserConnHist(@RequestBody TbUserConnHistVo searchVo, ModelMap model,
 			HttpServletRequest request)  {
+		setPagination(searchVo);
 		TbUserConnHistListVo resultListVo = userMgmtService.selectListTbUserConnHist(searchVo);
 		return createResultList(resultListVo.getTbUserConnHistVos(), resultListVo.getTotalCount());
 	}
@@ -397,8 +406,17 @@ public class UserMgmtController extends CommonController {
 	@ResponseBody
 	public ModelMap viewInsertUserHndSetTxn(@RequestBody TbUserHndsetApyTxnVo tbUserHndsetApyTxnVo, ModelMap model,
 			HttpServletRequest request)  {
-		TbUserHndsetApyTxnListVo resultListVo = userMgmtService.insertTbUserHndsetApyTxnVo(tbUserHndsetApyTxnVo);
-		return createResultList(resultListVo.getTbUserHndsetApyTxnVos(), resultListVo.getTotalCount());
+		TbUserHndsetApyTxnListVo	resultListVo = userMgmtService.insertTbUserHndsetApyTxnVo(tbUserHndsetApyTxnVo);
+		
+		if(resultListVo.getCommonMsg().equals("DUP"))
+		{
+			String msgDesc = tbCmnMstService.selectMsgDesc(new ServiceException("APP.INFO.00046", new String[]{tbUserHndsetApyTxnVo.getSuserHndsetId()}));
+			resultListVo.setsComment(msgDesc);
+		}
+		else {
+			resultListVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
+		}
+		return createResult(resultListVo);
 	}
 	@RequestMapping(value = "/opermgmt/usermgmt/viewInsertUserHndSetTxn.ajax", method = RequestMethod.POST)
 	public String viewInsertUserHndSetTxn(@RequestBody TbUserHndsetApyTxnVo tbUserHndsetApyTxnVo, ModelMap model,
@@ -457,7 +475,8 @@ public class UserMgmtController extends CommonController {
 	public ModelMap viewDeleteUserHndSetTxn(@RequestBody TbUserHndsetApyTxnVo tbUserHndsetApyTxnVo, ModelMap model,
 			HttpServletRequest request)  {
 		TbUserHndsetApyTxnListVo resultListVo = userMgmtService.deleteTbUserHndsetApyTxnVo(tbUserHndsetApyTxnVo);
-		return createResultList(resultListVo.getTbUserHndsetApyTxnVos(), resultListVo.getTotalCount());
+		resultListVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
+		return createResult(resultListVo);
 	}
 	@RequestMapping(value = "/opermgmt/usermgmt/viewDeleteUserHndSetTxn.ajax", method = RequestMethod.POST)
 	public String viewDeleteUserHndSetTxn(@RequestBody TbUserHndsetApyTxnVo tbUserHndsetApyTxnVo, ModelMap model,
