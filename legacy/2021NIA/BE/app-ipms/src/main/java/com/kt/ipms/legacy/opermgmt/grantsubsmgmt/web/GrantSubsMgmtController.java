@@ -65,8 +65,7 @@ public class GrantSubsMgmtController extends CommonController {
 	@RequestMapping(value = "/opermgmt/grantsubsmgmt/viewListUserAuthSubs.model", method = RequestMethod.POST)
 	@ResponseBody
 	public ModelMap viewListUserAuth(
-			@ModelAttribute("searchVo") TbUserGrantVo searchVo,
-			ModelMap model,
+			@ModelAttribute("searchVo") TbUserGrantVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		setPagination(searchVo);
 		TbUserGrantListVo resultListVo = grantSubsMgmtService.selectTbUserGrantList(searchVo);
@@ -347,7 +346,7 @@ public class GrantSubsMgmtController extends CommonController {
 		return model;
 	}
 
-	@RequestMapping(value = "/opermgmt/grantsubsmgmt/viewDeleteGrant.ajax", method = RequestMethod.POST)
+	@RequestMapping(value = "/opermgmt/grantsubsmgmt/viewDeleteGrant.model", method = RequestMethod.POST)
 	@ResponseBody
 	public TbUserGrantVo deleteGrant(HttpServletRequest request, @RequestBody TbUserGrantVo searchVo) {
 		TbUserGrantVo resultVo = null;
@@ -372,7 +371,7 @@ public class GrantSubsMgmtController extends CommonController {
 		return resultVo;
 	}
 
-	@RequestMapping(value = "/opermgmt/grantsubsmgmt/confirmGrantSub.ajax", method = RequestMethod.POST)
+	@RequestMapping(value = "/opermgmt/grantsubsmgmt/confirmGrantSub.model", method = RequestMethod.POST)
 	@ResponseBody
 	public TbUserGrantVo confirmGrantSub(@RequestBody TbUserAuthTxnListVo tbUserAuthTxnListVo,
 			HttpServletRequest request, HttpServletResponse response) {

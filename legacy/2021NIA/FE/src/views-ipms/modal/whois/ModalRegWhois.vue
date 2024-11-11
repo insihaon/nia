@@ -251,7 +251,7 @@
             <th>2h</th>
             <th>연결 날짜</th>
             <td>
-              <el-input v-model="formattedDate" size="small" class="w-60" disabled />
+              <el-input v-model="resultVo.dcreateDt" size="small" class="w-60" disabled />
               <span style="font-size:12px;color:#b5b5b5">(예: 2014.01.01)</span>
             </td>
           </tr>
@@ -335,6 +335,7 @@ export default {
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       resultVo: {
         sapplicationname: '',
+        swhoisTranStatusNm: '',
         swhoisRequestTypeNm: '',
         skrnicmemberId: '',
         sfirstAddr: '',
@@ -351,7 +352,8 @@ export default {
         swhoisresultCd: '',
         type: '',
         ssaid: '',
-        nwhoisSeq: ''
+        nwhoisSeq: '',
+        dcreateDt: ''
 
       },
       userVo: {
@@ -366,6 +368,8 @@ export default {
         sadmDpphone: '',
         sadmEmail: '',
       },
+      ktInfoVo: {},
+      scity: [],
       allocUserInfo: {
         customerName: '',
         customerAddr: '',
@@ -387,8 +391,30 @@ export default {
       this.domElement.maxWidth = 1000
     },
     onOpen(model, actionMode) {
-      this.resultVo = this._cloneDeep(model.row)
-      this.userVo = this._cloneDeep(model.row)
+      setTimeout(() => {
+        if (model.row) {
+         this.fnViewDetailWhois(model.row)
+        }
+      }, 10)
+    },
+    async fnViewDetailWhois(row) {
+      const target = ({ vue: this.$refs.content })
+       try {
+         this.openLoading(target)
+         const { nwhoisSeq } = row
+         const tbUserAuthVo = {
+            nwhoisSeq: nwhoisSeq,
+         }
+         const res = await apiRequestModel(ipmsModelApis.viewRegWhoisNew, tbUserAuthVo)
+          this.resultVo = res?.resultVo
+          this.userVo = res?.userVo
+          this.ktInfoVo = res?.ktInfoVo
+          this.scity = res?.scity
+       } catch (error) {
+         console.error(error)
+       } finally {
+         this.closeLoading(target)
+       }
     },
     fnSetAddr(type) {
       if (this.resultVo === '' || this.resultVo === null) {
@@ -403,12 +429,12 @@ export default {
         // this.sAftEOrgAddr = this.resultVo.sAftEOrgAddr
         // this.sAftEOrgAddrDetail = this.resultVo.sAftEOrgAddrDetail
       } else if (type === 'toKT') {
-        // this.sAftOrgName = this.ktInfoVo.sorgname
-        // this.sAftOrgAddr = this.ktInfoVo.sadmAddr
-        // this.sAftOrgAddrDetail = this.ktInfoVo.sadmAddrDetail
-        // this.sAftEOrgName = this.ktInfoVo.sadmEorgname
-        // this.sAftEOrgAddr = this.ktInfoVo.sadmEaddr
-        // this.sAftEOrgAddrDetail = this.ktInfoVo.sadmEaddrDetail
+        this.sAftOrgName = this.ktInfoVo.sorgname
+        this.sAftOrgAddr = this.ktInfoVo.sadmAddr
+        this.sAftOrgAddrDetail = this.ktInfoVo.sadmAddrDetail
+        this.sAftEOrgName = this.ktInfoVo.sadmEorgname
+        this.sAftEOrgAddr = this.ktInfoVo.sadmEaddr
+        this.sAftEOrgAddrDetail = this.ktInfoVo.sadmEaddrDetail
       }
     },
     async fnSaveRegWhoisSubmit() {

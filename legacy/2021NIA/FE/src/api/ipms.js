@@ -72,7 +72,7 @@ export const ipmsModelApis = {
   viewListUserAuthSubs: { desc: '사용자 권한 신청 조회', url: '/opermgmt/grantsubsmgmt/viewListUserAuthSubs' },
   viewDetailUserAuthSubs: { desc: '사용자 권한 신청 상세정보', url: '/opermgmt/grantsubsmgmt/viewDetailUserAuthSubs' },
   confirmGrantSub: { desc: '사용자 권한 신청 승인/반려', url: '/opermgmt/grantsubsmgmt/confirmGrantSub' },
-  viewDeleteGrant: { desc: '사용자 권한 신청 삭제', url: '/opermgmt/grantsubsmgmt/viewDeleteGrant' },
+  viewDeleteGrant: { desc: '사용자 권한 신청 취소', url: '/opermgmt/grantsubsmgmt/viewDeleteGrant' },
   viewInsertUserAuthSubs: { desc: '사용자 권한 신청 > 등록 화면', url: '/opermgmt/grantsubsmgmt/viewInsertUserAuthSubs' },
 
   // 운용정보관리(관리자 기능)
@@ -109,6 +109,11 @@ export const ipmsModelApis = {
   viewDetailScrnBas: { desc: '화면 관리 조회 > 수정 화면', url: '/opermgmt/menumgmt/viewDetailScrnBas' },
   viewListMenuAuth: { desc: '메뉴권한관리 조회', url: '/opermgmt/menumgmt/viewListMenuAuth' },
   viewListWhois: { desc: 'WHOIS 정보공개 관리 조회', url: '/opermgmt/whoismgmt/viewListWhois' },
+  viewRegWhoisNew: { desc: 'WHOIS 정보공개 관리 > 상세(수정)POP', url: '/opermgmt/whoismgmt/viewRegWhoisNew' },
+  viewListWhoisKeywordMst: { desc: 'WHOIS 정보공개 관리 > 이용기관관리 조회POP', url: '/opermgmt/whoismgmt/viewListWhoisKeywordMst' },
+  viewListWhoisKeywordMstNew: { desc: 'WHOIS 정보공개 관리 > 대체키워드 관리POP', url: '/opermgmt/whoismgmt/viewListWhoisKeywordMstNew' },
+  viewUpdateKtInfo: { desc: 'WHOIS 정보공개 관리 > KT 대체 정보 관리POP', url: '/opermgmt/whoismgmt/viewUpdateKtInfo' },
+  viewListWhoisDbMatchMst: { desc: 'WHOIS 정보공개 관리 > DB현행화 전송POP', url: '/opermgmt/whoismgmt/viewListWhoisDbMatchMst' },
 }
 export const ipmsJsonApis = {
   selectAuthCenterList: { desc: '센터 조회', url: '/opermgmt/orgmgmt/selectAuthCenterList' },

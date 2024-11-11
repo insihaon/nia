@@ -47,7 +47,6 @@
 </template>
 <script>
 import { Base } from '@/min/Base.min'
-import axios from 'axios'
 import CompTable from '@/components/elTable/CompTable.vue'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
 import tableHeightMixin from '@/mixin/tableHeightMixin'

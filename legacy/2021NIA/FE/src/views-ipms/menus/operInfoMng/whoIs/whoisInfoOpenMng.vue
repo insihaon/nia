@@ -14,24 +14,28 @@
       </table>
     </div>
     <DynamicComponentLoader
+      ref="searchCondition"
       :prop-name="name"
       :component-keys="componentList"
-      @handle-search="fnViewListWhois"
+      @handle-search="handleSearch"
     />
     <el-col :span="24">
       <compTable
         ref="compTable"
         style="height: calc(100% - 80px)"
         :prop-name="name"
-        :prop-table-height="'100%'"
         :prop-column="tableColumns"
-        :prop-data="resultListVo"
+        :prop-table-height="'100%'"
+        :prop-data="pagination.data"
+        :prop-pagination-data.sync="pagination"
         :prop-is-pagination="true"
         :prop-is-check-box="true"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
-        :prop-on-click="onClcikRow"
+        :prop-on-dbl-click="hadleClickWhoisEdit"
         :prop-on-select="handleClickTableCheck"
+        :prop-on-page-change="handleChangeCurPage"
+        :prop-on-page-size-change="handleChangeCurPage"
         @savedExcel="handleClickExcelDownloadBtn"
       >
         <template slot="text-description">
@@ -50,6 +54,10 @@
         </template>
       </compTable>
       <ModalRegWhois ref="ModalRegWhois" />
+      <ModalViewListWhoisKeywordMst ref="ModalViewListWhoisKeywordMst" />
+      <ModalViewListWhoisKeywordMstNew ref="ModalViewListWhoisKeywordMstNew" />
+      <ModalViewUpdateKtInfo ref="ModalViewUpdateKtInfo" />
+      <ModalViewListWhoisDbMatchMst ref="ModalViewListWhoisDbMatchMst" />
     </el-col>
   </el-row>
 
@@ -60,18 +68,23 @@ import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoad
 import CompTable from '@/components/elTable/CompTable.vue'
 import ModalRegWhois from '@/views-ipms/modal/whois/ModalRegWhois.vue'
 import { ipmsModelApis, apiRequestModel, apiRequestJson, ipmsJsonApis } from '@/api/ipms'
+import ModalViewListWhoisKeywordMst from '@/views-ipms/modal/whoismgmt/ModalViewListWhoisKeywordMst.vue'
+import ModalViewListWhoisKeywordMstNew from '@/views-ipms/modal/whoismgmt/ModalViewListWhoisKeywordMstNew.vue'
+import ModalViewUpdateKtInfo from '@/views-ipms/modal/whoismgmt/ModalViewUpdateKtInfo.vue'
+import ModalViewListWhoisDbMatchMst from '@/views-ipms/modal/whoismgmt/ModalViewListWhoisDbMatchMst.vue'
 import { downloadExcel } from '@/views-ipms/js/common-function'
 
 const routeName = 'WhoisInfoOpenManagement'
 
 export default {
   name: routeName,
-  components: { CompTable, DynamicComponentLoader, ModalRegWhois },
+  components: { CompTable, DynamicComponentLoader, ModalRegWhois, ModalViewListWhoisKeywordMst, ModalViewListWhoisKeywordMstNew, ModalViewUpdateKtInfo, ModalViewListWhoisDbMatchMst },
   extends: Base,
   data() {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      pagination: this.setDefaultPagination(),
         tableColumns: [
           { prop: 'rowNo', label: 'No', align: 'center', columnVisible: true, showOverflow: true },
           { prop: 'sfirstAddr', label: '시작 IP', align: 'center', columnVisible: true, showOverflow: true },
@@ -136,7 +149,6 @@ export default {
         { title: '반송', value: '9' },
         { title: '등록완료', value: '287091' }
       ],
-      resultListVo: null,
       selectedChecks: [],
       selectedChecksItem: null,
     }
@@ -145,18 +157,30 @@ export default {
     this.fnViewListWhois()
   },
   methods: {
-    async fnViewListWhois(requestParameter) {
-       try {
-        const res = await apiRequestModel(ipmsModelApis.viewListWhois, requestParameter)
-        this.resultListVo = res?.result?.data
+    handleSearch(requestParameter) {
+      this.pagination.currentPage = 1
+      this.fnViewListWhois(requestParameter)
+    },
+    async fnViewListWhois(requestParameter = null) {
+      const parameter = requestParameter ?? this.$refs.searchCondition.requestParameter
+      const target = ({ vue: this.$refs.compTable })
+      const { pageSize: pageUnit, currentPage: pageIndex } = this.pagination
+      Object.assign(parameter, { pageUnit, pageIndex })
+      try {
+        this.openLoading(target)
+        const res = await apiRequestModel(ipmsModelApis.viewListWhois, parameter)
+        this.pagination.data = res.result.data ?? []
+        this.pagination.total = res.result.totalCount
       } catch (error) {
         console.error(error)
+      } finally {
+        this.closeLoading(target)
       }
     },
     formatNode(row) {
      return `${row.ssvcLineTypeNm || ''} - ${row.ssvcGroupNm || ''} - ${row.ssvcObjNm || ''}`
     },
-    onClcikRow(row) {
+    hadleClickWhoisEdit(row) {
       this.fnViewRegWhois(row)
     },
     fnViewRegWhois(row) {
@@ -166,17 +190,21 @@ export default {
       this.selectedChecksItem = cur
       this.selectedChecks = all
     },
-    fnVieListWhoisKeywordMst1() {
-
+    handleChangeCurPage(v) {
+      if (v) this.pagination.currentPage = v
+      this.fnViewListWhois()
     },
-    fnVieListWhoisKeywordMst2() {
-
+    fnVieListWhoisKeywordMst1() { /* 이용기관 관리  */
+      this.$refs.ModalViewListWhoisKeywordMst.open()
     },
-    fnViewUpdateKtInfo() {
-
+    fnVieListWhoisKeywordMst2() { /* 대채 키워드 관리  */
+      this.$refs.ModalViewListWhoisKeywordMstNew.open()
     },
-    fnDbMatch() {
-
+    fnViewUpdateKtInfo() { /* KT 대체 정보 관리 */
+      this.$refs.ModalViewUpdateKtInfo.open()
+    },
+    fnDbMatch() { /* DB 현행화 전송 */
+      this.$refs.ModalViewListWhoisDbMatchMst.open()
     },
     fnDeleteListWhois() {
       this.$confirm('삭제 하시겠습니까?', 'WHO IS 정보 삭제', {

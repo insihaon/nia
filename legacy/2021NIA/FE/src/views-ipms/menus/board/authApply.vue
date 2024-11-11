@@ -65,7 +65,7 @@ export default {
         { prop: 'grantSeq', label: '번호', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'suserNm', label: '사용자명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'sposDeptFullNm', label: '소속조직', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'dcreateDt', label: '신청일시', align: 'center', sortable: true, columnVisible: true, showOverflow: true, formatter: (row) => { return row.dcreateDt ? this.moment(row.dmodifyDt).format('YYYY-MM-DD') : '' } },
+        { prop: 'dcreateDt', label: '신청일시', align: 'center', sortable: true, columnVisible: true, showOverflow: true, formatter: (row) => this.moment(row.dcreateDt).format('YYYY-MM-DD') },
         { prop: 'nrequestTypeNm', label: '진행상태', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
       ],
       componentList: [
