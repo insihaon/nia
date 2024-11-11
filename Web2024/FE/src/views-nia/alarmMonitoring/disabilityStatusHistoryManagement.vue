@@ -73,7 +73,7 @@ export default {
       { type: '', prop: 'ticket_type', name: '장애 구분', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
       { type: '', prop: 'ticket_rca_result_dtl_code', name: '장애 내용', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
     ]
-      return { options, columns, data: this.alarmCurHistList }
+      return { options, columns, data: this.alarmCurHistList, getRightClickMenuItems: () => { return [] } }
     },
   },
   mounted() {

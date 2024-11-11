@@ -34,7 +34,7 @@ div.headerWrapLogo{
   background-repeat: no-repeat;
   background-position: 10px center;
   height:100%;
-  padding-left: 45px;
+  padding-left: 63px;
   line-height :28px;
   font-size: 20px;
   letter-spacing: -0.5px;
@@ -669,10 +669,13 @@ div.popupWrap>div.popupWin>div.popupWinFooter>Button:active{
 div.popupWrap>div.popupWin>div.popupWinFooter>Button:disabled{
   opacity: 0.25;
   cursor:default !important;
-  filter:grayscale(1)
+  filter:grayscale(1);
+  border: solid 1px #131313;
+
 }
 .statusBarWrap ul.statusBarMenu{
   border-radius:5px;
+  
 }
 .statusBarMenuLI>ul{
   background-color:transparent !important; box-shadow: none !important; filter:drop-shadow(0px 5px 5px rgba(0,0,0,0.15));

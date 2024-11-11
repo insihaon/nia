@@ -18,16 +18,10 @@
 <script>
 import { Base } from '@/min/Base.min'
 import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
-import { AppOptions } from '@/class/appOptions'
 import { apiSelectAppTrafficList, apiApplicationCodeList } from '@/api/nia'
+import { getFormatGbyte } from '@/views-nia/js/commonFormat'
 
 const routeName = 'TrafficAnalysisApp'
-
-function getFormatValue(row, col, value, index) {
-  const packetBytesInGbyte = value / (1024 * 1024 * 1024)
-  const roundedGbyte = Math.round(packetBytesInGbyte * 100) / 100
-  return roundedGbyte.toLocaleString()
-}
 
 export default {
   name: routeName,
@@ -81,7 +75,7 @@ export default {
         { type: '', prop: 'src_port', name: 'Port(Source)', minWidth: 40, suppressMenu: true, alignItems: 'center', sortable: false, filterable: false },
         { type: '', prop: 'dst_protocol', name: 'Application(Destination)', minWidth: 50, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
         { type: '', prop: 'dst_port', name: 'Port(Destination)', minWidth: 50, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
-        { type: '', prop: 'packet_bytes', name: 'Gbyte', minWidth: 50, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true, formatter: getFormatValue },
+        { type: '', prop: 'packet_bytes', name: 'Gbyte', minWidth: 50, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true, formatter: getFormatGbyte },
       ]
       return { options, columns, data: this.trafficData, getRightClickMenuItems: () => { return [] } }
     }

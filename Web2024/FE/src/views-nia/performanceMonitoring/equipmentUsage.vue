@@ -120,7 +120,13 @@ export default {
       }
       try {
         const res = await apiSelectEquipAmountUsedList(param)
-        this.equitmentsData = res?.result
+
+          this.equitmentsData = res?.result.map(item => ({
+            ...item,
+            cpu_usage: item.cpu_usage === 0 ? '-' : item.cpu_usage,
+            mem_usage: item.mem_usage === 0 ? '-' : item.mem_usage,
+          }))
+
         this.paginationInfo.totalCount = res.total
         this.paginationInfo.totalPages = Math.ceil(this.paginationInfo.totalCount / this.paginationInfo.pageSize) // 전체 페이지 수 계산
       } catch (error) {

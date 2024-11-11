@@ -135,7 +135,7 @@ export default {
         { type: '', prop: '', name: '다운로드', width: 50, suppressMenu: true, alignItems: 'center', cellRendererFramework: 'CellRenderSnapshot', cellRendererParams: { type: 'downroadUrl', action: this.onClickDownload.bind(this) } },
         { type: '', prop: '', name: '삭제', width: 50, suppressMenu: true, alignItems: 'center', cellRendererFramework: 'CellRenderSnapshot', cellRendererParams: { type: 'delete', action: this.onDeleteSnapshot.bind(this) } },
       ]
-      return { options, columns, data: this.snapshotHistList }
+      return { options, columns, data: this.snapshotHistList, getRightClickMenuItems: () => { return [] } }
     },
     categoryOptions() {
       const isTicketNull = this.selectedTicket === null
