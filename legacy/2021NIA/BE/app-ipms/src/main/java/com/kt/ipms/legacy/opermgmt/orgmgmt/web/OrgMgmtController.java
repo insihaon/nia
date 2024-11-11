@@ -67,6 +67,7 @@ public class OrgMgmtController extends CommonController {
 	@ResponseBody
 	public ModelMap selectListTbLvlCdVo(@RequestBody TbLvlCdVo searchVo, ModelMap model,
 			HttpServletRequest request) {
+		setPagination(searchVo);
 		TbLvlCdListVo resultListVo = orgMgmtService.selectListTbLvlCdVo(searchVo);
 		return createResultList(resultListVo.getTbLvlCdVos(), resultListVo.getTotalCount());
 	}
@@ -803,6 +804,7 @@ public class OrgMgmtController extends CommonController {
 	@RequestMapping(value = "/opermgmt/orgmgmt/viewListLvlBas.model", method = RequestMethod.POST)
 	@ResponseBody
 	public ModelMap selectListLvlBas(@RequestBody TbLvlBasVo searchVo, ModelMap model, HttpServletRequest request) {
+		setPagination(searchVo);
 		TbLvlBasListVo resultListVo = orgMgmtService.selectListLvlBas(searchVo);
 		return createResultList(resultListVo.getTbLvlBasVos(), resultListVo.getTotalCount());
 	}
@@ -1310,17 +1312,17 @@ public class OrgMgmtController extends CommonController {
 		HashMap<String, Object> map = new HashMap<String, Object>();
 
 		TbLvlBasListVo svcLineListVo = orgMgmtService.selectListSvcLineAll();
-		TbLvlBasListVo centerListVo = orgMgmtService.selectlistCenterAll();
-		TbLvlBasListVo nodeListVo = orgMgmtService.selectlistNodeAll();
+		// TbLvlBasListVo centerListVo = orgMgmtService.selectlistCenterAll();
+		// TbLvlBasListVo nodeListVo = orgMgmtService.selectlistNodeAll();
 
 		map.put("svcLineListVo", svcLineListVo.getTbLvlBasVos());
-		map.put("svcLineListTotalCount", svcLineListVo.getTotalCount());
+		// map.put("svcLineListTotalCount", svcLineListVo.getTotalCount());
 
-		map.put("centerListVo", centerListVo.getTbLvlBasVos());
-		map.put("centerListTotalCount", centerListVo.getTotalCount());
+		// map.put("centerListVo", centerListVo.getTbLvlBasVos());
+		// map.put("centerListTotalCount", centerListVo.getTotalCount());
 
-		map.put("nodeListVo", nodeListVo.getTbLvlBasVos());
-		map.put("nodeListTotalCount", nodeListVo.getTotalCount());
+		// map.put("nodeListVo", nodeListVo.getTbLvlBasVos());
+		// map.put("nodeListTotalCount", nodeListVo.getTotalCount());
 
 		resultModel.addAttribute("result", map);
 		return resultModel;
@@ -1494,10 +1496,15 @@ public class OrgMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/opermgmt/orgmgmt/viewInsertLvlBas.model", method = RequestMethod.POST)
 	@ResponseBody
-	public ModelMap viewInsertLvlBas(ModelMap model,
-			HttpServletRequest request) {
-		TbLvlBasListVo resultListVo = orgMgmtService.selectListSvcLineAll();
-		return createResultList(resultListVo.getTbLvlBasVos(), resultListVo.getTotalCount());
+	public ModelMap viewInsertLvlBas(HttpServletRequest request) {
+		ModelMap resultModel = new ModelMap();
+		HashMap<String, Object> map = new HashMap<String, Object>();
+
+		TbLvlBasListVo svcLineListVo = orgMgmtService.selectListSvcLineAll();
+		map.put("svcLineListVo", svcLineListVo.getTbLvlBasVos());
+		resultModel.addAttribute("result", map);
+
+		return resultModel;
 	}
 
 	@RequestMapping(value = "/opermgmt/orgmgmt/viewInsertLvlBas.ajax", method = RequestMethod.POST)

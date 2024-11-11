@@ -31,10 +31,10 @@
         </thead>
         <tbody>
           <tr>
-            <td>{{ resultListVo[0].ssvcLineTypeNm }}</td>
-            <td>{{ resultListVo[0].slvlGroupNm }}</td>
-            <td>{{ resultListVo[0].slvlHighNm }}</td>
-            <td>{{ resultListVo[0].slvlNm }}</td>
+            <td>{{ resultVo.ssvcLineTypeNm }}</td>
+            <td>{{ resultVo.ssvcGroupNm }}</td>
+            <td>{{ resultVo.ssvchighObjNm }}</td>
+            <td>{{ resultVo.ssvcObjNm }}</td>
           </tr>
         </tbody>
       </table>
@@ -63,9 +63,8 @@
 
     </div>
     <div class="popupContentTable textcenter">
-      <div class="popupContentTableTitle">노드국 목록</div>
+      <div class="popupContentTableTitle">수용국 목록</div>
       <table>
-        <caption>조직계위정보 목록</caption>
         <colgroup>
           <col width="12%" />
           <col width="12%" />
@@ -79,22 +78,18 @@
           </tr>
         </thead>
 
-        <tbody>
+        <tbody v-loading="tableLoading">
           <!-- 조회된 결과 목록이 없을 때 -->
-          <template v-if="resultVo.totalCount === 0">
+          <template v-if="resultListVo.length === 0">
             <tr>
               <td colspan="3" class="textcenter">조회된 결과 목록이 존재하지 않습니다.</td>
             </tr>
           </template>
           <!-- 조회된 결과 목록이 있을 때 -->
-          <template v-if="resultVo.totalCount > 0">
-            <tr
-              v-for="(item, index) in resultListNodeVo"
-              :key="index"
-              :class="{'subbg': index % 2 !== 0, 'last': index === resultListNodeVo.length - 1}"
-            >
-              <td :title="item.slofficecode">{{ item.ssvcOfficeCd }}</td>
-              <td :title="item.slofficeNm">{{ item.ssvcOfficeNm }}</td>
+          <template v-if="resultListVo.length > 0">
+            <tr v-for="(item, index) in resultListVo" :key="index">
+              <td>{{ item.ssvcOfficeCd }}</td>
+              <td>{{ item.ssvcOfficeNm }}</td>
               <td>
                 <el-button type="danger" size="small" icon="el-icon-delete" circle @click="fnDeleteRoleSub(item)" />
               </td>
@@ -113,9 +108,10 @@
 <script>
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
-import { ipmsJsonApis, apiRequestJson } from '@/api/ipms'
+import { ipmsJsonApis, apiRequestJson, ipmsModelApis, apiRequestModel } from '@/api/ipms'
 import _ from 'lodash'
 import ModalEntireOrgSearch from '@/views-ipms/modal/search/ModalEntireOrgSearch.vue'
+import { onMessagePopup } from '@/utils'
 
 const routeName = 'ModalInsertLvlRoleSub'
 
@@ -128,18 +124,17 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      resultVo: null,
+      tableLoading: false,
+      resultVo: {
+        ssvcLineTypeNm: '',
+        ssvcGroupNm: '',
+        ssvchighObjNm: '',
+        ssvcObjNm: '',
+      },
       resultListVo: [],
-      resultListNodeVo: [],
       ssvcObjNm: '',
       ssvcObjCd: ''
     }
-  },
-  computed: {
-
-  },
-  mounted() {
-
   },
   methods: {
     onCreated() {
@@ -148,11 +143,25 @@ export default {
       this.domElement.maxWidth = 600
     },
     onOpen(model, actionMode) {
-      this.resultVo = this._cloneDeep(model.row)
-      this.resultListVo = this._cloneDeep(model.row.data)
-      this.resultListNodeVo = this._cloneDeep(model.row.data)
-
+      if (model.row) {
+        this.resultVo = this._cloneDeep(model.row)
+        this.fnViewInsertLvlRoleSub()
+      }
       this.ssvcObjNm = ''
+      this.ssvcObjCd = ''
+    },
+    async fnViewInsertLvlRoleSub() { /* 수용국 조회 */
+     const { ssvcLineTypeCd, ssvcLineTypeNm, ssvcGroupNm, ssvchighObjNm, ssvcObjCd, ssvcObjNm } = this.resultVo
+      try {
+        this.tableLoading = true
+        const TbLvlRoleSubVo = { ssvcLineTypeCd, ssvcLineTypeNm, ssvcGroupNm, ssvchighObjNm, ssvcObjCd, ssvcObjNm }
+        const res = await apiRequestModel(ipmsModelApis.viewInsertLvlRoleSub, TbLvlRoleSubVo)
+        this.resultListVo = res.result?.data ?? []
+      } catch (error) {
+        this.error(error)
+      } finally {
+        this.tableLoading = false
+      }
     },
      fnViewSearchCenterLvlCd() {
       this.$refs.ModalEntireOrgSearch.open({ viewTitle: '노드' })
@@ -162,62 +171,43 @@ export default {
       this.ssvcObjCd = row?.slvlCd
     },
     async fnDeleteRoleSub(item) { /* 노드국 목록 삭제 */
-      let res
+      const { ssvcLineTypeCd, ssvcObjCd } = this.resultVo
+      const TbLvlRoleSubVo = { smodifyId: this.$store.state.user.info.suserId, ssvcLineTypeCd, ssvcObjCd, ssvcOfficeCd: item.ssvcOfficeCd }
       try {
-        const TbLvlRoleSubVo = {
-          smodifyId: this.$store.state.user.info.suserId,
-          ssvcLineType: item.ssvcLineTypeCd,
-          ssvcObjCd: item.ssvcObjCd,
-          ssvcLineTypeCd: item.ssvcLineTypeCd
-        }
-        res = await apiRequestJson(ipmsJsonApis.deleteLvlRoleSub, TbLvlRoleSubVo)
+        const res = await apiRequestJson(ipmsJsonApis.deleteLvlRoleSub, TbLvlRoleSubVo)
         if (res.commonMsg === 'SUCCESS') {
-          this.$message('정상처리 되었습니다.')
-          const index = this.resultListNodeVo.indexOf(item)
-            if (index > -1) {
-              this.resultListNodeVo.splice(index, 1)
-          }
+          onMessagePopup(this, '국사 삭제 정상처리 되었습니다.')
+          this.fnViewInsertLvlRoleSub()
         } else {
-          return
+          onMessagePopup(this, res.commonMsg)
         }
       } catch (error) {
-        console.error(error)
+        this.error(error)
       }
     },
     async fnInsertFmBtnClick() {
-      this.resultListVo
-      if (this.resultListVo[0].ssvcObjCd === this.ssvcObjCd) {
-        this.$message('이미 등록된 국사입니다.')
+      if (this.resultListVo.map(row => row.ssvcOfficeCd).includes(this.ssvcObjCd)) {
+        onMessagePopup(this, '이미 등록된 국사정보입니다.')
         return
       }
-
       if (this.ssvcObjNm === '' || this.ssvcObjNm === null) {
-        this.$message('등록 할 국사 정보가 없습니다.')
+        onMessagePopup(this, '등록 할 국사 정보가 없습니다.')
         return
       }
-
-      let res
+      const { ssvcLineTypeCd, ssvcObjCd } = this.resultVo
+      const TbLvlRoleSubVo = { smodifyId: this.$store.state.user.info.suserId, ssvcLineTypeCd, ssvcObjCd, ssvcOfficeCd: this.ssvcObjCd }
       try {
-        const TbLvlRoleSubVo = {
-          smodifyId: this.$store.state.user.info.suserId,
-          ssvcObjCd: this.resultListVo[0].ssvcObjCd,
-          ssvcLineTypeCd: this.resultListVo[0].ssvcLineTypeCd,
-          ssvcOfficeCd: this.ssvcObjCd,
-        }
-        res = await apiRequestJson(ipmsJsonApis.insertLvlRoleSub, TbLvlRoleSubVo)
+        const res = await apiRequestJson(ipmsJsonApis.insertLvlRoleSub, TbLvlRoleSubVo)
         if (res.commonMsg === 'SUCCESS') {
-          this.$message('국사 등록이 완료 되었습니다.')
-          this.resultListNodeVo.push({
-            ssvcOfficeCd: this.ssvcObjCd,
-            ssvcOfficeNm: this.ssvcObjNm
-          })
+          onMessagePopup(this, '국사 등록이 완료 되었습니다.')
+          this.fnViewInsertLvlRoleSub()
           this.ssvcObjCd = ''
           this.ssvcObjNm = ''
         } else {
-          this.$message.error(`${res.commonMsg}`)
+          onMessagePopup(this, res.commonMsg)
         }
       } catch (error) {
-        console.error(error)
+        this.error(error)
       }
     },
     onClose() {

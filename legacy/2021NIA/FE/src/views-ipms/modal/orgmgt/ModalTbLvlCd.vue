@@ -3,7 +3,7 @@
     v-if="animationVisible"
     id="ipms"
     v-el-drag-dialog
-    :title="isTitle"
+    :title="'가상 국사 조직 정보'+ isEdit ? ' 수정' : '등록'"
     :visible.sync="visible"
     :width="domElement.maxWidth + `px`"
     :fullscreen.sync="fullscreen"
@@ -15,7 +15,7 @@
     class="ipms-dialog"
     :class="{ [name]: true }"
   >
-    <div class="popupContentTable">
+    <div v-loading="viewLoading" class="popupContentTable">
       <table>
         <colgroup>
           <col width="30%" /><col width="70%" />
@@ -57,8 +57,8 @@
       </table>
     </div>
     <div class="popupContentTableBottom">
-      <el-button v-if="isViewType === 'edit'" type="primary" size="small" icon="el-icon-save" round @click="fnApproveIpAssignApy()">저장</el-button>
-      <el-button v-else type="primary" size="small" icon="el-icon-document-add" round @click="fnInsertSubmit()">등록</el-button>
+      <el-button v-if="isEdit" type="primary" size="small" icon="el-icon-save" round @click="fnProcess()">저장</el-button>
+      <el-button v-else type="primary" size="small" icon="el-icon-document-add" round @click="fnProcess()">등록</el-button>
       <el-button type="primary" size="small" icon="el-icon-close" round @click="close()">{{ $t('exit') }}</el-button>
     </div>
   </el-dialog>
@@ -67,9 +67,10 @@
 <script>
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
-import { ipmsJsonApis, apiRequestJson } from '@/api/ipms'
+import { ipmsJsonApis, apiRequestJson, apiRequestModel, ipmsModelApis } from '@/api/ipms'
 import { mapState } from 'vuex'
 import _ from 'lodash'
+import { onMessagePopup } from '@/utils'
 
 const routeName = 'ModalTbLvlCd'
 
@@ -83,13 +84,14 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      viewLoading: false,
       resultVo: {
         slvlCd: '',
         slvlNm: '',
         sorgOfficeFlagYn: '',
         scomment: '',
       },
-      isViewType: ''
+      viewType: ''
     }
   },
   computed: {
@@ -98,9 +100,9 @@ export default {
       suserId: state => state.user.info.Uid,
       suserGradeCd: state => state.ipms.suserGradeCd,
     }),
-    isTitle() {
-      return this.isViewType === 'edit' ? '가상 국사 조직 정보 수정' : '가상 국사 조직 정보 등록'
-    },
+    isEdit() {
+      return this.viewType === 'edit'
+    }
   },
   mounted() {
 
@@ -112,79 +114,67 @@ export default {
       this.domElement.maxWidth = 600
     },
     onOpen(model, actionMode) {
-      this.isViewType = model.type
-      if (this.isViewType === 'edit') {
-        this.resultVo = _.cloneDeep(model.row)
+      this.viewType = model.type
+      if (this.isEdit) {
+        this.fnViewupdateLvlCd(model.slvlCd)
+        // this.resultVo = _.cloneDeep(model.row)
       } else {
-        this.resultVo = {}
+        this.resultVo = {
+        slvlCd: '',
+        slvlNm: '',
+        sorgOfficeFlagYn: '',
+        scomment: '',
+      }
       }
     },
-    async fnApproveIpAssignApy() {
+    async fnViewupdateLvlCd(slvlCd = null) {
+      if (slvlCd === '' || slvlCd === null) {
+        return
+      }
+      try {
+        this.viewLoading = true
+        const res = await apiRequestModel(ipmsModelApis.viewUpdateTbLvlCdVo, { slvlCd })
+        this.resultVo = res.result.data
+      } catch (error) {
+          this.error(error)
+      } finally {
+        this.viewLoading = false
+      }
+    },
+    getParameter() {
+      const userId = this.$store.state.user.info.suserId
+      const { slvlCd, slvlNm, sorgOfficeFlagYn, scomment } = this.resultVo
+      const params = { slvlCd, smodifyId: userId, slvlNm, sorgOfficeFlagYn, scomment }
+      if (!this.isEdit) {
+        Object.assign(params, { screateId: userId, sexLinkUseTypeCd: 'CE0006' })
+      }
+      return params
+    },
+    async fnProcess() {
       if (this.resultVo.slvlNm === '') {
-        this.$message('파라미터 오류, 계위명을 입력 하세요.')
+        onMessagePopup(this, '파라미터 오류, 계위명을 입력 하세요.')
         return
       }
 
       if (this.resultVo.sorgOfficeFlagYn === '') {
-        this.$message('파라미터 오류, 계위구분을 입력 하세요.')
+        onMessagePopup(this, '파라미터 오류, 계위구분을 입력 하세요.')
         return
       }
-
-      let res
+      const apiKey = this.isEdit ? 'updateTbLvlCdVo' : 'insertTbLvlCdVo'
       try {
-        const tbLvlCdVo = {
-          slvlCd: this.resultVo.slvlCd,
-          smodifyId: this.$store.state.user.info.suserId,
-          slvlNm: this.resultVo.slvlNm,
-          sorgOfficeFlagYn: this.resultVo.sorgOfficeFlagYn,
-          scomment: this.resultVo.scomment,
-        }
-         res = await apiRequestJson(ipmsJsonApis.updateTbLvlCdVo, tbLvlCdVo)
+        const res = await apiRequestJson(ipmsJsonApis[apiKey], this.getParameter())
         if (res.commonMsg === 'SUCCESS') {
-          this.$message('계위를 정상적으로 수정하였습니다.')
+          onMessagePopup(this, `계위를 정상적으로 ${this.isEdit ? '수정' : '등록'}하였습니다.`)
           this.$emit('reload')
           this.close()
+        } else {
+          onMessagePopup(this, res.commonMsg)
         }
       } catch (error) {
-        this.$message.error({ message: `${res.commonMsg}` })
         console.error(error)
       }
     },
-    async fnInsertSubmit() {
-      if (this.resultVo.slvlNm === '') {
-        this.$message('파라미터 오류, 계위명을 입력 하세요.')
-        return
-      }
-
-      if (this.resultVo.sorgOfficeFlagYn === '') {
-        this.$message('파라미터 오류, 계위구분을 입력 하세요.')
-        return
-      }
-
-      let res
-      try {
-        const tbLvlCdVo = {
-          smodifyId: this.$store.state.user.info.suserId,
-          screateId: this.$store.state.user.info.suserId,
-          slvlNm: this.resultVo.slvlNm,
-          sexLinkUseTypeCd: 'CE0006',
-          sorgOfficeFlagYn: this.resultVo.sorgOfficeFlagYn,
-          scomment: this.resultVo.scomment,
-        }
-         res = await apiRequestJson(ipmsJsonApis.insertTbLvlCdVo, tbLvlCdVo)
-        if (res.commonMsg === 'SUCCESS') {
-          this.$message('계위를 정상적으로 등록하였습니다.')
-          this.$emit('reload')
-          this.close()
-        }
-      } catch (error) {
-        this.$message.error({ message: `${res.commonMsg}` })
-        console.error(error)
-      }
-    },
-    onClose() {
-    }
-  },
+  }
 }
 </script>
 <style lang="scss" scoped>

@@ -24,11 +24,11 @@
         </template>
       </el-input>
     </td>
-    <ModalFacilityInformation v-show="false" ref="ModalFacilityInformation" @selected-value="setSelectedRow" />
+    <ModalFacilityInformation ref="ModalFacilityInformation" @selected-value="setSelectedRow" />
     <!-- <ModalLinkInformation ref="ModalLinkInformation" @selected-value="setSelectedRow" />
     <ModalIpAllocCircuitDetail ref="ModalIpAllocCircuitDetail" /> -->
-    <ModalProductInformation v-show="false" ref="ModalProductInformation" @selected-value="setSelectedRow" />
-    <ModalOrgSearch v-show="false" ref="ModalOrgSearch" @selected-value="setSelectedRow" />
+    <ModalProductInformation ref="ModalProductInformation" @selected-value="setSelectedRow" />
+    <ModalOrgSearch ref="ModalOrgSearch" @selected-value="setSelectedRow" />
   </fragment>
 </template>
 <script>
@@ -108,8 +108,8 @@ export default {
       }
     },
     setSelectedRow(params /* { returnFlag, selectedRow } */) {
-      this.value = params.selectedRow[this.valueName]
-      this.selectedRow = params.selectedRow
+      this.value = params.row[this.valueName]
+      this.selectedRow = params.row
 
       this.parameterKey !== null && this.emitEventToParent(this.getParameter())
     },

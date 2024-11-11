@@ -9,7 +9,7 @@
         size="small"
         @change="handleChange()"
       >
-        <el-option v-if="isAllOption" valua="" label="전체" />
+        <el-option v-if="isAllOption" value="" label="전체" />
         <el-option
           v-for="(option, i) in options"
           :key="i"

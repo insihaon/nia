@@ -44,12 +44,13 @@
       :prop-name="name"
       :prop-data="tableDatas"
       :prop-table-height="300"
-      :prop-column="tableColumns"
+      :prop-column.sync="tableColumns"
       :prop-is-pagination="false"
       :prop-is-check-box="true"
       :prop-is-cell-click-check="true"
       prop-grid-menu-id="inputSpeed"
       :prop-grid-indx="1"
+      :prop-enabled-excel-down="false"
       :prop-on-click="handleClickRow"
       :prop-on-dbl-click="handleDbClickRow"
     >
@@ -88,19 +89,21 @@ export default {
       typeByAZ: null,
       searchTxt: '',
       selectedRow: null,
-      tableDatas: []
+      tableDatas: [],
+      cdKey: 'slvlCd',
+      nmKey: 'slvlNm',
     }
   },
   computed: {
     tableColumns() {
-      let labelFrifix = '운용조직'
+      let labelPrefix = '운용조직'
       if (this.viewTitle === '수용국') {
-        labelFrifix = '수용국'
+        labelPrefix = '수용국'
       }
       return [
-        // { prop: '', label: '선택', width: 50, align: 'center', sortable: true, columnVisible: true, showOverflow: true, type: 'selection' },
-        { prop: labelFrifix === '수용국' ? 'slvlCd' : 'sktOrgId', label: `${labelFrifix} ID`, width: 150, align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: labelFrifix === '수용국' ? 'slvlNm' : 'sFullOrgNm', label: `${labelFrifix} 명`, align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        //  { prop: 'sktOrgId', label: `${labelPrefix} ID`, width: 150, align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: this.cdKey /* labelPrefix === '수용국' ? 'slvlCd' : 'sktOrgId' */, label: `${labelPrefix} ID`, width: 150, align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: this.nmKey /* labelPrefix === '수용국' ? 'slvlNm' : 'sFullOrgNm' */, label: `${labelPrefix} 명`, align: 'center', sortable: true, columnVisible: true, showOverflow: true },
       ]
     }
   },
@@ -111,22 +114,22 @@ export default {
       this.domElement.maxWidth = 1000
     },
     onOpen(model, actionMode) {
-      if (model.viewTitle) {
+      if (model?.viewTitle) {
         this.viewTitle = model.viewTitle
         this.typeByAZ = model.type
       }
     },
     onClose() {
+      this.searchTxt = ''
+      this.tableDatas = []
       if (this.selectedRow !== null) {
         // const keyValues = Object.keys(this.selectedRow).map(key=>{ return { key , value: this.selectedRow[v] }})
         // { label: this.selectedRow['sFullOrgNm'], value: this.selectedRow['sktOrgId'] }
         if (this.typeByAZ !== null) {
           this.$emit('selected-value', { row: this.selectedRow, type: this.typeByAZ })
         } else {
-          this.$emit('selected-value', this.selectedRow)
+          this.$emit('selected-value', { row: this.selectedRow })
         }
-        this.searchTxt = ''
-        this.tableDatas = []
         this.selectedRow = null
       }
     },
@@ -149,6 +152,8 @@ export default {
       try {
         const res = await apiRequestJson(ipmsJsonApis.selectSearchLvlCd, param)
         this.tableDatas = res.tbLvlCdVos
+        this.cdKey = 'slvlCd'
+        this.nmKey = 'slvlNm'
       } catch (error) {
         this.error(error)
       }
@@ -156,8 +161,10 @@ export default {
     async fnSelectSearchOrgCd() {
        const param = { searchWrd: this.searchTxt, sorgOfficeFlagYn: 'N' }
       try {
-        const res = await apiRequestJson(ipmsJsonApis.selectSearchLvlCd, param)
-        this.tableDatas = res.tbLvlCdVos
+        const res = await apiRequestJson(ipmsJsonApis.selectSearchOrgBas, param)
+        this.tableDatas = res.tbOrgBasVos
+        this.cdKey = 'sktOrgId'
+        this.nmKey = 'sFullOrgNm'
       } catch (error) {
         this.error(error)
       }
@@ -173,4 +180,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+::v-deep .el-table__body-wrapper {
+  height: 100% !important;
+}
 </style>

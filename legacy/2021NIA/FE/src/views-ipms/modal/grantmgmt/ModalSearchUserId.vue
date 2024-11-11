@@ -103,10 +103,10 @@ export default {
 
     },
     onClose() {
+      this.searchTxt = ''
+      this.tableDatas = []
       if (this.selectedRow !== null) {
         this.$emit('selected-value', this.selectedRow)
-        this.searchTxt = ''
-        this.tableDatas = []
         this.selectedRow = null
       }
       this.viewTitle = null
@@ -120,15 +120,19 @@ export default {
     },
     async fnSearchUser() {
       if (this.searchTxt.length < 2) {
-        this.$message('검색어는 2글자 이상 입력하세요.')
+        onMessagePopup(this, '검색어는 2글자 이상 입력하세요.')
         return
       }
-      const userVo = { searchWrd: this.searchTxt, suserSttusCd: 'US0001' }
+      const target = ({ vue: this.$refs.compTable })
+      const userVo = { suserNm: this.searchTxt, suserSttusCd: 'US0001' }
       try {
+        this.openLoading(target)
         const res = await apiRequestJson(ipmsJsonApis.selectSearchTbUserBas, userVo)
         this.tableDatas = res.tbUserBasVos
       } catch (error) {
         this.error(error)
+      } finally {
+        this.closeLoading(target)
       }
     },
     handleClickRow(row) {
