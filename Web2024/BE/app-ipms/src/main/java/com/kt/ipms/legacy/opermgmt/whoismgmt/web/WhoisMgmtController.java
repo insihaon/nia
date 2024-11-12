@@ -35,6 +35,7 @@ import com.kt.ipms.legacy.cmn.vo.SmtpVo;
 import com.kt.ipms.legacy.cmn.web.CommonController;
 import com.kt.ipms.legacy.linkmgmt.whois.adapter.WhoisAdapterService;
 import com.kt.ipms.legacy.linkmgmt.whois.model.WhoisInfoObj;
+import com.kt.ipms.legacy.opermgmt.grantmgmt.vo.TbUserAuthTxnListVo;
 import com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlBasListVo;
 import com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlBasVo;
 import com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlMstListVo;
@@ -85,6 +86,7 @@ public class WhoisMgmtController extends CommonController {
 	@RequestMapping(value = "/opermgmt/whoismgmt/viewListWhois.model", method = RequestMethod.POST)
 	@ResponseBody
 	public ModelMap viewListTbWhois(@RequestBody TbWhoisVo searchVo, ModelMap model, HttpServletRequest request) {
+		setPagination(searchVo);
 		TbWhoisListVo resultListVo = whoisService.selectListPageWhois(searchVo);
 		return createResultList(resultListVo.getTbWhoisVos(), resultListVo.getTotalCount());
 	}
@@ -470,6 +472,7 @@ public class WhoisMgmtController extends CommonController {
 
 	@RequestMapping(value = "opermgmt/whoismgmt/viewListWhoisKeywordMst.model", method = RequestMethod.POST)
 	public ModelMap viewListWhoisKeywordMst(@RequestBody TbWhoisKeywordVo searchVo) {
+		setPagination(searchVo);
 		TbWhoisKeywordListVo resultListVo = whoisService.selectListTbWhoisKeyword(searchVo);
 		return createResultList(resultListVo.getTbWhoisKeywordVos(), resultListVo.getTotalCount());
 	}
@@ -603,6 +606,12 @@ public class WhoisMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "opermgmt/whoismgmt/viewListWhoisKeywordMstNew.model", method = RequestMethod.POST)
 	public ModelMap viewListWhoisKeywordMstNew(@RequestBody TbWhoisKeywordVo searchVo) {
+		// ModelMap builtModel = viewListWhoisKeywordMstModel(searchVo);
+		// TbWhoisKeywordListVo resultListVo = (TbWhoisKeywordListVo)
+		// builtModel.get("resultListVo");
+		// ModelMap finalModel = createResultList(resultListVo.getTbWhoisKeywordVos(),
+		// resultListVo.getTotalCount());
+		setPagination(searchVo);
 		TbWhoisKeywordListVo resultListVo = whoisService.selectListTbWhoisKeywordNew(searchVo);
 		return createResultList(resultListVo.getTbWhoisKeywordVos(), resultListVo.getTotalCount());
 	}
@@ -724,8 +733,19 @@ public class WhoisMgmtController extends CommonController {
 	@RequestMapping(value = "opermgmt/whoismgmt/viewRegWhoisNew.model", method = RequestMethod.POST)
 	@ResponseBody
 	public ModelMap viewRegWhoisNew(@RequestBody TbWhoisVo tbWhoisVo, ModelMap model, HttpServletRequest request) {
-		TbWhoisVo resultVo = whoisService.selectWhois(tbWhoisVo);
-		return createResult(resultVo);
+		// TbWhoisVo resultVo = whoisService.selectWhois(tbWhoisVo);
+		// return createResult(resultVo);
+		ModelMap builtModel = viewRegWhoisNewModel(tbWhoisVo, request);
+		// TbWhoisVo resultVo = (TbWhoisVo) builtModel.get("resultVo");
+		ModelMap finalModel = new ModelMap();
+		finalModel.addAllAttributes(builtModel);
+
+		finalModel.addAttribute("resultVo", builtModel.get("resultVo"));
+		finalModel.addAttribute("userVo", builtModel.get("userVo"));
+		finalModel.addAttribute("scity", builtModel.get("scity"));
+		finalModel.addAttribute("ktInfoVo", builtModel.get("ktInfoVo"));
+		finalModel.addAttribute("allocInfoVo", builtModel.get("allocInfoVo"));
+		return finalModel;
 	}
 
 	@RequestMapping(value = "opermgmt/whoismgmt/viewRegWhoisNew.ajax", method = RequestMethod.POST)
