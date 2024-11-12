@@ -26,9 +26,11 @@
               <el-input v-model="sorgname"></el-input>
             </div>
           </td>
+          <td>
+            <el-button class="float-right my-2" size="small" type="primary"> 조회 </el-button>
+          </td>
         </tr>
       </table>
-      <el-button class="float-right my-2" size="small" type="primary"> 조회 </el-button>
       <table>
         <tr>
           <th>
@@ -57,11 +59,12 @@
               </el-select>
             </div>
           </td>
+          <td>
+            <el-button class="float-right my-2" size="small" type="primary"> 저장 </el-button>
+          </td>
         </tr>
       </table>
-      <el-button class="float-right my-2" size="small" type="primary"> 저장 </el-button>
     </div>
-
     <el-col :span="24" class="my-2">
       <compTable
         ref="compTable"
@@ -109,8 +112,8 @@ export default {
       pagination: this.setDefaultPagination(),
       selectedRow: null,
        tableColumns: [
-        { prop: 'suserorggb', label: '고객명', width: 200, align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'sorgname', label: '대체기준', align: 'center', width: 200, sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'suserorggb', label: '고객명', width: 400, align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'sorgname', label: '대체기준', align: 'center', width: 400, sortable: true, columnVisible: true, showOverflow: true },
       ],
       suserorggbOp: [
         { label: '고객명 일치', value: '10' },

@@ -29,6 +29,7 @@
           <el-button type="info" icon="el-icon-refresh" size="mini" style="margin-left:0px" round @click="handleRefresh()">초기화</el-button>
           <el-button type="primary" icon="el-icon-search" size="mini" round @click="handleSearch()">조회</el-button>
           <el-button
+            v-if="isShowCollapse"
             :class="{ 'slideUp': isEnabledCondition, 'slideDown': !isEnabledCondition }"
             class="expandToggleBtn"
             size="small"
@@ -71,6 +72,10 @@ export default {
       required: true,
     },
     isShowProfile: {
+      type: Boolean,
+      default: true
+    },
+    isShowCollapse: {
       type: Boolean,
       default: true
     }

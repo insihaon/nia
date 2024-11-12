@@ -202,7 +202,8 @@ export default {
     },
     onClose() {
     },
-    setSelectedRow(row) {
+    setSelectedRow(params) {
+      const { row } = params
       row['node'] = row['org']
       row['gwipType'] = 'last'
       row['gwip'] = 'aaa'

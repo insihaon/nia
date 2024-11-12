@@ -21,6 +21,7 @@
           ref="searchCondition"
           :component-keys="componentList"
           :is-show-profile="false"
+          :is-show-collapse="false"
           @handle-search="handleSearch"
         />
       </div>
@@ -136,7 +137,7 @@ export default {
     },
     onClose() {
       if (this.selectedRow !== null) {
-        this.$emit('selected-value', { selectedRow: this.selectedRow, returnFlag: 'allocNe' })
+        this.$emit('selected-value', { row: this.selectedRow, returnFlag: 'allocNe' })
       }
       this.tableDatas = []
     },

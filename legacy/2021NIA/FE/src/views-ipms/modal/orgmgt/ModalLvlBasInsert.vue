@@ -199,11 +199,12 @@ export default {
       }
       this.$refs.ModalEntireOrgSearch.open({ viewTitle: type })
     },
-    setSelectedRow(row, title) {
-      if (title === '센터/지역본부') {
+    setSelectedRow(params) {
+      const { row, viewTitle } = params
+      if (viewTitle === '센터/지역본부') {
         this.ssvcGroupNm = row?.slvlNm
         this.ssvcGroupCd = row?.slvlCd
-      } else if (title === '노드') {
+      } else if (viewTitle === '노드') {
         this.ssvcObjNm = row?.slvlNm
         this.ssvcObjCd = row?.slvlCd
       } else {

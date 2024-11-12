@@ -52,20 +52,12 @@
 
             <th>사용기관명</th>
             <td>
-              <el-input
-                v-model="sorgnamePop"
-                placeholder="사용기관명"
-              />
+              <el-input v-model="sorgnamePop" />
             </td>
-
             <th>네트워크이름</th>
             <td>
-              <el-input
-                v-model="snetNmPop"
-                placeholder="네트워크이름"
-              />
+              <el-input v-model="snetNmPop" />
             </td>
-
             <th>작업종류</th>
             <td>
               <el-select
@@ -84,9 +76,7 @@
           </tr>
         </tbody>
       </table>
-
     </div>
-
     <el-col :span="24" class="my-2">
       <compTable
         ref="compTable"

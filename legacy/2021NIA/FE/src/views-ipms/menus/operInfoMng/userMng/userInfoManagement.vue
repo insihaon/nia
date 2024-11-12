@@ -60,7 +60,7 @@
     <el-col style="height: calc(100% - 160px);" :span="24">
       <compTable
         ref="compTable"
-        style="height: calc(100% - 80px)"
+        style="height: 100%"
         :prop-name="name"
         :prop-table-height="'100%'"
         :prop-column="tableColumns"

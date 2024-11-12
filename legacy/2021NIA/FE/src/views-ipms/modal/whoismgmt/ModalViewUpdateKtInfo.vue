@@ -3,7 +3,7 @@
     v-if="animationVisible"
     id="ipms"
     v-el-drag-dialog
-    title="이용 기관 관리"
+    title="KT 대체 정보 수정"
     :visible.sync="visible"
     :width="domElement.maxWidth + `px`"
     :fullscreen.sync="fullscreen"
@@ -18,92 +18,59 @@
     <div class="popupContentTable">
       <table>
         <tbody>
-          <tr class="top">
+          <tr>
             <th>한글 기관명(한 단어)</th>
             <td>
-              <el-input
-                v-model="resultVo.sorgname"
-                size="small"
-                maxlength="200"
-              />
+              <el-input v-model="resultVo.sorgname" size="small" maxlength="200" />
             </td>
           </tr>
 
           <tr>
             <th>한글 주소</th>
-            <td>
-              <el-input
-                v-model="resultVo.sadmAddr"
-                size="small"
-                disabled
-              >
-                <el-button type="primary" size="small" round @click="fnViewSeachAddrPop('kt')">주소검색</el-button>
-              </el-input>
+            <td class="textflex">
+              <el-input v-model="resultVo.sadmAddr" size="small" disabled />
+              <el-button type="primary" size="small" round @click="fnViewSeachAddrPop('kt')">주소검색</el-button>
             </td>
           </tr>
           <tr>
             <th>한글 상세 주소</th>
             <td>
-              <el-input
-                v-model="resultVo.sadmAddrDetail"
-                title="한글 상세 주소"
-                disabled
-                size="small"
-              />
+              <el-input v-model="resultVo.sadmAddrDetail" disabled size="small" />
             </td>
           </tr>
-
           <tr>
             <th>우편 번호</th>
             <td>
-              <el-input
-                v-model="resultVo.sadmZipcode"
-                title="우편번호 앞자리"
-                disabled
-                size="small"
-              />
+              <el-input v-model="resultVo.sadmZipcode" disabled size="small" />
             </td>
           </tr>
-
           <tr>
             <th>영문 기관명</th>
             <td>
-              <el-input
-                v-model="resultVo.seorgname"
-                maxlength="200"
-                size="small"
-              />
+              <el-input v-model="resultVo.seorgname" maxlength="200" size="small" />
             </td>
           </tr>
-
           <tr>
             <th>영문 주소</th>
             <td>
-              <el-input
-                v-model="resultVo.sadmEaddr"
-                size="small"
-              />
+              <el-input v-model="resultVo.sadmEaddr" size="small" />
             </td>
           </tr>
-
           <tr>
             <th>영문 상세 주소</th>
             <td>
               <el-input
-                id="ktInfoEaddrDetail"
                 v-model="resultVo.sadmEaddrDetail"
-                class="txt w98"
                 title="영문 상세 주소"
                 size="small"
               />
             </td>
           </tr>
-
           <tr>
             <th>전화번호</th>
-            <td>
-              <span class="ml3">+ 82</span>
-              <span class="ml5 mr5">-</span>
+            <td class="textflex" style="white-space: nowrap;">
+              <span>+ 82</span>
+              <span>-</span>
               <el-input
                 v-model="formattedPhone"
                 size="small"
@@ -112,8 +79,7 @@
               <em>(예: 2-222-2222)</em>
             </td>
           </tr>
-
-          <tr class="last">
+          <tr>
             <th>전자우편주소</th>
             <td>
               <el-input
@@ -127,9 +93,8 @@
         </tbody>
       </table>
     </div>
-
     <div class="popupContentTableBottom">
-      <el-button type="primary" size="small" round @click.native="fnKeywordDel()">저장</el-button>
+      <el-button type="primary" size="small" icon="el-icon-check" round @click.native="fnKeywordDel()">저장</el-button>
       <el-button type="primary" size="small" icon="el-icon-close" round @click.native="close()">{{ $t('exit') }}</el-button>
     </div>
   </el-dialog>

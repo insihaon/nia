@@ -25,8 +25,6 @@
       </el-input>
     </td>
     <ModalFacilityInformation ref="ModalFacilityInformation" @selected-value="setSelectedRow" />
-    <!-- <ModalLinkInformation ref="ModalLinkInformation" @selected-value="setSelectedRow" />
-    <ModalIpAllocCircuitDetail ref="ModalIpAllocCircuitDetail" /> -->
     <ModalProductInformation ref="ModalProductInformation" @selected-value="setSelectedRow" />
     <ModalOrgSearch ref="ModalOrgSearch" @selected-value="setSelectedRow" />
   </fragment>
@@ -35,8 +33,6 @@
 import { Base } from '@/min/Base.min'
 import commonFunctionMixin from '@/mixin/commonFunctionMixin'
 import ModalFacilityInformation from '@/views-ipms/modal/search/ModalFacilityInformation.vue'
-// import ModalLinkInformation from '@/views-ipms/modal/ModalLinkInformation.vue'
-// import ModalIpAllocCircuitDetail from '@/views-ipms/modal/alloc/ModalIpAllocCircuitDetail.vue'
 import ModalProductInformation from '@/views-ipms/modal/search/ModalProductInformation.vue'
 import ModalOrgSearch from '@/views-ipms/modal/search/ModalOrgSearch.vue'
 

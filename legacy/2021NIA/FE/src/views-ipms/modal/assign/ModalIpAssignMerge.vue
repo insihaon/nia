@@ -24,80 +24,65 @@
           <col width="35%" />
         </colgroup>
         <tbody>
-          <tr class="top">
-            <th class="first" scope="row">계위</th>
-            <td class="view">
+          <tr>
+            <th>계위</th>
+            <td>
               {{ resultComplexVo.srcIpAssignMstVo.ssvcLineTypeNm }} - {{ resultComplexVo.srcIpAssignMstVo.ssvcGroupNm }} - {{ resultComplexVo.srcIpAssignMstVo.ssvcObjNm }}
             </td>
-            <th scope="row">공인/사설</th>
-            <td class="view">{{ resultComplexVo.srcIpAssignMstVo.sipCreateTypeNm }}</td>
+            <th>공인/사설</th>
+            <td>{{ resultComplexVo.srcIpAssignMstVo.sipCreateTypeNm }}</td>
           </tr>
           <tr>
-            <th class="first" scope="row">IP 버전</th>
-            <td class="view">{{ resultComplexVo.srcIpAssignMstVo.sipVersionTypeNm }}</td>
-            <th scope="row">IP 주소</th>
-            <td class="view">{{ resultComplexVo.srcIpAssignMstVo.pipPrefix }}</td>
+            <th>IP 버전</th>
+            <td>{{ resultComplexVo.srcIpAssignMstVo.sipVersionTypeNm }}</td>
+            <th>IP 주소</th>
+            <td>{{ resultComplexVo.srcIpAssignMstVo.pipPrefix }}</td>
           </tr>
           <tr>
-            <th class="first" scope="row">시작 IP</th>
-            <td class="view">{{ resultComplexVo.srcIpAssignMstVo.sfirstAddr }}</td>
-            <th scope="row">끝 IP</th>
-            <td class="view">{{ resultComplexVo.srcIpAssignMstVo.slastAddr }}</td>
+            <th>시작 IP</th>
+            <td>{{ resultComplexVo.srcIpAssignMstVo.sfirstAddr }}</td>
+            <th>끝 IP</th>
+            <td>{{ resultComplexVo.srcIpAssignMstVo.slastAddr }}</td>
           </tr>
-          <tr class="last">
-            <th class="first" scope="row">비고</th>
+          <tr>
+            <th>비고</th>
             <td colspan="3">
-              <textarea id="mrgScomment" v-model="mrgScomment" class="w98" rows="4" name="scomment"></textarea>
+              <textarea v-model="mrgScomment" rows="4"></textarea>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
-    <div class="popupContentTable">
+    <div class="popupContentTable textcenter">
       <div class="popupContentTableTitle">병합 대상 정보</div>
       <div class="scroll_area">
         <table>
-          <colgroup>
-            <col width="10%" />
-            <col width="10%" />
-            <col width="10%" />
-            <col width="10%" />
-            <col width="10%" />
-            <col width="12%" />
-            <col width="16%" />
-            <col width="12%" />
-            <col width="10%" />
-          </colgroup>
           <thead>
             <tr>
-              <th class="first" scope="col">서비스망</th>
-              <th scope="col">본부</th>
-              <th scope="col">노드</th>
-              <th scope="col">공인/사설</th>
-              <th scope="col">서비스</th>
-              <th scope="col">IP블록</th>
-              <th scope="col">배정범위</th>
-              <th scope="col" title="단위블록수(IPV4:/24, IPV6:/64)">단위블록수</th>
-              <th scope="col">배정상태</th>
+              <th>서비스망</th>
+              <th>본부</th>
+              <th>노드</th>
+              <th>공인/사설</th>
+              <th>서비스</th>
+              <th>IP블록</th>
+              <th>배정범위</th>
+              <th>단위블록수</th>
+              <th>배정상태</th>
             </tr>
           </thead>
           <tbody>
-            <tr
-              v-for="(item, index) in destIpAssignMstVos"
-              :key="index"
-              :class="{'last': index === destIpAssignMstVos.length - 1, 'subbg': index % 2 !== 0}"
-            >
-              <td class="first ellipsis">{{ item.ssvcLineTypeNm }}</td>
-              <td class="ellipsis" :title="item.ssvcGroupNm">{{ item.ssvcGroupNm }}</td>
-              <td class="ellipsis" :title="item.ssvcObjNm">{{ item.ssvcObjNm }}</td>
-              <td class="ellipsis" :title="item.sipCreateTypeNm">{{ item.sipCreateTypeNm }}</td>
-              <td class="ellipsis" :title="item.sassignTypeNm">{{ item.sassignTypeNm }}</td>
-              <td class="ellipsis" :title="item.pipPrefix">{{ item.pipPrefix }}</td>
-              <td class="ellipsis" :title="`${item.sfirstAddr} ~ ${item.slastAddr}`">{{ item.sfirstAddr }} ~ {{ item.slastAddr }}</td>
-              <td class="ellipsis">
+            <tr v-for="(item, index) in destIpAssignMstVos" :key="index">
+              <td>{{ item.ssvcLineTypeNm }}</td>
+              <td>{{ item.ssvcGroupNm }}</td>
+              <td>{{ item.ssvcObjNm }}</td>
+              <td>{{ item.sipCreateTypeNm }}</td>
+              <td>{{ item.sassignTypeNm }}</td>
+              <td>{{ item.pipPrefix }}</td>
+              <td>{{ item.sfirstAddr }} ~ {{ item.slastAddr }}</td>
+              <td>
                 {{ formatNumber(item.nclassCnt) }}
               </td>
-              <td class="ellipsis" :title="item.sassignLevelNm">{{ item.sassignLevelNm }}</td>
+              <td>{{ item.sassignLevelNm }}</td>
             </tr>
           </tbody>
         </table>

@@ -247,8 +247,8 @@ export default {
         this.error(error)
       }
     },
-    setSelectedRow(row) {
-      Object.assign(this.registVo, { suserId: row.suserId, suserNm: row.suserNm })
+    setSelectedRow(param) {
+      Object.assign(this.registVo, { suserId: param.row.suserId, suserNm: param.row.suserNm })
     },
     onCreated() {
       Modal.methods.onCreated.call(this)
