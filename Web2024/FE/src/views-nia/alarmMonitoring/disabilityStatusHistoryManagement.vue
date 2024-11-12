@@ -41,8 +41,8 @@ export default {
         pagerCount: 11
       },
       searchItems: [
-        { label: 'TICKET ID', type: 'input', size: 8, model: 'TICKET_ID' },
-        { label: 'TICKET 유형', type: 'select', size: 8, model: 'TICKET_TYPE', setting: { allOption: { toggle: true } },
+        { label: 'TICKET ID', type: 'input', size: 8, model: 'TICKET_ID', placeholder: 'TICKET_ID를 검색하세요' },
+        { label: 'TICKET 유형', type: 'select', size: 8, model: 'TICKET_TYPE', setting: { allOption: { toggle: true }, placeholder: 'TICKET 유형을 선택하세요' },
         options: [
           { label: '장비장애(RT)', value: 'RT' },
           { label: '유해트래픽(NTT)', value: 'NTT' },

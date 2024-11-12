@@ -24,7 +24,7 @@ var dialogOpenMixin = {
           pageTitle: '조치 요청서',
           top: '2vh',
           width: '1200',
-          height: '900',
+          height: '1100',
           resizeble: true,
         },
         processFin: {

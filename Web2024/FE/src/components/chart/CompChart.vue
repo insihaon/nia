@@ -3,6 +3,7 @@
     <ECharts
       ref="chart"
       class="chart"
+      style="text-align : left"
       :loading="chartLoading"
       :option="chartOptions"
       :loading-opts="{ text: '조회 중입니다. 최대 1분정도 소요될 수 있습니다.' }"

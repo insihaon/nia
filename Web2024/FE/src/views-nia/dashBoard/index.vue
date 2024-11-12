@@ -1,7 +1,7 @@
 <template>
   <div :class="{ [name]: true }">
     <LeftBar class="h-full">
-      <template v-if="isViewport('>', 'sm')" slot="leftbar-container">
+      <template v-if="isViewport('>', 'md')" slot="leftbar-container">
         <div class="h-20 text-center mt-1">
           <spans style="z-index : 1" class="font-bold text-lg whitespace-nowrap">AI관제 시스템 처리량</spans>
           <div class="d-flex p-2 justify-center items-center">
@@ -134,6 +134,7 @@ import { apiIpAlarmList, apiTransmissionAlarmList, apiDashboardStatistics, apiSe
 import { getAlarmType } from '@/views-nia/js/commonFormat'
 import { AppOptions } from '@/class/appOptions'
 import dialogOpenMixin from '@/mixin/dialogOpenMixin'
+import { mapState } from 'vuex'
 
 const routeName = 'NiaMain'
 export default {
@@ -173,6 +174,14 @@ export default {
     }
   },
   computed: {
+    // ...mapState({
+    //   topPaneSize: state => state.settings.topPaneSize,
+    //   sidePaneSize: state => state.settings.sidePaneSize
+    // }),
+    // handleViewSize() {
+    //   // 'sm' 이하일 때 sidePaneSize를 0%로 설정, 그 외에는 기본 사이즈를 유지
+    //   return this.isViewport('<', 'sm') ? '100%' : `${this.sidePaneSize}%`
+    // },
     ipAgGrid() {
       const columns = [
         { type: '', prop: 'alarmno', name: '알람번호', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, formatter: (row) => { return row.alarmno ?? '-' } },
@@ -313,7 +322,7 @@ export default {
           },
         ]
       }
-    }
+    },
   },
   watch: {
     viewport(nVal, oVal) {

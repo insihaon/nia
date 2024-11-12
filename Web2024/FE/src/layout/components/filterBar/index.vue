@@ -72,7 +72,7 @@ export default {
     overflow: hidden;
     align-items: center;
     width: 100%;
-    background-color: #94a3b838;
+    background-color: #F0F1F2;
     #function-container {
       padding: 0px 10px;
       display: flex;

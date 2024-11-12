@@ -18,12 +18,11 @@
 import { Base } from '@/min/Base.min'
 import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
 import { apiSelectEquipAmountUsedList } from '@/api/nia'
-import { shallowMount } from '@vue/test-utils'
 
 const routeName = 'EquipmentUsage'
 
-function getFilterValue(row, col, value, index) {
-  return value + ' %'
+function getFilterCalc(row, col, value, index) {
+  return value === 0 ? '수집실패' : value + ' %'
 }
 
 export default {
@@ -51,8 +50,8 @@ export default {
             { label: '실시간', value: 'live' },
         ] },
         { label: '장비', type: 'input', model: 'node_nm', placeholder: '장비명을 검색하세요', disabled: false },
-        { label: 'CPU >=', type: 'input', model: 'cpu_usage', disabled: false },
-        { label: 'Memory >=', type: 'input', model: 'mem_usage', disabled: false },
+        { label: 'CPU >=', type: 'input', model: 'cpu_usage', placeholder: 'CPU를 검색하세요', disabled: false },
+        { label: 'Memory >=', type: 'input', model: 'mem_usage', placeholder: 'Memory를 검색하세요', disabled: false },
         { label: '수집기간', type: 'dateTime', model: 'date_time', disabled: false },
       ],
       monitoring_type: 'OnDemand',
@@ -72,8 +71,8 @@ export default {
       const columns = [
         { type: '', prop: 'measured_datetime', name: '수집기간', minWidth: 80, flex: 0, suppressMenu: true, alignItems: 'center' },
         { type: '', prop: 'node_nm', name: '장비명', minWidth: 80, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: false },
-        { type: '', prop: 'cpu_usage', name: 'CPU 사용량', minWidth: 80, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true, format: getFilterValue },
-        { type: '', prop: 'mem_usage', name: 'MEM 사용량', minWidth: 80, flex: 0, suppressMenu: true, alignItems: 'center', valueFormatter: this.formatPercentage, format: getFilterValue },
+        { type: '', prop: 'cpu_usage', name: 'CPU 사용량', minWidth: 80, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true, format: getFilterCalc },
+        { type: '', prop: 'mem_usage', name: 'MEM 사용량', minWidth: 80, flex: 0, suppressMenu: true, alignItems: 'center', valueFormatter: this.formatPercentage, format: getFilterCalc },
       ]
 
       return { options, columns, data: this.equitmentsData, getRightClickMenuItems: () => { return [] } }
@@ -120,12 +119,7 @@ export default {
       }
       try {
         const res = await apiSelectEquipAmountUsedList(param)
-
-          this.equitmentsData = res?.result.map(item => ({
-            ...item,
-            cpu_usage: item.cpu_usage === 0 ? '-' : item.cpu_usage,
-            mem_usage: item.mem_usage === 0 ? '-' : item.mem_usage,
-          }))
+        this.equitmentsData = res?.result
 
         this.paginationInfo.totalCount = res.total
         this.paginationInfo.totalPages = Math.ceil(this.paginationInfo.totalCount / this.paginationInfo.pageSize) // 전체 페이지 수 계산

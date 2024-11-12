@@ -1,7 +1,7 @@
 <template>
   <div :class="[{ [name]: true }]">
     <!-- leftbar/top/bottom -->
-    <SplitPane :min-percent="0" :default-percent="sidePaneSize" split="vertical" @resize="(val)=> resize(val, 'sidePaneSize')">
+    <SplitPane :min-percent="0" :default-percent="resizeSidePane " split="vertical" @resize="(val)=> resize(val, 'sidePaneSize')">
       <template slot="paneL">
         <slot name="leftbar-container" />
       </template>
@@ -41,19 +41,16 @@ export default {
     ...mapState({
       topPaneSize: state => state.settings.topPaneSize,
       sidePaneSize: state => state.settings.sidePaneSize
-    })
+    }),
+    resizeSidePane () {
+      return this.isViewport('<', 'lg') ? 0 : this.sidePaneSize
+    },
   },
   methods: {
-    resize(val, key) {
-      let value
-      if (val < 25) {
-        value = 25
-      } else {
-        value = val
-      }
-        this.$store.dispatch('settings/changeSetting', {
+     resize(val, key) {
+      this.$store.dispatch('settings/changeSetting', {
         key: key,
-        value: value
+        value: val,
       })
     }
   },

@@ -310,8 +310,8 @@ export default {
         const seriesInfo = [
           { name: 'PPS_IN', value: 'fltpps_in' },
           { name: 'PPS_OUT', value: 'fltpps_out' },
-          { name: 'BPS_IN', value: 'fltbps_in' },
-          { name: 'BPS_OUT', value: 'fltbps_out' },
+          { name: 'MBPS_IN', value: 'fltbps_in' },
+          { name: 'MBPS_OUT', value: 'fltbps_out' },
         ]
         seriesArr = seriesInfo.map((item) => {
           return {
