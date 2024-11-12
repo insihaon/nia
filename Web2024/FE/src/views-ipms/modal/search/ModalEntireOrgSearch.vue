@@ -132,9 +132,9 @@ export default {
     onClose() {
       if (this.selectedRow !== null) {
         if (this.viewTitle !== null) {
-          this.$emit('selected-value', this.selectedRow, this.viewTitle)
+          this.$emit('selected-value', { row: this.selectedRow, viewTitle: this.viewTitle })
         } else {
-          this.$emit('selected-value', this.selectedRow)
+          this.$emit('selected-value', { row: this.selectedRow })
         }
         this.searchTxt = ''
         this.tableDatas = []

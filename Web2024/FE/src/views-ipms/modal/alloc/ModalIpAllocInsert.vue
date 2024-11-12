@@ -426,18 +426,17 @@ export default {
         this.error(error)
       }
     },
-    setSelectedRow(param) {
-      const { selectedRow, returnFlag } = param
-      this.infoValue = selectedRow[this.infoValueName]
-      this.selectedRow = selectedRow
+    setSelectedRow(params) {
+      const { row, returnFlag } = params
+      this.infoValue = row[this.infoValueName]
+      this.selectedRow = row
       this.returnFlag = returnFlag
 
       Object.keys(this.infoModalParameterKey).forEach(key => {
-        // if (selectedRow[this.infoModalParameterKey[key]] !== null) {
-        this.srcIpAllocMst[key] = selectedRow[this.infoModalParameterKey[key]]
+        // if (row[this.infoModalParameterKey[key]] !== null) {
+        this.srcIpAllocMst[key] = row[this.infoModalParameterKey[key]]
         // }
       })
-      console.log()
       // this.infoModalParameterKey
     },
     async fnViewAllocCheckTacsIpBlock() {

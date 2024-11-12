@@ -19,6 +19,7 @@
       <DynamicComponentLoader
         class="dynamic-container"
         :is-show-profile="false"
+        :is-show-collapse="false"
         :component-keys="componentList"
         @handle-search="handleSearch"
       />
@@ -131,7 +132,7 @@ export default {
     },
     onClose() {
       if (this.selectedRow !== null) {
-        this.$emit('selected-value', { selectedRow: this.selectedRow, returnFlag: 'allocLn' })
+        this.$emit('selected-value', { row: this.selectedRow, returnFlag: 'allocLn' })
         this.tableDatas = []
       }
     },

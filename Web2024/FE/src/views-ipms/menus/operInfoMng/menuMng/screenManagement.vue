@@ -1,7 +1,7 @@
 <template>
-  <el-row class="w-100 h-100">
+  <el-row ref="container" class="w-100 h-100">
     <div class="searchOptionWrap">
-      <table>
+      <table ref="searchCondition">
         <th>
           <label>화면유형</label>
         </th>
@@ -50,10 +50,10 @@
         </td>
       </table>
     </div>
-    <el-col :span="24">
+    <el-col ref="tableContainer" :span="24">
       <compTable
         ref="compTable"
-        style="height: calc(100% - 80px)"
+        style="height: 100%"
         :prop-name="name"
         :prop-table-height="'100%'"
         :prop-column="tableColumns"
@@ -72,7 +72,7 @@
           </span>
         </template>
         <template slot="add-features">
-          <div style="margin-top: 10px;">
+          <div class="add-features">
             <el-button type="primary" icon="el-icon-document-add" size="mini" round @click="fnInsertScrnBas('insert')">등록</el-button>
             <el-button type="primary" icon="el-icon-success" size="mini" round @click="fnUpdateSscrnUseYn('Y')">사용</el-button>
             <el-button type="primary" icon="el-icon-remove" size="mini" round @click="fnUpdateSscrnUseYn('N')">미사용</el-button>
@@ -86,6 +86,7 @@
 <script>
 import { Base } from '@/min/Base.min'
 import CompTable from '@/components/elTable/CompTable.vue'
+import tableHeightMixin from '@/mixin/tableHeightMixin'
 import ModalDetailScrn from '@/views-ipms/modal/menumgmt/ModalDetailScrn.vue'
 import { ipmsModelApis, apiRequestModel, apiRequestJson, ipmsJsonApis } from '@/api/ipms'
 const routeName = 'ScreenManagement'
@@ -94,6 +95,7 @@ export default {
   name: routeName,
   components: { CompTable, ModalDetailScrn },
   extends: Base,
+  mixins: [tableHeightMixin],
   data() {
     return {
       name: routeName,

@@ -44,9 +44,11 @@
               <el-input v-model="sorgname"></el-input>
             </div>
           </td>
+          <td>
+            <el-button class="float-right my-2" type="primary" size="small" round @click="fnViewSeachAddrPop('kt')">조회</el-button>
+          </td>
         </tr>
       </table>
-      <el-button class="float-right my-2" type="primary" size="small" round @click="fnViewSeachAddrPop('kt')">조회</el-button>
     </div>
     <el-col :span="24" class="my-2">
       <compTable
@@ -96,8 +98,8 @@ export default {
       pagination: this.setDefaultPagination(),
       selectedRow: null,
        tableColumns: [
-        { prop: 'suserorggb', label: '기관구분', width: 200, align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'sorgname', label: '기관명', align: 'center', width: 200, sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'suserorggb', label: '기관구분', width: 300, align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'sorgname', label: '기관명', align: 'center', width: 400, sortable: true, columnVisible: true, showOverflow: true },
       ],
       suserorggbOp: [
         { label: 'CORPORATION', value: 'CORPORATION' },

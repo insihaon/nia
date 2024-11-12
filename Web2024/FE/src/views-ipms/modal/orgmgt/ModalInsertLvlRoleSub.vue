@@ -166,7 +166,8 @@ export default {
      fnViewSearchCenterLvlCd() {
       this.$refs.ModalEntireOrgSearch.open({ viewTitle: '노드' })
     },
-    setSelectedRow(row) {
+    setSelectedRow(param) {
+      const { row } = param
       this.ssvcObjNm = row?.slvlNm
       this.ssvcObjCd = row?.slvlCd
     },
