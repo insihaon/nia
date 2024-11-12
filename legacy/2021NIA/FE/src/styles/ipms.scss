@@ -82,9 +82,13 @@ body .ipms{
     font-weight: 600;
     color:#FFFFFF;
   }
+  /* compTable 하단 버튼 레이아웃 */
+  .add-features {
+    display: flex;align-items: center;flex-direction: row;
+  }
   /* 공통 검색옵션 스타일 시트 */
   table.searchTable{
-    width:100%;margin-bottom: 30px;padding: 5px 5px;
+    width:100%;margin-bottom: 15px;padding: 5px 5px;
   }
   table.searchTable td>div.searchBtnWrap{
     border:1px solid #134d65; padding: 5px 5px;

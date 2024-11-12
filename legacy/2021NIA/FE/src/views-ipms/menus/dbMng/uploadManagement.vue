@@ -37,11 +37,11 @@
         </td>
         <td>
           <div class="searchBtnWrap">
+            <el-button type="info" size="mini" icon="el-icon-refresh" round @click="handleRefresh()">
+              초기화
+            </el-button>
             <el-button type="primary" size="mini" icon="el-icon-search" round @click="fnViewIpUploadMst()">
               조회
-            </el-button>
-            <el-button type="info" size="mini" icon="el-icon-refresh" round>
-              초기화
             </el-button>
           </div>
         </td>
@@ -107,6 +107,11 @@ export default {
     }
   },
   methods: {
+    handleRefresh() {
+      this.succVal = ''
+      this.dateVal = []
+      this.fnViewIpUploadMst()
+    },
     async fnViewIpUploadMst() {
       const [searchBgDe, searchEndDe] = this.dateVal
       const param = { sSuccessYn: this.succVal, searchBgDe: searchBgDe ? this.moment(searchBgDe).format('YYYY-MM-DD') : '', searchEndDe: searchEndDe ? this.moment(searchEndDe).format('YYYY-MM-DD') : '' }

@@ -40,7 +40,7 @@
         </td>
         <td colspan="4">
           <div class="searchBtnWrap">
-            <el-button type="info" size="mini" icon="el-icon-refresh" round>
+            <el-button type="info" size="mini" icon="el-icon-refresh" round @click="handleRefresh()">
               초기화
             </el-button>
             <el-button type="primary" size="mini" icon="el-icon-search" round @click="handleSearch()">
@@ -129,6 +129,12 @@ export default {
     this.fnViewListScrnBas()
   },
   methods: {
+    handleRefresh() {
+      this.scrnType = ''
+      this.inquiryValue = 'sscrnId'
+      this.inquiryTxt = ''
+      this.fnViewListScrnBas()
+    },
     async fnViewListScrnBas() {
       const params = {
         sscrnTypeCd: this.scrnType,

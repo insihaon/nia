@@ -1,7 +1,7 @@
 <template>
   <div ref="container" class="w-100 h-100">
     <div v-if="!isDashboard" ref="searchCondition" class="searchOptionWrap">
-      <table>
+      <table class="searchTable">
         <th>
           IP주소
         </th>

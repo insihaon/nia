@@ -65,7 +65,7 @@ export default {
   padding: 0px 30px 30px 30px;
   box-sizing: border-box;
   border: none;
-  overflow: auto;
+  overflow: hidden;
   transition:all 0.25s !important;
 }
 .app-main::-webkit-scrollbar {
@@ -124,6 +124,7 @@ export default {
 
 // fix css style bug in open el-dialog
 .el-popup-parent--hidden {
+  padding-right: 0px !important;
   .fixed-header {
     padding-right: 10px;
   }

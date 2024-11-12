@@ -56,7 +56,7 @@
           </span>
         </template>
         <template slot="add-features">
-          <div style="margin-top: 10px">
+          <div class="add-features">
             <el-button icon="el-icon-document-add" type="primary" size="mini" round @click="fnViewInsertNotice()">글쓰기</el-button>
           </div>
         </template>

@@ -40,7 +40,7 @@
           </span>
         </template>
         <template slot="add-features">
-          <div style="margin-top: 10px">
+          <div class="add-features">
             <el-button type="primary" size="mini" round @click="fnVieListWhoisKeywordMst1()">이용기관 관리</el-button>
             <el-button type="primary" size="mini" round @click="fnVieListWhoisKeywordMst2()">대체 키워드 관리</el-button>
             <el-button type="primary" size="mini" round @click="fnViewUpdateKtInfo()">KT 대체 정보 관리</el-button>

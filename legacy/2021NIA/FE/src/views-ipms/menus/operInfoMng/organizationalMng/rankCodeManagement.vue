@@ -29,7 +29,7 @@
           </span>
         </template>
         <template slot="add-features">
-          <div style="margin-top: 10px">
+          <div class="add-features">
             <el-button icon="el-icon-document-add" type="primary" size="mini" round @click="handleOpenModal('create')">가상 국사/조직등록</el-button>
           </div>
         </template>

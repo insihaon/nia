@@ -31,7 +31,7 @@
           </span>
         </template>
         <template slot="add-features">
-          <div style="margin-top: 10px">
+          <div class="add-features">
             <el-button icon="el-icon-document-add" type="primary" size="mini" round :disabled="selectedChecks.length > 0" @click="fnViewInsertUserAuth('','I')">등록</el-button>
             <el-button icon="el-icon-delete" type="primary" size="mini" round @click="fnDeleteUserAuth()">삭제</el-button>
           </div>

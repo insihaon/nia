@@ -32,11 +32,11 @@
           </span>
         </template>
         <template slot="add-features">
-          <div style="margin-top: 10px">
-            <el-button size="mini" icon="el-icon-document-add" type="primary" @click="handleOpenInsertModal('create')">신규생성</el-button>
-            <el-button size="mini" icon="el-icon-plus" type="primary" @click="handleOpenInsertModal('generate')">추가생성</el-button>
-            <el-button size="mini" icon="el-icon-tickets" type="primary" @click="handleOpenDetailModal('detail')">상세</el-button>
-            <el-button size="mini" icon="el-icon-edit-outline" type="primary" @click="handleOpenDetailModal('edit')">수정</el-button>
+          <div class="add-features">
+            <el-button size="mini" icon="el-icon-document-add" type="primary" round @click="handleOpenInsertModal('create')">신규생성</el-button>
+            <el-button size="mini" icon="el-icon-plus" type="primary" round @click="handleOpenInsertModal('generate')">추가생성</el-button>
+            <el-button size="mini" icon="el-icon-tickets" type="primary" round @click="handleOpenDetailModal('detail')">상세</el-button>
+            <el-button size="mini" icon="el-icon-edit-outline" type="primary" round @click="handleOpenDetailModal('edit')">수정</el-button>
           </div>
         </template>
       </compTable>

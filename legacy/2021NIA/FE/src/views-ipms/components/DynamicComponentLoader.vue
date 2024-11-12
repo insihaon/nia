@@ -35,14 +35,13 @@
             type="warning"
             plain
             round
-            @click="isEnabledCondition = !isEnabledCondition"
+            @click="handleClickCollapse()"
           >
             <i class="mr-1" :class="{ 'el-icon-arrow-up':isEnabledCondition, 'el-icon-arrow-down': !isEnabledCondition }" />
             <div style="display: grid;min-height: 12px;">
               <div class="reduce">접기</div>
               <div class="expand">펼치기</div>
             </div>
-            <!-- {{ isEnabledCondition ? '접기' : '펼치기' }} -->
           </el-button>
         </div>
       </td>
@@ -141,9 +140,17 @@ export default {
     // this.$store.dispatch('ipms/resetCurrentCondition')
   },
   methods: {
+    handleClickCollapse() {
+      this.isEnabledCondition = !this.isEnabledCondition
+      setTimeout(() => {
+        this.$parent?.$parent?.updateTableHeight()
+      }, 300)
+      /* animation delay로 인해 300s 뒤 실행 */
+    },
     handleRefresh() {
       Eventbus.$emit(EventType.resetCondition)
       this.requestParameter = this._cloneDeep(this.defaultRequestParameter)
+      this.$store.dispatch('ipms/setCurProfileByVue', { key: this.propName, profileName: '' })
       this.$emit('handle-search', this.requestParameter)
     },
     handleSearch() {
@@ -181,7 +188,7 @@ export default {
   min-width:31px;display: inline-block;transition: all .6s;
 }
 .expand/* 펼치기 */{
-  min-width:31px;display: inline-block;transform: translateY(20px);transition: all .6s;
+  min-width:31px;display: inline-block;transform: translateY(20px);transition: all .3s;
 }
 .expandToggleBtn.el-button{
   min-width: 80px;display: flex;justify-content: center;
@@ -214,6 +221,6 @@ export default {
 }
 .active .searchOptionWrap {
   max-height: 400px;
-  transition: max-height 1s ease, overflow 0.8s;
+  transition: max-height 0.8s ease, overflow 0.8s;
 }
 </style>

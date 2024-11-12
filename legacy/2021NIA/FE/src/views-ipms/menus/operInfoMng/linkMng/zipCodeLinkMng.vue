@@ -38,7 +38,7 @@
           </td>
           <td>
             <div class="searchBtnWrap">
-              <el-button type="info" size="mini" icon="el-icon-refresh" round>
+              <el-button type="info" size="mini" icon="el-icon-refresh" round @click="handleRefresh()">
                 초기화
               </el-button>
               <el-button type="primary" size="mini" icon="el-icon-search" round @click="fnUploadView()">
@@ -80,7 +80,7 @@
           </span>
         </template>
         <template slot="add-features">
-          <div style="margin-top: 10px">
+          <div class="add-features">
             <el-button icon="el-icon-download" type="primary" size="mini" round @click="fnDownloadData">우체국 데이터 다운로드</el-button>
           </div>
         </template>
@@ -127,6 +127,11 @@ export default {
     this.fnUploadView()
   },
   methods: {
+    handleRefresh() {
+      this.succVal = ''
+      this.dateVal = []
+      this.fnUploadView()
+    },
     async fnUploadView() {
       const [searchBgDe, searchEndDe] = this.dateVal
       const { pageSize: pageUnit, currentPage: pageIndex } = this.pagination

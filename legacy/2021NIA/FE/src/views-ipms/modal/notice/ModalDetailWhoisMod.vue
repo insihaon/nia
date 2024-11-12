@@ -62,8 +62,8 @@
       </table>
     </div>
     <div v-if="viewType === 'edit'" class="popupContentTableBottom">
-      <el-button type="primary" size="small" round @click="fnSetAddr('toKT')">{{ $t('KT 정보대체') }}</el-button>
-      <el-button type="primary" size="small" icon="el-icon-refresh-right" round @click="fnSetAddr('reset')">{{ $t('초기화') }}</el-button>
+      <el-button type="primary" size="small" round @click="fnSetAddr('toKT')">KT 정보대체</el-button>
+      <el-button type="primary" size="small" icon="el-icon-refresh-right" round @click="fnSetAddr('reset')">초기화</el-button>
     </div>
     <div class="popupContentTable">
       <div class="popupContentTableTitle">KISA WHOIS - IP 주소 사용기관 정보 (변경 후)</div>

@@ -22,18 +22,18 @@ var tableHeightMixin = {
         const containerHeight = containerEl?.$el?.offsetHeight || containerEl?.offsetHeight
 
         if (searchConditionHeight && containerHeight && tableEl) {
-          this.tableHeight = containerHeight - searchConditionHeight - 65 // 20: (margin, padding)
+          const tableHeight = containerHeight - searchConditionHeight - 50 // 20: (margin, padding)
           const tableElement = tableEl.$el ?? tableEl
-          tableElement.style.height = `${this.tableHeight}px`
+          tableElement.style.height = `${tableHeight}px`
         }
-      }, 0)
+      }, 100)
     },
   },
   watch: {
     // Watch for changes in search condition layout height if it changes dynamically
-    tableHeight() {
-      this.updateTableHeight()
-    },
+    // tableHeight() {
+    //   this.updateTableHeight()
+    // },
   },
 }
 
