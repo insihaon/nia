@@ -70,9 +70,9 @@
         <tr v-for="(item, index) in resultSubListVo.tbUserAuthTxnSubVos" :key="index">
           <td>{{ item.suserNm }}</td>
           <td :title="item.suserGradeNm">{{ item.suserGradeNm }}</td>
-          <td :title="item.ssvcLineTypeNm">{{ item.ssvcLineTypeNm }}</td>
-          <td :title="item.ssvcGroupNm">{{ item.ssvcGroupNm }}</td>
-          <td :title="item.ssvcObjNm">{{ item.ssvcObjNm }}</td>
+          <td :title="item.tbLvlBasVo.ssvcLineTypeNm">{{ item.tbLvlBasVo.ssvcLineTypeNm }}</td>
+          <td :title="item.tbLvlBasVo.ssvcGroupNm">{{ item.tbLvlBasVo.ssvcGroupNm }}</td>
+          <td :title="item.tbLvlBasVo.ssvcObjNm">{{ item.tbLvlBasVo.ssvcObjNm }}</td>
         </tr>
       </table>
     </div>
@@ -125,9 +125,6 @@ export default {
   mounted() {
   },
   methods: {
-    sipCreate() {
-      console.log(this.sipCreateTypeCd)
-    },
     onCreated() {
       Modal.methods.onCreated.call(this)
       this.closeOnClickModal = false
@@ -168,21 +165,21 @@ export default {
       try {
         this.openLoading(target)
         const tbUserAuthTxnListVo = {
-          srcIpBlockMstVo: {
-            nrequestTypeCd: 'node003',
+            nrequestTypeCd: 'nod003',
             grantSeq: this.rowGrantSeq,
-          }
         }
         res = await apiRequestModel(ipmsModelApis.confirmGrantSub, tbUserAuthTxnListVo)
         if (res.commonMsg === 'SUCCESS') {
           onMessagePopup(this, '권한 신청이 정상적으로 처리되었습니다.')
+          this.$emit('reload')
+          this.close()
         } else {
           onMessagePopup(this, res.commonMsg)
         }
       } catch (error) {
         console.error(error)
       } finally {
-         this.closeLoading(target)
+        this.closeLoading(target)
       }
     },
     fnDeleteBtnClick() { /* 신청취소 */
@@ -194,7 +191,7 @@ export default {
         let res
         try {
           this.openLoading(target)
-        const tbUserGrantVo = {
+          const tbUserGrantVo = {
           grantSeq: this.rowGrantSeq
         }
          res = await apiRequestModel(ipmsModelApis.viewDeleteGrant, tbUserGrantVo)
@@ -253,7 +250,9 @@ export default {
 
        res = await apiRequestModel(ipmsModelApis.confirmGrantSub, tbUserAuthTxnListVo)
        if (res.commonMsg === 'SUCCESS') {
-        onMessagePopup(this, '권한 신청이 정상적으로 처리되었습니다.')
+         onMessagePopup(this, '권한 신청이 정상적으로 처리되었습니다.')
+         this.$emit('reload')
+         this.close()
        } else {
          onMessagePopup(this, res.commonMsg)
        }

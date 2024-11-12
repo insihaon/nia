@@ -25,7 +25,7 @@
           <tr>
             <th>운용자</th>
             <td>
-              <el-input v-model="resultListVo.suserNm" size="small" type="text" readonly="readonly" />
+              <el-input v-model="suserNm" size="mini" type="text" class="txt w-100" readonly="readonly" />
             </td>
           </tr>
         </tbody>
@@ -51,20 +51,16 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-if="resultListDetailVo === 0">
+          <tr v-if="totalCount === 0">
             <td colspan="5">조회된 결과 목록이 존재하지 않습니다.</td>
           </tr>
           <template v-else>
-            <tr v-for="(item, index) in resultListDetailVo" :key="index">
+            <tr v-for="(item, index) in resultDetailListVo" :key="index">
               <td>{{ item.suserNm }}</td>
               <td :title="item.suserGradeNm">{{ item.suserGradeNm }}</td>
               <td :title="item.ssvcLineTypeNm">{{ item.ssvcLineTypeNm }}</td>
               <td :title="item.ssvcGroupNm">{{ item.ssvcGroupNm }}</td>
               <td :title="item.ssvcObjNm">{{ item.ssvcObjNm }}</td>
-              <!-- 추후에 레거시 코드로 반영 -->
-              <!-- <td :title="item.tbLvlBasVo.ssvcLineTypeNm">{{ item.tbLvlBasVo.ssvcLineTypeNm }}</td>
-              <td :title="item.tbLvlBasVo.ssvcGroupNm">{{ item.tbLvlBasVo.ssvcGroupNm }}</td>
-              <td :title="item.tbLvlBasVo.ssvcObjNm">{{ item.tbLvlBasVo.ssvcObjNm }}</td> -->
             </tr>
           </template>
         </tbody>
@@ -77,7 +73,7 @@
           <tr>
             <th>권한등급</th>
             <td>
-              <el-select v-model="suserGradeCode" size="small">
+              <el-select v-model="suserGradeCode" size="small" @change="handleChangeAuthCd()">
                 <el-option
                   v-for="item in userGradeOp"
                   :key="item.value"
@@ -142,19 +138,13 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(item, index) in resultListVo.tbUserAuthTxnVos" :key="index">
+          <tr v-for="(item, index) in resultListVo" :key="index">
             <td>{{ item.suserNm }}</td>
             <td :title="item.suserGradeNm">{{ item.suserGradeNm }}</td>
             <td :title="item.ssvcLineTypeNm">{{ item.ssvcLineTypeNm }}</td>
             <td :title="item.ssvcGroupNm">{{ item.ssvcGroupNm }}</td>
             <td :title="item.ssvcObjNm">{{ item.ssvcObjNm }}</td>
-            <!-- <td :title="item.ssvcLineTypeNm">{{ item?.tbLvlBasVo?.ssvcLineTypeNm }}</td>
-            <td :title="item.ssvcGroupNm">{{ item?.tbLvlBasVo?.ssvcGroupNm }}</td>
-            <td :title="item.ssvcObjNm">{{ item?.tbLvlBasVo?.ssvcObjNm }}</td> -->
-            <td class="textcenter"><el-button class="el-icon-delete" type="danger" size="mini" circle /></td>
-            <!-- <td v-show="false">{{ item?.tbLvlBasVo?.ssvcLineTypeCd }}</td>
-            <td v-show="false">{{ item?.tbLvlBasVo?.ssvcGroupCd }}</td>
-            <td v-show="false">{{ item?.tbLvlBasVo?.ssvcObjCd }}</td> -->
+            <td class="textcenter"><el-button class="el-icon-delete" type="danger" size="mini" circle @click.native="fnDeleteUserAuthPrev(index)" /></td>
           </tr>
         </tbody>
       </table>
@@ -223,7 +213,8 @@ export default {
       resultListDetailVo: [],
       viewModel: null,
       isDeleteMode: false,
-      totalCount: 0
+      totalCount: 0,
+      suserNm: ''
     }
   },
   computed: {
@@ -305,6 +296,7 @@ export default {
          const res = await apiRequestModel(ipmsModelApis.viewInsertUserAuthSubs, tbUserAuthVo)
           this.resultListVo = res.result.data
           this.resultDetailListVo = res.result.data
+          this.suserNm = res.result.data[0].suserNm
           this.totalCount = res.result.totalCount
           this.suserGradeCode = res.result.data[0].suserGradeCd
        } catch (error) {
@@ -312,6 +304,11 @@ export default {
        } finally {
          this.closeLoading(target)
        }
+    },
+    handleChangeAuthCd() {
+      this.ssvcLineTypeCd = ''
+      this.ssvcGroupCd = ''
+      this.ssvcObjCd = ''
     },
     async handleChangeLvl1() {
       const tbLvlBasVo = { ssvcLineTypeCd: this.ssvcLineTypeCd }
@@ -397,7 +394,7 @@ export default {
     }
 
     // 4. 권한 등급이 다를 경우 사용자에게 확인
-    if (this.resultDetailListVo[0].suserGradeCd !== this.suserGradeCode) {
+    if (this.resultListVo[0].suserGradeCd !== this.suserGradeCode) {
         this.$confirm(
             `선택한 권한등급이 이전 권한등급과 다릅니다.
             다른 권한등급 선택 시 이전 권한이 모두 삭제됩니다.
