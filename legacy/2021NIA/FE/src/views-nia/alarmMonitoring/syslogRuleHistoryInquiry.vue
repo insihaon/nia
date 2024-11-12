@@ -45,9 +45,9 @@ export default {
       selectedRow: [],
       ruleData: [],
       searchItems: [
-        { label: '규칙명', type: 'select', model: 'syslog_rule_nm', options: [] },
-        { label: '발생 키워드 ', type: 'input', model: 'occur_str' },
-        { label: '제외 키워드', type: 'input', model: 'occur_except_str' },
+        { label: '규칙명', type: 'select', model: 'syslog_rule_nm', options: [], placeholder: '규칙명을 검색하세요' },
+        { label: '발생 키워드 ', type: 'input', model: 'occur_str', placeholder: '발생 키워드를 검색하세요' },
+        { label: '제외 키워드', type: 'input', model: 'occur_except_str', placeholder: '제외 키워드를 검색하세요' },
       ],
       searchModel: {
         syslog_rule_nm: '',

@@ -44,10 +44,10 @@ export default {
        trafficData: [],
         searchItems: [
         { label: '이용기관(S)', type: 'select', multiple: false, placeholder: '이용기관을 선택하세요', model: 'src_nren_name', icon: 'el-icon-setting', setting: { allOption: { toggle: true } }, options: [] },
-        { label: 'IP(S)', type: 'input', multiple: false, placeholder: 'SEARCH', icon: 'el-icon-search', model: 'src_ip' },
+        { label: 'IP(S)', type: 'input', multiple: false, placeholder: 'IP(S)를 검색하세요', icon: 'el-icon-search', model: 'src_ip' },
         { label: '이용기관(D)', type: 'select', multiple: false, placeholder: '이용기관을 선택하세요', model: 'dst_nren_name', icon: 'el-icon-warning', setting: { allOption: { toggle: true } }, options: [] },
-        { label: 'IP(D)', type: 'input', multiple: false, placeholder: 'SEARCH', icon: 'el-icon-search', model: 'dst_ip' },
-        { label: 'Top N', type: 'select', multiple: false, placeholder: '', model: 'top_n', icon: 'el-icon-warning',
+        { label: 'IP(D)', type: 'input', multiple: false, placeholder: 'IP(D)를 검색하세요', icon: 'el-icon-search', model: 'dst_ip' },
+        { label: 'Top(N)', type: 'select', placeholder: 'Top(N)', multiple: false, model: 'top_n', icon: 'el-icon-warning',
           options: [
             { label: '10', value: 10 },
             { label: '30', value: 30 },

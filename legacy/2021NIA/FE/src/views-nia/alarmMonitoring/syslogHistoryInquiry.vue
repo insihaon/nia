@@ -50,12 +50,12 @@ export default {
       },
       syslogData: [],
       searchItems: [
-        { label: 'FROM', type: 'basicDate', model: 'start_date' },
-        { label: 'TO', type: 'basicDate', model: 'end_date' },
-        { label: '알람번호', type: 'input', model: 'alarmno' },
-        { label: '장비ID', type: 'input', model: 'node_num' },
-        { label: '장비명', type: 'select', model: 'node_nm', options: [] },
-        { label: '장애내용', type: 'input', model: 'alarmmsg' }
+        { label: 'FROM', type: 'basicDate', model: 'start_date', placeholder: '시작 일자' },
+        { label: 'TO', type: 'basicDate', model: 'end_date', placeholder: '종료 일자' },
+        { label: '알람번호', type: 'input', model: 'alarmno', placeholder: '알람번호를 검색하세요' },
+        { label: '장비ID', type: 'input', model: 'node_num', placeholder: '장비ID를 검색하세요' },
+        { label: '장비명', type: 'select', model: 'node_nm', options: [], placeholder: '장비명을 검색하세요' },
+        { label: '장애내용', type: 'input', model: 'alarmmsg', placeholder: '장애내용을 검색하세요' }
       ],
       searchModel: {
         alarmno: '',
@@ -108,12 +108,25 @@ export default {
   methods: {
     getCellStyle(params) {
       let color = ''
-      if (params.value === '자동 마감') {
-         color = 'red'
-      } else {
-         color = 'blue'
+      let background = ''
+      switch (params.value) {
+        case '발생':
+          background = '#b14948'
+          color = '#fff'
+          break
+        case '인지':
+          background = '#f7aa17'
+          break
+        case '수동 마감':
+          background = '#52a43a'
+          break
+        case '자동 마감':
+          background = '#adcc1e'
+          break
+        default:
+          break
       }
-      return { color: color }
+      return { 'background-color': background, color: color, 'font-weight': 600 }
     },
     onClickSearch(params) {
       this.onLoadSyslogHistList(params)

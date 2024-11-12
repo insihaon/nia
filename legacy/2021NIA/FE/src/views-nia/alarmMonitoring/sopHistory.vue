@@ -123,8 +123,8 @@ export default {
       const options = { name: this.name, checkable: false, rowGroupPanel: false, rowSelection: 'multiple', rowMultiSelection: false }
       const columns = [
         { type: '', prop: 'ticket_id', name: '티켓번호', width: 150, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
-        { type: '', prop: 'ticket_type', name: '티켓유형', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false, format: getAlarmType },
-        { type: '', prop: 'ticket_result', name: '장애내용', width: 160, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
+        { type: '', prop: 'ticket_type', name: '티켓유형', width: 130, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false, format: getAlarmType },
+        { type: '', prop: 'ticket_result', name: '장애내용', width: 200, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
         { type: '', prop: 'fault_classify', name: '장애구분', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
         { type: '', prop: 'fault_type', name: '장애유형', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
         { type: '', prop: 'fault_detail_content', name: '조치내용', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true },

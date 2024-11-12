@@ -44,7 +44,7 @@
           <td class="disable">{{ rowInfo.bandwidth }}</td>
         </tr>
         <tr>
-          <th colspan="1">담당Email</th>
+          <th colspan="1">담당E-mail</th>
           <td colspan="3" class="disable">
             <el-input
               v-model="rowInfo.email"
@@ -165,7 +165,7 @@ export default {
     onCreated() {
       Modal.methods.onCreated.call(this)
       this.closeOnClickModal = false
-      this.domElement.maxWidth = 500
+      this.domElement.maxWidth = 670
     },
     onOpen(model, actionMode) {
       this.viewType = model.type

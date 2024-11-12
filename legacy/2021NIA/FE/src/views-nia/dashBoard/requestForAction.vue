@@ -6,15 +6,15 @@
         {{ isSyslog ? 'SYSLOG 장애대응' : 'AI 장애대응' }} 조치 요청서
         <hr>
       </el-row> -->
-    <el-row class="w-full h-100">
-      <el-col class="p-1 h-100" :span="isMobile ? 24: 12">
-        <el-card shadow="never" style="height : 20%" :body-style="{'padding': '10px'}">
+    <el-row class="w-full">
+      <el-col class="p-1" :span="isMobile ? 24: 12">
+        <el-card shadow="never" :body-style="{'padding': '10px'}">
           <div slot="header">
             <div>
               <span><i class="el-icon-document" /> {{ isSyslog ? '알람': '티켓' }} 상세 정보</span>
             </div>
           </div>
-          <el-col>
+          <el-col class="style : 20%">
             <el-table
               v-if="isSyslog"
               ref="table"
@@ -55,13 +55,13 @@
           </el-col>
         </el-card>
 
-        <el-card shadow="never" style="height : 30%" :body-style="{'padding': '10px'}" :class="{'mt-1': isSyslog}">
+        <el-card shadow="never" :body-style="{'padding': '10px'}" :class="{'mt-1': isSyslog}">
           <div slot="header">
             <div>
               <span><i class="el-icon-document" /> 연관 SOP 리스트</span>
             </div>
           </div>
-          <el-col>
+          <el-col class="style : 30%">
             <el-table
               ref="sopTable"
               :size="'mini'"
@@ -82,14 +82,14 @@
             </el-table>
           </el-col>
         </el-card>
-        <el-card shadow="never" style="height : 50%" :body-style="{'padding': '10px'}" class="mt-1">
+        <el-card shadow="never" :body-style="{'padding': '10px'}" class="mt-1">
           <div slot="header">
             <div>
               <div><i class="el-icon-document" /> 담당 직원 정보</div>
             </div>
           </div>
 
-          <el-col>
+          <el-col class="style : 50%">
             <el-table
               ref="employeeTable"
               :size="'mini'"
@@ -116,8 +116,8 @@
           </el-col>
         </el-card>
       </el-col>
-      <el-col class="h-100 p-1" :span="isMobile ? 24: 12">
-        <el-card shadow="never" style="height : 100%" :body-style="{'padding': '10px'}" class="h-100">
+      <el-col class="p-1" :span="isMobile ? 24: 12">
+        <el-card shadow="never" :body-style="{'padding': '10px'}">
           <div slot="header">
             <div>
               <div><i class="el-icon-document" /> 요청 내용</div>
