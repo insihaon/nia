@@ -76,9 +76,9 @@
               <el-select v-model="suserGradeCode" size="small" @change="handleChangeAuthCd()">
                 <el-option
                   v-for="item in userGradeOp"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
                 />
               </el-select>
             </td>
@@ -93,7 +93,7 @@
                   :value="item.value"
                 />
               </el-select>
-              <el-select v-model="ssvcGroupCd" :disabled="isDisabledLvl2" size="small" @change="handleChangeLvl2()">
+              <el-select v-model="ssvcGroupCd" :disabled="(isDisabledLvl1 || isDisabledLvl2) || ssvcLineTypeCd === ''" size="small" @change="handleChangeLvl2()">
                 <el-option
                   v-for="item in ssvcGroupNmOp"
                   :key="item.value"
@@ -101,7 +101,7 @@
                   :value="item.value"
                 />
               </el-select>
-              <el-select v-model="ssvcObjCd" :disabled="isDisabledLvl3" size="small">
+              <el-select v-model="ssvcObjCd" :disabled="(isDisabledLvl1 || isDisabledLvl2 || isDisabledLvl3) || ssvcGroupCd === ''" size="small">
                 <el-option
                   v-for="item in ssvcObjNmOp"
                   :key="item.value"
@@ -139,7 +139,7 @@
         </thead>
         <tbody>
           <tr v-for="(item, index) in resultListVo" :key="index">
-            <td>{{ item.suserNm }}</td>
+            <td :title="item.suserNm">{{ item.suserNm }}</td>
             <td :title="item.suserGradeNm">{{ item.suserGradeNm }}</td>
             <td :title="item.ssvcLineTypeNm">{{ item.ssvcLineTypeNm }}</td>
             <td :title="item.ssvcGroupNm">{{ item.ssvcGroupNm }}</td>
@@ -192,16 +192,11 @@ export default {
       ],
       ssvcGroupNmOp: [],
       ssvcObjNmOp: [],
-      ssvcLineTypeCd: null,
-      ssvcGroupCd: null,
-      ssvcObjCd: null,
-      userGradeOp: [
-        { label: '시스템 관리자', value: 'UR0001' },
-        { label: '서비스망 관리자', value: 'UR0003' },
-        { label: '본부운용자', value: 'UR0004' },
-        { label: '노드운용자', value: 'UR0005' },
-      ],
-       selectedUserAuth: {
+      ssvcLineTypeCd: '',
+      ssvcGroupCd: '',
+      ssvcObjCd: '',
+      userGradeOp: [],
+      selectedUserAuth: {
         suserNm: this.$store.state.user.info.suserNm, // 사용자명
         suserGradeNm: '', // 권한등급
         ssvcLineTypeNm: '', // 계위
@@ -211,7 +206,6 @@ export default {
       suserGradeCode: null,
       addTableData: false,
       resultListDetailVo: [],
-      viewModel: null,
       isDeleteMode: false,
       totalCount: 0,
       suserNm: ''
@@ -225,18 +219,18 @@ export default {
       return this.suserGradeCode === 'UR0001'
     },
     isDisabledLvl2() {
-      return this.suserGradeCode === 'UR0001' || this.suserGradeCode === 'UR0003'
+      return this.ssvcLineTypeCd === 'UR0003'
     },
     isDisabledLvl3() {
-      return this.suserGradeCode === 'UR0001' || this.suserGradeCode === 'UR0003' || this.suserGradeCode === 'UR0004'
+      return this.suserGradeCode === 'UR0004'
     }
   },
   watch: {
     suserGradeCode(newVal) {
       this.updateDisabledStates()
       this.selectedUserAuth.suserGradeNm = this.userGradeOp.find(
-        (item) => item.value === this.suserGradeCode
-      ).label
+        (item) => item.code === this.suserGradeCode
+      ).name
     },
     ssvcLineTypeCd(newVal) {
       this.selectedUserAuth.ssvcLineTypeNm = this.ssvcLineTypeNmOp.find(/* get value of selected label */
@@ -255,20 +249,29 @@ export default {
     }
   },
   mounted() {
+    this.onLoadSelectUserGradeCds()
   },
   methods: {
     updateDisabledStates() {
       if (this.suserGradeCd === 'UR0001') {
         this.ssvcLineTypeCd = ''
-        this.ssvcGroupCd = null
-        this.ssvcObjCd = null
+        this.ssvcGroupCd = ''
+        this.ssvcObjCd = ''
       } else if (this.suserGradeCd === 'UR0003') {
-        this.ssvcGroupCd = null
-        this.ssvcObjCd = null
+        this.ssvcGroupCd = ''
+        this.ssvcObjCd = ''
       } else if (this.suserGradeCd === 'UR0004') {
-        this.ssvcObjCd = null
+        this.ssvcObjCd = ''
       } else if (this.suserGradeCd === 'UR0005') {
         // v-model 값 유지
+      }
+    },
+    async onLoadSelectUserGradeCds() {
+      try {
+        const res = await apiRequestJson(ipmsJsonApis.selectUserGradeCds, {})
+        this.userGradeOp = res.result.data.filter(v => v.code !== 'UR0000' && v.code !== 'UR0006') ?? []
+      } catch (error) {
+        this.error(error)
       }
     },
     onCreated() {
@@ -282,8 +285,6 @@ export default {
          this.fnViewInsertGrant(model.row)
         }
       }, 10)
-
-      this.viewModel = model.row
     },
     async fnViewInsertGrant(row) {
       const target = ({ vue: this.$refs.content })
@@ -295,7 +296,8 @@ export default {
          }
          const res = await apiRequestModel(ipmsModelApis.viewInsertUserAuthSubs, tbUserAuthVo)
           this.resultListVo = res.result.data
-          this.resultDetailListVo = res.result.data
+          this.selectedUserAuth = this._cloneDeep(this.resultListVo)
+          this.resultDetailListVo = this._cloneDeep(this.resultListVo)
           this.suserNm = res.result.data[0].suserNm
           this.totalCount = res.result.totalCount
           this.suserGradeCode = res.result.data[0].suserGradeCd
@@ -313,8 +315,8 @@ export default {
     async handleChangeLvl1() {
       const tbLvlBasVo = { ssvcLineTypeCd: this.ssvcLineTypeCd }
 
-      this.ssvcGroupCd = null
-      this.ssvcObjCd = null
+      this.ssvcGroupCd = ''
+      this.ssvcObjCd = ''
 
       const res = await apiRequestJson(ipmsJsonApis.selectAuthCenterList, tbLvlBasVo)
       this.ssvcGroupNmOp = res?.tbLvlBasVos?.filter(v => v.ssvcGroupNm !== '전체' && v.ssvcGroupNm !== '-------').map(v => {
@@ -329,7 +331,7 @@ export default {
         ssvcGroupCd: this.ssvcGroupCd,
       }
 
-      this.ssvcObjCd = null
+      this.ssvcObjCd = ''
 
       const res = await apiRequestJson(ipmsJsonApis.selectAuthNodeList, tbLvlBasVo)
       this.ssvcObjNmOp = res?.tbLvlBasVos?.filter(v => v.ssvcObjNm !== '전체' && v.ssvcObjNm !== '-------').map(v => {
@@ -341,7 +343,7 @@ export default {
     // 1. 테이블에 항목이 없는 경우
     if (this.resultListVo.length === 0) {
       const newRow = {
-            suserNm: this.selectedUserAuth.suserNm,
+            suserNm: this.$store.state.user.info.suserNm,
             suserGradeNm: this.selectedUserAuth.suserGradeNm,
             ssvcLineTypeNm: this.selectedUserAuth.ssvcLineTypeNm,
             ssvcGroupNm: this.selectedUserAuth.ssvcGroupNm,
@@ -407,7 +409,7 @@ export default {
         ).then(() => {
           this.resultListVo = []
            const newRow = {
-              suserNm: this.selectedUserAuth.suserNm,
+              suserNm: this.$store.state.user.info.suserNm,
               suserGradeNm: this.selectedUserAuth.suserGradeNm,
               ssvcLineTypeNm: this.selectedUserAuth.ssvcLineTypeNm,
               ssvcGroupNm: this.selectedUserAuth.ssvcGroupNm,
@@ -421,7 +423,7 @@ export default {
     } else {
         // 권한 등급이 동일할 경우 바로 row 추가
         const newRow = {
-          suserNm: this.selectedUserAuth.suserNm,
+          suserNm: this.$store.state.user.info.suserNm,
           suserGradeNm: this.selectedUserAuth.suserGradeNm,
           ssvcLineTypeNm: this.selectedUserAuth.ssvcLineTypeNm,
           ssvcGroupNm: this.selectedUserAuth.ssvcGroupNm,
@@ -445,9 +447,10 @@ export default {
       try {
         this.openLoading(target)
          const tbUserAuthListVo = {
-          tbUserAuthTxnVos: [],
-          suserId: this.resultListVo.suserId,
-          suserGradeCd: this.resultListVo.suserGradeCd
+           tbUserAuthTxnSubVos: [],
+
+          suserId: this.resultListVo[0].suserId,
+          suserGradeCd: this.resultListVo[0].suserGradeCd
         }
 
       this.resultListVo.forEach((item) => {
@@ -459,27 +462,24 @@ export default {
           screateId: this.$store.state.user.info.suserId
         }
 
-        // if (this.suserGradeCd !== 'UR0001') {
+        if (this.suserGradeCd !== 'UR0001') {
           tbUserAuthVo.tbLvlBasVo = {
             /* 추가한 row value set */
-            // ssvcLineTypeCd: this.ssvcLineTypeNmOp.find((item) => item.value === this.resultListVo[0].ssvcLineTypeNm
-            // )?.value ?? '000000',
-            // 각 항목을 찾아 값이 없을 경우 기본값 '000000'으로 설정
-             ssvcLineTypeCd: this.ssvcLineTypeNmOp.find(
-                (item) => item.label === this.resultListVo[0].ssvcLineTypeNm
+            ssvcLineTypeCd: this.ssvcLineTypeNmOp.find(
+              (item) => item.label === this.resultListVo[0].ssvcLineTypeNm
             )?.value ?? '000000',
 
-             ssvcGroupCd: this.ssvcGroupNmOp.find(
-                (item) => item.label === this.resultListVo[0].ssvcGroupNm
+            ssvcGroupCd: this.ssvcGroupNmOp.find(
+              (item) => item.label === this.resultListVo[0].ssvcGroupNm
             )?.value ?? '000000',
 
-             ssvcObjCd: this.ssvcObjNmOp.find(
-                (item) => item.label === this.resultListVo[0].ssvcObjNm
+            ssvcObjCd: this.ssvcObjNmOp.find(
+              (item) => item.label === this.resultListVo[0].ssvcObjNm
             )?.value ?? '000000'
           }
-        // }
+        }
 
-      tbUserAuthListVo.tbUserAuthTxnVos.push(tbUserAuthVo)
+      tbUserAuthListVo.tbUserAuthTxnSubVos.push(tbUserAuthVo)
     })
         res = await apiRequestJson(ipmsJsonApis.insertUserAuthTxnSub, tbUserAuthListVo)
         if (res.commonMsg === 'SUCCESS') {
@@ -496,6 +496,9 @@ export default {
        }
     },
     onClose() {
+      this.ssvcLineTypeCd = ''
+      this.ssvcGroupNmOp = ''
+      this.ssvcObjCd = ''
     },
   }
 }

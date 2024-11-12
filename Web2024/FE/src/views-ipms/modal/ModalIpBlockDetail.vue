@@ -96,7 +96,7 @@
     <div class="popupContentTableBottom">
       <el-button v-if="!isEdit" type="primary" size="small" icon="el-icon-edit" round @click="onChangeMode()">수정</el-button>
       <el-button v-if="isEdit" type="primary" size="small" icon="el-icon-edit-outline" round @click="fnUpdateCrtIPMstCallback()">저장</el-button>
-      <el-button v-if="!isEdit" type="primary" size="small" icon="el-icon-edit" round @click="fnDeleteBtnClick()">삭제</el-button>
+      <el-button v-if="!isEdit" type="primary" size="small" icon=" el-icon-delete" round @click="fnDeleteBtnClick()">삭제</el-button>
       <el-button type="primary" size="small" icon="el-icon-close" round @click.native="isClose()">{{ $t('exit') }}</el-button>
     </div>
   </el-dialog>

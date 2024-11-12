@@ -18,7 +18,6 @@
         :prop-is-pagination="true"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
-        :prop-on-click="onClcikRow"
         :prop-enabled-excel-down="false"
         :prop-on-dbl-click="fnViewDbClickUserAuth"
         :prop-on-page-change="handleChangeCurPage"
@@ -74,8 +73,8 @@ export default {
           props: {
             label: '소속조직',
             modalName: 'ModalOrgSearch',
-            valueName: 'sFullOrgNm',
-            prop_parameterKey: { sposDeptOrgId: 'sktOrgId', sporDdptOrgNm: 'sFullOrgNm' },
+            valueName: 'sorgNm',
+            prop_parameterKey: { sposDeptOrgId: 'sktOrgId', sporDdptOrgNm: 'sorgNm' },
             isReadOnly: true
           }
         },

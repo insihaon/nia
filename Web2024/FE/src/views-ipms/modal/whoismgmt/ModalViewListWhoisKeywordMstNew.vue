@@ -27,7 +27,7 @@
             </div>
           </td>
           <td>
-            <el-button class="float-right my-2" size="small" type="primary"> 조회 </el-button>
+            <el-button class="float-right my-2" size="small" round type="primary"> 조회 </el-button>
           </td>
         </tr>
       </table>
@@ -60,7 +60,7 @@
             </div>
           </td>
           <td>
-            <el-button class="float-right my-2" size="small" type="primary"> 저장 </el-button>
+            <el-button class="float-right my-2" size="small" round type="primary"> 저장 </el-button>
           </td>
         </tr>
       </table>
@@ -86,7 +86,7 @@
       <ModalInsertKeyword ref="ModalInsertKeyword" />
     </el-col>
     <div class="popupContentTableBottom">
-      <el-button type="primary" size="small" round @click.native="fnKeywordDel()">삭제</el-button>
+      <el-button type="primary" size="small" icon="el-icon-delete" round @click.native="fnKeywordDel()">삭제</el-button>
       <el-button type="primary" size="small" icon="el-icon-close" round @click.native="close()">{{ $t('exit') }}</el-button>
     </div>
   </el-dialog>
