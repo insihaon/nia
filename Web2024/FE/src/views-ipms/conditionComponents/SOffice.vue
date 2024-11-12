@@ -109,7 +109,7 @@ export default {
     setParameter(params) {
       setTimeout(() => {
         this.value = params[this.prop_parameterKey] ?? ''
-      }, 100)
+      }, 300)
     }
   }
 }

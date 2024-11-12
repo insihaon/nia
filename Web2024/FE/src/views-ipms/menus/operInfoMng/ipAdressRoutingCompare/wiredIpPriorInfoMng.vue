@@ -31,7 +31,7 @@
           </span>
         </template>
         <template slot="add-features">
-          <div style="margin-top: 10px">
+          <div class="add-features">
             <el-button icon="el-icon-document-add" type="primary" size="mini" round @click="handleClickRegist()">Community 등록</el-button>
             <el-button icon="el-icon-document-delete" type="primary" size="mini" round @click="fnDeleteWireMst()">삭제</el-button>
           </div>

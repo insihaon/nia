@@ -31,7 +31,7 @@
           </span>
         </template>
         <template slot="add-features">
-          <div style="margin-top: 10px">
+          <div class="add-features">
             <el-button type="primary" size="mini" round @click="fnRoutingCollectMst">무선 전체 라우팅 수집</el-button>
             <el-button type="primary" size="mini" round @click="handleClickSummaryMng">Summary 관리</el-button>
             <el-button type="primary" size="mini" round @click="$refs.ModalUploadMst.open()" @reload="fnViewListMobileMst">텍스트 파일 업로드</el-button>

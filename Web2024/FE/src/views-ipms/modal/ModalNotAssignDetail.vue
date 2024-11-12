@@ -36,7 +36,7 @@
         :prop-data="pagination.data"
         :prop-pagination-data.sync="pagination"
         :prop-is-pagination="true"
-        :prop-table-height="300"
+        :prop-table-height="500"
         :prop-column="tableColumns"
         :prop-max-select="pagination.data.length"
         :prop-is-check-box="false"

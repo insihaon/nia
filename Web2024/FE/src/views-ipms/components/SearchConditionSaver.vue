@@ -63,6 +63,34 @@ export default {
         savedProfile = JSON.parse(window.localStorage['savedSearchCondition'] || '{}')
       }
       const currentViewProfile = savedProfile[name] ? savedProfile[name] : []
+      if (this.ipms.curProfileByVue[this.propName]) {
+        await this.confirm(`현재 '${this.ipms.curProfileByVue[this.propName]}' 프로파일이 적용 되어있습니다. 변경된 조건을 해당 프로파일에 덮어 씌우시겠습니까?`, '알림', {
+          cancelButtonText: '취소',
+          confirmButtonText: '확인',
+          dangerouslyUseHTMLString: true
+        }).then(async () => {
+          await this.setCoverProfile(currentViewProfile)
+        }).catch(action => {
+          // if(action === 'cancel') {
+          //   await this.setCoverProfile(currentViewProfile)
+          // }
+        })
+      } else {
+        await this.setAddProfile(currentViewProfile)
+      }
+      /* 저장 공통 */
+      savedProfile[name] = currentViewProfile
+      window.localStorage['savedSearchCondition'] = JSON.stringify(savedProfile)
+      this.initialization()
+    },
+    setCoverProfile(currentViewProfile) {
+      currentViewProfile.forEach(profileItem => {
+        if (profileItem.name === this.ipms.curProfileByVue[this.propName]) {
+          Object.assign(profileItem, { parameter: this.parameter })
+        }
+      })
+    },
+    async setAddProfile(currentViewProfile) {
       if (currentViewProfile.length >= 3) {
         onMessagePopup(this, '3개 이상 저장할 수 없습니다.')
         return
@@ -78,9 +106,6 @@ export default {
           return
         }
         currentViewProfile.push({ name: result.value, parameter: this.parameter })
-        savedProfile[name] = currentViewProfile
-        window.localStorage['savedSearchCondition'] = JSON.stringify(savedProfile)
-        this.initialization()
       }
     },
     handleClickApply(profile) {
@@ -88,20 +113,27 @@ export default {
       const parameter = this._cloneDeep(profile.parameter)
       Eventbus.$emit(EventType.setSavedParameter, parameter)
     },
-    handleClickRemove(profileName) {
-      let savedProfile
-      const name = this.propName
-      if (name) {
-        savedProfile = JSON.parse(window.localStorage['savedSearchCondition'] || '{}')
-      }
-      if (savedProfile[name]) {
-        const removeIdx = savedProfile[name].findIndex(v => v.name === profileName)
-        if (removeIdx !== -1) {
-          savedProfile[name].splice(removeIdx, 1)
+    async handleClickRemove(profileName) {
+      await this.confirm(`프로파일 '${profileName}'을 삭제하시겠습니까?`, '알림', {
+        cancelButtonText: '취소',
+        confirmButtonText: '확인',
+        dangerouslyUseHTMLString: true
+      }).then(() => {
+        let savedProfile
+        const name = this.propName
+        if (name) {
+          savedProfile = JSON.parse(window.localStorage['savedSearchCondition'] || '{}')
         }
-        window.localStorage['savedSearchCondition'] = JSON.stringify(savedProfile)
-        this.initialization()
-      }
+        if (savedProfile[name]) {
+          const removeIdx = savedProfile[name].findIndex(v => v.name === profileName)
+          if (removeIdx !== -1) {
+            savedProfile[name].splice(removeIdx, 1)
+          }
+          window.localStorage['savedSearchCondition'] = JSON.stringify(savedProfile)
+          this.initialization()
+        }
+      }).catch(action => {
+      })
     }
   },
 }

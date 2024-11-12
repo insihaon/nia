@@ -32,7 +32,7 @@
           </span>
         </template>
         <template slot="add-features">
-          <div style="margin-top: 10px">
+          <div class="add-features">
             <el-button icon="el-icon-check" type="primary" size="mini" round @click="handleClickIpBlockCheck()">IP블럭 중복체크</el-button>
             <el-button icon="el-icon-document-checked" type="primary" size="mini" round @click="fnUpdateBtnClick()">배정</el-button>
             <el-button icon="el-icon-menu" type="primary" size="mini" round @click="handleClickMergeInsert()">병합</el-button>

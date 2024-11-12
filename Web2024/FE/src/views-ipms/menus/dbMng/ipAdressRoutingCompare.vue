@@ -33,7 +33,7 @@
           IPMS DB 기준 건수 : {{ (totalCount3 || 0).toLocaleString() }} 건 / 체크박스 기준 건수 : {{ (totalCount2 || 0).toLocaleString() }} 건 /
         </template>
         <template slot="add-features">
-          <div style="margin-top: 10px">
+          <div class="add-features">
             <el-button v-if="isShowRoutMngBtn" type="primary" size="mini" round @click="handleClickRoutChk">라우팅 수집/DB 비교 시작</el-button>
             <el-button type="primary" size="mini" round @click="handleClickRoutExcptMng">예외처리 관리</el-button>
             <el-button type="primary" size="mini" round @click="handleClickDivMerge">IP블록 (해지 후) 분할/병합</el-button>
@@ -132,15 +132,15 @@ export default {
         {
           prop: 'level', label: '계위', children: [
             { prop: 'ssvcLineTypeNm', label: '서비스망', align: 'center', columnVisible: true, showOverflow: true },
-            { prop: 'ssvcGroupNm', label: '본부', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+            { prop: 'ssvcGroupNm', label: '본부', width: 140, align: 'center', sortable: true, columnVisible: true, showOverflow: true },
             { prop: 'ssvcObjNm', label: '노드', align: 'center', columnVisible: true, showOverflow: true },
             { prop: 'sipCreateTypeNm', label: '공인/사설', align: 'center', columnVisible: true, showOverflow: true },
-            { prop: 'sassignTypeNm', label: '서비스', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+            { prop: 'sassignTypeNm', label: '서비스', width: 140, align: 'center', sortable: true, columnVisible: true, showOverflow: true },
           ], align: 'center', columnVisible: true, showOverflow: true,
           },
         {
           prop: 'ipms', label: 'IPMS', children: [
-            { prop: 'pipmsIpPrefix', label: 'IP블록', align: 'center', columnVisible: true, showOverflow: true,
+            { prop: 'pipmsIpPrefix', label: 'IP블록', width: 160, align: 'center', columnVisible: true, showOverflow: true,
                 formatter: (row, col, value, index) => {
                   return this.$createElement('el-button', {
                     attrs: {
@@ -157,12 +157,12 @@ export default {
               }
             },
             { prop: 'nipAllocMstCnt', label: '회선', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-            { prop: 'sassignLevelNm', label: 'IP블록상태', align: 'center', columnVisible: true, showOverflow: true },
+            { prop: 'sassignLevelNm', label: 'IP블록상태', width: 140, align: 'center', columnVisible: true, showOverflow: true },
           ], align: 'center', columnVisible: true, showOverflow: true,
         },
         {
           prop: 'routing', label: '실제 라우팅 장비', children: [
-            { prop: 'pipmsIpPrefix', label: 'IP블록', align: 'center', columnVisible: true, showOverflow: true,
+            { prop: 'pipmsIpPrefix', label: 'IP블록', width: 160, align: 'center', columnVisible: true, showOverflow: true,
               formatter: (row, col, value, index) => {
                 if ([30, 29].includes(row.nroutingIpBitmask) && row.sneossDdYn === 'N') {
                   return this.$createElement('el-button', {
@@ -182,7 +182,7 @@ export default {
                 }
               }
             },
-            { prop: 'sipNexthop', label: 'Nexthop', align: 'center', sortable: true, columnVisible: ssvcLineTypeCd !== 'CL0003', showOverflow: true,
+            { prop: 'sipNexthop', label: 'Nexthop', width: 160, align: 'center', sortable: true, columnVisible: ssvcLineTypeCd !== 'CL0003', showOverflow: true,
               formatter: (row, col, value, index) => {
                 if (row.sipNexthop !== '-') {
                   return this.$createElement('el-button', {

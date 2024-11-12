@@ -32,7 +32,7 @@
           </span>
         </template>
         <template slot="add-features">
-          <div style="margin-top: 10px">
+          <div class="add-features">
             <el-button icon="el-icon-document-add" type="primary" size="mini" round @click="handleClickProcessBtn('insert')">신규생성</el-button>
             <!-- <el-button size="mini" @click="handleClickProcessBtn('update')">수정</el-button> -->
             <el-button icon="el-icon-delete" type="primary" size="mini" round @click="fnDeleteFcltMst()">삭제</el-button>
