@@ -99,8 +99,8 @@
         </table>
       </div>
       <div class="popupContentTableBottom">
-        <el-button type="primary" size="small" round @click="fnInitBtnClick()"> 초기화</el-button>
-        <el-button type="primary" size="small" round @click="fnSaveBtnClick()"> 등록 </el-button>
+        <el-button class="el-icon-refresh" type="primary" size="small" round @click="fnInitBtnClick()"> 초기화</el-button>
+        <el-button class="el-icon-document-add" type="primary" size="small" round @click="fnSaveBtnClick()"> 등록 </el-button>
       </div>
       <div class="popupContentTableTitle">IP블록 처리결과</div>
       <template v-if="commonMsg">

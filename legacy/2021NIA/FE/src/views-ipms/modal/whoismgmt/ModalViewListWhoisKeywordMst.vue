@@ -73,7 +73,7 @@
     <div class="popupContentTableBottom">
       <el-button type="primary" size="small" round @click.native="fnViewKeywordInsert()">등록</el-button>
       <el-button type="primary" size="small" round @click.native="fnKeywordDel()">삭제</el-button>
-      <el-button type="primary" size="small" icon="el-icon-close" round @click.native="close()">{{ $t('exit') }}</el-button>
+      <el-button type="primary" size="small" round icon="el-icon-close" @click.native="close()">{{ $t('exit') }}</el-button>
     </div>
   </el-dialog>
 </template>

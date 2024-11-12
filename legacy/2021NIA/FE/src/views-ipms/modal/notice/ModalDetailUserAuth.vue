@@ -78,9 +78,9 @@
     </div>
     <div class="popupContentTableBottom">
       <template v-if="isCheckGrade">
-        <el-button v-if="isAdmin" type="primary" size="small" round @click.native="fnCancelBtnClick()">반려</el-button>
-        <el-button v-if="isAdmin" type="primary" size="small" round @click.native="fnUpdateConfirmBtnClick()">승인</el-button>
-        <el-button v-if="adminYn === 'Y' || ownerYn === 'Y'" type="primary" size="small" round @click.native="fnDeleteBtnClick()">신청취소</el-button>
+        <el-button v-if="isAdmin" class="el-icon-s-release" type="primary" size="small" round @click.native="fnCancelBtnClick()">반려</el-button>
+        <el-button v-if="isAdmin" class="el-icon-check" type="primary" size="small" round @click.native="fnUpdateConfirmBtnClick()">승인</el-button>
+        <el-button v-if="adminYn === 'Y' || ownerYn === 'Y'" class="el-icon-minus" type="primary" size="small" round @click.native="fnDeleteBtnClick()">신청취소</el-button>
       </template>
       <el-button type="primary" size="small" icon="el-icon-close" round @click.native="close()">{{ $t('exit') }}</el-button>
     </div>
@@ -146,10 +146,16 @@ export default {
             suserId: suserId,
             grantSeq: grantSeq
          }
-         const res = await apiRequestModel(ipmsModelApis.viewDetailUserAuthSubs, tbUserAuthVo)
-            this.resultListVo = res.resultListVo
-            this.totalCount = res.totalCount
-            this.resultSubListVo = res.resultSubListVo
+        const res = await apiRequestModel(ipmsModelApis.viewDetailUserAuthSubs, tbUserAuthVo)
+        this.resultListVo = res.resultListVo
+        this.totalCount = res.totalCount
+        this.resultSubListVo = res.resultSubListVo
+        if (res.resultSubListVo.tbUserAuthTxnSubVos[0].tbLvlBasVo === null) {
+          this.resultSubListVo.tbUserAuthTxnSubVos.map(row => {
+            const tbLvlBasVo = { ssvcLineTypeNm: '', ssvcGroupNm: '', ssvcObjNm: '' }
+            Object.assign(row, { tbLvlBasVo })
+          })
+        }
             this.rowGrantSeq = res.grant_seq
             this.adminYn = res.adminYn
             this.ownerYn = res.ownerYn
