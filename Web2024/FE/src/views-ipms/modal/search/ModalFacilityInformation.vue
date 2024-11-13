@@ -89,10 +89,10 @@ export default {
       requestParameter: null,
       selectedRow: null,
        tableColumns: [
-        { prop: 'sofficename', label: '수용국', width: 105, align: 'center', sortable: false, columnVisible: true, showOverflow: true },
-        { prop: 'ssubscnealias', label: '장비명', width: 155, align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'smodelname', label: '모델명', width: 195, align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'ssubscmstip', label: '장비대표 IP', width: 200, align: 'center', sortable: true, columnVisible: true, showOverflow: true }
+        { prop: 'sofficename', label: '수용국', align: 'center', sortable: false, columnVisible: true, showOverflow: true },
+        { prop: 'ssubscnealias', label: '장비명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'smodelname', label: '모델명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'ssubscmstip', label: '장비대표 IP', align: 'center', sortable: true, columnVisible: true, showOverflow: true }
       ],
       tableDatas: [],
       sOfficeOptions: [],

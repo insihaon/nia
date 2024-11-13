@@ -72,5 +72,7 @@ export const componentMap = {
     // 구분 (상품 관리)
     NetworkClassification: () => import('@/views-ipms/conditionComponents/NetworkClassification.vue'),
     // 장비 타입
-    EquipmentType: () => import('@/views-ipms/conditionComponents/EquipmentType.vue')
+    EquipmentType: () => import('@/views-ipms/conditionComponents/EquipmentType.vue'),
+    // 라우팅 중복 개수
+    RoutingDuplCount: () => import('@/views-ipms/conditionComponents/RoutingDuplCount.vue')
 }
