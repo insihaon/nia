@@ -7,7 +7,8 @@
         closable
         effect="plain"
         :type="ipms.curProfileByVue[propName] === item.name ? 'danger': 'primary'"
-        @click="handleClickApply(item)"
+        @click="debouncedClick(item)"
+        @dblclick.native="handleClickSearch(item)"
         @close="handleClickRemove(item.name)"
       >
         {{ item.name }}
@@ -43,11 +44,14 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      profileList: []
+      profileList: [],
     }
   },
   mounted () {
     this.initialization()
+  },
+  created () {
+    this.debouncedClick = this._debounce(item => this.handleClickApply(item), 200)
   },
   methods: {
     initialization() {
@@ -91,8 +95,8 @@ export default {
       })
     },
     async setAddProfile(currentViewProfile) {
-      if (currentViewProfile.length >= 3) {
-        onMessagePopup(this, '3개 이상 저장할 수 없습니다.')
+      if (currentViewProfile.length >= 5) {
+        onMessagePopup(this, '5개 이상 저장할 수 없습니다.')
         return
       }
       const result = await this.prompt('저장할 프로파일명을 입력하세요.', '현재 검색조건 저장')
@@ -112,6 +116,11 @@ export default {
       this.$store.dispatch('ipms/setCurProfileByVue', { key: this.propName, profileName: profile.name })
       const parameter = this._cloneDeep(profile.parameter)
       Eventbus.$emit(EventType.setSavedParameter, parameter)
+    },
+    handleClickSearch() {
+      setTimeout(() => {
+        this.$emit('handle-search')
+      }, 400)
     },
     async handleClickRemove(profileName) {
       await this.confirm(`프로파일 '${profileName}'을 삭제하시겠습니까?`, '알림', {
