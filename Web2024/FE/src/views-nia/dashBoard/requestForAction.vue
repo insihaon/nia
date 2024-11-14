@@ -55,7 +55,7 @@
           </el-col>
         </el-card>
 
-        <el-card shadow="never" :body-style="{'padding': '10px'}" :class="{'mt-1': isSyslog}">
+        <el-card shadow="never" :body-style="{'padding': '10px', 'height' : '200px'}" :class="{'mt-1': isSyslog}">
           <div slot="header">
             <div>
               <span><i class="el-icon-document" /> 연관 SOP 리스트</span>
@@ -82,7 +82,7 @@
             </el-table>
           </el-col>
         </el-card>
-        <el-card shadow="never" :body-style="{'padding': '10px'}" class="mt-1">
+        <el-card shadow="never" :body-style="{'padding': '10px', 'height' : '500px'}" class="mt-1">
           <div slot="header">
             <div>
               <div><i class="el-icon-document" /> 담당 직원 정보</div>
