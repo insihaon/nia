@@ -117,7 +117,9 @@ public class TbIpAssignMstVo extends IpVo implements Serializable {
 	private String sGubun;
 	
 	/* Summary 개수 */
+	private Integer summaryCnt; /* Summary 검색조건 */
 	private String nsummaryCnt;
+	private List<Integer> nsummaryCntMulti;
 	
 	/* null0 여부 */
 	private String snull0Yn;
@@ -401,12 +403,27 @@ public class TbIpAssignMstVo extends IpVo implements Serializable {
 		this.sintgrmYn = sintgrmYn;
 	}
 
+	public Integer getSummaryCnt() {
+		return summaryCnt;
+	}
+
+	public void setSummaryCnt(Integer summaryCnt) {
+		this.summaryCnt = summaryCnt;
+	}
 	public String getNsummaryCnt() {
 		return nsummaryCnt;
 	}
 
 	public void setNsummaryCnt(String nsummaryCnt) {
 		this.nsummaryCnt = nsummaryCnt;
+	}
+
+	public List<Integer> getNsummaryCntMulti() {
+		return nsummaryCntMulti;
+	}
+
+	public void setNsummaryCntMulti(List<Integer> nsummaryCntMulti) {
+		this.nsummaryCntMulti = nsummaryCntMulti;
 	}
 
 	public String getAsPath() {

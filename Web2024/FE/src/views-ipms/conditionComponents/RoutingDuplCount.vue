@@ -5,13 +5,15 @@
     </th>
     <td>
       <el-select
-        v-model="value"
-        allow-create
+        v-model="values"
+        multiple
         filterable
-        default-first-option
+        collapse-tags
+        size="small"
         @change="handleChange"
       >
-        <el-option v-for="cnt in cntList" :key="cnt" :value="cnt" :label="cnt" />
+        <el-option label="전체" value=""><span class="w-100 h-100 d-inline-block" @click="toggleAll()">전체</span></el-option>
+        <el-option v-for="cnt in options" :key="cnt" :value="cnt" :label="cnt" />
       </el-select>
     </td>
   </fragment>
@@ -36,20 +38,37 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      value: '',
-      parameterKey: 'nsummaryCnt',
-      cntList: ['0', '1', '2', '3', '4', '5~', '10~']
+      values: [],
+      // parameterKey: 'nsummaryCnt',
+      options: ['0', '1', '2', '3', '4', '5~', '6', '7', '8', '9', '10~']
     }
+  },
+  computed: {
+    fullOptions() {
+      return this.options.map(op => op).filter(v => v !== '')
+    },
   },
   methods: {
     handleChange(value) { /* override */
-      const regex = /^\d+~?$/
-      if (!regex.test(value)) {
-        onMessagePopup(this, '값은 숫자 단일 값이거나 "숫자~" 으로 입력해주세요.')
-        this.value = ''
-        return
-      }
+      this.updateSelectionWithAll()
       this.emitEventToParent(this.getParameter())
+    },
+    getParameter() {
+     const params = [{ key: 'nsummaryCntMulti', value: this.values.filter(v => v !== '' && v !== '5~' && v !== '10~') }]
+     if (this.values.includes('5~') || this.values.includes('10~')) {
+        let nsummaryCnt
+        if (this.values.includes('10~')) {
+          nsummaryCnt = '10'
+        }
+        if (this.values.includes('5~')) {
+          nsummaryCnt = '5'
+        }
+        /* nsummaryCnt: 해당 값의 이상인 데이터를 조회 (ex. 5이면 NSUMMARY_CNT >= 5) */
+        params.push({ key: 'summaryCnt', value: nsummaryCnt })
+      } else {
+        params.push({ key: 'summaryCnt', value: null })
+      }
+      return params
     },
   }
 }

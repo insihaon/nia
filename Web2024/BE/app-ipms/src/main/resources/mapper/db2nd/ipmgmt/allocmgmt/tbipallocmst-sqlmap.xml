@@ -1014,7 +1014,7 @@
 				AND A.NCLASS_CNT = #{nclassCnt, jdbcType=NUMERIC}
 			</if>
 			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(scomment)">
-				AND A.SCOMMENT = #{scomment, jdbcType=VARCHAR}
+				AND A.SCOMMENT ILIKE '%' || #{scomment, jdbcType=VARCHAR} || '%'
 			</if>
 			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(dcreateDt)">
 				AND A.DCREATE_DT = #{dcreateDt, jdbcType=TIMESTAMP}
@@ -1324,8 +1324,26 @@
 				<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sintgrmYn)">
 					AND NVL(A.SINTGRM_YN, '') = #{sintgrmYn, jdbcType=VARCHAR}
 				</if>
-				<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nsummaryCnt)">
-					AND NVL(A.NSUMMARY_CNT, '') = #{nsummaryCnt, jdbcType=VARCHAR}
+				<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(summaryCnt) or @org.apache.commons.lang.StringUtils@isNotEmpty(nsummaryCntMulti)">
+					AND (
+					<choose>
+						<when test="@org.apache.commons.lang.StringUtils@isNotEmpty(summaryCnt)">
+							NVL(A.NSUMMARY_CNT, 0) <![CDATA[>=]]> #{summaryCnt, jdbcType=INTEGER}
+						</when>
+						<when test="@org.apache.commons.lang.StringUtils@isEmpty(summaryCnt) and nsummaryCntMulti.size() > 0">
+							1=0
+						</when>
+						<otherwise>
+							1=1
+						</otherwise>
+					</choose>
+					<if test="nsummaryCntMulti.size() > 0">
+						OR NVL(A.NSUMMARY_CNT, 0) IN
+						<foreach collection="nsummaryCntMulti" item="item" separator="," open="(" close=")">
+							#{item, jdbcType=INTEGER}
+						</foreach>
+					</if>
+					)
 				</if>
 				<if test="sassignTypeMulti != null">
 					<if test="sassignTypeMulti.size() > 0">
@@ -1386,8 +1404,26 @@
 			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sintgrmYn)">
 				AND NVL(A.SINTGRM_YN, '') = #{sintgrmYn, jdbcType=VARCHAR}
 			</if>
-			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(nsummaryCnt)">
-				AND NVL(A.NSUMMARY_CNT, '') = #{nsummaryCnt, jdbcType=VARCHAR}
+			<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(summaryCnt) or @org.apache.commons.lang.StringUtils@isNotEmpty(nsummaryCntMulti)">
+				AND (
+				<choose>
+					<when test="@org.apache.commons.lang.StringUtils@isNotEmpty(summaryCnt)">
+						NVL(A.NSUMMARY_CNT, 0) <![CDATA[>=]]> #{summaryCnt, jdbcType=INTEGER}
+					</when>
+					<when test="@org.apache.commons.lang.StringUtils@isEmpty(summaryCnt) and nsummaryCntMulti.size() > 0">
+						1=0
+					</when>
+					<otherwise>
+						1=1
+					</otherwise>
+				</choose>
+				<if test="nsummaryCntMulti.size() > 0">
+					OR NVL(A.NSUMMARY_CNT, 0) IN
+					<foreach collection="nsummaryCntMulti" item="item" separator="," open="(" close=")">
+						#{item, jdbcType=INTEGER}
+					</foreach>
+				</if>
+				)
 			</if>
 			<if test="sassignTypeMulti != null">
 				<if test="sassignTypeMulti.size() > 0">
