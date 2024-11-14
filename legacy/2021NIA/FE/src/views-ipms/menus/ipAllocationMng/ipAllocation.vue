@@ -9,7 +9,6 @@
     <el-col ref="tableContainer" :span="24">
       <compTable
         ref="compTable"
-        style="height: calc(100% - 80px)"
         :prop-name="name"
         :prop-table-height="'100%'"
         :prop-data="pagination.data"
@@ -112,10 +111,11 @@ export default {
             prop_parameterKey: { sicisofficescodeNe: 'sofficecode', smodelnameNe: 'smodelname', ssubscmstipNe: 'ssubscmstip', ssubscnealiasNe: 'ssubscnealias' },
           }
         },
-        { key: 'SortType', props: { } },
+        { key: 'SortType', props: { sortOrdrDefaultVal: 'ASC' } },
         { key: 'IncludeYN', props: { label: 'Summary 포함 여부', prop_parameterKey: 'snull0Yn' } },
         { key: 'IncludeYN', props: { label: 'DB-라우팅 일치여부', prop_parameterKey: 'sintgrmYn' } },
-        { key: 'RoutingDuplCount', props: { label: '라우팅 중복 개수', prop_parameterKey: 'nsummaryCnt', valueType: 'number' } },
+        { key: 'RoutingDuplCount', props: { label: '라우팅 중복 개수', prop_parameterKey: 'summaryCnt', valueType: 'number' } },
+        { key: 'InputType', props: { label: '비고', prop_parameterKey: 'scomment' } },
       ],
       tableColumns: [
         { prop: 'ssvcLineTypeNm', label: '서비스망', align: 'center', sortable: false, columnVisible: true, showOverflow: true },
@@ -134,16 +134,19 @@ export default {
         { prop: 'sintgrmYn', label: 'DB-라우팅 일치 여부', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'nsummaryCnt', label: '라우팅 중복 개수', align: 'center', sortable: true, columnVisible: true, showOverflow: true,
           formatter: (row, col, value, index) => {
-            return this.$createElement('el-button', {
-              attrs: {
-                round: true, // Adding the round option
-                plain: true,
-                type: row.nsummaryCnt > 0 ? 'danger' : 'primary'
-              },
-              // class: row.nsummaryCnt > 0 ? 'red' : '',
-              on: { click: () => {
-                this.$refs.ModalDetailSummary.open({ row })
-            } } }, row.nsummaryCnt)
+            if (row.nsummaryCnt?.length === 0) {
+              return ''
+            } else {
+              return this.$createElement('el-button', {
+                attrs: {
+                  round: true, // Adding the round option
+                  plain: true,
+                  type: row.nsummaryCnt > 0 ? 'danger' : 'primary'
+                },
+                on: { click: () => {
+                  this.$refs.ModalDetailSummary.open({ row })
+              } } }, row.nsummaryCnt)
+            }
           }
         },
         { prop: 'division', label: '분할', align: 'center', sortable: true, columnVisible: true, showOverflow: true,
@@ -162,7 +165,7 @@ export default {
             } } }, row.sassignLevelCd === 'IA0004' ? '분할' : '불가')
           }
         },
-        { prop: 'scomment', label: '비고', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'scomment', label: '비고', align: 'center', sortable: true, columnVisible: true, showOverflow: true, formatter: (row) => { return row.scomment?.length > 0 ? 'Y' : 'N' } },
       ],
       selectedRows: []
     }
