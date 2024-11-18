@@ -77,18 +77,21 @@ export const ipmsRoute = Object.freeze([
         meta: { title: 'IP할당', affix: false }
       },
       {
+        hidden: true,
         path: 'neOssOrder',
         component: () => import('@/views-ipms/menus/ipAllocationMng/neOssOrder'),
         name: 'NeOssOrder',
         meta: { title: 'NeOSS오더', affix: false }
       },
       {
+        hidden: true,
         path: 'ipSeonbeonjang',
         component: () => import('@/views-ipms/menus/ipAllocationMng/ipSeonbeonjang'),
         name: 'IpSeonbeonjang',
         meta: { title: 'IP선번장', affix: false }
       },
       {
+        hidden: true,
         path: 'vpnIpStatue',
         component: () => import('@/views-ipms/menus/ipAllocationMng/vpnIpStatue'),
         name: 'VpnIpStatue',
@@ -113,6 +116,7 @@ export const ipmsRoute = Object.freeze([
         meta: { title: 'IP 정보조회', affix: false }
       },
       {
+        hidden: true,
         path: 'traceRoute',
         component: () => import('@/views-ipms/menus/ipInfoMng/traceRoute'),
         name: 'TraceRoute',
@@ -203,6 +207,7 @@ export const ipmsRoute = Object.freeze([
         meta: { title: '업로드 관리', affix: false }
       },
       {
+        hidden: true,
         path: 'nonKtIpStatus',
         component: () => import('@/views-ipms/menus/dbMng/nonKtIpStatus'),
         name: 'NonKtIpStatus',
@@ -457,6 +462,7 @@ export const ipmsRoute = Object.freeze([
             meta: { title: '배치 연동 이력현황', affix: false }
           },
           {
+            hidden: true,
             path: 'neossLinkErrorStatus',
             component: () => import('@/views-ipms/menus/operInfoMng/linkMng/neossLinkErrorStatus'),
             name: 'NeossLinkErrorStatus',
