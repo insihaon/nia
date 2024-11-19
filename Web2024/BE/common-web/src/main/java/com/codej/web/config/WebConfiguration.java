@@ -54,8 +54,8 @@ public class WebConfiguration implements WebMvcConfigurer {
         
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        // registry.addInterceptor(ipAddressInterceptor)
-        //         .addPathPatterns("/**");
+        registry.addInterceptor(ipAddressInterceptor)
+                .addPathPatterns("/**");
 
         // registry.addInterceptor(new LogInterceptor())
         //         .excludePathPatterns("/signin")
