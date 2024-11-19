@@ -22,7 +22,7 @@ import { apiSelectEquipAmountUsedList } from '@/api/nia'
 const routeName = 'EquipmentUsage'
 
 function getFilterCalc(row, col, value, index) {
-  return value === 0 ? '수집실패' : value + ' %'
+  return value === -1 ? '수집실패' : value + ' %'
 }
 
 export default {
