@@ -46,8 +46,9 @@
           </ElTableDraggable>
         </div>
         <div slot="footer" class="dialog-footer">
-          <el-button icon="el-icon-check" type="primary" size="mini" @click="saveColumnState">저장</el-button>
-          <el-button size="mini" class="el-icon-close" @click.native="close()">{{ $t('exit') }}</el-button>
+          <el-button icon="el-icon-refresh" type="primary" size="mini" round @click="reset">초기화</el-button>
+          <el-button icon="el-icon-check" type="primary" size="mini" round @click="saveColumnState">저장</el-button>
+          <el-button size="mini" type="primary" class="el-icon-close" round plain @click="close()">{{ $t('exit') }}</el-button>
         </div>
       </el-dialog>
     </transition>
@@ -145,18 +146,38 @@ export default {
         if (col.prop.length === 0) {
           return null
         }
+        const columnInfo = this.$parent.$refs.table.columns.find(v => v.property === col.prop)
+        const defaultWidth = document.querySelector(`.${columnInfo.id}`).clientWidth
         return {
           index,
           prop: col.prop,
           label: col.label,
           show: col.columnVisible,
-          width: col?.width ?? 150
+          width: col?.width ?? defaultWidth
         }
       })
       if (this.settingColumnList.includes(null)) {
         this.settingColumnList = []
         this.error('An empty value exists in prop.')
         this.close()
+      }
+    },
+    reset() {
+      const name = this.prop_name
+      if (name) {
+        this.confirm('초기화 하시겠습니까?', '알림', {
+        cancelButtonText: '취소',
+        confirmButtonText: '확인',
+      }).then(() => {
+        const savedColumnState = JSON.parse(window.localStorage['savedColumnState'] || '{}')
+        const currentColumnState = this._cloneDeep(this.prop_columns)
+        savedColumnState[name] = currentColumnState
+        window.localStorage['savedColumnState'] = JSON.stringify(savedColumnState)
+        onMessagePopup(this, '설정이 초기화 되었습니다. 화면을 새로고침 합니다.')
+        setTimeout(() => {
+          window.location.reload()
+        }, 200)
+      })
       }
     },
     saveColumnState() {
@@ -171,14 +192,15 @@ export default {
           row.columnVisible = row.show
           row.index = index
         })
-
         const name = this.prop_name
         if (name) {
           const savedColumnState = JSON.parse(window.localStorage['savedColumnState'] || '{}')
           savedColumnState[name] = currentColumnState
           window.localStorage['savedColumnState'] = JSON.stringify(savedColumnState)
-          onMessagePopup(this, '저장 되었습니다. 화면을 새로고침 합니다.')
-          window.location.reload()
+          onMessagePopup(this, '설정이 저장 되었습니다. 화면을 새로고침 합니다.')
+          setTimeout(() => {
+            window.location.reload()
+          }, 200)
         }
       })
       .catch(action => {

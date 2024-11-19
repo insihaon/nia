@@ -1,9 +1,9 @@
 <template>
   <div :class="{ [name]: true }">
     <LeftBar class="h-full">
-      <template v-if="isViewport('>', 'sm')" slot="leftbar-container">
+      <template v-if="isViewport('>', 'md')" slot="leftbar-container">
         <div class="h-20 text-center mt-1">
-          <span class="font-bold text-lg whitespace-nowrap">AI관제 시스템 처리량</span>
+          <spans style="z-index : 1" class="font-bold text-lg whitespace-nowrap">AI관제 시스템 처리량</spans>
           <div class="d-flex p-2 justify-center items-center">
             <span class="font-semibold whitespace-nowrap pr-2">검색</span>
             <el-radio-group v-model="systemChartCondition.dayType" size="mini" class="d-flex" @change="onLoadDashboardStatistics()">
@@ -42,7 +42,7 @@
         </div>
         <hr>
         <div style="height: calc(30% - 5rem)">
-          <CompChart :options="selfProcessOptions" class="h-full" @click="onClickChart" />
+          <CompChart :options="selfProcessOptions" class="h-full" style="min-width : 360px;" @click="onClickChart" />
         </div>
       </template>
       <template slot="top-container">
@@ -134,6 +134,7 @@ import { apiIpAlarmList, apiTransmissionAlarmList, apiDashboardStatistics, apiSe
 import { getAlarmType } from '@/views-nia/js/commonFormat'
 import { AppOptions } from '@/class/appOptions'
 import dialogOpenMixin from '@/mixin/dialogOpenMixin'
+import { mapState } from 'vuex'
 
 const routeName = 'NiaMain'
 export default {
@@ -173,6 +174,14 @@ export default {
     }
   },
   computed: {
+    // ...mapState({
+    //   topPaneSize: state => state.settings.topPaneSize,
+    //   sidePaneSize: state => state.settings.sidePaneSize
+    // }),
+    // handleViewSize() {
+    //   // 'sm' 이하일 때 sidePaneSize를 0%로 설정, 그 외에는 기본 사이즈를 유지
+    //   return this.isViewport('<', 'sm') ? '100%' : `${this.sidePaneSize}%`
+    // },
     ipAgGrid() {
       const columns = [
         { type: '', prop: 'alarmno', name: '알람번호', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, formatter: (row) => { return row.alarmno ?? '-' } },
@@ -197,7 +206,7 @@ export default {
         { type: '', prop: 'ip_addr', name: 'ip_addr', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
       ]
       const options = { name: this.name, checkable: false, rowGroupPanel: false }
-      return { options, columns, data: this.ipNetworkList, onDoesExternalFilterPass: (externalFilter, node) => { return this.onDoesExternalFilterPass(externalFilter, node, 'ip') } }
+      return { options, columns, data: this.ipNetworkList, onDoesExternalFilterPass: (externalFilter, node) => { return this.onDoesExternalFilterPass(externalFilter, node, 'ip') }, getRightClickMenuItems: () => { return [] } }
     },
     transmissionAgGrid() {
       const columns = [
@@ -224,7 +233,7 @@ export default {
         { type: '', prop: '_', name: '상세보기', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderTicketDetail', cellRendererParams: { name: '상세보기', action: this.handleOpenTicketDetail.bind(this) } },
  ]
       const options = { name: this.name, checkable: false, rowGroupPanel: false }
-      return { options, columns, data: this.transmissionNetworkList, onDoesExternalFilterPass: (externalFilter, node) => { return this.onDoesExternalFilterPass(externalFilter, node, 'trans') } }
+      return { options, columns, data: this.transmissionNetworkList, onDoesExternalFilterPass: (externalFilter, node) => { return this.onDoesExternalFilterPass(externalFilter, node, 'trans') }, getRightClickMenuItems: () => { return [] } }
     },
     ticketOptions() {
       const keyByTitle = [
@@ -260,7 +269,7 @@ export default {
       return {
         legend: {
           data: ['자가최적화 총 발생', '자가최적화 건 수', '자가회복 총 발생', '자가회복 건 수'],
-          top: '5%'
+          top: '5%',
         },
         title: {
           // text: '자가 최적화/자가 회복',
@@ -313,7 +322,7 @@ export default {
           },
         ]
       }
-    }
+    },
   },
   watch: {
     viewport(nVal, oVal) {
@@ -634,7 +643,7 @@ export default {
           result = '인지'
           break
         case 'FIN':
-          result = '마감'
+          result = '수동마감'
           break
         case 'AUTO_FIN':
           result = '자동마감'
@@ -682,7 +691,18 @@ export default {
       } else if (type === 'NTF') {
         this.fn_openWindow('requestForAction', row)
       } else if (type === 'ALARM') {
-        this.fn_openWindow('aiResponse', { row })
+        if (row.status === 'FIN' || row.status === 'AUTO_FIN') {
+           this.$confirm('이미 마감된 티켓입니다.', '안내', {
+            confirmButtonText: '확인',
+            cancelButtonText: '취소'
+          }).then(async () => {
+            this.fn_openWindow('aiResponse', { row })
+          }).catch(() => {
+            return
+          })
+        } else {
+          this.fn_openWindow('aiResponse', { row })
+        }
       } else if (type === 'FIN') {
         this.fn_openWindow('processFin', row)
       } else if (type === 'CONFIG_TEST') {
@@ -698,6 +718,7 @@ export default {
 .NiaMain {
   ::v-deep .splitter-pane {
     display: flex;
+    min-width: 25% !important;
     flex-direction: column;
   }
   ::v-deep .el-date-picker {
@@ -707,6 +728,7 @@ export default {
   ::v-deep.splitter-pane-resizer {
     z-index: 0;
   }
+
   .filter-container {
     height: 100%;
     display: flex;

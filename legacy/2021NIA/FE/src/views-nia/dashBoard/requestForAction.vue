@@ -1,5 +1,5 @@
 <template>
-  <el-row :class="{ [name]: true}">
+  <div :class="{ [name]: true}" style="height : 100%">
     <!-- <el-row class="w-full d-flex flex-column"> -->
     <!-- <el-row class="d-flex p-1">
         <i class="el-icon-document mr-2 text-base" />
@@ -14,7 +14,7 @@
               <span><i class="el-icon-document" /> {{ isSyslog ? '알람': '티켓' }} 상세 정보</span>
             </div>
           </div>
-          <el-col>
+          <el-col class="style : 20%">
             <el-table
               v-if="isSyslog"
               ref="table"
@@ -55,19 +55,19 @@
           </el-col>
         </el-card>
 
-        <el-card shadow="never" :body-style="{'padding': '10px'}" :class="{'mt-1': isSyslog}">
+        <el-card shadow="never" :body-style="{'padding': '10px', 'height' : '200px'}" :class="{'mt-1': isSyslog}">
           <div slot="header">
             <div>
               <span><i class="el-icon-document" /> 연관 SOP 리스트</span>
             </div>
           </div>
-          <el-col>
+          <el-col class="style : 30%">
             <el-table
               ref="sopTable"
               :size="'mini'"
               :data="relatedSopList"
               class="w-100"
-              :height="240"
+              :height="250"
               border
               fit
             >
@@ -82,20 +82,21 @@
             </el-table>
           </el-col>
         </el-card>
-        <el-card shadow="never" :body-style="{'padding': '10px'}" class="mt-1">
+        <el-card shadow="never" :body-style="{'padding': '10px', 'height' : '500px'}" class="mt-1">
           <div slot="header">
             <div>
               <div><i class="el-icon-document" /> 담당 직원 정보</div>
             </div>
           </div>
 
-          <el-col>
+          <el-col class="style : 50%">
             <el-table
               ref="employeeTable"
               :size="'mini'"
               :data="userList"
               class="w-100"
-              :height="200"
+              :height="400"
+
               border
               fit
             >
@@ -116,7 +117,7 @@
         </el-card>
       </el-col>
       <el-col class="p-1" :span="isMobile ? 24: 12">
-        <el-card shadow="never" :body-style="{'padding': '10px'}" class="h-100">
+        <el-card shadow="never" :body-style="{'padding': '10px'}">
           <div slot="header">
             <div>
               <div><i class="el-icon-document" /> 요청 내용</div>
@@ -128,7 +129,7 @@
               v-loading="containerLoading"
               class="w-100 d-flex flex-column rounded shadow-sm leading-7 pl-5 w-50 overflow-y-auto text-left"
               contenteditable="true"
-              :style="{ height: 645 + 'px', border: 'solid 1px lightgray' }"
+              :style="{ height: 945 + 'px', border: 'solid 1px lightgray' }"
             >
 
               <div style="display: none"><a :href="getMailToSystemUrl">바로가기</a><br></div>
@@ -139,34 +140,33 @@
               </div>
               <div>
                 <span class="sub-title font-semibold"><h4>&middot;AI 분석 결과 정보</h4></span>
-                ATT2 / 이상 트래픽
+                <span class="font-italic font-semibold"> {{ getAlarmtxt }} </span>
                 <div v-if="sendItem.ticket_type === 'ATT2'">
                   &emsp;<span>IN</span><br>
-                  &nbsp;&nbsp;- bps: {{ aiDetection !== null ? sendItem.in_bps + ' MB' : '' }} <br>
+                  &nbsp;&nbsp;- mbps: {{ aiDetection !== null ? sendItem.in_bps + ' MB' : '' }} <br>
                   &nbsp;&nbsp;- Predict: {{ aiDetection !== null ? sendItem.in_predict + ' MB' : '' }}<br>
                   &nbsp;&nbsp;- Threshold_Upper: {{ aiDetection !== null ? sendItem.in_threshold_upper + ' MB' : '' }}<br>
                   &nbsp;&nbsp;- Threshold_Lower: {{ aiDetection !== null ? sendItem.in_threshold_lower + ' MB' : '' }}<br>
-                  - Anomaly: {{ aiDetection !== null ? sendItem.in_anomaly + 'MB' : '' }}<br>
+                  - Anomaly: {{ aiDetection !== null ? sendItem.in_anomaly + '' : '' }}<br>
                   &emsp;<span>OUT</span><br>
-                  &nbsp;&nbsp;- bps: {{ aiDetection !== null ? sendItem.out_bps + ' MB' : '' }}<br>
+                  &nbsp;&nbsp;- mbps: {{ aiDetection !== null ? sendItem.out_bps + ' MB' : '' }}<br>
                   &nbsp;&nbsp;- Predict : {{ aiDetection !== null ? sendItem.out_predict + ' MB' : '' }}<br>
                   &nbsp;&nbsp;- Threshold_Upper: {{ aiDetection !== null ? sendItem.out_threshold_upper + ' MB' : '' }}<br>
                   &nbsp;&nbsp;- Threshold_Lower: {{ aiDetection !== null ? sendItem.out_threshold_lower + ' MB' : '' }}<br>
-                  &nbsp;&nbsp;- Anomaly: {{ aiDetection !== null ? sendItem.out_anomaly + 'MB' : '' }}<br>
+                  &nbsp;&nbsp;- Anomaly: {{ aiDetection !== null ? sendItem.out_anomaly + '' : '' }}<br>
                 </div>
 
                 <div v-if="sendItem.ticket_type === 'ATT2' || sendItem.ticket_type === 'NTT'">
                   <span class="font-semibold">&nbsp;&nbsp;&middot;장애 유무 판단 확률</span><br>
-                  &nbsp;&nbsp;&nbsp;- 유효 확률 : {{ ((1 - sendItem.zero1_entropy) * 100).toFixed(1) + '%' }}<br>
-                  &nbsp;&nbsp;&nbsp;- 무효 확률 : {{ (sendItem.zero1_entropy * 100).toFixed(1) + '%' }}
-                </div>
-                FTT(비장애)
-                <div v-if="sendItem.ticket_type === 'FTT'">
-                  &nbsp;&nbsp;- 장애 확률 : {{ (sendItem.zero1_entropy * 100).toFixed(1) + '%' }}<br>
-                  &nbsp;&nbsp;- 비장애 확률 : {{ ((1 - sendItem.zero1_entropy) * 100).toFixed(1) + '%' }}
+                  &nbsp;&nbsp;&nbsp;- 유효 확률 : {{ sendItem.zero1_entropy ? ((1 - sendItem.zero1_entropy) * 100).toFixed(1) + '%' : '' }}<br>
+                  &nbsp;&nbsp;&nbsp;- 무효 확률 : {{ sendItem.zero1_entropy ? (sendItem.zero1_entropy * 100).toFixed(1) + '%' : '' }}
                 </div>
 
-                NFTT
+                <div v-if="sendItem.ticket_type === 'FTT'">
+                  &nbsp;&nbsp;- 장애 확률 : {{ sendItem.zero1_entropy ? (sendItem.zero1_entropy * 100).toFixed(1) + '%' : '' }}<br>
+                  &nbsp;&nbsp;- 비장애 확률 : {{ sendItem.zero1_entropy ? ((1 - sendItem.zero1_entropy) * 100).toFixed(1) + '%' : '' }}
+                </div>
+
                 <div v-if="sendItem.ticket_type === 'NFTT'">
                   &nbsp;&nbsp;- Measured Time : {{ sendItem.measured_datetime }} <br>
                   &nbsp;&nbsp;- CPU 예측값 : {{ sendItem.cpu_predicted }} <br>
@@ -223,6 +223,9 @@
           </el-col>
         </el-card>
       </el-col>
+
+    <!-- </el-row> -->
+    <!-- </el-row> -->
     </el-row>
     <el-row>
       <el-col align="right" class="mt-1">
@@ -239,14 +242,13 @@
         </el-button>
       </el-col>
     </el-row>
-    <!-- </el-row> -->
-  </el-row>
+  </div>
 </template>
 
 <script>
 import { Base } from '@/min/Base'
 // import elDragDialog from '@/directive/el-drag-dialog'
-import { formatterTime } from '@/views-nia/js/commonFormat'
+import { formatterTime, getAlarmType } from '@/views-nia/js/commonFormat'
 import { apiSendMQ, apiSelectAiDetectionInfo, apiSelfProcessSyslogInfo, apiSelfProcessTrafficInfo, apiSelectSopHistList, apiSopSyslogHistList, apiSelectUserList } from '@/api/nia'
 import dialogOpenMixin from '@/mixin/dialogOpenMixin'
 
@@ -350,9 +352,9 @@ export default {
     },
     userInfoColumn() {
       return [
-        { type: '', prop: 'name', name: '이름', width: 120 },
-        { type: '', prop: 'agency_name', name: '분류', width: 120 },
-        { type: '', prop: 'email', name: 'E-mail', width: 200 },
+        { type: '', prop: 'name', name: '이름', width: 140 },
+        { type: '', prop: 'agency_name', name: '분류', width: 150 },
+        { type: '', prop: 'email', name: 'E-mail', width: 250 },
       ]
     },
     isSyslog() {
@@ -388,6 +390,9 @@ export default {
       }
       return `http://${host}:4002/#/operationStatusScreen/selfProcessingDashboard/?${key}=${value}&self_process_group=${self_process_group}`
     },
+    getAlarmtxt() {
+      return getAlarmType(this.sendItem)
+    }
   },
   created () {
     this.onLoadUserList()
@@ -511,6 +516,7 @@ export default {
       if (!TICKET_ID) {
         return
       }
+      const row = this.selectedRow
       const param = { TICKET_ID, START_NODE, START_PORT, FAULT_TIME }
       try {
         const res = await apiSelectAiDetectionInfo(param)
@@ -577,4 +583,8 @@ export default {
 .sub-title {
   font-size: 1rem;
 }
+
+//  ::v-deep .el-table th {
+//   background: rgba(211, 211, 211, 0.22) !important;
+// }
 </style>

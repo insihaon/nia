@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -193,7 +195,7 @@ public class AssignApyMgmtController extends CommonController{
 	
 	@RequestMapping(value = "/opermgmt/assignmgmt/viewListAssignApyTxnExcel.json", method = RequestMethod.POST)
 	@ResponseBody
-	public FileVo viewListAssignApyTxnExcel(@ModelAttribute("searchVo") TbRequestAssignMstVo searchVo, ModelMap model, 
+	public ResponseEntity<?> viewListAssignApyTxnExcel(@RequestBody TbRequestAssignMstVo searchVo, ModelMap model, 
 			HttpServletRequest request,HttpServletResponse response) {
 		FileVo resultVo = new FileVo();
 		try{
@@ -268,13 +270,8 @@ public class AssignApyMgmtController extends CommonController{
 			mappingList.add("처리일시|getDtrtDt");
 			mappingList.add("배정IP|getSassigncontents");
 			mappingList.add("배정IP개수|getNassignIpCnt");
-			String fileName = excelUtil.createExcelFile(resultListVo.getTbRequestAssignMstVos(), mappingList, request);
-			if (StringUtils.hasText(fileName)) {
-				resultVo.setFileName(fileName);
-				resultVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
-			} else {
-				throw new ServiceException("CMN.HIGH.00050");
-			}
+			
+			return excelDownloadService.generateAndDownloadExcel(resultListVo.getTbRequestAssignMstVos(), mappingList, request);
 		} catch (ServiceException e) {
 			String msgDesc = tbCmnMstService.selectMsgDesc(e);
 			resultVo.setCommonMsg(msgDesc);
@@ -282,7 +279,7 @@ public class AssignApyMgmtController extends CommonController{
 			String msgDesc = tbCmnMstService.selectMsgDesc(new ServiceException("CMN.HIGH.00000"));
 			resultVo.setCommonMsg(msgDesc);
 		}
-		return resultVo;
+		return new ResponseEntity<>(resultVo, HttpStatus.OK);
 	}
 	
 	@RequestMapping(value = "/opermgmt/assignmgmt/viewDetailAssignApyTxn.model", method = RequestMethod.POST)

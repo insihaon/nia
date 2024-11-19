@@ -70,18 +70,17 @@
           <th>파일 Upload</th>
           <td class="flex">
             <el-upload
-              action="https://www.typicode.com/posts/"
+              ref="upload"
+              action="#"
+              :auto-upload="false"
               :on-preview="handlePreview"
               :on-remove="handleRemove"
               :before-remove="beforeRemove"
-              multiple
-              :limit="3"
               :on-exceed="handleExceed"
               :file-list="fileList"
-              @change="handleFileUpload"
+              :on-change="handleFileUpload"
             >
               <el-button size="small" type="primary" plain>파일선택</el-button>
-              <div slot="tip" class="el-upload__tip">선택된 파일 없음</div>
             </el-upload>
           </td>
         </tr>
@@ -101,7 +100,11 @@ import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
 import SsvcLineType from '@/views-ipms/conditionComponents/SsvcLineType'
 import { onMessagePopup } from '@/utils/index'
-import { ipmsModelApis, apiRequestModel, ipmsJsonApis, apiRequestJson, apiRequestOffice } from '@/api/ipms'
+import { ipmsModelApis, apiRequestModel, ipmsJsonApis, apiRequestJson, apiRequestOffice, apiRequestExcel } from '@/api/ipms'
+
+import { getToken } from '@/utils/auth'
+import { AppOptions } from '@/class/appOptions'
+import axios from 'axios'
 
 const routeName = 'ModalUploadInsert'
 
@@ -122,7 +125,7 @@ export default {
         sicisofficescodeNe: '',
       },
       sOfficeOptions: [],
-      files: [],
+      uploadFile: null,
       fileList: []
     }
   },
@@ -133,6 +136,7 @@ export default {
       this.domElement.maxWidth = 800
     },
     onOpen(model, actionMode) {
+      this.uploadFile = null
       this.$set(this.formData, 'sicisofficescodeNe', '')
     },
     onClose() { },
@@ -157,14 +161,19 @@ export default {
       this.$set(this.formData, 'sicisofficescodeNe', '')
       ssvcArr.forEach(v => { this.$set(this.formData, v.key, v.value) })
       if (isAllExist) {
-        this.onLoadOfficeList(ssvcArr.map(v => { return { [v.key]: v.value } }))
+        const params = {}
+        ssvcArr.map(v => Object.assign(params, { [v.key]: v.value }))
+        this.onLoadOfficeList(params)
       }
     },
-    downloadFormat(type) {
-      if (!this.fnValidCheck()) return
-      const params = this.formData
-      // doAjaxExcelSubmit(baseContext, "ipmgmt/ipuploadmgmt/downloadtextformat.json", param);
-      // doAjaxExcelSubmit(baseContext, "ipmgmt/ipuploadmgmt/downloadformat.json", param);
+    async downloadFormat(type) {
+      if (type === 'excel' && !this.fnValidCheck()) return
+      try {
+        const apiKey = type === 'txt' ? 'downloadtextformat' : 'downloadformat'
+        await apiRequestExcel(ipmsJsonApis[apiKey], this.formData)
+      } catch (error) {
+        this.error(error)
+      }
     },
     fnValidCheck() {
       const { ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd, sicisofficescodeNe } = this.formData
@@ -186,8 +195,9 @@ export default {
       }
       return true
     },
-    handleFileUpload(e) {
-      this.files = e.target.files
+    handleFileUpload(file, fileList) {
+      this.uploadFile = file.raw
+      this.$refs.upload.uploadFiles = [file]
     },
     handleRemove(file, fileList) {
       console.log(file, fileList)
@@ -199,13 +209,36 @@ export default {
     },
     beforeRemove(file, fileList) {
     },
-    fnUpload() {
-      if (this.files.length === 0) {
+    async fnUpload() {
+      if (!this.fnValidCheck()) return
+      if (this.uploadFile === null) {
         onMessagePopup(this, '선택된 파일이 없습니다.')
         return
       }
-      // /ipmgmt/ipuploadmgmt/upload.ajax
-      const params = Object.assign({}, this.formData, { file: this.files[0] })
+      // /ipmgmt/ipuploadmgmt/upload.json
+      const formData = new FormData()
+      formData.append('file', this.uploadFile)
+      const { ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd } = this.formData
+      formData.append('ssvcLineTypeCd', ssvcLineTypeCd)
+      formData.append('ssvcGroupCd', ssvcGroupCd)
+      formData.append('ssvcObjCd', ssvcObjCd)
+      try {
+        /*
+          아래 컨트롤러 호출 시
+          - ipUploadMgmtService.parseUploadFile
+          - ipUploadMgmtService.parseUploadTxtFile
+          오류 발생
+        */
+        const res = await apiRequestJson(ipmsJsonApis.ipuploadmgmtUpload, formData)
+        const commonMsg = res.result.resultListVo.commonMsg
+        if (commonMsg === 'SUCCESS') {
+          onMessagePopup(this, '업로드가 완료됬습니다.')
+        } else {
+          onMessagePopup(this, commonMsg)
+        }
+      } catch (error) {
+        this.error(error)
+      }
     }
   },
 }

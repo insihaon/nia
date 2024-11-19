@@ -55,7 +55,7 @@
             <td>
               <el-select v-model="ssvcLineTypeCd" class="w-100" size="small" @change="handleChangeLvl1()">
                 <el-option
-                  v-for="item in ssvcLineTypeCdOp"
+                  v-for="item in svcLineListVo"
                   :key="item.value"
                   :value="item.value"
                   :label="item.label "
@@ -67,9 +67,9 @@
           <tr>
             <th>센터/지역본부</th>
             <td>
-              <el-select v-model="ssvcGroupCd" :disabled="isDisabledCt" class="w-100" size="small" @change="handleChangeLvl2()">
+              <el-select v-model="ssvcGroupCd" :disabled="ssvcLineTypeCd === 'CL0000'" class="w-100" size="small" @change="handleChangeLvl2()">
                 <el-option
-                  v-for="item in ssvcGroupCdOp"
+                  v-for="item in centerListVo"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value"
@@ -80,9 +80,9 @@
           <tr>
             <th>노드</th>
             <td>
-              <el-select v-model="ssvcObjCd" class="w-100" :disabled="isDisabledNd" size="small">
+              <el-select v-model="ssvcObjCd" class="w-100" :disabled="ssvcLineTypeCd === 'CL0000' || ssvcGroupCd === ''" size="small">
                 <el-option
-                  v-for="item in ssvcObjCdOp"
+                  v-for="item in nodeListVo"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value"
@@ -122,9 +122,10 @@
 <script>
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
-import { ipmsJsonApis, apiRequestJson } from '@/api/ipms'
+import { ipmsJsonApis, apiRequestJson, ipmsModelApis, apiRequestModel } from '@/api/ipms'
 import _ from 'lodash'
 import ModalEntireOrgSearch from '@/views-ipms/modal/search/ModalEntireOrgSearch.vue'
+import { onMessagePopup } from '@/utils'
 
 const routeName = 'ModalUpdateLvlBas'
 
@@ -137,19 +138,15 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      ssvcLineTypeCdOp: [
-        { label: '-선택-', value: 'CL0000' },
-        { label: 'KORNET', value: 'CL0001' },
-        { label: 'PREMIUM', value: 'CL0002' },
-        { label: 'MOBILE', value: 'CL0003' },
-        { label: 'GNS', value: 'CL0004' },
-        { label: 'VPN', value: 'CL0005' },
-        { label: 'ICC', value: 'CL0006' },
-        { label: '미분류', value: 'CL0007' },
-        { label: 'SCHOOLNET', value: 'CL0008' }
-      ],
-      ssvcGroupCdOp: [],
-      ssvcObjCdOp: [],
+      svcLineListVo: [],
+      centerListVo: [],
+      nodeListVo: [],
+      resultVo: {
+        ssvcLineTypeNm: '',
+        ssvcGroupNm: '',
+        ssvcObjNm: '',
+        ssvchighObjNm: '',
+      },
       ssvcLineTypeCd: 'CL0000',
       ssvcGroupCd: '',
       ssvcObjCd: '',
@@ -158,14 +155,9 @@ export default {
     }
   },
   computed: {
-    isDisabledCt() {
-      return this.ssvcLineTypeCd === 'CL0000'
-    },
-    isDisabledNd() {
-      return this.ssvcLineTypeCd === 'CL0000' || this.ssvcGroupCd === ''
-    }
   },
   mounted() {
+    this.loadSvcLineListVo()
   },
   methods: {
     onCreated() {
@@ -174,47 +166,52 @@ export default {
       this.domElement.maxWidth = 600
     },
     onOpen(model, actionMode) {
-      this.resultVo = this._cloneDeep(model.row)
+      // this.resultVo = this._cloneDeep(model.row)
+      if (model.row) {
+        this._merge(this.resultVo, model.row)
+      }
       const { ssvcGroupNm, ssvcObjNm, ssvchighObjNm, ssvchighObjCd } = this.resultVo
       this.ssvcGroupCd = ssvcGroupNm // 센터지역본부
       this.ssvcObjCd = ssvcObjNm // 노드
       this.ssvchighObjNm = ssvchighObjNm // 주노드
       this.ssvchighObjCd = ssvchighObjCd //
     },
+    async loadSvcLineListVo() { /* svcLineListVo 조회 */
+      try {
+        const res = await apiRequestModel(ipmsModelApis.viewInsertLvlBas, {})
+        this.svcLineListVo = res.result.svcLineListVo.map(v => { return { label: v.ssvcLineTypeNm, value: v.ssvcLineTypeCd } })
+        this.svcLineListVo.unshift({ label: '-선택-', value: 'CL0000' })
+      } catch (error) {
+        this.error(error)
+      }
+    },
     async handleChangeLvl1() {
       this.ssvcGroupCd = ''
-
+      this.ssvcObjCd = ''
       const tbLvlBasVo = { ssvcLineTypeCd: this.ssvcLineTypeCd }
-
-      this.ssvcGroupCd = null
-      this.ssvcObjCd = null
-
-      const res = await apiRequestJson(ipmsJsonApis.selectAuthCenterList, tbLvlBasVo)
-      this.ssvcGroupCdOp = res?.tbLvlBasVos?.filter(v => v.ssvcGroupNm !== '전체').map(v => {
-        return { value: v.ssvcGroupCd, label: v.ssvcGroupNm }
-      })
-
-      this.ssvcObjCdOp = []
+      try {
+        const res = await apiRequestJson(ipmsJsonApis.selectAuthCenterList, tbLvlBasVo)
+        this.centerListVo = res?.tbLvlBasVos?.filter(v => v.ssvcGroupNm !== '전체').map(v => { return { value: v.ssvcGroupCd, label: v.ssvcGroupNm } })
+        this.nodeListVo = []
+      } catch (error) {
+        this.error(error)
+      }
     },
     async handleChangeLvl2() {
       this.ssvcObjCd = ''
-
-      const tbLvlBasVo = {
-        ssvcLineTypeCd: this.ssvcLineTypeCd,
-        ssvcGroupCd: this.ssvcGroupCd,
+      const tbLvlBasVo = { ssvcLineTypeCd: this.ssvcLineTypeCd, ssvcGroupCd: this.ssvcGroupCd }
+      try {
+        const res = await apiRequestJson(ipmsJsonApis.selectAuthNodeList, tbLvlBasVo)
+        this.nodeListVo = res?.tbLvlBasVos?.filter(v => v.ssvcObjNm !== '전체').map(v => { return { value: v.ssvcObjCd, label: v.ssvcObjNm } })
+      } catch (error) {
+        this.error(error)
       }
-
-      this.ssvcObjCd = null
-
-      const res = await apiRequestJson(ipmsJsonApis.selectAuthNodeList, tbLvlBasVo)
-      this.ssvcObjCdOp = res?.tbLvlBasVos?.filter(v => v.ssvcObjNm !== '전체').map(v => {
-        return { value: v.ssvcObjCd, label: v.ssvcObjNm }
-      })
     },
     fnViewSearchCenterLvlCd() {
       this.$refs.ModalEntireOrgSearch.open({ viewTitle: '노드' })
     },
-    setSelectedRow(row) {
+    setSelectedRow(param) {
+      const { row } = param
       this.ssvchighObjNm = row.slvlNm
       this.ssvchighObjCd = row.slvlCd
     },
@@ -253,7 +250,7 @@ export default {
         }
         res = await apiRequestJson(ipmsJsonApis.validTbLvlBas, TbLvlBasVo)
         if (res.commonMsg === 'SUCCESS') {
-          this.$message('이동할 계위정보가 없습니다.')
+          onMessagePopup(this, '이동할 계위정보가 없습니다.')
         } else {
           this.fnLvlMoveSubmit()
         }

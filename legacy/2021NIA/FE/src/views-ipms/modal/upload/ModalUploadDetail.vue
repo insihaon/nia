@@ -15,7 +15,7 @@
     class="ipms-dialog"
     :class="{ [name]: true }"
   >
-    <div class="popupContentTable">
+    <div v-loading="viewLoading" class="popupContentTable textcenter">
       <div class="popupContentTableTitle">상세</div>
       <table>
         <tr>
@@ -57,6 +57,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      viewLoading: false,
       resultVo: {
         totalCount: 0,
         tbIpUploadSubVos: []
@@ -78,14 +79,16 @@ export default {
     async fnViewDetailIpMst(seq) {
       // 3계위까지 선택했을 때 요청 / 3계위 없으면 disable
       try {
+        this.viewLoading = true
         const res = await apiRequestModel(ipmsModelApis.viewDetailIpMst, { seq })
         this.$set(this.resultVo, 'tbIpUploadSubVos', res?.result?.data?.tbIpUploadSubVos ?? [])
         this.$set(this.resultVo, 'totalCount', res?.result?.data?.totalCount ?? 0)
       } catch (error) {
         this.error(error)
+      } finally {
+        this.viewLoading = false
       }
     },
-    handleFileUpload() {}
   },
 }
 </script>

@@ -130,6 +130,13 @@ table.basic {
   .CompAgGrid .ag-cell {
     font-size: 13px;
   }
+  .el-table th {
+    background: #e8ecf091 !important;
+  }
+
+  .ag-header-row{
+    background: #adbcca73;
+  }
   .splitter-paneL, .splitter-paneR {
     transition: all 0.25s;
   }

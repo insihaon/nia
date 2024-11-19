@@ -4,7 +4,7 @@
       ref="searchCondition"
       :prop-name="name"
       :component-keys="componentList"
-      @handle-search="fnViewListWhoisModReq"
+      @handle-search="handleSearch"
     />
     <el-col ref="tableContainer" :span="24">
       <compTable
@@ -12,13 +12,17 @@
         style="height: calc(100% - 80px)"
         :prop-name="name"
         :prop-table-height="'100%'"
+        :prop-data="pagination.data"
+        :prop-pagination-data.sync="pagination"
         :prop-column="tableColumns"
-        :prop-data="resultListVo"
-        :prop-is-pagination="false"
+        :prop-is-pagination="true"
         :prop-is-check-box="false"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
-        :prop-on-click="onClcikRow"
+        :prop-on-click="onClickRow"
+        :prop-on-page-change="handleChangeCurPage"
+        :prop-on-page-size-change="handleChangeCurPage"
+        @savedExcel="handleClickExcelDownloadBtn"
       >
         <template slot="text-description">
           <span>
@@ -26,13 +30,13 @@
           </span>
         </template>
         <template slot="add-features">
-          <div style="margin-top: 10px">
+          <div class="add-features">
             <el-button icon="el-icon-document-add" type="primary" size="mini" round @click="fnViewDetailWhoisMod('', 'create')">신청</el-button>
           </div>
         </template>
       </compTable>
-      <ModalDetailWhoisMod ref="ModalDetailWhoisMod" @reload="fnViewListWhoisModReq()" />
-      <ModalRegWhoisModReq ref="ModalRegWhoisModReq" @reload="fnViewListWhoisModReq()" />
+      <ModalDetailWhoisMod ref="ModalDetailWhoisMod" @reload="fnViewListWhoisModReq($refs.searchCondition.requestParameter)" />
+      <ModalRegWhoisModReq ref="ModalRegWhoisModReq" @reload="fnViewListWhoisModReq($refs.searchCondition.requestParameter)" />
     </el-col>
   </el-row>
 </template>
@@ -44,6 +48,7 @@ import tableHeightMixin from '@/mixin/tableHeightMixin'
 import ModalDetailWhoisMod from '@/views-ipms/modal/notice/ModalDetailWhoisMod.vue'
 import ModalRegWhoisModReq from '@/views-ipms/modal/notice/ModalRegWhoisModReq.vue'
 import { ipmsModelApis, apiRequestModel } from '@/api/ipms'
+import { downloadExcel } from '@/views-ipms/js/common-function'
 
 const routeName = 'WhoisInfoChange'
 
@@ -56,6 +61,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      pagination: this.setDefaultPagination(),
       tableColumns: [
         { prop: 'nmodify_apply_seq', label: '신청번호', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'sfirstAddr', label: '시작IP', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
@@ -63,8 +69,8 @@ export default {
         { prop: 'sBefOrgName', label: '기관명(변경전)', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'sAftOrgName', label: '기관명(변경후)', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'sApplyNm', label: '신청자', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'dApplyDt', label: '신청일시', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'dApprovalDt', label: '처리일시', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'dApplyDt', label: '신청일시', align: 'center', sortable: true, columnVisible: true, showOverflow: true, formatter: (row) => { return row.dApplyDt ? this.moment(row.dApplyDt).format('YYYY-MM-DD HH:mm:ss') : '' } },
+        { prop: 'dApprovalDt', label: '처리일시', align: 'center', sortable: true, columnVisible: true, showOverflow: true, formatter: (row) => { return row.dApprovalDt ? this.moment(row.dApprovalDt).format('YYYY-MM-DD HH:mm:ss') : '' } },
         { prop: 'sStatNm', label: '상태', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
       ],
       componentList: [
@@ -91,44 +97,50 @@ export default {
           }
         },
       ],
-      resultListVo: []
     }
   },
   mounted() {
-    this.fnViewListWhoisModReq()
+    setTimeout(() => {
+      this.fnViewListWhoisModReq()
+    }, 100)
   },
   methods: {
+     handleSearch(requestParameter) {
+      this.pagination.currentPage = 1
+      this.fnViewListWhoisModReq(requestParameter)
+    },
    async fnViewListWhoisModReq(requestParameter) {
+      const target = ({ vue: this.$refs.compTable })
+      const parameter = requestParameter ?? this.$refs.searchCondition.requestParameter
       try {
-        const res = await apiRequestModel(ipmsModelApis.viewListWhoisModReq, requestParameter)
-        this.resultListVo = res?.result.data
+        this.openLoading(target)
+        const res = await apiRequestModel(ipmsModelApis.viewListWhoisModReq, parameter)
+        this.pagination.data = res.result.data ?? []
+        this.pagination.total = res.result.totalCount
       } catch (error) {
         console.error(error)
+      } finally {
+        this.closeLoading(target)
       }
     },
-    onClcikRow(row, type) {
+    handleChangeCurPage(v) {
+      if (v) this.pagination.currentPage = v
+      this.fnViewListWhoisModReq()
+    },
+    onClickRow(row, type) {
       this.fnViewDetailWhoisMod(row, 'detail')
     },
     async fnViewDetailWhoisMod(row, type) {
       if (type === 'detail') {
-        try {
-          if (row.nmodify_apply_seq === '' || row.nmodify_apply_seq === null) {
-            return
-          }
-            const tbWhoisModifyVo = {
-              nmodify_apply_seq: row.nmodify_apply_seq
-            }
-            const res = await apiRequestModel(ipmsModelApis.viewDetailWhoisModReq, tbWhoisModifyVo)
-            this.$refs.ModalDetailWhoisMod.open({ row: res.result.data, type: type })
-          } catch (error) {
-            console.error(error)
-        }
+        this.$refs.ModalDetailWhoisMod.open({ row: row, type: type })
       } else {
-        this.$refs.ModalRegWhoisModReq.open()
+        this.$refs.ModalRegWhoisModReq.open() // 컨트롤러 메소드 호출
       }
+    },
+    handleClickExcelDownloadBtn() {
+      downloadExcel(this, 'viewListWhoisModReqExcel')
     }
   },
 }
 </script>
 <style lang="scss" scoped>
-</style>

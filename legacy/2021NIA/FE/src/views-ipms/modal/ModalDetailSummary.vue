@@ -14,19 +14,10 @@
     class="ipms-dialog"
     :class="{ [name]: true }"
   >
-    <div class="popupContentTable">
+    <div class="popupContentTable textcenter">
       <div class="popupContentTableTitle">라우팅 중복 상세정보</div>
       <div v-loading="loading">
         <table>
-          <colgroup>
-            <col width="8%" />
-            <col width="9%" />
-            <col width="9%" />
-            <col width="9%" />
-            <col width="9%" />
-            <col width="9%" />
-            <col width="15%" />
-          </colgroup>
           <thead>
             <tr>
               <th>서비스망</th>
@@ -44,13 +35,13 @@
             </tr>
             <template v-else>
               <tr v-for="(item, index) in resultList" :key="index" :class="[{ last: index === resultList.length - 1 }, { subbg: index % 2 !== 0 }]">
-                <td class="ellipsis">{{ item.ssvcLineTypeNm }}</td>
-                <td class="ellipsis">{{ item.ssvcGroupNm }}</td>
-                <td class="ellipsis">{{ item.ssvcHighNm }}</td>
-                <td class="ellipsis">{{ item.ssvcObjNm }}</td>
-                <td class="ellipsis">{{ item.pipPrefix }}</td>
-                <td class="ellipsis">{{ item.asPath }}</td>
-                <td class="ellipsis">{{ item.scommunity }}</td>
+                <td>{{ item.ssvcLineTypeNm }}</td>
+                <td>{{ item.ssvcGroupNm }}</td>
+                <td>{{ item.ssvcHighNm }}</td>
+                <td>{{ item.ssvcObjNm }}</td>
+                <td>{{ item.pipPrefix }}</td>
+                <td>{{ item.asPath }}</td>
+                <td>{{ item.scommunity }}</td>
               </tr>
             </template>
           </tbody>

@@ -16,7 +16,7 @@
     :class="{ [name]: true }"
   >
     <div class="popupContentTable">
-      <div class="popupContentTableTitle">IP블록관리 상세정보</div>
+      <div ref="content" class="popupContentTableTitle">IP블록관리 상세정보</div>
       <table>
         <colgroup>
           <col width="15%" />
@@ -30,7 +30,12 @@
           <th>생성차수</th>
           <td>
             <span v-if="isEdit">
-              <el-input v-model="sipCreateSeqCd" size="mini" />
+              <el-autocomplete
+                v-model="sipCreateSeqCd"
+                class="inline-input"
+                :fetch-suggestions="querySearch"
+              >
+              </el-autocomplete>
             </span>
             <span v-else>{{ resultVo.sipCreateSeqCd }}</span>
           </td>
@@ -91,7 +96,7 @@
     <div class="popupContentTableBottom">
       <el-button v-if="!isEdit" type="primary" size="small" icon="el-icon-edit" round @click="onChangeMode()">수정</el-button>
       <el-button v-if="isEdit" type="primary" size="small" icon="el-icon-edit-outline" round @click="fnUpdateCrtIPMstCallback()">저장</el-button>
-      <el-button v-if="!isEdit" type="primary" size="small" icon="el-icon-edit" round @click="fnDeleteBtnClick()">삭제</el-button>
+      <el-button v-if="!isEdit" type="primary" size="small" icon=" el-icon-delete" round @click="fnDeleteBtnClick()">삭제</el-button>
       <el-button type="primary" size="small" icon="el-icon-close" round @click.native="isClose()">{{ $t('exit') }}</el-button>
     </div>
   </el-dialog>
@@ -101,6 +106,7 @@
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
 import { apiRequestJson, ipmsJsonApis } from '@/api/ipms'
+import { onMessagePopup } from '@/utils/index'
 
 const routeName = 'ModalIpBlockDetail'
 
@@ -117,6 +123,14 @@ export default {
       sipCreateSeqCd: '',
       scomment: '',
       type: 'create',
+      sipCreateSeqCdOptions: [
+        { value: 'apple' },
+        { value: 'banana' },
+        { value: 'cherry' }
+      ],
+      allData: [],
+      loading: false,
+      links: []
     }
   },
   computed: {
@@ -127,9 +141,37 @@ export default {
       return this.type === 'edit'
     }
   },
+  watch: {
+  },
   mounted() {
+    this.allData = this.sipCreateSeqCdOptions
   },
   methods: {
+    querySearch(queryString, cb) {
+      /* this.fnSelectSipCd() */
+      var results = queryString ? this.allData.filter(this.createFilter(queryString)) : []
+      // 검색어가 있을 때만 필터링 결과 반환
+      cb(results)
+    },
+    async fnSelectSipCd() {
+      try {
+        const param = {
+          param: this
+        }
+        const res = await ipmsJsonApis(ipmsJsonApis.selectListSipCreateSeqCd, param)
+        this.sipCreateSeqCdOptions = res
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    createFilter(queryString) {
+      return (link) => {
+        return link.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0
+      }
+    },
+    handSelect(item) {
+      console.log(item)
+    },
     onCreated() {
       Modal.methods.onCreated.call(this)
       this.closeOnClickModal = false
@@ -161,12 +203,13 @@ export default {
           const param = { nipBlockMstSeq: this.resultVo.nipBlockMstSeq }
            res = await apiRequestJson(ipmsJsonApis.deleteCrtIPMst, param)
            if (res.commonMsg === 'SUCCESS') {
-            this.$message.success({ message: `삭제되었습니다.` })
+            onMessagePopup(this, '삭제되었습니다')
             this.$emit('reload')
             this.close()
-            }
+           } else {
+            onMessagePopup(this, res.commonMsg)
+           }
           } catch (error) {
-            this.$message.error({ message: `${res.commonMsg}` })
             console.log(error)
           }
         })
@@ -174,30 +217,31 @@ export default {
     async fnUpdateCrtIPMstCallback() { // IP 블럭 수정
       const sipCreateSeqCd = this.resultVo.sipCreateSeqCd
       if (sipCreateSeqCd.length < 10) {
-          this.$message.error('생성차수 수정정보가 잘못되었습니다.')
+          onMessagePopup(this, '생성차수 수정정보가 잘못되었습니다.')
           return
       }
       let res
       try {
           const tbIpBlockVo = {
-            sipCreateTypeCd: this.resultVo.sipCreateTypeCd,
+            sipCreateSeqCd: this.resultVo.sipCreateSeqCd,
             scomment: this.resultVo.scomment,
             nipBlockMstSeq: this.resultVo.nipBlockMstSeq,
           }
 
-          /* 생성차수 수정 */
-            //  const searchSipCreateSeqCd = tbIpBlockMstVo.sipCreateSeqCd
+          // /* 생성차수 수정 */
+          //    const searchSipCreateSeqCd = tbIpBlockMstVo.sipCreateSeqCd
           // const res = await ipmsJsonApis(ipmsJsonApis.selectListSipCreateSeqCd, tbIpBlockVo)
 
          res = await apiRequestJson(ipmsJsonApis.updateCrtIPMst, tbIpBlockVo)
 
            if (res.commonMsg === 'SUCCESS') {
-              this.$message('IP블록 수정이 정상적으로 처리되었습니다.')
+              onMessagePopup(this, 'IP블록 수정이 정상적으로 처리되었습니다.')
               this.$emit('reload')
               this.close()
+           } else {
+            onMessagePopup(this, res.commonMsg)
            }
         } catch (error) {
-            this.$message.error({ message: `${res.commonMsg}` })
             console.error(error)
         }
     },

@@ -19,16 +19,16 @@
           <template slot="title">{{ route.meta.title }}</template>
           <template v-for="(child, childIndex) in route.children" v-if="route.children && child.meta">
             <!-- 1차 메뉴 -->
-            <el-menu-item v-if="!child.children" :key="`${index}-${childIndex}`" :index="`${index}-${childIndex}`" @click="$router.push({ path: resolvePath(child.path, route.path) })">
+            <el-menu-item v-if="!child.children && !child.hidden" :key="`${index}-${childIndex}`" :index="`${index}-${childIndex}`" @click="$router.push({ path: resolvePath(child.path, route.path) })">
               <router-link :to="resolvePath(child.path, route.path)">
                 {{ child.meta.title }}
               </router-link>
             </el-menu-item>
             <!-- 2차 메뉴 -->
-            <el-submenu v-else-if="child.children" :key="`${index}-${childIndex}`" :index="`${index}-${childIndex}`">
+            <el-submenu v-else-if="child.children && !child.hidden" :key="`${index}-${childIndex}`" :index="`${index}-${childIndex}`">
               <template slot="title">{{ child.meta.title }}</template>
               <template v-for="(childSub, chSubIndex) in child.children">
-                <el-menu-item :key="`${index}-${childIndex}-${chSubIndex}`" :index="`${index}-${childIndex}-${chSubIndex}`" @click="$router.push({ path: resolvePath(childSub.path, child.path) })">
+                <el-menu-item v-if="!childSub.hidden" :key="`${index}-${childIndex}-${chSubIndex}`" :index="`${index}-${childIndex}-${chSubIndex}`" @click="$router.push({ path: resolvePath(childSub.path, child.path) })">
                   <router-link :to="resolvePath(childSub.path, child.path)">
                     {{ childSub.meta.title }}
                   </router-link>
@@ -42,7 +42,7 @@
     <div class="right-menu">
       <div class="right-menu-item userInfo flex-h">
         <i class="el-icon-user-solid" />
-        <span>{{ $store.state.user.name || '' }}님으로 로그인 되었습니다.</span>
+        <span>{{ $store.state.user.info.suserNm || '' }}님으로 로그인 되었습니다.</span>
       </div>
       <div class="right-menu-item logout flex-v" @click="logout">
         <i class="el-icon-lock" />

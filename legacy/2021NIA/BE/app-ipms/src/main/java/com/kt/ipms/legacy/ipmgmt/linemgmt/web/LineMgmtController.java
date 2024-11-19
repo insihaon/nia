@@ -211,7 +211,7 @@ public class LineMgmtController extends CommonController {
 	}
 	
 	
-	
+	/* IP선번장 엑셀 다운 */
 	@RequestMapping(value="/ipmgmt/linemgmt/viewListAsgnIPSubExcel.json", method = RequestMethod.POST)
 	@ResponseBody
 	public FileVo viewListAsgnIPSubExcel(@ModelAttribute("searchVo") TbIpAssignSubVo searchVo, ModelMap model,

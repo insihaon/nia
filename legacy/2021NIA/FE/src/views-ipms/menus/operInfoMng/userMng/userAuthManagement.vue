@@ -4,22 +4,26 @@
       ref="searchCondition"
       :prop-name="name"
       :component-keys="componentList"
-      @handle-search="fnViewListUserAuth"
+      @handle-search="handleSearch"
     />
     <el-col ref="tableContainer" :span="24">
       <compTable
         ref="compTable"
-        style="height: calc(100% - 80px)"
+        style="height: 100%"
         :prop-name="name"
         :prop-table-height="'100%'"
         :prop-column="tableColumns"
-        :prop-data="resultListVo"
+        :prop-data="pagination.data"
+        :prop-pagination-data.sync="pagination"
         :prop-is-pagination="true"
         :prop-is-check-box="true"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
         :prop-on-click="onClcikRow"
         :prop-on-select="handleClickTableCheck"
+        :prop-enabled-excel-down="false"
+        :prop-on-page-change="handleChangeCurPage"
+        :prop-on-page-size-change="handleChangeCurPage"
       >
         <template slot="text-description">
           <span>
@@ -27,7 +31,7 @@
           </span>
         </template>
         <template slot="add-features">
-          <div style="margin-top: 10px">
+          <div class="add-features">
             <el-button icon="el-icon-document-add" type="primary" size="mini" round :disabled="selectedChecks.length > 0" @click="fnViewInsertUserAuth('','I')">등록</el-button>
             <el-button icon="el-icon-delete" type="primary" size="mini" round @click="fnDeleteUserAuth()">삭제</el-button>
           </div>
@@ -44,6 +48,7 @@ import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoad
 import tableHeightMixin from '@/mixin/tableHeightMixin'
 import ModalMngUserAuth from '@/views-ipms/modal/grantmgmt/ModalMngUserAuth.vue'
 import { ipmsModelApis, apiRequestModel, apiRequestJson, ipmsJsonApis } from '@/api/ipms'
+import { onMessagePopup } from '@/utils/index'
 
 const routeName = 'UserAuthManagement'
 
@@ -56,6 +61,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      pagination: this.setDefaultPagination(),
       requestParameter: {},
       tableColumns: [
         { prop: 'suserNm', label: '사용자명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
@@ -80,36 +86,50 @@ export default {
         },
         { key: 'InputType', props: { label: '사용자', prop_parameterKey: 'suserNm' } },
       ],
-      resultListVo: [],
       selectedChecks: [],
       selectedChecksItem: {}
     }
   },
   mounted() {
-    this.fnViewListUserAuth()
+    setTimeout(() => {
+      this.fnViewListUserAuth()
+    }, 100)
   },
   methods: {
-    handleClickTableCheck(all, cur) {
-      this.selectedChecksItem = cur
-      this.selectedChecks = all
+    handleSearch(requestParameter) {
+      this.pagination.currentPage = 1
+      this.fnViewListUserAuth(requestParameter)
     },
-    async fnViewListUserAuth(compParams) {
-      // const rankKeys = ['ssvcLineTypeCd', 'ssvcGroupCd', 'ssvcObjCd']
-      // const params = {}
-      // rankKeys.forEach(key => {
-      //   Object.assign(params, { [`tbLvlBasVo.${key}`]: compParams[key] })
-      //   delete compParams[key]
-      // })
-      // Object.assign(this.requestParameter, params, compParams)
+    async fnViewListUserAuth(requestParameter = null) {
+      const parameter = requestParameter ?? this.$refs.searchCondition.requestParameter
+      const rankKeys = ['ssvcLineTypeCd', 'ssvcGroupCd', 'ssvcObjCd']
+      const tbLvlBasVo = {}
+      rankKeys.forEach(key => {
+        Object.assign(tbLvlBasVo, { [key]: parameter[key] })
+        delete parameter[key]
+      })
 
-      // /* 데이터 확인 console 추후 삭제 */
-      // console.log(this.requestParameter)
+      const target = ({ vue: this.$refs.compTable })
+      const { pageSize: pageUnit, currentPage: pageIndex } = this.pagination
+      Object.assign(parameter, { tbLvlBasVo }, { pageUnit, pageIndex })
       try {
-        const res = await apiRequestModel(ipmsModelApis.viewListUserAuth, this.requestParameter)
-        this.resultListVo = res?.result?.data
+        this.openLoading(target)
+        const res = await apiRequestModel(ipmsModelApis.viewListUserAuth, parameter)
+        this.pagination.data = res.result.data ?? []
+        this.pagination.total = res.result.totalCount
       } catch (error) {
         console.error(error)
+      } finally {
+        this.closeLoading(target)
       }
+    },
+    handleChangeCurPage(v) {
+      if (v) this.pagination.currentPage = v
+      this.fnViewListUserAuth()
+    },
+     handleClickTableCheck(all, cur) {
+      this.selectedChecksItem = cur
+      this.selectedChecks = all
     },
     onClcikRow(row) {
       if (row.suserId === '' || row.suserId === null) {
@@ -118,40 +138,21 @@ export default {
       this.fnViewInsertUserAuth(row, 'U')
     },
     async fnViewInsertUserAuth(row, type) {
-      if (type === 'U') {
-        const tbUserAuthVo = {
-          typeFlag: type,
-        }
-          if (type === 'U') {
-             this._merge(tbUserAuthVo, { suserId: row.suserId })
-          }
-          try {
-            const res = await apiRequestModel(ipmsModelApis.viewDetailUserAuthSubs, this.tbUserAuthVo) /* legacy : viewInsertUserAuth */
-            this.$refs.ModalMngUserAuth.open({ row: res, type: type })
-          } catch (error) {
-             console.error(error)
-          }
-      } else { /* 등록 */
-        this.$refs.ModalMngUserAuth.open({ type: type })
-      }
+      this.$refs.ModalMngUserAuth.open({ row, type })
     },
     async fnDeleteUserAuth() { /* 삭제 */
-      const tbUserAuthListVo = {
-        tbUserAuthTxnVos: []
-      }
-
+      const tbUserAuthListVo = { tbUserAuthTxnVos: [] }
       this.selectedChecks.forEach(row => {
         tbUserAuthListVo.tbUserAuthTxnVos.push({ nuserAutSeq: row.nuserAutSeq })
       })
-
       try {
         const res = await apiRequestJson(ipmsJsonApis.deleteUserAuthTxn, tbUserAuthListVo)
         if (res.commonMsg === 'SUCCESS') {
-          this.$message('사용자 권한이 정상적으로 삭제 되었습니다.')
+          onMessagePopup(this, '사용자 권한이 정상적으로 삭제 되었습니다.')
           this.fnViewListUserAuth()
           this.selectedChecks = []
         } else {
-          this.$message(`${res.commonMsg}`)
+          onMessagePopup(this, res.commonMsg)
         }
       } catch (error) {
         console.error(error)

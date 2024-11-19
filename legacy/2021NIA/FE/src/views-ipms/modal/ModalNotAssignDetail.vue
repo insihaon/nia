@@ -22,7 +22,9 @@
             <label>계위</label>
           </th>
           <td>
-            <div v-if="tbData !== null">{{ tbData.ssvcLineTypeNm }} - {{ tbData.ssvcGroupNm }}</div>
+            <div v-if="tableDatas !== null">
+              {{ tableDatas.ssvcLineTypeNm }} - {{ tableDatas.ssvcGroupNm }}
+            </div>
           </td>
         </tr>
       </table>
@@ -31,13 +33,17 @@
       <compTable
         ref="compTable"
         :prop-name="name"
-        :prop-data="tableDatas"
-        :prop-table-height="300"
+        :prop-data="pagination.data"
+        :prop-pagination-data.sync="pagination"
+        :prop-is-pagination="true"
+        :prop-table-height="500"
         :prop-column="tableColumns"
-        :prop-is-pagination="false"
+        :prop-max-select="pagination.data.length"
         :prop-is-check-box="false"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
+        :prop-on-page-change="handleChangeCurPage"
+        :prop-on-page-size-change="handleChangeCurPage"
       >
         <template slot="text-description">
           <span>
@@ -55,6 +61,7 @@
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
 import CompTable from '@/components/elTable/CompTable.vue'
+import { ipmsModelApis, apiRequestModel } from '@/api/ipms'
 
 const routeName = 'ModalNotAssignDetail'
 
@@ -67,6 +74,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      pagination: this.setDefaultPagination(),
       selectedRow: null,
        tableColumns: [
         { prop: 'sipCreateSeqCd', label: '생성차수', width: 150, align: 'center', sortable: true, columnVisible: true, showOverflow: true },
@@ -95,7 +103,8 @@ export default {
         },
       ],
       tableDatas: [],
-      tbData: null
+      row: null,
+      type: null
     }
   },
   methods: {
@@ -105,8 +114,41 @@ export default {
       this.domElement.maxWidth = 1000
     },
     onOpen(model, actionMode) {
-      this.tableDatas = model.row
-      this.tbData = this.tableDatas[0]
+      if (model.row) {
+        this.row = model.row
+        this.type = model.type
+        setTimeout(() => {
+          this.fnViewDetailUnAssignIP(this.row, this.type)
+        }, 10)
+      }
+    },
+    handleChangeCurPage(v) {
+      if (v) this.pagination.currentPage = v
+      this.fnViewDetailUnAssignIP(this.row, this.type)
+    },
+    async fnViewDetailUnAssignIP(row, type) {
+      const { ssvcLineTypeNm, ssvcGroupNm, nlvlMstSeq } = row
+      const { pageSize: pageUnit, currentPage: pageIndex } = this.pagination
+      const target = ({ vue: this.$refs.compTable })
+      const param = {
+        nlvlMstSeq: nlvlMstSeq,
+        sipVersionTypeCd: 'CV0001',
+        sassignLevelCd: type,
+        ssvcLineTypeNm: ssvcLineTypeNm,
+        ssvcGroupNm: ssvcGroupNm,
+      }
+      Object.assign(param, { pageUnit, pageIndex, })
+      try {
+       this.openLoading(target)
+        const res = await apiRequestModel(ipmsModelApis.viewDetailUnAssignIP, param)
+        this.pagination.data = res.result.data ?? []
+        this.pagination.total = res.result.totalCount
+        this.tableDatas = res.result.data[0]
+      } catch (error) {
+        console.error(error)
+      } finally {
+        this.closeLoading(target)
+      }
     },
     onClose() {
     },

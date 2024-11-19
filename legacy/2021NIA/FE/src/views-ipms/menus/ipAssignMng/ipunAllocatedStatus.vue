@@ -4,7 +4,7 @@
       ref="searchCondition"
       :prop-name="name"
       :component-keys="componentList"
-      @handle-search="fnViewListUnAssignIP"
+      @handle-search="handleSearch"
     />
     <el-col ref="tableContainer" :span="24">
       <compTable
@@ -12,11 +12,16 @@
         style="height: calc(100% - 80px)"
         :prop-name="name"
         :prop-table-height="'100%'"
-        :prop-data="tableDatas"
+        :prop-data="pagination.data"
+        :prop-pagination-data.sync="pagination"
         :prop-column="tableColumns"
         :prop-is-pagination="true"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
+        :prop-max-select="pagination.data.length"
+        :prop-on-page-change="handleChangeCurPage"
+        :prop-on-page-size-change="handleChangeCurPage"
+        @savedExcel="handleClickExcelDownloadBtn"
       >
         <template slot="text-description">
           <span>
@@ -35,6 +40,8 @@ import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoad
 import tableHeightMixin from '@/mixin/tableHeightMixin'
 import ModalNotAssignDetail from '@/views-ipms/modal/ModalNotAssignDetail.vue'
 import { ipmsModelApis, apiRequestModel } from '@/api/ipms'
+import { downloadExcel } from '@/views-ipms/js/common-function'
+
 const routeName = 'IpunAllocatedStatus'
 
 export default {
@@ -46,7 +53,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      tableDatas: [],
+      pagination: this.setDefaultPagination(),
       componentList: [
         { key: 'SsvcLineType', props: { lvl: 2 } },
       ]
@@ -126,36 +133,37 @@ export default {
     this.fnViewListUnAssignIP()
   },
   methods: {
+    handleSearch(requestParameter) {
+      this.pagination.currentPage = 1
+      this.fnViewListUnAssignIP(requestParameter)
+    },
     async fnViewListUnAssignIP(requestParameter = null) {
       const parameter = requestParameter ?? this.$refs.searchCondition.requestParameter
       const target = ({ vue: this.$refs.compTable })
+      const { pageSize: pageUnit, currentPage: pageIndex } = this.pagination
+      Object.assign(parameter, { pageUnit, pageIndex })
       try {
         this.openLoading(target)
         const res = await apiRequestModel(ipmsModelApis.viewListUnAssignIP, parameter)
-        this.tableDatas = res?.result.data
+        this.pagination.data = res.result.data ?? []
+        this.pagination.total = res.result.totalCount
       } catch (error) {
-        this.error(error)
+        console.error(error)
       } finally {
         this.closeLoading(target)
       }
     },
-    async viewDetailCrtIPMst(row, type) {
-      const { sipVersionTypeCd, sassignLeveslCd, ssvcLineTypeNm, ssvcGroupNm } = row
-      const nlvlMstSeq = type === '미배정' ? 'IA0001' : 'IA0002'
 
-      try {
-        const param = {
-          nlvlMstSeq: nlvlMstSeq,
-          sipVersionTypeCd: sipVersionTypeCd,
-          sassignLeveslCd: sassignLeveslCd,
-          ssvcLineTypeNm: ssvcLineTypeNm,
-          ssvcGroupNm: ssvcGroupNm,
-        }
-        const res = await apiRequestModel(ipmsModelApis.viewDetailUnAssignIP, param)
-        this.$refs.ModalNotAssignDetail.open({ row: res?.result.data, type: type })
-      } catch (error) {
-        this.error(error)
-      }
+     handleChangeCurPage(v) {
+      if (v) this.pagination.currentPage = v
+      this.fnViewListUnAssignIP()
+    },
+     viewDetailCrtIPMst(row, type) {
+      const sassignLevelCd = type === '미배정' ? 'IA0001' : 'IA0002'
+      this.$refs.ModalNotAssignDetail.open({ row: row, type: sassignLevelCd })
+    },
+    handleClickExcelDownloadBtn() {
+      downloadExcel(this, 'viewListUnAssignIPExcel')
     }
   }
 }

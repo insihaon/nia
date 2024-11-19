@@ -234,7 +234,9 @@ public class IpAllocOperMstVo extends IpVo implements Serializable {
 	private int totalCount;
 	
 	/* Summary 개수 */
+	private Integer summaryCnt; /* Summary 검색조건 */
 	private String nsummaryCnt;
+	private List<Integer> nsummaryCntMulti;
 	
 	/* null0 여부 */
 	private String snull0Yn;
@@ -1057,12 +1059,27 @@ public class IpAllocOperMstVo extends IpVo implements Serializable {
 		this.spageType = spageType;
 	}
 
+	public Integer getSummaryCnt() {
+		return summaryCnt;
+	}
+
+	public void setSummaryCnt(Integer summaryCnt) {
+		this.summaryCnt = summaryCnt;
+	}
 	public String getNsummaryCnt() {
 		return nsummaryCnt;
 	}
 
 	public void setNsummaryCnt(String nsummaryCnt) {
 		this.nsummaryCnt = nsummaryCnt;
+	}
+
+	public List<Integer> getNsummaryCntMulti() {
+		return nsummaryCntMulti;
+	}
+
+	public void setNsummaryCntMulti(List<Integer> nsummaryCntMulti) {
+		this.nsummaryCntMulti = nsummaryCntMulti;
 	}
 
 	public String getSsubscnealiasType() {

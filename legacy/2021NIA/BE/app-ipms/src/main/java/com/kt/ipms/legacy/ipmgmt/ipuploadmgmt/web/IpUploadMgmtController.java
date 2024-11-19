@@ -13,6 +13,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -23,6 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.codej.web.controller.FileController;
 import com.kt.framework.exception.ServiceException;
 import com.kt.framework.utils.StringUtils;
 import com.kt.ipms.legacy.cmn.service.ExcelCheckService;
@@ -62,6 +66,8 @@ public class IpUploadMgmtController extends CommonController {
 	
 	@Autowired
 	private ExcelCheckService excelCheckService;
+	@Autowired
+	private FileController fileController;
 	
 	@RequestMapping(value = "/ipmgmt/ipuploadmgmt/viewIpUploadMst.model", method = RequestMethod.POST)
 	@ResponseBody
@@ -109,10 +115,10 @@ public class IpUploadMgmtController extends CommonController {
 		return model;
 	}
 	
-	
-	@RequestMapping(value = "/ipmgmt/ipuploadmgmt/upload.ajax", method = RequestMethod.POST)
+	@RequestMapping(value = "/ipmgmt/ipuploadmgmt/upload.json", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String,Object> fileUpload(ModelMap model, MultipartHttpServletRequest request, HttpServletResponse response)  {
+		ModelMap resultModel = new ModelMap();
 		Map<String,Object> retMap = new HashMap<String,Object>();
 		TbIpUploadVo resultListVo = new TbIpUploadVo(); 
 		File convFile = null;
@@ -120,7 +126,7 @@ public class IpUploadMgmtController extends CommonController {
 		try{
 		
 			MultipartFile file =  request.getFile("file");
-			SimpleDateFormat transFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+			// SimpleDateFormat transFormat = new SimpleDateFormat("yyyyMMddHHmmss");
 			String fileName = file.getOriginalFilename();
 			String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
 			/* Sparrow - PATH_TRAVERSAL Start */
@@ -128,9 +134,10 @@ public class IpUploadMgmtController extends CommonController {
 			fileName = fileName.replaceAll("\\\\","");
 			fileName = fileName.replaceAll("&","");
 			/* Sparrow - PATH_TRAVERSAL End */
-			convFile = new File(fileName);
+			fileController.uploadFile(file);
+			// convFile = new File(fileName);
  			// convFile = new File(System.getProperty("jboss.server.temp.dir")+File.separator+file.getOriginalFilename());
-			file.transferTo(convFile);
+			// file.transferTo(convFile);
 		
 			TbIpUploadVo insertVo = new TbIpUploadVo();
 			insertVo.setsFileNm(fileName);
@@ -225,8 +232,8 @@ public class IpUploadMgmtController extends CommonController {
 		excelCheckService.updateExcelUp("N");
 		model.addAttribute("resultListVo", resultListVo);
 		retMap.put("resultListVo", resultListVo);
-		
-		return retMap;
+		resultModel.addAttribute("result", retMap);
+		return resultModel;
 	}
 		
 	/**
@@ -412,7 +419,7 @@ public class IpUploadMgmtController extends CommonController {
 	 */
 	@RequestMapping(value="/ipmgmt/ipuploadmgmt/downloadformat.json", method = RequestMethod.POST)
 	@ResponseBody
-	public FileVo viewListWhoisExcel(@ModelAttribute("searchVo") TbIpUploadVo searchVo, HttpServletRequest request, HttpServletResponse response){
+	public ResponseEntity<?> viewListWhoisExcel(@RequestBody TbIpUploadVo searchVo, HttpServletRequest request, HttpServletResponse response){
 		
 		FileVo resultVo = new FileVo();
 		
@@ -848,14 +855,15 @@ public class IpUploadMgmtController extends CommonController {
 			voList.add(hostList); // 장비목록
 			
 			// String fileName = excelUtil.createExcelFile(hostList, mappingList, request);
-			String fileName = excelUtil.createIpUploadExcelFile(voList, mappingList, sheetNames, request);
+			// String fileName = excelUtil.createIpUploadExcelFile(voList, mappingList, sheetNames, request);
 			
-			if (StringUtils.hasText(fileName)) {
-				resultVo.setFileName(fileName);
-				resultVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
-			} else {
-				throw new ServiceException("CMN.HIGH.00050");
-			}
+			// if (StringUtils.hasText(fileName)) {
+			// 	resultVo.setFileName(fileName);
+			// 	resultVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
+			// } else {
+			// 	throw new ServiceException("CMN.HIGH.00050");
+			// }
+			return excelDownloadService.generateAndDownloadIpUploadExcel(voList, mappingList, sheetNames, request);
 			
 		}catch (ServiceException e) {
 			e.printStackTrace();
@@ -867,7 +875,7 @@ public class IpUploadMgmtController extends CommonController {
 			resultVo.setCommonMsg(msgDesc);
 		}
 		
-		return resultVo;
+		return new ResponseEntity<>(resultVo, HttpStatus.OK);
 	}
 	
 	// 3계위 선택시 수용국 조회
@@ -1621,17 +1629,18 @@ public class IpUploadMgmtController extends CommonController {
 	
 	@RequestMapping(value="/ipmgmt/ipuploadmgmt/downloadtextformat.json", method = RequestMethod.POST)
 	@ResponseBody
-	public FileVo viewDownloadText(@ModelAttribute("searchVo") TbIpUploadVo searchVo, HttpServletRequest request, HttpServletResponse response){
+	public ResponseEntity<?> viewDownloadText(@RequestBody TbIpUploadVo searchVo, HttpServletRequest request, HttpServletResponse response){
 		
 		FileVo resultVo = new FileVo();
 		try{
-			String fileName = excelUtil.createIpUploadTextFile(request);
-			if (StringUtils.hasText(fileName)) {
-				resultVo.setFileName(fileName);
-				resultVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
-			} else {
-				throw new ServiceException("CMN.HIGH.00050");
-			}
+			// String fileName = excelUtil.createIpUploadTextFile(request);
+			// if (StringUtils.hasText(fileName)) {
+			// 	resultVo.setFileName(fileName);
+			// 	resultVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
+			// } else {
+			// 	throw new ServiceException("CMN.HIGH.00050");
+			// }
+			return excelDownloadService.generateAndDownloadTxt(request);
 		}catch (ServiceException e) {
 			e.printStackTrace();
 			String msgDesc = tbCmnMstService.selectMsgDesc(e);
@@ -1641,6 +1650,6 @@ public class IpUploadMgmtController extends CommonController {
 			String msgDesc = tbCmnMstService.selectMsgDesc(new ServiceException("CMN.HIGH.00000"));
 			resultVo.setCommonMsg(msgDesc);
 		}
-		return resultVo;
+		return new ResponseEntity<>(resultVo, HttpStatus.OK);
 	}
 }

@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.codej.base.utils.FileUtil;
 import com.kt.framework.exception.ServiceException;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
 import com.kt.ipms.legacy.opermgmt.requiremgmt.dao.ReqBoardDao;
@@ -97,15 +98,15 @@ public class ReqBoardService {
 			if(file != null){
 				// System.out.println(file.getOriginalFilename());  //Codeeyes-Critical-sysout
 				String originName = file.getOriginalFilename();
-				String uploadPath = insertVo.getRboardFilePath();
-				String extension = originName.substring(originName.lastIndexOf("."), originName.length());
-				UUID uuid = UUID.randomUUID();
-				String fileName = uuid.toString() + extension;
-				File t_file = new File(uploadPath + "\\" + fileName);
-				file.transferTo(t_file); 
+				// String uploadPath = insertVo.getRboardFilePath();
+				// String extension = originName.substring(originName.lastIndexOf("."), originName.length());
+				// UUID uuid = UUID.randomUUID();
+				// String fileName = uuid.toString() + extension;
+				// File t_file = new File(uploadPath);
+				// file.transferTo(t_file);
 				
 				insertVo.setRboardFileOriginName(originName);
-				insertVo.setRboardFileSaveName(fileName);
+				insertVo.setRboardFileSaveName(originName);
 				reqBoardDao.insertReqBoardUpload(insertVo);
 			}
 			
@@ -131,8 +132,13 @@ public class ReqBoardService {
 			int count = reqBoardDao.selectReqBoardUploadCount(deleteVo);
 			if(count != 0){
 				ReqBoardVo tempVo = reqBoardDao.selectReqBoardUpload(deleteVo);
-				File temp_file = new File(tempVo.getRboardFilePath());
-				temp_file.delete();
+				// File temp_file = new File(tempVo.getRboardFilePath());
+				// File temp_file = new File(tempVo.getRboardDownloadPath());
+				// temp_file.delete();
+				String path = FileUtil.getDownloadPathToFilePath(tempVo.getRboardDownloadPath());
+				if(path != null && FileUtil.existFile(path)) {
+					FileUtil.deleteFile(path);
+				}
 			}
 			reqBoardDao.deleteReqBoardUpload(deleteVo);
 		} catch (ServiceException e) {
@@ -159,24 +165,38 @@ public class ReqBoardService {
 			int count = reqBoardDao.selectReqBoardUploadCount(updateVo);
 			if(file != null){
 				String originName = file.getOriginalFilename();
-				String uploadPath = updateVo.getRboardFilePath();
-				String extension = originName.substring(originName.lastIndexOf("."), originName.length());
-				UUID uuid = UUID.randomUUID();
-				String fileName = uuid.toString() + extension;
-				File t_file = new File(uploadPath + "\\" + fileName);
-				file.transferTo(t_file); 
+				// String uploadPath = updateVo.getRboardFilePath();
+				// String extension = originName.substring(originName.lastIndexOf("."), originName.length());
+				// UUID uuid = UUID.randomUUID();
+				// String fileName = uuid.toString() + extension;
+				// File t_file = new File(uploadPath);
+				// file.transferTo(t_file); 
 				updateVo.setRboardFileOriginName(originName);
-				updateVo.setRboardFileSaveName(fileName);
+				updateVo.setRboardFileSaveName(originName);
 				
 				if(count == 1){
 					ReqBoardVo tempVo = reqBoardDao.selectReqBoardUpload(updateVo);
-					File temp_file = new File(tempVo.getRboardFilePath());
-					temp_file.delete();
+					// File temp_file = new File(tempVo.getRboardFilePath());
+					// File temp_file = new File(tempVo.getRboardDownloadPath());
+					// temp_file.delete();
+					String path = FileUtil.getDownloadPathToFilePath(tempVo.getRboardDownloadPath());
+					if(path != null && FileUtil.existFile(path)) {
+						FileUtil.deleteFile(path);
+					}
 					reqBoardDao.updateReqBoardUpload(updateVo);
 				}else{
 					reqBoardDao.insertReqBoardUpload(updateVo);
 				}
 				
+			} else {
+				if(count ==1) {
+					ReqBoardVo tempVo = reqBoardDao.selectReqBoardUpload(updateVo);
+					String path = FileUtil.getDownloadPathToFilePath(tempVo.getRboardDownloadPath());
+					if(path != null && FileUtil.existFile(path)) {
+						FileUtil.deleteFile(path);
+					}
+					reqBoardDao.deleteReqBoardUpload(updateVo);
+				}
 			}
 		} catch (ServiceException e) {
 			e.printStackTrace();

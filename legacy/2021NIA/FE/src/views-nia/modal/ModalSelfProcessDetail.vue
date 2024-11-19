@@ -53,8 +53,8 @@
             </el-card>
             <el-card shadow="never" :body-style="{'padding': '10px'}" class="mt-1">
               <div slot="header">
-                <div>
-                  <span><i class="el-icon-data-line" /> 트래픽 그래프</span>
+                <div ref="sopList">
+                  <span><i class="el-icon-data-line" /> 연관 SOP 리스트</span>
                 </div>
               </div>
               <el-col v-if="pageType === '최적화'">
@@ -62,9 +62,8 @@
               </el-col>
 
               <el-col v-else class="shadow-sm p-1 mt-2">
-                <span class="title">연관 SOP 리스트</span>
                 <div v-if="sopHistList.length > 0" class="overflow-auto" style="max-height: 250px">
-                  <CompAgGrid ref="sopAgGrid" v-model="sopAgGrid" class="w-100" style="height: 200px" />
+                  <CompAgGrid ref="sopList" v-model="sopAgGrid" class="w-100" style="height: 200px" />
                 </div>
                 <div v-else class="d-flex items-center justify-center text-lg font-semibold" style="height: 100px">연관 SOP 데이터가 존재하지 않습니다.</div>
               </el-col>
@@ -135,7 +134,6 @@
                 </div>
               </div>
               <el-col>
-                {{ syslogInfo.alarmno }}
                 <el-table
                   ref="table"
                   size="mini"
@@ -312,8 +310,8 @@ export default {
         const seriesInfo = [
           { name: 'PPS_IN', value: 'fltpps_in' },
           { name: 'PPS_OUT', value: 'fltpps_out' },
-          { name: 'BPS_IN', value: 'fltbps_in' },
-          { name: 'BPS_OUT', value: 'fltbps_out' },
+          { name: 'MBPS_IN', value: 'fltbps_in' },
+          { name: 'MBPS_OUT', value: 'fltbps_out' },
         ]
         seriesArr = seriesInfo.map((item) => {
           return {
@@ -431,7 +429,9 @@ export default {
       }
     },
     async onLoadSopHistList() {
+      const target = ({ vue: this.$refs.sopList })
       try {
+        this.openLoading(target)
         let res
         if (this.selectedRow.ticket_type === 'SYSLOG') {
           const { node_nm: NODE_NM, alarmmsg: ALARMMSG } = this.syslogInfo
@@ -443,18 +443,38 @@ export default {
         this.sopHistList = res?.result
       } catch (error) {
         this.error(error)
+      } finally {
+        this.closeLoading(target)
       }
     },
-    onOpenAiResponse() {
-      this.close()
+    async onOpenAiResponse() {
       const row = this.selectedRow
+
+      /* 마감 상태 여부 확인 */
+      if (row.clos_status === 'Y') {
+        const isConfirmed = await this.onCheckStatus()
+        if (!isConfirmed) {
+          return
+        }
+      }
+
       if (row.ticket_type === 'SYSLOG') {
         this._merge(row, this.syslogInfo)
         this.fn_openWindow('requestForAction', row)
       } else {
-        // this._merge(row, this.trafficInfo)
         this.fn_openWindow('aiResponse', { row, trafficInfo: this.trafficInfo })
       }
+      this.close()
+    },
+    onCheckStatus() {
+      return this.$confirm('이미 마감된 티켓입니다.', '안내', {
+        confirmButtonText: '확인',
+        cancelButtonText: '취소'
+      }).then(() => {
+        return true
+      }).catch(() => {
+        return false
+      })
     },
     onClose() {
       this.sopHistList = []

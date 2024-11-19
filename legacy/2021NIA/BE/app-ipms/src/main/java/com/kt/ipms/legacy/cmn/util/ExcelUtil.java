@@ -37,6 +37,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Component;
 
+import com.codej.base.property.FileStorageProperties;
 import com.kt.framework.exception.ServiceException;
 import com.kt.framework.utils.DateUtils;
 import com.kt.ipms.legacy.cmn.service.ExcelCheckService;
@@ -55,6 +56,9 @@ public class ExcelUtil {
 	
 	@Autowired
 	private ExcelCheckService excelCheckService;
+
+	@Autowired
+    private FileStorageProperties fileStorageProperties;
 	
 	private final DecimalFormat bigDecimalFormat = new DecimalFormat("#,##0.00########");
 	
@@ -95,8 +99,9 @@ public class ExcelUtil {
 			fileName.append("_EXCEL_FILE_");
 			fileName.append(jwtUtil.getUserId(request));
 			fileName.append(".xlsx");
-			
-			File excelFile = fileUtil.getFile(fileSystemResource.getPath() + File.separator + fileName.toString());
+
+			// File excelFile = fileUtil.getFile(fileSystemResource.getPath() + File.separator + fileName.toString());
+			File excelFile = fileUtil.getFile(fileStorageProperties.getExcelUploadDir() + File.separator + fileName.toString());
 			
 			if((fileName.indexOf(".."))!= -1 || (fileName.indexOf("./"))!=-1 || (fileName.indexOf(".\\"))!=-1 || (fileName.indexOf(":"))!=-1 || fileName.indexOf("xlsx") == -1 ){
 				excelCheckService.updateExcelDown("N");
@@ -434,7 +439,8 @@ public class ExcelUtil {
 			fileName.append(jwtUtil.getUserId(request));
 			fileName.append(".xlsx");
 			
-			File excelFile = fileUtil.getFile(fileSystemResource.getPath() + File.separator + fileName.toString());
+			// File excelFile = fileUtil.getFile(fileSystemResource.getPath() + File.separator + fileName.toString());
+			File excelFile = fileUtil.getFile(fileStorageProperties.getExcelUploadDir() + File.separator + fileName.toString());
 			bos = new BufferedOutputStream(new FileOutputStream(excelFile));
 			
 			workbook.write(bos);
@@ -464,7 +470,9 @@ public class ExcelUtil {
 			fileName.append("_TEXT_FILE_");
 			fileName.append(jwtUtil.getUserId(request));
 			fileName.append(".txt");
-			File textFile = fileUtil.getFile(fileSystemResource.getPath() + File.separator + fileName.toString());
+
+			// File textFile = fileUtil.getFile(fileSystemResource.getPath() + File.separator + fileName.toString());
+			File textFile = fileUtil.getFile(fileStorageProperties.getExcelUploadDir() + File.separator + fileName.toString());
 			br = new BufferedWriter(new FileWriter(textFile, true));
 			br.write(retStr);
 			br.flush();

@@ -9,7 +9,8 @@
     "build:datahub": "vue-cli-service build --mode datahub",
     "build:demo": "vue-cli-service build --mode demo",
     "build:nia": "vue-cli-service build --mode nia",
-    "build:ipms": "vue-cli-service build --mode ipms"
+    "build:ipms": "vue-cli-service build --mode ipms",
+    "test": "cypress open"
   },
   "dependencies": {
     "@babel/eslint-parser": "^7.24.6",
@@ -35,7 +36,6 @@
     "element-theme-dark": "^1.0.3",
     "element-ui": "2.13.2",
     "eslint-plugin-html": "^8.1.1",
-    "eslint-plugin-vue": "^7.5.0",
     "hotkeys-js": "^3.8.1",
     "js-cookie": "2.2.0",
     "json-editor-vue": "^0.12.0",
@@ -47,6 +47,7 @@
     "postcss": "^7.0.39",
     "quasar": "^1.15.21",
     "screenfull": "4.2.0",
+    "sheetjs-style": "^0.15.8",
     "splitpanes": "^2.4.1",
     "stompjs": "^2.3.3",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.17",
@@ -72,6 +73,7 @@
     "xxtea": "^0.2.2"
   },
   "devDependencies": {
+    "@eslint/js": "^9.15.0",
     "@mdi/js": "^7.4.47",
     "@vue/cli-plugin-babel": "4.4.4",
     "@vue/cli-plugin-eslint": "4.4.4",
@@ -80,7 +82,11 @@
     "babel-eslint": "10.1.0",
     "babel-jest": "23.6.0",
     "babel-plugin-dynamic-import-node": "2.3.3",
-    "eslint": "^7.5.0",
+    "cypress": "^13.15.2",
+    "eslint": "^9.15.0",
+    "eslint-plugin-cypress": "^4.1.0",
+    "eslint-plugin-vue": "^9.31.0",
+    "globals": "^15.12.0",
     "html-webpack-plugin": "3.2.0",
     "husky": "1.3.1",
     "lint-staged": "8.1.5",

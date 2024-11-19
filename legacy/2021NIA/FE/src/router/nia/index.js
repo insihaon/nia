@@ -32,13 +32,13 @@ export const niaRoute = Object.freeze([
         path: 'trafficAnalysisInstitution',
         component: () => import('@/views-nia/performanceMonitoring/trafficAnalysisInstitution'),
         name: 'TrafficAnalysisInstitution',
-        meta: { title: '이용기관별 트래픽 분석' }
+        meta: { title: '이용기관별 트래픽 분석 Top(N)' }
       },
       {
         path: 'trafficAnalysisApp',
         component: () => import('@/views-nia/performanceMonitoring/trafficAnalysisApp'),
         name: 'TrafficAnalysisApp',
-        meta: { title: '어플리케이션별 트래픽분석' }
+        meta: { title: '어플리케이션별 트래픽분석 Top(N)' }
       },
       {
         path: 'trafficAnalysisPort',

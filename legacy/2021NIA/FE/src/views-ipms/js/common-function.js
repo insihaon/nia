@@ -1,4 +1,5 @@
 import { onMessagePopup } from '@/utils/index'
+import { ipmsJsonApis, apiRequestExcel } from '@/api/ipms'
 /* text input 체크
  * example : text 속성에 onkeyup='checkInput(this,'IPonly')'
  *             형태로 사용
@@ -107,3 +108,20 @@ export function fnViewCheckTacsIpBlock(THIS, rows = []) {
     // const res = await api({ nipAssignMstSeq })
     THIS.$refs.ModalCheckTacsIpBlock.open({ row: rows[0] })
 }
+
+export async function downloadExcel(THIS = null, apiKey) {
+    if (THIS === null) return
+    const target = ({ vue: THIS.$refs.container })
+    const parameter = THIS.$refs.searchCondition.requestParameter
+     try {
+        THIS.openLoading(target)
+        const res = await apiRequestExcel(ipmsJsonApis[apiKey], parameter)
+        if (res && res.commonMsg) {
+            onMessagePopup(THIS, res?.commonMsg)
+        }
+    } catch (error) {
+        THIS.error(error)
+    } finally {
+        THIS.closeLoading(target)
+    }
+  }

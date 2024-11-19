@@ -14,13 +14,13 @@
     class="ipms-dialog"
     :class="{ [name]: true }"
   >
-    <div class="popupContentTable">
+    <div v-loading="vLoading" class="popupContentTable">
       <div class="popupContentTableTitle">IP 블록 정보
         <el-button
           v-if="type === 'Aloc'"
           size="mini"
           type="primary"
-          style="position: absolute;right: 20px;"
+          style="position: absolute;right: 25px;margin-top:7px"
           round
           plain
           @click="fnViewDetailWhois()"
@@ -131,6 +131,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      vLoading: false,
       type: '',
       defaultTbIpInfoVo: {
         sfirstAddr: '',
@@ -190,6 +191,7 @@ export default {
       }
       const searchVo = { query, nipAssignMstSeq }
       try {
+        this.vLoading = true
         const res = await apiRequestModel(ipmsModelApis.viewDetailWhois, searchVo)
         if (res.result.resultVo.commonMsg === 'SUCCESS') {
           this.$refs.ModelWhoInfoDetail.open({ response: res })
@@ -198,6 +200,8 @@ export default {
         }
       } catch (error) {
        this.error(error)
+      } finally {
+        this.vLoading = false
       }
     },
   },

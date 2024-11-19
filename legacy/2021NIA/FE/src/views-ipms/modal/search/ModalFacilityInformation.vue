@@ -21,6 +21,7 @@
           ref="searchCondition"
           :component-keys="componentList"
           :is-show-profile="false"
+          :is-show-collapse="false"
           @handle-search="handleSearch"
         />
       </div>
@@ -61,7 +62,6 @@ import { Modal } from '@/min/Modal.min'
 import CompTable from '@/components/elTable/CompTable.vue'
 import { onMessagePopup } from '@/utils/index'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
-import { facilityTableDatas } from '@/views-ipms/menus/ipAllocationMng/sample.js'
 import { ipmsModelApis, apiRequestModel, ipmsJsonApis, apiRequestJson } from '@/api/ipms'
 
 const routeName = 'ModalFacilityInformation'
@@ -89,10 +89,10 @@ export default {
       requestParameter: null,
       selectedRow: null,
        tableColumns: [
-        { prop: 'sofficename', label: '수용국', width: 105, align: 'center', sortable: false, columnVisible: true, showOverflow: true },
-        { prop: 'ssubscnealias', label: '장비명', width: 155, align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'smodelname', label: '모델명', width: 195, align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'ssubscmstip', label: '장비대표 IP', width: 200, align: 'center', sortable: true, columnVisible: true, showOverflow: true }
+        { prop: 'sofficename', label: '수용국', align: 'center', sortable: false, columnVisible: true, showOverflow: true },
+        { prop: 'ssubscnealias', label: '장비명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'smodelname', label: '모델명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'ssubscmstip', label: '장비대표 IP', align: 'center', sortable: true, columnVisible: true, showOverflow: true }
       ],
       tableDatas: [],
       sOfficeOptions: [],
@@ -137,7 +137,7 @@ export default {
     },
     onClose() {
       if (this.selectedRow !== null) {
-        this.$emit('selected-value', { selectedRow: this.selectedRow, returnFlag: 'allocNe' })
+        this.$emit('selected-value', { row: this.selectedRow, returnFlag: 'allocNe' })
       }
       this.tableDatas = []
     },

@@ -39,19 +39,19 @@
       ref="compTable"
       :prop-name="name"
       :prop-data="tableDatas"
-      :prop-table-height="300"
       :prop-column="tableColumns"
       :prop-is-pagination="false"
       :prop-is-check-box="true"
       :prop-is-cell-click-check="true"
       prop-grid-menu-id="inputSpeed"
       :prop-grid-indx="1"
+      :prop-enabled-excel-down="false"
       :prop-on-click="handleClickRow"
       :prop-on-dbl-click="handleDbClickRow"
     >
       <template slot="text-description">
         <span>
-          운용팀 조회결과
+          {{ viewTitle }} 조회결과
         </span>
       </template>
     </compTable>
@@ -132,9 +132,9 @@ export default {
     onClose() {
       if (this.selectedRow !== null) {
         if (this.viewTitle !== null) {
-          this.$emit('selected-value', this.selectedRow, this.viewTitle)
+          this.$emit('selected-value', { row: this.selectedRow, viewTitle: this.viewTitle })
         } else {
-          this.$emit('selected-value', this.selectedRow)
+          this.$emit('selected-value', { row: this.selectedRow })
         }
         this.searchTxt = ''
         this.tableDatas = []
@@ -193,4 +193,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+::v-deep .el-table__body-wrapper {
+  height: 100% !important;
+}
 </style>

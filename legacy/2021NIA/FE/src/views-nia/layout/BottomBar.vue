@@ -95,8 +95,8 @@ export default {
           수집 주기 max초과 시 연동이상으로 판단한다.
         */
         aiIpSdnTrafficeKey: { name: 'LinkTraffic', status: 'N', cycle: 1 /* * 60 * 1000 */ }, // 연동 주기 1분
-        aiIpSdnSflowKey: { name: 'Sflow', status: 'N', cycle: 1 /* * 60 * 1000 */ },
-        aiIpSdnSyslogKey: { name: 'Syslog', status: 'N', cycle: 1 /* * 60 * 1000 */ },
+        aiIpSdnSflowKey: { name: 'Sflow', status: 'N', cycle: 5 /* * 60 * 1000 */ },
+        aiIpSdnSyslogKey: { name: 'Syslog', status: 'N', cycle: 5 /* * 60 * 1000 */ },
         aiIpSdnNodeFactorKey: { name: 'NodeFactor', status: 'N', cycle: 1 /* * 60 * 1000 */ },
         // aiTrafficResultKey: { name: 'TRAFFIC', status: 'N', cycle: 1 /* * 60 * 1000 */ },
         aiTrafficNoxKey: { name: 'AI_Traffic_유해', status: 'N', cycle: 1 /* * 60 * 1000 */ },
@@ -193,6 +193,7 @@ export default {
     border-radius: 5px;
     box-sizing: border-box;
     height:40px;
+
     ::v-deep .el-submenu .el-submenu__title {
       height:40px;
       display: flex;
@@ -200,7 +201,7 @@ export default {
       align-items: center;
       background: #1e293b;
       color: white;
-      border: solid 1px #FFF;
+      border: solid 1px #797676;
       border-radius: 5px;
     }
     .badgeItem{
