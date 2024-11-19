@@ -9,7 +9,7 @@
     <el-col ref="tableContainer" :span="24">
       <compTable
         ref="compTable"
-        style="height: calc(100% - 80px)"
+        style="height: 100%"
         :prop-name="name"
         :prop-table-height="'100%'"
         :prop-data="pagination.data"
@@ -23,6 +23,7 @@
         :prop-on-page-change="handleChangeCurPage"
         :prop-on-page-size-change="handleChangeCurPage"
         @update:propSelected="handleClickCheck"
+        @savedExcel="handleClickExcelDownloadBtn"
       >
         <template slot="text-description">
           <span>
@@ -30,7 +31,7 @@
           </span>
         </template>
         <template slot="add-features">
-          <div style="margin-top: 10px">
+          <div class="add-features">
             <el-button icon="el-icon-document-add" type="primary" size="mini" round @click="handleClickRegist()">Community 등록</el-button>
             <el-button icon="el-icon-document-delete" type="primary" size="mini" round @click="fnDeleteWireMst()">삭제</el-button>
           </div>
@@ -48,6 +49,7 @@ import CompTable from '@/components/elTable/CompTable.vue'
 import tableHeightMixin from '@/mixin/tableHeightMixin'
 import { ipmsModelApis, apiRequestModel, ipmsJsonApis, apiRequestJson } from '@/api/ipms'
 import { onMessagePopup } from '@/utils'
+import { downloadExcel } from '@/views-ipms/js/common-function'
 
 const routeName = 'WiredIpPriorInfoManagement'
 
@@ -147,6 +149,9 @@ export default {
           this.error(error)
         }
       })
+    },
+    handleClickExcelDownloadBtn() {
+      downloadExcel(this, 'viewListWireMstExcel')
     }
   }
 }

@@ -173,9 +173,9 @@ export default {
       email_check: false,
       tableData: [],
       procOptions: [
-        // { value: 'ACK', label: '인지' },
+        { value: 'ACK', label: '인지' },
         { value: 'FIN', label: '마감' },
-        // { value: 'AUTO_FIN', label: '자동마감' },
+        { value: 'AUTO_FIN', label: '자동마감' },
       ],
       ticketData: [],
       nodeName: [],
@@ -552,7 +552,7 @@ export default {
     td {
       padding: 5px;
       background: #fff;
-      border-bottom: 0px;
+      // border-bottom: 0px;
     }
   }
 }

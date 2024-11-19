@@ -3,6 +3,10 @@ package com.codej.base.utils;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class FileUtil {
 
@@ -48,6 +52,51 @@ public class FileUtil {
 		return file;
 	}
 
+	public static boolean deleteFile(String pathname) {
+		try {
+			File file = new File(pathname);
+			if(file.delete()) {
+				return true;
+			}
+		} catch (Exception e) {
+		}
+		return false;
+	}
+	public static void DeleteOldFiles(String directory) {
+
+        if(directory == null)
+            return;
+
+        Calendar cal = Calendar.getInstance();    // Calendar 객체 생성
+        long todayMil = cal.getTimeInMillis();    // 현재 시간(밀리 세컨드)
+        long oneDayMil = 24 * 60 * 60 * 1000;    // 일 단위
+
+        Calendar fileCal = Calendar.getInstance();
+        Date fileDate = null;
+
+        File path = new File(directory);
+        File[] list = path.listFiles();         // 파일 리스트 가져오기
+
+        for (int j = 0; j < list.length; j++) {
+
+            // 파일의 마지막 수정시간 가져오기
+            fileDate = new Date(list[j].lastModified());
+
+            // 현재시간과 파일 수정시간 시간차 계산(단위 : 밀리 세컨드)
+            fileCal.setTime(fileDate);
+            long diffMil = todayMil - fileCal.getTimeInMillis();
+
+            // 시간으로 계산
+            int diffDay = (int)(diffMil / (oneDayMil / 24));
+
+            // 1시간이 지난 파일 삭제
+            if (diffDay >= 1 && list[j].exists()) {
+                list[j].delete();
+//                System.out.println(list[j].getName() + " 파일을 삭제했습니다.");
+            }
+        }
+    }
+
 	public static boolean existFile(String pathname) {
 		try {
 			File file = new File(pathname);
@@ -64,6 +113,21 @@ public class FileUtil {
 
 	public static Path getCurrentPath() {
 		return Paths.get(getCurrentDir());
+	}
+
+	public static String getDownloadPathToFilePath(String downloadUrl) {
+		// example: http://localhost:8070/downloadFile/20241106/a.png
+		Pattern regex = Pattern.compile("/downloadFile/([0-9]+)");
+		Matcher matcher = regex.matcher(downloadUrl);
+		if (matcher.find()) {
+			String dirDate = matcher.group(1);
+			String dir = FileUtil.getCurrentDir();
+			String fileName = downloadUrl.substring(downloadUrl.lastIndexOf("/")+1);
+			String path = FileUtil.combine(dir, "uploads", dirDate, fileName);
+			
+			return path;
+		}
+		return null;
 	}
 
 }

@@ -4,7 +4,7 @@
       <span>공지사항</span>
       <div class="notice-link-btn" @click="$router.push({ path: '/board/notice' })" />
     </div>
-    <div class="notice-content">
+    <div v-loading="notiLoading" class="notice-content">
       <el-carousel
         height="34px"
         direction="vertical"
@@ -16,7 +16,7 @@
         <el-carousel-item v-for="noti in notice" :key="noti.seq">
           <div class="notice-content-item" @click="handleClickNoticeDetail(noti.seq)">
             <span>[ {{ noti.sboardTypeSubNm }} ]</span>
-            <span>{{ noti.dcreateDt.split(' ')[0] }}</span>
+            <span>{{ moment(noti.dcreateDt).format('YYYY-MM-DD') }}</span>
             <span>{{ noti.sboardTitle }}</span>
           </div>
         </el-carousel-item>
@@ -34,6 +34,7 @@
     <el-col ref="tableContainer" :span="24">
       <compTable
         ref="compTable"
+        v-loading="notiLoading"
         style="height: calc(100% - 80px)"
         :prop-name="name"
         :prop-table-height="'100%'"
@@ -44,6 +45,7 @@
         :prop-is-check-box="false"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
+        :prop-enabled-excel-down="false"
         :prop-on-click="hadleClickNoticeDetail"
         :prop-on-page-change="handleChangeCurPage"
         :prop-on-page-size-change="handleChangeCurPage"
@@ -54,7 +56,7 @@
           </span>
         </template>
         <template slot="add-features">
-          <div style="margin-top: 10px">
+          <div class="add-features">
             <el-button icon="el-icon-document-add" type="primary" size="mini" round @click="fnViewInsertNotice()">글쓰기</el-button>
           </div>
         </template>
@@ -91,6 +93,7 @@ export default {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       pagination: this.setDefaultPagination(),
+      notiLoading: false,
       tableColumns: [
         { prop: 'seq', label: 'SEQ', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'sboardTypeSubNm', label: '유형', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
@@ -138,11 +141,10 @@ export default {
     async fnViewListNotice(requestParameter = null) {
       /* 대시보드 공지사항 조회 조건 확인필요함 */
       const parameter = requestParameter ?? this.$refs?.searchCondition?.requestParameter ?? { searchCnd: 'title', sboardTypeSubCd: 'BM0002' }
-      const target = ({ vue: this.$refs.compTable })
       const { pageSize: pageUnit, currentPage: pageIndex } = this.pagination
       Object.assign(parameter, { pageUnit, pageIndex })
       try {
-        this.openLoading(target)
+        this.notiLoading = true
         const res = await apiRequestModel(ipmsModelApis.viewListNotice, parameter)
         this.pagination.data = res.result.data ?? []
         this.noticeList = res.result.data ?? []
@@ -150,7 +152,7 @@ export default {
       } catch (error) {
         this.error(error)
       } finally {
-        this.closeLoading(target)
+        this.notiLoading = false
       }
     },
     handleChangeCurPage(v) {

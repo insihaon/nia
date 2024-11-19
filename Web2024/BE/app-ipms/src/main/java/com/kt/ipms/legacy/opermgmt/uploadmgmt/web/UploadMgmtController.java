@@ -25,6 +25,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.codej.base.dto.response.UploadFileResponse;
+import com.codej.web.controller.FileController;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.web.CommonController;
 import com.kt.ipms.legacy.opermgmt.loginmgmt.vo.LoginInfoVo;
@@ -40,6 +42,9 @@ public class UploadMgmtController  extends CommonController {
 	
 	@Autowired
 	private UploadMgmtService uploadMgmtService;
+
+	@Autowired
+	private FileController fileController;
 	
 	@RequestMapping(value = "/opermgmt/uploadmgmt/uploadView.model", method = RequestMethod.POST)
 	@ResponseBody
@@ -87,7 +92,7 @@ public class UploadMgmtController  extends CommonController {
 	}
 	
 	
-	@RequestMapping(value = "/opermgmt/uploadmgmt/upload.ajax", method = RequestMethod.POST)
+	@RequestMapping(value = "/opermgmt/uploadmgmt/upload.json", method = RequestMethod.POST)
 	@ResponseBody
 	public int fileUpload(ModelMap model, MultipartHttpServletRequest request, HttpServletResponse response)  {
 		MultipartFile file =  request.getFile("file");
@@ -117,6 +122,7 @@ public class UploadMgmtController  extends CommonController {
 		BufferedReader bufReader = null;
 		try {
 			file.transferTo(convFile);
+			// UploadFileResponse fileResponse = fileController.uploadFile(file);
             bufReader = new BufferedReader(new InputStreamReader(new FileInputStream(convFile),"UTF-8"));
             String line = "";
             int cnt = 0;

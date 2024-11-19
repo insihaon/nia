@@ -22,6 +22,7 @@
         :prop-on-click="onClcikRow"
         :prop-on-page-change="handleChangeCurPage"
         :prop-on-page-size-change="handleChangeCurPage"
+        @savedExcel="handleClickExcelDownloadBtn"
       >
         <template slot="text-description">
           <span>
@@ -29,7 +30,7 @@
           </span>
         </template>
         <template slot="add-features">
-          <div style="margin-top: 10px">
+          <div class="add-features">
             <el-button icon="el-icon-document-add" type="primary" size="mini" round @click="fnViewIPAssignApyPre()">배정신청</el-button>
           </div>
         </template>
@@ -47,6 +48,7 @@ import tableHeightMixin from '@/mixin/tableHeightMixin'
 import { ipmsModelApis, apiRequestModel } from '@/api/ipms'
 import ModalAssignApyDetail from '@/views-ipms/modal/ModalAssignApyDetail.vue'
 import ModalAssignApyInsert from '@/views-ipms/modal/ModalAssignApyInsert.vue'
+import { downloadExcel } from '@/views-ipms/js/common-function'
 
 const routeName = 'IpResourceAssignmentApply'
 
@@ -135,6 +137,9 @@ export default {
     },
     fnViewIPAssignApyPre() {
       this.$refs.ModalAssignApyInsert.open()
+    },
+    handleClickExcelDownloadBtn() {
+      downloadExcel(this, 'viewListAssignApyTxnExcel')
     }
   },
 }

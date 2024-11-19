@@ -220,7 +220,7 @@ export default {
       this.$refs.ModalSearchTbScrnBas.open()
     },
     onSetScrnNm(param) {
-      this.resultDetailVos.sscrnNm = param.scrnNm
+      this.resultDetailVos.sscrnNm = param.row.scrnNm
     },
     async fnUpdateTbMenuBas() { /* 메뉴 저장 */
       if (this.resultDetailVos.sscrnId === '' || this.resultDetailVos.sscrnId === null) {

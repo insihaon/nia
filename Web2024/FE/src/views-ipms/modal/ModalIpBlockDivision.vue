@@ -132,7 +132,6 @@
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
 import { onMessagePopup } from '@/utils/index'
-// import CompTable from '@/components/elTable/CompTable.vue'
 import { ipmsModelApis, ipmsJsonApis, apiRequestModel, apiRequestJson } from '@/api/ipms'
 
 const routeName = 'ModalIpBlockDivision'
@@ -255,7 +254,7 @@ export default {
         }
         this.divisionInfo = cloneDivisionInfo
     },
-    /* nsubnetmask 셋하는 부분 공통화 */
+    /* nsubnetmask set 공통화 */
     async getMergeNsubnetmask(tbIpAssignMstVo) {
       let divInfo
       try {

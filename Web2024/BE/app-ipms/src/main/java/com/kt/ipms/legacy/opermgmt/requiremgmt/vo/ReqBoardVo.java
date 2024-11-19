@@ -52,6 +52,8 @@ public class ReqBoardVo extends CommonVo implements Serializable {
 	
 	private String rboardFilePath;
 	
+	private String rboardDownloadPath;
+	
 	private String rboardFileSize;
 
 	public BigInteger getSeq() {
@@ -180,6 +182,13 @@ public class ReqBoardVo extends CommonVo implements Serializable {
 
 	public void setRboardFilePath(String rboardFilePath) {
 		this.rboardFilePath = rboardFilePath;
+	}
+	public String getRboardDownloadPath() {
+		return rboardDownloadPath;
+	}
+
+	public void setRboardDownloadPath(String rboardDownloadPath) {
+		this.rboardDownloadPath = rboardDownloadPath;
 	}
 
 	public String getRboardFileSize() {

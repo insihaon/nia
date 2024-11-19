@@ -31,10 +31,10 @@
         </thead>
         <tbody>
           <tr>
-            <td>{{ resultListVo[0].ssvcLineTypeNm }}</td>
-            <td>{{ resultListVo[0].slvlGroupNm }}</td>
-            <td>{{ resultListVo[0].slvlHighNm }}</td>
-            <td>{{ resultListVo[0].slvlNm }}</td>
+            <td>{{ resultVo.ssvcLineTypeNm }}</td>
+            <td>{{ resultVo.ssvcGroupNm }}</td>
+            <td>{{ resultVo.ssvchighObjNm }}</td>
+            <td>{{ resultVo.ssvcObjNm }}</td>
           </tr>
         </tbody>
       </table>
@@ -80,16 +80,16 @@
             <th>삭제</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody v-loading="tableLoading">
           <!-- 조회된 결과 목록이 없을 때 -->
-          <template v-if="resultVo.totalCount === 0">
+          <template v-if="resultListVo.length === 0">
             <tr>
               <td colspan="3" class="textcenter">조회된 결과 목록이 존재하지 않습니다.</td>
             </tr>
           </template>
           <!-- 조회된 결과 목록이 있을 때 -->
-          <template v-if="resultVo.totalCount > 0">
-            <tr v-for="(item, index) in resultListNodeVo" :key="index">
+          <template v-if="resultListVo.length > 0">
+            <tr v-for="(item, index) in resultListVo" :key="index">
               <td>{{ item.slofficecode }}</td>
               <td>{{ item.slofficeNm }}</td>
               <td><el-button type="danger" size="small" icon="el-icon-delete" circle @click="fnDeleteTbLvlSubCd(item)" /></td>
@@ -108,8 +108,9 @@
 <script>
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
-import { ipmsJsonApis, apiRequestJson } from '@/api/ipms'
+import { ipmsJsonApis, apiRequestJson, ipmsModelApis, apiRequestModel } from '@/api/ipms'
 import _ from 'lodash'
+import { onMessagePopup } from '@/utils'
 import ModalEntireOrgSearch from '@/views-ipms/modal/search/ModalEntireOrgSearch.vue'
 
 const routeName = 'ModalInsertLvlSonMgmt'
@@ -123,9 +124,14 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      resultVo: null,
+      tableLoading: false,
+      resultVo: {
+        ssvcLineTypeNm: '',
+        ssvcGroupNm: '',
+        ssvchighObjNm: '',
+        ssvcObjNm: '',
+      },
       resultListVo: [],
-      resultListNodeVo: [],
       ssvcObjNm: '',
       ssvcObjCd: ''
     }
@@ -138,89 +144,94 @@ export default {
     onCreated() {
       Modal.methods.onCreated.call(this)
       this.closeOnClickModal = false
-      this.domElement.maxWidth = 600
+      this.domElement.maxWidth = 800
     },
     onOpen(model, actionMode) {
-      this.resultVo = this._cloneDeep(model.row)
-      this.resultListVo = this._cloneDeep(model.row.data)
-      this.resultListNodeVo = this._cloneDeep(model.row.data)
-
+      if (model.row) {
+        this.resultVo = this._cloneDeep(model.row)
+        this.fnViewInsertLvlSon()
+      }
       this.ssvcObjNm = ''
+      this.ssvcObjCd = ''
     },
     fnViewSearchCenterLvlCd() {
       this.$refs.ModalEntireOrgSearch.open({ viewTitle: '노드' })
     },
-    setSelectedRow(row) {
+    setSelectedRow(param) {
+      const { row } = param
       this.ssvcObjNm = row?.slvlNm
       this.ssvcObjCd = row?.slvlCd
     },
-    async fnDeleteTbLvlSubCd(item) { /* 노드국 목록 삭제 */
-      let res
-      try {
-        const TbLvlSubCdVo = {
-          ssvcLineType: item.ssvcLineTypeCd,
-          slvlCd: item.slvlCd,
-          ssvcLineTypeCd: item.ssvcLineTypeCd
-        }
-        res = await apiRequestJson(ipmsJsonApis.deleteTbLvlSubCd, TbLvlSubCdVo)
-        if (res.commonMsg === 'SUCCESS') {
-          this.$message('정상처리 되었습니다.')
-          this.$emit('reload')
-          const index = this.resultListNodeVo.indexOf(item)
-            if (index > -1) {
-              this.resultListNodeVo.splice(index, 1)
-          }
-        } else {
-          return
-        }
+    async fnViewInsertLvlSon() { /* 노드국 목록조회 */
+      const { ssvcLineTypeCd, ssvcLineTypeNm, ssvcGroupNm: slvlGroupNm, ssvchighObjNm: slvlHighNm, ssvcObjCd: slvlCd, ssvcObjNm: slvlNm } = this.resultVo
+     try {
+        this.tableLoading = true
+        const TbLvlSubCdVo = { ssvcLineTypeCd, slvlCd, slvlGroupNm, slvlHighNm, slvlNm, ssvcLineTypeNm }
+        const res = await apiRequestModel(ipmsModelApis.viewInsertLvlSonMgmtPop, TbLvlSubCdVo)
+        this.resultListVo = res.result?.data ?? []
       } catch (error) {
-        console.error(error)
+        this.error(error)
+      } finally {
+        this.tableLoading = false
       }
     },
-    async fnValidslofficeSubmit() {
-      if (this.ssvcObjNm === '' || this.ssvcObjNm === null) {
-        this.$message('등록 할 국사 정보가 없습니다.')
-        return
-      }
-      let res
-      try {
-        const TbLvlSubCdVo = {
-          slofficecode: this.ssvcObjCd,
-          ssvcLineTypeCd: this.resultListVo[0].ssvcLineTypeCd
-        }
-        res = await apiRequestJson(ipmsJsonApis.selectSloffice, TbLvlSubCdVo)
-        if (res.commonMsg === 'SUCCESS') {
-          this.fnInsertSonSubmit(this.resultListVo[0])
-        } else {
-          this.$message.error('이미 등록된 국사정보입니다.')
-        }
-      } catch (error) {
-        console.error(error)
-      }
-    },
-    async fnInsertSonSubmit(resultListVo) {
-      let res
+    async fnInsertSonSubmit() {
       try {
         const TbLvlSubCdVo = {
           slofficecode: this.ssvcObjCd,
           smodifyId: this.$store.state.user.info.suserId,
-          ssvcLineTypeCd: resultListVo.ssvcLineTypeCd,
-          slvlCd: resultListVo.slvlCd,
+          ssvcLineTypeCd: this.resultVo.ssvcLineTypeCd,
+          slvlCd: this.resultVo.ssvcObjCd
         }
-        res = await apiRequestJson(ipmsJsonApis.insertTbLvlSubCd, TbLvlSubCdVo)
+        const res = await apiRequestJson(ipmsJsonApis.insertTbLvlSubCd, TbLvlSubCdVo)
         if (res.commonMsg === 'SUCCESS') {
-         this.$message('국사 등록이 정상처리 되었습니다.')
-         this.resultListNodeVo.push({
-          slofficecode: this.ssvcObjCd,
-          slofficeNm: this.ssvcObjNm
-         })
+         onMessagePopup(this, '국사 등록이 정상처리 되었습니다.')
+         this.fnViewInsertLvlSon()
          this.ssvcObjCd = ''
          this.ssvcObjNm = ''
         } else {
-          this.$message.error(`${res.commonMsg}`)
+          onMessagePopup(this, res.commonMsg)
         }
       } catch (error) {
         console.error(error)
+      }
+    },
+    async fnDeleteTbLvlSubCd(item) { /* 노드국 목록 삭제 */
+      try {
+        const TbLvlSubCdVo = {
+          slofficecode: item.slofficecode,
+          slvlCd: this.resultVo.ssvcObjCd,
+          ssvcLineTypeCd: this.resultVo.ssvcLineTypeCd
+        }
+        const res = await apiRequestJson(ipmsJsonApis.deleteTbLvlSubCd, TbLvlSubCdVo)
+        if (res.commonMsg === 'SUCCESS') {
+          onMessagePopup(this, '국사 삭제 정상처리 되었습니다.')
+          this.fnViewInsertLvlSon()
+        } else {
+          onMessagePopup(this, res.commonMsg)
+        }
+      } catch (error) {
+        this.error(error)
+      }
+    },
+    async fnValidslofficeSubmit() {
+      if (this.ssvcObjNm === '' || this.ssvcObjNm === null) {
+        onMessagePopup(this, '등록 할 국사 정보가 없습니다.')
+        return
+      }
+      try {
+        const TbLvlSubCdVo = {
+          slofficecode: this.ssvcObjCd,
+          ssvcLineTypeCd: this.resultVo.ssvcLineTypeCd
+        }
+        const res = await apiRequestJson(ipmsJsonApis.selectSloffice, TbLvlSubCdVo)
+        if (res.commonMsg === 'SUCCESS') {
+          this.fnInsertSonSubmit()
+        } else {
+          onMessagePopup(this, '이미 등록된 국사정보입니다.')
+        }
+      } catch (error) {
+        this.error(error)
       }
     },
     onClose() {

@@ -64,14 +64,15 @@ export const ipmsModelApis = {
   viewDetailPrivateAs: { desc: '사설AS 신청 상세정보', url: '/opermgmt/asmgmt/viewDetailPrivateAs' },
   viewListWhoisModReq: { desc: 'Whois 정보 변경 신청 조회', url: '/opermgmt/whoismgmt/viewListWhoisModReq' },
   viewDetailWhoisModReq: { desc: 'Whois 정보 변경 신청 상세정보', url: '/opermgmt/whoismgmt/viewDetailWhoisModReq' },
-  viewRegWhoisModReq: { desc: 'Whois 정보 변경 신청 > 등록 > IP주소 조회', url: '/opermgmt/whoismgmt/viewRegWhoisModReq' },
+  viewRegWhoisModReq: { desc: 'Whois 정보 변경 신청 > 등록 > IP주소/ktInfoVo 조회', url: '/opermgmt/whoismgmt/viewRegWhoisModReq' },
   viewSearchZipCode: { desc: 'Whois 정보 변경 신청 > 등록 > 주소 검색', url: '/opermgmt/whoismgmt/viewSearchZipCode' },
-  viewListReq: { desc: '요구사항 조회', url: '/opermgmt/requiremgmt/viewListReq' },
+  viewListReq: { desc: '개발/오류수정/자료 요청 조회', url: '/opermgmt/requiremgmt/viewListReq' },
+  viewInsertReq: { desc: '개발/오류수정/자료 요청pop(요청사항 구분 조건조회) ', url: '/opermgmt/requiremgmt/viewInsertReq' },
   viewDetailReq: { desc: '요구사항 조회 상세조회', url: '/opermgmt/requiremgmt/viewDetailReq' },
-  // updateReq: { desc: '요구사항 조회 > 수정', url: '/opermgmt/requiremgmt/updateReq' },
-  // deleteReq: { desc: '요구사항 조회 > 등록', url: '/opermgmt/requiremgmt/deleteReq' },
   viewListUserAuthSubs: { desc: '사용자 권한 신청 조회', url: '/opermgmt/grantsubsmgmt/viewListUserAuthSubs' },
   viewDetailUserAuthSubs: { desc: '사용자 권한 신청 상세정보', url: '/opermgmt/grantsubsmgmt/viewDetailUserAuthSubs' },
+  confirmGrantSub: { desc: '사용자 권한 신청 승인/반려', url: '/opermgmt/grantsubsmgmt/confirmGrantSub' },
+  viewDeleteGrant: { desc: '사용자 권한 신청 취소', url: '/opermgmt/grantsubsmgmt/viewDeleteGrant' },
   viewInsertUserAuthSubs: { desc: '사용자 권한 신청 > 등록 화면', url: '/opermgmt/grantsubsmgmt/viewInsertUserAuthSubs' },
 
   // 운용정보관리(관리자 기능)
@@ -94,18 +95,25 @@ export const ipmsModelApis = {
   viewListTbLvlCdVo: { desc: '계위코드 관리 조회', url: '/opermgmt/orgmgmt/viewListTbLvlCdVo' },
   viewUpdateTbLvlCdVo: { desc: '계위코드 관리 조회 > 수정 화면', url: '/opermgmt/orgmgmt/viewUpdateTbLvlCdVo' },
   viewListLvlBas: { desc: '조직계위 정보관리 조회', url: '/opermgmt/orgmgmt/viewListLvlBas' },
-  viewUdateLvlBas: { desc: '조직계위 정보관리 > 조직계위정보 이동 화면', url: '/opermgmt/orgmgmt/viewUdateLvlBas' },
+  viewInsertLvlBas: { desc: '조직계위 정보관리 > 조직계위정보 등록/이동 > 서비스망 조회', url: '/opermgmt/orgmgmt/viewInsertLvlBas' },
   viewInsertLvlSonMgmtPop: { desc: '조직계위 정보관리 > 오더 노드국 관리 조회 화면', url: '/opermgmt/orgmgmt/viewInsertLvlSonMgmtPop' },
   viewInsertLvlRoleSub: { desc: '조직계위 정보관리 > 시설 수용국 관리 조회 화면', url: '/opermgmt/orgmgmt/viewInsertLvlRoleSub' },
   viewListTbUserBas: { desc: '조직계위 정보관리 > 시설 수용국 관리 조회 화면', url: '/opermgmt/usermgmt/viewListTbUserBas' },
   viewListUserHndSetTxn: { desc: '사용자 정보관리 > 사용자 상세정보 > 사용자 접속 IP변경', url: '/opermgmt/usermgmt/viewListUserHndSetTxn' },
+  viewInsertUserHndSetTxn: { desc: '사용자 정보관리 > 수정 > 사용자 접속 IP 변경 등록', url: '/opermgmt/usermgmt/viewInsertUserHndSetTxn' },
+  viewDeleteUserHndSetTxn: { desc: '사용자 정보관리 > 수정 > 사용자 접속 IP 변경 삭제', url: '/opermgmt/usermgmt/viewDeleteUserHndSetTxn' },
   viewListTbUserConnHist: { desc: '사용자 접속 현황 조회', url: '/opermgmt/usermgmt/viewListTbUserConnHist' },
   viewListUserAuth: { desc: '사용자 권한 관리 조회', url: '/opermgmt/grantmgmt/viewListUserAuth' },
-  viewInsertUserAuth: { desc: '사용자 권한 관리 > 권한 정보 등록 화면', url: '/opermgmt/grantmgmt/viewInsertUserAuth' },
+  viewInsertUserAuth: { desc: '사용자 권한 관리 > 권한 정보 등록 화면(상세정보 조회)', url: '/opermgmt/grantmgmt/viewInsertUserAuth' },
   viewListScrnBas: { desc: '화면 관리 조회', url: '/opermgmt/menumgmt/viewListScrnBas' },
   viewDetailScrnBas: { desc: '화면 관리 조회 > 수정 화면', url: '/opermgmt/menumgmt/viewDetailScrnBas' },
   viewListMenuAuth: { desc: '메뉴권한관리 조회', url: '/opermgmt/menumgmt/viewListMenuAuth' },
   viewListWhois: { desc: 'WHOIS 정보공개 관리 조회', url: '/opermgmt/whoismgmt/viewListWhois' },
+  viewRegWhoisNew: { desc: 'WHOIS 정보공개 관리 > 상세(수정)POP', url: '/opermgmt/whoismgmt/viewRegWhoisNew' },
+  viewListWhoisKeywordMst: { desc: 'WHOIS 정보공개 관리 > 이용기관관리 조회POP', url: '/opermgmt/whoismgmt/viewListWhoisKeywordMst' },
+  viewListWhoisKeywordMstNew: { desc: 'WHOIS 정보공개 관리 > 대체키워드 관리POP', url: '/opermgmt/whoismgmt/viewListWhoisKeywordMstNew' },
+  viewUpdateKtInfo: { desc: 'WHOIS 정보공개 관리 > KT 대체 정보 관리POP', url: '/opermgmt/whoismgmt/viewUpdateKtInfo' },
+  viewListWhoisDbMatchMst: { desc: 'WHOIS 정보공개 관리 > DB현행화 전송POP', url: '/opermgmt/whoismgmt/viewListWhoisDbMatchMst' },
 }
 export const ipmsJsonApis = {
   selectAuthCenterList: { desc: '센터 조회', url: '/opermgmt/orgmgmt/selectAuthCenterList' },
@@ -117,6 +125,7 @@ export const ipmsJsonApis = {
   //
   appendCrtIPMst: { desc: 'IP 블록관리 > IP 블록생성 > IP 주소 추가', url: '/ipmgmt/createmgmt/appendCrtIPMst' },
   insertListCrtIPMst: { desc: 'IP 블록관리 > IP 블록생성 > IP 주소 등록', url: '/ipmgmt/createmgmt/insertListCrtIPMst' },
+  selectListSipCreateSeqCd: { desc: 'IP 블록관리  >  생성차수 조회', url: '/ipmgmt/createmgmt/selectListSipCreateSeqCd' },
   updateCrtIPMst: { desc: 'IP 블록관리  > 수정', url: '/ipmgmt/createmgmt/updateCrtIPMst' },
   updateAsgnIPMst: { desc: 'IP 블록관리 > 배정', url: '/ipmgmt/assignmgmt/updateAsgnIPMst' },
   deleteCrtIPMst: { desc: 'IP 블록관리 삭제', url: '/ipmgmt/createmgmt/deleteCrtIPMst' },
@@ -142,6 +151,7 @@ export const ipmsJsonApis = {
   insertHostIPMst: { desc: '운용정보등록(시설)', url: '/ipmgmt/hostmgmt/insertHostIPMst' },
   updateHostIPMst: { desc: '운용정보수정(시설)', url: '/ipmgmt/hostmgmt/updateHostIPMst' },
   deleteHostIPMst: { desc: '운용정보삭제(시설)', url: '/ipmgmt/hostmgmt/deleteHostIPMst' },
+  ipuploadmgmtUpload: { desc: '업로드 관리 > 업로드', url: '/ipmgmt/ipuploadmgmt/upload' },
   insertNotice: { desc: '공지사항 등록', url: '/opermgmt/boardmgmt/insertNotice' },
   updateNotice: { desc: '공지사항 수정', url: '/opermgmt/boardmgmt/updateNotice' },
   deleteNotice: { desc: '공지사항 삭제', url: '/opermgmt/boardmgmt/deleteNotice' },
@@ -166,8 +176,11 @@ export const ipmsJsonApis = {
   selectSearchWhoisInfo: { desc: 'Whois 정보 변경 신청 > 등록 > IP주소 조회 ', url: '/opermgmt/whoismgmt/selectSearchWhoisInfo' },
   sendMail: { desc: 'Whois 정보 변경 신청 > 등록 > 관리자에게 메일 보내기(IP주소) ', url: '/opermgmt/uploadmgmt/sendMail' },
   // insertRegWhoisModReq: { desc: 'Whois 정보 변경 신청 > 변경 신청  ', url: '/opermgmt/uploadmgmt/insertRegWhoisModReq' },
-  deleteReq: { desc: '요구사항 삭제', url: '/opermgmt/requiremgmt/deleteReq' },
+  insertReq: { desc: '개발/오류수정/자료 요청 > 등록', url: '/opermgmt/requiremgmt/insertReq' },
+  updateReq: { desc: '개발/오류수정/자료 요청 > 수정', url: '/opermgmt/requiremgmt/updateReq' },
+  deleteReq: { desc: '개발/오류수정/자료 요청 > 삭제', url: '/opermgmt/requiremgmt/deleteReq' },
   insertUserAuthTxnSub: { desc: '사용자 권한 신청 > 등록', url: '/opermgmt/grantsubsmgmt/insertUserAuthTxnSub' },
+  selectUserGradeCds: { desc: '사용자 권한 신청 > 권한등급 options조회', url: '/opermgmt/grantmgmt/selectUserGradeCds' },
   // 운용정보관리(관리자 기능)
   updateTbBatchSvcBas: { desc: '운용정보관리 > 연동관리 > 배치 연동 정보 수정', url: '/linkmgmt/batchmgmt/updateTbBatchSvcBas' },
   updateTacsConnBas: { desc: '운용정보관리 > TACS관리 > TACS 연동정보관리 수정', url: '/opermgmt/tacsmgmt/updateTacsConnBas' },
@@ -210,6 +223,7 @@ export const ipmsJsonApis = {
   selectSearchTbUserBas: { desc: '사용자 권한 등록 > 운용자 검색 ', url: '/opermgmt/usermgmt/selectSearchTbUserBas' },
   deleteUserAuthTxn: { desc: '사용자 권한 관리> 권한정보 삭제', url: '/opermgmt/grantmgmt/deleteUserAuthTxn' },
   insertUserAuthTxn: { desc: '사용자 권한 관리> 사용자 권한 등록', url: '/opermgmt/grantmgmt/insertUserAuthTxn' },
+  selectListUserConnResultCds: { desc: '사용자 접속 현황> 사용자 접속결과 검색조건 조회', url: '/opermgmt/usermgmt/selectListUserConnResultCds' },
   insertScrnBas: { desc: '화면관리 > 화면정보 등록', url: '/opermgmt/menumgmt/insertScrnBas' },
   updateScrnBas: { desc: '화면관리 > 화면정보 수정', url: '/opermgmt/menumgmt/updateScrnBas' },
   updateScrnUseYn: { desc: '화면관리 > 사용/미사용 수정', url: '/opermgmt/menumgmt/updateScrnUseYn' },
@@ -218,6 +232,33 @@ export const ipmsJsonApis = {
   selectSearchScrnBas: { desc: '메뉴관리 > 화면명 검색', url: '/opermgmt/menumgmt/selectSearchScrnBas' },
   updateTbMenuBasVo: { desc: '메뉴관리 > 화면명 저장', url: '/opermgmt/menumgmt/updateTbMenuBasVo' },
   updateWhoisComplexNew: { desc: 'WHOIS 정보공개관리 > WHOIS 신청서 수정 ', url: '/opermgmt/whoismgmt/updateWhoisComplexNew' },
+  uploadmgmtUpload: { desc: '연동관리 > 우편번호 연동관리 업로드', url: '/opermgmt/uploadmgmt/upload' },
+  // 엑셀 저장
+  viewListCrtIPMstExcel: { desc: 'IP블록관리 엑셀저장', url: 'ipmgmt/createmgmt/viewListCrtIPMstExcel' },
+  viewListAsgnIPMstExcel: { desc: 'IP배정 엑셀저장', url: 'ipmgmt/assignmgmt/viewListAsgnIPMstExcel' },
+  viewListUnAssignIPExcel: { desc: 'IP미배정 현황 엑셀저장', url: 'ipmgmt/assignmgmt/viewListUnAssignIPExcel' },
+  viewListIpAllocMstExcel: { desc: 'IP할당 엑셀저장', url: 'ipmgmt/allocmgmt/viewListIpAllocMstExcel' },
+  viewListIpAllocMstByMainExcel: { desc: 'IP정보조회 엑셀저장', url: 'ipmgmt/allocmgmt/viewListIpAllocMstByMainExcel' },
+  viewListMultiIpInfoExcel: { desc: 'IP정보조회(멀티) 엑셀저장', url: 'ipmgmt/allocmgmt/viewListMultiIpInfoExcel' },
+  viewListIpHistoryMstExcel: { desc: 'IP이력관리 엑셀저장', url: 'ipmgmt/historymgmt/viewListIpHistoryMstExcel' },
+  viewListRoutChkMstExcel: { desc: 'IP주소 라우팅 비교/점검 엑셀저장', url: 'ipmgmt/routmgmt/viewListRoutChkMstExcel' },
+  viewListVirtualHostInfoExcel: { desc: '운용정보관리(사설) 엑셀저장', url: 'ipmgmt/hostmgmt/viewListVirtualHostInfoExcel' },
+  viewListIpLinkMstExcel: { desc: '운용정보관리(링크) 엑셀저장', url: 'ipmgmt/linkmgmt/viewListIpLinkMstExcel' },
+  viewListNodeExcel: { desc: 'IP주소 노드 이전 신청 엑셀저장', url: 'ipmgmt/nodemgmt/viewListNodeExcel' },
+  viewListAssignApyTxnExcel: { desc: 'IP배정 신청 엑셀저장', url: 'opermgmt/assignmgmt/viewListAssignApyTxnExcel' },
+  viewListPrivateAsExcel: { desc: '사설AS 신청 엑셀저장', url: 'opermgmt/asmgmt/viewListPrivateAsExcel' },
+  viewListWhoisModReqExcel: { desc: 'WHOIS 정보 변경 신청 엑셀저장', url: 'opermgmt/whoismgmt/viewListWhoisModReqExcel' },
+  viewListReqExcel: { desc: '개발/오류수정/자료 요청 엑셀저장', url: 'ipmgmt/requiremgmt/viewListReqExcel' },
+  // viewListAssignTypeCdExcel: { desc: '운용정보관리 > 서비스 코드 관리 엑셀저장', url: 'opermgmt/srvmgmt/viewListAssignTypeCdExcel' },
+  // selectListIpmsSvcMstExcel: { desc: '운용정보관리 > 상품 관리 엑셀저장', url: 'opermgmt/srvmgmt/selectListIpmsSvcMstExcel' },
+  // viewListAsHistExcel: { desc: '운용정보관리 > 사설 AS 사용현황 엑셀저장', url: 'opermgmt/asmgmt/viewListAsHistExcel' },
+  viewListWhoisExcel: { desc: '운용정보관리 > WHOIS 정보공개 관리 엑셀저장', url: 'opermgmt/whoismgmt/viewListWhoisExcel' },
+  viewListFcltMstExcel: { desc: '운용정보관리 > (IP주소 라우팅 비교/점검) 조직별 장비 정보관리 엑셀저장', url: 'opermgmt/intgrmgmt/viewListFcltMstExcel' },
+  viewListFcltCmdMstExcel: { desc: '운용정보관리 > (IP주소 라우팅 비교/점검) 장비별 명령어 정보관리 엑셀저장', url: 'opermgmt/intgrmgmt/viewListFcltCmdMstExcel' },
+  viewListMobileMstExcel: { desc: '운용정보관리 > (IP주소 라우팅 비교/점검) 무선IP 사전 정보관리 엑셀저장', url: 'opermgmt/intgrmgmt/viewListMobileMstExcel' },
+  viewListWireMstExcel: { desc: '운용정보관리 > (IP주소 라우팅 비교/점검) 유선IP 사전 정보관리 엑셀저장', url: 'opermgmt/intgrmgmt/viewListWireMstExcel' },
+  downloadtextformat: { desc: 'DB관리 > 업로드 관리/양식 다운로드 및 업로드 > 텍스트 양식 다운로드', url: 'ipmgmt/ipuploadmgmt/downloadtextformat' },
+  downloadformat: { desc: 'DB관리 > 업로드 관리/양식 다운로드 및 업로드 > 엑셀 양식 다운로드', url: 'ipmgmt/ipuploadmgmt/downloadformat' },
 }
 
 export function apiTest(params) {
@@ -261,6 +302,38 @@ export function apiRequestOffice(urlPath, params, listName = 'selectOfficeList',
     filePath: filePath,
     data: params
   })
+}
+export function apiRequestExcel(api, params) {
+  return http.post(`${AppOptions.instance.baseURL}${api.url}.json`, params, { responseType: 'arraybuffer' })
+    .then(response => {
+      const contentDisposition = response.headers['content-disposition']
+      let fileName = 'downloadedFile' // Default name in case the header is not set
+      if (contentDisposition === undefined) {
+        const decoder = new TextDecoder('utf-8')
+        const jsonString = decoder.decode(response.data)
+        return JSON.parse(jsonString)
+      }
+
+      if (contentDisposition && contentDisposition.includes('filename=')) {
+        // Extract filename from header
+        const fileNameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/)
+        if (fileNameMatch) {
+          fileName = fileNameMatch[1].replace(/['"]/g, '')
+        }
+      }
+      var blob = new Blob([response.data])
+
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = fileName // Name of the file to be downloaded
+      document.body.appendChild(a)
+      a.click()
+
+      // Clean up by revoking the object URL and removing the link
+      URL.revokeObjectURL(url)
+      document.body.removeChild(a)
+    })
 }
 
 window.apiTest = apiTest

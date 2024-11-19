@@ -19,6 +19,7 @@
       <DynamicComponentLoader
         class="dynamic-container"
         :is-show-profile="false"
+        :is-show-collapse="false"
         :component-keys="componentList"
         @handle-search="handleSearch"
       />
@@ -58,7 +59,6 @@ import { Modal } from '@/min/Modal.min'
 import CompTable from '@/components/elTable/CompTable.vue'
 import { onMessagePopup } from '@/utils/index'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
-import { linkTableDatas } from '@/views-ipms/menus/ipAllocationMng/sample.js'
 import { ipmsModelApis, apiRequestModel, ipmsJsonApis, apiRequestJson } from '@/api/ipms'
 
 const routeName = 'ModalLinkInformation'
@@ -132,7 +132,7 @@ export default {
     },
     onClose() {
       if (this.selectedRow !== null) {
-        this.$emit('selected-value', { selectedRow: this.selectedRow, returnFlag: 'allocLn' })
+        this.$emit('selected-value', { row: this.selectedRow, returnFlag: 'allocLn' })
         this.tableDatas = []
       }
     },

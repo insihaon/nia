@@ -4,20 +4,24 @@
       ref="searchCondition"
       :prop-name="name"
       :component-keys="componentList"
-      @handle-search="fnViewListOrgBas"
+      @handle-search="handleSearch"
     />
     <el-col ref="tableContainer" :span="24">
       <compTable
         ref="compTable"
-        style="height: calc(100% - 80px)"
+        style="height: 100%"
         :prop-name="name"
         :prop-table-height="'100%'"
         :prop-column="tableColumns"
-        :prop-data="resultListVo"
+        :prop-data="pagination.data"
+        :prop-pagination-data.sync="pagination"
         :prop-is-pagination="true"
         :prop-is-check-box="false"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
+        :prop-enabled-excel-down="false"
+        :prop-on-page-change="handleChangeCurPage"
+        :prop-on-page-size-change="handleChangeCurPage"
       >
         <template slot="text-description">
           <span>
@@ -25,8 +29,8 @@
           </span>
         </template>
         <template slot="add-features">
-          <div style="margin-top: 10px">
-            <el-button icon="el-icon-document-add" type="primary" size="mini" round @click="fnViewupdateLvlCd('', 'create')">가상 국사/조직등록</el-button>
+          <div class="add-features">
+            <el-button icon="el-icon-document-add" type="primary" size="mini" round @click="handleOpenModal('create')">가상 국사/조직등록</el-button>
           </div>
         </template>
       </compTable>
@@ -53,6 +57,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      pagination: this.setDefaultPagination(),
       tableColumns: [
         { prop: 'slvlCd', label: '코드', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'slvlNm', label: '계위명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
@@ -70,7 +75,7 @@ export default {
                   size: 'mini'
                 },
                 on: { click: () => {
-                  this.fnViewupdateLvlCd(row.slvlCd, 'edit')
+                  this.handleOpenModal('edit', row.slvlCd)
                 } } }, '수정')
             } else {
               return this.$createElement('span', { style: 'color: red' }, '불가')
@@ -84,33 +89,42 @@ export default {
         { key: 'InputType', props: { label: '코드명', prop_parameterKey: 'slvlCd' } },
       ],
       searchWrd: '',
-      resultListVo: []
     }
   },
   mounted() {
     this.fnViewListOrgBas()
   },
   methods: {
-    async fnViewListOrgBas(requestParameter) {
+    handleSearch(requestParameter) {
+      this.pagination.currentPage = 1
+      this.fnViewListOrgBas(requestParameter)
+    },
+    async fnViewListOrgBas(requestParameter = null) {
+      const parameter = requestParameter ?? this.$refs.searchCondition.requestParameter
+      const target = ({ vue: this.$refs.compTable })
+      const { pageSize: pageUnit, currentPage: pageIndex } = this.pagination
+      Object.assign(parameter, { pageUnit, pageIndex })
       try {
-        const res = await apiRequestModel(ipmsModelApis.viewListTbLvlCdVo, requestParameter)
-        this.resultListVo = res?.result.data
+        this.openLoading(target)
+        const res = await apiRequestModel(ipmsModelApis.viewListTbLvlCdVo, parameter)
+        this.pagination.data = res.result.data ?? []
+        this.pagination.total = res.result.totalCount
       } catch (error) {
         console.error(error)
+      } finally {
+        this.closeLoading(target)
       }
     },
-    async fnViewupdateLvlCd(slvlCd, type) {
-      if (slvlCd === '' || slvlCd === null) {
-        this.$refs.ModalTbLvlCd.open({ type: type })
-        return
+    handleChangeCurPage(v) {
+      if (v) this.pagination.currentPage = v
+      this.fnViewListOrgBas()
+    },
+    handleOpenModal(type, slvlCd = null) {
+      const params = { type }
+      if (type === 'edit') {
+        Object.assign(params, { slvlCd })
       }
-        const TbLvlCdVo = {
-          slvlCd: slvlCd
-        }
-        const res = await apiRequestModel(ipmsModelApis.viewUpdateTbLvlCdVo, TbLvlCdVo)
-        if (res.result.data) {
-          this.$refs.ModalTbLvlCd.open({ row: res.result.data, type: type })
-        }
+      this.$refs.ModalTbLvlCd.open(params)
     }
   }
 }

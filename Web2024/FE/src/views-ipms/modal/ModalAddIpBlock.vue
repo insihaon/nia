@@ -15,21 +15,21 @@
     class="ipms-dialog"
     :class="{ [name]: true }"
   >
-    <div class="popupContentTable">
+    <div ref="content" class="popupContentTable">
       <div class="popupContentTableTitle">IP 블록 생성</div>
       <table>
         <tr>
           <th>공인/사설</th>
           <td>
             <el-select v-model="sipCreateTypeCd" size="small" :disabled="isDisabled">
-              <el-option v-for="option in sipCreateOptions" :key="option.value" :value="option.value">
+              <el-option v-for="option in sipCreateOptions" :key="option.value" :label="option.label" :value="option.value">
                 {{ option.label }}
               </el-option>
             </el-select>
           </td>
           <th>생성차수</th>
           <td>
-            <el-input v-model="sipCreateSeqCd" size="small" type="text" readonly="readonly" disabled />
+            <el-input v-model="sipCreateSeqCd" size="small" type="text" class="txt w95" readonly="readonly" disabled="disabled" />
           </td>
         </tr>
 
@@ -37,15 +37,15 @@
           <th>서비스망</th>
           <td>
             <el-select v-model="ssvcLineTypeCd" size="small" :disabled="isDisabled">
-              <el-option v-for="option in ssvcLineOptions" :key="option.value" :value="option.value">
+              <el-option v-for="option in ssvcLineOptions" :key="option.value" :label="option.label" :value="option.value">
                 {{ option.label }}
               </el-option>
             </el-select>
           </td>
           <th>IP 버전</th>
           <td>
-            <el-select v-model="sipVersionTypeNm" size="small" :disabled="isDisabled">
-              <el-option v-for="option in sipVersionOptions" :key="option.value" :value="option.value">
+            <el-select v-model="sipVersionTypeCd" size="small" :disabled="isDisabled">
+              <el-option v-for="option in sipVersionOptions" :key="option.value" :label="option.label" :value="option.value">
                 {{ option.label }}
               </el-option>
             </el-select>
@@ -71,7 +71,7 @@
       </table>
     </div>
     <div class="popupContentTable">
-      <div class="popupContentTableTitle">목록</div>
+      <div ref="baseTable" class="popupContentTableTitle">목록</div>
       <div>
         <table>
           <thead>
@@ -93,17 +93,19 @@
               <td> {{ item.slastAddr }}</td>
               <td> {{ item.nclassCnt }}</td>
               <td> {{ item.ncnt }}</td>
-              <td> <el-button type="primary" size="small" round @click="fnRemoveBtnClick()">삭제</el-button> </td>
+              <td> <el-button type="primary" size="small" :disabled="btnDisabled" @click="fnRemoveBtnClick()">삭제</el-button> </td>
             </tr>
           </tbody>
         </table>
       </div>
       <div class="popupContentTableBottom">
-        <el-button type="primary" size="small" round @click="fnInitBtnClick()"> 초기화</el-button>
-        <el-button type="primary" size="small" round @click="fnSaveBtnClick()"> 등록 </el-button>
+        <el-button class="el-icon-refresh" type="primary" size="small" round @click="fnInitBtnClick()"> 초기화</el-button>
+        <el-button class="el-icon-document-add" type="primary" size="small" round @click="fnSaveBtnClick()"> 등록 </el-button>
       </div>
       <div class="popupContentTableTitle">IP블록 처리결과</div>
-      <el-input v-model="commonMsg" size="small" readonly />
+      <template v-if="commonMsg">
+        <el-input v-model="commonMsg" readonly size="small" />
+      </template>
     </div>
 
     <div class="popupContentTableBottom">
@@ -116,7 +118,7 @@
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
 import { apiRequestJson, ipmsJsonApis, apiRequestModel, ipmsModelApis } from '@/api/ipms'
-
+import { onMessagePopup } from '@/utils/index'
 const routeName = 'ModalAddIpBlock'
 
 export default {
@@ -136,16 +138,17 @@ export default {
       sipVersionTypeNm: '',
       sipVersionTypeCd: '',
       sipCreateOptions: [
-        { label: '공인', value: '공인' },
-        { label: 'Bogon', value: 'Bogon' },
-        { label: '유/무선공용', value: '유/무선공용' },
+        { label: '공인', value: 'CT0001' },
+        { label: 'Bogon', value: 'CT0003' },
+        { label: '유/무선공용', value: 'CT0004' },
+          //  { label: '사설', value: 'CT0005' }
       ],
       ssvcLineOptions: [
-        { value: 'KORNET', label: 'KORNET' },
-        { value: 'PREMIUM', label: 'PREMIUM' },
-        { value: 'MOBILE', label: 'MOBILE' },
-        { value: 'GNS', label: 'GNS' },
-        { value: 'SCHOOLNET', label: 'SCHOOLNET' }
+        { label: 'KORNET', value: 'CL0001' },
+        { label: 'PREMIUM', value: 'CL0002' },
+        { label: 'MOBILE', value: 'CL0003' },
+        { label: 'GNS', value: 'CL0004' },
+        { label: 'SCHOOLNET', value: 'CL0005' }
       ],
       sipVersionOptions: [
         { value: 'CV0001', label: 'IPv4' },
@@ -162,20 +165,21 @@ export default {
       pipPrefix: '',
       ipBlockDetailList: [],
       resultListVo: null,
-      commonMsg: ''
+      commonMsg: '',
+      btnStatus: false
     }
   },
   computed: {
     isDisabled() {
       return this.viewType !== 'create'
+    },
+    btnDisabled() {
+      return this.btnStatus === true
     }
   },
   mounted() {
   },
   methods: {
-    sipCreate() {
-      console.log(this.sipCreateTypeCd)
-    },
     onCreated() {
       Modal.methods.onCreated.call(this)
       this.closeOnClickModal = false
@@ -185,7 +189,6 @@ export default {
       this.commonMsg = ''
       this.resultListVo = model?.row
       this.viewType = this.model.type
-      this.fnViewUpdateCrtIPMstCallBack(model)
       if (model.type === 'generate') {
         const { sipCreateTypeCd, sipCreateTypeNm, sipCreateSeqCd, ssvcLineTypeCd, sipVersionTypeNm, sipVersionTypeCd } = this.resultListVo
         this.sipCreateTypeCd = sipCreateTypeCd
@@ -202,25 +205,17 @@ export default {
         this.sipVersionTypeNm = ''
         this.sipVersionTypeCd = ''
       }
-      },
-      async fnViewUpdateCrtIPMstCallBack(model) {
-        try {
-          const res = await apiRequestModel(ipmsModelApis.viewInsertCrtIPMst, model)
-          this.resultListVo = res?.result.data
-        } catch (error) {
-          console.error(error)
-        }
+      this.onResetForm()
       },
       onResetForm() {
         this.ipBlockDetailList = []
         this.pipPrefix = ''
-      },
-
-      onClose() { this.resultListVo = [] },
-      async fnSaveBtnClick() {
-        // ip 등록
-        if (this.ipBlockDetailList.length === 0) {
-          this.$message('등록할 목록이 없습니다.')
+    },
+    onClose() {
+    },
+    async fnSaveBtnClick() { // IP 등록
+      if (this.ipBlockDetailList.length === 0) {
+        onMessagePopup(this, '등록할 목록이 없습니다.')
         return
       }
 
@@ -230,13 +225,17 @@ export default {
         type: 'success',
       }).then(async () => {
         let res
+        const target = { vue: this.$refs.content }
         try {
-          const tbIpBlockMstVos = []
+          this.openLoading(target)
 
-          for (let i = 0; i < this.ipBlockDetailList.length; i++) {
-            const ipBlock = this.ipBlockDetailList[i]
+        // tbIpBlockListVo 초기화
+        const tbIpBlockListVo = {
+          tbIpBlockMstVos: []
+        }
 
-            tbIpBlockMstVos.push({
+          this.ipBlockDetailList.forEach((ipBlock) => {
+            tbIpBlockListVo.tbIpBlockMstVos.push({
               sipCreateTypeCd: this.sipCreateTypeCd,
               ssvcLineTypeCd: this.ssvcLineTypeCd,
               sipCreateSeqCd: this.sipCreateSeqCd,
@@ -244,75 +243,102 @@ export default {
               pipPrefix: ipBlock.pipPrefix,
               scomment: this.scomment || '',
             })
-          }
+          })
 
-          const tbIpBlockListVo = {
-            tbIpBlockMstVos: tbIpBlockMstVos,
-          }
-
-           res = await apiRequestJson(ipmsJsonApis.insertListCrtIPMst, tbIpBlockListVo)
+          res = await apiRequestJson(ipmsJsonApis.insertListCrtIPMst, tbIpBlockListVo)
 
           if (res.commonMsg === 'SUCCESS') {
-            this.$message('IP블록 등록이 정상적으로 처리되었습니다.')
+            onMessagePopup(this, 'IP블록 등록이 정상적으로 처리되었습니다.')
             this.commonMsg = 'IP블록이 정상적으로 등록되었습니다.'
-            this.onResetForm()
             this.$emit('reloadData')
-            this.close()
+            this.btnStatus = true
           } else {
-            this.$message.error({ message: 'IP블록 등록에 실패했습니다.' })
+            onMessagePopup(this, res.commonMsg)
           }
         } catch (error) {
-          this.$message.error({ message: `${res.commonMsg}` })
           console.error(error)
+        } finally {
+          this.closeLoading(target)
         }
       })
     },
+
     async fnAppendBtnClick() {
       // ip 추가
+
       if (this.sipCreateTypeCd === '') {
-        this.$message('공인/사설이 미분류입니다. 다시 선택해 주시기 바랍니다.')
+         onMessagePopup(this, '공인/사설이 미분류입니다. 다시 선택해 주시기 바랍니다.')
         return
       }
        if (this.ssvcLineTypeCd === '') {
-        this.$message('서비스망이 미분류입니다. 다시 선택해 주시기 바랍니다.')
+        onMessagePopup(this, '서비스망이 미분류입니다. 다시 선택해 주시기 바랍니다.')
         return
       }
-       if (this.sipVersionTypeNm === '') {
-        this.$message('IP버전이 미분류입니다. 다시 선택해 주시기 바랍니다.')
+       if (this.sipVersionTypeCd === '') {
+         onMessagePopup(this, 'IP버전이 미분류입니다. 다시 선택해 주시기 바랍니다.')
         return
-      }
+       }
+
       this.viewType = 'generate'
       let res
+      const target = ({ vue: this.$refs.baseTable })
       try {
-          const ipBLockCheckVo = {
-            srcIpBlockMstVo: {
+        this.openLoading(target)
+        let resultData
+        const ipBLockCheckVo = {
+          srcIpBlockMstVo: {
+            sipCreateTypeCd: this.sipCreateTypeCd,
+            ssvcLineTypeCd: this.ssvcLineTypeCd,
+            sipCreateSeqCd: this.sipCreateSeqCd,
+            sipVersionTypeCd: this.sipVersionTypeCd,
+            pipPrefix: this.pipPrefix, // new pipPrefix
+          },
+          destIpBlockMstVos: []
+        }
+
+        // 기존 ip추가 목록이 있을시, 직전 pipPrefix
+        if (this.ipBlockDetailList.length !== 0) {
+          this.ipBlockDetailList.forEach((detail) => {
+            ipBLockCheckVo.destIpBlockMstVos.push({
               sipCreateTypeCd: this.sipCreateTypeCd,
               ssvcLineTypeCd: this.ssvcLineTypeCd,
-              sipCreateSeqCd: this.sipCreateSeqCd,
               sipVersionTypeCd: this.sipVersionTypeCd,
-              pipPrefix: this.pipPrefix,
-            },
-            destIpBlockMstVos: []
-          }
-           res = await apiRequestJson(ipmsJsonApis.appendCrtIPMst, ipBLockCheckVo)
-          if (res.commonMsg === 'SUCCESS') {
-             const resultData = res
-              this.ipBlockDetailList.push({
-                pipPrefix: resultData.pipPrefix,
-                sfirstAddr: resultData.sfirstAddr,
-                slastAddr: resultData.slastAddr,
-                nclassCnt: resultData.nclassCnt,
-                ncnt: resultData.ncnt,
-              })
-          }
+              pipPrefix: detail.pipPrefix ?? '', // old pipPrefix
+            })
+          })
+        }
+
+        // 새로운 IP 추가 요청
+        res = await apiRequestJson(ipmsJsonApis.appendCrtIPMst, ipBLockCheckVo)
+
+        if (res.commonMsg === 'SUCCESS') {
+          resultData = res
+
+          this.ipBlockDetailList.push({
+            pipPrefix: resultData.pipPrefix,
+            sfirstAddr: resultData.sfirstAddr,
+            slastAddr: resultData.slastAddr,
+            nclassCnt: resultData.nclassCnt,
+            ncnt: resultData.ncnt,
+          })
+        } else {
+           onMessagePopup(this, res.commonMsg)
+        }
       } catch (error) {
-        this.$message.error({ message: `${res.commonMsg}` })
         console.error(error)
+      } finally {
+        this.closeLoading(target)
       }
     },
     fnInitBtnClick() {
       // 초기화
       this.ipBlockDetailList = []
+      this.viewType = 'create'
+      if (this.viewType === 'create') {
+        this.sipCreateTypeCd = '공인'
+        this.ssvcLineTypeCd = 'KORNET'
+        this.sipVersionTypeCd = 'CV0001'
+      }
     },
     fnRemoveBtnClick(index) {
       // 블럭 삭제

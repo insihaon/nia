@@ -1,6 +1,7 @@
 package com.kt.ipms.legacy.opermgmt.grantmgmt.web;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -328,6 +329,7 @@ public class GrantMgmtController  extends CommonController {
 	@ResponseBody
 	public ModelMap viewListUserAuth(@RequestBody TbUserAuthTxnVo searchVo, ModelMap model,
 			HttpServletRequest request)  {
+		setPagination(searchVo);
 		TbUserAuthTxnListVo resultListVo = grantMgmtService.selectUserAuthTxnList(searchVo);
 		return createResultList(resultListVo.getTbUserAuthTxnVos(), resultListVo.getTotalCount());
 	}
@@ -462,13 +464,25 @@ public class GrantMgmtController  extends CommonController {
 		
 		return  resultVo;
 	}
+
+	@RequestMapping(value = "/opermgmt/grantmgmt/selectUserGradeCds.json", method = RequestMethod.POST)
+	@ResponseBody
+	public ModelMap selectUserGradeCds()  {
+				List<CommonCodeVo> userGradeCds = new ArrayList<>();
+		try {
+			userGradeCds = commonCodeService.selectListCommonCode(CommonCodeUtil.USER_GRADE_CD, null);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return createResultList(userGradeCds, userGradeCds.size());
+	}
 	
 	@RequestMapping(value = "/opermgmt/grantmgmt/viewInsertUserAuth.model", method = RequestMethod.POST)
 	@ResponseBody
 	public ModelMap viewInsertUserAuth(@RequestBody TbUserAuthTxnVo searchVo, 
 			HttpServletRequest request)  {
 		TbUserAuthTxnListVo resultListVo = grantMgmtService.selectDetailUserAuthTxn(searchVo);
-		return createResultList(resultListVo.getTbUserAuthTxnVos(), resultListVo.getTotalCount());
+		return createResult(resultListVo);
 	}
 	@RequestMapping(value = "/opermgmt/grantmgmt/viewInsertUserAuth.ajax", method = RequestMethod.POST)
 	public String viewInsertUserAuth(@RequestBody TbUserAuthTxnVo searchVo, ModelMap model,

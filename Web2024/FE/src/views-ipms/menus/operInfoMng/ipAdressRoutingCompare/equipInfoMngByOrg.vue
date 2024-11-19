@@ -9,7 +9,7 @@
     <el-col ref="tableContainer" :span="24">
       <compTable
         ref="compTable"
-        style="height: calc(100% - 80px)"
+        style="height: 100%"
         :prop-name="name"
         :prop-table-height="'100%'"
         :prop-column="tableColumns"
@@ -24,6 +24,7 @@
         :prop-on-page-change="handleChangeCurPage"
         :prop-on-page-size-change="handleChangeCurPage"
         @update:propSelected="handleClickCheck"
+        @savedExcel="handleClickExcelDownloadBtn"
       >
         <template slot="text-description">
           <span>
@@ -31,7 +32,7 @@
           </span>
         </template>
         <template slot="add-features">
-          <div style="margin-top: 10px">
+          <div class="add-features">
             <el-button icon="el-icon-document-add" type="primary" size="mini" round @click="handleClickProcessBtn('insert')">신규생성</el-button>
             <!-- <el-button size="mini" @click="handleClickProcessBtn('update')">수정</el-button> -->
             <el-button icon="el-icon-delete" type="primary" size="mini" round @click="fnDeleteFcltMst()">삭제</el-button>
@@ -49,6 +50,7 @@ import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoad
 import ModalFcltMstInsert from '@/views-ipms/modal/interlink/ModalFcltMstInsert'
 import CompTable from '@/components/elTable/CompTable.vue'
 import tableHeightMixin from '@/mixin/tableHeightMixin'
+import { downloadExcel } from '@/views-ipms/js/common-function'
 
 const routeName = 'EquipInfoManagementByOrg'
 
@@ -173,6 +175,9 @@ export default {
           this.error(error)
         }
       })
+    },
+    handleClickExcelDownloadBtn() {
+      downloadExcel(this, 'viewListFcltMstExcel')
     }
   }
 }

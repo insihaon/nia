@@ -137,7 +137,7 @@
       	, ALARMLOC
       	, TICKET_TYPE
         , TO_CHAR(ALARMTIME , 'YYYY-MM-DD HH24:MI:SS') AS ALARMTIME
-        , FAULT_TIME
+        , TO_CHAR(FAULT_TIME , 'YYYY-MM-DD HH24:MI:SS') AS FAULT_TIME
       	, ALARMMSG
       	, PORT
       	, ALARMMSG_ORIGINAL
@@ -335,6 +335,7 @@
         SELECT 
             KEY_NAME
             , TO_CHAR(YD_DATE, 'YYYY-MM-DD HH24:MI:SS') AS YD_DATE
+            , YD_DATE AS YD_DATE1
         FROM NIA.TB_LINKAGE_SEQ
         WHERE KEY_NAME IN (
             'aiIpSdnTrafficeKey',
@@ -587,7 +588,7 @@
     </select>
 
     <!-- 이상트래픽(ATT2) - AI탐지정보 -->
-    <select id="SELECT_AI_DETECTION_INFO" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+    <select id="SELECT_AI_DETECTION_INFO" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
         SELECT  
             FLTBPSIN AS IN_BPS
             , ROUND(FLTBPSIN_PREDICT::NUMERIC , 2) AS IN_PREDICT
@@ -838,7 +839,7 @@
                 sysDialog.rule_id,
                 sysDialog.alarmloc,
                 CASE WHEN sysDialog.status = 'INIT' THEN '발생'
-                WHEN sysDialog.status = 'FIN' THEN '마감'
+                WHEN sysDialog.status = 'FIN' THEN '수동 마감'
                 WHEN sysDialog.status = 'AUTO_FIN' THEN '자동 마감'
                 ELSE '-'
                 END AS status
@@ -1399,8 +1400,8 @@
             SELECT  A.NODE_NUM AS NODE_NUM,
                     A.SDN_NODE_ID AS SDN_NODE_ID,
                     A.NODE_NM AS NODE_NM,
-                    TRUNC(A.CPU_USAGE::NUMERIC,3) * 100 AS CPU_USAGE,
-                    TRUNC(A.MEM_USAGE::NUMERIC,3) * 100 AS MEM_USAGE,
+                    CASE WHEN A.CPU_USAGE = -1 THEN A.CPU_USAGE ELSE TRUNC(A.CPU_USAGE::NUMERIC, 3) * 100 END AS CPU_USAGE,
+                    CASE WHEN A.MEM_USAGE = -1 THEN A.MEM_USAGE ELSE TRUNC(A.MEM_USAGE::NUMERIC, 3) * 100 END AS MEM_USAGE,
                     TO_CHAR(A.MEASURED_DATETIME, 'YYYY-MM-DD HH24:MI:SS') AS MEASURED_DATETIME,
                     CASE WHEN TN.STRRESID IS NOT NULL THEN TRUE ELSE FALSE
                     END AS AI_RESULT

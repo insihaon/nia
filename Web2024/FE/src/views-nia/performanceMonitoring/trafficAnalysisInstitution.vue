@@ -19,6 +19,7 @@
 <script>
 import { Base } from '@/min/Base.min'
 import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
+import { getFormatByte } from '@/views-nia/js/commonFormat'
 import { apiTrafficAgencyList, apiSelectAgencyCodeList } from '@/api/nia'
 
 const routeName = 'TrafficAnalysisInstitution'
@@ -43,10 +44,10 @@ export default {
        trafficData: [],
         searchItems: [
         { label: '이용기관(S)', type: 'select', multiple: false, placeholder: '이용기관을 선택하세요', model: 'src_nren_name', icon: 'el-icon-setting', setting: { allOption: { toggle: true } }, options: [] },
-        { label: 'IP(S)', type: 'input', multiple: false, placeholder: 'SEARCH', icon: 'el-icon-search', model: 'src_ip' },
+        { label: 'IP(S)', type: 'input', multiple: false, placeholder: 'IP(S)를 검색하세요', icon: 'el-icon-search', model: 'src_ip' },
         { label: '이용기관(D)', type: 'select', multiple: false, placeholder: '이용기관을 선택하세요', model: 'dst_nren_name', icon: 'el-icon-warning', setting: { allOption: { toggle: true } }, options: [] },
-        { label: 'IP(D)', type: 'input', multiple: false, placeholder: 'SEARCH', icon: 'el-icon-search', model: 'dst_ip' },
-        { label: 'Top N', type: 'select', multiple: false, placeholder: '', model: 'top_n', icon: 'el-icon-warning',
+        { label: 'IP(D)', type: 'input', multiple: false, placeholder: 'IP(D)를 검색하세요', icon: 'el-icon-search', model: 'dst_ip' },
+        { label: 'Top(N)', type: 'select', placeholder: 'Top(N)', multiple: false, model: 'top_n', icon: 'el-icon-warning',
           options: [
             { label: '10', value: 10 },
             { label: '30', value: 30 },
@@ -76,7 +77,7 @@ export default {
         { type: '', model: 'src_ip', prop: 'src_ip', name: 'IP(Soruce)', minWidth: 150, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
         { type: '', model: 'dst_nren_name', prop: 'dst_nren_name', name: '이용기관(Destination)', minWidth: 100, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
         { type: '', model: 'dst_ip', prop: 'dst_ip', name: 'IP(Destination)', minWidth: 150, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
-        { type: '', model: 'packet_bytes', prop: 'packet_bytes', name: 'Mbyte', minWidth: 150, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
+        { type: '', model: 'packet_bytes', prop: 'packet_bytes', name: 'Mbyte', minWidth: 150, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true, formatter: getFormatByte },
       ]
       return { options, columns, data: this.trafficData, getRightClickMenuItems: () => { return [] } }
     },

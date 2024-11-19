@@ -18,16 +18,10 @@
 <script>
 import { Base } from '@/min/Base.min'
 import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
-import { AppOptions } from '@/class/appOptions'
 import { apiSelectAppTrafficList, apiApplicationCodeList } from '@/api/nia'
+import { getFormatGbyte } from '@/views-nia/js/commonFormat'
 
 const routeName = 'TrafficAnalysisApp'
-
-function getFormatValue(row, col, value, index) {
-  const packetBytesInGbyte = value / (1024 * 1024 * 1024)
-  const roundedGbyte = Math.round(packetBytesInGbyte * 100) / 100
-  return roundedGbyte.toLocaleString()
-}
 
 export default {
   name: routeName,
@@ -48,11 +42,11 @@ export default {
       },
       trafficData: [],
       searchItems: [
-        { label: 'Application(S)', type: 'select', multiple: false, placeholder: '', model: 'src_protocol', setting: { allOption: { toggle: true } }, options: [] },
-        { label: 'Port (S)', type: 'input', model: 'src_port', placeholder: '' },
-        { label: 'Application(D)', type: 'select', model: 'dst_protocol', placeholder: '', setting: { allOption: { toggle: true } }, options: [] },
-        { label: 'Port (D)', type: 'input', multiple: false, placeholder: '', model: 'dst_port', setting: { allOption: { toggle: true } }, options: [] },
-        { label: 'Top N', type: 'select', multiple: false, placeholder: '', model: 'top_n', icon: 'el-icon-warning', setting: { allOption: { toggle: true } },
+        { label: 'Application(S)', type: 'select', multiple: false, placeholder: 'Application(Source)를 선택하세요', model: 'src_protocol', setting: { allOption: { toggle: true } }, options: [] },
+        { label: 'Port (S)', type: 'input', model: 'src_port', placeholder: 'Port(Source)를 검색하세요' },
+        { label: 'Application(D)', type: 'select', model: 'dst_protocol', placeholder: 'Application(Destination)를 선택하세요', setting: { allOption: { toggle: true } }, options: [] },
+        { label: 'Port (D)', type: 'input', multiple: false, placeholder: 'Port(Destination)를 검색하세요', model: 'dst_port', setting: { allOption: { toggle: true } }, options: [] },
+        { label: 'Top(N)', type: 'select', multiple: false, placeholder: 'Top(N)', model: 'top_n', icon: 'el-icon-warning', setting: { allOption: { toggle: true } },
           options: [
             { label: '10', value: 10 },
             { label: '30', value: 30 },
@@ -79,9 +73,9 @@ export default {
         { type: '', prop: 'rank_order', name: 'Rank', minWidth: 30, suppressMenu: true, alignItems: 'center' },
         { type: '', prop: 'src_protocol', name: 'Application(Source)', minWidth: 30, suppressMenu: true, alignItems: 'center' },
         { type: '', prop: 'src_port', name: 'Port(Source)', minWidth: 40, suppressMenu: true, alignItems: 'center', sortable: false, filterable: false },
-        { type: '', prop: 'dst_protocol', name: 'Application(Destination)', minWidth: 50, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
-        { type: '', prop: 'dst_port', name: 'Port(Destination)', minWidth: 50, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
-        { type: '', prop: 'packet_bytes', name: 'Gbyte', minWidth: 50, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true, formatter: getFormatValue },
+        { type: '', prop: 'dst_protocol', name: 'Application(Destination)', minWidth: 50, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true, },
+        { type: '', prop: 'dst_port', name: 'Port(Destination)', minWidth: 50, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true, },
+        { type: '', prop: 'packet_bytes', name: 'Gbyte', minWidth: 50, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true, placeholder: '시작 일자', formatter: getFormatGbyte },
       ]
       return { options, columns, data: this.trafficData, getRightClickMenuItems: () => { return [] } }
     }

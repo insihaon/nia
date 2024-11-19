@@ -82,14 +82,24 @@ body .ipms{
     font-weight: 600;
     color:#FFFFFF;
   }
-  /* 공통 검색옵션 스타일 시트 */
-  div.searchOptionWrap{
-    width:100%; margin-bottom: 30px;
+  /* compTable 하단 버튼 레이아웃 */
+  .add-features {
+    display: flex;align-items: center;flex-direction: row;
   }
-  div.searchOptionWrap>table td>div.searchBtnWrap{
+  /* 공통 검색옵션 스타일 시트 */
+  table.searchTable{
+    width:100%;margin-bottom: 15px;padding: 5px 5px;
+  }
+  table.searchTable td>div.searchBtnWrap{
+    border:1px solid #134d65; padding: 5px 5px;
+  }
+  div.searchOptionWrap{
+    width:100%; //margin-bottom: 30px;
+  }
+  table td>div.searchBtnWrap{
     display: flex;justify-content: flex-end;align-items: center;gap: 10px;
   }
-  div.searchOptionWrap>table td>div.searchBtnWrap>.el-button{
+  table td>div.searchBtnWrap>.el-button{
     margin-left:0px;
   }
   div.searchOptionWrap>table{

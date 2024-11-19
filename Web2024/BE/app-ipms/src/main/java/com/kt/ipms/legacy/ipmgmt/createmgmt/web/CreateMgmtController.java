@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -41,12 +43,13 @@ import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
 
 @Controller
 public class CreateMgmtController extends CommonController {
-	
+
 	@Autowired
 	private CreateMgmtService createMgmtService;
-	
+
 	/**
 	 * IP 볼록 생성 목록
+	 * 
 	 * @param searchVo
 	 * @param model
 	 * @param request
@@ -54,14 +57,18 @@ public class CreateMgmtController extends CommonController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value="/ipmgmt/createmgmt/viewListCrtIPMst.model", method = {RequestMethod.POST, RequestMethod.GET})
+	@RequestMapping(value = "/ipmgmt/createmgmt/viewListCrtIPMst.model", method = { RequestMethod.POST,
+			RequestMethod.GET })
 	@ResponseBody
 	public ModelMap viewListCrtIPMst(@RequestBody TbIpBlockMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
+		setPagination(searchVo);
 		TbIpBlockMstListVo resultListVo = createMgmtService.selectListIpBlockMst(searchVo);
 		return createResultList(resultListVo.getTbIpBlockMstVos(), resultListVo.getTotalCount());
 	}
-	@RequestMapping(value="/ipmgmt/createmgmt/viewListCrtIPMst.do", method = {RequestMethod.POST, RequestMethod.GET})
+
+	@RequestMapping(value = "/ipmgmt/createmgmt/viewListCrtIPMst.do", method = { RequestMethod.POST,
+			RequestMethod.GET })
 	public String viewListCrtIPMst(@ModelAttribute("searchVo") TbIpBlockMstVo searchVo, ModelMap model,
 			HttpServletRequest request, HttpServletResponse response) {
 		TbIpBlockMstVo searchVoClone = new TbIpBlockMstVo();
@@ -81,21 +88,26 @@ public class CreateMgmtController extends CommonController {
 		model.addAttribute("searchVoJson", searchVoJson(searchVoClone));
 		return "ipmgmt/createmgmt/viewListCrtIPMst";
 	}
-	private ModelMap viewListCrtIPMstModel(@ModelAttribute("searchVo") TbIpBlockMstVo searchVo, HttpServletRequest request) {
+
+	private ModelMap viewListCrtIPMstModel(@ModelAttribute("searchVo") TbIpBlockMstVo searchVo,
+			HttpServletRequest request) {
 		ModelMap model = new ModelMap();
 		TbIpBlockMstListVo resultListVo = null;
-		
+
 		try {
-			List<CommonCodeVo> sipCreateTypeCds = commonCodeService.selectListCommonCode(CommonCodeUtil.IP_CREATE_TYPE_CD, null);
-			List<CommonCodeVo> sipCreateSeqCds = commonCodeService.selectListCommonCode(CommonCodeUtil.IP_CREATE_SEQ_CD, null);
-			List<CommonCodeVo> sipVersionTypeCds = commonCodeService.selectListCommonCode(CommonCodeUtil.IP_VERSION_TYPE_CD, null);
-			List<CommonCodeVo> ssvcLineTypeCds = commonCodeService.selectListCommonCode(CommonCodeUtil.SVC_LINE_TYPE_CD, null);
+			List<CommonCodeVo> sipCreateTypeCds = commonCodeService
+					.selectListCommonCode(CommonCodeUtil.IP_CREATE_TYPE_CD, null);
+			List<CommonCodeVo> sipCreateSeqCds = commonCodeService.selectListCommonCode(CommonCodeUtil.IP_CREATE_SEQ_CD,
+					null);
+			List<CommonCodeVo> sipVersionTypeCds = commonCodeService
+					.selectListCommonCode(CommonCodeUtil.IP_VERSION_TYPE_CD, null);
+			List<CommonCodeVo> ssvcLineTypeCds = commonCodeService.selectListCommonCode(CommonCodeUtil.SVC_LINE_TYPE_CD,
+					null);
 			model.addAttribute("sipCreateTypeCds", sipCreateTypeCds);
 			model.addAttribute("sipCreateSeqCds", sipCreateSeqCds);
 			model.addAttribute("sipVersionTypeCds", sipVersionTypeCds);
-			//model.addAttribute("ssvcLineTypeCds", ssvcLineTypeCds);
-			
-			
+			// model.addAttribute("ssvcLineTypeCds", ssvcLineTypeCds);
+
 			/** 계위 정보 설정 **/
 			TbLvlBasListVo svcLineListVo = jwtUtil.getSvcLineList(request);
 			TbLvlBasListVo centerListVo = null;
@@ -143,7 +155,7 @@ public class CreateMgmtController extends CommonController {
 			model.addAttribute("svcLineListVo", svcLineListVo);
 			model.addAttribute("centerListVo", centerListVo);
 			model.addAttribute("nodeListVo", nodeListVo);
-			
+
 			if (!StringUtils.hasText(searchVo.getSortType())) {
 				searchVo.setSortType(CommonCodeUtil.SORT_TYPE_PIP_PREFIX);
 			}
@@ -159,12 +171,12 @@ public class CreateMgmtController extends CommonController {
 			setPagination(searchVo);
 			resultListVo = createMgmtService.selectListIpBlockMst(searchVo);
 			resultListVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
-			
+
 			String sipCreateTypeCd = searchVo.getSipCreateTypeCd();
-			if(resultListVo.getTotalCount() > 0) {
+			if (resultListVo.getTotalCount() > 0) {
 				sipCreateTypeCd = resultListVo.getTbIpBlockMstVos().get(0).getSipCreateTypeCd();
 			}
-			
+
 		} catch (ServiceException e) {
 			resultListVo = new TbIpBlockMstListVo();
 			String msgDesc = tbCmnMstService.selectMsgDesc(e);
@@ -182,10 +194,10 @@ public class CreateMgmtController extends CommonController {
 		model.addAttribute("paginationInfo", paginationInfo);
 		return model;
 	}
-	
-	@RequestMapping(value="/ipmgmt/createmgmt/viewListCrtIPMstExcel.json", method = RequestMethod.POST)
+
+	@RequestMapping(value = "/ipmgmt/createmgmt/viewListCrtIPMstExcel.json", method = RequestMethod.POST)
 	@ResponseBody
-	public FileVo viewListCrtIPMstExcel(@ModelAttribute("searchVo") TbIpBlockMstVo searchVo, ModelMap model,
+	public ResponseEntity<?> viewListCrtIPMstExcel(@RequestBody TbIpBlockMstVo searchVo, ModelMap model,
 			HttpServletRequest request, HttpServletResponse response) {
 		FileVo resultVo = new FileVo();
 		try {
@@ -208,13 +220,9 @@ public class CreateMgmtController extends CommonController {
 			mappingList.add("종료 IP|getSlastAddr");
 			mappingList.add("단위블록수|getNclassCnt");
 			mappingList.add("작업일자|getDmodifyDt");
-			String fileName = excelUtil.createExcelFile(resultListVo.getTbIpBlockMstVos(), mappingList, request);
-			if (StringUtils.hasText(fileName)) {
-				resultVo.setFileName(fileName);
-				resultVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
-			} else {
-				throw new ServiceException("CMN.HIGH.00050");
-			}
+
+			return excelDownloadService.generateAndDownloadExcel(resultListVo.getTbIpBlockMstVos(), mappingList,
+					request);
 		} catch (ServiceException e) {
 			String msgDesc = tbCmnMstService.selectMsgDesc(e);
 			resultVo.setCommonMsg(msgDesc);
@@ -222,11 +230,12 @@ public class CreateMgmtController extends CommonController {
 			String msgDesc = tbCmnMstService.selectMsgDesc(new ServiceException("CMN.HIGH.00000"));
 			resultVo.setCommonMsg(msgDesc);
 		}
-		return resultVo;
+		return new ResponseEntity<>(resultVo, HttpStatus.OK);
 	}
-	
+
 	/**
 	 * IP 블록 상세 정보
+	 * 
 	 * @param tbIpBlockMstVo
 	 * @param model
 	 * @param request
@@ -234,14 +243,15 @@ public class CreateMgmtController extends CommonController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value="/ipmgmt/createmgmt/viewDetailCrtIPMst.model", method = RequestMethod.POST)
+	@RequestMapping(value = "/ipmgmt/createmgmt/viewDetailCrtIPMst.model", method = RequestMethod.POST)
 	@ResponseBody
 	public ModelMap viewDetailCrtIPMst(@RequestBody TbIpBlockMstVo tbIpBlockMstVo, ModelMap model,
 			HttpServletRequest request) {
 		TbIpBlockMstVo resultVo = createMgmtService.selectIpBlockMst(tbIpBlockMstVo);
 		return createResult(resultVo);
 	}
-	@RequestMapping(value="/ipmgmt/createmgmt/viewDetailCrtIPMst.ajax", method = RequestMethod.POST)
+
+	@RequestMapping(value = "/ipmgmt/createmgmt/viewDetailCrtIPMst.ajax", method = RequestMethod.POST)
 	public String viewDetailCrtIPMst(@RequestBody TbIpBlockMstVo tbIpBlockMstVo, ModelMap model,
 			HttpServletRequest request, HttpServletResponse response) {
 		TbIpBlockMstVo searchVoClone = new TbIpBlockMstVo();
@@ -261,8 +271,9 @@ public class CreateMgmtController extends CommonController {
 		model.addAttribute("searchVoJson", searchVoJson(searchVoClone));
 		return "ipmgmt/createmgmt/viewDetailCrtIPMst";
 	}
+
 	private ModelMap viewDetailCrtIPMstModel(@RequestBody TbIpBlockMstVo tbIpBlockMstVo, HttpServletRequest request) {
-		ModelMap model = new ModelMap(); 
+		ModelMap model = new ModelMap();
 		TbIpBlockMstVo resultVo = null;
 		try {
 			resultVo = createMgmtService.selectIpBlockMst(tbIpBlockMstVo);
@@ -279,17 +290,18 @@ public class CreateMgmtController extends CommonController {
 		model.addAttribute("resultVo", resultVo);
 		return model;
 	}
-	
-	@RequestMapping(value="/ipmgmt/createmgmt/viewInsertCrtIPMst.model", method = RequestMethod.POST)
+
+	@RequestMapping(value = "/ipmgmt/createmgmt/viewInsertCrtIPMst.model", method = RequestMethod.POST)
 	@ResponseBody
 	public ModelMap viewInsertCrtIPMst(@RequestBody TbIpBlockMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		TbIpBlockMstVo resultVo = createMgmtService.selectIpBlockMst(searchVo);
 		return createResult(resultVo);
 	}
-	
+
 	/**
 	 * IP 블록 생성 화면
+	 * 
 	 * @param searchVo
 	 * @param model
 	 * @param request
@@ -297,7 +309,7 @@ public class CreateMgmtController extends CommonController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value="/ipmgmt/createmgmt/viewInsertCrtIPMst.ajax", method = RequestMethod.POST)
+	@RequestMapping(value = "/ipmgmt/createmgmt/viewInsertCrtIPMst.ajax", method = RequestMethod.POST)
 	public String viewInsertCrtIPMst(@RequestBody TbIpBlockMstVo searchVo, ModelMap model,
 			HttpServletRequest request, HttpServletResponse response) {
 		TbIpBlockMstVo searchVoClone = new TbIpBlockMstVo();
@@ -317,19 +329,23 @@ public class CreateMgmtController extends CommonController {
 		model.addAttribute("searchVoJson", searchVoJson(searchVoClone));
 		return "ipmgmt/createmgmt/viewInsertCrtIPMst";
 	}
+
 	private ModelMap viewInsertCrtIPMstModel(@RequestBody TbIpBlockMstVo searchVo, HttpServletRequest request) {
 		ModelMap model = new ModelMap();
 		TbIpBlockMstVo resultVo = null;
 		try {
-			
-			/* 기존 사설(CT0004) 은 유/무선공용으로 사용, 신규 사설(CT0005) 을 사설로 사용  */
-			Map<String,Object> sipCreateTypeParamMap = new HashMap<String,Object>();
+
+			/* 기존 사설(CT0004) 은 유/무선공용으로 사용, 신규 사설(CT0005) 을 사설로 사용 */
+			Map<String, Object> sipCreateTypeParamMap = new HashMap<String, Object>();
 			sipCreateTypeParamMap.put("startCd", "CT0001");
-			sipCreateTypeParamMap.put("endCd", "CT0004");  // 사설은 사설 IP 신청 게시판에서만 등록 가능
-			
-			List<CommonCodeVo> sipCreateTypeCds = commonCodeService.selectListCommonCode(CommonCodeUtil.IP_CREATE_TYPE_CD, sipCreateTypeParamMap);
-			List<CommonCodeVo> sipVersionTypeCds = commonCodeService.selectListCommonCode(CommonCodeUtil.IP_VERSION_TYPE_CD, null);
-			List<CommonCodeVo> ssvcLineTypeCds = commonCodeService.selectListCommonCode(CommonCodeUtil.SVC_LINE_TYPE_CD, null);
+			sipCreateTypeParamMap.put("endCd", "CT0004"); // 사설은 사설 IP 신청 게시판에서만 등록 가능
+
+			List<CommonCodeVo> sipCreateTypeCds = commonCodeService
+					.selectListCommonCode(CommonCodeUtil.IP_CREATE_TYPE_CD, sipCreateTypeParamMap);
+			List<CommonCodeVo> sipVersionTypeCds = commonCodeService
+					.selectListCommonCode(CommonCodeUtil.IP_VERSION_TYPE_CD, null);
+			List<CommonCodeVo> ssvcLineTypeCds = commonCodeService.selectListCommonCode(CommonCodeUtil.SVC_LINE_TYPE_CD,
+					null);
 			model.addAttribute("sipCreateTypeCds", sipCreateTypeCds);
 			model.addAttribute("sipVersionTypeCds", sipVersionTypeCds);
 			model.addAttribute("ssvcLineTypeCds", ssvcLineTypeCds);
@@ -353,17 +369,17 @@ public class CreateMgmtController extends CommonController {
 		model.addAttribute("resultVo", resultVo);
 		return model;
 	}
-	
-	
+
 	/**
 	 * IP 블록 추가
+	 * 
 	 * @param tbIpBlockMstComplexVo
 	 * @param request
 	 * @param response
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value="/ipmgmt/createmgmt/appendCrtIPMst.json", method = RequestMethod.POST)
+	@RequestMapping(value = "/ipmgmt/createmgmt/appendCrtIPMst.json", method = RequestMethod.POST)
 	@ResponseBody
 	public TbIpBlockMstVo appendCrtIPMst(@RequestBody TbIpBlockMstComplexVo tbIpBlockMstComplexVo,
 			HttpServletRequest request, HttpServletResponse response) {
@@ -382,10 +398,10 @@ public class CreateMgmtController extends CommonController {
 		}
 		return resultVo;
 	}
-	
-	
+
 	/**
 	 * IP 블럭 생성 목록 등록
+	 * 
 	 * @param tbIpBlockMstListVo
 	 * @param request
 	 * @param response
@@ -394,7 +410,7 @@ public class CreateMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/ipmgmt/createmgmt/insertListCrtIPMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbIpBlockMstVo insertListCrtIPMst(@RequestBody TbIpBlockMstListVo tbIpBlockMstListVo, 
+	public TbIpBlockMstVo insertListCrtIPMst(@RequestBody TbIpBlockMstListVo tbIpBlockMstListVo,
 			HttpServletRequest request, HttpServletResponse response) {
 		TbIpBlockMstVo resultVo = null;
 		try {
@@ -419,12 +435,13 @@ public class CreateMgmtController extends CommonController {
 			String msgDesc = tbCmnMstService.selectMsgDesc(new ServiceException("CMN.HIGH.00000"));
 			resultVo.setCommonMsg(msgDesc);
 		}
-		
+
 		return resultVo;
 	}
-	
+
 	/**
 	 * IP 블럭 삭제
+	 * 
 	 * @param tbIpBlockMstVo
 	 * @param request
 	 * @param response
@@ -433,7 +450,7 @@ public class CreateMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/ipmgmt/createmgmt/deleteCrtIPMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbIpBlockMstVo deleteCrtIPMst(@RequestBody TbIpBlockMstVo tbIpBlockMstVo, 
+	public TbIpBlockMstVo deleteCrtIPMst(@RequestBody TbIpBlockMstVo tbIpBlockMstVo,
 			HttpServletRequest request, HttpServletResponse response) {
 		TbIpBlockMstVo resultVo = null;
 		try {
@@ -451,9 +468,10 @@ public class CreateMgmtController extends CommonController {
 		}
 		return resultVo;
 	}
-	
+
 	/**
 	 * IP 블럭 수정 화면
+	 * 
 	 * @param searchVo
 	 * @param model
 	 * @param request
@@ -463,13 +481,14 @@ public class CreateMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/ipmgmt/createmgmt/viewUpdateCrtIPMst.model", method = RequestMethod.POST)
 	@ResponseBody
-	public ModelMap viewUpdateCrtIPMst(@RequestBody TbIpBlockMstVo searchVo, ModelMap model, 
+	public ModelMap viewUpdateCrtIPMst(@RequestBody TbIpBlockMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		TbIpBlockMstVo resultVo = createMgmtService.selectIpBlockMst(searchVo);
 		return createResult(resultVo);
 	}
+
 	@RequestMapping(value = "/ipmgmt/createmgmt/viewUpdateCrtIPMst.ajax", method = RequestMethod.POST)
-	public String viewUpdateCrtIPMst(@RequestBody TbIpBlockMstVo searchVo, ModelMap model, 
+	public String viewUpdateCrtIPMst(@RequestBody TbIpBlockMstVo searchVo, ModelMap model,
 			HttpServletRequest request, HttpServletResponse response) {
 		TbIpBlockMstVo searchVoClone = new TbIpBlockMstVo();
 		try {
@@ -488,6 +507,7 @@ public class CreateMgmtController extends CommonController {
 		model.addAttribute("searchVoJson", searchVoJson(searchVoClone));
 		return "ipmgmt/createmgmt/viewUpdateCrtIPMst";
 	}
+
 	private ModelMap viewUpdateCrtIPMstModel(@RequestBody TbIpBlockMstVo searchVo, HttpServletRequest request) {
 		ModelMap model = new ModelMap();
 		TbIpBlockMstVo resultVo = null;
@@ -507,10 +527,10 @@ public class CreateMgmtController extends CommonController {
 		model.addAttribute("resultVo", resultVo);
 		return model;
 	}
-	
-	
+
 	/**
 	 * IP 블럭 수정
+	 * 
 	 * @param tbIpBlockMstVo
 	 * @param request
 	 * @param response
@@ -519,7 +539,7 @@ public class CreateMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/ipmgmt/createmgmt/updateCrtIPMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbIpBlockMstVo updateCrtIPMst(@RequestBody TbIpBlockMstVo tbIpBlockMstVo, 
+	public TbIpBlockMstVo updateCrtIPMst(@RequestBody TbIpBlockMstVo tbIpBlockMstVo,
 			HttpServletRequest request, HttpServletResponse response) {
 		TbIpBlockMstVo resultVo = null;
 		try {
@@ -538,9 +558,10 @@ public class CreateMgmtController extends CommonController {
 		}
 		return resultVo;
 	}
-	
+
 	/**
 	 * IP 블럭 차수 정보 AutoComplete
+	 * 
 	 * @param searchSipCreateSeqCd
 	 * @return
 	 * @throws Exception
@@ -549,17 +570,16 @@ public class CreateMgmtController extends CommonController {
 	@ResponseBody
 	public List<String> selectListSipCreateSeqCd(@RequestBody String searchSipCreateSeqCd) {
 		List<String> retList = createMgmtService.selectListSipCreateSeqCd(searchSipCreateSeqCd);
-		for(int i=0;i<retList.size();i++){
+		for (int i = 0; i < retList.size(); i++) {
 			retList.set(i, retList.get(i).replaceAll("[<]", "&lt;"));
 			retList.set(i, retList.get(i).replaceAll("[>]", "&gt;"));
 		}
 		return retList;
 	}
-	
-	
-	
+
 	/**
 	 * 사설 IP 볼록 생성 목록
+	 * 
 	 * @param searchVo
 	 * @param model
 	 * @param request
@@ -567,14 +587,17 @@ public class CreateMgmtController extends CommonController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value="/ipmgmt/createmgmt/viewListCrtPrivateIPMst.model", method = RequestMethod.POST)
+	@RequestMapping(value = "/ipmgmt/createmgmt/viewListCrtPrivateIPMst.model", method = RequestMethod.POST)
 	@ResponseBody
-	public ModelMap viewListCrtPrivateIPMst(@RequestBody TbIpBlockMstVo searchVo, ModelMap model, HttpServletRequest request) {
+	public ModelMap viewListCrtPrivateIPMst(@RequestBody TbIpBlockMstVo searchVo, ModelMap model,
+			HttpServletRequest request) {
 		TbIpBlockMstListVo resultListVo = createMgmtService.selectListIpBlockMst(searchVo);
 		return createResultList(resultListVo.getTbIpBlockMstVos(), resultListVo.getTotalCount());
 	}
-	@RequestMapping(value="/ipmgmt/createmgmt/viewListCrtPrivateIPMst.do", method = RequestMethod.POST)
-	public String viewListCrtPrivateIPMst(@ModelAttribute("searchVo") TbIpBlockMstVo searchVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
+
+	@RequestMapping(value = "/ipmgmt/createmgmt/viewListCrtPrivateIPMst.do", method = RequestMethod.POST)
+	public String viewListCrtPrivateIPMst(@ModelAttribute("searchVo") TbIpBlockMstVo searchVo, ModelMap model,
+			HttpServletRequest request, HttpServletResponse response) {
 		TbIpBlockMstVo searchVoClone = new TbIpBlockMstVo();
 		try {
 			CloneUtil.copyObjectInformation(searchVo, searchVoClone);
@@ -592,38 +615,41 @@ public class CreateMgmtController extends CommonController {
 		model.addAttribute("searchVoJson", searchVoJson(searchVoClone));
 		return "ipmgmt/createmgmt/viewListCrtPrivateIPMst";
 	}
-	
-	private ModelMap viewListCrtPrivateIPMstModel(@ModelAttribute("searchVo") TbIpBlockMstVo searchVo, HttpServletRequest request) {
+
+	private ModelMap viewListCrtPrivateIPMstModel(@ModelAttribute("searchVo") TbIpBlockMstVo searchVo,
+			HttpServletRequest request) {
 		ModelMap model = new ModelMap();
 		TbIpBlockMstListVo resultListVo = null;
-		String sloadFlg = "T"; //메뉴 호출 시 조회를 처리하지 않기 위한 예외값 로직 추가(2014.12.24 전필권 과장님 요청)
+		String sloadFlg = "T"; // 메뉴 호출 시 조회를 처리하지 않기 위한 예외값 로직 추가(2014.12.24 전필권 과장님 요청)
 		try {
-			
-			List<CommonCodeVo> sipCreateSeqCds = commonCodeService.selectListCommonCode(CommonCodeUtil.IP_CREATE_SEQ_CD2, null);
-			List<CommonCodeVo> sipVersionTypeCds = commonCodeService.selectListCommonCode(CommonCodeUtil.IP_VERSION_TYPE_CD, null);
-			
+
+			List<CommonCodeVo> sipCreateSeqCds = commonCodeService
+					.selectListCommonCode(CommonCodeUtil.IP_CREATE_SEQ_CD2, null);
+			List<CommonCodeVo> sipVersionTypeCds = commonCodeService
+					.selectListCommonCode(CommonCodeUtil.IP_VERSION_TYPE_CD, null);
+
 			model.addAttribute("sipCreateSeqCds", sipCreateSeqCds);
 			model.addAttribute("sipVersionTypeCds", sipVersionTypeCds);
-			
+
 			if (!StringUtils.hasText(searchVo.getSortType())) {
 				searchVo.setSortType(CommonCodeUtil.SORT_TYPE_DMODIFY_DT);
 				sloadFlg = "T";
 			} else {
 				sloadFlg = "F";
 			}
-			
+
 			if (!StringUtils.hasText(searchVo.getSortOrdr())) {
 				searchVo.setSortOrdr(CommonCodeUtil.SORT_ORDR_DESC);
 			}
-			
+
 			if (!StringUtils.hasText(searchVo.getSipVersionTypeCd())) {
 				searchVo.setSipVersionTypeCd(CommonCodeUtil.IPV4);
 			}
-			
+
 			if (!StringUtils.hasText(searchVo.getSipCreateTypeCd())) {
 				searchVo.setSipCreateTypeCd("CT0005");
 			}
-			
+
 			/** 계위 정보 설정 **/
 			TbLvlBasListVo svcLineListVo = jwtUtil.getSvcLineList(request);
 			TbLvlBasListVo centerListVo = null;
@@ -671,26 +697,26 @@ public class CreateMgmtController extends CommonController {
 			model.addAttribute("svcLineListVo", svcLineListVo);
 			model.addAttribute("centerListVo", centerListVo);
 			model.addAttribute("nodeListVo", nodeListVo);
-			
+
 			/** 계위 Seq 목록 조회 **/
 			TbLvlMstVo searchSeqVo = new TbLvlMstVo();
 			searchSeqVo.setSsvcLineTypeCd(searchVo.getSsvcLineTypeCd());
 			searchSeqVo.setSsvcGroupCd(searchVo.getSsvcGroupCd());
 			searchSeqVo.setSsvcObjCd(searchVo.getSsvcObjCd());
-			
+
 			TbLvlMstListVo resultSeqList = jwtUtil.getLvlSeqList(request, searchSeqVo);
 			searchVo.setLvlMstSeqListVo(resultSeqList);
-			
+
 			setPagination(searchVo);
-			if (sloadFlg.equals("T")){
+			if (sloadFlg.equals("T")) {
 				resultListVo = new TbIpBlockMstListVo();
 				resultListVo.setTotalCount(0);
-			}else{
+			} else {
 				resultListVo = createMgmtService.selectListIpBlockMst(searchVo);
 			}
-			
+
 			resultListVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
-			
+
 		} catch (ServiceException e) {
 			resultListVo = new TbIpBlockMstListVo();
 			String msgDesc = tbCmnMstService.selectMsgDesc(e);
@@ -708,18 +734,20 @@ public class CreateMgmtController extends CommonController {
 		model.addAttribute("paginationInfo", paginationInfo);
 		return model;
 	}
-	
+
 	/**
 	 * 사설 IP 볼록 생성 엑셀 다운로드
+	 * 
 	 * @param searchVo
 	 * @param model
 	 * @param request
 	 * @param response
 	 * @return
 	 */
-	@RequestMapping(value="/ipmgmt/createmgmt/viewListCrtPrivateIPMstExcel.json", method = RequestMethod.POST)
+	@RequestMapping(value = "/ipmgmt/createmgmt/viewListCrtPrivateIPMstExcel.json", method = RequestMethod.POST)
 	@ResponseBody
-	public FileVo viewListCrtPrivateIPMstExcel(@ModelAttribute("searchVo") TbIpBlockMstVo searchVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
+	public ResponseEntity<?> viewListCrtPrivateIPMstExcel(@RequestBody TbIpBlockMstVo searchVo, ModelMap model,
+			HttpServletRequest request, HttpServletResponse response) {
 		FileVo resultVo = new FileVo();
 		try {
 			if (!StringUtils.hasText(searchVo.getSortType())) {
@@ -743,13 +771,9 @@ public class CreateMgmtController extends CommonController {
 			mappingList.add("종료 IP|getSlastAddr");
 			mappingList.add("단위블록수|getNclassCnt");
 			mappingList.add("작업일자|getDmodifyDt");
-			String fileName = excelUtil.createExcelFile(resultListVo.getTbIpBlockMstVos(), mappingList, request);
-			if (StringUtils.hasText(fileName)) {
-				resultVo.setFileName(fileName);
-				resultVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
-			} else {
-				throw new ServiceException("CMN.HIGH.00050");
-			}
+
+			return excelDownloadService.generateAndDownloadExcel(resultListVo.getTbIpBlockMstVos(), mappingList,
+					request);
 		} catch (ServiceException e) {
 			String msgDesc = tbCmnMstService.selectMsgDesc(e);
 			resultVo.setCommonMsg(msgDesc);
@@ -757,11 +781,12 @@ public class CreateMgmtController extends CommonController {
 			String msgDesc = tbCmnMstService.selectMsgDesc(new ServiceException("CMN.HIGH.00000"));
 			resultVo.setCommonMsg(msgDesc);
 		}
-		return resultVo;
+		return new ResponseEntity<>(resultVo, HttpStatus.OK);
 	}
-	
+
 	/**
 	 * 사설 IP 블록 상세 정보
+	 * 
 	 * @param tbIpBlockMstVo
 	 * @param model
 	 * @param request
@@ -769,14 +794,17 @@ public class CreateMgmtController extends CommonController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value="/ipmgmt/createmgmt/viewDetailCrtPrivateIPMst.model", method = RequestMethod.POST)
+	@RequestMapping(value = "/ipmgmt/createmgmt/viewDetailCrtPrivateIPMst.model", method = RequestMethod.POST)
 	@ResponseBody
-	public ModelMap viewDetailCrtPrivateIPMst(@RequestBody TbIpBlockMstVo tbIpBlockMstVo, ModelMap model, HttpServletRequest request) {
+	public ModelMap viewDetailCrtPrivateIPMst(@RequestBody TbIpBlockMstVo tbIpBlockMstVo, ModelMap model,
+			HttpServletRequest request) {
 		TbIpBlockMstVo resultVo = createMgmtService.selectIpBlockMst(tbIpBlockMstVo);
 		return createResult(resultVo);
 	}
-	@RequestMapping(value="/ipmgmt/createmgmt/viewDetailCrtPrivateIPMst.ajax", method = RequestMethod.POST)
-	public String viewDetailCrtPrivateIPMst(@RequestBody TbIpBlockMstVo tbIpBlockMstVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
+
+	@RequestMapping(value = "/ipmgmt/createmgmt/viewDetailCrtPrivateIPMst.ajax", method = RequestMethod.POST)
+	public String viewDetailCrtPrivateIPMst(@RequestBody TbIpBlockMstVo tbIpBlockMstVo, ModelMap model,
+			HttpServletRequest request, HttpServletResponse response) {
 		TbIpBlockMstVo searchVoClone = new TbIpBlockMstVo();
 		try {
 			CloneUtil.copyObjectInformation(tbIpBlockMstVo, searchVoClone);
@@ -794,7 +822,9 @@ public class CreateMgmtController extends CommonController {
 		model.addAttribute("searchVoJson", searchVoJson(searchVoClone));
 		return "ipmgmt/createmgmt/viewDetailCrtPrivateIPMst";
 	}
-	private ModelMap viewDetailCrtPrivateIPMstModel(@RequestBody TbIpBlockMstVo tbIpBlockMstVo, HttpServletRequest request) {
+
+	private ModelMap viewDetailCrtPrivateIPMstModel(@RequestBody TbIpBlockMstVo tbIpBlockMstVo,
+			HttpServletRequest request) {
 		ModelMap model = new ModelMap();
 		TbIpBlockMstVo resultVo = null;
 		try {
@@ -812,6 +842,5 @@ public class CreateMgmtController extends CommonController {
 		model.addAttribute("resultVo", resultVo);
 		return model;
 	}
-	
-	
+
 }

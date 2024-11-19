@@ -9,7 +9,7 @@
     <el-col ref="tableContainer" :span="24">
       <compTable
         ref="compTable"
-        style="height: calc(100% - 80px)"
+        style="height: 100%"
         :prop-name="name"
         :prop-table-height="'100%'"
         :prop-data="pagination.data"
@@ -23,6 +23,7 @@
         :prop-on-page-change="handleChangeCurPage"
         :prop-on-page-size-change="handleChangeCurPage"
         @update:propSelected="handleClickCheck"
+        @savedExcel="handleClickExcelDownloadBtn"
       >
         <template slot="text-description">
           <span>
@@ -30,7 +31,7 @@
           </span>
         </template>
         <template slot="add-features">
-          <div style="margin-top: 10px">
+          <div class="add-features">
             <el-button type="primary" size="mini" round @click="fnRoutingCollectMst">무선 전체 라우팅 수집</el-button>
             <el-button type="primary" size="mini" round @click="handleClickSummaryMng">Summary 관리</el-button>
             <el-button type="primary" size="mini" round @click="$refs.ModalUploadMst.open()" @reload="fnViewListMobileMst">텍스트 파일 업로드</el-button>
@@ -55,6 +56,7 @@ import CompTable from '@/components/elTable/CompTable.vue'
 import tableHeightMixin from '@/mixin/tableHeightMixin'
 import { ipmsModelApis, apiRequestModel, ipmsJsonApis, apiRequestJson } from '@/api/ipms'
 import { onMessagePopup } from '@/utils'
+import { downloadExcel } from '@/views-ipms/js/common-function'
 
 const routeName = 'WirelessIpPriorInfoManagement'
 
@@ -176,6 +178,9 @@ export default {
     },
     handleClickSummaryMng() {
       this.$refs.ModalSummaryMst.open()
+    },
+    handleClickExcelDownloadBtn() {
+      downloadExcel(this, 'viewListMobileMstExcel')
     }
   }
 }

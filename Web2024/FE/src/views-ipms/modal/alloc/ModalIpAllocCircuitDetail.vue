@@ -151,7 +151,7 @@ export default {
       this.fnViewDetailSubSvcMst(model.ipBlockMstVo)
     },
     onClose() {
-      this.$emit('selected-value', { selectedRow: this.resultVo, returnFlag: 'allocTel' })
+      this.$emit('selected-value', { row: this.resultVo, returnFlag: 'allocTel' })
       this.$emit('closeCircuitDetail')
     },
     async fnViewDetailSubSvcMst(ipBlockMstVo = null) {

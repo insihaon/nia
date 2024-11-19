@@ -50,7 +50,7 @@ import { Base } from '@/min/Base.min'
 import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
 import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
 import { apiSelectSopHistList, apiSopSyslogHistList, apiEquipmentList, apiInterfaceList } from '@/api/nia'
-import { getAlarmType, getTicketStatus } from '@/views-nia/js/commonFormat'
+import { getAlarmType, getTicketStatus, getSopAiAccuracy } from '@/views-nia/js/commonFormat'
 import ModalSopDetail from '@/views-nia/modal/ModalSopDetail.vue'
 
 const routeName = 'SopHistory'
@@ -122,9 +122,9 @@ export default {
     sopAgGrid() {
       const options = { name: this.name, checkable: false, rowGroupPanel: false, rowSelection: 'multiple', rowMultiSelection: false }
       const columns = [
-        { type: '', prop: 'ticket_id', name: '티켓번호', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
-        { type: '', prop: 'ticket_type', name: '티켓유형', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false, format: getAlarmType },
-        { type: '', prop: 'ticket_result', name: '장애내용', width: 160, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
+        { type: '', prop: 'ticket_id', name: '티켓번호', width: 150, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
+        { type: '', prop: 'ticket_type', name: '티켓유형', width: 130, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false, format: getAlarmType },
+        { type: '', prop: 'ticket_result', name: '장애내용', width: 200, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
         { type: '', prop: 'fault_classify', name: '장애구분', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
         { type: '', prop: 'fault_type', name: '장애유형', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
         { type: '', prop: 'fault_detail_content', name: '조치내용', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true },
@@ -160,13 +160,14 @@ export default {
         { type: '', prop: 'root_cause_sysnamez', name: '노드Z', width: 250, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true },
         { type: '', prop: 'ip_addra', name: '마스터 IP', width: 250, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true },
         { type: '', prop: 'root_cause_porta', name: '장비I/F', width: 250, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true },
+        { type: '', prop: 'ai_accuracy', name: 'AI 결과 피드백', width: 100, formatter: getSopAiAccuracy }
       ]
-      return { options, columns, data: this.sopHistList }
+      return { options, columns, data: this.sopHistList, getRightClickMenuItems: () => { return [] } }
     },
     syslogAgGrid() {
       const options = { name: this.name, checkable: false, rowGroupPanel: false, rowSelection: 'multiple', rowMultiSelection: false }
       const columns = [
-        { type: '', prop: 'alarmno', name: '알람번호', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
+        { type: '', prop: 'alarmno', name: '알람번호', width: 150, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
         { type: '', prop: 'node_nm', name: '장비명', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
         { type: '', prop: 'alarmloc', name: '인터페이스', width: 160, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
         { type: '', prop: 'fault_classify', name: '장애구분', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
@@ -184,7 +185,7 @@ export default {
           sortable: true,
           filterable: true,
           formatter: (row) => {
-            return row.fault_time ? this.formatterTimeStamp(row.fault_time, 'YYYY/MM/DD-HH:mm:ss') : ''
+            return row.alarm_occur_time ? this.formatterTimeStamp(row.alarm_occur_time, 'YYYY/MM/DD-HH:mm:ss') : ''
           },
         },
         {

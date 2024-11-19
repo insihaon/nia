@@ -1,5 +1,6 @@
 package com.kt.ipms.legacy.ipmgmt.allocmgmt.web;
 
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -10,7 +11,13 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -23,9 +30,11 @@ import com.kt.framework.exception.ServiceException;
 import com.kt.framework.utils.StringUtils;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
+import com.kt.ipms.legacy.cmn.util.FileUtil;
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
 import com.kt.ipms.legacy.cmn.vo.FileVo;
 import com.kt.ipms.legacy.cmn.web.CommonController;
+
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.service.AllocMgmtService;
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.IpAllocMstComplexVo;
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.IpAllocOperMstListVo;
@@ -43,11 +52,23 @@ import com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlMstVo;
 
 import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
 
+import com.codej.base.property.FileStorageProperties;
+// import com.kt.ipms.legacy.cmn.web.FileController;
+import com.codej.web.controller.FileController;
+import com.codej.base.dto.model.ResultMap;
+
+
 @Controller
 public class AllocMgmtController extends CommonController {
 
 	@Autowired
 	private AllocMgmtService allocMgmtService;
+
+	@Autowired
+	protected FileController fileController;
+
+	@Autowired
+    private FileStorageProperties fileStorageProperties;
 
 	/**
 	 * IP 할당 목록
@@ -280,10 +301,10 @@ public class AllocMgmtController extends CommonController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/ipmgmt/allocmgmt/viewListIpAllocMstExcel.json", method = RequestMethod.POST)
+	@RequestMapping(value = "/ipmgmt/allocmgmt/viewListIpAllocMstExcel.json")
 	@ResponseBody
-	public FileVo selectListIpBlockMstExcel(@ModelAttribute("searchVo") IpAllocOperMstVo searchVo,
-			HttpServletRequest request, HttpServletResponse response) {
+	public ResponseEntity<?> selectListIpBlockMstExcel(@RequestBody IpAllocOperMstVo searchVo,
+			HttpServletRequest request) {
 		FileVo resultVo = new FileVo();
 		try {
 			/** 계위 정보 설정 **/
@@ -406,13 +427,7 @@ public class AllocMgmtController extends CommonController {
 			mappingList.add("장비명|getSsubscnealias");
 			mappingList.add("I/F명|getSsubsclgipportdescription");
 			mappingList.add("비고|getScomment");
-			String fileName = excelUtil.createExcelFile(resultListVo.getIpAllocOperMstVos(), mappingList, request);
-			if (StringUtils.hasText(fileName)) {
-				resultVo.setFileName(fileName);
-				resultVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
-			} else {
-				throw new ServiceException("CMN.HIGH.00050");
-			}
+			return excelDownloadService.generateAndDownloadExcel(resultListVo.getIpAllocOperMstVos(), mappingList, request);
 		} catch (ServiceException e) {
 			String msgDesc = tbCmnMstService.selectMsgDesc(e);
 			resultVo.setCommonMsg(msgDesc);
@@ -420,7 +435,7 @@ public class AllocMgmtController extends CommonController {
 			String msgDesc = tbCmnMstService.selectMsgDesc(new ServiceException("CMN.HIGH.00000"));
 			resultVo.setCommonMsg(msgDesc);
 		}
-		return resultVo;
+		return new ResponseEntity<>(resultVo, HttpStatus.OK);
 	}
 
 	/**
@@ -1034,10 +1049,34 @@ public class AllocMgmtController extends CommonController {
 	@ResponseBody
 	public ModelMap selectListIpAllocMstByMain(@RequestBody IpAllocOperMstVo searchVo, ModelMap model,
 	HttpServletRequest request) {
-		ModelMap builtModel = selectListIpAllocMstByMainModelMap(searchVo, request);
-		IpAllocOperMstListVo resultListVo = (IpAllocOperMstListVo)builtModel.get("resultListVo");
+		ModelMap resultModel = new ModelMap();
 		
-		return createResultList(resultListVo.getIpAllocOperMstVos(), resultListVo.getTotalCount());
+		IpAllocOperMstListVo resultListVo = allocMgmtService.selectListPageMainIpAssignMst(searchVo);
+		
+		TbIpHostMstVo tbHostInfoVo = new TbIpHostMstVo();
+		if (searchVo.getSearchWrd().equals("CV0001")) {
+			tbHostInfoVo.setSearchWrd(searchVo.getSfirstAddr());
+			tbHostInfoVo.setSipVersionTypeCd(searchVo.getSipVersionTypeCd());
+		} else if (searchVo.getSearchWrd().equals("CV0002")) {
+			tbHostInfoVo.setSearchWrd(searchVo.getSfirstAddr());
+			tbHostInfoVo.setSipVersionTypeCd(searchVo.getSipVersionTypeCd());
+		} else if (searchVo.getSearchWrd().equals("SAID")) {
+			tbHostInfoVo.setSsaid(searchVo.getSsaid());
+		} else if (searchVo.getSearchWrd().equals("SLLNUM")) {
+			tbHostInfoVo.setSllnum(searchVo.getSllnum());
+		} else if (searchVo.getSearchWrd().equals("SCONNALIAS")) {
+			tbHostInfoVo.setSconnAlias(searchVo.getSconnAlias());
+		}
+
+		TbIpHostMstListVo tbIpHostMstListVo = allocMgmtService.selectTbIpHostInfoVo(tbHostInfoVo);
+
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("resultListVo", resultListVo.getIpAllocOperMstVos());
+		map.put("resultListTotalCount", resultListVo.getTotalCount());
+		map.put("tbIpHostMstListVo", tbIpHostMstListVo.getTbIpHostMstVos());
+		map.put("tbIpHostMstListTotalCount", tbIpHostMstListVo.getTotalCount());
+		resultModel.addAttribute("result",map);
+		return resultModel;
 	}
 
 	@RequestMapping(value = "/ipmgmt/allocmgmt/viewListIpAllocMstByMain.ajax", method = RequestMethod.POST)
@@ -1179,7 +1218,7 @@ public class AllocMgmtController extends CommonController {
 
 	@RequestMapping(value="/ipmgmt/allocmgmt/viewListIpAllocMstByMainExcel.json", method = RequestMethod.POST)
 	@ResponseBody
-	public FileVo selectListIpAllocMstByMainExcel(@ModelAttribute("searchVo") IpAllocOperMstVo searchVo, ModelMap model,
+	public ResponseEntity<?> selectListIpAllocMstByMainExcel(@RequestBody IpAllocOperMstVo searchVo, ModelMap model,
 			HttpServletRequest request, HttpServletResponse response) {
 		IpAllocOperMstListVo resultListVo = null;
 		FileVo resultVo = new FileVo();
@@ -1203,14 +1242,7 @@ public class AllocMgmtController extends CommonController {
 			mappingList.add("SAID|getSsaid");
 			mappingList.add("전용번호|getSllnum");
 			mappingList.add("수용회선명|getSconnAlias");
-			String fileName = excelUtil.createExcelFile(resultListVo.getIpAllocOperMstVos(), mappingList, request);
-			if (StringUtils.hasText(fileName)) {
-				resultVo.setFileName(fileName);
-				resultVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
-			} else {
-				throw new ServiceException("CMN.HIGH.00050");
-			}
-
+			return excelDownloadService.generateAndDownloadExcel(resultListVo.getIpAllocOperMstVos(), mappingList, request);
 		} catch (ServiceException e) {
 			resultListVo = new IpAllocOperMstListVo();
 			String msgDesc = tbCmnMstService.selectMsgDesc(e);
@@ -1223,7 +1255,7 @@ public class AllocMgmtController extends CommonController {
 			resultListVo.setTotalCount(0);
 		}
 		
-		return resultVo;
+		return new ResponseEntity<>(resultVo, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/ipmgmt/allocmgmt/viewDetailIpAllocMstByMain.model", method = RequestMethod.POST)
@@ -1343,9 +1375,8 @@ public class AllocMgmtController extends CommonController {
 	
 	@RequestMapping(value = "/ipmgmt/allocmgmt/viewListMultiIpInfoExcel.json", method = RequestMethod.POST)
 	@ResponseBody
-	public FileVo viewListMultiIpInfoExcel(@ModelAttribute("searchVo") IpAllocOperMstVo searchVo, ModelMap model,
+	public ResponseEntity<?> viewListMultiIpInfoExcel(@RequestBody IpAllocOperMstVo searchVo, ModelMap model,
 			HttpServletRequest request, HttpServletResponse response) {
-
 		FileVo resultVo = new FileVo();
 		try {
 
@@ -1370,13 +1401,7 @@ public class AllocMgmtController extends CommonController {
 			mappingList.add("서비스|getSassignTypeNm");
 			mappingList.add("SAID|getSsaid");
 			mappingList.add("전용번호|getSllnum");
-			String fileName = excelUtil.createExcelFile(resultListVo.getIpAllocOperMstVos(), mappingList, request);
-			if (StringUtils.hasText(fileName)) {
-				resultVo.setFileName(fileName);
-				resultVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
-			} else {
-				throw new ServiceException("CMN.HIGH.00050");
-			}
+			return excelDownloadService.generateAndDownloadExcel(resultListVo.getIpAllocOperMstVos(), mappingList, request);
 		} catch (ServiceException e) {
 			String msgDesc = tbCmnMstService.selectMsgDesc(e);
 			resultVo.setCommonMsg(msgDesc);
@@ -1384,7 +1409,7 @@ public class AllocMgmtController extends CommonController {
 			String msgDesc = tbCmnMstService.selectMsgDesc(new ServiceException("CMN.HIGH.00000"));
 			resultVo.setCommonMsg(msgDesc);
 		}
-		return resultVo;
+		return new ResponseEntity<>(resultVo, HttpStatus.OK);
 	}
 
 	/**
@@ -1551,7 +1576,7 @@ public class AllocMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/ipmgmt/allocmgmt/viewListVpnIPStatExcel.json", method = RequestMethod.POST)
 	@ResponseBody
-	public FileVo selectListVPNIPStatExcel(@ModelAttribute("searchVo") TbIpAllocMstVo searchVo,
+	public ResponseEntity<?> selectListVPNIPStatExcel(@RequestBody TbIpAllocMstVo searchVo,
 			HttpServletRequest request, HttpServletResponse response) {
 		FileVo resultVo = new FileVo();
 		try {
@@ -1637,14 +1662,15 @@ public class AllocMgmtController extends CommonController {
 			mappingList.add("보유|getSvpnTypeNm");
 			mappingList.add("작업일자|getDmodifyDt");
 
-			String fileName = excelUtil.createExcelFile(resultListVo.getTbIpAllocMstVos(), mappingList, request);
+			// String fileName = excelUtil.createExcelFile(resultListVo.getTbIpAllocMstVos(), mappingList, request);
 
-			if (StringUtils.hasText(fileName)) {
-				resultVo.setFileName(fileName);
-				resultVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
-			} else {
-				throw new ServiceException("CMN.HIGH.00050");
-			}
+			// if (StringUtils.hasText(fileName)) {
+			// 	resultVo.setFileName(fileName);
+			// 	resultVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
+			// } else {
+			// 	throw new ServiceException("CMN.HIGH.00050");
+			// }
+			return excelDownloadService.generateAndDownloadExcel(resultListVo.getTbIpAllocMstVos(), mappingList, request);
 
 		} catch (ServiceException e) {
 			String msgDesc = tbCmnMstService.selectMsgDesc(e);
@@ -1653,7 +1679,7 @@ public class AllocMgmtController extends CommonController {
 			String msgDesc = tbCmnMstService.selectMsgDesc(new ServiceException("CMN.HIGH.00000"));
 			resultVo.setCommonMsg(msgDesc);
 		}
-		return resultVo;
+		return new ResponseEntity<>(resultVo, HttpStatus.OK);
 
 	}
 

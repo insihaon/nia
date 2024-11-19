@@ -1,11 +1,11 @@
 <template>
-  <div :class="{ [name]: true }">
+  <div :class="{ [name]: true}" style="height : 100%">
     <div class="d-flex flex-column h-full">
-      <el-card shadow="never" :body-style="{ padding: '10px' }">
+      <el-card shadow="never" style="height : 40%" :body-style="{ padding: '10px' , height: 'calc(100% - 55px)' }">
         <div slot="header">
           <span><i class="el-icon-document" /> 작업 요청 구간</span>
         </div>
-        <el-row style="height: 140px" class="d-flex flex-column justify-center">
+        <el-row class="d-flex flex-column justify-center h-100">
           <div class="node-section d-flex justify-center">
             <img src="@/assets/images/nia/node/switch.png">
             <div class="blinking mt-8" />
@@ -24,28 +24,28 @@
         </el-row>
       </el-card>
 
-      <el-card shadow="never" :body-style="{ padding: '10px' }" class="mt-2">
+      <el-card shadow="never" style="height : 60%" :body-style="{ padding: '10px', height: 'calc(100% - 30px)' }" class="mt-2">
         <div slot="header">
           <span><i class="el-icon-document" /> TRAFFIC 그래프</span>
         </div>
         <el-row v-if="!isRT">
-          <CompChart :options="trafficChart" :chart-loading="chartLoading" style="height: 250px" />
+          <CompChart :options="trafficChart" :chart-loading="chartLoading" style="height: 300px" />
         </el-row>
         <el-row v-else style="height: 250px" class="d-flex items-center justify-center"> 정보가 없습니다. </el-row>
       </el-card>
-    </div>
 
-    <el-row>
-      <el-col align="right" class="mt-2">
-        <el-button size="mini" type="primary" icon="el-icon-camera" @click.native="fn_openWindow('snapShot', _merge(selectedRow, trafficInfo))"> 데이터 스냅샷 </el-button>
-        <el-button size="mini" type="primary" @click.native="fn_openWindow('requestForAction', _merge(selectedRow, trafficInfo))"> 상황전파 </el-button>
-        <el-button size="mini" type="primary" @click.native="fn_openWindow('configTest', _merge(selectedRow, trafficInfo))"> 시험 </el-button>
-        <el-button size="mini" type="primary" @click.native="fn_openWindow('processFin', _merge(selectedRow, trafficInfo))"> 마감 </el-button>
-        <el-button size="mini" type="info" icon="el-icon-close" @click.native="$emit('windowClose')">
-          {{ $t('exit') }}
-        </el-button>
-      </el-col>
-    </el-row>
+      <el-row>
+        <el-col align="right" class="mt-2">
+          <el-button size="mini" type="primary" icon="el-icon-camera" @click.native="fn_openWindow('snapShot', _merge(selectedRow, trafficInfo))"> 데이터 스냅샷 </el-button>
+          <el-button size="mini" type="primary" @click.native="fn_openWindow('requestForAction', _merge(selectedRow, trafficInfo))"> 상황전파 </el-button>
+          <el-button size="mini" type="primary" @click.native="fn_openWindow('configTest', _merge(selectedRow, trafficInfo))"> 시험 </el-button>
+          <el-button size="mini" type="primary" @click.native="fn_openWindow('processFin', _merge(selectedRow, trafficInfo))"> 마감 </el-button>
+          <el-button size="mini" type="info" icon="el-icon-close" @click.native="$emit('windowClose')">
+            {{ $t('exit') }}
+          </el-button>
+        </el-col>
+      </el-row>
+    </div>
   </div>
 </template>
 
@@ -118,8 +118,8 @@ export default {
         const seriesInfo = [
           { name: 'PPS_IN', value: 'fltpps_in' },
           { name: 'PPS_OUT', value: 'fltpps_out' },
-          { name: 'BPS_IN', value: 'fltbps_in' },
-          { name: 'BPS_OUT', value: 'fltbps_out' },
+          { name: 'MBPS_IN', value: 'fltbps_in' },
+          { name: 'MBPS_OUT', value: 'fltbps_out' },
         ]
         seriesArr = seriesInfo.map((item) => {
           return {

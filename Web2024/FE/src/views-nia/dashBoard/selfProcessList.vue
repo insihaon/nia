@@ -142,7 +142,7 @@ export default {
           },
         },
       ]
-      return { options, columns, data: this.selfProcessList }
+      return { options, columns, data: this.selfProcessList, getRightClickMenuItems: () => { return [] } }
     },
     searchItems() {
       return [

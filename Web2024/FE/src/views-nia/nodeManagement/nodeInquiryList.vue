@@ -20,7 +20,7 @@
     <ModalPortManagement ref="ModalPortManagement" />
     <CompAgGrid
       v-show="false"
-      ref="excelGrid"
+      ref="nodeGrid"
       v-model="excelGrid"
     />
   </div>
@@ -162,7 +162,7 @@ export default {
       this.onLoadTrafficList()
     },
     onSaveExcel() {
-      this.$refs.excelGrid.exportExcel(`노드관리_${this.toStringTime(new Date(), 'YYMMDD')}`)
+      this.$refs.nodeGrid.exportExcel(`노드관리_${this.toStringTime(new Date(), 'YYMMDD')}`)
     },
     handleOpenModalDetail(row, type) {
       if (type === 'nodeDetail') {

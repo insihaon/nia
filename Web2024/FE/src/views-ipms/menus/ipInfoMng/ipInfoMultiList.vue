@@ -84,7 +84,7 @@ export default {
       */
     },
     onCheckValidation(val) {
-      const reVal = val.replace(/[^0-9\\.]/g, '')
+      const reVal = val.replace(/[^0-9.\/]/g, '')
       this.searchWrd = reVal
     }
   },

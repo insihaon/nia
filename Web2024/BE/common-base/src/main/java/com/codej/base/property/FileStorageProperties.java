@@ -20,6 +20,8 @@ public class FileStorageProperties {
     private String uploadDir;
     @Value("${file.access-url:/external/**}")
     private String accessUrl;
+    @Value("${file.excel-upload-dir:excelFiles}")
+    private String excelUploadDir;
 
     public String getUploadDir() {
         String dir = FileUtil.combine(FileUtil.getCurrentDir(), "uploads");
@@ -36,4 +38,16 @@ public class FileStorageProperties {
     public void setUploadDir(String uploadDir) {
         this.uploadDir = uploadDir;
     }
+
+    public String getExcelUploadDir() {
+        String dir = FileUtil.combine(FileUtil.getCurrentDir(), accessUrl.replace("**", ""), excelUploadDir);
+        // if (excelUploadDir != null) {
+        //     dir = excelUploadDir;
+        // }
+        if (!Files.exists(Paths.get(dir))) {
+            FileUtil.mkDirs(dir);
+        }
+        return dir;
+    }
+
 }

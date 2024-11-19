@@ -22,6 +22,7 @@
         :prop-on-dbl-click="handleDbClickRow"
         :prop-on-page-change="handleChangeCurPage"
         :prop-on-page-size-change="handleChangeCurPage"
+        @savedExcel="handleClickExcelDownloadBtn"
       >
         <template slot="text-description">
           <span>
@@ -29,7 +30,7 @@
           </span>
         </template>
         <template slot="add-features">
-          <div style="margin-top: 10px">
+          <div class="add-features">
             <el-button icon="el-icon-document-add" type="primary" size="mini" round @click="handleClickEditBtn('insert')">운용정보등록</el-button>
           </div>
         </template>
@@ -46,8 +47,9 @@ import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoad
 import ModalIpLinkMstInsert from '@/views-ipms/modal/ModalIpLinkMstInsert.vue'
 import ModalIpLinkMstDetail from '@/views-ipms/modal/ModalIpLinkMstDetail.vue'
 import tableHeightMixin from '@/mixin/tableHeightMixin'
-import { ipmsModelApis, apiRequestModel, apiRequestJson, ipmsJsonApis } from '@/api/ipms'
+import { ipmsModelApis, apiRequestModel, apiRequestJson, ipmsJsonApis, apiRequestExcel } from '@/api/ipms'
 import { onMessagePopup } from '@/utils'
+import { downloadExcel } from '@/views-ipms/js/common-function'
 
 const routeName = 'OperInfoLinkManagement'
 
@@ -132,8 +134,8 @@ export default {
       } catch (error) {
         this.error(error)
       } finally {
-          this.closeLoading(target)
-        }
+        this.closeLoading(target)
+      }
     },
     handleChangeCurPage(v) {
       if (v) this.pagination.currentPage = v
@@ -171,6 +173,9 @@ export default {
         })
         .catch(action => {
         })
+    },
+    handleClickExcelDownloadBtn() {
+      downloadExcel(this, 'viewListIpLinkMstExcel')
     }
   }
 }

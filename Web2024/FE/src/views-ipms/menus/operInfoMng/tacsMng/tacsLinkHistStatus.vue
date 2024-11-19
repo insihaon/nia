@@ -9,7 +9,7 @@
     <el-col ref="tableContainer" :span="24">
       <compTable
         ref="compTable"
-        style="height: calc(100% - 80px)"
+        style="height: 100%"
         :prop-name="name"
         :prop-table-height="'100%'"
         :prop-data="pagination.data"
@@ -20,6 +20,7 @@
         :prop-highlight-cell="onCheckSavailYn"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
+        :prop-enabled-excel-down="false"
         :prop-on-page-change="handleChangeCurPage"
         :prop-on-page-size-change="handleChangeCurPage"
       >
@@ -66,7 +67,7 @@ export default {
           },
           { prop: 'sresultMsg', label: '결과메세지', align: 'center', columnVisible: true, showOverflow: true, },
           { prop: 'smodifyId', label: '사용자ID', align: 'center', columnVisible: true, showOverflow: true },
-          { prop: 'dcreateDt', label: '접속일시', align: 'center', columnVisible: true, showOverflow: true },
+          { prop: 'dcreateDt', label: '접속일시', align: 'center', columnVisible: true, showOverflow: true, formatter: (row) => { return row.dcreateDt ? this.moment(row.dcreateDt).format('YYYY-MM-DD HH:mm:ss') : '' } },
       ],
       tableDatas: [],
       sresultMsgOptions: [],

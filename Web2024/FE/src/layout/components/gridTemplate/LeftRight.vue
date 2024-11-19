@@ -49,7 +49,7 @@ export default {
   methods: {
     resize(val) {
       console.log(val)
-        window.helper.$store.dispatch('settings/changeSetting', {
+        this.$store.dispatch('settings/changeSetting', {
         key: 'topPaneSize',
         value: val
       })

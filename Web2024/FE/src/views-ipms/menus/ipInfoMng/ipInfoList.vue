@@ -1,7 +1,7 @@
 <template>
   <div ref="container" class="w-100 h-100">
     <div v-if="!isDashboard" ref="searchCondition" class="searchOptionWrap">
-      <table>
+      <table class="searchTable">
         <th>
           IP주소
         </th>
@@ -57,6 +57,7 @@
         :prop-grid-indx="1"
         :prop-on-page-change="handleChangeCurPage"
         :prop-on-page-size-change="handleChangeCurPage"
+        @savedExcel="handleClickExcelDownloadBtn"
       >
         <template slot="text-description">
           <span>
@@ -73,7 +74,7 @@ import { Base } from '@/min/Base.min'
 import CompTable from '@/components/elTable/CompTable.vue'
 import tableHeightMixin from '@/mixin/tableHeightMixin'
 import { onMessagePopup } from '@/utils'
-import { ipmsModelApis, apiRequestModel } from '@/api/ipms'
+import { ipmsModelApis, apiRequestModel, apiRequestExcel, ipmsJsonApis } from '@/api/ipms'
 import ModalIpInfoDetail from '@/views-ipms/modal/ModalIpInfoDetail'
 
 const routeName = 'IpInfoList'
@@ -99,6 +100,7 @@ export default {
       searchTagStr: '',
       value: '',
       option: 'CV0001',
+      ipRegExp: new RegExp(/[^0-9.\/]/g),
       ipBlockColumns: [
         { prop: 'pipPrefix', label: 'IP블록', align: 'center', width: 135, sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'sfirstAddr', label: '시작 IP', align: 'center', width: 135, sortable: true, columnVisible: true, showOverflow: true },
@@ -152,7 +154,7 @@ export default {
   methods: {
     onCheckValidation(val) {
       if (['CV0001', 'CV0002'].includes(this.option)) {
-        const reVal = this.searchTagStr.replace(/[^0-9\\.]/g, '')
+        const reVal = this.searchTagStr.replace(this.ipRegExp, '')
         this.searchTagStr = reVal
       }
     },
@@ -164,24 +166,22 @@ export default {
       }
     },
     async fnMultiIpInfo() {
+      const searchWrd = this.searchTagArr.toString()
+      const { pageSize: pageUnit, currentPage: pageIndex } = this.pagination
+      const target = ({ vue: this.$refs.compTable })
       try {
-        const searchWrd = this.searchTagArr.toString()
-        const { pageSize: pageUnit, currentPage: pageIndex } = this.pagination
+        this.openLoading(target)
         const res = await apiRequestModel(ipmsModelApis.viewListMultiIpInfo, { pageIndex, pageUnit, searchWrd })
-        this.pagination.data = res?.result?.resultListVo ?? []
-        this.pagination.total = res.result.resultListTotalCount
+        this.pagination.data = res?.result.data ?? []
+        this.pagination.total = res.result.totalCount
       } catch (error) {
         this.error(error)
+      } finally {
+        this.closeLoading(target)
       }
     },
-    async fnViewListIpAllocMstByMain() {
-      const THIS = this
-      if (this.searchTagStr === '' && this.searchTagArr.length === 0) {
-        onMessagePopup(this, '검색어를  입력하세요.')
-        return
-      }
-      const { pageSize: pageUnit, currentPage: pageIndex } = this.pagination
-      const ipInfoVo = { pageIndex, pageUnit, searchWrd: this.option }
+    getViewListIpAllocMstByMainParameter() {
+      const ipInfoVo = { searchWrd: this.option }
       if (this.option === 'CV0001' || this.option === 'CV0002') {
         Object.assign(ipInfoVo, { sfirstAddr: this.searchTagArr[0] ?? this.searchTagStr, sipVersionTypeCd: this.option })
       } else {
@@ -204,6 +204,17 @@ export default {
         }
         Object.assign(ipInfoVo, { [key]: this.searchTagArr.length > 1 ? this.searchTagArr : [this.searchTagStr] })
       }
+      return ipInfoVo
+    },
+    async fnViewListIpAllocMstByMain() {
+      const THIS = this
+      if (this.searchTagStr === '' && this.searchTagArr.length === 0) {
+        onMessagePopup(this, '검색어를  입력하세요.')
+        return
+      }
+      const { pageSize: pageUnit, currentPage: pageIndex } = this.pagination
+      const ipInfoVo = { pageIndex, pageUnit }
+      Object.assign(ipInfoVo, this.getViewListIpAllocMstByMainParameter())
       const target = ({ vue: this.$refs.compTable })
       try {
         this.openLoading(target)
@@ -226,7 +237,7 @@ export default {
       if (['CV0001', 'CV0002'].includes(this.option)) {
         str = this.searchTagStr.replaceAll(' ', '')
       } else {
-        str = this.searchTagStr.replaceAll(/[^0-9]/g, '')
+        str = this.searchTagStr.replaceAll(this.ipRegExp, '')
       }
       if (!this.searchTagArr.includes(str) && str.length > 0) {
         this.searchTagArr.push(str)
@@ -280,6 +291,26 @@ export default {
         this.error(error)
       }
     },
+    async handleClickExcelDownloadBtn() {
+      const isMulti = ['CV0001', 'CV0002'].includes(this.option) && this.searchTagArr.length > 1
+      const target = ({ vue: this.$refs.container })
+       try {
+        this.openLoading(target)
+        let res
+        if (isMulti) {
+          res = await apiRequestExcel(ipmsJsonApis.viewListMultiIpInfoExcel, { searchWrd: this.searchTagArr.toString() })
+        } else {
+          res = await apiRequestExcel(ipmsJsonApis.viewListIpAllocMstByMainExcel, this.getViewListIpAllocMstByMainParameter())
+        }
+        if (res && res.commonMsg) {
+          onMessagePopup(this, res?.commonMsg)
+        }
+      } catch (error) {
+          this.error(error)
+      } finally {
+        this.closeLoading(target)
+      }
+    }
   },
 }
 </script>

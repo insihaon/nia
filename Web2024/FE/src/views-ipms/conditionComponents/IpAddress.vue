@@ -114,7 +114,7 @@ export default {
       }
     },
     onChangeInput(val) {
-      this.word = val.replace(/[^0-9.]+/g, '')
+      this.word = val.replace(/[^0-9.\/]+/g, '')
     }
   }
 }
