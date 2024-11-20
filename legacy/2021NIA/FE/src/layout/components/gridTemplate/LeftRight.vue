@@ -2,7 +2,7 @@
   <div :class="[{ [name]: true }]">
     <!-- left/right -->
     <SplitPane :min-percent="0" split="vertical" :default-percent="topPaneSize" @resize="resize">
-      <template slot="paneL" style="{ overflow: topPaneSize === 0? 'hidden':'auto' }">
+      <template slot="paneL">
         <filterBar position="TOP" :size-by-type="sizeByType" />
         <slot name="left-container" />
       </template>

@@ -259,7 +259,7 @@ export default {
   }
 </script>
 
-<style lang="scss" >
+<style lang="scss">
 
 .MetaDataManagement {
   font-family: "NanumSquare";
