@@ -1,7 +1,7 @@
 <template>
   <div :class="{ [name]: true }">
     <LeftBar class="h-full">
-      <template v-if="isViewport('>', 'md')" v-slot:leftbar-container>
+      <template v-if="isViewport('>', 'md')" #leftbar-container>
         <div class="h-20 text-center mt-1">
           <spans style="z-index : 1" class="font-bold text-lg whitespace-nowrap">AI관제 시스템 처리량</spans>
           <div class="d-flex p-2 justify-center items-center">
@@ -45,9 +45,9 @@
           <CompChart :options="selfProcessOptions" class="h-full" style="min-width : 360px;" @click="onClickChart" />
         </div>
       </template>
-      <template v-slot:top-container>
+      <template #top-container>
         <filterBar position="TOP">
-          <template v-slot:function-container>
+          <template #function-container>
             <div class="filter-container">
               <div class="title">IP-SDN</div>
               <div class="filter-group">
@@ -82,9 +82,9 @@
         <CompAgGrid ref="ipAgGrid" v-model="ipAgGrid" class="w-100 flex-fill" @rowClicked="selectedTicket" />
         <!-- top-container content -->
       </template>
-      <template v-slot:bottom-container>
+      <template #bottom-container>
         <filterBar position="BOTTOM">
-          <template v-slot:function-container>
+          <template #function-container>
             <div class="filter-container">
               <div class="title">전송망</div>
               <div class="filter-group">
@@ -147,7 +147,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      temp:'',
+      temp1: '',
       ipFilterGroup: '',
       transFilterGroup: '',
       ipspnTextSearch: '',
