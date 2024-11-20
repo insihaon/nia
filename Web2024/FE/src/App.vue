@@ -1,6 +1,6 @@
 <template>
   <div id="app" :class="[appClass, appProject, uuid]">
-    <RouterView2 />
+    <RouterView />
   </div>
 </template>
 

@@ -98,6 +98,7 @@ export default {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       isDeleteMode: false,
+      temp: '',
       userFormItem: [
         { label: '아이디', value: 'uid' },
         { label: '기존 비밀번호', value: 'orgpassword' },
