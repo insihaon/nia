@@ -147,7 +147,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      temp1: '',
+      temp2: '',
       ipFilterGroup: '',
       transFilterGroup: '',
       ipspnTextSearch: '',

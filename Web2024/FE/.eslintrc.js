@@ -21,6 +21,7 @@ module.exports = {
     'vue/name-property-casing': 'off',
     'vue/multi-word-component-names': 'off',
     'vue/no-useless-template-attributes': 'off',
+    'vue/html-closing-bracket-spacing': 'off',
     'vue/prop-name-casing': [0, 'never'],
     'vue/no-v-html': 'off',
     'accessor-pairs': 2,
