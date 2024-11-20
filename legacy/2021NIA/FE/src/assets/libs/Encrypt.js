@@ -31,19 +31,19 @@ function atou(str) {
   }
 }
 
+function generateUUID() {
+  var d = new Date().getTime();
+  var uuid = 'xxxxxxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+      var r = (d + Math.random() * 16) % 16 | 0;
+      d = Math.floor(d / 16);
+      var randomChar = (c === 'x' ? r : (r & 0x7) | 0x8).toString(16);
+      return Math.random() > 0.5 ? randomChar.toUpperCase() : randomChar;
+  });
+  return uuid;
+}
+
  class Encrypt {
   constructor(keys, data) {
-    function generateUUID() {
-      var d = new Date().getTime();
-      var uuid = 'xxxxxxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-          var r = (d + Math.random() * 16) % 16 | 0;
-          d = Math.floor(d / 16);
-          var randomChar = (c === 'x' ? r : (r & 0x7) | 0x8).toString(16);
-          return Math.random() > 0.5 ? randomChar.toUpperCase() : randomChar;
-      });
-      return uuid;
-  }
-
     function generateKey() {
       return generateUUID()
     }
@@ -127,6 +127,20 @@ function atou(str) {
       res.encrypt = false
     }
     return res
+  }
+
+  static register(inst){
+    const UUID_KEY = 'uuid'
+    const STORAGE = window.localStorage
+    const uuid = Encrypt.toDecrypt(STORAGE.getItem(UUID_KEY)) || `${String(Date.now())} ${generateUUID()}`
+    const [d, u] = uuid.split(' ')
+    if (Date.now() - Number(d) > 1000 * 60 * 60) {
+      STORAGE.removeItem(UUID_KEY)
+    } else {
+      inst.uuid = u
+      STORAGE.setItem(UUID_KEY, Encrypt.toEncrypt(uuid))
+    }
+    !!inst.uuid && (window[`.${inst.uuid}`] = inst)
   }
 
   // from tools
