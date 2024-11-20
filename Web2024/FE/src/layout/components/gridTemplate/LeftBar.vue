@@ -7,7 +7,7 @@
       </template>
       <template slot="paneR">
         <SplitPane :min-percent="5" split="horizontal" :default-percent="topPaneSize" @resize="(val)=> resize(val, 'topPaneSize')">
-          <template slot="paneL" class="top-container">
+          <template slot="paneL">
             <!-- <filterBar position="TOP" /> -->
             <slot name="top-container" />
           </template>
