@@ -129,8 +129,11 @@ function generateUUID() {
     return res
   }
 
-  static register(inst){
-    const UUID_KEY = 'uuid'
+  static register(inst, opt){
+    if(!inst) return
+    const className = (inst && inst.constructor && inst.constructor.name)  || ''
+    const varName = className.replace(/^\w/, (c) => c.toLowerCase())
+    const UUID_KEY = `!${varName}`
     const STORAGE = window.localStorage
     const uuid = Encrypt.toDecrypt(STORAGE.getItem(UUID_KEY)) || `${String(Date.now())} ${generateUUID()}`
     const [d, u] = uuid.split(' ')
@@ -141,6 +144,10 @@ function generateUUID() {
       STORAGE.setItem(UUID_KEY, Encrypt.toEncrypt(uuid))
     }
     !!inst.uuid && (window[`.${inst.uuid}`] = inst)
+
+    if(opt) {
+      window[varName] = this
+    }
   }
 
   // from tools
