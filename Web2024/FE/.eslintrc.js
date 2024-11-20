@@ -12,7 +12,7 @@ module.exports = {
   extends: ['plugin:vue/recommended', 'eslint:recommended'],
 
   // add your custom rules here
-  //it is base on https://github.com/vuejs/eslint-config-vue
+  // it is base on https://github.com/vuejs/eslint-config-vue
   rules: {
     'vue/no-use-v-if-with-v-for': 'off',
     'vue/max-attributes-per-line': [2, { singleline: 10, multiline: 1 }],
@@ -20,11 +20,10 @@ module.exports = {
     'vue/multiline-html-element-content-newline': 'off',
     'vue/multi-word-component-names': 'off',
     'vue/name-property-casing': 'off',
-    'vue/multi-word-component-names': 'off',
     'vue/no-useless-template-attributes': 'off',
     'vue/html-closing-bracket-spacing': 'off',
     'vue/prop-name-casing': [0, 'never'],
-    "vue/component-definition-name-casing": ['error', 'PascalCase'],
+    'vue/component-definition-name-casing': ['error', 'PascalCase'],
     'vue/no-v-html': 'off',
     'accessor-pairs': 2,
     'arrow-spacing': [

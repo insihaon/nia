@@ -12,13 +12,7 @@ export class Storage {
   reloadProperties = 'dark,project,baseURL'.split(/[\s,]+/)
   _data = {}
   constructor() {
-    Encrypt.register(this)
-    const className = this.constructor.name
-    const varName = className.replace(/^\w/, (c) => c.toLowerCase())
-    if (APP_DEV) {
-      window[varName] = this
-    } 
-
+    Encrypt.register(this, APP_DEV)
     this.self = this
     this._data = {
       isProd: NODE_ENV === 'production',
