@@ -126,6 +126,12 @@
     "management-system"
   ],
   "license": "MIT",
+  "eslintConfig": {
+    "root": true,
+    "extends": [
+      "./.eslintrc.js"
+    ]
+  },
   "lint-staged": {
     "src/**/*.{js,vue}": [
       "eslint --fix",
