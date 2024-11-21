@@ -21,16 +21,16 @@ export default Vue.extend({
       name: routeName,
       options: [
         {
-          value: 1,
-          label: '사용자',
+          value: this.CONSTANTS.userGrant.USER.value,
+          label: this.CONSTANTS.userGrant.USER.text,
         },
         {
-          value: 2,
-          label: '담당자',
+          value: this.CONSTANTS.userGrant.MANAGER.value,
+          label: this.CONSTANTS.userGrant.MANAGER.text,
         },
         {
-          value: 4,
-          label: '관리자',
+          value: this.CONSTANTS.userGrant.ADMIN.value,
+          label: this.CONSTANTS.userGrant.ADMIN.text,
         },
       ],
       authValue: [],
