@@ -3,7 +3,7 @@
     <LeftBar class="h-full">
       <template v-if="isViewport('>', 'md')" #leftbar-container>
         <div class="h-20 text-center mt-1">
-          <spans style="z-index : 1" class="font-bold text-lg whitespace-nowrap">AI관제 시스템 처리량</spans>
+          <span style="z-index : 1" class="font-bold text-lg whitespace-nowrap">AI관제 시스템 처리량</span>
           <div class="d-flex p-2 justify-center items-center">
             <span class="font-semibold whitespace-nowrap pr-2">검색</span>
             <el-radio-group v-model="systemChartCondition.dayType" size="mini" class="d-flex" @change="onLoadDashboardStatistics()">
@@ -174,14 +174,6 @@ export default {
     }
   },
   computed: {
-    // ...mapState({
-    //   topPaneSize: state => state.settings.topPaneSize,
-    //   sidePaneSize: state => state.settings.sidePaneSize
-    // }),
-    // handleViewSize() {
-    //   // 'sm' 이하일 때 sidePaneSize를 0%로 설정, 그 외에는 기본 사이즈를 유지
-    //   return this.isViewport('<', 'sm') ? '100%' : `${this.sidePaneSize}%`
-    // },
     ipAgGrid() {
       const columns = [
         { type: '', prop: 'alarmno', name: '알람번호', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, formatter: (row) => { return row.alarmno ?? '-' } },
@@ -194,7 +186,7 @@ export default {
         { type: '', prop: 'ticket_id', name: 'TICKET_ID', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'status', name: '상태', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, formatter: this.getStatus, cellStyle: this.getCellStyle, },
         { type: '', prop: 'ticket_type', name: '전표 유형', width: 150, alignItems: 'center', fixed: false, suppressMenu: true, formatter: getAlarmType },
-        { type: '', prop: 'root_cause_type', name: '장애유형', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
+        { type: '', prop: 'fault_type', name: '장애유형', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'alarmmsg', name: '장애정보', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'alarmmsg_original', name: '알람 원본메시지', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'ticket_rca_result_code', name: '장애내용', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
