@@ -31,12 +31,17 @@ function atou(str) {
   }
 }
 
+const idx = 3
+const len = 16
 function generateUUID() {
   var d = new Date().getTime();
-  var uuid = 'xxxxxxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-      var r = (d + Math.random() * 16) % 16 | 0;
-      d = Math.floor(d / 16);
-      var randomChar = (c === 'x' ? r : (r & 0x7) | 0x8).toString(16);
+  var uuid = Array(len)
+        .fill('x') // x로 채운 배열 생성
+        .join('')
+        .replace(/[xy]/g, function (c) {
+      var r = (d + Math.random() * len) % len | 0;
+      d = Math.floor(d / len);
+      var randomChar = (c === 'x' ? r : (r & 0x7) | 0x8).toString(len);
       return Math.random() > 0.5 ? randomChar.toUpperCase() : randomChar;
   });
   return uuid;
@@ -85,7 +90,8 @@ function generateUUID() {
       data = JSON.stringify(data)
     }
     const encrypt = new Encrypt(null, data)
-    const encryptText = encrypt.key + encrypt.data
+    const s = Math.min(encrypt.data.length, idx);
+    const encryptText = encrypt.data.slice(0, s) + encrypt.key + encrypt.data.slice(s);
     return encryptText
   }
 
@@ -111,10 +117,13 @@ function generateUUID() {
     }
 
     const encrypt = new Encrypt(null, null)
-    const key = encryptData.substring(0, 16)
-    const encryptText = encryptData.substring(16, encryptData.length)
-    const decrypt = encrypt.decrypt(encryptText, key)
+    const s = idx;
+    const e = s + len;
+    const key = encryptData.substring(s, e);
+    const encryptText = encryptData.substring(0, s) + encryptData.substring(e);
+    let decrypt = null
     try {
+      const decrypt = encrypt.decrypt(encryptText, key)
       return JSON.parse(decrypt)
     } catch (error) {
       return decrypt
@@ -149,30 +158,5 @@ function generateUUID() {
       window[varName] = this
     }
   }
-
-  // from tools
-  static testEncryptToDecrypt() {
-    const data = {
-      name: 'kim',
-      age: 22,
-    }
-    const encrypt = new Encrypt(null, JSON.stringify(data))
-    const encryptText = encrypt.key + encrypt.data
-    const key = encryptText.substring(0, 16)
-    const decryptText = encrypt.decrypt(encryptText.substring(16, encryptText.length), key)
-    console.log(decryptText)
-  }
-
-  static testEncryptToDecrypt2() {
-    const data = {
-      name: 'kim',
-      age: 22,
-    }
-    const encryptText = Encrypt.toEncrypt(data)
-    const decryptText = Encrypt.toDecrypt(encryptText2)
-    console.log(decryptText)
-  }
-
 }
-
 export default Encrypt
