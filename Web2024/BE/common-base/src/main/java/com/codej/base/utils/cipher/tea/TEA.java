@@ -180,6 +180,10 @@ public class TEA {
 	}
 
 	public static String generateUUID() {
-		return UUID.randomUUID().toString().replace("-", "").substring(0, 16);
+		return generateUUID(16);
+	}
+
+	public static String generateUUID(int len) {
+		return UUID.randomUUID().toString().replace("-", "").substring(0, len);
 	}
 }
