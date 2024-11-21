@@ -128,21 +128,24 @@
    
    <!-- IP-SDN ALARM + TRAFFIC + SYSLOG -->
    <select id="SELECT_IP_ALARM_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
-	  SELECT
+	  
+SELECT
         ALARMNO
-     	, TICKET_ID
-      	, CLUSTERNO
-      	, NUDE_NUM
-      	, NODE_NM
-      	, ALARMLOC
-      	, TICKET_TYPE
+       , TICKET_ID
+        , CLUSTERNO
+        , NODE_NUM
+        , NODE_NM
+        , ALARMLOC
+        , TICKET_TYPE
         , TO_CHAR(ALARMTIME , 'YYYY-MM-DD HH24:MI:SS') AS ALARMTIME
         , TO_CHAR(FAULT_TIME , 'YYYY-MM-DD HH24:MI:SS') AS FAULT_TIME
-      	, ALARMMSG
-      	, PORT
-      	, ALARMMSG_ORIGINAL
+        , PORT
+        , ALARMMSG -- 장애정보 
+        , FAULT_TYPE -- 장애유형
+        , ALARMMSG_ORIGINAL -- 알람 원본메세지
+        , TICKET_RCA_RESULT_CODE -- 장애내용
         , STATUS
-        , TICKET_RCA_RESULT_DTL_CODE
+        , TICKET_RCA_RESULT_DTL_CODE -- 장애 원인 
         , TOTAL_RELATED_ALARM_CNT
         , ROOT_CAUSE_SYSNAMEA
         , ROOT_CAUSE_SYSNAMEZ
@@ -152,19 +155,21 @@
         , IP_ADDR
       FROM (
         SELECT 
-     	ACM.ALARMNO
-     	, TC.TICKET_ID
-      	, ACM.CLUSTERNO
-      	, NULL NUDE_NUM
-      	, ACM.SYSNAME AS NODE_NM
-      	, ACM.ALARMLOC
-      	, TC.TICKET_TYPE
+       ACM.ALARMNO
+       , TC.TICKET_ID
+        , ACM.CLUSTERNO
+        , NULL NODE_NUM
+        , ACM.SYSNAME AS NODE_NM
+        , ACM.ALARMLOC
+        , TC.TICKET_TYPE
+        , TC.root_cause_type as FAULT_TYPE
         , ACM.ALARMTIME AS ALARMTIME
         , NULL FAULT_TIME
-      	, ACM.ALARMMSG
-      	, ACM.PORT
-      	, ACM.ALARMMSG_ORIGINAL
+        , ACM.ALARMMSG
+        , ACM.PORT
+        , ACM.ALARMMSG_ORIGINAL
         , TC.STATUS
+        , TC.TICKET_RCA_RESULT_CODE
         , TC.TICKET_RCA_RESULT_DTL_CODE
         , NULL TOTAL_RELATED_ALARM_CNT
         , AL.ROOT_CAUSE_SYSNAMEA
@@ -195,20 +200,22 @@
         LEFT JOIN rca.tb_rca_ticket_al_current AL ON TC.TICKET_ID = AL.TICKET_ID
         LEFT OUTER JOIN resource.tb_node_mst NM ON NM.NODE_ID = AL.ROOT_CAUSE_SYSNAMEA
         UNION ALL
-        SELECT
+         SELECT
         NULL ALARMNO
             , TC.TICKET_ID
             , CLUSTER_NO
-            , NULL NODE_NUM
-            , NULL NODE_NM
-            , NULL ALARMLOC
+            , nm.node_num as  NODE_NUM
+            , nm.node_nm as NODE_NM
+            , pt.if_id as ALARMLOC
             , TICKET_TYPE
+            , TC.root_cause_type as FAULT_TYPE
             , TICKET_GENERATION_TIME AS ALARMTIME
             , FAULT_TIME
-            , NULL ALARMMSG
+            , TC.root_cause_type as ALARMMSG
             , NULL PORT
             , NULL ALARMMSG_ORIGINAL
             , STATUS
+            , TICKET_RCA_RESULT_CODE
             , TICKET_RCA_RESULT_DTL_CODE
             , TOTAL_RELATED_ALARM_CNT
             , ROOT_CAUSE_SYSNAMEA
@@ -219,10 +226,12 @@
             , NM.IP_ADDR AS IP_ADDR
         FROM rca.tb_rca_ticket_current TC
         INNER JOIN rca.tb_rca_ticket_al_current AL ON TC.TICKET_ID = AL.TICKET_ID
-        LEFT OUTER JOIN resource.tb_node_mst NM ON NM.NODE_ID = al.root_cause_sysnamea
+        INNER JOIN resource.tb_port_mst PT on AL.ROOT_CAUSE_PORTA = PT.IF_ID  
+        INNER JOIN resource.tb_node_mst ND on PT.NODE_ID = ND.NODE_ID 
+        LEFT OUTER JOIN resource.tb_node_mst NM ON NM.NODE_ID = AL.ROOT_CAUSE_SYSNAMEA
         WHERE TICKET_TYPE IN ('NFTT', 'FTT', 'ATT2', 'NTT')
         AND TC.PARENT_TICKET_ID IS NULL
-        AND TC.TICKET_GENERATION_TIME <![CDATA[ > ]]> now() - INTERVAL '7' DAY
+        AND TC.TICKET_GENERATION_TIME <![CDATA[ >= ]]>  now() - INTERVAL '7' DAY
         UNION ALL
         SELECT 
             SAM.ALARMNO
@@ -231,16 +240,18 @@
             , SAM.NODE_NUM
             , SAM.NODE_NM
             , SAM.ALARMLOC
+            , null FAULT_TYPE
             , 'SYSLOG' TICKET_TYPE
             , SAM.ALARMTIME AS ALARMTIME
             , NULL FAULT_TIME
             , SAM.ALARMMSG
             , NULL PORT
-            , SAM.ETC AS ALARMMSG_ORIGINAL
-            , CASE WHEN SAM.STATUS IN ('INIT', 'FIN', 'AUTO_FIN') THEN SAM.STATUS
+            , SAM.ETC AS ALARMMSG_ORIGINAL,
+ CASE WHEN SAM.STATUS IN ('INIT', 'FIN', 'AUTO_FIN') THEN SAM.STATUS
                 ELSE '-'
                 END AS STATUS
             , NULL TICKET_RCA_RESULT_DTL_CODE
+            , NULL TICKET_RCA_RESULT_CODE
             , NULL TOTAL_RELATED_ALARM_CNT
             , NULL ROOT_CAUSE_SYSNAMEA
             , NULL ROOT_CAUSE_SYSNAMEZ
@@ -254,7 +265,7 @@
         <!-- WHERE ALARMTIME <![CDATA[ > ]]> now() - INTERVAL '7' DAY -->
         ) T
         <if test="IS_POLLING != null and IS_POLLING == true">
-            WHERE T.ALARMTIME <![CDATA[ >= ]]> (CURRENT_TIMESTAMP - INTERVAL '5 minutes')
+            WHERE T.ALARMTIME <![CDATA[ > ]]> (CURRENT_TIMESTAMP - INTERVAL '5 minutes')
         </if>
         ORDER BY ALARMTIME DESC
    </select>
@@ -1308,25 +1319,25 @@
     <!-- 미확인 트래픽 조회 (이용기관) -->
     <select id="SELECT_UNIDENTIFIED_AGENCY_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
         <include refid="TotalCountPrefix"/>
-        SELECT
-            IP.NREN_ID AS NREN_ID,
-            IP.NREN_NAME AS NREN_NAME,
-            IP.NREN_IP AS NREN_IP
+            SELECT
+        UO.NODE_ID AS NREN_ID,
+        UO.NREN_NAME AS NREN_NAME,
+        N.IP_ADDR AS NREN_IP
         FROM RESOURCE.TB_USER_ORGAN UO
-        INNER JOIN RESOURCE.TB_USER_ORGAN_IP IP ON UO.NREN_ID = IP.NREN_ID 
+        INNER JOIN RESOURCE.TB_NODE_MST N ON N.NODE_ID = UO.NODE_ID
         <where>
-                <if test="nren_name != null and nren_name != ''">
-                    AND IP.NREN_NAME LIKE '%' || #{nren_name} || '%'
-                </if>
-                <if test="nren_ip != null and nren_ip != ''">
-                    AND IP.NREN_IP LIKE '%' || #{nren_ip} || '%' 
-                </if>
-                <if test="node_id != null and node_id != ''">
-                    AND IP.NREN_ID IN (SELECT NREN_ID FROM RESOURCE.TB_USER_ORGAN WHERE NODE_ID = #{node_id})
-                </if>
+            <if test="nren_name != null and nren_name.trim() != ''">
+                AND UO.NREN_NAME LIKE '%' || #{nren_name} || '%'
+            </if>
+            <if test="nren_ip != null and nren_ip.trim() != ''">
+                AND N.IP_ADDR LIKE '%' || #{nren_ip} || '%'
+            </if>
+            <if test="node_id != null and node_id.trim() != ''">
+                AND UO.NODE_ID = #{node_id}
+            </if>
         </where>
-         <include refid="TotalCountSuffix"/>
-    </select>
+            <include refid="TotalCountSuffix"/>
+        </select>
 
 
     <!-- 미확인 트래픽 조회 (어플리케이션) -->
