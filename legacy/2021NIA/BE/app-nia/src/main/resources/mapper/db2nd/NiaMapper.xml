@@ -128,8 +128,7 @@
    
    <!-- IP-SDN ALARM + TRAFFIC + SYSLOG -->
    <select id="SELECT_IP_ALARM_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
-	  
-SELECT
+    SELECT
         ALARMNO
        , TICKET_ID
         , CLUSTERNO
@@ -247,7 +246,7 @@ SELECT
             , SAM.ALARMMSG
             , NULL PORT
             , SAM.ETC AS ALARMMSG_ORIGINAL,
- CASE WHEN SAM.STATUS IN ('INIT', 'FIN', 'AUTO_FIN') THEN SAM.STATUS
+            CASE WHEN SAM.STATUS IN ('INIT', 'FIN', 'AUTO_FIN') THEN SAM.STATUS
                 ELSE '-'
                 END AS STATUS
             , NULL TICKET_RCA_RESULT_DTL_CODE
@@ -646,6 +645,9 @@ SELECT
                 </if>
                 <if test="ISHISTORY != null or ISHISTORY == true">
                     AND SOP.HANDLING_FIN_TIME <![CDATA[ > ]]> NOW() - INTERVAL '1' MONTH
+                </if>
+                <if test="ALARM_NO != null and ALARM_NO != ''">
+                    AND SYSLOG.ALARMNO LIKE '%' || #{ALARM_NO} || '%'
                 </if>
                 <if test="NODE_NM != null and NODE_NM != ''">
                     AND SYSLOG.NODE_NM = #{NODE_NM}
