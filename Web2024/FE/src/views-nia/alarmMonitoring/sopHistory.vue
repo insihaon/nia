@@ -8,6 +8,7 @@
           :is-button-slot="false"
           title="SOP 리스트"
           :is-excel="true"
+          :search-model.sync="sopSearchModel"
           :is-excel-save-server="true"
           :items="searchSopItems"
           :is-grid-loading="loading"
@@ -100,7 +101,12 @@ export default {
         { label: '티켓번호', type: 'input', size: 8, model: 'TICKET_ID' },
         { label: 'DATE', type: 'date', size: 4, model: 'DATE' },
       ],
+      sopSearchModel: {
+        TICKET_ID: '',
+        DATE: []
+      },
       syslogSearchModel: {
+        ALARM_NO: '',
         NODE_NM: '',
         ALARMLOC: '',
         STATUS: '',
@@ -208,6 +214,7 @@ export default {
     },
     searchSyslogItems() {
       const searchItems = [
+        { label: '알람번호', type: 'input', size: 4, model: 'ALARM_NO' },
         { label: '장비명', type: 'select', size: 4, model: 'NODE_NM', setting: { allOption: { toggle: true } }, options: this.equipmentOptionList },
         { label: 'I/F', type: 'select', size: 4, model: 'ALARMLOC', setting: { allOption: { toggle: true } }, options: this.interfaceOptionList },
         {
@@ -231,9 +238,11 @@ export default {
     this.selectedRow = this.wdata?.params
   },
   mounted() {
-    this.setSelectedOptions()
-    this.onLoadSopHistList()
-    this.onLoadSyslogHistList()
+    this.$nextTick(() => {
+      this.setSelectedOptions()
+      this.onLoadSopHistList()
+      this.onLoadSyslogHistList()
+    })
   },
   methods: {
     async setSelectedOptions() {
@@ -251,6 +260,9 @@ export default {
       }
     },
     getSopHistParam() {
+      if (this.selectedRow.ticket_id) {
+        this.sopSearchModel.TICKET_ID = this.selectedRow.ticket_id
+      }
       const { pageSize: limit, currentPage: page } = this.sopPaginationInfo
       const param = { limit, page }
       const searchModel = this.$refs?.ticketSearch?.searchModel ?? {}
@@ -267,7 +279,7 @@ export default {
       return param
     },
     async onLoadSopHistList() {
-      const THIS = this
+      this.tapCurrent = 'ticket'
       const param = this.getSopHistParam()
       try {
         this.loading = true
@@ -281,6 +293,17 @@ export default {
       }
     },
     async onLoadSyslogHistList() {
+      if (this.selectedRow.fault_type === 'SYSLOG') {
+        this.tapCurrent = 'syslog'
+        const { alarmno, node_nm, alarmloc, status, alarmtime } = this.selectedRow
+        this.syslogSearchModel = {
+          ALARM_NO: alarmno,
+          NODE_NM: node_nm,
+          ALARMLOC: alarmloc,
+          STATUS: status,
+          DATE: [alarmtime, '']
+        }
+      }
       const { pageSize: limit, currentPage: page } = this.syslogPaginationInfo
       const param = { limit, page, ISHISTORY: true }
       const searchModel = this.$refs?.syslogSearch?.searchModel ?? {}

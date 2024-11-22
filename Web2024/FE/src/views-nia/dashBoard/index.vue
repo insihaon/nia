@@ -45,9 +45,9 @@
           <CompChart :options="selfProcessOptions" class="h-full" style="min-width : 360px;" @click="onClickChart" />
         </div>
       </template>
-      <template #top-container>
+      <template slot="top-container">
         <filterBar position="TOP">
-          <template #function-container>
+          <template slot="function-container">
             <div class="filter-container">
               <div class="title">IP-SDN</div>
               <div class="filter-group">
@@ -82,9 +82,9 @@
         <CompAgGrid ref="ipAgGrid" v-model="ipAgGrid" class="w-100 flex-fill" @rowClicked="selectedTicket" />
         <!-- top-container content -->
       </template>
-      <template #bottom-container>
+      <template slot="bottom-container">
         <filterBar position="BOTTOM">
-          <template #function-container>
+          <template slot="function-container">
             <div class="filter-container">
               <div class="title">전송망</div>
               <div class="filter-group">
