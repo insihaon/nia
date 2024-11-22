@@ -52,7 +52,7 @@ public class DataController extends AbsDataController {
     public Object postSelectList2(
             @RequestHeader(value = "command", required = false) String command,
             @PathVariable("sqlId") String sqlId,
-            @RequestBody HashMap<String, Object> param) throws Exception {
+            @RequestBody HashMap<String, Object> param) {
         return postSelectList(command, sqlId, param);
     }
 

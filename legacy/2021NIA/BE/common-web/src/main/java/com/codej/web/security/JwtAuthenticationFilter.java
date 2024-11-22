@@ -10,13 +10,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
-import com.codej.base.dto.AppDto;
 import com.codej.base.provider.BaseJwtTokenProvider;
 
 import lombok.RequiredArgsConstructor;
@@ -85,11 +82,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
              filterChain.doFilter(request, response);
              /* 후처리 코드 */
         } catch (IOException | ServletException ex) {
-            try {
-                response(request, response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, -999, ex.getMessage());
-            } catch (Exception ex2) {
-                log.info("doFilter Exception: {}", ex2.toString());
-            }
+            response(request, response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, -999, ex.getMessage());
         }
     }
 }

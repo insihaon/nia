@@ -1,15 +1,11 @@
 package com.codej.base.exception;
 
-public class CCommunicationException extends RuntimeException {
-    public CCommunicationException(String message, Throwable t) {
-        super(message, t);
-    }
-
-    public CCommunicationException(String message) {
-        super(message);
-    }
-
+public class CCommunicationException extends CBaseException {
     public CCommunicationException() {
-        super();
+        super("communicationError");
+    }
+
+    public CCommunicationException(String detail) {
+        super("communicationError", detail);
     }
 }

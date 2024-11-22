@@ -70,7 +70,7 @@ public class DataHubService extends MainService {
         } catch (Exception e) {
             transactionManager.rollback(txStatus);
             log.error(e.toString());
-            throw new CServiceException("Error in DELETE_LINK_SYSTEM_LIST_PROC", e);  
+            throw new CServiceException("Error in DELETE_LINK_SYSTEM_LIST_PROC");  
         }
         return result;
     }
@@ -102,7 +102,7 @@ public class DataHubService extends MainService {
         } catch (Exception e) {
             transactionManager.rollback(txStatus);
             log.error(e.toString());
-            throw new CServiceException("Error in INSERT_LINK_SYSTEM_LIST_PROC", e);  
+            throw new CServiceException("Error in INSERT_LINK_SYSTEM_LIST_PROC");
         }
         return result;
     }
@@ -151,7 +151,7 @@ public class DataHubService extends MainService {
         } catch (Exception e) {
             transactionManager.rollback(txStatus);
             log.error(e.toString());
-            throw new CServiceException("Error in UPDATE_API_AUTH_HIST_PROC", e);  
+            throw new CServiceException("Error in UPDATE_API_AUTH_HIST_PROC");
         }
         return result;
     }
@@ -179,7 +179,7 @@ public class DataHubService extends MainService {
         } catch (Exception e) {
             transactionManager.rollback(txStatus);
             log.error(e.toString());
-            throw new CServiceException("Error in INSERT_API_AUTH_HIST_PROC", e);  
+            throw new CServiceException("Error in INSERT_API_AUTH_HIST_PROC");
         }
         return result;
     }
@@ -216,7 +216,7 @@ public class DataHubService extends MainService {
         } catch (Exception e) {
             transactionManager.rollback(txStatus);
             log.error(e.toString());
-            throw new CServiceException("Error in INSERT_DATA_REQ_PROC", e);  
+            throw new CServiceException("Error in INSERT_DATA_REQ_PROC");
         }
         return result;
     }
@@ -255,7 +255,7 @@ public class DataHubService extends MainService {
         } catch (Exception e) {
             transactionManager.rollback(txStatus);
             log.error(e.toString());
-            throw new CServiceException("Error in UPDATE_API_RETRY_PROC", e);  
+            throw new CServiceException("Error in UPDATE_API_RETRY_PROC");
         }
 
         return result;
@@ -313,7 +313,7 @@ public class DataHubService extends MainService {
         } catch (Exception e) {
             transactionManager.rollback(txStatus);
             log.error(e.toString());
-            throw new CServiceException("Error in UPDATE_DATA_SET_HIST_LIST_PROC", e);  
+            throw new CServiceException("Error in UPDATE_DATA_SET_HIST_LIST_PROC");
         }
         return result;
     }

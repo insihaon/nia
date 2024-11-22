@@ -1,16 +1,11 @@
 package com.codej.base.exception;
 
-public class CUnknowException extends RuntimeException {
-    
-    public CUnknowException(String message, Throwable t) {
-        super(message, t);
-    }
-
-    public CUnknowException(String message) {
-        super(message);
-    }
-
+public class CUnknowException extends CBaseException {
     public CUnknowException() {
-        super();
+        super("unKnown");
+    }
+
+    public CUnknowException(String detail) {
+        super("unKnown", detail);
     }
 }

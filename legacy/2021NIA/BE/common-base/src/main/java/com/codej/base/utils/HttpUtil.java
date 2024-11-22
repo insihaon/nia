@@ -72,7 +72,7 @@ public class HttpUtil {
             request.releaseConnection();
         } catch (Exception ex) {
             ex.printStackTrace();
-            throw new CHttpRelayServiceFail("Error in get request", ex);
+            throw new CHttpRelayServiceFail("Failed to execute HTTP Relay Service.");
         } finally {
             httpClient.close();
         }
@@ -105,7 +105,7 @@ public class HttpUtil {
             request.releaseConnection();
         } catch (Exception ex) {
             ex.printStackTrace();
-            throw new CHttpRelayServiceFail("Error in get request", ex);
+            throw new CHttpRelayServiceFail("Failed to execute HTTP Relay Service.");
         } finally {
             httpClient.close();
         }
@@ -135,7 +135,7 @@ public class HttpUtil {
             request.releaseConnection();
         } catch (Exception ex) {
             ex.printStackTrace();
-            throw new CHttpRelayServiceFail("Error in findUserByUid", ex);
+            throw new CHttpRelayServiceFail("Failed to execute HTTP Relay Service. -findUserByUid");
         } finally {
             httpClient.close();
         }
@@ -171,7 +171,7 @@ public class HttpUtil {
             request.releaseConnection();
         } catch (Exception ex) {
             ex.printStackTrace();
-            throw new CHttpRelayServiceFail("Error in findUserByUid", ex);
+            throw new CHttpRelayServiceFail("Failed to execute HTTP Relay Service. -findUserByUid");
         } finally {
             httpClient.close();
         }

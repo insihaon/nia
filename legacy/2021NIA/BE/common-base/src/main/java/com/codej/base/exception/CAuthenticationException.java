@@ -1,15 +1,11 @@
 package com.codej.base.exception;
 
-public class CAuthenticationException extends RuntimeException {
-    public CAuthenticationException(String message, Throwable t) {
-        super(message, t);
-    }
-
-    public CAuthenticationException(String message) {
-        super(message);
-    }
-
+public class CAuthenticationException extends CBaseException {
     public CAuthenticationException() {
-        super();
+        super("entryPointException");
+    }
+
+    public CAuthenticationException(String detail) {
+        super("entryPointException", detail);
     }
 }

@@ -174,7 +174,7 @@ public class BaseJwtTokenProvider<T> { // JWT 토큰을 생성 및 검증 모듈
             return !claims.getExpiration().before(new Date());
         } catch (Exception e) {
             log.info("validateToken: {}, {}, {}", caller, claims, e.getMessage());
-            throw new CAuthenticationException("Error in validateToken", e);
+            throw new CAuthenticationException("The token is invalid.");
         }
     }
 

@@ -1,16 +1,11 @@
 package com.codej.base.exception;
 
-public class CForbiddenRequestException extends RuntimeException {
-
-    public CForbiddenRequestException(String message, Throwable t) {
-        super(message, t);
-    }
-
-    public CForbiddenRequestException(String message) {
-        super(message);
-    }
-
+public class CForbiddenRequestException extends CBaseException {
     public CForbiddenRequestException() {
-        super();
+        super("forbiddenRequest");
+    }
+
+    public CForbiddenRequestException(String detail) {
+        super("forbiddenRequest", detail);
     }
 }

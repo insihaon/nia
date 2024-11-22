@@ -101,6 +101,7 @@ public class ResponseService {
     // 실패 결과만 처리하는 메소드
     public ResultResponse<Boolean> createFailResponse(int code, String message, String detailMessage) {
         ErrorResponse response = new ErrorResponse();
+        response.setErrorCode(code);
         response.setSql(getSql());
         response.setMessage(message);
         response.setSuccess(false);

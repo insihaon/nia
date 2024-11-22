@@ -31,7 +31,7 @@ public class CryptUtil {
             Boolean encrypt = Boolean.parseBoolean(EncryptUtil.decryptText(encryptText));
             return decryptToMap(param, encrypt);
         } catch (Exception e) {
-            throw new CServiceIncorrectUse(CommonUtil.getStackTrace(String.format("$METHOD($FILE:$LINE), ")) + "decrypt 실패", e);
+            throw new CServiceIncorrectUse(CommonUtil.getStackTrace(String.format("$METHOD($FILE:$LINE), ")) + "decrypt 실패");
         }
     }
 

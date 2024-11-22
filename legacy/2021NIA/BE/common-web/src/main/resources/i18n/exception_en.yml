@@ -1,30 +1,64 @@
 unKnown:
   code: "-9999"
   message: "An unknown error has occurred."
+  message_detail: "Please contact the administrator."
 userNotFound:
   code: "-1000"
-  message: "This member not exist"
+  message: "The user does not exist."
+  message_detail: "Please register a new account."
 emailSigninFailed:
   code: "-1001"
-  message: "Your account does not exist or your email or password is incorrect."
+  message: "The account does not exist, or the email or password is incorrect."
+  message_detail: "Please check the data you entered."
 entryPointException:
   code: "-1002"
   message: "You do not have permission to access this resource."
+  message_detail: "Please check your permissions."
 accessDenied:
   code: "-1003"
-  message: "A resource that can not be accessed with the privileges it has."
+  message: "You do not have access to this resource with the current permissions."
+  message_detail: "Please check your permissions."
 communicationError:
   code: "-1004"
   message: "An error occurred during communication."
+  message_detail: "Please check your network and retry the service."
 existingUser:
   code: "-1005"
-  message: "You are an existing member."
+  message: "You have already registered. Please log in."
+  message_detail: ""
 notOwner:
   code: "-1006"
   message: "You are not the owner of this resource."
+  message_detail: "Only the owner can use this feature."
 resourceNotExist:
   code: "-1007"
-  message: "This resource does not exist."
+  message: "The requested resource does not exist."
+  message_detail: "Please check if the resource has been deleted or moved."
 forbiddenRequest:
   code: "-1008"
-  message: "forbidden request"
+  message: "This request is not allowed."
+  message_detail: "Please check your permissions."
+serviceException:
+  code: "-1009"
+  message: "An error occurred while processing the service."
+  message_detail: "Please check with the administrator."
+serviceNotImplement:
+  code: "-1010"
+  message: "The service has not been implemented."
+  message_detail: "The service is under preparation."
+serviceIncorrectUse:
+  code: "-1011"
+  message: "The service was called incorrectly."
+  message_detail: "Please check the service name."
+mybatisException:
+  code: "-1012"
+  message: "An error occurred during data processing."
+  message_detail: "Please check the MyBatis query logs."
+httpRelayServiceFail:
+  code: "-1013"
+  message: "An error occurred in the HTTP-RELAY service."
+  message_detail: "Please check the gateway logs."
+untrustedRequest:
+  code: "-1014"
+  message: "The request is untrusted."
+  message_detail: "Please check the service protocol."

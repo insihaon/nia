@@ -1,15 +1,11 @@
 package com.codej.base.exception;
 
-public class CServiceIncorrectUse extends RuntimeException {
-    public CServiceIncorrectUse(String message, Throwable t) {
-        super(message, t);
-    }
-
-    public CServiceIncorrectUse(String message) {
-        super(message);
-    }
-
+public class CServiceIncorrectUse extends CBaseException {
     public CServiceIncorrectUse() {
-        super();
+        super("serviceIncorrectUse");
+    }
+
+    public CServiceIncorrectUse(String detail) {
+        super("serviceIncorrectUse", detail);
     }
 }
