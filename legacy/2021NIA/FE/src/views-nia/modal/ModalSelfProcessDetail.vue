@@ -27,7 +27,7 @@
             <el-card shadow="never" :body-style="{'padding': '10px'}">
               <div slot="header">
                 <div>
-                  <span><i class="el-icon-document" /> 알람 상세 정보</span>
+                  <span><i class="el-icon-document" /> 알람 정보</span>
                 </div>
               </div>
               <el-col>
@@ -54,7 +54,7 @@
             <el-card shadow="never" :body-style="{'padding': '10px'}" class="mt-1">
               <div slot="header">
                 <div ref="sopList">
-                  <span><i class="el-icon-data-line" /> 연관 SOP 리스트</span>
+                  <span><i class="el-icon-data-line" /> {{ pageType === '최적화' ? '트래픽 상세 정보' : '연관 SOP 리스트' }}</span>
                 </div>
               </div>
               <el-col v-if="pageType === '최적화'">
