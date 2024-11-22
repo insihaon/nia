@@ -34,7 +34,7 @@ function atou(str) {
 const idx = 5
 const len = 8
 const minLen = 16
-const pad = 'import'
+const pad = 'utils/cipher/tea/TEA'.replaceAll('/', '.')
 
 function generateUUID(len = 16) {
   const chars = "fcMBoPtdqn3xG9Jih50lv4j1gmyYSN7TCeFAHL2IUVOsK86z/WEpXQkDZwabuRr"; 
