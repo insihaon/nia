@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codej.base.dto.DbUser;
+import com.codej.base.exception.CBaseException;
 import com.codej.base.property.GlobalConstants;
 import com.codej.web.mapper.db1st.BaseDataMapper;
 import com.codej.web.mapper.db1st.DataMapper;
@@ -88,14 +89,14 @@ public abstract class AbsDataController extends BaseDataController {
     }
 
     @GetMapping(value = "/data")
-    public Object getData(@RequestParam(value = "action", required = false) String action) throws Exception {
+    public Object getData(@RequestParam(value = "action", required = false) String action) throws CBaseException {
         return doRequest(action, new HashMap<String, Object>(), true);
     }
 
     @PostMapping(value = "/data")
     public Object postData(
             @RequestParam(value = "action", required = false) String action,
-            @RequestBody HashMap<String, Object> param) throws Exception {
+            @RequestBody HashMap<String, Object> param) throws CBaseException {
         return doRequest(action, param, true);
     }
 
@@ -103,7 +104,7 @@ public abstract class AbsDataController extends BaseDataController {
     public Object postSelectList(
             @RequestHeader(value = "command", required = false) String command,
             @RequestHeader("sqlId") String sqlId,
-            @RequestBody HashMap<String, Object> param) throws Exception {
+            @RequestBody HashMap<String, Object> param) throws CBaseException {
 
         HashMap<String, Object> data = nomalizeParam(param);
         Object result = selectList(command, sqlId, data, true);
@@ -114,7 +115,7 @@ public abstract class AbsDataController extends BaseDataController {
     public Object postSelectList2(
             @RequestHeader(value = "command", required = false) String command,
             @PathVariable("sqlId") String sqlId,
-            @RequestBody HashMap<String, Object> param) throws Exception {
+            @RequestBody HashMap<String, Object> param) throws CBaseException {
         return postSelectList(command, sqlId, param);
     }
 
@@ -122,7 +123,7 @@ public abstract class AbsDataController extends BaseDataController {
     public Object postSelectOne(
             @RequestHeader(value = "command", required = false) String command,
             @RequestHeader(value = "sqlId", required = false) String sqlId,
-            @RequestBody HashMap<String, Object> param) throws Exception {
+            @RequestBody HashMap<String, Object> param) throws CBaseException {
         HashMap<String, Object> data = nomalizeParam(param);
         Object result = selectOne(command, sqlId, data, true);
         return toResult(result, (Boolean) data.getOrDefault(GlobalConstants.Common.ENCRYPT, false));
@@ -132,7 +133,7 @@ public abstract class AbsDataController extends BaseDataController {
     public Object postSelectOne2(
             @RequestHeader(value = "command", required = false) String command,
             @PathVariable("sqlId") String sqlId,
-            @RequestBody HashMap<String, Object> param) throws Exception {
+            @RequestBody HashMap<String, Object> param) throws CBaseException {
         return postSelectOne(command, sqlId, param);
     }
 
@@ -140,7 +141,7 @@ public abstract class AbsDataController extends BaseDataController {
     public Object postModify(
             @RequestHeader(value = "command", required = false) String command,
             @RequestHeader("sqlId") String sqlId,
-            @RequestBody HashMap<String, Object> param) throws Exception {
+            @RequestBody HashMap<String, Object> param) throws CBaseException {
         HashMap<String, Object> data = nomalizeParam(param);
         Object result = modify(command, sqlId, data);
         return toResult(result, (Boolean) data.getOrDefault(GlobalConstants.Common.ENCRYPT, false));
@@ -150,7 +151,7 @@ public abstract class AbsDataController extends BaseDataController {
     public Object postModify2(
             @RequestHeader(value = "command", required = false) String command,
             @PathVariable("sqlId") String sqlId,
-            @RequestBody HashMap<String, Object> param) throws Exception {
+            @RequestBody HashMap<String, Object> param) throws CBaseException {
         return postModify(command, sqlId, param);
     }
 }

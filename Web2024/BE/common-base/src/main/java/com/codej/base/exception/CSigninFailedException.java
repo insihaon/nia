@@ -1,15 +1,11 @@
 package com.codej.base.exception;
 
-public class CSigninFailedException extends RuntimeException {
-    public CSigninFailedException(String message, Throwable t) {
-        super(message, t);
-    }
-
-    public CSigninFailedException(String message) {
-        super(message);
-    }
-
+public class CSigninFailedException extends CBaseException {
     public CSigninFailedException() {
-        super();
+        super("emailSigninFailed");
+    }
+
+    public CSigninFailedException(String detail) {
+        super("emailSigninFailed", detail);
     }
 }

@@ -62,7 +62,7 @@ public class AnonymousUserService extends BaseUserService {
                 put(user);
             }
 		} catch (Exception e) {
-			throw new CAuthenticationException("Error in findUserByUid", e);
+			throw new CAuthenticationException("Error in findUserByUid");
 		}
 		
 		return user;

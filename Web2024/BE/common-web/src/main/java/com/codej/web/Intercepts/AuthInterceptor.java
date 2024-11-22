@@ -12,7 +12,7 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import com.codej.base.exception.CForbiddenRequestException;
+import com.codej.base.exception.CUntrustedRequestException;
 import com.codej.base.utils.EncryptUtil;
 
 import lombok.extern.slf4j.Slf4j;
@@ -76,15 +76,16 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 					long now = new Date().getTime();
 					String ts = EncryptUtil.decryptText(request.getHeader("_t"));
 					if(ts == null || Math.abs((now - Long.valueOf(ts)) / 1000) > 10) {
-						throw new CForbiddenRequestException("출처가 확인되지 않은 요청입니다.");
+						throw new CUntrustedRequestException();
 					}
 				}
 			}
-		} catch (CForbiddenRequestException e) {
+		} catch (CUntrustedRequestException e) {
             log.error(e.toString());
 			throw e;
 		} catch (Exception e) {
             log.info("권한 처리중 오류 발생 : {}, {}", handler.toString(), e.toString());
+			throw e;
 		}
         
         return true;

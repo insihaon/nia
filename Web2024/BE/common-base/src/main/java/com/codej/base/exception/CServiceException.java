@@ -1,15 +1,11 @@
 package com.codej.base.exception;
 
-public class CServiceException extends RuntimeException {
-    public CServiceException(String message, Throwable t) {
-        super(message, t);
-    }
-
-    public CServiceException(String message) {
-        super(message);
-    }
-
+public class CServiceException extends CBaseException {
     public CServiceException() {
-        super();
+        super("serviceException");
+    }
+
+    public CServiceException(String detail) {
+        super("serviceException", detail);
     }
 }

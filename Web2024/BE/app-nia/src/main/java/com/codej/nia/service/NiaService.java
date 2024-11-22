@@ -152,7 +152,7 @@ public class NiaService extends MainService {
             return (Map<String, Object>) resMap.get("data");
         } catch (Exception e) {
             log.error(e.toString());
-            throw new CHttpRelayServiceFail(e);
+            throw new CHttpRelayServiceFail("Unable to retrieve IPSDN Token.");
         }
     }
 
@@ -193,7 +193,7 @@ public class NiaService extends MainService {
             return responseService.createSingleResponse(res);
         } catch (Exception e) {
             log.error(e.toString());
-            throw new CHttpRelayServiceFail(e);
+            throw new CHttpRelayServiceFail("IPSDN request failed.");
         }
     }
 

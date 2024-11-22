@@ -20,10 +20,12 @@ import com.codej.base.dto.DbUser;
 import com.codej.base.dto.model.ResultMap;
 import com.codej.base.dto.response.ResultResponse;
 import com.codej.base.dto.response.SingleResponse;
+import com.codej.base.exception.CBaseException;
 import com.codej.base.exception.CMybatisException;
 import com.codej.base.exception.CServiceException;
 import com.codej.base.exception.CServiceIncorrectUse;
 import com.codej.base.exception.CServiceNotImplement;
+import com.codej.base.exception.CUntrustedRequestException;
 import com.codej.base.property.GlobalConstants;
 import com.codej.base.utils.CommonUtil;
 import com.codej.base.utils.CryptUtil;
@@ -86,7 +88,7 @@ public abstract class BaseDataController extends BaseController {
         return encrypt;
       }
 
-    protected HashMap<String, Object> nomalizeParam(HashMap<String, Object> param) {
+    protected HashMap<String, Object> nomalizeParam(HashMap<String, Object> param) throws CUntrustedRequestException {
         Boolean encrypt = true;
         Object value = param.get(GlobalConstants.Common.ENCRYPT);
         try {
@@ -96,8 +98,8 @@ public abstract class BaseDataController extends BaseController {
             String decryptText = EncryptUtil.decryptText((String)value);
             encrypt = decryptText == null || "true".equals(decryptText);
         } catch (Exception e) {
-            log.error("ENCRYPT 정보 위변조", e);
-            return null;
+            log.error("REQUEST ENCRYPT 위변조", e);
+            throw new CUntrustedRequestException();
         }
 
         // if(appDto.isDevProfile() == false && "datahub".equals(appDto.getProject()) &&
@@ -124,7 +126,7 @@ public abstract class BaseDataController extends BaseController {
         return data;
     }
 
-    public Object doRequest(String action, HashMap<String, Object> param, boolean isIncludeResult) throws Exception {
+    public Object doRequest(String action, HashMap<String, Object> param, boolean isIncludeResult) throws CBaseException {
 
         HashMap<String, Object> data = nomalizeParam(param);
 
@@ -157,7 +159,7 @@ public abstract class BaseDataController extends BaseController {
         return toResult(result, (Boolean) data.getOrDefault(GlobalConstants.Common.ENCRYPT, false));
     }
 
-    protected Object toResult(Object result, Boolean encrypt) throws CServiceException, Exception {
+    protected Object toResult(Object result, Boolean encrypt) throws CServiceException, CBaseException {
         encrypt = encrypt != null ? encrypt : false;
         if (result == null) {
             throw new CServiceException("데이터가 null 입니다.");
@@ -193,7 +195,7 @@ public abstract class BaseDataController extends BaseController {
 
     @SuppressWarnings("unchecked")
     public Object selectList(String command, String sqlId, HashMap<String, Object> param, boolean isIncludeResult)
-            throws Exception {
+            throws CBaseException {
 
         if (sqlId == null /* || !sqlId.endsWith("List") */) {
             log.error("selectList sqlId is null: {}", param.toString());
@@ -229,13 +231,12 @@ public abstract class BaseDataController extends BaseController {
             String message = String.format("selectList-exception=%s\n\nsqlId==%s\n\nparam==%s",
                     e.getTargetException().getMessage(), sqlId, param.toString());
             log.error(message);
-            throw new CMybatisException(CommonUtil.getStackTrace(String.format("$METHOD($FILE:$LINE), ")) + message, e);
+            throw new CMybatisException(CommonUtil.getStackTrace(String.format("$METHOD($FILE:$LINE), ")) + message);
         } catch (Exception e) {
             String message = String.format("selectList-exception=%s\n\nsqlId==%s\n\nparam==%s", e.toString(), sqlId,
                     param.toString());
             log.error(message);
-            throw new CServiceIncorrectUse(CommonUtil.getStackTrace(String.format("$METHOD($FILE:$LINE), ")) + message,
-                    e);
+            throw new CServiceIncorrectUse(CommonUtil.getStackTrace(String.format("$METHOD($FILE:$LINE), ")) + message);
         }
     }
 
@@ -257,7 +258,7 @@ public abstract class BaseDataController extends BaseController {
     }
 
     public Object selectOne(String command, String sqlId, HashMap<String, Object> param, boolean isIncludeResult)
-            throws Exception {
+            throws CBaseException {
         if (sqlId == null /* || sqlId.endsWith("List") */) {
             log.error("selectOne sqlId is null: {}", param.toString());
             throw new CServiceIncorrectUse(CommonUtil.getStackTrace(String.format("$METHOD($FILE:$LINE), ")) + sqlId);
@@ -273,19 +274,18 @@ public abstract class BaseDataController extends BaseController {
             String message = String.format("selectOne-exception=%s\n\nsqlId==%s\n\nparam==%s",
                     e.getTargetException().getMessage(), sqlId, param.toString());
             // log.error(message);
-            throw new CMybatisException(CommonUtil.getStackTrace(String.format("$METHOD($FILE:$LINE), ")) + message, e);
+            throw new CMybatisException(CommonUtil.getStackTrace(String.format("$METHOD($FILE:$LINE), ")) + message);
         } catch (Exception e) {
             String message = String.format("selectOne-exception=%s\n\nsqlId==%s\n\nparam==%s", e.toString(), sqlId,
                     param.toString());
             log.error(message);
-            throw new CServiceIncorrectUse(CommonUtil.getStackTrace(String.format("$METHOD($FILE:$LINE), ")) + message,
-                    e);
+            throw new CServiceIncorrectUse(CommonUtil.getStackTrace(String.format("$METHOD($FILE:$LINE), ")) + message);
         }
     }
 
     // public ResultResponse<?> modify(String command, String sqlId, HashMap<String,
     // Object> param) throws Exception {
-    public Object modify(String command, String sqlId, HashMap<String, Object> param) throws Exception {
+    public Object modify(String command, String sqlId, HashMap<String, Object> param) throws CBaseException {
         if (sqlId == null || sqlId.matches("^(insert|delete|update|upsert)")) {
             throw new CServiceIncorrectUse(CommonUtil.getStackTrace(String.format("$METHOD($FILE:$LINE), ")) + sqlId);
         }
@@ -308,13 +308,12 @@ public abstract class BaseDataController extends BaseController {
             String message = String.format("modify-exception=%s\n\nsqlId==%s\n\nparam==%s",
                     e.getTargetException().getCause().getMessage(), sqlId, param.toString());
             // log.error(message);
-            throw new CMybatisException(CommonUtil.getStackTrace(String.format("$METHOD($FILE:$LINE), ")) + message, e);
+            throw new CMybatisException(CommonUtil.getStackTrace(String.format("$METHOD($FILE:$LINE), ")) + message);
         } catch (Exception e) {
             String message = String.format("modify-exception=%s\n\nsqlId==%s\n\nparam==%s",
                     e.toString() + "\n" + e.getCause(), sqlId, param.toString());
             log.error(message);
-            throw new CServiceIncorrectUse(CommonUtil.getStackTrace(String.format("$METHOD($FILE:$LINE), ")) + message,
-                    e);
+            throw new CServiceIncorrectUse(CommonUtil.getStackTrace(String.format("$METHOD($FILE:$LINE), ")) + message);
         }
     }
 
@@ -334,13 +333,11 @@ public abstract class BaseDataController extends BaseController {
             } catch (NoSuchMethodException | SecurityException e) {
                 if (ex == null)
                     ex = new CServiceNotImplement(
-                            CommonUtil.getStackTrace(String.format("$METHOD($FILE:$LINE), message=", e.getMessage())),
-                            e);
+                            CommonUtil.getStackTrace(String.format("$METHOD($FILE:$LINE), message=", e.getMessage())));
             } catch (Exception e) {
                 if (ex == null)
                     ex = new CServiceIncorrectUse(
-                            CommonUtil.getStackTrace(String.format("$METHOD($FILE:$LINE), message=", e.getMessage())),
-                            e);
+                            CommonUtil.getStackTrace(String.format("$METHOD($FILE:$LINE), message=", e.getMessage())));
             }
         }
 
@@ -351,7 +348,7 @@ public abstract class BaseDataController extends BaseController {
         if (count == 0 && ex != null) {
             log.error("run-exception=%s\n\nsqlId==%s\n\nparam==%s", ex.toString() + "\n" + ex.getCause(), sqlId,
                     param.toString());
-            throw new CServiceException("Error in runMehthod", ex);
+            throw new CServiceException("Error in runMehthod");
         }
         return null;
     }
@@ -382,14 +379,12 @@ public abstract class BaseDataController extends BaseController {
             String message = String.format("serviceMehthod-exception=%s\n\nsqlId==%s\n\nparam==%s",
                     e.getTargetException(), sqlId, param.toString());
             log.error(message);
-            throw new CServiceIncorrectUse(CommonUtil.getStackTrace(String.format("$METHOD($FILE:$LINE), ")) + message,
-                    e);
+            throw new CServiceIncorrectUse(CommonUtil.getStackTrace(String.format("$METHOD($FILE:$LINE), ")) + message);
         } catch (Exception e) {
             String message = String.format("serviceMehthod-exception=%s\n\nsqlId==%s\n\nparam==%s",
                     e.toString() + "\n" + e.getCause(), sqlId, param.toString());
             log.error(message);
-            throw new CServiceIncorrectUse(CommonUtil.getStackTrace(String.format("$METHOD($FILE:$LINE), ")) + message,
-                    e);
+            throw new CServiceIncorrectUse(CommonUtil.getStackTrace(String.format("$METHOD($FILE:$LINE), ")) + message);
         }
 
         return null;

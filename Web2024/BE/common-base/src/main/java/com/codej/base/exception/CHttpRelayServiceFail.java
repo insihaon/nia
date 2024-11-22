@@ -1,26 +1,11 @@
 package com.codej.base.exception;
 
-import lombok.Getter;
-
-@Getter
-public class CHttpRelayServiceFail extends RuntimeException {
-
-    private String detailMessage;
-
-    public CHttpRelayServiceFail(String message, Throwable t) {
-        super(message, t);
-    }
-
-    public CHttpRelayServiceFail(String message) {
-        super(message);
-    }
-
+public class CHttpRelayServiceFail extends CBaseException {
     public CHttpRelayServiceFail() {
-        super();
+        super("httpRelayServiceFail");
     }
 
-    public CHttpRelayServiceFail(Exception e) {
-        super();
-        this.detailMessage = e.toString();
+    public CHttpRelayServiceFail(String detail) {
+        super("httpRelayServiceFail", detail);
     }
 }
