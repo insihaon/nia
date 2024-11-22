@@ -12,6 +12,7 @@ import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import com.codej.base.controller.BaseController;
 import com.codej.base.dto.AppDto;
@@ -29,7 +30,6 @@ import com.codej.base.utils.CryptUtil;
 import com.codej.base.utils.EncryptUtil;
 import com.codej.web.security.AuthUserService;
 import com.codej.web.service.ResponseService;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -87,11 +87,16 @@ public abstract class BaseDataController extends BaseController {
       }
 
     protected HashMap<String, Object> nomalizeParam(HashMap<String, Object> param) {
-        Boolean encrypt = false;
+        Boolean encrypt = true;
+        Object value = param.get(GlobalConstants.Common.ENCRYPT);
         try {
-            String encryptText = (String) param.get(GlobalConstants.Common.ENCRYPT);
-            encrypt = Boolean.parseBoolean(EncryptUtil.decryptText(encryptText));
+            if (value == null) {
+                throw new NullPointerException();
+            }
+            String decryptText = EncryptUtil.decryptText((String)value);
+            encrypt = decryptText == null || "true".equals(decryptText);
         } catch (Exception e) {
+            log.error("ENCRYPT 정보 위변조", e);
             return null;
         }
 
