@@ -31,29 +31,36 @@ function atou(str) {
   }
 }
 
-const idx = 3
-const len = 16
-function generateUUID() {
-  var d = new Date().getTime();
-  var uuid = Array(len)
-        .fill('x') // x로 채운 배열 생성
+const idx = 5
+const len = 8
+const minLen = 16
+const pad = 'import'
+
+function generateUUID(len = 16) {
+  const chars = "fcMBoPtdqn3xG9Jih50lv4j1gmyYSN7TCeFAHL2IUVOsK86z/WEpXQkDZwabuRr"; 
+    let uuid = Array(len)
+        .fill('x')
         .join('')
-        .replace(/[xy]/g, function (c) {
-      var r = (d + Math.random() * len) % len | 0;
-      d = Math.floor(d / len);
-      var randomChar = (c === 'x' ? r : (r & 0x7) | 0x8).toString(len);
-      return Math.random() > 0.5 ? randomChar.toUpperCase() : randomChar;
-  });
-  return uuid;
+        .replace(/[xy]/g, function () {
+            const randomIndex = Math.floor(Math.random() * chars.length);
+            return chars[randomIndex];
+        });
+    return uuid;
+}
+
+function padKey(plainKey) {
+  let key = plainKey;
+
+  while (key.length < minLen) {
+      key += pad;
+  }
+
+  return key.substring(0, minLen);
 }
 
  class Encrypt {
   constructor(keys, data) {
-    function generateKey() {
-      return generateUUID()
-    }
-
-    this._key = generateKey()
+    this._key = generateUUID(len)
     this._keys = keys
     this._data = utoa(data)
   }
@@ -69,11 +76,11 @@ function generateUUID() {
   get rsakey() {
     let rsa = new RSAKey()
     rsa.setPublic(this._keys.m, this._keys.e)
-    return rsa.encrypt(this._key)
+    return rsa.encrypt(padKey(this._key))
   }
 
   get data() {
-    return Tea.encrypt(this._data, this._key)
+    return Tea.encrypt(this._data, padKey(this._key))
   }
 
   data_base64() {
@@ -81,7 +88,7 @@ function generateUUID() {
   }
 
   decrypt(ciphertext, key) {
-    return atou(Tea.decrypt(ciphertext, key))
+    return atou(Tea.decrypt(ciphertext, padKey(key)))
   }
   
   // from tools
@@ -92,6 +99,7 @@ function generateUUID() {
     const encrypt = new Encrypt(null, data)
     const s = Math.min(encrypt.data.length, idx);
     const encryptText = encrypt.data.slice(0, s) + encrypt.key + encrypt.data.slice(s);
+    // const decrypt = Encrypt.toDecrypt(encryptText)
     return encryptText
   }
 

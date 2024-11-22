@@ -1,7 +1,9 @@
 package com.codej.base.utils.cipher.tea;
 
 import java.io.UnsupportedEncodingException;
-import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import com.codej.base.utils.Base64;
 
@@ -183,7 +185,11 @@ public class TEA {
 		return generateUUID(16);
 	}
 
-	public static String generateUUID(int len) {
-		return UUID.randomUUID().toString().replace("-", "").substring(0, len);
+	private static final String CHARS = "AOcaUEeDsZRr9WLoJF4VPGvzQNpgutXMwjlH7/nIB025yYmTxhqdfKS163C8bik";
+
+    public static String generateUUID(int len) {
+        return IntStream.range(0, len)
+                .mapToObj(i -> String.valueOf(CHARS.charAt(ThreadLocalRandom.current().nextInt(CHARS.length()))))
+                .collect(Collectors.joining());
 	}
 }
