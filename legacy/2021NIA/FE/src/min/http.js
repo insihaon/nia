@@ -27,19 +27,18 @@ const service = axios.create({
 service.interceptors.request.use(
   config => {
     config.data = config.data || {}
+    const sqlId = config.sqlId || ''
+    let url = config.url
+    if (/\/(selectList|selectListPaging12|selectOne|modify)$/.test(url) && sqlId) {
+      url = config.url += `/${sqlId}`
+    }
+
     const { data, testData } = config
     const server = store.getters.server || {}
     const encryptRequest = !config.encrypt && mock !== 'FE' && !debug
     config.data = Encrypt.encryptHttp(data, encryptRequest, server.isDevProfile)
 
-    const sqlId = config.sqlId || ''
-    let url = config.url
-
     const command = config.command = url.slice(1).replace(/[^a-zA-Z0-9]+/, '_')
-
-    if (/\/(selectList|selectListPaging12|selectOne|modify)$/.test(url) && sqlId) {
-      url = config.url += `/${sqlId}`
-    }
 
     if (store.getters.token) {
       config.headers['X-AUTH-TOKEN'] = getToken()
