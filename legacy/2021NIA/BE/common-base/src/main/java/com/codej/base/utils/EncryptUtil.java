@@ -10,7 +10,7 @@ public class EncryptUtil {
     private static final int idx = 5;
     private static final int len = 8;
     private static final int minLen = 16;
-    private static final String pad = "import";
+    private static final String pad = "utils.cipher.tea.TEA";
     private EncryptUtil() {
     }
 
