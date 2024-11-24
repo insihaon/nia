@@ -65,9 +65,9 @@ export default {
       // { code: 'SYSLOG', text: 'SYSLOG', fnCount: (d) => safeString(d.ticket_type).trim() === 'SYSLOG', fnFilter: (d) => safeString(d.ticket_type).trim() === 'SYSLOG' },
     ],
     ipAlarmType: [
-      { code: 'ALARM', text: 'ALARM', fnCount: (d) => ['ATT2', 'NTT', 'SYSLOG'].includes(safeString(d.ticket_type).trim()), fnFilter: (d) => ['ATT2', 'NTT', 'SYSLOG'].includes(safeString(d.ticket_type).trim()) },
+      { code: 'ALARM', text: 'ALARM', fnCount: (d) => ['ATT2', 'NTT'].includes(safeString(d.ticket_type).trim()) || safeString(d.fault_type).trim() === 'SYSLOG', fnFilter: (d) => ['ATT2', 'NTT'].includes(safeString(d.ticket_type).trim()) || safeString(d.fault_type).trim() === 'SYSLOG' },
       { code: 'TRAFFIC', text: 'TRAFFIC', fnCount: (d) => ['ATT2', 'NTT'].includes(safeString(d.ticket_type).trim()), fnFilter: (d) => ['ATT2', 'NTT'].includes(safeString(d.ticket_type).trim()) },
-      { code: 'SYSLOG', text: 'SYSLOG', fnCount: (d) => safeString(d.ticket_type).trim() === 'SYSLOG', fnFilter: (d) => safeString(d.ticket_type).trim() === 'SYSLOG' }
+      { code: 'SYSLOG', text: 'SYSLOG', fnCount: (d) => safeString(d.fault_type).trim() === 'SYSLOG', fnFilter: (d) => safeString(d.fault_type).trim() === 'SYSLOG' }
     ],
     statusType: [
       { code: 'INIT', hex: '', text: '발생', fnCount: (d) => safeString(d.status).trim() === 'INIT', fnFilter: (d) => safeString(d.status).trim() === 'INIT' },
