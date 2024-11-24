@@ -1,10 +1,34 @@
 {
   "__body": {
     "success": true,
-    "encrypt": true,
+    "encrypt": false,
     "sql": null,
     "total": null,
-    "result": "a1937ff1c4f34ebdeGqt7DJ0P922KFfKarmJNXJdY4pVALdHZbIHWCHr/x3kMQMnpXm6yioG+P1OEs50ESoB/6FroowzjbmBfHABQ4RSDkk2Wrf6v3LoRtjM74Bjfnu3CIXpi4VkXXbrehEQVUm+G5NUxM2BDktcW+w+FzUsGugOz2/rZCvRtCTzNXzA23dTCjpmmbMYTqBJsLXfRiWUAg2teHmkYj0ndOhqKjfZh7dY7N6fzdsZCHus8SeQlu9kTlSityLiS2EIh6G7qdxkC9Tuftg0oeVrPyZH9BDarGKNUeCMa5/0ySHbWfZidBWjsv38zhY8TX4nORHvNMw7IYtb8vJtGIw5VT/PMNlBYQaCkoNS23ljMWp7jWlQq+8OB1JKMWMqAPYAODGOYqqbWeDmDb+HgqBcJie230zFILhItbDCSPSLZet/qHx/hiRu/M468jlsdRVdY24qgjy8XiBSNLDDpFU1ZWxGykkBurAppj7OvJVELhVrHdpJ/Y2nJ5VIYS4ByUnbXACgf+iNk4haLI4H3mGwqpVvsX4Mw58j9UHvsZzIvgABBgfyL9Uw9tLvUP9b3CyMBeM5pL1ZKKEj9QxO1YSr6U10CWcPPVgxHHwZlydozIoiqZk5QFhk1dXYACTkAarseeFsOWU0u1D73t2kL/tC3Znkyyf7e7dozbdVVNZFvF7VKelQHG3bsPG6ZZzNuw6ogwmKT47Z1Ko/FLNJcOzzxfOkzdihUf4ZL74ItabOkVFa8C+RcgzjjKGfYUqU+Iw+IRw8w4FjTI+56JwETYk+Woe1fOmvhFB20gK4gwGFs1ay/bOyu3NpB/r13TsGhTlRny0EV+/Foal3txw0ub6w+zgCkC2v0ev+zIyLH64NBprkpoJpjwoUWDBnoDhtSGdn24oJIt2uSdp69AhC4ovcgB2QOJ3XvA21zC/Y85G8bX4Rg/TTTRMuJaSlymE4DqyV9U8h60i1p27bTwTB70d4R+ChESI5WQ7JhD74qb5gpx7kCQExZmnjkMceQerllXO1eiVV3gkuk/E1Nxc="
+    "result": {
+        "Email": "91187283@ktfriend.com",
+        "roles": "ROLE_ADMIN",
+        "Reserved1": "T021239112",
+        "Reserved0": "91187283",
+        "Name": "이창재",
+        "Reserved2": "O0000183",
+        "Uid": "91187283",
+        "IpAddress": "0:0:0:0:0:0:0:1",
+        "RolesList": [
+            "ROLE_ADMIN"
+        ],
+        "BlackDtlList": [
+            "btnAdd",
+            "btnTemplate",
+            "btnManualAdd",
+            "btnReceiver",
+            "btnExceptAdd",
+            "btnAnalysis",
+            "btnDelete",
+            "btnManualDelete"
+        ],
+        "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI5MTE4NzI4MyIsInJvbGVzIjpbIlJPTEVfQURNSU4iXSwiYWRkcmVzcyI6IjA6MDowOjA6MDowOjA6MSIsImlhdCI6MTcxMjExNzUyNCwiZXhwIjoxNzEyMjAzOTI0fQ.fdL1AaBzMpafLAnjr_xFXTjRiTJq2b1gFiyo_hyFeMY",
+        "otpShow": false
+    }
   },
   "__config": {
     "url": "http://localhost:8070/signin",
