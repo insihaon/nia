@@ -5,9 +5,10 @@ import { AppOptions } from '@/class/appOptions'
 const TOKEN_KEY = 'X-AUTH-TOKEN'
 const IPSDN_TOKEN_KEY = 'X-AUTH-IP-TOKEN'
 const INFO_KEY = 'X-AUTH-INFO'
-const isUseCookie = process.env.VUE_USE_AUTH_COOKIE ?? false
+const isLocalStorage = process.env.VUE_APP_AUTH_LOCAL
+const STORAGE = isLocalStorage ? window.localStorage : window.sessionStorage
 export function getToken() {
-  const data = isUseCookie ? Cookies.get(TOKEN_KEY) : window.sessionStorage.getItem(TOKEN_KEY)
+  const data = STORAGE.getItem(TOKEN_KEY)
   if (data) {
     return data
   } else {
@@ -16,7 +17,7 @@ export function getToken() {
 }
 
 export function getIpsdnToken() {
-  const data = isUseCookie ? Cookies.get(IPSDN_TOKEN_KEY) : window.sessionStorage.getItem(IPSDN_TOKEN_KEY)
+  const data = STORAGE.getItem(IPSDN_TOKEN_KEY)
   if (data) {
     return data
   } else {
@@ -26,19 +27,19 @@ export function getIpsdnToken() {
 
 export function setToken(token) {
   token = AppOptions.instance.debug ? token : Encrypt.toEncrypt(token)
-  isUseCookie ? Cookies.set(TOKEN_KEY, token) : window.sessionStorage.setItem(TOKEN_KEY, token)
+  STORAGE.setItem(TOKEN_KEY, token)
 }
 export function setIpsdnToken(token) {
   token = AppOptions.instance.debug ? token : Encrypt.toEncrypt(token)
-  isUseCookie ? Cookies.set(IPSDN_TOKEN_KEY, token) : window.sessionStorage.setItem(IPSDN_TOKEN_KEY, token)
+  STORAGE.setItem(IPSDN_TOKEN_KEY, token)
 }
 
 export function removeToken() {
-  return isUseCookie ? Cookies.remove(TOKEN_KEY) : window.sessionStorage.removeItem(TOKEN_KEY)
+  return STORAGE.removeItem(TOKEN_KEY)
 }
 
 export function getInfo() {
-  const data = isUseCookie ? Cookies.get(INFO_KEY) : window.sessionStorage.getItem(INFO_KEY)
+  const data = STORAGE.getItem(INFO_KEY)
   if (data) {
     const raw = data.startsWith('{')
     const info = raw ? JSON.parse(data) : Encrypt.toDecrypt(data)
@@ -53,11 +54,11 @@ export function getInfo() {
 
 export function setInfo(info) {
   info = AppOptions.instance.debug ? JSON.stringify(info) : Encrypt.toEncrypt(info)
-  isUseCookie ? Cookies.set(INFO_KEY, info) : window.sessionStorage.setItem(INFO_KEY, info)
+  STORAGE.setItem(INFO_KEY, info)
 }
 
 export function removeInfo() {
-  return Cookies.remove(INFO_KEY)
+  return STORAGE.removeItem(INFO_KEY)
 }
 
 Object.assign(window, { getToken, removeToken, getInfo, removeInfo })
