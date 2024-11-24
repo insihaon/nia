@@ -238,6 +238,14 @@ export default {
     this.selectedRow = this.wdata?.params
   },
   mounted() {
+    if (this.selectedRow.ticket_id) {
+      this.tapCurrent = 'ticket'
+      this.sopSearchModel.TICKET_ID = this.selectedRow.ticket_id
+    }
+    if (this.selectedRow.fault_type === 'SYSLOG') {
+      this.tapCurrent = 'syslog'
+      this.syslogSearchModel = { ALARM_NO: this.selectedRow.alarmno }
+    }
     this.$nextTick(() => {
       this.setSelectedOptions()
       this.onLoadSopHistList()
@@ -260,9 +268,6 @@ export default {
       }
     },
     getSopHistParam() {
-      if (this.selectedRow.ticket_id) {
-        this.sopSearchModel.TICKET_ID = this.selectedRow.ticket_id
-      }
       const { pageSize: limit, currentPage: page } = this.sopPaginationInfo
       const param = { limit, page }
       const searchModel = this.$refs?.ticketSearch?.searchModel ?? {}
@@ -279,7 +284,6 @@ export default {
       return param
     },
     async onLoadSopHistList() {
-      this.tapCurrent = 'ticket'
       const param = this.getSopHistParam()
       try {
         this.loading = true
@@ -293,17 +297,6 @@ export default {
       }
     },
     async onLoadSyslogHistList() {
-      if (this.selectedRow.fault_type === 'SYSLOG') {
-        this.tapCurrent = 'syslog'
-        const { alarmno, node_nm, alarmloc, status, alarmtime } = this.selectedRow
-        this.syslogSearchModel = {
-          ALARM_NO: alarmno,
-          NODE_NM: node_nm,
-          ALARMLOC: alarmloc,
-          STATUS: status,
-          DATE: [alarmtime, '']
-        }
-      }
       const { pageSize: limit, currentPage: page } = this.syslogPaginationInfo
       const param = { limit, page, ISHISTORY: true }
       const searchModel = this.$refs?.syslogSearch?.searchModel ?? {}
