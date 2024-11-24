@@ -14,6 +14,7 @@ import App from './App'
 import store from './store'
 import router from './router'
 import * as filters from '@/filters'
+import { AppOptions } from '@/class/appOptions'
 
 import '@/permission'
 import '@/utils/extend'
@@ -51,7 +52,7 @@ import ElTableDraggable from 'el-table-draggable'
 Vue.component('ElTableDraggable', ElTableDraggable)
 
 /* ipms */
-if (process.env.VUE_APP_PROJECT === 'ipms') {
+if (AppOptions.instance.project === 'ipms') {
   require('element-ui/lib/theme-chalk/index.css')
   require('element-theme-dark')
   // require('./assets/css/xeicon.min.css') error

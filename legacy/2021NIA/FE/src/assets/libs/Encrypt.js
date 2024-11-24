@@ -31,8 +31,8 @@ function atou(str) {
   }
 }
 
-const idx = 5
-const len = 8
+const idx = 0
+const len = 16
 const minLen = 16
 const pad = 'utils/cipher/tea/TEA'.replaceAll('/', '.')
 
@@ -163,7 +163,7 @@ function padKey(plainKey) {
     !!inst.uuid && (window[`.${inst.uuid}`] = inst)
 
     if(opt) {
-      window[varName] = this
+      window[varName] = inst
     }
   }
 }
