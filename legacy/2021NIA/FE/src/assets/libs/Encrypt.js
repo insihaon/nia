@@ -31,8 +31,8 @@ function atou(str) {
   }
 }
 
-const idx = 0
-const len = 16
+const idx = 5
+const len = 8
 const minLen = 16
 const pad = 'utils/cipher/tea/TEA'.replaceAll('/', '.')
 
