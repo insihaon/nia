@@ -13,11 +13,12 @@
             <div class="system-name-e">IP ADDRESS MANAGEMENT SYSTEM</div>
             <el-form v-if="!isJoin" ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form d-flex items-start" autocomplete="on" label-position="left">
               <el-form-item prop="username">
-                <input v-model="loginForm.username" type="text" placeholder="아이디를 입력하세요">
+                <input ref="username" v-model="loginForm.username" type="text" placeholder="아이디를 입력하세요">
               </el-form-item>
               <!-- <el-tooltip v-model="capsTooltip" content="Caps lock is On" placement="right" effect="light"> -->
               <el-form-item prop="password">
                 <input
+                  ref="password"
                   v-model="loginForm.password"
                   type="password"
                   placeholder="패스워드를 입력하세요"
@@ -27,7 +28,7 @@
                 >
               </el-form-item>
               <!-- </el-tooltip> -->
-              <Button @click="handleLogin">로그인</Button>
+              <Button @click.native.prevent="handleLogin">로그인</Button>
             </el-form>
             <div class="des">아이디, 비밀번호는 kate/NeOSS와 동일합니다.</div>
           </div>
