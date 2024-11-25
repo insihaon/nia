@@ -16,7 +16,7 @@
   >
     <div class="popupContentTable textcenter">
       <div class="popupContentTableTitle">라우팅 중복 상세정보</div>
-      <div v-loading="loading">
+      <div v-loading="loading" class="scroll_area" style="max-height: 500px">
         <table>
           <thead>
             <tr>
