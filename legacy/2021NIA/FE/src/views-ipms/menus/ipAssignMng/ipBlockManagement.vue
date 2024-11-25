@@ -76,7 +76,6 @@ export default {
         { key: 'SortType', props: {} },
       ],
       tableColumns: [
-        // { prop: 'nipBlockMstSeq', label: '', align: 'center', propIsCheckBox: true, columnVisible: false, showOverflow: true },
         { prop: 'sipCreateTypeNm', label: '공인/사설', align: 'center', sortable: true, propIsCheckBox: true, columnVisible: true, showOverflow: true },
         { prop: 'sipCreateSeqNm', label: '생성차수', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'ssvcLineTypeNm', label: '서비스망', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
@@ -91,8 +90,6 @@ export default {
         { prop: 'dmodifyDt', label: '작업일자', align: 'center', sortable: true, columnVisible: true, showOverflow: true,
           formatter: (row) => moment(row.dmodifyDt).format('YYYY-MM-DD')
         },
-        // { prop: 'sipCreateSeqCd', label: '생성차수코드', align: 'center', sortable: true, columnVisible: false, showOverflow: true },
-        // { prop: 'sipVersionTypeNm', label: '', align: 'center', sortable: true, columnVisible: false, showOverflow: true }
       ],
       selectedRows: null,
       requestParam: null
@@ -137,28 +134,15 @@ export default {
       this.selectedRows = cur
     },
     hadleClickIpAssignDetail(row) {
-      this.fnViewDetailClick(row, 'detail')
+      this.$nextTick(() => {
+        this.fnViewDetailClick(row, 'detail')
+      })
     },
     onClcikRow(row) {
 
     },
     async fnViewDetailClick(row, type) {
-      const { nipBlockMstSeq } = row
-      const target = ({ vue: this.$refs.content })
-      try {
-        this.openLoading(target)
-        const param = {
-          nipBlockMstSeq: nipBlockMstSeq ?? ''
-        }
-        const res = await apiRequestModel(ipmsModelApis.viewDetailCrtIPMst, param)
-        if (res.result.data) {
-          this.$refs.ModalIpBlockDetail.open({ row: res.result.data, type: type })
-        }
-      } catch (error) {
-        console.error(error)
-      } finally {
-        this.closeLoading(target)
-      }
+      this.$refs.ModalIpBlockDetail.open({ row: row, type: type })
     },
     handleOpenDetailModal(type) {
       this.fnViewDetailClick(this.selectedRows ?? this.pagination.data[0], type)
@@ -166,11 +150,8 @@ export default {
     handleOpenInsertModal(type) {
       this.viewInsertCrtIPMst(this.selectedRows ?? this.pagination.data[0], type)
     },
-    async viewInsertCrtIPMst(row, type) {
+     viewInsertCrtIPMst(row, type) {
       const { nipBlockMstSeq } = row ?? ''
-      const target = ({ vue: this.$refs.content })
-      try {
-         this.openLoading(target)
         let param
         if (type === 'create') {
           param = {
@@ -183,16 +164,8 @@ export default {
             nipBlockMstSeq: nipBlockMstSeq,
             searchUseYn: 'Y'
           }
+          this.$refs.ModalAddIpBlock.open({ row: param, type: type })
         }
-        const res = await apiRequestModel(ipmsModelApis.viewInsertCrtIPMst, param)
-        if (res.result.data) {
-          this.$refs.ModalAddIpBlock.open({ row: res.result.data, type: type })
-        }
-      } catch (error) {
-        console.error(error)
-      } finally {
-        this.closeLoading(target)
-      }
     },
     handleClickExcelDownloadBtn() {
       downloadExcel(this, 'viewListCrtIPMstExcel')

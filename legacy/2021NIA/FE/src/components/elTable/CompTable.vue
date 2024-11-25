@@ -27,6 +27,7 @@ copyright notice above does not evidence any actual or * intended publication of
       :span-method="propSpanMethod"
       :height="propTableHeight"
       :row-class-name="propHighlight"
+      @selection-change="handleSelectionChange"
       @cell-click="fn_cell_click"
       @row-dblclick="propOnDblClick"
       @row-click="propOnClick"
@@ -37,7 +38,7 @@ copyright notice above does not evidence any actual or * intended publication of
     >
       <!-- @header-contextmenu="fn_headerContextmenu(...arguments, propGridMenuId, propGridIndx, propColumn, propSetColunm)"
       @header-dragend="fn_headerDragend(...arguments, propGridMenuId, propGridIndx, propColumn, propSetColunm)" -->
-      <el-table-column v-if="propIsCheckBox" :index="0" type="selection" align="center" width="35" />
+      <el-table-column v-if="propIsCheckBox" :selectable="isSelectable" :index="0" type="selection" align="center" width="35" />
       <el-table-column
         v-for="(item, index) in columnDefs"
         v-if="item.columnVisible"
@@ -121,6 +122,7 @@ export default {
     }, //데이터
     propSpanMethod: { type: Function, default: () => {} }, // 행, 열 span 처리
     propIsCheckBox: { type: Boolean, default: false }, //체크박스 유무
+    selectCondition : { type : Function, default: () => () => true }, // 체크박스 disabled
     propOnSelect: { type: Function, default: () => {} }, //체크시
     propMaxSelect: { type: Number, default: 0 }, //체크갯수 최대
     propSelected: {
@@ -200,6 +202,12 @@ export default {
     }, 100)
   },
   methods: {
+    isSelectable(row, index) {
+      return this.selectCondition(row)
+    },
+    handleSelectionChange(selectedRows) {
+      console.log("selected Row : ", selectedRows)
+    },
     headerDragend(newWidth, oldWidth, column, event) {
       let savedColumnState
       const name = this.propName
