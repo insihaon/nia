@@ -288,7 +288,7 @@ export default {
         }
       }
 
-      const tbIpAssignMstListVo = { typeFlag: 'Aloc', tbIpAssignMstVos: [] }
+      const tbIpAssignMstListVo = { tbIpAssignMstVos: [] }
       rows.forEach(row => {
         tbIpAssignMstListVo.tbIpAssignMstVos.push({ nipAssignMstSeq: row.nipAssignMstSeq })
       })
