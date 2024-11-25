@@ -26,7 +26,7 @@ router.afterEach((to, from, next) => {
   NProgress.done()
 })
 
-const newSession = JSON.parse(process.env.VUE_APP_USE_SESSION_SIGNIN || 'false')
+const newSession = JSON.parse(process.env.VUE_APP_USE_F5_SIGNOUT || 'false')
 if (anonymousMode && newSession) {
   store.dispatch('user/resetToken')
   store.dispatch('user/resetInfo')

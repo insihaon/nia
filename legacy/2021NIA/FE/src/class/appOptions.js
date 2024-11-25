@@ -33,7 +33,7 @@ export class AppOptions extends Storage {
       project: APP_PROJECT?.toLowerCase(),
       baseURL: null,
       useWebsocket: this.readEnv(process.env.VUE_APP_USE_WEBSOCKET, true),
-      useSessionSignin: this.readEnv(process.env.VUE_APP_USE_SESSION_SIGNIN, true),
+      env: process.env,
       lastUser: null,
       useWsLog: false,
       wsTicket: true,
