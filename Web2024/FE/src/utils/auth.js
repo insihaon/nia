@@ -5,7 +5,7 @@ import { AppOptions } from '@/class/appOptions'
 const TOKEN_KEY = 'X-AUTH-TOKEN'
 const IPSDN_TOKEN_KEY = 'X-AUTH-IP-TOKEN'
 const INFO_KEY = 'X-AUTH-INFO'
-const isLocalStorage = process.env.VUE_APP_AUTH_LOCAL
+const isLocalStorage = JSON.parse(process.env.VUE_APP_USE_LOCAL_STORAGE_AUTH || 'false')
 const STORAGE = isLocalStorage ? window.localStorage : window.sessionStorage
 export function getToken() {
   const data = STORAGE.getItem(TOKEN_KEY)
