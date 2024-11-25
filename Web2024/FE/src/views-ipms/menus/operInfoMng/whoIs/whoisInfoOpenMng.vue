@@ -1,17 +1,18 @@
 <template>
-
   <el-row class="w-100 h-100">
-    <div class="content_result my-2">
-      <table class="tbl_data">
-        <tbody>
-          <tr class="top last">
-            <template v-for="(item, index) in tableItems">
-              <th :key="'th-' + index">{{ item.title }}</th>
-              <td :key="'td-' + index">{{ item.value }} 건</td>
-            </template>
-          </tr>
-        </tbody>
-      </table>
+    <div class="popupContentTable">
+      <el-col class="py-4">
+        <table>
+          <tbody>
+            <tr>
+              <template v-for="(item, index) in tableItems">
+                <th :key="'th-' + index">{{ item.title }}</th>
+                <td :key="'td-' + index">{{ item.value }} 건</td>
+              </template>
+            </tr>
+          </tbody>
+        </table>
+      </el-col>
     </div>
     <DynamicComponentLoader
       ref="searchCondition"
@@ -30,8 +31,10 @@
         :prop-pagination-data.sync="pagination"
         :prop-is-pagination="true"
         :prop-is-check-box="true"
+        :check-disabled="false"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
+        :select-condition="selectCondition"
         :prop-on-dbl-click="hadleClickWhoisEdit"
         :prop-on-select="handleClickTableCheck"
         :prop-on-page-change="handleChangeCurPage"
@@ -49,15 +52,15 @@
             <el-button type="primary" size="mini" icon="el-icon-s-tools" round @click="fnVieListWhoisKeywordMst2()">대체 키워드 관리</el-button>
             <el-button type="primary" size="mini" icon="el-icon-s-tools" round @click="fnViewUpdateKtInfo()">KT 대체 정보 관리</el-button>
             <el-button type="primary" size="mini" icon="el-icon-s-tools" round @click="fnDbMatch()">DB 현행화 전송</el-button>
-            <el-button type="primary" size="mini" icon="el-icon-delete" round @click="fnDeleteListWhois()">삭제</el-button>
+            <el-button type="primary" size="mini" icon="el-icon-delete" round @click="fnDelRegWhoisSubmit()">삭제</el-button>
           </div>
         </template>
       </compTable>
       <ModalRegWhois ref="ModalRegWhois" />
-      <ModalViewListWhoisKeywordMst ref="ModalViewListWhoisKeywordMst" />
-      <ModalViewListWhoisKeywordMstNew ref="ModalViewListWhoisKeywordMstNew" />
-      <ModalViewUpdateKtInfo ref="ModalViewUpdateKtInfo" />
-      <ModalViewListWhoisDbMatchMst ref="ModalViewListWhoisDbMatchMst" />
+      <ModalViewListWhoisKeywordMst ref="ModalViewListWhoisKeywordMst" @reload="fnViewListWhois($refs.searchCondition.requestParameter)" />
+      <ModalViewListWhoisKeywordMstNew ref="ModalViewListWhoisKeywordMstNew" @reload="fnViewListWhois($refs.searchCondition.requestParameter)" />
+      <ModalViewUpdateKtInfo ref="ModalViewUpdateKtInfo" @reload="fnViewListWhois($refs.searchCondition.requestParameter)" />
+      <ModalViewListWhoisDbMatchMst ref="ModalViewListWhoisDbMatchMst" @reload="fnViewListWhois($refs.searchCondition.requestParameter)" />
     </el-col>
   </el-row>
 
@@ -73,6 +76,7 @@ import ModalViewListWhoisKeywordMstNew from '@/views-ipms/modal/whoismgmt/ModalV
 import ModalViewUpdateKtInfo from '@/views-ipms/modal/whoismgmt/ModalViewUpdateKtInfo.vue'
 import ModalViewListWhoisDbMatchMst from '@/views-ipms/modal/whoismgmt/ModalViewListWhoisDbMatchMst.vue'
 import { downloadExcel } from '@/views-ipms/js/common-function'
+import { onMessagePopup } from '@/utils/index'
 
 const routeName = 'WhoisInfoOpenManagement'
 
@@ -123,10 +127,10 @@ export default {
           prop_parameterKey: 'srequestCd',
           prop_options: [
               { label: '전체', value: '' },
-              { label: '신규 신청서', value: 'RES001' },
-              { label: '추가 신청서', value: 'RES002' },
-              { label: '삭제 신청서', value: 'RES003' },
-              { label: '변경 신청서', value: 'RES004' },
+              { label: '신규 신청서', value: '01' },
+              { label: '추가 신청서', value: '02' },
+              { label: '삭제 신청서', value: '03' },
+              { label: '변경 신청서', value: '04' },
             ]
           }
         },
@@ -157,6 +161,9 @@ export default {
     this.fnViewListWhois()
   },
   methods: {
+    selectCondition(row) {
+      return row.delyn === 'Y'
+    },
     handleSearch(requestParameter) {
       this.pagination.currentPage = 1
       this.fnViewListWhois(requestParameter)
@@ -206,31 +213,30 @@ export default {
     fnDbMatch() { /* DB 현행화 전송 */
       this.$refs.ModalViewListWhoisDbMatchMst.open()
     },
-    fnDeleteListWhois() {
-      this.$confirm('삭제 하시겠습니까?', 'WHO IS 정보 삭제', {
-        confirmButtonText: '확인',
-        cancelButtonText: '취소'
-      }).then(async() => {
-        let res
-        try {
-          const TbRequestAssignMstVo = {
-            nrequestAssignSeq: this.resultVo.nrequestAssignSeq,
-          }
-           res = await apiRequestJson(ipmsJsonApis.deleteAssignApyTxn, TbRequestAssignMstVo)
-           if (res.commonMsg === 'SUCCESS') {
-            this.$message.success('배정신청을 정상적으로 삭제 하였습니다.')
-            this.$emit('reload')
-            this.close()
-            }
-          } catch (error) {
-            this.$message.error({ message: `${res.commonMsg}` })
-            console.log(error)
-          }
-        })
-    },
-    handleClickExcelDownloadBtn() {
+
+    handleClickExcelDownloadBtn() { // 삭제신청서가 반송(할당된 IPv4주소가 아닐경우)되었을 경우 삭제 가능
       downloadExcel(this, 'viewListWhoisExcel')
+    },
+    async fnDelRegWhoisSubmit() { /* 삭제 */
+      if (this.selectedChecks.length < 0) {
+        onMessagePopup(this, '삭제할 정보를 선택 후 삭제 가능합니다.')
+        return
+      }
+        const tbWhoisVo = { delList: [] }
+        this.selectedChecks.forEach(nWhoisSeq => {
+          tbWhoisVo.delList.push({ whoisSeq: nWhoisSeq })
+        })
+    try {
+      const res = await apiRequestJson(ipmsJsonApis.deleteTbWhoisVo, tbWhoisVo)
+      if (res.tbWhoisVo.commonMsg === 'SUCCESS') {
+        onMessagePopup(this, '정상적으로 삭제 하였습니다.')
+      } else {
+        onMessagePopup(this, '삭제를 실패하였습니다.')
+      }
+    } catch (error) {
+      console.log(error)
     }
+  },
   }
 }
 </script>

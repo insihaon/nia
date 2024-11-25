@@ -52,8 +52,8 @@
 
       </div>
       <div class="popupContentTableBottom">
-        <el-button size="mini" class="el-icon-check" @click="btnSaveSearchAddr()">저장</el-button>
-        <el-button size="mini" class="el-icon-close" @click="close()">{{ $t('exit') }}</el-button>
+        <el-button type="primary" size="small" class="el-icon-check" @click="btnSaveSearchAddr()">저장</el-button>
+        <el-button type="primary" size="small" class="el-icon-close" @click="close()">{{ $t('exit') }}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -103,41 +103,30 @@ export default {
     },
     onOpen(model, actionMode) {
     },
-    async fnSelectZipcode() { /* 주소 검색 */
-      if (this.txtInputDongNm === '') {
-         onMessagePopup(this, '검색할 주소를 입력하세요.')
-        return
-      }
-      const searchVo = {
-        dong: this.txtInputDongNm.replace(' ', '%'),
-        pageType: this.viewType
-      }
-      const target = ({ vue: this.$refs.compTable })
+    async btnSaveSearchAddr() { /* 이용기관 저장 */
+      const target = { vue: this.$refs.content }
       try {
-        this.openLoading(target)
-        const res = await apiRequestModel(ipmsModelApis.viewSearchZipCode, searchVo)
-        this.resultListVo = res.result.data ?? []
+         this.openLoading(target)
+        const tbWhoisKeywordVo = {
+          sorgname: this.sorgname,
+          suserorggb: this.suserorggb
+
+        }
+        const res = await apiRequestJson(ipmsJsonApis.insertWhoisKeyword, tbWhoisKeywordVo)
+        if (res.commonMsg === 'SUCCESS') {
+          onMessagePopup(this, '정상적으로 등록되었습니다.')
+          this.$emit('reload')
+          this.close()
+        } else {
+          onMessagePopup(this, res.commonMsg)
+        }
       } catch (error) {
         console.log(error)
       } finally {
-        this.closeLoading(target)
-      }
-    },
-    fnZipcodeSelected(zipcode, newkaddr, eaddr) { /* 주소 클릭  */
-    this.txtAddress = newkaddr
-
-      this.searchAddrVo = {
-        zipcode: zipcode,
-        newkaddr: newkaddr,
-        eaddr: eaddr,
-      }
-    },
-    btnSaveSearchAddr() {
-      this.close()
+      this.closeLoading(target)
+    }
     },
     onClose() {
-      this._merge(this.searchAddrVo, { detailAddress: this.detailAddress })
-      this.$emit('setAddrForm', this.searchAddrVo)
     }
   },
 }

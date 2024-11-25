@@ -117,7 +117,7 @@
 <script>
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
-import { apiRequestJson, ipmsJsonApis, apiRequestModel, ipmsModelApis } from '@/api/ipms'
+import { ipmsModelApis, apiRequestModel, apiRequestJson, ipmsJsonApis } from '@/api/ipms'
 import { onMessagePopup } from '@/utils/index'
 const routeName = 'ModalAddIpBlock'
 
@@ -187,9 +187,27 @@ export default {
     },
     onOpen(model, actionMode) {
       this.commonMsg = ''
-      this.resultListVo = model?.row
       this.viewType = this.model.type
-      if (model.type === 'generate') {
+      setTimeout(async() => {
+        await this.fnViewInsertCrtIPMst(model.row)
+      }, 10)
+      this.onResetForm()
+    },
+    async fnViewInsertCrtIPMst(param) {
+      const target = ({ vue: this.$refs.content })
+      try {
+        this.openLoading(target)
+        const res = await apiRequestModel(ipmsModelApis.viewInsertCrtIPMst, param)
+        this.resultListVo = res.result.data
+        this.setValue()
+      } catch (error) {
+        console.error(error)
+      } finally {
+        this.closeLoading(target)
+      }
+    },
+    setValue() {
+      if (this.viewType === 'generate') {
         const { sipCreateTypeCd, sipCreateTypeNm, sipCreateSeqCd, ssvcLineTypeCd, sipVersionTypeNm, sipVersionTypeCd } = this.resultListVo
         this.sipCreateTypeCd = sipCreateTypeCd
         this.sipCreateTypeNm = sipCreateTypeNm
@@ -205,15 +223,14 @@ export default {
         this.sipVersionTypeNm = ''
         this.sipVersionTypeCd = ''
       }
-      this.onResetForm()
-      },
-      onResetForm() {
-        this.ipBlockDetailList = []
-        this.pipPrefix = ''
+    },
+    onResetForm() {
+      this.ipBlockDetailList = []
+      this.pipPrefix = ''
     },
     onClose() {
     },
-    async fnSaveBtnClick() { // IP 등록
+    async fnSaveBtnClick() { /* IP 등록 */
       if (this.ipBlockDetailList.length === 0) {
         onMessagePopup(this, '등록할 목록이 없습니다.')
         return
@@ -308,7 +325,6 @@ export default {
           })
         }
 
-        // 새로운 IP 추가 요청
         res = await apiRequestJson(ipmsJsonApis.appendCrtIPMst, ipBLockCheckVo)
 
         if (res.commonMsg === 'SUCCESS') {
@@ -330,8 +346,7 @@ export default {
         this.closeLoading(target)
       }
     },
-    fnInitBtnClick() {
-      // 초기화
+    fnInitBtnClick() { /* 초기화 */
       this.ipBlockDetailList = []
       this.viewType = 'create'
       if (this.viewType === 'create') {
@@ -340,8 +355,7 @@ export default {
         this.sipVersionTypeCd = 'CV0001'
       }
     },
-    fnRemoveBtnClick(index) {
-      // 블럭 삭제
+    fnRemoveBtnClick(index) { /* 블럭 삭제 */
       this.ipBlockDetailList.splice(index, 1)
     }
   },

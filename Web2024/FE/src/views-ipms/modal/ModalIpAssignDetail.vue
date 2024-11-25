@@ -184,8 +184,8 @@ export default {
     },
     onClose() { /* this.ipAssignVo = []  */ },
     handleAssignIp() {
-      this.closeOnClickModal = true
       this.$refs.ModalIpAssign.open({ row: this.ipAssignVo, type: 'asgnRoute' })
+      this.closeOnClickModal = true
     },
      async fnRetUpdateAsgnIPMst() {
         const { ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd, sassignLevelCd, sipCreateTypeCd } = this.ipAssignVo

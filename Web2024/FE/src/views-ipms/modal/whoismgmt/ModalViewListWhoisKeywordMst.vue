@@ -26,6 +26,7 @@
               <el-select
                 v-model="suserorggb"
                 size="small"
+                @keyup.enter.native="fnViewListWhoisKeywordMst()"
               >
                 <el-option
                   v-for="item in suserorggbOp"
@@ -37,15 +38,15 @@
             </div>
           </td>
           <th>
-            <label>기관명</label>
+            <label>기관명</label> this.
           </th>
           <td>
             <div>
-              <el-input v-model="sorgname"></el-input>
+              <el-input v-model="sorgname" @keyup.enter.native="fnViewListWhoisKeywordMst()"></el-input>
             </div>
           </td>
           <td>
-            <el-button class="float-right my-2" type="primary" size="small" round @click="fnViewSeachAddrPop('kt')">조회</el-button>
+            <el-button class="float-right my-2" type="primary" size="small" round @click="fnViewListWhoisKeywordMst()">조회</el-button>
           </td>
         </tr>
       </table>
@@ -57,8 +58,8 @@
         :prop-data="pagination.data"
         :prop-pagination-data.sync="pagination"
         :prop-is-pagination="true"
-        :prop-table-height="300"
         :prop-column="tableColumns"
+        :prop-on-select="handleClickTableCheck"
         :prop-max-select="pagination.data.length"
         :prop-is-check-box="true"
         prop-grid-menu-id="inputSpeed"
@@ -82,7 +83,8 @@ import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
 import CompTable from '@/components/elTable/CompTable.vue'
 import ModalInsertKeyword from '@/views-ipms/modal/whoismgmt/ModalInsertKeyword.vue'
-import { ipmsModelApis, apiRequestModel } from '@/api/ipms'
+import { apiRequestJson, ipmsJsonApis, apiRequestModel, ipmsModelApis } from '@/api/ipms'
+import { onMessagePopup } from '@/utils'
 
 const routeName = 'ModalViewListWhoisKeywordMst'
 
@@ -96,10 +98,9 @@ export default {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       pagination: this.setDefaultPagination(),
-      selectedRow: null,
        tableColumns: [
-        { prop: 'suserorggb', label: '기관구분', width: 300, align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'sorgname', label: '기관명', align: 'center', width: 400, sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'suserorggb', label: '기관구분', width: 500, align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'sorgname', label: '기관명', align: 'center', width: 500, sortable: true, columnVisible: true, showOverflow: true },
       ],
       suserorggbOp: [
         { label: 'CORPORATION', value: 'CORPORATION' },
@@ -112,6 +113,7 @@ export default {
       ],
       suserorggb: '',
       sorgname: '',
+      selectedRows: []
     }
   },
   methods: {
@@ -124,20 +126,29 @@ export default {
       setTimeout(() => {
         this.fnViewListWhoisKeywordMst()
       }, 10)
+      this.sorgname = ''
+      this.suserorggb = ''
     },
     handleChangeCurPage(v) {
       if (v) this.pagination.currentPage = v
       this.fnViewListWhoisKeywordMst()
     },
+    handleClickTableCheck(all, cur) {
+      this.selectedRows = all
+    },
     async fnViewListWhoisKeywordMst() {
       const target = ({ vue: this.$refs.compTable })
       const { pageSize: pageUnit, currentPage: pageIndex } = this.pagination
-      const param = { pageUnit, pageIndex }
+      const param = {
+        sorgname: this.sorgname,
+        suserorggb: this.suserorggb
+      }
+       Object.assign(param, { pageUnit, pageIndex })
       try {
        this.openLoading(target)
         const res = await apiRequestModel(ipmsModelApis.viewListWhoisKeywordMst, param)
-        // this.pagination.data = res.resultListVo.tbWhoisKeywordVos ?? []
-        // this.pagination.total = res.result.totalCount
+        this.pagination.data = res.result.data ?? []
+        this.pagination.total = res.result.totalCount
       } catch (error) {
         console.error(error)
       } finally {
@@ -147,10 +158,40 @@ export default {
     fnViewKeywordInsert() { /* 등록 */
       this.$refs.ModalInsertKeyword.open()
     },
-    fnKeywordDel() { /* 삭제 */
+    async fnKeywordDel() { /* 삭제 */
+      if (this.selectedRows.length === 0) {
+        onMessagePopup(this, '삭제할 대상이 없습니다.')
+        return
+      }
+       const target = ({ vue: this.$refs.content })
+      try {
+        const tbWhoisKeywordListVo = {
+          tbWhoisKeywordVos: []
+        }
 
+        this.selectedRows.forEach((item) => {
+          tbWhoisKeywordListVo.tbWhoisKeywordVos.push({ nwhoisKeywordSeq: item.nwhoisKeywordSeq })
+        })
+        const res = await apiRequestJson(ipmsJsonApis.deleteWhoisKeyword, tbWhoisKeywordListVo)
+        if (res.commonMsg === 'SUCCESS') {
+          onMessagePopup(this, '정상적으로 삭제되었습니다')
+          this.$emit('reload')
+          this.close()
+        } else {
+        onMessagePopup(this, res.commonMsg)
+       }
+
+        this.openLoading(target)
+      } catch (error) {
+        console.error(error)
+      } finally {
+        this.closeLoading(target)
+      }
     },
     onClose() {
+      this.suserorggb = ''
+      this.sorgname = ''
+      this.selectedRows = []
     },
   },
 }
