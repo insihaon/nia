@@ -147,7 +147,7 @@ export default {
       try {
         this.loading = true
         const res = await apiRequestModel(ipmsModelApis.viewInsertMrgAsgnIPMst, tbIpAssignMstListVo)
-        if (res.result.data.commonMsg === 'SUCCESS') {
+        if (res.result.data.commonMsg === 'SUCCESS' || res.result.data.commonMsg === null) {
           this.resultComplexVo = res.result.data
           this.destIpAssignMstVos = res.result.data?.destIpAssignMstVos
         } else {
