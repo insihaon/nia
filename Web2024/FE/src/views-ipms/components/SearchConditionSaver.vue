@@ -74,10 +74,15 @@ export default {
           dangerouslyUseHTMLString: true
         }).then(async () => {
           await this.setCoverProfile(currentViewProfile)
-        }).catch(action => {
-          // if(action === 'cancel') {
-          //   await this.setCoverProfile(currentViewProfile)
-          // }
+        }).catch(async(action) => {
+          if (action === 'cancel') {
+            await this.confirm('새 프로파일을 저장하시겠습니까?', '알림', {
+              cancelButtonText: '취소',
+            confirmButtonText: '확인',
+            }).then(async() => {
+              await this.setAddProfile(currentViewProfile)
+            }).catch(action => {})
+          }
         })
       } else {
         await this.setAddProfile(currentViewProfile)
