@@ -2,6 +2,7 @@ package com.codej.base.aop;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Map;
 
@@ -10,9 +11,11 @@ import javax.servlet.http.HttpServletRequest;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.ModelMap;
 
+import com.codej.base.exception.CServiceException;
 import com.codej.base.exception.CUntrustedRequestException;
 import com.codej.base.property.GlobalConstants;
 import com.codej.base.utils.EncryptUtil;
@@ -51,11 +54,36 @@ public class EncryptResponseAspect {
 
         // 암호화 조건 확인
         if (encrypt || encrypt == null) {
-            if (result instanceof org.springframework.ui.ModelMap) {
+
+            if (result instanceof ResponseEntity) {
+                ResponseEntity<?> responseEntity = (ResponseEntity<?>) result;
+                Object body = responseEntity.getBody();
+
                 ModelMap resultModel = new ModelMap();
-                resultModel.addAttribute("encrypt", true);
-                resultModel.addAttribute("data", encrypt(result));
+                resultModel.addAttribute(GlobalConstants.Common.ENCRYPT, true);
+                resultModel.addAttribute(GlobalConstants.Common.RESULT, encrypt(body));
                 return resultModel;
+
+                // if (body != null) {
+                //     // 응답 데이터 암호화
+                //     String encryptedData = encrypt(body);
+                //     return ResponseEntity.status(responseEntity.getStatusCode()).body(encryptedData);
+                // }
+            }
+            else if (result instanceof ModelMap) {
+                ModelMap resultModel = new ModelMap();
+                resultModel.addAttribute(GlobalConstants.Common.ENCRYPT, true);
+                resultModel.addAttribute(GlobalConstants.Common.RESULT, encrypt(result));
+                return resultModel;
+            }
+            else if (result instanceof Serializable) {
+                ModelMap resultModel = new ModelMap();
+                resultModel.addAttribute(GlobalConstants.Common.ENCRYPT, true);
+                resultModel.addAttribute(GlobalConstants.Common.RESULT, encrypt(result));
+                return resultModel;
+            } 
+            else {
+                throw new CServiceException("처리 불가능한 데이터 타입입니다.");
             }
         }
 
