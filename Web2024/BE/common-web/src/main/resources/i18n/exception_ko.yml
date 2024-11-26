@@ -24,8 +24,8 @@ communicationError:
   message_detail: "네트워크를 확인하고, 서비스를 재요청 하세요."
 existingUser:
   code: "-1005"
-  message: "이미 가입하셨습니다. 로그인을 해주십시오."
-  message_detail: ""
+  message: "이미 가입하셨습니다. "
+  message_detail: "로그인을 해주십시오."
 notOwner:
   code: "-1006"
   message: "해당 자원의 소유자가 아닙니다."
@@ -61,4 +61,4 @@ httpRelayServiceFail:
 untrustedRequest:
   code: "-1014"
   message: "신뢰할 수 없는 요청입니다."
-  message_detail: "서비스 프로토콜을 확인하세요"
+  message_detail: "인증 후 다시 시도 하세요"
