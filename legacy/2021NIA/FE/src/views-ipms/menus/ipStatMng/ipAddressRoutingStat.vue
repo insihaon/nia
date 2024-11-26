@@ -64,7 +64,7 @@ export default {
             }
           }
         },
-        { key: 'ServiceOrg', props: { limit: 3 } },
+        { key: 'ServiceOrg', props: { isAllOption: false, limit: 3 } },
         { key: 'SipCreateType', props: {} },
         { key: 'DatePicker', props: { } },
       ],
