@@ -28,7 +28,7 @@
                 >
               </el-form-item>
               <!-- </el-tooltip> -->
-              <Button @click.native.prevent="handleLogin">로그인</Button>
+              <el-button @click.native.prevent="handleLogin">로그인</el-button>
             </el-form>
             <div class="des">아이디, 비밀번호는 kate/NeOSS와 동일합니다.</div>
           </div>

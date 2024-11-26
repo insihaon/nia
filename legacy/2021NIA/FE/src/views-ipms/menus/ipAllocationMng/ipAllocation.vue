@@ -160,7 +160,7 @@ export default {
               },
               on: { click: () => {
                 if (row.sassignLevelCd === 'IA0004') {
-                  this.fnViewInsertDivAsgnIPMst(row)
+                  this.$refs.ModalIpBlockDivision.open({ row, typeFlag: 'Aloc' })
                 }
             } } }, row.sassignLevelCd === 'IA0004' ? '분할' : '불가')
           }
@@ -207,16 +207,6 @@ export default {
     },
     handleClickTableCheck(all, cur) {
       this.selectedRows = all
-    },
-    async fnViewInsertDivAsgnIPMst(row) {
-      try {
-        const res = await apiRequestModel(ipmsModelApis.viewInsertDivAsgnIPMst, { nipAssignMstSeq: row.nipAssignMstSeq, typeFlag: 'Aloc' })
-        if (res.result.data) {
-          this.$refs.ModalIpBlockDivision.open({ result: res.result.data })
-        }
-      } catch (error) {
-        this.error(error)
-      }
     },
     fnViewCheckTacsIpBlock_() {
       fnViewCheckTacsIpBlock(this, this.selectedRows)

@@ -80,7 +80,9 @@
       <template v-if="isCheckGrade">
         <el-button v-if="isAdmin" class="el-icon-s-release" type="primary" size="small" round @click.native="fnCancelBtnClick()">반려</el-button>
         <el-button v-if="isAdmin" class="el-icon-check" type="primary" size="small" round @click.native="fnUpdateConfirmBtnClick()">승인</el-button>
-        <el-button v-if="adminYn === 'Y' || ownerYn === 'Y'" class="el-icon-minus" type="primary" size="small" round @click.native="fnDeleteBtnClick()">신청취소</el-button>
+        <template v-if="isScreateId">
+          <el-button v-if="adminYn === 'Y' || ownerYn === 'Y'" class="el-icon-back" type="primary" size="small" round @click.native="fnDeleteBtnClick()">신청취소</el-button>
+        </template>
       </template>
       <el-button type="primary" size="small" icon="el-icon-close" round @click.native="close()">{{ $t('exit') }}</el-button>
     </div>
@@ -90,7 +92,7 @@
 <script>
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
-import { apiRequestJson, ipmsJsonApis, apiRequestModel, ipmsModelApis } from '@/api/ipms'
+import { apiRequestModel, ipmsModelApis } from '@/api/ipms'
 import { onMessagePopup } from '@/utils/index'
 
 const routeName = 'ModalDetailUserAuth'
@@ -105,6 +107,7 @@ export default {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       selectedRow: null,
+      resultList: [],
       resultListVo: {},
       resultSubListVo: {},
       totalCount: 0,
@@ -117,6 +120,9 @@ export default {
 
     isCheckGrade() {
       return this.resultSubListVo.nrequestTypeCd === 'nod001'
+    },
+    isScreateId() {
+      return this.resultList[0].screateId === this.$store.state.user.info.suserId
     },
     isAdmin() {
       return this.adminYn === 'Y'
@@ -131,11 +137,11 @@ export default {
       this.domElement.maxWidth = 800
     },
     onOpen(model, actionMode) {
-      setTimeout(() => {
+     this.$nextTick(() => {
         if (model.row) {
          this.fnViewDetailGrant(model.row)
         }
-      }, 10)
+      })
     },
     async fnViewDetailGrant(row) {
       const target = ({ vue: this.$refs.content })
@@ -147,6 +153,7 @@ export default {
             grantSeq: grantSeq
          }
         const res = await apiRequestModel(ipmsModelApis.viewDetailUserAuthSubs, tbUserAuthVo)
+        this.resultList = res.resultList
         this.resultListVo = res.resultListVo
         this.totalCount = res.totalCount
         this.resultSubListVo = res.resultSubListVo

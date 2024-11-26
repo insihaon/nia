@@ -72,11 +72,11 @@
               <span>+ 82</span>
               <span>-</span>
               <el-input
-                v-model="formattedPhone"
+                v-model="resultVo.sadmDpphone"
                 size="small"
                 maxlength="50"
               />
-              <em>(예: 2-222-2222)</em>
+              <em style="font-size: 12px;">(예: 2-222-2222)</em>
             </td>
           </tr>
           <tr>
@@ -94,21 +94,24 @@
       </table>
     </div>
     <div class="popupContentTableBottom">
-      <el-button type="primary" size="small" icon="el-icon-check" round @click.native="fnKeywordDel()">저장</el-button>
+      <el-button type="primary" size="small" icon="el-icon-check" round @click.native="fnSaveKtInfo()">저장</el-button>
       <el-button type="primary" size="small" icon="el-icon-close" round @click.native="close()">{{ $t('exit') }}</el-button>
     </div>
+    <ModalSearchZipCode ref="ModalSearchZipCode" @setAddrForm="setAddrForm" />
   </el-dialog>
 </template>
 <script>
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
-import { ipmsModelApis, apiRequestModel } from '@/api/ipms'
+import { apiRequestJson, ipmsJsonApis, apiRequestModel, ipmsModelApis } from '@/api/ipms'
+import { onMessagePopup } from '@/utils/index'
+import ModalSearchZipCode from '@/views-ipms/modal/notice/ModalSearchZipCode.vue'
 
 const routeName = 'ModalViewUpdateKtInfo'
 
 export default {
   name: routeName,
-  components: { },
+  components: { ModalSearchZipCode },
   directives: { elDragDialog },
   extends: Modal,
   data() {
@@ -121,7 +124,17 @@ export default {
         { prop: 'suserorggb', label: '고객명', width: 200, align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'sorgname', label: '대체기준', align: 'center', width: 200, sortable: true, columnVisible: true, showOverflow: true },
       ],
-      resultVo: {},
+      resultVo: {
+        sorgname: '',
+        sadmAddr: '',
+        sadmAddrDetail: '',
+        sadmZipcode: '',
+        seorgname: '',
+        sadmEaddr: '',
+        sadmEaddrDetail: '',
+        sadmDpphone: '',
+        sadmEmail: '',
+      },
       suserorggbOp: [
         { label: '고객명 일치', value: '10' },
         { label: '고객명 포함', value: '20' },
@@ -147,21 +160,85 @@ export default {
     },
     async fnViewListWhoisKeywordMstNew() {
       const target = ({ vue: this.$refs.compTable })
-      const { pageSize: pageUnit, currentPage: pageIndex } = this.pagination
-      const param = { pageUnit, pageIndex }
       try {
        this.openLoading(target)
-        const res = await apiRequestModel(ipmsModelApis.viewUpdateKtInfo, param)
-        this.pagination.data = res.resultListVo.tbWhoisKeywordVos ?? []
-        this.pagination.total = res.result.totalCount
+        const res = await apiRequestModel(ipmsModelApis.viewUpdateKtInfo)
+        this.resultVo = res.result.data ?? []
       } catch (error) {
         console.error(error)
       } finally {
         this.closeLoading(target)
       }
     },
-    fnKeywordDel() { /* 삭제 */
+    async fnSaveKtInfo() { /* KT 대체 정보 수정 */
+      if (this.resultVo.sorgname === '') {
+        onMessagePopup(this, '한글기관명을 입력하세요.')
+        return
+      }
 
+      if (this.resultVo.saddr === '') {
+        onMessagePopup(this, '한글주소를 입력하세요.')
+        return
+      }
+
+      if (this.resultVo.szipcode === '') {
+        onMessagePopup(this, '우편주소를 입력하세요.')
+        return
+      }
+
+      if (this.resultVo.seorgname === '') {
+        onMessagePopup(this, '영문기관명을 입력하세요.')
+        return
+      }
+
+      if (this.resultVo.seaddr === '') {
+        onMessagePopup(this, '영문주소를 입력하세요.')
+        return
+      }
+
+      const target = ({ vue: this.$refs.compTable })
+      try {
+        const ktInfoVo = {
+          sorgname: this.resultVo.sorgname,
+          saddr: this.resultVo.saddr,
+          sadmAddr: this.resultVo.sadmAddr,
+          saddrDetail: this.resultVo.saddrDetail,
+          sadmAddrDetail: this.resultVo.sadmAddrDetail,
+          szipcode: this.resultVo.szipcode,
+          sadmZipcode: this.resultVo.sadmZipcode,
+          seorgname: this.resultVo.seorgname,
+          sadmEorgname: this.resultVo.sadmEorgname,
+          seaddr: this.resultVo.seaddr,
+          sadmEaddr: this.resultVo.sadmEaddr,
+          seaddrDetail: this.resultVo.seaddrDetail,
+          sadmEaddrDetail: this.resultVo.sadmEaddrDetail,
+          sadmDpphone: this.resultVo.sadmDpphone,
+          sadmEmail: this.resultVo.sadmEmail
+        }
+        const res = await apiRequestJson(ipmsJsonApis.updateKtInfo, ktInfoVo)
+        if (res.commonMsg === 'SUCCESS') {
+          onMessagePopup(this, 'KT 대체 정보가 정상적으로 수정되었습니다')
+           this.fnViewListWhoisKeywordMstNew()
+        } else {
+          onMessagePopup(this, res.commonMsg)
+        }
+      } catch (error) {
+        console.error(error)
+      } finally {
+        this.closeLoading(target)
+      }
+    },
+    fnViewSeachAddrPop(type) { /* 주소 검색 */
+      this.$refs.ModalSearchZipCode.open({ type: type })
+    },
+    setAddrForm(Addr) {
+      const addrObj = {
+        sadmAddr: Addr.newkaddr, // 새 한글주소
+        sadmAddrDetail: Addr.detailAddress, // 디테일 주소
+        sadmZipcode: Addr.zipcode, // 우편번호
+        sadmEaddr: Addr.eaddr // 새 영어주소
+      }
+      Object.assign(this.resultVo, addrObj)
     },
     onClose() {
     },

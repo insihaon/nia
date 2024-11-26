@@ -114,6 +114,7 @@ export const ipmsModelApis = {
   viewListWhoisKeywordMstNew: { desc: 'WHOIS 정보공개 관리 > 대체키워드 관리POP', url: '/opermgmt/whoismgmt/viewListWhoisKeywordMstNew' },
   viewUpdateKtInfo: { desc: 'WHOIS 정보공개 관리 > KT 대체 정보 관리POP', url: '/opermgmt/whoismgmt/viewUpdateKtInfo' },
   viewListWhoisDbMatchMst: { desc: 'WHOIS 정보공개 관리 > DB현행화 전송POP', url: '/opermgmt/whoismgmt/viewListWhoisDbMatchMst' },
+  viewSearchKisa: { desc: 'WHOIS 정보공개 관리 > KISA IP 조회POP', url: '/opermgmt/whoismgmt/viewSearchKisa' },
 }
 export const ipmsJsonApis = {
   selectAuthCenterList: { desc: '센터 조회', url: '/opermgmt/orgmgmt/selectAuthCenterList' },
@@ -231,7 +232,15 @@ export const ipmsJsonApis = {
   selectListMenuBas: { desc: '메뉴관리 > 하위 메뉴 조회', url: '/opermgmt/menumgmt/selectListMenuBas' },
   selectSearchScrnBas: { desc: '메뉴관리 > 화면명 검색', url: '/opermgmt/menumgmt/selectSearchScrnBas' },
   updateTbMenuBasVo: { desc: '메뉴관리 > 화면명 저장', url: '/opermgmt/menumgmt/updateTbMenuBasVo' },
+  deleteTbWhoisVo: { desc: 'WHOIS 정보공개관리  > WHOIS 정보공개 삭제', url: '/opermgmt/whoismgmt/deleteTbWhoisVo' },
   updateWhoisComplexNew: { desc: 'WHOIS 정보공개관리 > WHOIS 신청서 수정 ', url: '/opermgmt/whoismgmt/updateWhoisComplexNew' },
+  selectWhoisComplexNew: { desc: 'WHOIS 데이터 변경 전송 ', url: '/opermgmt/whoismgmt/selectWhoisComplexNew' },
+  deleteWhoisKeyword: { desc: 'WHOIS 이용기관관리 삭제 ', url: '/opermgmt/whoismgmt/deleteWhoisKeyword' },
+  insertWhoisKeyword: { desc: 'WHOIS 이용기관관리 등록 ', url: '/opermgmt/whoismgmt/insertWhoisKeyword' },
+  insertWhoisKeywordNew: { desc: 'WHOIS 대체키워드 등록 ', url: '/opermgmt/whoismgmt/insertWhoisKeywordNew' },
+  deleteWhoisKeywordNew: { desc: 'WHOIS 대체키워드 삭제 ', url: '/opermgmt/whoismgmt/deleteWhoisKeywordNew' },
+  updateKtInfo: { desc: 'WHOIS KT 대체 정보 수정 ', url: '/opermgmt/whoismgmt/updateKtInfo' },
+  dbMatchListTbWhoisVo: { desc: 'WHOIS DB 현행화 전송', url: '/opermgmt/whoismgmt/dbMatchListTbWhoisVo' },
   uploadmgmtUpload: { desc: '연동관리 > 우편번호 연동관리 업로드', url: '/opermgmt/uploadmgmt/upload' },
   // 엑셀 저장
   viewListCrtIPMstExcel: { desc: 'IP블록관리 엑셀저장', url: 'ipmgmt/createmgmt/viewListCrtIPMstExcel' },

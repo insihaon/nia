@@ -26,7 +26,7 @@
           <tr>
             <th>계위</th>
             <td>
-              <el-select v-model="ssvcLineTypeCd" :disabled="disabledSassign" class="w-100" size="mini" @change="handleChangeLvl1()">
+              <el-select v-model="ssvcLineTypeCd" :disabled="isSsvcLineTypeCd" class="w-100" size="mini" @change="handleChangeLvl1()">
                 <el-option
                   v-for="item in ssvcLineTypeNmOp"
                   :key="item.value"
@@ -36,7 +36,7 @@
               </el-select>
             </td>
             <td>
-              <el-select v-model="ssvcGroupCd" :disabled="disabledSassign" class="w-100" size="mini" @change="handleChangeLvl2()">
+              <el-select v-model="ssvcGroupCd" :disabled="isSsvcGroupCd" class="w-100" size="mini" @change="handleChangeLvl2()">
                 <el-option
                   v-for="item in ssvcGroupNmOp"
                   :key="item.value"
@@ -46,7 +46,7 @@
               </el-select>
             </td>
             <td>
-              <el-select v-model="ssvcObjCd" :disabled="disabledSassign" class="w-100" size="mini">
+              <el-select v-model="ssvcObjCd" :disabled="isSsvcObjCd" class="w-100" size="mini">
                 <el-option
                   v-for="item in ssvcObjNmOp"
                   :key="item.value"
@@ -191,22 +191,27 @@ export default {
         label: '-------',
         value: '000000'
       }],
-
-      ssvcLineTypeCd: '',
-      ssvcGroupCd: '',
-      ssvcObjCd: '',
+      ssvcLineTypeCd: null,
+      ssvcGroupCd: null,
+      ssvcObjCd: null,
       sassignLevelCd: '',
       sassignTypeCd: 'SA0000',
       scomment: '',
       ssvcLineTypeNm: '',
       pipPrefix: '',
       tbIpAssignMstListVo: [],
-      disabledLevel: false
+      disabledLevel: {}
     }
   },
   computed: {
-    disabledSassign() {
-      return this.disabledLevel === true
+    isSsvcLineTypeCd() {
+      return this.disabledLevel.ssvcLineTypeCd
+    },
+    isSsvcGroupCd() {
+      return this.disabledLevel.ssvcGroupCd
+    },
+    isSsvcObjCd() {
+      return this.disabledLevel.ssvcObjCd
     }
 
   },
@@ -220,11 +225,15 @@ export default {
     },
     onOpen(model, actionMode) {
       if (model.type) {
-        const nipAssignMstSeq = model.row.nipAssignMstSeq
+        setTimeout(() => {
+          const nipAssignMstSeq = model.row.nipAssignMstSeq
           this.fnViewUpdateAsgnIPMst(nipAssignMstSeq, 'singleParam')
+        }, 100)
       } else {
+        setTimeout(() => {
         const nipAssignMstSeq = model.tbIpAssignMstListVo
         this.fnViewUpdateAsgnIPMst(nipAssignMstSeq, 'doubleParam')
+        }, 100)
       }
     },
     async fnViewUpdateAsgnIPMst(nipAssignMstSeq, paramType) {
@@ -244,8 +253,8 @@ export default {
           const res = await apiRequestModel(ipmsModelApis.viewUpdateAsgnIPMst, tbIpAssignMstListVo)
           this.tbIpAssignMstListVo = res.result.data
           this.disabledLevel = res.disabledMap
-          this.setvalue() /* set values */
           this.checkMethod() /* set 계위  */
+          this.setvalue() /* set values */
         } catch (error) {
           console.error(error)
         } finally {
@@ -253,18 +262,17 @@ export default {
         }
       },
       setvalue() {
-        const { ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd, sassignLevelCd, sassignTypeCd, scomment } = this.tbIpAssignMstListVo[0]
+        const { ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd, sassignLevelCd, } = this.tbIpAssignMstListVo[0]
           this.ssvcLineTypeCd = ssvcLineTypeCd
           this.ssvcGroupCd = ssvcGroupCd
           this.ssvcObjCd = ssvcObjCd
           this.sassignLevelCd = sassignLevelCd
-          // this.scomment = scomment
       },
-    checkMethod() {
-      if (this.ssvcLineTypeCd !== '' || this.ssvcLineTypeNm !== '000000') {
+      checkMethod() {
+      if (this.ssvcLineTypeCd !== null || this.ssvcLineTypeNm !== '000000') {
         this.handleChangeLvl1()
       }
-      if (this.ssvcGroupCd !== '' || this.ssvcGroupCd !== '000000') {
+      if (this.ssvcGroupCd !== null || this.ssvcGroupCd !== '000000') {
         this.handleChangeLvl2()
       }
 
@@ -278,7 +286,7 @@ export default {
       }
 
       if (this.ssvcObjCd === null) {
-        this.ssvcObjCd = ''
+        this.ssvcObjCd = null
       }
     },
     async fnSelectSassignType() {
@@ -400,7 +408,7 @@ export default {
         console.error(error)
       } finally {
         this.closeLoading(target)
-       }
+      }
     },
     onClose() { this.selectedRows = [] },
   },

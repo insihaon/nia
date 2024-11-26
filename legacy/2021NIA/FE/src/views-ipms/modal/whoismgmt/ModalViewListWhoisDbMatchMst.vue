@@ -29,7 +29,7 @@
             <th>IP 주소</th>
             <td>
               <el-input
-                v-model="searchWrdPop"
+                v-model="searchWrd"
                 placeholder="IP 주소 입력"
               />
             </td>
@@ -37,7 +37,7 @@
             <th>서비스</th>
             <td>
               <el-select
-                v-model="searchVo.sassignTypeCd"
+                v-model="sassignTypeCd"
                 placeholder="전체"
               >
                 <el-option label="전체" value="" />
@@ -52,16 +52,16 @@
 
             <th>사용기관명</th>
             <td>
-              <el-input v-model="sorgnamePop" />
+              <el-input v-model="sorgname" />
             </td>
             <th>네트워크이름</th>
             <td>
-              <el-input v-model="snetNmPop" />
+              <el-input v-model="snetNm" />
             </td>
             <th>작업종류</th>
             <td>
               <el-select
-                v-model="srequestCdPop"
+                v-model="srequestCd"
                 placeholder="전체"
               >
                 <el-option label="전체" value="" />
@@ -76,6 +76,7 @@
           </tr>
         </tbody>
       </table>
+      <el-button class="float-right my-2" size="small" round type="primary" @click="handleClickSearch()"> 조회 </el-button>
     </div>
     <el-col :span="24" class="my-2">
       <compTable
@@ -84,11 +85,12 @@
         :prop-data="pagination.data"
         :prop-pagination-data.sync="pagination"
         :prop-is-pagination="true"
-        :prop-table-height="300"
+        :prop-table-height="500"
         :prop-column="tableColumns"
         :prop-max-select="pagination.data.length"
         :prop-is-check-box="true"
         :text-des="false"
+        :prop-on-select="handleClickTableCheck"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
         :prop-on-page-change="handleChangeCurPage"
@@ -97,7 +99,7 @@
       </compTable>
     </el-col>
     <div class="popupContentTableBottom">
-      <el-button type="primary" size="small" round @click.native="fnKeywordDel()">DB 현행화 전송</el-button>
+      <el-button type="primary" size="small" round @click.native="fnDbMatch()">DB 현행화 전송</el-button>
       <el-button type="primary" size="small" icon="el-icon-close" round @click.native="close()">{{ $t('exit') }}</el-button>
     </div>
   </el-dialog>
@@ -106,7 +108,9 @@
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
 import CompTable from '@/components/elTable/CompTable.vue'
-import { ipmsModelApis, apiRequestModel } from '@/api/ipms'
+import { ipmsModelApis, apiRequestModel, apiRequestJson, ipmsJsonApis } from '@/api/ipms'
+import moment from 'moment'
+import { onMessagePopup } from '@/utils/index'
 
 const routeName = 'ModalViewListWhoisDbMatchMst'
 
@@ -121,28 +125,31 @@ export default {
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       pagination: this.setDefaultPagination(),
        tableColumns: [
-        { prop: 'suserorggb', label: 'IP', width: 200, align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'sorgname', label: '노드', align: 'center', width: 200, sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'sorgname', label: '서비스', align: 'center', width: 200, sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'pipPrefix', label: 'IP', width: 200, align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+         {
+           prop: 'ssvcLineTypeNm', label: '노드', align: 'center', width: 200, sortable: true, columnVisible: true, showOverflow: true,
+          formatter: (row) => `${row.ssvcLineTypeNm} - ${row.ssvcGroupNm} - ${row.ssvcObjNm}`
+        },
+        { prop: 'sassignTypeNm', label: '서비스', align: 'center', width: 200, sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'sorgname', label: '기관명', align: 'center', width: 200, sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'sorgname', label: '네트워크이름', align: 'center', width: 200, sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'sorgname', label: '작업종류', align: 'center', width: 200, sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'sorgname', label: '변경일시', align: 'center', width: 200, sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'sorgname', label: '등록현황', align: 'center', width: 200, sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'snetNm', label: '네트워크이름', align: 'center', width: 200, sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'swhoisRequestTypeNm', label: '작업종류', align: 'center', width: 200, sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'dmodifyDt', label: '변경일시', align: 'center', width: 200, sortable: true, columnVisible: true, showOverflow: true, formatter: (row) => moment(row.dmodifyDt).format('YYYY-MM-DD HH:mm:ss') },
+        { prop: 'swhoisTranStatusNm', label: '등록현황', align: 'center', width: 200, sortable: true, columnVisible: true, showOverflow: true },
       ],
       suserorggbOp: [
         { label: '고객명 일치', value: '10' },
         { label: '고객명 포함', value: '20' },
       ],
-       searchWrdPop: '',
-      sorgnamePop: '',
-      snetNmPop: '',
-      srequestCdPop: '',
-      searchVo: {
-        sassignTypeCd: ''
-      },
-      sassignTypeCdList: [], // 서비스 항목 리스트 (API로 받아온 데이터)
-      listReqTypeCd: [] // 작업종류 리스트 (API로 받아온 데이터)
+      searchWrd: '',
+      sorgname: '',
+      snetNm: '',
+      srequestCd: '',
+      sassignTypeCd: '',
+      sassignTypeCdList: [],
+      listReqTypeCd: [],
+      isFromOnOpen: false,
+      selectedChecks: []
     }
   },
   methods: {
@@ -151,34 +158,81 @@ export default {
       this.closeOnClickModal = false
       this.domElement.maxWidth = 1500
     },
+    handleChangeCurPage(v) {
+      if (v) this.pagination.currentPage = v
+      this.fnViewListWhoisKeywordMstNew()
+    },
     onOpen(model, actionMode) {
+     this.isFromOnOpen = true // onOpen에서 호출됨을 표시
       setTimeout(() => {
         this.fnViewListWhoisKeywordMstNew()
       }, 10)
     },
-    handleChangeCurPage(v) {
-      if (v) this.pagination.currentPage = v
+    handleClickTableCheck(all, cur) {
+      this.selectedChecks = all
+    },
+    handleClickSearch() {
+      this.isFromOnOpen = false
       this.fnViewListWhoisKeywordMstNew()
     },
     async fnViewListWhoisKeywordMstNew() {
       const target = ({ vue: this.$refs.compTable })
       const { pageSize: pageUnit, currentPage: pageIndex } = this.pagination
-      const param = { pageUnit, pageIndex }
+      const param = {
+        loadSearchYn: 'Y',
+        searchWrd: this.searchWrd,
+        sassignTypeCd: this.sassignTypeCd,
+        sorgname: this.sorgname,
+        snetNm: this.snetNm,
+        srequestCd: this.srequestCd,
+      }
+      Object.assign(param, { pageUnit, pageIndex })
       try {
        this.openLoading(target)
         const res = await apiRequestModel(ipmsModelApis.viewListWhoisDbMatchMst, param)
-        this.pagination.data = res.resultListVo.tbWhoisKeywordVos ?? []
-        this.pagination.total = res.result.totalCount
+        if (this.isFromOnOpen !== true) {
+          this.pagination.data = res.resultListVo.result.data ?? []
+          this.pagination.total = res.resultListVo.result.totalCount
+        }
+        this.sassignTypeCdList = res.sassignTypeCdList
+        this.listReqTypeCd = res.listReqTypeCd
+        this.searchVo = res.searchVo
       } catch (error) {
         console.error(error)
       } finally {
         this.closeLoading(target)
       }
     },
-    fnKeywordDel() {
-
+    fnDbMatch() { /* DB 현행화 전송 */
+      if (this.selectedChecks.length === 0) {
+        onMessagePopup(this, 'DB 현행화할 정보를 선택 후 전송 가능합니다.')
+        return
+      }
+      this.confirm('전송하시겠습니까?', 'DB 현행화 전송', {
+        cancelButtonText: '취소',
+        confirmButtonText: '확인',
+      }).then(async () => {
+      const tbWhoisVo = {
+        matchList: this.selectedChecks.map(item => item.nwhoisSeq)
+      }
+      try {
+        const res = await apiRequestJson(ipmsJsonApis.dbMatchListTbWhoisVo, tbWhoisVo)
+        if (res.commonMsg === 'SUCCESS') {
+          onMessagePopup(this, '삭제할 정보를 선택 후 삭제 가능합니다.')
+        } else if (res.commonMsg === '03') {
+          onMessagePopup(this, '삭제할 정보를 선택 후 삭제 가능합니다.')
+        } else {
+          onMessagePopup(this, '반영에 실패하였습니다.')
+        }
+      } catch (error) {
+        console.error(error)
+        }
+      })
+      .catch(action => {
+      })
     },
     onClose() {
+      this.isFromOnOpen = false
     },
   },
 }

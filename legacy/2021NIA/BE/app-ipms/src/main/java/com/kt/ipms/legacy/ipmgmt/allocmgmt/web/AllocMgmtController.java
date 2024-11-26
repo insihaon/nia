@@ -11,8 +11,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -57,7 +55,6 @@ import com.codej.base.property.FileStorageProperties;
 import com.codej.web.controller.FileController;
 import com.codej.base.dto.model.ResultMap;
 
-
 @Controller
 public class AllocMgmtController extends CommonController {
 
@@ -68,7 +65,7 @@ public class AllocMgmtController extends CommonController {
 	protected FileController fileController;
 
 	@Autowired
-    private FileStorageProperties fileStorageProperties;
+	private FileStorageProperties fileStorageProperties;
 
 	/**
 	 * IP 할당 목록
@@ -79,11 +76,12 @@ public class AllocMgmtController extends CommonController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/ipmgmt/allocmgmt/viewListIpAllocMst.model", method = {RequestMethod.POST, RequestMethod.GET})
+	@RequestMapping(value = "/ipmgmt/allocmgmt/viewListIpAllocMst.model", method = { RequestMethod.POST,
+			RequestMethod.GET })
 	@ResponseBody
 	public ModelMap selectListIpBlockMst(@RequestBody IpAllocOperMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
-			/** 계위 Seq 목록 조회 **/
+		/** 계위 Seq 목록 조회 **/
 		TbLvlMstVo searchSeqVo = new TbLvlMstVo();
 		searchSeqVo.setSsvcLineTypeCd(searchVo.getSsvcLineTypeCd());
 		searchSeqVo.setSsvcGroupCdMulti(searchVo.getSsvcGroupCdMulti());
@@ -97,7 +95,8 @@ public class AllocMgmtController extends CommonController {
 		return createResultList(resultListVo.getIpAllocOperMstVos(), resultListVo.getTotalCount());
 	}
 
-	@RequestMapping(value = "/ipmgmt/allocmgmt/viewListIpAllocMst.do", method = {RequestMethod.POST, RequestMethod.GET})
+	@RequestMapping(value = "/ipmgmt/allocmgmt/viewListIpAllocMst.do", method = { RequestMethod.POST,
+			RequestMethod.GET })
 	public String selectListIpBlockMst(@ModelAttribute("searchVo") IpAllocOperMstVo searchVo, ModelMap model,
 			HttpServletRequest request, HttpServletResponse response) {
 		IpAllocOperMstVo searchVoClone = new IpAllocOperMstVo();
@@ -119,7 +118,7 @@ public class AllocMgmtController extends CommonController {
 	}
 
 	private ModelMap ipBlockMstModel(@ModelAttribute("searchVo") IpAllocOperMstVo searchVo,
-	HttpServletRequest request) {
+			HttpServletRequest request) {
 		ModelMap model = new ModelMap();
 		IpAllocOperMstListVo resultListVo = null;
 		String sloadFlg = "T"; // 메뉴 호출 시 조회를 처리하지 않기 위한 예외값 로직 추가(2014.12.24 전필권 과장님 요청)
@@ -427,7 +426,8 @@ public class AllocMgmtController extends CommonController {
 			mappingList.add("장비명|getSsubscnealias");
 			mappingList.add("I/F명|getSsubsclgipportdescription");
 			mappingList.add("비고|getScomment");
-			return excelDownloadService.generateAndDownloadExcel(resultListVo.getIpAllocOperMstVos(), mappingList, request);
+			return excelDownloadService.generateAndDownloadExcel(resultListVo.getIpAllocOperMstVos(), mappingList,
+					request);
 		} catch (ServiceException e) {
 			String msgDesc = tbCmnMstService.selectMsgDesc(e);
 			resultVo.setCommonMsg(msgDesc);
@@ -497,9 +497,10 @@ public class AllocMgmtController extends CommonController {
 			String msgDesc = tbCmnMstService.selectMsgDesc(new ServiceException("CMN.HIGH.00000"));
 			resultListVo.setCommonMsg(msgDesc);
 		}
-		
+
 		return createResultList(sLvlSubvCds, sLvlSubvCds.size());
 	}
+
 	@RequestMapping(value = "/ipmgmt/allocmgmt/viewSearchtNeMst.ajax", method = RequestMethod.POST)
 	public String viewSearchtNeMst(@RequestBody IpAllocOperMstVo searchVo, ModelMap model,
 			HttpServletRequest request, HttpServletResponse response) {
@@ -520,8 +521,9 @@ public class AllocMgmtController extends CommonController {
 		model.addAttribute("searchVoJson", searchVoJson(searchVoClone));
 		return "ipmgmt/allocmgmt/viewSearchtNeMst";
 	}
+
 	private ModelMap searchtNeMstModel(@RequestBody IpAllocOperMstVo searchVo,
-	HttpServletRequest request) {
+			HttpServletRequest request) {
 		ModelMap model = new ModelMap();
 		IpAllocOperMstListVo resultListVo = null;
 		try {
@@ -632,6 +634,7 @@ public class AllocMgmtController extends CommonController {
 		TbIpAllocMstVo resultVo = allocMgmtService.selectIpAllocDetail(searchVo);
 		return createResult(resultVo);
 	}
+
 	@RequestMapping(value = "/ipmgmt/allocmgmt/viewDetailSubSvcMst.ajax", method = RequestMethod.POST)
 	public String viewDetailSubSvcMst(@RequestBody IpAllocOperMstVo searchVo, ModelMap model,
 			HttpServletRequest request, HttpServletResponse response) {
@@ -652,8 +655,9 @@ public class AllocMgmtController extends CommonController {
 		model.addAttribute("searchVoJson", searchVoJson(searchVoClone));
 		return "ipmgmt/allocmgmt/viewDetailSubSvcMst";
 	}
+
 	private ModelMap viewDetailSubSvcMstModel(@RequestBody IpAllocOperMstVo searchVo,
-	HttpServletRequest request) {
+			HttpServletRequest request) {
 		ModelMap model = new ModelMap();
 		TbIpAllocMstVo resultVo = null;
 		try {
@@ -698,10 +702,12 @@ public class AllocMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/ipmgmt/allocmgmt/viewDetailLinkMst.model", method = RequestMethod.POST)
 	@ResponseBody
-	public ModelMap viewDetailLinkMst(@RequestBody IpAllocOperMstVo searchVo, ModelMap model, HttpServletRequest request) {
+	public ModelMap viewDetailLinkMst(@RequestBody IpAllocOperMstVo searchVo, ModelMap model,
+			HttpServletRequest request) {
 		TbIpAllocMstVo resultVo = allocMgmtService.selectIpAllocDetailLink(searchVo);
 		return createResult(resultVo);
 	}
+
 	@RequestMapping(value = "/ipmgmt/allocmgmt/viewDetailLinkMst.ajax", method = RequestMethod.POST)
 	public String viewDetailLinkMst(@RequestBody IpAllocOperMstVo searchVo, ModelMap model, HttpServletRequest request,
 			HttpServletResponse response) {
@@ -722,6 +728,7 @@ public class AllocMgmtController extends CommonController {
 		model.addAttribute("searchVoJson", searchVoJson(searchVoClone));
 		return "ipmgmt/allocmgmt/viewDetailLinkMst";
 	}
+
 	private ModelMap viewDetailLinkMstModel(@RequestBody IpAllocOperMstVo searchVo, HttpServletRequest request) {
 		ModelMap model = new ModelMap();
 		TbIpAllocMstVo resultVo = null;
@@ -774,6 +781,7 @@ public class AllocMgmtController extends CommonController {
 		IpAllocOperMstListVo resultListVo = allocMgmtService.selectListIpAllocDetail(searchVo);
 		return createResultList(resultListVo.getIpAllocOperMstVos(), resultListVo.getTotalCount());
 	}
+
 	@RequestMapping(value = "/ipmgmt/allocmgmt/viewDetailAlcIPMst.ajax", method = RequestMethod.POST)
 	public String viewDetailAlcIPMst(@RequestBody IpAllocOperMstVo searchVo, ModelMap model,
 			HttpServletRequest request, HttpServletResponse response) {
@@ -815,7 +823,7 @@ public class AllocMgmtController extends CommonController {
 		model.addAttribute("resultListVo", resultListVo);
 		return model;
 	}
-	
+
 	/**
 	 * IP 할당 정보 팝업 조회
 	 * 
@@ -833,6 +841,7 @@ public class AllocMgmtController extends CommonController {
 		IpAllocOperMstListVo resultListVo = allocMgmtService.selectListAlcIPMstViaInMstSeq(ipAllocOperMstListVo);
 		return createResultList(resultListVo.getIpAllocOperMstVos(), resultListVo.getTotalCount());
 	}
+
 	@RequestMapping(value = "/ipmgmt/allocmgmt/viewInsertAlcIPMst.ajax", method = RequestMethod.POST)
 	public String viewInsertAlcIPMst(@RequestBody IpAllocOperMstListVo ipAllocOperMstListVo, ModelMap model,
 			HttpServletRequest request, HttpServletResponse response) {
@@ -853,7 +862,9 @@ public class AllocMgmtController extends CommonController {
 		model.addAttribute("searchVoJson", searchVoJson(searchVoClone));
 		return "ipmgmt/allocmgmt/viewInsertAlcIPMst";
 	}
-	private ModelMap viewInsertAlcIPMstModel(@RequestBody IpAllocOperMstListVo ipAllocOperMstListVo, HttpServletRequest request) {
+
+	private ModelMap viewInsertAlcIPMstModel(@RequestBody IpAllocOperMstListVo ipAllocOperMstListVo,
+			HttpServletRequest request) {
 		ModelMap model = new ModelMap();
 		IpAllocOperMstListVo resultListVo = null;
 		int totalCount = 0;
@@ -875,7 +886,6 @@ public class AllocMgmtController extends CommonController {
 		model.addAttribute("totalCount", totalCount);
 		return model;
 	}
-	
 
 	/**
 	 * IP 시설정보 조회 화면 결과
@@ -1048,11 +1058,11 @@ public class AllocMgmtController extends CommonController {
 	@RequestMapping(value = "/ipmgmt/allocmgmt/viewListIpAllocMstByMain.model", method = RequestMethod.POST)
 	@ResponseBody
 	public ModelMap selectListIpAllocMstByMain(@RequestBody IpAllocOperMstVo searchVo, ModelMap model,
-	HttpServletRequest request) {
+			HttpServletRequest request) {
 		ModelMap resultModel = new ModelMap();
-		
+
 		IpAllocOperMstListVo resultListVo = allocMgmtService.selectListPageMainIpAssignMst(searchVo);
-		
+
 		TbIpHostMstVo tbHostInfoVo = new TbIpHostMstVo();
 		if (searchVo.getSearchWrd().equals("CV0001")) {
 			tbHostInfoVo.setSearchWrd(searchVo.getSfirstAddr());
@@ -1075,7 +1085,7 @@ public class AllocMgmtController extends CommonController {
 		map.put("resultListTotalCount", resultListVo.getTotalCount());
 		map.put("tbIpHostMstListVo", tbIpHostMstListVo.getTbIpHostMstVos());
 		map.put("tbIpHostMstListTotalCount", tbIpHostMstListVo.getTotalCount());
-		resultModel.addAttribute("result",map);
+		resultModel.addAttribute("result", map);
 		return resultModel;
 	}
 
@@ -1095,13 +1105,13 @@ public class AllocMgmtController extends CommonController {
 		}
 		searchVoClone.setUrl("/ipmgmt/allocmgmt/viewListIpAllocMstByMain.model");
 		model.addAttribute("searchVoJson", searchVoJson(searchVoClone));
-		
+
 		ModelMap builtModel = selectListIpAllocMstByMainModelMap(searchVo, request);
 		model.addAllAttributes(builtModel);
 		String rtnVal = "";
-		
-		IpAllocOperMstListVo resultListVo = (IpAllocOperMstListVo)builtModel.get("resultListVo");
-		if(resultListVo.getTotalCount() == 0) {
+
+		IpAllocOperMstListVo resultListVo = (IpAllocOperMstListVo) builtModel.get("resultListVo");
+		if (resultListVo.getTotalCount() == 0) {
 			rtnVal = "ipmgmt/allocmgmt/viewDetailIpInfo";
 		} else if (resultListVo.getTotalCount() == 1) {
 			rtnVal = "ipmgmt/allocmgmt/viewDetailIpInfo";
@@ -1111,7 +1121,8 @@ public class AllocMgmtController extends CommonController {
 		return rtnVal;
 	}
 
-	private ModelMap selectListIpAllocMstByMainModelMap(@RequestBody IpAllocOperMstVo searchVo, HttpServletRequest request) {
+	private ModelMap selectListIpAllocMstByMainModelMap(@RequestBody IpAllocOperMstVo searchVo,
+			HttpServletRequest request) {
 		ModelMap model = new ModelMap();
 		IpAllocOperMstListVo resultListVo = null;
 		IpAllocOperMstVo tbIpInfoVo = null;
@@ -1216,7 +1227,7 @@ public class AllocMgmtController extends CommonController {
 		return model;
 	}
 
-	@RequestMapping(value="/ipmgmt/allocmgmt/viewListIpAllocMstByMainExcel.json", method = RequestMethod.POST)
+	@RequestMapping(value = "/ipmgmt/allocmgmt/viewListIpAllocMstByMainExcel.json", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<?> selectListIpAllocMstByMainExcel(@RequestBody IpAllocOperMstVo searchVo, ModelMap model,
 			HttpServletRequest request, HttpServletResponse response) {
@@ -1242,7 +1253,8 @@ public class AllocMgmtController extends CommonController {
 			mappingList.add("SAID|getSsaid");
 			mappingList.add("전용번호|getSllnum");
 			mappingList.add("수용회선명|getSconnAlias");
-			return excelDownloadService.generateAndDownloadExcel(resultListVo.getIpAllocOperMstVos(), mappingList, request);
+			return excelDownloadService.generateAndDownloadExcel(resultListVo.getIpAllocOperMstVos(), mappingList,
+					request);
 		} catch (ServiceException e) {
 			resultListVo = new IpAllocOperMstListVo();
 			String msgDesc = tbCmnMstService.selectMsgDesc(e);
@@ -1254,7 +1266,7 @@ public class AllocMgmtController extends CommonController {
 			resultListVo.setCommonMsg(msgDesc);
 			resultListVo.setTotalCount(0);
 		}
-		
+
 		return new ResponseEntity<>(resultVo, HttpStatus.OK);
 	}
 
@@ -1265,6 +1277,7 @@ public class AllocMgmtController extends CommonController {
 		IpAllocOperMstVo tbIpInfoVo = allocMgmtService.selectMainIpInfoMst(searchVo);
 		return createResult(tbIpInfoVo);
 	}
+
 	@RequestMapping(value = "/ipmgmt/allocmgmt/viewDetailIpAllocMstByMain.ajax", method = RequestMethod.POST)
 	public String selectTbUserBas(@RequestBody IpAllocOperMstVo searchVo, ModelMap model,
 			HttpServletRequest request, HttpServletResponse response) {
@@ -1285,6 +1298,7 @@ public class AllocMgmtController extends CommonController {
 		model.addAttribute("searchVoJson", searchVoJson(searchVoClone));
 		return "ipmgmt/allocmgmt/viewDetailIpInfoPop";
 	}
+
 	private ModelMap selectTbUserBasModel(@RequestBody IpAllocOperMstVo searchVo, HttpServletRequest request) {
 		ModelMap model = new ModelMap();
 		IpAllocOperMstVo tbIpInfoVo = null;
@@ -1307,6 +1321,7 @@ public class AllocMgmtController extends CommonController {
 		// model.addAttribute("tbHostInfoVo", tbHostInfoVo);
 		return model;
 	}
+
 	@RequestMapping(value = "/ipmgmt/allocmgmt/viewListMultiIpInfo.model", method = RequestMethod.POST)
 	@ResponseBody
 	public ModelMap viewListMultiIpInfo(@RequestBody IpAllocOperMstVo searchVo, ModelMap model,
@@ -1314,6 +1329,7 @@ public class AllocMgmtController extends CommonController {
 		IpAllocOperMstListVo resultListVo = allocMgmtService.selectListMainSearchMultiIp(searchVo);
 		return createResultList(resultListVo.getIpAllocOperMstVos(), resultListVo.getTotalCount());
 	}
+
 	@RequestMapping(value = "/ipmgmt/allocmgmt/viewListMultiIpInfo.do", method = RequestMethod.POST)
 	public String viewListMultiIpInfo(@ModelAttribute("searchVo") IpAllocOperMstVo searchVo, ModelMap model,
 			HttpServletRequest request, HttpServletResponse response) {
@@ -1335,7 +1351,8 @@ public class AllocMgmtController extends CommonController {
 		return "ipmgmt/allocmgmt/viewListMultiIpInfo";
 	}
 
-	private ModelMap viewListMultiIpInfoModel(@ModelAttribute("searchVo") IpAllocOperMstVo searchVo, HttpServletRequest request) {
+	private ModelMap viewListMultiIpInfoModel(@ModelAttribute("searchVo") IpAllocOperMstVo searchVo,
+			HttpServletRequest request) {
 		ModelMap model = new ModelMap();
 		IpAllocOperMstListVo resultListVo = null;
 		try {
@@ -1372,7 +1389,7 @@ public class AllocMgmtController extends CommonController {
 		// model.addAttribute("paginationInfo", paginationInfo);
 		return model;
 	}
-	
+
 	@RequestMapping(value = "/ipmgmt/allocmgmt/viewListMultiIpInfoExcel.json", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<?> viewListMultiIpInfoExcel(@RequestBody IpAllocOperMstVo searchVo, ModelMap model,
@@ -1401,7 +1418,8 @@ public class AllocMgmtController extends CommonController {
 			mappingList.add("서비스|getSassignTypeNm");
 			mappingList.add("SAID|getSsaid");
 			mappingList.add("전용번호|getSllnum");
-			return excelDownloadService.generateAndDownloadExcel(resultListVo.getIpAllocOperMstVos(), mappingList, request);
+			return excelDownloadService.generateAndDownloadExcel(resultListVo.getIpAllocOperMstVos(), mappingList,
+					request);
 		} catch (ServiceException e) {
 			String msgDesc = tbCmnMstService.selectMsgDesc(e);
 			resultVo.setCommonMsg(msgDesc);
@@ -1421,13 +1439,15 @@ public class AllocMgmtController extends CommonController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/ipmgmt/allocmgmt/viewListVpnIPStat.model", method ={RequestMethod.POST , RequestMethod.GET})
+	@RequestMapping(value = "/ipmgmt/allocmgmt/viewListVpnIPStat.model", method = { RequestMethod.POST,
+			RequestMethod.GET })
 	@ResponseBody
 	public ModelMap selectListVPNIPStat(@RequestBody TbIpAllocMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		TbIpAllocMstListVo resultListVo = allocMgmtService.selectListVpnIPStat(searchVo);
 		return createResultList(resultListVo.getTbIpAllocMstVos(), resultListVo.getTotalCount());
 	}
+
 	@RequestMapping(value = "/ipmgmt/allocmgmt/viewListVpnIPStat.do", method = RequestMethod.POST)
 	public String selectListVPNIPStat(@ModelAttribute("searchVo") TbIpAllocMstVo searchVo, ModelMap model,
 			HttpServletRequest request, HttpServletResponse response) {
@@ -1448,7 +1468,9 @@ public class AllocMgmtController extends CommonController {
 		model.addAttribute("searchVoJson", searchVoJson(searchVoClone));
 		return "ipmgmt/allocmgmt/viewListVpnIPStat";
 	}
-	private ModelMap selectListVPNIPStatModel(@ModelAttribute("searchVo") TbIpAllocMstVo searchVo, HttpServletRequest request) {
+
+	private ModelMap selectListVPNIPStatModel(@ModelAttribute("searchVo") TbIpAllocMstVo searchVo,
+			HttpServletRequest request) {
 		ModelMap model = new ModelMap();
 		TbIpAllocMstListVo resultListVo = null;
 		String sloadFlg = "T"; // 메뉴 호출 시 조회를 처리하지 않기 위한 예외값 로직 추가(2014.12.24 전필권 과장님 요청)
@@ -1564,7 +1586,7 @@ public class AllocMgmtController extends CommonController {
 		model.addAttribute("paginationInfo", paginationInfo);
 		return model;
 	}
-	
+
 	/**
 	 * VPN IP현황 목록 엑셀 저장
 	 * 
@@ -1662,15 +1684,18 @@ public class AllocMgmtController extends CommonController {
 			mappingList.add("보유|getSvpnTypeNm");
 			mappingList.add("작업일자|getDmodifyDt");
 
-			// String fileName = excelUtil.createExcelFile(resultListVo.getTbIpAllocMstVos(), mappingList, request);
+			// String fileName =
+			// excelUtil.createExcelFile(resultListVo.getTbIpAllocMstVos(), mappingList,
+			// request);
 
 			// if (StringUtils.hasText(fileName)) {
-			// 	resultVo.setFileName(fileName);
-			// 	resultVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
+			// resultVo.setFileName(fileName);
+			// resultVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
 			// } else {
-			// 	throw new ServiceException("CMN.HIGH.00050");
+			// throw new ServiceException("CMN.HIGH.00050");
 			// }
-			return excelDownloadService.generateAndDownloadExcel(resultListVo.getTbIpAllocMstVos(), mappingList, request);
+			return excelDownloadService.generateAndDownloadExcel(resultListVo.getTbIpAllocMstVos(), mappingList,
+					request);
 
 		} catch (ServiceException e) {
 			String msgDesc = tbCmnMstService.selectMsgDesc(e);
@@ -1814,6 +1839,7 @@ public class AllocMgmtController extends CommonController {
 		TbIpAllocMstVo resultVo = allocMgmtService.selectVpnIPStatDetail(searchVo);
 		return createResult(resultVo);
 	}
+
 	@RequestMapping(value = "/ipmgmt/allocmgmt/viewDetailVpnIPStat.ajax", method = RequestMethod.POST)
 	public String viewDetailVpnIPStat(@RequestBody TbIpAllocMstVo searchVo, ModelMap model,
 			HttpServletRequest request, HttpServletResponse response) {
@@ -1834,6 +1860,7 @@ public class AllocMgmtController extends CommonController {
 		model.addAttribute("searchVoJson", searchVoJson(searchVoClone));
 		return "ipmgmt/allocmgmt/viewDetailVpnIPStat";
 	}
+
 	private ModelMap viewDetailVpnIPStatModel(@RequestBody TbIpAllocMstVo searchVo, HttpServletRequest request) {
 		ModelMap model = new ModelMap();
 		TbIpAllocMstVo resultVo = null;
@@ -1852,7 +1879,6 @@ public class AllocMgmtController extends CommonController {
 		model.addAttribute("resultVo", resultVo);
 		return model;
 	}
-	
 
 	/**
 	 * IP 링크정보 조회 화면
@@ -1866,10 +1892,12 @@ public class AllocMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/ipmgmt/allocmgmt/viewSearchtLnMst.model", method = RequestMethod.POST)
 	@ResponseBody
-	public ModelMap viewSearchtLnMst(@RequestBody IpAllocOperMstVo searchVo, ModelMap model, HttpServletRequest request) {
+	public ModelMap viewSearchtLnMst(@RequestBody IpAllocOperMstVo searchVo, ModelMap model,
+			HttpServletRequest request) {
 		IpAllocOperMstListVo resultListVo = allocMgmtService.selectListIpAllocMst(searchVo);
 		return createResultList(resultListVo.getIpAllocOperMstVos(), resultListVo.getTotalCount());
 	}
+
 	@RequestMapping(value = "/ipmgmt/allocmgmt/viewSearchtLnMst.ajax", method = RequestMethod.POST)
 	public String viewSearchtLnMst(@RequestBody IpAllocOperMstVo searchVo, ModelMap model, HttpServletRequest request,
 			HttpServletResponse response) {
@@ -1890,6 +1918,7 @@ public class AllocMgmtController extends CommonController {
 		model.addAttribute("searchVoJson", searchVoJson(searchVoClone));
 		return "ipmgmt/allocmgmt/viewSearchtLnMst";
 	}
+
 	private ModelMap viewSearchtLnMstModel(@RequestBody IpAllocOperMstVo searchVo, HttpServletRequest request) {
 		ModelMap model = new ModelMap();
 		IpAllocOperMstListVo resultListVo = null;
@@ -1931,7 +1960,6 @@ public class AllocMgmtController extends CommonController {
 		model.addAttribute("searchVo", searchVo);
 		return model;
 	}
-	
 
 	/**
 	 * IP 링크정보 조회 화면 결과

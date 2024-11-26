@@ -496,7 +496,18 @@ public class AssignMgmtController extends CommonController {
 	@ResponseBody
 	public ModelMap viewInsertMrgAsgnIPMst(@RequestBody TbIpAssignMstListVo tbIpAssignMstListVo, ModelMap model,
 			HttpServletRequest request) {
-		TbIpAssignMstComplexVo resultComplexVo = assignMgmtService.validateMrgAsgnIPMst(tbIpAssignMstListVo);
+		TbIpAssignMstComplexVo resultComplexVo = null;
+		try {
+			resultComplexVo = assignMgmtService.validateMrgAsgnIPMst(tbIpAssignMstListVo);
+		} catch (ServiceException e) {
+			resultComplexVo = new TbIpAssignMstComplexVo();
+			String msgDesc = tbCmnMstService.selectMsgDesc(e);
+			resultComplexVo.setCommonMsg(msgDesc);
+		} catch (Exception e) {
+			resultComplexVo = new TbIpAssignMstComplexVo();
+			String msgDesc = tbCmnMstService.selectMsgDesc(new ServiceException("CMN.HIGH.00000"));
+			resultComplexVo.setCommonMsg(msgDesc);
+		}
 		return createResult(resultComplexVo);
 	}
 
