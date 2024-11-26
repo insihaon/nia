@@ -68,21 +68,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      options: [
-        { label: '기업고객(고정)', value: 'SA0001' },
-        { label: '홈고객(유동)', value: 'SA0002' },
-        { label: '홈고객(고정)', value: 'SA0003' },
-        { label: '홈고객(시설)', value: 'SA0004' },
-        { label: 'VR1-Routing', value: 'SA0005' },
-        { label: 'VR2-Routing', value: 'SA0006' },
-        { label: 'VR3-Routing', value: 'SA0007' },
-        { label: '미분류서비스', value: 'SA1001' },
-        { label: '홈고객(Secured IP)', value: 'SA1008' },
-        { label: '타사이관', value: 'SA1009' },
-        { label: '홍콩DC구축용', value: 'SA1010' },
-        { label: 'Cloud', value: 'SA1011' },
-        { label: '대군화 시설용', value: 'SA1014' }
-      ],
+      options: [],
       values: [],
       multiValue: ''
     }
@@ -93,6 +79,7 @@ export default {
     },
   },
   mounted () {
+    this.onLoadServiceList({ ssvcLineTypeCd: '' })
     Eventbus.$on(EventType.changeLvl1, (params) => {
       this.onLoadServiceList(params)
     })
