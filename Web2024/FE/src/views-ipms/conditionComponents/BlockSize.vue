@@ -5,11 +5,14 @@
     </th>
     <td>
       <el-select
+        ref="multiSelect"
         v-model="values"
         multiple
+        :multiple-limit="limit"
         collapse-tags
         size="small"
         @change="handleChange()"
+        @visible-change="handleDropdownVisibility"
       >
         <el-option label="전체" value=""><span class="w-100 h-100 d-inline-block" @click="handleClickAll">전체</span></el-option>
         <el-option
@@ -54,13 +57,11 @@ export default {
   methods: {
     handleChange() {
       this.updateSelectionWithAll()
-      this.onCheckLimit('계위')
 
       this.emitEventToParent(this.getParameter())
     },
     handleClickAll() {
       this.toggleAll()
-      this.onCheckLimit('계위')
     },
     getParameter() {
       return [{ key: this.parameterKey, value: this.values.join(';') }]

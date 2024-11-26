@@ -58,7 +58,7 @@ export default {
         { key: 'SsvcLineType', props: { lvl: 3 } },
         { key: 'IpAddress', props: { label: 'IP 버전', isShowInput: false } },
         { key: 'SipCreateType', props: {} },
-        { key: 'ServiceOrg', props: { limit: 3 } },
+        { key: 'ServiceOrg', props: { isAllOption: false, limit: 3 } },
         { key: 'DatePicker', props: { prop_parameterKey: 'searchBgnDe' } },
       ],
       columns: []

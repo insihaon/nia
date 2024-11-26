@@ -5,7 +5,8 @@ const state = {
     adminYn: 'Y',
     ownerYn: 'Y',
     suserGradeCd: 'UR0001',
-    currentCondition: {}
+    currentCondition: {},
+    isDropdownOpen: false
 }
 
 const mutations = {
@@ -30,6 +31,9 @@ const mutations = {
     MERGE_CURRENT_CONDITION(state, value) {
         /* value = requestParameter */
         _.merge(state.currentCondition, value)
+    },
+    SET_DROPDOWN_VISIBILITY(state, isVisible) {
+        state.isDropdownOpen = isVisible
     }
 }
 const actions = {
@@ -50,6 +54,9 @@ const actions = {
     },
     mergeCurrentCondition({ commit }, value) {
         commit('MERGE_CURRENT_CONDITION', value)
+    },
+    setDropdownVisibility({ commit }, value) {
+        commit('SET_DROPDOWN_VISIBILITY', value)
     }
 }
 
