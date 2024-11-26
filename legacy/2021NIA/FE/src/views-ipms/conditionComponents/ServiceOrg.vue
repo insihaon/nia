@@ -6,12 +6,14 @@
     <td>
       <div>
         <el-select
+          ref="multiSelect"
           v-model="values"
           filterable
           :multiple="isMulti"
           collapse-tags
           size="small"
           @change="handleChange()"
+          @visible-change="handleDropdownVisibility"
         >
           <el-option v-if="isAllOption" label="전체" value=""><span class="w-100 h-100 d-inline-block" @click="handleClickAll">전체</span></el-option>
           <el-option
@@ -114,6 +116,21 @@ export default {
         this.values = this.defaultValue
       }
       this.emitEventToParent(this.getParameter())
+    },
+    handleDropdownVisibility(isVisible) {
+      // if (!isVisible) {
+      //   // 드롭다운이 닫힐 때 실행
+      //   if (this.values.length > this.limit && this.limit > 0) {
+      //     this.limitReached = true
+      //     this.$message.error({ message: '10개까지 선택가능' })
+      //     this.$nextTick(() => {
+      //       // 드롭다운을 다시 열기
+      //       this.$refs.multiSelect.toggleMenu()
+      //     })
+      //   } else {
+      //     this.limitReached = false
+      //   }
+      // }
     },
     handleChange() {
       if (this.isMulti) {
