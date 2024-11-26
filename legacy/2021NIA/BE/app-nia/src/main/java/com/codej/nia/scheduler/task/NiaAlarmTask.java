@@ -28,7 +28,7 @@ public class NiaAlarmTask {
     @Autowired
     private NiaService niaService;
 
-    @Autowired
+    @Autowired(required = false)
     @Lazy
     private WebsocketService websocketService;
 
