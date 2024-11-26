@@ -24,8 +24,8 @@ communicationError:
   message_detail: "Please check your network and retry the service."
 existingUser:
   code: "-1005"
-  message: "You have already registered. Please log in."
-  message_detail: ""
+  message: "You have already registered."
+  message_detail: "Please log in."
 notOwner:
   code: "-1006"
   message: "You are not the owner of this resource."
@@ -61,4 +61,5 @@ httpRelayServiceFail:
 untrustedRequest:
   code: "-1014"
   message: "The request is untrusted."
-  message_detail: "Please check the service protocol."
+  message_detail: "Authenticate and try again."
+
