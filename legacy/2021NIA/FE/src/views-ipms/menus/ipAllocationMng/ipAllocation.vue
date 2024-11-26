@@ -85,7 +85,6 @@ export default {
       pagination: this.setDefaultPagination(),
       componentList: [
         { key: 'SsvcLineType', props: { lvl: 3, multi: [2] } },
-
         { key: 'SOffice', props: { apiPath: '/ipmgmt/linemgmt', voName: 'tbIpAssignSubVos', valueKey: { cd: 'sofficecode', nm: 'sofficename' } } },
         { key: 'SipCreateType', props: {} },
         { key: 'ServiceOrg', props: { limit: 10 } },

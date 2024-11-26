@@ -27,7 +27,7 @@
         <div class="searchBtnWrap" :style="{'border-top': isEnabledCondition ? '0px': '1px solid #134d65' }">
           <SearchConditionSaver v-if="isShowProfile" ref="SearchConditionSaver" :parameter="requestParameter" :prop-name="propName" @handle-search="handleSearch" />
           <el-button type="info" icon="el-icon-refresh" size="mini" style="margin-left:0px" round @click="handleRefresh()">초기화</el-button>
-          <el-button type="primary" icon="el-icon-search" size="mini" round @click="handleSearch()">조회</el-button>
+          <el-button type="primary" icon="el-icon-search" size="mini" round :disabled="isDropdownOpen" @click="handleSearch()">조회</el-button>
           <el-button
             v-if="isShowCollapse"
             :class="{ 'slideUp': isEnabledCondition, 'slideDown': !isEnabledCondition }"
@@ -108,6 +108,9 @@ export default {
       } else {
         return 0
       }
+    },
+    isDropdownOpen() {
+      return this.ipms.isDropdownOpen
     }
   },
   watch: {
