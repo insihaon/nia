@@ -7,23 +7,16 @@
     //     outline: 0.5px dashed deepskyblue !important;
     // }
     
-    .button {
+    .button,
+    .button img,
+    .el-table, 
+    .el-button,
+    tr
+    {
         outline: #e9b5f3 dotted !important;
         outline-width: 0.5px !important;
     }
   
-    // label {
-    //     outline: 0.5px solid #ffcb2e !important;
-    // }
-    
-    .button img {
-        outline: 1px solid #ff7167 !important;
-    }
-
-    .table {
-        outline: rgba(255, 0, 0, 0.8) solid 1px !important; /* 빨강 */
-    }
-    
     div {
         outline: rgba(255, 0, 0, 0.8) solid 1px !important; /* 빨강 */
     }
@@ -40,33 +33,31 @@
         outline: rgba(0, 255, 0, 0.8) dashed 1px !important; /* 초록 */
     }
     
-    // div > div > div > div > div {
-    //     outline: rgba(0, 127, 255, 0.8) dashed 1px !important; /* 하늘색 */
-    // }
+    div > div > div > div > div {
+        outline: rgba(0, 127, 255, 0.8) dashed 1px !important; /* 하늘색 */
+    }
     
-    // div > div > div > div > div > div {
-    //     outline: rgba(0, 0, 255, 0.8) dashed 1px !important; /* 파랑 */
-    // }
+    div > div > div > div > div > div {
+        outline: rgba(0, 0, 255, 0.8) dashed 1px !important; /* 파랑 */
+    }
     
-    // div > div > div > div > div > div > div {
-    //     outline: rgba(75, 0, 130, 0.8) dashed 1px !important; /* 남색 */
-    // }
+    div > div > div > div > div > div > div {
+        outline: rgba(75, 0, 130, 0.8) dashed 1px !important; /* 남색 */
+    }
     
-    // div > div > div > div > div > div > div > div {
-    //     outline: rgba(148, 0, 211, 0.8) dashed 1px !important; /* 보라 */
-    // }
+    div > div > div > div > div > div > div > div {
+        outline: rgba(148, 0, 211, 0.8) dashed 1px !important; /* 보라 */
+    }
     
-    // div > div > div > div > div > div > div > div > div {
-    //     outline: rgba(238, 130, 238, 0.8) dashed 1px !important; /* 연보라 */
-    // }
+    div > div > div > div > div > div > div > div > div {
+        outline: rgba(238, 130, 238, 0.8) dashed 1px !important; /* 연보라 */
+    }
     
-    // div > div > div > div > div > div > div > div > div > div {
-    //     outline: rgba(255, 105, 180, 0.8) dashed 1px !important; /* 핑크 */
-    // }
+    div > div > div > div > div > div > div > div > div > div {
+        outline: rgba(255, 105, 180, 0.8) dashed 1px !important; /* 핑크 */
+    }
     
-    // div > div > div > div > div > div > div > div > div > div div {
-    //     outline: rgba(128, 0, 0, 0.8) dashed 1px !important; /* 진한 빨강 */
-    // }
-    
-    
+    div > div > div > div > div > div > div > div > div > div div {
+        outline: rgba(128, 0, 0, 0.8) dashed 1px !important; /* 진한 빨강 */
+    }
 }
