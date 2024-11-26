@@ -10,6 +10,7 @@
           v-model="values"
           filterable
           :multiple="isMulti"
+          :multiple-limit="limit"
           collapse-tags
           size="small"
           @change="handleChange()"
@@ -117,32 +118,15 @@ export default {
       }
       this.emitEventToParent(this.getParameter())
     },
-    handleDropdownVisibility(isVisible) {
-      // if (!isVisible) {
-      //   // 드롭다운이 닫힐 때 실행
-      //   if (this.values.length > this.limit && this.limit > 0) {
-      //     this.limitReached = true
-      //     this.$message.error({ message: '10개까지 선택가능' })
-      //     this.$nextTick(() => {
-      //       // 드롭다운을 다시 열기
-      //       this.$refs.multiSelect.toggleMenu()
-      //     })
-      //   } else {
-      //     this.limitReached = false
-      //   }
-      // }
-    },
     handleChange() {
       if (this.isMulti) {
         this.updateSelectionWithAll()
-        this.limit !== null && this.onCheckLimit('서비스')
       }
       this.emitEventToParent(this.getParameter())
     },
     handleClickAll() {
       if (this.isMulti) {
         this.toggleAll()
-        this.limit !== null && this.onCheckLimit('서비스')
       }
     },
     async onLoadServiceList(params) {

@@ -61,10 +61,19 @@ var commonFunctionMixin = {
     toggleAll() {
       this.values = this.values.includes('') ? [] : ['', ...this.fullOptions]
     },
-    onCheckLimit(text) {
-      if (this.limit !== null && this.values.length > this.limit) {
-        onMessagePopup(this, `${text}는 최대 ${this.limit}개까지 선택 가능합니다.`)
-        this.values = []
+    handleDropdownVisibility(isVisible) {
+      if (!isVisible) {
+        // 드롭다운이 닫힐 때 실행
+        if (this.limit !== null && this.values.length > this.limit) {
+          this.$message.error({ message: `${this.limit}개까지 선택 가능합니다.` })
+          this.$nextTick(() => {
+            // 드롭다운을 다시 열기
+            this.$refs.multiSelect?.toggleMenu()
+            this.$store.dispatch('ipms/setDropdownVisibility', true)
+          })
+        } else {
+          this.$store.dispatch('ipms/setDropdownVisibility', false)
+        }
       }
     },
     setParameter(params) { /* override */
