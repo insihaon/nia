@@ -1,5 +1,5 @@
 <template>
-  <div id="app" :class="[appClass, appProject, uuid]">
+  <div id="app" :class="[appClass, appProject, uuid, outline]">
     <RouterView />
   </div>
 </template>
