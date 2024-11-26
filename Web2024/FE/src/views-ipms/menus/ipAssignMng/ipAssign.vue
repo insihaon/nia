@@ -83,7 +83,7 @@ export default {
         { key: 'IpAddress', props: { defaultWord: '' } },
         { key: 'ServiceOrg', props: { limit: 10 } },
         { key: 'IpBlockStatus', props: { label: '배정상태' } },
-        { key: 'SortType', props: {} },
+        { key: 'SortType', props: { sortOrdrDefaultVal: 'ASC' } },
         { key: 'IncludeYN', props: { label: 'Summary 포함 여부', prop_parameterKey: 'snull0Yn' } },
         { key: 'IncludeYN', props: { label: 'DB-라우팅 일치 여부', prop_parameterKey: 'sintgrmYn' } },
         { key: 'RoutingDuplCount', props: { label: '라우팅 중복 개수', prop_parameterKey: 'summaryCnt', valueType: 'number' } },
@@ -288,7 +288,7 @@ export default {
         }
       }
 
-      const tbIpAssignMstListVo = { typeFlag: 'Aloc', tbIpAssignMstVos: [] }
+      const tbIpAssignMstListVo = { tbIpAssignMstVos: [] }
       rows.forEach(row => {
         tbIpAssignMstListVo.tbIpAssignMstVos.push({ nipAssignMstSeq: row.nipAssignMstSeq })
       })

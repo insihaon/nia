@@ -32,7 +32,7 @@
             <span v-if="isEdit">
               <el-autocomplete
                 v-model="sipCreateSeqCd"
-                class="inline-input"
+                class="inline-input w-100"
                 :fetch-suggestions="querySearch"
               >
               </el-autocomplete>
@@ -105,7 +105,7 @@
 <script>
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
-import { apiRequestJson, ipmsJsonApis } from '@/api/ipms'
+import { apiRequestModel, ipmsModelApis, apiRequestJson, ipmsJsonApis } from '@/api/ipms'
 import { onMessagePopup } from '@/utils/index'
 
 const routeName = 'ModalIpBlockDetail'
@@ -119,18 +119,13 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      resultVo: null,
+      resultVo: {},
       sipCreateSeqCd: '',
+      sipCreateSeqOp: [],
       scomment: '',
       type: 'create',
-      sipCreateSeqCdOptions: [
-        { value: 'apple' },
-        { value: 'banana' },
-        { value: 'cherry' }
-      ],
-      allData: [],
+      sipCreateSeqCdOptions: [],
       loading: false,
-      links: []
     }
   },
   computed: {
@@ -144,33 +139,31 @@ export default {
   watch: {
   },
   mounted() {
-    this.allData = this.sipCreateSeqCdOptions
   },
   methods: {
-    querySearch(queryString, cb) {
-      /* this.fnSelectSipCd() */
-      var results = queryString ? this.allData.filter(this.createFilter(queryString)) : []
-      // 검색어가 있을 때만 필터링 결과 반환
-      cb(results)
+    async querySearch(queryString, cb) {
+    await this.fnSelectSipCd()
+    const results = queryString ? this.sipCreateSeqCdOptions.filter(this.createFilter(queryString)) : []
+    cb(results)
     },
-    async fnSelectSipCd() {
-      try {
-        const param = {
-          param: this
-        }
-        const res = await ipmsJsonApis(ipmsJsonApis.selectListSipCreateSeqCd, param)
-        this.sipCreateSeqCdOptions = res
-      } catch (error) {
-        console.error(error)
-      }
-    },
-    createFilter(queryString) {
+    createFilter(queryString) { /* 검색어의 첫글자 부터 일치하는지에 대한 옵션  */
       return (link) => {
         return link.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0
       }
     },
-    handSelect(item) {
-      console.log(item)
+    async fnSelectSipCd() {
+      try {
+        const res = await apiRequestJson(ipmsJsonApis.selectListSipCreateSeqCd, { sipCreateSeqCd: this.sipCreateSeqCd })
+        this.sipCreateSeqCdOptions = res.map((item) => ({ label: item, value: item }))
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    remoteMethod(query) {
+      if (query.length < 7) return
+      setTimeout(() => {
+        this.fnSelectSipCd()
+      }, 30)
     },
     onCreated() {
       Modal.methods.onCreated.call(this)
@@ -178,13 +171,34 @@ export default {
       this.domElement.maxWidth = 1200
     },
     onOpen(model, actionMode) {
-      this.resultVo = model.row
-       const { sipCreateSeqCd, scomment } = this.resultVo
-        this.sipCreateSeqCd = sipCreateSeqCd
-        this.scomment = scomment
-
       if (model.type === 'edit') {
         this.type = 'edit'
+      }
+      if (model.row) {
+        setTimeout(() => {
+          this.fnViewDetailClick(model.row)
+        }, 30)
+      }
+    },
+    async fnViewDetailClick(row, type) {
+      const { nipBlockMstSeq } = row
+      const target = ({ vue: this.$refs.content })
+      const param = {
+        nipBlockMstSeq: nipBlockMstSeq ?? ''
+      }
+      try {
+        this.openLoading(target)
+        const res = await apiRequestModel(ipmsModelApis.viewDetailCrtIPMst, param)
+        if (res?.result?.data) {
+          this.resultVo = res?.result?.data
+          const { sipCreateSeqCd, scomment } = this.resultVo ?? {}
+          this.sipCreateSeqCd = sipCreateSeqCd
+          this.scomment = scomment
+        }
+      } catch (error) {
+        console.error(error)
+      } finally {
+        this.closeLoading(target)
       }
     },
     onClose() {
@@ -215,7 +229,7 @@ export default {
         })
     },
     async fnUpdateCrtIPMstCallback() { // IP 블럭 수정
-      const sipCreateSeqCd = this.resultVo.sipCreateSeqCd
+      const sipCreateSeqCd = this.sipCreateSeqCd
       if (sipCreateSeqCd.length < 10) {
           onMessagePopup(this, '생성차수 수정정보가 잘못되었습니다.')
           return
@@ -223,15 +237,10 @@ export default {
       let res
       try {
           const tbIpBlockVo = {
-            sipCreateSeqCd: this.resultVo.sipCreateSeqCd,
+            sipCreateSeqCd: this.sipCreateSeqCd,
             scomment: this.resultVo.scomment,
             nipBlockMstSeq: this.resultVo.nipBlockMstSeq,
           }
-
-          // /* 생성차수 수정 */
-          //    const searchSipCreateSeqCd = tbIpBlockMstVo.sipCreateSeqCd
-          // const res = await ipmsJsonApis(ipmsJsonApis.selectListSipCreateSeqCd, tbIpBlockVo)
-
          res = await apiRequestJson(ipmsJsonApis.updateCrtIPMst, tbIpBlockVo)
 
            if (res.commonMsg === 'SUCCESS') {

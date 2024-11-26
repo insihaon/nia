@@ -16,7 +16,7 @@
   >
     <div class="popupContentTable">
       <div class="popupContentTableTitle">IP 블록 기본 정보</div>
-      <table>
+      <table v-loading="tableLoading">
         <colgroup>
           <col width="15%" />
           <col width="35%" />
@@ -145,6 +145,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      tableLoading: false,
       resultVo: {
         ssvcLineTypeNm: '',
         ssvcGroupNm: '',
@@ -182,10 +183,11 @@ export default {
       this.closeOnClickModal = false
       this.domElement.maxWidth = 900
     },
-    onOpen(model, actionMode) {
+    async onOpen(model, actionMode) {
       this.isViewTypeSeonbeonjang = model.isSeonbeonjang ?? false
-      if (model.result) {
-        this.$set(this, 'resultVo', model.result)
+
+      if (model.row) {
+        await this.fnViewInsertDivAsgnIPMst(model.row)
       }
       this.init()
     },
@@ -225,6 +227,23 @@ export default {
         }
       }
       return result
+    },
+    async fnViewInsertDivAsgnIPMst(row, typeFlag = null) {
+      const params = { nipAssignMstSeq: row.nipAssignMstSeq }
+      if (typeFlag !== null) {
+        Object.assign(params, { typeFlag })
+      }
+      try {
+        this.tableLoading = true
+        const res = await apiRequestModel(ipmsModelApis.viewInsertDivAsgnIPMst, params)
+        if (res.result.data) {
+          this.$set(this, 'resultVo', res.result.data)
+        }
+      } catch (error) {
+        this.error(error)
+      } finally {
+        this.tableLoading = false
+      }
     },
     async fnAppendDivAsgnIPMst() {
       const pipPrefix = this.resultVo.pipPrefix

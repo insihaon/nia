@@ -568,7 +568,8 @@ public class CreateMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/ipmgmt/createmgmt/selectListSipCreateSeqCd.json", method = RequestMethod.POST)
 	@ResponseBody
-	public List<String> selectListSipCreateSeqCd(@RequestBody String searchSipCreateSeqCd) {
+	public List<String> selectListSipCreateSeqCd(@RequestBody HashMap<String, Object> map) {
+		String searchSipCreateSeqCd = (String) map.get("sipCreateSeqCd");
 		List<String> retList = createMgmtService.selectListSipCreateSeqCd(searchSipCreateSeqCd);
 		for (int i = 0; i < retList.size(); i++) {
 			retList.set(i, retList.get(i).replaceAll("[<]", "&lt;"));
