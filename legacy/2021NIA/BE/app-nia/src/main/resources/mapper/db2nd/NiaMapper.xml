@@ -1723,8 +1723,11 @@
                 <if test="admin_yn != null and admin_yn != ''">
                     AND tnm.ADMIN_YN like '%' || #{admin_yn} || '%'
                 </if>
-                <if test="start_date != null and end_date != null">
-                    AND tnm.CHNG_DATETIME BETWEEN #{start_date} ::timestamp and #{end_date}::timestamp
+                 <if test="start_date != null">
+                    AND CHNG_DATETIME <![CDATA[ >= ]]> #{start_date}::TIMESTAMP
+                </if>
+                <if test="end_date != null">
+                    AND CHNG_DATETIME <![CDATA[ <= ]]> #{end_date}::TIMESTAMP
                 </if>
                 ORDER BY CHNG_DATETIME ASC
         ) AS node
