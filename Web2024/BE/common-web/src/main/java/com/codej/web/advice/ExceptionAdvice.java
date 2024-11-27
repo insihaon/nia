@@ -24,22 +24,54 @@ public class ExceptionAdvice {
 
     private final MessageSource messageSource;
 
+    private static String getStackTrace(Exception e) {
+        // System.out.println("Exception Type: " + e.getClass().getName());
+        // System.out.println("Message: " + e.getMessage());
+
+        // // 스택 추적 정보 출력
+        StringBuffer sb = new StringBuffer(" StackTrace: ");
+        StackTraceElement[] stackTrace = e.getStackTrace();
+        for (int i = 0; i < Math.min(5, stackTrace.length); i++) {
+            StackTraceElement element = stackTrace[i];
+            sb.append(String.format("%s:%d <- ", element.getFileName(), element.getLineNumber()));
+        }
+
+        return sb.toString();
+
+        // 전체 스택 추적을 문자열로 출력 (선택적)
+        // StringWriter sw = new StringWriter();
+        // e.printStackTrace(new PrintWriter(sw));
+        // String fullStackTrace = sw.toString();
+        // return fullStackTrace;
+    }
+
+  
+
     @ExceptionHandler(CBaseException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public BaseResponse untrustedRequestException(HttpServletRequest request, CBaseException e) {
-        return responseService.createFailResponse(Integer.valueOf(getMessage(e.getCodeKey())), getMessage(e.getMessageKey(), new Object[]{e.getMessage()}), e.getMessage() != null ? e.getMessage() : getMessage(e.getDetailMessageKey()));
+        Integer code = Integer.valueOf(getMessage(e.getCodeKey()));
+        String msg = getMessage(e.getMessageKey(), new Object[]{e.getMessage()});
+        String detail = e.getMessage() != null ? e.getMessage() : getMessage(e.getDetailMessageKey()) + getStackTrace(e);
+        return responseService.createFailResponse(code, msg, detail);
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     protected BaseResponse defaultException(HttpServletRequest request, Exception e) {
         // 예외 처리의 메시지를 MessageSource에서 가져오도록 수정
-        return responseService.createFailResponse(Integer.valueOf(getMessage("unKnown.code")), getMessage("unKnown.message"), e.getMessage());
+        Integer code = Integer.valueOf(getMessage("unKnown.code"));
+        String msg = getMessage("unKnown.message");
+        String detail = e.getMessage() + getStackTrace(e);
+        return responseService.createFailResponse(code, msg, detail);
     }
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public BaseResponse accessDeniedException(HttpServletRequest request, AccessDeniedException e) {
-        return responseService.createFailResponse(Integer.valueOf(getMessage("accessDenied.code")), getMessage("accessDenied.message"), e.getMessage());
+        Integer code = Integer.valueOf(getMessage("accessDenied.code"));
+        String msg = getMessage("accessDenied.message");
+        String detail = e.getMessage() + getStackTrace(e);
+        return responseService.createFailResponse(code, msg, detail);
     }
 
     // code정보에 해당하는 메시지를 조회합니다.
