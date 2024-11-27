@@ -20,8 +20,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kt.framework.exception.ServiceException;
 import com.kt.framework.utils.StringUtils;
+import com.kt.ipms.annotation.EncryptResponse;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
+import com.kt.ipms.legacy.cmn.vo.BaseVo;
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
 import com.kt.ipms.legacy.cmn.vo.FileVo;
 import com.kt.ipms.legacy.cmn.web.CommonController;
@@ -57,6 +59,7 @@ public class OrderMgmtController extends CommonController {
 	 */
 	@RequestMapping(value="/ipmgmt/ordermgmt/viewListNeossMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap selectListIpAllocOrderMst(@RequestBody IpAllocOrderMstVo searchVo, ModelMap model,
 			HttpServletRequest request){
 		IpAllocOrderMstListVo resultListVo = orderMgmtService.selectListIpAllocOrderMst(searchVo);
@@ -202,7 +205,8 @@ public class OrderMgmtController extends CommonController {
 	 */
 	@RequestMapping(value="/ipmgmt/ordermgmt/viewListNeossMstExcel.json", method = RequestMethod.POST)
 	@ResponseBody
-	public FileVo selectListIpAllocOrderMstExcel(@ModelAttribute("searchVo") IpAllocOrderMstVo searchVo,
+	@EncryptResponse
+	public BaseVo selectListIpAllocOrderMstExcel(@ModelAttribute("searchVo") IpAllocOrderMstVo searchVo,
 			HttpServletRequest request, HttpServletResponse response){
 		FileVo resultVo = new FileVo();
 		try {
@@ -314,6 +318,7 @@ public class OrderMgmtController extends CommonController {
 	 */
 	@RequestMapping(value="/ipmgmt/ordermgmt/viewSearchNeossSvcMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewSearchNeossSvcMst(@RequestBody TbIpmsSvcMstVo searchVo, ModelMap model,
 			HttpServletRequest request){
 		TbIpmsSvcMstListVo resultListVo = orderMgmtService.selectListIpmsSvc(searchVo);
@@ -400,6 +405,7 @@ public class OrderMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/ipmgmt/ordermgmt/viewDetailNeossMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewDetailSubSvcMst(@RequestBody IpAllocOrderMstVo searchVo, ModelMap model,
 			HttpServletRequest request){
 		IpAllocOrderMstListVo resultListVo = orderMgmtService.selectListIpAllocOrderMst(searchVo);
@@ -459,6 +465,7 @@ public class OrderMgmtController extends CommonController {
 	 */
 	@RequestMapping(value="/ipmgmt/ordermgmt/viewSearchAssignMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewSearchAssignMst(@RequestBody IpAllocOperMstVo searchVo, ModelMap model,
 			HttpServletRequest request){
 		IpAllocOperMstListVo resultListVo = orderMgmtService.selectListIpAllocMst(searchVo);
@@ -660,7 +667,8 @@ public class OrderMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/ipmgmt/ordermgmt/selectOrderOfficeList.json", method = RequestMethod.POST)
 	@ResponseBody
-	public IpAllocOrderMstListVo selectOfficeList(@RequestBody IpAllocOrderMstVo searchVo, HttpServletRequest request, HttpServletResponse response){
+	@EncryptResponse
+	public BaseVo selectOfficeList(@RequestBody IpAllocOrderMstVo searchVo, HttpServletRequest request, HttpServletResponse response){
 		IpAllocOrderMstListVo resultListVo = null;
 		try{
 			

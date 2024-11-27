@@ -20,13 +20,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kt.framework.exception.ServiceException;
 import com.kt.framework.utils.StringUtils;
+import com.kt.ipms.annotation.EncryptResponse;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
+import com.kt.ipms.legacy.cmn.vo.BaseVo;
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
 import com.kt.ipms.legacy.cmn.vo.FileVo;
 import com.kt.ipms.legacy.cmn.web.CommonController;
-import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.IpAllocOperMstListVo;
-import com.kt.ipms.legacy.ipmgmt.assignmgmt.vo.TbIpAssignMstListVo;
 import com.kt.ipms.legacy.ipmgmt.hostmgmt.service.HostMgmtService;
 import com.kt.ipms.legacy.ipmgmt.hostmgmt.vo.TbIpHostMstListVo;
 import com.kt.ipms.legacy.ipmgmt.hostmgmt.vo.TbIpHostMstVo;
@@ -45,6 +45,7 @@ public class HostMgmtController extends CommonController {
 
 	@RequestMapping(value="/ipmgmt/hostmgmt/viewListHostIPMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListHostIPMst(@RequestBody TbIpHostMstVo searchVo, ModelMap model,
 			HttpServletRequest request){
 		TbIpHostMstListVo resultListVo = hostMgmtService.selectListIpHostMst(searchVo);
@@ -99,6 +100,7 @@ public class HostMgmtController extends CommonController {
 	
 	@RequestMapping(value="/ipmgmt/hostmgmt/viewListHostIPMstExcel.json", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ResponseEntity<?> viewListHostIPMstExcel(@RequestBody TbIpHostMstVo searchVo, ModelMap model,
 			HttpServletRequest request, HttpServletResponse response){
 		FileVo resultVo = new FileVo();
@@ -126,6 +128,7 @@ public class HostMgmtController extends CommonController {
 
 	@RequestMapping(value="/ipmgmt/hostmgmt/viewDetailHostIPMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewDetailHostIPMst(@RequestBody TbIpHostMstVo searchVo, ModelMap model,
 			HttpServletRequest request){
 		TbIpHostMstListVo resultListVo = hostMgmtService.selectListIpHostMstViaIpInfo(searchVo);
@@ -177,7 +180,8 @@ public class HostMgmtController extends CommonController {
 	
 	@RequestMapping(value="/ipmgmt/hostmgmt/updateListHostIPMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbIpHostMstVo updateListHostIPMst(@RequestBody TbIpHostMstListVo tbIpHostMstListVo, 
+	@EncryptResponse
+	public BaseVo updateListHostIPMst(@RequestBody TbIpHostMstListVo tbIpHostMstListVo, 
 			HttpServletRequest request, HttpServletResponse response){
 		TbIpHostMstVo resultVo = null;
 		try {
@@ -198,7 +202,8 @@ public class HostMgmtController extends CommonController {
 	
 	@RequestMapping(value="/ipmgmt/hostmgmt/updateHostIPMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbIpHostMstVo updateHostIPMst(@RequestBody TbIpHostMstVo tbIpHostMstVo, 
+	@EncryptResponse
+	public BaseVo updateHostIPMst(@RequestBody TbIpHostMstVo tbIpHostMstVo, 
 			HttpServletRequest request, HttpServletResponse response){
 		TbIpHostMstVo resultVo = null;
 		try {
@@ -219,6 +224,7 @@ public class HostMgmtController extends CommonController {
 	
 	@RequestMapping(value="/ipmgmt/hostmgmt/viewListIpHostMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListIpHostMst(@RequestBody TbIpHostMstVo searchVo, ModelMap model,
 		HttpServletRequest request){
 		ModelMap builtModel = viewListIpHostMstModel(searchVo, request);
@@ -354,7 +360,8 @@ public class HostMgmtController extends CommonController {
 	
 	@RequestMapping(value = "/ipmgmt/hostmgmt/selectOfficeList.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbIpHostMstListVo selectOfficeList(@RequestBody TbIpHostMstVo searchVo, HttpServletRequest request, HttpServletResponse response){
+	@EncryptResponse
+	public BaseVo selectOfficeList(@RequestBody TbIpHostMstVo searchVo, HttpServletRequest request, HttpServletResponse response){
 		TbIpHostMstListVo resultListVo = null;
 		try{
 			
@@ -388,6 +395,7 @@ public class HostMgmtController extends CommonController {
 
 	@RequestMapping(value="/ipmgmt/hostmgmt/viewInsertIpHostMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewInsertIpHostMst(@RequestBody TbIpHostMstVo searchVo, ModelMap model,
 			HttpServletRequest request){
 		TbIpHostMstListVo resultListVo = new TbIpHostMstListVo();
@@ -441,7 +449,8 @@ public class HostMgmtController extends CommonController {
 	
 	@RequestMapping(value="/ipmgmt/hostmgmt/insertHostIPMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbIpHostMstVo insertHostIPMst(@RequestBody TbIpHostMstVo tbIpHostMstVo, 
+	@EncryptResponse
+	public BaseVo insertHostIPMst(@RequestBody TbIpHostMstVo tbIpHostMstVo, 
 			HttpServletRequest request, HttpServletResponse response){
 		TbIpHostMstVo resultVo = null;
 		try {
@@ -462,7 +471,8 @@ public class HostMgmtController extends CommonController {
 	
 	@RequestMapping(value="/ipmgmt/hostmgmt/deleteHostIPMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbIpHostMstVo deleteHostIPMst(@RequestBody TbIpHostMstVo tbIpHostMstVo, 
+	@EncryptResponse
+	public BaseVo deleteHostIPMst(@RequestBody TbIpHostMstVo tbIpHostMstVo, 
 			HttpServletRequest request, HttpServletResponse response){
 		TbIpHostMstVo resultVo = null;
 		try {
@@ -483,6 +493,7 @@ public class HostMgmtController extends CommonController {
 	
 	@RequestMapping(value="/ipmgmt/hostmgmt/viewDetailIPHostMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewDetailIPHostMst(@RequestBody TbIpHostMstVo searchVo, ModelMap model,
 			HttpServletRequest request){
 		TbIpHostMstVo resultVo = hostMgmtService.selectTbIpHostMstVo(searchVo);
@@ -530,6 +541,7 @@ public class HostMgmtController extends CommonController {
 	
 	@RequestMapping(value="/ipmgmt/hostmgmt/viewUpdateIPHostMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewUpdateIPHostMst(@RequestBody TbIpHostMstVo searchVo, ModelMap model,
 			HttpServletRequest request){
 		TbIpHostMstVo resultVo = hostMgmtService.selectTbIpHostMstVo(searchVo);
@@ -578,6 +590,7 @@ public class HostMgmtController extends CommonController {
 	
 	@RequestMapping(value="/ipmgmt/hostmgmt/viewListVirtualHostInfoExcel.json", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ResponseEntity<?> viewListVirtualHostInfoExcel(@RequestBody TbIpHostMstVo searchVo, ModelMap model,
 			HttpServletRequest request, HttpServletResponse response) {
 		FileVo resultVo = new FileVo();

@@ -16,8 +16,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kt.framework.exception.ServiceException;
+import com.kt.ipms.annotation.EncryptResponse;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
+import com.kt.ipms.legacy.cmn.vo.BaseVo;
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
 import com.kt.ipms.legacy.cmn.web.CommonController;
 import com.kt.ipms.legacy.opermgmt.boardmgmt.service.FaqService;
@@ -42,6 +44,7 @@ public class FaqController extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/boardmgmt/viewListFaq.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap selectListFaq(@RequestBody TbBoardVo searchVo, ModelMap model, HttpServletRequest request) {
 		TbBoardListVo resultListVo = faqService.selectListFaq(searchVo);
 		return createResultList(resultListVo.getTbBoardVos(), resultListVo.getTotalCount());
@@ -114,6 +117,7 @@ public class FaqController extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/boardmgmt/viewDetailFaq.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap selectFaq(@RequestBody TbBoardVo tbBoardVo, ModelMap model, HttpServletRequest request)  {
 		TbBoardVo resultVo = faqService.selectFaq(tbBoardVo);
 		return createResult(resultVo);
@@ -177,6 +181,7 @@ public class FaqController extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/boardmgmt/viewInsertFaq.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewInsertFaq(TbBoardVo tbBoardVo, ModelMap model, HttpServletRequest request)  {
 		tbBoardVo.setSboardTypeCd("BH0003");
 		List<CommonCodeVo> boardTypeSubCds = commonCodeService.selectListCommonCode(CommonCodeUtil.BOARD_TYPE_SUB_CD, tbBoardVo);
@@ -229,7 +234,8 @@ public class FaqController extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/boardmgmt/insertFaq.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbBoardVo insertFaq(@RequestBody TbBoardVo insertVo, HttpServletRequest request, HttpServletResponse response)  {
+	@EncryptResponse
+	public BaseVo insertFaq(@RequestBody TbBoardVo insertVo, HttpServletRequest request, HttpServletResponse response)  {
 		TbBoardVo resultVo = null;
 		try {
 			
@@ -272,6 +278,7 @@ public class FaqController extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/boardmgmt/viewUpdateFaq.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewUpdateFaq(@RequestBody TbBoardVo tbBoardVo, ModelMap model, HttpServletRequest request)  {
 		TbBoardVo resultVo = faqService.selectFaq(tbBoardVo);
 		return createResult(resultVo);
@@ -329,7 +336,8 @@ public class FaqController extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/boardmgmt/updateFaq.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbBoardVo updateFaq(@RequestBody TbBoardVo updateVo, ModelMap model, HttpServletRequest request, HttpServletResponse response)  {
+	@EncryptResponse
+	public BaseVo updateFaq(@RequestBody TbBoardVo updateVo, ModelMap model, HttpServletRequest request, HttpServletResponse response)  {
 		TbBoardVo resultVo = new TbBoardVo();
 		try{	
 			//모의해킹괄련 적용 2015. 05 .19
@@ -367,7 +375,8 @@ public class FaqController extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/boardmgmt/deleteFaq.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbBoardVo deleteFaq(@RequestBody TbBoardVo deleteVo, HttpServletRequest request, HttpServletResponse response)  {
+	@EncryptResponse
+	public BaseVo deleteFaq(@RequestBody TbBoardVo deleteVo, HttpServletRequest request, HttpServletResponse response)  {
 		TbBoardVo resultVo = new TbBoardVo();
 		try {	
 			//모의해킹괄련 적용 2015. 05 .19

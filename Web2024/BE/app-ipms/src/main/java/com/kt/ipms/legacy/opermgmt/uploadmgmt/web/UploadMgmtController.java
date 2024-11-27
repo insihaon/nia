@@ -25,8 +25,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import com.codej.base.dto.response.UploadFileResponse;
 import com.codej.web.controller.FileController;
+import com.kt.ipms.annotation.EncryptResponse;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.web.CommonController;
 import com.kt.ipms.legacy.opermgmt.loginmgmt.vo.LoginInfoVo;
@@ -48,6 +48,7 @@ public class UploadMgmtController  extends CommonController {
 	
 	@RequestMapping(value = "/opermgmt/uploadmgmt/uploadView.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap uploadView(@RequestBody TbUploadVo searchVo, ModelMap model,
 			HttpServletRequest request)  {
 		TbUploadListVo resultListVo = uploadMgmtService.selectListPageUpload(searchVo);
@@ -94,6 +95,7 @@ public class UploadMgmtController  extends CommonController {
 	
 	@RequestMapping(value = "/opermgmt/uploadmgmt/upload.json", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public int fileUpload(ModelMap model, MultipartHttpServletRequest request, HttpServletResponse response)  {
 		MultipartFile file =  request.getFile("file");
 		SimpleDateFormat transFormat = new SimpleDateFormat("yyyyMMddHHmmss");

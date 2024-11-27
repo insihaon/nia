@@ -34,9 +34,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.codej.base.dto.response.UploadFileResponse;
+import com.codej.base.property.FileStorageProperties;
+import com.codej.web.controller.FileController;
 import com.kt.framework.exception.ServiceException;
+import com.kt.ipms.annotation.EncryptResponse;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
+import com.kt.ipms.legacy.cmn.vo.BaseVo;
 import com.kt.ipms.legacy.cmn.vo.CommonVo;
 import com.kt.ipms.legacy.cmn.vo.FileVo;
 import com.kt.ipms.legacy.cmn.vo.SmtpVo;
@@ -49,9 +54,6 @@ import com.kt.ipms.legacy.opermgmt.requiremgmt.vo.ReqBoardVo;
 import com.kt.ipms.legacy.opermgmt.tacsmgmt.service.TacsMgmtService;
 import com.kt.ipms.legacy.opermgmt.usermgmt.service.UserMgmtService;
 import com.kt.ipms.legacy.opermgmt.usermgmt.vo.TbUserBasVo;
-import com.codej.base.dto.response.UploadFileResponse;
-import com.codej.base.property.FileStorageProperties;
-import com.codej.web.controller.FileController;
 
 import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
 
@@ -72,6 +74,7 @@ public class RequireMgmtController extends CommonController {
 	
 	@RequestMapping(value = "/opermgmt/requiremgmt/viewListReq.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap selectListReq(@RequestBody ReqBoardVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		setPagination(searchVo);
@@ -148,6 +151,7 @@ public class RequireMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/opermgmt/requiremgmt/viewDetailReq.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap selectReqBoard(@RequestBody ReqBoardVo searchVo, HttpServletRequest request)  {
 		ModelMap model = new ModelMap();
 		ReqBoardVo resultVo = null;
@@ -254,6 +258,7 @@ public class RequireMgmtController extends CommonController {
 
 	@RequestMapping(value = "/opermgmt/requiremgmt/viewInsertReq.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewinsertReq( ModelMap model, HttpServletRequest request)  {
 		ModelMap builtModel = viewinsertReqModel(request);
 		List<ReqBoardSubVo> requestType = (List<ReqBoardSubVo>)builtModel.get("requestType");
@@ -323,7 +328,8 @@ public class RequireMgmtController extends CommonController {
 	
 	@RequestMapping(value = "/opermgmt/requiremgmt/insertReq.json", method = RequestMethod.POST)
 	@ResponseBody
-	public ReqBoardVo insertReq(ModelMap model, MultipartHttpServletRequest request, HttpServletResponse response) {
+	@EncryptResponse
+	public BaseVo insertReq(ModelMap model, MultipartHttpServletRequest request, HttpServletResponse response) {
 		ReqBoardVo resultVo = new ReqBoardVo();
 		try {
 			String userId = jwtUtil.getUserId(request);
@@ -369,6 +375,7 @@ public class RequireMgmtController extends CommonController {
 
 	@RequestMapping(value = "/opermgmt/requiremgmt/deleteReq.json", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ReqBoardVo deleteReq(@RequestBody ReqBoardVo deleteVo, HttpServletRequest request,
 			HttpServletResponse response) {
 		ReqBoardVo resultVo = null;
@@ -385,7 +392,8 @@ public class RequireMgmtController extends CommonController {
 	
 	@RequestMapping(value = "/opermgmt/requiremgmt/updateReq.json", method = RequestMethod.POST)
 	@ResponseBody
-	public ReqBoardVo updateReq(ModelMap model, MultipartHttpServletRequest request, HttpServletResponse response)  {
+	@EncryptResponse
+	public BaseVo updateReq(ModelMap model, MultipartHttpServletRequest request, HttpServletResponse response)  {
 		ReqBoardVo resultVo = null;
 		String adminYn = null;
 		try {
@@ -515,6 +523,7 @@ public class RequireMgmtController extends CommonController {
 
 	@RequestMapping(value = "/ipmgmt/requiremgmt/viewListReqExcel.json", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ResponseEntity<?> selectListReqExcel(@RequestBody ReqBoardVo searchVo, HttpServletRequest request,
 			HttpServletResponse response) {
 		FileVo resultVo = new FileVo();

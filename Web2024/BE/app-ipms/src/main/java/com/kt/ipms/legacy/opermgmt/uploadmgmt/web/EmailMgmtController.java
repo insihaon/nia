@@ -2,17 +2,7 @@ package com.kt.ipms.legacy.opermgmt.uploadmgmt.web;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
-import javax.mail.Authenticator;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -25,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kt.framework.exception.ServiceException;
+import com.kt.ipms.annotation.EncryptResponse;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
+import com.kt.ipms.legacy.cmn.vo.BaseVo;
 import com.kt.ipms.legacy.cmn.vo.SmtpVo;
 import com.kt.ipms.legacy.cmn.web.CommonController;
 import com.kt.ipms.legacy.opermgmt.tacsmgmt.service.TacsMgmtService;
@@ -59,7 +51,8 @@ public class EmailMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/opermgmt/uploadmgmt/sendMail.json", method = RequestMethod.POST)
 	@ResponseBody
-	public SmtpVo sendMail(@RequestBody SmtpVo smtpVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
+	@EncryptResponse
+	public BaseVo sendMail(@RequestBody SmtpVo smtpVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
 		SmtpVo resultVo = new SmtpVo();
 		String commonMsg;
 		

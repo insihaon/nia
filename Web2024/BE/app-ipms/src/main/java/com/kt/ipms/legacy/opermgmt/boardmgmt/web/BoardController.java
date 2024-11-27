@@ -16,8 +16,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kt.framework.exception.ServiceException;
+import com.kt.ipms.annotation.EncryptResponse;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
+import com.kt.ipms.legacy.cmn.vo.BaseVo;
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
 import com.kt.ipms.legacy.cmn.web.CommonController;
 import com.kt.ipms.legacy.opermgmt.boardmgmt.service.BoardService;
@@ -45,6 +47,7 @@ public class BoardController extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/boardmgmt/viewListBoard.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap selectListBoard(@RequestBody TbBoardVo searchVo, ModelMap model, 
 			HttpServletRequest request) {
 		TbBoardListVo resultListVo =boardService.selectListBoard(searchVo);
@@ -111,6 +114,7 @@ public class BoardController extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/boardmgmt/viewDetailBoard.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap selectBoard(@RequestBody TbBoardVo tbBoardVo, ModelMap model, HttpServletRequest request) {
 		TbBoardVo resultVo = boardService.selectBoard(tbBoardVo);
 		return createResult(resultVo);
@@ -187,6 +191,7 @@ public class BoardController extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/boardmgmt/viewInsertBoard.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewInsertBoard(TbBoardVo tbBoardVo, ModelMap model, HttpServletRequest request) {
 		tbBoardVo.setSboardTypeCd("BH0002");
 		List<CommonCodeVo> boardTypeSubCds = commonCodeService.selectListCommonCode(CommonCodeUtil.BOARD_TYPE_SUB_CD, tbBoardVo);
@@ -239,7 +244,8 @@ public class BoardController extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/boardmgmt/insertBoard.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbBoardVo insertBoard(@RequestBody TbBoardVo insertVo, HttpServletRequest request, HttpServletResponse response) {
+	@EncryptResponse
+	public BaseVo insertBoard(@RequestBody TbBoardVo insertVo, HttpServletRequest request, HttpServletResponse response) {
 		TbBoardVo resultVo = null;
 		
 		//모의해킹괄련 적용 2015. 05 .19
@@ -277,6 +283,7 @@ public class BoardController extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/boardmgmt/viewUpdateBoard.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewUpdateBoard(@RequestBody TbBoardVo tbBoardVo, ModelMap model, HttpServletRequest request) {
 		TbBoardVo resultVo = boardService.selectBoard(tbBoardVo);
 		return createResult(resultVo);
@@ -334,7 +341,8 @@ public class BoardController extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/boardmgmt/updateBoard.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbBoardVo updateBoard(@RequestBody TbBoardVo updateVo, HttpServletRequest request, HttpServletResponse response)  {
+	@EncryptResponse
+	public BaseVo updateBoard(@RequestBody TbBoardVo updateVo, HttpServletRequest request, HttpServletResponse response)  {
 		TbBoardVo resultVo = new TbBoardVo();
 		try{
 			boardService.updateBoard(updateVo);
@@ -362,7 +370,8 @@ public class BoardController extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/boardmgmt/deleteBoard.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbBoardVo deleteBoard(@RequestBody TbBoardVo deleteVo, HttpServletRequest request, HttpServletResponse response)  {
+	@EncryptResponse
+	public BaseVo deleteBoard(@RequestBody TbBoardVo deleteVo, HttpServletRequest request, HttpServletResponse response)  {
 		TbBoardVo resultVo = new TbBoardVo();
 		try {
 			boardService.deleteBoard(deleteVo);
@@ -390,7 +399,8 @@ public class BoardController extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/boardmgmt/selectListBoardReply.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbBoardReplyListVo selectListBoardReply(@RequestBody TbBoardReplyVo tbBoardReplyVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
+	@EncryptResponse
+	public BaseVo selectListBoardReply(@RequestBody TbBoardReplyVo tbBoardReplyVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
 		TbBoardReplyListVo resultListRePlyVo = null;
 		try{
 			resultListRePlyVo = boardService.selectListBoardReply(tbBoardReplyVo);
@@ -419,7 +429,8 @@ public class BoardController extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/boardmgmt/insertBoardReply.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbBoardReplyVo insertBoardReply(@RequestBody TbBoardReplyVo insertVo, HttpServletRequest request, HttpServletResponse response) {
+	@EncryptResponse
+	public BaseVo insertBoardReply(@RequestBody TbBoardReplyVo insertVo, HttpServletRequest request, HttpServletResponse response) {
 		TbBoardReplyVo resultVo = new TbBoardReplyVo();
 		try{
 			resultVo = boardService.insertBoardReply(insertVo);
@@ -448,7 +459,8 @@ public class BoardController extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/boardmgmt/updateBoardReply.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbBoardReplyVo updateBoardReply(@RequestBody TbBoardReplyVo updateVo, HttpServletRequest request, HttpServletResponse response)  {
+	@EncryptResponse
+	public BaseVo updateBoardReply(@RequestBody TbBoardReplyVo updateVo, HttpServletRequest request, HttpServletResponse response)  {
 		TbBoardReplyVo resultVo = new TbBoardReplyVo();
 		try{
 			resultVo = boardService.updateBoardReply(updateVo);
@@ -476,7 +488,8 @@ public class BoardController extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/boardmgmt/deleteBoardReply.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbBoardReplyVo deleteBoardReply(@RequestBody TbBoardReplyVo deleteVo, HttpServletRequest request, HttpServletResponse response)  {
+	@EncryptResponse
+	public BaseVo deleteBoardReply(@RequestBody TbBoardReplyVo deleteVo, HttpServletRequest request, HttpServletResponse response)  {
 		TbBoardReplyVo resultVo = new TbBoardReplyVo();
 		try {
 			resultVo = boardService.deleteBoardReply(deleteVo);

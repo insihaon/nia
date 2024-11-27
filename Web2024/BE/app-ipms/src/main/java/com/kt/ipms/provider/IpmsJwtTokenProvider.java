@@ -3,7 +3,6 @@ package com.kt.ipms.provider;
 import java.util.Date;
 import java.util.List;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,7 +15,6 @@ import com.codej.base.provider.BaseJwtTokenProvider;
 import com.codej.base.utils.JsonUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.kt.ipms.legacy.opermgmt.loginmgmt.vo.LoginInfoVo;
-import com.kt.ipms.legacy.opermgmt.usermgmt.vo.TbUserBasVo;
 import com.kt.ipms.security.IpmsUserDetailsServiceImpl;
 
 import io.jsonwebtoken.Claims;

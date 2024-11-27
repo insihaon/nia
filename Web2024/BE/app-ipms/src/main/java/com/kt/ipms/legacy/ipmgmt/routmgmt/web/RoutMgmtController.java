@@ -24,9 +24,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kt.framework.exception.ServiceException;
 import com.kt.framework.utils.StringUtils;
+import com.kt.ipms.annotation.EncryptResponse;
 import com.kt.ipms.legacy.cmn.service.ConfigPropertieService;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
+import com.kt.ipms.legacy.cmn.vo.BaseVo;
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
 import com.kt.ipms.legacy.cmn.vo.FileVo;
 import com.kt.ipms.legacy.cmn.web.CommonController;
@@ -75,6 +77,7 @@ public class RoutMgmtController extends CommonController{
 	 */
 	@RequestMapping(value = "/ipmgmt/routmgmt/viewListRoutChkMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListRoutChkMst(@RequestBody TbRoutChkMstVo searchVo, ModelMap model, HttpServletRequest request) {
 		// setPagination(searchVo);
 		// TbRoutChkMstListVo resultListVo = routMgmtService.selectListRoutChkMst(searchVo);
@@ -330,6 +333,7 @@ public class RoutMgmtController extends CommonController{
 	 */
 	@RequestMapping(value="/ipmgmt/routmgmt/viewListRoutChkMstExcel.json", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ResponseEntity<?> viewListRoutChkMstExcel(@RequestBody TbRoutChkMstVo searchVo, HttpServletRequest request, HttpServletResponse response){
 		
 		FileVo resultVo = new FileVo();
@@ -560,7 +564,8 @@ public class RoutMgmtController extends CommonController{
 	 */
 	@RequestMapping(value = "/ipmgmt/routmgmt/insertListIpBlockMatchMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbRoutChkMstVo insertListIpBlockMatchMst(@RequestBody TbRoutChkMstVo tbRoutChkMstVo, HttpServletRequest request, HttpServletResponse response) {
+	@EncryptResponse
+	public BaseVo insertListIpBlockMatchMst(@RequestBody TbRoutChkMstVo tbRoutChkMstVo, HttpServletRequest request, HttpServletResponse response) {
 		TbRoutChkMstVo resultVo = null;
 
 		String resultMsg = CommonCodeUtil.INTGRM_DB_RESULT01;		// IP블록 현행화 실패
@@ -683,7 +688,8 @@ public class RoutMgmtController extends CommonController{
 	 */
 	@RequestMapping(value = "/ipmgmt/routmgmt/insertListRoutChkMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbRoutChkMstVo insertListRoutChkMst(@RequestBody TbRoutChkMstVo tbRoutChkMstVo, HttpServletRequest request, HttpServletResponse response) {
+	@EncryptResponse
+	public BaseVo insertListRoutChkMst(@RequestBody TbRoutChkMstVo tbRoutChkMstVo, HttpServletRequest request, HttpServletResponse response) {
 		TbRoutChkMstVo resultVo = null;
 		Map<String,String> result = null;
 		try {
@@ -725,6 +731,7 @@ public class RoutMgmtController extends CommonController{
 	 */
 	@RequestMapping(value = "/ipmgmt/routmgmt/viewPopRoutChkMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewPopRoutChkMst(@RequestBody TbRoutChkMstVo searchVo, ModelMap model, HttpServletRequest request) {
 		TbFcltCmdMstListVo resultListVo = routMgmtService.selectListFcltOrgCmdMst(searchVo);
 		return createResultList(resultListVo.getTbFcltCmdMstVos(), resultListVo.getTotalCount());
@@ -780,7 +787,8 @@ public class RoutMgmtController extends CommonController{
 	 */
 	@RequestMapping(value="/ipmgmt/routmgmt/test.json", method = RequestMethod.POST)
 	@ResponseBody
-	public FileVo test(@ModelAttribute("searchVo") TbRoutChkMstVo searchVo, HttpServletRequest request, HttpServletResponse response){
+	@EncryptResponse
+	public BaseVo test(@ModelAttribute("searchVo") TbRoutChkMstVo searchVo, HttpServletRequest request, HttpServletResponse response){
 		
 		FileVo resultVo = new FileVo();
 		excel.insertIpHostMstBatch();
@@ -798,6 +806,7 @@ public class RoutMgmtController extends CommonController{
 	 */
 	@RequestMapping(value = "/ipmgmt/routmgmt/viewDetailRoutChkMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewDetailRoutChkMst(@RequestBody IpAllocOperMstVo searchVo, ModelMap model, HttpServletRequest request){
 		IpAllocOperMstVo resultVo = allocMgmtService.selectMainIpInfoMst(searchVo);
 		return createResult(resultVo);
@@ -854,6 +863,7 @@ public class RoutMgmtController extends CommonController{
 	 */
 	@RequestMapping(value = "/ipmgmt/routmgmt/viewDetailNextHop.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewDetailNextHop(@RequestBody IpAllocOperMstVo searchVo, ModelMap model, HttpServletRequest request){
 		IpAllocOperMstVo resultVo = null;
 		if(searchVo.getSpageType().equals("link")) {
@@ -934,6 +944,7 @@ public class RoutMgmtController extends CommonController{
 	 */
 	@RequestMapping(value = "/ipmgmt/routmgmt/viewPopRoutChkExceptMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewPopRoutChkExceptMst(@RequestBody TbRoutChkMstVo searchVo, ModelMap model, HttpServletRequest request) {
 		List<CommonCodeVo> exceptCds = commonCodeService.selectListCommonCode(CommonCodeUtil.ROUTING_EXCEPT_CD, null);
 		return createResultList(exceptCds, exceptCds.size());
@@ -989,7 +1000,8 @@ public class RoutMgmtController extends CommonController{
 	 */
 	@RequestMapping(value = "/ipmgmt/routmgmt/insertListExcptMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbRoutChkMstVo insertListExcptMst(@RequestBody TbRoutChkMstVo tbRoutChkMstVo, HttpServletRequest request, HttpServletResponse response) {
+	@EncryptResponse
+	public BaseVo insertListExcptMst(@RequestBody TbRoutChkMstVo tbRoutChkMstVo, HttpServletRequest request, HttpServletResponse response) {
 		TbRoutChkMstVo resultVo = null;
 		String userId = jwtUtil.getUserId(request);
 		
@@ -1033,6 +1045,7 @@ public class RoutMgmtController extends CommonController{
 	 */
 	@RequestMapping(value = "/ipmgmt/routmgmt/viewDetailRoutExcptMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewDetailRoutExcptMst(@RequestBody TbRoutChkMstVo searchVo, ModelMap model, HttpServletRequest request){
 		TbRoutChkMstListVo resultListVo = routMgmtService.selectListPageRoutExcptMstVo(searchVo);
 		TbRoutChkMstVo resultVo = resultListVo.getTbRoutChkMstVos().get(0);
@@ -1093,7 +1106,8 @@ public class RoutMgmtController extends CommonController{
 	 */
 	@RequestMapping(value = "/ipmgmt/routmgmt/selectCheckService.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbRoutChkMstVo selectCheckService(@RequestBody TbRoutChkMstVo searchVo, ModelMap model, HttpServletRequest request, HttpServletResponse response){
+	@EncryptResponse
+	public BaseVo selectCheckService(@RequestBody TbRoutChkMstVo searchVo, ModelMap model, HttpServletRequest request, HttpServletResponse response){
 		
 		TbRoutChkMstVo resultVo = new TbRoutChkMstVo();
 		List<String> chkListStr = new ArrayList<String>();
@@ -1165,6 +1179,7 @@ public class RoutMgmtController extends CommonController{
 	 */
 	@RequestMapping(value = "/ipmgmt/routmgmt/viewPopRoutServiceChkMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewPopRoutServiceChkMst(@RequestBody TbRoutChkMstVo searchVo, HttpServletRequest request){
 		ModelMap model = viewPopRoutServiceChkMstModel(searchVo, request);
 		TbRoutChkMstListVo resultListVo = (TbRoutChkMstListVo)model.get("resultListVo");
@@ -1249,7 +1264,8 @@ public class RoutMgmtController extends CommonController{
 	 */
 	@RequestMapping(value = "/ipmgmt/routmgmt/updateServiceMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbRoutChkMstVo updateServiceMst(@RequestBody TbRoutChkMstVo searchVo, ModelMap model, HttpServletRequest request, HttpServletResponse response){
+	@EncryptResponse
+	public BaseVo updateServiceMst(@RequestBody TbRoutChkMstVo searchVo, ModelMap model, HttpServletRequest request, HttpServletResponse response){
 		
 		TbRoutChkMstVo resultVo = new TbRoutChkMstVo();
 		List<String> chkListStr = new ArrayList<String>();
@@ -1315,7 +1331,8 @@ public class RoutMgmtController extends CommonController{
 	 */
 	@RequestMapping(value = "/ipmgmt/routmgmt/upateStatusMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbRoutChkMstVo upateStatusMst(@RequestBody TbRoutChkMstVo tbRoutChkMstVo, HttpServletRequest request, HttpServletResponse response) {
+	@EncryptResponse
+	public BaseVo upateStatusMst(@RequestBody TbRoutChkMstVo tbRoutChkMstVo, HttpServletRequest request, HttpServletResponse response) {
 		TbRoutChkMstVo resultVo = null;
 
 		String resultMsg = CommonCodeUtil.INTGRM_DB_RESULT03;		// DB현행화 실패
@@ -1357,6 +1374,7 @@ public class RoutMgmtController extends CommonController{
 	 */
 	@RequestMapping(value = "/ipmgmt/routmgmt/viewPopInsertAlcIPMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewInsertAlcIPMst(@RequestBody IpAllocOperMstListVo ipAllocOperMstListVo, ModelMap model, HttpServletRequest request){
 		IpAllocOperMstListVo resultListVo = allocMgmtService.selectListAlcIPMstViaInMstSeq2(ipAllocOperMstListVo);
 		return createResultList(resultListVo.getIpAllocOperMstVos(), resultListVo.getTotalCount());
@@ -1413,6 +1431,7 @@ public class RoutMgmtController extends CommonController{
 	 */
 	@RequestMapping(value = "/ipmgmt/routmgmt/viewPopDetailAlcIPMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewDetailAlcIPMst(@RequestBody IpAllocOperMstVo searchVo, ModelMap model, HttpServletRequest request){
 		IpAllocOperMstListVo resultListVo = allocMgmtService.selectListIpAllocDetail(searchVo);
 		return createResultList(resultListVo.getIpAllocOperMstVos(), resultListVo.getTotalCount());

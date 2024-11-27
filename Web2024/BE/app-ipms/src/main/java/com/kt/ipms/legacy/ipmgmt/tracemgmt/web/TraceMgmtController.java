@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kt.framework.exception.ServiceException;
+import com.kt.ipms.annotation.EncryptResponse;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
+import com.kt.ipms.legacy.cmn.vo.BaseVo;
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
 import com.kt.ipms.legacy.cmn.vo.CommonVo;
 import com.kt.ipms.legacy.cmn.web.CommonController;
@@ -34,6 +36,7 @@ public class TraceMgmtController extends CommonController {
 	TraceMgmtService traceMgmtService;
 	@RequestMapping(value = "/ipmgmt/tracemgmt/viewTraceRouteMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewMainTraceRoute(ModelMap model, HttpServletRequest request) {
 		TbTraceIPVo resultVo = new TbTraceIPVo();
 		return createResult(resultVo);
@@ -91,7 +94,8 @@ public class TraceMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/ipmgmt/tracemgmt/selectListTraceRoute.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbTraceIPListVo selectListTraceRoute(@RequestBody TbTraceIPVo searchVo, HttpServletRequest request, HttpServletResponse response){
+	@EncryptResponse
+	public BaseVo selectListTraceRoute(@RequestBody TbTraceIPVo searchVo, HttpServletRequest request, HttpServletResponse response){
 		
 		TbTraceIPListVo resultListVo = null;
 		try{			
@@ -112,6 +116,7 @@ public class TraceMgmtController extends CommonController {
 	
 	@RequestMapping(value = "/ipmgmt/tracemgmt/viewDetailHost.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewDetailHost(@RequestBody TbTraceIPVo searchVo, ModelMap model, HttpServletRequest request) {
 		TbTraceIpHostMstVo resultVo = traceMgmtService.selectHostDetailInfo(searchVo);
 		TbTraceIpAssignMstVo resultAsgnVo = traceMgmtService.selectAssignDetailInfo(searchVo);
@@ -174,6 +179,7 @@ public class TraceMgmtController extends CommonController {
 //	 */
 //	@RequestMapping(value = "/ipmgmt/tracemgmt/selectHostDetailInfo.json", method = RequestMethod.POST)
 //	@ResponseBody
+//	@EncryptResponse
 //	public TbTraceIpHostMstVo selectHostDetailInfo(@RequestBody TbTraceIPVo searchVo, HttpServletRequest request, HttpServletResponse response){
 //		
 //		TbTraceIpHostMstVo resultVo = null;
@@ -206,6 +212,7 @@ public class TraceMgmtController extends CommonController {
 //	 */
 //	@RequestMapping(value = "/ipmgmt/tracemgmt/selectAssignDetailInfo.json", method = RequestMethod.POST)
 //	@ResponseBody
+//	@EncryptResponse
 //	public TbTraceIpAssignMstVo selectAssignDetailInfo(@RequestBody TbTraceIPVo searchVo, HttpServletRequest request, HttpServletResponse response){
 //		
 //		TbTraceIpAssignMstVo resultVo = null;

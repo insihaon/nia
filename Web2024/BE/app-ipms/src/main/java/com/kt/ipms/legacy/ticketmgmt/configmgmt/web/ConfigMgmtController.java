@@ -20,8 +20,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kt.framework.exception.ServiceException;
 import com.kt.framework.utils.StringUtils;
+import com.kt.ipms.annotation.EncryptResponse;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
+import com.kt.ipms.legacy.cmn.vo.BaseVo;
 import com.kt.ipms.legacy.cmn.vo.FileVo;
 import com.kt.ipms.legacy.cmn.web.CommonController;
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.IpAllocOperMstListVo;
@@ -45,6 +47,7 @@ public class ConfigMgmtController extends CommonController {
 
 	@RequestMapping(value = "/ticketmgmt/configmgmt/viewListConfigMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListConfigMst(@RequestBody TbConfigInterfaceMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		TbConfigInterfaceMstListVo resultListVo = configMgmtService.selectListFirstStepTopology(searchVo);
@@ -154,6 +157,7 @@ public class ConfigMgmtController extends CommonController {
 	
 	@RequestMapping(value = "/ticketmgmt/configmgmt/selectListTopologyTree.json", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public List<Map<String, Object>> selectListTopologyTree(@RequestParam Map<String, Object> paramMap, 
 			HttpServletRequest request, HttpServletResponse response) {
 		List<Map<String, Object>> resultListMap = null;
@@ -169,6 +173,7 @@ public class ConfigMgmtController extends CommonController {
 	
 	@RequestMapping(value = "/ticketmgmt/configmgmt/viewListRouteMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListRouteMst(@RequestBody TbConfigRouteMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		TbConfigRouteMstListVo resultListVo = configMgmtService.selectListPageRouteMst(searchVo);
@@ -223,7 +228,8 @@ public class ConfigMgmtController extends CommonController {
 	
 	@RequestMapping(value = "/ticketmgmt/configmgmt/viewListRouteMstExcel.json", method = RequestMethod.POST)
 	@ResponseBody
-	public FileVo viewListRouteMstExcel(@ModelAttribute("searchVo") TbConfigRouteMstVo searchVo, ModelMap model,
+	@EncryptResponse
+	public BaseVo viewListRouteMstExcel(@ModelAttribute("searchVo") TbConfigRouteMstVo searchVo, ModelMap model,
 			HttpServletRequest request, HttpServletResponse response) {
 		FileVo resultVo = new FileVo();
 		try {
@@ -258,6 +264,7 @@ public class ConfigMgmtController extends CommonController {
 	
 	@RequestMapping(value = "/ticketmgmt/configmgmt/viewDetailRouteMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewDetailRouteMst(@RequestBody TbConfigRouteMstVo searchVo, ModelMap model,
 			HttpServletRequest request){
 		TbConfigRouteMstVo resultVo = configMgmtService.selectConfigRouteMst(searchVo);

@@ -1,23 +1,17 @@
 package com.kt.ipms.legacy.linkmgmt.whois.web;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kt.framework.exception.ServiceException;
+import com.kt.ipms.annotation.EncryptResponse;
 import com.kt.ipms.legacy.cmn.util.PrintLogUtil;
+import com.kt.ipms.legacy.cmn.vo.BaseVo;
 import com.kt.ipms.legacy.cmn.web.CommonController;
 import com.kt.ipms.legacy.linkmgmt.whois.model.WhoisInfoObj;
 import com.kt.ipms.legacy.linkmgmt.whois.service.WhoisService;
@@ -34,6 +28,7 @@ public class WhoisController extends CommonController {
 
 	@RequestMapping(value="/whois/testWhoisSubmit1.json", method=RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public void testWhoisSubmit1(@RequestBody TbWhoisVo tbWhoisVo) {
 		try {
 			if(StringUtils.isNotEmpty(tbWhoisVo.getNwhoisSeq().toString())) {
@@ -50,6 +45,7 @@ public class WhoisController extends CommonController {
 	
 	@RequestMapping(value="/whois/testWhoisSubmit2.json", method=RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public void testWhoisSubmit2(@RequestBody TbWhoisVo tbWhoisVo) {
 		try {
 			if(StringUtils.isNotEmpty(tbWhoisVo.getNwhoisSeq().toString())) {
@@ -66,6 +62,7 @@ public class WhoisController extends CommonController {
 	
 	@RequestMapping(value="/whois/testWhoisSubmit3.json", method=RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public void testWhoisSubmit3(@RequestBody TbWhoisVo tbWhoisVo) {
 		try {
 			
@@ -80,8 +77,8 @@ public class WhoisController extends CommonController {
 	
 	@RequestMapping(value="/whois/testWhoisSubmit4.json", method=RequestMethod.POST)
 	@ResponseBody
-	public WhoisInfoObj testWhoisSubmit4(@RequestBody TbWhoisVo tbWhoisVo) {
-		
+	@EncryptResponse
+	public BaseVo testWhoisSubmit4(@RequestBody TbWhoisVo tbWhoisVo) {
 		WhoisInfoObj obj = new WhoisInfoObj();
 		try {
 			obj = whoisService.whoisInfo(tbWhoisVo);

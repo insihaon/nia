@@ -20,12 +20,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kt.framework.exception.ServiceException;
 import com.kt.framework.utils.StringUtils;
+import com.kt.ipms.annotation.EncryptResponse;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
+import com.kt.ipms.legacy.cmn.vo.BaseVo;
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
 import com.kt.ipms.legacy.cmn.vo.FileVo;
 import com.kt.ipms.legacy.cmn.web.CommonController;
-import com.kt.ipms.legacy.ipmgmt.assignmgmt.vo.TbIpAssignMstListVo;
 import com.kt.ipms.legacy.ipmgmt.linkmgmt.service.LinkMgmtService;
 import com.kt.ipms.legacy.ipmgmt.linkmgmt.vo.TbIpLinkMstListVo;
 import com.kt.ipms.legacy.ipmgmt.linkmgmt.vo.TbIpLinkMstVo;
@@ -53,6 +54,7 @@ public class LinkMgmtController extends CommonController{
 	 */
 	@RequestMapping(value="/ipmgmt/linkmgmt/viewListIpLinkMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListIpLinkMst(@RequestBody TbIpLinkMstVo searchVo, ModelMap model, HttpServletRequest request){
 		setPagination(searchVo);
 		TbIpLinkMstListVo resultListVo = linkMgmtService.selectListIpLinkMst(searchVo);
@@ -128,6 +130,7 @@ public class LinkMgmtController extends CommonController{
 	 */
 	@RequestMapping(value="/ipmgmt/linkmgmt/viewListIpLinkMstExcel.json", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ResponseEntity<?> viewListIpLinkMstExcel(@RequestBody TbIpLinkMstVo searchVo, ModelMap model,HttpServletRequest request, HttpServletResponse response) {
 		FileVo resultVo = new FileVo();
 		TbIpLinkMstListVo resultListVo = null;
@@ -187,7 +190,8 @@ public class LinkMgmtController extends CommonController{
 	 */
 	@RequestMapping(value = "/ipmgmt/linkmgmt/selectOfficeList.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbIpLinkMstListVo selectOfficeList(@RequestBody TbIpLinkMstVo searchVo, HttpServletRequest request, HttpServletResponse response){
+	@EncryptResponse
+	public BaseVo selectOfficeList(@RequestBody TbIpLinkMstVo searchVo, HttpServletRequest request, HttpServletResponse response){
 		TbIpLinkMstListVo resultListVo = null;
 		try{
 			
@@ -224,6 +228,7 @@ public class LinkMgmtController extends CommonController{
 	 */
 	@RequestMapping(value="/ipmgmt/linkmgmt/viewDetailIPLinkMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewDetailIPLinkMst(@RequestBody TbIpLinkMstVo searchVo, ModelMap model, HttpServletRequest request){
 		TbIpLinkMstVo resultVo = linkMgmtService.selectTbIpLinkMstVo(searchVo);
 		return createResult(resultVo);
@@ -278,6 +283,7 @@ public class LinkMgmtController extends CommonController{
 	 */
 	@RequestMapping(value="/ipmgmt/linkmgmt/viewInsertIpLinkMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewInsertIpLinkMst(@RequestBody TbIpLinkMstVo searchVo, ModelMap model, HttpServletRequest request){
 		TbIpLinkMstListVo resultListVo = new TbIpLinkMstListVo();
 		return createResultList(resultListVo.getTbIpLinkMstVos(), resultListVo.getTotalCount());
@@ -336,7 +342,8 @@ public class LinkMgmtController extends CommonController{
 	 */
 	@RequestMapping(value="/ipmgmt/linkmgmt/insertLinkIPMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbIpLinkMstVo insertLinkIPMst(@RequestBody TbIpLinkMstVo tbIpLinkMstVo, HttpServletRequest request, HttpServletResponse response){
+	@EncryptResponse
+	public BaseVo insertLinkIPMst(@RequestBody TbIpLinkMstVo tbIpLinkMstVo, HttpServletRequest request, HttpServletResponse response){
 		TbIpLinkMstVo resultVo = null;
 		try {
 			tbIpLinkMstVo.setSmodifyId(jwtUtil.getUserId(request));
@@ -366,6 +373,7 @@ public class LinkMgmtController extends CommonController{
 	 */
 	@RequestMapping(value = "/ipmgmt/linkmgmt/viewSearchAOfficeCode.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewSearchAOfficeCode(@RequestBody TbLvlCdVo searchVo, ModelMap model, HttpServletRequest request)  {
 		TbLvlCdListVo resultListVo = new TbLvlCdListVo();
 		return createResultList(resultListVo.getTbLvlCdVos(), resultListVo.getTotalCount());
@@ -424,6 +432,7 @@ public class LinkMgmtController extends CommonController{
 	 */
 	@RequestMapping(value = "/ipmgmt/linkmgmt/viewSearchZOfficeCode.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewSearchZOfficeCode(@RequestBody TbLvlCdVo searchVo, ModelMap model, HttpServletRequest request)  {
 		TbLvlCdListVo resultListVo =  new TbLvlCdListVo();
 		return createResultList(resultListVo.getTbLvlCdVos(), resultListVo.getTotalCount());
@@ -480,6 +489,7 @@ public class LinkMgmtController extends CommonController{
 	 */
 	@RequestMapping(value="/ipmgmt/linkmgmt/viewUpdateIPLinkMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewUpdateIPLinkMst(@RequestBody TbIpLinkMstVo searchVo, ModelMap model, HttpServletRequest request){
 		TbIpLinkMstVo resultVo = linkMgmtService.selectTbIpLinkMstVo(searchVo);
 		return createResult(resultVo);
@@ -533,7 +543,8 @@ public class LinkMgmtController extends CommonController{
 	 */
 	@RequestMapping(value="/ipmgmt/linkmgmt/updateLinkIPMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbIpLinkMstVo updateHostIPMst(@RequestBody TbIpLinkMstVo tbIpLinkMstVo, HttpServletRequest request, HttpServletResponse response){
+	@EncryptResponse
+	public BaseVo updateHostIPMst(@RequestBody TbIpLinkMstVo tbIpLinkMstVo, HttpServletRequest request, HttpServletResponse response){
 		TbIpLinkMstVo resultVo = null;
 		try {
 			tbIpLinkMstVo.setSmodifyId(jwtUtil.getUserId(request));
@@ -561,7 +572,8 @@ public class LinkMgmtController extends CommonController{
 	 */
 	@RequestMapping(value="/ipmgmt/linkmgmt/deleteLinkIPMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbIpLinkMstVo deleteLinkIPMst(@RequestBody TbIpLinkMstVo tbIpLinkMstVo, HttpServletRequest request, HttpServletResponse response){
+	@EncryptResponse
+	public BaseVo deleteLinkIPMst(@RequestBody TbIpLinkMstVo tbIpLinkMstVo, HttpServletRequest request, HttpServletResponse response){
 		TbIpLinkMstVo resultVo = null;
 		try {
 			linkMgmtService.deleteIpLinkMst(tbIpLinkMstVo);

@@ -22,9 +22,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kt.framework.exception.ServiceException;
 import com.kt.framework.utils.StringUtils;
+import com.kt.ipms.annotation.EncryptResponse;
 import com.kt.ipms.legacy.cmn.service.ConfigPropertieService;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
+import com.kt.ipms.legacy.cmn.vo.BaseVo;
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
 import com.kt.ipms.legacy.cmn.vo.FileVo;
 import com.kt.ipms.legacy.cmn.vo.SmtpVo;
@@ -76,6 +78,7 @@ public class PrivateMgmtController extends CommonController {
 	 */
 	@RequestMapping(value="/opermgmt/privatemgmt/viewListPrivateIPMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListPrivateIPMst(@RequestBody TbIpPrivateReqMstVo searchVo, ModelMap model, HttpServletRequest request) {
 		TbIpPrivateReqMstListVo resultListVo = privateMgmtService.selectListTbIpPrivateReqMst(searchVo);
 		return createResultList(resultListVo.getTbIpPrivateReqMstVos(), resultListVo.getTotalCount());
@@ -247,7 +250,8 @@ public class PrivateMgmtController extends CommonController {
 	 */
 	@RequestMapping(value="/opermgmt/privatemgmt/viewListPrivateIPMstExcel.json", method = RequestMethod.POST)
 	@ResponseBody
-	public FileVo viewListPrivateIPMstExcel(@ModelAttribute("searchVo") TbIpPrivateReqMstVo searchVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
+	@EncryptResponse
+	public BaseVo viewListPrivateIPMstExcel(@ModelAttribute("searchVo") TbIpPrivateReqMstVo searchVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
 		FileVo resultVo = new FileVo();
 		try {
 			
@@ -362,6 +366,7 @@ public class PrivateMgmtController extends CommonController {
 	 */
 	@RequestMapping(value="/opermgmt/privatemgmt/viewDetailPrivateIPMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewDetailCrtIPMst(@RequestBody TbIpPrivateReqMstVo tbIpPrivateReqMst, ModelMap model, HttpServletRequest request) {
 		TbIpPrivateReqMstVo resultVo = privateMgmtService.selectPrivateIPMst(tbIpPrivateReqMst);
 		return createResult(resultVo);
@@ -427,6 +432,7 @@ public class PrivateMgmtController extends CommonController {
 	 */
 	@RequestMapping(value="/opermgmt/privatemgmt/viewInsertPrivateIPMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewInsertCrtIPMst(@RequestBody TbIpPrivateReqMstVo searchVo, ModelMap model, HttpServletRequest request) {
 		TbIpPrivateReqMstVo resultVo = searchVo;
 		return createResult(resultVo);
@@ -535,7 +541,8 @@ public class PrivateMgmtController extends CommonController {
 	 */
 	@RequestMapping(value="/opermgmt/privatemgmt/appendPrivateIPMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbIpPrivateReqMstVo appendCrtIPMst(@RequestBody TbIpPrivateReqMstComplexVo tbIpPrivateReqMstComplexVo, HttpServletRequest request, HttpServletResponse response) {
+	@EncryptResponse
+	public BaseVo appendCrtIPMst(@RequestBody TbIpPrivateReqMstComplexVo tbIpPrivateReqMstComplexVo, HttpServletRequest request, HttpServletResponse response) {
 		TbIpPrivateReqMstVo resultVo = null;
 		try {
 			
@@ -575,7 +582,8 @@ public class PrivateMgmtController extends CommonController {
 
 	@RequestMapping(value = "/opermgmt/privatemgmt/insertListPrivateIPMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbIpPrivateReqMstVo insertListCrtIPMst(@RequestBody TbIpPrivateReqMstListVo tbIpPrivateReqMstListVo, HttpServletRequest request, HttpServletResponse response) {
+	@EncryptResponse
+	public BaseVo insertListCrtIPMst(@RequestBody TbIpPrivateReqMstListVo tbIpPrivateReqMstListVo, HttpServletRequest request, HttpServletResponse response) {
 		TbIpPrivateReqMstVo resultVo = null;
 		String commonMsg = null;
 		
@@ -626,7 +634,8 @@ public class PrivateMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/opermgmt/privatemgmt/deletePrivateIPMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbIpPrivateReqMstVo deleteCrtIPMst(@RequestBody TbIpPrivateReqMstVo delVo, HttpServletRequest request, HttpServletResponse response) {
+	@EncryptResponse
+	public BaseVo deleteCrtIPMst(@RequestBody TbIpPrivateReqMstVo delVo, HttpServletRequest request, HttpServletResponse response) {
 		TbIpPrivateReqMstVo resultVo = null;
 		try {
 			delVo.setScreateId(jwtUtil.getUserId(request));
@@ -784,6 +793,7 @@ public class PrivateMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/opermgmt/privatemgmt/viewPopPrivateIPMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewPopPrivateIPMst(@RequestBody TbIpPrivateReqMstVo tbIpPrivateReqMstVo, ModelMap model, HttpServletRequest request){
 		TbIpPrivateReqMstVo resultVo = tbIpPrivateReqMstVo;
 		return createResult(resultVo);
@@ -842,6 +852,7 @@ public class PrivateMgmtController extends CommonController {
 	 */
 	@RequestMapping(value="/opermgmt/privatemgmt/viewInsertPrivateDelIPMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewInsertPrivateDelIPMst(@RequestBody TbIpPrivateReqMstVo searchVo, ModelMap model, HttpServletRequest request) {
 		TbIpPrivateReqMstListVo resultListVo = privateMgmtService.selectListTbIpPrivateDelReq(searchVo);
 		return createResultList(resultListVo.getTbIpPrivateReqMstVos(), resultListVo.getTotalCount());
@@ -983,7 +994,8 @@ public class PrivateMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/opermgmt/privatemgmt/insertListPrivateDelIPMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbIpPrivateReqMstVo insertListCrtDelIPMst(@RequestBody TbIpPrivateReqMstVo tbIpPrivateReqMstVo, HttpServletRequest request, HttpServletResponse response) {
+	@EncryptResponse
+	public BaseVo insertListCrtDelIPMst(@RequestBody TbIpPrivateReqMstVo tbIpPrivateReqMstVo, HttpServletRequest request, HttpServletResponse response) {
 		TbIpPrivateReqMstVo resultVo = null;
 		String commonMsg = "";
 		try {

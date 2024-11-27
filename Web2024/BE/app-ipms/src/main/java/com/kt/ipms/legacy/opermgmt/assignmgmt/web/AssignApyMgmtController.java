@@ -25,15 +25,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kt.framework.exception.ServiceException;
 import com.kt.framework.utils.StringUtils;
+import com.kt.ipms.annotation.EncryptResponse;
 import com.kt.ipms.legacy.cmn.service.CommonService;
 import com.kt.ipms.legacy.cmn.service.ConfigPropertieService;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
+import com.kt.ipms.legacy.cmn.vo.BaseVo;
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
 import com.kt.ipms.legacy.cmn.vo.FileVo;
 import com.kt.ipms.legacy.cmn.vo.SmtpVo;
 import com.kt.ipms.legacy.cmn.web.CommonController;
-import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.IpAllocOperMstListVo;
 import com.kt.ipms.legacy.opermgmt.assignmgmt.service.AssignApyMgmtService;
 import com.kt.ipms.legacy.opermgmt.assignmgmt.vo.TbRequestAssignMstListVo;
 import com.kt.ipms.legacy.opermgmt.assignmgmt.vo.TbRequestAssignMstVo;
@@ -72,6 +73,7 @@ public class AssignApyMgmtController extends CommonController{
 	
 	@RequestMapping(value = "/opermgmt/assignmgmt/viewListAssignApyTxn.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListAssignApyTxn(@RequestBody TbRequestAssignMstVo searchVo, ModelMap model, 
 			HttpServletRequest request) {
 			/** 계위 Seq 목록 조회 **/
@@ -195,6 +197,7 @@ public class AssignApyMgmtController extends CommonController{
 	
 	@RequestMapping(value = "/opermgmt/assignmgmt/viewListAssignApyTxnExcel.json", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ResponseEntity<?> viewListAssignApyTxnExcel(@RequestBody TbRequestAssignMstVo searchVo, ModelMap model, 
 			HttpServletRequest request,HttpServletResponse response) {
 		FileVo resultVo = new FileVo();
@@ -284,6 +287,7 @@ public class AssignApyMgmtController extends CommonController{
 	
 	@RequestMapping(value = "/opermgmt/assignmgmt/viewDetailAssignApyTxn.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewDetailAssignApyTxn(@RequestBody TbRequestAssignMstVo searchVo, ModelMap model, HttpServletRequest request) {
 		TbRequestAssignMstVo resultVo = assignApyMgmtService.selectTbRequestAssignMst(searchVo);
 		return createResult(resultVo);
@@ -328,6 +332,7 @@ public class AssignApyMgmtController extends CommonController{
 	
 	@RequestMapping(value = "/opermgmt/assignmgmt/viewAssignIpApyPreCheck.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewAssignIpApyPreCheck(@RequestBody TbRequestAssignMstVo searchVo, ModelMap model, HttpServletRequest request) {
 		TbRequestAssignMstListVo resultListVo = assignApyMgmtService.selectListPreApyAssign(searchVo);	
 		return createResultList(resultListVo.getTbRequestAssignMstVos(), resultListVo.getTotalCount());
@@ -384,6 +389,7 @@ public class AssignApyMgmtController extends CommonController{
 	
 	@RequestMapping(value = "/opermgmt/assignmgmt/viewInsertAssignApyTxn.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewInsertAssignApyTxn(@RequestBody TbRequestAssignMstVo tbRequestAssignMstVo, ModelMap model, HttpServletRequest request) {
 		TbRequestAssignMstVo resultVo = new TbRequestAssignMstVo();
 		return createResult(resultVo);
@@ -451,7 +457,8 @@ public class AssignApyMgmtController extends CommonController{
 	
 	@RequestMapping(value = "/opermgmt/assignmgmt/insertAssignApyTxn.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbRequestAssignMstVo insertAssignApyTxn(@RequestBody  TbRequestAssignMstVo tbRequestAssignMstVo ,  HttpServletRequest request, HttpServletResponse response){
+	@EncryptResponse
+	public BaseVo insertAssignApyTxn(@RequestBody  TbRequestAssignMstVo tbRequestAssignMstVo ,  HttpServletRequest request, HttpServletResponse response){
 		TbRequestAssignMstVo resultVo = new TbRequestAssignMstVo();
 		String msgDesc = null;
 		try {
@@ -484,6 +491,7 @@ public class AssignApyMgmtController extends CommonController{
 	
 	@RequestMapping(value = "/opermgmt/assignmgmt/viewUpdateAssignApyTxn.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewUpdateAssignApyTxn(@RequestBody TbRequestAssignMstVo searchVo, ModelMap model, HttpServletRequest request) {
 		TbRequestAssignMstVo resultVo = assignApyMgmtService.selectTbRequestAssignMst(searchVo);
 		return createResult(resultVo);
@@ -529,7 +537,8 @@ public class AssignApyMgmtController extends CommonController{
 	
 	@RequestMapping(value = "/opermgmt/assignmgmt/updateAssignApyTxn.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbRequestAssignMstVo updateAssignApyTxn(@RequestBody  TbRequestAssignMstVo tbRequestAssignMstVo ,  HttpServletRequest request, HttpServletResponse response){
+	@EncryptResponse
+	public BaseVo updateAssignApyTxn(@RequestBody  TbRequestAssignMstVo tbRequestAssignMstVo ,  HttpServletRequest request, HttpServletResponse response){
 		TbRequestAssignMstVo resultVo = new TbRequestAssignMstVo();
 		String msgDesc = null;
 		try {			
@@ -558,7 +567,8 @@ public class AssignApyMgmtController extends CommonController{
 	
 	@RequestMapping(value = "/opermgmt/assignmgmt/deleteAssignApyTxn.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbRequestAssignMstVo deleteAssignApyTxn(@RequestBody  TbRequestAssignMstVo tbRequestAssignMstVo ,  HttpServletRequest request, HttpServletResponse response){
+	@EncryptResponse
+	public BaseVo deleteAssignApyTxn(@RequestBody  TbRequestAssignMstVo tbRequestAssignMstVo ,  HttpServletRequest request, HttpServletResponse response){
 		TbRequestAssignMstVo resultVo =new TbRequestAssignMstVo();
 		
 		try {	

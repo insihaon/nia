@@ -26,10 +26,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kt.framework.exception.ServiceException;
+import com.kt.ipms.annotation.EncryptResponse;
 import com.kt.ipms.legacy.cmn.service.ConfigPropertieService;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
-import com.kt.ipms.legacy.cmn.util.JwtUtil;
 import com.kt.ipms.legacy.cmn.util.PrintLogUtil;
 import com.kt.ipms.legacy.cmn.vo.CommonVo;
 import com.kt.ipms.legacy.cmn.web.CommonController;
@@ -98,6 +98,7 @@ public class LoginMgmtController  extends CommonController{
 	
 //	@RequestMapping(value = "/login.json", method =   { RequestMethod.GET,  RequestMethod.POST })
 //	@ResponseBody
+//	@EncryptResponse
 //	public LoginInfoVo login(@RequestBody LoginInfoVo loginVo 
 //			, HttpServletRequest request, HttpServletResponse response)  {
 //		LoginInfoVo resultLoginVo = null;
@@ -151,6 +152,7 @@ public class LoginMgmtController  extends CommonController{
 	
 	@RequestMapping(value = "/newLogin.json", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public Map<String,Object> newLogin(@RequestBody LoginInfoVo loginVo, HttpServletRequest request) throws JsonGenerationException, JsonMappingException, IOException{
 		
 		Map<String,Object> retMap = new HashMap<String,Object>();		
@@ -255,6 +257,7 @@ public class LoginMgmtController  extends CommonController{
 	
 	@RequestMapping(value = "otpconfirm.json", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public Map<String,Object> otpConfirm(@RequestBody Map<String,Object> reqMap,HttpServletRequest request, HttpServletResponse response){
 		
 		Map<String,Object> retMap = new HashMap<String,Object>();
@@ -274,6 +277,7 @@ public class LoginMgmtController  extends CommonController{
 	
 	@RequestMapping(value = "otprecreate.json", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public Map<String,Object> otpRecreate(@RequestBody LoginInfoVo loginVo, HttpServletRequest request, HttpServletResponse response){
 				
 		Map<String,Object> otpRetMap = loginMgmtService.callOtpSend(request,loginVo);

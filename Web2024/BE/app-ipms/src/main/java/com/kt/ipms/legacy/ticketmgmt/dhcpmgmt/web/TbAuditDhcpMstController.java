@@ -22,8 +22,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kt.framework.exception.ServiceException;
 import com.kt.framework.utils.StringUtils;
+import com.kt.ipms.annotation.EncryptResponse;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
+import com.kt.ipms.legacy.cmn.vo.BaseVo;
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
 import com.kt.ipms.legacy.cmn.vo.FileVo;
 import com.kt.ipms.legacy.cmn.web.CommonController;
@@ -56,6 +58,7 @@ public class TbAuditDhcpMstController extends CommonController {
 	 */
 	@RequestMapping(value="/ticketmgmt/dhcpmgmt/viewListDhcpAuditList.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListDhcpAuditList(@RequestBody TbAuditDhcpMstVo searchVo, ModelMap model,
 			HttpServletRequest request)  {
 		TbAuditDhcpMstListVo resultListVo = tbAuditDhcpMstService.selectListTbAuditDhcpMstVo(searchVo);
@@ -192,7 +195,8 @@ public class TbAuditDhcpMstController extends CommonController {
 	 */
 	@RequestMapping(value="/ticketmgmt/dhcpmgmt/viewListDhcpAuditListExcel.json", method = RequestMethod.POST)
 	@ResponseBody
-	public FileVo viewListDhcpAuditListExcel(@ModelAttribute("searchVo") TbAuditDhcpMstVo searchVo, ModelMap model,
+	@EncryptResponse
+	public BaseVo viewListDhcpAuditListExcel(@ModelAttribute("searchVo") TbAuditDhcpMstVo searchVo, ModelMap model,
 			HttpServletRequest request, HttpServletResponse response)  {
 		FileVo resultVo = new FileVo();
 		try {
@@ -298,6 +302,7 @@ public class TbAuditDhcpMstController extends CommonController {
 	
 	@RequestMapping(value="/ticketmgmt/dhcpmgmt/viewListDhcpAuditModpop.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListDhcpAuditModpop(@RequestBody TbAuditDhcpMstVo searchVo, ModelMap model,
 			HttpServletRequest request)  {
 		TbAuditDhcpMstVo resultVo = tbAuditDhcpMstService.selectTbAuditDhcpMstVo(searchVo);;
@@ -365,7 +370,8 @@ public class TbAuditDhcpMstController extends CommonController {
 	/*DHCP 임계치수정 : 수동관리*/
 	@RequestMapping(value = "ticketmgmt/dhcpmgmt/updateDhcpAuditMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbAuditDhcpMstVo updateTbAuditDhcpMst(@RequestBody TbAuditDhcpMstVo searchVo, 
+	@EncryptResponse
+	public BaseVo updateTbAuditDhcpMst(@RequestBody TbAuditDhcpMstVo searchVo, 
 			HttpServletRequest request, HttpServletResponse response, ModelMap model){
 		TbAuditDhcpMstVo resultVo = null;
 		try {
@@ -392,7 +398,8 @@ public class TbAuditDhcpMstController extends CommonController {
 	/*DHCP 임계치조회 : 자동관리*/
 	@RequestMapping(value = "ticketmgmt/dhcpmgmt/selectAuditDhcpBas.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbAuditDhcpBasVo selectTbAuditDhcpBasVo(@RequestBody TbAuditDhcpBasVo searchVo, 
+	@EncryptResponse
+	public BaseVo selectTbAuditDhcpBasVo(@RequestBody TbAuditDhcpBasVo searchVo, 
 			HttpServletRequest request, HttpServletResponse response, ModelMap model){
 		TbAuditDhcpBasVo resultVo = null;
 		try{
@@ -424,7 +431,8 @@ public class TbAuditDhcpMstController extends CommonController {
 	 */
 	@RequestMapping(value = "ticketmgmt/dhcpmgmt/selectOrderOfficeList.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbAuditDhcpMstListVo selectOfficeList(@RequestBody TbAuditDhcpMstVo searchVo, HttpServletRequest request, HttpServletResponse response){
+	@EncryptResponse
+	public BaseVo selectOfficeList(@RequestBody TbAuditDhcpMstVo searchVo, HttpServletRequest request, HttpServletResponse response){
 		TbAuditDhcpMstListVo resultListVo = null;
 		try{
 			

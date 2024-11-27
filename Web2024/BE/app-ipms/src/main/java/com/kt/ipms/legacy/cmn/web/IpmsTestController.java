@@ -28,6 +28,7 @@ public class IpmsTestController extends CommonController {
 
   @GetMapping(value = "/ipms/ex1")
   @ResponseBody
+	@EncryptResponse
   public ModelMap getEx1() throws Exception {
     CommonVo vo = new CommonVo();
     vo.setSearchWrd("KEYWORD");
@@ -36,7 +37,7 @@ public class IpmsTestController extends CommonController {
 
   @PostMapping(value = "/ipms/ex1")
   @ResponseBody
-  @EncryptResponse
+	@EncryptResponse
   public ModelMap postEx1() throws Exception {
     CommonVo vo = new CommonVo();
     vo.setSearchWrd("KEYWORD");
@@ -45,6 +46,7 @@ public class IpmsTestController extends CommonController {
 
   @PostMapping(value = "/ipms/ex2")
   @ResponseBody
+	@EncryptResponse
   public ResponseEntity<?> postEx2() throws Exception {
     ModelMap model = getEx1();
     return new ResponseEntity<>(encrypt(model), HttpStatus.OK);
@@ -76,7 +78,7 @@ public class IpmsTestController extends CommonController {
 
   @PostMapping(value = "/ipms/ex4.json")
 	@ResponseBody
-  @EncryptResponse
+	@EncryptResponse
   public ResponseEntity<?> selectListIpBlockMstExcel(@RequestBody IpAllocOperMstVo searchVo,
 			HttpServletRequest request) {
         FileVo resultVo = new FileVo();
@@ -86,7 +88,7 @@ public class IpmsTestController extends CommonController {
 
   @PostMapping(value = "/ipms/ex5.json")
 	@ResponseBody
-  @EncryptResponse
+	@EncryptResponse
   public BaseVo selectSearchtNeMst(@RequestBody IpAllocOperMstVo searchVo,
 			HttpServletRequest request, HttpServletResponse response) {
 		IpAllocOperMstListVo resultListVo = null;

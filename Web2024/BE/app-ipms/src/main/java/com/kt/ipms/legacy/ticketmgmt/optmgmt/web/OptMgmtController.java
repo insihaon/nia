@@ -18,8 +18,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kt.framework.exception.ServiceException;
 import com.kt.framework.utils.StringUtils;
+import com.kt.ipms.annotation.EncryptResponse;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
+import com.kt.ipms.legacy.cmn.vo.BaseVo;
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
 import com.kt.ipms.legacy.cmn.vo.FileVo;
 import com.kt.ipms.legacy.cmn.web.CommonController;
@@ -43,6 +45,7 @@ public class OptMgmtController extends CommonController {
 
 	@RequestMapping(value = "/ticketmgmt/optmgmt/viewListOptIPMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListOptIPMst(@RequestBody TbIpAssignMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		TbIpAssignMstListVo resultListVo = optMgmtService.selectListOptimizeIpSource(searchVo);
@@ -158,6 +161,7 @@ public class OptMgmtController extends CommonController {
 	
 	@RequestMapping(value = "/ticketmgmt/optmgmt/viewListOptIPTarget.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListOptIPTarget(@RequestBody TbIpAssignMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		TbIpAssignMstListVo resultListVo = optMgmtService.selectListOptimizeIpTarget(searchVo);
@@ -208,6 +212,7 @@ public class OptMgmtController extends CommonController {
 	
 	@RequestMapping(value = "/ticketmgmt/optmgmt/viewListOptIPRecommend.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListOptIPRecommend(@RequestBody TbIpAssignMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		TbIpAssignMstListVo resultListVo = optMgmtService.selectListOptimizeIpRecommend(searchVo);
@@ -259,7 +264,8 @@ public class OptMgmtController extends CommonController {
 	
 	@RequestMapping(value = "/ticketmgmt/optmgmt/selectListOptIPRecommend.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbIpAssignMstListVo selectListOptIPRecommend(@RequestBody TbIpAssignMstVo searchVo) {
+	@EncryptResponse
+	public BaseVo selectListOptIPRecommend(@RequestBody TbIpAssignMstVo searchVo) {
 		TbIpAssignMstListVo resultListVo = null;
 		try {
 			resultListVo = optMgmtService.selectListOptimizeIpRecommend(searchVo);
@@ -280,6 +286,7 @@ public class OptMgmtController extends CommonController {
 	
 	@RequestMapping(value = "/ticketmgmt/optmgmt/viewListOptIPResult.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListOptIPResult(@RequestBody TbOptimizationIpMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		TbOptimizationIpMstListVo resultListVo = optMgmtService.selectListOptimizeIpResult(searchVo);
@@ -331,7 +338,8 @@ public class OptMgmtController extends CommonController {
 	
 	@RequestMapping(value = "/ticketmgmt/optmgmt/insertListOptIPRecommend.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbOptimizationIpMstVo insertListOptIPRecommend(@RequestBody TbOptimizationIpMstListVo tbOptimizationIpMstListVo) {
+	@EncryptResponse
+	public BaseVo insertListOptIPRecommend(@RequestBody TbOptimizationIpMstListVo tbOptimizationIpMstListVo) {
 		TbOptimizationIpMstVo resultVo = null;
 		try {
 			optMgmtService.insertListOptIPMst(tbOptimizationIpMstListVo);
@@ -351,6 +359,7 @@ public class OptMgmtController extends CommonController {
 	
 	@RequestMapping(value = "/ticketmgmt/optmgmt/viewListOptIPMstResult.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListOptIPMstResult(@RequestBody TbOptimizationIpMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		TbOptimizationIpMstListVo resultListVo = optMgmtService.selectListPageOptimizeIpResult(searchVo);
@@ -471,7 +480,8 @@ public class OptMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/ticketmgmt/optmgmt/viewListOptIPMstResultExcel.json", method = RequestMethod.POST)
 	@ResponseBody
-	public FileVo viewListOptIPMstResultExcel(@ModelAttribute("searchVo") TbOptimizationIpMstVo searchVo,
+	@EncryptResponse
+	public BaseVo viewListOptIPMstResultExcel(@ModelAttribute("searchVo") TbOptimizationIpMstVo searchVo,
 			HttpServletRequest request, HttpServletResponse response) {
 		FileVo resultVo = new FileVo();
 		try {

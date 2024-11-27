@@ -21,8 +21,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kt.framework.exception.ServiceException;
 import com.kt.framework.utils.StringUtils;
+import com.kt.ipms.annotation.EncryptResponse;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
+import com.kt.ipms.legacy.cmn.vo.BaseVo;
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
 import com.kt.ipms.legacy.cmn.vo.FileVo;
 import com.kt.ipms.legacy.cmn.web.CommonController;
@@ -46,6 +48,7 @@ public class SvcMgmtController extends CommonController{
 	/* 상품 리스트 조회 메인화면*/
 	@RequestMapping(value = "/opermgmt/srvmgmt/viewListIpmsSvcMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap selectListIpmsSvc(@RequestBody TbIpmsSvcMstVo searchVo, ModelMap model, HttpServletRequest request)  {
 		TbIpmsSvcMstListVo resultListVo = svcMgmtService.selectListIpmsSvc(searchVo);
 		return createResultList(resultListVo.getTbIpmsSvcMstVos(), resultListVo.getTotalCount());
@@ -122,6 +125,7 @@ public class SvcMgmtController extends CommonController{
 	/* 상품관리 리스트 엑셀 다운 */
 	@RequestMapping(value = "/opermgmt/srvmgmt/selectListIpmsSvcMstExcel.json", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ResponseEntity<?> selectListIpmsSvcMstExcel(@RequestBody TbIpmsSvcMstVo searchVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
 		FileVo resultVo = new FileVo();
 		try {
@@ -155,7 +159,8 @@ public class SvcMgmtController extends CommonController{
 	/* 대분류 조회 */
 	@RequestMapping(value = "/opermgmt/srvmgmt/selectSsvcMgroupNmList.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbIpmsSvcMstListVo selectSsvcMgroupNmList(@RequestBody TbIpmsSvcMstVo searchVo, HttpServletRequest request, HttpServletResponse response)  {
+	@EncryptResponse
+	public BaseVo selectSsvcMgroupNmList(@RequestBody TbIpmsSvcMstVo searchVo, HttpServletRequest request, HttpServletResponse response)  {
 		TbIpmsSvcMstListVo resultListVo = null;
 		try{
 			resultListVo = svcMgmtService.selectListSvcMgroupNm(searchVo);
@@ -178,7 +183,8 @@ public class SvcMgmtController extends CommonController{
 	/* 소분류 조회 */
 	@RequestMapping(value = "/opermgmt/srvmgmt/selectSsvcMgroupNm1List.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbIpmsSvcMstListVo selectSsvcMgroupNm1List(@RequestBody TbIpmsSvcMstVo searchVo, HttpServletRequest request, HttpServletResponse response)  {
+	@EncryptResponse
+	public BaseVo selectSsvcMgroupNm1List(@RequestBody TbIpmsSvcMstVo searchVo, HttpServletRequest request, HttpServletResponse response)  {
 		TbIpmsSvcMstListVo resultListVo = null;
 		try{
 			resultListVo = svcMgmtService.selectListSvcMgroupNm1(searchVo);
@@ -201,6 +207,7 @@ public class SvcMgmtController extends CommonController{
 	/* 상품 등록 화면 */
 	@RequestMapping(value = "/opermgmt/srvmgmt/viewInsertIpmsSvcMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewInsertIpmsSvcMst(TbIpmsSvcMstVo tbIpmsSvcMstVo, ModelMap model, HttpServletRequest request) {
 		ModelMap resultModel = new ModelMap();
 
@@ -305,7 +312,8 @@ public class SvcMgmtController extends CommonController{
 	/* new LgroupCd 조회 */
 	@RequestMapping(value = "opermgmt/srvmgmt/selectNewLgroupCd.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbSvcLgroupCdVo selectNewLgroupCd(HttpServletRequest request, HttpServletResponse response) {
+	@EncryptResponse
+	public BaseVo selectNewLgroupCd(HttpServletRequest request, HttpServletResponse response) {
 		TbSvcLgroupCdVo resultVo = null;
 		String newLgroupCd = null;
 		try {
@@ -368,7 +376,8 @@ public class SvcMgmtController extends CommonController{
 	/* 서비스분류 조회 */
 	@RequestMapping(value = "/opermgmt/srvmgmt/selectListSvcMgroup.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbIpmsSvcMstListVo selectListSvcMgroup(@RequestBody TbIpmsSvcMstVo searchVo, HttpServletRequest request, HttpServletResponse response)  {
+	@EncryptResponse
+	public BaseVo selectListSvcMgroup(@RequestBody TbIpmsSvcMstVo searchVo, HttpServletRequest request, HttpServletResponse response)  {
 		TbIpmsSvcMstListVo resultListVo = null;
 		try{
 			resultListVo = svcMgmtService.selectListSvcMgroup(searchVo);
@@ -391,7 +400,8 @@ public class SvcMgmtController extends CommonController{
 	/* 상품명 조회 */
 	@RequestMapping(value = "/opermgmt/srvmgmt/selectListSvcLgroup.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbIpmsSvcMstListVo selectListSvcLgroup(@RequestBody TbIpmsSvcMstVo searchVo, HttpServletRequest request, HttpServletResponse response)  {
+	@EncryptResponse
+	public BaseVo selectListSvcLgroup(@RequestBody TbIpmsSvcMstVo searchVo, HttpServletRequest request, HttpServletResponse response)  {
 		TbIpmsSvcMstListVo resultListVo = null;
 		try{
 			resultListVo = svcMgmtService.selectListSvcLgroup(searchVo);
@@ -433,6 +443,7 @@ public class SvcMgmtController extends CommonController{
 	/* 상품 수정 화면 */
 	@RequestMapping(value = "/opermgmt/srvmgmt/viewUpdateIpmsSvcMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewUpdateIpmsSvcMst(@RequestBody TbIpmsSvcMstVo tbIpmsSvcMstVo, ModelMap model, HttpServletRequest request) {
 		TbIpmsSvcMstVo resultVo = svcMgmtService.selectTbIpmsSvcMstVo(tbIpmsSvcMstVo);
 		return createResult(resultVo);
@@ -487,6 +498,7 @@ public class SvcMgmtController extends CommonController{
 	/* 서비스망 관리 화면(popup) */
 	@RequestMapping(value = "/opermgmt/srvmgmt/viewSearchSvcLine.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewSearchSvcLine(@RequestBody TbIpmsSvcMstVo tbIpmsSvcMstVo, ModelMap model, HttpServletRequest request) {
 		TbIpmsSvcMstVo resultVo = svcMgmtService.selectTbIpmsSvcMstVo(tbIpmsSvcMstVo);
 		return createResult(resultVo);
@@ -591,6 +603,7 @@ public class SvcMgmtController extends CommonController{
 	/* 서비스 코드 리스트 메인 화면 */
 	@RequestMapping(value = "/opermgmt/srvmgmt/viewListAssignTypeCd.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListAssignTypeCd(@RequestBody TbAssignTypeCdVo searchVo, ModelMap model, HttpServletRequest request) {
 		TbAssignTypeCdListVo resultListVo = svcMgmtService.selectListTbAssignTypeCd(searchVo);
 		return createResultList(resultListVo.getTbAssignTypeCdVos(), resultListVo.getTotalCount());
@@ -642,6 +655,7 @@ public class SvcMgmtController extends CommonController{
 	
 	@RequestMapping(value = "/opermgmt/srvmgmt/viewListAssignTypeCdExcel.json", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ResponseEntity<?> viewListAssignTypeCdExcel(@RequestBody TbAssignTypeCdVo searchVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
 		FileVo resultVo = new FileVo();
 		
@@ -693,6 +707,7 @@ public class SvcMgmtController extends CommonController{
 	/* 서비스코드 수정 화면 */
 	@RequestMapping(value = "opermgmt/srvmgmt/viewUpdateAssignTypeCd.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewUpdateAssignTypeCd(@RequestBody TbAssignTypeCdVo tbAssignTypeCdVo, ModelMap model, HttpServletRequest request) {
 		TbAssignTypeCdVo resultVo = svcMgmtService.selectTbAssignTypeCdVo(tbAssignTypeCdVo);
 		return createResult(resultVo);

@@ -26,8 +26,10 @@ import com.codej.base.property.FileStorageProperties;
 import com.codej.web.controller.FileController;
 import com.kt.framework.exception.ServiceException;
 import com.kt.framework.utils.StringUtils;
+import com.kt.ipms.annotation.EncryptResponse;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
+import com.kt.ipms.legacy.cmn.vo.BaseVo;
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
 import com.kt.ipms.legacy.cmn.vo.FileVo;
 import com.kt.ipms.legacy.cmn.web.CommonController;
@@ -72,6 +74,7 @@ public class AllocMgmtController extends CommonController {
 	@RequestMapping(value = "/ipmgmt/allocmgmt/viewListIpAllocMst.model", method = { RequestMethod.POST,
 			RequestMethod.GET })
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap selectListIpBlockMst(@RequestBody IpAllocOperMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		/** 계위 Seq 목록 조회 **/
@@ -291,6 +294,7 @@ public class AllocMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/ipmgmt/allocmgmt/viewListIpAllocMstExcel.json")
 	@ResponseBody
+	@EncryptResponse
 	public ResponseEntity<?> selectListIpBlockMstExcel(@RequestBody IpAllocOperMstVo searchVo,
 			HttpServletRequest request) {
 		FileVo resultVo = new FileVo();
@@ -439,6 +443,7 @@ public class AllocMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/ipmgmt/allocmgmt/viewSearchtNeMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewSearchtNeMst(@RequestBody IpAllocOperMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 
@@ -577,7 +582,8 @@ public class AllocMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/ipmgmt/allocmgmt/selectSearchtNeMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public IpAllocOperMstListVo selectSearchtNeMst(@RequestBody IpAllocOperMstVo searchVo,
+	@EncryptResponse
+	public BaseVo selectSearchtNeMst(@RequestBody IpAllocOperMstVo searchVo,
 			HttpServletRequest request, HttpServletResponse response) {
 		IpAllocOperMstListVo resultListVo = null;
 		try {
@@ -618,6 +624,7 @@ public class AllocMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/ipmgmt/allocmgmt/viewDetailSubSvcMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewDetailSubSvcMst(@RequestBody IpAllocOperMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		TbIpAllocMstVo resultVo = allocMgmtService.selectIpAllocDetail(searchVo);
@@ -691,6 +698,7 @@ public class AllocMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/ipmgmt/allocmgmt/viewDetailLinkMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewDetailLinkMst(@RequestBody IpAllocOperMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		TbIpAllocMstVo resultVo = allocMgmtService.selectIpAllocDetailLink(searchVo);
@@ -764,7 +772,7 @@ public class AllocMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/ipmgmt/allocmgmt/viewDetailAlcIPMst.model", method = RequestMethod.POST)
 	@ResponseBody
-
+	@EncryptResponse
 	public ModelMap viewDetailAlcIPMst(@RequestBody IpAllocOperMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		IpAllocOperMstListVo resultListVo = allocMgmtService.selectListIpAllocDetail(searchVo);
@@ -825,6 +833,7 @@ public class AllocMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/ipmgmt/allocmgmt/viewInsertAlcIPMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewInsertAlcIPMst(@RequestBody IpAllocOperMstListVo ipAllocOperMstListVo, ModelMap model,
 			HttpServletRequest request) {
 		IpAllocOperMstListVo resultListVo = allocMgmtService.selectListAlcIPMstViaInMstSeq(ipAllocOperMstListVo);
@@ -888,7 +897,8 @@ public class AllocMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/ipmgmt/allocmgmt/selectDetailSubSvcMstList.json", method = RequestMethod.POST)
 	@ResponseBody
-	public IpAllocOperMstListVo selectDetailSubSvcMstList(@RequestBody IpAllocOperMstVo searchVo,
+	@EncryptResponse
+	public BaseVo selectDetailSubSvcMstList(@RequestBody IpAllocOperMstVo searchVo,
 			HttpServletRequest request, HttpServletResponse response) {
 		IpAllocOperMstListVo resultListVo = null;
 		try {
@@ -914,7 +924,8 @@ public class AllocMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/ipmgmt/allocmgmt/insertAlcIPMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public IpAllocOperMstVo insertAlcIPMst(@RequestBody IpAllocMstComplexVo ipAllocMstComplexVo,
+	@EncryptResponse
+	public BaseVo insertAlcIPMst(@RequestBody IpAllocMstComplexVo ipAllocMstComplexVo,
 			HttpServletRequest request, HttpServletResponse response) {
 		IpAllocOperMstVo resultVo = null;
 		try {
@@ -948,7 +959,8 @@ public class AllocMgmtController extends CommonController {
 	/* 해지 처리 */
 	@RequestMapping(value = "/ipmgmt/allocmgmt/deletAlcIPMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public IpAllocOperMstVo deleteAlcIPMst(@RequestBody IpAllocMstComplexVo ipAllocMstComplexVo,
+	@EncryptResponse
+	public BaseVo deleteAlcIPMst(@RequestBody IpAllocMstComplexVo ipAllocMstComplexVo,
 			HttpServletRequest request, HttpServletResponse response) {
 		IpAllocOperMstVo resultVo = null;
 		try {
@@ -980,7 +992,8 @@ public class AllocMgmtController extends CommonController {
 	/* 블록 반납 처리 */
 	@RequestMapping(value = "/ipmgmt/allocmgmt/updateAsgnIPMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbIpAssignMstVo updateAsgnIPMst(@RequestBody TbIpAssignMstComplexVo tbIpAssignMstComplexVo,
+	@EncryptResponse
+	public BaseVo updateAsgnIPMst(@RequestBody TbIpAssignMstComplexVo tbIpAssignMstComplexVo,
 			HttpServletRequest request, HttpServletResponse response) {
 		TbIpAssignMstVo resultVo = null;
 		try {
@@ -1015,7 +1028,8 @@ public class AllocMgmtController extends CommonController {
 	/* 비고 수정 처리 */
 	@RequestMapping(value = "/ipmgmt/allocmgmt/updateScommentAsgnIPMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbIpAssignMstVo updateScommentAsgnIPMst(@RequestBody TbIpAssignMstComplexVo tbIpAssignMstComplexVo,
+	@EncryptResponse
+	public BaseVo updateScommentAsgnIPMst(@RequestBody TbIpAssignMstComplexVo tbIpAssignMstComplexVo,
 			HttpServletRequest request, HttpServletResponse response) {
 		TbIpAssignMstVo resultVo = null;
 		try {
@@ -1046,6 +1060,7 @@ public class AllocMgmtController extends CommonController {
 
 	@RequestMapping(value = "/ipmgmt/allocmgmt/viewListIpAllocMstByMain.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap selectListIpAllocMstByMain(@RequestBody IpAllocOperMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		ModelMap resultModel = new ModelMap();
@@ -1218,6 +1233,7 @@ public class AllocMgmtController extends CommonController {
 
 	@RequestMapping(value = "/ipmgmt/allocmgmt/viewListIpAllocMstByMainExcel.json", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ResponseEntity<?> selectListIpAllocMstByMainExcel(@RequestBody IpAllocOperMstVo searchVo, ModelMap model,
 			HttpServletRequest request, HttpServletResponse response) {
 		IpAllocOperMstListVo resultListVo = null;
@@ -1261,6 +1277,7 @@ public class AllocMgmtController extends CommonController {
 
 	@RequestMapping(value = "/ipmgmt/allocmgmt/viewDetailIpAllocMstByMain.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap selectTbUserBas(@RequestBody IpAllocOperMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		IpAllocOperMstVo tbIpInfoVo = allocMgmtService.selectMainIpInfoMst(searchVo);
@@ -1313,6 +1330,7 @@ public class AllocMgmtController extends CommonController {
 
 	@RequestMapping(value = "/ipmgmt/allocmgmt/viewListMultiIpInfo.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListMultiIpInfo(@RequestBody IpAllocOperMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		IpAllocOperMstListVo resultListVo = allocMgmtService.selectListMainSearchMultiIp(searchVo);
@@ -1381,6 +1399,7 @@ public class AllocMgmtController extends CommonController {
 
 	@RequestMapping(value = "/ipmgmt/allocmgmt/viewListMultiIpInfoExcel.json", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ResponseEntity<?> viewListMultiIpInfoExcel(@RequestBody IpAllocOperMstVo searchVo, ModelMap model,
 			HttpServletRequest request, HttpServletResponse response) {
 		FileVo resultVo = new FileVo();
@@ -1431,6 +1450,7 @@ public class AllocMgmtController extends CommonController {
 	@RequestMapping(value = "/ipmgmt/allocmgmt/viewListVpnIPStat.model", method = { RequestMethod.POST,
 			RequestMethod.GET })
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap selectListVPNIPStat(@RequestBody TbIpAllocMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		TbIpAllocMstListVo resultListVo = allocMgmtService.selectListVpnIPStat(searchVo);
@@ -1587,6 +1607,7 @@ public class AllocMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/ipmgmt/allocmgmt/viewListVpnIPStatExcel.json", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ResponseEntity<?> selectListVPNIPStatExcel(@RequestBody TbIpAllocMstVo searchVo,
 			HttpServletRequest request, HttpServletResponse response) {
 		FileVo resultVo = new FileVo();
@@ -1708,7 +1729,8 @@ public class AllocMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/ipmgmt/allocmgmt/selectSassignTypeCdList.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbIpAllocMstListVo selectOrgSassignTypeCdList(@RequestBody TbIpAllocMstVo searchVo,
+	@EncryptResponse
+	public BaseVo selectOrgSassignTypeCdList(@RequestBody TbIpAllocMstVo searchVo,
 			HttpServletRequest request, HttpServletResponse response) {
 		TbIpAllocMstListVo resultListVo = new TbIpAllocMstListVo();
 		try {
@@ -1765,7 +1787,8 @@ public class AllocMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/ipmgmt/allocmgmt/selectSassignTypeCdList2.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbIpAllocMstListVo selectOrgSassignTypeCdList2(@RequestBody TbIpAllocMstVo searchVo,
+	@EncryptResponse
+	public BaseVo selectOrgSassignTypeCdList2(@RequestBody TbIpAllocMstVo searchVo,
 			HttpServletRequest request, HttpServletResponse response) {
 		TbIpAllocMstListVo resultListVo = new TbIpAllocMstListVo();
 		try {
@@ -1823,6 +1846,7 @@ public class AllocMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/ipmgmt/allocmgmt/viewDetailVpnIPStat.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewDetailVpnIPStat(@RequestBody TbIpAllocMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		TbIpAllocMstVo resultVo = allocMgmtService.selectVpnIPStatDetail(searchVo);
@@ -1881,6 +1905,7 @@ public class AllocMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/ipmgmt/allocmgmt/viewSearchtLnMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewSearchtLnMst(@RequestBody IpAllocOperMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		IpAllocOperMstListVo resultListVo = allocMgmtService.selectListIpAllocMst(searchVo);
@@ -1962,7 +1987,8 @@ public class AllocMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/ipmgmt/allocmgmt/selectSearchtLnMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public IpAllocOperMstListVo selectSearchtLnMst(@RequestBody IpAllocOperMstVo searchVo, HttpServletRequest request,
+	@EncryptResponse
+	public BaseVo selectSearchtLnMst(@RequestBody IpAllocOperMstVo searchVo, HttpServletRequest request,
 			HttpServletResponse response) {
 		IpAllocOperMstListVo resultListVo = null;
 		try {
