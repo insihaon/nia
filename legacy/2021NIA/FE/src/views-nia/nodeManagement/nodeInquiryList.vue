@@ -65,7 +65,7 @@ export default {
             { label: '사용', value: 'W' },
             { label: '미사용', value: 'N' },
         ] },
-        { label: '날짜', type: 'dateTime', model: 'datetime' },
+        { label: '날짜', type: 'date', model: 'datetime' },
 
       ],
       admin_yn_orgin: '',
@@ -74,6 +74,7 @@ export default {
         model_id: '',
         ip_addr: '',
         admin_yn: '',
+        dateTime: []
       },
     }
   },
