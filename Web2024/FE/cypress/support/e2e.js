@@ -15,6 +15,17 @@
 
 // Import commands.js using ES2015 syntax:
 import './commands'
+beforeEach(() => {
+    cy.intercept('POST', '**/getkey').as('getkey')
+    cy.intercept('POST', '**/signin').as('signin')
+    cy.intercept('POST', '**/setting').as('setting')
+})
 
+Cypress.on('uncaught:exception', (err, runnable) => {
+    // if(err.message.includes('ResizeObserver loop completed with undelivered notifications')) {
+    //     return false;
+    // }
+    return false;
+})
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
