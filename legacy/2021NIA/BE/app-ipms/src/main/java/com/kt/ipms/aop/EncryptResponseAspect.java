@@ -1,8 +1,7 @@
-package com.codej.base.aop;
+package com.kt.ipms.aop;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.io.Serializable;
 import java.util.Date;
 import java.util.Map;
 
@@ -11,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.ModelMap;
@@ -22,6 +22,8 @@ import com.codej.base.utils.EncryptUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.kt.ipms.legacy.cmn.vo.BaseVo;
+import com.kt.ipms.legacy.cmn.vo.EncryptedVo;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -37,14 +39,13 @@ public class EncryptResponseAspect {
         this.objectMapper = objectMapper;
     }
 
-
-    // @Around("execution(* com.kt.ipms.legacy..*(..)) && @annotation(com.codej.base.annotation.EncryptResponse))")
+    // @Around("execution(* com.kt.ipms.legacy..*(..)) && @annotation(com.kt.ipms.annotation.EncryptResponse))")
     // public Object handleEncryption(ProceedingJoinPoint joinPoint) throws Throwable {
     //     Object response = joinPoint.proceed();
     //     return response;
     // }
 
-    @Around("execution(* com.kt.ipms.legacy..*(..)) && @annotation(com.codej.base.annotation.EncryptResponse)")
+    @Around("execution(* com.kt.ipms.legacy..*(..)) && @annotation(com.kt.ipms.annotation.EncryptResponse)")
     public Object handleEncryption(ProceedingJoinPoint joinPoint) throws Throwable {
         // 요청 Body에서 encrypt 값을 확인
         Boolean encrypt = isEncrypt();
@@ -62,7 +63,7 @@ public class EncryptResponseAspect {
                 ModelMap resultModel = new ModelMap();
                 resultModel.addAttribute(GlobalConstants.Common.ENCRYPT, true);
                 resultModel.addAttribute(GlobalConstants.Common.RESULT, encrypt(body));
-                return resultModel;
+                return new ResponseEntity<>(resultModel, HttpStatus.OK);
 
                 // if (body != null) {
                 //     // 응답 데이터 암호화
@@ -76,14 +77,11 @@ public class EncryptResponseAspect {
                 resultModel.addAttribute(GlobalConstants.Common.RESULT, encrypt(result));
                 return resultModel;
             }
-            else if (result instanceof Serializable) {
-                ModelMap resultModel = new ModelMap();
-                resultModel.addAttribute(GlobalConstants.Common.ENCRYPT, true);
-                resultModel.addAttribute(GlobalConstants.Common.RESULT, encrypt(result));
-                return resultModel;
+            else if (result instanceof BaseVo) {
+                return new EncryptedVo(true, encrypt(result));
             } 
             else {
-                throw new CServiceException("처리 불가능한 데이터 타입입니다.");
+                throw new CServiceException("EncryptResponse 에러");
             }
         }
 

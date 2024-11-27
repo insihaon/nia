@@ -8,7 +8,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 import com.kt.ipms.legacy.cmn.typehandler.JsonDateSerializer;
 
 
-public class CommonVo {
+public class CommonVo extends BaseVo {
 
 	/** 검색시작일 */
 	private String searchBgnDe = "";

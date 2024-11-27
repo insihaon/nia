@@ -1,9 +1,7 @@
 package com.codej.web.config;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.access.expression.SecurityExpressionHandler;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
@@ -90,11 +88,12 @@ public class BaseSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
             .exceptionHandling()
                 .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
-                .and()
+            ;
 
-            // jwt token 필터를 id/password 인증 필터 전에 넣어야 한다.
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); 
-
+            if(appDto.getAuthUse()) {
+                // jwt token 필터를 id/password 인증 필터 전에 넣어야 한다.
+                http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); 
+            }
     }
 
     // cors 처리
