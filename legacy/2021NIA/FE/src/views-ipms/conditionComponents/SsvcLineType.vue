@@ -7,11 +7,14 @@
     <td class="textflex">
       <div>
         <el-select
+          ref="level1"
           v-model="localValue[key1]"
           :multiple="isMultiByLvl(1)"
+          :multiple-limit="limit[key1]"
           collapse-tags
           size="small"
           @change="()=> handleChangeLvl1(true)"
+          @visible-change="(isVisible) => handleDropdownVisibility(isVisible, 1)"
         >
           <el-option v-if="isAllLvl1" label="전체" value=""><span class="w-100 h-100 d-inline-block" @click="toggleAll(1)">전체</span></el-option>
           <el-option
@@ -24,12 +27,15 @@
         <!-- LEVEL 2 -->
         <el-select
           v-if="[2, 3].includes(lvl)"
+          ref="level2"
           v-model="localValue[key2]"
           :disabled="localValue[key1] === '' || localValue[key1] === 'ALL'"
           :multiple="isMultiByLvl(2)"
+          :multiple-limit="limit[key2]"
           collapse-tags
           size="small"
           @change="handleChangeLvl2"
+          @visible-change="(isVisible) => handleDropdownVisibility(isVisible, 2)"
         >
           <el-option label="전체" value=""><span class="w-100 h-100 d-inline-block" @click="toggleAll(2)">전체</span></el-option>
           <el-option
@@ -42,12 +48,15 @@
         <!-- LEVEL 3 -->
         <el-select
           v-if="lvl === 3"
+          ref="level3"
           v-model="localValue[key3]"
           :disabled="isDisabledLvlThree"
           :multiple="isMultiByLvl(3)"
+          :multiple-limit="limit[key3]"
           collapse-tags
           size="small"
           @change="handleChangeLvl3"
+          @visible-change="(isVisible) => handleDropdownVisibility(isVisible, 3)"
         >
           <el-option
             v-for="(option, i) in lvlOptions[key3]"
@@ -295,7 +304,6 @@ export default {
     toggleAll(lvl) {
       if (this.multi.includes(lvl)) {
         this.$set(this.localValue, lvl, this.localValue[lvl]?.includes('') ? [] : ['', ...this.getFullOptions(lvl)])
-        this.onCheckLimit(lvl)
       }
     },
     updateSelectionWithAll(lvl) {
@@ -309,16 +317,19 @@ export default {
       } else if (isIncludesAll && valueByLvlLen !== fullOptionLen + 1) {
         this.localValue[lvl] = this.localValue[lvl]?.filter(value => value !== '')
       }
-
-      return this.onCheckLimit(lvl)
     },
-    onCheckLimit(lvl) {
-      if (this.limit[lvl] !== null && this.localValue[lvl]?.length > this.limit[lvl]) {
-        onMessagePopup(this, `${this.label}는 최대 ${this.limit[lvl]}개까지 선택 가능합니다.`)
-        this.$set(this.localValue, lvl, [])
-        return true
+    handleDropdownVisibility(isVisible, lvl) {
+      if (!isVisible) {
+        if (this.limit[lvl] !== null && this.localValue[lvl]?.length > this.limit[lvl]) {
+          this.$message.error({ message: `${this.label}는 최대 ${this.limit[lvl]}개까지 선택 가능합니다.` })
+          this.$nextTick(() => {
+            this.$refs[`level${lvl}`].toggleMenu()
+            this.$store.dispatch('ipms/setDropdownVisibility', true)
+          })
+        } else {
+          this.$store.dispatch('ipms/setDropdownVisibility', false)
+        }
       }
-      return false
     }
   }
 }

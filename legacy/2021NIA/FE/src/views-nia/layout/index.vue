@@ -19,9 +19,6 @@
         <BottomBar ref="bottombar" />
       </div>
     </div>
-    <el-card v-if="showWindowSize" class="viewport-container" shadow="always">
-      <h6>{{ viewSize }}</h6>
-    </el-card>
     <WindowBase v-for="window in $store.getters.windows" :key="window.id" :type="window.type" :wdata="window" :target="window.target" />
   </div>
 </template>
@@ -101,9 +98,6 @@ export default {
       showHistorybar: (state) => state.app.historybar.opened,
       fixedHeader: (state) => state.settings.fixedHeader,
       screenDevice: (state) => state.app.screenDevice,
-      viewport: (state) => state.app.viewport,
-      windowSize: (state) => state.app.windowSize,
-      showWindowSize: (state) => state.app.showWindowSize,
       showSettings: (state) => state.settings.showSettings,
       needTagsView: (state) => state.settings.tagsView,
       popupLayout: (state) => state.settings.popupLayout,
@@ -112,9 +106,6 @@ export default {
       templateVariables: (state) => state.aamPersisted.templateVariables,
       commonSelectListData: (state) => state.aamPersisted.commonSelectListData,
     }),
-    viewSize() {
-      return `${this.viewport.toUpperCase()} ${this.windowSize.width}x${this.windowSize.height}`
-    },
     classObj() {
       return {
         // hideSidebar: this.sidebar.opened,
@@ -262,21 +253,5 @@ body.el-popup-parent--hidden .fixed-header {
   width: 300px;
   margin: 0 auto;
   cursor: pointer;
-}
-.viewport-container {
-  position: fixed;
-  background: #409eff;
-  color: white;
-  right: 0;
-  bottom: 0;
-  z-index: 100;
-  opacity: 0.8;
-  ::v-deep .el-card__body {
-    padding: 5px;
-    h3 {
-      text-align: -webkit-center;
-      min-width: 150px;
-    }
-  }
 }
 </style>

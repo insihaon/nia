@@ -1,6 +1,5 @@
 package com.kt.ipms.legacy.ipmgmt.allocmgmt.web;
 
-import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -12,8 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -24,15 +21,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.codej.base.property.FileStorageProperties;
+// import com.kt.ipms.legacy.cmn.web.FileController;
+import com.codej.web.controller.FileController;
 import com.kt.framework.exception.ServiceException;
 import com.kt.framework.utils.StringUtils;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
-import com.kt.ipms.legacy.cmn.util.FileUtil;
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
 import com.kt.ipms.legacy.cmn.vo.FileVo;
 import com.kt.ipms.legacy.cmn.web.CommonController;
-
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.service.AllocMgmtService;
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.IpAllocMstComplexVo;
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.IpAllocOperMstListVo;
@@ -49,11 +47,6 @@ import com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlMstListVo;
 import com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlMstVo;
 
 import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
-
-import com.codej.base.property.FileStorageProperties;
-// import com.kt.ipms.legacy.cmn.web.FileController;
-import com.codej.web.controller.FileController;
-import com.codej.base.dto.model.ResultMap;
 
 @Controller
 public class AllocMgmtController extends CommonController {
@@ -102,11 +95,7 @@ public class AllocMgmtController extends CommonController {
 		IpAllocOperMstVo searchVoClone = new IpAllocOperMstVo();
 		try {
 			CloneUtil.copyObjectInformation(searchVo, searchVoClone);
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
+		} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
 			e.printStackTrace();
 		}
 		ModelMap builtModel = ipBlockMstModel(searchVo, request);
