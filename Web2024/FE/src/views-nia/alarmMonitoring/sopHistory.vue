@@ -238,11 +238,11 @@ export default {
     this.selectedRow = this.wdata?.params
   },
   mounted() {
-    if (this.selectedRow.ticket_id) {
+    if (this.selectedRow?.ticket_id) {
       this.tapCurrent = 'ticket'
       this.sopSearchModel.TICKET_ID = this.selectedRow.ticket_id
     }
-    if (this.selectedRow.fault_type === 'SYSLOG') {
+    if (this.selectedRow?.fault_type === 'SYSLOG') {
       this.tapCurrent = 'syslog'
       this.syslogSearchModel = { ALARM_NO: this.selectedRow.alarmno }
     }
