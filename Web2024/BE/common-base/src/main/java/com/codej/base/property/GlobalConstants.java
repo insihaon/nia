@@ -22,5 +22,6 @@ public class GlobalConstants {
         public static final String ENCRYPT = "encrypt";
         public static final String UID = "uid";
         public static final String ROLES = "roles";
+        public static final String RESULT = "result";
     }
 }

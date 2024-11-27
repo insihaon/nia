@@ -345,6 +345,35 @@ export function apiRequestExcel(api, params) {
     })
 }
 
+export function apiRequestEx3(api, params = {}) {
+  return http({
+    url: `/ipms/ex3.model`,
+    method: 'post',
+    filePath: filePath,
+    data: params
+  })
+}
+export function apiRequestEx4(api, params = {}) {
+  return http({
+    url: `/ipms/ex4.json`,
+    method: 'post',
+    filePath: filePath,
+    data: params
+  })
+}
+export function apiRequestEx5(api, params = {}) {
+  return http({
+    url: `/ipms/ex5.json`,
+    method: 'post',
+    filePath: filePath,
+    data: params
+  })
+}
+
 window.apiTest = apiTest
 window.apiTest2 = apiTest2
+
+window.ex3 = apiRequestEx3
+window.ex4 = apiRequestEx4
+window.ex5 = apiRequestEx5
 

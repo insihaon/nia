@@ -1,4 +1,4 @@
-package com.codej.base.annotation;
+package com.kt.ipms.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
