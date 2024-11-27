@@ -22,6 +22,10 @@ public class CommonUtil {
         return MessageFormat.format(s, var2);
     }
 
+    public static String getStackTrace() {
+        return CommonUtil.getStackTrace(null);
+    }
+
     public static String getStackTrace(String in_format) {
         String format = in_format;
         if (format == null) {
