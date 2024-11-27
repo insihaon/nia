@@ -1,6 +1,8 @@
 package com.kt.ipms.legacy.linkmgmt.whois.model;
 
-public class WhoisInfoObj {
+import com.kt.ipms.legacy.cmn.vo.BaseVo;
+
+public class WhoisInfoObj extends BaseVo{
 
 	public String clTRID;			
 	

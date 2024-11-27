@@ -20,8 +20,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kt.framework.exception.ServiceException;
 import com.kt.framework.utils.StringUtils;
+import com.kt.ipms.annotation.EncryptResponse;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
+import com.kt.ipms.legacy.cmn.vo.BaseVo;
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
 import com.kt.ipms.legacy.cmn.web.CommonController;
 import com.kt.ipms.legacy.opermgmt.menumgmt.service.MenuMgmtService;
@@ -52,6 +54,7 @@ public class MenuMgmtController extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/menumgmt/viewListScrnBas.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap selectListScrnBas(@RequestBody TbScrnBasVo searchVo, ModelMap model, HttpServletRequest request)  {
 		TbScrnBasListVo resultListVo = menuMgmtService.selectListPageScrnBas(searchVo);
 		return createResultList(resultListVo.getTbScrnBasVos(), resultListVo.getTotalCount());
@@ -115,6 +118,7 @@ public class MenuMgmtController extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/menumgmt/viewDetailScrnBas.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap selectScrnBas(@RequestBody TbScrnBasVo tbScrnBasVo, ModelMap model, HttpServletRequest request)  {
 		TbScrnBasVo resultVo = menuMgmtService.selectScrnBas(tbScrnBasVo);
 		return createResult(resultVo);
@@ -169,6 +173,7 @@ public class MenuMgmtController extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/menumgmt/viewInsertScrnBas.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewInsertScrnBas(@ModelAttribute("tbScrnBasVo") TbScrnBasVo tbScrnBasVo, ModelMap model, HttpServletRequest request)  {
 		TbScrnBasVo resultVo = new TbScrnBasVo();
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -229,7 +234,8 @@ public class MenuMgmtController extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/menumgmt/insertScrnBas.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbScrnBasVo insertScrnBas(@RequestBody TbScrnBasVo insertVo, HttpServletRequest request, HttpServletResponse response)  {
+	@EncryptResponse
+	public BaseVo insertScrnBas(@RequestBody TbScrnBasVo insertVo, HttpServletRequest request, HttpServletResponse response)  {
 		TbScrnBasVo resultVo = new TbScrnBasVo();
 		try{
 			resultVo = menuMgmtService.insertScrnBas(insertVo);
@@ -258,6 +264,7 @@ public class MenuMgmtController extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/menumgmt/viewUpdateScrnBas.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewUpdateScrnBas(@RequestBody TbScrnBasVo tbScrnBasVo, ModelMap model, HttpServletRequest request)  {
 		TbScrnBasVo resultVo = menuMgmtService.selectScrnBas(tbScrnBasVo);
 		return createResult(resultVo);
@@ -312,7 +319,8 @@ public class MenuMgmtController extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/menumgmt/updateScrnBas.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbScrnBasVo updateScrnBas(@RequestBody TbScrnBasVo updateVo, HttpServletRequest request, HttpServletResponse response)  {
+	@EncryptResponse
+	public BaseVo updateScrnBas(@RequestBody TbScrnBasVo updateVo, HttpServletRequest request, HttpServletResponse response)  {
 		TbScrnBasVo resultVo = new TbScrnBasVo();
 		try{
 			resultVo = menuMgmtService.updateScrnBas(updateVo);
@@ -341,7 +349,8 @@ public class MenuMgmtController extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/menumgmt/updateScrnUseYn.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbScrnBasListVo updateSsrnUseYn(@RequestBody TbScrnBasListVo tbScrnBasListVo, HttpServletRequest request, HttpServletResponse response)  {
+	@EncryptResponse
+	public BaseVo updateSsrnUseYn(@RequestBody TbScrnBasListVo tbScrnBasListVo, HttpServletRequest request, HttpServletResponse response)  {
 		TbScrnBasListVo resultListVo = new TbScrnBasListVo();
 		try{
 			resultListVo = menuMgmtService.updateSsrnUseYn(tbScrnBasListVo);
@@ -370,6 +379,7 @@ public class MenuMgmtController extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/menumgmt/viewListMenuBas.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListMenuBas(@RequestBody TbMenuBasVo searchVo, ModelMap model, HttpServletRequest request)  {
 		TbMenuBasListVo resultListVo = menuMgmtService.selectMenuBas(searchVo);
 		return createResultList(resultListVo.getTbMenuBasVos(), resultListVo.getTotalCount());
@@ -423,6 +433,7 @@ public class MenuMgmtController extends CommonController{
 	
 	@RequestMapping(value = "/opermgmt/menumgmt/viewInsertGroupName.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap insertViewGroupName(@RequestBody TbMenuBasVo tbMenuBasVo, ModelMap model, HttpServletRequest request)  {
 		TbMenuBasVo resultVo =new TbMenuBasVo();
 		return createResult(resultVo);
@@ -467,6 +478,7 @@ public class MenuMgmtController extends CommonController{
 
 	@RequestMapping(value = "/opermgmt/menumgmt/viewInsertMenuName.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap insertViewMenuName(@RequestBody TbMenuBasVo tbMenuBasVo, ModelMap model, HttpServletRequest request)  {
 		TbMenuBasVo resultVo = new TbMenuBasVo();
 		return createResult(resultVo);
@@ -522,6 +534,7 @@ public class MenuMgmtController extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/menumgmt/viewListMenuAuth.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap selectListMenuAuth(@RequestBody TbMenuAuthVo searchVo, ModelMap model, HttpServletRequest request)  {
 		TbMenuAuthListVo resultListVo = menuMgmtService.selectListTbMenuAuth(searchVo);
 		return createResultList(resultListVo.getTbMenuAuthVos(), resultListVo.getTotalCount());
@@ -591,7 +604,8 @@ public class MenuMgmtController extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/menumgmt/updateMenuAuthUseYn.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbMenuAuthListVo updateMenuAuthUseYn(@RequestBody TbMenuAuthListVo menuAuthList, ModelMap model, HttpServletRequest request, HttpServletResponse response)  {
+	@EncryptResponse
+	public BaseVo updateMenuAuthUseYn(@RequestBody TbMenuAuthListVo menuAuthList, ModelMap model, HttpServletRequest request, HttpServletResponse response)  {
 		
 		TbMenuAuthListVo resultListVo = new TbMenuAuthListVo();
 		try {
@@ -612,6 +626,7 @@ public class MenuMgmtController extends CommonController{
 	
 	@RequestMapping(value = "/opermgmt/menumgmt/selectListMenuBas.json", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public List<Map<String, Object>> selectListMenuBas(@ModelAttribute("searchVo") TbMenuBasVo searchVo, HttpServletRequest request, HttpServletResponse response)  {
 		List<Map<String, Object>> resultListMap = new ArrayList<Map<String,Object>>();
 		try {
@@ -688,7 +703,8 @@ public class MenuMgmtController extends CommonController{
 	
 	@RequestMapping(value = "/opermgmt/menumgmt/selectDetailMenuBas.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbMenuBasVo selectDetailMenuBas(@RequestBody TbMenuBasVo searchVo, HttpServletRequest request, HttpServletResponse response)  {
+	@EncryptResponse
+	public BaseVo selectDetailMenuBas(@RequestBody TbMenuBasVo searchVo, HttpServletRequest request, HttpServletResponse response)  {
 		TbMenuBasVo  detailVo = null;
 		try {
 			
@@ -708,7 +724,8 @@ public class MenuMgmtController extends CommonController{
 	
 	@RequestMapping(value = "/opermgmt/menumgmt/updateTbMenuBasVo.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbMenuBasVo updateTbMenuBasVo(@RequestBody TbMenuBasVo searchVo, HttpServletRequest request, HttpServletResponse response)  {
+	@EncryptResponse
+	public BaseVo updateTbMenuBasVo(@RequestBody TbMenuBasVo searchVo, HttpServletRequest request, HttpServletResponse response)  {
 		TbMenuBasVo resultVo = null;
 		try {
 			
@@ -729,6 +746,7 @@ public class MenuMgmtController extends CommonController{
 
 	@RequestMapping(value = "/opermgmt/menumgmt/viewSearchTbScrnBas.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewSearchTbScrnBas(@RequestBody TbScrnBasVo searchVo, ModelMap model,
 			HttpServletRequest request)  {
 		TbScrnBasListVo resultListVo = new TbScrnBasListVo();
@@ -781,7 +799,8 @@ public class MenuMgmtController extends CommonController{
 	
 	@RequestMapping(value = "/opermgmt/menumgmt/selectSearchScrnBas.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbScrnBasListVo selectSearchOrgBas(@RequestBody TbScrnBasVo searchVo, 
+	@EncryptResponse
+	public BaseVo selectSearchOrgBas(@RequestBody TbScrnBasVo searchVo, 
 			HttpServletRequest request, HttpServletResponse response)  {
 		TbScrnBasListVo resultListVo = null;
 		try {

@@ -16,8 +16,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kt.framework.exception.ServiceException;
+import com.kt.ipms.annotation.EncryptResponse;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
+import com.kt.ipms.legacy.cmn.vo.BaseVo;
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
 import com.kt.ipms.legacy.cmn.web.CommonController;
 import com.kt.ipms.legacy.opermgmt.boardmgmt.service.NoticeService;
@@ -43,6 +45,7 @@ public class NoticeController extends CommonController {
 	 */
 	@RequestMapping(value = "/opermgmt/boardmgmt/viewListNotice.model", method = {RequestMethod.POST, RequestMethod.GET})
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap selectListTbBoard(@RequestBody TbBoardVo searchVo, ModelMap model,
 			HttpServletRequest request)  {
 		setPagination(searchVo);
@@ -118,6 +121,7 @@ public class NoticeController extends CommonController {
 	 */
 	@RequestMapping(value = "/opermgmt/boardmgmt/viewDetailNotice.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap selectNotice(@RequestBody TbBoardVo tbBoardVo, ModelMap model,
 			HttpServletRequest request)  {
 		TbBoardVo resultVo = noticeService.selectNotice(tbBoardVo);
@@ -189,6 +193,7 @@ public class NoticeController extends CommonController {
 	 */
 	@RequestMapping(value = "/opermgmt/boardmgmt/viewDetailEmergencyNotice.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewDetailEmergencyNotice(@RequestBody TbBoardVo searchVo, ModelMap model,
 			HttpServletRequest request)  {
 		TbBoardVo resultVo = noticeService.selectNotice(searchVo);
@@ -248,6 +253,7 @@ public class NoticeController extends CommonController {
 	 */
 	@RequestMapping(value = "/opermgmt/boardmgmt/viewInsertNotice.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewInsertNotice(TbBoardVo tbBoardVo, ModelMap model, HttpServletRequest request)  {
 		tbBoardVo.setSboardTypeCd("BH0001");
 		List<CommonCodeVo> boardTypeSubCds = commonCodeService.selectListCommonCode(CommonCodeUtil.BOARD_TYPE_SUB_CD, tbBoardVo);
@@ -300,7 +306,8 @@ public class NoticeController extends CommonController {
 	 */
 	@RequestMapping(value = "/opermgmt/boardmgmt/insertNotice.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbBoardVo insertNotice(@RequestBody TbBoardVo insertVo, HttpServletRequest request, HttpServletResponse response)  {
+	@EncryptResponse
+	public BaseVo insertNotice(@RequestBody TbBoardVo insertVo, HttpServletRequest request, HttpServletResponse response)  {
 		TbBoardVo resultVo = null;
 		try {
 			//모의해킹괄련 적용 2015. 05 .19
@@ -342,7 +349,8 @@ public class NoticeController extends CommonController {
 	 */
 	@RequestMapping(value = "/opermgmt/boardmgmt/deleteNotice.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbBoardVo deleteNotice(@RequestBody TbBoardVo deleteVo, HttpServletRequest request, HttpServletResponse response)  {
+	@EncryptResponse
+	public BaseVo deleteNotice(@RequestBody TbBoardVo deleteVo, HttpServletRequest request, HttpServletResponse response)  {
 		TbBoardVo resultVo = null;
 		try {
 			
@@ -380,6 +388,7 @@ public class NoticeController extends CommonController {
 	 */
 	@RequestMapping(value = "/opermgmt/boardmgmt/viewUpdateNotice.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewUpdateNotice(@RequestBody TbBoardVo tbBoardVo, ModelMap model,
 			HttpServletRequest request)  {
 		TbBoardVo resultVo = noticeService.selectNotice(tbBoardVo);
@@ -443,7 +452,8 @@ public class NoticeController extends CommonController {
 	 */
 	@RequestMapping(value = "/opermgmt/boardmgmt/updateNotice.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbBoardVo updateNotice(@RequestBody TbBoardVo updateVo, HttpServletRequest request, HttpServletResponse response)  {
+	@EncryptResponse
+	public BaseVo updateNotice(@RequestBody TbBoardVo updateVo, HttpServletRequest request, HttpServletResponse response)  {
 		TbBoardVo resultVo = new TbBoardVo();
 		try{
 			//모의해킹괄련 적용 2015. 05 .19

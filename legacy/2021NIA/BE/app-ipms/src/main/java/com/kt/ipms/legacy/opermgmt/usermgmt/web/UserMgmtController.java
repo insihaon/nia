@@ -16,8 +16,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kt.framework.exception.ServiceException;
+import com.kt.ipms.annotation.EncryptResponse;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
+import com.kt.ipms.legacy.cmn.vo.BaseVo;
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
 import com.kt.ipms.legacy.cmn.web.CommonController;
 import com.kt.ipms.legacy.opermgmt.usermgmt.service.UserMgmtService;
@@ -52,6 +54,7 @@ public class UserMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/opermgmt/usermgmt/viewListTbUserBas.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap selectListTbUserBas(@RequestBody TbUserBasVo searchVo, ModelMap model,
 	HttpServletRequest request)  {
 		setPagination(searchVo);
@@ -112,7 +115,8 @@ public class UserMgmtController extends CommonController {
 	
 	@RequestMapping(value = "/opermgmt/usermgmt/selectSearchTbUserBas.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbUserBasListVo selectSearchTbUserBas(@RequestBody TbUserBasVo searchVo, 
+	@EncryptResponse
+	public BaseVo selectSearchTbUserBas(@RequestBody TbUserBasVo searchVo, 
 			HttpServletRequest request, HttpServletResponse response)  {
 		TbUserBasListVo resultListVo = null;
 		try {
@@ -136,6 +140,7 @@ public class UserMgmtController extends CommonController {
 	
 	@RequestMapping(value = "/opermgmt/usermgmt/viewSearchTbUserBas.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap searchViewTbUserBas(@RequestBody TbUserBasVo searchVo, ModelMap model,
 			HttpServletRequest request)  {
 		TbUserBasListVo resultListVo = new TbUserBasListVo();
@@ -198,6 +203,7 @@ public class UserMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/opermgmt/usermgmt/viewDetailTbUserBas.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap selectTbUserBas(@RequestBody TbUserBasVo searchVo, ModelMap model,
 			HttpServletRequest request)  {
 		TbUserBasVo resultVo = userMgmtService.selectTbuserBas(searchVo);
@@ -262,7 +268,8 @@ public class UserMgmtController extends CommonController {
 	 */
 	@RequestMapping(value="opermgmt/usermgmt/updateTbUserBas.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbUserBasVo updateTbUserBas(@RequestBody TbUserBasVo updateVo, HttpServletRequest request, HttpServletResponse reponse)  {
+	@EncryptResponse
+	public BaseVo updateTbUserBas(@RequestBody TbUserBasVo updateVo, HttpServletRequest request, HttpServletResponse reponse)  {
 		TbUserBasVo resultVo = new TbUserBasVo();
 		try {
 				userMgmtService.updateTbuserBas(updateVo);
@@ -281,6 +288,7 @@ public class UserMgmtController extends CommonController {
 	
 	@RequestMapping(value = "/opermgmt/usermgmt/selectListUserConnResultCds.json", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap selectListUserConnResultCds(@RequestBody TbUserConnHistVo searchVo, ModelMap model,
 			HttpServletRequest request)  {
 		List<CommonCodeVo> userConnResultCds = commonCodeService.selectListCommonCode(CommonCodeUtil.USER_CONN_RESLT_TYPE_CD, null);
@@ -297,6 +305,7 @@ public class UserMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/opermgmt/usermgmt/viewListTbUserConnHist.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap selectListTbUserConnHist(@RequestBody TbUserConnHistVo searchVo, ModelMap model,
 			HttpServletRequest request)  {
 		setPagination(searchVo);
@@ -355,6 +364,7 @@ public class UserMgmtController extends CommonController {
 	
 	@RequestMapping(value = "/opermgmt/usermgmt/viewListUserHndSetTxn.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListUserHndSetTxn(@RequestBody TbUserHndsetApyTxnVo searchVo, ModelMap model,
 			HttpServletRequest request)  {
 		TbUserHndsetApyTxnListVo resultListVo = userMgmtService.selectListTbUserHndsetApyTxnVo(searchVo);
@@ -404,6 +414,7 @@ public class UserMgmtController extends CommonController {
 	
 	@RequestMapping(value = "/opermgmt/usermgmt/viewInsertUserHndSetTxn.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewInsertUserHndSetTxn(@RequestBody TbUserHndsetApyTxnVo tbUserHndsetApyTxnVo, ModelMap model,
 			HttpServletRequest request)  {
 		TbUserHndsetApyTxnListVo	resultListVo = userMgmtService.insertTbUserHndsetApyTxnVo(tbUserHndsetApyTxnVo);
@@ -472,6 +483,7 @@ public class UserMgmtController extends CommonController {
 	
 	@RequestMapping(value = "/opermgmt/usermgmt/viewDeleteUserHndSetTxn.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewDeleteUserHndSetTxn(@RequestBody TbUserHndsetApyTxnVo tbUserHndsetApyTxnVo, ModelMap model,
 			HttpServletRequest request)  {
 		TbUserHndsetApyTxnListVo resultListVo = userMgmtService.deleteTbUserHndsetApyTxnVo(tbUserHndsetApyTxnVo);

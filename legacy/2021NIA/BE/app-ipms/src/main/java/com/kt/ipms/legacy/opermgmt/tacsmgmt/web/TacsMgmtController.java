@@ -20,9 +20,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kt.framework.exception.ServiceException;
 import com.kt.framework.utils.StringUtils;
+import com.kt.ipms.annotation.EncryptResponse;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
 import com.kt.ipms.legacy.cmn.util.PrintLogUtil;
+import com.kt.ipms.legacy.cmn.vo.BaseVo;
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
 import com.kt.ipms.legacy.cmn.vo.CommonVo;
 import com.kt.ipms.legacy.cmn.web.CommonController;
@@ -50,6 +52,7 @@ public class TacsMgmtController extends CommonController {
 
 	@RequestMapping(value="/opermgmt/tacsmgmt/viewTacsConnBas.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewTacsConnBas(@RequestBody CommonVo searchVo, ModelMap model, HttpServletRequest request) {
 		TbTacsConnBasVo resultVo = tacsMgmtService.selectTbTacsConnBas();
 		return createResult(resultVo);
@@ -96,7 +99,8 @@ public class TacsMgmtController extends CommonController {
 	/*TACS 연동정보 수정*/
 	@RequestMapping(value = "/opermgmt/tacsmgmt/updateTacsConnBas.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbTacsConnBasVo updateTacsConnBas(@RequestBody TbTacsConnBasVo tbTacsConnBasVo, 
+	@EncryptResponse
+	public BaseVo updateTacsConnBas(@RequestBody TbTacsConnBasVo tbTacsConnBasVo, 
 			HttpServletRequest request, HttpServletResponse response){
 
 		TbTacsConnBasVo resultVo = null;
@@ -119,6 +123,7 @@ public class TacsMgmtController extends CommonController {
 	
 	@RequestMapping(value = "/opermgmt/tacsmgmt/viewListTacsFcltMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListTacsFcltMst(@RequestBody TbTacsFcltMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		setPagination(searchVo);
@@ -221,6 +226,7 @@ public class TacsMgmtController extends CommonController {
 	
 	@RequestMapping(value = "/opermgmt/tacsmgmt/viewInsertTacsFcltMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewInsertTacsFcltMst(ModelMap model, HttpServletRequest request) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("suseYn", "Y");
@@ -283,7 +289,8 @@ public class TacsMgmtController extends CommonController {
 	
 	@RequestMapping(value = "/opermgmt/tacsmgmt/insertTacsFcltMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbTacsFcltMstVo insertTacsFcltMst(@RequestBody TbTacsFcltMstVo insertVo,
+	@EncryptResponse
+	public BaseVo insertTacsFcltMst(@RequestBody TbTacsFcltMstVo insertVo,
 			HttpServletRequest request, HttpServletResponse response) {
 		TbTacsFcltMstVo resultVo = null;
 		try {
@@ -307,7 +314,8 @@ public class TacsMgmtController extends CommonController {
 	
 	@RequestMapping(value = "/opermgmt/tacsmgmt/deleteTacsFcltMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbTacsFcltMstVo deleteTacsFcltMst(@RequestBody TbTacsFcltMstVo deleteVo,
+	@EncryptResponse
+	public BaseVo deleteTacsFcltMst(@RequestBody TbTacsFcltMstVo deleteVo,
 			HttpServletRequest request, HttpServletResponse response) {
 		TbTacsFcltMstVo resultVo = null;
 		try {
@@ -329,6 +337,7 @@ public class TacsMgmtController extends CommonController {
 	
 	@RequestMapping(value = "/opermgmt/tacsmgmt/viewUpdateTacsFcltMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewUpdateTacsFcltMst(@RequestBody TbTacsFcltMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		TbTacsFcltMstVo resultVo = tacsMgmtService.selectTacsFcltMst(searchVo);
@@ -386,7 +395,8 @@ public class TacsMgmtController extends CommonController {
 	
 	@RequestMapping(value = "/opermgmt/tacsmgmt/updateTacsFcltMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbTacsFcltMstVo updateTacsFcltMst(@RequestBody TbTacsFcltMstVo updateVo,
+	@EncryptResponse
+	public BaseVo updateTacsFcltMst(@RequestBody TbTacsFcltMstVo updateVo,
 			HttpServletRequest request, HttpServletResponse response) {
 		TbTacsFcltMstVo resultVo = null;
 		try {
@@ -409,6 +419,7 @@ public class TacsMgmtController extends CommonController {
 
 	@RequestMapping(value = "/opermgmt/tacsmgmt/selectListCommonCode.json", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap selectListCommonCode() {
 		List<CommonCodeVo> sfcltTypes = commonCodeService.selectListCommonCode(CommonCodeUtil.TACS_FLCT_TYPE_CD, null);
 		return createResultList(sfcltTypes, sfcltTypes.size());
@@ -416,6 +427,7 @@ public class TacsMgmtController extends CommonController {
 	
 	@RequestMapping(value = "/opermgmt/tacsmgmt/viewListTacsFcltCmdMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListTacsFcltCmdMst(@RequestBody TbTacsFcltCmdMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		setPagination(searchVo);
@@ -478,7 +490,8 @@ public class TacsMgmtController extends CommonController {
 	
 	@RequestMapping(value = "/opermgmt/tacsmgmt/insertTacsFcltCmdMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbTacsFcltCmdMstVo insertTacsFcltMstCmdMst(@RequestBody TbTacsFcltCmdMstVo insertVo, 
+	@EncryptResponse
+	public BaseVo insertTacsFcltMstCmdMst(@RequestBody TbTacsFcltCmdMstVo insertVo, 
 			HttpServletRequest request, HttpServletResponse response) {
 		TbTacsFcltCmdMstVo resultVo = null;
 		try {
@@ -502,6 +515,7 @@ public class TacsMgmtController extends CommonController {
 	
 	@RequestMapping(value = "/opermgmt/tacsmgmt/viewUpdateTacsFcltCmdMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewUpdateTacsFcltCmdMst(@RequestBody TbTacsFcltCmdMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		TbTacsFcltCmdMstVo resultVo = tacsMgmtService.selectTacsFcltCmdMst(searchVo);
@@ -550,7 +564,8 @@ public class TacsMgmtController extends CommonController {
 	
 	@RequestMapping(value = "/opermgmt/tacsmgmt/updateTacsFcltCmdMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbTacsFcltCmdMstVo updateTacsFcltCmdMst(@RequestBody TbTacsFcltCmdMstVo updateVo, 
+	@EncryptResponse
+	public BaseVo updateTacsFcltCmdMst(@RequestBody TbTacsFcltCmdMstVo updateVo, 
 			HttpServletRequest request, HttpServletResponse response) {
 		TbTacsFcltCmdMstVo resultVo = null;
 		try {
@@ -573,6 +588,7 @@ public class TacsMgmtController extends CommonController {
 	
 	@RequestMapping(value = "/opermgmt/tacsmgmt/viewCheckTacsIpBlock.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewCheckTacsIpBlock(@RequestBody TbIpAssignMstVo searchVo,
 			HttpServletRequest request) {
 		ModelMap model = viewCheckTacsIpBlockModel(searchVo, request);
@@ -626,6 +642,7 @@ public class TacsMgmtController extends CommonController {
 	}
 	@RequestMapping(value = "/opermgmt/tacsmgmt/selectSresultMsg.json", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap selectSresultMsg() {
 		List<?> sresultMsg = tacsMgmtService.selectSresultMsg();
 		return createResultList(sresultMsg, sresultMsg.size());
@@ -633,6 +650,7 @@ public class TacsMgmtController extends CommonController {
 	
 	@RequestMapping(value = "/opermgmt/tacsmgmt/viewListTacsConnHist.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListTacsConnHist(@RequestBody TbTacsConnHistVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		setPagination(searchVo);

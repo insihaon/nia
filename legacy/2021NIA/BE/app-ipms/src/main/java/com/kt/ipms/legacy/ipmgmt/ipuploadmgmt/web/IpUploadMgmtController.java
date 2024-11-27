@@ -2,7 +2,6 @@ package com.kt.ipms.legacy.ipmgmt.ipuploadmgmt.web;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -13,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -29,6 +27,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.codej.web.controller.FileController;
 import com.kt.framework.exception.ServiceException;
 import com.kt.framework.utils.StringUtils;
+import com.kt.ipms.annotation.EncryptResponse;
 import com.kt.ipms.legacy.cmn.service.ExcelCheckService;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
@@ -71,6 +70,7 @@ public class IpUploadMgmtController extends CommonController {
 	
 	@RequestMapping(value = "/ipmgmt/ipuploadmgmt/viewIpUploadMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewIpUploadMst(@RequestBody TbIpUploadVo searchVo, ModelMap model, HttpServletRequest request) {
 		TbIpUploadListVo resultListVo = ipUploadMgmtService.selectListPageIpUpload(searchVo);
 		return createResultList(resultListVo.getTbIpUloadVos(), resultListVo.getTotalCount());
@@ -117,6 +117,7 @@ public class IpUploadMgmtController extends CommonController {
 	
 	@RequestMapping(value = "/ipmgmt/ipuploadmgmt/upload.json", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public Map<String,Object> fileUpload(ModelMap model, MultipartHttpServletRequest request, HttpServletResponse response)  {
 		ModelMap resultModel = new ModelMap();
 		Map<String,Object> retMap = new HashMap<String,Object>();
@@ -247,6 +248,7 @@ public class IpUploadMgmtController extends CommonController {
 	 */
 	@RequestMapping(value="/ipmgmt/ipuploadmgmt/viewCreFormatMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewInsertCrtIPMst(@RequestBody TbIpBlockMstVo searchVo, ModelMap model, HttpServletRequest request) {
 		TbIpBlockMstVo resultVo = new TbIpBlockMstVo();
 		return createResult(resultVo);
@@ -358,6 +360,7 @@ public class IpUploadMgmtController extends CommonController {
 	 */
 	@RequestMapping(value="/ipmgmt/ipuploadmgmt/viewDetailIpMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewDetailIpMst(@RequestBody TbIpUploadVo searchVo, ModelMap model, HttpServletRequest request) {
 		TbIpUploadSubListVo resultVo = ipUploadMgmtService.selectUploadDetail(searchVo);
 		return createResult(resultVo);
@@ -419,6 +422,7 @@ public class IpUploadMgmtController extends CommonController {
 	 */
 	@RequestMapping(value="/ipmgmt/ipuploadmgmt/downloadformat.json", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ResponseEntity<?> viewListWhoisExcel(@RequestBody TbIpUploadVo searchVo, HttpServletRequest request, HttpServletResponse response){
 		
 		FileVo resultVo = new FileVo();
@@ -881,6 +885,7 @@ public class IpUploadMgmtController extends CommonController {
 	// 3계위 선택시 수용국 조회
 	@RequestMapping(value="/ipmgmt/ipuploadmgmt/selectSearchHostList.json", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	 public List<CommonCodeVo> selectSearchHostList(@RequestBody TbIpUploadVo searchVo, HttpServletRequest request, HttpServletResponse response){
 		List<CommonCodeVo> resultListVo = null;
 		 
@@ -923,6 +928,7 @@ public class IpUploadMgmtController extends CommonController {
 	 */
 //	@RequestMapping(value="/ipmgmt/ipuploadmgmt/downloadformatMig1.json", method = RequestMethod.POST)
 //	@ResponseBody
+//	@EncryptResponse
 //	public FileVo viewMigExcelDown1(@ModelAttribute("searchVo") TbIpUploadVo searchVo, HttpServletRequest request, HttpServletResponse response){
 //		
 //		FileVo resultVo = new FileVo();
@@ -1098,6 +1104,7 @@ public class IpUploadMgmtController extends CommonController {
 //	 */
 //	@RequestMapping(value="/ipmgmt/ipuploadmgmt/downloadformatMig1_1.json", method = RequestMethod.POST)
 //	@ResponseBody
+//	@EncryptResponse
 //	public FileVo viewMigExcelDown1_1(@ModelAttribute("searchVo") TbIpUploadVo searchVo, HttpServletRequest request, HttpServletResponse response){
 //		
 //		FileVo resultVo = new FileVo();
@@ -1350,6 +1357,7 @@ public class IpUploadMgmtController extends CommonController {
 //	 */
 //	@RequestMapping(value="/ipmgmt/ipuploadmgmt/downloadformatMig2.json", method = RequestMethod.POST)
 //	@ResponseBody
+//	@EncryptResponse
 //	public FileVo viewMigExcelDown2(@ModelAttribute("searchVo") TbIpUploadVo searchVo, HttpServletRequest request, HttpServletResponse response){
 //		
 //		FileVo resultVo = new FileVo();
@@ -1524,6 +1532,7 @@ public class IpUploadMgmtController extends CommonController {
 //	
 //	@RequestMapping(value = "/ipmgmt/ipuploadmgmt/onlymergecancel.ajax", method = RequestMethod.POST)
 //	@ResponseBody
+//	@EncryptResponse
 //	public Map<String,Object> onlyMergeCancel(ModelMap model, MultipartHttpServletRequest request, HttpServletResponse response)  {
 //		Map<String,Object> retMap = new HashMap<String,Object>();
 //		TbIpUploadVo resultListVo = new TbIpUploadVo(); 
@@ -1629,6 +1638,7 @@ public class IpUploadMgmtController extends CommonController {
 	
 	@RequestMapping(value="/ipmgmt/ipuploadmgmt/downloadtextformat.json", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ResponseEntity<?> viewDownloadText(@RequestBody TbIpUploadVo searchVo, HttpServletRequest request, HttpServletResponse response){
 		
 		FileVo resultVo = new FileVo();

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kt.framework.exception.ServiceException;
+import com.kt.ipms.annotation.EncryptResponse;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
 import com.kt.ipms.legacy.cmn.web.CommonController;
@@ -36,6 +37,7 @@ public class TbBatchLogController extends CommonController{
 
 	@RequestMapping(value = "/linkmgmt/batchmgmt/viewListTbBatchLog.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListTbBatchLogVo(@RequestBody TbBatchLogVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		TbBatchLogListVo resultListVo = tbBatchLogService.selectListTbBatchLogVo(searchVo);
@@ -134,6 +136,7 @@ public class TbBatchLogController extends CommonController{
 	 */
 	@RequestMapping(value = "/linkmgmt/batchmgmt/viewListBatchHistMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListBatchHistMst(@RequestBody TbBatchLogVo searchVo, ModelMap model, HttpServletRequest request) {
 		TbBatchLogListVo resultListVo = tbBatchLogService.selectListBatchHistMst(searchVo);
 		return createResultList(resultListVo.getTbBatchLogVos(), resultListVo.getTotalCount());

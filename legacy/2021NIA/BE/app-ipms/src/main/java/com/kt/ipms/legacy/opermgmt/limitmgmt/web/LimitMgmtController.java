@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kt.framework.exception.ServiceException;
+import com.kt.ipms.annotation.EncryptResponse;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
+import com.kt.ipms.legacy.cmn.vo.BaseVo;
 import com.kt.ipms.legacy.cmn.web.CommonController;
 import com.kt.ipms.legacy.opermgmt.limitmgmt.service.LimitMgmtService;
 import com.kt.ipms.legacy.opermgmt.limitmgmt.vo.TbAuditAssignBasVo;
@@ -30,6 +32,7 @@ public class LimitMgmtController  extends CommonController{
 
 	@RequestMapping(value = "/opermgmt/limitmgmt/viewListLimitMgmt.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListLimitMgmt(@RequestBody TbAuditDhcpBasVo searchVo) {
 		TbAuditDhcpBasVo resultVo = limitMgmtService.selectTbAuditDhcpBasVo(searchVo);
 		TbAuditAssignBasVo resultVo2 = limitMgmtService.selectTbAuditAssignBasVo(searchVo);
@@ -85,7 +88,8 @@ public class LimitMgmtController  extends CommonController{
 	
 	@RequestMapping(value = "opermgmt/limitmgmt/updateTbAuditDhcpBasVo.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbAuditDhcpBasVo updateTbAuditDhcpBasVo(@RequestBody TbAuditDhcpBasVo searchVo,  ModelMap model) {
+	@EncryptResponse
+	public BaseVo updateTbAuditDhcpBasVo(@RequestBody TbAuditDhcpBasVo searchVo,  ModelMap model) {
 		
 		TbAuditDhcpBasVo resultVo = null;
 		
@@ -113,7 +117,8 @@ public class LimitMgmtController  extends CommonController{
 	
 	@RequestMapping(value = "opermgmt/limitmgmt/updateAuditAssignBasVo.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbAuditAssignBasVo updateAuditAssignBasVo(@RequestBody TbAuditAssignBasVo searchVo,  ModelMap model) {
+	@EncryptResponse
+	public BaseVo updateAuditAssignBasVo(@RequestBody TbAuditAssignBasVo searchVo,  ModelMap model) {
 		
 		TbAuditAssignBasVo resultVo = null;
 		

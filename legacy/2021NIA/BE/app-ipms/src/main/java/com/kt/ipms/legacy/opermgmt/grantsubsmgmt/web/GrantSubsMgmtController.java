@@ -20,9 +20,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kt.framework.exception.ServiceException;
 import com.kt.framework.utils.StringUtils;
+import com.kt.ipms.annotation.EncryptResponse;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
 import com.kt.ipms.legacy.cmn.util.PrintLogUtil;
+import com.kt.ipms.legacy.cmn.vo.BaseVo;
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
 import com.kt.ipms.legacy.cmn.vo.SmtpVo;
 import com.kt.ipms.legacy.cmn.web.CommonController;
@@ -64,6 +66,7 @@ public class GrantSubsMgmtController extends CommonController {
 
 	@RequestMapping(value = "/opermgmt/grantsubsmgmt/viewListUserAuthSubs.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListUserAuth(
 			@ModelAttribute("searchVo") TbUserGrantVo searchVo, ModelMap model,
 			HttpServletRequest request) {
@@ -131,6 +134,7 @@ public class GrantSubsMgmtController extends CommonController {
 
 	@RequestMapping(value = "/opermgmt/grantsubsmgmt/viewInsertUserAuthSubs.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewInsertUserAuth(@RequestBody TbUserAuthTxnVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		// TbUserAuthTxnListVo resultListVo =
@@ -212,7 +216,8 @@ public class GrantSubsMgmtController extends CommonController {
 
 	@RequestMapping(value = "/opermgmt/grantsubsmgmt/insertUserAuthTxnSub.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbUserAuthTxnSubVo insertUserAuthTxnSub(@RequestBody TbUserAuthTxnSubListVo tbUserAuthTxnSubListVo,
+	@EncryptResponse
+	public BaseVo insertUserAuthTxnSub(@RequestBody TbUserAuthTxnSubListVo tbUserAuthTxnSubListVo,
 			HttpServletRequest request, HttpServletResponse response) {
 		TbUserAuthTxnSubVo resultVo = new TbUserAuthTxnSubVo();
 
@@ -242,6 +247,7 @@ public class GrantSubsMgmtController extends CommonController {
 
 	@RequestMapping(value = "/opermgmt/grantsubsmgmt/viewDetailUserAuthSubs.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewDetailUserAuth(@RequestBody TbUserAuthTxnVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		ModelMap builtModel = viewDetailUserAuthModel(searchVo, request);
@@ -348,7 +354,8 @@ public class GrantSubsMgmtController extends CommonController {
 
 	@RequestMapping(value = "/opermgmt/grantsubsmgmt/viewDeleteGrant.model", method = RequestMethod.POST)
 	@ResponseBody
-	public TbUserGrantVo deleteGrant(HttpServletRequest request, @RequestBody TbUserGrantVo searchVo) {
+	@EncryptResponse
+	public BaseVo deleteGrant(HttpServletRequest request, @RequestBody TbUserGrantVo searchVo) {
 		TbUserGrantVo resultVo = null;
 		int result = 0;
 		try {
@@ -373,7 +380,8 @@ public class GrantSubsMgmtController extends CommonController {
 
 	@RequestMapping(value = "/opermgmt/grantsubsmgmt/confirmGrantSub.model", method = RequestMethod.POST)
 	@ResponseBody
-	public TbUserGrantVo confirmGrantSub(@RequestBody TbUserAuthTxnListVo tbUserAuthTxnListVo,
+	@EncryptResponse
+	public BaseVo confirmGrantSub(@RequestBody TbUserAuthTxnListVo tbUserAuthTxnListVo,
 			HttpServletRequest request, HttpServletResponse response) {
 		TbUserGrantVo resultVo = null;
 		try {

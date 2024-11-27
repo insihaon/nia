@@ -3,6 +3,8 @@ package com.kt.ipms.aop;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -52,11 +54,23 @@ public class EncryptResponseAspect {
 
         // 요청 처리
         Object result = joinPoint.proceed();
-
-        // 암호화 조건 확인
         if (encrypt || encrypt == null) {
-
-            if (result instanceof ResponseEntity) {
+            if (result == null) {
+                // 결과가 void 타입 일 때
+            }
+            else if (result instanceof String) {
+                // 결과가 String 타입 일 때
+            }
+            else if (result instanceof List) {
+                // 결과가 List 타입 일 때
+            }
+            else if (result instanceof Map) {
+                Map<String,Object> resultMap = new HashMap<String, Object>();
+                resultMap.put(GlobalConstants.Common.ENCRYPT, true);
+                resultMap.put(GlobalConstants.Common.RESULT, encrypt(result));
+                return resultMap;
+            }
+            else if (result instanceof ResponseEntity) {
                 ResponseEntity<?> responseEntity = (ResponseEntity<?>) result;
                 Object body = responseEntity.getBody();
 
@@ -64,12 +78,6 @@ public class EncryptResponseAspect {
                 resultModel.addAttribute(GlobalConstants.Common.ENCRYPT, true);
                 resultModel.addAttribute(GlobalConstants.Common.RESULT, encrypt(body));
                 return new ResponseEntity<>(resultModel, HttpStatus.OK);
-
-                // if (body != null) {
-                //     // 응답 데이터 암호화
-                //     String encryptedData = encrypt(body);
-                //     return ResponseEntity.status(responseEntity.getStatusCode()).body(encryptedData);
-                // }
             }
             else if (result instanceof ModelMap) {
                 ModelMap resultModel = new ModelMap();
@@ -85,7 +93,7 @@ public class EncryptResponseAspect {
             }
         }
 
-        // 암호화 조건이 아닐 경우 원본 응답 반환
+        // 원본 응답 
         return result;
     }
 

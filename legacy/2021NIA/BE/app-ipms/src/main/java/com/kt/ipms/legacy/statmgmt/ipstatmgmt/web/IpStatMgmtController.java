@@ -24,9 +24,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kt.framework.exception.ServiceException;
 import com.kt.framework.utils.StringUtils;
+import com.kt.ipms.annotation.EncryptResponse;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
 import com.kt.ipms.legacy.cmn.util.PrintLogUtil;
+import com.kt.ipms.legacy.cmn.vo.BaseVo;
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
 import com.kt.ipms.legacy.cmn.vo.FileVo;
 import com.kt.ipms.legacy.cmn.web.CommonController;
@@ -65,6 +67,7 @@ public class IpStatMgmtController extends CommonController {
 	 */
 	@RequestMapping(value="/statmgmt/ipstatmgmt/viewListCreateIPStat.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListCreateIpStatMst(@RequestBody IpCreateStatVo searchVo, ModelMap model,
 			HttpServletRequest request){
 		IpCreateStatListVo resultListVo = ipStatMgmtService.selectListIpCreateStat(searchVo);
@@ -149,7 +152,8 @@ public class IpStatMgmtController extends CommonController {
 	 */
 	@RequestMapping(value="/statmgmt/ipstatmgmt/viewListCreateIPStatExcel.json", method = RequestMethod.POST)
 	@ResponseBody
-	public FileVo viewListCreateIpStatMstExcel(@ModelAttribute("searchVo") IpCreateStatVo searchVo, 
+	@EncryptResponse
+	public BaseVo viewListCreateIpStatMstExcel(@ModelAttribute("searchVo") IpCreateStatVo searchVo, 
 			HttpServletRequest request, HttpServletResponse response) {
 		FileVo resultVo = new FileVo();
 		try {
@@ -203,6 +207,7 @@ public class IpStatMgmtController extends CommonController {
 	 */
 	@RequestMapping(value="/statmgmt/ipstatmgmt/viewListOrgIPStat.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListOrgIpStatMst(@RequestBody IpOrgStatVo searchVo, ModelMap model,
 			HttpServletRequest request){
 		IpOrgStatListVo resultListVo = ipStatMgmtService.selectListOrgIpStatMst(searchVo);
@@ -341,7 +346,8 @@ public class IpStatMgmtController extends CommonController {
 	 */
 	@RequestMapping(value="/statmgmt/ipstatmgmt/viewListOrgIPStatExcel.json", method = RequestMethod.POST)
 	@ResponseBody
-	public FileVo viewListOrgIpStatMstExcel(@ModelAttribute("searchVo") IpOrgStatVo searchVo,
+	@EncryptResponse
+	public BaseVo viewListOrgIpStatMstExcel(@ModelAttribute("searchVo") IpOrgStatVo searchVo,
 			HttpServletRequest request, HttpServletResponse response){
 		FileVo resultVo = new FileVo();
 		try {
@@ -458,6 +464,7 @@ public class IpStatMgmtController extends CommonController {
 	 */
 	@RequestMapping(value="/statmgmt/ipstatmgmt/viewListOrgSvcIPStat.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListOrgSvcIpStatMst(@RequestBody IpOrgServiceStatVo searchVo,
 			HttpServletRequest request){
 		IpOrgServiceStatListVo resultListVo = ipStatMgmtService.selectListOrgSvcIpStatMst(searchVo);
@@ -601,7 +608,8 @@ public class IpStatMgmtController extends CommonController {
 	 */
 	@RequestMapping(value="/statmgmt/ipstatmgmt/viewListOrgSvcIPStatExcel.json", method = RequestMethod.POST)
 	@ResponseBody
-	public FileVo viewListOrgSvcIpStatMstExcel(@ModelAttribute("searchVo") IpOrgServiceStatVo searchVo,
+	@EncryptResponse
+	public BaseVo viewListOrgSvcIpStatMstExcel(@ModelAttribute("searchVo") IpOrgServiceStatVo searchVo,
 			HttpServletRequest request, HttpServletResponse response){
 		FileVo resultVo = new FileVo();
 		try {
@@ -717,6 +725,7 @@ public class IpStatMgmtController extends CommonController {
 	
 	@RequestMapping(value="/statmgmt/ipstatmgmt/viewListSingleBlockIPStat.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListSingleBlockIpStatMst(@RequestBody IpSingleBlockStatVo searchVo, ModelMap model,
 			HttpServletRequest request){
 		IpSingleBlockStatListVo resultListVo = ipStatMgmtService.selectListSingleBlockIpStatMst(searchVo);
@@ -861,7 +870,8 @@ public class IpStatMgmtController extends CommonController {
 	 */
 	@RequestMapping(value="/statmgmt/ipstatmgmt/viewListSingleBlockIPStatExcel.json", method = RequestMethod.POST)
 	@ResponseBody
-	public FileVo viewListSingleBlockIpStatMstExcel(@ModelAttribute("searchVo") IpSingleBlockStatVo searchVo,
+	@EncryptResponse
+	public BaseVo viewListSingleBlockIpStatMstExcel(@ModelAttribute("searchVo") IpSingleBlockStatVo searchVo,
 			HttpServletRequest request, HttpServletResponse response){
 		FileVo resultVo = new FileVo();
 		try {
@@ -974,6 +984,7 @@ public class IpStatMgmtController extends CommonController {
 	 */
 	@RequestMapping(value="/statmgmt/ipstatmgmt/viewListIntgrmSvcStat.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListIntgrmSvcStat(@RequestBody IpIntgrmSvcStatVo searchVo, HttpServletRequest request){
 		ModelMap resultModel = new ModelMap();
 		ModelMap model = viewListIntgrmSvcStatModel(searchVo, request);
@@ -1229,6 +1240,7 @@ public class IpStatMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/statmgmt/ipstatmgmt/selectListIntgrmAll.json", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public Map<String,Object> selectListIntgrmAll(@RequestBody IpIntgrmSvcStatVo searchVo, HttpServletRequest request, HttpServletResponse response){
 		Map<String,Object> result = new HashMap<String, Object>();
 		List<Map<String,String>> resultList = null;
@@ -1321,6 +1333,7 @@ public class IpStatMgmtController extends CommonController {
 	 */
 	@RequestMapping(value="/statmgmt/ipstatmgmt/viewListOrgSvcStat.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListOrgSvcStat(@RequestBody IpIntgrmSvcStatVo searchVo, HttpServletRequest request){
 		ModelMap resultModel = new ModelMap();
 		ModelMap model = viewListOrgSvcStatModel(searchVo, request);
@@ -1572,6 +1585,7 @@ public class IpStatMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/statmgmt/ipstatmgmt/selectListOrgSvcAll.json", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public Map<String,Object> selectListOrgSvcAll(@RequestBody IpIntgrmSvcStatVo searchVo, HttpServletRequest request, HttpServletResponse response){
 		Map<String,Object> result = new HashMap<String, Object>();
 		List<Map<String,String>> resultList = null;
@@ -1669,6 +1683,7 @@ public class IpStatMgmtController extends CommonController {
 	 */
 	@RequestMapping(value="/statmgmt/ipstatmgmt/viewListSvcStat.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListSvcStat(@RequestBody IpIntgrmSvcStatVo searchVo, HttpServletRequest request){
 		ModelMap resultModel = new ModelMap();
 		ModelMap model = viewListSvcStatModel(searchVo, request);
@@ -1870,6 +1885,7 @@ public class IpStatMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/statmgmt/ipstatmgmt/viewListSvcIPStatExcel.json", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public Map<String,Object> selectListSvcAll(@RequestBody IpIntgrmSvcStatVo searchVo, HttpServletRequest request, HttpServletResponse response){
 		Map<String,Object> result = new HashMap<String, Object>();
 		List<Map<String,String>> resultList = null;
@@ -1985,6 +2001,7 @@ public class IpStatMgmtController extends CommonController {
 	 */
 	@RequestMapping(value="/statmgmt/ipstatmgmt/viewListBlockSizeStat.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListBlockSizeStat(@RequestBody IpIntgrmSvcStatVo searchVo, HttpServletRequest request){
 		ModelMap resultModel = new ModelMap();
 		ModelMap model = viewListBlockSizeStatModel(searchVo, request);
@@ -2203,6 +2220,7 @@ public class IpStatMgmtController extends CommonController {
 	
 	@RequestMapping(value = "/statmgmt/ipstatmgmt/viewListBlockSizeIPStatExcel.json", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public Map<String,Object> viewListBlockSizeIPStatExcel(@RequestBody IpIntgrmSvcStatVo searchVo, HttpServletRequest request, HttpServletResponse response){
 		
 		Map<String,Object> result = new HashMap<String, Object>();

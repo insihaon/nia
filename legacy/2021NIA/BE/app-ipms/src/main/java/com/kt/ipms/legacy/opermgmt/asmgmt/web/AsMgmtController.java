@@ -23,11 +23,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kt.framework.exception.ServiceException;
 import com.kt.framework.utils.StringUtils;
+import com.kt.ipms.annotation.EncryptResponse;
 import com.kt.ipms.legacy.cmn.service.CommonService;
 import com.kt.ipms.legacy.cmn.service.ConfigPropertieService;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
 import com.kt.ipms.legacy.cmn.util.PrintLogUtil;
+import com.kt.ipms.legacy.cmn.vo.BaseVo;
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
 import com.kt.ipms.legacy.cmn.vo.FileVo;
 import com.kt.ipms.legacy.cmn.vo.SmtpVo;
@@ -80,6 +82,7 @@ public class AsMgmtController extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/asmgmt/viewListPrivateAs.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListPrivateAs(@RequestBody TbRequestAsApyTxnVo searchVo, ModelMap model, HttpServletRequest request) {
 		setPagination(searchVo);
 		TbRequestAsApyTxnListVo resultListVo = asMgmtService.viewListPrivateAs(searchVo);
@@ -150,6 +153,7 @@ public class AsMgmtController extends CommonController{
 	
 	@RequestMapping(value = "/opermgmt/asmgmt/viewListPrivateAsExcel.json", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ResponseEntity<?> viewListPrivateAsExcel(@RequestBody TbRequestAsApyTxnVo searchVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
 		FileVo resultVo = new FileVo();
 		try{
@@ -206,6 +210,7 @@ public class AsMgmtController extends CommonController{
 	 */
 	@RequestMapping(value = "opermgmt/asmgmt/viewDetailPrivateAs.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewDetailPrivateAs(@RequestBody TbRequestAsApyTxnVo tbRequestAsApyTxnVo, ModelMap model, HttpServletRequest request) {
 		TbRequestAsApyTxnVo resultVo = asMgmtService.viewDetailPrivateAS(tbRequestAsApyTxnVo);
 		return createResult(resultVo);
@@ -274,7 +279,8 @@ public class AsMgmtController extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/asmgmt/insertPrivateAs.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbRequestAsApyTxnVo insertPrivateAs(@RequestBody TbRequestAsApyTxnVo insertVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
+	@EncryptResponse
+	public BaseVo insertPrivateAs(@RequestBody TbRequestAsApyTxnVo insertVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
 		TbRequestAsApyTxnVo resultVo = null;
 		String msgDesc = null;
 		
@@ -308,6 +314,7 @@ public class AsMgmtController extends CommonController{
 	 */
 	@RequestMapping(value = "opermgmt/asmgmt/viewUpdatePrivateAs.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewUpdatePrivateAs(@RequestBody TbRequestAsApyTxnVo tbRequestAsApyTxnVo, ModelMap model, HttpServletRequest request) {
 		TbRequestAsApyTxnVo resultVo = asMgmtService.viewDetailPrivateAS(tbRequestAsApyTxnVo);
 		return createResult(resultVo);
@@ -362,7 +369,8 @@ public class AsMgmtController extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/asmgmt/updatePrivateAs.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbRequestAsApyTxnVo updatePrivateAs(@RequestBody TbRequestAsApyTxnVo updateVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
+	@EncryptResponse
+	public BaseVo updatePrivateAs(@RequestBody TbRequestAsApyTxnVo updateVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
 		TbRequestAsApyTxnVo resultVo = null;
 		try {
 			resultVo = asMgmtService.updatePrivateAs(updateVo);
@@ -391,7 +399,8 @@ public class AsMgmtController extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/asmgmt/deletePrivateAs.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbRequestAsApyTxnVo deletePrivateAs(@RequestBody TbRequestAsApyTxnVo deleteVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
+	@EncryptResponse
+	public BaseVo deletePrivateAs(@RequestBody TbRequestAsApyTxnVo deleteVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
 		TbRequestAsApyTxnVo resultVo = null;
 		try{
 			resultVo = asMgmtService.deletePrivateAs(deleteVo);
@@ -419,7 +428,8 @@ public class AsMgmtController extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/asmgmt/updateNrequestAsSeqYn.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbRequestAsApyTxnVo updateNrequestAsSeqYn(@RequestBody TbRequestAsApyTxnVo updateVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
+	@EncryptResponse
+	public BaseVo updateNrequestAsSeqYn(@RequestBody TbRequestAsApyTxnVo updateVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
 		TbRequestAsApyTxnVo resultVo = null;
 		String msgDesc = null;
 		try {
@@ -456,7 +466,8 @@ public class AsMgmtController extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/asmgmt/insertAsHist.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbRequestAsApyTxnVo insertAsHist(@RequestBody TbRequestAsApyTxnVo insertVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
+	@EncryptResponse
+	public BaseVo insertAsHist(@RequestBody TbRequestAsApyTxnVo insertVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
 		TbRequestAsApyTxnVo resultVo = null;
 		try {
 			resultVo = asMgmtService.insertAsHist(insertVo);
@@ -486,6 +497,7 @@ public class AsMgmtController extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/asmgmt/viewListAsHist.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListAsHist(@RequestBody TbRequestAsMstVo searchVo, ModelMap model, HttpServletRequest request) {
 		TbRequestAsMstListVo resultListVo = asMgmtService.viewListAsHist(searchVo);
 		return createResultList(resultListVo.getTbRequestAsMstVos(), resultListVo.getTotalCount());
@@ -540,6 +552,7 @@ public class AsMgmtController extends CommonController{
 	
 	@RequestMapping(value = "/opermgmt/asmgmt/viewListAsHistExcel.json", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ResponseEntity<?> viewListAsHistExcel(@RequestBody TbRequestAsMstVo searchVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
 		FileVo resultVo = new FileVo();
 		try{
@@ -581,6 +594,7 @@ public class AsMgmtController extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/asmgmt/viewDetailAsHist.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewDetailAsHist(@RequestBody TbRequestAsHistVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		TbRequestAsHistListVo resultListVo = asMgmtService.viewDetailASHist(searchVo);
@@ -643,7 +657,8 @@ public class AsMgmtController extends CommonController{
 	 */
 	@RequestMapping(value = "opermgmt/asmgmt/selectMinNrequestAsSeq.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbRequestAsMstVo selectMinNrequestAsSeq(@RequestBody TbRequestAsMstVo tbRequestAsMstVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
+	@EncryptResponse
+	public BaseVo selectMinNrequestAsSeq(@RequestBody TbRequestAsMstVo tbRequestAsMstVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
 		TbRequestAsMstVo resultVo =null;
 		try {
 			resultVo = asMgmtService.selectMinNrequestAsSeq(tbRequestAsMstVo);
@@ -672,7 +687,8 @@ public class AsMgmtController extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/asmgmt/updateTbRequestAsMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbRequestAsMstVo updateTbRequestAsMst(@RequestBody TbRequestAsMstVo updateVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
+	@EncryptResponse
+	public BaseVo updateTbRequestAsMst(@RequestBody TbRequestAsMstVo updateVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
 		TbRequestAsMstVo resultVo = null;
 		try {
 			resultVo = asMgmtService.updateTbRequestAsMst(updateVo);

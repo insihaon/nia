@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kt.framework.exception.ServiceException;
+import com.kt.ipms.annotation.EncryptResponse;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
+import com.kt.ipms.legacy.cmn.vo.BaseVo;
 import com.kt.ipms.legacy.cmn.vo.CommonVo;
 import com.kt.ipms.legacy.cmn.web.CommonController;
 import com.kt.ipms.legacy.opermgmt.operstdmgmt.vo.TbCmnMsgLvlCdListVo;
@@ -83,6 +85,7 @@ public class TbCmnMsgMstController extends CommonController {
 	
 	@RequestMapping(value = "/opermgmt/operstdmgmt/viewInsertTbCmnMsgCd.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewInsertTbCmnMsgCd(HttpServletRequest request)  {
 		ModelMap resultModel = new ModelMap();
 
@@ -158,7 +161,8 @@ public class TbCmnMsgMstController extends CommonController {
 	
 	@RequestMapping(value = "/opermgmt/operstdmgmt/insertTbCmnMsgCd.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbCmnMsgMstVo insertTbCmnMsgCd(@RequestBody TbCmnMsgMstVo tbCmnMsgCdVo, 
+	@EncryptResponse
+	public BaseVo insertTbCmnMsgCd(@RequestBody TbCmnMsgMstVo tbCmnMsgCdVo, 
 			HttpServletRequest request, HttpServletResponse reponse)  {
 		TbCmnMsgMstVo resultVo = null;
 		try {
@@ -178,6 +182,7 @@ public class TbCmnMsgMstController extends CommonController {
 	}
 	@RequestMapping(value = "/opermgmt/operstdmgmt/viewDetailTbCmnMsgCd.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewDetailTbCmnMsg(@RequestBody TbCmnMsgMstVo tbCmnMsgCdVo, ModelMap model, HttpServletRequest request)  {
 		TbCmnMsgMstVo resultVo = tbCmnMstService.selectTbCmnMsgMstVo(tbCmnMsgCdVo);
 		return createResult(resultVo);
@@ -222,6 +227,7 @@ public class TbCmnMsgMstController extends CommonController {
 	
 	@RequestMapping(value = "opermgmt/operstdmgmt/viewUpdateTbCmnMsgCd.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewUpdateTbCmnMsgCd(@RequestBody TbCmnMsgMstVo tbCmnMsgCdVo, ModelMap model, HttpServletRequest request)  {
 		TbCmnMsgMstVo resultVo = tbCmnMstService.selectTbCmnMsgMstVo(tbCmnMsgCdVo);
 		return createResult(resultVo);
@@ -298,7 +304,8 @@ public class TbCmnMsgMstController extends CommonController {
 	
 	@RequestMapping(value="opermgmt/operstdmgmt/updateTbCmnMsgCd.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbCmnMsgMstVo updateTbCmnMsgCd(@RequestBody TbCmnMsgMstVo tbCmnMsgCdVo, HttpServletRequest request, HttpServletResponse reponse)  {
+	@EncryptResponse
+	public BaseVo updateTbCmnMsgCd(@RequestBody TbCmnMsgMstVo tbCmnMsgCdVo, HttpServletRequest request, HttpServletResponse reponse)  {
 		TbCmnMsgMstVo resultVo = new TbCmnMsgMstVo();
 		try {
 			tbCmnMstService.updateTbCmnMsgCdVo(tbCmnMsgCdVo);

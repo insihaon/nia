@@ -22,14 +22,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kt.framework.exception.ServiceException;
 import com.kt.framework.utils.StringUtils;
+import com.kt.ipms.annotation.EncryptResponse;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
+import com.kt.ipms.legacy.cmn.vo.BaseVo;
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
 import com.kt.ipms.legacy.cmn.vo.FileVo;
 import com.kt.ipms.legacy.cmn.web.CommonController;
-import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.IpAllocOperMstListVo;
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.TbIpAllocMstVo;
-import com.kt.ipms.legacy.ipmgmt.assignmgmt.vo.TbIpAssignMstListVo;
 import com.kt.ipms.legacy.ipmgmt.historymgmt.service.HistoryMgmtService;
 import com.kt.ipms.legacy.ipmgmt.historymgmt.vo.IpHistoryMstListVo;
 import com.kt.ipms.legacy.ipmgmt.historymgmt.vo.IpHistoryMstVo;
@@ -58,6 +58,7 @@ public class HistoryMgmtController extends CommonController {
 	
 	@RequestMapping(value="/ipmgmt/historymgmt/viewListIpHistoryMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap selectListIpHistoryMst(@RequestBody IpHistoryMstVo searchVo, ModelMap model, HttpServletRequest request){
 		ModelMap builtModel = selectListIpHistoryMstModel(searchVo, request);
 		// IpHistoryMstListVo resultListVo = historyMgmtService.selectListIpHistMst(searchVo);
@@ -264,6 +265,7 @@ public class HistoryMgmtController extends CommonController {
 	 */
 	@RequestMapping(value="/ipmgmt/historymgmt/viewListIpHistoryMstExcel.json", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ResponseEntity<?> selectListIpHistoryMstExcel(@RequestBody IpHistoryMstVo searchVo, ModelMap model, HttpServletRequest request, HttpServletResponse response){
 
 		FileVo resultVo = new FileVo();
@@ -391,7 +393,8 @@ public class HistoryMgmtController extends CommonController {
 	 */
 	@RequestMapping(value="ipmgmt/historymgmt/insertTbHistoryVo.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbLvlCdVo insertTbCmnMsgCd(@RequestBody IpHistoryMstVo insertVo, HttpServletRequest request, HttpServletResponse reponse)  {
+	@EncryptResponse
+	public BaseVo insertTbCmnMsgCd(@RequestBody IpHistoryMstVo insertVo, HttpServletRequest request, HttpServletResponse reponse)  {
 		TbLvlCdVo resultVo = new TbLvlCdVo();
 		try {
 			historyMgmtService.insertTbIpHistoryMstVo(insertVo);
@@ -410,6 +413,7 @@ public class HistoryMgmtController extends CommonController {
 	
 	@RequestMapping(value = "/ipmgmt/historymgmt/viewDetailIpHistMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewDetailIpHistMst(@RequestBody IpHistoryMstVo searchVo, ModelMap model, HttpServletRequest request){
 		IpHistoryMstVo resultVo = historyMgmtService.selectMainIpInfoMst(searchVo);
 		return createResult(resultVo);

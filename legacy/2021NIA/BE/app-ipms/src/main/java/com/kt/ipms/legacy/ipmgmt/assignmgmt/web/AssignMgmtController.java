@@ -10,7 +10,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.poi.ss.usermodel.Cell;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,13 +23,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kt.framework.exception.ServiceException;
 import com.kt.framework.utils.StringUtils;
+import com.kt.ipms.annotation.EncryptResponse;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
 import com.kt.ipms.legacy.cmn.util.PrintLogUtil;
+import com.kt.ipms.legacy.cmn.vo.BaseVo;
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
 import com.kt.ipms.legacy.cmn.vo.FileVo;
 import com.kt.ipms.legacy.cmn.web.CommonController;
-import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.IpAllocOperMstListVo;
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.TbIpAllocMstVo;
 import com.kt.ipms.legacy.ipmgmt.assignmgmt.service.AssignMgmtService;
 import com.kt.ipms.legacy.ipmgmt.assignmgmt.vo.TbIpAssignMstComplexVo;
@@ -51,6 +51,7 @@ public class AssignMgmtController extends CommonController {
 
 	@RequestMapping(value = "/ipmgmt/assignmgmt/viewListAsgnIPMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListAsgnIPMst(@RequestBody TbIpAssignMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		ModelMap builtModel = viewListAsgnIPMstModel(searchVo, request);
@@ -246,6 +247,7 @@ public class AssignMgmtController extends CommonController {
 
 	@RequestMapping(value = "/ipmgmt/assignmgmt/viewListAsgnIPMstExcel.json", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ResponseEntity<?> viewListAsgnIPMstExcel(@RequestBody TbIpAssignMstVo searchVo,
 			HttpServletRequest request, HttpServletResponse response) {
 		FileVo resultVo = new FileVo();
@@ -375,6 +377,7 @@ public class AssignMgmtController extends CommonController {
 
 	@RequestMapping(value = "/ipmgmt/assignmgmt/viewInsertDivAsgnIPMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewInsertDivAsgnIPMst(@RequestBody TbIpAssignMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		TbIpAssignMstVo resultVo = assignMgmtService.selectIpAssignMst(searchVo);
@@ -429,7 +432,8 @@ public class AssignMgmtController extends CommonController {
 
 	@RequestMapping(value = "/ipmgmt/assignmgmt/appendDivAsgnIPMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbIpAssignMstListVo appendDivAsgnIPMst(@RequestBody TbIpAssignMstVo tbIpAssignMstVo,
+	@EncryptResponse
+	public BaseVo appendDivAsgnIPMst(@RequestBody TbIpAssignMstVo tbIpAssignMstVo,
 			HttpServletRequest request, HttpServletResponse response) {
 		TbIpAssignMstListVo resultListVo = null;
 		try {
@@ -449,7 +453,8 @@ public class AssignMgmtController extends CommonController {
 
 	@RequestMapping(value = "/ipmgmt/assignmgmt/appendMergeDivAsgnIPMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbIpAssignMstVo appendMergeDivAsgnIPMst(@RequestBody TbIpAssignMstListVo tbIpAssignMstListVo,
+	@EncryptResponse
+	public BaseVo appendMergeDivAsgnIPMst(@RequestBody TbIpAssignMstListVo tbIpAssignMstListVo,
 			HttpServletRequest request, HttpServletResponse response) {
 
 		TbIpAssignMstVo resultVo = null;
@@ -470,7 +475,8 @@ public class AssignMgmtController extends CommonController {
 
 	@RequestMapping(value = "/ipmgmt/assignmgmt/insertListDivAsgnIPMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbIpAssignMstVo insertListDivAsgnIPMst(@RequestBody TbIpAssignMstComplexVo tbIpAssignMstComplexVo,
+	@EncryptResponse
+	public BaseVo insertListDivAsgnIPMst(@RequestBody TbIpAssignMstComplexVo tbIpAssignMstComplexVo,
 			HttpServletRequest request, HttpServletResponse response) {
 		TbIpAssignMstVo resultVo = null;
 		try {
@@ -494,6 +500,7 @@ public class AssignMgmtController extends CommonController {
 
 	@RequestMapping(value = "/ipmgmt/assignmgmt/viewInsertMrgAsgnIPMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewInsertMrgAsgnIPMst(@RequestBody TbIpAssignMstListVo tbIpAssignMstListVo, ModelMap model,
 			HttpServletRequest request) {
 		TbIpAssignMstComplexVo resultComplexVo = null;
@@ -604,7 +611,8 @@ public class AssignMgmtController extends CommonController {
 
 	@RequestMapping(value = "/ipmgmt/assignmgmt/insertMrgAsgnIPMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbIpAssignMstVo insertMrgAsgnIPMst(@RequestBody TbIpAssignMstComplexVo tbIpAssignMstComplexVo,
+	@EncryptResponse
+	public BaseVo insertMrgAsgnIPMst(@RequestBody TbIpAssignMstComplexVo tbIpAssignMstComplexVo,
 			HttpServletRequest request, HttpServletResponse response) {
 		TbIpAssignMstVo resultVo = null;
 		try {
@@ -642,6 +650,7 @@ public class AssignMgmtController extends CommonController {
 
 	@RequestMapping(value = "/ipmgmt/assignmgmt/viewUpdateAsgnIPMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewUpdateAsgnIPMst(@RequestBody TbIpAssignMstListVo tbIpAssignMstListVo, ModelMap model,
 			HttpServletRequest request) {
 		ModelMap builtModel = viewUpdateAsgnIPMstModel(tbIpAssignMstListVo, request);
@@ -794,7 +803,8 @@ public class AssignMgmtController extends CommonController {
 
 	@RequestMapping(value = "/ipmgmt/assignmgmt/updateAsgnIPMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbIpAssignMstVo updateAsgnIPMst(@RequestBody TbIpAssignMstComplexVo tbIpAssignMstComplexVo,
+	@EncryptResponse
+	public BaseVo updateAsgnIPMst(@RequestBody TbIpAssignMstComplexVo tbIpAssignMstComplexVo,
 			HttpServletRequest request, HttpServletResponse response) {
 		TbIpAssignMstVo resultVo = null;
 		try {
@@ -828,6 +838,7 @@ public class AssignMgmtController extends CommonController {
 
 	@RequestMapping(value = "/ipmgmt/assignmgmt/viewDetailAsgnIPMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewDetailAsgnIPMst(@RequestBody TbIpAssignMstVo tbIpAssignMstVo, ModelMap model,
 			HttpServletRequest request) {
 		TbIpAssignMstVo resultVo = assignMgmtService.selectIpAssignMst(tbIpAssignMstVo);
@@ -878,7 +889,8 @@ public class AssignMgmtController extends CommonController {
 	/* 비고 수정 처리 */
 	@RequestMapping(value = "/ipmgmt/assignmgmt/updateScommentAsgnIPMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbIpAssignMstVo updateScommentAsgnIPMst(@RequestBody TbIpAssignMstComplexVo tbIpAssignMstComplexVo,
+	@EncryptResponse
+	public BaseVo updateScommentAsgnIPMst(@RequestBody TbIpAssignMstComplexVo tbIpAssignMstComplexVo,
 			HttpServletRequest request, HttpServletResponse response) {
 		TbIpAssignMstVo resultVo = null;
 		try {
@@ -912,6 +924,7 @@ public class AssignMgmtController extends CommonController {
 	 ****************************************/
 	@RequestMapping(value = "/ipmgmt/assignmgmt/viewListUnAssignIP.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListUnAssignIP(@RequestBody TbIpAssignMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 
@@ -1035,6 +1048,7 @@ public class AssignMgmtController extends CommonController {
 
 	@RequestMapping(value = "/ipmgmt/assignmgmt/viewListUnAssignIPExcel.json", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ResponseEntity<?> viewListUnAssignIPExcel(@RequestBody TbIpAssignMstVo searchVo,
 			HttpServletRequest request, HttpServletResponse response) {
 		FileVo resultVo = new FileVo();
@@ -1106,6 +1120,7 @@ public class AssignMgmtController extends CommonController {
 
 	@RequestMapping(value = "/ipmgmt/assignmgmt/viewDetailUnAssignIP.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewDetailUnAssignIP(@RequestBody TbIpAssignMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		setPagination(searchVo);
@@ -1174,6 +1189,7 @@ public class AssignMgmtController extends CommonController {
 
 	@RequestMapping(value = "/ipmgmt/assignmgmt/viewDetailSummary.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewDetailSummaryMst(@RequestBody TbIpAssignMstVo tbIpAssignMstVo, HttpServletRequest request) {
 		ModelMap model = viewDetailSummaryMstModel(tbIpAssignMstVo, request);
 		TbIpAssignMstListVo resultListVo = (TbIpAssignMstListVo) model.get("resultListVo");

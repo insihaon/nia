@@ -18,8 +18,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kt.framework.exception.ServiceException;
 import com.kt.framework.utils.StringUtils;
+import com.kt.ipms.annotation.EncryptResponse;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
+import com.kt.ipms.legacy.cmn.vo.BaseVo;
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
 import com.kt.ipms.legacy.cmn.vo.FileVo;
 import com.kt.ipms.legacy.cmn.web.CommonController;
@@ -46,6 +48,7 @@ public class NonKtIpMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/opermgmt/nonktipmgmt/viewListNonKtIpSvcMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListNonKtIpSvcMst(@RequestBody TbNonKtSvcMstVo searchVo, ModelMap model, HttpServletRequest request) {
 		TbNonKtSvcMstListVo resultListVo = nonKtIpMgmtService.viewListNonKtIpSvcMst(searchVo);
 		return createResultList(resultListVo.getTbNonKtSvcMstVos(), resultListVo.getTotalCount());
@@ -108,6 +111,7 @@ public class NonKtIpMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/opermgmt/nonktipmgmt/viewDetailNonKtIpSvcMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewDetailNonKtIpSvcMst(@RequestBody TbNonKtSvcMstVo tbNonKtSvcMstVo, ModelMap model, HttpServletRequest request) {
 		TbNonKtSvcMstVo resultVo = nonKtIpMgmtService.viewDetailNonKtIpSvcMst(tbNonKtSvcMstVo);
 		return createResult(resultVo);
@@ -189,7 +193,8 @@ public class NonKtIpMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/opermgmt/nonktipmgmt/workCompletionIpBlock.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbNonKtIpblockVo workCompletionIpBlock(@RequestBody TbNonKtIpblockListVo tbNonKtIpblockListVo, HttpServletRequest request, HttpServletResponse response) {
+	@EncryptResponse
+	public BaseVo workCompletionIpBlock(@RequestBody TbNonKtIpblockListVo tbNonKtIpblockListVo, HttpServletRequest request, HttpServletResponse response) {
 		TbNonKtIpblockVo resultVo = null;
 		try{
 			nonKtIpMgmtService.workCompletionIpBlock(tbNonKtIpblockListVo);
@@ -219,7 +224,8 @@ public class NonKtIpMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/opermgmt/nonktipmgmt/selectListNonKtIpSvcMstExcel.json", method = RequestMethod.POST)
 	@ResponseBody
-	public FileVo selectListNonKtIpSvcMstExcel(@ModelAttribute("searchVo") TbNonKtSvcMstVo searchVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
+	@EncryptResponse
+	public BaseVo selectListNonKtIpSvcMstExcel(@ModelAttribute("searchVo") TbNonKtSvcMstVo searchVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {
 		FileVo resultVo = new FileVo();
 		try {
 			TbNonKtSvcMstListVo resultListVo = nonKtIpMgmtService.selectListNonKtIpSvcMstExcel(searchVo);

@@ -18,13 +18,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kt.framework.exception.ServiceException;
 import com.kt.framework.utils.StringUtils;
+import com.kt.ipms.annotation.EncryptResponse;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
-import com.kt.ipms.legacy.cmn.util.JwtUtil;
+import com.kt.ipms.legacy.cmn.vo.BaseVo;
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
 import com.kt.ipms.legacy.cmn.vo.CommonVo;
 import com.kt.ipms.legacy.cmn.web.CommonController;
-import com.kt.ipms.legacy.ipmgmt.assignmgmt.vo.TbIpAssignMstListVo;
 import com.kt.ipms.legacy.opermgmt.orgmgmt.service.OrgMgmtService;
 import com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlBasListVo;
 import com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlBasVo;
@@ -65,6 +65,7 @@ public class OrgMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/opermgmt/orgmgmt/viewListTbLvlCdVo.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap selectListTbLvlCdVo(@RequestBody TbLvlCdVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		setPagination(searchVo);
@@ -134,6 +135,7 @@ public class OrgMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/opermgmt/orgmgmt/viewUpdateTbLvlCdVo.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewUPdateTbLvlCdVo(@RequestBody TbLvlCdVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		TbLvlCdVo resultVo = orgMgmtService.selectTbLvlCdVo(searchVo);
@@ -197,6 +199,7 @@ public class OrgMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/opermgmt/orgmgmt/viewInsertTbLvlCdVo.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewInsertTbLvlCdVo(@RequestBody TbLvlCdVo requestVo, ModelMap model,
 			HttpServletRequest request) {
 		List<CommonCodeVo> resultList = commonCodeService.selectListCommonCode(CommonCodeUtil.EXTERNAL_LINK_USE_TYPE_CD,
@@ -262,7 +265,8 @@ public class OrgMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "opermgmt/orgmgmt/updateTbLvlCdVo.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbLvlCdVo updateTbCmnMsgCd(@RequestBody TbLvlCdVo updateVo, HttpServletRequest request,
+	@EncryptResponse
+	public BaseVo updateTbCmnMsgCd(@RequestBody TbLvlCdVo updateVo, HttpServletRequest request,
 			HttpServletResponse reponse) {
 		TbLvlCdVo resultVo = new TbLvlCdVo();
 		try {
@@ -292,7 +296,8 @@ public class OrgMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "opermgmt/orgmgmt/insertTbLvlCdVo.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbLvlCdVo insertTbCmnMsgCd(@RequestBody TbLvlCdVo insertVo, HttpServletRequest request,
+	@EncryptResponse
+	public BaseVo insertTbCmnMsgCd(@RequestBody TbLvlCdVo insertVo, HttpServletRequest request,
 			HttpServletResponse reponse) {
 		TbLvlCdVo resultVo = new TbLvlCdVo();
 		try {
@@ -312,7 +317,8 @@ public class OrgMgmtController extends CommonController {
 
 	@RequestMapping(value = "/opermgmt/orgmgmt/selectSearchLvlCd.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbLvlCdListVo selectSearchLvlCd(@RequestBody TbLvlCdVo searchVo,
+	@EncryptResponse
+	public BaseVo selectSearchLvlCd(@RequestBody TbLvlCdVo searchVo,
 			HttpServletRequest request, HttpServletResponse response) {
 		TbLvlCdListVo resultListVo = null;
 		try {
@@ -345,6 +351,7 @@ public class OrgMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/opermgmt/orgmgmt/viewSearchTbLvlCd.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewSearchTbLvlCd(@RequestBody TbLvlCdVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		TbLvlCdListVo resultListVo = new TbLvlCdListVo();
@@ -408,6 +415,7 @@ public class OrgMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/opermgmt/orgmgmt/viewListSvcLineType.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap selectListSvcLineType(@RequestBody TbSvcLineTypeCdVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		TbSvcLineTypeCdListVo resultListVo = orgMgmtService.selectListSvcLineType(searchVo);
@@ -519,6 +527,7 @@ public class OrgMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "opermgmt/orgmgmt/viewUpdateSvcLineType.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewUpdateSvcLineType(@RequestBody TbSvcLineTypeCdVo tbSvcLineTypeCdVo, ModelMap model,
 			HttpServletRequest request) {
 		TbSvcLineTypeCdVo resultVo = orgMgmtService.selectLineType(tbSvcLineTypeCdVo);
@@ -580,7 +589,8 @@ public class OrgMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "opermgmt/orgmgmt/updateSvcLineType.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbSvcLineTypeCdVo updateBoard(@RequestBody TbSvcLineTypeCdVo updateVo, HttpServletRequest request,
+	@EncryptResponse
+	public BaseVo updateBoard(@RequestBody TbSvcLineTypeCdVo updateVo, HttpServletRequest request,
 			HttpServletResponse response) {
 		TbSvcLineTypeCdVo resultVo = new TbSvcLineTypeCdVo();
 		try {
@@ -611,6 +621,7 @@ public class OrgMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/opermgmt/orgmgmt/viewListOrgBas.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap selectListOrgBas(@RequestBody TbOrgBasVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		setPagination(searchVo);
@@ -677,7 +688,8 @@ public class OrgMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/opermgmt/orgmgmt/selectSearchOrgBas.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbOrgBasListVo selectSearchOrgBas(@RequestBody TbOrgBasVo searchVo,
+	@EncryptResponse
+	public BaseVo selectSearchOrgBas(@RequestBody TbOrgBasVo searchVo,
 			HttpServletRequest request, HttpServletResponse response) {
 		TbOrgBasListVo resultListVo = null;
 		try {
@@ -710,6 +722,7 @@ public class OrgMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/opermgmt/orgmgmt/viewSearchTbOrgBas.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap searchViewTbOrgBas(@RequestBody TbOrgBasVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		TbOrgBasListVo resultListVo = new TbOrgBasListVo();
@@ -773,7 +786,8 @@ public class OrgMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/opermgmt/orgmgmt/updateSipmsOrgYn.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbOrgBasListVo updateSipmsOrgYn(@RequestBody TbOrgBasListVo tbOrgBasListVo, HttpServletRequest request,
+	@EncryptResponse
+	public BaseVo updateSipmsOrgYn(@RequestBody TbOrgBasListVo tbOrgBasListVo, HttpServletRequest request,
 			HttpServletResponse response) {
 		TbOrgBasListVo resultListVo = new TbOrgBasListVo();
 		try {
@@ -803,6 +817,7 @@ public class OrgMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/opermgmt/orgmgmt/viewListLvlBas.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap selectListLvlBas(@RequestBody TbLvlBasVo searchVo, ModelMap model, HttpServletRequest request) {
 		setPagination(searchVo);
 		TbLvlBasListVo resultListVo = orgMgmtService.selectListLvlBas(searchVo);
@@ -895,7 +910,8 @@ public class OrgMgmtController extends CommonController {
 	/*-------------------------------- 권한 조직 계위 정보 조회   Start------------------------------------*/
 	@RequestMapping(value = "opermgmt/orgmgmt/selectAuthSvcLineList.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbLvlBasListVo selectAuthSvcLineList(@RequestBody TbLvlBasVo searchVo, HttpServletRequest request,
+	@EncryptResponse
+	public BaseVo selectAuthSvcLineList(@RequestBody TbLvlBasVo searchVo, HttpServletRequest request,
 			HttpServletResponse response) {
 		TbLvlBasListVo resultListVo = null;
 		try {
@@ -915,7 +931,8 @@ public class OrgMgmtController extends CommonController {
 
 	@RequestMapping(value = "opermgmt/orgmgmt/selectAuthCenterList.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbLvlBasListVo selectAuthCenterList(@RequestBody TbLvlBasVo searchVo, HttpServletRequest request,
+	@EncryptResponse
+	public BaseVo selectAuthCenterList(@RequestBody TbLvlBasVo searchVo, HttpServletRequest request,
 			HttpServletResponse response) {
 		TbLvlBasListVo resultListVo = null;
 		try {
@@ -935,7 +952,8 @@ public class OrgMgmtController extends CommonController {
 
 	@RequestMapping(value = "opermgmt/orgmgmt/selectAuthNodeList.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbLvlBasListVo selectAuthNodeList(@RequestBody TbLvlBasVo searchVo, HttpServletRequest request,
+	@EncryptResponse
+	public BaseVo selectAuthNodeList(@RequestBody TbLvlBasVo searchVo, HttpServletRequest request,
 			HttpServletResponse response) {
 		TbLvlBasListVo resultListVo = null;
 		try {
@@ -967,6 +985,7 @@ public class OrgMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/opermgmt/orgmgmt/viewInsertLvlRoleSub.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewInsertLvlRoleSub(@RequestBody TbLvlRoleSubVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		TbLvlRoleSubListVo resultListVo = orgMgmtService.selectListLvlRoleSub(searchVo);
@@ -1040,7 +1059,8 @@ public class OrgMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "opermgmt/orgmgmt/insertLvlRoleSub.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbLvlRoleSubListVo insertLvlRoleSub(@RequestBody TbLvlRoleSubVo searchVo, ModelMap model,
+	@EncryptResponse
+	public BaseVo insertLvlRoleSub(@RequestBody TbLvlRoleSubVo searchVo, ModelMap model,
 			HttpServletRequest request, HttpServletResponse response) {
 		TbLvlRoleSubListVo resultListVo;
 		try {
@@ -1076,7 +1096,8 @@ public class OrgMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "opermgmt/orgmgmt/deleteLvlRoleSub.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbLvlRoleSubListVo deleteLvlRoleSub(@RequestBody TbLvlRoleSubVo searchVo, ModelMap model,
+	@EncryptResponse
+	public BaseVo deleteLvlRoleSub(@RequestBody TbLvlRoleSubVo searchVo, ModelMap model,
 			HttpServletRequest request, HttpServletResponse response) {
 		TbLvlRoleSubListVo resultListVo;
 		try {
@@ -1112,6 +1133,7 @@ public class OrgMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "opermgmt/orgmgmt/viewInsertLvlSonMgmtPop.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewInsertLvlSon(@RequestBody TbLvlSubCdVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		TbLvlSubCdListVo resultListVo = orgMgmtService.selectListLvlSubCd(searchVo);
@@ -1186,7 +1208,8 @@ public class OrgMgmtController extends CommonController {
 
 	@RequestMapping(value = "opermgmt/orgmgmt/selectSloffice.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbLvlSubCdVo selectSloffice(@RequestBody TbLvlSubCdVo searchVo,
+	@EncryptResponse
+	public BaseVo selectSloffice(@RequestBody TbLvlSubCdVo searchVo,
 			HttpServletRequest request, HttpServletResponse response) {
 
 		TbLvlSubCdVo resultVo;
@@ -1230,7 +1253,8 @@ public class OrgMgmtController extends CommonController {
 
 	@RequestMapping(value = "opermgmt/orgmgmt/insertTbLvlSubCd.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbLvlSubCdListVo insertTbLvlSubCd(@RequestBody TbLvlSubCdVo searchVo,
+	@EncryptResponse
+	public BaseVo insertTbLvlSubCd(@RequestBody TbLvlSubCdVo searchVo,
 			HttpServletRequest request, HttpServletResponse response) {
 
 		TbLvlSubCdListVo resultListVo;
@@ -1269,7 +1293,8 @@ public class OrgMgmtController extends CommonController {
 
 	@RequestMapping(value = "opermgmt/orgmgmt/deleteTbLvlSubCd.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbLvlSubCdListVo deleteTbLvlSubCd(@RequestBody TbLvlSubCdVo searchVo,
+	@EncryptResponse
+	public BaseVo deleteTbLvlSubCd(@RequestBody TbLvlSubCdVo searchVo,
 			HttpServletRequest request, HttpServletResponse response) {
 
 		TbLvlSubCdListVo resultListVo;
@@ -1306,6 +1331,7 @@ public class OrgMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/opermgmt/orgmgmt/viewUdateLvlBas.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewUdateLvlBas(@RequestBody TbLvlBasVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		ModelMap resultModel = new ModelMap();
@@ -1393,7 +1419,8 @@ public class OrgMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/opermgmt/orgmgmt/updateTbLvlMove.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbLvlMstVo updateTbLvlMove(@RequestBody TbLvlMstVo searchVo, ModelMap model,
+	@EncryptResponse
+	public BaseVo updateTbLvlMove(@RequestBody TbLvlMstVo searchVo, ModelMap model,
 			HttpServletRequest request, HttpServletResponse response) {
 		TbLvlMstVo resultVo;
 		try {
@@ -1427,7 +1454,8 @@ public class OrgMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/opermgmt/orgmgmt/updatetblvlrolemst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbLvlMstVo updatetblvlrolemst(@RequestBody TbLvlMstVo searchVo, ModelMap model,
+	@EncryptResponse
+	public BaseVo updatetblvlrolemst(@RequestBody TbLvlMstVo searchVo, ModelMap model,
 			HttpServletRequest request, HttpServletResponse response) {
 		TbLvlMstVo resultVo;
 		try {
@@ -1461,7 +1489,8 @@ public class OrgMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/opermgmt/orgmgmt/insertTbLvlBas.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbLvlRoleMstVo insertTbLvlBas(@RequestBody TbLvlRoleMstVo searchVo, ModelMap model,
+	@EncryptResponse
+	public BaseVo insertTbLvlBas(@RequestBody TbLvlRoleMstVo searchVo, ModelMap model,
 			HttpServletRequest request, HttpServletResponse response) {
 		TbLvlRoleMstVo resultVo;
 		try {
@@ -1496,6 +1525,7 @@ public class OrgMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/opermgmt/orgmgmt/viewInsertLvlBas.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewInsertLvlBas(HttpServletRequest request) {
 		ModelMap resultModel = new ModelMap();
 		HashMap<String, Object> map = new HashMap<String, Object>();
@@ -1573,7 +1603,8 @@ public class OrgMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "opermgmt/orgmgmt/insertValidTbLvlBas.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbLvlBasVo insertValidTbLvlBas(@RequestBody TbLvlBasVo searchVo,
+	@EncryptResponse
+	public BaseVo insertValidTbLvlBas(@RequestBody TbLvlBasVo searchVo,
 			HttpServletRequest request, HttpServletResponse response) {
 
 		int result;
@@ -1633,7 +1664,8 @@ public class OrgMgmtController extends CommonController {
 
 	@RequestMapping(value = "opermgmt/orgmgmt/validTbLvlBas.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbLvlBasVo validTbLvlBas(@RequestBody TbLvlBasVo searchVo,
+	@EncryptResponse
+	public BaseVo validTbLvlBas(@RequestBody TbLvlBasVo searchVo,
 			HttpServletRequest request, HttpServletResponse response) {
 
 		int result;
@@ -1676,6 +1708,7 @@ public class OrgMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/opermgmt/orgmgmt/viewSearchLvlCd.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewSearchLvlCd(@RequestBody TbLvlCdVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		TbLvlCdListVo resultListVo = new TbLvlCdListVo();
@@ -1738,6 +1771,7 @@ public class OrgMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/opermgmt/orgmgmt/viewSearchCenterNode.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewSearchCenterNode(@RequestBody TbLvlCdVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		TbLvlCdListVo resultListVo = new TbLvlCdListVo();

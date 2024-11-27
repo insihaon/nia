@@ -23,13 +23,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kt.framework.exception.ServiceException;
 import com.kt.framework.utils.StringUtils;
+import com.kt.ipms.annotation.EncryptResponse;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
+import com.kt.ipms.legacy.cmn.vo.BaseVo;
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
 import com.kt.ipms.legacy.cmn.vo.FileVo;
 import com.kt.ipms.legacy.cmn.web.CommonController;
-import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.IpAllocOperMstListVo;
-import com.kt.ipms.legacy.ipmgmt.assignmgmt.vo.TbIpAssignMstListVo;
 import com.kt.ipms.legacy.ipmgmt.createmgmt.service.CreateMgmtService;
 import com.kt.ipms.legacy.ipmgmt.createmgmt.vo.TbIpBlockMstComplexVo;
 import com.kt.ipms.legacy.ipmgmt.createmgmt.vo.TbIpBlockMstListVo;
@@ -60,6 +60,7 @@ public class CreateMgmtController extends CommonController {
 	@RequestMapping(value = "/ipmgmt/createmgmt/viewListCrtIPMst.model", method = { RequestMethod.POST,
 			RequestMethod.GET })
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListCrtIPMst(@RequestBody TbIpBlockMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		setPagination(searchVo);
@@ -197,6 +198,7 @@ public class CreateMgmtController extends CommonController {
 
 	@RequestMapping(value = "/ipmgmt/createmgmt/viewListCrtIPMstExcel.json", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ResponseEntity<?> viewListCrtIPMstExcel(@RequestBody TbIpBlockMstVo searchVo, ModelMap model,
 			HttpServletRequest request, HttpServletResponse response) {
 		FileVo resultVo = new FileVo();
@@ -245,6 +247,7 @@ public class CreateMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/ipmgmt/createmgmt/viewDetailCrtIPMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewDetailCrtIPMst(@RequestBody TbIpBlockMstVo tbIpBlockMstVo, ModelMap model,
 			HttpServletRequest request) {
 		TbIpBlockMstVo resultVo = createMgmtService.selectIpBlockMst(tbIpBlockMstVo);
@@ -293,6 +296,7 @@ public class CreateMgmtController extends CommonController {
 
 	@RequestMapping(value = "/ipmgmt/createmgmt/viewInsertCrtIPMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewInsertCrtIPMst(@RequestBody TbIpBlockMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		TbIpBlockMstVo resultVo = createMgmtService.selectIpBlockMst(searchVo);
@@ -381,7 +385,8 @@ public class CreateMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/ipmgmt/createmgmt/appendCrtIPMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbIpBlockMstVo appendCrtIPMst(@RequestBody TbIpBlockMstComplexVo tbIpBlockMstComplexVo,
+	@EncryptResponse
+	public BaseVo appendCrtIPMst(@RequestBody TbIpBlockMstComplexVo tbIpBlockMstComplexVo,
 			HttpServletRequest request, HttpServletResponse response) {
 		TbIpBlockMstVo resultVo = null;
 		try {
@@ -410,7 +415,8 @@ public class CreateMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/ipmgmt/createmgmt/insertListCrtIPMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbIpBlockMstVo insertListCrtIPMst(@RequestBody TbIpBlockMstListVo tbIpBlockMstListVo,
+	@EncryptResponse
+	public BaseVo insertListCrtIPMst(@RequestBody TbIpBlockMstListVo tbIpBlockMstListVo,
 			HttpServletRequest request, HttpServletResponse response) {
 		TbIpBlockMstVo resultVo = null;
 		try {
@@ -450,7 +456,8 @@ public class CreateMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/ipmgmt/createmgmt/deleteCrtIPMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbIpBlockMstVo deleteCrtIPMst(@RequestBody TbIpBlockMstVo tbIpBlockMstVo,
+	@EncryptResponse
+	public BaseVo deleteCrtIPMst(@RequestBody TbIpBlockMstVo tbIpBlockMstVo,
 			HttpServletRequest request, HttpServletResponse response) {
 		TbIpBlockMstVo resultVo = null;
 		try {
@@ -481,6 +488,7 @@ public class CreateMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/ipmgmt/createmgmt/viewUpdateCrtIPMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewUpdateCrtIPMst(@RequestBody TbIpBlockMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		TbIpBlockMstVo resultVo = createMgmtService.selectIpBlockMst(searchVo);
@@ -539,7 +547,8 @@ public class CreateMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/ipmgmt/createmgmt/updateCrtIPMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbIpBlockMstVo updateCrtIPMst(@RequestBody TbIpBlockMstVo tbIpBlockMstVo,
+	@EncryptResponse
+	public BaseVo updateCrtIPMst(@RequestBody TbIpBlockMstVo tbIpBlockMstVo,
 			HttpServletRequest request, HttpServletResponse response) {
 		TbIpBlockMstVo resultVo = null;
 		try {
@@ -568,6 +577,7 @@ public class CreateMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/ipmgmt/createmgmt/selectListSipCreateSeqCd.json", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public List<String> selectListSipCreateSeqCd(@RequestBody HashMap<String, Object> map) {
 		String searchSipCreateSeqCd = (String) map.get("sipCreateSeqCd");
 		List<String> retList = createMgmtService.selectListSipCreateSeqCd(searchSipCreateSeqCd);
@@ -590,6 +600,7 @@ public class CreateMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/ipmgmt/createmgmt/viewListCrtPrivateIPMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListCrtPrivateIPMst(@RequestBody TbIpBlockMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		TbIpBlockMstListVo resultListVo = createMgmtService.selectListIpBlockMst(searchVo);
@@ -747,6 +758,7 @@ public class CreateMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/ipmgmt/createmgmt/viewListCrtPrivateIPMstExcel.json", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ResponseEntity<?> viewListCrtPrivateIPMstExcel(@RequestBody TbIpBlockMstVo searchVo, ModelMap model,
 			HttpServletRequest request, HttpServletResponse response) {
 		FileVo resultVo = new FileVo();
@@ -797,6 +809,7 @@ public class CreateMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/ipmgmt/createmgmt/viewDetailCrtPrivateIPMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewDetailCrtPrivateIPMst(@RequestBody TbIpBlockMstVo tbIpBlockMstVo, ModelMap model,
 			HttpServletRequest request) {
 		TbIpBlockMstVo resultVo = createMgmtService.selectIpBlockMst(tbIpBlockMstVo);

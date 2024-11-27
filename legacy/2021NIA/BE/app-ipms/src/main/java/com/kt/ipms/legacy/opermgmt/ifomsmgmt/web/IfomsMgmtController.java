@@ -17,8 +17,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kt.framework.exception.ServiceException;
 import com.kt.framework.utils.StringUtils;
+import com.kt.ipms.annotation.EncryptResponse;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
+import com.kt.ipms.legacy.cmn.vo.BaseVo;
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
 import com.kt.ipms.legacy.cmn.vo.CommonVo;
 import com.kt.ipms.legacy.cmn.web.CommonController;
@@ -36,6 +38,7 @@ public class IfomsMgmtController extends CommonController {
 	
 	@RequestMapping(value="/opermgmt/ifomsmgmt/viewListIFomsMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListIFomsMst(@RequestBody TbConfigInterfaceMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		TbConfigInterfaceMstListVo resultListVo = ifomsMgmtService.selectListPageConfigInterfaceMst(searchVo);
@@ -99,6 +102,7 @@ public class IfomsMgmtController extends CommonController {
 	
 	@RequestMapping(value="/opermgmt/ifomsmgmt/viewInsertIFomsMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewInsertIFomsMst(ModelMap model, 
 			HttpServletRequest request) {
 		TbConfigInterfaceMstVo resultVo = new TbConfigInterfaceMstVo();
@@ -148,7 +152,8 @@ public class IfomsMgmtController extends CommonController {
 	
 	@RequestMapping(value="/opermgmt/ifomsmgmt/insertIFomsMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbConfigInterfaceMstVo insertIFomsMst(@RequestBody TbConfigInterfaceMstVo tbConfigInterfaceMstVo,
+	@EncryptResponse
+	public BaseVo insertIFomsMst(@RequestBody TbConfigInterfaceMstVo tbConfigInterfaceMstVo,
 			HttpServletRequest request, HttpServletResponse response) {
 		TbConfigInterfaceMstVo resultVo = null;
 		try {
@@ -169,6 +174,7 @@ public class IfomsMgmtController extends CommonController {
 	
 	@RequestMapping(value="/opermgmt/ifomsmgmt/viewUpdateIFomsMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewUpdateIFomsMst(@RequestBody TbConfigInterfaceMstVo searchVo, ModelMap model, 
 			HttpServletRequest request) {
 		TbConfigInterfaceMstVo resultVo = ifomsMgmtService.selectConfigInterfaceMst(searchVo);
@@ -219,7 +225,8 @@ public class IfomsMgmtController extends CommonController {
 	
 	@RequestMapping(value="/opermgmt/ifomsmgmt/updateIFomsMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbConfigInterfaceMstVo updateIFomsMst(@RequestBody TbConfigInterfaceMstVo tbConfigInterfaceMstVo,
+	@EncryptResponse
+	public BaseVo updateIFomsMst(@RequestBody TbConfigInterfaceMstVo tbConfigInterfaceMstVo,
 			HttpServletRequest request, HttpServletResponse response) {
 		TbConfigInterfaceMstVo resultVo = null;
 		try {
@@ -240,7 +247,8 @@ public class IfomsMgmtController extends CommonController {
 	
 	@RequestMapping(value="/opermgmt/ifomsmgmt/deleteIFomsMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbConfigInterfaceMstVo deleteIFomsMst(@RequestBody TbConfigInterfaceMstVo tbConfigInterfaceMstVo,
+	@EncryptResponse
+	public BaseVo deleteIFomsMst(@RequestBody TbConfigInterfaceMstVo tbConfigInterfaceMstVo,
 			HttpServletRequest request, HttpServletResponse response) {
 		TbConfigInterfaceMstVo resultVo = null;
 		try {

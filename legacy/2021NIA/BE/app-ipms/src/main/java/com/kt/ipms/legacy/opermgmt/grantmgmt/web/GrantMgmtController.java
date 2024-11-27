@@ -18,8 +18,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kt.framework.exception.ServiceException;
 import com.kt.framework.utils.StringUtils;
+import com.kt.ipms.annotation.EncryptResponse;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
+import com.kt.ipms.legacy.cmn.vo.BaseVo;
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
 import com.kt.ipms.legacy.cmn.web.CommonController;
 import com.kt.ipms.legacy.opermgmt.grantmgmt.service.GrantMgmtService;
@@ -49,6 +51,7 @@ public class GrantMgmtController  extends CommonController {
 	
 	@RequestMapping(value = "/opermgmt/usermgmt/viewListTbAdmrApvTxn.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap selectListTbAdmrApvTxnVo(@RequestBody TbAdmrApvTxnVo searchVo, ModelMap model,
 			HttpServletRequest request)  {
 		TbAdmrApvTxnListVo resultListVo = grantMgmtService.selectListTbAdmrApvTxnVo(searchVo);
@@ -109,6 +112,7 @@ public class GrantMgmtController  extends CommonController {
 	
 	@RequestMapping(value = "/opermgmt/usermgmt/viewInsertAdmrTxn.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewInsertTbLvlCdVo(@RequestBody TbAdmrApvTxnVo searchVo, ModelMap model,
 			HttpServletRequest request)  {
 		TbAdmrApvTxnVo resultVo = new TbAdmrApvTxnVo();
@@ -164,6 +168,7 @@ public class GrantMgmtController  extends CommonController {
 	
 	@RequestMapping(value = "/opermgmt/grantmgmt/viewListOperTeamAuth.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap selectListOperTeamAuth(@RequestBody TbOperTeamAuthTxnVo searchVo, 
 			HttpServletRequest request, HttpServletResponse response)  {
 		TbOperTeamAuthTxnListVo resultListVo = grantMgmtService.selectOperTeamAuthTxnList(searchVo);
@@ -280,7 +285,8 @@ public class GrantMgmtController  extends CommonController {
 	
 	@RequestMapping(value="/opermgmt/grantmgmt/insertAdmrAutTxn.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbAdmrApvTxnVo insertAdmrAutTxn(@RequestBody TbAdmrApvTxnVo tbAdmrApvTxnVo , HttpServletRequest request, HttpServletResponse response)  
+	@EncryptResponse
+	public BaseVo insertAdmrAutTxn(@RequestBody TbAdmrApvTxnVo tbAdmrApvTxnVo , HttpServletRequest request, HttpServletResponse response)  
 	{
 		TbAdmrApvTxnVo resultVo = new TbAdmrApvTxnVo();
 		
@@ -304,7 +310,8 @@ public class GrantMgmtController  extends CommonController {
 	
 	@RequestMapping(value="/opermgmt/grantmgmt/deleteAdmrAutTxn.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbAdmrApvTxnVo deleteAdmrAutTxn(@RequestBody TbAdmrApvTxnListVo tbAdmrApvTxnListVo , HttpServletRequest request, HttpServletResponse response)  
+	@EncryptResponse
+	public BaseVo deleteAdmrAutTxn(@RequestBody TbAdmrApvTxnListVo tbAdmrApvTxnListVo , HttpServletRequest request, HttpServletResponse response)  
 	{
 		TbAdmrApvTxnVo resultVo = new TbAdmrApvTxnVo();
 		
@@ -327,6 +334,7 @@ public class GrantMgmtController  extends CommonController {
 	
 	@RequestMapping(value = "/opermgmt/grantmgmt/viewListUserAuth.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListUserAuth(@RequestBody TbUserAuthTxnVo searchVo, ModelMap model,
 			HttpServletRequest request)  {
 		setPagination(searchVo);
@@ -445,7 +453,8 @@ public class GrantMgmtController  extends CommonController {
 	
 	@RequestMapping(value="/opermgmt/grantmgmt/deleteUserAuthTxn.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbUserAuthTxnVo deleteUserAuthTxn(@RequestBody TbUserAuthTxnListVo tbUserAuthTxnListVo , HttpServletRequest request, HttpServletResponse response)  
+	@EncryptResponse
+	public BaseVo deleteUserAuthTxn(@RequestBody TbUserAuthTxnListVo tbUserAuthTxnListVo , HttpServletRequest request, HttpServletResponse response)  
 	{
 		TbUserAuthTxnVo resultVo = new TbUserAuthTxnVo();
 		
@@ -467,6 +476,7 @@ public class GrantMgmtController  extends CommonController {
 
 	@RequestMapping(value = "/opermgmt/grantmgmt/selectUserGradeCds.json", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap selectUserGradeCds()  {
 				List<CommonCodeVo> userGradeCds = new ArrayList<>();
 		try {
@@ -479,6 +489,7 @@ public class GrantMgmtController  extends CommonController {
 	
 	@RequestMapping(value = "/opermgmt/grantmgmt/viewInsertUserAuth.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewInsertUserAuth(@RequestBody TbUserAuthTxnVo searchVo, 
 			HttpServletRequest request)  {
 		TbUserAuthTxnListVo resultListVo = grantMgmtService.selectDetailUserAuthTxn(searchVo);
@@ -556,7 +567,8 @@ public class GrantMgmtController  extends CommonController {
 	
 	@RequestMapping(value="/opermgmt/grantmgmt/insertUserAuthTxn.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbUserAuthTxnVo insertUserAuthTxn(@RequestBody TbUserAuthTxnListVo tbUserAuthTxnListVo , HttpServletRequest request, HttpServletResponse response)  
+	@EncryptResponse
+	public BaseVo insertUserAuthTxn(@RequestBody TbUserAuthTxnListVo tbUserAuthTxnListVo , HttpServletRequest request, HttpServletResponse response)  
 	{
 		TbUserAuthTxnVo resultVo = new TbUserAuthTxnVo();
 		

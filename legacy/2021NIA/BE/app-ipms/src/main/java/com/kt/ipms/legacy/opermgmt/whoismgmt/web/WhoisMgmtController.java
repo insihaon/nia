@@ -24,19 +24,19 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kt.framework.exception.ServiceException;
 import com.kt.framework.utils.StringUtils;
+import com.kt.ipms.annotation.EncryptResponse;
 import com.kt.ipms.legacy.cmn.service.ConfigPropertieService;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
 import com.kt.ipms.legacy.cmn.util.PrintLogUtil;
+import com.kt.ipms.legacy.cmn.vo.BaseVo;
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
 import com.kt.ipms.legacy.cmn.vo.CommonVo;
 import com.kt.ipms.legacy.cmn.vo.FileVo;
 import com.kt.ipms.legacy.cmn.vo.SmtpVo;
 import com.kt.ipms.legacy.cmn.web.CommonController;
-import com.kt.ipms.legacy.ipmgmt.assignmgmt.vo.TbIpAssignMstListVo;
 import com.kt.ipms.legacy.linkmgmt.whois.adapter.WhoisAdapterService;
 import com.kt.ipms.legacy.linkmgmt.whois.model.WhoisInfoObj;
-import com.kt.ipms.legacy.opermgmt.grantmgmt.vo.TbUserAuthTxnListVo;
 import com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlBasListVo;
 import com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlBasVo;
 import com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlMstListVo;
@@ -86,6 +86,7 @@ public class WhoisMgmtController extends CommonController {
 
 	@RequestMapping(value = "/opermgmt/whoismgmt/viewListWhois.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListTbWhois(@RequestBody TbWhoisVo searchVo, ModelMap model, HttpServletRequest request) {
 		setPagination(searchVo);
 		TbWhoisListVo resultListVo = whoisService.selectListPageWhois(searchVo);
@@ -223,6 +224,7 @@ public class WhoisMgmtController extends CommonController {
 
 	@RequestMapping(value = "opermgmt/whoismgmt/viewRegWhois.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewRegWhois(@RequestBody TbWhoisVo tbWhoisVo, ModelMap model, HttpServletRequest request) {
 		TbWhoisVo resultVo = whoisService.selectWhois(tbWhoisVo);
 		return createResult(resultVo);
@@ -289,6 +291,7 @@ public class WhoisMgmtController extends CommonController {
 
 	@RequestMapping(value = "opermgmt/whoismgmt/viewSearchZipCode.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewSearchZipCode(@RequestBody TbNewZipcodeVo tbZipcodeVo, ModelMap model,
 			HttpServletRequest request) {
 		setPagination(tbZipcodeVo);
@@ -358,6 +361,7 @@ public class WhoisMgmtController extends CommonController {
 
 	@RequestMapping(value = "opermgmt/whoismgmt/viewUpdateKtInfo.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewUpdateKtInfo(ModelMap model, HttpServletRequest request) {
 		ModelMap builtModel = viewUpdateKtInfoModel(request);
 		TbWhoisUserVo resultVo = (TbWhoisUserVo) builtModel.get("resultVo");
@@ -408,7 +412,8 @@ public class WhoisMgmtController extends CommonController {
 
 	@RequestMapping(value = "opermgmt/whoismgmt/updateKtInfo.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbWhoisUserVo updateKtInfoSubmit(@RequestBody TbWhoisUserVo ktInfoVo, HttpServletRequest request,
+	@EncryptResponse
+	public BaseVo updateKtInfoSubmit(@RequestBody TbWhoisUserVo ktInfoVo, HttpServletRequest request,
 			HttpServletResponse response) {
 		TbWhoisUserVo resultVo = null;
 		try {
@@ -436,6 +441,7 @@ public class WhoisMgmtController extends CommonController {
 
 	@RequestMapping(value = "opermgmt/whoismgmt/selectEaddr.json", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public String selectEaddrDetail(@RequestBody String addrDetail) {
 		String eaddrDetail = null;
 		try {
@@ -452,7 +458,8 @@ public class WhoisMgmtController extends CommonController {
 
 	@RequestMapping(value = "opermgmt/whoismgmt/updateWhoisComplex.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbWhoisComplexVo updateWhosiComplex(@RequestBody TbWhoisComplexVo tbWhoisComplexVo) {
+	@EncryptResponse
+	public BaseVo updateWhosiComplex(@RequestBody TbWhoisComplexVo tbWhoisComplexVo) {
 		TbWhoisComplexVo resultVo = null;
 		try {
 			int result = whoisService.updateWhoisComplex(tbWhoisComplexVo);
@@ -475,6 +482,7 @@ public class WhoisMgmtController extends CommonController {
 
 	@RequestMapping(value = "opermgmt/whoismgmt/viewListWhoisKeywordMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListWhoisKeywordMst(@RequestBody TbWhoisKeywordVo searchVo) {
 		ModelMap builtModel = viewListWhoisKeywordMstModel(searchVo);
 		setPagination(searchVo);
@@ -532,7 +540,8 @@ public class WhoisMgmtController extends CommonController {
 
 	@RequestMapping(value = "opermgmt/whoismgmt/insertWhoisKeyword.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbWhoisKeywordVo insertWhoisKeywordVo(@RequestBody TbWhoisKeywordVo tbWhoisKeywordVo) {
+	@EncryptResponse
+	public BaseVo insertWhoisKeywordVo(@RequestBody TbWhoisKeywordVo tbWhoisKeywordVo) {
 		TbWhoisKeywordVo resultVo = null;
 		try {
 			int count = whoisService.insertWhoisKeywordVo(tbWhoisKeywordVo);
@@ -558,7 +567,8 @@ public class WhoisMgmtController extends CommonController {
 
 	@RequestMapping(value = "opermgmt/whoismgmt/deleteWhoisKeyword.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbWhoisKeywordVo deleteWhoisKeyword(@RequestBody TbWhoisKeywordListVo tbWhoisKeywordListVo) {
+	@EncryptResponse
+	public BaseVo deleteWhoisKeyword(@RequestBody TbWhoisKeywordListVo tbWhoisKeywordListVo) {
 		TbWhoisKeywordVo resultVo = null;
 		try {
 			whoisService.deleteWhoisKeyword(tbWhoisKeywordListVo);
@@ -579,7 +589,8 @@ public class WhoisMgmtController extends CommonController {
 
 	@RequestMapping(value = "opermgmt/whoismgmt/insertWhoisComplex.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbWhoisComplexVo insertWhois(@RequestBody TbWhoisComplexVo tbWhoisComplexVo) {
+	@EncryptResponse
+	public BaseVo insertWhois(@RequestBody TbWhoisComplexVo tbWhoisComplexVo) {
 		TbWhoisComplexVo resultVo = null;
 		try {
 			int result = whoisService.insertWhoisComplex(tbWhoisComplexVo);
@@ -611,6 +622,7 @@ public class WhoisMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "opermgmt/whoismgmt/viewListWhoisKeywordMstNew.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListWhoisKeywordMstNew(@RequestBody TbWhoisKeywordVo searchVo) {
 		ModelMap builtModel = viewListWhoisKeywordMstNewModel(searchVo);
 		setPagination(searchVo);
@@ -669,7 +681,8 @@ public class WhoisMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "opermgmt/whoismgmt/insertWhoisKeywordNew.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbWhoisKeywordVo insertWhoisKeywordNewVo(@RequestBody TbWhoisKeywordVo tbWhoisKeywordVo,
+	@EncryptResponse
+	public BaseVo insertWhoisKeywordNewVo(@RequestBody TbWhoisKeywordVo tbWhoisKeywordVo,
 			HttpServletRequest request, HttpServletResponse response) {
 		TbWhoisKeywordVo resultVo = null;
 
@@ -704,7 +717,8 @@ public class WhoisMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "opermgmt/whoismgmt/deleteWhoisKeywordNew.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbWhoisKeywordVo deleteWhoisKeywordNew(@RequestBody TbWhoisKeywordListVo tbWhoisKeywordListVo) {
+	@EncryptResponse
+	public BaseVo deleteWhoisKeywordNew(@RequestBody TbWhoisKeywordListVo tbWhoisKeywordListVo) {
 		TbWhoisKeywordVo resultVo = null;
 		try {
 			whoisService.deleteWhoisKeywordNew(tbWhoisKeywordListVo);
@@ -734,6 +748,7 @@ public class WhoisMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "opermgmt/whoismgmt/viewRegWhoisNew.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewRegWhoisNew(@RequestBody TbWhoisVo tbWhoisVo, ModelMap model, HttpServletRequest request) {
 		// TbWhoisVo resultVo = whoisService.selectWhois(tbWhoisVo);
 		// return createResult(resultVo);
@@ -829,7 +844,8 @@ public class WhoisMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "opermgmt/whoismgmt/updateWhoisComplexNew.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbWhoisComplexVo updateWhosiComplexNew(@RequestBody TbWhoisComplexVo tbWhoisComplexVo,
+	@EncryptResponse
+	public BaseVo updateWhosiComplexNew(@RequestBody TbWhoisComplexVo tbWhoisComplexVo,
 			HttpServletRequest request, HttpServletResponse response) {
 		TbWhoisComplexVo resultVo = new TbWhoisComplexVo();
 		int result = 0;
@@ -910,6 +926,7 @@ public class WhoisMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/opermgmt/whoismgmt/viewListWhoisModReq.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListWhoisModReq(@RequestBody TbWhoisModifyVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		setPagination(searchVo);
@@ -992,6 +1009,7 @@ public class WhoisMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/opermgmt/whoismgmt/viewListWhoisModReqExcel.json", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ResponseEntity<?> viewListWhoisModReqExcel(@RequestBody TbWhoisModifyVo searchVo, ModelMap model,
 			HttpServletRequest request, HttpServletResponse response) {
 		FileVo resultVo = new FileVo();
@@ -1047,6 +1065,7 @@ public class WhoisMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "opermgmt/whoismgmt/viewDetailWhoisModReq.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewDetailWhoisModReq(@RequestBody TbWhoisModifyVo tbWhoisModifyVo, ModelMap model,
 			HttpServletRequest request) {
 
@@ -1110,6 +1129,7 @@ public class WhoisMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/opermgmt/whoismgmt/viewRegWhoisModReq.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap _viewRegWhoisModReq(@RequestBody TbWhoisModifyVo searchVo, HttpServletRequest request) {
 		ModelMap model = new ModelMap();
 		TbWhoisModifyListVo resultListVo = null;
@@ -1207,7 +1227,8 @@ public class WhoisMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/opermgmt/whoismgmt/selectSearchWhoisInfo.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbWhoisModifyVo selectSearchWhoisInfo(@RequestBody TbWhoisModifyVo searchVo, HttpServletRequest request,
+	@EncryptResponse
+	public BaseVo selectSearchWhoisInfo(@RequestBody TbWhoisModifyVo searchVo, HttpServletRequest request,
 			HttpServletResponse response) {
 
 		TbWhoisModifyVo resultVo = null;
@@ -1256,7 +1277,8 @@ public class WhoisMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "opermgmt/whoismgmt/insertRegWhoisModReq.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbWhoisModifyVo insertRegWhoisModReqVo(@RequestBody TbWhoisModifyVo tbWhoisModifyVo,
+	@EncryptResponse
+	public BaseVo insertRegWhoisModReqVo(@RequestBody TbWhoisModifyVo tbWhoisModifyVo,
 			HttpServletRequest request, HttpServletResponse response) {
 		TbWhoisModifyVo resultVo = null;
 		try {
@@ -1297,6 +1319,7 @@ public class WhoisMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/opermgmt/whoismgmt/viewUpdateWhoisModReq.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewUpdateWhoisModReq(@RequestBody TbWhoisModifyVo tbWhoisModifyVo, ModelMap model,
 			HttpServletRequest request) {
 		TbWhoisModifyVo resultVo = whoisService.selectTbWhoisModifyVo(tbWhoisModifyVo);
@@ -1540,7 +1563,8 @@ public class WhoisMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/opermgmt/whoismgmt/dbMatchListTbWhoisVo.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbWhoisVo dbMatchListTbWhoisVo(@RequestBody TbWhoisVo matchVo, ModelMap model, HttpServletRequest request,
+	@EncryptResponse
+	public BaseVo dbMatchListTbWhoisVo(@RequestBody TbWhoisVo matchVo, ModelMap model, HttpServletRequest request,
 			HttpServletResponse response) {
 		TbWhoisVo resultVo = new TbWhoisVo();
 		String commonMsg;
@@ -1814,6 +1838,7 @@ public class WhoisMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/opermgmt/whoismgmt/viewListWhoisExcel.json", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 
 	public ResponseEntity<?> viewListWhoisExcel(@RequestBody TbWhoisVo searchVo, HttpServletRequest request,
 			HttpServletResponse response) {
@@ -1910,6 +1935,7 @@ public class WhoisMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "opermgmt/whoismgmt/viewSearchKisa.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewSearchKisa(@RequestBody TbWhoisVo searchVo, ModelMap model, HttpServletRequest request) {
 		TbWhoisComplexVo resultVo = whoisService.selectListTbWhoisControl(searchVo);
 		return createResult(resultVo);
@@ -2018,6 +2044,7 @@ public class WhoisMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "opermgmt/whoismgmt/selectWhoisComplexNew.json", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public String selectWhoisComplexNew(@RequestBody TbWhoisVo searchVo) {
 		String strCount = null;
 		try {
@@ -2070,6 +2097,7 @@ public class WhoisMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "opermgmt/whoismgmt/viewListWhoisDbMatchMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListWhoisDbMatchMst(@RequestBody TbWhoisVo searchVo) {
 		// viewListWhoisDbMatchMstModel 호출
 		ModelMap builtModel = viewListWhoisDbMatchMstModel(searchVo);

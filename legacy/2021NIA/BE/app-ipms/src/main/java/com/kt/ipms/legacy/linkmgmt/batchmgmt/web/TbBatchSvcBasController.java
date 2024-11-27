@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kt.framework.exception.ServiceException;
+import com.kt.ipms.annotation.EncryptResponse;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
+import com.kt.ipms.legacy.cmn.vo.BaseVo;
 import com.kt.ipms.legacy.cmn.web.CommonController;
 import com.kt.ipms.legacy.linkmgmt.batchmgmt.service.BatchJobService;
 import com.kt.ipms.legacy.linkmgmt.common.service.TbBatchSvcBasService;
@@ -34,7 +36,8 @@ public class TbBatchSvcBasController extends CommonController{
 	private TbBatchSvcBasService tbBatchSvcBasService;
 	
 	@RequestMapping(value = "/linkmgmt/batchmgmt/setBatchOn.json")
-	public @ResponseBody String setBatchOn(ModelMap model, HttpServletRequest request, HttpServletResponse response){
+	public @ResponseBody
+	@EncryptResponse String setBatchOn(ModelMap model, HttpServletRequest request, HttpServletResponse response){
 		try{
 			batchJobService.startBatchJobServices();
 		}catch(ServiceException e){
@@ -43,7 +46,8 @@ public class TbBatchSvcBasController extends CommonController{
 		return CommonCodeUtil.SUCCESS_MSG;
 	}
 	@RequestMapping(value = "/linkmgmt/batchmgmt/setBatchOff.json")
-	public @ResponseBody String setBatchOff(ModelMap model, HttpServletRequest request, HttpServletResponse response){
+	public @ResponseBody
+	@EncryptResponse String setBatchOff(ModelMap model, HttpServletRequest request, HttpServletResponse response){
 		try{
 			batchJobService.stopBatchJobServices();
 		}catch(ServiceException e){
@@ -52,7 +56,8 @@ public class TbBatchSvcBasController extends CommonController{
 		return CommonCodeUtil.SUCCESS_MSG;
 	}
 	@RequestMapping(value = "/linkmgmt/batchmgmt/resetBatchJobs.json")
-	public @ResponseBody String rescheduleBatchJobs(ModelMap model, HttpServletRequest request, HttpServletResponse response){
+	public @ResponseBody
+	@EncryptResponse String rescheduleBatchJobs(ModelMap model, HttpServletRequest request, HttpServletResponse response){
 		try{
 			batchJobService.updateBatchJobs();
 		}catch(ServiceException e){
@@ -63,6 +68,7 @@ public class TbBatchSvcBasController extends CommonController{
 	
 	@RequestMapping(value = "/linkmgmt/batchmgmt/viewListTbBatchSvcBas.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap selectListTbBatchSvcBasVo(@RequestBody TbBatchSvcBasVo searchVo, ModelMap model, HttpServletRequest request){
 		TbBatchSvcBasListVo resultListVo = tbBatchSvcBasService.selectListTbBatchSvcBasVo(searchVo);
 		return createResultList(resultListVo.getTbBatchSvcBasVos(), resultListVo.getTotalCount());
@@ -113,6 +119,7 @@ public class TbBatchSvcBasController extends CommonController{
 	
 	@RequestMapping(value = "/linkmgmt/batchmgmt/viewDetailTbBatchSvcBas.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap selectDetailTbBatchLog(@RequestBody TbBatchSvcBasVo tbBatchSvcBasVo, ModelMap model,
 			HttpServletRequest request) throws ServiceException {
 		TbBatchSvcBasVo resultVo = tbBatchSvcBasService.selectTbBatchSvcBasVo(tbBatchSvcBasVo);
@@ -155,6 +162,7 @@ public class TbBatchSvcBasController extends CommonController{
 	
 	@RequestMapping(value = "/linkmgmt/batchmgmt/viewUpdateTbBatchSvcBas.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewUpdateTbBatchLog(@RequestBody TbBatchSvcBasVo tbBatchSvcBasVo, ModelMap model,
 			HttpServletRequest request) throws ServiceException {
 		TbBatchSvcBasVo resultVo = tbBatchSvcBasService.selectTbBatchSvcBasVo(tbBatchSvcBasVo);
@@ -198,7 +206,8 @@ public class TbBatchSvcBasController extends CommonController{
 	
 	@RequestMapping(value = "/linkmgmt/batchmgmt/updateTbBatchSvcBas.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbBatchSvcBasVo updateTbBatchSvcBas(@RequestBody TbBatchSvcBasVo updateVo, HttpServletRequest request, HttpServletResponse response) throws ServiceException {
+	@EncryptResponse
+	public BaseVo updateTbBatchSvcBas(@RequestBody TbBatchSvcBasVo updateVo, HttpServletRequest request, HttpServletResponse response) throws ServiceException {
 		TbBatchSvcBasVo resultVo = null;
 		try {
 			resultVo = tbBatchSvcBasService.updateTbBatchSvcBasVo(updateVo);

@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kt.framework.exception.ServiceException;
+import com.kt.ipms.annotation.EncryptResponse;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
 import com.kt.ipms.legacy.cmn.util.PrintLogUtil;
-import com.kt.ipms.legacy.cmn.vo.CommonVo;
 import com.kt.ipms.legacy.cmn.web.CommonController;
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.IpAllocOperMstVo;
 import com.kt.ipms.legacy.linkmgmt.batchmgmt.service.CallableBatchService;
@@ -35,6 +35,7 @@ public class SocketMgmtController extends CommonController {
 	
 	@RequestMapping(value = "/linkmgmt/socketmgmt/viewDetailWhois.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewDetailWhois(@RequestBody WhoisMstVo searchVo, ModelMap model,
 			HttpServletRequest request)  {
 		WhoisMstVo resultVo = socketMgmtService.getWhoisMstVo(searchVo.getQuery());

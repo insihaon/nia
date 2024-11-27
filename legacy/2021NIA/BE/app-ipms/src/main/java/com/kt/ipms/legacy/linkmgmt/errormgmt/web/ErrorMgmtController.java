@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kt.framework.exception.ServiceException;
+import com.kt.ipms.annotation.EncryptResponse;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
 import com.kt.ipms.legacy.cmn.web.CommonController;
@@ -32,6 +33,7 @@ public class ErrorMgmtController extends CommonController{
 	
 	@RequestMapping(value = "/linkmgmt/erromgmt/viewListError.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap selectListReq( @ModelAttribute("searchVo") ErrorMgmtVo searchVo, ModelMap model, HttpServletRequest request){
 		ErrorMgmtListVo resultListVo = errorMgmtService.selectListErrorMgmt(searchVo);
 		return createResultList(resultListVo.getErrorMgmtVos(), resultListVo.getTotalCount());

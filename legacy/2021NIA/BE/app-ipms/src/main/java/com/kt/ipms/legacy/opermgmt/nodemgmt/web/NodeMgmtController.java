@@ -24,10 +24,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kt.framework.exception.ServiceException;
 import com.kt.framework.utils.StringUtils;
+import com.kt.ipms.annotation.EncryptResponse;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
+import com.kt.ipms.legacy.cmn.vo.BaseVo;
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
-import com.kt.ipms.legacy.cmn.vo.CommonVo;
 import com.kt.ipms.legacy.cmn.vo.FileVo;
 import com.kt.ipms.legacy.cmn.vo.SmtpVo;
 import com.kt.ipms.legacy.cmn.web.CommonController;
@@ -81,6 +82,7 @@ public class NodeMgmtController extends CommonController{
 	
 	@RequestMapping(value = "/opermgmt/nodemgmt/viewListNode.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap selectListReq(@RequestBody NodeMgmtVo searchVo, ModelMap model, HttpServletRequest request){
 		setPagination(searchVo);
 		NodeMgmtListVo resultListVo = nodeMgmtService.selectListNodeMgmt(searchVo);
@@ -137,6 +139,7 @@ public class NodeMgmtController extends CommonController{
 	
 	@RequestMapping(value = "/opermgmt/nodemgmt/selectListIpAssignMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap selectListIpAssignMst(HttpServletRequest request, @RequestBody TbIpAssignMstVo searchVo)  {
 		setPagination(searchVo);
 		TbIpAssignMstListVo resultListVo = assignMgmtService.selectListIpAssignMst(searchVo);
@@ -230,7 +233,8 @@ public class NodeMgmtController extends CommonController{
 	
 	@RequestMapping(value="/opermgmt/nodemgmt/insertNode.json", method=RequestMethod.POST)
 	@ResponseBody
-	public NodeMgmtVo insertNode(HttpServletRequest request, @RequestBody NodeMgmtVo nodeMgmtVo) {
+	@EncryptResponse
+	public BaseVo insertNode(HttpServletRequest request, @RequestBody NodeMgmtVo nodeMgmtVo) {
 		NodeMgmtVo resultVo = null;
 		int result = 0;
 		try {
@@ -271,6 +275,7 @@ public class NodeMgmtController extends CommonController{
 
 	@RequestMapping(value = "/opermgmt/nodemgmt/viewDetailNode.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap selectNode(@RequestBody NodeMgmtVo searchVo, ModelMap model, HttpServletRequest request)  {
 		NodeMgmtVo resultVo = nodeMgmtService.selectNode(searchVo);
 		return createResult(resultVo);
@@ -331,7 +336,8 @@ public class NodeMgmtController extends CommonController{
 	
 	@RequestMapping(value="/opermgmt/nodemgmt/viewfnDeleteAlcIPMst.json", method=RequestMethod.POST)
 	@ResponseBody
-	public IpAllocOperMstListVo deleteAlcIPMst(HttpServletRequest request,@RequestBody IpAllocOperMstVo searchVo){
+	@EncryptResponse
+	public BaseVo deleteAlcIPMst(HttpServletRequest request,@RequestBody IpAllocOperMstVo searchVo){
 		IpAllocOperMstListVo resultListVo = null;
 		try {
 			resultListVo = allocMgmtService.selectListIpAllocDetail(searchVo);
@@ -359,6 +365,7 @@ public class NodeMgmtController extends CommonController{
 	
 	@RequestMapping(value="/opermgmt/nodemgmt/viewDeleteNode.json", method=RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public NodeMgmtVo deleteNode(HttpServletRequest request, @RequestBody NodeMgmtVo searchVo){
 		NodeMgmtVo resultVo = null;
 		int result = 0;
@@ -384,7 +391,8 @@ public class NodeMgmtController extends CommonController{
 	
 	@RequestMapping(value="/opermgmt/nodemgmt/viewCancelNode.json", method=RequestMethod.POST)
 	@ResponseBody
-	public NodeMgmtVo cancelNode(HttpServletRequest request, @RequestBody NodeMgmtVo searchVo){
+	@EncryptResponse
+	public BaseVo cancelNode(HttpServletRequest request, @RequestBody NodeMgmtVo searchVo){
 		NodeMgmtVo resultVo = null;
 		int result = 0;
 		try {
@@ -413,7 +421,8 @@ public class NodeMgmtController extends CommonController{
 	
 	@RequestMapping(value = "/opermgmt/nodemgmt/confirmNode.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbIpAssignMstVo confirmNode(@RequestBody TbIpAssignMstComplexVo tbIpAssignMstComplexVo, 
+	@EncryptResponse
+	public BaseVo confirmNode(@RequestBody TbIpAssignMstComplexVo tbIpAssignMstComplexVo, 
 			HttpServletRequest request, HttpServletResponse response){
 		TbIpAssignMstVo resultVo = null;
 		try {
@@ -533,6 +542,7 @@ public class NodeMgmtController extends CommonController{
 	}
 	@RequestMapping(value = "/ipmgmt/nodemgmt/viewListNodeExcel.json", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ResponseEntity<?> selectListNodeExcel(@RequestBody NodeMgmtVo searchVo ,HttpServletRequest request, HttpServletResponse response)  {
 		FileVo resultVo = new FileVo();
 		try {
@@ -564,7 +574,8 @@ public class NodeMgmtController extends CommonController{
 	
 	@RequestMapping(value = "opermgmt/nodemgmt/selectAuthCenterList.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbLvlBasListVo selectAuthCenterList(@RequestBody TbLvlBasVo searchVo, HttpServletRequest request, HttpServletResponse response)  {
+	@EncryptResponse
+	public BaseVo selectAuthCenterList(@RequestBody TbLvlBasVo searchVo, HttpServletRequest request, HttpServletResponse response)  {
 		TbLvlBasListVo resultListVo = null;
 		try{
 			resultListVo = orgMgmtAdapterService.selectlistCenter(searchVo);
@@ -583,7 +594,8 @@ public class NodeMgmtController extends CommonController{
 	
 	@RequestMapping(value = "opermgmt/nodemgmt/selectAuthNodeList.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbLvlBasListVo selectAuthNodeList(@RequestBody TbLvlBasVo searchVo, HttpServletRequest request, HttpServletResponse response)  {
+	@EncryptResponse
+	public BaseVo selectAuthNodeList(@RequestBody TbLvlBasVo searchVo, HttpServletRequest request, HttpServletResponse response)  {
 		TbLvlBasListVo resultListVo = null;
 		try{
 			resultListVo = orgMgmtAdapterService.selectlistNode(searchVo);
@@ -602,7 +614,8 @@ public class NodeMgmtController extends CommonController{
 	
 	@RequestMapping(value = "/opermgmt/nodemgmt/viewfnSelectNode.ajax", method = RequestMethod.POST)
 	@ResponseBody
-	public TbIpAssignMstVo confirmNode(@RequestBody TbIpAssignMstVo tbIpAssignMstVo, 
+	@EncryptResponse
+	public BaseVo confirmNode(@RequestBody TbIpAssignMstVo tbIpAssignMstVo, 
 			HttpServletRequest request, HttpServletResponse response){
 		TbIpAssignMstVo resultVo = null;
 		try {

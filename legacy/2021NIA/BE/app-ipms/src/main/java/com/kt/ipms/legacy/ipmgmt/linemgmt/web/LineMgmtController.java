@@ -18,8 +18,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kt.framework.exception.ServiceException;
 import com.kt.framework.utils.StringUtils;
+import com.kt.ipms.annotation.EncryptResponse;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
+import com.kt.ipms.legacy.cmn.vo.BaseVo;
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
 import com.kt.ipms.legacy.cmn.vo.FileVo;
 import com.kt.ipms.legacy.cmn.web.CommonController;
@@ -53,6 +55,7 @@ public class LineMgmtController extends CommonController {
 	 */
 	@RequestMapping(value="/ipmgmt/linemgmt/viewListAsgnIPSub.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListAsgnIPSub(@RequestBody TbIpAssignSubVo searchVo, ModelMap model,
 		HttpServletRequest request){
 		TbIpAssignSubListVo resultListVo = lineMgmtService.selectListIpAssignSub(searchVo);
@@ -214,7 +217,8 @@ public class LineMgmtController extends CommonController {
 	/* IP선번장 엑셀 다운 */
 	@RequestMapping(value="/ipmgmt/linemgmt/viewListAsgnIPSubExcel.json", method = RequestMethod.POST)
 	@ResponseBody
-	public FileVo viewListAsgnIPSubExcel(@ModelAttribute("searchVo") TbIpAssignSubVo searchVo, ModelMap model,
+	@EncryptResponse
+	public BaseVo viewListAsgnIPSubExcel(@ModelAttribute("searchVo") TbIpAssignSubVo searchVo, ModelMap model,
 		HttpServletRequest request, HttpServletResponse response){
 		FileVo resultVo = new FileVo();
 		try {
@@ -328,6 +332,7 @@ public class LineMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/ipmgmt/linemgmt/viewInsertDivAsgnIPSub.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewInsertDivAsgnIPSub(@RequestBody TbIpAssignSubVo searchVo, ModelMap model,
 			HttpServletRequest request){
 		TbIpAssignSubVo resultVo = lineMgmtService.selectIpAssignSub(searchVo);
@@ -383,7 +388,8 @@ public class LineMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/ipmgmt/linemgmt/appendDivAsgnIPSub.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbIpAssignSubListVo appendDivAsgnIPSub(@RequestBody TbIpAssignSubVo tbIpAssignSubVo,
+	@EncryptResponse
+	public BaseVo appendDivAsgnIPSub(@RequestBody TbIpAssignSubVo tbIpAssignSubVo,
 			HttpServletRequest request, HttpServletResponse response){
 		TbIpAssignSubListVo resultListVo = null;
 		try {
@@ -411,7 +417,8 @@ public class LineMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/ipmgmt/linemgmt/appendMergeDivAsgnIPSub.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbIpAssignSubVo appendMergeDivAsgnIPSub(@RequestBody TbIpAssignSubListVo tbIpAssignSubListVo,
+	@EncryptResponse
+	public BaseVo appendMergeDivAsgnIPSub(@RequestBody TbIpAssignSubListVo tbIpAssignSubListVo,
 			HttpServletRequest request, HttpServletResponse response){
 		TbIpAssignSubVo resultVo = null;
 		try {
@@ -437,7 +444,8 @@ public class LineMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/ipmgmt/linemgmt/insertListDivAsgnIPSub.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbIpAssignSubVo insertListDivAsgnIPSub(@RequestBody TbIpAssignSubComplexVo tbIpAssignSubComplexVo, HttpServletRequest request, HttpServletResponse response){
+	@EncryptResponse
+	public BaseVo insertListDivAsgnIPSub(@RequestBody TbIpAssignSubComplexVo tbIpAssignSubComplexVo, HttpServletRequest request, HttpServletResponse response){
 		TbIpAssignSubVo resultVo = null;
 		try {
 			tbIpAssignSubComplexVo.setScreateId(jwtUtil.getUserId(request));
@@ -467,6 +475,7 @@ public class LineMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/ipmgmt/linemgmt/viewInsertMrgAsgnIPSub.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewInsertMrgAsgnIPSub(@RequestBody TbIpAssignSubListVo tbIpAssignSubListVo, ModelMap model,
 			HttpServletRequest request){
 		TbIpAssignSubComplexVo resultComplexVo = lineMgmtService.validateMrgAsgnIPSub(tbIpAssignSubListVo);
@@ -523,7 +532,8 @@ public class LineMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/ipmgmt/linemgmt/insertMrgAsgnIPSub.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbIpAssignSubVo insertMrgAsgnIPSub(@RequestBody TbIpAssignSubComplexVo tbIpAssignSubComplexVo,
+	@EncryptResponse
+	public BaseVo insertMrgAsgnIPSub(@RequestBody TbIpAssignSubComplexVo tbIpAssignSubComplexVo,
 			HttpServletRequest request, HttpServletResponse response){
 		TbIpAssignSubVo resultVo = null;
 		try {
@@ -554,6 +564,7 @@ public class LineMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/ipmgmt/linemgmt/viewDetailAsgnIPSub.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewDetailAsgnIPSub(@RequestBody TbIpAssignSubVo searchVo, ModelMap model,
 			HttpServletRequest request){
 		TbIpAssignSubVo resultVo = lineMgmtService.selectIpAssignSub(searchVo);
@@ -617,7 +628,8 @@ public class LineMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/ipmgmt/linemgmt/updateAsgnIPSub.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbIpAssignSubVo updateAsgnIPSub(@RequestBody TbIpAssignSubVo tbIpAssignSubVo,
+	@EncryptResponse
+	public BaseVo updateAsgnIPSub(@RequestBody TbIpAssignSubVo tbIpAssignSubVo,
 			HttpServletRequest request, HttpServletResponse response){
 		TbIpAssignSubVo resultVo = null;
 		try {
@@ -647,7 +659,8 @@ public class LineMgmtController extends CommonController {
 	 */
 	@RequestMapping(value = "/ipmgmt/linemgmt/selectOfficeList.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbIpAssignSubListVo selectOfficeList(@RequestBody TbIpAssignSubVo searchVo, HttpServletRequest request, HttpServletResponse response){
+	@EncryptResponse
+	public BaseVo selectOfficeList(@RequestBody TbIpAssignSubVo searchVo, HttpServletRequest request, HttpServletResponse response){
 		TbIpAssignSubListVo resultListVo = null;
 		try{
 			if(null != searchVo.getSsvcGroupCdMultiStr() && !"".equals(searchVo.getSsvcGroupCdMultiStr())){

@@ -28,9 +28,11 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.kt.framework.exception.ServiceException;
 import com.kt.framework.utils.StringUtils;
+import com.kt.ipms.annotation.EncryptResponse;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
 import com.kt.ipms.legacy.cmn.util.PrintLogUtil;
+import com.kt.ipms.legacy.cmn.vo.BaseVo;
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
 import com.kt.ipms.legacy.cmn.vo.CommonVo;
 import com.kt.ipms.legacy.cmn.vo.FileVo;
@@ -83,6 +85,7 @@ public class IntgrMgmtController  extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/intgrmgmt/viewListFcltMst.model", method = {RequestMethod.POST, RequestMethod.GET})
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListFcltMst(@RequestBody TbFcltMstVo searchVo, ModelMap model, HttpServletRequest request) {
 		setPagination(searchVo);
 		TbFcltMstListVo resultListVo = intgrMgmtService.selectListFcltMst(searchVo);
@@ -190,6 +193,7 @@ public class IntgrMgmtController  extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/intgrmgmt/viewInsertFcltMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewInsertFcltMst(ModelMap model, HttpServletRequest request) {
 		ModelMap builtModel = new ModelMap();
 		Map<String, Object> paramMap = new HashMap<String, Object>();
@@ -261,7 +265,8 @@ public class IntgrMgmtController  extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/intgrmgmt/insertFcltMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbFcltMstVo insertFcltMst(@RequestBody TbFcltMstVo insertVo, HttpServletRequest request, HttpServletResponse response) {
+	@EncryptResponse
+	public BaseVo insertFcltMst(@RequestBody TbFcltMstVo insertVo, HttpServletRequest request, HttpServletResponse response) {
 		TbFcltMstVo resultVo = null;
 		try {
 			String userId = jwtUtil.getUserId(request);
@@ -292,6 +297,7 @@ public class IntgrMgmtController  extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/intgrmgmt/viewUpdateFcltMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewUpdateFcltMst(@RequestBody TbFcltMstVo searchVo, ModelMap model, HttpServletRequest request) {
 		TbFcltMstVo resultVo = null;
 		if (searchVo.getNfcltMstSeq() != null) {
@@ -359,7 +365,8 @@ public class IntgrMgmtController  extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/intgrmgmt/updateFcltMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbFcltMstVo updateFcltMst(@RequestBody TbFcltMstVo updateVo, HttpServletRequest request, HttpServletResponse response) {
+	@EncryptResponse
+	public BaseVo updateFcltMst(@RequestBody TbFcltMstVo updateVo, HttpServletRequest request, HttpServletResponse response) {
 		TbFcltMstVo resultVo = null;
 		try {
 			String userId = jwtUtil.getUserId(request);
@@ -388,7 +395,8 @@ public class IntgrMgmtController  extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/intgrmgmt/deleteFcltMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbFcltMstVo deleteFcltMst(@RequestBody TbFcltMstVo deleteVo, HttpServletRequest request, HttpServletResponse response) {
+	@EncryptResponse
+	public BaseVo deleteFcltMst(@RequestBody TbFcltMstVo deleteVo, HttpServletRequest request, HttpServletResponse response) {
 		TbFcltMstVo resultVo = null;
 		try {
 			intgrMgmtService.deleteFcltMst(deleteVo);
@@ -415,6 +423,7 @@ public class IntgrMgmtController  extends CommonController{
 	 */
 	@RequestMapping(value="/opermgmt/intgrmgmt/viewListFcltMstExcel.json", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ResponseEntity<?> viewListFcltMstExcel(@RequestBody TbFcltMstVo searchVo, HttpServletRequest request, HttpServletResponse response){
 		
 		FileVo resultVo = new FileVo();
@@ -506,6 +515,7 @@ public class IntgrMgmtController  extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/intgrmgmt/selectListCommonCode.json", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap selectListCommonCode(@RequestBody TbFcltCmdMstVo searchVo, ModelMap model, HttpServletRequest request) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("suseYn", "Y");
@@ -522,6 +532,7 @@ public class IntgrMgmtController  extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/intgrmgmt/viewListFcltCmdMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListFcltCmdMst(@RequestBody TbFcltCmdMstVo searchVo, ModelMap model, HttpServletRequest request) {
 		setPagination(searchVo);
 		TbFcltCmdMstListVo resultListVo = intgrMgmtService.selectListFcltCmdMst(searchVo);
@@ -597,7 +608,8 @@ public class IntgrMgmtController  extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/intgrmgmt/insertFcltCmdMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbFcltCmdMstVo insertFcltCmdMst(@RequestBody TbFcltCmdMstVo insertVo, HttpServletRequest request, HttpServletResponse response) {
+	@EncryptResponse
+	public BaseVo insertFcltCmdMst(@RequestBody TbFcltCmdMstVo insertVo, HttpServletRequest request, HttpServletResponse response) {
 		TbFcltCmdMstVo resultVo = null;
 		try {
 			String userId = jwtUtil.getUserId(request);
@@ -628,6 +640,7 @@ public class IntgrMgmtController  extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/intgrmgmt/viewUpdateFcltCmdMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewUpdateFcltCmdMst(@RequestBody TbFcltCmdMstVo searchVo, ModelMap model, HttpServletRequest request) {
 		TbFcltCmdMstVo resultVo = intgrMgmtService.selectFcltCmdMst(searchVo);
 		return createResult(resultVo);
@@ -680,7 +693,8 @@ public class IntgrMgmtController  extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/intgrmgmt/updateFcltCmdMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbFcltCmdMstVo updateFcltCmdMst(@RequestBody TbFcltCmdMstVo updateVo, HttpServletRequest request, HttpServletResponse response) {
+	@EncryptResponse
+	public BaseVo updateFcltCmdMst(@RequestBody TbFcltCmdMstVo updateVo, HttpServletRequest request, HttpServletResponse response) {
 		TbFcltCmdMstVo resultVo = null;
 		try {
 			String userId = jwtUtil.getUserId(request);
@@ -709,7 +723,8 @@ public class IntgrMgmtController  extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/intgrmgmt/deleteFcltCmdMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbFcltCmdMstVo deleteFcltCmdMst(@RequestBody TbFcltCmdMstVo deleteVo, HttpServletRequest request, HttpServletResponse response) {
+	@EncryptResponse
+	public BaseVo deleteFcltCmdMst(@RequestBody TbFcltCmdMstVo deleteVo, HttpServletRequest request, HttpServletResponse response) {
 		TbFcltCmdMstVo resultVo = null;
 		try {
 			intgrMgmtService.deleteFcltCmdMst(deleteVo);
@@ -736,6 +751,7 @@ public class IntgrMgmtController  extends CommonController{
 	 */
 	@RequestMapping(value="/opermgmt/intgrmgmt/viewListFcltCmdMstExcel.json", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ResponseEntity<?> viewListFcltCmdMstExcel(@RequestBody TbFcltCmdMstVo searchVo, HttpServletRequest request, HttpServletResponse response){
 		
 		FileVo resultVo = new FileVo();
@@ -775,6 +791,7 @@ public class IntgrMgmtController  extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/intgrmgmt/viewListMobileMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListMobileMst(@RequestBody TbMobileMstVo searchVo, ModelMap model, HttpServletRequest request) {
 		setPagination(searchVo);
 		TbMobileMstListVo resultListVo = intgrMgmtService.selectListMobileMst(searchVo);
@@ -853,7 +870,8 @@ public class IntgrMgmtController  extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/intgrmgmt/insertMobileMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbMobileMstVo insertMobileMst(@RequestBody TbMobileMstVo insertVo, HttpServletRequest request, HttpServletResponse response) {
+	@EncryptResponse
+	public BaseVo insertMobileMst(@RequestBody TbMobileMstVo insertVo, HttpServletRequest request, HttpServletResponse response) {
 		TbMobileMstVo resultVo = null;
 		try {
 			String userId = jwtUtil.getUserId(request);
@@ -884,6 +902,7 @@ public class IntgrMgmtController  extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/intgrmgmt/viewUpdateMobileMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewUpdateMobileMst(@RequestBody TbMobileMstVo searchVo, ModelMap model, HttpServletRequest request) {
 		TbMobileMstVo resultVo = intgrMgmtService.selectMobileMst(searchVo);
 		return createResult(resultVo);
@@ -936,7 +955,8 @@ public class IntgrMgmtController  extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/intgrmgmt/updateMobileMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbMobileMstVo updateMobileMst(@RequestBody TbMobileMstVo updateVo, HttpServletRequest request, HttpServletResponse response) {
+	@EncryptResponse
+	public BaseVo updateMobileMst(@RequestBody TbMobileMstVo updateVo, HttpServletRequest request, HttpServletResponse response) {
 		TbMobileMstVo resultVo = null;
 		try {
 			String userId = jwtUtil.getUserId(request);
@@ -966,7 +986,8 @@ public class IntgrMgmtController  extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/intgrmgmt/deleteMobileMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbMobileMstVo deleteMobileMst(@RequestBody TbMobileMstVo deleteVo, HttpServletRequest request, HttpServletResponse response) {
+	@EncryptResponse
+	public BaseVo deleteMobileMst(@RequestBody TbMobileMstVo deleteVo, HttpServletRequest request, HttpServletResponse response) {
 		TbMobileMstVo resultVo = null;
 		try {
 			intgrMgmtService.deleteMobileMst(deleteVo);
@@ -993,6 +1014,7 @@ public class IntgrMgmtController  extends CommonController{
 	 */
 	@RequestMapping(value="/opermgmt/intgrmgmt/viewListMobileMstExcel.json", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ResponseEntity<?> viewListMobileMstExcel(@RequestBody TbMobileMstVo searchVo, HttpServletRequest request, HttpServletResponse response){
 		
 		FileVo resultVo = new FileVo();
@@ -1027,7 +1049,8 @@ public class IntgrMgmtController  extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/intgrmgmt/insertListRoutChkMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbRoutChkMstVo insertListRoutChkMst(@RequestBody TbRoutChkMstVo tbRoutChkMstVo, HttpServletRequest request, HttpServletResponse response) {
+	@EncryptResponse
+	public BaseVo insertListRoutChkMst(@RequestBody TbRoutChkMstVo tbRoutChkMstVo, HttpServletRequest request, HttpServletResponse response) {
 		TbRoutChkMstVo resultVo = null;
 		Map<String,String> result = null;
 		try {
@@ -1072,6 +1095,7 @@ public class IntgrMgmtController  extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/intgrmgmt/viewPopSummaryMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewPopSummaryMst(@RequestBody TbMobileSummMstVo searchVo, ModelMap model, HttpServletRequest request) {
 		setPagination(searchVo);
 		TbMobileSummMstListVo resultListVo = intgrMgmtService.selectListMobileSummMst(searchVo);
@@ -1130,7 +1154,8 @@ public class IntgrMgmtController  extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/intgrmgmt/insertMobileSummMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbMobileSummMstVo insertMobileSummMst(@RequestBody TbMobileSummMstVo insertVo, HttpServletRequest request, HttpServletResponse response) {
+	@EncryptResponse
+	public BaseVo insertMobileSummMst(@RequestBody TbMobileSummMstVo insertVo, HttpServletRequest request, HttpServletResponse response) {
 		TbMobileSummMstVo resultVo = null;
 		try {
 			String userId = jwtUtil.getUserId(request);
@@ -1160,7 +1185,8 @@ public class IntgrMgmtController  extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/intgrmgmt/deleteMobileSummMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbMobileSummMstVo deleteMobileSummMst(@RequestBody TbMobileSummMstVo deleteVo, HttpServletRequest request, HttpServletResponse response) {
+	@EncryptResponse
+	public BaseVo deleteMobileSummMst(@RequestBody TbMobileSummMstVo deleteVo, HttpServletRequest request, HttpServletResponse response) {
 		TbMobileSummMstVo resultVo = null;
 		try {
 			intgrMgmtService.deleteMobileSummMst(deleteVo);
@@ -1203,7 +1229,8 @@ public class IntgrMgmtController  extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/intgrmgmt/uploadMobileMst.ajax", method = RequestMethod.POST)
 	@ResponseBody
-	public TbMobileMstVo uploadMobileMst(ModelMap model, MultipartHttpServletRequest request, HttpServletResponse response) throws IOException  {
+	@EncryptResponse
+	public BaseVo uploadMobileMst(ModelMap model, MultipartHttpServletRequest request, HttpServletResponse response) throws IOException  {
 		
 		TbMobileMstVo resultVo = null;
 		try {
@@ -1248,6 +1275,7 @@ public class IntgrMgmtController  extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/intgrmgmt/viewListDefaultSvcMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListDefaultSvcMst(@RequestBody TbDefaultSvcMstVo searchVo, ModelMap model, HttpServletRequest request) {
 		setPagination(searchVo);
 		TbDefaultSvcMstListVo resultListVo = intgrMgmtService.selectListDefaultSvcMst(searchVo);
@@ -1313,7 +1341,8 @@ public class IntgrMgmtController  extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/intgrmgmt/insertDefaultSvcMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbDefaultSvcMstVo insertDefaultSvcMst(@RequestBody List<Object> insertVo, HttpServletRequest request, HttpServletResponse response) {
+	@EncryptResponse
+	public BaseVo insertDefaultSvcMst(@RequestBody List<Object> insertVo, HttpServletRequest request, HttpServletResponse response) {
 		TbDefaultSvcMstVo resultVo = null;
 		
 		try {
@@ -1356,6 +1385,7 @@ public class IntgrMgmtController  extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/intgrmgmt/selectSresultMsg.json", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap selectSresultMsg() {
 		List<?> sresultMsg = intgrMgmtService.selectSresultMsg();
 		return createResultList(sresultMsg, sresultMsg.size());
@@ -1371,6 +1401,7 @@ public class IntgrMgmtController  extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/intgrmgmt/viewListRoutHistMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListRoutHistMst(@RequestBody TbRoutHistMstVo searchVo, ModelMap model, HttpServletRequest request) {
 		setPagination(searchVo);
 		TbRoutHistMstListVo resultListVo = intgrMgmtService.selectListRoutHistMst(searchVo);
@@ -1443,6 +1474,7 @@ public class IntgrMgmtController  extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/intgrmgmt/viewListWireMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewListWireMst(@RequestBody TbWireMstVo searchVo, ModelMap model, HttpServletRequest request) {
 		setPagination(searchVo);
 		TbWireMstListVo resultListVo = intgrMgmtService.selectListWireMst(searchVo);
@@ -1506,6 +1538,7 @@ public class IntgrMgmtController  extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/intgrmgmt/viewInsertWireMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewInsertWireMst(ModelMap model, HttpServletRequest request) {
 		TbWireMstVo resultVo = new TbWireMstVo();
 		return createResult(resultVo);
@@ -1567,7 +1600,8 @@ public class IntgrMgmtController  extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/intgrmgmt/insertWireMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbWireMstVo insertWireMst(@RequestBody TbWireMstVo insertVo, HttpServletRequest request, HttpServletResponse response) {
+	@EncryptResponse
+	public BaseVo insertWireMst(@RequestBody TbWireMstVo insertVo, HttpServletRequest request, HttpServletResponse response) {
 		TbWireMstVo resultVo = null;
 		
 		try {
@@ -1606,6 +1640,7 @@ public class IntgrMgmtController  extends CommonController{
 	 */
 	@RequestMapping(value = "/opermgmt/intgrmgmt/viewUpdateWireMst.model", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ModelMap viewUpdateWireMst(@RequestBody TbWireMstVo tbWireMstVo, ModelMap model, HttpServletRequest request) {
 		TbWireMstVo resultVo = intgrMgmtService.selectWireMst(tbWireMstVo);
 		return createResult(resultVo);
@@ -1652,7 +1687,8 @@ public class IntgrMgmtController  extends CommonController{
 	
 	@RequestMapping(value = "/opermgmt/intgrmgmt/updateWireMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbWireMstVo updateWireMst(@RequestBody TbWireMstVo updateVo, HttpServletRequest request, HttpServletResponse response) {
+	@EncryptResponse
+	public BaseVo updateWireMst(@RequestBody TbWireMstVo updateVo, HttpServletRequest request, HttpServletResponse response) {
 		TbWireMstVo resultVo = null;
 		
 		try {
@@ -1683,7 +1719,8 @@ public class IntgrMgmtController  extends CommonController{
 	
 	@RequestMapping(value = "/opermgmt/intgrmgmt/deleteWireMst.json", method = RequestMethod.POST)
 	@ResponseBody
-	public TbWireMstVo deleteWireMst(@RequestBody TbWireMstVo deleteVo, HttpServletRequest request, HttpServletResponse response) {
+	@EncryptResponse
+	public BaseVo deleteWireMst(@RequestBody TbWireMstVo deleteVo, HttpServletRequest request, HttpServletResponse response) {
 		TbWireMstVo resultVo = null;
 		
 		try {
@@ -1709,6 +1746,7 @@ public class IntgrMgmtController  extends CommonController{
 	
 	@RequestMapping(value = "/opermgmt/intgrmgmt/viewListWireMstExcel.json", method = RequestMethod.POST)
 	@ResponseBody
+	@EncryptResponse
 	public ResponseEntity<?> viewListWireMstExcel(@RequestBody TbWireMstVo searchVo, HttpServletRequest request, HttpServletResponse response){
 		
 		FileVo resultVo = new FileVo();
