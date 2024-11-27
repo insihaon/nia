@@ -52,7 +52,7 @@ import ElTableDraggable from 'el-table-draggable'
 Vue.component('ElTableDraggable', ElTableDraggable)
 
 /* ipms */
-if (AppOptions.instance.project === 'ipms') {
+if (AppOptions.instance.dark) {
   require('element-ui/lib/theme-chalk/index.css')
   require('element-theme-dark')
   // require('./assets/css/xeicon.min.css') error
