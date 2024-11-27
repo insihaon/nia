@@ -1,70 +1,63 @@
-body.outline {
-    * {
-        outline: 0.5px dashed rgba(255, 255, 255, 0.1) !important;
-    }
+#app.outline {
+    // * {
+    //     outline: 0.5px dashed rgba(255, 255, 255, 0.1) !important;
+    // }
 
-    .draft-img, .draft-sub-img, .draft-popup-img, .draft-control-img, .draft-menu-img {
-        outline: 0.5px dashed deepskyblue !important;
-    }
+    // .draft-img, .draft-sub-img, .draft-popup-img, .draft-control-img, .draft-menu-img {
+    //     outline: 0.5px dashed deepskyblue !important;
+    // }
     
-    .md-button, .button {
+    .button,
+    .button img,
+    .el-table, 
+    .el-button,
+    tr
+    {
         outline: #e9b5f3 dotted !important;
-    }
-    
-    .md-button, .button {
         outline-width: 0.5px !important;
     }
-
-    label {
-        outline: 0.5px solid #ffcb2e !important;
-    }
-    
-    .md-button.md-icon-button {
-        outline: 1px solid #ff7167 !important;
-    }
-    
+  
     div {
-        outline: rgba(255, 0, 0, 0.3) solid 0.5px !important;
+        outline: rgba(255, 0, 0, 0.8) solid 1px !important; /* 빨강 */
     }
     
     div > div {
-        outline: rgba(131, 138, 255, 0.8) dashed 0.5px !important;
+        outline: rgba(255, 165, 0, 0.8) dashed 1px !important; /* 주황 */
     }
     
     div > div > div {
-        outline: green dashed 0.5px !important;
+        outline: rgba(255, 255, 0, 0.8) dashed 1px !important; /* 노랑 */
     }
     
     div > div > div > div {
-        outline: #504ce3 dashed 0.5px !important;
+        outline: rgba(0, 255, 0, 0.8) dashed 1px !important; /* 초록 */
     }
     
     div > div > div > div > div {
-        outline: darkviolet dashed 0.5px !important;
+        outline: rgba(0, 127, 255, 0.8) dashed 1px !important; /* 하늘색 */
     }
     
     div > div > div > div > div > div {
-        outline: #d36430 dashed 0.5px !important;
+        outline: rgba(0, 0, 255, 0.8) dashed 1px !important; /* 파랑 */
     }
     
     div > div > div > div > div > div > div {
-        outline: #00d3d2 dashed 0.5px !important;
+        outline: rgba(75, 0, 130, 0.8) dashed 1px !important; /* 남색 */
     }
     
     div > div > div > div > div > div > div > div {
-        outline: #00d351 dashed 0.5px !important;
+        outline: rgba(148, 0, 211, 0.8) dashed 1px !important; /* 보라 */
     }
     
     div > div > div > div > div > div > div > div > div {
-        outline: #001ed3 dashed 0.5px !important;
+        outline: rgba(238, 130, 238, 0.8) dashed 1px !important; /* 연보라 */
     }
     
     div > div > div > div > div > div > div > div > div > div {
-        outline: #0074d3 dashed 0.5px !important;
+        outline: rgba(255, 105, 180, 0.8) dashed 1px !important; /* 핑크 */
     }
     
     div > div > div > div > div > div > div > div > div > div div {
-        outline: #d3736e dashed 0.5px !important;
+        outline: rgba(128, 0, 0, 0.8) dashed 1px !important; /* 진한 빨강 */
     }
-    
 }
