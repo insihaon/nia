@@ -51,8 +51,7 @@ Vue.component('SvgIcon', SvgIcon)
 import ElTableDraggable from 'el-table-draggable'
 Vue.component('ElTableDraggable', ElTableDraggable)
 
-/* ipms */
-if (AppOptions.instance.dark) {
+if ((process.env.NODE_ENV === 'development' && AppOptions.instance.dark) || (process.env.NODE_ENV !== 'development' && process.env.VUE_APP_USE_DARK_THEME)) {
   require('element-ui/lib/theme-chalk/index.css')
   require('element-theme-dark')
   // require('./assets/css/xeicon.min.css') error
@@ -60,7 +59,6 @@ if (AppOptions.instance.dark) {
 import { Fragment } from 'vue-frag'
 Vue.component('Fragment', Fragment)
 
-/*  */
 process.env.NODE_ENV === 'development' ? require('@/min/global') : require('@/min/global.min')
 
 Vue.use(LoadScript)
