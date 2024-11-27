@@ -14,7 +14,6 @@ import App from './App'
 import store from './store'
 import router from './router'
 import * as filters from '@/filters'
-import { AppOptions } from '@/class/appOptions'
 
 import '@/permission'
 import '@/utils/extend'
@@ -51,11 +50,12 @@ Vue.component('SvgIcon', SvgIcon)
 import ElTableDraggable from 'el-table-draggable'
 Vue.component('ElTableDraggable', ElTableDraggable)
 
-if ((process.env.NODE_ENV === 'development' && AppOptions.instance.dark) || (process.env.NODE_ENV !== 'development' && JSON.parse(process.env.VUE_APP_USE_DARK_THEME))) {
+if (process.env.VUE_APP_USE_DARK_THEME === 'true') {
+  // *** 주의 AppOptions 을 사용하면 배포 후 적용 안됨 ***
   require('element-ui/lib/theme-chalk/index.css')
   require('element-theme-dark')
-  // require('./assets/css/xeicon.min.css') error
 }
+
 import { Fragment } from 'vue-frag'
 Vue.component('Fragment', Fragment)
 
