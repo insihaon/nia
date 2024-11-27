@@ -129,9 +129,8 @@ function padKey(plainKey) {
     const e = s + len;
     const key = encryptData.substring(s, e);
     const encryptText = encryptData.substring(0, s) + encryptData.substring(e);
-    let decrypt = null
+    const decrypt = encrypt.decrypt(encryptText, key)
     try {
-      const decrypt = encrypt.decrypt(encryptText, key)
       return JSON.parse(decrypt)
     } catch (error) {
       return decrypt
@@ -152,15 +151,18 @@ function padKey(plainKey) {
     const varName = className.replace(/^\w/, (c) => c.toLowerCase())
     const UUID_KEY = `!${varName}`
     const STORAGE = window.localStorage
-    const uuid = Encrypt.toDecrypt(STORAGE.getItem(UUID_KEY)) || `${String(Date.now())} ${generateUUID()}`
-    const [d, u] = uuid.split(' ')
-    if (Date.now() - Number(d) > 1000 * 60 * 60) {
-      STORAGE.removeItem(UUID_KEY)
-    } else {
-      inst.uuid = u
+    let uuid = Encrypt.toDecrypt(STORAGE.getItem(UUID_KEY)) 
+    
+    if (uuid === null || Date.now() - Number(uuid.split(' ')[0]) > 1000 * 60 * 60) {
+      uuid = `${String(Date.now())} ${generateUUID()}`
       STORAGE.setItem(UUID_KEY, Encrypt.toEncrypt(uuid))
     }
-    !!inst.uuid && (window[`.${inst.uuid}`] = inst)
+
+    const [d, u] = uuid.split(' ')
+    if(u) {
+      inst.uuid = u
+      window[`.${inst.uuid}`] = inst
+    }
 
     if(opt) {
       window[varName] = inst
