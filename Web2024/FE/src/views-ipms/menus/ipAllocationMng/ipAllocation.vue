@@ -262,37 +262,40 @@ export default {
       res.every(r => r === true) && this.$refs.ModalIpAllocInsert.open({ ipAllocOperMstVos: rows })
     },
     fnMergeBtnClick() {
-      const checkedList = this.selectedRows
-      const { nipBlockMstSeq, sassignLevelCd, sassignTypeCd, nlvlMstSeq, sipCreateTypeCd } = checkedList[0]
-      let validateText = ''
+      const checkedList = this._orderBy(this.selectedRows, ['asc', 'nipAllocMstCnt'])
       if (checkedList.length === 0) {
-        validateText = '병합할 대상이 없습니다.'
+        onMessagePopup(this, '병합할 대상이 없습니다.')
+        return
       } else if (checkedList.length === 1) {
-        validateText = '병합할 대상은 최소 2개이상 선택해 주시기 바랍니다.'
+        onMessagePopup(this, '병합할 대상은 최소 2개이상 선택해 주시기 바랍니다.')
+        return
       }
-      checkedList.forEach(row => {
+      const { nipBlockMstSeq, sassignLevelCd, sassignTypeCd, nlvlMstSeq, sipCreateTypeCd } = checkedList[0]
+      for (const row of checkedList) {
         if (nipBlockMstSeq !== row.nipBlockMstSeq) {
-          validateText = '병합할 대상 정보들의 생성 유형이 동일하지 않습니다.'
+          onMessagePopup(this, '병합할 대상 정보들의 생성 유형이 동일하지 않습니다.')
+          return
         }
         if (sassignLevelCd !== row.sassignLevelCd) {
-          validateText = '병합할 대상 정보들의 작업 상태가 동일하지 않습니다.'
+          onMessagePopup(this, '병합할 대상 정보들의 작업 상태가 동일하지 않습니다')
+          return
         }
         if (sassignTypeCd !== row.sassignTypeCd) {
-          validateText = '병합할 대상 정보들의 서비스가 동일하지 않습니다.'
+          onMessagePopup(this, '병합할 대상 정보들의 서비스가 동일하지 않습니다.')
+          return
         }
         if (nlvlMstSeq !== row.nlvlMstSeq) {
-          validateText = '병합할 대상 정보들의 계위(조직)정보가 동일하지 않습니다.'
+          onMessagePopup(this, '병합할 대상 정보들의 계위(조직)정보가 동일하지 않습니다.')
+          return
         }
         if (sipCreateTypeCd !== row.sipCreateTypeCd) {
-          validateText = '병합할 대상 정보들의 생성 유형이 동일하지 않습니다.'
+          onMessagePopup(this, '병합할 대상 정보들의 생성 유형이 동일하지 않습니다.')
+          return
         }
         if (row.sassignLevelCd === 'IA0005' || row.sassignLevelCd === 'IA0006') {
-          validateText = '병합할 대상 정보들의 작업 상태가 할당확정/할당예약 일 경우 병합할 수 없습니다.'
+          onMessagePopup(this, '병합할 대상 정보들의 작업 상태가 할당확정/할당예약 일 경우 병합할 수 없습니다.')
+          return
         }
-      })
-      if (validateText.length > 0) {
-        onMessagePopup(this, validateText)
-        return
       }
       const tbIpAssignMstListVo = { typeFlag: 'Aloc', tbIpAssignMstVos: [] }
       checkedList.forEach(row => { tbIpAssignMstListVo.tbIpAssignMstVos.push({ nipAssignMstSeq: row.nipAssignMstSeq }) })
