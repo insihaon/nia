@@ -8,6 +8,16 @@
 // https://on.cypress.io/custom-commands
 // ***********************************************
 //
+
+Cypress.Commands.add('visitLocal', () => {
+    cy.visit('http://localhost:4000')
+    cy.viewport(1800, 900)
+})
+Cypress.Commands.add('login', () => {
+    cy.get(':nth-child(1) > .el-form-item__content > input').type('10150810');
+    cy.get(':nth-child(2) > .el-form-item__content > input').type('1');
+    cy.get('button').click();
+})
 //
 // -- This is a parent command --
 // Cypress.Commands.add('login', (email, password) => { ... })
