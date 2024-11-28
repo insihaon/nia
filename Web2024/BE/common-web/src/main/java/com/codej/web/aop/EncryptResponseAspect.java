@@ -45,6 +45,7 @@ public class EncryptResponseAspect {
     //     return response;
     // }
 
+    @SuppressWarnings("unused")
     @Around("(execution(* com.kt.ipms.legacy..*(..)) || execution(* com.codej.nia.controller..*(..))) && @annotation(com.codej.web.annotation.EncryptResponse)")
     public Object handleEncryption(ProceedingJoinPoint joinPoint) throws Throwable {
         // 요청 Body에서 encrypt 값을 확인
@@ -52,10 +53,18 @@ public class EncryptResponseAspect {
 
         // 요청 처리
         Object result = joinPoint.proceed();
-        Class<?> clazz = result.getClass();
+        
         if (encrypt || encrypt == null) {
+            Class<?> clazz = null;
+            try {
+                clazz = result.getClass();
+            } catch (Exception e) {
+                clazz = null;
+            }
+
             if (result == null) {
                 // 결과가 void 타입 일 때
+                return null;
             }
             else if (result instanceof String) {
                 // 결과가 String 타입 일 때
@@ -76,10 +85,11 @@ public class EncryptResponseAspect {
                 ModelMap resultModel = new ModelMap();
                 resultModel.addAttribute(GlobalConstants.Common.ENCRYPT, true);
                 resultModel.addAttribute(GlobalConstants.Common.RESULT, encrypt(result));
-                result = resultModel;
+                // result = resultModel;
+                result = new ResponseEntity<>(resultModel, HttpStatus.OK);
             }
             else if (result instanceof Map) {
-                /* *** 중요 ModelMap 이후에 처리해야 함 *** */
+                /*** 중요 ModelMap 이후에 처리해야 함 ***/
                 Map<String,Object> resultMap = new HashMap<String, Object>();
                 resultMap.put(GlobalConstants.Common.ENCRYPT, true);
                 resultMap.put(GlobalConstants.Common.RESULT, encrypt(result));
@@ -106,6 +116,7 @@ public class EncryptResponseAspect {
         return EncryptUtil.encrypt(json);
     }
 
+    @SuppressWarnings("unchecked")
     private Boolean isEncrypt() {
         Boolean encrypt = true;
         try {
@@ -139,8 +150,9 @@ public class EncryptResponseAspect {
             }
             encrypt = "true".equals(decryptText);
         } catch (Exception e) {
-            log.error("REQUEST ENCRYPT 위변조", e);
-            throw new CUntrustedRequestException();
+            String msg = "REQUEST ENCRYPT 위변조";
+            log.error(msg, e);
+            throw new CUntrustedRequestException(msg);
         }
         return encrypt;
     }
