@@ -1,4 +1,4 @@
-package com.kt.ipms.config;
+package com.codej.web.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
