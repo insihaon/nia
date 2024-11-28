@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.kt.ipms.annotation.EncryptResponse;
+import com.codej.web.annotation.EncryptResponse;
 import com.kt.ipms.legacy.cmn.service.RestApiService;
 
 /**

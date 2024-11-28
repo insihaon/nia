@@ -75,7 +75,7 @@ export class Storage {
 
   autoReload(newOptions) {
     const properties = this.reloadProperties
-    if (JSON.stringify(newOptions, ['baseURL', 'dark']) !== '{}') {
+    if (JSON.stringify(newOptions, ['baseURL']) !== '{}') {
       this.updateUseWebSocket()
       this._save()
     }
