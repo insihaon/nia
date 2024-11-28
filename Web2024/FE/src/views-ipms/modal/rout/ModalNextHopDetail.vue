@@ -158,8 +158,8 @@
         </tbody>
       </table>
     </div>
-    <div slot="footer" class="dialog-footer">
-      <el-button size="mini" class="el-icon-close" @click.native="close()">{{ $t('exit') }}</el-button>
+    <div class="popupContentTableBottom">
+      <el-button type="primary" size="mini" class="el-icon-close" round @click.native="close()">{{ $t('exit') }}</el-button>
     </div>
   </el-dialog>
 </template>

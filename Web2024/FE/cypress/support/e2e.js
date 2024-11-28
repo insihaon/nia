@@ -16,6 +16,7 @@
 // Import commands.js using ES2015 syntax:
 import './commands'
 beforeEach(() => {
+    cy.setOptions()
     cy.intercept('POST', '**/getkey').as('getkey')
     cy.intercept('POST', '**/signin').as('signin')
     cy.intercept('POST', '**/setting').as('setting')

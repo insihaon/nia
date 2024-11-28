@@ -13,6 +13,7 @@
           :multiple-limit="limit[key1]"
           collapse-tags
           size="small"
+          popper-class="ssvcLineTypeCd"
           @change="()=> handleChangeLvl1(true)"
           @visible-change="(isVisible) => handleDropdownVisibility(isVisible, 1)"
         >
@@ -34,6 +35,7 @@
           :multiple-limit="limit[key2]"
           collapse-tags
           size="small"
+          popper-class="ssvcGroupCd"
           @change="handleChangeLvl2"
           @visible-change="(isVisible) => handleDropdownVisibility(isVisible, 2)"
         >
@@ -55,6 +57,7 @@
           :multiple-limit="limit[key3]"
           collapse-tags
           size="small"
+          popper-class="ssvcObjCd"
           @change="handleChangeLvl3"
           @visible-change="(isVisible) => handleDropdownVisibility(isVisible, 3)"
         >
