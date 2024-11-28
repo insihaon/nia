@@ -12,11 +12,6 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-aop'
-
-	// AspectJ와 BCEL의 최신 버전
-    implementation 'org.aspectj:aspectjweaver:1.9.20'
-    implementation 'org.apache.bcel:bcel:6.6.0'
 	
 	// commons-codec: 범용 암호화 및 디코딩을 위한 Apache Commons Codec 라이브러리
 	implementation 'commons-codec:commons-codec:1.15'

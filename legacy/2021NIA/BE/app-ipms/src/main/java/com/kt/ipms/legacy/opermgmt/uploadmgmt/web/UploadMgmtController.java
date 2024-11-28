@@ -25,8 +25,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.codej.web.annotation.EncryptResponse;
 import com.codej.web.controller.FileController;
-import com.kt.ipms.annotation.EncryptResponse;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.web.CommonController;
 import com.kt.ipms.legacy.opermgmt.loginmgmt.vo.LoginInfoVo;

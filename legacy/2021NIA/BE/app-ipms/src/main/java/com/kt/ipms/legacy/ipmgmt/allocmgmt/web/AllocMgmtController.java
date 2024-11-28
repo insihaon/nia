@@ -22,14 +22,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.codej.base.property.FileStorageProperties;
+import com.codej.web.annotation.EncryptResponse;
 // import com.kt.ipms.legacy.cmn.web.FileController;
 import com.codej.web.controller.FileController;
+import com.codej.web.vo.BaseVo;
 import com.kt.framework.exception.ServiceException;
 import com.kt.framework.utils.StringUtils;
-import com.kt.ipms.annotation.EncryptResponse;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
-import com.kt.ipms.legacy.cmn.vo.BaseVo;
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
 import com.kt.ipms.legacy.cmn.vo.FileVo;
 import com.kt.ipms.legacy.cmn.web.CommonController;

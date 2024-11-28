@@ -36,12 +36,12 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.codej.base.dto.response.UploadFileResponse;
 import com.codej.base.property.FileStorageProperties;
+import com.codej.web.annotation.EncryptResponse;
 import com.codej.web.controller.FileController;
+import com.codej.web.vo.BaseVo;
 import com.kt.framework.exception.ServiceException;
-import com.kt.ipms.annotation.EncryptResponse;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
-import com.kt.ipms.legacy.cmn.vo.BaseVo;
 import com.kt.ipms.legacy.cmn.vo.CommonVo;
 import com.kt.ipms.legacy.cmn.vo.FileVo;
 import com.kt.ipms.legacy.cmn.vo.SmtpVo;

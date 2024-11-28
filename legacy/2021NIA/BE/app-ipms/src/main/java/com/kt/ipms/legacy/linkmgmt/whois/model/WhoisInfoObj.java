@@ -1,6 +1,6 @@
 package com.kt.ipms.legacy.linkmgmt.whois.model;
 
-import com.kt.ipms.legacy.cmn.vo.BaseVo;
+import com.codej.web.vo.BaseVo;
 
 public class WhoisInfoObj extends BaseVo{
 
