@@ -28,12 +28,23 @@ public class ExceptionAdvice {
         // System.out.println("Exception Type: " + e.getClass().getName());
         // System.out.println("Message: " + e.getMessage());
 
-        // // 스택 추적 정보 출력
+        // 스택 추적 정보 출력
         StringBuffer sb = new StringBuffer(" StackTrace: ");
         StackTraceElement[] stackTrace = e.getStackTrace();
-        for (int i = 0; i < Math.min(5, stackTrace.length); i++) {
+        for (int i = 0; i < Math.min(50, stackTrace.length); i++) {
             StackTraceElement element = stackTrace[i];
-            sb.append(String.format("%s:%d <- ", element.getFileName(), element.getLineNumber()));
+            String className = element.getClassName();
+            String fileName = element.getFileName();
+            int lineNumber = element.getLineNumber();
+
+            if("<generated>".equals(fileName)) {
+                fileName =  className;
+            }
+
+            if (i < 1 || className.startsWith("com.kt") || className.startsWith("com.codej")) {
+                sb.append(String.format("%s:%d <- ", fileName, lineNumber));
+            }
+            
         }
 
         return sb.toString();
@@ -45,14 +56,12 @@ public class ExceptionAdvice {
         // return fullStackTrace;
     }
 
-  
-
     @ExceptionHandler(CBaseException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public BaseResponse untrustedRequestException(HttpServletRequest request, CBaseException e) {
         Integer code = Integer.valueOf(getMessage(e.getCodeKey()));
         String msg = getMessage(e.getMessageKey(), new Object[]{e.getMessage()});
-        String detail = e.getMessage() != null ? e.getMessage() : getMessage(e.getDetailMessageKey()) + getStackTrace(e);
+        String detail = (e.getDetailMessage() != null ? e.getDetailMessage() : getMessage(e.getDetailMessageKey())) + getStackTrace(e);
         return responseService.createFailResponse(code, msg, detail);
     }
 

@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.codej.base.utils.EncryptUtil;
+import com.codej.web.annotation.EncryptResponse;
+import com.codej.web.vo.BaseVo;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.kt.ipms.annotation.EncryptResponse;
-import com.kt.ipms.legacy.cmn.vo.BaseVo;
 import com.kt.ipms.legacy.cmn.vo.CommonVo;
 import com.kt.ipms.legacy.cmn.vo.FileVo;
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.IpAllocOperMstListVo;
@@ -58,7 +58,7 @@ public class IpmsTestController extends CommonController {
           "content-type": "application/json",
         },
         body: JSON.stringify({
-          encrypt: true, // encrypt 값을 추가
+          encrypt: 'GpLFqAJUEginXTnHmhg=', // encrypt : true
         }),
         method: "POST",
         mode: "cors",

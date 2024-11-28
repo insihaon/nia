@@ -1,7 +1,6 @@
-package com.kt.ipms.aop;
+package com.codej.web.aop;
 
 import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -18,14 +17,15 @@ import org.springframework.stereotype.Component;
 import org.springframework.ui.ModelMap;
 
 import com.codej.base.exception.CServiceException;
+import com.codej.base.exception.CServiceIncorrectUse;
 import com.codej.base.exception.CUntrustedRequestException;
 import com.codej.base.property.GlobalConstants;
 import com.codej.base.utils.EncryptUtil;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.codej.base.utils.JsonUtil;
+import com.codej.web.vo.BaseVo;
+import com.codej.web.vo.EncryptedVo;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.kt.ipms.legacy.cmn.vo.BaseVo;
-import com.kt.ipms.legacy.cmn.vo.EncryptedVo;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,26 +34,25 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class EncryptResponseAspect {
     private final HttpServletRequest request;
-    private final ObjectMapper objectMapper;
 
-    public EncryptResponseAspect(HttpServletRequest request, ObjectMapper objectMapper) {
+    public EncryptResponseAspect(HttpServletRequest request) {
         this.request = request;
-        this.objectMapper = objectMapper;
     }
 
-    // @Around("execution(* com.kt.ipms.legacy..*(..)) && @annotation(com.kt.ipms.annotation.EncryptResponse))")
+    // @Around("execution(* com.kt.ipms.legacy..*(..)) && @annotation(com.codej.web.annotation.EncryptResponse))")
     // public Object handleEncryption(ProceedingJoinPoint joinPoint) throws Throwable {
     //     Object response = joinPoint.proceed();
     //     return response;
     // }
 
-    @Around("execution(* com.kt.ipms.legacy..*(..)) && @annotation(com.kt.ipms.annotation.EncryptResponse)")
+    @Around("(execution(* com.kt.ipms.legacy..*(..)) || execution(* com.codej.nia.controller..*(..))) && @annotation(com.codej.web.annotation.EncryptResponse)")
     public Object handleEncryption(ProceedingJoinPoint joinPoint) throws Throwable {
         // 요청 Body에서 encrypt 값을 확인
         Boolean encrypt = isEncrypt();
 
         // 요청 처리
         Object result = joinPoint.proceed();
+        Class<?> clazz = result.getClass();
         if (encrypt || encrypt == null) {
             if (result == null) {
                 // 결과가 void 타입 일 때
@@ -64,12 +63,6 @@ public class EncryptResponseAspect {
             else if (result instanceof List) {
                 // 결과가 List 타입 일 때
             }
-            else if (result instanceof Map) {
-                Map<String,Object> resultMap = new HashMap<String, Object>();
-                resultMap.put(GlobalConstants.Common.ENCRYPT, true);
-                resultMap.put(GlobalConstants.Common.RESULT, encrypt(result));
-                return resultMap;
-            }
             else if (result instanceof ResponseEntity) {
                 ResponseEntity<?> responseEntity = (ResponseEntity<?>) result;
                 Object body = responseEntity.getBody();
@@ -77,19 +70,27 @@ public class EncryptResponseAspect {
                 ModelMap resultModel = new ModelMap();
                 resultModel.addAttribute(GlobalConstants.Common.ENCRYPT, true);
                 resultModel.addAttribute(GlobalConstants.Common.RESULT, encrypt(body));
-                return new ResponseEntity<>(resultModel, HttpStatus.OK);
+                result = new ResponseEntity<>(resultModel, HttpStatus.OK);
             }
             else if (result instanceof ModelMap) {
                 ModelMap resultModel = new ModelMap();
                 resultModel.addAttribute(GlobalConstants.Common.ENCRYPT, true);
                 resultModel.addAttribute(GlobalConstants.Common.RESULT, encrypt(result));
-                return resultModel;
+                result = resultModel;
+            }
+            else if (result instanceof Map) {
+                /* *** 중요 ModelMap 이후에 처리해야 함 *** */
+                Map<String,Object> resultMap = new HashMap<String, Object>();
+                resultMap.put(GlobalConstants.Common.ENCRYPT, true);
+                resultMap.put(GlobalConstants.Common.RESULT, encrypt(result));
+                result = resultMap;
             }
             else if (result instanceof BaseVo) {
                 return new EncryptedVo(true, encrypt(result));
             } 
-            else {
-                throw new CServiceException("EncryptResponse 에러");
+            
+            if (result.getClass().equals(clazz) == false) {
+                throw new CServiceException("@EncryptResponse 에러");
             }
         }
 
@@ -108,38 +109,39 @@ public class EncryptResponseAspect {
     private Boolean isEncrypt() {
         Boolean encrypt = true;
         try {
-             // 타임스탬프 보안 체크
-             long now = new Date().getTime();
-             String tsHeader = request.getHeader("_t");
-             String ts = EncryptUtil.decryptText(tsHeader);
- 
-             if (ts == null || Math.abs((now - Long.valueOf(ts)) / 1000) > 10) {
-                 throw new CUntrustedRequestException();
-             }
+            // 타임스탬프 보안 체크
+            long now = new Date().getTime();
+            String tsHeader = request.getHeader("_t");
+            String ts = EncryptUtil.decryptText(tsHeader);
 
-            // Body 읽기
-            BufferedReader reader = new BufferedReader(new InputStreamReader(request.getInputStream()));
+            if (ts == null || Math.abs((now - Long.valueOf(ts)) / 1000) > 10) {
+                throw new CUntrustedRequestException();
+            }
+
+            // 요청 Body를 바로 읽기
             StringBuilder body = new StringBuilder();
+            BufferedReader reader = request.getReader();
             String line;
             while ((line = reader.readLine()) != null) {
                 body.append(line);
             }
 
             // JSON 데이터를 Map으로 변환
-            Map<String, Object> requestBody = objectMapper.readValue(body.toString(), Map.class);
-
-            Object value = (Boolean) requestBody.get(GlobalConstants.Common.ENCRYPT);
+            Map<String, Object> requestBody = JsonUtil.convertJsonToClass(body.toString(), Map.class);
+            Object value = requestBody.get(GlobalConstants.Common.ENCRYPT);
             if (value == null) {
                 throw new NullPointerException();
             }
-            String decryptText = EncryptUtil.decryptText((String)value);
-            encrypt = decryptText == null || "true".equals(decryptText);
+
+            String decryptText = EncryptUtil.decryptText((String) value);
+            if (decryptText == null) {
+                throw new CServiceIncorrectUse("데이터 형식을 알 수 없습니다.");
+            }
+            encrypt = "true".equals(decryptText);
         } catch (Exception e) {
             log.error("REQUEST ENCRYPT 위변조", e);
             throw new CUntrustedRequestException();
         }
-
         return encrypt;
     }
-
 }

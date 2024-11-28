@@ -1,4 +1,4 @@
-package com.kt.ipms.legacy.cmn.vo;
+package com.codej.web.vo;
 
 import java.io.Serializable;
 

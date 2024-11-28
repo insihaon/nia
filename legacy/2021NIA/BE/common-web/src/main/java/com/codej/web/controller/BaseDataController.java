@@ -96,7 +96,10 @@ public abstract class BaseDataController extends BaseController {
                 throw new NullPointerException();
             }
             String decryptText = EncryptUtil.decryptText((String)value);
-            encrypt = decryptText == null || "true".equals(decryptText);
+            if(decryptText == null) {
+                throw new CServiceIncorrectUse("데이터 형식을 알 수 없습니다.");
+            }
+            encrypt = "true".equals(decryptText);
         } catch (Exception e) {
             log.error("REQUEST ENCRYPT 위변조", e);
             throw new CUntrustedRequestException();

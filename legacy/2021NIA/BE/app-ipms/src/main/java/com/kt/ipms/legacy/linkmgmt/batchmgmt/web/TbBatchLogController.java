@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.codej.web.annotation.EncryptResponse;
 import com.kt.framework.exception.ServiceException;
-import com.kt.ipms.annotation.EncryptResponse;
 import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
 import com.kt.ipms.legacy.cmn.web.CommonController;

@@ -27,11 +27,7 @@ spring:
   application.name: ipms-web
   config.use-legacy-processing: true  # 스프링 부트 2.4 이전 레거시 구동방식 유지
   main.allow-bean-definition-overriding: true
-
-  aop:
-    proxy-target-class: true # Spring AOP가 인터페이스 기반이 아닌 CGLIB 기반의 클래스 프록시 생성 허용
-    auto: true               # AOP 설정을 자동으로 활성화합니다.
-
+  
   config:
     import: classpath:/properties/config.properties
 

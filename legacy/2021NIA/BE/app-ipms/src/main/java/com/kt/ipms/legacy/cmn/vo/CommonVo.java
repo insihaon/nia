@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
+import com.codej.web.vo.BaseVo;
 import com.kt.ipms.legacy.cmn.typehandler.JsonDateSerializer;
 
 
