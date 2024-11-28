@@ -102,7 +102,8 @@ public class ResponseService {
     public ResultResponse<Boolean> createFailResponse(int code, String message, String detailMessage) {
         ErrorResponse response = new ErrorResponse();
         response.setErrorCode(code);
-        response.setSql(getSql());
+        if (code == -1012)
+            response.setSql(getSql());
         response.setMessage(message);
         response.setSuccess(false);
         response.setDetailMessage(detailMessage);

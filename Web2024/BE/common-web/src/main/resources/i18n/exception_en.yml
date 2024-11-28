@@ -16,7 +16,7 @@ entryPointException:
   message_detail: "Please check your permissions."
 accessDenied:
   code: "-1003"
-  message: "You do not have access to this resource with the current permissions."
+  message: "Access to the service is denied."
   message_detail: "Please check your permissions."
 communicationError:
   code: "-1004"
@@ -52,7 +52,7 @@ serviceIncorrectUse:
   message_detail: "Please check the service name."
 mybatisException:
   code: "-1012"
-  message: "An error occurred during data processing."
+  message: "An error occurred during DB processing."
   message_detail: "Please check the MyBatis query logs."
 httpRelayServiceFail:
   code: "-1013"
