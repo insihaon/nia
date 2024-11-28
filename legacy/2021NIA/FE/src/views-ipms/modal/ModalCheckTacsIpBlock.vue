@@ -205,11 +205,11 @@ export default {
           cancelButtonText: '취소',
           type: 'warning',
         }).then(() => {
-          // const _THIS = this
+          const _THIS = this
           const { typeFlag } = this.ipRow
           // 할당처리
           if (this.typeFlag === 'ALLOC') {
-            const result = this.$parent.fnInsertConfirmBtnClick()
+            const result = this.$parent.$parent.fnInsertConfirmBtnClick()
             if (result) {
               this.tacsResultList = []
               this.close()
@@ -221,7 +221,7 @@ export default {
       } else {
         // 할당처리
         if (this.typeFlag === 'ALLOC') {
-          const result = this.$parent.fnInsertConfirmBtnClick()
+          const result = this.$parent.$parent.fnInsertConfirmBtnClick()
           if (result) {
               this.tacsResultList = []
               this.close()

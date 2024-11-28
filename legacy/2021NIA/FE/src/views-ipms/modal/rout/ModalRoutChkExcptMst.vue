@@ -25,7 +25,7 @@
           <tr>
             <th>예외처리 유형</th>
             <td class="text-left">
-              <el-select v-model="sexcptCd">
+              <el-select v-model="sexcptCd" popper-class="exceptOption">
                 <el-option value="">전체</el-option>
                 <el-option v-for="(item, index) in exceptionTypes" :key="index" :value="item.value">
                   {{ item.label }}

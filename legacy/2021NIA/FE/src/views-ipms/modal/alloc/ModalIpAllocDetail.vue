@@ -186,7 +186,7 @@
                   {{ item.sllnum }}
                 </td>
                 <td class="btn_text">
-                  <el-button @click="fnDeleteAlcIPMstClick(item)">
+                  <el-button type="primary" size="small" round plain @click="fnDeleteAlcIPMstClick(item)">
                     해지
                   </el-button>
                 </td>
@@ -366,7 +366,7 @@ export default {
                this.eventReload()
                this.close()
              } else {
-               onMessagePopup(this, res.result.commonMsg)
+               onMessagePopup(this, res.commonMsg)
              }
            }
          } catch (error) {
