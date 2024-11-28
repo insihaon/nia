@@ -27,8 +27,6 @@ spring:
 myconf:
   websocket:
     enabled: false
-  auth:
-    use: false #auth.use
 file:
   upload-dir: ./external
 
