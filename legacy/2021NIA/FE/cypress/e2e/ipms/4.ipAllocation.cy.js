@@ -1,19 +1,16 @@
 describe('Ip Allocation Fuctionality', () => {
   beforeEach(() => {
+    cy.visitPath('ipAllocationMng/ipAllocation')
+    /* POST 요청 정의 */
     cy.intercept('POST', '**/ipmgmt/allocmgmt/viewListIpAllocMst.model').as('viewListIpAllocMst') /* 할당 목록 */
-    cy.intercept('POST', '**/ipmgmt/allocmgmt/viewDetailAlcIPMst.model').as('viewDetailAlcIPMst') /* 할당 목록 */
+    cy.intercept('POST', '**/ipmgmt/allocmgmt/viewDetailAlcIPMst.model').as('viewDetailAlcIPMst') /* 할당 상세 */
   })
   context('IP Allocation View List', () => {
-    beforeEach(() => {
-      cy.visitLocal()
-      cy.login()
-      cy.wait(['@getkey', '@signin', '@setting'])
-      /* 페이지 이동 */
-      cy.visit('http://localhost:4000/#/ipAllocationMng/ipAllocation')
-      cy.wait(1000)
+    afterEach(() => {
+      cy.wait(1000) // 각 테스트 후에 1초 대기
     })
     it('list lookup', () => {
-      /* 조회 버튼 클릭 */ 
+      /* 조회 버튼 클릭 */
       cy.get('.searchBtnWrap > .el-button--primary').click()
       /* 조회 결과 성공여부 확인 */
       cy.wait('@viewListIpAllocMst').then((interception) => {
@@ -28,7 +25,7 @@ describe('Ip Allocation Fuctionality', () => {
       cy.get('.searchBtnWrap > .el-button--primary').click()
       cy.wait('@viewListIpAllocMst')
       /* 상세버튼 클릭 */
-      cy.get('tbody > :nth-child(1) > .el-table_2_column_2 > .cell').dblclick()
+      cy.get('tbody > :nth-child(1) > .el-table_2_column_13').dblclick()
       // cy.get('tbody > :nth-child(1) > .el-table_2_column_7')
       cy.wait('@viewDetailAlcIPMst').then((interception) => {
         expect(interception.response.statusCode).to.equal(200)
@@ -43,7 +40,7 @@ describe('Ip Allocation Fuctionality', () => {
       cy.get('.searchBtnWrap > .el-button--primary').click()
       cy.wait('@viewListIpAllocMst')
       /* 상세버튼 클릭 */
-      cy.get('tbody > :nth-child(1) > .el-table_2_column_2 > .cell').dblclick()
+      cy.get('tbody > :nth-child(1) > .el-table_2_column_13').dblclick()
       cy.wait('@viewDetailAlcIPMst')
       /* 수정버튼 클릭 */
       cy.get('.popupContentTable > .popupContentTableBottom > .el-button').click()

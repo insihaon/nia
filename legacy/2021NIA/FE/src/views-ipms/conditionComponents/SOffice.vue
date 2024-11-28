@@ -9,6 +9,7 @@
           v-model="value"
           collapse-tags
           size="small"
+          popper-class="SOffice"
           @change="handleChange()"
         >
           <el-option label="전체" value="" />

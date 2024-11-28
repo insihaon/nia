@@ -657,13 +657,7 @@ public class AssignMgmtController extends CommonController {
 		TbIpAssignMstListVo resultListVo = (TbIpAssignMstListVo) builtModel.get("resultListVo");
 
 		ModelMap finalModel = createResultList(resultListVo.getTbIpAssignMstVos(), resultListVo.getTotalCount());
-
-		finalModel.addAttribute("svcLineListVo", builtModel.get("svcLineListVo"));
-		finalModel.addAttribute("centerListVo", builtModel.get("centerListVo"));
-		finalModel.addAttribute("nodeListVo", builtModel.get("nodeListVo"));
 		finalModel.addAttribute("disabledMap", builtModel.get("disabledMap"));
-		finalModel.addAttribute("sassignLevelCds", builtModel.get("sassignLevelCds"));
-		finalModel.addAttribute("sassignTypeCds", builtModel.get("sassignTypeCds"));
 
 		return finalModel;
 	}
