@@ -128,7 +128,7 @@
    
    <!-- IP-SDN ALARM + TRAFFIC + SYSLOG -->
    <select id="SELECT_IP_ALARM_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
-    SELECT
+    SELECT DISTINCT
         ALARMNO
        , TICKET_ID
         , CLUSTERNO
