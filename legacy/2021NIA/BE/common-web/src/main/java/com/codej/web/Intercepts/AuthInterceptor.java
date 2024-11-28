@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -84,8 +85,9 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
             log.error(e.toString());
 			throw e;
 		} catch (Exception e) {
-            log.info("권한 처리중 오류 발생 : {}, {}", handler.toString(), e.toString());
-			throw e;
+			String msg = String.format("권한 처리중 오류 발생 : %s, %s", handler.toString(), e.toString());
+            log.info(msg);
+			throw new AccessDeniedException(msg);
 		}
         
         return true;

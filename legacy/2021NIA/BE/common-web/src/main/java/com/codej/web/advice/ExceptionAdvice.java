@@ -45,14 +45,12 @@ public class ExceptionAdvice {
         // return fullStackTrace;
     }
 
-  
-
     @ExceptionHandler(CBaseException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public BaseResponse untrustedRequestException(HttpServletRequest request, CBaseException e) {
         Integer code = Integer.valueOf(getMessage(e.getCodeKey()));
         String msg = getMessage(e.getMessageKey(), new Object[]{e.getMessage()});
-        String detail = e.getMessage() != null ? e.getMessage() : getMessage(e.getDetailMessageKey()) + getStackTrace(e);
+        String detail = (e.getDetailMessage() != null ? e.getDetailMessage() : getMessage(e.getDetailMessageKey())) + getStackTrace(e);
         return responseService.createFailResponse(code, msg, detail);
     }
 
