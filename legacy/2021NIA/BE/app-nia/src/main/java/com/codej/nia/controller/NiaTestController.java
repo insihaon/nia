@@ -33,6 +33,7 @@ public class NiaTestController extends BaseController {
 
     /* 
       // 요청 예제
+      // auth.use: true 옵션 변경 후 테스트
       fetch("http://localhost:8070/ipms/ex1", {
         headers: {
           "content-type": "application/json",
@@ -49,7 +50,6 @@ public class NiaTestController extends BaseController {
 
   @PostMapping(value = "/nia/ex2")
   @ResponseBody
-	
   public ResponseEntity<?> postEx2() throws Exception {
     ModelMap model = getEx1();
     return new ResponseEntity<>(encrypt(model), HttpStatus.OK);

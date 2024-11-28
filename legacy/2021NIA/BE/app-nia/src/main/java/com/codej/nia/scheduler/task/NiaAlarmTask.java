@@ -42,6 +42,10 @@ public class NiaAlarmTask {
     @Scheduled(cron = "0 */3 * * * *") /* 3분주기 */
     // @Scheduled(cron = "*/30 * * * * *") /* 30초 주기 */
     private void sendSystemMonitoring() throws Exception {
+        if (websocketService == null) {
+            log.warn("websocketService is null. sendSystemMonitoring will not execute.");
+            return;
+        }
         try {
             List<ResultMap> list = (List<ResultMap>) niaService.selectSystemMonitoringCur(new HashMap<>());
             if (list == null || list.size() == 0)
@@ -66,6 +70,10 @@ public class NiaAlarmTask {
     @Scheduled(cron = "0 */5 * * * *") /* 5분주기 */
     // @Scheduled(cron = "*/30 * * * * *") /* 30초 주기 */
     private void sendIpsdnAlarm() throws Exception {
+        if (websocketService == null) {
+            log.warn("websocketService is null. sendIpsdnAlarm will not execute.");
+            return;
+        }
         try {
             HashMap<String, Object> param = new HashMap<String, Object>();
             param.put("IS_POLLING", true);
@@ -91,6 +99,10 @@ public class NiaAlarmTask {
 
     @Scheduled(cron = "0 */5 * * * *")
     private void sendTransAlarm() throws Exception {
+        if (websocketService == null) {
+            log.warn("websocketService is null. sendTransAlarm will not execute.");
+            return;
+        }
         try {
             HashMap<String, Object> param = new HashMap<String, Object>();
             param.put("IS_POLLING", true);
