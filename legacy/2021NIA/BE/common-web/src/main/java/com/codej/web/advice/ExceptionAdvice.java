@@ -31,7 +31,7 @@ public class ExceptionAdvice {
         // 스택 추적 정보 출력
         StringBuffer sb = new StringBuffer(" StackTrace: ");
         StackTraceElement[] stackTrace = e.getStackTrace();
-        for (int i = 0; i < Math.min(50, stackTrace.length); i++) {
+        for (int i = 0; i < stackTrace.length; i++) {
             StackTraceElement element = stackTrace[i];
             String className = element.getClassName();
             String fileName = element.getFileName();
