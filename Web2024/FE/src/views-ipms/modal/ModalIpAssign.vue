@@ -208,13 +208,13 @@ export default {
   },
   computed: {
     isSsvcLineTypeCd() {
-      return this.disabledLevel.ssvcLineTypeCd
+      return this.disabledLevel?.ssvcLineTypeCd ?? false
     },
     isSsvcGroupCd() {
-      return this.disabledLevel.ssvcGroupCd
+      return this.disabledLevel?.ssvcGroupCd ?? false
     },
     isSsvcObjCd() {
-      return this.disabledLevel.ssvcObjCd
+      return this.disabledLevel?.ssvcObjCd ?? false
     }
 
   },

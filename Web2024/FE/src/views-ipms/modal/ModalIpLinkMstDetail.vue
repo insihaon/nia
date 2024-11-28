@@ -150,7 +150,7 @@ export default {
       this.confirm('해당 운용정보를 삭제 하시겠습니까?', '확인', {
         confirmButtonText: '확인',
         cancelButtonText: '취소',
-        type: 'success'
+        type: 'info'
       }).then(async () => {
         try {
           this.loading = true

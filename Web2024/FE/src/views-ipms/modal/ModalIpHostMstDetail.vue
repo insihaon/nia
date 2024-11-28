@@ -18,8 +18,16 @@
     <div class="popupContentTable">
       <div class="popupContentTableTitle">공통항목</div>
       <table>
+        <colgroup>
+          <col width="15%" />
+          <col width="20%" />
+          <col width="10%" />
+          <col width="20%" />
+          <col width="10%" />
+          <col width="25%" />
+        </colgroup>
         <tbody>
-          <tr class="top last">
+          <tr>
             <th>IP</th>
             <td>{{ resultVo.pipHostInet }}</td>
             <th>용도</th>
@@ -29,10 +37,10 @@
             <template v-if="fnType === 'update'">
               <th>대표여부</th>
               <td>
-                <select id="updateSprorityYno" v-model="resultVo.sprorityYn">
-                  <option value="Y">Y</option>
-                  <option value="N">N</option>
-                </select>
+                <el-select v-model="resultVo.sprorityYn" style="width: 70px">
+                  <el-option value="Y" label="Y" />
+                  <el-option value="N" label="N" />
+                </el-select>
               </td>
             </template>
           </tr>
@@ -259,13 +267,14 @@ export default {
       this.confirm('해당 운용정보를 삭제 하시겠습니까?', '확인', {
           confirmButtonText: '확인',
           cancelButtonText: '취소',
-          type: 'success'
+          type: 'info'
         }).then(async () => {
           try {
             const res = await apiRequestJson(ipmsJsonApis.deleteHostIPMst, { nipHostMstSeq: row.nipHostMstSeq })
             if (res.commonMsg === 'SUCCESS') {
               onMessagePopup(this, '운용 정보가 정상적으로 삭제 되었습니다.')
-              this.fnViewListIpHostMst()
+              this.$emit('reload')
+              this.close()
             } else {
               onMessagePopup(this, res.commonMsg)
             }
@@ -280,22 +289,4 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-::v-deep .el-input {
-  input {
-    display: inline-block;
-    height: 22px;
-    line-height: 21px;
-    padding: 2px 4px;
-    border: #ccc solid 1px;
-    color: #434343;
-    font-size: 1em;
-    vertical-align: middle;
-  }
-}
-::v-deep .el-input__inner:focus {
-  border: solid 2px #cc2929;
-}
-::v-deep .el-input__suffix {
-  top: -3px;
-}
 </style>

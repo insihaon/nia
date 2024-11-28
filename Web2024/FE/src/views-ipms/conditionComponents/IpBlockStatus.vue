@@ -10,6 +10,7 @@
           size="small"
           :multiple="isMulti"
           collapse-tags
+          popper-class="IpBlockStatus"
           @change="handleChange()"
         >
           <el-option label="전체" value=""><span class="w-100 h-100 d-inline-block" @click="handleClickAll">전체</span></el-option>

@@ -1,23 +1,16 @@
 describe('Ip Block Management Fuctionality', () => {
   beforeEach(() => {
-     /* POST 요청 정의 */
-     cy.intercept('POST', '**/ipmgmt/createmgmt/viewDetailCrtIPMst.model').as('viewDetailCrtIPMst') /* 상세 */
+    cy.visitPath('ipAssignMng/ipBlockManagement')
+    /* POST 요청 정의 */
+    cy.intercept('POST', '**/ipmgmt/createmgmt/viewDetailCrtIPMst.model').as('viewDetailCrtIPMst') /* 상세 */
   })
   context('IP Block Management View List', () => {
-    beforeEach(() => {
-      cy.visitLocal()
-      cy.login()
-      cy.wait(['@getkey', '@signin', '@setting'])
-      cy.visit('http://localhost:4000/#/ipAssignMng/ipBlockManagement')
+    afterEach(() => {
+      cy.wait(1000) // 각 테스트 후에 1초 대기
     })
     it('list lookup', () => {
       /* POST 요청 정의 */
       cy.intercept('POST', '**/ipmgmt/createmgmt/viewListCrtIPMst.model').as('viewListCrtIPMst')
-
-      /* assert case 1. error */
-      // cy.wait('@viewListCrtIPMst').its('response.body.data.result.data').should('exist').and('not.be.empty')
-
-      /* assert case 2. */
       cy.wait('@viewListCrtIPMst').then((interception) => {
         // cy.log('viewListCrtIPMst response:', JSON.stringify(interception.response))
         expect(interception.response.statusCode).to.equal(200)
@@ -28,12 +21,7 @@ describe('Ip Block Management Fuctionality', () => {
     /* 신규생성, 추가생성 테스트가 가능한 IP ? */
     // it('create', () => {
     // })
-
     it('detail', () => {
-     
-      /* 페이지 이동 */
-      cy.visit('http://localhost:4000/#/ipAssignMng/ipBlockManagement')
-      cy.wait(1000)
       /* 상세버튼 클릭 */
       cy.get('.add-features > :nth-child(3)').click()
       cy.wait('@viewDetailCrtIPMst').then((interception) => {
@@ -45,9 +33,6 @@ describe('Ip Block Management Fuctionality', () => {
     it('update', () => {
       /* POST 요청 정의 */
       cy.intercept('POST', '**/ipmgmt/createmgmt/updateCrtIPMst.json').as('updateCrtIPMst')
-      /* 페이지 이동 */
-      cy.visit('http://localhost:4000/#/ipAssignMng/ipBlockManagement')
-      cy.wait(1000)
       /* 목록 > 수정버튼 클릭 */
       cy.get('.add-features > :nth-child(4)').click()
       cy.get('.el-dialog__title').contains('수정')
@@ -60,13 +45,9 @@ describe('Ip Block Management Fuctionality', () => {
         expect(commonMsg).to.equal('SUCCESS')
       })
     })
-   
     it('delete', () => {
       /* POST 요청 정의 */
       cy.intercept('POST', '**/ipmgmt/createmgmt/deleteCrtIPMst.json').as('deleteCrtIPMst') /* 삭제 */
-      /* 페이지 이동 */
-      cy.visit('http://localhost:4000/#/ipAssignMng/ipBlockManagement')
-      cy.wait(1000)
       /* 상세버튼 클릭 */
       cy.get('.add-features > :nth-child(3)').click()
       cy.wait('@viewDetailCrtIPMst')

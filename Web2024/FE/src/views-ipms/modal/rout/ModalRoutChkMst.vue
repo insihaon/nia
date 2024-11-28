@@ -14,7 +14,7 @@
     class="ipms-dialog"
     :class="{ [name]: true }"
   >
-    <div class="popupContentTable">
+    <div class="popupContentTable textcenter">
       <div style="padding-bottom: 10px;">
         <span style="font-size: 20px; font-weight: bold;">
           아래 [시작] 버튼을 클릭하시고 창을 닫지 말고 잠시 기다려 주십시오.(1~3분 소요)
@@ -22,7 +22,6 @@
       </div>
       <div class="popupContentTableTitle">[ {{ ssvcNms.ssvcLineTypeNm }} - {{ ssvcNms.ssvcGroupNm }} - {{ ssvcNms.ssvcObjNm }} ] 라우팅 수집/DB 비교 시작</div>
       <table>
-        <caption>조직별 장비별 명령어</caption>
         <colgroup>
           <col width="20%" />
           <col width="10%" />
@@ -36,17 +35,14 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-if="tbFcltCmdMstVos.length === 0" class="subbg last">
+          <tr v-if="tbFcltCmdMstVos.length === 0">
             <td colspan="5">조회된 결과 목록이 존재하지 않습니다.</td>
           </tr>
           <template v-else>
-            <tr
-              v-for="(item, index) in tbFcltCmdMstVos"
-              :key="index"
-            >
-              <td :title="item.sfcltType">{{ item.sfcltType }}</td>
-              <td :title="item.npriority">{{ item.npriority }}</td>
-              <td :title="item.sfcltCmd">{{ item.sfcltCmd }}</td>
+            <tr v-for="(item, index) in tbFcltCmdMstVos" :key="index">
+              <td>{{ item.sfcltType }}</td>
+              <td>{{ item.npriority }}</td>
+              <td>{{ item.sfcltCmd }}</td>
             </tr>
           </template>
         </tbody>
