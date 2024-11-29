@@ -25,10 +25,9 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.type.TypeHandlerRegistry;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 
-import com.codej.web.service.SqlService;
+import com.codej.web.cached.SqlHolder;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -40,9 +39,7 @@ import lombok.extern.slf4j.Slf4j;
         @Signature(type = Executor.class, method = "query", args = { MappedStatement.class, Object.class,
                 RowBounds.class, ResultHandler.class }) })
 public class SqlStatementInterceptor implements Interceptor {
-    @Autowired
-    SqlService sqlService;
-    
+
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
         Object returnValue = null;
@@ -80,7 +77,7 @@ public class SqlStatementInterceptor implements Interceptor {
 
                 if(parameter != null) {
                     try {
-                        sqlService.add(sql);
+                        SqlHolder.add(sql);
                     } catch (Exception e) {
                         log.error(e.getMessage());
                     }

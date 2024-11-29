@@ -4,17 +4,17 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.codej.web.cached.RequestCachingFilter;
+import com.codej.web.cached.RequestBodyFilter;
 
 @Configuration
 public class FilterConfig {
 
     @Bean
-    public FilterRegistrationBean<RequestCachingFilter> loggingFilter() {
-        FilterRegistrationBean<RequestCachingFilter> registrationBean = new FilterRegistrationBean<>();
+    public FilterRegistrationBean<RequestBodyFilter> loggingFilter() {
+        FilterRegistrationBean<RequestBodyFilter> registrationBean = new FilterRegistrationBean<>();
 
         // 필터 인스턴스 등록
-        registrationBean.setFilter(new RequestCachingFilter());
+        registrationBean.setFilter(new RequestBodyFilter());
         
         // 필터가 적용될 URL 패턴 설정
         registrationBean.addUrlPatterns("/*"); 
