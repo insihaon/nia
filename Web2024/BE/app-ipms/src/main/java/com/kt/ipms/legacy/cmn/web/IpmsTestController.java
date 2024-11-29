@@ -1,5 +1,7 @@
 package com.kt.ipms.legacy.cmn.web;
 
+import java.util.HashMap;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -38,7 +40,7 @@ public class IpmsTestController extends CommonController {
   @PostMapping(value = "/ipms/ex1")
   @ResponseBody
 	@EncryptResponse
-  public ModelMap postEx1() throws Exception {
+  public ModelMap postEx1(@RequestBody IpAllocOperMstVo searchVo, ModelMap model, HttpServletRequest request) throws Exception {
     CommonVo vo = new CommonVo();
     vo.setSearchWrd("KEYWORD");
     return createResult(vo, null);
@@ -47,9 +49,9 @@ public class IpmsTestController extends CommonController {
   @PostMapping(value = "/ipms/ex2")
   @ResponseBody
 	@EncryptResponse
-  public ResponseEntity<?> postEx2() throws Exception {
-    ModelMap model = getEx1();
-    return new ResponseEntity<>(encrypt(model), HttpStatus.OK);
+  public ResponseEntity<?> postEx2(@RequestBody HashMap<String, Object> param) throws Exception {
+    ModelMap result = getEx1();
+    return new ResponseEntity<>(encrypt(result), HttpStatus.OK);
 
     /* 
       // 요청 예제

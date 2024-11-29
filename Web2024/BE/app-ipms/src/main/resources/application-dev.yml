@@ -18,5 +18,9 @@ spring:
       platform: postgres
       encoding: UTF-8
 
+myconf:
+  auth:
+    use: false #auth.use
+
 file:
   # upload-dir: ./external

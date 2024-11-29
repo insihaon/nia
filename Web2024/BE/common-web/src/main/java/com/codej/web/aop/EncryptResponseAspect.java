@@ -1,6 +1,5 @@
 package com.codej.web.aop;
 
-import java.io.BufferedReader;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -11,17 +10,20 @@ import javax.servlet.http.HttpServletRequest;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.ModelMap;
 
+import com.codej.base.dto.AppDto;
 import com.codej.base.exception.CServiceException;
 import com.codej.base.exception.CServiceIncorrectUse;
 import com.codej.base.exception.CUntrustedRequestException;
 import com.codej.base.property.GlobalConstants;
 import com.codej.base.utils.EncryptUtil;
 import com.codej.base.utils.JsonUtil;
+import com.codej.web.cached.RequestBodyHolder;
 import com.codej.web.vo.BaseVo;
 import com.codej.web.vo.EncryptedVo;
 import com.google.gson.Gson;
@@ -33,11 +35,11 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @Slf4j
 public class EncryptResponseAspect {
-    private final HttpServletRequest request;
+    @Autowired
+    private AppDto appDto;
 
-    public EncryptResponseAspect(HttpServletRequest request) {
-        this.request = request;
-    }
+    @Autowired
+    private HttpServletRequest request;
 
     // @Around("execution(* com.kt.ipms.legacy..*(..)) && @annotation(com.codej.web.annotation.EncryptResponse))")
     // public Object handleEncryption(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -48,8 +50,13 @@ public class EncryptResponseAspect {
     @SuppressWarnings("unused")
     @Around("(execution(* com.kt.ipms.legacy..*(..)) || execution(* com.codej.nia.controller..*(..))) && @annotation(com.codej.web.annotation.EncryptResponse)")
     public Object handleEncryption(ProceedingJoinPoint joinPoint) throws Throwable {
+
+        String requestBody = RequestBodyHolder.get();
+ 
         // 요청 Body에서 encrypt 값을 확인
-        Boolean encrypt = isEncrypt();
+        Boolean encrypt = isEncrypt(requestBody);
+
+        RequestBodyHolder.clear();
 
         // 요청 처리
         Object result = joinPoint.proceed();
@@ -85,8 +92,7 @@ public class EncryptResponseAspect {
                 ModelMap resultModel = new ModelMap();
                 resultModel.addAttribute(GlobalConstants.Common.ENCRYPT, true);
                 resultModel.addAttribute(GlobalConstants.Common.RESULT, encrypt(result));
-                // result = resultModel;
-                result = new ResponseEntity<>(resultModel, HttpStatus.OK);
+                result = resultModel;
             }
             else if (result instanceof Map) {
                 /*** 중요 ModelMap 이후에 처리해야 함 ***/
@@ -117,28 +123,25 @@ public class EncryptResponseAspect {
     }
 
     @SuppressWarnings("unchecked")
-    private Boolean isEncrypt() {
+    private Boolean isEncrypt(String body) {
         Boolean encrypt = true;
         try {
-            // 타임스탬프 보안 체크
-            long now = new Date().getTime();
-            String tsHeader = request.getHeader("_t");
-            String ts = EncryptUtil.decryptText(tsHeader);
-
-            if (ts == null || Math.abs((now - Long.valueOf(ts)) / 1000) > 10) {
-                throw new CUntrustedRequestException();
+            if(appDto.isDevProfile() == false) {
+                // 타임스탬프 보안 체크
+                long now = new Date().getTime();
+                String tsHeader = request.getHeader("_t");
+                String ts = EncryptUtil.decryptText(tsHeader);
+    
+                if (ts == null || Math.abs((now - Long.valueOf(ts)) / 1000) > 10) {
+                    throw new CUntrustedRequestException();
+                }
             }
 
-            // 요청 Body를 바로 읽기
-            StringBuilder body = new StringBuilder();
-            BufferedReader reader = request.getReader();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                body.append(line);
+            if (body == null) {
+                throw new CServiceIncorrectUse("요청 데이터가 비어 있습니다. ");
             }
 
-            // JSON 데이터를 Map으로 변환
-            Map<String, Object> requestBody = JsonUtil.convertJsonToClass(body.toString(), Map.class);
+            Map<String, Object> requestBody = JsonUtil.convertJsonToClass(body, Map.class);
             Object value = requestBody.get(GlobalConstants.Common.ENCRYPT);
             if (value == null) {
                 throw new NullPointerException();
@@ -146,7 +149,7 @@ public class EncryptResponseAspect {
 
             String decryptText = EncryptUtil.decryptText((String) value);
             if (decryptText == null) {
-                throw new CServiceIncorrectUse("데이터 형식을 알 수 없습니다.");
+                throw new CServiceIncorrectUse("요청 데이터가 규격에 맞지 안습니다.");
             }
             encrypt = "true".equals(decryptText);
         } catch (Exception e) {
