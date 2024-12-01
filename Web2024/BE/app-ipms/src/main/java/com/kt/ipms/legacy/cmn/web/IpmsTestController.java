@@ -56,15 +56,16 @@ public class IpmsTestController extends CommonController {
     /* 
       // 요청 예제
       fetch("http://localhost:8070/ipms/ex2", {
-        headers: {
-          "content-type": "application/json",
-        },
-        body: JSON.stringify({
-          encrypt: 'GpLFqAJUEginXTnHmhg=', // encrypt : true
-        }),
-        method: "POST",
-        mode: "cors",
-        credentials: "omit",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        encrypt: 'GpLFqAJUEginXTnHmhg=', // encrypt : true
+        data: 'ce7RjqIlhZB6wdikDkD95r3pdhOYsQ=='
+      }),
+      method: "POST",
+      mode: "cors",
+      credentials: "omit",
       }); 
     */
   }
