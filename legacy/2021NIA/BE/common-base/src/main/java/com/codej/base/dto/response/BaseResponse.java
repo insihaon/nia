@@ -12,7 +12,7 @@ import lombok.Setter;
 public class BaseResponse {
     protected boolean success = true;
     protected boolean encrypt = false;
-    private String sql;
+    private String[] sql;
     private Integer total;
 
     public BaseResponse() {

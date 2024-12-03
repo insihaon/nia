@@ -1,6 +1,8 @@
 package com.codej.web.aop;
 
-import java.io.BufferedReader;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -11,21 +13,28 @@ import javax.servlet.http.HttpServletRequest;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestBody;
 
+import com.codej.base.dto.AppDto;
 import com.codej.base.exception.CServiceException;
 import com.codej.base.exception.CServiceIncorrectUse;
 import com.codej.base.exception.CUntrustedRequestException;
 import com.codej.base.property.GlobalConstants;
 import com.codej.base.utils.EncryptUtil;
 import com.codej.base.utils.JsonUtil;
+import com.codej.web.cached.RequestBodyHolder;
 import com.codej.web.vo.BaseVo;
 import com.codej.web.vo.EncryptedVo;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.util.StdDateFormat;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,10 +42,19 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @Slf4j
 public class EncryptResponseAspect {
-    private final HttpServletRequest request;
+    @Autowired
+    private AppDto appDto;
 
-    public EncryptResponseAspect(HttpServletRequest request) {
-        this.request = request;
+    @Autowired
+    private HttpServletRequest request;
+
+    private static ObjectMapper objectMapper;
+
+    public EncryptResponseAspect() {
+        objectMapper = new ObjectMapper();
+        objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+        objectMapper.setDateFormat(new StdDateFormat()); // 기본 ISO-8601 형식 사용
+        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false); // 타임스탬프 대신 문자열 사용
     }
 
     // @Around("execution(* com.kt.ipms.legacy..*(..)) && @annotation(com.codej.web.annotation.EncryptResponse))")
@@ -48,11 +66,47 @@ public class EncryptResponseAspect {
     @SuppressWarnings("unused")
     @Around("(execution(* com.kt.ipms.legacy..*(..)) || execution(* com.codej.nia.controller..*(..))) && @annotation(com.codej.web.annotation.EncryptResponse)")
     public Object handleEncryption(ProceedingJoinPoint joinPoint) throws Throwable {
-        // 요청 Body에서 encrypt 값을 확인
-        Boolean encrypt = isEncrypt();
 
-        // 요청 처리
-        Object result = joinPoint.proceed();
+        String requestBody = RequestBodyHolder.get();
+ 
+        // 요청 Body에서 encrypt 값을 확인
+        Boolean encrypt = isEncrypt(requestBody);
+
+        RequestBodyHolder.clear();
+
+        Object result = null;
+        if(encrypt && requestBody != null) {
+             // 메서드 시그니처 가져오기
+            MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+            Method method = signature.getMethod();
+
+            // 메서드 파라미터와 어노테이션 확인
+            Object[] args = joinPoint.getArgs();
+            Annotation[][] parameterAnnotations = method.getParameterAnnotations();
+
+            for (int i = 0; i < parameterAnnotations.length; i++) {
+                for (Annotation annotation : parameterAnnotations[i]) {
+                    if (annotation instanceof RequestBody) { // @RequestBody 어노테이션 체크
+                        Object param = args[i];
+                       
+                        Map<String, Object> mapBody = JsonUtil.convertJsonToClass(requestBody, Map.class);
+                        Object value = mapBody.get(GlobalConstants.Common.DATA);
+                        if (value == null) {
+                            throw new NullPointerException();
+                        }
+
+                        args[i] = JsonUtil.convertJsonToClass(EncryptUtil.decryptText((String)value), param.getClass());
+                    }
+                }
+            }
+
+            // 변경된 인자를 사용하여 메서드 실행
+            result = joinPoint.proceed(args);
+        } else {
+            // 요청 처리
+            result = joinPoint.proceed();
+        }
+
         
         if (encrypt || encrypt == null) {
             Class<?> clazz = null;
@@ -85,8 +139,7 @@ public class EncryptResponseAspect {
                 ModelMap resultModel = new ModelMap();
                 resultModel.addAttribute(GlobalConstants.Common.ENCRYPT, true);
                 resultModel.addAttribute(GlobalConstants.Common.RESULT, encrypt(result));
-                // result = resultModel;
-                result = new ResponseEntity<>(resultModel, HttpStatus.OK);
+                result = resultModel;
             }
             else if (result instanceof Map) {
                 /*** 중요 ModelMap 이후에 처리해야 함 ***/
@@ -108,45 +161,45 @@ public class EncryptResponseAspect {
         return result;
     }
 
-    public static String encrypt(Object result) {
-        Gson gson = new GsonBuilder()
-            .setDateFormat("yyyy-MM-dd HH:mm:ss") // 원하는 형식 설정
-            .create();
-        String json = gson.toJson(result);
+    public static String encrypt(Object result) throws JsonProcessingException {
+        // Gson gson = new GsonBuilder()
+        //     .setDateFormat("yyyy-MM-dd HH:mm:ss") // 원하는 형식 설정
+        //     .create();
+        // String json = gson.toJson(result);
+        // return EncryptUtil.encrypt(json);
+
+        String json = objectMapper.writeValueAsString(result);
         return EncryptUtil.encrypt(json);
     }
 
     @SuppressWarnings("unchecked")
-    private Boolean isEncrypt() {
+    private Boolean isEncrypt(String requestBody) {
         Boolean encrypt = true;
         try {
-            // 타임스탬프 보안 체크
-            long now = new Date().getTime();
-            String tsHeader = request.getHeader("_t");
-            String ts = EncryptUtil.decryptText(tsHeader);
-
-            if (ts == null || Math.abs((now - Long.valueOf(ts)) / 1000) > 10) {
-                throw new CUntrustedRequestException();
+            if(appDto.isDevProfile() == false) {
+                // 타임스탬프 보안 체크
+                long now = new Date().getTime();
+                String tsHeader = request.getHeader("_t");
+                String ts = EncryptUtil.decryptText(tsHeader);
+    
+                if (ts == null || Math.abs((now - Long.valueOf(ts)) / 1000) > 10) {
+                    throw new CUntrustedRequestException();
+                }
             }
 
-            // 요청 Body를 바로 읽기
-            StringBuilder body = new StringBuilder();
-            BufferedReader reader = request.getReader();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                body.append(line);
+            if (requestBody == null) {
+                throw new CServiceIncorrectUse("요청 데이터가 비어 있습니다. ");
             }
 
-            // JSON 데이터를 Map으로 변환
-            Map<String, Object> requestBody = JsonUtil.convertJsonToClass(body.toString(), Map.class);
-            Object value = requestBody.get(GlobalConstants.Common.ENCRYPT);
+            Map<String, Object> mapBody = JsonUtil.convertJsonToClass(requestBody, Map.class);
+            Object value = mapBody.get(GlobalConstants.Common.ENCRYPT);
             if (value == null) {
                 throw new NullPointerException();
             }
 
             String decryptText = EncryptUtil.decryptText((String) value);
             if (decryptText == null) {
-                throw new CServiceIncorrectUse("데이터 형식을 알 수 없습니다.");
+                throw new CServiceIncorrectUse("요청 데이터가 규격에 맞지 안습니다.");
             }
             encrypt = "true".equals(decryptText);
         } catch (Exception e) {

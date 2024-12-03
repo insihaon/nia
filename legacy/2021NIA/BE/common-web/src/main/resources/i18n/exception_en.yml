@@ -12,8 +12,8 @@ emailSigninFailed:
   message_detail: "Please check the data you entered."
 entryPointException:
   code: "-1002"
-  message: "You do not have permission to access this resource."
-  message_detail: "Please check your permissions."
+  message: "Authentication information not found."
+  message_detail: "Please check your login."
 accessDenied:
   code: "-1003"
   message: "Access to the service is denied."

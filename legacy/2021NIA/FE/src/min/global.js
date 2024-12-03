@@ -202,7 +202,8 @@ import Vue from 'vue'
           'alt+p': '접속된 서버 프로젝트로 변경',
           'qs(selector) / qsa(selector)': 'document.querySelectorAll(...)',
           's.list(filter) / s.l / f2': '전체 서비스 로그 보기(필터가능)',
-          's.save(filter) / s.s': '전체 서비스 로그 다운로드(필터가능)',
+          's.list(filter) / s.l / f3': '현재 화면 서비스 로그 보기(필터가능)',
+          's.save(filter) / s.s / f10': '현재 화면 서비스 로그 다운로드(필터가능)',
           's.sql(filter) / f4': '전체 서비스 최근 3개 sql(필터가능)',
           's.clear() / f9': '전체 서비스 로그 삭제',
           's.re(index) / s.r': 'vc.list() 를 기준으로 인덱스에 해당하는 서비스 다시 요청',
@@ -212,9 +213,6 @@ import Vue from 'vue'
           'v.query / f8': '현재 화면 조회 조건 보기',
           'c, c.src, cd, cdq': '현재 화면 컴포넌트 및 데이터 v대신 c를 사용함, debugComponentName 설정해야 함 ',
           ref: '컨포넌트 refs에 접근 ',
-          'vs.list(filter) / vs.l / f3': '현재 화면 서비스 로그 보기(필터가능)',
-          'vs.save(filter) / vs.s / f10': '현재 화면 서비스 로그 다운로드(필터가능)',
-          'vs.sql(filter) / f4': '현재 화면 최근 3개 sql(필터가능)',
           ws: 'WebSocket Instance',
           appOptions: 'appOptions Instance',
           modalManager: 'modalManager Instance',
@@ -275,22 +273,23 @@ import Vue from 'vue'
     hotkeys(`f2`, 'debug', function (event, handler) {
       event.preventDefault()
       console.debug('\n\n')
-      console.debug(...global.s.l)
+      global.s.list()
+      // console.debug(...global.s.l)
       console.debug('#전체 서비스 로그 s.list(filter) / s.l ')
     })
 
     hotkeys(`f3`, 'debug', function (event, handler) {
       event.preventDefault()
       console.debug('\n\n')
-      console.debug(...global.vs.l)
-      console.debug('현재 화면 서비스 로그 보기 vs.list(filter) ')
+      console.debug(...global.s.l)
+      console.debug('현재 화면 서비스 로그 보기 s.list(filter) ')
     })
 
     hotkeys(`f4`, 'debug', function (event, handler) {
       event.preventDefault()
       console.debug('\n\n')
-      global.vs.sql()
-      console.debug('현재 화면 최근 3개 sql vs.sql(filter)')
+      global.s.sql()
+      console.debug('현재 화면 최근 3개 sql s.sql(filter)')
     })
 
     hotkeys(`f6`, 'debug', function (event, handler) {
@@ -322,8 +321,8 @@ import Vue from 'vue'
 
     hotkeys(`f10`, 'debug', function (event, handler) {
       event.preventDefault()
-      global.vs.save()
-      console.debug('#현재 화면 서비스 로그 다운로드 vs.save(filter) / vs.s')
+      global.s.save()
+      console.debug('#현재 화면 서비스 로그 다운로드 s.save(filter) / s.s')
     })
 
     hotkeys(`alt+s`, 'debug', function (event, handler) {
