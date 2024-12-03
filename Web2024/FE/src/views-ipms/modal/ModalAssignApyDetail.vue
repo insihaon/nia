@@ -125,8 +125,8 @@
         <el-button type="primary" size="small" icon="el-icon-delete" round @click="fnDeleteIpAssignApy()"> 삭제</el-button>
       </template>
 
-      <el-button v-if="!isStatusApply && isAdmin" size="mini" @click="fnUpdateStrtContents('modify')">처리내용 수정</el-button>
-      <el-button v-if="isEdit" type="primary" size="small" icon="el-icon-edit-outline" round @click="fnUpdateStrtContents('regist')"> 등록</el-button>
+      <el-button v-if="!isStatusApply && isAdmin" type="primary" size="small" round @click="fnUpdateStrtContents('modify')">처리내용 수정</el-button>
+      <el-button v-if="isEdit" type="primary" size="small" icon="el-icon-edit-outline" round @click="fnUpdateStrtContents('regist')">등록</el-button>
       <el-button type="primary" size="small" icon="el-icon-close" round @click="close()">{{ $t('exit') }}</el-button>
     </div>
   </el-dialog>
@@ -226,7 +226,7 @@ export default {
             // 미배정현황 page route
             const { ssvcLineTypeCd, ssvcGroupCd } = this.resultVo
             this.$store.dispatch('ipms/setToParam', { value: { ssvcLineTypeCd, ssvcGroupCd } })
-            this.$router.push({ path: '/ipAssignMng/ipunAllocatedStatus' })
+            this.$router.push({ path: '/ipAssignMng/ipUnAssignStatus' })
           } else {
             onMessagePopup(this, res.commonMsg)
           }
