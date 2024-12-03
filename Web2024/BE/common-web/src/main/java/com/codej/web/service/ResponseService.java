@@ -11,13 +11,13 @@ import com.codej.base.dto.response.ErrorResponse;
 import com.codej.base.dto.response.ListResponse;
 import com.codej.base.dto.response.ResultResponse;
 import com.codej.base.dto.response.SingleResponse;
+import com.codej.web.cached.SqlHolder;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
 public class ResponseService {
-    private final SqlService sqlService;
 
     // enum으로 api 요청 결과에 대한 code, message를 정의합니다.
     public enum CommonResponse {
@@ -118,8 +118,7 @@ public class ResponseService {
         }
     }
 
-    private String getSql() {
-        String sql = sqlService.poll();
-        return sql;
+    private String[] getSql() {
+        return SqlHolder .pull();
     }
 }

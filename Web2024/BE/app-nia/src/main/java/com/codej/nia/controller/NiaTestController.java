@@ -1,11 +1,14 @@
 package com.codej.nia.controller;
 
+import java.util.HashMap;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.codej.base.controller.BaseController;
@@ -28,7 +31,7 @@ public class NiaTestController extends BaseController {
   @PostMapping(value = "/nia/ex1")
   @ResponseBody
   @EncryptResponse
-  public ModelMap postEx1() throws Exception {
+  public ModelMap postEx1(@RequestBody HashMap<String, Object> param) throws Exception {
     return getEx1();
 
     /* 
@@ -50,7 +53,7 @@ public class NiaTestController extends BaseController {
 
   @PostMapping(value = "/nia/ex2")
   @ResponseBody
-  public ResponseEntity<?> postEx2() throws Exception {
+  public ResponseEntity<?> postEx2(@RequestBody HashMap<String, Object> param) throws Exception {
     ModelMap model = getEx1();
     return new ResponseEntity<>(encrypt(model), HttpStatus.OK);
   }

@@ -14,6 +14,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
+import com.codej.base.dto.AppDto;
+import com.codej.base.exception.CAuthenticationException;
 import com.codej.base.provider.BaseJwtTokenProvider;
 
 import lombok.RequiredArgsConstructor;
@@ -28,6 +30,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 
     private final BaseJwtTokenProvider baseJwtTokenProvider;
     private final AuthUserService authUserService;
+    private final AppDto appDto;
 
 
     private void response(ServletRequest request, ServletResponse response, int status, int code, String message ) throws IOException {
@@ -48,33 +51,36 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
         try {
-            HttpServletRequest httpRequest = (HttpServletRequest) request;
-            String token = baseJwtTokenProvider.resolveToken(httpRequest);
-            String requestURI = httpRequest.getRequestURI();
+            if (appDto.getAuthUse()) {
+                HttpServletRequest httpRequest = (HttpServletRequest) request;
+                String requestURI = httpRequest.getRequestURI();
+                if ("/mock".equals(requestURI)) {
+                    throw new Exception("JwtAuthenticationFilter PASS");
+                }
 
-            if ("/mock".equals(requestURI)) {
-                throw new Exception("JwtAuthenticationFilter PASS");
-            }
-            
-            boolean isBanned = token != null && baseJwtTokenProvider.isBannedTocken(token, true);
-            boolean validate = token != null && baseJwtTokenProvider.validateToken(token, "JwtAuthenticationFilter");
-            if (isBanned) {
-                JSONObject entity = new JSONObject();
-                entity.put("result", "kickout");
-                response.setContentType("application/json;charset=UTF-8");
-                response.getWriter().write(entity.toString());
-                return;
-            }
+                String token = baseJwtTokenProvider.resolveToken(httpRequest);
+                boolean isBanned = token != null && baseJwtTokenProvider.isBannedTocken(token, true);
+                boolean validate = token != null
+                        && baseJwtTokenProvider.validateToken(token, "JwtAuthenticationFilter");
+                if (isBanned) {
+                    JSONObject entity = new JSONObject();
+                    entity.put("result", "kickout");
+                    response.setContentType("application/json;charset=UTF-8");
+                    response.getWriter().write(entity.toString());
+                    return;
+                }
 
-            if (validate) {
-                Authentication auth = baseJwtTokenProvider.getAuthentication(token);
-                authUserService.setAuthentication(auth);
-            } else {
-                // com.codej.web.Intercepts.AuthInterceptor 에서 처리하도록 수정 2023.10.13
+                if (validate) {
+                    Authentication auth = baseJwtTokenProvider.getAuthentication(token);
+                    authUserService.setAuthentication(auth);
+                } else {
+                    // com.codej.web.Intercepts.AuthInterceptor 에서 처리하도록 수정 2023.10.13
+                }
             }
         } catch (Exception ex) {
             // 예외 처리
             ex.printStackTrace();
+            throw new CAuthenticationException();
         }
 
         try {
