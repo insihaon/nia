@@ -115,7 +115,7 @@
       <el-button v-if="!disabledBtn" type="primary" size="small" icon="el-icon-refresh-left" round @click.native="fnRetUpdateAsgnIPMst()">반납</el-button>
       <el-button type="primary" size="small" icon="el-icon-close" round @click.native="close()">{{ $t('exit') }}</el-button>
     </div>
-    ㄴ  </el-dialog>
+  </el-dialog>
 </template>
 
 <script>
