@@ -128,145 +128,149 @@
    
    <!-- IP-SDN ALARM + TRAFFIC + SYSLOG -->
    <select id="SELECT_IP_ALARM_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
-    SELECT DISTINCT
-        ALARMNO
-       , TICKET_ID
-        , CLUSTERNO
-        , NODE_NUM
-        , NODE_NM
-        , ALARMLOC
-        , TICKET_TYPE
-        , TO_CHAR(ALARMTIME , 'YYYY-MM-DD HH24:MI:SS') AS ALARMTIME
-        , TO_CHAR(FAULT_TIME , 'YYYY-MM-DD HH24:MI:SS') AS FAULT_TIME
-        , PORT
-        , ALARMMSG -- 장애정보 
-        , FAULT_TYPE -- 장애유형
-        , ALARMMSG_ORIGINAL -- 알람 원본메세지
-        , TICKET_RCA_RESULT_CODE -- 장애내용
-        , STATUS
-        , TICKET_RCA_RESULT_DTL_CODE -- 장애 원인 
-        , TOTAL_RELATED_ALARM_CNT
-        , ROOT_CAUSE_SYSNAMEA
-        , ROOT_CAUSE_SYSNAMEZ
-        , ROOT_CAUSE_PORTA
-        , ROOT_CAUSE_PORTZ
-        , ZERO1_ENTROPY
-        , IP_ADDR
-      FROM (
+        SELECT DISTINCT
+        ALARMNO,
+        TICKET_ID,
+        CLUSTERNO,
+        NODE_NUM,
+        NODE_NM,
+        ALARMLOC,
+        T.TICKET_TYPE,
+        TO_CHAR(ALARMTIME, 'YYYY-MM-DD HH24:MI:SS') AS ALARMTIME,
+        TO_CHAR(FAULT_TIME, 'YYYY-MM-DD HH24:MI:SS') AS FAULT_TIME,
+        PORT,
+        ALARMMSG,
+        FAULT_TYPE,
+        ALARMMSG_ORIGINAL,
+        TICKET_RCA_RESULT_CODE,
+        STATUS,
+        TICKET_RCA_RESULT_DTL_CODE,
+        TOTAL_RELATED_ALARM_CNT,
+        ROOT_CAUSE_SYSNAMEA,
+        ROOT_CAUSE_SYSNAMEZ,
+        ROOT_CAUSE_PORTA,
+        ROOT_CAUSE_PORTZ,
+        ZERO1_ENTROPY,
+        IP_ADDR,
+        AI_ACCURACY
+    FROM (
         SELECT 
-       ACM.ALARMNO
-       , TC.TICKET_ID
-        , ACM.CLUSTERNO
-        , NULL NODE_NUM
-        , ACM.SYSNAME AS NODE_NM
-        , ACM.ALARMLOC
-        , TC.TICKET_TYPE
-        , TC.root_cause_type as FAULT_TYPE
-        , ACM.ALARMTIME AS ALARMTIME
-        , NULL FAULT_TIME
-        , ACM.ALARMMSG
-        , ACM.PORT
-        , ACM.ALARMMSG_ORIGINAL
-        , TC.STATUS
-        , TC.TICKET_RCA_RESULT_CODE
-        , TC.TICKET_RCA_RESULT_DTL_CODE
-        , NULL TOTAL_RELATED_ALARM_CNT
-        , AL.ROOT_CAUSE_SYSNAMEA
-        , AL.ROOT_CAUSE_SYSNAMEZ
-        , AL.ROOT_CAUSE_PORTA
-        , AL.ROOT_CAUSE_PORTZ
-        , TC.ZERO1_ENTROPY
-        , NM.IP_ADDR AS IP_ADDR
-     FROM 
-        ( 
-        SELECT 
-            ACM.ALARMNO
-            , MAX(ACM.CLUSTERNO) AS CLUSTERNO
-            , ACM.SYSNAME
-            , ACM.ALARMTIME AS ALARMTIME
-            , ACM.CLEARTIME
-            , ACM.ALARMLOC
-            , ACM.ALARMMSG
-            , ACM.ALARMLEVEL
-            , ACM.PORT
-            , ACM.ALARMMSG_ORIGINAL
-        FROM rca.tb_alarm_cur_mst ACM
-        WHERE ALARMNO LIKE 'I%'
-            AND ALARMTIME <![CDATA[ > ]]> now() - INTERVAL '7' DAY
-        GROUP BY ACM.ALARMNO, ACM.SYSNAME, ACM.ALARMTIME, ACM.CLEARTIME, ACM.ALARMLOC, ACM.ALARMMSG, ACM.ALARMLEVEL, ACM.PORT, ACM.ALARMMSG_ORIGINAL
+            ACM.ALARMNO,
+            TC.TICKET_ID,
+            ACM.CLUSTERNO,
+            NULL NODE_NUM,
+            ACM.SYSNAME AS NODE_NM,
+            ACM.ALARMLOC,
+            TC.TICKET_TYPE,
+            TC.root_cause_type AS FAULT_TYPE,
+            ACM.ALARMTIME AS ALARMTIME,
+            NULL FAULT_TIME,
+            ACM.ALARMMSG,
+            ACM.PORT,
+            ACM.ALARMMSG_ORIGINAL,
+            TC.STATUS,
+            TC.TICKET_RCA_RESULT_CODE,
+            TC.TICKET_RCA_RESULT_DTL_CODE,
+            NULL TOTAL_RELATED_ALARM_CNT,
+            AL.ROOT_CAUSE_SYSNAMEA,
+            AL.ROOT_CAUSE_SYSNAMEZ,
+            AL.ROOT_CAUSE_PORTA,
+            AL.ROOT_CAUSE_PORTZ,
+            TC.ZERO1_ENTROPY,
+            NM.IP_ADDR AS IP_ADDR,
+            SOP.AI_ACCURACY
+        FROM (
+            SELECT 
+                ACM.ALARMNO,
+                MAX(ACM.CLUSTERNO) AS CLUSTERNO,
+                ACM.SYSNAME,
+                ACM.ALARMTIME AS ALARMTIME,
+                ACM.CLEARTIME,
+                ACM.ALARMLOC,
+                ACM.ALARMMSG,
+                ACM.ALARMLEVEL,
+                ACM.PORT,
+                ACM.ALARMMSG_ORIGINAL
+            FROM rca.tb_alarm_cur_mst ACM
+            WHERE ALARMNO LIKE 'I%'
+                AND ALARMTIME <![CDATA[ > ]]> now() - INTERVAL '7' DAY
+            GROUP BY ACM.ALARMNO, ACM.SYSNAME, ACM.ALARMTIME, ACM.CLEARTIME, ACM.ALARMLOC, ACM.ALARMMSG, ACM.ALARMLEVEL, ACM.PORT, ACM.ALARMMSG_ORIGINAL
         ) ACM
         LEFT JOIN rca.tb_rca_ticket_current TC ON ACM.clusterno = TC.cluster_no
         LEFT JOIN rca.tb_rca_ticket_al_current AL ON TC.TICKET_ID = AL.TICKET_ID
         LEFT OUTER JOIN resource.tb_node_mst NM ON NM.NODE_ID = AL.ROOT_CAUSE_SYSNAMEA
+        LEFT JOIN nia.tb_sop SOP ON TC.TICKET_ID = SOP.TICKET_ID
         UNION ALL
-         SELECT
-        NULL ALARMNO
-            , TC.TICKET_ID
-            , CLUSTER_NO
-            , nm.node_num as  NODE_NUM
-            , nm.node_nm as NODE_NM
-            , pt.if_id as ALARMLOC
-            , TICKET_TYPE
-            , TC.root_cause_type as FAULT_TYPE
-            , TICKET_GENERATION_TIME AS ALARMTIME
-            , FAULT_TIME
-            , TC.root_cause_type as ALARMMSG
-            , NULL PORT
-            , NULL ALARMMSG_ORIGINAL
-            , STATUS
-            , TICKET_RCA_RESULT_CODE
-            , TICKET_RCA_RESULT_DTL_CODE
-            , TOTAL_RELATED_ALARM_CNT
-            , ROOT_CAUSE_SYSNAMEA
-            , ROOT_CAUSE_SYSNAMEZ
-            , ROOT_CAUSE_PORTA
-            , ROOT_CAUSE_PORTZ
-            , TC.ZERO1_ENTROPY
-            , NM.IP_ADDR AS IP_ADDR
+        SELECT
+            NULL ALARMNO,
+            TC.TICKET_ID,
+            CLUSTER_NO,
+            nm.node_num AS NODE_NUM,
+            nm.node_nm AS NODE_NM,
+            pt.if_id AS ALARMLOC,
+            TC.TICKET_TYPE,
+            TC.root_cause_type AS FAULT_TYPE,
+            TICKET_GENERATION_TIME AS ALARMTIME,
+            FAULT_TIME,
+            TC.root_cause_type AS ALARMMSG,
+            NULL PORT,
+            NULL ALARMMSG_ORIGINAL,
+            TC.STATUS,
+            TC.TICKET_RCA_RESULT_CODE,
+            TC.TICKET_RCA_RESULT_DTL_CODE,
+            TOTAL_RELATED_ALARM_CNT,
+            ROOT_CAUSE_SYSNAMEA,
+            ROOT_CAUSE_SYSNAMEZ,
+            ROOT_CAUSE_PORTA,
+            ROOT_CAUSE_PORTZ,
+            TC.ZERO1_ENTROPY,
+            NM.IP_ADDR AS IP_ADDR,
+            SOP.AI_ACCURACY
         FROM rca.tb_rca_ticket_current TC
         INNER JOIN rca.tb_rca_ticket_al_current AL ON TC.TICKET_ID = AL.TICKET_ID
-        INNER JOIN resource.tb_port_mst PT on AL.ROOT_CAUSE_PORTA = PT.IF_ID  
-        INNER JOIN resource.tb_node_mst ND on PT.NODE_ID = ND.NODE_ID 
+        INNER JOIN resource.tb_port_mst PT ON AL.ROOT_CAUSE_PORTA = PT.IF_ID  
+        INNER JOIN resource.tb_node_mst ND ON PT.NODE_ID = ND.NODE_ID 
         LEFT OUTER JOIN resource.tb_node_mst NM ON NM.NODE_ID = AL.ROOT_CAUSE_SYSNAMEA
-        WHERE TICKET_TYPE IN ('NFTT', 'FTT', 'ATT2', 'NTT')
-        AND TC.PARENT_TICKET_ID IS NULL
-        AND TC.TICKET_GENERATION_TIME <![CDATA[ >= ]]>  now() - INTERVAL '7' DAY
+        LEFT JOIN nia.tb_sop SOP ON TC.TICKET_ID = SOP.TICKET_ID
+        WHERE TC.TICKET_TYPE IN ('NFTT', 'FTT', 'ATT2', 'NTT')
+            AND TC.PARENT_TICKET_ID IS NULL
+            AND TC.TICKET_GENERATION_TIME <![CDATA[ >= ]]> now() - INTERVAL '7' DAY
         UNION ALL
         SELECT 
-            SAM.ALARMNO
-            , NULL TICKET_ID
-            , NULL CLUSTER_NO
-            , SAM.NODE_NUM
-            , SAM.NODE_NM
-            , SAM.ALARMLOC
-            , null FAULT_TYPE
-            , 'SYSLOG' TICKET_TYPE
-            , SAM.ALARMTIME AS ALARMTIME
-            , NULL FAULT_TIME
-            , SAM.ALARMMSG
-            , NULL PORT
-            , SAM.ETC AS ALARMMSG_ORIGINAL,
+            SAM.ALARMNO,
+            NULL TICKET_ID,
+            NULL CLUSTER_NO,
+            SAM.NODE_NUM,
+            SAM.NODE_NM,
+            SAM.ALARMLOC,
+            'SYSLOG' AS TICKET_TYPE,
+            NULL FAULT_TYPE,
+            SAM.ALARMTIME AS ALARMTIME,
+            NULL FAULT_TIME,
+            SAM.ALARMMSG,
+            NULL PORT,
+            SAM.ETC AS ALARMMSG_ORIGINAL,
             CASE WHEN SAM.STATUS IN ('INIT', 'FIN', 'AUTO_FIN') THEN SAM.STATUS
                 ELSE '-'
-                END AS STATUS
-            , NULL TICKET_RCA_RESULT_DTL_CODE
-            , NULL TICKET_RCA_RESULT_CODE
-            , NULL TOTAL_RELATED_ALARM_CNT
-            , NULL ROOT_CAUSE_SYSNAMEA
-            , NULL ROOT_CAUSE_SYSNAMEZ
-            , NULL ROOT_CAUSE_PORTA
-            , NULL ROOT_CAUSE_PORTZ
-            , NULL ZERO1_ENTROPY
-            , NM.IP_ADDR AS IP_ADDR
+            END AS STATUS,
+            NULL TICKET_RCA_RESULT_DTL_CODE,
+            NULL TICKET_RCA_RESULT_CODE,
+            NULL TOTAL_RELATED_ALARM_CNT,
+            NULL ROOT_CAUSE_SYSNAMEA,
+            NULL ROOT_CAUSE_SYSNAMEZ,
+            NULL ROOT_CAUSE_PORTA,
+            NULL ROOT_CAUSE_PORTZ,
+            NULL ZERO1_ENTROPY,
+            NM.IP_ADDR AS IP_ADDR,
+            NULL AS AI_ACCURACY
         FROM rca.tb_syslog_alarm_mst SAM
         LEFT JOIN resource.tb_node_mst NM ON NM.NODE_ID = SAM.NODE_NM
         WHERE ALARMTIME <![CDATA[ > ]]> now() - INTERVAL '48' HOUR
-        <!-- WHERE ALARMTIME <![CDATA[ > ]]> now() - INTERVAL '7' DAY -->
-        ) T
-        <if test="IS_POLLING != null and IS_POLLING == true">
-            WHERE T.ALARMTIME <![CDATA[ > ]]> (CURRENT_TIMESTAMP - INTERVAL '5 minutes')
-        </if>
-        ORDER BY ALARMTIME DESC
+    ) T
+    <if test="IS_POLLING != null and IS_POLLING == true">
+        WHERE T.ALARMTIME <![CDATA[ > ]]> (CURRENT_TIMESTAMP - INTERVAL '5 minutes')
+    </if>
+    ORDER BY ALARMTIME DESC
    </select>
 
    <!-- 전송망 TICKET -->
@@ -1100,11 +1104,17 @@
             SELECT
             src_ip,
             src_nren_id,
-            src_nren_name,
+            CASE
+                WHEN src_nren_name IS NULL OR src_nren_name = '' THEN '기타'
+                ELSE src_nren_name
+            END AS src_nren_name,
             src_country_code,
             dst_ip,
             dst_nren_id,
-            dst_nren_name,
+            CASE
+                WHEN dst_nren_name IS NULL OR dst_nren_name = '' THEN '기타'
+                ELSE dst_nren_name
+        END AS dst_nren_name,
             dst_country_code,
             packet_bytes,
             row_num
@@ -1121,11 +1131,11 @@
                 SUM(packet_bytes) AS packet_bytes,
                 row_number() OVER (
                     ORDER BY
+                        SUM(packet_bytes) desc,
                         CASE
                             WHEN src_nren_id IS NULL AND dst_nren_id IS NULL THEN 0
                             ELSE 2
-                        END DESC,
-                        SUM(packet_bytes) DESC
+                        END desc
                 ) AS row_num
             FROM
                 gather.tb_mdb_sflow_traffic_day dt

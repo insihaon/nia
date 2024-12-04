@@ -131,10 +131,9 @@ import BaseFilterGroup from '@/filters/baseFilterGroup'
 import CellRenderAibuttons from '@/views-nia/components/cellRenderer/CellRenderAibuttons'
 import CellRenderTicketDetail from '@/views-nia/components/cellRenderer/CellRenderTicketDetail'
 import { apiIpAlarmList, apiTransmissionAlarmList, apiDashboardStatistics, apiSelfProcessStatistics } from '@/api/nia'
-import { getAlarmType } from '@/views-nia/js/commonFormat'
+import { getAlarmType, getSopAiAccuracy } from '@/views-nia/js/commonFormat'
 import { AppOptions } from '@/class/appOptions'
 import dialogOpenMixin from '@/mixin/dialogOpenMixin'
-import { mapState } from 'vuex'
 
 const routeName = 'NiaMain'
 export default {
@@ -196,6 +195,7 @@ export default {
         { type: '', prop: 'alarmloc', name: '인터페이스명', width: 200, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'total_related_alarm_cnt', name: '근원알람개수', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'ip_addr', name: 'ip_addr', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
+        { type: '', prop: 'ai_accuracy', name: 'AI 결과 피드백', width: 100, fixed: false, suppressMenu: true, formatter: getSopAiAccuracy }
       ]
       const options = { name: this.name, checkable: false, rowGroupPanel: false }
       return { options, columns, data: this.ipNetworkList, onDoesExternalFilterPass: (externalFilter, node) => { return this.onDoesExternalFilterPass(externalFilter, node, 'ip') }, getRightClickMenuItems: () => { return [] } }
