@@ -54,11 +54,11 @@ public class AssignMgmtController extends CommonController {
 	@EncryptResponse
 	public ModelMap viewListAsgnIPMst(@RequestBody TbIpAssignMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
-		ModelMap builtModel = viewListAsgnIPMstModel(searchVo, request);
 		setPagination(searchVo);
-		TbIpAssignMstListVo resultListVo = (TbIpAssignMstListVo) builtModel.get("resultListVo");
-
-		return createResultList(resultListVo.getTbIpAssignMstVos(), resultListVo.getTotalCount());
+		ModelMap builtModel = viewListAsgnIPMstModel(searchVo, request);
+		ModelMap finalModel = new ModelMap();
+		finalModel.addAllAttributes(builtModel);
+		return finalModel;
 	}
 
 	@RequestMapping(value = "/ipmgmt/assignmgmt/viewListAsgnIPMst.do", method = RequestMethod.POST)

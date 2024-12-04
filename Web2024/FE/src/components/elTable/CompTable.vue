@@ -206,7 +206,7 @@ export default {
       return this.selectCondition(row)
     },
     handleSelectionChange(selectedRows) {
-      console.log("selected Row : ", selectedRows)
+      /*  console.log("selected Row : ", selectedRows) */
     },
     headerDragend(newWidth, oldWidth, column, event) {
       let savedColumnState

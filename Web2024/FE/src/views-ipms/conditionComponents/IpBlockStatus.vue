@@ -45,7 +45,7 @@ export default {
     },
     prop_options: {
       type: Array,
-      default: null
+       default: () => []
     }
   },
   data() {
@@ -68,6 +68,17 @@ export default {
       return this.options.map(option => option.value).filter(v => v !== '')
     },
   },
+  watch: {
+    prop_options: {
+      handler(newOptions) {
+        if (newOptions && newOptions.length > 0) {
+          this.options = [...newOptions]
+        }
+      },
+      immediate: true,
+      deep: true
+    }
+  },
   // sassignLevelVd
   methods: {
     onResetParameter() {
@@ -75,8 +86,8 @@ export default {
     },
     init() {
       this.values = this.isMulti ? [] : ''
-      if (this.prop_options !== null) {
-        this.options = this.prop_options
+      if (this.prop_options && this.prop_options.length > 0) {
+        this.options = [...this.prop_options]
       }
       this.emitEventToParent(this.getParameter())
     },

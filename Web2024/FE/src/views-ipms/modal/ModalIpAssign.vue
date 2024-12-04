@@ -412,7 +412,7 @@ export default {
         this.vLoading = false
       }
     },
-    onClose() { this.selectedRows = [] },
+
   },
 }
 </script>
