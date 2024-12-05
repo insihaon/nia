@@ -40,10 +40,11 @@ public class FileStorageProperties {
     }
 
     public String getExcelUploadDir() {
-        String dir = FileUtil.combine(FileUtil.getCurrentDir(), accessUrl.replace("**", ""), excelUploadDir);
-        // if (excelUploadDir != null) {
-        //     dir = excelUploadDir;
-        // }
+        String uploadPath = "uploads";
+        if(uploadDir != null) {
+            uploadPath = uploadDir;
+        }
+        String dir = FileUtil.combine(FileUtil.getCurrentDir(), uploadPath, excelUploadDir);
         if (!Files.exists(Paths.get(dir))) {
             FileUtil.mkDirs(dir);
         }
