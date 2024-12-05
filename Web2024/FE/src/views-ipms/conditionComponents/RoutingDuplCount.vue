@@ -21,7 +21,6 @@
 <script>
 import { Base } from '@/min/Base.min'
 import commonFunctionMixin from '@/mixin/commonFunctionMixin'
-import { onMessagePopup } from '@/utils'
 
 const routeName = 'RoutingDuplCount'
 export default {
@@ -52,6 +51,15 @@ export default {
     handleChange(value) { /* override */
       this.updateSelectionWithAll()
       this.emitEventToParent(this.getParameter())
+    },
+    setParameter(params) { /* override */
+      const { summaryCnt, nsummaryCntMulti } = params
+      if (['10', '5'].includes(summaryCnt)) {
+        this.values.push(summaryCnt + '~')
+      }
+      if (nsummaryCntMulti.length > 0) {
+        this.values = this.values.concat(nsummaryCntMulti)
+      }
     },
     getParameter() {
      const params = [{ key: 'nsummaryCntMulti', value: this.values.filter(v => v !== '' && v !== '5~' && v !== '10~') }]

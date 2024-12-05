@@ -1,18 +1,14 @@
 <template>
   <el-row class="w-100 h-100">
     <div class="popupContentTable">
-      <el-col class="py-4">
-        <table>
-          <tbody>
-            <tr>
-              <template v-for="(item, index) in tableItems">
-                <th :key="'th-' + index">{{ item.title }}</th>
-                <td :key="'td-' + index">{{ item.value }} 건</td>
-              </template>
-            </tr>
-          </tbody>
-        </table>
-      </el-col>
+      <table v-loading="tableLoading">
+        <tr>
+          <template v-for="item in statusItems">
+            <th :key="item.title">{{ item.title }}</th>
+            <td :key="item.key">{{ statusVo[item.key] ? statusVo[item.key].toLocaleString() : 0 }} 건</td>
+          </template>
+        </tr>
+      </table>
     </div>
     <DynamicComponentLoader
       ref="searchCondition"
@@ -57,10 +53,10 @@
         </template>
       </compTable>
       <ModalRegWhois ref="ModalRegWhois" />
-      <ModalViewListWhoisKeywordMst ref="ModalViewListWhoisKeywordMst" @reload="fnViewListWhois($refs.searchCondition.requestParameter)" />
-      <ModalViewListWhoisKeywordMstNew ref="ModalViewListWhoisKeywordMstNew" @reload="fnViewListWhois($refs.searchCondition.requestParameter)" />
-      <ModalViewUpdateKtInfo ref="ModalViewUpdateKtInfo" @reload="fnViewListWhois($refs.searchCondition.requestParameter)" />
-      <ModalViewListWhoisDbMatchMst ref="ModalViewListWhoisDbMatchMst" @reload="fnViewListWhois($refs.searchCondition.requestParameter)" />
+      <ModalViewListWhoisKeywordMst ref="ModalViewListWhoisKeywordMst" @reload="fnViewListWhois()" />
+      <ModalViewListWhoisKeywordMstNew ref="ModalViewListWhoisKeywordMstNew" @reload="fnViewListWhois()" />
+      <ModalViewUpdateKtInfo ref="ModalViewUpdateKtInfo" @reload="fnViewListWhois()" />
+      <ModalViewListWhoisDbMatchMst ref="ModalViewListWhoisDbMatchMst" @reload="fnViewListWhois($refs.searchCondition.requestParameter, true)" />
     </el-col>
   </el-row>
 
@@ -88,21 +84,43 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      tableLoading: false,
       pagination: this.setDefaultPagination(),
-        tableColumns: [
-          { prop: 'rowNo', label: 'No', align: 'center', columnVisible: true, showOverflow: true },
-          { prop: 'sfirstAddr', label: '시작 IP', align: 'center', columnVisible: true, showOverflow: true },
-          { prop: 'slastAddr', label: '마지막 IP', align: 'center', columnVisible: true, showOverflow: true },
-          { label: '노드', align: 'center', columnVisible: true, showOverflow: true, formatter: (row, col, value, index) => this.formatNode(row) },
-          { prop: 'sassignTypeNm', label: '서비스', align: 'center', columnVisible: true, showOverflow: true },
-          { prop: 'sorgname', label: '기관명', align: 'center', columnVisible: true, showOverflow: true },
-          { prop: 'snetNm', label: '네트워크이름', align: 'center', columnVisible: true, showOverflow: true },
-          { prop: 'swhoisRequestTypeNm', label: '작업종류', align: 'center', columnVisible: true, showOverflow: true },
-          { prop: 'dmodifyDt', label: '변경일시', align: 'center', columnVisible: true, showOverflow: true, formatter: (row) => { return row.dmodifyDt ? this.moment(row.dmodifyDt).format('YYYY-MM-DD HH:mm:ss') : '' } },
-          { prop: 'swhoisTranStatusNm', label: '등록현황', align: 'center', columnVisible: true, showOverflow: true },
-          { prop: 'stransKind', label: '입력구분', align: 'center', columnVisible: true, showOverflow: true },
-        ],
-      componentList: [
+      sassignTypeCdList: [],
+      tableColumns: [
+        { prop: 'rowNo', label: 'No', align: 'center', columnVisible: true, showOverflow: true },
+        { prop: 'sfirstAddr', label: '시작 IP', align: 'center', columnVisible: true, showOverflow: true },
+        { prop: 'slastAddr', label: '마지막 IP', align: 'center', columnVisible: true, showOverflow: true },
+        { label: '노드', align: 'center', columnVisible: true, showOverflow: true, formatter: (row, col, value, index) => this.formatNode(row) },
+        { prop: 'sassignTypeNm', label: '서비스', align: 'center', columnVisible: true, showOverflow: true },
+        { prop: 'sorgname', label: '기관명', align: 'center', columnVisible: true, showOverflow: true },
+        { prop: 'snetNm', label: '네트워크이름', align: 'center', columnVisible: true, showOverflow: true },
+        { prop: 'swhoisRequestTypeNm', label: '작업종류', align: 'center', columnVisible: true, showOverflow: true },
+        { prop: 'dmodifyDt', label: '변경일시', align: 'center', columnVisible: true, showOverflow: true, formatter: (row) => { return row.dmodifyDt ? this.moment(row.dmodifyDt).format('YYYY-MM-DD HH:mm:ss') : '' } },
+        { prop: 'swhoisTranStatusNm', label: '등록현황', align: 'center', columnVisible: true, showOverflow: true },
+        { prop: 'stransKind', label: '입력구분', align: 'center', columnVisible: true, showOverflow: true },
+      ],
+      statusVo: {
+        transWait: '',
+        trans: '',
+        transOk: '',
+        fail: '',
+        registered: '',
+      },
+      statusItems: [
+        { title: '전송대기', key: 'transWait' },
+        { title: '전송', key: 'trans' },
+        { title: '전송완료', key: 'transOk' },
+        { title: '반송', key: 'fail' },
+        { title: '등록완료', key: 'registered' }
+      ],
+      selectedChecks: [],
+      selectedChecksItem: null,
+    }
+  },
+  computed: {
+    componentList() {
+      return [
         { key: 'SsvcLineType', props: { label: '계위 정보', lvl: 3 } },
         { key: 'InputType', props: { label: '사용기관명', prop_parameterKey: 'sorgname' } },
          {
@@ -119,7 +137,7 @@ export default {
             ]
           }
         },
-        { key: 'ServiceOrg', props: { isMulti: false, sortTypeDefaultVal: 'ALL' } },
+        { key: 'ServiceOrg', props: { isMulti: false, sortTypeDefaultVal: 'ALL', prop_options: this.sassignTypeCdList } },
         { key: 'InputType', props: { label: 'IP 주소', prop_parameterKey: 'searchWrd' } },
         {
           key: 'ApplyStatus', props: {
@@ -145,20 +163,12 @@ export default {
             ]
           }
         }
-      ],
-      tableItems: [
-        { title: '전송대기', value: '275' },
-        { title: '전송', value: '13' },
-        { title: '전송완료', value: '0' },
-        { title: '반송', value: '9' },
-        { title: '등록완료', value: '287091' }
-      ],
-      selectedChecks: [],
-      selectedChecksItem: null,
-    }
+      ]
+    },
   },
   mounted() {
-    this.fnViewListWhois()
+    this.loadServiceCd()
+    this.loadCountWhoisByStatus()
   },
   methods: {
     selectCondition(row) {
@@ -168,7 +178,29 @@ export default {
       this.pagination.currentPage = 1
       this.fnViewListWhois(requestParameter)
     },
-    async fnViewListWhois(requestParameter = null) {
+    async loadCountWhoisByStatus() {
+      try {
+        this.tableLoading = true
+        const res = await apiRequestJson(ipmsJsonApis.countWhoisByStatus)
+        this._merge(this.statusVo, res.result?.data)
+      } catch (error) {
+        this.error(error)
+      } finally {
+        this.tableLoading = false
+      }
+    },
+     async loadServiceCd() {
+      try {
+        const res = await apiRequestJson(ipmsJsonApis.selectListCommonCode)
+        this.sassignTypeCdList = res.result?.data?.map(v => { return { value: v.code, label: v.name } })
+      } catch (error) {
+        this.error(error)
+      }
+    },
+    async fnViewListWhois(requestParameter = null, loadStatus = false) {
+      if (loadStatus) {
+        this.loadCountWhoisByStatus()
+      }
       const parameter = requestParameter ?? this.$refs.searchCondition.requestParameter
       const target = ({ vue: this.$refs.compTable })
       const { pageSize: pageUnit, currentPage: pageIndex } = this.pagination
@@ -176,8 +208,8 @@ export default {
       try {
         this.openLoading(target)
         const res = await apiRequestModel(ipmsModelApis.viewListWhois, parameter)
-        this.pagination.data = res.result.data ?? []
-        this.pagination.total = res.result.totalCount
+        this.pagination.data = res?.result?.data ?? []
+        this.pagination.total = res?.result?.totalCount ?? 0
       } catch (error) {
         console.error(error)
       } finally {

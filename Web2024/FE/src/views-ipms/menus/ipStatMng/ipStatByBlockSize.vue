@@ -81,9 +81,9 @@ export default {
       try {
         this.loading = true
         const res = await apiRequestModel(ipmsModelApis.viewListBlockSizeStat, parameter)
-        if (res.data.resultStatus === 'SUCCESS') {
-          this.svcList = JSON.parse(res.data.blockSizeCdsList)
-          this.resultList = JSON.parse(res.data.result)
+        if (res.result.data.resultStatus === 'SUCCESS') {
+          this.svcList = JSON.parse(res.result.data.blockSizeCdsList)
+          this.resultList = JSON.parse(res.result.data.result)
           this.columns = [].concat(...getStatColumn('blockSize', this.svcList))
         }
       } catch (error) {

@@ -79,7 +79,10 @@ export default {
     },
   },
   mounted () {
-    this.onLoadServiceList({ ssvcLineTypeCd: '' })
+    this.init()
+    if (this.prop_options === null) {
+      this.onLoadServiceList({ ssvcLineTypeCd: '' })
+    }
     Eventbus.$on(EventType.changeLvl1, (params) => {
       this.onLoadServiceList(params)
     })
@@ -119,7 +122,7 @@ export default {
     async onLoadServiceList(params) {
       this.values = this.isMulti ? [] : ''
       try {
-        const res = await apiRequestJson(ipmsJsonApis.selectSassignTypeCdList, params)
+        const res = await apiRequestJson(ipmsJsonApis.selectOrgSassignTypeCdList, params)
         this.options = res.tbIpAllocMstVos.map(v => { return { value: v.sassignTypeCd, label: v.sassignTypeNm } })
       } catch (error) {
         this.error(error)

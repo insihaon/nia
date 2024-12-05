@@ -1727,7 +1727,7 @@ public class AllocMgmtController extends CommonController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/ipmgmt/allocmgmt/selectSassignTypeCdList.json", method = RequestMethod.POST)
+	@RequestMapping(value = "/ipmgmt/allocmgmt/selectOrgSassignTypeCdList.json", method = RequestMethod.POST)
 	@ResponseBody
 	@EncryptResponse
 	public BaseVo selectOrgSassignTypeCdList(@RequestBody TbIpAllocMstVo searchVo,

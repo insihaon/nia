@@ -29,7 +29,7 @@
           <tr>
             <th>제목</th>
             <td colspan="5">
-              <input
+              <el-input
                 v-model="stitle"
                 type="text"
                 maxlength="30"
@@ -70,8 +70,8 @@
           </tr>
           <tr>
             <th>요청 IP개수 (/24)</th>
-            <td colspan="5">
-              <input
+            <td colspan="5" class="textflex">
+              <el-input
                 v-model="napyIpCnt"
                 type="text"
                 maxlength="5"

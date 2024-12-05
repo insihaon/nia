@@ -17,7 +17,7 @@
   >
     <div class="popupContentTable">
       <div class="popupContentTableTitle">처리상태</div>
-      <table>
+      <table v-loading="tableLoading">
         <colgroup>
           <col width="24%" />
           <col width="76%" />
@@ -34,7 +34,7 @@
 
     <div class="popupContentTable">
       <div class="popupContentTableTitle">기본정보</div>
-      <table>
+      <table v-loading="tableLoading">
         <colgroup>
           <col width="4%" />
           <col width="18%" />
@@ -67,7 +67,7 @@
 
     <div v-if="resultVo.dbMatchYn === 'N'" id="allocDiv" class="popupContentTable">
       <div class="popupContentTableTitle">할당 테이블 고객정보</div>
-      <table>
+      <table v-loading="tableLoading">
         <colgroup>
           <col width="20%" />
           <col width="80%" />
@@ -97,7 +97,7 @@
 
     <div class="popupContentTable">
       <div class="popupContentTableTitle">1. IP 주소 사용기관 (필수)</div>
-      <table>
+      <table v-loading="tableLoading">
         <colgroup>
           <col width="4%" />
           <col width="18%" />
@@ -176,7 +176,7 @@
 
     <div class="popupContentTable">
       <div class="popupContentTableTitle">2. 네트워크 정보 (필수)</div>
-      <table>
+      <table v-loading="tableLoading">
         <colgroup>
           <col width="4%" />
           <col width="18%" />
@@ -277,7 +277,7 @@
 
     <div class="popupContentTable">
       <div class="popupContentTableTitle">3. 추가사항(Comment)</div>
-      <table class="tbl_data entry" summary="추가사항">
+      <table v-loading="tableLoading" class="tbl_data entry" summary="추가사항">
         <colgroup>
           <col width="22%" />
           <col width="78%" />
@@ -296,7 +296,7 @@
 
     <div class="popupContentTable">
       <div class="popupContentTableTitle">4. KRNIC 회신</div>
-      <table>
+      <table v-loading="tableLoading">
         <colgroup>
           <col width="22%" />
           <col width="78%" />
@@ -344,7 +344,8 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      resultVo: {
+        tableLoading: false,
+        resultVo: {
         sapplicationname: '',
         swhoisTranStatusNm: '',
         swhoisRequestTypeNm: '',
@@ -407,24 +408,23 @@ export default {
       }, 10)
     },
     async fnViewDetailWhois(row) {
-      const target = { vue: this.$refs.content }
       try {
-        this.openLoading(target)
+        this.tableLoading = true
         const { nwhoisSeq } = row
         const tbUserAuthVo = {
           nwhoisSeq: nwhoisSeq,
         }
         const res = await apiRequestModel(ipmsModelApis.viewRegWhoisNew, tbUserAuthVo)
-        this.resultVo = res?.resultVo
-        this.userVo = res?.userVo
-        this.ktInfoVo = res?.ktInfoVo
-        this.scity = res?.scity.map(item => {
+        this.resultVo = res?.result?.resultVo
+        this.userVo = res?.result?.userVo
+        this.ktInfoVo = res?.result?.ktInfoVo
+        this.scity = res?.result?.scity.map(item => {
           return { value: item, label: item }
         })
       } catch (error) {
         console.error(error)
       } finally {
-        this.closeLoading(target)
+        this.tableLoading = false
       }
     },
     fnSetAddr(type) {

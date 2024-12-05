@@ -185,7 +185,6 @@ export default {
     },
     async onOpen(model, actionMode) {
       this.isViewTypeSeonbeonjang = model.isSeonbeonjang ?? false
-
       if (model.row) {
         await this.fnViewInsertDivAsgnIPMst(model.row)
       }

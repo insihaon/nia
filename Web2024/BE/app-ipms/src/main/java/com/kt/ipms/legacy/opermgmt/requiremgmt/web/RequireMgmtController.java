@@ -181,7 +181,7 @@ public class RequireMgmtController extends CommonController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		model.addAttribute("resultVo", resultVo);
+		model.addAttribute("result", resultVo);
 		model.addAttribute("adminYn", adminYn);
 		return model;
 	}

@@ -26,7 +26,7 @@
             <tr>
               <th>IP주소</th>
               <td><el-input v-model="txtSearchIp" size="small" type="text" maxlength="200" clearable @keyup.enter.native="fnviewRegWhoisModReq()" /></td>
-              <td><el-button type="primary" size="small" round @click="fnviewRegWhoisModReq()"> 조회</el-button></td>
+              <td><el-button type="primary" size="small" round @click="fnviewRegWhoisModReq()">조회</el-button></td>
             </tr>
           </tbody>
         </table>
@@ -281,7 +281,7 @@ export default {
         this.tableLoading = true
         const res = await apiRequestModel(ipmsModelApis.viewRegWhoisModReq, params)
         this._merge(this.ktInfoVo, res.ktInfoVo)
-        if (res.resultListVoTotalCount === 0) {
+        if (res.result.totalCount === 0) {
           const mailObj = {
             mailType: 'Ipms-Table-Error',
             txtSearchIp: this.txtSearchIp,
@@ -289,8 +289,8 @@ export default {
           this.fnSendMail(mailObj)
           return
         }
-        this.pagination.data = res.resultListVo
-        this.pagination.total = res.resultListVoTotalCount
+        this.pagination.data = res?.result?.data ?? []
+        this.pagination.total = res?.result?.totalCount ?? 0
       } catch (error) {
         this.error(error)
       } finally {

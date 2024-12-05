@@ -210,12 +210,12 @@ export default {
           const res = await apiRequestModel(ipmsModelApis.viewDetailReq, { seq })
           this.adminYn = res.adminYn
           this.ownerYn = res.ownerYn
-          this.resultVo = res.resultVo
-          if (res.resultVo.rboardFileSeq) {
+          this.resultVo = res.result
+          if (res?.result?.rboardFileSeq) {
             this.files = [{
-            name: res.resultVo.rboardFileOriginName,
-            downloadUrl: res.resultVo.rboardDownloadPath, // changeDownloadFileHost(res.resultVo.rboardDownloadPath),
-            previewUrl: res.resultVo.rboardDownloadPath
+            name: res.result.rboardFileOriginName,
+            downloadUrl: res.result.rboardDownloadPath, // changeDownloadFileHost(res.resultVo.rboardDownloadPath),
+            previewUrl: res.result.rboardDownloadPath
           }]
         }
       } catch (error) {

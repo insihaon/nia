@@ -83,14 +83,20 @@ public class WhoisMgmtController extends CommonController {
 
 	@Autowired
 	private ReqBoardService reqBoardService;
-
+	@RequestMapping(value = "/opermgmt/whoismgmt/countWhoisByStatus.json", method = RequestMethod.POST)
+	@ResponseBody
+	@EncryptResponse
+	public ModelMap countWhoisByStatus(@RequestBody TbWhoisVo searchVo, ModelMap model, HttpServletRequest request) {
+		WhoisStatusVo statusVo = whoisService.countWhoisByStatus();
+		return createResult(statusVo);
+	}
 	@RequestMapping(value = "/opermgmt/whoismgmt/viewListWhois.model", method = RequestMethod.POST)
 	@ResponseBody
 	@EncryptResponse
 	public ModelMap viewListTbWhois(@RequestBody TbWhoisVo searchVo, ModelMap model, HttpServletRequest request) {
 		setPagination(searchVo);
-		TbWhoisListVo resultListVo = whoisService.selectListPageWhois(searchVo);
-		return createResultList(resultListVo.getTbWhoisVos(), resultListVo.getTotalCount());
+		TbWhoisListVo resultList = whoisService.selectListPageWhois(searchVo);
+		return createResultList(resultList.getTbWhoisVos(), resultList.getTotalCount());
 	}
 
 	@RequestMapping(value = "/opermgmt/whoismgmt/viewListWhois.do", method = RequestMethod.POST)
@@ -484,9 +490,8 @@ public class WhoisMgmtController extends CommonController {
 	@ResponseBody
 	@EncryptResponse
 	public ModelMap viewListWhoisKeywordMst(@RequestBody TbWhoisKeywordVo searchVo) {
-		ModelMap builtModel = viewListWhoisKeywordMstModel(searchVo);
 		setPagination(searchVo);
-		TbWhoisKeywordListVo resultListVo = (TbWhoisKeywordListVo) builtModel.get("resultListVo");
+		TbWhoisKeywordListVo resultListVo = whoisService.selectListTbWhoisKeyword(searchVo);
 		return createResultList(resultListVo.getTbWhoisKeywordVos(), resultListVo.getTotalCount());
 	}
 
@@ -624,9 +629,8 @@ public class WhoisMgmtController extends CommonController {
 	@ResponseBody
 	@EncryptResponse
 	public ModelMap viewListWhoisKeywordMstNew(@RequestBody TbWhoisKeywordVo searchVo) {
-		ModelMap builtModel = viewListWhoisKeywordMstNewModel(searchVo);
 		setPagination(searchVo);
-		TbWhoisKeywordListVo resultListVo = (TbWhoisKeywordListVo) builtModel.get("resultListVo");
+		TbWhoisKeywordListVo resultListVo = whoisService.selectListTbWhoisKeywordNew(searchVo);
 		return createResultList(resultListVo.getTbWhoisKeywordVos(), resultListVo.getTotalCount());
 	}
 
@@ -753,16 +757,11 @@ public class WhoisMgmtController extends CommonController {
 		// TbWhoisVo resultVo = whoisService.selectWhois(tbWhoisVo);
 		// return createResult(resultVo);
 		ModelMap builtModel = viewRegWhoisNewModel(tbWhoisVo, request);
-		// TbWhoisVo resultVo = (TbWhoisVo) builtModel.get("resultVo");
-		ModelMap finalModel = new ModelMap();
-		finalModel.addAllAttributes(builtModel);
+		
+		ModelMap resultModel = new ModelMap();
+		resultModel.addAttribute("result", builtModel);
 
-		finalModel.addAttribute("resultVo", builtModel.get("resultVo"));
-		finalModel.addAttribute("userVo", builtModel.get("userVo"));
-		finalModel.addAttribute("scity", builtModel.get("scity"));
-		finalModel.addAttribute("ktInfoVo", builtModel.get("ktInfoVo"));
-		finalModel.addAttribute("allocInfoVo", builtModel.get("allocInfoVo"));
-		return finalModel;
+		return resultModel;
 	}
 
 	@RequestMapping(value = "opermgmt/whoismgmt/viewRegWhoisNew.ajax", method = RequestMethod.POST)
@@ -1132,6 +1131,7 @@ public class WhoisMgmtController extends CommonController {
 	@EncryptResponse
 	public ModelMap _viewRegWhoisModReq(@RequestBody TbWhoisModifyVo searchVo, HttpServletRequest request) {
 		ModelMap model = new ModelMap();
+		HashMap<String, Object> map = new HashMap<String, Object>();
 		TbWhoisModifyListVo resultListVo = null;
 		TbWhoisUserVo ktInfoVo = null;
 		try {
@@ -1151,8 +1151,9 @@ public class WhoisMgmtController extends CommonController {
 			String commonMsg = tbCmnMstService.selectMsgDesc(new ServiceException("CMN.HIGH.00000"));
 			resultListVo.setCommonMsg(commonMsg);
 		}
-		model.addAttribute("resultListVo", resultListVo.getTbWhoisModifyVos());
-		model.addAttribute("resultListVoTotalCount", resultListVo.getTotalCount());
+		map.put("data", resultListVo.getTbWhoisModifyVos());
+		map.put("totalCount", resultListVo.getTotalCount());
+		model.addAttribute("result", map);
 		model.addAttribute("ktInfoVo", ktInfoVo);
 
 		return model;
@@ -2087,6 +2088,33 @@ public class WhoisMgmtController extends CommonController {
 
 		return resultVo;
 	}
+	/* 서비스 코드 조회 */
+	@RequestMapping(value = "opermgmt/whoismgmt/selectListCommonCode.json", method = RequestMethod.POST)
+	@ResponseBody
+	@EncryptResponse
+	public ModelMap selectListCommonCode(@RequestBody TbWhoisVo searchVo) {
+		List<CommonCodeVo> sassignTypeCdList = new ArrayList<CommonCodeVo>();
+		try {
+			sassignTypeCdList = commonCodeService.selectListCommonCode(CommonCodeUtil.ASSIGN_TYPE_CD,
+					new HashMap<String, String>());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return createResultList(sassignTypeCdList, sassignTypeCdList.size());
+	}
+	/* DB 현행화 전송 작업종류 코드 조회 */
+	@RequestMapping(value = "opermgmt/whoismgmt/listReqTypeCd.json", method = RequestMethod.POST)
+	@ResponseBody
+	@EncryptResponse
+	public ModelMap selectListVTbWhoisReqTypeCd(@RequestBody TbWhoisVo searchVo) {
+		List<CommonCodeVo> listReqTypeCd = new ArrayList<CommonCodeVo>();
+		try {
+			listReqTypeCd = whoisService.selectListVTbWhoisReqTypeCd();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return createResultList(listReqTypeCd, listReqTypeCd.size());
+	}
 
 	/**
 	 * DB 현행화 전송 건 목록 화면 로드 & 조회
@@ -2099,36 +2127,9 @@ public class WhoisMgmtController extends CommonController {
 	@ResponseBody
 	@EncryptResponse
 	public ModelMap viewListWhoisDbMatchMst(@RequestBody TbWhoisVo searchVo) {
-		// viewListWhoisDbMatchMstModel 호출
-		ModelMap builtModel = viewListWhoisDbMatchMstModel(searchVo);
-
-		// 최종 ModelMap 생성
-		ModelMap finalModel = new ModelMap();
-
-		try {
-			// 기존 데이터 가져오기
-			List<CommonCodeVo> sassignTypeCdList = (List<CommonCodeVo>) builtModel.get("sassignTypeCdList");
-			List<CommonCodeVo> listReqTypeCd = (List<CommonCodeVo>) builtModel.get("listReqTypeCd");
-			PaginationInfo paginationInfo = (PaginationInfo) builtModel.get("paginationInfo");
-			TbWhoisVo retrievedSearchVo = (TbWhoisVo) builtModel.get("searchVo");
-
-			// resultListVo는 별도로 조회
-			TbWhoisListVo resultListVo = whoisService.selectListDbMatch(searchVo);
-
-			// finalModel에 데이터 추가
-			finalModel.addAttribute("sassignTypeCdList", sassignTypeCdList);
-			finalModel.addAttribute("listReqTypeCd", listReqTypeCd);
-			finalModel.addAttribute("paginationInfo", paginationInfo);
-			finalModel.addAttribute("searchVo", retrievedSearchVo);
-			finalModel.addAttribute("resultListVo",
-					createResultList(resultListVo.getTbWhoisVos(), resultListVo.getTotalCount()));
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			finalModel.addAttribute("errorMsg", "데이터를 처리하는 중 오류가 발생했습니다.");
-		}
-
-		return finalModel;
+		setPagination(searchVo);
+		TbWhoisListVo resultListVo = whoisService.selectListDbMatch(searchVo);
+		return createResultList(resultListVo.getTbWhoisVos(), resultListVo.getTotalCount());
 	}
 
 	@RequestMapping(value = "opermgmt/whoismgmt/viewListWhoisDbMatchMst.ajax", method = RequestMethod.POST)

@@ -4,11 +4,11 @@ copyright notice above does not evidence any actual or * intended publication of
 <template>
   <div v-loading="propLoading" class="compTable">
     <div class="tableThum">
-      <div v-if="textDes" class="d-flex mb-1 justify-between items-baseline">
+      <div class="d-flex mb-1 justify-between items-baseline">
         <div>
           <i class="el-icon-document mr-1" />
           <slot name="text-description" />
-          <span class="countNum">( <slot name="add-count" /> 총 {{ propIsPagination != false ? (propPaginationData.total || 0).toLocaleString() : propData.length }} 건 )</span>
+          <span class="countNum">( <slot name="add-count" /> 총 {{ propIsPagination !== false ? (propPaginationData.total || 0).toLocaleString() : propData.length }} 건 )</span>
           <i class="el-icon-s-tools ml-1 mt-1" @click="fn_click_settings" />
         </div>
         <el-button v-if="propEnabledExcelDown" type="info" size="mini" icon="el-icon-download" round @click="$emit('savedExcel')">엑셀 파일로 저장</el-button>
@@ -111,7 +111,6 @@ export default {
   },
   extends: Base,
   props: {
-    textDes: { type: Boolean, default: true }, // slot 유무 
     propName: { type: String, default: '' },
     propColumn: { type: Array, default: [{ prop: '-', label: '-' }] }, //컬럼
     propData: {

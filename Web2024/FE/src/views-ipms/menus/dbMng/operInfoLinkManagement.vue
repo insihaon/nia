@@ -107,7 +107,7 @@ export default {
         { key: 'InputType', props: { prop_parameterKey: 'sifNm', label: 'IF명' } },
         { key: 'LineInformation', props: {} },
         { key: 'InputType', props: { prop_parameterKey: 'sconnalias', label: '수용회선명' } },
-        { key: 'SortType', props: { } },
+        { key: 'SortType', props: { sortOrdrDefaultVal: 'ASC' } },
       ]
     }
   },

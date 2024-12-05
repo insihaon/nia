@@ -17,7 +17,7 @@
     <!-- 시설/회선 정보 -->
     <div v-if="tbIpInfoVo.ssubscnealiasType === 'SE' && spageType === 'link'" class="popupContentTable">
       <div class="popupContentTableTitle">시설/회선 정보</div>
-      <table>
+      <table v-loading="tableLoading">
         <colgroup>
           <col width="13%" /><col width="20%" />
           <col width="13%" /><col width="20%" />
@@ -71,7 +71,7 @@
     <!-- 시설 정보 -->
     <div v-if="tbIpInfoVo.ssubscnealiasType !== 'SE' && spageType !== 'link'" class="popupContentTable">
       <div class="popupContentTableTitle">시설 정보</div>
-      <table>
+      <table v-loading="tableLoading">
         <colgroup>
           <col width="13%" /><col width="20%" />
         </colgroup>
@@ -105,9 +105,9 @@
       </table>
     </div>
     <!-- 링크 정보 -->
-    <div v-if="spageType === 'link'" class="popupContentTable">
+    <div v-if="spageType === 'link'" class="popupContentTable textcenter">
       <div class="popupContentTableTitle">링크 정보</div>
-      <table>
+      <table v-loading="tableLoading">
         <colgroup>
           <col width="13%" /><col width="20%" />
           <col width="13%" /><col width="20%" />
@@ -180,6 +180,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      tableLoading: false,
       spageType: '',
       ipInfoVo: {},
       tbIpInfoVo: {
@@ -226,12 +227,15 @@ export default {
     },
     async fnViewDetailNexthop() {
       const { sipNexthop, ssvcLineTypeCd, proutingIpPrefix, nroutingIpBitmask } = this.ipInfoVo
-      const ipInfoVo = { sipNexthop, ssvcLineTypeCd, proutingIpPrefix, nroutingIpBitmask, spageType: this.spageType }
+      const ipInfoVo = { sNextHop: sipNexthop, ssvcLineTypeCd, pipPrefix: proutingIpPrefix, nbitmask: nroutingIpBitmask, spageType: this.spageType }
       try {
+        this.tableLoading = true
         const res = await apiRequestModel(ipmsModelApis.viewDetailNextHop, ipInfoVo)
         this.tbIpInfoVo = res.result.data
       } catch (error) {
         this.error(error)
+      } finally {
+        this.tableLoading = false
       }
     }
   },

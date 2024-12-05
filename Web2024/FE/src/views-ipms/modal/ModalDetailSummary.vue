@@ -34,7 +34,7 @@
               <td class="text-center" colspan="7">조회된 결과 목록이 존재하지 않습니다.</td>
             </tr>
             <template v-else>
-              <tr v-for="(item, index) in resultList" :key="index" :class="[{ last: index === resultList.length - 1 }, { subbg: index % 2 !== 0 }]">
+              <tr v-for="(item, index) in resultList" :key="index">
                 <td>{{ item.ssvcLineTypeNm }}</td>
                 <td>{{ item.ssvcGroupNm }}</td>
                 <td>{{ item.ssvcHighNm }}</td>

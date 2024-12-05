@@ -295,7 +295,7 @@ export default {
     async fnSelectSassignType() {
       const tbLvlBasVo = { ssvcLineTypeCd: this.ssvcLineTypeCd }
 
-      const res = await apiRequestJson(ipmsJsonApis.selectSassignTypeCdList, tbLvlBasVo)
+      const res = await apiRequestJson(ipmsJsonApis.selectOrgSassignTypeCdList, tbLvlBasVo)
       this.sassignTypeOptions = res?.tbIpAllocMstVos?.map(v => {
         return { value: v.sassignTypeCd, label: v.sassignTypeNm }
       })

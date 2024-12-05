@@ -15,23 +15,13 @@
     class="ipms-dialog"
     :class="{ [name]: true }"
   >
-    <div class="popupContentTable">
+    <div class="popupContentTable mb-1">
       <table>
-        <colgroup>
-          <col width="3%" /><col width="10%" />
-          <col width="5%" /><col width="15%" />
-          <col width="5%" /><col width="10%" />
-          <col width="5%" /><col width="10%" />
-          <col width="5%" /><col width="10%" />
-        </colgroup>
         <tbody>
           <tr>
             <th>IP 주소</th>
             <td>
-              <el-input
-                v-model="searchWrd"
-                placeholder="IP 주소 입력"
-              />
+              <el-input v-model="searchWrd" />
             </td>
 
             <th>서비스</th>
@@ -49,7 +39,6 @@
                 />
               </el-select>
             </td>
-
             <th>사용기관명</th>
             <td>
               <el-input v-model="sorgname" />
@@ -73,29 +62,34 @@
                 />
               </el-select>
             </td>
+            <td><el-button class="float-right my-2" size="small" round type="primary" @click="handleClickSearch()"> 조회 </el-button></td>
           </tr>
         </tbody>
       </table>
-      <el-button class="float-right my-2" size="small" round type="primary" @click="handleClickSearch()"> 조회 </el-button>
     </div>
-    <el-col :span="24" class="my-2">
+    <el-col :span="24">
       <compTable
         ref="compTable"
         :prop-name="name"
         :prop-data="pagination.data"
         :prop-pagination-data.sync="pagination"
         :prop-is-pagination="true"
-        :prop-table-height="500"
+        :prop-table-height="'100%'"
         :prop-column="tableColumns"
         :prop-max-select="pagination.data.length"
         :prop-is-check-box="true"
-        :text-des="false"
         :prop-on-select="handleClickTableCheck"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
+        :prop-enabled-excel-down="false"
         :prop-on-page-change="handleChangeCurPage"
         :prop-on-page-size-change="handleChangeCurPage"
       >
+        <template slot="text-description">
+          <span>
+            조회 결과
+          </span>
+        </template>
       </compTable>
     </el-col>
     <div class="popupContentTableBottom">
@@ -148,9 +142,12 @@ export default {
       sassignTypeCd: '',
       sassignTypeCdList: [],
       listReqTypeCd: [],
-      isFromOnOpen: false,
       selectedChecks: []
     }
+  },
+  mounted() {
+    this.loadServiceCd()
+    this.loadReqTypeCd()
   },
   methods: {
     onCreated() {
@@ -163,17 +160,29 @@ export default {
       this.fnViewListWhoisKeywordMstNew()
     },
     onOpen(model, actionMode) {
-     this.isFromOnOpen = true // onOpen에서 호출됨을 표시
-      setTimeout(() => {
-        this.fnViewListWhoisKeywordMstNew()
-      }, 10)
+      this.pagination = this.setDefaultPagination()
     },
     handleClickTableCheck(all, cur) {
       this.selectedChecks = all
     },
     handleClickSearch() {
-      this.isFromOnOpen = false
       this.fnViewListWhoisKeywordMstNew()
+    },
+    async loadServiceCd() {
+      try {
+        const res = await apiRequestJson(ipmsJsonApis.selectListCommonCode)
+        this.sassignTypeCdList = res.result?.data
+      } catch (error) {
+        this.error(error)
+      }
+    },
+    async loadReqTypeCd() {
+      try {
+        const res = await apiRequestJson(ipmsJsonApis.listReqTypeCd)
+        this.listReqTypeCd = res.result?.data
+      } catch (error) {
+        this.error(error)
+      }
     },
     async fnViewListWhoisKeywordMstNew() {
       const target = ({ vue: this.$refs.compTable })
@@ -190,13 +199,8 @@ export default {
       try {
        this.openLoading(target)
         const res = await apiRequestModel(ipmsModelApis.viewListWhoisDbMatchMst, param)
-        if (this.isFromOnOpen !== true) {
-          this.pagination.data = res.resultListVo.result.data ?? []
-          this.pagination.total = res.resultListVo.result.totalCount
-        }
-        this.sassignTypeCdList = res.sassignTypeCdList
-        this.listReqTypeCd = res.listReqTypeCd
-        this.searchVo = res.searchVo
+        this.pagination.data = res.result.data ?? []
+        this.pagination.total = res.result.totalCount
       } catch (error) {
         console.error(error)
       } finally {
@@ -232,7 +236,6 @@ export default {
       })
     },
     onClose() {
-      this.isFromOnOpen = false
     },
   },
 }
