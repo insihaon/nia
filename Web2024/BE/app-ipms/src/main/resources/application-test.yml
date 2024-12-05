@@ -29,4 +29,5 @@ spring:
       encoding: UTF-8
 
 file:
-  # upload-dir: ./external
+  # upload-dir: ./external # 주석해제 시 파일 업로드 경로는 /local/external/excelFiles 된다. (default: /uploads/excelFiles )
+  excel-upload-dir: excelFiles
