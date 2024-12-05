@@ -123,7 +123,7 @@ export const ipmsJsonApis = {
   selectAuthNodeList: { desc: '노드 조회', url: '/opermgmt/orgmgmt/selectAuthNodeList' },
   selectOfficeList: { desc: '수용국 조회', url: '/ipmgmt/linemgmt/selectOfficeList' },
   selectSearchLvlCd: { desc: '운용팀 조회', url: 'opermgmt/orgmgmt/selectSearchLvlCd' },
-  selectSassignTypeCdList: { desc: '서비스 조회', url: '/ipmgmt/allocmgmt/selectSassignTypeCdList' },
+  selectOrgSassignTypeCdList: { desc: '서비스 조회', url: '/ipmgmt/allocmgmt/selectOrgSassignTypeCdList' },
   selectSearchOrgBas: { desc: '운용조직 검색', url: '/opermgmt/orgmgmt/selectSearchOrgBas' },
   //
   appendCrtIPMst: { desc: 'IP 블록관리 > IP 블록생성 > IP 주소 추가', url: '/ipmgmt/createmgmt/appendCrtIPMst' },
@@ -234,6 +234,7 @@ export const ipmsJsonApis = {
   selectListMenuBas: { desc: '메뉴관리 > 하위 메뉴 조회', url: '/opermgmt/menumgmt/selectListMenuBas' },
   selectSearchScrnBas: { desc: '메뉴관리 > 화면명 검색', url: '/opermgmt/menumgmt/selectSearchScrnBas' },
   updateTbMenuBasVo: { desc: '메뉴관리 > 화면명 저장', url: '/opermgmt/menumgmt/updateTbMenuBasVo' },
+  countWhoisByStatus: { desc: 'WHOIS 정보공개관리 상태 count 조회', url: '/opermgmt/whoismgmt/countWhoisByStatus' },
   deleteTbWhoisVo: { desc: 'WHOIS 정보공개관리  > WHOIS 정보공개 삭제', url: '/opermgmt/whoismgmt/deleteTbWhoisVo' },
   updateWhoisComplexNew: { desc: 'WHOIS 정보공개관리 > WHOIS 신청서 수정 ', url: '/opermgmt/whoismgmt/updateWhoisComplexNew' },
   selectWhoisComplexNew: { desc: 'WHOIS 데이터 변경 전송 ', url: '/opermgmt/whoismgmt/selectWhoisComplexNew' },
@@ -242,6 +243,8 @@ export const ipmsJsonApis = {
   insertWhoisKeywordNew: { desc: 'WHOIS 대체키워드 등록 ', url: '/opermgmt/whoismgmt/insertWhoisKeywordNew' },
   deleteWhoisKeywordNew: { desc: 'WHOIS 대체키워드 삭제 ', url: '/opermgmt/whoismgmt/deleteWhoisKeywordNew' },
   updateKtInfo: { desc: 'WHOIS KT 대체 정보 수정 ', url: '/opermgmt/whoismgmt/updateKtInfo' },
+  selectListCommonCode: { desc: 'WHOIS DB 현행화 POP 서비스 코드 조회', url: '/opermgmt/whoismgmt/selectListCommonCode' },
+  listReqTypeCd: { desc: 'WHOIS DB 현행화 POP 작업종류 코드 조회', url: '/opermgmt/whoismgmt/listReqTypeCd' },
   dbMatchListTbWhoisVo: { desc: 'WHOIS DB 현행화 전송', url: '/opermgmt/whoismgmt/dbMatchListTbWhoisVo' },
   uploadmgmtUpload: { desc: '연동관리 > 우편번호 연동관리 업로드', url: '/opermgmt/uploadmgmt/upload' },
   // 엑셀 저장

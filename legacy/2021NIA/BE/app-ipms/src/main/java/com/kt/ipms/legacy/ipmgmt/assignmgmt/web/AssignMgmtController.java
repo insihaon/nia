@@ -55,9 +55,7 @@ public class AssignMgmtController extends CommonController {
 	public ModelMap viewListAsgnIPMst(@RequestBody TbIpAssignMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		ModelMap builtModel = viewListAsgnIPMstModel(searchVo, request);
-		setPagination(searchVo);
 		TbIpAssignMstListVo resultListVo = (TbIpAssignMstListVo) builtModel.get("resultListVo");
-
 		return createResultList(resultListVo.getTbIpAssignMstVos(), resultListVo.getTotalCount());
 	}
 

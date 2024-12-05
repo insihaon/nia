@@ -16,7 +16,7 @@
     :class="{ [name]: true }"
   >
     <div class="popupContentTable">
-      <table>
+      <table v-loading="tableLoading">
         <tr>
           <th class="flex">
             <span class="tableSubject">[[{{ notiDetail.sboardTypeSubNm }}]{{ notiDetail.sboardTitle }}</span>
@@ -69,7 +69,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
-      loading: false,
+      tableLoading: false,
       isDashBoard: false,
       dateFormat: 'YYYY-MM-DD HH:mm:ss',
       notiDetail: {
@@ -115,13 +115,13 @@ export default {
     },
     async fnViewDetailNotice(param) {
       try {
-        this.loading = true
+        this.tableLoading = true
         const res = await apiRequestModel(ipmsModelApis.viewDetailNotice, param)
         this.notiDetail = res.result.data
       } catch (error) {
        this.error(error)
       } finally {
-        this.loading = false
+        this.tableLoading = false
       }
     },
     fnDeleteNotice(seq) {

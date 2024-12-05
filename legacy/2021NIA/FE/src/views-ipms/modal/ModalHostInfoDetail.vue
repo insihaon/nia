@@ -34,12 +34,11 @@
                 </td>
                 <th scope="row">용도</th>
                 <td>
-                  <input
+                  <el-input
                     id="ipScomment"
                     type="text"
                     class="txt w95"
                     :value="selectedRow.scomment"
-                    title=""
                   />
                 </td>
                 <th scope="row">IP 버전</th>

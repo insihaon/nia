@@ -25,8 +25,8 @@
         <tbody>
           <tr>
             <th>제목</th>
-            <td v-if="!isEdit" colspan="5" class="text-left">{{ resultVo.stitle }}</td>
-            <td v-else colspan="5"><input v-model="resultVo.stitle" type="text" class="txt w98" maxlength="30"></td>
+            <td v-if="!isEdit" colspan="5">{{ resultVo.stitle }}</td>
+            <td v-else colspan="5" class="text-left"><el-input v-model="resultVo.stitle" type="text" maxlength="30" /></td>
           </tr>
           <tr>
             <th>서비스망</th>
@@ -53,7 +53,7 @@
           <tr>
             <th>요청 IP개수 (/24)</th>
             <td v-if="!isEdit" class="text-left" colspan="5">{{ resultVo.napyIpCnt }}</td>
-            <td v-else colspan="5"><el-input v-model="resultVo.napyIpCnt" type="text" maxlength="5" /> 개(/24 단위)</td>
+            <td v-else colspan="5" class="textflex"><el-input v-model="resultVo.napyIpCnt" type="text" maxlength="5" /> 개(/24 단위)</td>
           </tr>
           <tr>
             <th>신청내용</th>
@@ -125,7 +125,7 @@
         <el-button type="primary" size="small" icon="el-icon-delete" round @click="fnDeleteIpAssignApy()"> 삭제</el-button>
       </template>
 
-      <el-button v-if="!isStatusApply && isAdmin" size="mini" @click="fnUpdateStrtContents('modify')">처리내용 수정</el-button>
+      <el-button v-if="!isStatusApply && isAdmin" type="primary" size="small" round @click="fnUpdateStrtContents('modify')">처리내용 수정</el-button>
       <el-button v-if="isEdit" type="primary" size="small" icon="el-icon-edit-outline" round @click="fnUpdateStrtContents('regist')"> 등록</el-button>
       <el-button type="primary" size="small" icon="el-icon-close" round @click="close()">{{ $t('exit') }}</el-button>
     </div>

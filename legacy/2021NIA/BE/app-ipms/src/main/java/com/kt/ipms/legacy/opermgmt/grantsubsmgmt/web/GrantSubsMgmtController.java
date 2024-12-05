@@ -255,7 +255,7 @@ public class GrantSubsMgmtController extends CommonController {
 		ModelMap finalModel = new ModelMap();
 		finalModel.addAllAttributes(builtModel);
 
-		TbUserAuthTxnListVo resultListVo = (TbUserAuthTxnListVo) builtModel.get("resultListVo");
+		TbUserAuthTxnListVo resultListVo = (TbUserAuthTxnListVo) builtModel.get("result");
 
 		finalModel.addAttribute("resultList", resultListVo.getTbUserAuthTxnVos());
 		finalModel.addAttribute("totalCount", resultListVo.getTotalCount());

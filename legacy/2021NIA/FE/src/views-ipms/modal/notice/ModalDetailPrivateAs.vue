@@ -51,7 +51,7 @@
               <td>{{ resultVo.screateNm }}</td>
               <th>요청일</th>
               <td>
-                {{ resultVo.dcreateDt }}
+                {{ resultVo.dcreateDt ? moment(resultVo.dcreateDt).format('YYYY-MM-DD HH:mm:ss') : '' }}
               </td>
             </tr>
             <tr>

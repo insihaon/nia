@@ -143,17 +143,17 @@
             </tr>
           </tbody>
         </table>
-        <div class="popupContentTableTitle">IP 할당 정보</div>
+        <div class="popupContentTableTitle textcenter">IP 할당 정보</div>
         <table>
           <thead>
             <tr>
-              <th scope="col">수용국</th>
-              <th scope="col">장비명</th>
-              <th scope="col">대표 IP</th>
-              <th scope="col">I/F명</th>
-              <th scope="col">수용회선명</th>
-              <th scope="col">전용번호</th>
-              <th scope="col">해지</th>
+              <th>수용국</th>
+              <th>장비명</th>
+              <th>대표 IP</th>
+              <th>I/F명</th>
+              <th>수용회선명</th>
+              <th>전용번호</th>
+              <th>해지</th>
             </tr>
           </thead>
           <tbody>
@@ -167,22 +167,22 @@
                 style="cursor: pointer;"
                 :class="{'subbg': index % 2 !== 0, 'last': index === ipAllocOperMstVo.length - 1}"
               >
-                <td class="first ellipsis" :title="item.sofficename" @click="fnViewSubDetailAlcIPMst(item)">
+                <td :title="item.sofficename" @click="fnViewSubDetailAlcIPMst(item)">
                   {{ item.sofficename }}
                 </td>
-                <td class="ellipsis" :title="item.ssubscnealias" @click="fnViewSubDetailAlcIPMst(item)">
+                <td :title="item.ssubscnealias" @click="fnViewSubDetailAlcIPMst(item)">
                   {{ item.ssubscnealias }}
                 </td>
-                <td class="ellipsis" :title="item.ssubscmstip" @click="fnViewSubDetailAlcIPMst(item)">
+                <td :title="item.ssubscmstip" @click="fnViewSubDetailAlcIPMst(item)">
                   {{ item.ssubscmstip }}
                 </td>
-                <td class="ellipsis" :title="item.ssubsclgipportdescription" @click="fnViewSubDetailAlcIPMst(item)">
+                <td :title="item.ssubsclgipportdescription" @click="fnViewSubDetailAlcIPMst(item)">
                   {{ item.ssubsclgipportdescription }}
                 </td>
-                <td class="ellipsis" :title="item.sconnAlias" @click="fnViewSubDetailAlcIPMst(item)">
+                <td :title="item.sconnAlias" @click="fnViewSubDetailAlcIPMst(item)">
                   {{ item.sconnAlias }}
                 </td>
-                <td class="ellipsis" :title="item.sllnum" @click="fnViewSubDetailAlcIPMst(item)">
+                <td :title="item.sllnum" @click="fnViewSubDetailAlcIPMst(item)">
                   {{ item.sllnum }}
                 </td>
                 <td class="btn_text">

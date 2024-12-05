@@ -16,7 +16,7 @@
     :class="{ [name]: true }"
   >
     <div class="popupContentTable">
-      <table>
+      <table v-loading="tableLoading">
         <tbody>
           <tr>
             <th>한글 기관명(한 단어)</th>
@@ -118,6 +118,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      tableLoading: false,
       pagination: this.setDefaultPagination(),
       selectedRow: null,
        tableColumns: [
@@ -159,15 +160,14 @@ export default {
       this.fnViewListWhoisKeywordMstNew()
     },
     async fnViewListWhoisKeywordMstNew() {
-      const target = ({ vue: this.$refs.compTable })
       try {
-       this.openLoading(target)
+        this.tableLoading = true
         const res = await apiRequestModel(ipmsModelApis.viewUpdateKtInfo)
         this.resultVo = res.result.data ?? []
       } catch (error) {
         console.error(error)
       } finally {
-        this.closeLoading(target)
+        this.tableLoading = false
       }
     },
     async fnSaveKtInfo() { /* KT 대체 정보 수정 */
@@ -196,8 +196,8 @@ export default {
         return
       }
 
-      const target = ({ vue: this.$refs.compTable })
       try {
+        this.tableLoading = true
         const ktInfoVo = {
           sorgname: this.resultVo.sorgname,
           saddr: this.resultVo.saddr,
@@ -225,7 +225,7 @@ export default {
       } catch (error) {
         console.error(error)
       } finally {
-        this.closeLoading(target)
+        this.tableLoading = false
       }
     },
     fnViewSeachAddrPop(type) { /* 주소 검색 */

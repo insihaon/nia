@@ -15,65 +15,68 @@
     class="ipms-dialog"
     :class="{ [name]: true }"
   >
-    <div class="popupContentTable">
-      <table>
-        <tr>
-          <th>
-            <label>기관 구분</label>
-          </th>
-          <td>
-            <div>
-              <el-select
-                v-model="suserorggb"
-                size="small"
-                @keyup.enter.native="fnViewListWhoisKeywordMst()"
-              >
-                <el-option
-                  v-for="item in suserorggbOp"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </el-select>
-            </div>
-          </td>
-          <th>
-            <label>기관명</label> this.
-          </th>
-          <td>
-            <div>
-              <el-input v-model="sorgname" @keyup.enter.native="fnViewListWhoisKeywordMst()"></el-input>
-            </div>
-          </td>
-          <td>
-            <el-button class="float-right my-2" type="primary" size="small" round @click="fnViewListWhoisKeywordMst()">조회</el-button>
-          </td>
-        </tr>
-      </table>
+    <div ref="content">
+      <div class="popupContentTable">
+        <table>
+          <tr>
+            <th>
+              <label>기관 구분</label>
+            </th>
+            <td>
+              <div>
+                <el-select
+                  v-model="suserorggb"
+                  size="small"
+                  @keyup.enter.native="fnViewListWhoisKeywordMst()"
+                >
+                  <el-option
+                    v-for="item in suserorggbOp"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+              </div>
+            </td>
+            <th>
+              <label>기관명</label>
+            </th>
+            <td>
+              <div>
+                <el-input v-model="sorgname" @keyup.enter.native="fnViewListWhoisKeywordMst()"></el-input>
+              </div>
+            </td>
+            <td>
+              <el-button class="float-right my-2" type="primary" size="small" round @click="fnViewListWhoisKeywordMst()">조회</el-button>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <el-col :span="24" class="my-2">
+        <compTable
+          ref="compTable"
+          :prop-name="name"
+          :prop-data="pagination.data"
+          :prop-pagination-data.sync="pagination"
+          :prop-is-pagination="true"
+          :prop-table-height="'100%'"
+          :prop-column="tableColumns"
+          :prop-on-select="handleClickTableCheck"
+          :prop-max-select="pagination.data.length"
+          :prop-is-check-box="true"
+          prop-grid-menu-id="inputSpeed"
+          :prop-grid-indx="1"
+          :prop-enabled-excel-down="false"
+          :prop-on-page-change="handleChangeCurPage"
+          :prop-on-page-size-change="handleChangeCurPage"
+        >
+        </compTable>
+        <ModalInsertKeyword ref="ModalInsertKeyword" />
+      </el-col>
     </div>
-    <el-col :span="24" class="my-2">
-      <compTable
-        ref="compTable"
-        :prop-name="name"
-        :prop-data="pagination.data"
-        :prop-pagination-data.sync="pagination"
-        :prop-is-pagination="true"
-        :prop-column="tableColumns"
-        :prop-on-select="handleClickTableCheck"
-        :prop-max-select="pagination.data.length"
-        :prop-is-check-box="true"
-        prop-grid-menu-id="inputSpeed"
-        :text-des="false"
-        :prop-grid-indx="1"
-        :prop-on-page-change="handleChangeCurPage"
-        :prop-on-page-size-change="handleChangeCurPage"
-      >
-      </compTable>
-      <ModalInsertKeyword ref="ModalInsertKeyword" />
-    </el-col>
     <div class="popupContentTableBottom">
-      <el-button type="primary" size="small" round @click.native="fnViewKeywordInsert()">등록</el-button>
-      <el-button type="primary" size="small" round @click.native="fnKeywordDel()">삭제</el-button>
+      <el-button type="primary" size="small" round icon="el-icon-check" @click.native="fnViewKeywordInsert()">등록</el-button>
+      <el-button type="primary" size="small" round icon="el-icon-delete" @click.native="fnKeywordDel()">삭제</el-button>
       <el-button type="primary" size="small" round icon="el-icon-close" @click.native="close()">{{ $t('exit') }}</el-button>
     </div>
   </el-dialog>
@@ -123,11 +126,12 @@ export default {
       this.domElement.maxWidth = 1000
     },
     onOpen(model, actionMode) {
+      this.sorgname = ''
+      this.suserorggb = ''
+      this.pagination = this.setDefaultPagination()
       setTimeout(() => {
         this.fnViewListWhoisKeywordMst()
       }, 10)
-      this.sorgname = ''
-      this.suserorggb = ''
     },
     handleChangeCurPage(v) {
       if (v) this.pagination.currentPage = v
@@ -163,12 +167,11 @@ export default {
         onMessagePopup(this, '삭제할 대상이 없습니다.')
         return
       }
-       const target = ({ vue: this.$refs.content })
+      const target = ({ vue: this.$refs.content })
       try {
         const tbWhoisKeywordListVo = {
           tbWhoisKeywordVos: []
         }
-
         this.selectedRows.forEach((item) => {
           tbWhoisKeywordListVo.tbWhoisKeywordVos.push({ nwhoisKeywordSeq: item.nwhoisKeywordSeq })
         })
@@ -178,10 +181,8 @@ export default {
           this.$emit('reload')
           this.close()
         } else {
-        onMessagePopup(this, res.commonMsg)
-       }
-
-        this.openLoading(target)
+          onMessagePopup(this, res.commonMsg)
+        }
       } catch (error) {
         console.error(error)
       } finally {

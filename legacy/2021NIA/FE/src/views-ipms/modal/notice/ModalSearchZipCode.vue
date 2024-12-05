@@ -26,7 +26,7 @@
             <tr>
               <th>주소 찾기</th>
               <td class="textflex">
-                <el-input v-model="txtInputDongNm" type="text" size="small" placeholder="SEARCH" @keyup.enter.native="fnSelectZipcode()" />
+                <el-input v-model="txtInputDongNm" type="text" size="small" @keyup.enter.native="fnSelectZipcode()" />
                 <el-button type="primary" size="small" icon="el-icon-search" round @click="fnSelectZipcode()" />
               </td>
             </tr>

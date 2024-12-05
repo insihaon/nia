@@ -15,71 +15,63 @@
     class="ipms-dialog"
     :class="{ [name]: true }"
   >
-    <div class="popupContentTable">
+    <div class="popupContentTable mb-2">
       <table>
         <tr>
           <th>
             <label>고객명</label>
           </th>
           <td>
-            <div>
-              <el-input v-model="sorgname_search" @keyup.enter.native="fnViewListIpAllocMstByMain()"></el-input>
-            </div>
+            <el-input v-model="sorgname_search" size="small" @keyup.enter.native="fnViewListIpAllocMstByMain()"></el-input>
           </td>
           <td>
-            <el-button class="float-right my-2" size="small" round type="primary" @click="fnViewListWhoisKeywordMstNew()"> 조회 </el-button>
+            <el-button size="small" round type="primary" @click="fnViewListWhoisKeywordMstNew()"> 조회 </el-button>
           </td>
         </tr>
       </table>
+      <div class="popupContentTableTitle">등록</div>
       <table>
         <tr>
           <th>
             <label>고객명</label>
           </th>
           <td>
-            <div>
-              <el-input v-model="sorgname_insert"></el-input>
-            </div>
+            <el-input v-model="sorgname_insert" size="small"></el-input>
           </td>
           <th>
             <label>대체 기준</label>
           </th>
           <td>
-            <div>
-              <el-select
-                v-model="sreplace_cd"
-                size="small"
-              >
-                <el-option
-                  v-for="item in suserorggbOp"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </el-select>
-            </div>
+            <el-select v-model="sreplace_cd" size="small">
+              <el-option
+                v-for="item in suserorggbOp"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
           </td>
           <td>
-            <el-button class="float-right my-2" size="small" round type="primary" @click="fnInsertWhoisKeywordSubmit()"> 저장 </el-button>
+            <el-button size="small" round type="primary" @click="fnInsertWhoisKeywordSubmit()"> 저장 </el-button>
           </td>
         </tr>
       </table>
     </div>
-    <el-col :span="24" class="my-2">
+    <el-col :span="24">
       <compTable
         ref="compTable"
         :prop-name="name"
         :prop-data="pagination.data"
         :prop-pagination-data.sync="pagination"
         :prop-is-pagination="true"
-        :prop-table-height="300"
+        :prop-table-height="'100%'"
         :prop-column="tableColumns"
         :prop-max-select="pagination.data.length"
         :prop-is-check-box="true"
         :prop-on-select="handleClickTableCheck"
-        :text-des="false"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
+        :prop-enabled-excel-down="false"
         :prop-on-page-change="handleChangeCurPage"
         :prop-on-page-size-change="handleChangeCurPage"
       >
@@ -114,8 +106,8 @@ export default {
       pagination: this.setDefaultPagination(),
       selectedRow: null,
        tableColumns: [
-        { prop: 'sorgname', label: '고객명', width: 500, align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'sreplace_nm', label: '대체기준', align: 'center', width: 500, sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'sorgname', label: '고객명', width: 450, align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'sreplace_nm', label: '대체기준', align: 'center', width: 450, sortable: true, columnVisible: true, showOverflow: true },
       ],
       suserorggbOp: [
         { label: '고객명 일치', value: '10' },
@@ -123,7 +115,7 @@ export default {
       ],
       sorgname_search: '',
       sorgname_insert: '',
-      sreplace_cd: '',
+      sreplace_cd: '10',
       selectedRows: []
     }
   },
@@ -134,6 +126,7 @@ export default {
       this.domElement.maxWidth = 1000
     },
     onOpen(model, actionMode) {
+      this.sreplace_cd = '10'
       setTimeout(() => {
         this.fnViewListWhoisKeywordMstNew()
       }, 10)
@@ -155,10 +148,10 @@ export default {
       try {
        this.openLoading(target)
         const res = await apiRequestModel(ipmsModelApis.viewListWhoisKeywordMstNew, param)
-        this.pagination.data = res.result.data ?? []
-        this.pagination.total = res.result.totalCount
+        this.pagination.data = res.result?.data ?? []
+        this.pagination.total = res.result?.totalCount ?? 0
       } catch (error) {
-        console.error(error)
+        this.error(error)
       } finally {
         this.closeLoading(target)
       }
@@ -168,7 +161,6 @@ export default {
         onMessagePopup(this, '고객명을 입력하세요.')
         return
       }
-
       if (this.sreplace_cd === '') {
         onMessagePopup(this, '대체기준을 선택하세요.')
         return
@@ -185,9 +177,9 @@ export default {
         if (res.commonMsg === 'SUCCESS') {
           onMessagePopup(this, '정상적으로 등록되었습니다.')
           this.fnViewListWhoisKeywordMstNew()
-      } else {
-        onMessagePopup(this, res.commonMsg)
-      }
+        } else {
+          onMessagePopup(this, res.commonMsg)
+        }
       } catch (error) {
         console.error(error)
       } finally {
@@ -213,8 +205,8 @@ export default {
           this.$emit('reload')
           this.close()
         } else {
-        onMessagePopup(this, res.commonMsg)
-       }
+          onMessagePopup(this, res.commonMsg)
+        }
         this.openLoading(target)
       } catch (error) {
         console.error(error)

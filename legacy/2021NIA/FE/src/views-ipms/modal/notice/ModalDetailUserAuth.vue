@@ -153,8 +153,8 @@ export default {
             grantSeq: grantSeq
          }
         const res = await apiRequestModel(ipmsModelApis.viewDetailUserAuthSubs, tbUserAuthVo)
-        this.resultList = res.resultList
-        this.resultListVo = res.resultListVo
+        this.resultList = res.result.resultList
+        this.resultListVo = res.result
         this.totalCount = res.totalCount
         this.resultSubListVo = res.resultSubListVo
         if (res.resultSubListVo.tbUserAuthTxnSubVos[0].tbLvlBasVo === null) {

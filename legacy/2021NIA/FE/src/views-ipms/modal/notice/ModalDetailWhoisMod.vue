@@ -17,7 +17,7 @@
   >
     <div v-if="viewType === 'detail'" class="popupContentTable">
       <div class="popupContentTableTitle">IP 정보</div>
-      <table>
+      <table v-loading="tableLoading">
         <colgroup>
           <col width="20%" /><col width="30%" /><col width="20%" /><col width="30%" />
         </colgroup>
@@ -33,7 +33,7 @@
     </div>
     <div class="popupContentTable">
       <div class="popupContentTableTitle">KISA WHOIS - IP 주소 사용기관 정보 (변경 전)</div>
-      <table>
+      <table v-loading="tableLoading">
         <colgroup>
           <col width="20%" /><col width="80%" />
         </colgroup>
@@ -67,7 +67,7 @@
     </div>
     <div class="popupContentTable">
       <div class="popupContentTableTitle">KISA WHOIS - IP 주소 사용기관 정보 (변경 후)</div>
-      <table>
+      <table v-loading="tableLoading">
         <colgroup>
           <col width="20%" /><col width="80%" />
         </colgroup>
@@ -96,7 +96,7 @@
             <th>영문주소</th>
             <td>{{ sAftEOrgAddr }}</td>
           </tr>
-          <tr class="last">
+          <tr>
             <th>영문상세주소</th>
             <td>{{ sAftEOrgAddrDetail }}</td>
           </tr>
@@ -149,6 +149,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      tableLoading: false,
       resultVo: {},
       sreject_rsn: '',
       viewType: '',
@@ -214,7 +215,7 @@ export default {
         return
       }
       try {
-        this.openLoading(target)
+        this.tableLoading = true
         const tbWhoisModifyVo = {
           nmodify_apply_seq: row.nmodify_apply_seq
         }
@@ -224,7 +225,7 @@ export default {
         } catch (error) {
           console.error(error)
         } finally {
-          this.closeLoading(target)
+          this.tableLoading = false
         }
     },
     onSetValue() {
@@ -285,9 +286,8 @@ export default {
             return
           }
         }
-        const target = ({ vue: this.$refs.content })
         try {
-          this.openLoading(target)
+          this.tableLoading = true
           const tbWhoisModfiyVo = {
             nmodify_apply_seq: `${this.resultVo.nmodify_apply_seq}`,
             sStatCd: stat,
@@ -306,9 +306,9 @@ export default {
           } catch (error) {
             console.log(error)
         } finally {
-            this.closeLoading(target)
-          }
-        })
+          this.tableLoading = false
+        }
+      })
     },
    async fnUpdateRegWhoisModReqSubmit() { /* 수정(등록) */
      if (this.resultVo.transyn === 'N') {
