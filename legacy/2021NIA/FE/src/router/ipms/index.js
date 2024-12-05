@@ -399,19 +399,19 @@ export const ipmsRoute = Object.freeze([
       //     },
       //   ]
       // },
-      // {
-      //   path: '/operInfoMng/privateAsMng',
-      //   component: AppMain,
-      //   meta: { title: '사설 AS관리', affix: false },
-      //   children: [
-      //     {
-      //       path: 'privateAsUseStatus',
-      //       component: () => import('@/views-ipms/menus/operInfoMng/privateAsMng/privateAsUseStatus'),
-      //       name: 'PrivateAsUseStatus',
-      //       meta: { title: '사설 AS 사용현황', affix: false }
-      //     },
-      //   ]
-      // },
+      {
+        path: '/operInfoMng/privateAsMng',
+        component: AppMain,
+        meta: { title: '사설 AS관리', affix: false },
+        children: [
+          {
+            path: 'privateAsUseStatus',
+            component: () => import('@/views-ipms/menus/operInfoMng/privateAsMng/privateAsUseStatus'),
+            name: 'PrivateAsUseStatus',
+            meta: { title: '사설 AS 사용현황', affix: false }
+          },
+        ]
+      },
       // {
       //   path: '/operInfoMng/postAuditInfoMng',
       //   component: AppMain,
