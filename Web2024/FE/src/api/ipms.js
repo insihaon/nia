@@ -297,7 +297,7 @@ export function apiRequestModel(api, params) {
     filePath: filePath,
     data: params
   }).then(d => {
-    return Object.paototype.hasOwnProperty.call(d?.result, 'result') ? d.result : d
+    return Object.prototype.hasOwnProperty.call(d?.result, 'result') ? d.result : d
   })
 }
 export function apiRequestJson(api, params) {
@@ -307,7 +307,7 @@ export function apiRequestJson(api, params) {
     filePath: filePath,
     data: params
   }).then(d => {
-    return Object.paototype.hasOwnProperty.call(d, 'result') ? d.result : d
+    return Object.prototype.hasOwnProperty.call(d, 'result') ? d.result : d
   })
 }
 export function apiRequestOffice(urlPath, params, listName = 'selectOfficeList',) {
@@ -317,7 +317,7 @@ export function apiRequestOffice(urlPath, params, listName = 'selectOfficeList',
     filePath: filePath,
     data: params
   }).then(d => {
-    return Object.paototype.hasOwnProperty.call(d, 'result') ? d.result : d
+    return Object.prototype.hasOwnProperty.call(d, 'result') ? d.result : d
   })
 }
 export function apiRequestExcel(api, params) {
