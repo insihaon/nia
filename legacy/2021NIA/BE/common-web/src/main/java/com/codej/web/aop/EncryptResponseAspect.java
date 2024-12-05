@@ -15,7 +15,11 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.ModelMap;
@@ -54,6 +58,7 @@ public class EncryptResponseAspect {
         objectMapper = new ObjectMapper();
         objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
         objectMapper.setDateFormat(new StdDateFormat()); // 기본 ISO-8601 형식 사용
+        objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false); // 타임스탬프 대신 문자열 사용
     }
 
@@ -129,11 +134,24 @@ public class EncryptResponseAspect {
             else if (result instanceof ResponseEntity) {
                 ResponseEntity<?> responseEntity = (ResponseEntity<?>) result;
                 Object body = responseEntity.getBody();
+                HttpHeaders headers = new HttpHeaders(responseEntity.getHeaders()); // 기존 헤더 복사
+                HttpStatus status = responseEntity.getStatusCode();
+                String contentType = headers.getContentType().toString();
+                if(headers.getContentType().includes(MediaType.APPLICATION_OCTET_STREAM) || contentType.contains(MediaType.TEXT_PLAIN_VALUE)) {
+                    return responseEntity;
+                }
+                // responseEntity.getHeaders().forEach((key, value) -> {
+                //     if (!key.equalsIgnoreCase(HttpHeaders.CONTENT_TYPE)) { // Content-Type 제외
+                //         headers.put(key, value); // 키와 값을 새로운 headers2에 추가
+                //     }
+                // });
+                // headers.setContentType(MediaType.APPLICATION_JSON);
 
                 ModelMap resultModel = new ModelMap();
                 resultModel.addAttribute(GlobalConstants.Common.ENCRYPT, true);
                 resultModel.addAttribute(GlobalConstants.Common.RESULT, encrypt(body));
-                result = new ResponseEntity<>(resultModel, HttpStatus.OK);
+
+                result = new ResponseEntity<>(resultModel, headers, status);
             }
             else if (result instanceof ModelMap) {
                 ModelMap resultModel = new ModelMap();
@@ -145,7 +163,9 @@ public class EncryptResponseAspect {
                 /*** 중요 ModelMap 이후에 처리해야 함 ***/
                 Map<String,Object> resultMap = new HashMap<String, Object>();
                 resultMap.put(GlobalConstants.Common.ENCRYPT, true);
-                resultMap.put(GlobalConstants.Common.RESULT, encrypt(result));
+                HashMap<String, Object> result_result = new HashMap<String, Object>();
+                result_result.put("result",encrypt(result));
+                resultMap.put(GlobalConstants.Common.RESULT, result_result);
                 result = resultMap;
             }
             else if (result instanceof BaseVo) {
@@ -171,7 +191,7 @@ public class EncryptResponseAspect {
         String json = objectMapper.writeValueAsString(result);
         return EncryptUtil.encrypt(json);
     }
-
+    
     @SuppressWarnings("unchecked")
     private Boolean isEncrypt(String requestBody) {
         Boolean encrypt = true;
