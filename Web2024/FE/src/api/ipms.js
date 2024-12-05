@@ -108,6 +108,8 @@ export const ipmsModelApis = {
   viewListScrnBas: { desc: '화면 관리 조회', url: '/opermgmt/menumgmt/viewListScrnBas' },
   viewDetailScrnBas: { desc: '화면 관리 조회 > 수정 화면', url: '/opermgmt/menumgmt/viewDetailScrnBas' },
   viewListMenuAuth: { desc: '메뉴권한관리 조회', url: '/opermgmt/menumgmt/viewListMenuAuth' },
+  viewListAsHist: { desc: '사설 AS 사용현황', url: 'opermgmt/asmgmt/viewListAsHist' },
+  viewDetailAsHist: { desc: '사설 AS 사용현황 상세', url: 'opermgmt/asmgmt/viewDetailAsHist' },
   viewListWhois: { desc: 'WHOIS 정보공개 관리 조회', url: '/opermgmt/whoismgmt/viewListWhois' },
   viewRegWhoisNew: { desc: 'WHOIS 정보공개 관리 > 상세(수정)POP', url: '/opermgmt/whoismgmt/viewRegWhoisNew' },
   viewListWhoisKeywordMst: { desc: 'WHOIS 정보공개 관리 > 이용기관관리 조회POP', url: '/opermgmt/whoismgmt/viewListWhoisKeywordMst' },
@@ -294,6 +296,8 @@ export function apiRequestModel(api, params) {
     method: 'post',
     filePath: filePath,
     data: params
+  }).then(d => {
+    return Object.paototype.hasOwnProperty.call(d?.result, 'result') ? d.result : d
   })
 }
 export function apiRequestJson(api, params) {
@@ -302,6 +306,8 @@ export function apiRequestJson(api, params) {
     method: 'post',
     filePath: filePath,
     data: params
+  }).then(d => {
+    return Object.paototype.hasOwnProperty.call(d, 'result') ? d.result : d
   })
 }
 export function apiRequestOffice(urlPath, params, listName = 'selectOfficeList',) {
@@ -310,6 +316,8 @@ export function apiRequestOffice(urlPath, params, listName = 'selectOfficeList',
     method: 'post',
     filePath: filePath,
     data: params
+  }).then(d => {
+    return Object.paototype.hasOwnProperty.call(d, 'result') ? d.result : d
   })
 }
 export function apiRequestExcel(api, params) {
