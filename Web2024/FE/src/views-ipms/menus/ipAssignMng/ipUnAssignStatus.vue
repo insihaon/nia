@@ -42,7 +42,7 @@ import ModalNotAssignDetail from '@/views-ipms/modal/ModalNotAssignDetail.vue'
 import { ipmsModelApis, apiRequestModel } from '@/api/ipms'
 import { downloadExcel } from '@/views-ipms/js/common-function'
 
-const routeName = 'IpunAllocatedStatus'
+const routeName = 'ipUnAssignStatus'
 
 export default {
   name: routeName,

@@ -115,7 +115,6 @@
       <el-button v-if="!disabledBtn" type="primary" size="small" icon="el-icon-refresh-left" round @click.native="fnRetUpdateAsgnIPMst()">반납</el-button>
       <el-button type="primary" size="small" icon="el-icon-close" round @click.native="close()">{{ $t('exit') }}</el-button>
     </div>
-    <ModalIpAssign ref="ModalIpAssign" @reload="close()" />
   </el-dialog>
 </template>
 
@@ -130,7 +129,7 @@ const routeName = 'ModalIpAssignDetail'
 
 export default {
   name: routeName,
-  components: { ModalIpAssign },
+  components: { },
   directives: { elDragDialog },
   extends: Modal,
   data() {
@@ -184,8 +183,8 @@ export default {
     },
     onClose() { /* this.ipAssignVo = []  */ },
     handleAssignIp() {
-      this.$refs.ModalIpAssign.open({ row: this.ipAssignVo, type: 'asgnRoute' })
-      this.closeOnClickModal = true
+      this.$emit('assignCallBtnClick')
+      this.close()
     },
      async fnRetUpdateAsgnIPMst() {
         const { ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd, sassignLevelCd, sipCreateTypeCd } = this.ipAssignVo

@@ -69,7 +69,7 @@ export default {
       pagination: this.setDefaultPagination(),
       componentList: [
         { key: 'SipCreateType', props: {} },
-        { key: 'GenerationDegree', props: {} },
+        { key: 'GenerationDegree', props: {}, prop_options: [] },
         { key: 'IpAddress', props: {} },
         { key: 'SsvcLineType', props: { label: '서비스망' } },
         { key: 'DateRange', props: {} },
@@ -92,7 +92,8 @@ export default {
         },
       ],
       selectedRows: null,
-      requestParam: null
+      requestParam: null,
+      sipCreateSeqCds: []
     }
   },
   computed: {
@@ -115,8 +116,22 @@ export default {
       try {
         this.openLoading(target)
         const res = await apiRequestModel(ipmsModelApis.viewListCrtIPMst, parameter)
-        this.pagination.data = res.result.data ?? []
-        this.pagination.total = res.result.totalCount
+        this.pagination.data = res.resultListVo.tbIpBlockMstVos ?? []
+        this.pagination.total = res.resultListVo.totalCount
+        this.sipCreateSeqCds = res.sipCreateSeqCds
+
+        const generationDegreeComponent = this.componentList.find((item) => item.key === 'GenerationDegree')
+
+        if (generationDegreeComponent) {
+          this.$set(
+            generationDegreeComponent.props,
+            'prop_options',
+            this.sipCreateSeqCds.map((item) => ({
+              value: item.code,
+              label: item.name
+            }))
+          )
+        }
         this.$nextTick(() => {
           this.$refs.compTable.$refs.table.selection.push(this.pagination.data[0])
         })

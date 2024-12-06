@@ -1,6 +1,6 @@
-describe('IpunAllocatedStatus Fuctionality', () => {
+describe('ipUnAssignStatus Fuctionality', () => {
   beforeEach(() => {
-    cy.visitPath('ipAssignMng/ipunAllocatedStatus')
+    cy.visitPath('ipAssignMng/ipUnAssignStatus')
     /* POST 요청 정의 */
     cy.intercept('POST', '**/ipmgmt/assignmgmt/viewListUnAssignIP.model').as('viewListUnAssignIP') /* 미배정 목록 */
     cy.intercept('POST', '**/ipmgmt/assignmgmt/viewDetailUnAssignIP.model').as('viewDetailUnAssignIP') /* 미배정 상세 */

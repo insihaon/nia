@@ -226,7 +226,7 @@ export default {
             // 미배정현황 page route
             const { ssvcLineTypeCd, ssvcGroupCd } = this.resultVo
             this.$store.dispatch('ipms/setToParam', { value: { ssvcLineTypeCd, ssvcGroupCd } })
-            this.$router.push({ path: '/ipAssignMng/ipunAllocatedStatus' })
+            this.$router.push({ path: '/ipAssignMng/ipUnAssignStatus' })
           } else {
             onMessagePopup(this, res.commonMsg)
           }

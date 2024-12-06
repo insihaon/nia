@@ -66,10 +66,9 @@ export default {
         name: this.name + 'table1', checkable: false, rowGroupPanel: false, rowSelection: 'multiple', rowMultiSelection: false, suppressRowClickSelection: true,
       }
       const columns = [
-        { type: '', prop: 'measured_datetime', name: '수집시간', minWidth: 30, flex: 0, suppressMenu: true, alignItems: 'center' },
-        { type: '', prop: 'node_name', name: '장비명', minWidth: 30, flex: 0, suppressMenu: true, alignItems: 'center' },
-        { type: '', prop: 'if_name', name: '인터페이스명', minWidth: 40, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: false },
-        { type: '', prop: 'if_num', name: '인터페이스 번호', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
+        { type: '', prop: 'measured_datetime', name: '수집시간', minWidth: 70, flex: 0, suppressMenu: true, alignItems: 'center' },
+        { type: '', prop: 'node_name', name: '장비명', minWidth: 70, flex: 0, suppressMenu: true, alignItems: 'center' },
+        { type: '', prop: 'if_name', name: '인터페이스명', minWidth: 70, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: false },
         { type: '', prop: 'tx_bit_rate', name: '발신 mbps', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true, formatter: getDecimalCalc },
         { type: '', prop: 'rx_bit_rate', name: '수신 mbps', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true, formatter: getDecimalCalc },
         { type: '', prop: 'tx_pkt_rate', name: '발신 pps', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true, formatter: getDecimalCalc },
