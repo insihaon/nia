@@ -98,7 +98,7 @@ export function getSopAiAccuracy(row, col, value, index) {
 
 export function getFormatByte(row, col, value, index) {
   const packetBytesInMbyte = value / (1024 * 1024) // set byte to Mbyte
-  return Math.round(packetBytesInMbyte * 100) / 100
+  return packetBytesInMbyte.toLocaleString()
 }
 
 export function getFormatGbyte(row, col, value, index) { // set Gbyte

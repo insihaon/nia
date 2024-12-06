@@ -64,8 +64,10 @@ public class CreateMgmtController extends CommonController {
 	public ModelMap viewListCrtIPMst(@RequestBody TbIpBlockMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		setPagination(searchVo);
-		TbIpBlockMstListVo resultListVo = createMgmtService.selectListIpBlockMst(searchVo);
-		return createResultList(resultListVo.getTbIpBlockMstVos(), resultListVo.getTotalCount());
+		ModelMap builtModel = viewListCrtIPMstModel(searchVo, request);
+		ModelMap finalModel = new ModelMap();
+		finalModel.addAllAttributes(builtModel);
+		return finalModel;
 	}
 
 	@RequestMapping(value = "/ipmgmt/createmgmt/viewListCrtIPMst.do", method = { RequestMethod.POST,

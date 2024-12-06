@@ -53,9 +53,9 @@ export const ipmsRoute = Object.freeze([
         meta: { title: 'IP 배정', affix: false }
       },
       {
-        path: 'ipunAllocatedStatus',
-        component: () => import('@/views-ipms/menus/ipAssignMng/ipunAllocatedStatus'),
-        name: 'IpunAllocatedStatus',
+        path: 'ipUnAssignStatus',
+        component: () => import('@/views-ipms/menus/ipAssignMng/ipUnAssignStatus'),
+        name: 'ipUnAssignStatus',
         meta: { title: 'IP 미배정 현황', affix: false }
       },
     ]

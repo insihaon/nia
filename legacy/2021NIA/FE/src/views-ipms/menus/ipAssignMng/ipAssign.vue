@@ -16,13 +16,15 @@
         :prop-column="tableColumns"
         :prop-is-pagination="true"
         :prop-is-check-box="true"
-        :prop-on-select="handleClickTableCheck"
+        :prop-is-cell-click-check="true"
+        :prop-max-select="pagination.data.length"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
-        :prop-max-select="pagination.data.length"
+        :prop-on-dbl-click="fnViewClickAsgnIPMst"
+        :prop-on-select="handleClickTableCheck"
         :prop-on-page-change="handleChangeCurPage"
         :prop-on-page-size-change="handleChangeCurPage"
-        :prop-on-dbl-click="fnViewClickAsgnIPMst"
+        @update:propCellClick="handleClickCell"
         @savedExcel="handleClickExcelDownloadBtn"
       >
         <template slot="text-description">
@@ -32,15 +34,15 @@
         </template>
         <template slot="add-features">
           <div class="add-features">
-            <el-button icon="el-icon-check" type="primary" size="mini" round @click="handleClickIpBlockCheck()">IP블럭 중복체크</el-button>
-            <el-button icon="el-icon-document-checked" type="primary" size="mini" round @click="fnUpdateBtnClick()">배정</el-button>
-            <el-button icon="el-icon-menu" type="primary" size="mini" round @click="handleClickMergeInsert()">병합</el-button>
+            <el-button icon="el-icon-check" type="primary" size="mini" round @click="handleClickIpBlockCheck">IP블럭 중복체크</el-button>
+            <el-button icon="el-icon-document-checked" type="primary" size="mini" round @click="fnUpdateBtnClick">배정</el-button>
+            <el-button icon="el-icon-menu" type="primary" size="mini" round @click="handleClickMergeInsert">병합</el-button>
           </div>
         </template>
       </comptable>
     </el-col>
     <ModalIpBlockDivision ref="ModalIpBlockDivision" @reload="onloadIpAssign($refs.searchCondition.requestParameter)" />
-    <ModalIpAssignDetail ref="ModalIpAssignDetail" @reload="onloadIpAssign($refs.searchCondition.requestParameter)" />
+    <ModalIpAssignDetail ref="ModalIpAssignDetail" @assignCallBtnClick="fnUpdateBtnClick" @reload="onloadIpAssign($refs.searchCondition.requestParameter)" />
     <ModalIpAssign ref="ModalIpAssign" @reload="onloadIpAssign($refs.searchCondition.requestParameter)" />
     <ModalCheckTacsIpBlock ref="ModalCheckTacsIpBlock" />
     <ModalIpAssignMerge ref="ModalIpAssignMerge" @reload="fnViewListIpAllocMst($refs.searchCondition.requestParameter)" />
@@ -77,12 +79,12 @@ export default {
       componentList: [
         { key: 'SsvcLineType', props: { lvl: 3, multi: [2] } },
         { key: 'SipCreateType', props: {} },
-        { key: 'GenerationDegree', props: {} },
+        { key: 'GenerationDegree', props: { prop_options: [] } },
         { key: 'InputType', props: { label: 'BitMask', prop_parameterKey: 'nbitmask' } },
         { key: 'DateRange', props: {} },
         { key: 'IpAddress', props: { defaultWord: '' } },
         { key: 'ServiceOrg', props: { limit: 10 } },
-        { key: 'IpBlockStatus', props: { label: '배정상태' } },
+        { key: 'IpBlockStatus', props: { label: '배정상태', prop_options: [] } },
         { key: 'SortType', props: { sortOrdrDefaultVal: 'ASC' } },
         { key: 'IncludeYN', props: { label: 'Summary 포함 여부', prop_parameterKey: 'snull0Yn' } },
         { key: 'IncludeYN', props: { label: 'DB-라우팅 일치 여부', prop_parameterKey: 'sintgrmYn' } },
@@ -137,8 +139,8 @@ export default {
           }
         },
       ],
-
-      ipAssignDatas: [],
+      sassignLevelCds: [],
+      sipCreateSeqCds: [],
       selectedRows: [],
     }
   },
@@ -160,7 +162,11 @@ export default {
       immediate: true
     }
   },
-  mounted () {
+  created() {
+
+  },
+  mounted() {
+    this.onloadIpAssign()
   },
   methods: {
     handleSearch(requestParameter) {
@@ -175,8 +181,37 @@ export default {
       try {
         this.openLoading(target)
         const res = await apiRequestModel(ipmsModelApis.viewListAsgnIPMst, parameter)
-        this.pagination.data = res.result.data ?? []
-        this.pagination.total = res.result.totalCount
+        this.pagination.data = res.resultListVo.tbIpAssignMstVos ?? []
+        this.sipCreateSeqCds = res.sipCreateSeqCds // 생성차수
+        this.sassignLevelCds = res.sassignLevelCds // 배정상태
+
+        const generationDegreeComponent = this.componentList.find((item) => item.key === 'GenerationDegree')
+
+        if (generationDegreeComponent) {
+          this.$set(
+            generationDegreeComponent.props,
+            'prop_options',
+            this.sipCreateSeqCds.map((item) => ({
+              value: item.code,
+              label: item.name
+            }))
+          )
+        }
+
+        const IpBlockStatusComponent = this.componentList.find((item) => item.key === 'IpBlockStatus')
+
+        if (IpBlockStatusComponent) {
+          this.$set(
+            IpBlockStatusComponent.props,
+            'prop_options',
+            this.sassignLevelCds.map((item) => ({
+              value: item.code,
+              label: item.name
+            }))
+          )
+        }
+
+        this.pagination.total = res.resultListVo.totalCount
       } catch (error) {
         console.error(error)
       } finally {
@@ -187,17 +222,18 @@ export default {
       if (v) this.pagination.currentPage = v
       this.onloadIpAssign()
     },
+    handleClickCell(params) {
+      this.selectedRows = [params?.row] || []
+    },
     handleClickTableCheck(all, cur) {
       this.selectedRows = all
     },
-    //  handleClickCell(params) { /* 더블클릭시 this.selectedRow 저장되는 이슈로 임시 주석처리 */
-    //   this.selectedRows = [params?.row] || []
-    // },
     fnViewClickAsgnIPMst(row, column) {
       if (column?.property === 'nsummaryCnt' || column?.property === 'nbitmask') return
       this.fnViewDetailAsgnIPMst(row)
     },
-    async fnViewDetailAsgnIPMst(row) {
+    fnViewDetailAsgnIPMst(row) {
+      this.selectedRows = [row]
       this.$refs.ModalIpAssignDetail.open({ row })
     },
     handleClickIpBlockCheck() {
@@ -222,7 +258,7 @@ export default {
       this.$refs.ModalCheckTacsIpBlock.open({ row: rows[0] })
     },
     fnUpdateBtnClick() {
-      const rows = this.selectedRows
+      const rows = this.selectedRows ?? []
       if (rows.length === 0) {
         onMessagePopup(this, '배정할 대상이 없습니다.')
         return
@@ -264,10 +300,10 @@ export default {
         return
       }
 
-      const { nipBlockSeq, nlvlMstSeq, sassignLevelCd, sassignTypeCd } = rows[0]
+      const { nipBlockMstSeq, nlvlMstSeq, sassignLevelCd, sassignTypeCd } = rows[0]
 
       for (const row of rows) {
-        if (nipBlockSeq !== row.nipBlockSeq) {
+        if (nipBlockMstSeq !== row.nipBlockMstSeq) {
           onMessagePopup(this, '병합할 대상 정보들의 생성 유형이 동일하지 않습니다.')
           return
         }
