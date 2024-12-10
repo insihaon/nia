@@ -42,24 +42,22 @@ export class Storage {
       })
     }
   }
+  
+  isDev = function () {
+    return this._data.debug
+  }
 
   _save = function () {
-    if (!APP_DEV) {
-      return
-    }
     const save = () => STORAGE.setItem(STORAGE_KEY, JSON.stringify(this._data))
     const save2 = () => STORAGE.setItem(STORAGE_KEY, Encrypt.toEncrypt(this._data))
-    if (this.debug) {
+    if (this.isDev()) {
       save()
     } else {
       save2()
     }
   }
-
+  
   _load = function () {
-    if (!APP_DEV) {
-      return
-    }
     const load = () => JSON.parse(STORAGE.getItem(STORAGE_KEY))
     const load2 = () => Encrypt.toDecrypt(STORAGE.getItem(STORAGE_KEY))
     let loaded
@@ -68,9 +66,9 @@ export class Storage {
     } catch (error) {
       loaded = load2()
     }
-    this._save()
 
-    _.merge(this._data, loaded, param2Obj(location.search))
+    _.merge(this._data, loaded.debug ? loaded : {}, param2Obj(location.search))
+    this._save()
   }
 
   autoReload(newOptions) {

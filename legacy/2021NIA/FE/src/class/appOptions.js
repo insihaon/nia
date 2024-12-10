@@ -66,7 +66,7 @@ export class AppOptions extends Storage {
   }
 
   get isGod() {
-    return this.debug
+    return this._data.debug
   }
 
   setFrontMock() {
