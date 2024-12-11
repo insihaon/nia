@@ -142,9 +142,9 @@
         "url": "/selectList/SELECT_PROFILE_NODE_LIST",
         "urlOrigin": "/selectList/SELECT_PROFILE_NODE_LIST",
         "params": null,
-        "data": "{\"encrypt\":\"TI5cCdYVeEFsyKanKmE=\"}"
+        "data": "{\"encrypt\":\"ic2m97rNLs41NycaPTI=\"}"
     },
-    "requestTime": "2024-12-11 08:42:24.289",
-    "responseTime": "2024-12-11 08:42:24.379",
-    "duration": 90
+    "requestTime": "2024-12-11 13:14:16.469",
+    "responseTime": "2024-12-11 13:14:16.531",
+    "duration": 62
 }
