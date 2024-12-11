@@ -1,11 +1,12 @@
 import moment from 'moment'
 import { AppOptions } from '@/class/appOptions'
-import { getJsonfileName } from '@/utils'
+import { getJsonfileName2 } from '@/utils/jsonfile'
 import store from '@/store'
 
 export const _var = { moment }
 const storage = window.localStorage || window.sessionStorage
 const MAX = AppOptions.instance.debug === true ? 10000 : 100
+const { project } = AppOptions.instance
 
 const state = {
   logs: JSON.parse(storage.getItem('serviceLogs') || '[]')
@@ -40,7 +41,7 @@ const actions = {
     const bcnApAddr = store.getters?.server?.bcnApAddr
     const { data, status, config } = response
     const { method, baseURL, url, params, requestTime, urlOrigin, filePath, fileIndex } = config
-    const jsonFileName = config.headers.jsonFileName || getJsonfileName(urlOrigin, config)
+    const jsonFileName = config.headers.jsonFileName || getJsonfileName2(urlOrigin, config, project)
 
     if (!jsonFileName) return
 
@@ -72,7 +73,7 @@ const actions = {
     const bcnApAddr = store.getters?.server?.bcnApAddr
     const { data, status, config, message, code } = error?.response || error
     const { method, baseURL, url, params, requestTime, urlOrigin, filePath, fileIndex } = config
-    const jsonFileName = config.headers.jsonFileName || getJsonfileName(urlOrigin, config)
+    const jsonFileName = config.headers.jsonFileName || getJsonfileName2(urlOrigin, config)
 
     if (!jsonFileName) return
 

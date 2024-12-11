@@ -1,5 +1,6 @@
 import { AppOptions } from '@/class/appOptions'
-import { clone, getJsonfileName, getJsonfileName2, wait } from '@/utils'
+import { clone, wait } from '@/utils'
+import { getJsonfileName2 } from '@/utils/jsonfile'
 import store from '@/store'
 import { getToken, getIpsdnToken } from '@/utils/auth'
 import axios from 'axios'
@@ -52,7 +53,7 @@ service.interceptors.request.use(
       config.headers['fileIndex'] = config.fileIndex
       config.headers['project'] = project
       config.headers['urlOrigin'] = config.urlOrigin = url
-      config.headers['jsonfilename'] = getJsonfileName2(url, config)
+      config.headers['jsonfilename'] = getJsonfileName2(url, config, project)
       if (store.getters.server) {
         config.headers['_t'] = Encrypt.toEncrypt(String(Date.now() - (store.getters.server.timeDiff || 0)))
       }
