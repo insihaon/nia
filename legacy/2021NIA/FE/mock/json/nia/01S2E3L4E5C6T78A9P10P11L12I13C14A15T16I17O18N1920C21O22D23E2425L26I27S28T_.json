@@ -1,0 +1,114 @@
+{
+    "jsonFileName": "01S2E3L4E5C6T78A9P10P11L12I13C14A15T16I17O18N1920C21O22D23E2425L26I27S28T_.json",
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [
+            "SELECT  port_num AS port_code ,\n                protocol AS protocol_name\n        FROM    gather.tb_default_port_number\n        WHERE protocol IS NOT NULL\n        ORDER BY protocol"
+        ],
+        "total": 22,
+        "result": [
+            {
+                "port_code": "111",
+                "protocol_name": "코드제이"
+            },
+            {
+                "port_code": "179",
+                "protocol_name": "BGP "
+            },
+            {
+                "port_code": "9",
+                "protocol_name": "DISCARD 프로토콜"
+            },
+            {
+                "port_code": "80",
+                "protocol_name": "DISCARD 프로토콜"
+            },
+            {
+                "port_code": "7",
+                "protocol_name": "ECHO 프로토콜"
+            },
+            {
+                "port_code": "21",
+                "protocol_name": "FTP"
+            },
+            {
+                "port_code": "443",
+                "protocol_name": "https"
+            },
+            {
+                "port_code": "143",
+                "protocol_name": "IMAP4"
+            },
+            {
+                "port_code": "389",
+                "protocol_name": "LDAP "
+            },
+            {
+                "port_code": "515",
+                "protocol_name": "LPD "
+            },
+            {
+                "port_code": "445",
+                "protocol_name": "Microsoft-DS "
+            },
+            {
+                "port_code": "139",
+                "protocol_name": "NetBIOS"
+            },
+            {
+                "port_code": "123",
+                "protocol_name": "NTP "
+            },
+            {
+                "port_code": "995",
+                "protocol_name": "POP3 "
+            },
+            {
+                "port_code": "110",
+                "protocol_name": "POP3 "
+            },
+            {
+                "port_code": "465",
+                "protocol_name": "SMTP "
+            },
+            {
+                "port_code": "25",
+                "protocol_name": "SMTP "
+            },
+            {
+                "port_code": "162",
+                "protocol_name": "SNMP "
+            },
+            {
+                "port_code": "161",
+                "protocol_name": "SNMP "
+            },
+            {
+                "port_code": "22",
+                "protocol_name": "ssh "
+            },
+            {
+                "port_code": "514",
+                "protocol_name": "syslog "
+            },
+            {
+                "port_code": "1",
+                "protocol_name": "TCPMUX "
+            }
+        ]
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/selectList/SELECT_APPLICATION_CODE_LIST",
+        "urlOrigin": "/selectList/SELECT_APPLICATION_CODE_LIST",
+        "params": null,
+        "data": "{\"encrypt\":\"twKzd6mm/onEtAFiDjc=\"}"
+    },
+    "requestTime": "2024-12-11 08:39:59.249",
+    "responseTime": "2024-12-11 08:39:59.293",
+    "duration": 44
+}

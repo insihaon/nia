@@ -1,0 +1,42 @@
+{
+    "jsonFileName": "01S2E3L4E5C6T78D9A10S11H12B13O14A15R16D1718S19T20A21T22I23S24T25I26C27S_DATETDAYSEARC20241109.json",
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [
+            "SELECT  COALESCE(SUM(TRANS_PERF_CNT), 0)AS TRANS_PERF_CNT,\n                COALESCE(SUM(TRANS_ALARM_CNT), 0)AS TRANS_ALARM_CNT,\n                COALESCE(SUM(IP_RESOURCE_CNT), 0)AS IP_RESOURCE_CNT,\n                COALESCE(SUM(IP_ALARM_CNT), 0)AS IP_ALARM_CNT,\n                COALESCE(SUM(IP_PERF_CNT), 0)AS IP_PERF_CNT,\n                COALESCE(SUM(IP_SFLOW_CNT), 0)AS IP_SFLOW_CNT,\n                COALESCE(SUM(TICKET_RT_CNT), 0)AS TICKET_RT_CNT,\n                COALESCE(SUM(TICKET_ATT_CNT), 0)AS TICKET_ATT_CNT,\n                COALESCE(SUM(TICKET_NTT_CNT), 0)AS TICKET_NTT_CNT,\n                COALESCE(SUM(TICKET_PF_CNT), 0)AS TICKET_PF_CNT,\n                COALESCE(SUM(LINK_TOTAL_RESOURCE_CNT), 0) AS LINK_TOTAL_RESOURCE_CNT,\n                COALESCE(SUM(LINK_TOTAL_ALARM_CNT), 0) AS LINK_TOTAL_ALARM_CNT,\n                COALESCE(SUM(LINK_IP_PERF_CNT), 0) AS LINK_IP_PERF_CNT,\n                COALESCE(SUM(LINK_TRANS_PERF_CNT), 0) AS LINK_TRANS_PERF_CNT\n        FROM    nia.tb_opsts\n        WHERE 1=1\n            AND OPSTS_TIME   =   '2024-11-09'\n            AND OPSTS_GB   =   'DAY'"
+        ],
+        "total": 1,
+        "result": [
+            {
+                "trans_alarm_cnt": 4,
+                "link_ip_perf_cnt": 598968,
+                "link_total_alarm_cnt": 5,
+                "ticket_ntt_cnt": 0,
+                "ticket_att_cnt": 0,
+                "ip_alarm_cnt": 1,
+                "ticket_rt_cnt": 0,
+                "link_total_resource_cnt": 73,
+                "trans_perf_cnt": 13680,
+                "ip_resource_cnt": 2227,
+                "ticket_pf_cnt": 0,
+                "ip_perf_cnt": 597031,
+                "ip_sflow_cnt": 0,
+                "link_trans_perf_cnt": 13824
+            }
+        ]
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/selectList/SELECT_DASHBOARD_STATISTICS",
+        "urlOrigin": "/selectList/SELECT_DASHBOARD_STATISTICS",
+        "params": null,
+        "data": "{\"DATE_TYPE\":\"DAY\",\"SEARCH_DATE\":\"2024-11-09\",\"encrypt\":\"3xpDBe3njK8e40jhNks=\"}"
+    },
+    "requestTime": "2024-12-11 08:41:49.257",
+    "responseTime": "2024-12-11 08:41:49.297",
+    "duration": 40
+}

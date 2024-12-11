@@ -1,0 +1,25 @@
+{
+    "jsonFileName": "01S2E3L4E5C6T78L9I10N11K1213I14F1516L17I18S19T_nodeibusan771.json",
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [
+            "SELECT \n            DISTINCT PM.NODE_ID, \n            PM.IF_ID ,\n            IP_ADDR , \n            IF_SPEED\n        FROM RESOURCE.TB_PORT_MST PM\n        WHERE NOT EXISTS (\n            SELECT 1\n            FROM RESOURCE.TB_BACKBONE_LINK BL\n            WHERE BL.SRC_NODE_ID = PM.NODE_ID AND BL.SRC_IF_ID  = PM.IF_ID\n               OR BL.DEST_NODE_ID = PM.NODE_ID AND BL.DEST_IF_ID = PM.IF_ID\n            )\n          AND  PM.NODE_ID = 'busan-7712' \n          AND IF_OPER_STATUS = 'up'\n        ORDER BY IF_ID"
+        ],
+        "total": 0,
+        "result": []
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/selectList/SELECT_LINK_IF_LIST",
+        "urlOrigin": "/selectList/SELECT_LINK_IF_LIST",
+        "params": null,
+        "data": "{\"node_id\":\"busan-7712\",\"encrypt\":\"m0VFGtFhneC3UkxUjow=\"}"
+    },
+    "requestTime": "2024-12-11 08:44:15.686",
+    "responseTime": "2024-12-11 08:44:15.770",
+    "duration": 84
+}

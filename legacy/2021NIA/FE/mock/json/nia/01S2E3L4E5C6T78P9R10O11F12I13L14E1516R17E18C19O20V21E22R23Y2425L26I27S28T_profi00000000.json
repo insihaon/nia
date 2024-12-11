@@ -1,0 +1,41 @@
+{
+    "jsonFileName": "01S2E3L4E5C6T78P9R10O11F12I13L14E1516R17E18C19O20V21E22R23Y2425L26I27S28T_profi00000000.json",
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [
+            "SELECT \n            PROFILE_NUM,\n            NODE_ID,\n            SERIAL_NUM\n        FROM RESOURCE.TB_FAULT_PROCESS_IF\n        WHERE PROFILE_NUM = '0000000077'"
+        ],
+        "total": 3,
+        "result": [
+            {
+                "profile_num": "0000000077",
+                "serial_num": "109",
+                "node_id": "busan-5812"
+            },
+            {
+                "profile_num": "0000000077",
+                "serial_num": "6",
+                "node_id": "busan-5812"
+            },
+            {
+                "profile_num": "0000000077",
+                "serial_num": "110",
+                "node_id": "busan-5812"
+            }
+        ]
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/selectList/SELECT_PROFILE_RECOVERY_LIST",
+        "urlOrigin": "/selectList/SELECT_PROFILE_RECOVERY_LIST",
+        "params": null,
+        "data": "{\"profile_num\":\"0000000077\",\"encrypt\":\"WnhyApRcattYON3p1r0=\"}"
+    },
+    "requestTime": "2024-12-11 08:42:24.288",
+    "responseTime": "2024-12-11 08:42:24.369",
+    "duration": 81
+}

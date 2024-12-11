@@ -1,0 +1,62 @@
+{
+    "jsonFileName": "01S2E3L4E5C6T78D9A10T11A1213S14N15A16P17S18H19O20T2122L23I24S25T_EVENTtest.json",
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [
+            "SELECT\n            TITLE\n            , TO_CHAR(START_TIME,  'YYYY-MM-DD HH24:MI:SS') AS START_TIME\n            , TO_CHAR(END_TIME, 'YYYY-MM-DD HH24:MI:SS') AS END_TIME\n            , EVENTNO\n        FROM rca.tb_fault_event\n        WHERE EVENT_GB='test'\n        ORDER BY EVENTNO::INT DESC"
+        ],
+        "total": 6,
+        "result": [
+            {
+                "start_time": "2024-05-20 00:00:00",
+                "end_time": "2024-05-20 23:59:59",
+                "title": "",
+                "eventno": "353"
+            },
+            {
+                "start_time": "2024-03-29 00:00:00",
+                "end_time": "2024-03-29 23:59:59",
+                "title": "1",
+                "eventno": "335"
+            },
+            {
+                "start_time": "2024-03-29 00:00:00",
+                "end_time": "2024-03-29 23:59:59",
+                "title": "test2",
+                "eventno": "332"
+            },
+            {
+                "start_time": "2024-03-28 00:00:00",
+                "end_time": "2024-03-28 23:59:59",
+                "title": "test",
+                "eventno": "328"
+            },
+            {
+                "start_time": "2023-01-19 00:00:00",
+                "end_time": "2023-01-19 06:30:00",
+                "title": "테스트1",
+                "eventno": "241"
+            },
+            {
+                "start_time": "2023-01-19 00:00:00",
+                "end_time": "2023-01-19 00:10:00",
+                "title": "테스트1",
+                "eventno": "240"
+            }
+        ]
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/selectList/SELECT_DATA_SNAPSHOT_LIST",
+        "urlOrigin": "/selectList/SELECT_DATA_SNAPSHOT_LIST",
+        "params": null,
+        "data": "{\"EVENT_GB\":\"test\",\"encrypt\":\"kznyvkjOYwl7OSvTSLk=\"}"
+    },
+    "requestTime": "2024-12-11 08:37:25.681",
+    "responseTime": "2024-12-11 08:37:25.723",
+    "duration": 42
+}

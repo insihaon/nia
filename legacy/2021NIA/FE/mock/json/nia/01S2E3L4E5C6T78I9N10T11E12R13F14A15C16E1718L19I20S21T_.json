@@ -1,0 +1,278 @@
+{
+    "jsonFileName": "01S2E3L4E5C6T78I9N10T11E12R13F14A15C16E1718L19I20S21T_.json",
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [
+            "SELECT DISTINCT ALARMLOC AS VALUE\n        FROM rca.tb_syslog_alarm_mst\n        WHERE ALARMLOC IS NOT NULL"
+        ],
+        "total": 84,
+        "result": [
+            {
+                "value": "ce10/1"
+            },
+            {
+                "value": "ce1/1"
+            },
+            {
+                "value": "ce11/1"
+            },
+            {
+                "value": "ce12/1"
+            },
+            {
+                "value": "ce17/1"
+            },
+            {
+                "value": "ce18/1"
+            },
+            {
+                "value": "ce19/1"
+            },
+            {
+                "value": "ce20/1"
+            },
+            {
+                "value": "ce2/1"
+            },
+            {
+                "value": "ce21/1"
+            },
+            {
+                "value": "ce23/1"
+            },
+            {
+                "value": "ce29/1"
+            },
+            {
+                "value": "ce3/1"
+            },
+            {
+                "value": "ce31/1"
+            },
+            {
+                "value": "ce32/1"
+            },
+            {
+                "value": "ce4/1"
+            },
+            {
+                "value": "ce5/1"
+            },
+            {
+                "value": "ce6/1"
+            },
+            {
+                "value": "ce9/1"
+            },
+            {
+                "value": "eth0"
+            },
+            {
+                "value": "vlan1.101"
+            },
+            {
+                "value": "vlan1.102"
+            },
+            {
+                "value": "vlan1.12"
+            },
+            {
+                "value": "vlan1.14"
+            },
+            {
+                "value": "vlan1.15"
+            },
+            {
+                "value": "vlan1.16"
+            },
+            {
+                "value": "vlan1.1634"
+            },
+            {
+                "value": "vlan1.18"
+            },
+            {
+                "value": "vlan1.19"
+            },
+            {
+                "value": "vlan1.24"
+            },
+            {
+                "value": "vlan1.25"
+            },
+            {
+                "value": "vlan1.26"
+            },
+            {
+                "value": "vlan1.28"
+            },
+            {
+                "value": "vlan1.322"
+            },
+            {
+                "value": "vlan1.883"
+            },
+            {
+                "value": "xe1"
+            },
+            {
+                "value": "xe10"
+            },
+            {
+                "value": "xe11"
+            },
+            {
+                "value": "xe12"
+            },
+            {
+                "value": "xe13"
+            },
+            {
+                "value": "xe14"
+            },
+            {
+                "value": "xe15"
+            },
+            {
+                "value": "xe16"
+            },
+            {
+                "value": "xe17"
+            },
+            {
+                "value": "xe18"
+            },
+            {
+                "value": "xe19"
+            },
+            {
+                "value": "xe2"
+            },
+            {
+                "value": "xe20"
+            },
+            {
+                "value": "xe21"
+            },
+            {
+                "value": "xe22"
+            },
+            {
+                "value": "xe23"
+            },
+            {
+                "value": "xe24"
+            },
+            {
+                "value": "xe25"
+            },
+            {
+                "value": "xe26"
+            },
+            {
+                "value": "xe27"
+            },
+            {
+                "value": "xe28"
+            },
+            {
+                "value": "xe29"
+            },
+            {
+                "value": "xe3"
+            },
+            {
+                "value": "xe30"
+            },
+            {
+                "value": "xe31"
+            },
+            {
+                "value": "xe32"
+            },
+            {
+                "value": "xe33"
+            },
+            {
+                "value": "xe34"
+            },
+            {
+                "value": "xe35"
+            },
+            {
+                "value": "xe36"
+            },
+            {
+                "value": "xe37"
+            },
+            {
+                "value": "xe38"
+            },
+            {
+                "value": "xe39"
+            },
+            {
+                "value": "xe40"
+            },
+            {
+                "value": "xe41"
+            },
+            {
+                "value": "xe42"
+            },
+            {
+                "value": "xe43"
+            },
+            {
+                "value": "xe44"
+            },
+            {
+                "value": "xe45"
+            },
+            {
+                "value": "xe46"
+            },
+            {
+                "value": "xe47"
+            },
+            {
+                "value": "xe48"
+            },
+            {
+                "value": "xe49/1"
+            },
+            {
+                "value": "xe5"
+            },
+            {
+                "value": "xe50/1"
+            },
+            {
+                "value": "xe52/1"
+            },
+            {
+                "value": "xe7"
+            },
+            {
+                "value": "xe8"
+            },
+            {
+                "value": "xe9"
+            }
+        ]
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/selectList/SELECT_INTERFACE_LIST",
+        "urlOrigin": "/selectList/SELECT_INTERFACE_LIST",
+        "params": null,
+        "data": "{\"encrypt\":\"K4cSE5F74XOBIQS/VS0=\"}"
+    },
+    "requestTime": "2024-12-11 08:38:54.098",
+    "responseTime": "2024-12-11 08:38:58.799",
+    "duration": 4701
+}

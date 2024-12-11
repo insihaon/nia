@@ -1,0 +1,146 @@
+{
+    "jsonFileName": "01S2E3L4E5C6T78L9I10N11K1213I14F1516L17I18S19T_nodeipangyo58.json",
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [
+            "SELECT \n            DISTINCT PM.NODE_ID, \n            PM.IF_ID ,\n            IP_ADDR , \n            IF_SPEED\n        FROM RESOURCE.TB_PORT_MST PM\n        WHERE NOT EXISTS (\n            SELECT 1\n            FROM RESOURCE.TB_BACKBONE_LINK BL\n            WHERE BL.SRC_NODE_ID = PM.NODE_ID AND BL.SRC_IF_ID  = PM.IF_ID\n               OR BL.DEST_NODE_ID = PM.NODE_ID AND BL.DEST_IF_ID = PM.IF_ID\n            )\n          AND  PM.NODE_ID = 'pangyo-5812' \n          AND IF_OPER_STATUS = 'up'\n        ORDER BY IF_ID"
+        ],
+        "total": 20,
+        "result": [
+            {
+                "if_speed": "1000000000",
+                "if_id": "eth0",
+                "ip_addr": null,
+                "node_id": "pangyo-5812"
+            },
+            {
+                "if_speed": "10000000000",
+                "if_id": "xe18",
+                "ip_addr": null,
+                "node_id": "pangyo-5812"
+            },
+            {
+                "if_speed": "10000000000",
+                "if_id": "xe19",
+                "ip_addr": null,
+                "node_id": "pangyo-5812"
+            },
+            {
+                "if_speed": "10000000000",
+                "if_id": "xe20",
+                "ip_addr": null,
+                "node_id": "pangyo-5812"
+            },
+            {
+                "if_speed": "10000000000",
+                "if_id": "xe22",
+                "ip_addr": null,
+                "node_id": "pangyo-5812"
+            },
+            {
+                "if_speed": "1000000000",
+                "if_id": "xe25",
+                "ip_addr": null,
+                "node_id": "pangyo-5812"
+            },
+            {
+                "if_speed": "1000000000",
+                "if_id": "xe26",
+                "ip_addr": null,
+                "node_id": "pangyo-5812"
+            },
+            {
+                "if_speed": "1000000000",
+                "if_id": "xe27",
+                "ip_addr": null,
+                "node_id": "pangyo-5812"
+            },
+            {
+                "if_speed": "1000000000",
+                "if_id": "xe29",
+                "ip_addr": null,
+                "node_id": "pangyo-5812"
+            },
+            {
+                "if_speed": "1000000000",
+                "if_id": "xe3",
+                "ip_addr": null,
+                "node_id": "pangyo-5812"
+            },
+            {
+                "if_speed": "10000000000",
+                "if_id": "xe31",
+                "ip_addr": null,
+                "node_id": "pangyo-5812"
+            },
+            {
+                "if_speed": "10000000000",
+                "if_id": "xe32",
+                "ip_addr": null,
+                "node_id": "pangyo-5812"
+            },
+            {
+                "if_speed": "10000000000",
+                "if_id": "xe33",
+                "ip_addr": null,
+                "node_id": "pangyo-5812"
+            },
+            {
+                "if_speed": "10000000000",
+                "if_id": "xe35",
+                "ip_addr": null,
+                "node_id": "pangyo-5812"
+            },
+            {
+                "if_speed": "1000000000",
+                "if_id": "xe41",
+                "ip_addr": null,
+                "node_id": "pangyo-5812"
+            },
+            {
+                "if_speed": "10000000000",
+                "if_id": "xe47",
+                "ip_addr": null,
+                "node_id": "pangyo-5812"
+            },
+            {
+                "if_speed": "1000000000",
+                "if_id": "xe48",
+                "ip_addr": null,
+                "node_id": "pangyo-5812"
+            },
+            {
+                "if_speed": "40000000000",
+                "if_id": "xe49/1",
+                "ip_addr": null,
+                "node_id": "pangyo-5812"
+            },
+            {
+                "if_speed": "1000000000",
+                "if_id": "xe7",
+                "ip_addr": null,
+                "node_id": "pangyo-5812"
+            },
+            {
+                "if_speed": "1000000000",
+                "if_id": "xe8",
+                "ip_addr": null,
+                "node_id": "pangyo-5812"
+            }
+        ]
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/selectList/SELECT_LINK_IF_LIST",
+        "urlOrigin": "/selectList/SELECT_LINK_IF_LIST",
+        "params": null,
+        "data": "{\"node_id\":\"pangyo-5812\",\"encrypt\":\"OJGWmtCXCZY6bavqv3o=\"}"
+    },
+    "requestTime": "2024-12-11 08:44:08.348",
+    "responseTime": "2024-12-11 08:44:08.428",
+    "duration": 80
+}

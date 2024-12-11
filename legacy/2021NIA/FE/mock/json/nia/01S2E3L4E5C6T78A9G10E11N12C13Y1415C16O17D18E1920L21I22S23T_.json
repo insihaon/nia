@@ -1,0 +1,514 @@
+{
+    "jsonFileName": "01S2E3L4E5C6T78A9G10E11N12C13Y1415C16O17D18E1920L21I22S23T_.json",
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [
+            "SELECT \n            NREN_NAME AS NAME, \n            NREN_ID AS ID \n        FROM RESOURCE.TB_USER_ORGAN TCC\n        WHERE NREN_ID IS NOT NULL \n        ORDER BY NREN_NAME"
+        ],
+        "total": 122,
+        "result": [
+            {
+                "name": "디오넷",
+                "id": "seoul-5812_xe30"
+            },
+            {
+                "name": "비자림",
+                "id": "seoul-5812_xe33"
+            },
+            {
+                "name": "아키스",
+                "id": "seoul-5812_xe24"
+            },
+            {
+                "name": "알티넷",
+                "id": "seoul-5812_xe37"
+            },
+            {
+                "name": "우리넷",
+                "id": "pangyo-5812_xe32"
+            },
+            {
+                "name": "유니바",
+                "id": "daegu-5812_xe25"
+            },
+            {
+                "name": "코위버",
+                "id": "seoul-5812_xe26"
+            },
+            {
+                "name": "클릭트",
+                "id": "seoul-5812_xe39"
+            },
+            {
+                "name": "넷브릿지",
+                "id": "daejeon-5812_xe20"
+            },
+            {
+                "name": "스트라토",
+                "id": "seoul-5812_xe14"
+            },
+            {
+                "name": "엑사비스",
+                "id": "suwon-5812_xe21"
+            },
+            {
+                "name": "유미테크",
+                "id": "daejeon-5812_xe24"
+            },
+            {
+                "name": "진인프라",
+                "id": "pangyo-5812_xe37"
+            },
+            {
+                "name": "코드제이",
+                "id": "daejeon-5812_xe25"
+            },
+            {
+                "name": "건국대학교",
+                "id": "seoul-5812_xe16"
+            },
+            {
+                "name": "경남대학교",
+                "id": "busan-5812_xe21"
+            },
+            {
+                "name": "계명대학교",
+                "id": "daegu-5812_xe21"
+            },
+            {
+                "name": "고려대학교",
+                "id": "seoul-5812_xe12"
+            },
+            {
+                "name": "국립암센터",
+                "id": "seoul-5812_xe8"
+            },
+            {
+                "name": "대전대학교",
+                "id": "daejeon-5812_xe26"
+            },
+            {
+                "name": "서울대의대",
+                "id": "seoul-5812_xe19"
+            },
+            {
+                "name": "숭실대학교",
+                "id": "seoul-5812_xe31"
+            },
+            {
+                "name": "안양대학교",
+                "id": "seoul-5812_xe23"
+            },
+            {
+                "name": "엔디소프트",
+                "id": "busan-5812_xe25"
+            },
+            {
+                "name": "연세의료원",
+                "id": "seoul-5812_xe7"
+            },
+            {
+                "name": "전북대병원",
+                "id": "jeonju-5812_xe20"
+            },
+            {
+                "name": "쿨클라우드",
+                "id": "suwon-5812_xe22"
+            },
+            {
+                "name": "퓨쳐시스템",
+                "id": "seoul-5812_xe25"
+            },
+            {
+                "name": "플레이스비",
+                "id": "seoul-5812_xe48"
+            },
+            {
+                "name": "가천대길병원",
+                "id": "seoul-5812_xe47"
+            },
+            {
+                "name": "나임네트웍스",
+                "id": "seoul-5812_xe29"
+            },
+            {
+                "name": "삼성서울병원",
+                "id": "seoul-5812_xe35"
+            },
+            {
+                "name": "서울아산병원",
+                "id": "seoul-5812_xe21"
+            },
+            {
+                "name": "아이엔소프트",
+                "id": "seoul-5812_xe28"
+            },
+            {
+                "name": "아이페이지온",
+                "id": "seoul-5812_xe11"
+            },
+            {
+                "name": "우주전파센터",
+                "id": "jeju-5812_xe23"
+            },
+            {
+                "name": "한국뇌연구원",
+                "id": "daegu-5812_xe24"
+            },
+            {
+                "name": "사이버텔브릿지",
+                "id": "seoul-5812_xe17"
+            },
+            {
+                "name": "서울보라매병원",
+                "id": "seoul-5812_xe13"
+            },
+            {
+                "name": "순천향대학병원",
+                "id": "seoul-5812_xe22"
+            },
+            {
+                "name": "에스앤티소프트",
+                "id": "daejeon-5812_xe27"
+            },
+            {
+                "name": "자람테크놀로지",
+                "id": "pangyo-5812_xe25"
+            },
+            {
+                "name": "제주에너지공사",
+                "id": "jeju-5812_xe21"
+            },
+            {
+                "name": "제주테크노파크",
+                "id": "jeju-5812_xe20"
+            },
+            {
+                "name": "한양대학교병원",
+                "id": "seoul-5812_xe27"
+            },
+            {
+                "name": "강남세브란스병원",
+                "id": "seoul-5812_xe9"
+            },
+            {
+                "name": "순천향대부천병원",
+                "id": "seoul-5812_xe32"
+            },
+            {
+                "name": "용인세브란스병원",
+                "id": "pangyo-5812_xe31"
+            },
+            {
+                "name": "우주측지관측센터",
+                "id": "daejeon-5812_xe33"
+            },
+            {
+                "name": "구미전자기술정보원",
+                "id": "daegu-5812_xe22"
+            },
+            {
+                "name": "부산테크노파크강서",
+                "id": "busan-5812_xe24"
+            },
+            {
+                "name": "부산테크노파크센텀",
+                "id": "busan-5812_xe23"
+            },
+            {
+                "name": "세종대학교산학협력단",
+                "id": "seoul-5812_xe46"
+            },
+            {
+                "name": "중앙대학교산학협력단",
+                "id": "seoul-5812_xe20"
+            },
+            {
+                "name": "차세대융합기술연구원",
+                "id": "pangyo-5812_xe24"
+            },
+            {
+                "name": "공정혁신시뮬레이션센터",
+                "id": "gwangju-5812_xe22"
+            },
+            {
+                "name": "건국대학교대전창의연구소",
+                "id": "daejeon-5812_xe17"
+            },
+            {
+                "name": "제주테크노파크디지털융합센터",
+                "id": "jeju-5812_xe22"
+            },
+            {
+                "name": "디엔씨캠퍼스(디지캡)",
+                "id": "seoul-5812_xe36"
+            },
+            {
+                "name": "다리소프트(본사)",
+                "id": "pangyo-5812_xe35"
+            },
+            {
+                "name": "판교 빅데이터센터(스타트업 캠퍼스)",
+                "id": "pangyo-5812_xe22"
+            },
+            {
+                "name": "광주-대전",
+                "id": "gwangju-7712_ce2/1"
+            },
+            {
+                "name": "광주-서울",
+                "id": "gwangju-7712_ce1/1"
+            },
+            {
+                "name": "대구-대전",
+                "id": "daegu-7712_ce2/1"
+            },
+            {
+                "name": "대구-서울",
+                "id": "daegu-7712_ce1/1"
+            },
+            {
+                "name": "대전-광주",
+                "id": "daejeon-7712_ce4/1"
+            },
+            {
+                "name": "대전-대구",
+                "id": "daejeon-7712_ce5/1"
+            },
+            {
+                "name": "대전-부산",
+                "id": "daejeon-7712_ce6/1"
+            },
+            {
+                "name": "대전-서울",
+                "id": "daejeon-7712_ce12/1"
+            },
+            {
+                "name": "대전-서울",
+                "id": "daejeon-7712_ce2/1"
+            },
+            {
+                "name": "대전-서울",
+                "id": "daejeon-7712_ce11/1"
+            },
+            {
+                "name": "대전-판교",
+                "id": "daejeon-7712_ce3/1"
+            },
+            {
+                "name": "서울-수원",
+                "id": "seoul-5812_xe2"
+            },
+            {
+                "name": "서울-춘천",
+                "id": "seoul-5812_xe1"
+            },
+            {
+                "name": "수원-대전",
+                "id": "suwon-5812_xe2"
+            },
+            {
+                "name": "수원-서울",
+                "id": "suwon-5812_xe1"
+            },
+            {
+                "name": "전주-대전",
+                "id": "jeonju-5812_xe2"
+            },
+            {
+                "name": "전주-서울",
+                "id": "jeonju-5812_xe1"
+            },
+            {
+                "name": "제주-광주",
+                "id": "jeju-5812_xe5"
+            },
+            {
+                "name": "(주)제로원에이아이",
+                "id": "pangyo-5812_xe33"
+            },
+            {
+                "name": "문엔지니어링#1",
+                "id": "seoul-5812_xe15"
+            },
+            {
+                "name": "문엔지니어링#2",
+                "id": "seoul-5812_xe34"
+            },
+            {
+                "name": "대전-수원5812",
+                "id": "daejeon-5812_xe2"
+            },
+            {
+                "name": "대전-전주5812",
+                "id": "daejeon-5812_xe3"
+            },
+            {
+                "name": "서울-전주5812",
+                "id": "seoul-5812_xe3"
+            },
+            {
+                "name": "춘천-서울5812via219(Backup)",
+                "id": "chuncheon-5812_xe2"
+            },
+            {
+                "name": "춘천-서울5812via219(Main)",
+                "id": "chuncheon-5812_xe1"
+            },
+            {
+                "name": "5G대전테크노파크",
+                "id": "daejeon-5812_xe30"
+            },
+            {
+                "name": "대전5G-ETRITB",
+                "id": "daejeon-5812_xe29"
+            },
+            {
+                "name": "부산-대전7712",
+                "id": "busan-7712_ce2/1"
+            },
+            {
+                "name": "부산-서울7712",
+                "id": "busan-7712_ce1/1"
+            },
+            {
+                "name": "서울-광주7712",
+                "id": "seoul-7712_ce4/1"
+            },
+            {
+                "name": "서울-대구7712",
+                "id": "seoul-7712_ce5/1"
+            },
+            {
+                "name": "서울-대전7712",
+                "id": "seoul-7712_ce2/1"
+            },
+            {
+                "name": "서울-대전7712",
+                "id": "seoul-7712_ce11/1"
+            },
+            {
+                "name": "서울-대전7712",
+                "id": "seoul-7712_ce12/1"
+            },
+            {
+                "name": "서울-부산7712",
+                "id": "seoul-7712_ce6/1"
+            },
+            {
+                "name": "서울-판교7712",
+                "id": "seoul-7712_ce3/1"
+            },
+            {
+                "name": "판교-대전7712",
+                "id": "pangyo-7712_ce2/1"
+            },
+            {
+                "name": "판교-서울7712",
+                "id": "pangyo-7712_ce1/1"
+            },
+            {
+                "name": "관리망c212-noIP",
+                "id": "daejeon-5812_xe5"
+            },
+            {
+                "name": "광주ETRI",
+                "id": "gwangju-5812_xe21"
+            },
+            {
+                "name": "대전ETRI",
+                "id": "daejeon-5812_xe50/1"
+            },
+            {
+                "name": "경기도경제과학진흥원(GBSA)",
+                "id": "pangyo-5812_xe20"
+            },
+            {
+                "name": "HPC이노베이션허브",
+                "id": "pangyo-5812_xe19"
+            },
+            {
+                "name": "한국네트워크산업협회(KANI)",
+                "id": "pangyo-5812_xe30"
+            },
+            {
+                "name": "한국방송공사KBS",
+                "id": "seoul-5812_xe38"
+            },
+            {
+                "name": "대전-둔산KT",
+                "id": "daejeon-cxp3_TenGigabitEthernet0/0/0"
+            },
+            {
+                "name": "서울-구로KT",
+                "id": "seoul-cxp2_TenGigabitEthernet4/4"
+            },
+            {
+                "name": "KT인프라연구소",
+                "id": "daejeon-5812_xe28"
+            },
+            {
+                "name": "성균관대Lab실",
+                "id": "suwon-5812_xe20"
+            },
+            {
+                "name": "전남대Lab실",
+                "id": "gwangju-5812_xe20"
+            },
+            {
+                "name": "LSTME",
+                "id": "busan-5812_xe20"
+            },
+            {
+                "name": "N9K14",
+                "id": "seoul-cxp2_TenGigabitEthernet2/3"
+            },
+            {
+                "name": "서울N9K19",
+                "id": "daejeon-cxp3_TenGigabitEthernet0/0/1"
+            },
+            {
+                "name": "N9K19GW인터넷",
+                "id": "seoul-7712_ce29/1"
+            },
+            {
+                "name": "대전N9K24",
+                "id": "daejeon-cxp3_TenGigabitEthernet0/1/0"
+            },
+            {
+                "name": "TEIN-CC",
+                "id": "seoul-5812_xe10"
+            },
+            {
+                "name": "한국정보통신기술협회(TTA)",
+                "id": "pangyo-5812_xe21"
+            },
+            {
+                "name": "㈜코웰테크",
+                "id": "pangyo-5812_xe29"
+            },
+            {
+                "name": "㈜소울시스템즈#1",
+                "id": "pangyo-5812_xe27"
+            },
+            {
+                "name": "㈜소울시스템즈#2",
+                "id": "pangyo-5812_xe26"
+            }
+        ]
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/selectList/SELECT_AGENCY_CODE_LIST",
+        "urlOrigin": "/selectList/SELECT_AGENCY_CODE_LIST",
+        "params": null,
+        "data": "{\"encrypt\":\"a2NbPbuuflmJeUpA6t0=\"}"
+    },
+    "requestTime": "2024-12-11 08:39:42.723",
+    "responseTime": "2024-12-11 08:39:42.828",
+    "duration": 105
+}

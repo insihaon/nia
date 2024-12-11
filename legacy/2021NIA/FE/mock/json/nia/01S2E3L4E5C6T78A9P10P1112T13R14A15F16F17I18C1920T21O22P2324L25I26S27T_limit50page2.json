@@ -1,0 +1,426 @@
+{
+    "jsonFileName": "01S2E3L4E5C6T78A9P10P1112T13R14A15F16F17I18C1920T21O22P2324L25I26S27T_limit50page2.json",
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [
+            "SELECT  src_protocol,\n                src_port,\n                dst_protocol,\n                dst_port,\n                packet_bytes,\n                rank_order\n        FROM    ( SELECT src_protocol,\n                        src_port,\n                        dst_protocol,\n                        dst_port,\n                        SUM(packet_bytes) packet_bytes ,\n                        row_number() over (ORDER BY\n                        CASE\n                                WHEN src_protocol IS NULL\n                                AND     dst_protocol IS NULL\n                                THEN 0\n                                ELSE 2\n                        END DESC, SUM(packet_bytes) DESC) rank_order\n                FROM    gather.tb_mdb_sflow_traffic_day dt\n                WHERE   1=1\n                        AND dt.collect_timestamp   <=   CURRENT_DATE \n                        AND dt.collect_timestamp   >=   CURRENT_DATE - interval '5 days'\n                GROUP BY src_protocol,\n                        src_port,\n                        dst_protocol,\n                        dst_port ) dt\n                WHERE   1=1\n                    AND rank_order   <   101\n            LIMIT 50 OFFSET 50"
+        ],
+        "total": 100,
+        "result": [
+            {
+                "src_port": "443",
+                "packet_bytes": 128694452224,
+                "dst_protocol": "기타",
+                "rank_order": 51,
+                "src_protocol": "https",
+                "dst_port": "44655"
+            },
+            {
+                "src_port": "443",
+                "packet_bytes": 127841878016,
+                "dst_protocol": "기타",
+                "rank_order": 52,
+                "src_protocol": "https",
+                "dst_port": "53709"
+            },
+            {
+                "src_port": "443",
+                "packet_bytes": 125375635456,
+                "dst_protocol": "기타",
+                "rank_order": 53,
+                "src_protocol": "https",
+                "dst_port": "47016"
+            },
+            {
+                "src_port": "443",
+                "packet_bytes": 124843761664,
+                "dst_protocol": "기타",
+                "rank_order": 54,
+                "src_protocol": "https",
+                "dst_port": "57863"
+            },
+            {
+                "src_port": "60998",
+                "packet_bytes": 121564340224,
+                "dst_protocol": "https",
+                "rank_order": 55,
+                "src_protocol": "기타",
+                "dst_port": "443"
+            },
+            {
+                "src_port": "443",
+                "packet_bytes": 120171126784,
+                "dst_protocol": "기타",
+                "rank_order": 56,
+                "src_protocol": "https",
+                "dst_port": "33185"
+            },
+            {
+                "src_port": "443",
+                "packet_bytes": 118867501056,
+                "dst_protocol": "기타",
+                "rank_order": 57,
+                "src_protocol": "https",
+                "dst_port": "49118"
+            },
+            {
+                "src_port": "443",
+                "packet_bytes": 112308494336,
+                "dst_protocol": "기타",
+                "rank_order": 58,
+                "src_protocol": "https",
+                "dst_port": "47973"
+            },
+            {
+                "src_port": "50146",
+                "packet_bytes": 110169702400,
+                "dst_protocol": "기타",
+                "rank_order": 59,
+                "src_protocol": "기타",
+                "dst_port": "7200"
+            },
+            {
+                "src_port": "443",
+                "packet_bytes": 109609541632,
+                "dst_protocol": "기타",
+                "rank_order": 60,
+                "src_protocol": "https",
+                "dst_port": "54265"
+            },
+            {
+                "src_port": "35765",
+                "packet_bytes": 109458407424,
+                "dst_protocol": "기타",
+                "rank_order": 61,
+                "src_protocol": "기타",
+                "dst_port": "57420"
+            },
+            {
+                "src_port": "443",
+                "packet_bytes": 107655012352,
+                "dst_protocol": "기타",
+                "rank_order": 62,
+                "src_protocol": "https",
+                "dst_port": "65522"
+            },
+            {
+                "src_port": "443",
+                "packet_bytes": 106677452800,
+                "dst_protocol": "기타",
+                "rank_order": 63,
+                "src_protocol": "https",
+                "dst_port": "8812"
+            },
+            {
+                "src_port": "443",
+                "packet_bytes": 104085381120,
+                "dst_protocol": "기타",
+                "rank_order": 64,
+                "src_protocol": "https",
+                "dst_port": "33269"
+            },
+            {
+                "src_port": "443",
+                "packet_bytes": 103618994176,
+                "dst_protocol": "기타",
+                "rank_order": 65,
+                "src_protocol": "https",
+                "dst_port": "48901"
+            },
+            {
+                "src_port": "443",
+                "packet_bytes": 102425944064,
+                "dst_protocol": "기타",
+                "rank_order": 66,
+                "src_protocol": "https",
+                "dst_port": "65515"
+            },
+            {
+                "src_port": "443",
+                "packet_bytes": 99619045376,
+                "dst_protocol": "기타",
+                "rank_order": 67,
+                "src_protocol": "https",
+                "dst_port": "9550"
+            },
+            {
+                "src_port": "80",
+                "packet_bytes": 96272293888,
+                "dst_protocol": "기타",
+                "rank_order": 68,
+                "src_protocol": "DISCARD 프로토콜",
+                "dst_port": "65374"
+            },
+            {
+                "src_port": "64531",
+                "packet_bytes": 95112019968,
+                "dst_protocol": "기타",
+                "rank_order": 69,
+                "src_protocol": "기타",
+                "dst_port": "3092"
+            },
+            {
+                "src_port": "443",
+                "packet_bytes": 94339080192,
+                "dst_protocol": "기타",
+                "rank_order": 70,
+                "src_protocol": "https",
+                "dst_port": "57650"
+            },
+            {
+                "src_port": "6669",
+                "packet_bytes": 94335680512,
+                "dst_protocol": "https",
+                "rank_order": 71,
+                "src_protocol": "기타",
+                "dst_port": "443"
+            },
+            {
+                "src_port": "443",
+                "packet_bytes": 91936440320,
+                "dst_protocol": "기타",
+                "rank_order": 72,
+                "src_protocol": "https",
+                "dst_port": "55120"
+            },
+            {
+                "src_port": "443",
+                "packet_bytes": 91635417088,
+                "dst_protocol": "기타",
+                "rank_order": 73,
+                "src_protocol": "https",
+                "dst_port": "7862"
+            },
+            {
+                "src_port": null,
+                "packet_bytes": 90633166848,
+                "dst_protocol": "기타",
+                "rank_order": 74,
+                "src_protocol": "기타",
+                "dst_port": null
+            },
+            {
+                "src_port": "443",
+                "packet_bytes": 89713303552,
+                "dst_protocol": "기타",
+                "rank_order": 75,
+                "src_protocol": "https",
+                "dst_port": "54730"
+            },
+            {
+                "src_port": "443",
+                "packet_bytes": 89326231552,
+                "dst_protocol": "기타",
+                "rank_order": 76,
+                "src_protocol": "https",
+                "dst_port": "8646"
+            },
+            {
+                "src_port": "65357",
+                "packet_bytes": 86013632512,
+                "dst_protocol": "https",
+                "rank_order": 77,
+                "src_protocol": "기타",
+                "dst_port": "443"
+            },
+            {
+                "src_port": "443",
+                "packet_bytes": 84825169920,
+                "dst_protocol": "기타",
+                "rank_order": 78,
+                "src_protocol": "https",
+                "dst_port": "65530"
+            },
+            {
+                "src_port": "80",
+                "packet_bytes": 84129742848,
+                "dst_protocol": "기타",
+                "rank_order": 79,
+                "src_protocol": "DISCARD 프로토콜",
+                "dst_port": "9839"
+            },
+            {
+                "src_port": "65196",
+                "packet_bytes": 83876519936,
+                "dst_protocol": "https",
+                "rank_order": 80,
+                "src_protocol": "기타",
+                "dst_port": "443"
+            },
+            {
+                "src_port": "80",
+                "packet_bytes": 82368577536,
+                "dst_protocol": "기타",
+                "rank_order": 81,
+                "src_protocol": "DISCARD 프로토콜",
+                "dst_port": "9947"
+            },
+            {
+                "src_port": "60810",
+                "packet_bytes": 82239488000,
+                "dst_protocol": "기타",
+                "rank_order": 82,
+                "src_protocol": "기타",
+                "dst_port": "20001"
+            },
+            {
+                "src_port": "8747",
+                "packet_bytes": 82228535296,
+                "dst_protocol": "https",
+                "rank_order": 83,
+                "src_protocol": "기타",
+                "dst_port": "443"
+            },
+            {
+                "src_port": "443",
+                "packet_bytes": 80169861120,
+                "dst_protocol": "기타",
+                "rank_order": 84,
+                "src_protocol": "https",
+                "dst_port": "43471"
+            },
+            {
+                "src_port": "443",
+                "packet_bytes": 79974277120,
+                "dst_protocol": "기타",
+                "rank_order": 85,
+                "src_protocol": "https",
+                "dst_port": "54475"
+            },
+            {
+                "src_port": "443",
+                "packet_bytes": 78952751104,
+                "dst_protocol": "기타",
+                "rank_order": 86,
+                "src_protocol": "https",
+                "dst_port": "41463"
+            },
+            {
+                "src_port": "63715",
+                "packet_bytes": 78006394880,
+                "dst_protocol": "https",
+                "rank_order": 87,
+                "src_protocol": "기타",
+                "dst_port": "443"
+            },
+            {
+                "src_port": "443",
+                "packet_bytes": 77636993024,
+                "dst_protocol": "기타",
+                "rank_order": 88,
+                "src_protocol": "https",
+                "dst_port": "9851"
+            },
+            {
+                "src_port": "443",
+                "packet_bytes": 75028520960,
+                "dst_protocol": "기타",
+                "rank_order": 89,
+                "src_protocol": "https",
+                "dst_port": "51983"
+            },
+            {
+                "src_port": "443",
+                "packet_bytes": 73054658560,
+                "dst_protocol": "기타",
+                "rank_order": 90,
+                "src_protocol": "https",
+                "dst_port": "65523"
+            },
+            {
+                "src_port": "7512",
+                "packet_bytes": 71820156928,
+                "dst_protocol": "https",
+                "rank_order": 91,
+                "src_protocol": "기타",
+                "dst_port": "443"
+            },
+            {
+                "src_port": "443",
+                "packet_bytes": 71811555328,
+                "dst_protocol": "기타",
+                "rank_order": 92,
+                "src_protocol": "https",
+                "dst_port": "44080"
+            },
+            {
+                "src_port": "65460",
+                "packet_bytes": 71411499008,
+                "dst_protocol": "https",
+                "rank_order": 93,
+                "src_protocol": "기타",
+                "dst_port": "443"
+            },
+            {
+                "src_port": "443",
+                "packet_bytes": 71111770112,
+                "dst_protocol": "기타",
+                "rank_order": 94,
+                "src_protocol": "https",
+                "dst_port": "37651"
+            },
+            {
+                "src_port": "443",
+                "packet_bytes": 69808283648,
+                "dst_protocol": "기타",
+                "rank_order": 95,
+                "src_protocol": "https",
+                "dst_port": "39769"
+            },
+            {
+                "src_port": "443",
+                "packet_bytes": 69435777024,
+                "dst_protocol": "기타",
+                "rank_order": 96,
+                "src_protocol": "https",
+                "dst_port": "54112"
+            },
+            {
+                "src_port": "65284",
+                "packet_bytes": 67478929408,
+                "dst_protocol": "https",
+                "rank_order": 97,
+                "src_protocol": "기타",
+                "dst_port": "443"
+            },
+            {
+                "src_port": "443",
+                "packet_bytes": 64444776448,
+                "dst_protocol": "기타",
+                "rank_order": 98,
+                "src_protocol": "https",
+                "dst_port": "65440"
+            },
+            {
+                "src_port": "44519",
+                "packet_bytes": 64254001152,
+                "dst_protocol": "기타",
+                "rank_order": 99,
+                "src_protocol": "기타",
+                "dst_port": "40024"
+            },
+            {
+                "src_port": "38753",
+                "packet_bytes": 63600771072,
+                "dst_protocol": "기타",
+                "rank_order": 100,
+                "src_protocol": "기타",
+                "dst_port": "50328"
+            }
+        ]
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/selectList/SELECT_APP_TRAFFIC_TOP_LIST",
+        "urlOrigin": "/selectList/SELECT_APP_TRAFFIC_TOP_LIST",
+        "params": null,
+        "data": "{\"src_protocol\":\"\",\"src_port\":\"\",\"dst_protocol\":\"\",\"dst_port\":\"\",\"top_n\":\"\",\"limit\":50,\"page\":2,\"encrypt\":\"5Kzjh581R62Y8sEMct0=\"}"
+    },
+    "requestTime": "2024-12-11 08:40:05.096",
+    "responseTime": "2024-12-11 08:40:08.864",
+    "duration": 3768
+}
