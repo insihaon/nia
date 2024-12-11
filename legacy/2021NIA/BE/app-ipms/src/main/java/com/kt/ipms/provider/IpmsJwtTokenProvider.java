@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -29,15 +29,17 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class IpmsJwtTokenProvider extends BaseJwtTokenProvider { // JWT 토큰을 생성 및 검증 모듈
 
+    @Lazy
     @Autowired
-    @Qualifier("ipmsUserDetailsServiceImpl")
+    // @Qualifier("ipmsUserDetailsServiceImpl")
     private final IpmsUserDetailsServiceImpl ipmsUserDetailsService;
 
     public IpmsJwtTokenProvider() {
         ipmsUserDetailsService = null;
     }
 
-    private UserDetailsService getDetailService() {
+    @Override
+    protected UserDetailsService getDetailService() {
         return ipmsUserDetailsService;
     }
     // Jwt 토큰 생성

@@ -66,7 +66,7 @@ public class BaseJwtTokenProvider<T> { // JWT 토큰을 생성 및 검증 모듈
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
-    private UserDetailsService getDetailService() {
+    protected UserDetailsService getDetailService() {
         return userDetailsService;
     }
 
