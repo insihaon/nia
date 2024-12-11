@@ -20,11 +20,11 @@ import com.codej.base.dto.response.BaseResponse;
 import com.codej.base.dto.response.SingleResponse;
 import com.codej.base.exception.CSigninFailedException;
 import com.codej.base.utils.JsonUtil;
-import com.codej.web.controller.AbsAuthController;
-import com.codej.base.provider.BaseJwtTokenProvider;
-import com.codej.web.service.ResponseService;
-import com.codej.nia.service.NiaUserService;
+import com.codej.nia.provider.NiaJwtTokenProvider;
 import com.codej.nia.service.NiaService;
+import com.codej.nia.service.NiaUserService;
+import com.codej.web.controller.AbsAuthController;
+import com.codej.web.service.ResponseService;
 import com.google.gson.JsonObject;
 
 import lombok.extern.slf4j.Slf4j;
@@ -46,7 +46,7 @@ public class AuthController extends AbsAuthController {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private BaseJwtTokenProvider baseJwtTokenProvider;
+    private NiaJwtTokenProvider niaJwtTokenProvider;
 
     @Autowired
     private AppDto appDto;
@@ -81,7 +81,7 @@ public class AuthController extends AbsAuthController {
         user.setPassword(null);
         user.setIpAddress(address);
 
-        String token = baseJwtTokenProvider.createToken(user, address);
+        String token = niaJwtTokenProvider.createToken(user, address);
 
         // User 정보와 토큰 정보를 반환
         HashMap<String, Object> mapUser = JsonUtil.convertObjectToMap(user);
@@ -111,8 +111,8 @@ public class AuthController extends AbsAuthController {
         
         try {
             JsonObject json = decryptRequestParameter(body);
-            String token = baseJwtTokenProvider.resolveToken(request);
-            DbUser currentUser = baseJwtTokenProvider.getUserDetails(token);
+            String token = niaJwtTokenProvider.resolveToken(request);
+            DbUser currentUser = niaJwtTokenProvider.getUserDetails(token);
             BaseUser dbUser = getService().loginFromDb(currentUser.getUid(), currentUser.getPassword());
             
             String orgPassword = json.get("orgpassword").getAsString();
