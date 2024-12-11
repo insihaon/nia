@@ -127,7 +127,7 @@
         <tr>
           <th>서비스망</th>
           <td class="flex">
-            <el-select v-model="updSsvcLineTypeCd" class="w-100" name="ssvcLineTypeCd" size="small" @change="handleChangeLvl1()">
+            <el-select v-model="updSsvcLineTypeCd" class="w-100" popper-class="ssvcLineTypeCd" size="small" @change="handleChangeLvl1()">
               <el-option label="전체" value=""><span class="w-100 h-100 d-inline-block">전체</span></el-option>
               <el-option
                 v-for="item in ssvcLineTypeNmOp"
@@ -139,7 +139,7 @@
           </td>
           <th>본부</th>
           <td>
-            <el-select v-model="updSsvcGroupCd" class="w-100" :disabled="isDisabled" name="ssvcGroupCd" size="small" @change="handleChangeLvl2()">
+            <el-select v-model="updSsvcGroupCd" class="w-100" :disabled="isDisabled" popper-class="ssvcGroupCd" size="small" @change="handleChangeLvl2()">
               <el-option
                 v-for="item in ssvcGroupNmOp"
                 :key="item.value"
@@ -150,7 +150,7 @@
           </td>
           <th>노드</th>
           <td>
-            <el-select v-model="updSsvcObjCd" class="w-100" :disabled="isDisabled" name="ssvcObjCd" size="small">
+            <el-select v-model="updSsvcObjCd" class="w-100" :disabled="isDisabled" popper-class="ssvcObjCd" size="small">
               <el-option
                 v-for="item in ssvcObjNmOp"
                 :key="item.value"
@@ -172,7 +172,7 @@
           <tr>
             <th>변경 사유</th>
             <td>
-              <el-select v-model="sCommentType" size="small">
+              <el-select v-model="sCommentType" size="small" popper-class="reason">
                 <el-option
                   v-for="item in sCommentOptions"
                   :key="item.value"
