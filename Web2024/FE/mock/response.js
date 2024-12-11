@@ -1,5 +1,6 @@
 var path = require('path')
 var fs = require('fs')
+const { forEach } = require('./route/json')
 
 function responseJson(config) {
   console.log('url'.padStart(17), ':', config.url)
@@ -51,7 +52,7 @@ function getSimilarFileName (dirPath, jsonFileName) {
   const prefix = (jsonFileName + '').split('_')[0]
   const list = fs.readdirSync(path.join(__dirname, dirPath)).filter(file => file.startsWith(prefix) && file.endsWith('.json'))
 
-  const existFileName = findSimilarityAlgorithm(list, jsonFileName)
+  const existFileName = findSimilarityAlgorithm(list, jsonFileName, dirPath)
   // const existFileName = findSortAlgorithm(list, jsonFileName)
 
   // 5. jsonFileName 을 삽입했던 위치(삽입 후 인덱스) 반환
@@ -176,23 +177,54 @@ function jaccardAlgorithm(str1, str2) {
   return intersection.size / union.size
 }
 
-function findSimilarityAlgorithm(list, jsonFileName) {
+function findSimilarityAlgorithm(list, jsonFileName, dirPath) {
   let rate = 0
   let index = 0
+  const candidateFiles = []
+  const rateList = []
+
+  // 유사도 계산
   for (let i = 0; i < list.length; i++) {
     const str1 = (list[i] + '').split('_')[1]
     const str2 = (jsonFileName + '').split('_')[1]
     const curRate = jaccardAlgorithm(str1, str2)
-    // const curRate = levenshteinAlgorithm(str1, str2)
-    // const curRate = lcsAlgorithm(str1, str2)
     // console.log(curRate.toFixed(3), list[i])
+
+    rateList.push(curRate)
+
     if (rate <= curRate) {
       index = i
       rate = curRate
     }
   }
-  // console.log(jsonFileName, list[index])
 
+  // 유사도가 threshold 범위에 해당하는 파일을 수집
+  // 데이터가 없는 응답을 최소화 하기 위함
+  const threshold = 0.1
+  for (let i = 0; i < rateList.length; i++) {
+    if (Math.abs(rateList[i] - rate) <= threshold) {
+      candidateFiles.push(list[i])
+    }
+  }
+
+  // 후보 파일 중 가장 파일 용량이 큰 파일 찾기
+  if (candidateFiles.length > 0) {
+    let largestFile = candidateFiles[0]
+    let largestPath = path.join(__dirname, dirPath, candidateFiles[0])
+    let largestSize = fs.statSync(largestPath).size
+
+    for (let i = 1; i < candidateFiles.length; i++) {
+      largestPath = path.join(__dirname, dirPath, candidateFiles[i])
+      const currentSize = fs.statSync(largestPath).size
+      if (currentSize > largestSize) {
+        largestFile = candidateFiles[i]
+        largestSize = currentSize
+      }
+    }
+    return largestFile
+  }
+
+  // 후보가 없으면 유사도가 가장 높은 파일 반환
   return list[index]
 }
 
