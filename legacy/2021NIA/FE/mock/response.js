@@ -31,10 +31,8 @@ function responseJson(config) {
   // console.log('jsonObject: ', jsonObject)
   console.log('--------------------------------------------------------------------------------------------------------------------------------')
 
-  // __body: response data
-  // __config: 요청 정보
-  return jsonObject.__body
-  // return jsonObject.data
+  const bodyKey = param.bodyKey || 'data' || '__body'
+  return jsonObject[bodyKey]
 }
 
 function findSimilarFile(dirPath, jsonFileName) {
