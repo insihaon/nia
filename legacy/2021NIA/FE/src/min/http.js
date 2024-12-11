@@ -94,6 +94,7 @@ service.interceptors.response.use(
         debugLog(`response.status=${response.status}`)
         return res
       case 401:
+      case 403:
         debugLog(`response.status=${response.status}`)
         logout()
       // eslint-disable-next-line no-fallthrough
@@ -116,9 +117,14 @@ service.interceptors.response.use(
     if (useServiceLog) {
       store.dispatch('serviceLog/addServiceErrorLog', error)
 
-      if (error && error.response && error.response.status === 401) {
-        debugLog(`error.response.status=`, 401)
-        logout()
+      if (error && error.response) {
+        switch (error.response.status) {
+          case 401:
+          case 403:
+            debugLog(`error.response.status=`, error.response.status)
+            logout()
+            break
+        }
       }
 
       wait(500).then(() => {
