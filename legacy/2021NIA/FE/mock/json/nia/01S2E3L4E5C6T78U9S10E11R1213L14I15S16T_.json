@@ -238,9 +238,9 @@
         "url": "/selectList/SELECT_USER_LIST",
         "urlOrigin": "/selectList/SELECT_USER_LIST",
         "params": null,
-        "data": "{\"encrypt\":\"eelYBQREggrjkn8Hnaw=\"}"
+        "data": "{\"encrypt\":\"bRiGOhboicXsl8Dt6cA=\"}"
     },
-    "requestTime": "2024-12-11 08:37:10.612",
-    "responseTime": "2024-12-11 08:37:10.661",
-    "duration": 49
+    "requestTime": "2024-12-11 10:22:03.268",
+    "responseTime": "2024-12-11 10:22:03.335",
+    "duration": 67
 }
