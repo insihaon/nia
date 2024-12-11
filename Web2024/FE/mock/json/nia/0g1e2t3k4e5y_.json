@@ -1,0 +1,25 @@
+{
+    "jsonFileName": "0g1e2t3k4e5y_.json",
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": null,
+        "total": null,
+        "result": {
+            "m": "b74625b14cf214fd30d3bca87313575c94a9038c35eed3cd3b5167ff2807603ec63c37734b6a77bc58f363c537d7a1ede38f79e36ca264958c099f9257765af89c53af408c24f644e06d36b35f47299f2e069cae509fdf5829936ccead657a1a3975e9ff0deddaeb7dd6a640de743c7adfb44712bd3bec816bf056be868d0719",
+            "e": "10001"
+        }
+    },
+    "status": 200,
+    "config": {
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "getkey",
+        "urlOrigin": "getkey",
+        "params": null,
+        "data": "{\"encrypt\":\"vE8ric4JUJe3YWVOLW8=\"}"
+    },
+    "requestTime": "2024-12-11 08:36:14.304",
+    "responseTime": "2024-12-11 08:36:14.446",
+    "duration": 142
+}

@@ -1,0 +1,276 @@
+{
+    "jsonFileName": "01S2E3L4E5C6T78U9N10I11D12E13N14T15I16F17I18E19D2021A22G23E24N25C26Y2728L29I30S31T_limit50page1.json",
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [
+            "SELECT\n        UO.NODE_ID AS NREN_ID,\n        UO.NREN_NAME AS NREN_NAME,\n        N.IP_ADDR AS NREN_IP\n        FROM RESOURCE.TB_USER_ORGAN UO\n        INNER JOIN RESOURCE.TB_NODE_MST N ON N.NODE_ID = UO.NODE_ID\n            LIMIT 50 OFFSET 0"
+        ],
+        "total": 122,
+        "result": [
+            {
+                "nren_ip": "116.89.169.63",
+                "nren_id": "busan-5812",
+                "nren_name": "부산테크노파크강서"
+            },
+            {
+                "nren_ip": "116.89.169.33",
+                "nren_id": "pangyo-5812",
+                "nren_name": "다리소프트(본사)"
+            },
+            {
+                "nren_ip": "116.89.169.13",
+                "nren_id": "seoul-5812",
+                "nren_name": "한국방송공사KBS"
+            },
+            {
+                "nren_ip": "116.89.169.13",
+                "nren_id": "seoul-5812",
+                "nren_name": "코위버"
+            },
+            {
+                "nren_ip": "116.89.169.33",
+                "nren_id": "pangyo-5812",
+                "nren_name": "용인세브란스병원"
+            },
+            {
+                "nren_ip": "116.89.169.101",
+                "nren_id": "suwon-5812",
+                "nren_name": "쿨클라우드"
+            },
+            {
+                "nren_ip": "116.89.169.13",
+                "nren_id": "seoul-5812",
+                "nren_name": "퓨쳐시스템"
+            },
+            {
+                "nren_ip": "116.89.169.13",
+                "nren_id": "seoul-5812",
+                "nren_name": "강남세브란스병원"
+            },
+            {
+                "nren_ip": "116.89.169.71",
+                "nren_id": "jeju-5812",
+                "nren_name": "제주테크노파크디지털융합센터"
+            },
+            {
+                "nren_ip": "116.89.169.21",
+                "nren_id": "daejeon-7712",
+                "nren_name": "대전-서울"
+            },
+            {
+                "nren_ip": "116.89.169.13",
+                "nren_id": "seoul-5812",
+                "nren_name": "서울-수원"
+            },
+            {
+                "nren_ip": "116.89.169.63",
+                "nren_id": "busan-5812",
+                "nren_name": "LSTME"
+            },
+            {
+                "nren_ip": "116.89.169.23",
+                "nren_id": "daejeon-5812",
+                "nren_name": "에스앤티소프트"
+            },
+            {
+                "nren_ip": "116.89.169.13",
+                "nren_id": "seoul-5812",
+                "nren_name": "문엔지니어링#2"
+            },
+            {
+                "nren_ip": "116.89.169.63",
+                "nren_id": "busan-5812",
+                "nren_name": "엔디소프트"
+            },
+            {
+                "nren_ip": "116.89.169.101",
+                "nren_id": "suwon-5812",
+                "nren_name": "수원-서울"
+            },
+            {
+                "nren_ip": "116.89.169.101",
+                "nren_id": "suwon-5812",
+                "nren_name": "엑사비스"
+            },
+            {
+                "nren_ip": "116.89.169.13",
+                "nren_id": "seoul-5812",
+                "nren_name": "클릭트"
+            },
+            {
+                "nren_ip": "116.89.169.13",
+                "nren_id": "seoul-5812",
+                "nren_name": "서울보라매병원"
+            },
+            {
+                "nren_ip": "116.89.169.91",
+                "nren_id": "chuncheon-5812",
+                "nren_name": "춘천-서울5812via219(Main)"
+            },
+            {
+                "nren_ip": "116.89.169.33",
+                "nren_id": "pangyo-5812",
+                "nren_name": "차세대융합기술연구원"
+            },
+            {
+                "nren_ip": "116.89.169.13",
+                "nren_id": "seoul-5812",
+                "nren_name": "서울-전주5812"
+            },
+            {
+                "nren_ip": "116.89.169.11",
+                "nren_id": "seoul-7712",
+                "nren_name": "서울-대전7712"
+            },
+            {
+                "nren_ip": "116.89.169.13",
+                "nren_id": "seoul-5812",
+                "nren_name": "TEIN-CC"
+            },
+            {
+                "nren_ip": "116.89.169.11",
+                "nren_id": "seoul-7712",
+                "nren_name": "서울-대전7712"
+            },
+            {
+                "nren_ip": "116.89.169.33",
+                "nren_id": "pangyo-5812",
+                "nren_name": "경기도경제과학진흥원(GBSA)"
+            },
+            {
+                "nren_ip": "116.89.169.21",
+                "nren_id": "daejeon-7712",
+                "nren_name": "대전-판교"
+            },
+            {
+                "nren_ip": "116.89.169.13",
+                "nren_id": "seoul-5812",
+                "nren_name": "플레이스비"
+            },
+            {
+                "nren_ip": "116.89.169.13",
+                "nren_id": "seoul-5812",
+                "nren_name": "사이버텔브릿지"
+            },
+            {
+                "nren_ip": "116.89.169.13",
+                "nren_id": "seoul-5812",
+                "nren_name": "순천향대학병원"
+            },
+            {
+                "nren_ip": "116.89.169.13",
+                "nren_id": "seoul-5812",
+                "nren_name": "세종대학교산학협력단"
+            },
+            {
+                "nren_ip": "116.89.169.33",
+                "nren_id": "pangyo-5812",
+                "nren_name": "(주)제로원에이아이"
+            },
+            {
+                "nren_ip": "116.89.169.13",
+                "nren_id": "seoul-5812",
+                "nren_name": "알티넷"
+            },
+            {
+                "nren_ip": "116.89.169.13",
+                "nren_id": "seoul-5812",
+                "nren_name": "비자림"
+            },
+            {
+                "nren_ip": "116.89.169.13",
+                "nren_id": "seoul-5812",
+                "nren_name": "안양대학교"
+            },
+            {
+                "nren_ip": "116.89.169.13",
+                "nren_id": "seoul-5812",
+                "nren_name": "연세의료원"
+            },
+            {
+                "nren_ip": "203.255.248.102",
+                "nren_id": "daejeon-cxp3",
+                "nren_name": "대전N9K24"
+            },
+            {
+                "nren_ip": "116.89.169.53",
+                "nren_id": "daegu-5812",
+                "nren_name": "구미전자기술정보원"
+            },
+            {
+                "nren_ip": "116.89.169.21",
+                "nren_id": "daejeon-7712",
+                "nren_name": "대전-광주"
+            },
+            {
+                "nren_ip": "116.89.169.53",
+                "nren_id": "daegu-5812",
+                "nren_name": "한국뇌연구원"
+            },
+            {
+                "nren_ip": "116.89.169.43",
+                "nren_id": "gwangju-5812",
+                "nren_name": "광주ETRI"
+            },
+            {
+                "nren_ip": "116.89.169.33",
+                "nren_id": "pangyo-5812",
+                "nren_name": "한국정보통신기술협회(TTA)"
+            },
+            {
+                "nren_ip": "116.89.169.23",
+                "nren_id": "daejeon-5812",
+                "nren_name": "건국대학교대전창의연구소"
+            },
+            {
+                "nren_ip": "116.89.169.13",
+                "nren_id": "seoul-5812",
+                "nren_name": "삼성서울병원"
+            },
+            {
+                "nren_ip": "116.89.169.33",
+                "nren_id": "pangyo-5812",
+                "nren_name": "우리넷"
+            },
+            {
+                "nren_ip": "116.89.169.13",
+                "nren_id": "seoul-5812",
+                "nren_name": "중앙대학교산학협력단"
+            },
+            {
+                "nren_ip": "116.89.169.13",
+                "nren_id": "seoul-5812",
+                "nren_name": "스트라토"
+            },
+            {
+                "nren_ip": "116.89.169.23",
+                "nren_id": "daejeon-5812",
+                "nren_name": "코드제이"
+            },
+            {
+                "nren_ip": "116.89.169.63",
+                "nren_id": "busan-5812",
+                "nren_name": "부산테크노파크센텀"
+            },
+            {
+                "nren_ip": "116.89.169.13",
+                "nren_id": "seoul-5812",
+                "nren_name": "한양대학교병원"
+            }
+        ]
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/selectList/SELECT_UNIDENTIFIED_AGENCY_LIST",
+        "urlOrigin": "/selectList/SELECT_UNIDENTIFIED_AGENCY_LIST",
+        "params": null,
+        "data": "{\"nren_name\":\"\",\"nren_ip\":\"\",\"limit\":50,\"page\":1,\"encrypt\":\"4Q2Dp4gjtMF6K4ZtKTg=\"}"
+    },
+    "requestTime": "2024-12-11 08:40:20.802",
+    "responseTime": "2024-12-11 08:40:20.924",
+    "duration": 122
+}
