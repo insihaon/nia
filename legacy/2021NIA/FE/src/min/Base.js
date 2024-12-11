@@ -547,8 +547,8 @@ const Base = {
     },
     formatterTimeStamp(time, formatStr = 'YYYY-MM-DD HH:mm:ss') {
       if (time === null || formatStr.length === 0) {
-        console.error('formatterDateTime ERROR')
-        return
+        // console.error('formatterDateTime ERROR')
+        return ''
       }
       return moment(time).format(formatStr)
     },
