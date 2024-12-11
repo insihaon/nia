@@ -105,7 +105,7 @@ export default {
         { key: 'ApplyStatus', props: { prop_parameterKey: 'progressStatus' } },
         {
           key: 'SortType', props: {
-            label: '등록기간',
+            label: '정렬조건',
             sortTypeDefaultVal: 'dcreate_dt',
             sortOrdrDefaultVal: 'DESC',
             prop_options: [

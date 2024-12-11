@@ -39,26 +39,20 @@
           <tr>
             <th>서비스망</th>
             <td>
-              <el-select v-model="ssvcLineTypeCd" @change="handleChangeLvl1">
-                <el-option v-for="item in svcLineList" :key="item.ssvcLineTypeCd" :value="item.value">
-                  {{ item.label }}
-                </el-option>
+              <el-select v-model="ssvcLineTypeCd" popper-class="ssvcLineTypeCdOp" @change="handleChangeLvl1">
+                <el-option v-for="item in svcLineList" :key="item.ssvcLineTypeCd" :value="item.value" :label="item.label" />
               </el-select>
             </td>
             <th>본부</th>
             <td>
-              <el-select v-model="ssvcGroupCd" @change="handleChangeLvl2">
-                <el-option v-for="item in centerList" :key="item.ssvcGroupCd" :value="item.ssvcGroupCd">
-                  {{ item.ssvcGroupNm }}
-                </el-option>
+              <el-select v-model="ssvcGroupCd" popper-class="ssvcGroupCdOp" @change="handleChangeLvl2">
+                <el-option v-for="item in centerList" :key="item.ssvcGroupCd" :value="item.ssvcGroupCd" :label="item.ssvcGroupNm" />
               </el-select>
             </td>
             <th>노드</th>
             <td>
-              <el-select v-model="ssvcObjCd">
-                <el-option v-for="item in nodeList" :key="item.ssvcObjCd" :value="item.ssvcObjCd">
-                  {{ item.ssvcObjNm }}
-                </el-option>
+              <el-select v-model="ssvcObjCd" popper-class="ssvcObjCdOp">
+                <el-option v-for="item in nodeList" :key="item.ssvcObjCd" :value="item.ssvcObjCd" :label="item.ssvcObjNm" />
               </el-select>
             </td>
           </tr>
@@ -70,7 +64,7 @@
           </tr>
           <tr>
             <th>요청 IP개수 (/24)</th>
-            <td colspan="5" class="textflex">
+            <td colspan="5" class="textflex" style="white-space: nowrap;">
               <el-input
                 v-model="napyIpCnt"
                 type="text"

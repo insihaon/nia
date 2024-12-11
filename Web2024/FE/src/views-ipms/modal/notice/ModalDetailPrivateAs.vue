@@ -195,7 +195,6 @@
       <el-button v-if="viewType === 'create'" type="primary" size="small" icon="el-icon-edit-outline" round @click="fnViewInsertPrvAs()">등록</el-button>
       <el-button type="primary" size="small" icon="el-icon-close" round @click="isClose()">{{ $t('exit') }}</el-button>
     </div>
-
   </el-dialog>
 </template>
 

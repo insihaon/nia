@@ -32,7 +32,7 @@
         <tr>
           <th>공지유형</th>
           <td class="textflex">
-            <el-select v-model="notice.sboardTypeSubCd" size="mini" :disabled="viewType === 'U'">
+            <el-select v-model="notice.sboardTypeSubCd" size="mini" popper-class="noticeType" :disabled="viewType === 'U'">
               <el-option
                 v-for="(typeItem, index) in boardTypes"
                 :key="index"
