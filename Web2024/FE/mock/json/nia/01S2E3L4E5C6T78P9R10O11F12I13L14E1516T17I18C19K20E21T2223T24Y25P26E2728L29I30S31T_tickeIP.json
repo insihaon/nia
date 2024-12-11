@@ -22,9 +22,9 @@
         "url": "/selectList/SELECT_PROFILE_TICKET_TYPE_LIST",
         "urlOrigin": "/selectList/SELECT_PROFILE_TICKET_TYPE_LIST",
         "params": null,
-        "data": "{\"ticket_gb\":\"IP\",\"encrypt\":\"wPsrczlpMAtwxkunlRM=\"}"
+        "data": "{\"ticket_gb\":\"IP\",\"encrypt\":\"DWTffLQ8SHA6i7QvV7E=\"}"
     },
-    "requestTime": "2024-12-11 08:42:24.288",
-    "responseTime": "2024-12-11 08:42:24.355",
-    "duration": 67
+    "requestTime": "2024-12-11 13:14:16.469",
+    "responseTime": "2024-12-11 13:14:16.526",
+    "duration": 57
 }

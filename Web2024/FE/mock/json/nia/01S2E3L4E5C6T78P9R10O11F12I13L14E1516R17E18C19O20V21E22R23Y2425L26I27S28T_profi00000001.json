@@ -23,9 +23,9 @@
         "url": "/selectList/SELECT_PROFILE_RECOVERY_LIST",
         "urlOrigin": "/selectList/SELECT_PROFILE_RECOVERY_LIST",
         "params": null,
-        "data": "{\"profile_num\":\"0000000181\",\"encrypt\":\"TjZOe2BwbXZyWFV4yuc=\"}"
+        "data": "{\"profile_num\":\"0000000181\",\"encrypt\":\"Kq75E9xd0IBqnX3N/nQ=\"}"
     },
-    "requestTime": "2024-12-11 08:42:39.480",
-    "responseTime": "2024-12-11 08:42:39.528",
-    "duration": 48
+    "requestTime": "2024-12-11 13:14:43.213",
+    "responseTime": "2024-12-11 13:14:43.267",
+    "duration": 54
 }
