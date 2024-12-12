@@ -47,9 +47,9 @@
           <col width="30%" />
         </colgroup>
         <tbody>
-          <tr v-if="isViewWire">
+          <tr v-if="isViewWire && fnType === 'update'">
             <th>계위</th>
-            <td v-if="fnType === 'update'">
+            <td>
               {{ formData.ssvcLineTypeNm }} - {{ formData.ssvcGroupNm }} - {{ formData.ssvcObjNm }}
             </td>
           </tr>
