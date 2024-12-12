@@ -294,6 +294,7 @@ class WebSocketManager {
   }
 
   addEventListener(channelName, eventHandler, owner) {
+    if (!this.isConnect()) return
     var listener = {
       channelName,
       eventHandler,
@@ -314,12 +315,14 @@ class WebSocketManager {
   }
 
   removeEventListener(channelName, eventHandler, owner) {
+    if (!this.isConnect()) return
     this.eventListeners = this.eventListeners.filter(function(item) {
       return !(channelName === item.channelName && eventHandler === item.eventHandler && (!owner || owner === item.owner))
     })
   }
 
   removeAllEventListener(owner) {
+    if (!this.isConnect()) return
     if (!owner) return
     this.eventListeners = this.eventListeners.filter(function(item) {
       return !(owner === item.owner)
@@ -327,6 +330,7 @@ class WebSocketManager {
   }
 
   dispatchEvent(event) {
+    if (!this.isConnect()) return
     for (var i = 0; i < this.eventListeners.length; i++) {
       if (event.channelName === null || event.channelName === this.eventListeners[i].channelName) {
         this.eventListeners[i].eventHandler(event)
