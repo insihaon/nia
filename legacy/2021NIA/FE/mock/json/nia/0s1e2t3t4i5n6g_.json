@@ -65,8 +65,8 @@
             "sshPort": 22,
             "sshUser": "",
             "sshPassword": "",
-            "time": 1733873774893,
-            "timeDiff": 5
+            "time": 1733966175299,
+            "timeDiff": 154
         }
     },
     "status": 200,
@@ -77,9 +77,9 @@
         "url": "/setting",
         "urlOrigin": "/setting",
         "params": null,
-        "data": "{\"encrypt\":\"L8tTa93/DTMeKn3gxbI=\"}"
+        "data": "{\"encrypt\":\"KIMtF0wwC7NRKMwdmMo=\"}"
     },
-    "requestTime": "2024-12-11 08:36:14.881",
-    "responseTime": "2024-12-11 08:36:14.898",
-    "duration": 17
+    "requestTime": "2024-12-12 10:16:15.278",
+    "responseTime": "2024-12-12 10:16:15.453",
+    "duration": 175
 }

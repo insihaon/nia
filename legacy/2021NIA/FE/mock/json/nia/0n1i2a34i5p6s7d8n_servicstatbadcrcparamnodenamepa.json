@@ -1,0 +1,34 @@
+{
+    "jsonFileName": "0n1i2a34i5p6s7d8n_servicstatbadcrcparamnodenamepa.json",
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [],
+        "total": 1,
+        "result": {
+            "status": true,
+            "message": "Data Read Complete.",
+            "data": [
+                {
+                    "ifStat": {
+                        "badCrc": 4
+                    },
+                    "ifName": "ce1/1"
+                }
+            ]
+        }
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/nia/ipsdn",
+        "urlOrigin": "/nia/ipsdn",
+        "params": null,
+        "data": "{\"servicePath\":\"stat/badcrc\",\"param\":\"nodename=pangyo-7712&ifname=ce1/1\",\"encrypt\":\"PsD9cZlcHcTAMZptbC4=\"}"
+    },
+    "requestTime": "2024-12-12 10:18:10.334",
+    "responseTime": "2024-12-12 10:18:10.710",
+    "duration": 376
+}

@@ -1,0 +1,65 @@
+{
+    "jsonFileName": "01S2E3L4E5C6T78S9Y10S11L12O13G1415H16I17S18T1920L21I22S23T_nodenmbusan5812limit50page1.json",
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [
+            "SELECT  sysDialog.alarmno,\n                sysDialog.alarmtime,\n                TO_CHAR(sysDialog.alarmtime, 'YYYY-MM-DD HH24:MI:SS') AS syslog_alarmtime,\n                sysDialog.node_num,\n                sysDialog.node_nm,\n                sysDialog.alarmmsg,\n                sysDialog.alarmlvl,\n                sysDialog.etc,\n                sysDialog.rule_id,\n                sysDialog.alarmloc,\n                CASE WHEN sysDialog.status = 'INIT' THEN '발생'\n                WHEN sysDialog.status = 'FIN' THEN '수동 마감'\n                WHEN sysDialog.status = 'AUTO_FIN' THEN '자동 마감'\n                ELSE '-'\n                END AS status\n        FROM    rca.tb_syslog_alarm_mst sysDialog\n             WHERE sysDialog.alarmtime BETWEEN NOW()::timestamp - interval '30 day' AND NOW()::timestamp\n                AND sysDialog.node_nm LIKE '%' || 'busan-5812' || '%'\n                ORDER BY sysDialog.alarmno DESC  \n            LIMIT 50 OFFSET 0"
+        ],
+        "total": 3,
+        "result": [
+            {
+                "rule_id": 2,
+                "alarmmsg": "IFMGR_IF_DOWN_2",
+                "alarmlvl": "7",
+                "etc": "Interface xe38 changed state to down",
+                "alarmno": "14742908",
+                "alarmtime": "2024-11-23T01:13:33.000+09:00",
+                "node_nm": "busan-5812",
+                "node_num": "1720140009483",
+                "alarmloc": "xe38",
+                "syslog_alarmtime": "2024-11-23 01:13:33",
+                "status": "발생"
+            },
+            {
+                "rule_id": 2,
+                "alarmmsg": "IFMGR_IF_DOWN_2",
+                "alarmlvl": "7",
+                "etc": "Interface xe42 changed state to down",
+                "alarmno": "14742906",
+                "alarmtime": "2024-11-23T01:13:32.000+09:00",
+                "node_nm": "busan-5812",
+                "node_num": "1720140009483",
+                "alarmloc": "xe42",
+                "syslog_alarmtime": "2024-11-23 01:13:32",
+                "status": "발생"
+            },
+            {
+                "rule_id": 2,
+                "alarmmsg": "IFMGR_IF_DOWN_2",
+                "alarmlvl": "7",
+                "etc": "Interface xe41 changed state to down",
+                "alarmno": "14742904",
+                "alarmtime": "2024-11-23T01:13:32.000+09:00",
+                "node_nm": "busan-5812",
+                "node_num": "1720140009483",
+                "alarmloc": "xe41",
+                "syslog_alarmtime": "2024-11-23 01:13:32",
+                "status": "발생"
+            }
+        ]
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/selectList/SELECT_SYSLOG_HIST_LIST",
+        "urlOrigin": "/selectList/SELECT_SYSLOG_HIST_LIST",
+        "params": null,
+        "data": "{\"start_date\":null,\"end_date\":null,\"alarmno\":\"\",\"node_nm\":\"busan-5812\",\"node_num\":\"\",\"alarmmsg\":\"\",\"limit\":50,\"page\":1,\"encrypt\":\"MUO2pJGS63F1r2hXbBg=\"}"
+    },
+    "requestTime": "2024-12-12 10:26:28.620",
+    "responseTime": "2024-12-12 10:26:29.181",
+    "duration": 561
+}

@@ -1,0 +1,25 @@
+{
+    "jsonFileName": "01S2E3L4E5C6T78S9O10P1112S13Y14S15L16O17G1819H20I21S22T2324L25I26S27T_limit100page1ISHISTtrueNODENMdaegu5812.json",
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [
+            "SELECT  SYSLOG.ALARMNO\n                , SYSLOG.NODE_NM\n                , SYSLOG.NODE_NUM\n                , SYSLOG.ALARMLOC\n                , TO_CHAR(SYSLOG.ALARMTIME, 'YYYY-MM-DD HH24:MI:SS') AS ALARMTIME\n                , SYSLOG.ALARMMSG\n                , SYSLOG.ETC\n                , SOP.PROC_STATUS\n                , SOP.FAULT_CLASSIFY\n                , SOP.FAULT_TYPE\n                , SOP.FAULT_DETAIL_CONTENT\n                , SOP.ETC_CONTENT\n                , TO_CHAR(SOP.ALARM_OCCUR_TIME, 'YYYY-MM-DD HH24:MI:SS') AS ALARM_OCCUR_TIME\n                , TO_CHAR(SOP.HANDLING_FIN_TIME, 'YYYY-MM-DD HH24:MI:SS') AS HANDLING_FIN_TIME\n                , SOP.HANDLING_FIN_USER\n                , SOP.STATUS\n        FROM    nia.tb_syslog_sop SOP\n        INNER JOIN rca.tb_syslog_alarm_mst SYSLOG ON SOP.ALARMNO = SYSLOG.ALARMNO\n         WHERE (  SOP.HANDLING_FIN_TIME  >  NOW() - INTERVAL '1' MONTH\n                    AND SYSLOG.NODE_NM = 'daegu-5812' ) \n        ORDER BY SYSLOG.ALARMTIME DESC\n            LIMIT 100 OFFSET 0"
+        ],
+        "total": 0,
+        "result": []
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/selectList/SELECT_SOP_SYSLOG_HIST_LIST",
+        "urlOrigin": "/selectList/SELECT_SOP_SYSLOG_HIST_LIST",
+        "params": null,
+        "data": "{\"limit\":100,\"page\":1,\"ISHISTORY\":true,\"ALARM_NO\":\"\",\"NODE_NM\":\"daegu-5812\",\"ALARMLOC\":\"\",\"STATUS\":\"\",\"START_DATE\":\"\",\"END_DATE\":\"\",\"encrypt\":\"BnIoisabofbHHU8haTM=\"}"
+    },
+    "requestTime": "2024-12-12 10:52:39.896",
+    "responseTime": "2024-12-12 10:52:40.028",
+    "duration": 132
+}

@@ -106,9 +106,9 @@
         "url": "/selectList/SELECT_APPLICATION_CODE_LIST",
         "urlOrigin": "/selectList/SELECT_APPLICATION_CODE_LIST",
         "params": null,
-        "data": "{\"encrypt\":\"twKzd6mm/onEtAFiDjc=\"}"
+        "data": "{\"encrypt\":\"sZ+4Iyt5ADEO7ZLl4mE=\"}"
     },
-    "requestTime": "2024-12-11 08:39:59.249",
-    "responseTime": "2024-12-11 08:39:59.293",
-    "duration": 44
+    "requestTime": "2024-12-12 10:22:19.692",
+    "responseTime": "2024-12-12 10:22:19.727",
+    "duration": 35
 }

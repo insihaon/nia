@@ -84,9 +84,9 @@
         "url": "/selectList/SELECT_SYSLOG_RULE_LIST",
         "urlOrigin": "/selectList/SELECT_SYSLOG_RULE_LIST",
         "params": null,
-        "data": "{\"encrypt\":\"ofN/H0JobHhwV/Dhe3g=\"}"
+        "data": "{\"encrypt\":\"voWPU32ROKegNKgblBE=\"}"
     },
-    "requestTime": "2024-12-11 08:40:55.348",
-    "responseTime": "2024-12-11 08:40:55.391",
-    "duration": 43
+    "requestTime": "2024-12-12 10:49:14.683",
+    "responseTime": "2024-12-12 10:49:14.789",
+    "duration": 106
 }

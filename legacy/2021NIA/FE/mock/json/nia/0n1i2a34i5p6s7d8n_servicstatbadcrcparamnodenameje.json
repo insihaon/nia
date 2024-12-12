@@ -1,0 +1,34 @@
+{
+    "jsonFileName": "0n1i2a34i5p6s7d8n_servicstatbadcrcparamnodenameje.json",
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [],
+        "total": 1,
+        "result": {
+            "status": true,
+            "message": "Data Read Complete.",
+            "data": [
+                {
+                    "ifStat": {
+                        "badCrc": 1
+                    },
+                    "ifName": "xe5"
+                }
+            ]
+        }
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/nia/ipsdn",
+        "urlOrigin": "/nia/ipsdn",
+        "params": null,
+        "data": "{\"servicePath\":\"stat/badcrc\",\"param\":\"nodename=jeju-5812&ifname=xe5\",\"encrypt\":\"IzrQPI4tsfurI+yycRQ=\"}"
+    },
+    "requestTime": "2024-12-12 10:18:48.228",
+    "responseTime": "2024-12-12 10:18:48.609",
+    "duration": 381
+}

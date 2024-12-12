@@ -6,7 +6,7 @@
         "sql": [
             "SELECT\n            U.NAME\n            , U.EMAIL\n            , U.AGENCY_NAME\n                ,U.ID\n                , U.PW\n                , U.LVL\n                , TO_CHAR(U.LAST_LOGIN, 'YYYY-MM-DD HH24:MI:SS') AS LAST_LOGIN\n                , U.PHONE_NUMBER\n        FROM nia.tb_user U\n            ORDER BY NAME DESC"
         ],
-        "total": 22,
+        "total": 21,
         "result": [
             {
                 "agency_name": null,
@@ -71,22 +71,12 @@
             {
                 "agency_name": "NOC",
                 "lvl": 7,
-                "last_login": "2024-12-11 08:32:36",
+                "last_login": "2024-12-12 10:12:35",
                 "pw": "{bcrypt}$2a$10$8SD7QH/3qKScytWwFIz92Oh4Sup34H5vXljT29vOvmHb487yITgnm",
                 "name": "dimmby",
                 "phone_number": "02-6191-2081",
                 "id": "dimmby",
                 "email": "test@codejone.com"
-            },
-            {
-                "agency_name": "NOC",
-                "lvl": 3,
-                "last_login": "2024-10-31 15:31:09",
-                "pw": "*C27A133595E5F4C46C5B9D1D06925E8907EDD4B8",
-                "name": "daxnee",
-                "phone_number": "01012345678",
-                "id": "daxnee",
-                "email": "daxnee@codejone.com"
             },
             {
                 "agency_name": "NOC",
@@ -101,7 +91,7 @@
             {
                 "agency_name": "NOC",
                 "lvl": 7,
-                "last_login": "2024-12-04 13:42:12",
+                "last_login": "2024-12-11 15:03:23",
                 "pw": "*4ACFE3202A5FF5CF467898FC58AAB1D615029441",
                 "name": "admin",
                 "phone_number": "0261912081",
@@ -238,9 +228,9 @@
         "url": "/selectList/SELECT_USER_LIST",
         "urlOrigin": "/selectList/SELECT_USER_LIST",
         "params": null,
-        "data": "{\"encrypt\":\"bRiGOhboicXsl8Dt6cA=\"}"
+        "data": "{\"encrypt\":\"G3aY4P7viLhm0dvwz70=\"}"
     },
-    "requestTime": "2024-12-11 10:22:03.268",
-    "responseTime": "2024-12-11 10:22:03.335",
-    "duration": 67
+    "requestTime": "2024-12-12 10:17:42.588",
+    "responseTime": "2024-12-12 10:17:42.677",
+    "duration": 89
 }

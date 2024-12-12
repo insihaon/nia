@@ -66,9 +66,9 @@
         "url": "/selectList/SELECT_EQUIPMENT_LIST",
         "urlOrigin": "/selectList/SELECT_EQUIPMENT_LIST",
         "params": null,
-        "data": "{\"encrypt\":\"mX8RyRqKtMZOYsMVbl8=\"}"
+        "data": "{\"encrypt\":\"IQhe2QTaHQ630xC7Gkk=\"}"
     },
-    "requestTime": "2024-12-11 08:38:49.307",
-    "responseTime": "2024-12-11 08:38:54.097",
-    "duration": 4790
+    "requestTime": "2024-12-12 10:17:30.931",
+    "responseTime": "2024-12-12 10:17:34.249",
+    "duration": 3318
 }

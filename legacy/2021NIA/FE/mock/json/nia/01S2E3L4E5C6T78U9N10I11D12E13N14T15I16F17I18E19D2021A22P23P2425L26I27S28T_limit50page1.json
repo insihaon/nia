@@ -172,9 +172,9 @@
         "url": "/selectList/SELECT_UNIDENTIFIED_APP_LIST",
         "urlOrigin": "/selectList/SELECT_UNIDENTIFIED_APP_LIST",
         "params": null,
-        "data": "{\"protocol\":\"\",\"port_num\":\"\",\"limit\":50,\"page\":1,\"encrypt\":\"kxCBqiYJOBdskNd8vNc=\"}"
+        "data": "{\"protocol\":\"\",\"port_num\":\"\",\"limit\":50,\"page\":1,\"encrypt\":\"rpBSwlwei0cbilqlCv0=\"}"
     },
-    "requestTime": "2024-12-11 08:40:20.802",
-    "responseTime": "2024-12-11 08:40:20.914",
-    "duration": 112
+    "requestTime": "2024-12-12 10:47:04.553",
+    "responseTime": "2024-12-12 10:47:04.743",
+    "duration": 190
 }

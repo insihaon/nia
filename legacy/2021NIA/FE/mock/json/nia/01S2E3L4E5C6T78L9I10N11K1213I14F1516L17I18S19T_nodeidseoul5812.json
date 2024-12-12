@@ -1,0 +1,230 @@
+{
+    "jsonFileName": "01S2E3L4E5C6T78L9I10N11K1213I14F1516L17I18S19T_nodeidseoul5812.json",
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [
+            "SELECT \n            DISTINCT PM.NODE_ID, \n            PM.IF_ID ,\n            IP_ADDR , \n            IF_SPEED\n        FROM RESOURCE.TB_PORT_MST PM\n        WHERE NOT EXISTS (\n            SELECT 1\n            FROM RESOURCE.TB_BACKBONE_LINK BL\n            WHERE BL.SRC_NODE_ID = PM.NODE_ID AND BL.SRC_IF_ID  = PM.IF_ID\n               OR BL.DEST_NODE_ID = PM.NODE_ID AND BL.DEST_IF_ID = PM.IF_ID\n            )\n          AND  PM.NODE_ID = 'seoul-5812' \n          AND IF_OPER_STATUS = 'up'\n        ORDER BY IF_ID"
+        ],
+        "total": 34,
+        "result": [
+            {
+                "if_speed": "10000000000",
+                "if_id": "xe11",
+                "ip_addr": null,
+                "node_id": "seoul-5812"
+            },
+            {
+                "if_speed": "10000000000",
+                "if_id": "xe12",
+                "ip_addr": null,
+                "node_id": "seoul-5812"
+            },
+            {
+                "if_speed": "10000000000",
+                "if_id": "xe13",
+                "ip_addr": null,
+                "node_id": "seoul-5812"
+            },
+            {
+                "if_speed": "10000000000",
+                "if_id": "xe14",
+                "ip_addr": null,
+                "node_id": "seoul-5812"
+            },
+            {
+                "if_speed": "1000000000",
+                "if_id": "xe15",
+                "ip_addr": null,
+                "node_id": "seoul-5812"
+            },
+            {
+                "if_speed": "10000000000",
+                "if_id": "xe16",
+                "ip_addr": null,
+                "node_id": "seoul-5812"
+            },
+            {
+                "if_speed": "10000000000",
+                "if_id": "xe18",
+                "ip_addr": null,
+                "node_id": "seoul-5812"
+            },
+            {
+                "if_speed": "1000000000",
+                "if_id": "xe19",
+                "ip_addr": null,
+                "node_id": "seoul-5812"
+            },
+            {
+                "if_speed": "1000000000",
+                "if_id": "xe20",
+                "ip_addr": null,
+                "node_id": "seoul-5812"
+            },
+            {
+                "if_speed": "1000000000",
+                "if_id": "xe21",
+                "ip_addr": null,
+                "node_id": "seoul-5812"
+            },
+            {
+                "if_speed": "1000000000",
+                "if_id": "xe22",
+                "ip_addr": null,
+                "node_id": "seoul-5812"
+            },
+            {
+                "if_speed": "1000000000",
+                "if_id": "xe23",
+                "ip_addr": null,
+                "node_id": "seoul-5812"
+            },
+            {
+                "if_speed": "1000000000",
+                "if_id": "xe24",
+                "ip_addr": null,
+                "node_id": "seoul-5812"
+            },
+            {
+                "if_speed": "1000000000",
+                "if_id": "xe25",
+                "ip_addr": null,
+                "node_id": "seoul-5812"
+            },
+            {
+                "if_speed": "1000000000",
+                "if_id": "xe27",
+                "ip_addr": null,
+                "node_id": "seoul-5812"
+            },
+            {
+                "if_speed": "1000000000",
+                "if_id": "xe28",
+                "ip_addr": null,
+                "node_id": "seoul-5812"
+            },
+            {
+                "if_speed": "1000000000",
+                "if_id": "xe29",
+                "ip_addr": null,
+                "node_id": "seoul-5812"
+            },
+            {
+                "if_speed": "1000000000",
+                "if_id": "xe30",
+                "ip_addr": null,
+                "node_id": "seoul-5812"
+            },
+            {
+                "if_speed": "1000000000",
+                "if_id": "xe31",
+                "ip_addr": null,
+                "node_id": "seoul-5812"
+            },
+            {
+                "if_speed": "10000000000",
+                "if_id": "xe32",
+                "ip_addr": null,
+                "node_id": "seoul-5812"
+            },
+            {
+                "if_speed": "1000000000",
+                "if_id": "xe33",
+                "ip_addr": null,
+                "node_id": "seoul-5812"
+            },
+            {
+                "if_speed": "1000000000",
+                "if_id": "xe34",
+                "ip_addr": null,
+                "node_id": "seoul-5812"
+            },
+            {
+                "if_speed": "10000000000",
+                "if_id": "xe35",
+                "ip_addr": null,
+                "node_id": "seoul-5812"
+            },
+            {
+                "if_speed": "1000000000",
+                "if_id": "xe36",
+                "ip_addr": null,
+                "node_id": "seoul-5812"
+            },
+            {
+                "if_speed": "1000000000",
+                "if_id": "xe37",
+                "ip_addr": null,
+                "node_id": "seoul-5812"
+            },
+            {
+                "if_speed": "1000000000",
+                "if_id": "xe39",
+                "ip_addr": null,
+                "node_id": "seoul-5812"
+            },
+            {
+                "if_speed": "1000000000",
+                "if_id": "xe41",
+                "ip_addr": null,
+                "node_id": "seoul-5812"
+            },
+            {
+                "if_speed": "10000000000",
+                "if_id": "xe42",
+                "ip_addr": null,
+                "node_id": "seoul-5812"
+            },
+            {
+                "if_speed": "1000000000",
+                "if_id": "xe46",
+                "ip_addr": null,
+                "node_id": "seoul-5812"
+            },
+            {
+                "if_speed": "1000000000",
+                "if_id": "xe47",
+                "ip_addr": null,
+                "node_id": "seoul-5812"
+            },
+            {
+                "if_speed": "10000000000",
+                "if_id": "xe48",
+                "ip_addr": null,
+                "node_id": "seoul-5812"
+            },
+            {
+                "if_speed": "10000000000",
+                "if_id": "xe7",
+                "ip_addr": null,
+                "node_id": "seoul-5812"
+            },
+            {
+                "if_speed": "1000000000",
+                "if_id": "xe8",
+                "ip_addr": null,
+                "node_id": "seoul-5812"
+            },
+            {
+                "if_speed": "10000000000",
+                "if_id": "xe9",
+                "ip_addr": null,
+                "node_id": "seoul-5812"
+            }
+        ]
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/selectList/SELECT_LINK_IF_LIST",
+        "urlOrigin": "/selectList/SELECT_LINK_IF_LIST",
+        "params": null,
+        "data": "{\"node_id\":\"seoul-5812\",\"encrypt\":\"HR0EJgcuH1/91rZvCqg=\"}"
+    },
+    "requestTime": "2024-12-12 10:30:47.023",
+    "responseTime": "2024-12-12 10:30:47.078",
+    "duration": 55
+}

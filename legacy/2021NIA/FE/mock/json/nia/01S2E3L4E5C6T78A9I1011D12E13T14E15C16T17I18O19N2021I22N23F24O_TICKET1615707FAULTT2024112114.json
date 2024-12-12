@@ -1,0 +1,25 @@
+{
+    "jsonFileName": "01S2E3L4E5C6T78A9I1011D12E13T14E15C16T17I18O19N2021I22N23F24O_TICKET1615707FAULTT2024112114.json",
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [
+            "SELECT  \n            FLTBPSIN AS IN_BPS\n            , ROUND(FLTBPSIN_PREDICT::NUMERIC , 2) AS IN_PREDICT\n            , ROUND(FLTBPSIN_THRESHOLD_UPPER::NUMERIC , 2) AS IN_THRESHOLD_UPPER\n            , ROUND(FLTBPSIN_THRESHOLD_LOWER::NUMERIC , 2) AS IN_THRESHOLD_LOWER\n            , FLTBPSIN_ANOMALY AS IN_ANOMALY\n            , FLTBPSOUT AS OUT_BPS\n            , ROUND(FLTBPSOUT_PREDICT::NUMERIC , 2) AS out_predict\n            , ROUND(FLTBPSOUT_THRESHOLD_UPPER::NUMERIC, 2) AS OUT_THRESHOLD_UPPER\n            , ROUND(FLTBPSOUT_THRESHOLD_LOWER::NUMERIC, 2) AS OUT_THRESHOLD_LOWER\n            , FLTBPSOUT_ANOMALY AS OUT_ANOMALY\n        FROM    rca.tb_anomalous_ai_result AR\n        INNER JOIN resource.tb_port_mst PM ON AR.STRIFID = PM.IF_NUM AND AR.STRRESID = PM.NODE_NUM\n        WHERE   PM.node_id= null\n        AND     PM.if_id = null\n        AND     MEASURED_DATETIME = '2024-11-21 14:03:58'::TIMESTAMP"
+        ],
+        "total": 0,
+        "result": []
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/selectOne/SELECT_AI_DETECTION_INFO",
+        "urlOrigin": "/selectOne/SELECT_AI_DETECTION_INFO",
+        "params": null,
+        "data": "{\"TICKET_ID\":\"1615707\",\"FAULT_TIME\":\"2024-11-21 14:03:58\",\"encrypt\":\"jNP4JEEUGFmNS8pQb58=\"}"
+    },
+    "requestTime": "2024-12-12 10:38:46.967",
+    "responseTime": "2024-12-12 10:38:47.025",
+    "duration": 58
+}

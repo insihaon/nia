@@ -32,7 +32,7 @@ window.toSimpleString = toSimpleString
  * 변경방식 : Object 중 한글,영문,숫자에 해당하는 key n글자 value n 글자를 정규표현식 추출 (convertTextV2)
  */
 
-function convertTextV2(obj, maxKeyLength = 5, maxValueLength = 8) {
+function convertTextV2(obj, maxKeyLength = 6, maxValueLength = 10) {
   // 정규 표현식
   const regex = /^[가-힣a-zA-Z0-9]$/
 

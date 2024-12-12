@@ -1,0 +1,236 @@
+{
+    "jsonFileName": "01S2E3L4E5C6T78S9E10L11F1213P14R15O16C17E18S19S2021S22T23A24T25I26S27T28I29C30S_STATISdaySERIESmonthDATE20241101T1.json",
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [
+            "WITH \n        series AS (\n            SELECT generate_series (\n                DATE_TRUNC('month', TO_DATE('2024-11-01T15:00:00.000Z', 'YYYY-MM')::date),\n                DATE_TRUNC('month', TO_DATE('2024-11-01T15:00:00.000Z', 'YYYY-MM')::date) + ('1 ' || 'month')::INTERVAL - ('1 ' || 'day')::INTERVAL,\n            ('1 '|| 'day')::INTERVAL\n            ) AS series_time\n        )\n        SELECT\n            TO_CHAR(series.series_time, 'YYYY-MM-DD') AS series_time,\n            COALESCE(COUNT(CASE WHEN TPD.self_process_group IN ('SO') THEN 1 END), 0) AS SO_TOTALCOUNT,\n            COALESCE(COUNT(CASE WHEN TPD.self_process_group IN ('SO') AND TPD.clos_type = 'A' AND TPD.clos_status = 'Y' THEN 1 END), 0) AS SO_COUNT,\n            COALESCE(COUNT(CASE WHEN TPD.self_process_group IN ('ST') THEN 1 END), 0) AS ST_TOTALCOUNT,\n            COALESCE(COUNT(CASE WHEN TPD.self_process_group IN ('ST') AND TPD.clos_type = 'A' AND TPD.clos_status = 'Y' THEN 1 END), 0) AS ST_COUNT\n        FROM series\n        LEFT JOIN nia.tb_auto_treat_process_dtl TPD ON DATE_TRUNC('day', TPD.occur_time) = series.series_time\n        GROUP BY series_time\n        ORDER BY series_time"
+        ],
+        "total": 30,
+        "result": [
+            {
+                "so_count": 16,
+                "so_totalcount": 16,
+                "series_time": "2024-11-01",
+                "st_count": 0,
+                "st_totalcount": 0
+            },
+            {
+                "so_count": 6,
+                "so_totalcount": 6,
+                "series_time": "2024-11-02",
+                "st_count": 0,
+                "st_totalcount": 0
+            },
+            {
+                "so_count": 2,
+                "so_totalcount": 2,
+                "series_time": "2024-11-03",
+                "st_count": 0,
+                "st_totalcount": 0
+            },
+            {
+                "so_count": 10,
+                "so_totalcount": 10,
+                "series_time": "2024-11-04",
+                "st_count": 0,
+                "st_totalcount": 0
+            },
+            {
+                "so_count": 7,
+                "so_totalcount": 7,
+                "series_time": "2024-11-05",
+                "st_count": 35,
+                "st_totalcount": 149
+            },
+            {
+                "so_count": 14,
+                "so_totalcount": 14,
+                "series_time": "2024-11-06",
+                "st_count": 29,
+                "st_totalcount": 121
+            },
+            {
+                "so_count": 13,
+                "so_totalcount": 13,
+                "series_time": "2024-11-07",
+                "st_count": 2,
+                "st_totalcount": 4
+            },
+            {
+                "so_count": 4,
+                "so_totalcount": 4,
+                "series_time": "2024-11-08",
+                "st_count": 0,
+                "st_totalcount": 0
+            },
+            {
+                "so_count": 0,
+                "so_totalcount": 0,
+                "series_time": "2024-11-09",
+                "st_count": 0,
+                "st_totalcount": 0
+            },
+            {
+                "so_count": 0,
+                "so_totalcount": 0,
+                "series_time": "2024-11-10",
+                "st_count": 0,
+                "st_totalcount": 0
+            },
+            {
+                "so_count": 19,
+                "so_totalcount": 19,
+                "series_time": "2024-11-11",
+                "st_count": 0,
+                "st_totalcount": 0
+            },
+            {
+                "so_count": 7,
+                "so_totalcount": 7,
+                "series_time": "2024-11-12",
+                "st_count": 0,
+                "st_totalcount": 0
+            },
+            {
+                "so_count": 11,
+                "so_totalcount": 11,
+                "series_time": "2024-11-13",
+                "st_count": 0,
+                "st_totalcount": 2
+            },
+            {
+                "so_count": 14,
+                "so_totalcount": 14,
+                "series_time": "2024-11-14",
+                "st_count": 0,
+                "st_totalcount": 0
+            },
+            {
+                "so_count": 8,
+                "so_totalcount": 8,
+                "series_time": "2024-11-15",
+                "st_count": 0,
+                "st_totalcount": 0
+            },
+            {
+                "so_count": 3,
+                "so_totalcount": 3,
+                "series_time": "2024-11-16",
+                "st_count": 0,
+                "st_totalcount": 0
+            },
+            {
+                "so_count": 2,
+                "so_totalcount": 2,
+                "series_time": "2024-11-17",
+                "st_count": 2,
+                "st_totalcount": 4
+            },
+            {
+                "so_count": 8,
+                "so_totalcount": 8,
+                "series_time": "2024-11-18",
+                "st_count": 1,
+                "st_totalcount": 2
+            },
+            {
+                "so_count": 3,
+                "so_totalcount": 3,
+                "series_time": "2024-11-19",
+                "st_count": 1,
+                "st_totalcount": 2
+            },
+            {
+                "so_count": 11,
+                "so_totalcount": 11,
+                "series_time": "2024-11-20",
+                "st_count": 2,
+                "st_totalcount": 4
+            },
+            {
+                "so_count": 3,
+                "so_totalcount": 3,
+                "series_time": "2024-11-21",
+                "st_count": 29,
+                "st_totalcount": 124
+            },
+            {
+                "so_count": 2,
+                "so_totalcount": 2,
+                "series_time": "2024-11-22",
+                "st_count": 9,
+                "st_totalcount": 18
+            },
+            {
+                "so_count": 4,
+                "so_totalcount": 4,
+                "series_time": "2024-11-23",
+                "st_count": 2,
+                "st_totalcount": 14
+            },
+            {
+                "so_count": 2,
+                "so_totalcount": 2,
+                "series_time": "2024-11-24",
+                "st_count": 11,
+                "st_totalcount": 39
+            },
+            {
+                "so_count": 12,
+                "so_totalcount": 12,
+                "series_time": "2024-11-25",
+                "st_count": 0,
+                "st_totalcount": 0
+            },
+            {
+                "so_count": 17,
+                "so_totalcount": 17,
+                "series_time": "2024-11-26",
+                "st_count": 0,
+                "st_totalcount": 0
+            },
+            {
+                "so_count": 10,
+                "so_totalcount": 10,
+                "series_time": "2024-11-27",
+                "st_count": 2,
+                "st_totalcount": 4
+            },
+            {
+                "so_count": 17,
+                "so_totalcount": 17,
+                "series_time": "2024-11-28",
+                "st_count": 1253,
+                "st_totalcount": 2507
+            },
+            {
+                "so_count": 11,
+                "so_totalcount": 11,
+                "series_time": "2024-11-29",
+                "st_count": 0,
+                "st_totalcount": 0
+            },
+            {
+                "so_count": 6,
+                "so_totalcount": 6,
+                "series_time": "2024-11-30",
+                "st_count": 1,
+                "st_totalcount": 2
+            }
+        ]
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/selectList/SELECT_SELF_PROCESS_STATISTICS",
+        "urlOrigin": "/selectList/SELECT_SELF_PROCESS_STATISTICS",
+        "params": null,
+        "data": "{\"STATISTICS_TYPE\":\"day\",\"SERIES_TYPE\":\"month\",\"DATE\":\"2024-11-01T15:00:00.000Z\",\"encrypt\":\"Gaee3yYh6xgSxXBjewQ=\"}"
+    },
+    "requestTime": "2024-12-12 10:16:53.875",
+    "responseTime": "2024-12-12 10:16:53.999",
+    "duration": 124
+}

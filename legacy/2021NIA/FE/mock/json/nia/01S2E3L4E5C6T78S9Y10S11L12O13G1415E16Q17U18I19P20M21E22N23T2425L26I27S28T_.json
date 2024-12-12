@@ -51,9 +51,9 @@
         "url": "/selectList/SELECT_SYSLOG_EQUIPMENT_LIST",
         "urlOrigin": "/selectList/SELECT_SYSLOG_EQUIPMENT_LIST",
         "params": null,
-        "data": "{\"encrypt\":\"H2eQsXUqldCM/JnFxSo=\"}"
+        "data": "{\"encrypt\":\"nbKLFbJ8gdVUMlyUMIo=\"}"
     },
-    "requestTime": "2024-12-11 08:40:52.276",
-    "responseTime": "2024-12-11 08:40:52.554",
-    "duration": 278
+    "requestTime": "2024-12-12 10:26:15.013",
+    "responseTime": "2024-12-12 10:26:15.277",
+    "duration": 264
 }

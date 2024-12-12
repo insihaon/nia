@@ -1,0 +1,38 @@
+{
+    "jsonFileName": "01S2E3L4E5C6T78A9G10E11N12C13Y1415I16F1718I19D2021L22I23S24T_nodenachuncheon5.json",
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [
+            "SELECT DISTINCT IF_ID,\n                IF_SPEED\n        FROM RESOURCE.TB_PORT_MST\n        WHERE NODE_ID = 'chuncheon-5812'\n            AND IF_OPER_STATUS = 'up'\n        ORDER BY IF_ID"
+        ],
+        "total": 3,
+        "result": [
+            {
+                "if_speed": "10000000000",
+                "if_id": "xe1"
+            },
+            {
+                "if_speed": "10000000000",
+                "if_id": "xe2"
+            },
+            {
+                "if_speed": "1000000000",
+                "if_id": "xe41"
+            }
+        ]
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/selectList/SELECT_AGENCY_IF_ID_LIST",
+        "urlOrigin": "/selectList/SELECT_AGENCY_IF_ID_LIST",
+        "params": null,
+        "data": "{\"node_name\":\"chuncheon-5812\",\"encrypt\":\"M7konYTI8HR8lZjc80E=\"}"
+    },
+    "requestTime": "2024-12-12 10:31:27.156",
+    "responseTime": "2024-12-12 10:31:27.211",
+    "duration": 55
+}
