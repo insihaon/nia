@@ -683,18 +683,7 @@ export default {
       } else if (type === 'NTF') {
         this.fn_openWindow('requestForAction', row)
       } else if (type === 'ALARM') {
-        if (row.status === 'FIN' || row.status === 'AUTO_FIN') {
-           this.$confirm('이미 마감된 티켓입니다.', '안내', {
-            confirmButtonText: '확인',
-            cancelButtonText: '취소'
-          }).then(async () => {
-            this.fn_openWindow('aiResponse', { row })
-          }).catch(() => {
-            return
-          })
-        } else {
-          this.fn_openWindow('aiResponse', { row })
-        }
+        this.fn_openWindow('aiResponse', { row })
       } else if (type === 'FIN') {
         this.fn_openWindow('processFin', row)
       } else if (type === 'CONFIG_TEST') {

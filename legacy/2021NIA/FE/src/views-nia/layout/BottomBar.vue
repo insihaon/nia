@@ -14,15 +14,15 @@
         <span class="text-3xl text-red-600 font-bold mx-1">{{ $store.state.nia.transmissionNetworkList.length }}</span>
         <span class="pt-1">건</span>
       </div>
-      <div v-if="isViewport('>', 'sm')" class="alarm-count-list flex flex-nowrap ml-4 pt-1 text-base">
-        <div class="pt-1 font-bold text-base">시스템 현황 모니터링</div>
+      <div class="alarm-count-list flex flex-nowrap ml-4 pt-1 text-base">
+        <div class="pt-1 font-bold text-base" style="white-space: nowrap;   overflow: hidden;">시스템 현황 모니터링</div>
         <div class="ml-2 d-flex font-bold items-center gap-x-2">
           <div
             v-for="system in niaProcess"
             :key="system.name"
             :style="{ color: system.status === 'Y' ? 'lime' : 'red' }"
             :class="{ blinking: system.status === 'N' }"
-            style="border-right: solid 1px #ffffff82;padding-right: 5px;"
+            style="border-right: solid 1px #ffffff82;padding-right: 5px; white-space: nowrap; overflow: hidden;"
           >
             {{ system.name }}
           </div>
@@ -176,6 +176,15 @@ export default {
 <style lang="scss" scoped>
 @import '~@/styles/variables.scss';
 @import '~@/styles/animation.scss';
+
+.system-name {
+  white-space: nowrap; /* 텍스트를 한 줄로 유지 */
+  overflow: hidden;    /* 넘치는 텍스트를 숨김 */
+  text-overflow: ellipsis; /* 넘치는 텍스트를 '...'로 표시 */
+  max-width: 100px;    /* 필요 시 최대 너비 설정 */
+  display: inline-block; /* 블록 요소로 처리 */
+}
+
 .BottomBar {
   width: 100%;
   height: 50px;
