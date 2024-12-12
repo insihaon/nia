@@ -51,14 +51,27 @@
                 </table>
               </el-col>
             </el-card>
-            <el-card shadow="never" :body-style="{'padding': '10px'}" class="mt-1">
+            <el-card shadow="never" :body-style="{'padding': '10px'}" >
               <div slot="header">
                 <div ref="sopList">
                   <span><i class="el-icon-data-line" /> {{ pageType === '최적화' ? '트래픽 상세 정보' : '연관 SOP 리스트' }}</span>
                 </div>
               </div>
               <el-col v-if="pageType === '최적화'">
-                <CompChart :options="trafficChart" :chart-loading="chartLoading" class="h-64" />
+                <el-row :gutter="10" >
+                  <el-col :span="12">
+                    <div slot="header">
+                      <span><i class="el-icon-document" /> TRAFFIC 그래프(MBPS)</span>
+                    </div>
+                    <CompChart :options="trafficChartMbps" :chart-loading="chartLoading" style="width : 370px" class="h-64 w-100" />
+                  </el-col>
+                  <el-col :span="12">
+                    <div slot="header">
+                      <span><i class="el-icon-document" /> TRAFFIC 그래프(PPS)</span>
+                    </div>
+                    <CompChart :options="trafficChartPps" :chart-loading="chartLoading" style="width : 370px" class="h-64 w-100" />
+                  </el-col>
+                </el-row>
               </el-col>
 
               <el-col v-else class="shadow-sm p-1 mt-2">
@@ -296,31 +309,32 @@ export default {
       const columns = this.selectedRow.ticket_type === 'SYSLOG' ? syslogColumns : sopColumns
       return { options, columns, data: this.sopHistList }
     },
-    trafficChart() {
+    trafficChartPps() {
       const { ticket_type } = this.selectedRow
       const chartData = this.trafficChartList
-      const xAxisKey = ticket_type === 'ATT2' ? 'measured_datetime' : 'collect_time'
+      const xAxisKey = ['ATT2', 'FTT'].includes(ticket_type) ? 'measured_datetime' : 'collect_time'
       const markLine = {
         symbol: ['none', 'none'],
         label: { show: false },
         data: [{ xAxis: this.selectedRow?.fault_time || '' }],
       }
+
       let seriesArr = []
-      if (ticket_type === 'ATT2') {
-        const seriesInfo = [
-          { name: 'PPS_IN', value: 'fltpps_in' },
-          { name: 'PPS_OUT', value: 'fltpps_out' },
-          { name: 'MBPS_IN', value: 'fltbps_in' },
-          { name: 'MBPS_OUT', value: 'fltbps_out' },
-        ]
-        seriesArr = seriesInfo.map((item) => {
-          return {
+      if (['ATT2', 'FTT'].includes(ticket_type)) {
+        seriesArr = [
+          {
             markLine,
-            name: item.name,
+            name: 'PPS_IN',
             type: 'line',
-            data: chartData.map((v) => v[item.value]),
-          }
-        })
+            data: chartData.map((v) => v.fltpps_in),
+          },
+          {
+            markLine,
+            name: 'PPS_OUT',
+            type: 'line',
+            data: chartData.map((v) => v.fltpps_out),
+          },
+        ]
       } else {
         seriesArr = [
           {
@@ -336,6 +350,88 @@ export default {
           },
         ]
       }
+
+      return {
+        tooltip: {
+          trigger: 'axis',
+        },
+        dataZoom: [{ type: 'inside' }],
+        xAxis: {
+          type: 'category',
+          data: chartData.map((v) => formatterTime(v[xAxisKey])),
+        },
+        yAxis: {
+          type: 'value',
+        },
+        series: seriesArr,
+      }
+    },
+
+    trafficChartMbps() {
+      const { ticket_type } = this.selectedRow
+      const chartData = this.trafficChartList
+      const xAxisKey = ['ATT2', 'FTT'].includes(ticket_type) ? 'measured_datetime' : 'collect_time'
+      const markLine = {
+        symbol: ['none', 'none'],
+        label: { show: false },
+        data: [{ xAxis: this.selectedRow?.fault_time || '' }],
+      }
+
+      let seriesArr = []
+      if (['ATT2', 'FTT'].includes(ticket_type)) {
+        seriesArr = [
+          {
+            markLine,
+            name: 'MBPS_IN',
+            type: 'line',
+            data: chartData.map((v) => v.fltbps_in),
+            itemStyle: {
+              color: '#ffcc00',
+            },
+          },
+          {
+            markLine,
+            name: 'MBPS_OUT',
+            type: 'line',
+            data: chartData.map((v) => v.fltbps_out),
+            itemStyle: {
+              color: '#ff7043',
+            },
+          },
+          {
+            name: 'THRESHOLD_UPPER',
+            type: 'line',
+            data: chartData.map((v) => v.in_threshold_upper),
+            smooth: true,
+            stack: 'total', // Area Chart
+            itemStyle: {
+              color: 'rgba(200, 200, 200, 0.5)',
+            },
+            areaStyle: {
+              color: 'rgba(200, 200, 200, 0.5)',
+            },
+            lineStyle: {
+              width: 0, // 라인 제거
+            },
+            symbol: 'none', // 점 제거
+          },
+        ]
+      } else {
+        seriesArr = [
+          {
+            markLine,
+            name: 'STRCOUNTS',
+            type: 'line',
+            data: chartData.map((v) => v.strcounts),
+          },
+          {
+            name: 'STRBYTES_COL',
+            type: 'line',
+            data: chartData.map((v) => v.strbytes_col),
+          },
+        ]
+      }
+
       return {
         tooltip: {
           trigger: 'axis',
@@ -361,7 +457,7 @@ export default {
   methods: {
     onCreated() {
       Modal.methods.onCreated.call(this)
-      this.domElement.maxWidth = 600
+      this.domElement.maxWidth = 800
       this.closeOnClickModal = false
     },
     onOpen(model, actionMode) {
@@ -377,7 +473,7 @@ export default {
         widthByPageType = 800
       } else {
         this.onLoadTrafficInfo()
-        widthByPageType = 600
+        widthByPageType = 900
       }
       if (!this.isMobile) {
         this.domElement.maxWidth = widthByPageType
@@ -450,14 +546,6 @@ export default {
     async onOpenAiResponse() {
       const row = this.selectedRow
 
-      /* 마감 상태 여부 확인 */
-      if (row.clos_status === 'Y') {
-        const isConfirmed = await this.onCheckStatus()
-        if (!isConfirmed) {
-          return
-        }
-      }
-
       if (row.ticket_type === 'SYSLOG') {
         this._merge(row, this.syslogInfo)
         this.fn_openWindow('requestForAction', row)
@@ -465,16 +553,6 @@ export default {
         this.fn_openWindow('aiResponse', { row, trafficInfo: this.trafficInfo })
       }
       this.close()
-    },
-    onCheckStatus() {
-      return this.$confirm('이미 마감된 티켓입니다.', '안내', {
-        confirmButtonText: '확인',
-        cancelButtonText: '취소'
-      }).then(() => {
-        return true
-      }).catch(() => {
-        return false
-      })
     },
     onClose() {
       this.sopHistList = []

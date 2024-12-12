@@ -15,8 +15,8 @@ var dialogOpenMixin = {
           component: () => import('@/views-nia/dashBoard/aiResponse'),
           pageTitle: 'AI 장애대응',
           top: '2vh',
-          width: '700',
-          height: '650',
+          width: '1100',
+          height: '750',
           resizeble: true,
         },
         requestForAction: {
@@ -48,7 +48,7 @@ var dialogOpenMixin = {
           pageTitle: '데이터 스냅샷',
           top: '2vh',
           width: '600',
-          height: '300',
+          height: '350',
           resizeble: true,
         },
         sopList: {
@@ -56,7 +56,7 @@ var dialogOpenMixin = {
           pageTitle: 'SOP 이력 조회',
           top: '2vh',
           width: '1200',
-          height: '800',
+          height: '900',
           resizeble: true,
         },
         selfProcessList: {

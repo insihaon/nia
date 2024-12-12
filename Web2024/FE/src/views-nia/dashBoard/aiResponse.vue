@@ -24,22 +24,40 @@
         </el-row>
       </el-card>
 
-      <el-card shadow="never" style="height : 60%" :body-style="{ padding: '10px', height: 'calc(100% - 30px)' }" class="mt-2">
-        <div slot="header">
-          <span><i class="el-icon-document" /> TRAFFIC 그래프</span>
-        </div>
-        <el-row v-if="!isRT">
-          <CompChart :options="trafficChart" :chart-loading="chartLoading" style="height: 300px" />
-        </el-row>
-        <el-row v-else style="height: 250px" class="d-flex items-center justify-center"> 정보가 없습니다. </el-row>
-      </el-card>
+      <el-row :gutter="10" class="mt-2">
+        <el-col :span="12">
+          <el-card shadow="never" style="height: 100%" :body-style="{ padding: '5px', height: 'calc(100% - 30px)' }">
+            <div slot="header">
+              <span><i class="el-icon-document" /> TRAFFIC 그래프(MBPS)</span>
+            </div>
+            <el-row v-if="!isRT">
+              <CompChart :options="trafficChartMbps" class="w-100" :chart-loading="chartLoading" style="height: 300px;" />
+            </el-row>
+            <el-row v-else style="height: 300px" class="d-flex items-center justify-center"> 정보가 없습니다. </el-row>
+          </el-card>
+        </el-col>
+
+        <el-col :span="12">
+          <el-card shadow="never" style="height: 100%" :body-style="{ padding: '5px', height: 'calc(100% - 30px)' }">
+            <div slot="header">
+              <span><i class="el-icon-document" /> TRAFFIC 그래프(PPS)</span>
+            </div>
+            <el-row v-if="!isRT">
+              <CompChart :options="trafficChartPps" class="w-100" :chart-loading="chartLoading" style="height: 300px" />
+            </el-row>
+            <el-row v-else style="height: 300px" class="d-flex items-center justify-center"> 정보가 없습니다. </el-row>
+          </el-card>
+        </el-col>
+      </el-row>
 
       <el-row>
         <el-col align="right" class="mt-2">
+
           <el-button size="mini" type="primary" icon="el-icon-camera" @click.native="fn_openWindow('snapShot', _merge(selectedRow, trafficInfo))"> 데이터 스냅샷 </el-button>
           <el-button size="mini" type="primary" @click.native="fn_openWindow('requestForAction', _merge(selectedRow, trafficInfo))"> 상황전파 </el-button>
           <el-button size="mini" type="primary" @click.native="fn_openWindow('configTest', _merge(selectedRow, trafficInfo))"> 시험 </el-button>
-          <el-button size="mini" type="primary" @click.native="fn_openWindow('processFin', _merge(selectedRow, trafficInfo))"> 마감 </el-button>
+          <el-button v-if="!disabledFin" size="mini" type="primary" @click.native="fn_openWindow('processFin', _merge(selectedRow, trafficInfo))"> 마감 </el-button>
+          <el-button v-if="disabledFin" disabled size="mini" type="danger" > 마감된 티켓입니다 </el-button>
           <el-button size="mini" type="info" icon="el-icon-close" @click.native="$emit('windowClose')">
             {{ $t('exit') }}
           </el-button>
@@ -104,7 +122,10 @@ export default {
     isRT() {
       return this.selectedRow?.ticket_type === 'RT'
     },
-    trafficChart() {
+    disabledFin() {
+      return this.selectedRow?.status === 'FIN' || this.selectedRow?.status === 'AUTO_FIN'
+    },
+    trafficChartPps() {
       const { ticket_type } = this.selectedRow
       const chartData = this.trafficChartList
       const xAxisKey = ['ATT2', 'FTT'].includes(ticket_type) ? 'measured_datetime' : 'collect_time'
@@ -113,22 +134,23 @@ export default {
         label: { show: false },
         data: [{ xAxis: this.selectedRow?.fault_time || '' }],
       }
+
       let seriesArr = []
       if (['ATT2', 'FTT'].includes(ticket_type)) {
-        const seriesInfo = [
-          { name: 'PPS_IN', value: 'fltpps_in' },
-          { name: 'PPS_OUT', value: 'fltpps_out' },
-          { name: 'MBPS_IN', value: 'fltbps_in' },
-          { name: 'MBPS_OUT', value: 'fltbps_out' },
-        ]
-        seriesArr = seriesInfo.map((item) => {
-          return {
+        seriesArr = [
+          {
             markLine,
-            name: item.name,
+            name: 'PPS_IN',
             type: 'line',
-            data: chartData.map((v) => v[item.value]),
-          }
-        })
+            data: chartData.map((v) => v.fltpps_in),
+          },
+          {
+            markLine,
+            name: 'PPS_OUT',
+            type: 'line',
+            data: chartData.map((v) => v.fltpps_out),
+          },
+        ]
       } else {
         seriesArr = [
           {
@@ -144,6 +166,7 @@ export default {
           },
         ]
       }
+
       return {
         tooltip: {
           trigger: 'axis',
@@ -159,6 +182,88 @@ export default {
         series: seriesArr,
       }
     },
+
+    trafficChartMbps() {
+      const { ticket_type } = this.selectedRow
+      const chartData = this.trafficChartList
+      const xAxisKey = ['ATT2', 'FTT'].includes(ticket_type) ? 'measured_datetime' : 'collect_time'
+      const markLine = {
+        symbol: ['none', 'none'],
+        label: { show: false },
+        data: [{ xAxis: this.selectedRow?.fault_time || '' }],
+      }
+
+      let seriesArr = []
+      if (['ATT2', 'FTT'].includes(ticket_type)) {
+        seriesArr = [
+          {
+            markLine,
+            name: 'MBPS_IN',
+            type: 'line',
+            data: chartData.map((v) => v.fltbps_in),
+            itemStyle: {
+              color: '#ffcc00',
+            },
+          },
+          {
+            markLine,
+            name: 'MBPS_OUT',
+            type: 'line',
+            data: chartData.map((v) => v.fltbps_out),
+            itemStyle: {
+              color: '#ff7043',
+            },
+          },
+          {
+            name: 'THRESHOLD_UPPER',
+            type: 'line',
+            data: chartData.map((v) => v.in_threshold_upper),
+            smooth: true,
+            stack: 'total', // Area Chart
+            itemStyle: {
+              color: 'rgba(200, 200, 200, 0.5)',
+            },
+            areaStyle: {
+              color: 'rgba(200, 200, 200, 0.5)',
+            },
+            lineStyle: {
+              width: 0, // 라인 제거
+            },
+            symbol: 'none', // 점 제거
+          },
+        ]
+      } else {
+        seriesArr = [
+          {
+            markLine,
+            name: 'STRCOUNTS',
+            type: 'line',
+            data: chartData.map((v) => v.strcounts),
+          },
+          {
+            name: 'STRBYTES_COL',
+            type: 'line',
+            data: chartData.map((v) => v.strbytes_col),
+          },
+        ]
+      }
+
+      return {
+        tooltip: {
+          trigger: 'axis',
+        },
+        dataZoom: [{ type: 'inside' }],
+        xAxis: {
+          type: 'category',
+          data: chartData.map((v) => formatterTime(v[xAxisKey])),
+        },
+        yAxis: {
+          type: 'value',
+        },
+        series: seriesArr,
+      }
+    },
+
   },
   created() {
     this.selectedRow = this.wdata?.params?.row
@@ -207,6 +312,8 @@ export default {
           chartRes = await apiNTTTrafficChart(param)
         }
         this.trafficChartList = chartRes?.result
+
+        console.log('MBPS Data:', this.trafficChartList.map((v) => v.measured_datetime))
       } catch (error) {
         this.error(error)
       } finally {
