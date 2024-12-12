@@ -95,8 +95,8 @@ export default {
         pageSize: limit,
         currentPage: page
       }
-      if (this.searchModel.lvl_value.length > 0) {
-        const lvl_value = this.searchModel.lvl_value.reduce((accum, current) => {
+      if (this.searchModel?.lvl_value && this.searchModel?.lvl_value.length > 0) {
+        const lvl_value = this.searchModel?.lvl_value.reduce((accum, current) => {
            return accum + current
         })
         Object.assign(param, { LVL_VALUE: lvl_value })

@@ -24,9 +24,10 @@
           <span><i class="el-icon-document" /> AI 결과 피드백</span>
         </div>
         <el-row class="p-2 d-flex">
-          <el-radio v-model="aiFeedback" label="0">일치</el-radio>
-          <el-radio v-model="aiFeedback" label="1">불일치</el-radio>
+          <input v-model="aiFeedback" style="margin-right: 5px;" type="radio" value="0" />일치
+          <input v-model="aiFeedback" style="margin-left:5px; margin-right: 5px;" type="radio" value="1" />불일치
         </el-row>
+
         <el-row class="p-2 d-flex">
           <el-date-picker v-model="period" type="datetimerange" range-separator="To" start-placeholder="시작 시간" end-placeholder="종료 시간" :disabled="aiFeedback === '0'" />
         </el-row>
@@ -91,7 +92,7 @@ export default {
         content: [],
       },
       codeKeys: { gubun: '장애구분', type: '장애유형', content: '조치내용' },
-      aiFeedback: null,
+      aiFeedback: '0',
       fault_type_content: '',
       etcContent: '',
       period: null,
@@ -230,6 +231,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
 ::v-deep .el-select {
   width: 100% !important;
 }
