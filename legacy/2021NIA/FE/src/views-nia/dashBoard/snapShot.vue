@@ -4,12 +4,14 @@
       <component :is="componentLoader" :selected-ticket="selectedRow" :is-modal="true" :is-show-hist="isShowHist" class="h-full" />
     </div>
     <el-row>
-      <el-col align="right">
-        <!-- <el-button size="small" plain class="btn-r" @click.native="onClickShowHist()"> 이력 {{ isShowHist ? '닫기' : '보기' }} </el-button> -->
-        <el-button size="mini" type="info" plain class="btn-r" @click.native="isShowHist = !isShowHist"> 이력 {{ isShowHist ? '닫기' : '보기' }} </el-button>
-        <el-button size="mini" type="info" icon="el-icon-close" @click.native="$emit('windowClose')">
-          {{ $t('exit') }}
-        </el-button>
+      <el-col align="right" >
+        <div class="my-4 mx-4">
+          <!-- <el-button size="small" plain class="btn-r" @click.native="onClickShowHist()"> 이력 {{ isShowHist ? '닫기' : '보기' }} </el-button> -->
+          <el-button size="mini" type="info" plain class="btn-r" @click.native="isShowHist = !isShowHist"> 이력 {{ isShowHist ? '닫기' : '보기' }} </el-button>
+          <el-button size="mini" type="info" icon="el-icon-close" @click.native="$emit('windowClose')">
+            {{ $t('exit') }}
+          </el-button>
+        </div>
       </el-col>
     </el-row>
   </div>
@@ -58,7 +60,7 @@ export default {
     isShowHist(newVal, oldVal) {
       if (newVal !== oldVal) {
         this.$set(this.wdata, 'width', newVal ? 700 : 600)
-        this.$set(this.wdata, 'height', newVal ? 600 : 280)
+        this.$set(this.wdata, 'height', newVal ? 650 : 300)
 
         let x = (window.innerWidth - this.wdata.width) * 0.5 + (this.$store.getters.windows.length - 1) * 20
         let y = (window.innerHeight - this.wdata.height) * 0.5 + (this.$store.getters.windows.length - 1) * 20

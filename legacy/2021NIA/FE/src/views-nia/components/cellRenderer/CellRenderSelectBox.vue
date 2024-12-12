@@ -20,34 +20,31 @@ export default Vue.extend({
     return {
       name: routeName,
       options: [
-        {
-          value: this.CONSTANTS.userGrant.USER.value,
-          label: this.CONSTANTS.userGrant.USER.text,
+        { value: 1,
+          label: '사용자',
         },
-        {
-          value: this.CONSTANTS.userGrant.MANAGER.value,
-          label: this.CONSTANTS.userGrant.MANAGER.text,
+        { value: 2,
+          label: '담당자',
         },
-        {
-          value: this.CONSTANTS.userGrant.ADMIN.value,
-          label: this.CONSTANTS.userGrant.ADMIN.text,
-        },
+        { value: 4,
+          label: '관리자',
+        }
       ],
       authValue: [],
     }
   },
   computed: {},
+  created() {
+  },
   mounted() {
+    // this.options = Object.values(this.CONSTANTS.userGrant).map(v => { return { value: v.value, label: v.text } })
     this.authValue = this.setAuthValue()
   },
   methods: {
     setAuthValue() {
       const authValue = []
-      // this.params.data.lvl를 이진수 문자열로 변환
-      const binaryString = (this.params.data.lvl >>> 0).toString(2)
-
-      // 이진수 문자열을 뒤집어서 각 비트를 확인
-      const reversedBinaryString = binaryString.split('').reverse().join('')
+      const binaryString = (this.params.data.lvl >>> 0).toString(2).padStart(32, '0') // 32비트로 패딩
+      const reversedBinaryString = binaryString.split('').reverse()
 
       this.options.forEach((option, index) => {
         if (reversedBinaryString[index] === '1') {

@@ -230,7 +230,7 @@ export default {
         this.auto_recovery = this.rowInfo.auto_recovery
         this.tableData = []
 
-        this.autoProcTime = [this.rowInfo.auto_process_start_datetime, this.rowInfo.auto_process_end_datetime].filter((time) => time !== null)
+        this.autoProcTime = [this.rowInfo?.auto_process_start_datetime, this.rowInfo?.auto_process_end_datetime].filter((time) => time !== null)
       }
       this.onLoadTicketCode()
       this.onLoadAlarmCode()
@@ -262,7 +262,7 @@ export default {
           this.ticketType = codeData.filter((item) => item.type === 'SWITCH')
         }
         this.ticketType = codeData
-        const matchingItem = this.ticketType.find((item) => item.label === this.rowInfo.ticket_type)
+        const matchingItem = this.ticketType.find((item) => item.label === this.rowInfo?.ticket_type)
         this.ticket_type = matchingItem?.value
       } catch (error) {
         console.error(error)
@@ -280,7 +280,7 @@ export default {
           value: item.fail_type,
         }))
         this.alarmType = codeData
-        const matchingItem = this.alarmType.find((item) => item.label === this.rowInfo.process_type)
+        const matchingItem = this.alarmType.find((item) => item.label === this.rowInfo?.process_type)
         this.process_type = matchingItem?.value
       } catch (error) {
         console.error(error)
@@ -336,16 +336,16 @@ export default {
         this.$message('노드명을 선택하세요')
         return false
       }
+      const isNameExists = this.tableData.some((item) => item.name === selectNode)
+      if (isNameExists) {
+        this.$message('이미 등록된 노드입니다.')
+        return
+      }
       this.$confirm(`${this.selectNode} 노드를 등록 하시겠습니까?`, '노드 등록', {
         confirmButtonText: '확인',
         cancelButtonText: '취소',
         type: 'info',
       }).then(async () => {
-        const isNameExists = this.tableData.some((item) => item.name === selectNode)
-        if (isNameExists) {
-          this.$message('이미 등록된 노드입니다.')
-          return
-        }
           const newNode = { name: selectNode }
           this.tableData.push(newNode)
           try {
@@ -524,6 +524,9 @@ export default {
       this.ticket_type = ''
       this.process_type = ''
       this.tableData = []
+    },
+    onClose() {
+      this.selectNode = ''
     }
   },
 }

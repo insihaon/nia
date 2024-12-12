@@ -9,6 +9,14 @@
         <div id="systeminfo-container">
           <div id="system-name" @click="onClickHeaderLogo()">NIA KOREN</div>
         </div>
+
+        <div v-if="isViewport('<=', 'lg')" id="logout" class="d-flex flex-column align-items-center mx-3" @click="$router.push({ path: '/login' })">
+          <i class="el-icon-unlock" style="font-size: 20px; color: aliceblue; text-align: center; font-weight: 500;" />
+          <button class="button h-5 px-3 bg-transparent text-white rounded" style="font-size: 14px; font-weight: 500" :disabled="buttonDisabled">
+            LogOut
+          </button>
+        </div>
+
         <!-- only parent -->
         <!-- <el-scrollbar ref="scrollHeader" wrap-class="scrollbar-wrapper" :vertical="false" @wheel.native="handleScroll"> -->
         <nav v-if="!isMobile" id="menu-bar" class="h-full">
@@ -31,7 +39,7 @@
       </div>
       <div v-if="!isMobile" id="other-container" style="min-width : 200px" class="flex items-center">
         <div id="function-container">
-          <SvgIcon class="mr-2" type="mdi" :path="path" @click.native="toggleHistoryBar" />
+          <SvgIcon v-if="isViewport('>', 'sm')" class="mr-2" type="mdi" :path="path" @click.native="toggleHistoryBar" />
         </div>
         <div id="user-info">
           <div class="d-flex items-baseline">
@@ -63,7 +71,7 @@
             <el-dropdown-item @click.native="$refs.ModaluserSettings.open()">정보수정</el-dropdown-item>
             <el-dropdown-item @click.native="toggleHistoryBar">방문기록</el-dropdown-item>
             <el-dropdown-item divided @click.native="logout">
-              <span style="display:block;">Log Out</span>
+              <span >Log Out</span>
             </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
