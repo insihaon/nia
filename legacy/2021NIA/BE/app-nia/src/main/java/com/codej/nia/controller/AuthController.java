@@ -103,12 +103,38 @@ public class AuthController extends AbsAuthController {
         return SingleResponse.createResult(response, true);
     }
 
-    @PostMapping(value = "/nia/upserUser")
+    @PostMapping(value = "/nia/insertUser")
     public BaseResponse signup(
+        HttpServletRequest request,
+        @RequestBody HashMap<String, Object> body)
+        throws Exception {
+        
+        try {
+            JsonObject json = decryptRequestParameter(body);
+            String password = json.get("password").getAsString();
+
+            DbUser user = DbUser.builder()
+                .uid(json.get("uid").getAsString())
+                .password(passwordEncoder.encode(password))
+                .name(json.get("name").getAsString())
+                .mobile(json.get("phone").getAsString())
+                .email(json.get("email").getAsString())
+                .agencyName(json.get("agency_name").getAsString())
+                .build();
+
+                getService().INSERT_USER(user);
+                
+        } catch (Exception e) {
+            log.error("insertUser fail ===>{}", e.toString());
+        }
+        return responseService.createSuccessResponse();
+    }
+
+    @PostMapping(value = "/nia/upsertUser")
+    public BaseResponse upsertUser(
             HttpServletRequest request,
             @RequestBody HashMap<String, Object> body)
             throws Exception {
-        
         try {
             JsonObject json = decryptRequestParameter(body);
             String token = niaJwtTokenProvider.resolveToken(request);
@@ -122,20 +148,18 @@ public class AuthController extends AbsAuthController {
             } else {
                 String newPassword = json.get("password").getAsString();
 
-            BaseUser user = DbUser.builder()
-                .uid(json.get("uid").getAsString())
-                .password(passwordEncoder.encode(newPassword))
-                .name(json.get("name").getAsString())
-                .mobile(json.get("phone").getAsString())
-                .email(json.get("email").getAsString())
-                .agencyName(json.get("agency_name").getAsString())
-                .build();
-
+                BaseUser user = DbUser.builder()
+                    .uid(json.get("uid").getAsString())
+                    .password(passwordEncoder.encode(newPassword))
+                    .name(json.get("name").getAsString())
+                    .mobile(json.get("phone").getAsString())
+                    .email(json.get("email").getAsString())
+                    .agencyName(json.get("agency_name").getAsString())
+                    .build();
                 getService().UPSERT_USER(user);
-                
             }
         } catch (Exception e) {
-            log.error("upserUser fail ===>{}", e.toString());
+            log.error("upsertUser fail ===>{}", e.toString());
         }
         return responseService.createSuccessResponse();
 
