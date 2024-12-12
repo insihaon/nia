@@ -43,6 +43,9 @@ const actions = {
     const { method, baseURL, url, params, requestTime, urlOrigin, filePath, fileIndex } = config
     const jsonFileName = config.headers.jsonFileName || getJsonfileName2(urlOrigin, config, project)
 
+    const paramString = (typeof params === 'string') ? params : `'${JSON.stringify(params)}'`
+    const fetch = `fetch('${url}', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': ${paramString}, 'method': '${method}' })`
+
     if (!jsonFileName) return
 
     const log = {
@@ -58,7 +61,8 @@ const actions = {
         url,
         urlOrigin,
         params: params || null,
-        data: config.data || null
+        data: config.data || null,
+        fetch
       },
       requestTime: moment(requestTime).format('YYYY-MM-DD HH:mm:ss.SSS'),
       responseTime: moment(Date.now()).format('YYYY-MM-DD HH:mm:ss.SSS'),
@@ -75,6 +79,9 @@ const actions = {
     const { method, baseURL, url, params, requestTime, urlOrigin, filePath, fileIndex } = config
     const jsonFileName = config.headers.jsonFileName || getJsonfileName2(urlOrigin, config)
 
+    const paramString = (typeof params === 'string') ? params : `'${JSON.stringify(params)}'`
+    const fetch = `fetch('${url}', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': ${paramString}, 'method': '${method}' })`
+
     if (!jsonFileName) return
 
     const log = {
@@ -90,7 +97,8 @@ const actions = {
         url,
         urlOrigin,
         params: params || null,
-        data: config.data || null
+        data: config.data || null,
+        fetch
       },
       requestTime: moment(requestTime).format('YYYY-MM-DD HH:mm:ss.SSS'),
       responseTime: moment(Date.now()).format('YYYY-MM-DD HH:mm:ss.SSS'),

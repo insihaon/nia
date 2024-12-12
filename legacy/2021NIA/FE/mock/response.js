@@ -29,11 +29,10 @@ function responseJson(config) {
   console.log('RES FilePath'.padStart(17), ':', filePath)
 
   const jsonObject = require(filePath)
-  // console.log('jsonObject: ', jsonObject)
+  console.log('jsonObject: ', jsonObject)
   console.log('--------------------------------------------------------------------------------------------------------------------------------')
 
-  const bodyKey = param.bodyKey || 'data' || '__body'
-  return jsonObject[bodyKey]
+  return jsonObject['data'] || jsonObject['__body']
 }
 
 function findSimilarFile(dirPath, jsonFileName) {
