@@ -25,9 +25,13 @@ function utoa(str) {
 function atou(str) {
   try {
     return decodeURIComponent(escape(window.atob(str)))
-  } catch (e) {
-    console.error(e)
-    return window.atob(str)
+  } catch (e1) {
+    // console.error(e)
+    try {
+      return window.atob(str)
+    } catch (e2) {
+      return ''
+    }
   }
 }
 

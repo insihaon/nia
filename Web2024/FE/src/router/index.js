@@ -132,7 +132,6 @@ const createRouter = () => {
     routes2: [...asyncRoutes]
   })
 
-  const anonymousMode = JSON.parse(process.env.VUE_APP_ANONYMOUS_MODE || 'true')
   router.afterEach((to, from) => {
     const { meta } = to
     if (to.name !== 'Login' && meta && isEmptyObject(meta)) {

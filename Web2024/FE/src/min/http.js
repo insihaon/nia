@@ -8,7 +8,7 @@ import { Message, MessageBox } from 'element-ui'
 import moment from 'moment'
 import Encrypt from '@/assets/libs/Encrypt.min'
 
-const { debug, mock, baseURL, project, debugOrDev } = AppOptions.instance
+const { debug, mock, baseURL, project } = AppOptions.instance
 const debugLog = debug ? console.log : () => { /* 빈 블록 사용 금지 */ }
 const clearLog = (debug) ? () => { } : () => { wait(500).then(console.clear) }
 export const __ = { store, AppOptions }

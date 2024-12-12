@@ -143,7 +143,7 @@ const actions = {
     return state.info
   },
 
-  logout({ commit, state, dispatch }) {
+  logout({ commit, state, dispatch }, reload = true) {
     apiLogout(state.token)
 
     commit('SET_TOKEN', '')
@@ -156,7 +156,9 @@ const actions = {
 
     // WebSocketManager.instance.dispose()
     dispatch('tagsView/delAllViews', null, { root: true })
-    window.location.reload()
+    if (reload) {
+      window.location.reload()
+    }
   },
 
   async signup({ commit, dispatch, state }, joinInfo) {
