@@ -20,6 +20,10 @@ const onlyIframe = JSON.parse(process.env.VUE_APP_ONLY_IFRAME || 'false')
 export const _ = { anonymousMode, env: process.env, store }
 
 const getAuthToken = () => getToken()
+const resetToken = () => {
+  store.dispatch('user/resetToken')
+  store.dispatch('user/resetInfo')
+}
 const isWhiteList = (path) => whiteList.indexOf(path) !== -1
 router.beforeEach(onBeforeEach)
 router.afterEach((to, from, next) => {
@@ -27,9 +31,8 @@ router.afterEach((to, from, next) => {
 })
 
 const newSession = JSON.parse(process.env.VUE_APP_USE_F5_SIGNOUT || 'false')
-if (anonymousMode && newSession) {
-  store.dispatch('user/resetToken')
-  store.dispatch('user/resetInfo')
+if (newSession) {
+  resetToken()
 }
 
 async function onBeforeEach(to, from, next) {
@@ -38,6 +41,7 @@ async function onBeforeEach(to, from, next) {
   document.title = getPageTitle(to.meta.title)
 
   if (to.path === '/login') {
+    resetToken()
     next()
     return
   } else if (isWhiteList(to.path)) {

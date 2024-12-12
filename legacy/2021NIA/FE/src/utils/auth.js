@@ -1,4 +1,3 @@
-import Cookies from 'js-cookie'
 import Encrypt from '@/assets/libs/Encrypt.min'
 import { AppOptions } from '@/class/appOptions'
 
@@ -7,6 +6,8 @@ const IPSDN_TOKEN_KEY = 'X-AUTH-IP-TOKEN'
 const INFO_KEY = 'X-AUTH-INFO'
 const isLocalStorage = JSON.parse(process.env.VUE_APP_USE_LOCAL_STORAGE_AUTH || 'false')
 const STORAGE = isLocalStorage ? window.localStorage : window.sessionStorage
+const useEncrypt = AppOptions.instance.debug
+
 export function getToken() {
   const data = STORAGE.getItem(TOKEN_KEY)
   if (data) {
@@ -26,11 +27,11 @@ export function getIpsdnToken() {
 }
 
 export function setToken(token) {
-  token = AppOptions.instance.debug ? token : Encrypt.toEncrypt(token)
+  token = useEncrypt ? token : Encrypt.toEncrypt(token)
   STORAGE.setItem(TOKEN_KEY, token)
 }
 export function setIpsdnToken(token) {
-  token = AppOptions.instance.debug ? token : Encrypt.toEncrypt(token)
+  token = useEncrypt ? token : Encrypt.toEncrypt(token)
   STORAGE.setItem(IPSDN_TOKEN_KEY, token)
 }
 
@@ -43,7 +44,7 @@ export function getInfo() {
   if (data) {
     const raw = data.startsWith('{')
     const info = raw ? JSON.parse(data) : Encrypt.toDecrypt(data)
-    if (AppOptions.instance.debug !== raw) {
+    if (useEncrypt !== raw) {
       setInfo(info)
     }
     return info
@@ -53,7 +54,7 @@ export function getInfo() {
 }
 
 export function setInfo(info) {
-  info = AppOptions.instance.debug ? JSON.stringify(info) : Encrypt.toEncrypt(info)
+  info = useEncrypt ? JSON.stringify(info) : Encrypt.toEncrypt(info)
   STORAGE.setItem(INFO_KEY, info)
 }
 

@@ -15,9 +15,9 @@ export class Storage {
     Encrypt.register(this, APP_DEV)
     this.self = this
     this._data = {
-      isProd: NODE_ENV === 'production',
       debug: NODE_ENV_DEV && APP_DEV,
     }
+    this._load()
   }
 
   get debugOrDev() {
@@ -47,13 +47,15 @@ export class Storage {
     return this._data.debug
   }
 
+  useEncrypt = function () {
+    return !this.isDev()
+  }
+
   _save = function () {
-    const save = () => STORAGE.setItem(STORAGE_KEY, JSON.stringify(this._data))
-    const save2 = () => STORAGE.setItem(STORAGE_KEY, Encrypt.toEncrypt(this._data))
-    if (this.isDev()) {
-      save()
+    if (this.useEncrypt()) {
+      STORAGE.setItem(STORAGE_KEY, Encrypt.toEncrypt(this._data))
     } else {
-      save2()
+      STORAGE.setItem(STORAGE_KEY, JSON.stringify(this._data))
     }
   }
   
@@ -67,7 +69,7 @@ export class Storage {
       loaded = load2()
     }
 
-    _.merge(this._data, loaded.debug ? loaded : {}, param2Obj(location.search))
+    _.merge(this._data, loaded, param2Obj(location.search))
     this._save()
   }
 
