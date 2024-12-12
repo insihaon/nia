@@ -73,11 +73,22 @@ export async function apiSignUp(data) {
     data: data
   })
 }
-/* NIA 회원가입, 정보수정 */
+/* NIA 회원가입 */
+export async function apiNiaInsertUser(data) {
+  data = await encrypt(data)
+  return http({
+    url: '/nia/insertUser',
+    filePath: filePath,
+    sqlId: 'apiUserInsert',
+    method: 'post',
+    data: data
+  })
+}
+/* NIA 정보수정 */
 export async function apiNiaUpsertUser(data) {
   data = await encrypt(data)
   return http({
-    url: '/nia/upserUser',
+    url: '/nia/upsertUser',
     filePath: filePath,
     sqlId: 'apiUserUpsert',
     method: 'post',

@@ -35,7 +35,7 @@
             , update_time
             , phone_number
             , email
-            , agencyName
+            , agency_name
         )
         VALUES
         (

@@ -48,7 +48,7 @@
         <span>
           <input id="ex_chk" type="checkbox"><label for="ex_chk" class="pr-2">아이디 저장</label>
         </span>
-        <span class="pl-2" @click="isJoin= true">회원가입</span>
+        <span class="pl-2" @click="handleClickLoginToJoin()">회원가입</span>
       </div>
     </el-form>
 
@@ -73,8 +73,9 @@
         />
       </el-form-item>
       <el-form-item label="분류" class="join-form-item d-flex" prop="type">
-        <el-radio ref="NOC" v-model="joinForm.agency_name" class="text-white" label="NOC">NOC</el-radio>
-        <el-radio ref="EMS" v-model="joinForm.agency_name" class="text-white" label="EMS">EMS</el-radio>
+        <el-radio ref="NOC" v-model="joinForm.agency_name" label="NOC" class="ml-3">NOC</el-radio>
+        <el-radio ref="EMS" v-model="joinForm.agency_name" label="EMS">EMS</el-radio>
+
       </el-form-item>
       <div id="loginForm" class="d-flex w-full justify-center pt-2">
         <span class="pr-2" style="border-right: 2px solid rgb(255 255 255 / 34%);" @click="isJoin= false">취소</span>
@@ -98,7 +99,7 @@ import { Base } from '@/min/Base.min'
 import { AppOptions } from '@/class/appOptions'
 import { rulesUsername, rulesPassword, rulesRePassword, rulesRequire, rulesTelephone, rulesEmail } from '@/utils/validate'
 import { onDownloadChrome, exceptionLoginFail } from '@/utils/index'
-import { apiNiaUpsertUser } from '@/api/auth'
+import { apiNiaInsertUser } from '@/api/auth'
 
 const routeName = 'Login'
 
@@ -111,10 +112,6 @@ export default {
       loginForm: {
         username: '',
         password: ''
-      },
-      loginRules: {
-        username: rulesUsername(),
-        password: rulesPassword()
       },
       passwordType: 'password',
       capsTooltip: false,
@@ -141,9 +138,15 @@ export default {
     }
   },
   computed: {
+    loginRules() {
+      return {
+        username: rulesUsername(),
+        password: rulesPassword()
+      }
+    },
     joinRules() {
       return {
-        uid: rulesRequire(),
+        uid: rulesUsername(),
         password: rulesPassword('password'),
         repassword: rulesRePassword(this.joinForm.password),
         name: rulesRequire('name'),
@@ -208,6 +211,14 @@ export default {
         }
       })
     },
+    handleClickLoginToJoin() {
+      this.isJoin = true
+      /* 회원가입 화면 전환 시 validate 문구가 사라지지 않아서 추가함 */
+      const el = document.querySelector('.el-form-item__error')
+      if (el) {
+        el.hidden = true
+      }
+    },
     handleJoin() {
       this.$refs.joinForm.validate(async valid => {
         if (!valid) {
@@ -217,10 +228,19 @@ export default {
 
         try {
           this.loading = true
-          const res = await apiNiaUpsertUser(this.joinForm)
+          const res = await apiNiaInsertUser(this.joinForm)
           if (res?.success) {
             await this.confirm('회원가입이 완료되었습니다.<br >로그인 화면으로 이동합니다.', '알림', { dangerouslyUseHTMLString: true })
             this.isJoin = false
+            this.joinForm = {
+              uid: '',
+              password: '',
+              repassword: '',
+              name: '',
+              phone: '',
+              email: '',
+              agency_name: 'NOC'
+            }
           } else {
             await this.confirm('회원가입이 실패하였습니다.<br >관리자에게 문의하세요.', '알림', { dangerouslyUseHTMLString: true })
           }
@@ -362,6 +382,16 @@ $light_gray:#eee;
       .el-form-item__label {
         width: 110px;
         color: white;
+      }
+      .el-radio__label {
+        color: white;
+        font-weight: 600;
+      }
+      .el-radio__inner {
+        border-color: gray;
+        &:after {
+          background-color: white;
+        }
       }
     }
   }

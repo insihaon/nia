@@ -141,10 +141,10 @@ export const rulesNumber = () => [
   { message: 'Data is Only Number', pattern: /^[0-9]+$/ }
 ]
 export const rulesTelephone = () => [
-  { message: 'not in telephone number format.', pattern: /^\d{2,3}-\d{3,4}-\d{4}$/ }
+  { message: '010-0000-0000 형식으로 입력하세요.', pattern: /^\d{2,3}-\d{3,4}-\d{4}$/ }
 ]
 export const rulesEmail = () => [
-  { message: 'not in email format.', validator: validateEmail }
+  { message: 'E-mail 형식으로 입력하세요', validator: validateEmail }
 ]
 export const rulesPhone = () => [
   { message: 'not in phone number format.', pattern: /^01(?:0|1|[6-9])-?([0-9]{3,4})-?([0-9]{4})$/ }
