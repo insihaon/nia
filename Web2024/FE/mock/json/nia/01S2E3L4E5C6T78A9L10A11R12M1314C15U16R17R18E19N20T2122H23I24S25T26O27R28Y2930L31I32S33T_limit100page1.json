@@ -6,12 +6,194 @@
         "sql": [
             "SELECT  TC.TICKET_ID\n                , TC.PARENT_TICKET_ID \n                , TC.FAULT_TIME\n                , CASE WHEN TC.STATUS = 'AUTO_FIN' \n                    THEN TC.TICKET_UPDATE_TIME \n                    ELSE SOP.HANDLING_FIN_TIME \n                 END AS HANDLING_FIN_TIME\n                , TC.TICKET_TYPE\n                , TC.TICKET_RCA_RESULT_DTL_CODE\n                , TC.STATUS \n                , TA.ROOT_CAUSE_SYSNAMEA\n                , TA.ROOT_CAUSE_PORTA\n                , TA.ROOT_CAUSE_SYSNAMEZ\n                , TA.ROOT_CAUSE_PORTZ\n        FROM    rca.tb_rca_ticket_current TC\n        INNER JOIN rca.tb_rca_ticket_al_current TA ON TC.TICKET_ID = TA.TICKET_ID\n        LEFT JOIN NIA.TB_SOP SOP ON TC.TICKET_ID = SOP.TICKET_ID\n         WHERE (  TC.FAULT_TIME  >  RCA.FC_GET_MINUS_DAY(7) ) \n        ORDER BY TC.TICKET_ID DESC\n            LIMIT 100 OFFSET 0"
         ],
-        "total": 229,
+        "total": 243,
         "result": [
             {
                 "ticket_type": "ATT2",
-                "root_cause_sysnamez": "제주-광주",
+                "root_cause_sysnamez": "서울-판교7712",
                 "handling_fin_time": null,
+                "fault_time": "2024-12-12T09:43:00.000+09:00",
+                "root_cause_portz": "ce3/1",
+                "root_cause_sysnamea": "seoul-7712",
+                "parent_ticket_id": "1617050",
+                "ticket_id": "1617055",
+                "root_cause_porta": "ce3/1",
+                "ticket_rca_result_dtl_code": "이상 트래픽(이용기관)",
+                "status": "INIT"
+            },
+            {
+                "ticket_type": "ATT2",
+                "root_cause_sysnamez": "서울-판교7712",
+                "handling_fin_time": null,
+                "fault_time": "2024-12-12T09:39:00.000+09:00",
+                "root_cause_portz": "ce3/1",
+                "root_cause_sysnamea": "seoul-7712",
+                "parent_ticket_id": "1617050",
+                "ticket_id": "1617054",
+                "root_cause_porta": "ce3/1",
+                "ticket_rca_result_dtl_code": "이상 트래픽(이용기관)",
+                "status": "INIT"
+            },
+            {
+                "ticket_type": "ATT2",
+                "root_cause_sysnamez": "판교-서울7712",
+                "handling_fin_time": null,
+                "fault_time": "2024-12-12T09:39:00.000+09:00",
+                "root_cause_portz": "ce1/1",
+                "root_cause_sysnamea": "pangyo-7712",
+                "parent_ticket_id": "1617049",
+                "ticket_id": "1617053",
+                "root_cause_porta": "ce1/1",
+                "ticket_rca_result_dtl_code": "이상 트래픽(이용기관)",
+                "status": "INIT"
+            },
+            {
+                "ticket_type": "ATT2",
+                "root_cause_sysnamez": "서울-판교7712",
+                "handling_fin_time": null,
+                "fault_time": "2024-12-12T09:38:00.000+09:00",
+                "root_cause_portz": "ce3/1",
+                "root_cause_sysnamea": "seoul-7712",
+                "parent_ticket_id": "1617050",
+                "ticket_id": "1617052",
+                "root_cause_porta": "ce3/1",
+                "ticket_rca_result_dtl_code": "이상 트래픽(이용기관)",
+                "status": "INIT"
+            },
+            {
+                "ticket_type": "ATT2",
+                "root_cause_sysnamez": "판교-서울7712",
+                "handling_fin_time": null,
+                "fault_time": "2024-12-12T09:38:00.000+09:00",
+                "root_cause_portz": "ce1/1",
+                "root_cause_sysnamea": "pangyo-7712",
+                "parent_ticket_id": "1617049",
+                "ticket_id": "1617051",
+                "root_cause_porta": "ce1/1",
+                "ticket_rca_result_dtl_code": "이상 트래픽(이용기관)",
+                "status": "INIT"
+            },
+            {
+                "ticket_type": "ATT2",
+                "root_cause_sysnamez": "서울-판교7712",
+                "handling_fin_time": null,
+                "fault_time": "2024-12-12T09:37:00.000+09:00",
+                "root_cause_portz": "ce3/1",
+                "root_cause_sysnamea": "seoul-7712",
+                "parent_ticket_id": null,
+                "ticket_id": "1617050",
+                "root_cause_porta": "ce3/1",
+                "ticket_rca_result_dtl_code": "이상 트래픽(이용기관)",
+                "status": "INIT"
+            },
+            {
+                "ticket_type": "ATT2",
+                "root_cause_sysnamez": "판교-서울7712",
+                "handling_fin_time": null,
+                "fault_time": "2024-12-12T09:37:00.000+09:00",
+                "root_cause_portz": "ce1/1",
+                "root_cause_sysnamea": "pangyo-7712",
+                "parent_ticket_id": null,
+                "ticket_id": "1617049",
+                "root_cause_porta": "ce1/1",
+                "ticket_rca_result_dtl_code": "이상 트래픽(이용기관)",
+                "status": "INIT"
+            },
+            {
+                "ticket_type": "ATT2",
+                "root_cause_sysnamez": "제주-광주",
+                "handling_fin_time": "2024-12-11T22:29:53.075+09:00",
+                "fault_time": "2024-12-11T21:30:00.000+09:00",
+                "root_cause_portz": "xe5",
+                "root_cause_sysnamea": "jeju-5812",
+                "parent_ticket_id": null,
+                "ticket_id": "1617048",
+                "root_cause_porta": "xe5",
+                "ticket_rca_result_dtl_code": "이상 트래픽(이용기관)",
+                "status": "AUTO_FIN"
+            },
+            {
+                "ticket_type": "ATT2",
+                "root_cause_sysnamez": "서울-광주7712",
+                "handling_fin_time": "2024-12-11T22:29:53.027+09:00",
+                "fault_time": "2024-12-11T21:30:00.000+09:00",
+                "root_cause_portz": "ce4/1",
+                "root_cause_sysnamea": "seoul-7712",
+                "parent_ticket_id": null,
+                "ticket_id": "1617047",
+                "root_cause_porta": "ce4/1",
+                "ticket_rca_result_dtl_code": "이상 트래픽(이용기관)",
+                "status": "AUTO_FIN"
+            },
+            {
+                "ticket_type": "ATT2",
+                "root_cause_sysnamez": "광주-서울",
+                "handling_fin_time": "2024-12-11T22:29:52.953+09:00",
+                "fault_time": "2024-12-11T21:30:00.000+09:00",
+                "root_cause_portz": "ce1/1",
+                "root_cause_sysnamea": "gwangju-7712",
+                "parent_ticket_id": null,
+                "ticket_id": "1617046",
+                "root_cause_porta": "ce1/1",
+                "ticket_rca_result_dtl_code": "이상 트래픽(이용기관)",
+                "status": "AUTO_FIN"
+            },
+            {
+                "ticket_type": "ATT2",
+                "root_cause_sysnamez": "(주)제로원에이아이",
+                "handling_fin_time": "2024-12-11T20:19:34.498+09:00",
+                "fault_time": "2024-12-11T18:03:00.000+09:00",
+                "root_cause_portz": "xe33",
+                "root_cause_sysnamea": "pangyo-5812",
+                "parent_ticket_id": null,
+                "ticket_id": "1617045",
+                "root_cause_porta": "xe33",
+                "ticket_rca_result_dtl_code": "이상 트래픽(이용기관)",
+                "status": "AUTO_FIN"
+            },
+            {
+                "ticket_type": "ATT2",
+                "root_cause_sysnamez": "판교-서울7712",
+                "handling_fin_time": "2024-12-11T19:45:04.992+09:00",
+                "fault_time": "2024-12-11T17:32:00.000+09:00",
+                "root_cause_portz": "ce1/1",
+                "root_cause_sysnamea": "pangyo-7712",
+                "parent_ticket_id": null,
+                "ticket_id": "1617044",
+                "root_cause_porta": "ce1/1",
+                "ticket_rca_result_dtl_code": "이상 트래픽(이용기관)",
+                "status": "AUTO_FIN"
+            },
+            {
+                "ticket_type": "ATT2",
+                "root_cause_sysnamez": "서울-판교7712",
+                "handling_fin_time": "2024-12-11T17:33:13.029+09:00",
+                "fault_time": "2024-12-11T15:37:00.000+09:00",
+                "root_cause_portz": "ce3/1",
+                "root_cause_sysnamea": "seoul-7712",
+                "parent_ticket_id": null,
+                "ticket_id": "1617043",
+                "root_cause_porta": "ce3/1",
+                "ticket_rca_result_dtl_code": "이상 트래픽(이용기관)",
+                "status": "AUTO_FIN"
+            },
+            {
+                "ticket_type": "ATT2",
+                "root_cause_sysnamez": "판교-서울7712",
+                "handling_fin_time": "2024-12-11T17:33:00.021+09:00",
+                "fault_time": "2024-12-11T15:37:00.000+09:00",
+                "root_cause_portz": "ce1/1",
+                "root_cause_sysnamea": "pangyo-7712",
+                "parent_ticket_id": null,
+                "ticket_id": "1617042",
+                "root_cause_porta": "ce1/1",
+                "ticket_rca_result_dtl_code": "이상 트래픽(이용기관)",
+                "status": "AUTO_FIN"
+            },
+            {
+                "ticket_type": "ATT2",
+                "root_cause_sysnamez": "제주-광주",
+                "handling_fin_time": "2024-12-11T09:26:53.132+09:00",
                 "fault_time": "2024-12-11T08:27:00.000+09:00",
                 "root_cause_portz": "xe5",
                 "root_cause_sysnamea": "jeju-5812",
@@ -19,12 +201,12 @@
                 "ticket_id": "1617041",
                 "root_cause_porta": "xe5",
                 "ticket_rca_result_dtl_code": "이상 트래픽(이용기관)",
-                "status": "INIT"
+                "status": "AUTO_FIN"
             },
             {
                 "ticket_type": "ATT2",
                 "root_cause_sysnamez": "서울-광주7712",
-                "handling_fin_time": null,
+                "handling_fin_time": "2024-12-11T09:26:53.210+09:00",
                 "fault_time": "2024-12-11T08:27:00.000+09:00",
                 "root_cause_portz": "ce4/1",
                 "root_cause_sysnamea": "seoul-7712",
@@ -32,12 +214,12 @@
                 "ticket_id": "1617040",
                 "root_cause_porta": "ce4/1",
                 "ticket_rca_result_dtl_code": "이상 트래픽(이용기관)",
-                "status": "INIT"
+                "status": "AUTO_FIN"
             },
             {
                 "ticket_type": "ATT2",
                 "root_cause_sysnamez": "광주-서울",
-                "handling_fin_time": null,
+                "handling_fin_time": "2024-12-11T09:26:53.184+09:00",
                 "fault_time": "2024-12-11T08:27:00.000+09:00",
                 "root_cause_portz": "ce1/1",
                 "root_cause_sysnamea": "gwangju-7712",
@@ -45,12 +227,12 @@
                 "ticket_id": "1617039",
                 "root_cause_porta": "ce1/1",
                 "ticket_rca_result_dtl_code": "이상 트래픽(이용기관)",
-                "status": "INIT"
+                "status": "AUTO_FIN"
             },
             {
                 "ticket_type": "ATT2",
                 "root_cause_sysnamez": "제주-광주",
-                "handling_fin_time": null,
+                "handling_fin_time": "2024-12-11T09:25:50.096+09:00",
                 "fault_time": "2024-12-11T08:26:00.000+09:00",
                 "root_cause_portz": "xe5",
                 "root_cause_sysnamea": "jeju-5812",
@@ -58,12 +240,12 @@
                 "ticket_id": "1617038",
                 "root_cause_porta": "xe5",
                 "ticket_rca_result_dtl_code": "이상 트래픽(이용기관)",
-                "status": "INIT"
+                "status": "AUTO_FIN"
             },
             {
                 "ticket_type": "ATT2",
                 "root_cause_sysnamez": "서울-광주7712",
-                "handling_fin_time": null,
+                "handling_fin_time": "2024-12-11T09:25:50.071+09:00",
                 "fault_time": "2024-12-11T08:26:00.000+09:00",
                 "root_cause_portz": "ce4/1",
                 "root_cause_sysnamea": "seoul-7712",
@@ -71,12 +253,12 @@
                 "ticket_id": "1617037",
                 "root_cause_porta": "ce4/1",
                 "ticket_rca_result_dtl_code": "이상 트래픽(이용기관)",
-                "status": "INIT"
+                "status": "AUTO_FIN"
             },
             {
                 "ticket_type": "ATT2",
                 "root_cause_sysnamez": "광주-서울",
-                "handling_fin_time": null,
+                "handling_fin_time": "2024-12-11T09:25:50.021+09:00",
                 "fault_time": "2024-12-11T08:26:00.000+09:00",
                 "root_cause_portz": "ce1/1",
                 "root_cause_sysnamea": "gwangju-7712",
@@ -84,12 +266,12 @@
                 "ticket_id": "1617036",
                 "root_cause_porta": "ce1/1",
                 "ticket_rca_result_dtl_code": "이상 트래픽(이용기관)",
-                "status": "INIT"
+                "status": "AUTO_FIN"
             },
             {
                 "ticket_type": "ATT2",
                 "root_cause_sysnamez": "제주-광주",
-                "handling_fin_time": null,
+                "handling_fin_time": "2024-12-11T09:24:53.286+09:00",
                 "fault_time": "2024-12-11T08:25:00.000+09:00",
                 "root_cause_portz": "xe5",
                 "root_cause_sysnamea": "jeju-5812",
@@ -97,12 +279,12 @@
                 "ticket_id": "1617035",
                 "root_cause_porta": "xe5",
                 "ticket_rca_result_dtl_code": "이상 트래픽(이용기관)",
-                "status": "INIT"
+                "status": "AUTO_FIN"
             },
             {
                 "ticket_type": "ATT2",
                 "root_cause_sysnamez": "서울-광주7712",
-                "handling_fin_time": null,
+                "handling_fin_time": "2024-12-11T09:24:53.233+09:00",
                 "fault_time": "2024-12-11T08:25:00.000+09:00",
                 "root_cause_portz": "ce4/1",
                 "root_cause_sysnamea": "seoul-7712",
@@ -110,12 +292,12 @@
                 "ticket_id": "1617034",
                 "root_cause_porta": "ce4/1",
                 "ticket_rca_result_dtl_code": "이상 트래픽(이용기관)",
-                "status": "INIT"
+                "status": "AUTO_FIN"
             },
             {
                 "ticket_type": "ATT2",
                 "root_cause_sysnamez": "광주-서울",
-                "handling_fin_time": null,
+                "handling_fin_time": "2024-12-11T09:24:53.152+09:00",
                 "fault_time": "2024-12-11T08:25:00.000+09:00",
                 "root_cause_portz": "ce1/1",
                 "root_cause_sysnamea": "gwangju-7712",
@@ -123,7 +305,7 @@
                 "ticket_id": "1617033",
                 "root_cause_porta": "ce1/1",
                 "ticket_rca_result_dtl_code": "이상 트래픽(이용기관)",
-                "status": "INIT"
+                "status": "AUTO_FIN"
             },
             {
                 "ticket_type": "ATT2",
@@ -1125,188 +1307,6 @@
                 "root_cause_porta": "ce1/1",
                 "ticket_rca_result_dtl_code": "이상 트래픽(이용기관)",
                 "status": "AUTO_FIN"
-            },
-            {
-                "ticket_type": "ATT2",
-                "root_cause_sysnamez": "서울-판교7712",
-                "handling_fin_time": "2024-12-10T20:54:30.077+09:00",
-                "fault_time": "2024-12-10T18:42:00.000+09:00",
-                "root_cause_portz": "ce3/1",
-                "root_cause_sysnamea": "seoul-7712",
-                "parent_ticket_id": null,
-                "ticket_id": "1616955",
-                "root_cause_porta": "ce3/1",
-                "ticket_rca_result_dtl_code": "이상 트래픽(이용기관)",
-                "status": "AUTO_FIN"
-            },
-            {
-                "ticket_type": "ATT2",
-                "root_cause_sysnamez": "판교-서울7712",
-                "handling_fin_time": "2024-12-10T20:54:30.029+09:00",
-                "fault_time": "2024-12-10T18:42:00.000+09:00",
-                "root_cause_portz": "ce1/1",
-                "root_cause_sysnamea": "pangyo-7712",
-                "parent_ticket_id": null,
-                "ticket_id": "1616954",
-                "root_cause_porta": "ce1/1",
-                "ticket_rca_result_dtl_code": "이상 트래픽(이용기관)",
-                "status": "AUTO_FIN"
-            },
-            {
-                "ticket_type": "ATT2",
-                "root_cause_sysnamez": "판교-서울7712",
-                "handling_fin_time": "2024-12-10T20:53:22.945+09:00",
-                "fault_time": "2024-12-10T18:41:00.000+09:00",
-                "root_cause_portz": "ce1/1",
-                "root_cause_sysnamea": "pangyo-7712",
-                "parent_ticket_id": "1616920",
-                "ticket_id": "1616953",
-                "root_cause_porta": "ce1/1",
-                "ticket_rca_result_dtl_code": "이상 트래픽(이용기관)",
-                "status": "AUTO_FIN"
-            },
-            {
-                "ticket_type": "ATT2",
-                "root_cause_sysnamez": "판교-서울7712",
-                "handling_fin_time": "2024-12-10T20:52:10.021+09:00",
-                "fault_time": "2024-12-10T18:40:00.000+09:00",
-                "root_cause_portz": "ce1/1",
-                "root_cause_sysnamea": "pangyo-7712",
-                "parent_ticket_id": "1616920",
-                "ticket_id": "1616952",
-                "root_cause_porta": "ce1/1",
-                "ticket_rca_result_dtl_code": "이상 트래픽(이용기관)",
-                "status": "AUTO_FIN"
-            },
-            {
-                "ticket_type": "ATT2",
-                "root_cause_sysnamez": "판교-서울7712",
-                "handling_fin_time": "2024-12-10T20:51:03.118+09:00",
-                "fault_time": "2024-12-10T18:38:00.000+09:00",
-                "root_cause_portz": "ce1/1",
-                "root_cause_sysnamea": "pangyo-7712",
-                "parent_ticket_id": "1616920",
-                "ticket_id": "1616951",
-                "root_cause_porta": "ce1/1",
-                "ticket_rca_result_dtl_code": "이상 트래픽(이용기관)",
-                "status": "AUTO_FIN"
-            },
-            {
-                "ticket_type": "ATT2",
-                "root_cause_sysnamez": "판교-서울7712",
-                "handling_fin_time": "2024-12-10T20:49:30.020+09:00",
-                "fault_time": "2024-12-10T18:36:00.000+09:00",
-                "root_cause_portz": "ce1/1",
-                "root_cause_sysnamea": "pangyo-7712",
-                "parent_ticket_id": "1616920",
-                "ticket_id": "1616950",
-                "root_cause_porta": "ce1/1",
-                "ticket_rca_result_dtl_code": "이상 트래픽(이용기관)",
-                "status": "AUTO_FIN"
-            },
-            {
-                "ticket_type": "ATT2",
-                "root_cause_sysnamez": "판교-서울7712",
-                "handling_fin_time": "2024-12-10T20:48:20.022+09:00",
-                "fault_time": "2024-12-10T18:35:00.000+09:00",
-                "root_cause_portz": "ce1/1",
-                "root_cause_sysnamea": "pangyo-7712",
-                "parent_ticket_id": "1616920",
-                "ticket_id": "1616949",
-                "root_cause_porta": "ce1/1",
-                "ticket_rca_result_dtl_code": "이상 트래픽(이용기관)",
-                "status": "AUTO_FIN"
-            },
-            {
-                "ticket_type": "ATT2",
-                "root_cause_sysnamez": "판교-서울7712",
-                "handling_fin_time": "2024-12-10T20:47:13.221+09:00",
-                "fault_time": "2024-12-10T18:34:00.000+09:00",
-                "root_cause_portz": "ce1/1",
-                "root_cause_sysnamea": "pangyo-7712",
-                "parent_ticket_id": "1616920",
-                "ticket_id": "1616948",
-                "root_cause_porta": "ce1/1",
-                "ticket_rca_result_dtl_code": "이상 트래픽(이용기관)",
-                "status": "AUTO_FIN"
-            },
-            {
-                "ticket_type": "ATT2",
-                "root_cause_sysnamez": "판교-서울7712",
-                "handling_fin_time": "2024-12-10T20:46:00.022+09:00",
-                "fault_time": "2024-12-10T18:33:00.000+09:00",
-                "root_cause_portz": "ce1/1",
-                "root_cause_sysnamea": "pangyo-7712",
-                "parent_ticket_id": "1616920",
-                "ticket_id": "1616947",
-                "root_cause_porta": "ce1/1",
-                "ticket_rca_result_dtl_code": "이상 트래픽(이용기관)",
-                "status": "AUTO_FIN"
-            },
-            {
-                "ticket_type": "ATT2",
-                "root_cause_sysnamez": "판교-서울7712",
-                "handling_fin_time": "2024-12-10T20:45:03.017+09:00",
-                "fault_time": "2024-12-10T18:32:00.000+09:00",
-                "root_cause_portz": "ce1/1",
-                "root_cause_sysnamea": "pangyo-7712",
-                "parent_ticket_id": "1616920",
-                "ticket_id": "1616946",
-                "root_cause_porta": "ce1/1",
-                "ticket_rca_result_dtl_code": "이상 트래픽(이용기관)",
-                "status": "AUTO_FIN"
-            },
-            {
-                "ticket_type": "ATT2",
-                "root_cause_sysnamez": "판교-서울7712",
-                "handling_fin_time": "2024-12-10T20:44:42.928+09:00",
-                "fault_time": "2024-12-10T18:31:00.000+09:00",
-                "root_cause_portz": "ce1/1",
-                "root_cause_sysnamea": "pangyo-7712",
-                "parent_ticket_id": "1616920",
-                "ticket_id": "1616945",
-                "root_cause_porta": "ce1/1",
-                "ticket_rca_result_dtl_code": "이상 트래픽(이용기관)",
-                "status": "AUTO_FIN"
-            },
-            {
-                "ticket_type": "ATT2",
-                "root_cause_sysnamez": "판교-서울7712",
-                "handling_fin_time": "2024-12-10T20:43:42.943+09:00",
-                "fault_time": "2024-12-10T18:30:00.000+09:00",
-                "root_cause_portz": "ce1/1",
-                "root_cause_sysnamea": "pangyo-7712",
-                "parent_ticket_id": "1616920",
-                "ticket_id": "1616944",
-                "root_cause_porta": "ce1/1",
-                "ticket_rca_result_dtl_code": "이상 트래픽(이용기관)",
-                "status": "AUTO_FIN"
-            },
-            {
-                "ticket_type": "ATT2",
-                "root_cause_sysnamez": "서울-판교7712",
-                "handling_fin_time": "2024-12-10T20:43:22.984+09:00",
-                "fault_time": "2024-12-10T18:29:00.000+09:00",
-                "root_cause_portz": "ce3/1",
-                "root_cause_sysnamea": "seoul-7712",
-                "parent_ticket_id": "1616922",
-                "ticket_id": "1616943",
-                "root_cause_porta": "ce3/1",
-                "ticket_rca_result_dtl_code": "이상 트래픽(이용기관)",
-                "status": "AUTO_FIN"
-            },
-            {
-                "ticket_type": "ATT2",
-                "root_cause_sysnamez": "판교-서울7712",
-                "handling_fin_time": "2024-12-10T20:43:22.934+09:00",
-                "fault_time": "2024-12-10T18:29:00.000+09:00",
-                "root_cause_portz": "ce1/1",
-                "root_cause_sysnamea": "pangyo-7712",
-                "parent_ticket_id": "1616920",
-                "ticket_id": "1616942",
-                "root_cause_porta": "ce1/1",
-                "ticket_rca_result_dtl_code": "이상 트래픽(이용기관)",
-                "status": "AUTO_FIN"
             }
         ]
     },
@@ -1318,9 +1318,9 @@
         "url": "/selectList/SELECT_ALARM_CURRENT_HISTORY_LIST",
         "urlOrigin": "/selectList/SELECT_ALARM_CURRENT_HISTORY_LIST",
         "params": null,
-        "data": "{\"limit\":100,\"page\":1,\"TICKET_ID\":\"\",\"TICKET_TYPE\":\"\",\"INIT_START_DATE\":null,\"INIT_END_DATE\":null,\"CLOSE_START_DATE\":\"\",\"CLOSE_END_DATE\":\"\",\"FIN_START_DATE\":null,\"FIN_END_DATE\":null,\"encrypt\":\"qw4+t2hl/T6zZI4pPAQ=\"}"
+        "data": "{\"limit\":100,\"page\":1,\"TICKET_ID\":\"\",\"TICKET_TYPE\":\"\",\"INIT_START_DATE\":null,\"INIT_END_DATE\":null,\"CLOSE_START_DATE\":\"\",\"CLOSE_END_DATE\":\"\",\"FIN_START_DATE\":null,\"FIN_END_DATE\":null,\"encrypt\":\"tXqBgvzgY2ECCS8UyF8=\"}"
     },
-    "requestTime": "2024-12-11 08:40:37.655",
-    "responseTime": "2024-12-11 08:40:38.101",
-    "duration": 446
+    "requestTime": "2024-12-12 10:25:34.150",
+    "responseTime": "2024-12-12 10:25:34.626",
+    "duration": 476
 }

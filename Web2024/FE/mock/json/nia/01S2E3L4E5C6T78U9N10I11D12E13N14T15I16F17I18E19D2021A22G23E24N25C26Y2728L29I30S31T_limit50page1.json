@@ -49,14 +49,14 @@
                 "nren_name": "강남세브란스병원"
             },
             {
-                "nren_ip": "116.89.169.71",
-                "nren_id": "jeju-5812",
-                "nren_name": "제주테크노파크디지털융합센터"
-            },
-            {
                 "nren_ip": "116.89.169.21",
                 "nren_id": "daejeon-7712",
                 "nren_name": "대전-서울"
+            },
+            {
+                "nren_ip": "116.89.169.71",
+                "nren_id": "jeju-5812",
+                "nren_name": "제주테크노파크디지털융합센터"
             },
             {
                 "nren_ip": "116.89.169.13",
@@ -199,14 +199,14 @@
                 "nren_name": "구미전자기술정보원"
             },
             {
-                "nren_ip": "116.89.169.21",
-                "nren_id": "daejeon-7712",
-                "nren_name": "대전-광주"
-            },
-            {
                 "nren_ip": "116.89.169.53",
                 "nren_id": "daegu-5812",
                 "nren_name": "한국뇌연구원"
+            },
+            {
+                "nren_ip": "116.89.169.21",
+                "nren_id": "daejeon-7712",
+                "nren_name": "대전-광주"
             },
             {
                 "nren_ip": "116.89.169.43",
@@ -268,9 +268,9 @@
         "url": "/selectList/SELECT_UNIDENTIFIED_AGENCY_LIST",
         "urlOrigin": "/selectList/SELECT_UNIDENTIFIED_AGENCY_LIST",
         "params": null,
-        "data": "{\"nren_name\":\"\",\"nren_ip\":\"\",\"limit\":50,\"page\":1,\"encrypt\":\"4Q2Dp4gjtMF6K4ZtKTg=\"}"
+        "data": "{\"nren_name\":\"\",\"nren_ip\":\"\",\"limit\":50,\"page\":1,\"encrypt\":\"YRSoqBrYwHRm4yR4cuo=\"}"
     },
-    "requestTime": "2024-12-11 08:40:20.802",
-    "responseTime": "2024-12-11 08:40:20.924",
-    "duration": 122
+    "requestTime": "2024-12-12 10:47:04.553",
+    "responseTime": "2024-12-12 10:47:04.773",
+    "duration": 220
 }

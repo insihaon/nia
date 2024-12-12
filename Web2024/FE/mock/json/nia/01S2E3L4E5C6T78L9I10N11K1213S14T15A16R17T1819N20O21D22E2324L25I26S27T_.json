@@ -144,9 +144,9 @@
         "url": "/selectList/SELECT_LINK_START_NODE_LIST",
         "urlOrigin": "/selectList/SELECT_LINK_START_NODE_LIST",
         "params": null,
-        "data": "{\"encrypt\":\"MwDcKqTjXmqaKDQK/cQ=\"}"
+        "data": "{\"encrypt\":\"9WF+XJz1oSkpaV8Bx14=\"}"
     },
-    "requestTime": "2024-12-11 08:43:57.341",
-    "responseTime": "2024-12-11 08:43:57.388",
-    "duration": 47
+    "requestTime": "2024-12-12 10:30:39.894",
+    "responseTime": "2024-12-12 10:30:39.936",
+    "duration": 42
 }

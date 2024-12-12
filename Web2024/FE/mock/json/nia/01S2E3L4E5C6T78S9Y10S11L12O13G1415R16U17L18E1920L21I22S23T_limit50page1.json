@@ -84,9 +84,9 @@
         "url": "/selectList/SELECT_SYSLOG_RULE_LIST",
         "urlOrigin": "/selectList/SELECT_SYSLOG_RULE_LIST",
         "params": null,
-        "data": "{\"syslog_rule_nm\":\"\",\"occur_str\":\"\",\"occur_except_str\":\"\",\"limit\":50,\"page\":1,\"encrypt\":\"5uYI/9DFh2wi6Vysbsk=\"}"
+        "data": "{\"syslog_rule_nm\":\"\",\"occur_str\":\"\",\"occur_except_str\":\"\",\"limit\":50,\"page\":1,\"encrypt\":\"wy1FvYxVaLFpi8fDo+A=\"}"
     },
-    "requestTime": "2024-12-11 08:40:55.349",
-    "responseTime": "2024-12-11 08:40:55.402",
-    "duration": 53
+    "requestTime": "2024-12-12 10:49:14.683",
+    "responseTime": "2024-12-12 10:49:14.810",
+    "duration": 127
 }

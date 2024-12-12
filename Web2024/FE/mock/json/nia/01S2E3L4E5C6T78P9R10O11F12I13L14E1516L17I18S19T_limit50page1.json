@@ -594,9 +594,9 @@
         "url": "/selectList/SELECT_PROFILE_LIST",
         "urlOrigin": "/selectList/SELECT_PROFILE_LIST",
         "params": null,
-        "data": "{\"profile_title\":\"\",\"network_type\":\"\",\"processing_template\":\"\",\"limit\":50,\"page\":1,\"encrypt\":\"D8pUirVlT9PVI3QbfEc=\"}"
+        "data": "{\"profile_title\":\"\",\"network_type\":\"\",\"processing_template\":\"\",\"limit\":50,\"page\":1,\"encrypt\":\"M26AkdHD67O3vX5zLok=\"}"
     },
-    "requestTime": "2024-12-11 08:42:21.917",
-    "responseTime": "2024-12-11 08:42:21.975",
-    "duration": 58
+    "requestTime": "2024-12-12 10:28:01.240",
+    "responseTime": "2024-12-12 10:28:01.471",
+    "duration": 231
 }

@@ -17,9 +17,9 @@
         "url": "/selectList/SELECT_PROFILE_ALARM_TYPE_LIST",
         "urlOrigin": "/selectList/SELECT_PROFILE_ALARM_TYPE_LIST",
         "params": null,
-        "data": "{\"ticket_type\":\"\",\"encrypt\":\"LVA7YoNSG8mqxfxPGH8=\"}"
+        "data": "{\"ticket_type\":\"\",\"encrypt\":\"yUettfQ3AUpaWqaqqKQ=\"}"
     },
-    "requestTime": "2024-12-11 08:42:24.288",
-    "responseTime": "2024-12-11 08:42:24.351",
-    "duration": 63
+    "requestTime": "2024-12-12 10:28:03.354",
+    "responseTime": "2024-12-12 10:28:03.541",
+    "duration": 187
 }

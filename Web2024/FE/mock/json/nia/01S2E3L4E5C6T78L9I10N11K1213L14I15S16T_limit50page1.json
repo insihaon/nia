@@ -593,9 +593,9 @@
         "url": "/selectList/SELECT_LINK_LIST",
         "urlOrigin": "/selectList/SELECT_LINK_LIST",
         "params": null,
-        "data": "{\"src_node_id\":\"\",\"dest_node_id\":\"\",\"src_if_id\":\"\",\"dest_if_id\":\"\",\"link_desc\":\"\",\"limit\":50,\"page\":1,\"encrypt\":\"CQW6CbNwzJs49u7YaKc=\"}"
+        "data": "{\"src_node_id\":\"\",\"dest_node_id\":\"\",\"src_if_id\":\"\",\"dest_if_id\":\"\",\"link_desc\":\"\",\"limit\":50,\"page\":1,\"encrypt\":\"yYitG1rAdHsUb6mwSFw=\"}"
     },
-    "requestTime": "2024-12-11 08:43:57.342",
-    "responseTime": "2024-12-11 08:43:57.402",
-    "duration": 60
+    "requestTime": "2024-12-12 10:30:39.894",
+    "responseTime": "2024-12-12 10:30:39.957",
+    "duration": 63
 }

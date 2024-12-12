@@ -506,9 +506,9 @@
         "url": "/selectList/SELECT_AGENCY_CODE_LIST",
         "urlOrigin": "/selectList/SELECT_AGENCY_CODE_LIST",
         "params": null,
-        "data": "{\"encrypt\":\"a2NbPbuuflmJeUpA6t0=\"}"
+        "data": "{\"encrypt\":\"JG2v8f5EAN3/LGLtRdg=\"}"
     },
-    "requestTime": "2024-12-11 08:39:42.723",
-    "responseTime": "2024-12-11 08:39:42.828",
-    "duration": 105
+    "requestTime": "2024-12-12 10:21:39.025",
+    "responseTime": "2024-12-12 10:21:39.066",
+    "duration": 41
 }

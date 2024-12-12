@@ -1,0 +1,38 @@
+{
+    "jsonFileName": "01S2E3L4E5C6T78L9I10N11K1213I14F1516L17I18S19T_nodeidgwangju771.json",
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [
+            "SELECT \n            DISTINCT PM.NODE_ID, \n            PM.IF_ID ,\n            IP_ADDR , \n            IF_SPEED\n        FROM RESOURCE.TB_PORT_MST PM\n        WHERE NOT EXISTS (\n            SELECT 1\n            FROM RESOURCE.TB_BACKBONE_LINK BL\n            WHERE BL.SRC_NODE_ID = PM.NODE_ID AND BL.SRC_IF_ID  = PM.IF_ID\n               OR BL.DEST_NODE_ID = PM.NODE_ID AND BL.DEST_IF_ID = PM.IF_ID\n            )\n          AND  PM.NODE_ID = 'gwangju-7712' \n          AND IF_OPER_STATUS = 'up'\n        ORDER BY IF_ID"
+        ],
+        "total": 2,
+        "result": [
+            {
+                "if_speed": "100000000000",
+                "if_id": "ce1/1",
+                "ip_addr": null,
+                "node_id": "gwangju-7712"
+            },
+            {
+                "if_speed": "100000000000",
+                "if_id": "ce17/1",
+                "ip_addr": null,
+                "node_id": "gwangju-7712"
+            }
+        ]
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/selectList/SELECT_LINK_IF_LIST",
+        "urlOrigin": "/selectList/SELECT_LINK_IF_LIST",
+        "params": null,
+        "data": "{\"node_id\":\"gwangju-7712\",\"encrypt\":\"2dI9OqL51M/eHVRkoaA=\"}"
+    },
+    "requestTime": "2024-12-12 10:31:00.766",
+    "responseTime": "2024-12-12 10:31:00.822",
+    "duration": 56
+}

@@ -1,0 +1,25 @@
+{
+    "jsonFileName": "01S2E3L4E5C6T78A9P10P1112T13R14A15F16F17I18C1920T21O22P2324L25I26S27T_srcpro111limit50page1.json",
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [
+            "SELECT  src_protocol,\n                src_port,\n                dst_protocol,\n                dst_port,\n                packet_bytes,\n                rank_order\n        FROM    ( SELECT src_protocol,\n                        src_port,\n                        dst_protocol,\n                        dst_port,\n                        SUM(packet_bytes) packet_bytes ,\n                        row_number() over (ORDER BY\n                        CASE\n                                WHEN src_protocol IS NULL\n                                AND     dst_protocol IS NULL\n                                THEN 0\n                                ELSE 2\n                        END DESC, SUM(packet_bytes) DESC) rank_order\n                FROM    gather.tb_mdb_sflow_traffic_day dt\n                WHERE   1=1\n                        AND dt.collect_timestamp   <=   CURRENT_DATE \n                        AND dt.collect_timestamp   >=   CURRENT_DATE - interval '5 days'\n                            AND src_port = '111'\n                GROUP BY src_protocol,\n                        src_port,\n                        dst_protocol,\n                        dst_port ) dt\n                WHERE   1=1\n                    AND rank_order   <   101\n            LIMIT 50 OFFSET 0"
+        ],
+        "total": 0,
+        "result": []
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/selectList/SELECT_APP_TRAFFIC_TOP_LIST",
+        "urlOrigin": "/selectList/SELECT_APP_TRAFFIC_TOP_LIST",
+        "params": null,
+        "data": "{\"src_protocol\":\"111\",\"src_port\":\"\",\"dst_protocol\":\"\",\"dst_port\":\"\",\"top_n\":\"\",\"limit\":50,\"page\":1,\"encrypt\":\"GVq9DPOqPgw/UTmH8RY=\"}"
+    },
+    "requestTime": "2024-12-12 10:23:02.455",
+    "responseTime": "2024-12-12 10:23:04.089",
+    "duration": 1634
+}

@@ -1,0 +1,42 @@
+{
+    "jsonFileName": "01S2E3L4E5C6T78A9G10E11N12C13Y1415I16F1718I19D2021L22I23S24T_nodenabusan7712.json",
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [
+            "SELECT DISTINCT IF_ID,\n                IF_SPEED\n        FROM RESOURCE.TB_PORT_MST\n        WHERE NODE_ID = 'busan-7712'\n            AND IF_OPER_STATUS = 'up'\n        ORDER BY IF_ID"
+        ],
+        "total": 4,
+        "result": [
+            {
+                "if_speed": "100000000000",
+                "if_id": "ce1/1"
+            },
+            {
+                "if_speed": "100000000000",
+                "if_id": "ce17/1"
+            },
+            {
+                "if_speed": "100000000000",
+                "if_id": "ce2/1"
+            },
+            {
+                "if_speed": "40000000000",
+                "if_id": "ce32/1"
+            }
+        ]
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/selectList/SELECT_AGENCY_IF_ID_LIST",
+        "urlOrigin": "/selectList/SELECT_AGENCY_IF_ID_LIST",
+        "params": null,
+        "data": "{\"node_name\":\"busan-7712\",\"encrypt\":\"9RtfQIBd3ZuhDwBP3cU=\"}"
+    },
+    "requestTime": "2024-12-12 10:31:25.443",
+    "responseTime": "2024-12-12 10:31:25.497",
+    "duration": 54
+}

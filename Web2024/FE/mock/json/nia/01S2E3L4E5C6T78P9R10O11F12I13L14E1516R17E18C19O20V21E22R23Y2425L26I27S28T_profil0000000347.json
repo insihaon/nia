@@ -1,0 +1,25 @@
+{
+    "jsonFileName": "01S2E3L4E5C6T78P9R10O11F12I13L14E1516R17E18C19O20V21E22R23Y2425L26I27S28T_profil0000000347.json",
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [
+            "SELECT \n            PROFILE_NUM,\n            NODE_ID,\n            SERIAL_NUM\n        FROM RESOURCE.TB_FAULT_PROCESS_IF\n        WHERE PROFILE_NUM = '0000000347'"
+        ],
+        "total": 0,
+        "result": []
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/selectList/SELECT_PROFILE_RECOVERY_LIST",
+        "urlOrigin": "/selectList/SELECT_PROFILE_RECOVERY_LIST",
+        "params": null,
+        "data": "{\"profile_num\":\"0000000347\",\"encrypt\":\"y3RhU7FjjdgSO5alGWU=\"}"
+    },
+    "requestTime": "2024-12-12 10:29:13.890",
+    "responseTime": "2024-12-12 10:29:13.946",
+    "duration": 56
+}

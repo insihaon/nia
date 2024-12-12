@@ -1,0 +1,149 @@
+{
+    "jsonFileName": "01S2E3L4E5C6T78L9I10N11K1213E14N15D1617N18O19D20E2122L23I24S25T_nodeidbusan5812.json",
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [
+            "SELECT DISTINCT PM.NODE_ID--, PM.INT_NAME\n        FROM RESOURCE.TB_PORT_MST PM\n        WHERE NOT EXISTS (\n            SELECT 1\n            FROM RESOURCE.TB_BACKBONE_LINK BL\n            WHERE BL.SRC_NODE_ID = PM.NODE_ID AND BL.SRC_IF_ID  = PM.IF_ID\n               OR BL.DEST_NODE_ID = PM.NODE_ID AND BL.DEST_IF_ID = PM.IF_ID\n            )\n        AND PM.NODE_ID != 'busan-5812'\n        ORDER BY NODE_ID"
+        ],
+        "total": 41,
+        "result": [
+            {
+                "node_id": "busan-control"
+            },
+            {
+                "node_id": "busan-n9k"
+            },
+            {
+                "node_id": "chuncheon-5812"
+            },
+            {
+                "node_id": "chuncheon-control"
+            },
+            {
+                "node_id": "daegu-5812"
+            },
+            {
+                "node_id": "daegu-7712"
+            },
+            {
+                "node_id": "daegu-control"
+            },
+            {
+                "node_id": "daegu-n9k"
+            },
+            {
+                "node_id": "daejeon-5812"
+            },
+            {
+                "node_id": "daejeon-7712"
+            },
+            {
+                "node_id": "daejeon-control"
+            },
+            {
+                "node_id": "daejeon-cxp3"
+            },
+            {
+                "node_id": "daejeon-n9k"
+            },
+            {
+                "node_id": "gwangju-5812"
+            },
+            {
+                "node_id": "gwangju-7712"
+            },
+            {
+                "node_id": "gwangju-control"
+            },
+            {
+                "node_id": "gwangju-n9k"
+            },
+            {
+                "node_id": "hk100"
+            },
+            {
+                "node_id": "jeju-5812"
+            },
+            {
+                "node_id": "jeju-control"
+            },
+            {
+                "node_id": "jeju-n9k"
+            },
+            {
+                "node_id": "jeonju-5812"
+            },
+            {
+                "node_id": "jeonju-control"
+            },
+            {
+                "node_id": "jeonju-n9k"
+            },
+            {
+                "node_id": "kr100"
+            },
+            {
+                "node_id": "pangyo-5812"
+            },
+            {
+                "node_id": "pangyo-7712"
+            },
+            {
+                "node_id": "pangyo-control"
+            },
+            {
+                "node_id": "pangyo-n9k"
+            },
+            {
+                "node_id": "seoul-5812"
+            },
+            {
+                "node_id": "seoul-7712"
+            },
+            {
+                "node_id": "seoul-asr9k"
+            },
+            {
+                "node_id": "seoul-control"
+            },
+            {
+                "node_id": "seoul-cxp1"
+            },
+            {
+                "node_id": "seoul-cxp2"
+            },
+            {
+                "node_id": "seoul-n9k"
+            },
+            {
+                "node_id": "seoul-n9k19"
+            },
+            {
+                "node_id": "sg100"
+            },
+            {
+                "node_id": "suwon-5812"
+            },
+            {
+                "node_id": "suwon-control"
+            },
+            {
+                "node_id": "suwon-n9k"
+            }
+        ]
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/selectList/SELECT_LINK_END_NODE_LIST",
+        "urlOrigin": "/selectList/SELECT_LINK_END_NODE_LIST",
+        "params": null,
+        "data": "{\"node_id\":\"busan-5812\",\"encrypt\":\"pZkh8c1rBGNQpqDt7b8=\"}"
+    },
+    "requestTime": "2024-12-12 10:31:08.691",
+    "responseTime": "2024-12-12 10:31:08.757",
+    "duration": 66
+}

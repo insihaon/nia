@@ -568,9 +568,9 @@
         "url": "/selectList/SELECT_AGENCY_LIST",
         "urlOrigin": "/selectList/SELECT_AGENCY_LIST",
         "params": null,
-        "data": "{\"nren_name\":\"\",\"node_id\":\"\",\"customer_id\":\"\",\"limit\":50,\"page\":1,\"encrypt\":\"PlxHCThmnz8IPPZHgqc=\"}"
+        "data": "{\"nren_name\":\"\",\"node_id\":\"\",\"customer_id\":\"\",\"limit\":50,\"page\":1,\"encrypt\":\"+Gh9Fk21ilPgXjzZnMs=\"}"
     },
-    "requestTime": "2024-12-11 08:44:29.941",
-    "responseTime": "2024-12-11 08:44:30.004",
-    "duration": 63
+    "requestTime": "2024-12-12 10:31:16.876",
+    "responseTime": "2024-12-12 10:31:16.922",
+    "duration": 46
 }

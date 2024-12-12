@@ -1,0 +1,202 @@
+{
+    "jsonFileName": "01S2E3L4E5C6T78A9P10P1112T13R14A15F16F17I18C1920T21O22P2324L25I26S27T_srcpro21limit50page1.json",
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [
+            "SELECT  src_protocol,\n                src_port,\n                dst_protocol,\n                dst_port,\n                packet_bytes,\n                rank_order\n        FROM    ( SELECT src_protocol,\n                        src_port,\n                        dst_protocol,\n                        dst_port,\n                        SUM(packet_bytes) packet_bytes ,\n                        row_number() over (ORDER BY\n                        CASE\n                                WHEN src_protocol IS NULL\n                                AND     dst_protocol IS NULL\n                                THEN 0\n                                ELSE 2\n                        END DESC, SUM(packet_bytes) DESC) rank_order\n                FROM    gather.tb_mdb_sflow_traffic_day dt\n                WHERE   1=1\n                        AND dt.collect_timestamp   <=   CURRENT_DATE \n                        AND dt.collect_timestamp   >=   CURRENT_DATE - interval '5 days'\n                            AND src_port = '21'\n                GROUP BY src_protocol,\n                        src_port,\n                        dst_protocol,\n                        dst_port ) dt\n                WHERE   1=1\n                    AND rank_order   <   101\n            LIMIT 50 OFFSET 0"
+        ],
+        "total": 22,
+        "result": [
+            {
+                "src_port": "21",
+                "packet_bytes": 11255808,
+                "dst_protocol": "기타",
+                "rank_order": 1,
+                "src_protocol": "FTP",
+                "dst_port": "59062"
+            },
+            {
+                "src_port": "21",
+                "packet_bytes": 11010048,
+                "dst_protocol": "기타",
+                "rank_order": 2,
+                "src_protocol": "FTP",
+                "dst_port": "57162"
+            },
+            {
+                "src_port": "21",
+                "packet_bytes": 10485760,
+                "dst_protocol": "기타",
+                "rank_order": 3,
+                "src_protocol": "FTP",
+                "dst_port": "59920"
+            },
+            {
+                "src_port": "21",
+                "packet_bytes": 10166272,
+                "dst_protocol": "기타",
+                "rank_order": 4,
+                "src_protocol": "FTP",
+                "dst_port": "59202"
+            },
+            {
+                "src_port": "21",
+                "packet_bytes": 9502720,
+                "dst_protocol": "기타",
+                "rank_order": 5,
+                "src_protocol": "FTP",
+                "dst_port": "58870"
+            },
+            {
+                "src_port": "21",
+                "packet_bytes": 8396800,
+                "dst_protocol": "기타",
+                "rank_order": 6,
+                "src_protocol": "FTP",
+                "dst_port": "59890"
+            },
+            {
+                "src_port": "21",
+                "packet_bytes": 5873664,
+                "dst_protocol": "기타",
+                "rank_order": 7,
+                "src_protocol": "FTP",
+                "dst_port": "57772"
+            },
+            {
+                "src_port": "21",
+                "packet_bytes": 4964352,
+                "dst_protocol": "기타",
+                "rank_order": 8,
+                "src_protocol": "FTP",
+                "dst_port": "50970"
+            },
+            {
+                "src_port": "21",
+                "packet_bytes": 4603904,
+                "dst_protocol": "기타",
+                "rank_order": 9,
+                "src_protocol": "FTP",
+                "dst_port": "60044"
+            },
+            {
+                "src_port": "21",
+                "packet_bytes": 2637824,
+                "dst_protocol": "기타",
+                "rank_order": 10,
+                "src_protocol": "FTP",
+                "dst_port": "56418"
+            },
+            {
+                "src_port": "21",
+                "packet_bytes": 1441792,
+                "dst_protocol": "기타",
+                "rank_order": 11,
+                "src_protocol": "FTP",
+                "dst_port": "10255"
+            },
+            {
+                "src_port": "21",
+                "packet_bytes": 1368064,
+                "dst_protocol": "기타",
+                "rank_order": 12,
+                "src_protocol": "FTP",
+                "dst_port": "54892"
+            },
+            {
+                "src_port": "21",
+                "packet_bytes": 1064960,
+                "dst_protocol": "기타",
+                "rank_order": 13,
+                "src_protocol": "FTP",
+                "dst_port": "63490"
+            },
+            {
+                "src_port": "21",
+                "packet_bytes": 1048576,
+                "dst_protocol": "기타",
+                "rank_order": 14,
+                "src_protocol": "FTP",
+                "dst_port": "58416"
+            },
+            {
+                "src_port": "21",
+                "packet_bytes": 1015808,
+                "dst_protocol": "기타",
+                "rank_order": 15,
+                "src_protocol": "FTP",
+                "dst_port": "37700"
+            },
+            {
+                "src_port": "21",
+                "packet_bytes": 794624,
+                "dst_protocol": "기타",
+                "rank_order": 16,
+                "src_protocol": "FTP",
+                "dst_port": "54511"
+            },
+            {
+                "src_port": "21",
+                "packet_bytes": 778240,
+                "dst_protocol": "기타",
+                "rank_order": 17,
+                "src_protocol": "FTP",
+                "dst_port": "55006"
+            },
+            {
+                "src_port": "21",
+                "packet_bytes": 630784,
+                "dst_protocol": "기타",
+                "rank_order": 18,
+                "src_protocol": "FTP",
+                "dst_port": "40768"
+            },
+            {
+                "src_port": "21",
+                "packet_bytes": 573440,
+                "dst_protocol": "기타",
+                "rank_order": 19,
+                "src_protocol": "FTP",
+                "dst_port": "49388"
+            },
+            {
+                "src_port": "21",
+                "packet_bytes": 573440,
+                "dst_protocol": "기타",
+                "rank_order": 20,
+                "src_protocol": "FTP",
+                "dst_port": "49760"
+            },
+            {
+                "src_port": "21",
+                "packet_bytes": 524288,
+                "dst_protocol": "기타",
+                "rank_order": 21,
+                "src_protocol": "FTP",
+                "dst_port": "46258"
+            },
+            {
+                "src_port": "21",
+                "packet_bytes": 524288,
+                "dst_protocol": "기타",
+                "rank_order": 22,
+                "src_protocol": "FTP",
+                "dst_port": "53576"
+            }
+        ]
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/selectList/SELECT_APP_TRAFFIC_TOP_LIST",
+        "urlOrigin": "/selectList/SELECT_APP_TRAFFIC_TOP_LIST",
+        "params": null,
+        "data": "{\"src_protocol\":\"21\",\"src_port\":\"\",\"dst_protocol\":\"\",\"dst_port\":\"\",\"top_n\":\"\",\"limit\":50,\"page\":1,\"encrypt\":\"CosAaZLhVzt6dalYXuU=\"}"
+    },
+    "requestTime": "2024-12-12 10:22:57.908",
+    "responseTime": "2024-12-12 10:22:59.500",
+    "duration": 1592
+}

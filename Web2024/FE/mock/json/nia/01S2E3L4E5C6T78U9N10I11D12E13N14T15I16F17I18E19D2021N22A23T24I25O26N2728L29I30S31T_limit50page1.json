@@ -218,9 +218,9 @@
         "url": "/selectList/SELECT_UNIDENTIFIED_NATION_LIST",
         "urlOrigin": "/selectList/SELECT_UNIDENTIFIED_NATION_LIST",
         "params": null,
-        "data": "{\"country_name\":\"\",\"country_code\":\"\",\"limit\":50,\"page\":1,\"encrypt\":\"iiFlSTeu8g7Y1ttu4kE=\"}"
+        "data": "{\"country_name\":\"\",\"country_code\":\"\",\"limit\":50,\"page\":1,\"encrypt\":\"lXGZwew2Ub0F4Tx3roQ=\"}"
     },
-    "requestTime": "2024-12-11 08:40:20.801",
-    "responseTime": "2024-12-11 08:40:20.888",
-    "duration": 87
+    "requestTime": "2024-12-12 10:47:04.552",
+    "responseTime": "2024-12-12 10:47:04.624",
+    "duration": 72
 }

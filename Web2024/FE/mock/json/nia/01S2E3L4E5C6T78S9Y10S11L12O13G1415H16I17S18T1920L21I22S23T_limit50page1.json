@@ -668,9 +668,9 @@
         "url": "/selectList/SELECT_SYSLOG_HIST_LIST",
         "urlOrigin": "/selectList/SELECT_SYSLOG_HIST_LIST",
         "params": null,
-        "data": "{\"start_date\":null,\"end_date\":null,\"alarmno\":\"\",\"node_nm\":\"\",\"node_num\":\"\",\"alarmmsg\":\"\",\"limit\":50,\"page\":1,\"encrypt\":\"6Rud/2hYg2B2bIxNdPA=\"}"
+        "data": "{\"start_date\":null,\"end_date\":null,\"alarmno\":\"\",\"node_nm\":\"\",\"node_num\":\"\",\"alarmmsg\":\"\",\"limit\":50,\"page\":1,\"encrypt\":\"EIHO4WLXWxE2mMN5dcU=\"}"
     },
-    "requestTime": "2024-12-11 08:40:52.275",
-    "responseTime": "2024-12-11 08:40:52.477",
-    "duration": 202
+    "requestTime": "2024-12-12 10:26:15.013",
+    "responseTime": "2024-12-12 10:26:15.196",
+    "duration": 183
 }
