@@ -54,9 +54,10 @@
         "url": "/selectList/SELECT_DATA_SNAPSHOT_LIST",
         "urlOrigin": "/selectList/SELECT_DATA_SNAPSHOT_LIST",
         "params": null,
-        "data": "{\"EVENT_GB\":\"ticket-ntt\",\"encrypt\":\"oAGt6UcUJXVsIqdJ+bI=\"}"
+        "data": "{\"EVENT_GB\":\"ticket-ntt\",\"encrypt\":\"pKoTV3bPKq2HoSOzkh4=\"}"
     },
-    "requestTime": "2024-12-12 10:29:51.877",
-    "responseTime": "2024-12-12 10:29:51.920",
-    "duration": 43
+    "cmd": "{ \"url\": \"/selectList/SELECT_DATA_SNAPSHOT_LIST\", \"sqlId\": \"SELECT_DATA_SNAPSHOT_LIST\", \"param\": {\"EVENT_GB\":\"ticket-ntt\",\"encrypt\":\"pKoTV3bPKq2HoSOzkh4=\"} }",
+    "requestTime": "2024-12-13 22:20:56.663",
+    "responseTime": "2024-12-13 22:20:56.714",
+    "duration": 51
 }

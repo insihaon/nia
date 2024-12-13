@@ -11,9 +11,9 @@
             "data": [
                 {
                     "ifStat": {
-                        "badCrc": 6
+                        "badCrc": 0
                     },
-                    "ifName": "ce3/1"
+                    "ifName": "xe19"
                 }
             ]
         }
@@ -26,9 +26,10 @@
         "url": "/nia/ipsdn",
         "urlOrigin": "/nia/ipsdn",
         "params": null,
-        "data": "{\"servicePath\":\"stat/badcrc\",\"param\":\"nodename=seoul-7712&ifname=ce3/1\",\"encrypt\":\"ngnICom9TuRKFheMDUY=\"}"
+        "data": "{\"servicePath\":\"stat/badcrc\",\"param\":\"nodename=seoul-5812&ifname=xe19\",\"encrypt\":\"OUoOWScpwfHTlqL2ACY=\"}"
     },
-    "requestTime": "2024-12-12 10:17:26.910",
-    "responseTime": "2024-12-12 10:17:27.197",
-    "duration": 287
+    "cmd": "{ \"url\": \"/nia/ipsdn\", \"sqlId\": \"\", \"param\": {\"servicePath\":\"stat/badcrc\",\"param\":\"nodename=seoul-5812&ifname=xe19\",\"encrypt\":\"OUoOWScpwfHTlqL2ACY=\"} }",
+    "requestTime": "2024-12-13 22:11:22.508",
+    "responseTime": "2024-12-13 22:11:22.874",
+    "duration": 366
 }

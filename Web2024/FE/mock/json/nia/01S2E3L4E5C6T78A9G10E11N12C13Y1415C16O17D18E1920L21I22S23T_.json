@@ -282,15 +282,15 @@
             },
             {
                 "name": "대전-서울",
+                "id": "daejeon-7712_ce11/1"
+            },
+            {
+                "name": "대전-서울",
                 "id": "daejeon-7712_ce12/1"
             },
             {
                 "name": "대전-서울",
                 "id": "daejeon-7712_ce2/1"
-            },
-            {
-                "name": "대전-서울",
-                "id": "daejeon-7712_ce11/1"
             },
             {
                 "name": "대전-판교",
@@ -382,15 +382,15 @@
             },
             {
                 "name": "서울-대전7712",
-                "id": "seoul-7712_ce2/1"
-            },
-            {
-                "name": "서울-대전7712",
                 "id": "seoul-7712_ce11/1"
             },
             {
                 "name": "서울-대전7712",
                 "id": "seoul-7712_ce12/1"
+            },
+            {
+                "name": "서울-대전7712",
+                "id": "seoul-7712_ce2/1"
             },
             {
                 "name": "서울-부산7712",
@@ -506,9 +506,10 @@
         "url": "/selectList/SELECT_AGENCY_CODE_LIST",
         "urlOrigin": "/selectList/SELECT_AGENCY_CODE_LIST",
         "params": null,
-        "data": "{\"encrypt\":\"JG2v8f5EAN3/LGLtRdg=\"}"
+        "data": "{\"encrypt\":\"IVtxMA7E28NK1rdSW00=\"}"
     },
-    "requestTime": "2024-12-12 10:21:39.025",
-    "responseTime": "2024-12-12 10:21:39.066",
-    "duration": 41
+    "cmd": "{ \"url\": \"/selectList/SELECT_AGENCY_CODE_LIST\", \"sqlId\": \"SELECT_AGENCY_CODE_LIST\", \"param\": {\"encrypt\":\"IVtxMA7E28NK1rdSW00=\"} }",
+    "requestTime": "2024-12-13 22:14:24.852",
+    "responseTime": "2024-12-13 22:14:24.900",
+    "duration": 48
 }

@@ -106,9 +106,10 @@
         "url": "/selectList/SELECT_APPLICATION_CODE_LIST",
         "urlOrigin": "/selectList/SELECT_APPLICATION_CODE_LIST",
         "params": null,
-        "data": "{\"encrypt\":\"sZ+4Iyt5ADEO7ZLl4mE=\"}"
+        "data": "{\"encrypt\":\"iyq0H6f4gcc42/hyUl4=\"}"
     },
-    "requestTime": "2024-12-12 10:22:19.692",
-    "responseTime": "2024-12-12 10:22:19.727",
-    "duration": 35
+    "cmd": "{ \"url\": \"/selectList/SELECT_APPLICATION_CODE_LIST\", \"sqlId\": \"SELECT_APPLICATION_CODE_LIST\", \"param\": {\"encrypt\":\"iyq0H6f4gcc42/hyUl4=\"} }",
+    "requestTime": "2024-12-13 22:14:59.845",
+    "responseTime": "2024-12-13 22:14:59.894",
+    "duration": 49
 }

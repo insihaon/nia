@@ -42,9 +42,10 @@
         "url": "/selectList/SELECT_DATA_SNAPSHOT_LIST",
         "urlOrigin": "/selectList/SELECT_DATA_SNAPSHOT_LIST",
         "params": null,
-        "data": "{\"EVENT_GB\":\"ticket-nftt\",\"encrypt\":\"t9VV51gxCEgSeqD6Q58=\"}"
+        "data": "{\"EVENT_GB\":\"ticket-nftt\",\"encrypt\":\"3D5Sb1Db0mu07v89mDQ=\"}"
     },
-    "requestTime": "2024-12-12 10:29:53.651",
-    "responseTime": "2024-12-12 10:29:53.691",
-    "duration": 40
+    "cmd": "{ \"url\": \"/selectList/SELECT_DATA_SNAPSHOT_LIST\", \"sqlId\": \"SELECT_DATA_SNAPSHOT_LIST\", \"param\": {\"EVENT_GB\":\"ticket-nftt\",\"encrypt\":\"3D5Sb1Db0mu07v89mDQ=\"} }",
+    "requestTime": "2024-12-13 22:20:57.216",
+    "responseTime": "2024-12-13 22:20:57.253",
+    "duration": 37
 }

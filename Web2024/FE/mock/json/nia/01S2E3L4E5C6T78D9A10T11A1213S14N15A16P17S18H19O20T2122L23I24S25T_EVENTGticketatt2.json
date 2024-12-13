@@ -120,9 +120,10 @@
         "url": "/selectList/SELECT_DATA_SNAPSHOT_LIST",
         "urlOrigin": "/selectList/SELECT_DATA_SNAPSHOT_LIST",
         "params": null,
-        "data": "{\"EVENT_GB\":\"ticket-att2\",\"encrypt\":\"yiuBWGy8vvChTX3mWoc=\"}"
+        "data": "{\"EVENT_GB\":\"ticket-att2\",\"encrypt\":\"fVoTcIUfM2p/rsjTVJw=\"}"
     },
-    "requestTime": "2024-12-12 10:29:51.170",
-    "responseTime": "2024-12-12 10:29:51.229",
-    "duration": 59
+    "cmd": "{ \"url\": \"/selectList/SELECT_DATA_SNAPSHOT_LIST\", \"sqlId\": \"SELECT_DATA_SNAPSHOT_LIST\", \"param\": {\"EVENT_GB\":\"ticket-att2\",\"encrypt\":\"fVoTcIUfM2p/rsjTVJw=\"} }",
+    "requestTime": "2024-12-13 22:20:55.812",
+    "responseTime": "2024-12-13 22:20:55.849",
+    "duration": 37
 }

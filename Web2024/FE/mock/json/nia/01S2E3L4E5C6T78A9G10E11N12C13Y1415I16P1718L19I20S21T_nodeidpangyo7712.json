@@ -17,9 +17,10 @@
         "url": "/selectList/SELECT_AGENCY_IP_LIST",
         "urlOrigin": "/selectList/SELECT_AGENCY_IP_LIST",
         "params": null,
-        "data": "{\"node_id\":\"pangyo-7712\",\"encrypt\":\"frUAdMCjtJUbSzPbcuU=\"}"
+        "data": "{\"node_id\":\"pangyo-7712\",\"encrypt\":\"HFtGKqto6ojmK0dKE18=\"}"
     },
-    "requestTime": "2024-12-12 10:18:10.334",
-    "responseTime": "2024-12-12 10:18:10.380",
-    "duration": 46
+    "cmd": "{ \"url\": \"/selectList/SELECT_AGENCY_IP_LIST\", \"sqlId\": \"SELECT_AGENCY_IP_LIST\", \"param\": {\"node_id\":\"pangyo-7712\",\"encrypt\":\"HFtGKqto6ojmK0dKE18=\"} }",
+    "requestTime": "2024-12-13 22:09:09.760",
+    "responseTime": "2024-12-13 22:09:09.824",
+    "duration": 64
 }

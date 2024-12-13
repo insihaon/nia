@@ -6,8 +6,28 @@
         "sql": [
             "SELECT\n            U.NAME\n            , U.EMAIL\n            , U.AGENCY_NAME\n                ,U.ID\n                , U.PW\n                , U.LVL\n                , TO_CHAR(U.LAST_LOGIN, 'YYYY-MM-DD HH24:MI:SS') AS LAST_LOGIN\n                , U.PHONE_NUMBER\n        FROM nia.tb_user U\n            ORDER BY NAME DESC"
         ],
-        "total": 21,
+        "total": 23,
         "result": [
+            {
+                "agency_name": "NOC",
+                "lvl": 1,
+                "last_login": "2024-12-13 16:44:25",
+                "pw": "{bcrypt}$2a$10$oFqeccliQ/locuFVz65BBOws3jDCnpxvBCwrnam3wKG1d/4xa7S6q",
+                "name": "user",
+                "phone_number": "010-1234-1234",
+                "id": "codejuser",
+                "email": "password:1234@code.com"
+            },
+            {
+                "agency_name": "NOC",
+                "lvl": 1,
+                "last_login": "2024-12-13 10:36:07",
+                "pw": "{bcrypt}$2a$10$FufigyvYagsvvXgoeUpKVee7TgYG9CR4p8WlmfMbTbV6rMtEkqZ8i",
+                "name": "test_user",
+                "phone_number": "010-1234-5678",
+                "id": "testUser1",
+                "email": "password:1234@cd.com"
+            },
             {
                 "agency_name": null,
                 "lvl": 1,
@@ -71,8 +91,8 @@
             {
                 "agency_name": "NOC",
                 "lvl": 7,
-                "last_login": "2024-12-12 10:12:35",
-                "pw": "{bcrypt}$2a$10$8SD7QH/3qKScytWwFIz92Oh4Sup34H5vXljT29vOvmHb487yITgnm",
+                "last_login": "2024-12-13 22:05:04",
+                "pw": "{bcrypt}$2a$10$Q5gfrqtgFqFcQgi7HQIJHuCicpXcwTVYQYMstZOn3acsniIZ/V1Ky",
                 "name": "dimmby",
                 "phone_number": "02-6191-2081",
                 "id": "dimmby",
@@ -228,9 +248,10 @@
         "url": "/selectList/SELECT_USER_LIST",
         "urlOrigin": "/selectList/SELECT_USER_LIST",
         "params": null,
-        "data": "{\"encrypt\":\"G3aY4P7viLhm0dvwz70=\"}"
+        "data": "{\"encrypt\":\"1sdCyMKyFvZWcfvl9M0=\"}"
     },
-    "requestTime": "2024-12-12 10:17:42.588",
-    "responseTime": "2024-12-12 10:17:42.677",
-    "duration": 89
+    "cmd": "{ \"url\": \"/selectList/SELECT_USER_LIST\", \"sqlId\": \"SELECT_USER_LIST\", \"param\": {\"encrypt\":\"1sdCyMKyFvZWcfvl9M0=\"} }",
+    "requestTime": "2024-12-13 22:09:40.651",
+    "responseTime": "2024-12-13 22:09:40.746",
+    "duration": 95
 }

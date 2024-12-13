@@ -6,457 +6,457 @@
         "sql": [
             "SELECT  A.NODE_NUM AS NODE_NUM,\n                    A.SDN_NODE_ID AS SDN_NODE_ID,\n                    A.NODE_NM AS NODE_NM,\n                    CASE WHEN A.CPU_USAGE = -1 THEN A.CPU_USAGE ELSE TRUNC(A.CPU_USAGE::NUMERIC, 3) * 100 END AS CPU_USAGE,\n                    CASE WHEN A.MEM_USAGE = -1 THEN A.MEM_USAGE ELSE TRUNC(A.MEM_USAGE::NUMERIC, 3) * 100 END AS MEM_USAGE,\n                    TO_CHAR(A.MEASURED_DATETIME, 'YYYY-MM-DD HH24:MI:SS') AS MEASURED_DATETIME,\n                    CASE WHEN TN.STRRESID IS NOT NULL THEN TRUE ELSE FALSE\n                    END AS AI_RESULT\n            FROM   ( SELECT NM.NODE_NUM,\n                            N.ID AS SDN_NODE_ID,\n                            NM.NODE_NM,\n                            NF.CPU_USAGE,\n                            NF.MEM_USAGE,\n                            NF.MEASURED_DATETIME\n                    FROM    IP_SDN.TB_NODEFACTOR NF\n                    INNER JOIN IP_SDN.TB_NODE N        ON NF.NODE_ID = N.ID\n                    INNER JOIN RESOURCE.TB_NODE_MST NM ON N.ID = NM.IP_SDN_ID::INT\n                    WHERE   1=1 \n                        AND NF.MEASURED_DATETIME BETWEEN NOW()::timestamp - interval '30 min' AND NOW()::timestamp\n                        ORDER BY MEASURED_DATETIME DESC\n                    ) A\n            LEFT OUTER JOIN RCA.TB_NODEFACTOR TN \n                ON TN.STRRESID = A.NODE_NUM \n                    AND TN.MEASURED_DATETIME = A.MEASURED_DATETIME\n            LIMIT 50 OFFSET 0"
         ],
-        "total": 182,
+        "total": 196,
         "result": [
-            {
-                "mem_usage": 37.9,
-                "ai_result": false,
-                "measured_datetime": "2024-12-12 10:18:13",
-                "node_nm": "daejeon-5812",
-                "node_num": "1623913513672",
-                "cpu_usage": 6.6,
-                "sdn_node_id": 4
-            },
-            {
-                "mem_usage": 20,
-                "ai_result": false,
-                "measured_datetime": "2024-12-12 10:18:13",
-                "node_nm": "gwangju-7712",
-                "node_num": "1720140269083",
-                "cpu_usage": 2,
-                "sdn_node_id": 11
-            },
-            {
-                "mem_usage": 43.9,
-                "ai_result": false,
-                "measured_datetime": "2024-12-12 10:18:13",
-                "node_nm": "jeju-5812",
-                "node_num": "1720140120816",
-                "cpu_usage": 8.2,
-                "sdn_node_id": 16
-            },
-            {
-                "mem_usage": 7,
-                "ai_result": false,
-                "measured_datetime": "2024-12-12 10:18:13",
-                "node_nm": "busan-5812",
-                "node_num": "1720140009483",
-                "cpu_usage": 11.6,
-                "sdn_node_id": 10
-            },
-            {
-                "mem_usage": 2.9,
-                "ai_result": false,
-                "measured_datetime": "2024-12-12 10:18:13",
-                "node_nm": "busan-7712",
-                "node_num": "1623914005776",
-                "cpu_usage": 3.7,
-                "sdn_node_id": 9
-            },
-            {
-                "mem_usage": 56,
-                "ai_result": false,
-                "measured_datetime": "2024-12-12 10:18:13",
-                "node_nm": "daegu-5812",
-                "node_num": "1720139646928",
-                "cpu_usage": 7,
-                "sdn_node_id": 8
-            },
             {
                 "mem_usage": 46,
                 "ai_result": false,
-                "measured_datetime": "2024-12-12 10:18:13",
+                "measured_datetime": "2024-12-13 22:12:10",
                 "node_nm": "seoul-7712",
                 "node_num": "1623913427068",
-                "cpu_usage": 5.5,
+                "cpu_usage": 5,
                 "sdn_node_id": 1
             },
             {
-                "mem_usage": 50,
+                "mem_usage": 51.9,
                 "ai_result": false,
-                "measured_datetime": "2024-12-12 10:18:13",
-                "node_nm": "gwangju-5812",
-                "node_num": "1720139920639",
-                "cpu_usage": 6.2,
-                "sdn_node_id": 12
-            },
-            {
-                "mem_usage": 20,
-                "ai_result": false,
-                "measured_datetime": "2024-12-12 10:18:13",
-                "node_nm": "daegu-7712",
-                "node_num": "1623913958348",
-                "cpu_usage": 1.7,
-                "sdn_node_id": 7
-            },
-            {
-                "mem_usage": 50.9,
-                "ai_result": false,
-                "measured_datetime": "2024-12-12 10:18:13",
+                "measured_datetime": "2024-12-13 22:12:10",
                 "node_nm": "seoul-5812",
                 "node_num": "1720139614634",
                 "cpu_usage": 11.9,
                 "sdn_node_id": 2
             },
             {
-                "mem_usage": 75,
-                "ai_result": false,
-                "measured_datetime": "2024-12-12 10:18:13",
-                "node_nm": "pangyo-5812",
-                "node_num": "1623913556405",
-                "cpu_usage": 7.9,
-                "sdn_node_id": 6
-            },
-            {
-                "mem_usage": 38.9,
-                "ai_result": false,
-                "measured_datetime": "2024-12-12 10:18:13",
-                "node_nm": "pangyo-7712",
-                "node_num": "1623913535070",
-                "cpu_usage": 5.2,
-                "sdn_node_id": 5
-            },
-            {
-                "mem_usage": 43,
-                "ai_result": false,
-                "measured_datetime": "2024-12-12 10:18:13",
-                "node_nm": "jeonju-5812",
-                "node_num": "1720140059885",
-                "cpu_usage": 3.1,
-                "sdn_node_id": 14
-            },
-            {
-                "mem_usage": 44.9,
-                "ai_result": false,
-                "measured_datetime": "2024-12-12 10:18:13",
-                "node_nm": "daejeon-7712",
-                "node_num": "1623913471006",
-                "cpu_usage": 4.2,
-                "sdn_node_id": 3
-            },
-            {
-                "mem_usage": 43.9,
-                "ai_result": false,
-                "measured_datetime": "2024-12-12 10:16:02",
-                "node_nm": "jeju-5812",
-                "node_num": "1720140120816",
-                "cpu_usage": 7.4,
-                "sdn_node_id": 16
-            },
-            {
-                "mem_usage": 44.9,
-                "ai_result": false,
-                "measured_datetime": "2024-12-12 10:16:02",
-                "node_nm": "daejeon-7712",
-                "node_num": "1623913471006",
-                "cpu_usage": 3.8,
-                "sdn_node_id": 3
-            },
-            {
-                "mem_usage": 37.9,
-                "ai_result": false,
-                "measured_datetime": "2024-12-12 10:16:02",
-                "node_nm": "daejeon-5812",
-                "node_num": "1623913513672",
-                "cpu_usage": 6.9,
-                "sdn_node_id": 4
-            },
-            {
-                "mem_usage": 20,
-                "ai_result": false,
-                "measured_datetime": "2024-12-12 10:16:02",
-                "node_nm": "daegu-7712",
-                "node_num": "1623913958348",
-                "cpu_usage": 1.6,
-                "sdn_node_id": 7
-            },
-            {
-                "mem_usage": 46,
-                "ai_result": false,
-                "measured_datetime": "2024-12-12 10:16:02",
-                "node_nm": "seoul-7712",
-                "node_num": "1623913427068",
-                "cpu_usage": 6.5,
-                "sdn_node_id": 1
-            },
-            {
-                "mem_usage": 7,
-                "ai_result": false,
-                "measured_datetime": "2024-12-12 10:16:02",
-                "node_nm": "busan-5812",
-                "node_num": "1720140009483",
-                "cpu_usage": 9.9,
-                "sdn_node_id": 10
-            },
-            {
                 "mem_usage": 2.9,
                 "ai_result": false,
-                "measured_datetime": "2024-12-12 10:16:02",
+                "measured_datetime": "2024-12-13 22:12:10",
                 "node_nm": "busan-7712",
                 "node_num": "1623914005776",
-                "cpu_usage": 4.1,
-                "sdn_node_id": 9
-            },
-            {
-                "mem_usage": 50,
-                "ai_result": false,
-                "measured_datetime": "2024-12-12 10:16:02",
-                "node_nm": "gwangju-5812",
-                "node_num": "1720139920639",
-                "cpu_usage": 6,
-                "sdn_node_id": 12
-            },
-            {
-                "mem_usage": 20,
-                "ai_result": false,
-                "measured_datetime": "2024-12-12 10:16:02",
-                "node_nm": "gwangju-7712",
-                "node_num": "1720140269083",
-                "cpu_usage": 2.2,
-                "sdn_node_id": 11
-            },
-            {
-                "mem_usage": 50.9,
-                "ai_result": false,
-                "measured_datetime": "2024-12-12 10:16:02",
-                "node_nm": "seoul-5812",
-                "node_num": "1720139614634",
-                "cpu_usage": 12.1,
-                "sdn_node_id": 2
-            },
-            {
-                "mem_usage": 56,
-                "ai_result": false,
-                "measured_datetime": "2024-12-12 10:16:02",
-                "node_nm": "daegu-5812",
-                "node_num": "1720139646928",
-                "cpu_usage": 6.4,
-                "sdn_node_id": 8
-            },
-            {
-                "mem_usage": 75,
-                "ai_result": false,
-                "measured_datetime": "2024-12-12 10:16:02",
-                "node_nm": "pangyo-5812",
-                "node_num": "1623913556405",
-                "cpu_usage": 8.1,
-                "sdn_node_id": 6
-            },
-            {
-                "mem_usage": 38.9,
-                "ai_result": false,
-                "measured_datetime": "2024-12-12 10:16:02",
-                "node_nm": "pangyo-7712",
-                "node_num": "1623913535070",
                 "cpu_usage": 5.3,
-                "sdn_node_id": 5
-            },
-            {
-                "mem_usage": 43,
-                "ai_result": false,
-                "measured_datetime": "2024-12-12 10:16:02",
-                "node_nm": "jeonju-5812",
-                "node_num": "1720140059885",
-                "cpu_usage": 4.3,
-                "sdn_node_id": 14
+                "sdn_node_id": 9
             },
             {
                 "mem_usage": 7,
                 "ai_result": false,
-                "measured_datetime": "2024-12-12 10:13:51",
+                "measured_datetime": "2024-12-13 22:12:10",
                 "node_nm": "busan-5812",
                 "node_num": "1720140009483",
+                "cpu_usage": 11.2,
+                "sdn_node_id": 10
+            },
+            {
+                "mem_usage": 37.9,
+                "ai_result": false,
+                "measured_datetime": "2024-12-13 22:12:10",
+                "node_nm": "daejeon-5812",
+                "node_num": "1623913513672",
                 "cpu_usage": 7.1,
+                "sdn_node_id": 4
+            },
+            {
+                "mem_usage": 20,
+                "ai_result": false,
+                "measured_datetime": "2024-12-13 22:12:10",
+                "node_nm": "daegu-7712",
+                "node_num": "1623913958348",
+                "cpu_usage": 2.4,
+                "sdn_node_id": 7
+            },
+            {
+                "mem_usage": 43,
+                "ai_result": false,
+                "measured_datetime": "2024-12-13 22:12:10",
+                "node_nm": "jeonju-5812",
+                "node_num": "1720140059885",
+                "cpu_usage": 4.1,
+                "sdn_node_id": 14
+            },
+            {
+                "mem_usage": 43.9,
+                "ai_result": false,
+                "measured_datetime": "2024-12-13 22:12:10",
+                "node_nm": "jeju-5812",
+                "node_num": "1720140120816",
+                "cpu_usage": 6.5,
+                "sdn_node_id": 16
+            },
+            {
+                "mem_usage": 56.9,
+                "ai_result": false,
+                "measured_datetime": "2024-12-13 22:12:10",
+                "node_nm": "daegu-5812",
+                "node_num": "1720139646928",
+                "cpu_usage": 4.6,
+                "sdn_node_id": 8
+            },
+            {
+                "mem_usage": 44.9,
+                "ai_result": false,
+                "measured_datetime": "2024-12-13 22:12:10",
+                "node_nm": "daejeon-7712",
+                "node_num": "1623913471006",
+                "cpu_usage": 3.4,
+                "sdn_node_id": 3
+            },
+            {
+                "mem_usage": 50,
+                "ai_result": false,
+                "measured_datetime": "2024-12-13 22:12:10",
+                "node_nm": "gwangju-5812",
+                "node_num": "1720139920639",
+                "cpu_usage": 5.3,
+                "sdn_node_id": 12
+            },
+            {
+                "mem_usage": 20,
+                "ai_result": false,
+                "measured_datetime": "2024-12-13 22:12:10",
+                "node_nm": "gwangju-7712",
+                "node_num": "1720140269083",
+                "cpu_usage": 8.9,
+                "sdn_node_id": 11
+            },
+            {
+                "mem_usage": 38.9,
+                "ai_result": false,
+                "measured_datetime": "2024-12-13 22:12:10",
+                "node_nm": "pangyo-7712",
+                "node_num": "1623913535070",
+                "cpu_usage": 2.7,
+                "sdn_node_id": 5
+            },
+            {
+                "mem_usage": 75,
+                "ai_result": false,
+                "measured_datetime": "2024-12-13 22:12:10",
+                "node_nm": "pangyo-5812",
+                "node_num": "1623913556405",
+                "cpu_usage": 9,
+                "sdn_node_id": 6
+            },
+            {
+                "mem_usage": 44.9,
+                "ai_result": false,
+                "measured_datetime": "2024-12-13 22:09:59",
+                "node_nm": "daejeon-7712",
+                "node_num": "1623913471006",
+                "cpu_usage": 3.7,
+                "sdn_node_id": 3
+            },
+            {
+                "mem_usage": 37.9,
+                "ai_result": false,
+                "measured_datetime": "2024-12-13 22:09:59",
+                "node_nm": "daejeon-5812",
+                "node_num": "1623913513672",
+                "cpu_usage": 7.9,
+                "sdn_node_id": 4
+            },
+            {
+                "mem_usage": 56.9,
+                "ai_result": false,
+                "measured_datetime": "2024-12-13 22:09:59",
+                "node_nm": "daegu-5812",
+                "node_num": "1720139646928",
+                "cpu_usage": 3.4,
+                "sdn_node_id": 8
+            },
+            {
+                "mem_usage": 75,
+                "ai_result": false,
+                "measured_datetime": "2024-12-13 22:09:59",
+                "node_nm": "pangyo-5812",
+                "node_num": "1623913556405",
+                "cpu_usage": 10.2,
+                "sdn_node_id": 6
+            },
+            {
+                "mem_usage": 7,
+                "ai_result": false,
+                "measured_datetime": "2024-12-13 22:09:59",
+                "node_nm": "busan-5812",
+                "node_num": "1720140009483",
+                "cpu_usage": 11.3,
+                "sdn_node_id": 10
+            },
+            {
+                "mem_usage": 46,
+                "ai_result": false,
+                "measured_datetime": "2024-12-13 22:09:59",
+                "node_nm": "seoul-7712",
+                "node_num": "1623913427068",
+                "cpu_usage": 4.7,
+                "sdn_node_id": 1
+            },
+            {
+                "mem_usage": 43.9,
+                "ai_result": false,
+                "measured_datetime": "2024-12-13 22:09:59",
+                "node_nm": "jeju-5812",
+                "node_num": "1720140120816",
+                "cpu_usage": 5.4,
+                "sdn_node_id": 16
+            },
+            {
+                "mem_usage": 51.9,
+                "ai_result": false,
+                "measured_datetime": "2024-12-13 22:09:59",
+                "node_nm": "seoul-5812",
+                "node_num": "1720139614634",
+                "cpu_usage": 11.8,
+                "sdn_node_id": 2
+            },
+            {
+                "mem_usage": 20,
+                "ai_result": false,
+                "measured_datetime": "2024-12-13 22:09:59",
+                "node_nm": "daegu-7712",
+                "node_num": "1623913958348",
+                "cpu_usage": 2.2,
+                "sdn_node_id": 7
+            },
+            {
+                "mem_usage": 38.9,
+                "ai_result": false,
+                "measured_datetime": "2024-12-13 22:09:59",
+                "node_nm": "pangyo-7712",
+                "node_num": "1623913535070",
+                "cpu_usage": 3,
+                "sdn_node_id": 5
+            },
+            {
+                "mem_usage": 2.9,
+                "ai_result": false,
+                "measured_datetime": "2024-12-13 22:09:59",
+                "node_nm": "busan-7712",
+                "node_num": "1623914005776",
+                "cpu_usage": 4.8,
+                "sdn_node_id": 9
+            },
+            {
+                "mem_usage": 20,
+                "ai_result": false,
+                "measured_datetime": "2024-12-13 22:09:59",
+                "node_nm": "gwangju-7712",
+                "node_num": "1720140269083",
+                "cpu_usage": 8.8,
+                "sdn_node_id": 11
+            },
+            {
+                "mem_usage": 43,
+                "ai_result": false,
+                "measured_datetime": "2024-12-13 22:09:59",
+                "node_nm": "jeonju-5812",
+                "node_num": "1720140059885",
+                "cpu_usage": 3.7,
+                "sdn_node_id": 14
+            },
+            {
+                "mem_usage": 50,
+                "ai_result": false,
+                "measured_datetime": "2024-12-13 22:09:59",
+                "node_nm": "gwangju-5812",
+                "node_num": "1720139920639",
+                "cpu_usage": 4.6,
+                "sdn_node_id": 12
+            },
+            {
+                "mem_usage": 43.9,
+                "ai_result": false,
+                "measured_datetime": "2024-12-13 22:07:48",
+                "node_nm": "jeju-5812",
+                "node_num": "1720140120816",
+                "cpu_usage": 7.2,
+                "sdn_node_id": 16
+            },
+            {
+                "mem_usage": 44.9,
+                "ai_result": false,
+                "measured_datetime": "2024-12-13 22:07:48",
+                "node_nm": "daejeon-7712",
+                "node_num": "1623913471006",
+                "cpu_usage": 3.5,
+                "sdn_node_id": 3
+            },
+            {
+                "mem_usage": 56.9,
+                "ai_result": false,
+                "measured_datetime": "2024-12-13 22:07:48",
+                "node_nm": "daegu-5812",
+                "node_num": "1720139646928",
+                "cpu_usage": 4.6,
+                "sdn_node_id": 8
+            },
+            {
+                "mem_usage": 50,
+                "ai_result": false,
+                "measured_datetime": "2024-12-13 22:07:48",
+                "node_nm": "gwangju-5812",
+                "node_num": "1720139920639",
+                "cpu_usage": 5.1,
+                "sdn_node_id": 12
+            },
+            {
+                "mem_usage": 38.9,
+                "ai_result": false,
+                "measured_datetime": "2024-12-13 22:07:48",
+                "node_nm": "pangyo-7712",
+                "node_num": "1623913535070",
+                "cpu_usage": 3.1,
+                "sdn_node_id": 5
+            },
+            {
+                "mem_usage": 46,
+                "ai_result": false,
+                "measured_datetime": "2024-12-13 22:07:48",
+                "node_nm": "seoul-7712",
+                "node_num": "1623913427068",
+                "cpu_usage": 3.6,
+                "sdn_node_id": 1
+            },
+            {
+                "mem_usage": 20,
+                "ai_result": false,
+                "measured_datetime": "2024-12-13 22:07:48",
+                "node_nm": "gwangju-7712",
+                "node_num": "1720140269083",
+                "cpu_usage": 4.4,
+                "sdn_node_id": 11
+            },
+            {
+                "mem_usage": 43,
+                "ai_result": false,
+                "measured_datetime": "2024-12-13 22:07:48",
+                "node_nm": "jeonju-5812",
+                "node_num": "1720140059885",
+                "cpu_usage": 4,
+                "sdn_node_id": 14
+            },
+            {
+                "mem_usage": 37.9,
+                "ai_result": false,
+                "measured_datetime": "2024-12-13 22:07:48",
+                "node_nm": "daejeon-5812",
+                "node_num": "1623913513672",
+                "cpu_usage": 7.4,
+                "sdn_node_id": 4
+            },
+            {
+                "mem_usage": 2.9,
+                "ai_result": false,
+                "measured_datetime": "2024-12-13 22:07:48",
+                "node_nm": "busan-7712",
+                "node_num": "1623914005776",
+                "cpu_usage": 5.3,
+                "sdn_node_id": 9
+            },
+            {
+                "mem_usage": 51.9,
+                "ai_result": false,
+                "measured_datetime": "2024-12-13 22:07:48",
+                "node_nm": "seoul-5812",
+                "node_num": "1720139614634",
+                "cpu_usage": 11.7,
+                "sdn_node_id": 2
+            },
+            {
+                "mem_usage": 7,
+                "ai_result": false,
+                "measured_datetime": "2024-12-13 22:07:48",
+                "node_nm": "busan-5812",
+                "node_num": "1720140009483",
+                "cpu_usage": 9.7,
                 "sdn_node_id": 10
             },
             {
                 "mem_usage": 20,
                 "ai_result": false,
-                "measured_datetime": "2024-12-12 10:13:51",
+                "measured_datetime": "2024-12-13 22:07:48",
+                "node_nm": "daegu-7712",
+                "node_num": "1623913958348",
+                "cpu_usage": 2.1,
+                "sdn_node_id": 7
+            },
+            {
+                "mem_usage": 75,
+                "ai_result": false,
+                "measured_datetime": "2024-12-13 22:07:48",
+                "node_nm": "pangyo-5812",
+                "node_num": "1623913556405",
+                "cpu_usage": 10.7,
+                "sdn_node_id": 6
+            },
+            {
+                "mem_usage": 20,
+                "ai_result": false,
+                "measured_datetime": "2024-12-13 22:05:37",
                 "node_nm": "gwangju-7712",
                 "node_num": "1720140269083",
-                "cpu_usage": 2.9,
+                "cpu_usage": 3.4,
                 "sdn_node_id": 11
-            },
-            {
-                "mem_usage": 46,
-                "ai_result": false,
-                "measured_datetime": "2024-12-12 10:13:51",
-                "node_nm": "seoul-7712",
-                "node_num": "1623913427068",
-                "cpu_usage": 5.1,
-                "sdn_node_id": 1
-            },
-            {
-                "mem_usage": 50.9,
-                "ai_result": false,
-                "measured_datetime": "2024-12-12 10:13:51",
-                "node_nm": "seoul-5812",
-                "node_num": "1720139614634",
-                "cpu_usage": 10.5,
-                "sdn_node_id": 2
-            },
-            {
-                "mem_usage": 44.9,
-                "ai_result": false,
-                "measured_datetime": "2024-12-12 10:13:51",
-                "node_nm": "daejeon-7712",
-                "node_num": "1623913471006",
-                "cpu_usage": 4.4,
-                "sdn_node_id": 3
-            },
-            {
-                "mem_usage": 43.9,
-                "ai_result": false,
-                "measured_datetime": "2024-12-12 10:13:51",
-                "node_nm": "jeju-5812",
-                "node_num": "1720140120816",
-                "cpu_usage": 7.1,
-                "sdn_node_id": 16
-            },
-            {
-                "mem_usage": 43,
-                "ai_result": false,
-                "measured_datetime": "2024-12-12 10:13:51",
-                "node_nm": "jeonju-5812",
-                "node_num": "1720140059885",
-                "cpu_usage": 5.8,
-                "sdn_node_id": 14
-            },
-            {
-                "mem_usage": 37.9,
-                "ai_result": false,
-                "measured_datetime": "2024-12-12 10:13:51",
-                "node_nm": "daejeon-5812",
-                "node_num": "1623913513672",
-                "cpu_usage": 6.9,
-                "sdn_node_id": 4
             },
             {
                 "mem_usage": 38.9,
                 "ai_result": false,
-                "measured_datetime": "2024-12-12 10:13:51",
+                "measured_datetime": "2024-12-13 22:05:37",
                 "node_nm": "pangyo-7712",
                 "node_num": "1623913535070",
-                "cpu_usage": 6.7,
+                "cpu_usage": 3.3,
                 "sdn_node_id": 5
             },
             {
-                "mem_usage": 75,
+                "mem_usage": 46,
                 "ai_result": false,
-                "measured_datetime": "2024-12-12 10:13:51",
-                "node_nm": "pangyo-5812",
-                "node_num": "1623913556405",
-                "cpu_usage": 8.3,
-                "sdn_node_id": 6
-            },
-            {
-                "mem_usage": 20,
-                "ai_result": false,
-                "measured_datetime": "2024-12-12 10:13:51",
-                "node_nm": "daegu-7712",
-                "node_num": "1623913958348",
-                "cpu_usage": 2.5,
-                "sdn_node_id": 7
-            },
-            {
-                "mem_usage": 50,
-                "ai_result": false,
-                "measured_datetime": "2024-12-12 10:13:51",
-                "node_nm": "gwangju-5812",
-                "node_num": "1720139920639",
-                "cpu_usage": 6.7,
-                "sdn_node_id": 12
-            },
-            {
-                "mem_usage": 56,
-                "ai_result": false,
-                "measured_datetime": "2024-12-12 10:13:51",
-                "node_nm": "daegu-5812",
-                "node_num": "1720139646928",
-                "cpu_usage": 6.8,
-                "sdn_node_id": 8
-            },
-            {
-                "mem_usage": 2.9,
-                "ai_result": false,
-                "measured_datetime": "2024-12-12 10:13:51",
-                "node_nm": "busan-7712",
-                "node_num": "1623914005776",
-                "cpu_usage": 2.9,
-                "sdn_node_id": 9
-            },
-            {
-                "mem_usage": 75,
-                "ai_result": false,
-                "measured_datetime": "2024-12-12 10:11:40",
-                "node_nm": "pangyo-5812",
-                "node_num": "1623913556405",
-                "cpu_usage": 8.7,
-                "sdn_node_id": 6
-            },
-            {
-                "mem_usage": 50,
-                "ai_result": false,
-                "measured_datetime": "2024-12-12 10:11:40",
-                "node_nm": "gwangju-5812",
-                "node_num": "1720139920639",
-                "cpu_usage": 7.4,
-                "sdn_node_id": 12
-            },
-            {
-                "mem_usage": 50.9,
-                "ai_result": false,
-                "measured_datetime": "2024-12-12 10:11:40",
-                "node_nm": "seoul-5812",
-                "node_num": "1720139614634",
-                "cpu_usage": 14.2,
-                "sdn_node_id": 2
+                "measured_datetime": "2024-12-13 22:05:37",
+                "node_nm": "seoul-7712",
+                "node_num": "1623913427068",
+                "cpu_usage": 4.2,
+                "sdn_node_id": 1
             },
             {
                 "mem_usage": 43.9,
                 "ai_result": false,
-                "measured_datetime": "2024-12-12 10:11:40",
+                "measured_datetime": "2024-12-13 22:05:37",
                 "node_nm": "jeju-5812",
                 "node_num": "1720140120816",
-                "cpu_usage": 7,
+                "cpu_usage": 6.3,
                 "sdn_node_id": 16
             },
             {
-                "mem_usage": 37.9,
+                "mem_usage": 51.9,
                 "ai_result": false,
-                "measured_datetime": "2024-12-12 10:11:40",
-                "node_nm": "daejeon-5812",
-                "node_num": "1623913513672",
-                "cpu_usage": 5.9,
-                "sdn_node_id": 4
+                "measured_datetime": "2024-12-13 22:05:37",
+                "node_nm": "seoul-5812",
+                "node_num": "1720139614634",
+                "cpu_usage": 9.3,
+                "sdn_node_id": 2
+            },
+            {
+                "mem_usage": 56.9,
+                "ai_result": false,
+                "measured_datetime": "2024-12-13 22:05:37",
+                "node_nm": "daegu-5812",
+                "node_num": "1720139646928",
+                "cpu_usage": 4.9,
+                "sdn_node_id": 8
             },
             {
                 "mem_usage": 2.9,
                 "ai_result": false,
-                "measured_datetime": "2024-12-12 10:11:40",
+                "measured_datetime": "2024-12-13 22:05:37",
                 "node_nm": "busan-7712",
                 "node_num": "1623914005776",
-                "cpu_usage": 3.4,
+                "cpu_usage": 3.9,
                 "sdn_node_id": 9
             },
             {
                 "mem_usage": 20,
                 "ai_result": false,
-                "measured_datetime": "2024-12-12 10:11:40",
-                "node_nm": "gwangju-7712",
-                "node_num": "1720140269083",
-                "cpu_usage": 2.4,
-                "sdn_node_id": 11
-            },
-            {
-                "mem_usage": 56,
-                "ai_result": false,
-                "measured_datetime": "2024-12-12 10:11:40",
-                "node_nm": "daegu-5812",
-                "node_num": "1720139646928",
-                "cpu_usage": 8.3,
-                "sdn_node_id": 8
+                "measured_datetime": "2024-12-13 22:05:37",
+                "node_nm": "daegu-7712",
+                "node_num": "1623913958348",
+                "cpu_usage": 2.3,
+                "sdn_node_id": 7
             }
         ]
     },
@@ -468,9 +468,10 @@
         "url": "/selectList/SELECT_EQUIP_AMOUNT_USED_LIST",
         "urlOrigin": "/selectList/SELECT_EQUIP_AMOUNT_USED_LIST",
         "params": null,
-        "data": "{\"node_nm\":\"\",\"cpu_usage\":0,\"mem_usage\":0,\"limit\":50,\"page\":1,\"encrypt\":\"Hu0dYA/SyRdhEri2ShE=\"}"
+        "data": "{\"node_nm\":\"\",\"cpu_usage\":0,\"mem_usage\":0,\"limit\":50,\"page\":1,\"encrypt\":\"r4qvVgbwF8w7g1xQ8j4=\"}"
     },
-    "requestTime": "2024-12-12 10:23:34.803",
-    "responseTime": "2024-12-12 10:23:35.048",
-    "duration": 245
+    "cmd": "{ \"url\": \"/selectList/SELECT_EQUIP_AMOUNT_USED_LIST\", \"sqlId\": \"SELECT_EQUIP_AMOUNT_USED_LIST\", \"param\": {\"node_nm\":\"\",\"cpu_usage\":0,\"mem_usage\":0,\"limit\":50,\"page\":1,\"encrypt\":\"r4qvVgbwF8w7g1xQ8j4=\"} }",
+    "requestTime": "2024-12-13 22:16:06.144",
+    "responseTime": "2024-12-13 22:16:06.445",
+    "duration": 301
 }

@@ -9,49 +9,49 @@
         "total": 9,
         "result": [
             {
-                "key_name": "aiIpPerfKey",
-                "yd_date": "2024-12-12 10:12:13",
-                "yd_date1": "2024-12-12T10:12:13.000+09:00"
-            },
-            {
                 "key_name": "aiIpSdnSyslogKey",
-                "yd_date": "2024-12-12 10:12:28",
-                "yd_date1": "2024-12-12T10:12:28.000+09:00"
-            },
-            {
-                "key_name": "aiIpSdnSflowKey",
-                "yd_date": "2024-12-12 10:12:17",
-                "yd_date1": "2024-12-12T10:12:17.000+09:00"
+                "yd_date": "2024-12-13 22:02:34",
+                "yd_date1": "2024-12-13T22:02:34.000+09:00"
             },
             {
                 "key_name": "aiIpSdnNodeFactorKey",
-                "yd_date": "2024-12-12 10:12:22",
-                "yd_date1": "2024-12-12T10:12:22.000+09:00"
-            },
-            {
-                "key_name": "aiIpSdnTrafficeKey",
-                "yd_date": "2024-12-12 10:12:28",
-                "yd_date1": "2024-12-12T10:12:28.000+09:00"
+                "yd_date": "2024-12-13 22:04:22",
+                "yd_date1": "2024-12-13T22:04:22.000+09:00"
             },
             {
                 "key_name": "aiTrafficAnoKey",
-                "yd_date": "2024-12-12 10:12:27",
-                "yd_date1": "2024-12-12T10:12:27.000+09:00"
+                "yd_date": "2024-12-13 21:10:41",
+                "yd_date1": "2024-12-13T21:10:41.000+09:00"
+            },
+            {
+                "key_name": "aiIpPerfKey",
+                "yd_date": "2024-12-13 22:02:14",
+                "yd_date1": "2024-12-13T22:02:14.000+09:00"
+            },
+            {
+                "key_name": "aiIpSdnTrafficeKey",
+                "yd_date": "2024-12-13 22:03:29",
+                "yd_date1": "2024-12-13T22:03:29.000+09:00"
+            },
+            {
+                "key_name": "aiIpSdnSflowKey",
+                "yd_date": "2024-12-13 22:04:17",
+                "yd_date1": "2024-12-13T22:04:17.000+09:00"
             },
             {
                 "key_name": "aiTrafficNoxKey",
-                "yd_date": "2024-12-12 06:32:10",
-                "yd_date1": "2024-12-12T06:32:10.000+09:00"
+                "yd_date": "2024-12-13 07:17:09",
+                "yd_date1": "2024-12-13T07:17:09.000+09:00"
             },
             {
                 "key_name": "aiIpResourceKey",
-                "yd_date": "2024-12-12 02:30:01",
-                "yd_date1": "2024-12-12T02:30:01.000+09:00"
+                "yd_date": "2024-12-13 02:30:01",
+                "yd_date1": "2024-12-13T02:30:01.000+09:00"
             },
             {
                 "key_name": "aiIpResourceIfKey",
-                "yd_date": "2024-12-12 02:40:01",
-                "yd_date1": "2024-12-12T02:40:01.000+09:00"
+                "yd_date": "2024-12-13 02:40:01",
+                "yd_date1": "2024-12-13T02:40:01.000+09:00"
             }
         ]
     },
@@ -63,9 +63,10 @@
         "url": "/selectList/SELECT_SYSTEM_MONITORING_CURRENT",
         "urlOrigin": "/selectList/SELECT_SYSTEM_MONITORING_CURRENT",
         "params": null,
-        "data": "{\"encrypt\":\"Q1mk3QOLx/uUVnSCQhM=\"}"
+        "data": "{\"encrypt\":\"74563LH5CiQYkFg6uwY=\"}"
     },
-    "requestTime": "2024-12-12 10:16:15.643",
-    "responseTime": "2024-12-12 10:16:15.781",
-    "duration": 138
+    "cmd": "{ \"url\": \"/selectList/SELECT_SYSTEM_MONITORING_CURRENT\", \"sqlId\": \"SELECT_SYSTEM_MONITORING_CURRENT\", \"param\": {\"encrypt\":\"74563LH5CiQYkFg6uwY=\"} }",
+    "requestTime": "2024-12-13 22:08:49.199",
+    "responseTime": "2024-12-13 22:08:49.382",
+    "duration": 183
 }

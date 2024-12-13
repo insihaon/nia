@@ -17,9 +17,10 @@
         "url": "/selectOne/SELECT_AI_DETECTION_INFO",
         "urlOrigin": "/selectOne/SELECT_AI_DETECTION_INFO",
         "params": null,
-        "data": "{\"TICKET_ID\":\"1615707\",\"FAULT_TIME\":\"2024-11-21 14:03:58\",\"encrypt\":\"jNP4JEEUGFmNS8pQb58=\"}"
+        "data": "{\"TICKET_ID\":\"1615707\",\"FAULT_TIME\":\"2024-11-21 14:03:58\",\"encrypt\":\"hH0+IIAGaIXXtfCSVIw=\"}"
     },
-    "requestTime": "2024-12-12 10:38:46.967",
-    "responseTime": "2024-12-12 10:38:47.025",
-    "duration": 58
+    "cmd": "{ \"url\": \"/selectOne/SELECT_AI_DETECTION_INFO\", \"sqlId\": \"SELECT_AI_DETECTION_INFO\", \"param\": {\"TICKET_ID\":\"1615707\",\"FAULT_TIME\":\"2024-11-21 14:03:58\",\"encrypt\":\"hH0+IIAGaIXXtfCSVIw=\"} }",
+    "requestTime": "2024-12-13 22:13:47.559",
+    "responseTime": "2024-12-13 22:13:47.618",
+    "duration": 59
 }

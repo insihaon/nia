@@ -17,9 +17,10 @@
         "url": "/selectList/SELECT_ALARM_CURRENT_HISTORY_LIST",
         "urlOrigin": "/selectList/SELECT_ALARM_CURRENT_HISTORY_LIST",
         "params": null,
-        "data": "{\"limit\":100,\"page\":1,\"TICKET_ID\":\"\",\"TICKET_TYPE\":\"NTT\",\"INIT_START_DATE\":null,\"INIT_END_DATE\":null,\"CLOSE_START_DATE\":\"\",\"CLOSE_END_DATE\":\"\",\"FIN_START_DATE\":null,\"FIN_END_DATE\":null,\"encrypt\":\"FI2otr/beyOiG03r5wY=\"}"
+        "data": "{\"limit\":100,\"page\":1,\"TICKET_ID\":\"\",\"TICKET_TYPE\":\"NTT\",\"INIT_START_DATE\":null,\"INIT_END_DATE\":null,\"CLOSE_START_DATE\":\"\",\"CLOSE_END_DATE\":\"\",\"FIN_START_DATE\":null,\"FIN_END_DATE\":null,\"encrypt\":\"gjEyCibnkQ1eyZoURWs=\"}"
     },
-    "requestTime": "2024-12-12 10:25:55.045",
-    "responseTime": "2024-12-12 10:25:55.137",
-    "duration": 92
+    "cmd": "{ \"url\": \"/selectList/SELECT_ALARM_CURRENT_HISTORY_LIST\", \"sqlId\": \"SELECT_ALARM_CURRENT_HISTORY_LIST\", \"param\": {\"limit\":100,\"page\":1,\"TICKET_ID\":\"\",\"TICKET_TYPE\":\"NTT\",\"INIT_START_DATE\":null,\"INIT_END_DATE\":null,\"CLOSE_START_DATE\":\"\",\"CLOSE_END_DATE\":\"\",\"FIN_START_DATE\":null,\"FIN_END_DATE\":null,\"encrypt\":\"gjEyCibnkQ1eyZoURWs=\"} }",
+    "requestTime": "2024-12-13 22:18:35.099",
+    "responseTime": "2024-12-13 22:18:35.181",
+    "duration": 82
 }
