@@ -10,7 +10,7 @@
           <div id="system-name" @click="onClickHeaderLogo()">NIA KOREN</div>
         </div>
 
-        <div v-if="isViewport('<=', 'lg')" id="logout" class="d-flex flex-column align-items-center mx-3" @click="$router.push({ path: '/login' })">
+        <div v-if="isViewport('<=', 'lg')" id="logout-sub" class="d-flex flex-column align-items-center" @click="$router.push({ path: '/login' })">
           <i class="el-icon-unlock" style="font-size: 20px; color: aliceblue; text-align: center; font-weight: 500;" />
           <button class="button h-5 px-3 bg-transparent text-white rounded" style="font-size: 14px; font-weight: 500" :disabled="buttonDisabled">
             LogOut
@@ -356,6 +356,15 @@ export default {
         background-color: #fff !important;
       }
     }
+    #logout-sub {
+      .button,
+      i,
+      svg,
+      span {
+        color: $aiTemplateDefault !important;
+      }
+    }
+
     ::v-deep #other-container {
       .button,
       i,
@@ -364,6 +373,7 @@ export default {
         color: $aiTemplateDefault !important;
       }
       #logout,
+
       #user-info {
         border-left: 1px solid $aiTemplateDefault;
       }

@@ -24,15 +24,25 @@
               <div class="optionItem">
                 <label> 분류 </label>
                 <div>
-                  <el-radio-group v-model="registItem.type" size="mini" :class="{'flex-column': isMobile}" style="flex-wrap: wrap">
-                    <el-radio
+                  <div :class="{'flex-column': isMobile}" style="display: flex; flex-wrap: wrap; font-weight: 100;" >
+                    <div
                       v-for="option in categoryOptions"
                       v-if="option.show"
                       :key="option.value"
-                      :label="option.value"
-                      @change="onChangeSnapshotType"
-                    >{{ option.label }}</el-radio>
-                  </el-radio-group>
+                      style="margin-right: 10px;"
+                    >
+                      <label>
+                        <input
+                          v-model="registItem.type"
+                          type="radio"
+                          :value="option.value"
+                          @change="onChangeSnapshotType"
+                        />
+                        {{ option.label }}
+                      </label>
+                    </div>
+                  </div>
+
                 </div>
               </div>
             </el-col>
@@ -269,6 +279,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '~@/styles/variables.scss';
 ::v-deep div.subContentWrap div.optionBox>div.optionBoxContent>div.optionItem>label {
   min-width: 70px;
 }
@@ -278,5 +289,10 @@ export default {
 ::v-deep .el-date-editor--datetimerange.el-input__inner {
   width: 300px;
 }
+
+input[type="radio"] {
+ margin-right: 5px !important;
+}
+
 </style>
 
