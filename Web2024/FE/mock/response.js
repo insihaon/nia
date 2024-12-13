@@ -29,7 +29,7 @@ function responseJson(config) {
   console.log('RES FilePath'.padStart(17), ':', filePath)
 
   const jsonObject = require(filePath)
-  console.log('jsonObject: ', jsonObject)
+  // console.log('jsonObject: ', jsonObject)
   console.log('--------------------------------------------------------------------------------------------------------------------------------')
 
   return jsonObject['data'] || jsonObject['__body']
