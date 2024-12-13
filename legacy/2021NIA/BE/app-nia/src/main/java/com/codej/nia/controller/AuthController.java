@@ -19,6 +19,8 @@ import com.codej.base.dto.model.Data;
 import com.codej.base.dto.response.BaseResponse;
 import com.codej.base.dto.response.SingleResponse;
 import com.codej.base.exception.CSigninFailedException;
+import com.codej.base.property.GlobalConstants;
+import com.codej.base.utils.EncryptUtil;
 import com.codej.base.utils.JsonUtil;
 import com.codej.nia.provider.NiaJwtTokenProvider;
 import com.codej.nia.service.NiaService;
@@ -110,7 +112,8 @@ public class AuthController extends AbsAuthController {
         throws Exception {
         
         try {
-            JsonObject json = decryptRequestParameter(body);
+            HashMap<String, Object> decryptBody = getDecryptBody(body);
+            JsonObject json = decryptRequestParameter(decryptBody);
             String password = json.get("password").getAsString();
 
             DbUser user = DbUser.builder()
@@ -122,12 +125,12 @@ public class AuthController extends AbsAuthController {
                 .agencyName(json.get("agency_name").getAsString())
                 .build();
 
-                getService().INSERT_USER(user);
-                
+            getService().INSERT_USER(user);
+            return responseService.createSuccessResponse();
         } catch (Exception e) {
             log.error("insertUser fail ===>{}", e.toString());
         }
-        return responseService.createSuccessResponse();
+        return responseService.createFailResponse();
     }
 
     @PostMapping(value = "/nia/upsertUser")
@@ -136,7 +139,8 @@ public class AuthController extends AbsAuthController {
             @RequestBody HashMap<String, Object> body)
             throws Exception {
         try {
-            JsonObject json = decryptRequestParameter(body);
+            HashMap<String, Object> decryptBody = getDecryptBody(body);
+            JsonObject json = decryptRequestParameter(decryptBody);
             String token = niaJwtTokenProvider.resolveToken(request);
             DbUser currentUser = niaJwtTokenProvider.getUserDetails(token);
             BaseUser dbUser = getService().loginFromDb(currentUser.getUid(), currentUser.getPassword());
@@ -157,11 +161,12 @@ public class AuthController extends AbsAuthController {
                     .agencyName(json.get("agency_name").getAsString())
                     .build();
                 getService().UPSERT_USER(user);
+                return responseService.createSuccessResponse();
             }
         } catch (Exception e) {
             log.error("upsertUser fail ===>{}", e.toString());
         }
-        return responseService.createSuccessResponse();
+        return responseService.createFailResponse();
 
     }
 
@@ -170,11 +175,17 @@ public class AuthController extends AbsAuthController {
             HttpServletRequest request,
             @RequestBody HashMap<String, Object> body)
             throws Exception {
-        JsonObject json = decryptRequestParameter(body);
-        String uid = json.get("uid").getAsString();
-        String password = json.get("password").getAsString();
-
-        return deleteUser(uid, password);
+        try {
+            HashMap<String, Object> decryptBody = getDecryptBody(body);
+            JsonObject json = decryptRequestParameter(decryptBody);
+            String uid = json.get("uid").getAsString();
+            String password = json.get("password").getAsString();
+    
+            return deleteUser(uid, password);
+        } catch (Exception e) {
+            log.error("deleteAccount fail ===>{}", e.toString());
+        }
+        return responseService.createFailResponse();
     }
 
     private BaseResponse deleteUser(String uid, String password) {
@@ -190,4 +201,19 @@ public class AuthController extends AbsAuthController {
         return responseService.createFailResponse(-9999, "password mismatch");
     }
 
+    private HashMap<String, Object> getDecryptBody(HashMap<String, Object> body) {
+        HashMap<String, Object> decryptBody = null;
+        try {
+            String endata = (String) body.get(GlobalConstants.Common.DATA);
+            decryptBody = EncryptUtil.decrypt(endata);
+
+            if (decryptBody == null) {
+                decryptBody = new HashMap<String, Object>(body);
+            }
+            
+        } catch (Exception e) {
+            log.error(e.toString());
+        }
+        return decryptBody;
+    }
 }
