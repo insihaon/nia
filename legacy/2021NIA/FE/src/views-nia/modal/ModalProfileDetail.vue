@@ -35,19 +35,56 @@
         <tr>
           <th>네트워크 구분</th>
           <td>
-            <el-radio-group v-model="network_type" size="mini" class="d-flex">
-              <el-radio label="전송">KOREN(전송)</el-radio>
-              <el-radio label="IP">KOREN(IP)</el-radio>
-            </el-radio-group>
+            <div class="d-flex">
+              <div style="margin-right: 10px;">
+                <input
+                  id="network-transmission"
+                  v-model="network_type"
+                  type="radio"
+                  value="전송"
+                  style="margin-right: 3px;"
+                />
+                <label style="font-size: 13px;" for="network-transmission">KOREN(전송)</label>
+              </div>
+              <div style="margin-right: 10px;">
+                <input
+                  id="network-ip"
+                  v-model="network_type"
+                  type="radio"
+                  value="IP"
+                  style="margin-right: 3px;"
+                />
+                <label style="font-size: 13px;" for="network-ip">KOREN(IP)</label>
+              </div>
+            </div>
           </td>
         </tr>
         <tr>
           <th>장애대응 구분</th>
           <td>
-            <el-radio-group v-model="processing_template" size="mini" class="d-flex">
-              <el-radio label="recovery">자가회복</el-radio>
-              <el-radio label="construction">공사</el-radio>
-            </el-radio-group>
+            <div class="d-flex">
+              <div style="margin-right: 10px;">
+                <input
+                  id="recovery"
+                  v-model="processing_template"
+                  type="radio"
+                  value="recovery"
+                  style="margin-right: 3px;"
+                />
+                <label style="font-size: 13px;" for="recovery">자가회복</label>
+              </div>
+              <div >
+                <input
+                  id="construction"
+                  v-model="processing_template"
+                  type="radio"
+                  value="construction"
+                  style="margin-right: 3px;"
+                />
+                <label style="font-size: 13px;" for="construction">공사</label>
+              </div>
+            </div>
+
           </td>
         </tr>
         <tr>

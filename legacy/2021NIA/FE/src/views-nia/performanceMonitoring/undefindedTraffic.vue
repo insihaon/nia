@@ -115,7 +115,7 @@ export default {
       ],
       searchAgencyItems: [
        { label: '이용기관명', type: 'input', model: 'nren_name', placeholder: '이용기관명을 검색하세요' },
-       { label: 'IP주소', type: 'input', model: 'nren_ip', placeholder: 'IP주소를 검색하세요' },
+       { label: 'IP주소', type: 'input', model: 'nren_id', placeholder: 'IP주소를 검색하세요' },
       ],
         searchAppItems: [
        { label: '어플리케이션명', type: 'input', model: 'protocol', placeholder: '어플리케이션명을 검색하세요' },

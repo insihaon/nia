@@ -1348,21 +1348,18 @@
     <!-- 미확인 트래픽 조회 (이용기관) -->
     <select id="SELECT_UNIDENTIFIED_AGENCY_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
         <include refid="TotalCountPrefix"/>
-            SELECT
-        UO.NODE_ID AS NREN_ID,
-        UO.NREN_NAME AS NREN_NAME,
-        N.IP_ADDR AS NREN_IP
+        SELECT
+            IP.NREN_ID AS NREN_ID,
+            IP.NREN_NAME AS NREN_NAME,
+            IP.NREN_IP AS NREN_IP
         FROM RESOURCE.TB_USER_ORGAN UO
-        INNER JOIN RESOURCE.TB_NODE_MST N ON N.NODE_ID = UO.NODE_ID
+        INNER JOIN RESOURCE.TB_USER_ORGAN_IP IP ON UO.NREN_ID = IP.NREN_ID 
         <where>
             <if test="nren_name != null and nren_name.trim() != ''">
-                AND UO.NREN_NAME LIKE '%' || #{nren_name} || '%'
+                AND IP.NREN_NAME LIKE '%' || #{nren_name} || '%'
             </if>
             <if test="nren_ip != null and nren_ip.trim() != ''">
-                AND N.IP_ADDR LIKE '%' || #{nren_ip} || '%'
-            </if>
-            <if test="node_id != null and node_id.trim() != ''">
-                AND UO.NODE_ID = #{node_id}
+                AND IP.nren_ip LIKE '%' || #{nren_ip} || '%' 
             </if>
         </where>
             <include refid="TotalCountSuffix"/>
@@ -2052,7 +2049,7 @@
         </where>
     </select>
 
-    <!-- 이용기관 IP 추가  -->
+    <!-- 미확인 이용기관 IP 추가  -->
     <insert id="INSERT_AGENCY_IP_LIST" parameterType="java.util.HashMap">
     INSERT INTO RESOURCE.TB_USER_ORGAN_IP
     (
@@ -2068,7 +2065,7 @@
     )
     </insert>
     
-    <!-- 이용기관 IP 수정 -->
+    <!--미확인 이용기관 IP 수정 -->
     <update id="UPDATE_AGENCY_IP_LIST">
     UPDATE RESOURCE.TB_USER_ORGAN_IP
     <set>
@@ -2081,7 +2078,7 @@
     </where>
     </update>
 
-    <!-- 이용기관 IP 삭제 -->
+    <!-- 미확인 이용기관 IP 삭제 -->
     <delete id="DELETE_AGENCY_IP_LIST" parameterType="hashmap">
         DELETE FROM RESOURCE.TB_USER_ORGAN_IP
         <where>
