@@ -72,9 +72,10 @@
         "url": "/selectList/SELECT_SOP_SYSLOG_HIST_LIST",
         "urlOrigin": "/selectList/SELECT_SOP_SYSLOG_HIST_LIST",
         "params": null,
-        "data": "{\"limit\":100,\"page\":1,\"ISHISTORY\":true,\"ALARM_NO\":\"\",\"NODE_NM\":\"busan-5812\",\"ALARMLOC\":\"\",\"STATUS\":\"\",\"START_DATE\":\"\",\"END_DATE\":\"\",\"encrypt\":\"nVEFe87moeviKH4zsJU=\"}"
+        "data": "{\"limit\":100,\"page\":1,\"ISHISTORY\":true,\"ALARM_NO\":\"\",\"NODE_NM\":\"busan-5812\",\"ALARMLOC\":\"\",\"STATUS\":\"\",\"START_DATE\":\"\",\"END_DATE\":\"\",\"encrypt\":\"b0YIeWGzKwpZTZi7mRU=\"}"
     },
-    "requestTime": "2024-12-12 10:52:29.672",
-    "responseTime": "2024-12-12 10:52:29.778",
-    "duration": 106
+    "cmd": "{ \"url\": \"/selectList/SELECT_SOP_SYSLOG_HIST_LIST\", \"sqlId\": \"SELECT_SOP_SYSLOG_HIST_LIST\", \"param\": {\"limit\":100,\"page\":1,\"ISHISTORY\":true,\"ALARM_NO\":\"\",\"NODE_NM\":\"busan-5812\",\"ALARMLOC\":\"\",\"STATUS\":\"\",\"START_DATE\":\"\",\"END_DATE\":\"\",\"encrypt\":\"b0YIeWGzKwpZTZi7mRU=\"} }",
+    "requestTime": "2024-12-13 22:18:19.146",
+    "responseTime": "2024-12-13 22:18:19.259",
+    "duration": 113
 }

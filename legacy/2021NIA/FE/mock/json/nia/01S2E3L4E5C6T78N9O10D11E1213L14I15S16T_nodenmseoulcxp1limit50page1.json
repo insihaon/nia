@@ -1,0 +1,54 @@
+{
+    "jsonFileName": "01S2E3L4E5C6T78N9O10D11E1213L14I15S16T_nodenmseoulcxp1limit50page1.json",
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [
+            "SELECT\n            ROW_NUMBER() OVER (ORDER BY NODE_NUM) AS ROWNUM,\n            node.*\n        FROM (\n            SELECT\n                TNM.NODE_NUM,\n                TNM.NODE_ID,\n                TNM.NODE_NM,\n                TNM.MODEL_NUM,\n                TNM.MODEL_ID,\n                CODE.CODE_NM,\n                TNM.IP_ADDR,\n                TNM.MAC_ADDR,\n                TNM.ADMIN_YN,\n                CASE\n                \tWHEN ADMIN_YN = 'W' THEN '사용'\n                \tELSE '미사용' \n                    \tEND AS ADMIN_YN_INFO,\n                TNM.PRIMARY_GB,\n                TNM.SNMP_VER,\n                TNM.SNMP_COMMUNITY,\n                TNM.SNMP_PORT,\n                TNM.LATITUDE,\n                TNM.LONGITUDE,\n                TNM.NETCONF_PORT,\n                TNM.NETCONF_ID,\n                TNM.NETCONF_PW,\n                TNM.NETCONF_TYPE,\n                TNM.NODE_DIVISION,\n                TNM.VENDOR,\n                TNM.SFLOW_IP,\n                TO_CHAR(TNM.CHNG_DATETIME, 'YYYY-MM-DD HH:MI:SS') AS CHNG_DATETIME\n                FROM RESOURCE.TB_NODE_MST TNM\n                LEFT OUTER JOIN RESOURCE.TB_CODE CODE ON (TNM.MODEL_ID = CODE.CODE_ID)\n                WHERE 1=1\n                    AND tnm.NODE_NM like '%' || 'seoul-cxp1' || '%'\n                ORDER BY CHNG_DATETIME ASC\n        ) AS node\n        ORDER BY NODE_NUM\n            LIMIT 50 OFFSET 0"
+        ],
+        "total": 1,
+        "result": [
+            {
+                "netconf_pw": null,
+                "sflow_ip": null,
+                "latitude": null,
+                "chng_datetime": "2024-12-13 09:59:27",
+                "snmp_ver": "v2c",
+                "snmp_community": "cxp1koren",
+                "node_division": null,
+                "mac_addr": null,
+                "vendor": null,
+                "node_nm": "seoul-cxp1",
+                "admin_yn_info": "사용",
+                "model_num": "1623827702480",
+                "netconf_id": null,
+                "longitude": null,
+                "netconf_port": null,
+                "netconf_type": null,
+                "model_id": "1623827702480",
+                "rownum": 1,
+                "code_nm": "cxp2",
+                "snmp_port": 161,
+                "admin_yn": "W",
+                "primary_gb": null,
+                "node_num": "1623912534173",
+                "ip_addr": "203.255.248.101",
+                "node_id": "seoul-cxp1"
+            }
+        ]
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/selectList/SELECT_NODE_LIST",
+        "urlOrigin": "/selectList/SELECT_NODE_LIST",
+        "params": null,
+        "data": "{\"node_nm\":\"seoul-cxp1\",\"model_id\":\"\",\"ip_addr\":\"\",\"admin_yn\":\"\",\"limit\":50,\"page\":1,\"encrypt\":\"AFuv0suZzmoJQVQDZoM=\"}"
+    },
+    "cmd": "{ \"url\": \"/selectList/SELECT_NODE_LIST\", \"sqlId\": \"SELECT_NODE_LIST\", \"param\": {\"node_nm\":\"seoul-cxp1\",\"model_id\":\"\",\"ip_addr\":\"\",\"admin_yn\":\"\",\"limit\":50,\"page\":1,\"encrypt\":\"AFuv0suZzmoJQVQDZoM=\"} }",
+    "requestTime": "2024-12-13 22:22:08.357",
+    "responseTime": "2024-12-13 22:22:08.411",
+    "duration": 54
+}

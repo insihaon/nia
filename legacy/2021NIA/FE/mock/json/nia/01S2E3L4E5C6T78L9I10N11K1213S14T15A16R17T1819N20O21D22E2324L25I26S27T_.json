@@ -144,9 +144,10 @@
         "url": "/selectList/SELECT_LINK_START_NODE_LIST",
         "urlOrigin": "/selectList/SELECT_LINK_START_NODE_LIST",
         "params": null,
-        "data": "{\"encrypt\":\"9WF+XJz1oSkpaV8Bx14=\"}"
+        "data": "{\"encrypt\":\"6U8TpaEq0x50bxnr+s8=\"}"
     },
-    "requestTime": "2024-12-12 10:30:39.894",
-    "responseTime": "2024-12-12 10:30:39.936",
-    "duration": 42
+    "cmd": "{ \"url\": \"/selectList/SELECT_LINK_START_NODE_LIST\", \"sqlId\": \"SELECT_LINK_START_NODE_LIST\", \"param\": {\"encrypt\":\"6U8TpaEq0x50bxnr+s8=\"} }",
+    "requestTime": "2024-12-13 22:22:16.231",
+    "responseTime": "2024-12-13 22:22:16.284",
+    "duration": 53
 }

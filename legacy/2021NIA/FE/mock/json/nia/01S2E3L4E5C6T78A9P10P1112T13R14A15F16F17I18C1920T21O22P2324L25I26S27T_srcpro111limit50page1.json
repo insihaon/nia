@@ -17,9 +17,10 @@
         "url": "/selectList/SELECT_APP_TRAFFIC_TOP_LIST",
         "urlOrigin": "/selectList/SELECT_APP_TRAFFIC_TOP_LIST",
         "params": null,
-        "data": "{\"src_protocol\":\"111\",\"src_port\":\"\",\"dst_protocol\":\"\",\"dst_port\":\"\",\"top_n\":\"\",\"limit\":50,\"page\":1,\"encrypt\":\"GVq9DPOqPgw/UTmH8RY=\"}"
+        "data": "{\"src_protocol\":\"111\",\"src_port\":\"\",\"dst_protocol\":\"\",\"dst_port\":\"\",\"top_n\":\"\",\"limit\":50,\"page\":1,\"encrypt\":\"jenFjdvwonjHwMDT9VM=\"}"
     },
-    "requestTime": "2024-12-12 10:23:02.455",
-    "responseTime": "2024-12-12 10:23:04.089",
-    "duration": 1634
+    "cmd": "{ \"url\": \"/selectList/SELECT_APP_TRAFFIC_TOP_LIST\", \"sqlId\": \"SELECT_APP_TRAFFIC_TOP_LIST\", \"param\": {\"src_protocol\":\"111\",\"src_port\":\"\",\"dst_protocol\":\"\",\"dst_port\":\"\",\"top_n\":\"\",\"limit\":50,\"page\":1,\"encrypt\":\"jenFjdvwonjHwMDT9VM=\"} }",
+    "requestTime": "2024-12-13 22:15:09.891",
+    "responseTime": "2024-12-13 22:15:11.445",
+    "duration": 1554
 }

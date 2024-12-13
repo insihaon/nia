@@ -66,9 +66,10 @@
         "url": "/selectList/SELECT_EQUIPMENT_LIST",
         "urlOrigin": "/selectList/SELECT_EQUIPMENT_LIST",
         "params": null,
-        "data": "{\"encrypt\":\"IQhe2QTaHQ630xC7Gkk=\"}"
+        "data": "{\"encrypt\":\"MK8M6HaA7lL4r7mqPy8=\"}"
     },
-    "requestTime": "2024-12-12 10:17:30.931",
-    "responseTime": "2024-12-12 10:17:34.249",
-    "duration": 3318
+    "cmd": "{ \"url\": \"/selectList/SELECT_EQUIPMENT_LIST\", \"sqlId\": \"SELECT_EQUIPMENT_LIST\", \"param\": {\"encrypt\":\"MK8M6HaA7lL4r7mqPy8=\"} }",
+    "requestTime": "2024-12-13 22:09:15.494",
+    "responseTime": "2024-12-13 22:09:18.364",
+    "duration": 2870
 }

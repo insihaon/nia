@@ -6,7 +6,7 @@
         "sql": [
             "SELECT  sysDialog.alarmno,\n                sysDialog.alarmtime,\n                TO_CHAR(sysDialog.alarmtime, 'YYYY-MM-DD HH24:MI:SS') AS syslog_alarmtime,\n                sysDialog.node_num,\n                sysDialog.node_nm,\n                sysDialog.alarmmsg,\n                sysDialog.alarmlvl,\n                sysDialog.etc,\n                sysDialog.rule_id,\n                sysDialog.alarmloc,\n                CASE WHEN sysDialog.status = 'INIT' THEN '발생'\n                WHEN sysDialog.status = 'FIN' THEN '수동 마감'\n                WHEN sysDialog.status = 'AUTO_FIN' THEN '자동 마감'\n                ELSE '-'\n                END AS status\n        FROM    rca.tb_syslog_alarm_mst sysDialog\n             WHERE sysDialog.alarmtime BETWEEN NOW()::timestamp - interval '30 day' AND NOW()::timestamp\n                ORDER BY sysDialog.alarmno DESC  \n            LIMIT 50 OFFSET 0"
         ],
-        "total": 2726,
+        "total": 2724,
         "result": [
             {
                 "rule_id": 3,
@@ -668,9 +668,10 @@
         "url": "/selectList/SELECT_SYSLOG_HIST_LIST",
         "urlOrigin": "/selectList/SELECT_SYSLOG_HIST_LIST",
         "params": null,
-        "data": "{\"start_date\":null,\"end_date\":null,\"alarmno\":\"\",\"node_nm\":\"\",\"node_num\":\"\",\"alarmmsg\":\"\",\"limit\":50,\"page\":1,\"encrypt\":\"EIHO4WLXWxE2mMN5dcU=\"}"
+        "data": "{\"start_date\":null,\"end_date\":null,\"alarmno\":\"\",\"node_nm\":\"\",\"node_num\":\"\",\"alarmmsg\":\"\",\"limit\":50,\"page\":1,\"encrypt\":\"4VoxUwy8dWawVwTtwR4=\"}"
     },
-    "requestTime": "2024-12-12 10:26:15.013",
-    "responseTime": "2024-12-12 10:26:15.196",
-    "duration": 183
+    "cmd": "{ \"url\": \"/selectList/SELECT_SYSLOG_HIST_LIST\", \"sqlId\": \"SELECT_SYSLOG_HIST_LIST\", \"param\": {\"start_date\":null,\"end_date\":null,\"alarmno\":\"\",\"node_nm\":\"\",\"node_num\":\"\",\"alarmmsg\":\"\",\"limit\":50,\"page\":1,\"encrypt\":\"4VoxUwy8dWawVwTtwR4=\"} }",
+    "requestTime": "2024-12-13 22:18:46.628",
+    "responseTime": "2024-12-13 22:18:46.894",
+    "duration": 266
 }

@@ -57,9 +57,10 @@
         "url": "/selectList/SELECT_SYSLOG_HIST_LIST",
         "urlOrigin": "/selectList/SELECT_SYSLOG_HIST_LIST",
         "params": null,
-        "data": "{\"start_date\":null,\"end_date\":null,\"alarmno\":\"\",\"node_nm\":\"busan-5812\",\"node_num\":\"\",\"alarmmsg\":\"\",\"limit\":50,\"page\":1,\"encrypt\":\"MUO2pJGS63F1r2hXbBg=\"}"
+        "data": "{\"start_date\":null,\"end_date\":null,\"alarmno\":\"\",\"node_nm\":\"busan-5812\",\"node_num\":\"\",\"alarmmsg\":\"\",\"limit\":50,\"page\":1,\"encrypt\":\"YW+6kKL9cNbo3joZzx8=\"}"
     },
-    "requestTime": "2024-12-12 10:26:28.620",
-    "responseTime": "2024-12-12 10:26:29.181",
-    "duration": 561
+    "cmd": "{ \"url\": \"/selectList/SELECT_SYSLOG_HIST_LIST\", \"sqlId\": \"SELECT_SYSLOG_HIST_LIST\", \"param\": {\"start_date\":null,\"end_date\":null,\"alarmno\":\"\",\"node_nm\":\"busan-5812\",\"node_num\":\"\",\"alarmmsg\":\"\",\"limit\":50,\"page\":1,\"encrypt\":\"YW+6kKL9cNbo3joZzx8=\"} }",
+    "requestTime": "2024-12-13 22:18:55.829",
+    "responseTime": "2024-12-13 22:18:56.245",
+    "duration": 416
 }

@@ -12,7 +12,7 @@
                 "protocol": "코드제이",
                 "mapp_serial": 11,
                 "port_num": "111",
-                "description": null,
+                "description": "0",
                 "ip_type": null
             },
             {
@@ -172,9 +172,10 @@
         "url": "/selectList/SELECT_UNIDENTIFIED_APP_LIST",
         "urlOrigin": "/selectList/SELECT_UNIDENTIFIED_APP_LIST",
         "params": null,
-        "data": "{\"protocol\":\"\",\"port_num\":\"\",\"limit\":50,\"page\":1,\"encrypt\":\"rpBSwlwei0cbilqlCv0=\"}"
+        "data": "{\"protocol\":\"\",\"port_num\":\"\",\"limit\":50,\"page\":1,\"encrypt\":\"hUnw20Qy9wy7nwE99Zc=\"}"
     },
-    "requestTime": "2024-12-12 10:47:04.553",
-    "responseTime": "2024-12-12 10:47:04.743",
-    "duration": 190
+    "cmd": "{ \"url\": \"/selectList/SELECT_UNIDENTIFIED_APP_LIST\", \"sqlId\": \"SELECT_UNIDENTIFIED_APP_LIST\", \"param\": {\"protocol\":\"\",\"port_num\":\"\",\"limit\":50,\"page\":1,\"encrypt\":\"hUnw20Qy9wy7nwE99Zc=\"} }",
+    "requestTime": "2024-12-13 22:16:26.548",
+    "responseTime": "2024-12-13 22:16:26.647",
+    "duration": 99
 }

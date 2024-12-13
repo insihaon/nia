@@ -162,9 +162,10 @@
         "url": "/selectList/SELECT_DATA_SNAPSHOT_LIST",
         "urlOrigin": "/selectList/SELECT_DATA_SNAPSHOT_LIST",
         "params": null,
-        "data": "{\"EVENT_GB\":\"fault\",\"encrypt\":\"RmGnaZ9/MpjqSxTyIO8=\"}"
+        "data": "{\"EVENT_GB\":\"fault\",\"encrypt\":\"gDYkY6CSS9B3ioCg5EM=\"}"
     },
-    "requestTime": "2024-12-12 10:29:50.593",
-    "responseTime": "2024-12-12 10:29:50.633",
+    "cmd": "{ \"url\": \"/selectList/SELECT_DATA_SNAPSHOT_LIST\", \"sqlId\": \"SELECT_DATA_SNAPSHOT_LIST\", \"param\": {\"EVENT_GB\":\"fault\",\"encrypt\":\"gDYkY6CSS9B3ioCg5EM=\"} }",
+    "requestTime": "2024-12-13 22:20:54.922",
+    "responseTime": "2024-12-13 22:20:54.962",
     "duration": 40
 }

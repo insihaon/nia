@@ -1,0 +1,35 @@
+{
+    "jsonFileName": "0n1i2a34i5p6s7d8n_servicstatbadcrcparamnodenameda.json",
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [],
+        "total": 1,
+        "result": {
+            "status": true,
+            "message": "Data Read Complete.",
+            "data": [
+                {
+                    "ifStat": {
+                        "badCrc": 1
+                    },
+                    "ifName": "ce12/1"
+                }
+            ]
+        }
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/nia/ipsdn",
+        "urlOrigin": "/nia/ipsdn",
+        "params": null,
+        "data": "{\"servicePath\":\"stat/badcrc\",\"param\":\"nodename=daejeon-7712&ifname=ce12/1\",\"encrypt\":\"9NmJlZYFsNE2azqR3m0=\"}"
+    },
+    "cmd": "{ \"url\": \"/nia/ipsdn\", \"sqlId\": \"\", \"param\": {\"servicePath\":\"stat/badcrc\",\"param\":\"nodename=daejeon-7712&ifname=ce12/1\",\"encrypt\":\"9NmJlZYFsNE2azqR3m0=\"} }",
+    "requestTime": "2024-12-13 22:11:25.023",
+    "responseTime": "2024-12-13 22:11:25.403",
+    "duration": 380
+}

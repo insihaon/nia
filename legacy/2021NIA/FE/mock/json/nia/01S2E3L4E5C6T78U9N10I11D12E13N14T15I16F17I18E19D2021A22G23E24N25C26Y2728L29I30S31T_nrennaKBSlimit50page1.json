@@ -1,0 +1,32 @@
+{
+    "jsonFileName": "01S2E3L4E5C6T78U9N10I11D12E13N14T15I16F17I18E19D2021A22G23E24N25C26Y2728L29I30S31T_nrennaKBSlimit50page1.json",
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [
+            "SELECT\n            IP.NREN_ID AS NREN_ID,\n            IP.NREN_NAME AS NREN_NAME,\n            IP.NREN_IP AS NREN_IP\n        FROM RESOURCE.TB_USER_ORGAN UO\n        INNER JOIN RESOURCE.TB_USER_ORGAN_IP IP ON UO.NREN_ID = IP.NREN_ID \n         WHERE  IP.NREN_NAME LIKE '%' || 'KBS' || '%' \n            LIMIT 50 OFFSET 0"
+        ],
+        "total": 1,
+        "result": [
+            {
+                "nren_ip": "203.255.250.129/29",
+                "nren_id": "seoul-5812_xe38",
+                "nren_name": "KBS"
+            }
+        ]
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/selectList/SELECT_UNIDENTIFIED_AGENCY_LIST",
+        "urlOrigin": "/selectList/SELECT_UNIDENTIFIED_AGENCY_LIST",
+        "params": null,
+        "data": "{\"nren_name\":\"KBS\",\"nren_ip\":\"\",\"limit\":50,\"page\":1,\"encrypt\":\"IJnckS65Hr3PIFzhCjw=\"}"
+    },
+    "cmd": "{ \"url\": \"/selectList/SELECT_UNIDENTIFIED_AGENCY_LIST\", \"sqlId\": \"SELECT_UNIDENTIFIED_AGENCY_LIST\", \"param\": {\"nren_name\":\"KBS\",\"nren_ip\":\"\",\"limit\":50,\"page\":1,\"encrypt\":\"IJnckS65Hr3PIFzhCjw=\"} }",
+    "requestTime": "2024-12-13 22:17:16.625",
+    "responseTime": "2024-12-13 22:17:16.786",
+    "duration": 161
+}

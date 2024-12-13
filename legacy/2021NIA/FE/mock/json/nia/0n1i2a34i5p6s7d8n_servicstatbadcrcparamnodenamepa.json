@@ -26,9 +26,10 @@
         "url": "/nia/ipsdn",
         "urlOrigin": "/nia/ipsdn",
         "params": null,
-        "data": "{\"servicePath\":\"stat/badcrc\",\"param\":\"nodename=pangyo-7712&ifname=ce1/1\",\"encrypt\":\"PsD9cZlcHcTAMZptbC4=\"}"
+        "data": "{\"servicePath\":\"stat/badcrc\",\"param\":\"nodename=pangyo-7712&ifname=ce1/1\",\"encrypt\":\"/5Aw+VsdBT8lZO1UUSM=\"}"
     },
-    "requestTime": "2024-12-12 10:18:10.334",
-    "responseTime": "2024-12-12 10:18:10.710",
-    "duration": 376
+    "cmd": "{ \"url\": \"/nia/ipsdn\", \"sqlId\": \"\", \"param\": {\"servicePath\":\"stat/badcrc\",\"param\":\"nodename=pangyo-7712&ifname=ce1/1\",\"encrypt\":\"/5Aw+VsdBT8lZO1UUSM=\"} }",
+    "requestTime": "2024-12-13 22:09:09.759",
+    "responseTime": "2024-12-13 22:09:10.148",
+    "duration": 389
 }

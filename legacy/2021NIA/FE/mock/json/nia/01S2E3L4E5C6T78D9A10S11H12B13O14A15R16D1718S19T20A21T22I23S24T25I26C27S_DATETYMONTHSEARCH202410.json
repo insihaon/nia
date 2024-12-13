@@ -34,9 +34,10 @@
         "url": "/selectList/SELECT_DASHBOARD_STATISTICS",
         "urlOrigin": "/selectList/SELECT_DASHBOARD_STATISTICS",
         "params": null,
-        "data": "{\"DATE_TYPE\":\"MONTH\",\"SEARCH_DATE\":\"2024-10\",\"encrypt\":\"gyxQvnxZYqf8Y6dDSVA=\"}"
+        "data": "{\"DATE_TYPE\":\"MONTH\",\"SEARCH_DATE\":\"2024-10\",\"encrypt\":\"eTZ7WVloYZ69PkJBBfE=\"}"
     },
-    "requestTime": "2024-12-12 10:27:49.264",
-    "responseTime": "2024-12-12 10:27:49.411",
-    "duration": 147
+    "cmd": "{ \"url\": \"/selectList/SELECT_DASHBOARD_STATISTICS\", \"sqlId\": \"SELECT_DASHBOARD_STATISTICS\", \"param\": {\"DATE_TYPE\":\"MONTH\",\"SEARCH_DATE\":\"2024-10\",\"encrypt\":\"eTZ7WVloYZ69PkJBBfE=\"} }",
+    "requestTime": "2024-12-13 22:19:15.389",
+    "responseTime": "2024-12-13 22:19:15.426",
+    "duration": 37
 }

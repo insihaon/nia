@@ -593,9 +593,10 @@
         "url": "/selectList/SELECT_LINK_LIST",
         "urlOrigin": "/selectList/SELECT_LINK_LIST",
         "params": null,
-        "data": "{\"src_node_id\":\"\",\"dest_node_id\":\"\",\"src_if_id\":\"\",\"dest_if_id\":\"\",\"link_desc\":\"\",\"limit\":50,\"page\":1,\"encrypt\":\"yYitG1rAdHsUb6mwSFw=\"}"
+        "data": "{\"src_node_id\":\"\",\"dest_node_id\":\"\",\"src_if_id\":\"\",\"dest_if_id\":\"\",\"link_desc\":\"\",\"limit\":50,\"page\":1,\"encrypt\":\"U/m/q86aDE6ylxYdEq4=\"}"
     },
-    "requestTime": "2024-12-12 10:30:39.894",
-    "responseTime": "2024-12-12 10:30:39.957",
-    "duration": 63
+    "cmd": "{ \"url\": \"/selectList/SELECT_LINK_LIST\", \"sqlId\": \"SELECT_LINK_LIST\", \"param\": {\"src_node_id\":\"\",\"dest_node_id\":\"\",\"src_if_id\":\"\",\"dest_if_id\":\"\",\"link_desc\":\"\",\"limit\":50,\"page\":1,\"encrypt\":\"U/m/q86aDE6ylxYdEq4=\"} }",
+    "requestTime": "2024-12-13 22:22:16.231",
+    "responseTime": "2024-12-13 22:22:16.322",
+    "duration": 91
 }

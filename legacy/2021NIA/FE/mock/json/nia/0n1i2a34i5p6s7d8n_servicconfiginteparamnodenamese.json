@@ -10,44 +10,30 @@
             "message": "Interface Config/Read Complete.",
             "data": [
                 {
-                    "lldpv2Interface": {
-                        "lldpAgent": {
-                            "lldpTlvConfigCmd": {
-                                "chassisId": "ip-address",
-                                "portAddr": "ip-address",
-                                "portId": "if-name"
-                            },
-                            "lldpAgent": "default",
-                            "lldpEnable": "txrx"
+                    "secondary": {
+                        "secIpAddr": "116.89.164.161/28"
+                    },
+                    "ifName": "xe19",
+                    "description": "NREN-SE_Univ_MedL2 1G 02018888-6763",
+                    "duplex": "full",
+                    "aclInterface": {
+                        "aclIntfTypeList": {
+                            "ifAclType": "ip",
+                            "aclIntfDirList": {
+                                "ifAclDir": "out",
+                                "ifAclName": "xe19-block-out"
+                            }
                         }
                     },
-                    "switchportInterface": {
-                        "nsmVlanPort": {
-                            "portMode": "trunk",
-                            "nativeVlanId": 18,
-                            "vlanRange": "18,310"
-                        }
-                    },
-                    "ifName": "ce3/1",
-                    "switchportStatus": true,
-                    "description": "SP-pangyo-7712-100G",
-                    "sflowInterfaceConfigs": {
-                        "samplingEgress": {
-                            "maxHeaderSizeEgress": 200,
-                            "samplingRateEgress": 8192
-                        },
-                        "pollingInterval": 10,
-                        "samplingEnable": {
-                            "samplingEnable": true
-                        },
-                        "samplingIngress": {
-                            "samplingRateIngress": 8192,
-                            "maxHeaderSizeIngress": 200
-                        }
-                    },
-                    "speed": "100g",
+                    "ipAddr": "210.114.95.65/26",
+                    "speed": "auto-1g",
                     "loadInterval": 30,
-                    "mtu": 9216
+                    "mtu": 9216,
+                    "equip_ip": [
+                        {
+                            "ip": "210.114.95.65/26"
+                        }
+                    ]
                 }
             ]
         }
@@ -60,9 +46,10 @@
         "url": "/nia/ipsdn",
         "urlOrigin": "/nia/ipsdn",
         "params": null,
-        "data": "{\"servicePath\":\"config/interfaces\",\"param\":\"nodename=seoul-7712&ifname=ce3/1\",\"encrypt\":\"DNg66xZ8mZQbar6rvpg=\"}"
+        "data": "{\"servicePath\":\"config/interfaces\",\"param\":\"nodename=seoul-5812&ifname=xe19\",\"encrypt\":\"2Iu4fn3XqOFohXWGRTw=\"}"
     },
-    "requestTime": "2024-12-12 10:17:26.911",
-    "responseTime": "2024-12-12 10:17:27.397",
-    "duration": 486
+    "cmd": "{ \"url\": \"/nia/ipsdn\", \"sqlId\": \"\", \"param\": {\"servicePath\":\"config/interfaces\",\"param\":\"nodename=seoul-5812&ifname=xe19\",\"encrypt\":\"2Iu4fn3XqOFohXWGRTw=\"} }",
+    "requestTime": "2024-12-13 22:11:22.508",
+    "responseTime": "2024-12-13 22:11:22.879",
+    "duration": 371
 }

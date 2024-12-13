@@ -142,9 +142,10 @@
         "url": "/selectList/SELECT_PROFILE_NODE_LIST",
         "urlOrigin": "/selectList/SELECT_PROFILE_NODE_LIST",
         "params": null,
-        "data": "{\"encrypt\":\"SBdmLDOrQZXIpuvk5LQ=\"}"
+        "data": "{\"encrypt\":\"vgZcicYSGxJ9ftXs1Us=\"}"
     },
-    "requestTime": "2024-12-12 10:28:03.354",
-    "responseTime": "2024-12-12 10:28:03.529",
-    "duration": 175
+    "cmd": "{ \"url\": \"/selectList/SELECT_PROFILE_NODE_LIST\", \"sqlId\": \"SELECT_PROFILE_NODE_LIST\", \"param\": {\"encrypt\":\"vgZcicYSGxJ9ftXs1Us=\"} }",
+    "requestTime": "2024-12-13 22:20:38.772",
+    "responseTime": "2024-12-13 22:20:39.021",
+    "duration": 249
 }

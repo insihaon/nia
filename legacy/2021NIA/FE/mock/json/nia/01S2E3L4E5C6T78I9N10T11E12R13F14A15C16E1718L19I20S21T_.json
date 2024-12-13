@@ -270,9 +270,10 @@
         "url": "/selectList/SELECT_INTERFACE_LIST",
         "urlOrigin": "/selectList/SELECT_INTERFACE_LIST",
         "params": null,
-        "data": "{\"encrypt\":\"+TV+xLaeZglnhQ0KwBU=\"}"
+        "data": "{\"encrypt\":\"TEpcforFSRQVmzXt8NM=\"}"
     },
-    "requestTime": "2024-12-12 10:17:34.253",
-    "responseTime": "2024-12-12 10:17:37.734",
-    "duration": 3481
+    "cmd": "{ \"url\": \"/selectList/SELECT_INTERFACE_LIST\", \"sqlId\": \"SELECT_INTERFACE_LIST\", \"param\": {\"encrypt\":\"TEpcforFSRQVmzXt8NM=\"} }",
+    "requestTime": "2024-12-13 22:09:18.368",
+    "responseTime": "2024-12-13 22:09:22.877",
+    "duration": 4509
 }

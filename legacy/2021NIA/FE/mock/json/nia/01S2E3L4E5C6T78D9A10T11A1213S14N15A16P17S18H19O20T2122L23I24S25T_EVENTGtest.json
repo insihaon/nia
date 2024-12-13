@@ -54,9 +54,10 @@
         "url": "/selectList/SELECT_DATA_SNAPSHOT_LIST",
         "urlOrigin": "/selectList/SELECT_DATA_SNAPSHOT_LIST",
         "params": null,
-        "data": "{\"EVENT_GB\":\"test\",\"encrypt\":\"k3H4LvSrYfygJ7gdWAI=\"}"
+        "data": "{\"EVENT_GB\":\"test\",\"encrypt\":\"DFkHIdKSB5SzRRSgqok=\"}"
     },
-    "requestTime": "2024-12-12 10:17:58.939",
-    "responseTime": "2024-12-12 10:17:59.028",
-    "duration": 89
+    "cmd": "{ \"url\": \"/selectList/SELECT_DATA_SNAPSHOT_LIST\", \"sqlId\": \"SELECT_DATA_SNAPSHOT_LIST\", \"param\": {\"EVENT_GB\":\"test\",\"encrypt\":\"DFkHIdKSB5SzRRSgqok=\"} }",
+    "requestTime": "2024-12-13 22:09:29.493",
+    "responseTime": "2024-12-13 22:09:29.596",
+    "duration": 103
 }

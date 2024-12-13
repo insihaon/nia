@@ -6,7 +6,7 @@
         "sql": [
             "SELECT  node_nm\n        FROM    rca.tb_syslog_alarm_mst tsam\n        WHERE   tsam.alarmtime BETWEEN NOW()::TIMESTAMP - interval '30 day' AND NOW()::TIMESTAMP\n        GROUP BY node_nm"
         ],
-        "total": 11,
+        "total": 10,
         "result": [
             {
                 "node_nm": "busan-5812"
@@ -19,9 +19,6 @@
             },
             {
                 "node_nm": "daejeon-7712"
-            },
-            {
-                "node_nm": "jeju-5812"
             },
             {
                 "node_nm": "jeonju-5812"
@@ -51,9 +48,10 @@
         "url": "/selectList/SELECT_SYSLOG_EQUIPMENT_LIST",
         "urlOrigin": "/selectList/SELECT_SYSLOG_EQUIPMENT_LIST",
         "params": null,
-        "data": "{\"encrypt\":\"nbKLFbJ8gdVUMlyUMIo=\"}"
+        "data": "{\"encrypt\":\"khsRBbiv0lbNMpgAOHc=\"}"
     },
-    "requestTime": "2024-12-12 10:26:15.013",
-    "responseTime": "2024-12-12 10:26:15.277",
-    "duration": 264
+    "cmd": "{ \"url\": \"/selectList/SELECT_SYSLOG_EQUIPMENT_LIST\", \"sqlId\": \"SELECT_SYSLOG_EQUIPMENT_LIST\", \"param\": {\"encrypt\":\"khsRBbiv0lbNMpgAOHc=\"} }",
+    "requestTime": "2024-12-13 22:18:46.629",
+    "responseTime": "2024-12-13 22:18:46.965",
+    "duration": 336
 }

@@ -594,9 +594,10 @@
         "url": "/selectList/SELECT_PROFILE_LIST",
         "urlOrigin": "/selectList/SELECT_PROFILE_LIST",
         "params": null,
-        "data": "{\"profile_title\":\"\",\"network_type\":\"\",\"processing_template\":\"\",\"limit\":50,\"page\":1,\"encrypt\":\"M26AkdHD67O3vX5zLok=\"}"
+        "data": "{\"profile_title\":\"\",\"network_type\":\"\",\"processing_template\":\"\",\"limit\":50,\"page\":1,\"encrypt\":\"nPdTkExUcd40I8kzVBY=\"}"
     },
-    "requestTime": "2024-12-12 10:28:01.240",
-    "responseTime": "2024-12-12 10:28:01.471",
-    "duration": 231
+    "cmd": "{ \"url\": \"/selectList/SELECT_PROFILE_LIST\", \"sqlId\": \"SELECT_PROFILE_LIST\", \"param\": {\"profile_title\":\"\",\"network_type\":\"\",\"processing_template\":\"\",\"limit\":50,\"page\":1,\"encrypt\":\"nPdTkExUcd40I8kzVBY=\"} }",
+    "requestTime": "2024-12-13 22:19:50.120",
+    "responseTime": "2024-12-13 22:19:50.172",
+    "duration": 52
 }
