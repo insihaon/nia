@@ -1,12 +1,13 @@
 /*
 vscode Search All
   "cmd": [^\n]*
-  *.json
+  *.json,   mock\json\nia\*.json
   => copy all
 re (python) 실행
   "cmd": ([^\n]*)
   => 추출
 "{ \"url\": \"/selectList/SELECT_SYSTEM_MONITORING_CURRENT\", \"sqlId\": \"SELECT_SYSTEM_MONITORING_CURRENT\", \"param\": {\"encrypt\":\"hK1atbVbJmptlHpkumU=\"} }",
+
 */
 
 export const apis = [
