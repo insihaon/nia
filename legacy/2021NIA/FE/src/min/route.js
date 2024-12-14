@@ -4,6 +4,10 @@ import { exportToFile } from '@/utils'
 import _ from 'lodash'
 import clip from '@/utils/clipboard'
 
+export function clearServicelist() {
+  store.getters.serviceLogs.splice(0)
+}
+
 export function getServicelist(filter) {
   const logs = store.getters.serviceLogs
   let i = 0
