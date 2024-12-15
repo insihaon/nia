@@ -51,14 +51,8 @@ const actions = {
     const { data, status, config } = response
     const { method, baseURL, url, params, requestTime, urlOrigin, filePath, fileIndex } = config
     const jsonFileName = config.headers.jsonFileName || getJsonfileName2(urlOrigin, config, project)
-    const fetchCmd = `fetch('${url}', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': ${toString(params)}, 'method': '${method}' })`
-    let cmd = `{ "url": "${urlOrigin}", "sqlId": "${config.sqlId || ''}", "param": ${toString(toObejct(config.data))} }`
-
-    switch (project) {
-      case 'ipms':
-        cmd = fetchCmd
-        break
-    }
+    // const fetchCmd = `fetch('${url}', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': ${toString(params)}, 'method': '${method}' })`
+    const cmd = `{ "url": "${urlOrigin || url}", "sqlId": "${config.sqlId || ''}", "param": ${toString(toObejct(config.data || config.param))} }`
 
     if (!jsonFileName) return
 
@@ -92,13 +86,8 @@ const actions = {
     const { data, status, config, message, code } = error?.response || error
     const { method, baseURL, url, params, requestTime, urlOrigin, filePath, fileIndex } = config
     const jsonFileName = config.headers.jsonFileName || getJsonfileName2(urlOrigin, config, project)
-    const fetchCmd = `fetch('${url}', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': ${toString(params)}, 'method': '${method}' })`
-    let cmd = `{ "url": "${urlOrigin}", "sqlId": "${config.sqlId || ''}", "param": ${toString(toObejct(config.data))} }`
-    switch (project) {
-      case 'ipms':
-        cmd = fetchCmd
-        break
-    }
+    // const fetchCmd = `fetch('${url}', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': ${toString(params)}, 'method': '${method}' })`
+    const cmd = `{ "url": "${urlOrigin || url}", "sqlId": "${config.sqlId || ''}", "param": ${toString(toObejct(config.data || config.param))} }`
 
     if (!jsonFileName) return
 

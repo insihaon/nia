@@ -1,0 +1,3 @@
+export const apis = [
+  '{ "url": "/ipmgmt/allocmgmt/viewListIpAllocMst.model", "sqlId": "", "param": {"ssvcLineTypeCd":"","ssvcGroupCdMultiStr":"","ssvcGroupCdMulti":[],"ssvcObjCd":"","sofficecode":"","sipCreateTypeCd":"CT0001","sassignTypeCdMultiStr":"","sipVersionTypeCd":"CV0001","searchWrd":"","nbitMask":"","llSrchTypeCd":"llnum","sllnum":"","ssaid":"","sordernum":"","sassignLevelCd":"","searchBgnDe":"","searchEndDe":"","sicisofficescodeNe":"","smodelnameNe":"","ssubscmstipNe":"","ssubscnealiasNe":"","sortType":"PIP_PREFIX","sortOrdr":"ASC","snull0Yn":"","sintgrmYn":"","nsummaryCntMulti":[],"summaryCnt":null,"scomment":"","pageUnit":10,"pageIndex":1,"encrypt":"ZICa/K14agX/0yiV1AA="} }'
+]

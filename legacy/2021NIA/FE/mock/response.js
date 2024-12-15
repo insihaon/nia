@@ -32,6 +32,10 @@ function responseJson(config) {
   // console.log('jsonObject: ', jsonObject)
   console.log('--------------------------------------------------------------------------------------------------------------------------------')
 
+  /*
+  __body : ipms
+  data: other
+  */
   return jsonObject['data'] || jsonObject['__body']
 }
 
