@@ -3,6 +3,8 @@ package com.kt.ipms.legacy.opermgmt.grantsubsmgmt.web;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -67,9 +69,7 @@ public class GrantSubsMgmtController extends CommonController {
 	@RequestMapping(value = "/opermgmt/grantsubsmgmt/viewListUserAuthSubs.model", method = RequestMethod.POST)
 	@ResponseBody
 	@EncryptResponse
-	public ModelMap viewListUserAuth(
-			@ModelAttribute("searchVo") TbUserGrantVo searchVo, ModelMap model,
-			HttpServletRequest request) {
+	public ModelMap viewListUserAuth(@RequestBody TbUserGrantVo searchVo, ModelMap model, HttpServletRequest request) {
 		setPagination(searchVo);
 		TbUserGrantListVo resultListVo = grantSubsMgmtService.selectTbUserGrantList(searchVo);
 		return createResultList(resultListVo.getTbUserGrantVos(), resultListVo.getTotalCount());
@@ -250,17 +250,26 @@ public class GrantSubsMgmtController extends CommonController {
 	@EncryptResponse
 	public ModelMap viewDetailUserAuth(@RequestBody TbUserAuthTxnVo searchVo, ModelMap model,
 			HttpServletRequest request) {
+		// viewDetailUserAuthModel 호출
 		ModelMap builtModel = viewDetailUserAuthModel(searchVo, request);
 
-		ModelMap finalModel = new ModelMap();
-		finalModel.addAllAttributes(builtModel);
+		// 필요한 데이터 추출
+		TbUserAuthTxnListVo resultListVo = (TbUserAuthTxnListVo) builtModel.get("resultListVo");
+		TbUserAuthTxnSubListVo resultSubListVo = (TbUserAuthTxnSubListVo) builtModel.get("resultSubListVo");
+		String adminYn = (String) builtModel.get("adminYn");
+		String ownerYn = (String) builtModel.get("ownerYn");
+		BigInteger grantSeq = (BigInteger) builtModel.get("grant_seq");
 
-		TbUserAuthTxnListVo resultListVo = (TbUserAuthTxnListVo) builtModel.get("result");
+		// 데이터를 Map으로 구성 (result.data에 직접 바인딩될 형태로)
+		HashMap<String, Object> resultData = new HashMap<>();
+		resultData.put("resultListVo", resultListVo);
+		resultData.put("resultSubListVo", resultSubListVo);
+		resultData.put("adminYn", adminYn);
+		resultData.put("ownerYn", ownerYn);
+		resultData.put("grantSeq", grantSeq);
 
-		finalModel.addAttribute("resultList", resultListVo.getTbUserAuthTxnVos());
-		finalModel.addAttribute("totalCount", resultListVo.getTotalCount());
-
-		return finalModel;
+		// createResultList 호출
+		return createResultList(Arrays.asList(resultData), resultListVo.getTotalCount());
 	}
 
 	@RequestMapping(value = "/opermgmt/grantsubsmgmt/viewDetailUserAuthSubs.ajax", method = RequestMethod.POST)

@@ -61,7 +61,7 @@ import ModalIpAssign from '@/views-ipms/modal/ModalIpAssign.vue'
 import ModalCheckTacsIpBlock from '@/views-ipms/modal/ModalCheckTacsIpBlock.vue'
 import ModalIpAssignMerge from '@/views-ipms/modal/assign/ModalIpAssignMerge.vue'
 import ModalDetailSummary from '@/views-ipms/modal/ModalDetailSummary.vue'
-import { ipmsModelApis, apiRequestModel } from '@/api/ipms'
+import { ipmsModelApis, apiRequestModel, apiRequestJson, ipmsJsonApis } from '@/api/ipms'
 import { downloadExcel } from '@/views-ipms/js/common-function'
 
 const routeName = 'IpAssign'
@@ -76,20 +76,7 @@ export default {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       pagination: this.setDefaultPagination(),
-      componentList: [
-        { key: 'SsvcLineType', props: { lvl: 3, multi: [2] } },
-        { key: 'SipCreateType', props: {} },
-        { key: 'GenerationDegree', props: { prop_options: [] } },
-        { key: 'InputType', props: { label: 'BitMask', prop_parameterKey: 'nbitmask' } },
-        { key: 'DateRange', props: {} },
-        { key: 'IpAddress', props: { defaultWord: '' } },
-        { key: 'ServiceOrg', props: { limit: 10 } },
-        { key: 'IpBlockStatus', props: { label: '배정상태', prop_options: [] } },
-        { key: 'SortType', props: { sortOrdrDefaultVal: 'ASC' } },
-        { key: 'IncludeYN', props: { label: 'Summary 포함 여부', prop_parameterKey: 'snull0Yn' } },
-        { key: 'IncludeYN', props: { label: 'DB-라우팅 일치 여부', prop_parameterKey: 'sintgrmYn' } },
-        { key: 'RoutingDuplCount', props: { label: '라우팅 중복 개수', prop_parameterKey: 'summaryCnt', valueType: 'number' } },
-      ],
+
       tableColumns: [
         { prop: 'ssvcLineTypeNm', label: '서비스망', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'ssvcGroupNm', label: '본부', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
@@ -144,6 +131,24 @@ export default {
       selectedRows: [],
     }
   },
+  computed: {
+    componentList() {
+      return [
+        { key: 'SsvcLineType', props: { lvl: 3, multi: [2] } },
+        { key: 'SipCreateType', props: {} },
+        { key: 'GenerationDegree', props: { prop_options: [] } },
+        { key: 'InputType', props: { label: 'BitMask', prop_parameterKey: 'nbitmask' } },
+        { key: 'DateRange', props: {} },
+        { key: 'IpAddress', props: { defaultWord: '' } },
+        { key: 'ServiceOrg', props: { limit: 10 } },
+        { key: 'IpBlockStatus', props: { label: '배정상태', prop_options: this.sassignLevelCds } },
+        { key: 'SortType', props: { sortOrdrDefaultVal: 'ASC' } },
+        { key: 'IncludeYN', props: { label: 'Summary 포함 여부', prop_parameterKey: 'snull0Yn' } },
+        { key: 'IncludeYN', props: { label: 'DB-라우팅 일치 여부', prop_parameterKey: 'sintgrmYn' } },
+        { key: 'RoutingDuplCount', props: { label: '라우팅 중복 개수', prop_parameterKey: 'summaryCnt', valueType: 'number' } },
+      ]
+    }
+  },
   watch: {
     $route: {
       handler: function(route) {
@@ -167,11 +172,33 @@ export default {
   },
   mounted() {
     this.onloadIpAssign()
+    this.fnSelectSipCreateSeqCds()
+    this.fnSelectSassignLevelCds()
   },
   methods: {
     handleSearch(requestParameter) {
       this.pagination.currentPage = 1
       this.onloadIpAssign(requestParameter)
+    },
+    async fnSelectSassignLevelCds() {
+      try {
+        const res = await apiRequestJson(ipmsJsonApis.selectSassignLevelCds, {})
+        const sassignLevelCd = res.tbIpAssignMstVos.map(v => { return { value: v.sassignLevelCd, label: v.sassignLevelNm } })
+        this.$set(this, 'sassignLevelCds', sassignLevelCd)
+        console.log(res)
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    async fnSelectSipCreateSeqCds() {
+      try {
+        const res = await apiRequestJson(ipmsJsonApis.selectSipCreateSeqCdsList, {})
+        const sipCreateSeqCd = res.tbIpBlockMstVos.map(v => { return { value: v.sipCreateSeqCd, label: v.sipCreateSeqNm } })
+        this.$set(this, 'sipCreateSeqCds', sipCreateSeqCd)
+        console.log(res)
+      } catch (error) {
+        console.error(error)
+      }
     },
     async onloadIpAssign(requestParameter = null) {
       const parameter = requestParameter ?? this.$refs.searchCondition.requestParameter
@@ -181,37 +208,8 @@ export default {
       try {
         this.openLoading(target)
         const res = await apiRequestModel(ipmsModelApis.viewListAsgnIPMst, parameter)
-        this.pagination.data = res.resultListVo.tbIpAssignMstVos ?? []
-        this.sipCreateSeqCds = res.sipCreateSeqCds // 생성차수
-        this.sassignLevelCds = res.sassignLevelCds // 배정상태
-
-        const generationDegreeComponent = this.componentList.find((item) => item.key === 'GenerationDegree')
-
-        if (generationDegreeComponent) {
-          this.$set(
-            generationDegreeComponent.props,
-            'prop_options',
-            this.sipCreateSeqCds.map((item) => ({
-              value: item.code,
-              label: item.name
-            }))
-          )
-        }
-
-        const IpBlockStatusComponent = this.componentList.find((item) => item.key === 'IpBlockStatus')
-
-        if (IpBlockStatusComponent) {
-          this.$set(
-            IpBlockStatusComponent.props,
-            'prop_options',
-            this.sassignLevelCds.map((item) => ({
-              value: item.code,
-              label: item.name
-            }))
-          )
-        }
-
-        this.pagination.total = res.resultListVo.totalCount
+        this.pagination.data = res.result.data ?? []
+        this.pagination.total = res.result.totalCount
       } catch (error) {
         console.error(error)
       } finally {

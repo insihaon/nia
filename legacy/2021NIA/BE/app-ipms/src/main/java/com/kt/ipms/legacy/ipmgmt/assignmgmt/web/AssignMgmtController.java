@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -48,12 +49,57 @@ public class AssignMgmtController extends CommonController {
 
 	@Autowired
 	private AssignMgmtService assignMgmtService;
+	/* 배정관리 > 배정 코드 리스트 */
+
+	@RequestMapping(value = "/ipmgmt/assignmgmt/selectSassignLevelCds.json", method = { RequestMethod.POST,
+			RequestMethod.GET })
+	@ResponseBody
+	@EncryptResponse
+	public TbIpAssignMstListVo selectSassignLevelCds(@RequestBody TbIpAssignMstVo searchVo,
+			HttpServletRequest request) {
+		TbIpAssignMstListVo resultListVo = new TbIpAssignMstListVo();
+		try {
+			// 배정 레벨 코드 매핑 설정
+			Map<String, String> assignLevelCdParamMap = new HashMap<>();
+			String gradeCd = jwtUtil.getUserGradeCd(request);
+			if (CommonCodeUtil.USER_GRADE_A.equals(gradeCd) || CommonCodeUtil.USER_GRADE_S.equals(gradeCd)) {
+				assignLevelCdParamMap.put("startCd", "IA0001");
+			} else if (CommonCodeUtil.USER_GRADE_N.equals(gradeCd)) {
+				assignLevelCdParamMap.put("startCd", "IA0001"); // 미배정 보이도록 설정
+			} else {
+				assignLevelCdParamMap.put("startCd", "IA0003");
+			}
+			assignLevelCdParamMap.put("endCd", "IA0004");
+
+			List<CommonCodeVo> sassignLevelCds = commonCodeService.selectListCommonCode(CommonCodeUtil.ASSIGN_LEVEL_CD,
+					assignLevelCdParamMap);
+
+			resultListVo.setTbIpAssignMstVos(sassignLevelCds.stream().map(code -> {
+				TbIpAssignMstVo vo = new TbIpAssignMstVo();
+				vo.setSassignLevelCd(code.getCode());
+				vo.setSassignLevelNm(code.getName());
+				return vo;
+			}).collect(Collectors.toList()));
+
+			resultListVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
+		} catch (ServiceException e) {
+			String msgDesc = tbCmnMstService.selectMsgDesc(e);
+			resultListVo.setCommonMsg(msgDesc);
+			resultListVo.setTotalCount(0);
+		} catch (Exception e) {
+			String msgDesc = tbCmnMstService.selectMsgDesc(new ServiceException("CMN.HIGH.00000"));
+			resultListVo.setCommonMsg(msgDesc);
+			resultListVo.setTotalCount(0);
+		}
+		return resultListVo;
+	}
 
 	@RequestMapping(value = "/ipmgmt/assignmgmt/viewListAsgnIPMst.model", method = RequestMethod.POST)
 	@ResponseBody
 	@EncryptResponse
 	public ModelMap viewListAsgnIPMst(@RequestBody TbIpAssignMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
+		setPagination(searchVo);
 		ModelMap builtModel = viewListAsgnIPMstModel(searchVo, request);
 		TbIpAssignMstListVo resultListVo = (TbIpAssignMstListVo) builtModel.get("resultListVo");
 		return createResultList(resultListVo.getTbIpAssignMstVos(), resultListVo.getTotalCount());
@@ -144,7 +190,8 @@ public class AssignMgmtController extends CommonController {
 			model.addAttribute("centerListVo", centerListVo);
 			model.addAttribute("nodeListVo", nodeListVo);
 
-			if (null != searchVo.getSsvcGroupCdMultiStr() && !"".equals(searchVo.getSsvcGroupCdMultiStr())) {
+			if (null != searchVo.getSsvcGroupCdMultiStr() &&
+					!"".equals(searchVo.getSsvcGroupCdMultiStr())) {
 				List<String> listString = new ArrayList<String>();
 				String[] ssvcGroupCdMulti = searchVo.getSsvcGroupCdMultiStr().split(";");
 				for (int i = 0; i < ssvcGroupCdMulti.length; i++) {
@@ -207,7 +254,8 @@ public class AssignMgmtController extends CommonController {
 			}
 			if (!StringUtils.hasText(searchVo.getSassignLevelCd())) {
 				searchVo.setSearchBgnCd(sassignLevelCds.get(0).getCode());
-				searchVo.setSearchEndCd(sassignLevelCds.get(sassignLevelCds.size() - 1).getCode());
+				searchVo.setSearchEndCd(sassignLevelCds.get(sassignLevelCds.size() -
+						1).getCode());
 			} else {
 				searchVo.setSearchBgnCd("");
 				searchVo.setSearchEndCd("");

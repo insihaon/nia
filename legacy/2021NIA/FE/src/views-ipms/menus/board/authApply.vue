@@ -74,7 +74,7 @@ export default {
             label: '소속조직',
             modalName: 'ModalOrgSearch',
             valueName: 'sorgNm',
-            prop_parameterKey: { sposDeptOrgId: 'sktOrgId', sporDdptOrgNm: 'sorgNm' },
+            prop_parameterKey: { sposDeptOrgId: 'sktOrgId', sposDeptOrgNm: 'sorgNm' },
             isReadOnly: true
           }
         },
