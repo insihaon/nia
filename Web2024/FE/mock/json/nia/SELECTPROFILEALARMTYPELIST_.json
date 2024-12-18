@@ -1,0 +1,26 @@
+{
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [
+            "SELECT \n            FAIL_TYPE,\n            TICKET_TYPE\n        FROM RCA.TB_RCA_TICKET_TYPE_LIST\n        WHERE TICKET_TYPE = ''"
+        ],
+        "total": 0,
+        "result": []
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/selectList/SELECT_PROFILE_ALARM_TYPE_LIST",
+        "urlOrigin": "/selectList/SELECT_PROFILE_ALARM_TYPE_LIST",
+        "params": null,
+        "data": "{\"ticket_type\":\"\",\"encrypt\":\"TgV+FETemWpFIujB9Mc=\"}",
+        "cmd": "{ \"url\": \"/selectList/SELECT_PROFILE_ALARM_TYPE_LIST\", \"sqlId\": \"SELECT_PROFILE_ALARM_TYPE_LIST\", \"param\": {\"ticket_type\":\"\",\"encrypt\":\"TgV+FETemWpFIujB9Mc=\"} }",
+        "requestTime": "2024-12-13 22:20:38.771",
+        "responseTime": "2024-12-13 22:20:39.027",
+        "duration": 256,
+        "jsonFileName": "SELECTPROFILEALARMTYPELIST_.json"
+    }
+}

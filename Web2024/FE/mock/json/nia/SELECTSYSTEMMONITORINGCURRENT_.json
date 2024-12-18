@@ -1,0 +1,72 @@
+{
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [
+            "SELECT \n            KEY_NAME\n            , TO_CHAR(YD_DATE, 'YYYY-MM-DD HH24:MI:SS') AS YD_DATE\n            , YD_DATE AS YD_DATE1\n        FROM NIA.TB_LINKAGE_SEQ\n        WHERE KEY_NAME IN (\n            'aiIpSdnTrafficeKey',\n            'aiIpSdnSflowKey',\n            'aiIpSdnSyslogKey',\n            'aiIpSdnNodeFactorKey',\n            'aiTrafficNoxKey',\n            'aiTrafficAnoKey',\n            'aiIpPerfKey',\n            'aiIpResourceIfKey',\n            'aiIpResourceKey')"
+        ],
+        "total": 9,
+        "result": [
+            {
+                "key_name": "aiIpSdnSyslogKey",
+                "yd_date": "2024-12-13 22:02:34",
+                "yd_date1": "2024-12-13T22:02:34.000+09:00"
+            },
+            {
+                "key_name": "aiIpSdnNodeFactorKey",
+                "yd_date": "2024-12-13 22:04:22",
+                "yd_date1": "2024-12-13T22:04:22.000+09:00"
+            },
+            {
+                "key_name": "aiTrafficAnoKey",
+                "yd_date": "2024-12-13 21:10:41",
+                "yd_date1": "2024-12-13T21:10:41.000+09:00"
+            },
+            {
+                "key_name": "aiIpPerfKey",
+                "yd_date": "2024-12-13 22:02:14",
+                "yd_date1": "2024-12-13T22:02:14.000+09:00"
+            },
+            {
+                "key_name": "aiIpSdnTrafficeKey",
+                "yd_date": "2024-12-13 22:03:29",
+                "yd_date1": "2024-12-13T22:03:29.000+09:00"
+            },
+            {
+                "key_name": "aiIpSdnSflowKey",
+                "yd_date": "2024-12-13 22:04:17",
+                "yd_date1": "2024-12-13T22:04:17.000+09:00"
+            },
+            {
+                "key_name": "aiTrafficNoxKey",
+                "yd_date": "2024-12-13 07:17:09",
+                "yd_date1": "2024-12-13T07:17:09.000+09:00"
+            },
+            {
+                "key_name": "aiIpResourceKey",
+                "yd_date": "2024-12-13 02:30:01",
+                "yd_date1": "2024-12-13T02:30:01.000+09:00"
+            },
+            {
+                "key_name": "aiIpResourceIfKey",
+                "yd_date": "2024-12-13 02:40:01",
+                "yd_date1": "2024-12-13T02:40:01.000+09:00"
+            }
+        ]
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/selectList/SELECT_SYSTEM_MONITORING_CURRENT",
+        "urlOrigin": "/selectList/SELECT_SYSTEM_MONITORING_CURRENT",
+        "params": null,
+        "data": "{\"encrypt\":\"74563LH5CiQYkFg6uwY=\"}",
+        "cmd": "{ \"url\": \"/selectList/SELECT_SYSTEM_MONITORING_CURRENT\", \"sqlId\": \"SELECT_SYSTEM_MONITORING_CURRENT\", \"param\": {\"encrypt\":\"74563LH5CiQYkFg6uwY=\"} }",
+        "requestTime": "2024-12-13 22:08:49.199",
+        "responseTime": "2024-12-13 22:08:49.382",
+        "duration": 183,
+        "jsonFileName": "SELECTSYSTEMMONITORINGCURRENT_.json"
+    }
+}

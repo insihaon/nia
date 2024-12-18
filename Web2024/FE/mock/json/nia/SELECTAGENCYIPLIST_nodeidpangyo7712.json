@@ -1,0 +1,26 @@
+{
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [
+            "SELECT\n            NREN_ID,\n            NREN_NAME,\n            NREN_IP\n        FROM RESOURCE.TB_USER_ORGAN_IP\n         WHERE (  NREN_ID IN (SELECT NREN_ID FROM RESOURCE.TB_USER_ORGAN WHERE NODE_ID = 'pangyo-7712') )"
+        ],
+        "total": 0,
+        "result": []
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/selectList/SELECT_AGENCY_IP_LIST",
+        "urlOrigin": "/selectList/SELECT_AGENCY_IP_LIST",
+        "params": null,
+        "data": "{\"node_id\":\"pangyo-7712\",\"encrypt\":\"HFtGKqto6ojmK0dKE18=\"}",
+        "cmd": "{ \"url\": \"/selectList/SELECT_AGENCY_IP_LIST\", \"sqlId\": \"SELECT_AGENCY_IP_LIST\", \"param\": {\"node_id\":\"pangyo-7712\",\"encrypt\":\"HFtGKqto6ojmK0dKE18=\"} }",
+        "requestTime": "2024-12-13 22:09:09.760",
+        "responseTime": "2024-12-13 22:09:09.824",
+        "duration": 64,
+        "jsonFileName": "SELECTAGENCYIPLIST_nodeidpangyo7712.json"
+    }
+}

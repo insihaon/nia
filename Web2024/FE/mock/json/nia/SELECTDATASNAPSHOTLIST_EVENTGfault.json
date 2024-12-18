@@ -1,0 +1,171 @@
+{
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [
+            "SELECT\n            TITLE\n            , TO_CHAR(START_TIME,  'YYYY-MM-DD HH24:MI:SS') AS START_TIME\n            , TO_CHAR(END_TIME, 'YYYY-MM-DD HH24:MI:SS') AS END_TIME\n            , EVENTNO\n        FROM rca.tb_fault_event\n        WHERE EVENT_GB='fault'\n        ORDER BY EVENTNO::INT DESC"
+        ],
+        "total": 24,
+        "result": [
+            {
+                "start_time": "2024-10-07 00:00:00",
+                "end_time": "2024-10-07 23:59:59",
+                "title": "데이터 스냅샷 test",
+                "eventno": "354"
+            },
+            {
+                "start_time": "2024-03-29 00:00:00",
+                "end_time": "2024-03-29 23:59:59",
+                "title": "test1",
+                "eventno": "338"
+            },
+            {
+                "start_time": "2024-03-29 00:00:00",
+                "end_time": "2024-03-29 23:59:59",
+                "title": "test1",
+                "eventno": "337"
+            },
+            {
+                "start_time": "2024-03-29 00:00:00",
+                "end_time": "2024-03-29 23:59:59",
+                "title": "1",
+                "eventno": "336"
+            },
+            {
+                "start_time": "2024-03-29 00:00:00",
+                "end_time": "2024-03-29 23:59:59",
+                "title": "1",
+                "eventno": "334"
+            },
+            {
+                "start_time": "2024-03-29 00:00:00",
+                "end_time": "2024-03-29 23:59:59",
+                "title": "1",
+                "eventno": "333"
+            },
+            {
+                "start_time": "2024-02-22 00:00:00",
+                "end_time": "2024-02-22 23:59:59",
+                "title": "test1",
+                "eventno": "315"
+            },
+            {
+                "start_time": "2024-02-13 00:00:00",
+                "end_time": "2024-02-13 23:59:59",
+                "title": "저장 test",
+                "eventno": "314"
+            },
+            {
+                "start_time": "2022-12-16 00:00:00",
+                "end_time": "2022-12-16 23:59:59",
+                "title": "test12-16",
+                "eventno": "189"
+            },
+            {
+                "start_time": "2022-11-09 00:00:00",
+                "end_time": "2022-11-10 01:59:00",
+                "title": "장애-test",
+                "eventno": "151"
+            },
+            {
+                "start_time": "2022-11-10 00:00:00",
+                "end_time": "2022-11-10 01:59:00",
+                "title": "장애-test",
+                "eventno": "150"
+            },
+            {
+                "start_time": "2022-10-27 23:59:59",
+                "end_time": "2022-11-03 23:59:59",
+                "title": "이용기관-포트장애검토",
+                "eventno": "123"
+            },
+            {
+                "start_time": "2022-10-27 23:59:59",
+                "end_time": "2022-11-03 23:59:59",
+                "title": "이용기관-포트장애검토",
+                "eventno": "122"
+            },
+            {
+                "start_time": "2022-07-13 00:00:00",
+                "end_time": "2022-07-14 11:00:00",
+                "title": "220714_장애테스트_시연",
+                "eventno": "118"
+            },
+            {
+                "start_time": "2022-07-13 00:00:00",
+                "end_time": "2022-07-14 10:35:00",
+                "title": "220714_장애테스트",
+                "eventno": "117"
+            },
+            {
+                "start_time": "2022-06-06 00:00:00",
+                "end_time": "2022-06-06 12:00:00",
+                "title": "장애데이터셋_샘플2_",
+                "eventno": "103"
+            },
+            {
+                "start_time": "2022-06-08 00:00:00",
+                "end_time": "2022-06-08 12:00:00",
+                "title": "장애데이터셋_샘플",
+                "eventno": "102"
+            },
+            {
+                "start_time": "2022-05-26 15:25:00",
+                "end_time": "2022-05-27 23:55:00",
+                "title": "서울 스위치 장애데이터",
+                "eventno": "101"
+            },
+            {
+                "start_time": "2022-05-18 00:00:00",
+                "end_time": "2022-05-18 10:00:00",
+                "title": "220518_장애테스트",
+                "eventno": "90"
+            },
+            {
+                "start_time": "2022-04-27 00:00:00",
+                "end_time": "2022-04-27 23:59:59",
+                "title": "장애데이터테스트_zeroone",
+                "eventno": "80"
+            },
+            {
+                "start_time": "2022-04-27 00:00:00",
+                "end_time": "2022-04-27 23:59:59",
+                "title": "장애테스트",
+                "eventno": "64"
+            },
+            {
+                "start_time": "2022-04-27 00:00:00",
+                "end_time": "2022-04-27 00:05:00",
+                "title": "장애트래픽test",
+                "eventno": "62"
+            },
+            {
+                "start_time": "2022-04-21 00:00:00",
+                "end_time": "2022-04-21 01:00:00",
+                "title": "test",
+                "eventno": "54"
+            },
+            {
+                "start_time": "2022-04-21 00:00:00",
+                "end_time": "2022-04-21 01:00:00",
+                "title": "test",
+                "eventno": "53"
+            }
+        ]
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/selectList/SELECT_DATA_SNAPSHOT_LIST",
+        "urlOrigin": "/selectList/SELECT_DATA_SNAPSHOT_LIST",
+        "params": null,
+        "data": "{\"EVENT_GB\":\"fault\",\"encrypt\":\"gDYkY6CSS9B3ioCg5EM=\"}",
+        "cmd": "{ \"url\": \"/selectList/SELECT_DATA_SNAPSHOT_LIST\", \"sqlId\": \"SELECT_DATA_SNAPSHOT_LIST\", \"param\": {\"EVENT_GB\":\"fault\",\"encrypt\":\"gDYkY6CSS9B3ioCg5EM=\"} }",
+        "requestTime": "2024-12-13 22:20:54.922",
+        "responseTime": "2024-12-13 22:20:54.962",
+        "duration": 40,
+        "jsonFileName": "SELECTDATASNAPSHOTLIST_EVENTGfault.json"
+    }
+}
