@@ -26,7 +26,7 @@
         </tr>
       </table>
     </div>
-    <div ref="content" class="popupContentTable textcenter">
+    <div v-loading="tableLoading" class="popupContentTable textcenter">
       <div class="popupContentTableTitle">권한상세</div>
       <table>
         <tr>
@@ -41,23 +41,23 @@
         </tr>
         <template v-else>
           <tr
-            v-for="(item, index) in resultListVo.tbUserAuthTxnVos"
+            v-for="(item, index) in resultList"
             :key="index"
             :class="{
-              last: index === resultSubListVo.tbUserAuthTxnSubVos.length - 1,
-              subbg: (index % 2) !== 0 || index === resultSubListVo.tbUserAuthTxnSubVos.length - 1
+              last: index === resultList.length - 1,
+              subbg: (index % 2) !== 0 || index === resultList.length - 1
             }"
           >
             <td>{{ item.suserNm }}</td>
             <td :title="item.suserGradeNm">{{ item.suserGradeNm }}</td>
-            <td :title="item.ssvcLineTypeNm">{{ item.ssvcLineTypeNm }}</td>
-            <td :title="item.ssvcGroupNm">{{ item.ssvcGroupNm }}</td>
-            <td :title="item.ssvcObjNm">{{ item.ssvcObjNm }}</td>
+            <td :title="item.tbLvlBasVo.ssvcLineTypeNm">{{ item.tbLvlBasVo.ssvcLineTypeNm }}</td>
+            <td :title="item.tbLvlBasVo.ssvcGroupNm">{{ item.tbLvlBasVo.ssvcGroupNm }}</td>
+            <td :title="item.tbLvlBasVo.ssvcObjNm">{{ item.tbLvlBasVo.ssvcObjNm }}</td>
           </tr>
         </template>
       </table>
     </div>
-    <div class="popupContentTable textcenter">
+    <div v-loading="tableLoading" class="popupContentTable textcenter">
       <div class="popupContentTableTitle">등록예정 권한 정보</div>
       <table>
         <tr>
@@ -113,7 +113,8 @@ export default {
       totalCount: 0,
       rowGrantSeq: '',
       adminYn: '',
-      ownerYn: ''
+      ownerYn: '',
+      tableLoading: false
     }
   },
   computed: {
@@ -146,30 +147,44 @@ export default {
     async fnViewDetailGrant(row) {
       const target = ({ vue: this.$refs.content })
       try {
-         this.openLoading(target)
+         this.tableLoading = true
          const { suserId, grantSeq } = row
          const tbUserAuthVo = {
             suserId: suserId,
             grantSeq: grantSeq
          }
         const res = await apiRequestModel(ipmsModelApis.viewDetailUserAuthSubs, tbUserAuthVo)
-        this.resultList = res.result.resultList
-        this.resultListVo = res.result
-        this.totalCount = res.totalCount
-        this.resultSubListVo = res.resultSubListVo
-        if (res.resultSubListVo.tbUserAuthTxnSubVos[0].tbLvlBasVo === null) {
-          this.resultSubListVo.tbUserAuthTxnSubVos.map(row => {
-            const tbLvlBasVo = { ssvcLineTypeNm: '', ssvcGroupNm: '', ssvcObjNm: '' }
-            Object.assign(row, { tbLvlBasVo })
-          })
-        }
-            this.rowGrantSeq = res.grant_seq
-            this.adminYn = res.adminYn
-            this.ownerYn = res.ownerYn
+        const responseData = res.result.data[0]
+        this.resultList = responseData.resultListVo?.tbUserAuthTxnVos || [] /* 권한상세 정보 */
+        this.resultList.forEach((txn) => {
+          if (!txn.tbLvlBasVo) {
+            txn.tbLvlBasVo = {
+              ssvcLineTypeNm: '',
+              ssvcGroupNm: '',
+              ssvcObjNm: '',
+            }
+          }
+        })
+
+        this.resultSubListVo = responseData.resultSubListVo || { tbUserAuthTxnSubVos: [] } /* 등록예정 권한 정보 */
+        this.resultSubListVo.tbUserAuthTxnSubVos.forEach((txn) => {
+          if (!txn.tbLvlBasVo) {
+            txn.tbLvlBasVo = {
+              ssvcLineTypeNm: '',
+              ssvcGroupNm: '',
+              ssvcObjNm: '',
+            }
+          }
+        })
+        this.resultListVo = this._cloneDeep(res.result.data[0].resultListVo) || {}
+        this.totalCount = res.result.data[0].resultListVo.totalCount
+            this.rowGrantSeq = res.result.data[0].grantSeq
+            this.adminYn = res.result.data[0].adminYn
+            this.ownerYn = res.result.data[0].ownerYn
        } catch (error) {
          console.error(error)
        } finally {
-         this.closeLoading(target)
+         this.tableLoading = false
        }
     },
     async fnCancelBtnClick() { /* 반려 */
@@ -196,14 +211,12 @@ export default {
       }
     },
     fnDeleteBtnClick() { /* 신청취소 */
-        this.$confirm('정말 삭제 하시겠습니까?', '신청취소 메세지', {
+      this.$confirm('정말 삭제 하시겠습니까?', '신청취소 메세지', {
         confirmButtonText: '확인',
         cancelButtonText: '취소'
         }).then(async () => {
-        const target = ({ vue: this.$refs.content })
         let res
         try {
-          this.openLoading(target)
           const tbUserGrantVo = {
           grantSeq: this.rowGrantSeq
         }
@@ -218,7 +231,7 @@ export default {
         } catch (error) {
           console.log(error)
         } finally {
-         this.closeLoading(target)
+          //
        }
       })
     },
