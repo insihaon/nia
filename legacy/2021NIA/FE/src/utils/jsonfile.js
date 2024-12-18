@@ -115,8 +115,11 @@ export function getJsonfileName2(url, config, project) {
 
   const param_encoding = convertText(JSON.parse(JSON.stringify(param)))
   const param_encoding_min = param_encoding.replace(/[^0-9]/g, '')
-  const url_encoding = url.replace(/^(\/selectList|\/selectOne|\/modify|\/)/g, '')
-  const filename = `${convertText(url_encoding)}_${param_encoding}`.substring(0, 200) + '.json'
+
+  let url_encoding = url.replace(/^https?:\/\/[^/]+/, '')
+  url_encoding = url_encoding.replace(/^(\/selectList|\/selectOne|\/modify|\/)/, '')
+  url_encoding = [...url_encoding].filter(char => /^[가-힣a-zA-Z0-9]$/.test(char)).join('')
+  const filename = `${url_encoding}_${param_encoding}`.slice(0, 200) + '.json'
 
   // console.log(
   // 	`getJsonfileName2({url:'${url}', param: JSON.parse('${JSON.stringify( param )}')})\n`,
