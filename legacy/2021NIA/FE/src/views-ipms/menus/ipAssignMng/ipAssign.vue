@@ -136,7 +136,7 @@ export default {
       return [
         { key: 'SsvcLineType', props: { lvl: 3, multi: [2] } },
         { key: 'SipCreateType', props: {} },
-        { key: 'GenerationDegree', props: { prop_options: [] } },
+        { key: 'GenerationDegree', props: { prop_options: this.sipCreateSeqCds } },
         { key: 'InputType', props: { label: 'BitMask', prop_parameterKey: 'nbitmask' } },
         { key: 'DateRange', props: {} },
         { key: 'IpAddress', props: { defaultWord: '' } },
