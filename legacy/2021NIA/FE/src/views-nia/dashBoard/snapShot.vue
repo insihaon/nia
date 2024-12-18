@@ -7,10 +7,10 @@
       <el-col align="right" >
         <div class="my-4 mx-4">
           <!-- <el-button size="small" plain class="btn-r" @click.native="onClickShowHist()"> 이력 {{ isShowHist ? '닫기' : '보기' }} </el-button> -->
-          <el-button size="mini" type="info" plain class="btn-r" @click.native="isShowHist = !isShowHist"> 이력 {{ isShowHist ? '닫기' : '보기' }} </el-button>
-          <el-button size="mini" type="info" icon="el-icon-close" @click.native="$emit('windowClose')">
+          <el-button size="mini" type="info" plain class="btn-r" @click.native="isShowHist = !isShowHist">  {{ isShowHist ? '닫기' : '이력 보기' }} </el-button>
+          <!-- <el-button size="mini" type="info" icon="el-icon-close" @click.native="$emit('windowClose')">
             {{ $t('exit') }}
-          </el-button>
+          </el-button> -->
         </div>
       </el-col>
     </el-row>
@@ -60,7 +60,7 @@ export default {
     isShowHist(newVal, oldVal) {
       if (newVal !== oldVal) {
         this.$set(this.wdata, 'width', newVal ? 700 : 600)
-        this.$set(this.wdata, 'height', newVal ? 650 : 300)
+        this.$set(this.wdata, 'height', newVal ? 680 : 380)
 
         let x = (window.innerWidth - this.wdata.width) * 0.5 + (this.$store.getters.windows.length - 1) * 20
         let y = (window.innerHeight - this.wdata.height) * 0.5 + (this.$store.getters.windows.length - 1) * 20
