@@ -1,0 +1,63 @@
+{
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [
+            "SELECT \n        TICKET_TYPE,\n        MIN(TICKET_GB) AS TICKET_GB\n        FROM RCA.TB_RCA_TICKET_TYPE_LIST\n        WHERE 1=1\n        GROUP BY TICKET_TYPE"
+        ],
+        "total": 9,
+        "result": [
+            {
+                "ticket_type": "유닛장애",
+                "ticket_gb": "POTN"
+            },
+            {
+                "ticket_type": "통신장애",
+                "ticket_gb": "POTN"
+            },
+            {
+                "ticket_type": "노드장애",
+                "ticket_gb": "POTN"
+            },
+            {
+                "ticket_type": "링크장애",
+                "ticket_gb": "POTN"
+            },
+            {
+                "ticket_type": "클럭장애",
+                "ticket_gb": "POTN"
+            },
+            {
+                "ticket_type": "장치장애",
+                "ticket_gb": "POTN"
+            },
+            {
+                "ticket_type": "기타장애",
+                "ticket_gb": "POTN"
+            },
+            {
+                "ticket_type": "전원장애",
+                "ticket_gb": "POTN"
+            },
+            {
+                "ticket_type": "스위치장애",
+                "ticket_gb": "SWITCH"
+            }
+        ]
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/selectList/SELECT_PROFILE_TICKET_TYPE_LIST",
+        "urlOrigin": "/selectList/SELECT_PROFILE_TICKET_TYPE_LIST",
+        "params": null,
+        "data": "{\"ticket_gb\":\"\",\"encrypt\":\"L6rLslCQwgwDzYko4cg=\"}",
+        "cmd": "{ \"url\": \"/selectList/SELECT_PROFILE_TICKET_TYPE_LIST\", \"sqlId\": \"SELECT_PROFILE_TICKET_TYPE_LIST\", \"param\": {\"ticket_gb\":\"\",\"encrypt\":\"L6rLslCQwgwDzYko4cg=\"} }",
+        "requestTime": "2024-12-13 22:20:38.771",
+        "responseTime": "2024-12-13 22:20:39.001",
+        "duration": 230,
+        "jsonFileName": "SELECTPROFILETICKETTYPELIST_.json"
+    }
+}

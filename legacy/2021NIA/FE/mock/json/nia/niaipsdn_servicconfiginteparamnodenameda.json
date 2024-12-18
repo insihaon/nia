@@ -1,0 +1,75 @@
+{
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [],
+        "total": 1,
+        "result": {
+            "status": true,
+            "message": "Interface Config/Read Complete.",
+            "data": [
+                {
+                    "lldpv2Interface": {
+                        "lldpAgent": {
+                            "lldpTlvConfigCmd": {
+                                "chassisId": "ip-address",
+                                "portAddr": "ip-address",
+                                "portId": "if-name"
+                            },
+                            "lldpAgent": "default",
+                            "lldpEnable": "txrx"
+                        }
+                    },
+                    "ifName": "ce12/1",
+                    "description": "SP-Seoul7712-R400G2-100G",
+                    "sflowInterfaceConfigs": {
+                        "samplingEgress": {
+                            "maxHeaderSizeEgress": 200,
+                            "samplingRateEgress": 8192
+                        },
+                        "pollingInterval": 10,
+                        "samplingEnable": {
+                            "samplingEnable": true
+                        },
+                        "samplingIngress": {
+                            "samplingRateIngress": 8192,
+                            "maxHeaderSizeIngress": 200
+                        }
+                    },
+                    "ospfInterface": {
+                        "ipOspfInterface": {
+                            "isMtuIgnoreAddr": true,
+                            "ifHelloIntervalAddr": 3,
+                            "ifCostAddr": 8
+                        },
+                        "ifNetworkType": "point-to-point"
+                    },
+                    "ipAddr": "61.252.50.39/31",
+                    "speed": "100g",
+                    "loadInterval": 30,
+                    "mtu": 9216,
+                    "equip_ip": [
+                        {
+                            "ip": "61.252.50.39/31"
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/nia/ipsdn",
+        "urlOrigin": "/nia/ipsdn",
+        "params": null,
+        "data": "{\"servicePath\":\"config/interfaces\",\"param\":\"nodename=daejeon-7712&ifname=ce12/1\",\"encrypt\":\"c8nMZpW73gsGJQPgM0c=\"}",
+        "cmd": "{ \"url\": \"/nia/ipsdn\", \"sqlId\": \"\", \"param\": {\"servicePath\":\"config/interfaces\",\"param\":\"nodename=daejeon-7712&ifname=ce12/1\",\"encrypt\":\"c8nMZpW73gsGJQPgM0c=\"} }",
+        "requestTime": "2024-12-13 22:11:25.023",
+        "responseTime": "2024-12-13 22:11:25.406",
+        "duration": 383,
+        "jsonFileName": "niaipsdn_servicconfiginteparamnodenameda.json"
+    }
+}

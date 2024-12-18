@@ -1,0 +1,227 @@
+{
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [
+            "SELECT\n            COUNTRY_NAME,\n            KOICA\n        FROM GATHER.TB_COUNTRY_CODE\n            LIMIT 50 OFFSET 0"
+        ],
+        "total": 215,
+        "result": [
+            {
+                "koica": "3322",
+                "country_name": "가봉"
+            },
+            {
+                "koica": "5364",
+                "country_name": "가이아나"
+            },
+            {
+                "koica": "3325",
+                "country_name": "감비아"
+            },
+            {
+                "koica": "5346",
+                "country_name": "그레나다"
+            },
+            {
+                "koica": "3358",
+                "country_name": "기니"
+            },
+            {
+                "koica": "3361",
+                "country_name": "기니비사우"
+            },
+            {
+                "koica": "3529",
+                "country_name": "나미비아"
+            },
+            {
+                "koica": "6532",
+                "country_name": "나우루"
+            },
+            {
+                "koica": "7795",
+                "country_name": "남수단"
+            },
+            {
+                "koica": "3658",
+                "country_name": "남아프리카공화국"
+            },
+            {
+                "koica": "6559",
+                "country_name": "니우에"
+            },
+            {
+                "koica": "3553",
+                "country_name": "니제르"
+            },
+            {
+                "koica": "5550",
+                "country_name": "니카라과"
+            },
+            {
+                "koica": "2439",
+                "country_name": "레바논"
+            },
+            {
+                "koica": "3442",
+                "country_name": "레소토"
+            },
+            {
+                "koica": "3448",
+                "country_name": "리비아"
+            },
+            {
+                "koica": "3466",
+                "country_name": "마다가스카르"
+            },
+            {
+                "koica": "6464",
+                "country_name": "마샬군도"
+            },
+            {
+                "koica": "6505",
+                "country_name": "마이크로네시아"
+            },
+            {
+                "koica": "3469",
+                "country_name": "말라위"
+            },
+            {
+                "koica": "3478",
+                "country_name": "말리"
+            },
+            {
+                "koica": "5502",
+                "country_name": "멕시코"
+            },
+            {
+                "koica": "3493",
+                "country_name": "모리셔스"
+            },
+            {
+                "koica": "3490",
+                "country_name": "모리타니"
+            },
+            {
+                "koica": "1475",
+                "country_name": "몰디브"
+            },
+            {
+                "koica": "6766",
+                "country_name": "바누아투"
+            },
+            {
+                "koica": "3169",
+                "country_name": "베냉"
+            },
+            {
+                "koica": "5772",
+                "country_name": "베네수엘라"
+            },
+            {
+                "koica": "5166",
+                "country_name": "벨리즈"
+            },
+            {
+                "koica": "3187",
+                "country_name": "보츠와나"
+            },
+            {
+                "koica": "3205",
+                "country_name": "부룬디"
+            },
+            {
+                "koica": "3202",
+                "country_name": "부르키나파소"
+            },
+            {
+                "koica": "1175",
+                "country_name": "부탄"
+            },
+            {
+                "koica": "5190",
+                "country_name": "브라질"
+            },
+            {
+                "koica": "6784",
+                "country_name": "사모아"
+            },
+            {
+                "koica": "3625",
+                "country_name": "상투메프린시페"
+            },
+            {
+                "koica": "5679",
+                "country_name": "세인트루시아"
+            },
+            {
+                "koica": "5685",
+                "country_name": "세인트빈센트"
+            },
+            {
+                "koica": "3655",
+                "country_name": "소말리아"
+            },
+            {
+                "koica": "6652",
+                "country_name": "솔로몬군도"
+            },
+            {
+                "koica": "3688",
+                "country_name": "수단"
+            },
+            {
+                "koica": "5691",
+                "country_name": "수리남"
+            },
+            {
+                "koica": "2706",
+                "country_name": "시리아"
+            },
+            {
+                "koica": "3640",
+                "country_name": "시에라리온"
+            },
+            {
+                "koica": "5130",
+                "country_name": "아르헨티나"
+            },
+            {
+                "koica": "5367",
+                "country_name": "아이티"
+            },
+            {
+                "koica": "3118",
+                "country_name": "앙골라"
+            },
+            {
+                "koica": "3299",
+                "country_name": "에리트레아"
+            },
+            {
+                "koica": "2787",
+                "country_name": "예멘"
+            },
+            {
+                "koica": "5370",
+                "country_name": "온두라스"
+            }
+        ]
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/selectList/SELECT_UNIDENTIFIED_NATION_LIST",
+        "urlOrigin": "/selectList/SELECT_UNIDENTIFIED_NATION_LIST",
+        "params": null,
+        "data": "{\"country_name\":\"\",\"country_code\":\"\",\"limit\":50,\"page\":1,\"encrypt\":\"Yw62dHOMLIY6R3Wtvwc=\"}",
+        "cmd": "{ \"url\": \"/selectList/SELECT_UNIDENTIFIED_NATION_LIST\", \"sqlId\": \"SELECT_UNIDENTIFIED_NATION_LIST\", \"param\": {\"country_name\":\"\",\"country_code\":\"\",\"limit\":50,\"page\":1,\"encrypt\":\"Yw62dHOMLIY6R3Wtvwc=\"} }",
+        "requestTime": "2024-12-13 22:16:26.547",
+        "responseTime": "2024-12-13 22:16:26.590",
+        "duration": 43,
+        "jsonFileName": "SELECTUNIDENTIFIEDNATIONLIST_limit50page1.json"
+    }
+}

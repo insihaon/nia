@@ -1,0 +1,41 @@
+{
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [
+            "SELECT  \n        MAPP_SERIAL, \n        PORT_NUM, \n        IP_TYPE, \n        PROTOCOL, \n        DESCRIPTION\n    FROM   GATHER.TB_DEFAULT_PORT_NUMBER\n     WHERE  PROTOCOL IS NOT NULL\n                AND PROTOCOL LIKE '%' || 'POP3' || '%' \n    ORDER BY PROTOCOL ASC\n            LIMIT 50 OFFSET 0"
+        ],
+        "total": 2,
+        "result": [
+            {
+                "protocol": "POP3 ",
+                "mapp_serial": 100,
+                "port_num": "110",
+                "description": "POP3 (Post Office Protocol version 3) - 전자우편 가져오기에 사용",
+                "ip_type": null
+            },
+            {
+                "protocol": "POP3 ",
+                "mapp_serial": 22,
+                "port_num": "995",
+                "description": "SSL 위의 POP3 (암호화 전송)",
+                "ip_type": null
+            }
+        ]
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/selectList/SELECT_UNIDENTIFIED_APP_LIST",
+        "urlOrigin": "/selectList/SELECT_UNIDENTIFIED_APP_LIST",
+        "params": null,
+        "data": "{\"protocol\":\"POP3\",\"port_num\":\"\",\"limit\":50,\"page\":1,\"encrypt\":\"D2mI4YRTccieAvViR4Y=\"}",
+        "cmd": "{ \"url\": \"/selectList/SELECT_UNIDENTIFIED_APP_LIST\", \"sqlId\": \"SELECT_UNIDENTIFIED_APP_LIST\", \"param\": {\"protocol\":\"POP3\",\"port_num\":\"\",\"limit\":50,\"page\":1,\"encrypt\":\"D2mI4YRTccieAvViR4Y=\"} }",
+        "requestTime": "2024-12-13 22:17:40.887",
+        "responseTime": "2024-12-13 22:17:40.928",
+        "duration": 41,
+        "jsonFileName": "SELECTUNIDENTIFIEDAPPLIST_protocPOP3limit50page1.json"
+    }
+}
