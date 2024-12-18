@@ -52,7 +52,7 @@ import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoad
 import tableHeightMixin from '@/mixin/tableHeightMixin'
 import ModalIpBlockDetail from '@/views-ipms/modal/ModalIpBlockDetail.vue'
 import ModalAddIpBlock from '@/views-ipms/modal/ModalAddIpBlock.vue'
-import { ipmsModelApis, apiRequestModel } from '@/api/ipms'
+import { ipmsModelApis, apiRequestModel, apiRequestJson, ipmsJsonApis } from '@/api/ipms'
 import { downloadExcel } from '@/views-ipms/js/common-function'
 import moment from 'moment'
 const routeName = 'IpBlockManagement'
@@ -67,14 +67,6 @@ export default {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       pagination: this.setDefaultPagination(),
-      componentList: [
-        { key: 'SipCreateType', props: {} },
-        { key: 'GenerationDegree', props: {}, prop_options: [] },
-        { key: 'IpAddress', props: {} },
-        { key: 'SsvcLineType', props: { label: '서비스망' } },
-        { key: 'DateRange', props: {} },
-        { key: 'SortType', props: {} },
-      ],
       tableColumns: [
         { prop: 'sipCreateTypeNm', label: '공인/사설', align: 'center', sortable: true, propIsCheckBox: true, columnVisible: true, showOverflow: true },
         { prop: 'sipCreateSeqNm', label: '생성차수', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
@@ -97,16 +89,37 @@ export default {
     }
   },
   computed: {
+    componentList() {
+      return [
+        { key: 'SipCreateType', props: {} },
+        { key: 'GenerationDegree', props: { prop_options: this.sipCreateSeqCds }, },
+        { key: 'IpAddress', props: {} },
+        { key: 'SsvcLineType', props: { label: '서비스망' } },
+        { key: 'DateRange', props: {} },
+        { key: 'SortType', props: {} },
+      ]
+    }
   },
   mounted() {
-      setTimeout(async() => {
+    setTimeout(async() => {
       await this.fnViewListIpBlockMst()
     }, 10)
+    this.fnSelectSipCreateSeqCds()
   },
   methods: {
     handleSearch(requestParameter) {
       this.pagination.currentPage = 1
       this.fnViewListIpBlockMst(requestParameter)
+    },
+    async fnSelectSipCreateSeqCds() {
+      try {
+        const res = await apiRequestJson(ipmsJsonApis.selectSipCreateSeqCdsList, {})
+        const sipCreateSeqCd = res.tbIpBlockMstVos.map(v => { return { value: v.sipCreateSeqCd, label: v.sipCreateSeqNm } })
+        this.$set(this, 'sipCreateSeqCds', sipCreateSeqCd)
+        console.log(res)
+      } catch (error) {
+        console.error(error)
+      }
     },
     async fnViewListIpBlockMst(requestParameter = null) {
     const parameter = requestParameter ?? this.$refs.searchCondition.requestParameter
@@ -116,22 +129,8 @@ export default {
       try {
         this.openLoading(target)
         const res = await apiRequestModel(ipmsModelApis.viewListCrtIPMst, parameter)
-        this.pagination.data = res.resultListVo.tbIpBlockMstVos ?? []
-        this.pagination.total = res.resultListVo.totalCount
-        this.sipCreateSeqCds = res.sipCreateSeqCds
-
-        const generationDegreeComponent = this.componentList.find((item) => item.key === 'GenerationDegree')
-
-        if (generationDegreeComponent) {
-          this.$set(
-            generationDegreeComponent.props,
-            'prop_options',
-            this.sipCreateSeqCds.map((item) => ({
-              value: item.code,
-              label: item.name
-            }))
-          )
-        }
+        this.pagination.data = res.result.data ?? []
+        this.pagination.total = res.result.totalCount
         this.$nextTick(() => {
           this.$refs.compTable.$refs.table.selection.push(this.pagination.data[0])
         })

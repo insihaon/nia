@@ -47,6 +47,43 @@ public class CreateMgmtController extends CommonController {
 	@Autowired
 	private CreateMgmtService createMgmtService;
 
+	/* IP 볼록 > 생성차수 공통 코드 리스트 */
+	@RequestMapping(value = "/ipmgmt/createmgmt/selectSipCreateSeqCdsList.json", method = { RequestMethod.POST,
+			RequestMethod.GET })
+	@ResponseBody
+	@EncryptResponse
+	public TbIpBlockMstListVo selectSipCreateSeqCdsList(@RequestBody TbIpBlockMstVo searchVo,
+			HttpServletRequest request) {
+		TbIpBlockMstListVo resultListVo = new TbIpBlockMstListVo();
+		try {
+			// 공통 코드 목록 조회
+			List<CommonCodeVo> sipCreateSeqCds = commonCodeService
+					.selectListCommonCode(CommonCodeUtil.IP_CREATE_SEQ_CD, null);
+
+			// 결과 데이터를 resultListVo에 바로 세팅
+			List<TbIpBlockMstVo> sipCreateSeqCdsVos = new ArrayList<>();
+			for (CommonCodeVo code : sipCreateSeqCds) {
+				TbIpBlockMstVo vo = new TbIpBlockMstVo();
+				vo.setSipCreateSeqCd(code.getCode());
+				vo.setSipCreateSeqNm(code.getName());
+				sipCreateSeqCdsVos.add(vo);
+			}
+			resultListVo.setTbIpBlockMstVos(sipCreateSeqCdsVos);
+
+		} catch (ServiceException e) {
+			// 예외 처리 및 오류 메시지 설정
+			String msgDesc = tbCmnMstService.selectMsgDesc(e);
+			resultListVo.setCommonMsg(msgDesc);
+			resultListVo.setTotalCount(0);
+		} catch (Exception e) {
+			String msgDesc = tbCmnMstService.selectMsgDesc(new ServiceException("CMN.HIGH.00000"));
+			resultListVo.setCommonMsg(msgDesc);
+			resultListVo.setTotalCount(0);
+		}
+		// resultListVo를 직접 반환
+		return resultListVo;
+	}
+
 	/**
 	 * IP 볼록 생성 목록
 	 * 
@@ -64,10 +101,9 @@ public class CreateMgmtController extends CommonController {
 	public ModelMap viewListCrtIPMst(@RequestBody TbIpBlockMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		setPagination(searchVo);
-		ModelMap builtModel = viewListCrtIPMstModel(searchVo, request);
-		ModelMap finalModel = new ModelMap();
-		finalModel.addAllAttributes(builtModel);
-		return finalModel;
+
+		TbIpBlockMstListVo resultListVo = createMgmtService.selectListIpBlockMst(searchVo);
+		return createResultList(resultListVo.getTbIpBlockMstVos(), resultListVo.getTotalCount());
 	}
 
 	@RequestMapping(value = "/ipmgmt/createmgmt/viewListCrtIPMst.do", method = { RequestMethod.POST,

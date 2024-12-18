@@ -48,7 +48,7 @@ var dialogOpenMixin = {
           pageTitle: '데이터 스냅샷',
           top: '2vh',
           width: '600',
-          height: '350',
+          height: '390',
           resizeble: true,
         },
         sopList: {
