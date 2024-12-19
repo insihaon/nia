@@ -173,7 +173,7 @@ class WebSocketManager {
           const { untact, uid } = store.getters
           const { subuserid, privilege, sender } = json
           if (project === 'untact') {
-            if (subuserid === uid && privilege === untact.authority.privilege && sender !== this.stompClient.ws._transport.url) {
+            if (subuserid === uid && privilege === untact.authority.privilege && sender !== this.stompClient.ws.url) {
               Vue.prototype.$alert('"동일계정 동시 로그인(다중접속)을 금지" 정책에 따라 로그아웃 됩니다.')
               await wait(5000)
               await store.dispatch('user/logout')
@@ -239,7 +239,7 @@ class WebSocketManager {
     const token = this.token = await getToken()
     const destination = '/pub/emit'
     const headers = { 'token': token }
-    const body = JSON.stringify({ type: type, channelName: channelName, sender: this.stompClient.ws._transport.url, message: JSON.stringify(data) })
+    const body = JSON.stringify({ type: type, channelName: channelName, sender: this.stompClient.ws.url, message: JSON.stringify(data) })
     this.stompClient.send(destination, headers, body)
   }
 
@@ -248,7 +248,7 @@ class WebSocketManager {
   }
 
   async sendLogout(data = {}) {
-    this.sendMessage('COMMAND', { command: 'LOGOUT', ...data, sender: this.stompClient.ws._transport.url })
+    this.sendMessage('COMMAND', { command: 'LOGOUT', ...data, sender: this.stompClient.ws.url })
   }
 
   onclose() {
