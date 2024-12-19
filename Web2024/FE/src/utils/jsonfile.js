@@ -104,9 +104,9 @@ export function getJsonfileName2(url, config, project) {
 
   let convertText = convertTextV1
   switch (project) {
-    case 'ipms':
     case 'datahub':
       break
+    case 'ipms':
     case 'nia':
     default:
       convertText = convertTextV2
@@ -120,6 +120,9 @@ export function getJsonfileName2(url, config, project) {
   url_encoding = url_encoding.replace(/^(\/selectList|\/selectOne|\/modify|\/)/, '')
   url_encoding = [...url_encoding].filter(char => /^[가-힣a-zA-Z0-9]$/.test(char)).join('')
   const filename = `${url_encoding}_${param_encoding}`.slice(0, 200) + '.json'
+
+  // const filename_v1 = `${convertTextV1(url_encoding)}_${param_encoding}`.substring(0, 200) + '.json'
+  // console.log(`filename_v1=${filename_v1}`)
 
   // console.log(
   // 	`getJsonfileName2({url:'${url}', param: JSON.parse('${JSON.stringify( param )}')})\n`,
