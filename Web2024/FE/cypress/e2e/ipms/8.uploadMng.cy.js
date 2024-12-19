@@ -22,7 +22,8 @@ describe('uploadMng Fuctionality', () => {
     it('detail', () => {
       /* POST 요청 정의 */
       cy.intercept('POST', '**/ipmgmt/ipuploadmgmt/viewDetailIpMst.model').as('viewDetailIpMst') /* 조회 */
-      cy.get('tbody > :nth-child(1) > .el-table_2_column_13 > .cell').click()
+      // cy.get('tbody > :nth-child(1) > .el-table_2_column_13 > .cell').click()
+      cy.get('#element-table tr').eq(1).click()
       /* 조회 결과 성공여부 확인 */
       cy.wait('@viewDetailIpMst').then((interception) => {
         // cy.log('viewListCrtIPMst response:', JSON.stringify(interception.response))

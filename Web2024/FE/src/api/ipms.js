@@ -178,7 +178,7 @@ export const ipmsJsonApis = {
   viewUpdateWhoisModReqVo: { desc: 'Whois 정보 변경 신청 > 수정 ', url: '/opermgmt/whoismgmt/viewUpdateWhoisModReqVo' },
   selectSearchWhoisInfo: { desc: 'Whois 정보 변경 신청 > 등록 > IP주소 조회 ', url: '/opermgmt/whoismgmt/selectSearchWhoisInfo' },
   sendMail: { desc: 'Whois 정보 변경 신청 > 등록 > 관리자에게 메일 보내기(IP주소) ', url: '/opermgmt/uploadmgmt/sendMail' },
-  // insertRegWhoisModReq: { desc: 'Whois 정보 변경 신청 > 변경 신청  ', url: '/opermgmt/uploadmgmt/insertRegWhoisModReq' },
+  insertRegWhoisModReq: { desc: 'Whois 정보 변경 신청 > 변경 신청  ', url: '/opermgmt/uploadmgmt/insertRegWhoisModReq' },
   insertReq: { desc: '개발/오류수정/자료 요청 > 등록', url: '/opermgmt/requiremgmt/insertReq' },
   updateReq: { desc: '개발/오류수정/자료 요청 > 수정', url: '/opermgmt/requiremgmt/updateReq' },
   deleteReq: { desc: '개발/오류수정/자료 요청 > 삭제', url: '/opermgmt/requiremgmt/deleteReq' },

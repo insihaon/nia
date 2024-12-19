@@ -19,8 +19,13 @@ describe('ipUnAssignStatus Fuctionality', () => {
     })
     it('unassign detail', () => {
       cy.wait('@viewListUnAssignIP')
-      /* 미배정 row 클릭 */
-      cy.get(':nth-child(1) > .el-table_2_column_14 > .cell > .el-button').click()
+      /* 미배정 column button 클릭 */
+      cy.get('#element-table tr').eq(1).find('td').eq(2).find('.el-button').then(($btn) => {
+        if($btn.length > 0) {
+          cy.wrap($btn).click()
+        }
+      })
+      // cy.get(':nth-child(1) > .el-table_2_column_14 > .cell > .el-button').click()
       cy.wait('@viewDetailUnAssignIP').then((interception) => {
         expect(interception.response.statusCode).to.equal(200)
         const responseData = interception.response.body.result.data
@@ -29,8 +34,12 @@ describe('ipUnAssignStatus Fuctionality', () => {
     })
     it('preUnassign detail', () => {
       cy.wait('@viewListUnAssignIP')
-      /* 예비배정 row 클릭 */
-      cy.get(':nth-child(1) > .el-table_2_column_15 > .cell > .el-button').click()
+      /* 예비배정 column button 클릭 */
+      cy.get('#element-table tr').eq(1).find('td').eq(3).find('.el-button').then(($btn) => {
+        if($btn.length > 0) {
+          cy.wrap($btn).click()
+        }
+      })
       cy.wait('@viewDetailUnAssignIP').then((interception) => {
         expect(interception.response.statusCode).to.equal(200)
         const responseData = interception.response.body.result.data
