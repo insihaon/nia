@@ -94,7 +94,7 @@ function filterNonNullValues(obj) {
   return Object.fromEntries(Object.entries(obj).filter(([key, value]) => value !== undefined && value !== null && value !== ''))
 }
 
-export function getJsonfileName2(url, config, project) {
+function getJsonfileName2(url, config) {
   let param = Object.assign({}, typeof config.data === 'string' ? JSON.parse(config.data) : config.data)
 
   delete param.encrypt
@@ -102,17 +102,7 @@ export function getJsonfileName2(url, config, project) {
 
   param = filterNonNullValues(param)
 
-  let convertText = convertTextV1
-  switch (project) {
-    case 'datahub':
-      break
-    case 'ipms':
-    case 'nia':
-    default:
-      convertText = convertTextV2
-      break
-  }
-
+  const convertText = convertTextV2
   const param_encoding = convertText(JSON.parse(JSON.stringify(param)))
   const param_encoding_min = param_encoding.replace(/[^0-9]/g, '')
 
@@ -131,3 +121,6 @@ export function getJsonfileName2(url, config, project) {
 
   return filename
 }
+window.getJsonfileName2 = getJsonfileName2
+
+export { getJsonfileName2 }
