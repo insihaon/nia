@@ -109,9 +109,11 @@ export default {
       this.pagination.currentPage = 1
       this.fnViewListWhoisModReq(requestParameter)
     },
-   async fnViewListWhoisModReq(requestParameter) {
+   async fnViewListWhoisModReq(requestParameter = null) {
+    const parameter = requestParameter ?? this.$refs.searchCondition.requestParameter
       const target = ({ vue: this.$refs.compTable })
-      const parameter = requestParameter ?? this.$refs.searchCondition.requestParameter
+      const { pageSize: pageUnit, currentPage: pageIndex } = this.pagination
+      Object.assign(parameter, { pageUnit, pageIndex })
       try {
         this.openLoading(target)
         const res = await apiRequestModel(ipmsModelApis.viewListWhoisModReq, parameter)

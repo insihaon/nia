@@ -12,19 +12,15 @@ const tokenPath = 'cypress/fixtures/ipms/token.json'
 Cypress.Commands.add('visitLocal', () => {
     cy.visit('http://localhost:4000')
     cy.viewport(1800, 900)
+    /* login test를 실행하여 saveToken을 할 땐 주석처리 해야함 */
     cy.setToken()
     cy.visit('/')
 })
-Cypress.Commands.add('login', () => { // 코드 전부 지우고 제거
-    cy.get(':nth-child(1) > .el-form-item__content > input').type('10150810');
-    cy.get(':nth-child(2) > .el-form-item__content > input').type('1');
-    cy.get('button').click();
-})
 Cypress.Commands.add('visitPath', (path) => {
     cy.visitLocal()
-    cy.wait(200)
+    cy.wait(1000)
     cy.visit(`/#/${path}`)
-    cy.wait(200)
+    cy.wait(1000)
 })
 
 Cypress.Commands.add('saveToken', () => {

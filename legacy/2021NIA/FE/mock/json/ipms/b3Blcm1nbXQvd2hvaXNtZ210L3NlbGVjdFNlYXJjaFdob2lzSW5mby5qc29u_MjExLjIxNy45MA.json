@@ -1,6 +1,6 @@
 {
   "__body": {
-    "tbWhoisModifyVo": {
+    "tbWhoisModifyVo":{
       "searchBgnDe": "",
       "searchCnd": "",
       "searchEndDe": "",
@@ -24,7 +24,7 @@
       "dmodifyDt": null,
       "smodifyId": null,
       "smodifyNm": null,
-      "commonMsg": "SUCCESS",
+      "commonMsg": "요청한 작업이 잘못되었습니다.",
       "screateEmail": null,
       "smodifyEmail": null,
       "moveType": "",
