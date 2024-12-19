@@ -990,7 +990,7 @@ public class IpStatMgmtController extends CommonController {
 		ModelMap model = viewListIntgrmSvcStatModel(searchVo, request);
 		
 		Map<String,Object> resultMap = (Map<String,Object>)model.get("result");
-		resultModel.addAttribute("data", resultMap);
+		resultModel.addAttribute("result", resultMap);
 		
 		return resultModel;
 	}
@@ -1213,7 +1213,7 @@ public class IpStatMgmtController extends CommonController {
 			strSvcList = oReq.writerWithDefaultPrettyPrinter().writeValueAsString(svcList);
 				
 			resultMap.put("resultStatus", CommonCodeUtil.SUCCESS_MSG);
-			resultMap.put("result", strList);
+			resultMap.put("data", strList);
 			resultMap.put("svcList", strSvcList);
 
 			
@@ -1339,7 +1339,7 @@ public class IpStatMgmtController extends CommonController {
 		ModelMap model = viewListOrgSvcStatModel(searchVo, request);
 		
 		Map<String,Object> resultMap = (Map<String,Object>)model.get("result");
-		resultModel.addAttribute("data", resultMap);
+		resultModel.addAttribute("result", resultMap);
 		
 		return resultModel;
 	}
@@ -1558,7 +1558,7 @@ public class IpStatMgmtController extends CommonController {
 			strSvcList = oReq.writerWithDefaultPrettyPrinter().writeValueAsString(svcList);
 				
 			resultMap.put("resultStatus", CommonCodeUtil.SUCCESS_MSG);
-			resultMap.put("result", strList);
+			resultMap.put("data", strList);
 			resultMap.put("svcList", strSvcList);
 
 			
@@ -1689,7 +1689,7 @@ public class IpStatMgmtController extends CommonController {
 		ModelMap model = viewListSvcStatModel(searchVo, request);
 		
 		Map<String,Object> resultMap = (Map<String,Object>)model.get("result");
-		resultModel.addAttribute("data", resultMap);
+		resultModel.addAttribute("result", resultMap);
 		
 		return resultModel;
 	}
@@ -1859,7 +1859,7 @@ public class IpStatMgmtController extends CommonController {
 				
 			resultMap.put("resultStatus", CommonCodeUtil.SUCCESS_MSG);
 			resultMap.put("svcLineList", strSvcLineList);
-			resultMap.put("result", strList);
+			resultMap.put("data", strList);
 			
 		} catch (ServiceException e) {
 			String msgDesc = tbCmnMstService.selectMsgDesc(e);
@@ -2007,7 +2007,7 @@ public class IpStatMgmtController extends CommonController {
 		ModelMap model = viewListBlockSizeStatModel(searchVo, request);
 		
 		Map<String,Object> resultMap = (Map<String,Object>)model.get("result");
-		resultModel.addAttribute("data", resultMap);
+		resultModel.addAttribute("result", resultMap);
 		
 		return resultModel;
 	}
@@ -2193,7 +2193,7 @@ public class IpStatMgmtController extends CommonController {
 			resultMap.put("blockSizeCds", strBlockSizeCds);
 			resultMap.put("resultStatus", CommonCodeUtil.SUCCESS_MSG);
 			
-			resultMap.put("result", strList);
+			resultMap.put("data", strList);
 			
 		} catch (ServiceException e) {
 			e.printStackTrace();

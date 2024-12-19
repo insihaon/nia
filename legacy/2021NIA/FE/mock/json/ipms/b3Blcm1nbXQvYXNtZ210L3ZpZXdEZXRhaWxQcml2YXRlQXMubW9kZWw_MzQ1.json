@@ -1,0 +1,73 @@
+{
+  "__body": {
+    "result": {
+      "data": {
+        "searchBgnDe": "",
+        "searchCnd": "",
+        "searchEndDe": "",
+        "searchWrd": "",
+        "sortType": "",
+        "sortOrdr": "",
+        "searchUseYn": "",
+        "searchBgnCd": "",
+        "searchEndCd": "",
+        "pageIndex": 1,
+        "pageUnit": 0,
+        "pageSize": 0,
+        "firstIndex": 1,
+        "lastIndex": 10,
+        "recordCountPerPage": 10,
+        "rowNo": 0,
+        "typeFlag": "",
+        "dcreateDt": "2024-12-18 17:05:30",
+        "screateId": "10150810",
+        "screateNm": "정회창",
+        "dmodifyDt": "2024-12-18 17:11:16",
+        "smodifyId": "10150810",
+        "smodifyNm": "정회창",
+        "commonMsg": null,
+        "screateEmail": null,
+        "smodifyEmail": null,
+        "moveType": "",
+        "moveSearchWrd": "",
+        "moveSipVersionTypeCd": null,
+        "url": null,
+        "menuType": null,
+        "paramMap": null,
+        "nrequestAsApyTxnSeq": 345,
+        "nrequestAsSeq": null,
+        "srequestAsCtm": "테스트",
+        "srequestAsObjNm1": "1",
+        "srequestAsObjLlnum1": "3",
+        "drequestAsObjOpenDt1": 1734480000000,
+        "srequestAsObjIpBlock1": "5",
+        "srequestAsObjNm2": "2",
+        "srequestAsObjLlnum2": "",
+        "drequestAsObjOpenDt2": null,
+        "srequestAsObjIpBlock2": "6",
+        "srequestAsTypeCd": "RS0201",
+        "srequestAsTypeNm": "신청",
+        "sasTpicNm": "8",
+        "sasTpicOrg": "9",
+        "sexistSpLine": "10",
+        "nexistSales": 12,
+        "saltSpLine": "11",
+        "naltSales": 13,
+        "dapvDt": null,
+        "sapvuserId": null,
+        "sapvuserNm": null,
+        "scomment": "7"
+      }
+    }
+  },
+  "__config": {
+    "url": "/opermgmt/asmgmt/viewDetailPrivateAs.model",
+    "param": {
+      "nrequestAsApyTxnSeq": "345"
+    },
+    "receivedTime": "2024-12-19 08:39:33.512",
+    "duration": 275,
+    "filename": "b3Blcm1nbXQvYXNtZ210L3ZpZXdEZXRhaWxQcml2YXRlQXMubW9kZWw_MzQ1.json",
+    "fetch": "fetch('/opermgmt/asmgmt/viewDetailPrivateAs.model', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{\"nrequestAsApyTxnSeq\":\"345\"}', 'method': 'POST' })"
+  }
+}
