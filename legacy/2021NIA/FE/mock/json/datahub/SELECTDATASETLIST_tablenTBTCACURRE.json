@@ -1,0 +1,691 @@
+{
+    "__body": {
+        "success": true,
+        "encrypt": false,
+        "sql": "SELECT \n        METADATA_SEQ\n        ,TDM.TABLE_NM \n        ,TDM.COLUMN_NM \n        ,TDM.DATA_TYPE \n        ,TDM.METADATA_DESC\n        ,TDM.UPDATE_USER\n        ,TO_CHAR(TDM.CREATE_TIME , 'YYYY-MM-DD HH24:MI:SS') AS CREATE_TIME\n        ,TO_CHAR(TDM.UPDATE_TIME , 'YYYY-MM-DD HH24:MI:SS') AS UPDATE_TIME\n   FROM DATAHUB.TB_METADATA_MST TDM\n    WHERE 1=1\n         AND TABLE_NM = 'TB_TCA_CURRENT_DTL'\n        AND UPPER(TDM.TABLE_NM) LIKE '%' || UPPER('TB_TCA_CURRENT_DTL') || '%'",
+        "total": 67,
+        "result": [
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 100,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "인지일시",
+                "data_type": "DATETIME",
+                "column_nm": "ACKN_TIME"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 101,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "인지자",
+                "data_type": "VARCHAR",
+                "column_nm": "ACKUSER"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 102,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "ALPINE장비별칭",
+                "data_type": "VARCHAR",
+                "column_nm": "ALPINE_EQUIP_ALIAS"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 103,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "경보세부내역",
+                "data_type": "VARCHAR",
+                "column_nm": "AL_DTL_CONT"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 104,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "SCS경보원시코드(내부로직처리용)",
+                "data_type": "VARCHAR",
+                "column_nm": "AL_EXT"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 105,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "경보발생위치",
+                "data_type": "VARCHAR",
+                "column_nm": "AL_OCCUR_LOC"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 106,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "자동해제구분",
+                "data_type": "VARCHAR",
+                "column_nm": "AUTO_CLEAR_GB_CD"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 107,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "클래스이름",
+                "data_type": "VARCHAR",
+                "column_nm": "CLASS_NM"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 108,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "수집일시",
+                "data_type": "DATETIME",
+                "column_nm": "COLLECT_TIME"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 109,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "공사문서번호",
+                "data_type": "VARCHAR",
+                "column_nm": "CONST_DOC_NUM"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 110,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "공사세부문서번호",
+                "data_type": "VARCHAR",
+                "column_nm": "CONST_DTL_DOC_NUM"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 111,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "가입자수 - 인터넷",
+                "data_type": "INTEGER",
+                "column_nm": "CUST_CNT"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 112,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "가입자수 - TV",
+                "data_type": "INTEGER",
+                "column_nm": "CUST_CNT_TV"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 113,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "DB서버구분",
+                "data_type": "VARCHAR",
+                "column_nm": "DB_SVR_GB"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 114,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "지속시각",
+                "data_type": "INTEGER",
+                "column_nm": "DUR_TIME"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 115,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "장비별칭",
+                "data_type": "VARCHAR",
+                "column_nm": "EQUIP_ALIAS"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 116,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "장비ID",
+                "data_type": "VARCHAR",
+                "column_nm": "EQUIP_ID"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 117,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "장비IP",
+                "data_type": "VARCHAR",
+                "column_nm": "EQUIP_IP"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 118,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "장애KEY (sms계정 전용)",
+                "data_type": "VARCHAR",
+                "column_nm": "ERR_KEY"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 119,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "장애설명( sms계정 전용)",
+                "data_type": "VARCHAR",
+                "column_nm": "FAULT_DESC"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 120,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "장애제목( sms계정 전용)",
+                "data_type": "VARCHAR",
+                "column_nm": "FAULT_TITLE"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 121,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "FWSMCONTEXT이름",
+                "data_type": "VARCHAR",
+                "column_nm": "FWSM_CONTEXT_NM"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 122,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "FWSM이름",
+                "data_type": "VARCHAR",
+                "column_nm": "FWSM_NM"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 123,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "인터페이스할당대역",
+                "data_type": "INTEGER",
+                "column_nm": "IF_ASSIGN"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 124,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "인터페이스이름",
+                "data_type": "VARCHAR",
+                "column_nm": "IF_NM"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 125,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "입출구분",
+                "data_type": "VARCHAR",
+                "column_nm": "INOUT_GB"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 126,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "하한임계치값",
+                "data_type": "INTEGER",
+                "column_nm": "LOWER_THRESHOLD_VAL"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 127,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "조치자ID",
+                "data_type": "VARCHAR",
+                "column_nm": "MNPLUSER_ID"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 128,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "조치내역",
+                "data_type": "VARCHAR",
+                "column_nm": "MNPL_CONT"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 129,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "조치일시",
+                "data_type": "DATETIME",
+                "column_nm": "MNPL_TIME"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 130,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "조치여부",
+                "data_type": "VARCHAR",
+                "column_nm": "MNPL_YN_CD"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 131,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "노드인덱스 ",
+                "data_type": "INTEGER",
+                "column_nm": "NODE_INDX"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 132,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "발생일시",
+                "data_type": "DATETIME",
+                "column_nm": "OCCUR_TIME"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 133,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "POLICYID",
+                "data_type": "VARCHAR",
+                "column_nm": "POLICY_ID"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 134,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "POLICY이름",
+                "data_type": "VARCHAR",
+                "column_nm": "POLICY_NM"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 135,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "처리상태",
+                "data_type": "VARCHAR",
+                "column_nm": "PROCESS_STATUS"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 136,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "품질클래스ID",
+                "data_type": "VARCHAR",
+                "column_nm": "QUALITY_CLASS_ID"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 137,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "참조임계치값",
+                "data_type": "INTEGER",
+                "column_nm": "RFRN_THRESHOLD_VAL"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 138,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "가입자정보 ID ( OllehTV계정 전용)",
+                "data_type": "VARCHAR",
+                "column_nm": "SBCR_INFO_ID"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 139,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "SER장비별칭",
+                "data_type": "VARCHAR",
+                "column_nm": "SER_EQUIP_ALIAS"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 140,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "슬롯ID",
+                "data_type": "INTEGER",
+                "column_nm": "SLOT_ID"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 141,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "표준정책설정플래그",
+                "data_type": "VARCHAR",
+                "column_nm": "STANDARD_POLICY_STNG_FLAG"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 142,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "서비스프로파일ID",
+                "data_type": "VARCHAR",
+                "column_nm": "SVC_PROFILE_ID"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 143,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "TCA항목",
+                "data_type": "VARCHAR",
+                "column_nm": "TCA_AL_CD"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 144,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "TCA수집구분",
+                "data_type": "VARCHAR",
+                "column_nm": "TCA_COLLECT_GB_CD"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 145,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "TCA현재값",
+                "data_type": "INTEGER",
+                "column_nm": "TCA_CURRENT_VAL"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 146,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "TCA등급",
+                "data_type": "VARCHAR",
+                "column_nm": "TCA_GRD_CD"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 147,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "TCA일련번호",
+                "data_type": "INTEGER",
+                "column_nm": "TCA_SRL_NUM"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 148,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "TCA상태코드",
+                "data_type": "VARCHAR",
+                "column_nm": "TCA_STATUS_CD"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 149,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "임계치초과값 ( OllehTV계정 전용)",
+                "data_type": "INTEGER",
+                "column_nm": "TCA_THRESHOLD_LAST_OVER_VAL"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 150,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "TCA유형",
+                "data_type": "VARCHAR",
+                "column_nm": "TCA_TYPE_CD"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 151,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "TCA유닛구분코드",
+                "data_type": "VARCHAR",
+                "column_nm": "TCA_UNIT_GB_CD"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 152,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "TCA와 VOC 관련여부( OllehTV계정 전용)",
+                "data_type": "VARCHAR",
+                "column_nm": "TCA_VOC_YN_CD"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 153,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "임계치 색인 ( OllehTV계정 전용)",
+                "data_type": "INTEGER",
+                "column_nm": "THRESHOLD_INDX"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 154,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "임계치초과값 ( OllehTV계정 전용)",
+                "data_type": "INTEGER",
+                "column_nm": "THRESHOLD_OVER_VAL"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 155,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "총용량",
+                "data_type": "INTEGER",
+                "column_nm": "TOTAL_AMT"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 156,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "총IP수",
+                "data_type": "INTEGER",
+                "column_nm": "TOTAL_IP_CNT"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 157,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "상한하한구분",
+                "data_type": "VARCHAR",
+                "column_nm": "UPPER_LOWER_GB"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 158,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "상한임계치값",
+                "data_type": "INTEGER",
+                "column_nm": "UPPER_THRESHOLD_VAL"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 159,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "사용IP수",
+                "data_type": "INTEGER",
+                "column_nm": "USE_IP_CNT"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 160,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "VOD 파일이름 ( OllehTV계정 전용)",
+                "data_type": "VARCHAR",
+                "column_nm": "VOD_FILE_NM"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 161,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "VOD 파일 서버 주소 ( OllehTV계정 전용)",
+                "data_type": "VARCHAR",
+                "column_nm": "VOD_FILE_SVR_ADDR"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 162,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "VRF이름",
+                "data_type": "VARCHAR",
+                "column_nm": "VRF_NM"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:21",
+                "update_user": "SYSTEM",
+                "metadata_seq": 2670,
+                "create_time": "2023-10-09 20:07:21",
+                "metadata_desc": "",
+                "data_type": "DATETIME",
+                "column_nm": "CHNG_TIME"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:24",
+                "update_user": "SYSTEM",
+                "metadata_seq": 3191,
+                "create_time": "2023-10-09 20:07:24",
+                "metadata_desc": "",
+                "data_type": "DATETIME",
+                "column_nm": "DHUB_INSERT_TIME"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:28",
+                "update_user": "SYSTEM",
+                "metadata_seq": 4126,
+                "create_time": "2023-10-09 20:07:28",
+                "metadata_desc": "",
+                "data_type": "VARCHAR",
+                "column_nm": "CLEARUSER_ID"
+            },
+            {
+                "table_nm": "TB_TCA_CURRENT_DTL",
+                "update_time": "2023-10-09 20:07:28",
+                "update_user": "SYSTEM",
+                "metadata_seq": 4233,
+                "create_time": "2023-10-09 20:07:28",
+                "metadata_desc": "",
+                "data_type": "DATETIME",
+                "column_nm": "CLEAR_TIME"
+            }
+        ]
+    },
+    "config": {
+        "param": {
+            "table_nm": "TB_TCA_CURRENT_DTL"
+        },
+        "receivedTime": "2024-04-03 09:05:52.401",
+        "url": "/selectList/SELECT_DATA_SET_LIST",
+        "cmd": "{\"url\": \"/selectList/SELECT_DATA_SET_LIST\", \"sqlId\": \"\", \"param\": \"{\\\"table_nm\\\": \\\"TB_TCA_CURRENT_DTL\\\"}\"}",
+        "duration": 26,
+        "jsonFileName": "SELECTDATASETLIST_tablenTBTCACURRE.json",
+        "oldJsonFileName": "L1NFTEVDVF9EQVRBX1NFVF9MSVNU_VEJfVENBX0NVUg.json"
+    }
+}
