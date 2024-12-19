@@ -1,0 +1,62 @@
+{
+    "__body": {
+        "tbRequestAsMstVo": {
+            "searchBgnDe": "",
+            "searchCnd": "",
+            "searchEndDe": "",
+            "searchWrd": "",
+            "sortType": "",
+            "sortOrdr": "",
+            "searchUseYn": "",
+            "searchBgnCd": "",
+            "searchEndCd": "",
+            "pageIndex": 1,
+            "pageUnit": 0,
+            "pageSize": 0,
+            "firstIndex": 1,
+            "lastIndex": 10,
+            "recordCountPerPage": 10,
+            "rowNo": 0,
+            "typeFlag": "",
+            "dcreateDt": null,
+            "screateId": null,
+            "screateNm": null,
+            "dmodifyDt": null,
+            "smodifyId": null,
+            "smodifyNm": null,
+            "commonMsg": "SUCCESS",
+            "screateEmail": null,
+            "smodifyEmail": null,
+            "moveType": "",
+            "moveSearchWrd": "",
+            "moveSipVersionTypeCd": null,
+            "url": null,
+            "menuType": null,
+            "paramMap": null,
+            "nrequestAsSeq": 64821,
+            "srequestAsTypeCd": null,
+            "srequestAsTypeNm": null,
+            "scomment": null,
+            "srequestAsCtm": null,
+            "apyDt": null,
+            "apyUserId": null,
+            "apyUserNm": null,
+            "srequestAsObjNm1": null,
+            "srequestAsObjLlnum1": null,
+            "srequestAsObjNm2": null,
+            "srequestAsObjLlnum2": null
+        }
+    },
+    "config": {
+        "url": "/opermgmt/asmgmt/selectMinNrequestAsSeq.json",
+        "param": {
+            "srequestAsTypeCd": "N"
+        },
+        "receivedTime": "2024-08-26 10:55:19.744",
+        "fetch": "success-fetch('/opermgmt/asmgmt/selectMinNrequestAsSeq.json', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{\"srequestAsTypeCd\":\"N\"}', 'method': 'POST' })",
+        "cmd": "{\"url\": \"/opermgmt/asmgmt/selectMinNrequestAsSeq.json\", \"sqlId\": \"\", \"param\": \"{\\\"srequestAsTypeCd\\\": \\\"N\\\"}\"}",
+        "duration": 433,
+        "jsonFileName": "opermgmtasmgmtselectMinNrequestAsSeqjson_srequeN.json",
+        "oldJsonFileName": "b3Blcm1nbXQvYXNtZ210L3NlbGVjdE1pbk5yZXF1ZXN0QXNTZXEuanNvbg_Tg.json"
+    }
+}

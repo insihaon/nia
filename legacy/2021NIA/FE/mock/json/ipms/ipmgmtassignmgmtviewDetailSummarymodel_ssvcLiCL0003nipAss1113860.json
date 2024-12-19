@@ -1,0 +1,21 @@
+{
+    "__body": {
+        "result": {
+            "totalCount": 0,
+            "data": null
+        }
+    },
+    "config": {
+        "url": "/ipmgmt/assignmgmt/viewDetailSummary.model",
+        "param": {
+            "ssvcLineTypeCd": "CL0003",
+            "nipAssignMstSeq": "1113860"
+        },
+        "receivedTime": "2024-08-07 11:08:08.516",
+        "fetch": "fetch('/ipmgmt/assignmgmt/viewDetailSummary.model', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{\"ssvcLineTypeCd\":\"CL0003\",\"nipAssignMstSeq\":\"1113860\"}', 'method': 'POST' })",
+        "cmd": "{\"url\": \"/ipmgmt/assignmgmt/viewDetailSummary.model\", \"sqlId\": \"\", \"param\": \"{\\\"ssvcLineTypeCd\\\": \\\"CL0003\\\", \\\"nipAssignMstSeq\\\": \\\"1113860\\\"}\"}",
+        "duration": 327,
+        "jsonFileName": "ipmgmtassignmgmtviewDetailSummarymodel_ssvcLiCL0003nipAss1113860.json",
+        "oldJsonFileName": "aXBtZ210L2Fzc2lnbm1nbXQvdmlld0RldGFpbFN1bW1hcnkubW9kZWw_Q0wwMDAzfDExMTM4NjA.json"
+    }
+}

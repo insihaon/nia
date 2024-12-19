@@ -1,13 +1,12 @@
 /*
-vscode Search All
+vscode Search All (정규표현식)
   "cmd": [^\n]*
   *.json,   mock\json\nia\*.json
   => copy all
 re (python) 실행
   "cmd": ([^\n]*)
   => 추출
-"{ \"url\": \"/selectList/SELECT_SYSTEM_MONITORING_CURRENT\", \"sqlId\": \"SELECT_SYSTEM_MONITORING_CURRENT\", \"param\": {\"encrypt\":\"hK1atbVbJmptlHpkumU=\"} }",
-
+  => 결과 복사 & 아래 apis 에 붙여넣기
 */
 
 export const apis = [
