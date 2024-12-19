@@ -112,7 +112,8 @@ service.interceptors.response.use(
   error => {
     debugLog(`response error=`, { ...error })
     const useServiceLog = true
-    const { urlOrigin, requestTime } = error.config
+    const urlOrigin = error.config?.urlOrigin
+    const requestTime = error.config?.requestTime
 
     if (useServiceLog) {
       store.dispatch('serviceLog/addServiceErrorLog', error)

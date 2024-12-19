@@ -178,11 +178,11 @@ export default {
 @import '~@/styles/animation.scss';
 
 .system-name {
-  white-space: nowrap; /* 텍스트를 한 줄로 유지 */
-  overflow: hidden;    /* 넘치는 텍스트를 숨김 */
-  text-overflow: ellipsis; /* 넘치는 텍스트를 '...'로 표시 */
-  max-width: 100px;    /* 필요 시 최대 너비 설정 */
-  display: inline-block; /* 블록 요소로 처리 */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100px;
+  display: inline-block;
 }
 
 .BottomBar {

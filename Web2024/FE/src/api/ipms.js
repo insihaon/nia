@@ -125,6 +125,8 @@ export const ipmsJsonApis = {
   selectSearchLvlCd: { desc: '운용팀 조회', url: 'opermgmt/orgmgmt/selectSearchLvlCd' },
   selectOrgSassignTypeCdList: { desc: '서비스 조회', url: '/ipmgmt/allocmgmt/selectOrgSassignTypeCdList' },
   selectSearchOrgBas: { desc: '운용조직 검색', url: '/opermgmt/orgmgmt/selectSearchOrgBas' },
+  selectSipCreateSeqCdsList: { desc: '생성차수 공통 코드 리스트 조회', url: '/ipmgmt/createmgmt/selectSipCreateSeqCdsList' },
+  selectSassignLevelCds: { desc: '배정조회 > 배정 상태 코드 리스트 조회', url: '/ipmgmt/assignmgmt/selectSassignLevelCds' },
   //
   appendCrtIPMst: { desc: 'IP 블록관리 > IP 블록생성 > IP 주소 추가', url: '/ipmgmt/createmgmt/appendCrtIPMst' },
   insertListCrtIPMst: { desc: 'IP 블록관리 > IP 블록생성 > IP 주소 등록', url: '/ipmgmt/createmgmt/insertListCrtIPMst' },

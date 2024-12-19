@@ -1,0 +1,33 @@
+{
+    "__body": {
+        "result": {
+            "totalCount": 0,
+            "data": []
+        }
+    },
+    "config": {
+        "url": "/opermgmt/privatemgmt/viewListPrivateIPMst.model",
+        "param": {
+            "sortType": "SIP_PRIVATE_REQ_MST_SEQ_CD",
+            "sortOrdr": "DESC",
+            "pageIndex": 1,
+            "pageUnit": 10,
+            "pageSize": 0,
+            "firstIndex": 1,
+            "lastIndex": 10,
+            "recordCountPerPage": 10,
+            "rowNo": 0,
+            "url": "/opermgmt/privatemgmt/viewListPrivateIPMst.model",
+            "sipVersionTypeCd": "CV0001",
+            "sipPrivateReqMstSeqCd": "R202302001",
+            "ssvcLineTypeCd": "CL0001",
+            "ssvcGroupCd": "383040"
+        },
+        "receivedTime": "2024-08-05 10:13:17.281",
+        "fetch": "fetch('/opermgmt/privatemgmt/viewListPrivateIPMst.model', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{\"sortType\":\"SIP_PRIVATE_REQ_MST_SEQ_CD\",\"sortOrdr\":\"DESC\",\"pageIndex\":1,\"pageUnit\":10,\"pageSize\":0,\"firstIndex\":1,\"lastIndex\":10,\"recordCountPerPage\":10,\"rowNo\":0,\"url\":\"/opermgmt/privatemgmt/viewListPrivateIPMst.model\",\"sipVersionTypeCd\":\"CV0001\",\"sipPrivateReqMstSeqCd\":\"R202302001\",\"ssvcLineTypeCd\":\"CL0001\",\"ssvcGroupCd\":\"383040\"}', 'method': 'POST' })",
+        "cmd": "{\"url\": \"/opermgmt/privatemgmt/viewListPrivateIPMst.model\", \"sqlId\": \"\", \"param\": \"{\\\"sortType\\\": \\\"SIP_PRIVATE_REQ_MST_SEQ_CD\\\", \\\"sortOrdr\\\": \\\"DESC\\\", \\\"pageIndex\\\": 1, \\\"pageUnit\\\": 10, \\\"pageSize\\\": 0, \\\"firstIndex\\\": 1, \\\"lastIndex\\\": 10, \\\"recordCountPerPage\\\": 10, \\\"rowNo\\\": 0, \\\"url\\\": \\\"/opermgmt/privatemgmt/viewListPrivateIPMst.model\\\", \\\"sipVersionTypeCd\\\": \\\"CV0001\\\", \\\"sipPrivateReqMstSeqCd\\\": \\\"R202302001\\\", \\\"ssvcLineTypeCd\\\": \\\"CL0001\\\", \\\"ssvcGroupCd\\\": \\\"383040\\\"}\"}",
+        "duration": 356,
+        "jsonFileName": "opermgmtprivatemgmtviewListPrivateIPMstmodel_sortTySIPPRIVATEsortOrDESCpageIn1pageUn10pageSi0firstI1lastIn10record10rowNo0urlopermgmtprsipVerCV0001sipPriR202302001ssvcLiCL0001ssvcGr383040.json",
+        "oldJsonFileName": "b3Blcm1nbXQvcHJpdmF0ZW1nbXQvdmlld0xpc3RQcml2YXRlSVBNc3QubW9kZWw_U0lQX1BSSVZBVHxERVNDfDF8MTB8MHwxfDEwfDEwfDB8L29wZXJtZ210L3xDVjAwMDF8UjIwMjMwMjAwMXxDTDAwMDF8MzgzMDQw.json"
+    }
+}

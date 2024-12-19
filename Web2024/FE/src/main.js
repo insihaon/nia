@@ -59,7 +59,12 @@ if (process.env.VUE_APP_USE_DARK_THEME === 'true') {
 import { Fragment } from 'vue-frag'
 Vue.component('Fragment', Fragment)
 
-process.env.NODE_ENV === 'development' ? require('@/min/global') : require('@/min/global.min')
+if (process.env.NODE_ENV === 'development') {
+  require('@/min/global')
+  require('@/class/e2e')
+} else {
+  require('@/min/global.min')
+}
 
 Vue.use(LoadScript)
 Vue.use(Element, {

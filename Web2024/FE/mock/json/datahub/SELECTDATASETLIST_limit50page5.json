@@ -1,0 +1,525 @@
+{
+    "__body": {
+        "success": true,
+        "encrypt": false,
+        "sql": "SELECT \n        METADATA_SEQ\n        ,TDM.TABLE_NM \n        ,TDM.COLUMN_NM \n        ,TDM.DATA_TYPE \n        ,TDM.METADATA_DESC\n        ,TDM.UPDATE_USER\n        ,TO_CHAR(TDM.CREATE_TIME , 'YYYY-MM-DD HH24:MI:SS') AS CREATE_TIME\n        ,TO_CHAR(TDM.UPDATE_TIME , 'YYYY-MM-DD HH24:MI:SS') AS UPDATE_TIME\n   FROM DATAHUB.TB_METADATA_MST TDM\n    WHERE 1=1\n            LIMIT 50 OFFSET 200",
+        "total": 4289,
+        "result": [
+            {
+                "table_nm": "TB_LINK_CURTRF_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 202,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "입력평균패킷크기하한임계치유격값",
+                "data_type": "INTEGER",
+                "column_nm": "INAVGPKTSIZELOWERDELTA"
+            },
+            {
+                "table_nm": "TB_LINK_CURTRF_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 203,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "입력평균패킷크기누적평균값",
+                "data_type": "INTEGER",
+                "column_nm": "INAVGPKTSIZEREFERENCE"
+            },
+            {
+                "table_nm": "TB_LINK_CURTRF_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 204,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "입력평균패킷크기상한임계치유격값",
+                "data_type": "INTEGER",
+                "column_nm": "INAVGPKTSIZEUPPERDELTA"
+            },
+            {
+                "table_nm": "TB_LINK_CURTRF_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 205,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "수신BPS",
+                "data_type": "INTEGER",
+                "column_nm": "INBPS"
+            },
+            {
+                "table_nm": "TB_LINK_CURTRF_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 206,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "입력패킷변동율임계치적용등급",
+                "data_type": "VARCHAR",
+                "column_nm": "INBPSDEGREE"
+            },
+            {
+                "table_nm": "TB_LINK_CURTRF_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 207,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "입력패킷변동율하한임계치유격값",
+                "data_type": "INTEGER",
+                "column_nm": "INBPSLOWERDELTA"
+            },
+            {
+                "table_nm": "TB_LINK_CURTRF_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 208,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "수신BPS누적평균값",
+                "data_type": "INTEGER",
+                "column_nm": "INBPSREFERENCE"
+            },
+            {
+                "table_nm": "TB_LINK_CURTRF_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 209,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "입력패킷변동율상한임계치유격값",
+                "data_type": "INTEGER",
+                "column_nm": "INBPSUPPERDELTA"
+            },
+            {
+                "table_nm": "TB_LINK_CURTRF_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 210,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "상위층전달브로드캐스트패킷수",
+                "data_type": "INTEGER",
+                "column_nm": "INBROADCASTPKTS"
+            },
+            {
+                "table_nm": "TB_LINK_CURTRF_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 211,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "상위층프로토콜미전달패킷수",
+                "data_type": "INTEGER",
+                "column_nm": "INDISCARDS"
+            },
+            {
+                "table_nm": "TB_LINK_CURTRF_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 212,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "패킷에러상위층프로토콜미전달패킷수",
+                "data_type": "INTEGER",
+                "column_nm": "INERRORS"
+            },
+            {
+                "table_nm": "TB_LINK_CURTRF_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 213,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "인터페이스RateLimitSpeed입력사용률",
+                "data_type": "INTEGER",
+                "column_nm": "INIFLIMITUSAGERATE"
+            },
+            {
+                "table_nm": "TB_LINK_CURTRF_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 214,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "수신패킷인터페이스이용율",
+                "data_type": "INTEGER",
+                "column_nm": "INIFUSAGERATE"
+            },
+            {
+                "table_nm": "TB_LINK_CURTRF_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 215,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "입력인터페이스이용율임계치적용등급",
+                "data_type": "VARCHAR",
+                "column_nm": "INIFUSAGERATEDEGREE"
+            },
+            {
+                "table_nm": "TB_LINK_CURTRF_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 216,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "입력인터페이스이용율하한임계치유격값",
+                "data_type": "INTEGER",
+                "column_nm": "INIFUSAGERATELOWERDELTA"
+            },
+            {
+                "table_nm": "TB_LINK_CURTRF_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 217,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "입력인터페이스이용율누적평균값",
+                "data_type": "INTEGER",
+                "column_nm": "INIFUSAGERATEREFERENCE"
+            },
+            {
+                "table_nm": "TB_LINK_CURTRF_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 218,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "입력인터페이스이용율상한임계치유격값",
+                "data_type": "INTEGER",
+                "column_nm": "INIFUSAGERATEUPPERDELTA"
+            },
+            {
+                "table_nm": "TB_LINK_CURTRF_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 219,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "입력PacketLoss",
+                "data_type": "INTEGER",
+                "column_nm": "INLOSS"
+            },
+            {
+                "table_nm": "TB_LINK_CURTRF_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 220,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "입력PacketLoss임계치적용등급",
+                "data_type": "VARCHAR",
+                "column_nm": "INLOSSDEGREE"
+            },
+            {
+                "table_nm": "TB_LINK_CURTRF_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 221,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "입력PacketLoss누적평균값",
+                "data_type": "INTEGER",
+                "column_nm": "INLOSSREFERENCE"
+            },
+            {
+                "table_nm": "TB_LINK_CURTRF_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 222,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "입력PacketLoss상한임계치유격값",
+                "data_type": "INTEGER",
+                "column_nm": "INLOSSUPPERDELTA"
+            },
+            {
+                "table_nm": "TB_LINK_CURTRF_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 223,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "상위층전달멀티캐스트패킷수",
+                "data_type": "INTEGER",
+                "column_nm": "INMULTICASTPKTS"
+            },
+            {
+                "table_nm": "TB_LINK_CURTRF_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 224,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "상위층전달유니캐스트이외패킷수",
+                "data_type": "INTEGER",
+                "column_nm": "INNUCASTPKTS"
+            },
+            {
+                "table_nm": "TB_LINK_CURTRF_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 225,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "인터페이스수신Octet수",
+                "data_type": "INTEGER",
+                "column_nm": "INOCTETS"
+            },
+            {
+                "table_nm": "TB_LINK_CURTRF_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 226,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "수신PPS",
+                "data_type": "INTEGER",
+                "column_nm": "INPPS"
+            },
+            {
+                "table_nm": "TB_LINK_CURTRF_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 227,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "입력PPS임계치적용등급",
+                "data_type": "VARCHAR",
+                "column_nm": "INPPSDEGREE"
+            },
+            {
+                "table_nm": "TB_LINK_CURTRF_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 228,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "입력PPS하한임계치유격값",
+                "data_type": "INTEGER",
+                "column_nm": "INPPSLOWERDELTA"
+            },
+            {
+                "table_nm": "TB_LINK_CURTRF_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 229,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "수신PPS누적평균값",
+                "data_type": "INTEGER",
+                "column_nm": "INPPSREFERENCE"
+            },
+            {
+                "table_nm": "TB_LINK_CURTRF_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 230,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "입력PPS상한임계치유격값",
+                "data_type": "INTEGER",
+                "column_nm": "INPPSUPPERDELTA"
+            },
+            {
+                "table_nm": "TB_LINK_CURTRF_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 231,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "상위층전달유니캐스트패킷수",
+                "data_type": "INTEGER",
+                "column_nm": "INUCASTPKTS"
+            },
+            {
+                "table_nm": "TB_LINK_CURTRF_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 232,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "입출력PPS비율",
+                "data_type": "INTEGER",
+                "column_nm": "IOPPSRATE"
+            },
+            {
+                "table_nm": "TB_LINK_CURTRF_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 233,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "링크트래픽임계치인덱스",
+                "data_type": "INTEGER",
+                "column_nm": "LINK_THRESHOLD_INDX"
+            },
+            {
+                "table_nm": "TB_LINK_CURTRF_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 234,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "출력평균패킷크기",
+                "data_type": "INTEGER",
+                "column_nm": "OUTAVGPKTSIZE"
+            },
+            {
+                "table_nm": "TB_LINK_CURTRF_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 235,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "출력평균패킷크기임계치적용등급",
+                "data_type": "VARCHAR",
+                "column_nm": "OUTAVGPKTSIZEDEGREE"
+            },
+            {
+                "table_nm": "TB_LINK_CURTRF_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 236,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "출력평균패킷크기하한임계치유격값",
+                "data_type": "INTEGER",
+                "column_nm": "OUTAVGPKTSIZELOWERDELTA"
+            },
+            {
+                "table_nm": "TB_LINK_CURTRF_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 237,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "출력평균패킷크기누적평균값",
+                "data_type": "INTEGER",
+                "column_nm": "OUTAVGPKTSIZEREFERENCE"
+            },
+            {
+                "table_nm": "TB_LINK_CURTRF_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 238,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "출력평균패킷크기상한임계치유격값",
+                "data_type": "INTEGER",
+                "column_nm": "OUTAVGPKTSIZEUPPERDELTA"
+            },
+            {
+                "table_nm": "TB_LINK_CURTRF_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 239,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "송신BPS",
+                "data_type": "INTEGER",
+                "column_nm": "OUTBPS"
+            },
+            {
+                "table_nm": "TB_LINK_CURTRF_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 240,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "출력패킷변동율임계치적용등급",
+                "data_type": "VARCHAR",
+                "column_nm": "OUTBPSDEGREE"
+            },
+            {
+                "table_nm": "TB_LINK_CURTRF_DTL",
+                "update_time": "2023-10-09 20:07:10",
+                "update_user": "SYSTEM",
+                "metadata_seq": 241,
+                "create_time": "2023-10-09 20:07:10",
+                "metadata_desc": "출력패킷변동율하한임계치유격값",
+                "data_type": "INTEGER",
+                "column_nm": "OUTBPSLOWERDELTA"
+            },
+            {
+                "table_nm": "TB_LINK_CURTRF_DTL",
+                "update_time": "2023-10-09 20:07:11",
+                "update_user": "SYSTEM",
+                "metadata_seq": 242,
+                "create_time": "2023-10-09 20:07:11",
+                "metadata_desc": "송신BPS누적평균값",
+                "data_type": "INTEGER",
+                "column_nm": "OUTBPSREFERENCE"
+            },
+            {
+                "table_nm": "TB_LINK_CURTRF_DTL",
+                "update_time": "2023-10-09 20:07:11",
+                "update_user": "SYSTEM",
+                "metadata_seq": 243,
+                "create_time": "2023-10-09 20:07:11",
+                "metadata_desc": "출력패킷변동율상한임계치유격값",
+                "data_type": "INTEGER",
+                "column_nm": "OUTBPSUPPERDELTA"
+            },
+            {
+                "table_nm": "TB_LINK_CURTRF_DTL",
+                "update_time": "2023-10-09 20:07:11",
+                "update_user": "SYSTEM",
+                "metadata_seq": 244,
+                "create_time": "2023-10-09 20:07:11",
+                "metadata_desc": "상위계층프로토콜요구전달브로드캐스트패킷수",
+                "data_type": "INTEGER",
+                "column_nm": "OUTBROADCASTPKTS"
+            },
+            {
+                "table_nm": "TB_LINK_CURTRF_DTL",
+                "update_time": "2023-10-09 20:07:11",
+                "update_user": "SYSTEM",
+                "metadata_seq": 245,
+                "create_time": "2023-10-09 20:07:11",
+                "metadata_desc": "미전송패킷수",
+                "data_type": "INTEGER",
+                "column_nm": "OUTDISCARDS"
+            },
+            {
+                "table_nm": "TB_LINK_CURTRF_DTL",
+                "update_time": "2023-10-09 20:07:11",
+                "update_user": "SYSTEM",
+                "metadata_seq": 246,
+                "create_time": "2023-10-09 20:07:11",
+                "metadata_desc": "패킷에러미전송패킷수",
+                "data_type": "INTEGER",
+                "column_nm": "OUTERRORS"
+            },
+            {
+                "table_nm": "TB_LINK_CURTRF_DTL",
+                "update_time": "2023-10-09 20:07:11",
+                "update_user": "SYSTEM",
+                "metadata_seq": 247,
+                "create_time": "2023-10-09 20:07:11",
+                "metadata_desc": "인터페이스RateLimitSpeed출력사용률",
+                "data_type": "INTEGER",
+                "column_nm": "OUTIFLIMITUSAGERATE"
+            },
+            {
+                "table_nm": "TB_LINK_CURTRF_DTL",
+                "update_time": "2023-10-09 20:07:11",
+                "update_user": "SYSTEM",
+                "metadata_seq": 248,
+                "create_time": "2023-10-09 20:07:11",
+                "metadata_desc": "송신패킷인터페이스이용율",
+                "data_type": "INTEGER",
+                "column_nm": "OUTIFUSAGERATE"
+            },
+            {
+                "table_nm": "TB_LINK_CURTRF_DTL",
+                "update_time": "2023-10-09 20:07:11",
+                "update_user": "SYSTEM",
+                "metadata_seq": 249,
+                "create_time": "2023-10-09 20:07:11",
+                "metadata_desc": "출력인터페이스이용율임계치적용등급",
+                "data_type": "VARCHAR",
+                "column_nm": "OUTIFUSAGERATEDEGREE"
+            },
+            {
+                "table_nm": "TB_LINK_CURTRF_DTL",
+                "update_time": "2023-10-09 20:07:11",
+                "update_user": "SYSTEM",
+                "metadata_seq": 250,
+                "create_time": "2023-10-09 20:07:11",
+                "metadata_desc": "출력인터페이스이용율하한임계치유격값",
+                "data_type": "INTEGER",
+                "column_nm": "OUTIFUSAGERATELOWERDELTA"
+            },
+            {
+                "table_nm": "TB_LINK_CURTRF_DTL",
+                "update_time": "2023-10-09 20:07:11",
+                "update_user": "SYSTEM",
+                "metadata_seq": 251,
+                "create_time": "2023-10-09 20:07:11",
+                "metadata_desc": "송신패킷인터페이스이용율누적평균값",
+                "data_type": "INTEGER",
+                "column_nm": "OUTIFUSAGERATEREFERENCE"
+            }
+        ]
+    },
+    "config": {
+        "param": {
+            "table_nm": "",
+            "column_nm": "",
+            "metadata_desc": "",
+            "limit": 50,
+            "page": 5
+        },
+        "receivedTime": "2024-04-03 09:05:53.784",
+        "url": "/selectList/SELECT_DATA_SET_LIST",
+        "cmd": "{\"url\": \"/selectList/SELECT_DATA_SET_LIST\", \"sqlId\": \"\", \"param\": \"{\\\"table_nm\\\": \\\"\\\", \\\"column_nm\\\": \\\"\\\", \\\"metadata_desc\\\": \\\"\\\", \\\"limit\\\": 50, \\\"page\\\": 5}\"}",
+        "duration": 43,
+        "jsonFileName": "SELECTDATASETLIST_limit50page5.json",
+        "oldJsonFileName": "L1NFTEVDVF9EQVRBX1NFVF9MSVNU_fHx8NTB8NQ.json"
+    }
+}

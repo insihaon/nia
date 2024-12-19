@@ -1,0 +1,55 @@
+{
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [],
+        "total": 1,
+        "result": {
+            "status": true,
+            "message": "Interface Config/Read Complete.",
+            "data": [
+                {
+                    "secondary": {
+                        "secIpAddr": "116.89.164.161/28"
+                    },
+                    "ifName": "xe19",
+                    "description": "NREN-SE_Univ_MedL2 1G 02018888-6763",
+                    "duplex": "full",
+                    "aclInterface": {
+                        "aclIntfTypeList": {
+                            "ifAclType": "ip",
+                            "aclIntfDirList": {
+                                "ifAclDir": "out",
+                                "ifAclName": "xe19-block-out"
+                            }
+                        }
+                    },
+                    "ipAddr": "210.114.95.65/26",
+                    "speed": "auto-1g",
+                    "loadInterval": 30,
+                    "mtu": 9216,
+                    "equip_ip": [
+                        {
+                            "ip": "210.114.95.65/26"
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/nia/ipsdn",
+        "urlOrigin": "/nia/ipsdn",
+        "params": null,
+        "data": "{\"servicePath\":\"config/interfaces\",\"param\":\"nodename=seoul-5812&ifname=xe19\",\"encrypt\":\"2Iu4fn3XqOFohXWGRTw=\"}",
+        "cmd": "{ \"url\": \"/nia/ipsdn\", \"sqlId\": \"\", \"param\": {\"servicePath\":\"config/interfaces\",\"param\":\"nodename=seoul-5812&ifname=xe19\",\"encrypt\":\"2Iu4fn3XqOFohXWGRTw=\"} }",
+        "requestTime": "2024-12-13 22:11:22.508",
+        "responseTime": "2024-12-13 22:11:22.879",
+        "duration": 371,
+        "jsonFileName": "niaipsdn_servicconfiginteparamnodenamese.json"
+    }
+}

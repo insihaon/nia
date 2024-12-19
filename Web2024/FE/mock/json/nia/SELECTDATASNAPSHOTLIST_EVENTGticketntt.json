@@ -1,0 +1,63 @@
+{
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [
+            "SELECT\n            TITLE\n            , TO_CHAR(START_TIME,  'YYYY-MM-DD HH24:MI:SS') AS START_TIME\n            , TO_CHAR(END_TIME, 'YYYY-MM-DD HH24:MI:SS') AS END_TIME\n            , EVENTNO\n        FROM rca.tb_fault_event\n        WHERE EVENT_GB='ticket-ntt'\n        ORDER BY EVENTNO::INT DESC"
+        ],
+        "total": 6,
+        "result": [
+            {
+                "start_time": "2024-10-31 00:00:00",
+                "end_time": "2024-10-31 23:59:59",
+                "title": "유해트래픽",
+                "eventno": "356"
+            },
+            {
+                "start_time": "2024-03-22 00:00:00",
+                "end_time": "2024-03-22 23:55:00",
+                "title": "test",
+                "eventno": "341"
+            },
+            {
+                "start_time": "2024-02-22 01:00:00",
+                "end_time": "2024-02-22 01:05:00",
+                "title": "test1",
+                "eventno": "320"
+            },
+            {
+                "start_time": "2024-02-22 01:00:00",
+                "end_time": "2024-02-22 01:05:00",
+                "title": "test1",
+                "eventno": "316"
+            },
+            {
+                "start_time": "2023-07-01 00:00:00",
+                "end_time": "2023-07-05 23:59:59",
+                "title": "유해트래픽_데이터스냅샷_20230705",
+                "eventno": "313"
+            },
+            {
+                "start_time": "2022-11-29 00:00:00",
+                "end_time": "2022-11-29 23:59:59",
+                "title": "테스트1129_유해",
+                "eventno": "161"
+            }
+        ]
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/selectList/SELECT_DATA_SNAPSHOT_LIST",
+        "urlOrigin": "/selectList/SELECT_DATA_SNAPSHOT_LIST",
+        "params": null,
+        "data": "{\"EVENT_GB\":\"ticket-ntt\",\"encrypt\":\"pKoTV3bPKq2HoSOzkh4=\"}",
+        "cmd": "{ \"url\": \"/selectList/SELECT_DATA_SNAPSHOT_LIST\", \"sqlId\": \"SELECT_DATA_SNAPSHOT_LIST\", \"param\": {\"EVENT_GB\":\"ticket-ntt\",\"encrypt\":\"pKoTV3bPKq2HoSOzkh4=\"} }",
+        "requestTime": "2024-12-13 22:20:56.663",
+        "responseTime": "2024-12-13 22:20:56.714",
+        "duration": 51,
+        "jsonFileName": "SELECTDATASNAPSHOTLIST_EVENTGticketntt.json"
+    }
+}

@@ -1,0 +1,111 @@
+{
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [
+            "WITH \n        series AS (\n            SELECT generate_series (\n                DATE_TRUNC('year', TO_DATE('2024-12-13T15:00:00.000Z', 'YYYY')::date),\n                DATE_TRUNC('year', TO_DATE('2024-12-13T15:00:00.000Z', 'YYYY')::date) + ('1 ' || 'year')::INTERVAL - ('1 ' || 'month')::INTERVAL,\n            ('1 '|| 'month')::INTERVAL\n            ) AS series_time\n        )\n        SELECT\n            TO_CHAR(series.series_time, 'YYYY-MM') AS series_time,\n            COALESCE(COUNT(CASE WHEN TPD.self_process_group IN ('SO') THEN 1 END), 0) AS SO_TOTALCOUNT,\n            COALESCE(COUNT(CASE WHEN TPD.self_process_group IN ('SO') AND TPD.clos_type = 'A' AND TPD.clos_status = 'Y' THEN 1 END), 0) AS SO_COUNT,\n            COALESCE(COUNT(CASE WHEN TPD.self_process_group IN ('ST') THEN 1 END), 0) AS ST_TOTALCOUNT,\n            COALESCE(COUNT(CASE WHEN TPD.self_process_group IN ('ST') AND TPD.clos_type = 'A' AND TPD.clos_status = 'Y' THEN 1 END), 0) AS ST_COUNT\n        FROM series\n        LEFT JOIN nia.tb_auto_treat_process_dtl TPD ON DATE_TRUNC('month', TPD.occur_time) = series.series_time\n        GROUP BY series_time\n        ORDER BY series_time"
+        ],
+        "total": 12,
+        "result": [
+            {
+                "so_count": 11407,
+                "so_totalcount": 11407,
+                "series_time": "2024-01",
+                "st_count": 30,
+                "st_totalcount": 192
+            },
+            {
+                "so_count": 14484,
+                "so_totalcount": 14486,
+                "series_time": "2024-02",
+                "st_count": 278,
+                "st_totalcount": 278
+            },
+            {
+                "so_count": 7931,
+                "so_totalcount": 7964,
+                "series_time": "2024-03",
+                "st_count": 180,
+                "st_totalcount": 180
+            },
+            {
+                "so_count": 747,
+                "so_totalcount": 751,
+                "series_time": "2024-04",
+                "st_count": 201,
+                "st_totalcount": 201
+            },
+            {
+                "so_count": 271,
+                "so_totalcount": 271,
+                "series_time": "2024-05",
+                "st_count": 246,
+                "st_totalcount": 246
+            },
+            {
+                "so_count": 318,
+                "so_totalcount": 318,
+                "series_time": "2024-06",
+                "st_count": 149,
+                "st_totalcount": 149
+            },
+            {
+                "so_count": 6,
+                "so_totalcount": 6,
+                "series_time": "2024-07",
+                "st_count": 311,
+                "st_totalcount": 311
+            },
+            {
+                "so_count": 22,
+                "so_totalcount": 22,
+                "series_time": "2024-08",
+                "st_count": 38416,
+                "st_totalcount": 38416
+            },
+            {
+                "so_count": 310,
+                "so_totalcount": 312,
+                "series_time": "2024-09",
+                "st_count": 877,
+                "st_totalcount": 877
+            },
+            {
+                "so_count": 228,
+                "so_totalcount": 229,
+                "series_time": "2024-10",
+                "st_count": 5623,
+                "st_totalcount": 5623
+            },
+            {
+                "so_count": 242,
+                "so_totalcount": 242,
+                "series_time": "2024-11",
+                "st_count": 1379,
+                "st_totalcount": 2996
+            },
+            {
+                "so_count": 71,
+                "so_totalcount": 71,
+                "series_time": "2024-12",
+                "st_count": 2,
+                "st_totalcount": 4
+            }
+        ]
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/selectList/SELECT_SELF_PROCESS_STATISTICS",
+        "urlOrigin": "/selectList/SELECT_SELF_PROCESS_STATISTICS",
+        "params": null,
+        "data": "{\"STATISTICS_TYPE\":\"month\",\"SERIES_TYPE\":\"year\",\"DATE\":\"2024-12-13T15:00:00.000Z\",\"encrypt\":\"k2CbakIT/vLUX3qNQ00=\"}",
+        "cmd": "{ \"url\": \"/selectList/SELECT_SELF_PROCESS_STATISTICS\", \"sqlId\": \"SELECT_SELF_PROCESS_STATISTICS\", \"param\": {\"STATISTICS_TYPE\":\"month\",\"SERIES_TYPE\":\"year\",\"DATE\":\"2024-12-13T15:00:00.000Z\",\"encrypt\":\"k2CbakIT/vLUX3qNQ00=\"} }",
+        "requestTime": "2024-12-13 22:08:55.403",
+        "responseTime": "2024-12-13 22:08:55.551",
+        "duration": 149,
+        "jsonFileName": "SELECTSELFPROCESSSTATISTICS_STATISmonthSERIESyearDATE20241213T1.json"
+    }
+}
