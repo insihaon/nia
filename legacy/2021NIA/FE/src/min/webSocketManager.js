@@ -294,17 +294,16 @@ class WebSocketManager {
   }
 
   addEventListener(channelName, eventHandler, owner) {
-    if (!this.isConnect()) return
-    var listener = {
-      channelName,
-      eventHandler,
-      owner
-    }
-
     if (!this.stompClient) {
       error('ws addEventListener error: stompClient=', this.stompClient)
       this.waitingEventListeners.push(listener)
       return
+    }
+
+    var listener = {
+      channelName,
+      eventHandler,
+      owner
     }
 
     if (this.isSubscribed(channelName)) {
