@@ -89,12 +89,14 @@
       </table>
     </div>
     <div class="popupContentTableBottom">
-      <template v-if="ownerYn === 'Y'">
+      <template v-if="ownerYn === 'Y' && isShowBtn">
         <template v-if="adminYn === 'Y'">
-          <el-button v-if="isShowBtn" type="primary" size="small" round @click="fnCancelBtnClick()">반려</el-button>
-          <el-button v-if="isShowBtn" type="primary" size="small" round @click="fnUpdateconfirmBtnClick()">승인</el-button>
+          <el-button type="primary" size="small" round @click="fnCancelBtnClick()">반려</el-button>
+          <el-button type="primary" size="small" round @click="fnUpdateconfirmBtnClick()">승인</el-button>
         </template>
-        <el-button v-if="isShowBtn" type="primary" size="small" round @click="fnDeleteBtnClick()">신청취소</el-button>
+        <template v-if="adminYn !== 'Y'">
+          <el-button type="primary" size="small" round @click="fnDeleteBtnClick()">신청취소</el-button>
+        </template>
       </template>
       <el-button type="primary" size="small" icon="el-icon-close" round @click="close()">{{ $t('exit') }}</el-button>
     </div>

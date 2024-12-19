@@ -1,7 +1,7 @@
 {
   "__body": {
     "result": {
-      "totalCount": 605,
+      "totalCount": 619,
       "data": [
         {
           "searchBgnDe": "",
@@ -52,7 +52,7 @@
           "afterSsvcObjCd": "R03169",
           "afterSsvcObjNm": "북전주국사",
           "progressStatus": "nod001",
-          "progressStatusNm": "반려",
+          "progressStatusNm": "접수",
           "sUserNm": "전필권",
           "dCreateDt": 1649668885842,
           "dCompleteDt": 1649668897000,
@@ -116,7 +116,7 @@
           "afterSsvcGroupNm": "IDC운용센터",
           "afterSsvcObjCd": "000904",
           "afterSsvcObjNm": "강남IDC",
-          "progressStatus": "nod001",
+          "progressStatus": "nod002",
           "progressStatusNm": "승인",
           "sUserNm": "선용현",
           "dCreateDt": 1650442102853,
@@ -724,18 +724,21 @@
   "__config": {
     "url": "/opermgmt/nodemgmt/viewListNode.model",
     "param": {
+      "sortType": "dcreate_dt",
+      "sortOrdr": "DESC",
       "pageIndex": 1,
-      "pageUnit": 0,
+      "pageUnit": 10,
       "pageSize": 0,
       "firstIndex": 1,
       "lastIndex": 10,
       "recordCountPerPage": 10,
       "rowNo": 0,
-      "url": "/opermgmt/nodemgmt/viewListNode.model"
+      "url": "/opermgmt/nodemgmt/viewListNode.model",
+      "progressStatus": "nod001"
     },
-    "receivedTime": "2024-08-05 10:13:07.710",
-    "duration": 218,
-    "filename": "b3Blcm1nbXQvbm9kZW1nbXQvdmlld0xpc3ROb2RlLm1vZGVs_MXwwfDB8MXwxMHwxMHwwfC9vcGVybWdtdC8.json",
-    "fetch": "fetch('/opermgmt/nodemgmt/viewListNode.model', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{\"pageIndex\":1,\"pageUnit\":0,\"pageSize\":0,\"firstIndex\":1,\"lastIndex\":10,\"recordCountPerPage\":10,\"rowNo\":0,\"url\":\"/opermgmt/nodemgmt/viewListNode.model\"}', 'method': 'POST' })"
+    "receivedTime": "2024-12-18 10:20:50.183",
+    "duration": 296,
+    "filename": "b3Blcm1nbXQvbm9kZW1nbXQvdmlld0xpc3ROb2RlLm1vZGVs_ZGNyZWF0ZV9kdHxERVNDfDF8MTB8MHwxfDEwfDEwfDB8L29wZXJtZ210L3xub2QwMDE.json",
+    "fetch": "success-fetch('/opermgmt/nodemgmt/viewListNode.model', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{\"sortType\":\"dcreate_dt\",\"sortOrdr\":\"DESC\",\"pageIndex\":1,\"pageUnit\":10,\"pageSize\":0,\"firstIndex\":1,\"lastIndex\":10,\"recordCountPerPage\":10,\"rowNo\":0,\"url\":\"/opermgmt/nodemgmt/viewListNode.model\",\"progressStatus\":\"nod001\"}', 'method': 'POST' })"
   }
 }

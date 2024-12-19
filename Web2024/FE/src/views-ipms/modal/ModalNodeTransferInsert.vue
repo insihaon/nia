@@ -265,6 +265,9 @@ export default {
       this.domElement.maxWidth = 1200
     },
     onOpen(model, actionMode) {
+      this.searchWrd = ''
+      this.pagination = this.setDefaultPagination()
+      this.pagination.pageSize = 5
     },
     onClose() { },
     async fnSelectListIpAssignMst() {

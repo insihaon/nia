@@ -4,18 +4,21 @@
       {{ label }}
     </th>
     <td>
-      <el-select
-        v-model="value"
-        size="small"
-        @change="handleChange()"
-      >
-        <el-option
-          v-for="(option, i) in options"
-          :key="i"
-          :label="option.label"
-          :value="option.value"
-        />
-      </el-select>
+      <div :class="{ [name]: true }">
+        <el-select
+          v-model="value"
+          size="small"
+          popper-class="applyStatus"
+          @change="handleChange()"
+        >
+          <el-option
+            v-for="(option, i) in options"
+            :key="i"
+            :label="option.label"
+            :value="option.value"
+          />
+        </el-select>
+      </div>
     </td>
   </fragment>
 </template>

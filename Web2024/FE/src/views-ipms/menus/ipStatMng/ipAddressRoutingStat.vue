@@ -100,9 +100,9 @@ export default {
       try {
         this.loading = true
         const res = await apiRequestModel(ipmsModelApis.viewListIntgrmSvcStat, parameter)
-        if (res.result.data.resultStatus === 'SUCCESS') {
-          this.svcList = JSON.parse(res.result.data.svcList)
-          this.resultList = JSON.parse(res.result.data.result)
+        if (res.result.resultStatus === 'SUCCESS') {
+          this.svcList = JSON.parse(res.result.svcList)
+          this.resultList = JSON.parse(res.result.data)
           this.columns = [].concat(...getStatColumn('routing', this.svcList))
         }
       } catch (error) {
