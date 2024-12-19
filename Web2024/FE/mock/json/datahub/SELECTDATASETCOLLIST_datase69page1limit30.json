@@ -1,0 +1,47 @@
+{
+    "__body": {
+        "success": true,
+        "encrypt": false,
+        "sql": "SELECT  \n        TDRCM.DATASET_ID\n        ,TDRCM.TABLE_NM\n        ,TDRCM.COLUMN_NM\n        ,TDRCM.DATA_TYPE\n        ,TO_CHAR(TDRCM.CREATE_TIME, 'YYYY-MM-DD HH24:MI:SS') AS CREATE_TIME\n        ,TO_CHAR(TDRM.UPDATE_TIME, 'YYYY-MM-DD HH24:MI:SS') AS UPDATE_TIME\n        ,TDRCM.PK_YN\n        ,TDRCM.NULL_YN\n        ,EXEC_MODE_CD\n        ,FIXED_DELAY\n        FROM DATAHUB.TB_DATASET_REQ_COL_MST TDRCM\n        INNER JOIN DATAHUB.TB_DATASET_REQ_MST TDRM\n        ON TDRCM.DATASET_ID = TDRM.DATASET_ID \n    WHERE 1=1\n        AND TDRCM.DATASET_ID = 69",
+        "total": 2,
+        "result": [
+            {
+                "table_nm": "TB_ORG_MST",
+                "update_time": "2023-09-11 19:47:52",
+                "create_time": "2023-09-12 18:25:53",
+                "exec_mode_cd": "B",
+                "pk_yn": null,
+                "null_yn": null,
+                "dataset_id": 69,
+                "data_type": "VARCHAR2",
+                "column_nm": "MODIFYUSER_ID",
+                "fixed_delay": null
+            },
+            {
+                "table_nm": "TB_ORG_MST",
+                "update_time": "2023-09-11 19:47:52",
+                "create_time": "2023-09-12 18:25:53",
+                "exec_mode_cd": "B",
+                "pk_yn": null,
+                "null_yn": null,
+                "dataset_id": 69,
+                "data_type": "DATE",
+                "column_nm": "REG_TIME",
+                "fixed_delay": null
+            }
+        ]
+    },
+    "config": {
+        "param": {
+            "dataset_id": 69,
+            "page": 1,
+            "limit": 30
+        },
+        "receivedTime": "2024-04-03 09:06:03.048",
+        "url": "/selectList/SELECT_DATA_SET_COL_LIST",
+        "cmd": "{\"url\": \"/selectList/SELECT_DATA_SET_COL_LIST\", \"sqlId\": \"\", \"param\": \"{\\\"dataset_id\\\": 69, \\\"page\\\": 1, \\\"limit\\\": 30}\"}",
+        "duration": 40,
+        "jsonFileName": "SELECTDATASETCOLLIST_datase69page1limit30.json",
+        "oldJsonFileName": "L1NFTEVDVF9EQVRBX1NFVF9DT0xfTElTVA_Njl8MXwzMA.json"
+    }
+}
