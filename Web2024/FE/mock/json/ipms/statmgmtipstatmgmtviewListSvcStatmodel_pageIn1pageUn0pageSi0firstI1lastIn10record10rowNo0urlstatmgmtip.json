@@ -6,23 +6,23 @@
       "resultStatus": "SUCCESS"
     }
   },
-    "config": {
-        "url": "/statmgmt/ipstatmgmt/viewListSvcStat.model",
-        "param": {
-            "pageIndex": 1,
-            "pageUnit": 0,
-            "pageSize": 0,
-            "firstIndex": 1,
-            "lastIndex": 10,
-            "recordCountPerPage": 10,
-            "rowNo": 0,
-            "url": "/statmgmt/ipstatmgmt/viewListSvcStat.model"
-        },
-        "receivedTime": "2024-08-06 08:49:36.257",
-        "fetch": "success-fetch('/statmgmt/ipstatmgmt/viewListSvcStat.model', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{\"pageIndex\":1,\"pageUnit\":0,\"pageSize\":0,\"firstIndex\":1,\"lastIndex\":10,\"recordCountPerPage\":10,\"rowNo\":0,\"url\":\"/statmgmt/ipstatmgmt/viewListSvcStat.model\"}', 'method': 'POST' })",
-        "cmd": "{\"url\": \"/statmgmt/ipstatmgmt/viewListSvcStat.model\", \"sqlId\": \"\", \"param\": \"{\\\"pageIndex\\\": 1, \\\"pageUnit\\\": 0, \\\"pageSize\\\": 0, \\\"firstIndex\\\": 1, \\\"lastIndex\\\": 10, \\\"recordCountPerPage\\\": 10, \\\"rowNo\\\": 0, \\\"url\\\": \\\"/statmgmt/ipstatmgmt/viewListSvcStat.model\\\"}\"}",
-        "duration": 2465,
-        "jsonFileName": "statmgmtipstatmgmtviewListSvcStatmodel_pageIn1pageUn0pageSi0firstI1lastIn10record10rowNo0urlstatmgmtip.json",
-        "oldJsonFileName": "c3RhdG1nbXQvaXBzdGF0bWdtdC92aWV3TGlzdFN2Y1N0YXQubW9kZWw_MXwwfDB8MXwxMHwxMHwwfC9zdGF0bWdtdC8.json"
-    }
+  "config": {
+    "url": "/statmgmt/ipstatmgmt/viewListSvcStat.model",
+    "param": {
+        "pageIndex": 1,
+        "pageUnit": 0,
+        "pageSize": 0,
+        "firstIndex": 1,
+        "lastIndex": 10,
+        "recordCountPerPage": 10,
+        "rowNo": 0,
+        "url": "/statmgmt/ipstatmgmt/viewListSvcStat.model"
+    },
+    "receivedTime": "2024-08-06 08:49:36.257",
+    "fetch": "success-fetch('/statmgmt/ipstatmgmt/viewListSvcStat.model', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{\"pageIndex\":1,\"pageUnit\":0,\"pageSize\":0,\"firstIndex\":1,\"lastIndex\":10,\"recordCountPerPage\":10,\"rowNo\":0,\"url\":\"/statmgmt/ipstatmgmt/viewListSvcStat.model\"}', 'method': 'POST' })",
+    "cmd": "{\"url\": \"/statmgmt/ipstatmgmt/viewListSvcStat.model\", \"sqlId\": \"\", \"param\": \"{\\\"pageIndex\\\": 1, \\\"pageUnit\\\": 0, \\\"pageSize\\\": 0, \\\"firstIndex\\\": 1, \\\"lastIndex\\\": 10, \\\"recordCountPerPage\\\": 10, \\\"rowNo\\\": 0, \\\"url\\\": \\\"/statmgmt/ipstatmgmt/viewListSvcStat.model\\\"}\"}",
+    "duration": 2465,
+    "jsonFileName": "statmgmtipstatmgmtviewListSvcStatmodel_pageIn1pageUn0pageSi0firstI1lastIn10record10rowNo0urlstatmgmtip.json",
+    "oldJsonFileName": "c3RhdG1nbXQvaXBzdGF0bWdtdC92aWV3TGlzdFN2Y1N0YXQubW9kZWw_MXwwfDB8MXwxMHwxMHwwfC9zdGF0bWdtdC8.json"
+  }
 }
