@@ -56,10 +56,10 @@
         }
     },
     "config": {
-        "url": "http://localhost:8070/setting",
+        "url": "/setting",
         "param": {},
         "receivedTime": "2024-04-03 13:12:04.347",
-        "cmd": "{\"url\": \"http://localhost:8070/setting\", \"sqlId\": \"\", \"param\": null}",
+        "cmd": "{\"url\": \"/setting\", \"sqlId\": \"\", \"param\": null}",
         "duration": 24,
         "jsonFileName": "setting_.json",
         "oldJsonFileName": "c2V0dGluZw_.json"

@@ -531,12 +531,12 @@
         }
     },
     "config": {
-        "url": "http://localhost:8070/selectOneFile",
+        "url": "/selectOneFile",
         "param": {
             "sqlId": "SELECT_NEA_LIST.json"
         },
         "receivedTime": "2024-04-03 09:06:04.767",
-        "cmd": "{\"url\": \"http://localhost:8070/selectOneFile\", \"sqlId\": \"\", \"param\": \"{\\\"sqlId\\\": \\\"SELECT_NEA_LIST.json\\\"}\"}",
+        "cmd": "{\"url\": \"/selectOneFile\", \"sqlId\": \"\", \"param\": \"{\\\"sqlId\\\": \\\"SELECT_NEA_LIST.json\\\"}\"}",
         "duration": 27,
         "jsonFileName": "File_sqlIdSELECTNEAL.json",
         "oldJsonFileName": "RmlsZQ_U0VMRUNUX05FQQ.json"
