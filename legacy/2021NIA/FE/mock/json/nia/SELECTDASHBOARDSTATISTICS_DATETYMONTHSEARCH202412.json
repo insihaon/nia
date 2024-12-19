@@ -1,0 +1,43 @@
+{
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [
+            "SELECT  COALESCE(SUM(TRANS_PERF_CNT), 0)AS TRANS_PERF_CNT,\n                COALESCE(SUM(TRANS_ALARM_CNT), 0)AS TRANS_ALARM_CNT,\n                COALESCE(SUM(IP_RESOURCE_CNT), 0)AS IP_RESOURCE_CNT,\n                COALESCE(SUM(IP_ALARM_CNT), 0)AS IP_ALARM_CNT,\n                COALESCE(SUM(IP_PERF_CNT), 0)AS IP_PERF_CNT,\n                COALESCE(SUM(IP_SFLOW_CNT), 0)AS IP_SFLOW_CNT,\n                COALESCE(SUM(TICKET_RT_CNT), 0)AS TICKET_RT_CNT,\n                COALESCE(SUM(TICKET_ATT_CNT), 0)AS TICKET_ATT_CNT,\n                COALESCE(SUM(TICKET_NTT_CNT), 0)AS TICKET_NTT_CNT,\n                COALESCE(SUM(TICKET_PF_CNT), 0)AS TICKET_PF_CNT,\n                COALESCE(SUM(LINK_TOTAL_RESOURCE_CNT), 0) AS LINK_TOTAL_RESOURCE_CNT,\n                COALESCE(SUM(LINK_TOTAL_ALARM_CNT), 0) AS LINK_TOTAL_ALARM_CNT,\n                COALESCE(SUM(LINK_IP_PERF_CNT), 0) AS LINK_IP_PERF_CNT,\n                COALESCE(SUM(LINK_TRANS_PERF_CNT), 0) AS LINK_TRANS_PERF_CNT\n        FROM    nia.tb_opsts\n        WHERE 1=1\n            AND OPSTS_TIME   =   '2024-12'\n            AND OPSTS_GB   =   'MONTH'"
+        ],
+        "total": 1,
+        "result": [
+            {
+                "trans_alarm_cnt": 0,
+                "link_ip_perf_cnt": 0,
+                "link_total_alarm_cnt": 0,
+                "ticket_ntt_cnt": 0,
+                "ticket_att_cnt": 0,
+                "ip_alarm_cnt": 0,
+                "ticket_rt_cnt": 0,
+                "link_total_resource_cnt": 0,
+                "trans_perf_cnt": 0,
+                "ip_resource_cnt": 0,
+                "ticket_pf_cnt": 0,
+                "ip_perf_cnt": 0,
+                "ip_sflow_cnt": 0,
+                "link_trans_perf_cnt": 0
+            }
+        ]
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/selectList/SELECT_DASHBOARD_STATISTICS",
+        "urlOrigin": "/selectList/SELECT_DASHBOARD_STATISTICS",
+        "params": null,
+        "data": "{\"DATE_TYPE\":\"MONTH\",\"SEARCH_DATE\":\"2024-12\",\"encrypt\":\"VwL1n9U2F0JpApbptZE=\"}",
+        "cmd": "{ \"url\": \"/selectList/SELECT_DASHBOARD_STATISTICS\", \"sqlId\": \"SELECT_DASHBOARD_STATISTICS\", \"param\": {\"DATE_TYPE\":\"MONTH\",\"SEARCH_DATE\":\"2024-12\",\"encrypt\":\"VwL1n9U2F0JpApbptZE=\"} }",
+        "requestTime": "2024-12-13 22:19:09.549",
+        "responseTime": "2024-12-13 22:19:09.588",
+        "duration": 39,
+        "jsonFileName": "SELECTDASHBOARDSTATISTICS_DATETYMONTHSEARCH202412.json"
+    }
+}

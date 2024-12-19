@@ -1,0 +1,61 @@
+{
+    "__body": {
+        "searchBgnDe": "",
+        "searchCnd": "",
+        "searchEndDe": "",
+        "searchWrd": "",
+        "sortType": "",
+        "sortOrdr": "",
+        "searchUseYn": "",
+        "searchBgnCd": "",
+        "searchEndCd": "",
+        "pageIndex": 1,
+        "pageUnit": 0,
+        "pageSize": 0,
+        "firstIndex": 21,
+        "lastIndex": 40,
+        "recordCountPerPage": 20,
+        "rowNo": 0,
+        "typeFlag": "",
+        "dcreateDt": null,
+        "screateId": null,
+        "screateNm": null,
+        "dmodifyDt": null,
+        "smodifyId": null,
+        "smodifyNm": null,
+        "commonMsg": "SUCCESS",
+        "screateEmail": null,
+        "smodifyEmail": null,
+        "moveType": "",
+        "moveSearchWrd": "",
+        "moveSipVersionTypeCd": null,
+        "url": null,
+        "menuType": null,
+        "paramMap": null,
+        "nfcltCmdMstSeq": null,
+        "sfcltType": null,
+        "sfcltCmd": null,
+        "npriority": null,
+        "suseYn": null,
+        "delList": null,
+        "ssvcLineTypeCd": null,
+        "ssvcGroupCd": null,
+        "ssvcObjCd": null,
+        "nlvlBasSeq": null,
+        "nlvlMstSeq": null
+    },
+    "config": {
+        "url": "/opermgmt/intgrmgmt/deleteFcltCmdMst.json",
+        "param": {
+            "delList": [
+                "47"
+            ]
+        },
+        "receivedTime": "2024-08-28 13:42:55.784",
+        "fetch": "success-fetch('/opermgmt/intgrmgmt/deleteFcltCmdMst.json', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{\"delList\":[\"47\"]}', 'method': 'POST' })",
+        "cmd": "{\"url\": \"/opermgmt/intgrmgmt/deleteFcltCmdMst.json\", \"sqlId\": \"\", \"param\": \"{\\\"delList\\\": [\\\"47\\\"]}\"}",
+        "duration": 198,
+        "jsonFileName": "opermgmtintgrmgmtdeleteFcltCmdMstjson_delLis47.json",
+        "oldJsonFileName": "b3Blcm1nbXQvaW50Z3JtZ210L2RlbGV0ZUZjbHRDbWRNc3QuanNvbg_NDc.json"
+    }
+}

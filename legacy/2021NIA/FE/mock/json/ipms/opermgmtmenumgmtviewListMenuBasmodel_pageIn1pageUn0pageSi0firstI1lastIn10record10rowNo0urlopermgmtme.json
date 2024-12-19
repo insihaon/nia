@@ -1,0 +1,27 @@
+{
+    "__body": {
+        "result": {
+            "totalCount": 0,
+            "data": null
+        }
+    },
+    "config": {
+        "url": "/opermgmt/menumgmt/viewListMenuBas.model",
+        "param": {
+            "pageIndex": 1,
+            "pageUnit": 0,
+            "pageSize": 0,
+            "firstIndex": 1,
+            "lastIndex": 10,
+            "recordCountPerPage": 10,
+            "rowNo": 0,
+            "url": "/opermgmt/menumgmt/viewListMenuBas.model"
+        },
+        "receivedTime": "2024-08-05 10:28:20.202",
+        "fetch": "success-fetch('/opermgmt/menumgmt/viewListMenuBas.model', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{\"pageIndex\":1,\"pageUnit\":0,\"pageSize\":0,\"firstIndex\":1,\"lastIndex\":10,\"recordCountPerPage\":10,\"rowNo\":0,\"url\":\"/opermgmt/menumgmt/viewListMenuBas.model\"}', 'method': 'POST' })",
+        "cmd": "{\"url\": \"/opermgmt/menumgmt/viewListMenuBas.model\", \"sqlId\": \"\", \"param\": \"{\\\"pageIndex\\\": 1, \\\"pageUnit\\\": 0, \\\"pageSize\\\": 0, \\\"firstIndex\\\": 1, \\\"lastIndex\\\": 10, \\\"recordCountPerPage\\\": 10, \\\"rowNo\\\": 0, \\\"url\\\": \\\"/opermgmt/menumgmt/viewListMenuBas.model\\\"}\"}",
+        "duration": 829,
+        "jsonFileName": "opermgmtmenumgmtviewListMenuBasmodel_pageIn1pageUn0pageSi0firstI1lastIn10record10rowNo0urlopermgmtme.json",
+        "oldJsonFileName": "b3Blcm1nbXQvbWVudW1nbXQvdmlld0xpc3RNZW51QmFzLm1vZGVs_MXwwfDB8MXwxMHwxMHwwfC9vcGVybWdtdC8.json"
+    }
+}

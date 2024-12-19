@@ -36,25 +36,30 @@ const mutations = {
   }
 }
 
+function toString(data) {
+  if (!data) return undefined
+  return typeof params === 'string' ? data : `${JSON.stringify(data)}`
+}
+
+function toObejct(data = {}) {
+  return (typeof params === 'object') ? data : JSON.parse(data)
+}
+
 const actions = {
   addServiceLog({ commit }, response) {
-    const bcnApAddr = store.getters?.server?.bcnApAddr
     const { data, status, config } = response
     const { method, baseURL, url, params, requestTime, urlOrigin, filePath, fileIndex } = config
     const jsonFileName = config.headers.jsonFileName || getJsonfileName2(urlOrigin, config, project)
-
-    const paramString = (typeof params === 'string') ? params : `'${JSON.stringify(params)}'`
-    const fetch = `fetch('${url}', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': ${paramString}, 'method': '${method}' })`
+    // const fetchCmd = `fetch('${url}', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': ${toString(params)}, 'method': '${method}' })`
+    const cmd = `{ "url": "${urlOrigin || url}", "sqlId": "${config.sqlId || ''}", "param": ${toString(toObejct(config.data || config.param))} }`
 
     if (!jsonFileName) return
 
     const log = {
-      bcnApAddr: bcnApAddr,
-      fileIndex,
-      jsonFileName,
       data,
       status,
       config: {
+        fileIndex,
         filePath,
         method,
         baseURL,
@@ -62,11 +67,12 @@ const actions = {
         urlOrigin,
         params: params || null,
         data: config.data || null,
-        fetch
+        cmd,
+        requestTime: moment(requestTime).format('YYYY-MM-DD HH:mm:ss.SSS'),
+        responseTime: moment(Date.now()).format('YYYY-MM-DD HH:mm:ss.SSS'),
+        duration: Date.now() - requestTime,
+        jsonFileName
       },
-      requestTime: moment(requestTime).format('YYYY-MM-DD HH:mm:ss.SSS'),
-      responseTime: moment(Date.now()).format('YYYY-MM-DD HH:mm:ss.SSS'),
-      duration: Date.now() - requestTime
     }
     commit('ADD_SERVICE_LOG', log)
   },
@@ -74,23 +80,19 @@ const actions = {
     if (!error.response) {
       // error.config 로 접근해야 한다.
     }
-    const bcnApAddr = store.getters?.server?.bcnApAddr
     const { data, status, config, message, code } = error?.response || error
     const { method, baseURL, url, params, requestTime, urlOrigin, filePath, fileIndex } = config
-    const jsonFileName = config.headers.jsonFileName || getJsonfileName2(urlOrigin, config)
-
-    const paramString = (typeof params === 'string') ? params : `'${JSON.stringify(params)}'`
-    const fetch = `fetch('${url}', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': ${paramString}, 'method': '${method}' })`
+    const jsonFileName = config.headers.jsonFileName || getJsonfileName2(urlOrigin, config, project)
+    // const fetchCmd = `fetch('${url}', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': ${toString(params)}, 'method': '${method}' })`
+    const cmd = `{ "url": "${urlOrigin || url}", "sqlId": "${config.sqlId || ''}", "param": ${toString(toObejct(config.data || config.param))} }`
 
     if (!jsonFileName) return
 
     const log = {
-      bcnApAddr: bcnApAddr,
-      fileIndex,
-      jsonFileName,
       data: data ?? { 'result': false, message },
       status: status ?? code,
       config: {
+        fileIndex,
         filePath,
         method,
         baseURL,
@@ -98,11 +100,12 @@ const actions = {
         urlOrigin,
         params: params || null,
         data: config.data || null,
-        fetch
+        cmd,
+        requestTime: moment(requestTime).format('YYYY-MM-DD HH:mm:ss.SSS'),
+        responseTime: moment(Date.now()).format('YYYY-MM-DD HH:mm:ss.SSS'),
+        duration: Date.now() - requestTime,
+        jsonFileName
       },
-      requestTime: moment(requestTime).format('YYYY-MM-DD HH:mm:ss.SSS'),
-      responseTime: moment(Date.now()).format('YYYY-MM-DD HH:mm:ss.SSS'),
-      duration: Date.now() - requestTime
     }
     commit('ADD_SERVICE_LOG', log)
   },

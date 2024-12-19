@@ -38,28 +38,26 @@ import com.kt.log4kt.KTLoggerFactory;
 
 import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
 
-
 @Controller
-public class GrantMgmtController  extends CommonController {
-	
-	
+public class GrantMgmtController extends CommonController {
+
 	@Autowired
 	GrantMgmtService grantMgmtService;
-	
-	
+
 	protected KTLogger logger = KTLoggerFactory.getLogger(getClass());
-	
+
 	@RequestMapping(value = "/opermgmt/usermgmt/viewListTbAdmrApvTxn.model", method = RequestMethod.POST)
 	@ResponseBody
 	@EncryptResponse
 	public ModelMap selectListTbAdmrApvTxnVo(@RequestBody TbAdmrApvTxnVo searchVo, ModelMap model,
-			HttpServletRequest request)  {
+			HttpServletRequest request) {
 		TbAdmrApvTxnListVo resultListVo = grantMgmtService.selectListTbAdmrApvTxnVo(searchVo);
 		return createResultList(resultListVo.getTbAdmrApvTxnVos(), resultListVo.getTotalCount());
 	}
+
 	@RequestMapping(value = "/opermgmt/usermgmt/viewListTbAdmrApvTxn.do", method = RequestMethod.POST)
 	public String selectListTbAdmrApvTxnVo(@ModelAttribute("searchVo") TbAdmrApvTxnVo searchVo, ModelMap model,
-			HttpServletRequest request, HttpServletResponse response)  {
+			HttpServletRequest request, HttpServletResponse response) {
 		TbUserAuthTxnVo searchVoClone = new TbUserAuthTxnVo();
 		try {
 			CloneUtil.copyObjectInformation(searchVo, searchVoClone);
@@ -77,22 +75,24 @@ public class GrantMgmtController  extends CommonController {
 		model.addAttribute("searchVoJson", searchVoJson(searchVoClone));
 		return "opermgmt/usermgmt/viewListAdmrTxn";
 	}
-	private ModelMap selectListTbAdmrApvTxnVoModel(@ModelAttribute("searchVo") TbAdmrApvTxnVo searchVo, 
-	HttpServletRequest request) {
+
+	private ModelMap selectListTbAdmrApvTxnVoModel(@ModelAttribute("searchVo") TbAdmrApvTxnVo searchVo,
+			HttpServletRequest request) {
 		ModelMap model = new ModelMap();
 		TbAdmrApvTxnListVo resultListVo = null;
 		try {
-			
-			
-			List<CommonCodeVo> userGradeCds = commonCodeService.selectListCommonCode(CommonCodeUtil.USER_GRADE_CD, null);
+
+			List<CommonCodeVo> userGradeCds = commonCodeService.selectListCommonCode(CommonCodeUtil.USER_GRADE_CD,
+					null);
 			model.addAttribute("userGradeCds", userGradeCds);
-			
-		//	List<TbLvlBasVo>  svcLineLists  = jwtUtil.getSvcLineList(request).getTbLvlBasVos();
-		//	model.addAttribute("svcLineList", svcLineLists);
+
+			// List<TbLvlBasVo> svcLineLists =
+			// jwtUtil.getSvcLineList(request).getTbLvlBasVos();
+			// model.addAttribute("svcLineList", svcLineLists);
 			setPagination(searchVo);
 			resultListVo = grantMgmtService.selectListTbAdmrApvTxnVo(searchVo);
 			resultListVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
-		} catch (ServiceException e){
+		} catch (ServiceException e) {
 			resultListVo = new TbAdmrApvTxnListVo();
 			String msgDesc = tbCmnMstService.selectMsgDesc(e);
 			resultListVo.setCommonMsg(msgDesc);
@@ -109,18 +109,19 @@ public class GrantMgmtController  extends CommonController {
 		model.addAttribute("paginationInfo", paginationInfo);
 		return model;
 	}
-	
+
 	@RequestMapping(value = "/opermgmt/usermgmt/viewInsertAdmrTxn.model", method = RequestMethod.POST)
 	@ResponseBody
 	@EncryptResponse
 	public ModelMap viewInsertTbLvlCdVo(@RequestBody TbAdmrApvTxnVo searchVo, ModelMap model,
-			HttpServletRequest request)  {
+			HttpServletRequest request) {
 		TbAdmrApvTxnVo resultVo = new TbAdmrApvTxnVo();
 		return createResult(resultVo);
 	}
+
 	@RequestMapping(value = "/opermgmt/usermgmt/viewInsertAdmrTxn.ajax", method = RequestMethod.POST)
 	public String viewInsertTbLvlCdVo(@RequestBody TbAdmrApvTxnVo searchVo, ModelMap model,
-			HttpServletRequest request, HttpServletResponse response)  {
+			HttpServletRequest request, HttpServletResponse response) {
 		TbUserAuthTxnVo searchVoClone = new TbUserAuthTxnVo();
 		try {
 			CloneUtil.copyObjectInformation(searchVo, searchVoClone);
@@ -138,18 +139,19 @@ public class GrantMgmtController  extends CommonController {
 		model.addAttribute("searchVoJson", searchVoJson(searchVoClone));
 		return "opermgmt/usermgmt/viewInsertAdmrTxn";
 	}
+
 	private ModelMap viewInsertTbLvlCdVoModel(@RequestBody TbAdmrApvTxnVo searchVo,
-	HttpServletRequest request) {
+			HttpServletRequest request) {
 		ModelMap model = new ModelMap();
 		TbAdmrApvTxnVo tbAdmrApvTxnVo = null;
 		try {
-			
-			
-			List<CommonCodeVo> userGradeCds = commonCodeService.selectListCommonCode(CommonCodeUtil.USER_GRADE_CD, null);
+
+			List<CommonCodeVo> userGradeCds = commonCodeService.selectListCommonCode(CommonCodeUtil.USER_GRADE_CD,
+					null);
 			model.addAttribute("userGradeCds", userGradeCds);
-			//tbLvlCdVo = orgMgmtService.selectTbLvlCdVo(searchVo);
-			//tbLvlCdVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
-		}catch (ServiceException e){
+			// tbLvlCdVo = orgMgmtService.selectTbLvlCdVo(searchVo);
+			// tbLvlCdVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
+		} catch (ServiceException e) {
 			tbAdmrApvTxnVo = new TbAdmrApvTxnVo();
 			String msgDesc = tbCmnMstService.selectMsgDesc(e);
 			tbAdmrApvTxnVo.setCommonMsg(msgDesc);
@@ -157,26 +159,27 @@ public class GrantMgmtController  extends CommonController {
 			tbAdmrApvTxnVo = new TbAdmrApvTxnVo();
 			String msgDesc = tbCmnMstService.selectMsgDesc(new ServiceException("CMN.HIGH.00000"));
 			tbAdmrApvTxnVo.setCommonMsg(msgDesc);
-			//tbLvlCdVo.setTotalCount(0);
+			// tbLvlCdVo.setTotalCount(0);
 		}
-		//model.addAttribute("tbLvlCdVo", tbLvlCdVo);
-		//PaginationInfo paginationInfo = getPaginationInfo();
-		//paginationInfo.setTotalRecordCount(resultListVo.getTotalCount());
-		//model.addAttribute("paginationInfo", paginationInfo);
+		// model.addAttribute("tbLvlCdVo", tbLvlCdVo);
+		// PaginationInfo paginationInfo = getPaginationInfo();
+		// paginationInfo.setTotalRecordCount(resultListVo.getTotalCount());
+		// model.addAttribute("paginationInfo", paginationInfo);
 		return model;
 	}
-	
+
 	@RequestMapping(value = "/opermgmt/grantmgmt/viewListOperTeamAuth.model", method = RequestMethod.POST)
 	@ResponseBody
 	@EncryptResponse
-	public ModelMap selectListOperTeamAuth(@RequestBody TbOperTeamAuthTxnVo searchVo, 
-			HttpServletRequest request, HttpServletResponse response)  {
+	public ModelMap selectListOperTeamAuth(@RequestBody TbOperTeamAuthTxnVo searchVo,
+			HttpServletRequest request, HttpServletResponse response) {
 		TbOperTeamAuthTxnListVo resultListVo = grantMgmtService.selectOperTeamAuthTxnList(searchVo);
 		return createResultList(resultListVo.getTbOperTeamAuthTxnVos(), resultListVo.getTotalCount());
 	}
+
 	@RequestMapping(value = "/opermgmt/grantmgmt/viewListOperTeamAuth.do", method = RequestMethod.POST)
 	public String selectListOperTeamAuth(@ModelAttribute("searchVo") TbOperTeamAuthTxnVo searchVo, ModelMap model,
-			HttpServletRequest request, HttpServletResponse response)  {
+			HttpServletRequest request, HttpServletResponse response) {
 		TbUserAuthTxnVo searchVoClone = new TbUserAuthTxnVo();
 		try {
 			CloneUtil.copyObjectInformation(searchVo, searchVoClone);
@@ -194,17 +197,18 @@ public class GrantMgmtController  extends CommonController {
 		model.addAttribute("searchVoJson", searchVoJson(searchVoClone));
 		return "opermgmt/grantmgmt/viewListOperTeamAuth";
 	}
+
 	private ModelMap selectListOperTeamAuthModel(@ModelAttribute("searchVo") TbOperTeamAuthTxnVo searchVo,
-	HttpServletRequest request) {
+			HttpServletRequest request) {
 		ModelMap model = new ModelMap();
 		TbOperTeamAuthTxnListVo resultListVo = null;
 		try {
-			
+
 			/** 계위 정보 설정 **/
 			TbLvlBasListVo svcLineListVo = jwtUtil.getSvcLineList(request);
 			TbLvlBasListVo centerListVo = null;
 			TbLvlBasListVo nodeListVo = null;
-			if (searchVo.getTbLvlBasVo() !=null  && StringUtils.hasText(searchVo.getTbLvlBasVo().getSsvcLineTypeCd())) {
+			if (searchVo.getTbLvlBasVo() != null && StringUtils.hasText(searchVo.getTbLvlBasVo().getSsvcLineTypeCd())) {
 				TbLvlBasVo searchCenterVo = new TbLvlBasVo();
 				searchCenterVo.setSsvcLineTypeCd(searchVo.getTbLvlBasVo().getSsvcLineTypeCd());
 				centerListVo = jwtUtil.getCenterList(request, searchCenterVo);
@@ -225,15 +229,15 @@ public class GrantMgmtController  extends CommonController {
 				}
 			} else {
 				if (StringUtils.hasText(svcLineListVo.getTbLvlBasVos().get(0).getSsvcLineTypeCd())) {
-					
-					if( searchVo.getTbLvlBasVo() == null)
-					{
+
+					if (searchVo.getTbLvlBasVo() == null) {
 						TbLvlBasVo searchBasVo = new TbLvlBasVo();
 						searchVo.setTbLvlBasVo(searchBasVo);
 					}
 					TbLvlBasVo searchCenterVo = new TbLvlBasVo();
 					searchCenterVo.setSsvcLineTypeCd(svcLineListVo.getTbLvlBasVos().get(0).getSsvcLineTypeCd());
-					searchVo.getTbLvlBasVo().setSsvcLineTypeCd(svcLineListVo.getTbLvlBasVos().get(0).getSsvcLineTypeCd());
+					searchVo.getTbLvlBasVo()
+							.setSsvcLineTypeCd(svcLineListVo.getTbLvlBasVos().get(0).getSsvcLineTypeCd());
 					centerListVo = jwtUtil.getCenterList(request, searchCenterVo);
 					if (StringUtils.hasText(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd())) {
 						searchVo.getTbLvlBasVo().setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
@@ -253,17 +257,16 @@ public class GrantMgmtController  extends CommonController {
 			model.addAttribute("svcLineListVo", svcLineListVo);
 			model.addAttribute("centerListVo", centerListVo);
 			model.addAttribute("nodeListVo", nodeListVo);
-			
+
 			setPagination(searchVo);
-			
-			if(searchVo.getTbLvlBasVo() == null)
-			{
+
+			if (searchVo.getTbLvlBasVo() == null) {
 				TbLvlBasVo tempVo = new TbLvlBasVo();
 				searchVo.setTbLvlBasVo(tempVo);
 			}
 			resultListVo = grantMgmtService.selectOperTeamAuthTxnList(searchVo);
 			resultListVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
-		} catch (ServiceException e){
+		} catch (ServiceException e) {
 			resultListVo = new TbOperTeamAuthTxnListVo();
 			String msgDesc = tbCmnMstService.selectMsgDesc(e);
 			resultListVo.setCommonMsg(msgDesc);
@@ -280,20 +283,18 @@ public class GrantMgmtController  extends CommonController {
 		model.addAttribute("paginationInfo", paginationInfo);
 		return model;
 	}
-	
-	
-	
-	@RequestMapping(value="/opermgmt/grantmgmt/insertAdmrAutTxn.json", method = RequestMethod.POST)
+
+	@RequestMapping(value = "/opermgmt/grantmgmt/insertAdmrAutTxn.json", method = RequestMethod.POST)
 	@ResponseBody
 	@EncryptResponse
-	public BaseVo insertAdmrAutTxn(@RequestBody TbAdmrApvTxnVo tbAdmrApvTxnVo , HttpServletRequest request, HttpServletResponse response)  
-	{
+	public BaseVo insertAdmrAutTxn(@RequestBody TbAdmrApvTxnVo tbAdmrApvTxnVo, HttpServletRequest request,
+			HttpServletResponse response) {
 		TbAdmrApvTxnVo resultVo = new TbAdmrApvTxnVo();
-		
+
 		try {
 			grantMgmtService.insertAdmrAutTxn(tbAdmrApvTxnVo);
 			resultVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
-			
+
 		} catch (ServiceException e) {
 			resultVo = new TbAdmrApvTxnVo();
 			String msgDesc = tbCmnMstService.selectMsgDesc(e);
@@ -303,22 +304,21 @@ public class GrantMgmtController  extends CommonController {
 			String msgDesc = tbCmnMstService.selectMsgDesc(new ServiceException("CMN.HIGH.00000"));
 			resultVo.setCommonMsg(msgDesc);
 		}
-		
-		return  resultVo;
+
+		return resultVo;
 	}
-	
-	
-	@RequestMapping(value="/opermgmt/grantmgmt/deleteAdmrAutTxn.json", method = RequestMethod.POST)
+
+	@RequestMapping(value = "/opermgmt/grantmgmt/deleteAdmrAutTxn.json", method = RequestMethod.POST)
 	@ResponseBody
 	@EncryptResponse
-	public BaseVo deleteAdmrAutTxn(@RequestBody TbAdmrApvTxnListVo tbAdmrApvTxnListVo , HttpServletRequest request, HttpServletResponse response)  
-	{
+	public BaseVo deleteAdmrAutTxn(@RequestBody TbAdmrApvTxnListVo tbAdmrApvTxnListVo, HttpServletRequest request,
+			HttpServletResponse response) {
 		TbAdmrApvTxnVo resultVo = new TbAdmrApvTxnVo();
-		
+
 		try {
 			grantMgmtService.deleteAdmrAutTxn(tbAdmrApvTxnListVo);
 			resultVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
-			
+
 		} catch (ServiceException e) {
 			resultVo = new TbAdmrApvTxnVo();
 			String msgDesc = tbCmnMstService.selectMsgDesc(e);
@@ -328,22 +328,23 @@ public class GrantMgmtController  extends CommonController {
 			String msgDesc = tbCmnMstService.selectMsgDesc(new ServiceException("CMN.HIGH.00000"));
 			resultVo.setCommonMsg(msgDesc);
 		}
-		
-		return  resultVo;
+
+		return resultVo;
 	}
-	
+
 	@RequestMapping(value = "/opermgmt/grantmgmt/viewListUserAuth.model", method = RequestMethod.POST)
 	@ResponseBody
 	@EncryptResponse
 	public ModelMap viewListUserAuth(@RequestBody TbUserAuthTxnVo searchVo, ModelMap model,
-			HttpServletRequest request)  {
+			HttpServletRequest request) {
 		setPagination(searchVo);
 		TbUserAuthTxnListVo resultListVo = grantMgmtService.selectUserAuthTxnList(searchVo);
 		return createResultList(resultListVo.getTbUserAuthTxnVos(), resultListVo.getTotalCount());
 	}
+
 	@RequestMapping(value = "/opermgmt/grantmgmt/viewListUserAuth.do", method = RequestMethod.POST)
 	public String viewListUserAuth(@ModelAttribute("searchVo") TbUserAuthTxnVo searchVo, ModelMap model,
-			HttpServletRequest request, HttpServletResponse response)  {
+			HttpServletRequest request, HttpServletResponse response) {
 		TbUserAuthTxnVo searchVoClone = new TbUserAuthTxnVo();
 		try {
 			CloneUtil.copyObjectInformation(searchVo, searchVoClone);
@@ -354,24 +355,25 @@ public class GrantMgmtController  extends CommonController {
 		} catch (InvocationTargetException e) {
 			e.printStackTrace();
 		}
-		ModelMap builtModel =viewListUserAuthModel(searchVo, request);
+		ModelMap builtModel = viewListUserAuthModel(searchVo, request);
 		model.addAllAttributes(builtModel);
 
 		searchVoClone.setUrl("/opermgmt/grantmgmt/viewListUserAuth.model");
 		model.addAttribute("searchVoJson", searchVoJson(searchVoClone));
 		return "opermgmt/grantmgmt/viewListUserAuth";
 	}
-	private ModelMap viewListUserAuthModel(@ModelAttribute("searchVo") TbUserAuthTxnVo searchVo, 
-	HttpServletRequest request) {
+
+	private ModelMap viewListUserAuthModel(@ModelAttribute("searchVo") TbUserAuthTxnVo searchVo,
+			HttpServletRequest request) {
 		ModelMap model = new ModelMap();
 		TbUserAuthTxnListVo resultListVo = null;
 		try {
-			
+
 			/** 계위 정보 설정 **/
 			TbLvlBasListVo svcLineListVo = jwtUtil.getSvcLineList(request);
 			TbLvlBasListVo centerListVo = null;
 			TbLvlBasListVo nodeListVo = null;
-			if (searchVo.getTbLvlBasVo() !=null  && StringUtils.hasText(searchVo.getTbLvlBasVo().getSsvcLineTypeCd())) {
+			if (searchVo.getTbLvlBasVo() != null && StringUtils.hasText(searchVo.getTbLvlBasVo().getSsvcLineTypeCd())) {
 				TbLvlBasVo searchCenterVo = new TbLvlBasVo();
 				searchCenterVo.setSsvcLineTypeCd(searchVo.getTbLvlBasVo().getSsvcLineTypeCd());
 				centerListVo = jwtUtil.getCenterList(request, searchCenterVo);
@@ -392,15 +394,15 @@ public class GrantMgmtController  extends CommonController {
 				}
 			} else {
 				if (StringUtils.hasText(svcLineListVo.getTbLvlBasVos().get(0).getSsvcLineTypeCd())) {
-					
-					if( searchVo.getTbLvlBasVo() == null)
-					{
+
+					if (searchVo.getTbLvlBasVo() == null) {
 						TbLvlBasVo searchBasVo = new TbLvlBasVo();
 						searchVo.setTbLvlBasVo(searchBasVo);
 					}
 					TbLvlBasVo searchCenterVo = new TbLvlBasVo();
 					searchCenterVo.setSsvcLineTypeCd(svcLineListVo.getTbLvlBasVos().get(0).getSsvcLineTypeCd());
-					searchVo.getTbLvlBasVo().setSsvcLineTypeCd(svcLineListVo.getTbLvlBasVos().get(0).getSsvcLineTypeCd());
+					searchVo.getTbLvlBasVo()
+							.setSsvcLineTypeCd(svcLineListVo.getTbLvlBasVos().get(0).getSsvcLineTypeCd());
 					centerListVo = jwtUtil.getCenterList(request, searchCenterVo);
 					if (StringUtils.hasText(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd())) {
 						searchVo.getTbLvlBasVo().setSsvcGroupCd(centerListVo.getTbLvlBasVos().get(0).getSsvcGroupCd());
@@ -420,19 +422,19 @@ public class GrantMgmtController  extends CommonController {
 			model.addAttribute("svcLineListVo", svcLineListVo);
 			model.addAttribute("centerListVo", centerListVo);
 			model.addAttribute("nodeListVo", nodeListVo);
-			
-			List<CommonCodeVo> userGradeCds = commonCodeService.selectListCommonCode(CommonCodeUtil.USER_GRADE_CD, null);			
+
+			List<CommonCodeVo> userGradeCds = commonCodeService.selectListCommonCode(CommonCodeUtil.USER_GRADE_CD,
+					null);
 			model.addAttribute("userGradeCds", userGradeCds);
 			setPagination(searchVo);
-			
-			if(searchVo.getTbLvlBasVo() == null)
-			{
+
+			if (searchVo.getTbLvlBasVo() == null) {
 				TbLvlBasVo tempVo = new TbLvlBasVo();
 				searchVo.setTbLvlBasVo(tempVo);
 			}
 			resultListVo = grantMgmtService.selectUserAuthTxnList(searchVo);
 			resultListVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
-		} catch (ServiceException e){
+		} catch (ServiceException e) {
 			resultListVo = new TbUserAuthTxnListVo();
 			String msgDesc = tbCmnMstService.selectMsgDesc(e);
 			resultListVo.setCommonMsg(msgDesc);
@@ -449,18 +451,17 @@ public class GrantMgmtController  extends CommonController {
 		model.addAttribute("paginationInfo", paginationInfo);
 		return model;
 	}
-	
-	
-	@RequestMapping(value="/opermgmt/grantmgmt/deleteUserAuthTxn.json", method = RequestMethod.POST)
+
+	@RequestMapping(value = "/opermgmt/grantmgmt/deleteUserAuthTxn.json", method = RequestMethod.POST)
 	@ResponseBody
 	@EncryptResponse
-	public BaseVo deleteUserAuthTxn(@RequestBody TbUserAuthTxnListVo tbUserAuthTxnListVo , HttpServletRequest request, HttpServletResponse response)  
-	{
+	public BaseVo deleteUserAuthTxn(@RequestBody TbUserAuthTxnListVo tbUserAuthTxnListVo, HttpServletRequest request,
+			HttpServletResponse response) {
 		TbUserAuthTxnVo resultVo = new TbUserAuthTxnVo();
-		
+
 		try {
 			grantMgmtService.deleteTbUserAuthTxnVo(tbUserAuthTxnListVo);
-			resultVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);			
+			resultVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
 		} catch (ServiceException e) {
 			resultVo = new TbUserAuthTxnVo();
 			String msgDesc = tbCmnMstService.selectMsgDesc(e);
@@ -470,15 +471,15 @@ public class GrantMgmtController  extends CommonController {
 			String msgDesc = tbCmnMstService.selectMsgDesc(new ServiceException("CMN.HIGH.00000"));
 			resultVo.setCommonMsg(msgDesc);
 		}
-		
-		return  resultVo;
+
+		return resultVo;
 	}
 
 	@RequestMapping(value = "/opermgmt/grantmgmt/selectUserGradeCds.json", method = RequestMethod.POST)
 	@ResponseBody
 	@EncryptResponse
-	public ModelMap selectUserGradeCds()  {
-				List<CommonCodeVo> userGradeCds = new ArrayList<>();
+	public ModelMap selectUserGradeCds() {
+		List<CommonCodeVo> userGradeCds = new ArrayList<>();
 		try {
 			userGradeCds = commonCodeService.selectListCommonCode(CommonCodeUtil.USER_GRADE_CD, null);
 		} catch (Exception e) {
@@ -486,18 +487,19 @@ public class GrantMgmtController  extends CommonController {
 		}
 		return createResultList(userGradeCds, userGradeCds.size());
 	}
-	
+
 	@RequestMapping(value = "/opermgmt/grantmgmt/viewInsertUserAuth.model", method = RequestMethod.POST)
 	@ResponseBody
 	@EncryptResponse
-	public ModelMap viewInsertUserAuth(@RequestBody TbUserAuthTxnVo searchVo, 
-			HttpServletRequest request)  {
+	public ModelMap viewInsertUserAuth(@RequestBody TbUserAuthTxnVo searchVo,
+			HttpServletRequest request) {
 		TbUserAuthTxnListVo resultListVo = grantMgmtService.selectDetailUserAuthTxn(searchVo);
 		return createResult(resultListVo);
 	}
+
 	@RequestMapping(value = "/opermgmt/grantmgmt/viewInsertUserAuth.ajax", method = RequestMethod.POST)
 	public String viewInsertUserAuth(@RequestBody TbUserAuthTxnVo searchVo, ModelMap model,
-			HttpServletRequest request, HttpServletResponse response)  {
+			HttpServletRequest request, HttpServletResponse response) {
 		TbUserAuthTxnVo searchVoClone = new TbUserAuthTxnVo();
 		try {
 			CloneUtil.copyObjectInformation(searchVo, searchVoClone);
@@ -515,34 +517,35 @@ public class GrantMgmtController  extends CommonController {
 		model.addAttribute("searchVoJson", searchVoJson(searchVoClone));
 		return "opermgmt/grantmgmt/viewInsertUserAuth";
 	}
+
 	private ModelMap viewInsertUserAuthModel(@RequestBody TbUserAuthTxnVo searchVo,
-	HttpServletRequest request) {
+			HttpServletRequest request) {
 		ModelMap model = new ModelMap();
 		TbUserAuthTxnListVo resultListVo = null;
-		try {		
-			
-			List<CommonCodeVo> userGradeCds = commonCodeService.selectListCommonCode(CommonCodeUtil.USER_GRADE_CD, null);
+		try {
+
+			List<CommonCodeVo> userGradeCds = commonCodeService.selectListCommonCode(CommonCodeUtil.USER_GRADE_CD,
+					null);
 			model.addAttribute("userGradeCds", userGradeCds);
-			
+
 			TbLvlBasListVo svcLineListVo = jwtUtil.getSvcLineList(request);
 			TbLvlBasListVo centerListVo = new TbLvlBasListVo();
 			TbLvlBasListVo nodeListVo = new TbLvlBasListVo();
-			
+
 			model.addAttribute("svcLineListVo", svcLineListVo);
 			model.addAttribute("centerListVo", centerListVo);
 			model.addAttribute("nodeListVo", nodeListVo);
-			
-			if(StringUtils.hasText(searchVo.getSuserId())) {
+
+			if (StringUtils.hasText(searchVo.getSuserId())) {
 				resultListVo = grantMgmtService.selectDetailUserAuthTxn(searchVo);
-			}
-			else{
+			} else {
 				resultListVo = new TbUserAuthTxnListVo();
 				resultListVo.setTotalCount(0);
 			}
-			
-			resultListVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);			
-			
-		}catch (ServiceException e){
+
+			resultListVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
+
+		} catch (ServiceException e) {
 			resultListVo = new TbUserAuthTxnListVo();
 			resultListVo.setTotalCount(0);
 			String msgDesc = tbCmnMstService.selectMsgDesc(e);
@@ -552,29 +555,27 @@ public class GrantMgmtController  extends CommonController {
 			resultListVo.setTotalCount(0);
 			String msgDesc = tbCmnMstService.selectMsgDesc(new ServiceException("CMN.HIGH.00000"));
 			resultListVo.setCommonMsg(msgDesc);
-			//tbLvlCdVo.setTotalCount(0);
+			// tbLvlCdVo.setTotalCount(0);
 		}
-		
+
 		model.addAttribute("resultListVo", resultListVo);
-		//model.addAttribute("tbLvlCdVo", tbLvlCdVo);
-		//PaginationInfo paginationInfo = getPaginationInfo();
-		//paginationInfo.setTotalRecordCount(resultListVo.getTotalCount());
-		//model.addAttribute("paginationInfo", paginationInfo);
+		// model.addAttribute("tbLvlCdVo", tbLvlCdVo);
+		// PaginationInfo paginationInfo = getPaginationInfo();
+		// paginationInfo.setTotalRecordCount(resultListVo.getTotalCount());
+		// model.addAttribute("paginationInfo", paginationInfo);
 		return model;
 	}
-	
-	
-	
-	@RequestMapping(value="/opermgmt/grantmgmt/insertUserAuthTxn.json", method = RequestMethod.POST)
+
+	@RequestMapping(value = "/opermgmt/grantmgmt/insertUserAuthTxn.json", method = RequestMethod.POST)
 	@ResponseBody
 	@EncryptResponse
-	public BaseVo insertUserAuthTxn(@RequestBody TbUserAuthTxnListVo tbUserAuthTxnListVo , HttpServletRequest request, HttpServletResponse response)  
-	{
+	public BaseVo insertUserAuthTxn(@RequestBody TbUserAuthTxnListVo tbUserAuthTxnListVo, HttpServletRequest request,
+			HttpServletResponse response) {
 		TbUserAuthTxnVo resultVo = new TbUserAuthTxnVo();
-		
+
 		try {
 			grantMgmtService.insertTbUserAuthTxnVo(tbUserAuthTxnListVo);
-			resultVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);			
+			resultVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
 		} catch (ServiceException e) {
 			resultVo = new TbUserAuthTxnVo();
 			String msgDesc = tbCmnMstService.selectMsgDesc(e);
@@ -584,8 +585,8 @@ public class GrantMgmtController  extends CommonController {
 			String msgDesc = tbCmnMstService.selectMsgDesc(new ServiceException("CMN.HIGH.00000"));
 			resultVo.setCommonMsg(msgDesc);
 		}
-		
-		return  resultVo;
+
+		return resultVo;
 	}
 
 }

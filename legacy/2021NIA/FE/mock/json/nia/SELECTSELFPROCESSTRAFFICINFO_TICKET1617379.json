@@ -1,0 +1,36 @@
+{
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [
+            "SELECT  \n            AL.TICKET_ID\n            , AL.ROOT_CAUSE_SYSNAMEA\n            , AL.ROOT_CAUSE_PORTA\n            , AL.ROOT_CAUSE_SYSNAMEZ\n            , AL.ROOT_CAUSE_PORTZ\n            , TPD.SELF_PROCESS_GROUP\n            , TPD.SELF_PROCESS_TYPE\n        FROM    rca.tb_rca_ticket_al_current AL\n        LEFT JOIN nia.tb_auto_treat_process_dtl TPD ON TPD.TICKET_ID = AL.TICKET_ID\n         WHERE (  AL.TICKET_ID = '1617379' )"
+        ],
+        "total": 1,
+        "result": [
+            {
+                "root_cause_sysnamez": "서울-판교7712",
+                "root_cause_portz": "ce3/1",
+                "self_process_type": "A",
+                "root_cause_sysnamea": "seoul-7712",
+                "ticket_id": "1617379",
+                "self_process_group": "SO",
+                "root_cause_porta": "ce3/1"
+            }
+        ]
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/selectList/SELECT_SELF_PROCESS_TRAFFIC_INFO",
+        "urlOrigin": "/selectList/SELECT_SELF_PROCESS_TRAFFIC_INFO",
+        "params": null,
+        "data": "{\"TICKET_ID\":\"1617379\",\"encrypt\":\"YiB+PiQDiRor7zRk6Rw=\"}",
+        "cmd": "{ \"url\": \"/selectList/SELECT_SELF_PROCESS_TRAFFIC_INFO\", \"sqlId\": \"SELECT_SELF_PROCESS_TRAFFIC_INFO\", \"param\": {\"TICKET_ID\":\"1617379\",\"encrypt\":\"YiB+PiQDiRor7zRk6Rw=\"} }",
+        "requestTime": "2024-12-13 22:09:54.437",
+        "responseTime": "2024-12-13 22:09:54.518",
+        "duration": 81,
+        "jsonFileName": "SELECTSELFPROCESSTRAFFICINFO_TICKET1617379.json"
+    }
+}

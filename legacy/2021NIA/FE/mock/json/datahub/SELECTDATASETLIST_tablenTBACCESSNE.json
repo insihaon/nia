@@ -1,0 +1,151 @@
+{
+    "__body": {
+        "success": true,
+        "encrypt": false,
+        "sql": "SELECT \n        METADATA_SEQ\n        ,TDM.TABLE_NM \n        ,TDM.COLUMN_NM \n        ,TDM.DATA_TYPE \n        ,TDM.METADATA_DESC\n        ,TDM.UPDATE_USER\n        ,TO_CHAR(TDM.CREATE_TIME , 'YYYY-MM-DD HH24:MI:SS') AS CREATE_TIME\n        ,TO_CHAR(TDM.UPDATE_TIME , 'YYYY-MM-DD HH24:MI:SS') AS UPDATE_TIME\n   FROM DATAHUB.TB_METADATA_MST TDM\n    WHERE 1=1\n         AND TABLE_NM = 'TB_ACCESS_NET_LINK_MST'\n        AND UPPER(TDM.TABLE_NM) LIKE '%' || UPPER('TB_ACCESS_NET_LINK_MST') || '%'",
+        "total": 13,
+        "result": [
+            {
+                "table_nm": "TB_ACCESS_NET_LINK_MST",
+                "update_time": "2023-10-09 20:07:11",
+                "update_user": "SYSTEM",
+                "metadata_seq": 281,
+                "create_time": "2023-10-09 20:07:11",
+                "metadata_desc": "액세스인터페이스이름",
+                "data_type": "VARCHAR",
+                "column_nm": "ACCESS_IF_NM"
+            },
+            {
+                "table_nm": "TB_ACCESS_NET_LINK_MST",
+                "update_time": "2023-10-09 20:07:11",
+                "update_user": "SYSTEM",
+                "metadata_seq": 282,
+                "create_time": "2023-10-09 20:07:11",
+                "metadata_desc": "액세스망링크ID",
+                "data_type": "INTEGER",
+                "column_nm": "ACCESS_NET_LINK_ID"
+            },
+            {
+                "table_nm": "TB_ACCESS_NET_LINK_MST",
+                "update_time": "2023-10-09 20:07:11",
+                "update_user": "SYSTEM",
+                "metadata_seq": 283,
+                "create_time": "2023-10-09 20:07:11",
+                "metadata_desc": "고객이름",
+                "data_type": "VARCHAR",
+                "column_nm": "CUST_NM"
+            },
+            {
+                "table_nm": "TB_ACCESS_NET_LINK_MST",
+                "update_time": "2023-10-09 20:07:11",
+                "update_user": "SYSTEM",
+                "metadata_seq": 284,
+                "create_time": "2023-10-09 20:07:11",
+                "metadata_desc": "현행플래그",
+                "data_type": "INTEGER",
+                "column_nm": "DM_FLAG"
+            },
+            {
+                "table_nm": "TB_ACCESS_NET_LINK_MST",
+                "update_time": "2023-10-09 20:07:11",
+                "update_user": "SYSTEM",
+                "metadata_seq": 285,
+                "create_time": "2023-10-09 20:07:11",
+                "metadata_desc": "장비ID",
+                "data_type": "VARCHAR",
+                "column_nm": "EQUIP_ID"
+            },
+            {
+                "table_nm": "TB_ACCESS_NET_LINK_MST",
+                "update_time": "2023-10-09 20:07:11",
+                "update_user": "SYSTEM",
+                "metadata_seq": 286,
+                "create_time": "2023-10-09 20:07:11",
+                "metadata_desc": "전용회선번호",
+                "data_type": "VARCHAR",
+                "column_nm": "LL_NUM"
+            },
+            {
+                "table_nm": "TB_ACCESS_NET_LINK_MST",
+                "update_time": "2023-10-09 20:07:11",
+                "update_user": "SYSTEM",
+                "metadata_seq": 287,
+                "create_time": "2023-10-09 20:07:11",
+                "metadata_desc": "LSRID",
+                "data_type": "VARCHAR",
+                "column_nm": "LSR_ID"
+            },
+            {
+                "table_nm": "TB_ACCESS_NET_LINK_MST",
+                "update_time": "2023-10-09 20:07:11",
+                "update_user": "SYSTEM",
+                "metadata_seq": 288,
+                "create_time": "2023-10-09 20:07:11",
+                "metadata_desc": "원격인터페이스IP",
+                "data_type": "VARCHAR",
+                "column_nm": "RMT_IF_IP"
+            },
+            {
+                "table_nm": "TB_ACCESS_NET_LINK_MST",
+                "update_time": "2023-10-09 20:07:11",
+                "update_user": "SYSTEM",
+                "metadata_seq": 289,
+                "create_time": "2023-10-09 20:07:11",
+                "metadata_desc": "사이트이름",
+                "data_type": "VARCHAR",
+                "column_nm": "SITE_NM"
+            },
+            {
+                "table_nm": "TB_ACCESS_NET_LINK_MST",
+                "update_time": "2023-10-09 20:07:11",
+                "update_user": "SYSTEM",
+                "metadata_seq": 290,
+                "create_time": "2023-10-09 20:07:11",
+                "metadata_desc": "스페셜여부",
+                "data_type": "VARCHAR",
+                "column_nm": "SPECIAL_YN_CD"
+            },
+            {
+                "table_nm": "TB_ACCESS_NET_LINK_MST",
+                "update_time": "2023-10-09 20:07:11",
+                "update_user": "SYSTEM",
+                "metadata_seq": 291,
+                "create_time": "2023-10-09 20:07:11",
+                "metadata_desc": "서비스유형",
+                "data_type": "VARCHAR",
+                "column_nm": "SVC_TYPE_CD"
+            },
+            {
+                "table_nm": "TB_ACCESS_NET_LINK_MST",
+                "update_time": "2023-10-09 20:07:11",
+                "update_user": "SYSTEM",
+                "metadata_seq": 292,
+                "create_time": "2023-10-09 20:07:11",
+                "metadata_desc": "VPN유형코드",
+                "data_type": "VARCHAR",
+                "column_nm": "VPN_TYPE_CD"
+            },
+            {
+                "table_nm": "TB_ACCESS_NET_LINK_MST",
+                "update_time": "2023-10-09 20:07:21",
+                "update_user": "SYSTEM",
+                "metadata_seq": 2668,
+                "create_time": "2023-10-09 20:07:21",
+                "metadata_desc": "",
+                "data_type": "DATETIME",
+                "column_nm": "DHUB_INSERT_TIME"
+            }
+        ]
+    },
+    "config": {
+        "param": {
+            "table_nm": "TB_ACCESS_NET_LINK_MST"
+        },
+        "receivedTime": "2024-04-03 09:05:55.124",
+        "url": "/selectList/SELECT_DATA_SET_LIST",
+        "cmd": "{\"url\": \"/selectList/SELECT_DATA_SET_LIST\", \"sqlId\": \"\", \"param\": \"{\\\"table_nm\\\": \\\"TB_ACCESS_NET_LINK_MST\\\"}\"}",
+        "duration": 20,
+        "jsonFileName": "SELECTDATASETLIST_tablenTBACCESSNE.json",
+        "oldJsonFileName": "L1NFTEVDVF9EQVRBX1NFVF9MSVNU_VEJfQUNDRVNTXw.json"
+    }
+}

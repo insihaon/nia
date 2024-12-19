@@ -10,13 +10,6 @@
           <div id="system-name" @click="onClickHeaderLogo()">NIA KOREN</div>
         </div>
 
-        <div v-if="isViewport('<=', 'lg')" id="logout-sub" class="d-flex flex-column align-items-center" @click="$router.push({ path: '/login' })">
-          <i class="el-icon-unlock" style="font-size: 20px; color: aliceblue; text-align: center; font-weight: 500;" />
-          <button class="button h-5 px-3 bg-transparent text-white rounded" style="font-size: 14px; font-weight: 500" :disabled="buttonDisabled">
-            LogOut
-          </button>
-        </div>
-
         <!-- only parent -->
         <!-- <el-scrollbar ref="scrollHeader" wrap-class="scrollbar-wrapper" :vertical="false" @wheel.native="handleScroll"> -->
         <nav v-if="!isMobile" id="menu-bar" class="h-full">
@@ -37,7 +30,7 @@
         </nav>
         <!-- </el-scrollbar> -->
       </div>
-      <div v-if="!isMobile" id="other-container" style="min-width : 200px" class="flex items-center">
+      <div v-if="!isMobile" id="other-container" class="flex items-center">
         <div id="function-container">
           <SvgIcon v-if="isViewport('>', 'sm')" class="mr-2" type="mdi" :path="path" @click.native="toggleHistoryBar" />
         </div>
@@ -193,6 +186,7 @@ export default {
   display: none;
 }
 #header-menu {
+  position: relative;
   transition: all 0.4s;
   background-color: rgb(30 41 59);
 
@@ -263,9 +257,18 @@ export default {
       border-top: 1px solid rgb(255 255 255 / 34%);
     }
     #logout {
+      z-index: 10;
+      position: absolute;
+      right: 0;
+      top: 0;
       width: 60px;
       height: 60px;
       border-left: 1px solid rgb(255 255 255 / 34%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
       &:hover {
         cursor: pointer;
       }
@@ -354,14 +357,6 @@ export default {
       li {
         color: $aiTemplateDefault !important;
         background-color: #fff !important;
-      }
-    }
-    #logout-sub {
-      .button,
-      i,
-      svg,
-      span {
-        color: $aiTemplateDefault !important;
       }
     }
 
