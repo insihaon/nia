@@ -52,36 +52,15 @@ public class CreateMgmtController extends CommonController {
 			RequestMethod.GET })
 	@ResponseBody
 	@EncryptResponse
-	public TbIpBlockMstListVo selectSipCreateSeqCdsList(@RequestBody TbIpBlockMstVo searchVo,
+	public ModelMap selectSipCreateSeqCdsList(@RequestBody TbIpBlockMstVo searchVo,
 			HttpServletRequest request) {
-		TbIpBlockMstListVo resultListVo = new TbIpBlockMstListVo();
+		List<CommonCodeVo> sipCreateSeqCds = new ArrayList<CommonCodeVo>();
 		try {
-			// 공통 코드 목록 조회
-			List<CommonCodeVo> sipCreateSeqCds = commonCodeService
-					.selectListCommonCode(CommonCodeUtil.IP_CREATE_SEQ_CD, null);
-
-			// 결과 데이터를 resultListVo에 바로 세팅
-			List<TbIpBlockMstVo> sipCreateSeqCdsVos = new ArrayList<>();
-			for (CommonCodeVo code : sipCreateSeqCds) {
-				TbIpBlockMstVo vo = new TbIpBlockMstVo();
-				vo.setSipCreateSeqCd(code.getCode());
-				vo.setSipCreateSeqNm(code.getName());
-				sipCreateSeqCdsVos.add(vo);
-			}
-			resultListVo.setTbIpBlockMstVos(sipCreateSeqCdsVos);
-
-		} catch (ServiceException e) {
-			// 예외 처리 및 오류 메시지 설정
-			String msgDesc = tbCmnMstService.selectMsgDesc(e);
-			resultListVo.setCommonMsg(msgDesc);
-			resultListVo.setTotalCount(0);
+			sipCreateSeqCds = commonCodeService.selectListCommonCode(CommonCodeUtil.IP_CREATE_SEQ_CD,null);
 		} catch (Exception e) {
-			String msgDesc = tbCmnMstService.selectMsgDesc(new ServiceException("CMN.HIGH.00000"));
-			resultListVo.setCommonMsg(msgDesc);
-			resultListVo.setTotalCount(0);
+			e.printStackTrace();
 		}
-		// resultListVo를 직접 반환
-		return resultListVo;
+		return createResultList(sipCreateSeqCds, sipCreateSeqCds.size());
 	}
 
 	/**
@@ -101,7 +80,6 @@ public class CreateMgmtController extends CommonController {
 	public ModelMap viewListCrtIPMst(@RequestBody TbIpBlockMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
 		setPagination(searchVo);
-
 		TbIpBlockMstListVo resultListVo = createMgmtService.selectListIpBlockMst(searchVo);
 		return createResultList(resultListVo.getTbIpBlockMstVos(), resultListVo.getTotalCount());
 	}

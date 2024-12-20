@@ -312,6 +312,9 @@ export function apiRequestJson(api, params) {
     filePath: filePath,
     data: params
   }).then(d => {
+    if (!d.result) {
+      return d
+    }
     return Object.prototype.hasOwnProperty.call(d, 'result') ? d.result : d
   })
 }
