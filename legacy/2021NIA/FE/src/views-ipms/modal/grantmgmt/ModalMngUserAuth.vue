@@ -242,7 +242,7 @@ export default {
     async onLoadSelectUserGradeCds() {
       try {
         const res = await apiRequestJson(ipmsJsonApis.selectUserGradeCds, {})
-        this.userGradeOp = res.result.data.filter(v => v.code !== 'UR0000' && v.code !== 'UR0006') ?? []
+        this.userGradeOp = res?.result?.data.filter(v => v.code !== 'UR0000' && v.code !== 'UR0006') ?? []
       } catch (error) {
         this.error(error)
       }

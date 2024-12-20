@@ -11,6 +11,7 @@
         size="small"
         @change="handleChange()"
       >
+        <el-option label="전체" value="" />
         <el-option
           v-for="(option, i) in options"
           :key="i"

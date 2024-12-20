@@ -55,43 +55,26 @@ public class AssignMgmtController extends CommonController {
 			RequestMethod.GET })
 	@ResponseBody
 	@EncryptResponse
-	public TbIpAssignMstListVo selectSassignLevelCds(@RequestBody TbIpAssignMstVo searchVo,
+	public ModelMap selectSassignLevelCds(@RequestBody TbIpAssignMstVo searchVo,
 			HttpServletRequest request) {
-		TbIpAssignMstListVo resultListVo = new TbIpAssignMstListVo();
+		List<CommonCodeVo> sassignLevelCds = new ArrayList<CommonCodeVo>();
 		try {
-			// 배정 레벨 코드 매핑 설정
-			Map<String, String> assignLevelCdParamMap = new HashMap<>();
+			/** 계위별 배정 레벨 목록 조회 **/
+			Map<String, String> assignLevelCdParamMap = new HashMap<String, String>();
 			String gradeCd = jwtUtil.getUserGradeCd(request);
-			if (CommonCodeUtil.USER_GRADE_A.equals(gradeCd) || CommonCodeUtil.USER_GRADE_S.equals(gradeCd)) {
+			if (gradeCd.equals(CommonCodeUtil.USER_GRADE_A) || gradeCd.equals(CommonCodeUtil.USER_GRADE_S)) {
 				assignLevelCdParamMap.put("startCd", "IA0001");
-			} else if (CommonCodeUtil.USER_GRADE_N.equals(gradeCd)) {
-				assignLevelCdParamMap.put("startCd", "IA0001"); // 미배정 보이도록 설정
+			} else if (gradeCd.equals(CommonCodeUtil.USER_GRADE_N)) {
+				assignLevelCdParamMap.put("startCd", "IA0001"); // 2015-01-08 망관리잗ㅎ 미배정 보이도록 요청
 			} else {
 				assignLevelCdParamMap.put("startCd", "IA0003");
 			}
 			assignLevelCdParamMap.put("endCd", "IA0004");
-
-			List<CommonCodeVo> sassignLevelCds = commonCodeService.selectListCommonCode(CommonCodeUtil.ASSIGN_LEVEL_CD,
-					assignLevelCdParamMap);
-
-			resultListVo.setTbIpAssignMstVos(sassignLevelCds.stream().map(code -> {
-				TbIpAssignMstVo vo = new TbIpAssignMstVo();
-				vo.setSassignLevelCd(code.getCode());
-				vo.setSassignLevelNm(code.getName());
-				return vo;
-			}).collect(Collectors.toList()));
-
-			resultListVo.setCommonMsg(CommonCodeUtil.SUCCESS_MSG);
-		} catch (ServiceException e) {
-			String msgDesc = tbCmnMstService.selectMsgDesc(e);
-			resultListVo.setCommonMsg(msgDesc);
-			resultListVo.setTotalCount(0);
+			sassignLevelCds = commonCodeService.selectListCommonCode(CommonCodeUtil.ASSIGN_LEVEL_CD, assignLevelCdParamMap);
 		} catch (Exception e) {
-			String msgDesc = tbCmnMstService.selectMsgDesc(new ServiceException("CMN.HIGH.00000"));
-			resultListVo.setCommonMsg(msgDesc);
-			resultListVo.setTotalCount(0);
+			e.printStackTrace();
 		}
-		return resultListVo;
+		return createResultList(sassignLevelCds, sassignLevelCds.size());
 	}
 
 	@RequestMapping(value = "/ipmgmt/assignmgmt/viewListAsgnIPMst.model", method = RequestMethod.POST)
@@ -99,9 +82,10 @@ public class AssignMgmtController extends CommonController {
 	@EncryptResponse
 	public ModelMap viewListAsgnIPMst(@RequestBody TbIpAssignMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
+		TbIpAssignMstListVo resultListVo = new TbIpAssignMstListVo();
 		setPagination(searchVo);
 		ModelMap builtModel = viewListAsgnIPMstModel(searchVo, request);
-		TbIpAssignMstListVo resultListVo = (TbIpAssignMstListVo) builtModel.get("resultListVo");
+		resultListVo = (TbIpAssignMstListVo) builtModel.get("resultListVo");
 		return createResultList(resultListVo.getTbIpAssignMstVos(), resultListVo.getTotalCount());
 	}
 
@@ -132,15 +116,12 @@ public class AssignMgmtController extends CommonController {
 		TbIpAssignMstListVo resultListVo = null;
 		String sloadFlg = "T"; // 메뉴 호출 시 조회를 처리하지 않기 위한 예외값 로직 추가(2014.12.24 전필권 과장님 요청)
 		try {
-			List<CommonCodeVo> sipCreateTypeCds = commonCodeService
-					.selectListCommonCode(CommonCodeUtil.IP_CREATE_TYPE_CD, null);
-			List<CommonCodeVo> sipCreateSeqCds = commonCodeService.selectListCommonCode(CommonCodeUtil.IP_CREATE_SEQ_CD,
-					null);
-			List<CommonCodeVo> sipVersionTypeCds = commonCodeService
-					.selectListCommonCode(CommonCodeUtil.IP_VERSION_TYPE_CD, null);
-			model.addAttribute("sipCreateTypeCds", sipCreateTypeCds);
-			model.addAttribute("sipCreateSeqCds", sipCreateSeqCds);
-			model.addAttribute("sipVersionTypeCds", sipVersionTypeCds);
+			// List<CommonCodeVo> sipCreateTypeCds = commonCodeService.selectListCommonCode(CommonCodeUtil.IP_CREATE_TYPE_CD, null);
+			// List<CommonCodeVo> sipCreateSeqCds = commonCodeService.selectListCommonCode(CommonCodeUtil.IP_CREATE_SEQ_CD, null);
+			// List<CommonCodeVo> sipVersionTypeCds = commonCodeService.selectListCommonCode(CommonCodeUtil.IP_VERSION_TYPE_CD, null);
+			// model.addAttribute("sipCreateTypeCds", sipCreateTypeCds);
+			// model.addAttribute("sipCreateSeqCds", sipCreateSeqCds);
+			// model.addAttribute("sipVersionTypeCds", sipVersionTypeCds);
 
 			/** 계위 정보 설정 **/
 			TbLvlBasListVo svcLineListVo = jwtUtil.getSvcLineList(request);
@@ -186,9 +167,9 @@ public class AssignMgmtController extends CommonController {
 					nodeListVo = new TbLvlBasListVo();
 				}
 			}
-			model.addAttribute("svcLineListVo", svcLineListVo);
-			model.addAttribute("centerListVo", centerListVo);
-			model.addAttribute("nodeListVo", nodeListVo);
+			// model.addAttribute("svcLineListVo", svcLineListVo);
+			// model.addAttribute("centerListVo", centerListVo);
+			// model.addAttribute("nodeListVo", nodeListVo);
 
 			if (null != searchVo.getSsvcGroupCdMultiStr() &&
 					!"".equals(searchVo.getSsvcGroupCdMultiStr())) {
@@ -284,9 +265,9 @@ public class AssignMgmtController extends CommonController {
 			resultListVo.setTotalCount(0);
 		}
 		model.addAttribute("resultListVo", resultListVo);
-		PaginationInfo paginationInfo = getPaginationInfo();
-		paginationInfo.setTotalRecordCount(resultListVo.getTotalCount());
-		model.addAttribute("paginationInfo", paginationInfo);
+		// PaginationInfo paginationInfo = getPaginationInfo();
+		// paginationInfo.setTotalRecordCount(resultListVo.getTotalCount());
+		// model.addAttribute("paginationInfo", paginationInfo);
 		return model;
 
 	}
@@ -702,10 +683,11 @@ public class AssignMgmtController extends CommonController {
 		ModelMap builtModel = viewUpdateAsgnIPMstModel(tbIpAssignMstListVo, request);
 		TbIpAssignMstListVo resultListVo = (TbIpAssignMstListVo) builtModel.get("resultListVo");
 
-		ModelMap finalModel = createResultList(resultListVo.getTbIpAssignMstVos(), resultListVo.getTotalCount());
-		finalModel.addAttribute("disabledMap", builtModel.get("disabledMap"));
+		ModelMap resultModel = createResultList(resultListVo.getTbIpAssignMstVos(), resultListVo.getTotalCount());
+		resultModel.addAttribute("sassignTypeCds", builtModel.get("sassignTypeCds"));
+		resultModel.addAttribute("disabledMap", builtModel.get("disabledMap"));
 
-		return finalModel;
+		return resultModel;
 	}
 
 	@RequestMapping(value = "/ipmgmt/assignmgmt/viewUpdateAsgnIPMst.ajax", method = RequestMethod.POST)

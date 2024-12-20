@@ -239,6 +239,14 @@ export default {
         // v-model 값 유지
       }
     },
+    async onLoadSelectUserGradeCds() {
+      try {
+        const res = await apiRequestJson(ipmsJsonApis.selectUserGradeCds, {})
+        this.userGradeOp = res?.result?.data?.filter(v => v.code !== 'UR0000' && v.code !== 'UR0006') ?? []
+      } catch (error) {
+        this.error(error)
+      }
+    },
     onCreated() {
       Modal.methods.onCreated.call(this)
       this.closeOnClickModal = false
@@ -251,16 +259,6 @@ export default {
           this.onLoadSelectUserGradeCds()
         }
       })
-    },
-    async onLoadSelectUserGradeCds() {
-      try {
-        const res = await apiRequestJson(ipmsJsonApis.selectUserGradeCds, {})
-        this.userGradeOp = res.data.filter((v) => v.code !== 'UR0000' && v.code !== 'UR0006') ?? []
-
-        this.suserGradeCode = this.userGradeOp.find((item) => item.code === this.suserGradeCode)?.name
-      } catch (error) {
-        this.error(error)
-      }
     },
     async fnViewInsertGrant(row) {
       try {
