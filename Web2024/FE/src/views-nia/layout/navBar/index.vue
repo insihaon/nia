@@ -32,7 +32,7 @@
       </div>
       <div v-if="!isMobile" id="other-container" class="flex items-center">
         <div id="function-container">
-          <SvgIcon v-if="isViewport('>', 'sm')" class="mr-2" type="mdi" :path="path" @click.native="toggleHistoryBar" />
+          <SvgIcon v-if="isViewport('>', 'lg')" class="mr-2" type="mdi" :path="path" @click.native="toggleHistoryBar" />
         </div>
         <div id="user-info">
           <div class="d-flex items-baseline">
@@ -209,7 +209,6 @@ export default {
     .lottie {
       width: 50px;
       height: 50px;
-      // background: #101827;
       background: transparent;
     }
     #system-name {
@@ -223,7 +222,6 @@ export default {
   }
   #menu-bar {
     margin-left: 120px;
-    // min-width: 1350px;
     ul {
       flex-wrap: nowrap;
     }
@@ -268,9 +266,20 @@ export default {
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      background-color: rgb(30, 41, 59);
+      transition: all 0.4s;
 
       &:hover {
+        background-color: #fff;
+        color: rgb(30, 41, 59);
+        box-shadow: 0 3px 3px rgba(0, 0, 0, 0.1);
         cursor: pointer;
+
+        i,
+        button {
+          transform: scale(1.1);
+          transition: transform 0.3s ease-in-out;
+        }
       }
     }
     #function-container {
@@ -323,10 +332,8 @@ export default {
     width: 100%;
     padding-left: 140px;
     overflow: hidden;
-    // position: fixed;
-    // top: 60px;
     background-color: #eef0f3;
-    transition: height, 0.25s linear;
+    transition: height 0.25s linear;
     #top-inner {
       margin-left: 59px;
       min-width: 1400px;
@@ -342,7 +349,7 @@ export default {
   }
   .open#sub-menu {
     height: 250px;
-    transition: height, 0.25s linear;
+    transition: height 0.25s linear;
     box-shadow: 0 3px 3px rgba(0, 0, 0, 0.1);
   }
 
@@ -361,13 +368,18 @@ export default {
     }
 
     ::v-deep #other-container {
+      #logout {
+        background-color: #fff;
+        color: rgb(30, 41, 59);
+        border-left: 1px solid rgb(30, 41, 59);
+      }
+
       .button,
       i,
       svg,
       span {
         color: $aiTemplateDefault !important;
       }
-      #logout,
 
       #user-info {
         border-left: 1px solid $aiTemplateDefault;

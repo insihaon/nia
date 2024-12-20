@@ -80,7 +80,7 @@ export async function exportServicelist(filter, maxByte) {
   const array = getServicelist(filter)
   for (let index = 0; index < array.length; index++) {
     const log = array[index]
-    const { jsonFileName } = log
+    const { jsonFileName } = log.config
     await exportToFile(log, jsonFileName, maxByte)
   }
   return array
