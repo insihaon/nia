@@ -53,7 +53,7 @@ service.interceptors.request.use(
       config.headers['fileIndex'] = config.fileIndex
       config.headers['project'] = project
       config.headers['urlOrigin'] = config.urlOrigin = url
-      config.headers['jsonfilename'] = getJsonfileName2(url, config, project)
+      config.headers['jsonfilename'] = encodeURIComponent(getJsonfileName2(url, config))
       if (store.getters.server) {
         config.headers['_t'] = Encrypt.toEncrypt(String(Date.now() - (store.getters.server.timeDiff || 0)))
       }
