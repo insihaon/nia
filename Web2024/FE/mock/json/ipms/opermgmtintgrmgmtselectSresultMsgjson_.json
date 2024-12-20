@@ -1,7 +1,6 @@
 {
-    "__body": {
+    "data": {
         "result": {
-            "totalCount": 8,
             "data": [
                 {
                     "sresult_msg": "(TACS)알수 없는 에러"
@@ -27,17 +26,23 @@
                 {
                     "sresult_msg": "(TACS)등록된 장비가 없음"
                 }
-            ]
+            ],
+            "totalCount": 8
         }
     },
+    "status": 200,
     "config": {
+        "filePath": "src/api/ipms.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
         "url": "/opermgmt/intgrmgmt/selectSresultMsg.json",
-        "param": {},
-        "receivedTime": "2024-08-28 14:50:12.045",
-        "fetch": "fetch('/opermgmt/intgrmgmt/selectSresultMsg.json', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{}', 'method': 'POST' })",
-        "cmd": "{\"url\": \"/opermgmt/intgrmgmt/selectSresultMsg.json\", \"sqlId\": \"\", \"param\": null}",
-        "duration": 116,
-        "jsonFileName": "opermgmtintgrmgmtselectSresultMsgjson_.json",
-        "oldJsonFileName": "b3Blcm1nbXQvaW50Z3JtZ210L3NlbGVjdFNyZXN1bHRNc2cuanNvbg_.json"
+        "urlOrigin": "/opermgmt/intgrmgmt/selectSresultMsg.json",
+        "params": null,
+        "data": "{\"encrypt\":\"7rgOpDwmSrkX8iJZl3A=\"}",
+        "cmd": "{ \"url\": \"/opermgmt/intgrmgmt/selectSresultMsg.json\", \"sqlId\": \"\", \"param\": {\"encrypt\":\"7rgOpDwmSrkX8iJZl3A=\"} }",
+        "requestTime": "2024-12-20 15:41:31.998",
+        "responseTime": "2024-12-20 15:41:32.215",
+        "duration": 217,
+        "jsonFileName": "opermgmtintgrmgmtselectSresultMsgjson_.json"
     }
 }

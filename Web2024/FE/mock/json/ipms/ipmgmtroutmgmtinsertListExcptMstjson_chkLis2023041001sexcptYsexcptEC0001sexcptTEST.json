@@ -1,5 +1,5 @@
 {
-    "__body": {
+    "data": {
         "searchBgnDe": "",
         "searchCnd": "",
         "searchEndDe": "",
@@ -103,22 +103,19 @@
         "sexcptRsn": null,
         "spageType": null
     },
+    "status": 200,
     "config": {
+        "filePath": "src/api/ipms.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
         "url": "/ipmgmt/routmgmt/insertListExcptMst.json",
-        "param": {
-            "chkListStr": [
-                "2023041001_32_28867349_PIPMS_N_0_",
-                "2023041001_32_28867350_PIPMS_N_0_"
-            ],
-            "sexcpt_yn": "Y",
-            "sexcpt_cd": "EC0001",
-            "sexcpt_rsn": "TEST"
-        },
-        "receivedTime": "2024-08-20 14:29:44.573",
-        "fetch": "success-fetch('/ipmgmt/routmgmt/insertListExcptMst.json', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{\"chkListStr\":[\"2023041001_32_28867349_PIPMS_N_0_\",\"2023041001_32_28867350_PIPMS_N_0_\"],\"sexcpt_yn\":\"Y\",\"sexcpt_cd\":\"EC0001\",\"sexcpt_rsn\":\"TEST\"}', 'method': 'POST' })",
-        "cmd": "{\"url\": \"/ipmgmt/routmgmt/insertListExcptMst.json\", \"sqlId\": \"\", \"param\": \"{\\\"chkListStr\\\": [\\\"2023041001_32_28867349_PIPMS_N_0_\\\", \\\"2023041001_32_28867350_PIPMS_N_0_\\\"], \\\"sexcpt_yn\\\": \\\"Y\\\", \\\"sexcpt_cd\\\": \\\"EC0001\\\", \\\"sexcpt_rsn\\\": \\\"TEST\\\"}\"}",
-        "duration": 5775,
-        "jsonFileName": "ipmgmtroutmgmtinsertListExcptMstjson_chkLis2023041001sexcptYsexcptEC0001sexcptTEST.json",
-        "oldJsonFileName": "aXBtZ210L3JvdXRtZ210L2luc2VydExpc3RFeGNwdE1zdC5qc29u_MjAyMzA0MTAwMXxZfEVDMDAwMXxURVNU.json"
+        "urlOrigin": "/ipmgmt/routmgmt/insertListExcptMst.json",
+        "params": null,
+        "data": "{\"chkListStr\":[\"2023041001_28_28867353_PIPMS_N_0_\"],\"sexcpt_yn\":\"Y\",\"sexcpt_cd\":\"EC0001\",\"sexcpt_rsn\":\"test\",\"encrypt\":\"6DW7GE0jEtKsbXZfsjc=\"}",
+        "cmd": "{ \"url\": \"/ipmgmt/routmgmt/insertListExcptMst.json\", \"sqlId\": \"\", \"param\": {\"chkListStr\":[\"2023041001_28_28867353_PIPMS_N_0_\"],\"sexcpt_yn\":\"Y\",\"sexcpt_cd\":\"EC0001\",\"sexcpt_rsn\":\"test\",\"encrypt\":\"6DW7GE0jEtKsbXZfsjc=\"} }",
+        "requestTime": "2024-12-20 15:01:31.247",
+        "responseTime": "2024-12-20 15:01:33.323",
+        "duration": 2076,
+        "jsonFileName": "ipmgmtroutmgmtinsertListExcptMstjson_chkLis2023041001sexcptYsexcptEC0001sexcpttest.json"
     }
 }
