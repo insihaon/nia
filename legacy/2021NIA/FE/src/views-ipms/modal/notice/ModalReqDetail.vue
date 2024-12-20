@@ -3,7 +3,7 @@
     v-if="animationVisible"
     id="ipms"
     v-el-drag-dialog
-    :title="'요구사항 ' + viewType === 'detail' ? '상세' : '등록'"
+    :title="'요구사항 '+(viewType === 'detail' ? '상세' : '등록')"
     :visible.sync="visible"
     :width="domElement.maxWidth + `px`"
     :fullscreen.sync="fullscreen"
@@ -36,7 +36,7 @@
           <tr>
             <th>요청사항 구분</th>
             <td>
-              <el-select v-model="resultVo.rboardDivision" size="small" :disabled="isDisabled">
+              <el-select v-model="resultVo.rboardDivision" size="small" :disabled="isDisabled" popper-class="rboardDivision">
                 <el-option value="" label="전체" />
                 <el-option
                   v-for="(option, i) in requestOptions"
@@ -48,7 +48,7 @@
             </td>
             <th>중요도</th>
             <td>
-              <el-select v-model="resultVo.rboardImportance" size="small" :disabled="isDisabled">
+              <el-select v-model="resultVo.rboardImportance" size="small" :disabled="isDisabled" popper-class="rboardImportance">
                 <el-option value="" label="전체" />
                 <el-option value="상">상</el-option>
                 <el-option value="중">중</el-option>
@@ -67,6 +67,7 @@
                 v-model="resultVo.rboardDesireDate"
                 type="date"
                 size="small"
+                popper-class="rboardDesireDate"
                 :disabled="isDisabled"
               />
             </td>
@@ -268,17 +269,17 @@ export default {
           formData.append('rboardProgress', this.resultVo.rboardProgress)
           formData.append('rboardExpectedDate', this.moment(this.resultVo.rboardExpectedDate).format('YYYY-MM-DD'))
         }
-        formData.append('file', this.files[0])
-        formData.append('rboardTitle', rboardTitle)
-        formData.append('rboardDivision', rboardDivision)
-        formData.append('rboardDesireDate', this.moment(rboardDesireDate).format('YYYY-MM-DD'))
-        formData.append('rboardPurposeRequest', rboardPurposeRequest)
-        formData.append('rboardImportance', rboardImportance)
-        formData.append('rboardContent', rboardContent)
-        formData.append('sUserNm', sUserNm)
-        formData.append('mail_type', 'Req-Insert')
-        return formData
       }
+      formData.append('file', this.files[0])
+      formData.append('rboardTitle', rboardTitle)
+      formData.append('rboardDivision', rboardDivision)
+      formData.append('rboardDesireDate', this.moment(rboardDesireDate).format('YYYY-MM-DD'))
+      formData.append('rboardPurposeRequest', rboardPurposeRequest)
+      formData.append('rboardImportance', rboardImportance)
+      formData.append('rboardContent', rboardContent)
+      formData.append('sUserNm', sUserNm)
+      formData.append('mail_type', 'Req-Insert')
+      return formData
     },
     downloadReqFile(seq) {
       // 파일 다운로드

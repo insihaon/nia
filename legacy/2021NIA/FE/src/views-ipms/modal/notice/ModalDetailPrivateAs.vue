@@ -97,11 +97,11 @@
             <th>개통일</th>
             <td v-if="isReadOnly" class="textcenter">{{ resultVo.drequestAsObjOpenDt1 ? moment(resultVo.drequestAsObjOpenDt1).format('YYYY-MM-DD') : '' }}</td>
             <td v-else>
-              <el-date-picker v-model="resultVo.drequestAsObjOpenDt1" type="date" size="small" format="yyyy-MM-dd" />
+              <el-date-picker v-model="resultVo.drequestAsObjOpenDt1" type="date" size="small" format="yyyy-MM-dd" popper-class="nodeOnePicker"/>
             </td>
             <td v-if="isReadOnly" class="textcenter">{{ resultVo.drequestAsObjOpenDt2 ? moment(resultVo.drequestAsObjOpenDt2).format('YYYY-MM-DD') : '' }}</td>
             <td v-else>
-              <el-date-picker v-model="resultVo.drequestAsObjOpenDt2" type="date" size="small" format="yyyy-MM-dd" />
+              <el-date-picker v-model="resultVo.drequestAsObjOpenDt2" type="date" size="small" format="yyyy-MM-dd" popper-class="nodeTwoPicker" />
             </td>
           </tr>
           <tr>
@@ -184,7 +184,7 @@
       <el-button v-if="isCreated && viewType !== 'edit'" type="primary" size="small" class="float-left" round @click="fnRejectPrvAsSubmit()">반려</el-button>
       <el-button v-if="resultVo.srequestAsTypeCd === 'RS0202'" type="primary" size="small" round @click="fnReturnAsTxmSubmit()">반납</el-button>
       <template v-if="resultVo.screateId === userId">
-        <el-button v-if="isCreated && viewType !== 'edit'" type="primary" size="small" round @click="fnDeletePrvAsSubmit()">신청 취소</el-button>
+        <el-button v-if="isCreated && viewType !== 'edit'" type="primary" size="small" round @click="fnDeletePrvAsSubmit()">신청취소</el-button>
         <template v-if="viewType === 'detail' && isCreated">
           <el-button type="primary" size="small" icon="el-icon-edit" round @click="onChangeMode()">수정</el-button>
         </template>

@@ -381,7 +381,7 @@ export default {
           }
           const res = await apiRequestJson(ipmsJsonApis.viewDeleteWhoisModReq, tbWhoisModfiyVo)
           if (res.tbWhoisModifyVo.commonMsg === 'SUCCESS') {
-            onMessagePopup(this`WHOIS 정보 변경 신청 내역이 정상적으로 취소 되었습니다.`)
+            onMessagePopup(this, `WHOIS 정보 변경 신청 내역이 정상적으로 취소 되었습니다.`)
             this.$emit('reload')
             this.close()
           } else {

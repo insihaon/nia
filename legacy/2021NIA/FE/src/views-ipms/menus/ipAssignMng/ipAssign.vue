@@ -167,11 +167,7 @@ export default {
       immediate: true
     }
   },
-  created() {
-
-  },
   mounted() {
-    this.onloadIpAssign()
     this.fnSelectSipCreateSeqCds()
     this.fnSelectSassignLevelCds()
   },
@@ -183,9 +179,8 @@ export default {
     async fnSelectSassignLevelCds() {
       try {
         const res = await apiRequestJson(ipmsJsonApis.selectSassignLevelCds, {})
-        const sassignLevelCd = res.tbIpAssignMstVos.map(v => { return { value: v.sassignLevelCd, label: v.sassignLevelNm } })
+        const sassignLevelCd = res.result.data.map(v => { return { value: v.code, label: v.name } })
         this.$set(this, 'sassignLevelCds', sassignLevelCd)
-        console.log(res)
       } catch (error) {
         console.error(error)
       }
@@ -193,9 +188,8 @@ export default {
     async fnSelectSipCreateSeqCds() {
       try {
         const res = await apiRequestJson(ipmsJsonApis.selectSipCreateSeqCdsList, {})
-        const sipCreateSeqCd = res.tbIpBlockMstVos.map(v => { return { value: v.sipCreateSeqCd, label: v.sipCreateSeqNm } })
+        const sipCreateSeqCd = res.result.data.map(v => { return { value: v.code, label: v.name } })
         this.$set(this, 'sipCreateSeqCds', sipCreateSeqCd)
-        console.log(res)
       } catch (error) {
         console.error(error)
       }

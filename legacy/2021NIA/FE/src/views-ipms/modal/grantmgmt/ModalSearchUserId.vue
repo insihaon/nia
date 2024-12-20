@@ -89,10 +89,6 @@ export default {
       ]
     }
   },
-  computed: {
-  },
-  mounted() {
-  },
   methods: {
     onCreated() {
       Modal.methods.onCreated.call(this)
