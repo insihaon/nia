@@ -1,5 +1,5 @@
 {
-    "__body": {
+    "data": {
         "searchBgnDe": "",
         "searchCnd": "",
         "searchEndDe": "",
@@ -103,14 +103,19 @@
         "sexcptRsn": null,
         "spageType": null
     },
+    "status": 200,
     "config": {
+        "filePath": "src/api/ipms.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
         "url": "/opermgmt/intgrmgmt/insertListRoutChkMst.json",
-        "param": {},
-        "receivedTime": "2024-08-29 14:21:47.269",
-        "fetch": "success-fetch('/opermgmt/intgrmgmt/insertListRoutChkMst.json', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{}', 'method': 'POST' })",
-        "cmd": "{\"url\": \"/opermgmt/intgrmgmt/insertListRoutChkMst.json\", \"sqlId\": \"\", \"param\": null}",
-        "duration": 20285,
-        "jsonFileName": "opermgmtintgrmgmtinsertListRoutChkMstjson_.json",
-        "oldJsonFileName": "b3Blcm1nbXQvaW50Z3JtZ210L2luc2VydExpc3RSb3V0Q2hrTXN0Lmpzb24_.json"
+        "urlOrigin": "/opermgmt/intgrmgmt/insertListRoutChkMst.json",
+        "params": null,
+        "data": "{\"encrypt\":\"PNKqyQNPWWtaZIhgqwY=\"}",
+        "cmd": "{ \"url\": \"/opermgmt/intgrmgmt/insertListRoutChkMst.json\", \"sqlId\": \"\", \"param\": {\"encrypt\":\"PNKqyQNPWWtaZIhgqwY=\"} }",
+        "requestTime": "2024-12-20 15:40:29.010",
+        "responseTime": "2024-12-20 15:40:49.293",
+        "duration": 20283,
+        "jsonFileName": "opermgmtintgrmgmtinsertListRoutChkMstjson_.json"
     }
 }

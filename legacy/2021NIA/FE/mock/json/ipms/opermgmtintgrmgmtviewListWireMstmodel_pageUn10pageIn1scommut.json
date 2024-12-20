@@ -1,0 +1,70 @@
+{
+    "data": {
+        "result": {
+            "data": [
+                {
+                    "searchBgnDe": "",
+                    "searchCnd": "",
+                    "searchEndDe": "",
+                    "searchWrd": "",
+                    "sortType": "",
+                    "sortOrdr": "",
+                    "searchUseYn": "",
+                    "searchBgnCd": "",
+                    "searchEndCd": "",
+                    "pageIndex": 1,
+                    "pageUnit": 0,
+                    "pageSize": 0,
+                    "firstIndex": 1,
+                    "lastIndex": 10,
+                    "recordCountPerPage": 10,
+                    "rowNo": 1,
+                    "typeFlag": "",
+                    "dcreateDt": "2024-12-20T15:41:57.000+09:00",
+                    "screateId": "10150810",
+                    "screateNm": null,
+                    "dmodifyDt": "2024-12-20T15:41:57.000+09:00",
+                    "smodifyId": "10150810",
+                    "smodifyNm": null,
+                    "commonMsg": null,
+                    "screateEmail": null,
+                    "smodifyEmail": null,
+                    "moveType": "",
+                    "moveSearchWrd": "",
+                    "moveSipVersionTypeCd": null,
+                    "url": null,
+                    "menuType": null,
+                    "paramMap": null,
+                    "nwireIpCommuSeq": 665,
+                    "skindCd": "KORNET",
+                    "scommunity": "t",
+                    "snexthop": null,
+                    "nlvlBasSeq": 456,
+                    "ssvcLineTypeCd": "CL0001",
+                    "ssvcLineTypeNm": "KORNET",
+                    "ssvcGroupCd": "369794",
+                    "ssvcGroupNm": "네트워크관제센터",
+                    "ssvcObjCd": "VV0060",
+                    "ssvcObjNm": "타사이관 가상국사",
+                    "delList": null
+                }
+            ],
+            "totalCount": 1
+        }
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/ipms.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/opermgmt/intgrmgmt/viewListWireMst.model",
+        "urlOrigin": "/opermgmt/intgrmgmt/viewListWireMst.model",
+        "params": null,
+        "data": "{\"pageUnit\":10,\"pageIndex\":1,\"skindCd\":\"\",\"scommunity\":\"t\",\"snexthop\":\"\",\"encrypt\":\"3Q7RAApASGe4BsoSBvA=\"}",
+        "cmd": "{ \"url\": \"/opermgmt/intgrmgmt/viewListWireMst.model\", \"sqlId\": \"\", \"param\": {\"pageUnit\":10,\"pageIndex\":1,\"skindCd\":\"\",\"scommunity\":\"t\",\"snexthop\":\"\",\"encrypt\":\"3Q7RAApASGe4BsoSBvA=\"} }",
+        "requestTime": "2024-12-20 15:42:02.802",
+        "responseTime": "2024-12-20 15:42:02.998",
+        "duration": 196,
+        "jsonFileName": "opermgmtintgrmgmtviewListWireMstmodel_pageUn10pageIn1scommut.json"
+    }
+}

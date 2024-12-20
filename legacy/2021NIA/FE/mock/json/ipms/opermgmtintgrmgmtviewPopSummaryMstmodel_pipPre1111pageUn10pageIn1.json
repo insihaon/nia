@@ -1,0 +1,63 @@
+{
+    "data": {
+        "result": {
+            "data": [
+                {
+                    "searchBgnDe": "",
+                    "searchCnd": "",
+                    "searchEndDe": "",
+                    "searchWrd": "",
+                    "sortType": "",
+                    "sortOrdr": "",
+                    "searchUseYn": "",
+                    "searchBgnCd": "",
+                    "searchEndCd": "",
+                    "pageIndex": 1,
+                    "pageUnit": 0,
+                    "pageSize": 0,
+                    "firstIndex": 1,
+                    "lastIndex": 10,
+                    "recordCountPerPage": 10,
+                    "rowNo": 1,
+                    "typeFlag": "",
+                    "dcreateDt": "2024-12-20T15:41:02.000+09:00",
+                    "screateId": "10150810",
+                    "screateNm": null,
+                    "dmodifyDt": "2024-12-20T15:41:02.000+09:00",
+                    "smodifyId": "10150810",
+                    "smodifyNm": null,
+                    "commonMsg": null,
+                    "screateEmail": null,
+                    "smodifyEmail": null,
+                    "moveType": "",
+                    "moveSearchWrd": "",
+                    "moveSipVersionTypeCd": null,
+                    "url": null,
+                    "menuType": null,
+                    "paramMap": null,
+                    "nmobileIpSummSeq": 75,
+                    "skindCd": "public",
+                    "skindNm": "public",
+                    "pipPrefix": "1.1.1.1/32",
+                    "delList": null
+                }
+            ],
+            "totalCount": 1
+        }
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/ipms.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/opermgmt/intgrmgmt/viewPopSummaryMst.model",
+        "urlOrigin": "/opermgmt/intgrmgmt/viewPopSummaryMst.model",
+        "params": null,
+        "data": "{\"skindCd\":\"\",\"pipPrefix\":\"1.1.1.1\",\"pageUnit\":10,\"pageIndex\":1,\"encrypt\":\"8swrjNdb4jumMuoTDIg=\"}",
+        "cmd": "{ \"url\": \"/opermgmt/intgrmgmt/viewPopSummaryMst.model\", \"sqlId\": \"\", \"param\": {\"skindCd\":\"\",\"pipPrefix\":\"1.1.1.1\",\"pageUnit\":10,\"pageIndex\":1,\"encrypt\":\"8swrjNdb4jumMuoTDIg=\"} }",
+        "requestTime": "2024-12-20 15:41:05.780",
+        "responseTime": "2024-12-20 15:41:05.879",
+        "duration": 99,
+        "jsonFileName": "opermgmtintgrmgmtviewPopSummaryMstmodel_pipPre1111pageUn10pageIn1.json"
+    }
+}
