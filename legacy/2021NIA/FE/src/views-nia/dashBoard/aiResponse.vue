@@ -126,62 +126,66 @@ export default {
       return this.selectedRow?.status === 'FIN' || this.selectedRow?.status === 'AUTO_FIN'
     },
     trafficChartPps() {
-      const { ticket_type } = this.selectedRow
-      const chartData = this.trafficChartList
-      const xAxisKey = ['ATT2', 'FTT'].includes(ticket_type) ? 'measured_datetime' : 'collect_time'
-      const markLine = {
-        symbol: ['none', 'none'],
-        label: { show: false },
-        data: [{ xAxis: this.selectedRow?.fault_time || '' }],
-      }
+  const { ticket_type } = this.selectedRow
+  const chartData = this.trafficChartList
+  const xAxisKey = ['ATT2', 'FTT'].includes(ticket_type) ? 'measured_datetime' : 'collect_time'
+  const markLine = {
+    symbol: ['none', 'none'],
+    label: { show: false },
+    data: [{ xAxis: this.selectedRow?.fault_time || '' }],
+  }
 
-      let seriesArr = []
-      if (['ATT2', 'FTT'].includes(ticket_type)) {
-        seriesArr = [
-          {
-            markLine,
-            name: 'PPS_IN',
-            type: 'line',
-            data: chartData.map((v) => v.fltpps_in),
-          },
-          {
-            markLine,
-            name: 'PPS_OUT',
-            type: 'line',
-            data: chartData.map((v) => v.fltpps_out),
-          },
-        ]
-      } else {
-        seriesArr = [
-          {
-            markLine,
-            name: 'STRCOUNTS',
-            type: 'line',
-            data: chartData.map((v) => v.strcounts),
-          },
-          {
-            name: 'STRBYTES_COL',
-            type: 'line',
-            data: chartData.map((v) => v.strbytes_col),
-          },
-        ]
-      }
-
-      return {
-        tooltip: {
-          trigger: 'axis',
-        },
-        dataZoom: [{ type: 'inside' }],
-        xAxis: {
-          type: 'category',
-          data: chartData.map((v) => formatterTime(v[xAxisKey])),
-        },
-        yAxis: {
-          type: 'value',
-        },
-        series: seriesArr,
-      }
+  let seriesArr = []
+  if (['ATT2', 'FTT'].includes(ticket_type)) {
+    seriesArr = [
+      {
+        markLine,
+        name: 'PPS_IN',
+        type: 'line',
+        data: chartData.map((v) => v.fltpps_in),
+      },
+      {
+        markLine,
+        name: 'PPS_OUT',
+        type: 'line',
+        data: chartData.map((v) => v.fltpps_out),
+      },
+    ]
+  } else {
+    seriesArr = [
+      {
+        markLine,
+        name: 'STRCOUNTS',
+        type: 'line',
+        data: chartData.map((v) => v.strcounts),
+      },
+      {
+        name: 'STRBYTES_COL',
+        type: 'line',
+        data: chartData.map((v) => v.strbytes_col),
+      },
+    ]
+  }
+  return {
+    tooltip: {
+      trigger: 'axis',
     },
+    legend: {
+      top: '5%', // 상단에 위치
+      left: 'center', // 중앙 정렬
+      orient: 'horizontal', // 가로 방향 정렬
+    },
+    dataZoom: [{ type: 'inside' }],
+    xAxis: {
+      type: 'category',
+      data: chartData.map((v) => formatterTime(v[xAxisKey])),
+    },
+    yAxis: {
+      type: 'value',
+    },
+    series: seriesArr,
+  }
+},
   trafficChartMbps() {
     const { ticket_type } = this.selectedRow
     const chartData = this.trafficChartList
@@ -224,7 +228,6 @@ export default {
           type: 'line',
           data: chartData.map((v) => v.in_threshold_upper),
           smooth: true,
-          stack: 'total',
           itemStyle: { color: colorMap.IN_THRESHOLD_UPPER },
           areaStyle: { color: colorMap.IN_THRESHOLD_UPPER },
           lineStyle: { width: 0 },
@@ -235,7 +238,6 @@ export default {
           type: 'line',
           data: chartData.map((v) => v.out_threshold_upper),
           smooth: true,
-          stack: 'total',
           itemStyle: { color: colorMap.OUT_THRESHOLD_UPPER },
           areaStyle: { color: colorMap.OUT_THRESHOLD_UPPER },
           lineStyle: { width: 0 },
