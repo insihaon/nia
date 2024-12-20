@@ -1,16 +1,15 @@
 describe('Ip Block Management Fuctionality', () => {
   beforeEach(() => {
-    cy.visitPath('ipAssignMng/ipBlockManagement')
     /* POST 요청 정의 */
+    cy.intercept('POST', '**/ipmgmt/createmgmt/viewListCrtIPMst.model').as('viewListCrtIPMst')
     cy.intercept('POST', '**/ipmgmt/createmgmt/viewDetailCrtIPMst.model').as('viewDetailCrtIPMst') /* 상세 */
+    cy.visitPath('ipAssignMng/ipBlockManagement')
   })
   context('IP Block Management View List', () => {
     afterEach(() => {
       cy.wait(1000) // 각 테스트 후에 1초 대기
     })
     it('list lookup', () => {
-      /* POST 요청 정의 */
-      cy.intercept('POST', '**/ipmgmt/createmgmt/viewListCrtIPMst.model').as('viewListCrtIPMst')
       cy.wait('@viewListCrtIPMst').then((interception) => {
         // cy.log('viewListCrtIPMst response:', JSON.stringify(interception.response))
         expect(interception.response.statusCode).to.equal(200)
@@ -22,8 +21,7 @@ describe('Ip Block Management Fuctionality', () => {
     // it('create', () => {
     // })
     it('detail', () => {
-      /* 상세버튼 클릭 */
-      cy.get('.add-features > :nth-child(3)').click()
+      cy.get('#element-table tr').eq(1).dblclick()
       cy.wait('@viewDetailCrtIPMst').then((interception) => {
         expect(interception.response.statusCode).to.equal(200)
         const responseData = interception.response.body.result.data

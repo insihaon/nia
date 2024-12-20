@@ -19,7 +19,7 @@ describe('operInfoManagement Fuctionality', () => {
     })
     it('detail', () => {
       cy.intercept('POST', '**/ipmgmt/hostmgmt/viewDetailIPHostMst.model').as('viewDetailIPHostMst') /* 상세 */
-      cy.get('tbody > :nth-child(1) > .el-table_2_column_12').dblclick()
+      cy.get('#element-table tr').eq(1).dblclick()
       cy.wait('@viewDetailIPHostMst').then((interception) => {
         expect(interception.response.statusCode).to.equal(200)
         expect(interception.response.body.result.data).to.exist
@@ -36,7 +36,7 @@ describe('operInfoManagement Fuctionality', () => {
       cy.get('.el-input__suffix-inner > .el-button').click()
       cy.get('.popupContentTable > table > tr > :nth-child(2) > .el-input > .el-input__inner').type('유성')
       cy.get('tr > :nth-child(3) > .el-button').click()
-      cy.get('tbody > :nth-child(1) > .el-table_3_column_21').dblclick()
+      cy.get('.el-dialog__body > .compTable tr').eq(1).dblclick()
       /* 나머지 정보 입력 */
       cy.get(':nth-child(3) > .textflex > :nth-child(2) > .el-input__inner').type('0.0.0.1')
       cy.get('.txt > .el-input__inner').type('test')
@@ -48,7 +48,7 @@ describe('operInfoManagement Fuctionality', () => {
     })
     it('update', () => {
       cy.intercept('POST', '**/ipmgmt/hostmgmt/updateHostIPMst.json').as('updateHostIPMst') /* 수정 */
-      cy.get('tbody > :nth-child(1) > .el-table_2_column_12').dblclick()
+      cy.get('#element-table tr').eq(1).dblclick()
       cy.get('.el-icon-edit').click()
       cy.wait(200)
       cy.get('.el-icon-edit').click()
@@ -73,7 +73,7 @@ describe('operInfoManagement Fuctionality', () => {
     /* case 2. */
     it('delete_2', () => {
       cy.intercept('POST', '**/ipmgmt/hostmgmt/deleteHostIPMst.json').as('deleteHostIPMst') /* 삭제 */
-      cy.get('tbody > :nth-child(1) > .el-table_2_column_12').dblclick()
+      cy.get('#element-table tr').eq(1).dblclick()
       cy.get('.popupContentTableBottom > :nth-child(2)').click()
       cy.get('.el-message-box__btns > .el-button--primary').click()
       cy.wait('@deleteHostIPMst').then((interception) => {
@@ -102,7 +102,7 @@ describe('operInfoManagement Fuctionality', () => {
     })
     it('detail', () => {
       cy.intercept('POST', '**/ipmgmt/linkmgmt/viewDetailIPLinkMst.model').as('viewDetailIPLinkMst') /* 상세 */
-      cy.get('tbody > :nth-child(1) > .el-table_2_column_12').dblclick()
+      cy.get('#element-table tr').eq(1).dblclick()
       cy.wait('@viewDetailIPLinkMst').then((interception) => {
         expect(interception.response.statusCode).to.equal(200)
         expect(interception.response.body.result.data).to.exist
@@ -150,7 +150,7 @@ describe('operInfoManagement Fuctionality', () => {
     it('update', () => {
       cy.intercept('POST', '**/ipmgmt/linkmgmt/viewUpdateIPLinkMst.model').as('viewUpdateIPLinkMst') /* 수정 데이터 조회 */
       cy.intercept('POST', '**/ipmgmt/linkmgmt/updateLinkIPMst.json').as('updateLinkIPMst') /* 수정 */
-      cy.get('tbody > :nth-child(1) > .el-table_2_column_12').dblclick()
+      cy.get('#element-table tr').eq(1).dblclick()
       cy.get('.el-icon-edit').click()
       cy.wait('@viewUpdateIPLinkMst').then((interception) => {
         expect(interception.response.statusCode).to.equal(200)
@@ -176,7 +176,7 @@ describe('operInfoManagement Fuctionality', () => {
     /* case 2. */
     it('delete_2', () => {
       cy.intercept('POST', '**/ipmgmt/linkmgmt/deleteLinkIPMst.json').as('deleteLinkIPMst') /* 삭제 */
-      cy.get('tbody > :nth-child(1) > .el-table_2_column_12').dblclick()
+      cy.get('#element-table tr').eq(1).dblclick()
       cy.get('.popupContentTableBottom > :nth-child(2)').click()
       cy.get('.el-message-box__btns > .el-button--primary').click()
       cy.wait('@deleteLinkIPMst').then((interception) => {

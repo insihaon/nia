@@ -49,10 +49,10 @@
             }"
           >
             <td>{{ item.suserNm }}</td>
-            <td :title="item.suserGradeNm">{{ item.suserGradeNm }}</td>
-            <td :title="item.tbLvlBasVo.ssvcLineTypeNm">{{ item.tbLvlBasVo.ssvcLineTypeNm }}</td>
-            <td :title="item.tbLvlBasVo.ssvcGroupNm">{{ item.tbLvlBasVo.ssvcGroupNm }}</td>
-            <td :title="item.tbLvlBasVo.ssvcObjNm">{{ item.tbLvlBasVo.ssvcObjNm }}</td>
+            <td>{{ item.suserGradeNm }}</td>
+            <td>{{ item.tbLvlBasVo.ssvcLineTypeNm }}</td>
+            <td>{{ item.tbLvlBasVo.ssvcGroupNm }}</td>
+            <td>{{ item.tbLvlBasVo.ssvcObjNm }}</td>
           </tr>
         </template>
       </table>
@@ -69,10 +69,10 @@
         </tr>
         <tr v-for="(item, index) in resultSubListVo.tbUserAuthTxnSubVos" :key="index">
           <td>{{ item.suserNm }}</td>
-          <td :title="item.suserGradeNm">{{ item.suserGradeNm }}</td>
-          <td :title="item.tbLvlBasVo.ssvcLineTypeNm">{{ item.tbLvlBasVo.ssvcLineTypeNm }}</td>
-          <td :title="item.tbLvlBasVo.ssvcGroupNm">{{ item.tbLvlBasVo.ssvcGroupNm }}</td>
-          <td :title="item.tbLvlBasVo.ssvcObjNm">{{ item.tbLvlBasVo.ssvcObjNm }}</td>
+          <td>{{ item.suserGradeNm }}</td>
+          <td>{{ item.tbLvlBasVo.ssvcLineTypeNm }}</td>
+          <td>{{ item.tbLvlBasVo.ssvcGroupNm }}</td>
+          <td>{{ item.tbLvlBasVo.ssvcObjNm }}</td>
         </tr>
       </table>
     </div>
@@ -154,33 +154,27 @@ export default {
             grantSeq: grantSeq
          }
         const res = await apiRequestModel(ipmsModelApis.viewDetailUserAuthSubs, tbUserAuthVo)
-        const responseData = res.result.data[0]
-        this.resultList = responseData.resultListVo?.tbUserAuthTxnVos || [] /* 권한상세 정보 */
-        this.resultList.forEach((txn) => {
-          if (!txn.tbLvlBasVo) {
-            txn.tbLvlBasVo = {
-              ssvcLineTypeNm: '',
-              ssvcGroupNm: '',
-              ssvcObjNm: '',
-            }
-          }
-        })
+        this.resultList = res.result.resultListVo.tbUserAuthTxnVos
+        if (this.resultList[0].tbLvlBasVo === null) {
+          this.resultList.map(row => {
+            const tbLvlBasVo = { ssvcLineTypeNm: '', ssvcGroupNm: '', ssvcObjNm: '' }
+            Object.assign(row, { tbLvlBasVo })
+          })
+        }
 
-        this.resultSubListVo = responseData.resultSubListVo || { tbUserAuthTxnSubVos: [] } /* 등록예정 권한 정보 */
-        this.resultSubListVo.tbUserAuthTxnSubVos.forEach((txn) => {
-          if (!txn.tbLvlBasVo) {
-            txn.tbLvlBasVo = {
-              ssvcLineTypeNm: '',
-              ssvcGroupNm: '',
-              ssvcObjNm: '',
-            }
-          }
-        })
-        this.resultListVo = this._cloneDeep(res.result.data[0].resultListVo) || {}
-        this.totalCount = res.result.data[0].resultListVo.totalCount
-            this.rowGrantSeq = res.result.data[0].grantSeq
-            this.adminYn = res.result.data[0].adminYn
-            this.ownerYn = res.result.data[0].ownerYn
+        this.resultListVo = res.result.resultListVo
+        this.totalCount = res.result.resultListVo.tbUserAuthTxnVos?.length ?? 0
+
+        this.resultSubListVo = res.result.resultSubListVo
+        if (this.resultSubListVo.tbUserAuthTxnSubVos[0].tbLvlBasVo === null) {
+          this.resultSubListVo.tbUserAuthTxnSubVos.map(row => {
+            const tbLvlBasVo = { ssvcLineTypeNm: '', ssvcGroupNm: '', ssvcObjNm: '' }
+            Object.assign(row, { tbLvlBasVo })
+          })
+        }
+        this.rowGrantSeq = res.result.grant_seq
+        this.adminYn = res.result.adminYn
+        this.ownerYn = res.result.ownerYn
        } catch (error) {
          console.error(error)
        } finally {

@@ -81,16 +81,16 @@
         "sassigncontents": null,
         "nassignIpCnt": null
     },
-    "config": {
-        "url": "/opermgmt/assignmgmt/deleteAssignApyTxn.json",
-        "param": {
-            "nrequestAssignSeq": "625"
-        },
-        "receivedTime": "2024-08-30 08:49:18.097",
-        "fetch": "success-fetch('/opermgmt/assignmgmt/deleteAssignApyTxn.json', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{\"nrequestAssignSeq\":\"625\"}', 'method': 'POST' })",
-        "cmd": "{\"url\": \"/opermgmt/assignmgmt/deleteAssignApyTxn.json\", \"sqlId\": \"\", \"param\": \"{\\\"nrequestAssignSeq\\\": \\\"625\\\"}\"}",
-        "duration": 147,
-        "jsonFileName": "opermgmtassignmgmtdeleteAssignApyTxnjson_nreque625.json",
-        "oldJsonFileName": "b3Blcm1nbXQvYXNzaWdubWdtdC9kZWxldGVBc3NpZ25BcHlUeG4uanNvbg_NjI1.json"
-    }
+  "config": {
+    "url": "/opermgmt/assignmgmt/deleteAssignApyTxn.json",
+    "param": {
+        "nrequestAssignSeq": "625"
+    },
+    "receivedTime": "2024-08-30 08:49:18.097",
+    "fetch": "success-fetch('/opermgmt/assignmgmt/deleteAssignApyTxn.json', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{\"nrequestAssignSeq\":\"625\"}', 'method': 'POST' })",
+    "cmd": "{\"url\": \"/opermgmt/assignmgmt/deleteAssignApyTxn.json\", \"sqlId\": \"\", \"param\": \"{\\\"nrequestAssignSeq\\\": \\\"625\\\"}\"}",
+    "duration": 147,
+    "jsonFileName": "opermgmtassignmgmtdeleteAssignApyTxnjson_nreque625.json",
+    "oldJsonFileName": "b3Blcm1nbXQvYXNzaWdubWdtdC9kZWxldGVBc3NpZ25BcHlUeG4uanNvbg_NjI1.json"
+  }
 }

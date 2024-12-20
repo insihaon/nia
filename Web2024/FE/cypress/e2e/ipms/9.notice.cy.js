@@ -1,12 +1,13 @@
 describe('notice Fuctionality', () => {
   context('notice View List', () => {
     beforeEach(() => {
-      cy.visitPath('board/notice')
       /* POST 요청 정의 */
       cy.intercept('POST', '**/opermgmt/boardmgmt/viewListNotice.model').as('viewListNotice') /* 목록 */
       cy.intercept('POST', '**/opermgmt/boardmgmt/viewDetailNotice.model').as('viewDetailNotice') /* 상세 조회 */
+      cy.visitPath('board/notice')
       /* 조회 버튼 클릭 */
-      cy.get('.searchBtnWrap > .el-button--primary').click()
+      // cy.get('.searchBtnWrap > .el-button--primary').click()
+      cy.wait(1000)
     })
     afterEach(() => {
       cy.wait(1000) // 각 테스트 후에 1초 대기
@@ -38,7 +39,7 @@ describe('notice Fuctionality', () => {
       })
     })
     it('detail', () => {
-      cy.get('tbody > :nth-child(1) > .el-table_2_column_14').click()
+      cy.get('#element-table tr').eq(1).click()
       /* 상세 결과 성공여부 확인 */
       cy.wait('@viewDetailNotice').then((interception) => {
         // cy.log('viewListCrtIPMst response:', JSON.stringify(interception.response))
@@ -52,15 +53,17 @@ describe('notice Fuctionality', () => {
       cy.intercept('POST', '**/opermgmt/boardmgmt/viewUpdateNotice.model').as('viewUpdateNotice') /* 수정 정보 조회 */
       cy.intercept('POST', '**/opermgmt/boardmgmt/updateNotice.json').as('updateNotice') /* 수정 */
       /* row 클릭 */
-      cy.get('tbody > :nth-child(1) > .el-table_2_column_14').click()
+      cy.get('#element-table tr').eq(1).click()
       cy.wait('@viewDetailNotice')
-      /* 수정 버튼 클릭 */
+      /* 수정 버튼 클릭 (상세-> 수정화면) */
       cy.get('.popupContentTableBottom > :nth-child(1)').click()
       cy.wait('@viewUpdateNotice').then((interception) => {
         expect(interception.response.statusCode).to.equal(200)
         const responseData = interception.response.body.result.data
         expect(responseData).to.exist
       })
+      /* 수정 버튼 클릭(process) */
+      cy.get('.popupContentTableBottom > :nth-child(1)').click()
       /* 수정 결과 성공여부 확인 */
       cy.wait('@updateNotice').then((interception) => {
         expect(interception.response.statusCode).to.equal(200)
@@ -70,7 +73,7 @@ describe('notice Fuctionality', () => {
     it('delete', () => {
       /* POST 요청 정의 */
       cy.intercept('POST', '**/opermgmt/boardmgmt/deleteNotice.json').as('deleteNotice') /* 삭제 */
-      cy.get('tbody > :nth-child(1) > .el-table_2_column_14').click()
+      cy.get('#element-table tr').eq(1).click()
       cy.wait('@viewDetailNotice')
       /* 삭제 버튼 클릭 */
       cy.get('.popupContentTableBottom > :nth-child(2)').click()

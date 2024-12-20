@@ -60,7 +60,7 @@
             <tr>
               <th>배정상태</th>
               <td>
-                <el-select v-model="sassignLevelCd" size="mini">
+                <el-select v-model="sassignLevelCd" size="mini" popper-class="sassignLevelCd">
                   <el-option v-for="option in sassignTypeLevelOptions" :key="option.value" :label="option.label" :value="option.value">
                     {{ option.label }}
                   </el-option>
