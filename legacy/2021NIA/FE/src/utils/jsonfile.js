@@ -134,5 +134,7 @@ function getJsonfileName2(url, config) {
 }
 window.getJsonfileName2 = getJsonfileName2
 
-export { getJsonfileName2 }
+module.exports = {
+  getJsonfileName2
+}
 

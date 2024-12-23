@@ -201,12 +201,29 @@ function findSimilarityAlgorithm(list, jsonFileName, dirPath) {
     }
   }
 
-  // 유사도가 threshold 범위에 해당하는 파일을 수집
+  // rateList에서 가장 높은 rate의 파일 크기가 2KB를 넘으면 해당 파일 반환
+  const highestRateFile = list[index]
+  const highestRateFilePath = path.join(__dirname, dirPath, highestRateFile)
+  const highestRateFileSize = fs.statSync(highestRateFilePath).size
+
+  if (highestRateFileSize > 2 * 1024) {
+    return highestRateFile
+  }
+
+  // 유사도가 threshold 범위에 해당하는 파일 수집
   // 데이터가 없는 응답을 최소화 하기 위함
+  // 0: 유사도가 높은 파일 반환, 값이 높을 수록 비슷한 호출 중 파일 크기가 큰 파일 반환
   const threshold = 0.1
   for (let i = 0; i < rateList.length; i++) {
     if (Math.abs(rateList[i] - rate) <= threshold) {
       candidateFiles.push(list[i])
+    }
+  }
+
+  // candidateFiles에 포함되지 않은 rate 제거
+  for (let i = rateList.length - 1; i >= 0; i--) {
+    if (Math.abs(rateList[i] - rate) > threshold) {
+      rateList.splice(i, 1) // 조건에 맞지 않는 값을 제거
     }
   }
 
@@ -216,14 +233,24 @@ function findSimilarityAlgorithm(list, jsonFileName, dirPath) {
     let largestPath = path.join(__dirname, dirPath, candidateFiles[0])
     let largestSize = fs.statSync(largestPath).size
 
-    for (let i = 1; i < candidateFiles.length; i++) {
+    const log = false
+
+    log && console.log(''.padEnd(100, '-'))
+    log && console.log(`${'유사도'.padEnd(3, ' ')} | ${'파일크기'.padStart(8, ' ')} | 파일명`)
+    log && console.log(''.padEnd(100, '-'))
+
+    for (let i = 0; i < candidateFiles.length; i++) {
       largestPath = path.join(__dirname, dirPath, candidateFiles[i])
       const currentSize = fs.statSync(largestPath).size
+
+      log && console.log(`${rateList[i].toFixed(3).padEnd(6, ' ')} | ${currentSize.toString().padStart(12, ' ')} | ${candidateFiles[i]}`)
+
       if (currentSize > largestSize) {
         largestFile = candidateFiles[i]
         largestSize = currentSize
       }
     }
+    log && console.log(''.padEnd(100, '-'))
     return largestFile
   }
 
