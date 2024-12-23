@@ -1,8 +1,7 @@
 var path = require('path')
 var fs = require('fs')
-const { forEach } = require('./route/json')
 
-function responseJson(config) {
+function responseJson(config, res) {
   console.log('url'.padStart(17), ':', config.url)
 
   const param = config.headers
@@ -37,12 +36,27 @@ function responseJson(config) {
 
   console.log('--------------------------------------------------------------------------------------------------------------------------------')
 
+  if (jsonObject === null) {
+    res.status(404).json({
+      success: false,
+      error: `Mock 파일을 찾을 수 없습니다: ${jsonFileName}`
+    })
+    return
+  }
+
   /*
   __body : ipms
   data: other
   */
-  return jsonObject['data'] || jsonObject['__body'] || {
-    'success': false,
+
+  try {
+    return jsonObject['data'] || jsonObject['__body']
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: 'Mock 파일 응답 처리 중 에러가 발생했습니다.'
+    })
+    return
   }
 }
 
