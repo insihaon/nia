@@ -18,7 +18,10 @@
                 "clos_status": "Y",
                 "zero1_entropy": null,
                 "ticket_id": "14870846",
-                "fault_detail_content": "포트리셋"
+                "fault_detail_content": "포트리셋",
+                "DATE_TYPE": "day",
+                "DATE_TIME": "2024-12-03",
+                "SELF_PROCESS_GROUP": "ST"
             },
             {
                 "ticket_type": "SYSLOG",
@@ -31,7 +34,10 @@
                 "clos_status": "N",
                 "zero1_entropy": null,
                 "ticket_id": "14870845",
-                "fault_detail_content": "포트리셋"
+                "fault_detail_content": "포트리셋",
+                "DATE_TYPE": "day",
+                "DATE_TIME": "2024-12-03",
+                "SELF_PROCESS_GROUP": "ST"
             },
             {
                 "ticket_type": "SYSLOG",
@@ -44,7 +50,10 @@
                 "clos_status": "Y",
                 "zero1_entropy": null,
                 "ticket_id": "14870844",
-                "fault_detail_content": "포트리셋"
+                "fault_detail_content": "포트리셋",
+                "DATE_TYPE": "day",
+                "DATE_TIME": "2024-12-03",
+                "SELF_PROCESS_GROUP": "ST"
             },
             {
                 "ticket_type": "SYSLOG",
@@ -57,7 +66,10 @@
                 "clos_status": "N",
                 "zero1_entropy": null,
                 "ticket_id": "14870843",
-                "fault_detail_content": "포트리셋"
+                "fault_detail_content": "포트리셋",
+                "DATE_TYPE": "day",
+                "DATE_TIME": "2024-12-03",
+                "SELF_PROCESS_GROUP": "ST"
             }
         ]
     },
@@ -69,11 +81,11 @@
         "url": "/selectList/SELECT_SELF_PROCESS_LIST",
         "urlOrigin": "/selectList/SELECT_SELF_PROCESS_LIST",
         "params": null,
-        "data": "{\"DATE_TYPE\":\"day\",\"DATE_TIME\":\"2024-12-03\",\"SELF_PROCESS_GROUP\":\"ST\",\"limit\":100,\"page\":1,\"encrypt\":\"CtPbFr2nkCq82u7Xfpc=\"}",
-        "cmd": "{ \"url\": \"/selectList/SELECT_SELF_PROCESS_LIST\", \"sqlId\": \"SELECT_SELF_PROCESS_LIST\", \"param\": {\"DATE_TYPE\":\"day\",\"DATE_TIME\":\"2024-12-03\",\"SELF_PROCESS_GROUP\":\"ST\",\"limit\":100,\"page\":1,\"encrypt\":\"CtPbFr2nkCq82u7Xfpc=\"} }",
-        "requestTime": "2024-12-23 08:03:23.327",
-        "responseTime": "2024-12-23 08:03:23.463",
-        "duration": 136,
+        "data": "{\"DATE_TYPE\":\"day\",\"DATE_TIME\":\"2024-12-03\",\"SELF_PROCESS_GROUP\":\"ST\",\"limit\":100,\"page\":1,\"encrypt\":\"GKWka3x3PeJt6D95DYQ=\"}",
+        "cmd": "{ \"url\": \"/selectList/SELECT_SELF_PROCESS_LIST\", \"sqlId\": \"SELECT_SELF_PROCESS_LIST\", \"param\": {\"DATE_TYPE\":\"day\",\"DATE_TIME\":\"2024-12-03\",\"SELF_PROCESS_GROUP\":\"ST\",\"limit\":100,\"page\":1,\"encrypt\":\"GKWka3x3PeJt6D95DYQ=\"} }",
+        "requestTime": "2024-12-23 09:41:54.245",
+        "responseTime": "2024-12-23 09:41:54.383",
+        "duration": 138,
         "jsonFileName": "SELECTSELFPROCESSLIST_DATETYdayDATETI20241203SELFPRSTlimit100page1.json"
     }
 }
