@@ -22,21 +22,28 @@ function responseJson(config) {
   // console.log('param:', param)
   // console.log('decodeFileName:', decodeFileName)
 
-  if (!fs.existsSync(filePath)) {
-    filePath = findSimilarFile(dirPath, jsonFileName)
+  let jsonObject = null
+  try {
+    if (!fs.existsSync(filePath)) {
+      filePath = findSimilarFile(dirPath, jsonFileName)
+    }
+
+    console.log('RES FilePath'.padStart(17), ':', filePath)
+    jsonObject = require(filePath)
+    // console.log('jsonObject: ', jsonObject)
+  } catch (error) {
+    console.error(`[ERROR] mock 파일을 찾을 수 없습니다. ${jsonFileName}`)
   }
 
-  console.log('RES FilePath'.padStart(17), ':', filePath)
-
-  const jsonObject = require(filePath)
-  // console.log('jsonObject: ', jsonObject)
   console.log('--------------------------------------------------------------------------------------------------------------------------------')
 
   /*
   __body : ipms
   data: other
   */
-  return jsonObject['data'] || jsonObject['__body']
+  return jsonObject['data'] || jsonObject['__body'] || {
+    'success': false,
+  }
 }
 
 function findSimilarFile(dirPath, jsonFileName) {
