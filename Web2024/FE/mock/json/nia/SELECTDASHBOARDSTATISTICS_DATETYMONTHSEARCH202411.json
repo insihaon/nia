@@ -33,11 +33,11 @@
         "url": "/selectList/SELECT_DASHBOARD_STATISTICS",
         "urlOrigin": "/selectList/SELECT_DASHBOARD_STATISTICS",
         "params": null,
-        "data": "{\"DATE_TYPE\":\"MONTH\",\"SEARCH_DATE\":\"2024-11\",\"encrypt\":\"VrSo3dYoIxja75NFZlM=\"}",
-        "cmd": "{ \"url\": \"/selectList/SELECT_DASHBOARD_STATISTICS\", \"sqlId\": \"SELECT_DASHBOARD_STATISTICS\", \"param\": {\"DATE_TYPE\":\"MONTH\",\"SEARCH_DATE\":\"2024-11\",\"encrypt\":\"VrSo3dYoIxja75NFZlM=\"} }",
-        "requestTime": "2024-12-13 22:08:52.059",
-        "responseTime": "2024-12-13 22:08:52.096",
-        "duration": 37,
+        "data": "{\"DATE_TYPE\":\"MONTH\",\"SEARCH_DATE\":\"2024-11\",\"encrypt\":\"4HQGRyH5tU4iwN6Uf6U=\"}",
+        "cmd": "{ \"url\": \"/selectList/SELECT_DASHBOARD_STATISTICS\", \"sqlId\": \"SELECT_DASHBOARD_STATISTICS\", \"param\": {\"DATE_TYPE\":\"MONTH\",\"SEARCH_DATE\":\"2024-11\",\"encrypt\":\"4HQGRyH5tU4iwN6Uf6U=\"} }",
+        "requestTime": "2024-12-23 08:03:45.971",
+        "responseTime": "2024-12-23 08:03:46.004",
+        "duration": 33,
         "jsonFileName": "SELECTDASHBOARDSTATISTICS_DATETYMONTHSEARCH202411.json"
     }
 }
