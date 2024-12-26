@@ -257,8 +257,9 @@ export default {
         sAftOrgAddr: Addr.newkaddr,
         sAftZipCode: Addr.zipcode,
         sAftEOrgAddr: Addr.eaddr,
-        sAftEOrgName: '',
-        sAftOrgAddrDetail: Addr.detailAddress
+        // sAftEOrgName: '',
+        sAftOrgAddrDetail: Addr.detailAddress,
+        sAftEOrgAddrDetail: Addr.detailEAddress
       }
       Object.assign(this.afterInfo, addrObj)
     },

@@ -119,6 +119,7 @@ export default {
       viewType: '',
       txtAddress: '',
       detailAddress: '',
+      detailEAddress: '',
       zipcodePrefix: '',
       searchAddrVo: {}
     }
@@ -176,12 +177,22 @@ export default {
         eaddr: eaddr,
       }
     },
+    async fnSelectEaddrDetail() {
+      try {
+        const detailEAddress = await apiRequestJson(ipmsJsonApis.selectEaddr, { detailAddress: this.detailAddress })
+        this.detailEAddress = detailEAddress
+      } catch (error) {
+        this.error(error)
+      } finally {
+        this._merge(this.searchAddrVo, { detailAddress: this.detailAddress, detailEAddress: this.detailEAddress })
+        this.$emit('setAddrForm', this.searchAddrVo)
+        this.close()
+      }
+    },
     btnSaveSearchAddr() {
-      this.close()
+      this.fnSelectEaddrDetail()
     },
     onClose() {
-      this._merge(this.searchAddrVo, { detailAddress: this.detailAddress })
-      this.$emit('setAddrForm', this.searchAddrVo)
     }
   },
 }
