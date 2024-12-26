@@ -237,6 +237,7 @@ export const ipmsJsonApis = {
   selectSearchScrnBas: { desc: '메뉴관리 > 화면명 검색', url: '/opermgmt/menumgmt/selectSearchScrnBas' },
   updateTbMenuBasVo: { desc: '메뉴관리 > 화면명 저장', url: '/opermgmt/menumgmt/updateTbMenuBasVo' },
   countWhoisByStatus: { desc: 'WHOIS 정보공개관리 상태 count 조회', url: '/opermgmt/whoismgmt/countWhoisByStatus' },
+  selectEaddr: { desc: 'WHOIS 정보공개관리 주소 검색 > 영문 상세주소 조회', url: '/opermgmt/whoismgmt/selectEaddr' },
   deleteTbWhoisVo: { desc: 'WHOIS 정보공개관리  > WHOIS 정보공개 삭제', url: '/opermgmt/whoismgmt/deleteTbWhoisVo' },
   updateWhoisComplexNew: { desc: 'WHOIS 정보공개관리 > WHOIS 신청서 수정 ', url: '/opermgmt/whoismgmt/updateWhoisComplexNew' },
   selectWhoisComplexNew: { desc: 'WHOIS 데이터 변경 전송 ', url: '/opermgmt/whoismgmt/selectWhoisComplexNew' },
@@ -312,7 +313,7 @@ export function apiRequestJson(api, params) {
     filePath: filePath,
     data: params
   }).then(d => {
-    if (!d.result) {
+    if (!d.result || !!d.result.data) {
       return d
     }
     return Object.prototype.hasOwnProperty.call(d, 'result') ? d.result : d
