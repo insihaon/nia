@@ -129,11 +129,7 @@ export default {
       sassignLevelCds: [],
       sipCreateSeqCds: [],
       selectedRows: [],
-    }
-  },
-  computed: {
-    componentList() {
-      return [
+      componentList: [
         { key: 'SsvcLineType', props: { lvl: 3, multi: [2] } },
         { key: 'SipCreateType', props: {} },
         { key: 'GenerationDegree', props: { prop_options: this.sipCreateSeqCds } },

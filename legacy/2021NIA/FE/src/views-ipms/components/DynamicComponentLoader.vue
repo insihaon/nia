@@ -138,7 +138,9 @@ export default {
     }
   },
   mounted() {
-    Eventbus.$on(EventType.setSavedParameter, (params) => { this.setParameter(params) })
+    Eventbus.$on(EventType.setSavedParameter, (params) => {
+      this.setParameter(params)
+    })
   },
   beforeDestroy() {
     Eventbus.$off(EventType.setSavedParameter)

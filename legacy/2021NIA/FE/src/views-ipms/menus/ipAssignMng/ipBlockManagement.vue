@@ -85,12 +85,8 @@ export default {
       ],
       selectedRows: null,
       requestParam: null,
-      sipCreateSeqCds: []
-    }
-  },
-  computed: {
-    componentList() {
-      return [
+      sipCreateSeqCds: [],
+      componentList: [
         { key: 'SipCreateType', props: {} },
         { key: 'GenerationDegree', props: { prop_options: this.sipCreateSeqCds }, },
         { key: 'IpAddress', props: {} },

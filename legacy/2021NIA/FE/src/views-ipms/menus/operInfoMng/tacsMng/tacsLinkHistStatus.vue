@@ -71,11 +71,7 @@ export default {
       ],
       tableDatas: [],
       sresultMsgOptions: [],
-    }
-  },
-  computed: {
-    componentList() {
-      return [
+      componentList: [
         { key: 'InputType', props: { label: '장비 IP', prop_parameterKey: 'pipFcltInet' } },
         { key: 'InputType', props: { label: '장비프롬프트명', prop_parameterKey: 'sfcltPromptNm' } },
         { key: 'InputType', props: { label: '조회IP블럭', prop_parameterKey: 'pipPrefix' } },
