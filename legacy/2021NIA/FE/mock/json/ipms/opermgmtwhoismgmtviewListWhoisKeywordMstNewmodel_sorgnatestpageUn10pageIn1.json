@@ -1,8 +1,48 @@
 {
     "data": {
         "result": {
-            "data": [],
-            "totalCount": 0
+            "data": [
+                {
+                    "searchBgnDe": "",
+                    "searchCnd": "",
+                    "searchEndDe": "",
+                    "searchWrd": "",
+                    "sortType": "",
+                    "sortOrdr": "",
+                    "searchUseYn": "",
+                    "searchBgnCd": "",
+                    "searchEndCd": "",
+                    "pageIndex": 1,
+                    "pageUnit": 0,
+                    "pageSize": 0,
+                    "firstIndex": 1,
+                    "lastIndex": 10,
+                    "recordCountPerPage": 10,
+                    "rowNo": 1,
+                    "typeFlag": "",
+                    "dcreateDt": "2024-12-27T13:54:22.710+09:00",
+                    "screateId": "10150810",
+                    "screateNm": null,
+                    "dmodifyDt": "2024-12-27T13:54:23.000+09:00",
+                    "smodifyId": null,
+                    "smodifyNm": null,
+                    "commonMsg": null,
+                    "screateEmail": null,
+                    "smodifyEmail": null,
+                    "moveType": "",
+                    "moveSearchWrd": "",
+                    "moveSipVersionTypeCd": null,
+                    "url": null,
+                    "menuType": null,
+                    "paramMap": null,
+                    "nwhoisKeywordSeq": 78,
+                    "suserorggb": null,
+                    "sorgname": "TEST",
+                    "sreplace_cd": "10",
+                    "sreplace_nm": "고객명 일치"
+                }
+            ],
+            "totalCount": 1
         }
     },
     "status": 200,
@@ -13,11 +53,11 @@
         "url": "/opermgmt/whoismgmt/viewListWhoisKeywordMstNew.model",
         "urlOrigin": "/opermgmt/whoismgmt/viewListWhoisKeywordMstNew.model",
         "params": null,
-        "data": "{\"sorgname\":\"test\",\"pageUnit\":10,\"pageIndex\":1,\"encrypt\":\"n0AJPdNRSXxl24UVi+Q=\"}",
-        "cmd": "{ \"url\": \"/opermgmt/whoismgmt/viewListWhoisKeywordMstNew.model\", \"sqlId\": \"\", \"param\": {\"sorgname\":\"test\",\"pageUnit\":10,\"pageIndex\":1,\"encrypt\":\"n0AJPdNRSXxl24UVi+Q=\"} }",
-        "requestTime": "2024-12-20 15:35:48.016",
-        "responseTime": "2024-12-20 15:35:48.131",
-        "duration": 115,
-        "jsonFileName": "opermgmtwhoismgmtviewListWhoisKeywordMstNewmodel_sorgnatestpageUn10pageIn1.json"
+        "data": "{\"sorgname\":\"TEST\",\"pageUnit\":10,\"pageIndex\":1,\"encrypt\":\"jeeIBw0wgt3UZJif8xU=\"}",
+        "cmd": "{ \"url\": \"/opermgmt/whoismgmt/viewListWhoisKeywordMstNew.model\", \"sqlId\": \"\", \"param\": {\"sorgname\":\"TEST\",\"pageUnit\":10,\"pageIndex\":1,\"encrypt\":\"jeeIBw0wgt3UZJif8xU=\"} }",
+        "requestTime": "2024-12-27 13:54:29.284",
+        "responseTime": "2024-12-27 13:54:29.401",
+        "duration": 117,
+        "jsonFileName": "opermgmtwhoismgmtviewListWhoisKeywordMstNewmodel_sorgnaTESTpageUn10pageIn1.json"
     }
 }
