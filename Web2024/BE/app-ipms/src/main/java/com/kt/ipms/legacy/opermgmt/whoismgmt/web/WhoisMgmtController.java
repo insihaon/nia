@@ -1387,6 +1387,8 @@ public class WhoisMgmtController extends CommonController {
 	 * @return
 	 */
 	@RequestMapping(value = "/opermgmt/whoismgmt/viewUpdateWhoisModReqVo.json", method = RequestMethod.POST)
+	@ResponseBody
+	@EncryptResponse
 	public TbWhoisModifyVo viewUpdateWhoisModReqVo(@RequestBody TbWhoisModifyVo updateVo, ModelMap model,
 			HttpServletRequest request, HttpServletResponse response) {
 		TbWhoisModifyVo resultVo = null;
@@ -1418,6 +1420,8 @@ public class WhoisMgmtController extends CommonController {
 	 * @return
 	 */
 	@RequestMapping(value = "/opermgmt/whoismgmt/viewDeleteWhoisModReq.json", method = RequestMethod.POST)
+	@ResponseBody
+	@EncryptResponse
 	public TbWhoisModifyVo viewDeleteWhoisModReq(@RequestBody TbWhoisModifyVo deleteVo, ModelMap model,
 			HttpServletRequest request, HttpServletResponse response) {
 		TbWhoisModifyVo resultVo = null;
@@ -1447,6 +1451,8 @@ public class WhoisMgmtController extends CommonController {
 	 * @return
 	 */
 	@RequestMapping(value = "/opermgmt/whoismgmt/updateWhoisModReqAppr.json", method = RequestMethod.POST)
+	@ResponseBody
+	@EncryptResponse
 	public TbWhoisModifyVo updateWhoisModReqAppr(@RequestBody TbWhoisModifyVo updateVo, ModelMap model,
 			HttpServletRequest request, HttpServletResponse response) {
 		TbWhoisModifyVo resultVo = new TbWhoisModifyVo();
@@ -1497,6 +1503,8 @@ public class WhoisMgmtController extends CommonController {
 	 * @return
 	 */
 	@RequestMapping(value = "/opermgmt/whoismgmt/deleteTbWhoisVo.json", method = RequestMethod.POST)
+	@ResponseBody
+	@EncryptResponse
 	public TbWhoisVo deleteTbWhoisVo(@RequestBody TbWhoisVo deleteVo, ModelMap model, HttpServletRequest request,
 			HttpServletResponse response) {
 		TbWhoisVo resultVo = new TbWhoisVo();
@@ -1530,6 +1538,8 @@ public class WhoisMgmtController extends CommonController {
 	 * @return
 	 */
 	@RequestMapping(value = "/opermgmt/whoismgmt/deleteTbWhoisVo2.json", method = RequestMethod.POST)
+	@ResponseBody
+	@EncryptResponse
 	public TbWhoisVo deleteTbWhoisVo2(@RequestBody TbWhoisVo deleteVo, ModelMap model, HttpServletRequest request,
 			HttpServletResponse response) {
 		TbWhoisVo resultVo = new TbWhoisVo();
@@ -1602,6 +1612,8 @@ public class WhoisMgmtController extends CommonController {
 	 * @return
 	 */
 	@RequestMapping(value = "/opermgmt/whoismgmt/dbMatchTbWhoisVo.json", method = RequestMethod.POST)
+	@ResponseBody
+	@EncryptResponse
 	public TbWhoisVo dbMatchTbWhoisVo(@RequestBody TbWhoisVo matchVo, ModelMap model, HttpServletRequest request,
 			HttpServletResponse response) {
 		TbWhoisVo resultVo = new TbWhoisVo();

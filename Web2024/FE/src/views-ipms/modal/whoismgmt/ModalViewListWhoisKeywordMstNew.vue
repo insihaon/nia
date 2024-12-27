@@ -42,7 +42,7 @@
             <label>대체 기준</label>
           </th>
           <td>
-            <el-select v-model="sreplace_cd" size="small">
+            <el-select v-model="sreplace_cd" size="small" popper-class="sreplace_cd">
               <el-option
                 v-for="item in suserorggbOp"
                 :key="item.value"
@@ -127,9 +127,9 @@ export default {
     },
     onOpen(model, actionMode) {
       this.sreplace_cd = '10'
-      setTimeout(() => {
+      this.$nextTick(() => {
         this.fnViewListWhoisKeywordMstNew()
-      }, 10)
+      })
     },
     handleClickTableCheck(all, cur) {
       this.selectedRows = all
@@ -139,9 +139,7 @@ export default {
       this.fnViewListWhoisKeywordMstNew()
     },
     async fnViewListWhoisKeywordMstNew() {
-      const param = {
-        sorgname: this.sorgname_search
-      }
+      const param = { sorgname: this.sorgname_search }
       const target = ({ vue: this.$refs.compTable })
       const { pageSize: pageUnit, currentPage: pageIndex } = this.pagination
       Object.assign(param, { pageUnit, pageIndex })
@@ -181,7 +179,7 @@ export default {
           onMessagePopup(this, res.commonMsg)
         }
       } catch (error) {
-        console.error(error)
+        this.error(error)
       } finally {
         this.closeLoading(target)
       }
@@ -191,25 +189,22 @@ export default {
         onMessagePopup(this, '삭제할 대상이 없습니다.')
         return
       }
-       const target = ({ vue: this.$refs.content })
+      const target = ({ vue: this.$refs.compTable })
       try {
-        const tbWhoisKeywordListVo = {
-          tbWhoisKeywordVos: []
-        }
+        const tbWhoisKeywordVos = []
         this.selectedRows.forEach((item) => {
-          tbWhoisKeywordListVo.tbWhoisKeywordVos.push({ nwhoisKeywordSeq: item.nwhoisKeywordSeq })
+          tbWhoisKeywordVos.push({ nwhoisKeywordSeq: item.nwhoisKeywordSeq })
         })
-        const res = await apiRequestJson(ipmsJsonApis.deleteWhoisKeywordNew, tbWhoisKeywordListVo)
+        const res = await apiRequestJson(ipmsJsonApis.deleteWhoisKeywordNew, { tbWhoisKeywordVos })
         if (res.commonMsg === 'SUCCESS') {
           onMessagePopup(this, '정상적으로 삭제되었습니다')
-          this.$emit('reload')
-          this.close()
+          this.fnViewListWhoisKeywordMstNew()
         } else {
           onMessagePopup(this, res.commonMsg)
         }
         this.openLoading(target)
       } catch (error) {
-        console.error(error)
+        this.error(error)
       } finally {
         this.closeLoading(target)
       }
