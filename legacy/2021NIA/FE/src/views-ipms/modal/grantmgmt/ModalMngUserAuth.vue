@@ -95,7 +95,7 @@
             </td>
             <th>계위</th>
             <td v-loading="levelLoading" class="textflex">
-              <el-select v-model="ssvcLineTypeCd" :disabled="isSystemMng" size="small" @change="handleChangeLvl1()">
+              <el-select v-model="ssvcLineTypeCd" :disabled="isSystemMng" size="small" popper-class="ssvcLineTypeNmOp" @change="handleChangeLvl1()">
                 <el-option label="전체" value=""><span class="w-100 h-100 d-inline-block">전체</span></el-option>
                 <el-option
                   v-for="item in ssvcLineTypeNmOp"
@@ -104,29 +104,31 @@
                   :value="item.value"
                 />
               </el-select>
-              <el-select v-model="ssvcGroupCd" :disabled="(isSystemMng || isServiceMng) || ssvcLineTypeCd === ''" size="small" @change="handleChangeLvl2()">
+              <el-select v-model="ssvcGroupCd" :disabled="(isSystemMng || isServiceMng) || ssvcLineTypeCd === ''" size="small" popper-class="ssvcGroupCd" @change="handleChangeLvl2()">
+                <el-option v-show="false" value="000000" label="-------" />
                 <el-option
-                  v-for="item in ssvcGroupNmOp"
+                  v-for="item in ssvcGroupNmOptions"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value"
                 />
               </el-select>
-              <el-select v-model="ssvcObjCd" :disabled="(isSystemMng || isServiceMng || isCenterMng) || ssvcGroupCd === ''" size="small">
+              <el-select v-model="ssvcObjCd" :disabled="(isSystemMng || isServiceMng || isCenterMng) || ssvcGroupCd === ''" popper-class="ssvcObjCd" size="small">
+                <el-option v-show="false" value="000000" label="-------" />
                 <el-option
-                  v-for="item in ssvcObjNmOp"
+                  v-for="item in ssvcObjNmOptions"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value"
                 />
               </el-select>
             </td>
+            <td>
+              <el-button v-if="isShowAddBtn" type="primary" size="small" round @click="fnUserAuthDupCheck()">추가</el-button>
+            </td>
           </tr>
         </tbody>
       </table>
-      <div class="popupContentTableBottom" style="padding: 0px;text-align: end;">
-        <el-button v-if="isShowAddBtn" type="primary" size="small" round @click="fnUserAuthDupCheck()">추가</el-button>
-      </div>
     </div>
     <div v-loading="tableLoading" class="popupContentTable textcenter">
       <div class="popupContentTableTitle">등록예정 권한 정보</div>
@@ -234,6 +236,21 @@ export default {
     isNodeMng() {
       return this.registVo.suserGradeCd === 'UR0005'
     },
+    ssvcObjNmOptions() {
+      return this.ssvcObjNmOp.filter(v => v.label !== '전체' && v.label !== '-------')
+    },
+    ssvcGroupNmOptions() {
+      return this.ssvcGroupNmOp.filter(v => v.label !== '전체' && v.label !== '-------')
+    },
+    ssvcLineTypeNm() {
+      return this.ssvcLineTypeNmOp.find(v => v.value === this.ssvcLineTypeCd).label
+    },
+    ssvcGroupNm() {
+      return this.ssvcGroupNmOp.find(v => v.value === this.ssvcGroupCd)?.label ?? ''
+    },
+    ssvcObjNm() {
+      return this.ssvcObjNmOp.find(v => v.value === this.ssvcObjCd)?.label ?? ''
+    },
   },
   mounted() {
     this.onLoadSelectUserGradeCds()
@@ -268,7 +285,7 @@ export default {
         this.registVo = {
           suserId: '',
           suserNm: '',
-          suserGradeCd: ''
+          suserGradeCd: 'UR0001'
         }
       }
     },
@@ -309,16 +326,14 @@ export default {
       try {
         this.levelLoading = true
         const res = await apiRequestJson(ipmsJsonApis.selectAuthCenterList, { ssvcLineTypeCd: this.ssvcLineTypeCd })
-        this.ssvcGroupNmOp = res?.tbLvlBasVos?.filter(v => v.ssvcGroupNm !== '전체' && v.ssvcGroupNm !== '-------').map(v => {
-          return { value: v.ssvcGroupCd, label: v.ssvcGroupNm }
-        })
-        this.ssvcObjCd = ''
-        if (this.isCenterMng) {
-          this.ssvcGroupCd = this.ssvcGroupNmOp[0].value
+        this.ssvcGroupNmOp = res?.tbLvlBasVos?.map(v => { return { value: v.ssvcGroupCd, label: v.ssvcGroupNm } })
+        if (this.isCenterMng || this.isNodeMng) {
+          this.ssvcGroupCd = this.ssvcGroupNmOptions[0].value
+        } else {
+          this.ssvcGroupCd = '000000'
         }
-        if (this.isNodeMng) {
-          this.handleChangeLvl2()
-        }
+        this.ssvcObjCd = '000000'
+        this.handleChangeLvl2()
       } catch (error) {
         this.error(error)
       } finally {
@@ -330,11 +345,11 @@ export default {
       try {
         this.levelLoading = true
         const res = await apiRequestJson(ipmsJsonApis.selectAuthNodeList, tbLvlBasVo)
-        this.ssvcObjNmOp = res?.tbLvlBasVos?.filter(v => v.ssvcObjNm !== '전체' && v.ssvcObjNm !== '-------').map(v => {
-          return { value: v.ssvcObjCd, label: v.ssvcObjNm }
-        })
+        this.ssvcObjNmOp = res?.tbLvlBasVos?.map(v => { return { value: v.ssvcObjCd, label: v.ssvcObjNm } })
         if (this.isNodeMng) {
-          this.ssvcObjCd = this.ssvcObjNmOp[0].value
+          this.ssvcObjCd = this.ssvcObjNmOptions[0].value
+        } else {
+          this.ssvcObjCd = '000000'
         }
       } catch (error) {
         this.error(error)
@@ -373,12 +388,12 @@ export default {
         }
       }
       const isCheck = this.registListVo.map(row => {
-        const { ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd } = row.tbLvlBasVo
+        const { ssvcLineTypeNm, ssvcGroupNm, ssvcObjNm } = row.tbLvlBasVo
 
         if (row.suserGradeCd === this.registVo.suserGradeCd &&
-          (ssvcLineTypeCd || '') === this.ssvcLineTypeCd &&
-          (ssvcGroupCd || '') === this.ssvcGroupCd &&
-          (ssvcObjCd || '') === this.ssvcObjCd) {
+          (ssvcLineTypeNm || '') === this.ssvcLineTypeNm &&
+          (ssvcGroupNm || '') === this.ssvcGroupNm &&
+          (ssvcObjNm || '') === this.ssvcObjNm) {
           return false
         }
         return true
@@ -392,18 +407,15 @@ export default {
     async fnUserAuthAppend() {
       const { suserId, suserNm, suserGradeCd } = this.registVo
       const suserGradeNm = this.userGradeOp.find(item => item.code === suserGradeCd).name
-      const ssvcLineTypeNm = this.ssvcLineTypeNmOp?.find(item => item.value === this.ssvcLineTypeCd)?.label ?? ''
-      const ssvcGroupNm = this.ssvcGroupNmOp?.find(item => item.value === this.ssvcGroupCd)?.label ?? ''
-      const ssvcObjNm = this.ssvcObjNmOp?.find(item => item.value === this.ssvcObjCd)?.label ?? ''
       const newResistVo = {
         suserId, suserNm, suserGradeNm, suserGradeCd,
         tbLvlBasVo: {
-          ssvcLineTypeNm: ssvcLineTypeNm === '' ? '전체' : ssvcLineTypeNm,
-          ssvcGroupNm,
-          ssvcObjNm,
           ssvcLineTypeCd: this.ssvcLineTypeCd,
+          ssvcLineTypeNm: this.ssvcLineTypeNm === '' ? '전체' : this.ssvcLineTypeNm,
           ssvcGroupCd: this.ssvcGroupCd,
-          ssvcObjCd: this.ssvcObjCd
+          ssvcGroupNm: this.ssvcGroupNm,
+          ssvcObjCd: this.ssvcObjCd,
+          ssvcObjNm: this.ssvcObjNm
         }
       }
       if (this.registListVo.length > 0) {
