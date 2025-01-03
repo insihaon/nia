@@ -355,6 +355,11 @@ export default {
         tooltip: {
           trigger: 'axis',
         },
+        legend: {
+          top: '5%', // 상단에 위치
+          left: 'center', // 중앙 정렬
+          orient: 'horizontal', // 가로 방향 정렬
+        },
         dataZoom: [{ type: 'inside' }],
         xAxis: {
           type: 'category',
@@ -377,7 +382,16 @@ export default {
         data: [{ xAxis: this.selectedRow?.fault_time || '' }],
       }
 
+      const colorMap = {
+        MBPS_IN: '#ffcc00',
+        IN_THRESHOLD_UPPER: 'rgba(255, 204, 0, 0.3)',
+        MBPS_OUT: '#ff7043',
+        OUT_THRESHOLD_UPPER: 'rgba(255, 112, 67, 0.3)',
+      }
+
       let seriesArr = []
+      let topLegend = []
+      let bottomLegend = []
       if (['ATT2', 'FTT'].includes(ticket_type)) {
         seriesArr = [
           {
@@ -385,37 +399,38 @@ export default {
             name: 'MBPS_IN',
             type: 'line',
             data: chartData.map((v) => v.fltbps_in),
-            itemStyle: {
-              color: '#ffcc00',
-            },
+            itemStyle: { color: colorMap.MBPS_IN },
           },
           {
             markLine,
             name: 'MBPS_OUT',
             type: 'line',
             data: chartData.map((v) => v.fltbps_out),
-            itemStyle: {
-              color: '#ff7043',
-            },
+            itemStyle: { color: colorMap.MBPS_OUT },
           },
           {
-            name: 'THRESHOLD_UPPER',
+            name: 'IN_THRESHOLD_UPPER',
             type: 'line',
             data: chartData.map((v) => v.in_threshold_upper),
             smooth: true,
-            stack: 'total', // Area Chart
-            itemStyle: {
-              color: 'rgba(200, 200, 200, 0.5)',
-            },
-            areaStyle: {
-              color: 'rgba(200, 200, 200, 0.5)',
-            },
-            lineStyle: {
-              width: 0, // 라인 제거
-            },
+            itemStyle: { color: 'rgba(200, 200, 200, 0.5)' },
+            areaStyle: { color: 'rgba(200, 200, 200, 0.5)' },
+            lineStyle: { width: 0, },
             symbol: 'none', // 점 제거
           },
+          {
+            name: 'OUT_THRESHOLD_UPPER',
+            type: 'line',
+            data: chartData.map((v) => v.out_threshold_upper),
+            smooth: true,
+            itemStyle: { color: colorMap.OUT_THRESHOLD_UPPER },
+            areaStyle: { color: colorMap.OUT_THRESHOLD_UPPER },
+            lineStyle: { width: 0 },
+            symbol: 'none',
+          },
         ]
+        topLegend = ['MBPS_IN', 'MBPS_OUT'] // 위쪽 레전드 항목
+        bottomLegend = ['IN_THRESHOLD_UPPER', 'OUT_THRESHOLD_UPPER'] // 아래쪽 레전드 항목
       } else {
         seriesArr = [
           {
@@ -423,27 +438,39 @@ export default {
             name: 'STRCOUNTS',
             type: 'line',
             data: chartData.map((v) => v.strcounts),
+            itemStyle: { color: '#4575bc' },
           },
           {
             name: 'STRBYTES_COL',
             type: 'line',
             data: chartData.map((v) => v.strbytes_col),
+            itemStyle: { color: '#8dc2e5' },
           },
         ]
+        topLegend = ['STRCOUNTS']
+        bottomLegend = ['STRBYTES_COL']
       }
 
       return {
-        tooltip: {
-          trigger: 'axis',
-        },
+        tooltip: { trigger: 'axis', },
+        legend: [
+          {
+            data: topLegend,
+            top: '3%',
+            orient: 'horizontal',
+          },
+          {
+            data: bottomLegend,
+            top: '12%',
+            orient: 'horizontal',
+          },
+        ],
         dataZoom: [{ type: 'inside' }],
         xAxis: {
           type: 'category',
           data: chartData.map((v) => formatterTime(v[xAxisKey])),
         },
-        yAxis: {
-          type: 'value',
-        },
+        yAxis: { type: 'value', },
         series: seriesArr,
       }
     },

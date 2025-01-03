@@ -118,11 +118,22 @@ export default {
   },
   created () {
     this.selectedRow = this.wdata?.params
+    this.setAiFeedBack()
   },
   mounted() {
     this.onLoadSopCodeList()
   },
   methods: {
+    setAiFeedBack() {
+      if (this.selectedRow) {
+        if (['0', '1'].includes(this.selectedRow.ai_accuracy)) {
+          this.aiFeedback = this.selectedRow.ai_accuracy
+        } else {
+          this.aiFeedback = '0'
+        }
+      }
+    },
+
     async onLoadSopCodeList() {
       try {
         const res = await apiSelectSopCode({ IS_OPTION: true })
@@ -187,13 +198,12 @@ export default {
       const param = {
         eventType: `REQUEST_CHANGE_${finType}_STATUS`,
         status: 'FIN',
-        ai_accuracy: this.ai_accuracy,
+        ai_accuracy: this.aiFeedback,
         etc_content: this.etcContent,
-        fault_type_content: this.ai_accuracy === 1 ? this.fault_type_content : null,
-        start_time: this.ai_accuracy === 1 ? this.period[0] : null,
-        end_time: this.ai_accuracy === 1 ? this.period[1] : null,
+        fault_type_content: this.aiFeedback === '1' ? this.fault_type_content : null,
+        start_time: this.aiFeedback === '1' ? this.period[0] : null,
+        end_time: this.aiFeedback === '1' ? this.period[1] : null,
         handling_fin_user: this.$store.state.user.name,
-        aiFeedback: this.aiFeedback
       }
       Object.assign(param, this.finSop)
 
