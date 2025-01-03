@@ -44,9 +44,7 @@
       </el-card>
       <el-row>
         <el-col align="right" class="mt-2">
-          <el-button size="mini" type="primary" class="el-icon-edit-outline" @click.native="onClickFin()">
-            {{ selectedRow.status == 'FIN' || selectedRow.status == 'AUTO_FIN' ? '수정' : '마감' }}
-          </el-button>
+          <el-button size="mini" type="primary" class="el-icon-edit-outline" @click.native="onClickFin()"> 마감 </el-button>
           <el-button size="mini" type="info" icon="el-icon-close" @click.native="$emit('windowClose')">
             {{ $t('exit') }}
           </el-button>
@@ -114,6 +112,9 @@ export default {
         { label: '조치내용', model: 'faultDetail', options: this.selectOption.content },
       ]
     },
+    // disabledFin() {
+    //   return this.selectedRow?.status === 'FIN' || this.selectedRow?.status === 'AUTO_FIN'
+    // },
   },
   created () {
     this.selectedRow = this.wdata?.params

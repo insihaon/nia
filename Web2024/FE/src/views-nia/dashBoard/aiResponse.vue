@@ -56,8 +56,7 @@
           <el-button size="mini" type="primary" icon="el-icon-camera" @click.native="fn_openWindow('snapShot', _merge(selectedRow, trafficInfo))"> 데이터 스냅샷 </el-button>
           <el-button size="mini" type="primary" @click.native="fn_openWindow('requestForAction', _merge(selectedRow, trafficInfo))"> 상황전파 </el-button>
           <el-button size="mini" type="primary" @click.native="fn_openWindow('configTest', _merge(selectedRow, trafficInfo))"> 시험 </el-button>
-          <el-button v-if="!disabledFin" size="mini" type="primary" @click.native="fn_openWindow('processFin', _merge(selectedRow, trafficInfo))"> 마감 </el-button>
-          <el-button v-if="disabledFin" disabled size="mini" type="danger" > 마감된 티켓입니다 </el-button>
+          <el-button size="mini" type="primary" @click.native="fn_openWindow('processFin', _merge(selectedRow, trafficInfo))"> 마감 </el-button>
           <el-button size="mini" type="info" icon="el-icon-close" @click.native="$emit('windowClose')">
             {{ $t('exit') }}
           </el-button>
@@ -122,9 +121,9 @@ export default {
     isRT() {
       return this.selectedRow?.ticket_type === 'RT'
     },
-    disabledFin() {
-      return this.selectedRow?.status === 'FIN' || this.selectedRow?.status === 'AUTO_FIN'
-    },
+    // disabledFin() {
+    //   return this.selectedRow?.status === 'FIN' || this.selectedRow?.status === 'AUTO_FIN'
+    // },
     trafficChartPps() {
   const { ticket_type } = this.selectedRow
   const chartData = this.trafficChartList
