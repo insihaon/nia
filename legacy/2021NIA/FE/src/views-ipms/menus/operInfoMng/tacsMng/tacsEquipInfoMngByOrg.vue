@@ -112,9 +112,9 @@ export default {
         this.pagination.data = res.result.data ?? []
         this.pagination.total = res.result.totalCount
         setTimeout(() => {
-          this.$refs?.compTable?.$refs?.table?.selection.push(this.tableDatas[0])
+          this.$refs?.compTable?.$refs?.table?.selection.push(this.pagination.data[0])
           this.selectedRow = this.pagination.data[0]
-        }, 10)
+        }, 200)
       } catch (error) {
         this.error(error)
       } finally {
