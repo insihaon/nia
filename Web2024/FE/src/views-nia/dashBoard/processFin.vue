@@ -44,9 +44,7 @@
       </el-card>
       <el-row>
         <el-col align="right" class="mt-2">
-          <el-button size="mini" type="primary" class="el-icon-edit-outline" @click.native="onClickFin()">
-            {{ selectedRow.status == 'FIN' || selectedRow.status == 'AUTO_FIN' ? '수정' : '마감' }}
-          </el-button>
+          <el-button size="mini" type="primary" class="el-icon-edit-outline" @click.native="onClickFin()"> 마감 </el-button>
           <el-button size="mini" type="info" icon="el-icon-close" @click.native="$emit('windowClose')">
             {{ $t('exit') }}
           </el-button>
@@ -114,14 +112,28 @@ export default {
         { label: '조치내용', model: 'faultDetail', options: this.selectOption.content },
       ]
     },
+    // disabledFin() {
+    //   return this.selectedRow?.status === 'FIN' || this.selectedRow?.status === 'AUTO_FIN'
+    // },
   },
   created () {
     this.selectedRow = this.wdata?.params
+    this.setAiFeedBack()
   },
   mounted() {
     this.onLoadSopCodeList()
   },
   methods: {
+    setAiFeedBack() {
+      if (this.selectedRow) {
+        if (['0', '1'].includes(this.selectedRow.ai_accuracy)) {
+          this.aiFeedback = this.selectedRow.ai_accuracy
+        } else {
+          this.aiFeedback = '0'
+        }
+      }
+    },
+
     async onLoadSopCodeList() {
       try {
         const res = await apiSelectSopCode({ IS_OPTION: true })
@@ -186,13 +198,12 @@ export default {
       const param = {
         eventType: `REQUEST_CHANGE_${finType}_STATUS`,
         status: 'FIN',
-        ai_accuracy: this.ai_accuracy,
+        ai_accuracy: this.aiFeedback,
         etc_content: this.etcContent,
-        fault_type_content: this.ai_accuracy === 1 ? this.fault_type_content : null,
-        start_time: this.ai_accuracy === 1 ? this.period[0] : null,
-        end_time: this.ai_accuracy === 1 ? this.period[1] : null,
+        fault_type_content: this.aiFeedback === '1' ? this.fault_type_content : null,
+        start_time: this.aiFeedback === '1' ? this.period[0] : null,
+        end_time: this.aiFeedback === '1' ? this.period[1] : null,
         handling_fin_user: this.$store.state.user.name,
-        aiFeedback: this.aiFeedback
       }
       Object.assign(param, this.finSop)
 

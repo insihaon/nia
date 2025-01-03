@@ -1,0 +1,162 @@
+{
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [
+            "WITH DATEREGDATE_DATA AS (\n            SELECT DISTINCT DATEREGDATE\n            FROM IP_YD.XE_SFLOW_LOG\n             WHERE (  DATEREGDATE BETWEEN '2024-03-29 23:14:53'::TIMESTAMP - INTERVAL '1 HOUR' AND '2024-03-29 23:14:53'::TIMESTAMP + INTERVAL '1 HOUR' ) \n            ORDER BY DATEREGDATE\n        )\n        SELECT\n            COLLECT_TIME\n\t        , STRBYTES_COL\n        \t, STRCOUNTS\n        FROM\n        (\n            SELECT\n                CASE WHEN DD.DATEREGDATE = XSL.DATEREGDATE THEN XSL.STRBYTES_COL\n                    ELSE '0'\n                    END STRBYTES_COL\n                , CASE WHEN DD.DATEREGDATE = XSL.DATEREGDATE THEN STRCOUNTS\n                    ELSE '0'\n                    END STRCOUNTS\n                , DD.DATEREGDATE AS COLLECT_TIME\n            FROM DATEREGDATE_DATA DD\n            LEFT JOIN (\n                SELECT STRCOUNTS, STRBYTES_COL, DATEREGDATE\n                FROM ip_yd.xe_sflow_log\n                 WHERE (  DATEREGDATE = '2024-03-29 23:14:53'::TIMESTAMP\n                            AND STRSENDERIP = (\n                                SELECT DISTINCT STRSENDERIP \n                                FROM RCA.TB_NOXIOUS_TRAFFIC \n                                WHERE TICKET_ID = '1599535'\n                            )\n                            AND STRS_IP  = '104.18.14.166'\n                            AND STRS_PORT  = '443'\n                            AND STRD_IP  = '210.114.89.130'\n                            AND STRD_PORT  = '53272' ) \n            ) XSL ON 1=1\n        ) T\n        GROUP BY COLLECT_TIME, STRBYTES_COL, STRCOUNTS"
+        ],
+        "total": 27,
+        "result": [
+            {
+                "strcounts": "0",
+                "collect_time": "2024-03-29T22:14:53.000+09:00",
+                "strbytes_col": "0"
+            },
+            {
+                "strcounts": "0",
+                "collect_time": "2024-03-29T22:19:54.000+09:00",
+                "strbytes_col": "0"
+            },
+            {
+                "strcounts": "0",
+                "collect_time": "2024-03-29T22:24:53.000+09:00",
+                "strbytes_col": "0"
+            },
+            {
+                "strcounts": "0",
+                "collect_time": "2024-03-29T22:29:54.000+09:00",
+                "strbytes_col": "0"
+            },
+            {
+                "strcounts": "0",
+                "collect_time": "2024-03-29T22:34:53.000+09:00",
+                "strbytes_col": "0"
+            },
+            {
+                "strcounts": "0",
+                "collect_time": "2024-03-29T22:39:54.000+09:00",
+                "strbytes_col": "0"
+            },
+            {
+                "strcounts": "0",
+                "collect_time": "2024-03-29T22:44:53.000+09:00",
+                "strbytes_col": "0"
+            },
+            {
+                "strcounts": "0",
+                "collect_time": "2024-03-29T22:44:54.000+09:00",
+                "strbytes_col": "0"
+            },
+            {
+                "strcounts": "0",
+                "collect_time": "2024-03-29T22:49:54.000+09:00",
+                "strbytes_col": "0"
+            },
+            {
+                "strcounts": "0",
+                "collect_time": "2024-03-29T22:54:53.000+09:00",
+                "strbytes_col": "0"
+            },
+            {
+                "strcounts": "0",
+                "collect_time": "2024-03-29T22:59:54.000+09:00",
+                "strbytes_col": "0"
+            },
+            {
+                "strcounts": "0",
+                "collect_time": "2024-03-29T23:04:53.000+09:00",
+                "strbytes_col": "0"
+            },
+            {
+                "strcounts": "0",
+                "collect_time": "2024-03-29T23:09:54.000+09:00",
+                "strbytes_col": "0"
+            },
+            {
+                "strcounts": "1",
+                "collect_time": "2024-03-29T23:14:53.000+09:00",
+                "strbytes_col": "324608"
+            },
+            {
+                "strcounts": "0",
+                "collect_time": "2024-03-29T23:19:54.000+09:00",
+                "strbytes_col": "0"
+            },
+            {
+                "strcounts": "0",
+                "collect_time": "2024-03-29T23:24:53.000+09:00",
+                "strbytes_col": "0"
+            },
+            {
+                "strcounts": "0",
+                "collect_time": "2024-03-29T23:29:54.000+09:00",
+                "strbytes_col": "0"
+            },
+            {
+                "strcounts": "0",
+                "collect_time": "2024-03-29T23:34:53.000+09:00",
+                "strbytes_col": "0"
+            },
+            {
+                "strcounts": "0",
+                "collect_time": "2024-03-29T23:39:54.000+09:00",
+                "strbytes_col": "0"
+            },
+            {
+                "strcounts": "0",
+                "collect_time": "2024-03-29T23:44:54.000+09:00",
+                "strbytes_col": "0"
+            },
+            {
+                "strcounts": "0",
+                "collect_time": "2024-03-29T23:49:54.000+09:00",
+                "strbytes_col": "0"
+            },
+            {
+                "strcounts": "0",
+                "collect_time": "2024-03-29T23:54:53.000+09:00",
+                "strbytes_col": "0"
+            },
+            {
+                "strcounts": "0",
+                "collect_time": "2024-03-29T23:59:54.000+09:00",
+                "strbytes_col": "0"
+            },
+            {
+                "strcounts": "0",
+                "collect_time": "2024-03-30T00:04:53.000+09:00",
+                "strbytes_col": "0"
+            },
+            {
+                "strcounts": "0",
+                "collect_time": "2024-03-30T00:04:54.000+09:00",
+                "strbytes_col": "0"
+            },
+            {
+                "strcounts": "0",
+                "collect_time": "2024-03-30T00:09:54.000+09:00",
+                "strbytes_col": "0"
+            },
+            {
+                "strcounts": "0",
+                "collect_time": "2024-03-30T00:14:53.000+09:00",
+                "strbytes_col": "0"
+            }
+        ]
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/selectList/SELECT_NTT_CHART",
+        "urlOrigin": "/selectList/SELECT_NTT_CHART",
+        "params": null,
+        "data": "{\"TICKET_ID\":\"1599535\",\"START_NODE\":\"104.18.14.166\",\"START_PORT\":\"443\",\"FAULT_TIME\":\"2024-03-29 23:14:53\",\"END_NODE\":\"210.114.89.130\",\"END_PORT\":\"53272\",\"encrypt\":\"txkW6iyuhk90pOGWGMo=\"}",
+        "cmd": "{ \"url\": \"/selectList/SELECT_NTT_CHART\", \"sqlId\": \"SELECT_NTT_CHART\", \"param\": {\"TICKET_ID\":\"1599535\",\"START_NODE\":\"104.18.14.166\",\"START_PORT\":\"443\",\"FAULT_TIME\":\"2024-03-29 23:14:53\",\"END_NODE\":\"210.114.89.130\",\"END_PORT\":\"53272\",\"encrypt\":\"txkW6iyuhk90pOGWGMo=\"} }",
+        "requestTime": "2024-12-23 11:07:50.889",
+        "responseTime": "2024-12-23 11:07:52.225",
+        "duration": 1336,
+        "jsonFileName": "SELECTNTTCHART_TICKET1599535STARTN1041814166STARTP443FAULTT2024032923ENDNOD2101148913ENDPOR53272.json"
+    }
+}

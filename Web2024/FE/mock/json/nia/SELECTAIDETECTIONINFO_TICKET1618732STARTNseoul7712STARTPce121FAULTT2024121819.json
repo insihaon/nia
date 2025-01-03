@@ -1,0 +1,39 @@
+{
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [
+            "SELECT  \n            FLTBPSIN AS IN_BPS\n            , ROUND(FLTBPSIN_PREDICT::NUMERIC , 2) AS IN_PREDICT\n            , ROUND(FLTBPSIN_THRESHOLD_UPPER::NUMERIC , 2) AS IN_THRESHOLD_UPPER\n            , ROUND(FLTBPSIN_THRESHOLD_LOWER::NUMERIC , 2) AS IN_THRESHOLD_LOWER\n            , FLTBPSIN_ANOMALY AS IN_ANOMALY\n            , FLTBPSOUT AS OUT_BPS\n            , ROUND(FLTBPSOUT_PREDICT::NUMERIC , 2) AS out_predict\n            , ROUND(FLTBPSOUT_THRESHOLD_UPPER::NUMERIC, 2) AS OUT_THRESHOLD_UPPER\n            , ROUND(FLTBPSOUT_THRESHOLD_LOWER::NUMERIC, 2) AS OUT_THRESHOLD_LOWER\n            , FLTBPSOUT_ANOMALY AS OUT_ANOMALY\n        FROM    rca.tb_anomalous_ai_result AR\n        INNER JOIN resource.tb_port_mst PM ON AR.STRIFID = PM.IF_NUM AND AR.STRRESID = PM.NODE_NUM\n        WHERE   PM.node_id= 'seoul-7712'\n        AND     PM.if_id = 'ce12/1'\n        AND     MEASURED_DATETIME = '2024-12-18 19:55:00'::TIMESTAMP"
+        ],
+        "total": 1,
+        "result": [
+            {
+                "in_threshold_upper": 176.3,
+                "out_predict": 39.66,
+                "out_threshold_lower": 0,
+                "out_threshold_upper": 166.29,
+                "in_predict": 40.96,
+                "in_threshold_lower": 0,
+                "in_bps": 355,
+                "in_anomaly": true,
+                "out_bps": 0,
+                "out_anomaly": false
+            }
+        ]
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/selectOne/SELECT_AI_DETECTION_INFO",
+        "urlOrigin": "/selectOne/SELECT_AI_DETECTION_INFO",
+        "params": null,
+        "data": "{\"TICKET_ID\":\"1618732\",\"START_NODE\":\"seoul-7712\",\"START_PORT\":\"ce12/1\",\"FAULT_TIME\":\"2024-12-18 19:55:00\",\"encrypt\":\"WwuPR1jOWiWnE20sfvA=\"}",
+        "cmd": "{ \"url\": \"/selectOne/SELECT_AI_DETECTION_INFO\", \"sqlId\": \"SELECT_AI_DETECTION_INFO\", \"param\": {\"TICKET_ID\":\"1618732\",\"START_NODE\":\"seoul-7712\",\"START_PORT\":\"ce12/1\",\"FAULT_TIME\":\"2024-12-18 19:55:00\",\"encrypt\":\"WwuPR1jOWiWnE20sfvA=\"} }",
+        "requestTime": "2024-12-23 09:40:54.305",
+        "responseTime": "2024-12-23 09:40:54.387",
+        "duration": 82,
+        "jsonFileName": "SELECTAIDETECTIONINFO_TICKET1618732STARTNseoul7712STARTPce121FAULTT2024121819.json"
+    }
+}

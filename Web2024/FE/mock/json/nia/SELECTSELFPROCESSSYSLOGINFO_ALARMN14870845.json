@@ -1,0 +1,41 @@
+{
+    "data": {
+        "success": true,
+        "encrypt": false,
+        "sql": [
+            "SELECT  \n             SA.ALARMNO\n            , TO_CHAR(SA.ALARMTIME, 'YYYY-MM-DD HH24:MI:SS') AS ALARMTIME\n            , SA.NODE_NUM\n            , SA.NODE_NM\n            , SA.ALARMMSG\n            , SA.ALARMLVL\n            , SA.ETC\n            , SA.RULE_ID\n            , SA.ALARMLOC\n            , SA.STATUS\n            , TPD.SELF_PROCESS_GROUP\n            , TPD.SELF_PROCESS_TYPE\n        FROM    rca.tb_syslog_alarm_mst SA\n        LEFT JOIN nia.tb_auto_treat_process_dtl TPD ON TPD.ALARMNO = SA.ALARMNO\n         WHERE (  SA.ALARMNO = '14870845' )"
+        ],
+        "total": 1,
+        "result": [
+            {
+                "rule_id": 2,
+                "alarmmsg": "IFMGR_IF_DOWN_2",
+                "alarmlvl": "7",
+                "etc": "Interface xe35 changed state to down",
+                "alarmno": "14870845",
+                "alarmtime": "2024-12-03 10:15:30",
+                "self_process_type": "S",
+                "node_nm": "seoul-5812",
+                "node_num": "1720139614634",
+                "self_process_group": "ST",
+                "alarmloc": "xe35",
+                "status": "AUTO_FIN"
+            }
+        ]
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/nia.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/selectList/SELECT_SELF_PROCESS_SYSLOG_INFO",
+        "urlOrigin": "/selectList/SELECT_SELF_PROCESS_SYSLOG_INFO",
+        "params": null,
+        "data": "{\"ALARMNO\":\"14870845\",\"encrypt\":\"50g+6ygt6KJiYcIn6yA=\"}",
+        "cmd": "{ \"url\": \"/selectList/SELECT_SELF_PROCESS_SYSLOG_INFO\", \"sqlId\": \"SELECT_SELF_PROCESS_SYSLOG_INFO\", \"param\": {\"ALARMNO\":\"14870845\",\"encrypt\":\"50g+6ygt6KJiYcIn6yA=\"} }",
+        "requestTime": "2024-12-23 09:41:58.383",
+        "responseTime": "2024-12-23 09:41:58.546",
+        "duration": 163,
+        "jsonFileName": "SELECTSELFPROCESSSYSLOGINFO_ALARMN14870845.json"
+    }
+}
