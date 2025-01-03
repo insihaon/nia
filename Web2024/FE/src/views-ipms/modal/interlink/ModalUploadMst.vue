@@ -37,12 +37,8 @@
               </el-select>
               <el-upload
                 action="https://www.typicode.com/posts/"
-                :on-preview="handlePreview"
-                :on-remove="handleRemove"
-                :before-remove="beforeRemove"
                 multiple
                 :limit="3"
-                :on-exceed="handleExceed"
                 :file-list="fileList"
                 @change="handleFileUpload"
               >
@@ -99,6 +95,7 @@ export default {
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       selectedOption: 'COMMU', // Default selected option
       files: null,
+      fileList: [],
       uploadOptions: [
         { value: 'COMMU', label: 'Community' },
         { value: 'NOCOMMU', label: 'No-Community' },

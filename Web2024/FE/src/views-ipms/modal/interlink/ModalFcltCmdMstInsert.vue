@@ -52,7 +52,7 @@
               </td>
               <th>할당가능여부</th>
               <td>
-                <el-select v-model="formData.savailYn">
+                <el-select v-model="formData.savailYn" popper-class="savailYn">
                   <el-option value="" label="선택" />
                   <el-option value="Y" label="할당가능" />
                   <el-option value="N" label="할당불가능" />
@@ -62,7 +62,7 @@
             <tr v-if="fnType === 'update'">
               <th>사용여부</th>
               <td colspan="3">
-                <el-select v-model="formData.suseYn" style="width: 30%">
+                <el-select v-model="formData.suseYn" style="width: 30%" popper-class="suseYn">
                   <el-option value="Y" label="사용" />
                   <el-option value="N" label="미사용" />
                 </el-select>
@@ -81,7 +81,7 @@
               </td>
               <th>사용여부</th>
               <td>
-                <el-select v-model="formData.suseYn">
+                <el-select v-model="formData.suseYn" popper-class="suseYn">
                   <el-option value="" label="선택" />
                   <el-option value="Y" label="Y" />
                   <el-option value="N" label="N" />

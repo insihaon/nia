@@ -121,8 +121,9 @@ export default {
       componentList: [
         { key: 'SsvcLineType', props: { label: '계위 정보', lvl: 3 } },
         { key: 'InputType', props: { label: '사용기관명', prop_parameterKey: 'sorgname' } },
-         {
+        {
           key: 'ApplyStatus', props: {
+          prop_class: 'RegistrationStatus',
           label: '등록현황',
           prop_parameterKey: 'swhoisresultCd',
           prop_options: [
@@ -259,7 +260,7 @@ export default {
       })
       try {
         const res = await apiRequestJson(ipmsJsonApis.deleteTbWhoisVo, { delList })
-        if (res.tbWhoisVo.commonMsg === 'SUCCESS') {
+        if (res.commonMsg === 'SUCCESS') {
           onMessagePopup(this, '정상적으로 삭제 하였습니다.')
         } else {
           onMessagePopup(this, '삭제를 실패하였습니다.')

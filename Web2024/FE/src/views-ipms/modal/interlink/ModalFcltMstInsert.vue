@@ -17,7 +17,7 @@
   >
     <!-- TACS관리 / IP주소 라우팅 비교/점검 > 조직별 장비 정보관리 > 신규생성 -->
     <div class="popupContentTable">
-      <table v-if="fnType === 'insert'">
+      <table v-if="fnType === 'insert'" class="table1">
         <colgroup>
           <col width="15%" />
           <col width="85%" />
@@ -25,7 +25,7 @@
         <tr>
           <SsvcLineType
             ref="ssvcLineType"
-            class="SsvcLineType"
+            class="_ssvcLineType"
             :lvl="3"
             prop-colspan="3"
             :is-all-lvl1="false"
@@ -40,7 +40,7 @@
           />
         </tr>
       </table>
-      <table>
+      <table class="table2">
         <colgroup>
           <col width="15%" />
           <col width="35%" />
@@ -193,7 +193,7 @@ export default {
       try {
         const apiStr = this.viewType === 'ipRouting' ? 'viewInsertFcltMst' : 'viewInsertTacsFcltMst'
         const res = await apiRequestModel(ipmsModelApis[apiStr], {})
-        this.sfcltTypes = res.sfcltTypes
+        this.sfcltTypes = res?.result?.data ?? ''
       } catch (error) {
         this.error(error)
       }
@@ -312,7 +312,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.SsvcLineType ::v-deep {
+._ssvcLineType ::v-deep {
   width: 100%;
   display: flex;
   label {
