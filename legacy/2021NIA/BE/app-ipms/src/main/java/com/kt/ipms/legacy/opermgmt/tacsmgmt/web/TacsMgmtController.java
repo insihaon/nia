@@ -231,9 +231,7 @@ public class TacsMgmtController extends CommonController {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("suseYn", "Y");
 		List<CommonCodeVo> sfcltTypes = commonCodeService.selectListCommonCode(CommonCodeUtil.TACS_FLCT_TYPE_CD, paramMap);
-		ModelMap builtModel = new ModelMap();
-		builtModel.addAttribute("sfcltTypes", sfcltTypes);
-		return builtModel;
+		return createResultList(sfcltTypes, sfcltTypes.size());
 	}
 	@RequestMapping(value = "/opermgmt/tacsmgmt/viewInsertTacsFcltMst.ajax", method = RequestMethod.POST)
 	public String viewInsertTacsFcltMst(@RequestBody CommonVo searchVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {

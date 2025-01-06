@@ -72,12 +72,8 @@ export default {
       ],
       tableDatas: [],
       sfcltTypes: [],
-      delRows: []
-    }
-  },
-  computed: {
-    componentList() {
-      return [
+      delRows: [],
+      componentList: [
         { key: 'EquipmentType', props: { prop_parameterKey: 'sfcltType', prop_options: this.sfcltTypes } },
         { key: 'InputType', props: { label: '장비명령어' } },
         { key: 'UsageYN', props: { label: '사용여부', prop_parameterKey: 'suseYn' } }

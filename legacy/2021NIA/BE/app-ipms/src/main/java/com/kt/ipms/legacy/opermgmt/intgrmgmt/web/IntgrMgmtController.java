@@ -195,14 +195,11 @@ public class IntgrMgmtController  extends CommonController{
 	@ResponseBody
 	@EncryptResponse
 	public ModelMap viewInsertFcltMst(ModelMap model, HttpServletRequest request) {
-		ModelMap builtModel = new ModelMap();
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 
 		paramMap.put("suseYn", "Y");
 		List<CommonCodeVo> sfcltTypes = commonCodeService.selectListCommonCode(CommonCodeUtil.FLCT_TYPE_CD, paramMap);
-		builtModel.addAttribute("sfcltTypes", sfcltTypes);
-
-		return builtModel;
+		return createResultList(sfcltTypes, sfcltTypes.size());
 	}
 	@RequestMapping(value = "/opermgmt/intgrmgmt/viewInsertFcltMst.ajax", method = RequestMethod.POST)
 	public String viewInsertFcltMst(@RequestBody CommonVo searchVo, ModelMap model, HttpServletRequest request, HttpServletResponse response) {

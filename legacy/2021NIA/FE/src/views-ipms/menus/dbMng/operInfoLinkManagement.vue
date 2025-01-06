@@ -96,11 +96,7 @@ export default {
       ],
       tableDatas: [],
       // sOfficeOptions: []
-    }
-  },
-  computed: {
-    componentList() {
-      return [
+      componentList: [
         { key: 'InputType', props: { prop_parameterKey: 'searchWrd', label: '링크IP블록', valueType: 'ip' } },
         { key: 'SOffice', props: { prop_parameterKey: 'srssofficescode', apiPath: '/ipmgmt/linkmgmt', voName: 'tbIpLinkMstVos', valueKey: { cd: 'srssofficescode', nm: 'srssofficesNm' } } },
         { key: 'InputType', props: { prop_parameterKey: 'smodelNm', label: '장비명' } },

@@ -1,0 +1,57 @@
+{
+    "data": {
+        "result": {
+            "data": {
+                "searchBgnDe": "",
+                "searchCnd": "",
+                "searchEndDe": "",
+                "searchWrd": "",
+                "sortType": "",
+                "sortOrdr": "",
+                "searchUseYn": "",
+                "searchBgnCd": "",
+                "searchEndCd": "",
+                "pageIndex": 1,
+                "pageUnit": 0,
+                "pageSize": 0,
+                "firstIndex": 1,
+                "lastIndex": 10,
+                "recordCountPerPage": 10,
+                "rowNo": 0,
+                "typeFlag": "",
+                "dcreateDt": null,
+                "screateId": null,
+                "screateNm": null,
+                "dmodifyDt": null,
+                "smodifyId": null,
+                "smodifyNm": null,
+                "commonMsg": null,
+                "screateEmail": null,
+                "smodifyEmail": null,
+                "moveType": "",
+                "moveSearchWrd": "",
+                "moveSipVersionTypeCd": null,
+                "url": null,
+                "menuType": null,
+                "paramMap": null,
+                "tbIpUploadSubVos": [],
+                "totalCount": 0
+            }
+        }
+    },
+    "status": 200,
+    "config": {
+        "filePath": "src/api/ipms.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
+        "url": "/ipmgmt/ipuploadmgmt/viewDetailIpMst.model",
+        "urlOrigin": "/ipmgmt/ipuploadmgmt/viewDetailIpMst.model",
+        "params": null,
+        "data": "{\"seq\":1212,\"encrypt\":\"mBv2oY393K/J3xUIavQ=\"}",
+        "cmd": "{ \"url\": \"/ipmgmt/ipuploadmgmt/viewDetailIpMst.model\", \"sqlId\": \"\", \"param\": {\"seq\":1212,\"encrypt\":\"mBv2oY393K/J3xUIavQ=\"} }",
+        "requestTime": "2024-12-20 15:02:42.039",
+        "responseTime": "2024-12-20 15:02:42.150",
+        "duration": 111,
+        "jsonFileName": "ipmgmtipuploadmgmtviewDetailIpMstmodel_seq1212.json"
+    }
+}

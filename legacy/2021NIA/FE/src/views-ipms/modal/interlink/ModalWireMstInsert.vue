@@ -56,7 +56,7 @@
           <tr>
             <th>구분</th>
             <td colspan="3">
-              <el-select v-model="formData.skindCd" class="w-30" :disabled="fnType === 'update'">
+              <el-select v-model="formData.skindCd" class="w-30" :disabled="fnType === 'update'" popper-class="skindCd">
                 <el-option v-for="item in skindCdOptions" :key="item.value" :value="item.value" :label="item.label" />
               </el-select>
             </td>

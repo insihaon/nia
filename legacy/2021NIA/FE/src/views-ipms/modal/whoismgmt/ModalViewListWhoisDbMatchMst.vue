@@ -222,9 +222,9 @@ export default {
       try {
         const res = await apiRequestJson(ipmsJsonApis.dbMatchListTbWhoisVo, tbWhoisVo)
         if (res.commonMsg === 'SUCCESS') {
-          onMessagePopup(this, '삭제할 정보를 선택 후 삭제 가능합니다.')
+          onMessagePopup(this, '정상적으로 반영 하였습니다.')
         } else if (res.commonMsg === '03') {
-          onMessagePopup(this, '삭제할 정보를 선택 후 삭제 가능합니다.')
+          onMessagePopup(this, '반송되었습니다. 팝업창 변경버튼을 통하여 전송하시기 바랍니다.')
         } else {
           onMessagePopup(this, '반영에 실패하였습니다.')
         }

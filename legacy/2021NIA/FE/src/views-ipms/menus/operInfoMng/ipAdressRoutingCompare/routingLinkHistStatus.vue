@@ -64,11 +64,7 @@ export default {
       ],
 
       sresultMsgOptions: [],
-    }
-  },
-  computed: {
-    componentList() {
-      return [
+      componentList: [
         { key: 'InputType', props: { label: '장비 IP', valueType: 'ip', prop_parameterKey: 'ptelnetIp' } },
         { key: 'InputType', props: { label: '장비프롬프트명', prop_parameterKey: 'shostNm' } },
         { key: 'UsageYN', props: { label: '진행여부', prop_parameterKey: 'sprocessYn',
