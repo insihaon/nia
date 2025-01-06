@@ -32,7 +32,7 @@ var dialogOpenMixin = {
           pageTitle: '마감 처리',
           top: '2vh',
           width: '600',
-          height: '500',
+          height: '550',
           resizeble: true,
         },
         configTest: {

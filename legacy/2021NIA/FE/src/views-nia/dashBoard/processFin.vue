@@ -38,7 +38,7 @@
         </div>
         <el-row>
           <el-col>
-            <el-input v-model="fault_type_content" :rows="3" type="textarea" :disabled="aiFeedback === '0'" placeholder="AI 결과 피드백 내용 입력" />
+            <el-input v-model="fault_type_content" :rows="4" type="textarea" :disabled="aiFeedback === '0'" placeholder="AI 결과 피드백 내용 입력" />
           </el-col>
         </el-row>
       </el-card>
