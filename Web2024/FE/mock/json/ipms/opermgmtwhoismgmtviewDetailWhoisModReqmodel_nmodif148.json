@@ -1,5 +1,5 @@
 {
-    "__body": {
+    "data": {
         "result": {
             "data": {
                 "searchBgnDe": "",
@@ -59,31 +59,34 @@
                 "sAftEOrgName": "Korea Telecom",
                 "sAftEOrgAddr": "6 Jungsimsangeop2ro Ochang-Eup Cheongwon-Gu Cheongju-Si Chungcheongbuk-Do",
                 "sAftEOrgAddrDetail": "OchanggwahakRSS",
-                "sStatCd": "10",
-                "sStatNm": "변경신청",
-                "dApplyDt": 1680570396056,
+                "sStatCd": "30",
+                "sStatNm": "반려",
+                "dApplyDt": "2023-04-04T10:06:36.056+09:00",
                 "sApplyId": "10083412",
                 "sApplyNm": null,
-                "dApprovalDt": null,
-                "sApprovalId": null,
+                "dApprovalDt": "2024-10-22T08:56:49.304+09:00",
+                "sApprovalId": "10150810",
                 "dCreateDt": null,
                 "sCreateId": "10083412",
                 "dModifyDt": null,
                 "sModifyId": null,
-                "sreject_rsn": null
+                "sreject_rsn": "TEST"
             }
         }
     },
+    "status": 200,
     "config": {
+        "filePath": "src/api/ipms.js",
+        "method": "post",
+        "baseURL": "//localhost:8070/",
         "url": "/opermgmt/whoismgmt/viewDetailWhoisModReq.model",
-        "param": {
-            "nmodify_apply_seq": "148"
-        },
-        "receivedTime": "2024-08-27 13:27:35.010",
-        "fetch": "fetch('/opermgmt/whoismgmt/viewDetailWhoisModReq.model', { 'headers': { 'content-type': 'application/json; charset=UTF-8' }, 'body': '{\"nmodify_apply_seq\":\"148\"}', 'method': 'POST' })",
-        "cmd": "{\"url\": \"/opermgmt/whoismgmt/viewDetailWhoisModReq.model\", \"sqlId\": \"\", \"param\": \"{\\\"nmodify_apply_seq\\\": \\\"148\\\"}\"}",
-        "duration": 183,
-        "jsonFileName": "opermgmtwhoismgmtviewDetailWhoisModReqmodel_nmodif148.json",
-        "oldJsonFileName": "b3Blcm1nbXQvd2hvaXNtZ210L3ZpZXdEZXRhaWxXaG9pc01vZFJlcS5tb2RlbA_MTQ4.json"
+        "urlOrigin": "/opermgmt/whoismgmt/viewDetailWhoisModReq.model",
+        "params": null,
+        "data": "{\"nmodify_apply_seq\":148,\"encrypt\":\"VfK1nXF72W8UKCj9SYE=\"}",
+        "cmd": "{ \"url\": \"/opermgmt/whoismgmt/viewDetailWhoisModReq.model\", \"sqlId\": \"\", \"param\": {\"nmodify_apply_seq\":148,\"encrypt\":\"VfK1nXF72W8UKCj9SYE=\"} }",
+        "requestTime": "2024-12-20 15:04:00.262",
+        "responseTime": "2024-12-20 15:04:00.347",
+        "duration": 85,
+        "jsonFileName": "opermgmtwhoismgmtviewDetailWhoisModReqmodel_nmodif148.json"
     }
 }

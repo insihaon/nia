@@ -8,7 +8,7 @@
         <el-select
           v-model="value"
           size="small"
-          popper-class="applyStatus"
+          :popper-class="prop_class === null ? 'applyStatus' : prop_class"
           @change="handleChange()"
         >
           <el-option
@@ -44,6 +44,10 @@ export default {
       type: String,
       default: null
     },
+    prop_class: {
+      type: String,
+      default: null
+    }
   },
   data() {
     return {

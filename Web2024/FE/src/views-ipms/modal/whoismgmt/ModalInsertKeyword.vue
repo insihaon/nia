@@ -16,11 +16,9 @@
       class="ipms-dialog"
       :class="{ [name]: true }"
     >
-
-      <div class="popupContentTable">
-
-        <table>
-          <tbody>
+      <div v-loading="viewLoading">
+        <div class="popupContentTable">
+          <table>
             <tr>
               <th>기관 구분</th>
               <td>
@@ -28,6 +26,7 @@
                   <el-select
                     v-model="suserorggb"
                     size="small"
+                    popper-class="suserorggb"
                   >
                     <el-option
                       v-for="item in suserorggbOp"
@@ -47,13 +46,12 @@
                 </div>
               </td>
             </tr>
-          </tbody>
-        </table>
-
-      </div>
-      <div class="popupContentTableBottom">
-        <el-button type="primary" size="small" class="el-icon-check" @click="btnSaveSearchAddr()">저장</el-button>
-        <el-button type="primary" size="small" class="el-icon-close" @click="close()">{{ $t('exit') }}</el-button>
+          </table>
+        </div>
+        <div class="popupContentTableBottom">
+          <el-button type="primary" size="small" class="el-icon-check" round @click="btnSaveSearchAddr()">저장</el-button>
+          <el-button type="primary" size="small" class="el-icon-close" round @click="close()">{{ $t('exit') }}</el-button>
+        </div>
       </div>
     </el-dialog>
   </div>
@@ -77,6 +75,7 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      viewLoading: false,
       searchAddrVo: {},
       suserorggb: '',
       sorgname: '',
@@ -91,10 +90,6 @@ export default {
       ],
     }
   },
-  computed: {
-  },
-  mounted() {
-  },
   methods: {
     onCreated() {
       Modal.methods.onCreated.call(this)
@@ -104,14 +99,9 @@ export default {
     onOpen(model, actionMode) {
     },
     async btnSaveSearchAddr() { /* 이용기관 저장 */
-      const target = { vue: this.$refs.content }
+      const tbWhoisKeywordVo = { sorgname: this.sorgname, suserorggb: this.suserorggb }
       try {
-         this.openLoading(target)
-        const tbWhoisKeywordVo = {
-          sorgname: this.sorgname,
-          suserorggb: this.suserorggb
-
-        }
+        this.viewLoading = true
         const res = await apiRequestJson(ipmsJsonApis.insertWhoisKeyword, tbWhoisKeywordVo)
         if (res.commonMsg === 'SUCCESS') {
           onMessagePopup(this, '정상적으로 등록되었습니다.')
@@ -121,10 +111,10 @@ export default {
           onMessagePopup(this, res.commonMsg)
         }
       } catch (error) {
-        console.log(error)
+        this.error(error)
       } finally {
-      this.closeLoading(target)
-    }
+        this.viewLoading = false
+      }
     },
     onClose() {
     }

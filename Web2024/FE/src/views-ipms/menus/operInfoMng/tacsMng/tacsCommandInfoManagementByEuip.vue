@@ -72,12 +72,8 @@ export default {
         { prop: 'suseYn', label: '사용여부', align: 'center', columnVisible: true, showOverflow: true },
       ],
       sfcltTypes: [],
-      selectedRow: null
-    }
-  },
-  computed: {
-    componentList() {
-      return [
+      selectedRow: null,
+      componentList: [
         { key: 'ApplyStatus', props: { label: '장비타입', prop_parameterKey: 'sfcltType', prop_options: this.sfcltTypes } },
         { key: 'InputType', props: { label: '장비명령어' } },
         { key: 'UsageYN', props: { label: '사용여부', prop_parameterKey: 'suseYn' } }

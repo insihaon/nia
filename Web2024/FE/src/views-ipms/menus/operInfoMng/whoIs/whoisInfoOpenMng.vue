@@ -1,5 +1,5 @@
 <template>
-  <el-row class="w-100 h-100">
+  <el-row ref="container" class="w-100 h-100">
     <div class="popupContentTable">
       <table v-loading="tableLoading">
         <tr>
@@ -16,7 +16,7 @@
       :component-keys="componentList"
       @handle-search="handleSearch"
     />
-    <el-col :span="24">
+    <el-col ref="tableContainer" :span="24">
       <compTable
         ref="compTable"
         style="height: calc(100% - 80px)"
@@ -64,6 +64,7 @@
 <script>
 import { Base } from '@/min/Base.min'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
+import tableHeightMixin from '@/mixin/tableHeightMixin'
 import CompTable from '@/components/elTable/CompTable.vue'
 import ModalRegWhois from '@/views-ipms/modal/whois/ModalRegWhois.vue'
 import { ipmsModelApis, apiRequestModel, apiRequestJson, ipmsJsonApis } from '@/api/ipms'
@@ -80,6 +81,7 @@ export default {
   name: routeName,
   components: { CompTable, DynamicComponentLoader, ModalRegWhois, ModalViewListWhoisKeywordMst, ModalViewListWhoisKeywordMstNew, ModalViewUpdateKtInfo, ModalViewListWhoisDbMatchMst },
   extends: Base,
+  mixins: [tableHeightMixin],
   data() {
     return {
       name: routeName,
@@ -116,15 +118,12 @@ export default {
       ],
       selectedChecks: [],
       selectedChecksItem: null,
-    }
-  },
-  computed: {
-    componentList() {
-      return [
+      componentList: [
         { key: 'SsvcLineType', props: { label: '계위 정보', lvl: 3 } },
         { key: 'InputType', props: { label: '사용기관명', prop_parameterKey: 'sorgname' } },
-         {
+        {
           key: 'ApplyStatus', props: {
+          prop_class: 'RegistrationStatus',
           label: '등록현황',
           prop_parameterKey: 'swhoisresultCd',
           prop_options: [
@@ -164,11 +163,11 @@ export default {
           }
         }
       ]
-    },
+    }
   },
-  mounted() {
-    this.loadServiceCd()
-    this.loadCountWhoisByStatus()
+  async mounted() {
+    await this.loadServiceCd()
+    await this.loadCountWhoisByStatus()
   },
   methods: {
     selectCondition(row) {
@@ -192,7 +191,7 @@ export default {
      async loadServiceCd() {
       try {
         const res = await apiRequestJson(ipmsJsonApis.selectListCommonCode)
-        this.sassignTypeCdList = res.result?.data?.map(v => { return { value: v.code, label: v.name } })
+        this.$set(this, 'sassignTypeCdList', res.result?.data?.map(v => { return { value: v.code, label: v.name } }))
       } catch (error) {
         this.error(error)
       }
@@ -211,7 +210,7 @@ export default {
         this.pagination.data = res?.result?.data ?? []
         this.pagination.total = res?.result?.totalCount ?? 0
       } catch (error) {
-        console.error(error)
+        this.error(error)
       } finally {
         this.closeLoading(target)
       }
@@ -246,31 +245,32 @@ export default {
       this.$refs.ModalViewListWhoisDbMatchMst.open()
     },
 
-    handleClickExcelDownloadBtn() { // 삭제신청서가 반송(할당된 IPv4주소가 아닐경우)되었을 경우 삭제 가능
+    handleClickExcelDownloadBtn() {
       downloadExcel(this, 'viewListWhoisExcel')
     },
     async fnDelRegWhoisSubmit() { /* 삭제 */
+      // 삭제신청서가 반송(할당된 IPv4주소가 아닐경우)되었을 경우 삭제 가능
       if (this.selectedChecks.length < 0) {
         onMessagePopup(this, '삭제할 정보를 선택 후 삭제 가능합니다.')
         return
       }
-        const tbWhoisVo = { delList: [] }
-        this.selectedChecks.forEach(nWhoisSeq => {
-          tbWhoisVo.delList.push({ whoisSeq: nWhoisSeq })
-        })
-    try {
-      const res = await apiRequestJson(ipmsJsonApis.deleteTbWhoisVo, tbWhoisVo)
-      if (res.tbWhoisVo.commonMsg === 'SUCCESS') {
-        onMessagePopup(this, '정상적으로 삭제 하였습니다.')
-      } else {
-        onMessagePopup(this, '삭제를 실패하였습니다.')
+      const delList = []
+      this.selectedChecks.forEach(row => {
+        delList.push(row.nwhoisSeq)
+      })
+      try {
+        const res = await apiRequestJson(ipmsJsonApis.deleteTbWhoisVo, { delList })
+        if (res.commonMsg === 'SUCCESS') {
+          onMessagePopup(this, '정상적으로 삭제 하였습니다.')
+        } else {
+          onMessagePopup(this, '삭제를 실패하였습니다.')
+        }
+      } catch (error) {
+        this.error(error)
       }
-    } catch (error) {
-      console.log(error)
-    }
-  },
+    },
   }
 }
 </script>
-<style lang="css" scoped>
+<style lang="scss" scoped>
 </style>

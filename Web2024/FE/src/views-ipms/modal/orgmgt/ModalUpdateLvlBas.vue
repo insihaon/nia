@@ -53,7 +53,7 @@
           <tr class="top">
             <th>서비스망</th>
             <td>
-              <el-select v-model="ssvcLineTypeCd" class="w-100" size="small" @change="handleChangeLvl1()">
+              <el-select v-model="ssvcLineTypeCd" class="w-100" size="small" popper-class="_ssvcLineTypeCd" @change="handleChangeLvl1()">
                 <el-option
                   v-for="item in svcLineListVo"
                   :key="item.value"
@@ -67,7 +67,7 @@
           <tr>
             <th>센터/지역본부</th>
             <td>
-              <el-select v-model="ssvcGroupCd" :disabled="ssvcLineTypeCd === 'CL0000'" class="w-100" size="small" @change="handleChangeLvl2()">
+              <el-select v-model="ssvcGroupCd" :disabled="ssvcLineTypeCd === 'CL0000'" class="w-100" size="small" popper-class="_ssvcGroupCd" @change="handleChangeLvl2()">
                 <el-option
                   v-for="item in centerListVo"
                   :key="item.value"
@@ -80,7 +80,7 @@
           <tr>
             <th>노드</th>
             <td>
-              <el-select v-model="ssvcObjCd" class="w-100" :disabled="ssvcLineTypeCd === 'CL0000' || ssvcGroupCd === ''" size="small">
+              <el-select v-model="ssvcObjCd" class="w-100" :disabled="ssvcLineTypeCd === 'CL0000' || ssvcGroupCd === ''" size="small" popper-class="_ssvcObjCd">
                 <el-option
                   v-for="item in nodeListVo"
                   :key="item.value"
