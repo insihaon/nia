@@ -124,18 +124,25 @@
 </template>
 <script>
 import { Base } from '@/min/Base.min'
-import axios from 'axios'
 import {
   apiSelectNiaAlarmList, apiSelectNiaCableAlarmList, apiSelectNiaAbnormalTraffic2List,
   apiSelectNiaBadTraffic2List, apiSelectNiaBadTrafficList, apiSelectNiaAbnormalTrafficList,
   apiSelectNiaTopologyCableList, apiSelectNiaPfTopologyCableList, apiSelectNiaAgencyList,
   apiSelectTopologyNodeList, apiSelectTopologyLinkList, apiUpdateNodePosition
 } from '@/api/nia'
+import data_nia_ip_1 from '@/views-nia/dashBoard/niaTopologyConfig/json/data_nia_ip_1'
+import data_nia_ip_2 from '@/views-nia/dashBoard/niaTopologyConfig/json/data_nia_ip_2'
+import data_nia_ip_3 from '@/views-nia/dashBoard/niaTopologyConfig/json/data_nia_ip_3'
 
 import niaTopologyTemplalate from './niaTopologyConfig/niaTopologyTemplate.vue'
 
 const routeName = 'niaTopology'
 const jsons = ['data_nia_ip_1.json', 'data_nia_ip_2.json', 'data_nia_ip_3.json']
+const jsonData = {
+  'data_nia_ip_1.json': data_nia_ip_1,
+  'data_nia_ip_2.json': data_nia_ip_2,
+  'data_nia_ip_3.json': data_nia_ip_3,
+}
 const roadm_slots = {
     '192.168.200.213': ['MRPA-A', 'MRPA-A', 'MRSA-2B', 'MRSA-2A', 'OCPMA-4', 'BLK', 'OM24A', 'OM24A', 'BLK', 'BLK', 'BLK', 'BLK', 'BLK', 'BLK', 'BLK', 'BLK', 'BLK', 'BLK'],
     '192.168.200.220': ['MRPA-A', 'MRPA-A', 'OTUC1A-L', 'OTUC1A-L', 'OTUC1A-L', 'OTUC1A-L', 'OTUC1A-L', 'OTUC2A-L', 'OM2C2A-L', 'OM2C2A-L', 'OM24A', 'OM24A', 'OM24A', 'OM24A', 'BLK', 'BLK'],
@@ -669,8 +676,8 @@ export default {
 
     async loadMapData(fileName) {
       try {
-        const response = await axios.get(`/json/${fileName}`)
-        this.mapData = response.data
+        const response = jsonData[fileName]
+        this.mapData = response
         return this.mapData
       } catch (error) {
         console.error('Failed to load map data:', error)
