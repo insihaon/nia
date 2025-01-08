@@ -283,6 +283,16 @@ export function apiInsertSyslogRule(params = {}) {
   })
 }
 
+export function apiUpdateNodePosition(params = {}) {
+  return http({
+    url: '/selectOne',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'UPDATE_NODE_POSITION',
+    data: params
+  })
+}
+
 export function apiSelectCheckRuleName(params = {}) {
   return http({
     url: '/selectList',
@@ -854,6 +864,26 @@ export function apiSelectNiaAgencyList(params = {}) {
     method: 'post',
     filePath: filePath,
     sqlId: 'SELECT_NIA_AGENCY_LIST',
+    data: params
+  })
+}
+
+export function apiSelectTopologyNodeList(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_TOPOLOGY_NODE_LIST',
+    data: params
+  })
+}
+
+export function apiSelectTopologyLinkList(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_TOPOLOGY_LINK_LIST',
     data: params
   })
 }

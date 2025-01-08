@@ -79,7 +79,7 @@
             </div>
           </template>
         </filterBar>
-        <CompAgGrid ref="ipAgGrid" v-model="ipAgGrid" class="w-100 flex-fill" @rowClicked="selectedTicket" @rowDoubleClicked="ipAgGridRowDoubleClicked" />
+        <CompAgGrid ref="ipAgGrid" v-model="ipAgGrid" class="w-100 flex-fill" @rowClicked="selectedTicket" @rowDoubleClicked="agGridRowDoubleClicked"/>
         <!-- top-container content -->
       </template>
       <template slot="bottom-container">
@@ -116,7 +116,7 @@
             </div>
           </template>
         </filterBar>
-        <CompAgGrid ref="transmissionAgGrid" v-model="transmissionAgGrid" class="w-100 flex-fill" />
+        <CompAgGrid ref="transmissionAgGrid" v-model="transmissionAgGrid" class="w-100 flex-fill" @rowDoubleClicked="agGridRowDoubleClicked" />
       </template>
     </LeftBar>
   </div>
@@ -671,8 +671,9 @@ export default {
     selectedTicket(param) {
       this.selectedItem = param
     },
-    ipAgGridRowDoubleClicked(selectedItems) {
-      this.fn_openWindow('niaTopology', selectedItems)
+    agGridRowDoubleClicked(selectedItems) {
+      const data = this.selectedItem?.data || []
+      this.fn_openWindow('niaTopology', data)
     },
     handleOpenTicketDetail(row) {
       this.fn_openWindow('ticketDetail', row)

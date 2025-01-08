@@ -207,11 +207,6 @@
   /* #endregion */
 
   /* #region [scroll table] */
-  :root {
-    --table-height: 200px;
-    --table-td-height: inherit;
-    --table-th-margin: 24px;
-  }
   caption {
     position: absolute;
     font-size: 0;
@@ -220,14 +215,14 @@
   .table-box-wrap {
     position: relative;
     width: 509px;
-    padding-top: var(--table-td-height);
+    padding-top: inherit;
     border: 1px dotted grey;
   }
   .table-box-wrap .table-box {
-    max-height: var(--table-height);
+    max-height: 200px;
     overflow: auto;
     overflow-x: hidden;
-    margin-top: var(--table-th-margin);
+    margin-top: 24px;
     /* 스크롤이 있을 때는 아래 속성을 주고, 없을 때는 제거해야 픽셀깨짐이 없는데, 어떻게 처리해야 하나? */
     /* margin-right: -6px;  */
   }
@@ -246,13 +241,13 @@
   .table-box-wrap .table-box table thead tr th {
     font-weight: normal;
     box-sizing: border-box;
-    height: var(--table-td-height);
+    height: inherit;
     border: none !important;
   }
 
   .table-box-wrap .table-box table td {
     text-align: center;
-    height: var(--table-td-height);
+    height: inherit;
     overflow-wrap: break-word;
   }
 
