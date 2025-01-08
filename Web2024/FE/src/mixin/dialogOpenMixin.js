@@ -82,7 +82,13 @@ var dialogOpenMixin = {
           height: '650',
           resizeble: true
         },
-
+        niaTopology: {
+          component: () => import('@/views-nia/dashBoard/niaTopology'),
+          pageTitle: '토폴로지',
+          width: '1200',
+          height: '785',
+          resizeble: true
+        },
       }
     }
   },

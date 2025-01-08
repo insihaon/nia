@@ -79,7 +79,7 @@
             </div>
           </template>
         </filterBar>
-        <CompAgGrid ref="ipAgGrid" v-model="ipAgGrid" class="w-100 flex-fill" @rowClicked="selectedTicket" />
+        <CompAgGrid ref="ipAgGrid" v-model="ipAgGrid" class="w-100 flex-fill" @rowClicked="selectedTicket" @rowDoubleClicked="ipAgGridRowDoubleClicked" />
         <!-- top-container content -->
       </template>
       <template slot="bottom-container">
@@ -670,6 +670,9 @@ export default {
     },
     selectedTicket(param) {
       this.selectedItem = param
+    },
+    ipAgGridRowDoubleClicked(selectedItems) {
+      this.fn_openWindow('niaTopology', selectedItems)
     },
     handleOpenTicketDetail(row) {
       this.fn_openWindow('ticketDetail', row)

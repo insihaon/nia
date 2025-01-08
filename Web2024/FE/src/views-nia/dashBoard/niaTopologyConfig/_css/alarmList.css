@@ -1,0 +1,248 @@
+md-dialog.alarm-dialog{
+    background-color: rgba(245,245,245,1);
+    max-width: 100%;
+    max-height: 100%;
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+    transition: all 0s ease 0s !important;
+}
+md-dialog.alarm-dialog.md-transition-in{
+    transition: all 0s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+md-dialog.alarm-dialog form,
+md-dialog.alarm-dialog md-dialog-content,
+md-dialog.alarm-dialog div.alarmContents,
+md-dialog.alarm-dialog md-card.alarm-card,
+md-dialog.alarm-dialog md-tabs{
+    height:100%;
+}
+md-dialog.alarm-dialog md-tab-content{
+    overflow-x: hidden;
+}
+
+md-dialog.alarm-dialog div.alarmContents{
+    background-color: #c1d3f624;
+    overflow: hidden;
+    padding: 5px;
+}
+
+md-table-pagination.md-table-pagination.ng-isolate-scope {
+    height: 38px;
+}
+
+md-table-pagination.md-table-pagination.ng-isolate-scope > *{
+    padding-top: 15px;
+}
+
+md-card.alarm-card{
+    margin: 20px;
+}
+
+md-content.tt-alarm-content{
+    background-color: #ffffff;
+    overflow: hidden;
+}
+md-content.tt-alarm-content._md {
+    height: calc(100% - 50px);
+    width: 100%;
+}
+
+tbody#alarm-tbody{
+    height:calc(100% - 40px);
+}
+.repeated-item{
+    height: 33px;
+}
+
+table.tt-alarm-table tbody.md-body > tr.md-row, table.tt-alarm-table tfoot.md-foot > tr.md-row {
+    height: 33px !important;
+}
+
+table.tt-alarm-table thead.md-head > tr.md-row {
+    height: 38px !important;
+}
+
+table.tt-alarm-table tr > th > md-icon > svg {
+    height: 16px;
+    margin: 4px auto;
+    width: 16px;
+}
+
+table.tt-alarm-table .slim-cell{
+    height: 2.2em;
+    /*position: relative;*/
+}
+
+table.tt-alarm-table.md-table{
+    background-color: white;
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    height: 100%;
+}
+
+table.tt-alarm-table thead{
+    display: block;
+}
+table.tt-alarm-table tbody{
+    display: block;
+    height: calc(100% - 40px);
+    /* overflow-y: auto !important;
+    overflow-x: hidden; */
+    position: relative;
+}
+
+/*table.tt-alarm-table td.md-cell */
+table.tt-alarm-table th.md-column{
+    font-size: 14px !important;
+}
+table.tt-alarm-table td.md-cell{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+table.tt-alarm-table td.md-cell > span.wrapper-span:hover{
+    background-color: #fff;
+}
+table.tt-alarm-table td.md-cell.topas-over > span.wrapper-span:hover{
+    max-width: 220px;
+    white-space: normal;
+    background-color: #ededed;
+    border: solid 1px #a2a2a2;
+    transition: background-color 0s;
+}
+
+table.tt-alarm-table td.md-cell div.over-cell {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: 21px;
+    display: inline-block;
+    position: relative;
+}
+
+table.tt-alarm-table div.overflow-action:hover{
+    overflow: visible !important;
+    width: auto;
+    display: inline-block;
+    background-color: #ffffff;
+    position: absolute !important;
+    margin-top: -10px;
+    outline: solid 1px #adadad;
+    max-width: 1000px !important;
+    padding-right: 5px;
+    cursor: text;
+    z-index: 1;
+}
+table.tt-alarm-table td.md-cell:not(:last-child) div.overflow-action:hover:before{
+    content: "";
+    position: absolute;
+    left: -2px;
+    top: -2px;
+    height: 120%;
+    border-left: 2px solid #ffffff;
+    border-top: 2px solid #ffffff;
+    border-bottom: 2px solid #ffffff;
+}
+table.tt-alarm-table td.md-cell:last-child div.overflow-action:hover{
+    float: right;
+    background-color: #e8e8e8;
+    padding-left: 5px;
+}
+
+div.over-cell:hover:before{
+    width: var(--width);
+}
+
+button.excelBtn{
+    max-height: 10px;
+    margin-top: auto;
+    margin-bottom: auto;
+    font-size: 11px;
+    font-weight: 900;
+    color: #4e4d4d;
+}
+
+div.pagination{
+    font-size: 12px;
+    color: rgba(0,0,0,.54);
+    padding-right: 12px;
+    margin-top: 7px;
+}
+div.pagination .label{
+    margin-top: auto;
+    margin-bottom: auto;
+}
+div.pagination md-select > .md-select-value,
+div.pagination md-select:not([disabled]):focus .md-select-value{
+    border-bottom-color: rgba(0,0,0,0);
+}
+
+div.pagination md-select > .md-select-value > span:first-child{
+    text-align: right;
+    margin-right: -10px;
+}
+div.pagination a.paging-number{
+    margin: 0 8px;
+    padding: 11px 0;
+}
+div.pagination a.paging-number:not(.selectedPage):hover{
+    text-decoration: underline !important;
+    cursor: pointer;
+}
+
+div.pagination a.selectedPage{
+    font-weight: 900;
+    color: #272727 !important;
+}
+
+/* Tail 하단 검색 컨테이너 */
+md-dialog.alarm-dialog div.search-container{
+    position: relative;
+    width: auto;
+    min-width: 139px;
+    z-index: 78;
+    overflow: hidden;
+    height: 42px;
+    transition: height 0.4s;
+    background-color: rgb(255, 255, 255);
+}
+md-dialog.alarm-dialog div.date-container{
+    margin-top: 3px;
+    margin-left: 20px;
+}
+md-dialog.alarm-dialog div.date-container > span{
+    font-size: 11px;
+    margin: auto 0px auto 5px;
+}
+md-dialog.alarm-dialog div.date-container > button{
+    height: 20px !important;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+md-dialog.alarm-dialog div.date-container input.mini-ticket-search{
+    font-size: 13px;
+    width: 200px;
+    padding: 0px;
+    height: 32px;
+}
+md-dialog.alarm-dialog div.date-container input.mini-ticket-search::placeholder{
+    font-size: 13px;
+}
+md-dialog.alarm-dialog md-input-container{
+    width: 160px;
+    font-size: 13px;
+    margin: 0 0 0 0;
+}
+md-dialog.alarm-dialog md-input-container svg{
+    height:18px;
+    margin-top: 4px;
+}
+
+
+
+
+
+
