@@ -2353,4 +2353,138 @@
         </if>
     </select>
 
+    <select id="SELECT_TOPOLOGY_NODE_LIST" parameterType="hashmap" resultType="hashmap">
+        SELECT
+            row_number() over () AS index
+            , node.id
+            , node.device_name
+            , node.ip_addr
+            , node.device_type
+            , node.visible
+            , coalesce(cast (node.fx as integer), 20 + (node.index * 80)) as fx
+            , coalesce(cast (node.fx as integer), 20 + (node.index * 80)) as x
+            , coalesce(cast (node.fy as integer), 100) as fy
+            , coalesce(cast (node.fy as integer), 100) as y
+        from (
+            SELECT DISTINCT ON (nm.node_id, nm.node_nm, nm.ip_addr)
+                 row_number() over () AS index
+                , nm.node_num
+                , nm.node_id AS id
+                 , nm.node_nm AS device_name
+                 , nm.ip_addr AS ip_addr
+                 , '4' as device_type
+                 , case when nm.admin_yn = 'W' then true
+                        else false end as visible
+                 , np.fx as fx  
+                 , np.fy  as fy
+            FROM resource.tb_node_mst nm
+                      LEFT OUTER JOIN resource.tb_node_position_info np ON np.node_id = nm.node_id AND np.topology_type = #{TYPE}
+            where np.fx is not null
+            UNION 
+            SELECT distinct on (em.tid, em.sysname, em.model)
+                 row_number() over () AS index
+                 , null as node_num
+                 , em.tid AS id
+                 , em.sysname  AS device_name
+                 , em.tid AS ip_addr
+                 , CASE model
+                 WHEN 'Utrans-6300p-H3' THEN '1'
+                 WHEN 'Utrans-6300p-V9' THEN '0'
+                 ELSE '2'
+                 END AS device_type
+                 , true as visible
+                 , np.fx as fx
+                 , np.fy  as fy
+             FROM nia.tb_equip_mst em
+                  LEFT OUTER JOIN resource.tb_node_position_info np ON np.node_id = em.tid AND np.topology_type= #{TYPE}
+            order by node_num
+        ) as node
+    </select>
+
+    <select id="SELECT_TOPOLOGY_LINK_LIST" parameterType="hashmap" resultType="hashmap">
+        SELECT  row_number() over () AS id,
+                concat('link_', row_number() over ()) AS element_id,
+                link.*
+        FROM    ( SELECT bl.src_node_id AS source_name,
+                        bl.src_node_id AS source_id,
+                        row_number() over (partition BY bl.src_node_id ORDER BY bl.src_node_id, bl.src_if_id) source_dir,
+                        bl.src_if_id AS source_port_disp,
+                        bl.src_if_id AS source_pau,
+                        bl.dest_node_id AS target_name,
+                        bl.dest_node_id AS target_id,
+                        row_number() over (partition BY bl.dest_node_id ORDER BY bl.dest_node_id, bl.dest_if_id) target_dir,
+                        bl.dest_if_id AS target_port_disp,
+                        bl.dest_if_id AS target_pau,
+                        'UP' AS state,
+                        '' AS equip_type,
+                        '1' AS status
+                FROM    resource.tb_backbone_link bl
+                INNER JOIN resource.tb_node_mst ns ON ns.node_id = bl.src_node_id
+                INNER JOIN resource.tb_node_mst nd ON nd.node_id = bl.dest_node_id
+                WHERE   bl.dest_node_id NOT LIKE '%control%'
+                AND     bl.dest_node_id NOT LIKE '%n9k%'
+                UNION ALL
+                SELECT  es.sysname AS source_name,
+                        es.tid AS source_id,
+                        row_number() over (partition BY tp.sysnamea ORDER BY tp.sysnamea, tp.ptpnamea_bau) source_dir,
+                        tp.ptpnamea_bau AS source_port_disp,
+                        tp.ptpnamea_pau AS source_pau,
+                        et.sysname AS target_name,
+                        et.tid AS target_id,
+                        row_number() over (partition BY tp.sysnamez ORDER BY tp.sysnamez, tp.ptpnamea_bau) target_dir,
+                        tp.ptpnamea_bau AS target_port_disp,
+                        tp.ptpnamea_pau AS target_pau,
+                        'UP' AS state,
+                        tp.equip_type AS equip_type,
+                        '1' AS status
+                FROM    NIA.tb_topology tp
+                INNER JOIN nia.tb_equip_mst es ON REPLACE(tp.sysnamea, '-SH1', '') = es.tid
+                INNER JOIN nia.tb_equip_mst et ON REPLACE(tp.sysnamez, '-SH1', '') = et.tid
+                WHERE   tp.sysnamez NOT LIKE '%control%'
+                AND     tp.sysnamez NOT LIKE '%n9k%'
+                UNION ALL
+                SELECT  e2e.node_ida AS source_name,
+                        e2e.node_ida AS source_id,
+                        1 AS source_dir,
+                        e2e.porta AS source_port_disp,
+                        e2e.porta AS source_pau,
+                        e2e.node_idz AS target_name,
+                        e2e.node_idz AS target_id,
+                        1 AS target_dir,
+                        e2e.portz AS target_port_disp,
+                        e2e.portz AS target_pau,
+                        'UP' AS state,
+                        '' AS equip_type,
+                        '1' AS status
+                FROM    nia.tb_e2e_topology e2e
+                WHERE   e2e.node_idz NOT LIKE '%control%'
+                AND     e2e.node_idz NOT LIKE '%n9k%' ) AS link;
+    </select>
+
+    <insert id="UPDATE_NODE_POSITION" parameterType="java.util.List">
+        DELETE FROM resource.tb_node_position_info
+        WHERE topology_type = #{TYPE};
+        INSERT
+        INTO    resource.tb_node_position_info
+                (
+                        node_type,
+                        node_id,
+                        node_image_path,
+                        fx,
+                        fy,
+                        topology_type
+                )
+                VALUES
+                <foreach collection="NODES" item="item" separator=",">
+                (
+                        #{item.node_type},
+                        #{item.node_id},
+                        #{item.node_image_path},
+                        #{item.fx},
+                        #{item.fy},
+                        #{item.topology_type}
+                )
+                </foreach>
+    </insert>
+
 </mapper>

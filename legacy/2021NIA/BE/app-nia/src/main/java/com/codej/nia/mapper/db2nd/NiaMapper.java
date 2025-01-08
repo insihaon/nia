@@ -156,6 +156,8 @@ public interface NiaMapper extends BaseDataMapper {
 
         public int INSERT_AGENCY_IP_LIST(HashMap<String, Object> map);
 
+        public int UPDATE_NODE_POSITION(HashMap<String, Object> map);
+
         public int UPDATE_AGENCY_IP_LIST(HashMap<String, Object> map);
 
         public int DELETE_AGENCY_IP_LIST(HashMap<String, Object> map);
@@ -181,6 +183,10 @@ public interface NiaMapper extends BaseDataMapper {
         public List<ResultMap> SELECT_NIA_PF_TOPOLOGY_CABLE_LIST(HashMap<String, Object> map);
 
         public List<ResultMap> SELECT_NIA_AGENCY_LIST(HashMap<String, Object> map);
+
+        public List<ResultMap> SELECT_TOPOLOGY_NODE_LIST(HashMap<String, Object> map);
+
+        public List<ResultMap> SELECT_TOPOLOGY_LINK_LIST(HashMap<String, Object> map);
 
         public int DELETE_DATA_SNAPSHOT(HashMap<String, Object> map);
 

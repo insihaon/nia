@@ -2,11 +2,9 @@
   <div :class="{ [name]: true, 'h-100': true }">
     <div layout="row" flex layout-fill ng-cloak>
       <div class="map-area" style="display: flex; flex-direction: column; width: 100%; height: 100%;">
-        <!-- v-show="!singlePage" -->
         <div class="underline" style="display: flex; flex-direction: column; flex-wrap: wrap;">
           <div class="rightContent" style="z-index:9999">
             <div class="ttSetting" >
-              <!-- style="overflow: hidden;" -->
               <ul>
                 <li
                   v-if="isVisibleView('LAYERED')"
@@ -41,6 +39,7 @@
                   <span class="tooltip-text">노드 줌인 테스트</span>
                 </li>
                 <li
+                  v-if="isDebug"
                   style="font-size:20px;"
                   class="tooltip-hover"
                   @click="broadcastMenuEvent('updateTopology')"
@@ -101,7 +100,7 @@
                           </tr>
                           <tr
                             v-for="(agency, index) in sortedAgencyList"
-                            :key="agency.nren_name"
+                            :key="agency.nren_id"
                             :class="{ 'animation-blink': ticket.is_organ_system && ticket.root_cause_sysnamez === agency.nren_name }"
                           >
                             <td>{{ index + 1 }}</td>
@@ -117,222 +116,10 @@
             </div>
           </div>
         </div>
-
       </div>
     </div>
 
-    <div id="template-2">
-      <div class="gripper"></div>
-      <div class="properties flex-column" style="display: none;">
-        <div class="flex-item node" style="display: none;">
-          <div>NODE INFORMATION</div>
-          <table class="tg">
-            <thead>
-              <tr class="alias">
-                <th>ALIAS</th>
-                <th>Device1</th>
-                <th>Device2</th>
-              </tr>
-            </thead>
-            <tr class="id">
-              <td>ID</td>
-              <td></td>
-              <td></td>
-            </tr>
-            <tr class="ip">
-              <td>IP</td>
-              <td></td>
-              <td></td>
-            </tr>
-            <tr class="type">
-              <td>TYPE</td>
-              <td></td>
-              <td></td>
-            </tr>
-            <tr class="mac">
-              <td>MAC</td>
-              <td></td>
-              <td></td>
-            </tr>
-            <tr class="alarm">
-              <td>ALARM</td>
-              <td></td>
-              <td></td>
-            </tr>
-            <tr class="port">
-              <td>PORT</td>
-              <td></td>
-              <td></td>
-            </tr>
-          </table>
-        </div>
-        <div class="flex-item link">
-          <div>LINK INFOMATION</div>
-          <table>
-            <tr class="link_alias">
-              <td>ALIAS</td>
-              <td></td>
-            </tr>
-            <tr class="speed">
-              <td>SPEED</td>
-              <td></td>
-            </tr>
-            <tr class="status">
-              <td>STATUS</td>
-              <td></td>
-            </tr>
-          </table>
-        </div>
-        <div class="flex-item unit">
-          <div id="template-POTN">
-            <div class="template POTN">
-              <div class="title-wapper">
-                <div class="left">POTN <span class="potnSysname">${시스템명}</span></div>
-              </div>
-              <div class="table-wapper">
-                <table style="font-size: 10px; width: 25em; word-break: break-all; line-height: 15px; display: table-cell; text-align: center;">
-                  <tbody style="height: 15em;">
-                    <!--<tr>-->
-                    <!--<td colspan="5">FAN</td>-->
-                    <!--<td colspan="6">FAN</td>-->
-                    <!--<td colspan="5">FAN</td>-->
-                    <!--</tr>-->
-                    <tr>
-                      <td rowspan="2" style="height: 6em;">OMU A</td>
-                      <td class="S1 S01" rowspan="4">S01</td>
-                      <td class="S2 S02" rowspan="4">S02</td>
-                      <td class="S3 S03" rowspan="4">S03</td>
-                      <td class="S4 S04" colspan="2" rowspan="4">S04</td>
-                      <td class="S5 S05" rowspan="4">S05</td>
-                      <td class="S11" rowspan="4">OXCU A</td>
-                      <td class="S12" colspan="2" rowspan="4">OXCU B</td>
-                      <td class="S6 S06" colspan="2" rowspan="4">S06</td>
-                      <td class="S7 S07" rowspan="4">S07</td>
-                      <td class="S8 S08" rowspan="4">S08</td>
-                      <td class="S9 S09" rowspan="4">S09</td>
-                      <td class="S10" rowspan="4">S10</td>
-                    </tr>
-                    <tr>
-                    </tr>
-                    <tr>
-                      <td rowspan="2" style="height: 6em;">OMU B</td>
-                    </tr>
-                    <tr>
-                    </tr>
-                    <!--<tr>-->
-                    <!--<td colspan="5">FAN</td>-->
-                    <!--<td colspan="6">FAN</td>-->
-                    <!--<td colspan="5">FAN</td>-->
-                    <!--</tr>-->
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div id="template-3">
-      <div class="gripper"></div>
-      <div class="properties flex-column" style="display: none;">
-        <div class="flex-item node" style="display: none;">
-          <div>NODE INFORMATION</div>
-          <table class="tg">
-            <thead>
-              <tr class="alias">
-                <th>ALIAS</th>
-                <th>Device1</th>
-                <th>Device2</th>
-              </tr>
-            </thead>
-            <tr class="id">
-              <td>ID</td>
-              <td></td>
-              <td></td>
-            </tr>
-            <tr class="ip">
-              <td>IP</td>
-              <td></td>
-              <td></td>
-            </tr>
-            <tr class="type">
-              <td>TYPE</td>
-              <td></td>
-              <td></td>
-            </tr>
-            <tr class="mac">
-              <td>MAC</td>
-              <td></td>
-              <td></td>
-            </tr>
-            <tr class="alarm">
-              <td>ALARM</td>
-              <td></td>
-              <td></td>
-            </tr>
-            <tr class="port">
-              <td>PORT</td>
-              <td></td>
-              <td></td>
-            </tr>
-          </table>
-        </div>
-        <div class="flex-item link">
-          <div>LINK INFOMATION</div>
-          <table>
-            <tr class="link_alias">
-              <td>ALIAS</td>
-              <td></td>
-            </tr>
-            <tr class="speed">
-              <td>SPEED</td>
-              <td></td>
-            </tr>
-            <tr class="status">
-              <td>STATUS</td>
-              <td></td>
-            </tr>
-          </table>
-        </div>
-        <div class="flex-item unit">
-          <div id="template-ROADM">
-            <div class="template ROADM">
-              <div class="title-wapper">
-                <div class="left">ROADM  <span class="roadmSysname">${시스템명}</span> </div>
-              </div>
-              <div class="table-wapper">
-                <table style="font-size: 10px; width: 25em; word-break: break-all; line-height: 15px; display: table-cell; text-align: center;">
-                  <tbody>
-                    <tr class="slot-table" style="height: 15em;">
-                      <td class="S1 S01">S1</td>
-                      <td class="S2 S02">S2</td>
-                      <td class="S3 S03">S3</td>
-                      <td class="S4 S04">S4</td>
-                      <td class="S5 S05">S5</td>
-                      <td class="S6 S06">S6</td>
-                      <td class="S7 S07">S7</td>
-                      <td class="S8 S08">S8</td>
-                      <td class="S9 S09">S9</td>
-                      <td class="S10">S10</td>
-                      <td class="S11">S11</td>
-                      <td class="S12">S12</td>
-                      <td class="S13">S13</td>
-                      <td class="S14">S14</td>
-                      <td class="S15">S15</td>
-                      <td class="S16">S16</td>
-                      <td class="S17" style="display: none;"></td>
-                      <td class="S18" style="display: none;"></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
+    <niaTopologyTemplalate />
   </div>
 </template>
 <script>
@@ -341,8 +128,11 @@ import axios from 'axios'
 import {
   apiSelectNiaAlarmList, apiSelectNiaCableAlarmList, apiSelectNiaAbnormalTraffic2List,
   apiSelectNiaBadTraffic2List, apiSelectNiaBadTrafficList, apiSelectNiaAbnormalTrafficList,
-  apiSelectNiaTopologyCableList, apiSelectNiaPfTopologyCableList, apiSelectNiaAgencyList
+  apiSelectNiaTopologyCableList, apiSelectNiaPfTopologyCableList, apiSelectNiaAgencyList,
+  apiSelectTopologyNodeList, apiSelectTopologyLinkList, apiUpdateNodePosition
 } from '@/api/nia'
+
+import niaTopologyTemplalate from './niaTopologyConfig/niaTopologyTemplate.vue'
 
 const routeName = 'niaTopology'
 const jsons = ['data_nia_ip_1.json', 'data_nia_ip_2.json', 'data_nia_ip_3.json']
@@ -358,7 +148,7 @@ const roadm_slots = {
 export default {
   name: routeName,
   // eslint-disable-next-line vue/no-unused-components
-  components: { },
+  components: { niaTopologyTemplalate },
   extends: Base,
   props: {
     wdata: {
@@ -391,6 +181,11 @@ export default {
       ticketRtAlarms: [],
       ticketAbnormalTrafficAlarms: [],
       ticketBadTrafficAlarms: [],
+      query: {
+        order: ['end_time', 'monitored_object'],
+        limit: 500,
+        page: 1
+      }
     }
   },
   computed: {
@@ -399,6 +194,10 @@ export default {
         a.nren_name.localeCompare(b.nren_name)
       )
     },
+
+    isDebug() {
+      return this.appOptions.debug
+    }
   },
   created() {
     this.selectedRow = this.wdata?.params
@@ -409,14 +208,21 @@ export default {
     ], async)
   },
   mounted() {
-    const ctrl = this
-    ctrl.initMap()
+    this.topologyConstruct()
+    this.initMap()
 
     setTimeout(() => {
       this.onInit()
     }, 500)
   },
   methods: {
+    topologyConstruct() {
+      const defaultMapFile = jsons[this.topologyType - 1] || 'data_nia_ip_3.json'
+      if (!jsons.includes(localStorage['last_map'])) {
+          localStorage['last_map'] = defaultMapFile
+      }
+    },
+
     isVisibleView() {
       return true
     },
@@ -424,11 +230,6 @@ export default {
     broadcastMenuEvent(param) {
       if (!param) return
         switch (param) {
-          case 'properties':
-              if (this.appOptions.debug) {
-                  this.onMenuClick(param)
-              }
-              break
           case 'changeType':
               {
                 const index = this.topologyType % jsons.length
@@ -452,7 +253,7 @@ export default {
               break
           case 'linkZoomTest':
               {
-                  const node = this.map.data.links.find(v => v.id === '44')
+                  const node = this.map.data.links.find(v => String(v.id) === '44')
                   this.map.zoomInByLink(node, 5, 1000)
               }
               break
@@ -472,6 +273,36 @@ export default {
       }
     },
 
+    updateNodePosition() {
+      this.$confirm('토폴로지를 저장하시겠습니까?', '확인', {
+        confirmButtonText: '확인',
+        cancelButtonText: '취소',
+      }).then(async() => {
+        const TYPE = this.topologyType.toString()
+        const NODES = this.map.getVisualNodeAll().map(n => {
+          return {
+              node_type: n.device_type,
+              node_id: n.id,
+              node_image_path: n.image.path,
+              fx: Math.floor(n.x || n.fx),
+              fy: Math.floor(n.y || n.fy),
+              topology_type: TYPE
+          }
+        })
+
+        const param = {
+          TYPE: TYPE,
+          NODES: NODES
+        }
+        const res = await apiUpdateNodePosition(param)
+        if (res.result === 1) {
+          this.$message.success({ message: `저장에 성공하였습니다.` })
+        } else {
+          this.$message.success({ message: `저장에 실패하였습니다.` })
+        }
+      })
+    },
+
     async initMap() {
       const THIS = this
       this.loadNiaAgencyList()
@@ -482,25 +313,29 @@ export default {
         }
 
         const map = this.map = THIS.map = new window.Map2d()
-
         this.map.initialize()
+
         await this.loadMapByFile(jsons[this.topologyType - 1], true)
+
+        setTimeout(() => {
+          const node = this.map.data.nodes.find(v => v.ip_addr === this.selectedRow.ip_addr)
+          this.map.zoomInByNode(node, 5, 1000)
+        }, 1000)
 
         map.addEventListener(window.Map2d.eventType.selectChanged, e => {
             console.log('selected changed : ', e)
 
             if (e.target_type === 'svg') {
-                this.loadTemplate(null, 'svg')
+              this.loadTemplate(null, 'svg')
             } else {
-                this.displaySlotAlarm(this.map.select)
+              this.displaySlotAlarm(this.map.select)
             }
         })
       }, 100)
     },
 
     onInit() {
-      // document.getElementById('componentWapperId').appendChild(document.getElementById('template-3').content.cloneNode(true))
-      document.getElementById('templateUnitArea').innerHTML = document.querySelector('#template-3').innerHTML
+ document.getElementById('templateUnitArea').innerHTML = document.querySelector('#template-3').innerHTML
     },
 
     async loadNiaAgencyList() {
@@ -519,15 +354,18 @@ export default {
 
     async loadMapByFile(fileName, isCompareData) {
       this.map.options.fileName = fileName
-      return await this.loadMapData(fileName).then(async(data) => {
-        if (isCompareData) {
-            // 이전 코드
-            // const result = await this.compareNiaData(data.nodes, data.links) || { }
-            // data.nodes = result.nodes
-            // data.links = result.linkData
-        }
-        await this.loadMap(data)
-        this.loadTicketAlarm()
+
+      return new Promise((resolve, reject) => {
+        this.loadMapData(fileName).then(async(data) => {
+          if (isCompareData) {
+              const result = await this.compareNiaData(data.nodes, data.links) || { }
+              data.nodes = result.nodes
+              data.links = result.linkData
+          }
+          await this.loadMap(data)
+          await this.loadTicketAlarm()
+          resolve()
+        })
       })
     },
 
@@ -555,35 +393,80 @@ export default {
       }
     },
 
-    updateBadgeCount (data, alarms) {
-        const alarmCnt = {}
-        let related_alarm = alarms.find(v => v.related_alarm === true)
-        const alarmNodes = new Set()
-        related_alarm = !related_alarm ? '' : related_alarm.sysname.split('-')[0]
+    zoom(alarmLink, alarmNode) {
+      setTimeout(() => {
+          if (alarmLink) {
+              this.map.selectElement(alarmLink, 'link', true)
+              this.map.zoomInByLink(alarmLink, 5, 750)
+          } else if (alarmNode && alarmNode.visible) {
+              this.map.selectElement(alarmNode, 'node', true)
+              this.map.zoomInByNode(alarmNode, 5, 750)
+              this.map.setInfomation('node', alarmNode, null, this.slot)
+          } else {
+              this.map.resetZoom(750)
+          }
+      }, 200)
+    },
 
-        alarms.map(alarm => this.getAlarmSysname(alarm)).map(function (sysname) {
-            if (sysname in alarmCnt) {
-                alarmCnt[sysname]++
-            } else {
-                alarmCnt[sysname] = 1
-            }
-        })
-        const key = Object.keys(alarmCnt)
-
-        for (var i = 0; i < key.length; i++) {
-            data.nodes.map(function (node) {
-                if (node.id === key[i]) {
-                    node.alarm_count = alarmCnt[key[i]]
-                    alarmNodes.add(node)
-                }
-                if (node.id === related_alarm) {
-                    node.related_alarm = true
-                    alarmNodes.add(node)
-                }
-            })
+    resize() {
+      // rt-alarm 테이블
+      const rtAlarmTable = document.querySelector('table.alarm-table.rt-alarm')
+      if (rtAlarmTable) {
+        const rtAlarmTableChildren = rtAlarmTable.children
+        for (const child of rtAlarmTableChildren) {
+          child.style.width = `${rtAlarmTable.offsetWidth + rtAlarmTable.scrollLeft}px`
         }
+      }
 
-        return [...alarmNodes].sort(function (a, b) { a.alarm_count > b.alarm_count })
+      // traffic-abnormal-alarm 테이블
+      const trafficAbnormalTable = document.querySelector('table.alarm-table.traffic-abnormal-alarm')
+      if (trafficAbnormalTable) {
+        const trafficAbnormalChildren = trafficAbnormalTable.children
+        for (const child of trafficAbnormalChildren) {
+          child.style.width = `${trafficAbnormalTable.offsetWidth + trafficAbnormalTable.scrollLeft}px`
+        }
+      }
+
+      // traffic-bad-alarm 테이블
+      const trafficBadTable = document.querySelector('table.alarm-table.traffic-bad-alarm')
+      if (trafficBadTable) {
+        const trafficBadChildren = trafficBadTable.children
+        for (const child of trafficBadChildren) {
+          child.style.width = `${trafficBadTable.offsetWidth + trafficBadTable.scrollLeft}px`
+        }
+      }
+      this.clickAlarmExpandBtn(null)
+    },
+
+    updateBadgeCount (data, alarms) {
+      const alarmCnt = {}
+      let related_alarm = alarms.find(v => v.related_alarm === true)
+      const alarmNodes = new Set()
+      related_alarm = !related_alarm ? '' : related_alarm.sysname.split('-')[0]
+
+      alarms.map(alarm => this.getAlarmSysname(alarm)).map(function (sysname) {
+          if (sysname in alarmCnt) {
+              alarmCnt[sysname]++
+          } else {
+              alarmCnt[sysname] = 1
+          }
+      })
+      const key = Object.keys(alarmCnt)
+
+      for (var i = 0; i < key.length; i++) {
+          data.nodes.map(function (node) {
+              if (node.id === key[i]) {
+                  node.alarm_count = alarmCnt[key[i]]
+                  alarmNodes.add(node)
+              }
+              if (node.id === related_alarm) {
+                  node.related_alarm = true
+                  alarmNodes.add(node)
+              }
+          })
+      }
+
+      return [...alarmNodes].sort(function (a, b) { a.alarm_count > b.alarm_count })
     },
 
     clearTicketAlarm() {
@@ -613,8 +496,10 @@ export default {
             this.ticketRtAlarms = res?.result
             this.ticketAlarmsType = 'RT'
             setTimeout(() => {
-              // 이전 코드
-              // $('table.alarm-table.rt-alarm').on('scroll', this.resize.bind(this))
+              const rtAlarmTable = document.querySelector('table.alarm-table.rt-alarm')
+              if (rtAlarmTable) {
+                rtAlarmTable.addEventListener('scroll', this.resize.bind(this))
+              }
             }, 1000)
             return res?.result
           }
@@ -637,8 +522,10 @@ export default {
             this.ticketAbnormalTrafficAlarms = res?.result
             this.ticketAlarmsType = 'ABNORMAL_TRAFFIC'
             setTimeout(() => {
-              // 이전 코드
-              // $('table.alarm-table.traffic-abnormal-alarm').on('scroll', this.resize.bind(this))
+              const trafficAbnormalTable = document.querySelector('table.alarm-table.traffic-abnormal-alarm')
+              if (trafficAbnormalTable) {
+                trafficAbnormalTable.addEventListener('scroll', this.resize.bind(this))
+              }
             }, 1000)
             return res?.result
           }
@@ -651,8 +538,10 @@ export default {
             this.ticketBadTrafficAlarms = res?.result
             this.ticketAlarmsType = 'BAD_TRAFFIC'
             setTimeout(() => {
-                // 이전 코드
-                // $('table.alarm-table.traffic-bad-alarm').on('scroll', this.resize.bind(this))
+              const trafficBadTable = document.querySelector('table.alarm-table.traffic-bad-alarm')
+              if (trafficBadTable) {
+                trafficBadTable.addEventListener('scroll', this.resize.bind(this))
+              }
             }, 1000)
             return res?.result
           }
@@ -666,17 +555,20 @@ export default {
               this.ticketBadTrafficAlarms = res?.result
               this.ticketAlarmsType = 'BAD_TRAFFIC'
               setTimeout(() => {
-                  // 이전 코드
-                  // $('table.alarm-table.traffic-bad-alarm').on('scroll', this.resize.bind(this))
+                const trafficBadTable = document.querySelector('table.alarm-table.traffic-bad-alarm')
+                if (trafficBadTable) {
+                  trafficBadTable.addEventListener('scroll', this.resize.bind(this))
+                }
               }, 1000)
             } else {
               this.ticketAbnormalTrafficAlarms = res?.result
               this.ticketAlarmsType = 'ABNORMAL_TRAFFIC'
               setTimeout(() => {
-                        // 이전 코드
-                        // $('table.alarm-table.traffic-abnormal-alarm').on('scroll', this.resize.bind(this))
+                const trafficAbnormalTable = document.querySelector('table.alarm-table.traffic-abnormal-alarm')
+                if (trafficAbnormalTable) {
+                  trafficAbnormalTable.addEventListener('scroll', this.resize.bind(this))
+                }
               }, 1000)
-
               if (res?.result) {
                 const [first] = res?.result
                 if (first) {
@@ -696,18 +588,15 @@ export default {
       const selector = document.getElementById('node_' + sysname)
       const invisible = selector.classList.contains('node_invisible')
       if (selector && !invisible) {
-          // 이전 코드
-          // const node = d3.select(selector).datum()
-          // d3 라이브러리 없으므로 임시처리
-          const node = this.d3.select(selector).datum()
-          node && this.zoom(null, node)
+          const node = document.querySelector(selector)
+          const data = node ? node.__data__ : null
+          data && this.zoom(null, data)
       } else {
-          this.tools.showToast('장비를 찾을 수 없습니다.', null, '알림', 1500)
+        this.$message.error({ message: `장비를 찾을 수 없습니다.` })
       }
     },
 
     async loadNiaCableAlarmList(ticket) {
-      const THIS = this
       if (this.ticket.ticket_type === 'RT') {
         const param = {
           TICKET_ID: ticket.ticket_id
@@ -781,7 +670,7 @@ export default {
     async loadMapData(fileName) {
       try {
         const response = await axios.get(`/json/${fileName}`)
-        this.mapData = response.data // 가져온 데이터를 mapData에 저장
+        this.mapData = response.data
         return this.mapData
       } catch (error) {
         console.error('Failed to load map data:', error)
@@ -791,7 +680,6 @@ export default {
     loadMap(data) {
       return new Promise((resolve, reject) => {
         setTimeout(() => {
-          // this.tools.store.niaData = data
           console.log('load!!!')
           this.map.options.load(data)
           resolve()
@@ -812,28 +700,20 @@ export default {
       })
     },
 
-    requestNodes() {
+    async requestNodes() {
+      const param = {
+        TYPE: this.topologyType.toString()
+      }
+      const res = await apiSelectTopologyNodeList(param)
       return new Promise((resolve, reject) => {
-          const { tools } = this
-          tools.http({
-              service: tools.constants.Service.rca,
-              action: 'SELECT_TOPOLOGY_NODE_LIST',
-              TYPE: this.topologyType.toString()
-          }, (result) => {
-              if (result) { resolve(result) } else { reject(result) }
-          })
+          if (res?.result) { resolve(res?.result) } else { reject(res?.result) }
       })
     },
 
-    requestLinks() {
+    async requestLinks() {
+        const res = await apiSelectTopologyLinkList()
         return new Promise((resolve, reject) => {
-            const { tools } = this
-            tools.http({
-                service: tools.constants.Service.rca,
-                action: 'SELECT_TOPOLOGY_LINK_LIST'
-            }, (result) => {
-                if (result) { resolve(result) } else { reject(result) }
-            })
+            if (res?.result) { resolve(res?.result) } else { reject(res?.result) }
         })
     },
 
@@ -852,59 +732,58 @@ export default {
 
       const type = (click === 'node') ? select.d.device_type : select.equiptype || this.map.data.nodes.find(v => v.id === this.getAlarmSysname(select)).device_type
 
-      // 수정해서 componentWapper 바로 밑에 properties가 있는 경우에만 삭제하도록 변경해야함
-      // const componentWapper = this.$refs.componentWapper
-      // const properties = componentWapper.querySelector('.properties')
-      // if (properties) {
-      //   properties.remove()
-      // }
+      const componentWapper = this.$refs.componentWapper
+      Array.from(componentWapper.children).forEach((child) => {
+        if (child.classList.contains('properties')) {
+          child.remove()
+        }
+      })
 
       if (type === '2' || type === 'POTN') {
-          document.getElementById('templateUnitArea').innerHTML = document.querySelector('#template-2').innerHTML
+        document.getElementById('templateUnitArea').innerHTML = document.querySelector('#template-2').innerHTML
 
-          const elements = document.querySelectorAll('.potnSysname')
-          elements.forEach(element => {
-            element.innerHTML = this.click === 'node' ? this.select.d.id : this.select.sysname
-          })
+        const elements = document.querySelectorAll('.potnSysname')
+        elements.forEach(element => {
+          element.innerHTML = click === 'node' ? select.d.id : select.sysname
+        })
 
-          show('templateUnitArea', true)
-          show('templateAgentListArea', false)
+        show('templateUnitArea', true)
+        show('templateAgentListArea', false)
       } else if (type === '0' || type === 'ROADM') {
-          var roadmSlot
-          document.getElementById('templateUnitArea').innerHTML = document.querySelector('#template-3').innerHTML
-          if (click === 'node' && roadm_slots[select.d.id]) {
-              roadmSlot = roadm_slots[select.d.id]
-          } else if (click === 'alarm') {
-              select = this.map.data.nodes.find(v => v.id === this.getAlarmSysname(select))
-              roadmSlot = roadm_slots[select.id]
-          }
+        var roadmSlot
+        document.getElementById('templateUnitArea').innerHTML = document.querySelector('#template-3').innerHTML
+        if (click === 'node' && roadm_slots[select.d.id]) {
+            roadmSlot = roadm_slots[select.d.id]
+        } else if (click === 'alarm') {
+            select = this.map.data.nodes.find(v => v.id === this.getAlarmSysname(select))
+            roadmSlot = roadm_slots[select.id]
+        }
 
-          if (roadmSlot) {
-              for (var i = 0; i < roadmSlot.length; i++) {
-                  const cells = document.querySelectorAll('#templateUnitArea .table-wapper tr.slot-table > td')
-                  cells.forEach((cell, i) => {
-                    if (this.roadmSlot[i] !== undefined) {
-                      cell.innerHTML = this.roadmSlot[i]
-                    }
-                  })
-              }
-              document.getElementsByClassName('S17')[0].style.display = roadmSlot.length < 17 ? 'none' : ''
-              document.getElementsByClassName('S18')[0].style.display = roadmSlot.length < 17 ? 'none' : ''
-          }
-          const elements = document.querySelectorAll('.roadmSysname')
-          elements.forEach(element => {
-            element.innerHTML = this.click === 'node' ? this.select.d.id : this.select.id
-          })
-          show('templateUnitArea', true)
-          show('templateAgentListArea', false)
+        if (roadmSlot) {
+            for (var i = 0; i < roadmSlot.length; i++) {
+                const cells = document.querySelectorAll('#templateUnitArea .table-wapper tr.slot-table > td')
+                cells.forEach((cell, i) => {
+                  if (roadmSlot[i] !== undefined) {
+                    cell.innerHTML = roadmSlot[i]
+                  }
+                })
+            }
+            document.getElementsByClassName('S17')[0].style.display = roadmSlot.length < 17 ? 'none' : ''
+            document.getElementsByClassName('S18')[0].style.display = roadmSlot.length < 17 ? 'none' : ''
+        }
+        const elements = document.querySelectorAll('.roadmSysname')
+        elements.forEach(element => {
+          element.innerHTML = click === 'node' ? select.d.id : select.id
+        })
+        show('templateUnitArea', true)
+        show('templateAgentListArea', false)
       } else {
-          const nodeId = (click === 'node') ? select.d.id : select.id
-          const list = this.agencyList[nodeId] || []
-          this.filteredAgencyList = [...list]
-          // this.safeApply()
+        const nodeId = (click === 'node') ? select.d.id : select.id
+        const list = this.agencyList[nodeId] || []
+        this.filteredAgencyList = [...list]
 
-          show('templateUnitArea', false)
-          show('templateAgentListArea', true)
+        show('templateUnitArea', false)
+        show('templateAgentListArea', true)
       }
     },
 
