@@ -413,8 +413,8 @@ export default {
             type: 'line',
             data: chartData.map((v) => v.in_threshold_upper),
             smooth: true,
-            itemStyle: { color: 'rgba(200, 200, 200, 0.5)' },
-            areaStyle: { color: 'rgba(200, 200, 200, 0.5)' },
+            itemStyle: { color: colorMap.IN_THRESHOLD_UPPER },
+            areaStyle: { color: colorMap.IN_THRESHOLD_UPPER },
             lineStyle: { width: 0, },
             symbol: 'none', // 점 제거
           },

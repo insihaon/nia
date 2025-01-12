@@ -283,6 +283,16 @@ export function apiInsertSyslogRule(params = {}) {
   })
 }
 
+export function apiUpdateNodePosition(params = {}) {
+  return http({
+    url: '/selectOne',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'UPDATE_NODE_POSITION',
+    data: params
+  })
+}
+
 export function apiSelectCheckRuleName(params = {}) {
   return http({
     url: '/selectList',
@@ -768,4 +778,112 @@ export function apiDeleteSnapshot(params = {}) {
     data: params
   })
 }
+export function apiSelectNiaAlarmList(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_NIA_ALARM_LIST',
+    data: params
+  })
+}
 
+export function apiSelectNiaCableAlarmList(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_NIA_CABLE_ALARM_LIST',
+    data: params
+  })
+}
+
+export function apiSelectNiaAbnormalTraffic2List(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_NIA_ABNORMAL_TRAFFIC2_LIST',
+    data: params
+  })
+}
+
+export function apiSelectNiaBadTraffic2List(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_NIA_BAD_TRAFFIC2_LIST',
+    data: params
+  })
+}
+
+export function apiSelectNiaBadTrafficList(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_NIA_BAD_TRAFFIC_LIST',
+    data: params
+  })
+}
+
+export function apiSelectNiaAbnormalTrafficList(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_NIA_ABNORMAL_TRAFFIC_LIST',
+    data: params
+  })
+}
+
+export function apiSelectNiaTopologyCableList(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_NIA_TOPOLOGY_CABLE_LIST',
+    data: params
+  })
+}
+
+export function apiSelectNiaPfTopologyCableList(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_NIA_PF_TOPOLOGY_CABLE_LIST',
+    data: params
+  })
+}
+
+export function apiSelectNiaAgencyList(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_NIA_AGENCY_LIST',
+    data: params
+  })
+}
+
+export function apiSelectTopologyNodeList(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_TOPOLOGY_NODE_LIST',
+    data: params
+  })
+}
+
+export function apiSelectTopologyLinkList(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_TOPOLOGY_LINK_LIST',
+    data: params
+  })
+}
