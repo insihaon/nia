@@ -39,7 +39,9 @@ public interface NiaMapper extends BaseDataMapper {
         public List<ResultMap> SELECT_AI_DETECTION_INFO(HashMap<String, Object> map);
 
         public List<ResultMap> SELECT_SOP_SYSLOG_HIST_LIST(HashMap<String, Object> map);
+
         public int UPDATE_SYSLOG_HIST(HashMap<String, Object> map);
+
         public int DELETE_SYSLOG_HIST(HashMap<String, Object> map);
 
         public List<ResultMap> SELECT_EQUIPMENT_LIST(HashMap<String, Object> map);
@@ -47,7 +49,9 @@ public interface NiaMapper extends BaseDataMapper {
         public List<ResultMap> SELECT_INTERFACE_LIST(HashMap<String, Object> map);
 
         public List<ResultMap> SELECT_SOP_HIST_LIST(HashMap<String, Object> map);
+
         public int UPDATE_SOP_HIST(HashMap<String, Object> map);
+
         public int DELETE_SOP_HIST(HashMap<String, Object> map);
 
         public List<ResultMap> SELECT_ALARM_CURRENT_HISTORY_LIST(HashMap<String, Object> map);
@@ -99,7 +103,7 @@ public interface NiaMapper extends BaseDataMapper {
         public List<ResultMap> SELECT_EQUIP_AMOUNT_USED_LIST(HashMap<String, Object> map);
 
         public List<ResultMap> SELECT_PROFILE_LIST(HashMap<String, Object> map);
-        
+
         public List<ResultMap> SELECT_MAX_PROFILE_NUM(HashMap<String, Object> map);
 
         public int INSERT_PROFILE_LIST(HashMap<String, Object> map);
@@ -119,7 +123,7 @@ public interface NiaMapper extends BaseDataMapper {
         public int INSERT_PROFILE_NODE_NAME_LIST(HashMap<String, Object> map);
 
         public int DELETE_PROFILE_NODE_NAME_LIST(HashMap<String, Object> map);
-        
+
         public int DELETE_PROFILE_NODE_LIST(HashMap<String, Object> map);
 
         public List<ResultMap> SELECT_NODE_LIST(HashMap<String, Object> map);
@@ -152,6 +156,8 @@ public interface NiaMapper extends BaseDataMapper {
 
         public int INSERT_AGENCY_IP_LIST(HashMap<String, Object> map);
 
+        public int UPDATE_NODE_POSITION(HashMap<String, Object> map);
+
         public int UPDATE_AGENCY_IP_LIST(HashMap<String, Object> map);
 
         public int DELETE_AGENCY_IP_LIST(HashMap<String, Object> map);
@@ -159,6 +165,28 @@ public interface NiaMapper extends BaseDataMapper {
         public int UPDATE_AGENCY_DETAIL_LIST(HashMap<String, Object> map);
 
         public List<ResultMap> SELECT_DATA_SNAPSHOT_LIST(HashMap<String, Object> map);
+
+        public List<ResultMap> SELECT_NIA_ALARM_LIST(HashMap<String, Object> map);
+
+        public List<ResultMap> SELECT_NIA_CABLE_ALARM_LIST(HashMap<String, Object> map);
+
+        public List<ResultMap> SELECT_NIA_ABNORMAL_TRAFFIC2_LIST(HashMap<String, Object> map);
+
+        public List<ResultMap> SELECT_NIA_BAD_TRAFFIC2_LIST(HashMap<String, Object> map);
+
+        public List<ResultMap> SELECT_NIA_BAD_TRAFFIC_LIST(HashMap<String, Object> map);
+
+        public List<ResultMap> SELECT_NIA_ABNORMAL_TRAFFIC_LIST(HashMap<String, Object> map);
+
+        public List<ResultMap> SELECT_NIA_TOPOLOGY_CABLE_LIST(HashMap<String, Object> map);
+
+        public List<ResultMap> SELECT_NIA_PF_TOPOLOGY_CABLE_LIST(HashMap<String, Object> map);
+
+        public List<ResultMap> SELECT_NIA_AGENCY_LIST(HashMap<String, Object> map);
+
+        public List<ResultMap> SELECT_TOPOLOGY_NODE_LIST(HashMap<String, Object> map);
+
+        public List<ResultMap> SELECT_TOPOLOGY_LINK_LIST(HashMap<String, Object> map);
 
         public int DELETE_DATA_SNAPSHOT(HashMap<String, Object> map);
 

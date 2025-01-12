@@ -29,6 +29,13 @@ import './assets/css/tailwindcss.css'
 
 import LoadScript from 'vue-plugin-load-script'
 
+// Font Awesome ---
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { faRetweet, faGlobe, faSave } from '@fortawesome/free-solid-svg-icons'
+library.add(faRetweet, faGlobe, faSave)
+Vue.component('FontAwesomeIcon', FontAwesomeIcon)
+
 import VModal from 'vue-js-modal'
 import { i18n } from './i18n'
 
