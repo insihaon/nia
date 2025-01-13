@@ -1,7 +1,7 @@
 <template>
   <div class="cell-container" :class="{ [name]: true }">
     <div v-if="isShow()" class="button-panel">
-      <div :class="linkType" size="mini" @click="openModal(params)"><i :class="{ ['el-icon-' + params.icon]: true }" /> {{ getLable }}</div>
+      <div :class="linkType" size="mini" @click="openModal($event, params)"><i :class="{ ['el-icon-' + params.icon]: true }" /> {{ getLable }}</div>
     </div>
   </div>
 </template>
@@ -43,7 +43,8 @@ export default Vue.extend({
       }
       return result
     },
-    openModal(params) {
+    openModal(event, params) {
+      event.stopPropagation()
       params.action(params.data, params.type)
     },
   },
