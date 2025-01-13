@@ -77,6 +77,37 @@
       </table>
     </div>
 
+    <div class="popupContentTable">
+      <div class="popupContentTableTitle">신규 분할</div>
+      <table>
+        <colgroup>
+          <col width="15%" />
+          <col width="85%" />
+        </colgroup>
+        <tbody>
+          <tr>
+            <th>IP대역</th>
+            <td colspan="4" class="text-center">
+              {{ resultVo.pipPrefix }}
+            </td>
+          </tr>
+          <tr>
+            <th>bitmask</th>
+            <td class="textflex align-center">
+              <el-input v-model="finalBit" type="text" size="small" round maxlength="3" style="width: 200px" />bit
+            </td>
+            <th>개수</th>
+            <td class="textflex align-center">
+              <el-input v-model="finalCount" type="text" size="small" round maxlength="3" style="width: 200px" />개
+            </td>
+            <td>
+              <el-button type="primary" size="small" round class="ml-1" @click="fnNewAppendDivAsgnIPMst()">분할</el-button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
     <div class="popupContentTable textcenter">
       <div class="popupContentTableTitle">분할 예정 정보</div>
       <div>
@@ -109,7 +140,7 @@
               <td>{{ info.pipPrefix }}</td>
               <td>{{ info.sfirstAddr }}</td>
               <td>{{ info.slastAddr }}</td>
-              <td>{{ info.nclassCnt }}</td>
+              <td>{{ (info.nclassCnt).toLocaleString() }}</td>
               <td>{{ info.nbitmask }}</td>
               <td><el-input v-model="info.nsubnetmask" type="text" class="txt" maxlength="3" style="width: 100px;height: 21px;" /></td>
               <td>
@@ -145,6 +176,9 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      typeFlag: '',
+      finalBit: '',
+      finalCount: '',
       tableLoading: false,
       resultVo: {
         ssvcLineTypeNm: '',
@@ -178,6 +212,85 @@ export default {
     },
   },
   methods: {
+    async fnNewAppendDivAsgnIPMst() {
+      if (this.finalBit === '' || this.finalBit === null) {
+        onMessagePopup(this, '분할 bit 수를 입력하세요.')
+        return
+      }
+      if (this.finalCount === '' || this.finalCount === null) {
+        onMessagePopup(this, '분할 개수를 입력하세요.')
+        return
+      }
+      const sipVersionTypeCd = this.resultVo.sipVersionTypeCd
+      if (this.typeFlag === 'Asgn') {
+        if (sipVersionTypeCd === 'CV0001') {
+          if (this.finalBit > 24) {
+            onMessagePopup(this, 'IPv4는 24Bit 이상 배정분할 할 수 없습니다.')
+            return
+          }
+        } else if (sipVersionTypeCd === 'CV0002') {
+          if (this.finalBit > 64) {
+            onMessagePopup(this, 'IPv6는 64Bit 이상 배정분할 할 수 없습니다.')
+            return
+          }
+        }
+      } else { /* 할당 또는 선번장 화면처리 */
+        if (sipVersionTypeCd === 'CV0001') {
+          if (this.finalBit > 32) {
+            onMessagePopup(this, 'IPv4 일 경우 SubNet이 32보다 클 수  없습니다.')
+            return
+          }
+        } else if (sipVersionTypeCd === 'CV0002') {
+          if (this.finalBit > 128) {
+            onMessagePopup(this, 'IPv6 일 경우 SubNet이 128보다 클 수  없습니다.')
+            return
+          }
+        }
+      }
+      const initial_bit = this.resultVo.nbitmask
+      const final_bit = this.finalBit // 사용자 입력 bitmask(최종 만들어질 서브넷마스크)
+      const final_count = this.finalCount // 사용자 입력 최종 bitmask 갯수
+      // 1번만 분할하는 갯수를 구함
+      const req_obj = {} // ex: { final_bit-1: 분할 수, final_bit-2: 분할 수 ... }
+      let div_bit = final_bit - 1
+      let req_count = Math.floor(final_count / 2) + (final_count % 2)
+      while (req_count > 0) {
+        Object.assign(req_obj, { [div_bit]: req_count })
+        if (req_count === 1) req_count = 0
+        div_bit = div_bit - 1 // 분할예정 bit
+        req_count = Math.floor(req_count / 2) + (req_count % 2)
+      }
+
+      // 1. 1번 분할 (oneDivCount: 1번만 분할되는 갯수)
+      const req_obj_keys = Object.keys(req_obj)
+      const oneDivCount = parseInt(req_obj_keys[0]) - initial_bit
+      // 1차 분할정보 get
+      let divInfo = await this.getDivSubnetmask()
+
+      // 첫 번째 서브넷만 1번씩 계속 분할
+      for (const num of [...Array(oneDivCount).keys()]) {
+        const tbIpAssignMstVo = divInfo[0]
+        const divMergeInfo = await this.getMergeNsubnetmask(tbIpAssignMstVo)
+        const cloneDivisionInfo = this._cloneDeep(divInfo)
+        const chkRowindex = cloneDivisionInfo.findIndex(orgRow => orgRow.pipPrefix === tbIpAssignMstVo.pipPrefix)
+        if (chkRowindex !== -1) {
+          cloneDivisionInfo.splice(chkRowindex, 1, ...divMergeInfo)
+        }
+        divInfo = cloneDivisionInfo
+      }
+      // 2. n번 분할 ex) final_bit: 24, final_count: 10, req_obj: {20: 1, 21: 2, 22: 3, 23: 5}
+      for (const value of Object.values(req_obj)) {
+        // value: 분할 횟수
+        if (value !== 1) {
+          for (const i of [...Array(value).keys()].reverse()) {
+            // this._orderBy(divInfo, ['desc', 'nbitmask'])
+            const divMergeInfo = await this.getMergeNsubnetmask(divInfo[i])
+            await divInfo.splice(i, 1, ...divMergeInfo)
+          }
+        }
+      }
+      this.divisionInfo = divInfo
+    },
     onCreated() {
       Modal.methods.onCreated.call(this)
       this.closeOnClickModal = false
@@ -186,7 +299,8 @@ export default {
     async onOpen(model, actionMode) {
       this.isViewTypeSeonbeonjang = model.isSeonbeonjang ?? false
       if (model.row) {
-        await this.fnViewInsertDivAsgnIPMst(model.row)
+        this.typeFlag = model.typeFlag !== null ? model.typeFlag : ''
+        await this.fnViewInsertDivAsgnIPMst(model.row, model.typeFlag)
       }
       this.init()
     },
@@ -194,18 +308,23 @@ export default {
       this.divisionInfo = []
     },
     init() {
+      this.finalBit = ''
+      this.finalCount = ''
       let bitMask = ''
       const sipVersionTypeCd = this.resultVo.sipVersionTypeCd
       const nbitmask = parseInt(this.resultVo.nbitmask)
       if (sipVersionTypeCd === 'CV0001') {
-        bitMask = (nbitmask + 1) >= 32 ? 32 : nbitmask + 1
+        const limitBit = this.typeFlag === 'Asgn' ? 24 : 32
+        bitMask = (nbitmask + 1) >= limitBit ? limitBit : nbitmask + 1
       } else if (sipVersionTypeCd === 'CV0002') {
-        bitMask = (nbitmask + 1) >= 128 ? 128 : nbitmask + 1
+        const limitBit = this.typeFlag === 'Asgn' ? 64 : 128
+        bitMask = (nbitmask + 1) >= limitBit ? limitBit : nbitmask + 1
       }
       this.baseBitmask = bitMask
     },
-    isCheckSubnet(bitmask, nsubnetmask, sipVersionTypeCd) {
+    isCheckSubnet(nsubnetmask, sipVersionTypeCd) {
       let result = true
+      const bitmask = parseInt(this.resultVo.nbitmask)
       if (nsubnetmask <= bitmask) {
         onMessagePopup(this, 'SubNet이 BitMask 보다 작거나 같을 수 없습니다.')
         result = false
@@ -213,15 +332,29 @@ export default {
         if ((bitmask + 8) < nsubnetmask) {
           onMessagePopup(this, 'SubNet이 기준정보의 BitMask 보다 8Bit 이상 분할이 불가합니다.')
           result = false
-        } else if (sipVersionTypeCd === 'CV0001') {
-          if (nsubnetmask > 32) {
-            onMessagePopup(this, 'IPv4 일 경우 SubNet이 32보다 클 수  없습니다.')
-            result = false
+        } else if (this.typeFlag === 'Asgn') {
+          if (sipVersionTypeCd === 'CV0001') {
+            if (nsubnetmask > 24) {
+              onMessagePopup(this, 'IPv4는 24Bit 이상 배정분할 할 수 없습니다.')
+              result = false
+            }
+          } else if (sipVersionTypeCd === 'CV0002') {
+            if (nsubnetmask > 64) {
+              onMessagePopup(this, 'IPv6는 64Bit 이상 배정분할 할 수 없습니다.')
+              result = false
+            }
           }
-        } else if (sipVersionTypeCd === 'CV0002') {
-          if (nsubnetmask > 128) {
-            onMessagePopup(this, 'IPv6 일 경우 SubNet이 128보다 클 수  없습니다.')
-            result = false
+        } else { /* 할당 또는 선번장 화면처리 */
+          if (sipVersionTypeCd === 'CV0001') {
+            if (nsubnetmask > 32) {
+              onMessagePopup(this, 'IPv4 일 경우 SubNet이 32보다 클 수  없습니다.')
+              result = false
+            }
+          } else if (sipVersionTypeCd === 'CV0002') {
+            if (nsubnetmask > 128) {
+              onMessagePopup(this, 'IPv6 일 경우 SubNet이 128보다 클 수  없습니다.')
+              result = false
+            }
           }
         }
       }
@@ -244,22 +377,26 @@ export default {
         this.tableLoading = false
       }
     },
-    async fnAppendDivAsgnIPMst() {
+    async getDivSubnetmask() {
       const pipPrefix = this.resultVo.pipPrefix
       const sipVersionTypeCd = this.resultVo.sipVersionTypeCd
-      const bitmask = parseInt(this.resultVo.nbitmask)
+      // const bitmask = parseInt(this.resultVo.nbitmask)
       const nsubnetmask = parseInt(this.baseBitmask)
-      if (!this.isCheckSubnet(bitmask, nsubnetmask, sipVersionTypeCd)) {
+      if (!this.isCheckSubnet(nsubnetmask, sipVersionTypeCd)) {
         return
       }
       const tbIpAssignMstVo = { pipPrefix, sipVersionTypeCd, nsubnetmask }
       const divInfo = await this.getMergeNsubnetmask(tbIpAssignMstVo)
+      return divInfo
+    },
+    async fnAppendDivAsgnIPMst() {
+      const divInfo = await this.getDivSubnetmask()
       this.divisionInfo = this._cloneDeep(divInfo)
     },
     async fnAppendSubDivAlocIPMst(subRow) {
       const nsubnetmask = parseInt(subRow.nsubnetmask)
       const { nbitmask, pipPrefix, sipVersionTypeCd } = subRow
-      if (!this.isCheckSubnet(nbitmask, nsubnetmask, sipVersionTypeCd)) {
+      if (!this.isCheckSubnet(nsubnetmask, sipVersionTypeCd)) {
         return
       }
       const tbIpAssignMstVo = { pipPrefix, sipVersionTypeCd, nsubnetmask }
@@ -267,10 +404,10 @@ export default {
       const cloneDivisionInfo = this._cloneDeep(this.divisionInfo)
       const chkRowindex = cloneDivisionInfo.findIndex(orgRow => orgRow.pipPrefix === subRow.pipPrefix)
 
-        if (chkRowindex !== -1) {
-          cloneDivisionInfo.splice(chkRowindex, 1, ...divInfo)
-        }
-        this.divisionInfo = cloneDivisionInfo
+      if (chkRowindex !== -1) {
+        cloneDivisionInfo.splice(chkRowindex, 1, ...divInfo)
+      }
+      this.divisionInfo = cloneDivisionInfo
     },
     /* nsubnetmask set 공통화 */
     async getMergeNsubnetmask(tbIpAssignMstVo) {
@@ -280,9 +417,11 @@ export default {
         divInfo = res.tbIpAssignMstVos
         divInfo.forEach(row => {
           if (row.sipVersionTypeCd === 'CV0001') {
-            row['nsubnetmask'] = (row.nbitmask + 1) >= 32 ? 32 : row.nbitmask + 1
+            const limitBit = this.typeFlag === 'Asgn' ? 24 : 32
+            row['nsubnetmask'] = (row.nbitmask + 1) >= limitBit ? limitBit : row.nbitmask + 1
           } else if (row.sipVersionTypeCd === 'CV0002') {
-            row['nsubnetmask'] = (row.nbitmask + 1) >= 128 ? 128 : row.nbitmask + 1
+            const limitBit = this.typeFlag === 'Asgn' ? 64 : 128
+            row['nsubnetmask'] = (row.nbitmask + 1) >= limitBit ? limitBit : row.nbitmask + 1
           }
         })
       } catch (error) {
@@ -339,7 +478,7 @@ export default {
       }
       const { nipAssignMstSeq, nlvlMstSeq, sipVersionTypeCd, sassignLevelCd } = this.resultVo
       const tbIpAssignMstComplexVo = {
-        menuType: 'Aloc',
+        menuType: this.typeFlag,
         srcIpAssignMstVo: { nipAssignMstSeq, nlvlMstSeq, sipVersionTypeCd, sassignLevelCd },
         destIpAssignMstVos: []
       }
