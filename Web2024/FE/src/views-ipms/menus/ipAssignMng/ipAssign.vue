@@ -119,7 +119,7 @@ export default {
               on: {
                 click: () => {
                   if (isDivisible) {
-                    this.$refs.ModalIpBlockDivision.open({ row })
+                    this.$refs.ModalIpBlockDivision.open({ row, typeFlag: 'Asgn' })
                   }
                 }
               }
