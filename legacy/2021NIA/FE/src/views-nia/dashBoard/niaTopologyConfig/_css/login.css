@@ -1,0 +1,609 @@
+.light		{ font-weight: 300 }
+.normal		{ font-weight: 400 }
+.bold		{ font-weight: 700 }
+.bolder		{ font-weight: 800 }
+
+div.loginWrap{
+    line-height: 1.3;
+    position: absolute;
+    font-family: 'NanumSquare', sans-serif;
+    /*background-color: #ececec; !*#2d2e4b;*!*/
+    background-color:#002c55;
+    /*background-image: url("../images/koren_rca/nia_login_main4.png");*/
+    /*background-image: url("../images/koren_rca/nia_login_main.png");*/
+    /*background-image: url("../images/koren_rca/login_background_grid2.png");*/
+    /*background-position-x: -42%;*/
+    /*background-size: contain;*/
+    /*background-repeat: no-repeat;*/
+    /*background-position: -42% 50%;*/
+}
+/*div.loginWrap{*/
+    /*position:absolute;*/
+    /*left:0; top:0; right:0; bottom:0;*/
+    /*background-image: url("../images/koren_rca/login_background_grid2.png");*/
+    /*pointer-events: none;*/
+    /*user-select: none;*/
+    /*!*mix-blend-mode: overlay;*!*/
+    /*overflow: hidden;*/
+/*}*/
+
+div.loginWrap > video {
+    position:absolute;
+    width:100%; height:100%;
+    object-fit: cover;
+    pointer-events: none;
+    user-select: none;
+    opacity: 0.25;
+}
+
+/*div.loginWrap>#bottomBar{*/
+    /*content:"";*/
+    /*display:inline-block;*/
+    /*position: absolute;*/
+    /*left:0;*/
+    /*top:0;*/
+    /*width:100%;*/
+    /*height:100%;*/
+    /*!*background-color: #80808033;*!*/
+    /*!*background-color: #cedde533*!*/
+/*}*/
+div.loginWrap>#bottomBar{
+    content:"";
+    display:inline-block;
+    position: absolute;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    /*background-color: #80808033;*/
+    /*background-color: #cedde533*/
+}
+div.loginWrap>div.browserInfo{
+    position: absolute;
+    right:40px;
+    top:40px;
+    width:220px;
+    text-align: center;
+    cursor: default;
+}
+/*div.loginWrap::before{*/
+    /*content: "";*/
+    /*position: absolute;*/
+    /*left:20px;*/
+    /*top:20px;*/
+    /*right:20px;*/
+    /*bottom:20px;*/
+/*}*/
+
+div.loginWrap::before{
+    content:"";
+    display: inline-block;
+    width:1000px; height:1000px;
+    box-sizing: border-box;
+    position: absolute;
+    pointer-events: none;
+    user-select: none;
+    touch-action: none;
+    border:2px solid rgba(255,255,255,0.4);
+    mix-blend-mode: overlay;
+    left:50%;
+    top:50%;
+    transform: translate(-50%, -50%);
+    border-radius: 100%;
+}
+
+div.loginWrap::after{
+    content:"";
+    display: inline-block;
+    width:1400px; height:1400px;
+    box-sizing: border-box;
+    position: absolute;
+    pointer-events: none;
+    user-select: none;
+    touch-action: none;
+    border:4px solid rgba(255,255,255,0.3);
+    mix-blend-mode: overlay;
+    left:50%;
+    top:50%;
+    transform: translate(-50%, -50%);
+    border-radius: 100%;
+    filter: blur(5px);
+}
+div.loginWrap>div.browserInfo>img{
+    border:none;
+    position: relative;
+    filter: grayscale(100%);
+    transition: all 0.5s;
+    cursor:pointer;
+}
+div.loginWrap>div.browserInfo:hover>img{
+    filter: none;
+    transform: rotate(360deg);
+    transition: all 0.5s;
+}
+div.loginWrap>div.browserInfo>span{
+    display:inline-block;
+    font-size: 12px;
+    transform: rotate(0.03deg);
+    text-align: center;
+    line-height: 150%;
+    letter-spacing: -0.25px;
+    font-weight: 600;
+    /*color: #000000;*/
+    color: #CCCCCC;
+    margin-top: 5px;
+}
+
+div.loginWrap>div.findUserBox{
+    width: 734px;
+    height: 600px;
+    position: absolute;
+    left: 43%;
+    top: 20%;
+    margin-left: -240px;
+    filter: drop-shadow(10px 10px 5px rgba(0,0,0,0.1));
+    text-align: center;
+    background-color: white;
+    border-radius: 20px;
+    padding: 30px;
+}
+
+/*div.loginWrap>div.loginBox{*/
+    /*width: 600px;*/
+    /*height: 590px;*/
+    /*position: absolute;*/
+    /*left: 65%;*/
+    /*top: 20%;*/
+    /*margin-left: -240px;*/
+    /*filter: drop-shadow(10px 10px 5px rgba(0,0,0,0.1));*/
+    /*text-align: center;*/
+    /*background-color: white;*/
+    /*border-radius: 20px;*/
+    /*padding: 58px;*/
+/*}*/
+
+div.loginWrap>div.loginBox{
+    position: absolute;
+    width:600px;
+    height:590px;
+    left:50%;
+    top:55%;
+    transform: translate(-50%, -50%);
+    filter:drop-shadow(0px 10px 5px rgba(0,0,0,0.2));
+}
+
+/*div.loginWrap>div.loginBox>span.loginSystemTitle{*/
+    /*position: relative;*/
+    /*display: inline-block;*/
+    /*font-size: 35px;*/
+    /*color: #1baec5;*/
+    /*font-weight: 800;*/
+    /*letter-spacing: -2px;*/
+    /*transform: rotate(0.03deg);*/
+    /*margin-top: 10px;*/
+    /*margin-bottom: 10px;*/
+    /*filter: drop-shadow(10px 10px 5px rgba(0,0,0,0.1));*/
+/*}*/
+
+div.loginWrap>div.loginBox>div.loginBox-logo{
+    text-align: center;
+}
+
+div.loginWrap>div.loginBox>div.loginBox-logo>img{
+    vertical-align: 20%;
+}
+div.loginWrap>div.loginBox>div.loginBox-logo>span.loginSystemTitle{
+    display: inline-block;
+    width:100%;
+    color:#FFFFFF;
+    text-align: center;
+    transform: rotate(-0.03deg);
+    user-select: none;
+    cursor: default;
+}
+div.loginWrap>div.loginBox>div.loginBox-logo> span:nth-child(1){
+    font-size:48px;
+    font-weight: 800;
+    white-space: nowrap;
+    letter-spacing: -1px;
+}
+div.loginWrap>div.loginBox>div.loginBox-logo> span:nth-child(2){
+    font-size:42px;
+    font-weight: 800;
+    white-space: nowrap;
+    letter-spacing: -1px;
+    text-align: center;
+}
+div.loginWrap>div.loginBox>div.loginBox-logo> span:nth-child(3){
+    font-size:27px;
+    letter-spacing: -0.5px;
+    font-weight: 200; white-space: nowrap;
+    text-align: center;
+}
+div.loginWrap>div.loginBox>span.loginSystemVersion{
+    position:relative;
+    display:inline-block;
+    color:#FFFFFF;
+    font-size:14px;
+    height:21px;
+    background-color:#7a7c8d;
+    line-height:21px;
+    padding-left:15px;
+    padding-right:15px;
+    border-radius: 10.5px;
+    transform: rotate(0.03deg);
+    margin-top:13px;
+}
+div.loginWrap>div.loginBox>hr{
+    border:none;
+    border-top:1px solid rgba(0,0,0,0.1);
+    margin-bottom:30px;
+}
+div.loginWrap>div.loginBox>ul{
+    position: relative;
+    padding:0;
+    margin:0;
+    list-style: none;
+}
+
+/*div.loginWrap>div.loginBox>ul.loginForm span{*/
+    /*display: inline-block;*/
+    /*width:108px;*/
+    /*font-size:16px;*/
+    /*color:#58585a;*/
+    /*text-align: left;*/
+    /*text-indent: 33px;*/
+    /*transform: rotate(-0.03deg);*/
+    /*background-repeat: no-repeat;*/
+/*}*/
+
+div.loginWrap>div.loginBox>ul.loginForm{
+    width:100%;
+    text-align: center;
+    margin-top:40px;
+}
+
+/*div.loginWrap>div.loginBox>ul.loginForm span{*/
+    /*width:100%;*/
+    /*text-align: center;*/
+    /*margin-top:40px;*/
+/*}*/
+/*div.loginWrap>div.loginBox>ul>li{*/
+    /*margin-bottom:15px;*/
+/*}*/
+/*div.loginWrap>div.loginBox>ul>li:nth-child(1) span.id{*/
+    /*background-image: url("../images/koren_rca/icon_login_id.png");*/
+/*}*/
+/*div.loginWrap>div.loginBox>ul>li:nth-child(2) span.password{*/
+    /*background-image: url("../images/koren_rca/icon_login_pass.png");*/
+/*}*/
+div.loginWrap>div.loginBox>ul>li.loginInput span{
+    float: left;
+    width: 150px;
+    height: 50px;
+    border: none;
+    text-align: center;
+    font-size: 18px;
+    color: white;
+    text-align-last: right;
+    padding-top: 15px;
+}
+
+div.loginWrap>div.loginBox>ul>li.loginSelect{
+    color: white;
+}
+
+div.loginWrap>div.loginBox>ul.loginForm li.loginInput input.id,
+div.loginWrap>div.loginBox>ul.loginForm li.loginInput input.password {
+    background-repeat: no-repeat;
+    background-position: 25px 50%;
+}
+
+/*div.loginWrap>div.loginBox>ul>li:nth-child(1) span.id{*/
+    /*background-image: url("../images/koren_rca/login_icon_id.png");*/
+/*}*/
+/*div.loginWrap>div.loginBox>ul>li:nth-child(2) span.password{*/
+    /*background-image: url("../images/koren_rca/login_icon_pass.png");*/
+/*}*/
+
+div.loginWrap>div.loginBox>ul>li.loginInput input.id{
+    background-image: url("../images/koren_rca/login_icon_id.png");
+}
+div.loginWrap>div.loginBox>ul>li.loginInput input.password{
+    background-image: url("../images/koren_rca/login_icon_pass.png");
+}
+
+
+div.loginWrap>div.loginBox>ul>li.findUser{
+    text-align: left;
+    margin-left: 20px;
+}
+div.loginWrap>div.loginBox>ul>li.findUser>span {
+    display: inline-block;
+    width: 200px;
+    font-size: 23px;
+    font-weight: bold;
+    color: #FFFFFF;
+    text-align: left;
+    text-indent: 33px;
+}
+
+/*div.loginWrap>div.loginBox>ul.loginForm li.loginInput input{*/
+    /*background-color: #35435b5c; !* rgba(0,55,66,0.75) *!*/
+    /*color: #FFFFFF;*/
+    /*font-size: 14px;*/
+    /*text-align: center;*/
+    /*border: none;*/
+    /*width: 350px;*/
+    /*height: 50px;*/
+    /*border-radius: 20px;*/
+    /*outline: none;*/
+    /*transition: all 0.25s;*/
+/*}*/
+
+div.loginWrap>div.loginBox>ul.loginForm li.loginInput input{
+    width:330px;
+    height:50px;
+    border:none;
+    border-radius: 25px;
+    margin-bottom: 10px;
+    text-align: center;
+    font-size:18px;
+    background-color:rgba(255,255,255,0.8);
+    /* outline: none; */
+    transition: background-color 0.25s;
+    box-sizing: border-box;
+    padding-left:50px;
+    padding-right:50px;
+}
+/*div.loginWrap>div.loginBox>ul.loginForm li.loginInput input:focus{*/
+    /*background-color: rgba(20, 31, 49, 0.75);*/
+    /*transition: all 0.25s;*/
+/*}*/
+
+div.loginWrap>div.loginBox>ul.loginForm li.loginInput input:focus{
+    background-color:#FFFFFF;
+}
+
+/*div.loginWrap>div.loginBox>ul.loginForm li.loginInput input::placeholder {*/
+    /*color: #FFFFFF;*/
+    /*font-size: 14px;*/
+    /*opacity: 1; !* Firefox *!*/
+/*}*/
+
+div.loginWrap>div.loginBox>ul.loginForm li.loginInput input::placeholder {
+    color:#999999;
+    font-weight: 200;
+}
+/*div.loginWrap>div.loginBox>ul.loginForm li.loginInput input:-ms-input-placeholder {*/
+    /*color: #FFFFFF;*/
+    /*font-size: 14px;*/
+/*}*/
+div.loginWrap>div.loginBox>ul.loginForm li.loginInput input::-ms-input-placeholder {
+    color: #FFFFFF;
+    font-size: 14px;
+}
+
+div.loginWrap>div.loginBox>ul.loginForm li.loginInput input.username,
+div.loginWrap>div.loginBox>ul.loginForm li.loginInput input.password {
+    background-repeat: no-repeat;
+    background-position: 25px 50%;
+}
+
+div.loginWrap>div.loginBox>ul.loginForm li.loginInput input.username {
+    background-image: url("../images/koren_rca/login_icon_id.png");
+}
+div.loginWrap>div.loginBox>ul.loginForm li.loginInput input.password {
+    background-image: url("../images/koren_rca/login_icon_pass.png");
+ }
+/*div.loginWrap>div.loginBox>ul.loginForm>li.loginBtn{*/
+    /*position: absolute;*/
+    /*right: 305px;*/
+    /*width: 110px;*/
+    /*height: 50px;*/
+    /*margin-top: 45px;*/
+/*}*/
+
+div.loginWrap>div.loginBox>ul.loginForm>li.deployBtn{
+    position: absolute;
+    right: 137px;
+    width: 120px;
+    height: 50px;
+    margin-top: 45px;
+}
+div.loginWrap > div.loginBox > ul > li.loginClickBtn > span {
+    cursor: pointer;
+    font-size: 17px !important;
+}
+div.loginWrap>div.loginBox>ul.loginForm>li:last-child{
+    line-height: 22px;
+    font-size: 16px;
+    color: #58585a;
+    margin-left: 40px;
+}
+/*div.loginWrap>div.loginBox>ul.loginForm>li:last-child span{*/
+    /*font-size:14px;*/
+/*}*/
+div.loginWrap>div.loginBox>ul.loginForm>li:last-child span{
+    width:100%;
+    /*display: flex;*/
+    justify-content: center;
+    align-items: center;
+    gap:10px;
+    color:#FFFFFF;
+}
+/*div.loginWrap>div.loginBox>ul.loginForm>li:last-child span a{*/
+    /*text-decoration: none;*/
+    /*color:#58585a;*/
+/*}*/
+/*div.loginWrap>div.loginBox>ul.loginForm>li:last-child span a:hover{*/
+    /*text-decoration: underline;*/
+    /*color:#58585a;*/
+/*}*/
+div.loginWrap>div.loginBox>ul.loginForm>li:last-child span a{
+    color:#FFFFFF;
+    text-decoration: none;
+    font-weight: 200;
+    transform: rotate(-0.03deg);
+    letter-spacing: -0.5px;
+    opacity: 0.8;
+}
+div.loginWrap>div.loginBox>ul.loginForm>li:last-child span a:hover{
+    text-decoration: underline;
+    opacity: 1;
+}
+div.loginWrap>div.loginBox>ul.loginForm>li:last-child span:first-child{
+    border-right: 1px solid #c6c9ca;
+    /*padding-right:10px;*/
+}
+div.loginWrap>div.loginBox>ul.loginForm>li:last-child span:last-child{
+    border-left: 1px solid #c6c9ca;
+    /*text-indent: 15px;*/
+}
+
+div.loginWrap>div.loginBox>ul.loginForm>li.loginClickBtn:last-child span:first-child{
+    border-right: 0px;
+    margin-right: 5px;
+}
+
+div.loginWrap>div.loginBox>ul.loginForm>li.loginClickBtn:last-child span:last-child{
+    border-left: 1px solid #c6c9ca;
+    padding-left: 10px;
+}
+
+div.loginWrap>div.loginBox>ul.loginForm>li input[type="checkbox"]{
+    position: relative;
+    float:left;
+    width:0px;
+    height:0px;
+    padding:0;
+    /*margin:0;*/
+    margin-left: 140px;
+}
+div.loginWrap>div.loginBox>ul.loginForm>li input[type="checkbox"]::before{
+    position: relative;
+    left:0;
+    top:0;
+    content:"";
+    float:left;
+    display: inline-block;
+    width:20px;
+    height:20px;
+    border:4px solid #818285;
+    border-radius: 100%;
+    background-color:#818285;
+    transition: all 0.25s;
+    cursor:pointer;
+}
+div.loginWrap>div.loginBox>ul.loginForm>li input[type="checkbox"]:checked::before{
+    background-color:#FFFFFF;
+    transition: all 0.25s;
+}
+
+/*div.loginWrap>div.loginBox>ul.loginForm>li.loginBtn>button,*/
+/*div.loginWrap>div.loginBox>ul.loginForm>li.deployBtn>button{*/
+    /*width: 350px;*/
+    /*height: 50px;*/
+    /*border-radius: 20px;*/
+    /*background-color: #35435bbf;*/
+    /*cursor: pointer;*/
+    /*transition: all 0.25s;*/
+    /*color:#FFFFFF;*/
+    /*transform: rotate(-0.03deg);*/
+    /*background-repeat: no-repeat;*/
+    /*background-position: 50% 30%;*/
+    /*border: none;*/
+    /*font-size: 17px;*/
+/*}*/
+div.loginWrap>div.loginBox>ul.loginForm>li.loginBtn>button,
+div.loginWrap>div.loginBox>ul.loginForm>li.deployBtn>button{
+    width:330px;
+    height:50px;
+    border:none;
+    border-radius: 25px;
+    background-color:#609fe6;
+    color:#FFFFFF;
+    font-size:18px;
+    background-image:url("../images/koren_rca/login_icon_lock.png");
+    background-repeat: no-repeat;
+    background-position: 25px 50%;
+    margin-bottom:20px;
+    cursor:pointer;
+}
+/*div.loginWrap>div.loginBox>ul.loginForm>li.loginBtn>button:focus,*/
+/*div.loginWrap>div.loginBox>ul.loginForm>li.loginBtn>button:hover,*/
+/*div.loginWrap>div.loginBox>ul.loginForm>li.deployBtn>button:focus,*/
+/*div.loginWrap>div.loginBox>ul.loginForm>li.deployBtn>button:hover{*/
+    /*background-color: rgba(23, 33, 47, 0.75);*/
+    /*transition: all 0.25s;*/
+/*}*/
+/*div.loginWrap>div.loginBox>ul.loginForm>li.loginBtn>button:active,*/
+/*div.loginWrap>div.loginBox>ul.loginForm>li.deployBtn>button:active{*/
+    /*background-color:rgba(23, 33, 47, 0.75);*/
+    /*transform:translateY(2px);*/
+    /*transition: all 0.25s;*/
+/*}*/
+div.loginWrap>div.loginBox>ul.loginForm>li.loginBtn>button:focus,
+div.loginWrap>div.loginBox>ul.loginForm>li.loginBtn>button:hover,
+div.loginWrap>div.loginBox>ul.loginForm>li.deployBtn>button:focus,
+div.loginWrap>div.loginBox>ul.loginForm>li.deployBtn>button:hover{
+    background-color:#7aaee8;
+}
+div.loginWrap>div.loginBox>ul.loginForm>li.loginBtn>button:active,
+div.loginWrap>div.loginBox>ul.loginForm>li.deployBtn>button:active{
+    transform: scale(0.99);
+}
+/*div.loginWrap>div.bottomCopyright{*/
+    /*position: absolute;*/
+    /*color: #000000;*/
+    /*font-size:13px;*/
+    /*width:550px;*/
+    /*left:50%;*/
+    /*margin-left:-250px;*/
+    /*bottom:50px;*/
+/*}*/
+div.loginWrap>div.bottomCopyright{
+    position:absolute;
+    width:100%;
+    left:0; right:0;
+    bottom:0px;
+    /*color:rgba(255,255,255,1);*/
+    color:#CCCCCC;
+    font-weight: 200;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    user-select: none;
+    cursor: default;
+}
+
+/*div.loginWrap>div.bottomCopyright span{*/
+    /*display: inline-block;*/
+    /*position: relative;*/
+    /*width:100%;*/
+    /*text-align: center;*/
+    /*line-height: 140%;*/
+    /*transform: rotate(0.03deg);*/
+/*}*/
+div.loginWrap>div.bottomCopyright span{
+    font-size:12px;
+    left:50%;
+    display: inline-block;
+    width:100%;
+    text-align: center;
+    margin-bottom:10px;
+    opacity: 0.5;
+}
+div.loginWrap>div.bottomCopyright span:last-child{
+    font-size:12px;
+    margin-top:10px;
+}
+div.loginWrap>div.bottomCopyright div.bottomCopyrightLogo{
+    width:100%;
+    background-color:#FFFFFF;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap:50px;
+    padding:20px 0;
+}

@@ -32,7 +32,7 @@ var dialogOpenMixin = {
           pageTitle: '마감 처리',
           top: '2vh',
           width: '600',
-          height: '500',
+          height: '550',
           resizeble: true,
         },
         configTest: {
@@ -82,7 +82,13 @@ var dialogOpenMixin = {
           height: '650',
           resizeble: true
         },
-
+        niaTopology: {
+          component: () => import('@/views-nia/dashBoard/niaTopology'),
+          pageTitle: '토폴로지',
+          width: '1200',
+          height: '785',
+          resizeble: true
+        },
       }
     }
   },
