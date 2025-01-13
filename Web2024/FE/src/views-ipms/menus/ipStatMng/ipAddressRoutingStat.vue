@@ -6,7 +6,7 @@
       :component-keys="componentList"
       @handle-search="handleSearch"
     />
-    <el-col ref="tableContainer" :span="24">
+    <el-col ref="tableContainer" v-loading="loading" :span="24">
       <compTable
         ref="compTable"
         style="height: calc(100% - 40px)"
