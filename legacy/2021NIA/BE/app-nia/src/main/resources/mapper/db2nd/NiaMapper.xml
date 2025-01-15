@@ -2193,12 +2193,11 @@
 
     <select id="SELECT_NIA_ABNORMAL_TRAFFIC2_LIST" parameterType="hashmap" resultType="hashmap">
         SELECT DISTINCT
-            #{TICKET_ID} AS ticket_id ,
             'INIT' AS status,
             'ABNORMAL_TRAFFIC' AS alarm_type,
             '7' AS alarmlevel,
-            TO_TIMESTAMP((P.INTTIMESTAMP * 1000) / 1000) as receivetime,
-            TO_TIMESTAMP((P.INTTIMESTAMP * 1000) / 1000) as faulttime,
+            <!-- null as receivetime, -->
+            <!-- null as faulttime, -->
             R.STRRESNAME AS sysname,
             PM.if_id AS interface_id,
             I.STRIFNAME AS interface_name,
@@ -2210,9 +2209,9 @@
                  WHEN R.STRRESNAME LIKE '%-5812%' THEN '7712/5812'
                  WHEN STRRESNAME LIKE '%-n9k%' THEN 'ngk'
                  ELSE '' END AS equiptype,
-            P.fltbpsin_anomaly,
-            P.fltbpsout_anomaly
-        FROM rca.tb_anomalous_traffic P
+            P.fltbpsin,
+            P.fltbpsout
+        FROM rca.TB_ANOMALOUS_1MI_TRAFFIC P
                  LEFT OUTER JOIN IP_YD.XE_CVNMS_RESOURCE R ON P.STRRESID = R.STRRESID
                  LEFT OUTER JOIN IP_YD.XE_CVNMS_RESOURCE_IF I ON P.STRRESID = I.STRRESID  AND P.STRIFID = I.STRIFID
                  LEFT OUTER JOIN RESOURCE.TB_PORT_MST PM ON PM.NODE_NUM = I.STRRESID AND PM.IF_NUM = I.STRIFID

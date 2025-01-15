@@ -207,7 +207,7 @@ export default {
     }
   },
   created() {
-    this.selectedRow = this.wdata?.params
+    this.ticket = this.wdata?.params
 
     const async = false
     this.addScript([
@@ -325,8 +325,12 @@ export default {
         await this.loadMapByFile(jsons[this.topologyType - 1], true)
 
         setTimeout(() => {
-          const node = this.map.data.nodes.find(v => v.ip_addr === this.selectedRow.ip_addr)
-          this.map.zoomInByNode(node, 5, 1000)
+          // const node = this.map.data.nodes.find(v => v.ip_addr === this.selectedRow.ip_addr)
+          // if (node) {
+          //   this.map.zoomInByNode(node, 5, 1000)
+          //   this.map.selectElement(node, 'node', true)
+          //   this.loadTicketAlarm(this.ticket)
+          // }
         }, 1000)
 
         map.addEventListener(window.Map2d.eventType.selectChanged, e => {
@@ -342,7 +346,7 @@ export default {
     },
 
     onInit() {
- document.getElementById('templateUnitArea').innerHTML = document.querySelector('#template-3').innerHTML
+      document.getElementById('templateUnitArea').innerHTML = document.querySelector('#template-3').innerHTML
     },
 
     async loadNiaAgencyList() {
@@ -377,26 +381,44 @@ export default {
     },
 
     async loadTicketAlarm(ticket) {
-      let reload = false
-      if (ticket == null) {
-          ticket = this.ticket
-          reload = true
-      }
+      const { THIS } = this
+      // let reload = false
+      // if (ticket == null) {
+      //   ticket = this.ticket
+      //   reload = true
+      // }
 
-      if (ticket == null || Object.keys(ticket).length === 0) {
-          return
-      }
+      // if (ticket == null || Object.keys(ticket).length === 0) {
+      //   return
+      // }
 
       this.clearTicketAlarm()
-      if (reload || ticket && this.ticket !== ticket) {
-          this.ticket = ticket
+      // if (reload || ticket /* && this.ticket !== ticket */) {
+      if (this.ticket /* && this.ticket !== ticket */) {
+        // this.ticket = ticket
 
-          var alarms = await this.loadNiaAlarmList(ticket)
-          var alarmLink = await this.loadNiaCableAlarmList(ticket)
-
+        if (!this.ticket.allTicket) {
+          var alarms = await this.loadNiaAlarmList(this.ticket)
+          var alarmLink = await this.loadNiaCableAlarmList(this.ticket)
           var [alarmNode] = await this.updateBadgeCount(this.map.data, alarms)
-          this.zoom(alarmLink, alarmNode)
+
+          setTimeout(() => {
+            this.zoom(alarmLink, alarmNode)
+            this.map.draw(false)
+          }, 1000)
+        } else {
+          var totalAlarms = []
+
+          for (let i = 0; i < this.ticket.ticketList.length; i++) {
+            const ticket = this.ticket.ticketList[i]
+            const alarms = await this.loadNiaAlarmList(ticket)
+            if (alarms) {
+              totalAlarms.push(...alarms)
+            }
+          }
+          await this.updateBadgeCount(this.map.data, totalAlarms)
           this.map.draw(false)
+        }
       }
     },
 
@@ -470,7 +492,7 @@ export default {
                   node.related_alarm = true
                   alarmNodes.add(node)
               }
-          })
+        })
       }
 
       return [...alarmNodes].sort(function (a, b) { a.alarm_count > b.alarm_count })
@@ -671,7 +693,7 @@ export default {
             links.forEach(link => { link.status = -1 })
             causeLinks = [...links]
             return causeLinks[0]
-        }
+      }
     },
 
     async loadMapData(fileName) {
