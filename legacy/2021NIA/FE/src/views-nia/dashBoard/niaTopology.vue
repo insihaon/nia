@@ -579,6 +579,14 @@ export default {
             const param = {
               TICKET_ID: ticket.ticket_id
             }
+
+            if (ticket.ticket_rca_result_code === 'TRAFFIC_BAD_DETECTION') {
+              console.error('apiSelectNiaBadTrafficList는 2022-12-06 이후로 사용안한다고 되어있습니다..??')
+              console.error('테이블이 IP_YD.XE_SFLOW_LOG에서 TB_SFLOW_COLLECT로 변경되었다고 하며 그 이후로 사용안되는 것...?')
+              console.error('해당 에러 로그 작성일 : 2025-01-15')
+              return
+            }
+
             const res = await ticket.ticket_rca_result_code === 'TRAFFIC_BAD_DETECTION' ? apiSelectNiaBadTrafficList(param) : apiSelectNiaAbnormalTrafficList(param)
             if (ticket.ticket_rca_result_code === 'TRAFFIC_BAD_DETECTION') {
               this.ticketBadTrafficAlarms = res?.result

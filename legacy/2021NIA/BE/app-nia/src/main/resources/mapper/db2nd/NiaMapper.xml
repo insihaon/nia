@@ -511,17 +511,22 @@
 
     <!-- 유해트래픽(NTT) 차트 정보 조회 -->
     <select id="SELECT_NTT_CHART" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
+    <!-- 2025-01-15 수정해놓았으나 테스트 못함. -->
         WITH DATEREGDATE_DATA AS (
-            SELECT DISTINCT DATEREGDATE
-            FROM IP_YD.XE_SFLOW_LOG
+            SELECT DISTINCT COLLECT_TIMESTAMP DATEREGDATE
+            FROM GATHER.TB_SFLOW_COLLECT
             <where>
                 <trim prefix="(" prefixOverrides="AND|OR" suffix=")" suffixOverrides="">
                     <if test="FAULT_TIME != null and FAULT_TIME != ''">
-                        AND DATEREGDATE BETWEEN #{FAULT_TIME}::TIMESTAMP - INTERVAL '1 HOUR' AND #{FAULT_TIME}::TIMESTAMP + INTERVAL '1 HOUR'
+                        AND COLLECT_TIMESTAMP BETWEEN #{FAULT_TIME}::TIMESTAMP - INTERVAL '1 HOUR' AND #{FAULT_TIME}::TIMESTAMP + INTERVAL '1 HOUR'
                     </if>
                 </trim>
             </where>
             ORDER BY DATEREGDATE
+        )
+        WITH TOTAL_COUNT AS (
+            SELECT COUNT(*) AS STRCOUNTS
+            FROM GATHER.TB_SFLOW_COLLECT
         )
         SELECT
             COLLECT_TIME
@@ -539,31 +544,32 @@
                 , DD.DATEREGDATE AS COLLECT_TIME
             FROM DATEREGDATE_DATA DD
             LEFT JOIN (
-                SELECT STRCOUNTS, STRBYTES_COL, DATEREGDATE
-                FROM ip_yd.xe_sflow_log
+                SELECT TC.STRCOUNTS, SC.PACKET_BYTES * TC.STRCOUNTS STRBYTES_COL, COLLECT_TIMESTAMP DATEREGDATE
+                FROM GATHER.TB_SFLOW_COLLECT SC
+                CROSS JOIN TOTAL_COUNT TC
                 <where>
                     <trim prefix="(" prefixOverrides="AND|OR" suffix=")" suffixOverrides="">
                         <if test="FAULT_TIME != null and FAULT_TIME != ''">
-                            AND DATEREGDATE = #{FAULT_TIME}::TIMESTAMP
+                            AND COLLECT_TIMESTAMP = #{FAULT_TIME}::TIMESTAMP
                         </if>
                         <if test="TICKET_ID != null and TICKET_ID != ''">
-                            AND STRSENDERIP = (
+                            AND AGENT_ADDRESS = (
                                 SELECT DISTINCT STRSENDERIP 
                                 FROM RCA.TB_NOXIOUS_TRAFFIC 
                                 WHERE TICKET_ID = #{TICKET_ID}
                             )
                         </if>
                         <if test="START_NODE != null and START_NODE != ''">
-                            AND STRS_IP  = #{START_NODE}
+                            AND SRC_IP  = #{START_NODE}
                         </if>
                         <if test="START_PORT != null and START_PORT != ''">
-                            AND STRS_PORT  = #{START_PORT}
+                            AND SRC_PORT  = #{START_PORT}
                         </if>
                         <if test="END_NODE != null and END_NODE != ''">
-                            AND STRD_IP  = #{END_NODE}
+                            AND DST_IP  = #{END_NODE}
                         </if>
                         <if test="END_PORT != null and END_PORT != ''">
-                            AND STRD_PORT  = #{END_PORT}
+                            AND DST_PORT  = #{END_PORT}
                         </if>
                     </trim>
                 </where>
@@ -2244,7 +2250,40 @@
     </select>
 
     <select id="SELECT_NIA_BAD_TRAFFIC_LIST" parameterType="hashmap" resultType="hashmap">
-    -- 2022-12-06 사용안함
+    SELECT
+        '11214' AS TICKET_ID,
+        'INIT' AS STATUS,
+        'BAD_TRAFFIC' AS ALARM_TYPE,
+        '7' AS ALARMLEVEL,
+        DATEREGDATE AS RECEIVETIME,
+        DATEREGDATE AS FAULTTIME,
+        STRRESNAME AS SYSNAME,
+        STRPROTOCOL AS PROTOCOL_NUM,
+        STRS_IP AS SRC_IP,
+        STRS_PORT AS SRC_PORT,
+        STRD_IP AS DST_IP,
+        STRD_PORT AS DST_PORT,
+        STRBYTES_COL AS BYTE_COUNT
+    FROM (
+        SELECT 
+        A.AGENT_ADDRESS 	AS        STRRESIP
+        , N.NODE_NM       AS        STRRESNAME
+        , A.SRC_IP        AS        STRS_IP
+        , A.SRC_PORT      AS        STRS_PORT
+        , A.SRC_MAC       AS        STRSMAC
+        , A.DST_IP        AS        STRD_IP
+        , A.DST_PORT      AS        STRD_PORT
+        , A.DST_MAC       AS        STRDMAC
+        , A.HEADER_PROTOCOL AS 		STRPROTOCOL
+        , PACKET_BYTES AS STRBYTES_COL
+        , A.COLLECT_TIMESTAMP AS DATEREGDATE
+        FROM GATHER.TB_SFLOW_COLLECT A
+        INNER JOIN RESOURCE.TB_NODE_MST N ON A.AGENT_ADDRESS = N.IP_ADDR
+        WHERE A.COLLECT_TIMESTAMP > #{TIMESTAMP}::TIMESTAMP
+    ) A
+
+    <!-- 2022-12-06 사용안함 + 2025-01-15 사용안한다고 하기에 위에 새운운 테이블로 교체만 해놓음-->
+    <!-- 
         SELECT
             '11214' AS ticket_id,
             'INIT' AS status,
@@ -2264,7 +2303,7 @@
         WHERE DATEREGDATE between '2021-11-22 13:49:52' and '2021-11-22 13:49:54'
         AND strresip = '116.89.161.14'
         AND strs_ip in ('211.114.64.142','211.114.64.17','211.114.66.79','59.18.30.17','59.18.30.76','59.18.35.211')
-        AND strs_port in ('443')
+        AND strs_port in ('443') -->
     </select>
 
     <!--이상 트래픽-->

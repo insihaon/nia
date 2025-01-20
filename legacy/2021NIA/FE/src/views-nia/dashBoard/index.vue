@@ -173,7 +173,7 @@ export default {
       getIpAgGridRightClickMenuItems: (event) => {
         return [
           {
-            name: '토폴로지 상세보기', action: () => {
+            name: '토폴로지 전체보기', action: () => {
               this.openNiaTopology({ allTicket: true, ticketList: this.ipNetworkList })
             }
           }
