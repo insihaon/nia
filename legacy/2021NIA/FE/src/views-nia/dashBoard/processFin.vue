@@ -95,9 +95,9 @@ export default {
       etcContent: '',
       period: null,
       finSop: {
-        faultClassify: '',
-        faultType: '',
-        faultDetail: '',
+        faultClassify: null,
+        faultType: null,
+        faultDetail: null,
       },
     }
   },
@@ -201,8 +201,8 @@ export default {
         ai_accuracy: this.aiFeedback,
         etc_content: this.etcContent,
         fault_type_content: this.aiFeedback === '1' ? this.fault_type_content : null,
-        start_time: this.aiFeedback === '1' ? this.period[0] : null,
-        end_time: this.aiFeedback === '1' ? this.period[1] : null,
+        start_time: this.aiFeedback === '1' && this.period ? this.period[0] : null,
+        end_time: this.aiFeedback === '1' && this.period ? this.period[1] : null,
         handling_fin_user: this.$store.state.user.name,
       }
       Object.assign(param, this.finSop)
