@@ -170,6 +170,15 @@ export default {
       selfStatistics: [],
       chartloading: false,
       redrawTimer: null,
+      getIpAgGridRightClickMenuItems: (event) => {
+        return [
+          {
+            name: '토폴로지 전체보기', action: () => {
+              this.openNiaTopology({ allTicket: true, ticketList: this.ipNetworkList })
+            }
+          }
+        ]
+      }
     }
   },
   computed: {
@@ -198,7 +207,7 @@ export default {
         { type: '', prop: 'ai_accuracy', name: 'AI 결과 피드백', width: 100, fixed: false, suppressMenu: true, formatter: getSopAiAccuracy }
       ]
       const options = { name: this.name, checkable: false, rowGroupPanel: false }
-      return { options, columns, data: this.ipNetworkList, onDoesExternalFilterPass: (externalFilter, node) => { return this.onDoesExternalFilterPass(externalFilter, node, 'ip') }, getRightClickMenuItems: () => { return [] } }
+      return { options, columns, data: this.ipNetworkList, onDoesExternalFilterPass: (externalFilter, node) => { return this.onDoesExternalFilterPass(externalFilter, node, 'ip') }, getRightClickMenuItems: this.getIpAgGridRightClickMenuItems }
     },
     transmissionAgGrid() {
       const columns = [
@@ -315,6 +324,10 @@ export default {
         ]
       }
     },
+
+    openWindowList() {
+      return this.$store.state.mdi.windows
+    }
   },
   watch: {
     viewport(nVal, oVal) {
@@ -341,6 +354,20 @@ export default {
     })
   },
   methods: {
+    openNiaTopology(param) {
+      const existTopologyWindow = this.openWindowList.filter((openWindow) => {
+        return openWindow.dialogNm === 'niaTopology'
+      })
+
+      if (existTopologyWindow.length > 0) {
+        existTopologyWindow.forEach((w) => {
+          this.$store.dispatch('mdi/removeWindow', w.id)
+        })
+      }
+
+      this.fn_openWindow('niaTopology', param)
+    },
+
     subscribeEvent() {
       this.addWsEventListener(this.CONSTANTS.channels.IPSDN_ALARM.name, this.onReceivedIpsdnTicketEvent)
       this.addWsEventListener(this.CONSTANTS.channels.TRANS_ALARM.name, this.onReceivedTransTicketEvent)
@@ -380,6 +407,7 @@ export default {
       AppOptions.instance.useWsLog && this.log('RECEIVED SIBSCRIBE IPSDN_ALARM EVENT: ', data)
 
       this.ipNetworkList = [].concat(...this.getMergedList('ipNetworkList', data))
+      // this.ipNetworkTicketIdList
       this.$store.dispatch('nia/insertIpNetworkList', this.ipNetworkList)
     },
     onReceivedTransTicketEvent({ channelName, socketMessage }) {
@@ -673,7 +701,7 @@ export default {
     },
     agGridRowDoubleClicked(selectedItems) {
       const data = this.selectedItem?.data || []
-      this.fn_openWindow('niaTopology', data)
+      this.openNiaTopology(data)
     },
     handleOpenTicketDetail(row) {
       this.fn_openWindow('ticketDetail', row)

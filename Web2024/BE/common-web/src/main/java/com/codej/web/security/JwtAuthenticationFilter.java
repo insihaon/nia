@@ -59,9 +59,8 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
                 }
 
                 String token = baseJwtTokenProvider.resolveToken(httpRequest);
-                boolean isBanned = token != null && baseJwtTokenProvider.isBannedTocken(token, true);
-                boolean validate = token != null
-                        && baseJwtTokenProvider.validateToken(token, "JwtAuthenticationFilter");
+                boolean isBanned = false; //token != null && baseJwtTokenProvider.isBannedTocken(token, true);
+                boolean validate = token != null && baseJwtTokenProvider.validateToken(token, "JwtAuthenticationFilter");
                 if (isBanned) {
                     JSONObject entity = new JSONObject();
                     entity.put("result", "kickout");
@@ -77,6 +76,18 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
                     // com.codej.web.Intercepts.AuthInterceptor 에서 처리하도록 수정 2023.10.13
                 }
             }
+        } catch (CAuthenticationException ex) {
+            HttpServletResponse httpResponse = (HttpServletResponse)response;
+            httpResponse.setStatus(HttpServletResponse.SC_FORBIDDEN); 
+            httpResponse.setContentType("application/json");
+            httpResponse.setCharacterEncoding("UTF-8");
+
+            JSONObject json = new JSONObject();
+            json.put("code", -999);
+            json.put("message","validateToken 실패");
+
+            httpResponse.getWriter().write(json.toString());
+            return;
         } catch (Exception ex) {
             // 예외 처리
             ex.printStackTrace();

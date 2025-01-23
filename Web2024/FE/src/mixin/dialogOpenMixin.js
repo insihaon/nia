@@ -99,6 +99,7 @@ var dialogOpenMixin = {
       tmpWindowData.id = new Date().getTime()
       tmpWindowData.name = this.dialogList[dialogNm]['pageTitle']
       tmpWindowData.target = this.dialogList[dialogNm]['component']
+      tmpWindowData.dialogNm = dialogNm
       // tmpWindowData.type = this.dialogList[dialogNm]
       tmpWindowData.width = this.isMobile ? window.innerWidth : this.dialogList[dialogNm]['width']
       tmpWindowData.height = this.dialogList[dialogNm]['height']
