@@ -2,6 +2,7 @@ package com.nia.data.linkage.ipsdn.mapper.common;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import java.sql.Timestamp;
 import java.util.HashMap;
 
 @Mapper

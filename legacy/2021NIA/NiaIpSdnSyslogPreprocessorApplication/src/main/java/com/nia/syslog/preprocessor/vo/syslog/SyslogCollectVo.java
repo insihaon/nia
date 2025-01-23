@@ -13,7 +13,7 @@ import java.util.Date;
 @Data
 @Scope(value = "prototype")
 public class SyslogCollectVo implements Serializable {
-	private int collectSeq;
+	private long collectSeq;
 	private String collectHost;
 	private String source;
 	private String appname;

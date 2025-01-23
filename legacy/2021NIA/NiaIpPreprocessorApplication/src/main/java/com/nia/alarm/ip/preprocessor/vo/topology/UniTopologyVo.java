@@ -13,7 +13,7 @@ public class UniTopologyVo implements Serializable {
     private String linkId;
     private String nodeNum;
     private String nodeId;
-    private String nrenName;
+    private String organName;
     private String ifId;
     private String ifNum;
 

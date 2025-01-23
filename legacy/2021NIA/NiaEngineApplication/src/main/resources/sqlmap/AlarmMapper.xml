@@ -29,7 +29,8 @@
     </resultMap>
 
     <select id="selectAlarmMstList" resultMap="BasicAlarmVo" parameterType="hashmap">
-        SELECT ALARMNO, CLUSTERNO, SYSNAME, EQUIPTYPE, ALARMTIME, RECEIVETIME, ALARMLOC, ALARMMSG, UNIT, ALARMLEVEL, PTPNAME, SLOT
+        SELECT ALARMNO, CLUSTERNO, SYSNAME, EQUIPTYPE, ALARMTIME,
+               RECEIVETIME, ALARMLOC, ALARMMSG, UNIT, ALARMLEVEL, PTPNAME, SLOT
         FROM RCA.TB_ALARM_CUR_MST
         WHERE CLUSTERNO = #{clusterno}
             --           AND RECEIVETIME >= now() - INTERVAL '7DAY'

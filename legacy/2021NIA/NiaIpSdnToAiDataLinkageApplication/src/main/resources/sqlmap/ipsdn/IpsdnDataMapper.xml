@@ -13,6 +13,7 @@
         FROM IP_SDN.TB_INTERFACE
     </select>
 
+<!--          SELECT ID as Id, SIF_ID, RIF_ID, OSPF_METRIC, USAGED , VSIF_ID , SPEED , LATENCYSTD , ACTIVESTANDBY-->
     <select id="selectLink" resultType="com.nia.data.linkage.ipsdn.vo.ipsdn.resource.LinkVo">
         SELECT ID as Id, SIF_ID, RIF_ID, OSPF_METRIC, USAGED
         FROM IP_SDN.TB_LINK
@@ -43,6 +44,36 @@
         ORDER BY LT.ID
     </select>
 
+    <select id="selectTrafficUserOrganList" resultType="com.nia.data.linkage.ipsdn.vo.ipsdn.traffic.LinkTrafficVo" parameterType="int">
+        SELECT
+            OE.NREN_ID
+             ,OE.NREN_NAME, OE.SDN_NODE_ID, OE.SDN_IF_ID
+             , OE.STRRESID, OE.STRRESNM, OE.STRIFID, OE.STRIFNM
+             , COALESCE(LT.TX_BIT_RATE,0) as FLTBPSOUT
+             , COALESCE(LT.RX_BIT_RATE, 0) AS FLTBPSIN
+             , COALESCE(LT.TX_PKT_RATE, 0) AS FLTPPSOUT
+             , COALESCE(LT.RX_PKT_RATE, 0) AS FLTPPSIN
+             , LT.MEASURED_DATETIME
+             , COALESCE(LT.ID,0) as ID
+        FROM (
+                 SELECT
+                     UO.NREN_ID,UO.NREN_NAME,
+                     nm.node_id,pm.if_id,
+                     N.ID as SDN_NODE_ID,
+                     NM.NODE_NUM as STRRESID,NM.NODE_NM as STRRESNM,
+                     I.ID as SDN_IF_ID,I.IF_NAME as STRIFNM,
+                     PM.IF_NUM as STRIFID
+                 from RESOURCE.TB_USER_ORGAN UO
+                          inner join RESOURCE.TB_PORT_MST   PM on PM.if_id = UO.IF_ID
+                          inner join RESOURCE.TB_NODE_MST   NM on NM.NODE_ID = UO.NODE_ID and PM.NODE_NUM = NM.NODE_NUM
+                          inner join IP_SDN.TB_INTERFACE I on PM.IF_ID = LOWER(I.IF_NAME)
+                          inner join IP_SDN.TB_NODE N on I.NODE_ID = N.ID and N.ID = NM.IP_SDN_ID::INT
+             ) OE
+                 LEFT OUTER JOIN IP_SDN.TB_LINK_TRAFFIC LT on LT.IF_ID = OE.SDN_IF_ID  AND LT.ID > #{datakey}
+        order by
+            CASE WHEN ID IS NULL THEN 0 ELSE 1 end, LT  DESC;
+    </select>
+
     <!--    팩터      -->
     <select id="selectNodeFactorLink" resultType="com.nia.data.linkage.ipsdn.vo.ipsdn.factor.NodeFactorVo" parameterType="int" >
         SELECT N.ID AS SDN_NODE_ID
@@ -67,17 +98,18 @@
 
 <!--    Sflow    -->
     <select id="selectSflowData" resultType="com.nia.data.linkage.ipsdn.vo.ipsdn.sflow.SflowDataVo" parameterType="long">
-        SELECT COLLECT_SEQ as collectSeq, COLLECT_HOST as collectHost, AGENT_ADDRESS as agentAddress, ETHER_TYPE as etherType,
+        SELECT COLLECT_SEQ as collectSeq, COLLECT_HOST as strresname, AGENT_ADDRESS as strresip, ETHER_TYPE as etherType,
                HEADER_PROTOCOL as headerProtocol, INPUT_IFINDEX as inputIfindex, OUTPUT_IFINDEX as outputIfindex, SAMPLE_DIRECTION as sampleDirection,
-               SRC_IP as srcIp, SRC_MAC as srcMac, SRC_PORT as srcPort, SOURCE_ID_TYPE as sourceIdType, SOURCE_ID_INDEX as sourceIdIndex,
-               DST_IP as dstIp, DST_MAC as dstMac, DST_PORT as dstPort, PACKET_BYTES as packetBytes, PACKET_DROPS as packetDrops, FRAME_LENGTH as frameLength,
+               SRC_IP as strsIp, SRC_MAC as strsMac, SRC_PORT as strsPort, SOURCE_ID_TYPE as sourceIdType, SOURCE_ID_INDEX as sourceIdIndex,
+               DST_IP as strdIp, DST_MAC as strdMac, DST_PORT as strdPort, PACKET_BYTES as packetBytes, PACKET_DROPS as packetDrops, FRAME_LENGTH as frameLength,
                HEADER_LENGTH as headerLength, IP_DSCP as ipDscp, IP_ECN as ipEcn, IP_FLAGS as ipFlags, IP_FRAGMENT_OFFSET as ipFragmentOffset,
                IP_TOTAL_LENGTH as ipTotalLength, IP_TTL as ipTtl, SAMPLING_RATE as samplingRate, TCP_HEADER_LENGTH as tcpHeaderLength, TCP_URGENT_POINTER as tcpUrgentPointer,
-               TCP_WINDOW_SIZE as tcpWindowSize, COLLECT_TIMESTAMP as collectTimestamp
+               TCP_WINDOW_SIZE as tcpWindowSize, COLLECT_TIMESTAMP as dateregdate
         FROM GATHER.TB_SFLOW_COLLECT
         WHERE COLLECT_SEQ > #{collectSeq} AND COLLECT_TIMESTAMP > rca.fc_get_minus_time(1)
         ORDER BY COLLECT_SEQ
     </select>
+
 
 <!--    Alarm     -->
     <select id="selectAlarmList" resultType="com.nia.data.linkage.ipsdn.vo.ipsdn.alarm.AlarmDataVo" parameterType="int">
@@ -86,8 +118,6 @@
         WHERE ALARMNO::INTEGER > #{dataKey}
         ORDER BY ALARMNO
     </select>
-
-
 
 </mapper>
 

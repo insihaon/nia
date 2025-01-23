@@ -29,7 +29,6 @@ public class FieldsVo implements Serializable {
 
 
 
-
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
 

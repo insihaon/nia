@@ -8,7 +8,9 @@ import java.util.HashMap;
 
 @Mapper
 public interface NodeFactorMapper {
+
     NodeFactorInfoVo selectNodeFactor(HashMap<String, String> map);
+
 
     void updateNodeFactor(HashMap<String,String> map);
 }

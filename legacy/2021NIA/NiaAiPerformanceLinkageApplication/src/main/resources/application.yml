@@ -2,8 +2,8 @@ server:
   port: 30305
 logging:
   level:
-    root: INFO  
-    
+    root: INFO
+
 ---
 spring:
   profiles: dev
@@ -18,18 +18,18 @@ spring:
         suffix: )
 
   restTemplate:
-      factory:
-        readTimeout: 5000
-        connectTimeout: 3000
-      httpClient:
-        maxConnTotal: 100
-        maxConnPerRoute: 5
+    factory:
+      readTimeout: 5000
+      connectTimeout: 3000
+    httpClient:
+      maxConnTotal: 100
+      maxConnPerRoute: 5
   ai:
     api:
       url: http://192.168.0.9:8000
 
   task:
-    poolSize: 100 
+    poolSize: 100
     keepAlive: 600000
     queueCapacity: 100
     concurrency: 100
@@ -74,12 +74,12 @@ spring:
         suffix: )
 
   restTemplate:
-      factory:
-        readTimeout: 5000
-        connectTimeout: 3000
-      httpClient:
-        maxConnTotal: 100
-        maxConnPerRoute: 5
+    factory:
+      readTimeout: 5000
+      connectTimeout: 3000
+    httpClient:
+      maxConnTotal: 100
+      maxConnPerRoute: 5
   ai:
     api:
       url: http://116.89.191.47:8000
@@ -168,6 +168,3 @@ spring:
     mybatisConfig-locations: classpath:mybatis-config.xml
     configuration:
       mapUnderscoreToCamelCase: true
-
-
-      service iptables save

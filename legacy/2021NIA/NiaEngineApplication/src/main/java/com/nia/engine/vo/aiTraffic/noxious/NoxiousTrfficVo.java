@@ -29,5 +29,6 @@ public class NoxiousTrfficVo implements Serializable {
      private long strbytes_col;
      private int strcounts;
      private String dateregdate;
+     private String profile_title;
      private int anomaly;
 }

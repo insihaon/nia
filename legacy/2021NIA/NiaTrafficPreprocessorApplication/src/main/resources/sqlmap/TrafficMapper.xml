@@ -107,7 +107,6 @@
         <if test="strifid != null">
             AND PM.IF_NUM = #{strifid}
         </if>
-
         <if test="strresid != null">
             AND NM.NODE_NUM = #{strresid}
         </if>
@@ -154,7 +153,7 @@
             ,FLTBPSIN_THRESHOLD_LOWER , FLTBPSIN_ANOMALY ,FLTBPSOUT, FLTBPSOUT_PREDICT, FLTBPSOUT_THRESHOLD_UPPER,
             FLTBPSOUT_THRESHOLD_LOWER,FLTBPSOUT_ANOMALY,INSERT_TIME
         )
-        SELECT #{traffic_gb},NODE_NUM, IF_NUM, to_timestamp(#{measured_datetime}/1000), #{fltbpsin}, #{fltbpsin_predict}, #{fltbpsin_threshold_upper},
+        SELECT #{traffic_gb}, IF_NUM, NODE_NUM ,to_timestamp(#{measured_datetime}/1000), #{fltbpsin}, #{fltbpsin_predict}, #{fltbpsin_threshold_upper},
             #{fltbpsin_threshold_lower}, #{fltbpsin_anomaly},#{fltbpsout},#{fltbpsout_predict},#{fltbpsout_threshold_upper},
             #{fltbpsout_threshold_lower},#{fltbpsout_anomaly},now()
         FROM RESOURCE.TB_PORT_MST
@@ -173,4 +172,12 @@
         )
 
     </insert>
+
+    <!-- 시스템 현황 모니터링 -->
+    <update id="updateLinkageYdKey" parameterType="java.util.HashMap">
+        UPDATE NIA.TB_LINKAGE_SEQ
+        SET VALUE_NAME = TO_CHAR(now(), 'YYYY-MM-DD HH24:MI:SS.MS +0900')
+            , YD_DATE = now()
+        WHERE KEY_NAME = #{key}
+    </update>
 </mapper>

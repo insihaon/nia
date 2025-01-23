@@ -13,7 +13,7 @@ import com.nia.ip.sdn.syslog.linkage.common.UtlDateHelper;
 @Data
 @Scope(value = "prototype")
 public class SyslogCollectVo implements Serializable {
-	private int collectSeq;
+	private long collectSeq;
 	private String collectHost;
 	private String source;
 	private String appname;
@@ -26,10 +26,11 @@ public class SyslogCollectVo implements Serializable {
 	private String syslogProcid;
 	private Timestamp collectTimestamp;
 	private String partitionKey;
+	private String alarmLoc;
 
 	public void setSyslogCollectVo(SyslogDataVo syslogDataVo) {
 		this.setCollectSeq(syslogDataVo.getCollectSeq());
-		this.setCollectHost(syslogDataVo.getTags().getHost());
+		this.setCollectHost(syslogDataVo.getTags().getHost().toLowerCase());
 		this.setSource(syslogDataVo.getTags().getSource());
 		this.setAppname(syslogDataVo.getTags().getAppname());
 		this.setHostname(syslogDataVo.getTags().getHostname());
@@ -41,5 +42,6 @@ public class SyslogCollectVo implements Serializable {
 		this.setSyslogMessage(syslogDataVo.getFields().getMessage());
 		this.setSyslogProcid(syslogDataVo.getFields().getProcid());
 		this.setPartitionKey(String.valueOf(syslogDataVo.getCollectSeq()));
+
 	}
 }

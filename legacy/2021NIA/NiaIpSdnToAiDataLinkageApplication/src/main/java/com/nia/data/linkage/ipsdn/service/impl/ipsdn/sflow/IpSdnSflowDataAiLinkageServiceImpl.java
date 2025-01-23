@@ -98,7 +98,8 @@ public class IpSdnSflowDataAiLinkageServiceImpl implements IpSdnSflowLinkageServ
                 sflowDataVoList = ipsdnDataMapper.selectSflowData(Long.parseLong(dataKey));
 
                 if(sflowDataVoList != null && sflowDataVoList.size() > 0) {
-                    LOGGER.info("==========>[IpSdnSflowLinkageService] sendSflowData sflowVoList("+sflowDataVoList.size() +") <==============");
+                    LOGGER.info("==========>[IpSdnSflowLinkageService] sendSflowData sflowVoList size ("+sflowDataVoList.size() +") <==============");
+//                    LOGGER.info("==========>[IpSdnSflowLinkageService] sendSflowData sflowVoList("+sflowDataVoList+") <==============");
 
                     sflowDataListVo = ipSflowDataListVoObjectFactory.getObject();
                     sflowDataListVo.setData(sflowDataVoList);

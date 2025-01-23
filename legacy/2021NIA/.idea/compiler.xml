@@ -7,23 +7,40 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="com.nia.ping.alarm.preprocessor" />
         <module name="NiaIpSdnSflowLinkageApplication" />
+        <module name="com.nia.data.linkage.ip.perf" />
         <module name="com.nia.ip.sdn.sflow.linkage" />
-        <module name="com.nia.ip.sdn.syslog.linkage" />
         <module name="NiaIpSdnToAiDataLinkageApplication" />
-        <module name="com.nia.ip.sdn.linkage" />
+        <module name="com.nia.data.linkage.ip.equip" />
+        <module name="com.nia.ems.linkage" />
         <module name="com.nia.data.linkage.ai" />
         <module name="com.nia.engine" />
         <module name="com.nia.ai.traffic.preprocessor" />
+        <module name="com.nia.ai.per.ap" />
+        <module name="com.nia.ip.sdn.syslog.preprocessor" />
         <module name="com.nia.ip.country.code.linkage" />
+        <module name="NiaSysCheckApplication" />
+        <module name="com.nia.rca.cluster.preprocessor" />
+        <module name="com.nia.ip.sdn.data.linkage.ai" />
+        <module name="com.nia.ai.performance.result" />
+        <module name="com.nia.alarm.preprocessor" />
+        <module name="com.nia.ip.sdn.syslog.linkage" />
+        <module name="com.nia.ip.sdn.linkage" />
+        <module name="com.nia.data.linkage" />
+        <module name="com.nia.ai.performance.send" />
+        <module name="com.nia.data.linkage.ip.alarm" />
+        <module name="com.nia.alarm.ip.preprocessor" />
+        <module name="com.nia.alarm.ip.simulator" />
         <module name="NiaIpSdnLinkageApplication" />
         <module name="NiaIpSdnSyslogPreprocessorApplication" />
-        <module name="com.nia.rca.cluster.preprocessor" />
         <module name="NiaIpSdnSyslogLinkageApplication" />
+        <module name="com.nia.data.linkage.ip.sflow" />
+        <module name="com.nia.alarm.simulator" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="com.nia.alarm.simulator" target="1.8" />
+      <module name="MailingTest" target="1.8" />
       <module name="NiaRcaToAiDataSnapShotServerApplication" target="1.8" />
     </bytecodeTargetLevel>
   </component>
@@ -36,6 +53,7 @@
       <module name="NiaIpSdnToAiDataLinkageApplication" options="-parameters" />
       <module name="NiaPingPreprocessorApplication" options="-parameters" />
       <module name="NiaRcaToAiDataSnapShotServerApplication" options="-parameters" />
+      <module name="NiaSysCheckApplication" options="-parameters" />
       <module name="com.nia.ai.per.ap" options="-parameters" />
       <module name="com.nia.ai.performance.result" options="-parameters" />
       <module name="com.nia.ai.performance.send" options="-parameters" />
@@ -53,9 +71,12 @@
       <module name="com.nia.ems.linkage" options="-parameters" />
       <module name="com.nia.engine" options="-parameters" />
       <module name="com.nia.ip.country.code.linkage" options="-parameters" />
+      <module name="com.nia.ip.sdn.data.linkage.ai" options="-parameters" />
       <module name="com.nia.ip.sdn.linkage" options="-parameters" />
       <module name="com.nia.ip.sdn.sflow.linkage" options="-parameters" />
       <module name="com.nia.ip.sdn.syslog.linkage" options="-parameters" />
+      <module name="com.nia.ip.sdn.syslog.preprocessor" options="-parameters" />
+      <module name="com.nia.ping.alarm.preprocessor" options="-parameters" />
       <module name="com.nia.rca.cluster.preprocessor" options="-parameters" />
       <module name="com.nia.rca.test.simulator" options="-parameters" />
     </option>

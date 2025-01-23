@@ -170,7 +170,7 @@ public class RcaTicketMergeServiceImpl implements RcaTicketMergeService {
                                                                     rcaTicketHandlingStatus.setTicketId(tmpRcaTicket.getTicketId());
                                                                     rcaTicketHandlingStatus.setStatus(RcaCodeInfo.TICKET_STATUS_AUTO_FIN);
                                                                     rcaTicketHandlingService.ticketStatusModify(rcaTicketHandlingStatus);
-                                                                }
+                                                                } //RCA 티켓이면 자동마감
 
                                                                 LOGGER.info(">>>>>>>>>>[RcaTicketMergeServiceImpl] rcaTicketMerge TrunkId : parent = " + rcaTicket.getParentTicketId() + ", child = " + rcaTicket.getTicketId() + " <<<<<<<<<<<<<<<<<");
                                                                 return rcaTicketResult;

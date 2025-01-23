@@ -82,27 +82,17 @@ public class NiaSdnTrafficHdlServiceImpl implements NiaSdnTrafficHdlService {
 
                             }
 
-                            if(sdnTrafficVoList != null && sdnTrafficVoList.size() > 0){
-                                sdnTrafficListVo.setData(sdnTrafficVoList);
-                                engineTrafficeResultVo = engineTrafficeResultVoObjectFactory.getObject();
-                                    engineTrafficeResultVo.setGb(trafficGb);
-                                engineTrafficeResultVo.setTrafficListVo(sdnTrafficListVo);
-                                engineSendPrdAmqp.sendMessageCmd(engineTrafficeResultVo);
-                            }
                         }
                     }
 
-                    hashMap = null;
 
-
-//                    if(sdnTrafficVoList != null && sdnTrafficVoList.size() > 0){
-//                        sdnTrafficListVo.setData(sdnTrafficVoList);
-//                        engineTrafficeResultVo = engineTrafficeResultVoObjectFactory.getObject();
-//                        engineTrafficeResultVo.setGb("traffic");
-//                        engineTrafficeResultVo.setTrafficListVo(sdnTrafficListVo);
-//
-//                        engineSendPrdAmqp.sendMessageCmd(engineTrafficeResultVo);
-//                    }
+                    if(sdnTrafficVoList != null && sdnTrafficVoList.size() > 0){
+                        sdnTrafficListVo.setData(sdnTrafficVoList);
+                        engineTrafficeResultVo = engineTrafficeResultVoObjectFactory.getObject();
+                        engineTrafficeResultVo.setGb(trafficGb);
+                        engineTrafficeResultVo.setTrafficListVo(sdnTrafficListVo);
+                        engineSendPrdAmqp.sendMessageCmd(engineTrafficeResultVo);
+                    }
                 }
             }
         } catch (Exception e) {

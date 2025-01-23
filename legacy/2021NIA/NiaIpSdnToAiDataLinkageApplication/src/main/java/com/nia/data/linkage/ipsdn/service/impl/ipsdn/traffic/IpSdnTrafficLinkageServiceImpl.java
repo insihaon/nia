@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nia.data.linkage.ipsdn.common.SFTPSession;
 import com.nia.data.linkage.ipsdn.mapper.common.CommonMapper;
 import com.nia.data.linkage.ipsdn.mapper.ipsdn.IpsdnDataMapper;
-import com.nia.data.linkage.ipsdn.service.ipsdn.factor.IpSdnFactorLinkageService;
 import com.nia.data.linkage.ipsdn.service.ipsdn.traffic.IpSdnTrafficLinkageService;
 import com.nia.data.linkage.ipsdn.vo.ipsdn.traffic.LinkTrafficListVo;
 import com.nia.data.linkage.ipsdn.vo.ipsdn.traffic.LinkTrafficVo;
@@ -18,12 +17,15 @@ import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.NoSuchElementException;
 
 @Service("IpSdnTrafficLinkageService")
 public class IpSdnTrafficLinkageServiceImpl implements IpSdnTrafficLinkageService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(IpSdnFactorLinkageService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(IpSdnTrafficLinkageService.class);
 
     @Autowired
     private CommonMapper commonMapper;
@@ -61,13 +63,13 @@ public class IpSdnTrafficLinkageServiceImpl implements IpSdnTrafficLinkageServic
     @Value("${spring.profiles}")
     private String profiles;
 
-    public void sendTrafficData() {
+    public void sendTrafficData () {
         LOGGER.info("==========>[IpSdnTrafficLinkageService] sendTrafficLinkData <==============");
         SFTPSession sftpSession;
 
         String dataKey = null;
         String jsonData;
-        String ftpUpdatePath = uploadPath+"linktraffic/";
+        String ftpUpdatePath = uploadPath + "linktraffic/";
         ArrayList<LinkTrafficVo> linkTrafficVoList;
         long fileSize;
 
@@ -82,18 +84,27 @@ public class IpSdnTrafficLinkageServiceImpl implements IpSdnTrafficLinkageServic
 
 
         try {
-            Thread.sleep(15*1000);
+            Thread.sleep(15 * 1000);
             //15초
 
             dataKey = commonMapper.selectLinkageYdKey("aiIpSdnTrafficeKey");
 
-            LOGGER.info("==========>[IpSdnTrafficLinkageService] sendTrafficData dataKey : "+dataKey+" <==============");
+            LOGGER.info("==========>[IpSdnTrafficLinkageService] sendTrafficData dataKey : " + dataKey + " " +
+                    "<==============");
 
-            if(StringUtils.isNotEmpty(dataKey)){
-                linkTrafficVoList = ipsdnDataMapper.selectTrafficList(Integer.parseInt(dataKey));
+            if (StringUtils.isNotEmpty(dataKey)) {
+                //                linkTrafficVoList = ipsdnDataMapper.selectTrafficList(Integer.parseInt(dataKey));
+                linkTrafficVoList = ipsdnDataMapper.selectTrafficUserOrganList(Integer.parseInt(dataKey));
 
-                if(linkTrafficVoList != null && linkTrafficVoList.size() > 0) {
-                    LOGGER.info("==========>[IpSdnTrafficLinkageService] sendTrafficData linkTrafficVoList("+linkTrafficVoList.size() +") <==============");
+                if (linkTrafficVoList != null && linkTrafficVoList.size() > 0) {
+                    for (LinkTrafficVo list : linkTrafficVoList) {
+                        if (list.getMeasuredDatetime() == null) {
+                            Timestamp timeItem =
+                                    linkTrafficVoList.get(linkTrafficVoList.size() - 1).getMeasuredDatetime();
+                            list.setMeasuredDatetime(timeItem);
+                        }
+                    }
+                    LOGGER.info("==========>[IpSdnTrafficLinkageService] sendTrafficData linkTrafficVoList(" + linkTrafficVoList.size() + ") <==============");
 
                     linkTrafficListVo = linkTrafficListVoObjectFactory.getObject();
                     linkTrafficListVo.setData(linkTrafficVoList);
@@ -101,63 +112,73 @@ public class IpSdnTrafficLinkageServiceImpl implements IpSdnTrafficLinkageServic
                     mapper = new ObjectMapper();
                     jsonData = mapper.writeValueAsString(linkTrafficListVo);
 
-                    putFile = createJsonFile("linktraffic", jsonData, linkTrafficVoList.get(linkTrafficVoList.size()-1).getMeasuredDatetime().getTime()+"", ftpUpdatePath);
+                    LOGGER.info("ftpUpdatePath :" + ftpUpdatePath);
+                    putFile = createJsonFile("linktraffic", jsonData,
+                            linkTrafficVoList.get(linkTrafficVoList.size() - 1).getMeasuredDatetime().getTime() + "",
+                            ftpUpdatePath);
 
                     sftpSession = sftpSessionObjectFactory.getObject();
 
-                        try {
-                            sftpSession.init(host1, port, user, pw);
+                    try {
+                        sftpSession.init(host1, port, user, pw);
 
-                            if (putFile != null) {
-                                if(!folder.exists()){
-                                    folder.mkdirs();
-                                }
-
-                                sftpSession.upload(ftpUpdatePath, putFile);
-                                LOGGER.info("=====> [IpSdnTrafficLinkageService] sendTrafficData upload(" + host1.split("\\.")[3] + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                        if (putFile != null) {
+                            if (!folder.exists()) {
+                                folder.mkdirs();
                             }
 
-                            sftpSession.disconnection();
-                        } catch (Exception e1) {
-                            LOGGER.error("=====> [IpSdnTrafficLinkageService] sendTrafficData upload(" + host1.split("\\.")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
+                            sftpSession.upload(ftpUpdatePath, putFile);
+                            LOGGER.info("=====> [IpSdnTrafficLinkageService] sendTrafficData upload(" + host1.split(
+                                    "\\.")[3] + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
                         }
 
-                        try {
-                            sftpSession.init(host2, port, user, pw);
+                        sftpSession.disconnection();
+                    } catch (Exception e1) {
+                        LOGGER.error("=====> [IpSdnTrafficLinkageService] sendTrafficData upload(" + host1.split("\\" + ".")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
+                    }
 
-                            if (putFile != null) {
-                                if(!folder.exists()){
-                                    folder.mkdirs();
-                                }
+                    try {
+                        sftpSession.init(host2, port, user, pw);
 
-                                sftpSession.upload(ftpUpdatePath, putFile);
-                                LOGGER.info("=====> [IpSdnTrafficLinkageService] sendTrafficData upload(" + host2.split("\\.")[3] + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+                        if (putFile != null) {
+                            if (!folder.exists()) {
+                                folder.mkdirs();
                             }
 
-                            sftpSession.disconnection();
-                        } catch (Exception e1) {
-                            LOGGER.error("=====> [IpSdnTrafficLinkageService] sendTrafficData upload(" + host2.split("\\.")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
+                            sftpSession.upload(ftpUpdatePath, putFile);
+                            LOGGER.info("=====> [IpSdnTrafficLinkageService] sendTrafficData upload(" + host2.split(
+                                    "\\.")[3] + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
                         }
 
+                        sftpSession.disconnection();
+                    } catch (Exception e1) {
+                        LOGGER.error("=====> [IpSdnTrafficLinkageService] sendTrafficData upload(" + host2.split("\\" + ".")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
+                    }
 
-//                    Comparator<LinkTrafficVo> comparatorById  = Comparator.comparingInt(LinkTrafficVo::getId);
-//                    maxLinkTrafficVo = linkTrafficVoList.stream()
-//                            .max(comparatorById)
-//                            .orElseThrow(NoSuchElementException::new);
 
-                    strHashMap = new HashMap<>();
-                    strHashMap.put("key", "aiIpSdnTrafficeKey");
-                    strHashMap.put("value", linkTrafficVoList.get(linkTrafficVoList.size()-1).getId()+"");
-                    commonMapper.updateLinkageYdKey(strHashMap);
+                    Comparator<LinkTrafficVo> comparatorById = Comparator.comparingInt(LinkTrafficVo::getId);
+                    maxLinkTrafficVo =
+                            linkTrafficVoList.stream().max(comparatorById).orElseThrow(NoSuchElementException::new);
 
-                    if(putFile.exists()){
+
+                    if (maxLinkTrafficVo.getId() != 0) {
+                        strHashMap = new HashMap<>();
+                        strHashMap.put("key", "aiIpSdnTrafficeKey");
+                        //                    strHashMap.put("value", linkTrafficVoList.get(linkTrafficVoList.size()
+                        //                    -1).getId()+"");
+                        strHashMap.put("value", maxLinkTrafficVo.getId() + "");
+                        commonMapper.updateLinkageYdKey(strHashMap);
+                    }
+
+
+                    if (putFile.exists()) {
                         fileSize = (putFile.length()) / 1024;
 
                         strHashMap = new HashMap<>();
                         strHashMap.put("key", "aiIpSdnTrafficeKey");
                         strHashMap.put("fileName", putFile.getName());
-                        strHashMap.put("fileSize", fileSize+"");
-                        strHashMap.put("rowCnt", linkTrafficVoList.size()+"");
+                        strHashMap.put("fileSize", fileSize + "");
+                        strHashMap.put("rowCnt", linkTrafficVoList.size() + "");
 
                         commonMapper.insertLinkageHist(strHashMap);
 
@@ -165,43 +186,44 @@ public class IpSdnTrafficLinkageServiceImpl implements IpSdnTrafficLinkageServic
                     }
                 }
             }
-        }catch (Exception e){
-            LOGGER.error("=====> [IpSdnTrafficLinkageService] sendTrafficData error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
+        } catch (Exception e) {
+            LOGGER.error("=====> [IpSdnTrafficLinkageService] sendTrafficData error() " + ExceptionUtils.getStackTrace(e) + "<=====");
         }
     }
 
     @Override
-    public File createJsonFile(String eventType, String jsonData, String perfKey, String ftpUpdatePath) {
+    public File createJsonFile (String eventType, String jsonData, String perfKey, String ftpUpdatePath) {
         LOGGER.info(">>>>>>>>>>[IpSdnTrafficLinkageService] createJsonFile(" + eventType + ") <<<<<<<<<<<<<<<<<");
         File putFile = null;
-        File folder = new File(localUploadPath+eventType);
+        File folder = new File(localUploadPath + eventType);
 
         BufferedWriter output;
         PrintWriter pw;
 
-        try{
-            if(!folder.exists()){
+        try {
+            if (!folder.exists()) {
                 folder.mkdirs();
             }
 
-            putFile = new File(folder.getPath()+"/"+eventType + "_" + perfKey+".json");
+            putFile = new File(folder.getPath() + "/" + eventType + "_" + perfKey + ".json");
 
-            if(!putFile.isFile()){
+            if (!putFile.isFile()) {
                 putFile.createNewFile();
             }
 
-            output  = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(putFile), StandardCharsets.UTF_8));
-            pw = new PrintWriter(output,true);
+            output = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(putFile), StandardCharsets.UTF_8));
+            pw = new PrintWriter(output, true);
             pw.write(jsonData);
             pw.flush();
 
-            LOGGER.info(">>>>>>>>>>[IpSdnTrafficLinkageService] createJsonFile(" + (putFile != null ? putFile.getPath() : null) + ") <<<<<<<<<<<<<<<<<");
+            LOGGER.info(">>>>>>>>>>[IpSdnTrafficLinkageService] createJsonFile(" + (putFile != null ?
+                    putFile.getPath() : null) + ") <<<<<<<<<<<<<<<<<");
 
             if (pw != null) {
                 pw.close();
             }
-        }catch (Exception e){
-            LOGGER.error("=====> [IpSdnTrafficLinkageService] createJsonFile error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
+        } catch (Exception e) {
+            LOGGER.error("=====> [IpSdnTrafficLinkageService] createJsonFile error() " + ExceptionUtils.getStackTrace(e) + "<=====");
         }
         return putFile;
     }

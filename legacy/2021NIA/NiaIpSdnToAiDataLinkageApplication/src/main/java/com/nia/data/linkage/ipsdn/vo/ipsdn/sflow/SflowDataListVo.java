@@ -13,4 +13,5 @@ import java.util.ArrayList;
 public class SflowDataListVo implements Serializable {
     private ArrayList<SflowDataVo> data;
 
+
 }

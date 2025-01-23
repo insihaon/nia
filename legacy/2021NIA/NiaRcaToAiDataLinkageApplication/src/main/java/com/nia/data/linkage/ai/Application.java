@@ -4,6 +4,7 @@ import com.nia.data.linkage.ai.service.ip.alarm.IpAlarmToAiLinkageService;
 import com.nia.data.linkage.ai.service.ip.equip.IpEquipTableDataAiLinkageService;
 import com.nia.data.linkage.ai.service.ip.perf.IpPerfToAiLinkageService;
 import com.nia.data.linkage.ai.service.ip.sflow.IpSflowToAiLinkageService;
+import com.nia.data.linkage.ai.service.ip.traffic.IpAttTrafficToAiService;
 import com.nia.data.linkage.ai.service.trans.equip.TransEquipTableDataAiLinkageService;
 import com.nia.data.linkage.ai.service.trans.perf.RoadmPmDataAiLinkageService;
 import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
@@ -43,6 +44,10 @@ public class Application implements CommandLineRunner {
     @Qualifier("IpAlarmToAiLinkageService")
     private IpAlarmToAiLinkageService ipAlarmToAiLinkageService;
 
+    @Autowired
+    @Qualifier("IpAttTrafficToAiService")
+    private IpAttTrafficToAiService ipAttTrafficToAiService;
+
 
     @Autowired
     @Qualifier("EntityService")
@@ -56,6 +61,7 @@ public class Application implements CommandLineRunner {
     public void run(String... arg0) throws Exception {
 
 
+//        ipAttTrafficToAiService.sendAttTrafficData();
 //        ipPerfToAiLinkageService.sendPerfLogData();
 //        ipAlarmToAiLinkageService.sendAlarmData();
 //        transEquipTableDataAiLinkageService.sendEquipMstData();

@@ -14,6 +14,8 @@ import java.io.Serializable;
 @Scope(value = "prototype")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class NoxiousTrafficVo implements Serializable {
+     private String ticket_id;
+     private String ticket_type;
      private String strresip;
      private String strresname;
      private String strs_ip;

@@ -228,12 +228,16 @@ public class RcaCodeInfo {
 
 	//RCA Ticket Type
 	public static final String TICKET_TYPE_PERFORMACE = "PF"; // Cable Inspecter Ticket
-	public static final String TICKET_TYPE_RCATICKET = "RT"; // RCA Ticket
+	public static final String TICKET_TYPE_RCATICKET = "RT"; // RCA Ticket ( 스위치 장애 )
 	public static final String TICKET_TYPE_ANOMALOUS_TRAFFIC_TICKET = "ATT"; // RCA Ticket
-
+	//이상 트래픽
 	public static final String TICKET_TYPE_ANOMALOUS2_TRAFFIC_TICKET = "ATT2"; // RCA Ticket
+	//이상 트래픽
 	public static final String TICKET_TYPE_NOXIOUS_TRAFFIC_TICKET = "NTT"; // RCA Ticket
-	public static final String TICKET_TYPE_NODE_FACTOR_TICKET = "NFTT";
+	//유해 트래픽
+	public static final String TICKET_TYPE_NODE_FACTOR_TICKET = "NFTT"; //장비 과부하
+	public static final String TICKET_TYPE_SYSLOG_TICKET = "SYSTT";
+	//SYSLOG 티켓
 
 
 
@@ -263,6 +267,9 @@ public class RcaCodeInfo {
 	// UI MESSAGE
 	public static final String UI_REQUEST_DATA_SNAPSHOT = "REQUEST_DATA_SNAPSHOT";
 
+	public static final String UI_REQUEST_DATA_SYSLOG = "REQUEST_CHANGE_SYSLOG_STATUS";
+	public static final String UI_REQUEST_DATA_TICKET = "REQUEST_CHANGE_TICKET_STATUS";
+
 	public static final String DATA_SHARE_NAME_IS_START = "isStart";
 
 	//알람 등급
@@ -271,4 +278,8 @@ public class RcaCodeInfo {
 	public static final String ALARM_LEVEL_MINOR = "4";
 	public static final String ALARM_LEVEL_MAJOR = "5";
 	public static final String ALARM_LEVEL_CRITICAL = "7";
+
+
+	//SYSLOG
+	public static final String SYSLOG_STATUS_FIN  = "FIN";  //마감
 }

@@ -91,7 +91,6 @@ public class IpSdnResourceLinkageServiceImpl implements IpSdnResourceLinkageServ
                 jsonData = mapper.writeValueAsString(nodeListVo);
 
                 putFile = createJsonFile("node", jsonData, ftpUpdatePath);
-
                 sftpSession = sftpSessionObjectFactory.getObject();
 
                     try {

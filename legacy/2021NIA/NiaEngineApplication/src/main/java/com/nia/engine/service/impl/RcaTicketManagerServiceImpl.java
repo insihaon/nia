@@ -355,9 +355,10 @@ public class RcaTicketManagerServiceImpl implements RcaTicketManagerService {
                             rcaTicketStatus.setTicketType("RT");
                             rcaTicketStatus.setTicketGenerationTime(rcaTicket.getTicketGenerationTime());
 
-                            ticketService.updateRCATicketHandlingStatus(rcaTicketStatus);
+//                            ticketService.updateRCATicketHandlingStatus(rcaTicketStatus);
                             ticketService.insertRCATicketHandlingStatus(rcaTicketStatus);
                             ticketService.insertRCATicketHandlingStatusHist(rcaTicketStatus);
+                            //handling 테이블에 저장.
 
                             if (!rcaTicketResult.isResult()) {
                                 updateTime = String.valueOf(rcaTicket.getTicketGenerationTime());

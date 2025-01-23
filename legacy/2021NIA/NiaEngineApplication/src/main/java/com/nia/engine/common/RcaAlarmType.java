@@ -2,7 +2,7 @@ package com.nia.engine.common;
 
 public class RcaAlarmType {
 	
-	//PTN 알랑메세지
+	//PTN 알람메세지
 	public static final String PTN_LOS = "LOS";
 	public static final String PTN_RDI = "RDI";
 	public static final String PTN_RFI = "RFI";

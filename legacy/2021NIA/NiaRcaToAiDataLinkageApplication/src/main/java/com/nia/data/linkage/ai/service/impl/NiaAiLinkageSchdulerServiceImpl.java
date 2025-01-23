@@ -4,6 +4,11 @@ import com.nia.data.linkage.ai.service.ip.alarm.IpAlarmToAiLinkageService;
 import com.nia.data.linkage.ai.service.ip.equip.IpEquipTableDataAiLinkageService;
 import com.nia.data.linkage.ai.service.ip.perf.IpPerfToAiLinkageService;
 import com.nia.data.linkage.ai.service.ip.sflow.IpSflowToAiLinkageService;
+import com.nia.data.linkage.ai.service.ip.sop.IpSopToAiService;
+import com.nia.data.linkage.ai.service.ip.traffic.IpAttTrafficToAiService;
+import com.nia.data.linkage.ai.service.ip.traffic.IpDataHistToAiService;
+import com.nia.data.linkage.ai.service.ip.traffic.IpDataToAiService;
+import com.nia.data.linkage.ai.service.ip.traffic.IpNttSflowToAiService;
 import com.nia.data.linkage.ai.service.trans.equip.TransEquipTableDataAiLinkageService;
 import com.nia.data.linkage.ai.service.trans.perf.RoadmPmDataAiLinkageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +43,33 @@ public class NiaAiLinkageSchdulerServiceImpl {
     @Qualifier("TransEquipTableDataAiLinkageService")
     private TransEquipTableDataAiLinkageService transEquipTableDataAiLinkageService;
 
+    @Autowired
+    @Qualifier("IpNttSflowToAiService")
+    private IpNttSflowToAiService ipNttSflowToAiService;
+
+    @Autowired
+    @Qualifier("IpAttTrafficToAiService")
+    private IpAttTrafficToAiService ipAttTrafficToAiService;
+
+    @Autowired
+    @Qualifier("IpSopToAiService")
+    private IpSopToAiService ipSopToAiService;
+
+
+    @Scheduled(cron = "0 0 1 * * *") //초(0-59) 분(0-59) 시간(0-23) 일(1-31) 월(1-12) 요일(0-7)
+    public void conJobIpSopData() {
+        ipSopToAiService.sendSopData();
+    }
+
+    @Scheduled(cron = "0 0 1 * * *") //초(0-59) 분(0-59) 시간(0-23) 일(1-31) 월(1-12) 요일(0-7)
+    public void conJobIpNttSflowData() {
+        ipNttSflowToAiService.sendNttSflowData();
+    }
+
+    @Scheduled(cron = "0 0 1 * * *") //초(0-59) 분(0-59) 시간(0-23) 일(1-31) 월(1-12) 요일(0-7)
+    public void conJobIpAttTrafficData() {
+        ipAttTrafficToAiService.sendAttTrafficData();
+    }
 
     @Scheduled(cron = "0 0/5 * * * *") //초(0-59) 분(0-59) 시간(0-23) 일(1-31) 월(1-12) 요일(0-7)
     public void conJobIpAlarmData() {
@@ -49,7 +81,7 @@ public class NiaAiLinkageSchdulerServiceImpl {
         ipPerfToAiLinkageService.sendPerfLogData();
     }
 
-    @Scheduled(cron = "0 0/5 * * * *") //초(0-59) 분(0-59) 시간(0-23) 일(1-31) 월(1-12) 요일(0-7)
+    @Scheduled(cron = "0 0/1 * * * *") //초(0-59) 분(0-59) 시간(0-23) 일(1-31) 월(1-12) 요일(0-7)
     public void conJobIpSflowLogfData() {
         ipSflowToAiLinkageService.sendSflowLogData();
     }

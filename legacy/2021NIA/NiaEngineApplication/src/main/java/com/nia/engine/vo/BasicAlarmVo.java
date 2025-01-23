@@ -42,7 +42,6 @@ public class BasicAlarmVo implements Serializable {
 	private String unit;
 	@JsonProperty("alarmlevel")
 	private String alarmlevel;
-
 	@JsonProperty("topologyObject")
 	private TopologyObject topology;
 	@JsonProperty("ptpname")

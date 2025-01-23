@@ -16,7 +16,8 @@
         INSERT INTO NIA.TB_PERFORMACE_MST(PERFORMACEID, SYSNAME, PORT, UNIT, TMPER, RXCUR, RXMIN, RXMAX, RXAVE, TXCUR, TXMIN, TXMAX, TXAVE, OCRTIME)
         VALUES
         <foreach collection="performaceVoList" item="item" separator=",">
-           (#{item.performaceid}, #{item.sysname}, #{item.port}, #{item.unit}, #{item.tmper}, #{item.rxCur}, #{item.rxMin}, #{item.rxMax}, #{item.rxAve}, #{item.txCur}, #{item.txMin}, #{item.txMax}, #{item.txAve}, #{item.ocrtime})
+           (#{item.performaceid}, #{item.sysname}, #{item.port}, #{item.unit}, #{item.tmper}, #{item.rxCur}, #{item.rxMin}, #{item.rxMax},
+        #{item.rxAve}, #{item.txCur}, #{item.txMin}, #{item.txMax}, #{item.txAve}, #{item.ocrtime})
         </foreach>
       </if>
     </insert>

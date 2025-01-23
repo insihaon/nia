@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -80,7 +81,16 @@ public class AlarmServiceImpl implements AlarmService {
                         .add(0, new StringHttpMessageConverter(Charset.forName("UTF-8")));
 
             try {
-                responseEntity = restTemplate.exchange(alarmUrl+"_search?q=(date["+fromDate+"+TO+"+toDate+"]) AND almType:\"alm\"&size=1000&pretty", HttpMethod.GET, null, String.class);
+                // 쿼리에서 특수 문자를 인코딩
+                String query = URLEncoder.encode("date:[" + fromDate + " TO " + toDate + "] AND almType:\"alm\"", "UTF-8");
+
+                // 완성된 URL
+                String fullUrl = alarmUrl + "_search?q=" + query + "&size=1000&pretty";
+
+                // 요청 전송
+                responseEntity = restTemplate.exchange(fullUrl, HttpMethod.GET, null, String.class);
+
+//                responseEntity = restTemplate.exchange(alarmUrl+"_search?q=(date["+fromDate+"+TO+"+toDate+"]) AND almType:\"alm\"&size=1000&pretty", HttpMethod.GET, null, String.class);
 
                 LOGGER.info("==========>[AlarmService] getAlarmData result: "+ responseEntity.getBody() +"<==============");
             }catch (ResourceAccessException rae){

@@ -3,6 +3,7 @@ package com.nia.data.linkage.ai.service.impl.ip.equip;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nia.data.linkage.ai.common.SFTPSession;
 import com.nia.data.linkage.ai.common.UtlDateHelper;
+import com.nia.data.linkage.ai.mapper.common.CommonMapper;
 import com.nia.data.linkage.ai.mapper.ip.IpDataMapper;
 import com.nia.data.linkage.ai.service.ip.equip.IpEquipTableDataAiLinkageService;
 import com.nia.data.linkage.ai.vo.ip.equip.*;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 @Service("IpEquipTableDataAiLinkageService")
 public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiLinkageService {
@@ -41,6 +43,9 @@ public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiL
 
     @Autowired
     private org.springframework.beans.factory.ObjectFactory<SFTPSession> sftpSessionObjectFactory;
+
+    @Autowired
+    private CommonMapper commonMapper;
 
     @Value("${spring.ftp.file-path}")
     private String uploadPath;
@@ -337,6 +342,7 @@ public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiL
         SFTPSession sftpSession;
         String jsonData;
         String ftpUpdatePath = uploadPath+"xe_cvnms_resource/";
+        HashMap<String, String> strHashMap;
 
         ArrayList<IpCvnmsResourceVo> ipCvnmsResourceVoList;
 
@@ -413,6 +419,11 @@ public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiL
                     }
                 }
 
+                strHashMap = new HashMap<>();
+                strHashMap.put("key", "aiIpResourceKey");
+                strHashMap.put("value", ipCvnmsResourceVoList.get(ipCvnmsResourceVoList.size()-2).getDatelastupdatedate());
+                commonMapper.updateLinkageYdKey(strHashMap);
+
                 if(putFile.exists()){
                     putFile.delete();
                 }
@@ -429,6 +440,7 @@ public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiL
         SFTPSession sftpSession;
         String jsonData;
         String ftpUpdatePath = uploadPath+"xe_cvnms_resource_if/";
+        HashMap<String, String> strHashMap;
 
         ArrayList<IpCvnmsResourceIfVo> ipCvnmsResourceIfList;
 
@@ -488,6 +500,8 @@ public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiL
                     } catch (Exception e1) {
                         LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendCvnmsResourceIfData upload(" + host2.split("\\.")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
                     }
+
+
                 }
 
                 if("codej".equals(profiles)){
@@ -504,6 +518,11 @@ public class IpEquipTableDataAiLinkageServiceImpl implements IpEquipTableDataAiL
                         LOGGER.error("=====> [IpEquipTableDataAiLinkageService] sendCvnmsResourceIfData upload(10.81.192.18) error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
                     }
                 }
+
+                strHashMap = new HashMap<>();
+                strHashMap.put("key", "aiIpResourceIfKey");
+                strHashMap.put("value", ipCvnmsResourceIfList.get(ipCvnmsResourceIfList.size()-2).getDatelastupdatedate());
+                commonMapper.updateLinkageYdKey(strHashMap);
 
                 if(putFile.exists()){
                     putFile.delete();

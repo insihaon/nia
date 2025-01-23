@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-
 /**
 
  * @author
@@ -59,6 +58,8 @@ public class NiaNoxiousTrafficHdlServiceImpl implements NiaNoxiousTrafficHdlServ
                             hashMap.put("strdIp", noxiousTrafficVo.getStrd_ip());
                             hashMap.put("strdPort", String.valueOf(noxiousTrafficVo.getStrd_port()));
                             hashMap.put("dateregdate", String.valueOf(noxiousTrafficVo.getDateregdate()));
+
+
 
                             cnt = trafficMapper.selectNoxiousTrafficCheck(hashMap);
 

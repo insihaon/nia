@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 public class NiaAiLinkageSchdulerServiceImpl {
 
 
-
     @Autowired
     @Qualifier("IpSdnResourceLinkageService")
     private IpSdnResourceLinkageService ipSdnResourceLinkageService;
@@ -31,7 +30,6 @@ public class NiaAiLinkageSchdulerServiceImpl {
     @Autowired
     @Qualifier("IpSdnSyslogDataAiLinkageService")
     private IpSdnSyslogLinkageService ipSdnSyslogLinkageService;
-
 
     @Autowired
     @Qualifier("IpSdnSflowDataAiLinkageService")
@@ -68,7 +66,6 @@ public class NiaAiLinkageSchdulerServiceImpl {
         ipSdnTrafficLinkageService.sendTrafficData();
     }
 
-
 //   Syslog, Sflow
     @Scheduled(cron = "0 0/1 * * * *") //초(0-59) 분(0-59) 시간(0-23) 일(1-31) 월(1-12) 요일(0-7)
     public void conJobIpsdnSyslogData() {
@@ -81,7 +78,6 @@ public class NiaAiLinkageSchdulerServiceImpl {
     }
 
 //  Syslog  Alarm
-
     @Scheduled(cron = "0 0/1 * * * *") //초(0-59) 분(0-59) 시간(0-23) 일(1-31) 월(1-12) 요일(0-7)
     public void conJobIpsdnSyslogAlarm(){
         ipSdnAlarmToAiLinkageService.sendAlarmData();

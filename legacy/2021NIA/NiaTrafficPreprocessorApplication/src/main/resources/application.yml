@@ -44,6 +44,16 @@ spring:
     aiIpSdnNodeFactorResultQueue: nia.AiIpSdnNodeFactorResultIndexDirectly
     aiIpSdnNodeFactorResultRoutingKey: AiIpSdnNodeFactorResultIndexDirectly
 
+##    이상 유해 4차 큐 받을 곳 (zero1->codej)
+#
+#    aiAnoToEngineExchange: nia.exchangeAiToEngineAnoDirectly
+#    aiAnoToEngineQueue: nia.AiAnoToEngineIndexDirectly
+#    aiAnoToEngineRoutingKey: AiAnoToEngineIndexDirectly
+#
+#    aiNoxToEngineExchange: nia.ExchangeEngineToAiNoxDirectly
+#    aiNoxToEngineQueue: nia.aiNoxToEngineIndexDirectly
+#    aiNoxToEngineRoutingKey: aiNoxToEngineIndexDirectly
+
   task:
     poolSize: 100 
     keepAlive: 600000

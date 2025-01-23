@@ -325,13 +325,13 @@ public class FaultEventServiceImpl implements FaultEventService {
                         break;
                     case "fault" :
                         try {
-                            faultEventMapper.insertFaultEventAlarmCurMst(parameterMap);
+                            faultEventMapper.insertFaultEventAlarmCurMst(parameterMap); //
                         }catch (Exception e){
                             LOGGER.error("=====> [FaultEventService] insertFaultEvent(insertFaultEventAlarmCurMst) error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
                         }
 
                         try {
-                            faultEventMapper.insertFaultEventXeCvnmsError(parameterMap);
+                            faultEventMapper.insertFaultEventXeCvnmsError(parameterMap); //
                         }catch (Exception e){
                             LOGGER.error("=====> [FaultEventService] insertFaultEvent(insertFaultEventXeCvnmsError) error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
                         }
@@ -341,7 +341,7 @@ public class FaultEventServiceImpl implements FaultEventService {
                     case "ticket-att" :
                     case "ticket-att2" :
                         try {
-                            faultEventMapper.insertFaultEventXeCvnmsPerfIf(parameterMap);
+                            faultEventMapper.insertFaultEventXeCvnmsPerfIf(parameterMap); //
                         }catch (Exception e){
                             LOGGER.error("=====> [FaultEventService] insertFaultEvent(insertFaultEventXeCvnmsPerfIf) error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
                         }
@@ -362,7 +362,7 @@ public class FaultEventServiceImpl implements FaultEventService {
 //                        }
 
                         try {
-                            faultEventMapper.insertFaultEventXeSflowLog(parameterMap);
+                            faultEventMapper.insertFaultEventXeSflowLog(parameterMap); //
                         }catch (Exception e){
                             LOGGER.error("=====> [FaultEventService] insertFaultEvent(insertFaultEventXeSflowLog) error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
                         }
@@ -370,7 +370,7 @@ public class FaultEventServiceImpl implements FaultEventService {
                         break;
                     case "perf" :
                         try {
-                            faultEventMapper.insertFaultEventAiPerformanceMst(parameterMap);
+                            faultEventMapper.insertFaultEventAiPerformanceMst(parameterMap); // RCA.TB_FAULT_EVENT_PERFORMACE_MST
                         }catch (Exception e){
                             LOGGER.error("=====> [FaultEventService] insertFaultEvent(insertFaultEventAiPerformanceMst) error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
                         }
@@ -378,25 +378,25 @@ public class FaultEventServiceImpl implements FaultEventService {
                         break;
                     case "resources" :
                         try {
-                            faultEventMapper.insertFaultEventXeCvnmsResource(parameterMap);
+                            faultEventMapper.insertFaultEventXeCvnmsResource(parameterMap); // RCA.TB_FAULT_EVENT_XE_CVNMS_RESOURCE
                         }catch (Exception e){
                             LOGGER.error("=====> [FaultEventService] insertFaultEvent(insertFaultEventXeCvnmsResource) error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
                         }
 
                         try {
-                            faultEventMapper.insertFaultEventCvnmsResourceIf(parameterMap);
+                            faultEventMapper.insertFaultEventCvnmsResourceIf(parameterMap); // RCA.TB_FAULT_EVENT_XE_CVNMS_RESOURCE_IF
                         }catch (Exception e){
                             LOGGER.error("=====> [FaultEventService] insertFaultEvent(insertFaultEventCvnmsResourceIf) error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
                         }
 
                         try {
-                            faultEventMapper.insertFaultEventNniTopology(parameterMap);
+                            faultEventMapper.insertFaultEventNniTopology(parameterMap); // RCA.TB_FAULT_EVENT_NNI_TOPOLOGY
                         }catch (Exception e){
                             LOGGER.error("=====> [FaultEventService] insertFaultEvent(insertFaultEventNniTopology) error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
                         }
 
                         try {
-                            faultEventMapper.insertFaultEventUniTopology(parameterMap);
+                            faultEventMapper.insertFaultEventUniTopology(parameterMap); // RCA.TB_FAULT_EVENT_UNI_TOPOLOGY
                         }catch (Exception e){
                             LOGGER.error("=====> [FaultEventService] insertFaultEvent(insertFaultEventUniTopology) error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
                         }

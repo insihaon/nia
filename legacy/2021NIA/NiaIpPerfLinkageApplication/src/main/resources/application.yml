@@ -95,9 +95,9 @@ spring:
       idleTimeout : 6000
     linkage:
       driver-class-name: org.mariadb.jdbc.Driver
-      url: jdbc:mariadb://203.255.249.194:3306/catchview?characterEncoding=UTF-8&serverTimezone=UTC
-      username: koren
-      password: koren1q
+      url: jdbc:mariadb://116.89.186.178:13310/newcatchview?characterEncoding=UTF-8&serverTimezone=UTC
+      username: codej
+      password: codej!@#
       maximumPoolSize: 10
       idleTimeout: 6000
 
@@ -146,9 +146,9 @@ spring:
       idleTimeout : 6000
     linkage:
       driver-class-name: org.mariadb.jdbc.Driver
-      url: jdbc:mariadb://203.255.249.194:3306/catchview?characterEncoding=UTF-8&serverTimezone=UTC
-      username: koren
-      password: koren1q
+      url: jdbc:mariadb://116.89.186.178:13310/newcatchview?characterEncoding=UTF-8&serverTimezone=UTC
+      username: codej
+      password: codej!@#
       maximumPoolSize: 10
       idleTimeout: 6000
 

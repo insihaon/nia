@@ -1,9 +1,9 @@
 package com.nia.ai.traffic.preprocessor.listener;
 
 import com.nia.ai.traffic.preprocessor.common.UtlCommon;
+import com.nia.ai.traffic.preprocessor.mapper.TrafficMapper;
 import com.nia.ai.traffic.preprocessor.service.NiaSdnTrafficHdlService;
 import com.nia.ai.traffic.preprocessor.vo.sdn.traffic.SdnTrafficJsonVo;
-import com.nia.ai.traffic.preprocessor.vo.sdn.traffic.SdnTrafficListVo;
 import com.rabbitmq.client.Channel;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -14,38 +14,50 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+
 @Service
 public class AiIpSdnTrafficMsgListener implements ChannelAwareMessageListener {
-	private static final Logger LOGGER = LoggerFactory.getLogger(AiIpSdnTrafficMsgListener.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AiIpSdnTrafficMsgListener.class);
 
-	@Autowired
-	private org.springframework.beans.factory.ObjectFactory<SdnTrafficJsonVo> sdnTrafficJsonVoObjectFactory;
+    @Autowired
+    private org.springframework.beans.factory.ObjectFactory<SdnTrafficJsonVo> sdnTrafficJsonVoObjectFactory;
 
-	@Autowired
-	@Qualifier("NiaSdnTrafficHdlService")
-	private NiaSdnTrafficHdlService niaSdnTrafficHdlService;
+    @Autowired
+    @Qualifier("NiaSdnTrafficHdlService")
+    private NiaSdnTrafficHdlService niaSdnTrafficHdlService;
 
-	@Autowired
-	private SdnTrafficJsonVo sdnTrafficJsonVo;
+    @Autowired
+    private SdnTrafficJsonVo sdnTrafficJsonVo;
 
-	@Override
-	public void onMessage(Message message, Channel channel) {
+    @Autowired
+    private TrafficMapper trafficMapper;
 
-		try {
-			Object obj;
-			String msg = new String(message.getBody());
+    @Override
+    public void onMessage (Message message, Channel channel) {
 
-			sdnTrafficJsonVo = sdnTrafficJsonVoObjectFactory.getObject();
+        try {
+            Object obj;
+            HashMap<String, String> strHashMap;
+            String msg = new String(message.getBody());
 
-			obj = UtlCommon.jsonToObject(sdnTrafficJsonVo, msg);
-			sdnTrafficJsonVo = (SdnTrafficJsonVo)obj;
+            sdnTrafficJsonVo = sdnTrafficJsonVoObjectFactory.getObject();
 
-			LOGGER.info(">>>>>>>>>>[AiSdnTrafficeMsgListener] onMessage : " + sdnTrafficJsonVo.getData().getData().size() + " <<<<<<<<<<<<<<<<<");
+            obj = UtlCommon.jsonToObject(sdnTrafficJsonVo, msg);
+            sdnTrafficJsonVo = (SdnTrafficJsonVo) obj;
 
-			niaSdnTrafficHdlService.niaSdnTrafficeHdlProcessor(sdnTrafficJsonVo.getData());
+            LOGGER.info(">>>>>>>>>>[AiSdnTrafficeMsgListener] onMessage : " + sdnTrafficJsonVo.getData().getData().size() + " <<<<<<<<<<<<<<<<<");
+//			LOGGER.info(">>>>>>>>>>[AiSdnTrafficeMsgListener] onMessage : " + sdnTrafficJsonVo.getData().getData() + " <<<<<<<<<<<<<<<<<");
 
-		} catch (Exception e) {
-			LOGGER.error("=====> [AiSdnTrafficeMsgListener] onMessage error "+ ExceptionUtils.getStackTrace(e)+ "<=====");
-		}
-	}
+            niaSdnTrafficHdlService.niaSdnTrafficeHdlProcessor(sdnTrafficJsonVo.getData());
+
+            strHashMap = new HashMap<>();
+            strHashMap.put("key", "aiTrafficAnoKey");
+            trafficMapper.updateLinkageYdKey(strHashMap);
+
+
+        } catch (Exception e) {
+            LOGGER.error("=====> [AiSdnTrafficeMsgListener] onMessage error " + ExceptionUtils.getStackTrace(e) + "<=====");
+        }
+    }
 }

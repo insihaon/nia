@@ -2,8 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.nia.data.linkage.ip.perf.mapper.linkage.LinkagePerfMapper">
 
+
+<!--    catchview       -->
+
     <select id="selectMaxIntTimestamp" resultType="com.nia.data.linkage.ip.perf.vo.perf.PerfVo">
-        SELECT MAX(inttimestamp) AS inttimestamp FROM catchview.xe_cvnms_perf_if
+        SELECT MAX(inttimestamp) AS inttimestamp FROM xe_cvnms_perf_if
     </select>
 
     <select id="selectPerfList" resultType="com.nia.data.linkage.ip.perf.vo.perf.PerfVo" parameterType="int">
@@ -15,7 +18,7 @@
              , flhcinmulticastpkts, flhcoutmulticastpkts, flhcinbroadcastpkts, flhcoutbroadcastpkts, fltbpsinmax
              , fltbpsoutmax, fltppsinmax, fltppsoutmax, flterrorinmax, flterroroutmax
              , fltdiscardinmax, fltdiscardoutmax, fltunknownmax, fltusagemax
-          FROM catchview.xe_cvnms_perf_if
+          FROM xe_cvnms_perf_if
          WHERE inttimestamp > #{inttimestamp}
          ORDER BY inttimestamp
     </select>

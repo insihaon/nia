@@ -2,24 +2,18 @@ package com.nia.engine.service.impl;
 
 import com.nia.engine.amqp.EngineToUiTicketPrdAmqp;
 import com.nia.engine.common.RcaCodeInfo;
-import com.nia.engine.common.UtlDateHelper;
-import com.nia.engine.data.DataShareBean;
 import com.nia.engine.service.TicketService;
 import com.nia.engine.vo.*;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Component
 @Scope(value = "prototype")
@@ -139,6 +133,7 @@ public class TicketClearService {
             LOGGER.error(">>>>>>>>>>[TicketClearService] clearAlarm() error : " + ExceptionUtils.getStackTrace(e) +" <<<<<<<<<<<<<<<<<");
         }
     }
+
 }
 
 

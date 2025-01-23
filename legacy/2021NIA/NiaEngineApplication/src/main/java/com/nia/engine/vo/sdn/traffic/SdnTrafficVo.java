@@ -34,6 +34,9 @@ public class SdnTrafficVo implements Serializable {
     private String fltbpsout_threshold_upper;
     private String fltbpsout_threshold_lower;
     private boolean fltbpsout_anomaly;
+    private String profile_title;
     private Timestamp insert_time;
+    @JsonProperty("nodeId")
+    private String node_id;
 
 }

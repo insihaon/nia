@@ -59,7 +59,11 @@ public class NiaAnomalousTrafficHdlServiceImpl implements NiaAnomalousTrafficHdl
                             hashMap.put("fltbpsinAnomaly", String.valueOf(anomalousTrafficVo.isFltbpsin_anomaly()));
                             hashMap.put("fltbpsoutAnomaly", String.valueOf(anomalousTrafficVo.isFltbpsout_anomaly()));
 
+
+
                             cnt = trafficMapper.selectAnomalousTrafficCheck(hashMap);
+
+
 
                             LOGGER.info("==========>[NiaAnomalousTrafficHdlService] niaAnomalousTrafficeHdlProcessor check cnt : "+cnt+"<==============");
 
