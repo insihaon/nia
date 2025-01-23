@@ -20,4 +20,6 @@ public class SysLogAlarmVo implements Serializable {
 	private String alarmlvl;
     private String etc;
 	private int ruleId;
+	private String alarmloc;
+	private String status;
 }

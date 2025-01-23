@@ -1,11 +1,10 @@
 package com.nia.ai.performance.result.controller;
 
 import com.nia.ai.performance.result.amqp.PerformanceSendPrdAmqp;
-import com.nia.ai.performance.result.common.UtlCommon;
 import com.nia.ai.performance.result.mapper.PerformanceMapper;
-import com.nia.ai.performance.result.vo.ResultVo;
 import com.nia.ai.performance.result.vo.performance.PerformanceListVo;
-import com.nia.ai.performance.result.vo.performance.PerformanceVo;
+import com.nia.ip.country.code.linkage.common.UtlCommon;
+import com.nia.ip.country.code.linkage.vo.web.ResultVo;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
@@ -59,7 +58,7 @@ public class PerformanceDataController {
                 performanceList = (ArrayList<LinkedHashMap<String, String>>)obj;
 
                 resultVo = resultVoObjectFactory.getObject();
-                resultVo.setRes_code(1);
+                resultVo.setResultCode("1");
                 resultMsg = UtlCommon.objectToJson(resultVo);
 
                 if(performanceList != null && performanceList.size() > 0){

@@ -34,6 +34,8 @@ public class RCATicket implements Serializable {
 	private boolean occur;
 	private String direction;
     private String profileTitle;
+	private String zero1Model;
+	private String zero1Entropy;
 	private int childCnt;
 	private boolean cur = false; // 과거 or 현재 티켓 구분 플래그
 

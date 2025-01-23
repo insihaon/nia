@@ -17,7 +17,14 @@ import java.util.regex.Pattern;
  */
 public class UtlCommon {	
 	private static final Logger LOGGER = Logger.getLogger(UtlCommon.class);
-	
+
+
+    public static String objectToJson(Object obj) throws Exception {
+
+        ObjectMapper mapper;
+        mapper = new ObjectMapper();
+        return mapper.writeValueAsString(obj);
+    }
 	public static String getNowTimeToString() {
 		Calendar calendar = Calendar.getInstance();
 		Date date = calendar.getTime();

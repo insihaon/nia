@@ -41,6 +41,7 @@ public class RCATicketAl implements Serializable {
 	private AnomalousTrafficVo rootCauseAnomalousTrafficAlarmInfoZ;
 	private NoxiousTrfficVo rootCauseNoxiousTrfficAlarmInfoA;
 	private NoxiousTrfficVo rootCauseNoxiousTrfficAlarmInfoZ;
+	
 
 	private String rootCausePtpnameA;
 	private String rootCausePtpnameZ;

@@ -39,7 +39,7 @@ public class RoadmEmsTL1Client {
     @Autowired
     private ApplicationContext applicationContext;
 
-    public Boolean login(String emsGb) {
+    public Boolean login (String emsGb) {
         LOGGER.info("=====> [RoadmEmsTL1Client] login <=====");
 
         Boolean isLoginOk = false;
@@ -49,97 +49,102 @@ public class RoadmEmsTL1Client {
         try {
             telnet = applicationContext.getBean(TelnetMmc.class);
 
-            if(telnet != null && telnet.isConnected()){
-                telnet.sendCommand("canc-user:::1:"+id+";\r\n", false);
+            LOGGER.info("=====> [RoadmEmsTL1Client] telnet open before<=====");
+            if (telnet != null && telnet.isConnected()) {
+                LOGGER.info("=====> [RoadmEmsTL1Client] telnet open <=====");
+                telnet.sendCommand("canc-user:::1:" + id + ";\r\n", false);
                 telnet.closeConnection();
                 telnet = null;
-            }else if(telnet != null){
-                telnet = null;
             }
+//            else if (telnet != null) {
+//                telnet = null;
+//            }
 
             telnet = telnetObjectFactory.getObject();
 
-            if("D".equals(emsGb)){
+            if ("D".equals(emsGb)) {
                 telnet.setHostPort(roadmDIp, port);
-            }else if("S".equals(emsGb)){
+            } else if ("S".equals(emsGb)) {
                 telnet.setHostPort(roadmSIp, port);
             }
 
             telnet.openConnection();
             telnet.main_proc();
 
-            if(telnet.isConnected()){
+            if (telnet.isConnected()) {
+                byte[] enterBytes = {13, 10}; // \r\n
+//                roadmEmsTNClient.write(new String(enterBytes, "ASCII"));
                 mmcResult = telnet.sendCommand("\r\n", false);
-                Thread.sleep(500);
+//                Thread.sleep(500);
 
-                if(mmcResult.contains("LOGIN:")){
+                if (mmcResult.contains("LOGIN:")) {
 
-                    mmcResult = telnet.sendCommand( id+"\r\n", false);
-                    Thread.sleep(500);
+                    mmcResult = telnet.sendCommand(id + "\r\n", false);
+//                    Thread.sleep(500);
 
-                    if(mmcResult.contains("PASSWORD:")) {
-                        mmcResult = telnet.sendCommand( pw+"\r\n", false);
+                    if (mmcResult.contains("PASSWORD:")) {
+                        mmcResult = telnet.sendCommand(pw + "\r\n", false);
 
-                        if(mmcResult.contains("TL1>")) {
+                        if (mmcResult.contains("TL1>")) {
                             isLoginOk = true;
-                        }else if(mmcResult.contains("LOGIN:")){
+                        } else if (mmcResult.contains("LOGIN:")) {
                             telnet.closeConnection();
                             telnet = null;
 
-                            if(loginCnt == 3){
+                            if (loginCnt == 3) {
                                 return false;
                             }
-                            Thread.sleep(3000);
+//                            Thread.sleep(3000);
                             loginCnt++;
                             login(emsGb);
                         }
                     }
-                }else{
+                } else {
                     telnet.closeConnection();
                     telnet = null;
 
-                    if(loginCnt == 3){
+                    if (loginCnt == 3) {
                         return false;
                     }
-                    Thread.sleep(3000);
+//                    Thread.sleep(3000);
                     loginCnt++;
                     login(emsGb);
                 }
             }
-        }catch (Exception e){
-            LOGGER.error("=====> [RoadmEmsTL1Client] login error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
+        } catch (Exception e) {
+            LOGGER.error("=====> [RoadmEmsTL1Client] login error() " + ExceptionUtils.getStackTrace(e) + "<=====");
         }
         return isLoginOk;
     }
 
-    public Boolean sendCommand(String command, Boolean isFlush){
+    public Boolean sendCommand (String command, Boolean isFlush) {
         try {
-            if(telnet != null && telnet.isConnected()){
+            if (telnet != null && telnet.isConnected()) {
                 telnet.sendCommand(command, isFlush);
                 return true;
-            }else{
+            } else {
                 return false;
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
     }
 
-    public Boolean isConnected(){
-        if(telnet == null){
+    public Boolean isConnected () {
+        if (telnet == null) {
             return false;
-        }else{
+        } else {
             return telnet.isConnected();
         }
     }
 
-    public void logout(){
-        if(telnet != null && telnet.isConnected()){
-            telnet.sendCommand("canc-user:::1:"+id+";\r\n", false);
+    public void logout () {
+        if (telnet != null && telnet.isConnected()) {
+            telnet.sendCommand("canc-user:::1:" + id + ";\r\n", false);
             telnet.closeConnection();
             telnet = null;
-        }else{
-            if(telnet != null){
+        } else {
+            if (telnet != null) {
                 telnet.closeConnection();
                 telnet = null;
             }

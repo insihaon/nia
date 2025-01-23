@@ -1,4 +1,4 @@
-package com.kt.rca.topas.preprocessor.config;
+package com.nia.engine.config;
 
 import org.jasypt.encryption.StringEncryptor;
 import org.jasypt.encryption.pbe.PooledPBEStringEncryptor;

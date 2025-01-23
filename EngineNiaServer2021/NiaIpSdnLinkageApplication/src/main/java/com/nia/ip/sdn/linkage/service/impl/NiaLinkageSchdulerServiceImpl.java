@@ -34,12 +34,12 @@ public class NiaLinkageSchdulerServiceImpl {
     private NodeFactorService nodeFactorService;
 
 
-    @Scheduled(cron = "0 0 1 * * *") //초(0-59) 분(0-59) 시간(0-23) 일(1-31) 월(1-12) 요일(0-7)
+    @Scheduled(cron = "0 5 1 * * *") //초(0-59) 분(0-59) 시간(0-23) 일(1-31) 월(1-12) 요일(0-7)
     public void conJobInterfaceData() {
         interfaceService.getInterfaceData();
     }
-
-    @Scheduled(cron = "0 5 1 * * *") //초(0-59) 분(0-59) 시간(0-23) 일(1-31) 월(1-12) 요일(0-7)
+// 0 5 1 * * *
+    @Scheduled(cron = "0 0/1 * * * *") //초(0-59) 분(0-59) 시간(0-23) 일(1-31) 월(1-12) 요일(0-7)
     public void conJobLinkData() {
         linkService.getLinkData();
     }

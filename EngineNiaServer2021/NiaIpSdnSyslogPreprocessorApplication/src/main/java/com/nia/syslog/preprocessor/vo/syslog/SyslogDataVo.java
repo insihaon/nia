@@ -17,7 +17,7 @@ import java.sql.Timestamp;
 public class SyslogDataVo implements Serializable {
 
     private SyslogRuleVo syslogRuleVo;
-    private int collectSeq;
+    private long collectSeq;
     private FieldsVo fields;
     private String name;
     private TagsVo tags;

@@ -14,6 +14,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+
 @EnableScheduling
 @EnableEncryptableProperties
 @SpringBootApplication
@@ -45,8 +46,9 @@ public class Application implements CommandLineRunner {
     private IpSdnAlarmToAiLinkageService ipSdnAlarmToAiLinkageService;
 
 
-    @Autowired
-    @Qualifier("EntityService")
+//    @Autowired
+//    @Qualifier("EntityService")
+
 
 
     public static void main(String[] args) {
@@ -56,9 +58,9 @@ public class Application implements CommandLineRunner {
     @Override
     public void run(String... arg0) throws Exception {
 
-//        ipSdnResourceLinkageService.sendNodeData();
+        ipSdnResourceLinkageService.sendNodeData();
 //        ipSdnResourceLinkageService.sendLinkData();
-//        ipSdnResourceLinkageService.sendInterfaceData();
+        ipSdnResourceLinkageService.sendInterfaceData();
 
 //        ipSdnFactorLinkageService.sendFactorData();
 //        ipSdnTrafficLinkageService.sendTrafficData();
@@ -67,5 +69,8 @@ public class Application implements CommandLineRunner {
 //         ipSdnSyslogLinkageService.sendSyslogData();
 
 //        ipSdnAlarmToAiLinkageService.sendAlarmData();
+
+
+
     }
 }

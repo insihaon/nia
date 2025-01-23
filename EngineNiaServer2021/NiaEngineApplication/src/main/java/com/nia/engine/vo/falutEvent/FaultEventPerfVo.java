@@ -65,11 +65,11 @@ public class FaultEventPerfVo implements Serializable {
 
 
     @JsonProperty("nren_id")
-    public String getNrenId() {
+    public String getnrenId() {
         return nrenId;
     }
     @JsonProperty("nren_name")
-    public String getNrenName() {
+    public String getnrenName() {
         return nrenName;
     }
     @JsonProperty("node_id")

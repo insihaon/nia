@@ -2,6 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.nia.data.linkage.ip.equip.mapper.linkage.LinkageEquipMapper">
 
+<!--    catchview       -->
+
     <select id="selectCvnmsResourceList" resultType="com.nia.data.linkage.ip.equip.vo.equip.CvnmsResourceVo">
         SELECT intResIdx, module_srl, member_srl, strResName, strResID
              , strResType, strModelID, strGroupID, strGroupID1, strGroupID2
@@ -16,18 +18,19 @@
              , intIntervalPing, intTimeoutPing, strEnabledPing, intLogRaiseCount, intErrRaiseCount
              , strCPUCurrent, strMEMCurrent, strDiskCurrent, strRTTCurrent, intSensorPID
              , strAlive, strContacts, dateProbeUpdateDate, dateLastUpdateDate, dateRegDate
-          FROM catchview.xe_cvnms_resource
+          FROM xe_cvnms_resource
     </select>
 
     <select id="selectCvnmsResourceIfList" resultType="com.nia.data.linkage.ip.equip.vo.equip.CvnmsResourceIfVo">
-        SELECT intIfIdx, module_srl, strResID, strIfID, strIfName
+        SELECT  dateRegDate,intIfIdx, module_srl, strResID, strIfID, strIfName
              , strResID_A, strResID_Z, intIfindex, strIfDesc, strIfType
              , strIfSpeed, strIfPhysAddress, strIfOperStatus, strIfLimitBPS, strIfLimitBPSC
              , strIfLimitBPSM, strIfLimitBPSN, strIfLimitBPSW, strifErrLevel, strifIPAddr
              , strifManPerf, strifManError, strIfCurrent, strifLimitErr, strIfMemo
-             , dateLastUpdateDate, dateRegDate
-        FROM catchview.xe_cvnms_resource_if
+             , dateLastUpdateDate
+        FROM xe_cvnms_resource_if
     </select>
+
 </mapper>
 
 

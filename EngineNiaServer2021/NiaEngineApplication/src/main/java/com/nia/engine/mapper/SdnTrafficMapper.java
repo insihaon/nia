@@ -12,4 +12,6 @@ public interface SdnTrafficMapper {
     SdnTrafficInfoVo selectSdnTrafficAlarm(HashMap<String, String> map);
 
     void updateSdnTraffic(HashMap<String, String> parameterMap);
+
+    SdnTrafficInfoVo selectATT2Alarm(HashMap<String, String> map);
 }

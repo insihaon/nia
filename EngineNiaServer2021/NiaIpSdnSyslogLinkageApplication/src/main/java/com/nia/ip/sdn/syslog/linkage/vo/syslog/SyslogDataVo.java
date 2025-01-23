@@ -15,7 +15,7 @@ import java.sql.Timestamp;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SyslogDataVo implements Serializable {
 
-    private int collectSeq;
+    private long collectSeq;
     private FieldsVo fields;
     private String name;
     private TagsVo tags;

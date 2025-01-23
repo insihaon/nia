@@ -20,4 +20,5 @@ public class ResultVo implements Serializable {
     private String resultCode;
     @JsonProperty("result_msg")
     private String resultMsg;
+
 }

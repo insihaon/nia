@@ -100,6 +100,7 @@ spring:
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      max-poll-interval-ms: 500000
     producer:
       bootstrap-servers: 116.89.191.47:9392
       key-serializer: org.apache.kafka.common.serialization.StringDeserializer

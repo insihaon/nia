@@ -13,24 +13,26 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class NiaAiPerformanceListener implements ChannelAwareMessageListener {
-	private static final Logger LOGGER = LoggerFactory.getLogger(NiaAiPerformanceListener.class);
-	
-	@Autowired
+    private static final Logger LOGGER = LoggerFactory.getLogger(NiaAiPerformanceListener.class);
+
+    @Autowired
     @Qualifier("PerformanceSendService")
-	private PerformanceSendService performanceSendService;
-	
-	@Override
-	public void onMessage(Message message, Channel channel) {
+    private PerformanceSendService performanceSendService;
 
-		try {
-			LOGGER.info(">>>>>>>>>>[NiaAiPerformanceListener] onMessage : " + message.toString() + " <<<<<<<<<<<<<<<<<");
+    @Override
+    public void onMessage (Message message, Channel channel) {
 
-			Object obj;
-			String msg = new String(message.getBody());
+        try {
+            LOGGER.info(">>>>>>>>>>[NiaAiPerformanceListener] onMessage : " + message.toString() + " <<<<<<<<<<<<<<<<<");
 
-		    performanceSendService.sendPerformanceData(msg.replaceAll("\"",""));
-		} catch (Exception e) {
-			LOGGER.error("=====> [NiaAiPerformanceListener] onMessage error "+ ExceptionUtils.getStackTrace(e)+ "<=====");
-		}
-	}
+            Object obj;
+            String msg = new String(message.getBody());
+
+            LOGGER.info(" msg ======> " + msg);
+
+            performanceSendService.sendPerformanceData(msg.replaceAll("\"", ""));
+        } catch (Exception e) {
+            LOGGER.error("=====> [NiaAiPerformanceListener] onMessage error " + ExceptionUtils.getStackTrace(e) + "<=====");
+        }
+    }
 }

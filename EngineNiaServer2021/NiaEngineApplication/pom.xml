@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -9,30 +9,47 @@
         <version>2.3.8.RELEASE</version>
     </parent>
 
-	<groupId>niaEngine</groupId>
-	<artifactId>com.nia.engine</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+    <groupId>niaEngine</groupId>
+    <artifactId>com.nia.engine</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>niaEngine</name>
     <description>Demo project for Spring Boot</description>
 
 
-	<properties>
-		<java.version>1.8</java.version>
+    <properties>
+        <java.version>1.8</java.version>
         <log4j2.version>2.15.0</log4j2.version>
-	</properties>
+    </properties>
 
-	<dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-net</groupId>
+            <artifactId>commons-net</artifactId>
+            <version>3.6</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -48,7 +65,7 @@
         <dependency>
             <groupId>com.github.ulisesbocchio</groupId>
             <artifactId>jasypt-spring-boot-starter</artifactId>
-            <version>2.1.0</version>
+            <version>3.0.5</version>
         </dependency>
 
         <dependency>
@@ -62,9 +79,9 @@
         </dependency>
 
         <!--<dependency>-->
-            <!--<groupId>org.codehaus.jackson</groupId>-->
-            <!--<artifactId>jackson-mapper-asl</artifactId>-->
-            <!--<version>1.9.13</version>-->
+        <!--<groupId>org.codehaus.jackson</groupId>-->
+        <!--<artifactId>jackson-mapper-asl</artifactId>-->
+        <!--<version>1.9.13</version>-->
         <!--</dependency>-->
 
         <dependency>
@@ -80,9 +97,9 @@
         </dependency>
 
         <!--<dependency>-->
-            <!--<groupId>com.fasterxml.jackson.core</groupId>-->
-            <!--<artifactId>jackson-annotations</artifactId>-->
-            <!--<version>2.9.8</version>-->
+        <!--<groupId>com.fasterxml.jackson.core</groupId>-->
+        <!--<artifactId>jackson-annotations</artifactId>-->
+        <!--<version>2.9.8</version>-->
         <!--</dependency>-->
 
         <dependency>
@@ -218,18 +235,18 @@
             <version>2.12.4</version>
             <scope>compile</scope>
         </dependency>
-		
-		<dependency>
-		    <groupId>org.drools</groupId>
-		    <artifactId>drools-compiler</artifactId>
-		    <version>7.7.0.Final</version>
-		</dependency>
-		
-		<dependency>
-		    <groupId>org.drools</groupId>
-		    <artifactId>drools-decisiontables</artifactId>
-		    <version>7.7.0.Final</version>
-		</dependency>
+
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-compiler</artifactId>
+            <version>7.7.0.Final</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-decisiontables</artifactId>
+            <version>7.7.0.Final</version>
+        </dependency>
 
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -249,21 +266,46 @@
             <version>7.7.0.Final</version>
         </dependency>
 
+        <!--        ============================================================================ -->
+
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+            <version>1.5.5</version> <!-- 최신 버전으로 업데이트 가능 -->
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.9.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+
+
     </dependencies>
 
-	<build>
+    <build>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
             </resource>
         </resources>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

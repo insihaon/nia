@@ -17,7 +17,7 @@ public class CvnmsResourceIfVo implements Serializable {
     private String strifname;
     private String strresidA;
     private String strresidZ;
-    private int intifindex;
+    private long intifindex;
     private String strifdesc;
     private String striftype;
     private String strifspeed;
@@ -37,4 +37,38 @@ public class CvnmsResourceIfVo implements Serializable {
     private String strifmemo;
     private String datelastupdatedate;
     private String dateregdate;
+
+
+    @Override
+    public String toString() {
+        return "CvnmsResourceIfVo{" +
+                "intifidx=" + intifidx +
+                ", moduleSrl=" + moduleSrl +
+                ", strresid='" + strresid + '\'' +
+                ", strifid='" + strifid + '\'' +
+                ", strifname='" + strifname + '\'' +
+                ", strresidA='" + strresidA + '\'' +
+                ", strresidZ='" + strresidZ + '\'' +
+                ", intifindex=" + intifindex +
+                ", strifdesc='" + strifdesc + '\'' +
+                ", striftype='" + striftype + '\'' +
+                ", strifspeed='" + strifspeed + '\'' +
+                ", strifphysaddress='" + strifphysaddress + '\'' +
+                ", strifoperstatus='" + strifoperstatus + '\'' +
+                ", striflimitbps='" + striflimitbps + '\'' +
+                ", striflimitbpsc='" + striflimitbpsc + '\'' +
+                ", striflimitbpsm='" + striflimitbpsm + '\'' +
+                ", striflimitbpsn='" + striflimitbpsn + '\'' +
+                ", striflimitbpsw='" + striflimitbpsw + '\'' +
+                ", striferrlevel='" + striferrlevel + '\'' +
+                ", strifipaddr='" + strifipaddr + '\'' +
+                ", strifmanperf='" + strifmanperf + '\'' +
+                ", strifmanerror='" + strifmanerror + '\'' +
+                ", strifcurrent='" + strifcurrent + '\'' +
+                ", striflimiterr='" + striflimiterr + '\'' +
+                ", strifmemo='" + strifmemo + '\'' +
+                ", datelastupdatedate='" + datelastupdatedate + '\'' +
+                ", dateregdate='" + dateregdate + '\'' +
+                '}';
+    }
 }

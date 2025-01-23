@@ -3,7 +3,6 @@ package com.nia.data.linkage.ai.service.impl.ip.sflow;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nia.data.linkage.ai.common.SFTPSession;
 import com.nia.data.linkage.ai.common.UtlDateHelper;
-import com.nia.data.linkage.ai.common.UtlFileReaderWriter;
 import com.nia.data.linkage.ai.mapper.common.CommonMapper;
 import com.nia.data.linkage.ai.mapper.ip.IpDataMapper;
 import com.nia.data.linkage.ai.service.ip.sflow.IpSflowToAiLinkageService;
@@ -64,12 +63,13 @@ public class IpSflowToAiLinkageServiceImpl implements IpSflowToAiLinkageService 
 
     @Override
     public void sendSflowLogData() {
+        // 기존 xe_Sflow_log 데이터에서 통계 데이터로 용도 변경함.
         LOGGER.info("==========>[IpSflowToAiLinkageService] sendSflowLogData <==============");
         SFTPSession sftpSession;
 
         String dataKey = null;
         String jsonData;
-        String ftpUpdatePath = uploadPath+"xe_sflow_log/";
+        String ftpUpdatePath = uploadPath + "xe_sflow_log/";
         long fileSize;
 
         ArrayList<SflowLogVo> sflowVoList = null;
@@ -82,18 +82,18 @@ public class IpSflowToAiLinkageServiceImpl implements IpSflowToAiLinkageService 
         SflowListVo sflowListVo;
 
         try {
-            Thread.sleep(120*1000);
+            Thread.sleep(15 * 1000);
 
             dataKey = commonMapper.selectLinkageYdKey("aiIpSfolwLogKey");
 
-            LOGGER.info("==========>[IpSflowToAiLinkageService] sendSflowLogData dataKey : "+dataKey+" <==============");
+            LOGGER.info("==========>[IpSflowToAiLinkageService] sendSflowLogData dataKey : " + dataKey + " <==============");
 
-            if(StringUtils.isNotEmpty(dataKey)){
+            if (StringUtils.isNotEmpty(dataKey)) {
                 sflowVoList = ipDataMapper.selectSflowLogList(dataKey);
 
 
-                if(sflowVoList != null && sflowVoList.size() > 0) {
-                    LOGGER.info("==========>[IpSflowToAiLinkageService] sendSflowLogData perfVoList("+sflowVoList.size() +") <==============");
+                if (sflowVoList != null && sflowVoList.size() > 0) {
+                    LOGGER.info("==========>[IpSflowToAiLinkageService] sendSflowLogData xeSflowLogList(" + sflowVoList.size() + ") <==============");
 
                     sflowListVo = sflowListVoObjectFactory.getObject();
                     sflowListVo.setData(sflowVoList);
@@ -101,16 +101,16 @@ public class IpSflowToAiLinkageServiceImpl implements IpSflowToAiLinkageService 
                     mapper = new ObjectMapper();
                     jsonData = mapper.writeValueAsString(sflowListVo);
 
-                    putFile = createJsonFile("xe_sflow_log", jsonData, sflowVoList.get(sflowVoList.size()-1).getDateregdate()+"", ftpUpdatePath);
+                    putFile = createJsonFile("xe_sflow_log", jsonData, sflowVoList.get(sflowVoList.size() - 1).getDateregdate() + "", ftpUpdatePath);
 
                     sftpSession = sftpSessionObjectFactory.getObject();
 
-                    if(!"codej".equals(profiles)) {
+                    if (!"codej".equals(profiles)) {
                         try {
                             sftpSession.init(host1, port, user, pw);
 
                             if (putFile != null) {
-                                if(!folder.exists()){
+                                if (!folder.exists()) {
                                     folder.mkdirs();
                                 }
 
@@ -127,7 +127,7 @@ public class IpSflowToAiLinkageServiceImpl implements IpSflowToAiLinkageService 
                             sftpSession.init(host2, port, user, pw);
 
                             if (putFile != null) {
-                                if(!folder.exists()){
+                                if (!folder.exists()) {
                                     folder.mkdirs();
                                 }
 
@@ -141,47 +141,47 @@ public class IpSflowToAiLinkageServiceImpl implements IpSflowToAiLinkageService 
                         }
                     }
 
-                    if("codej".equals(profiles)){
+                    if ("codej".equals(profiles)) {
                         try {
                             sftpSession.init("10.81.192.18", 22, "aifactory", "dpdldkdl12!@");
 
-                            if(putFile != null){
+                            if (putFile != null) {
                                 sftpSession.upload("/home/aifactory/inference/raw/xe_sflow_log/", putFile);
-                                LOGGER.info("=====> [IpSflowToAiLinkageService] sendSflowLogData upload(10.81.192.18) : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                                LOGGER.info("=====> [IpSflowToAiLinkageService] sendSflowLogData upload(10.81.192.18) : " + ftpUpdatePath + putFile.getName() + "<=====");
                             }
 
                             sftpSession.disconnection();
-                        }catch (Exception e1){
-                            LOGGER.error("=====> [IpSflowToAiLinkageService] sendSflowLogData upload(10.81.192.18) error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
+                        } catch (Exception e1) {
+                            LOGGER.error("=====> [IpSflowToAiLinkageService] sendSflowLogData upload(10.81.192.18) error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
                         }
 
                         try {
                             sftpSession.init("10.81.192.18", 22, "aifactory", "dpdldkdl12!@");
 
-                            if(putFile != null){
+                            if (putFile != null) {
                                 sftpSession.upload("/home/aifactory/zerooneai/data/xe_sflow_log/", putFile);
-                                LOGGER.info("=====> [IpSflowToAiLinkageService] sendSflowLogData upload(10.81.192.18) : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                                LOGGER.info("=====> [IpSflowToAiLinkageService] sendSflowLogData upload(10.81.192.18) : " + ftpUpdatePath + putFile.getName() + "<=====");
                             }
 
                             sftpSession.disconnection();
-                        }catch (Exception e1){
-                            LOGGER.error("=====> [IpSflowToAiLinkageService] sendSflowLogData upload(10.81.192.18) error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
+                        } catch (Exception e1) {
+                            LOGGER.error("=====> [IpSflowToAiLinkageService] sendSflowLogData upload(10.81.192.18) error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
                         }
                     }
 
                     strHashMap = new HashMap<>();
                     strHashMap.put("key", "aiIpSfolwLogKey");
-                    strHashMap.put("value", sflowVoList.get(sflowVoList.size()-1).getDateregdate()+"");
+                    strHashMap.put("value", sflowVoList.get(sflowVoList.size() - 1).getDateregdate() + "");
                     commonMapper.updateLinkageYdKey(strHashMap);
 
-                    if(putFile.exists()){
+                    if (putFile.exists()) {
                         fileSize = (putFile.length()) / 1024;
 
                         strHashMap = new HashMap<>();
                         strHashMap.put("key", "aiIpSfolwLogKey");
                         strHashMap.put("fileName", putFile.getName());
-                        strHashMap.put("fileSize", fileSize+"");
-                        strHashMap.put("rowCnt", sflowVoList.size()+"");
+                        strHashMap.put("fileSize", fileSize + "");
+                        strHashMap.put("rowCnt", sflowVoList.size() + "");
 
                         commonMapper.insertLinkageHist(strHashMap);
 
@@ -189,8 +189,8 @@ public class IpSflowToAiLinkageServiceImpl implements IpSflowToAiLinkageService 
                     }
                 }
             }
-        }catch (Exception e){
-            LOGGER.error("=====> [IpSflowToAiLinkageService] sendSflowLogData error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
+        } catch (Exception e) {
+            LOGGER.error("=====> [IpSflowToAiLinkageService] sendSflowLogData error() " + ExceptionUtils.getStackTrace(e) + "<=====");
         }
     }
 
@@ -198,29 +198,29 @@ public class IpSflowToAiLinkageServiceImpl implements IpSflowToAiLinkageService 
     public File createJsonFile(String eventType, String jsonData, String dataKey, String ftpUpdatePath) {
         LOGGER.info(">>>>>>>>>>[IpSflowToAiLinkageService] createJsonFile(" + eventType + ") <<<<<<<<<<<<<<<<<");
         File putFile = null;
-        File folder = new File(localUploadPath+"/"+eventType);
+        File folder = new File(localUploadPath + "/" + eventType);
 
         BufferedWriter output;
         PrintWriter pw;
 
-        try{
+        try {
 
-            if(dataKey.contains("+")){
-                dataKey = dataKey.substring(0,dataKey.indexOf("+"));
+            if (dataKey.contains("+")) {
+                dataKey = dataKey.substring(0, dataKey.indexOf("+"));
             }
 
-            if(!folder.exists()){
+            if (!folder.exists()) {
                 folder.mkdirs();
             }
 
-            putFile = new File(folder.getPath()+"/"+eventType+"_"+(UtlDateHelper.stringToTimestamp(dataKey).getTime())+""+".json");
+            putFile = new File(folder.getPath() + "/" + eventType + "_" + (UtlDateHelper.stringToTimestamp(dataKey).getTime()) + "" + ".json");
 
-            if(!putFile.isFile()){
+            if (!putFile.isFile()) {
                 putFile.createNewFile();
             }
 
-            output  = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(putFile), StandardCharsets.UTF_8));
-            pw = new PrintWriter(output,true);
+            output = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(putFile), StandardCharsets.UTF_8));
+            pw = new PrintWriter(output, true);
             pw.write(jsonData);
             pw.flush();
 
@@ -229,8 +229,8 @@ public class IpSflowToAiLinkageServiceImpl implements IpSflowToAiLinkageService 
             if (pw != null) {
                 pw.close();
             }
-        }catch (Exception e){
-            LOGGER.error("=====> [IpSflowToAiLinkageService] createJsonFile error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
+        } catch (Exception e) {
+            LOGGER.error("=====> [IpSflowToAiLinkageService] createJsonFile error() " + ExceptionUtils.getStackTrace(e) + "<=====");
         }
         return putFile;
     }

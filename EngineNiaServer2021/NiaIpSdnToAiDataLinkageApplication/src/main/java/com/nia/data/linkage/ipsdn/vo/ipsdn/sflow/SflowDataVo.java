@@ -1,30 +1,33 @@
 package com.nia.data.linkage.ipsdn.vo.ipsdn.sflow;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+
 import java.io.Serializable;
 import java.sql.Timestamp;
+
 @Component
 @Data
 @Scope(value = "prototype")
 public class SflowDataVo implements Serializable {
 	private long collectSeq;
-	private String collectHost;
-	private String agentAddress;
+	private String strresname; // collectHost
+	private String strresip; // agentAddress
 	private String etherType;
 	private String headerProtocol;
 	private int inputIfindex;
 	private int outputIfindex;
 	private String sampleDirection;
-	private String srcIp;
-	private String srcMac;
-	private String srcPort;
+	private String strsIp; // srcIp
+	private String strsMac; // srcMac
+	private String strsPort; // srcPort
 	private String sourceIdType;
 	private String sourceIdIndex;
-	private String dstIp;
-	private String dstMac;
-	private String dstPort;
+	private String strdIp; // dstIp
+	private String strdMac; // dstMac
+	private String strdPort; // dstPort
 	private int packetBytes;
 	private int packetDrops;
 	private int frameLength;
@@ -39,7 +42,7 @@ public class SflowDataVo implements Serializable {
 	private int tcpHeaderLength;
 	private int tcpUrgentPointer;
 	private int tcpWindowSize;
-	private Timestamp collectTimestamp;
+	private Timestamp dateregdate; //collectTimestamp
 
 
 	@JsonProperty("CollectSeq")
@@ -49,12 +52,12 @@ public class SflowDataVo implements Serializable {
 
 	@JsonProperty("CollectHost")
 	public String getCollectHost() {
-		return collectHost;
+		return strresname;
 	}
 
 	@JsonProperty("AgentAddress")
 	public String getAgentAddress() {
-		return agentAddress;
+		return strresip;
 	}
 
 	@JsonProperty("EtherType")
@@ -84,17 +87,17 @@ public class SflowDataVo implements Serializable {
 
 	@JsonProperty("SrcIp")
 	public String getSrcIp() {
-		return srcIp;
+		return strsIp;
 	}
 
 	@JsonProperty("SrcMac")
 	public String getSrcMac() {
-		return srcMac;
+		return strsMac;
 	}
 
 	@JsonProperty("SrcPort")
 	public String getSrcPort() {
-		return srcPort;
+		return strsPort;
 	}
 
 	@JsonProperty("SourceIdType")
@@ -109,17 +112,17 @@ public class SflowDataVo implements Serializable {
 
 	@JsonProperty("DstIp")
 	public String getDstIp() {
-		return dstIp;
+		return strdIp;
 	}
 
 	@JsonProperty("DstMac")
 	public String getDstMac() {
-		return dstMac;
+		return strdMac;
 	}
 
 	@JsonProperty("DstPort")
 	public String getDstPort() {
-		return dstPort;
+		return strdPort;
 	}
 
 	@JsonProperty("PacketBytes")
@@ -194,7 +197,7 @@ public class SflowDataVo implements Serializable {
 
 	@JsonProperty("CollectTimestamp")
 	public Timestamp getCollectTimestamp() {
-		return collectTimestamp;
+		return dateregdate;
 	}
 
 }

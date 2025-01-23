@@ -4,7 +4,9 @@
 <mapper namespace="com.nia.ip.country.code.linkage.mapper.CountryMapper">
 
     <select id="selectIpCountryCodeList" resultType="com.nia.ip.country.code.linkage.vo.country.CountryVo">
-        SELECT IP_ADDR, COUNTRY_CODE, REGISTRY FROM NIA.TB_IP_COUNTRY_CODE WHERE COUNTRY_CODE IS NULL LIMIT 10000
+        SELECT IP_ADDR, COUNTRY_CODE, REGISTRY
+        FROM NIA.TB_IP_COUNTRY_CODE
+        WHERE COUNTRY_CODE IS NULL LIMIT 10000
     </select>
 
     <update id="updateIpCountryCode" parameterType="com.nia.ip.country.code.linkage.vo.web.WhoisVo">

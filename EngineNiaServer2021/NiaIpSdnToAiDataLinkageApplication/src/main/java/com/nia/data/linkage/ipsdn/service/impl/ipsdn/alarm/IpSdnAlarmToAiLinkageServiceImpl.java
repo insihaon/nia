@@ -68,13 +68,13 @@ public class IpSdnAlarmToAiLinkageServiceImpl implements IpSdnAlarmToAiLinkageSe
     private AlarmDataVo alarmDataVo;
 
     @Override
-    public void sendAlarmData(){
+    public void sendAlarmData() {
         LOGGER.info("==========>[IpSdnAlarmToAiLinkageService] sendSyslogData <==============");
         SFTPSession sftpSession;
 
         String dataKey = null;
         String jsonData;
-        String ftpUpdatePath = uploadPath+"ipSdnSyslogAlarm/";
+        String ftpUpdatePath = uploadPath + "ipSdnSyslogAlarm/";
         ArrayList<AlarmDataVo> alarmDataVoList;
         long fileSize;
 
@@ -87,23 +87,23 @@ public class IpSdnAlarmToAiLinkageServiceImpl implements IpSdnAlarmToAiLinkageSe
         AlarmDataListVo alarmDataListVo;
         AlarmDataVo maxAlarmDataVo;
         try {
-            Thread.sleep(15*1000);
+            Thread.sleep(15 * 1000);
 
             dataKey = commonMapper.selectLinkageYdKey("aiIpSdnSyslogAlarmKey");
-            LOGGER.info("==========>[IpSdnAlarmToAiLinkageService] sendAlarmData dataKey : "+dataKey+" <==============");
+            LOGGER.info("==========>[IpSdnAlarmToAiLinkageService] sendAlarmData dataKey : " + dataKey + " <==============");
 
-            if (StringUtils.isNotEmpty(dataKey)){
+            if (StringUtils.isNotEmpty(dataKey)) {
                 alarmDataVoList = ipsdnDataMapper.selectAlarmList(Integer.parseInt(dataKey));
 
-                if (alarmDataVoList != null && alarmDataVoList.size() > 0){
-                    LOGGER.info("==========>[IpSdnAlarmToAiLinkageService] sendAlarmData alarmDataVoList("+alarmDataVoList.size() +") <==============");
+                if (alarmDataVoList != null && alarmDataVoList.size() > 0) {
+                    LOGGER.info("==========>[IpSdnAlarmToAiLinkageService] sendAlarmData alarmDataVoList(" + alarmDataVoList.size() + ") <==============");
 
                     alarmDataListVo = ipSdnAlarmListVoObjectFactory.getObject();
                     alarmDataListVo.setData(alarmDataVoList);
                     mapper = new ObjectMapper();
                     jsonData = mapper.writeValueAsString(alarmDataListVo);
 
-                    putFile = createJsonFile("ipSdnSyslogAlarm", jsonData, alarmDataVoList.get(alarmDataVoList.size()-1).getAlarmno()+"", ftpUpdatePath);
+                    putFile = createJsonFile("ipSdnSyslogAlarm", jsonData, alarmDataVoList.get(alarmDataVoList.size() - 1).getAlarmno() + "", ftpUpdatePath);
 
                     sftpSession = sftpSessionObjectFactory.getObject();
 
@@ -111,7 +111,7 @@ public class IpSdnAlarmToAiLinkageServiceImpl implements IpSdnAlarmToAiLinkageSe
                         sftpSession.init(host1, port, user, pw);
 
                         if (putFile != null) {
-                            if(!folder.exists()){
+                            if (!folder.exists()) {
                                 folder.mkdirs();
                             }
 
@@ -119,7 +119,7 @@ public class IpSdnAlarmToAiLinkageServiceImpl implements IpSdnAlarmToAiLinkageSe
                             LOGGER.info("=====> [IpSdnAlarmToAiLinkageService] sendAlarmData upload(" + host1.split("\\.")[3] + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
                         }
 
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         LOGGER.error("=====> [IpSdnAlarmToAiLinkageService] sendAlarmData upload(" + host1.split("\\.")[3] + ") error() " + ExceptionUtils.getStackTrace(e) + "<=====");
                     }
 
@@ -128,7 +128,7 @@ public class IpSdnAlarmToAiLinkageServiceImpl implements IpSdnAlarmToAiLinkageSe
                         sftpSession.init(host2, port, user, pw);
 
                         if (putFile != null) {
-                            if(!folder.exists()){
+                            if (!folder.exists()) {
                                 folder.mkdirs();
                             }
 
@@ -146,25 +146,24 @@ public class IpSdnAlarmToAiLinkageServiceImpl implements IpSdnAlarmToAiLinkageSe
 //                            .max(comparatorById)
 //                            .orElseThrow(NoSuchElementException::new);
 
-                    maxAlarmDataVo = alarmDataVoList.get(alarmDataVoList.size() -1 );
+                    maxAlarmDataVo = alarmDataVoList.get(alarmDataVoList.size() - 1);
                     LOGGER.info("=================> maxAlarmData" + maxAlarmDataVo);
-
 
 
                     strHashMap = new HashMap<>();
                     strHashMap.put("key", "aiIpSdnSyslogAlarmKey");
-                    strHashMap.put("value", maxAlarmDataVo.getAlarmno()+"");
+                    strHashMap.put("value", maxAlarmDataVo.getAlarmno() + "");
                     commonMapper.updateLinkageYdKey(strHashMap);
 
 
-                    if(putFile.exists()){
+                    if (putFile.exists()) {
                         fileSize = (putFile.length()) / 1024;
 
                         strHashMap = new HashMap<>();
                         strHashMap.put("key", "aiIpSdnSyslogAlarmKey");
                         strHashMap.put("fileName", putFile.getName());
-                        strHashMap.put("fileSize", fileSize+"");
-                        strHashMap.put("rowCnt", alarmDataVoList.size()+"");
+                        strHashMap.put("fileSize", fileSize + "");
+                        strHashMap.put("rowCnt", alarmDataVoList.size() + "");
 
                         commonMapper.insertLinkageHist(strHashMap);
 
@@ -175,34 +174,32 @@ public class IpSdnAlarmToAiLinkageServiceImpl implements IpSdnAlarmToAiLinkageSe
             }
 
 
-
-
-
-        }catch (Exception e){
-            LOGGER.error("=====> [IpSdnAlarmToAiLinkageService] sendAlarmData error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
+        } catch (Exception e) {
+            LOGGER.error("=====> [IpSdnAlarmToAiLinkageService] sendAlarmData error() " + ExceptionUtils.getStackTrace(e) + "<=====");
         }
     }
-    public File createJsonFile(String eventType, String jsonData, String dataKey, String ftpUpdatePath){
+
+    public File createJsonFile(String eventType, String jsonData, String dataKey, String ftpUpdatePath) {
         LOGGER.info(">>>>>>>>>>[IpSdnAlarmToAiLinkageService] createJsonFile(" + eventType + ") <<<<<<<<<<<<<<<<<");
         File putFile = null;
-        File folder = new File(localUploadPath+eventType);
+        File folder = new File(localUploadPath + eventType);
 
         BufferedWriter output;
         PrintWriter pw;
 
-        try{
-            if(!folder.exists()){
+        try {
+            if (!folder.exists()) {
                 folder.mkdirs();
             }
 
-            putFile = new File(folder.getPath()+"/"+eventType+"_"+dataKey+""+".json");
+            putFile = new File(folder.getPath() + "/" + eventType + "_" + dataKey + "" + ".json");
 
-            if(!putFile.isFile()){
+            if (!putFile.isFile()) {
                 putFile.createNewFile();
             }
 
-            output  = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(putFile), StandardCharsets.UTF_8));
-            pw = new PrintWriter(output,true);
+            output = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(putFile), StandardCharsets.UTF_8));
+            pw = new PrintWriter(output, true);
             pw.write(jsonData);
             pw.flush();
 
@@ -211,8 +208,8 @@ public class IpSdnAlarmToAiLinkageServiceImpl implements IpSdnAlarmToAiLinkageSe
             if (pw != null) {
                 pw.close();
             }
-        }catch (Exception e){
-            LOGGER.error("=====> [IpSdnAlarmToAiLinkageService] createJsonFile error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
+        } catch (Exception e) {
+            LOGGER.error("=====> [IpSdnAlarmToAiLinkageService] createJsonFile error() " + ExceptionUtils.getStackTrace(e) + "<=====");
         }
         return putFile;
     }

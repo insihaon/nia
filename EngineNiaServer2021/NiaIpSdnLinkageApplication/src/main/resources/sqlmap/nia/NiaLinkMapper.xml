@@ -16,6 +16,8 @@
             </foreach>
         </if>
     </insert>
+<!--             , VSIF_ID , SPEED , LATENCYSTD , ACTIVESTANDBY, #{item.vsifId} , #{item.speed} , #{item.latencystd} , #{item.activeStandby}
+insertLinkYd 에서 제거한 컬럼-->
 
     <insert id="insertLink">
         INSERT INTO IP_SDN.TB_LINK
@@ -29,6 +31,7 @@
     <delete id="deleteLink">
         TRUNCATE TABLE IP_SDN.TB_LINK
     </delete>
+
 </mapper>
 
 

@@ -68,7 +68,7 @@ public class RoadmPmDataAiLinkageServiceImpl implements RoadmPmDataAiLinkageServ
         LOGGER.info("=====> [RoadmPmDataAiLinkageService] sendRoadmPmData <=====");
         SFTPSession sftpSession;
 
-        String ftpUpdatePath = uploadPath+"tb_performace_mst/";
+        String ftpUpdatePath = uploadPath + "tb_performace_mst/";
         String dataKey = null;
         String jsonData;
         long fileSize;
@@ -82,18 +82,18 @@ public class RoadmPmDataAiLinkageServiceImpl implements RoadmPmDataAiLinkageServ
         PerfDataAiLinkageVo perfDataAiLinkageVo;
 
         try {
-            Thread.sleep(300*1000);
+            Thread.sleep(300 * 1000);
 
             dataKey = commonMapper.selectLinkageYdKey("aiRoadmPerfKey");
 
-            LOGGER.info("==========>[RoadmPmDataAiLinkageService] sendRoadmPmData dataKey : "+dataKey+" <==============");
+            LOGGER.info("==========>[RoadmPmDataAiLinkageService] sendRoadmPmData dataKey : " + dataKey + " <==============");
 
-            if(StringUtils.isNotEmpty(dataKey)){
+            if (StringUtils.isNotEmpty(dataKey)) {
                 performaceVoList = transDataMapper.selectAiSendPerformanceData(dataKey);
 
                 LOGGER.info("=====> [RoadmPmDataAiLinkageService] sendRoadmPmData performaceVoList size: " + performaceVoList.size() + "<=====");
 
-                if(performaceVoList != null && performaceVoList.size() > 0) {
+                if (performaceVoList != null && performaceVoList.size() > 0) {
 
                     perfDataAiLinkageVo = perfDataAiLinkageVoObjectFactory.getObject();
                     perfDataAiLinkageVo.setData(performaceVoList);
@@ -105,12 +105,12 @@ public class RoadmPmDataAiLinkageServiceImpl implements RoadmPmDataAiLinkageServ
 
                     sftpSession = sftpSessionObjectFactory.getObject();
 
-                    if(!"codej".equals(profiles)) {
+                    if (!"codej".equals(profiles)) {
                         try {
                             sftpSession.init(host1, port, user, pw);
 
                             if (putFile != null) {
-                                if(!folder.exists()){
+                                if (!folder.exists()) {
                                     folder.mkdirs();
                                 }
 
@@ -127,7 +127,7 @@ public class RoadmPmDataAiLinkageServiceImpl implements RoadmPmDataAiLinkageServ
                             sftpSession.init(host2, port, user, pw);
 
                             if (putFile != null) {
-                                if(!folder.exists()){
+                                if (!folder.exists()) {
                                     folder.mkdirs();
                                 }
 
@@ -141,34 +141,34 @@ public class RoadmPmDataAiLinkageServiceImpl implements RoadmPmDataAiLinkageServ
                         }
                     }
 
-                    if("codej".equals(profiles)){
+                    if ("codej".equals(profiles)) {
                         try {
                             sftpSession.init("10.81.192.18", 22, "aifactory", "dpdldkdl12!@");
 
-                            if(putFile != null){
+                            if (putFile != null) {
                                 sftpSession.upload("/home/aifactory/zerooneai/data/tb_performace_mst/", putFile);
-                                LOGGER.info("=====> [RoadmPmDataAiLinkageService] sendRoadmPmData upload(10.81.192.18) : " + ftpUpdatePath+putFile.getName()+ "<=====");
+                                LOGGER.info("=====> [RoadmPmDataAiLinkageService] sendRoadmPmData upload(10.81.192.18) : " + ftpUpdatePath + putFile.getName() + "<=====");
                             }
 
                             sftpSession.disconnection();
-                        }catch (Exception e1){
-                            LOGGER.error("=====> [RoadmPmDataAiLinkageService] sendRoadmPmData upload(10.81.192.18) error() "+ ExceptionUtils.getStackTrace(e1)+ "<=====");
+                        } catch (Exception e1) {
+                            LOGGER.error("=====> [RoadmPmDataAiLinkageService] sendRoadmPmData upload(10.81.192.18) error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
                         }
                     }
 
                     strHashMap = new HashMap<>();
                     strHashMap.put("key", "aiRoadmPerfKey");
-                    strHashMap.put("value", performaceVoList.get(performaceVoList.size()-1).getOcrtime()+"");
+                    strHashMap.put("value", performaceVoList.get(performaceVoList.size() - 1).getOcrtime() + "");
                     commonMapper.updateLinkageYdKey(strHashMap);
 
-                    if(putFile.exists()){
+                    if (putFile.exists()) {
                         fileSize = (putFile.length()) / 1024;
 
                         strHashMap = new HashMap<>();
                         strHashMap.put("key", "aiRoadmPerfKey");
                         strHashMap.put("fileName", putFile.getName());
-                        strHashMap.put("fileSize", fileSize+"");
-                        strHashMap.put("rowCnt", performaceVoList.size()+"");
+                        strHashMap.put("fileSize", fileSize + "");
+                        strHashMap.put("rowCnt", performaceVoList.size() + "");
 
                         commonMapper.insertLinkageHist(strHashMap);
 
@@ -177,8 +177,8 @@ public class RoadmPmDataAiLinkageServiceImpl implements RoadmPmDataAiLinkageServ
 
                 }
             }
-        }catch (Exception e){
-            LOGGER.error("=====> [RoadmPmDataAiLinkageService] sendRoadmPmData error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
+        } catch (Exception e) {
+            LOGGER.error("=====> [RoadmPmDataAiLinkageService] sendRoadmPmData error() " + ExceptionUtils.getStackTrace(e) + "<=====");
         }
     }
 
@@ -186,28 +186,28 @@ public class RoadmPmDataAiLinkageServiceImpl implements RoadmPmDataAiLinkageServ
     public File createJsonFile(String eventType, String jsonData, String ocrTime, String ftpUpdatePath) {
         LOGGER.info(">>>>>>>>>>[RoadmPmDataAiLinkageService] createJsonFile(" + eventType + ") <<<<<<<<<<<<<<<<<");
         File putFile = null;
-        File folder = new File(localUploadPath+eventType);
+        File folder = new File(localUploadPath + eventType);
 
         BufferedWriter output;
         PrintWriter pw;
 
-        try{
-            if(ocrTime.contains("+")){
-                ocrTime = ocrTime.substring(0,ocrTime.indexOf("+"));
+        try {
+            if (ocrTime.contains("+")) {
+                ocrTime = ocrTime.substring(0, ocrTime.indexOf("+"));
             }
 
-            if(!folder.exists()){
+            if (!folder.exists()) {
                 folder.mkdir();
             }
 
-            putFile = new File(folder.getPath()+"/"+eventType+"_"+(UtlDateHelper.stringToTimestamp(ocrTime).getTime())+""+".json");
+            putFile = new File(folder.getPath() + "/" + eventType + "_" + (UtlDateHelper.stringToTimestamp(ocrTime).getTime()) + "" + ".json");
 
-            if(!putFile.isFile()){
+            if (!putFile.isFile()) {
                 putFile.createNewFile();
             }
 
-            output  = new BufferedWriter(new FileWriter(putFile,true));
-            pw = new PrintWriter(output,true);
+            output = new BufferedWriter(new FileWriter(putFile, true));
+            pw = new PrintWriter(output, true);
             pw.write(jsonData);
             pw.flush();
 
@@ -216,8 +216,8 @@ public class RoadmPmDataAiLinkageServiceImpl implements RoadmPmDataAiLinkageServ
             if (pw != null) {
                 pw.close();
             }
-        }catch (Exception e){
-            LOGGER.error("=====> [RoadmPmDataAiLinkageService] createJsonFile error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
+        } catch (Exception e) {
+            LOGGER.error("=====> [RoadmPmDataAiLinkageService] createJsonFile error() " + ExceptionUtils.getStackTrace(e) + "<=====");
         }
         return putFile;
     }

@@ -35,7 +35,7 @@ public class LinkTrafficVo implements Serializable {
 	}
 
 	@JsonProperty("nren_id")
-	public String getNrenId() {
+	public String getnrenId() {
 		return nrenId;
 	}
 

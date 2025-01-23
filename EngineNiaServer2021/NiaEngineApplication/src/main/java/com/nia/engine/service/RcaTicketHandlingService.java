@@ -10,4 +10,8 @@ public interface RcaTicketHandlingService {
 
     void removeRcaTicket(String ticketId);
 
+    void syslogAlarmStatusModify(RCATicketHandlingStatus rcaTicketHandlingStatus);
+
+    void syslogSopSave(RCATicketHandlingStatus rcaTicketHandlingStatus);
+
 }

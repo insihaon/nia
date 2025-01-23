@@ -38,6 +38,15 @@ public class RabbitMQConfig {
     @Autowired
     private NiaEngineTrafficMsgListener niaEngineTrafficMsgListener;
 
+    @Autowired
+    private NiaAiAnoToEngineMsgListener niaAiAnoToEngineMsgListener;
+
+    @Autowired
+    private NiaAiNoxToEngineMsgListener niaAiNoxToEngineMsgListener;
+
+//    @Autowired
+//    private UiSyslogMsgListener uiSyslogMsgListener;
+
 
     @Bean
     public ConnectionFactory connectionFactory() {
@@ -83,6 +92,22 @@ public class RabbitMQConfig {
     @Bean(name="NiaEngineTraffic_Queue")
     public Queue NiaEngineTrafficQueue() { return new Queue(rabbitMQVo.getNiaEngineTrafficQueue()); }
 
+    @Bean(name = "NiaEngineToAiAno_Queue")
+    public Queue NiaEngineToAiAnoQueue(){return new Queue(rabbitMQVo.getNiaEngineToAiAnoQueue()); }
+
+    @Bean(name = "NiaEngineToAiNox_Queue")
+    public Queue NiaEngineToAiNoxQueue(){return new Queue(rabbitMQVo.getNiaEngineToAiNoxQueue()); }
+
+    @Bean(name = "NiaAiAnoEngine_Queue")
+    public Queue NiaAiAnoToEngineQueue(){return new Queue(rabbitMQVo.getNiaAiAnoToEngineQueue()); }
+
+    @Bean(name = "NiaAiNoxToEngine_Queue")
+    public Queue NiaAiNoxEngineQueue(){return new Queue(rabbitMQVo.getNiaAiNoxToEngineQueue()); }
+
+//    @Bean(name="UIToEngineSyslog_Queue")
+//    public Queue UIToEngineSyslogQueue() { return new Queue(rabbitMQVo.getUIToEngineSyslogQueue()); }
+
+
     @Bean(name="EngineToUiTicket_RabbitTemplate")
     public RabbitTemplate rabbitTemplateTicketEngineToUI() {
         RabbitTemplate template = new RabbitTemplate(connectionFactory());
@@ -99,6 +124,23 @@ public class RabbitMQConfig {
         return template;
     }
 
+    @Bean(name="NiaEngineToAiAno_RabbitTemplate")
+    public RabbitTemplate rabbitTemplateNiaEngineToAiAno() {
+        RabbitTemplate template = new RabbitTemplate(connectionFactory());
+        template.setRoutingKey(rabbitMQVo.getNiaEngineToAiAnoQueue());
+        template.setMessageConverter(jsonMessageConverter());
+        return template;
+    }
+
+    @Bean(name="NiaEngineToAiNox_RabbitTemplate")
+    public RabbitTemplate rabbitTemplateNiaEngineToAiNox() {
+        RabbitTemplate template = new RabbitTemplate(connectionFactory());
+        template.setRoutingKey(rabbitMQVo.getNiaEngineToAiNoxQueue());
+        template.setMessageConverter(jsonMessageConverter());
+        return template;
+    }
+
+
     @Bean(name="NiaEngineTraffic_RabbitTemplate")
     public RabbitTemplate rabbitTemplateNiaEngineTraffic() {
         RabbitTemplate template = new RabbitTemplate(connectionFactory());
@@ -106,6 +148,9 @@ public class RabbitMQConfig {
         template.setMessageConverter(jsonMessageConverter());
         return template;
     }
+    
+//     위 : 큐 쏘는 부분  | 아래 : 큐 받는 부분
+    
     
     @Bean(name="Engine_ListenerContainer")
     public SimpleMessageListenerContainer engineListenerContainer() {
@@ -156,4 +201,34 @@ public class RabbitMQConfig {
         listenerContainer.setAcknowledgeMode(AcknowledgeMode.AUTO);
         return listenerContainer;
     }
+
+    @Bean(name="NiaAiAnoToEngine_ListenerContainer")
+    public SimpleMessageListenerContainer NiaEngineToAiAnoListenerContainer() {
+        SimpleMessageListenerContainer listenerContainer = new SimpleMessageListenerContainer();
+        listenerContainer.setConnectionFactory(connectionFactory());
+        listenerContainer.setQueues(NiaAiAnoToEngineQueue());
+        listenerContainer.setMessageListener(niaAiAnoToEngineMsgListener);
+        listenerContainer.setAcknowledgeMode(AcknowledgeMode.AUTO);
+        return listenerContainer;
+    }
+
+    @Bean(name="NiaAiNoxToEngine_ListenerContainer")
+    public SimpleMessageListenerContainer NiaEngineToAiNoxListenerContainer() {
+        SimpleMessageListenerContainer listenerContainer = new SimpleMessageListenerContainer();
+        listenerContainer.setConnectionFactory(connectionFactory());
+        listenerContainer.setQueues(NiaAiNoxEngineQueue());
+        listenerContainer.setMessageListener(niaAiNoxToEngineMsgListener);
+        listenerContainer.setAcknowledgeMode(AcknowledgeMode.AUTO);
+        return listenerContainer;
+    }
+
+//    @Bean(name="UIToEngineSyslog_ListenerContainer")
+//    public SimpleMessageListenerContainer UIToEngineSyslogListenerContainer() {
+//        SimpleMessageListenerContainer listenerContainer = new SimpleMessageListenerContainer();
+//        listenerContainer.setConnectionFactory(connectionFactory());
+//        listenerContainer.setQueues(UIToEngineSyslogQueue());
+//        listenerContainer.setMessageListener(uiSyslogMsgListener);
+//        listenerContainer.setAcknowledgeMode(AcknowledgeMode.AUTO);
+//        return listenerContainer;
+//    }
 }

@@ -13,6 +13,11 @@ public class LinkVo implements Serializable {
 	private int sifId;
 	private int rifId;
 	private int ospfMetric;
+//	private int vsifId;
+//	private String speed;
+//	private int activeStandby;
+//	private float latencyStd;
+	private int usaged;
 
 
 	@JsonProperty("Id")
@@ -40,5 +45,24 @@ public class LinkVo implements Serializable {
 		return usaged;
 	}
 
-	private int usaged;
+//	@JsonProperty("Vsif_Id")
+//	public int getVsifId(){
+//		return vsifId;
+//	}
+//
+//	@JsonProperty
+//	public String getSpeed(){
+//		return speed;
+//	}
+//	@JsonProperty("ActiveStandby")
+//	public int getActiveStandby(){
+//		return activeStandby;
+//	}
+//	@JsonProperty("LatencyStd")
+//	public float getLatencyStd(){
+//		return latencyStd;
+//	}
+
+
+
 }

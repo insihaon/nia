@@ -10,15 +10,17 @@ import com.nia.data.linkage.ipsdn.vo.ipsdn.syslog.SyslogDataVo;
 import com.nia.data.linkage.ipsdn.vo.ipsdn.traffic.LinkTrafficVo;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 @Mapper
-public interface IpsdnDataMapper {
+public interface  IpsdnDataMapper {
     ArrayList<NodeVo> selectNodeLink();
     ArrayList<InterfaceVo> selectInterfaceLink();
     ArrayList<LinkVo> selectLink();
     ArrayList<NodeFactorVo> selectNodeFactorLink(int dataKey);
     ArrayList<LinkTrafficVo> selectTrafficList(int dataKey);
+    ArrayList<LinkTrafficVo> selectTrafficUserOrganList(int dataKey);
     ArrayList<SyslogDataVo> selectSyslogData(int dataKey);
     ArrayList<SflowDataVo> selectSflowData(long dataKey);
 

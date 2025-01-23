@@ -25,88 +25,100 @@ import java.util.HashMap;
 
 @Service
 public class UITicketMsgListener implements ChannelAwareMessageListener {
-	private static final Logger LOGGER = LoggerFactory.getLogger(UITicketMsgListener.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UITicketMsgListener.class);
 
-	@Autowired
-	private org.springframework.beans.factory.ObjectFactory<RCATicketHandlingStatus> rcaTicketHandlingStatusFactory;
+    @Autowired
+    private org.springframework.beans.factory.ObjectFactory<RCATicketHandlingStatus> rcaTicketHandlingStatusFactory;
 
-	@Autowired
-	private org.springframework.beans.factory.ObjectFactory<RcaEngineResult> rcaEngineResultObjectFactory;
+    @Autowired
+    private org.springframework.beans.factory.ObjectFactory<RcaEngineResult> rcaEngineResultObjectFactory;
 
-	@Autowired
-	private org.springframework.beans.factory.ObjectFactory<AnomalousTrafficListVo> perfListVoObjectFactory;
+    @Autowired
+    private org.springframework.beans.factory.ObjectFactory<AnomalousTrafficListVo> perfListVoObjectFactory;
 
-	@Autowired
-	private org.springframework.beans.factory.ObjectFactory<NoxiousTrafficListVo> noxiousTrafficListVoObjectFactory;
+    @Autowired
+    private org.springframework.beans.factory.ObjectFactory<NoxiousTrafficListVo> noxiousTrafficListVoObjectFactory;
 
-	@Autowired
-	private org.springframework.beans.factory.ObjectFactory<SingleDomainRcaServiceImpl> singleDomainRcaServiceFactory;
+    @Autowired
+    private org.springframework.beans.factory.ObjectFactory<SingleDomainRcaServiceImpl> singleDomainRcaServiceFactory;
 
-	@Autowired
-	@Qualifier("ClusterService")
-	private ClusterService clusterService;
+    @Autowired
+    @Qualifier("ClusterService")
+    private ClusterService clusterService;
 
-	@Autowired
-	@Qualifier("AlarmService")
-	private AlarmService alarmService;
+    @Autowired
+    @Qualifier("AlarmService")
+    private AlarmService alarmService;
 
-	@Autowired
+    @Autowired
     @Qualifier("RcaTicketHandlingService")
     private RcaTicketHandlingService rcaTicketHandlingService;
 
-	@Autowired
-	private EngineToUiTicketPrdAmqp engineToUiTicketPrdAmqp;
+    @Autowired
+    private EngineToUiTicketPrdAmqp engineToUiTicketPrdAmqp;
 
-	@Autowired
+    @Autowired
     private DataShareBean dataShareBean;
 
-	@Autowired
-	@Qualifier("FaultEventService")
-	private FaultEventService faultEventService;
 
-	@Value("${spring.profiles}")
-	private String profiles;
+    @Autowired
+    @Qualifier("FaultEventService")
+    private FaultEventService faultEventService;
+
+    @Value("${spring.profiles}")
+    private String profiles;
 
     private HashMap<String, String> parameterMap;
 
-	@Autowired
-	@Qualifier("RcaTrafficTicketService")
-	private RcaTrafficTicketService rcaTrafficTicketService;
+    @Autowired
+    @Qualifier("RcaTrafficTicketService")
+    private RcaTrafficTicketService rcaTrafficTicketService;
 
-	@Override
-	public void onMessage(Message message, Channel channel) {
-		LOGGER.info("==========>[UITicketMsgListener] onMessage : "+new String(message.getBody())+"<==============");
+    @Override
+    public void onMessage (Message message, Channel channel) {
+        LOGGER.info("==========>[UITicketMsgListener] onMessage : " + new String(message.getBody()) + "<==============");
 
-		try {
-			RcaEngineResult rcaEngineResult = rcaEngineResultObjectFactory.getObject();
-			Object obj;
-			String msg = new String(message.getBody());
-			RCATicketHandlingStatus rcaTicketHandlingStatus = rcaTicketHandlingStatusFactory.getObject();
-			obj = UtlCommon.jsonToObject(rcaTicketHandlingStatus, msg);
-			rcaTicketHandlingStatus = (RCATicketHandlingStatus)obj;
+        try {
+            RcaEngineResult rcaEngineResult = rcaEngineResultObjectFactory.getObject();
+            Object obj;
+            String msg = new String(message.getBody());
+            RCATicketHandlingStatus rcaTicketHandlingStatus = rcaTicketHandlingStatusFactory.getObject();
+            obj = UtlCommon.jsonToObject(rcaTicketHandlingStatus, msg);
+            rcaTicketHandlingStatus = (RCATicketHandlingStatus) obj;
 
-			LOGGER.info("==========>[UITicketMsgListener] rcaTicketHandlingStatus : "+rcaTicketHandlingStatus+"<==============");
+            LOGGER.info("==========>[UITicketMsgListener] rcaTicketHandlingStatus : " + rcaTicketHandlingStatus + "<==============");
 
-			if(RcaCodeInfo.UI_REQUEST_DATA_SNAPSHOT.equals(rcaTicketHandlingStatus.getEventType())) {
-				faultEventService.insertFaultEvent(String.valueOf(rcaTicketHandlingStatus.getStartTime()), String.valueOf(rcaTicketHandlingStatus.getEndTime()), rcaTicketHandlingStatus.getTitle(), rcaTicketHandlingStatus.getDetail());
-			} else {
-				if (RcaCodeInfo.TICKET_STATUS_FIN.equals(rcaTicketHandlingStatus.getStatus())) {
+            if (RcaCodeInfo.UI_REQUEST_DATA_SNAPSHOT.equals(rcaTicketHandlingStatus.getEventType())) {
+                faultEventService.insertFaultEvent(String.valueOf(rcaTicketHandlingStatus.getStartTime()), String.valueOf(rcaTicketHandlingStatus.getEndTime()), rcaTicketHandlingStatus.getTitle(), rcaTicketHandlingStatus.getDetail());
+            } else if (RcaCodeInfo.UI_REQUEST_DATA_TICKET.equals(rcaTicketHandlingStatus.getEventType())) {
+                LOGGER.info("==========>[UITicketMsgListener] rcaTicketHandlingStatus TICKET <==============");
 
-					rcaTicketHandlingService.ticketStatusModify(rcaTicketHandlingStatus);
+                if (RcaCodeInfo.TICKET_STATUS_FIN.equals(rcaTicketHandlingStatus.getStatus())) {
+                    LOGGER.info("==========>[UITicketMsgListener] rcaTicketHandlingStatus FIN <==============");
+                    LOGGER.info("==========> [rcaTicketHandlingStatus] :: " + rcaTicketHandlingStatus.toString());
 
-					rcaTicketHandlingService.removeRcaTicket(rcaTicketHandlingStatus.getTicketId());
+                    rcaTicketHandlingService.ticketStatusModify(rcaTicketHandlingStatus);
+                    rcaTicketHandlingService.removeRcaTicket(rcaTicketHandlingStatus.getTicketId());
 
-					parameterMap = new HashMap<String, String>();
-					parameterMap.put("ticketId", rcaTicketHandlingStatus.getTicketId());
-					parameterMap.put("ticketType", rcaTicketHandlingStatus.getTicketType());
-					parameterMap.put("status", RcaCodeInfo.TICKET_STATUS_FIN);
+                    parameterMap = new HashMap<String, String>();
+                    parameterMap.put("ticketId", rcaTicketHandlingStatus.getTicketId());
+                    parameterMap.put("ticketType", rcaTicketHandlingStatus.getTicketType());
+                    parameterMap.put("status", RcaCodeInfo.TICKET_STATUS_FIN);
 
-				} else {
-					rcaTicketHandlingService.ticketStatusModify(rcaTicketHandlingStatus);
-				}
-			}
-		} catch (Exception e) {
-			LOGGER.error("==========>[EngineClearAlarmMsgListener] onMessage error "+e.getMessage()+" <==============");
-		}
-	}
+                } else {
+                    rcaTicketHandlingService.ticketStatusModify(rcaTicketHandlingStatus);
+                }
+            } else if (RcaCodeInfo.UI_REQUEST_DATA_SYSLOG.equals(rcaTicketHandlingStatus.getEventType())) {
+
+                LOGGER.info("==========>[UITicketMsgListener] rcaTicketHandlingStatus SYSLOG <==============");
+
+                rcaTicketHandlingService.syslogAlarmStatusModify(rcaTicketHandlingStatus);
+                rcaTicketHandlingService.syslogSopSave(rcaTicketHandlingStatus);
+
+                LOGGER.info("==========>[UITicketMsgListener] rcaTicketHandlingStatus SYSLOG : " + rcaTicketHandlingStatus + "<==============");
+            }
+        } catch (Exception e) {
+            LOGGER.error("==========>[EngineClearAlarmMsgListener] onMessage error " + e.getMessage() + " <==============");
+        }
+    }
 }
