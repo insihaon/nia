@@ -1,0 +1,26 @@
+{
+  "data": {
+    "success": true,
+    "encrypt": false,
+    "sql": [
+      "SELECT DISTINCT\r\n            P.ticket_id ,\r\n            'INIT' AS status,\r\n            'ABNORMAL_TRAFFIC' AS alarm_type,\r\n            '7' AS alarmlevel,\r\n            TO_TIMESTAMP((P.INTTIMESTAMP * 1000) / 1000) as receivetime,\r\n            TO_TIMESTAMP((P.INTTIMESTAMP * 1000) / 1000) as faulttime,\r\n            R.STRRESNAME AS sysname,\r\n            PM.if_id AS interface_id,\r\n            I.STRIFNAME AS interface_name,\r\n            P.FLTBPSIN AS bpsin,\r\n            P.FLTBPSOUT AS bpsout,\r\n            P.FLTPPSIN AS ppsin,\r\n            P.FLTPPSOUT AS ppsout,\r\n            CASE WHEN R.STRRESNAME LIKE '%-7712%' THEN '7712/5812'\r\n                 WHEN R.STRRESNAME LIKE '%-5812%' THEN '7712/5812'\r\n                 WHEN STRRESNAME LIKE '%-n9k%' THEN 'ngk'\r\n                 ELSE '' END AS equiptype,\r\n            P.fltbpsin_anomaly,\r\n            P.fltbpsout_anomaly\r\n        FROM rca.tb_anomalous_traffic P\r\n                 LEFT OUTER JOIN IP_YD.XE_CVNMS_RESOURCE R ON P.STRRESID = R.STRRESID\r\n                 LEFT OUTER JOIN IP_YD.XE_CVNMS_RESOURCE_IF I ON P.STRRESID = I.STRRESID  AND P.STRIFID = I.STRIFID\r\n                 LEFT OUTER JOIN RESOURCE.TB_PORT_MST PM ON PM.NODE_NUM = I.STRRESID AND PM.IF_NUM = I.STRIFID\r\n                 LEFT OUTER JOIN RESOURCE.TB_USER_ORGAN UO ON PM.NODE_ID=UO.NODE_ID AND PM.IF_ID = UO.IF_ID\r\n        WHERE P.ticket_id = '161738'"
+    ],
+    "result": [
+      {
+        "status": "INIT",
+        "alarm_type": "ABNORMAL_TRAFFIC",
+        "alarmlevel": "7",
+        "sysname": "seoul-7712",
+        "interface_id": "ce3/1",
+        "interface_name": "CORE_ce3/1_서울-판교7712_100G",
+        "bpsin": 14.0,
+        "bpsout": 677.0,
+        "ppsin": 16926.0,
+        "ppsout": 64334.0,
+        "equiptype": "7712/5812",
+        "fltbpsin": 14.0,
+        "fltbpsout": 677.0
+      }
+    ]
+  }
+}
