@@ -67,7 +67,7 @@ export default {
         { type: '', prop: 'nren_name', name: '기관명', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: false,
           cellRendererFramework: 'CellRenderHyperlink', cellRendererParams: { type: 'agencyDetail', action: this.handleOpenModalDetail.bind(this) } },
         { type: '', prop: 'node_id', name: '노드명', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center', sortable: false, filterable: true },
-        { type: '', prop: 'node_int', name: 'I/F ID', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center' },
+        { type: '', prop: 'if_id', name: 'I/F ID', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center' },
         { type: '', prop: 'if_nm', name: 'I/F명', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center' },
         { type: '', prop: 'bandwidth', name: '대역폭(Gbps)', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center' },
         { type: '', prop: 'customer_id', name: '고객ID', minWidth: 50, flex: 0, suppressMenu: true, alignItems: 'center' },
