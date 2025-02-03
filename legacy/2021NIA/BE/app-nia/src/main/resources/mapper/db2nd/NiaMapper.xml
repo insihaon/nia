@@ -128,7 +128,7 @@
    
    <!-- IP-SDN ALARM + TRAFFIC + SYSLOG -->
    <select id="SELECT_IP_ALARM_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
-        SELECT DISTINCT
+    SELECT DISTINCT
         ALARMNO,
         TICKET_ID,
         CLUSTERNO,
@@ -267,8 +267,12 @@
         LEFT JOIN resource.tb_node_mst NM ON NM.NODE_ID = SAM.NODE_NM
         WHERE ALARMTIME <![CDATA[ > ]]> now() - INTERVAL '48' HOUR
     ) T
+    WHERE 1=1 
     <if test="IS_POLLING != null and IS_POLLING == true">
-        WHERE T.ALARMTIME <![CDATA[ > ]]> (CURRENT_TIMESTAMP - INTERVAL '5 minutes')
+        AND T.ALARMTIME <![CDATA[ > ]]> (CURRENT_TIMESTAMP - INTERVAL '5 minutes')
+    </if>
+    <if test="TICKET_ID != null">
+        AND T.TICKET_ID = #{TICKET_ID}
     </if>
     ORDER BY ALARMTIME DESC
    </select>
