@@ -362,9 +362,6 @@ const Base = {
       const { name, typeOf, _inactive } = self
       if (typeOf !== 'Base' || !name || _inactive === true) return
       if (AppOptions.instance.project === 'nia') {
-        console.log('dialogOpenMixin', dialogOpenMixin)
-        console.log('dialogOpenMixin.data()', dialogOpenMixin.data())
-
         const dMap = dialogOpenMixin.data().dialogList
         if (typeOf === 'Base' && (this.$route.name !== this.name && !Object.keys(dMap).includes(this.name))) return
       } else {
