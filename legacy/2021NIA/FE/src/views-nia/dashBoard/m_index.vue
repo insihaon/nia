@@ -600,12 +600,9 @@ export default {
       this.fn_openWindow('ticketDetail', row)
     },
     handleOpenEditModal(row, type) {
-      // this.fn_openWindow('sopList', row, 'SOP 이력 조회')
-
       const param = { row, type }
       if (type === 'SOP') {
-        // this.$refs.ModalSopList.open(param)
-        this.fn_openWindow('sopList', row)
+        this.fn_openWindow('sopHistory', row)
       } else if (type === 'NTF') {
         // this.$refs.ModalNTF.open(param)
         this.fn_openWindow('requestForAction', row)
