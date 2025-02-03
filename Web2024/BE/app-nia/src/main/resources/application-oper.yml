@@ -34,7 +34,8 @@ spring:
     address: 116.89.191.47 # incodej-lab.iptime.org
     port: 6786
     # 테스트용 웹으로 운영서버에 배포했을 때 운영mq 데이터를 가져오지 않기 위한 설정(2024.10.21)
-    niaEngineToUi: OPER#nia.EngineToUiIndexDirectly
+    # niaEngineToUi: OPER#nia.EngineToUiIndexDirectly
+    niaEngineToUi: nia.EngineToUiIndexDirectly
     niaUiToEngine: nia.UiToEngineIndexDirectly
     InspectorToUID: OPER#nia.InspectorToUIDirectly
     TicketRestart: OPER#nia.NiaTicketReStartIndexDirectly

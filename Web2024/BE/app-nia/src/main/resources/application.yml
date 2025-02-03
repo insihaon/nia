@@ -60,9 +60,9 @@ spring:
   datasource2nd:
     enabled: true
     driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-    url: jdbc:log4jdbc:postgresql://incodej-lab.iptime.org:41544/niadb?allowMultiQueries=true
-    username: ENC(nEDs/lC9Tk5WpCugaKnCO2HbY1b88bnH)
-    password: ENC(aDtzf6fHV2dJdOeI5IWQ+C3vz3ly6Klm)
+    url: jdbc:log4jdbc:postgresql://incodej-lab.iptime.org:6544/niadb?allowMultiQueries=true
+    username: ENC(8Fi3mfw4UUT/4sIfuw71gKaNJQnbCn7y)
+    password: ENC(qth6L1xxsdq5xTajX4jkKmlJQ9ieFYm6)
     dataSource-name: ENC(+24YoukpnVKZAmX8g5jOtw==)
     mapper-packages: >
       com.codej.nia.mapper.db2nd,
@@ -91,9 +91,9 @@ spring:
     maxheap: 128M
 
   rabbitmq:
-    enabled: false # 접속 불가 환경을 위해 추가함
+    enabled: true # 접속 불가 환경을 위해 추가함
     address: incodej-lab.iptime.org
-    port: 41072 # 15123
+    port: 6786 # 15123
     username: niaadmin
     password: niaadmin12#$
     niaEngineToUi: nia.EngineToUiIndexDirectly
@@ -115,7 +115,7 @@ jasypt:
 myconf:
   project: nia
   websocket:
-    enabled: false #websocket.enabled
+    enabled: true #websocket.enabled
     url: /ws-stomp
     heartbeat.enabled: false
   auth:
