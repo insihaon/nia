@@ -119,6 +119,16 @@ public class RcaTicketHandlingServiceImpl implements RcaTicketHandlingService {
                 rcaTicketHandlingStatus.setZero1Model(aiResult.getZero1Model());
                 rcaTicketHandlingStatus.setZero1Entropy(aiResult.getZero1Entropy());
 
+                if (rcaTicketHandlingStatus.getFaultClassify() == null) {
+                    rcaTicketHandlingStatus.setFaultClassify("-");
+                }
+                if (rcaTicketHandlingStatus.getFaultDetailContent() == null) {
+                    rcaTicketHandlingStatus.setFaultDetailContent("-");
+                }
+                if (rcaTicketHandlingStatus.getFaultType() == null) {
+                    rcaTicketHandlingStatus.setFaultType("-");
+                }
+
                 try {
                     LOGGER.info(">>>>>>>>> [RcaTicketHandlingService]   NTT/ATT2/NFTT UpsertSop");
                     ticketService.upsertSop(rcaTicketHandlingStatus);
