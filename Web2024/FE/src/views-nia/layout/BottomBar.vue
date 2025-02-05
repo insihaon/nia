@@ -115,6 +115,7 @@ export default {
   },
   beforeDestroy() {
     clearInterval(this.monitoringInterval)
+    this.removeWsEventListener(this.CONSTANTS.channels.SYSTEM_MONITORING.name, this.onReceivedSystemMonitoring)
   },
   methods: {
     subscribeEvent() {
