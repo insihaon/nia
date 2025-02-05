@@ -2,8 +2,8 @@ import { safeArray, safeString } from '@/utils'
 
 export default {
   channels: {
-    UNKNOWN: { name: 'UNKNOWN', enable: true },
-    HEARTBEAT: { name: 'HEARTBEAT', enable: true },
+    UNKNOWN: { name: 'UNKNOWN', enable: true, init: true },
+    HEARTBEAT: { name: 'HEARTBEAT', enable: true, init: true },
     IPSDN_ALARM: { name: 'IPSDN_ALARM', enable: true },
     TRANS_ALARM: { name: 'TRANS_ALARM', enable: true },
     SYSTEM_MONITORING: { name: 'SYSTEM_MONITORING', enable: true },
@@ -17,7 +17,7 @@ export default {
     pleaseInputName: '이름을 입력해 주세요',
     save: '저장',
     cancel: '취소',
-    error: '에러'
+    error: '에러',
   },
   // authOptions: [
   //   { text: '사용자', code: 'user', value: 1, index: 0 },
@@ -35,7 +35,7 @@ export default {
     GRANT: { code: 'GRANT', label: '승인', index: 0 },
     REJECT: { code: 'REJECT', label: '반려', index: 1 },
     APPLY: { code: 'APPLY', label: '신청', index: 2 },
-    REVOKE: { code: 'REVOKE', label: '회수', index: 3 }
+    REVOKE: { code: 'REVOKE', label: '회수', index: 3 },
   },
   authDataSet: {
     APPLY: { code: 'A', label: '요청', index: 0 },
@@ -46,12 +46,11 @@ export default {
   apiAlarm: {
     onDemand: { code: 'O', state: 'OnDemand', label: '재처리' },
     batch: { code: 'B', state: 'Batch', label: '' },
-    retry: { code: 'T', label: '재처리 성공' }
+    retry: { code: 'T', label: '재처리 성공' },
   },
   nia: {
     // 전송망
     transType: [
-
       { code: 'EMS', text: 'EMS', fnCount: (d) => safeString(d.ticket_type).trim() !== 'PF', fnFilter: (d) => safeString(d.ticket_type).trim() !== 'PF' },
       { code: 'PF', text: '광레벨', fnCount: (d) => safeString(d.ticket_type).trim() === 'PF', fnFilter: (d) => safeString(d.ticket_type).trim() === 'PF' },
     ],
@@ -67,14 +66,14 @@ export default {
     ipAlarmType: [
       { code: 'ALARM', text: 'ALARM', fnCount: (d) => ['ATT2', 'NTT'].includes(safeString(d.ticket_type).trim()) || safeString(d.fault_type).trim() === 'SYSLOG', fnFilter: (d) => ['ATT2', 'NTT'].includes(safeString(d.ticket_type).trim()) || safeString(d.fault_type).trim() === 'SYSLOG' },
       { code: 'TRAFFIC', text: 'TRAFFIC', fnCount: (d) => ['ATT2', 'NTT'].includes(safeString(d.ticket_type).trim()), fnFilter: (d) => ['ATT2', 'NTT'].includes(safeString(d.ticket_type).trim()) },
-      { code: 'SYSLOG', text: 'SYSLOG', fnCount: (d) => safeString(d.fault_type).trim() === 'SYSLOG', fnFilter: (d) => safeString(d.fault_type).trim() === 'SYSLOG' }
+      { code: 'SYSLOG', text: 'SYSLOG', fnCount: (d) => safeString(d.fault_type).trim() === 'SYSLOG', fnFilter: (d) => safeString(d.fault_type).trim() === 'SYSLOG' },
     ],
     statusType: [
       { code: 'INIT', hex: '', text: '발생', fnCount: (d) => safeString(d.status).trim() === 'INIT', fnFilter: (d) => safeString(d.status).trim() === 'INIT' },
       { code: 'ACK', hex: '', text: '인지', fnCount: (d) => safeString(d.status).trim() === 'ACK', fnFilter: (d) => safeString(d.status).trim() === 'ACK' },
       { code: 'FIN', hex: '', text: '수동마감', fnCount: (d) => safeString(d.status).trim() === 'FIN', fnFilter: (d) => safeString(d.status).trim() === 'FIN' },
       { code: 'AUTO_FIN', hex: '', text: '자동마감', fnCount: (d) => safeString(d.status).trim() === 'AUTO_FIN', fnFilter: (d) => safeString(d.status).trim() === 'AUTO_FIN' },
-    ]
+    ],
   },
   ipms: {
     ipInfoOptions: [
@@ -83,8 +82,8 @@ export default {
       { value: 'SAID', label: 'SAID' },
       { value: 'SLLNUM', label: '전용번호' },
       { value: 'SCONNALIAS', label: '수용회선명' },
-    ]
-  }
+    ],
+  },
 }
 
 export function objectToArray(obj) {
