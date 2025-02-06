@@ -28,6 +28,7 @@ import org.apache.ibatis.type.TypeHandlerRegistry;
 import org.springframework.util.CollectionUtils;
 
 import com.codej.web.cached.SqlHolder;
+import com.codej.web.vo.BaseVo;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -65,9 +66,9 @@ public class SqlStatementInterceptor implements Interceptor {
                 parameter = invocation.getArgs()[1];
             }
 
-            if (parameter == null || parameter instanceof Map && ((HashMap<?, ?>) parameter).get("TOTAL_COUNT") == null) {
+            if (parameter == null || parameter instanceof BaseVo  || parameter instanceof Map && ((HashMap<?, ?>) parameter).get("TOTAL_COUNT") == null) {
                 // SQL 문의 ID를 가져옵니다.
-                if (parameter != null) {
+                if (parameter != null && parameter instanceof BaseVo != true) {
                     log.debug(String.format("parameter=%s", parameter.toString()));
                 }
                 String sqlId = ms.getId();
