@@ -51,7 +51,7 @@ var dialogOpenMixin = {
           height: '390',
           resizeble: true,
         },
-        sopList: {
+        sopHistory: {
           component: () => import('@/views-nia/alarmMonitoring/sopHistory'),
           pageTitle: 'SOP 이력 조회',
           top: '2vh',
@@ -99,6 +99,7 @@ var dialogOpenMixin = {
       tmpWindowData.id = new Date().getTime()
       tmpWindowData.name = this.dialogList[dialogNm]['pageTitle']
       tmpWindowData.target = this.dialogList[dialogNm]['component']
+      tmpWindowData.dialogNm = dialogNm
       // tmpWindowData.type = this.dialogList[dialogNm]
       tmpWindowData.width = this.isMobile ? window.innerWidth : this.dialogList[dialogNm]['width']
       tmpWindowData.height = this.dialogList[dialogNm]['height']

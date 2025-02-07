@@ -47,14 +47,14 @@
   </div>
 </template>
 <script>
-import { Base } from '@/min/Base.min'
+import { Base } from '@/min/Base'
 import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
 import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
 import { apiSelectSopHistList, apiSopSyslogHistList, apiEquipmentList, apiInterfaceList } from '@/api/nia'
 import { getAlarmType, getTicketStatus, getSopAiAccuracy } from '@/views-nia/js/commonFormat'
 import ModalSopDetail from '@/views-nia/modal/ModalSopDetail.vue'
 
-const routeName = 'SopHistory'
+const routeName = 'sopHistory'
 export default {
   name: routeName,
   // eslint-disable-next-line vue/no-unused-components

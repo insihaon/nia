@@ -12,6 +12,8 @@ import { mapState } from 'vuex'
 import XLSX from 'xlsx'
 import xxtea from 'xxtea'
 import CONSTANTS from './constants'
+import dialogOpenMixin from '@/mixin/dialogOpenMixin'
+
 // eslint-disable-next-line no-import-assign
 XLSX = require('sheetjs-style')
 export const _var = { CONSTANTS, xxtea }
@@ -356,9 +358,16 @@ const Base = {
     onDeactiveView() { /* for Override */ },
     activeView(when) {
       const self = this
+
       const { name, typeOf, _inactive } = self
       if (typeOf !== 'Base' || !name || _inactive === true) return
-      if (typeOf === 'Base' && this.$route.name !== this.name) return
+      if (AppOptions.instance.project === 'nia') {
+        const dMap = dialogOpenMixin.data().dialogList
+        if (typeOf === 'Base' && (this.$route.name !== this.name && !Object.keys(dMap).includes(this.name))) return
+      } else {
+        if (typeOf === 'Base' && (this.$route.name !== this.name)) return
+      }
+
       if (ModalManager.instance.last()) return
       if (this.limitedDev) {
         this.onActiveView()

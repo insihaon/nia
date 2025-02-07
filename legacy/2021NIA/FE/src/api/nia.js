@@ -818,16 +818,6 @@ export function apiSelectNiaBadTraffic2List(params = {}) {
   })
 }
 
-export function apiSelectNiaBadTrafficList(params = {}) {
-  return http({
-    url: '/selectList',
-    method: 'post',
-    filePath: filePath,
-    sqlId: 'SELECT_NIA_BAD_TRAFFIC_LIST',
-    data: params
-  })
-}
-
 export function apiSelectNiaAbnormalTrafficList(params = {}) {
   return http({
     url: '/selectList',
