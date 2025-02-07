@@ -66,15 +66,36 @@ public class SqlStatementInterceptor implements Interceptor {
                 parameter = invocation.getArgs()[1];
             }
 
-            if (parameter == null || parameter instanceof BaseVo  || parameter instanceof Map && ((HashMap<?, ?>) parameter).get("TOTAL_COUNT") == null) {
-                // SQL 문의 ID를 가져옵니다.
-                if (parameter != null && parameter instanceof BaseVo != true) {
-                    log.debug(String.format("parameter=%s", parameter.toString()));
-                }
-                String sqlId = ms.getId();
+            if (parameter == null || parameter instanceof BaseVo || (parameter instanceof Map && !((Map<?, ?>) parameter).containsKey("TOTAL_COUNT"))) {
+                String sqlId = ms.getId();  // SQL 문의 ID를 가져옵니다.
                 BoundSql boundSql = ms.getBoundSql(parameter);
                 Configuration configuration = ms.getConfiguration();
                 String sql = printSql(configuration, boundSql, sqlId, size, time);
+
+                if(parameter != null) {
+                    if (parameter instanceof BaseVo) {
+                        List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
+                    
+                        if (!CollectionUtils.isEmpty(parameterMappings)) {
+                            MetaObject metaObject = configuration.newMetaObject(parameter);
+                            Map<String, Object> boundParams = new HashMap<>();
+                    
+                            for (ParameterMapping paramMapping : parameterMappings) {
+                                String propertyName = paramMapping.getProperty();
+                                if (metaObject.hasGetter(propertyName)) {
+                                    Object value = metaObject.getValue(propertyName);
+                                    boundParams.put(propertyName, value);
+                                } else if (boundSql.hasAdditionalParameter(propertyName)) {
+                                    Object value = boundSql.getAdditionalParameter(propertyName);
+                                    boundParams.put(propertyName, value);
+                                }
+                            }
+                            log.debug(String.format("parameter=%s", boundParams));
+                        }
+                    } else {
+                        log.debug(String.format("parameter=%s", parameter.toString()));
+                    }
+                }
 
                 if(parameter != null) {
                     try {
