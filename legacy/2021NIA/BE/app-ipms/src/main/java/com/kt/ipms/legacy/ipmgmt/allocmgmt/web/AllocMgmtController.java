@@ -39,7 +39,9 @@ import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.IpAllocOperMstListVo;
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.IpAllocOperMstVo;
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.TbIpAllocMstListVo;
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.TbIpAllocMstVo;
+import com.kt.ipms.legacy.ipmgmt.assignmgmt.service.AssignMgmtService;
 import com.kt.ipms.legacy.ipmgmt.assignmgmt.vo.TbIpAssignMstComplexVo;
+import com.kt.ipms.legacy.ipmgmt.assignmgmt.vo.TbIpAssignMstListVo;
 import com.kt.ipms.legacy.ipmgmt.assignmgmt.vo.TbIpAssignMstVo;
 import com.kt.ipms.legacy.ipmgmt.hostmgmt.vo.TbIpHostMstListVo;
 import com.kt.ipms.legacy.ipmgmt.hostmgmt.vo.TbIpHostMstVo;
@@ -55,12 +57,40 @@ public class AllocMgmtController extends CommonController {
 
 	@Autowired
 	private AllocMgmtService allocMgmtService;
+	@Autowired
+	private AssignMgmtService assignMgmtService;
 
 	@Autowired
 	protected FileController fileController;
 
 	@Autowired
 	private FileStorageProperties fileStorageProperties;
+
+	/* IP병합 가능 목록 */
+	@RequestMapping(value = "/ipmgmt/allocmgmt/viewListIpMergeMst.model", method = { RequestMethod.POST,
+		RequestMethod.GET })
+	@ResponseBody
+	@EncryptResponse
+	public ModelMap selectListIpMergeMst(@RequestBody IpAllocOperMstVo searchVo, ModelMap model,
+			HttpServletRequest request) {
+		List<IpAllocOperMstVo> ipMergeMstVos = new ArrayList<IpAllocOperMstVo>();
+		try {
+			TbLvlMstVo searchSeqVo = new TbLvlMstVo();
+			searchSeqVo.setSsvcLineTypeCd(searchVo.getSsvcLineTypeCd());
+			searchSeqVo.setSsvcGroupCdMulti(searchVo.getSsvcGroupCdMulti());
+			searchSeqVo.setSsvcObjCd(searchVo.getSsvcObjCd());
+
+			TbLvlMstListVo resultSeqList = jwtUtil.getLvlSeqList(request, searchSeqVo);
+			searchVo.setLvlMstSeqListVo(resultSeqList);
+			
+			ipMergeMstVos = allocMgmtService.validateMrgAsgnIPMstTest(searchVo);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return createResultList(ipMergeMstVos, ipMergeMstVos.size());
+	}
 
 	/**
 	 * IP 할당 목록

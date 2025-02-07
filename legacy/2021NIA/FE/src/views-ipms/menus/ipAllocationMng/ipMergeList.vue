@@ -42,15 +42,6 @@
         </template>
       </compTable>
     </el-col>
-    <ModalCheckTacsIpBlock ref="ModalCheckTacsIpBlock" />
-    <!-- 분할 -->
-    <ModalIpBlockDivision ref="ModalIpBlockDivision" @reload="fnViewListIpAllocMst()" />
-    <!-- 할당 처리 -->
-    <ModalIpAllocInsert ref="ModalIpAllocInsert" @reload="fnViewListIpAllocMst()" />
-    <!-- 할당 상세 -->
-    <ModalIpAllocDetail ref="ModalIpAllocDetail" @alocCallBtnClick="fnInsertAlcBtnClick" />
-    <!-- 라우팅 중복 개수 -->
-    <ModalDetailSummary ref="ModalDetailSummary" />
     <!-- IP블록병합 -->
     <ModalIpAssignMerge ref="ModalIpAssignMerge" @reload="fnViewListIpAllocMst()" />
   </el-row>
@@ -61,22 +52,17 @@ import { onMessagePopup } from '@/utils/index'
 import CompTable from '@/components/elTable/CompTable.vue'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
 import tableHeightMixin from '@/mixin/tableHeightMixin'
-import ModalIpAllocInsert from '@/views-ipms/modal/alloc/ModalIpAllocInsert.vue'
-import ModalIpAllocDetail from '@/views-ipms/modal/alloc/ModalIpAllocDetail.vue'
-import ModalCheckTacsIpBlock from '@/views-ipms/modal/ModalCheckTacsIpBlock.vue'
-import ModalIpBlockDivision from '@/views-ipms/modal/ModalIpBlockDivision.vue'
-import ModalDetailSummary from '@/views-ipms/modal/ModalDetailSummary.vue'
 import ModalIpAssignMerge from '@/views-ipms/modal/assign/ModalIpAssignMerge.vue'
 
 import { fnViewCheckTacsIpBlock } from '@/views-ipms/js/common-function'
 import { ipmsModelApis, apiRequestModel, ipmsJsonApis, apiRequestExcel } from '@/api/ipms'
 import { downloadExcel } from '@/views-ipms/js/common-function'
 
-const routeName = 'IpAllocation'
+const routeName = 'ipMergeList'
 
 export default {
   name: routeName,
-  components: { CompTable, DynamicComponentLoader, ModalIpBlockDivision, ModalIpAllocDetail, ModalCheckTacsIpBlock, ModalIpAllocInsert, ModalIpAssignMerge, ModalDetailSummary },
+  components: { CompTable, DynamicComponentLoader, ModalIpAssignMerge },
   extends: Base,
   mixins: [tableHeightMixin],
   data() {
@@ -124,6 +110,7 @@ export default {
         { prop: 'sipCreateTypeNm', label: '공인/사설', align: 'center', sortable: false, columnVisible: true, showOverflow: true },
         { prop: 'sassignTypeNm', label: '서비스', align: 'center', sortable: false, columnVisible: true, showOverflow: true },
         { prop: 'pipPrefix', label: 'IP블록', align: 'center', sortable: false, columnVisible: true, showOverflow: true },
+        { prop: 'groupId', label: '그룹ID', align: 'center', sortable: false, columnVisible: true, showOverflow: true },
         { prop: 'sassignLevelNm', label: '할당상태', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'nipAllocMstCnt', label: '회선', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'dmodifyDt', label: '작업일자', align: 'center', sortable: true, columnVisible: true, showOverflow: true, formatter: (row) => { return row.dmodifyDt ? this.moment(row.dmodifyDt).format('YYYY-MM-DD HH:mm:ss') : '' } },
@@ -183,7 +170,7 @@ export default {
       Object.assign(parameter, { pageUnit, pageIndex })
       try {
         this.openLoading(target)
-        const res = await apiRequestModel(ipmsModelApis.viewListIpAllocMst, parameter)
+        const res = await apiRequestModel(ipmsModelApis.viewListIpMergeMst, parameter)
         this.pagination.data = res.result.data ?? []
         this.pagination.total = res.result.totalCount
       } catch (error) {

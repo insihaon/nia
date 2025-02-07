@@ -21,7 +21,7 @@ public class ipmsTask {
     
     //초(0-59) 분(0-59) 시간(0-23) 일(1-31) 월(1-12) 요일(0-7)
     // 매일 오전 1시에 실행
-    @Scheduled(cron = "0 0 11 * * ?") 
+    @Scheduled(cron = "0 0 1 * * ?") 
     public void sendHeartbeat() {
         try {
             String dir = fileStorageProperties.getExcelUploadDir();
