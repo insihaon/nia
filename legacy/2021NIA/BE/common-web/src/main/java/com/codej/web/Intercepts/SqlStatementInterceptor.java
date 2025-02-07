@@ -90,10 +90,10 @@ public class SqlStatementInterceptor implements Interceptor {
                                     boundParams.put(propertyName, value);
                                 }
                             }
-                            log.debug(String.format("parameter=%s", boundParams));
+                            log.debug(String.format("parameter=%s %s", parameter.getClass().getSimpleName(), boundParams));
                         }
                     } else {
-                        log.debug(String.format("parameter=%s", parameter.toString()));
+                        log.debug(String.format("parameter=%s %s", parameter.getClass().getSimpleName(), parameter.toString()));
                     }
                 }
 
