@@ -77,6 +77,12 @@ export const ipmsRoute = Object.freeze([
         meta: { title: 'IP할당', affix: false }
       },
       {
+        path: 'ipMergeList',
+        component: () => import('@/views-ipms/menus/ipAllocationMng/ipMergeList'),
+        name: 'ipMergeList',
+        meta: { title: 'IP병합가능 목록', affix: false }
+      },
+      {
         hidden: true,
         path: 'neOssOrder',
         component: () => import('@/views-ipms/menus/ipAllocationMng/neOssOrder'),

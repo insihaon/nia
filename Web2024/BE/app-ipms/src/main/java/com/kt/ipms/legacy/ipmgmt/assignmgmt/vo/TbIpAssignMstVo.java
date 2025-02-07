@@ -13,6 +13,14 @@ public class TbIpAssignMstVo extends IpVo implements Serializable {
 	/** MEMBER VARIABLE DECLARATION START **/
 	private static final long serialVersionUID = 3585868905953709272L;
 
+	private int groupId;
+	public int getGroupId() {
+		return groupId;
+	}
+
+	public void setGroupId(int groupId) {
+		this.groupId = groupId;
+	}
 	private String ssvcLineTypeCd;
 
 	private String ssvcLineTypeNm;

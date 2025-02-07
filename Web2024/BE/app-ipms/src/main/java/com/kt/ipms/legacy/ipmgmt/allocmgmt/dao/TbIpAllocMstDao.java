@@ -10,10 +10,16 @@ import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.IpAllocOperMstListVo;
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.IpAllocOperMstVo;
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.IpmsSvcVo;
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.TbIpAllocMstVo;
+import com.kt.ipms.legacy.ipmgmt.assignmgmt.vo.TbIpAssignMstVo;
 
 /** TB_IP_ALLOC_MST DAO INTERFACE **/
 @Mapper
 public interface TbIpAllocMstDao extends BaseDataMapper {
+
+	/** TB_IP_ASSIGN_MST selectListTbIpAssignMstVoMergeList (병합가능 리스트 구현 테스트용) **/
+	public List<IpAllocOperMstVo> selectListTbIpAssignMstVoMergeList(IpAllocOperMstVo ipAllocOperMstVo);
+	/* TB_IP_ASSIGN_MST 병합가능 group id update */
+	public int updateTbIpAssignMstVoGroupId(IpAllocOperMstListVo ipAllocOperMstListVo);
 
 	/** TB_IP_ALLOC_MST insert **/
 	public int insertTbIpAllocMstVo(TbIpAllocMstVo tbIpAllocMstVo);
@@ -48,9 +54,12 @@ public interface TbIpAllocMstDao extends BaseDataMapper {
 	
 	/** 배정할당 selectListPage **/
 	public List<IpAllocOperMstVo> selectListPageIpAllocOperMstVo(IpAllocOperMstVo ipAllocOperMstVo);
-
+	
 	/** 배정할당 countListPage **/
 	public int countListPageIpAllocOperMstVo(IpAllocOperMstVo tbIpAllocOperMstVo);
+	
+	/** 병합가능 selectListPage **/
+	public List<IpAllocOperMstVo> selectListPageIpMergeOperMstVo(IpAllocOperMstVo ipAllocOperMstVo);
 
 	/** 할당시설 selectListPage **/
 	public List<IpAllocOperMstVo> selectListPageNeMst(IpAllocOperMstVo ipAllocOperMstVo);
