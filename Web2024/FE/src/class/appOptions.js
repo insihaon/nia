@@ -37,6 +37,7 @@ export class AppOptions extends Storage {
       lastUser: null,
       useWsLog: false,
       wsTicket: true,
+      debugEncrypt: !this.debug,
       language: ['ko', 'en'].at(0),
       urlParam: {},
     })
@@ -67,6 +68,10 @@ export class AppOptions extends Storage {
 
   get isGod() {
     return this._data.debug
+  }
+
+  get encrypt() {
+    return this._data.mock !== 'FE' && (this._data.debug ? this._data.debugEncrypt : !this._data.debugEncrypt)
   }
 
   setFrontMock() {

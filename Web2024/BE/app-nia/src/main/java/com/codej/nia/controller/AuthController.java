@@ -204,8 +204,8 @@ public class AuthController extends AbsAuthController {
     private HashMap<String, Object> getDecryptBody(HashMap<String, Object> body) {
         HashMap<String, Object> decryptBody = null;
         try {
-            String endata = (String) body.get(GlobalConstants.Common.DATA);
-            decryptBody = EncryptUtil.decrypt(endata);
+            String encryptData = (String) body.get(GlobalConstants.Common.DATA);
+            decryptBody = EncryptUtil.decrypt(encryptData);
 
             if (decryptBody == null) {
                 decryptBody = new HashMap<String, Object>(body);

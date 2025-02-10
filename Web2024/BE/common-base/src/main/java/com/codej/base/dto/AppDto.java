@@ -7,16 +7,19 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.codej.base.dto.model.ToStringFormatter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
-@Data
-public class AppDto {
+@Getter
+@Setter
+public class AppDto extends ToStringFormatter {
     @PostConstruct
     void log() throws JsonProcessingException {
         String context = this.toString();
@@ -182,6 +185,12 @@ public class AppDto {
 
     @Value("${myconf.api-server.grafana-url:127.0.0.1}")
     private String grafanaUrl;
+
+    @Value("${myconf.redirectServer.enable:false}")
+    private Boolean redirectServerEnable;
+
+    @Value("${myconf.redirectServer.url:}")
+    private String redirectServerUrl;
 
     @Value("${myconf.api-server.hub-api:http://127.0.0.1:8070/dh}")
     private String hubUrl;

@@ -6,9 +6,9 @@ import { getToken, getIpsdnToken } from '@/utils/auth'
 import axios from 'axios'
 import { Message, MessageBox } from 'element-ui'
 import moment from 'moment'
-import Encrypt from '@/assets/libs/Encrypt.min'
+import Encrypt from '@/assets/libs/Encrypt'
 
-const { debug, mock, baseURL, project } = AppOptions.instance
+const { debug, mock, baseURL, project, encrypt } = AppOptions.instance
 const debugLog = debug ? console.log : () => { /* 빈 블록 사용 금지 */ }
 const clearLog = (debug) ? () => { } : () => { wait(500).then(console.clear) }
 export const __ = { store, AppOptions }
@@ -34,9 +34,7 @@ service.interceptors.request.use(
     }
 
     const { data, testData } = config
-    const server = store.getters.server || {}
-    const encryptRequest = !config.encrypt && mock !== 'FE' && !debug
-    config.data = Encrypt.encryptHttp(data, encryptRequest, server.isDevProfile)
+    config.data = Encrypt.encryptHttp(data, !config.encrypt && encrypt)
 
     const command = config.command = url.slice(1).replace(/[^a-zA-Z0-9]+/, '_')
 

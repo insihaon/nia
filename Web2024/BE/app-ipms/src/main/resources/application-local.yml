@@ -1,5 +1,5 @@
 server:
-  port: 8070
+  port: 8080
 
 spring:
   config:
@@ -31,9 +31,7 @@ spring:
 myconf:
   auth:
     use: false #auth.use
-  redirectServer:
-    enable: true
-    url: http://127.0.0.1:8080
+  encrypt: false 
 
 file:
   # upload-dir: ./external

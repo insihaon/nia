@@ -106,7 +106,10 @@ jasypt:
 
 myconf:
   project: ipms
-  ajp.use: true
+  ajp.use: false
+  # redirectServer: 
+  #   enable: true  # true 설정하면 웹 요청을 url 로 리다이렉트 함
+  #   url: http://127.0.0.1:8080
   websocket:
     enabled: false   #websocket.enabled
     url: /ws-stomp
