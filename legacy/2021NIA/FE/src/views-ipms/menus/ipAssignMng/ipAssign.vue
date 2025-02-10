@@ -42,11 +42,11 @@
         </template>
       </comptable>
     </el-col>
-    <ModalIpBlockDivision ref="ModalIpBlockDivision" @reload="onloadIpAssign($refs.searchCondition.requestParameter)" />
-    <ModalIpAssignDetail ref="ModalIpAssignDetail" @assignCallBtnClick="fnUpdateBtnClick" @reload="onloadIpAssign($refs.searchCondition.requestParameter)" />
-    <ModalIpAssign ref="ModalIpAssign" @reload="onloadIpAssign($refs.searchCondition.requestParameter)" />
+    <ModalIpBlockDivision ref="ModalIpBlockDivision" @reload="fnViewListAsgnIPMst()" />
+    <ModalIpAssignDetail ref="ModalIpAssignDetail" @assignCallBtnClick="fnUpdateBtnClick" @reload="fnViewListAsgnIPMst()" />
+    <ModalIpAssign ref="ModalIpAssign" @reload="fnViewListAsgnIPMst()" />
     <ModalCheckTacsIpBlock ref="ModalCheckTacsIpBlock" />
-    <ModalIpAssignMerge ref="ModalIpAssignMerge" @reload="fnViewListIpAllocMst($refs.searchCondition.requestParameter)" />
+    <ModalIpAssignMerge ref="ModalIpAssignMerge" @reload="fnViewListAsgnIPMst()" />
     <ModalDetailSummary ref="ModalDetailSummary" />
   </el-row>
 </template>
@@ -94,16 +94,19 @@ export default {
         { prop: 'sintgrmYn', label: 'DB-라우팅 일치 여부', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'nsummaryCnt', label: '라우팅 중복 개수', align: 'center', sortable: true, columnVisible: true, showOverflow: true,
           formatter: (row, col, value, index) => {
-            return this.$createElement('el-button', {
-              // class: row.nsummaryCnt > 0 ? 'red' : '',
-              attrs: {
-                round: true, // Adding the round option
-                plain: true,
-                type: row.nsummaryCnt > 0 ? 'danger' : 'primary'
-              },
-              on: { click: () => {
-                this.$refs.ModalDetailSummary.open({ row })
-            } } }, row.nsummaryCnt)
+            if (row.nsummaryCnt === '' || row.nsummaryCnt === null) return ''
+            else {
+              return this.$createElement('el-button', {
+                // class: row.nsummaryCnt > 0 ? 'red' : '',
+                attrs: {
+                  round: true, // Adding the round option
+                  plain: true,
+                  type: row.nsummaryCnt > 0 ? 'danger' : 'primary'
+                },
+                on: { click: () => {
+                  this.$refs.ModalDetailSummary.open({ row })
+              } } }, row.nsummaryCnt)
+            }
           }
         },
         { prop: 'nbitmask', label: '분할', align: 'center', sortable: true, columnVisible: true, showOverflow: true,
@@ -157,7 +160,7 @@ export default {
           }
           this.$store.dispatch('ipms/setToParam', null)
           setTimeout(() => {
-            this.onloadIpAssign()
+            this.fnViewListAsgnIPMst()
           }, 10)
         }
       },
@@ -171,7 +174,7 @@ export default {
   methods: {
     handleSearch(requestParameter) {
       this.pagination.currentPage = 1
-      this.onloadIpAssign(requestParameter)
+      this.fnViewListAsgnIPMst(requestParameter)
     },
     async fnSelectSassignLevelCds() {
       try {
@@ -191,7 +194,8 @@ export default {
         console.error(error)
       }
     },
-    async onloadIpAssign(requestParameter = null) {
+    async fnViewListAsgnIPMst(requestParameter = null) {
+      this.selectedRows = []
       const parameter = requestParameter ?? this.$refs.searchCondition.requestParameter
       const target = ({ vue: this.$refs.compTable })
       const { pageSize: pageUnit, currentPage: pageIndex } = this.pagination
@@ -209,7 +213,7 @@ export default {
     },
     handleChangeCurPage(v) {
       if (v) this.pagination.currentPage = v
-      this.onloadIpAssign()
+      this.fnViewListAsgnIPMst()
     },
     handleClickCell(params) {
       this.selectedRows = [params?.row] || []

@@ -13,6 +13,12 @@ public class IpAllocOperMstVo extends IpVo implements Serializable {
 	/** MEMBER VARIABLE DECLARATION START **/
 	private static final long serialVersionUID = 5627637610299525126L;
 	
+	private Integer index;
+	
+	private List<Integer> indexList;
+
+	private String groupId;
+
 	private String ssvcLineTypeCd;
 
 	private String ssvcLineTypeNm;
@@ -269,7 +275,23 @@ public class IpAllocOperMstVo extends IpVo implements Serializable {
 	
 	/** MEMBER METHOD DECLARATION START **/
 	
+	public Integer getIndex() {
+		return index;
+	}
+	public void setIndexList(List<Integer>  indexList) {
+		this.indexList = indexList;
+	}
+	public List<Integer> getIndexList() {
+		return indexList;
+	}
 
+	public void setGroupId(String groupId) {
+		this.groupId = groupId;
+	}
+
+	public String getGroupId() {
+		return groupId;
+	}
 	public void setSsvcLineTypeCd(String ssvcLineTypeCd) {
 		this.ssvcLineTypeCd = ssvcLineTypeCd;
 	}

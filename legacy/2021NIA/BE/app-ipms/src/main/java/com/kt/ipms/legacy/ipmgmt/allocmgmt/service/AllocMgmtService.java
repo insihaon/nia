@@ -1,8 +1,16 @@
 package com.kt.ipms.legacy.ipmgmt.allocmgmt.service;
 
 import java.math.BigInteger;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -16,6 +24,7 @@ import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
 import com.kt.ipms.legacy.cmn.util.PrintLogUtil;
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
+import com.kt.ipms.legacy.cmn.vo.IpVo;
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.dao.TbIpAllocMstDao;
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.IpAllocMstComplexVo;
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.IpAllocOperMstListVo;
@@ -44,6 +53,7 @@ import com.kt.ipms.legacy.opermgmt.srvmgmt.adapter.SvcMgmtAdapterService;
 import com.kt.ipms.legacy.opermgmt.srvmgmt.vo.TbIpmsSvcMstVo;
 import com.kt.ipms.legacy.ticketmgmt.ticketmgmt.adapter.TicketMgmtAdapterService;
 import com.kt.ipms.legacy.ticketmgmt.ticketmgmt.vo.TbTicketMstVo;
+import com.kt.ipms.legacy.cmn.service.IpCommonService;
 
 @Component @Transactional
 public class AllocMgmtService {
@@ -84,6 +94,9 @@ public class AllocMgmtService {
 	@Lazy @Autowired
 	private HistoryMgmtAdapterService historyMgmtAdapterService;
 
+	@Lazy @Autowired
+	private IpCommonService ipCommonService;
+
 	/*할당 메인 조회*/
 	@Transactional(readOnly = true)
 	public IpAllocOperMstListVo selectListIpAllocMst(IpAllocOperMstVo ipAllocOperMstVo) {
@@ -103,6 +116,115 @@ public class AllocMgmtService {
 			throw new ServiceException("CMN.HIGH.00023", new String[] { "IP할당블록목록" });
 		}
 		return resultListVo;
+	}
+
+	/* 병합가능 리스트 조회 > group id update*/
+	@SuppressWarnings("unchecked")
+	@Transactional(propagation = Propagation.REQUIRED)
+	public List<IpAllocOperMstVo> validateMrgAsgnIPMstTest(IpAllocOperMstVo searchVo) {
+		IpAllocOperMstListVo ipAllocOperMstListVo = new IpAllocOperMstListVo();
+		List<IpAllocOperMstVo> destIpAssignMstVos = new ArrayList<IpAllocOperMstVo>();
+		try {
+			long start = System.currentTimeMillis();
+			destIpAssignMstVos = allocMgmtTxService.selectListMergeList(searchVo);
+			if (destIpAssignMstVos != null && destIpAssignMstVos.size() > 0) {
+				ArrayList<IpAllocOperMstVo> bind = (ArrayList<IpAllocOperMstVo>) destIpAssignMstVos;
+				List<IpAllocOperMstVo> copyIpAssignMstVos = (List<IpAllocOperMstVo>)bind.clone();
+
+				while(copyIpAssignMstVos.size() > 1) {
+					List<IpAllocOperMstVo> validateCheckList = new ArrayList<>();
+					IpAllocOperMstVo ipVo1 = copyIpAssignMstVos.get(0);
+					IpAllocOperMstVo ipVo2 = copyIpAssignMstVos.get(1);
+					validateCheckList.add(ipVo1);
+					validateCheckList.add(ipVo2);
+					
+					if(!ipVo1.getSassignTypeCd().equals(ipVo2.getSassignTypeCd())) {
+						String ipVo1Network = ipCommonService.calculateNetworkAddress(ipVo1.getSipBlock(), ipVo1.getNbitmask() - 1);
+						String ipVo2Network = ipCommonService.calculateNetworkAddress(ipVo2.getSipBlock(), ipVo2.getNbitmask() - 1);
+						copyIpAssignMstVos.remove(ipVo1);
+						if(ipVo1Network.equals(ipVo2Network)) {
+							copyIpAssignMstVos.remove(ipVo2);
+						}
+					} else {
+						boolean isMergeSuccess = ipCommonService.getMergeIpBlockMstInfo(validateCheckList);
+						if(isMergeSuccess) {
+							/* 메모리 최적화 검토 필요 => IpAllocOperMstVo를 return하는 getMergeIpBlockMstInfo 메소드 추가 */
+							IpAllocOperMstVo mergedAllocVo = new IpAllocOperMstVo();
+							IpVo mergedVo = validateCheckList.get(0);
+							/* 
+							 * 1. 병합된 vo에 병합 전 vo의 index를 indexList에 추가
+							 * 2. vo의 indexList 값을 최초 조회 리스트index에 setGroupId(pipPrefix가)
+							*/
+							List<Integer> indexList = new ArrayList<Integer>();
+							if(ipVo1.getIndexList() != null && ipVo2.getIndexList() != null) {
+								indexList.addAll(Stream.concat(ipVo1.getIndexList().stream(), ipVo2.getIndexList().stream()).collect(Collectors.toList()));
+							} else {
+								indexList.add((Integer)ipVo1.getIndex());
+								indexList.add(ipVo2.getIndex());
+							}
+							mergedAllocVo.setIndexList(indexList);
+
+							/* 찾은 기존vo에 병합된 vo의 pipprefix를 group id로 set */
+							// IpAllocOperMstVo mergedVo = (IpAllocOperMstVo)validateCheckList.get(0);
+							
+							/* copyIpAssignMstVos에 추가할 mergedAllocVo(ipVo1, ipVo2가 병합된 결과) setting */
+							mergedAllocVo.setPipPrefix(mergedVo.getPipPrefix());
+							mergedAllocVo.setSipBlock(mergedVo.getSipBlock());
+							mergedAllocVo.setNbitmask(mergedVo.getNbitmask());
+							mergedAllocVo.setSfirstAddr(mergedVo.getSfirstAddr());
+							mergedAllocVo.setNfirstAddr(mergedVo.getNfirstAddr());
+							mergedAllocVo.setNlastAddr(mergedVo.getNlastAddr());
+							mergedAllocVo.setSipVersionTypeCd(mergedVo.getSipVersionTypeCd());
+							mergedAllocVo.setSassignTypeCd(ipVo1.getSassignTypeCd());
+							/* 
+							 * IpAllocOperMstVo 프로퍼티 추가 : index(rownum), group id, indexList
+							 * destIpAssignMstVos 에 0, 1에 해당하는 vo찾아서 group id set
+							 * mergedAllocVo의 indexList의 값으로 base리스트의 groupid를 update
+							*/
+							if(mergedAllocVo.getIndexList().size() > 0) {
+								for(int index : mergedAllocVo.getIndexList()) {
+									destIpAssignMstVos.get(index - 1).setGroupId(mergedAllocVo.getPipPrefix());
+								}
+							}
+							copyIpAssignMstVos.remove(ipVo1);
+							copyIpAssignMstVos.remove(ipVo2);
+							copyIpAssignMstVos.add(mergedAllocVo);
+						} else {
+							copyIpAssignMstVos.remove(ipVo1);
+						}
+					}
+					validateCheckList.clear();
+				}
+				/* 1000건씩 */
+				int batchSize = 1000;
+				int totalRecords = destIpAssignMstVos.size();
+				for(int i = 0;i< totalRecords ;i += batchSize) {
+					int end = Math.min(i + batchSize, totalRecords);
+					List<IpAllocOperMstVo> batchList = destIpAssignMstVos.subList(i, end);
+					ipAllocOperMstListVo.setIpAllocOperMstVos(batchList);
+					allocMgmtTxService.updateTbIpAssignMstVoGroupId(ipAllocOperMstListVo);
+					System.out.println("Processed batch: " + (i / batchSize + 1));
+				}
+				// allocMgmtTxService.insertTempMergeTable(ipAllocOperMstListVo);
+				// allocMgmtTxService.bulkUpdateTbIpAssignMstVoGroupId(ipAllocOperMstListVo);
+			} else {
+				throw new ServiceException("CMN.HIGH.00001");	
+			}
+			long end = System.currentTimeMillis();
+			long elapsedTimeMillis = end - start;
+
+			long seconds = elapsedTimeMillis /1000;
+			long minutes = elapsedTimeMillis / (1000 * 60);
+
+			System.out.println("Exeution time: " + minutes + " minutes " + seconds + " seconds" );
+		} catch (ServiceException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new ServiceException("CMN.HIGH.00023", new String[] { "IP병합가능블록목록" });
+		}
+		
+		// return destIpAssignMstVos;
+		return new ArrayList<IpAllocOperMstVo>();
 	}
 
 	/*할당 메인 조회 Excel*/
