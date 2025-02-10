@@ -1443,7 +1443,158 @@
 			)
 		
 	</select>
-	
+
+	<select id="selectListTbIpAssignMstVoMergeList" resultMap="IpAllocOperMstVoResult" parameterType="com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.IpAllocOperMstVo">
+		SELECT 
+		<include refid="Base_Column_List2" />
+			, ROW_NUMBER() OVER () AS INDEX
+			, A.SSVC_LINE_TYPE_NM
+			, A.SSVC_GROUP_CD
+			, A.SSVC_GROUP_NM
+			, A.SSVC_OBJ_CD
+			, A.SSVC_OBJ_NM
+			, A.SIP_VERSION_TYPE_NM
+			, A.SIP_CREATE_TYPE_NM
+			, A.SASSIGN_TYPE_NM
+			, A.SASSIGN_LEVEL_NM
+			, A.SLLNUM
+			, A.SSUBSCNEALIAS
+			, A.SSUBSCLGIPPORTDESCRIPTION
+			, A.SNEOSS_DD_YN 
+			, A.RNUM
+			, CASE WHEN A.NCNT > 3 
+			    THEN SQLJ.GETNTOA(TEXT(DECODE(FAMILY(INET(A.PIP_PREFIX)), 4, 'IPV4', 6, 'IPV6', 'IPV4'))||'|'||TO_CHAR(A.NFIRST_ADDR + 1))
+			    ELSE A.SFIRST_ADDR END AS SFIRST_ADDR_GWIP
+			, CASE WHEN A.NCNT > 3 
+			    THEN SQLJ.GETNTOA(TEXT(DECODE(FAMILY(INET(A.PIP_PREFIX)), 4, 'IPV4', 6, 'IPV6', 'IPV4'))||'|'||TO_CHAR(A.NLAST_ADDR - 1))
+			    ELSE A.SLAST_ADDR END AS SLAST_ADDR_GWIP
+			, A.NIP_LINK_MST_SEQ
+			, A.NSUMMARY_CNT
+			, A.SNULL0_YN
+			, A.SINTGRM_YN   
+		 FROM (
+			SELECT <include refid="Base_Column_List2" />
+			, A.SSVC_LINE_TYPE_NM
+			, A.SSVC_GROUP_CD
+			, A.SSVC_GROUP_NM
+			, A.SSVC_OBJ_CD
+			, A.SSVC_OBJ_NM
+			, A.SIP_VERSION_TYPE_NM
+			, A.SIP_CREATE_TYPE_NM
+			, A.SASSIGN_TYPE_NM
+			, A.SASSIGN_LEVEL_NM
+			, A.SLLNUM
+			, A.SSUBSCNEALIAS
+			, A.SSUBSCLGIPPORTDESCRIPTION
+			, A.SNEOSS_DD_YN 
+			, A.NIP_LINK_MST_SEQ
+			, ROWNUM RNUM
+			, A.NSUMMARY_CNT
+			, A.SNULL0_YN
+			, A.SINTGRM_YN  
+			FROM (
+				SELECT
+				<include refid="Base_Column_List2" />
+				<include refid="Append_Column_List2"/>
+				, J.NIP_LINK_MST_SEQ
+				, NVL(A.NSUMMARY_CNT, '') AS NSUMMARY_CNT
+				, NVL(A.SNULL0_YN, '') AS SNULL0_YN
+				, NVL(A.SINTGRM_YN, '') AS  SINTGRM_YN
+				, NFIRST_ADDR - LAG(A.NLAST_ADDR, 1, A.NFIRST_ADDR - 1) OVER (ORDER BY A.PIP_PREFIX, A.NFIRST_ADDR) AS DIFF
+				FROM MST.TB_IP_ASSIGN_MST A
+				<include refid="Append_From_Clause2"/>
+				<include refid="List_Where_Clause2" />
+				<include refid="Append_Where_Clause2"/>
+				<if test="lvlMstSeqListVo != null and lvlMstSeqListVo.tbLvlMstVos != null">
+					AND A.NLVL_MST_SEQ IN 
+					<foreach collection="lvlMstSeqListVo.tbLvlMstVos" item="item" separator="," open="(" close=")">
+						#{item.nlvlSeq}
+					</foreach>
+				</if>
+				<!-- AND A.NFIRST_ADDR <![CDATA[>=]]> 23364800 AND A.NFIRST_ADDR <![CDATA[<=]]> 23365375 -->
+				AND A.SASSIGN_LEVEL_CD IN ('IA0004')
+				<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sAlcSrchTypeCd) and sAlcSrchTypeCd == 'order'">
+					AND ((A.SIP_VERSION_TYPE_CD = 'CV0001' AND A.NBITMASK >= 16) OR (A.SIP_VERSION_TYPE_CD = 'CV0002' AND A.NBITMASK >= 48))
+					AND A.SIP_CREATE_TYPE_CD BETWEEN 'CT0001' AND 'CT0003'
+					AND A.SSVC_LINE_TYPE_CD BETWEEN 'CL0001' AND 'CL0002'
+					<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sicisofficescode)">
+						AND A.NLVL_MST_SEQ IN (SELECT DISTINCT NLVL_MST_SEQ FROM MST.TB_LVL_MST LM 
+						INNER JOIN MST.TB_LVL_SUB_CD LS ON LM.SSVC_LINE_TYPE_CD = LS.SSVC_LINE_TYPE_CD AND LM.SSVC_OBJ_CD = LS.SLVL_CD 
+						INNER JOIN MST.TB_IPMS_SVC_SUB SS ON LM.SSVC_LINE_TYPE_CD = SS.SSVC_LINE_TYPE_CD 
+						INNER JOIN MST.TB_IPMS_SVC_MST SM ON SM.NIPMS_SVC_SEQ = SS.NIPMS_SVC_MST_SEQ 
+						WHERE SLOFFICECODE = #{sicisofficescode, jdbcType=VARCHAR}
+						)
+					</if>
+				</if>
+				<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(snull0Yn)">
+					AND NVL(A.SNULL0_YN, '') = #{snull0Yn, jdbcType=VARCHAR}
+				</if>
+				<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sintgrmYn)">
+					AND NVL(A.SINTGRM_YN, '') = #{sintgrmYn, jdbcType=VARCHAR}
+				</if>
+				<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(summaryCnt) or @org.apache.commons.lang.StringUtils@isNotEmpty(nsummaryCntMulti)">
+					AND (
+					<choose>
+						<when test="@org.apache.commons.lang.StringUtils@isNotEmpty(summaryCnt)">
+							NVL(A.NSUMMARY_CNT, 0) <![CDATA[>=]]> #{summaryCnt, jdbcType=INTEGER}
+						</when>
+						<when test="@org.apache.commons.lang.StringUtils@isEmpty(summaryCnt) and nsummaryCntMulti.size() > 0">
+							1=0
+						</when>
+						<otherwise>
+							1=1
+						</otherwise>
+					</choose>
+					<if test="nsummaryCntMulti.size() > 0">
+						OR NVL(A.NSUMMARY_CNT, 0) IN
+						<foreach collection="nsummaryCntMulti" item="item" separator="," open="(" close=")">
+							#{item, jdbcType=INTEGER}
+						</foreach>
+					</if>
+					)
+				</if>
+				<if test="sassignTypeMulti != null">
+					<if test="sassignTypeMulti.size() > 0">
+						AND A.SASSIGN_TYPE_CD IN
+						<foreach collection="sassignTypeMulti" item="item" separator="," open="(" close=")">
+							#{item}
+						</foreach>
+					</if>
+				</if>
+				GROUP BY
+				<include refid="Base_Column_List2" />
+				<include refid="Group_Column_List2" />
+				, J.NIP_LINK_MST_SEQ
+				, NVL(A.NSUMMARY_CNT, '') 
+				, NVL(A.SNULL0_YN, '') 
+				, NVL(A.SINTGRM_YN, '')
+				<include refid="Append_OrderBy_Clause2" />
+			) A WHERE A.DIFF = 1
+			ORDER BY A.PIP_PREFIX
+		) A <!-- LIMIT 1000 -->
+	</select>
+
+	<!-- updateTbIpAssignMstVoGroupId -->
+	<update id="updateTbIpAssignMstVoGroupId" parameterType="com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.IpAllocOperMstListVo">
+		UPDATE MST.TB_IP_ASSIGN_MST
+		SET GROUP_ID =
+		CASE
+			<foreach collection="ipAllocOperMstVos" item="item">
+				<if test="item.groupId != null">
+					WHEN PIP_PREFIX = #{item.pipPrefix, javaType=Object, jdbcType=OTHER, typeHandler=com.kt.ipms.legacy.cmn.typehandler.CIDRTypeHandler}
+					THEN #{item.groupId, javaType=Object, jdbcType=OTHER, typeHandler=com.kt.ipms.legacy.cmn.typehandler.CIDRTypeHandler}
+				</if>
+			</foreach>
+			ELSE GROUP_ID
+			END
+		WHERE PIP_PREFIX IN
+		<foreach collection="ipAllocOperMstVos" item="item" separator="," open="(" close=")">
+			<if test="item.groupId != null">
+				#{item.pipPrefix, javaType=Object, jdbcType=OTHER, typeHandler=com.kt.ipms.legacy.cmn.typehandler.CIDRTypeHandler}
+			</if>
+		</foreach>
+	</update>
+
 	<select id="selectListIpAllocDetail" resultMap="IpAllocOperMstVoResult" parameterType="com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.IpAllocOperMstVo">
 			SELECT
 				<include refid="Base_Column_List2" />

@@ -38,6 +38,15 @@ public class AllocMgmtTxService {
 	@Lazy @Autowired
 	private HistoryMgmtAdapterService historyMgmtAdapterService;
 
+	@Transactional(propagation = Propagation.REQUIRED)
+	public List<IpAllocOperMstVo> selectListMergeList(IpAllocOperMstVo ipAllocOperMstVo) {
+		return tbIpAllocMstDao.selectListTbIpAssignMstVoMergeList(ipAllocOperMstVo);
+	}
+	@Transactional(propagation = Propagation.REQUIRED)
+	public int updateTbIpAssignMstVoGroupId(IpAllocOperMstListVo ipAllocOperMstListVo) {
+		return tbIpAllocMstDao.updateTbIpAssignMstVoGroupId(ipAllocOperMstListVo);
+	}
+
 	@Transactional(readOnly = true)
 	public List<IpAllocOperMstVo> selectListPageIpAllocMst(IpAllocOperMstVo ipAllocOperMstVo){
 		return tbIpAllocMstDao.selectListPageIpAllocOperMstVo(ipAllocOperMstVo);
