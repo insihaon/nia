@@ -1,7 +1,7 @@
 import { AppOptions } from '@/class/appOptions'
 // import { TempStore } from '@/class/tempStore'
 import { ModalManager } from '@/class/modalManager'
-import http from '@/min/http.min'
+import http from '@/min/http'
 import { exportServicelist, getApilist, getLastSql, getServicelist, resendService } from '@/min/route'
 import router from '@/router'
 import $store from '@/store'
