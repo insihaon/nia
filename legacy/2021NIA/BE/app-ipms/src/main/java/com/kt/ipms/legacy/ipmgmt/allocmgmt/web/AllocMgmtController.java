@@ -68,28 +68,33 @@ public class AllocMgmtController extends CommonController {
 
 	/* IP병합 가능 목록 */
 	@RequestMapping(value = "/ipmgmt/allocmgmt/viewListIpMergeMst.model", method = { RequestMethod.POST,
-		RequestMethod.GET })
+			RequestMethod.GET })
 	@ResponseBody
 	@EncryptResponse
 	public ModelMap selectListIpMergeMst(@RequestBody IpAllocOperMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
-		List<IpAllocOperMstVo> ipMergeMstVos = new ArrayList<IpAllocOperMstVo>();
+		// List<IpAllocOperMstVo> ipMergeMstVos = new ArrayList<IpAllocOperMstVo>();
+		IpAllocOperMstListVo resultListVo = new IpAllocOperMstListVo();
 		try {
 			TbLvlMstVo searchSeqVo = new TbLvlMstVo();
 			searchSeqVo.setSsvcLineTypeCd(searchVo.getSsvcLineTypeCd());
 			searchSeqVo.setSsvcGroupCdMulti(searchVo.getSsvcGroupCdMulti());
 			searchSeqVo.setSsvcObjCd(searchVo.getSsvcObjCd());
 
-			TbLvlMstListVo resultSeqList = jwtUtil.getLvlSeqList(request, searchSeqVo);
-			searchVo.setLvlMstSeqListVo(resultSeqList);
-			
-			ipMergeMstVos = allocMgmtService.validateMrgAsgnIPMstTest(searchVo);
-			
+			// TbLvlMstListVo resultSeqList = jwtUtil.getLvlSeqList(request, searchSeqVo);
+			// searchVo.setLvlMstSeqListVo(resultSeqList);
+
+			/* 병합가능 리스트 조회 */
+			setPagination(searchVo);
+			resultListVo = allocMgmtService.selectMergeListIpAllocMst(searchVo);
+			/* 병합가능 리스트 스켸줄러 로직 */
+			// ipMergeMstVos = allocMgmtService.validateMrgAsgnIPMstTest(searchVo);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		return createResultList(ipMergeMstVos, ipMergeMstVos.size());
+		return createResultList(resultListVo.getIpAllocOperMstVos(), resultListVo.getTotalCount());
+		// return createResultList(ipMergeMstVos, ipMergeMstVos.size());
 	}
 
 	/**
@@ -1861,6 +1866,45 @@ public class AllocMgmtController extends CommonController {
 			resultListVo.setCommonMsg(msgDesc);
 		}
 
+		return resultListVo;
+	}
+
+	/*
+	 * 시설용 IP서비스 조회
+	 */
+	@RequestMapping(value = "/ipmgmt/allocmgmt/selectFacilitesSassignTypeCdList.json", method = RequestMethod.POST)
+	@ResponseBody
+	@EncryptResponse
+	public BaseVo selectFacilitesSassignTypeCdList(@RequestBody TbIpAllocMstVo searchVo,
+			HttpServletRequest request, HttpServletResponse response) {
+		TbIpAllocMstListVo resultListVo = new TbIpAllocMstListVo();
+		try {
+			List<TbIpAllocMstVo> groupSassignTypeCdVos = new ArrayList<TbIpAllocMstVo>();
+			List<CommonCodeVo> sassignTypeCds = new ArrayList<CommonCodeVo>();
+
+			sassignTypeCds = allocMgmtService.selectFacilitesTypeCdList(searchVo);
+
+			if (sassignTypeCds != null) {
+
+				for (CommonCodeVo orgSassignTypeCdVo : sassignTypeCds) {
+					TbIpAllocMstVo groupSassignTypeCdMstVo = new TbIpAllocMstVo();
+
+					groupSassignTypeCdMstVo.setSassignTypeCd(orgSassignTypeCdVo.getCode());
+					groupSassignTypeCdMstVo.setSassignTypeNm(orgSassignTypeCdVo.getName());
+					groupSassignTypeCdVos.add(groupSassignTypeCdMstVo);
+				}
+
+				resultListVo.setTbIpAllocMstVos(groupSassignTypeCdVos);
+			}
+		} catch (ServiceException e) {
+			resultListVo = new TbIpAllocMstListVo();
+			String msgDesc = tbCmnMstService.selectMsgDesc(e);
+			resultListVo.setCommonMsg(msgDesc);
+		} catch (Exception e) {
+			resultListVo = new TbIpAllocMstListVo();
+			String msgDesc = tbCmnMstService.selectMsgDesc(new ServiceException("CMN.HIGH.00000"));
+			resultListVo.setCommonMsg(msgDesc);
+		}
 		return resultListVo;
 	}
 

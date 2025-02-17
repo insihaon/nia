@@ -1,4 +1,5 @@
 package com.kt.ipms.legacy.ipmgmt.assignmgmt.vo;
+
 import java.io.Serializable;
 
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
@@ -8,12 +9,12 @@ import com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlMstListVo;
 import java.math.BigInteger;
 import java.util.List;
 
-
 public class TbIpAssignMstVo extends IpVo implements Serializable {
 	/** MEMBER VARIABLE DECLARATION START **/
 	private static final long serialVersionUID = 3585868905953709272L;
 
 	private int groupId;
+
 	public int getGroupId() {
 		return groupId;
 	}
@@ -21,16 +22,17 @@ public class TbIpAssignMstVo extends IpVo implements Serializable {
 	public void setGroupId(int groupId) {
 		this.groupId = groupId;
 	}
+
 	private String ssvcLineTypeCd;
 
 	private String ssvcLineTypeNm;
-	
+
 	private String ssvcGroupCd;
-	
+
 	private String ssvcGroupNm;
-	
+
 	private String ssvcObjCd;
-	
+
 	private String ssvcObjNm;
 
 	private BigInteger nipBlockMstSeq;
@@ -54,9 +56,9 @@ public class TbIpAssignMstVo extends IpVo implements Serializable {
 	private BigInteger nipmsSvcSeq;
 
 	private String sassignTypeCd;
-	
+
 	private List<CommonCodeVo> sassignTypeCds;
-	
+
 	public List<CommonCodeVo> getSassignTypeCds() {
 		return sassignTypeCds;
 	}
@@ -74,16 +76,18 @@ public class TbIpAssignMstVo extends IpVo implements Serializable {
 	 * 할당 유형 List<String>
 	 */
 	private List<String> sassignTypeMulti;
-	
+
 	/**
 	 * 서비스망 목록 문자열
 	 */
-	
+
 	private String ssvcGroupCdMultiStr;
-	
+
 	private List<String> ssvcGroupCdMulti;
 
-	
+	/* 시설용IP 화면 활성화 여부 */
+	private Boolean isViewFacilites;
+
 	public String getSsvcGroupCdMultiStr() {
 		return ssvcGroupCdMultiStr;
 	}
@@ -98,6 +102,14 @@ public class TbIpAssignMstVo extends IpVo implements Serializable {
 
 	public void setSsvcGroupCdMulti(List<String> ssvcGroupCdMulti) {
 		this.ssvcGroupCdMulti = ssvcGroupCdMulti;
+	}
+
+	public Boolean getIsViewFacilites() {
+		return isViewFacilites;
+	}
+
+	public void setIsViewFacilites(Boolean isViewFacilites) {
+		this.isViewFacilites = isViewFacilites;
 	}
 
 	private String sassignTypeNm;
@@ -117,36 +129,36 @@ public class TbIpAssignMstVo extends IpVo implements Serializable {
 	private Integer npriority;
 
 	private TbLvlMstListVo lvlMstSeqListVo;
-	
+
 	private BigInteger nUnAssignBlockCnt;
-	
+
 	private BigInteger nReserveAssignBlockCnt;
-	
+
 	private String sGubun;
-	
+
 	/* Summary 개수 */
 	private Integer summaryCnt; /* Summary 검색조건 */
 	private String nsummaryCnt;
 	private List<Integer> nsummaryCntMulti;
-	
+
 	/* null0 여부 */
 	private String snull0Yn;
-	
+
 	/* 라우팅 비교/점검 여부 */
 	private String sintgrmYn;
-	
+
 	private String asPath;
-	
+
 	private String scommunity;
-	
+
 	private String ssvcHighNm; // 주노드
-	
+
 	private BigInteger nipAllocMstSeq;
 
 	/** MEMBER VARIABLE DECLARATION END **/
-	
+
 	/** MEMBER METHOD DECLARATION START **/
-	
+
 	public String getSassignTypeCdMultiStr() {
 		return sassignTypeCdMultiStr;
 	}
@@ -418,6 +430,7 @@ public class TbIpAssignMstVo extends IpVo implements Serializable {
 	public void setSummaryCnt(Integer summaryCnt) {
 		this.summaryCnt = summaryCnt;
 	}
+
 	public String getNsummaryCnt() {
 		return nsummaryCnt;
 	}
@@ -465,6 +478,6 @@ public class TbIpAssignMstVo extends IpVo implements Serializable {
 	public void setNipAllocMstSeq(BigInteger nipAllocMstSeq) {
 		this.nipAllocMstSeq = nipAllocMstSeq;
 	}
-	
+
 	/** MEMBER METHOD DECLARATION END **/
 }
