@@ -8,6 +8,7 @@
         <el-select
           v-model="values"
           size="small"
+          :disabled="disabled"
           :multiple="isMulti"
           collapse-tags
           popper-class="IpBlockStatus"
@@ -46,6 +47,14 @@ export default {
     prop_options: {
       type: Array,
        default: () => []
+    },
+    defaultValue: {
+      type: String,
+      default: null
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -88,6 +97,9 @@ export default {
       this.values = this.isMulti ? [] : ''
       if (this.prop_options && this.prop_options.length > 0) {
         this.options = [...this.prop_options]
+      }
+      if (this.defaultValue != null) {
+        this.values = this.isMulti ? [this.defaultValue] : this.defaultValue
       }
       this.emitEventToParent(this.getParameter())
     },
