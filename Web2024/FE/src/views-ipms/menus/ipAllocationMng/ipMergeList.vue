@@ -35,8 +35,6 @@
         </template>
         <template slot="add-features">
           <div class="add-features">
-            <el-button icon="el-icon-check" type="primary" size="mini" round @click="fnViewCheckTacsIpBlock_">IP블럭 중복체크</el-button>
-            <el-button icon="el-icon-thumb" type="primary" size="mini" round @click="fnInsertAlcBtnClick">할당</el-button>
             <el-button icon="el-icon-menu" type="primary" size="mini" round @click="fnMergeBtnClick">병합</el-button>
           </div>
         </template>
@@ -44,6 +42,8 @@
     </el-col>
     <!-- IP블록병합 -->
     <ModalIpAssignMerge ref="ModalIpAssignMerge" @reload="fnViewListIpAllocMst()" />
+    <!-- 병합가능 리스트 상세 -->
+    <ModalIpMergeInfoDetail ref="ModalIpMergeInfoDetail" @reload="fnViewListIpAllocMst()" />
   </el-row>
 </template>
 <script>
@@ -53,6 +53,7 @@ import CompTable from '@/components/elTable/CompTable.vue'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
 import tableHeightMixin from '@/mixin/tableHeightMixin'
 import ModalIpAssignMerge from '@/views-ipms/modal/assign/ModalIpAssignMerge.vue'
+import ModalIpMergeInfoDetail from '@/views-ipms/modal/alloc/ModalIpMergeInfoDetail.vue'
 
 import { fnViewCheckTacsIpBlock } from '@/views-ipms/js/common-function'
 import { ipmsModelApis, apiRequestModel, ipmsJsonApis, apiRequestExcel } from '@/api/ipms'
@@ -62,7 +63,7 @@ const routeName = 'ipMergeList'
 
 export default {
   name: routeName,
-  components: { CompTable, DynamicComponentLoader, ModalIpAssignMerge },
+  components: { CompTable, DynamicComponentLoader, ModalIpAssignMerge, ModalIpMergeInfoDetail },
   extends: Base,
   mixins: [tableHeightMixin],
   data() {
@@ -77,87 +78,77 @@ export default {
         { key: 'ServiceOrg', props: { limit: 10 } },
         { key: 'IpAddress', props: {} },
         { key: 'InputType', props: { label: 'BitMask', prop_parameterKey: 'nbitMask' } },
-        { key: 'LineInformation', props: {} },
-        {
-          key: 'IpBlockStatus', props: {
-            label: '할당상태', prop_options: [
-              { label: '서비스배정[미할당]', value: 'IA0004' },
-              { label: '할당예약', value: 'IA0005' },
-              { label: '할당', value: 'IA0006' },
-            ]
-          }
-        },
+        // { key: 'LineInformation', props: {} },
+        // {
+        //   key: 'IpBlockStatus', props: {
+        //     label: '할당상태', prop_options: [
+        //       { label: '서비스배정[미할당]', value: 'IA0004' },
+        //       { label: '할당예약', value: 'IA0005' },
+        //       { label: '할당', value: 'IA0006' },
+        //     ]
+        //   }
+        // },
         { key: 'DateRange', props: { } },
-        {
-          key: 'InputSearchDetail',
-          props: {
-            label: '장비명',
-            modalName: 'ModalFacilityInformation',
-            valueName: 'ssubscnealias',
-            prop_parameterKey: { sicisofficescodeNe: 'sofficecode', smodelnameNe: 'smodelname', ssubscmstipNe: 'ssubscmstip', ssubscnealiasNe: 'ssubscnealias' },
-          }
-        },
+        // {
+        //   key: 'InputSearchDetail',
+        //   props: {
+        //     label: '장비명',
+        //     modalName: 'ModalFacilityInformation',
+        //     valueName: 'ssubscnealias',
+        //     prop_parameterKey: { sicisofficescodeNe: 'sofficecode', smodelnameNe: 'smodelname', ssubscmstipNe: 'ssubscmstip', ssubscnealiasNe: 'ssubscnealias' },
+        //   }
+        // },
         { key: 'SortType', props: { sortOrdrDefaultVal: 'ASC' } },
-        { key: 'IncludeYN', props: { label: 'Summary 포함 여부', prop_parameterKey: 'snull0Yn' } },
-        { key: 'IncludeYN', props: { label: 'DB-라우팅 일치여부', prop_parameterKey: 'sintgrmYn' } },
-        { key: 'RoutingDuplCount', props: { label: '라우팅 중복 개수', prop_parameterKey: 'summaryCnt', valueType: 'number' } },
-        { key: 'InputType', props: { label: '비고', prop_parameterKey: 'scomment' } },
+        // { key: 'IncludeYN', props: { label: 'Summary 포함 여부', prop_parameterKey: 'snull0Yn' } },
+        // { key: 'IncludeYN', props: { label: 'DB-라우팅 일치여부', prop_parameterKey: 'sintgrmYn' } },
+        // { key: 'RoutingDuplCount', props: { label: '라우팅 중복 개수', prop_parameterKey: 'summaryCnt', valueType: 'number' } },
+        // { key: 'InputType', props: { label: '비고', prop_parameterKey: 'scomment' } },
       ],
       tableColumns: [
-        { prop: 'ssvcLineTypeNm', label: '서비스망', align: 'center', sortable: false, columnVisible: true, showOverflow: true },
-        { prop: 'ssvcGroupNm', label: '본부', align: 'center', sortable: false, columnVisible: true, showOverflow: true },
-        { prop: 'ssvcObjNm', label: '노드', align: 'center', sortable: false, columnVisible: true, showOverflow: true },
-        { prop: 'sipCreateTypeNm', label: '공인/사설', align: 'center', sortable: false, columnVisible: true, showOverflow: true },
-        { prop: 'sassignTypeNm', label: '서비스', align: 'center', sortable: false, columnVisible: true, showOverflow: true },
-        { prop: 'pipPrefix', label: 'IP블록', align: 'center', sortable: false, columnVisible: true, showOverflow: true },
-        { prop: 'groupId', label: '그룹ID', align: 'center', sortable: false, columnVisible: true, showOverflow: true },
-        { prop: 'sassignLevelNm', label: '할당상태', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'nipAllocMstCnt', label: '회선', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'dmodifyDt', label: '작업일자', align: 'center', sortable: true, columnVisible: true, showOverflow: true, formatter: (row) => { return row.dmodifyDt ? this.moment(row.dmodifyDt).format('YYYY-MM-DD HH:mm:ss') : '' } },
-        { prop: 'sllnum', label: '전용번호', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'ssubscnealias', label: '장비명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'ssubsclgipportdescription', label: 'I/F명', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'snull0Yn', label: 'Summary 포함 여부', align: 'center', sortable: true, columnVisible: true, showOverflow: true, formatter: (row) => { return row.snull0Yn?.length === 0 ? '-' : row.snull0Yn } },
-        { prop: 'sintgrmYn', label: 'DB-라우팅 일치 여부', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
-        { prop: 'nsummaryCnt', label: '라우팅 중복 개수', align: 'center', sortable: true, columnVisible: true, showOverflow: true,
-          formatter: (row, col, value, index) => {
-            if (row.nsummaryCnt?.length === 0) {
-              return ''
-            } else {
+        { prop: 'ssvcLineTypeNm', label: '서비스망', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'ssvcGroupNm', label: '본부', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'ssvcObjNm', label: '노드', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'sipCreateTypeNm', label: '공인/사설', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'sassignTypeNm', label: '서비스', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'pipPrefix', label: 'IP블록', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: '', label: '병합가능 블록 수', align: 'center', sortable: true, columnVisible: true, showOverflow: true,
+        formatter: (row, col, value, index) => {
+            if (this.isValidJSON(row.ipList)) {
               return this.$createElement('el-button', {
                 attrs: {
                   round: true, // Adding the round option
                   plain: true,
-                  type: row.nsummaryCnt > 0 ? 'danger' : 'primary'
+                  type: 'primary'
                 },
                 on: { click: () => {
-                  this.$refs.ModalDetailSummary.open({ row })
-              } } }, row.nsummaryCnt)
+                  /* 병합 가능 목록 상세 화면
+                    groupid 파라미터 셋팅해서 화면에 데이터 출력 할당쿼리 사용 , groupid 조건만 추가
+                  */
+                 this.$refs.ModalIpMergeInfoDetail.open({ row })
+              } } }, JSON.parse(row.ipList).length)
+            } else {
+              return 0
             }
           }
-        },
-        { prop: 'division', label: '분할', align: 'center', sortable: true, columnVisible: true, showOverflow: true,
-          formatter: (row, col, value, index) => {
-            return this.$createElement('el-button', {
-              // class: row.sassignLevelCd === 'IA0004' ? '' : 'red',
-              attrs: {
-                round: true, // Adding the round option
-                plain: true,
-                type: row.sassignLevelCd === 'IA0004' ? 'primary' : 'danger'
-              },
-              on: { click: () => {
-                if (row.sassignLevelCd === 'IA0004') {
-                  this.$refs.ModalIpBlockDivision.open({ row, typeFlag: 'Aloc' })
-                }
-            } } }, row.sassignLevelCd === 'IA0004' ? '분할' : '불가')
-          }
-        },
+          // formatter: (row) => { return this.isValidJSON(row.ipList) ? JSON.parse(row.ipList).length : 0 }
+         },
+        // { prop: 'groupId', label: '그룹ID', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'sassignLevelNm', label: '할당상태', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'dmodifyDt', label: '작업일자', align: 'center', sortable: true, columnVisible: true, showOverflow: true, formatter: (row) => { return row.dmodifyDt ? this.moment(row.dmodifyDt).format('YYYY-MM-DD HH:mm:ss') : '' } },
         { prop: 'scomment', label: '비고', align: 'center', sortable: true, columnVisible: true, showOverflow: true, formatter: (row) => { return row.scomment?.length > 0 ? 'Y' : 'N' } },
       ],
       selectedRows: []
     }
   },
   methods: {
+    isValidJSON(data) {
+      try {
+        JSON.parse(data)
+        return true
+      } catch (error) {
+        return false
+      }
+    },
     handleSearch(requestParameter) {
       this.pagination.currentPage = 1
       this.fnViewListIpAllocMst(requestParameter)
@@ -195,59 +186,6 @@ export default {
     },
     handleClickTableCheck(all, cur) {
       this.selectedRows = all
-    },
-    fnViewCheckTacsIpBlock_() {
-      fnViewCheckTacsIpBlock(this, this.selectedRows)
-    },
-    fnInsertAlcBtnClick() {
-      const rows = this.selectedRows
-      if (rows.length === 0) {
-        onMessagePopup(this, '할당 할 대상이 없습니다.')
-        return
-      }
-      /* 체크대상여부 확인 */
-      const res = rows.map((row, i) => {
-        /* Step 01. 서비스배정상태 체크 */
-        if (row.sassignLevelCd !== 'IA0004') {
-          onMessagePopup(this, '할당 대상 블록 중 서비스배정이 아닌 블록이 있습니다.')
-          return false
-        }
-        /* Step 02. 계위 및 서비스 유형 동일 선택 체크 */
-        const { sassignTypeCd, nlvlMstSeq, nbitMask, sneossDdYn, ssvcLineTypeCd, sipCreateTypeCd, sipVersionTypeCd } = row
-
-        let linkYn = 'N'
-        let linkYn2 = 'N'
-        if (['CL0001', 'CL0002', 'CL0003'].includes(ssvcLineTypeCd)) {
-          if (sneossDdYn === 'N' && [29, 30].includes(nbitMask)) {
-            linkYn = 'Y'
-          }
-        }
-        for (let j = 0; j < i; j++) {
-          if (sassignTypeCd !== rows[j].sassignTypeCd || nlvlMstSeq !== rows[j].nlvlMstSeq) {
-            onMessagePopup(this, '선택하신 할당 대상 블록의 계위/서비스 정보가 동일하지 않습니다. 확인해주세요.')
-            return false
-          }
-          if (['CL0001', 'CL0002', 'CL0003'].includes(ssvcLineTypeCd)) {
-            if (rows[j].sneossDdYn === 'N' && [29, 30].includes(rows[j].nbitMask)) {
-              linkYn2 = 'Y'
-            }
-          }
-        }
-        if (linkYn !== linkYn2) {
-          onMessagePopup(this, '선택하신 할당 대상 블록의 할당구분(회선/시설/링크) 정보가 동일하지 않습니다. 확인해주세요.')
-          return false
-        }
-        if ((sipVersionTypeCd === 'CV0001' && nbitMask < 16) || (sipVersionTypeCd === 'CV0002' && nbitMask < 48)) {
-          onMessagePopup(this, '/16(IPv4), /48(IPv6) 보다 큰 IP블록은 할당할 수 없습니다.')
-          return false
-        }
-        if (ssvcLineTypeCd === 'CL0005' && sipCreateTypeCd !== 'CT0001') {
-          onMessagePopup(this, 'VPN망은 공인 IP블록만 할당할 수 있습니다.')
-          return false
-        }
-        return true
-      })
-      res.every(r => r === true) && this.$refs.ModalIpAllocInsert.open({ ipAllocOperMstVos: rows })
     },
     fnMergeBtnClick() {
       const checkedList = this._orderBy(this.selectedRows, ['asc', 'nipAllocMstCnt'])
