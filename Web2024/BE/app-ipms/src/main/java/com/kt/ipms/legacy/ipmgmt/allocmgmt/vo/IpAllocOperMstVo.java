@@ -1,4 +1,5 @@
 package com.kt.ipms.legacy.ipmgmt.allocmgmt.vo;
+
 import java.io.Serializable;
 
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
@@ -8,27 +9,28 @@ import com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlMstListVo;
 import java.math.BigInteger;
 import java.util.List;
 
-
 public class IpAllocOperMstVo extends IpVo implements Serializable {
 	/** MEMBER VARIABLE DECLARATION START **/
 	private static final long serialVersionUID = 5627637610299525126L;
-	
+
 	private Integer index;
-	
+
 	private List<Integer> indexList;
+
+	private String ipList;
 
 	private String groupId;
 
 	private String ssvcLineTypeCd;
 
 	private String ssvcLineTypeNm;
-	
+
 	private String ssvcGroupCd;
-	
+
 	private String ssvcGroupNm;
-	
+
 	private String ssvcObjCd;
-	
+
 	private String ssvcObjNm;
 
 	private BigInteger nipBlockMstSeq;
@@ -66,221 +68,222 @@ public class IpAllocOperMstVo extends IpVo implements Serializable {
 	private String sipAllocExTypeCd;
 
 	private String sipAllocExTypeNm;
-	
+
 	private TbLvlMstListVo lvlMstSeqListVo;
-	
-	/*회선정보 추가*/
-	private String sllnum;	//전용회선번호
-	private List<String> sllnums;	// 전용회선번호 multi
-	
-	private String ssubscnealias;	//장비별칭명
-	
-	private String ssubsclgipportdescription;	//인터페이스
-	
-	private String sicisofficescode; //수용국코드
-	
-	private String sicisofficesname; //수용국명
-	
-	private String sofficecode; //수용국코드 (2014.11.10)
-	
-	private String sofficename; //수용국명 (2014.11.10)
-	
-	private String smodelname;	//모델명
-	
-	private String ssubscmstip;	//대표IP
-	
-	private String svalidCheck;  // 감사여부 
-	
+
+	/* 회선정보 추가 */
+	private String sllnum; // 전용회선번호
+	private List<String> sllnums; // 전용회선번호 multi
+
+	private String ssubscnealias; // 장비별칭명
+
+	private String ssubsclgipportdescription; // 인터페이스
+
+	private String sicisofficescode; // 수용국코드
+
+	private String sicisofficesname; // 수용국명
+
+	private String sofficecode; // 수용국코드 (2014.11.10)
+
+	private String sofficename; // 수용국명 (2014.11.10)
+
+	private String smodelname; // 모델명
+
+	private String ssubscmstip; // 대표IP
+
+	private String svalidCheck; // 감사여부
+
 	private String sconnAlias; // 수용회선명
 	private List<String> sconnAliass; // 수용회선명
-	
+
 	private BigInteger nipAllocMstSeq;
-	
+
 	private String ssubscnnescode; // 장비표준코드
-	
+
 	private String ssubscnescode; // 장비표준코드
-	
-	private String sgatewayip; //게이트웨이IP
-	
-	/*회선장비검색조건*/
-	
-	private String sneSrchTypeCd;//조회 유형(시설) 
-	
-	private String sicisofficescodeNe;	//장비수용국
-	
-	private String ssubscnealiasNe;	//장비별칭
-	
-	private String smodelnameNe;	//모델명
-	
-	private String ssubscmstipNe;	//대표IP
-	
-	private String sssvcMgroupNm;  //상품명
-	
+
+	private String sgatewayip; // 게이트웨이IP
+
+	/* 회선장비검색조건 */
+
+	private String sneSrchTypeCd;// 조회 유형(시설)
+
+	private String sicisofficescodeNe; // 장비수용국
+
+	private String ssubscnealiasNe; // 장비별칭
+
+	private String smodelnameNe; // 모델명
+
+	private String ssubscmstipNe; // 대표IP
+
+	private String sssvcMgroupNm; // 상품명
+
 	private String ssvcLgroupNm; // 서비스 유형
-	
-	private String ssvcUseTypeNm; // 사업용여부 
-	
-	private String ssaid;  // 서비스 계약 번호
-	private List<String> ssaids;  // 서비스 계약 번호 multi
-	
-	private String scustName;  // 고객명 
-	
+
+	private String ssvcUseTypeNm; // 사업용여부
+
+	private String ssaid; // 서비스 계약 번호
+	private List<String> ssaids; // 서비스 계약 번호 multi
+
+	private String scustName; // 고객명
+
 	private String sipAssignSubNm; // 사용용도
-	
-	private String llSrchTypeCd; //회선검색유형
-	
-	private String sordernum;//오더번호
-	
-	/*할당 처리 파라미터 셋팅*/
+
+	private String llSrchTypeCd; // 회선검색유형
+
+	private String sordernum;// 오더번호
+
+	/* 할당 처리 파라미터 셋팅 */
 	private String sregyn;
-	
+
 	private String slacpsid;
-	//private BigInteger nipmsSvcSeq;
-	
+	// private BigInteger nipmsSvcSeq;
+
 	private String ssvcUseTypeCd;
-	
+
 	private String sexPushYn;
-	
+
 	private BigInteger nticketActSeq;
-	
+
 	private String sipmsSvcNm;
-	
+
 	private String sneossDdYn;
-	
+
 	private String sfirstAddrGwip; // 시작_IP_CIDR(GWIP용 계산)
-	
+
 	private String slastAddrGwip; // 종료_IP_CIDR(GWIP용 계산)
-	
-	/*할당 메인조회와 오더할당 조회 구분을 위한 추가 구성*/
+
+	/* 할당 메인조회와 오더할당 조회 구분을 위한 추가 구성 */
 	private String sAlcSrchTypeCd;
-	
-	private BigInteger nwhoisSeq;		// Whois Seq
-	
+
+	private BigInteger nwhoisSeq; // Whois Seq
+
 	/**
 	 * 라우팅_비교_결과_MST_SEQ
 	 */
 	private BigInteger nroutingChkMstSeq;
-	
+
 	/* 자국/대국 링크 정보 */
-	
+
 	/* 인터페이스 시리얼 IP */
 	private String pifSerialIp;
-	
+
 	/* 자국 장비명 */
 	private String sanealias;
-	
+
 	/* 자국 장비IP */
 	private String samstip;
-	
+
 	/* 자국 IF명 */
 	private String saifname;
-	
+
 	/* 자국 시설코드 */
 	private String salocationcode;
-	
+
 	/* 자국 시설명 */
 	private String salocationcodeNm;
-	
+
 	/* 자국 수용국 코드 */
 	private String saofficescode;
-	
+
 	/* 자국 수용국 명 */
 	private String saofficescodeNm;
-	
+
 	/* 대국 장비명 */
 	private String sznealias;
-	
+
 	/* 대국 장비IP */
 	private String szmstip;
-	
+
 	/* 대국 IF명 */
 	private String szifname;
-	
+
 	/* 대국 시설코드 */
 	private String szlocationcode;
-	
+
 	/* 대국 시설명 */
 	private String szlocationcodeNm;
-	
+
 	/* 대국 수용국 코드 */
 	private String szofficescode;
-	
+
 	/* 대국 수용국 명 */
 	private String szofficescodeNm;
-	
+
 	/* 자국/대국 수용국 검색조건 */
 	private String sofficescodeSrch;
-	
+
 	/* 자국/대국 장비명 검색조건 */
 	private String snealiasSrch;
-	
+
 	/* 자국/대국 대표IP 검색조건 */
 	private String smstipSrch;
-	
-	/* 자국/대국 IF 검색조건*/
+
+	/* 자국/대국 IF 검색조건 */
 	private String sifipSrch;
-	
+
 	/* 자국/대국 시설명 검색조건 */
 	private String slocationcodeNmSrch;
-	
+
 	/* 자국/대국 전용번호 검색조건 */
 	private String sllnumSrch;
-	
+
 	/* 자국/대국 인터페이스 시리얼 IP 검색조건 */
 	private String pifSerialIpSrch;
-	
+
 	private BigInteger nipLinkMstSeq;
-	
+
 	private String sconnalias;
-	
+
 	private String sGubun;
-	
+
 	private String sNextHop;
-	
+
 	private int totalCount;
-	
+
 	/* Summary 개수 */
 	private Integer summaryCnt; /* Summary 검색조건 */
 	private String nsummaryCnt;
 	private List<Integer> nsummaryCntMulti;
-	
+
 	/* null0 여부 */
 	private String snull0Yn;
-	
+
 	/* 라우팅 비교/점검 여부 */
 	private String sintgrmYn;
-	
+
 	private String spageType; // 링크조회, 회선조회
-	
+
 	private String ssubscnealiasType;
-	
+
 	private boolean bUploadFlag; // IP Excel Upload를 사용 플래그 *IpUpload*
-	
+
 	private List<CommonCodeVo> sassignTypeCds;
-	
+
 	private String sassignTypeCdMultiStr;
-	
+
 	private List<String> sassignTypeMulti;
-	
+
 	private String ssvcGroupCdMultiStr;
-	
+
 	private List<String> ssvcGroupCdMulti;
-	
+
 	private String ssubsclgipportip;
 
 	private String ssubscrouterserialip;
-	
+
 	/** MEMBER VARIABLE DECLARATION END **/
-	
-	
+
 	/** MEMBER METHOD DECLARATION START **/
-	
+
 	public Integer getIndex() {
 		return index;
 	}
-	public void setIndexList(List<Integer>  indexList) {
+
+	public void setIndexList(List<Integer> indexList) {
 		this.indexList = indexList;
 	}
+
 	public List<Integer> getIndexList() {
 		return indexList;
 	}
@@ -292,6 +295,15 @@ public class IpAllocOperMstVo extends IpVo implements Serializable {
 	public String getGroupId() {
 		return groupId;
 	}
+
+	public String getIpList() {
+		return ipList;
+	}
+
+	public void setIpList(String ipList) {
+		this.ipList = ipList;
+	}
+
 	public void setSsvcLineTypeCd(String ssvcLineTypeCd) {
 		this.ssvcLineTypeCd = ssvcLineTypeCd;
 	}
@@ -507,7 +519,7 @@ public class IpAllocOperMstVo extends IpVo implements Serializable {
 	public void setLvlMstSeqListVo(TbLvlMstListVo lvlMstSeqListVo) {
 		this.lvlMstSeqListVo = lvlMstSeqListVo;
 	}
-	
+
 	public String getSllnum() {
 		return sllnum;
 	}
@@ -515,6 +527,7 @@ public class IpAllocOperMstVo extends IpVo implements Serializable {
 	public void setSllnum(String sllnum) {
 		this.sllnum = sllnum;
 	}
+
 	public List<String> getSllnums() {
 		return sllnums;
 	}
@@ -586,7 +599,7 @@ public class IpAllocOperMstVo extends IpVo implements Serializable {
 	public void setSsubscmstipNe(String ssubscmstipNe) {
 		this.ssubscmstipNe = ssubscmstipNe;
 	}
-	
+
 	public String getSvalidCheck() {
 		return svalidCheck;
 	}
@@ -602,6 +615,7 @@ public class IpAllocOperMstVo extends IpVo implements Serializable {
 	public void setSconnAlias(String sconnAlias) {
 		this.sconnAlias = sconnAlias;
 	}
+
 	public List<String> getSconnAliass() {
 		return sconnAliass;
 	}
@@ -641,6 +655,7 @@ public class IpAllocOperMstVo extends IpVo implements Serializable {
 	public void setSsaid(String ssaid) {
 		this.ssaid = ssaid;
 	}
+
 	public List<String> getSsaids() {
 		return ssaids;
 	}
@@ -680,7 +695,7 @@ public class IpAllocOperMstVo extends IpVo implements Serializable {
 	public void setSicisofficesname(String sicisofficesname) {
 		this.sicisofficesname = sicisofficesname;
 	}
-	
+
 	public String getSofficecode() {
 		return sofficecode;
 	}
@@ -705,7 +720,7 @@ public class IpAllocOperMstVo extends IpVo implements Serializable {
 		this.sipAssignSubNm = sipAssignSubNm;
 	}
 
-		public String getLlSrchTypeCd() {
+	public String getLlSrchTypeCd() {
 		return llSrchTypeCd;
 	}
 
@@ -784,7 +799,7 @@ public class IpAllocOperMstVo extends IpVo implements Serializable {
 	public void setsAlcSrchTypeCd(String sAlcSrchTypeCd) {
 		this.sAlcSrchTypeCd = sAlcSrchTypeCd;
 	}
-	
+
 	public String getSneossDdYn() {
 		return sneossDdYn;
 	}
@@ -1088,6 +1103,7 @@ public class IpAllocOperMstVo extends IpVo implements Serializable {
 	public void setSummaryCnt(Integer summaryCnt) {
 		this.summaryCnt = summaryCnt;
 	}
+
 	public String getNsummaryCnt() {
 		return nsummaryCnt;
 	}
@@ -1167,7 +1183,6 @@ public class IpAllocOperMstVo extends IpVo implements Serializable {
 	public void setSsubscrouterserialip(String ssubscrouterserialip) {
 		this.ssubscrouterserialip = ssubscrouterserialip;
 	}
-	
-	
+
 	/** MEMBER METHOD DECLARATION END **/
 }

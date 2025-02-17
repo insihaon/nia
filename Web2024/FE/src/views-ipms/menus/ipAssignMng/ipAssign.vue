@@ -131,23 +131,29 @@ export default {
         },
       ],
       sassignLevelCds: [],
+      sassignTypeCds: [],
       sipCreateSeqCds: [],
       selectedRows: [],
-      componentList: [
+    }
+  },
+  computed: {
+    componentList() {
+      return [
         { key: 'SsvcLineType', props: { lvl: 3, multi: [2] } },
         { key: 'SipCreateType', props: {} },
         { key: 'GenerationDegree', props: { prop_options: this.sipCreateSeqCds } },
         { key: 'InputType', props: { label: 'BitMask', prop_parameterKey: 'nbitmask' } },
         { key: 'DateRange', props: {} },
         { key: 'IpAddress', props: { defaultWord: '' } },
-        { key: 'ServiceOrg', props: { limit: 10 } },
-        { key: 'IpBlockStatus', props: { label: '배정상태', prop_options: this.sassignLevelCds } },
+        { key: 'ServiceOrg', props: { limit: 10, prop_options: this.sassignTypeCds } },
+        { key: 'IpBlockStatus', props: { label: '배정상태', prop_options: this.sassignLevelCds, defaultValue: this.ipms.isFacilitesAssign ? 'IA0004' : '', disabled: this.ipms.isFacilitesAssign } },
         { key: 'SortType', props: { sortOrdrDefaultVal: 'ASC' } },
-        { key: 'IncludeYN', props: { label: 'Summary 포함 여부', prop_parameterKey: 'snull0Yn' } },
-        { key: 'IncludeYN', props: { label: 'DB-라우팅 일치 여부', prop_parameterKey: 'sintgrmYn' } },
-        { key: 'RoutingDuplCount', props: { label: '라우팅 중복 개수', prop_parameterKey: 'summaryCnt', valueType: 'number' } },
+        { key: 'IncludeYN', props: { label: 'Summary 포함 여부', prop_parameterKey: 'snull0Yn', disabled: this.ipms.isFacilitesAssign } },
+        { key: 'IncludeYN', props: { label: 'DB-라우팅 일치 여부', prop_parameterKey: 'sintgrmYn', disabled: this.ipms.isFacilitesAssign } },
+        { key: 'RoutingDuplCount', props: { label: '라우팅 중복 개수', prop_parameterKey: 'summaryCnt', valueType: 'number', disabled: this.ipms.isFacilitesAssign } },
+        { key: 'FacilitiesOption', props: {} },
       ]
-    }
+    },
   },
   watch: {
     $route: {
@@ -165,9 +171,19 @@ export default {
         }
       },
       immediate: true
+    },
+    '$store.state.ipms.isFacilitesAssign' (value) {
+      this.$route.meta.title = value ? '시설용 IP 배정' : 'IP 배정'
+      this.$set(this, 'sassignLevelCds', [{ label: '서비스배정[미할당]', value: 'IA0004' }])
+      this.fnSelectSassignTypeCds()
+      /* TO-DO
+        시설용 IP 서비스 배정 블록들만 조회
+        시설용 IP할당 단계 이동 버튼 좌측하단 추가
+      */
     }
   },
   mounted() {
+    this.fnSelectSassignTypeCds()
     this.fnSelectSipCreateSeqCds()
     this.fnSelectSassignLevelCds()
   },
@@ -175,6 +191,19 @@ export default {
     handleSearch(requestParameter) {
       this.pagination.currentPage = 1
       this.fnViewListAsgnIPMst(requestParameter)
+    },
+    async fnSelectSassignTypeCds() {
+      try {
+        if (this.ipms.isFacilitesAssign) {
+          const res = await apiRequestJson(ipmsJsonApis.selectFacilitesSassignTypeCdList, {})
+          const sassignTypeCds = res.tbIpAllocMstVos.map(v => { return { value: v.sassignTypeCd, label: v.sassignTypeNm } })
+          this.$set(this, 'sassignTypeCds', sassignTypeCds)
+        } else {
+          this.$set(this, 'sassignTypeCds', null)
+        }
+      } catch (error) {
+        console.error(error)
+      }
     },
     async fnSelectSassignLevelCds() {
       try {
@@ -276,11 +305,7 @@ export default {
             }
           }
 
-        const tbIpAssignMstListVo = { tbIpAssignMstVos: [] }
-         rows.forEach(row => {
-          tbIpAssignMstListVo.tbIpAssignMstVos.push({ ...row })
-        })
-        this.$refs.ModalIpAssign.open({ tbIpAssignMstListVo })
+        this.$refs.ModalIpAssign.open({ rows })
     },
     handleClickMergeInsert() {
       const rows = this.selectedRows
@@ -325,7 +350,7 @@ export default {
     },
     handleClickExcelDownloadBtn() {
       downloadExcel(this, 'viewListAsgnIPMstExcel')
-    }
+    },
   }
 }
 </script>

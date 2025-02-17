@@ -6,7 +6,8 @@ const state = {
     ownerYn: 'Y',
     suserGradeCd: 'UR0001',
     currentCondition: {},
-    isDropdownOpen: false
+    isDropdownOpen: false,
+    isFacilitesAssign: false, // 시설용 IP배정 활성상태
 }
 
 const mutations = {
@@ -34,7 +35,10 @@ const mutations = {
     },
     SET_DROPDOWN_VISIBILITY(state, isVisible) {
         state.isDropdownOpen = isVisible
-    }
+    },
+    SET_IS_FACILITES_OPTION(state, isVisible) {
+        state.isFacilitesAssign = isVisible
+    },
 }
 const actions = {
     setCurProfileByVue({ commit }, params) {
@@ -57,7 +61,10 @@ const actions = {
     },
     setDropdownVisibility({ commit }, value) {
         commit('SET_DROPDOWN_VISIBILITY', value)
-    }
+    },
+    setIsFacilitesOption({ commit }, value) {
+        commit('SET_IS_FACILITES_OPTION', value)
+    },
 }
 
 export default {

@@ -41,6 +41,7 @@ import com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlBasListVo;
 import com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlBasVo;
 import com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlMstListVo;
 import com.kt.ipms.legacy.opermgmt.orgmgmt.vo.TbLvlMstVo;
+import com.mysql.cj.util.DnsSrv.SrvRecord;
 
 import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
 
@@ -70,7 +71,8 @@ public class AssignMgmtController extends CommonController {
 				assignLevelCdParamMap.put("startCd", "IA0003");
 			}
 			assignLevelCdParamMap.put("endCd", "IA0004");
-			sassignLevelCds = commonCodeService.selectListCommonCode(CommonCodeUtil.ASSIGN_LEVEL_CD, assignLevelCdParamMap);
+			sassignLevelCds = commonCodeService.selectListCommonCode(CommonCodeUtil.ASSIGN_LEVEL_CD,
+					assignLevelCdParamMap);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -116,9 +118,15 @@ public class AssignMgmtController extends CommonController {
 		TbIpAssignMstListVo resultListVo = null;
 		String sloadFlg = "T"; // 메뉴 호출 시 조회를 처리하지 않기 위한 예외값 로직 추가(2014.12.24 전필권 과장님 요청)
 		try {
-			// List<CommonCodeVo> sipCreateTypeCds = commonCodeService.selectListCommonCode(CommonCodeUtil.IP_CREATE_TYPE_CD, null);
-			// List<CommonCodeVo> sipCreateSeqCds = commonCodeService.selectListCommonCode(CommonCodeUtil.IP_CREATE_SEQ_CD, null);
-			// List<CommonCodeVo> sipVersionTypeCds = commonCodeService.selectListCommonCode(CommonCodeUtil.IP_VERSION_TYPE_CD, null);
+			// List<CommonCodeVo> sipCreateTypeCds =
+			// commonCodeService.selectListCommonCode(CommonCodeUtil.IP_CREATE_TYPE_CD,
+			// null);
+			// List<CommonCodeVo> sipCreateSeqCds =
+			// commonCodeService.selectListCommonCode(CommonCodeUtil.IP_CREATE_SEQ_CD,
+			// null);
+			// List<CommonCodeVo> sipVersionTypeCds =
+			// commonCodeService.selectListCommonCode(CommonCodeUtil.IP_VERSION_TYPE_CD,
+			// null);
 			// model.addAttribute("sipCreateTypeCds", sipCreateTypeCds);
 			// model.addAttribute("sipCreateSeqCds", sipCreateSeqCds);
 			// model.addAttribute("sipVersionTypeCds", sipVersionTypeCds);
@@ -189,10 +197,11 @@ public class AssignMgmtController extends CommonController {
 			searchVo.setLvlMstSeqListVo(resultSeqList);
 
 			/** 조직별 서비스 유형 셋팅(2014.12.04) **/
-			TbIpAllocMstVo searchasTypeVo = new TbIpAllocMstVo();
-			searchasTypeVo.setLvlMstSeqListVo(resultSeqList);
-			List<CommonCodeVo> sassignTypeCds = assignMgmtService.selectOrgSassignTypeCdList(searchasTypeVo);
-			model.addAttribute("sassignTypeCds", sassignTypeCds);
+			// TbIpAllocMstVo searchasTypeVo = new TbIpAllocMstVo();
+			// searchasTypeVo.setLvlMstSeqListVo(resultSeqList);
+			// List<CommonCodeVo> sassignTypeCds =
+			// assignMgmtService.selectOrgSassignTypeCdList(searchasTypeVo);
+			// model.addAttribute("sassignTypeCds", sassignTypeCds);
 
 			/** 계위별 배정 레벨 목록 조회 **/
 			Map<String, String> assignLevelCdParamMap = new HashMap<String, String>();
@@ -209,6 +218,24 @@ public class AssignMgmtController extends CommonController {
 					assignLevelCdParamMap);
 			model.addAttribute("sassignLevelCds", sassignLevelCds);
 
+			// 시설용IP화면 서비스그룹 하위 코드 setting
+			if (searchVo.getIsViewFacilites()) {
+				TbIpAllocMstVo searchasTypeVo = new TbIpAllocMstVo();
+				/* 멀티 list 조건 추가 */
+				List<String> listString = new ArrayList<String>();
+				String[] sAssignGroupTypeMulti = searchVo.getSassignTypeCdMultiStr().split(";");
+				for (int i = 0; i < sAssignGroupTypeMulti.length; i++) {
+					listString.add(sAssignGroupTypeMulti[i]);
+				}
+				searchasTypeVo.setSassignTypeMulti(listString);
+
+				List<CommonCodeVo> sassignGroupTypeCds = assignMgmtService.selectFacilitesTypeCdList(searchasTypeVo);
+				String sAssignTypeMultiStr = new String();
+				for (CommonCodeVo vo : sassignGroupTypeCds) {
+					sAssignTypeMultiStr = sAssignTypeMultiStr.concat(vo.getSubCodeStr());
+				}
+				searchVo.setSassignTypeCdMultiStr(sAssignTypeMultiStr);
+			}
 			// 멀티셀렉트
 			if (null != searchVo.getSassignTypeCdMultiStr() && !"".equals(searchVo.getSassignTypeCdMultiStr())) {
 				List<String> listString = new ArrayList<String>();

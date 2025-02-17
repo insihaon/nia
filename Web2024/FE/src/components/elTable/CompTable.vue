@@ -38,7 +38,7 @@ copyright notice above does not evidence any actual or * intended publication of
     >
       <!-- @header-contextmenu="fn_headerContextmenu(...arguments, propGridMenuId, propGridIndx, propColumn, propSetColunm)"
       @header-dragend="fn_headerDragend(...arguments, propGridMenuId, propGridIndx, propColumn, propSetColunm)" -->
-      <el-table-column v-if="propIsCheckBox" :selectable="isSelectable" :index="0" type="selection" align="center" width="35" />
+      <el-table-column v-if="propIsCheckBox" :selectable="isSelectable" :index="0" type="selection" align="center" width="45" />
       <el-table-column
         v-for="(item, index) in columnDefs"
         v-if="item.columnVisible"
@@ -157,6 +157,7 @@ export default {
     propOnClick: { type: Function, default: () => {} }, //클릭액션
     propOnCellClick: { type: Function, default: () => {} }, //셀클릭액션
     propIsCellClickCheck: { type: Boolean, default: false },
+    propIsMultiCheck: { type: Boolean, default: false },
     propIsRClick: { type: Boolean, default: false }, //우클릭 액션 유무
     propRClickOptions: {
       type: Array,
@@ -324,11 +325,18 @@ export default {
     },
     fn_cell_click(row, column, cell, event) {
       if(this.propIsCellClickCheck) {
-        this.$refs.table.clearSelection()
-        this.$refs.table.selection.push(row)
+        const equalRowIndex = this.$refs.table.selection.findIndex(v=> this._isEqual(v, row))
+        if(!this.propIsMultiCheck) {
+          this.$refs.table.clearSelection()
+        }
+        if(equalRowIndex != -1) {
+          this.$refs.table.selection.splice(equalRowIndex, 1)
+        } else {
+          this.$refs.table.selection.push(row)
+        }
       }
       if(column.index === 0) return
-      this.$emit('update:propCellClick', { row, column })
+      this.$emit('update:propCellClick', { all: this.$refs.table.selection, row, column })
     },
     fn_onPageSizeChange(pageSize) {
       var temp_pagin = this.propPaginationData

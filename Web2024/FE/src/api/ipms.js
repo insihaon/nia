@@ -124,6 +124,7 @@ export const ipmsJsonApis = {
   selectOfficeList: { desc: '수용국 조회', url: '/ipmgmt/linemgmt/selectOfficeList' },
   selectSearchLvlCd: { desc: '운용팀 조회', url: 'opermgmt/orgmgmt/selectSearchLvlCd' },
   selectOrgSassignTypeCdList: { desc: '서비스 조회', url: '/ipmgmt/allocmgmt/selectOrgSassignTypeCdList' },
+  selectFacilitesSassignTypeCdList: { desc: '시설용IP 서비스 조회(그룹)', url: '/ipmgmt/allocmgmt/selectFacilitesSassignTypeCdList' },
   selectSearchOrgBas: { desc: '운용조직 검색', url: '/opermgmt/orgmgmt/selectSearchOrgBas' },
   selectSipCreateSeqCdsList: { desc: '생성차수 공통 코드 리스트 조회', url: '/ipmgmt/createmgmt/selectSipCreateSeqCdsList' },
   selectSassignLevelCds: { desc: '배정조회 > 배정 상태 코드 리스트 조회', url: '/ipmgmt/assignmgmt/selectSassignLevelCds' },
