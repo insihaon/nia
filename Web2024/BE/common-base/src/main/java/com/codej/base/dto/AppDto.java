@@ -85,6 +85,12 @@ public class AppDto extends ToStringFormatter {
     @Value("${myconf.websocket.auth-same-network:true}") // true: redis를 이용해 사용자 정보를 공유 할 수 있는 환경이다.
     private Boolean wsCanAccessUser;
 
+    @Value("${spring.session.jwt-compare:false}")
+    private Boolean sessionJwtCompare;
+
+    @Value("${spring.session.store-type:none}")
+    private String sessionStoreType;
+
     @Value("${spring.redis.host:127.0.0.1}")
     private String redisHost;
 
