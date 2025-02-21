@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -48,14 +49,22 @@ import lombok.extern.slf4j.Slf4j;
 public abstract class AbsAuthController extends BaseController {
     @Autowired
     private UserService userService;
+    
     @Autowired
     private BaseJwtTokenProvider baseJwtTokenProvider;
+
     @Autowired
     private ResponseService responseService;
+
     @Autowired
     private KakaoService kakaoService;
+    
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private HttpSession session;
+
     @Autowired
     private AppDto appDto;
 
@@ -163,7 +172,7 @@ public abstract class AbsAuthController extends BaseController {
         user.setPassword(null);
         user.setIpAddress(address);
 
-        String token = baseJwtTokenProvider.createToken(user, address);
+        String token = baseJwtTokenProvider.createToken(user, session.getId(), address);
 
         // User 정보와 토큰 정보를 반환
         HashMap<String, Object> mapUser = JsonUtil.convertObjectToMap(user);
@@ -252,7 +261,7 @@ public abstract class AbsAuthController extends BaseController {
         DbUser user = (DbUser) getService().findUserByUidAndProvider(String.valueOf(profile.getId()), provider);
         user.setIpAddress(address);
         return responseService.createSingleResponse(
-                baseJwtTokenProvider.createToken(user, address));
+                baseJwtTokenProvider.createToken(user, session.getId(), address));
     }
 
     /**

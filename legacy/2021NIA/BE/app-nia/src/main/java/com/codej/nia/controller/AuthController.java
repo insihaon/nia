@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -37,19 +38,16 @@ import lombok.extern.slf4j.Slf4j;
 public class AuthController extends AbsAuthController {
     @Autowired
     private NiaUserService niaUserService;
-
     @Autowired
     private NiaService niaService;
-
     @Autowired
     private ResponseService responseService;
-
     @Autowired
     private PasswordEncoder passwordEncoder;
-
     @Autowired
     private NiaJwtTokenProvider niaJwtTokenProvider;
-
+    @Autowired
+    private HttpSession session;
     @Autowired
     private AppDto appDto;
 
@@ -83,7 +81,7 @@ public class AuthController extends AbsAuthController {
         user.setPassword(null);
         user.setIpAddress(address);
 
-        String token = niaJwtTokenProvider.createToken(user, address);
+        String token = niaJwtTokenProvider.createToken(user, session.getId(), address);
 
         // User 정보와 토큰 정보를 반환
         HashMap<String, Object> mapUser = JsonUtil.convertObjectToMap(user);

@@ -8,11 +8,12 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.json.JSONObject;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
-import org.springframework.web.filter.GenericFilterBean;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.codej.base.dto.AppDto;
 import com.codej.base.exception.CAuthenticationException;
@@ -25,7 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 // @ConditionalOnExpression("'${myconf.project:dev}' != 'ipms'")
-public class JwtAuthenticationFilter extends GenericFilterBean {
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 
     private final BaseJwtTokenProvider baseJwtTokenProvider;
@@ -49,7 +50,8 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 
     // Request로 들어오는 Jwt Token의 유효성을 검증(baseJwtTokenProvider.validateToken)하는 filter를 filterChain에 등록합니다.
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+            throws ServletException, IOException {
         try {
             if (appDto.getAuthUse()) {
                 HttpServletRequest httpRequest = (HttpServletRequest) request;
@@ -67,6 +69,24 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
                     response.setContentType("application/json;charset=UTF-8");
                     response.getWriter().write(entity.toString());
                     return;
+                }
+
+                if (appDto.getSessionJwtCompare()) {
+                    log.debug("JWT의 SessionId 와 현재 세션의 SessionId 비교");
+                    if (token != null) {
+                        HttpSession session = request.getSession(false); // 현재 세션이 없으면 새로 생성하지 않음
+                        String sessionIdFromJwt = baseJwtTokenProvider.extractSessionId(token);
+
+                        if (session == null || !sessionIdFromJwt.equals(session.getId())) {
+                            // 세션 ID가 일치하지 않으면 인증 실패 응답
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            response.getWriter().write("인증 실패: 세션이 유효하지 않습니다.");
+                            log.debug("JWT의 SessionId 와 현재 세션의 SessionId 비교 결과: 불일치");
+                            return;
+                        } else {
+                            log.debug("JWT의 SessionId 와 현재 세션의 SessionId 비교 결과: 일치");
+                        }
+                    }
                 }
 
                 if (validate) {
@@ -96,7 +116,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 
         try {
              /* 전처리 코드 */
-             filterChain.doFilter(request, response);
+             chain.doFilter(request, response);
              /* 후처리 코드 */
         } catch (IOException | ServletException ex) {
             response(request, response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, -999, ex.getMessage());
