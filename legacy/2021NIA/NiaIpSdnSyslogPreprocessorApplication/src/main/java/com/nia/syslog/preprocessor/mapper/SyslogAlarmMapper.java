@@ -4,6 +4,7 @@ import com.nia.syslog.preprocessor.vo.alarm.SysLogAlarmVo;
 import com.nia.syslog.preprocessor.vo.resource.IpNodeInfoVo;
 import com.nia.syslog.preprocessor.vo.rule.SyslogRuleVo;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -15,6 +16,6 @@ public interface SyslogAlarmMapper {
 
     void insertSyslogAlarm(SysLogAlarmVo sysLogAlarmVo);
 
-    String selectAlarmLoc(String collectSeq, String etc);
+    String selectAlarmLoc(@Param("alarmno") String alarmno, @Param("etc") String etc);
 
 }
