@@ -10,12 +10,14 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.session.Session;
 import org.springframework.session.data.redis.RedisOperationsSessionRepository;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 
 /*
  * A 서버: 세션을 주는 서버, 로그인 인증을 한 서버
@@ -29,7 +31,9 @@ import org.springframework.web.bind.annotation.RestController;
  *  요약하면 A 서비스의 세션을 그래도 B서비스에서 계속 같은 세션으로 서비스를 이용하는 방법은?
  */
 
-@RestController
+@Controller
+@ConditionalOnExpression("'${spring.redis.enabled:true}' == 'true'")
+@ConditionalOnProperty(prefix = "spring.session", name = "store-type", havingValue = "redis") 
 public class SessionController {
 
     // Redis에 저장된 세션을 관리하는 Repository를 주입합니다.
