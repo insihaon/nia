@@ -31,7 +31,7 @@ spring:
 myconf:
   auth:
     use: false #auth.use
-  redirectServer:
+  webProxy:
     enable: true
     url: http://127.0.0.1:8080
 

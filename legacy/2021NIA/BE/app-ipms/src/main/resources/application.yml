@@ -112,9 +112,17 @@ jasypt:
 myconf:
   project: ipms
   ajp.use: false
-  # redirectServer: 
-  #   enable: true  # true 설정하면 웹 요청을 url 로 리다이렉트 함
-  #   url: http://127.0.0.1:8080
+  webProxy: 
+    enable: true  # true 설정하면 웹 요청을 url 로 리다이렉트 함
+    url: http://127.0.0.1:8080
+    ssl:  
+      enable: false # SSL 인증서 사용 여부
+      # PKCS12 형식의 인증서 사용 시 p12 설정
+      # PEM 형식의 인증서 사용 시 p12 null 설정
+      p12: # PKCS12 형식의 인증서 파일 경로(X.509 형식)
+      crt: # PEM 형식의 인증서 파일 경로
+      key: # PEM 형식의 개인키 파일 경로
+      password: 
   websocket:
     enabled: false   #websocket.enabled
     url: /ws-stomp
