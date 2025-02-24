@@ -47,6 +47,10 @@ subprojects {
 
 	dependencies {
 		implementation fileTree(dir: 'libs', include: ['**/*.jar'])
+
+		// PEM 형식의 인증서와 개인키를 로드하여 SSL 인증서를 적용
+		implementation 'org.bouncycastle:bcprov-jdk15on:1.70'
+    	implementation 'org.bouncycastle:bcpkix-jdk15on:1.70'
 					
 		// developmentOnly 'org.springframework.boot:spring-boot-devtools' 주의 사용시 @Cacheable 에 ClassCastException 문제가 발생함. 
 		implementation 'org.springframework.boot:spring-boot-starter'

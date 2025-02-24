@@ -17,7 +17,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.codej.web.Intercepts.WebServiceProxyInterceptor;
+import com.codej.web.Intercepts.WebProxyInterceptor;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 public class IpmsApplication extends SpringBootServletInitializer implements WebMvcConfigurer {
 
 	@Autowired
-    private WebServiceProxyInterceptor webServiceProxyInterceptor;
+    private WebProxyInterceptor webProxyInterceptor;
 
 	@Override
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
@@ -40,7 +40,7 @@ public class IpmsApplication extends SpringBootServletInitializer implements Web
 
 	@Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(webServiceProxyInterceptor).addPathPatterns("/**");
+        registry.addInterceptor(webProxyInterceptor).addPathPatterns("/**");
     }
 
 	public static void main(String[] args) {

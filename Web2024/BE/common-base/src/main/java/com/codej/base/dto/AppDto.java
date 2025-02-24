@@ -192,12 +192,27 @@ public class AppDto extends ToStringFormatter {
     @Value("${myconf.api-server.grafana-url:127.0.0.1}")
     private String grafanaUrl;
 
-    @Value("${myconf.redirectServer.enable:false}")
-    private Boolean redirectServerEnable;
+    @Value("${myconf.webProxy.enable:false}")
+    private Boolean webProxyEnable;
 
-    @Value("${myconf.redirectServer.url:}")
-    private String redirectServerUrl;
+    @Value("${myconf.webProxy.url:}")
+    private String webProxyUrl;
 
+    @Value("${myconf.webProxy.ssl.enable:false}")
+    private Boolean webProxySslEnable;
+
+    @Value("${myconf.webProxy.ssl.p12:}")
+    private String webProxySslP12;
+
+    @Value("${myconf.webProxy.ssl.crt:}")
+    private String webProxySslCrt;
+
+    @Value("${myconf.webProxy.ssl.key:}")
+    private String webProxySslKey;
+
+    @Value("${myconf.webProxy.ssl.password:}")
+    private String webProxySslPassword;
+    
     @Value("${myconf.api-server.hub-api:http://127.0.0.1:8070/dh}")
     private String hubUrl;
 

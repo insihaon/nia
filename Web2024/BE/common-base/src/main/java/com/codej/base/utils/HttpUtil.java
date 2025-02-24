@@ -34,7 +34,6 @@ import org.springframework.web.client.RestTemplate;
 import com.codej.base.exception.CHttpRelayServiceFail;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-
 public class HttpUtil {
 
     // @formatter:off      
@@ -173,7 +172,6 @@ public class HttpUtil {
         return createHttpClient(url, 30000);    // 데이터 읽기 타임아웃 
     }
 
-
     public static CloseableHttpClient createHttpClient(String url, int timeout) throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException {
         final int connectionTimeout = 3000;         // 서버에 연결할 때의 타임아웃
         final int connectionRequestTimeout = 3000;    // 커넥션 풀에서 커넥션을 할당받을 때의 타임아웃
@@ -190,8 +188,8 @@ public class HttpUtil {
             }).build();
 
             final RequestConfig requestConfig = RequestConfig.custom()
-                .setConnectTimeout(connectionTimeout)
-                .setConnectionRequestTimeout(connectionRequestTimeout)
+                .setConnectTimeout(3000)
+                .setConnectionRequestTimeout(3000)
                 .setSocketTimeout(timeout)
                 .build();
 
@@ -211,5 +209,4 @@ public class HttpUtil {
         }
         return httpClient;
     }
-
 }
