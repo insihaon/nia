@@ -40,7 +40,7 @@
 <!--          AND SC.SYSLOG_MESSAGE LIKE '%'||NM.IF_ID||'%';-->
 <!--    </select>-->
 
-    <select id="selectAlarmLoc" resultType="string" parameterType="string">
+    <select id="selectAlarmLoc" resultType="string" parameterType="map">
         SELECT substring(#{etc} FROM '(?:interface:|Interface)\s*([^\s]+)') AS alarmloc
         FROM RCA.TB_SYSLOG_ALARM_MST SC
         where sc.alarmno = #{alarmno}
