@@ -125,7 +125,7 @@ public class RcaTicketManagerServiceImpl implements RcaTicketManagerService {
 
                     for(List<RoadmPerformanceOrgVo> performanaceVoList : rowPerformanaceList){
                         if(performanaceVoList.size() > 0){
-                            for(int i = 0; i <= performanaceVoList.size(); i++){
+                            for(int i = 0; i < performanaceVoList.size(); i++){ //전송망 오류 발생으로 인해 <= 를 < 로 변경
                                 if(i == 0){
                                     if("REPEATER".equals(performanaceVoList.get(i).getRoadmCode())){
                                         if(performanaceVoList.get(i).getIsInRowSignal()){
