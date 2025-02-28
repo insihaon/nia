@@ -73,7 +73,9 @@ copyright notice above does not evidence any actual or * intended publication of
     </el-table>
     <!--  && propIsPageSize -->
     <div class="d-flex justify-between">
-      <div style="width: 33%"></div>
+      <div style="width: 33%">
+        <slot name="left-features" />
+      </div>
       <div v-if="propIsPagination != false" style="text-align: center; margin-top: 10px">
         <el-pagination
           :current-page.sync="propPaginationData.currentPage"

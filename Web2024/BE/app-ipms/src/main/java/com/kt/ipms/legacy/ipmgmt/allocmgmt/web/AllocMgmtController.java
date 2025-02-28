@@ -121,6 +121,35 @@ public class AllocMgmtController extends CommonController {
 		TbLvlMstListVo resultSeqList = jwtUtil.getLvlSeqList(request, searchSeqVo);
 		searchVo.setLvlMstSeqListVo(resultSeqList);
 
+		// 시설용IP화면 서비스그룹 하위 코드 setting
+		if (searchVo.getIsFacilities() != null && searchVo.getIsFacilities()) {
+			TbIpAllocMstVo searchasTypeVo = new TbIpAllocMstVo();
+			/* 멀티 list 조건 추가 */
+			List<String> listString = new ArrayList<String>();
+			String[] sAssignGroupTypeMulti = searchVo.getSassignTypeCdMultiStr().split(";");
+			for (int i = 0; i < sAssignGroupTypeMulti.length; i++) {
+				listString.add(sAssignGroupTypeMulti[i]);
+			}
+			searchasTypeVo.setSassignTypeMulti(listString);
+
+			List<CommonCodeVo> sassignGroupTypeCds = assignMgmtService.selectFacilitesTypeCdList(searchasTypeVo);
+			String sAssignTypeMultiStr = new String();
+			for (CommonCodeVo vo : sassignGroupTypeCds) {
+				sAssignTypeMultiStr = sAssignTypeMultiStr.concat(vo.getSubCodeStr()) + ";";
+			}
+			searchVo.setSassignTypeCdMultiStr(sAssignTypeMultiStr);
+		}
+		// 멀티셀렉트
+		if (null != searchVo.getSassignTypeCdMultiStr() && !"".equals(searchVo.getSassignTypeCdMultiStr())) {
+			List<String> listString = new ArrayList<String>();
+			String[] sAssignTypeMulti = searchVo.getSassignTypeCdMultiStr().split(";");
+			for (int i = 0; i < sAssignTypeMulti.length; i++) {
+				listString.add(sAssignTypeMulti[i]);
+			}
+
+			searchVo.setSassignTypeMulti(listString);
+		}
+
 		setPagination(searchVo);
 		IpAllocOperMstListVo resultListVo = allocMgmtService.selectListIpAllocMst(searchVo);
 		return createResultList(resultListVo.getIpAllocOperMstVos(), resultListVo.getTotalCount());
@@ -234,11 +263,30 @@ public class AllocMgmtController extends CommonController {
 			model.addAttribute("sLvlSubvCds", sLvlSubvCds);
 
 			/** 조직별 서비스 유형 셋팅(2014.12.04) **/
-			TbIpAllocMstVo searchasTypeVo = new TbIpAllocMstVo();
-			searchasTypeVo.setLvlMstSeqListVo(resultSeqList);
-			List<CommonCodeVo> sassignTypeCds = allocMgmtService.selectOrgSassignTypeCdList(searchasTypeVo);
-			model.addAttribute("sassignTypeCds", sassignTypeCds);
+			// TbIpAllocMstVo searchasTypeVo = new TbIpAllocMstVo();
+			// searchasTypeVo.setLvlMstSeqListVo(resultSeqList);
+			// List<CommonCodeVo> sassignTypeCds =
+			// allocMgmtService.selectOrgSassignTypeCdList(searchasTypeVo);
+			// model.addAttribute("sassignTypeCds", sassignTypeCds);
 
+			// 시설용IP화면 서비스그룹 하위 코드 setting
+			if (searchVo.getIsFacilities()) {
+				TbIpAllocMstVo searchasTypeVo = new TbIpAllocMstVo();
+				/* 멀티 list 조건 추가 */
+				List<String> listString = new ArrayList<String>();
+				String[] sAssignGroupTypeMulti = searchVo.getSassignTypeCdMultiStr().split(";");
+				for (int i = 0; i < sAssignGroupTypeMulti.length; i++) {
+					listString.add(sAssignGroupTypeMulti[i]);
+				}
+				searchasTypeVo.setSassignTypeMulti(listString);
+
+				List<CommonCodeVo> sassignGroupTypeCds = assignMgmtService.selectFacilitesTypeCdList(searchasTypeVo);
+				String sAssignTypeMultiStr = new String();
+				for (CommonCodeVo vo : sassignGroupTypeCds) {
+					sAssignTypeMultiStr = sAssignTypeMultiStr.concat(vo.getSubCodeStr());
+				}
+				searchVo.setSassignTypeCdMultiStr(sAssignTypeMultiStr);
+			}
 			// 멀티셀렉트
 			if (null != searchVo.getSassignTypeCdMultiStr() && !"".equals(searchVo.getSassignTypeCdMultiStr())) {
 				List<String> listString = new ArrayList<String>();
@@ -1875,7 +1923,7 @@ public class AllocMgmtController extends CommonController {
 	@RequestMapping(value = "/ipmgmt/allocmgmt/selectFacilitesSassignTypeCdList.json", method = RequestMethod.POST)
 	@ResponseBody
 	@EncryptResponse
-	public BaseVo selectFacilitesSassignTypeCdList(@RequestBody TbIpAllocMstVo searchVo,
+	public TbIpAllocMstListVo selectFacilitesSassignTypeCdList(@RequestBody TbIpAllocMstVo searchVo,
 			HttpServletRequest request, HttpServletResponse response) {
 		TbIpAllocMstListVo resultListVo = new TbIpAllocMstListVo();
 		try {

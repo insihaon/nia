@@ -14,7 +14,7 @@
           popper-class="IpBlockStatus"
           @change="handleChange()"
         >
-          <el-option label="전체" value=""><span class="w-100 h-100 d-inline-block" @click="handleClickAll">전체</span></el-option>
+          <el-option v-if="isShowAll" label="전체" value=""><span class="w-100 h-100 d-inline-block" @click="handleClickAll">전체</span></el-option>
           <el-option
             v-for="(option, i) in options"
             :key="i"
@@ -36,6 +36,10 @@ export default {
   extends: Base,
   mixins: [commonFunctionMixin],
   props: {
+    isShowAll: {
+      type: Boolean,
+      default: true
+    },
     label: {
       type: String,
       default: 'IP 블록상태'

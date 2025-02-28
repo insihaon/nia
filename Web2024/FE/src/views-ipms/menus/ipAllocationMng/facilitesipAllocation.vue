@@ -17,8 +17,8 @@
         :prop-column="tableColumns"
         :prop-is-pagination="true"
         :prop-is-check-box="true"
+        :prop-max-select="1"
         :prop-is-cell-click-check="true"
-        :prop-max-select="pagination.data.length"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
         :prop-on-dbl-click="hadleClickIpAllocDetail"
@@ -33,11 +33,20 @@
             IP 할당 조회결과
           </span>
         </template>
+        <template slot="left-features">
+          <el-button icon="el-icon-copy-document" type="primary" size="mini" round @click="handleClickViewChange">
+            {{ viewMode === 'autoAloc' ? '시설용 IP할당 이동' : 'IPv4 시설용 IP 자동할당 이동' }}
+          </el-button>
+        </template>
         <template slot="add-features">
           <div class="add-features">
-            <el-button icon="el-icon-check" type="primary" size="mini" round @click="fnViewCheckTacsIpBlock_">IP블럭 중복체크</el-button>
-            <el-button icon="el-icon-thumb" type="primary" size="mini" round @click="fnInsertAlcBtnClick">할당</el-button>
-            <el-button icon="el-icon-menu" type="primary" size="mini" round @click="fnMergeBtnClick">병합</el-button>
+            <!-- <el-button icon="el-icon-check" type="primary" size="mini" round @click="fnViewCheckTacsIpBlock_">IP블럭 중복체크</el-button> -->
+            <el-button v-if="viewMode === 'autoAloc'" icon="el-icon-thumb" type="primary" size="mini" round @click="fnViewDetailAlcIpMst()">
+              IPv6로 자동할당
+            </el-button>
+            <el-button v-else icon="el-icon-thumb" type="primary" size="mini" round @click="fnViewDetailAlcIpMst()">
+              할당
+            </el-button>
           </div>
         </template>
       </compTable>
@@ -49,6 +58,8 @@
     <ModalIpAllocInsert ref="ModalIpAllocInsert" @reload="fnViewListIpAllocMst()" />
     <!-- 할당 상세 -->
     <ModalIpAllocDetail ref="ModalIpAllocDetail" @alocCallBtnClick="fnInsertAlcBtnClick" />
+    <!-- 할당 처리 전 계위 설정 -->
+    <ModalIpAllocOrgSetting ref="ModalIpAllocOrgSetting" @alocDetailCallBtnClick="hadleClickIpAllocDetail" />
     <!-- 라우팅 중복 개수 -->
     <ModalDetailSummary ref="ModalDetailSummary" />
     <!-- IP블록병합 -->
@@ -63,20 +74,21 @@ import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoad
 import tableHeightMixin from '@/mixin/tableHeightMixin'
 import ModalIpAllocInsert from '@/views-ipms/modal/alloc/ModalIpAllocInsert.vue'
 import ModalIpAllocDetail from '@/views-ipms/modal/alloc/ModalIpAllocDetail.vue'
+import ModalIpAllocOrgSetting from '@/views-ipms/modal/alloc/ModalIpAllocOrgSetting.vue'
 import ModalCheckTacsIpBlock from '@/views-ipms/modal/ModalCheckTacsIpBlock.vue'
 import ModalIpBlockDivision from '@/views-ipms/modal/ModalIpBlockDivision.vue'
 import ModalDetailSummary from '@/views-ipms/modal/ModalDetailSummary.vue'
 import ModalIpAssignMerge from '@/views-ipms/modal/assign/ModalIpAssignMerge.vue'
 
 import { fnViewCheckTacsIpBlock } from '@/views-ipms/js/common-function'
-import { ipmsModelApis, apiRequestModel, ipmsJsonApis, apiRequestExcel } from '@/api/ipms'
+import { ipmsModelApis, apiRequestModel, ipmsJsonApis, apiRequestJson, apiRequestExcel } from '@/api/ipms'
 import { downloadExcel } from '@/views-ipms/js/common-function'
 
-const routeName = 'IpAllocation'
+const routeName = 'FacilitesipAllocation'
 
 export default {
   name: routeName,
-  components: { CompTable, DynamicComponentLoader, ModalIpBlockDivision, ModalIpAllocDetail, ModalCheckTacsIpBlock, ModalIpAllocInsert, ModalIpAssignMerge, ModalDetailSummary },
+  components: { CompTable, DynamicComponentLoader, ModalIpBlockDivision, ModalIpAllocDetail, ModalIpAllocOrgSetting, ModalCheckTacsIpBlock, ModalIpAllocInsert, ModalIpAssignMerge, ModalDetailSummary },
   extends: Base,
   mixins: [tableHeightMixin],
   data() {
@@ -84,40 +96,14 @@ export default {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       pagination: this.setDefaultPagination(),
-      componentList: [
-        { key: 'SsvcLineType', props: { lvl: 3, multi: [2] } },
-        { key: 'SOffice', props: { apiPath: '/ipmgmt/linemgmt', voName: 'tbIpAssignSubVos', valueKey: { cd: 'sofficecode', nm: 'sofficename' } } },
-        { key: 'SipCreateType', props: {} },
-        { key: 'ServiceOrg', props: { limit: 10 } },
-        { key: 'IpAddress', props: {} },
-        { key: 'InputType', props: { label: 'BitMask', prop_parameterKey: 'nbitmask', valueType: 'number' } },
-        { key: 'LineInformation', props: {} },
-        {
-          key: 'IpBlockStatus', props: {
-            label: '할당상태', prop_options: [
-              { label: '서비스배정[미할당]', value: 'IA0004' },
-              { label: '할당예약', value: 'IA0005' },
-              { label: '할당', value: 'IA0006' },
-            ]
-          }
-        },
-        { key: 'DateRange', props: { } },
-        {
-          key: 'InputSearchDetail',
-          props: {
-            label: '장비명',
-            modalName: 'ModalFacilityInformation',
-            valueName: 'ssubscnealias',
-            prop_parameterKey: { sicisofficescodeNe: 'sofficecode', smodelnameNe: 'smodelname', ssubscmstipNe: 'ssubscmstip', ssubscnealiasNe: 'ssubscnealias' },
-          }
-        },
-        { key: 'SortType', props: { sortOrdrDefaultVal: 'ASC' } },
-        { key: 'IncludeYN', props: { label: 'Summary 포함 여부', prop_parameterKey: 'snull0Yn' } },
-        { key: 'IncludeYN', props: { label: 'DB-라우팅 일치여부', prop_parameterKey: 'sintgrmYn' } },
-        { key: 'RoutingDuplCount', props: { label: '라우팅 중복 개수', prop_parameterKey: 'summaryCnt', valueType: 'number' } },
-        { key: 'InputType', props: { label: '비고', prop_parameterKey: 'scomment' } },
-      ],
-      tableColumns: [
+      viewMode: 'manualAloc', // autoAloc (v4-> v6 자동할당)/ manualAloc (v6 수동할당)
+      selectedRow: null,
+      sassignTypeCds: [],
+    }
+  },
+  computed: {
+    tableColumns() {
+      return [
         { prop: 'ssvcLineTypeNm', label: '서비스망', align: 'center', sortable: false, columnVisible: true, showOverflow: true },
         { prop: 'ssvcGroupNm', label: '본부', align: 'center', sortable: false, columnVisible: true, showOverflow: true },
         { prop: 'ssvcObjNm', label: '노드', align: 'center', sortable: false, columnVisible: true, showOverflow: true },
@@ -141,6 +127,7 @@ export default {
                 attrs: {
                   round: true, // Adding the round option
                   plain: true,
+                  disabled: this.viewMode === 'manualAloc',
                   type: row.nsummaryCnt > 0 ? 'danger' : 'primary'
                 },
                 on: { click: () => {
@@ -149,13 +136,15 @@ export default {
             }
           }
         },
-        { prop: 'division', label: '분할', align: 'center', sortable: true, columnVisible: true, showOverflow: true,
+        { prop: '', label: '시설 DB 일치 여부', align: 'center', sortable: true, showOverflow: true, columnVisible: this.viewMode === 'autoAloc' },
+        { prop: 'division', label: '분할', align: 'center', sortable: true, showOverflow: true, columnVisible: this.viewMode === 'manualAloc',
           formatter: (row, col, value, index) => {
             return this.$createElement('el-button', {
               // class: row.sassignLevelCd === 'IA0004' ? '' : 'red',
               attrs: {
                 round: true, // Adding the round option
                 plain: true,
+                disabled: true,
                 type: row.sassignLevelCd === 'IA0004' ? 'primary' : 'danger'
               },
               on: { click: () => {
@@ -166,9 +155,46 @@ export default {
           }
         },
         { prop: 'scomment', label: '비고', align: 'center', sortable: true, columnVisible: true, showOverflow: true, formatter: (row) => { return row.scomment?.length > 0 ? 'Y' : 'N' } },
-      ],
-      selectedRows: []
+      ]
+    },
+    componentList() {
+      return [
+        { key: 'SsvcLineType', props: { lvl: 3, multi: [2] } },
+        { key: 'SOffice', props: { apiPath: '/ipmgmt/linemgmt', voName: 'tbIpAssignSubVos', valueKey: { cd: 'sofficecode', nm: 'sofficename' } } },
+        { key: 'SipCreateType', props: {} },
+        { key: 'ServiceOrg', props: { limit: 10, /* prop_options: this.sassignTypeCds */ } },
+        { key: 'IpAddress', props: { defaultValue: this.viewMode === 'autoAloc' ? 'CV0001' : 'CV0002', disabled: this.viewMode === 'autoAloc' } },
+        { key: 'InputType', props: { label: 'BitMask', prop_parameterKey: 'nbitmask', valueType: 'number' } },
+        { key: 'LineInformation', props: {} },
+        {
+          key: 'IpBlockStatus', props: {
+            label: '할당상태', prop_options: [
+              { label: '서비스배정[미할당]', value: 'IA0004' },
+              { label: '할당', value: 'IA0006' },
+            ], defaultValue: this.viewMode === 'manualAloc' ? 'IA0004' : 'IA0006',
+            isShowAll: false, disabled: this.viewMode === 'autoAloc'
+          }
+        },
+        { key: 'DateRange', props: { } },
+        { key: 'SortType', props: { sortOrdrDefaultVal: 'ASC' } },
+        { key: 'InputType', props: { label: '비고', prop_parameterKey: 'scomment' } },
+      ]
     }
+  },
+  /*
+    - row 선택 후 할당 버튼 클릭시
+      2/3계위 선택되었을 경우 [할당] 화면
+      선택 안되었을 경우 계위 설정화면 : ModalIpAllocOrgSetting
+    - row 클릭 시
+      2/3계위 선택되었을 경우 [할당 상세] 화면
+      선택 안되었을 경우 계위 설정화면
+  */
+  mounted() {
+    this.viewMode = 'manualAloc'
+    this.$store.dispatch('ipms/setIsFacilitesOption', true)
+  },
+  beforeDestroy() {
+    this.$store.dispatch('ipms/setIsFacilitesOption', false)
   },
   methods: {
     handleSearch(requestParameter) {
@@ -176,11 +202,11 @@ export default {
       this.fnViewListIpAllocMst(requestParameter)
     },
     async fnViewListIpAllocMst(requestParameter = null) {
-      this.selectedRows = []
+      this.selectedRow = null
       const parameter = requestParameter ?? this.$refs.searchCondition.requestParameter
       const target = ({ vue: this.$refs.compTable })
       const { pageSize: pageUnit, currentPage: pageIndex } = this.pagination
-      Object.assign(parameter, { pageUnit, pageIndex })
+      Object.assign(parameter, { pageUnit, pageIndex, isFacilites: true })
       try {
         this.openLoading(target)
         const res = await apiRequestModel(ipmsModelApis.viewListIpAllocMst, parameter)
@@ -192,115 +218,87 @@ export default {
         this.closeLoading(target)
       }
     },
+    handleClickViewChange() {
+      if (this.viewMode === 'manualAloc') {
+        this.viewMode = 'autoAloc'
+        this.$route.meta.title = 'IPv4 시설용 IP 자동할당'
+      } else {
+        this.viewMode = 'manualAloc'
+        this.$route.meta.title = '시설용 IP할당'
+      }
+      this.pagination.data = []
+      this.pagination.total = 0
+    },
     handleChangeCurPage(v) {
       if (v) this.pagination.currentPage = v
       this.fnViewListIpAllocMst()
     },
     handleClickCell(params) {
-      this.selectedRows = [params?.row] || []
+      this.selectedRow = params?.row
     },
-    fnViewDetailAlcIpMst(row) {
-      this.selectedRows = [row]
-      this.$refs.ModalIpAllocDetail.open({ row })
+    fnViewDetailAlcIpMst() {
+      const row = this.selectedRow
+      if (this.viewMode === 'manualAloc' && row.ssvcGroupCd === '000000' || row.ssvcObjCd === '000000') {
+        this.$refs.ModalIpAllocOrgSetting.open({ row })
+      } else {
+        this.$refs.ModalIpAllocDetail.open({ row, menuType: this.viewMode })
+      }
     },
     hadleClickIpAllocDetail(row) {
       this.fnViewDetailAlcIpMst(row)
     },
     handleClickTableCheck(all, cur) {
-      this.selectedRows = all
+      this.selectedRow = cur
     },
     fnViewCheckTacsIpBlock_() {
-      fnViewCheckTacsIpBlock(this, this.selectedRows)
+      fnViewCheckTacsIpBlock(this, this.selectedRow)
     },
     fnInsertAlcBtnClick() {
-      const rows = this.selectedRows
-      if (rows.length === 0) {
+      const row = this.selectedRow
+      if (row === null) {
         onMessagePopup(this, '할당 할 대상이 없습니다.')
         return
       }
       /* 체크대상여부 확인 */
-      const res = rows.map((row, i) => {
-        /* Step 01. 서비스배정상태 체크 */
+       /* Step 01. 서비스배정상태 체크 */
         if (row.sassignLevelCd !== 'IA0004') {
           onMessagePopup(this, '할당 대상 블록 중 서비스배정이 아닌 블록이 있습니다.')
-          return false
+          return
         }
         /* Step 02. 계위 및 서비스 유형 동일 선택 체크 */
         const { sassignTypeCd, nlvlMstSeq, nbitMask, sneossDdYn, ssvcLineTypeCd, sipCreateTypeCd, sipVersionTypeCd } = row
 
-        let linkYn = 'N'
-        let linkYn2 = 'N'
-        if (['CL0001', 'CL0002', 'CL0003'].includes(ssvcLineTypeCd)) {
-          if (sneossDdYn === 'N' && [29, 30].includes(nbitMask)) {
-            linkYn = 'Y'
-          }
-        }
-        for (let j = 0; j < i; j++) {
-          if (sassignTypeCd !== rows[j].sassignTypeCd || nlvlMstSeq !== rows[j].nlvlMstSeq) {
-            onMessagePopup(this, '선택하신 할당 대상 블록의 계위/서비스 정보가 동일하지 않습니다. 확인해주세요.')
-            return false
-          }
-          if (['CL0001', 'CL0002', 'CL0003'].includes(ssvcLineTypeCd)) {
-            if (rows[j].sneossDdYn === 'N' && [29, 30].includes(rows[j].nbitMask)) {
-              linkYn2 = 'Y'
-            }
-          }
-        }
-        if (linkYn !== linkYn2) {
-          onMessagePopup(this, '선택하신 할당 대상 블록의 할당구분(회선/시설/링크) 정보가 동일하지 않습니다. 확인해주세요.')
-          return false
-        }
+        // let linkYn = 'N'
+        // let linkYn2 = 'N'
+        // if (['CL0001', 'CL0002', 'CL0003'].includes(ssvcLineTypeCd)) {
+        //   if (sneossDdYn === 'N' && [29, 30].includes(nbitMask)) {
+        //     linkYn = 'Y'
+        //   }
+        // }
+        // for (let j = 0; j < i; j++) {
+        //   if (sassignTypeCd !== rows[j].sassignTypeCd || nlvlMstSeq !== rows[j].nlvlMstSeq) {
+        //     onMessagePopup(this, '선택하신 할당 대상 블록의 계위/서비스 정보가 동일하지 않습니다. 확인해주세요.')
+        //     return
+        //   }
+        //   if (['CL0001', 'CL0002', 'CL0003'].includes(ssvcLineTypeCd)) {
+        //     if (rows[j].sneossDdYn === 'N' && [29, 30].includes(rows[j].nbitMask)) {
+        //       linkYn2 = 'Y'
+        //     }
+        //   }
+        // }
+        // if (linkYn !== linkYn2) {
+        //   onMessagePopup(this, '선택하신 할당 대상 블록의 할당구분(회선/시설/링크) 정보가 동일하지 않습니다. 확인해주세요.')
+        //   return
+        // }
         if ((sipVersionTypeCd === 'CV0001' && nbitMask < 16) || (sipVersionTypeCd === 'CV0002' && nbitMask < 48)) {
           onMessagePopup(this, '/16(IPv4), /48(IPv6) 보다 큰 IP블록은 할당할 수 없습니다.')
-          return false
+          return
         }
         if (ssvcLineTypeCd === 'CL0005' && sipCreateTypeCd !== 'CT0001') {
           onMessagePopup(this, 'VPN망은 공인 IP블록만 할당할 수 있습니다.')
-          return false
-        }
-        return true
-      })
-      res.every(r => r === true) && this.$refs.ModalIpAllocInsert.open({ ipAllocOperMstVos: rows })
-    },
-    fnMergeBtnClick() {
-      const checkedList = this._orderBy(this.selectedRows, ['asc', 'nipAllocMstCnt'])
-      if (checkedList.length === 0) {
-        onMessagePopup(this, '병합할 대상이 없습니다.')
-        return
-      } else if (checkedList.length === 1) {
-        onMessagePopup(this, '병합할 대상은 최소 2개이상 선택해 주시기 바랍니다.')
-        return
-      }
-      const { nipBlockMstSeq, sassignLevelCd, sassignTypeCd, nlvlMstSeq, sipCreateTypeCd } = checkedList[0]
-      for (const row of checkedList) {
-        if (nipBlockMstSeq !== row.nipBlockMstSeq) {
-          onMessagePopup(this, '병합할 대상 정보들의 생성 유형이 동일하지 않습니다.')
           return
         }
-        if (sassignLevelCd !== row.sassignLevelCd) {
-          onMessagePopup(this, '병합할 대상 정보들의 작업 상태가 동일하지 않습니다')
-          return
-        }
-        if (sassignTypeCd !== row.sassignTypeCd) {
-          onMessagePopup(this, '병합할 대상 정보들의 서비스가 동일하지 않습니다.')
-          return
-        }
-        if (nlvlMstSeq !== row.nlvlMstSeq) {
-          onMessagePopup(this, '병합할 대상 정보들의 계위(조직)정보가 동일하지 않습니다.')
-          return
-        }
-        if (sipCreateTypeCd !== row.sipCreateTypeCd) {
-          onMessagePopup(this, '병합할 대상 정보들의 생성 유형이 동일하지 않습니다.')
-          return
-        }
-        if (row.sassignLevelCd === 'IA0005' || row.sassignLevelCd === 'IA0006') {
-          onMessagePopup(this, '병합할 대상 정보들의 작업 상태가 할당확정/할당예약 일 경우 병합할 수 없습니다.')
-          return
-        }
-      }
-      const tbIpAssignMstListVo = { typeFlag: 'Aloc', tbIpAssignMstVos: [] }
-      checkedList.forEach(row => { tbIpAssignMstListVo.tbIpAssignMstVos.push({ nipAssignMstSeq: row.nipAssignMstSeq }) })
-      this.$refs.ModalIpAssignMerge.open({ tbIpAssignMstListVo })
+        this.$refs.ModalIpAllocInsert.open({ ipAllocOperMstVos: [row] })
     },
     handleClickExcelDownloadBtn() {
       downloadExcel(this, 'viewListIpAllocMstExcel')

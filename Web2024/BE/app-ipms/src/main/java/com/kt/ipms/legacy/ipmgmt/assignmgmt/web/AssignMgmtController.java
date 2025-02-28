@@ -219,7 +219,7 @@ public class AssignMgmtController extends CommonController {
 			model.addAttribute("sassignLevelCds", sassignLevelCds);
 
 			// 시설용IP화면 서비스그룹 하위 코드 setting
-			if (searchVo.getIsViewFacilites()) {
+			if (searchVo.getIsFacilities()) {
 				TbIpAllocMstVo searchasTypeVo = new TbIpAllocMstVo();
 				/* 멀티 list 조건 추가 */
 				List<String> listString = new ArrayList<String>();

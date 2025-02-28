@@ -78,14 +78,14 @@ export default {
       return this.options.map(option => option.value).filter(values => values !== 'ALL')
     },
   },
-  mounted () {
-    this.init()
+  async mounted () {
     if (this.prop_options === null) {
-      this.onLoadServiceList({ ssvcLineTypeCd: '' })
+      await this.onLoadServiceList({ ssvcLineTypeCd: '' })
     }
     Eventbus.$on(EventType.changeLvl1, (params) => {
       this.onLoadServiceList(params)
     })
+     this.init()
   },
   beforeDestroy() {
     Eventbus.$off(EventType.changeLvl1)
@@ -121,6 +121,11 @@ export default {
     },
     async onLoadServiceList(params) {
       this.values = this.isMulti ? [] : ''
+      /*
+      sipVersionTypeCd: 'CV0002' 일 때 서비스 집군화 하여 조회
+      isFacilities: 시설용 서비스유형만 조회
+      */
+      Object.assign(params, { sipVersionTypeCd: this.ipms.isFacilites ? 'CV0002' : 'CV0001', isFacilities: this.ipms.isFacilites })
       try {
         const res = await apiRequestJson(ipmsJsonApis.selectOrgSassignTypeCdList, params)
         this.options = res.tbIpAllocMstVos.map(v => { return { value: v.sassignTypeCd, label: v.sassignTypeNm } })
@@ -134,6 +139,9 @@ export default {
       if (this.isMulti) {
         key = 'sassignTypeCdMultiStr'
         value = this.values.filter(v => v !== 'ALL').join(';')
+        if (this.values.length === 0 && this.ipms.isFacilites) {
+          value = this.options.filter(v => v.value !== 'ALL').map(v => v.value).join(';')
+        }
       }
       return [{ key, value }]
     },

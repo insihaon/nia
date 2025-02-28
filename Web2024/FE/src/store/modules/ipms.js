@@ -7,7 +7,7 @@ const state = {
     suserGradeCd: 'UR0001',
     currentCondition: {},
     isDropdownOpen: false,
-    isFacilitesAssign: false, // 시설용 IP배정 활성상태
+    isFacilites: false, // 시설용 화면(시설용IP배정, 시설용IP할당, 시설용IPv4 자동할당) 활성상태
 }
 
 const mutations = {
@@ -37,7 +37,7 @@ const mutations = {
         state.isDropdownOpen = isVisible
     },
     SET_IS_FACILITES_OPTION(state, isVisible) {
-        state.isFacilitesAssign = isVisible
+        state.isFacilites = isVisible
     },
 }
 const actions = {

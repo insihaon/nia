@@ -44,6 +44,8 @@
     <ModalIpAssignMerge ref="ModalIpAssignMerge" @reload="fnViewListIpAllocMst()" />
     <!-- 병합가능 리스트 상세 -->
     <ModalIpMergeInfoDetail ref="ModalIpMergeInfoDetail" @reload="fnViewListIpAllocMst()" />
+    <!-- 라우팅 중복 개수 -->
+    <ModalDetailSummary ref="ModalDetailSummary" />
   </el-row>
 </template>
 <script>
@@ -54,6 +56,7 @@ import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoad
 import tableHeightMixin from '@/mixin/tableHeightMixin'
 import ModalIpAssignMerge from '@/views-ipms/modal/assign/ModalIpAssignMerge.vue'
 import ModalIpMergeInfoDetail from '@/views-ipms/modal/alloc/ModalIpMergeInfoDetail.vue'
+import ModalDetailSummary from '@/views-ipms/modal/ModalDetailSummary.vue'
 
 import { fnViewCheckTacsIpBlock } from '@/views-ipms/js/common-function'
 import { ipmsModelApis, apiRequestModel, ipmsJsonApis, apiRequestExcel } from '@/api/ipms'
@@ -63,7 +66,7 @@ const routeName = 'ipMergeList'
 
 export default {
   name: routeName,
-  components: { CompTable, DynamicComponentLoader, ModalIpAssignMerge, ModalIpMergeInfoDetail },
+  components: { CompTable, DynamicComponentLoader, ModalIpAssignMerge, ModalIpMergeInfoDetail, ModalDetailSummary },
   extends: Base,
   mixins: [tableHeightMixin],
   data() {
@@ -77,17 +80,15 @@ export default {
         { key: 'SipCreateType', props: {} },
         { key: 'ServiceOrg', props: { limit: 10 } },
         { key: 'IpAddress', props: {} },
-        { key: 'InputType', props: { label: 'BitMask', prop_parameterKey: 'nbitMask' } },
+        { key: 'InputType', props: { label: 'BitMask', prop_parameterKey: 'nbitmask' } },
         // { key: 'LineInformation', props: {} },
-        // {
-        //   key: 'IpBlockStatus', props: {
-        //     label: '할당상태', prop_options: [
-        //       { label: '서비스배정[미할당]', value: 'IA0004' },
-        //       { label: '할당예약', value: 'IA0005' },
-        //       { label: '할당', value: 'IA0006' },
-        //     ]
-        //   }
-        // },
+        {
+          key: 'IpBlockStatus', props: {
+            label: '할당상태', prop_options: [
+              { label: '서비스배정[미할당]', value: 'IA0004' },
+            ], defaultValue: 'IA0004', disabled: true
+          }
+        },
         { key: 'DateRange', props: { } },
         // {
         //   key: 'InputSearchDetail',
@@ -99,9 +100,9 @@ export default {
         //   }
         // },
         { key: 'SortType', props: { sortOrdrDefaultVal: 'ASC' } },
-        // { key: 'IncludeYN', props: { label: 'Summary 포함 여부', prop_parameterKey: 'snull0Yn' } },
-        // { key: 'IncludeYN', props: { label: 'DB-라우팅 일치여부', prop_parameterKey: 'sintgrmYn' } },
-        // { key: 'RoutingDuplCount', props: { label: '라우팅 중복 개수', prop_parameterKey: 'summaryCnt', valueType: 'number' } },
+        { key: 'IncludeYN', props: { label: 'Summary 포함 여부', prop_parameterKey: 'snull0Yn' } },
+        { key: 'IncludeYN', props: { label: 'DB-라우팅 일치여부', prop_parameterKey: 'sintgrmYn' } },
+        { key: 'RoutingDuplCount', props: { label: '라우팅 중복 개수', prop_parameterKey: 'summaryCnt', valueType: 'number' } },
         // { key: 'InputType', props: { label: '비고', prop_parameterKey: 'scomment' } },
       ],
       tableColumns: [
@@ -135,6 +136,25 @@ export default {
         // { prop: 'groupId', label: '그룹ID', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'sassignLevelNm', label: '할당상태', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'dmodifyDt', label: '작업일자', align: 'center', sortable: true, columnVisible: true, showOverflow: true, formatter: (row) => { return row.dmodifyDt ? this.moment(row.dmodifyDt).format('YYYY-MM-DD HH:mm:ss') : '' } },
+        { prop: 'snull0Yn', label: 'Summary 포함 여부', align: 'center', sortable: true, columnVisible: true, showOverflow: true, formatter: (row) => { return row.snull0Yn?.length === 0 ? '-' : row.snull0Yn } },
+        { prop: 'sintgrmYn', label: 'DB-라우팅 일치 여부', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
+        { prop: 'nsummaryCnt', label: '라우팅 중복 개수', align: 'center', sortable: true, columnVisible: true, showOverflow: true,
+          formatter: (row, col, value, index) => {
+            if (row.nsummaryCnt?.length === 0) {
+              return ''
+            } else {
+              return this.$createElement('el-button', {
+                attrs: {
+                  round: true, // Adding the round option
+                  plain: true,
+                  type: row.nsummaryCnt > 0 ? 'danger' : 'primary'
+                },
+                on: { click: () => {
+                  this.$refs.ModalDetailSummary.open({ row })
+              } } }, row.nsummaryCnt)
+            }
+          }
+        },
         { prop: 'scomment', label: '비고', align: 'center', sortable: true, columnVisible: true, showOverflow: true, formatter: (row) => { return row.scomment?.length > 0 ? 'Y' : 'N' } },
       ],
       selectedRows: []

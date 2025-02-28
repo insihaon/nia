@@ -75,6 +75,4 @@ export const componentMap = {
     EquipmentType: () => import('@/views-ipms/conditionComponents/EquipmentType.vue'),
     // 라우팅 중복 개수
     RoutingDuplCount: () => import('@/views-ipms/conditionComponents/RoutingDuplCount.vue'),
-    // 시설용 IP check option
-    FacilitiesOption: () => import('@/views-ipms/conditionComponents/FacilitiesOption.vue'),
 }

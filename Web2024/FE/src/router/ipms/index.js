@@ -77,6 +77,12 @@ export const ipmsRoute = Object.freeze([
         meta: { title: 'IP할당', affix: false }
       },
       {
+        path: 'facilitesipAllocation',
+        component: () => import('@/views-ipms/menus/ipAllocationMng/facilitesipAllocation'),
+        name: 'FacilitesipAllocation',
+        meta: { title: '시설용 IP 할당', affix: false }
+      },
+      {
         path: 'ipMergeList',
         component: () => import('@/views-ipms/menus/ipAllocationMng/ipMergeList'),
         name: 'ipMergeList',
