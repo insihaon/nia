@@ -85,9 +85,6 @@ public class TbIpAssignMstVo extends IpVo implements Serializable {
 
 	private List<String> ssvcGroupCdMulti;
 
-	/* 시설용IP 화면 활성화 여부 */
-	private Boolean isViewFacilites;
-
 	public String getSsvcGroupCdMultiStr() {
 		return ssvcGroupCdMultiStr;
 	}
@@ -102,14 +99,6 @@ public class TbIpAssignMstVo extends IpVo implements Serializable {
 
 	public void setSsvcGroupCdMulti(List<String> ssvcGroupCdMulti) {
 		this.ssvcGroupCdMulti = ssvcGroupCdMulti;
-	}
-
-	public Boolean getIsViewFacilites() {
-		return isViewFacilites;
-	}
-
-	public void setIsViewFacilites(Boolean isViewFacilites) {
-		this.isViewFacilites = isViewFacilites;
 	}
 
 	private String sassignTypeNm;

@@ -156,11 +156,6 @@ export default {
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       vLoading: false,
       selectedRows: null,
-      ssvcLineTypeOptions: [
-        { label: '공인', value: 'CT0001' },
-        { label: 'Bogon', value: 'CT0003' },
-        { label: '유/무선공용', value: 'CT0004' },
-      ],
       ssvcGroupOptions: [
         { label: 'KORNET', value: 'CL0001' },
         { label: 'PREMIUM', value: 'CL0002' },
@@ -222,10 +217,8 @@ export default {
   },
   methods: {
     /*
-      TO-DO
       - v6 이고 '시설용 IP' 서비스 선택 시 배정상태는 '서비스배정[미할당]'으로 고정한다.
-      - v6 일 때에는 시설용 IP서비스를 집군화 하여 출력한다. => 쿼리: 기존 서비스 조회 코드에서 그룹테이블과 매핑하여 그룹아이디가 있는 항목필터..?
-
+      - v6 일 때에는 시설용 IP서비스를 집군화 하여 출력한다.
     */
     onCreated() {
       Modal.methods.onCreated.call(this)
@@ -237,6 +230,11 @@ export default {
         this.selectedRows = this._cloneDeep(model.rows)
         this.fnViewUpdateAsgnIPMst(model.rows)
       }
+    },
+    onClose() {
+      this.selectedRows = null
+      this.tbIpAssignMstListVo = []
+      this.disabledLevel = {}
     },
     async fnViewUpdateAsgnIPMst(rows) {
       const tbIpAssignMstVos = rows.map(r => { return { nipAssignMstSeq: r.nipAssignMstSeq } })

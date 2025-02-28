@@ -23,7 +23,6 @@
             :prop-name="name"
             :prop-data="pagination.data"
             :prop-table-height="'100%'"
-            :prop-highlight="rowHighlight"
             :prop-column="tableColumns"
             :prop-is-pgination="false"
             :prop-is-check-box="true"
@@ -140,11 +139,6 @@ export default {
         this.vLoading = false
       }
     },
-    rowHighlight({ row, rowIndex }) {
-      if (this.blinkIndexs.includes(row.index)) {
-        return 'blinking'
-      }
-    },
     handleClickTableCheck(all, cur) {
       this.selectedRows = all
       this.addHighlightMergePossibleRows()
@@ -154,18 +148,24 @@ export default {
       this.addHighlightMergePossibleRows()
     },
     addHighlightMergePossibleRows() {
-      // const el = document.querySelectorAll('.el-dialog__body .el-table__body-wrapper tr')
-      // if(el !== null && el.length > 0) {
-      //   for(let i =0; i < el.length; i ++) {
-      //     el[i].classList.remove('blinking') // 삭제 한 후 다시 작동안함
-      //   }
-      // }
-      /*
-      애니메이션 다 지운다음에 blinkIndexs에 있는 index for문을 돌아서 element에 추가 => V6에서 row 갯수가 많을 때 문제 가능성 ..? ()
-      */
+      const el = document.querySelectorAll('.el-dialog__body .el-table__body-wrapper tr')
+      if (el !== null && el.length > 0) {
+        for (let i = 0; i < el.length; i++) {
+          el[i].classList.remove('blinking')
+        }
+      }
       const checkedIndex = this.selectedRows.map(row => row.index)
       const blinkIndexs = this.getExpandedBlock(checkedIndex)
       this.blinkIndexs = blinkIndexs
+      setTimeout(() => {
+        if (el !== null && el.length > 0) {
+          for (let i = 0; i < el.length; i++) {
+            if (this.blinkIndexs.includes(i + 1)) {
+              el[i].classList.add('blinking')
+            }
+          }
+        }
+      }, 100)
     },
     /**
        * 입력 배열이 포함되는 2의 제곱수 길이의 구간을 반환한다.

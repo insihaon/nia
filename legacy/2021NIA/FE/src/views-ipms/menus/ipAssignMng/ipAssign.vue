@@ -33,6 +33,9 @@
             IP 배정 조회결과
           </span>
         </template>
+        <template slot="left-features">
+          <el-button icon="el-icon-copy-document" type="primary" size="mini" round @click="$router.push('/ipAllocationMng/facilitesipAllocation')">시설용 IP할당</el-button>
+        </template>
         <template slot="add-features">
           <div class="add-features">
             <el-button icon="el-icon-check" type="primary" size="mini" round @click="handleClickIpBlockCheck">IP블럭 중복체크</el-button>
@@ -57,8 +60,8 @@ import CompTable from '@/components/elTable/CompTable.vue'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
 import tableHeightMixin from '@/mixin/tableHeightMixin'
 import ModalIpBlockDivision from '@/views-ipms/modal/ModalIpBlockDivision.vue'
-import ModalIpAssignDetail from '@/views-ipms/modal/ModalIpAssignDetail.vue'
-import ModalIpAssign from '@/views-ipms/modal/ModalIpAssign.vue'
+import ModalIpAssignDetail from '@/views-ipms/modal/assign/ModalIpAssignDetail.vue'
+import ModalIpAssign from '@/views-ipms/modal/assign/ModalIpAssign.vue'
 import ModalCheckTacsIpBlock from '@/views-ipms/modal/ModalCheckTacsIpBlock.vue'
 import ModalIpAssignMerge from '@/views-ipms/modal/assign/ModalIpAssignMerge.vue'
 import ModalDetailSummary from '@/views-ipms/modal/ModalDetailSummary.vue'
@@ -131,7 +134,6 @@ export default {
         },
       ],
       sassignLevelCds: [],
-      sassignTypeCds: [],
       sipCreateSeqCds: [],
       selectedRows: [],
     }
@@ -145,13 +147,12 @@ export default {
         { key: 'InputType', props: { label: 'BitMask', prop_parameterKey: 'nbitmask' } },
         { key: 'DateRange', props: {} },
         { key: 'IpAddress', props: { defaultWord: '' } },
-        { key: 'ServiceOrg', props: { limit: 10, prop_options: this.sassignTypeCds } },
-        { key: 'IpBlockStatus', props: { label: '배정상태', prop_options: this.sassignLevelCds, defaultValue: this.ipms.isFacilitesAssign ? 'IA0004' : '', disabled: this.ipms.isFacilitesAssign } },
+        { key: 'ServiceOrg', props: { limit: 10 } },
+        { key: 'IpBlockStatus', props: { label: '배정상태', prop_options: this.sassignLevelCds } },
         { key: 'SortType', props: { sortOrdrDefaultVal: 'ASC' } },
-        { key: 'IncludeYN', props: { label: 'Summary 포함 여부', prop_parameterKey: 'snull0Yn', disabled: this.ipms.isFacilitesAssign } },
-        { key: 'IncludeYN', props: { label: 'DB-라우팅 일치 여부', prop_parameterKey: 'sintgrmYn', disabled: this.ipms.isFacilitesAssign } },
-        { key: 'RoutingDuplCount', props: { label: '라우팅 중복 개수', prop_parameterKey: 'summaryCnt', valueType: 'number', disabled: this.ipms.isFacilitesAssign } },
-        { key: 'FacilitiesOption', props: {} },
+        { key: 'IncludeYN', props: { label: 'Summary 포함 여부', prop_parameterKey: 'snull0Yn' } },
+        { key: 'IncludeYN', props: { label: 'DB-라우팅 일치 여부', prop_parameterKey: 'sintgrmYn' } },
+        { key: 'RoutingDuplCount', props: { label: '라우팅 중복 개수', prop_parameterKey: 'summaryCnt', valueType: 'number' } },
       ]
     },
   },
@@ -172,18 +173,8 @@ export default {
       },
       immediate: true
     },
-    '$store.state.ipms.isFacilitesAssign' (value) {
-      this.$route.meta.title = value ? '시설용 IP 배정' : 'IP 배정'
-      this.$set(this, 'sassignLevelCds', [{ label: '서비스배정[미할당]', value: 'IA0004' }])
-      this.fnSelectSassignTypeCds()
-      /* TO-DO
-        시설용 IP 서비스 배정 블록들만 조회
-        시설용 IP할당 단계 이동 버튼 좌측하단 추가
-      */
-    }
   },
   mounted() {
-    this.fnSelectSassignTypeCds()
     this.fnSelectSipCreateSeqCds()
     this.fnSelectSassignLevelCds()
   },
@@ -191,19 +182,6 @@ export default {
     handleSearch(requestParameter) {
       this.pagination.currentPage = 1
       this.fnViewListAsgnIPMst(requestParameter)
-    },
-    async fnSelectSassignTypeCds() {
-      try {
-        if (this.ipms.isFacilitesAssign) {
-          const res = await apiRequestJson(ipmsJsonApis.selectFacilitesSassignTypeCdList, {})
-          const sassignTypeCds = res.tbIpAllocMstVos.map(v => { return { value: v.sassignTypeCd, label: v.sassignTypeNm } })
-          this.$set(this, 'sassignTypeCds', sassignTypeCds)
-        } else {
-          this.$set(this, 'sassignTypeCds', null)
-        }
-      } catch (error) {
-        console.error(error)
-      }
     },
     async fnSelectSassignLevelCds() {
       try {

@@ -1582,6 +1582,9 @@
 				, MIN(NLAST_ADDR) as NLAST_ADDR
 				, MIN(A.NIP_ASSIGN_MST_SEQ) as NIP_ASSIGN_MST_SEQ
 				, MIN(A.DMODIFY_DT) as DMODIFY_DT
+				, (ARRAY_AGG(A.NSUMMARY_CNT order by PIP_PREFIX))[1] as NSUMMARY_CNT
+                , (ARRAY_AGG(A.SNULL0_YN order by PIP_PREFIX))[1] as SNULL0_YN
+                , (ARRAY_AGG(A.SINTGRM_YN order by PIP_PREFIX))[1] as SINTGRM_YN
 			FROM (
 				SELECT
 					A.GROUP_ID,
@@ -3031,6 +3034,10 @@
 				#{item.nlvlSeq}
 				</foreach>
 		</if>
+		<!-- 시설용 페이지에서 시설용 유형의 서비스만 필터 -->
+		<if test="isFacilities != null and isFacilities == true">
+			AND GM.SASSIGN_TYPE_CD IS NOT NULL
+		</if>
 		<if test="sipVersionTypeCd == 'CV0002'">
 			GROUP BY COALESCE(GM.SASSIGN_TYPE_GROUP_NM, M.SASSIGN_TYPE_NM::TEXT)
 				, COALESCE(GM.SASSIGN_TYPE_GROUP_CD, M.SASSIGN_TYPE_CD::TEXT)
@@ -3072,6 +3079,7 @@
 		<result column="SUB_CODE_STR" property="subCodeStr" jdbcType="VARCHAR" />
 	</resultMap>
 
+	<!-- 목록 조회 시 SASSIGN_TYPE_GROUP_CD에 포함된 SASSIGN_TYPE_CD를 a;b;c 형태로 조회 -->
 	<select id="selectFacilitesTypeCdList" resultMap="CommonCodeVoResult" parameterType="com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.TbIpAllocMstVo">
 		SELECT SASSIGN_TYPE_GROUP_CD AS CODE
 			, SASSIGN_TYPE_GROUP_NM AS NAME
