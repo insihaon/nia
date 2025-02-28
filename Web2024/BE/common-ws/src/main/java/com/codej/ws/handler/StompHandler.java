@@ -195,7 +195,7 @@ public class StompHandler implements ChannelInterceptor {
             // }
 
         } catch (Exception e) {
-            log.error("{}", e.toString());
+            log.debug("{}", e.toString());
         }
         return message;
     }

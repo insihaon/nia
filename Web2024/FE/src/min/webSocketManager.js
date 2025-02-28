@@ -16,8 +16,8 @@ const log = AppOptions.instance.useWsLog ? console.log : () => {}
 const error = AppOptions.instance.debug === true ? console.error.bind(null) : () => { }
 
 let instance = null
-const retryMax = JSON.parse(process.env.VUE_APP_WS_RETRY_MAX || 30)
-const retryInterval = 1000 * JSON.parse(process.env.VUE_APP_WS_RETRY_INTERVAL || 10)
+const retryMax = JSON.parse(process.env.VUE_APP_WS_RETRY_MAX || 999)
+const retryInterval = 1000 * JSON.parse(process.env.VUE_APP_WS_RETRY_INTERVAL || 1)
 const channels = objectToArray(CONSTANTS.channels).filter(channel => channel.enable === true && channel.init === true)
 // eslint-disable-next-line no-return-assign
 

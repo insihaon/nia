@@ -7,16 +7,19 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.codej.base.dto.model.ToStringFormatter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
-@Data
-public class AppDto {
+@Getter
+@Setter
+public class AppDto extends ToStringFormatter {
     @PostConstruct
     void log() throws JsonProcessingException {
         String context = this.toString();
@@ -81,6 +84,12 @@ public class AppDto {
 
     @Value("${myconf.websocket.auth-same-network:true}") // true: redis를 이용해 사용자 정보를 공유 할 수 있는 환경이다.
     private Boolean wsCanAccessUser;
+
+    @Value("${spring.session.jwt-compare:false}")
+    private Boolean sessionJwtCompare;
+
+    @Value("${spring.session.store-type:none}")
+    private String sessionStoreType;
 
     @Value("${spring.redis.host:127.0.0.1}")
     private String redisHost;
@@ -183,6 +192,27 @@ public class AppDto {
     @Value("${myconf.api-server.grafana-url:127.0.0.1}")
     private String grafanaUrl;
 
+    @Value("${myconf.webProxy.enable:false}")
+    private Boolean webProxyEnable;
+
+    @Value("${myconf.webProxy.url:}")
+    private String webProxyUrl;
+
+    @Value("${myconf.webProxy.ssl.enable:false}")
+    private Boolean webProxySslEnable;
+
+    @Value("${myconf.webProxy.ssl.p12:}")
+    private String webProxySslP12;
+
+    @Value("${myconf.webProxy.ssl.crt:}")
+    private String webProxySslCrt;
+
+    @Value("${myconf.webProxy.ssl.key:}")
+    private String webProxySslKey;
+
+    @Value("${myconf.webProxy.ssl.password:}")
+    private String webProxySslPassword;
+    
     @Value("${myconf.api-server.hub-api:http://127.0.0.1:8070/dh}")
     private String hubUrl;
 
