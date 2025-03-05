@@ -287,7 +287,7 @@ public class WebProxyInterceptor implements HandlerInterceptor {
             if (appDto.isDevProfile() == false) {
                 // 타임스탬프 보안 체크
                 long now = new Date().getTime();
-                String tsHeader = request.getHeader("_t");
+                String tsHeader = request.getHeader("verifier");
                 String ts = EncryptUtil.decryptText(tsHeader);
 
                 if (ts == null || Math.abs((now - Long.valueOf(ts)) / 1000) > 10) {
