@@ -110,7 +110,10 @@ module.exports = {
   assetsDir: 'assets',
   lintOnSave: !isProduction(),
   productionSourceMap: true,
-
+  
+  css: {
+    extract: false
+  },
   devServer: {
     headers: {
       'Access-Control-Allow-Origin': '*',
