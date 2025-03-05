@@ -113,7 +113,7 @@ myconf:
   project: ipms
   ajp.use: false
   webProxy: 
-    enable: true  # true 설정하면 웹 요청을 url 로 리다이렉트 함
+    enable: false  # true 설정하면 웹 요청을 url 로 리다이렉트 함
     url: http://127.0.0.1:8080
     ssl:  
       enable: false # SSL 인증서 사용 여부
