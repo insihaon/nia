@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.redis.cache.CacheKeyPrefix;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
@@ -31,6 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @EnableCaching
 @Configuration
+@Import(BaseRedisSessionConfiguration.class)  // Redis 세션 기능 설정을 Import합니다.
 @Slf4j
 // @ConditionalOnProperty(name="myconf.websocket.enabled", havingValue="true")
 @ConditionalOnExpression("'${spring.redis.enabled:true}' == 'true'")

@@ -1,8 +1,16 @@
 package com.kt.ipms.legacy.ipmgmt.allocmgmt.service;
 
 import java.math.BigInteger;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -16,6 +24,7 @@ import com.kt.ipms.legacy.cmn.util.CloneUtil;
 import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
 import com.kt.ipms.legacy.cmn.util.PrintLogUtil;
 import com.kt.ipms.legacy.cmn.vo.CommonCodeVo;
+import com.kt.ipms.legacy.cmn.vo.IpVo;
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.dao.TbIpAllocMstDao;
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.IpAllocMstComplexVo;
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.IpAllocOperMstListVo;
@@ -44,47 +53,65 @@ import com.kt.ipms.legacy.opermgmt.srvmgmt.adapter.SvcMgmtAdapterService;
 import com.kt.ipms.legacy.opermgmt.srvmgmt.vo.TbIpmsSvcMstVo;
 import com.kt.ipms.legacy.ticketmgmt.ticketmgmt.adapter.TicketMgmtAdapterService;
 import com.kt.ipms.legacy.ticketmgmt.ticketmgmt.vo.TbTicketMstVo;
+import com.kt.ipms.legacy.cmn.service.IpCommonService;
 
-@Component @Transactional
+@Component
+@Transactional
 public class AllocMgmtService {
 
-	@Lazy @Autowired
+	@Lazy
+	@Autowired
 	private AllocMgmtTxService allocMgmtTxService;
 
-	@Lazy @Autowired
+	@Lazy
+	@Autowired
 	private AssignMgmtAdapterService assignMgmtAdapterService;
 
-	@Lazy @Autowired
+	@Lazy
+	@Autowired
 	private LineMgmtAdapterService lineMgmtAdapterService;
 
-	@Lazy @Autowired
+	@Lazy
+	@Autowired
 	private NeOSSConsumeAdapterService neOSSConsumeAdapterService;
 
-	@Lazy @Autowired
+	@Lazy
+	@Autowired
 	private TbIpAllocMstDao tbIpAllocMstDao;
 
-	@Lazy @Autowired
+	@Lazy
+	@Autowired
 	private HostMgmtAdapterService hostMgmtAdapterService;
 
-	@Lazy @Autowired
+	@Lazy
+	@Autowired
 	private TicketMgmtAdapterService ticketMgmtAdapterService;
 
-	@Lazy @Autowired
+	@Lazy
+	@Autowired
 	private SvcMgmtAdapterService svcMgmtAdapterService;
 
-	@Lazy @Autowired
+	@Lazy
+	@Autowired
 	private WhoisAdapterService whoisAdapterService;
 
-	@Lazy @Autowired
+	@Lazy
+	@Autowired
 	private WhoisService whoisService;
 
-	@Lazy @Autowired
+	@Lazy
+	@Autowired
 	private RoutMgmtTxService routMgmtTxService;
 
-	@Lazy @Autowired
+	@Lazy
+	@Autowired
 	private HistoryMgmtAdapterService historyMgmtAdapterService;
 
-	/*할당 메인 조회*/
+	@Lazy
+	@Autowired
+	private IpCommonService ipCommonService;
+
+	/* 할당 메인 조회 */
 	@Transactional(readOnly = true)
 	public IpAllocOperMstListVo selectListIpAllocMst(IpAllocOperMstVo ipAllocOperMstVo) {
 		IpAllocOperMstListVo resultListVo = null;
@@ -105,7 +132,141 @@ public class AllocMgmtService {
 		return resultListVo;
 	}
 
-	/*할당 메인 조회 Excel*/
+	/* 병합가능 리스트 메인 조회 */
+	@Transactional(readOnly = true)
+	public IpAllocOperMstListVo selectMergeListIpAllocMst(IpAllocOperMstVo ipAllocOperMstVo) {
+		IpAllocOperMstListVo resultListVo = null;
+		if (ipAllocOperMstVo == null) {
+			throw new ServiceException("CMN.HIGH.00001");
+		}
+		try {
+			List<IpAllocOperMstVo> resultList = allocMgmtTxService.selectMergeListPageIpAllocMst(ipAllocOperMstVo);
+			int totalCount = allocMgmtTxService.countMergeListPageIpAllocMst(ipAllocOperMstVo);
+			resultListVo = new IpAllocOperMstListVo();
+			resultListVo.setIpAllocOperMstVos(resultList);
+			resultListVo.setTotalCount(totalCount);
+		} catch (ServiceException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new ServiceException("CMN.HIGH.00023", new String[] { "IP병합가능 목록" });
+		}
+		return resultListVo;
+	}
+
+	/* 병합가능 리스트 스케줄러 > group id update */
+	@SuppressWarnings("unchecked")
+	@Transactional(propagation = Propagation.REQUIRED)
+	public List<IpAllocOperMstVo> validateMrgAsgnIPMstTest(IpAllocOperMstVo searchVo) {
+		IpAllocOperMstListVo ipAllocOperMstListVo = new IpAllocOperMstListVo();
+		List<IpAllocOperMstVo> destIpAssignMstVos = new ArrayList<IpAllocOperMstVo>();
+		try {
+			long start = System.currentTimeMillis();
+			destIpAssignMstVos = allocMgmtTxService.selectListTbIpAssignMstVoContinuityList(searchVo);
+			if (destIpAssignMstVos != null && destIpAssignMstVos.size() > 0) {
+				ArrayList<IpAllocOperMstVo> bind = (ArrayList<IpAllocOperMstVo>) destIpAssignMstVos;
+				List<IpAllocOperMstVo> copyIpAssignMstVos = (List<IpAllocOperMstVo>) bind.clone();
+
+				while (copyIpAssignMstVos.size() > 1) {
+					List<IpAllocOperMstVo> validateCheckList = new ArrayList<>();
+					IpAllocOperMstVo ipVo1 = copyIpAssignMstVos.get(0);
+					IpAllocOperMstVo ipVo2 = copyIpAssignMstVos.get(1);
+					validateCheckList.add(ipVo1);
+					validateCheckList.add(ipVo2);
+
+					if (!ipVo1.getSassignTypeCd().equals(ipVo2.getSassignTypeCd())) {
+						String ipVo1Network = ipCommonService.calculateNetworkAddress(ipVo1.getSipBlock(),
+								ipVo1.getNbitmask() - 1);
+						String ipVo2Network = ipCommonService.calculateNetworkAddress(ipVo2.getSipBlock(),
+								ipVo2.getNbitmask() - 1);
+						copyIpAssignMstVos.remove(ipVo1);
+						if (ipVo1Network.equals(ipVo2Network)) {
+							copyIpAssignMstVos.remove(ipVo2);
+						}
+					} else {
+						boolean isMergeSuccess = ipCommonService.getMergeIpBlockMstInfo(validateCheckList);
+						if (isMergeSuccess) {
+							/* 메모리 최적화 검토 필요 => IpAllocOperMstVo를 return하는 getMergeIpBlockMstInfo 메소드 추가 */
+							IpAllocOperMstVo mergedAllocVo = new IpAllocOperMstVo();
+							IpVo mergedVo = validateCheckList.get(0);
+							/*
+							 * 1. 병합된 vo에 병합 전 vo의 index를 indexList에 추가
+							 * 2. vo의 indexList 값을 최초 조회 리스트index에 setGroupId(pipPrefix가)
+							 */
+							List<Integer> indexList = new ArrayList<Integer>();
+							if (ipVo1.getIndexList() != null && ipVo2.getIndexList() != null) {
+								indexList.addAll(
+										Stream.concat(ipVo1.getIndexList().stream(), ipVo2.getIndexList().stream())
+												.collect(Collectors.toList()));
+							} else {
+								indexList.add((Integer) ipVo1.getIndex());
+								indexList.add(ipVo2.getIndex());
+							}
+							mergedAllocVo.setIndexList(indexList);
+
+							/* 찾은 기존vo에 병합된 vo의 pipprefix를 group id로 set */
+							// IpAllocOperMstVo mergedVo = (IpAllocOperMstVo)validateCheckList.get(0);
+
+							/* copyIpAssignMstVos에 추가할 mergedAllocVo(ipVo1, ipVo2가 병합된 결과) setting */
+							mergedAllocVo.setPipPrefix(mergedVo.getPipPrefix());
+							mergedAllocVo.setSipBlock(mergedVo.getSipBlock());
+							mergedAllocVo.setNbitmask(mergedVo.getNbitmask());
+							mergedAllocVo.setSfirstAddr(mergedVo.getSfirstAddr());
+							mergedAllocVo.setNfirstAddr(mergedVo.getNfirstAddr());
+							mergedAllocVo.setNlastAddr(mergedVo.getNlastAddr());
+							mergedAllocVo.setSipVersionTypeCd(mergedVo.getSipVersionTypeCd());
+							mergedAllocVo.setSassignTypeCd(ipVo1.getSassignTypeCd());
+							/*
+							 * IpAllocOperMstVo 프로퍼티 추가 : index(rownum), group id, indexList
+							 * destIpAssignMstVos 에 0, 1에 해당하는 vo찾아서 group id set
+							 * mergedAllocVo의 indexList의 값으로 base리스트의 groupid를 update
+							 */
+							if (mergedAllocVo.getIndexList().size() > 0) {
+								for (int index : mergedAllocVo.getIndexList()) {
+									destIpAssignMstVos.get(index - 1).setGroupId(mergedAllocVo.getPipPrefix());
+								}
+							}
+							copyIpAssignMstVos.remove(ipVo1);
+							copyIpAssignMstVos.remove(ipVo2);
+							copyIpAssignMstVos.add(mergedAllocVo);
+						} else {
+							copyIpAssignMstVos.remove(ipVo1);
+						}
+					}
+					validateCheckList.clear();
+				}
+				/* 1000건씩 */
+				int batchSize = 1000;
+				int totalRecords = destIpAssignMstVos.size();
+				for (int i = 0; i < totalRecords; i += batchSize) {
+					int end = Math.min(i + batchSize, totalRecords);
+					List<IpAllocOperMstVo> batchList = destIpAssignMstVos.subList(i, end);
+					ipAllocOperMstListVo.setIpAllocOperMstVos(batchList);
+					allocMgmtTxService.updateTbIpAssignMstVoGroupId(ipAllocOperMstListVo);
+					System.out.println("Processed batch: " + (i / batchSize + 1));
+				}
+				// allocMgmtTxService.insertTempMergeTable(ipAllocOperMstListVo);
+				// allocMgmtTxService.bulkUpdateTbIpAssignMstVoGroupId(ipAllocOperMstListVo);
+			} else {
+				throw new ServiceException("CMN.HIGH.00001");
+			}
+			long end = System.currentTimeMillis();
+			long elapsedTimeMillis = end - start;
+
+			long seconds = elapsedTimeMillis / 1000;
+			long minutes = elapsedTimeMillis / (1000 * 60);
+
+			System.out.println("Exeution time: " + minutes + " minutes " + seconds + " seconds");
+		} catch (ServiceException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new ServiceException("CMN.HIGH.00023", new String[] { "IP병합가능블록목록" });
+		}
+
+		// return destIpAssignMstVos;
+		return new ArrayList<IpAllocOperMstVo>();
+	}
+
+	/* 할당 메인 조회 Excel */
 	@Transactional(readOnly = true)
 	public IpAllocOperMstListVo selectListIpAllocMstExcel(IpAllocOperMstVo ipAllocOperMstVo) {
 		IpAllocOperMstListVo resultListVo = null;
@@ -134,7 +295,7 @@ public class AllocMgmtService {
 		return resultListVo;
 	}
 
-	/*할당 정보 조회*/
+	/* 할당 정보 조회 */
 	@Transactional(readOnly = true)
 	public IpAllocOperMstVo selectIpAllocMst(IpAllocOperMstVo ipAllocOperMstVo) {
 		IpAllocOperMstVo resultVo = null;
@@ -151,7 +312,7 @@ public class AllocMgmtService {
 		return resultVo;
 	}
 
-	/*시설 정보 조회*/
+	/* 시설 정보 조회 */
 	@Transactional(readOnly = true)
 	public IpAllocOperMstListVo selectListNeMst(IpAllocOperMstVo ipAllocOperMstVo) {
 		IpAllocOperMstListVo resultListVo = null;
@@ -163,8 +324,8 @@ public class AllocMgmtService {
 			int totalCount = 0;
 			List<IpAllocOperMstVo> resultList = null;
 			String sSrchTypeCd = ipAllocOperMstVo.getSneSrchTypeCd();
-			/*시설조회 시 할당 기준인지 호스트 기준인지의 처리*/
-			if (sSrchTypeCd.equals("1")) {//1. ALLOC 할당기준, 2.HOST 수용국
+			/* 시설조회 시 할당 기준인지 호스트 기준인지의 처리 */
+			if (sSrchTypeCd.equals("1")) {// 1. ALLOC 할당기준, 2.HOST 수용국
 				totalCount = allocMgmtTxService.countListPageNeMst(ipAllocOperMstVo);
 			} else {
 				totalCount = allocMgmtTxService.countListPageTbIpHostMst(ipAllocOperMstVo);
@@ -259,7 +420,7 @@ public class AllocMgmtService {
 		return resultVo;
 	}
 
-	/*할당 대상 정보 조회*/
+	/* 할당 대상 정보 조회 */
 	@Transactional(readOnly = true)
 	public IpAllocOperMstListVo selectListAlcIPMstViaInMstSeq(IpAllocOperMstListVo ipAllocOperMstListVo) {
 		IpAllocOperMstListVo resultListVo = null;
@@ -279,7 +440,7 @@ public class AllocMgmtService {
 		return resultListVo;
 	}
 
-	/*할당 대상 정보 조회*/
+	/* 할당 대상 정보 조회 */
 	@Transactional(readOnly = true)
 	public IpAllocOperMstListVo selectListAlcIPMstViaInMstSeq2(IpAllocOperMstListVo ipAllocOperMstListVo) {
 		IpAllocOperMstListVo resultListVo = null;
@@ -300,7 +461,7 @@ public class AllocMgmtService {
 	}
 
 	//
-	/*회선 정보 조회*/
+	/* 회선 정보 조회 */
 	@Transactional(readOnly = true)
 	public IpAllocOperMstListVo selectDetailSubSvcMstList(IpAllocOperMstVo ipAllocOperMstVo) {
 		IpAllocOperMstListVo resultListVo = null;
@@ -322,7 +483,7 @@ public class AllocMgmtService {
 		return resultListVo;
 	}
 
-	/*블록 할당 처리*/
+	/* 블록 할당 처리 */
 	@Transactional(propagation = Propagation.REQUIRED)
 	public void insertListAllocIPMst(IpAllocMstComplexVo ipAllocMstComplexVo) {
 		try {
@@ -333,32 +494,32 @@ public class AllocMgmtService {
 			}
 
 			IpAllocOperMstVo srcIpAllocMstVo = ipAllocMstComplexVo.getSrcIpAllocMstVo();
-			IpAllocOperMstVo updateIpAllocMstVo = new IpAllocOperMstVo(); //배정테이블
+			IpAllocOperMstVo updateIpAllocMstVo = new IpAllocOperMstVo(); // 배정테이블
 			List<IpAllocOperMstVo> destIpAllocMstVos = ipAllocMstComplexVo.getDestIpAllocMstVos();
 
-			List<TbIpAllocMstVo> insertIpAllocMstVos = new ArrayList<TbIpAllocMstVo>(); //할당 처리 관련
-			List<TbIpAssignMstVo> destIpAssignMstVos = new ArrayList<TbIpAssignMstVo>(); //배정 처리 관련
-			List<TbIpAssignSubVo> insertIpAssignSubVos = new ArrayList<TbIpAssignSubVo>(); //선번장 처리 관련
-			List<TbIpAllocNeossMstVo> linkIpAllocNeossVos = new ArrayList<TbIpAllocNeossMstVo>(); //연동 처리 관련
+			List<TbIpAllocMstVo> insertIpAllocMstVos = new ArrayList<TbIpAllocMstVo>(); // 할당 처리 관련
+			List<TbIpAssignMstVo> destIpAssignMstVos = new ArrayList<TbIpAssignMstVo>(); // 배정 처리 관련
+			List<TbIpAssignSubVo> insertIpAssignSubVos = new ArrayList<TbIpAssignSubVo>(); // 선번장 처리 관련
+			List<TbIpAllocNeossMstVo> linkIpAllocNeossVos = new ArrayList<TbIpAllocNeossMstVo>(); // 연동 처리 관련
 
-			//연동용 VO 생성
+			// 연동용 VO 생성
 			TbIpAllocNeossMstListVo tbIpAllocNeossMstListVo = new TbIpAllocNeossMstListVo();
 
 			String sNote = srcIpAllocMstVo.getScomment();
-			String sLinkFlg = "N"; //연동유형 체크(Y: 할당호출, O: 할당예약호출 N: 연동호출 안함.)
+			String sLinkFlg = "N"; // 연동유형 체크(Y: 할당호출, O: 할당예약호출 N: 연동호출 안함.)
 
 			String sUserId = srcIpAllocMstVo.getScreateId();
 
 			String ssvcLineTypeCd = null;
 			String sipCreateTypeCd = null;
 
-			//블록에 해당번호(회선일 경우 해당 회선 정보를 조회 후 값을 셋팅함.
+			// 블록에 해당번호(회선일 경우 해당 회선 정보를 조회 후 값을 셋팅함.
 			if (srcIpAllocMstVo.getNipAllocMstSeq() != null) {
 
 				// 회선정보 읽기
 				TbIpAllocMstVo preSrcIpAllocMstVo = allocMgmtTxService.selectIpAllocDetail(srcIpAllocMstVo);
 
-				//회선정보의 연동유형 셋팅
+				// 회선정보의 연동유형 셋팅
 				sLinkFlg = preSrcIpAllocMstVo.getSregyn();
 
 				CloneUtil.copyObjectInformation(preSrcIpAllocMstVo, srcIpAllocMstVo);
@@ -369,16 +530,16 @@ public class AllocMgmtService {
 					ssvcLineTypeCd = ipAllocOperMstVo.getSsvcLineTypeCd();
 					sipCreateTypeCd = ipAllocOperMstVo.getSipCreateTypeCd();
 
-					IpAllocOperMstVo searchIpAllocMstVo = new IpAllocOperMstVo(); //배정테이블
+					IpAllocOperMstVo searchIpAllocMstVo = new IpAllocOperMstVo(); // 배정테이블
 
-					//배정정보 확인을 위한 기준값 복사
+					// 배정정보 확인을 위한 기준값 복사
 					searchIpAllocMstVo.setSsvcLineTypeCd(ipAllocOperMstVo.getSsvcLineTypeCd());
 					searchIpAllocMstVo.setSipCreateTypeCd(ipAllocOperMstVo.getSipCreateTypeCd());
 					searchIpAllocMstVo.setNipAssignMstSeq(ipAllocOperMstVo.getNipAssignMstSeq());
 					searchIpAllocMstVo.setSassignTypeCd(ipAllocOperMstVo.getSassignTypeCd());
 					searchIpAllocMstVo.setSgatewayip(ipAllocOperMstVo.getSgatewayip());
 
-					/*중복 회선 처리*/
+					/* 중복 회선 처리 */
 					BigInteger iAllcnt = BigInteger.ZERO;
 					iAllcnt = ipAllocOperMstVo.getNipAllocMstCnt();
 					iAllcnt = iAllcnt.add(BigInteger.ONE);
@@ -427,7 +588,7 @@ public class AllocMgmtService {
 						}
 					}
 
-					//입력 대상 정보에 회선정보 매핑 
+					// 입력 대상 정보에 회선정보 매핑
 					TbIpAllocMstVo mapIpAllocMstVo = new TbIpAllocMstVo();
 					CloneUtil.copyObjectInformation(preSrcIpAllocMstVo, mapIpAllocMstVo);
 					mapIpAllocMstVo.setNipmsSvcSeq(resultListIpmsSvc.get(0).getNipmsSvcSeq());
@@ -437,7 +598,7 @@ public class AllocMgmtService {
 
 					CloneUtil.copyObjectInformation(mapIpAllocMstVo, ipAllocOperMstVo);
 
-					//입력 대상 정보에 배정정보 매핑 (IP블록 기본정보)
+					// 입력 대상 정보에 배정정보 매핑 (IP블록 기본정보)
 					updateIpAllocMstVo = allocMgmtTxService.selectIpAllocMst(searchIpAllocMstVo);
 					CloneUtil.copyIpVoInfomation(updateIpAllocMstVo, ipAllocOperMstVo);
 
@@ -447,23 +608,23 @@ public class AllocMgmtService {
 					ipAllocOperMstVo.setSassignTypeCd(searchIpAllocMstVo.getSassignTypeCd());
 					ipAllocOperMstVo.setNipAllocMstCnt(searchIpAllocMstVo.getNipAllocMstCnt());
 					ipAllocOperMstVo.setSgatewayip(searchIpAllocMstVo.getSgatewayip());
-					ipAllocOperMstVo.setSexPushYn("Y"); //insert 시점에 고정(회선 - 연동정보 IPMS=> NEOSS)
-					ipAllocOperMstVo.setNticketActSeq(BigInteger.ZERO); //insert 시점에 고정
+					ipAllocOperMstVo.setSexPushYn("Y"); // insert 시점에 고정(회선 - 연동정보 IPMS=> NEOSS)
+					ipAllocOperMstVo.setNticketActSeq(BigInteger.ZERO); // insert 시점에 고정
 					ipAllocOperMstVo.setScreateId(sUserId);
 					ipAllocOperMstVo.setSmodifyId(sUserId);
 					ipAllocOperMstVo.setScomment(sNote);
 
-					if (sLinkFlg.equals("O")) { //O준공대기 => 할당예약 호출
-						ipAllocOperMstVo.setSassignLevelCd("IA0005"); //updateTbIpAllocMstVo Neoss 연동시 할당예약
+					if (sLinkFlg.equals("O")) { // O준공대기 => 할당예약 호출
+						ipAllocOperMstVo.setSassignLevelCd("IA0005"); // updateTbIpAllocMstVo Neoss 연동시 할당예약
 					} else {
-						ipAllocOperMstVo.setSassignLevelCd("IA0006"); //updateTbIpAllocMstVo Neoss 연동시 할당
+						ipAllocOperMstVo.setSassignLevelCd("IA0006"); // updateTbIpAllocMstVo Neoss 연동시 할당
 					}
 
-					//등록 할당 데이터 복제 
+					// 등록 할당 데이터 복제
 					TbIpAllocMstVo insertIpAllocMstVo = new TbIpAllocMstVo();
 					CloneUtil.copyObjectInformation(ipAllocOperMstVo, insertIpAllocMstVo);
 
-					//ip 할당(회선 정보) 추가 복사
+					// ip 할당(회선 정보) 추가 복사
 					insertIpAllocMstVo.setNipAllocNeossSeq(mapIpAllocMstVo.getNipAllocNeossSeq());
 					insertIpAllocMstVo.setSordernum(mapIpAllocMstVo.getSordernum());
 					insertIpAllocMstVo.setSodrCloseTypeCd(mapIpAllocMstVo.getSodrCloseTypeCd());
@@ -486,37 +647,48 @@ public class AllocMgmtService {
 
 					insertIpAllocMstVos.add(insertIpAllocMstVo);
 
-					//등록 선번장 데이터 복제
+					// 등록 선번장 데이터 복제
 					TbIpAssignSubVo insertIpAssignSubVo = new TbIpAssignSubVo();
 					CloneUtil.copyObjectInformation(ipAllocOperMstVo, insertIpAssignSubVo);
 					insertIpAssignSubVos.add(insertIpAssignSubVo);
 
-					//수정 배정 데이터 복제
+					// 수정 배정 데이터 복제
 					TbIpAssignMstVo updateIpAssignMstVo = new TbIpAssignMstVo();
 					CloneUtil.copyObjectInformation(ipAllocOperMstVo, updateIpAssignMstVo);
-					updateIpAssignMstVo.setSipAllocExTypeCd("AE0003"); //AE0000 (강제할당처리), AE0003(웹서비스)
-					updateIpAssignMstVo.setSortType("I"); //등록 예외 처리를 위한 구분자
+					updateIpAssignMstVo.setSipAllocExTypeCd("AE0003"); // AE0000 (강제할당처리), AE0003(웹서비스)
+					updateIpAssignMstVo.setSortType("I"); // 등록 예외 처리를 위한 구분자
 					destIpAssignMstVos.add(updateIpAssignMstVo);
 
-					//연동 대상 데이터 복제
+					// 연동 대상 데이터 복제
 					TbIpAllocNeossMstVo linkAllocNeossMstVo = new TbIpAllocNeossMstVo();
 
-					linkAllocNeossMstVo.setSordernum(insertIpAllocMstVo.getSordernum()); //sordernum NeOSS 오더번호
-					linkAllocNeossMstVo.setSaid(insertIpAllocMstVo.getSsaid()); //ssaid 서비스계약ID
-					linkAllocNeossMstVo.setRegyn("Y"); //할당요청/취소 구분 [ 예약 = Y, 취소 = N ]
-					linkAllocNeossMstVo.setIpmsSvcSeq(insertIpAllocMstVo.getNipmsSvcSeq()); //nipms_svc_seq  IPMS 상품MST Seq
-					linkAllocNeossMstVo.setAssignTypeCd(insertIpAllocMstVo.getSassignTypeCd()); // sassign_type_cd  IP할당유형
-					linkAllocNeossMstVo.setExSvcCd(insertIpAllocMstVo.getSexSvcCd()); //sex_svc_cd
-					linkAllocNeossMstVo.setSvcUseTypeCd(insertIpAllocMstVo.getSsvcUseTypeCd()); //ssvc_use_type_cd 서비스 이용목정 [사업용 = SU0001 / 일반용 = SU0002 ]
-					linkAllocNeossMstVo.setIpVersionTypeCd(insertIpAllocMstVo.getSipVersionTypeCd()); //sip_version_type_cd IPv6 = CV0002/ IPv4 CV0001
-					linkAllocNeossMstVo.setIpCreateTypeCd(insertIpAllocMstVo.getSipCreateTypeCd()); //sip_create_type_cd   CT0001 = 공인 
+					linkAllocNeossMstVo.setSordernum(insertIpAllocMstVo.getSordernum()); // sordernum NeOSS 오더번호
+					linkAllocNeossMstVo.setSaid(insertIpAllocMstVo.getSsaid()); // ssaid 서비스계약ID
+					linkAllocNeossMstVo.setRegyn("Y"); // 할당요청/취소 구분 [ 예약 = Y, 취소 = N ]
+					linkAllocNeossMstVo.setIpmsSvcSeq(insertIpAllocMstVo.getNipmsSvcSeq()); // nipms_svc_seq  IPMS 상품MST
+																							// Seq
+					linkAllocNeossMstVo.setAssignTypeCd(insertIpAllocMstVo.getSassignTypeCd()); // sassign_type_cd 
+																								// IP할당유형
+					linkAllocNeossMstVo.setExSvcCd(insertIpAllocMstVo.getSexSvcCd()); // sex_svc_cd
+					linkAllocNeossMstVo.setSvcUseTypeCd(insertIpAllocMstVo.getSsvcUseTypeCd()); // ssvc_use_type_cd 서비스
+																								// 이용목정 [사업용 = SU0001 /
+																								// 일반용 = SU0002 ]
+					linkAllocNeossMstVo.setIpVersionTypeCd(insertIpAllocMstVo.getSipVersionTypeCd()); // sip_version_type_cd
+																										// IPv6 =
+																										// CV0002/ IPv4
+																										// CV0001
+					linkAllocNeossMstVo.setIpCreateTypeCd(insertIpAllocMstVo.getSipCreateTypeCd()); // sip_create_type_cd
+																									//   CT0001 = 공인 
 					linkAllocNeossMstVo.setIpBlock(insertIpAllocMstVo.getSipBlock()); // sip_block     fe01:1:1::
-					linkAllocNeossMstVo.setIpbitmask(insertIpAllocMstVo.getNbitmask()); //nbitmask      64
-					linkAllocNeossMstVo.setSipaddr(insertIpAllocMstVo.getSfirstAddr()); //sfirst_addr  fe01:1:1::
-					linkAllocNeossMstVo.setEipaddr(insertIpAllocMstVo.getSlastAddr()); //slast_addr fe01:1:1:0:ffff:ffff:ffff:ffff
-					linkAllocNeossMstVo.setNipAssignMstSeq(insertIpAllocMstVo.getNipAssignMstSeq()); // nip_assign_mst_seq 48
-					linkAllocNeossMstVo.setGatewayip(insertIpAllocMstVo.getSgatewayip()); //sgatewayip fe01:1:1:0:ffff:ffff:ffff:ffff
-					//2014.11.13 연동 변경에 따른 추가(이중회선, 망코드 추가)
+					linkAllocNeossMstVo.setIpbitmask(insertIpAllocMstVo.getNbitmask()); // nbitmask      64
+					linkAllocNeossMstVo.setSipaddr(insertIpAllocMstVo.getSfirstAddr()); // sfirst_addr  fe01:1:1::
+					linkAllocNeossMstVo.setEipaddr(insertIpAllocMstVo.getSlastAddr()); // slast_addr
+																						// fe01:1:1:0:ffff:ffff:ffff:ffff
+					linkAllocNeossMstVo.setNipAssignMstSeq(insertIpAllocMstVo.getNipAssignMstSeq()); // nip_assign_mst_seq
+																										// 48
+					linkAllocNeossMstVo.setGatewayip(insertIpAllocMstVo.getSgatewayip()); // sgatewayip
+																							// fe01:1:1:0:ffff:ffff:ffff:ffff
+					// 2014.11.13 연동 변경에 따른 추가(이중회선, 망코드 추가)
 					if (ipAllocOperMstVo.getNipAllocMstCnt().equals(BigInteger.ONE)) {
 						linkAllocNeossMstVo.setSlacpBlockYN("N");
 					} else {
@@ -528,35 +700,35 @@ public class AllocMgmtService {
 
 				}
 
-			} else {//시설일 경우 해당 정보를 입력함.  // 링크할당일 경우도 포함 (2021.05.07 추가)
+			} else {// 시설일 경우 해당 정보를 입력함. // 링크할당일 경우도 포함 (2021.05.07 추가)
 
-				//미연동(시설)의 연동유형 셋팅
+				// 미연동(시설)의 연동유형 셋팅
 				sLinkFlg = "N";
 
-				//장비정보 셋팅
+				// 장비정보 셋팅
 				for (IpAllocOperMstVo ipAllocOperMstVo : destIpAllocMstVos) {
 
 					String sGubun = ipAllocOperMstVo.getsGubun(); // 라우팅점검에서 할당
 
-					IpAllocOperMstVo searchIpAllocMstVo = new IpAllocOperMstVo(); //배정테이블
+					IpAllocOperMstVo searchIpAllocMstVo = new IpAllocOperMstVo(); // 배정테이블
 
 					ssvcLineTypeCd = ipAllocOperMstVo.getSsvcLineTypeCd();
 					sipCreateTypeCd = ipAllocOperMstVo.getSipCreateTypeCd();
 
-					//배정정보 확인을 위한 기준값 복사
+					// 배정정보 확인을 위한 기준값 복사
 					searchIpAllocMstVo.setSsvcLineTypeCd(ipAllocOperMstVo.getSsvcLineTypeCd());
 					searchIpAllocMstVo.setSipCreateTypeCd(ipAllocOperMstVo.getSipCreateTypeCd());
 					searchIpAllocMstVo.setNipAssignMstSeq(ipAllocOperMstVo.getNipAssignMstSeq());
 					searchIpAllocMstVo.setSassignTypeCd(ipAllocOperMstVo.getSassignTypeCd());
 					searchIpAllocMstVo.setSgatewayip(ipAllocOperMstVo.getSgatewayip());
 
-					/*중복 회선 처리*/
+					/* 중복 회선 처리 */
 					BigInteger iAllcnt = BigInteger.ZERO;
 					iAllcnt = ipAllocOperMstVo.getNipAllocMstCnt();
 					iAllcnt = iAllcnt.add(BigInteger.ONE);
 					searchIpAllocMstVo.setNipAllocMstCnt(iAllcnt);
 
-					//입력 대상 정보에 배정정보 매핑 (IP블록 기본정보)
+					// 입력 대상 정보에 배정정보 매핑 (IP블록 기본정보)
 					updateIpAllocMstVo = allocMgmtTxService.selectIpAllocMst(searchIpAllocMstVo);
 					CloneUtil.copyIpVoInfomation(updateIpAllocMstVo, ipAllocOperMstVo);
 
@@ -567,52 +739,52 @@ public class AllocMgmtService {
 					ipAllocOperMstVo.setNipAllocMstCnt(searchIpAllocMstVo.getNipAllocMstCnt());
 
 					ipAllocOperMstVo.setSregyn("Y");
-					//ipAllocOperMstVo.setSsaId(ssaid); //insert 시점에 체크
+					// ipAllocOperMstVo.setSsaId(ssaid); //insert 시점에 체크
 					ipAllocOperMstVo.setSicisofficescode(srcIpAllocMstVo.getSicisofficescode());
-					ipAllocOperMstVo.setSofficecode(srcIpAllocMstVo.getSofficecode()); /*수용국 복사*/
-					//ipAllocOperMstVo.setSlacpsid(slacpsid); //insert 시점에 체크
+					ipAllocOperMstVo.setSofficecode(srcIpAllocMstVo.getSofficecode()); /* 수용국 복사 */
+					// ipAllocOperMstVo.setSlacpsid(slacpsid); //insert 시점에 체크
 					ipAllocOperMstVo.setSsubscnnescode(srcIpAllocMstVo.getSsubscnnescode());
 					ipAllocOperMstVo.setSsubscmstip(srcIpAllocMstVo.getSsubscmstip());
 					ipAllocOperMstVo.setSsubscnealias(srcIpAllocMstVo.getSsubscnealias());
 					ipAllocOperMstVo.setSmodelname(srcIpAllocMstVo.getSmodelname());
 					ipAllocOperMstVo.setSllnum(srcIpAllocMstVo.getSllnum());
-					ipAllocOperMstVo.setNipmsSvcSeq(BigInteger.ZERO); //insert 시점에 고정
+					ipAllocOperMstVo.setNipmsSvcSeq(BigInteger.ZERO); // insert 시점에 고정
 					ipAllocOperMstVo.setSsvcUseTypeCd("SU0000");
 					ipAllocOperMstVo.setSgatewayip(searchIpAllocMstVo.getSgatewayip());
 					ipAllocOperMstVo.setSexPushYn("O");
-					ipAllocOperMstVo.setNticketActSeq(BigInteger.ZERO); //insert 시점에 고정
+					ipAllocOperMstVo.setNticketActSeq(BigInteger.ZERO); // insert 시점에 고정
 					ipAllocOperMstVo.setScreateId(srcIpAllocMstVo.getScreateId());
 					ipAllocOperMstVo.setSmodifyId(srcIpAllocMstVo.getSmodifyId());
 					ipAllocOperMstVo.setScomment(sNote);
 					ipAllocOperMstVo.setSsubsclgipportdescription(srcIpAllocMstVo.getSsubsclgipportdescription()); // IF명
 
-					ipAllocOperMstVo.setSassignLevelCd("IA0006"); //updateTbIpAllocMstVo
+					ipAllocOperMstVo.setSassignLevelCd("IA0006"); // updateTbIpAllocMstVo
 
 					if (null != srcIpAllocMstVo.getNipLinkMstSeq()) {
 						ipAllocOperMstVo.setNipLinkMstSeq(srcIpAllocMstVo.getNipLinkMstSeq()); // 링크마스터seq
 						ipAllocOperMstVo.setSsubsclgipportdescription(srcIpAllocMstVo.getSsubsclgipportdescription()); // 자국IF명
-						ipAllocOperMstVo.setSofficecode(srcIpAllocMstVo.getSicisofficescode()); /*수용국 복사*/
+						ipAllocOperMstVo.setSofficecode(srcIpAllocMstVo.getSicisofficescode()); /* 수용국 복사 */
 						ipAllocOperMstVo.setSconnalias(srcIpAllocMstVo.getSconnAlias()); // 수용회선명
 					}
 
-					//등록 할당 데이터 복제 
+					// 등록 할당 데이터 복제
 					TbIpAllocMstVo insertIpAllocMstVo = new TbIpAllocMstVo();
 					CloneUtil.copyObjectInformation(ipAllocOperMstVo, insertIpAllocMstVo);
 					insertIpAllocMstVo.setsGubun(sGubun);
 					insertIpAllocMstVos.add(insertIpAllocMstVo);
 
-					//등록 선번장 데이터 복제
+					// 등록 선번장 데이터 복제
 					TbIpAssignSubVo insertIpAssignSubVo = new TbIpAssignSubVo();
 					CloneUtil.copyObjectInformation(ipAllocOperMstVo, insertIpAssignSubVo);
 					insertIpAssignSubVos.add(insertIpAssignSubVo);
 
-					//수정 배정 데이터 복제
+					// 수정 배정 데이터 복제
 					TbIpAssignMstVo updateIpAssignMstVo = new TbIpAssignMstVo();
 					CloneUtil.copyObjectInformation(ipAllocOperMstVo, updateIpAssignMstVo);
 					updateIpAssignMstVo.setNipmsSvcSeq(null);
 					updateIpAssignMstVo.setSexSvcCd(null);
-					updateIpAssignMstVo.setSipAllocExTypeCd("AE0000"); //AE0000 (강제할당처리), AE0003(웹서비스)
-					updateIpAssignMstVo.setSortType("I"); //등록 예외 처리를 위한 구분자
+					updateIpAssignMstVo.setSipAllocExTypeCd("AE0000"); // AE0000 (강제할당처리), AE0003(웹서비스)
+					updateIpAssignMstVo.setSortType("I"); // 등록 예외 처리를 위한 구분자
 					destIpAssignMstVos.add(updateIpAssignMstVo);
 
 				}
@@ -621,13 +793,13 @@ public class AllocMgmtService {
 			/* 스쿨넷은 외부 연동 없음 */
 			if (!ssvcLineTypeCd.equals("CL0008")) {
 
-				/* 사설IP 는  연동 없음 */
+				/* 사설IP 는 연동 없음 */
 				if (!sipCreateTypeCd.equals("CT0005")) {
-					//1. 연동 처리 정보 호출부(연동 결과에 따른 처리는 연동 추가 후 진행예정)
-					if (sLinkFlg.equals("O")) { //할당예약 웹서비스 호출
+					// 1. 연동 처리 정보 호출부(연동 결과에 따른 처리는 연동 추가 후 진행예정)
+					if (sLinkFlg.equals("O")) { // 할당예약 웹서비스 호출
 						tbIpAllocNeossMstListVo.setTbIpAllocNeossMstVos(linkIpAllocNeossVos);
 						neOSSConsumeAdapterService.insertReservedIPList(tbIpAllocNeossMstListVo);
-					} else if (sLinkFlg.equals("Y")) { //할당 웹서비스 호출
+					} else if (sLinkFlg.equals("Y")) { // 할당 웹서비스 호출
 						tbIpAllocNeossMstListVo.setTbIpAllocNeossMstVos(linkIpAllocNeossVos);
 						neOSSConsumeAdapterService.insertFixedIPList(tbIpAllocNeossMstListVo);
 					}
@@ -636,10 +808,10 @@ public class AllocMgmtService {
 
 			}
 
-			//2. 할당 처리
+			// 2. 할당 처리
 			allocMgmtTxService.processInsertIPAllocMst(insertIpAllocMstVos);
 
-			//할당 처리 key Mapping( 
+			// 할당 처리 key Mapping(
 			for (TbIpAllocMstVo keyIpAllocOperMstVo : insertIpAllocMstVos) {
 				for (TbIpAssignSubVo desIpAllocOperMstVo : insertIpAssignSubVos) {
 					if (keyIpAllocOperMstVo.getPipPrefix().equals(desIpAllocOperMstVo.getPipPrefix())) {
@@ -648,15 +820,16 @@ public class AllocMgmtService {
 				}
 			}
 
-			//3. 할당 서브(선번장) 처리
+			// 3. 할당 서브(선번장) 처리
 			lineMgmtAdapterService.insertIpAssignSub(insertIpAssignSubVos);
 
-			//4. 배정 변경(할당) 처리
+			// 4. 배정 변경(할당) 처리
 			assignMgmtAdapterService.updateAlocIpAssignMst(destIpAssignMstVos);
 
-			//5. Ticket정보 처리(할당)
+			// 5. Ticket정보 처리(할당)
 			for (TbIpAssignMstVo destTicketTbIpAssignMstVo : destIpAssignMstVos) {
-				/* Step 1. 배정블록 조회
+				/*
+				 * Step 1. 배정블록 조회
 				 * - Method 호출 및 리턴 셋팅
 				 */
 				TbIpAssignMstVo srchTicketIpAssignMstVo = new TbIpAssignMstVo();
@@ -670,7 +843,8 @@ public class AllocMgmtService {
 				srchTicketIpAssignMstVo.setNipAssignMstSeq(destTicketTbIpAssignMstVo.getNipAssignMstSeq());
 				insertTicketTbIpAssignMstVo = assignMgmtAdapterService.selectIpAssignMst(srchTicketIpAssignMstVo);
 
-				/* Step 2. 변경 Param Setting (회선, 시설) 
+				/*
+				 * Step 2. 변경 Param Setting (회선, 시설)
 				 * - Step 1의 정보에 상단 셋팅 값 input
 				 * - tbTicketMstVo에 블록 정보 (배정) 셋팅 및 기본값 셋팅
 				 */
@@ -682,7 +856,8 @@ public class AllocMgmtService {
 				tbTicketMstVo.setNticketTypeSeq(CommonCodeUtil.TICKET_TYPE_IP_ALLOC_ALLOC);
 				tbTicketMstVo.setScreateId(destTicketTbIpAssignMstVo.getSmodifyId());
 
-				/* Step 3. 상품정보 셋팅 
+				/*
+				 * Step 3. 상품정보 셋팅
 				 * - 상단 정보에 대하여 상품코드 존재시 해당 정보 셋팅
 				 */
 				if (destTicketTbIpAssignMstVo.getNipmsSvcSeq() != null) {
@@ -705,7 +880,7 @@ public class AllocMgmtService {
 				if (sipCreateTypeCd.equals("CT0001")) {
 
 					/***************************
-					 *  Whois 전송
+					 * Whois 전송
 					 ***************************/
 					if (insertIpAllocMstVos.size() > 0) {
 						BigInteger allocMstSeq = null;
@@ -729,10 +904,12 @@ public class AllocMgmtService {
 				/* 사설IP 는 라우팅 점검 연동 없음 */
 				if (!sipCreateTypeCd.equals("CT0005")) {
 					/***************************
-					 *  라우팅 점검 업데이트
+					 * 라우팅 점검 업데이트
 					 ***************************/
 					for (int i = 0; i < insertIpAllocMstVos.size(); i++) {
-						//						if(insertIpAllocMstVos.get(i).getsGubun() == null || insertIpAllocMstVos.get(i).getsGubun() == "") { //Codeeyes-Urgent-객체 비교시 == , != 사용제한
+						// if(insertIpAllocMstVos.get(i).getsGubun() == null ||
+						// insertIpAllocMstVos.get(i).getsGubun() == "") { //Codeeyes-Urgent-객체 비교시 == ,
+						// != 사용제한
 						if (insertIpAllocMstVos.get(i).getsGubun() == null
 								|| insertIpAllocMstVos.get(i).getsGubun().equals("")) {
 							PrintLogUtil.printLog(
@@ -771,23 +948,23 @@ public class AllocMgmtService {
 
 							if (!StringUtils.hasText(ipAllocMstComplexVo.getMenuType())) {
 								ipHistoryMstVo.setsMenuHistCd("Aloc");
-								//ipHistoryMstVo.setSmenuNm("IP 할당");
-								//ipHistoryMstVo.setSmenuId("M00009");  // IP 할당 
+								// ipHistoryMstVo.setSmenuNm("IP 할당");
+								// ipHistoryMstVo.setSmenuId("M00009"); // IP 할당
 							} else if (ipAllocMstComplexVo.getMenuType().equals("Rout")) {
 								ipHistoryMstVo.setsMenuHistCd("Rout");
-								//ipHistoryMstVo.setSmenuNm("IP주소 라우팅 비교/점검");
-								//ipHistoryMstVo.setSmenuId("M00118");  // IP주소 라우팅 비교/점검 
+								// ipHistoryMstVo.setSmenuNm("IP주소 라우팅 비교/점검");
+								// ipHistoryMstVo.setSmenuId("M00118"); // IP주소 라우팅 비교/점검
 							} else if (ipAllocMstComplexVo.getMenuType().equals("Upload")) {
 								ipHistoryMstVo.setsMenuHistCd("Upload"); // 업로드관리
 							} else {
 								ipHistoryMstVo.setsMenuHistCd("Aloc");
-								//ipHistoryMstVo.setSmenuNm("IP 할당");
-								//ipHistoryMstVo.setSmenuId("M00009");  // IP 할당
+								// ipHistoryMstVo.setSmenuNm("IP 할당");
+								// ipHistoryMstVo.setSmenuId("M00009"); // IP 할당
 							}
 
-							if (sLinkFlg.equals("O")) { //할당예약
+							if (sLinkFlg.equals("O")) { // 할당예약
 								ipHistoryMstVo.setNipHistTaskCd(CommonCodeUtil.HIST_TASK_ALLOC_RESV); // 할당예약
-							} else { //할당 
+							} else { // 할당
 								ipHistoryMstVo.setNipHistTaskCd(CommonCodeUtil.HIST_TASK_ALLOC); // 할당
 							}
 
@@ -810,7 +987,7 @@ public class AllocMgmtService {
 		}
 	}
 
-	/*블록 해지 처리*/
+	/* 블록 해지 처리 */
 	@Transactional(propagation = Propagation.REQUIRED)
 	public void deleteListAllocIPMst(IpAllocMstComplexVo ipAllocMstComplexVo) {
 		try {
@@ -821,32 +998,32 @@ public class AllocMgmtService {
 			}
 
 			IpAllocOperMstVo srcIpAllocMstVo = ipAllocMstComplexVo.getSrcIpAllocMstVo();
-			//IpAllocOperMstVo updateIpAllocMstVo = new IpAllocOperMstVo(); //배정테이블
+			// IpAllocOperMstVo updateIpAllocMstVo = new IpAllocOperMstVo(); //배정테이블
 			List<IpAllocOperMstVo> destIpAllocMstVos = ipAllocMstComplexVo.getDestIpAllocMstVos();
 
 			List<TbIpAssignSubVo> deleteIpAssignSubVos = new ArrayList<TbIpAssignSubVo>();
 			List<TbIpAllocMstVo> deleteIpAllocMstVos = new ArrayList<TbIpAllocMstVo>();
 			List<IpHistoryMstVo> deleteIpHistMstVos = new ArrayList<IpHistoryMstVo>();
 			List<TbIpAssignMstVo> updateIpAssignMstVos = new ArrayList<TbIpAssignMstVo>();
-			List<TbIpAllocNeossMstVo> linkIpAllocNeossVos = new ArrayList<TbIpAllocNeossMstVo>(); //연동 처리 관련
+			List<TbIpAllocNeossMstVo> linkIpAllocNeossVos = new ArrayList<TbIpAllocNeossMstVo>(); // 연동 처리 관련
 
-			//연동용 VO 생성
+			// 연동용 VO 생성
 			TbIpAllocNeossMstListVo tbIpAllocNeossMstListVo = new TbIpAllocNeossMstListVo();
 
-			String sLinkFlg = "N"; //연동유형 체크(Y: 할당해지호출, O: 할당예약해지호출 N: 연동호출 안함.)
-			String sLinkFlgExPush = "O"; //연동유형 체크(Y: IPMS=> NEOSS, O: 수동 N: NEOSS=> IPMS.)
-			String sLinkFlgSreg = "N"; //연동유형 체크(Y: 할당, O: 할당예약 N: 없음.)
+			String sLinkFlg = "N"; // 연동유형 체크(Y: 할당해지호출, O: 할당예약해지호출 N: 연동호출 안함.)
+			String sLinkFlgExPush = "O"; // 연동유형 체크(Y: IPMS=> NEOSS, O: 수동 N: NEOSS=> IPMS.)
+			String sLinkFlgSreg = "N"; // 연동유형 체크(Y: 할당, O: 할당예약 N: 없음.)
 
 			String ssvcLineTypeCd = null;
 			String sipCreateTypeCd = null;
 
-			//블록에 해당번호(회선일 경우 해당 회선 정보를 조회 후 값을 셋팅함.
+			// 블록에 해당번호(회선일 경우 해당 회선 정보를 조회 후 값을 셋팅함.
 			if (srcIpAllocMstVo.getNipAssignMstSeq() != null && srcIpAllocMstVo.getNipAllocMstSeq() != null) {
 
-				//배정정보 읽기
+				// 배정정보 읽기
 				IpAllocOperMstVo preSrcIpAllocMstVo = allocMgmtTxService.selectIpAllocMst(srcIpAllocMstVo);
 
-				/*중복 회선 처리*/
+				/* 중복 회선 처리 */
 				BigInteger iAllcnt = BigInteger.ZERO;
 				iAllcnt = preSrcIpAllocMstVo.getNipAllocMstCnt();
 
@@ -855,14 +1032,14 @@ public class AllocMgmtService {
 
 				for (IpAllocOperMstVo ipAllocOperMstVo : destIpAllocMstVos) {
 
-					//연동 정보 처리를 위한 IP정보 복제
+					// 연동 정보 처리를 위한 IP정보 복제
 					CloneUtil.copyIpVoInfomation(preSrcIpAllocMstVo, ipAllocOperMstVo);
 
-					//회선정보 읽기
+					// 회선정보 읽기
 					TbIpAllocMstVo preDtlSrcIpAllocMstVo = allocMgmtTxService.selectIpAllocDetail(srcIpAllocMstVo);
 
-					//회선정보의 연동유형 셋팅
-					//sLinkFlg = preDtlSrcIpAllocMstVo.getSexPushYn();
+					// 회선정보의 연동유형 셋팅
+					// sLinkFlg = preDtlSrcIpAllocMstVo.getSexPushYn();
 					sLinkFlgExPush = preDtlSrcIpAllocMstVo.getSexPushYn();
 					sLinkFlgSreg = preDtlSrcIpAllocMstVo.getSregyn();
 
@@ -874,8 +1051,8 @@ public class AllocMgmtService {
 
 					iAllcnt = iAllcnt.subtract(BigInteger.ONE);
 
-					if (iAllcnt.equals(BigInteger.ZERO)) { //배정블럭의 해당 값 초기화
-						ipAllocOperMstVo.setSassignLevelCd("IA0004"); //updateTbIpAllocMstVo (0일 경우 서비스배정으로 변경)
+					if (iAllcnt.equals(BigInteger.ZERO)) { // 배정블럭의 해당 값 초기화
+						ipAllocOperMstVo.setSassignLevelCd("IA0004"); // updateTbIpAllocMstVo (0일 경우 서비스배정으로 변경)
 						ipAllocOperMstVo.setNipmsSvcSeq(BigInteger.ZERO);
 						ipAllocOperMstVo.setSexSvcCd(null);
 						ipAllocOperMstVo.setSipAllocExTypeCd("AE0000");
@@ -884,20 +1061,20 @@ public class AllocMgmtService {
 					ipAllocOperMstVo.setNipAllocMstCnt(iAllcnt);
 					ipAllocOperMstVo.setSmodifyId(srcIpAllocMstVo.getSmodifyId());
 
-					//삭제대상 선번장 데이터 복제
+					// 삭제대상 선번장 데이터 복제
 					TbIpAssignSubVo deleteIpAssignSubVo = new TbIpAssignSubVo();
 					CloneUtil.copyObjectInformation(ipAllocOperMstVo, deleteIpAssignSubVo);
 					deleteIpAssignSubVos.add(deleteIpAssignSubVo);
 
-					//삭제대상 할당 데이터 복제 
+					// 삭제대상 할당 데이터 복제
 					TbIpAllocMstVo deleteIpAllocMstVo = new TbIpAllocMstVo();
 					CloneUtil.copyObjectInformation(ipAllocOperMstVo, deleteIpAllocMstVo);
 					deleteIpAllocMstVos.add(deleteIpAllocMstVo);
 
-					//수정 배정 데이터 복제
+					// 수정 배정 데이터 복제
 					TbIpAssignMstVo updateIpAssignMstVo = new TbIpAssignMstVo();
 					CloneUtil.copyObjectInformation(ipAllocOperMstVo, updateIpAssignMstVo);
-					updateIpAssignMstVo.setSortType("D"); //삭제 예외 처리를 위한 구분자
+					updateIpAssignMstVo.setSortType("D"); // 삭제 예외 처리를 위한 구분자
 					updateIpAssignMstVos.add(updateIpAssignMstVo);
 
 					// 이력 데이터 복제 (이력관리)
@@ -933,28 +1110,43 @@ public class AllocMgmtService {
 
 					deleteIpHistMstVos.add(deleteIpHistMstVo);
 
-					//연동 대상 데이터 복제
+					// 연동 대상 데이터 복제
 					TbIpAllocNeossMstVo linkAllocNeossMstVo = new TbIpAllocNeossMstVo();
 
 					if (sLinkFlg.equals("O") || sLinkFlg.equals("Y")) {
-						linkAllocNeossMstVo.setSordernum(preDtlSrcIpAllocMstVo.getSordernum()); //sordernum NeOSS 오더번호
-						linkAllocNeossMstVo.setSaid(preDtlSrcIpAllocMstVo.getSsaid()); //ssaid 서비스계약ID
-						linkAllocNeossMstVo.setRegyn("N"); //할당요청/취소 구분 [ 예약 = Y, 취소 = N ]
-						linkAllocNeossMstVo.setIpmsSvcSeq(preDtlSrcIpAllocMstVo.getNipmsSvcSeq()); //nipms_svc_seq  IPMS 상품MST Seq
-						linkAllocNeossMstVo.setAssignTypeCd(preDtlSrcIpAllocMstVo.getSassignTypeCd()); // sassign_type_cd  IP할당유형
-						linkAllocNeossMstVo.setExSvcCd(preDtlSrcIpAllocMstVo.getSexSvcCd()); //sex_svc_cd
-						linkAllocNeossMstVo.setSvcUseTypeCd(preDtlSrcIpAllocMstVo.getSsvcUseTypeCd()); //ssvc_use_type_cd 서비스 이용목정 [사업용 = SU0001 / 일반용 = SU0002 ]
-						linkAllocNeossMstVo.setIpVersionTypeCd(preDtlSrcIpAllocMstVo.getSipVersionTypeCd()); //sip_version_type_cd IPv6 = CV0002/ IPv4 CV0001
-						linkAllocNeossMstVo.setIpCreateTypeCd(preDtlSrcIpAllocMstVo.getSipCreateTypeCd()); //sip_create_type_cd   CT0001 = 공인 
+						linkAllocNeossMstVo.setSordernum(preDtlSrcIpAllocMstVo.getSordernum()); // sordernum NeOSS 오더번호
+						linkAllocNeossMstVo.setSaid(preDtlSrcIpAllocMstVo.getSsaid()); // ssaid 서비스계약ID
+						linkAllocNeossMstVo.setRegyn("N"); // 할당요청/취소 구분 [ 예약 = Y, 취소 = N ]
+						linkAllocNeossMstVo.setIpmsSvcSeq(preDtlSrcIpAllocMstVo.getNipmsSvcSeq()); // nipms_svc_seq 
+																									// IPMS 상품MST Seq
+						linkAllocNeossMstVo.setAssignTypeCd(preDtlSrcIpAllocMstVo.getSassignTypeCd()); // sassign_type_cd 
+																										// IP할당유형
+						linkAllocNeossMstVo.setExSvcCd(preDtlSrcIpAllocMstVo.getSexSvcCd()); // sex_svc_cd
+						linkAllocNeossMstVo.setSvcUseTypeCd(preDtlSrcIpAllocMstVo.getSsvcUseTypeCd()); // ssvc_use_type_cd 서비스
+																										// 이용목정 [사업용 =
+																										// SU0001 / 일반용
+																										// = SU0002 ]
+						linkAllocNeossMstVo.setIpVersionTypeCd(preDtlSrcIpAllocMstVo.getSipVersionTypeCd()); // sip_version_type_cd
+																												// IPv6
+																												// =
+																												// CV0002/
+																												// IPv4
+																												// CV0001
+						linkAllocNeossMstVo.setIpCreateTypeCd(preDtlSrcIpAllocMstVo.getSipCreateTypeCd()); // sip_create_type_cd
+																											//   CT0001
+																											// = 공인 
 						linkAllocNeossMstVo.setIpBlock(preDtlSrcIpAllocMstVo.getSipBlock()); // sip_block     fe01:1:1::
-						linkAllocNeossMstVo.setIpbitmask(preDtlSrcIpAllocMstVo.getNbitmask()); //nbitmask      64
-						linkAllocNeossMstVo.setSipaddr(preDtlSrcIpAllocMstVo.getSfirstAddr()); //sfirst_addr  fe01:1:1::
-						linkAllocNeossMstVo.setEipaddr(preDtlSrcIpAllocMstVo.getSlastAddr()); //slast_addr fe01:1:1:0:ffff:ffff:ffff:ffff
-						linkAllocNeossMstVo.setNipAssignMstSeq(preDtlSrcIpAllocMstVo.getNipAssignMstSeq()); // nip_assign_mst_seq 48
-						linkAllocNeossMstVo.setGatewayip(preDtlSrcIpAllocMstVo.getSgatewayip()); //sgatewayip fe01:1:1:0:ffff:ffff:ffff:ffff
+						linkAllocNeossMstVo.setIpbitmask(preDtlSrcIpAllocMstVo.getNbitmask()); // nbitmask      64
+						linkAllocNeossMstVo.setSipaddr(preDtlSrcIpAllocMstVo.getSfirstAddr()); // sfirst_addr  fe01:1:1::
+						linkAllocNeossMstVo.setEipaddr(preDtlSrcIpAllocMstVo.getSlastAddr()); // slast_addr
+																								// fe01:1:1:0:ffff:ffff:ffff:ffff
+						linkAllocNeossMstVo.setNipAssignMstSeq(preDtlSrcIpAllocMstVo.getNipAssignMstSeq()); // nip_assign_mst_seq
+																											// 48
+						linkAllocNeossMstVo.setGatewayip(preDtlSrcIpAllocMstVo.getSgatewayip()); // sgatewayip
+																									// fe01:1:1:0:ffff:ffff:ffff:ffff
 
-						//2014.11.13 연동 변경에 따른 추가(이중회선, 망코드 추가)
-						if (ipAllocOperMstVo.getNipAllocMstCnt().equals(BigInteger.ZERO)) { //단일회선 해지시 0임으로 이중화 회선아님.
+						// 2014.11.13 연동 변경에 따른 추가(이중회선, 망코드 추가)
+						if (ipAllocOperMstVo.getNipAllocMstCnt().equals(BigInteger.ZERO)) { // 단일회선 해지시 0임으로 이중화 회선아님.
 							linkAllocNeossMstVo.setSlacpBlockYN("N");
 						} else {
 							linkAllocNeossMstVo.setSlacpBlockYN("Y");
@@ -969,16 +1161,16 @@ public class AllocMgmtService {
 				/* 스쿨넷은 외부 연동 없음 */
 				if (!ssvcLineTypeCd.equals("CL0008")) {
 
-					/* 사설IP 는  연동 없음 */
+					/* 사설IP 는 연동 없음 */
 					if (!sipCreateTypeCd.equals("CT0005")) {
 
-						//1. 연동 처리 정보 호출부(연동 결과에 따른 처리는 연동 추가 후 진행예정)
-						if (sLinkFlg.equals("O")) { //할당예약 해지 웹서비스 호출
-							//bLinkResultFlg = true; 할당예약
+						// 1. 연동 처리 정보 호출부(연동 결과에 따른 처리는 연동 추가 후 진행예정)
+						if (sLinkFlg.equals("O")) { // 할당예약 해지 웹서비스 호출
+							// bLinkResultFlg = true; 할당예약
 							tbIpAllocNeossMstListVo.setTbIpAllocNeossMstVos(linkIpAllocNeossVos);
 							neOSSConsumeAdapterService.insertReservedIPList(tbIpAllocNeossMstListVo);
-						} else if (sLinkFlg.equals("Y")) { //할당 해지 웹서비스 호출
-							//bLinkResultFlg = true; 할당콜
+						} else if (sLinkFlg.equals("Y")) { // 할당 해지 웹서비스 호출
+							// bLinkResultFlg = true; 할당콜
 							tbIpAllocNeossMstListVo.setTbIpAllocNeossMstVos(linkIpAllocNeossVos);
 							neOSSConsumeAdapterService.insertFixedIPList(tbIpAllocNeossMstListVo);
 						}
@@ -986,13 +1178,14 @@ public class AllocMgmtService {
 
 				}
 
-				//2. 할당 서브(선번장) 삭제 처리
+				// 2. 할당 서브(선번장) 삭제 처리
 				lineMgmtAdapterService.deleteIpAssignSub(deleteIpAssignSubVos);
-				//3. 할당 삭제 처리
+				// 3. 할당 삭제 처리
 				allocMgmtTxService.processDeleteIPAllocMst(deleteIpAllocMstVos);
-				//5. Ticket정보 처리(할당) - 배정처리전 데이터 확인을 위해 처리 함.
+				// 5. Ticket정보 처리(할당) - 배정처리전 데이터 확인을 위해 처리 함.
 				for (TbIpAssignMstVo destTicketTbIpAssignMstVo : updateIpAssignMstVos) {
-					/* Step 1. 배정블록 조회
+					/*
+					 * Step 1. 배정블록 조회
 					 * - Method 호출 및 리턴 셋팅
 					 */
 					TbIpAssignMstVo srchTicketIpAssignMstVo = new TbIpAssignMstVo();
@@ -1006,7 +1199,8 @@ public class AllocMgmtService {
 					srchTicketIpAssignMstVo.setNipAssignMstSeq(destTicketTbIpAssignMstVo.getNipAssignMstSeq());
 					insertTicketTbIpAssignMstVo = assignMgmtAdapterService.selectIpAssignMst(srchTicketIpAssignMstVo);
 
-					/* Step 2. 변경 Param Setting (회선, 시설) 
+					/*
+					 * Step 2. 변경 Param Setting (회선, 시설)
 					 * - Step 1의 정보에 상단 셋팅 값 input
 					 * - tbTicketMstVo에 블록 정보 (배정) 셋팅 및 기본값 셋팅
 					 */
@@ -1014,7 +1208,8 @@ public class AllocMgmtService {
 					tbTicketMstVo.setNticketTypeSeq(CommonCodeUtil.TICKET_TYPE_IP_ALLOC_CANCEL);
 					tbTicketMstVo.setScreateId(destTicketTbIpAssignMstVo.getSmodifyId());
 
-					/* Step 3. 상품정보 셋팅 
+					/*
+					 * Step 3. 상품정보 셋팅
 					 * - 상단 정보에 대하여 상품코드 존재시 해당 정보 셋팅
 					 */
 					if (destTicketTbIpAssignMstVo.getNipmsSvcSeq() != null) {
@@ -1028,7 +1223,7 @@ public class AllocMgmtService {
 					ticketMgmtAdapterService.insertTicketMst(tbTicketMstVo);
 				}
 
-				//6. 이력관리 이력 등록(할당) - 배정처리전 데이터 확인을 위해 처리 함.
+				// 6. 이력관리 이력 등록(할당) - 배정처리전 데이터 확인을 위해 처리 함.
 				for (IpHistoryMstVo destTicketTbIpAssignMstVo : deleteIpHistMstVos) {
 
 					/* 이력관리 이력 등록 */
@@ -1070,25 +1265,25 @@ public class AllocMgmtService {
 
 					if (!StringUtils.hasText(ipAllocMstComplexVo.getMenuType())) {
 						ipHistoryMstVo.setsMenuHistCd("Aloc");
-						//ipHistoryMstVo.setSmenuNm("IP 할당");
-						//ipHistoryMstVo.setSmenuId("M00009");  // IP 할당 
+						// ipHistoryMstVo.setSmenuNm("IP 할당");
+						// ipHistoryMstVo.setSmenuId("M00009"); // IP 할당
 					} else if (ipAllocMstComplexVo.getMenuType().equals("Rout")) {
 						ipHistoryMstVo.setsMenuHistCd("Rout");
-						//ipHistoryMstVo.setSmenuNm("IP주소 라우팅 비교/점검");
-						//ipHistoryMstVo.setSmenuId("M00118");  // IP주소 라우팅 비교/점검 
+						// ipHistoryMstVo.setSmenuNm("IP주소 라우팅 비교/점검");
+						// ipHistoryMstVo.setSmenuId("M00118"); // IP주소 라우팅 비교/점검
 					} else if (ipAllocMstComplexVo.getMenuType().equals("NodeReq")) {
 						ipHistoryMstVo.setsMenuHistCd("NodeReq"); // IP 주소 노드 이전 신청
 					} else if (ipAllocMstComplexVo.getMenuType().equals("Upload")) {
 						ipHistoryMstVo.setsMenuHistCd("Upload"); // 업로드관리
 					} else {
 						ipHistoryMstVo.setsMenuHistCd("Aloc");
-						//ipHistoryMstVo.setSmenuNm("IP 할당");
-						//ipHistoryMstVo.setSmenuId("M00009");  // IP 할당
+						// ipHistoryMstVo.setSmenuNm("IP 할당");
+						// ipHistoryMstVo.setSmenuId("M00009"); // IP 할당
 					}
 
-					if (sLinkFlg.equals("O")) { //할당예약
+					if (sLinkFlg.equals("O")) { // 할당예약
 						ipHistoryMstVo.setNipHistTaskCd(CommonCodeUtil.HIST_TASK_CANCEL_RESV); // 할당예약해지
-					} else { //할당 
+					} else { // 할당
 						ipHistoryMstVo.setNipHistTaskCd(CommonCodeUtil.HIST_TASK_CANCEL); // 해지
 					}
 
@@ -1099,7 +1294,7 @@ public class AllocMgmtService {
 
 				}
 
-				//4. 배정 변경(해지) 처리
+				// 4. 배정 변경(해지) 처리
 				assignMgmtAdapterService.updateAlocIpAssignMst(updateIpAssignMstVos);
 
 				/* 스쿨넷은 외부 연동 없음 */
@@ -1109,7 +1304,7 @@ public class AllocMgmtService {
 					if (sipCreateTypeCd.equals("CT0001")) {
 
 						/***************************
-						 *  Whois 전송
+						 * Whois 전송
 						 ***************************/
 						if (deleteIpAllocMstVos.size() > 0) {
 							BigInteger allocMstSeq = null;
@@ -1123,19 +1318,21 @@ public class AllocMgmtService {
 								if (nwhoisSeq != null) {
 									int nipAllocMstCnt = whoisAdapterService.selectNipAllocMstCnt(nwhoisSeq);
 									if (nipAllocMstCnt <= 1) {
-										//하나의 결과를 바라는데 2개가 나옴
+										// 하나의 결과를 바라는데 2개가 나옴
 										sessionId = ipAllocMstComplexVo.getSrcIpAllocMstVo().getSmodifyId();
 										PrintLogUtil.printLogInfo("#####ALLOC MST SEQ: " + allocMstSeq);
 										PrintLogUtil.printLogInfo("#####WHOIS SEQ: " + nwhoisSeq);
 										rtnExceptVal = whoisAdapterService.exceptWhois("DEL", null, nwhoisSeq);
-										//rtnExceptVal = whoisAdapterService.exceptWhois("DEL", allocMstSeq, nwhoisSeq);
+										// rtnExceptVal = whoisAdapterService.exceptWhois("DEL", allocMstSeq,
+										// nwhoisSeq);
 										if (rtnExceptVal) {
 											whoisAdapterService.sendToWhoisWithDbNoRtn(sessionId, nwhoisSeq, "DEL");
 										}
 									}
 								} else {
 									rtnExceptVal = whoisAdapterService.exceptWhois("DEL", null, nwhoisSeq);
-									//rtnExceptVal = whoisAdapterService.exceptWhois("DEL", allocMstSeq, nwhoisSeq);
+									// rtnExceptVal = whoisAdapterService.exceptWhois("DEL", allocMstSeq,
+									// nwhoisSeq);
 									if (rtnExceptVal) {
 										whoisAdapterService.sendToWhoisWithDbNoRtn(sessionId, nwhoisSeq, "DEL");
 									}
@@ -1149,10 +1346,12 @@ public class AllocMgmtService {
 					if (!sipCreateTypeCd.equals("CT0005")) {
 
 						/***************************
-						 *  라우팅 점검 업데이트
+						 * 라우팅 점검 업데이트
 						 ***************************/
 						for (int i = 0; i < deleteIpAllocMstVos.size(); i++) {
-							//							if(deleteIpAllocMstVos.get(i).getsGubun() == null || deleteIpAllocMstVos.get(i).getsGubun() == "") { //Codeeyes-Urgent-객체 비교시 == , != 사용제한
+							// if(deleteIpAllocMstVos.get(i).getsGubun() == null ||
+							// deleteIpAllocMstVos.get(i).getsGubun() == "") { //Codeeyes-Urgent-객체 비교시 == ,
+							// != 사용제한
 							if (deleteIpAllocMstVos.get(i).getsGubun() == null
 									|| deleteIpAllocMstVos.get(i).getsGubun().equals("")) {
 								PrintLogUtil.printLog(
@@ -1168,7 +1367,7 @@ public class AllocMgmtService {
 				}
 
 			} else {
-				//해지정보가 없습니다.
+				// 해지정보가 없습니다.
 				throw new ServiceException("CMN.HIGH.00001");
 			}
 
@@ -1177,12 +1376,12 @@ public class AllocMgmtService {
 			throw e;
 		} catch (Exception e) {
 			e.printStackTrace();
-			//해지처리시 오류 발생
+			// 해지처리시 오류 발생
 			throw new ServiceException("APP.HIGH.00033", new String[] { "IP블록 해지처리" });
 		}
 	}
 
-	/*반납 처리*/
+	/* 반납 처리 */
 	@Transactional(propagation = Propagation.REQUIRED)
 	public void updateListAsgnIPMst(TbIpAssignMstComplexVo tbIpAssignMstComplexVo) {
 		try {
@@ -1206,14 +1405,16 @@ public class AllocMgmtService {
 
 			}
 
-			//반납(배정) 처리
+			// 반납(배정) 처리
 			assignMgmtAdapterService.updateIpAssignMst(destIpAssignMstVos);
 
 			/***************************
-			 *  라우팅 점검 업데이트
+			 * 라우팅 점검 업데이트
 			 ***************************/
 			for (int i = 0; i < destIpAssignMstVos.size(); i++) {
-				//				if(destIpAssignMstVos.get(i).getsGubun() == null || destIpAssignMstVos.get(i).getsGubun() == "") { //Codeeyes-Urgent-객체 비교시 == , != 사용제한
+				// if(destIpAssignMstVos.get(i).getsGubun() == null ||
+				// destIpAssignMstVos.get(i).getsGubun() == "") { //Codeeyes-Urgent-객체 비교시 == ,
+				// != 사용제한
 				if (destIpAssignMstVos.get(i).getsGubun() == null || destIpAssignMstVos.get(i).getsGubun().equals("")) {
 					PrintLogUtil.printLog("#####ASSIGN MST SEQ: " + destIpAssignMstVos.get(i).getNipAssignMstSeq());
 					TbRoutChkMstVo tbRoutChkMstVo = new TbRoutChkMstVo();
@@ -1229,7 +1430,7 @@ public class AllocMgmtService {
 		}
 	}
 
-	/*비고 처리*/
+	/* 비고 처리 */
 	@Transactional(propagation = Propagation.REQUIRED)
 	public void updateListScommentAllocIPMst(TbIpAssignMstComplexVo tbIpAssignMstComplexVo) {
 		try {
@@ -1246,7 +1447,7 @@ public class AllocMgmtService {
 				tbIpAssignMstVo.setMenuType(tbIpAssignMstComplexVo.getMenuType());
 			}
 
-			//비고(할당) 처리
+			// 비고(할당) 처리
 			allocMgmtTxService.processScommentUpdateAllocIPMst(destIpAssignMstVos);
 		} catch (ServiceException e) {
 			throw e;
@@ -1263,7 +1464,7 @@ public class AllocMgmtService {
 		}
 		try {
 
-			//ipAllocOperMstVo.setPageUnit(totalCount);
+			// ipAllocOperMstVo.setPageUnit(totalCount);
 			List<IpAllocOperMstVo> resultList = tbIpAllocMstDao.selectListPageMainIpAssignMst(ipAllocOperMstVo);
 			int totalCount = tbIpAllocMstDao.countListMainIpAssignMst(ipAllocOperMstVo);
 			resultListVo = new IpAllocOperMstListVo();
@@ -1338,7 +1539,7 @@ public class AllocMgmtService {
 
 	}
 
-	/*할당 등록(외부)*/
+	/* 할당 등록(외부) */
 	@Transactional(propagation = Propagation.REQUIRED)
 	public void processInsertIPAllocMst(List<TbIpAllocMstVo> tbIpAllocMstVos) {
 
@@ -1351,6 +1552,7 @@ public class AllocMgmtService {
 
 	/**
 	 * 수용국 정보 조회(초기)
+	 * 
 	 * @param tbIpAssignSubVo
 	 * @return
 	 * @throws Exception
@@ -1379,6 +1581,7 @@ public class AllocMgmtService {
 
 	/**
 	 * 수용국 정보 조회(시설기반)
+	 * 
 	 * @param ipAllocOperMstVo
 	 * @return List<CommonCodeVo>
 	 * @throws Exception
@@ -1447,7 +1650,7 @@ public class AllocMgmtService {
 		return resultListVo;
 	}
 
-	/*VPN IP 현황 조회*/
+	/* VPN IP 현황 조회 */
 	@Transactional(readOnly = true)
 	public TbIpAllocMstListVo selectListVpnIPStat(TbIpAllocMstVo tbIpAllocMstVo) {
 		TbIpAllocMstListVo resultListVo = null;
@@ -1468,7 +1671,7 @@ public class AllocMgmtService {
 		return resultListVo;
 	}
 
-	/*VPN IP 현황 조회*/
+	/* VPN IP 현황 조회 */
 	@Transactional(readOnly = true)
 	public TbIpAllocMstListVo selectListVpnIPStatExcel(TbIpAllocMstVo tbIpAllocMstVo) {
 		TbIpAllocMstListVo resultListVo = null;
@@ -1499,6 +1702,7 @@ public class AllocMgmtService {
 
 	/**
 	 * 조직별 서비스 유형 목록 조회
+	 * 
 	 * @param ipAllocOperMstVo
 	 * @return List<CommonCodeVo>
 	 * @throws Exception
@@ -1522,6 +1726,7 @@ public class AllocMgmtService {
 
 	/**
 	 * 조직별 서비스 유형 목록 조회
+	 * 
 	 * @param ipAllocOperMstVo
 	 * @return List<CommonCodeVo>
 	 * @throws Exception
@@ -1539,6 +1744,26 @@ public class AllocMgmtService {
 			throw e;
 		} catch (Exception e) {
 			throw new ServiceException("CMN.HIGH.00023", new String[] { "조직기반 서비스목록" });
+		}
+		return resultListVo;
+	}
+
+	/*
+	 * 시설용 IP 서비스 유형 목록 조회
+	 */
+	@Transactional(readOnly = true)
+	public List<CommonCodeVo> selectFacilitesTypeCdList(TbIpAllocMstVo tbIpAllocMstVo) {
+		List<CommonCodeVo> resultListVo = null;
+		try {
+			if (tbIpAllocMstVo == null) {
+				throw new ServiceException("CMN.HIGH.00001");
+			}
+
+			resultListVo = allocMgmtTxService.selectFacilitesTypeCdList(tbIpAllocMstVo);
+		} catch (ServiceException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new ServiceException("CMN.HIGH.00023", new String[] { "시설용 서비스목록" });
 		}
 		return resultListVo;
 	}
@@ -1563,7 +1788,9 @@ public class AllocMgmtService {
 		return resultVo;
 	}
 
-	/** 링크 정보 조회
+	/**
+	 * 링크 정보 조회
+	 * 
 	 * @param ipAllocOperMstVo
 	 * @return
 	 */
@@ -1578,7 +1805,7 @@ public class AllocMgmtService {
 			int totalCount = 0;
 			List<IpAllocOperMstVo> resultList = null;
 			String sSrchTypeCd = ipAllocOperMstVo.getSneSrchTypeCd();
-			/*시설조회 시 할당 기준인지 호스트 기준인지의 처리*/
+			/* 시설조회 시 할당 기준인지 호스트 기준인지의 처리 */
 			totalCount = allocMgmtTxService.countListPageTbIpLinkMst(ipAllocOperMstVo);
 
 			ipAllocOperMstVo.setPageUnit(totalCount);
@@ -1601,6 +1828,7 @@ public class AllocMgmtService {
 
 	/**
 	 * 수용국 정보 조회(링크기반)
+	 * 
 	 * @param ipAllocOperMstVo
 	 * @return List<CommonCodeVo>
 	 * @throws Exception

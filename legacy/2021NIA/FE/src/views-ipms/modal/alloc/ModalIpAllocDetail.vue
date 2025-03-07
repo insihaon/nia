@@ -143,62 +143,122 @@
             </tr>
           </tbody>
         </table>
-        <div class="popupContentTableTitle textcenter">IP 할당 정보</div>
-        <table>
-          <thead>
-            <tr>
-              <th>수용국</th>
-              <th>장비명</th>
-              <th>대표 IP</th>
-              <th>I/F명</th>
-              <th>수용회선명</th>
-              <th>전용번호</th>
-              <th>해지</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-if="ipAllocOperMstVo.sassignLevelCd === 'IA0004' || ipAllocOperMstVo.nipAllocMstSeq === null">
-              <td colspan="8">조회된 결과 목록이 존재하지 않습니다.</td>
-            </tr>
-            <template v-else>
-              <tr
-                v-for="(item, index) in resultList"
-                :key="item.nipAllocMstSeq"
-                style="cursor: pointer;"
-                :class="{'subbg': index % 2 !== 0, 'last': index === ipAllocOperMstVo.length - 1}"
-              >
-                <td :title="item.sofficename" @click="fnViewSubDetailAlcIPMst(item)">
-                  {{ item.sofficename }}
-                </td>
-                <td :title="item.ssubscnealias" @click="fnViewSubDetailAlcIPMst(item)">
-                  {{ item.ssubscnealias }}
-                </td>
-                <td :title="item.ssubscmstip" @click="fnViewSubDetailAlcIPMst(item)">
-                  {{ item.ssubscmstip }}
-                </td>
-                <td :title="item.ssubsclgipportdescription" @click="fnViewSubDetailAlcIPMst(item)">
-                  {{ item.ssubsclgipportdescription }}
-                </td>
-                <td :title="item.sconnAlias" @click="fnViewSubDetailAlcIPMst(item)">
-                  {{ item.sconnAlias }}
-                </td>
-                <td :title="item.sllnum" @click="fnViewSubDetailAlcIPMst(item)">
-                  {{ item.sllnum }}
-                </td>
-                <td class="btn_text">
-                  <el-button type="primary" size="small" round plain @click="fnDeleteAlcIPMstClick(item)">
-                    해지
-                  </el-button>
+        <template v-if="menuType === 'manualAloc'">
+          <div class="popupContentTableTitle">시설용IP 블록 내 할당대역 목록</div>
+          <!-- 할당대역 목록 compTable 추가 -->
+          <template v-if="ipAllocOperMstVo.sassignLevelCd === 'IA0004'">
+            <div class="popupContentTableTitle">수동 입력 할당</div>
+            <table>
+              <tr>
+                <th>배정상태</th>
+                <td colspan="3" class="textcenter">
+                  <template v-if="ipAllocOperMstVo">
+                    {{ ipAllocOperMstVo.sassignLevelNm }}
+                  </template>
                 </td>
               </tr>
-            </template>
-          </tbody>
-        </table>
+              <tr>
+                <th>IP주소</th>
+                <td class="textcenter">
+                  <el-input v-model="alocInfo.network" disabled style="width: 200px;margin-right: 5px" />
+                  <el-input v-model="alocInfo.host" style="width: 200px;" /> /
+                  <!-- <el-button type="primary" size="small" round class="ml-2" @click="handleClickIpBlockCheck">할당</el-button> -->
+                </td>
+                <th>할당 Bitmask</th>
+                <td>
+                  <el-input v-model="alocInfo.nbitmask" style="width: 100px;" />
+                </td>
+              </tr>
+            </table>
+          </template>
+          <!-- 시설용 IP블록 내 할당 대역 리스트, 수동입력 할당 -->
+        </template>
+        <template v-if="menuType !== 'manualAloc'">
+          <div class="popupContentTableTitle">IP 할당 정보</div>
+          <table>
+            <thead>
+              <tr>
+                <th>수용국</th>
+                <th>장비명</th>
+                <th>대표 IP</th>
+                <th>I/F명</th>
+                <th>수용회선명</th>
+                <th>전용번호</th>
+                <th>해지</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-if="ipAllocOperMstVo.sassignLevelCd === 'IA0004' || ipAllocOperMstVo.nipAllocMstSeq === null">
+                <td colspan="8" class="textcenter">조회된 결과 목록이 존재하지 않습니다.</td>
+              </tr>
+              <template v-else>
+                <tr
+                  v-for="(item, index) in resultList"
+                  :key="item.nipAllocMstSeq"
+                  style="cursor: pointer;"
+                  :class="{'subbg': index % 2 !== 0, 'last': index === ipAllocOperMstVo.length - 1}"
+                >
+                  <td :title="item.sofficename" @click="fnViewSubDetailAlcIPMst(item)">
+                    {{ item.sofficename }}
+                  </td>
+                  <td :title="item.ssubscnealias" @click="fnViewSubDetailAlcIPMst(item)">
+                    {{ item.ssubscnealias }}
+                  </td>
+                  <td :title="item.ssubscmstip" @click="fnViewSubDetailAlcIPMst(item)">
+                    {{ item.ssubscmstip }}
+                  </td>
+                  <td :title="item.ssubsclgipportdescription" @click="fnViewSubDetailAlcIPMst(item)">
+                    {{ item.ssubsclgipportdescription }}
+                  </td>
+                  <td :title="item.sconnAlias" @click="fnViewSubDetailAlcIPMst(item)">
+                    {{ item.sconnAlias }}
+                  </td>
+                  <td :title="item.sllnum" @click="fnViewSubDetailAlcIPMst(item)">
+                    {{ item.sllnum }}
+                  </td>
+                  <td class="btn_text">
+                    <el-button type="primary" size="small" round plain @click="fnDeleteAlcIPMstClick(item)">
+                      해지
+                    </el-button>
+                  </td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </template>
+        <template v-if="menuType === 'autoAloc'">
+          <div class="popupContentTableTitle">운용정보관리(링크) data</div>
+          <div style="overflow-y: auto;">
+            <table>
+              <tr>
+                <th>링크IP블록</th>
+                <th>자국 수용국명</th>
+                <th>자국 장비명</th>
+                <th>자국 장비IP</th>
+                <th>자국 IF명</th>
+                <th>대국 수용국명</th>
+                <th>대국 장비명</th>
+                <th>대국 장비IP</th>
+                <th>대국 IF명</th>
+                <th>SAID</th>
+                <th>전용번호</th>
+                <th>수용회선명</th>
+                <th>작업일자</th>
+              </tr>
+              <tr></tr>
+            </table>
+          </div>
+        </template>
       </div>
       <div class="popupContentTableBottom">
         <el-button v-if="ipAllocOperMstVo" type="primary" icon="el-icon-check" size="small" round @click="fnViewCheckTacsIpBlock_">IP블럭 중복체크</el-button>
         <template v-if="ipAllocOperMstVo.sassignLevelCd === 'IA0004'">
-          <el-button type="primary" size="small" icon="el-icon-menu" round @click="fnAlocCallBtnClick">할당</el-button>
+          <el-button v-if="menuType === 'autoAloc'" type="primary" icon="el-icon-menu" size="small" round @click="fnViewCheckTacsIpBlock_('AUTO_ALLOC')">IPv6로 자동할당</el-button>
+          <el-button type="primary" size="small" icon="el-icon-menu" round @click="handleClickIpBlockCheck">할당</el-button>
+          <!--
+            시설용 IP 수동 할당의 경우 시설지정 할당 팝업 fnAlocCallBtnClick
+            v4-> v6 자동 할당일 경우 ip블럭 중복체크
+           -->
           <el-button type="primary" size="small" icon="el-icon-menu" round @click="fnRetUpdateConfirmClick">반납</el-button>
         </template>
         <el-button type="primary" icon="el-icon-close" size="small" round @click="close()">
@@ -231,11 +291,16 @@ export default {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       vLoading: false,
-      menuType: 'Aloc',
+      menuType: 'Aloc', /* Aloc, autoAloc(시설용 IPv4-> v6 자동할당), manualAloc (시설용 IPv6 수동할당) */
       receivedRow: null,
       resultList: [],
       ipAllocOperMstVo: {},
-      tbRoutChkMstVo: {}
+      tbRoutChkMstVo: {},
+      alocInfo: {
+        network: '',
+        host: '',
+        nbitmask: '',
+      }
     }
   },
   computed: {
@@ -251,6 +316,8 @@ export default {
         if (model.row) {
           this.receivedRow = model.row
           this.fnViewDetailAlcIPMst({ nipAssignMstSeq: model.row.nipAssignMstSeq })
+          this._merge(this.alocInfo, this.splitIPv6(model.row.pipPrefix))
+          this.alocInfo.nbitmask = model.row.nbitmask
         }
         if (model.menuType) {
           this.menuType = model.menuType
@@ -273,6 +340,11 @@ export default {
         const res = await apiRequestModel(ipmsModelApis.viewDetailAlcIPMst, param)
         this.resultList = res.result.data
         this.ipAllocOperMstVo = this.resultList[0]
+        const { ssvcGroupCd, ssvcObjCd } = this.ipAllocOperMstVo
+        if (ssvcGroupCd === '000000' || ssvcObjCd === '000000') {
+          const { ssvcGroupCd, ssvcGroupNm, ssvcObjCd, ssvcObjNm } = this.receivedRow
+          this._merge(this.ipAllocOperMstVo, { ssvcGroupCd, ssvcGroupNm, ssvcObjCd, ssvcObjNm })
+        }
       } catch (error) {
         this.error(error)
       } finally {
@@ -391,12 +463,36 @@ export default {
         this.error(error)
       }
     },
-    fnViewCheckTacsIpBlock_() {
-      fnViewCheckTacsIpBlock(this, [this.receivedRow])
+    fnViewCheckTacsIpBlock_(typeFlag = null) {
+      fnViewCheckTacsIpBlock(this, [this.receivedRow], typeFlag)
     },
     fnAlocCallBtnClick() {
       this.$emit('alocCallBtnClick')
       this.close()
+    },
+    async handleClickIpBlockCheck() {
+      const { sipCreateTypeCd, ssvcLineTypeCd, sipCreateSeqCd, sipVersionTypeCd } = this.ipAllocOperMstVo
+      const { network, host, nbitmask } = this.alocInfo
+      const pipPrefix = this.compressIPv6(network + host + '/' + nbitmask)
+      const ipBLockCheckVo = {
+        srcIpBlockMstVo: {
+          sipCreateTypeCd,
+          ssvcLineTypeCd,
+          sipCreateSeqCd,
+          sipVersionTypeCd,
+          pipPrefix, // new pipPrefix
+        },
+        destIpBlockMstVos: []
+      }
+      try {
+        const res = await apiRequestJson(ipmsJsonApis.appendCrtIPMst, ipBLockCheckVo)
+        console.log()
+        // res.commonMsg 성공일 경우
+        // 할당 정보 입력 팝업
+        this.fnAlocCallBtnClick()
+      } catch (error) {
+        this.error(error)
+      }
     },
     async fnRetUpdateConfirmClick() {
       /* sipCreateTypeCd: 기존 사설(CT0004) 은 유/무선공용으로 사용, 신규 사설(CT0005) 을 사설로 사용  */
@@ -432,8 +528,146 @@ export default {
     },
     eventReload() {
       this.$emit('reload')
+    },
+    // v4-> v6 주소 전환(시설용 ipv4자동할당시 사용)
+    convertIPv4ToIPv6(ip, ipv4Mask) {
+      // IPv4 주소를 점(.)을 기준으로 분리
+      const parts = ip.split('.')
+      if (parts.length !== 4) {
+        throw new Error('잘못된 IPv4 주소 형식입니다.')
+      }
+      // 마지막 옥텟을 10진수에서 16진수(대문자)로 변환
+      const lastHex = parseInt(parts[3], 10).toString(16).toUpperCase()
+      // 첫 세 옥텟은 그대로 사용하고 마지막 옥텟은 변환된 값으로 대체
+      const ipv6Segments = parts.slice(0, 3).concat(lastHex)
+      // 고정된 IPv6 /64 프리픽스 (단축 표기법 사용)
+      const prefix = '2400::'
+      const ipv6Address = prefix + ipv6Segments.join(':')
+      // IPv6 프리픽스 길이는 IPv4 마스크에 96을 더한 값
+      const ipv6Mask = ipv4Mask + 96
+      return `${ipv6Address} /${ipv6Mask}`
+    },
+    expandIPv6(address) {
+      const parts = address.split('::')
+      const left = parts[0] ? parts[0].split(':') : []
+      const right = parts.length > 1 && parts[1] ? parts[1].split(':') : []
+      const missing = 8 - (left.length + right.length)
+      const zeros = Array(missing).fill('0')
+      const groups = left.concat(zeros, right)
+      return groups.map(g => g.padStart(4, '0'))
+    },
+    splitIPv6(ipWithMask) {
+      const [ip, maskStr] = ipWithMask.split('/')
+      const mask = parseInt(maskStr, 10)
+      const groups = this.expandIPv6(ip)
+      const fullHex = groups.join('')
+      const netDigits = Math.floor(mask / 4)
+      const networkHex = fullHex.slice(0, netDigits)
+      let hostHex = fullHex.slice(netDigits)
+      // 네트워크 부분은 floor(mask/4) 자리로 나누고,
+      // 완전한 4자리 그룹은 minimal하게(불필요한 선행 0 제거) 변환하되,
+      // partial 그룹(마지막 그룹)이면 원본 그대로 사용
+      const netGroups = []
+      const netCompleteCount = Math.floor(networkHex.length / 4)
+      const netRem = networkHex.length % 4
+      for (let i = 0; i < netCompleteCount; i++) {
+        let grp = networkHex.slice(i * 4, i * 4 + 4)
+        grp = parseInt(grp, 16).toString(16)
+        if (networkHex.slice(i * 4, i * 4 + 4) === '0000') {
+          grp = '0000'
+        }
+        netGroups.push(grp)
+      }
+      if (netRem > 0) {
+        netGroups.push(networkHex.slice(netCompleteCount * 4))
+      }
+      let netFormatted = netGroups.join(':')
+      if (networkHex.length % 4 === 0 && hostHex.length > 0) {
+        netFormatted += ':'
+      }
+      // 호스트 부분은, 만약 네트워크가 partial로 끝났다면,
+      // 해당 그룹의 남은 자리(4 - (networkHex.length mod 4))를 첫 그룹으로 사용하고,
+      // 그 이후 나머지를 4자리씩 분리하여 minimal하게 변환
+      const hostGroups = []
+      const firstGroupLen = (networkHex.length % 4 === 0) ? 0 : (4 - (networkHex.length % 4))
+      if (firstGroupLen > 0) {
+        hostGroups.push(hostHex.slice(0, firstGroupLen))
+        hostHex = hostHex.slice(firstGroupLen)
+      }
+      const hostCompleteCount = Math.floor(hostHex.length / 4)
+      const hostRem = hostHex.length % 4
+      for (let i = 0; i < hostCompleteCount; i++) {
+        let grp = hostHex.slice(i * 4, i * 4 + 4)
+        grp = parseInt(grp, 16).toString(16)
+        if (hostHex.slice(i * 4, i * 4 + 4) === '0000') {
+          grp = '0000'
+        }
+        hostGroups.push(grp)
+      }
+      if (hostRem > 0) {
+        hostGroups.push(hostHex.slice(hostCompleteCount * 4))
+      }
+      const hostFormatted = hostGroups.join(':')
+      return { network: netFormatted, host: hostFormatted }
+    },
+    compressIPv6(ip) {
+      // 주소와 넷마스크 분리 (넷마스크가 없으면 undefined)
+      const [address, mask] = ip.split('/')
+      // 콜론(:)으로 각 그룹 분리
+      let groups = address.split(':')
+      // 각 그룹의 선행 0 제거 (빈 문자열이 되면 '0'으로 처리)
+      groups = groups.map(group => group.replace(/^0+/, '') || '0')
+      // 연속된 '0' 그룹 중 가장 긴 부분 찾기
+      let bestStart = -1
+      let bestLen = 0
+      let currentStart = -1
+      let currentLen = 0
+      for (let i = 0; i < groups.length; i++) {
+        if (groups[i] === '0') {
+          if (currentStart === -1) {
+            currentStart = i
+            currentLen = 1
+          } else {
+            currentLen++
+          }
+        } else {
+          if (currentLen > bestLen) {
+            bestLen = currentLen
+            bestStart = currentStart
+          }
+          currentStart = -1
+          currentLen = 0
+        }
+      }
+      // 끝까지 '0'가 연속되었을 경우 체크
+      if (currentLen > bestLen) {
+        bestLen = currentLen
+        bestStart = currentStart
+      }
+      // 단일 '0' 그룹은 압축하지 않음 (압축은 2개 이상의 연속된 '0' 그룹에만 적용)
+      if (bestLen < 2) {
+        bestStart = -1
+      }
+      // 결과 문자열 생성: 압축할 부분이 있는 경우 '::'로 대체
+      let result = ''
+      if (bestStart !== -1) {
+        // 압축 시작 전까지의 그룹
+        const before = groups.slice(0, bestStart).join(':')
+        // 압축 이후의 그룹
+        const after = groups.slice(bestStart + bestLen).join(':')
+        result = before + '::' + after
+        // 양쪽 끝에 불필요한 콜론이 있다면 정리 (예: '::' 앞뒤에 빈 문자열이 있을 수 있음)
+        result = result.replace(/^:$/, '::').replace(/:{3,}/, '::')
+      } else {
+        result = groups.join(':')
+      }
+      // 넷마스크가 있다면 다시 붙임
+      if (mask !== undefined) {
+        result += '/' + mask
+      }
+      return result
     }
-  },
+  }
 }
 </script>
 <style lang="scss" scoped>

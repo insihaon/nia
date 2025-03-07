@@ -16,6 +16,7 @@ spring:
   datasource2nd:
     enabled: true
     driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+    # url: jdbc:log4jdbc:postgresql://10.217.180.106:5432/ipms
     url: jdbc:log4jdbc:postgresql://147.6.97.117:5444/ipms_prod_20230411?allowMultiQueries=true
     username: ipms_user
     password: tjsgkdb!@#

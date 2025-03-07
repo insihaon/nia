@@ -5,9 +5,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
-import org.springframework.context.annotation.Lazy;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,28 +16,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codej.base.dto.AppDto;
-import com.codej.base.dto.BaseUser;
 import com.codej.base.dto.model.Data;
 import com.codej.base.dto.response.BaseResponse;
 import com.codej.base.dto.response.SingleResponse;
-import com.codej.base.exception.CSigninFailedException;
-import com.kt.ipms.provider.IpmsJwtTokenProvider;
 import com.codej.base.utils.JsonUtil;
 import com.codej.web.controller.AbsAuthController;
 import com.codej.web.service.ResponseService;
 import com.google.gson.JsonObject;
-import com.kt.ipms.service.IpmsUserService;
+import com.kt.framework.exception.ServiceException;
+import com.kt.ipms.legacy.cmn.service.ConfigPropertieService;
+import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
 import com.kt.ipms.legacy.opermgmt.loginmgmt.service.LoginMgmtService;
 import com.kt.ipms.legacy.opermgmt.loginmgmt.service.LoginMgmtTxService;
 import com.kt.ipms.legacy.opermgmt.loginmgmt.vo.LoginInfoVo;
-import com.kt.ipms.legacy.opermgmt.loginmgmt.web.LoginMgmtController;
 import com.kt.ipms.legacy.opermgmt.operstdmgmt.service.TbCmnMsgMstService;
-import com.kt.ipms.legacy.opermgmt.loginmgmt.service.LoginMgmtService;
-import com.kt.ipms.legacy.cmn.service.ConfigPropertieService;
-import com.kt.ipms.legacy.cmn.util.CommonCodeUtil;
 import com.kt.ipms.legacy.opermgmt.usermgmt.adapter.UserMgmtAdapterService;
-import com.kt.ipms.legacy.opermgmt.usermgmt.vo.TbUserBasVo;
-import com.kt.framework.exception.ServiceException;
+import com.kt.ipms.provider.IpmsJwtTokenProvider;
+import com.kt.ipms.service.IpmsUserService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -69,6 +65,9 @@ public class AuthController extends AbsAuthController {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private IpmsJwtTokenProvider ipmsJwtTokenProvider;
+
+    @Autowired
+    private HttpSession session;
 
     @Autowired
     private AppDto appDto;
@@ -140,7 +139,7 @@ public class AuthController extends AbsAuthController {
             responseService.createFailResponse();
 		}
 
-        String token = ipmsJwtTokenProvider.createToken(resultLoginVo, address);
+        String token = ipmsJwtTokenProvider.createToken(resultLoginVo, session.getId(), address);
         // // User 정보와 토큰 정보를 반환
         HashMap<String, Object> mapUser = JsonUtil.convertObjectToMap(resultLoginVo);
         Data data = new Data(mapUser);

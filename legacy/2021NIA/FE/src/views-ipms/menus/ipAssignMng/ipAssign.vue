@@ -33,6 +33,9 @@
             IP 배정 조회결과
           </span>
         </template>
+        <template slot="left-features">
+          <el-button icon="el-icon-copy-document" type="primary" size="mini" round @click="$router.push('/ipAllocationMng/facilitesipAllocation')">시설용 IP할당</el-button>
+        </template>
         <template slot="add-features">
           <div class="add-features">
             <el-button icon="el-icon-check" type="primary" size="mini" round @click="handleClickIpBlockCheck">IP블럭 중복체크</el-button>
@@ -42,11 +45,11 @@
         </template>
       </comptable>
     </el-col>
-    <ModalIpBlockDivision ref="ModalIpBlockDivision" @reload="onloadIpAssign($refs.searchCondition.requestParameter)" />
-    <ModalIpAssignDetail ref="ModalIpAssignDetail" @assignCallBtnClick="fnUpdateBtnClick" @reload="onloadIpAssign($refs.searchCondition.requestParameter)" />
-    <ModalIpAssign ref="ModalIpAssign" @reload="onloadIpAssign($refs.searchCondition.requestParameter)" />
+    <ModalIpBlockDivision ref="ModalIpBlockDivision" @reload="fnViewListAsgnIPMst()" />
+    <ModalIpAssignDetail ref="ModalIpAssignDetail" @assignCallBtnClick="fnUpdateBtnClick" @reload="fnViewListAsgnIPMst()" />
+    <ModalIpAssign ref="ModalIpAssign" @reload="fnViewListAsgnIPMst()" />
     <ModalCheckTacsIpBlock ref="ModalCheckTacsIpBlock" />
-    <ModalIpAssignMerge ref="ModalIpAssignMerge" @reload="fnViewListIpAllocMst($refs.searchCondition.requestParameter)" />
+    <ModalIpAssignMerge ref="ModalIpAssignMerge" @reload="fnViewListAsgnIPMst()" />
     <ModalDetailSummary ref="ModalDetailSummary" />
   </el-row>
 </template>
@@ -57,8 +60,8 @@ import CompTable from '@/components/elTable/CompTable.vue'
 import DynamicComponentLoader from '@/views-ipms/components/DynamicComponentLoader.vue'
 import tableHeightMixin from '@/mixin/tableHeightMixin'
 import ModalIpBlockDivision from '@/views-ipms/modal/ModalIpBlockDivision.vue'
-import ModalIpAssignDetail from '@/views-ipms/modal/ModalIpAssignDetail.vue'
-import ModalIpAssign from '@/views-ipms/modal/ModalIpAssign.vue'
+import ModalIpAssignDetail from '@/views-ipms/modal/assign/ModalIpAssignDetail.vue'
+import ModalIpAssign from '@/views-ipms/modal/assign/ModalIpAssign.vue'
 import ModalCheckTacsIpBlock from '@/views-ipms/modal/ModalCheckTacsIpBlock.vue'
 import ModalIpAssignMerge from '@/views-ipms/modal/assign/ModalIpAssignMerge.vue'
 import ModalDetailSummary from '@/views-ipms/modal/ModalDetailSummary.vue'
@@ -94,16 +97,19 @@ export default {
         { prop: 'sintgrmYn', label: 'DB-라우팅 일치 여부', align: 'center', sortable: true, columnVisible: true, showOverflow: true },
         { prop: 'nsummaryCnt', label: '라우팅 중복 개수', align: 'center', sortable: true, columnVisible: true, showOverflow: true,
           formatter: (row, col, value, index) => {
-            return this.$createElement('el-button', {
-              // class: row.nsummaryCnt > 0 ? 'red' : '',
-              attrs: {
-                round: true, // Adding the round option
-                plain: true,
-                type: row.nsummaryCnt > 0 ? 'danger' : 'primary'
-              },
-              on: { click: () => {
-                this.$refs.ModalDetailSummary.open({ row })
-            } } }, row.nsummaryCnt)
+            if (row.nsummaryCnt === '' || row.nsummaryCnt === null) return ''
+            else {
+              return this.$createElement('el-button', {
+                // class: row.nsummaryCnt > 0 ? 'red' : '',
+                attrs: {
+                  round: true, // Adding the round option
+                  plain: true,
+                  type: row.nsummaryCnt > 0 ? 'danger' : 'primary'
+                },
+                on: { click: () => {
+                  this.$refs.ModalDetailSummary.open({ row })
+              } } }, row.nsummaryCnt)
+            }
           }
         },
         { prop: 'nbitmask', label: '분할', align: 'center', sortable: true, columnVisible: true, showOverflow: true,
@@ -130,7 +136,11 @@ export default {
       sassignLevelCds: [],
       sipCreateSeqCds: [],
       selectedRows: [],
-      componentList: [
+    }
+  },
+  computed: {
+    componentList() {
+      return [
         { key: 'SsvcLineType', props: { lvl: 3, multi: [2] } },
         { key: 'SipCreateType', props: {} },
         { key: 'GenerationDegree', props: { prop_options: this.sipCreateSeqCds } },
@@ -144,7 +154,7 @@ export default {
         { key: 'IncludeYN', props: { label: 'DB-라우팅 일치 여부', prop_parameterKey: 'sintgrmYn' } },
         { key: 'RoutingDuplCount', props: { label: '라우팅 중복 개수', prop_parameterKey: 'summaryCnt', valueType: 'number' } },
       ]
-    }
+    },
   },
   watch: {
     $route: {
@@ -157,12 +167,12 @@ export default {
           }
           this.$store.dispatch('ipms/setToParam', null)
           setTimeout(() => {
-            this.onloadIpAssign()
+            this.fnViewListAsgnIPMst()
           }, 10)
         }
       },
       immediate: true
-    }
+    },
   },
   mounted() {
     this.fnSelectSipCreateSeqCds()
@@ -171,7 +181,7 @@ export default {
   methods: {
     handleSearch(requestParameter) {
       this.pagination.currentPage = 1
-      this.onloadIpAssign(requestParameter)
+      this.fnViewListAsgnIPMst(requestParameter)
     },
     async fnSelectSassignLevelCds() {
       try {
@@ -191,7 +201,8 @@ export default {
         console.error(error)
       }
     },
-    async onloadIpAssign(requestParameter = null) {
+    async fnViewListAsgnIPMst(requestParameter = null) {
+      this.selectedRows = []
       const parameter = requestParameter ?? this.$refs.searchCondition.requestParameter
       const target = ({ vue: this.$refs.compTable })
       const { pageSize: pageUnit, currentPage: pageIndex } = this.pagination
@@ -209,7 +220,7 @@ export default {
     },
     handleChangeCurPage(v) {
       if (v) this.pagination.currentPage = v
-      this.onloadIpAssign()
+      this.fnViewListAsgnIPMst()
     },
     handleClickCell(params) {
       this.selectedRows = [params?.row] || []
@@ -272,11 +283,7 @@ export default {
             }
           }
 
-        const tbIpAssignMstListVo = { tbIpAssignMstVos: [] }
-         rows.forEach(row => {
-          tbIpAssignMstListVo.tbIpAssignMstVos.push({ ...row })
-        })
-        this.$refs.ModalIpAssign.open({ tbIpAssignMstListVo })
+        this.$refs.ModalIpAssign.open({ rows })
     },
     handleClickMergeInsert() {
       const rows = this.selectedRows
@@ -321,7 +328,7 @@ export default {
     },
     handleClickExcelDownloadBtn() {
       downloadExcel(this, 'viewListAsgnIPMstExcel')
-    }
+    },
   }
 }
 </script>

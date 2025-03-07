@@ -51,7 +51,7 @@ var dialogOpenMixin = {
           height: '390',
           resizeble: true,
         },
-        sopList: {
+        sopHistory: {
           component: () => import('@/views-nia/alarmMonitoring/sopHistory'),
           pageTitle: 'SOP 이력 조회',
           top: '2vh',

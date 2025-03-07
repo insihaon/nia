@@ -134,6 +134,7 @@ import { apiIpAlarmList, apiTransmissionAlarmList, apiDashboardStatistics, apiSe
 import { getAlarmType, getSopAiAccuracy } from '@/views-nia/js/commonFormat'
 import { AppOptions } from '@/class/appOptions'
 import dialogOpenMixin from '@/mixin/dialogOpenMixin'
+import _ from 'lodash'
 
 const routeName = 'NiaMain'
 export default {
@@ -232,7 +233,7 @@ export default {
         { type: '', prop: 'ticket_rca_result_dtl_code', name: '장애 원인', width: 200, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'total_related_alarm_cnt', name: '근원알람개수', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: '_', name: '상세보기', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderTicketDetail', cellRendererParams: { name: '상세보기', action: this.handleOpenTicketDetail.bind(this) } },
- ]
+      ]
       const options = { name: this.name, checkable: false, rowGroupPanel: false }
       return { options, columns, data: this.transmissionNetworkList, onDoesExternalFilterPass: (externalFilter, node) => { return this.onDoesExternalFilterPass(externalFilter, node, 'trans') }, getRightClickMenuItems: () => { return [] } }
     },
@@ -342,9 +343,10 @@ export default {
     await this.onLoadDashboardStatistics()
     await this.onLoadSelfProcessStatistics()
 
-    this.$nextTick(async() => {
+    this.$nextTick(async () => {
       await this.onLoadIpAlarmList()
       await this.onLoadTransmissionAlarmList()
+      this.subscribeEvent()
 
       this.ipFilterGroup = new BaseFilterGroup(this, { onFilterChanged: () => this.onFilterChanged('ip'), isCheckBox: false })
       this.setIPFilterGroup()
@@ -367,7 +369,10 @@ export default {
 
       this.fn_openWindow('niaTopology', param)
     },
-
+    beforeDestroy() {
+      this.removeWsEventListener(this.CONSTANTS.channels.IPSDN_ALARM.name, this.onReceivedIpsdnTicketEvent)
+      this.removeWsEventListener(this.CONSTANTS.channels.TRANS_ALARM.name, this.onReceivedTransTicketEvent)
+    },
     subscribeEvent() {
       this.addWsEventListener(this.CONSTANTS.channels.IPSDN_ALARM.name, this.onReceivedIpsdnTicketEvent)
       this.addWsEventListener(this.CONSTANTS.channels.TRANS_ALARM.name, this.onReceivedTransTicketEvent)
@@ -406,8 +411,52 @@ export default {
       const data = JSON.parse(socketMessage.message)
       AppOptions.instance.useWsLog && this.log('RECEIVED SIBSCRIBE IPSDN_ALARM EVENT: ', data)
 
-      this.ipNetworkList = [].concat(...this.getMergedList('ipNetworkList', data))
-      // this.ipNetworkTicketIdList
+      switch (data.eventType) {
+        case 'TICKET_NEW':
+          (async() => {
+            const param = {
+              TICKET_ID: data.ticketId
+            }
+            const res = await this.onLoadIpAlarmList(param)
+            if (res) {
+              this.ipNetworkList.splice(0, 0, res.result[0])
+            } else {
+              console.error(`${data.eventType} FAIL.. TICKET_ID : ` + data.ticketId)
+            }
+          })()
+          break
+        case 'TICKET_UPDATE': case 'TICKET_MERGE':
+          (async() => {
+            const ticket = this.ipNetworkList.find(v => v.ticket_id === data.ticketId)
+            if (ticket) {
+              Object.assign(ticket, data.properties)
+              this.ipNetworkList = _.cloneDeep(this.ipNetworkList)
+            } else {
+              const param = {
+                TICKET_ID: data.ticketId
+              }
+              const res = await this.onLoadIpAlarmList(param)
+              if (res) {
+                this.ipNetworkList.splice(0, 0, res.result[0])
+              } else {
+                console.error(`${data.eventType} FAIL.. TICKET_ID : ` + data.ticketId)
+              }
+            }
+          })()
+          break
+        case 'TICKET_DELETE':
+          (() => {
+              const ticket = this.ipNetworkList.find(v => v.ticket_id === data.ticketId)
+            if (ticket) {
+              this.ipNetworkList.remove(ticket)
+            } else {
+              console.error(`${data.eventType} FAIL.. TICKET_ID : ` + data.ticketId)
+            }
+          })()
+          break
+      }
+
+      // this.ipNetworkList = [].concat(...this.getMergedList('ipNetworkList', data))
       this.$store.dispatch('nia/insertIpNetworkList', this.ipNetworkList)
     },
     onReceivedTransTicketEvent({ channelName, socketMessage }) {
@@ -707,11 +756,9 @@ export default {
       this.fn_openWindow('ticketDetail', row)
     },
     handleOpenEditModal(row, type) {
-      // this.fn_openWindow('sopList', row, 'SOP 이력 조회')
-
       const param = { row, type }
       if (type === 'SOP') {
-        this.fn_openWindow('sopList', row)
+        this.fn_openWindow('sopHistory', row)
       } else if (type === 'NTF') {
         this.fn_openWindow('requestForAction', row)
       } else if (type === 'ALARM') {

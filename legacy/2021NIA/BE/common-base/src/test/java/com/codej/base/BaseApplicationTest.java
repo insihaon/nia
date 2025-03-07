@@ -1,10 +1,10 @@
-package com.codej.ws;
+package com.codej.base;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class WsApplicationTests {
+class BaseApplicationTest {
 
 	@Test
 	void contextLoads() {

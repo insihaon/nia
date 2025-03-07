@@ -44,15 +44,15 @@
     </el-col>
     <ModalCheckTacsIpBlock ref="ModalCheckTacsIpBlock" />
     <!-- 분할 -->
-    <ModalIpBlockDivision ref="ModalIpBlockDivision" @reload="fnViewListIpAllocMst($refs.searchCondition.requestParameter)" />
+    <ModalIpBlockDivision ref="ModalIpBlockDivision" @reload="fnViewListIpAllocMst()" />
     <!-- 할당 처리 -->
-    <ModalIpAllocInsert ref="ModalIpAllocInsert" @reload="fnViewListIpAllocMst($refs.searchCondition.requestParameter)" />
+    <ModalIpAllocInsert ref="ModalIpAllocInsert" @reload="fnViewListIpAllocMst()" />
     <!-- 할당 상세 -->
     <ModalIpAllocDetail ref="ModalIpAllocDetail" @alocCallBtnClick="fnInsertAlcBtnClick" />
     <!-- 라우팅 중복 개수 -->
     <ModalDetailSummary ref="ModalDetailSummary" />
     <!-- IP블록병합 -->
-    <ModalIpAssignMerge ref="ModalIpAssignMerge" @reload="fnViewListIpAllocMst($refs.searchCondition.requestParameter)" />
+    <ModalIpAssignMerge ref="ModalIpAssignMerge" @reload="fnViewListIpAllocMst()" />
   </el-row>
 </template>
 <script>
@@ -90,7 +90,7 @@ export default {
         { key: 'SipCreateType', props: {} },
         { key: 'ServiceOrg', props: { limit: 10 } },
         { key: 'IpAddress', props: {} },
-        { key: 'InputType', props: { label: 'BitMask', prop_parameterKey: 'nbitMask' } },
+        { key: 'InputType', props: { label: 'BitMask', prop_parameterKey: 'nbitmask', valueType: 'number' } },
         { key: 'LineInformation', props: {} },
         {
           key: 'IpBlockStatus', props: {
@@ -176,6 +176,7 @@ export default {
       this.fnViewListIpAllocMst(requestParameter)
     },
     async fnViewListIpAllocMst(requestParameter = null) {
+      this.selectedRows = []
       const parameter = requestParameter ?? this.$refs.searchCondition.requestParameter
       const target = ({ vue: this.$refs.compTable })
       const { pageSize: pageUnit, currentPage: pageIndex } = this.pagination
