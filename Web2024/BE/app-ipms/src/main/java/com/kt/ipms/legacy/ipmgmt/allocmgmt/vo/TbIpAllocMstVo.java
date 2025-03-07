@@ -183,6 +183,7 @@ public class TbIpAllocMstVo extends IpVo implements Serializable {
 	private String sassignTypeCdMultiStr;
 	
 	private List<String> sassignTypeMulti;
+
 	
 	/** MEMBER METHOD DECLARATION START **/
 

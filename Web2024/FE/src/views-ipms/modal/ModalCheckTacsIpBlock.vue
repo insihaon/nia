@@ -49,66 +49,68 @@
           </tbody>
         </table>
         <el-tabs>
-          <el-tab-pane v-for="(item, index) in tacsResultList" v-if="tacsResultList.length > 0" :key="index" :label="'접속장비' + (index + 1)">
-            <table class="tbl_data" summary="TACS 정보">
-              <colgroup>
-                <col width="15%" />
-                <col width="35%" />
-                <col width="15%" />
-                <col width="35%" />
-              </colgroup>
-              <tbody>
-                <tr class="top">
-                  <th>장비IP / 장비타입</th>
-                  <td>{{ item.targetIp }} / {{ item.targetType }}</td>
-                  <th scope="row">접속결과</th>
-                  <td>{{ item.responseMsg }}</td>
-                </tr>
-                <tr>
-                  <th>IP블럭 중복 여부</th>
-                  <td colspan="3">
-                    <span v-if="item.flag === 'Y'" style="color: blue; font-weight: bold;">중복아님</span>
-                    <span v-else style="color: red; font-weight: bold;">중복</span>
-                  </td>
-                </tr>
-                <tr v-if="item.responseCd !== '0'">
-                  <th>조회명령어</th>
-                  <td colspan="3">-</td>
-                </tr>
-                <tr v-if="item.responseCd !== '0'" class="last">
-                  <th>조회명령어결과</th>
-                  <td colspan="3">
-                    <textarea readonly class="w98" rows="8">조회 결과 없음</textarea>
-                  </td>
-                </tr>
-                <template v-for="(result, resultIndex) in item.responseList">
-                  <tr :key="resultIndex">
-                    <th>조회명령어{{ resultIndex + 1 }}</th>
-                    <td colspan="3">{{ result.cmd }}</td>
+          <template v-if="tacsResultList.length > 0">
+            <el-tab-pane v-for="(item, index) in tacsResultList" :key="index" :label="'접속장비' + (index + 1)">
+              <table class="tbl_data" summary="TACS 정보">
+                <colgroup>
+                  <col width="15%" />
+                  <col width="35%" />
+                  <col width="15%" />
+                  <col width="35%" />
+                </colgroup>
+                <tbody>
+                  <tr class="top">
+                    <th>장비IP / 장비타입</th>
+                    <td>{{ item.targetIp }} / {{ item.targetType }}</td>
+                    <th scope="row">접속결과</th>
+                    <td>{{ item.responseMsg }}</td>
                   </tr>
-                  <tr :key="resultIndex">
-                    <th>IP블럭 중복 여부{{ resultIndex + 1 }}</th>
+                  <tr>
+                    <th>IP블럭 중복 여부</th>
                     <td colspan="3">
-                      <span v-if="result.flag === 'Y'" style="color: blue; font-weight: bold;">중복아님</span>
+                      <span v-if="item.flag === 'Y'" style="color: blue; font-weight: bold;">중복아님</span>
                       <span v-else style="color: red; font-weight: bold;">중복</span>
                     </td>
                   </tr>
-                  <tr :key="resultIndex" :class="{ 'last': resultIndex === item.responseList.length - 1 }">
-                    <th>조회명령어결과 {{ resultIndex + 1 }}</th>
+                  <tr v-if="item.responseCd !== '0'">
+                    <th>조회명령어</th>
+                    <td colspan="3">-</td>
+                  </tr>
+                  <tr v-if="item.responseCd !== '0'" class="last">
+                    <th>조회명령어결과</th>
                     <td colspan="3">
-                      <textarea v-model="result.result" readonly class="w98" rows="8" />
+                      <textarea readonly class="w98" rows="8">조회 결과 없음</textarea>
                     </td>
                   </tr>
-                </template>
-              </tbody>
-            </table>
-          </el-tab-pane>
+                  <template v-for="(result, resultIndex) in item.responseList">
+                    <tr :key="resultIndex">
+                      <th>조회명령어{{ resultIndex + 1 }}</th>
+                      <td colspan="3">{{ result.cmd }}</td>
+                    </tr>
+                    <tr :key="resultIndex">
+                      <th>IP블럭 중복 여부{{ resultIndex + 1 }}</th>
+                      <td colspan="3">
+                        <span v-if="result.flag === 'Y'" style="color: blue; font-weight: bold;">중복아님</span>
+                        <span v-else style="color: red; font-weight: bold;">중복</span>
+                      </td>
+                    </tr>
+                    <tr :key="resultIndex" :class="{ 'last': resultIndex === item.responseList.length - 1 }">
+                      <th>조회명령어결과 {{ resultIndex + 1 }}</th>
+                      <td colspan="3">
+                        <textarea v-model="result.result" readonly class="w98" rows="5" />
+                      </td>
+                    </tr>
+                  </template>
+                </tbody>
+              </table>
+            </el-tab-pane>
+          </template>
         </el-tabs>
       </fragment>
     </div>
     <div class="popupContentTableBottom">
       <el-button
-        v-if="typeFlag === 'ALLOC' || typeFlag === 'NEOSS'"
+        v-if="['ALLOC', 'NEOSS', 'AUTO_ALLOC'].includes(typeFlag)"
         size="small"
         icon="el-icon-thumb"
         style="background: #2b5890"
@@ -205,32 +207,24 @@ export default {
           cancelButtonText: '취소',
           type: 'warning',
         }).then(() => {
-          const _THIS = this
-          const { typeFlag } = this.ipRow
-          // 할당처리
-          if (this.typeFlag === 'ALLOC') {
-            const result = this.$parent.$parent.fnInsertConfirmBtnClick()
-            if (result) {
-              this.tacsResultList = []
-              this.close()
-            }
-          } else if (this.typeFlag === 'NEOSS') {
-            // fnAllocBtnClick()
-          }
+          this.fnAlloc()
         })
       } else {
-        // 할당처리
-        if (this.typeFlag === 'ALLOC') {
-          const result = this.$parent.$parent.fnInsertConfirmBtnClick()
-          if (result) {
-              this.tacsResultList = []
-              this.close()
-            }
-        } else if (this.typeFlag === 'NEOSS') {
-          // fnAllocBtnClick()
-        }
+        this.fnAlloc()
       }
     },
+    fnAlloc() {
+      // 할당처리
+      if (this.typeFlag === 'ALLOC') {
+        const result = this.$parent.$parent.fnInsertConfirmBtnClick()
+        if (result) {
+          this.tacsResultList = []
+          this.close()
+        }
+      } else if (this.typeFlag === 'NEOSS') {
+        // fnAllocBtnClick()
+      }
+    }
   },
 }
 </script>

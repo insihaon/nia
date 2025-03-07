@@ -1,14 +1,25 @@
 package com.codej.base.utils;
 
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.Map;
+
+import javax.net.ssl.SSLContext;
 
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.ssl.SSLContexts;
+import org.apache.http.ssl.TrustStrategy;
 import org.apache.http.util.EntityUtils;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -53,15 +64,11 @@ public class HttpUtil {
         return exchange.getBody();
     }
 
-    public static ResponseEntity<?> get(String url) throws CHttpRelayServiceFail, Exception {
+    public static ResponseEntity<?> get(String url)
+            throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException, CHttpRelayServiceFail,
+            Exception {
         String json = "";
-        int timeout = 30;
-        RequestConfig config = RequestConfig.custom()
-                .setConnectTimeout(timeout * 3000)
-                .setConnectionRequestTimeout(timeout * 3000)
-                .setSocketTimeout(timeout * 1000).build();
-
-        CloseableHttpClient httpClient = HttpClientBuilder.create().setDefaultRequestConfig(config).build();
+        CloseableHttpClient httpClient = createHttpClient(url);
         try {
             HttpGet request = new HttpGet(url);
             request.addHeader("content-type", "application/json;charset=UTF-8");
@@ -81,15 +88,10 @@ public class HttpUtil {
     }
 
     public static ResponseEntity<?> get(String url,
-            Map<String, String> headers) throws CHttpRelayServiceFail, Exception {
+            Map<String, String> headers)
+            throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException, CHttpRelayServiceFail, Exception {
         String json = "";
-        int timeout = 30;
-        RequestConfig config = RequestConfig.custom()
-                .setConnectTimeout(timeout * 3000)
-                .setConnectionRequestTimeout(timeout * 3000)
-                .setSocketTimeout(timeout * 1000).build();
-
-        CloseableHttpClient httpClient = HttpClientBuilder.create().setDefaultRequestConfig(config).build();
+        CloseableHttpClient httpClient = createHttpClient(url);
         try {
             HttpGet request = new HttpGet(url);
 
@@ -114,16 +116,10 @@ public class HttpUtil {
     }
 
     public static ResponseEntity<?> post(String url, Map<String, Object> param)
-            throws CHttpRelayServiceFail, Exception {
+            throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException, CHttpRelayServiceFail,
+            Exception {
         String json = "";
-        int timeout = 30;
-        RequestConfig config = RequestConfig.custom()
-                .setConnectTimeout(timeout * 3000)
-                .setConnectionRequestTimeout(timeout * 3000)
-                .setSocketTimeout(timeout * 1000)
-                .build();
-
-        CloseableHttpClient httpClient = HttpClientBuilder.create().setDefaultRequestConfig(config).build();
+        CloseableHttpClient httpClient = createHttpClient(url);
         try {
             HttpPost request = new HttpPost(url);
             request.addHeader("content-type", "application/json;charset=UTF-8");
@@ -139,22 +135,15 @@ public class HttpUtil {
         } finally {
             httpClient.close();
         }
-
+        ;
         return new ResponseEntity<String>(json, HttpStatus.OK);
     }
 
     public static ResponseEntity<?> post(String url, Map<String, Object> param,
             Map<String, String> headers)
-            throws CHttpRelayServiceFail, Exception {
+            throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException, CHttpRelayServiceFail, Exception {
         String json = "";
-        int timeout = 30;
-        RequestConfig config = RequestConfig.custom()
-                .setConnectTimeout(timeout * 3000)
-                .setConnectionRequestTimeout(timeout * 3000)
-                .setSocketTimeout(timeout * 1000)
-                .build();
-
-        CloseableHttpClient httpClient = HttpClientBuilder.create().setDefaultRequestConfig(config).build();
+        CloseableHttpClient httpClient = createHttpClient(url);
         try {
             HttpPost request = new HttpPost(url);
 
@@ -179,4 +168,45 @@ public class HttpUtil {
         return new ResponseEntity<String>(json, HttpStatus.OK);
     }
 
+    public static CloseableHttpClient createHttpClient(String url) throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException {
+        return createHttpClient(url, 30000);    // 데이터 읽기 타임아웃 
+    }
+
+    public static CloseableHttpClient createHttpClient(String url, int timeout) throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException {
+        final int connectionTimeout = 3000;         // 서버에 연결할 때의 타임아웃
+        final int connectionRequestTimeout = 3000;    // 커넥션 풀에서 커넥션을 할당받을 때의 타임아웃
+        
+        CloseableHttpClient httpClient = null;
+        if (url.startsWith("https")) {
+            SSLContext sslcontext = SSLContexts.custom()
+                .useProtocol("SSL")
+                .loadTrustMaterial(null, new TrustStrategy() {
+                @Override
+                public boolean isTrusted(X509Certificate[] paramArrayOfX509Certificate, String paramString) throws CertificateException {
+                    return true;
+                }
+            }).build();
+
+            final RequestConfig requestConfig = RequestConfig.custom()
+                .setConnectTimeout(3000)
+                .setConnectionRequestTimeout(3000)
+                .setSocketTimeout(timeout)
+                .build();
+
+            HttpClientBuilder httpClientBuilder = HttpClients.custom();
+            httpClientBuilder
+                .setDefaultRequestConfig(requestConfig)
+                .setSSLHostnameVerifier(new NoopHostnameVerifier())
+                .setSSLContext(sslcontext);
+            httpClient = httpClientBuilder.build();
+        } else {
+            RequestConfig config = RequestConfig.custom()
+                .setConnectTimeout(connectionTimeout)
+                .setConnectionRequestTimeout(connectionRequestTimeout)
+                .setSocketTimeout(timeout).build();
+
+            httpClient = HttpClientBuilder.create().setDefaultRequestConfig(config).build();
+        }
+        return httpClient;
+    }
 }

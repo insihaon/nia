@@ -9,7 +9,7 @@ const NODE_ENV_DEV = NODE_ENV === 'development'
 const STORAGE = NODE_ENV_DEV ? window.localStorage : window.sessionStorage
 
 export class Storage {
-  reloadProperties = 'dark,project,baseURL'.split(/[\s,]+/)
+  reloadProperties = 'dark,project,baseURL,debugEncrypt'.split(/[\s,]+/)
   _data = {}
   constructor() {
     Encrypt.register(this, APP_DEV)

@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -71,11 +72,12 @@ public class BaseJwtTokenProvider<T> { // JWT 토큰을 생성 및 검증 모듈
     }
 
     // Jwt 토큰 생성
-    public String createToken(BaseUser user, String address) throws JsonProcessingException {
+    public String createToken(BaseUser user, String sessionId, String address) throws JsonProcessingException {
         String userPk = String.valueOf(user.getUsername());
         List<String> roles = user.getRolesList();
         Claims claims = Jwts.claims().setSubject(userPk);
 
+        claims.put("sessionId", sessionId);  
         claims.put("roles", roles);
         claims.put("address", address);
 
@@ -142,6 +144,10 @@ public class BaseJwtTokenProvider<T> { // JWT 토큰을 생성 및 검증 모듈
         return getClaims(token).getSubject();
     }
 
+    public String extractSessionId(String token) throws Exception {
+        return getClaims(token, claims -> claims.get("sessionId", String.class));
+    }
+
     public String decrypt(String text) {
         if (text == null) {
             return null;
@@ -181,6 +187,12 @@ public class BaseJwtTokenProvider<T> { // JWT 토큰을 생성 및 검증 모듈
     public Claims getClaims(String jwt) throws Exception {
         return (Claims) getJwtClaims(jwt).getBody();
     }
+
+    public <T> T getClaims(String token, Function<Claims, T> claimsResolver) throws Exception {
+        final Claims claims = getClaims(token);
+        return claimsResolver.apply(claims);
+    }
+
 
     private Jws<Claims> getJwtClaims(String jwt) throws Exception {
         try {

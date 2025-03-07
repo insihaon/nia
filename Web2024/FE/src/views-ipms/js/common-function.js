@@ -87,7 +87,7 @@ export function getStatColumn(type, svcList) {
     return resultColumns
 }
 // IP할당 상세 > IP블록 중복 체크
-export function fnViewCheckTacsIpBlock(THIS, rows = []) {
+export function fnViewCheckTacsIpBlock(THIS, rows = [], typeFlag = null) {
     if (rows.length === 0) {
         onMessagePopup(THIS, 'IP블럭 중복체크할 대상이 없습니다. 선택해주세요.')
         return
@@ -106,7 +106,7 @@ export function fnViewCheckTacsIpBlock(THIS, rows = []) {
         return
     }
     // const res = await api({ nipAssignMstSeq })
-    THIS.$refs.ModalCheckTacsIpBlock.open({ row: rows[0] })
+    THIS.$refs.ModalCheckTacsIpBlock.open({ row: rows[0], typeFlag })
 }
 
 export async function downloadExcel(THIS = null, apiKey) {

@@ -144,9 +144,9 @@ export default {
   computed: {
     actionForm() {
       return [
-        { label: '장애구분', model: 'faultClassify', options: this.selectOption.gubun },
-        { label: '장애유형', model: 'faultType', options: this.selectOption.type },
-        { label: '조치내용', model: 'faultDetail', options: this.selectOption.content },
+        { label: '장애구분', model: 'fault_classify', options: this.selectOption.gubun },
+        { label: '장애유형', model: 'fault_type', options: this.selectOption.type },
+        { label: '조치내용', model: 'fault_detail_content', options: this.selectOption.content },
       ]
     },
   },

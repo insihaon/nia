@@ -107,7 +107,7 @@ function padKey(plainKey) {
     return encryptText
   }
 
-  static encryptHttp(data = {}, encrypt = true, isDevProfile = false) {
+  static encryptHttp(data = {}, encrypt = true) {
     let encryptText = null
     if (encrypt) {
       encryptText = Encrypt.toEncrypt(data)

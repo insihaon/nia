@@ -82,7 +82,6 @@ export default {
         pagerCount: 11,
       },
       selectedRow: null,
-      totalCount: 0,
       viewType: 'TICKET',
       sopCodeList: [],
       visible: false,
@@ -104,11 +103,11 @@ export default {
     sopEditGrid() {
       const options = { name: this.name, checkable: false, rowGroupPanel: false, rowSelection: 'multiple', rowMultiSelection: false }
       const columns = [
-        { type: '', prop: 'user_id', name: '등록자', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
+        { type: '', prop: 'user_id', name: '등록자', width: 130, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
         { type: '', prop: 'fault_gb', name: '조치 SOP', width: 160, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
         { type: '', prop: 'fault_type', name: '항목', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
-        { type: '', prop: 'edit', name: '편집', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false, cellRenderer: (params) => { return `<button class='el-icon-edit' />` } },
-        { type: '', prop: 'reg_time', name: '등록일', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false, formatter: (row) => { return this.formatterTimeStamp(row.reg_time, 'YYYY/MM/DD-HH:mm:ss') } },
+        { type: '', prop: 'edit', name: '편집', width: 65, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false, cellRenderer: (params) => { return `<button class='el-icon-edit' />` } },
+        { type: '', prop: 'reg_time', name: '등록일', width: 185, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false, formatter: (row) => { return this.formatterTimeStamp(row.reg_time, 'YYYY/MM/DD-HH:mm:ss') } },
       ]
       return { options, columns, data: this.sopCodeList }
     },
@@ -125,9 +124,14 @@ export default {
     },
     async onLoadSopCodeList() {
       try {
-        const res = await apiSelectSopCode()
+        const param = {
+          limit: this.paginationInfo.pageSize,
+          page: this.paginationInfo.currentPage
+        }
+
+        const res = await apiSelectSopCode(param)
         this.sopCodeList = res?.result
-        this.totalCount = res.total
+        this.paginationInfo.totalCount = res.total
         this.paginationInfo.totalPages = Math.ceil(this.paginationInfo.totalCount / this.paginationInfo.pageSize) // 전체 페이지 수 계산
       } catch (error) {
         this.error(error)

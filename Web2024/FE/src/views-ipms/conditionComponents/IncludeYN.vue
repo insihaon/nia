@@ -7,6 +7,7 @@
       <el-select
         v-model="value"
         size="small"
+        :disabled="disabled"
         @change="handleChange()"
       >
         <el-option
@@ -41,6 +42,10 @@ export default {
     prop_parameterKey: {
       type: String,
       default: 'suseTypeCd'
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   data() {

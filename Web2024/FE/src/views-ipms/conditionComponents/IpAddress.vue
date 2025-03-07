@@ -8,9 +8,10 @@
         v-if="isShowSelectBox"
         v-model="value"
         collapse-tags
+        :disabled="disabled"
         size="small"
         :style="{'width': isShowInput ? '200px': '100%'}"
-        @change="()=> emitEventToParent([{ key: 'sipVersionTypeCd', value }])"
+        @change="onChangeSelected"
       >
         <el-option v-if="isAllOption" value="" label="전체"></el-option>
         <el-option
@@ -67,6 +68,10 @@ export default {
     isShowSelectBox: {
       type: Boolean,
       default: true
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -113,11 +118,22 @@ export default {
         this.word = params.searchWrd ?? ''
       }
     },
+    onChangeSelected() {
+      this.word = ''
+      this.emitEventToParent([{ key: 'sipVersionTypeCd', value: this.value }])
+    },
     onChangeInput(val) {
-      this.word = val.replace(/[^0-9.\/]+/g, '')
+      if (this.value === 'CV0001') {
+        this.word = val.replace(/[^0-9.\/]+/g, '')
+      } else if (this.value === 'CV0002') {
+        this.word = val.replace(/[^0-9a-fA-F:\/]+/g, '')
+      }
     }
   }
 }
 </script>
 <style lang="scss" scoped>
+::v-deep.el-select .el-input{
+  width: 150px !important;
+}
 </style>
