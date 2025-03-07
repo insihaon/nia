@@ -85,8 +85,12 @@ export class Storage {
       reload(projectChange)
     }
   }
+  isDark(project) { return false }
 
   update(newOptions = {}, reload = true) {
+    if(this.isDark(newOptions.project)){
+      newOptions.dark = true
+    }
     Object.assign(this._data, newOptions)
     this._save()
     reload && this.autoReload(newOptions)
