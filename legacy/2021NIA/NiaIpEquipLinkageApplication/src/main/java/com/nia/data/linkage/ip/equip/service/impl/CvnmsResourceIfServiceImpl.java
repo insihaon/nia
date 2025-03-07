@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,7 +26,6 @@ public class CvnmsResourceIfServiceImpl implements CvnmsResourceIfService {
     private NiaEquipMapper niaAlarmMapper;
 
     @Override
-    @Transactional
     public void getCvnmsResourceIfData() {
         LOGGER.info("==========>[CvnmsResourceIfService] getCvnmsResourceIfData <==============");
 
@@ -60,6 +58,8 @@ public class CvnmsResourceIfServiceImpl implements CvnmsResourceIfService {
 
                 niaAlarmMapper.fcResourceIfYd();
                 niaAlarmMapper.fcCreateUserOrganYd();
+
+                LOGGER.info("==========>[CvnmsResourceIfService] getCvnmsResourceIfData Success! <==============");
             }
         } catch (Exception e) {
             LOGGER.error("=====> [CvnmsResourceIfService] getCvnmsResourceIfData error() " + ExceptionUtils.getStackTrace(e) + "<=====");
