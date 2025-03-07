@@ -57,13 +57,14 @@ Vue.component('SvgIcon', SvgIcon)
 import ElTableDraggable from 'el-table-draggable'
 Vue.component('ElTableDraggable', ElTableDraggable)
 
-if (process.env.VUE_APP_USE_DARK_THEME === 'true') {
-  // *** 주의 AppOptions 을 사용하면 배포 후 적용 안됨 ***
+import { Fragment } from 'vue-frag'
+import { AppOptions } from './class/appOptions'
+
+if (AppOptions.instance.dark) {
   require('element-ui/lib/theme-chalk/index.css')
   require('element-theme-dark')
 }
 
-import { Fragment } from 'vue-frag'
 Vue.component('Fragment', Fragment)
 
 if (process.env.NODE_ENV === 'development') {

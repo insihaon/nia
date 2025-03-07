@@ -69,6 +69,10 @@ export class AppOptions extends Storage {
     return this._data.debug
   }
 
+  isDark(project) {
+    return ['ipms'].includes(project)
+  }
+
   get encrypt() {
     return this._data.mock !== 'FE' && (this._data.debug ? !this._data.debugEncrypt : this._data.debugEncrypt)
   }
