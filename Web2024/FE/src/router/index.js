@@ -110,13 +110,13 @@ export let constantRoutes = [
   },
 ].filter(v => v.disable !== true)
 
-if (isOnlyFront) {
-  constantRoutes = constantRoutes.concat(constantRoutes, ...projectRoute.filter(v => v.disable !== true))
-}
-
 export const asyncRoutes = [
   ...projectRoute,
 ].filter(v => v.disable !== true)
+
+if (isOnlyFront) {
+  constantRoutes = constantRoutes.concat(constantRoutes, asyncRoutes)
+}
 
 const createRouter = () => {
   var router = new Router({

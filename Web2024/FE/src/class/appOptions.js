@@ -27,8 +27,8 @@ export class AppOptions extends Storage {
       baseURLIndex: this.readEnv(process.env.VUE_APP_BASE_API_INDEX, 0),
       isOnlyFront: this.readEnv(process.env.VUE_APP_ONLY_FE, false),
       mobile: Device.instance.mobile ?? false,
-      mock: null,
-      projectList: ['datahub', 'demo', 'nia', 'ipms'],
+      mock: process.env.VUE_APP_MOCK || '',
+      projectList: ['datahub', 'nia', 'ipms'],
       project: APP_PROJECT?.toLowerCase(),
       baseURL: null,
       useWebsocket: this.readEnv(process.env.VUE_APP_USE_WEBSOCKET, true),
@@ -46,6 +46,7 @@ export class AppOptions extends Storage {
     this._save()
 
     this._data.baseURL = this._getDefaultBaseUrl()
+    // this._data.mock = this._data.mock || this.readEnv(process.env.VUE_APP_MOCK, '')
 
     const href = location.href
     this._data.urlParam = param2Obj(href)
@@ -60,10 +61,10 @@ export class AppOptions extends Storage {
     }
   }
 
-  get mock() {
-    /* request 요청시 json file을 가져온다 */
-    return this.baseURL === '/mock'
-  }
+  // get mock() {
+  //   /* request 요청시 json file을 가져온다 */
+  //   return this.baseURL === '/mock'
+  // }
   get isGod() {
     return this._data.debug
   }
