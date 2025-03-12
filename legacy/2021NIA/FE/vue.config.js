@@ -13,7 +13,7 @@ const liveReload = true
 // use administrator privileges to execute the command line.
 // For example, Mac: sudo npm run
 // You can change the port by the following method:
-// port = 4000 npm run dev OR npm orun dev --port = 4000
+// port = 4000 npm run dev OR npm run dev --port = 4000
 const port = process.env.port || process.env.npm_config_port || 4000 // dev port
 console.log(`${getTitleName()} server started: port=${port}, env=${process.env.NODE_ENV}, project=${process.env.VUE_APP_PROJECT}`)
 

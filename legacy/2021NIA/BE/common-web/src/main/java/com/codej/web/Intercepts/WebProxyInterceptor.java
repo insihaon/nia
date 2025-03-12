@@ -14,7 +14,7 @@ import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -50,6 +50,7 @@ import com.codej.base.dto.AppDto;
 import com.codej.base.exception.CServiceIncorrectUse;
 import com.codej.base.exception.CUntrustedRequestException;
 import com.codej.base.property.GlobalConstants;
+import com.codej.base.utils.CurlUtil;
 import com.codej.base.utils.EncryptUtil;
 import com.codej.base.utils.HttpUtil;
 import com.codej.base.utils.JsonUtil;
@@ -83,24 +84,28 @@ public class WebProxyInterceptor implements HandlerInterceptor {
         String requestUri = request.getRequestURI();
         String fullExternalUrl = appDto.getWebProxyUrl() + requestUri + (originalQuery == null || originalQuery.isEmpty() ? "" : "?" + originalQuery);
 
+        if (!requestUri.endsWith(".model") && !requestUri.endsWith(".json"))
+            return true;  // 컨트롤러로 요청 전달
+
         // 요청 Body에서 encrypt 값을 확인
-        Boolean encrypt = isEncrypt(request);
+        // Boolean encrypt = isEncrypt(request);
+        Boolean encrypt = false;
 
         // 요청 Body 변경 (POST, PUT 경우만)
         String requestBody = null;
         if (HttpMethod.POST.equals(httpMethod) || HttpMethod.PUT.equals(httpMethod)) {
             requestBody = getRequestBody(request);
-
+            
+            // JSON 문자열을 HashMap 으로 변환
+            Map<String, Object> requestMap = objectMapper.readValue(requestBody, HashMap.class);
             if (encrypt) {
-                // JSON 문자열을 HashMap 으로 변환
-                Map<String, Object> requestMap = objectMapper.readValue(requestBody, HashMap.class);
                 String encryptData = (String) requestMap.get(GlobalConstants.Common.DATA);
                 String decryptData = EncryptUtil.decryptText(encryptData);
-                Map<String, Object> decryptMap = objectMapper.readValue(decryptData, HashMap.class);
-                decryptMap.put(GlobalConstants.Common.ENCRYPT, EncryptUtil.encrypt(Boolean.toString(false)));
-
-                requestBody = objectMapper.writeValueAsString(decryptMap);
-            }
+                requestMap = objectMapper.readValue(decryptData, HashMap.class);
+                // requestMap.put(GlobalConstants.Common.ENCRYPT, EncryptUtil.encrypt(Boolean.toString(false)));
+            } 
+            requestMap.remove(GlobalConstants.Common.ENCRYPT);
+            requestBody = objectMapper.writeValueAsString(requestMap);
         }
 
         // 기존 HttpUtil.createHttpClient 대신 SSL 인증서 적용 HttpClient 생성
@@ -123,9 +128,15 @@ public class WebProxyInterceptor implements HandlerInterceptor {
             } else if (HttpMethod.POST.equals(httpMethod)) {
                 requestRelay = new HttpPost(fullExternalUrl);
                 ((HttpPost) requestRelay).setEntity(new StringEntity(requestBody, StandardCharsets.UTF_8));
+
+                // String body = "{\"searchBgnDe\":\"\",\"searchCnd\":\"\",\"searchEndDe\":\"\",\"searchWrd\":\"\",\"sortType\":\"\",\"sortOrdr\":\"\",\"searchUseYn\":\"\",\"searchBgnCd\":\"\",\"searchEndCd\":\"\",\"pageIndex\":1,\"pageUnit\":0,\"pageSize\":0,\"firstIndex\":1,\"lastIndex\":10,\"recordCountPerPage\":10,\"rowNo\":0,\"typeFlag\":\"\",\"dcreateDt\":null,\"screateId\":null,\"screateNm\":null,\"dmodifyDt\":null,\"smodifyId\":null,\"smodifyNm\":null,\"commonMsg\":null,\"screateEmail\":null,\"smodifyEmail\":null,\"moveType\":\"\",\"moveSearchWrd\":\"\",\"moveSipVersionTypeCd\":null,\"url\":\"/ipmgmt/createmgmt/viewListCrtIPMst.model\",\"menuType\":null,\"paramMap\":null,\"pipPrefix\":null,\"sipVersionTypeCd\":null,\"sipVersionTypeNm\":null,\"sipBlock\":null,\"nbitmask\":null,\"snetmask\":null,\"sfirstAddr\":null,\"slastAddr\":null,\"nfirstAddr\":null,\"nlastAddr\":null,\"sfirstIpPreferred\":null,\"slastIpPreferred\":null,\"sfirstAddrBinary\":null,\"slastAddrBinary\":null,\"ncnt\":null,\"nclassCnt\":null,\"nuseIpCnt\":null,\"nfreeIpCnt\":null,\"nsubnetmask\":null,\"nipBlockMstSeq\":null,\"ssvcLineTypeCd\":null,\"ssvcLineTypeNm\":null,\"sipCreateTypeCd\":null,\"sipCreateTypeNm\":null,\"sipCreateSeqCd\":null,\"sipCreateSeqNm\":null,\"scomment\":null,\"ssvcGroupCd\":null,\"ssvcObjCd\":null,\"lvlMstSeqListVo\":null,\"nlvlMstSeq\":null,\"smenuNm\":null,\"ssvcGroupNm\":null,\"ssvcObjNm\":null,\"sMenuHistCd\":null,\"sMenuType\":null}";
+                // ((HttpPost) requestRelay).setEntity(new StringEntity(body, StandardCharsets.UTF_8));
             }
 
             copyRequestHeaders(request, requestRelay);
+
+            String curlCmd = CurlUtil.generateCurlCommand(requestRelay);
+            System.out.println(curlCmd);
 
             CloseableHttpResponse externalResponse = httpClient.execute(requestRelay);
             org.apache.http.HttpEntity entity = externalResponse.getEntity();
@@ -284,16 +295,16 @@ public class WebProxyInterceptor implements HandlerInterceptor {
         String requestBody = getRequestBody(request);
         try {
 
-            if (appDto.isDevProfile() == false) {
-                // 타임스탬프 보안 체크
-                long now = new Date().getTime();
-                String tsHeader = request.getHeader("verifier");
-                String ts = EncryptUtil.decryptText(tsHeader);
+            // if (appDto.isDevProfile() == false) {
+            //     // 타임스탬프 보안 체크
+            //     long now = new Date().getTime();
+            //     String tsHeader = request.getHeader("_t");
+            //     String ts = EncryptUtil.decryptText(tsHeader);
 
-                if (ts == null || Math.abs((now - Long.valueOf(ts)) / 1000) > 10) {
-                    throw new CUntrustedRequestException();
-                }
-            }
+            //     if (ts == null || Math.abs((now - Long.valueOf(ts)) / 1000) > 10) {
+            //         throw new CUntrustedRequestException();
+            //     }
+            // }
 
             if (requestBody == null) {
                 throw new CServiceIncorrectUse("요청 데이터가 비어 있습니다.");
@@ -326,11 +337,20 @@ public class WebProxyInterceptor implements HandlerInterceptor {
 
     // 요청 헤더 복사 (content-length 제외)
     private void copyRequestHeaders(HttpServletRequest src, HttpRequestBase dest) {
+        ArrayList<String> include = new ArrayList<String>() {{
+            // add("x-auth-token");
+            add("content-type");
+            add("urlorigin");
+            add("jsonfilename");
+        }};
+        ArrayList<String> exclude = new ArrayList<String>() {{
+            add("content-length");
+        }};
         Enumeration<String> headerNames = src.getHeaderNames();
         while (headerNames.hasMoreElements()) {
             String headerName = headerNames.nextElement();
             String headerValue = src.getHeader(headerName);
-            if (!headerName.equals("content-length")) {
+            if(include.contains(headerName.toLowerCase()) && !exclude.contains(headerName.toLowerCase()) ) {
                 dest.setHeader(headerName, headerValue);
             }
         }
@@ -338,6 +358,10 @@ public class WebProxyInterceptor implements HandlerInterceptor {
         if (dest.getFirstHeader("Content-Type") == null) {
             dest.setHeader("Content-Type", "application/json; charset=UTF-8");
         }
+
+        // dest.setHeader("host", "localhost:8070");
+        // dest.setHeader("user-agent", "curl/7.80.0");
+        // dest.setHeader("accept", "*/*");
     }
 
     private void sendErrorResponse(HttpServletResponse response, int statusCode, String message) {
