@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class AmqpNiaAlarmListener implements ChannelAwareMessageListener {
 
-    @Autowired
+    @Autowired(required = false)
     private WebsocketService websocketService;
 
     @Autowired
@@ -29,24 +29,24 @@ public class AmqpNiaAlarmListener implements ChannelAwareMessageListener {
     @Override
     public void onMessage(Message message, Channel channel) {
         try {
-            String body = new String(message.getBody(), StandardCharsets.UTF_8);
+            if (websocketService == null) {
+                return;
+            } else {
+                String body = new String(message.getBody(), StandardCharsets.UTF_8);
 
-            log.info("[MQ:{}] >>> onMessage : {}", niaRabbitMQProperites.getNiaEngineToUi(),
-                    body.substring(0, Math.min(200, body.length())));
+                log.info("[MQ:{}] >>> onMessage : {}", niaRabbitMQProperites.getNiaEngineToUi(),
+                        body.substring(0, Math.min(200, body.length())));
 
-            /*
-             * "{"result":"success","properties":{"sop_id":"95597","status":"FIN"},"ticketId":"1620541","eventType":"TICKET_UPDATE","ticketType":null}"
-             */
+                SocketMessage socketMessage = SocketMessage.builder()
+                        .type(SocketMessage.EmMessage.BROADCAST)
+                        .channelName(EmChannel.IPSDN_ALARM)
+                        .sender("SYSTEM")
+                        .message(body)
+                        .build();
+                websocketService.sendMessage(socketMessage);
 
-            SocketMessage socketMessage = SocketMessage.builder()
-                    .type(SocketMessage.EmMessage.BROADCAST)
-                    .channelName(EmChannel.IPSDN_ALARM)
-                    .sender("SYSTEM")
-                    .message(body)
-                    .build();
-            websocketService.sendMessage(socketMessage);
-
-            log.info("websocket sendIpsdnAlarm Message: {}", socketMessage);
+                log.info("websocket sendIpsdnAlarm Message: {}", socketMessage);
+            }
         } catch (Exception e) {
             log.error("=====> [{}] onMessage error {} <=====", this.getClass().getSimpleName(),
                     ExceptionUtils.getStackTrace(e));
