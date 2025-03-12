@@ -50,6 +50,14 @@ public class AllocMgmtTxService {
 	public int countMergeListPageIpAllocMst(IpAllocOperMstVo ipAllocOperMstVo) {
 		return tbIpAllocMstDao.countMergeListPageIpAllocMst(ipAllocOperMstVo);
 	}
+	@Transactional(readOnly = true)
+	public int countDuplicateTbIpAllocMstVo(IpAllocOperMstVo ipAllocOperMstVo) {
+		return tbIpAllocMstDao.countDuplicateTbIpAllocMstVo(ipAllocOperMstVo);
+	}
+	@Transactional(readOnly = true)
+	public int countDuplicateTbIpAllocMstVo2(IpAllocOperMstVo ipAllocOperMstVo) {
+		return tbIpAllocMstDao.countDuplicateTbIpAllocMstVo2(ipAllocOperMstVo);
+	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
 	public List<IpAllocOperMstVo> selectListTbIpAssignMstVoContinuityList(IpAllocOperMstVo ipAllocOperMstVo) {

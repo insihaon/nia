@@ -57,6 +57,7 @@ public class AllocMgmtController extends CommonController {
 
 	@Autowired
 	private AllocMgmtService allocMgmtService;
+
 	@Autowired
 	private AssignMgmtService assignMgmtService;
 
@@ -348,6 +349,27 @@ public class AllocMgmtController extends CommonController {
 		return model;
 	}
 
+	@RequestMapping(value = "/ipmgmt/allocmgmt/appendCrtIPAllocMst.json", method = { RequestMethod.POST,
+		RequestMethod.GET })
+	@ResponseBody
+	@EncryptResponse
+	public IpAllocOperMstVo appendCrtIPMst(@RequestBody IpAllocOperMstVo ipAllocOperMstVo) {
+		IpAllocOperMstVo resultVo = null;
+		try {
+			resultVo = allocMgmtService.appendCrtIPAllocMst(ipAllocOperMstVo);
+			resultVo.setCommonMsg("SUCCESS");
+		} catch (ServiceException e) {
+			resultVo = new IpAllocOperMstVo();
+			String msgDesc = tbCmnMstService.selectMsgDesc(e);
+			resultVo.setCommonMsg(msgDesc);
+		} catch (Exception e) {
+			resultVo = new IpAllocOperMstVo();
+			String msgDesc = tbCmnMstService.selectMsgDesc(new ServiceException("CMN.HIGH.00000"));
+			resultVo.setCommonMsg(msgDesc);
+		}
+		return resultVo;
+	}
+	
 	/**
 	 * IP 할당 목록 엑셀 저장
 	 * 
@@ -840,7 +862,16 @@ public class AllocMgmtController extends CommonController {
 	@EncryptResponse
 	public ModelMap viewDetailAlcIPMst(@RequestBody IpAllocOperMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
-		IpAllocOperMstListVo resultListVo = allocMgmtService.selectListIpAllocDetail(searchVo);
+		IpAllocOperMstListVo resultListVo = new IpAllocOperMstListVo();
+		try {
+			resultListVo = allocMgmtService.selectListIpAllocDetail(searchVo);
+			// IP 서비스유형 시설용 여부 확인
+			Boolean isFacilitiesIp = allocMgmtService.isFacilitiesIp(searchVo);
+			List<IpAllocOperMstVo> IpAllocOperMstListVos =  resultListVo.getIpAllocOperMstVos();
+			IpAllocOperMstListVos.get(0).setIsFacilities(isFacilitiesIp);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return createResultList(resultListVo.getIpAllocOperMstVos(), resultListVo.getTotalCount());
 	}
 

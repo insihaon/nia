@@ -20,9 +20,15 @@ public interface TbIpAllocMstDao extends BaseDataMapper {
 	public List<IpAllocOperMstVo> selectMergeListPageIpAllocMst(IpAllocOperMstVo ipAllocOperMstVo);
 
 	public int countMergeListPageIpAllocMst(IpAllocOperMstVo ipAllocOperMstVo);
-
+	
+	public int countDuplicateTbIpAllocMstVo(IpAllocOperMstVo ipAllocOperMstVo);
+	
+	public int countDuplicateTbIpAllocMstVo2(IpAllocOperMstVo ipAllocOperMstVo);
+	
+	/* 시설용 IP 여부 COUNT  */
+	public int countSassignTypeCd(IpAllocOperMstVo ipAllocOperMstVo);
 	/**
-	 * TB_IP_ASSIGN_MST selectListTbIpAssignMstVoContinuityList (병합가능 리스트 구현 테스트용)
+	 * TB_IP_ASSIGN_MST (병합가능 리스트 BASE LIST조회)
 	 **/
 	public List<IpAllocOperMstVo> selectListTbIpAssignMstVoContinuityList(IpAllocOperMstVo ipAllocOperMstVo);
 

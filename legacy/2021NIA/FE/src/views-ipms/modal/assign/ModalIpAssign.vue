@@ -213,8 +213,6 @@ export default {
     }
 
   },
-  mounted() {
-  },
   methods: {
     /*
       - v6 이고 '시설용 IP' 서비스 선택 시 배정상태는 '서비스배정[미할당]'으로 고정한다.
@@ -235,6 +233,8 @@ export default {
       this.selectedRows = null
       this.tbIpAssignMstListVo = []
       this.disabledLevel = {}
+      this.sassignTypeCd = 'SA0000'
+      this.isDisabledSassignLevelCd = false
     },
     async fnViewUpdateAsgnIPMst(rows) {
       const tbIpAssignMstVos = rows.map(r => { return { nipAssignMstSeq: r.nipAssignMstSeq } })
@@ -406,7 +406,7 @@ export default {
           onMessagePopup(this, res.commonMsg)
         }
       } catch (error) {
-        console.error(error)
+        this.error(error)
       } finally {
         this.vLoading = false
       }

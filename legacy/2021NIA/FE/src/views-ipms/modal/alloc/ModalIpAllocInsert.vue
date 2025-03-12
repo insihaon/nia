@@ -505,8 +505,11 @@ export default {
       // 데이터 확인용
     const THIS = this
      const destIpAllocMstVos = []
-
      this.ipAllocOperMstVos.forEach(row => {
+      /*
+        IPv6 시설용 할당할 경우 2/3계위 추가 -> alloc테이블에 2/3계위 컬럼 추가 필요(검토)
+        ssvcGroupCd, ssvcObjCd
+      */
         const { nipAssignMstSeq, sgatewayip, sassignTypeCd, sipCreateTypeCd, ssvcLineTypeCd, nlvlMstSeq, nipAllocMstCnt, nipmsSvcSeq } = row
         const ipAllocOperMstVo = { nipAssignMstSeq, sgatewayip, sassignTypeCd, sipCreateTypeCd, ssvcLineTypeCd, nlvlMstSeq, nipAllocMstCnt, nipmsSvcSeq }
         if (sgatewayip === '') {

@@ -266,6 +266,75 @@ public class AllocMgmtService {
 		return new ArrayList<IpAllocOperMstVo>();
 	}
 
+	/**
+	 * IP 할당 CIDR, 중복검증 로직 
+	 * @param IpAllocOperMstVo
+	 * @return
+	 * @throws Exception
+	 */
+	@Transactional(readOnly = true)
+	public IpAllocOperMstVo appendCrtIPAllocMst(IpAllocOperMstVo ipAllocOperMstVo) {
+		IpAllocOperMstVo resultVo = null;
+		try {
+			if (ipAllocOperMstVo == null) {
+				throw new ServiceException("CMN.HIGH.00001");
+			}
+			// cidr검증
+			ipCommonService.setBaseIpBlockMstInfo(ipAllocOperMstVo);
+			// 중복 ip검증
+			// 대군화 시설용, BcN: CT0001 / N/W Infra: CT0001, CT0004, CT0005
+			/** DB 에 등록될 수 있는 여부 체크 
+			 * 
+			 * 1. 공인 : 계위 상관 없이 IP 중복 불가 CT0001
+				2. 유/무선공용 : 서비스망(1계위)별로 IP 중복 가능 CT0004
+				3. 사설 : 국사(3계위)별로 IP 중복 가능 CT0005
+				4. 공인, 유/무선공용 IP 중복 불가
+			 * 
+			 * */
+			if((ipAllocOperMstVo.getSipCreateTypeCd().equals("CT0005") || ipAllocOperMstVo.getSipCreateTypeCd().equals("CT0004"))){ // 사설
+				int cnt = allocMgmtTxService.countDuplicateTbIpAllocMstVo2(ipAllocOperMstVo);
+				if (cnt > 0) {
+					throw new ServiceException("APP.INFO.00018", new String[]{ipAllocOperMstVo.getPipPrefix()});
+				}
+			} else {
+
+				/* 공인, 유/무선공용 IP 중복 불가 체크 */
+				IpAllocOperMstVo tempVo = new IpAllocOperMstVo();
+				tempVo.setNfirstAddr(ipAllocOperMstVo.getNfirstAddr());
+				tempVo.setNlastAddr(ipAllocOperMstVo.getNlastAddr());
+				tempVo.setSipVersionTypeCd(ipAllocOperMstVo.getSipVersionTypeCd());
+				tempVo.setSipCreateTypeCd(null);
+				int cnt2 = allocMgmtTxService.countDuplicateTbIpAllocMstVo(tempVo);
+				
+				IpAllocOperMstVo tempVo2 = new IpAllocOperMstVo();
+				tempVo2.setNfirstAddr(ipAllocOperMstVo.getNfirstAddr());
+				tempVo2.setNlastAddr(ipAllocOperMstVo.getNlastAddr());
+				tempVo2.setSipVersionTypeCd(ipAllocOperMstVo.getSipVersionTypeCd());
+				tempVo2.setSipCreateTypeCd("CT0004X");
+				int cnt3 = allocMgmtTxService.countDuplicateTbIpAllocMstVo(tempVo2);
+				
+				int cnt = allocMgmtTxService.countDuplicateTbIpAllocMstVo(ipAllocOperMstVo);
+				
+				if("CT0004".equals(ipAllocOperMstVo.getSipCreateTypeCd())) {
+					if (cnt3 > 0 || cnt > 0) { 
+						throw new ServiceException("APP.INFO.00018", new String[]{ipAllocOperMstVo.getPipPrefix()});
+					}	
+				} else {
+					if (cnt2 > 0) {
+						throw new ServiceException("APP.INFO.00018", new String[]{ipAllocOperMstVo.getPipPrefix()});
+					}
+				}
+			}
+			resultVo = ipAllocOperMstVo;
+		} catch (ServiceException e) {
+			throw e;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new ServiceException("CMN.HIGH.00000");
+		}
+		return resultVo;
+	}
+
 	/* 할당 메인 조회 Excel */
 	@Transactional(readOnly = true)
 	public IpAllocOperMstListVo selectListIpAllocMstExcel(IpAllocOperMstVo ipAllocOperMstVo) {
@@ -350,6 +419,26 @@ public class AllocMgmtService {
 		}
 		return resultListVo;
 	}
+	/* IP 시설용인지 확인 */
+	@Transactional(readOnly = true)
+	public Boolean isFacilitiesIp(IpAllocOperMstVo ipAllocOperMstVo) {
+		if (ipAllocOperMstVo == null) {
+			throw new ServiceException("CMN.HIGH.00001");
+		}
+		Boolean result = false;
+		try {
+			int countSassignTypeCd = tbIpAllocMstDao.countSassignTypeCd(ipAllocOperMstVo);
+			if(countSassignTypeCd > 0) {
+				result = true;
+			}
+		} catch (ServiceException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new ServiceException("CMN.HIGH.00023", new String[] { "시설용IP여부" });
+		}
+		return result;
+	}
+	
 
 	/* IP 할당정보 상세 조회 */
 	@Transactional(readOnly = true)

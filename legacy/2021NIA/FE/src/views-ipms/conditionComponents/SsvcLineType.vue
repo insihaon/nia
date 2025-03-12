@@ -307,6 +307,7 @@ export default {
     toggleAll(lvl) {
       if (this.multi.includes(lvl)) {
         this.$set(this.localValue, lvl, this.localValue[lvl]?.includes('') ? [] : ['', ...this.getFullOptions(lvl)])
+        this.emitEventToParent(this.getParameter())
       }
     },
     updateSelectionWithAll(lvl) {

@@ -299,7 +299,7 @@ export default {
       const row = this.selectedRow
       // row ssvcGroupCd, ssvcObjCd 변경
       this.$emit('alocDetailCallBtnClick', row)
-      // this.close()
+      this.close()
       // this.$refs.ModalIpAllocDetail.open({ row: this.selectedRow })
     },
 
