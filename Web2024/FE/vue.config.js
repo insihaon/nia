@@ -13,7 +13,7 @@ const liveReload = true
 // use administrator privileges to execute the command line.
 // For example, Mac: sudo npm run
 // You can change the port by the following method:
-// port = 4000 npm run dev OR npm run dev --port = 4000
+// port = 4000 npm run dev OR npm orun dev --port = 4000
 const port = process.env.port || process.env.npm_config_port || 4000 // dev port
 console.log(`${getTitleName()} server started: port=${port}, env=${process.env.NODE_ENV}, project=${process.env.VUE_APP_PROJECT}`)
 
@@ -27,7 +27,7 @@ function getBaseUrl() {
 
 function isProduction() {
   // const env = ['development', 'staging', 'production']
-  return ['staging', 'production'].includes(process.env.NODE_ENV)
+  return process.env.VUE_APP_MOCK === 'FE' || ['staging', 'production'].includes(process.env.NODE_ENV)
 }
 
 function getPlugIns() {
@@ -84,19 +84,22 @@ function getPlugIns() {
 
 function getOutputDir() {
   let dir = 'dist'
-  switch (process.env.VUE_APP_PROJECT) {
-    case 'datahub':
-      dir = '../BE/app-dataHub/src/main/resources/static'
-      break
-    case 'demo':
-      dir = '../BE/app-demo/src/main/resources/static'
+
+  if (process.env.VUE_APP_MOCK !== 'FE') {
+    switch (process.env.VUE_APP_PROJECT) {
+      case 'datahub':
+        dir = '../BE/app-dataHub/src/main/resources/static'
         break
-    case 'nia':
-      dir = '../BE/app-nia/src/main/resources/static'
+      case 'demo':
+        dir = '../BE/app-demo/src/main/resources/static'
         break
-    case 'ipms':
-      dir = '../BE/app-ipms/src/main/resources/static'
+      case 'nia':
+        dir = '../BE/app-nia/src/main/resources/static'
         break
+      case 'ipms':
+        dir = '../BE/app-ipms/src/main/resources/static'
+        break
+    }
   }
   console.log(`OutputDir=${dir}`)
   return dir
