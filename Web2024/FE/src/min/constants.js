@@ -61,12 +61,12 @@ export default {
       { code: 'FTT', text: '비장애', fnCount: (d) => safeString(d.ticket_type).trim() === 'FTT', fnFilter: (d) => safeString(d.ticket_type).trim() === 'FTT' },
       { code: 'ATT2', text: '이상 트래픽', fnCount: (d) => safeString(d.ticket_type).trim() === 'ATT2', fnFilter: (d) => safeString(d.ticket_type).trim() === 'ATT2' },
       { code: 'NTT', text: '유해 트래픽', fnCount: (d) => safeString(d.ticket_type).trim() === 'NTT', fnFilter: (d) => safeString(d.ticket_type).trim() === 'NTT' },
-      // { code: 'SYSLOG', text: 'SYSLOG', fnCount: (d) => safeString(d.ticket_type).trim() === 'SYSLOG', fnFilter: (d) => safeString(d.ticket_type).trim() === 'SYSLOG' },
+      { code: 'SYSLOG', text: 'SYSLOG', fnCount: (d) => safeString(d.ticket_type).trim() === 'SYSLOG', fnFilter: (d) => safeString(d.ticket_type).trim() === 'SYSLOG' },
     ],
     ipAlarmType: [
-      { code: 'ALARM', text: 'ALARM', fnCount: (d) => ['ATT2', 'NTT'].includes(safeString(d.ticket_type).trim()) || safeString(d.fault_type).trim() === 'SYSLOG', fnFilter: (d) => ['ATT2', 'NTT'].includes(safeString(d.ticket_type).trim()) || safeString(d.fault_type).trim() === 'SYSLOG' },
+      { code: 'ALARM', text: 'ALARM', fnCount: (d) => ['ATT2', 'NTT'].includes(safeString(d.ticket_type).trim()) || safeString(d.ticket_type).trim() === 'SYSLOG', fnFilter: (d) => ['ATT2', 'NTT'].includes(safeString(d.ticket_type).trim()) || safeString(d.ticket_type).trim() === 'SYSLOG' },
       { code: 'TRAFFIC', text: 'TRAFFIC', fnCount: (d) => ['ATT2', 'NTT'].includes(safeString(d.ticket_type).trim()), fnFilter: (d) => ['ATT2', 'NTT'].includes(safeString(d.ticket_type).trim()) },
-      { code: 'SYSLOG', text: 'SYSLOG', fnCount: (d) => safeString(d.fault_type).trim() === 'SYSLOG', fnFilter: (d) => safeString(d.fault_type).trim() === 'SYSLOG' },
+      { code: 'SYSLOG', text: 'SYSLOG', fnCount: (d) => safeString(d.ticket_type).trim() === 'SYSLOG', fnFilter: (d) => safeString(d.ticket_type).trim() === 'SYSLOG' },
     ],
     statusType: [
       { code: 'INIT', hex: '', text: '발생', fnCount: (d) => safeString(d.status).trim() === 'INIT', fnFilter: (d) => safeString(d.status).trim() === 'INIT' },
