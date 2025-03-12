@@ -53,7 +53,7 @@ service.interceptors.request.use(
       config.headers['urlOrigin'] = config.urlOrigin = url
       config.headers['jsonfilename'] = encodeURIComponent(getJsonfileName2(url, config))
       if (store.getters.server) {
-        config.headers['_t'] = Encrypt.toEncrypt(String(Date.now() - (store.getters.server.timeDiff || 0)))
+        config.headers['verifier'] = Encrypt.toEncrypt(String(Date.now() - (store.getters.server.timeDiff || 0)))
       }
 
       if (mock === 'BE') {

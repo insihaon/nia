@@ -466,6 +466,7 @@ import Vue from 'vue'
       configurable: true,
     })
     global.helper = helper
+    global.store = helper.getters
     registHotkey()
 
     setTimeout(() => {

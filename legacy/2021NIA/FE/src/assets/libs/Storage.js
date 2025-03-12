@@ -15,7 +15,7 @@ export class Storage {
     Encrypt.register(this, APP_DEV)
     this.self = this
     this._data = {
-      debug: NODE_ENV_DEV && APP_DEV,
+      debug: (NODE_ENV_DEV && APP_DEV) || process.env.VUE_APP_MOCK === 'FE',
     }
     this._load()
   }

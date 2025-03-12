@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.session.Session;
-import org.springframework.session.data.redis.RedisOperationsSessionRepository;
+import org.springframework.session.data.redis.RedisIndexedSessionRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -38,7 +38,7 @@ public class SessionController {
 
     // Redis에 저장된 세션을 관리하는 Repository를 주입합니다.
     @Autowired
-    private RedisOperationsSessionRepository sessionRepository;
+    private RedisIndexedSessionRepository sessionRepository;
 
     /**
      * A 서버에서 전달받은 sid 파라미터를 이용하여 Redis 세션 정보를 현재 세션에 적용합니다.
