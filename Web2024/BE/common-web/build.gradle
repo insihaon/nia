@@ -33,6 +33,7 @@ dependencies {
 	implementation 'commons-io:commons-io:2.11.0'	/* FileStorageService */
 
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis' /* RedisConfiguration */
+	implementation 'org.springframework.session:spring-session-data-redis' // Redis 세션 저장소 의존성 추가
 	implementation 'com.github.ben-manes.caffeine:caffeine:2.9.1' /* CachingConfiguration */
 	implementation ('it.ozimov:embedded-redis:0.7.3') {		/* EmbeddedRedisConfiguration */
 		exclude group: "org.slf4j", module: "slf4j-simple"

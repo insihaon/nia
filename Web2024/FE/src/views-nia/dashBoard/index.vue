@@ -369,7 +369,10 @@ export default {
 
       this.fn_openWindow('niaTopology', param)
     },
-
+    beforeDestroy() {
+      this.removeWsEventListener(this.CONSTANTS.channels.IPSDN_ALARM.name, this.onReceivedIpsdnTicketEvent)
+      this.removeWsEventListener(this.CONSTANTS.channels.TRANS_ALARM.name, this.onReceivedTransTicketEvent)
+    },
     subscribeEvent() {
       this.addWsEventListener(this.CONSTANTS.channels.IPSDN_ALARM.name, this.onReceivedIpsdnTicketEvent)
       this.addWsEventListener(this.CONSTANTS.channels.TRANS_ALARM.name, this.onReceivedTransTicketEvent)
@@ -497,8 +500,8 @@ export default {
       const btnOption = { isMultiSelect: true, allItem: true, ifAllthenOtherUncheck: true, listName }
 
       this.ipFilterGroup.addFilter('ipStatus', '상태', this.CONSTANTS.nia.statusType, btnOption) // 상태
-      this.ipFilterGroup.addFilter('ipType', 'TYPE', this.CONSTANTS.nia.ipType, btnOption) // ip망 장애 종류
-      this.ipFilterGroup.addFilter('ipAlarmType', '알람 종류', this.CONSTANTS.nia.ipAlarmType, btnOption) // ip망 알람 종류
+      this.ipFilterGroup.addFilter('ipType', '전표 유형', this.CONSTANTS.nia.ipType, btnOption) // ip망 장애 종류
+      // this.ipFilterGroup.addFilter('ipAlarmType', '알람 종류', this.CONSTANTS.nia.ipAlarmType, btnOption) // ip망 알람 종류
     },
     setTransFilterGroup() {
       const listName = 'transmissionNetworkList'

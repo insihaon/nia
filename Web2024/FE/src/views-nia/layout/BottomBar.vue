@@ -94,14 +94,14 @@ export default {
           5분주기 스케줄링 -> max 10분
           수집 주기 max초과 시 연동이상으로 판단한다.
         */
-        aiIpSdnTrafficeKey: { name: 'LinkTraffic', status: 'N', cycle: 1 /* * 60 * 1000 */ }, // 연동 주기 1분
-        aiIpSdnSflowKey: { name: 'Sflow', status: 'N', cycle: 5 /* * 60 * 1000 */ },
-        aiIpSdnSyslogKey: { name: 'Syslog', status: 'N', cycle: 5 /* * 60 * 1000 */ },
-        aiIpSdnNodeFactorKey: { name: 'NodeFactor', status: 'N', cycle: 1 /* * 60 * 1000 */ },
-        // aiTrafficResultKey: { name: 'TRAFFIC', status: 'N', cycle: 1 /* * 60 * 1000 */ },
-        aiTrafficNoxKey: { name: 'AI_Traffic_유해', status: 'N', cycle: 1 /* * 60 * 1000 */ },
-        aiTrafficAnoKey: { name: 'AI_Traffic_이상', status: 'N', cycle: 1 /* * 60 * 1000 */ },
-        aiIpPerfKey: { name: 'IPSDN_Perf', status: 'N', cycle: 5 /* * 60 * 1000 */ }, // 연동 주기 5분
+        aiIpSdnTrafficeKey: { name: 'LinkTraffic', status: 'N', cycle: 5 * 60 * 1000 },
+        aiIpSdnSflowKey: { name: 'Sflow', status: 'N', cycle: 10 * 60 * 1000 },
+        aiIpSdnSyslogKey: { name: 'Syslog', status: 'N', cycle: 10 * 60 * 1000 },
+        aiIpSdnNodeFactorKey: { name: 'NodeFactor', status: 'N', cycle: 5 * 60 * 1000 },
+        // aiTrafficResultKey: { name: 'TRAFFIC', status: 'N', cycle: 5 * 60 * 1000  },
+        aiTrafficNoxKey: { name: 'AI_Traffic_유해', status: 'N', cycle: 5 * 60 * 1000 },
+        aiTrafficAnoKey: { name: 'AI_Traffic_이상', status: 'N', cycle: 5 * 60 * 1000 },
+        aiIpPerfKey: { name: 'IPSDN_Perf', status: 'N', cycle: 10 * 60 * 1000 },
         aiIpResourceIfKey: { name: 'IPSDN_ResourceIf', status: 'N', cycle: this.moment().set({ hour: 2, minute: 40, second: 0, millisecond: 0 }) }, // 매일 2시 40분
         aiIpResourceKey: { name: 'IPSDN_Resource', status: 'N', cycle: this.moment().set({ hour: 2, minute: 30, second: 0, millisecond: 0 }) }, // 매일 2시 30분
       },
@@ -109,25 +109,33 @@ export default {
     }
   },
   mounted() {
-    this.initProcess()
+    this.getSystemMonitoringData()
+    this.setIntervalGetSystemMonitoringData()
     this.subscribeEvent()
     window.bbar = Object.assign(window.bbar || {}, { header: this })
   },
   beforeDestroy() {
     clearInterval(this.monitoringInterval)
+    // this.removeWsEventListener(this.CONSTANTS.channels.SYSTEM_MONITORING.name, this.onReceivedSystemMonitoring)
   },
   methods: {
-    subscribeEvent() {
-      this.addWsEventListener(this.CONSTANTS.channels.SYSTEM_MONITORING.name, this.onReceivedSystemMonitoring)
+    setIntervalGetSystemMonitoringData() {
+      this.monitoringInterval = setInterval(() => {
+        this.getSystemMonitoringData()
+      }, 3 * 60 * 1000)
     },
-    onReceivedSystemMonitoring({ channelName, socketMessage }) {
-      if (channelName !== 'SYSTEM_MONITORING') return
 
-      const data = JSON.parse(socketMessage.message)
-      AppOptions.instance.useWsLog && this.log('RECEIVED SIBSCRIBE SYSTEM_MONITORING EVENT: ', data)
-      this.setCurrentProcess(data)
+    subscribeEvent() {
+      // this.addWsEventListener(this.CONSTANTS.channels.SYSTEM_MONITORING.name, this.onReceivedSystemMonitoring)
     },
-    async initProcess() {
+    // onReceivedSystemMonitoring({ channelName, socketMessage }) {
+    //   if (channelName !== 'SYSTEM_MONITORING') return
+
+    //   const data = JSON.parse(socketMessage.message)
+    //   AppOptions.instance.useWsLog && this.log('RECEIVED SIBSCRIBE SYSTEM_MONITORING EVENT: ', data)
+    //   this.setCurrentProcess(data)
+    // },
+    async getSystemMonitoringData() {
       try {
         const res = await apiSystemMonitoring()
         this.setCurrentProcess(res.result)
@@ -147,21 +155,15 @@ export default {
       const { cycle, collectionTime: lastCollectedTime } = processObj
       const currentTime = new Date()
       const collectionTime = new Date(lastCollectedTime)
-
       const timeDifference = currentTime - collectionTime
 
       if (typeof cycle !== 'number') {
         const dayDiff = cycle.diff(lastCollectedTime, 'days')
         const miniteDiff = cycle.diff(lastCollectedTime, 'minutes')
         return dayDiff > 1 || miniteDiff > 10 ? 'N' : 'Y'
-      } else if (cycle < 5) {
-        const minuteThreshold = 5 * 60 * 1000 // 5 minutes
-        return timeDifference > minuteThreshold ? 'N' : 'Y'
-      } else if (cycle >= 5) {
-        const dailyThreshold = 10 * 60 * 1000 // 10 minutes
-        return timeDifference > dailyThreshold ? 'N' : 'Y'
+      } else {
+        return timeDifference > cycle ? 'N' : 'Y'
       }
-      return 'Y'
     },
     windowSelection(window) {
       if (window.windowState === 'minimize') {

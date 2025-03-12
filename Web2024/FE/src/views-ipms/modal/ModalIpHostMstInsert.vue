@@ -57,13 +57,14 @@
             <th>IP 정보</th>
             <td class="textflex">
               <el-select v-model="resultVo.insertIpVersion" size="mini" @change="onChangeIpVersion">
-                <el-option
-                  v-for="item in [{ code: 'CV0001', name: 'IPv4' }, { code: 'CV0002', name: 'IPv6' }]"
-                  v-if="item.code !== 'CV0000'"
-                  :key="item.code"
-                  :value="item.code"
-                  :label="item.name"
-                />
+                <template v-if="item.code !== 'CV0000'">
+                  <el-option
+                    v-for="item in [{ code: 'CV0001', name: 'IPv4' }, { code: 'CV0002', name: 'IPv6' }]"
+                    :key="item.code"
+                    :value="item.code"
+                    :label="item.name"
+                  />
+                </template>
               </el-select>
               <el-input
                 v-model="resultVo.insertIpHostInet"

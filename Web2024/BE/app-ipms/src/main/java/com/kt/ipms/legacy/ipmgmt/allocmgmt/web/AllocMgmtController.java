@@ -39,7 +39,9 @@ import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.IpAllocOperMstListVo;
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.IpAllocOperMstVo;
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.TbIpAllocMstListVo;
 import com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.TbIpAllocMstVo;
+import com.kt.ipms.legacy.ipmgmt.assignmgmt.service.AssignMgmtService;
 import com.kt.ipms.legacy.ipmgmt.assignmgmt.vo.TbIpAssignMstComplexVo;
+import com.kt.ipms.legacy.ipmgmt.assignmgmt.vo.TbIpAssignMstListVo;
 import com.kt.ipms.legacy.ipmgmt.assignmgmt.vo.TbIpAssignMstVo;
 import com.kt.ipms.legacy.ipmgmt.hostmgmt.vo.TbIpHostMstListVo;
 import com.kt.ipms.legacy.ipmgmt.hostmgmt.vo.TbIpHostMstVo;
@@ -57,10 +59,44 @@ public class AllocMgmtController extends CommonController {
 	private AllocMgmtService allocMgmtService;
 
 	@Autowired
+	private AssignMgmtService assignMgmtService;
+
+	@Autowired
 	protected FileController fileController;
 
 	@Autowired
 	private FileStorageProperties fileStorageProperties;
+
+	/* IP병합 가능 목록 */
+	@RequestMapping(value = "/ipmgmt/allocmgmt/viewListIpMergeMst.model", method = { RequestMethod.POST,
+			RequestMethod.GET })
+	@ResponseBody
+	@EncryptResponse
+	public ModelMap selectListIpMergeMst(@RequestBody IpAllocOperMstVo searchVo, ModelMap model,
+			HttpServletRequest request) {
+		// List<IpAllocOperMstVo> ipMergeMstVos = new ArrayList<IpAllocOperMstVo>();
+		IpAllocOperMstListVo resultListVo = new IpAllocOperMstListVo();
+		try {
+			TbLvlMstVo searchSeqVo = new TbLvlMstVo();
+			searchSeqVo.setSsvcLineTypeCd(searchVo.getSsvcLineTypeCd());
+			searchSeqVo.setSsvcGroupCdMulti(searchVo.getSsvcGroupCdMulti());
+			searchSeqVo.setSsvcObjCd(searchVo.getSsvcObjCd());
+
+			// TbLvlMstListVo resultSeqList = jwtUtil.getLvlSeqList(request, searchSeqVo);
+			// searchVo.setLvlMstSeqListVo(resultSeqList);
+
+			/* 병합가능 리스트 조회 */
+			setPagination(searchVo);
+			resultListVo = allocMgmtService.selectMergeListIpAllocMst(searchVo);
+			/* 병합가능 리스트 스켸줄러 로직 */
+			// ipMergeMstVos = allocMgmtService.validateMrgAsgnIPMstTest(searchVo);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return createResultList(resultListVo.getIpAllocOperMstVos(), resultListVo.getTotalCount());
+		// return createResultList(ipMergeMstVos, ipMergeMstVos.size());
+	}
 
 	/**
 	 * IP 할당 목록
@@ -85,6 +121,35 @@ public class AllocMgmtController extends CommonController {
 
 		TbLvlMstListVo resultSeqList = jwtUtil.getLvlSeqList(request, searchSeqVo);
 		searchVo.setLvlMstSeqListVo(resultSeqList);
+
+		// 시설용IP화면 서비스그룹 하위 코드 setting
+		if (searchVo.getIsFacilities() != null && searchVo.getIsFacilities()) {
+			TbIpAllocMstVo searchasTypeVo = new TbIpAllocMstVo();
+			/* 멀티 list 조건 추가 */
+			List<String> listString = new ArrayList<String>();
+			String[] sAssignGroupTypeMulti = searchVo.getSassignTypeCdMultiStr().split(";");
+			for (int i = 0; i < sAssignGroupTypeMulti.length; i++) {
+				listString.add(sAssignGroupTypeMulti[i]);
+			}
+			searchasTypeVo.setSassignTypeMulti(listString);
+
+			List<CommonCodeVo> sassignGroupTypeCds = assignMgmtService.selectFacilitesTypeCdList(searchasTypeVo);
+			String sAssignTypeMultiStr = new String();
+			for (CommonCodeVo vo : sassignGroupTypeCds) {
+				sAssignTypeMultiStr = sAssignTypeMultiStr.concat(vo.getSubCodeStr()) + ";";
+			}
+			searchVo.setSassignTypeCdMultiStr(sAssignTypeMultiStr);
+		}
+		// 멀티셀렉트
+		if (null != searchVo.getSassignTypeCdMultiStr() && !"".equals(searchVo.getSassignTypeCdMultiStr())) {
+			List<String> listString = new ArrayList<String>();
+			String[] sAssignTypeMulti = searchVo.getSassignTypeCdMultiStr().split(";");
+			for (int i = 0; i < sAssignTypeMulti.length; i++) {
+				listString.add(sAssignTypeMulti[i]);
+			}
+
+			searchVo.setSassignTypeMulti(listString);
+		}
 
 		setPagination(searchVo);
 		IpAllocOperMstListVo resultListVo = allocMgmtService.selectListIpAllocMst(searchVo);
@@ -199,11 +264,12 @@ public class AllocMgmtController extends CommonController {
 			model.addAttribute("sLvlSubvCds", sLvlSubvCds);
 
 			/** 조직별 서비스 유형 셋팅(2014.12.04) **/
-			TbIpAllocMstVo searchasTypeVo = new TbIpAllocMstVo();
-			searchasTypeVo.setLvlMstSeqListVo(resultSeqList);
-			List<CommonCodeVo> sassignTypeCds = allocMgmtService.selectOrgSassignTypeCdList(searchasTypeVo);
-			model.addAttribute("sassignTypeCds", sassignTypeCds);
-
+			// TbIpAllocMstVo searchasTypeVo = new TbIpAllocMstVo();
+			// searchasTypeVo.setLvlMstSeqListVo(resultSeqList);
+			// List<CommonCodeVo> sassignTypeCds =
+			// allocMgmtService.selectOrgSassignTypeCdList(searchasTypeVo);
+			// model.addAttribute("sassignTypeCds", sassignTypeCds);
+			
 			// 멀티셀렉트
 			if (null != searchVo.getSassignTypeCdMultiStr() && !"".equals(searchVo.getSassignTypeCdMultiStr())) {
 				List<String> listString = new ArrayList<String>();
@@ -283,6 +349,27 @@ public class AllocMgmtController extends CommonController {
 		return model;
 	}
 
+	@RequestMapping(value = "/ipmgmt/allocmgmt/appendCrtIPAllocMst.json", method = { RequestMethod.POST,
+		RequestMethod.GET })
+	@ResponseBody
+	@EncryptResponse
+	public IpAllocOperMstVo appendCrtIPMst(@RequestBody IpAllocOperMstVo ipAllocOperMstVo) {
+		IpAllocOperMstVo resultVo = null;
+		try {
+			resultVo = allocMgmtService.appendCrtIPAllocMst(ipAllocOperMstVo);
+			resultVo.setCommonMsg("SUCCESS");
+		} catch (ServiceException e) {
+			resultVo = new IpAllocOperMstVo();
+			String msgDesc = tbCmnMstService.selectMsgDesc(e);
+			resultVo.setCommonMsg(msgDesc);
+		} catch (Exception e) {
+			resultVo = new IpAllocOperMstVo();
+			String msgDesc = tbCmnMstService.selectMsgDesc(new ServiceException("CMN.HIGH.00000"));
+			resultVo.setCommonMsg(msgDesc);
+		}
+		return resultVo;
+	}
+	
 	/**
 	 * IP 할당 목록 엑셀 저장
 	 * 
@@ -775,7 +862,16 @@ public class AllocMgmtController extends CommonController {
 	@EncryptResponse
 	public ModelMap viewDetailAlcIPMst(@RequestBody IpAllocOperMstVo searchVo, ModelMap model,
 			HttpServletRequest request) {
-		IpAllocOperMstListVo resultListVo = allocMgmtService.selectListIpAllocDetail(searchVo);
+		IpAllocOperMstListVo resultListVo = new IpAllocOperMstListVo();
+		try {
+			resultListVo = allocMgmtService.selectListIpAllocDetail(searchVo);
+			// IP 서비스유형 시설용 여부 확인
+			Boolean isFacilitiesIp = allocMgmtService.isFacilitiesIp(searchVo);
+			List<IpAllocOperMstVo> IpAllocOperMstListVos =  resultListVo.getIpAllocOperMstVos();
+			IpAllocOperMstListVos.get(0).setIsFacilities(isFacilitiesIp);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return createResultList(resultListVo.getIpAllocOperMstVos(), resultListVo.getTotalCount());
 	}
 
@@ -1831,6 +1927,45 @@ public class AllocMgmtController extends CommonController {
 			resultListVo.setCommonMsg(msgDesc);
 		}
 
+		return resultListVo;
+	}
+
+	/*
+	 * 시설용 IP서비스 조회
+	 */
+	@RequestMapping(value = "/ipmgmt/allocmgmt/selectFacilitesSassignTypeCdList.json", method = RequestMethod.POST)
+	@ResponseBody
+	@EncryptResponse
+	public TbIpAllocMstListVo selectFacilitesSassignTypeCdList(@RequestBody TbIpAllocMstVo searchVo,
+			HttpServletRequest request, HttpServletResponse response) {
+		TbIpAllocMstListVo resultListVo = new TbIpAllocMstListVo();
+		try {
+			List<TbIpAllocMstVo> groupSassignTypeCdVos = new ArrayList<TbIpAllocMstVo>();
+			List<CommonCodeVo> sassignTypeCds = new ArrayList<CommonCodeVo>();
+
+			sassignTypeCds = allocMgmtService.selectFacilitesTypeCdList(searchVo);
+
+			if (sassignTypeCds != null) {
+
+				for (CommonCodeVo orgSassignTypeCdVo : sassignTypeCds) {
+					TbIpAllocMstVo groupSassignTypeCdMstVo = new TbIpAllocMstVo();
+
+					groupSassignTypeCdMstVo.setSassignTypeCd(orgSassignTypeCdVo.getCode());
+					groupSassignTypeCdMstVo.setSassignTypeNm(orgSassignTypeCdVo.getName());
+					groupSassignTypeCdVos.add(groupSassignTypeCdMstVo);
+				}
+
+				resultListVo.setTbIpAllocMstVos(groupSassignTypeCdVos);
+			}
+		} catch (ServiceException e) {
+			resultListVo = new TbIpAllocMstListVo();
+			String msgDesc = tbCmnMstService.selectMsgDesc(e);
+			resultListVo.setCommonMsg(msgDesc);
+		} catch (Exception e) {
+			resultListVo = new TbIpAllocMstListVo();
+			String msgDesc = tbCmnMstService.selectMsgDesc(new ServiceException("CMN.HIGH.00000"));
+			resultListVo.setCommonMsg(msgDesc);
+		}
 		return resultListVo;
 	}
 

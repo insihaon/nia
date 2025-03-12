@@ -19,7 +19,7 @@
         :prop-is-check-box="false"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
-        :prop-on-click="onClcikRow"
+        :prop-on-click="onClickRow"
         :prop-on-page-change="handleChangeCurPage"
         :prop-on-page-size-change="handleChangeCurPage"
         @savedExcel="handleClickExcelDownloadBtn"
@@ -149,7 +149,7 @@ export default {
       if (v) this.pagination.currentPage = v
       this.fnViewListIpBlockMst()
     },
-     onClcikRow(row) {
+     onClickRow(row) {
        this.fnViewDetailNode(row)
     },
      async fnViewDetailNode(row) {

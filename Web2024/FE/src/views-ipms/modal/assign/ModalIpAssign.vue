@@ -18,7 +18,7 @@
   >
     <div v-loading="vLoading">
       <div class="popupContentTable">
-        <div ref="popupContent" class="popupContentTableTitle">배정 정보</div>
+        <div class="popupContentTableTitle">배정 정보</div>
         <table>
           <colgroup>
             <col width="15%" /><col width="30%" /><col width="30%" /><col width="30%" />
@@ -60,7 +60,7 @@
             <tr>
               <th>배정상태</th>
               <td>
-                <el-select v-model="sassignLevelCd" size="mini" popper-class="sassignLevelCd">
+                <el-select v-model="sassignLevelCd" size="mini" :disabled="isDisabledSassignLevelCd" popper-class="sassignLevelCd">
                   <el-option v-for="option in sassignTypeLevelOptions" :key="option.value" :label="option.label" :value="option.value">
                     {{ option.label }}
                   </el-option>
@@ -68,7 +68,7 @@
               </td>
               <th>서비스</th>
               <td>
-                <el-select v-model="sassignTypeCd" :disabled="sassignLevelCd !== 'IA0004'" size="mini">
+                <el-select v-model="sassignTypeCd" :disabled="sassignLevelCd !== 'IA0004'" size="mini" @change="handleChangeSassignTypeCd">
                   <el-option label="-------" value="SA0000"></el-option>
                   <el-option v-for="option in sassignTypeOptions" :key="option.value" :label="option.label" :value="option.value">
                     {{ option.label }}
@@ -85,9 +85,8 @@
           </tbody>
         </table>
       </div>
-
       <div class="popupContentTable">
-        <div ref="popupContent" class="popupContentTableTitle">배정 대상 정보</div>
+        <div class="popupContentTableTitle">배정 대상 정보</div>
         <div>
           <table id="baseTable" class="tbl_list my-3" summary="목록">
             <colgroup>
@@ -156,12 +155,7 @@ export default {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       vLoading: false,
-      selectedRow: null,
-      ssvcLineTypeOptions: [
-        { label: '공인', value: 'CT0001' },
-        { label: 'Bogon', value: 'CT0003' },
-        { label: '유/무선공용', value: 'CT0004' },
-      ],
+      selectedRows: null,
       ssvcGroupOptions: [
         { label: 'KORNET', value: 'CL0001' },
         { label: 'PREMIUM', value: 'CL0002' },
@@ -169,6 +163,7 @@ export default {
         { label: 'GNS', value: 'CL0004' },
         { label: 'SCHOOLNET', value: 'CL0005' }
       ],
+      isDisabledSassignLevelCd: false,
       sassignTypeLevelOptions: [
         { label: '미배정', value: 'IA0001' },
         { label: '예비배정', value: 'IA0002' },
@@ -218,67 +213,58 @@ export default {
     }
 
   },
-  mounted() {
-  },
   methods: {
+    /*
+      - v6 이고 '시설용 IP' 서비스 선택 시 배정상태는 '서비스배정[미할당]'으로 고정한다.
+      - v6 일 때에는 시설용 IP서비스를 집군화 하여 출력한다.
+    */
     onCreated() {
       Modal.methods.onCreated.call(this)
       this.closeOnClickModal = false
       this.domElement.maxWidth = 1200
     },
     onOpen(model, actionMode) {
-      if (model.type) {
-        setTimeout(() => {
-          const nipAssignMstSeq = model.row.nipAssignMstSeq
-          this.fnViewUpdateAsgnIPMst(nipAssignMstSeq, 'singleParam')
-        }, 100)
-      } else {
-        setTimeout(() => {
-        const nipAssignMstSeq = model.tbIpAssignMstListVo
-        this.fnViewUpdateAsgnIPMst(nipAssignMstSeq, 'doubleParam')
-        }, 100)
+      if (model.rows) {
+        this.selectedRows = this._cloneDeep(model.rows)
+        this.fnViewUpdateAsgnIPMst(model.rows)
       }
     },
-    async fnViewUpdateAsgnIPMst(nipAssignMstSeq, paramType) {
-      const tbIpAssignMstListVo = {
-        tbIpAssignMstVos: []
+    onClose() {
+      this.selectedRows = null
+      this.tbIpAssignMstListVo = []
+      this.disabledLevel = {}
+      this.sassignTypeCd = 'SA0000'
+      this.isDisabledSassignLevelCd = false
+    },
+    async fnViewUpdateAsgnIPMst(rows) {
+      const tbIpAssignMstVos = rows.map(r => { return { nipAssignMstSeq: r.nipAssignMstSeq } })
+      try {
+        this.vLoading = true
+        const res = await apiRequestModel(ipmsModelApis.viewUpdateAsgnIPMst, { tbIpAssignMstVos })
+        this.tbIpAssignMstListVo = res.result.data
+        this.disabledLevel = res.disabledMap
+        this.checkMethod() /* set 계위  */
+        this.setvalue() /* set values */
+      } catch (error) {
+        console.error(error)
+      } finally {
+        this.vLoading = false
       }
-        if (paramType === 'singleParam') {
-          tbIpAssignMstListVo.tbIpAssignMstVos.push({ nipAssignMstSeq: nipAssignMstSeq })
-        } else {
-          nipAssignMstSeq.tbIpAssignMstVos.forEach((item) => {
-            tbIpAssignMstListVo.tbIpAssignMstVos.push({ nipAssignMstSeq: item.nipAssignMstSeq })
-          })
-        }
-        const target = ({ vue: this.$refs.popupContent })
-        try {
-          this.openLoading(target)
-          const res = await apiRequestModel(ipmsModelApis.viewUpdateAsgnIPMst, tbIpAssignMstListVo)
-          this.tbIpAssignMstListVo = res.result.data
-          this.disabledLevel = res.disabledMap
-          this.checkMethod() /* set 계위  */
-          this.setvalue() /* set values */
-        } catch (error) {
-          console.error(error)
-        } finally {
-          this.closeLoading(target)
-        }
-      },
-      setvalue() {
-        const { ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd, sassignLevelCd, } = this.tbIpAssignMstListVo[0]
-          this.ssvcLineTypeCd = ssvcLineTypeCd
-          this.ssvcGroupCd = ssvcGroupCd
-          this.ssvcObjCd = ssvcObjCd
-          this.sassignLevelCd = sassignLevelCd
-      },
-      checkMethod() {
+    },
+    setvalue() {
+      const { ssvcLineTypeCd, ssvcGroupCd, ssvcObjCd, sassignLevelCd, } = this.tbIpAssignMstListVo[0]
+        this.ssvcLineTypeCd = ssvcLineTypeCd
+        this.ssvcGroupCd = ssvcGroupCd
+        this.ssvcObjCd = ssvcObjCd
+        this.sassignLevelCd = sassignLevelCd
+    },
+    checkMethod() {
       if (this.ssvcLineTypeCd !== null || this.ssvcLineTypeNm !== '000000') {
         this.handleChangeLvl1()
       }
       if (this.ssvcGroupCd !== null || this.ssvcGroupCd !== '000000') {
         this.handleChangeLvl2()
       }
-
       /* 값 null 일 경우  */
       if (this.ssvcGroupCd === null) {
         const selectedOption = this.ssvcGroupNmOp.find((option) => option.label === '-------')
@@ -287,13 +273,14 @@ export default {
           this.ssvcGroupCd = selectedOption.value
         }
       }
-
       if (this.ssvcObjCd === null) {
         this.ssvcObjCd = null
       }
     },
     async fnSelectSassignType() {
-      const tbLvlBasVo = { ssvcLineTypeCd: this.ssvcLineTypeCd }
+      const THIS = this
+      const { ssvcLineTypeCd, sipVersionTypeCd } = this.selectedRows[0]
+      const tbLvlBasVo = { ssvcLineTypeCd, sipVersionTypeCd }
 
       const res = await apiRequestJson(ipmsJsonApis.selectOrgSassignTypeCdList, tbLvlBasVo)
       this.sassignTypeOptions = res?.tbIpAllocMstVos?.map(v => {
@@ -301,6 +288,19 @@ export default {
       })
 
       // this.ssvcObjNmOp = []
+    },
+    handleChangeSassignTypeCd(value) {
+      /*
+      N/W INFRA - 장비/IF :SA9035
+      대군화 시설용: SA1014
+      BcN고객: SA9010
+      */
+      if (['SA9035', 'SA1014', 'SA9010'].includes(value)) {
+        this.isDisabledSassignLevelCd = true
+        this.sassignLevelCd = 'IA0004'
+      } else {
+        this.isDisabledSassignLevelCd = false
+      }
     },
     async handleChangeLvl1() {
       this.fnSelectSassignType()
@@ -313,7 +313,6 @@ export default {
       this.ssvcGroupNmOp = res?.tbLvlBasVos?.filter(v => v.ssvcGroupNm !== '전체').map(v => {
         return { value: v.ssvcGroupCd, label: v.ssvcGroupNm }
       })
-
       this.ssvcObjNmOp = []
     },
     async handleChangeLvl2() {
@@ -407,7 +406,7 @@ export default {
           onMessagePopup(this, res.commonMsg)
         }
       } catch (error) {
-        console.error(error)
+        this.error(error)
       } finally {
         this.vLoading = false
       }

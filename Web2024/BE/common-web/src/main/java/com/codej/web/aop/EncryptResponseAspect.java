@@ -15,8 +15,6 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -199,7 +197,7 @@ public class EncryptResponseAspect {
             if(appDto.isDevProfile() == false) {
                 // 타임스탬프 보안 체크
                 long now = new Date().getTime();
-                String tsHeader = request.getHeader("_t");
+                String tsHeader = request.getHeader("verifier");
                 String ts = EncryptUtil.decryptText(tsHeader);
     
                 if (ts == null || Math.abs((now - Long.valueOf(ts)) / 1000) > 10) {

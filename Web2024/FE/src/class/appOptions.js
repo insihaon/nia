@@ -26,10 +26,9 @@ export class AppOptions extends Storage {
       baseURLs: this.readEnv(process.env.VUE_APP_BASE_API, ['//localhost:8070', '/mock']),
       baseURLIndex: this.readEnv(process.env.VUE_APP_BASE_API_INDEX, 0),
       isOnlyFront: this.readEnv(process.env.VUE_APP_ONLY_FE, false),
-      dark: this.readEnv(process.env.VUE_APP_USE_DARK_THEME, false),
       mobile: Device.instance.mobile ?? false,
-      mock: null,
-      projectList: ['datahub', 'demo', 'nia', 'ipms'],
+      mock: process.env.VUE_APP_MOCK || '',
+      projectList: ['datahub', 'nia', 'ipms'],
       project: APP_PROJECT?.toLowerCase(),
       baseURL: null,
       useWebsocket: this.readEnv(process.env.VUE_APP_USE_WEBSOCKET, true),
@@ -37,6 +36,7 @@ export class AppOptions extends Storage {
       lastUser: null,
       useWsLog: false,
       wsTicket: true,
+      debugEncrypt: !this.debug,
       language: ['ko', 'en'].at(0),
       urlParam: {},
     })
@@ -46,6 +46,7 @@ export class AppOptions extends Storage {
     this._save()
 
     this._data.baseURL = this._getDefaultBaseUrl()
+    // this._data.mock = this._data.mock || this.readEnv(process.env.VUE_APP_MOCK, '')
 
     const href = location.href
     this._data.urlParam = param2Obj(href)
@@ -60,13 +61,20 @@ export class AppOptions extends Storage {
     }
   }
 
-  get mock() {
-    /* request 요청시 json file을 가져온다 */
-    return this.baseURL === '/mock'
-  }
-
+  // get mock() {
+  //   /* request 요청시 json file을 가져온다 */
+  //   return this.baseURL === '/mock'
+  // }
   get isGod() {
     return this._data.debug
+  }
+
+  get dark() {
+    return ['ipms'].includes(this._data.project)
+  }
+
+  get encrypt() {
+    return this._data.mock !== 'FE' && (this._data.debug ? !this._data.debugEncrypt : this._data.debugEncrypt)
   }
 
   setFrontMock() {
