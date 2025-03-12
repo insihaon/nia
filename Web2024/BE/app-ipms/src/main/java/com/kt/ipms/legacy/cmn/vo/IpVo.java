@@ -52,7 +52,7 @@ public class IpVo extends CommonVo implements Serializable {
 	
 	private Integer nsubnetmask; // subnet bitmask
 
-	private Boolean isFacilities; // 시설용 화면 여부
+	private Boolean isFacilities; // 시설용 여부
 
 	public String getPipPrefix() {
 		return pipPrefix;

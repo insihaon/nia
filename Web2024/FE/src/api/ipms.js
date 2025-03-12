@@ -130,6 +130,7 @@ export const ipmsJsonApis = {
   selectSassignLevelCds: { desc: '배정조회 > 배정 상태 코드 리스트 조회', url: '/ipmgmt/assignmgmt/selectSassignLevelCds' },
   //
   appendCrtIPMst: { desc: 'IP 블록관리 > IP 블록생성 > IP 주소 추가', url: '/ipmgmt/createmgmt/appendCrtIPMst' },
+  appendCrtIPAllocMst: { desc: 'IP 시설용 할당 > 할당 전 CIDR, 중복체크', url: '/ipmgmt/allocmgmt/appendCrtIPAllocMst' },
   insertListCrtIPMst: { desc: 'IP 블록관리 > IP 블록생성 > IP 주소 등록', url: '/ipmgmt/createmgmt/insertListCrtIPMst' },
   selectListSipCreateSeqCd: { desc: 'IP 블록관리  >  생성차수 조회', url: '/ipmgmt/createmgmt/selectListSipCreateSeqCd' },
   updateCrtIPMst: { desc: 'IP 블록관리  > 수정', url: '/ipmgmt/createmgmt/updateCrtIPMst' },

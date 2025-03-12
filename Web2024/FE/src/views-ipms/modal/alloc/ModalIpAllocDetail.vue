@@ -467,31 +467,48 @@ export default {
       fnViewCheckTacsIpBlock(this, [this.receivedRow], typeFlag)
     },
     fnAlocCallBtnClick() {
-      this.$emit('alocCallBtnClick')
+      this.$emit('alocCallBtnClick', this.receivedRow)
       this.close()
     },
     async handleClickIpBlockCheck() {
-      const { sipCreateTypeCd, ssvcLineTypeCd, sipCreateSeqCd, sipVersionTypeCd } = this.ipAllocOperMstVo
-      const { network, host, nbitmask } = this.alocInfo
-      const pipPrefix = this.compressIPv6(network + host + '/' + nbitmask)
-      const ipBLockCheckVo = {
-        srcIpBlockMstVo: {
+      /*
+      if : 시설용 ipv6일 때 서비스 호출 sipVersionTypeCd === 'CV0002' && this.ipAllocOperMstVo.isFaciliteis
+
+      else : 할당 시설정보 셋팅화면 호출 => this.fnAlocCallBtnClick()
+      */
+     const ipAllocOperMstVo = this.ipAllocOperMstVo
+     console.log()
+      const { sipCreateTypeCd, ssvcLineTypeCd, sipCreateSeqCd, sipVersionTypeCd, isFacilities } = this.ipAllocOperMstVo
+      if (sipVersionTypeCd === 'CV0002' && isFacilities) {
+        const { network, host, nbitmask } = this.alocInfo
+        const pipPrefix = this.compressIPv6(network + host + '/' + nbitmask)
+        const IpAllocOperMstVo = {
           sipCreateTypeCd,
           ssvcLineTypeCd,
           sipCreateSeqCd,
           sipVersionTypeCd,
           pipPrefix, // new pipPrefix
-        },
-        destIpBlockMstVos: []
-      }
-      try {
-        const res = await apiRequestJson(ipmsJsonApis.appendCrtIPMst, ipBLockCheckVo)
-        console.log()
-        // res.commonMsg 성공일 경우
-        // 할당 정보 입력 팝업
+        }
+        try {
+          /*
+          2025-03-06 cidr 검증 및 중복 ip검증(db insert되는지)
+          시설용 ipv6일 때 서비스 호출.
+          */
+          const res = await apiRequestJson(ipmsJsonApis.appendCrtIPAllocMst, IpAllocOperMstVo)
+          console.log(res)
+          // res.commonMsg 성공일 경우
+          // 할당 정보 입력 팝업
+          if (res.commonMsg !== 'SUCCESS') {
+            onMessagePopup(this, res.commonMsg)
+            return
+          } else {
+            this.fnAlocCallBtnClick()
+          }
+        } catch (error) {
+          this.error(error)
+        }
+      } else {
         this.fnAlocCallBtnClick()
-      } catch (error) {
-        this.error(error)
       }
     },
     async fnRetUpdateConfirmClick() {

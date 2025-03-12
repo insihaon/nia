@@ -21,7 +21,7 @@
         :prop-is-cell-click-check="true"
         prop-grid-menu-id="inputSpeed"
         :prop-grid-indx="1"
-        :prop-on-dbl-click="hadleClickIpAllocDetail"
+        :prop-on-dbl-click="(row) => hadleClickIpAllocDetail(row)"
         :prop-on-select="handleClickTableCheck"
         :prop-on-page-change="handleChangeCurPage"
         :prop-on-page-size-change="handleChangeCurPage"
@@ -59,7 +59,7 @@
     <!-- 할당 상세 -->
     <ModalIpAllocDetail ref="ModalIpAllocDetail" @alocCallBtnClick="fnInsertAlcBtnClick" />
     <!-- 할당 처리 전 계위 설정 -->
-    <ModalIpAllocOrgSetting ref="ModalIpAllocOrgSetting" @alocDetailCallBtnClick="hadleClickIpAllocDetail" />
+    <ModalIpAllocOrgSetting ref="ModalIpAllocOrgSetting" @alocDetailCallBtnClick="(row) => hadleClickIpAllocDetail(row, true)" />
     <!-- 라우팅 중복 개수 -->
     <ModalDetailSummary ref="ModalDetailSummary" />
     <!-- IP블록병합 -->
@@ -206,7 +206,7 @@ export default {
       const parameter = requestParameter ?? this.$refs.searchCondition.requestParameter
       const target = ({ vue: this.$refs.compTable })
       const { pageSize: pageUnit, currentPage: pageIndex } = this.pagination
-      Object.assign(parameter, { pageUnit, pageIndex, isFacilites: true })
+      Object.assign(parameter, { pageUnit, pageIndex, isFacilities: true })
       try {
         this.openLoading(target)
         const res = await apiRequestModel(ipmsModelApis.viewListIpAllocMst, parameter)
@@ -236,16 +236,19 @@ export default {
     handleClickCell(params) {
       this.selectedRow = params?.row
     },
-    fnViewDetailAlcIpMst() {
-      const row = this.selectedRow
-      if (this.viewMode === 'manualAloc' && row.ssvcGroupCd === '000000' || row.ssvcObjCd === '000000') {
-        this.$refs.ModalIpAllocOrgSetting.open({ row })
-      } else {
-        this.$refs.ModalIpAllocDetail.open({ row, menuType: this.viewMode })
+    fnViewDetailAlcIpMst(receviedRow = null, isSetOrg = false) {
+      const row = receviedRow ?? this.selectedRow
+      const isSettingOrg = row.ssvcGroupCd !== '000000' && row.ssvcObjCd !== '000000'
+      if (this.viewMode === 'manualAloc') {
+        if ((isSettingOrg || isSetOrg) || row.sassignLevelCd === 'IA0006') {
+          this.$refs.ModalIpAllocDetail.open({ row, menuType: this.viewMode })
+        } else if (!isSettingOrg) {
+          this.$refs.ModalIpAllocOrgSetting.open({ row })
+        }
       }
     },
-    hadleClickIpAllocDetail(row) {
-      this.fnViewDetailAlcIpMst(row)
+    hadleClickIpAllocDetail(row = null, isSetOrg = false) {
+      this.fnViewDetailAlcIpMst(row, isSetOrg)
     },
     handleClickTableCheck(all, cur) {
       this.selectedRow = cur
@@ -253,8 +256,8 @@ export default {
     fnViewCheckTacsIpBlock_() {
       fnViewCheckTacsIpBlock(this, this.selectedRow)
     },
-    fnInsertAlcBtnClick() {
-      const row = this.selectedRow
+    fnInsertAlcBtnClick(receivedRow = null) {
+      const row = receivedRow ?? this.selectedRow
       if (row === null) {
         onMessagePopup(this, '할당 할 대상이 없습니다.')
         return
@@ -266,12 +269,12 @@ export default {
           return
         }
         /* Step 02. 계위 및 서비스 유형 동일 선택 체크 */
-        const { sassignTypeCd, nlvlMstSeq, nbitMask, sneossDdYn, ssvcLineTypeCd, sipCreateTypeCd, sipVersionTypeCd } = row
+        const { sassignTypeCd, nlvlMstSeq, nbitmask, sneossDdYn, ssvcLineTypeCd, sipCreateTypeCd, sipVersionTypeCd } = row
 
         // let linkYn = 'N'
         // let linkYn2 = 'N'
         // if (['CL0001', 'CL0002', 'CL0003'].includes(ssvcLineTypeCd)) {
-        //   if (sneossDdYn === 'N' && [29, 30].includes(nbitMask)) {
+        //   if (sneossDdYn === 'N' && [29, 30].includes(nbitmask)) {
         //     linkYn = 'Y'
         //   }
         // }
@@ -281,7 +284,7 @@ export default {
         //     return
         //   }
         //   if (['CL0001', 'CL0002', 'CL0003'].includes(ssvcLineTypeCd)) {
-        //     if (rows[j].sneossDdYn === 'N' && [29, 30].includes(rows[j].nbitMask)) {
+        //     if (rows[j].sneossDdYn === 'N' && [29, 30].includes(rows[j].nbitmask)) {
         //       linkYn2 = 'Y'
         //     }
         //   }
@@ -290,7 +293,7 @@ export default {
         //   onMessagePopup(this, '선택하신 할당 대상 블록의 할당구분(회선/시설/링크) 정보가 동일하지 않습니다. 확인해주세요.')
         //   return
         // }
-        if ((sipVersionTypeCd === 'CV0001' && nbitMask < 16) || (sipVersionTypeCd === 'CV0002' && nbitMask < 48)) {
+        if ((sipVersionTypeCd === 'CV0001' && nbitmask < 16) || (sipVersionTypeCd === 'CV0002' && nbitmask < 48)) {
           onMessagePopup(this, '/16(IPv4), /48(IPv6) 보다 큰 IP블록은 할당할 수 없습니다.')
           return
         }
@@ -298,6 +301,7 @@ export default {
           onMessagePopup(this, 'VPN망은 공인 IP블록만 할당할 수 있습니다.')
           return
         }
+        // cidr 검증, 중복 ip 검증 서비스 추가
         this.$refs.ModalIpAllocInsert.open({ ipAllocOperMstVos: [row] })
     },
     handleClickExcelDownloadBtn() {

@@ -581,6 +581,63 @@
 		<include refid="List_Where_Clause" />
 		<include refid="Append_Where_Clause"/>
 	</select>
+
+	<!-- /* 기존 사설(CT0004) 은 유/무선공용으로 사용, 신규 사설(CT0005) 을 사설로 사용  */ -->
+	<!-- 
+		1. 공인 : 계위 상관 없이 IP 중복 불가
+		2. 유/무선공용 : 서비스망(1계위)별로 IP 중복 가능
+		3. 사설 : 국사(3계위)별로 IP 중복 가능
+		4. 공인, 유/무선공용 IP 중복 불가
+	 -->
+	<select id="countDuplicateTbIpAllocMstVo" resultType="int" parameterType="com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.IpAllocOperMstVo">
+		SELECT COUNT(NIP_ALLOC_MST_SEQ) AS CNT
+		FROM MST.TB_IP_ALLOC_MST ALLOC
+		LEFT JOIN MST.TB_IP_ASSIGN_MST ASSIGN ON ALLOC.NIP_ASSIGN_MST_SEQ = ASSIGN.NIP_ASSIGN_MST_SEQ
+		WHERE 1=1
+		AND (
+				(NFIRST_ADDR <![CDATA[<=]]> #{nfirstAddr, jdbcType=NUMERIC} AND NLAST_ADDR <![CDATA[>=]]> #{nlastAddr, jdbcType=NUMERIC})
+				OR (NFIRST_ADDR <![CDATA[>=]]> #{nfirstAddr, jdbcType=NUMERIC} AND NFIRST_ADDR <![CDATA[<=]]> #{nlastAddr, jdbcType=NUMERIC})
+				OR (NLAST_ADDR <![CDATA[>=]]> #{nfirstAddr, jdbcType=NUMERIC} AND NLAST_ADDR <![CDATA[<=]]> #{nlastAddr, jdbcType=NUMERIC})
+				OR (NFIRST_ADDR <![CDATA[>=]]> #{nfirstAddr, jdbcType=NUMERIC} AND NLAST_ADDR <![CDATA[<=]]> #{nlastAddr, jdbcType=NUMERIC})
+			)
+		<choose>
+			<when test="sipCreateTypeCd == 'CT0004'">
+				AND ALLOC.SIP_CREATE_TYPE_CD NOT IN ('CT0005')
+				AND ALLOC.SSVC_LINE_TYPE_CD = #{ssvcLineTypeCd, jdbcType=CHAR}
+			</when>
+			<!-- 사설 중복 IP체크 -->
+			<when test="sipCreateTypeCd == 'CT0005'">
+				AND ALLOC.SIP_CREATE_TYPE_CD = 'CT0005' 
+				AND NLVL_MST_SEQ = #{nlvlMstSeq, jdbcType=BIGINT}
+				AND ALLOC.SSVC_LINE_TYPE_CD = #{ssvcLineTypeCd, jdbcType=CHAR}
+			</when>
+			<when test="sipCreateTypeCd == 'CT0004X'">
+				AND ALLOC.SIP_CREATE_TYPE_CD NOT IN ('CT0004', 'CT0005') 
+			</when>
+			<otherwise>
+				AND ALLOC.SIP_CREATE_TYPE_CD NOT IN ('CT0005')
+			</otherwise>
+		</choose>
+		AND ALLOC.SIP_VERSION_TYPE_CD = #{sipVersionTypeCd, jdbcType=CHAR}
+	</select>
+
+	<!-- 사설IP 중복 체크  -->
+	<select id="countDuplicateTbIpAllocMstVo2" resultType="int" parameterType="com.kt.ipms.legacy.ipmgmt.createmgmt.vo.TbIpBlockMstVo">
+		SELECT COUNT(NIP_ALLOC_MST_SEQ) AS CNT
+		FROM FROM MST.TB_IP_ALLOC_MST ALLOC
+		LEFT JOIN MST.TB_IP_ASSIGN_MST ASSIGN ON ALLOC.NIP_ASSIGN_MST_SEQ = ASSIGN.NIP_ASSIGN_MST_SEQ
+		WHERE 1=1
+		AND (
+				(NFIRST_ADDR <![CDATA[<=]]> #{nfirstAddr, jdbcType=NUMERIC} AND NLAST_ADDR <![CDATA[>=]]> #{nlastAddr, jdbcType=NUMERIC})
+				OR (NFIRST_ADDR <![CDATA[>=]]> #{nfirstAddr, jdbcType=NUMERIC} AND NFIRST_ADDR <![CDATA[<=]]> #{nlastAddr, jdbcType=NUMERIC})
+				OR (NLAST_ADDR <![CDATA[>=]]> #{nfirstAddr, jdbcType=NUMERIC} AND NLAST_ADDR <![CDATA[<=]]> #{nlastAddr, jdbcType=NUMERIC})
+				OR (NFIRST_ADDR <![CDATA[>=]]> #{nfirstAddr, jdbcType=NUMERIC} AND NLAST_ADDR <![CDATA[<=]]> #{nlastAddr, jdbcType=NUMERIC})
+			)
+		AND ALLOC.SIP_CREATE_TYPE_CD = 'CT0005' 
+		AND ALLOC.SIP_VERSION_TYPE_CD = #{sipVersionTypeCd, jdbcType=CHAR}
+		AND ALLOC.SSVC_LINE_TYPE_CD = #{ssvcLineTypeCd, jdbcType=CHAR}	 
+		AND NLVL_MST_SEQ = #{nlvlMstSeq, jdbcType=BIGINT}
+	</select>
 	
 	<!-- 회선정보조회 -->
 	<select id="selectIpAllocDetail" resultMap="tbIpAllocMstVoResult" parameterType="com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.IpAllocOperMstVo">
@@ -3097,6 +3154,17 @@
 		GROUP BY SASSIGN_TYPE_GROUP_CD, SASSIGN_TYPE_GROUP_NM
 		ORDER BY SASSIGN_TYPE_GROUP_CD, SASSIGN_TYPE_GROUP_NM
 	</select>
+
+	<!-- 시설용 IP여부  -->
+	<select id="countSassignTypeCd" resultType="int" parameterType="com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.IpAllocOperMstVo">
+		SELECT COUNT(SASSIGN_TYPE_CD)
+		FROM MST.TB_ASSIGN_TYPE_GROUP_CD
+    	WHERE 1=1
+		<if test="sassignTypeCd != null">
+			SASSIGN_TYPE_CD = #{sassignTypeCd, jdbcType=CHAR}
+		</if>
+	</select>
+
 	
 	<select id="selectVpnIPStat" resultMap="tbIpAllocMstVoResult" parameterType="com.kt.ipms.legacy.ipmgmt.allocmgmt.vo.TbIpAllocMstVo">
 		<if test="@org.apache.commons.lang.StringUtils@isNotEmpty(sAlcSrchTypeCd)">
