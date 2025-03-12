@@ -43,11 +43,12 @@ public class IpmsJwtTokenProvider extends BaseJwtTokenProvider { // JWT 토큰�
         return ipmsUserDetailsService;
     }
     // Jwt 토큰 생성
-    public String createToken(LoginInfoVo user, String address) throws JsonProcessingException {
+    public String createToken(LoginInfoVo user, String sessionId, String address) throws JsonProcessingException {
         String userPk = String.valueOf(user.getSuserId());
         List<String> roles = user.getRolesList();
         Claims claims = Jwts.claims().setSubject(userPk);
 
+        claims.put("sessionId", sessionId);  
         claims.put("roles", roles);
         claims.put("address", address);
 

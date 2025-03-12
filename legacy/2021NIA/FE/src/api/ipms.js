@@ -7,6 +7,7 @@ const { debug, isProd } = AppOptions.instance
 export const filePath = __filename.replace(/\\/g, '/')
 
 export const ipmsModelApis = {
+  viewListIpMergeMst: { desc: '병합가능 리스트 테스트', url: '/ipmgmt/allocmgmt/viewListIpMergeMst' },
   viewListCrtIPMst: { desc: 'IP 블록관리 조회', url: '/ipmgmt/createmgmt/viewListCrtIPMst' },
   viewListAsgnIPMst: { desc: 'IP 배정 조회', url: '/ipmgmt/assignmgmt/viewListAsgnIPMst' },
   viewListUnAssignIP: { desc: 'IP 미배정 조회', url: '/ipmgmt/assignmgmt/viewListUnAssignIP' },
@@ -18,7 +19,6 @@ export const ipmsModelApis = {
   viewSearchtNeMst: { desc: 'IP할당 > 시설 정보 조회 POP', url: '/ipmgmt/allocmgmt/viewSearchtNeMst' },
   viewSearchtLnMst: { desc: 'IP할당 > 링크 정보 조회 POP', url: '/ipmgmt/allocmgmt/viewSearchtLnMst' },
   viewInsertDivAsgnIPMst: { desc: '배정/할당 > IP분할 대상정보', url: '/ipmgmt/assignmgmt/viewInsertDivAsgnIPMst' },
-  viewInsertMrgAsgnIPMst: { desc: '배정/할당 > IP병합 대상정보', url: '/ipmgmt/assignmgmt/viewInsertMrgAsgnIPMst' },
   viewListSvcStat: { desc: 'IP 서비스별 통계 조회', url: '/statmgmt/ipstatmgmt/viewListSvcStat' },
   viewListOrgSvcStat: { desc: 'IP 조직서비스별 통계 조회', url: '/statmgmt/ipstatmgmt/viewListOrgSvcStat' },
   viewListBlockSizeStat: { desc: 'IP 블록크기별 통계 조회', url: '/statmgmt/ipstatmgmt/viewListBlockSizeStat' },
@@ -124,11 +124,13 @@ export const ipmsJsonApis = {
   selectOfficeList: { desc: '수용국 조회', url: '/ipmgmt/linemgmt/selectOfficeList' },
   selectSearchLvlCd: { desc: '운용팀 조회', url: 'opermgmt/orgmgmt/selectSearchLvlCd' },
   selectOrgSassignTypeCdList: { desc: '서비스 조회', url: '/ipmgmt/allocmgmt/selectOrgSassignTypeCdList' },
+  selectFacilitesSassignTypeCdList: { desc: '시설용IP 서비스 조회(그룹)', url: '/ipmgmt/allocmgmt/selectFacilitesSassignTypeCdList' },
   selectSearchOrgBas: { desc: '운용조직 검색', url: '/opermgmt/orgmgmt/selectSearchOrgBas' },
   selectSipCreateSeqCdsList: { desc: '생성차수 공통 코드 리스트 조회', url: '/ipmgmt/createmgmt/selectSipCreateSeqCdsList' },
   selectSassignLevelCds: { desc: '배정조회 > 배정 상태 코드 리스트 조회', url: '/ipmgmt/assignmgmt/selectSassignLevelCds' },
   //
   appendCrtIPMst: { desc: 'IP 블록관리 > IP 블록생성 > IP 주소 추가', url: '/ipmgmt/createmgmt/appendCrtIPMst' },
+  appendCrtIPAllocMst: { desc: 'IP 시설용 할당 > 할당 전 CIDR, 중복체크', url: '/ipmgmt/allocmgmt/appendCrtIPAllocMst' },
   insertListCrtIPMst: { desc: 'IP 블록관리 > IP 블록생성 > IP 주소 등록', url: '/ipmgmt/createmgmt/insertListCrtIPMst' },
   selectListSipCreateSeqCd: { desc: 'IP 블록관리  >  생성차수 조회', url: '/ipmgmt/createmgmt/selectListSipCreateSeqCd' },
   updateCrtIPMst: { desc: 'IP 블록관리  > 수정', url: '/ipmgmt/createmgmt/updateCrtIPMst' },

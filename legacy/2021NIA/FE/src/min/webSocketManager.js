@@ -9,16 +9,17 @@ import moment from 'moment'
 import store from '@/store'
 import Vue from 'vue'
 
+export const _ = { channels: CONSTANTS.channels }
+
 // eslint-disable-next-line no-constant-condition
 const log = AppOptions.instance.useWsLog ? console.log : () => {}
 const error = AppOptions.instance.debug === true ? console.error.bind(null) : () => { }
 
 let instance = null
-const retryMax = JSON.parse(process.env.VUE_APP_WS_RETRY_MAX || 30)
-const retryInterval = 1000 * JSON.parse(process.env.VUE_APP_WS_RETRY_INTERVAL || 10)
-const channels = objectToArray(CONSTANTS.channels).filter(channel => channel.enable === true)
+const retryMax = JSON.parse(process.env.VUE_APP_WS_RETRY_MAX || 999)
+const retryInterval = 1000 * JSON.parse(process.env.VUE_APP_WS_RETRY_INTERVAL || 1)
+const channels = objectToArray(CONSTANTS.channels).filter(channel => channel.enable === true && channel.init === true)
 // eslint-disable-next-line no-return-assign
-channels.forEach(s => s.url = s.url || `/sub/${s.name}`)
 
 class WebSocketManager {
   static get instance() {
@@ -98,14 +99,14 @@ class WebSocketManager {
       }
       // #endregion
     } else {
-      this.subscribe()
+      this.subscribeInit()
     }
 
     // eslint-disable-next-line no-inner-declarations
     function onConnect(frame) {
       log('Connected: ' + frame)
       this.retry = 0
-      this.subscribe()
+      this.subscribeInit()
     }
 
     // eslint-disable-next-line no-inner-declarations
@@ -184,55 +185,65 @@ class WebSocketManager {
     }
   }
 
-  subscribe() {
+  subscribeInit() {
     this.startHeartbeatCheck()
-    channels.forEach(channel => {
-      if (!channel.name || this.isSubscribed(channel.name)) {
-        return true
-      }
-      this.stompClient.subscribe(channel.url, (message) => {
+    channels.forEach(channel => this.subscribe(channel.name))
+    this.dispatchWaitingListeners()
+  }
+
+  subscribe(channelName) {
+    if (!channelName || this.getSubscribedChannel(channelName)) {
+      return true
+    }
+    const url = `/sub/${channelName}`
+    const subscribed = this.stompClient.subscribe(url, (message) => {
+      try {
+        const data = JSON.parse(message.body)
         try {
-          const data = JSON.parse(message.body)
-          try {
-            log(`>>> ${channel.name} received message, userCount=${data.userCount}, sessionCount=${data.sessionCount}\n`, JSON.parse(data.message))
-          // eslint-disable-next-line no-empty
-          } catch (error) {
-          }
-
-          switch (channel.name) {
-            case 'COMMAND':
-              this.runCommand(data)
-              break
-            case 'HEARTBEAT':
-              {
-                const timestamp = data.message
-                const last = this.heartbeats[0] || timestamp
-                this.heartbeats.unshift(timestamp)
-                this.heartbeats.splice(10)
-                if (new Date(last) - new Date(timestamp) > 10 * 1000) {
-                  throw new Error(`Network Connect Detected (HEARTBEAT): lastTimestamp=${last}`)
-                }
-              }
-              break
-            default:
-              if (CONSTANTS.channels[channel.name]) {
-                this.messages.unshift({ 'type': data.type, 'sender': data.sender, 'message': data.message })
-              } else {
-                throw new Error(`Undefined subscribe destinations`, channel)
-              }
-          }
-
-          this.fireEvent({
-            channelName: channel.name,
-            socketMessage: data
-          })
-        } catch (e) {
-          error(e)
+          log(`>>> ${channelName} received message, userCount=${data.userCount}, sessionCount=${data.sessionCount}\n`, JSON.parse(data.message))
+        // eslint-disable-next-line no-empty
+        } catch (error) {
         }
-      }, { id: channel.name })
-    })
 
-    this.addWaitingEventListeners()
+        switch (channelName) {
+          case 'COMMAND':
+            this.runCommand(data)
+            break
+          case 'HEARTBEAT':
+            {
+              const timestamp = data.message
+              const last = this.heartbeats[0] || timestamp
+              this.heartbeats.unshift(timestamp)
+              this.heartbeats.splice(10)
+              if (new Date(last) - new Date(timestamp) > 10 * 1000) {
+                throw new Error(`Network Connect Detected (HEARTBEAT): lastTimestamp=${last}`)
+              }
+            }
+            break
+          default:
+            if (CONSTANTS.channels[channelName]) {
+              this.messages.unshift({ 'type': data.type, 'sender': data.sender, 'message': data.message })
+            } else {
+              throw new Error(`Undefined subscribe destinations`, channelName)
+            }
+        }
+
+        this.fireEvent({
+          channelName: channelName,
+          socketMessage: data
+        })
+      } catch (e) {
+        error(e)
+      }
+    }, { id: channelName })
+
+    if (subscribed && subscribed.id === channelName) {
+      log(`WS subscribe ${channelName} Successed`)
+      return true
+    } else {
+      log(`WS subscribe ${channelName} Failed`)
+      return false
+    }
   }
 
   async sendMessage(channelName = 'UNKNOWN', data = '', type = 'BROADCAST') {
@@ -277,7 +288,7 @@ class WebSocketManager {
     }
   }
 
-  addWaitingEventListeners(listener) {
+  dispatchWaitingListeners(listener) {
     if (!this.stompClient) {
       return
     }
@@ -288,7 +299,7 @@ class WebSocketManager {
     this.waitingEventListeners.splice(0)
   }
 
-  isSubscribed(channelName) {
+  getSubscribedChannel(channelName) {
     const subscriptions = this.stompClient.subscriptions
     return subscriptions[channelName]
   }
@@ -306,10 +317,20 @@ class WebSocketManager {
       owner
     }
 
-    if (this.isSubscribed(channelName)) {
+    if (this.getSubscribedChannel(channelName)) {
       this.eventListeners.push(listener)
     } else {
-      this.waitingEventListeners.push(listener)
+      const subscribed = this.subscribe(channelName)
+
+      if (!subscribed) {
+        error(`WS addEventListener fail: ${channelName}`)
+      }
+
+      // 1초 후 addEventListener 재시도
+      const THIS = this
+      setTimeout(() => {
+        THIS.addEventListener(channelName, eventHandler, owner)
+      }, 1000)
     }
   }
 
@@ -318,6 +339,14 @@ class WebSocketManager {
     this.eventListeners = this.eventListeners.filter(function(item) {
       return !(channelName === item.channelName && eventHandler === item.eventHandler && (!owner || owner === item.owner))
     })
+
+    const channels = this.eventListeners.filter(function(item) {
+      return channelName === item.channelName
+    })
+    if (channels.length === 0) {
+      const subscription = this.getSubscribedChannel(channelName)
+      subscription && this.stompClient.unsubscribe(subscription)	// 구독해제, unsubscribe(id, headers)
+    }
   }
 
   removeAllEventListener(owner) {

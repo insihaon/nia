@@ -107,7 +107,7 @@ function padKey(plainKey) {
     return encryptText
   }
 
-  static encryptHttp(data = {}, encrypt = true, isDevProfile = false) {
+  static encryptHttp(data = {}, encrypt = true) {
     let encryptText = null
     if (encrypt) {
       encryptText = Encrypt.toEncrypt(data)
@@ -160,6 +160,7 @@ function padKey(plainKey) {
     if (uuid === null || Date.now() - Number(uuid.split(' ')[0]) > 1000 * 60 * 60) {
       uuid = `${String(Date.now())} ${generateUUID()}`
       STORAGE.setItem(UUID_KEY, Encrypt.toEncrypt(uuid))
+      !opt && STORAGE.removeItem('options')
     }
 
     const [d, u] = uuid.split(' ')

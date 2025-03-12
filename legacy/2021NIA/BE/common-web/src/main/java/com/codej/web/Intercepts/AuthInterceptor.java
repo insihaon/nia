@@ -75,7 +75,7 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 
 				if(controller instanceof com.codej.web.controller.BaseDataController) {
 					long now = new Date().getTime();
-					String ts = EncryptUtil.decryptText(request.getHeader("_t"));
+					String ts = EncryptUtil.decryptText(request.getHeader("verifier"));
 					if(ts == null || Math.abs((now - Long.valueOf(ts)) / 1000) > 10) {
 						throw new CUntrustedRequestException();
 					}

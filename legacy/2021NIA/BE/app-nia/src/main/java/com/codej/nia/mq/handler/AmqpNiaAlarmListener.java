@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 public class AmqpNiaAlarmListener implements ChannelAwareMessageListener {
 
     @Autowired(required = false)
+    @Lazy
     private WebsocketService websocketService;
 
     @Autowired

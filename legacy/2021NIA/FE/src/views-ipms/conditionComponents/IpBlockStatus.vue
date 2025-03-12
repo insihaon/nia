@@ -8,12 +8,13 @@
         <el-select
           v-model="values"
           size="small"
+          :disabled="disabled"
           :multiple="isMulti"
           collapse-tags
           popper-class="IpBlockStatus"
           @change="handleChange()"
         >
-          <el-option label="전체" value=""><span class="w-100 h-100 d-inline-block" @click="handleClickAll">전체</span></el-option>
+          <el-option v-if="isShowAll" label="전체" value=""><span class="w-100 h-100 d-inline-block" @click="handleClickAll">전체</span></el-option>
           <el-option
             v-for="(option, i) in options"
             :key="i"
@@ -35,6 +36,10 @@ export default {
   extends: Base,
   mixins: [commonFunctionMixin],
   props: {
+    isShowAll: {
+      type: Boolean,
+      default: true
+    },
     label: {
       type: String,
       default: 'IP 블록상태'
@@ -46,6 +51,14 @@ export default {
     prop_options: {
       type: Array,
        default: () => []
+    },
+    defaultValue: {
+      type: String,
+      default: null
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -88,6 +101,9 @@ export default {
       this.values = this.isMulti ? [] : ''
       if (this.prop_options && this.prop_options.length > 0) {
         this.options = [...this.prop_options]
+      }
+      if (this.defaultValue != null) {
+        this.values = this.isMulti ? [this.defaultValue] : this.defaultValue
       }
       this.emitEventToParent(this.getParameter())
     },

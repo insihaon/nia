@@ -10,6 +10,7 @@
         filterable
         collapse-tags
         size="small"
+        :disabled="disabled"
         @change="handleChange"
       >
         <el-option label="전체" value=""><span class="w-100 h-100 d-inline-block" @click="toggleAll()">전체</span></el-option>
@@ -31,6 +32,10 @@ export default {
     valueType: {
       type: String,
       default: null
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   data() {

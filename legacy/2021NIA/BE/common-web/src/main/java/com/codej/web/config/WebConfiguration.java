@@ -61,11 +61,11 @@ public class WebConfiguration implements WebMvcConfigurer {
         //         .excludePathPatterns("/signin")
         //         .excludePathPatterns("/signout");
 
-        // if (!appDto.isDevProfile() && appDto.getAuthUse() == true) {
+        if (!appDto.isDevProfile() && appDto.getAuthUse() == true) {
             registry.addInterceptor(new AuthInterceptor())
                     .excludePathPatterns("/signin")
                     .excludePathPatterns("/signout");
-        // }
+        }
     }
 
     @Override

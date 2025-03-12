@@ -101,16 +101,19 @@
               <el-input v-model="finalCount" type="text" size="small" round maxlength="3" style="width: 200px" />개
             </td>
             <td>
-              <el-button type="primary" size="small" round class="ml-1" @click="fnNewAppendDivAsgnIPMst()">분할</el-button>
+              <el-button type="primary" size="small" round class="ml-1" :loading="expectedTableLoading" @click="fnNewAppendDivAsgnIPMst()">분할</el-button>
             </td>
           </tr>
         </tbody>
       </table>
+      <div class="fr">
+        <span style="color: #f56c6c;">※ 128개 이상 분할할 경우 5초이상 시간이 소요될 수 있습니다.</span>
+      </div>
     </div>
 
     <div class="popupContentTable textcenter">
       <div class="popupContentTableTitle">분할 예정 정보</div>
-      <div>
+      <div v-loading="expectedTableLoading" class="scroll_area">
         <table>
           <!-- <colgroup>
             <col width="6%" />
@@ -176,10 +179,11 @@ export default {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
+      tableLoading: false,
+      expectedTableLoading: false,
       typeFlag: '',
       finalBit: '',
       finalCount: '',
-      tableLoading: false,
       resultVo: {
         ssvcLineTypeNm: '',
         ssvcGroupNm: '',
@@ -221,6 +225,10 @@ export default {
         onMessagePopup(this, '분할 개수를 입력하세요.')
         return
       }
+      if (this.finalBit > 256) {
+        onMessagePopup(this, '256개까지만 분할이 가능합니다.')
+        return
+      }
       const sipVersionTypeCd = this.resultVo.sipVersionTypeCd
       if (this.typeFlag === 'Asgn') {
         if (sipVersionTypeCd === 'CV0001') {
@@ -247,6 +255,7 @@ export default {
           }
         }
       }
+      this.expectedTableLoading = true
       const initial_bit = this.resultVo.nbitmask
       const final_bit = this.finalBit // 사용자 입력 bitmask(최종 만들어질 서브넷마스크)
       const final_count = this.finalCount // 사용자 입력 최종 bitmask 갯수
@@ -290,6 +299,7 @@ export default {
         }
       }
       this.divisionInfo = divInfo
+      this.expectedTableLoading = false
     },
     onCreated() {
       Modal.methods.onCreated.call(this)

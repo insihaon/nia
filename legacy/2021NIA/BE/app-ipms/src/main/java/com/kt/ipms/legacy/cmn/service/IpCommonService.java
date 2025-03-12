@@ -2,6 +2,8 @@ package com.kt.ipms.legacy.cmn.service;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -344,5 +346,23 @@ public class IpCommonService {
 		}
 		return isValidation;
 	}
+
+	public static String calculateNetworkAddress(String ipAddress, int prefixLength) {
+        try {
+
+            byte[] ipBytes = InetAddress.getByName(ipAddress).getAddress();
+            int subnetMask = 0xFFFFFFFF << (32 - prefixLength);
+
+            byte[] networkBytes = new byte[4];
+            for (int i = 0; i < 4; i++) {
+                networkBytes[i] = (byte) (ipBytes[i] & (subnetMask >> (8 * (3 - i))));
+            }
+
+            return InetAddress.getByAddress(networkBytes).getHostAddress();
+        } catch (UnknownHostException | NumberFormatException e) {
+            e.printStackTrace();
+            return "Invalid Input";
+        }
+    }
 
 }

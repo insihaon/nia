@@ -52,6 +52,8 @@ public class IpVo extends CommonVo implements Serializable {
 	
 	private Integer nsubnetmask; // subnet bitmask
 
+	private Boolean isFacilities; // 시설용 여부
+
 	public String getPipPrefix() {
 		return pipPrefix;
 	}
@@ -208,6 +210,13 @@ public class IpVo extends CommonVo implements Serializable {
 
 	public void setNsubnetmask(Integer nsubnetmask) {
 		this.nsubnetmask = nsubnetmask;
+	}
+	public Boolean getIsFacilities() {
+		return isFacilities;
+	}
+
+	public void setIsFacilities(Boolean isFacilities) {
+		this.isFacilities = isFacilities;
 	}
 	
 }

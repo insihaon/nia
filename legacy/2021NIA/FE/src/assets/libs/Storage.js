@@ -9,13 +9,13 @@ const NODE_ENV_DEV = NODE_ENV === 'development'
 const STORAGE = NODE_ENV_DEV ? window.localStorage : window.sessionStorage
 
 export class Storage {
-  reloadProperties = 'dark,project,baseURL'.split(/[\s,]+/)
+  reloadProperties = 'dark,project,baseURL,debugEncrypt'.split(/[\s,]+/)
   _data = {}
   constructor() {
     Encrypt.register(this, APP_DEV)
     this.self = this
     this._data = {
-      debug: NODE_ENV_DEV && APP_DEV,
+      debug: (NODE_ENV_DEV && APP_DEV) || process.env.VUE_APP_MOCK === 'FE',
     }
     this._load()
   }
