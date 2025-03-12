@@ -1,5 +1,6 @@
 server:
-  port: 8070
+  port: 8080
+
 spring:
   config:
     import: "classpath:/properties/config.dev"
@@ -15,7 +16,7 @@ spring:
   datasource2nd:
     enabled: true
     driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-    url: jdbc:log4jdbc:postgresql://192.168.0.17:5444/ipms
+    url: jdbc:log4jdbc:postgresql://192.168.0.17:5444/ipms?allowMultiQueries=true
     username: ipms_user
     password: new1234!
     mapper-packages: >
