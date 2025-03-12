@@ -113,7 +113,7 @@ module.exports = {
   assetsDir: 'assets',
   lintOnSave: !isProduction(),
   productionSourceMap: true,
-  
+
   css: {
     extract: false
   },
