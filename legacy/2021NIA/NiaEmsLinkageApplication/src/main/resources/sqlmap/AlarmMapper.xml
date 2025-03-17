@@ -13,35 +13,24 @@
     <!--</insert>-->
 
     <insert id="insertAlarm" parameterType="com.nia.ems.linkage.vo.alarm.AlarmVo">
-        WITH UPSERT AS
-        (
-            SELECT (SELECT NEXTVAL('nia.seq_alarmno') ::VARCHAR) AS ALARMNO
-                 , #{sysname} AS SYSNAME
-                 , #{equiptype} AS EQUIPTYPE
-                 , #{unit} AS UNIT
-                 , #{alarmtime}::TIMESTAMP AS ALARMTIME
-                 , #{receivetime}::TIMESTAMP AS RECEIVETIME
-                 , #{alarmloc} AS ALARMLOC
-                 , #{alarmmsg} AS ALARMMSG
-                 , #{alarmlevel} AS ALARMLEVEL
-                 , #{lineName} AS LINE_NAME
+
+        INSERT INTO NIA.TB_ALARM_MST (
+            ALARMNO, SYSNAME, EQUIPTYPE, UNIT, ALARMTIME, RECEIVETIME, ALARMLOC, ALARMMSG, ALARMLEVEL, LINE_NAME
         )
-        INSERT INTO NIA.TB_ALARM_MST
-        (
-           ALARMNO, SYSNAME, EQUIPTYPE, UNIT, ALARMTIME, RECEIVETIME, ALARMLOC, ALARMMSG, ALARMLEVEL, LINE_NAME
+        SELECT (SELECT NEXTVAL('nia.seq_alarmno') ::VARCHAR), #{sysname}, #{equiptype}, #{unit},
+                #{alarmtime}::TIMESTAMP, #{receivetime}::TIMESTAMP, #{alarmloc},
+                #{alarmmsg}, #{alarmlevel}, #{lineName}
+        WHERE NOT EXISTS (
+            SELECT 1 FROM NIA.TB_ALARM_MST A
+            WHERE A.SYSNAME = #{sysname}
+            AND A.UNIT = #{unit}
+            AND A.RECEIVETIME = #{receivetime}
+            AND A.ALARMLOC = #{alarmloc}
+            AND A.ALARMMSG = #{alarmmsg}
+            AND A.ALARMLEVEL = #{alarmlevel}
         )
-        SELECT U.ALARMNO, U.SYSNAME, U.EQUIPTYPE, U.UNIT, U.ALARMTIME, U.RECEIVETIME, U.ALARMLOC, U.ALARMMSG, U.ALARMLEVEL, U.LINE_NAME
-          FROM UPSERT U
-         WHERE NOT EXISTS(
-                SELECT A.SYSNAME, A.EQUIPTYPE, A.UNIT, A.ALARMTIME, A.RECEIVETIME, A.ALARMLOC, A.ALARMMSG, A.ALARMLEVEL, A.LINE_NAME
-                  FROM NIA.TB_ALARM_MST A
-                 WHERE A.SYSNAME = U.SYSNAME
-                   AND A.UNIT = U.UNIT
-                   AND A.RECEIVETIME = U.RECEIVETIME
-                   AND A.ALARMLOC = U.ALARMLOC
-                   AND A.ALARMMSG = U.ALARMMSG
-                   AND A.ALARMLEVEL = U.ALARMLEVEL
-        )
+        ON CONFLICT (ALARMNO) DO NOTHING
+
         <!--
         INSERT INTO NIA.TB_ALARM_MST(
              ALARMNO, SYSNAME, EQUIPTYPE, UNIT, ALARMTIME, RECEIVETIME, ALARMLOC, ALARMMSG, ALARMLEVEL, LINE_NAME
