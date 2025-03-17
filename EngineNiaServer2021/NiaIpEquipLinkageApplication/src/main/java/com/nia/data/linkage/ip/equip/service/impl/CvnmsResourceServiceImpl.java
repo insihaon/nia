@@ -37,7 +37,7 @@ public class CvnmsResourceServiceImpl implements CvnmsResourceService {
 
         try {
             cvnmsResourceVoList = linkageAlarmMapper.selectCvnmsResourceList();
-            LOGGER.info("==========>[CvnmsResourceIfService] getCvnmsResourceData size("+cvnmsResourceVoList.size()+") <==============");
+            LOGGER.info("==========>[CvnmsResourceService] getCvnmsResourceData size("+cvnmsResourceVoList.size()+") <==============");
 
             if(cvnmsResourceVoList != null && cvnmsResourceVoList.size() > 0) {
                 niaAlarmMapper.deleteCvnmsResource();
@@ -52,6 +52,7 @@ public class CvnmsResourceServiceImpl implements CvnmsResourceService {
                 niaAlarmMapper.updateLinkageHist(strHashMap);
 
                 niaAlarmMapper.fcResourceNodeYd();
+                LOGGER.info("==========>[CvnmsResourceService] getCvnmsResourceData Success! <==============");
             }
         }catch (Exception e){
             LOGGER.error("=====> [CvnmsResourceService] getCvnmsResourceData error() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
