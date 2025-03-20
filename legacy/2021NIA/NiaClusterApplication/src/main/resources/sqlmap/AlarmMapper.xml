@@ -23,14 +23,15 @@
 	<insert id="insertAlTopology" parameterType="com.nia.rca.cluster.preprocessor.vo.TopologyObject">
 		INSERT INTO RCA.TB_CLUSTER_AL_TOPOLOGY
 		(
-			  ALARMNO, LINK_ID, TRUNK_ID ,NW_TYPE, OPP_SYSNAME, OPP_PTPNAME
-			, OPP_SLOT, OPP_PORT, INSERT_TIME
+			ALARMNO, LINK_ID, TRUNK_ID ,NW_TYPE, OPP_SYSNAME, OPP_PTPNAME,
+			OPP_SLOT, OPP_PORT, INSERT_TIME
 		)
-		VALUES
-		(
+		SELECT
 			#{alarmno}, #{linkId}, #{trunkId}, #{nwType}, #{oppSysname}, #{oppPtpName},
-			#{oppSlot},	#{oppPort},	#{insertTime}
-	 	 )
+			#{oppSlot}, #{oppPort}, #{insertTime}
+		WHERE NOT EXISTS (
+			SELECT 1 FROM RCA.TB_CLUSTER_AL_TOPOLOGY WHERE ALARMNO = #{alarmno}
+		)
 	</insert>
 
 	<update id="updateAlarmClusterNo" parameterType="java.util.HashMap">
