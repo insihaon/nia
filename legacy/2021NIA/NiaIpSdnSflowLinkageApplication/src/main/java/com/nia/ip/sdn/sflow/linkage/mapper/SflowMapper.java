@@ -10,4 +10,5 @@ import java.util.HashMap;
 public interface SflowMapper {
     long selectSflowSeq();
     void insertSflowData(SflowCollectVo sflowCollectVo);
+    void updateLinkageHist(HashMap<String, String> hashMap);
 }
