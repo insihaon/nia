@@ -165,3 +165,58 @@ spring:
     mybatisConfig-locations : classpath:mybatis-config.xml
     configuration:
       mapUnderscoreToCamelCase: true
+
+---
+spring:
+  profiles: test
+
+  jasypt:
+    encryptor:
+      bean: jasyptStringEncryptor
+      property:
+        prefix: ENC(
+        suffix: )
+
+  rabbitmq:
+    address: codej.iptime.org  #개발
+    port: 9997
+    username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
+    password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
+
+    niaAlarmExchange: nia.exchangeNiaAlarmDirectly
+    niaAlarmQueue: nia.NiaAlarmIndexDirectly
+    niaAlarmRoutingKey: nia.NiaAlarmIndexDirectl
+
+    clusterExchange: nia.exchangeClusterDirectly
+    clusterQueue: nia.ClusterIndexDirectly
+    clusterRoutingKey: nia.ClusterIndexDirectly
+
+    engineClearExchange: nia.exchangeEngineClearDirectly
+    engineClearQueue: nia.EngineClearIndexDirectly
+    engineClearRoutingKey: nia.EngineClearIndexDirectly
+
+  kafka:
+    consumer:
+      bootstrap-servers: 116.89.191.47:9392
+      group-id: pingData
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      bootstrap-servers: 116.89.191.47:9392
+      key-serializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-serializer: org.apache.kafka.common.serialization.StringDeserializer
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://codej.iptime.org:9998/niadb #개발
+    username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
+    password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
+    maximumPoolSize : 10
+    idleTimeout : 6000
+
+  mybatis:
+    mapper-locations: classpath*:sqlmap/*.xml
+    mybatisConfig-locations : classpath:mybatis-config.xml
+    configuration:
+      mapUnderscoreToCamelCase: true
