@@ -1,7 +1,6 @@
 package com.nia.ip.sdn.sflow.linkage.service;
 
 import com.nia.ip.sdn.sflow.linkage.common.LoggerPrint;
-import com.nia.ip.sdn.sflow.linkage.listener.NiaSflowDataMsgListener;
 import com.nia.ip.sdn.sflow.linkage.mapper.SflowMapper;
 import com.nia.ip.sdn.sflow.linkage.vo.sflow.SflowCollectVo;
 import com.nia.ip.sdn.sflow.linkage.vo.sflow.SflowDataVo;
@@ -9,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
 
 @Service("IpSdnSflowService")
 public class IpSdnSflowService {
@@ -25,8 +26,8 @@ public class IpSdnSflowService {
     private org.springframework.beans.factory.ObjectFactory<SflowCollectVo> sflowCollectVoObjectFactory;
 
     public void sflowDataHdlProcessor(SflowDataVo sflowDataVo){
-//        LOGGER.info(">>>>>>>>>>[IpSdnSflowService] sflowDataHdlProcessor <<<<<<<<<<<<<<<<<");
-
+        LOGGER.info(">>>>>>>>>>[IpSdnSflowService] sflowDataHdlProcessor <<<<<<<<<<<<<<<<<");
+        HashMap<String, String> strHashMap;
         long collectSeq;
 
         try {
@@ -39,6 +40,11 @@ public class IpSdnSflowService {
             sflowCollectVo.setSflowCollectVo(sflowDataVo);
 
             sflowMapper.insertSflowData(sflowCollectVo);
+
+            strHashMap = new HashMap<>();
+            strHashMap.put("key", "ipSdnSflowKey");
+            strHashMap.put("value", String.valueOf(collectSeq));
+            sflowMapper.updateLinkageHist(strHashMap);
         }catch (Exception e){
             LoggerPrint.errorLog(e);
         }

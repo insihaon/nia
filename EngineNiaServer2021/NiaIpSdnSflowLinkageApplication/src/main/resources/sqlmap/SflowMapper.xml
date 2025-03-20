@@ -30,6 +30,13 @@
         )
     </insert>
 
+    <update id="updateLinkageHist" parameterType="java.util.HashMap">
+        UPDATE NIA.TB_LINKAGE_SEQ
+        SET VALUE_NAME = #{value}
+          , YD_DATE = now()
+        WHERE KEY_NAME = #{key}
+    </update>
+
 
 </mapper>
 
