@@ -30,7 +30,7 @@ public class NiaSyslogDataMsgListener {
         SyslogDataVo syslogDataVo;
 
         try {
-            LoggerPrint.infoLog();
+            LOGGER.info(">>>>>>>>>>[NiaSyslogDataMsgListener] onMessage : " + message.toString() + " <<<<<<<<<<<<<<<<<");
 
             Object obj;
             syslogDataVo = syslogDataVoObjectFactory.getObject();
