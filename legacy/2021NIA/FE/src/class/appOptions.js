@@ -74,7 +74,7 @@ export class AppOptions extends Storage {
   }
 
   get encrypt() {
-    return this._data.mock !== 'FE' && (this._data.debug ? !this._data.debugEncrypt : this._data.debugEncrypt)
+    return this._data.mock !== 'FE' && this._data.debugEncrypt
   }
 
   setFrontMock() {
