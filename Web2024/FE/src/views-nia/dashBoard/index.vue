@@ -175,7 +175,7 @@ export default {
         return [
           {
             name: '토폴로지 전체보기', action: () => {
-              this.openNiaTopology({ allTicket: true, ticketList: this.ipNetworkList })
+              this.openNiaTopology({ isAllTicket: true })
             }
           }
         ]
@@ -750,7 +750,7 @@ export default {
     },
     agGridRowDoubleClicked(selectedItems) {
       const data = this.selectedItem?.data || []
-      this.openNiaTopology(data)
+      this.openNiaTopology({ isAllTicket: false, ticket: data })
     },
     handleOpenTicketDetail(row) {
       this.fn_openWindow('ticketDetail', row)

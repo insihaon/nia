@@ -18351,21 +18351,39 @@ let log = window.console.log
 
                 return 'translate(' + 0.5 * (nodeR + outWidth / 2) + ',' + (-1.0 * (nodeR + outHeight / 2)) + ') scale(' + outWidth / 100 + ' ' + outHeight / 100 + ')';
               });
-          } else if (d.alarm_count != undefined) {
-            selection.append('g')
-              .attr('class', 'node_badge')
-              .append('circle')
-              .attr('r', 20)
-              .attr('transform', 'translate(20,-20) scale(0.5 0.5)')
-              .style('fill', d.related_alarm ? 'red' : '#ff000033')
-              .style('stroke', 'red');
+          } else {
+            if (d.alarm_count != undefined) {
+              selection.append('g')
+                .attr('class', 'node_badge')
+                .append('circle')
+                .attr('r', 20)
+                .attr('transform', 'translate(20,-20) scale(0.5 0.5)')
+                .style('fill', d.related_alarm ? 'red' : '#ff000033')
+                .style('stroke', 'red');
 
-            selection.select('g.node_badge')
-              .append('text')
-              .attr('transform', 'translate(20,-15) scale(0.4, 0.4)')
-              .style('fill', 'rgb(255 255 255)')
-              .style('font-size', '30px')
-              .html(d.alarm_count);
+              selection.select('g.node_badge')
+                .append('text')
+                .attr('transform', 'translate(20,-15) scale(0.4, 0.4)')
+                .style('fill', 'rgb(255 255 255)')
+                .style('font-size', '30px')
+                .html(d.alarm_count);
+            }
+
+            if (d.syslog_count != undefined) {
+              selection.append('g')
+                .attr('class', 'node_badge')
+                .append('circle')
+                .attr('r', 20)
+                .attr('transform', 'translate(-20,-20) scale(0.5 0.5)')
+                .style('stroke', 'orange');
+
+              selection.select('g.node_badge')
+                .append('text')
+                .attr('transform', 'translate(-20,-15) scale(0.4, 0.4)')
+                .style('fill', 'rgb(255 255 255)')
+                .style('font-size', '30px')
+                .html(d.syslog_count);
+            }
           }
         });
 
