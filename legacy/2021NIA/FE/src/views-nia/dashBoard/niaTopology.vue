@@ -403,7 +403,13 @@ export default {
       const allTicket = res.result
       const totalAlarms = allTicket.map((t) => {
         t.sysname = t.node_nm
-        t.equiptype = this.getEquipType(t.sysname)
+        /*
+          사실 sysname이 없는 장비는 존재해서는 안되지만,
+          250327 에 실수로 sysname이 없는 것을 통과시켜서 예외처리
+        */
+        if (t.sysname) {
+          t.equiptype = this.getEquipType(t.sysname)
+        }
         return t
       })
 
