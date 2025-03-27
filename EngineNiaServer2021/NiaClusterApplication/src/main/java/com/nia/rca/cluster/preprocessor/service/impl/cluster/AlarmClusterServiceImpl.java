@@ -190,10 +190,11 @@ public class AlarmClusterServiceImpl implements AlarmClusterService {
                 for (ClusterObject clusterObject1 : clusterObjectList) {
                     for (ClusterObject clusterObject2 : clusterObjectList) {
                         if (! clusterObject1.getClusterNo().equals(clusterObject2.getClusterNo())) {
-
-                            for (String sysname : clusterObject2.getEquipList()) {
-                                if (clusterObject1.getEquipList().contains(sysname)) {
-                                    clusterNoSet.add(Integer.parseInt(clusterObject1.getClusterNo()));
+                            if(clusterObject1.getEquipList() != null && clusterObject2.getEquipList() != null){
+                                for (String sysname : clusterObject2.getEquipList()) {
+                                    if (clusterObject1.getEquipList().contains(sysname)) {
+                                        clusterNoSet.add(Integer.parseInt(clusterObject1.getClusterNo()));
+                                    }
                                 }
                             }
 
@@ -329,7 +330,9 @@ public class AlarmClusterServiceImpl implements AlarmClusterService {
             clusterObject = clusterObjectFactory.getObject();
             clusterObject.setTmpClusterNo(tmpClusterNo);
             clusterObject.setClusterNo(clusterNo);
-            clusterObject.addEquipList(basicAlarmVo.getSysname());
+            if(basicAlarmVo.getSysname() != null){
+                clusterObject.addEquipList(basicAlarmVo.getSysname());
+            }
 
             basicAlarmVo.setClusterno(clusterNo);
             clusterInfoVo = clusterInfoVoObjectFactory.getObject();
