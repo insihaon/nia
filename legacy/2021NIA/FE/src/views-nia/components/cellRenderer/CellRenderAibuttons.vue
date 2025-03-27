@@ -38,7 +38,7 @@ export default Vue.extend({
         result = false
       }
       if (!['ATT2', 'NTT', 'SYSLOG'].includes(data.ticket_type) && type === 'CONFIG_TEST') {
-        // 시험기능 ATT2, NTT, SYSLOG 만 활성화
+        // 시험기능 ATT2(이상트래픽), NTT(유해트래픽), SYSLOG 만 활성화
         result = false
       }
       return result
