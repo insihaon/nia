@@ -176,6 +176,8 @@ public interface NiaMapper extends BaseDataMapper {
 
         public List<ResultMap> SELECT_NIA_ABNORMAL_TRAFFIC_LIST(HashMap<String, Object> map);
 
+        public List<ResultMap> SELECT_SYSLOG_ALARM_LIST(HashMap<String, Object> map);
+
         public List<ResultMap> SELECT_NIA_TOPOLOGY_CABLE_LIST(HashMap<String, Object> map);
 
         public List<ResultMap> SELECT_NIA_PF_TOPOLOGY_CABLE_LIST(HashMap<String, Object> map);
