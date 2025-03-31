@@ -330,9 +330,10 @@ public class AlarmClusterServiceImpl implements AlarmClusterService {
             clusterObject = clusterObjectFactory.getObject();
             clusterObject.setTmpClusterNo(tmpClusterNo);
             clusterObject.setClusterNo(clusterNo);
-            if(basicAlarmVo.getSysname() != null){
-                clusterObject.addEquipList(basicAlarmVo.getSysname());
+            if(basicAlarmVo.getSysname() == null){
+                return;
             }
+            clusterObject.addEquipList(basicAlarmVo.getSysname());
 
             basicAlarmVo.setClusterno(clusterNo);
             clusterInfoVo = clusterInfoVoObjectFactory.getObject();
