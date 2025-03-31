@@ -52,9 +52,9 @@ public class ClusterServiceImpl implements ClusterService {
 
         try {
             if (tmpClusterList.size() > 0) {
-                for(TmpClusterObject tmpClusterObject : tmpClusterList){
-                    if(!tmpClusterObject.isClusterMaxTime() && !tmpClusterObject.isStop()){
-                        startTimeDiff = basicAlarmVo.getReceivetime().getTime() - tmpClusterObject.getStartTime().getTime();
+                        for(TmpClusterObject tmpClusterObject : tmpClusterList){
+                            if(!tmpClusterObject.isClusterMaxTime() && !tmpClusterObject.isStop()){
+                                startTimeDiff = basicAlarmVo.getReceivetime().getTime() - tmpClusterObject.getStartTime().getTime();
                         endTimeDiff = basicAlarmVo.getReceivetime().getTime() - tmpClusterObject.getEndTime().getTime();
 
                         if (startTimeDiff < (timeCondition * -1)) {
