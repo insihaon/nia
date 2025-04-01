@@ -18371,13 +18371,13 @@ let log = window.console.log
 
             if (d.syslog_count != undefined) {
               selection.append('g')
-                .attr('class', 'node_badge')
+                .attr('class', 'syslog_node_badge')
                 .append('circle')
                 .attr('r', 20)
                 .attr('transform', 'translate(-20,-20) scale(0.5 0.5)')
                 .style('stroke', 'orange');
 
-              selection.select('g.node_badge')
+              selection.select('g.syslog_node_badge')
                 .append('text')
                 .attr('transform', 'translate(-20,-15) scale(0.4, 0.4)')
                 .style('fill', 'rgb(255 255 255)')

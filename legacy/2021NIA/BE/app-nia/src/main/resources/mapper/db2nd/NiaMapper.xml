@@ -2146,7 +2146,8 @@
 
     <select id="SELECT_NIA_ALARM_LIST" parameterType="hashmap" resultType="hashmap">
         WITH sub_ticket_alarm AS
-        ( SELECT T.*,
+        ( 
+        <!-- SELECT T.*,
                 AL.ticket_al_id,
                 AL.root_cause_alarm_noa,
                 AL.root_cause_alarm_noz
@@ -2154,7 +2155,20 @@
         LEFT OUTER JOIN
                 ( SELECT SUB_AL.* ,
                         ROW_NUMBER() OVER (PARTITION BY SUB_AL.TICKET_ID ORDER BY TICKET_AL_ID DESC) AS ORDER_NUM
-                FROM    RCA.TB_RCA_TICKET_AL_CURRENT SUB_AL ) AL ON T.TICKET_ID = AL.TICKET_ID AND AL.ORDER_NUM = 1
+                FROM    RCA.TB_RCA_TICKET_AL_CURRENT SUB_AL ) AL ON T.TICKET_ID = AL.TICKET_ID AND AL.ORDER_NUM = 1 -->
+            SELECT 
+                T.*,
+                AL.ticket_al_id,
+                AL.root_cause_alarm_noa,
+                AL.root_cause_alarm_noz
+            FROM RCA.TB_RCA_TICKET_CURRENT T
+            LEFT JOIN LATERAL (
+                SELECT ticket_al_id, root_cause_alarm_noa, root_cause_alarm_noz
+                FROM RCA.TB_RCA_TICKET_AL_CURRENT AL
+                WHERE AL.TICKET_ID = T.TICKET_ID
+                ORDER BY AL.TICKET_AL_ID DESC
+                FETCH FIRST 1 ROWS ONLY
+            ) AL ON TRUE
         )
         SELECT  T.ALARMNO AS ALARMNO,
                 T.CLUSTERNO AS CLUSTERNO,
