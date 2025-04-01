@@ -360,12 +360,19 @@
             'aiIpSdnSflowKey',
             'aiIpSdnSyslogKey',
             'aiIpSdnNodeFactorKey',
-            <!-- 'aiTrafficResultKey', -->
             'aiTrafficNoxKey',
             'aiTrafficAnoKey',
             'aiIpPerfKey',
             'aiIpResourceIfKey',
-            'aiIpResourceKey')
+            'aiIpResourceKey',
+            'ipSdnTrafficeKey',
+            'ipSdnSflowKey',
+            'ipSdnSyslogKey',
+            'ipSdnNodeFactorKey',
+            'ipPerfKey',
+            'ipResourceIfKey',
+            'ipResourceKey'
+        )
    </select>
 
    <!-- AI관제 시스템 처리량 -->
