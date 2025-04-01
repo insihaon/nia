@@ -403,10 +403,6 @@ export default {
       const allTicket = res.result
       const totalAlarms = allTicket.map((t) => {
         t.sysname = t.node_nm
-        /*
-          사실 sysname이 없는 장비는 존재해서는 안되지만,
-          250327 에 실수로 sysname이 없는 것을 통과시켜서 예외처리
-        */
         if (t.sysname) {
           t.equiptype = this.getEquipType(t.sysname)
         }
@@ -504,14 +500,14 @@ export default {
 
       for (var i = 0; i < key.length; i++) {
           data.nodes.map(function (node) {
-              if (node.id === key[i]) {
-                node.alarm_count = alarmCnt[key[i]]
-                alarmNodes.add(node)
-              }
-              if (node.id === related_alarm) {
-                node.related_alarm = true
-                alarmNodes.add(node)
-              }
+            if (node.id === key[i]) {
+              node.alarm_count = alarmCnt[key[i]]
+              alarmNodes.add(node)
+            }
+            if (node.id === related_alarm) {
+              node.related_alarm = true
+              alarmNodes.add(node)
+            }
         })
       }
 
@@ -917,12 +913,20 @@ export default {
     },
 
     getAlarmSysname(alarm) {
-      if (alarm.equiptype === '7712/5812') {
+      if (alarm.sysname == null) {
+        return null
+      }
+
+      try {
+        if (alarm.equiptype === '7712/5812') {
           return alarm.sysname
-      } else if (alarm.sysname.includes('n9k') || alarm.sysname.includes('control') || alarm.sysname.includes('cxp') || alarm.sysname.includes('asr9k')) {
-          return alarm.sysname
-      } else {
-          return alarm.sysname.split('-')[0]
+        } else if (alarm.sysname.includes('n9k') || alarm.sysname.includes('control') || alarm.sysname.includes('cxp') || alarm.sysname.includes('asr9k')) {
+            return alarm.sysname
+        } else {
+            return alarm.sysname.split('-')[0]
+        }
+      } catch (e) {
+        console.error(e)
       }
     }
   },
