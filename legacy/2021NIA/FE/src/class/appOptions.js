@@ -36,7 +36,6 @@ export class AppOptions extends Storage {
       lastUser: null,
       useWsLog: false,
       wsTicket: true,
-      debugEncrypt: !this.debug,
       language: ['ko', 'en'].at(0),
       urlParam: {},
     })
@@ -50,6 +49,7 @@ export class AppOptions extends Storage {
 
     const href = location.href
     this._data.urlParam = param2Obj(href)
+    this._data.debugEncrypt = !this.debug
     this.updateUseWebSocket()
 
     if (this.debug) {
