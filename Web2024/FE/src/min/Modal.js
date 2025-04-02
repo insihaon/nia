@@ -67,8 +67,16 @@ const Modal = {
         this.onClose()
         this.$store.dispatch('app/removeViewData', this.name)
         ModalManager.instance.pop(this)
-        const parent = ModalManager.instance.last() || this.$parent
-        parent && parent.activeView && parent.activeView(`child close`)
+        let parent = ModalManager.instance.last() || this.$parent
+
+        while (parent && parent.$parent) {
+          if (parent.activeView) break
+          parent = parent.$parent
+        }
+
+        if (parent) {
+          parent.activeView && parent.activeView(`child close`)
+        }
       }
 
       this.$emit('onVisibleChanged', n)
