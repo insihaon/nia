@@ -19,6 +19,7 @@ if (debug) {
 
 axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*'
 axios.defaults.headers.common['Access-Control-Expose-Headers'] = 'Client-Addr'
+axios.defaults.withCredentials = true // true 로 설정하면 서버에 설정이 없으면 호출이 안 될 수 있다.
 const service = axios.create({
   baseURL: mock === 'FE' ? '/mock' : baseURL, // url = base url + request url
   timeout: (process.env.VUE_APP_HTTP_TIMEOUT || 10) * 1000 // request timeout
@@ -120,6 +121,7 @@ service.interceptors.response.use(
         switch (error.response.status) {
           case 401:
           case 403:
+          case 405: // IPMS 에서 권한 없음 반환 시 로그오프하도록 처리. 공통코드에 위배된다면 코드 고려
             debugLog(`error.response.status=`, error.response.status)
             logout()
             break
@@ -172,10 +174,10 @@ function logout() {
     store.dispatch('user/logout')
   }, 5000)
   MessageBox.confirm(
-    '"로그인 세션 토큰 만료" 정책에 따라 로그아웃 됩니다. ',
+    '"로그인 세션 만료" 정책에 따라 로그아웃 됩니다. ',
     '로그아웃',
     {
-      confirmButtonText: '세션 토큰 갱신',
+      confirmButtonText: '재인증',
       cancelButtonText: '취소',
       type: 'warning'
     }
