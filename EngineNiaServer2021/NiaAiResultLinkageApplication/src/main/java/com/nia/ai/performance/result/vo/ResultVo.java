@@ -1,5 +1,8 @@
 package com.nia.ai.performance.result.vo;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -9,7 +12,13 @@ import java.io.Serializable;
 @Data
 @Component()
 @Scope(value = "prototype")
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ResultVo implements Serializable {
-    private int res_code;
-    private String res_msg;
+    @JsonProperty("result_code")
+    private String resultCode;
+    @JsonProperty("result_msg")
+    private String resultMsg;
 }
+
+
