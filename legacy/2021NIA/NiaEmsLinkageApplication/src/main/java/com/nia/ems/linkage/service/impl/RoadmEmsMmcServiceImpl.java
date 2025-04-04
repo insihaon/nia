@@ -95,7 +95,7 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
         RoadmEmsTL1Client roadmEmsTL1Client = null;
 
         try {
-//            Thread.sleep(120*1000);
+            Thread.sleep(120*1000);
 
             equipSipcVoList = equipmentMapper.selectEquipSipcList();
 

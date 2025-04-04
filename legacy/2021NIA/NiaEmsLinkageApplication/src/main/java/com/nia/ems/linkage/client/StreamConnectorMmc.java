@@ -55,8 +55,7 @@ public class StreamConnectorMmc implements NiaEmsLinkageThread{
         int cnt = 0;
         String line = null;
         StringBuffer sbTemp = new StringBuffer();
-        Boolean isSend = false;
-        Boolean isMmcResult = false;
+        StringBuffer fullMsg = new StringBuffer();
 
         while (this.isStart) {
             try {
@@ -66,46 +65,36 @@ public class StreamConnectorMmc implements NiaEmsLinkageThread{
                 if(cnt > 0) {
                     line = new String(data, 0, cnt, "EUC-KR");
                     sbTemp.append(line);
+                    fullMsg.append(line);
                 }
 
-                if(line.contains("COMPLD")){
-                    isMmcResult = true;
-                    if(line.contains(";")){
-                        isSend = true;
-                    }else{
-                        isSend = false;
-                    }
-                }else{
-                    if(!isMmcResult){
-                        isSend = true;
-                    }else{
-                        if(line.contains(";")){
-                            isSend = true;
-                        }
-                    }
-                }
-                LOGGER.info("=====> [StreamConnectorMmc] run() mmcMsg isSend : "+ isSend+ " isMmcResult : "+isMmcResult+"<=====");
+                if(sbTemp != null && sbTemp.length() > 0){
+                    ((Queue<String>)dataShareBean.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_MMC_MSG_QUE)).offer(sbTemp.toString());
+                    ((Queue<String>)dataShareBean.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_MMC_MSG_PASING_QUE)).offer(sbTemp.toString());
 
-                if(isSend){
-                    if(sbTemp != null && sbTemp.length() > 0){
-                        ((Queue<String>)dataShareBean.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_MMC_MSG_QUE)).offer(sbTemp.toString());
-                        ((Queue<String>)dataShareBean.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_MMC_MSG_PASING_QUE)).offer(sbTemp.toString());
+                    LOGGER.info("=====> [StreamConnectorMmc] run() mmcMsg : "+ sbTemp.toString()+ "<=====");
+                    sbTemp.delete(0,sbTemp.length());
 
-                        LOGGER.info("=====> [StreamConnectorMmc] run() mmcMsg : "+ sbTemp.toString()+ "<=====");
+                    if(fullMsg.toString().contains("canc-user")){
+                        LOGGER.info("=====> [StreamConnectorMmc] canc-user");
 
-                        if(sbTemp.toString().contains("canc-user")){
+                        // "canc-user" 이후의 문자열 가져오기
+                        int cancIndex = fullMsg.indexOf("canc-user") + "canc-user".length();
+                        String afterCancUser = fullMsg.substring(cancIndex);
+
+                        // "TL1>"이 있는지 확인
+                        if (afterCancUser.contains("TL1>")) {
+                            LOGGER.info("=====> [StreamConnectorMmc] canc-user real Finish");
                             this.isStart = false;
                         }
-
-                        sbTemp.delete(0,sbTemp.length());
-                        isSend = false;
-                        isMmcResult = false;
                     }
                 }
+
                 try {
                     Thread.sleep(50);
                 }catch (InterruptedException e){
                     LOGGER.error("=====> [StreamConnectorMmc] sendCommand() "+ ExceptionUtils.getStackTrace(e)+ "<=====");
+                    LOGGER.error("=====> [StreamConnectorMmc] sendCommand() fullMsg: "+ fullMsg.toString() + "<=====");
                 }
             }catch(SocketException e){
                 this.isStart = false;
@@ -117,11 +106,13 @@ public class StreamConnectorMmc implements NiaEmsLinkageThread{
                     ex.printStackTrace();
                 }
 
-                LOGGER.error("=====> [StreamConnectorMmc] run error("+this.host+") "+ ExceptionUtils.getStackTrace(e)+ "<=====");
+                LOGGER.error("=====> [StreamConnectorMmc] run error SocketException("+this.host+") "+ ExceptionUtils.getStackTrace(e)+ "<=====");
+                LOGGER.error("=====> [StreamConnectorMmc] run error SocketException("+this.host+") fullMsg: "+ fullMsg.toString()+ "<=====");
             }catch (Exception e){
                 this.isStart = false;
                 this.telnetMmc.closeConnection();
-                LOGGER.error("=====> [StreamConnectorMmc] run error("+this.host+") "+ ExceptionUtils.getStackTrace(e)+ "<=====");
+                LOGGER.error("=====> [StreamConnectorMmc] run error Exception("+this.host+") "+ ExceptionUtils.getStackTrace(e)+ "<=====");
+                LOGGER.error("=====> [StreamConnectorMmc] run error Exception("+this.host+") fullMsg: "+ fullMsg.toString()+ "<=====");
             }
         }
     }

@@ -55,10 +55,9 @@ public class RoadmEmsTL1Client {
                 telnet.sendCommand("canc-user:::1:" + id + ";\r\n", false);
                 telnet.closeConnection();
                 telnet = null;
+            } else if (telnet != null) {
+                telnet = null;
             }
-//            else if (telnet != null) {
-//                telnet = null;
-//            }
 
             telnet = telnetObjectFactory.getObject();
 
@@ -75,12 +74,12 @@ public class RoadmEmsTL1Client {
                 byte[] enterBytes = {13, 10}; // \r\n
 //                roadmEmsTNClient.write(new String(enterBytes, "ASCII"));
                 mmcResult = telnet.sendCommand("\r\n", false);
-//                Thread.sleep(500);
+                Thread.sleep(500);
 
                 if (mmcResult.contains("LOGIN:")) {
 
                     mmcResult = telnet.sendCommand(id + "\r\n", false);
-//                    Thread.sleep(500);
+                    Thread.sleep(500);
 
                     if (mmcResult.contains("PASSWORD:")) {
                         mmcResult = telnet.sendCommand(pw + "\r\n", false);
@@ -94,7 +93,7 @@ public class RoadmEmsTL1Client {
                             if (loginCnt == 3) {
                                 return false;
                             }
-//                            Thread.sleep(3000);
+                            Thread.sleep(3000);
                             loginCnt++;
                             login(emsGb);
                         }
@@ -106,7 +105,7 @@ public class RoadmEmsTL1Client {
                     if (loginCnt == 3) {
                         return false;
                     }
-//                    Thread.sleep(3000);
+                    Thread.sleep(3000);
                     loginCnt++;
                     login(emsGb);
                 }
@@ -115,6 +114,14 @@ public class RoadmEmsTL1Client {
             LOGGER.error("=====> [RoadmEmsTL1Client] login error() " + ExceptionUtils.getStackTrace(e) + "<=====");
         }
         return isLoginOk;
+    }
+
+    public Boolean isConnected () {
+        if (telnet == null) {
+            return false;
+        } else {
+            return telnet.isConnected();
+        }
     }
 
     public Boolean sendCommand (String command, Boolean isFlush) {
@@ -127,14 +134,6 @@ public class RoadmEmsTL1Client {
             }
         } catch (Exception e) {
             return false;
-        }
-    }
-
-    public Boolean isConnected () {
-        if (telnet == null) {
-            return false;
-        } else {
-            return telnet.isConnected();
         }
     }
 
