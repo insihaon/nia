@@ -109,7 +109,7 @@ public class IpSdnTrafficLinkageServiceImpl implements IpSdnTrafficLinkageServic
                     linkTrafficListVo = linkTrafficListVoObjectFactory.getObject();
                     linkTrafficListVo.setData(linkTrafficVoList);
 
-                    mapper = new ObjectMapper();
+                            mapper = new ObjectMapper();
                     jsonData = mapper.writeValueAsString(linkTrafficListVo);
 
                     LOGGER.info("ftpUpdatePath :" + ftpUpdatePath);

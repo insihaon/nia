@@ -49,29 +49,38 @@
             OE.NREN_ID
              ,OE.NREN_NAME, OE.SDN_NODE_ID, OE.SDN_IF_ID
              , OE.STRRESID, OE.STRRESNM, OE.STRIFID, OE.STRIFNM
-             , COALESCE(LT.TX_BIT_RATE,0) as FLTBPSOUT
+             , COALESCE(LT.TX_BIT_RATE,0) AS FLTBPSOUT
              , COALESCE(LT.RX_BIT_RATE, 0) AS FLTBPSIN
              , COALESCE(LT.TX_PKT_RATE, 0) AS FLTPPSOUT
              , COALESCE(LT.RX_PKT_RATE, 0) AS FLTPPSIN
              , LT.MEASURED_DATETIME
-             , COALESCE(LT.ID,0) as ID
+             , COALESCE(LT.ID,0) AS ID
         FROM (
                  SELECT
                      UO.NREN_ID,UO.NREN_NAME,
                      nm.node_id,pm.if_id,
-                     N.ID as SDN_NODE_ID,
-                     NM.NODE_NUM as STRRESID,NM.NODE_NM as STRRESNM,
-                     I.ID as SDN_IF_ID,I.IF_NAME as STRIFNM,
-                     PM.IF_NUM as STRIFID
-                 from RESOURCE.TB_USER_ORGAN UO
-                          inner join RESOURCE.TB_PORT_MST   PM on PM.if_id = UO.IF_ID
-                          inner join RESOURCE.TB_NODE_MST   NM on NM.NODE_ID = UO.NODE_ID and PM.NODE_NUM = NM.NODE_NUM
-                          inner join IP_SDN.TB_INTERFACE I on PM.IF_ID = LOWER(I.IF_NAME)
-                          inner join IP_SDN.TB_NODE N on I.NODE_ID = N.ID and N.ID = NM.IP_SDN_ID::INT
+                     N.ID AS SDN_NODE_ID,
+                     NM.NODE_NUM AS STRRESID,NM.NODE_NM AS STRRESNM,
+                     I.ID AS SDN_IF_ID,I.IF_NAME AS STRIFNM,
+                     PM.IF_NUM AS STRIFID
+                 FROM RESOURCE.TB_USER_ORGAN UO
+                 INNER JOIN RESOURCE.TB_PORT_MST PM ON PM.if_id = UO.IF_ID
+                 INNER JOIN RESOURCE.TB_NODE_MST NM ON NM.NODE_ID = UO.NODE_ID and PM.NODE_NUM = NM.NODE_NUM
+                 INNER JOIN IP_SDN.TB_INTERFACE I ON PM.IF_ID = LOWER(I.IF_NAME)
+                 INNER JOIN IP_SDN.TB_NODE N ON I.NODE_ID = N.ID AND N.ID = NM.IP_SDN_ID::INT
              ) OE
-                 LEFT OUTER JOIN IP_SDN.TB_LINK_TRAFFIC LT on LT.IF_ID = OE.SDN_IF_ID  AND LT.ID > #{datakey}
-        order by
+        INNER JOIN IP_SDN.TB_LINK_TRAFFIC LT ON LT.IF_ID = OE.SDN_IF_ID  AND LT.ID > #{datakey}
+        ORDER BY
             CASE WHEN ID IS NULL THEN 0 ELSE 1 end, LT  DESC;
+        /*
+            250410 고성호 LEFT OUTER JOIN => INNER JOIN으로 변경
+            [논의 사항]
+            - TB_LINK_TRAFFIC을 우선으로 할지 TB_USER_ORGAN을 우선으로 할지
+                > TB_USER_ORGAN을 우선으로 하는 것 유지 => 이유 : USER_ORGAN으로 관리하지 않는 Traffic은 출력안하는 것으로 결정
+            - LEFT OUTER JOIN을 INNER JOIN으로 변경
+                > INNER JOIN으로 변경하게 되면 TB_LINK_TRAFFIC이 없으면 데이터가 0개로 출력되므로 다음 Time에 처리됨
+                > 현 상황에서 TB_LINK_TRAFFIC에 없는 TB_USER_ORGAN 정보는 다음에 보내는것으로 결정
+        */
     </select>
 
     <!--    팩터      -->
