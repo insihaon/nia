@@ -69,25 +69,17 @@ public class StreamConnectorMmc implements NiaEmsLinkageThread{
                 }
 
                 if(sbTemp != null && sbTemp.length() > 0){
-                    ((Queue<String>)dataShareBean.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_MMC_MSG_QUE)).offer(sbTemp.toString());
-                    ((Queue<String>)dataShareBean.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_MMC_MSG_PASING_QUE)).offer(sbTemp.toString());
-
                     LOGGER.info("=====> [StreamConnectorMmc] run() mmcMsg : "+ sbTemp.toString()+ "<=====");
-                    sbTemp.delete(0,sbTemp.length());
-
                     if(fullMsg.toString().contains("canc-user")){
                         LOGGER.info("=====> [StreamConnectorMmc] canc-user");
-
-                        // "canc-user" 이후의 문자열 가져오기
-                        int cancIndex = fullMsg.indexOf("canc-user") + "canc-user".length();
-                        String afterCancUser = fullMsg.substring(cancIndex);
-
-                        // "TL1>"이 있는지 확인
-                        if (afterCancUser.contains("TL1>")) {
-                            LOGGER.info("=====> [StreamConnectorMmc] canc-user real Finish");
-                            this.isStart = false;
-                        }
+                        ((Queue<String>)dataShareBean.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_MMC_MSG_QUE)).offer(sbTemp.toString()+"canc-user");
+                        this.isStart = false;
+                    }else{
+                        ((Queue<String>)dataShareBean.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_MMC_MSG_QUE)).offer(sbTemp.toString());
                     }
+
+                    ((Queue<String>)dataShareBean.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_MMC_MSG_PASING_QUE)).offer(sbTemp.toString());
+                    sbTemp.delete(0,sbTemp.length());
                 }
 
                 try {
