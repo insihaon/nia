@@ -73,7 +73,7 @@ public class StreamConnectorMmc implements NiaEmsLinkageThread{
                     if(fullMsg.toString().contains("canc-user")){
                         LOGGER.info("=====> [StreamConnectorMmc] canc-user");
                         ((Queue<String>)dataShareBean.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_MMC_MSG_QUE)).offer(sbTemp.toString()+"canc-user");
-                        this.isStart = false;
+                        this.setStart(false);
                     }else{
                         ((Queue<String>)dataShareBean.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_MMC_MSG_QUE)).offer(sbTemp.toString());
                     }
@@ -89,7 +89,10 @@ public class StreamConnectorMmc implements NiaEmsLinkageThread{
                     LOGGER.error("=====> [StreamConnectorMmc] sendCommand() fullMsg: "+ fullMsg.toString() + "<=====");
                 }
             }catch(SocketException e){
-                this.isStart = false;
+                LOGGER.error("=====> [StreamConnectorMmc] run error SocketException("+this.host+") "+ ExceptionUtils.getStackTrace(e)+ "<=====");
+                LOGGER.error("=====> [StreamConnectorMmc] run error SocketException("+this.host+") fullMsg: "+ fullMsg.toString()+ "<=====");
+
+                this.setStart(false);
                 this.isConnection = false;
                 this.telnetMmc.closeConnection();
                 try {
@@ -97,19 +100,17 @@ public class StreamConnectorMmc implements NiaEmsLinkageThread{
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
-
-                LOGGER.error("=====> [StreamConnectorMmc] run error SocketException("+this.host+") "+ ExceptionUtils.getStackTrace(e)+ "<=====");
-                LOGGER.error("=====> [StreamConnectorMmc] run error SocketException("+this.host+") fullMsg: "+ fullMsg.toString()+ "<=====");
             }catch (Exception e){
-                this.isStart = false;
-                this.telnetMmc.closeConnection();
                 LOGGER.error("=====> [StreamConnectorMmc] run error Exception("+this.host+") "+ ExceptionUtils.getStackTrace(e)+ "<=====");
                 LOGGER.error("=====> [StreamConnectorMmc] run error Exception("+this.host+") fullMsg: "+ fullMsg.toString()+ "<=====");
+                this.setStart(false);
+                this.telnetMmc.closeConnection();
             }
         }
     }
 
     public void setStart(Boolean start) {
+        LOGGER.info("=====> [StreamConnectorMmc] setStart start : "+ start + "<=====");
         this.isStart = start;
     }
 
