@@ -44,7 +44,7 @@ public class Application implements CommandLineRunner {
 //		roadmEmsEventMsgService.eventMsgListener();
 //		roadmEmsPmMmcCheckService.pmMmcLinkageCheck();
 
-        roadmEmsTNMmcService.roadmPmMMC();
+//        roadmEmsTNMmcService.roadmPmMMC();
 
 //		roadmEmsMmcService.roadmSipcMMC();
 //		roadmEmsMmcService.roadmPmMMC();
