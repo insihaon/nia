@@ -7,8 +7,8 @@
 
     <insert id="insertPerf" parameterType="java.util.HashMap">
         <if test="perfVoList.size != 0">
-            INSERT INTO IP_YD.XE_CVNMS_PERF_IF
-            (
+            <foreach collection="perfVoList" item="item" separator=";">
+                INSERT INTO IP_YD.XE_CVNMS_PERF_IF (
                 STRIFID, STRRESID, STRTYPEMIN, INTTIMESTAMP, INTYEAR,
                 INTMONTH, INTDAY, INTHOUR, INTMIN, INTWEEK,
                 INTBANDWIDTH, FLTBPSIN, FLTBPSOUT, FLTPPSIN, FLTPPSOUT,
@@ -17,10 +17,8 @@
                 FLHCINMULTICASTPKTS, FLHCOUTMULTICASTPKTS, FLHCINBROADCASTPKTS, FLHCOUTBROADCASTPKTS, FLTBPSINMAX,
                 FLTBPSOUTMAX, FLTPPSINMAX, FLTPPSOUTMAX, FLTERRORINMAX, FLTERROROUTMAX,
                 FLTDISCARDINMAX, FLTDISCARDOUTMAX, FLTUNKNOWNMAX, FLTUSAGEMAX, INSERT_TIME
-            )
-            VALUES
-            <foreach collection="perfVoList" item="item" separator=",">
-            (
+                )
+                SELECT
                 #{item.strIfID}, #{item.strResID}, #{item.strTypeMin}, #{item.intTimestamp}, #{item.intYear},
                 #{item.intMonth}, #{item.intDay}, #{item.intHour}, #{item.intMin}, #{item.intWeek},
                 #{item.intBandwidth}, #{item.flHCInOctets}, #{item.flHCOutOctets}, #{item.fltPPSIn}, #{item.fltPPSOut},
@@ -29,9 +27,13 @@
                 #{item.flHCInMulticastPkts}, #{item.flHCOutMulticastPkts}, #{item.flHCInBroadcastPkts}, #{item.flHCOutBroadcastPkts}, #{item.fltBPSInMax},
                 #{item.fltBPSOutMax}, #{item.fltPPSInMax}, #{item.fltPPSOutMax}, #{item.fltErrorInMax}, #{item.fltErrorOutMax},
                 #{item.fltDiscardInMax}, #{item.fltDiscardOutMax}, #{item.fltUnknownMax}, #{item.fltUsageMax}, now()
-            )
+                WHERE NOT EXISTS (
+                    SELECT 1 FROM IP_YD.XE_CVNMS_PERF_IF
+                    WHERE STRIFID = #{item.strIfID}
+                    AND STRRESID = #{item.strResID}
+                    AND INTTIMESTAMP = #{item.intTimestamp}
+                )
             </foreach>
-            ON CONFLICT (STRIFID, STRRESID, INTTIMESTAMP) DO NOTHING
         </if>
     </insert>
 
