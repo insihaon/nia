@@ -125,169 +125,170 @@ export default {
     //   return this.selectedRow?.status === 'FIN' || this.selectedRow?.status === 'AUTO_FIN'
     // },
     trafficChartPps() {
-  const { ticket_type } = this.selectedRow
-  const chartData = this.trafficChartList
-  const xAxisKey = ['ATT2', 'FTT'].includes(ticket_type) ? 'measured_datetime' : 'collect_time'
-  const markLine = {
-    symbol: ['none', 'none'],
-    label: { show: false },
-    data: [{ xAxis: this.selectedRow?.fault_time || '' }],
-  }
+      const { ticket_type } = this.selectedRow
+      const chartData = this.trafficChartList
+      const xAxisKey = ['ATT2', 'FTT'].includes(ticket_type) ? 'measured_datetime' : 'collect_time'
+      const markLine = {
+        symbol: ['none', 'none'],
+        label: { show: false },
+        data: [{ xAxis: this.selectedRow?.fault_time || '' }],
+      }
 
-  let seriesArr = []
-  if (['ATT2', 'FTT'].includes(ticket_type)) {
-    seriesArr = [
-      {
-        markLine,
-        name: 'PPS_IN',
-        type: 'line',
-        data: chartData.map((v) => v.fltpps_in),
-      },
-      {
-        markLine,
-        name: 'PPS_OUT',
-        type: 'line',
-        data: chartData.map((v) => v.fltpps_out),
-      },
-    ]
-  } else {
-    seriesArr = [
-      {
-        markLine,
-        name: 'STRCOUNTS',
-        type: 'line',
-        data: chartData.map((v) => v.strcounts),
-      },
-      {
-        name: 'STRBYTES_COL',
-        type: 'line',
-        data: chartData.map((v) => v.strbytes_col),
-      },
-    ]
-  }
-  return {
-    tooltip: {
-      trigger: 'axis',
+      let seriesArr = []
+      if (['ATT2', 'FTT'].includes(ticket_type)) {
+        seriesArr = [
+          {
+            markLine,
+            name: 'PPS_IN',
+            type: 'line',
+            data: chartData.map((v) => v.fltpps_in),
+          },
+          {
+            markLine,
+            name: 'PPS_OUT',
+            type: 'line',
+            data: chartData.map((v) => v.fltpps_out),
+          },
+        ]
+      } else {
+        seriesArr = [
+          {
+            markLine,
+            name: 'STRCOUNTS',
+            type: 'line',
+            data: chartData.map((v) => v.strcounts),
+          },
+          {
+            name: 'STRBYTES_COL',
+            type: 'line',
+            data: chartData.map((v) => v.strbytes_col),
+          },
+        ]
+      }
+      return {
+        tooltip: {
+          trigger: 'axis',
+        },
+        legend: {
+          top: '5%', // 상단에 위치
+          left: 'center', // 중앙 정렬
+          orient: 'horizontal', // 가로 방향 정렬
+        },
+        dataZoom: [{ type: 'inside' }],
+        xAxis: {
+          type: 'category',
+          data: chartData.map((v) => formatterTime(v[xAxisKey])),
+        },
+        yAxis: {
+          type: 'value',
+        },
+        series: seriesArr,
+      }
     },
-    legend: {
-      top: '5%', // 상단에 위치
-      left: 'center', // 중앙 정렬
-      orient: 'horizontal', // 가로 방향 정렬
-    },
-    dataZoom: [{ type: 'inside' }],
-    xAxis: {
-      type: 'category',
-      data: chartData.map((v) => formatterTime(v[xAxisKey])),
-    },
-    yAxis: {
-      type: 'value',
-    },
-    series: seriesArr,
-  }
-},
-  trafficChartMbps() {
-    const { ticket_type } = this.selectedRow
-    const chartData = this.trafficChartList
-    const xAxisKey = ['ATT2', 'FTT'].includes(ticket_type) ? 'measured_datetime' : 'collect_time'
-    const markLine = {
-      symbol: ['none', 'none'],
-      label: { show: false },
-      data: [{ xAxis: this.selectedRow?.fault_time || '' }],
+    trafficChartMbps() {
+      const { ticket_type } = this.selectedRow
+      const chartData = this.trafficChartList
+      const xAxisKey = ['ATT2', 'FTT'].includes(ticket_type) ? 'measured_datetime' : 'collect_time'
+      const markLine = {
+        symbol: ['none', 'none'],
+        label: { show: false },
+        data: [{ xAxis: this.selectedRow?.fault_time || '' }],
+      }
+
+      const colorMap = {
+        MBPS_IN: '#ffcc00',
+        IN_THRESHOLD_UPPER: 'rgba(255, 204, 0, 0.3)',
+        MBPS_OUT: '#ff7043',
+        OUT_THRESHOLD_UPPER: 'rgba(255, 112, 67, 0.3)',
+      }
+
+      let seriesArr = []
+      let topLegend = []
+      let bottomLegend = []
+
+      if (['ATT2', 'FTT'].includes(ticket_type)) {
+        seriesArr = [
+          {
+            markLine,
+            name: 'MBPS_IN',
+            type: 'line',
+            data: chartData.map((v) => v.fltbps_in),
+            itemStyle: { color: colorMap.MBPS_IN },
+          },
+          {
+            markLine,
+            name: 'MBPS_OUT',
+            type: 'line',
+            data: chartData.map((v) => v.fltbps_out),
+            itemStyle: { color: colorMap.MBPS_OUT },
+          },
+          {
+            name: 'IN_THRESHOLD_UPPER',
+            type: 'line',
+            data: chartData.map((v) => v.in_threshold_upper),
+            smooth: true,
+            itemStyle: { color: colorMap.IN_THRESHOLD_UPPER },
+            areaStyle: { color: colorMap.IN_THRESHOLD_UPPER },
+            lineStyle: { width: 0 },
+            symbol: 'none',
+          },
+          {
+            name: 'OUT_THRESHOLD_UPPER',
+            type: 'line',
+            data: chartData.map((v) => v.out_threshold_upper),
+            smooth: true,
+            itemStyle: { color: colorMap.OUT_THRESHOLD_UPPER, opacity: 0, },
+            areaStyle: { color: colorMap.OUT_THRESHOLD_UPPER, opacity: 0, },
+            lineStyle: { width: 0, opacity: 0, },
+            symbol: 'none',
+
+          },
+        ]
+        topLegend = ['MBPS_IN', 'MBPS_OUT'] // 위쪽 레전드 항목
+        bottomLegend = ['IN_THRESHOLD_UPPER', 'OUT_THRESHOLD_UPPER'] // 아래쪽 레전드 항목
+      } else {
+        seriesArr = [
+          {
+            markLine,
+            name: 'STRCOUNTS',
+            type: 'line',
+            data: chartData.map((v) => v.strcounts),
+            itemStyle: { color: '#4575bc' },
+          },
+          {
+            name: 'STRBYTES_COL',
+            type: 'line',
+            data: chartData.map((v) => v.strbytes_col),
+            itemStyle: { color: '#8dc2e5' },
+          },
+        ]
+        topLegend = ['STRCOUNTS']
+        bottomLegend = ['STRBYTES_COL']
+      }
+
+      return {
+        tooltip: { trigger: 'axis' },
+        legend: [
+          {
+            data: topLegend,
+            top: '3%',
+            orient: 'horizontal',
+          },
+          {
+            data: bottomLegend,
+            top: '12%',
+            orient: 'horizontal',
+          },
+        ],
+        dataZoom: [{ type: 'inside' }],
+        xAxis: {
+          type: 'category',
+          data: chartData.map((v) => formatterTime(v[xAxisKey])),
+        },
+        yAxis: { type: 'value' },
+        series: seriesArr,
     }
-
-    const colorMap = {
-      MBPS_IN: '#ffcc00',
-      IN_THRESHOLD_UPPER: 'rgba(255, 204, 0, 0.3)',
-      MBPS_OUT: '#ff7043',
-      OUT_THRESHOLD_UPPER: 'rgba(255, 112, 67, 0.3)',
-    }
-
-    let seriesArr = []
-    let topLegend = []
-    let bottomLegend = []
-
-    if (['ATT2', 'FTT'].includes(ticket_type)) {
-      seriesArr = [
-        {
-          markLine,
-          name: 'MBPS_IN',
-          type: 'line',
-          data: chartData.map((v) => v.fltbps_in),
-          itemStyle: { color: colorMap.MBPS_IN },
-        },
-        {
-          markLine,
-          name: 'MBPS_OUT',
-          type: 'line',
-          data: chartData.map((v) => v.fltbps_out),
-          itemStyle: { color: colorMap.MBPS_OUT },
-        },
-        {
-          name: 'IN_THRESHOLD_UPPER',
-          type: 'line',
-          data: chartData.map((v) => v.in_threshold_upper),
-          smooth: true,
-          itemStyle: { color: colorMap.IN_THRESHOLD_UPPER },
-          areaStyle: { color: colorMap.IN_THRESHOLD_UPPER },
-          lineStyle: { width: 0 },
-          symbol: 'none',
-        },
-        {
-          name: 'OUT_THRESHOLD_UPPER',
-          type: 'line',
-          data: chartData.map((v) => v.out_threshold_upper),
-          smooth: true,
-          itemStyle: { color: colorMap.OUT_THRESHOLD_UPPER },
-          areaStyle: { color: colorMap.OUT_THRESHOLD_UPPER },
-          lineStyle: { width: 0 },
-          symbol: 'none',
-        },
-      ]
-      topLegend = ['MBPS_IN', 'MBPS_OUT'] // 위쪽 레전드 항목
-      bottomLegend = ['IN_THRESHOLD_UPPER', 'OUT_THRESHOLD_UPPER'] // 아래쪽 레전드 항목
-    } else {
-      seriesArr = [
-        {
-          markLine,
-          name: 'STRCOUNTS',
-          type: 'line',
-          data: chartData.map((v) => v.strcounts),
-          itemStyle: { color: '#4575bc' },
-        },
-        {
-          name: 'STRBYTES_COL',
-          type: 'line',
-          data: chartData.map((v) => v.strbytes_col),
-          itemStyle: { color: '#8dc2e5' },
-        },
-      ]
-      topLegend = ['STRCOUNTS']
-      bottomLegend = ['STRBYTES_COL']
-    }
-
-    return {
-      tooltip: { trigger: 'axis' },
-      legend: [
-        {
-          data: topLegend,
-          top: '3%',
-          orient: 'horizontal',
-        },
-        {
-          data: bottomLegend,
-          top: '12%',
-          orient: 'horizontal',
-        },
-      ],
-      dataZoom: [{ type: 'inside' }],
-      xAxis: {
-        type: 'category',
-        data: chartData.map((v) => formatterTime(v[xAxisKey])),
-      },
-      yAxis: { type: 'value' },
-      series: seriesArr,
   }
-}
 
   },
   created() {
