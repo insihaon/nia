@@ -31,7 +31,7 @@
               <span><i class="el-icon-document" /> TRAFFIC 그래프(MBPS)</span>
             </div>
             <el-row v-if="!isRT">
-              <CompChart :options="trafficChartMbps" class="w-100" :chart-loading="chartLoading" style="height: 300px;" />
+              <CompChart ref="trafficChartMbps" :options="trafficChartMbps" class="w-100" :chart-loading="chartLoading" style="height: 300px;" />
             </el-row>
             <el-row v-else style="height: 300px" class="d-flex items-center justify-center"> 정보가 없습니다. </el-row>
           </el-card>
@@ -43,7 +43,7 @@
               <span><i class="el-icon-document" /> TRAFFIC 그래프(PPS)</span>
             </div>
             <el-row v-if="!isRT">
-              <CompChart :options="trafficChartPps" class="w-100" :chart-loading="chartLoading" style="height: 300px" />
+              <CompChart ref="trafficChartPps" :options="trafficChartPps" class="w-100" :chart-loading="chartLoading" style="height: 300px" />
             </el-row>
             <el-row v-else style="height: 300px" class="d-flex items-center justify-center"> 정보가 없습니다. </el-row>
           </el-card>
@@ -185,10 +185,11 @@ export default {
         series: seriesArr,
       }
     },
+
     trafficChartMbps() {
       const { ticket_type } = this.selectedRow
       const chartData = this.trafficChartList
-      const xAxisKey = ['ATT2', 'FTT'].includes(ticket_type) ? 'measured_datetime' : 'collect_time'
+      const xAxisKey = this.isAttFtt(ticket_type) ? 'measured_datetime' : 'collect_time'
       const markLine = {
         symbol: ['none', 'none'],
         label: { show: false },
@@ -206,7 +207,7 @@ export default {
       let topLegend = []
       let bottomLegend = []
 
-      if (['ATT2', 'FTT'].includes(ticket_type)) {
+      if (this.isAttFtt(ticket_type)) {
         seriesArr = [
           {
             markLine,
@@ -237,9 +238,9 @@ export default {
             type: 'line',
             data: chartData.map((v) => v.out_threshold_upper),
             smooth: true,
-            itemStyle: { color: colorMap.OUT_THRESHOLD_UPPER, opacity: 0, },
-            areaStyle: { color: colorMap.OUT_THRESHOLD_UPPER, opacity: 0, },
-            lineStyle: { width: 0, opacity: 0, },
+            itemStyle: { color: colorMap.OUT_THRESHOLD_UPPER, },
+            areaStyle: { color: colorMap.OUT_THRESHOLD_UPPER, },
+            lineStyle: { width: 0, },
             symbol: 'none',
 
           },
@@ -266,30 +267,43 @@ export default {
         bottomLegend = ['STRBYTES_COL']
       }
 
-      return {
-        tooltip: { trigger: 'axis' },
-        legend: [
-          {
-            data: topLegend,
-            top: '3%',
-            orient: 'horizontal',
+      const trafficChartMbpsOptions = {
+          tooltip: { trigger: 'axis' },
+          legend: [
+            {
+              data: topLegend,
+              top: '3%',
+              orient: 'horizontal',
+            },
+            {
+              data: bottomLegend,
+              top: '12%',
+              orient: 'horizontal',
+            }
+          ],
+          dataZoom: [{ type: 'inside' }],
+          xAxis: {
+            type: 'category',
+            data: chartData.map((v) => formatterTime(v[xAxisKey])),
           },
-          {
-            data: bottomLegend,
-            top: '12%',
-            orient: 'horizontal',
-          },
-        ],
-        dataZoom: [{ type: 'inside' }],
-        xAxis: {
-          type: 'category',
-          data: chartData.map((v) => formatterTime(v[xAxisKey])),
-        },
-        yAxis: { type: 'value' },
-        series: seriesArr,
-    }
-  }
+          yAxis: { type: 'value' },
+          series: seriesArr,
+      }
 
+      if (this.isAttFtt(ticket_type)) {
+        const targetData = chartData.find((d) => {
+          return formatterTime(d[xAxisKey]) === this.selectedRow?.fault_time
+        })
+
+        const overIn = targetData?.fltbps_in >= targetData?.in_threshold_upper
+        const overOut = targetData?.fltbps_out >= targetData?.out_threshold_upper
+
+        trafficChartMbpsOptions.legend[0]['selected'] = { MBPS_IN: overIn, MBPS_OUT: overOut }
+        trafficChartMbpsOptions.legend[1]['selected'] = { IN_THRESHOLD_UPPER: overIn, OUT_THRESHOLD_UPPER: overOut }
+      }
+
+      return trafficChartMbpsOptions
+    }
   },
   created() {
     this.selectedRow = this.wdata?.params?.row
@@ -344,6 +358,11 @@ export default {
         this.chartLoading = false
       }
     },
+
+    isAttFtt(ticket_type) {
+      return ['ATT2', 'FTT'].includes(ticket_type)
+    },
+
     onClose() {
       /* for Override */
     },
