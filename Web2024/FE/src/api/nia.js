@@ -827,6 +827,15 @@ export function apiSelectNiaAbnormalTrafficList(params = {}) {
     data: params
   })
 }
+export function apiSelectSyslogAlarmList(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_SYSLOG_ALARM_LIST',
+    data: params
+  })
+}
 
 export function apiSelectNiaTopologyCableList(params = {}) {
   return http({

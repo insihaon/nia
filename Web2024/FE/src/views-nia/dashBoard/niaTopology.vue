@@ -128,7 +128,8 @@ import {
   apiSelectNiaAlarmList, apiSelectNiaCableAlarmList, apiSelectNiaAbnormalTraffic2List,
   apiSelectNiaBadTraffic2List, apiNTTTrafficChart, apiSelectNiaAbnormalTrafficList,
   apiSelectNiaTopologyCableList, apiSelectNiaPfTopologyCableList, apiSelectNiaAgencyList,
-  apiSelectTopologyNodeList, apiSelectTopologyLinkList, apiUpdateNodePosition
+  apiSelectTopologyNodeList, apiSelectTopologyLinkList, apiUpdateNodePosition,
+  apiIpAlarmList, apiSelectSyslogAlarmList
 } from '@/api/nia'
 import data_nia_ip_1 from '@/views-nia/dashBoard/niaTopologyConfig/json/data_nia_ip_1'
 import data_nia_ip_2 from '@/views-nia/dashBoard/niaTopologyConfig/json/data_nia_ip_2'
@@ -181,7 +182,9 @@ export default {
       slot: [],
       agencyList: [],
       ticket: {},
+      isAllTicket: false,
       filteredAgencyList: [],
+      showNodeAllError: false, // 해당 Option을 true로 변경하면, 개별 ticket 장애에 대해서도 해당 노드에서 발생한 모든 경보의 총합을 표시
 
       ticketAlarmsType: 'RT',
       ticketPFAlarms: [],
@@ -207,7 +210,8 @@ export default {
     }
   },
   created() {
-    this.ticket = this.wdata?.params
+    this.ticket = this.wdata?.params.ticket
+    this.isAllTicket = this.wdata?.params.isAllTicket
 
     const async = false
     this.addScript([
@@ -380,45 +384,53 @@ export default {
       })
     },
 
-    async loadTicketAlarm(ticket) {
-      const { THIS } = this
-      // let reload = false
-      // if (ticket == null) {
-      //   ticket = this.ticket
-      //   reload = true
-      // }
+    getEquipType(strResName) {
+      if (strResName.endsWith('-7712')) {
+        return '7712/5812'
+      } else if (strResName.endsWith('-5812')) {
+        return '7712/5812'
+      } else if (strResName.endsWith('-n9k')) {
+        return 'ngk'
+      } else {
+        return ''
+      }
+    },
 
-      // if (ticket == null || Object.keys(ticket).length === 0) {
-      //   return
-      // }
-
+    async loadTicketAlarm() {
       this.clearTicketAlarm()
-      // if (reload || ticket /* && this.ticket !== ticket */) {
-      if (this.ticket /* && this.ticket !== ticket */) {
-        // this.ticket = ticket
 
-        if (!this.ticket.allTicket) {
-          var alarms = await this.loadNiaAlarmList(this.ticket)
-          var alarmLink = await this.loadNiaCableAlarmList(this.ticket)
-          var [alarmNode] = await this.updateBadgeCount(this.map.data, alarms)
-
-          setTimeout(() => {
-            this.zoom(alarmLink, alarmNode)
-            this.map.draw(false)
-          }, 1000)
-        } else {
-          var totalAlarms = []
-
-          for (let i = 0; i < this.ticket.ticketList.length; i++) {
-            const ticket = this.ticket.ticketList[i]
-            const alarms = await this.loadNiaAlarmList(ticket)
-            if (alarms) {
-              totalAlarms.push(...alarms)
-            }
-          }
-          await this.updateBadgeCount(this.map.data, totalAlarms)
-          this.map.draw(false)
+      const res = await apiIpAlarmList()
+      const allTicket = res.result
+      const totalAlarms = allTicket.map((t) => {
+        t.sysname = t.node_nm
+        if (t.sysname) {
+          t.equiptype = this.getEquipType(t.sysname)
         }
+        return t
+      })
+
+      if (!this.isAllTicket) {
+        // 개별 경보 더블 클릭
+        if (!this.ticket) throw new Error('no Ticket')
+        var [alarms] = await this.loadNiaAlarmList(this.ticket)
+        var alarmLink = await this.loadNiaCableAlarmList(this.ticket)
+
+        var alarmNode = null
+        if (this.showNodeAllError) {
+          const filterAlarms = totalAlarms.filter((a) => a.sysname === alarms.sysname)
+          alarmNode = await this.updateBadgeCount(this.map.data, filterAlarms)
+        } else {
+          alarmNode = await this.updateBadgeCount(this.map.data, [alarms])
+        }
+
+        setTimeout(() => {
+          this.zoom(alarmLink, alarmNode[0])
+          this.map.draw(false)
+        }, 1000)
+      } else {
+        // 토폴로지 전체보기
+        await this.updateBadgeCount(this.map.data, totalAlarms)
+        this.map.draw(false)
       }
     },
 
@@ -469,28 +481,51 @@ export default {
 
     updateBadgeCount (data, alarms) {
       const alarmCnt = {}
+      const syslogCnt = {}
       let related_alarm = alarms.find(v => v.related_alarm === true)
       const alarmNodes = new Set()
       related_alarm = !related_alarm ? '' : related_alarm.sysname.split('-')[0]
 
-      alarms.map(alarm => this.getAlarmSysname(alarm)).map(function (sysname) {
-          if (sysname in alarmCnt) {
-              alarmCnt[sysname]++
-          } else {
-              alarmCnt[sysname] = 1
-          }
+      const syslogAlarm = alarms.filter((v) => v.ticket_type === 'SYSLOG')
+      const notSyslogAlarm = alarms.filter((v) => v.ticket_type !== 'SYSLOG')
+
+      notSyslogAlarm.map(alarm => this.getAlarmSysname(alarm)).map(function (sysname) {
+        if (sysname in alarmCnt) {
+            alarmCnt[sysname]++
+        } else {
+            alarmCnt[sysname] = 1
+        }
       })
       const key = Object.keys(alarmCnt)
 
       for (var i = 0; i < key.length; i++) {
           data.nodes.map(function (node) {
-              if (node.id === key[i]) {
-                  node.alarm_count = alarmCnt[key[i]]
-                  alarmNodes.add(node)
-              }
-              if (node.id === related_alarm) {
-                  node.related_alarm = true
-                  alarmNodes.add(node)
+            if (node.id === key[i]) {
+              node.alarm_count = alarmCnt[key[i]]
+              alarmNodes.add(node)
+            }
+            if (node.id === related_alarm) {
+              node.related_alarm = true
+              alarmNodes.add(node)
+            }
+        })
+      }
+
+      // syslogCnt
+      syslogAlarm.map(alarm => this.getAlarmSysname(alarm)).map(function (sysname) {
+        if (sysname in syslogCnt) {
+            syslogCnt[sysname]++
+        } else {
+            syslogCnt[sysname] = 1
+        }
+      })
+      const key2 = Object.keys(syslogCnt)
+
+      for (var j = 0; j < key2.length; j++) {
+          data.nodes.map(function (node) {
+              if (node.id === key2[j]) {
+                node.syslog_count = syslogCnt[key2[j]]
+                alarmNodes.add(node)
               }
         })
       }
@@ -513,13 +548,14 @@ export default {
     },
 
     async loadNiaAlarmList(ticket) {
-      if (!ticket) return Promise.resolve()
+      if (!ticket) throw new Error('not Ticket')
 
       switch (ticket.ticket_type) {
         case 'RT':
           {
             const param = {
-              CLUSTERNO: ticket.cluster_no,
+              CLUSTERNO: ticket.clusterno,
+              ALARMNO: ticket.alarmno
             }
             const res = await apiSelectNiaAlarmList(param)
             this.ticketRtAlarms = res?.result
@@ -530,6 +566,7 @@ export default {
                 rtAlarmTable.addEventListener('scroll', this.resize.bind(this))
               }
             }, 1000)
+            if (res.result.length > 1) throw new Error('하나의 티켓에 경보는 하나여야합니다.')
             return res?.result
           }
         case 'PF':
@@ -540,6 +577,7 @@ export default {
             const res = await apiSelectNiaCableAlarmList(param)
             this.ticketPFAlarms = res?.result
             this.ticketAlarmsType = 'PF'
+            if (res.result.length > 1) throw new Error('하나의 티켓에 경보는 하나여야합니다.')
             return res?.result
           }
         case 'ATT2':
@@ -556,6 +594,7 @@ export default {
                 trafficAbnormalTable.addEventListener('scroll', this.resize.bind(this))
               }
             }, 1000)
+            if (res.result.length > 1) throw new Error('하나의 티켓에 경보는 하나여야합니다.')
             return res?.result
           }
         case 'NTT':
@@ -572,9 +611,11 @@ export default {
                 trafficBadTable.addEventListener('scroll', this.resize.bind(this))
               }
             }, 1000)
+            if (res.result.length > 1) throw new Error('하나의 티켓에 경보는 하나여야합니다.')
             return res?.result
           }
         case 'TRAFFIC':
+          // 사실상 의미없음 사용될 일이 없음
           {
             const param = {
               TICKET_ID: ticket.ticket_id
@@ -608,7 +649,17 @@ export default {
                 }
               }
             }
+            if (res.result.length > 1) throw new Error('하나의 티켓에 경보는 하나여야합니다.')
             return res?.reuslt
+          }
+        case 'SYSLOG':
+          {
+            const param = {
+              ALARMNO: ticket.alarmno
+            }
+            const res = await apiSelectSyslogAlarmList(param)
+            if (res.result.length > 1) throw new Error('하나의 티켓에 경보는 하나여야합니다.')
+            return res?.result
           }
       }
     },
@@ -635,8 +686,15 @@ export default {
         const { root_cause_type, root_cause_sysnamea, root_cause_sysnamez } = this.ticket
         let causeLinks = []
         const data = this.map.data
-        const sysnamea = root_cause_sysnamea.replace(/(\d+\.\d+\.\d+\.\d+)-\w+/gi, '$1')
-        const sysnamez = root_cause_sysnamez.replace(/(\d+\.\d+\.\d+\.\d+)-\w+/gi, '$1')
+        let sysnamea = null
+        if (root_cause_sysnamea) {
+          sysnamea = root_cause_sysnamea.replace(/(\d+\.\d+\.\d+\.\d+)-\w+/gi, '$1')
+        }
+
+        let sysnamez = null
+        if (root_cause_sysnamez) {
+          sysnamez = root_cause_sysnamez.replace(/(\d+\.\d+\.\d+\.\d+)-\w+/gi, '$1')
+        }
 
         if (res?.result && res.result.length > 0) {
             const temp = res.result.sort((a, b) => a.routenum - b.routenum).reduce((r, p, i) => {
@@ -668,32 +726,38 @@ export default {
 
           causeLinks.sort((a, b) => a.status - b.status)
           return causeLinks[0]
-        } else if (this.ticket.ticket_type === 'PF') {
-          const param = {
-            TICKET_ID: ticket.ticket_id
-          }
-          const res = apiSelectNiaPfTopologyCableList(param)
-          const data = this.map.data
-          const temp = res.result.map(v => ({ source_id: v.sysnamea.replace(/(\d+\.\d+\.\d+\.\d+)-\w+/gi, '$1'), target_id: v.sysnamez.replace(/(\d+\.\d+\.\d+\.\d+)-\w+/gi, '$1') }))
-          const causeLinks = temp.map(item => {
-              const link = data.links.find(v => v.source_id === item.source_id && v.target_id === item.target_id)
-              Object.assign(link, { status: 0 })
-              return link
-          })
-          return causeLinks[0]
-        } else {
-            const { root_cause_sysnamea, root_cause_sysnamez } = this.ticket
+      } else if (this.ticket.ticket_type === 'PF') {
+        const param = {
+          TICKET_ID: ticket.ticket_id
+        }
+        const res = apiSelectNiaPfTopologyCableList(param)
+        const data = this.map.data
+        const temp = res.result.map(v => ({ source_id: v.sysnamea.replace(/(\d+\.\d+\.\d+\.\d+)-\w+/gi, '$1'), target_id: v.sysnamez.replace(/(\d+\.\d+\.\d+\.\d+)-\w+/gi, '$1') }))
+        const causeLinks = temp.map(item => {
+            const link = data.links.find(v => v.source_id === item.source_id && v.target_id === item.target_id)
+            Object.assign(link, { status: 0 })
+            return link
+        })
+        return causeLinks[0]
+      } else {
+        const { root_cause_sysnamea, root_cause_sysnamez } = this.ticket
 
-            let causeLinks = []
-            const data = this.map.data
-            const sysnamea = root_cause_sysnamea.replace(/(\d+\.\d+\.\d+\.\d+)-\w+/gi, '$1')
-            const sysnamez = root_cause_sysnamez.replace(/(\d+\.\d+\.\d+\.\d+)-\w+/gi, '$1')
-            const links = data.links.filter(v =>
-                v.source_id === sysnamea && v.target_id === sysnamez ||
-                v.source_id === sysnamez && v.target_id === sysnamea)
-            links.forEach(link => { link.status = -1 })
-            causeLinks = [...links]
-            return causeLinks[0]
+        let causeLinks = []
+        const data = this.map.data
+        let sysnamea = null
+        if (root_cause_sysnamea) {
+          sysnamea = root_cause_sysnamea.replace(/(\d+\.\d+\.\d+\.\d+)-\w+/gi, '$1')
+        }
+        let sysnamez = null
+        if (root_cause_sysnamez) {
+          sysnamez = root_cause_sysnamez.replace(/(\d+\.\d+\.\d+\.\d+)-\w+/gi, '$1')
+        }
+        const links = data.links.filter(v =>
+            v.source_id === sysnamea && v.target_id === sysnamez ||
+            v.source_id === sysnamez && v.target_id === sysnamea)
+        links.forEach(link => { link.status = -1 })
+        causeLinks = [...links]
+        return causeLinks[0]
       }
     },
 
@@ -849,12 +913,20 @@ export default {
     },
 
     getAlarmSysname(alarm) {
-      if (alarm.equiptype === '7712/5812') {
+      if (alarm.sysname == null) {
+        return null
+      }
+
+      try {
+        if (alarm.equiptype === '7712/5812') {
           return alarm.sysname
-      } else if (alarm.sysname.includes('n9k') || alarm.sysname.includes('control') || alarm.sysname.includes('cxp') || alarm.sysname.includes('asr9k')) {
-          return alarm.sysname
-      } else {
-          return alarm.sysname.split('-')[0]
+        } else if (alarm.sysname.includes('n9k') || alarm.sysname.includes('control') || alarm.sysname.includes('cxp') || alarm.sysname.includes('asr9k')) {
+            return alarm.sysname
+        } else {
+            return alarm.sysname.split('-')[0]
+        }
+      } catch (e) {
+        console.error(e)
       }
     }
   },

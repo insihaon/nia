@@ -158,8 +158,8 @@
             ACM.ALARMNO,
             TC.TICKET_ID,
             ACM.CLUSTERNO,
-            NULL NODE_NUM,
-            ACM.SYSNAME AS NODE_NM,
+            NM.NODE_NUM AS NODE_NUM,
+            NM.NODE_NM AS NODE_NM,
             ACM.ALARMLOC,
             TC.TICKET_TYPE,
             TC.root_cause_type AS FAULT_TYPE,
@@ -360,12 +360,19 @@
             'aiIpSdnSflowKey',
             'aiIpSdnSyslogKey',
             'aiIpSdnNodeFactorKey',
-            <!-- 'aiTrafficResultKey', -->
             'aiTrafficNoxKey',
             'aiTrafficAnoKey',
             'aiIpPerfKey',
             'aiIpResourceIfKey',
-            'aiIpResourceKey')
+            'aiIpResourceKey',
+            'ipSdnTrafficeKey',
+            'ipSdnSflowKey',
+            'ipSdnSyslogKey',
+            'ipSdnNodeFactorKey',
+            'ipPerfKey',
+            'ipResourceIfKey',
+            'ipResourceKey'
+        )
    </select>
 
    <!-- AI관제 시스템 처리량 -->
@@ -2139,7 +2146,8 @@
 
     <select id="SELECT_NIA_ALARM_LIST" parameterType="hashmap" resultType="hashmap">
         WITH sub_ticket_alarm AS
-        ( SELECT T.*,
+        ( 
+        <!-- SELECT T.*,
                 AL.ticket_al_id,
                 AL.root_cause_alarm_noa,
                 AL.root_cause_alarm_noz
@@ -2147,7 +2155,20 @@
         LEFT OUTER JOIN
                 ( SELECT SUB_AL.* ,
                         ROW_NUMBER() OVER (PARTITION BY SUB_AL.TICKET_ID ORDER BY TICKET_AL_ID DESC) AS ORDER_NUM
-                FROM    RCA.TB_RCA_TICKET_AL_CURRENT SUB_AL ) AL ON T.TICKET_ID = AL.TICKET_ID AND AL.ORDER_NUM = 1
+                FROM    RCA.TB_RCA_TICKET_AL_CURRENT SUB_AL ) AL ON T.TICKET_ID = AL.TICKET_ID AND AL.ORDER_NUM = 1 -->
+            SELECT 
+                T.*,
+                AL.ticket_al_id,
+                AL.root_cause_alarm_noa,
+                AL.root_cause_alarm_noz
+            FROM RCA.TB_RCA_TICKET_CURRENT T
+            LEFT JOIN LATERAL (
+                SELECT ticket_al_id, root_cause_alarm_noa, root_cause_alarm_noz
+                FROM RCA.TB_RCA_TICKET_AL_CURRENT AL
+                WHERE AL.TICKET_ID = T.TICKET_ID
+                ORDER BY AL.TICKET_AL_ID DESC
+                FETCH FIRST 1 ROWS ONLY
+            ) AL ON TRUE
         )
         SELECT  T.ALARMNO AS ALARMNO,
                 T.CLUSTERNO AS CLUSTERNO,
@@ -2170,8 +2191,12 @@
         FROM    rca.tb_alarm_cur_mst T
         LEFT OUTER JOIN sub_ticket_alarm ta ON T.clusterno = ta.cluster_no
         <where>
+            1=1
             <if test="CLUSTERNO != null">
-                T.CLUSTERNO = #{CLUSTERNO}
+                AND T.CLUSTERNO = #{CLUSTERNO}
+            </if>
+            <if test="ALARMNO != null">
+                AND T.ALARMNO = #{ALARMNO}
             </if>
         </where>
     </select>
@@ -2278,6 +2303,22 @@
         and uo.NREN_ID = 'UO00000347'
     </select>
 
+    <select id="SELECT_SYSLOG_ALARM_LIST" parameterType="hashmap" resultType="hashmap">
+        SELECT 
+            ALARMNO
+            , NODE_NM SYSNAME
+            , CASE WHEN node_nm LIKE '%-7712%' THEN '7712/5812'
+                WHEN node_nm LIKE '%-5812%' THEN '7712/5812'
+                WHEN node_nm LIKE '%-n9k%' THEN 'ngk'
+                ELSE '' END AS EQUIPTYPE
+            , 'SYSLOG' AS TICKET_TYPE
+        FROM RCA.TB_SYSLOG_ALARM_MST
+        WHERE 1=1
+        <if test="ALARMNO != null">
+            AND ALARMNO = #{ALARMNO}
+        </if>
+    </select> 
+
     <select id="SELECT_NIA_TOPOLOGY_CABLE_LIST" parameterType="hashmap" resultType="hashmap">
         SELECT
             trtr.routenum,
@@ -2288,7 +2329,7 @@
                           WHERE tcat.alarmno = (
                               SELECT AL.root_cause_alarm_noa
                               FROM rca.tb_rca_ticket_current T
-                                       LEFT OUTER JOIN rca.tb_rca_ticket_al_current AL ON AL.ticket_id = T.ticket_id
+                                      LEFT OUTER JOIN rca.tb_rca_ticket_al_current AL ON AL.ticket_id = T.ticket_id
                                       AND AL.ticket_al_id = (
                                           SELECT max(ticket_al_id)
                                           FROM rca.tb_rca_ticket_al_current
