@@ -27,6 +27,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import com.codej.base.dto.AppDto;
 import com.codej.base.property.GlobalConstants.CustomCacheKey;
+import com.codej.web.bean.Receiver;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -41,12 +42,20 @@ public class BaseRedisConfiguration {
     @Autowired
     private AppDto appDto;
 
+    @Autowired
+    private Receiver receiver;
+
      /**
      * 단일 Topic 사용을 위한 Bean 설정
      */
     @Bean
     public ChannelTopic channelTopic() {
         return new ChannelTopic("event_push");
+    }
+
+    @Bean
+    public MessageListenerAdapter messageListenerAdapter() {
+        return new MessageListenerAdapter(receiver, "receiveMessage");
     }
 
     /**
