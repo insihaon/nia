@@ -20,11 +20,12 @@
           <div
             v-for="system in niaProcess"
             :key="system.name"
-            :style="{ color: system.status === 'Y' ? 'lime' : 'red' }"
-            :class="{ blinking: system.status === 'N' }"
-            style="border-right: solid 1px #ffffff82;padding-right: 5px; white-space: nowrap; overflow: hidden;"
+            :style="{ color: system.status }"
+            class="system-tooltip"
+            style="border-right: solid 1px #ffffff82;padding-right: 5px; white-space: nowrap;"
           >
-            {{ system.name }}
+            <div :class="{ blinking: system.status !== 'lime' }">{{ system.name }}</div>
+            <div class="tooltip-text" v-html="system.tooltip" />
           </div>
         </div>
       </div>
@@ -37,7 +38,7 @@
       </div> -->
       <div v-show="$store.getters.windows.length > 0" class="statusBarWrap mr-3">
         <el-menu mode="horizontal" class="statusBarMenu">
-          <el-submenu index="0" popper-class="statusBarMenuLI">
+          <el-submenu index="0" popper-class="statusBarMenuNiaBottomBar">
             <template slot="title">
               <i class="el-icon-files" /> <span>창목록</span><span class="badgeItem">{{ $store.getters.windows.length }}</span>
             </template>
@@ -48,7 +49,9 @@
                 class="statusBarWindowItem"
                 @click="windowSelection(window)"
               >
-                <i class="el-icon-document" /> <span>{{ window.name }}</span> <i v-show="window.windowState !== 'minimize' && window.zindex === 1000" class="el-icon-view" />
+                <!-- :style="{'background-color': window.windowState !== 'minimize' && window.zindex === 1000 ? 'rgb(30, 41, 59) !important' : '#fff !important'}" -->
+                <i class="el-icon-document" /> <span>{{ window.name }}</span>
+                <!-- <i v-show="window.windowState !== 'minimize' && window.zindex === 1000" class="el-icon-view" /> -->
                 <i class="el-icon-close statusBarWindowItemCloseBtn" @click="$store.dispatch('mdi/removeWindow', window.id)" />
               </el-menu-item>
             </template>
@@ -90,20 +93,126 @@ export default {
 
       niaProcess: {
         /*
-          실시간 포함 5분 미만 스케줄링 -> max 5분
-          5분주기 스케줄링 -> max 10분
-          수집 주기 max초과 시 연동이상으로 판단한다.
+          ai가 붙은 것은 전송주기를 파악하며 collection이 있으면 수집주기 파악용으로 사용.
+          수집, 전송 주기 max초과 시 연동이상으로 판단한다.
         */
-        aiIpSdnTrafficeKey: { name: 'LinkTraffic', status: 'N', cycle: 5 * 60 * 1000 },
-        aiIpSdnSflowKey: { name: 'Sflow', status: 'N', cycle: 10 * 60 * 1000 },
-        aiIpSdnSyslogKey: { name: 'Syslog', status: 'N', cycle: 10 * 60 * 1000 },
-        aiIpSdnNodeFactorKey: { name: 'NodeFactor', status: 'N', cycle: 5 * 60 * 1000 },
-        // aiTrafficResultKey: { name: 'TRAFFIC', status: 'N', cycle: 5 * 60 * 1000  },
-        aiTrafficNoxKey: { name: 'AI_Traffic_유해', status: 'N', cycle: 5 * 60 * 1000 },
-        aiTrafficAnoKey: { name: 'AI_Traffic_이상', status: 'N', cycle: 5 * 60 * 1000 },
-        aiIpPerfKey: { name: 'IPSDN_Perf', status: 'N', cycle: 10 * 60 * 1000 },
-        aiIpResourceIfKey: { name: 'IPSDN_ResourceIf', status: 'N', cycle: this.moment().set({ hour: 2, minute: 40, second: 0, millisecond: 0 }) }, // 매일 2시 40분
-        aiIpResourceKey: { name: 'IPSDN_Resource', status: 'N', cycle: this.moment().set({ hour: 2, minute: 30, second: 0, millisecond: 0 }) }, // 매일 2시 30분
+
+        ipSdnTrafficeKey: {
+          name: 'LinkTraffic', status: 'red', cycle: 5 * 60 * 1000,
+          tooltip: `
+            <div style="font-size: 13px; text-align: left">
+            <span style="color:red">빨강</span> : 수집 실패<br>
+            <span style="color:orange">주황</span> : 연동 실패<br>
+            <span style="color:lime">초록</span> : AI 연동 성공
+            </div>
+          `,
+          secondStep: {
+            key: 'aiIpSdnTrafficeKey',
+            cycle: 5 * 60 * 1000,
+          }
+        },
+        ipSdnSflowKey: {
+          name: 'Sflow', status: 'red', cycle: 10 * 60 * 1000,
+          tooltip: `
+            <div style="font-size: 13px; text-align: left">
+            <span style="color:red">빨강</span> : 수집 실패<br>
+            <span style="color:orange">주황</span> : 연동 실패<br>
+            <span style="color:lime">초록</span> : AI 연동 성공
+            </div>
+          `,
+          secondStep: {
+            key: 'aiIpSdnSflowKey',
+            cycle: 10 * 60 * 1000,
+          }
+        },
+        ipSdnSyslogKey: {
+          name: 'Syslog', status: 'red', cycle: 10 * 60 * 1000,
+          tooltip: `
+            <div style="font-size: 13px; text-align: left">
+            <span style="color:red">빨강</span> : 수집 실패<br>
+            <span style="color:orange">주황</span> : 연동 실패<br>
+            <span style="color:lime">초록</span> : AI 연동 성공
+            </div>
+          `,
+          secondStep: {
+            key: 'aiIpSdnSyslogKey',
+            cycle: 10 * 60 * 1000,
+          }
+        },
+        ipSdnNodeFactorKey: {
+          name: 'NodeFactor', status: 'red', cycle: 5 * 60 * 1000,
+          tooltip: `
+            <div style="font-size: 13px; text-align: left">
+            <span style="color:red">빨강</span> : 수집 실패<br>
+            <span style="color:orange">주황</span> : 연동 실패<br>
+            <span style="color:lime">초록</span> : AI 연동 성공
+            </div>
+          `,
+          secondStep: {
+            key: 'aiIpSdnNodeFactorKey',
+            cycle: 5 * 60 * 1000,
+          }
+        },
+        aiTrafficNoxKey: {
+          name: 'AI_Traffic_유해', status: 'red', cycle: 5 * 60 * 1000,
+          tooltip: `
+            <div style="font-size: 13px; text-align: left">
+            <span style="color:red">빨강</span> : AI 연동 실패<br>
+            <span style="color:lime">초록</span> : AI 연동 성공
+            </div>
+          `,
+        },
+        aiTrafficAnoKey: {
+          name: 'AI_Traffic_이상', status: 'red', cycle: 5 * 60 * 1000,
+          tooltip: `
+            <div style="font-size: 13px; text-align: left">
+            <span style="color:red">빨강</span> : AI 연동 실패<br>
+            <span style="color:lime">초록</span> : AI 연동 성공
+            </div>
+          `,
+        },
+        ipPerfKey: {
+          name: 'IPSDN_Perf', status: 'red', cycle: 10 * 60 * 1000,
+          tooltip: `
+            <div style="font-size: 13px; text-align: left">
+            <span style="color:red">빨강</span> : 수집 실패<br>
+            <span style="color:orange">주황</span> : 연동 실패<br>
+            <span style="color:lime">초록</span> : AI 연동 성공
+            </div>
+          `,
+          secondStep: {
+            key: 'aiIpPerfKey',
+            cycle: 10 * 60 * 1000,
+          }
+        },
+        ipResourceIfKey: {
+          name: 'IPSDN_ResourceIf', status: 'red', cycle: this.moment().set({ hour: 0, minute: 15, second: 0, millisecond: 0 }), // 매일 2시 40분
+          tooltip: `
+            <div style="font-size: 13px; text-align: left">
+            <span style="color:red">빨강</span> : 수집 실패 <br>
+            <span style="color:orange">주황</span> : 연동 실패<br>
+            <span style="color:lime">초록</span> : AI 연동 성공
+            </div>
+          `,
+          secondStep: {
+            key: 'aiIpResourceIfKey',
+            cycle: this.moment().set({ hour: 2, minute: 40, second: 0, millisecond: 0 })
+          }
+        },
+        ipResourceKey: {
+          name: 'IPSDN_Resource', status: 'red', cycle: this.moment().set({ hour: 0, minute: 5, second: 0, millisecond: 0 }), // 매일 2시 30분
+          tooltip: `
+            <div style="font-size: 13px; text-align: left">
+            <span style="color:red">빨강</span> : 수집 실패<br>
+            <span style="color:orange">주황</span> : 연동 실패<br>
+            <span style="color:lime">초록</span> : AI 연동 성공
+            </div>
+          `,
+          secondStep: {
+            key: 'aiIpResourceKey',
+            cycle: this.moment().set({ hour: 2, minute: 30, second: 0, millisecond: 0 })
+          }
+        }
       },
       monitoringInterval: null
     }
@@ -144,25 +253,76 @@ export default {
       }
     },
     setCurrentProcess(processList) {
-      processList.forEach(d => { this.niaProcess[d.key_name]['collectionTime'] = d.yd_date ?? null })
+      for (const d of processList) {
+        if (this.niaProcess[d.key_name]) {
+          this.niaProcess[d.key_name]['firstTime'] = d.yd_date ?? null
+        } else {
+          const modifiedKeyName = d.key_name.slice(2)
+          const secondKey = modifiedKeyName.charAt(0).toLowerCase() + modifiedKeyName.slice(1)
+          if (secondKey in this.niaProcess) {
+            if ('secondStep' in this.niaProcess[secondKey]) {
+              this.niaProcess[secondKey]['secondTime'] = d.yd_date ?? null
+              this.niaProcess[secondKey]['secondCycle'] = this.niaProcess[secondKey]['secondStep'].cycle
+            } else {
+              throw new Error('firstStep, secondStep이 둘다 없는 Process는 에러입니다.')
+            }
+          }
+        }
+      }
+
       const monitoringKeys = Object.keys(this.niaProcess)
-      monitoringKeys.forEach(key => {
+      for (const key of monitoringKeys) {
         this.niaProcess[key].status = this.checkKeyStatus(this.niaProcess[key])
-      })
-      console.log()
+      }
     },
     checkKeyStatus(processObj) {
-      const { cycle, collectionTime: lastCollectedTime } = processObj
-      const currentTime = new Date()
-      const collectionTime = new Date(lastCollectedTime)
-      const timeDifference = currentTime - collectionTime
+      const { cycle: firstCycle, secondCycle, secondTime, firstTime } = processObj
+      const currentDate = new Date()
+      const firstDate = firstTime ? new Date(firstTime) : null
+      const secondDate = secondTime ? new Date(secondTime) : null
 
-      if (typeof cycle !== 'number') {
-        const dayDiff = cycle.diff(lastCollectedTime, 'days')
-        const miniteDiff = cycle.diff(lastCollectedTime, 'minutes')
-        return dayDiff > 1 || miniteDiff > 10 ? 'N' : 'Y'
+      if (typeof firstCycle !== 'number') {
+        const dayDiff = firstCycle.diff(firstTime, 'days')
+        const miniteDiff = firstCycle.diff(firstTime, 'minutes')
+
+        if (dayDiff <= 1 && miniteDiff <= 10) {
+          const secondDayDiff = secondCycle.diff(secondTime, 'days')
+          const secondMiniteDiff = secondCycle.diff(secondTime, 'minutes')
+          return secondDayDiff > 1 || secondMiniteDiff > 10 ? 'orange' : 'lime'
+        } else {
+          return 'red'
+        }
+
+        // if (dayDiff > 1 || miniteDiff > 10) {
+        //   const secondDayDiff = secondCycle.diff(secondTime, 'days')
+        //   const secondMiniteDiff = secondCycle.diff(secondTime, 'minutes')
+        //   return secondDayDiff > 1 || secondMiniteDiff > 10 ? 'red' : 'orange'
+        // } else {
+        //   return 'lime'
+        // }
       } else {
-        return timeDifference > cycle ? 'N' : 'Y'
+        const firstDateTimeDifference = currentDate - firstDate
+        if (firstDateTimeDifference < firstCycle) {
+          if (secondTime != null && secondDate != null) {
+            const secondTimeDifference = currentDate - secondDate
+            return secondTimeDifference > secondCycle ? 'orange' : 'lime'
+          } else {
+            return 'lime'
+          }
+        } else {
+          return 'red'
+        }
+
+        // if (firstDateTimeDifference > firstCycle) {
+        //   if (secondTime != null && secondDate != null) {
+        //     const secondTimeDifference = currentDate - secondDate
+        //     return secondTimeDifference > secondCycle ? 'red' : 'orange'
+        //   } else {
+        //     return 'red'
+        //   }
+        // } else {
+        //   return 'lime'
+        // }
       }
     },
     windowSelection(window) {
@@ -178,6 +338,48 @@ export default {
 <style lang="scss" scoped>
 @import '~@/styles/variables.scss';
 @import '~@/styles/animation.scss';
+
+.BottomBar{
+  .system-tooltip {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+
+    .tooltip-text {
+      visibility: hidden;
+      background-color: black;
+      color: #fff;
+      text-align: center;
+      padding: 5px;
+      border-radius: 5px;
+      position: absolute;
+      bottom: 150%;
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    &:hover .tooltip-text {
+        visibility: visible;
+        opacity: 1;
+    }
+
+      .blinking {
+      animation: blink 1.5s ease-in-out infinite alternate;
+    }
+
+    @keyframes blink{
+      0% {
+        opacity: 0.3;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+  }
+}
 
 .system-name {
   white-space: nowrap;
@@ -219,15 +421,54 @@ export default {
       position: absolute;
       background-color:#fff;
       color:#141414;
-      height: 14px;
+      height: 18px;
       line-height: 18px;
       text-align: center;
       padding:0 5px;
-      border-radius: 3px;
+      border-radius: 15px;
       font-size:12px;
       font-weight: 400;
-      right:5px; top:5px;
+      right:5px; top:9px;
       /* transform: translate(30px, 20px); */
+    }
+
+    ::v-deep .el-menu--horizontal {
+      .el-submenu{
+        .el-submenu__icon-arrow{
+          margin-right: 10px !important;
+        }
+      }
+    }
+  }
+}
+</style>
+
+<style lang="scss">
+.el-menu--horizontal.statusBarMenuNiaBottomBar{
+
+  ul.el-menu.el-menu--popup{
+    background: transparent !important;
+    border-radius: 15px !important;
+    top: 17px !important;
+
+    li.statusBarWindowItem{
+      text-align: left !important;
+      font-size: 14px !important;
+      font-family: NotoSansKR;
+      background-color: #fff !important;
+      border: rgb(232, 232, 232) solid 1px;
+      margin-bottom: 10px;
+      height: 39px !important;
+
+      &:hover{
+        // opacity: 0.8;
+        background: rgb(232, 232, 232) !important;
+      }
+
+      &.focusWindow{
+        background-color: rgb(30, 41, 59) !important;
+        color: white !important;
+      }
     }
   }
 }

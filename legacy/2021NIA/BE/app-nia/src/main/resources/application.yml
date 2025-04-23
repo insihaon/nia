@@ -101,6 +101,10 @@ spring:
     InspectorToUID: nia.InspectorToUIDirectly
     TicketRestart: nia.NiaTicketReStartIndexDirectly
 
+  session:
+    jwt-compare: false
+    store-type: none # none, redis
+
   jwt:
     secret: ENC(JHGQ4l2duXL/dcZJSWYxdyASjfzLjyXb)
   #sql.init.encoding: UTF-8 # DB 한글이 깨질 경우에만 설정
@@ -133,7 +137,7 @@ myconf:
   ssh:
     host: 127.0.0.1
     port: 22
-    user: 
+    user:
     password:
   api-server:
     ipsdn: http://incodej-lab.iptime.org:18088
