@@ -86,21 +86,12 @@ public class AlarmClusterServiceImpl implements AlarmClusterService {
      */
     @Override
     public void clustering(BasicAlarmVo basicAlarmVo) {
-
         boolean isSysNameFind = false;
         boolean isTrunkIdFind = false;
         boolean isOppSysNameFind = false;
         boolean isAddAlarm = false;
 
         try {
-            if (endTime.getTime() <= basicAlarmVo.getReceivetime().getTime()) {
-                endTime = basicAlarmVo.getReceivetime();
-            }
-
-            if (startTime.getTime() > basicAlarmVo.getReceivetime().getTime()) {
-                startTime = basicAlarmVo.getReceivetime();
-            }
-
             StringBuffer strLog = new StringBuffer();
             strLog.append("=====> [AlarmClusterService] clustering <=====\n");
             strLog.append("tmpClusterno : " + basicAlarmVo.getTmpClusterno() + "\n");
@@ -111,6 +102,15 @@ public class AlarmClusterServiceImpl implements AlarmClusterService {
             strLog.append("receiveTime : " + basicAlarmVo.getReceivetime() + "\n");
             strLog.append("equipType : " + basicAlarmVo.getEquiptype() + "\n");
             strLog.append("sysname : " + basicAlarmVo.getSysname() + "\n");
+
+            if (endTime.getTime() <= basicAlarmVo.getReceivetime().getTime()) {
+                endTime = basicAlarmVo.getReceivetime();
+            }
+
+            if (startTime.getTime() > basicAlarmVo.getReceivetime().getTime()) {
+                startTime = basicAlarmVo.getReceivetime();
+            }
+
             if (basicAlarmVo.getTopologyObject() != null) {
                 strLog.append("oppSysname : " + basicAlarmVo.getTopologyObject().getOppSysname() + "\n");
             }
@@ -321,8 +321,6 @@ public class AlarmClusterServiceImpl implements AlarmClusterService {
     @Override
     public void createCluster(BasicAlarmVo basicAlarmVo) {
         try {
-            //  LOGGER.info(">>>>>>>>>>[AlarmClusterThreadImpl] createCluster() basicAlarmVo : " + basicAlarmVo
-            //  .getAlarmno() + " <<<<<<<<<<<<<<<<<");
             String clusterNo = null;
             ClusterInfoVo clusterInfoVo = null;
             ClusterObject clusterObject = null;
@@ -330,9 +328,6 @@ public class AlarmClusterServiceImpl implements AlarmClusterService {
             clusterObject = clusterObjectFactory.getObject();
             clusterObject.setTmpClusterNo(tmpClusterNo);
             clusterObject.setClusterNo(clusterNo);
-            if(basicAlarmVo.getSysname() == null){
-                return;
-            }
             clusterObject.addEquipList(basicAlarmVo.getSysname());
 
             basicAlarmVo.setClusterno(clusterNo);
@@ -359,11 +354,18 @@ public class AlarmClusterServiceImpl implements AlarmClusterService {
 
             clusterObject.setClusterInfoVo(clusterInfoVo);
             clusterObjectList.add(clusterObject);
+
+            if (basicAlarmVo.getReceivetime() == null) {
+                throw new IllegalArgumentException("basicAlarmVo.getReceivetime() is null.");
+            }
+
             endTime = basicAlarmVo.getReceivetime();
             startTime = basicAlarmVo.getReceivetime();
             basicAlarmVo.setTmpClusterno(tmpClusterNo);
             clusterObject.addAlarmNoList(basicAlarmVo);
             alarmService.insertAlarm(basicAlarmVo);
+
+            LOGGER.info("[AlarmClusterService] createCluster setFin");
         } catch (Exception e) {
             LOGGER.error(">>>>>>>>>>[AlarmClusterService] createCluster error(" + tmpClusterObject.getTmpClusterSeq() + ") : " + ExceptionUtils.getStackTrace(e) + " <<<<<<<<<<<<<<<<<");
         }
