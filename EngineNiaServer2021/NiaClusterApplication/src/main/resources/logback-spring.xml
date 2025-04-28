@@ -1,16 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <configuration>
-    <property name="LOG_TEMP" value="/home/codej8888/server/logs/" />
 	<include resource="org/springframework/boot/logging/logback/defaults.xml" />
 	<include resource="org/springframework/boot/logging/logback/base.xml"/>
+
+    <springProfile name="dev">
+        <property resource="log-properties/logback-dev.properties"/>
+    </springProfile>
+
+    <springProfile name="real">
+        <property resource="log-properties/logback-real.properties"/>
+    </springProfile>
+
+    <!-- log file path -->
+    <property name="LOG_PATH" value="${log.config.path}"/>
 
 	<appender name="preprocessorApplicationInfo"
 		class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<prudent>true</prudent>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <!--<fileNamePattern>../logs/preprocessor_application.%d{yyyy-MM-dd}.log</fileNamePattern>-->
-            <fileNamePattern>/home/codej8888/server/logs/cluster_preprocessor_application.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>${LOG_PATH}/cluster_preprocessor_application.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>15</maxHistory>
             <totalSizeCap>5GB</totalSizeCap>
         </rollingPolicy>
@@ -27,7 +36,7 @@
         class="ch.qos.logback.core.rolling.RollingFileAppender">
         <prudent>true</prudent>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>/home/codej8888/server/logs/cluster_preprocessor_application_error.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>${LOG_PATH}/cluster_preprocessor_application_error.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>15</maxHistory>
             <totalSizeCap>5GB</totalSizeCap>
         </rollingPolicy>

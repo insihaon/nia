@@ -37,7 +37,7 @@ public class ClusterServiceImpl implements ClusterService {
     @Autowired
     private org.springframework.beans.factory.ObjectFactory<AlarmClusterServiceImpl> AlarmClusterServiceFactory;
 
-    private List<TmpClusterObject> tmpClusterList = new  ArrayList<TmpClusterObject>();
+    private List<TmpClusterObject> tmpClusterList = new ArrayList<TmpClusterObject>();
     private List<AlarmClusterService> alarmClusterServiceImplList = new ArrayList<AlarmClusterService>();
 
     @Value("${spring.cluster.timeCondition}")
@@ -52,9 +52,10 @@ public class ClusterServiceImpl implements ClusterService {
 
         try {
             if (tmpClusterList.size() > 0) {
-                        for(TmpClusterObject tmpClusterObject : tmpClusterList){
-                            if(!tmpClusterObject.isClusterMaxTime() && !tmpClusterObject.isStop()){
-                                startTimeDiff = basicAlarmVo.getReceivetime().getTime() - tmpClusterObject.getStartTime().getTime();
+                LOGGER.info("[ClusterService] tmpClusterList.size() : " + tmpClusterList.size());
+                for(TmpClusterObject tmpClusterObject : tmpClusterList){
+                    if(!tmpClusterObject.isClusterMaxTime() && !tmpClusterObject.isStop()){
+                        startTimeDiff = basicAlarmVo.getReceivetime().getTime() - tmpClusterObject.getStartTime().getTime();
                         endTimeDiff = basicAlarmVo.getReceivetime().getTime() - tmpClusterObject.getEndTime().getTime();
 
                         if (startTimeDiff < (timeCondition * -1)) {
@@ -105,6 +106,11 @@ public class ClusterServiceImpl implements ClusterService {
         TmpClusterObject tmpClusterObject;
         StringBuffer strLog;
         try {
+            if(basicAlarmVo.getSysname() == null){
+                LOGGER.info("=====> [ClusterService] createCluster null sysname");
+                return;
+            }
+
             tmpClusterNo = selectTmpClusterKey();
             tmpClusterObject = tmpClusterObjectFactory.getObject();
             tmpClusterObject.setTmpClusterSeq(tmpClusterNo);
@@ -120,8 +126,6 @@ public class ClusterServiceImpl implements ClusterService {
             alarmClusterService.getInstance(basicAlarmVo,tmpClusterObject);
             alarmClusterServiceImplList.add(alarmClusterService);
 
-          //  new Thread(alarmClusterThread).start();
-
             strLog = new StringBuffer();
             strLog.append("=====> [ClusterService] createCluster <=====\n");
             strLog.append("alarmno : " + basicAlarmVo.getAlarmno()+"\n");
@@ -132,7 +136,6 @@ public class ClusterServiceImpl implements ClusterService {
             strLog.append("cluEndTime : " + tmpClusterObject.getEndTime()+"\n");
             strLog.append("---------------------------------------------------------------");
             LOGGER.info(strLog.toString());
-        //    Thread.sleep(50);
         }catch( Exception e ) {
             LOGGER.error("=====> [ClusterService] createCluster error "+ ExceptionUtils.getStackTrace(e)+ "<=====");
         }
