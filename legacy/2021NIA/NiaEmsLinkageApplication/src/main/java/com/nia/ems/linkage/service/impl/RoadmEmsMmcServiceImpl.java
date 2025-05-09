@@ -4,6 +4,7 @@ import com.nia.ems.linkage.amqp.PerformanceToAiPrdAmqp;
 import com.nia.ems.linkage.common.LinkageCodeInfo;
 import com.nia.ems.linkage.common.UtlDateHelper;
 import com.nia.ems.linkage.data.DataShareBean;
+import com.nia.ems.linkage.mapper.CommonMapper;
 import com.nia.ems.linkage.mapper.EquipmentMapper;
 import com.nia.ems.linkage.service.RoadmEmsMmcService;
 import com.nia.ems.linkage.vo.equipment.EquipInfoVo;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Service("RoadmEmsMmcService")
@@ -26,6 +28,9 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
 
     @Autowired
     private EquipmentMapper equipmentMapper;
+
+    @Autowired
+    private CommonMapper commonMapper;
 
     @Autowired
     private PerformanceToAiPrdAmqp performanceToAiPrdAmqp;
@@ -66,6 +71,11 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
                     if (roadmEmsTL1Client.isConnected()) {
                         try {
                             roadmEmsTL1Client.logout();
+
+                            // emsSipcKey
+                            HashMap<String, String> strHashMap = new HashMap<>();
+                            strHashMap.put("key", "emsSipcKey");
+                            commonMapper.updateLinkageYdKey(strHashMap);
                         } catch (Exception e) {
                             LOGGER.error("=====> [RoadmEmsMmcService] roadmSipcMMC error() " + ExceptionUtils.getStackTrace(e) + "<=====");
                         }
@@ -145,6 +155,11 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
 
                     if (roadmEmsTL1Client != null && roadmEmsTL1Client.isConnected()) {
                         roadmEmsTL1Client.logout();
+
+                        // emsPm
+                        HashMap<String, String> strHashMap = new HashMap<>();
+                        strHashMap.put("key", "emsPmKey");
+                        commonMapper.updateLinkageYdKey(strHashMap);
 
                         if (isUpdateOk) {
 //                            Thread.sleep(5 * 1000);

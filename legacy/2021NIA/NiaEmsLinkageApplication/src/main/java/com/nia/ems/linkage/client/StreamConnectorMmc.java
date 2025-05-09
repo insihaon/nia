@@ -69,16 +69,29 @@ public class StreamConnectorMmc implements NiaEmsLinkageThread{
                 }
 
                 if(sbTemp != null && sbTemp.length() > 0){
+//                    LOGGER.info("=====> [StreamConnectorMmc] run() mmcMsg : "+ sbTemp.toString()+ "<=====");
+//                    if(fullMsg.toString().contains("canc-user")){
+//                        LOGGER.info("=====> [StreamConnectorMmc] canc-user");
+//                        ((Queue<String>)dataShareBean.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_MMC_MSG_QUE)).offer(sbTemp.toString()+"canc-user");
+//                        this.setStart(false);
+//                    }else{
+//                        ((Queue<String>)dataShareBean.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_MMC_MSG_QUE)).offer(sbTemp.toString());
+//                    }
+//
+//                    ((Queue<String>)dataShareBean.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_MMC_MSG_PASING_QUE)).offer(sbTemp.toString());
+//                    sbTemp.delete(0,sbTemp.length());
+
+                    ((Queue<String>)dataShareBean.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_MMC_MSG_QUE)).offer(sbTemp.toString());
+                    ((Queue<String>)dataShareBean.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_MMC_MSG_PASING_QUE)).offer(sbTemp.toString());
+
                     LOGGER.info("=====> [StreamConnectorMmc] run() mmcMsg : "+ sbTemp.toString()+ "<=====");
-                    if(fullMsg.toString().contains("canc-user")){
+
+//                  if(sbTemp.toString().contains("canc-user") || sbTemp.toString().contains("nc-user")){
+                    if(sbTemp.toString().contains("canc-user")){
                         LOGGER.info("=====> [StreamConnectorMmc] canc-user");
-                        ((Queue<String>)dataShareBean.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_MMC_MSG_QUE)).offer(sbTemp.toString()+"canc-user");
-                        this.setStart(false);
-                    }else{
-                        ((Queue<String>)dataShareBean.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_MMC_MSG_QUE)).offer(sbTemp.toString());
+                        this.isStart = false;
                     }
 
-                    ((Queue<String>)dataShareBean.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_MMC_MSG_PASING_QUE)).offer(sbTemp.toString());
                     sbTemp.delete(0,sbTemp.length());
                 }
 
