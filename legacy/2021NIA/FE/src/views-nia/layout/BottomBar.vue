@@ -15,7 +15,7 @@
         <span class="pt-1">건</span>
       </div>
       <div class="alarm-count-list flex flex-nowrap ml-4 pt-1 text-base">
-        <div class="pt-1 font-bold text-base" style="white-space: nowrap;   overflow: hidden;">시스템 현황 모니터링</div>
+        <div class="pt-1 font-bold text-base" style="white-space: nowrap; overflow: hidden;">시스템 현황 모니터링</div>
         <div class="ml-2 d-flex font-bold items-center gap-x-2">
           <div
             v-for="system in niaProcess"
@@ -31,11 +31,6 @@
       </div>
     </div>
     <div class="notice-container flex items-center mr-4 text-base pt-1">
-      <!-- <el-divider direction="vertical" />
-      <div class="notice-content">
-        <span>2023.2.30 12:00</span>
-        <span>서구 C 기지국 신설로 인한 경보 테스트 작업이 있습니다.</span>
-      </div> -->
       <div v-show="$store.getters.windows.length > 0" class="statusBarWrap mr-3">
         <el-menu mode="horizontal" class="statusBarMenu">
           <el-submenu index="0" popper-class="statusBarMenuNiaBottomBar">
@@ -140,7 +135,7 @@ export default {
           }
         },
         ipSdnNodeFactorKey: {
-          name: 'NodeFactor', status: 'red', cycle: 5 * 60 * 1000,
+          name: 'NodeFactor', status: 'red', cycle: 10 * 60 * 1000,
           tooltip: `
             <div style="font-size: 13px; text-align: left">
             <span style="color:red">빨강</span> : 수집 실패<br>
@@ -150,7 +145,7 @@ export default {
           `,
           secondStep: {
             key: 'aiIpSdnNodeFactorKey',
-            cycle: 5 * 60 * 1000,
+            cycle: 10 * 60 * 1000,
           }
         },
         aiTrafficNoxKey: {
@@ -212,7 +207,25 @@ export default {
             key: 'aiIpResourceKey',
             cycle: this.moment().set({ hour: 2, minute: 30, second: 0, millisecond: 0 })
           }
-        }
+        },
+        emsSipcKey: {
+          name: 'EMS_SIPC', status: 'red', cycle: 18 * 60 * 1000,
+          tooltip: `
+            <div style="font-size: 13px; text-align: left">
+            <span style="color:red">빨강</span> : EMS SIPC 수집 실패<br>
+            <span style="color:lime">초록</span> : EMS SIPC 수집 성공
+            </div>
+          `,
+        },
+        emsPmKey: {
+          name: 'EMS_PM', status: 'red', cycle: 18 * 60 * 1000,
+          tooltip: `
+            <div style="font-size: 13px; text-align: left">
+            <span style="color:red">빨강</span> : EMS PM 수집 실패<br>
+            <span style="color:lime">초록</span> : EMS PM 수집 성공
+            </div>
+          `,
+        },
       },
       monitoringInterval: null
     }
