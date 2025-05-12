@@ -17,8 +17,8 @@ if (debug) {
   Object.assign(console, console._)
 }
 
-axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*'
-axios.defaults.headers.common['Access-Control-Expose-Headers'] = 'Client-Addr'
+// axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*'
+// axios.defaults.headers.common['Access-Control-Expose-Headers'] = 'Client-Addr'
 axios.defaults.withCredentials = true // true 로 설정하면 서버에 설정이 없으면 호출이 안 될 수 있다.
 const service = axios.create({
   baseURL: mock === 'FE' ? '/mock' : baseURL, // url = base url + request url

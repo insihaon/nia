@@ -34,8 +34,7 @@ public class WebConfiguration implements WebMvcConfigurer {
     @Autowired
     private IPAddressInterceptor ipAddressInterceptor;
 
-    
-	@Autowired
+    @Autowired
     private FileStorageProperties fileStorageProperties;
 
     @Autowired
@@ -49,17 +48,19 @@ public class WebConfiguration implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-            .allowedOrigins("*");
+                .allowedOriginPatterns("*")
+                .allowCredentials(true);
+        // .allowedOrigins("*");
     }
-        
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(ipAddressInterceptor)
                 .addPathPatterns("/**");
 
         // registry.addInterceptor(new LogInterceptor())
-        //         .excludePathPatterns("/signin")
-        //         .excludePathPatterns("/signout");
+        // .excludePathPatterns("/signin")
+        // .excludePathPatterns("/signout");
 
         if (!appDto.isDevProfile() && appDto.getAuthUse() == true) {
             registry.addInterceptor(new AuthInterceptor())
@@ -90,19 +91,19 @@ public class WebConfiguration implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         String url = fileStorageProperties.getAccessUrl();
         String dir = FileUtil.combine("file:", fileStorageProperties.getUploadDir(), "/");
-		log.info("addResource: {} => {}", url, dir);
+        log.info("addResource: {} => {}", url, dir);
 
         // addResourceLocations 는 반드시 / 로 끝나야 한다.
         registry.addResourceHandler(url)
                 .addResourceLocations(dir)
                 .setCacheControl(CacheControl.maxAge(2, TimeUnit.HOURS).cachePublic());
 
-        if(appDto.isDevProfile()) {
+        if (appDto.isDevProfile()) {
             registry.addResourceHandler("resources/**")
-                .addResourceLocations("classpath:/static/")
-                .setCacheControl(CacheControl.maxAge(2, TimeUnit.HOURS).cachePublic());
+                    .addResourceLocations("classpath:/static/")
+                    .setCacheControl(CacheControl.maxAge(2, TimeUnit.HOURS).cachePublic());
         }
-        
+
         /*********************************************************************
          * [주의] application.yml 에 resources.static-locations 을 이용해 세팅하면 index.html을 못 찾아
          * 404 에러 발생함
