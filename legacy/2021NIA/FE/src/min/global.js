@@ -83,11 +83,18 @@ import Vue from 'vue'
         let index = 0
         while (n && n instanceof Element) {
           try {
-            const vm = n.__vue__
+            let vm = n.__vue__
+
+            while (vm && vm.$parent) {
+              if (parent.activeView) break
+              vm = vm.$parent
+            }
+
             if (vm) {
               // const v = n.getAttribute('__vue__')
               // const src = (v && v.match(/src\/.*vue/ig) || [])[0]
-              const src = vm != null ? vm.src : undefined
+              // const src = vm != null ? vm.src : undefined
+              const src = vm?.src
               if (src) {
                 // eslint-disable-next-line no-eval
                 eval(`window.v${index} = vm`)
