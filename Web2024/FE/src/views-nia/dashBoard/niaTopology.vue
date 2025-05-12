@@ -101,7 +101,7 @@
                           <tr
                             v-for="(agency, index) in sortedAgencyList"
                             :key="agency.nren_id"
-                            :class="{ 'animation-blink': ticket.is_organ_system && ticket.root_cause_sysnamez === agency.nren_name }"
+                            :class="{ 'animation-blink': ticket.root_cause_sysnamez === agency.nren_name }"
                           >
                             <td>{{ index + 1 }}</td>
                             <td>{{ agency.nren_name }}</td>
@@ -210,7 +210,7 @@ export default {
     }
   },
   created() {
-    this.ticket = this.wdata?.params.ticket
+    this.ticket = this.wdata?.params.ticket || {}
     this.isAllTicket = this.wdata?.params.isAllTicket
 
     const async = false
@@ -328,19 +328,12 @@ export default {
 
         await this.loadMapByFile(jsons[this.topologyType - 1], true)
 
-        setTimeout(() => {
-          // const node = this.map.data.nodes.find(v => v.ip_addr === this.selectedRow.ip_addr)
-          // if (node) {
-          //   this.map.zoomInByNode(node, 5, 1000)
-          //   this.map.selectElement(node, 'node', true)
-          //   this.loadTicketAlarm(this.ticket)
-          // }
-        }, 1000)
-
+        // 이벤트 리스너 추가
         map.addEventListener(window.Map2d.eventType.selectChanged, e => {
             console.log('selected changed : ', e)
 
-            if (e.target_type === 'svg') {
+          if (e.target_type === 'svg') {
+              // 배경클릭
               this.loadTemplate(null, 'svg')
             } else {
               this.displaySlotAlarm(this.map.select)
@@ -833,51 +826,55 @@ export default {
         }
       })
 
-      if (type === '2' || type === 'POTN') {
-        document.getElementById('templateUnitArea').innerHTML = document.querySelector('#template-2').innerHTML
+      switch (type) {
+        case '2': case 'POTN':
+          document.getElementById('templateUnitArea').innerHTML = document.querySelector('#template-2').innerHTML
 
-        const elements = document.querySelectorAll('.potnSysname')
-        elements.forEach(element => {
-          element.innerHTML = click === 'node' ? select.d.id : select.sysname
-        })
+          document.querySelectorAll('.potnSysname').forEach(element => {
+            element.innerHTML = click === 'node' ? select.d.id : select.sysname
+          })
 
-        show('templateUnitArea', true)
-        show('templateAgentListArea', false)
-      } else if (type === '0' || type === 'ROADM') {
-        var roadmSlot
-        document.getElementById('templateUnitArea').innerHTML = document.querySelector('#template-3').innerHTML
-        if (click === 'node' && roadm_slots[select.d.id]) {
-            roadmSlot = roadm_slots[select.d.id]
-        } else if (click === 'alarm') {
-            select = this.map.data.nodes.find(v => v.id === this.getAlarmSysname(select))
-            roadmSlot = roadm_slots[select.id]
-        }
+          show('templateUnitArea', true)
+          show('templateAgentListArea', false)
+          break
+        case '0': case 'ROADN':
+          var roadmSlot
+          document.getElementById('templateUnitArea').innerHTML = document.querySelector('#template-3').innerHTML
+          if (click === 'node' && roadm_slots[select.d.id]) {
+              roadmSlot = roadm_slots[select.d.id]
+          } else if (click === 'alarm') {
+              select = this.map.data.nodes.find(v => v.id === this.getAlarmSysname(select))
+              roadmSlot = roadm_slots[select.id]
+          }
 
-        if (roadmSlot) {
-            for (var i = 0; i < roadmSlot.length; i++) {
-                const cells = document.querySelectorAll('#templateUnitArea .table-wapper tr.slot-table > td')
-                cells.forEach((cell, i) => {
-                  if (roadmSlot[i] !== undefined) {
-                    cell.innerHTML = roadmSlot[i]
-                  }
-                })
-            }
-            document.getElementsByClassName('S17')[0].style.display = roadmSlot.length < 17 ? 'none' : ''
-            document.getElementsByClassName('S18')[0].style.display = roadmSlot.length < 17 ? 'none' : ''
-        }
-        const elements = document.querySelectorAll('.roadmSysname')
-        elements.forEach(element => {
-          element.innerHTML = click === 'node' ? select.d.id : select.id
-        })
-        show('templateUnitArea', true)
-        show('templateAgentListArea', false)
-      } else {
-        const nodeId = (click === 'node') ? select.d.id : select.id
-        const list = this.agencyList[nodeId] || []
-        this.filteredAgencyList = [...list]
+          if (roadmSlot) {
+              for (var i = 0; i < roadmSlot.length; i++) {
+                  const cells = document.querySelectorAll('#templateUnitArea .table-wapper tr.slot-table > td')
+                  cells.forEach((cell, i) => {
+                    if (roadmSlot[i] !== undefined) {
+                      cell.innerHTML = roadmSlot[i]
+                    }
+                  })
+              }
+              document.getElementsByClassName('S17')[0].style.display = roadmSlot.length < 17 ? 'none' : ''
+              document.getElementsByClassName('S18')[0].style.display = roadmSlot.length < 17 ? 'none' : ''
+          }
+          document.querySelectorAll('.roadmSysname').forEach(element => {
+            element.innerHTML = click === 'node' ? select.d.id : select.id
+          })
+          show('templateUnitArea', true)
+          show('templateAgentListArea', false)
+          break
+        default:
+          (() => {
+            const nodeId = (click === 'node') ? select.d.id : select.id
+            const list = this.agencyList[nodeId] || []
+            this.filteredAgencyList = [...list]
 
-        show('templateUnitArea', false)
-        show('templateAgentListArea', true)
+            show('templateUnitArea', false)
+            show('templateAgentListArea', true)
+          })()
+          break
       }
     },
 
