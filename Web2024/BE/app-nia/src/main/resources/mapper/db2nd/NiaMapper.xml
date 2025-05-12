@@ -371,7 +371,9 @@
             'ipSdnNodeFactorKey',
             'ipPerfKey',
             'ipResourceIfKey',
-            'ipResourceKey'
+            'ipResourceKey',
+            'emsSipcKey',
+            'emsPmKey'
         )
    </select>
 
