@@ -14,11 +14,11 @@
           <div class="node-info d-flex justify-evenly">
             <div>
               <div>{{ trafficInfo.root_cause_sysnamea }}</div>
-              <div v-if="!isRT">({{ trafficInfo.root_cause_porta }})</div>
+              <div v-if="isShowChartTicketType">({{ trafficInfo.root_cause_porta }})</div>
             </div>
             <div>
-              <div>{{ isRT ? trafficInfo.root_cause_sysnamea : trafficInfo.root_cause_sysnamez }}</div>
-              <div v-if="!isRT">({{ trafficInfo.root_cause_portz }})</div>
+              <div>{{ !isShowChartTicketType ? trafficInfo.root_cause_sysnamea : trafficInfo.root_cause_sysnamez }}</div>
+              <div v-if="isShowChartTicketType">({{ trafficInfo.root_cause_portz }})</div>
             </div>
           </div>
         </el-row>
@@ -30,7 +30,7 @@
             <div slot="header">
               <span><i class="el-icon-document" /> TRAFFIC 그래프(MBPS)</span>
             </div>
-            <el-row v-if="!isRT">
+            <el-row v-if="isShowChartTicketType">
               <CompChart ref="trafficChartMbps" :options="trafficChartMbps" class="w-100" :chart-loading="chartLoading" style="height: 300px;" />
             </el-row>
             <el-row v-else style="height: 300px" class="d-flex items-center justify-center"> 정보가 없습니다. </el-row>
@@ -42,7 +42,7 @@
             <div slot="header">
               <span><i class="el-icon-document" /> TRAFFIC 그래프(PPS)</span>
             </div>
-            <el-row v-if="!isRT">
+            <el-row v-if="isShowChartTicketType">
               <CompChart ref="trafficChartPps" :options="trafficChartPps" class="w-100" :chart-loading="chartLoading" style="height: 300px" />
             </el-row>
             <el-row v-else style="height: 300px" class="d-flex items-center justify-center"> 정보가 없습니다. </el-row>
@@ -72,7 +72,7 @@ import _ from 'lodash'
 import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
 import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
 import { apiSelfProcessTrafficInfo, apiATTTrafficChart, apiNTTTrafficChart } from '@/api/nia'
-import { getAlarmType, formatterTime } from '@/views-nia/js/commonFormat'
+import { formatterTime } from '@/views-nia/js/commonFormat'
 import CompChart from '@/components/chart/CompChart.vue'
 import dialogOpenMixin from '@/mixin/dialogOpenMixin'
 
@@ -102,7 +102,6 @@ export default {
       selectedRow: null,
       chartLoading: false,
       trafficChartList: [],
-      // relatedSopList: [],
       trafficInfo: {
         root_cause_sysnamea: '',
         root_cause_sysnamez: '',
@@ -118,16 +117,19 @@ export default {
     }
   },
   computed: {
-    isRT() {
-      return this.selectedRow?.ticket_type === 'RT'
+    isShowChartTicketType() {
+      if (this.selectedRow?.ticket_type) {
+        return ['ATT2', 'FTT', 'NTT'].includes(this.selectedRow.ticket_type)
+      } else {
+        return false
+      }
     },
-    // disabledFin() {
-    //   return this.selectedRow?.status === 'FIN' || this.selectedRow?.status === 'AUTO_FIN'
-    // },
     trafficChartPps() {
+      if (!this.isShowChartTicketType) return {}
+
       const { ticket_type } = this.selectedRow
       const chartData = this.trafficChartList
-      const xAxisKey = ['ATT2', 'FTT'].includes(ticket_type) ? 'measured_datetime' : 'collect_time'
+      const xAxisKey = this.isAttFtt(ticket_type) ? 'measured_datetime' : 'collect_time'
       const markLine = {
         symbol: ['none', 'none'],
         label: { show: false },
@@ -135,7 +137,7 @@ export default {
       }
 
       let seriesArr = []
-      if (['ATT2', 'FTT'].includes(ticket_type)) {
+      if (this.isAttFtt(ticket_type)) {
         seriesArr = [
           {
             markLine,
@@ -187,6 +189,8 @@ export default {
     },
 
     trafficChartMbps() {
+      if (!this.isShowChartTicketType) return {}
+
       const { ticket_type } = this.selectedRow
       const chartData = this.trafficChartList
       const xAxisKey = this.isAttFtt(ticket_type) ? 'measured_datetime' : 'collect_time'
@@ -315,15 +319,19 @@ export default {
     }
   },
   mounted() {
-    if (!this.wdata?.params['trafficInfo'] !== undefined) {
+    if (!this.wdata?.params['trafficInfo']) {
       this.onLoadTrafficInfo()
     } else {
       this.onLoadTrafficChart()
     }
   },
   methods: {
-    // 자가 구성 조치 구간정보 조회
+    isAttFtt(ticket_type) {
+      return ['ATT2', 'FTT'].includes(ticket_type)
+    },
+
     async onLoadTrafficInfo() {
+      // 자가 구성 조치 구간정보 조회
       if (!this.selectedRow?.ticket_id) {
         this.error('aiResponse view : ticket_id not found')
         return
@@ -338,29 +346,27 @@ export default {
       }
     },
     async onLoadTrafficChart() {
-      const { fault_time: FAULT_TIME, ticket_id: TICKET_ID, ticket_type } = this.selectedRow
-      const { root_cause_sysnamea: START_NODE, root_cause_sysnamez: END_NODE, root_cause_porta: START_PORT, root_cause_portz: END_PORT } = this.trafficInfo
+      if (this.isShowChartTicketType) {
+        const { fault_time: FAULT_TIME, ticket_id: TICKET_ID, ticket_type } = this.selectedRow
+        const { root_cause_sysnamea: START_NODE, root_cause_sysnamez: END_NODE, root_cause_porta: START_PORT, root_cause_portz: END_PORT } = this.trafficInfo
 
-      const param = { TICKET_ID, START_NODE, START_PORT, FAULT_TIME }
-      try {
-        this.chartLoading = true
-        let chartRes
-        if (['ATT2', 'FTT'].includes(ticket_type)) {
-          chartRes = await apiATTTrafficChart(param)
-        } else if (ticket_type === 'NTT') {
-          this._merge(param, { END_NODE, END_PORT })
-          chartRes = await apiNTTTrafficChart(param)
+        const param = { TICKET_ID, START_NODE, START_PORT, FAULT_TIME }
+        try {
+          this.chartLoading = true
+          let chartRes
+          if (this.isAttFtt(ticket_type)) {
+            chartRes = await apiATTTrafficChart(param)
+          } else if (ticket_type === 'NTT') {
+            this._merge(param, { END_NODE, END_PORT })
+            chartRes = await apiNTTTrafficChart(param)
+          }
+          this.trafficChartList = chartRes?.result
+        } catch (error) {
+          this.error(error)
+        } finally {
+          this.chartLoading = false
         }
-        this.trafficChartList = chartRes?.result
-      } catch (error) {
-        this.error(error)
-      } finally {
-        this.chartLoading = false
       }
-    },
-
-    isAttFtt(ticket_type) {
-      return ['ATT2', 'FTT'].includes(ticket_type)
     },
 
     onClose() {
