@@ -6,6 +6,7 @@ import com.nia.data.linkage.mapper.AlarmMapper;
 import com.nia.data.linkage.service.AlarmService;
 import com.nia.data.linkage.vo.alarm.AlarmVo;
 import com.nia.data.linkage.vo.alarm.json.AlarmHitsDataVo;
+import com.nia.data.linkage.vo.alarm.json.AlarmHitsHitsDataVo;
 import com.nia.data.linkage.vo.alarm.json.AlarmHitsVo;
 import com.nia.data.linkage.vo.topology.TopologyVo;
 import org.apache.commons.lang3.StringUtils;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
+import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.ResourceAccessException;
@@ -77,6 +79,13 @@ public class AlarmServiceImpl implements AlarmService {
             SimpleDateFormat dayTime = new SimpleDateFormat("yyyy-MM-dd");
 		    toDate = dayTime.format(cal.getTime());
 
+            LOGGER.info("==========>[AlarmService] restTemplate check : " + restTemplate);
+
+            List<HttpMessageConverter<?>> converters = restTemplate.getMessageConverters();
+            for (HttpMessageConverter<?> converter : converters) {
+                System.out.println(">>> Converter check: " + (converter == null ? "NULL" : converter.getClass().getName()));
+            }
+
             restTemplate.getMessageConverters()
                         .add(0, new StringHttpMessageConverter(Charset.forName("UTF-8")));
 
@@ -92,7 +101,7 @@ public class AlarmServiceImpl implements AlarmService {
 
 //                responseEntity = restTemplate.exchange(alarmUrl+"_search?q=(date["+fromDate+"+TO+"+toDate+"]) AND almType:\"alm\"&size=1000&pretty", HttpMethod.GET, null, String.class);
 
-                LOGGER.info("==========>[AlarmService] getAlarmData result: "+ responseEntity.getBody() +"<==============");
+//                LOGGER.info("==========>[AlarmService] getAlarmData result: "+ responseEntity.getBody() +"<==============");
             }catch (ResourceAccessException rae){
                 Thread.sleep(3000);
                 restTemplate.getMessageConverters()
@@ -107,7 +116,22 @@ public class AlarmServiceImpl implements AlarmService {
             obj = UtlCommon.jsonToObject(alarmHitsDataVo, msg);
 
             alarmHitsDataVo = (AlarmHitsDataVo)obj;
-            setAlarmData(alarmHitsDataVo);
+            if(alarmHitsDataVo != null){
+                AlarmHitsHitsDataVo hists = alarmHitsDataVo.getAlarmHitsHitsDataVo();
+                if(hists != null){
+                    List<AlarmHitsVo> histList = hists.getAlarmHitsVo();
+                    if(histList != null){
+                        LOGGER.info("==========>[AlarmService] histList size : " + histList.size());
+                        setAlarmData(histList);
+                    }else{
+                        LOGGER.info("==========>[AlarmService] histList null ");
+                    }
+                }else{
+                    LOGGER.info("==========>[AlarmService] hists null ");
+                }
+            }else{
+                LOGGER.info("==========>[AlarmService] alarmHitsDataVo null ");
+            }
 
 
         }catch (Exception e){
@@ -116,7 +140,7 @@ public class AlarmServiceImpl implements AlarmService {
     }
 
     @Override
-    public void setAlarmData(AlarmHitsDataVo alarmHitsDataVo) {
+    public void setAlarmData(List<AlarmHitsVo> histList) {
         LOGGER.info("==========>[AlarmService] setAlarmData <==============");
         AlarmVo alarmVo;
         List<AlarmVo> alarmVoList = null;
@@ -124,49 +148,46 @@ public class AlarmServiceImpl implements AlarmService {
         String elkAlarmId = null;
 
         try {
-            if(alarmHitsDataVo != null && alarmHitsDataVo.getAlarmHitsHitsDataVo() != null){
-                if(alarmHitsDataVo.getAlarmHitsHitsDataVo().getAlarmHitsVo() != null &&
-                        alarmHitsDataVo.getAlarmHitsHitsDataVo().getAlarmHitsVo().size() > 0){
-                    alarmVoList = new ArrayList<AlarmVo>();
+            if(histList != null && histList.size() > 0){
+                alarmVoList = new ArrayList<AlarmVo>();
+                for(AlarmHitsVo alarmHitsVo : histList){
+                    switch (alarmHitsVo.getAlarmVo().getAlmType()){
+                       // case "alm_eqpt":
+                        case "alm" :
 
-                    for(AlarmHitsVo alarmHitsVo : alarmHitsDataVo.getAlarmHitsHitsDataVo().getAlarmHitsVo()){
-                        switch (alarmHitsVo.getAlarmVo().getAlmType()){
-                           // case "alm_eqpt":
-                            case "alm" :
+                            elkAlarmId = alarmMapper.selectElkAlarmCheck(alarmHitsVo.getId());
 
-                                elkAlarmId = alarmMapper.selectElkAlarmCheck(alarmHitsVo.getId());
+                            if(StringUtils.isEmpty(elkAlarmId)){
+                                alarmVo = alarmVoFactory.getObject();
+                                alarmVo.setElkAlarmId(alarmHitsVo.getId());
+                                alarmVo.setAlarmlevel(setAlarmLvl(alarmHitsVo.getAlarmVo().getSev()));
+                                alarmVo.setAlarmloc(alarmHitsVo.getAlarmVo().getAid());
+                                alarmVo.setAlarmmsg(alarmHitsVo.getAlarmVo().getLogType());
+//                                switch (alarmHitsVo.getAlarmVo().getAlmType()) {
+////                                    case "alm_eqpt":
+////                                        alarmVo.setAlarmtime(UtlDateHelper.stringToTimestamp(alarmHitsVo.getAlarmVo().getOcrdat() + " " + alarmHitsVo.getAlarmVo().getOcrtm()));
+////                                        alarmVo.setUnit(alarmHitsVo.getAlarmVo().getBid());
+////                                        break;
+//                                    case "alm":
+//                                        alarmVo.setReceivetime(UtlDateHelper.stringToTimestamp(alarmHitsVo.getAlarmVo().getDate()));
+//                                        alarmVo.setAlarmtime(UtlDateHelper.stringToTimestamp(alarmHitsVo.getAlarmVo().getDate()));
+//                                        alarmVo.setUnit(alarmHitsVo.getAlarmVo().getUnit());
+//                                        break;
+//                                }
+                                alarmVo.setReceivetime(UtlDateHelper.stringToTimestamp(alarmHitsVo.getAlarmVo().getDate()));
+                                alarmVo.setAlarmtime(UtlDateHelper.stringToTimestamp(alarmHitsVo.getAlarmVo().getDate()));
+                                alarmVo.setUnit(alarmHitsVo.getAlarmVo().getUnit());
+                                alarmVo.setDescription(alarmHitsVo.getAlarmVo().getDescription());
+                                alarmVo.setSysname(alarmHitsVo.getAlarmVo().getSource());
 
-                                if(StringUtils.isEmpty(elkAlarmId)){
-                                    alarmVo = alarmVoFactory.getObject();
-                                    alarmVo.setElkAlarmId(alarmHitsVo.getId());
-                                    alarmVo.setAlarmlevel(setAlarmLvl(alarmHitsVo.getAlarmVo().getSev()));
-                                    alarmVo.setAlarmloc(alarmHitsVo.getAlarmVo().getAid());
-                                    alarmVo.setAlarmmsg(alarmHitsVo.getAlarmVo().getLogType());
-    //                                switch (alarmHitsVo.getAlarmVo().getAlmType()) {
-    ////                                    case "alm_eqpt":
-    ////                                        alarmVo.setAlarmtime(UtlDateHelper.stringToTimestamp(alarmHitsVo.getAlarmVo().getOcrdat() + " " + alarmHitsVo.getAlarmVo().getOcrtm()));
-    ////                                        alarmVo.setUnit(alarmHitsVo.getAlarmVo().getBid());
-    ////                                        break;
-    //                                    case "alm":
-    //                                        alarmVo.setReceivetime(UtlDateHelper.stringToTimestamp(alarmHitsVo.getAlarmVo().getDate()));
-    //                                        alarmVo.setAlarmtime(UtlDateHelper.stringToTimestamp(alarmHitsVo.getAlarmVo().getDate()));
-    //                                        alarmVo.setUnit(alarmHitsVo.getAlarmVo().getUnit());
-    //                                        break;
-    //                                }
-                                    alarmVo.setReceivetime(UtlDateHelper.stringToTimestamp(alarmHitsVo.getAlarmVo().getDate()));
-                                    alarmVo.setAlarmtime(UtlDateHelper.stringToTimestamp(alarmHitsVo.getAlarmVo().getDate()));
-                                    alarmVo.setUnit(alarmHitsVo.getAlarmVo().getUnit());
-                                    alarmVo.setDescription(alarmHitsVo.getAlarmVo().getDescription());
-                                    alarmVo.setSysname(alarmHitsVo.getAlarmVo().getSource());
-
-                                    if(alarmHitsVo.getAlarmVo().getProviderId().contains("potn")){
-                                        alarmVo.setEquiptype("POTN");
-                                    }
-
-                                    alarmVoList.add(alarmVo);
-                                    break;
+                                if(alarmHitsVo.getAlarmVo().getProviderId().contains("potn")){
+                                    alarmVo.setEquiptype("POTN");
                                 }
-                        }
+
+                                LOGGER.info("==========>[AlarmService] insert alarmVO : " + alarmVo);
+                                alarmVoList.add(alarmVo);
+                                break;
+                            }
                     }
                 }
             }
