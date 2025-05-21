@@ -32,6 +32,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -99,10 +100,6 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
     @Override
     public void createAnomalousTrafficTicket(AnomalousTrafficListVo anomalousTrafficListVo){
         LOGGER.info("==========>[RcaTrafficTicketService] createAnomalousTrafficTicket : " + anomalousTrafficListVo + " <==============");
-        String time1 = null;
-        String time2 = null;
-        Timestamp time3 = null;
-        Timestamp time4 = null;
         Map<String, String> properties;
         int updateCnt = 0;
 
@@ -144,12 +141,12 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
 
                     faultTime  = Timestamp.valueOf(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(anomalousTrafficVo.getInttimestamp() * 1000L)));
 
-                    time1 = UtlDateHelper.timestampToString("yyyy-MM-dd", faultTime) + " 00:00:00";
-                    time2 = UtlDateHelper.timestampToString("yyyy-MM-dd", faultTime) + " 06:00:00";
-                    time3 = UtlDateHelper.stringToTimestamp(time1);
-                    time4 = UtlDateHelper.stringToTimestamp(time2);
+//                    String time1 = UtlDateHelper.timestampToString("yyyy-MM-dd", faultTime) + " 00:00:00";
+//                    String time2 = UtlDateHelper.timestampToString("yyyy-MM-dd", faultTime) + " 06:00:00";
+//                    Timestamp time3 = UtlDateHelper.stringToTimestamp(time1);
+//                    Timestamp time4 = UtlDateHelper.stringToTimestamp(time2);
 
-                    if (faultTime.getTime() > time4.getTime()) {
+//                    if (faultTime.getTime() > time4.getTime()) {
                         rcaTicket = rcaTicketFactory.getObject();
                         ticketId = ticketService.selectTicketKey();
                         rcaTicket.setTicketId(ticketId);
@@ -277,10 +274,7 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
                         ticketService.insertRCATicketHandlingStatusHist(rcaTicketStatus);
 
                         rcaTicketManagerService.uiSendTicketResult(rcaEngineResult);
-
-                    }
-
-
+//                    }
                 }
             }
         }catch (Exception e) {
@@ -291,10 +285,6 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
     @Override
     public void createNoxiousTrfficTicket(NoxiousTrafficListVo noxiousTrafficListVo){
         LOGGER.info("==========>[RcaTrafficTicketService] createNoxiousTrfficTicket : " + noxiousTrafficListVo + " <==============");
-        String time1 = null;
-        String time2 = null;
-        Timestamp time3 = null;
-        Timestamp time4 = null;
         Map<String, String> properties;
         int updateCnt = 0;
 
@@ -317,12 +307,12 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
                 for(NoxiousTrfficVo noxiousTrffic : noxiousTrafficListVo.getData()) {
                     faultTime  = Timestamp.valueOf(noxiousTrffic.getDateregdate());
 
-                    time1 = UtlDateHelper.timestampToString("yyyy-MM-dd", faultTime) + " 00:00:00";
-                    time2 = UtlDateHelper.timestampToString("yyyy-MM-dd", faultTime) + " 06:00:00";
-                    time3 = UtlDateHelper.stringToTimestamp(time1);
-                    time4 = UtlDateHelper.stringToTimestamp(time2);
+//                    String time1 = UtlDateHelper.timestampToString("yyyy-MM-dd", faultTime) + " 00:00:00";
+//                    String time2 = UtlDateHelper.timestampToString("yyyy-MM-dd", faultTime) + " 06:00:00";
+//                    Timestamp time3 = UtlDateHelper.stringToTimestamp(time1);
+//                    Timestamp time4 = UtlDateHelper.stringToTimestamp(time2);
 
-                    if(faultTime.getTime() > time4.getTime()) {
+//                    if(faultTime.getTime() > time4.getTime()) {
                         rcaTicket = rcaTicketFactory.getObject();
                         ticketId = ticketService.selectTicketKey();
                         rcaTicket.setTicketId(ticketId);
@@ -450,9 +440,7 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
                             LOGGER.info("self_process insert ======> "+ rcaTicket.getTicketId());
 
                         }
-
-
-                    }
+//                    }
                 }
             }
         }catch (Exception e) {
@@ -463,10 +451,6 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
     @Override
     public void createNodeFactorTicket(NodeFactorListVo nodeFactorListVo) {
         LOGGER.info("==========>[RcaTrafficTicketService] createNodeFactorTicket : " + nodeFactorListVo + " <==============");
-        String time1 = null;
-        String time2 = null;
-        Timestamp time3 = null;
-        Timestamp time4 = null;
         Map<String, String> properties;
         int updateCnt = 0;
 
@@ -486,12 +470,12 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
                 for(NodeFactorVo nodeFactorVo : nodeFactorListVo.getData()) {
                     faultTime  = Timestamp.valueOf(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(nodeFactorVo.getMeasured_datetime())));
 
-                    time1 = UtlDateHelper.timestampToString("yyyy-MM-dd", faultTime) + " 00:00:00";
-                    time2 = UtlDateHelper.timestampToString("yyyy-MM-dd", faultTime) + " 06:00:00";
-                    time3 = UtlDateHelper.stringToTimestamp(time1);
-                    time4 = UtlDateHelper.stringToTimestamp(time2);
+//                    String time1 = UtlDateHelper.timestampToString("yyyy-MM-dd", faultTime) + " 00:00:00";
+//                    String time2 = UtlDateHelper.timestampToString("yyyy-MM-dd", faultTime) + " 06:00:00";
+//                    Timestamp time3 = UtlDateHelper.stringToTimestamp(time1);
+//                    Timestamp time4 = UtlDateHelper.stringToTimestamp(time2);
 
-                    if(faultTime.getTime() > time4.getTime()) {
+//                    if(faultTime.getTime() > time4.getTime()) {
                         rcaTicket = rcaTicketFactory.getObject();
                         ticketId = ticketService.selectTicketKey();
                         rcaTicket.setTicketId(ticketId);
@@ -576,9 +560,8 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
                             ticketService.insertRcaTicketCnt(rcaTicket);
 
                             rcaTicketManagerService.uiSendTicketResult(rcaEngineResult);
-
                         }
-                    }
+//                    }
                 }
             }
         }catch (Exception e) {
@@ -589,10 +572,6 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
     @Override
     public void createSdnTrafficTicket(SdnTrafficListVo sdnTrafficListVo) {
         LOGGER.info("==========>[RcaTrafficTicketService] createAnomalousTrafficTicket : " + sdnTrafficListVo + " <==============");
-        String time1 = null;
-        String time2 = null;
-        Timestamp time3 = null;
-        Timestamp time4 = null;
         Map<String, String> properties;
         int updateCnt = 0;
 
@@ -640,12 +619,12 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
 
                     faultTime = Timestamp.valueOf(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(sdnTrafficVo.getMeasured_datetime())));
 
-                    time1 = UtlDateHelper.timestampToString("yyyy-MM-dd", faultTime) + " 00:00:00";
-                    time2 = UtlDateHelper.timestampToString("yyyy-MM-dd", faultTime) + " 06:00:00";
-                    time3 = UtlDateHelper.stringToTimestamp(time1);
-                    time4 = UtlDateHelper.stringToTimestamp(time2);
+//                    String time1 = UtlDateHelper.timestampToString("yyyy-MM-dd", faultTime) + " 00:00:00";
+//                    String time2 = UtlDateHelper.timestampToString("yyyy-MM-dd", faultTime) + " 06:00:00";
+//                    Timestamp time3 = UtlDateHelper.stringToTimestamp(time1);
+//                    Timestamp time4 = UtlDateHelper.stringToTimestamp(time2);
 
-                    if (faultTime.getTime() > time4.getTime()) {
+//                    if (faultTime.getTime() > time4.getTime()) {
                         rcaTicket = rcaTicketFactory.getObject();
                         ticketId = ticketService.selectTicketKey();
                         rcaTicket.setTicketId(ticketId);
@@ -786,11 +765,7 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
 
                             LOGGER.info("self_process insert ======> "+ rcaTicket.getTicketId());
                         }
-
-
-
-
-                    }
+//                    }
                 }
             }
 
@@ -804,10 +779,6 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
     @Override
     public void createSyslogTicket(SyslogListVo syslogListVo) {
         LOGGER.info("==========>[RcaTrafficTicketService] createSyslogTicket : " + syslogListVo + " <==============");
-        String time1 = null;
-        String time2 = null;
-        Timestamp time3 = null;
-        Timestamp time4 = null;
         Map<String, String> properties;
         int updateCnt = 0;
 
@@ -829,12 +800,12 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
                 for(SyslogVo syslogVo : syslogListVo.getData()) {
                     faultTime  = Timestamp.valueOf(syslogVo.getCollect_timestamp());
 
-                    time1 = UtlDateHelper.timestampToString("yyyy-MM-dd", faultTime) + " 00:00:00";
-                    time2 = UtlDateHelper.timestampToString("yyyy-MM-dd", faultTime) + " 06:00:00";
-                    time3 = UtlDateHelper.stringToTimestamp(time1);
-                    time4 = UtlDateHelper.stringToTimestamp(time2);
+//                    String time1 = UtlDateHelper.timestampToString("yyyy-MM-dd", faultTime) + " 00:00:00";
+//                    String time2 = UtlDateHelper.timestampToString("yyyy-MM-dd", faultTime) + " 06:00:00";
+//                    Timestamp time3 = UtlDateHelper.stringToTimestamp(time1);
+//                    Timestamp time4 = UtlDateHelper.stringToTimestamp(time2);
 
-                    if(faultTime.getTime() > time4.getTime()) {
+//                    if(faultTime.getTime() > time4.getTime()) {
                         rcaTicket = rcaTicketFactory.getObject();
                         ticketId = ticketService.selectTicketKey();
                         rcaTicket.setTicketId(ticketId);
@@ -919,11 +890,7 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
                         ticketService.insertRcaTicketCnt(rcaTicket);
 
                         rcaTicketManagerService.uiSendTicketResult(rcaEngineResult);
-
-
-
-
-                    }
+//                    }
                 }
             }
         }catch (Exception e) {
