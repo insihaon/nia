@@ -254,10 +254,6 @@ public class RcaTicketManagerServiceImpl implements RcaTicketManagerService {
         RCAHandlingStatus rcaTicketStatus;
         RcaEngineResult rcaEngineResult;
         RcaTicketResult rcaTicketResult;
-        String time1 = null;
-        String time2 = null;
-        Timestamp time3 = null;
-        Timestamp time4 = null;
         BasicAlarmVo basicAlarmVo;
         String updateTime;
         HashMap<String, String> ticketUpdateTime = new HashMap<String, String>();
@@ -269,13 +265,13 @@ public class RcaTicketManagerServiceImpl implements RcaTicketManagerService {
                 while( itr.hasNext() ) {
                     rcaResult = itr.next();
 
-                    time1 = UtlDateHelper.timestampToString("yyyy-MM-dd", rcaResult.getAlarmTime()) + " 00:00:00";
-                    time2 = UtlDateHelper.timestampToString("yyyy-MM-dd", rcaResult.getAlarmTime()) + " 06:00:00";
-                    time3 = UtlDateHelper.stringToTimestamp(time1);
-                    time4 = UtlDateHelper.stringToTimestamp(time2);
+//                    String time1 = UtlDateHelper.timestampToString("yyyy-MM-dd", rcaResult.getAlarmTime()) + " 00:00:00";
+//                    String time2 = UtlDateHelper.timestampToString("yyyy-MM-dd", rcaResult.getAlarmTime()) + " 06:00:00";
+//                    Timestamp time3 = UtlDateHelper.stringToTimestamp(time1);
+//                    Timestamp time4 = UtlDateHelper.stringToTimestamp(time2);
 
 //                    if (RcaCodeInfo.DOMAIN_ROADM.equals(rcaResult.getDomainCode()) || RcaCodeInfo.DOMAIN_POTN.equals(rcaResult.getDomainCode())) {
-                        if (rcaResult.getAlarmTime().getTime() > time4.getTime()) {
+//                        if (rcaResult.getAlarmTime().getTime() > time4.getTime()) {
                             basicAlarmVoList = rcaResult.getRelatedAlarmList();
                             ticketId = ticketService.selectTicketKey();
                             rcaTicket = rcaTicketFactory.getObject();
@@ -431,7 +427,7 @@ public class RcaTicketManagerServiceImpl implements RcaTicketManagerService {
 
                             rcaTicketProfileService.profileCheck(rcaTicket);
                             ticketClearCheck(rcaTicket);
-                        }
+//                        }
                     }
                 }
 //            }
