@@ -1,24 +1,29 @@
 server:
-  servlet:
-    context-path:
+  port: 8070
 
 spring:
-  profiles.active: local
+  profiles:
+    active: local
+    dev: false
 
-  h2:
-    console:
-      enabled: true
-      settings.web-allow-others: true
+  datasource2nd:
+    enabled: true
+    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+    url: jdbc:log4jdbc:postgresql://116.89.191.47:6544/niadb?allowMultiQueries=true
+    username: ENC(8Fi3mfw4UUT/4sIfuw71gKaNJQnbCn7y)
+    password: ENC(qth6L1xxsdq5xTajX4jkKmlJQ9ieFYm6)
+    dataSource-name: ENC(+24YoukpnVKZAmX8g5jOtw==)
+    mapper-packages: >
+      com.codej.nia.mapper.db2nd,
+      com.codej.nia.test.dao,
 
-  datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:test;MODE=MYSQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;BUILTIN_ALIAS_OVERRIDE=1
-    username: sa
-    password:
-  
   rabbitmq:
-    enabled: true  
-
-myconf:
-  auth:
-    use: true 
+    enabled: true
+    address: 116.89.191.47 # incodej-lab.iptime.org
+    port: 6786
+    username: niaadmin
+    password: niaadmin12#$
+    niaEngineToUi: nia.EngineToUiIndexDirectly
+    niaUiToEngine: nia.UiToEngineIndexDirectly
+    InspectorToUID: OPER#nia.InspectorToUIDirectly
+    TicketRestart: OPER#nia.NiaTicketReStartIndexDirectly

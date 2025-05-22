@@ -1,35 +1,28 @@
+server:
+  port: 8090
+  
 spring:
   profiles:
     active: dev
-    dev: true
+    dev: false
 
-  h2:
-    console:
-      enabled: true
-      settings.web-allow-others: true
-  
   datasource2nd:
-    # 운영 DB
-    url: jdbc:log4jdbc:postgresql://incodej-lab.iptime.org:6544/niadb?allowMultiQueries=true
-    username: ENC(8Fi3mfw4UUT/4sIfuw71gKaNJQnbCn7y)
-    password: ENC(qth6L1xxsdq5xTajX4jkKmlJQ9ieFYm6)
-
-  sql:
-    init:
-      platform: postgres
-      encoding: UTF-8
-      
-  rabbitmq:
-    enabled: false # 접속 불가 환경을 위해 추가함
-    address: incodej-lab.iptime.org
-    port: 41072 # 15123
-    # niaEngineToUi: TEST_MQ_Queue1 # 2024.05.20 운영서버 알람을 가져오지 않기 위한 임시 설정
-myconf:
-  websocket:
     enabled: true
-  auth:
-    use: true #auth.use
-file:
-  upload-dir: ./external
+    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+    url: jdbc:log4jdbc:postgresql://192.168.0.241:6544/niadb?allowMultiQueries=true
+    username: postgres
+    password: zhemwpdl12!@
+    dataSource-name: niadb
+    mapper-packages: >
+      com.codej.nia.mapper.db2nd,
+      com.codej.nia.test.dao,
 
+  rabbitmq:
+    enabled: true 
+    address: 192.168.0.241
+    port: 5672
+    username: niaadmin
+    password: niaadmin12#$
+    niaEngineToUi: nia.EngineToUiIndexDirectly
+    niaUiToEngine: nia.UiToEngineIndexDirectly
 
