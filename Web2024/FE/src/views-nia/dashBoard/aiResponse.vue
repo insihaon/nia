@@ -1,7 +1,12 @@
 <template>
   <div :class="{ [name]: true}" style="height : 100%">
     <div class="d-flex flex-column h-full">
-      <el-card shadow="never" style="height : 40%" :body-style="{ padding: '10px' , height: 'calc(100% - 55px)' }">
+      <el-card
+        shadow="never"
+        style="flex : 1"
+        :body-style="{ padding: '10px' , height: 'calc(100% - 55px)' }"
+      >
+        <!-- :style="{flex : isShowChartTicketType ? '0 0 55%' : '0 0 100%'}" -->
         <div slot="header">
           <span><i class="el-icon-document" /> 작업 요청 구간</span>
         </div>
@@ -24,33 +29,38 @@
         </el-row>
       </el-card>
 
-      <el-row :gutter="10" class="mt-2">
-        <el-col :span="12">
+      <el-row
+        v-if="isShowChartTicketType"
+        :style="{flex : isShowChartTicketType ? '0 0 45%' : '0 0 0%'}"
+        :gutter="10"
+        class="mt-2"
+      >
+        <el-col :span="12" style="height: 100%">
           <el-card shadow="never" style="height: 100%" :body-style="{ padding: '5px', height: 'calc(100% - 30px)' }">
             <div slot="header">
               <span><i class="el-icon-document" /> TRAFFIC 그래프(MBPS)</span>
             </div>
-            <el-row v-if="isShowChartTicketType">
+            <el-row>
               <CompChart ref="trafficChartMbps" :options="trafficChartMbps" class="w-100" :chart-loading="chartLoading" style="height: 300px;" />
             </el-row>
-            <el-row v-else style="height: 300px" class="d-flex items-center justify-center"> 정보가 없습니다. </el-row>
+            <!-- <el-row style="height: 300px" class="d-flex items-center justify-center"> 정보가 없습니다. </el-row> -->
           </el-card>
         </el-col>
 
-        <el-col :span="12">
+        <el-col :span="12" style="height: 100%">
           <el-card shadow="never" style="height: 100%" :body-style="{ padding: '5px', height: 'calc(100% - 30px)' }">
             <div slot="header">
               <span><i class="el-icon-document" /> TRAFFIC 그래프(PPS)</span>
             </div>
-            <el-row v-if="isShowChartTicketType">
+            <el-row>
               <CompChart ref="trafficChartPps" :options="trafficChartPps" class="w-100" :chart-loading="chartLoading" style="height: 300px" />
             </el-row>
-            <el-row v-else style="height: 300px" class="d-flex items-center justify-center"> 정보가 없습니다. </el-row>
+            <!-- <el-row style="height: 300px" class="d-flex items-center justify-center"> 정보가 없습니다. </el-row> -->
           </el-card>
         </el-col>
       </el-row>
 
-      <el-row>
+      <el-row style="flex: 0 0 35px">
         <el-col align="right" class="mt-2">
 
           <el-button size="mini" type="primary" icon="el-icon-camera" @click.native="fn_openWindow('snapShot', _merge(selectedRow, trafficInfo))"> 데이터 스냅샷 </el-button>
@@ -319,10 +329,17 @@ export default {
     }
   },
   mounted() {
-    if (!this.wdata?.params['trafficInfo']) {
-      this.onLoadTrafficInfo()
+    if (this.isShowChartTicketType) {
+      if (!this.wdata?.params['trafficInfo']) {
+        this.onLoadTrafficInfo()
+      } else {
+        this.onLoadTrafficChart()
+      }
     } else {
-      this.onLoadTrafficChart()
+      this.$store.dispatch('mdi/setWindowOptions', {
+        id: this.wdata.id,
+        options: { height: '300', width: '500' }
+      })
     }
   },
   methods: {
