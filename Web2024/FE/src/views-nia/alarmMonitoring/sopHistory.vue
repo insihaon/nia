@@ -242,7 +242,7 @@ export default {
       this.tapCurrent = 'ticket'
       this.sopSearchModel.TICKET_ID = this.selectedRow.ticket_id
     }
-    if (this.selectedRow?.fault_type === 'SYSLOG') {
+    if (this.selectedRow?.ticket_type === 'SYSLOG') {
       this.tapCurrent = 'syslog'
       this.syslogSearchModel = { ALARM_NO: this.selectedRow.alarmno }
     }
