@@ -288,7 +288,7 @@ spring:
       maxConnPerRoute: 5
 
   ems:
-    roadm_s_ip: 61.252.53.18
+    roadm_s_ip: 61.252.53.18 # 사용안함
     roadm_d_ip: 61.252.53.34
     port_mmc: 42001
     port_evt: 42002

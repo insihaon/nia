@@ -18,7 +18,7 @@ import java.net.UnknownHostException;
 import java.util.Queue;
 
 @Component
-@Scope(value = "prototype")
+@Scope(value = "singleton")
 public class TelnetMmc {
     private static final Logger LOGGER = LoggerFactory.getLogger(TelnetMmc.class);
 
@@ -27,9 +27,10 @@ public class TelnetMmc {
     private OutputStream serverOutput;//   네트워크 출력용 스트림
     private String host;//       접속 서버의  주소
     private int port;   //        접속 서버의 포트 번호
-    private Boolean isStart = false;
     private StreamConnectorMmc socket_to_stdout = null;
     private Thread output_thread = null;
+
+    boolean isReadStreamRunning = true;
 
     @Autowired
     private DataShareBean dataShareBean;
@@ -52,6 +53,8 @@ public class TelnetMmc {
         serverSocket = new Socket(host, port);
         serverInput = serverSocket.getInputStream();
         serverOutput = serverSocket.getOutputStream();
+
+        isReadStreamRunning = true;
     }
 
     public Boolean isConnected () {
@@ -72,9 +75,9 @@ public class TelnetMmc {
         try {
             socket_to_stdout = streamConnectorMmcObjectFactory.getObject();
             socket_to_stdout.setStream(this, serverInput, System.out, host, port);
-            // 슬롯을 생성한다.
+            // -- 슬롯 생성 --
             output_thread = new Thread(socket_to_stdout);
-            // 슬롯을 시작한다.
+            // -- 슬롯 시작 --
             output_thread.start();
 
         } catch (Exception e) {
@@ -101,15 +104,14 @@ public class TelnetMmc {
                 LOGGER.info("=====> [TelnetMmc] sendCommand :  " + command + " OK <=====");
 
                 try {
+                    // 1초의 시간동안, streamConnectorMmc에서 Queue에 데이터 쌓음
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     LOGGER.error("=====> [TelnetMmc] sendCommand() " + ExceptionUtils.getStackTrace(e) + "<=====");
                 }
 
-                isStart = true;
                 msg = readStream();
                 LOGGER.info("=====> [TelnetMmc] sendCommand msg :  " + msg);
-                isStart = false;
             }
         } catch (Exception e) {
             LOGGER.error("=====> [TelnetMmc] sendCommand() " + ExceptionUtils.getStackTrace(e) + "<=====");
@@ -121,11 +123,11 @@ public class TelnetMmc {
         String msg = null;
 
         try {
-            while (serverSocket.isConnected()) {
+            while (isReadStreamRunning && serverSocket != null && serverSocket.isConnected()) {
                 if (!((Queue<String>) dataShareBean.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_MMC_QUE)).isEmpty()) {
                     msg = ((Queue<String>) dataShareBean.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_MMC_QUE)).poll();
 
-                    if (msg.contains("LOGIN:") || msg.contains("PASSWORD:") || msg.contains("TL1>") || msg.contains("canc-user")) {
+                    if (msg.contains("LOGIN:") || msg.contains("PASSWORD:") || msg.contains("TL1>") || msg.contains("canc-user") || msg.contains("nc-user")) {
                         return msg;
                     }
                 }
@@ -142,29 +144,40 @@ public class TelnetMmc {
     }
 
     public void closeConnection () {
+        LOGGER.info("=====> [TelnetMmc] closeConnection" );
+
+        isReadStreamRunning = false;
+
         try {
-            if (serverSocket != null && serverSocket.isConnected()) {
-                socket_to_stdout.setStart(false);
-                socket_to_stdout = null;
+            if(serverSocket != null && serverSocket.isConnected()){
                 serverSocket.close();
-                serverSocket = null;
+            }
+            serverSocket = null;
+            if (socket_to_stdout != null) {
+                socket_to_stdout.endStream();
+                socket_to_stdout = null;
+            }
+            if (output_thread != null) {
                 output_thread.interrupt();
-            } else {
-                if (socket_to_stdout != null) {
-                    socket_to_stdout.setStart(false);
-                    socket_to_stdout = null;
-                } else {
-                    socket_to_stdout = null;
-                }
-                serverSocket = null;
-                output_thread.interrupt();
+                output_thread = null;
+            }
+            if (serverInput != null) {
+                serverInput.close();
+                serverInput = null;
+            }
+            if (serverOutput != null) {
+                serverOutput.close();
+                serverOutput = null;
             }
         } catch (Exception e) {
             LOGGER.error("=====> [TelnetMmc] closeConnection error : " + ExceptionUtils.getStackTrace(e) + " <=====");
-            socket_to_stdout.setStart(false);
+            socket_to_stdout.endStream();
             socket_to_stdout = null;
             serverSocket = null;
-            output_thread.interrupt();
+            if (output_thread != null) {
+                output_thread.interrupt();
+                output_thread = null;
+            }
         }
     }
 }

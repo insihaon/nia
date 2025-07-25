@@ -41,28 +41,25 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
     @Autowired
     private DataShareBean dataShareBean;
 
+    @Autowired
+    private RoadmEmsTL1Client roadmEmsTL1Client;
+
     @Override
     public void roadmSipcMMC () {
         LOGGER.info("=====> [RoadmEmsMmcService] roadmSipcMMC <=====");
-        List<EquipVo> equipList = null;
-        String mmc = null;
-        RoadmEmsTL1Client roadmEmsTL1Client = null;
 
         try {
-            roadmEmsTL1Client = roadmEmsTL1ClientObjectFactory.getObject();
-            equipList = equipmentMapper.selectEquipList();
+            List<EquipVo> equipList = equipmentMapper.selectEquipList();
 
             if (equipList != null && equipList.size() > 0) {
                 if (roadmEmsTL1Client.login("D")) {
                     for (EquipVo equip : equipList) {
                         if (roadmEmsTL1Client.isConnected()) {
                             try {
-
-                                mmc = "RTRV-SIPC:" + equip.getIp() + "-SH1::::;\r\n";
+                                String mmc = "RTRV-SIPC:" + equip.getIp() + "-SH1::::;\r\n";
                                 roadmEmsTL1Client.sendCommand(mmc, false);
-                                //    roadmMmcMsgPasing(mmcResult, "RTRV-SIPC");
                             } catch (Exception e) {
-                                LOGGER.error("=====> [RoadmEmsMmcService] roadmSipcMMC error() " + ExceptionUtils.getStackTrace(e) + "<=====");
+                                LOGGER.error("=====> [RoadmEmsMmcService] roadmSipcMMC sendCommand error() " + ExceptionUtils.getStackTrace(e) + "<=====");
                                 break;
                             }
                         }
@@ -72,14 +69,18 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
                         try {
                             roadmEmsTL1Client.logout();
 
-                            // emsSipcKey
                             HashMap<String, String> strHashMap = new HashMap<>();
                             strHashMap.put("key", "emsSipcKey");
                             commonMapper.updateLinkageYdKey(strHashMap);
                         } catch (Exception e) {
-                            LOGGER.error("=====> [RoadmEmsMmcService] roadmSipcMMC error() " + ExceptionUtils.getStackTrace(e) + "<=====");
+                            LOGGER.error("=====> [RoadmEmsMmcService] roadmSipcMMC logout error() " + ExceptionUtils.getStackTrace(e) + "<=====");
                         }
                     }
+                } else {
+                    if (roadmEmsTL1Client != null && roadmEmsTL1Client.isConnected()) {
+                        roadmEmsTL1Client.logout();
+                    }
+                    LOGGER.info("=====> [RoadmEmsMmcService] roadmSipcMMC login fail <=====");
                 }
             }
         } catch (Exception e) {
@@ -91,23 +92,32 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
             if (roadmEmsTL1Client != null) {
                 roadmEmsTL1Client.logout();
             }
+
+            LOGGER.info("=====> [RoadmEmsMmcService] roadmSipcMMC finally roadmEmsTL1Client : " + roadmEmsTL1Client);
         }
     }
 
     @Override
     public void roadmPmMMC () {
         LOGGER.info("=====> [RoadmEmsMmcService] roadmPmMMC <=====");
-        List<EquipSipcVo> equipSipcVoList;
-        String mmc = null;
-        String yyyyMMddHH;
-        Timestamp ocrTime = null;
         Boolean isUpdateOk = true;
-        RoadmEmsTL1Client roadmEmsTL1Client = null;
 
         try {
-            Thread.sleep(180*1000);
+            Thread.sleep(10*1000);
+            long startTime = System.currentTimeMillis(); // 시작 시각
+            long timeout = 10 * 60 * 1000; // 8분 = 480000ms
+            while(roadmEmsTL1Client.isConnected()){
+                long elapsed = System.currentTimeMillis() - startTime;
+                if (elapsed > timeout) {
+                    LOGGER.error("=====> [RoadmEmsMmcService] roadmPmMMC 10분 경과, 전 작업이 너무 걸리므로 전 단계 연결 종료 후 실행 <=====");
+                    roadmEmsTL1Client.logout();
+                }
 
-            equipSipcVoList = equipmentMapper.selectEquipSipcList();
+                Thread.sleep(1000); // 과도한 CPU 사용 방지
+            }
+            Thread.sleep(10*1000);
+
+            List<EquipSipcVo> equipSipcVoList = equipmentMapper.selectEquipSipcList();
 
             if (equipSipcVoList != null && equipSipcVoList.size() > 0) {
                 roadmEmsTL1Client = roadmEmsTL1ClientObjectFactory.getObject();
@@ -116,41 +126,27 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
                     for (EquipSipcVo equipSipc : equipSipcVoList) {
                         try {
                             if (roadmEmsTL1Client.isConnected()) {
-                                mmc = "RTRV-PM:" + equipSipc.getSysname() + "-" + equipSipc.getSysnameName() + "::::SIGNAL=AMPPWR,TYPE=15M,INTERVAL=CURR;\r\n";
+                                String mmc = "RTRV-PM:" + equipSipc.getSysname() + "-" + equipSipc.getSysnameName() + "::::SIGNAL=AMPPWR,TYPE=15M,INTERVAL=CURR;\r\n";
 
                                 try {
                                     roadmEmsTL1Client.sendCommand(mmc, false);
                                     isUpdateOk = true;
                                 } catch (Exception e) {
-                                    LOGGER.info("=====> [RoadmEmsMmcService] roadmPmMMC login fail <=====");
+                                    LOGGER.info("=====> [RoadmEmsMmcService] roadmPmMMC sendCommand Error <=====");
                                     isUpdateOk = false;
                                     break;
                                 }
-                                //    roadmMmcMsgPasing(mmcResult, "RTRV-PM");
                             } else {
+                                LOGGER.info("=====> [RoadmEmsMmcService] roadmPmMMC Telnet not Connected <=====");
                                 isUpdateOk = false;
+                                break;
                             }
                         } catch (Exception e) {
-                            LOGGER.info("=====> [RoadmEmsMmcService] roadmPmMMC login fail <=====");
+                            LOGGER.info("=====> [RoadmEmsMmcService] roadmPmMMC login fail 2 <=====");
                             isUpdateOk = false;
                             break;
                         }
 //                        Thread.sleep(1500);
-                    }
-
-                    yyyyMMddHH = (UtlDateHelper.getCurrentDateTime() + "").substring(0, 14);
-
-                    if (UtlDateHelper.stringToTimestamp(yyyyMMddHH + "00:00").getTime() <= UtlDateHelper.getCurrentDateTime().getTime()
-                            && UtlDateHelper.stringToTimestamp(yyyyMMddHH + "15:00").getTime() > UtlDateHelper.getCurrentDateTime().getTime()) {
-                        ocrTime = UtlDateHelper.stringToTimestamp(yyyyMMddHH + "00:00");
-                    } else if (UtlDateHelper.stringToTimestamp(yyyyMMddHH + "15:00").getTime() <= UtlDateHelper.getCurrentDateTime().getTime()
-                            && UtlDateHelper.stringToTimestamp(yyyyMMddHH + "30:00").getTime() > UtlDateHelper.getCurrentDateTime().getTime()) {
-                        ocrTime = UtlDateHelper.stringToTimestamp(yyyyMMddHH + "15:00");
-                    } else if (UtlDateHelper.stringToTimestamp(yyyyMMddHH + "30:00").getTime() <= UtlDateHelper.getCurrentDateTime().getTime()
-                            && UtlDateHelper.stringToTimestamp(yyyyMMddHH + "45:00").getTime() > UtlDateHelper.getCurrentDateTime().getTime()) {
-                        ocrTime = UtlDateHelper.stringToTimestamp(yyyyMMddHH + "30:00");
-                    } else if (UtlDateHelper.stringToTimestamp(yyyyMMddHH + "45:00").getTime() <= UtlDateHelper.getCurrentDateTime().getTime()) {
-                        ocrTime = UtlDateHelper.stringToTimestamp(yyyyMMddHH + "45:00");
                     }
 
                     if (roadmEmsTL1Client != null && roadmEmsTL1Client.isConnected()) {
@@ -162,16 +158,12 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
                         commonMapper.updateLinkageYdKey(strHashMap);
 
                         if (isUpdateOk) {
-//                            Thread.sleep(5 * 1000);
-                            performanceToAiPrdAmqp.sendMessageCmd(ocrTime + "");
-                            //     performaceMapper.updatePerformanceUpdateTime(ocrTime+"");
+                            performanceToAiPrdAmqp.sendMessageCmd(getOcrTime() + "");
                         }
                     }
                 } else {
-                    if (roadmEmsTL1Client != null) {
-                        if (roadmEmsTL1Client.isConnected()) {
-                            roadmEmsTL1Client.logout();
-                        }
+                    if (roadmEmsTL1Client != null && roadmEmsTL1Client.isConnected()) {
+                        roadmEmsTL1Client.logout();
                     }
                     LOGGER.info("=====> [RoadmEmsMmcService] roadmPmMMC login fail <=====");
                 }
@@ -185,6 +177,8 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
             if (roadmEmsTL1Client != null) {
                 roadmEmsTL1Client.logout();
             }
+
+            LOGGER.info("=====> [RoadmEmsMmcService] roadmPmMMC finally roadmEmsTL1Client : " + roadmEmsTL1Client);
         }
     }
 
@@ -507,4 +501,26 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
             }
         }
     }
+
+    private Timestamp getOcrTime(){
+        Timestamp ocrTime = null;
+        String yyyyMMddHH = (UtlDateHelper.getCurrentDateTime() + "").substring(0, 14);
+
+        if (UtlDateHelper.stringToTimestamp(yyyyMMddHH + "00:00").getTime() <= UtlDateHelper.getCurrentDateTime().getTime()
+                && UtlDateHelper.stringToTimestamp(yyyyMMddHH + "15:00").getTime() > UtlDateHelper.getCurrentDateTime().getTime()) {
+            ocrTime = UtlDateHelper.stringToTimestamp(yyyyMMddHH + "00:00");
+        } else if (UtlDateHelper.stringToTimestamp(yyyyMMddHH + "15:00").getTime() <= UtlDateHelper.getCurrentDateTime().getTime()
+                && UtlDateHelper.stringToTimestamp(yyyyMMddHH + "30:00").getTime() > UtlDateHelper.getCurrentDateTime().getTime()) {
+            ocrTime = UtlDateHelper.stringToTimestamp(yyyyMMddHH + "15:00");
+        } else if (UtlDateHelper.stringToTimestamp(yyyyMMddHH + "30:00").getTime() <= UtlDateHelper.getCurrentDateTime().getTime()
+                && UtlDateHelper.stringToTimestamp(yyyyMMddHH + "45:00").getTime() > UtlDateHelper.getCurrentDateTime().getTime()) {
+            ocrTime = UtlDateHelper.stringToTimestamp(yyyyMMddHH + "30:00");
+        } else if (UtlDateHelper.stringToTimestamp(yyyyMMddHH + "45:00").getTime() <= UtlDateHelper.getCurrentDateTime().getTime()) {
+            ocrTime = UtlDateHelper.stringToTimestamp(yyyyMMddHH + "45:00");
+        }
+
+        return ocrTime;
+    }
+
 }
+
