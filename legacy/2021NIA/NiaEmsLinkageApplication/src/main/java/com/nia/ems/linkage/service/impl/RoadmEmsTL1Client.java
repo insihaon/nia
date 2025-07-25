@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 @Component
-@Scope(value = "prototype")
+@Scope(value = "singleton")
 public class RoadmEmsTL1Client {
     private static final Logger LOGGER = LoggerFactory.getLogger(RoadmEmsTL1Client.class);
 
@@ -39,27 +39,30 @@ public class RoadmEmsTL1Client {
     @Autowired
     private ApplicationContext applicationContext;
 
+    int loginCnt = 0;
+
     public Boolean login (String emsGb) {
         LOGGER.info("=====> [RoadmEmsTL1Client] login <=====");
 
         Boolean isLoginOk = false;
         String mmcResult;
-        int loginCnt = 0;
 
         try {
-            telnet = applicationContext.getBean(TelnetMmc.class);
+//            telnet = applicationContext.getBean(TelnetMmc.class);
 
             LOGGER.info("=====> [RoadmEmsTL1Client] telnet open before<=====");
             if (telnet != null && telnet.isConnected()) {
-                LOGGER.info("=====> [RoadmEmsTL1Client] telnet open <=====");
+                LOGGER.info("=====> [RoadmEmsTL1Client] telnet reset <=====");
                 telnet.sendCommand("canc-user:::1:" + id + ";\r\n", false);
                 telnet.closeConnection();
-                telnet = null;
-            } else if (telnet != null) {
-                telnet = null;
+//                telnet = null;
             }
+//            else if (telnet != null) {
+//                LOGGER.info("=====> [RoadmEmsTL1Client] telnet clear <=====");
+//                telnet = null;
+//            }
 
-            telnet = telnetObjectFactory.getObject();
+//            telnet = telnetObjectFactory.getObject();
 
             if ("D".equals(emsGb)) {
                 telnet.setHostPort(roadmDIp, port);
@@ -71,8 +74,9 @@ public class RoadmEmsTL1Client {
             telnet.main_proc();
 
             if (telnet.isConnected()) {
-                byte[] enterBytes = {13, 10}; // \r\n
-//                roadmEmsTNClient.write(new String(enterBytes, "ASCII"));
+                LOGGER.info("=====> [RoadmEmsTL1Client] telnet connected <=====");
+//              byte[] enterBytes = {13, 10}; // \r\n
+//              roadmEmsTNClient.write(new String(enterBytes, "ASCII"));
                 mmcResult = telnet.sendCommand("\r\n", false);
                 Thread.sleep(500);
 
@@ -88,9 +92,10 @@ public class RoadmEmsTL1Client {
                             isLoginOk = true;
                         } else if (mmcResult.contains("LOGIN:")) {
                             telnet.closeConnection();
-                            telnet = null;
+//                            telnet = null;
 
                             if (loginCnt == 3) {
+                                loginCnt = 0;
                                 return false;
                             }
                             Thread.sleep(3000);
@@ -100,9 +105,10 @@ public class RoadmEmsTL1Client {
                     }
                 } else {
                     telnet.closeConnection();
-                    telnet = null;
+//                    telnet = null;
 
                     if (loginCnt == 3) {
+                        loginCnt = 0;
                         return false;
                     }
                     Thread.sleep(3000);
@@ -138,14 +144,16 @@ public class RoadmEmsTL1Client {
     }
 
     public void logout () {
+        LOGGER.info("=====> [RoadmEmsTL1Client] logout <=====");
+
         if (telnet != null && telnet.isConnected()) {
             telnet.sendCommand("canc-user:::1:" + id + ";\r\n", false);
             telnet.closeConnection();
-            telnet = null;
+//            telnet = null;
         } else {
             if (telnet != null) {
                 telnet.closeConnection();
-                telnet = null;
+//                telnet = null;
             }
         }
     }
