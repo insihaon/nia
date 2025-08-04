@@ -747,7 +747,6 @@
           AND ticket_type != 'NFTT'
           AND ticket_type != 'ATT2'
           AND profile_title is null
-
     </select>
 
     <select id="selectSopKey" resultType="string">
