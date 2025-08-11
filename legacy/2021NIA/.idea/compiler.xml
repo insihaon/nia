@@ -13,12 +13,12 @@
         <module name="com.nia.ip.sdn.sflow.linkage" />
         <module name="NiaIpSdnToAiDataLinkageApplication" />
         <module name="com.nia.data.linkage.ip.equip" />
-        <module name="com.nia.ems.linkage" />
         <module name="com.nia.data.linkage.ai" />
+        <module name="com.nia.ems.linkage" />
         <module name="com.nia.engine" />
         <module name="com.nia.ai.traffic.preprocessor" />
-        <module name="com.nia.ai.per.ap" />
         <module name="com.nia.ip.sdn.syslog.preprocessor" />
+        <module name="com.nia.ai.per.ap" />
         <module name="com.nia.ip.country.code.linkage" />
         <module name="NiaSysCheckApplication" />
         <module name="com.nia.rca.cluster.preprocessor" />
@@ -35,8 +35,8 @@
         <module name="NiaIpSdnLinkageApplication" />
         <module name="NiaIpSdnSyslogPreprocessorApplication" />
         <module name="NiaIpSdnSyslogLinkageApplication" />
-        <module name="com.nia.data.linkage.ip.sflow" />
         <module name="com.nia.alarm.simulator" />
+        <module name="com.nia.data.linkage.ip.sflow" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>

@@ -57,12 +57,12 @@
              , COALESCE(LT.ID,0) AS ID
         FROM (
                  SELECT
-                     UO.NREN_ID,UO.NREN_NAME,
+                     UO.NREN_IDE,
                      nm.node_id,pm.if_id,
                      N.ID AS SDN_NODE_ID,
                      NM.NODE_NUM AS STRRESID,NM.NODE_NM AS STRRESNM,
                      I.ID AS SDN_IF_ID,I.IF_NAME AS STRIFNM,
-                     PM.IF_NUM AS STRIFID
+                     PM.IF_NU,UO.NREN_NAMM AS STRIFID
                  FROM RESOURCE.TB_USER_ORGAN UO
                  INNER JOIN RESOURCE.TB_PORT_MST PM ON PM.if_id = UO.IF_ID
                  INNER JOIN RESOURCE.TB_NODE_MST NM ON NM.NODE_ID = UO.NODE_ID and PM.NODE_NUM = NM.NODE_NUM

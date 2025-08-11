@@ -94,7 +94,7 @@ public class EngineAlarmMsgListener implements ChannelAwareMessageListener {
 //					}
 //				}
 //			}
-		}catch (Exception e) {
+		} catch (Exception e) {
 			LOGGER.error(">>>>>>>>>>[EngineAlarmMsgListener] onMessage error : " + ExceptionUtils.getStackTrace(e) + " <<<<<<<<<<<<<<<<<");
 		}
 	}
