@@ -16,7 +16,7 @@ public interface TrafficMapper {
     void insertAiAnomalous(AnomalousTrafficVo anomalousTrafficVo);
     void insertAiNoxious(NoxiousTrafficVo noxiousTrfficVo);
 
-//    SDN
+    //    SDN
     int insertSdnTraffic(HashMap<String, String> map);
     void insertAiSdnTraffic(SdnTrafficVo sdnTrafficVo);
     int insertNodeFactor(HashMap<String, String> map);
@@ -25,12 +25,12 @@ public interface TrafficMapper {
     int selectAnomalousTrafficCheck(HashMap<String, String> map);
     int selectNoxiousTrafficCheck(HashMap<String, String> map);
 
-//    SDN
+    //    SDN
     int selectSdnTrafficCheck(HashMap<String, String> map);
     int selectNodeFactorCheck(HashMap<String, String> map);
     
-// 시스템 현황 모니터링
+    // 시스템 현황 모니터링
     void updateLinkageYdKey(HashMap<String,String> strHashMap);
 
-
+    int selectThreeTimesCntCheck(SdnTrafficVo sdnTrafficVo);
 }

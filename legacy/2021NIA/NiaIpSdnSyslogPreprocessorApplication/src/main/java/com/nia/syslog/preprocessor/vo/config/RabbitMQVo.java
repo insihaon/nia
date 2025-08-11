@@ -21,8 +21,8 @@ public class RabbitMQVo implements Serializable {
 
     @Value("${spring.rabbitmq.niaSyslogAlarmExchange}")
     private String niaSyslogAlarmExchange;
-    @Value("${spring.rabbitmq.niaSyslogAlarmRoutingKey}")
-    private String niaSyslogAlarmRoutingKey;
+//    @Value("${spring.rabbitmq.niaSyslogAlarmRoutingKey}")
+//    private String niaSyslogAlarmRoutingKey;
     @Value("${spring.rabbitmq.niaSyslogAlarmQueue}")
     private String niaSyslogAlarmQueue;
 

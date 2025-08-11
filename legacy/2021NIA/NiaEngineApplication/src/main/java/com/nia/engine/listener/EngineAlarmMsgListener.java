@@ -42,7 +42,7 @@ public class EngineAlarmMsgListener implements ChannelAwareMessageListener {
 	@Qualifier("SingleRuleAsyncService")
 	private SingleRuleAsyncService singleRuleAsyncService;
 
-	private String tmpClusterNo;
+//	private String tmpClusterNo;
 
 	@Autowired
 	private DataShareBean dataShareBean;
@@ -63,8 +63,8 @@ public class EngineAlarmMsgListener implements ChannelAwareMessageListener {
 						TmpClusterObject tmpClusterObject;
 						TopologyObject topologyObject;
 
-						tmpClusterNo = new String(message.getBody());
-						tmpClusterNo = tmpClusterNo.replaceAll("\"", "");
+//						tmpClusterNo = new String(message.getBody());
+//						tmpClusterNo = tmpClusterNo.replaceAll("\"", "");
 
 						List<ClusterObject> clusterObjectList = new ArrayList<>();
 						List<BasicAlarmVo> basicAlarmVoList = new ArrayList<>();

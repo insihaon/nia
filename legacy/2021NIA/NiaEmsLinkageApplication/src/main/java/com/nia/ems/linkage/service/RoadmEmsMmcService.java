@@ -8,5 +8,5 @@ public interface RoadmEmsMmcService {
     void roadmSlotMMC();
     void createRoadmUniTopology();
     void getSystemList();
-    void updateSystemInfo();
+    void updateSystemInfo(); // 광장비 정보 리스트 정보 수집
 }

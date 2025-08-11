@@ -54,7 +54,9 @@ public class ClusterServiceImpl implements ClusterService {
             if (tmpClusterList.size() > 0) {
                 LOGGER.info("[ClusterService] tmpClusterList.size() : " + tmpClusterList.size());
                 for(TmpClusterObject tmpClusterObject : tmpClusterList){
-                    if(!tmpClusterObject.isClusterMaxTime() && !tmpClusterObject.isStop()){
+                    if(tmpClusterObject.isClusterMaxTime() || tmpClusterObject.isStop()){
+                        continue;
+                    }else{
                         startTimeDiff = basicAlarmVo.getReceivetime().getTime() - tmpClusterObject.getStartTime().getTime();
                         endTimeDiff = basicAlarmVo.getReceivetime().getTime() - tmpClusterObject.getEndTime().getTime();
 
@@ -62,6 +64,7 @@ public class ClusterServiceImpl implements ClusterService {
                             if(tmpClusterObject.getCreateTime().getTime() > basicAlarmVo.getReceivetime().getTime()+timeCondition){
                                 continue;
                             }
+
                             createCluster(basicAlarmVo);
                             insertionDone = true;
                             break;
@@ -77,7 +80,11 @@ public class ClusterServiceImpl implements ClusterService {
                                 basicAlarmVo.setTmpClusterno(tmpClusterObject.getTmpClusterSeq());
 
                                 for(AlarmClusterService alarmClusterService : alarmClusterServiceImplList){
-                                    alarmClusterService.onMessage(basicAlarmVo);
+                                    if(basicAlarmVo.getSysname() != null && basicAlarmVo.getSysname().length() > 0 ){
+                                        LOGGER.info("=====> [startThreadPool] onMessage basicAlarmVo.getSysname() : " + basicAlarmVo.getSysname());
+                                        LOGGER.info("=====> [startThreadPool] onMessage basicAlarmVo.getSysname().length() : " + basicAlarmVo.getSysname().length());
+                                        alarmClusterService.onMessage(basicAlarmVo);
+                                    }
                                 }
                                 insertionDone = true;
                                 break;
@@ -102,12 +109,13 @@ public class ClusterServiceImpl implements ClusterService {
     @Override
     @Synchronized
     public void createCluster(BasicAlarmVo basicAlarmVo){
+        LOGGER.info("=====> [ClusterService] createCluster <<<<<<<<<<<<<<<<<");
         String tmpClusterNo;
         TmpClusterObject tmpClusterObject;
         StringBuffer strLog;
         try {
             if(basicAlarmVo.getSysname() == null){
-                LOGGER.info("=====> [ClusterService] createCluster null sysname");
+                LOGGER.info("=====> [ClusterService] not createCluster null sysname");
                 return;
             }
 

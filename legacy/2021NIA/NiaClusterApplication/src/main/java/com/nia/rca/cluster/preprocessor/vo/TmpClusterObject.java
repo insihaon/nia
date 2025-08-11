@@ -21,9 +21,9 @@ public class TmpClusterObject implements Serializable{
     private static final Logger LOGGER = LoggerFactory.getLogger(TmpClusterObject.class);
 	
 	private String tmpClusterSeq;
-	private Timestamp startTime;
+	private Timestamp startTime; // cluster 생성시간 ||
 	private Timestamp endTime;
-	private Timestamp createTime;
+	private Timestamp createTime; // cluster 최초 생성시간
     private Timestamp clusterStartTime;
     private Timestamp clusterEndTime;
 	private List<ClusterObject> clusterList = new ArrayList<ClusterObject>();

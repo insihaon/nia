@@ -24,7 +24,7 @@ public class SyslogAlarmHdlService {
     @Qualifier("SyslogRuleHdlService")
     private SyslogRuleHdlService syslogRuleHdlService;
 
-    @Autowired
+    @Autowired(required = false)
     @Qualifier("SyslogMailingService")
     private SyslogMailingService syslogMailingService;
 
@@ -49,9 +49,8 @@ public class SyslogAlarmHdlService {
         try {
             syslogDataVo = syslogRuleHdlService.occurRuleCheck(pSyslogDataVo);
             if (syslogDataVo.getSyslogRuleVo() != null) {
-
                 sysLogAlarmVo = setSyslogAlarm(syslogDataVo);
-                String alarmloc = syslogAlarmMapper.selectAlarmLoc(sysLogAlarmVo.getAlarmno(), sysLogAlarmVo.getEtc());
+                String alarmloc = syslogAlarmMapper.selectAlarmLoc(sysLogAlarmVo.getEtc());
                 LoggerPrint.infoLog("alarmloc chk : " + alarmloc + ", Alarmno chk : " + sysLogAlarmVo.getAlarmno());
                 if (sysLogAlarmVo != null) {
                     sysLogAlarmVo.setAlarmloc(alarmloc);
@@ -68,10 +67,10 @@ public class SyslogAlarmHdlService {
                 autoProcessSyslogMap.put("alarmno", sysLogAlarmVo.getAlarmno());
 
                 selfProcessSyslogMapper.insertAutoProcess(autoProcessSyslogMap);
-
                 SyslogAlarmVo row = selfProcessSyslogMapper.selectSyslogAlarmMst(sysLogAlarmVo.getAlarmno());
-                //                 tb_syslog_alarm_mst 에 up이 들어왔을 경우 해당 장비 상태 전부 자동마감
+
                 if ("IFMGR_IF_UP_4".equals(row.getAlarmmsg())) {
+                    // tb_syslog_alarm_mst 에 up이 들어왔을 경우 해당 장비 상태 전부 자동마감
                     selfProcessSyslogMapper.updateSyslogPortAlarmStatus(sysLogAlarmVo.getNodeNum(),
                             sysLogAlarmVo.getNodeNm());
                     selfProcessSyslogMapper.updateAutoProcessSyslog(sysLogAlarmVo.getAlarmno());
@@ -99,6 +98,7 @@ public class SyslogAlarmHdlService {
                     autoProcessSyslogMap.put("handlingFinUser", "NIA ADMIN");
                     autoProcessSyslogMap.put("alarmloc", alarmloc);
                 } else if ("OSPF_OPR_LINK_UP_4".equals(row.getAlarmmsg())) {
+                    // tb_syslog_alarm_mst 에 up이 들어왔을 경우 해당 장비 상태 전부 자동마감
                     selfProcessSyslogMapper.updateSyslogLinkAlarmStatus(sysLogAlarmVo.getNodeNum(),
                             sysLogAlarmVo.getNodeNm());
                     selfProcessSyslogMapper.updateAutoProcessSyslog(sysLogAlarmVo.getAlarmno());
@@ -135,8 +135,6 @@ public class SyslogAlarmHdlService {
                 if ("IFMGR_IF_DOWN_2".equals(row.getAlarmmsg())) {
                     syslogMailingService.syslogSendMail(sysLogAlarmVo);
                 }
-
-
             }
         } catch (Exception e) {
             LoggerPrint.errorLog(e);

@@ -7,7 +7,7 @@ logging:
     
 ---
 spring:
-  profiles: local
+  profiles: real
   jasypt:
     encryptor:
       bean: jasyptStringEncryptor
@@ -48,56 +48,56 @@ spring:
 
 
 ---
-spring:
-  profiles: real
-  logging:
-    config: classpath:context/logback-spring.xml
-
-  jasypt:
-    encryptor:
-      bean: jasyptStringEncryptor
-      property:
-        prefix: ENC(
-        suffix: )
-
-  restTemplate:
-    factory:
-      readTimeout: 5000
-      connectTimeout: 3000
-    httpClient:
-      maxConnTotal: 100
-      maxConnPerRoute: 5
-  ai:
-    api:
-      url: http://116.89.186.194:8000
-
-  task:
-    poolSize: 100
-    keepAlive: 600000
-    queueCapacity: 100
-    concurrency: 100
-
-  rabbitmq:
-    address: localhost  #개발
-    port: 5675
-    username: local
-    password: local12!@
-
-    niaPerformanceToAiSendExchange: nia.exchangeNiaPerformanceToAiSendDirectly
-    niaPerformanceToAiSendQueue: nia.NiaPerformanceToAiSendIndexDirectly
-    niaPerformanceToAiSendRoutingKey: NiaPerformanceToAiSendIndexDirectly
-
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    data-source-class-name: org.postgresql.ds.PGSimpleDataSource
-    url: jdbc:postgresql://localhost:5433/niadb #운영
-    username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
-    password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
-    maximumPoolSize: 10
-    idleTimeout: 6000
-
-  mybatis:
-    mapper-locations: classpath*:sqlmap/*.xml
-    mybatisConfig-locations: classpath:mybatis-config.xml
-    configuration:
-      mapUnderscoreToCamelCase: true
+#spring:
+#  profiles: real
+#  logging:
+#    config: classpath:context/logback-spring.xml
+#
+#  jasypt:
+#    encryptor:
+#      bean: jasyptStringEncryptor
+#      property:
+#        prefix: ENC(
+#        suffix: )
+#
+#  restTemplate:
+#    factory:
+#      readTimeout: 5000
+#      connectTimeout: 3000
+#    httpClient:
+#      maxConnTotal: 100
+#      maxConnPerRoute: 5
+#  ai:
+#    api:
+#      url: http://116.89.186.194:8000
+#
+#  task:
+#    poolSize: 100
+#    keepAlive: 600000
+#    queueCapacity: 100
+#    concurrency: 100
+#
+#  rabbitmq:
+#    address: localhost  #개발
+#    port: 5675
+#    username: local
+#    password: local12!@
+#
+#    niaPerformanceToAiSendExchange: nia.exchangeNiaPerformanceToAiSendDirectly
+#    niaPerformanceToAiSendQueue: nia.NiaPerformanceToAiSendIndexDirectly
+#    niaPerformanceToAiSendRoutingKey: NiaPerformanceToAiSendIndexDirectly
+#
+#  datasource:
+#    driver-class-name: org.postgresql.Driver
+#    data-source-class-name: org.postgresql.ds.PGSimpleDataSource
+#    url: jdbc:postgresql://localhost:5433/niadb #운영
+#    username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
+#    password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
+#    maximumPoolSize: 10
+#    idleTimeout: 6000
+#
+#  mybatis:
+#    mapper-locations: classpath*:sqlmap/*.xml
+#    mybatisConfig-locations: classpath:mybatis-config.xml
+#    configuration:
+#      mapUnderscoreToCamelCase: true

@@ -36,16 +36,12 @@ public class NiaSdnTrafficHdlServiceImpl implements NiaSdnTrafficHdlService {
 
         HashMap<String, String> hashMap;
         String trafficGb = null;
-
-        ArrayList<SdnTrafficVo> sdnTrafficVoList;
-        int cnt = 0;
-        int insertCnt = 0;
+        ArrayList<SdnTrafficVo> mqSendSdnTrafficVoList = new ArrayList<>();
 
         try {
             if(sdnTrafficListVo != null){
                 if(sdnTrafficListVo.getData() != null && sdnTrafficListVo.getData().size() > 0){
                     LOGGER.info("==========>[niaSdnTrafficeHdlService] niaSdnTrafficeHdlProcessor size : "+sdnTrafficListVo.getData().size()+"<==============");
-                    sdnTrafficVoList = new ArrayList<>();
 
                     for(SdnTrafficVo sdnTrafficVo : sdnTrafficListVo.getData()){
                         if (StringUtils.isNotEmpty(sdnTrafficVo.getSdn_node_id()) && StringUtils.isEmpty(sdnTrafficVo.getStrifid())){
@@ -62,32 +58,29 @@ public class NiaSdnTrafficHdlServiceImpl implements NiaSdnTrafficHdlService {
                             hashMap.put("fltbpsinAnomaly", String.valueOf(sdnTrafficVo.isFltbpsin_anomaly()));
                             hashMap.put("fltbpsoutAnomaly", String.valueOf(sdnTrafficVo.isFltbpsout_anomaly()));
 
-                            cnt = trafficMapper.selectSdnTrafficCheck(hashMap);
-
+                            int cnt = trafficMapper.selectSdnTrafficCheck(hashMap);
                             LOGGER.info("==========>[niaSdnTrafficeHdlService] niaSdnTrafficeHdlProcessor check cnt : "+cnt+"<==============");
-
-
                             if(cnt < 1){
-
                                 sdnTrafficVo.setTraffic_gb(trafficGb);
 
-
-                                insertCnt = trafficMapper.insertSdnTraffic(hashMap);
+                                int insertCnt = trafficMapper.insertSdnTraffic(hashMap); // RCA.TB_ANOMALOUS_1MI_TRAFFIC
+                                LOGGER.info("==========>[niaSdnTrafficeHdlService] niaSdnTrafficeHdlProcessor check insertCnt : "+insertCnt+"<==============");
                                 if (insertCnt > 0){
-                                    trafficMapper.insertAiSdnTraffic(sdnTrafficVo);
-
-                                    sdnTrafficVoList.add(sdnTrafficVo);
+                                    trafficMapper.insertAiSdnTraffic(sdnTrafficVo); // RCA.TB_ANOMALOUS_AI_RESULT
                                     LOGGER.info("==========>[niaSdnTrafficeHdlService] niaSdnTrafficeHdlProcessor add : "+sdnTrafficVo.toString()+"<==============");
+
+                                    int threeTimesCnt = trafficMapper.selectThreeTimesCntCheck(sdnTrafficVo);
+                                    LOGGER.info("==========>[niaSdnTrafficeHdlService] niaSdnTrafficeHdlProcessor check threeTimesCnt : "+threeTimesCnt+"<==============");
+                                    if(threeTimesCnt >= 3){
+                                        mqSendSdnTrafficVoList.add(sdnTrafficVo);
+                                    }
                                 }
-
                             }
-
                         }
                     }
 
-
-                    if(sdnTrafficVoList != null && sdnTrafficVoList.size() > 0){
-                        sdnTrafficListVo.setData(sdnTrafficVoList);
+                    if(mqSendSdnTrafficVoList != null && mqSendSdnTrafficVoList.size() > 0){
+                        sdnTrafficListVo.setData(mqSendSdnTrafficVoList);
                         engineTrafficeResultVo = engineTrafficeResultVoObjectFactory.getObject();
                         engineTrafficeResultVo.setGb(trafficGb);
                         engineTrafficeResultVo.setTrafficListVo(sdnTrafficListVo);

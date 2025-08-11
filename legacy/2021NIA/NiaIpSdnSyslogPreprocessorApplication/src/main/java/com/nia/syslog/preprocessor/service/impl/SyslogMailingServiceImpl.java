@@ -8,6 +8,7 @@ import com.nia.syslog.preprocessor.vo.selfProcess.SyslogSopVo;
 import lombok.RequiredArgsConstructor;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -19,6 +20,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 @Service("SyslogMailingService")
+@Profile("real")
 @RequiredArgsConstructor
 public class SyslogMailingServiceImpl implements SyslogMailingService {
     private final Logger LOGGER = Logger.getLogger(SyslogMailingServiceImpl.class);

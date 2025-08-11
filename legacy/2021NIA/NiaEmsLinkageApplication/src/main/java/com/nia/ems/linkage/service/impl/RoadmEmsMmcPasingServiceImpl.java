@@ -110,7 +110,7 @@ public class RoadmEmsMmcPasingServiceImpl  implements RoadmEmsMmcPasingService {
 
         switch (mmc){
             case "RTRV-SIPC" :
-                LOGGER.info("=====> [RoadmEmsMmcPasingService] roadmMmcMsgPasing RTRV-SIPC <=====");
+                LOGGER.info("=====> [RoadmEmsMmcPasingService] roadmMmcMsgPasing RTRV-SIPC : " + mmcResult.toString() + " <=====");
 
                 try {
                     equipSipcVoList = new ArrayList<EquipSipcVo>();
@@ -163,7 +163,7 @@ public class RoadmEmsMmcPasingServiceImpl  implements RoadmEmsMmcPasingService {
                 }
                 break;
             case "RTRV-PM" :
-                LOGGER.info("=====> [RoadmEmsMmcPasingService] roadmMmcMsgPasing RTRV-PM <=====");
+                LOGGER.info("=====> [RoadmEmsMmcPasingService] roadmMmcMsgPasing RTRV-PM : " + mmcResult.toString() + " <=====");
 
                 try {
                     if(mmcResult.contains("COMPLD")) {

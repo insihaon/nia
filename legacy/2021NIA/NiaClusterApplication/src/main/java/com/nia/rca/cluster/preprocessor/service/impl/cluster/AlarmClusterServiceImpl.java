@@ -81,13 +81,11 @@ public class AlarmClusterServiceImpl implements AlarmClusterService {
         return this;
     }
 
-    /*
-     * 같은 sysName 또는 ocaSeq를 가지고 있는 알람끼리 클러스터 구성
-     */
+    /* 같은 sysName 또는 ocaSeq를 가지고 있는 알람끼리 클러스터 구성 */
     @Override
     public void clustering(BasicAlarmVo basicAlarmVo) {
         boolean isSysNameFind = false;
-        boolean isTrunkIdFind = false;
+//        boolean isTrunkIdFind = false;
         boolean isOppSysNameFind = false;
         boolean isAddAlarm = false;
 
@@ -121,24 +119,22 @@ public class AlarmClusterServiceImpl implements AlarmClusterService {
 
             if (clusterObjectList.size() > 0) {
                 for (ClusterObject clusterObject : clusterObjectList) {
+                    isSysNameFind = clusterObject.findSysName(basicAlarmVo.getSysname());
+
                     if (basicAlarmVo.getTopologyObject() != null) {
                         //                        if(StringUtils.isNotEmpty(basicAlarmVo.getTopologyObject()
                         //                        .getTrunkId())){
                         //                            isTrunkIdFind = clusterObject.findTrunkId(basicAlarmVo
                         //                            .getTopologyObject().getTrunkId());
                         //                        }
-
-                        isSysNameFind = clusterObject.findSysName(basicAlarmVo.getSysname());
-
                         if (! StringUtils.isEmpty(basicAlarmVo.getTopologyObject().getOppSysname())) {
                             isOppSysNameFind =
                                     clusterObject.findSysName(basicAlarmVo.getTopologyObject().getOppSysname());
                         }
-                    } else {
-                        isSysNameFind = clusterObject.findSysName(basicAlarmVo.getSysname());
                     }
 
-                    if (isSysNameFind || isOppSysNameFind || isTrunkIdFind) {
+//                    if (isSysNameFind || isOppSysNameFind || isTrunkIdFind) {
+                    if (isSysNameFind || isOppSysNameFind) {
                         clusterObject.addEquipList(basicAlarmVo.getSysname());
 
                         if (basicAlarmVo.getTopologyObject() != null && ! StringUtils.isEmpty(basicAlarmVo.getTopologyObject().getOppSysname())) {
@@ -152,7 +148,7 @@ public class AlarmClusterServiceImpl implements AlarmClusterService {
                     }
                     isSysNameFind = false;
                     isOppSysNameFind = false;
-                    isTrunkIdFind = false;
+//                    isTrunkIdFind = false;
                 }
 
                 if (isAddAlarm) {
@@ -320,6 +316,7 @@ public class AlarmClusterServiceImpl implements AlarmClusterService {
 
     @Override
     public void createCluster(BasicAlarmVo basicAlarmVo) {
+        LOGGER.info(">>>>>>>>>>[AlarmClusterService] createCluster <<<<<<<<<<<<<<<<<");
         try {
             String clusterNo = null;
             ClusterInfoVo clusterInfoVo = null;

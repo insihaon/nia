@@ -45,7 +45,6 @@ public class PerformanceSendServiceImpl implements PerformanceSendService {
         LOGGER.info("==========>[PerformanceSendService] sendPerformanceData <==============");
         ResponseEntity<String> responseEntity;
         String requestData;
-        List<PerformaceVo> performaceVoList = null;
         HashMap<String, String> parameterMap = null;
         HttpEntity<String> request;
         HttpHeaders httpHeaders;
@@ -88,7 +87,7 @@ public class PerformanceSendServiceImpl implements PerformanceSendService {
 
             parameterMap = new HashMap<String, String>();
             parameterMap.put("ocrtime", date);
-            performaceVoList = performanceMapper.selectPerformanceDataList(parameterMap);
+            List<PerformaceVo> performaceVoList = performanceMapper.selectPerformanceDataList(parameterMap);
 
             if(performaceVoList != null && performaceVoList.size() > 0){
                 ObjectMapper mapper = new ObjectMapper();

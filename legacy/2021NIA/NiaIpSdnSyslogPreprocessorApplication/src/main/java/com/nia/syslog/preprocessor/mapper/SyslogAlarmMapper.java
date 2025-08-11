@@ -16,6 +16,6 @@ public interface SyslogAlarmMapper {
 
     void insertSyslogAlarm(SysLogAlarmVo sysLogAlarmVo);
 
-    String selectAlarmLoc(@Param("alarmno") String alarmno, @Param("etc") String etc);
+    String selectAlarmLoc(String etc);
 
 }

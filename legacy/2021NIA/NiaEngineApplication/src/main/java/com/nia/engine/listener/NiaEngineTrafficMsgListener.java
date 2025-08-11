@@ -28,27 +28,29 @@ public class NiaEngineTrafficMsgListener implements ChannelAwareMessageListener 
 		LOGGER.info("==========>[NiaEngineTrafficMsgListener] onMessage : "+new String(message.getBody())+"<==============");
 
 		try {
-			Object obj;
 			String msg = new String(message.getBody());
-
 			EngineTrafficeResultVo engineTrafficeResultVo = engineTrafficeResultVoObjectFactory.getObject();
-			obj = UtlCommon.jsonToObject(engineTrafficeResultVo, msg);
+			Object obj = UtlCommon.jsonToObject(engineTrafficeResultVo, msg);
 			engineTrafficeResultVo = (EngineTrafficeResultVo)obj;
 
-			if("anomalous".equals(engineTrafficeResultVo.getGb())){
-				rcaTrafficTicketService.createAnomalousTrafficTicket(engineTrafficeResultVo.getPerfListVo());
+			switch(engineTrafficeResultVo.getGb()){
+				case "anomalous": // 이상트래픽 과거
+					LOGGER.error("과거 이상 트래픽 처리입니다. 확인 필요..");
+//					rcaTrafficTicketService.createAnomalousTrafficTicket(engineTrafficeResultVo.getPerfListVo());
+					break;
+				case "noxious": // 유해 트래픽
+					rcaTrafficTicketService.createNoxiousTrfficTicket(engineTrafficeResultVo.getNoxiousListVo());
+					break;
+				case "nodefactor": // nodefactor
+					rcaTrafficTicketService.createNodeFactorTicket(engineTrafficeResultVo.getNodeFactorListVo());
+					break;
+				case "Traffic_N": case "Traffic_P": // 이상트래픽
+					rcaTrafficTicketService.createSdnTrafficTicket((engineTrafficeResultVo.getTrafficListVo()));
+					break;
+				default:
+					LOGGER.error("예상치 못한 Msg ...");
+					break;
 			}
-			else if("noxious".equals(engineTrafficeResultVo.getGb())){
-				rcaTrafficTicketService.createNoxiousTrfficTicket(engineTrafficeResultVo.getNoxiousListVo());
-			}
-			else if("nodefactor".equals(engineTrafficeResultVo.getGb())){
-				rcaTrafficTicketService.createNodeFactorTicket(engineTrafficeResultVo.getNodeFactorListVo());
-			}else if("Traffic_N".equals(engineTrafficeResultVo.getGb())||"Traffic_P".equals(engineTrafficeResultVo.getGb())){
-				rcaTrafficTicketService.createSdnTrafficTicket((engineTrafficeResultVo.getTrafficListVo()));
-			}
-
-//			aiTicketAmqp.sendMessageCmd(engineTrafficeResultVo);
-//			Thread.sleep(10 * 1000);
 		} catch (Exception e) {
 			LOGGER.error("==========>[NiaEngineTrafficMsgListener] onMessage error "+e.getMessage()+" <==============");
 		}

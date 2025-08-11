@@ -47,7 +47,7 @@ public class AiIpSdnTrafficMsgListener implements ChannelAwareMessageListener {
             sdnTrafficJsonVo = (SdnTrafficJsonVo) obj;
 
             LOGGER.info(">>>>>>>>>>[AiSdnTrafficeMsgListener] onMessage : " + sdnTrafficJsonVo.getData().getData().size() + " <<<<<<<<<<<<<<<<<");
-//			LOGGER.info(">>>>>>>>>>[AiSdnTrafficeMsgListener] onMessage : " + sdnTrafficJsonVo.getData().getData() + " <<<<<<<<<<<<<<<<<");
+			LOGGER.info(">>>>>>>>>>[AiSdnTrafficeMsgListener] onMessage : " + sdnTrafficJsonVo.getData().getData() + " <<<<<<<<<<<<<<<<<");
 
             niaSdnTrafficHdlService.niaSdnTrafficeHdlProcessor(sdnTrafficJsonVo.getData());
 
