@@ -572,200 +572,138 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
     @Override
     public void createSdnTrafficTicket(SdnTrafficListVo sdnTrafficListVo) {
         LOGGER.info("==========>[RcaTrafficTicketService] createAnomalousTrafficTicket : " + sdnTrafficListVo + " <==============");
-        Map<String, String> properties;
-        int updateCnt = 0;
-
-        String ticketId;
-        Timestamp faultTime;
-        SdnTrafficVo sdnTrafficVo;
-        SdnTrafficVo tmpSdnTrafficVo;
-        RcaEngineResult rcaEngineResult;
-        RCATicketAl rcaTicketAl;
-        UserOrganVo userOrganVo;
-        BackboneLinkVo backboneLinkVo;
-        RcaTicketResult rcaTicketResult = null;
-        EngineToAiAnoVo engineToAiAnoVo;
-
-        Iterator<SdnTrafficVo> itr;
-        List<RCATicketAl> rcaTicketAlList = null;
-        HashMap<String, String> parameterMap;
-
-        SdnTrafficInfoVo sdnTrafficInfoVo;
-        HashMap<String, String> autoProcessInserMap;
-
 
         try{
             if(sdnTrafficListVo != null && sdnTrafficListVo.getData().size() > 0) {
-                itr = sdnTrafficListVo.getData().iterator();
-
+                Iterator<SdnTrafficVo> itr = sdnTrafficListVo.getData().iterator();
                 while (itr.hasNext()) {
-                    sdnTrafficVo = itr.next();
-                    String stringTimestamp = String.valueOf(sdnTrafficVo.getMeasured_datetime());
-                    long unixTimestamp = Long.parseLong(stringTimestamp);
-                    Timestamp timestamp = new Timestamp(unixTimestamp * 1000L);
-
-
-                    parameterMap = new HashMap<String, String>();
+                    // sdnTrafficInfoVo 조회
+                    SdnTrafficVo sdnTrafficVo = itr.next();
+                    HashMap<String, String> parameterMap = new HashMap<String, String>();
                     parameterMap.put("strifid", sdnTrafficVo.getStrifid());
                     parameterMap.put("measured_datetime", sdnTrafficVo.getMeasured_datetime() + "");
+                    SdnTrafficInfoVo sdnTrafficInfoVo = sdnTrafficMapper.selectATT2Alarm(parameterMap);
 
-                    sdnTrafficInfoVo = sdnTrafficMapper.selectATT2Alarm(parameterMap);
+                    // rcaTicket 변수 셋팅
+                    rcaTicket = rcaTicketFactory.getObject();
+                    String ticketId = ticketService.selectTicketKey();
+                    rcaTicket.setTicketId(ticketId);
+                    rcaTicket.setTicketType(RcaCodeInfo.TICKET_TYPE_ANOMALOUS2_TRAFFIC_TICKET);
+                    rcaTicket.setTicketGenerationTime(UtlDateHelper.getCurrentTime());
+                    rcaTicket.setFaultTime(sdnTrafficInfoVo.getMeasuredDatetime());
+                    rcaTicket.setRootCauseType(RcaCodeInfo.RCA_RESULT_TRAFFIC_FAIL);
+                    rcaTicket.setRootCauseDomain(RcaCodeInfo.DOMAIN_TRAFFIC);
+                    rcaTicket.setOccur(true);
+                    rcaTicket.setStatus(RcaCodeInfo.TICKET_STATUS_INIT);
+                    rcaTicket.setRelatedAlarmCnt(1);
 
-                    if (sdnTrafficInfoVo != null) {
-                        sdnTrafficVo.setStrifid(sdnTrafficInfoVo.getStrifid());
-                        sdnTrafficVo.setStrresid(sdnTrafficInfoVo.getStrresid());
-                        sdnTrafficVo.setNode_id(sdnTrafficInfoVo.getNodeid());
+                    // TB_ANOMALOUS_1MI_TRAFFIC TICKET_ID UPDATE (JOIN 해서 사용할 수 있도록)
+                    parameterMap = new HashMap<String, String>();
+                    parameterMap.put("ticketId", rcaTicket.getTicketId());
+                    parameterMap.put("strifid", sdnTrafficInfoVo.getStrifid());
+                    parameterMap.put("strresid", sdnTrafficInfoVo.getStrresid());
+                    parameterMap.put("inttimestamp", sdnTrafficInfoVo.getMeasuredDatetime().getTime() + "");
+                    sdnTrafficMapper.updateSdnTraffic(parameterMap);
+                    
+                    // rcaTicketAl 변수 셋팅
+                    RCATicketAl rcaTicketAl = rcaTicketAlFactory.getObject();
+                    rcaTicketAl.setTicketId(ticketId);
+                    rcaTicketAl.setRootCauseSysnameA(sdnTrafficInfoVo.getNodeid());
+                    rcaTicketAl.setRootCausePortA(sdnTrafficInfoVo.getStrifnm());
+
+                    // RcaResultDtlCode 및 sysnameZ, portZ 셋팅
+                    parameterMap = new HashMap<String, String>();
+                    parameterMap.put("resid", sdnTrafficInfoVo.getStrresid());
+                    parameterMap.put("ifid", sdnTrafficInfoVo.getStrifid());
+                    BackboneLinkVo backboneLinkVo = topologyMapper.selectBackboneTopology(parameterMap);
+                    if (backboneLinkVo != null) {
+                        rcaTicket.setTicketRcaResultDtlCode("이상 트래픽(백본)");
+
+                        if (sdnTrafficInfoVo.getStrresid().equals(backboneLinkVo.getSrcNodeNum())) {
+                            rcaTicketAl.setRootCauseSysnameZ(backboneLinkVo.getDestNodeId());
+                            rcaTicketAl.setRootCausePortZ(backboneLinkVo.getDestIfId());
+                        } else {
+                            rcaTicketAl.setRootCauseSysnameZ(backboneLinkVo.getSrcNodeId());
+                            rcaTicketAl.setRootCausePortZ(backboneLinkVo.getSrcIfId());
+                        }
+                    } else {
+                        parameterMap = new HashMap<String, String>();
+                        parameterMap.put("nodeId", sdnTrafficInfoVo.getStrresnm());
+                        parameterMap.put("ifId", sdnTrafficInfoVo.getStrifnm());
+                        UserOrganVo userOrganVo = ticketService.selectUserOrgan(parameterMap);
+
+                        if (userOrganVo != null) {
+                            rcaTicket.setTicketRcaResultDtlCode("이상 트래픽(이용기관)");
+                            rcaTicketAl.setRootCauseSysnameZ(userOrganVo.getNrenName());
+                            rcaTicketAl.setRootCausePortZ(userOrganVo.getIfId());
+                        } else {
+                            rcaTicket.setTicketRcaResultDtlCode("이상 트래픽(포트)");
+                            rcaTicketAl.setRootCauseSysnameZ("Unknown");
+                        }
                     }
 
-                    faultTime = Timestamp.valueOf(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(sdnTrafficVo.getMeasured_datetime())));
+                    // 티켓 중복 체크 -> UI에 전달할 신호 생성
+                    RcaTicketResult rcaTicketResult = rcaTicketMergeService.rcaTrafficeTicketMerge(rcaTicket);
+                    RcaEngineResult rcaEngineResult = new RcaEngineResult();
+                    if (rcaTicketResult != null && rcaTicketResult.isResult()) {
+                        rcaTicket.setParentTicketId(rcaTicketResult.getTicketId());
+                        rcaTicket.setStatus(rcaTicketResult.getValue());
 
-//                    String time1 = UtlDateHelper.timestampToString("yyyy-MM-dd", faultTime) + " 00:00:00";
-//                    String time2 = UtlDateHelper.timestampToString("yyyy-MM-dd", faultTime) + " 06:00:00";
-//                    Timestamp time3 = UtlDateHelper.stringToTimestamp(time1);
-//                    Timestamp time4 = UtlDateHelper.stringToTimestamp(time2);
-
-//                    if (faultTime.getTime() > time4.getTime()) {
-                        rcaTicket = rcaTicketFactory.getObject();
-                        ticketId = ticketService.selectTicketKey();
-                        rcaTicket.setTicketId(ticketId);
-                        rcaTicket.setTicketType(RcaCodeInfo.TICKET_TYPE_ANOMALOUS2_TRAFFIC_TICKET);
-                        rcaTicket.setTicketGenerationTime(UtlDateHelper.getCurrentTime());
-                        rcaTicket.setFaultTime(faultTime);
-                        rcaTicket.setRootCauseType(RcaCodeInfo.RCA_RESULT_TRAFFIC_FAIL);
-                        rcaTicket.setRootCauseDomain(RcaCodeInfo.DOMAIN_TRAFFIC);
-                        rcaTicket.setOccur(true);
-
-                        rcaTicket.setStatus(RcaCodeInfo.TICKET_STATUS_INIT);
-                        rcaTicket.setRelatedAlarmCnt(1);
-
-                        rcaTicketAl = rcaTicketAlFactory.getObject();
-                        rcaTicketAlList = new ArrayList<>();
-
-
-                        rcaTicketAl.setTicketId(ticketId);
-                        rcaTicketAl.setRootCauseSysnameA(sdnTrafficInfoVo.getNodeid());
-                        rcaTicketAl.setRootCausePortA(sdnTrafficInfoVo.getStrifnm());
+                        rcaEngineResult.setTicketId(rcaTicket.getParentTicketId());
+                        rcaEngineResult.setEventType(RcaCodeInfo.UI_TICKET_TYPE_MERGE);
+                        rcaEngineResult.setTicketType("RT");
 
                         parameterMap = new HashMap<String, String>();
-                        parameterMap.put("resid", sdnTrafficInfoVo.getStrresid());
-                        parameterMap.put("ifid", sdnTrafficInfoVo.getStrifid());
-                        backboneLinkVo = topologyMapper.selectBackboneTopology(parameterMap);
+                        parameterMap.put("ticketId", rcaTicket.getParentTicketId());
+                        parameterMap.put("ticketUpdateTime", rcaTicket.getTicketGenerationTime() + "");
+                        ticketService.updateRcaTicketUpdateTime(parameterMap);
+                    } else {
+                        rcaEngineResult = new RcaEngineResult();
+                        rcaEngineResult.setTicketId(rcaTicket.getTicketId());
+                        rcaEngineResult.setEventType(RcaCodeInfo.UI_TICKET_TYPE_NEW);
+                        rcaEngineResult.setTicketType("RT");
+                    }
+                    
+                    // 티켓 발행
+                    List<RCATicketAl> rcaTicketAlList = new ArrayList<>();
+                    rcaTicketAlList.add(rcaTicketAl);
+                    rcaTicket.setTicketAlList(rcaTicketAlList);
+                    LOGGER.info("==========>[RcaTicketManager] createAnomalousTrafficTicket createTicket : " + rcaTicket.toString() + "<==============");
+                    LOGGER.info("==========>[RcaTicketManager] createAnomalousTrafficTicket rcaTicketAlList : " + rcaTicketAlList + "<==============");
+                    ticketService.insertRcaTicket(rcaTicket);  // RCA Ticket 발행
+                    ticketService.insertRcaTicketAl(rcaTicketAlList); // RCA Ticket Al 발행
+                    ticketService.insertRcaTicketCnt(rcaTicket); // cnt 업데이트
 
+                    // UI에 신호 전송(현재 의미없음)
+                    if (StringUtils.isNotEmpty(rcaTicket.getParentTicketId())) {
+                        ticketService.updateTicketCnt(rcaTicket);
+                        int updateCnt = ticketService.selectChildTicketCnt(rcaTicket.getParentTicketId());
+                        Map<String, String> properties = new HashMap<String, String>();
+                        properties.put("child_count", updateCnt + "");
+                        properties.put("ticket_update_time", rcaTicket.getTicketGenerationTime() + "");
 
-                        if (backboneLinkVo != null) {
-                            rcaTicket.setTicketRcaResultDtlCode("이상 트래픽(백본)");
+                        rcaEngineResult.setProperties(properties);
+                    }
+                    rcaTicketManagerService.uiSendTicketResult(rcaEngineResult);
 
-                            if (sdnTrafficVo.getStrresid().equals(backboneLinkVo.getSrcNodeNum())) {
-                                rcaTicketAl.setRootCauseSysnameZ(backboneLinkVo.getDestNodeId());
-                                rcaTicketAl.setRootCausePortZ(backboneLinkVo.getDestIfId());
-                            } else {
-                                rcaTicketAl.setRootCauseSysnameZ(backboneLinkVo.getSrcNodeId());
-                                rcaTicketAl.setRootCausePortZ(backboneLinkVo.getSrcIfId());
-                            }
-                        } else {
+                    // 자가최적화(ATT2) 큐로 AI측 전송
+                    EngineToAiAnoVo engineToAiAnoVo = autoProcessMapper.selectEngineToAiAno(rcaTicket.getTicketId());
+                    engineToAiAnoVo.setNodeId(sdnTrafficInfoVo.getNodeid());
+                    engineToAiAnoVo.setIfId(sdnTrafficInfoVo.getStrifnm());
+                    niaEngineToAiAnoAmqp.sendMessageCmd(engineToAiAnoVo);
 
-                            parameterMap = new HashMap<String, String>();
-                            parameterMap.put("nodeId", sdnTrafficInfoVo.getStrresnm());
-                            parameterMap.put("ifId", sdnTrafficInfoVo.getStrifnm());
-                            userOrganVo = ticketService.selectUserOrgan(parameterMap);
-
-
-                            if (userOrganVo != null) {
-                                rcaTicket.setTicketRcaResultDtlCode("이상 트래픽(이용기관)");
-
-                                rcaTicketAl.setRootCauseSysnameZ(userOrganVo.getNrenName());
-                                rcaTicketAl.setRootCausePortZ(userOrganVo.getIfId());
-                            } else {
-                                rcaTicket.setTicketRcaResultDtlCode("이상 트래픽(포트)");
-                                rcaTicketAl.setRootCauseSysnameZ("Unknown");
-                            }
-                        }
-
-                        parameterMap = new HashMap<String, String>();
-                        parameterMap.put("ticketId", rcaTicket.getTicketId());
-                        parameterMap.put("strifid", sdnTrafficVo.getStrifid());
-                        parameterMap.put("strresid", sdnTrafficVo.getStrresid());
-                        parameterMap.put("inttimestamp", sdnTrafficVo.getMeasured_datetime() + "");
-
-                        sdnTrafficMapper.updateSdnTraffic(parameterMap);
-
-                        rcaTicketAlList.add(rcaTicketAl);
-
-                        if (rcaTicketAlList != null) {
-                            rcaTicket.setTicketAlList(rcaTicketAlList);
-                        }
-                        rcaTicket.setStatus(RcaCodeInfo.TICKET_STATUS_INIT);
-
-                        rcaTicketResult = rcaTicketMergeService.rcaTrafficeTicketMerge(rcaTicket);
-
-                        if (rcaTicketResult != null && rcaTicketResult.isResult()) {
-
-                            rcaTicket.setParentTicketId(rcaTicketResult.getTicketId());
-                            rcaTicket.setStatus(rcaTicketResult.getValue());
-
-                            rcaEngineResult = new RcaEngineResult();
-                            rcaEngineResult.setTicketId(rcaTicket.getParentTicketId());
-                            rcaEngineResult.setEventType(RcaCodeInfo.UI_TICKET_TYPE_MERGE);
-                            rcaEngineResult.setTicketType("RT");
-
-                            parameterMap = new HashMap<String, String>();
-                            parameterMap.put("ticketId", rcaTicket.getParentTicketId());
-                            parameterMap.put("ticketUpdateTime", rcaTicket.getTicketGenerationTime() + "");
-                            ticketService.updateRcaTicketUpdateTime(parameterMap);
-                        } else {
-                            rcaEngineResult = new RcaEngineResult();
-                            rcaEngineResult.setTicketId(rcaTicket.getTicketId());
-                            rcaEngineResult.setEventType(RcaCodeInfo.UI_TICKET_TYPE_NEW);
-                            rcaEngineResult.setTicketType("RT");
-                        }
-
-                        LOGGER.info("==========>[RcaTicketManager] createTicket : " + rcaTicket.toString() + "<==============");
-                        ticketService.insertRcaTicket(rcaTicket);
-                        LOGGER.info("==========>[RcaTicketManager] rcaTicketAlList : " + rcaTicketAlList + "<==============");
-                        ticketService.insertRcaTicketAl(rcaTicketAlList);
-
-                        if (StringUtils.isNotEmpty(rcaTicket.getParentTicketId())) {
-                            ticketService.updateTicketCnt(rcaTicket);
-
-                            updateCnt = ticketService.selectChildTicketCnt(rcaTicket.getParentTicketId());
-
-                            properties = new HashMap<String, String>();
-                            properties.put("child_count", updateCnt + "");
-                            properties.put("ticket_update_time", rcaTicket.getTicketGenerationTime() + "");
-
-                            rcaEngineResult.setProperties(properties);
-                        }
-
-                        ticketService.insertRcaTicketCnt(rcaTicket);
-
-                        rcaTicketManagerService.uiSendTicketResult(rcaEngineResult);
-
-//= = = = = = = = = = = = = = = = = = = = = = 자가최적화(ATT2) 큐  = = = = = = = = = = = = = = = = = = = = = = = = = =
-                        engineToAiAnoVo = autoProcessMapper.selectEngineToAiAno(rcaTicket.getTicketId());
-                        engineToAiAnoVo.setNodeId(sdnTrafficInfoVo.getNodeid());
-                        engineToAiAnoVo.setIfId(sdnTrafficInfoVo.getStrifnm());
-                        niaEngineToAiAnoAmqp.sendMessageCmd(engineToAiAnoVo);
-
-//= = = = = = = = = = = = = = = = = = = = = = 자가최적화(ATT2) 현황 테이블 저장 = = = = = = = = = = = = = = = = = = = = = = = = = =
-//                        String autoTreatProcessMaxNoVo = autoProcessMapper.selectAutoProcessMaxNo();
-//                        int self_process_no = Integer.parseInt(autoTreatProcessMaxNoVo);
-
-//                        autoProcessInserMap.put("selfProcessNo", String.valueOf(self_process_no+1));
-                        if (rcaTicket.getParentTicketId() == null){
-
-                            autoProcessInserMap = new HashMap<>();
-                            autoProcessInserMap.put("selfProcessGroup","SO");
-                            autoProcessInserMap.put("selfProcessType","A");
-                            autoProcessInserMap.put("occur_time", String.valueOf(rcaTicket.getTicketGenerationTime()));
-                            autoProcessInserMap.put("ticketId",rcaTicket.getTicketId());
-                            autoProcessInserMap.put("ticketType",rcaTicket.getTicketType());
-                            autoProcessInserMap.put("alarmno",null);
-
-                            autoProcessMapper.insertAutoProcess(autoProcessInserMap);
-
-                            LOGGER.info("self_process insert ======> "+ rcaTicket.getTicketId());
-                        }
-//                    }
+                    // 자가최적화(ATT2) 현황 테이블 저장
+                    if (rcaTicket.getParentTicketId() == null){
+                        HashMap<String, String> autoProcessInserMap = new HashMap<>();
+                        autoProcessInserMap.put("selfProcessGroup","SO");
+                        autoProcessInserMap.put("selfProcessType","A");
+                        autoProcessInserMap.put("occur_time", String.valueOf(rcaTicket.getTicketGenerationTime()));
+                        autoProcessInserMap.put("ticketId",rcaTicket.getTicketId());
+                        autoProcessInserMap.put("ticketType",rcaTicket.getTicketType());
+                        autoProcessInserMap.put("alarmno",null);
+                        autoProcessMapper.insertAutoProcess(autoProcessInserMap);
+                        LOGGER.info("self_process insert ======> "+ rcaTicket.getTicketId());
+                    }
                 }
             }
 
