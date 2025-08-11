@@ -19,10 +19,10 @@ spring:
         suffix: )
 
   rabbitmq:
-    address: 192.168.0.87  #개발
-    port: 6786
-    username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
-    password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
+    address: 192.168.0.241  #개발
+    port: 5672
+    username: niaadmin
+    password: niaadmin12#$
 
     engineTrafficExchange: nia.exchangeEngineTrafficDirectly
     engineTrafficQueue: nia.EngineTrafficIndexDirectly
@@ -44,16 +44,6 @@ spring:
     aiIpSdnNodeFactorResultQueue: nia.AiIpSdnNodeFactorResultIndexDirectly
     aiIpSdnNodeFactorResultRoutingKey: AiIpSdnNodeFactorResultIndexDirectly
 
-##    이상 유해 4차 큐 받을 곳 (zero1->codej)
-#
-#    aiAnoToEngineExchange: nia.exchangeAiToEngineAnoDirectly
-#    aiAnoToEngineQueue: nia.AiAnoToEngineIndexDirectly
-#    aiAnoToEngineRoutingKey: AiAnoToEngineIndexDirectly
-#
-#    aiNoxToEngineExchange: nia.ExchangeEngineToAiNoxDirectly
-#    aiNoxToEngineQueue: nia.aiNoxToEngineIndexDirectly
-#    aiNoxToEngineRoutingKey: aiNoxToEngineIndexDirectly
-
   task:
     poolSize: 100 
     keepAlive: 600000
@@ -69,11 +59,11 @@ spring:
   datasource:
     driver-class-name: org.postgresql.Driver
     data-source-class-name: org.postgresql.ds.PGSimpleDataSource
-    url: jdbc:postgresql://192.168.0.87:5433/niadb  #개발
-    username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
-    password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
-    maximumPoolSize : 5
-    idleTimeout : 6000
+    url: jdbc:postgresql://192.168.0.241:6544/niadb
+    username: postgres
+    password: zhemwpdl12!@
+    maximumPoolSize: 10
+    idleTimeout: 6000
 
 ---
 spring:
@@ -81,20 +71,18 @@ spring:
   logging:
     config: classpath:context/logback-spring.xml
 
-#  jasypt:
-#    encryptor:
-#      bean: jasyptStringEncryptor
-#      property:
-#        prefix: ENC(
-#        suffix: )
+  jasypt:
+    encryptor:
+      bean: jasyptStringEncryptor
+      property:
+        prefix: ENC(
+        suffix: )
 
   rabbitmq:
     address: 116.89.191.47  #운영
     port: 6786
-#    username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
-#    password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
-    username: niaadmin
-    password: niaadmin12#$
+    username: niaadmin #ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
+    password: niaadmin12#$ #ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
 
     engineTrafficExchange: nia.exchangeEngineTrafficDirectly
     engineTrafficQueue: nia.EngineTrafficIndexDirectly
@@ -132,114 +120,9 @@ spring:
     driver-class-name: org.postgresql.Driver
     data-source-class-name: org.postgresql.ds.PGSimpleDataSource
     url: jdbc:postgresql://116.89.191.47:6544/niadb  #운영
-#    username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
-#    password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
-    username: niaadmin
-    password: niaadmin12#$
+    username: niaadmin # ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
+    password: niaadmin12#$ # ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
     maximumPoolSize : 5
     idleTimeout : 6000
 
 
----
-spring:
-  profiles: codej
-  logging:
-    config: classpath:context/logback-spring.xml
-
-  jasypt:
-    encryptor:
-      bean: jasyptStringEncryptor
-      property:
-        prefix: ENC(
-        suffix: )
-
-  rabbitmq:
-    address: 10.81.192.18
-    port: 5672
-    username: niaadmin
-    password: niaadmin12#$
-
-    engineTrafficExchange: nia.exchangeEngineTrafficDirectly
-    engineTrafficQueue: nia.EngineTrafficIndexDirectly
-    engineTrafficRoutingKey: EngineTrafficIndexDirectly
-
-    aiIpAnomalousTrafficResultExchange: nia.exchangeAiIpAnomalousTrafficResultDirectly
-    aiIpAnomalousTrafficResultQueue: nia.AiIpAnomalousTrafficResultIndexDirectly
-    aiIpAnomalousTrafficResultRoutingKey: AiIpAnomalousTrafficResultIndexDirectly
-
-    aiIpNoxiousTrafficResultExchange: nia.exchangeAiIpNoxiousTrafficResultDirectly
-    aiIpNoxiousTrafficResultQueue: nia.AiIpNoxiousTrafficResultIndexDirectly
-    aiIpNoxiousTrafficResultRoutingKey: AiIpNoxiousTrafficResultIndexDirectly
-
-  task:
-    poolSize: 100
-    keepAlive: 600000
-    queueCapacity: 100
-    concurrency: 100
-
-  mybatis:
-    mapper-locations: classpath*:sqlmap/*.xml
-    mybatisConfig-locations: classpath:mybatis-config.xml
-    configuration:
-      mapUnderscoreToCamelCase: true
-
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    data-source-class-name: org.postgresql.ds.PGSimpleDataSource
-    url: jdbc:postgresql://10.81.192.18:5433/niadb #운영
-    username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
-    password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
-    maximumPoolSize : 5
-    idleTimeout : 6000
-
----
-spring:
-  profiles: test
-  logging:
-    config: classpath:context/logback-spring.xml
-
-  jasypt:
-    encryptor:
-      bean: jasyptStringEncryptor
-      property:
-        prefix: ENC(
-        suffix: )
-
-  rabbitmq:
-    address: codej.iptime.org  #개발
-    port: 9997
-    username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
-    password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
-
-    engineTrafficExchange: nia.exchangeEngineTrafficDirectly
-    engineTrafficQueue: nia.EngineTrafficIndexDirectly
-    engineTrafficRoutingKey: EngineTrafficIndexDirectly
-
-    aiIpAnomalousTrafficResultExchange: nia.exchangeAiIpAnomalousTrafficResultDirectly
-    aiIpAnomalousTrafficResultQueue: nia.AiIpAnomalousTrafficResultIndexDirectly
-    aiIpAnomalousTrafficResultRoutingKey: AiIpAnomalousTrafficResultIndexDirectly
-
-    aiIpNoxiousTrafficResultExchange: nia.exchangeAiIpNoxiousTrafficResultDirectly
-    aiIpNoxiousTrafficResultQueue: nia.AiIpNoxiousTrafficResultIndexDirectly
-    aiIpNoxiousTrafficResultRoutingKey: AiIpNoxiousTrafficResultIndexDirectly
-
-  task:
-    poolSize: 100
-    keepAlive: 600000
-    queueCapacity: 100
-    concurrency: 100
-
-  mybatis:
-    mapper-locations: classpath*:sqlmap/*.xml
-    mybatisConfig-locations: classpath:mybatis-config.xml
-    configuration:
-      mapUnderscoreToCamelCase: true
-
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    data-source-class-name: org.postgresql.ds.PGSimpleDataSource
-    url: jdbc:postgresql://codej.iptime.org:9998/niadb #개발
-    username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
-    password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
-    maximumPoolSize : 5
-    idleTimeout : 6000

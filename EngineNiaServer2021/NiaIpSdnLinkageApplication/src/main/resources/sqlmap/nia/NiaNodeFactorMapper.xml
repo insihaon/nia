@@ -6,13 +6,13 @@
         <if test="nodeFactorVoList.size != 0">
             INSERT INTO IP_SDN.TB_NODEFACTOR
             (
-                ID, CPU_USAGE, MEM_USAGE, NODE_ID, MEASURED_DATETIME
+            ID, CPU_USAGE, MEM_USAGE, NODE_ID, MEASURED_DATETIME
             )
             VALUES
             <foreach collection="nodeFactorVoList" item="item" separator=",">
-            (
+                (
                 #{item.id}, #{item.cpuUsage}, #{item.memUsage}, #{item.nodeId}, #{item.measuredDateTime}
-            )
+                )
             </foreach>
         </if>
     </insert>

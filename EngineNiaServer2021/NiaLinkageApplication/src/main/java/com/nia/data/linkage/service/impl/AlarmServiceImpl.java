@@ -96,6 +96,8 @@ public class AlarmServiceImpl implements AlarmService {
                 // 완성된 URL
                 String fullUrl = alarmUrl + "_search?q=" + query + "&size=1000&pretty";
 
+                LOGGER.info("==========>[AlarmService] fullUrl : " + fullUrl);
+
                 // 요청 전송
                 responseEntity = restTemplate.exchange(fullUrl, HttpMethod.GET, null, String.class);
 

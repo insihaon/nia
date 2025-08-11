@@ -18,14 +18,12 @@ spring:
   rabbitmq:
     address: incodej-lab.iptime.org
     port: 41072
-    username: niaadmin
-    password: niaadmin12#$
-#    username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
-#    password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
+    username: niaadmin #ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
+    password: niaadmin12#$ #ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
 
     niaSyslogAlarmExchange: nia.exchangeNiaSyslogAlarmDirectly
     niaSyslogAlarmQueue: nia.NiaSyslogAlarmIndexDirectly
-    niaSyslogAlarmRoutingKey: nia.NiaSyslogAlarmIndexDirectl
+    #niaSyslogAlarmRoutingKey: nia.NiaSyslogAlarmIndexDirectly
 
   datasource:
     driver-class-name: org.postgresql.Driver
@@ -41,21 +39,6 @@ spring:
     configuration:
       mapUnderscoreToCamelCase: true
 
-  mail:
-    host: smtp.gmail.com
-    port: 465
-    username: codej@koren.kr
-    password: zgpi wyws mnko mokj
-    properties:
-      mail:
-        debug: true
-        smtp:
-          starttls:
-            enable: false
-          auth: true
-          ssl:
-            enable: true
-
 ---
 spring:
   profiles: dev
@@ -68,20 +51,20 @@ spring:
         suffix: )
 
   rabbitmq:
-    address: 116.89.191.47  #개발
-    port: 6786
+    address: 192.168.0.241  #개발
+    port: 5672
     username: niaadmin
     password: niaadmin12#$
 
     niaSyslogAlarmExchange: nia.exchangeNiaSyslogAlarmDirectly
     niaSyslogAlarmQueue: nia.NiaSyslogAlarmIndexDirectly
-    niaSyslogAlarmRoutingKey: nia.NiaSyslogAlarmIndexDirectl
+    #niaSyslogAlarmRoutingKey: nia.NiaSyslogAlarmIndexDirectly
 
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://116.89.191.47:6544/niadb
-    username: niaadmin
-    password: niaadmin12#$
+    url: jdbc:postgresql://192.168.0.241:6544/niadb
+    username: postgres
+    password: zhemwpdl12!@
     maximumPoolSize : 10
     idleTimeout : 6000
 
@@ -90,6 +73,7 @@ spring:
     mybatisConfig-locations : classpath:mybatis-config.xml
     configuration:
       mapUnderscoreToCamelCase: true
+
 
 ---
 spring:
@@ -103,24 +87,20 @@ spring:
         suffix: )
 
   rabbitmq:
-    address: 116.89.191.47  #개발
+    address: 116.89.191.47  # 운영
     port: 6786
-    username: niaadmin
-    password: niaadmin12#$
-#    username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
-#    password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
+    username: niaadmin # username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
+    password: niaadmin12#$ # password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
 
     niaSyslogAlarmExchange: nia.exchangeNiaSyslogAlarmDirectly
     niaSyslogAlarmQueue: nia.NiaSyslogAlarmIndexDirectly
-    niaSyslogAlarmRoutingKey: nia.NiaSyslogAlarmIndexDirectl
+#    niaSyslogAlarmRoutingKey: nia.NiaSyslogAlarmIndexDirectly
 
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://116.89.191.47:6544/niadb
-    username: niaadmin
-    password: niaadmin12#$
-#    username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
-#    password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
+    username: niaadmin #ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
+    password: niaadmin12#$ #ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
     maximumPoolSize: 10
     idleTimeout: 6000
 

@@ -32,11 +32,17 @@ public class SyslogRuleHdlService {
 
         try {
             syslogRuleVoList = syslogAlarmMapper.selectSyslogRule();
+            LoggerPrint.infoLog("syslogRuleVoList : " + syslogRuleVoList);
 
-            if (! CollectionUtils.isEmpty(syslogRuleVoList)) {
+            if (!CollectionUtils.isEmpty(syslogRuleVoList)) {
                 resultSyslogRuleVoList =
-                        syslogRuleVoList.stream().filter(x -> (StringUtils.isEmpty(x.getOccurStr1()) ? true :
-                                        syslogDataVo.getFields().getMessage().contains(x.getOccurStr1())) && (StringUtils.isEmpty(x.getOccurStr2()) ? true : syslogDataVo.getFields().getMessage().contains(x.getOccurStr2())) && (StringUtils.isEmpty(x.getOccurStr3()) ? true : syslogDataVo.getFields().getMessage().contains(x.getOccurStr3())) && (StringUtils.isEmpty(x.getOccurExceptStr1()) ? true : ! syslogDataVo.getFields().getMessage().contains(x.getOccurExceptStr1())) && (StringUtils.isEmpty(x.getOccurExceptStr2()) ? true : ! syslogDataVo.getFields().getMessage().contains(x.getOccurExceptStr2())) && (StringUtils.isEmpty(x.getOccurExceptStr3()) ? true : ! syslogDataVo.getFields().getMessage().contains(x.getOccurExceptStr3()))
+                        syslogRuleVoList.stream().filter(x ->
+                                            (StringUtils.isEmpty(x.getOccurStr1()) ? true : syslogDataVo.getFields().getMessage().contains(x.getOccurStr1()))
+                                        && (StringUtils.isEmpty(x.getOccurStr2()) ? true : syslogDataVo.getFields().getMessage().contains(x.getOccurStr2()))
+                                        && (StringUtils.isEmpty(x.getOccurStr3()) ? true : syslogDataVo.getFields().getMessage().contains(x.getOccurStr3()))
+                                        && (StringUtils.isEmpty(x.getOccurExceptStr1()) ? true : !syslogDataVo.getFields().getMessage().contains(x.getOccurExceptStr1()))
+                                        && (StringUtils.isEmpty(x.getOccurExceptStr2()) ? true : !syslogDataVo.getFields().getMessage().contains(x.getOccurExceptStr2()))
+                                        && (StringUtils.isEmpty(x.getOccurExceptStr3()) ? true : !syslogDataVo.getFields().getMessage().contains(x.getOccurExceptStr3()))
                         //                                (!StringUtils.isEmpty(x.getOccurStr1()) && syslogDataVo
                                 //                                .getFields().getMessage().contains(x.getOccurStr1()))
                         //                                    && (!StringUtils.isEmpty(x.getOccurStr2()) &&
@@ -56,14 +62,11 @@ public class SyslogRuleHdlService {
                                 //                                    (x.getOccurExceptStr3()))
                 ).collect(Collectors.toList());
 
-                if (! CollectionUtils.isEmpty(resultSyslogRuleVoList)) {
-                    Comparator<SyslogRuleVo> comparatorByPriority =
-                            Comparator.comparingInt(SyslogRuleVo::getPriorityOrder);
-                    minSyslogPriority =
-                            resultSyslogRuleVoList.stream().min(comparatorByPriority).orElseThrow(NoSuchElementException::new);
+                if (!CollectionUtils.isEmpty(resultSyslogRuleVoList)) {
+                    Comparator<SyslogRuleVo> comparatorByPriority = Comparator.comparingInt(SyslogRuleVo::getPriorityOrder);
+                    minSyslogPriority = resultSyslogRuleVoList.stream().min(comparatorByPriority).orElseThrow(NoSuchElementException::new);
                     LoggerPrint.infoLog("sysRuleId : " + resultSyslogRuleVoList.get(0).getSyslogRuleId());
                     syslogDataVo.setSyslogRuleVo(minSyslogPriority);
-
                 }
             }
 

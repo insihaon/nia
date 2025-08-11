@@ -59,6 +59,12 @@ public class EngineClearSchedulerJobServiceImpl {
     private SelfProcessService selfProcessService;
 
     public void clearTicketCheck(){
+        /*
+        * 2025-07-10 고성호
+        * (추측) 사용자가 UI에서 수동마감했을때
+        * 상태가 변경된 것을 확인해서 Queue를 통해 UI로 변경되었다고 알리는 기능으로 보임
+        * (이상한점) 왜?
+        * */
         try {
             LOGGER.info(">>>>>>>>> clearTicketCheck <<<<<<<<<<<<<<");
             RcaEngineResult rcaEngineResult;
@@ -129,6 +135,9 @@ public class EngineClearSchedulerJobServiceImpl {
     }
 
     public void clearTicket(){
+        /*
+        *
+        * */
         try {
             LOGGER.info(">>>>>>>>> clearTicketCheck <<<<<<<<<<<<<<");
             RcaEngineResult rcaEngineResult;
@@ -206,7 +215,11 @@ public class EngineClearSchedulerJobServiceImpl {
     }
 
     public void TicketClearPassing5Minute(){ //자가최적화 5분 지난 티켓 자동 클리어 & 포트다운
-
+        /*
+        * 2025-07-10 고성호
+        * 티켓을 마감 처리하는 것이면 자가 최적화가 아니라 자동마감.. 같은데..
+        * 그리고 자동마감이라면 포트다운이 아니라 포트 업이 맞는 것 같은데..
+        * */
 //        시험 전 까지는 48시간 주기 마감.
         List<RCATicket> rcaTicketList = null;
         HashMap<String,String> map;
@@ -214,7 +227,6 @@ public class EngineClearSchedulerJobServiceImpl {
         String sopId = "";
         try {
             rcaTicketList = ticketService.selectRca48Ticket();
-
 
             if (rcaTicketList.size() > 0){
                 map = new HashMap<>();
@@ -297,13 +309,11 @@ public class EngineClearSchedulerJobServiceImpl {
 
 
     public void SyslogClearPassing5MinuteAndRemoteCommand(){ //자가회복
-
         List<SyslogAlarmVo> syslogAlarmVoList = null;
         HashMap<String,String> map;
         HashMap<String, String> updateMap;
         try {
             syslogAlarmVoList = ticketService.selectRcaBefor5mSyslog();
-
 
             if (syslogAlarmVoList.size() > 0){
                 map = new HashMap<>();

@@ -127,7 +127,7 @@ public class TelnetMmc {
                 if (!((Queue<String>) dataShareBean.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_MMC_QUE)).isEmpty()) {
                     msg = ((Queue<String>) dataShareBean.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_MMC_QUE)).poll();
 
-                    if (msg.contains("LOGIN:") || msg.contains("PASSWORD:") || msg.contains("TL1>") || msg.contains("canc-user") || msg.contains("nc-user")) {
+                    if (msg.contains("LOGIN:") || msg.contains("PASSWORD:") || msg.contains("TL1>") || msg.contains("canc-user") || msg.contains("c-user")) {
                         return msg;
                     }
                 }

@@ -63,7 +63,7 @@ public class IpSdnTrafficLinkageServiceImpl implements IpSdnTrafficLinkageServic
     @Value("${spring.profiles}")
     private String profiles;
 
-    public void sendTrafficData () {
+    public void sendTrafficData() {
         LOGGER.info("==========>[IpSdnTrafficLinkageService] sendTrafficLinkData <==============");
         SFTPSession sftpSession;
 
@@ -109,8 +109,12 @@ public class IpSdnTrafficLinkageServiceImpl implements IpSdnTrafficLinkageServic
                     linkTrafficListVo = linkTrafficListVoObjectFactory.getObject();
                     linkTrafficListVo.setData(linkTrafficVoList);
 
-                            mapper = new ObjectMapper();
+                    mapper = new ObjectMapper();
                     jsonData = mapper.writeValueAsString(linkTrafficListVo);
+
+
+                    LOGGER.info("==========>[IpSdnTrafficLinkageService] sendTrafficData getMeasuredDatetime()" + linkTrafficVoList.get(linkTrafficVoList.size() - 1).getMeasuredDatetime() + ") <==============");
+                    LOGGER.info("==========>[IpSdnTrafficLinkageService] sendTrafficData getMeasuredDatetime().getTime()" + linkTrafficVoList.get(linkTrafficVoList.size() - 1).getMeasuredDatetime().getTime() + ") <==============");
 
                     LOGGER.info("ftpUpdatePath :" + ftpUpdatePath);
                     putFile = createJsonFile("linktraffic", jsonData,
@@ -192,7 +196,7 @@ public class IpSdnTrafficLinkageServiceImpl implements IpSdnTrafficLinkageServic
     }
 
     @Override
-    public File createJsonFile (String eventType, String jsonData, String perfKey, String ftpUpdatePath) {
+    public File createJsonFile(String eventType, String jsonData, String perfKey, String ftpUpdatePath) {
         LOGGER.info(">>>>>>>>>>[IpSdnTrafficLinkageService] createJsonFile(" + eventType + ") <<<<<<<<<<<<<<<<<");
         File putFile = null;
         File folder = new File(localUploadPath + eventType);
@@ -204,6 +208,8 @@ public class IpSdnTrafficLinkageServiceImpl implements IpSdnTrafficLinkageServic
             if (!folder.exists()) {
                 folder.mkdirs();
             }
+
+            LOGGER.info(">>>>>>>>>>[IpSdnTrafficLinkageService] perfKey" + perfKey + " <<<<<<<<<<<<<<<<<");
 
             putFile = new File(folder.getPath() + "/" + eventType + "_" + perfKey + ".json");
 

@@ -116,7 +116,13 @@
                TCP_WINDOW_SIZE as tcpWindowSize, COLLECT_TIMESTAMP as dateregdate
         FROM GATHER.TB_SFLOW_COLLECT
         WHERE COLLECT_SEQ > #{collectSeq} AND COLLECT_TIMESTAMP > rca.fc_get_minus_time(1)
+        AND (SRC_IP is not null or DST_IP is not null)
         ORDER BY COLLECT_SEQ
+        /*
+            6월 19일
+            gather.tb_sflow_collect 에 수집되는 데이터에 src_ip와 dst_ip가
+            null인 값이 수집되기 시작해서 NULL처리
+        */
     </select>
 
 

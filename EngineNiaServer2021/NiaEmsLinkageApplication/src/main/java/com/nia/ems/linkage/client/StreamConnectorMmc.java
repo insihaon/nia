@@ -87,7 +87,7 @@ public class StreamConnectorMmc implements NiaEmsLinkageThread{
                     LOGGER.info("=====> [StreamConnectorMmc] run() mmcMsg : "+ sbTemp.toString()+ "<=====");
 
 //                    if(sbTemp.toString().contains("canc-user")){
-                    if(sbTemp.toString().contains("canc-user") || sbTemp.toString().contains("nc-user")){
+                    if(sbTemp.toString().contains("canc-user") || sbTemp.toString().contains("c-user")){
                         LOGGER.info("=====> [StreamConnectorMmc] canc-user");
                         this.endStream();
                     }

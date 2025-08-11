@@ -178,6 +178,11 @@ public class RcaTicketManagerServiceImpl implements RcaTicketManagerService {
                                             ticketCableList.add(ticketCableVo);
                                         }
                                     }else{
+                                        if(i == performanaceVoList.size() -1){
+                                            LOGGER.info("==========>[RcaTicketManager] REPEATER가 아닌데 size가 1 이면 반드시 오류가 나므로 return 시킵니다");
+                                            return;
+                                        }
+
                                         ticketCableVo = ticketCableVoObjectFactory.getObject();
                                         ticketCableVo.setTicketId(ticketId);
 

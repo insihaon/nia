@@ -31,19 +31,8 @@
         )
     </insert>
 
-<!--    <select id="selectAlarmLoc" resultType="string" parameterType="long">-->
-<!--        SELECT NM.IF_ID-->
-<!--        FROM GATHER.TB_SYSLOG_COLLECT SC-->
-<!--                 INNER JOIN RESOURCE.TB_PORT_MST NM-->
-<!--                            ON SC.HOSTNAME = NM.NODE_ID-->
-<!--        WHERE SC.COLLECT_SEQ = #{collectSeq}-->
-<!--          AND SC.SYSLOG_MESSAGE LIKE '%'||NM.IF_ID||'%';-->
-<!--    </select>-->
-
-    <select id="selectAlarmLoc" resultType="string" parameterType="map">
+    <select id="selectAlarmLoc" resultType="string" parameterType="string">
         SELECT substring(#{etc} FROM '(?:interface:|Interface)\s*([^\s]+)') AS alarmloc
-        FROM RCA.TB_SYSLOG_ALARM_MST SC
-        where sc.alarmno = #{alarmno}
     </select>
 
 </mapper>

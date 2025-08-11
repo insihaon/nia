@@ -140,6 +140,12 @@
         from gather.tb_sflow_collect a
                  inner join resource.tb_node_mst n on a.agent_address = n.ip_addr
         where a.collect_timestamp > #{timestamp}::timestamp
+        AND (a.src_ip is not null or a.dst_ip is not null)
+        /*
+            6월 19일
+            gather.tb_sflow_collect 에 수집되는 데이터에 src_ip와 dst_ip가
+            null인 값이 수집되기 시작해서 NULL처리
+        */
     </select>
 
     <select id="selectNodeMst" resultType="com.nia.data.linkage.ai.vo.ip.equip.IpNodeInfoVo">
