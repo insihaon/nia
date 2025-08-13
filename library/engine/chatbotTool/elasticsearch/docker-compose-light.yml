@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.8.23
+    container_name: es-light
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms64m -Xmx64m
+      - xpack.security.enabled=false
+    ports:
+      - "9200:9200"
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+
+volumes:
+  esdata:

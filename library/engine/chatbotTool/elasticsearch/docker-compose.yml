@@ -8,13 +8,12 @@ services:
       - node.name=es-node-1
       - cluster.name=es-cluster
       - discovery.type=single-node
-      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
       - ELASTIC_PASSWORD=changeme123       # 반드시 설정
       - INIT_API_KEY_ID=zGm9bEOvTaq6zrr5FLDILg
       - INIT_API_KEY_ENCODED=V1lIUEJaZ0I4b1VqbjNGYkZ4NmU6ekdtOWJFT3ZUYXE2enJyNUZMRElMZw==
       - xpack.security.http.ssl.enabled=false      # HTTP SSL 끔
       - xpack.security.enrollment.enabled=false    # 토큰 절차 끔
-      - ES_JAVA_OPTS=-Xms1g -Xmx1g
     secrets:
       - elastic_password
     volumes:

@@ -2,29 +2,18 @@
 # -*- coding: utf-8 -*-
 
 """
-chatbot_indexer.py
-
-- ES 연결 테스트
-- Elasticsearch 클라이언트 생성
-- CSV/TSV/; 구분 파일 자동 스니핑 후 문서 리스트 생성
-- 인덱스 생성 (custom analyzer: 불필요 단어 stopwords 제거)
-- Bulk 색인 (refresh wait_for)
-- 인덱스·문서 조회 및 검색
-- 문서/인덱스 삭제 기능
+챗봇 메인 실행 모듈
+- 사용자 입력을 받아 검색 수행
+- 검색 결과에 따라 URL 자동 열기
+- test.py.1의 URL 열기 기능 활용
 """
 
-import os
-import sys
-import csv
 import logging
-import datetime
-from dataclasses import dataclass
-from pathlib import Path
+import sys
+import webbrowser
 from typing import List, Dict, Any
 
-import requests
-from elasticsearch import Elasticsearch, helpers
-from urllib3.exceptions import InsecureRequestWarning
+from components.chatbot_service import ChatbotService
 
 # ─── 로깅 설정 ───────────────────────────────────────────────────────────────
 logging.basicConfig(
@@ -33,210 +22,141 @@ logging.basicConfig(
     datefmt='%Y-%m-%d %H:%M:%S'
 )
 
-# ─── 환경 설정 데이터클래스 ───────────────────────────────────────────────────
-@dataclass(frozen=True)
-class ESConfig:
-    # url: str            = os.getenv("ES_URL",     "https://localhost:9200")
-    url: str            = os.getenv("ES_URL",     "http://localhost:9200")
-    user: str           = os.getenv("ES_USER",    "elastic")
-    password: str       = os.getenv("ES_PASS",    "changeme123")
-    verify: bool        = os.getenv("ES_VERIFY",  "false").lower() == "true"
-    timeout: int        = int(os.getenv("ES_TIMEOUT", "30"))
-    index: str          = "my-index"
-    csv_path: Path      = Path(os.getenv("CSV_PATH", "chatbot.data"))
-
-config = ESConfig()
-warnings = InsecureRequestWarning
-# 경고 억제
-import warnings as _w; _w.simplefilter("ignore", InsecureRequestWarning)
-
-# ─── 분석기 설정 (DRY 원칙) ────────────────────────────────────────────────────
-ANALYSIS_SETTINGS: Dict[str, Any] = {
-    "filter": {
-        "custom_stop_filter": {
-            "type": "stop",
-            "stopwords": ["보고", "싶어", "출력해줘", "알려줘", "보여줘"]
-        }
-    },
-    "analyzer": {
-        # default analyzer 정의
-        "default": {
-            "type": "custom",
-            "tokenizer": "standard",
-            "filter": ["lowercase", "custom_stop_filter"]
-        },
-        # 명시적 custom_analyzer (mappings 에서 참조)
-        "custom_analyzer": {
-            "type": "custom",
-            "tokenizer": "standard",
-            "filter": ["lowercase", "custom_stop_filter"]
-        }
-    }
-}
-
-# ─── 매핑 설정 ─────────────────────────────────────────────────────────────────
-MAPPINGS: Dict[str, Any] = {
-    "properties": {
-        "question":    {"type": "text",    "analyzer": "custom_analyzer"},
-        "answer":      {"type": "text",    "index": False},
-        "category":    {"type": "keyword"},
-        "api_call":    {"type": "keyword"},
-        "description": {"type": "text",    "index": False},
-        "created":     {"type": "date"}
-    }
-}
-
-def test_connection() -> None:
-    """Basic Auth GET / 로 ES 연결 테스트"""
+def open_url(url: str) -> None:
+    """URL을 기본 브라우저에서 열기"""
     try:
-        res = requests.get(
-            config.url + "/",
-            auth=(config.user, config.password),
-            verify=config.verify,
-            timeout=config.timeout
-        )
-        res.raise_for_status()
-    except requests.RequestException as exc:
-        logging.error(f"ES 연결 실패: {exc}")
-        sys.exit(1)
-    logging.info("ES 연결 테스트 성공 (GET /)")
+        # URL이 http:// 또는 https://로 시작하는지 확인
+        if not url.startswith(('http://', 'https://')):
+            # 상대 경로인 경우 기본 도메인 추가
+            if url.startswith('/'):
+                url = f"http://116.89.191.47:8080{url}"
+            else:
+                url = f"http://116.89.191.47:8080/{url}"
+        
+        print(f"🌐 브라우저에서 URL 열기: {url}")
+        webbrowser.open(url)
+        
+    except Exception as e:
+        print(f"❌ URL 열기 실패: {e}")
 
-def get_es_client() -> Elasticsearch:
-    """Elasticsearch 클라이언트 생성 및 info() 호출로 연결 확인"""
-    es = Elasticsearch(
-        hosts=[config.url],
-        basic_auth=(config.user, config.password),
-        verify_certs=config.verify,
-        request_timeout=config.timeout,
-        max_retries=3,
-        retry_on_timeout=True
-    )
-    info = es.info()
-    logging.info(f"ES 연결 성공: cluster={info['cluster_name']}, node={info['name']}")
-    return es
-
-def load_csv_docs(path: Path) -> List[Dict[str, Any]]:
-    """
-    CSV/TSV/; 파일을 자동 스니핑한 뒤 DictReader 로 읽어
-    문서 리스트 생성 (필드명: 질문, 답변, 카테고리, API 호출, 설명)
-    """
-    docs: List[Dict[str, Any]] = []
-    now = datetime.datetime.utcnow().isoformat()
-    if not path.exists():
-        logging.error(f"CSV 파일을 찾을 수 없습니다: {path}")
-        sys.exit(1)
-    try:
-        with path.open(encoding="utf-8-sig", newline="") as f:
-            sample = f.read(1024)
-            f.seek(0)
-            dialect = csv.Sniffer().sniff(sample, delimiters=[',','\t',';'])
-            reader = csv.DictReader(f, dialect=dialect)
-            for idx, row in enumerate(reader, start=1):
-                docs.append({
-                    "id":          idx,
-                    "question":    row.get("질문", "").strip(),
-                    "answer":      row.get("답변", "").strip(),
-                    "category":    row.get("카테고리", "").strip(),
-                    "api_call":    row.get("API 호출", "").strip(),
-                    "description": row.get("설명",    "").strip(),
-                    "created":     now
-                })
-    except csv.Error as exc:
-        logging.error(f"CSV 파싱 실패: {exc}")
-        sys.exit(1)
-    logging.info(f"CSV 로드 완료: {len(docs)}건")
-    return docs
-
-def create_index(es: Elasticsearch) -> None:
-    """인덱스가 없으면 생성 (설정·매핑 적용)"""
-    if es.indices.exists(index=config.index):
-        logging.info(f"인덱스 이미 존재: {config.index}")
+def display_search_results(results: List[Dict[str, Any]]) -> None:
+    """검색 결과를 보기 좋게 출력"""
+    if not results:
+        print("❌ 검색 결과가 없습니다.")
         return
+    
+    print(f"\n🔍 검색 결과: {len(results)}건")
+    print("=" * 60)
+    
+    for i, result in enumerate(results, 1):
+        print(f"\n📋 결과 {i}:")
+        print(f"  질문: {result['question']}")
+        print(f"  답변: {result['answer']}")
+        print(f"  카테고리: {result['category']}")
+        print(f"  API 호출: {result['api_call']}")
+        print(f"  설명: {result['description']}")
+        print(f"  유사도 점수: {result['score']:.3f}")
+        print("-" * 40)
 
-    body = {
-        "settings": {"analysis": ANALYSIS_SETTINGS},
-        "mappings": MAPPINGS
-    }
+def interactive_search(chatbot: ChatbotService) -> None:
+    """대화형 검색 인터페이스"""
+    print("\n🤖 챗봇 검색 서비스를 시작합니다!")
+    print("💡 질문을 입력하면 관련 정보를 찾아드립니다.")
+    print("🚪 종료하려면 'quit', 'exit', '종료'를 입력하세요.")
+    print("📚 전체 문서를 보려면 'all'을 입력하세요.")
+    print("🔍 카테고리별 검색을 하려면 'category [카테고리명]'을 입력하세요.")
+    
+    while True:
+        try:
+            # 사용자 입력 받기
+            user_input = input("\n❓ 질문을 입력하세요: ").strip()
+            
+            if not user_input:
+                continue
+            
+            # 종료 명령어 확인
+            if user_input.lower() in ['quit', 'exit', '종료', 'q']:
+                print("👋 챗봇 서비스를 종료합니다. 안녕히 가세요!")
+                break
+            
+            # 전체 문서 조회
+            if user_input.lower() == 'all':
+                print("\n📚 전체 문서를 조회합니다...")
+                all_docs = chatbot.get_all_docs()
+                print(f"총 {len(all_docs)}건의 문서가 있습니다.")
+                continue
+            
+            # 카테고리별 검색
+            if user_input.lower().startswith('category '):
+                category = user_input[9:].strip()  # 'category ' 제거
+                if category:
+                    print(f"\n🏷️ '{category}' 카테고리로 검색합니다...")
+                    results = chatbot.search_by_category(category)
+                    display_search_results(results)
+                    
+                    # 첫 번째 결과의 URL 열기 여부 확인
+                    if results:
+                        open_first_result_url(results[0])
+                continue
+            
+            # 일반 검색 수행
+            print(f"\n🔍 '{user_input}'로 검색 중...")
+            results = chatbot.search(user_input, size=5)
+            
+            # 검색 결과 출력
+            display_search_results(results)
+            
+            # 검색 결과가 있으면 URL 열기 옵션 제공
+            if results:
+                open_first_result_url(results[0])
+            
+        except KeyboardInterrupt:
+            print("\n\n👋 Ctrl+C로 서비스를 종료합니다. 안녕히 가세요!")
+            break
+        except Exception as e:
+            print(f"❌ 오류 발생: {e}")
+            print("🔧 다시 시도해주세요.")
 
-    es.indices.create(index=config.index, body=body, request_timeout=config.timeout)
-    logging.info(f"인덱스 생성됨: {config.index}")
-
-def bulk_index(es: Elasticsearch, docs: List[Dict[str, Any]]) -> None:
-    """helpers.bulk 을 이용한 대량 색인(Refresh wait_for)"""
-    actions = [
-        {"_index": config.index, "_id": d["id"], "_source": d}
-        for d in docs
-    ]
-    helpers.bulk(es, actions, request_timeout=config.timeout, refresh="wait_for")
-    logging.info(f"Bulk 색인 완료: {len(docs)}건")
-
-def list_indices(es: Elasticsearch) -> None:
-    inds = es.cat.indices(format="json", request_timeout=config.timeout)
-    logging.info(f"전체 인덱스 ({len(inds)}개):")
-    for idx in inds:
-        logging.info(f"  - {idx['index']} (docs={idx['docs.count']})")
-
-def print_all_docs(es: Elasticsearch) -> None:
-    logging.info(f"'{config.index}' 전체 문서 출력 시작")
-    for hit in helpers.scan(
-        es, index=config.index,
-        query={"query": {"match_all": {}}},
-        size=1000, request_timeout=config.timeout
-    ):
-        src = hit["_source"]
-        logging.info(f"  - ID={hit['_id']}, Q={src['question']}")
-    logging.info(f"'{config.index}' 전체 문서 출력 완료")
-
-def search_docs(es: Elasticsearch, query: str, size: int = 10) -> None:
-    body = {
-        "query": {"match": {"question": {"query": query}}},
-        "size": size
-    }
-    res = es.search(index=config.index, body=body, sort=["_score"], request_timeout=config.timeout)
-    hits = res["hits"]["hits"]
-    logging.info(f"'{query}' 검색결과: {len(hits)}건")
-    for h in hits:
-        src = h["_source"]
-        score = h.get("_score", 0.0)
-        logging.info(f"  - score={score:.3f}, Q={src['question']}, ID={h['_id']}")
-
-def delete_all_docs(es: Elasticsearch) -> None:
-    """인덱스 내 모든 문서 삭제"""
-    resp = es.delete_by_query(
-        index=config.index,
-        body={"query": {"match_all": {}}},
-        refresh=True,
-        request_timeout=config.timeout
-    )
-    logging.info(f"문서 삭제됨: {resp.get('deleted', 0)}건")
-
-def delete_all_indices(es: Elasticsearch) -> None:
-    """클러스터 내 모든 인덱스 삭제"""
-    es.indices.delete(index="*", ignore_unavailable=True, request_timeout=config.timeout)
-    logging.info("모든 인덱스 삭제 완료")
+def open_first_result_url(result: Dict[str, Any]) -> None:
+    """첫 번째 검색 결과의 URL 열기"""
+    api_call = result.get('api_call', '')
+    if api_call:
+        print(f"\n🌐 이 결과의 API URL을 열까요?")
+        print(f"URL: {api_call}")
+        
+        while True:
+            choice = input("열기? (y/n): ").strip().lower()
+            if choice in ['y', 'yes', '네', '예']:
+                open_url(api_call)
+                break
+            elif choice in ['n', 'no', '아니오']:
+                print("URL을 열지 않습니다.")
+                break
+            else:
+                print("y 또는 n을 입력해주세요.")
 
 def main() -> None:
-    test_connection()
-    es = get_es_client()
-
-    # ▼ 필요시 아래 주석 해제 ▼
-    # delete_all_docs(es)
-    # delete_all_indices(es)
-
-    create_index(es)
-
-    # 색인이 비어있다면 CSV → Bulk 색인
-    if es.count(index=config.index)["count"] == 0:
-        docs = load_csv_docs(config.csv_path)
-        bulk_index(es, docs)
-
-    # 기능 시연
-    list_indices(es)
-    print_all_docs(es)
-
-    # 샘플 검색
-    for q in ["현재 발생한 장애", "오늘 장애 상황", "최근 장애 현황 출력해줘"]:
-        search_docs(es, q)
+    """챗봇 서비스 메인 실행 함수"""
+    print("🤖 챗봇 서비스를 시작합니다...")
+    
+    try:
+        # 챗봇 서비스 초기화
+        chatbot = ChatbotService()
+        print("✅ 챗봇 서비스 초기화 완료!")
+        
+        # 서비스 정보 출력
+        info = chatbot.get_service_info()
+        print(f"📊 서비스 정보: {info}")
+        
+        # 대화형 검색 시작
+        interactive_search(chatbot)
+        
+    except Exception as e:
+        print(f"❌ 오류 발생: {e}")
+        print("\n🔧 해결 방법:")
+        print("   1. Elasticsearch가 실행 중인지 확인")
+        print("   2. 'python data_initializer.py'를 먼저 실행하여 데이터를 설정하세요")
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()
