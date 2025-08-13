@@ -1,0 +1,43 @@
+version: '3.8'
+services:
+  elasticsearch:
+    build: .
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.14.3
+    container_name: es-node
+    environment:
+      - node.name=es-node-1
+      - cluster.name=es-cluster
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+      - ELASTIC_PASSWORD=changeme123       # 반드시 설정
+      - INIT_API_KEY_ID=zGm9bEOvTaq6zrr5FLDILg
+      - INIT_API_KEY_ENCODED=V1lIUEJaZ0I4b1VqbjNGYkZ4NmU6ekdtOWJFT3ZUYXE2enJyNUZMRElMZw==
+      - xpack.security.http.ssl.enabled=false      # HTTP SSL 끔
+      - xpack.security.enrollment.enabled=false    # 토큰 절차 끔
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+    secrets:
+      - elastic_password
+    volumes:
+      - ./volumes/esdata:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+      
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.14.3
+    container_name: kibana
+    depends_on:
+      - elasticsearch                   
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - ELASTICSEARCH_SERVICEACCOUNTTOKEN=AAEAAWVsYXN0aWMva2liYW5hL2tpYmFuYS1sb2NhbDpyeWUzY28yOFF2LU9vekRBcDBCQlF3
+    ports:
+      - "5601:5601"
+secrets:
+  elastic_password:
+    file: ./elastic_password.txt
+volumes:
+  esdata:
+  
+  
+  
+

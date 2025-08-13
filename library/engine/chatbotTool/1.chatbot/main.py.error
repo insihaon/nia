@@ -1,0 +1,220 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+import os, sys, csv, datetime, requests
+from elasticsearch import Elasticsearch, helpers
+
+# 개발 환경: 검증 비활성화 시 경고 억제
+import warnings
+from urllib3.exceptions import InsecureRequestWarning
+
+warnings.simplefilter("ignore", InsecureRequestWarning)
+
+# ─── 환경변수 및 상수 정의 ────────────────────────────────────────────────
+ES_URL     = os.getenv("ES_URL",     "https://localhost:9200")
+ES_USER    = os.getenv("ES_USER",    "elastic")
+ES_PASS    = os.getenv("ES_PASS",    "changeme123")
+ES_VERIFY  = os.getenv("ES_VERIFY",  "false").lower() == "true"
+ES_TIMEOUT = int(os.getenv("ES_TIMEOUT", "30"))
+CSV_PATH   = os.getenv("CSV_PATH",   "chatbot.data")
+INDEX      = "my-index"
+
+# ─── 1) Basic Auth 연결 테스트 ─────────────────────────────────────────────
+def test_connection():
+    try:
+        r = requests.get(ES_URL + "/", auth=(ES_USER, ES_PASS),
+                         verify=ES_VERIFY, timeout=ES_TIMEOUT)
+        r.raise_for_status()
+    except requests.RequestException as e:
+        print(f"[ERROR] ES 연결 실패: {e}"); sys.exit(1)
+    print("[INFO] ES 연결 테스트 성공 (GET /)")
+
+# ─── 2) ES 클라이언트 생성 ────────────────────────────────────────────────
+def get_es_client() -> Elasticsearch:
+    client = Elasticsearch(
+        hosts=[ES_URL],
+        basic_auth=(ES_USER, ES_PASS),
+        verify_certs=ES_VERIFY,
+        max_retries=3, retry_on_timeout=True,
+        request_timeout=ES_TIMEOUT
+    )
+    try:
+        info = client.info()
+        print(f"[INFO] ES 연결 성공: cluster={info['cluster_name']}, node={info['name']}")
+    except Exception as e:
+        print(f"[ERROR] ES info() 실패: {e}"); sys.exit(1)
+    return client
+
+# ─── 3) CSV → docs 리스트 ─────────────────────────────────────────────────
+def load_csv_docs(path: str) -> list[dict]:
+    """
+    CSV/TSV/; 구분 파일을 자동으로 스니핑해 읽습니다.
+    각 행에서 키("질문","답변","카테고리","API 호출","설명")를 추출해 docs 리스트를 만듭니다.
+    """
+    docs = []
+    now = datetime.datetime.utcnow().isoformat()
+    try:
+        with open(path, newline='', encoding='utf-8-sig') as f:
+            # 1) 스니핑: 처음 1KB를 읽어 구분자 탐지
+            sample = f.read(1024)
+            f.seek(0)
+            dialect = csv.Sniffer().sniff(sample, delimiters=[',','\t',';'])
+            # 2) DictReader 생성
+            reader = csv.DictReader(f, dialect=dialect)
+            for i, row in enumerate(reader, start=1):
+                # 필드명이 다를 경우 기본값 "" 반환
+                docs.append({
+                    "id":          i,
+                    "question":    row.get("질문", "").strip(),
+                    "answer":      row.get("답변", "").strip(),
+                    "category":    row.get("카테고리", "").strip(),
+                    "api_call":    row.get("API 호출", "").strip(),
+                    "description": row.get("설명", "").strip(),
+                    "created":     now
+                })
+    except FileNotFoundError:
+        print(f"[ERROR] CSV 파일을 찾을 수 없습니다: {path}")
+        sys.exit(1)
+    except csv.Error as e:
+        print(f"[ERROR] CSV 파싱 실패 (dialect sniffing): {e}")
+        sys.exit(1)
+    return docs
+
+
+# ─── 4) 인덱스 생성・Bulk 색인・검색・조회 기능 ───────────────────────────────
+def create_index(es, idx: str):
+    """
+    - 보고 싶어, 출력해줘 등의 서술어를 stopwords 로 등록해
+      색인 시 제거됩니다.
+    """
+    if not es.indices.exists(index=idx):
+        body = {
+            "settings": {
+                "analysis": {
+                    "filter": {
+                        # 1) stop 필터 정의: 제외할 단어를 모두 소문자로
+                        "custom_stop_filter": {
+                            "type":      "stop",
+                            "stopwords": ["보고", "싶어", "출력해줘", "알려줘", "보여줘"]
+                        }
+                    },
+                    "analyzer": {
+                        # 2) 토크나이저·필터 순서 지정
+                        "custom_analyzer": {
+                            "type":      "custom",
+                            "tokenizer": "standard",
+                            "filter":    [
+                                "lowercase",
+                                "custom_stop_filter"  # 여기에 stop 필터 삽입
+                            ]
+                        },
+                        # 기본 분석기도 custom_analyzer 로 설정
+                        "default": {
+                            "type": "custom_analyzer"
+                        }
+                    }
+                }
+            },
+            "mappings": {
+                "properties": {
+                    "question": {"type": "text", "analyzer": "custom_analyzer"},
+                    "answer":   {"type": "text", "index": False},
+                    "category": {"type": "keyword"},
+                    "api_call": {"type": "keyword"},
+                    "description":{"type":"text", "index":False},
+                    "created":  {"type": "date"}
+                }
+            }
+        }
+        es.indices.create(index=idx, body=body, request_timeout=ES_TIMEOUT)
+        print(f"[INFO] 인덱스 생성됨 (custom_analyzer 적용): {idx}")
+    else:
+        print(f"[INFO] 인덱스 이미 존재함: {idx}")
+
+
+def bulk_index(es, idx: str, docs: list[dict]):
+    actions = [{"_index": idx, "_id": d["id"], "_source": d} for d in docs]
+    helpers.bulk(
+        es,
+        actions,
+        request_timeout=ES_TIMEOUT,
+        refresh="wait_for"      # ← bulk 완료 후 자동으로 refresh
+    )
+    print(f"[INFO] Bulk 색인 완료: {len(docs)}건 (refresh 완료)")
+
+def search_docs(es, idx: str, q: str, size:int=10):
+    body = {"query":{"match":{"question":{"query":q}}},"size":size}
+    res = es.search(index=idx, body=body, sort=["_score"], request_timeout=ES_TIMEOUT)
+    hits = res["hits"]["hits"]
+    print(f"[INFO] '{q}' 검색결과: {len(hits)}건")
+    for h in hits:
+        s=h["_source"]; score=h.get("_score",0)
+        print(f"  - score={score:.3f}, Q={s['question']}, ID={h['_id']}")
+
+def list_indices(es):
+    inds = es.cat.indices(format="json", request_timeout=ES_TIMEOUT)
+    print(f"[INFO] 전체 인덱스 ({len(inds)}개):")
+    for x in inds:
+        print(f"  - {x['index']} (docs={x['docs.count']})")
+
+def print_all_docs(es, idx: str, batch_size:int=1000):
+    print(f"[INFO] '{idx}' 전체 문서 출력 시작")
+    for h in helpers.scan(es, index=idx,
+                          query={"query":{"match_all":{}}},
+                          size=batch_size, request_timeout=ES_TIMEOUT):
+        print(f"  - ID={h['_id']}, source={h['_source']}")
+    print(f"[INFO] '{idx}' 전체 문서 출력 완료")
+
+# ─── 5) 추가: 문서/인덱스 삭제 기능 ───────────────────────────────────────────
+def delete_all_docs(es, idx: str):
+    """
+    특정 인덱스의 모든 문서 삭제
+    """
+    try:
+        resp = es.delete_by_query(
+            index=idx,
+            body={"query":{"match_all":{}}},
+            refresh=True,
+            request_timeout=ES_TIMEOUT
+        )
+        print(f"[INFO] 인덱스 '{idx}' 문서 삭제됨 (deleted={resp['deleted']})")
+    except Exception as e:
+        print(f"[ERROR] 문서 삭제 실패: {e}")
+
+def delete_all_indices(es):
+    """
+    클러스터의 모든 인덱스 삭제 (데이터 초기화)
+    """
+    try:
+        es.indices.delete(
+            index="*",
+            ignore_unavailable=True,
+            request_timeout=ES_TIMEOUT
+        )
+        print("[INFO] 모든 인덱스 삭제 완료 (데이터 초기화)")
+    except Exception as e:
+        print(f"[ERROR] 모든 인덱스 삭제 실패: {e}")
+
+# ─── 메인 실행 ───────────────────────────────────────────────────────────────
+if __name__ == "__main__":
+    test_connection()
+    es = get_es_client()
+
+    # ▼ 아래 두 줄 주석 해제하여 실행하세요 ▼
+    # delete_all_docs(es, INDEX)       # (1) 특정 인덱스 문서 전부 삭제
+    # delete_all_indices(es)           # (2) 모든 인덱스 삭제 및 초기화
+
+    # 1) 인덱스 생성 및 CSV Bulk 색인
+    create_index(es, INDEX)
+    if es.count(index=INDEX)["count"] == 0:
+        bulk_index(es, INDEX, load_csv_docs(CSV_PATH))
+
+    # 2) 기능 시연 예시
+    list_indices(es)
+    print_all_docs(es, INDEX)
+
+    search_docs(es, INDEX, "현재 발생한 장애")
+    search_docs(es, INDEX, "오늘 장애 상황")
+    search_docs(es, INDEX, "최근 장애 현황 출력해줘")
+    search_docs(es, INDEX, "장애 출력해줘")
+
