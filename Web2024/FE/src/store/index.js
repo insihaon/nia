@@ -18,8 +18,7 @@ const modules = modulesFiles.keys().reduce((modules, modulePath) => {
 }, {})
 
 const KEY = 'state'
-const paths = ['testComponentPersisted'] // Object.keys(modules)
-const SALT_KEY = '__DATAHUB__'
+const paths = ['testComponentPersisted', 'systemMonitoring.systemMonitoringMap'] // Object.keys(modules)
 const debug = AppOptions.instance.debug
 
 const getItem = (decrypt) => {
@@ -30,25 +29,25 @@ const setItem = (decrypt) => {
   return (key, state) => decrypt ? localStorage.setItem(key, state) : localStorage.setItem(key, Encrypt.toEncrypt(JSON.stringify(state)))
 }
 
-/**
- * 데이터 초기화
- */
-;(function() {
-  let decrypt = false
-  try {
-    JSON.parse(localStorage.getItem(KEY))
-    decrypt = true
-  } catch (error) {
-    decrypt = false
-  }
+  /**
+   * 데이터 초기화
+   */
+  ; (function () {
+    let decrypt = false
+    try {
+      JSON.parse(localStorage.getItem(KEY))
+      decrypt = true
+    } catch (error) {
+      decrypt = false
+    }
 
-  if (decrypt !== debug) {
-    // eslint-disable-next-line no-useless-call
-    const data = getItem(decrypt).call(null, KEY)
-    // eslint-disable-next-line no-useless-call
-    setItem(debug).call(null, KEY, data)
-  }
-})()
+    if (decrypt !== debug) {
+      // eslint-disable-next-line no-useless-call
+      const data = getItem(decrypt).call(null, KEY)
+      // eslint-disable-next-line no-useless-call
+      setItem(debug).call(null, KEY, data)
+    }
+  })()
 
 const persistedState = createPersistedState({
   key: KEY, // 저장할 상태의 키

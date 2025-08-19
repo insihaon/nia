@@ -19,6 +19,14 @@ var dialogOpenMixin = {
           height: '750',
           resizeble: true,
         },
+        aiResponse2: {
+          component: () => import('@/views-nia/dashBoard/aiResponse2'),
+          pageTitle: 'AI 장애대응(신규)',
+          top: '2vh',
+          width: '1100',
+          height: '750',
+          resizeble: true,
+        },
         requestForAction: {
           component: () => import('@/views-nia/dashBoard/requestForAction'),
           pageTitle: '조치 요청서',
@@ -48,7 +56,7 @@ var dialogOpenMixin = {
           pageTitle: '데이터 스냅샷',
           top: '2vh',
           width: '600',
-          height: '390',
+          height: '310',
           resizeble: true,
         },
         sopHistory: {
@@ -88,6 +96,22 @@ var dialogOpenMixin = {
           width: '1200',
           height: '785',
           resizeble: true
+        },
+        systemMonitoringFilter: {
+          component: () => import('@/views-nia/dashBoard/systemMonitoringFilter'),
+          pageTitle: '시스템 모니터링 필터',
+          top: '2vh',
+          width: '600',
+          height: '380',
+          resizeble: true,
+        },
+        chatbot: {
+          component: () => import('@/views-nia/dashBoard/chatbot'),
+          pageTitle: 'chatbot',
+          top: '2vh',
+          width: '600',
+          height: '700',
+          resizeble: true,
         },
       }
     }
