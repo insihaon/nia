@@ -177,7 +177,12 @@ export default {
             name: '토폴로지 전체보기', action: () => {
               this.openNiaTopology({ showFullTopology: true, tickets: this.ipNetworkList })
             }
-          }
+          },
+          {
+            name: 'AI 장애대응(신규) - 개발중', action: () => {
+              this.fn_openWindow('aiResponse2', this.ipNetworkList)
+            }
+          },
         ]
       }
     }

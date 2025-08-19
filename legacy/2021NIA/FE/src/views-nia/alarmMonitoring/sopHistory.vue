@@ -99,7 +99,7 @@ export default {
       selectedRow: [],
       searchSopItems: [
         { label: '티켓번호', type: 'input', size: 8, model: 'TICKET_ID' },
-        { label: 'DATE', type: 'date', size: 4, model: 'DATE' },
+        { label: 'DATE', type: 'date', size: 8, model: 'DATE' },
       ],
       sopSearchModel: {
         TICKET_ID: '',
@@ -214,13 +214,13 @@ export default {
     },
     searchSyslogItems() {
       const searchItems = [
-        { label: '알람번호', type: 'input', size: 4, model: 'ALARM_NO' },
-        { label: '장비명', type: 'select', size: 4, model: 'NODE_NM', setting: { allOption: { toggle: true } }, options: this.equipmentOptionList },
-        { label: 'I/F', type: 'select', size: 4, model: 'ALARMLOC', setting: { allOption: { toggle: true } }, options: this.interfaceOptionList },
+        { label: '알람번호', type: 'input', size: 8, model: 'ALARM_NO' },
+        { label: '장비명', type: 'select', size: 8, model: 'NODE_NM', setting: { allOption: { toggle: true } }, options: this.equipmentOptionList },
+        { label: 'I/F', type: 'select', size: 8, model: 'ALARMLOC', setting: { allOption: { toggle: true } }, options: this.interfaceOptionList },
         {
           label: '상태',
           type: 'select',
-          size: 6,
+          size: 8,
           model: 'STATUS',
           setting: { allOption: { toggle: true } },
           options: [
@@ -229,7 +229,7 @@ export default {
             { label: '수동', value: 'FIN' },
           ],
         },
-        { label: 'DATE', type: 'date', size: 6, model: 'DATE', placeholder: '' },
+        { label: 'DATE', type: 'date', size: 8, model: 'DATE', placeholder: '' },
       ]
       return searchItems
     },

@@ -2136,8 +2136,18 @@
             , TO_CHAR(END_TIME, 'YYYY-MM-DD HH24:MI:SS') AS END_TIME
             , EVENTNO
         FROM rca.tb_fault_event
+        WHERE 1=1 
         <if test="EVENT_GB != null">
-        WHERE EVENT_GB=#{EVENT_GB}
+            AND EVENT_GB=#{EVENT_GB}
+        </if>
+        <if test="TITLE != null and TITLE != ''">
+            AND TITLE LIKE '%' || #{TITLE} || '%'
+        </if>
+        <if test="START_DATE != null and START_DATE != ''">
+            AND START_TIME <![CDATA[ >= ]]> #{START_DATE}::TIMESTAMP
+        </if>
+        <if test="END_DATE != null and END_DATE != ''">
+            AND END_TIME <![CDATA[ <= ]]> #{END_DATE}::TIMESTAMP
         </if>
         ORDER BY EVENTNO::INT DESC
     </select>

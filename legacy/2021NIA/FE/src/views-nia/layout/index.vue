@@ -15,7 +15,7 @@
             <span>{{ getCurPageTitle }}</span>
           </div>
         </div>
-        <AppMain v-if="!popupLayout" ref="appmain" :style="{height: `calc(100vh - ${$route.name === 'NiaMain' ? '110': '155'}px)`}" />
+        <AppMain v-if="!popupLayout" ref="appmain" :style="{height: appMainHeight}" />
         <BottomBar ref="bottombar" />
       </div>
     </div>
@@ -61,6 +61,11 @@ export default {
   },
   computed: {
     ...mapGetters(['permission_routes']),
+
+    appMainHeight() {
+      return `calc(100vh - ${this.$route.name === 'NiaMain' ? '110' : '155'}px)`
+    },
+
     getCurPageTitle() {
       return this.$route?.meta?.title ?? ''
     },
