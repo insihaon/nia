@@ -6,7 +6,6 @@
         style="flex : 1"
         :body-style="{ padding: '10px' , height: 'calc(100% - 55px)' }"
       >
-        <!-- :style="{flex : isShowChartTicketType ? '0 0 55%' : '0 0 100%'}" -->
         <div slot="header">
           <span><i class="el-icon-document" /> 작업 요청 구간</span>
         </div>
@@ -17,13 +16,15 @@
             <img src="@/assets/images/nia/node/switch.png">
           </div>
           <div class="node-info d-flex justify-evenly">
-            <div>
-              <div>{{ trafficInfo.root_cause_sysnamea }}</div>
-              <div v-if="isShowChartTicketType">({{ trafficInfo.root_cause_porta }})</div>
-            </div>
-            <div>
-              <div>{{ !isShowChartTicketType ? trafficInfo.root_cause_sysnamea : trafficInfo.root_cause_sysnamez }}</div>
-              <div v-if="isShowChartTicketType">({{ trafficInfo.root_cause_portz }})</div>
+            <div style="width: 390px">
+              <div style="float: left">
+                <div>{{ trafficInfo.root_cause_sysnamea }}</div>
+                <div><span v-if="isShowChartTicketType">({{ trafficInfo.root_cause_porta }})</span></div>
+              </div>
+              <div style="float: right">
+                <div>{{ !isShowChartTicketType ? trafficInfo.root_cause_sysnamea : trafficInfo.root_cause_sysnamez }}</div>
+                <div><span v-if="isShowChartTicketType">({{ trafficInfo.root_cause_portz }})</span></div>
+              </div>
             </div>
           </div>
         </el-row>
@@ -336,6 +337,10 @@ export default {
         this.onLoadTrafficChart()
       }
     } else {
+      if (!this.wdata?.params['trafficInfo']) {
+        this.onLoadTrafficInfo()
+      }
+
       this.$store.dispatch('mdi/setWindowOptions', {
         id: this.wdata.id,
         options: { height: '300', width: '500' }
@@ -398,6 +403,11 @@ export default {
 .mobile .el-button--mini {
   padding: 7px 10px;
 }
+
+.aiResponse{
+  caret-color: transparent; /* 깜빡이는 커서 숨김 */
+}
+
 .node-section {
   img {
     width: 85px;
