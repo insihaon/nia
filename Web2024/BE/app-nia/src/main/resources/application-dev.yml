@@ -1,6 +1,6 @@
 server:
   port: 8090
-  
+
 spring:
   profiles:
     active: dev
@@ -18,11 +18,10 @@ spring:
       com.codej.nia.test.dao,
 
   rabbitmq:
-    enabled: true 
+    enabled: true
     address: 192.168.0.241
     port: 5672
     username: niaadmin
     password: niaadmin12#$
     niaEngineToUi: nia.EngineToUiIndexDirectly
     niaUiToEngine: nia.UiToEngineIndexDirectly
-

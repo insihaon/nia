@@ -137,7 +137,7 @@ public class AppDto extends ToStringFormatter {
 
     private Boolean isDevProfile = true;
 
-    @Value("${myconf.api-server.ipsdn:http://203.255.249.31:8088}")
+    @Value("${myconf.api-server.ipsdn:}")
     private String ipsdnUrl;
 
     @Value("${myconf.api-server.user:code}")
