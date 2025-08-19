@@ -90,6 +90,7 @@ myconf:
     single-only: false
     expired-seconds: 86400 # 60*60*24
     login: false
+  snapshot-Url: http://116.89.191.35:24888/download/
 
 file:
   access-Url: /external/**

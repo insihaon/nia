@@ -23,6 +23,7 @@ import com.codej.base.exception.CSigninFailedException;
 import com.codej.base.property.GlobalConstants;
 import com.codej.base.utils.EncryptUtil;
 import com.codej.base.utils.JsonUtil;
+import com.codej.nia.properties.ApiServerProperites;
 import com.codej.nia.provider.NiaJwtTokenProvider;
 import com.codej.nia.service.NiaService;
 import com.codej.nia.service.NiaUserService;
@@ -52,6 +53,9 @@ public class AuthController extends AbsAuthController {
     private AppDto appDto;
 
     protected static final String ipsdnTokenKey = "ipsdnToken";
+
+    @Autowired
+    private ApiServerProperites apiServerProperites;
 
     @Override
     protected NiaUserService getService() {
@@ -88,8 +92,12 @@ public class AuthController extends AbsAuthController {
         Data data = new Data(mapUser);
         data.set(tokenKey, token);
 
-        Map<String, Object> ipsdnToken = niaService.getIpsdnToken();
-        data.set(ipsdnTokenKey, ipsdnToken);
+
+        if (apiServerProperites.getIpsdnUrl() == null || apiServerProperites.getIpsdnUrl().trim().isEmpty()) {
+        }else{
+            Map<String, Object> ipsdnToken = niaService.getIpsdnToken();
+            data.set(ipsdnTokenKey, ipsdnToken);
+        }
 
         Boolean otpShow = isOtpShow(uid);
         data.set("otpShow", otpShow);

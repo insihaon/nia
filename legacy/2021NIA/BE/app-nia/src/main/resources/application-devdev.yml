@@ -3,24 +3,24 @@ server:
 
 spring:
   profiles:
-    active: local
+    active: devdev
     dev: false
 
   datasource2nd:
     enabled: true
     driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-    url: jdbc:log4jdbc:postgresql://incodej-lab.iptime.org:6544/niadb?allowMultiQueries=true
-    username: ENC(8Fi3mfw4UUT/4sIfuw71gKaNJQnbCn7y)
-    password: ENC(qth6L1xxsdq5xTajX4jkKmlJQ9ieFYm6)
-    dataSource-name: ENC(+24YoukpnVKZAmX8g5jOtw==)
+    url: jdbc:log4jdbc:postgresql://incodej-lab.iptime.org:41544/niadb?allowMultiQueries=true
+    username: postgres
+    password: zhemwpdl12!@
+    dataSource-name: niadb
     mapper-packages: >
       com.codej.nia.mapper.db2nd,
       com.codej.nia.test.dao,
 
   rabbitmq:
     enabled: true
-    address: 116.89.191.47 # incodej-lab.iptime.org
-    port: 6786
+    address: incodej-lab.iptime.org
+    port: 41072
     username: niaadmin
     password: niaadmin12#$
     niaEngineToUi: nia.EngineToUiIndexDirectly
