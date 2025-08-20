@@ -3,30 +3,24 @@
     <LeftBar class="h-full">
       <template v-if="isViewport('>', 'md')" #leftbar-container>
         <div class="h-20 text-center mt-1">
-          <span style="z-index : 1" class="font-bold text-lg whitespace-nowrap">AI관제 시스템 처리량</span>
+          <span style="z-index: 1" class="font-bold text-lg whitespace-nowrap">AI관제 시스템 처리량</span>
           <div class="d-flex p-2 justify-center items-center">
             <span class="font-semibold whitespace-nowrap pr-2">검색</span>
             <el-radio-group v-model="systemChartCondition.dayType" size="mini" class="d-flex" @change="onLoadDashboardStatistics()">
               <el-radio-button label="DAY">일별</el-radio-button>
               <el-radio-button label="MONTH">월별</el-radio-button>
             </el-radio-group>
-            <el-date-picker
-              v-model="systemChartCondition.date"
-              style="width: 150px"
-              size="mini"
-              :picker-options="pickerOptions"
-              :type="systemChartCondition.dayType === 'DAY' ? 'date' : 'month'"
-            />
+            <el-date-picker v-model="systemChartCondition.date" style="width: 150px" size="mini" :picker-options="pickerOptions" :type="systemChartCondition.dayType === 'DAY' ? 'date' : 'month'" />
             <el-button icon="el-icon-search" size="mini" style="padding: 7px 7px" @click="onLoadDashboardStatistics()" />
           </div>
         </div>
-        <hr>
+        <hr />
         <div style="height: calc(70% - 5rem)">
           <CompChart :options="ticketOptions" class="relative h-64" style="top: -1rem" />
           <CompChart :options="collectOptions" class="relative h-72" style="top: -7rem" />
           <CompChart :options="servingOptions" class="relative h-64" style="top: -12rem" />
         </div>
-        <hr>
+        <hr />
         <div class="h-20 text-center">
           <div class="font-bold text-lg whitespace-nowrap mt-2">자가 처리 현황</div>
           <div class="d-flex p-2 justify-center items-center">
@@ -40,9 +34,9 @@
             <el-button icon="el-icon-search" size="mini" style="padding: 7px 7px" @click="onLoadSelfProcessStatistics()" />
           </div>
         </div>
-        <hr>
+        <hr />
         <div style="height: calc(30% - 5rem)">
-          <CompChart :options="selfProcessOptions" class="h-full" style="min-width : 360px;" @click="onClickChart" />
+          <CompChart :options="selfProcessOptions" class="h-full" style="min-width: 360px" @click="onClickChart" />
         </div>
       </template>
       <template slot="top-container">
@@ -62,13 +56,7 @@
                     </div>
                     <ul>
                       <!-- :class="{'filterBtn': !filterIconList.includes(keyName), 'filterIcon d-flex':filterIconList.includes(keyName)}" -->
-                      <li
-                        v-for="(item, index) in filter.getArray()"
-                        :key="index"
-                        class="checkItem d-flex items-center checked ml-1"
-                        :style="{ 'background-color': item.hex, color: item.color }"
-                        @click="onClickFilterItem('ip', filter.filterName, item.code)"
-                      >
+                      <li v-for="(item, index) in filter.getArray()" :key="index" class="checkItem d-flex items-center checked ml-1" :style="{ 'background-color': item.hex, color: item.color }" @click="onClickFilterItem('ip', filter.filterName, item.code)">
                         <i :class="item.selected ? 'el-icon-success' : 'el-icon-circle-check'" />
                         <div class="filter-text">{{ item.text + '(' + item.count + ')' }}</div>
                       </li>
@@ -79,7 +67,7 @@
             </div>
           </template>
         </filterBar>
-        <CompAgGrid ref="ipAgGrid" v-model="ipAgGrid" class="w-100 flex-fill" @rowClicked="selectedTicket" @rowDoubleClicked="agGridRowDoubleClicked"/>
+        <CompAgGrid ref="ipAgGrid" v-model="ipAgGrid" class="w-100 flex-fill" @rowClicked="selectedTicket" @rowDoubleClicked="agGridRowDoubleClicked" />
         <!-- top-container content -->
       </template>
       <template slot="bottom-container">
@@ -99,13 +87,7 @@
                     </div>
                     <ul v-if="keyName" :key="keyName">
                       <!-- :class="{'filterBtn': !filterIconList.includes(keyName), 'filterIcon d-flex':filterIconList.includes(keyName)}" -->
-                      <li
-                        v-for="(item, index) in filter.getArray()"
-                        :key="index"
-                        class="checkItem d-flex items-center checked ml-1"
-                        :style="{ 'background-color': item.hex, color: item.color }"
-                        @click="onClickFilterItem('trans', filter.filterName, item.code)"
-                      >
+                      <li v-for="(item, index) in filter.getArray()" :key="index" class="checkItem d-flex items-center checked ml-1" :style="{ 'background-color': item.hex, color: item.color }" @click="onClickFilterItem('trans', filter.filterName, item.code)">
                         <i :class="item.selected ? 'el-icon-success' : 'el-icon-circle-check'" />
                         <div class="filter-text">{{ item.text + '(' + item.count + ')' }}</div>
                       </li>
@@ -135,6 +117,7 @@ import { getAlarmType, getSopAiAccuracy } from '@/views-nia/js/commonFormat'
 import { AppOptions } from '@/class/appOptions'
 import dialogOpenMixin from '@/mixin/dialogOpenMixin'
 import _ from 'lodash'
+import { mapState } from 'vuex'
 
 const routeName = 'NiaMain'
 export default {
@@ -160,8 +143,8 @@ export default {
       },
       pickerOptions: {
         disabledDate(time) {
-            return time.getTime() > Date.now()
-          },
+          return time.getTime() > Date.now()
+        },
       },
       selfChartCondition: {
         statisticsType: 'hour',
@@ -172,33 +155,62 @@ export default {
       chartloading: false,
       redrawTimer: null,
       getIpAgGridRightClickMenuItems: (event) => {
-        return [
+        const menuItems = [
           {
-            name: '토폴로지 전체보기', action: () => {
+            name: '토폴로지 전체보기',
+            action: () => {
               this.openNiaTopology({ showFullTopology: true, tickets: this.ipNetworkList })
-            }
-          },
-          {
-            name: 'AI 장애대응(신규) - 개발중', action: () => {
-              this.fn_openWindow('aiResponse2', this.ipNetworkList)
-            }
+            },
           },
         ]
-      }
+
+        if (this.debug) {
+          menuItems.push({
+            name: 'AI 장애대응(신규)',
+            action: () => {
+              this.fn_openWindow('aiResponse2', this.ipNetworkList)
+            },
+          })
+        }
+
+        return menuItems
+      },
     }
   },
   computed: {
     ipAgGrid() {
       const columns = [
-        { type: '', prop: 'alarmno', name: '알람번호', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, formatter: (row) => { return row.alarmno ?? '-' } },
-        { type: '', prop: 'alarmtime', name: '장애 발생시간', width: 200, alignItems: 'center', fixed: false, suppressMenu: true, formatter: (row) => { return this.formatterTimeStamp(row.alarmtime, 'YYYY/MM/DD-HH:mm:ss') } },
+        {
+          type: '',
+          prop: 'alarmno',
+          name: '알람번호',
+          width: 100,
+          alignItems: 'center',
+          fixed: false,
+          suppressMenu: true,
+          formatter: (row) => {
+            return row.alarmno ?? '-'
+          },
+        },
+        {
+          type: '',
+          prop: 'alarmtime',
+          name: '장애 발생시간',
+          width: 200,
+          alignItems: 'center',
+          fixed: false,
+          suppressMenu: true,
+          formatter: (row) => {
+            return this.formatterTimeStamp(row.alarmtime, 'YYYY/MM/DD-HH:mm:ss')
+          },
+        },
         { type: '', prop: '', name: '마감', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '마감', icon: 'edit-outline', type: 'FIN', action: this.handleOpenEditModal.bind(this) } },
         { type: '', prop: '', name: '시험', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '시험', icon: 'edit-outline', type: 'CONFIG_TEST', action: this.handleOpenEditModal.bind(this) } },
         { type: '', prop: '', name: 'SOP이력', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: 'SOP', icon: 'circle-check', type: 'SOP', action: this.handleOpenEditModal.bind(this) } },
         { type: '', prop: '', name: '장애대응', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '장애대응', icon: 'circle-check', type: 'ALARM', action: this.handleOpenEditModal.bind(this) } },
         { type: '', prop: '', name: '상황전파', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '조치요청', icon: 'circle-check', type: 'NTF', action: this.handleOpenEditModal.bind(this) } },
         { type: '', prop: 'ticket_id', name: 'TICKET_ID', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
-        { type: '', prop: 'status', name: '상태', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, formatter: this.getStatus, cellStyle: this.getCellStyle, },
+        { type: '', prop: 'status', name: '상태', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, formatter: this.getStatus, cellStyle: this.getCellStyle },
         { type: '', prop: 'ticket_type', name: '전표 유형', width: 150, alignItems: 'center', fixed: false, suppressMenu: true, formatter: getAlarmType },
         { type: '', prop: 'fault_type', name: '장애유형', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'alarmmsg', name: '장애정보', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
@@ -210,10 +222,18 @@ export default {
         { type: '', prop: 'alarmloc', name: '인터페이스명', width: 200, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'total_related_alarm_cnt', name: '근원알람개수', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'ip_addr', name: 'ip_addr', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
-        { type: '', prop: 'ai_accuracy', name: 'AI 결과 피드백', width: 100, fixed: false, suppressMenu: true, formatter: getSopAiAccuracy }
+        { type: '', prop: 'ai_accuracy', name: 'AI 결과 피드백', width: 100, fixed: false, suppressMenu: true, formatter: getSopAiAccuracy },
       ]
       const options = { name: this.name, checkable: false, rowGroupPanel: false }
-      return { options, columns, data: this.ipNetworkList, onDoesExternalFilterPass: (externalFilter, node) => { return this.onDoesExternalFilterPass(externalFilter, node, 'ip') }, getRightClickMenuItems: this.getIpAgGridRightClickMenuItems }
+      return {
+        options,
+        columns,
+        data: this.ipNetworkList,
+        onDoesExternalFilterPass: (externalFilter, node) => {
+          return this.onDoesExternalFilterPass(externalFilter, node, 'ip')
+        },
+        getRightClickMenuItems: this.getIpAgGridRightClickMenuItems,
+      }
     },
     transmissionAgGrid() {
       const columns = [
@@ -229,7 +249,7 @@ export default {
         { type: '', prop: 'ticket_id', name: 'TICKET_ID', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'ticket_generation_time', name: '전표 발행시간', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'fault_time', name: '전표 마감시간', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
-        { type: '', prop: 'status', name: '상태', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, formatter: this.getStatus, cellStyle: this.getCellStyle, },
+        { type: '', prop: 'status', name: '상태', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, formatter: this.getStatus, cellStyle: this.getCellStyle },
         { type: '', prop: 'ticket_type', name: '전표 유형', width: 150, alignItems: 'center', fixed: false, suppressMenu: true, formatter: getAlarmType },
         { type: '', prop: 'root_cause_type', name: '장애유형', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'alarmmsg', name: '장애정보', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
@@ -240,7 +260,17 @@ export default {
         { type: '', prop: '_', name: '상세보기', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderTicketDetail', cellRendererParams: { name: '상세보기', action: this.handleOpenTicketDetail.bind(this) } },
       ]
       const options = { name: this.name, checkable: false, rowGroupPanel: false }
-      return { options, columns, data: this.transmissionNetworkList, onDoesExternalFilterPass: (externalFilter, node) => { return this.onDoesExternalFilterPass(externalFilter, node, 'trans') }, getRightClickMenuItems: () => { return [] } }
+      return {
+        options,
+        columns,
+        data: this.transmissionNetworkList,
+        onDoesExternalFilterPass: (externalFilter, node) => {
+          return this.onDoesExternalFilterPass(externalFilter, node, 'trans')
+        },
+        getRightClickMenuItems: () => {
+          return []
+        },
+      }
     },
     ticketOptions() {
       const keyByTitle = [
@@ -253,12 +283,12 @@ export default {
     },
     collectOptions() {
       const keyByTitle = [
-      { name: '광레벨\n수집', key: 'trans_perf_cnt' },
-      { name: '전송\n경보수집', key: 'trans_alarm_cnt' },
-      { name: 'IP시설\n연동', key: 'ip_resource_cnt' },
-      { name: 'IP경보\n연동', key: 'ip_alarm_cnt' },
-      { name: 'IP트래픽\n연동', key: 'ip_perf_cnt' },
-      { name: 'IP SFlow\n연동', key: 'ip_sflow_cnt' }
+        { name: '광레벨\n수집', key: 'trans_perf_cnt' },
+        { name: '전송\n경보수집', key: 'trans_alarm_cnt' },
+        { name: 'IP시설\n연동', key: 'ip_resource_cnt' },
+        { name: 'IP경보\n연동', key: 'ip_alarm_cnt' },
+        { name: 'IP트래픽\n연동', key: 'ip_perf_cnt' },
+        { name: 'IP SFlow\n연동', key: 'ip_sflow_cnt' },
       ]
       return this.getDefaultChartOptions('데이터 수집량', keyByTitle.reverse())
     },
@@ -267,7 +297,7 @@ export default {
         { name: '시설\n연동', key: 'link_total_resource_cnt' },
         { name: '경보\n연동', key: 'link_total_alarm_cnt' },
         { name: '트래픽\n연동', key: 'link_ip_perf_cnt' },
-        { name: '광레벨\n연동', key: 'link_trans_perf_cnt' }
+        { name: '광레벨\n연동', key: 'link_trans_perf_cnt' },
       ]
       return this.getDefaultChartOptions('데이터 제공량(데이터레이크 연계량)', keyByTitle.reverse())
     },
@@ -282,69 +312,80 @@ export default {
           // text: '자가 최적화/자가 회복',
           // left: 'center',
           textStyle: {
-            fontSize: 13
-          }
+            fontSize: 13,
+          },
         },
         dataZoom: [{ type: 'inside' }, { type: 'slider' }],
         tooltip: {},
         xAxis: {
           type: 'category',
-          data: selfStatistics.map(v => v.series_time),
+          data: selfStatistics.map((v) => v.series_time),
         },
         yAxis: {
           type: 'value',
           axisLabel: {
             formatter: function (value, index) {
-                let result = value
-                if (value >= 1000) {
-                  result = (value / 1000) + 'K'
-                } else {
-                  result = value.toString()
-                }
-                return result
+              let result = value
+              if (value >= 1000) {
+                result = value / 1000 + 'K'
+              } else {
+                result = value.toString()
               }
-          }
+              return result
+            },
+          },
         },
         series: [
           {
             name: '자가최적화 총 발생',
             type: 'bar',
-            data: this.selfStatistics.map(v => v.so_totalcount)
+            data: this.selfStatistics.map((v) => v.so_totalcount),
           },
           {
             name: '자가최적화 건 수',
             type: 'bar',
 
-            data: this.selfStatistics.map(v => v.so_count)
+            data: this.selfStatistics.map((v) => v.so_count),
           },
           {
             name: '자가회복 총 발생',
             type: 'bar',
-            data: this.selfStatistics.map(v => v.st_totalcount)
+            data: this.selfStatistics.map((v) => v.st_totalcount),
           },
           {
             name: '자가회복 건 수',
             type: 'bar',
-            data: this.selfStatistics.map(v => v.st_count)
+            data: this.selfStatistics.map((v) => v.st_count),
           },
-        ]
+        ],
       }
     },
 
     openWindowList() {
       return this.$store.state.mdi.windows
-    }
+    },
+
+    ...mapState({
+      NiaMainEventText: (state) => state.chatbot.eventParameter.NiaMain,
+    }),
   },
   watch: {
+    NiaMainEventText(nVal, oVal) {
+      if (nVal !== '') {
+        this.handleOpenEditModal(this.ipNetworkList[0], 'CONFIG_TEST')
+        this.$store.commit('chatbot/CLEAR_STATE', { name: this.$route.name })
+      }
+    },
+
     viewport(nVal, oVal) {
       let sideSize = 20
       if (this.isViewport('<=', 'sm')) {
         sideSize = 0
       }
       this.onChangeSidePaneSize(sideSize)
-    }
+    },
   },
-  async mounted () {
+  async mounted() {
     await this.onLoadDashboardStatistics()
     await this.onLoadSelfProcessStatistics()
 
@@ -387,58 +428,43 @@ export default {
       this.onReceivedIpsdnTicketEvent({
         channelName: 'IPSDN_ALARM',
         socketMessage: {
-          message:
-            '[{"ticket_type":"SYSLOG","root_cause_sysnamez":null,"alarmmsg":"IFMGR_IF_UP_4","clusterno":null,"alarmno":"1204486911","root_cause_sysnamea":null,"ticket_id":null,"nude_num":"1623913556405","fault_time":null,"port":null,"alarmtime":"2024-04-16 14:38:46","root_cause_portz":null,"zero1_entropy":null,"node_nm":"pangyo-5812","alarmmsg_original":"Interface xe27 changed state to up","ip_addr":"116.89.169.33","alarmloc":"xe13","total_related_alarm_cnt":null,"root_cause_porta":null,"ticket_rca_result_dtl_code":null,"status":"INIT"}]',
+          message: '{ "result":null,"properties":null,"ticketId":"1653101","eventType":"TICKET_NEW","ticketType":"RT" }',
         },
       })
       setTimeout(() => {
         // I36563
-        this.onReceivedIpsdnTicketEvent({
-          channelName: 'IPSDN_ALARM',
-          socketMessage: {
-            message:
-              '[{"ticket_type":"RT","root_cause_sysnamez":null,"alarmmsg":"PORT_DOWN","clusterno":"119606","alarmno":"I36563","root_cause_sysnamea":"pangyo-5812","ticket_id":"1600297","nude_num":null,"fault_time":null,"port":"1688534024126","alarmtime":"2024-04-16 14:34:36","root_cause_portz":null,"zero1_entropy":null,"node_nm":"pangyo-5812","alarmmsg_original":"port down - NREN_xe27_소울시스템즈_1G#5027","ip_addr":"116.89.169.33","alarmloc":"xe27","total_related_alarm_cnt":null,"root_cause_porta":null,"ticket_rca_result_dtl_code":"PORT 다운","status":"INIT"}]',
-          },
-        })
+        // this.onReceivedIpsdnTicketEvent({
+        //   channelName: 'IPSDN_ALARM',
+        //   socketMessage: {
+        //     message:
+        //       '[{"ticket_type":"RT","root_cause_sysnamez":null,"alarmmsg":"PORT_DOWN","clusterno":"119606","alarmno":"I36563","root_cause_sysnamea":"pangyo-5812","ticket_id":"1600297","nude_num":null,"fault_time":null,"port":"1688534024126","alarmtime":"2024-04-16 14:34:36","root_cause_portz":null,"zero1_entropy":null,"node_nm":"pangyo-5812","alarmmsg_original":"port down - NREN_xe27_소울시스템즈_1G#5027","ip_addr":"116.89.169.33","alarmloc":"xe27","total_related_alarm_cnt":null,"root_cause_porta":null,"ticket_rca_result_dtl_code":"PORT 다운","status":"INIT"}]',
+        //   },
+        // })
         // 187714
-        this.onReceivedTransTicketEvent({
-          channelName: 'TRANS_ALARM',
-          socketMessage: {
-            message:
-              '[{"ticket_al_id":"187714","ticket_type":"ATT","alarmmsg":"DCC-FAIL","alarmno":"187714","alarmtime":"2024-04-15 11:45:46","sysname":"192.168.200.210-SH1","ticket_id":"188295","alarmloc":"MRPA.A-P1","status":"AUTO_FIN"}]',
-          },
-        })
+        // this.onReceivedTransTicketEvent({
+        //   channelName: 'TRANS_ALARM',
+        //   socketMessage: {
+        //     message:
+        //       '[{"ticket_al_id":"187714","ticket_type":"ATT","alarmmsg":"DCC-FAIL","alarmno":"187714","alarmtime":"2024-04-15 11:45:46","sysname":"192.168.200.210-SH1","ticket_id":"188295","alarmloc":"MRPA.A-P1","status":"AUTO_FIN"}]',
+        //   },
+        // })
       }, 3000)
     },
     onReceivedIpsdnTicketEvent({ channelName, socketMessage }) {
       if (channelName !== 'IPSDN_ALARM') return
-
+      if (data.ticketType === 'PF') return
       const data = JSON.parse(socketMessage.message)
       AppOptions.instance.useWsLog && this.log('RECEIVED SIBSCRIBE IPSDN_ALARM EVENT: ', data)
 
-      switch (data.eventType) {
-        case 'TICKET_NEW':
-          (async() => {
-            const param = {
-              TICKET_ID: data.ticketId
-            }
-            const res = await this.onLoadIpAlarmList(param)
-            if (res) {
-              this.ipNetworkList.splice(0, 0, res.result[0])
-            } else {
-              console.error(`${data.eventType} FAIL.. TICKET_ID : ` + data.ticketId)
-            }
-          })()
-          break
-        case 'TICKET_UPDATE': case 'TICKET_MERGE':
-          (async() => {
-            const ticket = this.ipNetworkList.find(v => v.ticket_id === data.ticketId)
-            if (ticket) {
-              Object.assign(ticket, data.properties)
-              this.ipNetworkList = _.cloneDeep(this.ipNetworkList)
-            } else {
+      // eslint-disable-next-line
+      ;async () => {
+        switch (data.eventType) {
+          case 'TICKET_NEW':
+            // prettier-ignore
+            // eslint-disable-next-line no-extra-parens
+            (async () => {
               const param = {
-                TICKET_ID: data.ticketId
+                TICKET_ID: data.ticketId,
               }
               const res = await this.onLoadIpAlarmList(param)
               if (res) {
@@ -446,22 +472,44 @@ export default {
               } else {
                 console.error(`${data.eventType} FAIL.. TICKET_ID : ` + data.ticketId)
               }
+            })
+            break
+          case 'TICKET_UPDATE':
+          case 'TICKET_MERGE':
+            // prettier-ignore
+            // eslint-disable-next-line no-extra-parens
+            (async () => {
+              const ticket = this.ipNetworkList.find((v) => v.ticket_id === data.ticketId)
+              if (ticket) {
+                Object.assign(ticket, data.properties)
+                this.ipNetworkList = _.cloneDeep(this.ipNetworkList)
+              } else {
+                const param = {
+                  TICKET_ID: data.ticketId,
+                }
+                const res = await this.onLoadIpAlarmList(param)
+                if (res) {
+                  this.ipNetworkList.splice(0, 0, res.result[0])
+                } else {
+                  console.error(`${data.eventType} FAIL.. TICKET_ID : ` + data.ticketId)
+                }
+              }
+            })
+            break
+          case 'TICKET_DELETE':
+            // prettier-ignore
+            () => {
+              const ticket = this.ipNetworkList.find((v) => v.ticket_id === data.ticketId)
+              if (ticket) {
+                this.ipNetworkList.remove(ticket)
+              } else {
+                console.error(`${data.eventType} FAIL.. TICKET_ID : ` + data.ticketId)
+              }
             }
-          })()
-          break
-        case 'TICKET_DELETE':
-          (() => {
-              const ticket = this.ipNetworkList.find(v => v.ticket_id === data.ticketId)
-            if (ticket) {
-              this.ipNetworkList.remove(ticket)
-            } else {
-              console.error(`${data.eventType} FAIL.. TICKET_ID : ` + data.ticketId)
-            }
-          })()
-          break
+            break
+        }
       }
 
-      // this.ipNetworkList = [].concat(...this.getMergedList('ipNetworkList', data))
       this.$store.dispatch('nia/insertIpNetworkList', this.ipNetworkList)
     },
     onReceivedTransTicketEvent({ channelName, socketMessage }) {
@@ -549,11 +597,13 @@ export default {
         .every((res) => res)
       return resMultiCondition
     },
-    async onLoadIpAlarmList() {
+    async onLoadIpAlarmList(param) {
       try {
-        const res = await apiIpAlarmList()
+        const res = await apiIpAlarmList(param)
         this.ipNetworkList = res?.result
         this.$store.dispatch('nia/insertIpNetworkList', this.ipNetworkList)
+
+        return res
       } catch (error) {
         this.error(error)
       }
@@ -611,9 +661,9 @@ export default {
       }
     },
     onChangeSidePaneSize(val) {
-        window.helpe?.$store.dispatch('settings/changeSetting', {
+      window.helpe?.$store.dispatch('settings/changeSetting', {
         key: 'sidePaneSize',
-        value: val
+        value: val,
       })
     },
     getDefaultChartOptions(title, keyByTitle) {
