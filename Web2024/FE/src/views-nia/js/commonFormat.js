@@ -36,26 +36,26 @@ export function getAlarmType(row, col, value, index) {
   let result = ''
   switch (row.ticket_type) {
     case 'RT':
-    result = '장애'
+      result = '장애'
       break
     case 'FTT':
-    result = '비장애'
+      result = '비장애'
       break
     case 'PF':
-    result = '광레벨'
+      result = '광레벨'
       break
     case 'ATT2':
-    result = '이상 트래픽'
+      result = '이상 트래픽'
       break
     case 'NTT':
-    result = '유해 트래픽'
+      result = '유해 트래픽'
       break
     case 'NFTT':
-    result = '장비부하장애'
+      result = '장비부하장애'
       break
     case 'SYSLOG':
-    result = 'SYSLOG'
-    break
+      result = 'SYSLOG'
+      break
     default:
       break
   }
@@ -112,3 +112,17 @@ export function getDecimalCalc(row, col, value, index) { // set Decimal point
   return packetPerSeconds
 }
 
+export function makeAlertMessage(ticketData) {
+  switch (ticketData.ticket_type) {
+    case 'ATT2': // 이상 트래픽
+      return `이상트래픽장애가 발생하였습니다.<br> ${ticketData.node_nm}의 ${ticketData.root_cause_porta}에 대하여<br> 자가최적화를 진행하시겠습니까?`
+    case 'NTT': // 유해 트래픽
+      return `유해트래픽장애가 발생하였습니다.<br> ${ticketData.node_nm}의 ${ticketData.root_cause_porta}에 대하여<br> 자가구성을 진행하시겠습니까?`
+    case 'RT': // 장애
+      if (ticketData.alarmmsg === 'PORT_DOWN') {
+        return `비정상적인 ${ticketData.alarmmsg}장애가 발생하였습니다.<br> ${ticketData.node_nm}의 ${ticketData.root_cause_porta}에 대하여<br> 자가회복을 진행하겠습니까?`
+      }
+  }
+
+  console.error('유효하지 않은 ticketData')
+}

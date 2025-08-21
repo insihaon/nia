@@ -118,6 +118,7 @@ import { AppOptions } from '@/class/appOptions'
 import dialogOpenMixin from '@/mixin/dialogOpenMixin'
 import _ from 'lodash'
 import { mapState } from 'vuex'
+import { makeAlertMessage } from '@/views-nia/js/commonFormat'
 
 const routeName = 'NiaMain'
 export default {
@@ -373,7 +374,7 @@ export default {
     NiaMainEventText(nVal, oVal) {
       if (nVal !== '') {
         this.handleOpenEditModal(this.ipNetworkList[0], 'CONFIG_TEST')
-        this.$store.commit('chatbot/CLEAR_STATE', { name: this.$route.name })
+        this.$store.commit('chatbot/CLEAR_EVENT_PARAMETER', { name: this.$route.name })
       }
     },
 
@@ -392,7 +393,6 @@ export default {
     this.$nextTick(async () => {
       await this.onLoadIpAlarmList()
       await this.onLoadTransmissionAlarmList()
-      this.subscribeEvent()
 
       this.ipFilterGroup = new BaseFilterGroup(this, { onFilterChanged: () => this.onFilterChanged('ip'), isCheckBox: false })
       this.setIPFilterGroup()
@@ -415,48 +415,7 @@ export default {
 
       this.fn_openWindow('niaTopology', param)
     },
-    beforeDestroy() {
-      this.removeWsEventListener(this.CONSTANTS.channels.IPSDN_ALARM.name, this.onReceivedIpsdnTicketEvent)
-      this.removeWsEventListener(this.CONSTANTS.channels.TRANS_ALARM.name, this.onReceivedTransTicketEvent)
-    },
-    subscribeEvent() {
-      this.addWsEventListener(this.CONSTANTS.channels.IPSDN_ALARM.name, this.onReceivedIpsdnTicketEvent)
-      this.addWsEventListener(this.CONSTANTS.channels.TRANS_ALARM.name, this.onReceivedTransTicketEvent)
-    },
-    simulateTest() {
-      // new
-      this.onReceivedIpsdnTicketEvent({
-        channelName: 'IPSDN_ALARM',
-        socketMessage: {
-          message: '{ "result":null,"properties":null,"ticketId":"1653101","eventType":"TICKET_NEW","ticketType":"RT" }',
-        },
-      })
-      setTimeout(() => {
-        // I36563
-        // this.onReceivedIpsdnTicketEvent({
-        //   channelName: 'IPSDN_ALARM',
-        //   socketMessage: {
-        //     message:
-        //       '[{"ticket_type":"RT","root_cause_sysnamez":null,"alarmmsg":"PORT_DOWN","clusterno":"119606","alarmno":"I36563","root_cause_sysnamea":"pangyo-5812","ticket_id":"1600297","nude_num":null,"fault_time":null,"port":"1688534024126","alarmtime":"2024-04-16 14:34:36","root_cause_portz":null,"zero1_entropy":null,"node_nm":"pangyo-5812","alarmmsg_original":"port down - NREN_xe27_소울시스템즈_1G#5027","ip_addr":"116.89.169.33","alarmloc":"xe27","total_related_alarm_cnt":null,"root_cause_porta":null,"ticket_rca_result_dtl_code":"PORT 다운","status":"INIT"}]',
-        //   },
-        // })
-        // 187714
-        // this.onReceivedTransTicketEvent({
-        //   channelName: 'TRANS_ALARM',
-        //   socketMessage: {
-        //     message:
-        //       '[{"ticket_al_id":"187714","ticket_type":"ATT","alarmmsg":"DCC-FAIL","alarmno":"187714","alarmtime":"2024-04-15 11:45:46","sysname":"192.168.200.210-SH1","ticket_id":"188295","alarmloc":"MRPA.A-P1","status":"AUTO_FIN"}]',
-        //   },
-        // })
-      }, 3000)
-    },
-    async onReceivedIpsdnTicketEvent({ channelName, socketMessage }) {
-      if (channelName !== 'IPSDN_ALARM') return
-      const data = JSON.parse(socketMessage.message)
-      AppOptions.instance.useWsLog && this.log('RECEIVED SIBSCRIBE IPSDN_ALARM EVENT: ', data)
-
-      if (data.ticketType === 'PF') return
-
+    async onReceivedIpsdnTicketEvent(data) {
       // prettier-ignore
       (async () => {
         switch (data.eventType) {
@@ -470,15 +429,15 @@ export default {
               if (res) {
                 const ticketData = res.result[0]
                 this.ipNetworkList.splice(0, 0, ticketData)
+
                 if (this.debug) {
-                  const alertMessage = this.makeAlertMessage(ticketData)
-                  this.$confirm(alertMessage, '티켓처리', {
+                  this.$confirm(makeAlertMessage(ticketData), '티켓처리', {
                     confirmButtonText: '진행',
                     cancelButtonText: '취소',
                     dangerouslyUseHTMLString: true,
-                    customClass: 'nia-message-box'
+                    customClass: 'nia-message-box',
                   }).then(() => {
-                    this.handleOpenEditModal(ticketData, 'CONFIG_TEST')
+                    this.fn_openWindow('configTest', ticketData)
                   })
                 }
               } else {
@@ -522,21 +481,6 @@ export default {
       })()
 
       this.$store.dispatch('nia/insertIpNetworkList', this.ipNetworkList)
-    },
-
-    makeAlertMessage(ticketData) {
-      switch (ticketData.ticket_type) {
-        case 'ATT2': // 이상 트래픽
-          return `이상트래픽장애가 발생하였습니다.<br> ${ticketData.node_nm}의 ${ticketData.root_cause_porta}에 대하여<br> 자가최적화를 진행하시겠습니까?`
-        case 'NTT': // 유해 트래픽
-          return `유해트래픽장애가 발생하였습니다.<br> ${ticketData.node_nm}의 ${ticketData.root_cause_porta}에 대하여<br> 자가구성을 진행하시겠습니까?`
-        case 'RT': // 장애
-          if (ticketData.alarmmsg === 'PORT_DOWN') {
-            return `비정상적인 ${ticketData.alarmmsg}장애가 발생하였습니다.<br> ${ticketData.node_nm}의 ${ticketData.root_cause_porta}에 대하여<br> 자가회복을 진행하겠습니까?`
-          }
-      }
-
-      console.error('유효하지 않은 ticketData')
     },
 
     onReceivedTransTicketEvent({ channelName, socketMessage }) {
