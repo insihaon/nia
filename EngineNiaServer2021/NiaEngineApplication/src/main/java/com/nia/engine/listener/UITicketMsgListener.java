@@ -61,12 +61,9 @@ public class UITicketMsgListener implements ChannelAwareMessageListener {
     private DataShareBean dataShareBean;
 
 
-    @Autowired
+    @Autowired(required = false)
     @Qualifier("FaultEventService")
     private FaultEventService faultEventService;
-
-    @Value("${spring.profiles}")
-    private String profiles;
 
     private HashMap<String, String> parameterMap;
 

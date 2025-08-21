@@ -20,7 +20,7 @@ public class Application implements CommandLineRunner{
     @Qualifier("EngineBootSettingService")
     private EngineBootSettingService engineBootSettingService;
 
-	@Autowired
+	@Autowired(required = false)
 	@Qualifier("FaultEventService")
 	private FaultEventService faultEventService;
 

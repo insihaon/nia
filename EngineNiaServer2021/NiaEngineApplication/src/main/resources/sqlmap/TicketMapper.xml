@@ -305,38 +305,43 @@
 
     <insert id="insertRcaTicket" parameterType="com.nia.engine.vo.RCATicket">
         INSERT INTO RCA.tb_rca_ticket_current
-        (ticket_id,
-         cluster_no,
-         ticket_type,
-         ticket_generation_time,
-         fault_time,
-         root_cause_type,
-         root_cause_code,
-         root_cause_domain,
-         total_related_alarm_cnt,
-         status,
-         ticket_rca_result_code,
-         ticket_rca_result_dtl_code,
-         ticket_rca_result_orig_dtl_code,
-         parent_ticket_id,
-         occur,
-         direction)
-        VALUES (#{ticketId},
-                #{clusterNo},
-                #{ticketType},
-                (SELECT NOW()),
-                #{faultTime},
-                #{rootCauseType},
-                #{rootCauseCode},
-                #{rootCauseDomain},
-                #{relatedAlarmCnt},
-                #{status},
-                #{ticketRcaResultCode},
-                #{ticketRcaResultDtlCode},
-                #{ticketRcaResultDtlCode},
-                #{parentTicketId},
-                #{occur},
-                #{direction})
+        (
+             ticket_id,
+             cluster_no,
+             ticket_type,
+             ticket_generation_time,
+             fault_time,
+             root_cause_type,
+             root_cause_code,
+             root_cause_domain,
+             total_related_alarm_cnt,
+             status,
+             ticket_rca_result_code,
+             ticket_rca_result_dtl_code,
+             ticket_rca_result_orig_dtl_code,
+             parent_ticket_id,
+             occur,
+             direction
+        )
+        VALUES
+        (
+            #{ticketId},
+            #{clusterNo},
+            #{ticketType},
+            (SELECT NOW()),
+            #{faultTime},
+            #{rootCauseType},
+            #{rootCauseCode},
+            #{rootCauseDomain},
+            #{relatedAlarmCnt},
+            #{status},
+            #{ticketRcaResultCode},
+            #{ticketRcaResultDtlCode},
+            #{ticketRcaResultDtlCode},
+            #{parentTicketId},
+            #{occur},
+            #{direction}
+        )
     </insert>
 
     <insert id="insertRcaTicketAl" parameterType="java.util.HashMap">

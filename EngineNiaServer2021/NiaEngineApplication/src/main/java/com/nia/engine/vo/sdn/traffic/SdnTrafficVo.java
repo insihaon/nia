@@ -22,6 +22,7 @@ public class SdnTrafficVo implements Serializable {
     private String strresid;
     private String strifid;
     private String strresnm;
+    private String strifnm;
     @JsonProperty("inttimestamp")
     private long measured_datetime;
     private int fltbpsin;
@@ -38,5 +39,6 @@ public class SdnTrafficVo implements Serializable {
     private Timestamp insert_time;
     @JsonProperty("nodeId")
     private String node_id;
+    private String ticketRcaResultCode;
 
 }

@@ -31,7 +31,7 @@ public class NiaAiNoxToEngineMsgListener implements ChannelAwareMessageListener 
     @Autowired
     private AutoProcessMapper autoProcessMapper;
 
-    @Autowired
+    @Autowired(required = false)
     @Qualifier("RcaMailingService")
     private RcaMailingService rcaMailingService;
     @Autowired
