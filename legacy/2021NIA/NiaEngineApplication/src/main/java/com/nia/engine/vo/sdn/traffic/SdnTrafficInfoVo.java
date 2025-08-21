@@ -27,5 +27,5 @@ public class SdnTrafficInfoVo implements Serializable {
     private float fltppsout;
     private Timestamp insertTime;
     private String nodeid;
-
+    private String ticketRcaResultCode;
 }

@@ -102,15 +102,6 @@ spring:
     configuration:
       mapUnderscoreToCamelCase: true
 
-#  ftp:
-#    host1: 116.89.191.34
-#    host2: 116.89.191.35
-#    port: 16891
-#    user: codej8888
-#    password: zhfps!
-#    file-path: /data/
-#    local-file-path: /home/codej8888/data/
-
 ---
 
 spring:

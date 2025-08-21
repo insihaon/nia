@@ -65,7 +65,7 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
     @Qualifier("RcaTicketManagerService")
     private RcaTicketManagerService rcaTicketManagerService;
 
-    @Autowired
+    @Autowired(required = false)
     @Qualifier("RcaMailingService")
     private RcaMailingService rcaMailingService;
 
@@ -570,7 +570,7 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
     }
 
     @Override
-    public void createSdnTrafficTicket(SdnTrafficListVo sdnTrafficListVo) {
+    public void createSdnTrafficTicket(SdnTrafficListVo sdnTrafficListVo, String gb) {
         LOGGER.info("==========>[RcaTrafficTicketService] createAnomalousTrafficTicket : " + sdnTrafficListVo + " <==============");
 
         try{
@@ -579,10 +579,23 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
                 while (itr.hasNext()) {
                     // sdnTrafficInfoVo 조회
                     SdnTrafficVo sdnTrafficVo = itr.next();
-                    HashMap<String, String> parameterMap = new HashMap<String, String>();
-                    parameterMap.put("strifid", sdnTrafficVo.getStrifid());
-                    parameterMap.put("measured_datetime", sdnTrafficVo.getMeasured_datetime() + "");
-                    SdnTrafficInfoVo sdnTrafficInfoVo = sdnTrafficMapper.selectATT2Alarm(parameterMap);
+                    SdnTrafficInfoVo sdnTrafficInfoVo= null;
+                    HashMap<String, String> parameterMap = null;
+                    if(!gb.equals("Traffic_AIB")){
+                        parameterMap = new HashMap<String, String>();
+                        parameterMap.put("strifid", sdnTrafficVo.getStrifid());
+                        parameterMap.put("measured_datetime", sdnTrafficVo.getMeasured_datetime() + "");
+                        sdnTrafficInfoVo = sdnTrafficMapper.selectATT2Alarm(parameterMap);
+                    }else{
+                        sdnTrafficInfoVo = new SdnTrafficInfoVo();
+                        sdnTrafficInfoVo.setStrresid(sdnTrafficVo.getStrresid());
+                        sdnTrafficInfoVo.setStrresnm(sdnTrafficVo.getStrresnm());
+                        sdnTrafficInfoVo.setNodeid(sdnTrafficVo.getNode_id());
+                        sdnTrafficInfoVo.setStrifid(sdnTrafficVo.getStrifid());
+                        sdnTrafficInfoVo.setStrifnm(sdnTrafficVo.getStrifnm());
+                        sdnTrafficInfoVo.setTicketRcaResultCode(sdnTrafficVo.getTicketRcaResultCode());
+                        sdnTrafficInfoVo.setMeasuredDatetime(Timestamp.valueOf(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(sdnTrafficVo.getMeasured_datetime()))));
+                    }
 
                     // rcaTicket 변수 셋팅
                     rcaTicket = rcaTicketFactory.getObject();
@@ -594,16 +607,19 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
                     rcaTicket.setRootCauseType(RcaCodeInfo.RCA_RESULT_TRAFFIC_FAIL);
                     rcaTicket.setRootCauseDomain(RcaCodeInfo.DOMAIN_TRAFFIC);
                     rcaTicket.setOccur(true);
+                    rcaTicket.setTicketRcaResultCode(sdnTrafficInfoVo.getTicketRcaResultCode());
                     rcaTicket.setStatus(RcaCodeInfo.TICKET_STATUS_INIT);
                     rcaTicket.setRelatedAlarmCnt(1);
 
                     // TB_ANOMALOUS_1MI_TRAFFIC TICKET_ID UPDATE (JOIN 해서 사용할 수 있도록)
-                    parameterMap = new HashMap<String, String>();
-                    parameterMap.put("ticketId", rcaTicket.getTicketId());
-                    parameterMap.put("strifid", sdnTrafficInfoVo.getStrifid());
-                    parameterMap.put("strresid", sdnTrafficInfoVo.getStrresid());
-                    parameterMap.put("inttimestamp", sdnTrafficInfoVo.getMeasuredDatetime().getTime() + "");
-                    sdnTrafficMapper.updateSdnTraffic(parameterMap);
+                    if(!gb.equals("Traffic_AIB")){
+                        parameterMap = new HashMap<String, String>();
+                        parameterMap.put("ticketId", rcaTicket.getTicketId());
+                        parameterMap.put("strifid", sdnTrafficInfoVo.getStrifid());
+                        parameterMap.put("strresid", sdnTrafficInfoVo.getStrresid());
+                        parameterMap.put("inttimestamp", sdnTrafficInfoVo.getMeasuredDatetime().getTime() + "");
+                        sdnTrafficMapper.updateSdnTraffic(parameterMap);
+                    }
 
                     // rcaTicketAl 변수 셋팅
                     RCATicketAl rcaTicketAl = rcaTicketAlFactory.getObject();
@@ -618,7 +634,6 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
                     BackboneLinkVo backboneLinkVo = topologyMapper.selectBackboneTopology(parameterMap);
                     if (backboneLinkVo != null) {
                         rcaTicket.setTicketRcaResultDtlCode("이상 트래픽(백본)");
-
                         if (sdnTrafficInfoVo.getStrresid().equals(backboneLinkVo.getSrcNodeNum())) {
                             rcaTicketAl.setRootCauseSysnameZ(backboneLinkVo.getDestNodeId());
                             rcaTicketAl.setRootCausePortZ(backboneLinkVo.getDestIfId());
@@ -631,7 +646,6 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
                         parameterMap.put("nodeId", sdnTrafficInfoVo.getStrresnm());
                         parameterMap.put("ifId", sdnTrafficInfoVo.getStrifnm());
                         UserOrganVo userOrganVo = ticketService.selectUserOrgan(parameterMap);
-
                         if (userOrganVo != null) {
                             rcaTicket.setTicketRcaResultDtlCode("이상 트래픽(이용기관)");
                             rcaTicketAl.setRootCauseSysnameZ(userOrganVo.getNrenName());
@@ -641,6 +655,11 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
                             rcaTicketAl.setRootCauseSysnameZ("Unknown");
                         }
                     }
+
+                    // rcaTrafficeTicketMerge에서 사용하므로 ticketAl 셋팅해야함.
+                    List<RCATicketAl> rcaTicketAlList = new ArrayList<>();
+                    rcaTicketAlList.add(rcaTicketAl);
+                    rcaTicket.setTicketAlList(rcaTicketAlList);
 
                     // 티켓 중복 체크 -> UI에 전달할 신호 생성
                     RcaTicketResult rcaTicketResult = rcaTicketMergeService.rcaTrafficeTicketMerge(rcaTicket);
@@ -664,10 +683,6 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
                         rcaEngineResult.setTicketType("RT");
                     }
 
-                    // 티켓 발행
-                    List<RCATicketAl> rcaTicketAlList = new ArrayList<>();
-                    rcaTicketAlList.add(rcaTicketAl);
-                    rcaTicket.setTicketAlList(rcaTicketAlList);
                     LOGGER.info("==========>[RcaTicketManager] createAnomalousTrafficTicket createTicket : " + rcaTicket.toString() + "<==============");
                     LOGGER.info("==========>[RcaTicketManager] createAnomalousTrafficTicket rcaTicketAlList : " + rcaTicketAlList + "<==============");
                     ticketService.insertRcaTicket(rcaTicket);  // RCA Ticket 발행
@@ -681,7 +696,6 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
                         Map<String, String> properties = new HashMap<String, String>();
                         properties.put("child_count", updateCnt + "");
                         properties.put("ticket_update_time", rcaTicket.getTicketGenerationTime() + "");
-
                         rcaEngineResult.setProperties(properties);
                     }
                     rcaTicketManagerService.uiSendTicketResult(rcaEngineResult);
@@ -706,7 +720,6 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
                     }
                 }
             }
-
         }catch (Exception e) {
             LOGGER.error(">>>>>>>>>>[RcaTrafficTicketService] createSdnTrafficTicket error : " + ExceptionUtils.getStackTrace(e) +" <<<<<<<<<<<<<<<<<");
         }

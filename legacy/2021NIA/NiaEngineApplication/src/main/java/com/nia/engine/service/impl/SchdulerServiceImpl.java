@@ -2,10 +2,12 @@ package com.nia.engine.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
+@Profile("real")  // real 프로파일일때만 활성화
 public class SchdulerServiceImpl {
 
     @Autowired
@@ -20,14 +22,10 @@ public class SchdulerServiceImpl {
     @Qualifier("SopTimeoutAiService")
     private SopTimeoutAiService sopTimeoutAiService;
 
-
-
-
     @Scheduled(cron = "0/10 * * * * *") //초(0-59) 분(0-59) 시간(0-23) 일(1-31) 월(1-12) 요일(0-7)
     public void cronJobTimeoutSopCheck(){
         sopTimeoutAiService.processTimeoutSop();
     }
-
 
     @Scheduled(cron = "0 0/5 * * * *") //초(0-59) 분(0-59) 시간(0-23) 일(1-31) 월(1-12) 요일(0-7)
     public void conJobClearTicketCheck() {

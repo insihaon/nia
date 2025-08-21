@@ -228,17 +228,17 @@ public class RcaTicketManagerServiceImpl implements RcaTicketManagerService {
 
                     ticketService.insertRcaTicket(rcaTicket);
 
-                    for(TicketCableVo ticketCableVo1 : ticketCableList) {
-                        LOGGER.info("==========>[RcaTicketManager] createPerformanceTicket ticketCableVo : " + ticketCableVo1 + "<==============");
-                        performanceTicketService.insertPerformanceTicket(ticketCableVo1);
-
-                        rcaEngineResult = new RcaEngineResult();
-                        rcaEngineResult.setTicketId(ticketCableVo1.getTicketId());
-                        rcaEngineResult.setEventType(RcaCodeInfo.UI_TICKET_TYPE_NEW);
-                        rcaEngineResult.setTicketType("PF");
-
-                        uiSendTicketResult(rcaEngineResult);
-                    }
+//                    for(TicketCableVo ticketCableVo1 : ticketCableList) {
+//                        LOGGER.info("==========>[RcaTicketManager] createPerformanceTicket ticketCableVo : " + ticketCableVo1 + "<==============");
+//                        performanceTicketService.insertPerformanceTicket(ticketCableVo1);
+//
+//                        rcaEngineResult = new RcaEngineResult();
+//                        rcaEngineResult.setTicketId(ticketCableVo1.getTicketId());
+//                        rcaEngineResult.setEventType(RcaCodeInfo.UI_TICKET_TYPE_NEW);
+//                        rcaEngineResult.setTicketType("PF");
+//
+//                        uiSendTicketResult(rcaEngineResult);
+//                    }
                 }
             }
         }catch (Exception e){

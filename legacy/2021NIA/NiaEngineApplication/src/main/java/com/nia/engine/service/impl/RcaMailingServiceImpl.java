@@ -11,6 +11,7 @@ import com.nia.engine.vo.selfProcess.MailEquipAndPortVo;
 import lombok.RequiredArgsConstructor;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -23,6 +24,7 @@ import java.util.HashMap;
 
 
 @Service("RcaMailingService")
+@ConditionalOnProperty(prefix = "spring.mail", name = "host")
 @RequiredArgsConstructor
 public class RcaMailingServiceImpl implements RcaMailingService {
     private final org.apache.log4j.Logger LOGGER = Logger.getLogger(RcaMailingServiceImpl.class);

@@ -44,8 +44,8 @@ public class NiaEngineTrafficMsgListener implements ChannelAwareMessageListener 
 				case "nodefactor": // nodefactor
 					rcaTrafficTicketService.createNodeFactorTicket(engineTrafficeResultVo.getNodeFactorListVo());
 					break;
-				case "Traffic_N": case "Traffic_P": // 이상트래픽
-					rcaTrafficTicketService.createSdnTrafficTicket((engineTrafficeResultVo.getTrafficListVo()));
+				case "Traffic_N": case "Traffic_P": case "Traffic_AIB": // 이상트래픽 AIB 는 의도적으로 AIB로 함 AI로 넣으면 티켓 발행되는데 우선 막아놓음
+					rcaTrafficTicketService.createSdnTrafficTicket(engineTrafficeResultVo.getTrafficListVo(), engineTrafficeResultVo.getGb());
 					break;
 				default:
 					LOGGER.error("예상치 못한 Msg ...");
