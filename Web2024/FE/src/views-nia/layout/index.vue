@@ -146,7 +146,7 @@ export default {
   },
   methods: {
     simulateTest() {
-      // new
+      // new 사용법 v.$parent.$parent.simulateTest
       this.onReceivedIpsdnTicketEvent({
         channelName: 'IPSDN_ALARM',
         socketMessage: {
