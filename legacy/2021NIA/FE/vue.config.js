@@ -260,6 +260,6 @@ module.exports = {
   },
 
   transpileDependencies: [
-    'quasar', 'json-editor-vue'
+    'quasar', 'json-editor-vue', 'chart.js'
   ]
 }
