@@ -2,16 +2,12 @@
   <div :class="{ [name]: true, 'w-full h-full': true }">
     <div class="chatbot-container">
       <div class="chat-header">
-        <h3>AI 챗봇</h3>
-        <p>질문을 입력하고 AI의 답변을 받아보세요</p>
+        <h3>chatbot</h3>
+        <p>질문을 입력하고 답변을 받아보세요</p>
       </div>
 
-      <div ref="chatMessages" class="chat-messages">
-        <div
-          v-for="(message, index) in chatMessages"
-          :key="index"
-          :class="['message', message.type]"
-        >
+      <div ref="chatMessagesBox" class="chat-messages">
+        <div v-for="(message, index) in chatMessages" :key="index" :class="['message', message.type]">
           <div class="message-content" @click="handlePathClick" v-html="formatMessage(message.content)"></div>
           <div class="message-time">
             {{ message.time }}
@@ -20,18 +16,8 @@
       </div>
 
       <div class="chat-input">
-        <input
-          v-model="userInput"
-          type="text"
-          placeholder="질문을 입력하세요..."
-          @keyup.enter="sendMessage"
-        >
-        <button
-          :disabled="!userInput.trim()"
-          @click="sendMessage"
-        >
-          전송
-        </button>
+        <input v-model="userInput" type="text" placeholder="질문을 입력하세요..." @keyup.enter="sendMessage" />
+        <button :disabled="!userInput.trim()" @click="sendMessage">전송</button>
       </div>
     </div>
   </div>
@@ -56,76 +42,52 @@ export default {
       type: Object,
       default() {
         return {}
-      }
-    }
+      },
+    },
   },
   data() {
     return {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       userInput: '',
-      chatMessages: [
-        {
-          type: 'bot',
-          content: '안녕하세요! 무엇을 도와드릴까요?',
-          time: this.getCurrentTime()
-        }
-      ]
     }
   },
   computed: {
     ...mapState({
-      systemMonitoringMap: state => state.systemMonitoring.systemMonitoringMap
-    })
+      systemMonitoringMap: (state) => state.systemMonitoring.systemMonitoringMap,
+      chatMessages: (state) => state.chatbot.chatMessages,
+    }),
   },
-  watch: {},
+  watch: {
+    chatMessages(nval, oval) {
+      this.scrollToBottom()
+    },
+  },
   created() {
     this.selectedRow = this.wdata.params
+    this.scrollToBottom()
   },
   methods: {
     async sendMessage() {
       if (!this.userInput.trim()) return
 
-      // 사용자 메시지 추가
-      this.chatMessages.push({
-        type: 'user',
-        content: this.userInput,
-        time: this.getCurrentTime()
-      })
-
+      this.$store.dispatch('chatbot/userPushQuestionMessage', { content: this.userInput })
       const userQuestion = this.userInput
       this.userInput = ''
 
-      // 로딩 메시지 추가
-      this.chatMessages.push({
-        type: 'bot',
-        content: '검색 중입니다...',
-        time: this.getCurrentTime()
-      })
-
       try {
-        // ElasticSearch에서 검색
         const searchResult = await this.searchElasticSearch(userQuestion)
-
-        // 로딩 메시지 제거하고 결과 메시지 추가
-        this.chatMessages.pop()
-        this.chatMessages.push({
-          type: 'bot',
+        this.$store.dispatch('chatbot/botPushAnsewerMessage', {
           content: searchResult,
-          time: this.getCurrentTime()
+          isAnswer: true,
         })
       } catch (error) {
-        // 에러 발생 시 로딩 메시지 제거하고 에러 메시지 추가
-        this.chatMessages.pop()
-        this.chatMessages.push({
-          type: 'bot',
+        this.$store.dispatch('chatbot/botPushAnsewerMessage', {
           content: '죄송합니다. 검색 중 오류가 발생했습니다.',
-          time: this.getCurrentTime()
+          isAnswer: true,
         })
         console.error('ElasticSearch 검색 오류:', error)
       }
-
-      this.scrollToBottom()
     },
 
     async searchElasticSearch(query) {
@@ -135,8 +97,8 @@ export default {
           baseURL: 'http://116.89.191.47:8001/es',
           timeout: 10000,
           headers: {
-            'Content-Type': 'application/json'
-          }
+            'Content-Type': 'application/json',
+          },
         })
 
         const response = await esClient.post('/chatbot_index/_search', {
@@ -145,16 +107,16 @@ export default {
               query: query,
               fields: ['keyword^2'],
               type: 'best_fields',
-              fuzziness: 'AUTO' // 유사한 데이터도 검색
-            }
+              fuzziness: 'AUTO', // 유사한 데이터도 검색
+            },
           },
           size: 5,
           highlight: {
             fields: {
               keyword: {},
-              path: {}
-            }
-          }
+              path: {},
+            },
+          },
         })
 
         const data = response.data
@@ -179,33 +141,23 @@ export default {
       }
     },
 
-    getCurrentTime() {
-      const now = new Date()
-      return now.toLocaleTimeString('ko-KR', {
-        hour: '2-digit',
-        minute: '2-digit'
-      })
-    },
-
     scrollToBottom() {
       this.$nextTick(() => {
-        const chatMessages = this.$refs.chatMessages
-        if (chatMessages) {
-          chatMessages.scrollTop = chatMessages.scrollHeight
+        const chatMessagesBox = this.$refs.chatMessagesBox
+        if (chatMessagesBox) {
+          chatMessagesBox.scrollTop = chatMessagesBox.scrollHeight
         }
       })
     },
 
     formatMessage(content) {
       // 줄바꿈을 <br> 태그로 변환하고 HTML 태그 제거
-      let formattedContent = content
-        .replace(/\n/g, '<br>') // 줄바꿈을 <br>로 변환
+      let formattedContent = content.replace(/\n/g, '<br>') // 줄바꿈을 <br>로 변환
 
       // [이동] 텍스트를 클릭 가능한 링크로 변환
-      formattedContent = formattedContent.replace(
-        /(\d+\.\s+)([^<]+)\s+<span class="move-text">\[이동\]<\/span>/g,
-        '$1$2 <a href="#" class="move-link" data-keyword="$2">[이동]</a>'
-      )
+      formattedContent = formattedContent.replace(/(\d+\.\s+)([^<]+)\s+<span class="move-text">\[이동\]<\/span>/g, '$1$2 <a href="#" class="move-link" data-keyword="$2">[이동]</a>')
+
+      formattedContent = formattedContent.replace(/(\s+)([^<]+)\s+<span class="move-text">\[진행\]<\/span>/g, '$1$2 <a href="#" class="move-link" data-keyword="$2">[진행]</a>')
 
       return formattedContent
     },
@@ -213,18 +165,26 @@ export default {
     handlePathClick(event) {
       if (event.target.classList.contains('move-link')) {
         event.preventDefault()
-        const keyword = event.target.getAttribute('data-keyword')
-
-        // ElasticSearch에서 해당 keyword의 path를 다시 검색
-        this.searchPathByKeyword(keyword)
+        let keyword = ''
+        switch (event.target.innerHTML) {
+          case '[이동]':
+            keyword = event.target.getAttribute('data-keyword')
+            this.searchPathByKeyword(keyword)
+            break
+          case '[진행]':
+            keyword = event.target.getAttribute('data-keyword')
+            // this.$store.commit('chatbot/SWITCH_EVENT_PARAMETER', { name, parameter })
+            this.$router.push({ name: 'NiaMain' })
+            break
+        }
       }
     },
 
     async searchPathByKeyword(keyword) {
       try {
         const response = await axios.post('http://116.89.191.47:8001/es/chatbot_index/_search', {
-          'query': { 'match': { 'keyword': keyword } },
-          'size': 1
+          query: { match: { keyword: keyword } },
+          size: 1,
         })
 
         const data = response.data
@@ -237,22 +197,9 @@ export default {
             path = rawPath.substring(0, questionIndex)
             parameter = rawPath.substring(questionIndex + 1)
           }
-          const routes = this.$router.options.routes2;
-          let name = this.getRouteNameByPath(routes,path)
-          this.$store.commit('chatbot/SWITCH_STATE', {name, parameter})
-
-          // const currentOrigin = window.location.origin
-          // const fullUrl = `${currentOrigin}/#${path}`
-
-          // const normalizedTargetPath = path.startsWith('/') ? path : `/${path}`
-          // if (this.$route && this.$route.path === normalizedTargetPath) {
-          //   // 기존화면과 같은 화면인 경우
-          // } else {
-          //   this.$router.push({
-          //     path: path,
-          //     query: paramObj
-          //   })
-          // }
+          const routes = this.$router.options.routes2
+          let name = this.getRouteNameByPath(routes, path)
+          this.$store.commit('chatbot/SWITCH_EVENT_PARAMETER', { name, parameter })
           this.$router.push({ name })
         }
       } catch (error) {
@@ -264,23 +211,23 @@ export default {
       for (const route of routes) {
         // 1. 현재 라우트의 path와 일치하는지 확인
         if (prefix + route.path === path) {
-          return route.name;
+          return route.name
         }
 
         // 2. children이 있는지 확인하고 재귀적으로 탐색
         if (route.children) {
-          const foundName = this.getRouteNameByPath(route.children, path, route.path + '/');
+          const foundName = this.getRouteNameByPath(route.children, path, route.path + '/')
           // 자식 라우트에서 이름이 발견되면 즉시 반환
           if (foundName) {
-            return foundName;
+            return foundName
           }
         }
       }
 
       // 모든 라우트를 탐색했지만 일치하는 것을 찾지 못한 경우
-      return null;
-    }
-  }
+      return null
+    },
+  },
 }
 </script>
 
@@ -357,12 +304,12 @@ export default {
   line-height: 1.4;
   word-wrap: break-word;
   white-space: normal; /* <br> 태그가 제대로 작동하도록 */
-  
+
   ::v-deep .move-link {
     color: #3b82f6 !important;
     text-decoration: underline !important;
     cursor: pointer;
-    
+
     &:hover {
       color: #2563eb !important;
       text-decoration: none !important;
