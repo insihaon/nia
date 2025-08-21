@@ -14,7 +14,6 @@ var dialogOpenMixin = {
         aiResponse: {
           component: () => import('@/views-nia/dashBoard/aiResponse'),
           pageTitle: 'AI 장애대응',
-          top: '2vh',
           width: '1100',
           height: '750',
           resizeble: true,
@@ -22,7 +21,6 @@ var dialogOpenMixin = {
         aiResponse2: {
           component: () => import('@/views-nia/dashBoard/aiResponse2'),
           pageTitle: 'AI 장애대응(신규)',
-          top: '2vh',
           width: '1100',
           height: '750',
           resizeble: true,
@@ -30,7 +28,6 @@ var dialogOpenMixin = {
         requestForAction: {
           component: () => import('@/views-nia/dashBoard/requestForAction'),
           pageTitle: '조치 요청서',
-          top: '2vh',
           width: '1200',
           height: '1100',
           resizeble: true,
@@ -38,7 +35,6 @@ var dialogOpenMixin = {
         processFin: {
           component: () => import('@/views-nia/dashBoard/processFin'),
           pageTitle: '마감 처리',
-          top: '2vh',
           width: '600',
           height: '550',
           resizeble: true,
@@ -46,7 +42,6 @@ var dialogOpenMixin = {
         configTest: {
           component: () => import('@/views-nia/dashBoard/configTest'),
           pageTitle: '시험',
-          top: '2vh',
           width: '750',
           height: '660',
           resizeble: true,
@@ -54,7 +49,6 @@ var dialogOpenMixin = {
         snapShot: {
           component: () => import('@/views-nia/dashBoard/snapShot'),
           pageTitle: '데이터 스냅샷',
-          top: '2vh',
           width: '600',
           height: '310',
           resizeble: true,
@@ -62,7 +56,6 @@ var dialogOpenMixin = {
         sopHistory: {
           component: () => import('@/views-nia/alarmMonitoring/sopHistory'),
           pageTitle: 'SOP 이력 조회',
-          top: '2vh',
           width: '1200',
           height: '900',
           resizeble: true,
@@ -70,7 +63,6 @@ var dialogOpenMixin = {
         selfProcessList: {
           component: () => import('@/views-nia/dashBoard/selfProcessList'),
           pageTitle: '자가 최적화 이력조회',
-          top: '2vh',
           width: '1000',
           height: '800',
           resizeble: true,
@@ -78,7 +70,6 @@ var dialogOpenMixin = {
         ticketDetail: {
           component: () => import('@/views-nia/dashBoard/ticketDetail'),
           pageTitle: '전표 상세내역',
-          top: '2vh',
           width: '1200',
           height: '770',
           resizeble: true,
@@ -100,7 +91,6 @@ var dialogOpenMixin = {
         systemMonitoringFilter: {
           component: () => import('@/views-nia/dashBoard/systemMonitoringFilter'),
           pageTitle: '시스템 모니터링 필터',
-          top: '2vh',
           width: '600',
           height: '380',
           resizeble: true,
@@ -108,20 +98,20 @@ var dialogOpenMixin = {
         chatbot: {
           component: () => import('@/views-nia/dashBoard/chatbot'),
           pageTitle: 'chatbot',
-          top: '2vh',
           width: '600',
           height: '700',
           resizeble: true,
+          positionBottomRight: true
         },
       }
     }
   },
   methods: {
-    fn_openWindow(dialogNm, data, callback, pageTitle) {
+    fn_openWindow(dialogNm, data, callback, customPageTitle) {
       var tmpWindowData = Object.assign({}, this.$store.getters.window_param)
 
       tmpWindowData.id = new Date().getTime()
-      tmpWindowData.name = this.dialogList[dialogNm]['pageTitle']
+      tmpWindowData.name = customPageTitle || this.dialogList[dialogNm]['pageTitle']
       tmpWindowData.target = this.dialogList[dialogNm]['component']
       tmpWindowData.dialogNm = dialogNm
       // tmpWindowData.type = this.dialogList[dialogNm]
@@ -132,12 +122,14 @@ var dialogOpenMixin = {
       tmpWindowData.resizeble = this.dialogList[dialogNm]['resizeble']
       tmpWindowData.callback = callback || null
 
-      if (pageTitle) {
-        tmpWindowData.name = pageTitle
+      var isPositionBottomRight = this.dialogList[dialogNm]['positionBottomRight']
+      if (isPositionBottomRight) {
+        tmpWindowData.x = window.innerWidth - tmpWindowData.width - 10
+        tmpWindowData.y = window.innerHeight - tmpWindowData.height - 60
+      } else {
+        tmpWindowData.x = (window.innerWidth - tmpWindowData.width) * 0.5 + (this.$store.getters.windows.length - 1) * 20
+        tmpWindowData.y = (window.innerHeight - tmpWindowData.height) * 0.5 + (this.$store.getters.windows.length - 1) * 20
       }
-
-      tmpWindowData.x = (window.innerWidth - tmpWindowData.width) * 0.5 + (this.$store.getters.windows.length - 1) * 20
-      tmpWindowData.y = (window.innerHeight - tmpWindowData.height) * 0.5 + (this.$store.getters.windows.length - 1) * 20
 
       if (tmpWindowData.x < 0) {
         tmpWindowData.x = 15

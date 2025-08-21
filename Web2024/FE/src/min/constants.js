@@ -6,7 +6,7 @@ export default {
     HEARTBEAT: { name: 'HEARTBEAT', enable: true, init: true },
     IPSDN_ALARM: { name: 'IPSDN_ALARM', enable: true },
     TRANS_ALARM: { name: 'TRANS_ALARM', enable: true },
-    SYSTEM_MONITORING: { name: 'SYSTEM_MONITORING', enable: true },
+    SYSTEM_MONITORING: { name: 'SYSTEM_MONITORING', enable: false }, // 현재 사용안함
   },
   message: {
     areYouSureWantToDelete: '삭제하시겠습니까?',

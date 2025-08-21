@@ -1,8 +1,8 @@
 <template>
   <div :class="{ [name]: true }">
     <div class="alarm-container flex flex-nowrap ml-3">
-      <div v-if="isViewport('>', 'md')" class="alarm-title flex items-center flex-nowrap whitespace-nowrap mx-2" style="min-width: 93px;">
-        <img src="@/assets/icon/attention.png" style="height: 22px;width: 22px;filter: contrast(0) brightness(2)">
+      <div v-if="isViewport('>', 'md')" class="alarm-title flex items-center flex-nowrap whitespace-nowrap mx-2" style="min-width: 93px">
+        <img src="@/assets/icon/attention.png" style="height: 22px; width: 22px; filter: contrast(0) brightness(2)" />
         <span class="text-lg font-bold pl-1 pt-1">경보 현황</span>
       </div>
       <div class="alarm-content flex flex-nowrap items-center ml-2 text-sm">
@@ -15,18 +15,10 @@
         <span class="pt-1">건</span>
       </div>
       <div class="alarm-count-list flex flex-nowrap ml-4 pt-1 text-base">
-        <div class="pt-1 font-bold text-base" style="white-space: nowrap; overflow: hidden;">시스템 현황 모니터링</div>
+        <div class="pt-1 font-bold text-base" style="white-space: nowrap; overflow: hidden">시스템 현황 모니터링</div>
         <div class="ml-2 d-flex font-bold items-center gap-x-2">
-          <span
-            v-for="system in niaProcess"
-            v-show="systemMonitoringMap[system.name].show"
-            :key="system.name"
-          >
-            <div
-              :style="{ color: system.status }"
-              class="system-tooltip"
-              style="border-right: solid 1px #ffffff82;padding-right: 5px; white-space: nowrap;"
-            >
+          <span v-for="system in niaProcess" v-show="systemMonitoringMap[system.name].show" :key="system.name">
+            <div :style="{ color: system.status }" class="system-tooltip" style="border-right: solid 1px #ffffff82; padding-right: 5px; white-space: nowrap">
               <div :class="{ blinking: system.status !== 'lime' }">{{ system.name }}</div>
               <div class="tooltip-text" v-html="system.tooltip" />
             </div>
@@ -42,12 +34,7 @@
               <i class="el-icon-files" /> <span>창목록</span><span class="badgeItem">{{ $store.getters.windows.length }}</span>
             </template>
             <template v-for="window in $store.getters.windows">
-              <el-menu-item
-                :key="window.id"
-                :class="{ focusWindow: window.windowState !== 'minimize' && window.zindex == 1000 }"
-                class="statusBarWindowItem"
-                @click="windowSelection(window)"
-              >
+              <el-menu-item :key="window.id" :class="{ focusWindow: window.windowState !== 'minimize' && window.zindex == 1000 }" class="statusBarWindowItem" @click="windowSelection(window)">
                 <i class="el-icon-document" /> <span>{{ window.name }}</span>
                 <i class="el-icon-close statusBarWindowItemCloseBtn" @click="$store.dispatch('mdi/removeWindow', window.id)" />
               </el-menu-item>
@@ -55,12 +42,12 @@
           </el-submenu>
         </el-menu>
       </div>
-      <div v-if="isViewport('>', 'md')" class="notice-title flex items-center" >
+      <div v-if="isViewport('>', 'md')" class="notice-title flex items-center">
         <el-tooltip class="item" effect="light" content="시스템 모니터링 필터" placement="top">
           <i class="el-icon-s-tools m_icon" style="cursor: pointer; margin-right: 5px" @click="openSystemMonitoringModal" />
         </el-tooltip>
-        <el-tooltip class="item" effect="light" content="ChatBot" placement="top">
-          <i class="el-icon-chat-line-square m_icon" style="cursor: pointer;" @click="openChatbotModal" />
+        <el-tooltip :style="{ display: debug ? 'inline-block' : 'none' }" class="item" effect="light" content="ChatBot" placement="top">
+          <i class="el-icon-chat-line-square m_icon" style="cursor: pointer" @click="openChatbotModal" />
         </el-tooltip>
       </div>
     </div>
@@ -93,20 +80,19 @@ export default {
         { name: 'WARNING', count: 20, color: 'skyblue' },
       ],
 
-      monitoringInterval: null
+      monitoringInterval: null,
     }
   },
 
   computed: {
     ...mapState({
-      niaProcess: state => state.systemMonitoring.niaProcess,
-      systemMonitoringMap: state => state.systemMonitoring.systemMonitoringMap
-    })
-  },
-
-  created() {
+      niaProcess: (state) => state.systemMonitoring.niaProcess,
+      systemMonitoringMap: (state) => state.systemMonitoring.systemMonitoringMap,
+    }),
 
   },
+
+  created() {},
 
   mounted() {
     this.getSystemMonitoringData()
@@ -127,8 +113,7 @@ export default {
       }, 3 * 60 * 1000)
     },
 
-    subscribeEvent() {
-    },
+    subscribeEvent() {},
     async getSystemMonitoringData() {
       try {
         const res = await apiSystemMonitoring()
@@ -230,7 +215,7 @@ export default {
     },
     openChatbotModal() {
       this.fn_openWindow('chatbot')
-    }
+    },
   },
 }
 </script>
@@ -239,7 +224,7 @@ export default {
 @import '~@/styles/variables.scss';
 @import '~@/styles/animation.scss';
 
-.BottomBar{
+.BottomBar {
   caret-color: transparent; /* 깜빡이는 커서 숨김 */
 
   .system-tooltip {
@@ -264,15 +249,15 @@ export default {
     }
 
     &:hover .tooltip-text {
-        visibility: visible;
-        opacity: 1;
+      visibility: visible;
+      opacity: 1;
     }
 
-      .blinking {
+    .blinking {
       animation: blink 1.5s ease-in-out infinite alternate;
     }
 
-    @keyframes blink{
+    @keyframes blink {
       0% {
         opacity: 0.3;
       }
@@ -303,14 +288,14 @@ export default {
     font-size: 21px;
   }
   .statusBarWrap {
-    display:flex;
-    background-color:rgba(0,0,0,0.5);
+    display: flex;
+    background-color: rgba(0, 0, 0, 0.5);
     border-radius: 5px;
     box-sizing: border-box;
-    height:40px;
+    height: 40px;
 
     ::v-deep .el-submenu .el-submenu__title {
-      height:40px;
+      height: 40px;
       display: flex;
       border-bottom: 0px;
       align-items: center;
@@ -319,24 +304,25 @@ export default {
       border: solid 1px #797676;
       border-radius: 5px;
     }
-    .badgeItem{
+    .badgeItem {
       position: absolute;
-      background-color:#fff;
-      color:#141414;
+      background-color: #fff;
+      color: #141414;
       height: 18px;
       line-height: 18px;
       text-align: center;
-      padding:0 5px;
+      padding: 0 5px;
       border-radius: 15px;
-      font-size:12px;
+      font-size: 12px;
       font-weight: 400;
-      right:5px; top:9px;
+      right: 5px;
+      top: 9px;
       /* transform: translate(30px, 20px); */
     }
 
     ::v-deep .el-menu--horizontal {
-      .el-submenu{
-        .el-submenu__icon-arrow{
+      .el-submenu {
+        .el-submenu__icon-arrow {
           margin-right: 10px !important;
         }
       }
@@ -346,14 +332,13 @@ export default {
 </style>
 
 <style lang="scss">
-.el-menu--horizontal.statusBarMenuNiaBottomBar{
-
-  ul.el-menu.el-menu--popup{
+.el-menu--horizontal.statusBarMenuNiaBottomBar {
+  ul.el-menu.el-menu--popup {
     background: transparent !important;
     border-radius: 15px !important;
     top: 17px !important;
 
-    li.statusBarWindowItem{
+    li.statusBarWindowItem {
       text-align: left !important;
       font-size: 14px !important;
       font-family: NotoSansKR;
@@ -362,12 +347,12 @@ export default {
       margin-bottom: 10px;
       height: 39px !important;
 
-      &:hover{
+      &:hover {
         // opacity: 0.8;
         background: rgb(232, 232, 232) !important;
       }
 
-      &.focusWindow{
+      &.focusWindow {
         background-color: rgb(30, 41, 59) !important;
         color: white !important;
       }
