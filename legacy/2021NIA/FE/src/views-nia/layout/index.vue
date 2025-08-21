@@ -5,17 +5,13 @@
     <div class="main-container" :class="[{ hasTagsView: needTagsView }, AppOptions.instance.project]">
       <div :class="{ 'fixed-header': fixedHeader }">
         <NavBar ref="navbar" />
-        <div
-          v-if="$route.name !== 'NiaMain'"
-          class="cur-title-container"
-          :style="{'background-color': ($route.name.includes('Monitoring')) ? '#1f335d' : '#fff', color: ($route.name.includes('Monitoring')) ? '#fff' : '#141414'}"
-        >
+        <div v-if="$route.name !== 'NiaMain'" class="cur-title-container" :style="{ 'background-color': $route.name.includes('Monitoring') ? '#1f335d' : '#fff', color: $route.name.includes('Monitoring') ? '#fff' : '#141414' }">
           <div>
             <span><i class="el-icon-document" />홈 > {{ getCurPageParentTitle }} > </span>
             <span>{{ getCurPageTitle }}</span>
           </div>
         </div>
-        <AppMain v-if="!popupLayout" ref="appmain" :style="{height: appMainHeight}" />
+        <AppMain v-if="!popupLayout" ref="appmain" :style="{ height: appMainHeight }" />
         <BottomBar ref="bottombar" />
       </div>
     </div>
@@ -46,7 +42,7 @@ export default {
     NavBar,
     SideBar,
     BottomBar,
-    WindowBase
+    WindowBase,
   },
   extends: Base,
   mixins: [ResizeMixin],
@@ -71,7 +67,7 @@ export default {
     },
     getCurPageParentTitle() {
       const parantPath = this.$route.path.split('/')[1]
-      const parantRoute = this.permission_routes.find(v => v.path === `/${parantPath}`)
+      const parantRoute = this.permission_routes.find((v) => v.path === `/${parantPath}`)
       return parantRoute?.meta?.title ?? ''
     },
     loginUsername() {
@@ -98,7 +94,7 @@ export default {
     },
     ...mapState({
       roles: (state) => state.user.roles,
-      sidebar: state => state.app.sidebar,
+      sidebar: (state) => state.app.sidebar,
       historybar: (state) => state.app.historybar,
       showHistorybar: (state) => state.app.historybar.opened,
       fixedHeader: (state) => state.settings.fixedHeader,
@@ -173,8 +169,9 @@ export default {
 }
 </script>
 <style lang="scss">
+@import '~@/styles/nia_confirm.scss';
 .common-padding {
-  padding: 15px/* var(--common-padding) */;
+  padding: 15px /* var(--common-padding) */;
   position: relative;
   height: 100%;
   width: 100%;
@@ -188,7 +185,7 @@ export default {
 <style lang="scss" scoped>
 @import '~@/styles/mixin.scss';
 @import '~@/styles/variables.scss';
-@import "~@/assets/css/nia_style_main.css";
+@import '~@/assets/css/nia_style_main.css';
 
 .router-link-active {
   color: #93c3ed !important;
@@ -237,7 +234,7 @@ body.el-popup-parent--hidden .fixed-header {
   padding: 15px 20px 5px 20px;
   div {
     padding-bottom: 5px;
-    border-bottom: solid 1px #EEEEEE;
+    border-bottom: solid 1px #eeeeee;
     i {
       padding-right: 5px;
     }

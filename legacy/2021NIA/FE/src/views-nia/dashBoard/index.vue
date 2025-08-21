@@ -450,34 +450,45 @@ export default {
         // })
       }, 3000)
     },
-    onReceivedIpsdnTicketEvent({ channelName, socketMessage }) {
+    async onReceivedIpsdnTicketEvent({ channelName, socketMessage }) {
       if (channelName !== 'IPSDN_ALARM') return
-      if (data.ticketType === 'PF') return
       const data = JSON.parse(socketMessage.message)
       AppOptions.instance.useWsLog && this.log('RECEIVED SIBSCRIBE IPSDN_ALARM EVENT: ', data)
 
-      // eslint-disable-next-line
-      ;async () => {
+      if (data.ticketType === 'PF') return
+
+      // prettier-ignore
+      (async () => {
         switch (data.eventType) {
           case 'TICKET_NEW':
             // prettier-ignore
-            // eslint-disable-next-line no-extra-parens
             (async () => {
               const param = {
                 TICKET_ID: data.ticketId,
               }
               const res = await this.onLoadIpAlarmList(param)
               if (res) {
-                this.ipNetworkList.splice(0, 0, res.result[0])
+                const ticketData = res.result[0]
+                this.ipNetworkList.splice(0, 0, ticketData)
+                if (this.debug) {
+                  const alertMessage = this.makeAlertMessage(ticketData)
+                  this.$confirm(alertMessage, '티켓처리', {
+                    confirmButtonText: '진행',
+                    cancelButtonText: '취소',
+                    dangerouslyUseHTMLString: true,
+                    customClass: 'nia-message-box'
+                  }).then(() => {
+                    this.handleOpenEditModal(ticketData, 'CONFIG_TEST')
+                  })
+                }
               } else {
                 console.error(`${data.eventType} FAIL.. TICKET_ID : ` + data.ticketId)
               }
-            })
+            })()
             break
           case 'TICKET_UPDATE':
           case 'TICKET_MERGE':
             // prettier-ignore
-            // eslint-disable-next-line no-extra-parens
             (async () => {
               const ticket = this.ipNetworkList.find((v) => v.ticket_id === data.ticketId)
               if (ticket) {
@@ -494,24 +505,40 @@ export default {
                   console.error(`${data.eventType} FAIL.. TICKET_ID : ` + data.ticketId)
                 }
               }
-            })
+            })()
             break
           case 'TICKET_DELETE':
             // prettier-ignore
-            () => {
+            (() => {
               const ticket = this.ipNetworkList.find((v) => v.ticket_id === data.ticketId)
               if (ticket) {
                 this.ipNetworkList.remove(ticket)
               } else {
                 console.error(`${data.eventType} FAIL.. TICKET_ID : ` + data.ticketId)
               }
-            }
+            })()
             break
         }
-      }
+      })()
 
       this.$store.dispatch('nia/insertIpNetworkList', this.ipNetworkList)
     },
+
+    makeAlertMessage(ticketData) {
+      switch (ticketData.ticket_type) {
+        case 'ATT2': // 이상 트래픽
+          return `이상트래픽장애가 발생하였습니다.<br> ${ticketData.node_nm}의 ${ticketData.root_cause_porta}에 대하여<br> 자가최적화를 진행하시겠습니까?`
+        case 'NTT': // 유해 트래픽
+          return `유해트래픽장애가 발생하였습니다.<br> ${ticketData.node_nm}의 ${ticketData.root_cause_porta}에 대하여<br> 자가구성을 진행하시겠습니까?`
+        case 'RT': // 장애
+          if (ticketData.alarmmsg === 'PORT_DOWN') {
+            return `비정상적인 ${ticketData.alarmmsg}장애가 발생하였습니다.<br> ${ticketData.node_nm}의 ${ticketData.root_cause_porta}에 대하여<br> 자가회복을 진행하겠습니까?`
+          }
+      }
+
+      console.error('유효하지 않은 ticketData')
+    },
+
     onReceivedTransTicketEvent({ channelName, socketMessage }) {
       if (channelName !== 'TRANS_ALARM') return
 

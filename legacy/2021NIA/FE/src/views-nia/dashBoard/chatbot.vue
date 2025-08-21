@@ -86,9 +86,6 @@ export default {
     async sendMessage() {
       if (!this.userInput.trim()) return
 
-
-      await axios.get('http://116.89.191.47:8001/health')
-
       // 사용자 메시지 추가
       this.chatMessages.push({
         type: 'user',
@@ -232,16 +229,56 @@ export default {
 
         const data = response.data
         if (data.hits && data.hits.hits && data.hits.hits.length > 0) {
-          const path = data.hits.hits[0]._source.path
-          const currentOrigin = window.location.origin
-          const fullUrl = `${currentOrigin}/#${path}`
+          const rawPath = data.hits.hits[0]._source.path
+          const questionIndex = rawPath.indexOf('?')
+          let path = rawPath
+          let parameter = ''
+          if (questionIndex !== -1) {
+            path = rawPath.substring(0, questionIndex)
+            parameter = rawPath.substring(questionIndex + 1)
+          }
+          const routes = this.$router.options.routes2;
+          let name = this.getRouteNameByPath(routes,path)
+          this.$store.commit('chatbot/SWITCH_STATE', {name, parameter})
 
-          // 현재 창에서 이동
-          window.location.href = fullUrl
+          // const currentOrigin = window.location.origin
+          // const fullUrl = `${currentOrigin}/#${path}`
+
+          // const normalizedTargetPath = path.startsWith('/') ? path : `/${path}`
+          // if (this.$route && this.$route.path === normalizedTargetPath) {
+          //   // 기존화면과 같은 화면인 경우
+          // } else {
+          //   this.$router.push({
+          //     path: path,
+          //     query: paramObj
+          //   })
+          // }
+          this.$router.push({ name })
         }
       } catch (error) {
         console.error('경로 검색 오류:', error)
       }
+    },
+
+    getRouteNameByPath(routes, path, prefix = '') {
+      for (const route of routes) {
+        // 1. 현재 라우트의 path와 일치하는지 확인
+        if (prefix + route.path === path) {
+          return route.name;
+        }
+
+        // 2. children이 있는지 확인하고 재귀적으로 탐색
+        if (route.children) {
+          const foundName = this.getRouteNameByPath(route.children, path, route.path + '/');
+          // 자식 라우트에서 이름이 발견되면 즉시 반환
+          if (foundName) {
+            return foundName;
+          }
+        }
+      }
+
+      // 모든 라우트를 탐색했지만 일치하는 것을 찾지 못한 경우
+      return null;
     }
   }
 }
