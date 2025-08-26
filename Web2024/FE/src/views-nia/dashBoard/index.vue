@@ -415,6 +415,20 @@ export default {
 
       this.fn_openWindow('niaTopology', param)
     },
+
+    getTicketConfirmHeader(ticketData) {
+      switch (ticketData.ticket_type) {
+        case 'ATT2':
+          return '이상트래픽 경보'
+        case 'NTT':
+          return '유해트래픽 경보'
+        case 'RT':
+          return '장애 경보'
+        default:
+          return '경보'
+      }
+    },
+
     async onReceivedIpsdnTicketEvent(data) {
       // prettier-ignore
       (async () => {
@@ -422,16 +436,15 @@ export default {
           case 'TICKET_NEW':
             // prettier-ignore
             (async () => {
-              const param = {
-                TICKET_ID: data.ticketId,
-              }
-              const res = await this.onLoadIpAlarmList(param)
+              const param = { TICKET_ID: data.ticketId, }
+              const res = await apiIpAlarmList(param)
               if (res) {
                 const ticketData = res.result[0]
+
                 this.ipNetworkList.splice(0, 0, ticketData)
 
                 if (this.debug) {
-                  this.$confirm(makeAlertMessage(ticketData), '티켓처리', {
+                  this.$confirm(makeAlertMessage(ticketData), this.getTicketConfirmHeader(ticketData), {
                     confirmButtonText: '진행',
                     cancelButtonText: '취소',
                     dangerouslyUseHTMLString: true,
@@ -454,10 +467,8 @@ export default {
                 Object.assign(ticket, data.properties)
                 this.ipNetworkList = _.cloneDeep(this.ipNetworkList)
               } else {
-                const param = {
-                  TICKET_ID: data.ticketId,
-                }
-                const res = await this.onLoadIpAlarmList(param)
+                const param = { TICKET_ID: data.ticketId, }
+                const res = await apiIpAlarmList(param)
                 if (res) {
                   this.ipNetworkList.splice(0, 0, res.result[0])
                 } else {
@@ -782,7 +793,6 @@ export default {
       this.fn_openWindow('ticketDetail', row)
     },
     handleOpenEditModal(row, type) {
-      const param = { row, type }
       if (type === 'SOP') {
         this.fn_openWindow('sopHistory', row)
       } else if (type === 'NTF') {
