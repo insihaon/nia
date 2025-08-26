@@ -32,17 +32,13 @@
           :pagination-info="syslogPaginationInfo"
           class="w-100 h-100"
           @handleClickSearch="() => onClickSearch('SYSLOG')"
-          @onChangePage="(curPage) => onChangePage(curPage, 'SYSLOG')"
+@onChangePage="(curPage) => onChangePage(curPage, 'SYSLOG')"
           @rowClicked="(row) => onClickRow(row, 'SYSLOG')"
           @searchClear="() => onLoadSyslogHistList()"
         />
       </el-tab-pane>
     </el-tabs>
-    <CompAgGrid
-      v-show="false"
-      ref="excelGrid"
-      v-model="excelGrid"
-    />
+    <CompAgGrid v-show="false" ref="excelGrid" v-model="excelGrid" />
     <ModalSopDetail ref="ModalSopDetail" @reload="onReload" />
   </div>
 </template>
@@ -65,7 +61,7 @@ export default {
       type: Object,
       default() {
         return {}
-      }
+      },
     },
     row: {
       type: Object,
@@ -103,7 +99,7 @@ export default {
       ],
       sopSearchModel: {
         TICKET_ID: '',
-        DATE: []
+        DATE: [],
       },
       syslogSearchModel: {
         ALARM_NO: '',
@@ -115,7 +111,7 @@ export default {
       },
       equipmentOptionList: [],
       interfaceOptionList: [],
-      excelList: []
+      excelList: [],
     }
   },
 
@@ -166,9 +162,16 @@ export default {
         { type: '', prop: 'root_cause_sysnamez', name: '노드Z', width: 250, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true },
         { type: '', prop: 'ip_addra', name: '마스터 IP', width: 250, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true },
         { type: '', prop: 'root_cause_porta', name: '장비I/F', width: 250, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true },
-        { type: '', prop: 'ai_accuracy', name: 'AI 결과 피드백', width: 100, formatter: getSopAiAccuracy }
+        { type: '', prop: 'ai_accuracy', name: 'AI 결과 피드백', width: 100, formatter: getSopAiAccuracy },
       ]
-      return { options, columns, data: this.sopHistList, getRightClickMenuItems: () => { return [] } }
+      return {
+        options,
+        columns,
+        data: this.sopHistList,
+        getRightClickMenuItems: () => {
+          return []
+        },
+      }
     },
     syslogAgGrid() {
       const options = { name: this.name, checkable: false, rowGroupPanel: false, rowSelection: 'multiple', rowMultiSelection: false }
@@ -288,6 +291,7 @@ export default {
       try {
         this.loading = true
         const res = await apiSelectSopHistList(param)
+
         this.sopHistList = res?.result
         this.sopPaginationInfo.totalCount = res.total
         this.sopPaginationInfo.totalPages = Math.ceil(this.sopPaginationInfo.totalCount / this.sopPaginationInfo.pageSize) // 전체 페이지 수 계산
@@ -350,19 +354,20 @@ export default {
         await this.$confirm('데이터가 50,000건을 초과하였습니다. <br/> 50,000건 까지만 출력합니다.', '메시지 창', {
           confirmButtonText: '확인',
           dangerouslyUseHTMLString: true,
-          type: 'info'
-        }).then(async() => {
-          limit = 50000
-          await this.exportExcel(limit)
-        }).catch((action) => {
+          type: 'info',
         })
+          .then(async () => {
+            limit = 50000
+            await this.exportExcel(limit)
+          })
+          .catch((action) => {})
       } else {
         await this.exportExcel(limit)
       }
     },
     async exportExcel(limit) {
       const param = Object.assign(this.getSopHistParam(), { limit, page: 1 })
-      const target = ({ vue: this })
+      const target = { vue: this }
       try {
         this.openLoading(target, { text: '다운로드 중입니다.' })
         const res = await apiSelectSopHistList(param)
@@ -377,16 +382,16 @@ export default {
     },
     async autoTest() {
       const { assert, wait, onLoadSopHistList, onLoadSyslogHistList } = this
-        if (this.tapCurrent === 'ticket') {
-          await onLoadSopHistList()
-          await wait(1000)
-          assert(this.sopHistList.length > 0)
-        } else {
-          await onLoadSyslogHistList()
-          await wait(1000)
-          assert(this.syslogHistList.length > 0)
-        }
+      if (this.tapCurrent === 'ticket') {
+        await onLoadSopHistList()
+        await wait(1000)
+        assert(this.sopHistList.length > 0)
+      } else {
+        await onLoadSyslogHistList()
+        await wait(1000)
+        assert(this.syslogHistList.length > 0)
       }
+    },
   },
 }
 </script>
