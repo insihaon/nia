@@ -150,7 +150,7 @@ export default {
       this.onReceivedIpsdnTicketEvent({
         channelName: 'IPSDN_ALARM',
         socketMessage: {
-          message: '{ "result":null,"properties":null,"ticketId":"1653101","eventType":"TICKET_NEW","ticketType":"RT" }',
+          message: '{ "result":null,"properties":null,"ticketId":"1659093","eventType":"TICKET_NEW","ticketType":"...." }',
         },
       })
       setTimeout(() => {

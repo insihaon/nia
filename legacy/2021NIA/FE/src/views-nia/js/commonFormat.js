@@ -112,15 +112,40 @@ export function getDecimalCalc(row, col, value, index) { // set Decimal point
   return packetPerSeconds
 }
 
-export function makeAlertMessage(ticketData) {
+export function makeAlertMessage(ticketData, isSop = true) {
   switch (ticketData.ticket_type) {
     case 'ATT2': // 이상 트래픽
-      return `이상트래픽장애가 발생하였습니다.<br> ${ticketData.node_nm}의 ${ticketData.root_cause_porta}에 대하여<br> 자가최적화를 진행하시겠습니까?`
+      if (isSop) {
+        return `이상트래픽 장애가 발생하였습니다.
+        장비명(${ticketData.node_nm})의 포트명(${ticketData.root_cause_porta})장비에 대하여
+        <b style=color:red>SOP이력</b>이 있습니다. 이력대로 설정하시겠습니까?
+        `
+      } else {
+        return `이상트래픽 장애가 발생하였습니다.
+        장비명(${ticketData.node_nm})의 포트명(${ticketData.root_cause_porta})장비에 대하여
+        <b style=color:red>경로변경</b>을 진행할 수 있습니다. 진행하시겠습니까?`
+      }
     case 'NTT': // 유해 트래픽
-      return `유해트래픽장애가 발생하였습니다.<br> ${ticketData.node_nm}의 ${ticketData.root_cause_porta}에 대하여<br> 자가구성을 진행하시겠습니까?`
+      if (isSop) {
+        return `유해트래픽 장애가 발생하였습니다.
+        장비명(${ticketData.node_nm})의 포트명(${ticketData.root_cause_porta})장비에 대하여
+        <b style=color:red>SOP이력</b>이 있습니다. 이력대로 설정하시겠습니까?`
+      } else {
+        return `유해트래픽 장애가 발생하였습니다.
+        장비명(${ticketData.node_nm})의 포트명(${ticketData.root_cause_porta})장비에 대하여
+        <b style=color:red>포트다운</b>을 진행할 수 있습니다. 진행하시겠습니까?`
+      }
     case 'RT': // 장애
       if (ticketData.alarmmsg === 'PORT_DOWN') {
-        return `비정상적인 ${ticketData.alarmmsg}장애가 발생하였습니다.<br> ${ticketData.node_nm}의 ${ticketData.root_cause_porta}에 대하여<br> 자가회복을 진행하겠습니까?`
+        if (isSop) {
+          return `비정상적인 PORT_DOWN 장애가 발생하였습니다.
+            장비명(${ticketData.node_nm})의 포트명(${ticketData.root_cause_porta})장비에 대하여
+            <b style=color:red>SOP이력</b>이 있습니다. 이력대로 설정하시겠습니까?`
+        } else {
+          return `비정상적인 PORT_DOWN 장애가 발생하였습니다.
+            장비명(${ticketData.node_nm})의 포트명(${ticketData.root_cause_porta})장비에 대하여
+            <b style=color:red>포트리셋</b>을 진행할 수 있습니다. 진행하시겠습니까?`
+        }
       }
   }
 
