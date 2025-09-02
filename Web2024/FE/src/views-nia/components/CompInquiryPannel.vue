@@ -5,11 +5,24 @@
 
         <!-- 조회 옵션상자 -->
         <el-row class="optionRow">
-          <el-col v-for="(item, index) in items" :key="index" :xs="24" :sm="12" :md="12" :lg="8" :xl="6">
+          <el-col
+            v-for="(item, index) in items"
+            :key="index"
+            :xs="24"
+            :sm="12"
+            :md="item.size || 12"
+            :lg="item.size || 8"
+            :xl="item.size || 6"
+          >
             <div class="optionItem">
-              <label style="width : 100px">
+              <label :style="{width : item.disabledCheckBoxShow ? '80px' : '100px'}">
                 {{ item.label }}
               </label>
+              <el-checkbox
+                v-if="item.disabledCheckBoxShow"
+                v-model="item.disabled"
+                style="width: 20px; padding-right: 30px;"
+              />
               <div>
                 <el-input
                   v-if="item.type === 'input'"
@@ -27,6 +40,18 @@
                   :item="item"
                   :search-model.sync="searchModel[item.model]"
                 />
+
+                <el-radio-group
+                  v-if="item.type === 'radio'"
+                  v-model="searchModel[item.model]"
+                >
+                  <el-radio
+                    v-for="option in item.options"
+                    :key="option.value"
+                    :label="option.value"
+                  >{{ option.label }}</el-radio>
+                </el-radio-group>
+
                 <el-select
                   v-if="item.type === 'select' && !item.multiple"
                   v-model="searchModel[item.model]"
@@ -81,10 +106,10 @@
 
         <el-row>
           <el-col :span="24" align="center" class="searchBtnGroup" :class="{'is-mobile': isMobile}">
-            <el-button class="btn-r" type="info" size="mini" icon="el-icon-search" @click="onClickSearchButton">
+            <el-button v-if="!hideSearchBtn" class="btn-r" type="info" size="mini" icon="el-icon-search" @click="onClickSearchButton">
               검색
             </el-button>
-            <el-button class="btn-r" type="info" size="mini" icon="el-icon-refresh" @click="handleSearchClear">
+            <el-button v-if="!hideRefreshBtn" class="btn-r" type="info" size="mini" icon="el-icon-refresh" @click="handleSearchClear">
               초기화
             </el-button>
             <el-button v-if="isExcel" type="button" size="mini" class="excel-form-export" icon="el-icon-download" @click="handleExcel">
@@ -96,7 +121,7 @@
             </div>
           </el-col>
         </el-row>
-        <div class="sizeChangeBtn" @click="toggleMinizeOption">
+        <div v-if="!hideSizeChangeBtn" class="sizeChangeBtn" @click="toggleMinizeOption">
           <i v-show="!minizeOption" class="el-icon-close" />
           <i v-show="minizeOption" class="el-icon-arrow-down" />
         </div>
@@ -190,6 +215,18 @@ export default {
       type: String,
       default() { return null }
     },
+    hideSizeChangeBtn: {
+      type: Boolean,
+      default: false
+    },
+    hideSearchBtn: {
+      type: Boolean,
+      default: false
+    },
+    hideRefreshBtn: {
+      type: Boolean,
+      default: false
+    }
   },
   data() {
     return {
@@ -197,7 +234,9 @@ export default {
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       selectedItem: [],
       path: mdiBugOutline,
-      minizeOption: false
+      minizeOption: false,
+      dateOnOffCheckBox: true
+
     }
   },
   computed: {

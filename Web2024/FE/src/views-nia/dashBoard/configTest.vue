@@ -64,7 +64,7 @@
         </div>
         <el-row>
           <el-col :span="7">
-            <el-select v-model="remoteControl" @change="onChangeRemoteControl">
+            <el-select v-model="remoteControl">
               <el-option v-for="op in remoteOptions" :key="op.value" :label="op.label" :value="op.value" />
             </el-select>
           </el-col>
@@ -109,7 +109,7 @@ export default {
       type: Object,
       default() {
         return {}
-      }
+      },
     },
   },
   data() {
@@ -119,10 +119,11 @@ export default {
       visible: false,
       selectedRow: null,
       remoteOptions: [
-        { value: 'shoutdown', label: 'shoutdown' },
-        { value: 'noshut', label: 'noshut' }, // port up
-        { value: 'ping', label: 'ping' },
-        { value: 'ACL', label: 'ACL deny' }, // 접근제어 - 원격 차단
+        { value: 'shoutdown', label: '포트다운' }, // 자가최적화(유해트래픽)
+        { value: 'noshut', label: '포트리셋' }, // 자가회복(포트장애)
+        { value: '경로변경', label: '경로변경' }, // 자가구성(이상트래픽)
+        { value: 'ping', label: 'ping' }, // 핑 테스트
+        { value: 'ACL', label: 'ACL deny' }, // 접근제어 - 원격 차단 ??? 현재 동작안함, UI 엔진쪽에 처리코드 없음
       ],
       remoteControl: '',
       remoteParam: '',
@@ -138,7 +139,7 @@ export default {
       frameLoading: false,
       pingFileName: null,
       pingResultSrc: '',
-      activeProfile: null
+      activeProfile: null,
     }
   },
   computed: {
@@ -173,21 +174,37 @@ export default {
         this.$set(this.wdata, 'y', y)
       }
     },
+    remoteControl(nVAl, oVal) {
+      if (nVAl !== 'ping') {
+        this.isShowFrame = false
+      }
+    },
   },
   created() {
     this.selectedRow = this.wdata?.params
   },
   mounted() {
-    // PARAM: "?nodename=suwon-5812&ifname=xe2"
-    // SERVICE: "ipsdn/services/stat/badcrc"
-    // PARAM: "?nodename=suwon-5812&ifname=xe2"
-    // SERVICE: "ipsdn/services/config/interfaces"
-    const { ticket_type, root_cause_sysnamea, node_nm, ip_addr, root_cause_porta, alarmloc } = this.selectedRow
+    const { ticket_type, root_cause_sysnamea, node_nm, ip_addr, root_cause_porta, alarmloc, alarmmsg } = this.selectedRow
     this.item = {
       nodeName: ticket_type === 'SYSLOG' ? node_nm : root_cause_sysnamea,
       ipAddr: ip_addr,
       ifname: ticket_type === 'SYSLOG' ? alarmloc : root_cause_porta,
     }
+
+    switch (ticket_type) {
+      case 'ATT2': // 이상트래픽
+        this.remoteControl = '경로변경'
+        break
+      case 'NTT': // 유해트래픽
+        this.remoteControl = 'shoutdown'
+        break
+      case 'RT': // 포트다운
+        if (alarmmsg === 'PORT_DOWN') {
+          this.remoteControl = 'noshut'
+        }
+        break
+    }
+
     this.onLoadCRC()
     this.onLoadInterface()
     this.onLoadAgencyIpList()
@@ -229,36 +246,62 @@ export default {
         this.error(error)
       }
     },
-    onChangeRemoteControl(value) {
-      if (value !== 'ping') {
-        this.isShowFrame = false
+
+    makeConfirmMessage() {
+      const { nodeName, ifname } = this.item
+
+      let message = `장비명(${nodeName})의 포트명(${ifname})인 장비를<br>`
+      if (this.remoteControl === '경로변경') {
+        message += `${this.remoteParam}로`
       }
+      message += `<b style="color:red">${this.remoteControl}</b>하시겠습니까?`
+
+      return message
     },
+
     async onClickRemote() {
-      if (['shoutdown', 'noshut'].includes(this.remoteControl) && this.$store.state.app.server.profile !== 'oper') {
-        onMessagePopup(this, '해당 기능은 운영서버일때만 테스트가 가능합니다.')
-        return
+      if (!['shotdown', 'noshut', '경로변경'].includes(this.remoteControl)) {
+        this.$alert('아직 준비되지 않았습니다.')
       }
 
-      this.isShowFrame = true
-      try {
-        this.frameLoading = true
-        const { nodeName, ipAddr, ifname } = this.item
-        if (!ipAddr) {
-          await this.confirm('해당 장비의 IP가 존재하지 않습니다.', '알림', { confirmButtonText: '확인' })
-        }
-        const res = await apiRemote(this.remoteControl, { ip: ipAddr, param: `nodename=${nodeName}&ifname=${ifname}`, user_id: this.$store.state.user.info.uid })
-        if (res.success) {
-          this.pingFileName = res.result
-        } else {
-          this.pingFileName = null
-          this.isShowFrame = false
-        }
-      } catch (error) {
-        this.error(error)
-      } finally {
-        this.frameLoading = false
-      }
+      this.$confirm(this.makeConfirmMessage(), '명령어전송', {
+        confirmButtonText: '실행',
+        cancelButtonText: '취소',
+        dangerouslyUseHTMLString: true,
+        customClass: 'nia-message-box',
+      }).then(() => {
+        this.$alert('성공적으로 명령어가 전송되었습니다.', '알림', {
+          confirmButtonText: '확인',
+          customClass: 'nia-message-box',
+        })
+      })
+
+      return // 우선 막아놓음.
+
+      // if (['shoutdown', 'noshut'].includes(this.remoteControl) && this.$store.state.app.server.profile !== 'oper') {
+      //   onMessagePopup(this, '해당 기능은 운영서버일때만 테스트가 가능합니다.')
+      //   return
+      // }
+
+      // this.isShowFrame = true
+      // try {
+      //   this.frameLoading = true
+      //   const { nodeName, ipAddr, ifname } = this.item
+      //   if (!ipAddr) {
+      //     await this.confirm('해당 장비의 IP가 존재하지 않습니다.', '알림', { confirmButtonText: '확인' })
+      //   }
+      //   const res = await apiRemote(this.remoteControl, { ip: ipAddr, param: `nodename=${nodeName}&ifname=${ifname}`, user_id: this.$store.state.user.info.uid })
+      //   if (res.success) {
+      //     this.pingFileName = res.result
+      //   } else {
+      //     this.pingFileName = null
+      //     this.isShowFrame = false
+      //   }
+      // } catch (error) {
+      //   this.error(error)
+      // } finally {
+      //   this.frameLoading = false
+      // }
     },
     onClose() {
       this.isShowFrame = false

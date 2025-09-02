@@ -1,5 +1,5 @@
 <template>
-  <div :class="{ [name]: true}" style="height : 100%">
+  <div :class="{ [name]: true }" style="height: 100%">
     <!-- <el-row class="w-full d-flex flex-column"> -->
     <!-- <el-row class="d-flex p-1">
         <i class="el-icon-document mr-2 text-base" />
@@ -7,82 +7,36 @@
         <hr>
       </el-row> -->
     <el-row class="w-full">
-      <el-col class="p-1" :span="isMobile ? 24: 12">
-        <el-card shadow="never" :body-style="{'padding': '10px'}">
+      <el-col class="p-1" :span="isMobile ? 24 : 12">
+        <el-card shadow="never" :body-style="{ padding: '10px' }">
           <div slot="header">
             <div>
-              <span><i class="el-icon-document" /> {{ isSyslog ? '알람': '티켓' }} 상세 정보</span>
+              <span><i class="el-icon-document" /> {{ isSyslog ? '알람' : '티켓' }} 상세 정보</span>
             </div>
           </div>
           <el-col class="style : 20%">
-            <el-table
-              v-if="isSyslog"
-              ref="table"
-              size="mini"
-              :data="[syslogInfo]"
-              class="w-100"
-              :height="90"
-              border
-              fit
-            >
-              <el-table-column
-                v-for="col in defineSyslogDetailTable"
-                :key="col.prop"
-                :prop="col.prop"
-                :label="col.name"
-                :width="col.width"
-              />
+            <el-table v-if="isSyslog" ref="table" size="mini" :data="[syslogInfo]" class="w-100" :height="90" border fit>
+              <el-table-column v-for="col in defineSyslogDetailTable" :key="col.prop" :prop="col.prop" :label="col.name" :width="col.width" />
             </el-table>
-            <el-table
-              v-else
-              ref="table"
-              size="mini"
-              :data="[sendItem]"
-              class="w-100"
-              :height="90"
-              border
-              fit
-            >
-              <el-table-column
-                v-for="col in defineTicketDetailTable"
-                :key="col.prop"
-                :prop="col.prop"
-                :formatter="col.formatter"
-                :label="col.name"
-                :width="col.width"
-              />
+            <el-table v-else ref="table" size="mini" :data="[sendItem]" class="w-100" :height="90" border fit>
+              <el-table-column v-for="col in defineTicketDetailTable" :key="col.prop" :prop="col.prop" :formatter="col.formatter" :label="col.name" :width="col.width" />
             </el-table>
           </el-col>
         </el-card>
 
-        <el-card shadow="never" :body-style="{'padding': '10px', 'height' : '200px'}" :class="{'mt-1': isSyslog}">
+        <el-card shadow="never" :body-style="{ padding: '10px', height: '200px' }" :class="{ 'mt-1': isSyslog }">
           <div slot="header">
             <div>
               <span><i class="el-icon-document" /> 연관 SOP 리스트</span>
             </div>
           </div>
           <el-col class="style : 30%">
-            <el-table
-              ref="sopTable"
-              :size="'mini'"
-              :data="relatedSopList"
-              class="w-100"
-              :height="250"
-              border
-              fit
-            >
-              <el-table-column
-                v-for="col in sopHistColumn"
-                :key="col.name"
-                :prop="col.prop"
-                :label="col.name"
-                :width="col.width"
-                :formatter="col.formatter"
-              />
+            <el-table ref="sopTable" :size="'mini'" :data="relatedSopList" class="w-100" :height="250" border fit>
+              <el-table-column v-for="col in sopHistColumn" :key="col.name" :prop="col.prop" :label="col.name" :width="col.width" :formatter="col.formatter" />
             </el-table>
           </el-col>
         </el-card>
-        <el-card shadow="never" :body-style="{'padding': '10px', 'height' : '500px'}" class="mt-1">
+        <el-card shadow="never" :body-style="{ padding: '10px', height: '500px' }" class="mt-1">
           <div slot="header">
             <div>
               <div><i class="el-icon-document" /> 담당 직원 정보</div>
@@ -90,49 +44,23 @@
           </div>
 
           <el-col class="style : 50%">
-            <el-table
-              ref="employeeTable"
-              :size="'mini'"
-              :data="userList"
-              class="w-100"
-              :height="400"
-
-              border
-              fit
-            >
-              <el-table-column
-                type="selection"
-                align="center"
-                width="40"
-              />
-              <el-table-column
-                v-for="col in userInfoColumn"
-                :key="col.prop"
-                :prop="col.prop"
-                :label="col.name"
-                :width="col.width"
-              />
+            <el-table ref="employeeTable" :size="'mini'" :data="userList" class="w-100" :height="400" border fit>
+              <el-table-column type="selection" align="center" width="40" />
+              <el-table-column v-for="col in userInfoColumn" :key="col.prop" :prop="col.prop" :label="col.name" :width="col.width" />
             </el-table>
           </el-col>
         </el-card>
       </el-col>
-      <el-col class="p-1" :span="isMobile ? 24: 12">
-        <el-card shadow="never" :body-style="{'padding': '10px'}">
+      <el-col class="p-1" :span="isMobile ? 24 : 12">
+        <el-card shadow="never" :body-style="{ padding: '10px' }">
           <div slot="header">
             <div>
               <div><i class="el-icon-document" /> 요청 내용</div>
             </div>
           </div>
           <el-col>
-            <div
-              id="mail-content"
-              v-loading="containerLoading"
-              class="w-100 d-flex flex-column rounded shadow-sm leading-7 pl-5 w-50 overflow-y-auto text-left"
-              contenteditable="true"
-              :style="{ height: 945 + 'px', border: 'solid 1px lightgray' }"
-            >
-
-              <div style="display: none"><a :href="getMailToSystemUrl">바로가기</a><br></div>
+            <div id="mail-content" v-loading="containerLoading" class="w-100 d-flex flex-column rounded shadow-sm leading-7 pl-5 w-50 overflow-y-auto text-left" contenteditable="true" :style="{ height: 945 + 'px', border: 'solid 1px lightgray' }">
+              <div style="display: none"><a :href="getMailToSystemUrl">바로가기</a><br /></div>
               <div class="text-xl font-bold"><h2>장애 상세내역 및 조치 요청서</h2></div>
               <div>
                 <span class="sub-title font-semibold"><h4>&middot;발신</h4></span>
@@ -142,35 +70,35 @@
                 <span class="sub-title font-semibold"><h4>&middot;AI 분석 결과 정보</h4></span>
                 <span class="font-italic font-semibold"> {{ getAlarmtxt }} </span>
                 <div v-if="sendItem.ticket_type === 'ATT2'">
-                  &emsp;<span>IN</span><br>
-                  &nbsp;&nbsp;- mbps: {{ aiDetection !== null ? sendItem.in_bps + ' MB' : '' }} <br>
-                  &nbsp;&nbsp;- Predict: {{ aiDetection !== null ? sendItem.in_predict + ' MB' : '' }}<br>
-                  &nbsp;&nbsp;- Threshold_Upper: {{ aiDetection !== null ? sendItem.in_threshold_upper + ' MB' : '' }}<br>
-                  &nbsp;&nbsp;- Threshold_Lower: {{ aiDetection !== null ? sendItem.in_threshold_lower + ' MB' : '' }}<br>
-                  - Anomaly: {{ aiDetection !== null ? sendItem.in_anomaly + '' : '' }}<br>
-                  &emsp;<span>OUT</span><br>
-                  &nbsp;&nbsp;- mbps: {{ aiDetection !== null ? sendItem.out_bps + ' MB' : '' }}<br>
-                  &nbsp;&nbsp;- Predict : {{ aiDetection !== null ? sendItem.out_predict + ' MB' : '' }}<br>
-                  &nbsp;&nbsp;- Threshold_Upper: {{ aiDetection !== null ? sendItem.out_threshold_upper + ' MB' : '' }}<br>
-                  &nbsp;&nbsp;- Threshold_Lower: {{ aiDetection !== null ? sendItem.out_threshold_lower + ' MB' : '' }}<br>
-                  &nbsp;&nbsp;- Anomaly: {{ aiDetection !== null ? sendItem.out_anomaly + '' : '' }}<br>
+                  &emsp;<span>IN</span><br />
+                  &nbsp;&nbsp;- mbps: {{ aiDetection !== null ? sendItem.in_bps + ' MB' : '' }} <br />
+                  &nbsp;&nbsp;- Predict: {{ aiDetection !== null ? sendItem.in_predict + ' MB' : '' }}<br />
+                  &nbsp;&nbsp;- Threshold_Upper: {{ aiDetection !== null ? sendItem.in_threshold_upper + ' MB' : '' }}<br />
+                  &nbsp;&nbsp;- Threshold_Lower: {{ aiDetection !== null ? sendItem.in_threshold_lower + ' MB' : '' }}<br />
+                  - Anomaly: {{ aiDetection !== null ? sendItem.in_anomaly + '' : '' }}<br />
+                  &emsp;<span>OUT</span><br />
+                  &nbsp;&nbsp;- mbps: {{ aiDetection !== null ? sendItem.out_bps + ' MB' : '' }}<br />
+                  &nbsp;&nbsp;- Predict : {{ aiDetection !== null ? sendItem.out_predict + ' MB' : '' }}<br />
+                  &nbsp;&nbsp;- Threshold_Upper: {{ aiDetection !== null ? sendItem.out_threshold_upper + ' MB' : '' }}<br />
+                  &nbsp;&nbsp;- Threshold_Lower: {{ aiDetection !== null ? sendItem.out_threshold_lower + ' MB' : '' }}<br />
+                  &nbsp;&nbsp;- Anomaly: {{ aiDetection !== null ? sendItem.out_anomaly + '' : '' }}<br />
                 </div>
 
                 <div v-if="sendItem.ticket_type === 'ATT2' || sendItem.ticket_type === 'NTT'">
-                  <span class="font-semibold">&nbsp;&nbsp;&middot;장애 유무 판단 확률</span><br>
-                  &nbsp;&nbsp;&nbsp;- 유효 확률 : {{ sendItem.zero1_entropy ? ((1 - sendItem.zero1_entropy) * 100).toFixed(1) + '%' : '' }}<br>
+                  <span class="font-semibold">&nbsp;&nbsp;&middot;장애 유무 판단 확률</span><br />
+                  &nbsp;&nbsp;&nbsp;- 유효 확률 : {{ sendItem.zero1_entropy ? ((1 - sendItem.zero1_entropy) * 100).toFixed(1) + '%' : '' }}<br />
                   &nbsp;&nbsp;&nbsp;- 무효 확률 : {{ sendItem.zero1_entropy ? (sendItem.zero1_entropy * 100).toFixed(1) + '%' : '' }}
                 </div>
 
                 <div v-if="sendItem.ticket_type === 'FTT'">
-                  &nbsp;&nbsp;- 장애 확률 : {{ sendItem.zero1_entropy ? (sendItem.zero1_entropy * 100).toFixed(1) + '%' : '' }}<br>
+                  &nbsp;&nbsp;- 장애 확률 : {{ sendItem.zero1_entropy ? (sendItem.zero1_entropy * 100).toFixed(1) + '%' : '' }}<br />
                   &nbsp;&nbsp;- 비장애 확률 : {{ sendItem.zero1_entropy ? ((1 - sendItem.zero1_entropy) * 100).toFixed(1) + '%' : '' }}
                 </div>
 
                 <div v-if="sendItem.ticket_type === 'NFTT'">
-                  &nbsp;&nbsp;- Measured Time : {{ sendItem.measured_datetime }} <br>
-                  &nbsp;&nbsp;- CPU 예측값 : {{ sendItem.cpu_predicted }} <br>
-                  &nbsp;&nbsp;- Mem 예측값 : {{ sendItem.mem_predicted }} <br>
+                  &nbsp;&nbsp;- Measured Time : {{ sendItem.measured_datetime }} <br />
+                  &nbsp;&nbsp;- CPU 예측값 : {{ sendItem.cpu_predicted }} <br />
+                  &nbsp;&nbsp;- Mem 예측값 : {{ sendItem.mem_predicted }} <br />
                 </div>
               </div>
               <div>
@@ -182,22 +110,21 @@
               <div>
                 <span class="sub-title font-semibold"><h4>&middot;작업 요청 내용</h4></span>
                 <div v-if="isSyslog">
-                  &nbsp;&nbsp;- 발생 시간 : {{ formatterTimeStamp(syslogInfo.alarmtime) }}<br>
-                  &nbsp;&nbsp;- 알람 번호 : {{ syslogInfo.alarmno }} <br>
-                  &nbsp;&nbsp;- 장비명 : {{ syslogInfo.node_nm }}<br>
-                  &nbsp;&nbsp;- 장비 번호 : {{ syslogInfo.node_num }}<br>
-                  &nbsp;&nbsp;- 인터페이스 : {{ syslogInfo.alarmloc }}<br>
-                  &nbsp;&nbsp;- 알람 메시지 : {{ syslogInfo.alarmmsg }}<br>
-                  &nbsp;&nbsp;- 원본 메시지 : {{ syslogInfo.etc }}<br>
+                  &nbsp;&nbsp;- 발생 시간 : {{ formatterTimeStamp(syslogInfo.alarmtime) }}<br />
+                  &nbsp;&nbsp;- 알람 번호 : {{ syslogInfo.alarmno }} <br />
+                  &nbsp;&nbsp;- 장비명 : {{ syslogInfo.node_nm }}<br />
+                  &nbsp;&nbsp;- 장비 번호 : {{ syslogInfo.node_num }}<br />
+                  &nbsp;&nbsp;- 인터페이스 : {{ syslogInfo.alarmloc }}<br />
+                  &nbsp;&nbsp;- 알람 메시지 : {{ syslogInfo.alarmmsg }}<br />
+                  &nbsp;&nbsp;- 원본 메시지 : {{ syslogInfo.etc }}<br />
                   &nbsp;&nbsp;- 상세 내용 :
                 </div>
                 <div v-else>
-                  &nbsp;&nbsp;- 작업 요청 구간 : {{ (trafficInfo.root_cause_sysnamea || '') + '(' + (trafficInfo.root_cause_porta || '')+ ')' }} →
-                  {{ (trafficInfo.root_cause_sysnamez ||'') + '(' +(trafficInfo.root_cause_portz ||'') + ')' }}<br>
-                  &nbsp;&nbsp;- 티켓 번호 : {{ sendItem.ticket_id }} <br>
-                  &nbsp;&nbsp;- 티켓 타입 : {{ sendItem.ticket_type }}<br>
-                  &nbsp;&nbsp;- 발생 원인 : {{ sendItem.ticket_result || sendItem.ticket_rca_result_dtl_code }}<br>
-                  &nbsp;&nbsp;- 발생 시간 : {{ formatterTimeStamp(sendItem.fault_time) }}<br>
+                  &nbsp;&nbsp;- 작업 요청 구간 : {{ (trafficInfo.root_cause_sysnamea || '') + '(' + (trafficInfo.root_cause_porta || '') + ')' }} → {{ (trafficInfo.root_cause_sysnamez || '') + '(' + (trafficInfo.root_cause_portz || '') + ')' }}<br />
+                  &nbsp;&nbsp;- 티켓 번호 : {{ sendItem.ticket_id }} <br />
+                  &nbsp;&nbsp;- 티켓 타입 : {{ sendItem.ticket_type }}<br />
+                  &nbsp;&nbsp;- 발생 원인 : {{ sendItem.ticket_result || sendItem.ticket_rca_result_dtl_code }}<br />
+                  &nbsp;&nbsp;- 발생 시간 : {{ formatterTimeStamp(sendItem.fault_time) }}<br />
                   &nbsp;&nbsp;- 상세 내용 :
                 </div>
               </div>
@@ -207,15 +134,13 @@
               </div>
               <div v-if="['NTT', 'ATT2'].includes(sendItem.ticket_type)">
                 <span class="sub-title font-semibold"><h4>&middot;장애 구간</h4></span>
-                <div>
-                  {{ trafficInfo.root_cause_sysnamea + '(' + trafficInfo.root_cause_porta + ')' }} → {{ trafficInfo.root_cause_sysnamez + '(' + trafficInfo.root_cause_portz + ')' }}
-                </div>
+                <div>{{ trafficInfo.root_cause_sysnamea + '(' + trafficInfo.root_cause_porta + ')' }} → {{ trafficInfo.root_cause_sysnamez + '(' + trafficInfo.root_cause_portz + ')' }}</div>
               </div>
               <div>
                 <span class="sub-title font-semibold"><h4>&middot;연관 SOP</h4></span>
                 <div>
-                  &nbsp;&nbsp;- 장애 구분: {{ sendItem.fault_classify || '' }}<br>
-                  &nbsp;&nbsp;- 장애 유형: {{ sendItem.fault_type || '' }}<br>
+                  &nbsp;&nbsp;- 장애 구분: {{ sendItem.fault_classify || '' }}<br />
+                  &nbsp;&nbsp;- 장애 유형: {{ sendItem.fault_type || '' }}<br />
                   &nbsp;&nbsp;- 조치 내용: {{ sendItem.fault_detail_content || '' }}
                 </div>
               </div>
@@ -224,8 +149,8 @@
         </el-card>
       </el-col>
 
-    <!-- </el-row> -->
-    <!-- </el-row> -->
+      <!-- </el-row> -->
+      <!-- </el-row> -->
     </el-row>
     <el-row>
       <el-col align="right" class="mt-1">
@@ -265,9 +190,9 @@ export default {
       type: Object,
       default() {
         return {}
-      }
+      },
     },
-    popup: { type: String, default: 'N' }
+    popup: { type: String, default: 'N' },
   },
   data() {
     return {
@@ -298,21 +223,37 @@ export default {
       ticketInfo: [],
       defineSyslogDetailTable: [
         { type: '', prop: 'alarmno', name: '알람번호', width: 100 },
-        { type: '', prop: 'alarmtime', name: '발생시간', width: 140, formatter: (row) => { return this.formatterTimeStamp(row.request_time, 'YYYY/MM/DD-HH:mm:ss') } },
-        { type: '', prop: 'node_num', name: '장비번호', width: 100, },
-        { type: '', prop: 'node_nm', name: '장비명', width: 100, },
-        { type: '', prop: 'alarmloc', name: '인터페이스', width: 100, },
-        { type: '', prop: 'alarmmsg', name: '알람메시지', width: 150, },
-        { type: '', prop: 'etc', name: '원본메시지', width: 230, },
+        {
+          type: '',
+          prop: 'alarmtime',
+          name: '발생시간',
+          width: 140,
+          formatter: (row) => {
+            return this.formatterTimeStamp(row.request_time, 'YYYY/MM/DD-HH:mm:ss')
+          },
+        },
+        { type: '', prop: 'node_num', name: '장비번호', width: 100 },
+        { type: '', prop: 'node_nm', name: '장비명', width: 100 },
+        { type: '', prop: 'alarmloc', name: '인터페이스', width: 100 },
+        { type: '', prop: 'alarmmsg', name: '알람메시지', width: 150 },
+        { type: '', prop: 'etc', name: '원본메시지', width: 230 },
       ],
       defineTicketDetailTable: [
         { type: '', prop: 'ticket_id', name: '티켓번호', width: 100 },
-        { type: '', prop: 'fault_time', name: '처리시간', width: 140, formatter: (row) => { return this.formatterTimeStamp(row.request_time, 'YYYY/MM/DD-HH:mm:ss') } },
-        { type: '', prop: 'clos_time', name: '마감시간', width: 140, },
+        {
+          type: '',
+          prop: 'fault_time',
+          name: '처리시간',
+          width: 140,
+          formatter: (row) => {
+            return this.formatterTimeStamp(row.request_time, 'YYYY/MM/DD-HH:mm:ss')
+          },
+        },
+        { type: '', prop: 'clos_time', name: '마감시간', width: 140 },
         { type: '', prop: 'ticket_type', name: '티켓유형', width: 100 },
-        { type: '', prop: 'ticket_result', name: '장애내용', width: 120, },
-        { type: '', prop: 'root_cause_sysnamea', name: '장비ID', width: 100, },
-        { type: '', prop: 'root_cause_porta', name: '인터페이스', width: 100, }
+        { type: '', prop: 'ticket_result', name: '장애내용', width: 120 },
+        { type: '', prop: 'root_cause_sysnamea', name: '장비ID', width: 100 },
+        { type: '', prop: 'root_cause_porta', name: '인터페이스', width: 100 },
       ],
       selectedReceiverUser: [],
     }
@@ -321,7 +262,15 @@ export default {
     sopHistColumn() {
       const syslogCol = [
         { type: '', prop: 'alarmno', name: '알람번호', width: 100 },
-        { type: '', prop: '', name: '발생시간', width: 180, formatter: (row) => { return this.formatterTimeStamp(row.fault_time, 'YYYY/MM/DD-HH:mm:ss') }, },
+        {
+          type: '',
+          prop: '',
+          name: '발생시간',
+          width: 180,
+          formatter: (row) => {
+            return this.formatterTimeStamp(row.fault_time, 'YYYY/MM/DD-HH:mm:ss')
+          },
+        },
         { type: '', prop: 'fault_classify', name: '장애구분', width: 100 },
         { type: '', prop: 'fault_type', name: '장애유형', width: 100 },
         { type: '', prop: 'fault_detail_content', name: '조치내용', width: 100 },
@@ -334,7 +283,15 @@ export default {
       ]
       const columns = [
         { type: '', prop: 'ticket_id', name: '티켓번호', width: 100 },
-        { type: '', prop: '', name: '처리시간', width: 180, formatter: (row) => { return this.formatterTimeStamp(row.request_time, 'YYYY/MM/DD-HH:mm:ss') }, },
+        {
+          type: '',
+          prop: '',
+          name: '처리시간',
+          width: 180,
+          formatter: (row) => {
+            return this.formatterTimeStamp(row.request_time, 'YYYY/MM/DD-HH:mm:ss')
+          },
+        },
         { type: '', prop: 'ticket_type', name: '티켓유형', width: 80 /* , formatter: getAlarmType */ },
         { type: '', prop: 'root_cause_porta', name: '장애구분', width: 100 },
         { type: '', prop: 'fault_classify', name: '장애유형', width: 100 },
@@ -345,7 +302,15 @@ export default {
         { type: '', prop: 'ip_addra', name: '마스터 IP', width: 100 },
         { type: '', prop: 'root_cause_porta', name: '장비I/F', width: 100 },
         { type: '', prop: 'handling_fin_user', name: '마감자', width: 100 },
-        { type: '', prop: 'handling_fin_time', name: '마감시간', width: 150, formatter: (row) => { return formatterTime(row.handling_fin_time) }, },
+        {
+          type: '',
+          prop: 'handling_fin_time',
+          name: '마감시간',
+          width: 150,
+          formatter: (row) => {
+            return formatterTime(row.handling_fin_time)
+          },
+        },
       ]
       const isSyslog = this.isSyslog
       return isSyslog ? syslogCol : columns
@@ -392,9 +357,9 @@ export default {
     },
     getAlarmtxt() {
       return getAlarmType(this.sendItem)
-    }
+    },
   },
-  created () {
+  created() {
     this.onLoadUserList()
   },
   async mounted() {
@@ -547,7 +512,7 @@ export default {
       const param = {
         mail: {
           subject: this.moment(new Date()).format('YYYY년 MM월 DD일 HH시mm분ss초') + ' 장비 조치 요청서',
-          content: contentEl.getInnerHTML().replace('display: none;'),
+          content: contentEl.innerHTML.replace('display: none;'),
           receiverUser: receiverUser
             .map((v) => v.email)
             .join(', ')

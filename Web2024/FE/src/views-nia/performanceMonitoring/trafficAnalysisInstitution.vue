@@ -41,8 +41,8 @@ export default {
         // pagerCount: 11
       },
       selectedRow: [],
-       trafficData: [],
-        searchItems: [
+      trafficData: [],
+      searchItems: [
         { label: '이용기관(S)', type: 'select', multiple: false, placeholder: '이용기관을 선택하세요', model: 'src_nren_name', icon: 'el-icon-setting', setting: { allOption: { toggle: true } }, options: [] },
         { label: 'IP(S)', type: 'input', multiple: false, placeholder: 'IP(S)를 검색하세요', icon: 'el-icon-search', model: 'src_ip' },
         { label: '이용기관(D)', type: 'select', multiple: false, placeholder: '이용기관을 선택하세요', model: 'dst_nren_name', icon: 'el-icon-warning', setting: { allOption: { toggle: true } }, options: [] },
@@ -91,7 +91,7 @@ export default {
       this.onLoadTrafficList(params)
     },
     async onLoadTrafficList() {
-       const param = {
+      const param = {
         src_nren_name: this.searchModel.src_nren_name,
         src_ip: this.searchModel.src_ip,
         dst_nren_name: this.searchModel.dst_nren_name,
@@ -99,7 +99,7 @@ export default {
         top_n: this.searchModel.top_n,
         limit: this.paginationInfo.pageSize,
         page: this.paginationInfo.currentPage,
-       }
+      }
       try {
         this.loading = true
         const res = await apiTrafficAgencyList(param)

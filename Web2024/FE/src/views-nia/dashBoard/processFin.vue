@@ -59,14 +59,14 @@ import { Base } from '@/min/Base'
 import _ from 'lodash'
 import { apiSelectSopCode, apiSendMQ } from '@/api/nia'
 import ModalSopMng from '@/views-nia/modal/ModalSopMng'
-import sopHistory from '@/views-nia/alarmMonitoring/sopHistory.vue'
+// import sopHistory from '@/views-nia/alarmMonitoring/sopHistory.vue'
 
 const routeName = 'processFin'
 
 export default {
   name: routeName,
   // eslint-disable-next-line vue/no-unused-components
-  components: { sopHistory, ModalSopMng },
+  components: { /* sopHistory, */ ModalSopMng },
   extends: Base,
   props: {
     wdata: {
@@ -102,9 +102,9 @@ export default {
     }
   },
   computed: {
-    componentLoader() {
-      return sopHistory
-    },
+    // componentLoader() {
+    //   return sopHistory
+    // },
     actionForm() {
       return [
         { label: '장애구분', model: 'fault_classify', options: this.selectOption.gubun },

@@ -60,6 +60,12 @@ const mutations = {
       state.windows[i].zindex--
     }
     state.windows.push(value)
+  },
+  SET_WINDOW_OPTIONS(state, { id, options }) {
+    var window = state.windows.find(window => window.id === id)
+    if (window) {
+      Object.assign(window, options)
+    }
   }
 }
 
@@ -72,6 +78,9 @@ const actions = {
   },
   bringToFrontWindow({ commit }, id) {
     commit('BRING_TO_FRONT_WINDOW', id)
+  },
+  setWindowOptions({ commit }, { id, options }) {
+    commit('SET_WINDOW_OPTIONS', { id, options })
   }
 }
 

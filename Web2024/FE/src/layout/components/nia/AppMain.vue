@@ -4,7 +4,7 @@
     <div v-if="isMobile && isOpenHistorybar" class="drawer-bg" @click="handleClickOutside" />
     <transition name="fade-transform" mode="out-in" :duration="duration">
       <keep-alive :include="cachedViews">
-        <router-view :key="key" :style="{ 'padding-right': isMobile ? '0px' : getHistoryOffset }" style="transition: all 0.3s" />
+        <router-view ref="routerView" :key="key" :style="{ 'padding-right': isMobile ? '0px' : getHistoryOffset }" style="transition: all 0.3s" />
       </keep-alive>
     </transition>
   </section>
@@ -22,7 +22,7 @@ export default {
   extends: Base,
   data() {
     return {
-      AppOptions: AppOptions
+      AppOptions: AppOptions,
     }
   },
   computed: {
@@ -36,8 +36,8 @@ export default {
       return this.$store.state.tagsView.lazyCachedViews.includes(this.$route.name) ? 200 : 500
     },
     ...mapState({
-      showBottombar: state => state.settings.bottombar,
-      historybar: state => state.app.historybar,
+      showBottombar: (state) => state.settings.bottombar,
+      historybar: (state) => state.app.historybar,
     }),
     isOpenHistorybar() {
       return this.historybar.opened
@@ -54,8 +54,7 @@ export default {
   mounted() {
     window.main = this
   },
-  beforeDestroy() {
-  },
+  beforeDestroy() {},
   methods: {
     addTags() {
       const { name } = this.$route
@@ -67,22 +66,21 @@ export default {
     handleClickOutside() {
       this.$store.dispatch('app/closeHistoryBar')
     },
-  }
+  },
 }
 </script>
 
 <style lang="scss">
-
-.el-notification.right{
+.el-notification.right {
   bottom: 16px !important;
 }
 
 :root {
-    --navTopbar-height: 0px;
-    --historybar-width: 180px;
-    --historybar-default-width: 10px;
-    --tag-bar-height: 75px;
-    --fixed-top-header-height: calc( var(--navTopbar-height) + var(--tag-bar-height));
+  --navTopbar-height: 0px;
+  --historybar-width: 180px;
+  --historybar-default-width: 10px;
+  --tag-bar-height: 75px;
+  --fixed-top-header-height: calc(var(--navTopbar-height) + var(--tag-bar-height));
 }
 
 // fix css style bug in open el-dialog
@@ -105,7 +103,7 @@ export default {
 
 <style lang="scss" scoped>
 .app-main {
-  font-family: "NotoSansKR";
+  font-family: 'NotoSansKR';
   height: calc(100vh - 80px);
 
   width: 100%;
@@ -113,7 +111,7 @@ export default {
   overflow: hidden;
   // transition: all 0.3s;
 
-  &>* {
+  & > * {
     height: 100%;
     overflow: auto;
     width: 100%;
@@ -133,17 +131,17 @@ body.el-popup-parent--hidden .app-main {
   z-index: 1;
 }
 
-.fixed-header+.app-main {
+.fixed-header + .app-main {
   padding-top: var(--navTopbar-height);
 }
 
 .hasTagsView {
-  .fixed-header+.app-main {
+  .fixed-header + .app-main {
     padding-top: var(--fixed-top-header-height);
   }
 }
 
-:not(.hasTagsView) .app-main{
+:not(.hasTagsView) .app-main {
   padding-top: var(--navTopbar-height);
 }
 
@@ -151,8 +149,8 @@ body.el-popup-parent--hidden .app-main {
   .app-main {
     height: calc(100vh - 100px);
   }
-  .fixed-header+.app-main,
-  .hasTagsView .fixed-header+.app-main{
+  .fixed-header + .app-main,
+  .hasTagsView .fixed-header + .app-main {
     height: calc(100vh - 48px);
   }
   .hasTagsView .app-main {
@@ -164,8 +162,8 @@ body.el-popup-parent--hidden .app-main {
   .app-main {
     height: calc(100vh - 150px);
   }
-  .fixed-header+.app-main,
-  .hasTagsView .fixed-header+.app-main{
+  .fixed-header + .app-main,
+  .hasTagsView .fixed-header + .app-main {
     height: calc(100vh - 92px);
   }
   .hasTagsView .app-main {
@@ -175,15 +173,14 @@ body.el-popup-parent--hidden .app-main {
 
 .hideBottombar {
   .app-main {
-    height: calc(100vh - 71px)
+    height: calc(100vh - 71px);
   }
-  .hasTagsView .fixed-header+.app-main,
-  .fixed-header+.app-main {
+  .hasTagsView .fixed-header + .app-main,
+  .fixed-header + .app-main {
     height: 100vh;
   }
   .hasTagsView .app-main {
     height: calc(100vh - var(--fixed-top-header-height));
   }
 }
-
 </style>
