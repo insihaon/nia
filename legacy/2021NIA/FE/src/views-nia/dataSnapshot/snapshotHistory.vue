@@ -1,85 +1,13 @@
 <template>
   <div :class="{ [name]: true, 'w-100':true }">
     <div class="common-padding">
-      <div class="search-container">
-        <div class="optionBox">
-          <!-- 조회 옵션상자 -->
-          <el-row class="optionRow" :class="{ 'd-flex flex-column': isModal }">
-            <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
-              <div class="optionItem">
-                <label> 제목 </label>
-                <div>
-                  <el-input
-                    v-model="registItem.title"
-                    size="mini"
-                    type="text"
-                    :style="{'width': isModal? '200px': '100%'}"
-                    placeholder="제목을 입력하세요"
-                    clearable
-                  />
-                </div>
-              </div>
-            </el-col>
-            <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="12">
-              <div class="optionItem">
-                <label> 분류 </label>
-                <div>
-                  <div :class="{'flex-column': isMobile}" style="display: flex; flex-wrap: wrap; font-weight: 100;" >
-                    <div
-                      v-for="option in categoryOptions"
-                      v-if="option.show"
-                      :key="option.value"
-                      style="margin-right: 10px;"
-                    >
-                      <label>
-                        <input
-                          v-model="registItem.type"
-                          type="radio"
-                          :value="option.value"
-                          @change="onChangeSnapshotType"
-                        />
-                        {{ option.label }}
-                      </label>
-                    </div>
-                  </div>
-
-                </div>
-              </div>
-            </el-col>
-            <el-col :xs="24" :sm="12" :md="12" :lg="24" :xl="6">
-              <div class="optionItem">
-                <label> 기간 </label>
-                <div>
-                  <el-date-picker
-                    v-model="registItem.period"
-                    type="datetimerange"
-                    size="mini"
-                    start-placeholder="시작 일자"
-                    end-placeholder="종료 일자"
-                    :default-time="['00:00:00','23:59:59']"
-                  />
-                </div>
-              </div>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="24" align="center" class="searchBtnGroup">
-              <el-button class="btn-r" type="info" size="mini" icon="el-icon-folder-opened" @click="onClickSnapshot()">
-                저장
-              </el-button>
-            </el-col>
-          </el-row>
-        </div>
-      </div>
       <CompInquiryPannel
-        v-if="isShowHist"
-        ref="snapshotAgGrid"
+        ref="CompInquiryPannel"
         :ag-grid="snapshotAgGrid"
+        :items="searchItems"
+        :search-model.sync="searchModel"
         :pagination-info="paginationInfo"
-        class="w-100"
-        :style="{'height': isModal ? '300px':'' }"
-        :is-search="false"
-        :is-modal="true"
+        class="w-100 h-100"
         @handleClickSearch="onClickSearch"
         @onChangePage="onChangePage"
       />
@@ -108,10 +36,6 @@ export default {
       type: Boolean,
       default: true
     },
-    selectedTicket: {
-      type: Object,
-      default() { return null }
-    },
   },
   data() {
     return {
@@ -125,12 +49,25 @@ export default {
         pagerCount: 11
       },
       snapshotHistList: [],
-      registItem: {
+      searchItems: [
+        { label: '제목', size: 6, type: 'input', multiple: false, placeholder: '제목을 입력하세요', icon: 'el-icon-search', model: 'title' },
+        {
+          label: '분류', type: 'select', size: 6, model: 'type', placeholder: '분류를 선택하세요', options: [
+            { value: 'fault', label: '장애' },
+            { value: 'ticket-att2', label: '이상 트래픽' },
+            { value: 'ticket-ntt', label: '유해 트래픽' },
+            { value: 'ticket-nftt', label: '장비부하 장애' },
+            { value: 'perf', label: '광신호이상' },
+            { value: 'resources', label: '시설' },
+            { value: 'test', label: '시험데이터' }
+        ] },
+        { label: '기간', type: 'date', size: 6, model: 'period', disabledCheckBoxShow: true, disabled: true }
+      ],
+      searchModel: {
         title: '',
         type: 'test',
-        period: [Date.today(0), Date.today()],
+        period: [Date.today(0), Date.today()]
       },
-      options: ['장애', '이상트래픽', '유해 트래픽', '장비부하 장애', '광신호이상', '시설', '시험데이터'],
     }
   },
   computed: {
@@ -139,108 +76,56 @@ export default {
         name: this.name, checkable: false, rowGroupPanel: false, rowSelection: 'multiple', rowMultiSelection: false, suppressRowClickSelection: true,
       }
       const columns = [
-        { type: '', prop: 'title', name: '제목', width: 100, suppressMenu: true, alignItems: 'center' },
-        { type: '', prop: 'start_time', name: '시작 시간', width: 150, suppressMenu: true, alignItems: 'center', format: (row) => { return row.start_time ? this.formatterTimeStamp(row.start_time, 'YYYY/MM/DD-HH:mm:ss') : '' } },
-        { type: '', prop: 'end_time', name: '종료 시간', width: 150, suppressMenu: true, alignItems: 'center', format: (row) => { return row.end_time ? this.formatterTimeStamp(row.end_time, 'YYYY/MM/DD-HH:mm:ss') : '' } },
+        { type: '', prop: 'title', name: '제목', width: 200, suppressMenu: true, alignItems: 'center' },
+        { type: '', prop: 'start_time', name: '시작 시간', width: 200, suppressMenu: true, alignItems: 'center', format: (row) => { return row.start_time ? this.formatterTimeStamp(row.start_time, 'YYYY/MM/DD-HH:mm:ss') : '' } },
+        { type: '', prop: 'end_time', name: '종료 시간', width: 200, suppressMenu: true, alignItems: 'center', format: (row) => { return row.end_time ? this.formatterTimeStamp(row.end_time, 'YYYY/MM/DD-HH:mm:ss') : '' } },
         { type: '', prop: '', name: '다운로드', width: 50, suppressMenu: true, alignItems: 'center', cellRendererFramework: 'CellRenderSnapshot', cellRendererParams: { type: 'downroadUrl', action: this.onClickDownload.bind(this) } },
         { type: '', prop: '', name: '삭제', width: 50, suppressMenu: true, alignItems: 'center', cellRendererFramework: 'CellRenderSnapshot', cellRendererParams: { type: 'delete', action: this.onDeleteSnapshot.bind(this) } },
       ]
       return { options, columns, data: this.snapshotHistList, getRightClickMenuItems: () => { return [] } }
     },
-    categoryOptions() {
-      const isTicketNull = this.selectedTicket === null
-      return [
-      { value: 'fault', label: '장애', show: isTicketNull },
-      { value: 'ticket-att2', label: '이상 트래픽', show: true },
-      { value: 'ticket-ntt', label: '유해 트래픽', show: true },
-      { value: 'ticket-nftt', label: '장비부하 장애', show: true },
-      { value: 'perf', label: '광신호이상', show: isTicketNull },
-      { value: 'resources', label: '시설', show: isTicketNull },
-      { value: 'test', label: '시험데이터', show: isTicketNull }
-    ]
-  }
+    periodItem() {
+      return this.searchItems.find((i) => i.model === 'period')
+    }
+
   },
   watch: {
-    selectedTicket(nVal, oVal) {
-      this.setRadioType()
-    }
   },
   mounted() {
     this.onLoadSnapshotList()
   },
   methods: {
     onSortedChange(param) {
-       this.onLoadSnapshotList()
+      this.onLoadSnapshotList()
     },
     onClickSearch(params) {
       this.onLoadSnapshotList(params)
     },
-    setRadioType() {
-      if (this.isModal) {
-        let registType = ''
-        switch (this.selectedTicket.ticket_type) {
-          case 'ATT2':
-          registType = 'ticket-att2'
-            break
-          case 'NTT':
-          registType = 'ticket-ntt'
-            break
-          case 'NFTT':
-          registType = 'ticket-nftt'
-            break
-          default:
-            break
-        }
-        this.registItem.type = registType
-      } else {
-        this.onLoadSnapshotList()
-      }
-    },
     async onLoadSnapshotList() {
-      const target = { vue: this.$refs.trafficAnalysis }
-      this.isShowHist && this.openLoading(target)
+      if (!this.searchModel.type || this.searchModel.type.length === 0) {
+        this.$alert('분류를 선택해야합니다.', '검색실패')
+        return
+      }
+
+      const target = { vue: this.$refs.CompInquiryPannel }
+      this.openLoading(target)
       try {
-        const res = await apiSelectSnapshotList({ EVENT_GB: this.registItem.type })
+        const res = await apiSelectSnapshotList(
+          {
+            EVENT_GB: this.searchModel.type,
+            TITLE: this.searchModel.title,
+            START_DATE: this.periodItem.disabled ? null : this.searchModel.period[0],
+            END_DATE: this.periodItem.disabled ? null : this.searchModel.period[1],
+          }
+        )
         this.snapshotHistList = res?.result
         this.paginationInfo.totalCount = res.total // 총 항목 수 설정
         this.paginationInfo.totalPages = Math.ceil(this.paginationInfo.totalCount / this.paginationInfo.pageSizes) // 전체 페이지 수 계산
       } catch (error) {
         console.error(error)
       } finally {
-        this.isShowHist && this.closeLoading(target)
+        this.closeLoading(target)
       }
-    },
-    onClickSnapshot() {
-      this.confirm('저장 하시겠습니까?', '데이터 스냅샷', {
-        confirmButtonText: '저장',
-        cancelButtonText: '취소',
-      }).then(async () => {
-        const param = {
-          eventType: 'REQUEST_DATA_SNAPSHOT',
-          title: this.registItem.title,
-          startTime: this.registItem.period[0]?.getTime(),
-          endTime: this.registItem.period[1]?.getTime(),
-          detail: this.registItem.type,
-          // ticket_id: this.selectedTicket ? this.selectedTicket.ticket_id : null
-        }
-        if (this.selectedTicket) {
-          Object.assign(param, { ticket_id: this.selectedTicket.ticket_id })
-        }
-        try {
-            const res = await apiSendMQ('dataSnapshot', param)
-            if (res.success) {
-              this.$alert('저장 되었습니다.', '알림', {
-                confirmButtonText: '확인'
-              })
-              this.onLoadSnapshotList()
-            }
-        } catch (error) {
-          this.$alert('저장에 실패하였습니다.', '알림', {
-            confirmButtonText: '확인'
-          })
-          console.error(error)
-        }
-      })
     },
     onDeleteSnapshot(row) {
       this.confirm('삭제 하시겠습니까?', '알림', {

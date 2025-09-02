@@ -5,17 +5,13 @@
     <div class="main-container" :class="[{ hasTagsView: needTagsView }, AppOptions.instance.project]">
       <div :class="{ 'fixed-header': fixedHeader }">
         <NavBar ref="navbar" />
-        <div
-          v-if="$route.name !== 'NiaMain'"
-          class="cur-title-container"
-          :style="{'background-color': ($route.name.includes('Monitoring')) ? '#1f335d' : '#fff', color: ($route.name.includes('Monitoring')) ? '#fff' : '#141414'}"
-        >
+        <div v-if="$route.name !== 'NiaMain'" class="cur-title-container" :style="{ 'background-color': $route.name.includes('Monitoring') ? '#1f335d' : '#fff', color: $route.name.includes('Monitoring') ? '#fff' : '#141414' }">
           <div>
             <span><i class="el-icon-document" />홈 > {{ getCurPageParentTitle }} > </span>
             <span>{{ getCurPageTitle }}</span>
           </div>
         </div>
-        <AppMain v-if="!popupLayout" ref="appmain" :style="{height: `calc(100vh - ${$route.name === 'NiaMain' ? '110': '155'}px)`}" />
+        <AppMain v-if="!popupLayout" ref="appmain" :style="{ height: appMainHeight }" />
         <BottomBar ref="bottombar" />
       </div>
     </div>
@@ -32,6 +28,8 @@ import SideBar from './sideBar/index'
 import BottomBar from './BottomBar'
 import WindowBase from '@/views-nia/layout/components/WindowBase'
 import ResizeMixin from '@/layout/mixin/ResizeHandler'
+import { makeAlertMessage } from '@/views-nia/js/commonFormat'
+import { apiIpAlarmList } from '@/api/nia'
 
 import { mapState, mapGetters } from 'vuex'
 
@@ -46,7 +44,7 @@ export default {
     NavBar,
     SideBar,
     BottomBar,
-    WindowBase
+    WindowBase,
   },
   extends: Base,
   mixins: [ResizeMixin],
@@ -61,12 +59,17 @@ export default {
   },
   computed: {
     ...mapGetters(['permission_routes']),
+
+    appMainHeight() {
+      return `calc(100vh - ${this.$route.name === 'NiaMain' ? '110' : '155'}px)`
+    },
+
     getCurPageTitle() {
       return this.$route?.meta?.title ?? ''
     },
     getCurPageParentTitle() {
       const parantPath = this.$route.path.split('/')[1]
-      const parantRoute = this.permission_routes.find(v => v.path === `/${parantPath}`)
+      const parantRoute = this.permission_routes.find((v) => v.path === `/${parantPath}`)
       return parantRoute?.meta?.title ?? ''
     },
     loginUsername() {
@@ -93,7 +96,7 @@ export default {
     },
     ...mapState({
       roles: (state) => state.user.roles,
-      sidebar: state => state.app.sidebar,
+      sidebar: (state) => state.app.sidebar,
       historybar: (state) => state.app.historybar,
       showHistorybar: (state) => state.app.historybar.opened,
       fixedHeader: (state) => state.settings.fixedHeader,
@@ -132,20 +135,94 @@ export default {
     },
   },
   mounted() {
-    //  this.subscribeEvent()
     this.$nextTick(() => {
       this.setShowBottombar()
+      this.subscribeEvent()
     })
   },
+  beforeDestroy() {
+    this.removeWsEventListener(this.CONSTANTS.channels.IPSDN_ALARM.name, this.onReceivedIpsdnTicketEvent)
+    this.removeWsEventListener(this.CONSTANTS.channels.TRANS_ALARM.name, this.onReceivedTransTicketEvent)
+  },
   methods: {
+    simulateTest() {
+      // new 사용법 v.$parent.$parent.simulateTest
+      this.onReceivedIpsdnTicketEvent({
+        channelName: 'IPSDN_ALARM',
+        socketMessage: {
+          message: '{ "result":null,"properties":null,"ticketId":"1659093","eventType":"TICKET_NEW","ticketType":"...." }',
+        },
+      })
+      setTimeout(() => {
+        // I36563
+        // this.onReceivedIpsdnTicketEvent({
+        //   channelName: 'IPSDN_ALARM',
+        //   socketMessage: {
+        //     message:
+        //       '[{"ticket_type":"RT","root_cause_sysnamez":null,"alarmmsg":"PORT_DOWN","clusterno":"119606","alarmno":"I36563","root_cause_sysnamea":"pangyo-5812","ticket_id":"1600297","nude_num":null,"fault_time":null,"port":"1688534024126","alarmtime":"2024-04-16 14:34:36","root_cause_portz":null,"zero1_entropy":null,"node_nm":"pangyo-5812","alarmmsg_original":"port down - NREN_xe27_소울시스템즈_1G#5027","ip_addr":"116.89.169.33","alarmloc":"xe27","total_related_alarm_cnt":null,"root_cause_porta":null,"ticket_rca_result_dtl_code":"PORT 다운","status":"INIT"}]',
+        //   },
+        // })
+        // 187714
+        // this.onReceivedTransTicketEvent({
+        //   channelName: 'TRANS_ALARM',
+        //   socketMessage: {
+        //     message:
+        //       '[{"ticket_al_id":"187714","ticket_type":"ATT","alarmmsg":"DCC-FAIL","alarmno":"187714","alarmtime":"2024-04-15 11:45:46","sysname":"192.168.200.210-SH1","ticket_id":"188295","alarmloc":"MRPA.A-P1","status":"AUTO_FIN"}]',
+        //   },
+        // })
+      }, 3000)
+    },
+
+    subscribeEvent() {
+      // this.addWsEventListener(this.CONSTANTS.channels.HEARTBEAT.name, this.onReceiveHeartbeat)
+      this.addWsEventListener(this.CONSTANTS.channels.IPSDN_ALARM.name, this.onReceivedIpsdnTicketEvent)
+      this.addWsEventListener(this.CONSTANTS.channels.TRANS_ALARM.name, this.onReceivedTransTicketEvent)
+    },
+
+    async onReceivedIpsdnTicketEvent({ channelName, socketMessage }) {
+      if (channelName !== 'IPSDN_ALARM') return
+      const data = JSON.parse(socketMessage.message)
+      AppOptions.instance.useWsLog && this.log('RECEIVED SIBSCRIBE IPSDN_ALARM EVENT: ', data)
+
+      if (data.ticketType === 'PF') return
+
+      if (data.eventType === 'TICKET_NEW') {
+        await this.pushChatbotAlert(data)
+      }
+
+      if (this.$route.name === 'NiaMain') {
+        this.$refs.appmain.$refs.routerView.onReceivedIpsdnTicketEvent(data)
+      }
+    },
+
+    onReceivedTransTicketEvent({ channelName, socketMessage }) {
+      if (this.$route.name === 'NiaMain') {
+        this.$refs.appmain.$refs.routerView.onReceivedTransTicketEvent({ channelName, socketMessage })
+      }
+    },
+
+    async pushChatbotAlert(data) {
+      const param = {
+        TICKET_ID: data.ticketId,
+      }
+      const res = await apiIpAlarmList(param)
+      if (res) {
+        const ticketData = res.result[0]
+
+        if (this.debug) {
+          this.$store.dispatch('chatbot/botPushAnsewerMessage', {
+            content: makeAlertMessage(ticketData),
+            isAnswer: false,
+          })
+        }
+      }
+    },
+
     handleOpenEditModal(row, type) {
       this.$refs.ModaluserSettings.open({ row: row, type: type })
     },
     handleClickOutside() {
       this.$store.dispatch('app/closeSideBar', { withoutAnimation: false })
-    },
-    subscribeEvent() {
-      this.addWsEventListener(this.CONSTANTS.channels.HEARTBEAT.name, this.onReceiveHeartbeat)
     },
     onReceiveHeartbeat({ channelName, socketMessage }) {
       this.$store.dispatch('user/setConnectCount', socketMessage)
@@ -168,8 +245,9 @@ export default {
 }
 </script>
 <style lang="scss">
+@import '~@/styles/nia_confirm.scss';
 .common-padding {
-  padding: 15px/* var(--common-padding) */;
+  padding: 15px /* var(--common-padding) */;
   position: relative;
   height: 100%;
   width: 100%;
@@ -183,7 +261,7 @@ export default {
 <style lang="scss" scoped>
 @import '~@/styles/mixin.scss';
 @import '~@/styles/variables.scss';
-@import "~@/assets/css/nia_style_main.css";
+@import '~@/assets/css/nia_style_main.css';
 
 .router-link-active {
   color: #93c3ed !important;
@@ -232,7 +310,7 @@ body.el-popup-parent--hidden .fixed-header {
   padding: 15px 20px 5px 20px;
   div {
     padding-bottom: 5px;
-    border-bottom: solid 1px #EEEEEE;
+    border-bottom: solid 1px #eeeeee;
     i {
       padding-right: 5px;
     }

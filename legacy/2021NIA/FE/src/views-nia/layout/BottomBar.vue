@@ -1,8 +1,8 @@
 <template>
   <div :class="{ [name]: true }">
     <div class="alarm-container flex flex-nowrap ml-3">
-      <div v-if="isViewport('>', 'md')" class="alarm-title flex items-center flex-nowrap whitespace-nowrap mx-2" style="min-width: 93px;">
-        <img src="@/assets/icon/attention.png" style="height: 22px;width: 22px;filter: contrast(0) brightness(2)">
+      <div v-if="isViewport('>', 'md')" class="alarm-title flex items-center flex-nowrap whitespace-nowrap mx-2" style="min-width: 93px">
+        <img src="@/assets/icon/attention.png" style="height: 22px; width: 22px; filter: contrast(0) brightness(2)" />
         <span class="text-lg font-bold pl-1 pt-1">경보 현황</span>
       </div>
       <div class="alarm-content flex flex-nowrap items-center ml-2 text-sm">
@@ -15,18 +15,14 @@
         <span class="pt-1">건</span>
       </div>
       <div class="alarm-count-list flex flex-nowrap ml-4 pt-1 text-base">
-        <div class="pt-1 font-bold text-base" style="white-space: nowrap; overflow: hidden;">시스템 현황 모니터링</div>
+        <div class="pt-1 font-bold text-base" style="white-space: nowrap; overflow: hidden">시스템 현황 모니터링</div>
         <div class="ml-2 d-flex font-bold items-center gap-x-2">
-          <div
-            v-for="system in niaProcess"
-            :key="system.name"
-            :style="{ color: system.status }"
-            class="system-tooltip"
-            style="border-right: solid 1px #ffffff82;padding-right: 5px; white-space: nowrap;"
-          >
-            <div :class="{ blinking: system.status !== 'lime' }">{{ system.name }}</div>
-            <div class="tooltip-text" v-html="system.tooltip" />
-          </div>
+          <span v-for="system in niaProcess" v-show="systemMonitoringMap[system.name].show" :key="system.name">
+            <div :style="{ color: system.status }" class="system-tooltip" style="border-right: solid 1px #ffffff82; padding-right: 5px; white-space: nowrap">
+              <div :class="{ blinking: system.status !== 'lime' }">{{ system.name }}</div>
+              <div class="tooltip-text" v-html="system.tooltip" />
+            </div>
+          </span>
         </div>
       </div>
     </div>
@@ -38,15 +34,8 @@
               <i class="el-icon-files" /> <span>창목록</span><span class="badgeItem">{{ $store.getters.windows.length }}</span>
             </template>
             <template v-for="window in $store.getters.windows">
-              <el-menu-item
-                :key="window.id"
-                :class="{ focusWindow: window.windowState !== 'minimize' && window.zindex == 1000 }"
-                class="statusBarWindowItem"
-                @click="windowSelection(window)"
-              >
-                <!-- :style="{'background-color': window.windowState !== 'minimize' && window.zindex === 1000 ? 'rgb(30, 41, 59) !important' : '#fff !important'}" -->
+              <el-menu-item :key="window.id" :class="{ focusWindow: window.windowState !== 'minimize' && window.zindex == 1000 }" class="statusBarWindowItem" @click="windowSelection(window)">
                 <i class="el-icon-document" /> <span>{{ window.name }}</span>
-                <!-- <i v-show="window.windowState !== 'minimize' && window.zindex === 1000" class="el-icon-view" /> -->
                 <i class="el-icon-close statusBarWindowItemCloseBtn" @click="$store.dispatch('mdi/removeWindow', window.id)" />
               </el-menu-item>
             </template>
@@ -54,8 +43,11 @@
         </el-menu>
       </div>
       <div v-if="isViewport('>', 'md')" class="notice-title flex items-center">
-        <el-tooltip class="item" effect="light" content="서비스 준비중입니다." placement="top">
-          <i class="el-icon-s-tools m_icon" />
+        <el-tooltip class="item" effect="light" content="시스템 모니터링 필터" placement="top">
+          <i class="el-icon-s-tools m_icon" style="cursor: pointer; margin-right: 5px" @click="openSystemMonitoringModal" />
+        </el-tooltip>
+        <el-tooltip :style="{ display: debug ? 'inline-block' : 'none' }" class="item" effect="light" content="ChatBot" placement="top">
+          <i class="el-icon-chat-line-square m_icon" style="cursor: pointer" @click="openChatbotModal" />
         </el-tooltip>
       </div>
     </div>
@@ -64,14 +56,16 @@
 <script>
 import { Base } from '@/min/Base.min'
 const routeName = 'BottomBar'
-import { AppOptions } from '@/class/appOptions'
 import { apiSystemMonitoring } from '@/api/nia'
+import dialogOpenMixin from '@/mixin/dialogOpenMixin'
+import { mapState } from 'vuex'
 
 export default {
   name: routeName,
   src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
   components: {},
   extends: Base,
+  mixins: [dialogOpenMixin],
   data() {
     return {
       name: routeName,
@@ -86,160 +80,32 @@ export default {
         { name: 'WARNING', count: 20, color: 'skyblue' },
       ],
 
-      niaProcess: {
-        /*
-          ai가 붙은 것은 전송주기를 파악하며 collection이 있으면 수집주기 파악용으로 사용.
-          수집, 전송 주기 max초과 시 연동이상으로 판단한다.
-        */
-
-        ipSdnTrafficeKey: {
-          name: 'LinkTraffic', status: 'red', cycle: 5 * 60 * 1000,
-          tooltip: `
-            <div style="font-size: 13px; text-align: left">
-            <span style="color:red">빨강</span> : 수집 실패<br>
-            <span style="color:orange">주황</span> : 연동 실패<br>
-            <span style="color:lime">초록</span> : AI 연동 성공
-            </div>
-          `,
-          secondStep: {
-            key: 'aiIpSdnTrafficeKey',
-            cycle: 5 * 60 * 1000,
-          }
-        },
-        ipSdnSflowKey: {
-          name: 'Sflow', status: 'red', cycle: 10 * 60 * 1000,
-          tooltip: `
-            <div style="font-size: 13px; text-align: left">
-            <span style="color:red">빨강</span> : 수집 실패<br>
-            <span style="color:orange">주황</span> : 연동 실패<br>
-            <span style="color:lime">초록</span> : AI 연동 성공
-            </div>
-          `,
-          secondStep: {
-            key: 'aiIpSdnSflowKey',
-            cycle: 10 * 60 * 1000,
-          }
-        },
-        ipSdnSyslogKey: {
-          name: 'Syslog', status: 'red', cycle: 10 * 60 * 1000,
-          tooltip: `
-            <div style="font-size: 13px; text-align: left">
-            <span style="color:red">빨강</span> : 수집 실패<br>
-            <span style="color:orange">주황</span> : 연동 실패<br>
-            <span style="color:lime">초록</span> : AI 연동 성공
-            </div>
-          `,
-          secondStep: {
-            key: 'aiIpSdnSyslogKey',
-            cycle: 10 * 60 * 1000,
-          }
-        },
-        ipSdnNodeFactorKey: {
-          name: 'NodeFactor', status: 'red', cycle: 10 * 60 * 1000,
-          tooltip: `
-            <div style="font-size: 13px; text-align: left">
-            <span style="color:red">빨강</span> : 수집 실패<br>
-            <span style="color:orange">주황</span> : 연동 실패<br>
-            <span style="color:lime">초록</span> : AI 연동 성공
-            </div>
-          `,
-          secondStep: {
-            key: 'aiIpSdnNodeFactorKey',
-            cycle: 10 * 60 * 1000,
-          }
-        },
-        aiTrafficNoxKey: {
-          name: 'AI_Traffic_유해', status: 'red', cycle: 5 * 60 * 1000,
-          tooltip: `
-            <div style="font-size: 13px; text-align: left">
-            <span style="color:red">빨강</span> : AI 연동 실패<br>
-            <span style="color:lime">초록</span> : AI 연동 성공
-            </div>
-          `,
-        },
-        aiTrafficAnoKey: {
-          name: 'AI_Traffic_이상', status: 'red', cycle: 5 * 60 * 1000,
-          tooltip: `
-            <div style="font-size: 13px; text-align: left">
-            <span style="color:red">빨강</span> : AI 연동 실패<br>
-            <span style="color:lime">초록</span> : AI 연동 성공
-            </div>
-          `,
-        },
-        ipPerfKey: {
-          name: 'IPSDN_Perf', status: 'red', cycle: 10 * 60 * 1000,
-          tooltip: `
-            <div style="font-size: 13px; text-align: left">
-            <span style="color:red">빨강</span> : 수집 실패<br>
-            <span style="color:orange">주황</span> : 연동 실패<br>
-            <span style="color:lime">초록</span> : AI 연동 성공
-            </div>
-          `,
-          secondStep: {
-            key: 'aiIpPerfKey',
-            cycle: 10 * 60 * 1000,
-          }
-        },
-        ipResourceIfKey: {
-          name: 'IPSDN_ResourceIf', status: 'red', cycle: this.moment().set({ hour: 0, minute: 15, second: 0, millisecond: 0 }), // 매일 2시 40분
-          tooltip: `
-            <div style="font-size: 13px; text-align: left">
-            <span style="color:red">빨강</span> : 수집 실패 <br>
-            <span style="color:orange">주황</span> : 연동 실패<br>
-            <span style="color:lime">초록</span> : AI 연동 성공
-            </div>
-          `,
-          secondStep: {
-            key: 'aiIpResourceIfKey',
-            cycle: this.moment().set({ hour: 2, minute: 40, second: 0, millisecond: 0 })
-          }
-        },
-        ipResourceKey: {
-          name: 'IPSDN_Resource', status: 'red', cycle: this.moment().set({ hour: 0, minute: 5, second: 0, millisecond: 0 }), // 매일 2시 30분
-          tooltip: `
-            <div style="font-size: 13px; text-align: left">
-            <span style="color:red">빨강</span> : 수집 실패<br>
-            <span style="color:orange">주황</span> : 연동 실패<br>
-            <span style="color:lime">초록</span> : AI 연동 성공
-            </div>
-          `,
-          secondStep: {
-            key: 'aiIpResourceKey',
-            cycle: this.moment().set({ hour: 2, minute: 30, second: 0, millisecond: 0 })
-          }
-        },
-        emsSipcKey: {
-          name: 'EMS_SIPC', status: 'red', cycle: 18 * 60 * 1000,
-          tooltip: `
-            <div style="font-size: 13px; text-align: left">
-            <span style="color:red">빨강</span> : EMS SIPC 수집 실패<br>
-            <span style="color:lime">초록</span> : EMS SIPC 수집 성공
-            </div>
-          `,
-        },
-        emsPmKey: {
-          name: 'EMS_PM', status: 'red', cycle: 18 * 60 * 1000,
-          tooltip: `
-            <div style="font-size: 13px; text-align: left">
-            <span style="color:red">빨강</span> : EMS PM 수집 실패<br>
-            <span style="color:lime">초록</span> : EMS PM 수집 성공
-            </div>
-          `,
-        },
-      },
-      monitoringInterval: null
+      monitoringInterval: null,
     }
   },
+
+  computed: {
+    ...mapState({
+      niaProcess: (state) => state.systemMonitoring.niaProcess,
+      systemMonitoringMap: (state) => state.systemMonitoring.systemMonitoringMap,
+    }),
+
+  },
+
+  created() {},
+
   mounted() {
     this.getSystemMonitoringData()
     this.setIntervalGetSystemMonitoringData()
     this.subscribeEvent()
     window.bbar = Object.assign(window.bbar || {}, { header: this })
+
+    this.$store.dispatch('systemMonitoring/checkSaveState')
   },
   beforeDestroy() {
     clearInterval(this.monitoringInterval)
-    // this.removeWsEventListener(this.CONSTANTS.channels.SYSTEM_MONITORING.name, this.onReceivedSystemMonitoring)
   },
+
   methods: {
     setIntervalGetSystemMonitoringData() {
       this.monitoringInterval = setInterval(() => {
@@ -247,16 +113,7 @@ export default {
       }, 3 * 60 * 1000)
     },
 
-    subscribeEvent() {
-      // this.addWsEventListener(this.CONSTANTS.channels.SYSTEM_MONITORING.name, this.onReceivedSystemMonitoring)
-    },
-    // onReceivedSystemMonitoring({ channelName, socketMessage }) {
-    //   if (channelName !== 'SYSTEM_MONITORING') return
-
-    //   const data = JSON.parse(socketMessage.message)
-    //   AppOptions.instance.useWsLog && this.log('RECEIVED SIBSCRIBE SYSTEM_MONITORING EVENT: ', data)
-    //   this.setCurrentProcess(data)
-    // },
+    subscribeEvent() {},
     async getSystemMonitoringData() {
       try {
         const res = await apiSystemMonitoring()
@@ -265,17 +122,21 @@ export default {
         this.error(error)
       }
     },
+
     setCurrentProcess(processList) {
       for (const d of processList) {
         if (this.niaProcess[d.key_name]) {
-          this.niaProcess[d.key_name]['firstTime'] = d.yd_date ?? null
+          this.$store.dispatch('systemMonitoring/setNiaProcess', { processKey: d.key_name, mapKey: 'firstTime', value: d.yd_date ?? null })
+          // this.niaProcess[d.key_name]['firstTime'] = d.yd_date ?? null
         } else {
           const modifiedKeyName = d.key_name.slice(2)
-          const secondKey = modifiedKeyName.charAt(0).toLowerCase() + modifiedKeyName.slice(1)
-          if (secondKey in this.niaProcess) {
-            if ('secondStep' in this.niaProcess[secondKey]) {
-              this.niaProcess[secondKey]['secondTime'] = d.yd_date ?? null
-              this.niaProcess[secondKey]['secondCycle'] = this.niaProcess[secondKey]['secondStep'].cycle
+          const firstKey = modifiedKeyName.charAt(0).toLowerCase() + modifiedKeyName.slice(1)
+          if (firstKey in this.niaProcess) {
+            if ('secondStep' in this.niaProcess[firstKey]) {
+              this.$store.dispatch('systemMonitoring/setNiaProcess', { processKey: firstKey, mapKey: 'secondTime', value: d.yd_date ?? null })
+              this.$store.dispatch('systemMonitoring/setNiaProcess', { processKey: firstKey, mapKey: 'secondCycle', value: this.niaProcess[firstKey]['secondStep'].cycle })
+              // this.niaProcess[firstKey]['secondTime'] = d.yd_date ?? null
+              // this.niaProcess[firstKey]['secondCycle'] = this.niaProcess[firstKey]['secondStep'].cycle
             } else {
               throw new Error('firstStep, secondStep이 둘다 없는 Process는 에러입니다.')
             }
@@ -285,9 +146,28 @@ export default {
 
       const monitoringKeys = Object.keys(this.niaProcess)
       for (const key of monitoringKeys) {
-        this.niaProcess[key].status = this.checkKeyStatus(this.niaProcess[key])
+        this.$store.dispatch('systemMonitoring/setNiaProcess', { processKey: key, mapKey: 'status', value: this.checkKeyStatus(this.niaProcess[key]) })
+        // this.niaProcess[key].status = this.checkKeyStatus(this.niaProcess[key])
       }
     },
+
+    calculateDateDiff(date1, date2, unit = 'days') {
+      const d1 = new Date(date1)
+      const d2 = new Date(date2)
+      const diffMs = d2 - d1
+
+      switch (unit) {
+        case 'days':
+          return Math.floor(diffMs / (1000 * 60 * 60 * 24))
+        case 'minutes':
+          return Math.floor(diffMs / (1000 * 60))
+        case 'hours':
+          return Math.floor(diffMs / (1000 * 60 * 60))
+        default:
+          return diffMs
+      }
+    },
+
     checkKeyStatus(processObj) {
       const { cycle: firstCycle, secondCycle, secondTime, firstTime } = processObj
       const currentDate = new Date()
@@ -295,24 +175,21 @@ export default {
       const secondDate = secondTime ? new Date(secondTime) : null
 
       if (typeof firstCycle !== 'number') {
-        const dayDiff = firstCycle.diff(firstTime, 'days')
-        const miniteDiff = firstCycle.diff(firstTime, 'minutes')
+        const testcycle = this.moment().set({ hour: 2, minute: 40, second: 0, millisecond: 0 })
+        const dayDiff = this.calculateDateDiff(firstCycle, firstTime, 'days')
+        const miniteDiff = this.calculateDateDiff(firstCycle, firstTime, 'minutes')
+        // const dayDiff = firstCycle.diff(firstTime, 'days')
+        // const miniteDiff = firstCycle.diff(firstTime, 'minutes')
 
         if (dayDiff <= 1 && miniteDiff <= 10) {
-          const secondDayDiff = secondCycle.diff(secondTime, 'days')
-          const secondMiniteDiff = secondCycle.diff(secondTime, 'minutes')
+          const secondDayDiff = this.calculateDateDiff(secondCycle, secondTime, 'days')
+          const secondMiniteDiff = this.calculateDateDiff(secondCycle, secondTime, 'minutes')
+          // const secondDayDiff = secondCycle.diff(secondTime, 'days')
+          // const secondMiniteDiff = secondCycle.diff(secondTime, 'minutes')
           return secondDayDiff > 1 || secondMiniteDiff > 10 ? 'orange' : 'lime'
         } else {
           return 'red'
         }
-
-        // if (dayDiff > 1 || miniteDiff > 10) {
-        //   const secondDayDiff = secondCycle.diff(secondTime, 'days')
-        //   const secondMiniteDiff = secondCycle.diff(secondTime, 'minutes')
-        //   return secondDayDiff > 1 || secondMiniteDiff > 10 ? 'red' : 'orange'
-        // } else {
-        //   return 'lime'
-        // }
       } else {
         const firstDateTimeDifference = currentDate - firstDate
         if (firstDateTimeDifference < firstCycle) {
@@ -325,17 +202,6 @@ export default {
         } else {
           return 'red'
         }
-
-        // if (firstDateTimeDifference > firstCycle) {
-        //   if (secondTime != null && secondDate != null) {
-        //     const secondTimeDifference = currentDate - secondDate
-        //     return secondTimeDifference > secondCycle ? 'red' : 'orange'
-        //   } else {
-        //     return 'red'
-        //   }
-        // } else {
-        //   return 'lime'
-        // }
       }
     },
     windowSelection(window) {
@@ -343,6 +209,12 @@ export default {
         this.$set(window, 'windowState', 'normal')
       }
       this.$store.dispatch('mdi/bringToFrontWindow', window.id)
+    },
+    openSystemMonitoringModal() {
+      this.fn_openWindow('systemMonitoringFilter')
+    },
+    openChatbotModal() {
+      this.fn_openWindow('chatbot')
     },
   },
 }
@@ -352,7 +224,9 @@ export default {
 @import '~@/styles/variables.scss';
 @import '~@/styles/animation.scss';
 
-.BottomBar{
+.BottomBar {
+  caret-color: transparent; /* 깜빡이는 커서 숨김 */
+
   .system-tooltip {
     position: relative;
     display: inline-block;
@@ -375,15 +249,15 @@ export default {
     }
 
     &:hover .tooltip-text {
-        visibility: visible;
-        opacity: 1;
+      visibility: visible;
+      opacity: 1;
     }
 
-      .blinking {
+    .blinking {
       animation: blink 1.5s ease-in-out infinite alternate;
     }
 
-    @keyframes blink{
+    @keyframes blink {
       0% {
         opacity: 0.3;
       }
@@ -414,14 +288,14 @@ export default {
     font-size: 21px;
   }
   .statusBarWrap {
-    display:flex;
-    background-color:rgba(0,0,0,0.5);
+    display: flex;
+    background-color: rgba(0, 0, 0, 0.5);
     border-radius: 5px;
     box-sizing: border-box;
-    height:40px;
+    height: 40px;
 
     ::v-deep .el-submenu .el-submenu__title {
-      height:40px;
+      height: 40px;
       display: flex;
       border-bottom: 0px;
       align-items: center;
@@ -430,24 +304,25 @@ export default {
       border: solid 1px #797676;
       border-radius: 5px;
     }
-    .badgeItem{
+    .badgeItem {
       position: absolute;
-      background-color:#fff;
-      color:#141414;
+      background-color: #fff;
+      color: #141414;
       height: 18px;
       line-height: 18px;
       text-align: center;
-      padding:0 5px;
+      padding: 0 5px;
       border-radius: 15px;
-      font-size:12px;
+      font-size: 12px;
       font-weight: 400;
-      right:5px; top:9px;
+      right: 5px;
+      top: 9px;
       /* transform: translate(30px, 20px); */
     }
 
     ::v-deep .el-menu--horizontal {
-      .el-submenu{
-        .el-submenu__icon-arrow{
+      .el-submenu {
+        .el-submenu__icon-arrow {
           margin-right: 10px !important;
         }
       }
@@ -457,14 +332,13 @@ export default {
 </style>
 
 <style lang="scss">
-.el-menu--horizontal.statusBarMenuNiaBottomBar{
-
-  ul.el-menu.el-menu--popup{
+.el-menu--horizontal.statusBarMenuNiaBottomBar {
+  ul.el-menu.el-menu--popup {
     background: transparent !important;
     border-radius: 15px !important;
     top: 17px !important;
 
-    li.statusBarWindowItem{
+    li.statusBarWindowItem {
       text-align: left !important;
       font-size: 14px !important;
       font-family: NotoSansKR;
@@ -473,12 +347,12 @@ export default {
       margin-bottom: 10px;
       height: 39px !important;
 
-      &:hover{
+      &:hover {
         // opacity: 0.8;
         background: rgb(232, 232, 232) !important;
       }
 
-      &.focusWindow{
+      &.focusWindow {
         background-color: rgb(30, 41, 59) !important;
         color: white !important;
       }

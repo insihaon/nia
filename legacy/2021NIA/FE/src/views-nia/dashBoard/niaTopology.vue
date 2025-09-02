@@ -101,7 +101,7 @@
                           <tr
                             v-for="(agency, index) in sortedAgencyList"
                             :key="agency.nren_id"
-                            :class="{ 'animation-blink': ticket.root_cause_sysnamez === agency.nren_name }"
+                            :class="{ 'animation-blink': paramTickets.some(t => t.root_cause_sysnamez === agency.nren_name) }"
                           >
                             <td>{{ index + 1 }}</td>
                             <td>{{ agency.nren_name }}</td>
@@ -181,8 +181,8 @@ export default {
       mapData: null,
       slot: [],
       agencyList: [],
-      ticket: {},
-      isAllTicket: false,
+      paramTickets: {},
+      paramShowFullTopology: false,
       filteredAgencyList: [],
       showNodeAllError: false, // 해당 Option을 true로 변경하면, 개별 ticket 장애에 대해서도 해당 노드에서 발생한 모든 경보의 총합을 표시
 
@@ -210,8 +210,8 @@ export default {
     }
   },
   created() {
-    this.ticket = this.wdata?.params.ticket || {}
-    this.isAllTicket = this.wdata?.params.isAllTicket
+    this.paramTickets = this.wdata?.params.tickets || []
+    this.paramShowFullTopology = this.wdata?.params.showFullTopology
 
     const async = false
     this.addScript([
@@ -402,11 +402,11 @@ export default {
         return t
       })
 
-      if (!this.isAllTicket) {
+      if (!this.paramShowFullTopology) {
         // 개별 경보 더블 클릭
-        if (!this.ticket) throw new Error('no Ticket')
-        var [alarms] = await this.loadNiaAlarmList(this.ticket)
-        var alarmLink = await this.loadNiaCableAlarmList(this.ticket)
+        if (!this.paramTickets || this.paramTickets.length === 0) throw new Error('no Ticket')
+        var [alarms] = await this.loadNiaAlarmList(this.paramTickets[0])
+        var alarmLink = await this.loadNiaCableAlarmList(this.paramTickets[0])
 
         var alarmNode = null
         if (this.showNodeAllError) {
@@ -671,12 +671,12 @@ export default {
     },
 
     async loadNiaCableAlarmList(ticket) {
-      if (this.ticket.ticket_type === 'RT') {
+      if (ticket.ticket_type === 'RT') {
         const param = {
           TICKET_ID: ticket.ticket_id
         }
         const res = await apiSelectNiaTopologyCableList(param)
-        const { root_cause_type, root_cause_sysnamea, root_cause_sysnamez } = this.ticket
+        const { root_cause_type, root_cause_sysnamea, root_cause_sysnamez } = ticket
         let causeLinks = []
         const data = this.map.data
         let sysnamea = null
@@ -719,7 +719,7 @@ export default {
 
           causeLinks.sort((a, b) => a.status - b.status)
           return causeLinks[0]
-      } else if (this.ticket.ticket_type === 'PF') {
+      } else if (ticket.ticket_type === 'PF') {
         const param = {
           TICKET_ID: ticket.ticket_id
         }
@@ -733,7 +733,7 @@ export default {
         })
         return causeLinks[0]
       } else {
-        const { root_cause_sysnamea, root_cause_sysnamez } = this.ticket
+        const { root_cause_sysnamea, root_cause_sysnamez } = ticket
 
         let causeLinks = []
         const data = this.map.data

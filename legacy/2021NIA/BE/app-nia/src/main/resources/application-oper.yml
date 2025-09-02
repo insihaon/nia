@@ -1,22 +1,10 @@
 server:
   port: 8080
-  servlet:
-    context-path:
 
 spring:
   profiles:
     active: oper
     dev: false
-
-  h2:
-    console:
-      enabled: true
-      settings.web-allow-others: true
-
-  sql:
-    init:
-      platform: postgres
-      encoding: UTF-8
 
   datasource2nd:
     enabled: true
@@ -33,8 +21,8 @@ spring:
     enabled: true
     address: 116.89.191.47 # incodej-lab.iptime.org
     port: 6786
-    # 테스트용 웹으로 운영서버에 배포했을 때 운영mq 데이터를 가져오지 않기 위한 설정(2024.10.21)
-    # niaEngineToUi: OPER#nia.EngineToUiIndexDirectly
+    username: niaadmin
+    password: niaadmin12#$
     niaEngineToUi: nia.EngineToUiIndexDirectly
     niaUiToEngine: nia.UiToEngineIndexDirectly
     InspectorToUID: OPER#nia.InspectorToUIDirectly
@@ -42,7 +30,9 @@ spring:
 
 myconf:
   websocket:
-    enabled: true
+    enabled: true #websocket.enabled
+    url: /ws-stomp
+    heartbeat.enabled: false
   mail:
     host: smtp.gmail.com
     port: 587
@@ -55,9 +45,9 @@ myconf:
     password: zhfps!
   api-server:
     ipsdn: http://203.255.249.31:8088
+    user: codej
+    pw: codej!@#
   aimonitor-Url: http://116.89.191.45:82
   servermonitor-Url: http://116.89.191.40:3000
   snapshot-Url: http://116.89.191.35:24888/download/
 
-file:
-  upload-dir: ./external

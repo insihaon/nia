@@ -1,7 +1,11 @@
 <template>
   <div :class="{ [name]: true}" style="height : 100%">
     <div class="d-flex flex-column h-full">
-      <el-card shadow="never" style="height : 40%" :body-style="{ padding: '10px' , height: 'calc(100% - 55px)' }">
+      <el-card
+        shadow="never"
+        style="flex : 1"
+        :body-style="{ padding: '10px' , height: 'calc(100% - 55px)' }"
+      >
         <div slot="header">
           <span><i class="el-icon-document" /> 작업 요청 구간</span>
         </div>
@@ -12,45 +16,52 @@
             <img src="@/assets/images/nia/node/switch.png">
           </div>
           <div class="node-info d-flex justify-evenly">
-            <div>
-              <div>{{ trafficInfo.root_cause_sysnamea }}</div>
-              <div v-if="!isRT">({{ trafficInfo.root_cause_porta }})</div>
-            </div>
-            <div>
-              <div>{{ isRT ? trafficInfo.root_cause_sysnamea : trafficInfo.root_cause_sysnamez }}</div>
-              <div v-if="!isRT">({{ trafficInfo.root_cause_portz }})</div>
+            <div style="width: 390px">
+              <div style="float: left">
+                <div>{{ trafficInfo.root_cause_sysnamea }}</div>
+                <div><span v-if="isShowChartTicketType">({{ trafficInfo.root_cause_porta }})</span></div>
+              </div>
+              <div style="float: right">
+                <div>{{ !isShowChartTicketType ? trafficInfo.root_cause_sysnamea : trafficInfo.root_cause_sysnamez }}</div>
+                <div><span v-if="isShowChartTicketType">({{ trafficInfo.root_cause_portz }})</span></div>
+              </div>
             </div>
           </div>
         </el-row>
       </el-card>
 
-      <el-row :gutter="10" class="mt-2">
-        <el-col :span="12">
+      <el-row
+        v-if="isShowChartTicketType"
+        :style="{flex : isShowChartTicketType ? '0 0 45%' : '0 0 0%'}"
+        :gutter="10"
+        class="mt-2"
+      >
+        <el-col :span="12" style="height: 100%">
           <el-card shadow="never" style="height: 100%" :body-style="{ padding: '5px', height: 'calc(100% - 30px)' }">
             <div slot="header">
               <span><i class="el-icon-document" /> TRAFFIC 그래프(MBPS)</span>
             </div>
-            <el-row v-if="!isRT">
+            <el-row>
               <CompChart ref="trafficChartMbps" :options="trafficChartMbps" class="w-100" :chart-loading="chartLoading" style="height: 300px;" />
             </el-row>
-            <el-row v-else style="height: 300px" class="d-flex items-center justify-center"> 정보가 없습니다. </el-row>
+            <!-- <el-row style="height: 300px" class="d-flex items-center justify-center"> 정보가 없습니다. </el-row> -->
           </el-card>
         </el-col>
 
-        <el-col :span="12">
+        <el-col :span="12" style="height: 100%">
           <el-card shadow="never" style="height: 100%" :body-style="{ padding: '5px', height: 'calc(100% - 30px)' }">
             <div slot="header">
               <span><i class="el-icon-document" /> TRAFFIC 그래프(PPS)</span>
             </div>
-            <el-row v-if="!isRT">
+            <el-row>
               <CompChart ref="trafficChartPps" :options="trafficChartPps" class="w-100" :chart-loading="chartLoading" style="height: 300px" />
             </el-row>
-            <el-row v-else style="height: 300px" class="d-flex items-center justify-center"> 정보가 없습니다. </el-row>
+            <!-- <el-row style="height: 300px" class="d-flex items-center justify-center"> 정보가 없습니다. </el-row> -->
           </el-card>
         </el-col>
       </el-row>
 
-      <el-row>
+      <el-row style="flex: 0 0 35px">
         <el-col align="right" class="mt-2">
 
           <el-button size="mini" type="primary" icon="el-icon-camera" @click.native="fn_openWindow('snapShot', _merge(selectedRow, trafficInfo))"> 데이터 스냅샷 </el-button>
@@ -72,7 +83,7 @@ import _ from 'lodash'
 import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
 import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
 import { apiSelfProcessTrafficInfo, apiATTTrafficChart, apiNTTTrafficChart } from '@/api/nia'
-import { getAlarmType, formatterTime } from '@/views-nia/js/commonFormat'
+import { formatterTime } from '@/views-nia/js/commonFormat'
 import CompChart from '@/components/chart/CompChart.vue'
 import dialogOpenMixin from '@/mixin/dialogOpenMixin'
 
@@ -102,7 +113,6 @@ export default {
       selectedRow: null,
       chartLoading: false,
       trafficChartList: [],
-      // relatedSopList: [],
       trafficInfo: {
         root_cause_sysnamea: '',
         root_cause_sysnamez: '',
@@ -118,16 +128,19 @@ export default {
     }
   },
   computed: {
-    isRT() {
-      return this.selectedRow?.ticket_type === 'RT'
+    isShowChartTicketType() {
+      if (this.selectedRow?.ticket_type) {
+        return ['ATT2', 'FTT', 'NTT'].includes(this.selectedRow.ticket_type)
+      } else {
+        return false
+      }
     },
-    // disabledFin() {
-    //   return this.selectedRow?.status === 'FIN' || this.selectedRow?.status === 'AUTO_FIN'
-    // },
     trafficChartPps() {
+      if (!this.isShowChartTicketType) return {}
+
       const { ticket_type } = this.selectedRow
       const chartData = this.trafficChartList
-      const xAxisKey = ['ATT2', 'FTT'].includes(ticket_type) ? 'measured_datetime' : 'collect_time'
+      const xAxisKey = this.isAttFtt(ticket_type) ? 'measured_datetime' : 'collect_time'
       const markLine = {
         symbol: ['none', 'none'],
         label: { show: false },
@@ -135,7 +148,7 @@ export default {
       }
 
       let seriesArr = []
-      if (['ATT2', 'FTT'].includes(ticket_type)) {
+      if (this.isAttFtt(ticket_type)) {
         seriesArr = [
           {
             markLine,
@@ -187,6 +200,8 @@ export default {
     },
 
     trafficChartMbps() {
+      if (!this.isShowChartTicketType) return {}
+
       const { ticket_type } = this.selectedRow
       const chartData = this.trafficChartList
       const xAxisKey = this.isAttFtt(ticket_type) ? 'measured_datetime' : 'collect_time'
@@ -315,15 +330,30 @@ export default {
     }
   },
   mounted() {
-    if (!this.wdata?.params['trafficInfo'] !== undefined) {
-      this.onLoadTrafficInfo()
+    if (this.isShowChartTicketType) {
+      if (!this.wdata?.params['trafficInfo']) {
+        this.onLoadTrafficInfo()
+      } else {
+        this.onLoadTrafficChart()
+      }
     } else {
-      this.onLoadTrafficChart()
+      if (!this.wdata?.params['trafficInfo']) {
+        this.onLoadTrafficInfo()
+      }
+
+      this.$store.dispatch('mdi/setWindowOptions', {
+        id: this.wdata.id,
+        options: { height: '300', width: '500' }
+      })
     }
   },
   methods: {
-    // 자가 구성 조치 구간정보 조회
+    isAttFtt(ticket_type) {
+      return ['ATT2', 'FTT'].includes(ticket_type)
+    },
+
     async onLoadTrafficInfo() {
+      // 자가 구성 조치 구간정보 조회
       if (!this.selectedRow?.ticket_id) {
         this.error('aiResponse view : ticket_id not found')
         return
@@ -338,29 +368,27 @@ export default {
       }
     },
     async onLoadTrafficChart() {
-      const { fault_time: FAULT_TIME, ticket_id: TICKET_ID, ticket_type } = this.selectedRow
-      const { root_cause_sysnamea: START_NODE, root_cause_sysnamez: END_NODE, root_cause_porta: START_PORT, root_cause_portz: END_PORT } = this.trafficInfo
+      if (this.isShowChartTicketType) {
+        const { fault_time: FAULT_TIME, ticket_id: TICKET_ID, ticket_type } = this.selectedRow
+        const { root_cause_sysnamea: START_NODE, root_cause_sysnamez: END_NODE, root_cause_porta: START_PORT, root_cause_portz: END_PORT } = this.trafficInfo
 
-      const param = { TICKET_ID, START_NODE, START_PORT, FAULT_TIME }
-      try {
-        this.chartLoading = true
-        let chartRes
-        if (['ATT2', 'FTT'].includes(ticket_type)) {
-          chartRes = await apiATTTrafficChart(param)
-        } else if (ticket_type === 'NTT') {
-          this._merge(param, { END_NODE, END_PORT })
-          chartRes = await apiNTTTrafficChart(param)
+        const param = { TICKET_ID, START_NODE, START_PORT, FAULT_TIME }
+        try {
+          this.chartLoading = true
+          let chartRes
+          if (this.isAttFtt(ticket_type)) {
+            chartRes = await apiATTTrafficChart(param)
+          } else if (ticket_type === 'NTT') {
+            this._merge(param, { END_NODE, END_PORT })
+            chartRes = await apiNTTTrafficChart(param)
+          }
+          this.trafficChartList = chartRes?.result
+        } catch (error) {
+          this.error(error)
+        } finally {
+          this.chartLoading = false
         }
-        this.trafficChartList = chartRes?.result
-      } catch (error) {
-        this.error(error)
-      } finally {
-        this.chartLoading = false
       }
-    },
-
-    isAttFtt(ticket_type) {
-      return ['ATT2', 'FTT'].includes(ticket_type)
     },
 
     onClose() {
@@ -375,6 +403,11 @@ export default {
 .mobile .el-button--mini {
   padding: 7px 10px;
 }
+
+.aiResponse{
+  caret-color: transparent; /* 깜빡이는 커서 숨김 */
+}
+
 .node-section {
   img {
     width: 85px;

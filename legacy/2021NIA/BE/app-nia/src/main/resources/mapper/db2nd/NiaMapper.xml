@@ -204,7 +204,7 @@
         SELECT
             NULL ALARMNO,
             TC.TICKET_ID,
-            CLUSTER_NO,
+            CLUSTER_NO AS CLUSTERNO,
             nm.node_num AS NODE_NUM,
             nm.node_nm AS NODE_NM,
             pt.if_id AS ALARMLOC,
@@ -239,7 +239,7 @@
         SELECT 
             SAM.ALARMNO,
             NULL TICKET_ID,
-            NULL CLUSTER_NO,
+            NULL CLUSTERNO,
             SAM.NODE_NUM,
             SAM.NODE_NM,
             SAM.ALARMLOC,
@@ -594,48 +594,50 @@
     <!-- 이상트래픽(ATT2) 차트 정보 조회 -->
     <select id="SELECT_ATT2_CHART" parameterType="java.util.HashMap" resultType="com.codej.base.dto.model.ResultMap">
         SELECT  
-        N.ID AS SDN_NODE_ID,
-        NM.NODE_NUM AS STRRESID,
-        NM.NODE_NM AS STRRESNM, 
-        I.ID AS SDN_IF_ID,
-        I.IF_NAME AS STRIFNM, 
-        PM.IF_NUM AS STRIFID, 
-        LT.TX_BIT_RATE AS FLTBPS_OUT,
-        LT.RX_BIT_RATE AS FLTBPS_IN,
-        LT.TX_PKT_RATE AS FLTPPS_OUT,
-        LT.RX_PKT_RATE AS FLTPPS_IN,
-        ROUND(AR.FLTBPSIN_THRESHOLD_UPPER::NUMERIC, 2) AS IN_THRESHOLD_UPPER, 
-        ROUND(AR.FLTBPSOUT_THRESHOLD_UPPER::NUMERIC, 2) AS OUT_THRESHOLD_UPPER, 
-        UO.NREN_ID,
-        UO.NREN_NAME,
-        TO_CHAR(LT.MEASURED_DATETIME, 'YYYY-MM-DD HH24:MI:SS') AS MEASURED_DATETIME,
-        LT.ID
-    FROM 
-        IP_SDN.TB_LINK_TRAFFIC LT
-    INNER JOIN 
-        IP_SDN.TB_INTERFACE I ON LT.IF_ID = I.ID
-    INNER JOIN 
-        RESOURCE.TB_PORT_MST PM ON PM.IF_ID = LOWER(I.IF_NAME)
-    INNER JOIN 
-        IP_SDN.TB_NODE N ON I.NODE_ID = N.ID
-    INNER JOIN 
-        RESOURCE.TB_NODE_MST NM ON N.ID = NM.IP_SDN_ID::INT
-    LEFT OUTER JOIN 
-        RESOURCE.TB_USER_ORGAN UO ON UO.NODE_ID = NM.NODE_ID AND UO.IF_ID = PM.IF_ID
-    LEFT OUTER JOIN 
-        rca.tb_anomalous_ai_result AR 
-        ON AR.STRIFID = PM.IF_NUM 
-        AND AR.STRRESID = PM.NODE_NUM 
-        AND AR.MEASURED_DATETIME BETWEEN #{FAULT_TIME}::TIMESTAMP - interval '10 min' 
-                                    AND #{FAULT_TIME}::TIMESTAMP + interval '10 min' -- 시간 조건 추가
-    WHERE   
-        PM.NODE_NUM = NM.NODE_NUM
-        AND NM.NODE_NM = #{START_NODE}
-        AND I.IF_NAME = #{START_PORT}
-        AND LT.MEASURED_DATETIME BETWEEN #{FAULT_TIME}::TIMESTAMP - interval '10 min' 
-                                    AND #{FAULT_TIME}::TIMESTAMP + interval '10 min' -- 기존 시간 조건
-    ORDER BY 
-        LT.ID
+            N.ID AS SDN_NODE_ID,
+            NM.NODE_NUM AS STRRESID,
+            NM.NODE_NM AS STRRESNM, 
+            I.ID AS SDN_IF_ID,
+            I.IF_NAME AS STRIFNM, 
+            PM.IF_NUM AS STRIFID, 
+            LT.TX_BIT_RATE AS FLTBPS_OUT,
+            LT.RX_BIT_RATE AS FLTBPS_IN,
+            LT.TX_PKT_RATE AS FLTPPS_OUT,
+            LT.RX_PKT_RATE AS FLTPPS_IN,
+            ROUND(AR.FLTBPSIN_THRESHOLD_UPPER::NUMERIC, 2) AS IN_THRESHOLD_UPPER, 
+            ROUND(AR.FLTBPSOUT_THRESHOLD_UPPER::NUMERIC, 2) AS OUT_THRESHOLD_UPPER, 
+            UO.NREN_ID,
+            UO.NREN_NAME,
+            TO_CHAR(LT.MEASURED_DATETIME, 'YYYY-MM-DD HH24:MI:SS') AS MEASURED_DATETIME,
+            LT.ID,
+            PM.IF_NUM,
+            PM.NODE_NUM
+        FROM IP_SDN.TB_LINK_TRAFFIC LT
+        INNER JOIN IP_SDN.TB_INTERFACE I ON LT.IF_ID = I.ID
+        INNER JOIN RESOURCE.TB_PORT_MST PM ON PM.IF_ID = LOWER(I.IF_NAME)
+        INNER JOIN IP_SDN.TB_NODE N ON I.NODE_ID = N.ID
+        INNER JOIN RESOURCE.TB_NODE_MST NM ON N.ID = NM.IP_SDN_ID::INT and PM.NODE_NUM = NM.NODE_NUM
+        LEFT OUTER JOIN RESOURCE.TB_USER_ORGAN UO ON UO.NODE_ID = NM.NODE_ID AND UO.IF_ID = PM.IF_ID
+        INNER JOIN 
+            (
+                select 
+                    STRIFID
+                    , STRRESID
+                    , MIN(FLTBPSIN_THRESHOLD_UPPER) FLTBPSIN_THRESHOLD_UPPER
+                    , MIN(FLTBPSOUT_THRESHOLD_UPPER) FLTBPSOUT_THRESHOLD_UPPER
+                from rca.tb_anomalous_ai_result 
+                where MEASURED_DATETIME BETWEEN #{FAULT_TIME}::TIMESTAMP - interval '10 min' 
+                                AND #{FAULT_TIME}::TIMESTAMP + interval '10 min'
+                group by STRIFID, STRRESID
+            ) AR ON AR.STRIFID = PM.IF_NUM 
+            AND AR.STRRESID = PM.NODE_NUM 
+        WHERE   
+            NM.NODE_NM = #{START_NODE}
+            AND I.IF_NAME = #{START_PORT}
+            AND LT.MEASURED_DATETIME BETWEEN #{FAULT_TIME}::TIMESTAMP - interval '10 min' 
+                                        AND #{FAULT_TIME}::TIMESTAMP + interval '10 min' 
+        ORDER BY 
+            LT.ID
     </select>
 
     <!-- 이상트래픽(ATT2) - AI탐지정보 -->
@@ -2134,8 +2136,18 @@
             , TO_CHAR(END_TIME, 'YYYY-MM-DD HH24:MI:SS') AS END_TIME
             , EVENTNO
         FROM rca.tb_fault_event
+        WHERE 1=1 
         <if test="EVENT_GB != null">
-        WHERE EVENT_GB=#{EVENT_GB}
+            AND EVENT_GB=#{EVENT_GB}
+        </if>
+        <if test="TITLE != null and TITLE != ''">
+            AND TITLE LIKE '%' || #{TITLE} || '%'
+        </if>
+        <if test="START_DATE != null and START_DATE != ''">
+            AND START_TIME <![CDATA[ >= ]]> #{START_DATE}::TIMESTAMP
+        </if>
+        <if test="END_DATE != null and END_DATE != ''">
+            AND END_TIME <![CDATA[ <= ]]> #{END_DATE}::TIMESTAMP
         </if>
         ORDER BY EVENTNO::INT DESC
     </select>
