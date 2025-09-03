@@ -1,7 +1,7 @@
 /*
 vscode Search All (정규표현식)
   "cmd": [^\n]*
-  *.json,   mock\json\ipms\*.json
+  mock\json\ipms\*.json
   => copy all
 re (python) 실행
   "cmd": ([^\n]*)
