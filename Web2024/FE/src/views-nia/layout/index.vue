@@ -14,6 +14,7 @@
         <AppMain v-if="!popupLayout" ref="appmain" :style="{ height: appMainHeight }" />
         <BottomBar ref="bottombar" />
       </div>
+      <chatbotIcon v-show="debug && !existChatbotPopup" />
     </div>
     <WindowBase v-for="window in $store.getters.windows" :key="window.id" :type="window.type" :wdata="window" :target="window.target" />
   </div>
@@ -30,6 +31,7 @@ import WindowBase from '@/views-nia/layout/components/WindowBase'
 import ResizeMixin from '@/layout/mixin/ResizeHandler'
 import { makeAlertMessage } from '@/views-nia/js/commonFormat'
 import { apiIpAlarmList } from '@/api/nia'
+import chatbotIcon from '@/views-nia/dashBoard/chatbotIcon.vue'
 
 import { mapState, mapGetters } from 'vuex'
 
@@ -45,6 +47,7 @@ export default {
     SideBar,
     BottomBar,
     WindowBase,
+    chatbotIcon,
   },
   extends: Base,
   mixins: [ResizeMixin],
@@ -94,6 +97,11 @@ export default {
     showLogo() {
       return this.$store.state.settings.sidebarLogo
     },
+
+    existChatbotPopup() {
+      return this.windows.find((w) => w.name === '챗봇')
+    },
+
     ...mapState({
       roles: (state) => state.user.roles,
       sidebar: (state) => state.app.sidebar,
@@ -108,6 +116,7 @@ export default {
       username: (state) => state.user.name,
       templateVariables: (state) => state.aamPersisted.templateVariables,
       commonSelectListData: (state) => state.aamPersisted.commonSelectListData,
+      windows: (state) => state.mdi.windows,
     }),
     classObj() {
       return {
@@ -150,7 +159,7 @@ export default {
       this.onReceivedIpsdnTicketEvent({
         channelName: 'IPSDN_ALARM',
         socketMessage: {
-          message: '{ "result":null,"properties":null,"ticketId":"1659093","eventType":"TICKET_NEW","ticketType":"...." }',
+          message: '{ "result":null,"properties":null,"ticketId":"1661997","eventType":"TICKET_NEW","ticketType":"...." }',
         },
       })
       setTimeout(() => {
@@ -211,7 +220,7 @@ export default {
 
         if (this.debug) {
           this.$store.dispatch('chatbot/botPushAnsewerMessage', {
-            content: makeAlertMessage(ticketData),
+            content: makeAlertMessage(ticketData, false),
             isAnswer: false,
           })
         }

@@ -27,7 +27,7 @@ function getCurrentTime() {
 const state = {
     eventParameter,
     chatMessages: [{
-        type: 'bot',
+        type: 'bot-answer',
         content: '안녕하세요! 무엇을 도와드릴까요?',
         time: getCurrentTime(),
     }]
@@ -67,7 +67,7 @@ const mutations = {
 const actions = {
     pushLodingMessage({ commit }) {
         commit('PUSH_CHAT_MESSAGE', {
-            type: 'bot',
+            type: 'bot-answer',
             content: '검색 중입니다...',
             time: getCurrentTime(),
         })
@@ -81,10 +81,11 @@ const actions = {
     botPushAnsewerMessage({ commit }, { content, isAnswer }) {
         if (isAnswer) {
             commit('POP_CHAT_MESSAGE')
+            commit('PUSH_CHAT_MESSAGE', { content, type: 'bot-answer' })
         } else {
             content += ' <span class="move-text">[진행]</span>'
+            commit('PUSH_CHAT_MESSAGE', { content, type: 'bot-alert' })
         }
-        commit('PUSH_CHAT_MESSAGE', { content, type: 'bot' })
     }
 }
 

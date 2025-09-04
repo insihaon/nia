@@ -46,9 +46,6 @@
         <el-tooltip class="item" effect="light" content="시스템 모니터링 필터" placement="top">
           <i class="el-icon-s-tools m_icon" style="cursor: pointer; margin-right: 5px" @click="openSystemMonitoringModal" />
         </el-tooltip>
-        <el-tooltip :style="{ display: debug ? 'inline-block' : 'none' }" class="item" effect="light" content="ChatBot" placement="top">
-          <i class="el-icon-chat-line-square m_icon" style="cursor: pointer" @click="openChatbotModal" />
-        </el-tooltip>
       </div>
     </div>
   </div>
@@ -89,7 +86,6 @@ export default {
       niaProcess: (state) => state.systemMonitoring.niaProcess,
       systemMonitoringMap: (state) => state.systemMonitoring.systemMonitoringMap,
     }),
-
   },
 
   created() {},
@@ -212,9 +208,6 @@ export default {
     },
     openSystemMonitoringModal() {
       this.fn_openWindow('systemMonitoringFilter')
-    },
-    openChatbotModal() {
-      this.fn_openWindow('chatbot')
     },
   },
 }
