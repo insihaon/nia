@@ -8,14 +8,17 @@
 
       <div ref="chatMessagesBox" class="chat-messages">
         <div v-for="(message, index) in chatMessages" :key="index" :class="['message', message.type]">
-          <div class="message-content" @click="handlePathClick" v-html="formatMessage(message.content)"></div>
-          <div class="message-time">
-            {{ message.time }}
+          <div v-if="message.type !== 'bot-alert' || isActiveBotAlert">
+            <div class="message-content" @click="handlePathClick($event, message.content)" v-html="formatMessage(message.content)"></div>
+            <div class="message-time">
+              {{ message.time }}
+            </div>
           </div>
         </div>
       </div>
 
       <div class="chat-input">
+        경보표시 : <el-switch v-model="isActiveBotAlert" active-color="#13ce66" inactive-color="#ff4949" />
         <input v-model="userInput" type="text" placeholder="질문을 입력하세요..." @keyup.enter="sendMessage" />
         <button :disabled="!userInput.trim()" @click="sendMessage">전송</button>
       </div>
@@ -28,6 +31,8 @@ import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
 import { mapState } from 'vuex'
 import axios from 'axios'
+import { apiIpAlarmList } from '@/api/nia'
+import dialogOpenMixin from '@/mixin/dialogOpenMixin'
 
 const routeName = 'chatbot'
 /* eslint-disable */
@@ -35,6 +40,7 @@ export default {
   name: routeName,
   components: {},
   directives: { elDragDialog },
+  mixins: [dialogOpenMixin],
 
   extends: Modal,
   props: {
@@ -50,6 +56,7 @@ export default {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       userInput: '',
+      isActiveBotAlert: true,
     }
   },
   computed: {
@@ -127,7 +134,7 @@ export default {
 
           hits.forEach((hit, index) => {
             const source = hit._source
-            resultMessage += `${index + 1}. ${source.keyword} <span class="move-text">[이동]</span>\n`
+            resultMessage += `${index + 1}. ${source.name} <span class="move-text">[이동]</span>\n`
             resultMessage += '\n'
           })
 
@@ -162,7 +169,7 @@ export default {
       return formattedContent
     },
 
-    handlePathClick(event) {
+    async handlePathClick(event, content) {
       if (event.target.classList.contains('move-link')) {
         event.preventDefault()
         let keyword = ''
@@ -173,8 +180,21 @@ export default {
             break
           case '[진행]':
             keyword = event.target.getAttribute('data-keyword')
-            // this.$store.commit('chatbot/SWITCH_EVENT_PARAMETER', { name, parameter })
-            this.$router.push({ name: 'NiaMain' })
+
+            const ticketMatch = content.match(/>티켓ID: (.*?)<\/span>/)
+            const ticketId = ticketMatch ? ticketMatch[1] : null
+
+            if (!ticketId) {
+              this.$alert(`예상치 못한 에러 해당 장비에 ticketId가 존재하지 않습니다. 내용 : ${content}`)
+              return
+            }
+
+            const res = await apiIpAlarmList({ TICKET_ID: ticketId })
+            if (res) {
+              const ticketData = res.result[0]
+              this.fn_openWindow('configTest', ticketData)
+            }
+
             break
         }
       }
@@ -286,11 +306,22 @@ export default {
     }
   }
 
-  &.bot {
+  &.bot-answer {
     align-self: flex-start;
 
     .message-content {
       background: white;
+      color: #334155;
+      border-radius: 1rem 1rem 1rem 0.25rem;
+      border: 1px solid #e2e8f0;
+    }
+  }
+
+  &.bot-alert {
+    align-self: flex-start;
+
+    .message-content {
+      background: #ffcdd2;
       color: #334155;
       border-radius: 1rem 1rem 1rem 0.25rem;
       border: 1px solid #e2e8f0;

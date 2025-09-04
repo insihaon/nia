@@ -59,7 +59,17 @@ const mutations = {
     for (i = 0; i < wCount; i++) {
       state.windows[i].zindex--
     }
-    state.windows.push(value)
+
+    if (value.notDuplicate) {
+      const duplicateWindow = state.windows.find((window) => window.name === value.name)
+      if (!duplicateWindow) {
+        state.windows.push(value)
+      } else {
+        duplicateWindow.zindex = value.zindex
+      }
+    } else {
+      state.windows.push(value)
+    }
   },
   SET_WINDOW_OPTIONS(state, { id, options }) {
     var window = state.windows.find(window => window.id === id)

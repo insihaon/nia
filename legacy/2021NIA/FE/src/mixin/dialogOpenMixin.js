@@ -27,7 +27,7 @@ var dialogOpenMixin = {
         },
         requestForAction: {
           component: () => import('@/views-nia/dashBoard/requestForAction'),
-          pageTitle: '조치 요청서',
+          pageTitle: '상황전파',
           width: '1200',
           height: '1100',
           resizeble: true,
@@ -41,7 +41,7 @@ var dialogOpenMixin = {
         },
         configTest: {
           component: () => import('@/views-nia/dashBoard/configTest'),
-          pageTitle: '시험',
+          pageTitle: '조치',
           width: '750',
           height: '660',
           resizeble: true,
@@ -97,11 +97,12 @@ var dialogOpenMixin = {
         },
         chatbot: {
           component: () => import('@/views-nia/dashBoard/chatbot'),
-          pageTitle: 'chatbot',
+          pageTitle: '챗봇',
           width: '600',
           height: '700',
           resizeble: true,
-          positionBottomRight: true
+          positionBottomRight: true,
+          notDuplicate: true
         },
       }
     }
@@ -114,12 +115,13 @@ var dialogOpenMixin = {
       tmpWindowData.name = customPageTitle || this.dialogList[dialogNm]['pageTitle']
       tmpWindowData.target = this.dialogList[dialogNm]['component']
       tmpWindowData.dialogNm = dialogNm
-      // tmpWindowData.type = this.dialogList[dialogNm]
+      tmpWindowData.type = this.dialogList[dialogNm]
       tmpWindowData.width = this.isMobile ? window.innerWidth : this.dialogList[dialogNm]['width']
       tmpWindowData.height = this.dialogList[dialogNm]['height']
       tmpWindowData.minWidth = this.dialogList[dialogNm]['minWidth']
       tmpWindowData.minHeight = this.dialogList[dialogNm]['minHeight']
       tmpWindowData.resizeble = this.dialogList[dialogNm]['resizeble']
+      tmpWindowData.notDuplicate = this.dialogList[dialogNm]['notDuplicate']
       tmpWindowData.callback = callback || null
 
       var isPositionBottomRight = this.dialogList[dialogNm]['positionBottomRight']
