@@ -44,9 +44,7 @@ public interface NiaMapper extends BaseDataMapper {
 
         public int DELETE_SYSLOG_HIST(HashMap<String, Object> map);
 
-        public List<ResultMap> SELECT_EQUIPMENT_LIST(HashMap<String, Object> map);
-
-        public List<ResultMap> SELECT_INTERFACE_LIST(HashMap<String, Object> map);
+        public List<ResultMap> SELECT_SYSLOG_INTERFACE_LIST(HashMap<String, Object> map);
 
         public List<ResultMap> SELECT_SOP_HIST_LIST(HashMap<String, Object> map);
 
@@ -59,6 +57,8 @@ public interface NiaMapper extends BaseDataMapper {
         public List<ResultMap> SELECT_SYSLOG_HIST_LIST(HashMap<String, Object> map);
 
         public List<ResultMap> SELECT_SYSLOG_EQUIPMENT_LIST(HashMap<String, Object> map);
+
+        public List<ResultMap> SELECT_EQUIPMENT_PORT_LIST(HashMap<String, Object> map);
 
         public List<ResultMap> SELECT_SYSLOG_RULE_LIST(HashMap<String, Object> map);
 
