@@ -37,7 +37,7 @@ export default Vue.extend({
         // 장애대응 버튼 SYSLOG 비활성
         result = false
       }
-      if (!['ATT2', 'NTT', 'SYSLOG'].includes(data.ticket_type) && type === 'CONFIG_TEST') {
+      if (!['ATT2', 'NTT', 'SYSLOG', 'RT'].includes(data.ticket_type) && type === 'CONFIG_TEST') {
         // 시험기능 ATT2(이상트래픽), NTT(유해트래픽), SYSLOG 만 활성화
         result = false
       }

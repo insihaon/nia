@@ -1,12 +1,17 @@
 <template>
-  <div ref="aggrid" class="component-container" :class="{ [name]: true,[value.options.theme ||'']: true }" :style="customStyle">
-    <el-row class="aggrid-row" style="display:flex; height: 100%; flex-direction:column">
+  <div
+    ref="aggrid"
+    class="component-container"
+    :class="{ [name]: true, [value.options.theme || '']: true }"
+    :style="customStyle"
+  >
+    <el-row class="aggrid-row" style="display: flex; height: 100%; flex-direction: column">
       <ag-grid-vue
         ref="aggridvue"
         :group-remove-single-children="eval('value.options?.groupRemoveSingleChildren')"
         :locale-text="localeText"
-        :style="{height: `${eval('value.options?.height') || '100%'}`}"
-        style="flex:1"
+        :style="{ height: `${eval('value.options?.height') || '100%'}` }"
+        style="flex: 1"
         class="ag-theme-material"
         :class="{}"
         :row-data="value.data"
@@ -81,7 +86,7 @@
         :pager-count="paginationInfo.pagerCount"
         :current-page="paginationInfo.currentPage"
         background-color="rgb(249, 249, 249);"
-        style="margin: 0 auto;"
+        style="margin: 0 auto"
         @size-change="handleSizeChange"
         @current-change="handlePageChange"
       />
@@ -120,7 +125,7 @@ const EVENTS = {
   sortChanged: 'sortChanged',
   check: 'check',
   paginationPageLode: 'paginationPageLode',
-  gridWidth: 'gridWidth'
+  gridWidth: 'gridWidth',
 }
 
 /*
@@ -143,7 +148,8 @@ const EVENTS = {
 // const consoleError = window.console.error
 
 const routeName = 'CompAgGrid'
-const verticalScrollSeletor = 'div.ag-root-wrapper-body.ag-layout-normal > div.ag-root.ag-layout-normal > div.ag-body-viewport.ag-layout-normal'
+const verticalScrollSeletor =
+  'div.ag-root-wrapper-body.ag-layout-normal > div.ag-root.ag-layout-normal > div.ag-body-viewport.ag-layout-normal'
 // const horizonScrollSeletor = 'div.ag-root-wrapper-body.ag-layout-normal > div.ag-root.ag-layout-normal > div.ag-body-viewport.ag-layout-normal > div.ag-center-cols-clipper > div'
 
 export default {
@@ -156,13 +162,14 @@ export default {
       type: Object,
       default() {
         return {}
-      }
+      },
     },
     paginationInfo: {
       type: Object,
-      default() { return {} }
-    }
-
+      default() {
+        return {}
+      },
+    },
   },
   data() {
     return {
@@ -183,7 +190,7 @@ export default {
       excelStyles: null,
       clickedCell: null,
       rowModelType: 'clientSide',
-      tempY: 0
+      tempY: 0,
     }
   },
   computed: {
@@ -209,7 +216,7 @@ export default {
 
     customStyle() {
       return {
-        '--cell-padding': this.value.options?.cellPadding ?? '23px'
+        '--cell-padding': this.value.options?.cellPadding ?? '23px',
       }
     },
     localeText() {
@@ -225,7 +232,7 @@ export default {
     },
     rowNodes() {
       const array = []
-      this.gridApi.forEachNode(node => array.push(node))
+      this.gridApi.forEachNode((node) => array.push(node))
       return array
     },
     columns() {
@@ -243,11 +250,11 @@ export default {
           this.tempY = val
         } catch (error) {
           console.log(error)
-         }
+        }
       },
       get() {
         return this.$refs.aggridvue.$el.querySelector(verticalScrollSeletor).scrollTop ?? 0
-      }
+      },
     },
     paginationModel() {
       if (this.value.options.paginationModel) {
@@ -256,7 +263,7 @@ export default {
         return {
           pageSize: this.gridApi?.paginationGetPageSize(),
           totalPage: this.gridApi?.paginationGetTotalPages(),
-          currentPage: this.gridApi?.paginationGetCurrentPage()
+          currentPage: this.gridApi?.paginationGetCurrentPage(),
         }
       }
 
@@ -265,13 +272,14 @@ export default {
       //   totalPage: this.gridApi?.paginationGetTotalPages(),
       //   currentPage: this.gridApi?.paginationGetCurrentPage()
       // }
-    }
+    },
   },
   watch: {
     'value.data'(n, o) {
       if (this.value.options?.scrollPosition) {
         if (n === o) return
-        const currentScrollTop = this.$refs.aggridvue.$el.querySelector(verticalScrollSeletor).scrollTop
+        const currentScrollTop =
+          this.$refs.aggridvue.$el.querySelector(verticalScrollSeletor).scrollTop
         this.$nextTick().then(() => {
           this.scrollTop = currentScrollTop
           this.gridApi?.redrawRows()
@@ -294,21 +302,22 @@ export default {
   },
   created() {
     this.excelStyles = [
-      { id: 'header',
+      {
+        id: 'header',
         alignment: {
-          horizontal: 'Center'
+          horizontal: 'Center',
         },
         interior: {
           color: '#d8d8d8',
           pattern: 'Solid',
-          patternColor: undefined
+          patternColor: undefined,
         },
         font: {
           bold: true,
           color: '#000000',
-          size: 14
-        }
-      }
+          size: 14,
+        },
+      },
     ]
   },
   mounted() {
@@ -325,19 +334,21 @@ export default {
       })
     }, 500)
   },
-  beforeDestroy() {
-  },
+  beforeDestroy() {},
   beforeMount() {
-    this.defaultColDef = this._merge({
-      minWidth: 30,
-      sortable: true,
-      filter: true,
-      resizable: this.value.options?.resizable ?? true,
-      tooltipComponent: 'customTooltip',
-      cellClassRules: this.value.options?.rules
-      // enableRowGroup: true, // grouping boolean 값
-      // rowGroup: false
-    }, this.tableOptions)
+    this.defaultColDef = this._merge(
+      {
+        minWidth: 30,
+        sortable: true,
+        filter: true,
+        resizable: this.value.options?.resizable ?? true,
+        tooltipComponent: 'customTooltip',
+        cellClassRules: this.value.options?.rules,
+        // enableRowGroup: true, // grouping boolean 값
+        // rowGroup: false
+      },
+      this.tableOptions
+    )
     // this.autoGroupColumnDef = {
     //   cellRendererParams: {
     //     innerRenderer: (params) => {
@@ -369,14 +380,26 @@ export default {
       this.gridApi?.setColumnDefs(newColumnDefs)
     },
     updateColumnDefs() {
-      if (array_equals(this.value.columns, this.oldColumns)) { return }
+      if (array_equals(this.value.columns, this.oldColumns)) {
+        return
+      }
 
       const options = this.value.options
       const columns = this.value.columns
       this.oldColumns = _.cloneDeep(columns)
 
       if (options && options.checkable && columns[0].headerName !== 'checkAll') {
-        columns.splice(0, 0, { type: '', prop: 'checkAll', headerName: 'checkAll', filter: false, headerCheckboxSelection: true, headerCheckboxSelectionFilteredOnly: true, checkboxSelection: true, maxWidth: 50, resizable: false })
+        columns.splice(0, 0, {
+          type: '',
+          prop: 'checkAll',
+          headerName: 'checkAll',
+          filter: false,
+          headerCheckboxSelection: true,
+          headerCheckboxSelectionFilteredOnly: true,
+          checkboxSelection: true,
+          maxWidth: 50,
+          resizable: false,
+        })
       }
 
       if (options && options.rightClickExcelName) {
@@ -392,7 +415,9 @@ export default {
         c.pinned = c.fixed
         c.align = c.alignItems
         c.cellClass = `td-${c.field}-class ${c.fill ? 'fill' : ''}`
-        c.headerClass = `th-${c.field}-class` + ((hasChildren && !c.children) ? ' ' + 'mergedHeaderGroupColumn' : '')
+        c.headerClass =
+          `th-${c.field}-class` +
+          (hasChildren && !c.children ? ' ' + 'mergedHeaderGroupColumn' : '')
         const formatter = c.format || c.formatter || c.cellRendererParams?.fnFormatter
         let agFormatter
         if (formatter) {
@@ -401,10 +426,12 @@ export default {
           }
         }
         c.valueFormatter = agFormatter
-        c.hide = (c.show === false)
-        c.width = (typeof c.width === 'number') ? c.width : Number(c.width)
+        c.hide = c.show === false
+        c.width = typeof c.width === 'number' ? c.width : Number(c.width)
         c.enableRowGroup = c.enableRowGroup === undefined ? true : c.enableRowGroup
-        c.cellStyle = Object.assign(c.cellStyle ?? {}, { textAlign: c.alignItems })
+        c.cellStyle = Object.assign(c.cellStyle ?? {}, {
+          textAlign: c.alignItems,
+        })
       }
 
       const convertRecusive = (columns) => {
@@ -439,7 +466,7 @@ export default {
     },
     findRowNode(fn) {
       let rowNode
-      this.gridApi.forEachNode(node => {
+      this.gridApi.forEachNode((node) => {
         if (fn(node.data)) {
           rowNode = node
         }
@@ -448,7 +475,9 @@ export default {
     },
     getNodes(filter = null) {
       const array = []
-      this.gridApi.forEachNodeAfterFilterAndSort(node => array.push(deepCloneFilter(node.data, filter)))
+      this.gridApi.forEachNodeAfterFilterAndSort((node) =>
+        array.push(deepCloneFilter(node.data, filter))
+      )
       return array
     },
     getAllNodes() {
@@ -465,9 +494,12 @@ export default {
     },
     onRowDoubleClicked($event) {
       const selectedNodeds = this.gridApi.getSelectedNodes()
-      const selectedData = selectedNodeds.map(node => node.data)
+      const selectedData = selectedNodeds.map((node) => node.data)
       copyToClipboard(this.clickedCell.value)
-      this.devEmit(EVENTS.rowDoubleClicked, this.value.options.rowMultiSelection ? [$event.data] : selectedData)
+      this.devEmit(
+        EVENTS.rowDoubleClicked,
+        this.value.options.rowMultiSelection ? [$event.data] : selectedData
+      )
       this.devEmit(EVENTS.rowDoubleClickedEvent, Object.assign($event, this.clickedCell))
     },
     printFilterAndSort() {
@@ -497,7 +529,7 @@ export default {
     },
     getSelectedRows(param) {
       const selectedNodeds = this.gridApi.getSelectedNodes()
-      const selectedData = selectedNodeds.map(node => node.data)
+      const selectedData = selectedNodeds.map((node) => node.data)
       this.devEmit(EVENTS.changeSelectedRows, selectedData, param)
       this.devEmit(EVENTS.changeRowChecked, param)
       return selectedData
@@ -507,14 +539,14 @@ export default {
     },
     autoSizeAll(skipHeader = false) {
       var allColumnIds = []
-      this.gridColumnApi.getAllColumns().forEach(function(column) {
+      this.gridColumnApi.getAllColumns().forEach(function (column) {
         allColumnIds.push(column.colId)
       })
       this.gridColumnApi.autoSizeColumns(allColumnIds, skipHeader)
     },
     saveColumnState() {
       var allState = this.gridColumnApi.getColumnState()
-      var currentState = allState.map(function(state) {
+      var currentState = allState.map(function (state) {
         return { ...state /* rowGroup: undefined, rowGroupIndex: undefined*/ }
       })
       const name = this.value.options?.name
@@ -534,13 +566,16 @@ export default {
         savedColumnState = JSON.parse(window.localStorage['savedColumnState'] || '{}')[name]
       }
       if (!savedColumnState) {
-        this.log('no order and visibility state to restore by, you must save order and visibility state first')
+        this.log(
+          'no order and visibility state to restore by, you must save order and visibility state first'
+        )
         return
       }
 
       // 전체 선택의 경우 항상 index 0
-      const index = savedColumnState.findIndex(item => item.colId === 'checkAll')
-      if (index !== -1) { // 조건을 만족하는 항목을 찾은 경우
+      const index = savedColumnState.findIndex((item) => item.colId === 'checkAll')
+      if (index !== -1) {
+        // 조건을 만족하는 항목을 찾은 경우
         const itemToMove = savedColumnState[index]
         savedColumnState.splice(index, 1) // 해당 아이템을 배열에서 제거합니다.
         savedColumnState.unshift(itemToMove) // 아이템을 배열의 맨 앞에 추가합니다.
@@ -548,7 +583,7 @@ export default {
 
       this.gridColumnApi.applyColumnState({
         state: savedColumnState,
-        applyOrder: true
+        applyOrder: true,
       })
 
       if (this.gridColumnApi?.columnController?.groupAutoColumns) {
@@ -566,35 +601,40 @@ export default {
       this.gridApi.onSortChanged()
     },
     getExportParams(option = {}) {
-      const params = Object.assign({
-        suppressQuotes: undefined, // undefined or true
-        columnSeparator: undefined, // undefined or tab('\t') or "|"
-        customHeader: undefined,
-        customFooter: undefined,
-        fileName: this.value.options?.name,
-        processCellCallback: (cell) => {
-          const colDef = cell.column.getColDef()
-          // try to reuse valueFormatter from the colDef
-          if (colDef.valueFormatter) {
-            const valueFormatterParams = {
-              ...cell,
-              data: cell.node.data,
-              node: cell.node,
-              colDef: cell.column.getColDef()
+      const params = Object.assign(
+        {
+          suppressQuotes: undefined, // undefined or true
+          columnSeparator: undefined, // undefined or tab('\t') or "|"
+          customHeader: undefined,
+          customFooter: undefined,
+          fileName: this.value.options?.name,
+          processCellCallback: (cell) => {
+            const colDef = cell.column.getColDef()
+            // try to reuse valueFormatter from the colDef
+            if (colDef.valueFormatter) {
+              const valueFormatterParams = {
+                ...cell,
+                data: cell.node.data,
+                node: cell.node,
+                colDef: cell.column.getColDef(),
+              }
+              return colDef.valueFormatter(valueFormatterParams)
             }
-            return colDef.valueFormatter(valueFormatterParams)
-          }
-          return cell.value
-        }
-      }, option)
+            return cell.value
+          },
+        },
+        option
+      )
       if (params.suppressQuotes || params.columnSeparator) {
-        console.warn('참고: 비표준 따옴표 또는 구분 기호가 있는 파일을 다운로드 중입니다. Excel에서 올바르게 렌더링되지 않을 수 있습니다.')
+        console.warn(
+          '참고: 비표준 따옴표 또는 구분 기호가 있는 파일을 다운로드 중입니다. Excel에서 올바르게 렌더링되지 않을 수 있습니다.'
+        )
       }
       return params
     },
     exportCsv(fileName) {
       const params = this.getExportParams({
-        fileName: fileName
+        fileName: fileName,
       })
       this.gridApi.exportDataAsCsv(params)
     },
@@ -605,7 +645,7 @@ export default {
     exportTxt(fileName) {
       const params = this.getExportParams({
         suppressQuotes: true,
-        columnSeparator: '\t'
+        columnSeparator: '\t',
       })
       const txt = this.gridApi.getDataAsCsv(params)
       exportToFile(txt, `${fileName}.txt`)
@@ -661,7 +701,7 @@ export default {
     onSortChanged(e) {
       this.onColumnChanged()
       // this.log('Event Sort Changed', e);
-      const sortedColumns = e.columnApi.getColumnState().filter(col => col.sort)
+      const sortedColumns = e.columnApi.getColumnState().filter((col) => col.sort)
       this.devEmit(EVENTS.sortChanged, sortedColumns)
     },
     onColumnResized(e) {
@@ -696,13 +736,18 @@ export default {
       this.onColumnChanged()
       // this.log('Callback onCellValueChanged:', params)
     },
-    isExternalFilterPresent() { return true },
+    isExternalFilterPresent() {
+      return true
+    },
     externalFilterChanged(newValue) {
       this.externalFilter = newValue
       this.gridApi.onFilterChanged()
     },
     doesExternalFilterPass(node) {
-      return !this.value.onDoesExternalFilterPass || this.value.onDoesExternalFilterPass(this.externalFilter, node)
+      return (
+        !this.value.onDoesExternalFilterPass ||
+        this.value.onDoesExternalFilterPass(this.externalFilter, node)
+      )
     },
     onCheckRow(row) {
       this.devEmit(EVENTS.check, row)
@@ -714,7 +759,7 @@ export default {
       this.devEmit(EVENTS.cellClicked, event)
       this.clickedCell = {
         column: event.column,
-        value: event.value
+        value: event.value,
       }
     },
     onPaginationChanged() {
@@ -741,8 +786,8 @@ export default {
         this.value.options.paginationModel.currentPage++
         this.$forceUpdate()
       }
-    }
-  }
+    },
+  },
 }
 
 import 'ag-grid-enterprise'
@@ -752,37 +797,51 @@ import { copyToClipboard } from 'quasar'
 
 LicenseManager.prototype.outputMissingLicenseKey = () => {}
 GridOptionsWrapper.prototype.checkProperties = () => {}
-GridApi.prototype.setSortModel = function(sortModel, source) {
+GridApi.prototype.setSortModel = function (sortModel, source) {
   // console.warn('AG Grid: as of version 24.0.0, setSortModel() is deprecated, sort information is now part of Column State. Please use columnApi.applyColumnState() instead.')
   var columnState = []
   if (sortModel) {
-    sortModel.forEach(function(item, index) {
+    sortModel.forEach(function (item, index) {
       columnState.push({
         colId: item.colId,
         sort: item.sort,
-        sortIndex: index
+        sortIndex: index,
       })
     })
   }
-  this.columnController.applyColumnState({ state: columnState, defaultState: { sort: null } })
+  this.columnController.applyColumnState({
+    state: columnState,
+    defaultState: { sort: null },
+  })
 }
-GridApi.prototype.getSortModel = function() {
+GridApi.prototype.getSortModel = function () {
   // console.warn('AG Grid: as of version 24.0.0, getSortModel() is deprecated, sort information is now part of Column State. Please use columnApi.getColumnState() instead.')
   var columnState = this.columnController.getColumnState()
-  var filteredStates = columnState.filter(function(item) { return item.sort != null })
+  var filteredStates = columnState.filter(function (item) {
+    return item.sort != null
+  })
   var indexes = {}
-  filteredStates.forEach(function(state) {
+  filteredStates.forEach(function (state) {
     var id = state.colId
     var sortIndex = state.sortIndex
     indexes[id] = sortIndex
   })
-  var res = filteredStates.map(function(s) {
+  var res = filteredStates.map(function (s) {
     return { colId: s.colId, sort: s.sort }
   })
-  res.sort(function(a, b) { return indexes[a.colId] - indexes[b.colId] })
+  res.sort(function (a, b) {
+    return indexes[a.colId] - indexes[b.colId]
+  })
   return res
 }
 </script>
+
+<style lang="scss">
+.ag-center-cols-clipper .ag-row.highlight-row {
+  background-color: #ffe8d6 !important;
+  border: 1px solid red !important;
+}
+</style>
 
 <style lang="scss" scope>
 .CompAgGrid {
@@ -796,10 +855,10 @@ GridApi.prototype.getSortModel = function() {
   }
 
   .ag-header-cell-label {
-      display: flex !important;
-      align-items: center;
-      justify-content: center !important;
-    }
+    display: flex !important;
+    align-items: center;
+    justify-content: center !important;
+  }
 
   .ag-header-cell {
     color: black;
@@ -807,13 +866,13 @@ GridApi.prototype.getSortModel = function() {
     font-weight: 800;
   }
 
-  .ag-group-expanded:not(.ag-hidden){
-    height:100% !important;
+  .ag-group-expanded:not(.ag-hidden) {
+    height: 100% !important;
     display: block !important;
   }
 
-  .ag-group-child-count{
-    height:100% !important;
+  .ag-group-child-count {
+    height: 100% !important;
   }
 
   .ag-theme-material .ag-header-cell,
@@ -824,12 +883,12 @@ GridApi.prototype.getSortModel = function() {
     }
   }
 
-  .ag-header-group-cell{
+  .ag-header-group-cell {
     color: black;
     font-size: 1em;
     font-weight: 800;
-    background-color:#f8f8f9 !important;
-    border:1px solid #e8eaec;
+    background-color: #f8f8f9 !important;
+    border: 1px solid #e8eaec;
     transition: all 0.25s;
 
     .ag-header-group-cell-label {
@@ -842,21 +901,20 @@ GridApi.prototype.getSortModel = function() {
     color: black;
     font-size: 12px;
     font-weight: 800;
-
   }
 
   .ag-header {
     text-align: center !important;
   }
 
-  .ag-body-viewport{
+  .ag-body-viewport {
     border-bottom: 3px solid rgb(232, 234, 236);
   }
 
   .ag-cell {
-    font-family: "굴림", "SUIT-Medium", "Spoqa Han Sans Neo", "sans-serif"  !important;
+    font-family: '굴림', 'SUIT-Medium', 'Spoqa Han Sans Neo', 'sans-serif' !important;
     font-weight: normal;
-    color:#505050;
+    color: #505050;
     font-size: 11.5px;
     padding: 0 var(--cell-padding) !important;
     line-height: 30px !important;
@@ -866,50 +924,46 @@ GridApi.prototype.getSortModel = function() {
     }
   }
 
-  .ag-full-width-row{
-    .ag-cell-wrapper.ag-row-group{
-      color:black
+  .ag-full-width-row {
+    .ag-cell-wrapper.ag-row-group {
+      color: black;
     }
   }
 
-  .ag-center-cols-viewport  {
+  .ag-center-cols-viewport {
     text-align: center;
   }
 
   // 우클릭 메뉴 스타일
-  .ag-menu-option-part.ag-menu-option-text{
-    font-size:14px;
+  .ag-menu-option-part.ag-menu-option-text {
+    font-size: 14px;
   }
 
   /*
     아래 .ag-header-row.ag-header-row-column와 mergedHeaderGroupColumn은
     group화된 header가 있을 경우 나머지의 이이를 group과 맞춰주기 위함이다.
   */
-  .ag-header-row.ag-header-row-column{
+  .ag-header-row.ag-header-row-column {
     overflow: visible;
   }
 
-  .mergedHeaderGroupColumn{
+  .mergedHeaderGroupColumn {
     height: 200%;
     top: -100%;
     z-index: 9999;
-    background-color: #FFFFFF;
+    background-color: #ffffff;
   }
 
-  .el-pagination{
-
-    .el-pagination__sizes{
-      .el-input__inner{
-        height:22px;
+  .el-pagination {
+    .el-pagination__sizes {
+      .el-input__inner {
+        height: 22px;
       }
 
-      .el-input--mini .el-input__icon{
+      .el-input--mini .el-input__icon {
         line-height: 22px;
       }
     }
-
   }
 }
-
 </style>
-

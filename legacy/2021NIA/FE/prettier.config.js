@@ -1,9 +1,9 @@
 module.exports = {
-    "singleQuote": true,
-    "semi": false,
-    "tabWidth": 2,
-    "endofLine": "lf",
-    "printWidth": 500,
-    "trailingComma": "es5",
-    "htmlSelfClosing": false
-};
+    'singleQuote': true,
+    'semi': false,
+    'tabWidth': 2,
+    'endofLine': 'lf',
+    'printWidth': 250,
+    'trailingComma': 'es5',
+    'htmlSelfClosing': false
+}
