@@ -729,18 +729,12 @@
         WHERE  alarmno = #{ALARMNO}
     </update>
     
-     <delete id="DELETE_SYSLOG_HIST" parameterType="java.util.HashMap">
+    <delete id="DELETE_SYSLOG_HIST" parameterType="java.util.HashMap">
         DELETE from nia.tb_syslog_sop
         WHERE alarmno = #{ALARMNO}
     </delete>
 
-    <select id="SELECT_EQUIPMENT_LIST" parameterType="hashmap" resultType="hashmap">
-        SELECT  DISTINCT NODE_NM AS VALUE
-        FROM    rca.tb_syslog_alarm_mst
-        <!-- WHERE   ALARMTIME BETWEEN NOW()::TIMESTAMP - INTERVAL '30 day' AND NOW()::TIMESTAMP -->
-    </select>
-
-    <select id="SELECT_INTERFACE_LIST" parameterType="hashmap" resultType="hashmap">
+    <select id="SELECT_SYSLOG_INTERFACE_LIST" parameterType="hashmap" resultType="hashmap">
         SELECT DISTINCT ALARMLOC AS VALUE
         FROM rca.tb_syslog_alarm_mst
         WHERE ALARMLOC IS NOT NULL
@@ -786,8 +780,15 @@
         LEFT JOIN resource.tb_node_mst NODEA ON NODEA.node_id = AL.ROOT_CAUSE_SYSNAMEA
         LEFT JOIN resource.tb_node_mst NODEZ ON NODEZ.node_id = AL.ROOT_CAUSE_SYSNAMEZ
         WHERE 1=1
+            AND TC.PARENT_TICKET_ID IS NULL
         <if test="TICKET_ID != null">
             AND SOP.TICKET_ID LIKE '%' || #{TICKET_ID} || '%'
+        </if>
+        <if test="NODE_NM != null">
+            AND AL.ROOT_CAUSE_SYSNAMEA = #{NODE_NM}
+        </if>
+        <if test="ALARMLOC != null">
+            AND AL.ROOT_CAUSE_PORTA = #{ALARMLOC}
         </if>
         <if test="START_DATE == null and END_DATE == null">
             AND AL.INSERT_TIME <![CDATA[ > ]]> now() - INTERVAL '7' day
@@ -928,11 +929,20 @@
     </select>
 
     <!-- 장비명 리스트 조회 -->
-    <select id="SELECT_SYSLOG_EQUIPMENT_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
-        SELECT  node_nm
-        FROM    rca.tb_syslog_alarm_mst tsam
-        WHERE   tsam.alarmtime BETWEEN NOW()::TIMESTAMP - interval '30 day' AND NOW()::TIMESTAMP
-        GROUP BY node_nm
+    <select id="SELECT_SYSLOG_EQUIPMENT_LIST" parameterType="hashmap" resultType="hashmap">
+        SELECT  DISTINCT NODE_NM AS VALUE
+        FROM    rca.tb_syslog_alarm_mst
+    </select>
+
+    <!-- 장비명 리스트 조회 -->
+    <select id="SELECT_EQUIPMENT_PORT_LIST" parameterType="hashmap" resultType="hashmap">
+        select a.node_id, b.if_id
+        from resource.tb_node_mst a 
+        inner join resource.tb_port_mst b on a.node_id = b.node_id
+        where 1=1 
+        <if test="NODE_ID == null">
+            AND a.node_id = #{NODE_ID}
+        </if>
     </select>
 
     <!-- SYSLOG RULE 관리 리스트 조회 -->

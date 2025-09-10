@@ -26,13 +26,15 @@
           ref="syslogSearch"
           :ag-grid="syslogAgGrid"
           :is-button-slot="false"
+          :is-excel="false"
           :search-model.sync="syslogSearchModel"
-          :is-grid-loading="syslogLoading"
+          :is-excel-save-server="false"
           :items="searchSyslogItems"
+          :is-grid-loading="syslogLoading"
           :pagination-info="syslogPaginationInfo"
           class="w-100 h-100"
           @handleClickSearch="() => onClickSearch('SYSLOG')"
-@onChangePage="(curPage) => onChangePage(curPage, 'SYSLOG')"
+          @onChangePage="(curPage) => onChangePage(curPage, 'SYSLOG')"
           @rowClicked="(row) => onClickRow(row, 'SYSLOG')"
           @searchClear="() => onLoadSyslogHistList()"
         />
@@ -46,9 +48,10 @@
 import { Base } from '@/min/Base'
 import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
 import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
-import { apiSelectSopHistList, apiSopSyslogHistList, apiEquipmentList, apiInterfaceList } from '@/api/nia'
+import { apiSelectSopHistList, apiSopSyslogHistList, apiSyslogEquipmentList, apiSyslogInterfaceList } from '@/api/nia'
 import { getAlarmType, getTicketStatus, getSopAiAccuracy } from '@/views-nia/js/commonFormat'
 import ModalSopDetail from '@/views-nia/modal/ModalSopDetail.vue'
+import { mapState } from 'vuex'
 
 const routeName = 'sopHistory'
 export default {
@@ -93,13 +96,12 @@ export default {
         pagerCount: 11,
       },
       selectedRow: [],
-      searchSopItems: [
-        { label: '티켓번호', type: 'input', size: 8, model: 'TICKET_ID' },
-        { label: 'DATE', type: 'date', size: 8, model: 'DATE' },
-      ],
+
       sopSearchModel: {
         TICKET_ID: '',
         DATE: [],
+        NODE_NM: '',
+        ALARMLOC: '',
       },
       syslogSearchModel: {
         ALARM_NO: '',
@@ -215,8 +217,16 @@ export default {
       ]
       return { options, columns, data: this.syslogHistList }
     },
+    searchSopItems() {
+      return [
+        { label: '티켓번호', type: 'input', size: 6, model: 'TICKET_ID' },
+        { label: 'DATE', type: 'date', size: 6, model: 'DATE' },
+        { label: '장비명', type: 'select', size: 6, model: 'NODE_NM', setting: { allOption: { toggle: true } }, options: this.equipmentOptionList },
+        { label: 'I/F', type: 'select', size: 6, model: 'ALARMLOC', setting: { allOption: { toggle: true } }, options: this.interfaceOptionList },
+      ]
+    },
     searchSyslogItems() {
-      const searchItems = [
+      return [
         { label: '알람번호', type: 'input', size: 8, model: 'ALARM_NO' },
         { label: '장비명', type: 'select', size: 8, model: 'NODE_NM', setting: { allOption: { toggle: true } }, options: this.equipmentOptionList },
         { label: 'I/F', type: 'select', size: 8, model: 'ALARMLOC', setting: { allOption: { toggle: true } }, options: this.interfaceOptionList },
@@ -234,7 +244,17 @@ export default {
         },
         { label: 'DATE', type: 'date', size: 8, model: 'DATE', placeholder: '' },
       ]
-      return searchItems
+    },
+    ...mapState({
+      sopHistoryEventText: (state) => state.chatbot.routerParameter.SopHistory,
+    }),
+  },
+  watch: {
+    sopHistoryEventText(nVal, oVal) {
+      if (nVal.includes('saveExcel')) {
+        this.onSaveExcel()
+        this.$store.commit('chatbot/CLEAR_ROUTER_PARAMETER', { name: this.$route.name })
+      }
     },
   },
   created() {
@@ -243,7 +263,9 @@ export default {
   mounted() {
     if (this.selectedRow?.ticket_id) {
       this.tapCurrent = 'ticket'
-      this.sopSearchModel.TICKET_ID = this.selectedRow.ticket_id
+      // this.sopSearchModel.TICKET_ID = this.selectedRow.ticket_id
+      this.sopSearchModel.NODE_NM = this.selectedRow.node_nm
+      this.sopSearchModel.ALARMLOC = this.selectedRow.alarmloc
     }
     if (this.selectedRow?.ticket_type === 'SYSLOG') {
       this.tapCurrent = 'syslog'
@@ -258,11 +280,11 @@ export default {
   methods: {
     async setSelectedOptions() {
       try {
-        const equipRes = await apiEquipmentList()
+        const equipRes = await apiSyslogEquipmentList()
         this.equipmentOptionList = equipRes?.result.map((v) => {
           return { label: v.value, value: v.value }
         })
-        const ifRes = await apiInterfaceList()
+        const ifRes = await apiSyslogInterfaceList()
         this.interfaceOptionList = ifRes?.result.map((v) => {
           return { label: v.value, value: v.value }
         })
@@ -277,6 +299,12 @@ export default {
       if (searchModel?.TICKET_ID) {
         this._merge(param, { TICKET_ID: this.$refs.ticketSearch.searchModel.TICKET_ID })
       }
+      if (searchModel?.NODE_NM) {
+        this._merge(param, { NODE_NM: this.$refs.ticketSearch.searchModel.NODE_NM })
+      }
+      if (searchModel?.ALARMLOC) {
+        this._merge(param, { ALARMLOC: this.$refs.ticketSearch.searchModel.ALARMLOC })
+      }
       if (searchModel?.DATE) {
         const dateTime = this.$refs.ticketSearch.searchModel.DATE
         this._merge(param, { START_DATE: dateTime[0], END_DATE: dateTime[1] })
@@ -287,10 +315,9 @@ export default {
       return param
     },
     async onLoadSopHistList() {
-      const param = this.getSopHistParam()
       try {
         this.loading = true
-        const res = await apiSelectSopHistList(param)
+        const res = await apiSelectSopHistList(this.getSopHistParam())
 
         this.sopHistList = res?.result
         this.sopPaginationInfo.totalCount = res.total
@@ -375,6 +402,10 @@ export default {
         setTimeout(() => {
           this.$refs.excelGrid.exportExcel(`SOP 리스트_${this.toStringTime(new Date(), 'YYMMDD')}`)
           this.closeLoading(target)
+
+          this.$store.dispatch('chatbot/botPushAnswerMessage', {
+            content: `➡️ SOP이력조회에서 성공적으로 엑셀을 저장했습니다.`,
+          })
         }, 10)
       } catch (error) {
         this.error(error)

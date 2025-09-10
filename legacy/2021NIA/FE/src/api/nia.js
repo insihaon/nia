@@ -94,21 +94,12 @@ export function apiSelfProcessList(params = {}) {
     data: params
   })
 }
-export function apiEquipmentList(params = {}) {
+export function apiSyslogInterfaceList(params = {}) {
   return http({
     url: '/selectList',
     method: 'post',
     filePath: filePath,
-    sqlId: 'SELECT_EQUIPMENT_LIST',
-    data: params
-  })
-}
-export function apiInterfaceList(params = {}) {
-  return http({
-    url: '/selectList',
-    method: 'post',
-    filePath: filePath,
-    sqlId: 'SELECT_INTERFACE_LIST',
+    sqlId: 'SELECT_SYSLOG_INTERFACE_LIST',
     data: params
   })
 }
@@ -239,6 +230,16 @@ export function apiSyslogEquipmentList(params = {}) {
     method: 'post',
     filePath: filePath,
     sqlId: 'SELECT_SYSLOG_EQUIPMENT_LIST',
+    data: params
+  })
+}
+
+export function apiEquipmentPortList(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_EQUIPMENT_PORT_LIST',
     data: params
   })
 }
