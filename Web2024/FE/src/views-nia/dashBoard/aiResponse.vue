@@ -1,48 +1,43 @@
 <template>
-  <div :class="{ [name]: true}" style="height : 100%">
+  <div :class="{ [name]: true }" style="height: 100%">
     <div class="d-flex flex-column h-full">
-      <el-card
-        shadow="never"
-        style="flex : 1"
-        :body-style="{ padding: '10px' , height: 'calc(100% - 55px)' }"
-      >
+      <el-card shadow="never" style="flex: 1" :body-style="{ padding: '10px', height: 'calc(100% - 55px)' }">
         <div slot="header">
           <span><i class="el-icon-document" /> 작업 요청 구간</span>
         </div>
         <el-row class="d-flex flex-column justify-center h-100">
           <div class="node-section d-flex justify-center">
-            <img src="@/assets/images/nia/node/switch.png">
+            <img src="@/assets/images/nia/node/switch.png" />
             <div class="blinking mt-8" />
-            <img src="@/assets/images/nia/node/switch.png">
+            <img src="@/assets/images/nia/node/switch.png" />
           </div>
           <div class="node-info d-flex justify-evenly">
             <div style="width: 390px">
               <div style="float: left">
                 <div>{{ trafficInfo.root_cause_sysnamea }}</div>
-                <div><span v-if="isShowChartTicketType">({{ trafficInfo.root_cause_porta }})</span></div>
+                <div>
+                  <span v-if="isShowChartTicketType">({{ trafficInfo.root_cause_porta }})</span>
+                </div>
               </div>
               <div style="float: right">
                 <div>{{ !isShowChartTicketType ? trafficInfo.root_cause_sysnamea : trafficInfo.root_cause_sysnamez }}</div>
-                <div><span v-if="isShowChartTicketType">({{ trafficInfo.root_cause_portz }})</span></div>
+                <div>
+                  <span v-if="isShowChartTicketType">({{ trafficInfo.root_cause_portz }})</span>
+                </div>
               </div>
             </div>
           </div>
         </el-row>
       </el-card>
 
-      <el-row
-        v-if="isShowChartTicketType"
-        :style="{flex : isShowChartTicketType ? '0 0 45%' : '0 0 0%'}"
-        :gutter="10"
-        class="mt-2"
-      >
+      <el-row v-if="isShowChartTicketType" :style="{ flex: isShowChartTicketType ? '0 0 45%' : '0 0 0%' }" :gutter="10" class="mt-2">
         <el-col :span="12" style="height: 100%">
           <el-card shadow="never" style="height: 100%" :body-style="{ padding: '5px', height: 'calc(100% - 30px)' }">
             <div slot="header">
               <span><i class="el-icon-document" /> TRAFFIC 그래프(MBPS)</span>
             </div>
             <el-row>
-              <CompChart ref="trafficChartMbps" :options="trafficChartMbps" class="w-100" :chart-loading="chartLoading" style="height: 300px;" />
+              <CompChart ref="trafficChartMbps" :options="trafficChartMbps" class="w-100" :chart-loading="chartLoading" style="height: 300px" />
             </el-row>
             <!-- <el-row style="height: 300px" class="d-flex items-center justify-center"> 정보가 없습니다. </el-row> -->
           </el-card>
@@ -63,10 +58,9 @@
 
       <el-row style="flex: 0 0 35px">
         <el-col align="right" class="mt-2">
-
           <el-button size="mini" type="primary" icon="el-icon-camera" @click.native="fn_openWindow('snapShot', _merge(selectedRow, trafficInfo))"> 데이터 스냅샷 </el-button>
           <el-button size="mini" type="primary" @click.native="fn_openWindow('requestForAction', _merge(selectedRow, trafficInfo))"> 상황전파 </el-button>
-          <el-button size="mini" type="primary" @click.native="fn_openWindow('configTest', _merge(selectedRow, trafficInfo))"> 시험 </el-button>
+          <el-button size="mini" type="primary" @click.native="fn_openWindow('configTest', _merge(selectedRow, trafficInfo))"> 조치 </el-button>
           <el-button size="mini" type="primary" @click.native="fn_openWindow('processFin', _merge(selectedRow, trafficInfo))"> 마감 </el-button>
           <el-button size="mini" type="info" icon="el-icon-close" @click.native="$emit('windowClose')">
             {{ $t('exit') }}
@@ -100,7 +94,7 @@ export default {
       type: Object,
       default() {
         return {}
-      }
+      },
     },
   },
   data() {
@@ -253,11 +247,10 @@ export default {
             type: 'line',
             data: chartData.map((v) => v.out_threshold_upper),
             smooth: true,
-            itemStyle: { color: colorMap.OUT_THRESHOLD_UPPER, },
-            areaStyle: { color: colorMap.OUT_THRESHOLD_UPPER, },
-            lineStyle: { width: 0, },
+            itemStyle: { color: colorMap.OUT_THRESHOLD_UPPER },
+            areaStyle: { color: colorMap.OUT_THRESHOLD_UPPER },
+            lineStyle: { width: 0 },
             symbol: 'none',
-
           },
         ]
         topLegend = ['MBPS_IN', 'MBPS_OUT'] // 위쪽 레전드 항목
@@ -283,26 +276,26 @@ export default {
       }
 
       const trafficChartMbpsOptions = {
-          tooltip: { trigger: 'axis' },
-          legend: [
-            {
-              data: topLegend,
-              top: '3%',
-              orient: 'horizontal',
-            },
-            {
-              data: bottomLegend,
-              top: '12%',
-              orient: 'horizontal',
-            }
-          ],
-          dataZoom: [{ type: 'inside' }],
-          xAxis: {
-            type: 'category',
-            data: chartData.map((v) => formatterTime(v[xAxisKey])),
+        tooltip: { trigger: 'axis' },
+        legend: [
+          {
+            data: topLegend,
+            top: '3%',
+            orient: 'horizontal',
           },
-          yAxis: { type: 'value' },
-          series: seriesArr,
+          {
+            data: bottomLegend,
+            top: '12%',
+            orient: 'horizontal',
+          },
+        ],
+        dataZoom: [{ type: 'inside' }],
+        xAxis: {
+          type: 'category',
+          data: chartData.map((v) => formatterTime(v[xAxisKey])),
+        },
+        yAxis: { type: 'value' },
+        series: seriesArr,
       }
 
       if (this.isAttFtt(ticket_type)) {
@@ -318,7 +311,7 @@ export default {
       }
 
       return trafficChartMbpsOptions
-    }
+    },
   },
   created() {
     this.selectedRow = this.wdata?.params?.row
@@ -326,7 +319,7 @@ export default {
       root_cause_sysnamea: '',
       root_cause_sysnamez: '',
       root_cause_porta: '',
-      root_cause_portz: ''
+      root_cause_portz: '',
     }
   },
   mounted() {
@@ -343,7 +336,7 @@ export default {
 
       this.$store.dispatch('mdi/setWindowOptions', {
         id: this.wdata.id,
-        options: { height: '300', width: '500' }
+        options: { height: '300', width: '500' },
       })
     }
   },
@@ -404,7 +397,7 @@ export default {
   padding: 7px 10px;
 }
 
-.aiResponse{
+.aiResponse {
   caret-color: transparent; /* 깜빡이는 커서 숨김 */
 }
 

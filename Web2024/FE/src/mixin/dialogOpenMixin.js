@@ -59,6 +59,7 @@ var dialogOpenMixin = {
           width: '1200',
           height: '900',
           resizeble: true,
+          routerName: 'SopHistory' // 만약, router가 있는 화면의 경우 chatbot 팝업 명령을 위해 기존 router의 name이 필요
         },
         selfProcessList: {
           component: () => import('@/views-nia/dashBoard/selfProcessList'),
@@ -95,14 +96,29 @@ var dialogOpenMixin = {
           height: '380',
           resizeble: true,
         },
+        disabilityStatusHistoryManagement: {
+          component: () => import('@/views-nia/alarmMonitoring/disabilityStatusHistoryManagement'),
+          pageTitle: '장애현황 및 이력관리',
+          width: '600',
+          height: '380',
+          resizeble: true,
+          routerName: 'DisabilityStatusHistoryManagement' // 만약, router가 있는 화면의 경우 chatbot 팝업 명령을 위해 기존 router의 name이 필요
+        },
         chatbot: {
           component: () => import('@/views-nia/dashBoard/chatbot'),
-          pageTitle: '챗봇',
+          pageTitle: '어시스턴트',
           width: '600',
           height: '700',
           resizeble: true,
-          positionBottomRight: true,
+          positionBottomLeft: true,
           notDuplicate: true
+        },
+        pathSwitch: {
+          component: () => import('@/views-nia/dashBoard/pathSwitch'),
+          pageTitle: '포트변경',
+          width: '800',
+          height: '500',
+          resizeble: true,
         },
       }
     }
@@ -124,9 +140,16 @@ var dialogOpenMixin = {
       tmpWindowData.notDuplicate = this.dialogList[dialogNm]['notDuplicate']
       tmpWindowData.callback = callback || null
 
-      var isPositionBottomRight = this.dialogList[dialogNm]['positionBottomRight']
-      if (isPositionBottomRight) {
+      if (this.dialogList[dialogNm]['positionBottomRight']) {
         tmpWindowData.x = window.innerWidth - tmpWindowData.width - 10
+        tmpWindowData.y = window.innerHeight - tmpWindowData.height - 60
+      } else {
+        tmpWindowData.x = (window.innerWidth - tmpWindowData.width) * 0.5 + (this.$store.getters.windows.length - 1) * 20
+        tmpWindowData.y = (window.innerHeight - tmpWindowData.height) * 0.5 + (this.$store.getters.windows.length - 1) * 20
+      }
+
+      if (this.dialogList[dialogNm]['positionBottomLeft']) {
+        tmpWindowData.x = 10
         tmpWindowData.y = window.innerHeight - tmpWindowData.height - 60
       } else {
         tmpWindowData.x = (window.innerWidth - tmpWindowData.width) * 0.5 + (this.$store.getters.windows.length - 1) * 20

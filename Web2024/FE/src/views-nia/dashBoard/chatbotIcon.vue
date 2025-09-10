@@ -65,7 +65,7 @@ export default {
 .chatbot-icon {
   width: 50px;
   height: 50px;
-  background-color: #007bff;
+  background-color: #1e293b;
   border-radius: 50%;
   display: flex;
   justify-content: center;

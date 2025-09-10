@@ -1,24 +1,59 @@
 <template>
-  <div :class="{ [name]: true, 'w-full h-full': true }">
-    <div class="chatbot-container">
-      <div class="chat-header">
-        <h3>chatbot</h3>
-        <p>질문을 입력하고 답변을 받아보세요</p>
-      </div>
+  <div ref="chatbot-total" :class="{ [name]: true, 'w-full h-full': true }">
+    <div class="chatbot-body">
+      <div v-if="currentMode === 'questionMode'" class="chatbot-container">
+        <div class="chat-header">
+          <h3>어시스턴트</h3>
+          <p>질문을 입력하고 답변을 받아보세요</p>
+        </div>
 
-      <div ref="chatMessagesBox" class="chat-messages">
-        <div v-for="(message, index) in chatMessages" :key="index" :class="['message', message.type]">
-          <div v-if="message.type !== 'bot-alert' || isActiveBotAlert">
-            <div class="message-content" @click="handlePathClick($event, message.content)" v-html="formatMessage(message.content)"></div>
-            <div class="message-time">
-              {{ message.time }}
+        <div ref="chatMessagesBox" class="chat-messages">
+          <div v-for="(message, index) in questionMode_chatMessages" :key="index" :class="['message', message.type]">
+            <div v-if="message.type !== 'bot-alert' || isActiveBotAlert">
+              <div class="message-content" @click="handlePathClick($event, message.content)" v-html="formatMessage(message.content)"></div>
+              <div class="message-time">
+                {{ message.time }}
+              </div>
             </div>
           </div>
+        </div>
+
+        <div class="utility-buttons">
+          <button class="utility-button" @click="makeAlert">테스트 경보</button>
+          <button class="utility-button" :style="{ background: isActiveBotAlert ? '#13ce66' : '#ff4949' }" @click="toggleIsActiveBotAlert">{{ isActiveBotAlert ? '경보 표시' : '경보 미표시' }}</button>
+          <button class="utility-button" @click="switchMode">{{ currentMode === 'questionMode' ? '질문모드' : '집중경보모드' }}</button>
+          <button class="utility-button">추천명령어</button>
+          <button class="utility-button" @click="resetChat">채팅초기화</button>
+        </div>
+      </div>
+
+      <div v-else-if="currentMode === 'alarmFocusMode'" class="chatbot-container">
+        <div class="chat-header">
+          <h3>어시스턴트(집중경보모드)</h3>
+          [TICKET_ID: {{ alarmFocusMode_TicketData.ticket_id }}] [전표유형: {{ alarmFocusMode_TicketData.ticket_type }}] [장비명: {{ alarmFocusMode_TicketData.node_nm }}] [인터페이스명: {{ alarmFocusMode_TicketData.alarmloc }}]
+        </div>
+
+        <div ref="chatMessagesBox" class="chat-messages">
+          <div v-for="(message, index) in alarmFocusMode_chatMessages" :key="index" :class="['message', message.type]">
+            <div v-if="message.type !== 'bot-alert' || isActiveBotAlert">
+              <div class="message-content" @click="handlePathClick($event, message.content)" v-html="formatMessage(message.content)"></div>
+              <div class="message-time">
+                {{ message.time }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="utility-buttons">
+          <button class="utility-button" @click="makeAlert">테스트 경보</button>
+          <button class="utility-button" @click="openPopupDisabilityStatusHistoryManagement">장애이력 팝업</button>
+          <button class="utility-button" @click="switchMode">{{ currentMode === 'questionMode' ? '질문모드' : '집중경보모드' }}</button>
+          <button class="utility-button">추천명령어</button>
+          <button class="utility-button" @click="resetChat">채팅초기화</button>
         </div>
       </div>
 
       <div class="chat-input">
-        경보표시 : <el-switch v-model="isActiveBotAlert" active-color="#13ce66" inactive-color="#ff4949" />
         <input v-model="userInput" type="text" placeholder="질문을 입력하세요..." @keyup.enter="sendMessage" />
         <button :disabled="!userInput.trim()" @click="sendMessage">전송</button>
       </div>
@@ -31,8 +66,9 @@ import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
 import { mapState } from 'vuex'
 import axios from 'axios'
-import { apiIpAlarmList } from '@/api/nia'
 import dialogOpenMixin from '@/mixin/dialogOpenMixin'
+
+import { searchMessaging, errorMessaging1, errorMessaging2, errorMessaging3, nextMessage } from '@/store/modules/chatbot.js'
 
 const routeName = 'chatbot'
 /* eslint-disable */
@@ -62,12 +98,36 @@ export default {
   computed: {
     ...mapState({
       systemMonitoringMap: (state) => state.systemMonitoring.systemMonitoringMap,
-      chatMessages: (state) => state.chatbot.chatMessages,
+      questionMode_chatMessages: (state) => state.chatbot.questionMode_chatMessages,
+      alarmFocusMode_chatMessages: (state) => state.chatbot.alarmFocusMode_chatMessages,
+      currentMode: (state) => state.chatbot.currentMode,
+      alarmFocusMessageHistory: (state) => state.chatbot.alarmFocusMessageHistory,
+      windows: (state) => state.mdi.windows,
     }),
+
+    alarmFocusMode_TicketData() {
+      return this.alarmFocusMode_chatMessages[0].ticketData
+    },
+
+    getCurrentChatMessageArray() {
+      return this.currentMode === 'questionMode' ? this.questionMode_chatMessages : this.alarmFocusMode_chatMessages
+    },
+
+    routerList() {
+      return this.$router.options.routes2
+    },
   },
   watch: {
-    chatMessages(nval, oval) {
-      this.scrollToBottom()
+    questionMode_chatMessages(nval, oval) {
+      if (this.currentMode === 'questionMode') {
+        this.scrollToBottom()
+      }
+    },
+
+    alarmFocusMode_chatMessages(nVal, oval) {
+      if (this.currentMode === 'alarmFocusMode') {
+        this.scrollToBottom()
+      }
     },
   },
   created() {
@@ -75,6 +135,33 @@ export default {
     this.scrollToBottom()
   },
   methods: {
+    resetChat() {
+      this.$store.commit('chatbot/RESET_CHAT')
+    },
+
+    openPopupDisabilityStatusHistoryManagement() {
+      this.fn_openWindow('disabilityStatusHistoryManagement', ticketData)
+    },
+
+    switchMode() {
+      switch (this.currentMode) {
+        case 'alarmFocusMode':
+          this.$store.commit('chatbot/MODE_CHANGE', { newMode: 'questionMode' })
+          break
+        case 'questionMode':
+          this.$store.commit('chatbot/MODE_CHANGE', { newMode: 'alarmFocusMode' })
+          break
+      }
+    },
+
+    makeAlert() {
+      window.v.$parent.$parent.simulateTest()
+    },
+
+    toggleIsActiveBotAlert() {
+      this.isActiveBotAlert = !this.isActiveBotAlert
+    },
+
     async sendMessage() {
       if (!this.userInput.trim()) return
 
@@ -84,34 +171,116 @@ export default {
 
       try {
         const searchResult = await this.searchElasticSearch(userQuestion)
-        this.$store.dispatch('chatbot/botPushAnsewerMessage', {
+        this.$store.dispatch('chatbot/botPushAnswerMessage', {
           content: searchResult,
-          isAnswer: true,
         })
       } catch (error) {
-        this.$store.dispatch('chatbot/botPushAnsewerMessage', {
-          content: '죄송합니다. 검색 중 오류가 발생했습니다.',
-          isAnswer: true,
+        this.$store.dispatch('chatbot/botPushAnswerMessage', {
+          content: errorMessaging1,
         })
         console.error('ElasticSearch 검색 오류:', error)
       }
     },
 
-    async searchElasticSearch(query) {
+    getLastAnswer() {
+      const botAnswer = this.getCurrentChatMessageArray.filter((m) => {
+        if (m.type !== 'bot-answer') return
+        if (m.content.includes(searchMessaging)) return
+        if (m.content.includes(errorMessaging1)) return
+        if (m.content.includes(errorMessaging2)) return
+        if (m.content.includes(errorMessaging3)) return
+        return true
+      })
+
+      return botAnswer.at(-1)
+    },
+
+    findLastAnswerQuestion(userQuestion) {
+      const lastAnswer = this.getLastAnswer()
+
+      let matchMap = {
+        matchContext: '',
+        path: '',
+        popup: '',
+        action: '',
+      }
+
+      if (/^\d$/.test(userQuestion)) {
+        const pattern = new RegExp(`${userQuestion}\\. (.*?)<span.*?\\[path\\]:(.*?)\\, \\[popup\\]:(.*?)\\, \\[action\\]:(.*?)\\<\\/span\\>`)
+        const match = lastAnswer.content.match(pattern)
+        matchMap.matchContext = match[1].trim()
+        matchMap.path = match[2].trim()
+        matchMap.popup = match[3].trim()
+        matchMap.action = match[4].trim()
+      } else if (userQuestion.length > 0) {
+        const pattern = new RegExp(`\\d\\. .*?<span.*?\\[path\\]:.*?\\, \\[popup\\]:.*?\\, \\[action\\]:.*?\\<\\/span\\>`, 'g')
+        const matchs = lastAnswer.content.match(pattern)
+
+        if (matchs) {
+          const fullString = matchs.find((matchText) => {
+            const pattern = new RegExp(`\\d\\. (.*?)<span.*?\\[path\\]:(.*?)\\, \\[popup\\]:(.*?)\\, \\[action\\]:(.*?)\\<\\/span\\>`)
+            const textMatch = matchText.match(pattern)
+            return textMatch && textMatch[1].replace(/\s/g, '').toLowerCase() === userQuestion.replace(/\s/g, '').toLowerCase()
+          })
+
+          if (fullString) {
+            const pattern = new RegExp(`\\d\\. (.*?)<span.*?\\[path\\]:(.*?)\\, \\[popup\\]:(.*?)\\, \\[action\\]:(.*?)\\<\\/span\\>`)
+            const lastMatch = fullString.match(pattern)
+
+            matchMap.matchContext = lastMatch[1].trim()
+            matchMap.path = lastMatch[2].trim()
+            matchMap.popup = lastMatch[3].trim()
+            matchMap.action = lastMatch[4].trim()
+          }
+        }
+      }
+
+      return matchMap
+    },
+
+    async searchElasticSearch(userQuestion) {
+      const matchMap = this.findLastAnswerQuestion(userQuestion)
+      if (matchMap.matchContext?.length > 0) {
+        let name = this.getRouteNameByPath(this.routerList, matchMap.path)
+        this.$router.push({ name })
+
+        // prettier-ignore
+        let text = `<b>` + matchMap.matchContext + ' 명령을 실행했습니다.</b>'
+          + `<br><br>`
+          + `➡️ ${this.getRouteTitleByPath(this.routerList, matchMap.path)}로 이동했습니다.`
+
+        if (matchMap.popup.length > 0) {
+          this.fn_openWindow(matchMap.popup)
+
+          console.log(this.dialogList)
+          const dialogKey = Object.keys(this.dialogList).find((key) => key === matchMap.popup)
+
+          text += `<br>➡️ ${this.dialogList[dialogKey].pageTitle} 팝업을 열었습니다. `
+
+          // 팝업이 있으면 action을 위해 router의 name을 popup의 name으로 변경
+          name = this.dialogList[dialogKey].routerName
+        }
+
+        if (matchMap.action.length > 0) {
+          setTimeout(() => {
+            this.$store.commit('chatbot/SWITCH_ROUTER_PARAMETER', { name, parameter: matchMap.action })
+          }, 1000)
+        }
+
+        return text
+      }
+
       try {
-        // axios 인스턴스 생성하여 baseURL 설정 (Python 프록시)
         const esClient = axios.create({
           baseURL: 'http://116.89.191.47:8001/es',
           timeout: 10000,
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: { 'Content-Type': 'application/json' },
         })
 
         const response = await esClient.post('/chatbot_index/_search', {
           query: {
             multi_match: {
-              query: query,
+              query: userQuestion,
               fields: ['keyword^2'],
               type: 'best_fields',
               fuzziness: 'AUTO', // 유사한 데이터도 검색
@@ -134,13 +303,16 @@ export default {
 
           hits.forEach((hit, index) => {
             const source = hit._source
-            resultMessage += `${index + 1}. ${source.name} <span class="move-text">[이동]</span>\n`
+            const hiddenParameter = `<span style="display:none">[path]:${source.path}, [popup]:${source.popup}, [action]:${source.action}</span>`
+
+            resultMessage += `${index + 1}. ${source.name}`
+            resultMessage += hiddenParameter
             resultMessage += '\n'
           })
 
           return resultMessage
         } else {
-          return '죄송합니다. 검색 결과를 찾을 수 없습니다. 다른 키워드로 검색해보세요.'
+          return errorMessaging2
         }
       } catch (error) {
         console.error('ElasticSearch 검색 오류:', error)
@@ -161,9 +333,6 @@ export default {
       // 줄바꿈을 <br> 태그로 변환하고 HTML 태그 제거
       let formattedContent = content.replace(/\n/g, '<br>') // 줄바꿈을 <br>로 변환
 
-      // [이동] 텍스트를 클릭 가능한 링크로 변환
-      formattedContent = formattedContent.replace(/(\d+\.\s+)([^<]+)\s+<span class="move-text">\[이동\]<\/span>/g, '$1$2 <a href="#" class="move-link" data-keyword="$2">[이동]</a>')
-
       formattedContent = formattedContent.replace(/(\s+)([^<]+)\s+<span class="move-text">\[진행\]<\/span>/g, '$1$2 <a href="#" class="move-link" data-keyword="$2">[진행]</a>')
 
       return formattedContent
@@ -174,61 +343,44 @@ export default {
         event.preventDefault()
         let keyword = ''
         switch (event.target.innerHTML) {
-          case '[이동]':
-            keyword = event.target.getAttribute('data-keyword')
-            this.searchPathByKeyword(keyword)
-            break
           case '[진행]':
-            keyword = event.target.getAttribute('data-keyword')
-
+            // 집중경보 모드 전환
             const ticketMatch = content.match(/>티켓ID: (.*?)<\/span>/)
             const ticketId = ticketMatch ? ticketMatch[1] : null
-
             if (!ticketId) {
               this.$alert(`예상치 못한 에러 해당 장비에 ticketId가 존재하지 않습니다. 내용 : ${content}`)
               return
             }
 
-            const res = await apiIpAlarmList({ TICKET_ID: ticketId })
-            if (res) {
-              const ticketData = res.result[0]
-              this.fn_openWindow('configTest', ticketData)
-            }
-
+            window.changeFocusAlertMode(ticketId)
             break
         }
       }
     },
 
-    async searchPathByKeyword(keyword) {
-      try {
-        const response = await axios.post('http://116.89.191.47:8001/es/chatbot_index/_search', {
-          query: { match: { keyword: keyword } },
-          size: 1,
-        })
-
-        const data = response.data
-        if (data.hits && data.hits.hits && data.hits.hits.length > 0) {
-          const rawPath = data.hits.hits[0]._source.path
-          const questionIndex = rawPath.indexOf('?')
-          let path = rawPath
-          let parameter = ''
-          if (questionIndex !== -1) {
-            path = rawPath.substring(0, questionIndex)
-            parameter = rawPath.substring(questionIndex + 1)
-          }
-          const routes = this.$router.options.routes2
-          let name = this.getRouteNameByPath(routes, path)
-          this.$store.commit('chatbot/SWITCH_EVENT_PARAMETER', { name, parameter })
-          this.$router.push({ name })
+    getRouteTitleByPath(routerList, path, prefix = '') {
+      for (const route of routerList) {
+        // 1. 현재 라우트의 path와 일치하는지 확인
+        if (prefix + route.path === path) {
+          return route.meta.title
         }
-      } catch (error) {
-        console.error('경로 검색 오류:', error)
+
+        // 2. children이 있는지 확인하고 재귀적으로 탐색
+        if (route.children) {
+          const foundTitle = this.getRouteTitleByPath(route.children, path, route.path + '/')
+          // 자식 라우트에서 이름이 발견되면 즉시 반환
+          if (foundTitle) {
+            return foundTitle
+          }
+        }
       }
+
+      // 모든 라우트를 탐색했지만 일치하는 것을 찾지 못한 경우
+      return null
     },
 
-    getRouteNameByPath(routes, path, prefix = '') {
-      for (const route of routes) {
+    getRouteNameByPath(routerList, path, prefix = '') {
+      for (const route of routerList) {
         // 1. 현재 라우트의 path와 일치하는지 확인
         if (prefix + route.path === path) {
           return route.name
@@ -256,6 +408,12 @@ export default {
   caret-color: transparent; /* 깜빡이는 커서 숨김 */
 }
 
+.chatbot-body {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
 .chatbot-container {
   display: flex;
   flex-direction: column;
@@ -266,7 +424,7 @@ export default {
 }
 
 .chat-header {
-  background: #3b82f6;
+  background: #1e293b;
   color: white;
   padding: 0.5rem;
   text-align: center;
@@ -295,6 +453,7 @@ export default {
 
 .message {
   max-width: 80%;
+  text-align: left;
 
   &.user {
     align-self: flex-end;
@@ -355,7 +514,35 @@ export default {
   text-align: right;
 }
 
+// 편의 기능 버튼 스타일 추가
+.utility-buttons {
+  display: flex;
+  justify-content: space-around;
+  padding: 0.5rem 1rem;
+  background: white;
+  border-top: 1px solid #e2e8f0;
+  gap: 0.5rem; /* 버튼 사이의 간격 추가 */
+}
+
+.utility-button {
+  flex: 1; /* 버튼들이 가로 공간을 균등하게 차지하도록 함 */
+  padding: 0.5rem;
+  background: #e5e7eb; /* 회색 배경 */
+  color: #4b5563;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: #d1d5db;
+  }
+}
+
 .chat-input {
+  height: 80px;
   display: flex;
   gap: 0.5rem;
   padding: 1rem;
