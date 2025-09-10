@@ -77,6 +77,11 @@ export class AppOptions extends Storage {
     return this._data.mock !== 'FE' && this._data.debugEncrypt
   }
 
+  dev() {
+    this.debug = true
+    this.debugEncrypt = false
+  }
+
   setFrontMock() {
     this.setMock('FE')
   }
