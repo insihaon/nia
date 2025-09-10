@@ -112,40 +112,40 @@ export function getDecimalCalc(row, col, value, index) { // set Decimal point
   return packetPerSeconds
 }
 
-export function makeAlertMessage(ticketData, isSop = true) {
+export function makeAlertMessage(ticketData, isSop) {
   switch (ticketData.ticket_type) {
     case 'ATT2': // 이상 트래픽
-      if (isSop) {
-        return `이상트래픽 장애가 발생하였습니다.
-        장비명(${ticketData.node_nm})의 포트명(${ticketData.root_cause_porta})장비에 대하여
-        <b style=color:red>SOP이력</b>이 있습니다. 이력대로 설정하시겠습니까?
-        `
-      } else {
-        return `이상트래픽 장애가 발생하였습니다.
-        장비명(${ticketData.node_nm})의 포트명(${ticketData.root_cause_porta})장비에 대하여
-        <b style=color:red>경로변경</b>을 진행할 수 있습니다. 진행하시겠습니까?`
-      }
+      // if (isSop) {
+      //   return `<span style="display: none">티켓ID: ${ticketData.ticket_id}</span>이상트래픽 장애가 발생하였습니다.
+      //   장비명(${ticketData.node_nm})의 포트명(${ticketData.root_cause_porta})장비에 대하여
+      //   <b style=color:red>SOP이력</b>이 있습니다. 이력대로 설정하시겠습니까?
+      //   `
+      // } else {
+      return `<span style="display: none">티켓ID: ${ticketData.ticket_id}</span>이상트래픽 장애가 발생하였습니다.
+        <span>장비명(${ticketData.node_nm})의 포트명(${ticketData.root_cause_porta})장비에 대하여</span>
+        <b style=color:red>집중경보</b>를 진행할 수 있습니다. 진행하시겠습니까?`
+    // }
     case 'NTT': // 유해 트래픽
-      if (isSop) {
-        return `유해트래픽 장애가 발생하였습니다.
+      // if (isSop) {
+      //   return `<span style="display: none">티켓ID: ${ticketData.ticket_id}</span>유해트래픽 장애가 발생하였습니다.
+      //   장비명(${ticketData.node_nm})의 포트명(${ticketData.root_cause_porta})장비에 대하여
+      //   <b style=color:red>SOP이력</b>이 있습니다. 이력대로 설정하시겠습니까?`
+      // } else {
+      return `<span style="display: none">티켓ID: ${ticketData.ticket_id}</span>유해트래픽 장애가 발생하였습니다.
         장비명(${ticketData.node_nm})의 포트명(${ticketData.root_cause_porta})장비에 대하여
-        <b style=color:red>SOP이력</b>이 있습니다. 이력대로 설정하시겠습니까?`
-      } else {
-        return `유해트래픽 장애가 발생하였습니다.
-        장비명(${ticketData.node_nm})의 포트명(${ticketData.root_cause_porta})장비에 대하여
-        <b style=color:red>포트다운</b>을 진행할 수 있습니다. 진행하시겠습니까?`
-      }
+        <b style=color:red>집중경보</b>를 진행할 수 있습니다. 진행하시겠습니까?`
+    // }
     case 'RT': // 장애
       if (ticketData.alarmmsg === 'PORT_DOWN') {
-        if (isSop) {
-          return `비정상적인 PORT_DOWN 장애가 발생하였습니다.
+        // if (isSop) {
+        //   return `<span style="display: none">티켓ID: ${ticketData.ticket_id}</span>비정상적인 PORT_DOWN 장애가 발생하였습니다.
+        //     장비명(${ticketData.node_nm})의 포트명(${ticketData.root_cause_porta})장비에 대하여
+        //     <b style=color:red>SOP이력</b>이 있습니다. 이력대로 설정하시겠습니까?`
+        // } else {
+        return `<span style="display: none">티켓ID: ${ticketData.ticket_id}</span>비정상적인 PORT_DOWN 장애가 발생하였습니다.
             장비명(${ticketData.node_nm})의 포트명(${ticketData.root_cause_porta})장비에 대하여
-            <b style=color:red>SOP이력</b>이 있습니다. 이력대로 설정하시겠습니까?`
-        } else {
-          return `비정상적인 PORT_DOWN 장애가 발생하였습니다.
-            장비명(${ticketData.node_nm})의 포트명(${ticketData.root_cause_porta})장비에 대하여
-            <b style=color:red>포트리셋</b>을 진행할 수 있습니다. 진행하시겠습니까?`
-        }
+            <b style=color:red>집중경보</b>를 진행할 수 있습니다. 진행하시겠습니까?`
+        // }
       }
   }
 

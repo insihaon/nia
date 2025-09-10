@@ -523,7 +523,7 @@ export default {
           status: 'ACK',
           user_ids: uid,
           detail: 'DETAIL',
-          mail_content: contentEl.getInnerHTML().replace('display: none;'),
+          mail_content: contentEl.innerHTML.replace('display: none;'),
           handling_ack_user: name,
           ticket_result: this.selectedRow.ticket_result || this.selectedRow.ticket_rca_result_code,
         }),

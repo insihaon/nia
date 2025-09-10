@@ -1,7 +1,7 @@
 <template>
-  <div :class="{ [name]: true }" style="height : 100%">
+  <div :class="{ [name]: true }" style="height: 100%">
     <div class="d-flex flex-column h-100 rounded justify-between">
-      <el-card shadow="never" style="height : 85%" :body-style="{'padding': '10px'}">
+      <el-card shadow="never" style="height: 85%" :body-style="{ padding: '10px' }">
         <div slot="header">
           <span><i class="el-icon-document" /> 조치 SOP</span>
         </div>
@@ -19,20 +19,17 @@
           <el-input v-model="etcContent" placeholder="기타 조치내용 입력" />
         </el-row>
       </el-card>
-      <el-card shadow="never" style="height : 90%" :body-style="{'padding': '10px'}">
+      <el-card shadow="never" style="height: 90%" :body-style="{ padding: '10px' }">
         <div slot="header">
           <span><i class="el-icon-document" /> AI 결과 피드백</span>
         </div>
-        <el-row class="p-2 d-flex">
-          <input v-model="aiFeedback" style="margin-right: 5px;" type="radio" value="0" />일치
-          <input v-model="aiFeedback" style="margin-left:5px; margin-right: 5px;" type="radio" value="1" />불일치
-        </el-row>
+        <el-row class="p-2 d-flex"> <input v-model="aiFeedback" style="margin-right: 5px" type="radio" value="0" />일치 <input v-model="aiFeedback" style="margin-left: 5px; margin-right: 5px" type="radio" value="1" />불일치 </el-row>
 
         <el-row class="p-2 d-flex">
           <el-date-picker v-model="period" type="datetimerange" range-separator="To" start-placeholder="시작 시간" end-placeholder="종료 시간" :disabled="aiFeedback === '0'" />
         </el-row>
       </el-card>
-      <el-card shadow="never" class="h-100" :body-style="{'padding': '10px'}">
+      <el-card shadow="never" class="h-100" :body-style="{ padding: '10px' }">
         <div slot="header">
           <span><i class="el-icon-document" /> 피드백 내용</span>
         </div>
@@ -73,7 +70,7 @@ export default {
       type: Object,
       default() {
         return {}
-      }
+      },
     },
   },
   data() {
@@ -116,7 +113,7 @@ export default {
     //   return this.selectedRow?.status === 'FIN' || this.selectedRow?.status === 'AUTO_FIN'
     // },
   },
-  created () {
+  created() {
     this.selectedRow = this.wdata?.params
     this.setAiFeedBack()
   },
@@ -164,6 +161,8 @@ export default {
           if (res.success) {
             this.$alert('마감 처리 되었습니다.', '알림', {
               confirmButtonText: '확인',
+              dangerouslyUseHTMLString: true,
+              customClass: 'nia-message-box',
             })
           }
         } catch (error) {
@@ -242,7 +241,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 ::v-deep .el-select {
   width: 100% !important;
 }

@@ -1,12 +1,14 @@
 // store.js
 import { niaRoute } from '@/router/nia/index'
+import _ from 'lodash'
 
-// 라우터 이름 기반으로 eventParameter 키 자동 생성
-const eventParameter = {}
+// 라우터 이름 기반으로 routerParameter 키 자동 생성
+const routerParameter = {}
+
 function setRouteName(routes) {
     routes.forEach((route) => {
         if (route.name) {
-            eventParameter[route.name] = ''
+            routerParameter[route.name] = ''
         }
 
         if (route.children) {
@@ -24,51 +26,130 @@ function getCurrentTime() {
     })
 }
 
+const defaultAlarmFocusModeFirstChatMessages = {
+    type: 'bot-answer',
+    content: `<b>집중경보 모드가 실행되었습니다.</b>
+
+        1. 경보 상세 확인
+        2. 장애조치
+
+        <span style='color:red'> ESC. 집중경보 모드 해제</span>
+    `,
+    time: getCurrentTime(),
+    ticketData: {}
+}
+
+const defaultQuestionModeChatMessages = {
+    type: 'bot-answer',
+    content: '안녕하세요! 무엇을 도와드릴까요?',
+    time: getCurrentTime(),
+}
+
 const state = {
-    eventParameter,
-    chatMessages: [{
-        type: 'bot-answer',
-        content: '안녕하세요! 무엇을 도와드릴까요?',
-        time: getCurrentTime(),
-    }]
+    routerParameter,
+    currentMode: 'questionMode',
+    modes: ['questionMode', 'alarmFocusMode'],
+    questionMode_chatMessages: [_.cloneDeep(defaultQuestionModeChatMessages)],
+    alarmFocusMode_chatMessages: [_.cloneDeep(defaultAlarmFocusModeFirstChatMessages)],
 }
 
 const mutations = {
-    SWITCH_EVENT_PARAMETER(state, { name, parameter }) {
+    SWITCH_ROUTER_PARAMETER(state, { name, parameter }) {
         if (parameter && parameter.length > 0) {
-            if (!Object.prototype.hasOwnProperty.call(state.eventParameter, name)) {
+            if (!Object.prototype.hasOwnProperty.call(state.routerParameter, name)) {
                 throw new Error('parameter가 존재함에도 state가 정의되지 않았습니다.')
             }
-            state.eventParameter[name] = parameter
+            state.routerParameter[name] = parameter
         }
     },
 
-    CLEAR_EVENT_PARAMETER(state, { name }) {
-        if (!Object.prototype.hasOwnProperty.call(state.eventParameter, name)) {
+    CLEAR_ROUTER_PARAMETER(state, { name }) {
+        if (!Object.prototype.hasOwnProperty.call(state.routerParameter, name)) {
             throw new Error('state가 정의되지 않았습니다.')
         }
-        state.eventParameter[name] = ''
+        state.routerParameter[name] = ''
     },
 
     PUSH_CHAT_MESSAGE(state, { content, type }) {
-        state.chatMessages.push({
-            type: type,
-            content: content,
-            time: getCurrentTime(),
-        })
+        if (type === 'bot-alert') {
+            state.questionMode_chatMessages.push({
+                type: type,
+                content: content,
+                time: getCurrentTime(),
+            })
+            return
+        }
+
+        switch (state.currentMode) {
+            case 'questionMode':
+                state.questionMode_chatMessages.push({
+                    type: type,
+                    content: content,
+                    time: getCurrentTime(),
+                })
+                break
+            case 'alarmFocusMode':
+                state.alarmFocusMode_chatMessages.push({
+                    type: type,
+                    content: content,
+                    time: getCurrentTime(),
+                })
+                break
+        }
     },
 
     POP_CHAT_MESSAGE(state) {
-        var x = state.chatMessages.pop()
-        // x는 질문인지 확인해서 아니면 error 표시
+        switch (state.currentMode) {
+            case 'questionMode':
+                state.questionMode_chatMessages.pop()
+                break
+            case 'alarmFocusMode':
+                state.alarmFocusMode_chatMessages.pop()
+                break
+        }
+    },
+
+    MODE_CHANGE(state, { newMode }) {
+        state.currentMode = newMode
+    },
+
+    SET_ALARM_FUCUS_CHAT_TICKET_DATA(state, { ticketData }) {
+        // 초기화
+        state.alarmFocusMode_chatMessages.length = 0
+        state.alarmFocusMode_chatMessages.push(defaultAlarmFocusModeFirstChatMessages)
+
+        state.alarmFocusMode_chatMessages[0].ticketData = ticketData
+    },
+
+    RESET_CHAT(state) {
+        switch (state.currentMode) {
+            case 'questionMode':
+                state.questionMode_chatMessages.length = 0
+                state.questionMode_chatMessages.push(_.cloneDeep(defaultQuestionModeChatMessages))
+                break
+            case 'alarmFocusMode':
+                state.alarmFocusMode_chatMessages.length = 0
+                state.alarmFocusMode_chatMessages.push(_.cloneDeep(defaultAlarmFocusModeFirstChatMessages))
+                break
+        }
     }
+
 }
+
+export const searchMessaging = '검색 중입니다...'
+export const errorMessaging1 = '죄송합니다. 검색 중 오류가 발생했습니다.'
+export const errorMessaging2 = '죄송합니다. 검색 결과를 찾을 수 없습니다. 다른 키워드로 검색해보세요.'
+export const errorMessaging3 = '찾으시는 번호는 없습니다. :'
+
+export const endMessage = 'ESC. 모든 창닫고, 집중경보해제'
+export const nextMessage = `
+어떤 작업을 실행할까요?`
 
 const actions = {
     pushLodingMessage({ commit }) {
         commit('PUSH_CHAT_MESSAGE', {
             type: 'bot-answer',
-            content: '검색 중입니다...',
+            content: searchMessaging,
             time: getCurrentTime(),
         })
     },
@@ -78,14 +159,28 @@ const actions = {
         dispatch('pushLodingMessage')
     },
 
-    botPushAnsewerMessage({ commit }, { content, isAnswer }) {
-        if (isAnswer) {
-            commit('POP_CHAT_MESSAGE')
-            commit('PUSH_CHAT_MESSAGE', { content, type: 'bot-answer' })
-        } else {
-            content += ' <span class="move-text">[진행]</span>'
-            commit('PUSH_CHAT_MESSAGE', { content, type: 'bot-alert' })
+    botPushAnswerMessage({ commit }, { content, addContent, isAlert }) {
+        switch (state.currentMode) {
+            case 'questionMode':
+                if (state.questionMode_chatMessages.at(-1).content === searchMessaging) {
+                    commit('POP_CHAT_MESSAGE')
+                }
+                break
+            case 'alarmFocusMode':
+                if (state.alarmFocusMode_chatMessages.at(-1).content === searchMessaging) {
+                    commit('POP_CHAT_MESSAGE')
+                }
+                break
         }
+
+        if (addContent) { content += addContent }
+
+        commit('PUSH_CHAT_MESSAGE', { content, type: isAlert ? 'bot-alert' : 'bot-answer' })
+    },
+
+    newAlarmFocusChat({ commit }, { ticketData }) {
+        commit('MODE_CHANGE', { newMode: 'alarmFocusMode' })
+        commit('SET_ALARM_FUCUS_CHAT_TICKET_DATA', { ticketData })
     }
 }
 

@@ -32,7 +32,7 @@ import ResizeMixin from '@/layout/mixin/ResizeHandler'
 import { makeAlertMessage } from '@/views-nia/js/commonFormat'
 import { apiIpAlarmList } from '@/api/nia'
 import chatbotIcon from '@/views-nia/dashBoard/chatbotIcon.vue'
-
+import _lo from 'lodash'
 import { mapState, mapGetters } from 'vuex'
 
 export const _ = { AppOptions }
@@ -58,6 +58,7 @@ export default {
       AppOptions: AppOptions,
       closeNoticeSeq: [],
       popupNoticeArray: [],
+      simulateCnt: 0,
     }
   },
   computed: {
@@ -99,7 +100,7 @@ export default {
     },
 
     existChatbotPopup() {
-      return this.windows.find((w) => w.name === '챗봇')
+      return this.windows.find((w) => w.name === '어시스턴트')
     },
 
     ...mapState({
@@ -155,31 +156,23 @@ export default {
   },
   methods: {
     simulateTest() {
-      // new 사용법 v.$parent.$parent.simulateTest
-      this.onReceivedIpsdnTicketEvent({
-        channelName: 'IPSDN_ALARM',
-        socketMessage: {
-          message: '{ "result":null,"properties":null,"ticketId":"1661997","eventType":"TICKET_NEW","ticketType":"...." }',
-        },
-      })
-      setTimeout(() => {
-        // I36563
-        // this.onReceivedIpsdnTicketEvent({
-        //   channelName: 'IPSDN_ALARM',
-        //   socketMessage: {
-        //     message:
-        //       '[{"ticket_type":"RT","root_cause_sysnamez":null,"alarmmsg":"PORT_DOWN","clusterno":"119606","alarmno":"I36563","root_cause_sysnamea":"pangyo-5812","ticket_id":"1600297","nude_num":null,"fault_time":null,"port":"1688534024126","alarmtime":"2024-04-16 14:34:36","root_cause_portz":null,"zero1_entropy":null,"node_nm":"pangyo-5812","alarmmsg_original":"port down - NREN_xe27_소울시스템즈_1G#5027","ip_addr":"116.89.169.33","alarmloc":"xe27","total_related_alarm_cnt":null,"root_cause_porta":null,"ticket_rca_result_dtl_code":"PORT 다운","status":"INIT"}]',
-        //   },
-        // })
-        // 187714
-        // this.onReceivedTransTicketEvent({
-        //   channelName: 'TRANS_ALARM',
-        //   socketMessage: {
-        //     message:
-        //       '[{"ticket_al_id":"187714","ticket_type":"ATT","alarmmsg":"DCC-FAIL","alarmno":"187714","alarmtime":"2024-04-15 11:45:46","sysname":"192.168.200.210-SH1","ticket_id":"188295","alarmloc":"MRPA.A-P1","status":"AUTO_FIN"}]',
-        //   },
-        // })
-      }, 3000)
+      if (this.simulateCnt % 2 === 0) {
+        // new 사용법 v.$parent.$parent.simulateTest
+        this.onReceivedIpsdnTicketEvent({
+          channelName: 'IPSDN_ALARM',
+          socketMessage: {
+            message: '{ "result":null,"properties":null,"ticketId":"1663063","eventType":"TICKET_NEW","ticketType":"...." }',
+          },
+        })
+      } else {
+        this.onReceivedIpsdnTicketEvent({
+          channelName: 'IPSDN_ALARM',
+          socketMessage: {
+            message: '{ "result":null,"properties":null,"ticketId":"1663062","eventType":"TICKET_NEW","ticketType":"...." }',
+          },
+        })
+      }
+      this.simulateCnt++
     },
 
     subscribeEvent() {
@@ -219,9 +212,10 @@ export default {
         const ticketData = res.result[0]
 
         if (this.debug) {
-          this.$store.dispatch('chatbot/botPushAnsewerMessage', {
+          this.$store.dispatch('chatbot/botPushAnswerMessage', {
             content: makeAlertMessage(ticketData, false),
-            isAnswer: false,
+            addContent: ' <span class="move-text">[진행]</span>',
+            isAlert: true,
           })
         }
       }
@@ -255,6 +249,7 @@ export default {
 </script>
 <style lang="scss">
 @import '~@/styles/nia_confirm.scss';
+@import '~@/styles/nia_notify.scss';
 .common-padding {
   padding: 15px /* var(--common-padding) */;
   position: relative;
