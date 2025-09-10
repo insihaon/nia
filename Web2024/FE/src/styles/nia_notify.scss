@@ -1,0 +1,60 @@
+/* NIA 프로젝트 전용 Notification 스타일 */
+.nia-notify.el-notification {
+  /* 알림창 크기 및 위치 조정 */
+  width: 335px !important; /* 고정된 너비 설정 */
+  right: 16px !important; /* 우측으로부터의 간격 설정 */
+  bottom: 16px !important; /* 하단으로부터의 간격 설정 */
+  top: auto !important; /* top 속성 제거 */
+  letter-spacing: -0.8px;
+
+  /* 기존 스타일 유지 */
+  background-color: #1e293b;
+  border: 2px solid #6a50da;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+  color: #ffffff;
+  padding: 20px;
+}
+
+/* Notification 타이틀 */
+.nia-notify.el-notification .el-notification__title {
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+/* Notification 본문 메시지 */
+.nia-notify.el-notification .el-notification__content {
+  color: #ffffff;
+  font-size: 14px;
+  line-height: 1.6;
+  white-space: pre-line;
+}
+
+/* 진행 버튼 (Primary) - 기본 보라색 */
+.nia-notify.el-notification .button--primary {
+  background-color: #6a50da !important;
+  border: 1px solid #ffffff !important;
+  border-radius: 5px;
+  color: #ffffff;
+  padding: 3px 10px;
+
+  &:hover {
+    background-color: #ffffff !important;
+    color: #6a50da;
+    border-color: #5a40c0;
+  }
+}
+
+/* Notification 닫기 버튼 */
+.nia-notify.el-notification .el-notification__closeBtn {
+  color: #ffffff;
+  top: 10px;
+  right: 10px;
+  font-size: 16px;
+}
+
+.nia-notify.el-notification .el-notification__closeBtn:hover {
+  color: #6a50da;
+}

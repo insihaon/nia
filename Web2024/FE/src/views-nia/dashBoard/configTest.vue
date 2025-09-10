@@ -93,8 +93,7 @@
 <script>
 import { Base } from '@/min/Base'
 import _ from 'lodash'
-import { onMessagePopup } from '@/utils/index'
-
+import dialogOpenMixin from '@/mixin/dialogOpenMixin'
 import { apiIpsdnRequest, apiSelectAgencyIpList, apiRemote } from '@/api/nia'
 
 const routeName = 'ConfigTest'
@@ -104,6 +103,7 @@ export default {
   // eslint-disable-next-line vue/no-unused-components
   components: {},
   extends: Base,
+  mixins: [dialogOpenMixin],
   props: {
     wdata: {
       type: Object,
@@ -121,7 +121,7 @@ export default {
       remoteOptions: [
         { value: 'shoutdown', label: '포트다운' }, // 자가최적화(유해트래픽)
         { value: 'noshut', label: '포트리셋' }, // 자가회복(포트장애)
-        { value: '경로변경', label: '경로변경' }, // 자가구성(이상트래픽)
+        { value: '포트변경', label: '포트변경' }, // 자가구성(이상트래픽)
         { value: 'ping', label: 'ping' }, // 핑 테스트
         { value: 'ACL', label: 'ACL deny' }, // 접근제어 - 원격 차단 ??? 현재 동작안함, UI 엔진쪽에 처리코드 없음
       ],
@@ -178,6 +178,10 @@ export default {
       if (nVAl !== 'ping') {
         this.isShowFrame = false
       }
+
+      if (nVAl === '포트변경') {
+        this.fn_openWindow('pathSwitch', this.selectedRow)
+      }
     },
   },
   created() {
@@ -193,7 +197,7 @@ export default {
 
     switch (ticket_type) {
       case 'ATT2': // 이상트래픽
-        this.remoteControl = '경로변경'
+        this.remoteControl = '포트변경'
         break
       case 'NTT': // 유해트래픽
         this.remoteControl = 'shoutdown'
@@ -225,7 +229,7 @@ export default {
       try {
         const res = await apiIpsdnRequest({ servicePath: 'config/interfaces', param: `nodename=${nodeName}&ifname=${ifname}` })
         this.if_config = res.result?.data ? res.result?.data[0] : { speed: '', equip_ip: [] }
-        if (res.result?.data[0].ipAddr) {
+        if (res.result && res.result?.data[0].ipAddr) {
           if (Array.isArray(res.result?.data[0].ipAddr)) {
             Object.assign(this.if_config, { equip_ip: res.result?.data[0].ipAddr })
           } else {
@@ -251,16 +255,13 @@ export default {
       const { nodeName, ifname } = this.item
 
       let message = `장비명(${nodeName})의 포트명(${ifname})인 장비를<br>`
-      if (this.remoteControl === '경로변경') {
-        message += `${this.remoteParam}로`
-      }
       message += `<b style="color:red">${this.remoteControl}</b>하시겠습니까?`
 
       return message
     },
 
     async onClickRemote() {
-      if (!['shotdown', 'noshut', '경로변경'].includes(this.remoteControl)) {
+      if (!['shotdown', 'noshut', '포트변경'].includes(this.remoteControl)) {
         this.$alert('아직 준비되지 않았습니다.')
       }
 

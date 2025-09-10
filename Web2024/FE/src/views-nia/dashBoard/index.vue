@@ -3,7 +3,7 @@
     <LeftBar class="h-full">
       <template v-if="isViewport('>', 'md')" #leftbar-container>
         <div class="h-20 text-center mt-1">
-          <span style="z-index: 1" class="font-bold text-lg whitespace-nowrap">AI관제 시스템 처리량</span>
+          <span style="z-index: 1" class="font-bold text-lg whitespace-nowrap"> AI관제 시스템 처리량 </span>
           <div class="d-flex p-2 justify-center items-center">
             <span class="font-semibold whitespace-nowrap pr-2">검색</span>
             <el-radio-group v-model="systemChartCondition.dayType" size="mini" class="d-flex" @change="onLoadDashboardStatistics()">
@@ -56,7 +56,13 @@
                     </div>
                     <ul>
                       <!-- :class="{'filterBtn': !filterIconList.includes(keyName), 'filterIcon d-flex':filterIconList.includes(keyName)}" -->
-                      <li v-for="(item, index) in filter.getArray()" :key="index" class="checkItem d-flex items-center checked ml-1" :style="{ 'background-color': item.hex, color: item.color }" @click="onClickFilterItem('ip', filter.filterName, item.code)">
+                      <li
+                        v-for="(item, index) in filter.getArray()"
+                        :key="index"
+                        class="checkItem d-flex items-center checked ml-1"
+                        :style="{ 'background-color': item.hex, color: item.color }"
+                        @click="onClickFilterItem('ip', filter.filterName, item.code)"
+                      >
                         <i :class="item.selected ? 'el-icon-success' : 'el-icon-circle-check'" />
                         <div class="filter-text">{{ item.text + '(' + item.count + ')' }}</div>
                       </li>
@@ -87,7 +93,13 @@
                     </div>
                     <ul v-if="keyName" :key="keyName">
                       <!-- :class="{'filterBtn': !filterIconList.includes(keyName), 'filterIcon d-flex':filterIconList.includes(keyName)}" -->
-                      <li v-for="(item, index) in filter.getArray()" :key="index" class="checkItem d-flex items-center checked ml-1" :style="{ 'background-color': item.hex, color: item.color }" @click="onClickFilterItem('trans', filter.filterName, item.code)">
+                      <li
+                        v-for="(item, index) in filter.getArray()"
+                        :key="index"
+                        class="checkItem d-flex items-center checked ml-1"
+                        :style="{ 'background-color': item.hex, color: item.color }"
+                        @click="onClickFilterItem('trans', filter.filterName, item.code)"
+                      >
                         <i :class="item.selected ? 'el-icon-success' : 'el-icon-circle-check'" />
                         <div class="filter-text">{{ item.text + '(' + item.count + ')' }}</div>
                       </li>
@@ -113,18 +125,18 @@ import BaseFilterGroup from '@/filters/baseFilterGroup'
 import CellRenderAibuttons from '@/views-nia/components/cellRenderer/CellRenderAibuttons'
 import CellRenderTicketDetail from '@/views-nia/components/cellRenderer/CellRenderTicketDetail'
 import { apiIpAlarmList, apiTransmissionAlarmList, apiDashboardStatistics, apiSelfProcessStatistics } from '@/api/nia'
-import { getAlarmType, getSopAiAccuracy } from '@/views-nia/js/commonFormat'
+import { getAlarmType, getSopAiAccuracy, makeAlertMessage } from '@/views-nia/js/commonFormat'
 import { AppOptions } from '@/class/appOptions'
 import dialogOpenMixin from '@/mixin/dialogOpenMixin'
 import _ from 'lodash'
 import { mapState } from 'vuex'
-import { makeAlertMessage } from '@/views-nia/js/commonFormat'
 
 const routeName = 'NiaMain'
 export default {
   name: routeName,
+  // prettier-ignore
   // eslint-disable-next-line vue/no-unused-components
-  components: { CompAgGrid, CompChart, LeftBar, filterBar, CellRenderAibuttons, CellRenderTicketDetail },
+  components: { CompAgGrid, CompChart, LeftBar, filterBar, CellRenderAibuttons, CellRenderTicketDetail, },
   extends: Base,
   mixins: [dialogOpenMixin],
   data() {
@@ -136,6 +148,7 @@ export default {
       ipspnTextSearch: '',
       transTextSearch: '',
       ipNetworkList: [],
+      activeTimers: {},
       transmissionNetworkList: [],
       selectedItem: [],
       systemChartCondition: {
@@ -180,36 +193,15 @@ export default {
   },
   computed: {
     ipAgGrid() {
+      // prettier-ignore
       const columns = [
-        {
-          type: '',
-          prop: 'alarmno',
-          name: '알람번호',
-          width: 100,
-          alignItems: 'center',
-          fixed: false,
-          suppressMenu: true,
-          formatter: (row) => {
-            return row.alarmno ?? '-'
-          },
-        },
-        {
-          type: '',
-          prop: 'alarmtime',
-          name: '장애 발생시간',
-          width: 200,
-          alignItems: 'center',
-          fixed: false,
-          suppressMenu: true,
-          formatter: (row) => {
-            return this.formatterTimeStamp(row.alarmtime, 'YYYY/MM/DD-HH:mm:ss')
-          },
-        },
-        { type: '', prop: '', name: '마감', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '마감', icon: 'edit-outline', type: 'FIN', action: this.handleOpenEditModal.bind(this) } },
-        { type: '', prop: '', name: '시험', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '시험', icon: 'edit-outline', type: 'CONFIG_TEST', action: this.handleOpenEditModal.bind(this) } },
-        { type: '', prop: '', name: 'SOP이력', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: 'SOP', icon: 'circle-check', type: 'SOP', action: this.handleOpenEditModal.bind(this) } },
-        { type: '', prop: '', name: '장애대응', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '장애대응', icon: 'circle-check', type: 'ALARM', action: this.handleOpenEditModal.bind(this) } },
-        { type: '', prop: '', name: '상황전파', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '조치요청', icon: 'circle-check', type: 'NTF', action: this.handleOpenEditModal.bind(this) } },
+        { type: '', prop: 'alarmno', name: '알람번호', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, formatter: (row) => { return row.alarmno ?? '-' }, },
+        { type: '', prop: 'alarmtime', name: '장애 발생시간', width: 200, alignItems: 'center', fixed: false, suppressMenu: true, formatter: (row) => { return this.formatterTimeStamp(row.alarmtime, 'YYYY/MM/DD-HH:mm:ss') }, },
+        { type: '', prop: '', name: '마감', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '마감', icon: 'edit-outline', type: 'FIN', action: this.handleOpenEditModal.bind(this) }, },
+        { type: '', prop: '', name: '조치', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '조치', icon: 'edit-outline', type: 'CONFIG_TEST', action: this.handleOpenEditModal.bind(this), }, },
+        { type: '', prop: '', name: 'SOP이력', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: 'SOP', icon: 'circle-check', type: 'SOP', action: this.handleOpenEditModal.bind(this), }, },
+        { type: '', prop: '', name: '장애대응', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '장애대응', icon: 'circle-check', type: 'ALARM', action: this.handleOpenEditModal.bind(this), }, },
+        { type: '', prop: '', name: '상황전파', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '상황전파', icon: 'circle-check', type: 'NTF', action: this.handleOpenEditModal.bind(this), }, },
         { type: '', prop: 'ticket_id', name: 'TICKET_ID', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'status', name: '상태', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, formatter: this.getStatus, cellStyle: this.getCellStyle },
         { type: '', prop: 'ticket_type', name: '전표 유형', width: 150, alignItems: 'center', fixed: false, suppressMenu: true, formatter: getAlarmType },
@@ -237,16 +229,15 @@ export default {
       }
     },
     transmissionAgGrid() {
+      // prettier-ignore
       const columns = [
         { type: '', prop: 'alarmno', name: '알람 번호', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'sysname', name: '장비명', width: 160, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'alarmtime', name: '알람 발생시간', width: 200, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'alarmloc', name: '인터페이스명', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'alarmmsg', name: '알람 메시지', width: 120, alignItems: 'center', fixed: false, suppressMenu: true },
-        { type: '', prop: '', name: '마감', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '마감', icon: 'edit-outline', type: 'FIN', action: this.handleOpenEditModal.bind(this) } },
-        // { type: '', prop: '', name: 'SOP이력', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: 'SOP', icon: 'circle-check', type: 'SOP', action: this.handleOpenEditModal.bind(this) } },
-        // { type: '', prop: '', name: '장애대응', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '장애대응', icon: 'circle-check', type: 'alarm', action: this.handleOpenEditModal.bind(this) } },
-        { type: '', prop: '', name: '상황전파', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '조치요청', icon: 'circle-check', type: 'NTF', action: this.handleOpenEditModal.bind(this) } },
+        { type: '', prop: '', name: '마감', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '마감', icon: 'edit-outline', type: 'FIN', action: this.handleOpenEditModal.bind(this) }, },
+        { type: '', prop: '', name: '상황전파', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '상황전파', icon: 'circle-check', type: 'NTF', action: this.handleOpenEditModal.bind(this) }, },
         { type: '', prop: 'ticket_id', name: 'TICKET_ID', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'ticket_generation_time', name: '전표 발행시간', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'fault_time', name: '전표 마감시간', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
@@ -258,7 +249,7 @@ export default {
         { type: '', prop: 'ticket_rca_result_code', name: '장애내용', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'ticket_rca_result_dtl_code', name: '장애 원인', width: 200, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'total_related_alarm_cnt', name: '근원알람개수', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
-        { type: '', prop: '_', name: '상세보기', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderTicketDetail', cellRendererParams: { name: '상세보기', action: this.handleOpenTicketDetail.bind(this) } },
+        { type: '', prop: '_', name: '상세보기', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderTicketDetail', cellRendererParams: { name: '상세보기', action: this.handleOpenTicketDetail.bind(this) }, },
       ]
       const options = { name: this.name, checkable: false, rowGroupPanel: false }
       return {
@@ -367,14 +358,15 @@ export default {
     },
 
     ...mapState({
-      NiaMainEventText: (state) => state.chatbot.eventParameter.NiaMain,
+      NiaMainEventText: (state) => state.chatbot.routerParameter.NiaMain,
+      alarmFocusMode_chatMessages: (state) => state.chatbot.alarmFocusMode_chatMessages,
     }),
   },
   watch: {
     NiaMainEventText(nVal, oVal) {
-      if (nVal !== '') {
-        this.handleOpenEditModal(this.ipNetworkList[0], 'CONFIG_TEST')
-        this.$store.commit('chatbot/CLEAR_EVENT_PARAMETER', { name: this.$route.name })
+      if (nVal.includes('openNiaTopology')) {
+        this.openNiaTopology({ showFullTopology: true, tickets: this.ipNetworkList })
+        this.$store.commit('chatbot/CLEAR_ROUTER_PARAMETER', { name: this.$route.name })
       }
     },
 
@@ -394,12 +386,24 @@ export default {
       await this.onLoadIpAlarmList()
       await this.onLoadTransmissionAlarmList()
 
-      this.ipFilterGroup = new BaseFilterGroup(this, { onFilterChanged: () => this.onFilterChanged('ip'), isCheckBox: false })
+      this.ipFilterGroup = new BaseFilterGroup(this, {
+        onFilterChanged: () => this.onFilterChanged('ip'),
+        isCheckBox: false,
+      })
       this.setIPFilterGroup()
 
-      this.transFilterGroup = new BaseFilterGroup(this, { onFilterChanged: () => this.onFilterChanged('trans'), isCheckBox: false })
+      this.transFilterGroup = new BaseFilterGroup(this, {
+        onFilterChanged: () => this.onFilterChanged('trans'),
+        isCheckBox: false,
+      })
       this.setTransFilterGroup()
+
+      window.changeFocusAlertMode = this.changeFocusAlertMode.bind(this)
     })
+  },
+
+  beforeUnmount() {
+    window.changeFocusAlertMode = null
   },
   methods: {
     openNiaTopology(param) {
@@ -416,19 +420,6 @@ export default {
       this.fn_openWindow('niaTopology', param)
     },
 
-    getTicketConfirmHeader(ticketData) {
-      switch (ticketData.ticket_type) {
-        case 'ATT2':
-          return '이상트래픽 경보'
-        case 'NTT':
-          return '유해트래픽 경보'
-        case 'RT':
-          return '장애 경보'
-        default:
-          return '경보'
-      }
-    },
-
     async onReceivedIpsdnTicketEvent(data) {
       // prettier-ignore
       (async () => {
@@ -436,25 +427,13 @@ export default {
           case 'TICKET_NEW':
             // prettier-ignore
             (async () => {
-              const param = { TICKET_ID: data.ticketId, }
-              const res = await apiIpAlarmList(param)
+              window.fn_openWindow = this.fn_openWindow
+
+              const res = await apiIpAlarmList({ TICKET_ID: data.ticketId })
               if (res) {
-                const ticketData = res.result[0]
-
-                this.ipNetworkList.splice(0, 0, ticketData)
-
-                if (this.debug) {
-                  this.$confirm(makeAlertMessage(ticketData), this.getTicketConfirmHeader(ticketData), {
-                    confirmButtonText: '진행',
-                    cancelButtonText: '취소',
-                    dangerouslyUseHTMLString: true,
-                    customClass: 'nia-message-box',
-                  }).then(() => {
-                    this.fn_openWindow('configTest', ticketData)
-                  })
-                }
-              } else {
-                console.error(`${data.eventType} FAIL.. TICKET_ID : ` + data.ticketId)
+                  const ticketData = res.result[0]
+                  const isSop = true
+                  this.notifyAlert(ticketData, isSop)
               }
             })()
             break
@@ -492,6 +471,59 @@ export default {
       })()
 
       this.$store.dispatch('nia/insertIpNetworkList', this.ipNetworkList)
+    },
+
+    changeFocusAlertMode(ticketId) {
+      const agGridElement = this.$refs.ipAgGrid.$el
+
+      this.$refs.ipAgGrid.gridApi.forEachNode((node) => {
+        const rowIndex = node.rowIndex
+        const rowElement = agGridElement.querySelector(`.ag-center-cols-clipper .ag-row[row-index="${rowIndex}"]`)
+        rowElement && rowElement.classList.remove('highlight-row')
+        if (node.data.ticket_id === ticketId) {
+          if (!this.alarmFocusMode_chatMessages[0].ticketData.ticket_id) {
+            this.$store.dispatch('chatbot/newAlarmFocusChat', { ticketData: node.data })
+            rowElement.classList.add('highlight-row')
+          } else if (this.alarmFocusMode_chatMessages[0].ticketData.ticket_id === node.data.ticket_id) {
+            this.$store.commit('chatbot/MODE_CHANGE', { newMode: 'alarmFocusMode' })
+          } else {
+            this.$confirm(
+              `
+              기존과 다른 Ticket입니다. 채팅이 초기화됩니다.
+              진행하시겠습니까?`,
+              '경고',
+              {
+                confirmButtonText: '실행',
+                cancelButtonText: '취소',
+                dangerouslyUseHTMLString: true,
+                customClass: 'nia-message-box',
+              }
+            ).then(() => {
+              this.$store.dispatch('chatbot/newAlarmFocusChat', { ticketData: node.data, isNew: true })
+              rowElement.classList.add('highlight-row')
+            })
+          }
+        }
+      })
+    },
+
+    notifyAlert(ticketData, isSop) {
+      window.notifyAlert_window = (p1, p2) => {
+        this.notifyAlert(p1, p2)
+      }
+
+      // prettier-ignore
+      this.$notify({
+        title: '경보',
+        dangerouslyUseHTMLString: true,
+        message: makeAlertMessage(ticketData, isSop) +
+          `<div style="display:flex; gap:8px; justify-content:flex-end; margin-top:8px;">` +
+          /* `<button class='button--primary' onclick='window.fn_openWindow("configTest", ${JSON.stringify(ticketData)})'>진행</button>` + */
+          `<button class='button--primary' onclick='window.changeFocusAlertMode(${JSON.stringify(ticketData.ticket_id)})'>집중경보</button>` +
+          /* (isSop ? `<button class='button--primary' onclick='window.notifyAlert_window(${JSON.stringify(ticketData)}, false)'>취소</button>` : '') + */
+        '</div>',
+        customClass: 'nia-notify',
+      })
     },
 
     onReceivedTransTicketEvent({ channelName, socketMessage }) {
@@ -532,7 +564,12 @@ export default {
     },
     setIPFilterGroup() {
       const listName = 'ipNetworkList'
-      const btnOption = { isMultiSelect: true, allItem: true, ifAllthenOtherUncheck: true, listName }
+      const btnOption = {
+        isMultiSelect: true,
+        allItem: true,
+        ifAllthenOtherUncheck: true,
+        listName,
+      }
 
       this.ipFilterGroup.addFilter('ipStatus', '상태', this.CONSTANTS.nia.statusType, btnOption) // 상태
       this.ipFilterGroup.addFilter('ipType', '전표 유형', this.CONSTANTS.nia.ipType, btnOption) // ip망 장애 종류
@@ -540,13 +577,20 @@ export default {
     },
     setTransFilterGroup() {
       const listName = 'transmissionNetworkList'
-      const btnOption = { isMultiSelect: true, allItem: true, ifAllthenOtherUncheck: true, listName }
+      const btnOption = {
+        isMultiSelect: true,
+        allItem: true,
+        ifAllthenOtherUncheck: true,
+        listName,
+      }
 
       this.transFilterGroup.addFilter('transStatus', '상태', this.CONSTANTS.nia.statusType, btnOption) // 상태
       this.transFilterGroup.addFilter('transType', 'TYPE', this.CONSTANTS.nia.transType, btnOption) // 전송망 장애 종류
     },
     onFilterChanged(type) {
-      this.$refs[type === 'ip' ? 'ipAgGrid' : 'transmissionAgGrid'].externalFilterChanged({ name: this.name })
+      this.$refs[type === 'ip' ? 'ipAgGrid' : 'transmissionAgGrid'].externalFilterChanged({
+        name: this.name,
+      })
     },
     onClickFilterItem(filterType, name, code) {
       if (filterType === 'ip') {
@@ -626,7 +670,10 @@ export default {
         link_trans_perf_cnt: 0,
       }
       try {
-        const res = await apiDashboardStatistics({ DATE_TYPE, SEARCH_DATE: this.moment(cloneDate).format(formatStr) })
+        const res = await apiDashboardStatistics({
+          DATE_TYPE,
+          SEARCH_DATE: this.moment(cloneDate).format(formatStr),
+        })
         this.statistics = res.result[0] ?? defaultSt
       } catch (error) {
         this.error(error)
@@ -636,7 +683,11 @@ export default {
       const { statisticsType: STATISTICS_TYPE, date } = this.selfChartCondition
       const SERIES_TYPE = STATISTICS_TYPE === 'hour' ? 'day' : this.getSelfProDateType()
       try {
-        const resSelfProcess = await apiSelfProcessStatistics({ STATISTICS_TYPE, SERIES_TYPE, DATE: this.moment(date).add(1, 'd') })
+        const resSelfProcess = await apiSelfProcessStatistics({
+          STATISTICS_TYPE,
+          SERIES_TYPE,
+          DATE: this.moment(date).add(1, 'd'),
+        })
         this.selfStatistics = resSelfProcess.result ?? []
       } catch (error) {
         this.error(error)
