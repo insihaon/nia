@@ -1,10 +1,10 @@
 // store.js
 import { niaRoute } from '@/router/nia/index'
 import _ from 'lodash'
+import constants from '@/min/constants'
 
-// 라우터 이름 기반으로 routerParameter 키 자동 생성
+// 라우터 이름 기반으로 키 자동 생성
 const routerParameter = {}
-
 function setRouteName(routes) {
     routes.forEach((route) => {
         if (route.name) {
@@ -17,6 +17,13 @@ function setRouteName(routes) {
     })
 }
 setRouteName(niaRoute)
+
+function setChatbotKey() {
+    Object.keys(constants.nia.chatbotKeyMap).forEach((key) => {
+        routerParameter[constants.nia.chatbotKeyMap[key].parameterKey] = ''
+    })
+}
+setChatbotKey()
 
 function getCurrentTime() {
     const now = new Date()
@@ -47,6 +54,7 @@ const defaultQuestionModeChatMessages = {
 
 const state = {
     routerParameter,
+    lastFocusModule: { name: '', type: '' },
     currentMode: 'questionMode',
     modes: ['questionMode', 'alarmFocusMode'],
     questionMode_chatMessages: [_.cloneDeep(defaultQuestionModeChatMessages)],
@@ -54,6 +62,14 @@ const state = {
 }
 
 const mutations = {
+    SET_LAST_FOCUS_MODULE(state, { name, type }) {
+        if (name === 'chatbot') return
+        if (state.lastFocusModule.name === name && state.lastFocusModule.type === type) return
+
+        state.lastFocusModule.name = name
+        state.lastFocusModule.type = type
+    },
+
     SWITCH_ROUTER_PARAMETER(state, { name, parameter }) {
         if (parameter && parameter.length > 0) {
             if (!Object.prototype.hasOwnProperty.call(state.routerParameter, name)) {

@@ -103,8 +103,11 @@
               </div>
               <div>
                 <span class="sub-title font-semibold"><h4>&middot;수신</h4></span>
-                <span v-for="user in selectedUser" v-if="selectedUser.length > 0" :key="user.email">
-                  {{ user.name }}
+                <span v-for="user in selectedUser" :key="user.email">
+                  <span v-if="selectedUser.length > 0">
+                    {{ user.name }}
+                  </span>
+                  <span v-else>수신자 없음</span>
                 </span>
               </div>
               <div>
@@ -177,14 +180,20 @@ import { formatterTime, getAlarmType } from '@/views-nia/js/commonFormat'
 import { apiSendMQ, apiSelectAiDetectionInfo, apiSelfProcessSyslogInfo, apiSelfProcessTrafficInfo, apiSelectSopHistList, apiSopSyslogHistList, apiSelectUserList } from '@/api/nia'
 import dialogOpenMixin from '@/mixin/dialogOpenMixin'
 
+import { mapState } from 'vuex'
+import constants from '@/min/constants'
+import { getHiddenParameter, getNiaRouterPathByName } from '@/views-nia/js/commonNiaFunction'
+
 import _ from 'lodash'
 
-const routeName = 'requestForAction'
+import niaObserverMixin from '@/mixin/niaObserverMixin'
+
+const routeName = constants.nia.chatbotKeyMap.requestForAction.parameterKey
 
 export default {
   name: routeName,
   extends: Base,
-  mixins: [dialogOpenMixin],
+  mixins: [dialogOpenMixin, niaObserverMixin],
   props: {
     wdata: {
       type: Object,
@@ -358,6 +367,20 @@ export default {
     getAlarmtxt() {
       return getAlarmType(this.sendItem)
     },
+    ...mapState({
+      requestForActionEventText: (state) => state.chatbot.routerParameter[constants.nia.chatbotKeyMap.requestForAction.parameterKey],
+    }),
+  },
+  watch: {
+    requestForActionEventText(nVal, oVal) {
+      if (nVal.includes('edit')) {
+        this.onClickFin()
+      }
+      if (nVal.includes('mailSend')) {
+        this.onClickEmailSender()
+      }
+      this.$store.commit('chatbot/CLEAR_ROUTER_PARAMETER', { name: constants.nia.chatbotKeyMap.requestForAction.parameterKey })
+    },
   },
   created() {
     this.onLoadUserList()
@@ -384,8 +407,21 @@ export default {
     } finally {
       this.containerLoading = false
     }
+
+    this.$nextTick(() => {
+      this.popupShowCommand()
+    })
   },
   methods: {
+    popupShowCommand() {
+      this.$store.dispatch('chatbot/botPushAnswerMessage', {
+        content: `<b>${constants.nia.chatbotKeyMap.requestForAction.popupName} 화면에서 활용가능한 명령어입니다.</b>
+
+        1. ${constants.nia.chatbotCommand.edit.label}${getHiddenParameter(getNiaRouterPathByName('NiaMain'), constants.nia.chatbotKeyMap.requestForAction.dialogNm, 'edit')}
+        2. ${constants.nia.chatbotCommand.mailSend.label}${getHiddenParameter(getNiaRouterPathByName('NiaMain'), constants.nia.chatbotKeyMap.requestForAction.dialogNm, 'mailSend')}
+        `,
+      })
+    },
     setTemplateContent() {
       const { ticket_type, status } = this.selectedRow
 

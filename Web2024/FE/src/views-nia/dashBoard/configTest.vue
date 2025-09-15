@@ -95,15 +95,19 @@ import { Base } from '@/min/Base'
 import _ from 'lodash'
 import dialogOpenMixin from '@/mixin/dialogOpenMixin'
 import { apiIpsdnRequest, apiSelectAgencyIpList, apiRemote } from '@/api/nia'
+import constants from '@/min/constants'
+import { getHiddenParameter, getNiaRouterPathByName } from '@/views-nia/js/commonNiaFunction'
+import { mapState } from 'vuex'
 
-const routeName = 'ConfigTest'
+import niaObserverMixin from '@/mixin/niaObserverMixin'
+const routeName = constants.nia.chatbotKeyMap.configTest.parameterKey
 
 export default {
   name: routeName,
   // eslint-disable-next-line vue/no-unused-components
   components: {},
   extends: Base,
-  mixins: [dialogOpenMixin],
+  mixins: [dialogOpenMixin, niaObserverMixin],
   props: {
     wdata: {
       type: Object,
@@ -150,8 +154,18 @@ export default {
         { label: '조치내용', model: 'fault_detail_content', options: this.selectOption.content },
       ]
     },
+    ...mapState({
+      configTestEventText: (state) => state.chatbot.routerParameter[constants.nia.chatbotKeyMap.configTest.parameterKey],
+    }),
   },
   watch: {
+    configTestEventText(nVal, oVal) {
+      if (nVal.includes('remote')) {
+        this.onClickRemote()
+      }
+      this.$store.commit('chatbot/CLEAR_ROUTER_PARAMETER', { name: constants.nia.chatbotKeyMap.configTest.parameterKey })
+    },
+
     pingFileName(nVal, oVal) {
       if (nVal === null) {
         this.isShowFrame = false
@@ -212,8 +226,20 @@ export default {
     this.onLoadCRC()
     this.onLoadInterface()
     this.onLoadAgencyIpList()
+
+    this.$nextTick(() => {
+      this.popupShowCommand()
+    })
   },
   methods: {
+    popupShowCommand() {
+      this.$store.dispatch('chatbot/botPushAnswerMessage', {
+        content: `<b>${constants.nia.chatbotKeyMap.configTest.popupName} 화면에서 활용가능한 명령어입니다.</b>
+
+        1. ${constants.nia.chatbotCommand.remote.label}${getHiddenParameter(getNiaRouterPathByName('NiaMain'), constants.nia.chatbotKeyMap.configTest.dialogNm, 'remote')}
+        `,
+      })
+    },
     async onLoadCRC() {
       const { nodeName, ifname } = this.item
       try {
@@ -274,6 +300,10 @@ export default {
         this.$alert('성공적으로 명령어가 전송되었습니다.', '알림', {
           confirmButtonText: '확인',
           customClass: 'nia-message-box',
+        })
+
+        this.$store.dispatch('chatbot/botPushAnswerMessage', {
+          content: `${constants.nia.chatbotIcon.success} ${constants.nia.chatbotKeyMap.configTest.popupName}에서 성공적으로 ${constants.nia.chatbotCommand.remote.label}을 했습니다.`,
         })
       })
 

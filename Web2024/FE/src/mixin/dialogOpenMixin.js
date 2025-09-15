@@ -1,3 +1,5 @@
+import constants from '@/min/constants'
+
 var dialogOpenMixin = {
   data() {
     return {
@@ -17,6 +19,7 @@ var dialogOpenMixin = {
           width: '1100',
           height: '750',
           resizeble: true,
+          chatbotParameterKeyName: constants.nia.chatbotKeyMap.aiResponse.parameterKey
         },
         aiResponse2: {
           component: () => import('@/views-nia/dashBoard/aiResponse2'),
@@ -31,6 +34,7 @@ var dialogOpenMixin = {
           width: '1200',
           height: '1100',
           resizeble: true,
+          chatbotParameterKeyName: constants.nia.chatbotKeyMap.requestForAction.parameterKey
         },
         processFin: {
           component: () => import('@/views-nia/dashBoard/processFin'),
@@ -38,6 +42,7 @@ var dialogOpenMixin = {
           width: '600',
           height: '550',
           resizeble: true,
+          chatbotParameterKeyName: constants.nia.chatbotKeyMap.processFin.parameterKey
         },
         configTest: {
           component: () => import('@/views-nia/dashBoard/configTest'),
@@ -45,6 +50,7 @@ var dialogOpenMixin = {
           width: '750',
           height: '660',
           resizeble: true,
+          chatbotParameterKeyName: 'configTest'
         },
         snapShot: {
           component: () => import('@/views-nia/dashBoard/snapShot'),
@@ -59,7 +65,7 @@ var dialogOpenMixin = {
           width: '1200',
           height: '900',
           resizeble: true,
-          routerName: 'SopHistory' // 만약, router가 있는 화면의 경우 chatbot 팝업 명령을 위해 기존 router의 name이 필요
+          chatbotParameterKeyName: constants.nia.chatbotKeyMap.sopHistory.parameterKey
         },
         selfProcessList: {
           component: () => import('@/views-nia/dashBoard/selfProcessList'),
@@ -87,7 +93,8 @@ var dialogOpenMixin = {
           pageTitle: '토폴로지',
           width: '1200',
           height: '785',
-          resizeble: true
+          resizeble: true,
+          chatbotParameterKeyName: constants.nia.chatbotKeyMap.niaTopology.parameterKey
         },
         systemMonitoringFilter: {
           component: () => import('@/views-nia/dashBoard/systemMonitoringFilter'),
@@ -99,10 +106,10 @@ var dialogOpenMixin = {
         disabilityStatusHistoryManagement: {
           component: () => import('@/views-nia/alarmMonitoring/disabilityStatusHistoryManagement'),
           pageTitle: '장애현황 및 이력관리',
-          width: '600',
-          height: '380',
+          width: '1200',
+          height: '900',
           resizeble: true,
-          routerName: 'DisabilityStatusHistoryManagement' // 만약, router가 있는 화면의 경우 chatbot 팝업 명령을 위해 기존 router의 name이 필요
+          chatbotParameterKeyName: constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.parameterKey
         },
         chatbot: {
           component: () => import('@/views-nia/dashBoard/chatbot'),
@@ -139,6 +146,7 @@ var dialogOpenMixin = {
       tmpWindowData.resizeble = this.dialogList[dialogNm]['resizeble']
       tmpWindowData.notDuplicate = this.dialogList[dialogNm]['notDuplicate']
       tmpWindowData.callback = callback || null
+      tmpWindowData.chatbotParameterKeyName = this.dialogList[dialogNm]['chatbotParameterKeyName'] || dialogNm
 
       if (this.dialogList[dialogNm]['positionBottomRight']) {
         tmpWindowData.x = window.innerWidth - tmpWindowData.width - 10

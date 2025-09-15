@@ -81,14 +81,20 @@ import { formatterTime } from '@/views-nia/js/commonFormat'
 import CompChart from '@/components/chart/CompChart.vue'
 import dialogOpenMixin from '@/mixin/dialogOpenMixin'
 
-const routeName = 'aiResponse'
+import { mapState } from 'vuex'
+import constants from '@/min/constants'
+import { getHiddenParameter, getNiaRouterPathByName } from '@/views-nia/js/commonNiaFunction'
+
+import niaObserverMixin from '@/mixin/niaObserverMixin'
+
+const routeName = constants.nia.chatbotKeyMap.aiResponse.parameterKey
 
 export default {
   name: routeName,
   // eslint-disable-next-line vue/no-unused-components
   components: { CompAgGrid, CompChart, CompInquiryPannel },
   extends: Base,
-  mixins: [dialogOpenMixin],
+  mixins: [dialogOpenMixin, niaObserverMixin],
   props: {
     wdata: {
       type: Object,
@@ -312,7 +318,29 @@ export default {
 
       return trafficChartMbpsOptions
     },
+    ...mapState({
+      aiResponseEventText: (state) => state.chatbot.routerParameter[constants.nia.chatbotKeyMap.aiResponse.parameterKey],
+    }),
   },
+  watch: {
+    aiResponseEventText(nVal, oVal) {
+      if (nVal.includes('dataSnapshot')) {
+        this.fn_openWindow('snapShot', this._merge(this.selectedRow, this.trafficInfo))
+      }
+      if (nVal.includes('requestForAction')) {
+        this.fn_openWindow('requestForAction', this._merge(this.selectedRow, this.trafficInfo))
+      }
+      if (nVal.includes('configTest')) {
+        this.fn_openWindow('configTest', this._merge(this.selectedRow, this.trafficInfo))
+      }
+      if (nVal.includes('fin')) {
+        this.fn_openWindow('processFin', this._merge(this.selectedRow, this.trafficInfo))
+      }
+
+      this.$store.commit('chatbot/CLEAR_ROUTER_PARAMETER', { name: constants.nia.chatbotKeyMap.aiResponse.parameterKey })
+    },
+  },
+
   created() {
     this.selectedRow = this.wdata?.params?.row
     this.trafficInfo = this.wdata?.params?.trafficInfo ?? {
@@ -339,8 +367,23 @@ export default {
         options: { height: '300', width: '500' },
       })
     }
+
+    this.$nextTick(() => {
+      this.popupShowCommand()
+    })
   },
   methods: {
+    popupShowCommand() {
+      this.$store.dispatch('chatbot/botPushAnswerMessage', {
+        content: `<b>${constants.nia.chatbotKeyMap.aiResponse.popupName} 화면에서 활용가능한 명령어입니다.</b>
+
+        1. ${constants.nia.chatbotCommand.dataSnapshot.label}${getHiddenParameter(getNiaRouterPathByName('NiaMain'), constants.nia.chatbotKeyMap.aiResponse.dialogNm, 'dataSnapshot')}
+        2. ${constants.nia.chatbotCommand.requestForAction.label}${getHiddenParameter(getNiaRouterPathByName('NiaMain'), constants.nia.chatbotKeyMap.aiResponse.dialogNm, 'requestForAction')}
+        3. ${constants.nia.chatbotCommand.configTest.label}${getHiddenParameter(getNiaRouterPathByName('NiaMain'), constants.nia.chatbotKeyMap.aiResponse.dialogNm, 'configTest')}
+        4. ${constants.nia.chatbotCommand.fin.label}${getHiddenParameter(getNiaRouterPathByName('NiaMain'), constants.nia.chatbotKeyMap.aiResponse.dialogNm, 'fin')}
+        `,
+      })
+    },
     isAttFtt(ticket_type) {
       return ['ATT2', 'FTT'].includes(ticket_type)
     },
