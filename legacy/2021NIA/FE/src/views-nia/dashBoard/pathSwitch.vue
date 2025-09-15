@@ -24,9 +24,9 @@
 import { Base } from '@/min/Base'
 import _ from 'lodash'
 import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
-import { apiEquipmentPortList } from '@/api/nia'
+import { apiSelectPortList } from '@/api/nia'
 
-import { endMessage, nextMessage } from '@/store/modules/chatbot.js'
+import { nextMessage } from '@/store/modules/chatbot.js'
 
 const routeName = 'pathSwitch'
 export default {
@@ -130,7 +130,7 @@ export default {
     async onLoadPathSwitchList() {
       try {
         this.loading = true
-        const res = await apiEquipmentPortList({ NODE_ID: this.selectedRow.node_id || this.selectedRow.node_nm })
+        const res = await apiSelectPortList({ node_id: this.selectedRow.node_id || this.selectedRow.node_nm })
 
         this.pathSwitchList = res.result.map((r) => {
           r.isSwitch = 'Y'

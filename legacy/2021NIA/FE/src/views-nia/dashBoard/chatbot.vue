@@ -67,8 +67,9 @@ import { Modal } from '@/min/Modal.min'
 import { mapState } from 'vuex'
 import axios from 'axios'
 import dialogOpenMixin from '@/mixin/dialogOpenMixin'
-
-import { searchMessaging, errorMessaging1, errorMessaging2, errorMessaging3, nextMessage } from '@/store/modules/chatbot.js'
+import { searchMessaging, errorMessaging1, errorMessaging2, errorMessaging3 } from '@/store/modules/chatbot.js'
+import { getHiddenParameter, getNiaRouteNameByPath, getNiaRouteTitleByPath } from '@/views-nia/js/commonNiaFunction'
+import constants from '@/min/constants'
 
 const routeName = 'chatbot'
 /* eslint-disable */
@@ -102,6 +103,7 @@ export default {
       alarmFocusMode_chatMessages: (state) => state.chatbot.alarmFocusMode_chatMessages,
       currentMode: (state) => state.chatbot.currentMode,
       alarmFocusMessageHistory: (state) => state.chatbot.alarmFocusMessageHistory,
+      lastFocusModule: (state) => state.chatbot.lastFocusModule,
       windows: (state) => state.mdi.windows,
     }),
 
@@ -195,7 +197,7 @@ export default {
       return botAnswer.at(-1)
     },
 
-    findLastAnswerQuestion(userQuestion) {
+    findLastAnswerMatchMap(userQuestion) {
       const lastAnswer = this.getLastAnswer()
 
       let matchMap = {
@@ -208,10 +210,13 @@ export default {
       if (/^\d$/.test(userQuestion)) {
         const pattern = new RegExp(`${userQuestion}\\. (.*?)<span.*?\\[path\\]:(.*?)\\, \\[popup\\]:(.*?)\\, \\[action\\]:(.*?)\\<\\/span\\>`)
         const match = lastAnswer.content.match(pattern)
-        matchMap.matchContext = match[1].trim()
-        matchMap.path = match[2].trim()
-        matchMap.popup = match[3].trim()
-        matchMap.action = match[4].trim()
+
+        if (match) {
+          matchMap.matchContext = match[1].trim()
+          matchMap.path = match[2].trim()
+          matchMap.popup = match[3].trim()
+          matchMap.action = match[4].trim()
+        }
       } else if (userQuestion.length > 0) {
         const pattern = new RegExp(`\\d\\. .*?<span.*?\\[path\\]:.*?\\, \\[popup\\]:.*?\\, \\[action\\]:.*?\\<\\/span\\>`, 'g')
         const matchs = lastAnswer.content.match(pattern)
@@ -238,38 +243,61 @@ export default {
       return matchMap
     },
 
-    async searchElasticSearch(userQuestion) {
-      const matchMap = this.findLastAnswerQuestion(userQuestion)
-      if (matchMap.matchContext?.length > 0) {
-        let name = this.getRouteNameByPath(this.routerList, matchMap.path)
-        this.$router.push({ name })
+    runMatchHaviorAndGetText(matchMap) {
+      console.log('[matchMap] >> ' + 'path : ' + matchMap.path + ', popup :' + matchMap.popup + ', action :' + matchMap.action)
 
-        // prettier-ignore
-        let text = `<b>` + matchMap.matchContext + ' 명령을 실행했습니다.</b>'
-          + `<br><br>`
-          + `➡️ ${this.getRouteTitleByPath(this.routerList, matchMap.path)}로 이동했습니다.`
-
-        if (matchMap.popup.length > 0) {
-          this.fn_openWindow(matchMap.popup)
-
-          console.log(this.dialogList)
-          const dialogKey = Object.keys(this.dialogList).find((key) => key === matchMap.popup)
-
-          text += `<br>➡️ ${this.dialogList[dialogKey].pageTitle} 팝업을 열었습니다. `
-
-          // 팝업이 있으면 action을 위해 router의 name을 popup의 name으로 변경
-          name = this.dialogList[dialogKey].routerName
+      let routerParameterTargetName = ''
+      let text = ''
+      if (matchMap.path.length > 0) {
+        const routerName = getNiaRouteNameByPath(matchMap.path)
+        if (this.$router.history.current.path === matchMap.path) {
+          routerParameterTargetName = routerName
+          text = `<br><br>` + `${constants.nia.chatbotIcon.noAction} ${getNiaRouteTitleByPath(matchMap.path)} 입니다.`
+        } else {
+          this.$router.push({ name: routerName })
+          routerParameterTargetName = routerName
+          text = `<br><br>` + `${constants.nia.chatbotIcon.move} ${getNiaRouteTitleByPath(matchMap.path)}로 이동했습니다.`
         }
-
-        if (matchMap.action.length > 0) {
-          setTimeout(() => {
-            this.$store.commit('chatbot/SWITCH_ROUTER_PARAMETER', { name, parameter: matchMap.action })
-          }, 1000)
-        }
-
-        return text
       }
 
+      if (matchMap.popup.length > 0) {
+        const hasWindow = this.windows.find((w) => w.dialogNm === matchMap.popup)
+        let newName = ''
+        if (hasWindow) {
+          text += `<br>${constants.nia.chatbotIcon.noAction} ${hasWindow.name} 팝업이 이미 활성화되어 있습니다.`
+          newName = hasWindow.chatbotParameterKeyName
+        } else {
+          this.fn_openWindow(matchMap.popup)
+
+          const dialogKey = Object.keys(this.dialogList).find((key) => key === matchMap.popup)
+          text += `<br>${constants.nia.chatbotIcon.openPopup} ${this.dialogList[dialogKey].pageTitle} 팝업을 활성화했습니다. `
+          newName = this.dialogList[dialogKey].chatbotParameterKeyName
+        }
+
+        routerParameterTargetName = newName
+      }
+
+      if (matchMap.action.length > 0) {
+        setTimeout(() => {
+          this.$store.commit('chatbot/SWITCH_ROUTER_PARAMETER', { name: routerParameterTargetName, parameter: matchMap.action })
+        }, 1000)
+      }
+
+      return text
+    },
+
+    async searchElasticSearch(userQuestion) {
+      const matchMap = this.findLastAnswerMatchMap(userQuestion)
+      if (matchMap.matchContext?.length > 0) {
+        // prettier-ignore
+        return `<b>` + matchMap.matchContext + ' 명령을 실행했습니다.</b>'
+          + this.runMatchHaviorAndGetText(matchMap)
+      } else {
+        return await this.getDBAnswer(userQuestion)
+      }
+    },
+
+    async getDBAnswer(userQuestion) {
       try {
         const esClient = axios.create({
           baseURL: 'http://116.89.191.47:8001/es',
@@ -303,7 +331,7 @@ export default {
 
           hits.forEach((hit, index) => {
             const source = hit._source
-            const hiddenParameter = `<span style="display:none">[path]:${source.path}, [popup]:${source.popup}, [action]:${source.action}</span>`
+            const hiddenParameter = getHiddenParameter(source.path, source.popup, source.action)
 
             resultMessage += `${index + 1}. ${source.name}`
             resultMessage += hiddenParameter
@@ -330,18 +358,21 @@ export default {
     },
 
     formatMessage(content) {
-      // 줄바꿈을 <br> 태그로 변환하고 HTML 태그 제거
-      let formattedContent = content.replace(/\n/g, '<br>') // 줄바꿈을 <br>로 변환
+      try {
+        // 줄바꿈을 <br> 태그로 변환하고 HTML 태그 제거
+        let formattedContent = content.replace(/\n/g, '<br>') // 줄바꿈을 <br>로 변환
 
-      formattedContent = formattedContent.replace(/(\s+)([^<]+)\s+<span class="move-text">\[진행\]<\/span>/g, '$1$2 <a href="#" class="move-link" data-keyword="$2">[진행]</a>')
+        formattedContent = formattedContent.replace(/(\s+)([^<]+)\s+<span class="move-text">\[진행\]<\/span>/g, '$1$2 <a href="#" class="move-link" data-keyword="$2">[진행]</a>')
 
-      return formattedContent
+        return formattedContent
+      } catch (error) {
+        console.error(error)
+      }
     },
 
     async handlePathClick(event, content) {
       if (event.target.classList.contains('move-link')) {
         event.preventDefault()
-        let keyword = ''
         switch (event.target.innerHTML) {
           case '[진행]':
             // 집중경보 모드 전환
@@ -356,48 +387,6 @@ export default {
             break
         }
       }
-    },
-
-    getRouteTitleByPath(routerList, path, prefix = '') {
-      for (const route of routerList) {
-        // 1. 현재 라우트의 path와 일치하는지 확인
-        if (prefix + route.path === path) {
-          return route.meta.title
-        }
-
-        // 2. children이 있는지 확인하고 재귀적으로 탐색
-        if (route.children) {
-          const foundTitle = this.getRouteTitleByPath(route.children, path, route.path + '/')
-          // 자식 라우트에서 이름이 발견되면 즉시 반환
-          if (foundTitle) {
-            return foundTitle
-          }
-        }
-      }
-
-      // 모든 라우트를 탐색했지만 일치하는 것을 찾지 못한 경우
-      return null
-    },
-
-    getRouteNameByPath(routerList, path, prefix = '') {
-      for (const route of routerList) {
-        // 1. 현재 라우트의 path와 일치하는지 확인
-        if (prefix + route.path === path) {
-          return route.name
-        }
-
-        // 2. children이 있는지 확인하고 재귀적으로 탐색
-        if (route.children) {
-          const foundName = this.getRouteNameByPath(route.children, path, route.path + '/')
-          // 자식 라우트에서 이름이 발견되면 즉시 반환
-          if (foundName) {
-            return foundName
-          }
-        }
-      }
-
-      // 모든 라우트를 탐색했지만 일치하는 것을 찾지 못한 경우
-      return null
     },
   },
 }

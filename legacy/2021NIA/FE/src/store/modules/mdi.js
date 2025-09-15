@@ -32,6 +32,7 @@ const mutations = {
     for (i = 0; i < wCount; i++) {
       if (id === state.windows[i].id) {
         state.windows[i].zindex = 1000
+        this.commit('chatbot/SET_LAST_FOCUS_MODULE', { name: state.windows[i].chatbotParameterKeyName, type: 'popup' })
       } else {
         if (state.windows[i].zindex > 0) {
           state.windows[i].zindex--
@@ -69,6 +70,7 @@ const mutations = {
       }
     } else {
       state.windows.push(value)
+      this.commit('chatbot/SET_LAST_FOCUS_MODULE', { name: value.chatbotParameterKeyName, type: 'popup' })
     }
   },
   SET_WINDOW_OPTIONS(state, { id, options }) {

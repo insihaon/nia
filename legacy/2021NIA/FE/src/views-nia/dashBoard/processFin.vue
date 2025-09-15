@@ -56,15 +56,19 @@ import { Base } from '@/min/Base'
 import _ from 'lodash'
 import { apiSelectSopCode, apiSendMQ } from '@/api/nia'
 import ModalSopMng from '@/views-nia/modal/ModalSopMng'
-// import sopHistory from '@/views-nia/alarmMonitoring/sopHistory.vue'
+import constants from '@/min/constants'
+import { getHiddenParameter, getNiaRouterPathByName } from '@/views-nia/js/commonNiaFunction'
+import { mapState } from 'vuex'
+import niaObserverMixin from '@/mixin/niaObserverMixin'
 
-const routeName = 'processFin'
+const routeName = constants.nia.chatbotKeyMap.processFin.parameterKey
 
 export default {
   name: routeName,
   // eslint-disable-next-line vue/no-unused-components
   components: { /* sopHistory, */ ModalSopMng },
   extends: Base,
+  mixins: [niaObserverMixin],
   props: {
     wdata: {
       type: Object,
@@ -109,9 +113,20 @@ export default {
         { label: '조치내용', model: 'fault_detail_content', options: this.selectOption.content },
       ]
     },
+    ...mapState({
+      processFinEventText: (state) => state.chatbot.routerParameter[constants.nia.chatbotKeyMap.processFin.parameterKey],
+    }),
     // disabledFin() {
     //   return this.selectedRow?.status === 'FIN' || this.selectedRow?.status === 'AUTO_FIN'
     // },
+  },
+  watch: {
+    processFinEventText(nVal, oVal) {
+      if (nVal.includes('fin')) {
+        this.onClickFin()
+      }
+      this.$store.commit('chatbot/CLEAR_ROUTER_PARAMETER', { name: constants.nia.chatbotKeyMap.processFin.parameterKey })
+    },
   },
   created() {
     this.selectedRow = this.wdata?.params
@@ -119,8 +134,20 @@ export default {
   },
   mounted() {
     this.onLoadSopCodeList()
+
+    this.$nextTick(() => {
+      this.popupShowCommand()
+    })
   },
   methods: {
+    popupShowCommand() {
+      this.$store.dispatch('chatbot/botPushAnswerMessage', {
+        content: `<b>${constants.nia.chatbotKeyMap.processFin.popupName}화면에서 활용가능한 명령어입니다.</b>
+
+        1. ${constants.nia.chatbotCommand.fin.label}${getHiddenParameter(getNiaRouterPathByName('NiaMain'), constants.nia.chatbotKeyMap.processFin.dialogNm, 'fin')}
+        `,
+      })
+    },
     setAiFeedBack() {
       if (this.selectedRow) {
         if (['0', '1'].includes(this.selectedRow.ai_accuracy)) {
@@ -145,12 +172,14 @@ export default {
       if (this.aiFeedback == null) {
         this.$alert('AI 결과 피드백 여부를 선택해 주십시오.', '알림', {
           confirmButtonText: '확인',
+          customClass: 'nia-message-box',
         })
         return
       }
-      this.confirm('확인 버튼 클릭 시 해당 티켓은 최종 마감처리 됩니다.', '알림', {
+      this.$confirm('확인 버튼 클릭 시 해당 티켓은 최종 마감처리 됩니다.', '알림', {
         confirmButtonText: '확인',
         cancelButtonText: '취소',
+        customClass: 'nia-message-box',
       }).then(async () => {
         const param = this.getFinParam()
         if (this.selectedTicket) {
@@ -163,6 +192,10 @@ export default {
               confirmButtonText: '확인',
               dangerouslyUseHTMLString: true,
               customClass: 'nia-message-box',
+            })
+
+            this.$store.dispatch('chatbot/botPushAnswerMessage', {
+              content: `${constants.nia.chatbotIcon.success} ${constants.nia.chatbotKeyMap.processFin.popupName}에서 성공적으로 ${constants.nia.chatbotCommand.fin.label}했습니다.`,
             })
           }
         } catch (error) {
