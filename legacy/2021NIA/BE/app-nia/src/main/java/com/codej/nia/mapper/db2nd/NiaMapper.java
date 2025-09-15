@@ -58,8 +58,6 @@ public interface NiaMapper extends BaseDataMapper {
 
         public List<ResultMap> SELECT_SYSLOG_EQUIPMENT_LIST(HashMap<String, Object> map);
 
-        public List<ResultMap> SELECT_EQUIPMENT_PORT_LIST(HashMap<String, Object> map);
-
         public List<ResultMap> SELECT_SYSLOG_RULE_LIST(HashMap<String, Object> map);
 
         public int UPDATE_NIA_SYSLOG_RULE(HashMap<String, Object> map);
@@ -167,6 +165,8 @@ public interface NiaMapper extends BaseDataMapper {
         public List<ResultMap> SELECT_DATA_SNAPSHOT_LIST(HashMap<String, Object> map);
 
         public List<ResultMap> SELECT_NIA_ALARM_LIST(HashMap<String, Object> map);
+
+        public List<ResultMap> SELECT_AI_CHART_DATA(HashMap<String, Object> map);
 
         public List<ResultMap> SELECT_NIA_CABLE_ALARM_LIST(HashMap<String, Object> map);
 

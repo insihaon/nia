@@ -784,10 +784,10 @@
         <if test="TICKET_ID != null">
             AND SOP.TICKET_ID LIKE '%' || #{TICKET_ID} || '%'
         </if>
-        <if test="NODE_NM != null">
+        <if test="NODE_NM != null and NODE_NM != ''">
             AND AL.ROOT_CAUSE_SYSNAMEA = #{NODE_NM}
         </if>
-        <if test="ALARMLOC != null">
+        <if test="ALARMLOC != null and ALARMLOC != ''">
             AND AL.ROOT_CAUSE_PORTA = #{ALARMLOC}
         </if>
         <if test="START_DATE == null and END_DATE == null">
@@ -840,7 +840,7 @@
                 , CASE WHEN TC.STATUS = 'AUTO_FIN' 
                     THEN TC.TICKET_UPDATE_TIME 
                     ELSE SOP.HANDLING_FIN_TIME 
-                 END AS HANDLING_FIN_TIME
+                END AS HANDLING_FIN_TIME
                 , TC.TICKET_TYPE
                 , TC.TICKET_RCA_RESULT_DTL_CODE
                 , TC.STATUS 
@@ -858,6 +858,18 @@
                 </if>
                 <if test="TICKET_TYPE != null and TICKET_TYPE != ''">
                     AND TC.TICKET_TYPE = #{TICKET_TYPE}
+                </if>
+                <if test="NODE_NM != null and NODE_NM != ''">
+                    AND (
+                        TA.ROOT_CAUSE_SYSNAMEA LIKE '%' || #{NODE_NM} || '%'
+                        OR 
+                        TA.ROOT_CAUSE_SYSNAMEZ LIKE '%' || #{NODE_NM} || '%'
+                    )
+                </if>
+                <if test="ALARMLOC != null and ALARMLOC != ''">
+                    AND (
+                        TA.ROOT_CAUSE_PORTA LIKE '%' || #{ALARMLOC} || '%'
+                    )
                 </if>
                 <choose>
                     <when test="INIT_START_DATE != null and INIT_START_DATE != '' and INIT_END_DATE != null and INIT_END_DATE != ''">
@@ -932,17 +944,6 @@
     <select id="SELECT_SYSLOG_EQUIPMENT_LIST" parameterType="hashmap" resultType="hashmap">
         SELECT  DISTINCT NODE_NM AS VALUE
         FROM    rca.tb_syslog_alarm_mst
-    </select>
-
-    <!-- 장비명 리스트 조회 -->
-    <select id="SELECT_EQUIPMENT_PORT_LIST" parameterType="hashmap" resultType="hashmap">
-        select a.node_id, b.if_id
-        from resource.tb_node_mst a 
-        inner join resource.tb_port_mst b on a.node_id = b.node_id
-        where 1=1 
-        <if test="NODE_ID == null">
-            AND a.node_id = #{NODE_ID}
-        </if>
     </select>
 
     <!-- SYSLOG RULE 관리 리스트 조회 -->
@@ -2223,6 +2224,35 @@
                 AND T.ALARMNO = #{ALARMNO}
             </if>
         </where>
+    </select>
+
+    <select id="SELECT_AI_CHART_DATA" parameterType ="hashmap" resultType="hashmap">
+        select 
+            model.model_id
+            , model.node_num
+            , model.if_num
+            , model.if_id
+            , model.predict_datetime
+            , model.in_alertyn
+            , model.out_alertyn
+            , model.predictyn
+            , model.fit_date
+            , predict.ds
+            , predict.in_yhat
+            , predict.in_yhat_lower
+            , predict.in_yhat_upper
+            , predict.in_trend
+            , predict.in_y
+            , predict.out_yhat
+            , predict.out_yhat_lower
+            , predict.out_yhat_upper
+            , predict.out_trend
+            , predict.out_y
+            , predict.reg_datetime
+        from nia.tb_ai_model model
+        inner join nia.tb_ai_predict predict on model.model_id = predict.model_id
+        where model.model_id='6280'
+        order by predict_datetime desc
     </select>
 
     <select id="SELECT_NIA_CABLE_ALARM_LIST" parameterType="hashmap" resultType="hashmap">

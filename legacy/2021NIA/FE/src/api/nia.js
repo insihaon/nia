@@ -234,12 +234,12 @@ export function apiSyslogEquipmentList(params = {}) {
   })
 }
 
-export function apiEquipmentPortList(params = {}) {
+export function apiSelectPortList(params = {}) {
   return http({
     url: '/selectList',
     method: 'post',
     filePath: filePath,
-    sqlId: 'SELECT_EQUIPMENT_PORT_LIST',
+    sqlId: 'SELECT_PORT_LIST',
     data: params
   })
 }
@@ -572,16 +572,6 @@ export function apiSelectNodeList(params = {}) {
   })
 }
 
-export function apiSelectPortList(params = {}) {
-  return http({
-    url: '/selectList',
-    method: 'post',
-    filePath: filePath,
-    sqlId: 'SELECT_PORT_LIST',
-    data: params
-  })
-}
-
 export function apiUpdatePortList(params = {}) {
   return http({
     url: '/modify',
@@ -785,6 +775,15 @@ export function apiSelectNiaAlarmList(params = {}) {
     method: 'post',
     filePath: filePath,
     sqlId: 'SELECT_NIA_ALARM_LIST',
+    data: params
+  })
+}
+export function apiSelectAiChartData(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_AI_CHART_DATA',
     data: params
   })
 }
