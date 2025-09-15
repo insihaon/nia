@@ -18,6 +18,7 @@
           @onChangePage="(curPage) => onChangePage(curPage, 'TICKET')"
           @rowClicked="(row) => onClickRow(row, 'TICKET')"
           @searchClear="() => onLoadSopHistList()"
+          @selectChange="selectChange"
           @savedExcel="onSaveExcel"
         />
       </el-tab-pane>
@@ -48,17 +49,22 @@
 import { Base } from '@/min/Base'
 import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
 import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
-import { apiSelectSopHistList, apiSopSyslogHistList, apiSyslogEquipmentList, apiSyslogInterfaceList } from '@/api/nia'
+import { apiSelectSopHistList, apiSopSyslogHistList, apiSyslogEquipmentList, apiSyslogInterfaceList, apiSelectNodeList, apiSelectLinkList } from '@/api/nia'
 import { getAlarmType, getTicketStatus, getSopAiAccuracy } from '@/views-nia/js/commonFormat'
 import ModalSopDetail from '@/views-nia/modal/ModalSopDetail.vue'
 import { mapState } from 'vuex'
+import constants from '@/min/constants'
+import { getHiddenParameter, getNiaRouterPathByName } from '@/views-nia/js/commonNiaFunction'
+import niaObserverMixin from '@/mixin/niaObserverMixin'
 
-const routeName = 'sopHistory'
+const routeName = constants.nia.chatbotKeyMap.sopHistory.parameterKey
+
 export default {
   name: routeName,
   // eslint-disable-next-line vue/no-unused-components
   components: { CompInquiryPannel, ModalSopDetail, CompAgGrid },
   extends: Base,
+  mixins: [niaObserverMixin],
   props: {
     wdata: {
       type: Object,
@@ -113,6 +119,8 @@ export default {
       },
       equipmentOptionList: [],
       interfaceOptionList: [],
+      equipmentSyslogOptionList: [],
+      interfaceSyslogOptionList: [],
       excelList: [],
     }
   },
@@ -228,8 +236,8 @@ export default {
     searchSyslogItems() {
       return [
         { label: '알람번호', type: 'input', size: 8, model: 'ALARM_NO' },
-        { label: '장비명', type: 'select', size: 8, model: 'NODE_NM', setting: { allOption: { toggle: true } }, options: this.equipmentOptionList },
-        { label: 'I/F', type: 'select', size: 8, model: 'ALARMLOC', setting: { allOption: { toggle: true } }, options: this.interfaceOptionList },
+        { label: '장비명', type: 'select', size: 8, model: 'NODE_NM', setting: { allOption: { toggle: true } }, options: this.equipmentSyslogOptionList },
+        { label: 'I/F', type: 'select', size: 8, model: 'ALARMLOC', setting: { allOption: { toggle: true } }, options: this.interfaceSyslogOptionList },
         {
           label: '상태',
           type: 'select',
@@ -246,16 +254,27 @@ export default {
       ]
     },
     ...mapState({
-      sopHistoryEventText: (state) => state.chatbot.routerParameter.SopHistory,
+      sopHistoryEventText: (state) => state.chatbot.routerParameter[constants.nia.chatbotKeyMap.sopHistory.parameterKey],
+      // lastFocusModuleName: (state) => state.chatbot.lastFocusModule.name,
     }),
   },
   watch: {
     sopHistoryEventText(nVal, oVal) {
       if (nVal.includes('saveExcel')) {
         this.onSaveExcel()
-        this.$store.commit('chatbot/CLEAR_ROUTER_PARAMETER', { name: this.$route.name })
       }
+
+      if (nVal.includes('tabSwitching')) {
+        this.tabSwitching()
+      }
+
+      this.$store.commit('chatbot/CLEAR_ROUTER_PARAMETER', { name: constants.nia.chatbotKeyMap.sopHistory.parameterKey })
     },
+    // lastFocusModuleName(nVal, oVal) {
+    //   if (nVal === constants.nia.chatbotKeyMap.sopHistory.parameterKey) {
+    //     this.popupShowCommand()
+    //   }
+    // },
   },
   created() {
     this.selectedRow = this.wdata?.params
@@ -273,19 +292,75 @@ export default {
     }
     this.$nextTick(() => {
       this.setSelectedOptions()
+      this.setSelectedSyslogOptions()
       this.onLoadSopHistList()
       this.onLoadSyslogHistList()
+
+      this.popupShowCommand()
     })
   },
   methods: {
+    selectChange(map) {
+      if (map.model === 'NODE_NM') {
+        this.chainSetInterfaceOptionList()
+      }
+    },
+
+    async chainSetInterfaceOptionList() {
+      const ifRes = await apiSelectLinkList({ src_node_id: this.sopSearchModel.NODE_NM === 'ALL' ? '' : this.sopSearchModel.NODE_NM })
+      this.interfaceOptionList = ifRes?.result.map((v) => {
+        return { label: v.src_if_id, value: v.src_if_id }
+      })
+      this.interfaceOptionList.unshift({ label: '전체', value: 'ALL' })
+      this.sopSearchModel.ALARMLOC = 'ALL'
+    },
+
+    popupShowCommand() {
+      this.$store.dispatch('chatbot/botPushAnswerMessage', {
+        content: `<b>${constants.nia.chatbotKeyMap.sopHistory.popupName} 화면에서 활용가능한 명령어입니다.</b>
+        
+        1. ${constants.nia.chatbotCommand.saveExcel.label}${getHiddenParameter(getNiaRouterPathByName('NiaMain'), constants.nia.chatbotKeyMap.sopHistory.dialogNm, 'saveExcel')}
+        2. ${constants.nia.chatbotCommand.tabSwitching.label}${getHiddenParameter(getNiaRouterPathByName('NiaMain'), constants.nia.chatbotKeyMap.sopHistory.dialogNm, 'tabSwitching')}
+        `,
+      })
+    },
+    tabSwitching() {
+      if (this.tapCurrent === 'ticket') {
+        this.tapCurrent = 'syslog'
+      } else {
+        this.tapCurrent = 'ticket'
+      }
+
+      this.$store.dispatch('chatbot/botPushAnswerMessage', {
+        content: `${constants.nia.chatbotIcon.success} ${constants.nia.chatbotKeyMap.sopHistory.popupName}에서 성공적으로 ${constants.nia.chatbotCommand.tabSwitching.label}을 했습니다.`,
+      })
+    },
+
     async setSelectedOptions() {
       try {
-        const equipRes = await apiSyslogEquipmentList()
+        const equipRes = await apiSelectNodeList()
         this.equipmentOptionList = equipRes?.result.map((v) => {
+          return { label: v.node_id, value: v.node_id }
+        })
+        this.equipmentOptionList.unshift({ label: '전체', value: 'ALL' })
+
+        const ifRes = await apiSelectLinkList()
+        this.interfaceOptionList = ifRes?.result.map((v) => {
+          return { label: v.src_if_id, value: v.src_if_id }
+        })
+        this.interfaceOptionList.unshift({ label: '전체', value: 'ALL' })
+      } catch (error) {
+        this.error(error)
+      }
+    },
+    async setSelectedSyslogOptions() {
+      try {
+        const equipRes = await apiSyslogEquipmentList()
+        this.equipmentSyslogOptionList = equipRes?.result.map((v) => {
           return { label: v.value, value: v.value }
         })
         const ifRes = await apiSyslogInterfaceList()
-        this.interfaceOptionList = ifRes?.result.map((v) => {
+        this.interfaceSyslogOptionList = ifRes?.result.map((v) => {
           return { label: v.value, value: v.value }
         })
       } catch (error) {
@@ -312,6 +387,14 @@ export default {
       if (this.row !== null) {
         this._merge(param, { TICKET_TYPE: this.row.ticket_type })
       }
+      if (param.NODE_NM === 'ALL') {
+        param.NODE_NM = null
+      }
+
+      if (param.ALARMLOC === 'ALL') {
+        param.ALARMLOC = null
+      }
+
       return param
     },
     async onLoadSopHistList() {
@@ -404,7 +487,7 @@ export default {
           this.closeLoading(target)
 
           this.$store.dispatch('chatbot/botPushAnswerMessage', {
-            content: `➡️ SOP이력조회에서 성공적으로 엑셀을 저장했습니다.`,
+            content: `${constants.nia.chatbotIcon.success} ${constants.nia.chatbotKeyMap.sopHistory.popupName}에서 성공적으로 ${constants.nia.chatbotCommand.saveExcel.label}을 했습니다.`,
           })
         }, 10)
       } catch (error) {
