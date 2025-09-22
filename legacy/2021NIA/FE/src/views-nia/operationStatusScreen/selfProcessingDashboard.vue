@@ -1,6 +1,6 @@
 <template>
   <div :class="{ [name]: true }">
-    <div class="search-container" :class="{'flex-column': isViewport('<=', 'sm')}">
+    <div class="search-container" :class="{ 'flex-column': isViewport('<=', 'sm') }">
       <div v-if="!isMobile" class="title"><i class="el-icon-pie-chart pr-2" />자가 처리 관제 화면</div>
       <div class="d-flex items-center" :class="{ 'flex-wrap': isMobile }">
         <el-radio-group v-model="selfChartCondition.statisticsType" size="mini" @change="onLoadSelfProcessStatistics()">
@@ -10,13 +10,9 @@
         </el-radio-group>
         <div class="d-flex items-center">
           <el-button icon="el-icon-caret-left" size="mini" @click="onChangeDate('minus')" />
-          <el-date-picker
-            v-model="selfChartCondition.date"
-            :type="getSelfProDateType()"
-            size="mini"
-          />
+          <el-date-picker v-model="selfChartCondition.date" :type="getSelfProDateType()" size="mini" />
           <el-button icon="el-icon-caret-right" size="mini" @click="onChangeDate('plus')" />
-          <el-button icon="el-icon-search" size="mini" style="padding: 7px 7px;" @click="onLoadSelfProcessStatistics()" />
+          <el-button icon="el-icon-search" size="mini" style="padding: 7px 7px" @click="onLoadSelfProcessStatistics()" />
         </div>
       </div>
     </div>
@@ -48,7 +44,7 @@ export default {
       selfProcessInfo: {},
       selfChartCondition: {
         statisticsType: 'hour',
-        date: this.moment().format('YYYY-MM-DD')
+        date: this.moment().format('YYYY-MM-DD'),
       },
     }
   },
@@ -65,58 +61,58 @@ export default {
           // left: 'center',
           textStyle: {
             // fontSize: 13
-          }
+          },
         },
         dataZoom: [{ type: 'inside' }, { type: 'slider' }],
         tooltip: {},
         xAxis: {
           type: 'category',
-          data: selfStatistics.map(v => v.series_time),
+          data: selfStatistics.map((v) => v.series_time),
         },
         yAxis: {
           type: 'value',
           axisLabel: {
             formatter: function (value, index) {
-                let result = value
-                if (value >= 1000) {
-                  result = (value / 1000) + 'K'
-                } else {
-                  result = value.toString()
-                }
-                return result
+              let result = value
+              if (value >= 1000) {
+                result = value / 1000 + 'K'
+              } else {
+                result = value.toString()
               }
-          }
+              return result
+            },
+          },
         },
         series: [
           {
             name: '자가최적화 총 발생',
             type: 'bar',
-            data: this.selfStatistics.map(v => v.so_totalcount)
+            data: this.selfStatistics.map((v) => v.so_totalcount),
           },
           {
             name: '자가최적화 건 수',
             type: 'bar',
 
-            data: this.selfStatistics.map(v => v.so_count)
+            data: this.selfStatistics.map((v) => v.so_count),
           },
           {
             name: '자가회복 총 발생',
             type: 'bar',
-            data: this.selfStatistics.map(v => v.st_totalcount)
+            data: this.selfStatistics.map((v) => v.st_totalcount),
           },
           {
             name: '자가회복 건 수',
             type: 'bar',
-            data: this.selfStatistics.map(v => v.st_count)
+            data: this.selfStatistics.map((v) => v.st_count),
           },
-        ]
+        ],
       }
-    }
+    },
   },
   watch: {
     'selfChartCondition.date'() {
       this.onLoadSelfProcessStatistics()
-    }
+    },
   },
   mounted() {
     if (this.$route.query?.ticket_id || this.$route.query?.alarmno) {
@@ -175,10 +171,10 @@ export default {
       const params = {
         DATE_TYPE: this.selfChartCondition.statisticsType,
         DATE_TIME: e.name,
-        SELF_PROCESS_GROUP: e.seriesName.includes('최적화') ? 'SO' : 'ST'
+        SELF_PROCESS_GROUP: e.seriesName.includes('최적화') ? 'SO' : 'ST',
       }
       const pageTitle = params.SELF_PROCESS_GROUP === 'SO' ? '자가 최적화 이력조회' : '자가 회복 이력조회'
-      this.fn_openWindow('selfProcessList', params, null, pageTitle)
+      this.fn_openWindow('selfProcessList', params, null, { name: pageTitle })
     },
     getSelfProDateType() {
       let type = 'date'
