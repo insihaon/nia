@@ -97,6 +97,10 @@ export default {
       // [집중 경보]
       focusModeCheckAlarm: { label: '경보상세 확인', action: 'focusModeCheckAlarm' },
       failover: { label: '장애조치 목록', action: 'failover' },
+
+      // 대시보드
+      onReceivedIpsdnTicketEvent: { label: 'IP-SDN 경보 발생', action: 'onReceivedIpsdnTicketEvent' },
+      onReceivedTransTicketEvent: { label: 'Trans 경보 발생', action: 'onReceivedTransTicketEvent' }
     },
     chatbotKeyMap: {
       /*
