@@ -373,23 +373,29 @@ export default {
   },
   watch: {
     NiaMainEventText(nVal, oVal) {
-      if (nVal === 'openNiaTopology') {
-        this.openNiaTopology({ showFullTopology: true, tickets: this.ipNetworkList })
+      switch (nVal) {
+        case this.chatbotCommand.focusModeCheckAlarm.action:
+          this.fn_openWindow('niaTopology', { showFullTopology: false, tickets: [this.alarmFocusMode_chatMessages[0].ticketData] }, null, { addX: -580 })
+          this.fn_openWindow('aiResponse', { row: this.alarmFocusMode_chatMessages[0].ticketData }, null, { addX: 580, addY: -20 })
+          break
+        case this.chatbotCommand.failover.action:
+          this.$store.dispatch('chatbot/botPushAnswerMessage', {
+            content:
+              `<b>${this.chatbotCommand.failover.label}를 위한 명령어 입니다.</b><br><br>` +
+              showNumberText(1, `${this.chatbotKeyMap.processFin.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), this.chatbotKeyMap.processFin.dialogNm, '')}<br>`) +
+              showNumberText(2, `${this.chatbotKeyMap.configTest.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), this.chatbotKeyMap.configTest.dialogNm, '')}<br>`) +
+              showNumberText(3, `${this.chatbotKeyMap.requestForAction.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), this.chatbotKeyMap.requestForAction.dialogNm, '')}<br>`),
+          })
+          break
       }
 
-      if (nVal === this.chatbotCommand.focusModeCheckAlarm.action) {
-        this.fn_openWindow('niaTopology', { showFullTopology: false, tickets: [this.alarmFocusMode_chatMessages[0].ticketData] }, null, { addX: -580 })
-        this.fn_openWindow('aiResponse', { row: this.alarmFocusMode_chatMessages[0].ticketData }, null, { addX: 580, addY: -20 })
-      }
-
-      if (nVal === this.chatbotCommand.failover.action) {
-        this.$store.dispatch('chatbot/botPushAnswerMessage', {
-          content:
-            `<b>${this.chatbotCommand.failover.label}를 위한 명령어 입니다.</b><br><br>` +
-            showNumberText(1, `${this.chatbotKeyMap.processFin.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), this.chatbotKeyMap.processFin.dialogNm, '')}<br>`) +
-            showNumberText(2, `${this.chatbotKeyMap.configTest.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), this.chatbotKeyMap.configTest.dialogNm, '')}<br>`) +
-            showNumberText(3, `${this.chatbotKeyMap.requestForAction.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), this.chatbotKeyMap.requestForAction.dialogNm, '')}<br>`),
-        })
+      switch (nVal.actionName) {
+        case this.chatbotCommand.onReceivedIpsdnTicketEvent.action:
+          this.onReceivedIpsdnTicketEvent(nVal.data)
+          break
+        case this.chatbotCommand.onReceivedTransTicketEvent.action:
+          this.onReceivedTransTicketEvent({ channelName: nVal.channelName, socketMessage: nVal.socketMessage })
+          break
       }
 
       this.$store.commit('chatbot/CLEAR_ROUTER_PARAMETER', { name: this.$route.name })

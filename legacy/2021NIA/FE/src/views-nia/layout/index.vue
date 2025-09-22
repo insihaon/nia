@@ -34,6 +34,7 @@ import { apiIpAlarmList } from '@/api/nia'
 import chatbotIcon from '@/views-nia/dashBoard/chatbotIcon.vue'
 import _lo from 'lodash'
 import { mapState, mapGetters } from 'vuex'
+import EventBus from '@/utils/event-bus'
 
 export const _ = { AppOptions }
 
@@ -145,12 +146,15 @@ export default {
     },
   },
   mounted() {
+    EventBus.$on('simulateTest', this.simulateTest)
+
     this.$nextTick(() => {
       this.setShowBottombar()
       this.subscribeEvent()
     })
   },
   beforeDestroy() {
+    EventBus.$off('simulateTest')
     this.removeWsEventListener(this.CONSTANTS.channels.IPSDN_ALARM.name, this.onReceivedIpsdnTicketEvent)
     this.removeWsEventListener(this.CONSTANTS.channels.TRANS_ALARM.name, this.onReceivedTransTicketEvent)
   },
@@ -193,13 +197,26 @@ export default {
       }
 
       if (this.$route.name === 'NiaMain') {
-        this.$refs.appmain.$refs.routerView.onReceivedIpsdnTicketEvent(data)
+        this.$store.commit('chatbot/SWITCH_ROUTER_PARAMETER', {
+          name: 'NiaMain',
+          parameter: {
+            actionName: this.CONSTANTS.nia.chatbotCommand.onReceivedIpsdnTicketEvent.action,
+            data: data,
+          },
+        })
       }
     },
 
     onReceivedTransTicketEvent({ channelName, socketMessage }) {
       if (this.$route.name === 'NiaMain') {
-        this.$refs.appmain.$refs.routerView.onReceivedTransTicketEvent({ channelName, socketMessage })
+        this.$store.commit('chatbot/SWITCH_ROUTER_PARAMETER', {
+          name: 'NiaMain',
+          parameter: {
+            actionName: this.CONSTANTS.nia.chatbotCommand.onReceivedTransTicketEvent.action,
+            channelName: channelName,
+            socketMessage: socketMessage,
+          },
+        })
       }
     },
 

@@ -19,7 +19,7 @@
         </div>
 
         <div class="utility-buttons">
-          <button class="utility-button" @click="makeAlert">테스트 경보</button>
+          <button class="utility-button" @click="makeSimulationAlert">테스트 경보</button>
           <button class="utility-button" :style="{ background: isActiveBotAlert ? '#13ce66' : '#ff4949' }" @click="toggleIsActiveBotAlert">{{ isActiveBotAlert ? '경보 표시' : '경보 미표시' }}</button>
           <button class="utility-button" @click="switchMode">{{ currentMode === 'questionMode' ? '질문모드' : '집중경보모드' }}</button>
           <button class="utility-button">추천명령어</button>
@@ -45,7 +45,7 @@
         </div>
 
         <div class="utility-buttons">
-          <button class="utility-button" @click="makeAlert">테스트 경보</button>
+          <button class="utility-button" @click="makeSimulationAlert">테스트 경보</button>
           <button class="utility-button" @click="openPopupDisabilityStatusHistoryManagement">장애이력 팝업</button>
           <button class="utility-button" @click="switchMode">{{ currentMode === 'questionMode' ? '질문모드' : '집중경보모드' }}</button>
           <button class="utility-button">추천명령어</button>
@@ -70,7 +70,7 @@ import dialogOpenMixin from '@/mixin/dialogOpenMixin'
 import { searchMessaging, errorMessaging1, errorMessaging2, errorMessaging3 } from '@/store/modules/chatbot.js'
 import { getNiaRouteNameByPath, getNiaRouteTitleByPath, getSpanFormatMessageForDB, getMatchMapOfspanFormatMessage } from '@/views-nia/js/commonNiaFunction'
 import constants from '@/min/constants'
-
+import EventBus from '@/utils/event-bus'
 const routeName = 'chatbot'
 /* eslint-disable */
 export default {
@@ -168,8 +168,8 @@ export default {
       }
     },
 
-    makeAlert() {
-      window.v.$parent.$parent.simulateTest()
+    makeSimulationAlert() {
+      EventBus.$emit('simulateTest', {})
     },
 
     toggleIsActiveBotAlert() {
