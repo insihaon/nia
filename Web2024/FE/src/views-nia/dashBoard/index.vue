@@ -130,6 +130,7 @@ import { AppOptions } from '@/class/appOptions'
 import dialogOpenMixin from '@/mixin/dialogOpenMixin'
 import _ from 'lodash'
 import { mapState } from 'vuex'
+import { getInvisibleSpanParameter, getNiaRouterPathByName, showNumberText } from '@/views-nia/js/commonNiaFunction'
 
 const routeName = 'NiaMain'
 export default {
@@ -214,7 +215,7 @@ export default {
         { type: '', prop: 'node_nm', name: '장비명', width: 200, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'alarmloc', name: '인터페이스명', width: 200, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'total_related_alarm_cnt', name: '근원알람개수', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
-        { type: '', prop: 'ip_addr', name: 'ip_addr', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
+        { type: '', prop: 'ip_addr', name: 'IP주소', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'ai_accuracy', name: 'AI 결과 피드백', width: 100, fixed: false, suppressMenu: true, formatter: getSopAiAccuracy },
       ]
       const options = { name: this.name, checkable: false, rowGroupPanel: false }
@@ -361,13 +362,37 @@ export default {
       NiaMainEventText: (state) => state.chatbot.routerParameter.NiaMain,
       alarmFocusMode_chatMessages: (state) => state.chatbot.alarmFocusMode_chatMessages,
     }),
+
+    chatbotCommand() {
+      return this.CONSTANTS.nia.chatbotCommand
+    },
+
+    chatbotKeyMap() {
+      return this.CONSTANTS.nia.chatbotKeyMap
+    },
   },
   watch: {
     NiaMainEventText(nVal, oVal) {
-      if (nVal.includes('openNiaTopology')) {
+      if (nVal === 'openNiaTopology') {
         this.openNiaTopology({ showFullTopology: true, tickets: this.ipNetworkList })
-        this.$store.commit('chatbot/CLEAR_ROUTER_PARAMETER', { name: this.$route.name })
       }
+
+      if (nVal === this.chatbotCommand.focusModeCheckAlarm.action) {
+        this.fn_openWindow('niaTopology', { showFullTopology: false, tickets: [this.alarmFocusMode_chatMessages[0].ticketData] }, null, { addX: -580 })
+        this.fn_openWindow('aiResponse', { row: this.alarmFocusMode_chatMessages[0].ticketData }, null, { addX: 580, addY: -20 })
+      }
+
+      if (nVal === this.chatbotCommand.failover.action) {
+        this.$store.dispatch('chatbot/botPushAnswerMessage', {
+          content:
+            `<b>${this.chatbotCommand.failover.label}를 위한 명령어 입니다.</b><br><br>` +
+            showNumberText(1, `${this.chatbotKeyMap.processFin.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), this.chatbotKeyMap.processFin.dialogNm, '')}<br>`) +
+            showNumberText(2, `${this.chatbotKeyMap.configTest.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), this.chatbotKeyMap.configTest.dialogNm, '')}<br>`) +
+            showNumberText(3, `${this.chatbotKeyMap.requestForAction.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), this.chatbotKeyMap.requestForAction.dialogNm, '')}<br>`),
+        })
+      }
+
+      this.$store.commit('chatbot/CLEAR_ROUTER_PARAMETER', { name: this.$route.name })
     },
 
     viewport(nVal, oVal) {
@@ -491,7 +516,7 @@ export default {
               `
               기존과 다른 Ticket입니다. 채팅이 초기화됩니다.
               진행하시겠습니까?`,
-              '경고',
+              '집중경보 전환',
               {
                 confirmButtonText: '실행',
                 cancelButtonText: '취소',
@@ -560,7 +585,7 @@ export default {
         SELF_PROCESS_GROUP: e.seriesName.includes('최적화') ? 'SO' : 'ST',
       }
       const pageTitle = params.SELF_PROCESS_GROUP === 'SO' ? '자가 최적화 이력조회' : '자가 회복 이력조회'
-      this.fn_openWindow('selfProcessList', params, null, pageTitle)
+      this.fn_openWindow('selfProcessList', params, null, { name: pageTitle })
     },
     setIPFilterGroup() {
       const listName = 'ipNetworkList'

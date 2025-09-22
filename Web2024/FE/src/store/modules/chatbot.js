@@ -2,6 +2,7 @@
 import { niaRoute } from '@/router/nia/index'
 import _ from 'lodash'
 import constants from '@/min/constants'
+import { getInvisibleSpanParameter, getNiaRouterPathByName, showNumberText } from '@/views-nia/js/commonNiaFunction'
 
 // 라우터 이름 기반으로 키 자동 생성
 const routerParameter = {}
@@ -33,15 +34,14 @@ function getCurrentTime() {
     })
 }
 
+const chatbotCommand = constants.nia.chatbotCommand
+
 const defaultAlarmFocusModeFirstChatMessages = {
     type: 'bot-answer',
-    content: `<b>집중경보 모드가 실행되었습니다.</b>
-
-        1. 경보 상세 확인
-        2. 장애조치
-
-        <span style='color:red'> ESC. 집중경보 모드 해제</span>
-    `,
+    content: `<b>집중경보 모드가 실행되었습니다.</b><br>
+    ` +
+        showNumberText(1, `${chatbotCommand.focusModeCheckAlarm.label}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', chatbotCommand.focusModeCheckAlarm.action)}<br>`) +
+        showNumberText(2, `${chatbotCommand.failover.label}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', chatbotCommand.failover.action)}`),
     time: getCurrentTime(),
     ticketData: {}
 }
@@ -86,7 +86,7 @@ const mutations = {
         state.routerParameter[name] = ''
     },
 
-    PUSH_CHAT_MESSAGE(state, { content, type }) {
+    PUSH_CHAT_MESSAGE(state, { content, type, callBack }) {
         if (type === 'bot-alert') {
             state.questionMode_chatMessages.push({
                 type: type,
@@ -112,6 +112,8 @@ const mutations = {
                 })
                 break
         }
+
+        if (callBack) callBack()
     },
 
     POP_CHAT_MESSAGE(state) {
@@ -175,7 +177,7 @@ const actions = {
         dispatch('pushLodingMessage')
     },
 
-    botPushAnswerMessage({ commit }, { content, addContent, isAlert }) {
+    botPushAnswerMessage({ commit }, { content, addContent, isAlert, callBack }) {
         switch (state.currentMode) {
             case 'questionMode':
                 if (state.questionMode_chatMessages.at(-1).content === searchMessaging) {
@@ -190,8 +192,7 @@ const actions = {
         }
 
         if (addContent) { content += addContent }
-
-        commit('PUSH_CHAT_MESSAGE', { content, type: isAlert ? 'bot-alert' : 'bot-answer' })
+        commit('PUSH_CHAT_MESSAGE', { content, type: isAlert ? 'bot-alert' : 'bot-answer', callBack: callBack })
     },
 
     newAlarmFocusChat({ commit }, { ticketData }) {

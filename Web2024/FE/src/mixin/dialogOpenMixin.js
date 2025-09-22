@@ -1,4 +1,5 @@
 import constants from '@/min/constants'
+import store from '@/store'
 
 var dialogOpenMixin = {
   data() {
@@ -131,21 +132,22 @@ var dialogOpenMixin = {
     }
   },
   methods: {
-    fn_openWindow(dialogNm, data, callback, customPageTitle) {
-      var tmpWindowData = Object.assign({}, this.$store.getters.window_param)
+    fn_openWindow(dialogNm, data, callback, customStyle = {}) {
+      var tmpWindowData = Object.assign({}, store.getters.window_param)
 
-      tmpWindowData.id = new Date().getTime()
-      tmpWindowData.name = customPageTitle || this.dialogList[dialogNm]['pageTitle']
+      tmpWindowData.id = customStyle.id || new Date().getTime()
+      tmpWindowData.name = customStyle.name || this.dialogList[dialogNm]['pageTitle']
       tmpWindowData.target = this.dialogList[dialogNm]['component']
-      tmpWindowData.dialogNm = dialogNm
-      tmpWindowData.type = this.dialogList[dialogNm]
-      tmpWindowData.width = this.isMobile ? window.innerWidth : this.dialogList[dialogNm]['width']
-      tmpWindowData.height = this.dialogList[dialogNm]['height']
-      tmpWindowData.minWidth = this.dialogList[dialogNm]['minWidth']
-      tmpWindowData.minHeight = this.dialogList[dialogNm]['minHeight']
-      tmpWindowData.resizeble = this.dialogList[dialogNm]['resizeble']
-      tmpWindowData.notDuplicate = this.dialogList[dialogNm]['notDuplicate']
+      tmpWindowData.dialogNm = customStyle.dialogNm || dialogNm
+      tmpWindowData.type = customStyle.type || this.dialogList[dialogNm]
+      tmpWindowData.width = customStyle.width || this.isMobile ? window.innerWidth : this.dialogList[dialogNm]['width']
+      tmpWindowData.height = customStyle.height || this.dialogList[dialogNm]['height']
+      tmpWindowData.minWidth = customStyle.minWidth || this.dialogList[dialogNm]['minWidth']
+      tmpWindowData.minHeight = customStyle.minHeight || this.dialogList[dialogNm]['minHeight']
+      tmpWindowData.resizeble = customStyle.resizeble || this.dialogList[dialogNm]['resizeble']
+      tmpWindowData.notDuplicate = customStyle.notDuplicate || this.dialogList[dialogNm]['notDuplicate']
       tmpWindowData.callback = callback || null
+      tmpWindowData.isModal = true
       tmpWindowData.chatbotParameterKeyName = this.dialogList[dialogNm]['chatbotParameterKeyName'] || dialogNm
 
       if (this.dialogList[dialogNm]['positionBottomRight']) {
@@ -173,6 +175,9 @@ var dialogOpenMixin = {
       if (tmpWindowData.y < 0) {
         tmpWindowData.y = 85
       }
+
+      if (customStyle.addX) tmpWindowData.x = tmpWindowData.x + customStyle.addX
+      if (customStyle.addY) tmpWindowData.y = tmpWindowData.y + customStyle.addY
 
       tmpWindowData.params = Object.assign({}, data)
 

@@ -96,7 +96,7 @@ import _ from 'lodash'
 import dialogOpenMixin from '@/mixin/dialogOpenMixin'
 import { apiIpsdnRequest, apiSelectAgencyIpList, apiRemote } from '@/api/nia'
 import constants from '@/min/constants'
-import { getHiddenParameter, getNiaRouterPathByName } from '@/views-nia/js/commonNiaFunction'
+import { getInvisibleSpanParameter, getNiaRouterPathByName, getAlarmFocusTicketData, showNumberText, getWindowActionList } from '@/views-nia/js/commonNiaFunction'
 import { mapState } from 'vuex'
 
 import niaObserverMixin from '@/mixin/niaObserverMixin'
@@ -157,13 +157,21 @@ export default {
     ...mapState({
       configTestEventText: (state) => state.chatbot.routerParameter[constants.nia.chatbotKeyMap.configTest.parameterKey],
     }),
+    isModal() {
+      return !!this.wdata.params
+    },
   },
   watch: {
     configTestEventText(nVal, oVal) {
-      if (nVal.includes('remote')) {
-        this.onClickRemote()
+      if (this.isModal) {
+        switch (nVal) {
+          case constants.nia.chatbotCommand.remote.action:
+            this.onClickRemote()
+            break
+        }
+
+        this.$store.commit('chatbot/CLEAR_ROUTER_PARAMETER', { name: constants.nia.chatbotKeyMap.configTest.parameterKey })
       }
-      this.$store.commit('chatbot/CLEAR_ROUTER_PARAMETER', { name: constants.nia.chatbotKeyMap.configTest.parameterKey })
     },
 
     pingFileName(nVal, oVal) {
@@ -194,14 +202,20 @@ export default {
       }
 
       if (nVAl === '포트변경') {
-        this.fn_openWindow('pathSwitch', this.selectedRow)
+        this.fn_openWindow('pathSwitch', this.selectedRow, null, { addX: 800 })
       }
     },
   },
   created() {
     this.selectedRow = this.wdata?.params
   },
-  mounted() {
+  async mounted() {
+    const ticketData = await getAlarmFocusTicketData(this.wdata)
+    if (ticketData) {
+      this.selectedRow = ticketData
+      this.$emit('update:wdataParams', ticketData)
+    }
+
     const { ticket_type, root_cause_sysnamea, node_nm, ip_addr, root_cause_porta, alarmloc, alarmmsg } = this.selectedRow
     this.item = {
       nodeName: ticket_type === 'SYSLOG' ? node_nm : root_cause_sysnamea,
@@ -232,13 +246,12 @@ export default {
     })
   },
   methods: {
-    popupShowCommand() {
-      this.$store.dispatch('chatbot/botPushAnswerMessage', {
-        content: `<b>${constants.nia.chatbotKeyMap.configTest.popupName} 화면에서 활용가능한 명령어입니다.</b>
-
-        1. ${constants.nia.chatbotCommand.remote.label}${getHiddenParameter(getNiaRouterPathByName('NiaMain'), constants.nia.chatbotKeyMap.configTest.dialogNm, 'remote')}
-        `,
-      })
+    async popupShowCommand() {
+      if (!this.isFocusModeButNotFocus) {
+        this.$store.dispatch('chatbot/botPushAnswerMessage', {
+          content: await getWindowActionList(constants.nia.chatbotKeyMap.configTest.dialogNm, constants.nia.chatbotKeyMap.configTest.popupName),
+        })
+      }
     },
     async onLoadCRC() {
       const { nodeName, ifname } = this.item
@@ -302,9 +315,12 @@ export default {
           customClass: 'nia-message-box',
         })
 
-        this.$store.dispatch('chatbot/botPushAnswerMessage', {
-          content: `${constants.nia.chatbotIcon.success} ${constants.nia.chatbotKeyMap.configTest.popupName}에서 성공적으로 ${constants.nia.chatbotCommand.remote.label}을 했습니다.`,
-        })
+        if (!this.isFocusModeButNotFocus) {
+          this.$store.dispatch('chatbot/botPushAnswerMessage', {
+            content: `${constants.nia.chatbotIcon.success} ${constants.nia.chatbotKeyMap.configTest.popupName}에서 성공적으로 ${constants.nia.chatbotCommand.remote.label}을 했습니다.`,
+            callBack: this.popupShowCommand,
+          })
+        }
       })
 
       return // 우선 막아놓음.

@@ -182,7 +182,7 @@ import dialogOpenMixin from '@/mixin/dialogOpenMixin'
 
 import { mapState } from 'vuex'
 import constants from '@/min/constants'
-import { getHiddenParameter, getNiaRouterPathByName } from '@/views-nia/js/commonNiaFunction'
+import { getAlarmFocusTicketData, getWindowActionList } from '@/views-nia/js/commonNiaFunction'
 
 import _ from 'lodash'
 
@@ -370,26 +370,39 @@ export default {
     ...mapState({
       requestForActionEventText: (state) => state.chatbot.routerParameter[constants.nia.chatbotKeyMap.requestForAction.parameterKey],
     }),
+    isModal() {
+      return !!this.wdata.params
+    },
   },
   watch: {
     requestForActionEventText(nVal, oVal) {
-      if (nVal.includes('edit')) {
-        this.onClickFin()
+      if (this.isModal) {
+        switch (nVal) {
+          case constants.nia.chatbotCommand.edit.action:
+            this.onClickFin()
+            break
+          case constants.nia.chatbotCommand.mailSend.action:
+            this.onClickEmailSender()
+            break
+        }
+
+        this.$store.commit('chatbot/CLEAR_ROUTER_PARAMETER', { name: constants.nia.chatbotKeyMap.requestForAction.parameterKey })
       }
-      if (nVal.includes('mailSend')) {
-        this.onClickEmailSender()
-      }
-      this.$store.commit('chatbot/CLEAR_ROUTER_PARAMETER', { name: constants.nia.chatbotKeyMap.requestForAction.parameterKey })
     },
   },
   created() {
     this.onLoadUserList()
+    this.selectedRow = this.wdata.params
   },
   async mounted() {
+    const ticketData = await getAlarmFocusTicketData(this.wdata)
+    if (ticketData) {
+      this.selectedRow = ticketData
+      this.$emit('update:wdataParams', ticketData)
+    }
+
     const { uid, name, mobile, email, agencyName } = this.$store.state.user.info
     this.$set(this.sendItem, 'sender', `${agencyName} ${name}`)
-
-    this.selectedRow = this.wdata.params
     this._merge(this.sendItem, this.selectedRow)
 
     try {
@@ -413,14 +426,12 @@ export default {
     })
   },
   methods: {
-    popupShowCommand() {
-      this.$store.dispatch('chatbot/botPushAnswerMessage', {
-        content: `<b>${constants.nia.chatbotKeyMap.requestForAction.popupName} 화면에서 활용가능한 명령어입니다.</b>
-
-        1. ${constants.nia.chatbotCommand.edit.label}${getHiddenParameter(getNiaRouterPathByName('NiaMain'), constants.nia.chatbotKeyMap.requestForAction.dialogNm, 'edit')}
-        2. ${constants.nia.chatbotCommand.mailSend.label}${getHiddenParameter(getNiaRouterPathByName('NiaMain'), constants.nia.chatbotKeyMap.requestForAction.dialogNm, 'mailSend')}
-        `,
-      })
+    async popupShowCommand() {
+      if (!this.isFocusModeButNotFocus) {
+        this.$store.dispatch('chatbot/botPushAnswerMessage', {
+          content: await getWindowActionList(constants.nia.chatbotKeyMap.requestForAction.dialogNm, constants.nia.chatbotKeyMap.requestForAction.popupName),
+        })
+      }
     },
     setTemplateContent() {
       const { ticket_type, status } = this.selectedRow

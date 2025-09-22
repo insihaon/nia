@@ -54,7 +54,7 @@ import { getAlarmType, getTicketStatus, getSopAiAccuracy } from '@/views-nia/js/
 import ModalSopDetail from '@/views-nia/modal/ModalSopDetail.vue'
 import { mapState } from 'vuex'
 import constants from '@/min/constants'
-import { getHiddenParameter, getNiaRouterPathByName } from '@/views-nia/js/commonNiaFunction'
+import { getAlarmFocusTicketData, getWindowActionList } from '@/views-nia/js/commonNiaFunction'
 import niaObserverMixin from '@/mixin/niaObserverMixin'
 
 const routeName = constants.nia.chatbotKeyMap.sopHistory.parameterKey
@@ -255,34 +255,39 @@ export default {
     },
     ...mapState({
       sopHistoryEventText: (state) => state.chatbot.routerParameter[constants.nia.chatbotKeyMap.sopHistory.parameterKey],
-      // lastFocusModuleName: (state) => state.chatbot.lastFocusModule.name,
     }),
+    isModal() {
+      return !!this.wdata.params
+    },
   },
   watch: {
     sopHistoryEventText(nVal, oVal) {
-      if (nVal.includes('saveExcel')) {
-        this.onSaveExcel()
-      }
+      if (this.isModal) {
+        switch (nVal) {
+          case constants.nia.chatbotCommand.saveExcel.action:
+            this.onSaveExcel()
+            break
+          case constants.nia.chatbotCommand.tabSwitching.action:
+            this.tabSwitching()
+            break
+        }
 
-      if (nVal.includes('tabSwitching')) {
-        this.tabSwitching()
+        this.$store.commit('chatbot/CLEAR_ROUTER_PARAMETER', { name: constants.nia.chatbotKeyMap.sopHistory.parameterKey })
       }
-
-      this.$store.commit('chatbot/CLEAR_ROUTER_PARAMETER', { name: constants.nia.chatbotKeyMap.sopHistory.parameterKey })
     },
-    // lastFocusModuleName(nVal, oVal) {
-    //   if (nVal === constants.nia.chatbotKeyMap.sopHistory.parameterKey) {
-    //     this.popupShowCommand()
-    //   }
-    // },
   },
   created() {
-    this.selectedRow = this.wdata?.params
+    this.selectedRow = this.wdata.params
   },
-  mounted() {
+  async mounted() {
+    const ticketData = await getAlarmFocusTicketData(this.wdata)
+    if (ticketData) {
+      this.selectedRow = ticketData
+      this.$emit('update:wdataParams', ticketData)
+    }
+
     if (this.selectedRow?.ticket_id) {
       this.tapCurrent = 'ticket'
-      // this.sopSearchModel.TICKET_ID = this.selectedRow.ticket_id
       this.sopSearchModel.NODE_NM = this.selectedRow.node_nm
       this.sopSearchModel.ALARMLOC = this.selectedRow.alarmloc
     }
@@ -295,9 +300,9 @@ export default {
       this.setSelectedSyslogOptions()
       this.onLoadSopHistList()
       this.onLoadSyslogHistList()
-
-      this.popupShowCommand()
     })
+
+    this.popupShowCommand()
   },
   methods: {
     selectChange(map) {
@@ -315,14 +320,12 @@ export default {
       this.sopSearchModel.ALARMLOC = 'ALL'
     },
 
-    popupShowCommand() {
-      this.$store.dispatch('chatbot/botPushAnswerMessage', {
-        content: `<b>${constants.nia.chatbotKeyMap.sopHistory.popupName} 화면에서 활용가능한 명령어입니다.</b>
-        
-        1. ${constants.nia.chatbotCommand.saveExcel.label}${getHiddenParameter(getNiaRouterPathByName('NiaMain'), constants.nia.chatbotKeyMap.sopHistory.dialogNm, 'saveExcel')}
-        2. ${constants.nia.chatbotCommand.tabSwitching.label}${getHiddenParameter(getNiaRouterPathByName('NiaMain'), constants.nia.chatbotKeyMap.sopHistory.dialogNm, 'tabSwitching')}
-        `,
-      })
+    async popupShowCommand() {
+      if (!this.isFocusModeButNotFocus) {
+        this.$store.dispatch('chatbot/botPushAnswerMessage', {
+          content: await getWindowActionList(constants.nia.chatbotKeyMap.sopHistory.dialogNm, constants.nia.chatbotKeyMap.sopHistory.popupName),
+        })
+      }
     },
     tabSwitching() {
       if (this.tapCurrent === 'ticket') {
@@ -331,9 +334,12 @@ export default {
         this.tapCurrent = 'ticket'
       }
 
-      this.$store.dispatch('chatbot/botPushAnswerMessage', {
-        content: `${constants.nia.chatbotIcon.success} ${constants.nia.chatbotKeyMap.sopHistory.popupName}에서 성공적으로 ${constants.nia.chatbotCommand.tabSwitching.label}을 했습니다.`,
-      })
+      if (!this.isFocusModeButNotFocus) {
+        this.$store.dispatch('chatbot/botPushAnswerMessage', {
+          content: `${constants.nia.chatbotIcon.success} ${constants.nia.chatbotKeyMap.sopHistory.popupName}에서 성공적으로 ${constants.nia.chatbotCommand.tabSwitching.label}을 했습니다.<br> `,
+          callBack: this.popupShowCommand,
+        })
+      }
     },
 
     async setSelectedOptions() {
@@ -484,14 +490,17 @@ export default {
         this.excelList = res?.result
         setTimeout(() => {
           this.$refs.excelGrid.exportExcel(`SOP 리스트_${this.toStringTime(new Date(), 'YYMMDD')}`)
-          this.closeLoading(target)
-
-          this.$store.dispatch('chatbot/botPushAnswerMessage', {
-            content: `${constants.nia.chatbotIcon.success} ${constants.nia.chatbotKeyMap.sopHistory.popupName}에서 성공적으로 ${constants.nia.chatbotCommand.saveExcel.label}을 했습니다.`,
-          })
+          if (!this.isFocusModeButNotFocus) {
+            this.$store.dispatch('chatbot/botPushAnswerMessage', {
+              content: `${constants.nia.chatbotIcon.success} ${constants.nia.chatbotKeyMap.sopHistory.popupName}에서 성공적으로 ${constants.nia.chatbotCommand.saveExcel.label}을 했습니다.`,
+              callBack: this.popupShowCommand,
+            })
+          }
         }, 10)
       } catch (error) {
         this.error(error)
+      } finally {
+        this.closeLoading(target)
       }
     },
     async autoTest() {

@@ -1,4 +1,4 @@
-import { safeArray, safeString } from '@/utils'
+import { safeString } from '@/utils'
 
 export default {
   channels: {
@@ -75,24 +75,28 @@ export default {
       { code: 'AUTO_FIN', hex: '', text: '자동마감', fnCount: (d) => safeString(d.status).trim() === 'AUTO_FIN', fnFilter: (d) => safeString(d.status).trim() === 'AUTO_FIN' },
     ],
     chatbotCommand: {
-      saveExcel: { label: '엑셀저장', value: 'saveExcel' },
-      tabSwitching: { label: '탭 전환', value: 'tabSwitching' },
-      fin: { label: '마감', value: 'fin' },
-      configTest: { label: '조치', value: 'configTest' },
-      remote: { label: '원격제어', value: 'remote' },
-      dataSnapshot: { label: '데이터스냅샷', value: 'dataSnapshot' },
-      requestForAction: { label: '상황전파', value: 'requestForAction' },
-      edit: { label: '수정', value: 'edit' },
-      mailSend: { label: '메일전송', value: 'mailSend' },
-      search: { label: '검색', value: 'search' },
+      // 아래 command의 action이 DB의 action과 일치해야합니다.
+      saveExcel: { label: '엑셀저장', action: 'saveExcel' },
+      tabSwitching: { label: '탭 전환', action: 'tabSwitching' },
+      fin: { label: '마감처리', action: 'fin' },
+      configTest: { label: '조치처리', action: 'configTest' },
+      remote: { label: '원격제어 실행', action: 'remote' },
+      dataSnapshot: { label: '데이터스냅샷', action: 'dataSnapshot' },
+      requestForAction: { label: '상황전파', action: 'requestForAction' },
+      edit: { label: '수정', action: 'edit' },
+      mailSend: { label: '메일전송', action: 'mailSend' },
+      search: { label: '검색', action: 'search' },
+      refresh: { label: '새로고침', action: 'refresh' },
+      topologyTypeChange: { label: '토폴로지 타입 변경', action: 'topologyTypeChange' },
+      wholeZoom: { label: '줌 전체보기', action: 'wholeZoom' },
+      nodeZoomTest: { label: '노드 줌인 테스트', action: 'nodeZoomTest' },
+      save: { label: '저장', action: 'save' },
+      linkZoomTest: { label: '링크 줌인 테스트', action: 'linkZoomTest' },
+      labelToggle: { label: '라벨 토글', action: 'labelToggle' },
 
-      refresh: { label: '새로고침', value: 'refresh' },
-      topologyTypeChange: { label: '토폴로지 타입 변경', value: 'topologyTypeChange' },
-      wholeZoom: { label: '줌 전체보기', value: 'wholeZoom' },
-      nodeZoomTest: { label: '노드 줌인 테스트', value: 'nodeZoomTest' },
-      save: { label: '저장', value: 'save' },
-      linkZoomTest: { label: '링크 줌인 테스트', value: 'linkZoomTest' },
-      labelToggle: { label: '라벨 토글', value: 'labelToggle' },
+      // [집중 경보]
+      focusModeCheckAlarm: { label: '경보상세 확인', action: 'focusModeCheckAlarm' },
+      failover: { label: '장애조치 목록', action: 'failover' },
     },
     chatbotKeyMap: {
       /*
@@ -102,22 +106,22 @@ export default {
           - 따라서 parameterKey는 router와 일치시킨다. 그리고 만약 router가 없으면 생성한다.
         dialogNm 은
           - dialogOpenMixin에 등록된 dialog의 key이다.
+          - DB의 popup값과 일치해야한다.
       */
-      sopHistory: { popupName: 'SOP이력조회', parameterKey: 'SopHistory', dialogNm: 'sopHistory' },
-      processFin: { popupName: '마감', parameterKey: 'processFin', dialogNm: 'processFin' },
-      configTest: { popupName: '조치', parameterKey: 'configTest', dialogNm: 'configTest' },
-      requestForAction: { popupName: '상황전파', parameterKey: 'requestForAction', dialogNm: 'requestForAction' },
-      aiResponse: { popupName: 'AI 장애대응', parameterKey: 'aiResponse', dialogNm: 'aiResponse' },
-      niaTopology: { popupName: '토폴로지', parameterKey: 'niaTopology', dialogNm: 'niaTopology' },
-      disabilityStatusHistoryManagement: { popupName: '장애현황 및 이력관리', parameterKey: 'DisabilityStatusHistoryManagement', dialogNm: 'disabilityStatusHistoryManagement' },
+      sopHistory: { popupName: 'SOP이력조회 팝업', parameterKey: 'SopHistory', dialogNm: 'sopHistory' },
+      processFin: { popupName: '마감 팝업', parameterKey: 'processFin', dialogNm: 'processFin' },
+      configTest: { popupName: '조치 팝업', parameterKey: 'configTest', dialogNm: 'configTest' },
+      requestForAction: { popupName: '상황전파 팝업', parameterKey: 'requestForAction', dialogNm: 'requestForAction' },
+      aiResponse: { popupName: 'AI 장애대응 팝업', parameterKey: 'aiResponse', dialogNm: 'aiResponse' },
+      niaTopology: { popupName: '토폴로지 팝업', parameterKey: 'niaTopology', dialogNm: 'niaTopology' },
+      disabilityStatusHistoryManagement: { popupName: '장애현황 및 이력관리 팝업', parameterKey: 'DisabilityStatusHistoryManagement', dialogNm: 'disabilityStatusHistoryManagement' },
     },
     chatbotIcon: {
       success: '✅',
       move: '➡️',
       noAction: '➖',
       openPopup: '↗️'
-    }
-
+    },
   },
   ipms: {
     ipInfoOptions: [

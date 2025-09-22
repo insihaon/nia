@@ -161,14 +161,14 @@ export default {
         this.onReceivedIpsdnTicketEvent({
           channelName: 'IPSDN_ALARM',
           socketMessage: {
-            message: '{ "result":null,"properties":null,"ticketId":"1663063","eventType":"TICKET_NEW","ticketType":"...." }',
+            message: '{ "result":null,"properties":null,"ticketId":"1670055","eventType":"TICKET_NEW","ticketType":"...." }',
           },
         })
       } else {
         this.onReceivedIpsdnTicketEvent({
           channelName: 'IPSDN_ALARM',
           socketMessage: {
-            message: '{ "result":null,"properties":null,"ticketId":"1663062","eventType":"TICKET_NEW","ticketType":"...." }',
+            message: '{ "result":null,"properties":null,"ticketId":"1670055","eventType":"TICKET_NEW","ticketType":"...." }',
           },
         })
       }

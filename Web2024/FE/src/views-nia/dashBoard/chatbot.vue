@@ -30,7 +30,7 @@
       <div v-else-if="currentMode === 'alarmFocusMode'" class="chatbot-container">
         <div class="chat-header">
           <h3>어시스턴트(집중경보모드)</h3>
-          [TICKET_ID: {{ alarmFocusMode_TicketData.ticket_id }}] [전표유형: {{ alarmFocusMode_TicketData.ticket_type }}] [장비명: {{ alarmFocusMode_TicketData.node_nm }}] [인터페이스명: {{ alarmFocusMode_TicketData.alarmloc }}]
+          [TICKET_ID: {{ alarmFocusMode_TicketData.ticket_id }}] [전표유형: {{ getTicketTypeHangle(alarmFocusMode_TicketData.ticket_type) }}] [장비명: {{ alarmFocusMode_TicketData.node_nm }}] [인터페이스명: {{ alarmFocusMode_TicketData.alarmloc }}]
         </div>
 
         <div ref="chatMessagesBox" class="chat-messages">
@@ -68,7 +68,7 @@ import { mapState } from 'vuex'
 import axios from 'axios'
 import dialogOpenMixin from '@/mixin/dialogOpenMixin'
 import { searchMessaging, errorMessaging1, errorMessaging2, errorMessaging3 } from '@/store/modules/chatbot.js'
-import { getHiddenParameter, getNiaRouteNameByPath, getNiaRouteTitleByPath } from '@/views-nia/js/commonNiaFunction'
+import { getNiaRouteNameByPath, getNiaRouteTitleByPath, getSpanFormatMessageForDB, getMatchMapOfspanFormatMessage } from '@/views-nia/js/commonNiaFunction'
 import constants from '@/min/constants'
 
 const routeName = 'chatbot'
@@ -98,7 +98,6 @@ export default {
   },
   computed: {
     ...mapState({
-      systemMonitoringMap: (state) => state.systemMonitoring.systemMonitoringMap,
       questionMode_chatMessages: (state) => state.chatbot.questionMode_chatMessages,
       alarmFocusMode_chatMessages: (state) => state.chatbot.alarmFocusMode_chatMessages,
       currentMode: (state) => state.chatbot.currentMode,
@@ -141,6 +140,19 @@ export default {
       this.$store.commit('chatbot/RESET_CHAT')
     },
 
+    getTicketTypeHangle(ticketType) {
+      switch (ticketType) {
+        case 'ATT2':
+          return '이상트래픽'
+        case 'NTT':
+          return '유해트래픽'
+        case 'RT':
+          return '장애'
+        default:
+          return ticketType
+      }
+    },
+
     openPopupDisabilityStatusHistoryManagement() {
       this.fn_openWindow('disabilityStatusHistoryManagement', ticketData)
     },
@@ -172,7 +184,7 @@ export default {
       this.userInput = ''
 
       try {
-        const searchResult = await this.searchElasticSearch(userQuestion)
+        const searchResult = await this.SearchAndAction(userQuestion)
         this.$store.dispatch('chatbot/botPushAnswerMessage', {
           content: searchResult,
         })
@@ -184,7 +196,7 @@ export default {
       }
     },
 
-    getLastAnswer() {
+    getSpanFormatLastAnswer() {
       const botAnswer = this.getCurrentChatMessageArray.filter((m) => {
         if (m.type !== 'bot-answer') return
         if (m.content.includes(searchMessaging)) return
@@ -197,53 +209,7 @@ export default {
       return botAnswer.at(-1)
     },
 
-    findLastAnswerMatchMap(userQuestion) {
-      const lastAnswer = this.getLastAnswer()
-
-      let matchMap = {
-        matchContext: '',
-        path: '',
-        popup: '',
-        action: '',
-      }
-
-      if (/^\d$/.test(userQuestion)) {
-        const pattern = new RegExp(`${userQuestion}\\. (.*?)<span.*?\\[path\\]:(.*?)\\, \\[popup\\]:(.*?)\\, \\[action\\]:(.*?)\\<\\/span\\>`)
-        const match = lastAnswer.content.match(pattern)
-
-        if (match) {
-          matchMap.matchContext = match[1].trim()
-          matchMap.path = match[2].trim()
-          matchMap.popup = match[3].trim()
-          matchMap.action = match[4].trim()
-        }
-      } else if (userQuestion.length > 0) {
-        const pattern = new RegExp(`\\d\\. .*?<span.*?\\[path\\]:.*?\\, \\[popup\\]:.*?\\, \\[action\\]:.*?\\<\\/span\\>`, 'g')
-        const matchs = lastAnswer.content.match(pattern)
-
-        if (matchs) {
-          const fullString = matchs.find((matchText) => {
-            const pattern = new RegExp(`\\d\\. (.*?)<span.*?\\[path\\]:(.*?)\\, \\[popup\\]:(.*?)\\, \\[action\\]:(.*?)\\<\\/span\\>`)
-            const textMatch = matchText.match(pattern)
-            return textMatch && textMatch[1].replace(/\s/g, '').toLowerCase() === userQuestion.replace(/\s/g, '').toLowerCase()
-          })
-
-          if (fullString) {
-            const pattern = new RegExp(`\\d\\. (.*?)<span.*?\\[path\\]:(.*?)\\, \\[popup\\]:(.*?)\\, \\[action\\]:(.*?)\\<\\/span\\>`)
-            const lastMatch = fullString.match(pattern)
-
-            matchMap.matchContext = lastMatch[1].trim()
-            matchMap.path = lastMatch[2].trim()
-            matchMap.popup = lastMatch[3].trim()
-            matchMap.action = lastMatch[4].trim()
-          }
-        }
-      }
-
-      return matchMap
-    },
-
-    runMatchHaviorAndGetText(matchMap) {
+    runSpanAction(matchMap) {
       console.log('[matchMap] >> ' + 'path : ' + matchMap.path + ', popup :' + matchMap.popup + ', action :' + matchMap.action)
 
       let routerParameterTargetName = ''
@@ -252,7 +218,7 @@ export default {
         const routerName = getNiaRouteNameByPath(matchMap.path)
         if (this.$router.history.current.path === matchMap.path) {
           routerParameterTargetName = routerName
-          text = `<br><br>` + `${constants.nia.chatbotIcon.noAction} ${getNiaRouteTitleByPath(matchMap.path)} 입니다.`
+          text = `<br><br>` + `${constants.nia.chatbotIcon.noAction} ${getNiaRouteTitleByPath(matchMap.path)}에서`
         } else {
           this.$router.push({ name: routerName })
           routerParameterTargetName = routerName
@@ -264,10 +230,11 @@ export default {
         const hasWindow = this.windows.find((w) => w.dialogNm === matchMap.popup)
         let newName = ''
         if (hasWindow) {
-          text += `<br>${constants.nia.chatbotIcon.noAction} ${hasWindow.name} 팝업이 이미 활성화되어 있습니다.`
+          text += `<br>${constants.nia.chatbotIcon.noAction} ${hasWindow.name} 팝업을 선택합니다.`
+          this.$store.dispatch('mdi/bringToFrontWindow', hasWindow.id)
           newName = hasWindow.chatbotParameterKeyName
         } else {
-          this.fn_openWindow(matchMap.popup)
+          this.fn_openWindow(matchMap.popup, { isChatbotGenerated: true })
 
           const dialogKey = Object.keys(this.dialogList).find((key) => key === matchMap.popup)
           text += `<br>${constants.nia.chatbotIcon.openPopup} ${this.dialogList[dialogKey].pageTitle} 팝업을 활성화했습니다. `
@@ -283,68 +250,23 @@ export default {
         }, 1000)
       }
 
+      if (text.length === 0) text += '\n\n명령 실행에 실패했습니다.'
+
       return text
     },
 
-    async searchElasticSearch(userQuestion) {
-      const matchMap = this.findLastAnswerMatchMap(userQuestion)
+    async SearchAndAction(userQuestion) {
+      const lastAnswerObj = this.getSpanFormatLastAnswer()
+      const spanFormatLastAnswerContent = lastAnswerObj.content
+      let matchMap = getMatchMapOfspanFormatMessage(userQuestion, spanFormatLastAnswerContent)
       if (matchMap.matchContext?.length > 0) {
-        // prettier-ignore
-        return `<b>` + matchMap.matchContext + ' 명령을 실행했습니다.</b>'
-          + this.runMatchHaviorAndGetText(matchMap)
+        const actionProcessMessage = this.runSpanAction(matchMap)
+        return `<b>` + matchMap.matchContext + ' 명령을 실행했습니다.</b>' + actionProcessMessage
       } else {
-        return await this.getDBAnswer(userQuestion)
-      }
-    },
-
-    async getDBAnswer(userQuestion) {
-      try {
-        const esClient = axios.create({
-          baseURL: 'http://116.89.191.47:8001/es',
-          timeout: 10000,
-          headers: { 'Content-Type': 'application/json' },
-        })
-
-        const response = await esClient.post('/chatbot_index/_search', {
-          query: {
-            multi_match: {
-              query: userQuestion,
-              fields: ['keyword^2'],
-              type: 'best_fields',
-              fuzziness: 'AUTO', // 유사한 데이터도 검색
-            },
-          },
-          size: 5,
-          highlight: {
-            fields: {
-              keyword: {},
-              path: {},
-            },
-          },
-        })
-
-        const data = response.data
-
-        if (data.hits && data.hits.hits && data.hits.hits.length > 0) {
-          const hits = data.hits.hits
-          let resultMessage = '검색 결과를 찾았습니다\n\n'
-
-          hits.forEach((hit, index) => {
-            const source = hit._source
-            const hiddenParameter = getHiddenParameter(source.path, source.popup, source.action)
-
-            resultMessage += `${index + 1}. ${source.name}`
-            resultMessage += hiddenParameter
-            resultMessage += '\n'
-          })
-
-          return resultMessage
-        } else {
-          return errorMessaging2
-        }
-      } catch (error) {
-        console.error('ElasticSearch 검색 오류:', error)
-        throw error
+        const spanFormatMessage = await getSpanFormatMessageForDB(userQuestion)
+        const matchMap = getMatchMapOfspanFormatMessage('1', spanFormatMessage)
+        const actionProcessMessage = this.runSpanAction(matchMap)
+        return `<b>` + matchMap.matchContext + ' 명령을 실행했습니다.</b>' + actionProcessMessage
       }
     },
 
