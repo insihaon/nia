@@ -112,7 +112,7 @@ import data_nia_ip_3 from '@/views-nia/dashBoard/niaTopologyConfig/json/data_nia
 import niaTopologyTemplalate from './niaTopologyConfig/niaTopologyTemplate.vue'
 import { mapState } from 'vuex'
 import constants from '@/min/constants'
-import { getHiddenParameter, getNiaRouterPathByName } from '@/views-nia/js/commonNiaFunction'
+import { getAlarmFocusTicketData, getWindowActionList } from '@/views-nia/js/commonNiaFunction'
 
 import niaObserverMixin from '@/mixin/niaObserverMixin'
 
@@ -187,34 +187,53 @@ export default {
       return this.appOptions.debug
     },
     ...mapState({
-      topologyEventText: (state) => state.chatbot.routerParameter[constants.nia.chatbotKeyMap.niaTopology.parameterKey],
+      topologyEventText: (state) => state.chatbot.routerParameter[this.chatbotKeyMap.niaTopology.parameterKey],
     }),
+    isModal() {
+      return !!this.wdata.params
+    },
+
+    chatbotCommand() {
+      return constants.nia.chatbotCommand
+    },
+
+    chatbotKeyMap() {
+      return constants.nia.chatbotKeyMap
+    },
   },
   watch: {
     topologyEventText(nVal, oVal) {
-      if (nVal.includes('refresh')) {
-        this.broadcastMenuEvent('reload')
-      }
-      if (nVal.includes('topologyTypeChange')) {
-        this.broadcastMenuEvent('changeType')
-      }
-      if (nVal.includes('wholeZoom')) {
-        this.broadcastMenuEvent('resetZoom')
-      }
-      if (nVal.includes('nodeZoomTest')) {
-        this.broadcastMenuEvent('nodeZoomTest')
-      }
-      if (nVal.includes('save')) {
-        this.broadcastMenuEvent('updateTopology')
-      }
-      if (nVal.includes('linkZoomTest')) {
-        this.broadcastMenuEvent('linkZoomTest')
-      }
-      if (nVal.includes('labelToggle')) {
-        this.broadcastMenuEvent('toggleLabel')
-      }
+      if (this.isModal) {
+        switch (nVal) {
+          case this.chatbotCommand.refresh.action:
+            this.broadcastMenuEvent('reload')
+            break
+          case this.chatbotCommand.topologyTypeChange.action:
+            this.broadcastMenuEvent('changeType')
+            break
+          case this.chatbotCommand.wholeZoom.action:
+            this.broadcastMenuEvent('resetZoom')
+            break
+          case this.chatbotCommand.nodeZoomTest.action:
+            this.broadcastMenuEvent('nodeZoomTest')
+            break
+          case this.chatbotCommand.save.action:
+            this.broadcastMenuEvent('updateTopology')
+            break
+          case this.chatbotCommand.linkZoomTest.action:
+            this.broadcastMenuEvent('linkZoomTest')
+            break
+          case this.chatbotCommand.labelToggle.action:
+            this.broadcastMenuEvent('toggleLabel')
+            break
+        }
 
-      this.$store.commit('chatbot/CLEAR_ROUTER_PARAMETER', { name: constants.nia.chatbotKeyMap.niaTopology.parameterKey })
+        if (!nVal) {
+          this.popupShowCommand()
+        }
+
+        this.$store.commit('chatbot/CLEAR_ROUTER_PARAMETER', { name: this.chatbotKeyMap.niaTopology.parameterKey })
+      }
     },
   },
   created() {
@@ -224,7 +243,14 @@ export default {
     const async = false
     this.addScript(['./extlib/map2d/lib/index_nia_bundle.js'], async)
   },
-  mounted() {
+  async mounted() {
+    const ticketData = await getAlarmFocusTicketData(this.wdata)
+    if (ticketData) {
+      this.paramTickets = [ticketData]
+      this.paramShowFullTopology = false
+      this.$emit('update:wdataParams', ticketData)
+    }
+
     this.topologyConstruct()
     this.initMap()
 
@@ -234,20 +260,12 @@ export default {
     }, 500)
   },
   methods: {
-    popupShowCommand() {
-      this.$store.dispatch('chatbot/botPushAnswerMessage', {
-        content: `<b>${constants.nia.chatbotKeyMap.niaTopology.popupName} 화면에서 활용가능한 명령어입니다.</b>
-        
-        1. ${constants.nia.chatbotCommand.refresh.label}${getHiddenParameter(getNiaRouterPathByName('NiaMain'), constants.nia.chatbotKeyMap.niaTopology.dialogNm, 'refresh')}
-        2. ${constants.nia.chatbotCommand.topologyTypeChange.label}${getHiddenParameter(getNiaRouterPathByName('NiaMain'), constants.nia.chatbotKeyMap.niaTopology.dialogNm, 'topologyTypeChange')}
-        3. ${constants.nia.chatbotCommand.wholeZoom.label}${getHiddenParameter(getNiaRouterPathByName('NiaMain'), constants.nia.chatbotKeyMap.niaTopology.dialogNm, 'wholeZoom')}
-        4. ${constants.nia.chatbotCommand.nodeZoomTest.label}${getHiddenParameter(getNiaRouterPathByName('NiaMain'), constants.nia.chatbotKeyMap.niaTopology.dialogNm, 'nodeZoomTest')}
-        5. ${constants.nia.chatbotCommand.save.label}${getHiddenParameter(getNiaRouterPathByName('NiaMain'), constants.nia.chatbotKeyMap.niaTopology.dialogNm, 'save')}
-        6. ${constants.nia.chatbotCommand.linkZoomTest.label}${getHiddenParameter(getNiaRouterPathByName('NiaMain'), constants.nia.chatbotKeyMap.niaTopology.dialogNm, 'linkZoomTest')}
-        7. ${constants.nia.chatbotCommand.labelToggle.label}${getHiddenParameter(getNiaRouterPathByName('NiaMain'), constants.nia.chatbotKeyMap.niaTopology.dialogNm, 'labelToggle')}
-        `,
-        // 1. ${constants.nia.chatbotCommand.saveExcel.label}${getHiddenParameter(getNiaRouterPathByName('NiaMain'), constants.nia.chatbotKeyMap.sopHistory.dialogNm, 'saveExcel')}
-      })
+    async popupShowCommand() {
+      if (!this.isFocusModeButNotFocus) {
+        this.$store.dispatch('chatbot/botPushAnswerMessage', {
+          content: await getWindowActionList(constants.nia.chatbotKeyMap.niaTopology.dialogNm, constants.nia.chatbotKeyMap.niaTopology.popupName),
+        })
+      }
     },
     topologyConstruct() {
       const defaultMapFile = jsons[this.topologyType - 1] || 'data_nia_ip_3.json'

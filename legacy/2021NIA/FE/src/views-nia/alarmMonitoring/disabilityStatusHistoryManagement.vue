@@ -23,7 +23,7 @@ import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
 import { apiAlarmCurAndHistList, apiSelectNodeList, apiSelectLinkList } from '@/api/nia'
 import { mapState } from 'vuex'
 import constants from '@/min/constants'
-import { getHiddenParameter, getNiaRouterPathByName } from '@/views-nia/js/commonNiaFunction'
+import { getAlarmFocusTicketData, getWindowActionList } from '@/views-nia/js/commonNiaFunction'
 
 import niaObserverMixin from '@/mixin/niaObserverMixin'
 
@@ -35,6 +35,15 @@ export default {
   components: { CompInquiryPannel },
   extends: Base,
   mixins: [niaObserverMixin],
+  props: {
+    wdata: {
+      type: Object,
+      default() {
+        return {}
+      },
+    },
+  },
+
   data() {
     return {
       name: routeName,
@@ -135,22 +144,42 @@ export default {
     ...mapState({
       disabilityStatusHistoryManagementEventText: (state) => state.chatbot.routerParameter[constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.parameterKey],
     }),
+    isModal() {
+      return !!this.wdata.params
+    },
+
+    chatbotCommand() {
+      return constants.nia.chatbotCommand
+    },
+    chatbotKeyMap() {
+      return constants.nia.chatbotKeyMap
+    },
   },
   watch: {
     disabilityStatusHistoryManagementEventText(nVal, oVal) {
-      if (nVal.includes('search')) {
-        this.onLoadAlarmCurHistList()
-      }
+      if (this.isModal) {
+        if (nVal === constants.nia.chatbotCommand.search.action) {
+          this.onLoadAlarmCurHistList()
+        }
+        if (nVal === constants.nia.chatbotCommand.refresh.action) {
+          this.$refs.inquiry.handleSearchClear()
+        }
 
-      this.$store.commit('chatbot/CLEAR_ROUTER_PARAMETER', { name: constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.parameterKey })
+        this.$store.commit('chatbot/CLEAR_ROUTER_PARAMETER', { name: constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.parameterKey })
+      }
     },
   },
-  mounted() {
-    this.onLoadAlarmCurHistList()
+  async mounted() {
+    const ticketData = await getAlarmFocusTicketData(this.wdata)
+    if (ticketData) {
+      this.selectedRow = ticketData
+      this.$emit('update:wdataParams', ticketData)
+    }
 
     this.$nextTick(() => {
-      this.popupShowCommand()
       this.setSelectedOptions()
+      this.onLoadAlarmCurHistList()
+      this.popupShowCommand()
     })
   },
   methods: {
@@ -175,25 +204,24 @@ export default {
           return { label: v.node_id, value: v.node_id }
         })
         this.equipmentOptionList.unshift({ label: '전체', value: 'ALL' })
-        this.searchModel.NODE_NM = 'ALL'
+        this.searchModel.NODE_NM = this.searchModel.NODE_NM || 'ALL'
 
         const ifRes = await apiSelectLinkList()
         this.interfaceOptionList = ifRes?.result.map((v) => {
           return { label: v.src_if_id, value: v.src_if_id }
         })
         this.interfaceOptionList.unshift({ label: '전체', value: 'ALL' })
-        this.searchModel.ALARMLOC = 'ALL'
+        this.searchModel.ALARMLOC = this.searchModel.ALARMLOC || 'ALL'
       } catch (error) {
         this.error(error)
       }
     },
-    popupShowCommand() {
-      this.$store.dispatch('chatbot/botPushAnswerMessage', {
-        content: `<b>${constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.popupName} 화면에서 활용가능한 명령어입니다.</b>
-
-        1. ${constants.nia.chatbotCommand.search.label}${getHiddenParameter(getNiaRouterPathByName('NiaMain'), constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.dialogNm, 'search')}
-        `,
-      })
+    async popupShowCommand() {
+      if (!this.isFocusModeButNotFocus) {
+        this.$store.dispatch('chatbot/botPushAnswerMessage', {
+          content: await getWindowActionList(constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.dialogNm, constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.popupName),
+        })
+      }
     },
     onChangeSort(param) {
       this.onLoadAlarmCurHistList()

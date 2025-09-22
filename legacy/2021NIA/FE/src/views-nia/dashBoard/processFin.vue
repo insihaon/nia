@@ -57,7 +57,7 @@ import _ from 'lodash'
 import { apiSelectSopCode, apiSendMQ } from '@/api/nia'
 import ModalSopMng from '@/views-nia/modal/ModalSopMng'
 import constants from '@/min/constants'
-import { getHiddenParameter, getNiaRouterPathByName } from '@/views-nia/js/commonNiaFunction'
+import { getAlarmFocusTicketData, getWindowActionList } from '@/views-nia/js/commonNiaFunction'
 import { mapState } from 'vuex'
 import niaObserverMixin from '@/mixin/niaObserverMixin'
 
@@ -116,23 +116,32 @@ export default {
     ...mapState({
       processFinEventText: (state) => state.chatbot.routerParameter[constants.nia.chatbotKeyMap.processFin.parameterKey],
     }),
-    // disabledFin() {
-    //   return this.selectedRow?.status === 'FIN' || this.selectedRow?.status === 'AUTO_FIN'
-    // },
+    isModal() {
+      return !!this.wdata.params
+    },
   },
   watch: {
     processFinEventText(nVal, oVal) {
-      if (nVal.includes('fin')) {
-        this.onClickFin()
+      if (this.isModal) {
+        switch (nVal) {
+          case constants.nia.chatbotCommand.fin.action:
+            this.onClickFin()
+            break
+        }
+        this.$store.commit('chatbot/CLEAR_ROUTER_PARAMETER', { name: constants.nia.chatbotKeyMap.processFin.parameterKey })
       }
-      this.$store.commit('chatbot/CLEAR_ROUTER_PARAMETER', { name: constants.nia.chatbotKeyMap.processFin.parameterKey })
     },
   },
   created() {
     this.selectedRow = this.wdata?.params
-    this.setAiFeedBack()
   },
-  mounted() {
+  async mounted() {
+    const ticketData = await getAlarmFocusTicketData(this.wdata)
+    if (ticketData) {
+      this.selectedRow = ticketData
+      this.$emit('update:wdataParams', ticketData)
+    }
+    this.setAiFeedBack()
     this.onLoadSopCodeList()
 
     this.$nextTick(() => {
@@ -140,13 +149,12 @@ export default {
     })
   },
   methods: {
-    popupShowCommand() {
-      this.$store.dispatch('chatbot/botPushAnswerMessage', {
-        content: `<b>${constants.nia.chatbotKeyMap.processFin.popupName}화면에서 활용가능한 명령어입니다.</b>
-
-        1. ${constants.nia.chatbotCommand.fin.label}${getHiddenParameter(getNiaRouterPathByName('NiaMain'), constants.nia.chatbotKeyMap.processFin.dialogNm, 'fin')}
-        `,
-      })
+    async popupShowCommand() {
+      if (!this.isFocusModeButNotFocus) {
+        this.$store.dispatch('chatbot/botPushAnswerMessage', {
+          content: await getWindowActionList(constants.nia.chatbotKeyMap.processFin.dialogNm, constants.nia.chatbotKeyMap.processFin.popupName),
+        })
+      }
     },
     setAiFeedBack() {
       if (this.selectedRow) {
@@ -194,9 +202,12 @@ export default {
               customClass: 'nia-message-box',
             })
 
-            this.$store.dispatch('chatbot/botPushAnswerMessage', {
-              content: `${constants.nia.chatbotIcon.success} ${constants.nia.chatbotKeyMap.processFin.popupName}에서 성공적으로 ${constants.nia.chatbotCommand.fin.label}했습니다.`,
-            })
+            if (!this.isFocusModeButNotFocus) {
+              this.$store.dispatch('chatbot/botPushAnswerMessage', {
+                content: `${constants.nia.chatbotIcon.success} ${constants.nia.chatbotKeyMap.processFin.popupName}에서 성공적으로 ${constants.nia.chatbotCommand.fin.label}했습니다.`,
+                callBack: this.popupShowCommand,
+              })
+            }
           }
         } catch (error) {
           this.$alert('저장에 실패하였습니다.', '알림', {

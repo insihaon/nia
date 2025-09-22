@@ -1,36 +1,68 @@
 <template>
   <div :class="{ [name]: true }" style="height: 100%">
     <div class="d-flex flex-column h-full">
-      <el-card shadow="never" style="flex: 1" :body-style="{ padding: '10px', height: 'calc(100% - 55px)' }">
-        <div slot="header">
-          <span><i class="el-icon-document" /> 작업 요청 구간</span>
-        </div>
-        <el-row class="d-flex flex-column justify-center h-100">
-          <div class="node-section d-flex justify-center">
-            <img src="@/assets/images/nia/node/switch.png" />
-            <div class="blinking mt-8" />
-            <img src="@/assets/images/nia/node/switch.png" />
-          </div>
-          <div class="node-info d-flex justify-evenly">
-            <div style="width: 390px">
-              <div style="float: left">
-                <div>{{ trafficInfo.root_cause_sysnamea }}</div>
-                <div>
-                  <span v-if="isShowChartTicketType">({{ trafficInfo.root_cause_porta }})</span>
-                </div>
-              </div>
-              <div style="float: right">
-                <div>{{ !isShowChartTicketType ? trafficInfo.root_cause_sysnamea : trafficInfo.root_cause_sysnamez }}</div>
-                <div>
-                  <span v-if="isShowChartTicketType">({{ trafficInfo.root_cause_portz }})</span>
-                </div>
-              </div>
+      <!-- Layer 1: 요청구간, 데이터 -->
+      <el-row style="overflow: hidden" :style="{ flex: isShowChartTicketType ? '0 1 50%' : '1' }" :gutter="10">
+        <el-col :span="12" style="height: 100%">
+          <el-card shadow="never" style="height: 100%" :body-style="{ padding: '10px', height: '100%' }">
+            <div slot="header">
+              <span><i class="el-icon-document" /> 작업 요청 구간</span>
             </div>
-          </div>
-        </el-row>
-      </el-card>
+            <el-row class="d-flex flex-column justify-center h-100">
+              <div class="node-section d-flex justify-center">
+                <img src="@/assets/images/nia/node/switch.png" />
+                <div class="blinking mt-8" />
+                <img src="@/assets/images/nia/node/switch.png" />
+              </div>
+              <div class="node-info d-flex justify-evenly">
+                <div style="width: 390px">
+                  <div style="float: left">
+                    <div>{{ trafficInfo.root_cause_sysnamea }}</div>
+                    <div>
+                      <span v-if="isShowChartTicketType">({{ trafficInfo.root_cause_porta }})</span>
+                    </div>
+                  </div>
+                  <div style="float: right">
+                    <div>{{ !isShowChartTicketType ? trafficInfo.root_cause_sysnamea : trafficInfo.root_cause_sysnamez }}</div>
+                    <div>
+                      <span v-if="isShowChartTicketType">({{ trafficInfo.root_cause_portz }})</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </el-row>
+          </el-card>
+        </el-col>
+        <el-col :span="12" style="height: 100%">
+          <el-card shadow="never" style="height: 100%" :body-style="{ padding: '10px', height: '100%' }">
+            <div slot="header">
+              <span><i class="el-icon-document" />티켓 정보</span>
+            </div>
+            <ul style="text-align: left; overflow: auto; height: calc(100% - 40px)">
+              <li>알람번호 : {{ selectedRow.alarmno }}</li>
+              <li>장애 발생시간 : {{ selectedRow.alarmtime }}</li>
+              <li>티켓ID : {{ selectedRow.ticket_id }}</li>
+              <li>상태 : {{ selectedRow.status }}</li>
+              <li>티켓타입 : {{ selectedRow.ticket_type }}</li>
+              <li>장애유형 : {{ selectedRow.fault_type }}</li>
+              <li>장애정보 : {{ selectedRow.alarmmsg }}</li>
+              <li>알람 원본메시지 : {{ selectedRow.alarmmsg_original }}</li>
+              <li>장애내용 : {{ selectedRow.ticket_rca_result_code }}</li>
+              <li>장애원인 : {{ selectedRow.ticket_rca_result_dtl_code }}</li>
+              <li>장비ID : {{ selectedRow.node_num }}</li>
+              <li>장비명 : {{ selectedRow.node_nm }}</li>
+              <li>인터페이스명 : {{ selectedRow.alarmloc }}</li>
+              <li>근원알람개수 : {{ selectedRow.total_related_alarm_cnt }}</li>
+              <li>IP주소 : {{ selectedRow.ip_addr }}</li>
+              <li>AI결과피드백 : {{ selectedRow.ai_accuracy }}</li>
+            </ul>
+          </el-card>
+        </el-col>
+      </el-row>
 
-      <el-row v-if="isShowChartTicketType" :style="{ flex: isShowChartTicketType ? '0 0 45%' : '0 0 0%' }" :gutter="10" class="mt-2">
+      <!-- Layer 2: chart 영역  -->
+      <!-- class="mt-2" -->
+      <el-row v-if="isShowChartTicketType" :style="{ flex: isShowChartTicketType ? '1 1 calc(50% - 35px)' : '0 0 0%' }" :gutter="10" class="mt-2">
         <el-col :span="12" style="height: 100%">
           <el-card shadow="never" style="height: 100%" :body-style="{ padding: '5px', height: 'calc(100% - 30px)' }">
             <div slot="header">
@@ -56,6 +88,7 @@
         </el-col>
       </el-row>
 
+      <!-- Layer 3: 버튼 영역 -->
       <el-row style="flex: 0 0 35px">
         <el-col align="right" class="mt-2">
           <el-button size="mini" type="primary" icon="el-icon-camera" @click.native="fn_openWindow('snapShot', _merge(selectedRow, trafficInfo))"> 데이터 스냅샷 </el-button>
@@ -80,10 +113,9 @@ import { apiSelfProcessTrafficInfo, apiATTTrafficChart, apiNTTTrafficChart } fro
 import { formatterTime } from '@/views-nia/js/commonFormat'
 import CompChart from '@/components/chart/CompChart.vue'
 import dialogOpenMixin from '@/mixin/dialogOpenMixin'
-
 import { mapState } from 'vuex'
 import constants from '@/min/constants'
-import { getHiddenParameter, getNiaRouterPathByName } from '@/views-nia/js/commonNiaFunction'
+import { getAlarmFocusTicketData, getWindowActionList } from '@/views-nia/js/commonNiaFunction'
 
 import niaObserverMixin from '@/mixin/niaObserverMixin'
 
@@ -321,23 +353,30 @@ export default {
     ...mapState({
       aiResponseEventText: (state) => state.chatbot.routerParameter[constants.nia.chatbotKeyMap.aiResponse.parameterKey],
     }),
+    isModal() {
+      return !!this.wdata.params
+    },
   },
   watch: {
     aiResponseEventText(nVal, oVal) {
-      if (nVal.includes('dataSnapshot')) {
-        this.fn_openWindow('snapShot', this._merge(this.selectedRow, this.trafficInfo))
-      }
-      if (nVal.includes('requestForAction')) {
-        this.fn_openWindow('requestForAction', this._merge(this.selectedRow, this.trafficInfo))
-      }
-      if (nVal.includes('configTest')) {
-        this.fn_openWindow('configTest', this._merge(this.selectedRow, this.trafficInfo))
-      }
-      if (nVal.includes('fin')) {
-        this.fn_openWindow('processFin', this._merge(this.selectedRow, this.trafficInfo))
-      }
+      if (this.isModal) {
+        switch (nVal) {
+          case constants.nia.chatbotCommand.dataSnapshot.action:
+            this.fn_openWindow('snapShot', this._merge(this.selectedRow, this.trafficInfo))
+            break
+          case constants.nia.chatbotCommand.requestForAction.action:
+            this.fn_openWindow('requestForAction', this._merge(this.selectedRow, this.trafficInfo))
+            break
+          case constants.nia.chatbotCommand.configTest.action:
+            this.fn_openWindow('configTest', this._merge(this.selectedRow, this.trafficInfo))
+            break
+          case constants.nia.chatbotCommand.fin.action:
+            this.fn_openWindow('processFin', this._merge(this.selectedRow, this.trafficInfo))
+            break
+        }
 
-      this.$store.commit('chatbot/CLEAR_ROUTER_PARAMETER', { name: constants.nia.chatbotKeyMap.aiResponse.parameterKey })
+        this.$store.commit('chatbot/CLEAR_ROUTER_PARAMETER', { name: constants.nia.chatbotKeyMap.aiResponse.parameterKey })
+      }
     },
   },
 
@@ -350,7 +389,13 @@ export default {
       root_cause_portz: '',
     }
   },
-  mounted() {
+  async mounted() {
+    const ticketData = await getAlarmFocusTicketData(this.wdata)
+    if (ticketData) {
+      this.selectedRow = ticketData
+      this.$emit('update:wdataParams', ticketData)
+    }
+
     if (this.isShowChartTicketType) {
       if (!this.wdata?.params['trafficInfo']) {
         this.onLoadTrafficInfo()
@@ -364,7 +409,7 @@ export default {
 
       this.$store.dispatch('mdi/setWindowOptions', {
         id: this.wdata.id,
-        options: { height: '300', width: '500' },
+        options: { height: '400', width: '600' },
       })
     }
 
@@ -373,16 +418,12 @@ export default {
     })
   },
   methods: {
-    popupShowCommand() {
-      this.$store.dispatch('chatbot/botPushAnswerMessage', {
-        content: `<b>${constants.nia.chatbotKeyMap.aiResponse.popupName} 화면에서 활용가능한 명령어입니다.</b>
-
-        1. ${constants.nia.chatbotCommand.dataSnapshot.label}${getHiddenParameter(getNiaRouterPathByName('NiaMain'), constants.nia.chatbotKeyMap.aiResponse.dialogNm, 'dataSnapshot')}
-        2. ${constants.nia.chatbotCommand.requestForAction.label}${getHiddenParameter(getNiaRouterPathByName('NiaMain'), constants.nia.chatbotKeyMap.aiResponse.dialogNm, 'requestForAction')}
-        3. ${constants.nia.chatbotCommand.configTest.label}${getHiddenParameter(getNiaRouterPathByName('NiaMain'), constants.nia.chatbotKeyMap.aiResponse.dialogNm, 'configTest')}
-        4. ${constants.nia.chatbotCommand.fin.label}${getHiddenParameter(getNiaRouterPathByName('NiaMain'), constants.nia.chatbotKeyMap.aiResponse.dialogNm, 'fin')}
-        `,
-      })
+    async popupShowCommand() {
+      if (!this.isFocusModeButNotFocus) {
+        this.$store.dispatch('chatbot/botPushAnswerMessage', {
+          content: await getWindowActionList(constants.nia.chatbotKeyMap.aiResponse.dialogNm, constants.nia.chatbotKeyMap.aiResponse.popupName),
+        })
+      }
     },
     isAttFtt(ticket_type) {
       return ['ATT2', 'FTT'].includes(ticket_type)
