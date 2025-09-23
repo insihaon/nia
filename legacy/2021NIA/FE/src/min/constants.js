@@ -124,7 +124,8 @@ export default {
       success: '✅',
       move: '➡️',
       noAction: '➖',
-      openPopup: '↗️'
+      openPopup: '↗️',
+      popupWarning: '❌'
     },
   },
   ipms: {

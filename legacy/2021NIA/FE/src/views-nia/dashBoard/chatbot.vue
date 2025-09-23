@@ -212,6 +212,10 @@ export default {
     runSpanAction(matchMap) {
       console.log('[matchMap] >> ' + 'path : ' + matchMap.path + ', popup :' + matchMap.popup + ', action :' + matchMap.action)
 
+      if (matchMap.matchContext.includes(constants.nia.chatbotIcon.popupWarning)) {
+        return '<br><br>질문모드에서는 팝업 기능이 제한됩니다. 집중경보모드에서 사용해주세요'
+      }
+
       let routerParameterTargetName = ''
       let text = ''
       if (matchMap.path.length > 0) {
@@ -264,9 +268,13 @@ export default {
         return `<b>` + matchMap.matchContext + ' 명령을 실행했습니다.</b>' + actionProcessMessage
       } else {
         const spanFormatMessage = await getSpanFormatMessageForDB(userQuestion)
-        const matchMap = getMatchMapOfspanFormatMessage('1', spanFormatMessage)
-        const actionProcessMessage = this.runSpanAction(matchMap)
-        return `<b>` + matchMap.matchContext + ' 명령을 실행했습니다.</b>' + actionProcessMessage
+        if (this.currentMode === 'questionMode') {
+          return spanFormatMessage
+        } else {
+          const matchMap = getMatchMapOfspanFormatMessage('1', spanFormatMessage)
+          const actionProcessMessage = this.runSpanAction(matchMap)
+          return `<b>` + matchMap.matchContext + ' 명령을 실행했습니다.</b>' + actionProcessMessage
+        }
       }
     },
 

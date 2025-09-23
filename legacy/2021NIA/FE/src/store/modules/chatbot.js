@@ -36,14 +36,16 @@ function getCurrentTime() {
 
 const chatbotCommand = constants.nia.chatbotCommand
 
-const defaultAlarmFocusModeFirstChatMessages = {
-    type: 'bot-answer',
-    content: `<b>집중경보 모드가 실행되었습니다.</b><br>
+function getDefaultAlarmFocusModeFirstChatMessages() {
+    return {
+        type: 'bot-answer',
+        content: `<b>집중경보 모드가 실행되었습니다.</b><br>
     ` +
-        showNumberText(1, `${chatbotCommand.focusModeCheckAlarm.label}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', chatbotCommand.focusModeCheckAlarm.action)}<br>`) +
-        showNumberText(2, `${chatbotCommand.failover.label}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', chatbotCommand.failover.action)}`),
-    time: getCurrentTime(),
-    ticketData: {}
+            showNumberText(1, `${chatbotCommand.focusModeCheckAlarm.label}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', chatbotCommand.focusModeCheckAlarm.action)}<br>`) +
+            showNumberText(2, `${chatbotCommand.failover.label}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', chatbotCommand.failover.action)}`),
+        time: getCurrentTime(),
+        ticketData: {}
+    }
 }
 
 const defaultQuestionModeChatMessages = {
@@ -58,7 +60,7 @@ const state = {
     currentMode: 'questionMode',
     modes: ['questionMode', 'alarmFocusMode'],
     questionMode_chatMessages: [_.cloneDeep(defaultQuestionModeChatMessages)],
-    alarmFocusMode_chatMessages: [_.cloneDeep(defaultAlarmFocusModeFirstChatMessages)],
+    alarmFocusMode_chatMessages: [getDefaultAlarmFocusModeFirstChatMessages()],
 }
 
 const mutations = {
@@ -71,7 +73,7 @@ const mutations = {
     },
 
     SWITCH_ROUTER_PARAMETER(state, { name, parameter }) {
-        if (parameter && parameter.length > 0) {
+        if (parameter && (parameter.length > 0 || Object.keys(parameter).length > 0)) {
             if (!Object.prototype.hasOwnProperty.call(state.routerParameter, name)) {
                 throw new Error('parameter가 존재함에도 state가 정의되지 않았습니다.')
             }
@@ -134,8 +136,7 @@ const mutations = {
     SET_ALARM_FUCUS_CHAT_TICKET_DATA(state, { ticketData }) {
         // 초기화
         state.alarmFocusMode_chatMessages.length = 0
-        state.alarmFocusMode_chatMessages.push(defaultAlarmFocusModeFirstChatMessages)
-
+        state.alarmFocusMode_chatMessages.push(getDefaultAlarmFocusModeFirstChatMessages())
         state.alarmFocusMode_chatMessages[0].ticketData = ticketData
     },
 
@@ -147,7 +148,7 @@ const mutations = {
                 break
             case 'alarmFocusMode':
                 state.alarmFocusMode_chatMessages.length = 0
-                state.alarmFocusMode_chatMessages.push(_.cloneDeep(defaultAlarmFocusModeFirstChatMessages))
+                state.alarmFocusMode_chatMessages.push((getDefaultAlarmFocusModeFirstChatMessages()))
                 break
         }
     }

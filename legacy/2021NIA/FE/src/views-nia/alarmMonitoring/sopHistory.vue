@@ -321,7 +321,7 @@ export default {
     },
 
     async popupShowCommand() {
-      if (!this.isFocusModeButNotFocus) {
+      if (this.isModal && !this.isFocusModeButNotFocus) {
         this.$store.dispatch('chatbot/botPushAnswerMessage', {
           content: await getWindowActionList(constants.nia.chatbotKeyMap.sopHistory.dialogNm, constants.nia.chatbotKeyMap.sopHistory.popupName),
         })

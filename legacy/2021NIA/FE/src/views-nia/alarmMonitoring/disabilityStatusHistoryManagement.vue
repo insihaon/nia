@@ -217,7 +217,7 @@ export default {
       }
     },
     async popupShowCommand() {
-      if (!this.isFocusModeButNotFocus) {
+      if (this.isModal && !this.isFocusModeButNotFocus) {
         this.$store.dispatch('chatbot/botPushAnswerMessage', {
           content: await getWindowActionList(constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.dialogNm, constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.popupName),
         })
