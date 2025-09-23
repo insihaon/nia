@@ -5,7 +5,6 @@ import store from '@/store'
 import axios from 'axios'
 import { searchMessaging, errorMessaging1, errorMessaging2, errorMessaging3 } from '@/store/modules/chatbot.js'
 import constants from '@/min/constants'
-import dialogOpenMixin from '@/mixin/dialogOpenMixin'
 
 export function getInvisibleSpanParameter(routerPath, popupDialogName, action) {
     return `<span style="display:none">[path]:${routerPath}, [popup]:${popupDialogName}, [action]:${action}</span>`
@@ -100,10 +99,11 @@ export async function getAlarmFocusTicketData(wdata) {
 }
 
 function isCurrentRouterDashboard() {
-    return router.history.current.path === '/dashBoard/index'
+    return router.history.current.name === 'NiaMain'
 }
 
 function getFilter() {
+    console.log('filterRouter : ', router)
     if (isCurrentRouterDashboard()) {
         return {
             bool: { must_not: [{ term: { 'popup.keyword': '' } }] }
@@ -145,7 +145,15 @@ export async function getSpanFormatMessageForDB(userQuestion) {
             }
         })
 
-        return getSpanFormatMessage(response, '검색 결과를 찾았습니다\n\n')
+        console.log('score Log : ', response.data)
+
+        const spanMessage = getSpanFormatMessage(response, '검색 결과를 찾았습니다\n\n', { showScore: true })
+
+        store.dispatch('chatbot/botPushAnswerMessage', {
+            content: spanMessage,
+        })
+
+        return spanMessage
     } catch (error) {
         console.error('ElasticSearch 검색 오류:', error)
         throw error
@@ -174,7 +182,7 @@ export async function getWindowActionList(dialogNm, popupName) {
             }
         })
 
-        return getSpanFormatMessage(response, `<b>${popupName} 화면에서 활용가능한 명령어입니다.</b>\n\n`)
+        return getSpanFormatMessage(response, `<b>${popupName} 화면에서 활용가능한 명령어입니다.</b>\n\n`, { showScore: false })
     } catch (error) {
         console.error('ElasticSearch 검색 오류:', error)
         throw error
@@ -185,17 +193,25 @@ export function showNumberText(number, text) {
     return number + '. ' + text
 }
 
-function getSpanFormatMessage(response, messagePrefix) {
+function getSpanFormatMessage(response, messagePrefix, customObj = {}) {
     const data = response.data
     if (data.hits && data.hits.hits && data.hits.hits.length > 0) {
         const hits = data.hits.hits
         let resultMessage = messagePrefix
 
+        const currentMode = store.state.chatbot.currentMode
         hits.forEach((hit, index) => {
             const source = hit._source
             const hiddenParameter = getInvisibleSpanParameter(source.path, source.popup, source.action)
 
             resultMessage += `${index + 1}. ${source.name}`
+            if (customObj.showScore) {
+                resultMessage += ` <b>(${Number(hit._score).toFixed(1)}점)</b>`
+            }
+
+            if (currentMode === 'questionMode' && source.popup.length > 0 && source.action.length === 0) {
+                resultMessage += `${constants.nia.chatbotIcon.popupWarning}`
+            }
             resultMessage += hiddenParameter
             resultMessage += '\n'
         })
