@@ -95,8 +95,7 @@ export default {
       labelToggle: { label: '라벨 토글', action: 'labelToggle' },
 
       // [집중 경보]
-      focusModeCheckAlarm: { label: '경보상세 확인', action: 'focusModeCheckAlarm' },
-      failover: { label: '장애조치 목록', action: 'failover' },
+      focusModeCheckAlarm: { label: '티켓상세확인', action: 'focusModeCheckAlarm' },
 
       // 대시보드
       onReceivedIpsdnTicketEvent: { label: 'IP-SDN 경보 발생', action: 'onReceivedIpsdnTicketEvent' },
@@ -112,12 +111,12 @@ export default {
           - dialogOpenMixin에 등록된 dialog의 key이다.
           - DB의 popup값과 일치해야한다.
       */
-      sopHistory: { popupName: 'SOP이력조회 팝업', parameterKey: 'SopHistory', dialogNm: 'sopHistory' },
-      processFin: { popupName: '마감 팝업', parameterKey: 'processFin', dialogNm: 'processFin' },
-      configTest: { popupName: '조치 팝업', parameterKey: 'configTest', dialogNm: 'configTest' },
-      requestForAction: { popupName: '상황전파 팝업', parameterKey: 'requestForAction', dialogNm: 'requestForAction' },
-      aiResponse: { popupName: 'AI 장애대응 팝업', parameterKey: 'aiResponse', dialogNm: 'aiResponse' },
-      niaTopology: { popupName: '토폴로지 팝업', parameterKey: 'niaTopology', dialogNm: 'niaTopology' },
+      sopHistory: { popupName: 'SOP이력조회', parameterKey: 'SopHistory', dialogNm: 'sopHistory' },
+      processFin: { popupName: '마감', parameterKey: 'processFin', dialogNm: 'processFin' },
+      configTest: { popupName: '조치', parameterKey: 'configTest', dialogNm: 'configTest' },
+      requestForAction: { popupName: '상황전파', parameterKey: 'requestForAction', dialogNm: 'requestForAction' },
+      aiResponse: { popupName: 'AI 장애대응', parameterKey: 'aiResponse', dialogNm: 'aiResponse' },
+      niaTopology: { popupName: '토폴로지', parameterKey: 'niaTopology', dialogNm: 'niaTopology' },
       disabilityStatusHistoryManagement: { popupName: '장애현황 및 이력관리 팝업', parameterKey: 'DisabilityStatusHistoryManagement', dialogNm: 'disabilityStatusHistoryManagement' },
     },
     chatbotIcon: {
@@ -125,8 +124,27 @@ export default {
       move: '➡️',
       noAction: '➖',
       openPopup: '↗️',
-      popupWarning: '❌'
+      popupWarning: '❌',
+      assistantIcon: '💬'
     },
+
+    chatType: {
+      botAnswer: 'bot-answer',
+      botAlert: 'bot-alert',
+      user: 'user'
+    },
+
+    chatbotMode: {
+      'questionMode': 'questionMode',
+      'alarmFocusMode': 'alarmFocusMode'
+    },
+    chatbotActiontype: {
+      'interactive': 'interactive',
+      'prompted': 'prompted'
+    },
+    chatbotComment: {
+      lastComment: `어떤 기능을 도와드릴까요?`
+    }
   },
   ipms: {
     ipInfoOptions: [

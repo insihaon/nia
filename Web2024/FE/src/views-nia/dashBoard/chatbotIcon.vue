@@ -1,7 +1,7 @@
 <template>
   <div class="chatbot-icon-container" :style="containerStyle" @click="toggleChatbot" @mouseenter="startFollow" @mouseleave="stopFollow" @mousemove="followMouse">
     <div class="chatbot-icon">
-      <span class="icon-placeholder">💬</span>
+      <span class="icon-placeholder">{{ assistantIcon }}</span>
     </div>
     <div v-if="tooltipVisible" class="chatbot-tooltip">Chatbot</div>
   </div>
@@ -9,6 +9,7 @@
 
 <script>
 import dialogOpenMixin from '@/mixin/dialogOpenMixin'
+import constants from '@/min/constants'
 
 export default {
   mixins: [dialogOpenMixin],
@@ -19,6 +20,7 @@ export default {
       isFollowing: false,
       offsetX: 20,
       offsetY: window.innerHeight - 120,
+      assistantIcon: constants.nia.chatbotIcon.assistantIcon,
     }
   },
   computed: {
