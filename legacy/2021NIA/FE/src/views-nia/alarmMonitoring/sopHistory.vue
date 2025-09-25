@@ -280,31 +280,35 @@ export default {
     this.selectedRow = this.wdata.params
   },
   async mounted() {
-    const ticketData = await getAlarmFocusTicketData(this.wdata)
-    if (ticketData) {
-      this.selectedRow = ticketData
-      this.$emit('update:wdataParams', ticketData)
-    }
-
-    if (this.selectedRow?.ticket_id) {
-      this.tapCurrent = 'ticket'
-      this.sopSearchModel.NODE_NM = this.selectedRow.node_nm
-      this.sopSearchModel.ALARMLOC = this.selectedRow.alarmloc
-    }
-    if (this.selectedRow?.ticket_type === 'SYSLOG') {
-      this.tapCurrent = 'syslog'
-      this.syslogSearchModel = { ALARM_NO: this.selectedRow.alarmno }
-    }
-    this.$nextTick(() => {
-      this.setSelectedOptions()
-      this.setSelectedSyslogOptions()
-      this.onLoadSopHistList()
-      this.onLoadSyslogHistList()
-    })
-
+    await this.setTicketDataForAlarmFocusTicketData()
     this.popupShowCommand()
   },
   methods: {
+    async setTicketDataForAlarmFocusTicketData(isChatbotGenerated) {
+      if (isChatbotGenerated) this.wdata.params.isChatbotGenerated = isChatbotGenerated
+      const ticketData = await getAlarmFocusTicketData(this.wdata)
+      if (ticketData) {
+        this.selectedRow = ticketData
+        this.$emit('update:wdataParams', ticketData)
+      }
+
+      if (this.selectedRow?.ticket_id) {
+        this.tapCurrent = 'ticket'
+        this.sopSearchModel.NODE_NM = this.selectedRow.node_nm
+        this.sopSearchModel.ALARMLOC = this.selectedRow.alarmloc
+      }
+      if (this.selectedRow?.ticket_type === 'SYSLOG') {
+        this.tapCurrent = 'syslog'
+        this.syslogSearchModel = { ALARM_NO: this.selectedRow.alarmno }
+      }
+      this.$nextTick(() => {
+        this.setSelectedOptions()
+        this.setSelectedSyslogOptions()
+        this.onLoadSopHistList()
+        this.onLoadSyslogHistList()
+      })
+    },
+
     selectChange(map) {
       if (map.model === 'NODE_NM') {
         this.chainSetInterfaceOptionList()

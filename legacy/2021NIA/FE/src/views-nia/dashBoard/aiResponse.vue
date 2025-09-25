@@ -390,34 +390,39 @@ export default {
     }
   },
   async mounted() {
-    const ticketData = await getAlarmFocusTicketData(this.wdata)
-    if (ticketData) {
-      this.selectedRow = ticketData
-      this.$emit('update:wdataParams', ticketData)
-    }
-
-    if (this.isShowChartTicketType) {
-      if (!this.wdata?.params['trafficInfo']) {
-        this.onLoadTrafficInfo()
-      } else {
-        this.onLoadTrafficChart()
-      }
-    } else {
-      if (!this.wdata?.params['trafficInfo']) {
-        this.onLoadTrafficInfo()
-      }
-
-      this.$store.dispatch('mdi/setWindowOptions', {
-        id: this.wdata.id,
-        options: { height: '400', width: '600' },
-      })
-    }
+    await this.setTicketDataForAlarmFocusTicketData()
 
     this.$nextTick(() => {
       this.popupShowCommand()
     })
   },
   methods: {
+    async setTicketDataForAlarmFocusTicketData(isChatbotGenerated) {
+      if (isChatbotGenerated) this.wdata.params.isChatbotGenerated = isChatbotGenerated
+      const ticketData = await getAlarmFocusTicketData(this.wdata)
+      if (ticketData) {
+        this.selectedRow = ticketData
+        this.$emit('update:wdataParams', ticketData)
+      }
+
+      if (this.isShowChartTicketType) {
+        if (!this.wdata?.params['trafficInfo']) {
+          this.onLoadTrafficInfo()
+        } else {
+          this.onLoadTrafficChart()
+        }
+      } else {
+        if (!this.wdata?.params['trafficInfo']) {
+          this.onLoadTrafficInfo()
+        }
+
+        this.$store.dispatch('mdi/setWindowOptions', {
+          id: this.wdata.id,
+          options: { height: '400', width: '600' },
+        })
+      }
+    },
+
     async popupShowCommand() {
       if (!this.isFocusModeButNotFocus) {
         this.$store.dispatch('chatbot/botPushAnswerMessage', {

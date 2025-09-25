@@ -395,37 +395,42 @@ export default {
     this.selectedRow = this.wdata.params
   },
   async mounted() {
-    const ticketData = await getAlarmFocusTicketData(this.wdata)
-    if (ticketData) {
-      this.selectedRow = ticketData
-      this.$emit('update:wdataParams', ticketData)
-    }
-
-    const { uid, name, mobile, email, agencyName } = this.$store.state.user.info
-    this.$set(this.sendItem, 'sender', `${agencyName} ${name}`)
-    this._merge(this.sendItem, this.selectedRow)
-
-    try {
-      this.containerLoading = true
-      if (!['SYSLOG', 'RT'].includes(this.selectedRow.ticket_type)) {
-        await this.onLoadTrafficInfo()
-      }
-      if (this.isSyslog) {
-        await this.onLoadSyslogInfo()
-      }
-      await this.onLoadSopHistList()
-      await this.onLoadAiDetectionInfo()
-    } catch (error) {
-      this.error(error)
-    } finally {
-      this.containerLoading = false
-    }
+    await this.setTicketDataForAlarmFocusTicketData()
 
     this.$nextTick(() => {
       this.popupShowCommand()
     })
   },
   methods: {
+    async setTicketDataForAlarmFocusTicketData(isChatbotGenerated) {
+      if (isChatbotGenerated) this.wdata.params.isChatbotGenerated = isChatbotGenerated
+      const ticketData = await getAlarmFocusTicketData(this.wdata)
+      if (ticketData) {
+        this.selectedRow = ticketData
+        this.$emit('update:wdataParams', ticketData)
+      }
+
+      const { uid, name, mobile, email, agencyName } = this.$store.state.user.info
+      this.$set(this.sendItem, 'sender', `${agencyName} ${name}`)
+      this._merge(this.sendItem, this.selectedRow)
+
+      try {
+        this.containerLoading = true
+        if (!['SYSLOG', 'RT'].includes(this.selectedRow.ticket_type)) {
+          await this.onLoadTrafficInfo()
+        }
+        if (this.isSyslog) {
+          await this.onLoadSyslogInfo()
+        }
+        await this.onLoadSopHistList()
+        await this.onLoadAiDetectionInfo()
+      } catch (error) {
+        this.error(error)
+      } finally {
+        this.containerLoading = false
+      }
+    },
+
     async popupShowCommand() {
       if (!this.isFocusModeButNotFocus) {
         this.$store.dispatch('chatbot/botPushAnswerMessage', {

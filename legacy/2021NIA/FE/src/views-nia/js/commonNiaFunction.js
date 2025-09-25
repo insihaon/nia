@@ -86,7 +86,7 @@ export async function getAlarmFocusTicketData(wdata) {
 
     const currentMode = store.state.chatbot.currentMode
     if (currentMode === 'alarmFocusMode') {
-        const ticket_id = store.state.chatbot.alarmFocusMode_chatMessages[0].ticketData.ticket_id
+        const ticket_id = store.state.chatbot.alarmFocusTicketData.ticket_id
         const res = await apiIpAlarmList({ TICKET_ID: ticket_id })
         if (res) {
             const ticketData = res.result[0]
@@ -146,14 +146,7 @@ export async function getSpanFormatMessageForDB(userQuestion) {
         })
 
         console.log('score Log : ', response.data)
-
-        const spanMessage = getSpanFormatMessage(response, '검색 결과를 찾았습니다\n\n', { showScore: true })
-
-        store.dispatch('chatbot/botPushAnswerMessage', {
-            content: spanMessage,
-        })
-
-        return spanMessage
+        return getSpanFormatMessage(response, '검색 결과를 찾았습니다\n\n', { showScore: true })
     } catch (error) {
         console.error('ElasticSearch 검색 오류:', error)
         throw error
@@ -190,7 +183,7 @@ export async function getWindowActionList(dialogNm, popupName) {
 }
 
 export function showNumberText(number, text) {
-    return number + '. ' + text
+    return `${number}. ${text}`
 }
 
 function getSpanFormatMessage(response, messagePrefix, customObj = {}) {

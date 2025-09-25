@@ -119,6 +119,16 @@ export default {
       niaTopology: { popupName: '토폴로지', parameterKey: 'niaTopology', dialogNm: 'niaTopology' },
       disabilityStatusHistoryManagement: { popupName: '장애현황 및 이력관리 팝업', parameterKey: 'DisabilityStatusHistoryManagement', dialogNm: 'disabilityStatusHistoryManagement' },
     },
+
+    chatbotDashboardPopupMap: {
+      'sopHistory': { label: 'SOP이력', key: 'sopHistory' },
+      'processFin': { label: '마감', key: 'processFin' },
+      'configTest': { label: '조치', key: 'configTest' },
+      'aiResponse': { label: '장애대응', key: 'aiResponse' },
+      'aiResponse2': { label: 'AIB장애대응', key: 'aiResponse2' },
+      'requestForAction': { label: '상황전파', key: 'requestForAction' },
+      'niaTopology': { label: '토폴로지', key: 'niaTopology' },
+    },
     chatbotIcon: {
       success: '✅',
       move: '➡️',

@@ -96,7 +96,7 @@ import _ from 'lodash'
 import dialogOpenMixin from '@/mixin/dialogOpenMixin'
 import { apiIpsdnRequest, apiSelectAgencyIpList, apiRemote } from '@/api/nia'
 import constants from '@/min/constants'
-import { getInvisibleSpanParameter, getNiaRouterPathByName, getAlarmFocusTicketData, showNumberText, getWindowActionList } from '@/views-nia/js/commonNiaFunction'
+import { getAlarmFocusTicketData, getWindowActionList, getInvisibleSpanParameter, getNiaRouterPathByName, showNumberText } from '@/views-nia/js/commonNiaFunction'
 import { mapState } from 'vuex'
 
 import niaObserverMixin from '@/mixin/niaObserverMixin'
@@ -210,42 +210,47 @@ export default {
     this.selectedRow = this.wdata?.params
   },
   async mounted() {
-    const ticketData = await getAlarmFocusTicketData(this.wdata)
-    if (ticketData) {
-      this.selectedRow = ticketData
-      this.$emit('update:wdataParams', ticketData)
-    }
-
-    const { ticket_type, root_cause_sysnamea, node_nm, ip_addr, root_cause_porta, alarmloc, alarmmsg } = this.selectedRow
-    this.item = {
-      nodeName: ticket_type === 'SYSLOG' ? node_nm : root_cause_sysnamea,
-      ipAddr: ip_addr,
-      ifname: ticket_type === 'SYSLOG' ? alarmloc : root_cause_porta,
-    }
-
-    switch (ticket_type) {
-      case 'ATT2': // 이상트래픽
-        this.remoteControl = '포트변경'
-        break
-      case 'NTT': // 유해트래픽
-        this.remoteControl = 'shoutdown'
-        break
-      case 'RT': // 포트다운
-        if (alarmmsg === 'PORT_DOWN') {
-          this.remoteControl = 'noshut'
-        }
-        break
-    }
-
-    this.onLoadCRC()
-    this.onLoadInterface()
-    this.onLoadAgencyIpList()
+    await this.setTicketDataForAlarmFocusTicketData()
 
     this.$nextTick(() => {
       this.popupShowCommand()
     })
   },
   methods: {
+    async setTicketDataForAlarmFocusTicketData(isChatbotGenerated) {
+      if (isChatbotGenerated) this.wdata.params.isChatbotGenerated = isChatbotGenerated
+      const ticketData = await getAlarmFocusTicketData(this.wdata)
+      if (ticketData) {
+        this.selectedRow = ticketData
+        this.$emit('update:wdataParams', ticketData)
+      }
+
+      const { ticket_type, root_cause_sysnamea, node_nm, ip_addr, root_cause_porta, alarmloc, alarmmsg } = this.selectedRow
+      this.item = {
+        nodeName: ticket_type === 'SYSLOG' ? node_nm : root_cause_sysnamea,
+        ipAddr: ip_addr,
+        ifname: ticket_type === 'SYSLOG' ? alarmloc : root_cause_porta,
+      }
+
+      switch (ticket_type) {
+        case 'ATT2': // 이상트래픽
+          this.remoteControl = '포트변경'
+          break
+        case 'NTT': // 유해트래픽
+          this.remoteControl = 'shoutdown'
+          break
+        case 'RT': // 포트다운
+          if (alarmmsg === 'PORT_DOWN') {
+            this.remoteControl = 'noshut'
+          }
+          break
+      }
+
+      this.onLoadCRC()
+      this.onLoadInterface()
+      this.onLoadAgencyIpList()
+    },
+
     async popupShowCommand() {
       if (!this.isFocusModeButNotFocus) {
         this.$store.dispatch('chatbot/botPushAnswerMessage', {
@@ -290,6 +295,15 @@ export default {
       }
     },
 
+    configNextAction() {
+      this.$store.dispatch('chatbot/botPushAnswerMessage', {
+        content:
+          `<b>${constants.nia.chatbotCommand.configTest.label} 실행 후 추천명령어 입니다</b><br><br>` +
+          showNumberText(1, `${constants.nia.chatbotKeyMap.processFin.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), constants.nia.chatbotKeyMap.processFin.dialogNm, '')}<br>`) +
+          showNumberText(2, `${constants.nia.chatbotKeyMap.sopHistory.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), constants.nia.chatbotKeyMap.sopHistory.dialogNm, '')}<br>`),
+      })
+    },
+
     makeConfirmMessage() {
       const { nodeName, ifname } = this.item
 
@@ -318,7 +332,7 @@ export default {
         if (!this.isFocusModeButNotFocus) {
           this.$store.dispatch('chatbot/botPushAnswerMessage', {
             content: `${constants.nia.chatbotIcon.success} ${constants.nia.chatbotKeyMap.configTest.popupName}에서 성공적으로 ${constants.nia.chatbotCommand.remote.label}을 했습니다.`,
-            callBack: this.popupShowCommand,
+            callBack: this.configNextAction,
           })
         }
       })
