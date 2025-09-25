@@ -41,7 +41,7 @@ var dialogOpenMixin = {
           component: () => import('@/views-nia/dashBoard/processFin'),
           pageTitle: '마감 처리',
           width: '600',
-          height: '550',
+          height: '700',
           resizeble: true,
           chatbotParameterKeyName: constants.nia.chatbotKeyMap.processFin.parameterKey
         },
@@ -116,7 +116,7 @@ var dialogOpenMixin = {
           component: () => import('@/views-nia/dashBoard/chatbot'),
           pageTitle: '어시스턴트',
           width: '600',
-          height: '700',
+          height: '800',
           resizeble: true,
           positionBottomLeft: true,
           notDuplicate: true
