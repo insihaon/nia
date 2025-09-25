@@ -174,7 +174,7 @@ export default {
           {
             name: '토폴로지 전체보기',
             action: () => {
-              this.openNiaTopology({ showFullTopology: true, tickets: this.ipNetworkList })
+              this.openNiaTopology(this.ipNetworkList)
             },
           },
         ]
@@ -377,8 +377,8 @@ export default {
     NiaMainEventText(nVal, oVal) {
       switch (nVal) {
         case this.chatbotCommand.focusModeCheckAlarm.action:
-          this.fn_openWindow('niaTopology', { showFullTopology: false, tickets: [this.alarmFocusTicketData] }, null, { addX: -580 })
-          this.fn_openWindow('aiResponse', { row: this.alarmFocusTicketData }, null, { addX: 580, addY: -20 })
+          this.fn_openWindow('niaTopology', this.alarmFocusTicketData, null, { addX: -580 })
+          this.fn_openWindow('aiResponse', this.alarmFocusTicketData, null, { addX: 580, addY: -20 })
           break
       }
 
@@ -874,7 +874,7 @@ export default {
     },
     agGridRowDoubleClicked(selectedItems) {
       const data = this.selectedItem?.data || {}
-      this.openNiaTopology({ showFullTopology: false, tickets: [data] })
+      this.openNiaTopology(data)
     },
     handleOpenTicketDetail(row) {
       this.fn_openWindow('ticketDetail', row)
@@ -885,7 +885,7 @@ export default {
       } else if (type === 'NTF') {
         this.fn_openWindow('requestForAction', row)
       } else if (type === 'ALARM') {
-        this.fn_openWindow('aiResponse', { row })
+        this.fn_openWindow('aiResponse', row)
       } else if (type === 'FIN') {
         this.fn_openWindow('processFin', row)
       } else if (type === 'CONFIG_TEST') {

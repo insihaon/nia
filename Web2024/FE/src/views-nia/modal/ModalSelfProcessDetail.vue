@@ -577,7 +577,8 @@ export default {
         this._merge(row, this.syslogInfo)
         this.fn_openWindow('requestForAction', row)
       } else {
-        this.fn_openWindow('aiResponse', { row, trafficInfo: this.trafficInfo })
+        row.paramTrafficInfo = this.trafficInfo
+        this.fn_openWindow('aiResponse', row)
       }
       this.close()
     },
@@ -620,3 +621,4 @@ export default {
   width: calc(100% - 90px);
 }
 </style>
+

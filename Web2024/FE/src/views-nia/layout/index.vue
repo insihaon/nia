@@ -14,7 +14,7 @@
         <AppMain v-if="!popupLayout" ref="appmain" :style="{ height: appMainHeight }" />
         <BottomBar ref="bottombar" />
       </div>
-      <chatbotIcon v-show="debug && !existChatbotPopup" />
+      <chatbotIcon v-show="!existChatbotPopup" />
     </div>
     <WindowBase v-for="window in $store.getters.windows" :key="window.id" :type="window.type" :wdata="window" :target="window.target" />
   </div>
@@ -165,14 +165,14 @@ export default {
         this.onReceivedIpsdnTicketEvent({
           channelName: 'IPSDN_ALARM',
           socketMessage: {
-            message: '{ "result":null,"properties":null,"ticketId":"1670055","eventType":"TICKET_NEW","ticketType":"...." }',
+            message: '{ "result":null,"properties":null,"ticketId":"1671626","eventType":"TICKET_NEW","ticketType":"...." }',
           },
         })
       } else {
         this.onReceivedIpsdnTicketEvent({
           channelName: 'IPSDN_ALARM',
           socketMessage: {
-            message: '{ "result":null,"properties":null,"ticketId":"1670055","eventType":"TICKET_NEW","ticketType":"...." }',
+            message: '{ "result":null,"properties":null,"ticketId":"1671626","eventType":"TICKET_NEW","ticketType":"...." }',
           },
         })
       }
