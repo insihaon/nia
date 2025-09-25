@@ -106,23 +106,14 @@ import {
   apiIpAlarmList,
   apiSelectSyslogAlarmList,
 } from '@/api/nia'
-import data_nia_ip_1 from '@/views-nia/dashBoard/niaTopologyConfig/json/data_nia_ip_1'
-import data_nia_ip_2 from '@/views-nia/dashBoard/niaTopologyConfig/json/data_nia_ip_2'
-import data_nia_ip_3 from '@/views-nia/dashBoard/niaTopologyConfig/json/data_nia_ip_3'
 import niaTopologyTemplalate from './niaTopologyConfig/niaTopologyTemplate.vue'
 import { mapState } from 'vuex'
 import constants from '@/min/constants'
 import { getAlarmFocusTicketData, getWindowActionList } from '@/views-nia/js/commonNiaFunction'
-
+import nia_topology_data from '@/views-nia/dashBoard/niaTopologyConfig/json/nia_topology_data'
 import niaObserverMixin from '@/mixin/niaObserverMixin'
 
 const routeName = constants.nia.chatbotKeyMap.niaTopology.parameterKey
-const jsons = ['data_nia_ip_1.json', 'data_nia_ip_2.json', 'data_nia_ip_3.json']
-const jsonData = {
-  'data_nia_ip_1.json': data_nia_ip_1,
-  'data_nia_ip_2.json': data_nia_ip_2,
-  'data_nia_ip_3.json': data_nia_ip_3,
-}
 const roadm_slots = {
   '192.168.200.213': ['MRPA-A', 'MRPA-A', 'MRSA-2B', 'MRSA-2A', 'OCPMA-4', 'BLK', 'OM24A', 'OM24A', 'BLK', 'BLK', 'BLK', 'BLK', 'BLK', 'BLK', 'BLK', 'BLK', 'BLK', 'BLK'],
   '192.168.200.220': ['MRPA-A', 'MRPA-A', 'OTUC1A-L', 'OTUC1A-L', 'OTUC1A-L', 'OTUC1A-L', 'OTUC1A-L', 'OTUC2A-L', 'OM2C2A-L', 'OM2C2A-L', 'OM24A', 'OM24A', 'OM24A', 'OM24A', 'BLK', 'BLK'],
@@ -251,7 +242,7 @@ export default {
       this.$emit('update:wdataParams', ticketData)
     }
 
-    this.topologyConstruct()
+    // this.topologyConstruct()
     this.initMap()
 
     setTimeout(() => {
@@ -267,12 +258,12 @@ export default {
         })
       }
     },
-    topologyConstruct() {
-      const defaultMapFile = jsons[this.topologyType - 1] || 'data_nia_ip_3.json'
-      if (!jsons.includes(localStorage['last_map'])) {
-        localStorage['last_map'] = defaultMapFile
-      }
-    },
+    // topologyConstruct() {
+    //   const defaultMapFile = jsons[this.topologyType - 1] || 'data_nia_ip_3.json'
+    //   if (!jsons.includes(localStorage['last_map'])) {
+    //     localStorage['last_map'] = defaultMapFile
+    //   }
+    // },
 
     isVisibleView() {
       return true
@@ -283,10 +274,9 @@ export default {
       switch (param) {
         case 'changeType':
           {
-            const index = this.topologyType % jsons.length
+            const index = this.topologyType % 3
             this.topologyType = index + 1
-            const newFileName = jsons.at(index)
-            newFileName && this.loadMapByFile(newFileName, true)
+            this.loadMapByFile()
             console.log(`topologyType: ${this.topologyType}`)
           }
           break
@@ -316,7 +306,7 @@ export default {
           }
           break
         case 'refresh':
-          this.loadMapByFile(this.map.options.fileName, true)
+          this.loadMapByFile()
           break
         case 'updateTopology':
           this.updateNodePosition()
@@ -366,7 +356,7 @@ export default {
         const map = (this.map = THIS.map = new window.Map2d())
         this.map.initialize()
 
-        await this.loadMapByFile(jsons[this.topologyType - 1], true)
+        await this.loadMapByFile()
 
         // 이벤트 리스너 추가
         map.addEventListener(window.Map2d.eventType.selectChanged, (e) => {
@@ -400,21 +390,15 @@ export default {
       }
     },
 
-    async loadMapByFile(fileName, isCompareData) {
-      this.map.options.fileName = fileName
-
-      return new Promise((resolve, reject) => {
-        this.loadMapData(fileName).then(async (data) => {
-          if (isCompareData) {
-            const result = (await this.compareNiaData(data.nodes, data.links)) || {}
-            data.nodes = result.nodes
-            data.links = result.linkData
-          }
-          await this.loadMap(data)
-          await this.loadTicketAlarm()
-          resolve()
-        })
+    async loadMapByFile() {
+      const configData = nia_topology_data['config' + this.topologyType]
+      const result = (await this.compareNiaData()) || {}
+      await this.loadMap({
+        nodes: result.nodes,
+        links: result.linkData,
+        config: configData,
       })
+      await this.loadTicketAlarm()
     },
 
     getEquipType(strResName) {
@@ -794,16 +778,6 @@ export default {
       }
     },
 
-    async loadMapData(fileName) {
-      try {
-        const response = jsonData[fileName]
-        this.mapData = response
-        return this.mapData
-      } catch (error) {
-        console.error('Failed to load map data:', error)
-      }
-    },
-
     loadMap(data) {
       return new Promise((resolve, reject) => {
         setTimeout(() => {
@@ -815,7 +789,7 @@ export default {
     },
 
     async compareNiaData(nodes = [], links = []) {
-      return Promise.all([this.requestNodes(), this.requestLinks(), nodes, links]).then((values) => {
+      return Promise.all([this.requestNodes(), this.requestLinks()]).then((values) => {
         const [nodeData, linkData] = values
         linkData.map((link1) => {
           const length = linkData.filter((link2) => {
