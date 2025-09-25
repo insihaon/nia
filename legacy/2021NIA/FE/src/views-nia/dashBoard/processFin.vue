@@ -1,7 +1,7 @@
 <template>
   <div :class="{ [name]: true }" style="height: 100%">
     <div class="d-flex flex-column h-100 rounded justify-between">
-      <el-card shadow="never" style="height: 85%" :body-style="{ padding: '10px' }">
+      <el-card shadow="never" style="height: 100px; flex-shrink: 0" :body-style="{ padding: '10px' }">
         <div slot="header">
           <span><i class="el-icon-document" /> 조치 SOP</span>
         </div>
@@ -15,9 +15,17 @@
             <el-button class="edit" size="mini" type="primary" icon="el-icon-edit-outline" @click.native="$refs.ModalSopMng.open()"> 편집 </el-button>
           </el-col>
         </el-row>
-        <el-row class="px-2 input">
-          <el-input v-model="etcContent" placeholder="기타 조치내용 입력" />
+      </el-card>
+      <el-card shadow="never" class="h-100" :body-style="{ padding: '10px' }">
+        <div slot="header">
+          <span><i class="el-icon-document" /> 기타 조치내용 입력</span>
+        </div>
+        <el-row>
+          <el-col>
+            <el-input v-model="etcContent" :rows="4" type="textarea" placeholder="기타 조치내용 입력" />
+          </el-col>
         </el-row>
+        <span style="color: red">※ 기타 조치내용 입력은 시스템 기능 개선에 큰 도움이 됩니다</span>
       </el-card>
       <el-card shadow="never" style="height: 90%" :body-style="{ padding: '10px' }">
         <div slot="header">
@@ -136,11 +144,8 @@ export default {
     this.selectedRow = this.wdata?.params
   },
   async mounted() {
-    const ticketData = await getAlarmFocusTicketData(this.wdata)
-    if (ticketData) {
-      this.selectedRow = ticketData
-      this.$emit('update:wdataParams', ticketData)
-    }
+    await this.setFocusPopupParameter()
+
     this.setAiFeedBack()
     this.onLoadSopCodeList()
 
@@ -149,6 +154,14 @@ export default {
     })
   },
   methods: {
+    async setFocusPopupParameter() {
+      const ticketData = await getAlarmFocusTicketData(this.wdata)
+      if (ticketData) {
+        this.selectedRow = ticketData
+        this.$emit('update:wdataParams', ticketData)
+      }
+    },
+
     async popupShowCommand() {
       if (!this.isFocusModeButNotFocus) {
         this.$store.dispatch('chatbot/botPushAnswerMessage', {
@@ -179,6 +192,13 @@ export default {
     onClickFin() {
       if (this.aiFeedback == null) {
         this.$alert('AI 결과 피드백 여부를 선택해 주십시오.', '알림', {
+          confirmButtonText: '확인',
+          customClass: 'nia-message-box',
+        })
+        return
+      }
+      if (this.etcContent.length === 0) {
+        this.$alert('기타 조치내용 입력을 확인해주세요', '알림', {
           confirmButtonText: '확인',
           customClass: 'nia-message-box',
         })
@@ -218,25 +238,6 @@ export default {
       })
     },
     getFinParam() {
-      /* TICKET 마감처리 참고 파라미터 (레거시)
-      {
-        "service": "rca",
-        "action": "CHANGE_TICKET_STATUS",
-        "eventType": "REQUEST_CHANGE_TICKET_STATUS",
-        "ticket_id": "85207",
-        "status": "FIN",
-        "ticket_type": "RT",
-        "ai_accuracy": "0",
-        "fault_classify": "",
-        "fault_type": "",
-        "fault_detail_content": "",
-        "etc_content": "",
-        "fault_type_content": null,
-        "start_time": null,
-        "end_time": null,
-        "handling_fin_user": "NIA ADMIN"
-      }
-      */
       const finType = this.selectedRow.ticket_type === 'SYSLOG' ? 'SYSLOG' : 'TICKET'
       const param = {
         eventType: `REQUEST_CHANGE_${finType}_STATUS`,
