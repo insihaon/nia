@@ -144,17 +144,22 @@ export default {
     this.selectedRow = this.wdata?.params
   },
   async mounted() {
-    await this.setFocusPopupParameter()
-
-    this.setAiFeedBack()
-    this.onLoadSopCodeList()
+    await this.setTicketDataForAlarmFocusTicketData()
 
     this.$nextTick(() => {
       this.popupShowCommand()
     })
   },
   methods: {
-    async setFocusPopupParameter() {
+    async setTicketDataForAlarmFocusTicketData(isChatbotGenerated) {
+      await this.setFocusPopupParameter(isChatbotGenerated)
+
+      this.setAiFeedBack()
+      this.onLoadSopCodeList()
+    },
+
+    async setFocusPopupParameter(isChatbotGenerated) {
+      if (isChatbotGenerated) this.wdata.params.isChatbotGenerated = isChatbotGenerated
       const ticketData = await getAlarmFocusTicketData(this.wdata)
       if (ticketData) {
         this.selectedRow = ticketData

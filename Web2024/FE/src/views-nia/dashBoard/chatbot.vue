@@ -1,61 +1,56 @@
 <template>
   <div ref="chatbot-total" :class="{ [name]: true, 'w-full h-full': true }">
     <div class="chatbot-body">
-      <div v-if="currentMode === 'questionMode'" class="chatbot-container">
-        <div class="chat-header">
-          <h3>어시스턴트</h3>
-          <p>질문을 입력하고 답변을 받아보세요</p>
-        </div>
+      <div class="chat-header">
+        <h3>어시스턴트</h3>
+        <p v-if="isQuestionMode">질문을 입력하고 답변을 받아보세요</p>
+        <p v-else>
+          [TICKET_ID: {{ alarmFocusMode_TicketData.ticket_id }}] [전표유형: {{ getTicketTypeHangle(alarmFocusMode_TicketData.ticket_type) }}] [장비명: {{ alarmFocusMode_TicketData.node_nm }}] [인터페이스명: {{ alarmFocusMode_TicketData.alarmloc }}]
+        </p>
+      </div>
 
-        <div ref="chatMessagesBox" class="chat-messages">
-          <div v-for="(message, index) in questionMode_chatMessages" :key="index" :class="['message', message.type]">
-            <div v-if="message.type !== 'bot-alert' || isActiveBotAlert">
-              <div class="message-content" @click="handlePathClick($event, message.content)" v-html="formatMessage(message.content)"></div>
-              <div class="message-time">
-                {{ message.time }}
-              </div>
+      <div v-if="isQuestionMode" ref="chatMessagesBox" class="chat-messages">
+        <div v-for="(message, index) in questionMode_chatMessages" :key="index" :class="['message', message.type]">
+          <div v-if="message.type !== botAlertText || isActiveBotAlert">
+            <div class="message-content" @click="handlePathClick($event, message.content)" v-html="formatMessage(message.content)"></div>
+            <div class="message-time">
+              {{ message.time }}
             </div>
           </div>
         </div>
-
-        <div class="utility-buttons">
-          <button class="utility-button" @click="makeSimulationAlert">테스트 경보</button>
-          <button class="utility-button" :style="{ background: isActiveBotAlert ? '#13ce66' : '#ff4949' }" @click="toggleIsActiveBotAlert">{{ isActiveBotAlert ? '경보 표시' : '경보 미표시' }}</button>
-          <button class="utility-button" @click="switchMode">{{ currentMode === 'questionMode' ? '질문모드' : '집중경보모드' }}</button>
-          <button class="utility-button">추천명령어</button>
-          <button class="utility-button" @click="resetChat">채팅초기화</button>
+      </div>
+      <div v-else ref="chatMessagesBox" class="chat-messages">
+        <DoughnutChart v-if="alarmFocusSopDataList.length > 0" ref="donutChart" :chart-data="chartData" :options="chartOptions" style="height: 160px; width: 380px; border: 3px solid" />
+        <div v-for="(message, index) in alarmFocusMode_chatMessages" :key="index" :class="['message', message.type]">
+          <div v-if="index === 0" class="message-content">
+            <span v-if="alarmFocusSopDataList.length > 0">
+              {{ alarmFocusTicketData.node_nm }} 장비에 대한 SOP 조치내용 통계<br />
+              전체SOP개수 : {{ alarmFocusSopDataList.length }}개<br />
+              <!-- <span v-for="(label, index2) in chartData.labels" :key="index2"> {{ label }} : {{ chartData.datasets[index2].data.length + '개' }} </span> -->
+            </span>
+            <span v-else>SOP이력이 없어서 통계자료가 제공되지않습니다</span>
+          </div>
+          <div v-if="message.type !== botAlertText || isActiveBotAlert">
+            <div class="message-content" @click="handlePathClick($event, message.content)" v-html="formatMessage(message.content)"></div>
+            <div class="message-time">
+              {{ message.time }}
+            </div>
+          </div>
         </div>
       </div>
 
-      <div v-else-if="currentMode === 'alarmFocusMode'" class="chatbot-container">
-        <div class="chat-header">
-          <h3>어시스턴트(집중경보모드)</h3>
-          [TICKET_ID: {{ alarmFocusMode_TicketData.ticket_id }}] [전표유형: {{ getTicketTypeHangle(alarmFocusMode_TicketData.ticket_type) }}] [장비명: {{ alarmFocusMode_TicketData.node_nm }}] [인터페이스명: {{ alarmFocusMode_TicketData.alarmloc }}]
-        </div>
-
-        <div ref="chatMessagesBox" class="chat-messages">
-          <div v-for="(message, index) in alarmFocusMode_chatMessages" :key="index" :class="['message', message.type]">
-            <div v-if="message.type !== 'bot-alert' || isActiveBotAlert">
-              <div class="message-content" @click="handlePathClick($event, message.content)" v-html="formatMessage(message.content)"></div>
-              <div class="message-time">
-                {{ message.time }}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="utility-buttons">
-          <button class="utility-button" @click="makeSimulationAlert">테스트 경보</button>
-          <button class="utility-button" @click="openPopupDisabilityStatusHistoryManagement">장애이력 팝업</button>
-          <button class="utility-button" @click="switchMode">{{ currentMode === 'questionMode' ? '질문모드' : '집중경보모드' }}</button>
-          <button class="utility-button">추천명령어</button>
-          <button class="utility-button" @click="resetChat">채팅초기화</button>
-        </div>
+      <div class="utility-buttons">
+        <button :disabled="isQuestionMode" class="utility-button" @click="openSop">SOP화면</button>
+        <button :disabled="isQuestionMode" class="utility-button" @click="openConfigTest">조치화면</button>
+        <button :disabled="isQuestionMode" class="utility-button" :style="{ 'background-color': isActiveBotAlert ? '#ff4949' : '#e5e7eb' }" @click="toggleIsActiveBotAlert">{{ isActiveBotAlert ? '경보 표시' : '경보 미표시' }}</button>
+        <button :disabled="isQuestionMode" class="utility-button" @click="actionSwitch">액션변경({{ actionType === 'interactive' ? 'I' : 'P' }})</button>
+        <button :disabled="isQuestionMode" class="utility-button" @click="resetChat">채팅초기화</button>
       </div>
 
       <div class="chat-input">
-        <input v-model="userInput" type="text" placeholder="질문을 입력하세요..." @keyup.enter="sendMessage" />
-        <button :disabled="!userInput.trim()" @click="sendMessage">전송</button>
+        <input v-model="userInput" :disabled="isQuestionMode" type="text" placeholder="질문을 입력하세요..." @keyup.enter="sendMessage" />
+        <button :disabled="!userInput.trim() || isQuestionMode" @click="sendMessage">전송</button>
+        <button v-if="isDebug" @click="makeSimulationAlert">테스트 경보</button>
       </div>
     </div>
   </div>
@@ -65,8 +60,8 @@
 import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
 import { mapState } from 'vuex'
-import axios from 'axios'
 import dialogOpenMixin from '@/mixin/dialogOpenMixin'
+import { Doughnut } from 'vue-chartjs'
 import { searchMessaging, errorMessaging1, errorMessaging2, errorMessaging3 } from '@/store/modules/chatbot.js'
 import { getNiaRouteNameByPath, getNiaRouteTitleByPath, getSpanFormatMessageForDB, getMatchMapOfspanFormatMessage } from '@/views-nia/js/commonNiaFunction'
 import constants from '@/min/constants'
@@ -75,7 +70,56 @@ const routeName = 'chatbot'
 /* eslint-disable */
 export default {
   name: routeName,
-  components: {},
+  components: {
+    DoughnutChart: {
+      extends: Doughnut,
+      props: {
+        chartData: {
+          type: Object,
+          required: true,
+        },
+        options: {
+          type: Object,
+          default: () => ({}),
+        },
+      },
+      mounted() {
+        const clonedData = JSON.parse(JSON.stringify(this.chartData))
+        const clonedOptions = JSON.parse(JSON.stringify(this.options || {}))
+        this.renderChart(clonedData, clonedOptions)
+      },
+      watch: {
+        chartData: {
+          deep: true,
+          handler(newVal) {
+            const clonedData = JSON.parse(JSON.stringify(newVal))
+            const clonedOptions = JSON.parse(JSON.stringify(this.options || {}))
+            this.renderChart(clonedData, clonedOptions)
+          },
+        },
+        options: {
+          deep: true,
+          handler(newVal) {
+            const clonedData = JSON.parse(JSON.stringify(this.chartData))
+            const clonedOptions = JSON.parse(JSON.stringify(newVal || {}))
+            this.renderChart(clonedData, clonedOptions)
+          },
+        },
+      },
+      methods: {
+        optionUpdate() {
+          const clonedData = JSON.parse(JSON.stringify(this.chartData))
+          const clonedOptions = JSON.parse(JSON.stringify(this.options || {}))
+          this.renderChart(clonedData, clonedOptions)
+        },
+        chartUpdate() {
+          const clonedData = JSON.parse(JSON.stringify(this.chartData))
+          const clonedOptions = JSON.parse(JSON.stringify(this.options || {}))
+          this.renderChart(clonedData, clonedOptions)
+        },
+      },
+    },
+  },
   directives: { elDragDialog },
   mixins: [dialogOpenMixin],
 
@@ -93,21 +137,51 @@ export default {
       name: routeName,
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       userInput: '',
-      isActiveBotAlert: true,
+      isActiveBotAlert: false,
+      chartData: {
+        labels: [],
+        datasets: [
+          {
+            backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
+            data: [],
+          },
+        ],
+      },
+      chartOptions: {
+        responsive: true,
+        maintainAspectRatio: false,
+        title: {
+          display: true,
+          text: 'SOP 조치내용 통계',
+          fontSize: 16,
+          fontStyle: 'bold',
+          fontColor: '#333',
+        },
+        legend: {
+          position: 'right',
+          align: 'center',
+          labels: {
+            usePointStyle: true,
+            padding: 20,
+          },
+        },
+      },
     }
   },
   computed: {
     ...mapState({
       questionMode_chatMessages: (state) => state.chatbot.questionMode_chatMessages,
       alarmFocusMode_chatMessages: (state) => state.chatbot.alarmFocusMode_chatMessages,
+      alarmFocusTicketData: (state) => state.chatbot.alarmFocusTicketData,
+      alarmFocusSopDataList: (state) => state.chatbot.alarmFocusSopDataList,
       currentMode: (state) => state.chatbot.currentMode,
-      alarmFocusMessageHistory: (state) => state.chatbot.alarmFocusMessageHistory,
+      actionType: (state) => state.chatbot.actionType,
       lastFocusModule: (state) => state.chatbot.lastFocusModule,
       windows: (state) => state.mdi.windows,
     }),
 
     alarmFocusMode_TicketData() {
-      return this.alarmFocusMode_chatMessages[0].ticketData
+      return this.alarmFocusTicketData
     },
 
     getCurrentChatMessageArray() {
@@ -116,6 +190,17 @@ export default {
 
     routerList() {
       return this.$router.options.routes2
+    },
+
+    isQuestionMode() {
+      return this.currentMode === 'questionMode'
+    },
+    isDebug() {
+      return this.appOptions.debug
+    },
+
+    botAlertText() {
+      return constants.nia.chatType.botAlert
     },
   },
   watch: {
@@ -130,12 +215,48 @@ export default {
         this.scrollToBottom()
       }
     },
+
+    alarmFocusSopDataList: {
+      handler(nVal, oval) {
+        this.setDonutChartData()
+      },
+      deep: true,
+    },
   },
   created() {
     this.selectedRow = this.wdata.params
     this.scrollToBottom()
   },
+
+  mounted() {
+    this.setDonutChartData()
+  },
+
   methods: {
+    setDonutChartData() {
+      const accD = this.alarmFocusSopDataList.reduce((acc, d) => {
+        if (!acc[d.fault_type]) {
+          acc[d.fault_type] = []
+        }
+        acc[d.fault_type].push(d)
+        return acc
+      }, {})
+      this.chartData.labels.length = 0
+      this.chartData.datasets[0].data.length = 0
+
+      Object.keys(accD).forEach((k) => {
+        this.chartData.labels.push(k)
+        this.chartData.datasets[0].data.push(accD[k].length)
+      })
+
+      console.log('Chart Data:', this.chartData)
+      console.log('Chart Options:', this.chartOptions)
+    },
+
+    actionSwitch() {
+      this.$store.commit('chatbot/SWTICH_ACTION')
+    },
+
     resetChat() {
       this.$store.commit('chatbot/RESET_CHAT')
     },
@@ -163,13 +284,29 @@ export default {
           this.$store.commit('chatbot/MODE_CHANGE', { newMode: 'questionMode' })
           break
         case 'questionMode':
-          this.$store.commit('chatbot/MODE_CHANGE', { newMode: 'alarmFocusMode' })
+          if (!this.alarmFocusTicketData.ticket_id) {
+            this.$alert(`대시보드에서 집중경보모드로 먼저 전환해주세요.`, '알림', {
+              confirmButtonText: '확인',
+              customClass: 'nia-message-box',
+            })
+          } else {
+            this.$store.commit('chatbot/MODE_CHANGE', { newMode: 'alarmFocusMode' })
+          }
+
           break
       }
     },
 
     makeSimulationAlert() {
       EventBus.$emit('simulateTest', {})
+    },
+
+    openSop() {
+      this.fn_openWindow('sopHistory', { isChatbotGenerated: true })
+    },
+
+    openConfigTest() {
+      this.fn_openWindow('configTest', { isChatbotGenerated: true })
     },
 
     toggleIsActiveBotAlert() {
@@ -198,7 +335,7 @@ export default {
 
     getSpanFormatLastAnswer() {
       const botAnswer = this.getCurrentChatMessageArray.filter((m) => {
-        if (m.type !== 'bot-answer') return
+        if (m.type !== constants.nia.chatType.botAnswer) return
         if (m.content.includes(searchMessaging)) return
         if (m.content.includes(errorMessaging1)) return
         if (m.content.includes(errorMessaging2)) return
@@ -222,7 +359,7 @@ export default {
         const routerName = getNiaRouteNameByPath(matchMap.path)
         if (this.$router.history.current.path === matchMap.path) {
           routerParameterTargetName = routerName
-          text = `<br><br>` + `${constants.nia.chatbotIcon.noAction} ${getNiaRouteTitleByPath(matchMap.path)}에서`
+          text = `<br><br>` + `${constants.nia.chatbotIcon.noAction} ${getNiaRouteTitleByPath(matchMap.path)}화면에서 명령을 실행합니다.`
         } else {
           this.$router.push({ name: routerName })
           routerParameterTargetName = routerName
@@ -234,7 +371,7 @@ export default {
         const hasWindow = this.windows.find((w) => w.dialogNm === matchMap.popup)
         let newName = ''
         if (hasWindow) {
-          text += `<br>${constants.nia.chatbotIcon.noAction} ${hasWindow.name} 팝업을 선택합니다.`
+          text += `<br>${constants.nia.chatbotIcon.noAction} ${hasWindow.name} 팝업이 선택됩니다.`
           this.$store.dispatch('mdi/bringToFrontWindow', hasWindow.id)
           newName = hasWindow.chatbotParameterKeyName
         } else {
@@ -268,12 +405,17 @@ export default {
         return `<b>` + matchMap.matchContext + ' 명령을 실행했습니다.</b>' + actionProcessMessage
       } else {
         const spanFormatMessage = await getSpanFormatMessageForDB(userQuestion)
-        if (this.currentMode === 'questionMode') {
-          return spanFormatMessage
-        } else {
-          const matchMap = getMatchMapOfspanFormatMessage('1', spanFormatMessage)
-          const actionProcessMessage = this.runSpanAction(matchMap)
-          return `<b>` + matchMap.matchContext + ' 명령을 실행했습니다.</b>' + actionProcessMessage
+
+        switch (this.actionType) {
+          case 'interactive':
+            this.$store.dispatch('chatbot/botPushAnswerMessage', {
+              content: spanFormatMessage,
+            })
+            const matchMap = getMatchMapOfspanFormatMessage('1', spanFormatMessage)
+            const actionProcessMessage = this.runSpanAction(matchMap)
+            return `<b>` + matchMap.matchContext + ' 명령을 실행했습니다.</b>' + actionProcessMessage
+          case 'prompted':
+            return spanFormatMessage
         }
       }
     },
@@ -327,10 +469,19 @@ export default {
   caret-color: transparent; /* 깜빡이는 커서 숨김 */
 }
 
-.chatbot-body {
+::v-deep .chatbot-body {
   display: flex;
   flex-direction: column;
   height: 100%;
+
+  span.chatbotIcon {
+    font-size: 14px;
+    background: black;
+    height: 25px;
+    width: 25px;
+    border-radius: 25px;
+    text-indent: -3px;
+  }
 }
 
 .chatbot-container {

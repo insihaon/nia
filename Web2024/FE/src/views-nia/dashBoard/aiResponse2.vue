@@ -228,6 +228,8 @@ export default {
         }, 100)
       } catch (error) {
         this.error(error)
+      } finally {
+        this.closeLoading(target)
       }
     },
 

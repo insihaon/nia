@@ -128,28 +128,68 @@ export default {
     wdata: function (value) {
       this.component = this.target
     },
+
+    alarmFocusTicketData(nVal, oVal) {
+      // 과거에는 감시 대상이였는데, 현재는 감시대상이 아니게 되었다면,
+      if (this.showAlarmFocusModeBtn && oVal.ticket_id === this.getCurrentWindowTicketId && nVal.ticket_id !== this.getCurrentWindowTicketId) {
+        console.log('감시대상이 변경되었네요! dialogNm : ' + this.wdata.dialogNm)
+        // (1) 현재 윈도우에 셋팅된 티켓 데이터 this.wdata.params.ticket를 바꾸고
+        let key = this.getParamTicketKey
+        let optionsData = {}
+        if (key === 'current') {
+          optionsData = nVal
+        } else if (key === 'tickets') {
+          optinosData = [nVal]
+        } else if (key === 'row'){
+          optinosData = {row : nVal}
+        } else {
+          throw error('/??')
+        }
+        
+        this.$store.dispatch('mdi/setWindowOptions', {
+          id: this.wdata.id,
+          options: {params: optionsData}
+        })
+
+        // (2) 자식 popup의 함수를 실행시켜서 기존 데이터를 reset하고, 새로운 티켓 정보로 다시 셋팅되도록 지시한다.
+        this.$refs.childComponent.setTicketDataForAlarmFocusTicketData(true)
+      }
+    },
   },
   computed: {
     ...mapState({
       currentMode: (state) => state.chatbot.currentMode,
       alarmFocusMode_chatMessages: (state) => state.chatbot.alarmFocusMode_chatMessages,
+      alarmFocusTicketData: (state) => state.chatbot.alarmFocusTicketData,
     }),
 
     isFocusWindow() {
       if (this.showAlarmFocusModeBtn) {
-        return this.alarmFocusMode_chatMessages[0].ticketData?.ticket_id === this.getCurrentWindowTicketId
+        return this.alarmFocusTicketData?.ticket_id === this.getCurrentWindowTicketId
       } else {
         return false
       }
     },
 
-    getCurrentWindowTicketId() {
+    getParamTicketKey() {
       if (this.wdata.params.tickets) {
-        return this.wdata.params.tickets[0].ticket_id
+        return 'tickets'
       } else if (this.wdata.params.row) {
-        return this.wdata.params.row.ticket_id
+        return 'row'
       } else {
-        return this.wdata.params.ticket_id
+        return 'current'
+      }
+    },
+
+    getCurrentWindowTicketId() {
+      // fn_openWindow 열때 설정되는 Param
+      switch (this.getParamTicketKey) {
+        case 'tickets': // niaTopology
+          return this.wdata.params[this.getParamTicketKey][0].ticket_id
+        case 'row': // aiResponse
+          return this.wdata.params[this.getParamTicketKey].ticket_id
+        case 'current': // 가장 일반적인 popup열 때
+          return this.wdata.params.ticket_id
       }
     },
 

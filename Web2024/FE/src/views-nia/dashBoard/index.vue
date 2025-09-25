@@ -198,7 +198,7 @@ export default {
       const columns = [
         { type: '', prop: 'alarmno', name: '알람번호', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, formatter: (row) => { return row.alarmno ?? '-' }, },
         { type: '', prop: 'alarmtime', name: '장애 발생시간', width: 200, alignItems: 'center', fixed: false, suppressMenu: true, formatter: (row) => { return this.formatterTimeStamp(row.alarmtime, 'YYYY/MM/DD-HH:mm:ss') }, },
-        { type: '', prop: '', name: '집중경보', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '집중경보', icon: 'chat-line-square', type: 'CHANGE_FOCUS', action: this.iconClickChangeFocusAlertMode.bind(this) }, },
+        { type: '', prop: '', name: '어시스턴트', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: this.CONSTANTS.nia.chatbotIcon.assistantIcon, icon: '', type: 'CHANGE_CHATBOT_FOCUS', action: this.iconClickChangeFocusAlertMode.bind(this) } },
         { type: '', prop: '', name: '마감', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '마감', icon: 'edit-outline', type: 'FIN', action: this.handleOpenEditModal.bind(this) }, },
         { type: '', prop: '', name: '조치', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '조치', icon: 'edit-outline', type: 'CONFIG_TEST', action: this.handleOpenEditModal.bind(this), }, },
         { type: '', prop: '', name: 'SOP이력', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: 'SOP', icon: 'circle-check', type: 'SOP', action: this.handleOpenEditModal.bind(this), }, },
@@ -362,6 +362,7 @@ export default {
     ...mapState({
       NiaMainEventText: (state) => state.chatbot.routerParameter.NiaMain,
       alarmFocusMode_chatMessages: (state) => state.chatbot.alarmFocusMode_chatMessages,
+      alarmFocusTicketData: (state) => state.chatbot.alarmFocusTicketData,
     }),
 
     chatbotCommand() {
@@ -376,17 +377,8 @@ export default {
     NiaMainEventText(nVal, oVal) {
       switch (nVal) {
         case this.chatbotCommand.focusModeCheckAlarm.action:
-          this.fn_openWindow('niaTopology', { showFullTopology: false, tickets: [this.alarmFocusMode_chatMessages[0].ticketData] }, null, { addX: -580 })
-          this.fn_openWindow('aiResponse', { row: this.alarmFocusMode_chatMessages[0].ticketData }, null, { addX: 580, addY: -20 })
-          break
-        case this.chatbotCommand.failover.action:
-          this.$store.dispatch('chatbot/botPushAnswerMessage', {
-            content:
-              `<b>${this.chatbotCommand.failover.label}를 위한 명령어 입니다.</b><br><br>` +
-              showNumberText(1, `${this.chatbotKeyMap.processFin.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), this.chatbotKeyMap.processFin.dialogNm, '')}<br>`) +
-              showNumberText(2, `${this.chatbotKeyMap.configTest.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), this.chatbotKeyMap.configTest.dialogNm, '')}<br>`) +
-              showNumberText(3, `${this.chatbotKeyMap.requestForAction.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), this.chatbotKeyMap.requestForAction.dialogNm, '')}<br>`),
-          })
+          this.fn_openWindow('niaTopology', { showFullTopology: false, tickets: [this.alarmFocusTicketData] }, null, { addX: -580 })
+          this.fn_openWindow('aiResponse', { row: this.alarmFocusTicketData }, null, { addX: 580, addY: -20 })
           break
       }
 
@@ -506,7 +498,11 @@ export default {
     },
 
     iconClickChangeFocusAlertMode(row) {
-      this.changeFocusAlertMode(row.ticket_id)
+      if (this.alarmFocusTicketData.ticket_id === row.ticket_id) {
+        this.$message('이미 어시스턴트가 활성화된 티켓입니다')
+      } else {
+        this.changeFocusAlertMode(row.ticket_id)
+      }
     },
 
     changeFocusAlertMode(ticketId) {
@@ -517,17 +513,19 @@ export default {
         const rowElement = agGridElement.querySelector(`.ag-center-cols-clipper .ag-row[row-index="${rowIndex}"]`)
         rowElement && rowElement.classList.remove('highlight-row')
         if (node.data.ticket_id === ticketId) {
-          if (!this.alarmFocusMode_chatMessages[0].ticketData.ticket_id) {
+          if (!this.alarmFocusTicketData.ticket_id) {
             this.$store.dispatch('chatbot/newAlarmFocusChat', { ticketData: node.data })
             this.fn_openWindow('chatbot')
             rowElement.classList.add('highlight-row')
-          } else if (this.alarmFocusMode_chatMessages[0].ticketData.ticket_id === node.data.ticket_id) {
+          } else if (this.alarmFocusTicketData.ticket_id === node.data.ticket_id) {
             this.$store.commit('chatbot/MODE_CHANGE', { newMode: 'alarmFocusMode' })
           } else {
             this.$confirm(
               `
-              기존과 다른 Ticket입니다. 채팅이 초기화됩니다.
-              진행하시겠습니까? (티켓ID : ${ticketId})`,
+              기존과 다른 Ticket입니다.
+              기존에 감시중이던 🟢팝업의 ticket_id가
+              <span style='color:red'>${ticketId}</span>로 변경되며 새로 데이터를 가져옵니다.
+              진행하시겠습니까?`,
               '집중경보 전환',
               {
                 confirmButtonText: '실행',
@@ -901,6 +899,16 @@ export default {
 @import '~@/styles/variables.scss';
 
 .NiaMain {
+  ::v-deep .CHANGE_CHATBOT_FOCUS-class {
+    font-size: 14px;
+    background: black;
+    height: 25px;
+    width: 25px;
+    border-radius: 25px;
+    margin-left: 10px;
+    text-indent: -3px;
+  }
+
   ::v-deep .splitter-pane {
     display: flex;
     min-width: 25% !important;
