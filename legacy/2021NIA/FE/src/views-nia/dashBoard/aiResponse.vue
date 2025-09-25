@@ -381,8 +381,8 @@ export default {
   },
 
   created() {
-    this.selectedRow = this.wdata?.params?.row
-    this.trafficInfo = this.wdata?.params?.trafficInfo ?? {
+    this.selectedRow = this.wdata?.params
+    this.trafficInfo = this.wdata?.params?.paramTrafficInfo ?? {
       root_cause_sysnamea: '',
       root_cause_sysnamez: '',
       root_cause_porta: '',
@@ -406,13 +406,13 @@ export default {
       }
 
       if (this.isShowChartTicketType) {
-        if (!this.wdata?.params['trafficInfo']) {
+        if (!this.wdata?.params['paramTrafficInfo']) {
           this.onLoadTrafficInfo()
         } else {
           this.onLoadTrafficChart()
         }
       } else {
-        if (!this.wdata?.params['trafficInfo']) {
+        if (!this.wdata?.params['paramTrafficInfo']) {
           this.onLoadTrafficInfo()
         }
 

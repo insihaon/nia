@@ -727,7 +727,7 @@ export default {
         this.fn_openWindow('requestForAction', row)
       } else if (type === 'ALARM') {
         // this.$refs.ModalAiResponse.open(param)
-        this.fn_openWindow('aiResponse', { row })
+        this.fn_openWindow('aiResponse', row)
       } else if (type === 'FIN') {
         // this.$refs.ModalFIN.open(param)
         this.fn_openWindow('processFin', row)

@@ -177,19 +177,17 @@ export default {
     isDebug() {
       return this.appOptions.debug
     },
-    ...mapState({
-      topologyEventText: (state) => state.chatbot.routerParameter[this.chatbotKeyMap.niaTopology.parameterKey],
-    }),
-    isModal() {
-      return !!this.wdata.params
+    chatbotKeyMap() {
+      return constants.nia.chatbotKeyMap
     },
-
     chatbotCommand() {
       return constants.nia.chatbotCommand
     },
-
-    chatbotKeyMap() {
-      return constants.nia.chatbotKeyMap
+    ...mapState({
+      topologyEventText: (state) => state.chatbot.routerParameter[constants.nia.chatbotKeyMap.niaTopology.parameterKey],
+    }),
+    isModal() {
+      return !!this.wdata.params
     },
   },
   watch: {
@@ -228,8 +226,13 @@ export default {
     },
   },
   created() {
-    this.paramTickets = this.wdata?.params.tickets || []
-    this.paramShowFullTopology = this.wdata?.params.showFullTopology
+    const keys = Object.keys(this.wdata?.params)
+    const isAllNumericKeys = keys.every((key, index) => {
+      return String(index) === key
+    })
+
+    this.paramTickets = isAllNumericKeys ? Object.values(this.wdata?.params) : [this.wdata?.params]
+    this.paramShowFullTopology = isAllNumericKeys
 
     const async = false
     this.addScript(['./extlib/map2d/lib/index_nia_bundle.js'], async)

@@ -2251,7 +2251,7 @@
             , predict.reg_datetime
         from nia.tb_ai_model model
         inner join nia.tb_ai_predict predict on model.model_id = predict.model_id
-        where model.model_id='6280'
+        where model.model_id='10581'
         order by predict_datetime desc
     </select>
 

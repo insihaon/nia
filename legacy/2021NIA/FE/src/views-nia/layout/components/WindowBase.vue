@@ -140,15 +140,13 @@ export default {
           optionsData = nVal
         } else if (key === 'tickets') {
           optinosData = [nVal]
-        } else if (key === 'row'){
-          optinosData = {row : nVal}
-        } else {
+        }  else {
           throw error('/??')
         }
-        
+
         this.$store.dispatch('mdi/setWindowOptions', {
           id: this.wdata.id,
-          options: {params: optionsData}
+          options: { params: optionsData },
         })
 
         // (2) 자식 popup의 함수를 실행시켜서 기존 데이터를 reset하고, 새로운 티켓 정보로 다시 셋팅되도록 지시한다.
@@ -174,9 +172,7 @@ export default {
     getParamTicketKey() {
       if (this.wdata.params.tickets) {
         return 'tickets'
-      } else if (this.wdata.params.row) {
-        return 'row'
-      } else {
+      }  else {
         return 'current'
       }
     },
@@ -184,10 +180,8 @@ export default {
     getCurrentWindowTicketId() {
       // fn_openWindow 열때 설정되는 Param
       switch (this.getParamTicketKey) {
-        case 'tickets': // niaTopology
+        case 'tickets': // niaTopology 전체보기 일때
           return this.wdata.params[this.getParamTicketKey][0].ticket_id
-        case 'row': // aiResponse
-          return this.wdata.params[this.getParamTicketKey].ticket_id
         case 'current': // 가장 일반적인 popup열 때
           return this.wdata.params.ticket_id
       }
