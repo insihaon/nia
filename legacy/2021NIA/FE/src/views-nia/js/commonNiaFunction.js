@@ -7,7 +7,7 @@ import { searchMessaging, errorMessaging1, errorMessaging2, errorMessaging3 } fr
 import constants from '@/min/constants'
 
 export function getInvisibleSpanParameter(routerPath, popupDialogName, action) {
-    return `<span style="display:none">[path]:${routerPath}, [popup]:${popupDialogName}, [action]:${action}</span>`
+    return `<span class="invisibleParameterSpan" style="display:none">[path]:${routerPath}, [popup]:${popupDialogName}, [action]:${action}</span>`
 }
 
 export function getNiaRouterPathByName(routerName, path = '', routes = niaRoute) {
@@ -145,8 +145,13 @@ export async function getSpanFormatMessageForDB(userQuestion) {
             }
         })
 
-        console.log('score Log : ', response.data)
-        return getSpanFormatMessage(response, '검색 결과를 찾았습니다\n\n', { showScore: true })
+        const spanFormatMessage = getSpanFormatMessage(response, '검색 결과를 찾았습니다\n\n', { showScore: true })
+
+        if (!isSpanFormatChatMessage(spanFormatMessage)) {
+            throw new Error('DB 결과는 Span 형식이어야 합니다.')
+        }
+
+        return spanFormatMessage
     } catch (error) {
         console.error('ElasticSearch 검색 오류:', error)
         throw error
@@ -192,7 +197,6 @@ function getSpanFormatMessage(response, messagePrefix, customObj = {}) {
         const hits = data.hits.hits
         let resultMessage = messagePrefix
 
-        const currentMode = store.state.chatbot.currentMode
         hits.forEach((hit, index) => {
             const source = hit._source
             const hiddenParameter = getInvisibleSpanParameter(source.path, source.popup, source.action)
@@ -202,9 +206,6 @@ function getSpanFormatMessage(response, messagePrefix, customObj = {}) {
                 resultMessage += ` <b>(${Number(hit._score).toFixed(1)}점)</b>`
             }
 
-            if (currentMode === 'questionMode' && source.popup.length > 0 && source.action.length === 0) {
-                resultMessage += `${constants.nia.chatbotIcon.popupWarning}`
-            }
             resultMessage += hiddenParameter
             resultMessage += '\n'
         })
@@ -215,15 +216,16 @@ function getSpanFormatMessage(response, messagePrefix, customObj = {}) {
     }
 }
 
-export function getMatchMapOfspanFormatMessage(userQuestion, spanFormatMessage) {
-    const matchMap = {
-        matchContext: '',
-        path: '',
-        popup: '',
-        action: '',
-    }
+export function isSpanFormatChatMessage(spanFormatMessage) {
+    return spanFormatMessage.length !== 0 && spanFormatMessage.includes(`class="invisibleParameterSpan"`)
+}
 
-    if (/^\d$/.test(userQuestion)) {
+export function getMatchMapOfspanFormatMessage(userQuestion, spanFormatMessage) {
+    const matchMap = { matchContext: '', path: '', popup: '', action: '', }
+
+    if (!isSpanFormatChatMessage(spanFormatMessage)) return false
+
+    if (/^\d+$/.test(userQuestion)) {
         const pattern = new RegExp(`${userQuestion}\\. (.*?)<span.*?\\[path\\]:(.*?)\\, \\[popup\\]:(.*?)\\, \\[action\\]:(.*?)\\<\\/span\\>`)
         const match = spanFormatMessage.match(pattern)
 
@@ -234,30 +236,19 @@ export function getMatchMapOfspanFormatMessage(userQuestion, spanFormatMessage) 
             matchMap.action = match[4].trim()
             return matchMap
         }
-    } else if (userQuestion.length > 0) {
-        const pattern = new RegExp(`\\d\\. .*?<span.*?\\[path\\]:.*?\\, \\[popup\\]:.*?\\, \\[action\\]:.*?\\<\\/span\\>`, 'g')
-        const matchs = spanFormatMessage.match(pattern)
+    } else {
+        const pattern = new RegExp(`\\d\\. ${userQuestion}<span.*?\\[path\\]:(.*?)\\, \\[popup\\]:(.*?)\\, \\[action\\]:(.*?)\\<\\/span\\>`)
+        const match = spanFormatMessage.match(pattern)
 
-        if (matchs) {
-            const fullString = matchs.find((matchText) => {
-                const pattern = new RegExp(`\\d\\. (.*?)<span.*?\\[path\\]:(.*?)\\, \\[popup\\]:(.*?)\\, \\[action\\]:(.*?)\\<\\/span\\>`)
-                const textMatch = matchText.match(pattern)
-                return textMatch && textMatch[1].replace(/\s/g, '').toLowerCase() === userQuestion.replace(/\s/g, '').toLowerCase()
-            })
-
-            if (fullString) {
-                const pattern = new RegExp(`\\d\\. (.*?)<span.*?\\[path\\]:(.*?)\\, \\[popup\\]:(.*?)\\, \\[action\\]:(.*?)\\<\\/span\\>`)
-                const lastMatch = fullString.match(pattern)
-
-                matchMap.matchContext = lastMatch[1].trim()
-                matchMap.path = lastMatch[2].trim()
-                matchMap.popup = lastMatch[3].trim()
-                matchMap.action = lastMatch[4].trim()
-                return matchMap
-            }
+        if (match) {
+            matchMap.matchContext = userQuestion
+            matchMap.path = match[1].trim()
+            matchMap.popup = match[2].trim()
+            matchMap.action = match[3].trim()
+            return matchMap
         }
     }
 
-    return matchMap
+    return false
 }
 
