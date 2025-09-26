@@ -2,7 +2,9 @@
   <div ref="chatbot-total" :class="{ [name]: true, 'w-full h-full': true }">
     <div class="chatbot-body">
       <div class="chat-header">
-        <h3>어시스턴트</h3>
+        <h3>
+          어시스턴트 <span :style="{ color: isQuestionMode ? 'red' : 'green' }">[{{ isQuestionMode ? 'OFF' : 'ON' }}]</span>
+        </h3>
         <p v-if="isQuestionMode">질문을 입력하고 답변을 받아보세요</p>
         <p v-else>
           [TICKET_ID: {{ alarmFocusMode_TicketData.ticket_id }}] [전표유형: {{ getTicketTypeHangle(alarmFocusMode_TicketData.ticket_type) }}] [장비명: {{ alarmFocusMode_TicketData.node_nm }}] [인터페이스명: {{ alarmFocusMode_TicketData.alarmloc }}]
@@ -28,7 +30,7 @@
               전체SOP개수 : {{ alarmFocusSopDataList.length }}개<br />
               <!-- <span v-for="(label, index2) in chartData.labels" :key="index2"> {{ label }} : {{ chartData.datasets[index2].data.length + '개' }} </span> -->
             </span>
-            <span v-else>SOP이력이 없어서 통계자료가 제공되지않습니다</span>
+            <span v-else>SOP이력이 없어서 SOP통계자료는 제공되지않습니다</span>
           </div>
           <div v-if="message.type !== botAlertText || isActiveBotAlert">
             <div class="message-content" @click="handlePathClick($event, message.content)" v-html="formatMessage(message.content)"></div>
@@ -43,7 +45,7 @@
         <button :disabled="isQuestionMode" class="utility-button" @click="openSop">SOP화면</button>
         <button :disabled="isQuestionMode" class="utility-button" @click="openConfigTest">조치화면</button>
         <button :disabled="isQuestionMode" class="utility-button" :style="{ 'background-color': isActiveBotAlert ? '#ff4949' : '#e5e7eb' }" @click="toggleIsActiveBotAlert">{{ isActiveBotAlert ? '경보 표시' : '경보 미표시' }}</button>
-        <button :disabled="isQuestionMode" class="utility-button" @click="actionSwitch">액션변경({{ actionType === 'interactive' ? 'I' : 'P' }})</button>
+        <button :disabled="isQuestionMode" class="utility-button" @click="actionSwitch">{{ actionType === 'expert' ? '전문가모드' : '안내모드' }}</button>
         <button :disabled="isQuestionMode" class="utility-button" @click="resetChat">채팅초기화</button>
       </div>
 
@@ -63,7 +65,7 @@ import { mapState } from 'vuex'
 import dialogOpenMixin from '@/mixin/dialogOpenMixin'
 import { Doughnut } from 'vue-chartjs'
 import { searchMessaging, errorMessaging1, errorMessaging2, errorMessaging3 } from '@/store/modules/chatbot.js'
-import { getNiaRouteNameByPath, getNiaRouteTitleByPath, getSpanFormatMessageForDB, getMatchMapOfspanFormatMessage } from '@/views-nia/js/commonNiaFunction'
+import { getNiaRouteNameByPath, getNiaRouteTitleByPath, getSpanFormatMessageForDB, getMatchMapOfspanFormatMessage, isSpanFormatChatMessage } from '@/views-nia/js/commonNiaFunction'
 import constants from '@/min/constants'
 import EventBus from '@/utils/event-bus'
 const routeName = 'chatbot'
@@ -333,7 +335,7 @@ export default {
       }
     },
 
-    getSpanFormatLastAnswer() {
+    getLastAnswerObj() {
       const botAnswer = this.getCurrentChatMessageArray.filter((m) => {
         if (m.type !== constants.nia.chatType.botAnswer) return
         if (m.content.includes(searchMessaging)) return
@@ -348,10 +350,6 @@ export default {
 
     runSpanAction(matchMap) {
       console.log('[matchMap] >> ' + 'path : ' + matchMap.path + ', popup :' + matchMap.popup + ', action :' + matchMap.action)
-
-      if (matchMap.matchContext.includes(constants.nia.chatbotIcon.popupWarning)) {
-        return '<br><br>질문모드에서는 팝업 기능이 제한됩니다. 집중경보모드에서 사용해주세요'
-      }
 
       let routerParameterTargetName = ''
       let text = ''
@@ -397,26 +395,29 @@ export default {
     },
 
     async SearchAndAction(userQuestion) {
-      const lastAnswerObj = this.getSpanFormatLastAnswer()
-      const spanFormatLastAnswerContent = lastAnswerObj.content
-      let matchMap = getMatchMapOfspanFormatMessage(userQuestion, spanFormatLastAnswerContent)
-      if (matchMap.matchContext?.length > 0) {
-        const actionProcessMessage = this.runSpanAction(matchMap)
-        return `<b>` + matchMap.matchContext + ' 명령을 실행했습니다.</b>' + actionProcessMessage
-      } else {
-        const spanFormatMessage = await getSpanFormatMessageForDB(userQuestion)
+      const lastAnswerObj = this.getLastAnswerObj()
 
-        switch (this.actionType) {
-          case 'interactive':
-            this.$store.dispatch('chatbot/botPushAnswerMessage', {
-              content: spanFormatMessage,
-            })
-            const matchMap = getMatchMapOfspanFormatMessage('1', spanFormatMessage)
-            const actionProcessMessage = this.runSpanAction(matchMap)
-            return `<b>` + matchMap.matchContext + ' 명령을 실행했습니다.</b>' + actionProcessMessage
-          case 'prompted':
-            return spanFormatMessage
+      if (isSpanFormatChatMessage(lastAnswerObj.content)) {
+        let matchMap = getMatchMapOfspanFormatMessage(userQuestion, lastAnswerObj.content)
+        if (matchMap) {
+          const actionProcessMessage = this.runSpanAction(matchMap)
+          return `<b>` + matchMap.matchContext + ' 명령을 실행했습니다.</b>' + actionProcessMessage
         }
+      }
+
+      const spanFormatMessage = await getSpanFormatMessageForDB(userQuestion)
+      switch (this.actionType) {
+        case constants.nia.chatbotActiontype.expert:
+          this.$store.dispatch('chatbot/botPushAnswerMessage', {
+            content: spanFormatMessage,
+          })
+
+          const matchMap = getMatchMapOfspanFormatMessage('1', spanFormatMessage)
+          if (!matchMap) throw new Error('DB의 span 형식이 잘못되었네요')
+          const actionProcessMessage = this.runSpanAction(matchMap)
+          return `<b>` + matchMap.matchContext + ' 명령을 실행했습니다.</b>' + actionProcessMessage
+        case constants.nia.chatbotActiontype.assist:
+          return spanFormatMessage
       }
     },
 

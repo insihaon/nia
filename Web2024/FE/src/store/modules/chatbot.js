@@ -54,7 +54,7 @@ function getDefaultAlarmFocusModeFirstChatMessages() {
 
 const defaultQuestionModeChatMessages = {
     type: constants.nia.chatType.botAnswer,
-    content: `안녕하세요 장애대응 챗봇입니다<br><span style='color: red'>현재 챗봇 비활성화 상태입니다</span><br>발행된 티켓의 <span class="chatbotIcon">${constants.nia.chatbotIcon.assistantIcon}</span>을 클릭하면 챗봇을 활성화할 수 있습니다`,
+    content: `안녕하세요, 장애대응 어시스턴트입니다.<br> 현재 저는 <span style='font-weight:1000; color:red'>휴면 상태</span>로 설정되어 있습니다.<br> 실시간 응대가 필요하실 경우, 발행된 티켓 옆의 <span class="chatbotIcon">${constants.nia.chatbotIcon.assistantIcon}</span> 아이콘을 눌러 저를 깨워주시면 즉시 응대를 시작하겠습니다.`,
     time: getCurrentTime(),
 }
 
@@ -66,7 +66,7 @@ const state = {
     alarmFocusMode_chatMessages: [getDefaultAlarmFocusModeFirstChatMessages()],
     alarmFocusTicketData: {},
     alarmFocusSopDataList: [],
-    actionType: constants.nia.chatbotActiontype.interactive
+    actionType: constants.nia.chatbotActiontype.assist
 }
 
 const mutations = {
@@ -80,11 +80,11 @@ const mutations = {
 
     SWTICH_ACTION(state) {
         switch (state.actionType) {
-            case constants.nia.chatbotActiontype.interactive:
-                state.actionType = constants.nia.chatbotActiontype.prompted
+            case constants.nia.chatbotActiontype.expert:
+                state.actionType = constants.nia.chatbotActiontype.assist
                 break
-            case constants.nia.chatbotActiontype.prompted:
-                state.actionType = constants.nia.chatbotActiontype.interactive
+            case constants.nia.chatbotActiontype.assist:
+                state.actionType = constants.nia.chatbotActiontype.expert
                 break
         }
     },
@@ -218,7 +218,14 @@ const actions = {
         }
 
         if (addContent) { content += addContent }
-        commit('PUSH_CHAT_MESSAGE', { content, type: isAlert ? constants.nia.chatType.botAlert : constants.nia.chatType.botAnswer, callBack: callBack })
+        if (state.currentMode === constants.nia.chatbotMode.questionMode) {
+            // 현재 질문 모드는 입력되는 것을 막아놓음
+            return
+        }
+        commit('PUSH_CHAT_MESSAGE', {
+            content, type: isAlert ? constants.nia.chatType.botAlert : constants.nia.chatType.botAnswer,
+            callBack: callBack
+        })
     },
 
     newAlarmFocusChat({ commit }, { ticketData }) {
