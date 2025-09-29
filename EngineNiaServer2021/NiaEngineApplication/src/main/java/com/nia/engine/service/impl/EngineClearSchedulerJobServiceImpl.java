@@ -136,7 +136,7 @@ public class EngineClearSchedulerJobServiceImpl {
 
     public void clearTicket(){
         /*
-        *
+        * RT의 자동마감
         * */
         try {
             LOGGER.info(">>>>>>>>> clearTicketCheck <<<<<<<<<<<<<<");
@@ -215,17 +215,19 @@ public class EngineClearSchedulerJobServiceImpl {
     }
 
     public void TicketClearPassing5Minute(){ //자가최적화 5분 지난 티켓 자동 클리어 & 포트다운
+        // 이상트래픽과 유해트래픽의 자동마감 프로세스
         /*
         * 2025-07-10 고성호
         * 티켓을 마감 처리하는 것이면 자가 최적화가 아니라 자동마감.. 같은데..
         * 그리고 자동마감이라면 포트다운이 아니라 포트 업이 맞는 것 같은데..
         * */
-//        시험 전 까지는 48시간 주기 마감.
+
         List<RCATicket> rcaTicketList = null;
         HashMap<String,String> map;
         HashMap<String, String> updateMap;
         String sopId = "";
         try {
+            // 시험 전 까지는 48시간 현재는 1시간 주기 마감. (ATT2, NTT)
             rcaTicketList = ticketService.selectRca48Ticket();
 
             if (rcaTicketList.size() > 0){
