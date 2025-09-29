@@ -248,6 +248,7 @@ public class RcaTicketManagerServiceImpl implements RcaTicketManagerService {
 
     @Override
     public void createRcaTicket(List<RcaResult> rcaResultList){
+        // RT 티켓 발행          
         LOGGER.info("==========>[RcaTicketManager] createRcaTicket : "+rcaResultList+"<==============");
         RCATicket rcaTicket;
         String ticketId;
