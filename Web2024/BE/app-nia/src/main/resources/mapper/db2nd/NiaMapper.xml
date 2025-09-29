@@ -135,6 +135,7 @@
         NODE_NUM,
         NODE_NM,
         ALARMLOC,
+        IF_NUM,
         T.TICKET_TYPE,
         TO_CHAR(ALARMTIME, 'YYYY-MM-DD HH24:MI:SS') AS ALARMTIME,
         TO_CHAR(FAULT_TIME, 'YYYY-MM-DD HH24:MI:SS') AS FAULT_TIME,
@@ -161,6 +162,7 @@
             NM.NODE_NUM AS NODE_NUM,
             NM.NODE_NM AS NODE_NM,
             ACM.ALARMLOC,
+            NULL AS IF_NUM,
             TC.TICKET_TYPE,
             TC.root_cause_type AS FAULT_TYPE,
             ACM.ALARMTIME AS ALARMTIME,
@@ -208,6 +210,7 @@
             nm.node_num AS NODE_NUM,
             nm.node_nm AS NODE_NM,
             pt.if_id AS ALARMLOC,
+            pt.if_num AS IF_NUM,
             TC.TICKET_TYPE,
             TC.root_cause_type AS FAULT_TYPE,
             TICKET_GENERATION_TIME AS ALARMTIME,
@@ -243,6 +246,7 @@
             SAM.NODE_NUM,
             SAM.NODE_NM,
             SAM.ALARMLOC,
+            NULL AS IF_NUM,
             'SYSLOG' AS TICKET_TYPE,
             NULL FAULT_TYPE,
             SAM.ALARMTIME AS ALARMTIME,
@@ -2251,7 +2255,13 @@
             , predict.reg_datetime
         from nia.tb_ai_model model
         inner join nia.tb_ai_predict predict on model.model_id = predict.model_id
-        where model.model_id='10581'
+        where 1=1
+        <if test="NODE_NUM != null">
+            AND model.NODE_NUM = #{NODE_NUM}
+        </if>
+        <if test="IF_NUM != null">
+            AND model.IF_NUM = #{IF_NUM}
+        </if>
         order by predict_datetime desc
     </select>
 
