@@ -177,16 +177,13 @@ export default {
               this.openNiaTopology(this.ipNetworkList)
             },
           },
-        ]
-
-        if (this.debug) {
-          menuItems.push({
+          {
             name: 'AI 장애대응(신규)',
             action: () => {
-              this.fn_openWindow('aiResponse2', this.ipNetworkList)
+              this.fn_openWindow('aiResponse2', event.node.data)
             },
-          })
-        }
+          },
+        ]
 
         return menuItems
       },
