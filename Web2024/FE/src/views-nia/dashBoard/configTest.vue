@@ -254,7 +254,19 @@ export default {
     async popupShowCommand() {
       if (!this.isFocusModeButNotFocus) {
         this.$store.dispatch('chatbot/botPushAnswerMessage', {
-          content: await getWindowActionList(constants.nia.chatbotKeyMap.configTest.dialogNm, constants.nia.chatbotKeyMap.configTest.popupName),
+          content:
+            `<b>[조치 화면]</b>입니다.
+            원격으로 장비를 포트다운, 포트리셋, 포트변경할 수 있습니다.<br>
+            장비에 대한 정보를 자동으로 설정했습니다. 정보를 확인하신 후에 <b>원격제어</b>를 진행해 주시면 됩니다.<br>
+            ${constants.nia.chatbotIcon.Information} 마감이 완료되었다면 <b>마감처리 화면</b>으로 이동해 주세요.
+            ${constants.nia.chatbotIcon.Information} 장애에 대한 좀 더 상세한 정보를 알고 싶으시면, <b>티켓 상세 확인</b>도 도와드릴 수 있습니다.<br>
+            ` +
+            (await getWindowActionList(
+              constants.nia.chatbotKeyMap.configTest.dialogNm,
+              constants.nia.chatbotKeyMap.configTest.popupName,
+              showNumberText(2, `${constants.nia.chatbotKeyMap.processFin.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), constants.nia.chatbotKeyMap.processFin.dialogNm, '')}<br>`) +
+                showNumberText(3, `${constants.nia.chatbotCommand.focusModeCheckAlarm.label}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', constants.nia.chatbotCommand.focusModeCheckAlarm.action)}<br>`)
+            )),
         })
       }
     },

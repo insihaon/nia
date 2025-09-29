@@ -158,7 +158,7 @@ export async function getSpanFormatMessageForDB(userQuestion) {
     }
 }
 
-export async function getWindowActionList(dialogNm, popupName) {
+export async function getWindowActionList(dialogNm, popupName, additionActionList = '') {
     try {
         const esClient = axios.create({
             baseURL: 'http://116.89.191.47:8001/es',
@@ -180,7 +180,9 @@ export async function getWindowActionList(dialogNm, popupName) {
             }
         })
 
-        return getSpanFormatMessage(response, `<b>${popupName} 화면에서 활용가능한 명령어입니다.</b>\n\n`, { showScore: false })
+        const spanFormatMessage = getSpanFormatMessage(response, `<b>${popupName} 화면에서 활용가능한 명령어입니다.</b>\n\n`, { showScore: false })
+
+        return spanFormatMessage + additionActionList + '<br>명령을 선택해주시면 실행을 도와드리며, 다른 작업을 원하시면 입력해주세요.'
     } catch (error) {
         console.error('ElasticSearch 검색 오류:', error)
         throw error
