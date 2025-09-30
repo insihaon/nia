@@ -116,7 +116,7 @@ var dialogOpenMixin = {
           component: () => import('@/views-nia/dashBoard/chatbot'),
           pageTitle: '어시스턴트',
           width: '600',
-          height: '800',
+          height: '900',
           resizeble: true,
           positionBottomLeft: true,
           notDuplicate: true

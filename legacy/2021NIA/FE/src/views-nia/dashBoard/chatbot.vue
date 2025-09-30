@@ -22,15 +22,37 @@
         </div>
       </div>
       <div v-else ref="chatMessagesBox" class="chat-messages">
-        <DoughnutChart v-if="alarmFocusSopDataList.length > 0" ref="donutChart" :chart-data="chartData" :options="chartOptions" style="height: 160px; width: 380px; border: 3px solid" />
+        <DoughnutChart v-if="alarmFocusSopDataList.length > 0" ref="donutChart" :plugins="[centerTextPlugin]" class="chatbot-donut-chart" :chart-data="chartData" :options="chartOptions" />
         <div v-for="(message, index) in alarmFocusMode_chatMessages" :key="index" :class="['message', message.type]">
           <div v-if="index === 0" class="message-content">
-            <span v-if="alarmFocusSopDataList.length > 0">
-              {{ alarmFocusTicketData.node_nm }} 장비에 대한 SOP 조치내용 통계<br />
-              전체SOP개수 : {{ alarmFocusSopDataList.length }}개<br />
-              <!-- <span v-for="(label, index2) in chartData.labels" :key="index2"> {{ label }} : {{ chartData.datasets[index2].data.length + '개' }} </span> -->
-            </span>
-            <span v-else>SOP이력이 없어서 SOP통계자료는 제공되지않습니다</span>
+            <div v-if="alarmFocusSopDataList.length > 0">
+              <div style="background-color: #1e293b; font-weight: 600; text-align: center; color: white">{{ alarmFocusTicketData.node_nm }} 장비에 대한 SOP 조치내용 통계</div>
+              <table class="sop-stats-table">
+                <tbody>
+                  <tr>
+                    <td>전체SOP</td>
+                    <td>{{ alarmFocusSopDataList.length }}개</td>
+                  </tr>
+                  <tr>
+                    <td>포트다운</td>
+                    <td>{{ chartData.datasets[0].data[0] }}개</td>
+                  </tr>
+                  <tr>
+                    <td>포트변경</td>
+                    <td>{{ chartData.datasets[0].data[1] }}개</td>
+                  </tr>
+                  <tr>
+                    <td>포트리셋</td>
+                    <td>{{ chartData.datasets[0].data[2] }}개</td>
+                  </tr>
+                  <tr>
+                    <td>기타</td>
+                    <td>{{ chartData.datasets[0].data[3] }}개</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <span v-else>SOP이력이 없어서 SOP통계자료가 제공되지않습니다</span>
           </div>
           <div v-if="message.type !== botAlertText || isActiveBotAlert">
             <div class="message-content" @click="handlePathClick($event, message.content)" v-html="formatMessage(message.content)"></div>
@@ -69,7 +91,46 @@ import { getNiaRouteNameByPath, getNiaRouteTitleByPath, getSpanFormatMessageForD
 import constants from '@/min/constants'
 import EventBus from '@/utils/event-bus'
 const routeName = 'chatbot'
-/* eslint-disable */
+
+const centerTextPlugin = {
+  id: 'centerTextPlugin', // 플러그인 ID
+  beforeDraw: (chart) => {
+    const total = chart.data.datasets[0].data.reduce((a, b) => a + b, 0)
+
+    if (total > 0) {
+      const { ctx, width, height } = chart
+      ctx.restore()
+
+      // 1. 텍스트 스타일 설정
+      const fontSize = (height / 150).toFixed(2)
+      ctx.font = `${fontSize}em sans-serif`
+      ctx.textBaseline = 'middle'
+      ctx.fillStyle = '#333' // 텍스트 색상
+
+      // 2. 텍스트 내용 정의
+      const totalLabel = '전체'
+      const totalValue = total.toLocaleString() + '개'
+
+      // 3. 중앙 좌표 계산
+      const centerX = width / 2 + 62
+      const centerY = height / 2 + 15
+
+      // 4. 레이블 그리기 (윗줄)
+      let text = totalLabel
+      let textX = Math.round(centerX - ctx.measureText(text).width / 2)
+      ctx.fillText(text, textX, centerY - 5) // 윗줄 렌더링
+
+      // 5. 값 그리기 (아랫줄)
+      text = totalValue
+      ctx.font = `${(fontSize * 0.9).toFixed(2)}em sans-serif`
+      textX = Math.round(centerX - ctx.measureText(text).width / 2)
+      ctx.fillText(text, textX, centerY + 15) // 아랫줄 렌더링
+
+      ctx.save()
+    }
+  },
+}
+
 export default {
   name: routeName,
   components: {
@@ -86,46 +147,58 @@ export default {
         },
       },
       mounted() {
-        const clonedData = JSON.parse(JSON.stringify(this.chartData))
-        const clonedOptions = JSON.parse(JSON.stringify(this.options || {}))
+        const clonedData = this._cloneChartData(this.chartData)
+        const clonedOptions = this._cloneOptionsPreservingFunctions(this.options)
         this.renderChart(clonedData, clonedOptions)
       },
       watch: {
         chartData: {
           deep: true,
           handler(newVal) {
-            const clonedData = JSON.parse(JSON.stringify(newVal))
-            const clonedOptions = JSON.parse(JSON.stringify(this.options || {}))
+            const clonedData = this._cloneChartData(newVal)
+            const clonedOptions = this._cloneOptionsPreservingFunctions(this.options)
             this.renderChart(clonedData, clonedOptions)
           },
         },
         options: {
           deep: true,
           handler(newVal) {
-            const clonedData = JSON.parse(JSON.stringify(this.chartData))
-            const clonedOptions = JSON.parse(JSON.stringify(newVal || {}))
+            const clonedData = this._cloneChartData(this.chartData)
+            const clonedOptions = this._cloneOptionsPreservingFunctions(newVal)
             this.renderChart(clonedData, clonedOptions)
           },
         },
       },
       methods: {
+        _cloneOptionsPreservingFunctions(options) {
+          const generateLabelsFn = options && options.legend && options.legend.labels && options.legend.labels.generateLabels
+          const clonedOptions = JSON.parse(JSON.stringify(options || {}))
+          if (generateLabelsFn) {
+            if (!clonedOptions.legend) clonedOptions.legend = {}
+            if (!clonedOptions.legend.labels) clonedOptions.legend.labels = {}
+            clonedOptions.legend.labels.generateLabels = generateLabelsFn
+          }
+          return clonedOptions
+        },
+        _cloneChartData(data) {
+          return JSON.parse(JSON.stringify(data))
+        },
         optionUpdate() {
-          const clonedData = JSON.parse(JSON.stringify(this.chartData))
-          const clonedOptions = JSON.parse(JSON.stringify(this.options || {}))
+          const clonedData = this._cloneChartData(this.chartData)
+          const clonedOptions = this._cloneOptionsPreservingFunctions(this.options)
           this.renderChart(clonedData, clonedOptions)
         },
         chartUpdate() {
-          const clonedData = JSON.parse(JSON.stringify(this.chartData))
-          const clonedOptions = JSON.parse(JSON.stringify(this.options || {}))
+          const clonedData = this._cloneChartData(this.chartData)
+          const clonedOptions = this._cloneOptionsPreservingFunctions(this.options)
           this.renderChart(clonedData, clonedOptions)
         },
       },
     },
   },
   directives: { elDragDialog },
-  mixins: [dialogOpenMixin],
-
   extends: Modal,
+  mixins: [dialogOpenMixin],
   props: {
     wdata: {
       type: Object,
@@ -140,12 +213,13 @@ export default {
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       userInput: '',
       isActiveBotAlert: false,
+      centerTextPlugin: centerTextPlugin,
       chartData: {
-        labels: [],
+        labels: ['포트다운', '포트변경', '포트리셋', '기타'],
         datasets: [
           {
-            backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
-            data: [],
+            backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', 'gray'],
+            data: [0, 0, 0, 0],
           },
         ],
       },
@@ -160,11 +234,31 @@ export default {
           fontColor: '#333',
         },
         legend: {
-          position: 'right',
+          position: 'left',
           align: 'center',
           labels: {
             usePointStyle: true,
             padding: 20,
+            generateLabels: function (chart) {
+              const data = chart.data
+              if (data.labels.length && data.datasets.length) {
+                const counts = data.datasets[0].data
+                return data.labels.map(function (label, i) {
+                  return {
+                    // 라벨에 개수 추가 (예: '포트다운: 5개')
+                    text: label + ': ' + counts[i] + '개',
+                    fillStyle: data.datasets[0].backgroundColor[i],
+                    hidden: isNaN(counts[i]) || counts[i] === 0,
+                    // Chart.js가 요구하는 기타 속성들...
+                    // lineCap: data.datasets[0].lineCap,
+                    // lineWidth: data.datasets[0].lineWidth,
+                    // strokeStyle: data.datasets[0].borderColor[i],
+                    index: i,
+                  }
+                })
+              }
+              return []
+            },
           },
         },
       },
@@ -236,19 +330,23 @@ export default {
 
   methods: {
     setDonutChartData() {
-      const accD = this.alarmFocusSopDataList.reduce((acc, d) => {
-        if (!acc[d.fault_type]) {
-          acc[d.fault_type] = []
-        }
-        acc[d.fault_type].push(d)
-        return acc
-      }, {})
-      this.chartData.labels.length = 0
-      this.chartData.datasets[0].data.length = 0
+      this.chartData.datasets[0].data = [0, 0, 0, 0]
 
-      Object.keys(accD).forEach((k) => {
-        this.chartData.labels.push(k)
-        this.chartData.datasets[0].data.push(accD[k].length)
+      this.alarmFocusSopDataList.forEach((data) => {
+        const datasets = this.chartData.datasets[0]
+        switch (data.faultType) {
+          case '포트다운':
+            datasets.data[0]++
+            break
+          case '포트변경':
+            datasets.data[1]++
+            break
+          case '포트리셋':
+            datasets.data[2]++
+            break
+          default: // 기타
+            datasets.data[3]++
+        }
       })
 
       console.log('Chart Data:', this.chartData)
@@ -274,10 +372,6 @@ export default {
         default:
           return ticketType
       }
-    },
-
-    openPopupDisabilityStatusHistoryManagement() {
-      this.fn_openWindow('disabilityStatusHistoryManagement', ticketData)
     },
 
     switchMode() {
@@ -398,7 +492,7 @@ export default {
       const lastAnswerObj = this.getLastAnswerObj()
 
       if (isSpanFormatChatMessage(lastAnswerObj.content)) {
-        let matchMap = getMatchMapOfspanFormatMessage(userQuestion, lastAnswerObj.content)
+        const matchMap = getMatchMapOfspanFormatMessage(userQuestion, lastAnswerObj.content)
         if (matchMap) {
           const actionProcessMessage = this.runSpanAction(matchMap)
           return `<b>` + matchMap.matchContext + ' 명령을 실행했습니다.</b>' + actionProcessMessage
@@ -406,18 +500,17 @@ export default {
       }
 
       const spanFormatMessage = await getSpanFormatMessageForDB(userQuestion)
-      switch (this.actionType) {
-        case constants.nia.chatbotActiontype.expert:
-          this.$store.dispatch('chatbot/botPushAnswerMessage', {
-            content: spanFormatMessage,
-          })
+      if (this.actionType === constants.nia.chatbotActiontype.expert) {
+        this.$store.dispatch('chatbot/botPushAnswerMessage', {
+          content: spanFormatMessage,
+        })
 
-          const matchMap = getMatchMapOfspanFormatMessage('1', spanFormatMessage)
-          if (!matchMap) throw new Error('DB의 span 형식이 잘못되었네요')
-          const actionProcessMessage = this.runSpanAction(matchMap)
-          return `<b>` + matchMap.matchContext + ' 명령을 실행했습니다.</b>' + actionProcessMessage
-        case constants.nia.chatbotActiontype.assist:
-          return spanFormatMessage
+        const matchMap = getMatchMapOfspanFormatMessage('1', spanFormatMessage)
+        if (!matchMap) throw new Error('DB의 span 형식이 잘못되었네요')
+        const actionProcessMessage = this.runSpanAction(matchMap)
+        return `<b>` + matchMap.matchContext + ' 명령을 실행했습니다.</b>' + actionProcessMessage
+      } else if (this.actionType === constants.nia.chatbotActiontype.assist) {
+        return spanFormatMessage
       }
     },
 
@@ -446,18 +539,17 @@ export default {
     async handlePathClick(event, content) {
       if (event.target.classList.contains('move-link')) {
         event.preventDefault()
-        switch (event.target.innerHTML) {
-          case '[진행]':
-            // 집중경보 모드 전환
-            const ticketMatch = content.match(/>티켓ID: (.*?)<\/span>/)
-            const ticketId = ticketMatch ? ticketMatch[1] : null
-            if (!ticketId) {
-              this.$alert(`예상치 못한 에러 해당 장비에 ticketId가 존재하지 않습니다. 내용 : ${content}`)
-              return
-            }
 
-            window.changeFocusAlertMode(ticketId)
-            break
+        if (event.target.innerHTML === '[진행]') {
+          // 집중경보 모드 전환
+          const ticketMatch = content.match(/>티켓ID: (.*?)<\/span>/)
+          const ticketId = ticketMatch ? ticketMatch[1] : null
+          if (!ticketId) {
+            this.$alert(`예상치 못한 에러 해당 장비에 ticketId가 존재하지 않습니다. 내용 : ${content}`)
+            return
+          }
+
+          window.changeFocusAlertMode(ticketId)
         }
       }
     },
@@ -468,6 +560,23 @@ export default {
 <style lang="scss" scoped>
 .chatbot {
   caret-color: transparent; /* 깜빡이는 커서 숨김 */
+}
+
+::v-deep .chatbot-donut-chart {
+  border: none;
+  background-color: #fcfcfc; /* 아주 옅은 배경색 */
+  border-radius: 12px; /* 부드러운 모서리 */
+  padding: 0px 10px; /* 차트와 주변 여백 확보 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 은은한 그림자 효과 */
+  height: 200px;
+  width: 400px;
+}
+
+::v-deep .chatbot-command-header {
+  background-color: #1e293b;
+  font-weight: 600;
+  text-align: center;
+  color: white;
 }
 
 ::v-deep .chatbot-body {
@@ -652,6 +761,30 @@ export default {
     &:disabled {
       background: #9ca3af;
       cursor: not-allowed;
+    }
+  }
+}
+
+// SOP 통계 테이블
+.sop-stats-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 6px;
+
+  td {
+    padding: 4px 6px;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 12px;
+    color: #334155;
+
+    &:first-child {
+      width: 60%;
+      font-weight: 600;
+    }
+
+    &:last-child {
+      text-align: right;
+      color: #0f172a;
     }
   }
 }

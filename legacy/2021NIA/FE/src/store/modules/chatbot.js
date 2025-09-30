@@ -41,13 +41,13 @@ function getCurrentTime() {
 function getDefaultAlarmFocusModeFirstChatMessages() {
     return {
         type: constants.nia.chatType.botAnswer,
-        content: `<b>아래 메뉴를 통해 원하시는 업무를 선택하실 수 있습니다</b><br>
+        content: `<b>아래 메뉴를 통해 원하시는 업무를 선택하실 수 있습니다</b>
     ` +
             showNumberText(1, `${chatbotCommand.focusModeCheckAlarm.label}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', chatbotCommand.focusModeCheckAlarm.action)}<br>`) +
             showNumberText(2, `${chatbotKeyMap.processFin.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), chatbotKeyMap.processFin.dialogNm, '')}<br>`) +
             showNumberText(3, `${chatbotKeyMap.configTest.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), chatbotKeyMap.configTest.dialogNm, '')}<br>`) +
-            showNumberText(4, `${chatbotKeyMap.requestForAction.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), chatbotKeyMap.requestForAction.dialogNm, '')}<br><br>`) +
-            `${constants.nia.chatbotComment.lastComment}`,
+            showNumberText(4, `${chatbotKeyMap.requestForAction.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), chatbotKeyMap.requestForAction.dialogNm, '')}<br>`) +
+            `<br>${constants.nia.chatbotComment.lastComment}`,
         time: getCurrentTime(),
     }
 }
