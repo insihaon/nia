@@ -426,7 +426,14 @@ export default {
     async popupShowCommand() {
       if (!this.isFocusModeButNotFocus) {
         this.$store.dispatch('chatbot/botPushAnswerMessage', {
-          content: await getWindowActionList(constants.nia.chatbotKeyMap.aiResponse.dialogNm, constants.nia.chatbotKeyMap.aiResponse.popupName),
+          content:
+            `<div class="chatbot-command-header">AI 장애대응화면</div>
+          AI에서 지정한 임계치를 초과한 시점의 실제 트래픽과 AI 임계치가 어느정도인지 차트를 통하여 확인할 수 있습니다.
+          <br>${constants.nia.chatbotIcon.Information} 차트 라벨을 클릭으로 차트를 표시하거나 숨깁니다.
+          ${constants.nia.chatbotIcon.Information} 장애 시점은 MBPS 차트에서 확인할 수 있으며 OUT, IN 중 장애가 발생한 정보만 초기에 표시합니다.
+          ${constants.nia.chatbotIcon.Information} BPS는 대역폭을 확인하여 대역폭 포화를 감지합니다.
+          ${constants.nia.chatbotIcon.Information} PPS는 Packet 개수로 DDOS공격을 확인합니다.<br>
+          ` + (await getWindowActionList(constants.nia.chatbotKeyMap.aiResponse.dialogNm, constants.nia.chatbotKeyMap.aiResponse.popupName)),
         })
       }
     },

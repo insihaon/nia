@@ -117,7 +117,7 @@ export default {
       requestForAction: { popupName: '상황전파', parameterKey: 'requestForAction', dialogNm: 'requestForAction' },
       aiResponse: { popupName: 'AI 장애대응', parameterKey: 'aiResponse', dialogNm: 'aiResponse' },
       niaTopology: { popupName: '토폴로지', parameterKey: 'niaTopology', dialogNm: 'niaTopology' },
-      disabilityStatusHistoryManagement: { popupName: '장애현황 및 이력관리 팝업', parameterKey: 'DisabilityStatusHistoryManagement', dialogNm: 'disabilityStatusHistoryManagement' },
+      disabilityStatusHistoryManagement: { popupName: '장애현황 및 이력관리', parameterKey: 'DisabilityStatusHistoryManagement', dialogNm: 'disabilityStatusHistoryManagement' },
     },
 
     chatbotDashboardPopupMap: {

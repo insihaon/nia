@@ -262,7 +262,10 @@ export default {
     async popupShowCommand() {
       if (!this.isFocusModeButNotFocus) {
         this.$store.dispatch('chatbot/botPushAnswerMessage', {
-          content: await getWindowActionList(constants.nia.chatbotKeyMap.niaTopology.dialogNm, constants.nia.chatbotKeyMap.niaTopology.popupName),
+          content:
+            `<div class="chatbot-command-header">토폴로지 화면</div>
+          장애가 발생한 노드의 위치를 표시하며, 연관된 노드와 링크를 토폴로지로 제공합니다.<br>
+          ` + (await getWindowActionList(constants.nia.chatbotKeyMap.niaTopology.dialogNm, constants.nia.chatbotKeyMap.niaTopology.popupName)),
         })
       }
     },

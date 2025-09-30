@@ -180,9 +180,9 @@ export async function getWindowActionList(dialogNm, popupName, additionActionLis
             }
         })
 
-        const spanFormatMessage = getSpanFormatMessage(response, `<b>${popupName} 화면에서 활용가능한 명령어입니다.</b>\n\n`, { showScore: false })
+        const spanFormatMessage = getSpanFormatMessage(response, `<b>${popupName} 화면에서 활용가능한 명령어입니다.</b><br>`, { showScore: false })
 
-        return spanFormatMessage + additionActionList + '<br>명령을 선택해주시면 실행을 도와드리며, 다른 작업을 원하시면 입력해주세요.'
+        return spanFormatMessage + additionActionList + '<br><br>다음 명령을 입력해주시면 실행을 도와드리며, 다른 작업을 원하시면 말씀해주세요.'
     } catch (error) {
         console.error('ElasticSearch 검색 오류:', error)
         throw error
@@ -190,7 +190,7 @@ export async function getWindowActionList(dialogNm, popupName, additionActionLis
 }
 
 export function showNumberText(number, text) {
-    return `${number}. ${text}`
+    return `<span style="border: 1px solid #ddd; border-radius: 50px; background-color: #f7f7f7; padding: 5px; font-weight: 600; line-height: 15px; display:inline-block; margin: 2px 2px 2px 0px">${number}. ${text}</span>`
 }
 
 function getSpanFormatMessage(response, messagePrefix, customObj = {}) {
@@ -203,13 +203,14 @@ function getSpanFormatMessage(response, messagePrefix, customObj = {}) {
             const source = hit._source
             const hiddenParameter = getInvisibleSpanParameter(source.path, source.popup, source.action)
 
-            resultMessage += `${index + 1}. ${source.name}`
+            let tempMessage = `${source.name}`
             if (customObj.showScore) {
-                resultMessage += ` <b>(${Number(hit._score).toFixed(1)}점)</b>`
+                tempMessage += ` <b>(${Number(hit._score).toFixed(1)}점)</b>`
             }
 
-            resultMessage += hiddenParameter
-            resultMessage += '\n'
+            tempMessage += hiddenParameter
+            resultMessage += showNumberText(index + 1, tempMessage)
+            // resultMessage += '\n'
         })
 
         return resultMessage
