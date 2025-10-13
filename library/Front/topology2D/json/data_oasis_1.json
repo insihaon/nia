@@ -1,0 +1,108 @@
+{
+    "config": {
+        "converter": "oasis",
+        "options": {
+            "node_fix_size": true,
+            "node_r_width": 0,
+            "node_width": 40,
+            "node_height": 35,
+            "node_badge_size": 25,
+            "node_r_out_color": "#f9f9fb",
+            "node_r_in_color": "#f9f9fb",
+            "--svg-text-color": "#474747",
+            "node_r_opacity": 0,
+            "node_text_size": 12,
+            "node_drag_use": true,
+            "link_text_field": "name",
+            "link_traffic_arrow_show": false,
+            "link_traffic_r": 5,
+            "link_traffic_r_color": "#fff",
+            "grid_mode": false,
+            "action_mode": "selectBlur",
+            "nodeImage": {
+                "CU": { "path": "images/node/cu.png" },
+                "CU1": { "path": "images/node/cu_1.png" },
+                "CU2": { "path": "images/node/cu_2.png" },
+                "CU3": { "path": "images/node/cu_3.png" },
+                "CU4": { "path": "images/node/cu_4.png" },
+                "DU": { "path": "images/node/du.png"},
+                "DU1": { "path": "images/node/du_1.png" },
+                "DU2": { "path": "images/node/du_2.png" },
+                "DU3": { "path": "images/node/du_3.png" },
+                "DU4": { "path": "images/node/du_4.png" },
+                "RU": { "path": "images/node/ru.png" },
+                "RU1": { "path": "images/node/ru_1.png" },
+                "RU2": { "path": "images/node/ru_2.png" },
+                "RU3": { "path": "images/node/ru_3.png" },
+                "RU4": { "path": "images/node/ru_4.png" },
+                "BLACK_CIRCLE": { "path": "images/node/black-circle.png", "width": 10, "height": 10 },
+                "RED_CIRCLE": { "path": "images/node/red-circle.png", "width": 15, "height": 15 },
+                "BLUE_CIRCLE": { "path": "images/node/blue-circle.png", "width": 15, "height": 15 }
+            }
+        },
+        "map": {
+            "width": "100%",
+            "height": "100%",
+            "path": "images/busan.png",
+            "opacity": "1",
+            "screen_range": {
+                "p0": {
+                    "scrX": 440,
+                    "scrY": 0,
+                    "lat": 35.387003473829594,
+                    "lng": 128.7961749981692
+                },
+                "p1": {
+                    "scrX": 1500,
+                    "scrY": 1030,
+                    "lat": 34.986231,
+                    "lng": 129.306842
+                }
+            }
+        },
+        "zoom": {
+            "disable": false,
+            "node": {
+                "min_scale": 1
+            },
+            "desc": {
+                "max_value": 35
+            }
+        }
+    },    
+    "nodes": [
+        { "id": "CU-1", "device_name": "해운대 동래구센터", "device_type": "CU", "fx": 1151.1932983398438, "fy": 427.302490234375, "image": { "path": "images/node/cu.png" }, "index": 0 },
+        { "id": "DU-1-1", "device_name": "DU-1-1", "parent_id": "CU-1", "device_type": "BLACK_CIRCLE", "text_color": "none", "fx": 915.4705810546875, "fy": 319.3109436035156, "image": { "path": "images/node/black-circle.png", "width": 10, "height": 10 }, "index": 1 },
+        { "id": "RU-1-1-1", "device_name": "경보발생 기지국명1", "parent_id": "DU-1-1", "device_type": "RU1", "fx": 1225.4537353515625, "fy": 84.03362274169922, "image": { "path": "images/node/ru_1.png" }, "index": 2 },
+        { "id": "RU-1-1-2", "device_name": "경보발생 기지국명2", "parent_id": "DU-1-1", "device_type": "RU1", "fx": 833.4454345703125, "fy": 515.4873657226562, "image": { "path": "images/node/ru_1.png" }, "index": 3 },
+        { "id": "DU-1-2", "device_name": "DU-1-2", "parent_id": "CU-1", "device_type": "BLACK_CIRCLE", "text_color": "none", "fx": 790.2940673828125, "fy": 687.1176147460938, "image": { "path": "images/node/black-circle.png", "width": 10, "height": 10 }, "index": 4 },
+        { "id": "DU-1-3", "device_name": "DU-1-3", "parent_id": "CU-1", "device_type": "BLACK_CIRCLE", "text_color": "none", "fx": 1357.9244384765625, "fy": 299.89076232910156, "image": { "path": "images/node/black-circle.png", "width": 10, "height": 10 }, "index": 5 },
+        { "id": "DU-1-4", "device_name": "DU-1-4", "parent_id": "CU-1", "device_type": "BLACK_CIRCLE", "text_color": "none", "fx": 636.579833984375, "fy": 460.9580078125, "image": { "path": "images/node/black-circle.png", "width": 10, "height": 10 }, "index": 6 },
+        { "id": "DU-1-5", "device_name": "DU-1-5", "parent_id": "CU-1", "device_type": "BLACK_CIRCLE", "text_color": "none", "fx": 1005.0504150390625, "fy": 356.82354736328125, "image": { "path": "images/node/black-circle.png", "width": 10, "height": 10 }, "index": 7 },
+        { "id": "DU-1-6", "device_name": "DU-1-6", "parent_id": "CU-1", "device_type": "BLACK_CIRCLE", "text_color": "none", "fx": 1089.7730712890625, "fy": 406.72269439697266, "image": { "path": "images/node/black-circle.png", "width": 10, "height": 10 }, "index": 8 },
+        { "id": "DU-1-7", "device_name": "DU-1-7", "parent_id": "CU-1", "device_type": "BLACK_CIRCLE", "text_color": "none", "fx": 806.5210571289062, "fy": 818.6723022460938, "image": { "path": "images/node/black-circle.png", "width": 10, "height": 10 }, "index": 9 },
+        { "id": "DU-1-8", "device_name": "DU-1-8", "parent_id": "CU-1", "device_type": "BLACK_CIRCLE", "text_color": "none", "fx": 890.43701171875, "fy": 429.4622039794922, "image": { "path": "images/node/black-circle.png", "width": 10, "height": 10 }, "index": 10 },
+        { "id": "DU-1-9", "device_name": "DU-1-9", "parent_id": "CU-1", "device_type": "BLACK_CIRCLE", "text_color": "none", "fx": 674.2184448242188, "fy": 574.56298828125, "image": { "path": "images/node/black-circle.png", "width": 10, "height": 10 }, "index": 11 },
+        { "id": "DU-1-10", "device_name": "DU-1-10", "parent_id": "CU-1", "device_type": "BLACK_CIRCLE", "text_color": "none", "fx": 1407.420166015625, "fy": 154.100830078125, "image": { "path": "images/node/black-circle.png", "width": 10, "height": 10 }, "index": 12 },
+        { "id": "DU-1-11", "device_name": "DU-1-11", "parent_id": "CU-1", "device_type": "BLACK_CIRCLE", "text_color": "none", "fx": 1309.361328125, "fy": 414.50421142578125, "image": { "path": "images/node/black-circle.png", "width": 10, "height": 10 }, "index": 13 },
+        { "id": "DU-1-12", "device_name": "DU-1-12", "parent_id": "CU-1", "device_type": "BLACK_CIRCLE", "text_color": "none", "fx": 1203.1260986328125, "fy": 523.6974792480469, "image": { "path": "images/node/black-circle.png", "width": 10, "height": 10 }, "index": 14 },
+        { "id": "DU-1-13", "device_name": "DU-1-13", "parent_id": "CU-1", "device_type": "BLACK_CIRCLE", "text_color": "none", "fx": 667.0587768554688, "fy": 742.6554565429688, "image": { "path": "images/node/black-circle.png", "width": 10, "height": 10 }, "index": 15 },
+        { "id": "DU-1-14", "device_name": "DU-1-14", "parent_id": "CU-1", "device_type": "BLACK_CIRCLE", "text_color": "none", "fx": 779.218505859375, "fy": 430.6890563964844, "image": { "path": "images/node/black-circle.png", "width": 10, "height": 10 }, "index": 16 },
+        { "id": "DU-1-15", "device_name": "DU-1-15", "parent_id": "CU-1", "device_type": "BLACK_CIRCLE", "text_color": "none", "fx": 1384.1175537109375, "fy": 50.739498138427734, "image": { "path": "images/node/black-circle.png", "width": 10, "height": 10 }, "index": 17 },
+        { "id": "DU-1-16", "device_name": "DU-1-16", "parent_id": "CU-1", "device_type": "BLACK_CIRCLE", "text_color": "none", "fx": 1023.4034423828125, "fy": 677.20166015625, "image": { "path": "images/node/black-circle.png", "width": 10, "height": 10 }, "index": 18 },
+        { "id": "DU-1-17", "device_name": "DU-1-17", "parent_id": "CU-1", "device_type": "BLACK_CIRCLE", "text_color": "none", "fx": 910.3529052734375, "fy": 693.6554565429688, "image": { "path": "images/node/black-circle.png", "width": 10, "height": 10 }, "index": 19 },
+        { "id": "DU-1-18", "device_name": "DU-1-18", "parent_id": "CU-1", "device_type": "BLACK_CIRCLE", "text_color": "none", "fx": 1153.43701171875, "fy": 122.9916000366211, "image": { "path": "images/node/black-circle.png", "width": 10, "height": 10 }, "index": 20 },
+        { "id": "DU-1-19", "device_name": "DU-1-19", "parent_id": "CU-1", "device_type": "BLACK_CIRCLE", "text_color": "none", "fx": 1220.84033203125, "fy": 319.9579620361328, "image": { "path": "images/node/black-circle.png", "width": 10, "height": 10 }, "index": 21 },
+        { "id": "DU-1-20", "device_name": "DU-1-20", "parent_id": "CU-1", "device_type": "BLACK_CIRCLE", "text_color": "none", "fx": 745.1763916015625, "fy": 640.9747924804688, "image": { "path": "images/node/black-circle.png", "width": 10, "height": 10 }, "index": 22 },
+        { "id": "DU-1-21", "device_name": "DU-1-21", "parent_id": "CU-1", "device_type": "BLACK_CIRCLE", "text_color": "none", "fx": 826.9999389648438, "fy": 646.15966796875, "image": { "path": "images/node/black-circle.png", "width": 10, "height": 10 }, "index": 23 },
+        { "id": "DU-1-22", "device_name": "DU-1-22", "parent_id": "CU-1", "device_type": "BLACK_CIRCLE", "text_color": "none", "fx": 1138.92431640625, "fy": 220.37815856933594, "image": { "path": "images/node/black-circle.png", "width": 10, "height": 10 }, "index": 24 },
+        { "id": "DU-1-23", "device_name": "DU-1-23", "parent_id": "CU-1", "device_type": "BLACK_CIRCLE", "text_color": "none", "fx": 547.5377807617188, "fy": 825.2688598632812, "image": { "path": "images/node/black-circle.png", "width": 10, "height": 10 }, "index": 25 },
+        { "id": "DU-1-24", "device_name": "DU-1-24", "parent_id": "CU-1", "device_type": "BLACK_CIRCLE", "text_color": "none", "fx": 1302.941162109375, "fy": 47.764705657958984, "image": { "path": "images/node/black-circle.png", "width": 10, "height": 10 }, "index": 26 },
+        { "id": "DU-1-25", "device_name": "DU-1-25", "parent_id": "CU-1", "device_type": "BLACK_CIRCLE", "text_color": "none", "fx": 865.361328125, "fy": 774.0084228515625, "image": { "path": "images/node/black-circle.png", "width": 10, "height": 10 }, "index": 27 },
+        { "id": "DU-1-26", "device_name": "DU-1-26", "parent_id": "CU-1", "device_type": "BLACK_CIRCLE", "text_color": "none", "fx": 578.0924682617188, "fy": 615.663818359375, "image": { "path": "images/node/black-circle.png", "width": 10, "height": 10 }, "index": 28 },
+        { "id": "DU-1-27", "device_name": "DU-1-27", "parent_id": "CU-1", "device_type": "BLACK_CIRCLE", "text_color": "none", "fx": 867.8235473632812, "fy": 719.84033203125, "image": { "path": "images/node/black-circle.png", "width": 10, "height": 10 }, "index": 29 },
+        { "id": "DU-1-28", "device_name": "DU-1-28", "parent_id": "CU-1", "device_type": "BLACK_CIRCLE", "text_color": "none", "fx": 575.0335693359375, "fy": 745.0587768554688, "image": { "path": "images/node/black-circle.png", "width": 10, "height": 10 }, "index": 30 },
+        { "id": "DU-1-29", "device_name": "DU-1-29", "parent_id": "CU-1", "device_type": "BLACK_CIRCLE", "text_color": "none", "fx": 939.9999389648438, "fy": 648.27734375, "image": { "path": "images/node/black-circle.png", "width": 10, "height": 10 }, "index": 31 },
+        { "id": "DU-1-30", "device_name": "DU-1-30", "parent_id": "CU-1", "device_type": "BLACK_CIRCLE", "text_color": "none", "fx": 1010.1259765625, "fy": 288.638671875, "image": { "path": "images/node/black-circle.png", "width": 10, "height": 10 }, "index": 32 }        
+    ]
+}

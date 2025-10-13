@@ -1,0 +1,40 @@
+{
+    "nodes": [],
+    "links": [],
+    "config": {
+        "converter": "oasis",
+        "options": {
+            "node_r_show": false,
+            "node_width": 20,
+            "node_height": 20,
+            "node_badget_weight": 1.5
+        },
+        "map": {
+            "path": "images/background3.png",
+            "opacity": "0.5",
+            "screen_range": {
+                "p0": {
+                    "scrX": 697,
+                    "scrY": 15,
+                    "lat": 38.5887183,
+                    "lng": 126.11830289999968
+                },
+                "p1": {
+                    "scrX": 1234,
+                    "scrY": 1054,
+                    "lat": 33.19787889999985,
+                    "lng": 129.57934729999957
+                }
+            }
+        },
+        "zoom": {
+            "reset": true,
+            "initScale": 1
+        }        
+    },
+    "data": [        
+        {"id": "1", "device_name": "경남도청", "lat": "35.238303", "lng": "128.692593"},
+        {"id": "2", "device_name": "부산시청", "lat": "35.179758", "lng": "129.075043"},
+        {"id": "3", "device_name": "대전시청", "lat": "36.350170900000236", "lng": "127.38431569999996"}
+    ]
+}

@@ -1,0 +1,78 @@
+{
+    "config": {
+        "converter": "oasis",
+        "options": {
+            "node_fix_size": true,
+            "node_r_width": 30,
+            "node_width": 40,
+            "node_height": 35,
+            "node_badge_size": 25,
+            "node_r_out_color": "#f9f9fb",
+            "node_r_in_color": "#f9f9fb",
+            "--svg-text-color": "#474747",
+            "node_r_opacity": 0,
+            "node_text_size": 12,
+            "node_drag_use": true,
+            "link_text_field": "name",
+            "link_traffic_arrow_show": false,
+            "link_traffic_r": 5,
+            "link_traffic_r_color": "#fff",
+            "grid_mode": false,
+            "nodeImage": {
+                "CU": { "path": "images/node/cu.png" },
+                "CU1": { "path": "images/node/cu_1.png" },
+                "CU2": { "path": "images/node/cu_2.png" },
+                "CU3": { "path": "images/node/cu_3.png" },
+                "CU4": { "path": "images/node/cu_4.png" },
+                "DU": { "path": "images/node/du.png"},
+                "DU1": { "path": "images/node/du_1.png" },
+                "DU2": { "path": "images/node/du_2.png" },
+                "DU3": { "path": "images/node/du_3.png" },
+                "DU4": { "path": "images/node/du_4.png" },
+                "RU": { "path": "images/node/ru.png" },
+                "RU1": { "path": "images/node/ru_1.png" },
+                "RU2": { "path": "images/node/ru_2.png" },
+                "RU3": { "path": "images/node/ru_3.png" },
+                "RU4": { "path": "images/node/ru_4.png" },
+                "BLACK_CIRCLE": { "path": "images/node/black-circle.png", "width": 10, "height": 10 },
+                "RED_CIRCLE": { "path": "images/node/red-circle.png", "width": 15, "height": 15 },
+                "BLUE_CIRCLE": { "path": "images/node/blue-circle.png", "width": 30, "height": 30 }
+            }
+        },
+        "map": {
+            "width": "100%",
+            "height": "100%",
+            "path": "images/gyeongnam.png",
+
+            "opacity": "1",
+            "screen_range": {
+                "p0": {
+                    "scrX": 390,
+                    "scrY": 0,
+                    "lat": 35.910843,
+                    "lng": 127.563820
+                },
+                "p1": {
+                    "scrX": 1533,
+                    "scrY": 1024,
+                    "lat": 34.701233,
+                    "lng": 129.217164
+                }
+            }
+
+        },
+        "zoom": {
+            "disable": false,
+            "node": {
+                "min_scale": 1
+            },
+            "desc": {
+                "max_value": 35
+            }
+        }
+
+    },    
+    "nodes": [        
+        {"id": "CU-1", "device_name": "경남도청", "device_type": "CU", "index": 0, "lat": "35.238303", "lng": "128.692593"}        
+    ]
+}

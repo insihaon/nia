@@ -1,0 +1,5 @@
+**/*.lnk
+**/*.log
+**/.history
+**/.settings
+**/.vscode

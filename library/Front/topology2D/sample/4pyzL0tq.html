@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title></title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="googlebot" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- <script type="text/javascript" src="/js/babel/babel.js"></script>
+
+<script type="text/javascript" src="/js/lib/dummy.js"></script>
+
+<link rel="stylesheet" type="text/css" href="/css/result-light.css"> -->
+
+
+  <style id="compiled-css" type="text/css">
+      .container__graph {
+  background-color: lightsteelblue;
+}
+
+.result__header {
+  background-color: aliceblue;
+  text-align: center;
+  color: cadetblue;
+  text-transform: uppercase;
+  font-family: cursive;
+}
+
+.result__name {
+  background-color: bisque;
+  text-align: center;
+  text-transform: uppercase;
+  color: chocolate;
+  font-family: cursive;
+  margin-bottom: 10px;
+  padding: 6px;
+}
+    /* EOS */
+  </style>
+
+  <script id="insert"></script>
+
+
+</head>
+<body>
+      <script src="https://unpkg.com/react@16.2.0/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16.2.0/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/d3@4.13.0/build/d3.min.js"></script>
+  <div id="root"></div>
+
+
+    <script type="text/jsx" data-presets="es2017,react,stage-0" data-plugins="transform-decorators-legacy">//<![CDATA[
+
+
+///////////////////////////////////////////////////////////
+/////// Functions and variables
+///////////////////////////////////////////////////////////
+
+function Force() {
+  var width = 1080,
+  height = 250,
+  enterNode = (selection) => {
+      var circle = selection.select('circle')
+        .attr("r", 25)
+        .style("fill", 'tomato' ) 
+        .style("stroke", "bisque")
+        .style("stroke-width", "3px")
+
+      selection.select('text')
+        .style("fill", "honeydew")
+        .style("font-weight", "600")
+        .style("text-transform", "uppercase")
+        .style("text-anchor", "middle")
+        .style("alignment-baseline", "middle")
+        .style("font-size", "10px")
+        .style("font-family", "cursive")
+      },
+  updateNode = (selection) => {
+      selection
+        .attr("transform", (d) => "translate(" + d.x + "," + d.y + ")")
+        .attr("cx", function(d) { return d.x = Math.max(30, Math.min(width - 30, d.x)); })
+        .attr("cy", function(d) { return d.y = Math.max(30, Math.min(height - 30, d.y)); })
+    },
+
+  enterLink = (selection) => {
+    selection
+      .attr("stroke-width", 3)
+      .attr("stroke","bisque")
+  },
+
+  updateLink = (selection) => {
+    selection
+      .attr("x1", (d) => d.source.x)
+      .attr("y1", (d) => d.source.y)
+      .attr("x2", (d) => d.target.x)
+      .attr("y2", (d) => d.target.y);
+  },
+
+  updateGraph = (selection) => {
+    selection.selectAll('.node')
+      .call(updateNode)
+    selection.selectAll('.link')
+      .call(updateLink);
+  },
+  color = d3.scaleOrdinal(d3.schemeCategory10),
+  nsp = {},
+      
+  initForce = (nodes, links) => {
+    nsp.force = d3.forceSimulation(nodes)
+      .force("charge", d3.forceManyBody().strength(-200))
+      .force("link", d3.forceLink(links).distance(70))
+      .force("center", d3.forceCenter().x(nsp.width /2).y(nsp.height / 2))
+      .force("collide", d3.forceCollide([5]).iterations([5]));
+  },
+
+  setNodes = (nodes) => {
+    nsp.force.nodes(nodes);
+  },
+
+  setLinks = (links) => {
+    nsp.force.force("link", d3.forceLink(links).distance(70));
+  },
+
+  dragStarted = (d) => {
+    if (!d3.event.active) nsp.force.alphaTarget(0.3).restart();
+    d.fx = d.x;
+    d.fy = d.y
+  },
+
+  dragging = (d) => {
+    d.fx = d3.event.x;
+    d.fy = d3.event.y
+  },
+      
+  dragEnded = (d) => {
+      if (!d3.event.active) nsp.force.alphaTarget(0);
+      d.fx = null;
+      d.fy = null
+  },
+
+  tick = (node) => {
+    var d3Graph = d3.select(ReactDOM.findDOMNode(node)).select('svg');
+    nsp.force.on('tick', () => {
+      d3Graph.call(updateGraph)
+    });
+  };
+
+  nsp.addDragHandlerToNode = function (node) {
+    node.call(d3.drag()
+      .on("start", dragStarted)
+      .on("drag", dragging)
+      .on("end", dragEnded));
+  };
+
+  nsp.enterNode = enterNode;
+  nsp.updateNode = updateNode;
+  nsp.enterLink = enterLink;
+  nsp.updateLink = updateLink;
+  nsp.width = width;
+  nsp.height = height;
+  nsp.initForce = initForce;
+  nsp.setNodes = setNodes;
+  nsp.setLinks = setLinks;
+  nsp.dragStarted = dragStarted;
+  nsp.dragging = dragging;
+  nsp.dragEnded = dragEnded;
+  nsp.tick = tick;
+  
+  return nsp
+  
+}
+
+class ForceGraph extends React.Component {
+    constructor(props) {
+        super(props);
+        this.force = Force();
+    }
+
+    initGraph() {
+        // for best practices, this should be altered to copy data
+        // because d3 changes it, and props should generally not change
+        const data = this.props.data;
+        this.force.initForce(data.nodes, data.links);
+        this.force.tick(this);
+    }
+
+    componentDidMount() {
+        this.initGraph();
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        var prevData = prevProps.data;
+        var data = this.props.data;
+        if (prevData.nodes !== data.nodes || prevData.links !== data.links) {
+          this.force.setNodes(data.nodes);
+          this.force.setLinks(data.links);
+          d3.select(ReactDOM.findDOMNode(this)).selectAll('.node').data(data.nodes);
+          d3.select(ReactDOM.findDOMNode(this)).selectAll('.link').data(data.links);
+          this.force.force.alpha(1).restart();
+        }
+    }
+
+    render() {
+        const {name, id, nodes, links} = this.props.data;
+        const force = this.force;
+        return (
+            <div className="result__box" key={id} value={name}>
+                <h5 className="result__name">{name}</h5>
+                <div className={"container__graph"}>
+                <svg className="graph" width={force.width} height={force.height}>
+                    <g>
+                        {links.map((link) => {
+                            return (
+                                <Link
+                                    key={link.lineID}
+                                    data={link}
+                                    force={force}
+                                />);
+                        })}
+                    </g>
+                    <g>
+                        {nodes.map((node) => {
+                            return (
+                                <Node
+                                    data={node}
+                                    label={node.label}
+                                    force={force}
+                                    key={node.id}
+                                />);
+                        })}
+                    </g>
+                </svg>
+                </div>
+            </div>
+        );
+      }
+
+
+};
+
+////////////////////////////////////////////////////////////////////////////
+/////// class App is the parent component of Link and Node
+////////////////////////////////////////////////////////////////////////////
+
+class App extends React.Component {
+  constructor(props){
+      super(props)
+      this.state = {
+        data: [{
+            name: "one",
+            id: 65,
+            nodes: [{
+                "name": "fruit",
+                "id": 0
+              },
+              {
+                "name": "apple",
+                "id": 1
+              },
+              {
+                "name": "orange",
+                "id": 2
+              },
+              {
+                "name": "banana",
+                "id": 3
+              }
+            ],
+            links: [{
+                "source": 0,
+                "target": 1,
+                "lineID": 1
+              },
+              {
+                "source": 0,
+                "target": 2,
+                "lineID": 2
+              },
+              {
+                "source": 3,
+                "target": 0,
+                "lineID": 3
+              }
+            ]
+          },
+          {
+            name: "two",
+            id: 66,
+            nodes: [{
+                "name": "Me",
+                "id": 0
+              },
+              {
+                "name": "Jim",
+                "id": 1
+              },
+              {
+                "name": "Bob",
+                "id": 2
+              },
+              {
+                "name": "Jen",
+                "id": 3
+              }
+            ],
+            links: [{
+                "source": 0,
+                "target": 1,
+                "lineID": 1
+              },
+              {
+                "source": 0,
+                "target": 2,
+                "lineID": 2
+              },
+              {
+                "source": 1,
+                "target": 2,
+                "lineID": 3
+              },
+              {
+                "source": 2,
+                "target": 3,
+                "lineID": 4
+              },
+            ]
+          }
+        ]
+      }
+    }
+    componentDidMount() {
+      var that = this;
+      setTimeout(function () {
+        // For best practices, this should be changed so data is copied
+        var data = that.state.data;
+        data[1].nodes.push({name: "Hank", id: 4});
+        data[1].links.push({source: 2, target:4, lineID: 5});
+        that.setState({data: data})
+      }, 3000);
+    }
+
+    
+    render() {
+        const data = JSON.parse(JSON.stringify(this.state.data));
+        return (
+            <div className="result__container">
+                <h5 className="result__header">Data</h5>
+                {data.map((graphData) => (<ForceGraph data={graphData} key={graphData.id} />))}
+            </div>
+        )
+    }
+}
+
+///////////////////////////////////////////////////////////
+/////// Link component
+///////////////////////////////////////////////////////////
+
+class Link extends React.Component {
+
+    componentDidMount() {
+      this.d3Link = d3.select(ReactDOM.findDOMNode(this))
+        .datum(this.props.data)
+        .call(this.props.force.enterLink);
+    }
+  
+    componentDidUpdate() {
+      // updates are handled by the force simulation
+    }
+
+    render() {
+      return (
+        <line className='link' />
+      );
+    }
+}
+
+///////////////////////////////////////////////////////////
+/////// Node component
+///////////////////////////////////////////////////////////
+
+class Node extends React.Component {
+
+    componentDidMount() {
+      this.d3Node = d3.select(ReactDOM.findDOMNode(this))
+        .datum(this.props.data);
+      this.d3Node.call(this.props.force.enterNode);
+      this.d3Node.call(this.props.force.addDragHandlerToNode);
+    }
+
+    componentDidUpdate() {
+      // updates are handled by the force simulation
+    }
+
+    render() {
+      return (
+        <g className='node'>
+          <circle onClick={this.props.addLink}/>
+          <text>{this.props.data.name}</text>
+        </g>
+      );
+    }
+}
+
+debugger
+ReactDOM.render(<App />, document.querySelector('#root'))
+
+
+  //]]></script>
+
+  <script>
+    // tell the embed parent frame the height of the content
+    if (window.parent && window.parent.parent){
+      window.parent.parent.postMessage(["resultsFrame", {
+        height: document.body.getBoundingClientRect().height,
+        slug: "4pyzL0tq"
+      }], "*")
+    }
+
+    // always overwrite window.name, in case users try to set it manually
+    window.name = "result"
+  </script>
+
+
+</body>
+</html>
