@@ -3,6 +3,7 @@ package com.nia.ip.sdn.linkage.config;
 import com.nia.ip.sdn.linkage.vo.config.NiaDatabaseConfigVo;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
@@ -55,5 +56,12 @@ public class NiaDatabaseConfiguration {
     @Bean(name = "NiaSqlSessionTemplate")
     public SqlSessionTemplate getSqlSessionTemplate() throws Exception{
         return new SqlSessionTemplate(getSqlSessionFactory());
+    }
+
+    // ✨ BATCH 전용 SqlSessionTemplate 추가 (이름을 다르게 지정해야 함)
+    @Bean(name = "NiaBatchSqlSessionTemplate")
+    public SqlSessionTemplate getBatchSqlSessionTemplate() throws Exception{
+        // ExecutorType.BATCH를 지정하여 BATCH 모드로 동작하는 SqlSessionTemplate 생성
+        return new SqlSessionTemplate(getSqlSessionFactory(), ExecutorType.BATCH);
     }
 }

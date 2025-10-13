@@ -9,8 +9,9 @@
     <select id="selectLinkTrafficVoList" resultType="com.nia.ip.sdn.linkage.vo.LinkTrafficVo" parameterType="int">
         SELECT ID, If_Id, txBitRate, rxBitRate, txPktRate, rxPktRate, MeasuredDateTime
           FROM optroute.linktraffic
-         WHERE ID <![CDATA[ > ]]> #{id}
-         ORDER BY ID
+        WHERE ID <![CDATA[ > ]]> #{id}
+        ORDER BY ID
+        LIMIT 1000
     </select>
 </mapper>
 
