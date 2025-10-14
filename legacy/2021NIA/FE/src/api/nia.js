@@ -788,6 +788,16 @@ export function apiSelectAiChartData(params = {}) {
   })
 }
 
+export function apiSelectCurrentChartData(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_CURRENT_CHART_DATA',
+    data: params
+  })
+}
+
 export function apiSelectNiaCableAlarmList(params = {}) {
   return http({
     url: '/selectList',

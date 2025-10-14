@@ -585,12 +585,20 @@ export default {
   height: 100%;
 
   span.chatbotIcon {
-    font-size: 14px;
-    background: black;
-    height: 25px;
-    width: 25px;
+    font-size: 17px;
+    background: #1e293b;
+    color: white;
+    height: 26px;
+    width: 26px;
+    display: inline-block;
     border-radius: 25px;
-    text-indent: -3px;
+
+    .el-icon-chat-dot-square {
+      display: inline-block;
+      position: relative;
+      top: 1px;
+      left: 5px;
+    }
   }
 }
 

@@ -231,11 +231,10 @@
             SOP.AI_ACCURACY
         FROM rca.tb_rca_ticket_current TC
         INNER JOIN rca.tb_rca_ticket_al_current AL ON TC.TICKET_ID = AL.TICKET_ID
-        INNER JOIN resource.tb_port_mst PT ON AL.ROOT_CAUSE_PORTA = PT.IF_ID  
-        INNER JOIN resource.tb_node_mst ND ON PT.NODE_ID = ND.NODE_ID 
-        LEFT OUTER JOIN resource.tb_node_mst NM ON NM.NODE_ID = AL.ROOT_CAUSE_SYSNAMEA
+        INNER JOIN resource.tb_node_mst NM ON NM.NODE_ID = AL.ROOT_CAUSE_SYSNAMEA
+        INNER JOIN resource.tb_port_mst PT ON AL.ROOT_CAUSE_PORTA = PT.IF_ID and PT.node_id = NM.node_id
         LEFT JOIN nia.tb_sop SOP ON TC.TICKET_ID = SOP.TICKET_ID
-        WHERE TC.TICKET_TYPE IN ('NFTT', 'FTT', 'ATT2', 'NTT')
+        WHERE TC.TICKET_TYPE IN ('NFTT', 'FTT', 'ATT2', 'NTT', 'ATT2_AIB')
             AND TC.PARENT_TICKET_ID IS NULL
             AND TC.TICKET_GENERATION_TIME <![CDATA[ >= ]]> now() - INTERVAL '7' DAY
         UNION ALL
@@ -2230,39 +2229,66 @@
         </where>
     </select>
 
+    <select id="SELECT_CURRENT_CHART_DATA" parameterType ="hashmap" resultType="hashmap">
+        SELECT 
+            if_id
+            , tx_bit_rate
+            , rx_bit_rate
+            , tx_pkt_rate
+            , rx_pkt_rate
+            , measured_datetime
+        FROM IP_SDN.TB_LINK_TRAFFIC
+        WHERE MEASURED_DATETIME >= CAST(${FIT_DATE} AS TIMESTAMP)
+            AND if_id = ${IF_ID}
+    </select>
+
     <select id="SELECT_AI_CHART_DATA" parameterType ="hashmap" resultType="hashmap">
-        select 
+        SELECT
             model.model_id
             , model.node_num
             , model.if_num
-            , model.if_id
-            , model.predict_datetime
-            , model.in_alertyn
-            , model.out_alertyn
-            , model.predictyn
-            , model.fit_date
-            , predict.ds
-            , predict.in_yhat
-            , predict.in_yhat_lower
-            , predict.in_yhat_upper
-            , predict.in_trend
-            , predict.in_y
-            , predict.out_yhat
-            , predict.out_yhat_lower
-            , predict.out_yhat_upper
-            , predict.out_trend
-            , predict.out_y
-            , predict.reg_datetime
-        from nia.tb_ai_model model
-        inner join nia.tb_ai_predict predict on model.model_id = predict.model_id
-        where 1=1
+            , model.ipsdn_if_id
+            , DATE_TRUNC('hour', predict.ds) AS ds  
+            , MAX(pm.if_speed) if_speed
+            , MAX(model.predict_datetime) AS predict_datetime
+            , MAX(model.in_alertyn) AS in_alertyn
+            , MAX(model.in_alert_datetime) AS in_alert_datetime
+            , MAX(model.out_alert_datetime) AS out_alert_datetime
+            , MAX(model.out_alertyn) AS out_alertyn
+            , MAX(model.predictyn) AS predictyn
+            , MAX(model.fit_date) AS fit_date
+            , MAX(model.fit_sttime) AS fit_sttime
+            , MAX(model.fit_endtime) AS fit_endtime
+            , AVG(predict.in_yhat) AS in_yhat
+            , AVG(predict.in_yhat_lower) AS in_yhat_lower
+            , AVG(predict.in_yhat_upper) AS in_yhat_upper
+            , AVG(predict.in_trend) AS in_trend
+            , AVG(predict.in_y) AS in_y
+            , AVG(predict.out_yhat) AS out_yhat
+            , AVG(predict.out_yhat_lower) AS out_yhat_lower
+            , AVG(predict.out_yhat_upper) AS out_yhat_upper
+            , AVG(predict.out_trend) AS out_trend
+            , AVG(predict.out_y) AS out_y
+            , MAX(predict.reg_datetime) AS reg_datetime
+        FROM nia.tb_ai_model model
+        INNER JOIN nia.tb_ai_predict predict ON model.model_id = predict.model_id
+        inner join resource.tb_port_mst pm on pm.if_num = model.if_num
+        WHERE 1=1
         <if test="NODE_NUM != null">
             AND model.NODE_NUM = #{NODE_NUM}
         </if>
         <if test="IF_NUM != null">
             AND model.IF_NUM = #{IF_NUM}
         </if>
-        order by predict_datetime desc
+        AND predict.reg_datetime <![CDATA[ >= ]]> DATE_TRUNC('day', CURRENT_TIMESTAMP)
+        AND predict.reg_datetime <![CDATA[ < ]]> DATE_TRUNC('day', CURRENT_TIMESTAMP) + '1 day'::interval
+        GROUP BY
+            model.model_id
+            , model.node_num
+            , model.if_num
+            , model.ipsdn_if_id
+            , DATE_TRUNC('hour', predict.ds)  
+        ORDER BY ds ASC
     </select>
 
     <select id="SELECT_NIA_CABLE_ALARM_LIST" parameterType="hashmap" resultType="hashmap">
@@ -2457,36 +2483,36 @@
             , coalesce(cast (node.fy as integer), 100) as y
         from (
             SELECT DISTINCT ON (nm.node_id, nm.node_nm, nm.ip_addr)
-                 row_number() over () AS index
+                row_number() over () AS index
                 , nm.node_num
                 , nm.node_id AS id
-                 , nm.node_nm AS device_name
-                 , nm.ip_addr AS ip_addr
-                 , '4' as device_type
-                 , case when nm.admin_yn = 'W' then true
-                        else false end as visible
-                 , np.fx as fx  
-                 , np.fy  as fy
+                , nm.node_nm AS device_name
+                , nm.ip_addr AS ip_addr
+                , '4' as device_type
+                , case when nm.admin_yn = 'W' then true
+                    else false end as visible
+                , np.fx as fx  
+                , np.fy  as fy
             FROM resource.tb_node_mst nm
-                      LEFT OUTER JOIN resource.tb_node_position_info np ON np.node_id = nm.node_id AND np.topology_type = #{TYPE}
+            LEFT OUTER JOIN resource.tb_node_position_info np ON np.node_id = nm.node_id AND np.topology_type = #{TYPE}
             where np.fx is not null
             UNION 
             SELECT distinct on (em.tid, em.sysname, em.model)
-                 row_number() over () AS index
-                 , null as node_num
-                 , em.tid AS id
-                 , em.sysname  AS device_name
-                 , em.tid AS ip_addr
-                 , CASE model
-                 WHEN 'Utrans-6300p-H3' THEN '1'
-                 WHEN 'Utrans-6300p-V9' THEN '0'
-                 ELSE '2'
-                 END AS device_type
-                 , true as visible
-                 , np.fx as fx
-                 , np.fy  as fy
-             FROM nia.tb_equip_mst em
-                  LEFT OUTER JOIN resource.tb_node_position_info np ON np.node_id = em.tid AND np.topology_type= #{TYPE}
+                row_number() over () AS index
+                , null as node_num
+                , em.tid AS id
+                , em.sysname  AS device_name
+                , em.tid AS ip_addr
+                , CASE model
+                WHEN 'Utrans-6300p-H3' THEN '1'
+                WHEN 'Utrans-6300p-V9' THEN '0'
+                ELSE '2'
+                END AS device_type
+                , true as visible
+                , np.fx as fx
+                , np.fy  as fy
+            FROM nia.tb_equip_mst em
+            LEFT OUTER JOIN resource.tb_node_position_info np ON np.node_id = em.tid AND np.topology_type= #{TYPE}
             order by node_num
         ) as node
     </select>
@@ -2551,30 +2577,16 @@
                 AND     e2e.node_idz NOT LIKE '%n9k%' ) AS link;
     </select>
 
-    <insert id="UPDATE_NODE_POSITION" parameterType="java.util.List">
-        DELETE FROM resource.tb_node_position_info
-        WHERE topology_type = #{TYPE};
-        INSERT
-        INTO    resource.tb_node_position_info
-                (
-                        node_type,
-                        node_id,
-                        node_image_path,
-                        fx,
-                        fy,
-                        topology_type
-                )
-                VALUES
-                <foreach collection="NODES" item="item" separator=",">
-                (
-                        #{item.node_type},
-                        #{item.node_id},
-                        #{item.node_image_path},
-                        #{item.fx},
-                        #{item.fy},
-                        #{item.topology_type}
-                )
-                </foreach>
-    </insert>
+    <update id="UPDATE_NODE_POSITION" parameterType="java.util.List">
+        <foreach collection="NODES" item="item" separator=";">
+        UPDATE resource.tb_node_position_info
+        SET
+            fx = #{item.fx},
+            fy = #{item.fy}
+        WHERE
+            node_id = #{item.node_id}
+            AND topology_type = #{item.topology_type}
+        </foreach>
+    </update>
 
 </mapper>

@@ -168,6 +168,8 @@ public interface NiaMapper extends BaseDataMapper {
 
         public List<ResultMap> SELECT_AI_CHART_DATA(HashMap<String, Object> map);
 
+        public List<ResultMap> SELECT_CURRENT_CHART_DATA(HashMap<String, Object> map);
+
         public List<ResultMap> SELECT_NIA_CABLE_ALARM_LIST(HashMap<String, Object> map);
 
         public List<ResultMap> SELECT_NIA_ABNORMAL_TRAFFIC2_LIST(HashMap<String, Object> map);
