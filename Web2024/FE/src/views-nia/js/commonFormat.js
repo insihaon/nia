@@ -45,7 +45,10 @@ export function getAlarmType(row, col, value, index) {
       result = '광레벨'
       break
     case 'ATT2':
-      result = '이상 트래픽'
+      result = '이상 트래픽(Model-A)'
+      break
+    case 'ATT2_AIB':
+      result = '이상 트래픽(Model-C)'
       break
     case 'NTT':
       result = '유해 트래픽'

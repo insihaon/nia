@@ -1,8 +1,11 @@
 import Vue from 'vue'
 import Cookies from 'js-cookie'
-
 import 'normalize.css/normalize.css' // a modern alternative to CSS resets
 import 'vue2-animate/dist/vue2-animate.min.css'
+
+import Chart from 'chart.js'
+import zoom from 'chartjs-plugin-zoom'
+Chart.plugins.register(zoom)
 
 import Element from 'element-ui'
 import './styles/element-variables.scss'

@@ -24,7 +24,7 @@
           <i v-if="isFocusWindow" class="circleBtn">🟢</i>
           <i v-else class="circleBtn" @click="changeFocusTarget">🔴</i>
         </el-tooltip>
-        <el-tooltip v-else-if="showQuestionModeBtn" class="item" effect="dark" content="어시스턴트 모드(클릭시 집중경보 전환)" placement="top">
+        <el-tooltip v-else-if="showQuestionModeBtn" class="item" effect="dark" content="클릭시 집중경보로 전환됩니다" placement="top">
           <i class="circleBtn" @click="changeFocusTarget">🟤</i>
         </el-tooltip>
       </transition>
@@ -140,7 +140,7 @@ export default {
           optionsData = nVal
         } else if (key === 'tickets') {
           optinosData = [nVal]
-        }  else {
+        } else {
           throw error('/??')
         }
 
@@ -172,7 +172,7 @@ export default {
     getParamTicketKey() {
       if (this.wdata.params.tickets) {
         return 'tickets'
-      }  else {
+      } else {
         return 'current'
       }
     },

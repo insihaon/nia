@@ -34,28 +34,78 @@
           </el-card>
         </el-col>
         <el-col :span="12" style="height: 100%">
-          <el-card shadow="never" style="height: 100%" :body-style="{ padding: '10px', height: '100%' }">
+          <el-card shadow="never" style="height: 100%" :body-style="{ padding: '10px', height: '100%', overflow: 'auto' }">
             <div slot="header">
               <span><i class="el-icon-document" />티켓 정보</span>
             </div>
-            <ul style="text-align: left; overflow: auto; height: calc(100% - 40px)">
-              <li>알람번호 : {{ selectedRow.alarmno }}</li>
-              <li>장애 발생시간 : {{ selectedRow.alarmtime }}</li>
-              <li>티켓ID : {{ selectedRow.ticket_id }}</li>
-              <li>상태 : {{ selectedRow.status }}</li>
-              <li>티켓타입 : {{ selectedRow.ticket_type }}</li>
-              <li>장애유형 : {{ selectedRow.fault_type }}</li>
-              <li>장애정보 : {{ selectedRow.alarmmsg }}</li>
-              <li>알람 원본메시지 : {{ selectedRow.alarmmsg_original }}</li>
-              <li>장애내용 : {{ selectedRow.ticket_rca_result_code }}</li>
-              <li>장애원인 : {{ selectedRow.ticket_rca_result_dtl_code }}</li>
-              <li>장비ID : {{ selectedRow.node_num }}</li>
-              <li>장비명 : {{ selectedRow.node_nm }}</li>
-              <li>인터페이스명 : {{ selectedRow.alarmloc }}</li>
-              <li>근원알람개수 : {{ selectedRow.total_related_alarm_cnt }}</li>
-              <li>IP주소 : {{ selectedRow.ip_addr }}</li>
-              <li>AI결과피드백 : {{ selectedRow.ai_accuracy }}</li>
-            </ul>
+            <table class="ticket-info-table">
+              <tbody>
+                <tr>
+                  <td>알람번호</td>
+                  <td>{{ selectedRow.alarmno || noDataText }}</td>
+                </tr>
+                <tr>
+                  <td>장애 발생시간</td>
+                  <td>{{ selectedRow.alarmtime || noDataText }}</td>
+                </tr>
+                <tr>
+                  <td>티켓ID</td>
+                  <td>{{ selectedRow.ticket_id || noDataText }}</td>
+                </tr>
+                <tr>
+                  <td>상태</td>
+                  <td>{{ selectedRow.status || noDataText }}</td>
+                </tr>
+                <tr>
+                  <td>티켓타입</td>
+                  <td>{{ selectedRow.ticket_type || noDataText }}</td>
+                </tr>
+                <tr>
+                  <td>장애유형</td>
+                  <td>{{ selectedRow.fault_type || noDataText }}</td>
+                </tr>
+                <tr>
+                  <td>장애정보</td>
+                  <td>{{ selectedRow.alarmmsg || noDataText }}</td>
+                </tr>
+                <tr>
+                  <td>알람 원본메시지</td>
+                  <td>{{ selectedRow.alarmmsg_original || noDataText }}</td>
+                </tr>
+                <tr>
+                  <td>장애내용</td>
+                  <td>{{ selectedRow.ticket_rca_result_code || noDataText }}</td>
+                </tr>
+                <tr>
+                  <td>장애원인</td>
+                  <td>{{ selectedRow.ticket_rca_result_dtl_code || noDataText }}</td>
+                </tr>
+                <tr>
+                  <td>장비ID</td>
+                  <td>{{ selectedRow.node_num || noDataText }}</td>
+                </tr>
+                <tr>
+                  <td>장비명</td>
+                  <td>{{ selectedRow.node_nm || noDataText }}</td>
+                </tr>
+                <tr>
+                  <td>인터페이스명</td>
+                  <td>{{ selectedRow.alarmloc || noDataText }}</td>
+                </tr>
+                <tr>
+                  <td>근원알람개수</td>
+                  <td>{{ selectedRow.total_related_alarm_cnt || noDataText }}</td>
+                </tr>
+                <tr>
+                  <td>IP주소</td>
+                  <td>{{ selectedRow.ip_addr || noDataText }}</td>
+                </tr>
+                <tr>
+                  <td>AI결과피드백</td>
+                  <td>{{ selectedRow.ai_accuracy || noDataText }}</td>
+                </tr>
+              </tbody>
+            </table>
           </el-card>
         </el-col>
       </el-row>
@@ -157,6 +207,7 @@ export default {
         totalCount: 0, // 총 항목 수
         totalPages: null, // 전체 페이지 수
       },
+      noDataText: '-',
     }
   },
   computed: {
@@ -519,6 +570,30 @@ export default {
     color: #cb5252;
     text-align: center;
     font-weight: bolder;
+  }
+}
+
+.ticket-info-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 6px;
+  overflow: auto;
+  height: calc(100% - 40px);
+
+  td {
+    padding: 4px 6px;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 12px;
+    color: #334155;
+
+    &:first-child {
+      width: 40%;
+      font-weight: 600;
+    }
+
+    &:last-child {
+      color: #0f172a;
+    }
   }
 }
 </style>

@@ -180,7 +180,7 @@ export default {
           {
             name: 'AI 장애대응(신규)',
             action: () => {
-              this.fn_openWindow('aiResponse2', event.node.data)
+              this.fn_openWindow('aiResponse2', Object.assign(event.node.data, { node_num: '1623913427068', if_num: '1720169357741' }))
             },
           },
         ]
@@ -195,7 +195,7 @@ export default {
       const columns = [
         { type: '', prop: 'alarmno', name: '알람번호', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, formatter: (row) => { return row.alarmno ?? '-' }, },
         { type: '', prop: 'alarmtime', name: '장애 발생시간', width: 200, alignItems: 'center', fixed: false, suppressMenu: true, formatter: (row) => { return this.formatterTimeStamp(row.alarmtime, 'YYYY/MM/DD-HH:mm:ss') }, },
-        { type: '', prop: '', name: '어시스턴트', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: this.CONSTANTS.nia.chatbotIcon.assistantIcon, icon: '', type: 'CHANGE_CHATBOT_FOCUS', action: this.iconClickChangeFocusAlertMode.bind(this) } },
+        { type: '', prop: '', name: '어시스턴트', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '', icon: 'chat-dot-square', type: 'CHANGE_CHATBOT_FOCUS', action: this.iconClickChangeFocusAlertMode.bind(this) } },
         { type: '', prop: '', name: '마감', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '마감', icon: 'edit-outline', type: 'FIN', action: this.handleOpenEditModal.bind(this) }, },
         { type: '', prop: '', name: '조치', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '조치', icon: 'edit-outline', type: 'CONFIG_TEST', action: this.handleOpenEditModal.bind(this), }, },
         { type: '', prop: '', name: 'SOP이력', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: 'SOP', icon: 'circle-check', type: 'SOP', action: this.handleOpenEditModal.bind(this), }, },
@@ -203,7 +203,7 @@ export default {
         { type: '', prop: '', name: '상황전파', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '상황전파', icon: 'circle-check', type: 'NTF', action: this.handleOpenEditModal.bind(this), }, },
         { type: '', prop: 'ticket_id', name: 'TICKET_ID', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'status', name: '상태', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, formatter: this.getStatus, cellStyle: this.getCellStyle },
-        { type: '', prop: 'ticket_type', name: '전표 유형', width: 150, alignItems: 'center', fixed: false, suppressMenu: true, formatter: getAlarmType },
+        { type: '', prop: 'ticket_type', name: '전표 유형', width: 250, alignItems: 'center', fixed: false, suppressMenu: true, formatter: getAlarmType },
         { type: '', prop: 'fault_type', name: '장애유형', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'alarmmsg', name: '장애정보', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'alarmmsg_original', name: '알람 원본메시지', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
@@ -897,13 +897,19 @@ export default {
 
 .NiaMain {
   ::v-deep .CHANGE_CHATBOT_FOCUS-class {
-    font-size: 14px;
-    background: black;
-    height: 25px;
-    width: 25px;
+    font-size: 17px;
+    background: #1e293b;
+    color: white;
+    height: 26px;
+    width: 26px;
     border-radius: 25px;
     margin-left: 10px;
-    text-indent: -3px;
+
+    .el-icon-chat-dot-square {
+      display: inline-block;
+      position: relative;
+      top: -1px;
+    }
   }
 
   ::v-deep .splitter-pane {

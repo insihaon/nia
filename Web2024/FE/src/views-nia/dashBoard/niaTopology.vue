@@ -6,28 +6,28 @@
           <div class="rightContent" style="z-index: 9999">
             <div class="ttSetting">
               <ul>
-                <li v-if="isVisibleView('LAYERED')" class="refresh image_dark_Converter tooltip-hover" @click="broadcastMenuEvent('reload')">
+                <li class="refresh image_dark_Converter tooltip-hover" @click="broadcastMenuEvent('reload')">
                   <span class="tooltip-text">새로고침</span>
                 </li>
-                <li v-if="isVisibleView('LAYERED')" style="font-size: 20px" class="tooltip-hover" @click="broadcastMenuEvent('changeType')">
+                <li style="font-size: 20px" class="tooltip-hover" @click="broadcastMenuEvent('changeType')">
                   <font-awesome-icon style="color: gray" :icon="['fas', 'retweet']" />
                   <span class="tooltip-text">토폴로지 타입 변경</span>
                 </li>
-                <li v-if="isVisibleView('LAYERED')" style="font-size: 20px" class="tooltip-hover" @click="broadcastMenuEvent('resetZoom')">
+                <li style="font-size: 20px" class="tooltip-hover" @click="broadcastMenuEvent('resetZoom')">
                   <font-awesome-icon style="color: gray" :icon="['fas', 'globe']" />
                   <span class="tooltip-text">줌 전체보기</span>
                 </li>
-                <li v-if="isVisibleView('LAYERED')" class="nodeblink image_dark_Converter tooltip-hover" @click="broadcastMenuEvent('nodeZoomTest')">
+                <li class="nodeblink image_dark_Converter tooltip-hover" @click="broadcastMenuEvent('nodeZoomTest')">
                   <span class="tooltip-text">노드 줌인 테스트</span>
                 </li>
                 <li v-if="isDebug" style="font-size: 20px" class="tooltip-hover" @click="broadcastMenuEvent('updateTopology')">
                   <font-awesome-icon style="color: gray" :icon="['fas', 'save']" />
                   <span class="tooltip-text">저장</span>
                 </li>
-                <li v-if="isVisibleView('LAYERED')" class="traffic image_dark_Converter tooltip-hover" @click="broadcastMenuEvent('linkZoomTest')">
+                <li class="traffic image_dark_Converter tooltip-hover" @click="broadcastMenuEvent('linkZoomTest')">
                   <span class="tooltip-text">링크 줌인 테스트</span>
                 </li>
-                <li v-if="isVisibleView('LAYERED')" class="nodetitle image_dark_Converter tooltip-hover" @click="broadcastMenuEvent('toggleLabel')">
+                <li class="nodetitle image_dark_Converter tooltip-hover" @click="broadcastMenuEvent('toggleLabel')">
                   <span class="tooltip-text">라벨 토글</span>
                 </li>
               </ul>
@@ -270,15 +270,11 @@ export default {
       }
     },
     // topologyConstruct() {
-    //   const defaultMapFile = jsons[this.topologyType - 1] || 'data_nia_ip_3.json'
-    //   if (!jsons.includes(localStorage['last_map'])) {
+    //   const defaultMapFile = nia_topology_data['config' + this.topologyType]
+    //   if (!nia_topology_data.includes(localStorage['last_map'])) {
     //     localStorage['last_map'] = defaultMapFile
     //   }
     // },
-
-    isVisibleView() {
-      return true
-    },
 
     broadcastMenuEvent(param) {
       if (!param) return
@@ -347,7 +343,7 @@ export default {
           NODES: NODES,
         }
         const res = await apiUpdateNodePosition(param)
-        if (res.result === 1) {
+        if (res.success) {
           this.$message.success({ message: `저장에 성공하였습니다.` })
         } else {
           this.$message.success({ message: `저장에 실패하였습니다.` })
@@ -915,6 +911,8 @@ export default {
     },
 
     displaySlotAlarm(select) {
+      // slot 깜빡이 표시하는 함수
+
       this.slot = []
       const elements = document.querySelectorAll('.animation-blink')
       elements.forEach((el) => {

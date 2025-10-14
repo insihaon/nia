@@ -1,7 +1,9 @@
 <template>
   <div class="chatbot-icon-container" :style="containerStyle" @click="toggleChatbot" @mouseenter="startFollow" @mouseleave="stopFollow" @mousemove="followMouse">
     <div class="chatbot-icon">
-      <span class="icon-placeholder">{{ assistantIcon }}</span>
+      <span class="icon-placeholder">
+        <i class="el-icon-chat-dot-square" />
+      </span>
     </div>
     <div v-if="tooltipVisible" class="chatbot-tooltip">Chatbot</div>
   </div>
