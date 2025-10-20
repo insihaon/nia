@@ -72,7 +72,7 @@
             <el-input v-model="remoteParam" placeholder="입력 파라미터" :disabled="['shoutdown', 'noshut'].includes(remoteControl)" />
           </el-col>
           <el-col :span="3">
-            <el-button size="mini" type="primary" icon="el-icon-video-play" :disabled="remoteControl.length === 0" @click="onClickRemote()">실행 </el-button>
+            <el-button size="mini" type="primary" icon="el-icon-video-play" :disabled="remoteControl.length === 0 || remoteControl === 'chngport'" @click="onClickRemote">실행 </el-button>
           </el-col>
         </el-row>
         <div v-if="isShowFrame" v-loading="frameLoading" style="height: 200px; width: 100%">
@@ -87,6 +87,7 @@
         </el-col>
       </el-row>
     </div>
+    <pathSwitch ref="pathSwitch" :wdata="{ selectedRow: selectedRow, item: item }"></pathSwitch>
   </div>
 </template>
 
@@ -98,14 +99,15 @@ import { apiIpsdnRequest, apiSelectAgencyIpList, apiRemote } from '@/api/nia'
 import constants from '@/min/constants'
 import { getAlarmFocusTicketData, getWindowActionList, getInvisibleSpanParameter, getNiaRouterPathByName, showNumberText } from '@/views-nia/js/commonNiaFunction'
 import { mapState } from 'vuex'
-
 import niaObserverMixin from '@/mixin/niaObserverMixin'
 const routeName = constants.nia.chatbotKeyMap.configTest.parameterKey
 
 export default {
   name: routeName,
   // eslint-disable-next-line vue/no-unused-components
-  components: {},
+  components: {
+    pathSwitch: () => import('@/views-nia/dashBoard/pathSwitch'),
+  },
   extends: Base,
   mixins: [dialogOpenMixin, niaObserverMixin],
   props: {
@@ -125,7 +127,7 @@ export default {
       remoteOptions: [
         { value: 'shoutdown', label: '포트다운' }, // 자가최적화(유해트래픽)
         { value: 'noshut', label: '포트리셋' }, // 자가회복(포트장애)
-        { value: '포트변경', label: '포트변경' }, // 자가구성(이상트래픽)
+        { value: 'chngport', label: '포트변경' }, // 자가구성(이상트래픽)
         { value: 'ping', label: 'ping' }, // 핑 테스트
         { value: 'ACL', label: 'ACL deny' }, // 접근제어 - 원격 차단 ??? 현재 동작안함, UI 엔진쪽에 처리코드 없음
       ],
@@ -197,12 +199,13 @@ export default {
       }
     },
     remoteControl(nVAl, oVal) {
-      if (nVAl !== 'ping') {
-        this.isShowFrame = false
-      }
-
-      if (nVAl === '포트변경') {
-        this.fn_openWindow('pathSwitch', this.selectedRow, null, { addX: 800 })
+      if (nVAl === 'chngport') {
+        this.$refs.pathSwitch.setVisible()
+        // this.fn_openWindow('pathSwitch', this.selectedRow, null, { addX: 800 })
+      } else {
+        if (nVAl !== 'ping') {
+          this.isShowFrame = false
+        }
       }
     },
   },
@@ -227,14 +230,14 @@ export default {
 
       const { ticket_type, root_cause_sysnamea, node_nm, ip_addr, root_cause_porta, alarmloc, alarmmsg } = this.selectedRow
       this.item = {
-        nodeName: ticket_type === 'SYSLOG' ? node_nm : root_cause_sysnamea,
+        nodeName: ['SYSLOG', 'RT'].includes(ticket_type) ? node_nm : root_cause_sysnamea,
         ipAddr: ip_addr,
-        ifname: ticket_type === 'SYSLOG' ? alarmloc : root_cause_porta,
+        ifname: ['SYSLOG', 'RT'].includes(ticket_type) ? alarmloc : root_cause_porta,
       }
 
       switch (ticket_type) {
         case 'ATT2': // 이상트래픽
-          this.remoteControl = '포트변경'
+          this.remoteControl = 'chngport'
           break
         case 'NTT': // 유해트래픽
           this.remoteControl = 'shoutdown'
@@ -256,7 +259,7 @@ export default {
         this.$store.dispatch('chatbot/botPushAnswerMessage', {
           content:
             `<div class="chatbot-command-header">조치 화면</div>
-            <b>원격으로</b> 장비를 포트다운, 포트리셋, 포트변경할 수 있습니다.<br>
+            <b>원격으로</b> 장비를 제어할 수 있습니다.<br>
             장비에 대한 정보를 자동으로 설정했습니다. 정보를 확인하신 후에 <b>원격제어</b>를 진행해 주시면 됩니다.<br>
             ${constants.nia.chatbotIcon.Information} 조치가 이미 완료되었다면 <b>마감화면</b>으로 이동해 주세요.
             ${constants.nia.chatbotIcon.Information} 장애에 대해 더 상세한 정보를 알고 싶으시면, <b>티켓 상세 확인</b>도 도와드릴 수 있습니다.<br>
@@ -319,63 +322,90 @@ export default {
     makeConfirmMessage() {
       const { nodeName, ifname } = this.item
 
-      let message = `장비명(${nodeName})의 포트명(${ifname})인 장비를<br>`
-      message += `<b style="color:red">${this.remoteControl}</b>하시겠습니까?`
+      const currentRemoteOption = this.remoteOptions.find((map) => map.value === this.remoteControl)
+
+      let message = `장비(${nodeName})의 포트(${ifname})인 장비를<br>`
+      message += `<b style="color:red">${currentRemoteOption.label}</b>하시겠습니까?`
 
       return message
     },
 
     async onClickRemote() {
-      if (!['shotdown', 'noshut', '포트변경'].includes(this.remoteControl)) {
-        this.$alert('아직 준비되지 않았습니다.')
-      }
-
       this.$confirm(this.makeConfirmMessage(), '명령어전송', {
         confirmButtonText: '실행',
         cancelButtonText: '취소',
         dangerouslyUseHTMLString: true,
         customClass: 'nia-message-box',
-      }).then(() => {
-        this.$alert('성공적으로 명령어가 전송되었습니다.', '알림', {
-          confirmButtonText: '확인',
-          customClass: 'nia-message-box',
-        })
-
-        if (!this.isFocusModeButNotFocus) {
-          this.$store.dispatch('chatbot/botPushAnswerMessage', {
-            content: `${constants.nia.chatbotIcon.success} ${constants.nia.chatbotKeyMap.configTest.popupName}에서 성공적으로 ${constants.nia.chatbotCommand.remote.label}을 했습니다.`,
-            callBack: this.configNextAction,
-          })
+      }).then(async () => {
+        switch (this.remoteControl) {
+          case 'shoutdown': // 포트다운
+          case 'noshut': // 포트리셋
+            this.$alert('해당 기능은 현재 일시적으로 막아놓았습니다. Ping테스트 진행하겠습니다')
+            // this.actionRemote(this.remoteControl)
+            this.remotePingTest()
+            break
+          case 'ping':
+            this.remotePingTest()
+            break
+          case 'ACL':
+            this.$alert('해당 기능은 현재 일시적으로 막아놓았습니다. Ping테스트 진행하겠습니다')
+            this.remotePingTest()
+            break
         }
       })
-
-      return // 우선 막아놓음.
-
-      // if (['shoutdown', 'noshut'].includes(this.remoteControl) && this.$store.state.app.server.profile !== 'oper') {
-      //   onMessagePopup(this, '해당 기능은 운영서버일때만 테스트가 가능합니다.')
-      //   return
-      // }
-
-      // this.isShowFrame = true
-      // try {
-      //   this.frameLoading = true
-      //   const { nodeName, ipAddr, ifname } = this.item
-      //   if (!ipAddr) {
-      //     await this.confirm('해당 장비의 IP가 존재하지 않습니다.', '알림', { confirmButtonText: '확인' })
-      //   }
-      //   const res = await apiRemote(this.remoteControl, { ip: ipAddr, param: `nodename=${nodeName}&ifname=${ifname}`, user_id: this.$store.state.user.info.uid })
-      //   if (res.success) {
-      //     this.pingFileName = res.result
-      //   } else {
-      //     this.pingFileName = null
-      //     this.isShowFrame = false
-      //   }
-      // } catch (error) {
-      //   this.error(error)
-      // } finally {
-      //   this.frameLoading = false
-      // }
     },
+
+    async actionRemote(remoteControl) {
+      const { nodeName, ipAddr, ifname } = this.item
+      if (!ipAddr) {
+        this.$alert('해당 장비의 IP가 존재하지 않습니다.')
+        return
+      }
+
+      const res = await apiRemote(remoteControl, {
+        ip: ipAddr,
+        param: `nodename=${nodeName}&ifname=${ifname}`,
+        user_id: this.$store.state.user.info.uid,
+      })
+
+      if (res.success) {
+        this.$alert('성공적으로 명령이 실행되었습니다.', '성공', {
+          confirmButtonText: '확인',
+        })
+      } else {
+        this.$alert('명령 실행이 실패했습니다.', '실패', {
+          confirmButtonText: '확인',
+        })
+      }
+    },
+
+    async remotePingTest() {
+      this.isShowFrame = true
+      try {
+        this.frameLoading = true
+        const { nodeName, ipAddr, ifname } = this.item
+        if (!ipAddr) {
+          this.$alert('해당 장비의 IP가 존재하지 않습니다.')
+          return
+        }
+        const res = await apiRemote('ping', {
+          ip: ipAddr,
+          param: `nodename=${nodeName}&ifname=${ifname}`,
+          user_id: this.$store.state.user.info.uid,
+        })
+        if (res.success) {
+          this.pingFileName = res.result
+        } else {
+          this.pingFileName = null
+          this.isShowFrame = false
+        }
+      } catch (error) {
+        this.error(error)
+      } finally {
+        this.frameLoading = false
+      }
+    },
+
     onClose() {
       this.isShowFrame = false
       this.remoteControl = ''

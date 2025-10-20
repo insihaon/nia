@@ -19,3 +19,13 @@ spring:
 
   rabbitmq:
     enabled: false
+# myconf:
+#   ssh:
+#     host: 116.89.191.47
+#     port: 16891
+#     user: codej8888
+#     password: zhfps!
+#   api-server:
+#     ipsdn: http://103.22.222.7:8088
+#     user: codej
+#     pw: codej!@#

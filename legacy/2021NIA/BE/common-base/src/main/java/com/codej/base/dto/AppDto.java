@@ -212,7 +212,7 @@ public class AppDto extends ToStringFormatter {
 
     @Value("${myconf.webProxy.ssl.password:}")
     private String webProxySslPassword;
-    
+
     @Value("${myconf.api-server.hub-api:http://127.0.0.1:8070/dh}")
     private String hubUrl;
 
@@ -226,7 +226,6 @@ public class AppDto extends ToStringFormatter {
     private String aiMonitorUrl;
 
     @Value("${myconf.ssh.host:127.0.0.1}")
-
     private String sshHost;
 
     @Value("${myconf.ssh.port:22}")

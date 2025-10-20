@@ -44,10 +44,9 @@ myconf:
     user: codej8888
     password: zhfps!
   api-server:
-    ipsdn: http://203.255.249.31:8088
+    ipsdn: http://103.22.222.7:8088
     user: codej
     pw: codej!@#
   aimonitor-Url: http://116.89.191.45:82
   servermonitor-Url: http://116.89.191.40:3000
   snapshot-Url: http://116.89.191.35:24888/download/
-
