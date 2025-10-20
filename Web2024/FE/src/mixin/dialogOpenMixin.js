@@ -121,13 +121,6 @@ var dialogOpenMixin = {
           positionBottomLeft: true,
           notDuplicate: true
         },
-        pathSwitch: {
-          component: () => import('@/views-nia/dashBoard/pathSwitch'),
-          pageTitle: '포트변경',
-          width: '800',
-          height: '500',
-          resizeble: true,
-        },
       }
     }
   },

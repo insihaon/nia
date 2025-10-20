@@ -69,6 +69,7 @@
         <button :disabled="isQuestionMode" class="utility-button" :style="{ 'background-color': isActiveBotAlert ? '#ff4949' : '#e5e7eb' }" @click="toggleIsActiveBotAlert">{{ isActiveBotAlert ? '경보 표시' : '경보 미표시' }}</button>
         <button :disabled="isQuestionMode" class="utility-button" @click="actionSwitch">{{ actionType === 'expert' ? '전문가모드' : '안내모드' }}</button>
         <button :disabled="isQuestionMode" class="utility-button" @click="resetChat">채팅초기화</button>
+        <button :disabled="isQuestionMode" class="utility-button" :style="{ 'background-color': isRecording ? '#ff4949' : '#e5e7eb' }" @click="switchVoiceRecording">음성인식({{ isRecording ? 'ON' : 'OFF' }})</button>
       </div>
 
       <div class="chat-input">
@@ -90,6 +91,7 @@ import { searchMessaging, errorMessaging1, errorMessaging2, errorMessaging3 } fr
 import { getNiaRouteNameByPath, getNiaRouteTitleByPath, getSpanFormatMessageForDB, getMatchMapOfspanFormatMessage, isSpanFormatChatMessage } from '@/views-nia/js/commonNiaFunction'
 import constants from '@/min/constants'
 import EventBus from '@/utils/event-bus'
+
 const routeName = 'chatbot'
 
 const centerTextPlugin = {
@@ -223,6 +225,13 @@ export default {
           },
         ],
       },
+      /* --- 음성인식 Start --- */
+      mediaRecorder: null,
+      audioChunks: [],
+      audioStream: null, // 마이크에서 가져온 스트림
+      isRecording: false,
+      transcribedText: '여기에 텍스트가 표시됩니다.', // UI 표시용
+      /* --- 음성인식 End --- */
       chartOptions: {
         responsive: true,
         maintainAspectRatio: false,
@@ -329,6 +338,190 @@ export default {
   },
 
   methods: {
+    async loadMediaRecorder() {
+      try {
+        // 표준 API: 사용자에게 마이크 접근 권한을 요청합니다.
+        this.audioStream = await navigator.mediaDevices.getUserMedia({ audio: true })
+
+        // MediaRecorder 초기화: 스트림을 인자로 받습니다.
+        this.mediaRecorder = new MediaRecorder(this.audioStream)
+
+        // 녹음 데이터가 들어올 때마다 chunks 배열에 추가합니다.
+        this.mediaRecorder.ondataavailable = (event) => {
+          this.audioChunks.push(event.data)
+        }
+
+        // 녹음이 중지되었을 때 최종적으로 실행할 콜백을 설정합니다.
+        this.mediaRecorder.onstop = () => {
+          this.handleRecordingStop()
+        }
+
+        // ⭐ VAD 로직 추가 ⭐
+        this.vadContext = new (window.AudioContext || window.webkitAudioContext)()
+        this.vadSource = this.vadContext.createMediaStreamSource(this.audioStream)
+        this.vadAnalyzer = this.vadContext.createAnalyser()
+
+        // 분석기 설정
+        this.vadAnalyzer.fftSize = 256
+        this.vadSource.connect(this.vadAnalyzer)
+
+        // VAD 분석 루프 시작
+        this.checkVoiceActivity()
+      } catch (error) {
+        console.error('마이크 접근 또는 초기화 실패:', error)
+        this.transcribedText = '마이크 접근 권한이 필요합니다. 브라우저 설정을 확인하세요.'
+      }
+    },
+
+    // [methods에 VAD 분석 루프 추가]
+    checkVoiceActivity() {
+      if (!this.vadAnalyzer) return
+
+      // 분석할 빈도 데이터를 담을 배열
+      const bufferLength = this.vadAnalyzer.frequencyBinCount
+      const dataArray = new Uint8Array(bufferLength)
+
+      // 주파수 영역 데이터를 얻습니다.
+      this.vadAnalyzer.getByteFrequencyData(dataArray)
+
+      // 전체 소리 레벨 계산 (간단화: 배열 요소의 평균)
+      const average = dataArray.reduce((acc, val) => acc + val, 0) / bufferLength
+      // 0-255 사이의 값을 0-1 사이의 값으로 정규화
+      const normalizedVolume = average / 255
+
+      // 녹음 중일 때만 침묵 감지 로직 실행
+      if (this.isRecording) {
+        if (normalizedVolume < this.SILENCE_THRESHOLD) {
+          // 소리가 임계값 이하일 때 타이머 시작/유지
+          if (!this.silenceTimer) {
+            this.silenceTimer = setTimeout(() => {
+              console.log('자동 종료: 3초 이상 침묵 감지.')
+              this.stopRecording() // 자동 종료 및 전송
+            }, this.SILENCE_DURATION)
+          }
+        } else {
+          // 소리가 감지되면 타이머 초기화
+          clearTimeout(this.silenceTimer)
+          this.silenceTimer = null
+        }
+      }
+
+      // 다음 프레임에서 이 함수를 다시 호출하여 루프 유지
+      requestAnimationFrame(this.checkVoiceActivity)
+    },
+
+    /**
+     * 녹음을 시작하고 상태를 업데이트합니다.
+     */
+    async startRecording() {
+      // 마이크 스트림이 없다면 다시 로드 (stopRecording에서 해제되었을 경우)
+      if (!this.audioStream) {
+        await this.loadMediaRecorder()
+      }
+
+      if (!this.mediaRecorder || this.mediaRecorder.state === 'recording') return
+
+      this.audioChunks = []
+      this.mediaRecorder.start()
+
+      this.isRecording = true
+      this.transcribedText = '녹음 중... (3초 침묵 시 자동 전송)'
+
+      // 녹음 시작과 동시에 VAD 타이머를 초기화하여 즉시 종료되는 것을 방지
+      clearTimeout(this.silenceTimer)
+      this.silenceTimer = null
+    },
+
+    /**
+     * 녹음을 중지하고 onstop 이벤트를 트리거합니다.
+     */
+    stopRecording() {
+      if (this.mediaRecorder && this.mediaRecorder.state === 'recording') {
+        this.mediaRecorder.stop()
+        this.isRecording = false
+        this.transcribedText = '녹음 완료, 서버로 전송 준비 중...'
+
+        // ⭐ 마이크 스트림 비활성화 ⭐
+        if (this.audioStream) {
+          this.audioStream.getTracks().forEach((track) => track.stop())
+          this.audioStream = null
+        }
+      }
+    },
+
+    /**
+     * 녹음 중지 후 호출되며, Blob을 생성하고 서버로 전송합니다.
+     */
+    handleRecordingStop() {
+      // 녹음된 오디오 조각(Chunks)을 하나의 Blob 파일로 합칩니다.
+      // mimeType은 녹음 시 사용된 코덱에 따라 결정됩니다.
+      const mimeType = this.mediaRecorder.mimeType || 'audio/wav'
+      const audioBlob = new Blob(this.audioChunks, { type: mimeType })
+
+      if (audioBlob.size === 0) {
+        this.transcribedText = '오디오 데이터가 녹음되지 않았습니다.'
+        return
+      }
+
+      // FormData를 사용하여 Blob을 파일 형태로 서버에 보낼 준비를 합니다.
+      const formData = new FormData()
+      // 파일 이름을 'recording.wav' 또는 'recording.webm' 등으로 지정합니다.
+      const fileExtension = mimeType.split('/')[1] || 'wav'
+      formData.append('audio_file', audioBlob, `recording.${fileExtension}`)
+
+      this.sendToPythonServer(formData)
+    },
+
+    // --- Blob 데이터를 파일로 다운로드하는 도우미 함수 ---
+    downloadBlob(blob, filename) {
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.style.display = 'none'
+      a.href = url
+      a.download = filename // 파일 이름 지정
+      document.body.appendChild(a)
+      a.click()
+      window.URL.revokeObjectURL(url) // 메모리 해제
+      document.body.removeChild(a)
+    },
+
+    /**
+     * 녹음 데이터를 Python 서버로 전송하고 응답을 처리합니다.
+     */
+    async sendToPythonServer(formData) {
+      const URL = '/api/stt_process' // Python 서버의 엔드포인트 경로
+
+      try {
+        this.transcribedText = '서버로 전송 중...'
+        // const response = await fetch(URL, {
+        //   method: 'POST',
+        //   body: formData, // FormData 객체를 전송
+        // })
+
+        // if (!response.ok) {
+        //   throw new Error(`HTTP error! status: ${response.status}`)
+        // }
+
+        // const result = await response.json()
+
+        // // UI에 인식된 텍스트 표시
+        // this.transcribedText = result.text || '인식된 텍스트가 없습니다.'
+      } catch (error) {
+        console.error('STT 서버 통신 오류:', error)
+        this.transcribedText = `오류 발생: ${error.message}`
+      }
+    },
+
+    switchVoiceRecording() {
+      if (this.isRecording) {
+        this.isRecording = false
+        this.stopRecording()
+      } else {
+        this.isRecording = true
+        this.startRecording()
+      }
+    },
+
     setDonutChartData() {
       this.chartData.datasets[0].data = [0, 0, 0, 0]
 

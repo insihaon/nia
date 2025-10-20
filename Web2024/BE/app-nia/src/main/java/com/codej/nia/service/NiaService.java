@@ -137,8 +137,7 @@ public class NiaService extends MainService {
     }
 
     public Map<String, Object> getIpsdnToken() {
-        String url = CommonUtil.format("{}/ipsdn/auth/login", apiServerProperites.getIpsdnUrl());
-        // String param = "{ \"loginid\" : \"codej\", \"password\" : \"codej!@#\" }";
+        String url = CommonUtil.format("{}/login", apiServerProperites.getIpsdnUrl());
 
         Map<String, Object> param = new HashMap<String, Object>();
         param.put("loginid", appDto.getIpsdnId());
@@ -147,17 +146,43 @@ public class NiaService extends MainService {
             ResponseEntity<?> responseEntity = HttpUtil.post(url, param);
 
             String body = (String) responseEntity.getBody();
-            Map<String, Object> resMap = JsonUtil.convertJsonToMap(body);
 
-            return (Map<String, Object>) resMap.get("data");
+            if (body == null || body.trim().isEmpty()) {
+                return new HashMap<String, Object>();
+            } else {
+                Map<String, Object> resMap = JsonUtil.convertJsonToMap(body);
+                return (Map<String, Object>) resMap.get("data");
+            }
         } catch (Exception e) {
             log.error(e.toString());
             throw new CHttpRelayServiceFail("Unable to retrieve IPSDN Token.");
         }
     }
 
+    public SingleResponse<Object> ipsdnPortSwitchRequest(HttpServletRequest request, Map<String, Object> map)
+            throws Exception {
+
+        Map<String, Object> tokenMap = getIpsdnToken();
+        return responseService.createSingleResponse(tokenMap);
+
+        // String url = CommonUtil.format("{}/login",
+        // apiServerProperites.getIpsdnPortSwitchUrl());
+        // log.debug("<<< Request url={}", url);
+
+        // Map<String, String> headers = new HashMap<String, String>();
+        // headers.put("content-type", "application/json");
+
+        // String responseBody = (String) HttpUtil.post(url, new HashMap<String,
+        // Object>(), headers).getBody();
+        // Map<String, Object> res = JsonUtil.convertJsonToMap(responseBody);
+
+        // return responseService.createSingleResponse(res);
+    }
+
     public SingleResponse<Object> ipsdnRequest(HttpServletRequest request, Map<String, Object> map)
             throws Exception {
+
+        // getIpsdnToken();
 
         String servicePath = (String) map.get("servicePath");
         String requestType = (String) map.get("requestType");
@@ -174,8 +199,6 @@ public class NiaService extends MainService {
         String url = CommonUtil.format("{}/ipsdn/services/{}/?{}", apiServerProperites.getIpsdnUrl(),
                 servicePath, param);
 
-        // http: //
-        // 203.255.249.31:8088/ipsdn/services/config/interfaces/shutdown?nodename=daejeon-7712&ifname=ce3/1
         log.debug("<<< Request url={}", url);
 
         Map<String, String> headers = new HashMap<String, String>();
@@ -224,14 +247,14 @@ public class NiaService extends MainService {
         int result = -1;
         int result2 = -1;
         TransactionStatus txStatus = transactionManager.getTransaction(new DefaultTransactionDefinition());
-        try {   
+        try {
             result = niaMapper.INSERT_PROFILE_LIST(param);
 
             List<ResultMap> profile_num = niaMapper.SELECT_MAX_PROFILE_NUM(null);
 
             // 등록시 추가한 노드명 리스트(tableData) INSERT
             ArrayList<HashMap<String, Object>> tableData = (ArrayList<HashMap<String, Object>>) param.get("tableData");
-            if(tableData != null && tableData.size() > 0){
+            if (tableData != null && tableData.size() > 0) {
 
                 for (HashMap<String, Object> data : tableData) {
                     String node_id = (String) data.get("name");
@@ -239,10 +262,10 @@ public class NiaService extends MainService {
                     String maxProfileNum = String.valueOf(maxProfile.get("max_profile_num"));
                     param.put("profile_num", maxProfileNum);
                     param.put("node_id", node_id);
-        
+
                     result2 = niaMapper.INSERT_PROFILE_NODE_NAME_LIST(param);
 
-                    if(result2 < 0){
+                    if (result2 < 0) {
                         throw new Exception(String.format("Failed to DELETE_PROFILE_NODE_LIST: %s", profile_num));
                     }
                 }
@@ -253,27 +276,27 @@ public class NiaService extends MainService {
             } else {
                 throw new Exception(String.format("Fail insertProfileList, %s", param.toString()));
             }
-    
+
         } catch (Exception e) {
             transactionManager.rollback(txStatus);
             log.error(e.toString());
             throw e;
         }
-        return result;  
+        return result;
     }
 
     public int deleteProfileList(HashMap<String, Object> param) throws Exception {
         int result = -1;
         TransactionStatus txStatus = transactionManager.getTransaction(new DefaultTransactionDefinition());
-        try { 
+        try {
             // 프로파일 삭제시 profile_num에 해당하는 노드명 리스트 DELETE
             ArrayList<HashMap<String, Object>> tableData = (ArrayList<HashMap<String, Object>>) param.get("tableData");
             for (HashMap<String, Object> data : tableData) {
                 String profile_num = (String) data.get("profile_num");
                 int result2 = niaMapper.DELETE_PROFILE_NODE_LIST(param);
-                    if(result2 < 0){
-                        throw new Exception(String.format("Failed to DELETE_PROFILE_NODE_LIST: %s", profile_num));
-                    }
+                if (result2 < 0) {
+                    throw new Exception(String.format("Failed to DELETE_PROFILE_NODE_LIST: %s", profile_num));
+                }
             }
             result = niaMapper.DELETE_PROFILE_LIST(param);
 
@@ -282,7 +305,7 @@ public class NiaService extends MainService {
             } else {
                 throw new Exception(String.format("Fail deleteProfileList, %s", param.toString()));
             }
-    
+
         } catch (Exception e) {
             transactionManager.rollback(txStatus);
             log.error(e.toString());
@@ -290,6 +313,5 @@ public class NiaService extends MainService {
         }
         return result;
     }
-    
-    
+
 }

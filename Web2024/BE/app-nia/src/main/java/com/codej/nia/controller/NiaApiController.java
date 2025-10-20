@@ -91,6 +91,10 @@ public class NiaApiController extends AbsDataController {
                     param.put("requestType", "post");
                     param.put("servicePath", String.format("config/interfaces/%s", remoteType));
                     response = niaService.ipsdnRequest(request, param);
+                    break;
+                case "chngport":
+                    response = niaService.ipsdnPortSwitchRequest(request, param);
+                    break;
                 default:
                     break;
             }

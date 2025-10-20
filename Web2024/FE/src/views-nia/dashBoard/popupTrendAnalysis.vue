@@ -210,7 +210,7 @@ export default {
 </script>
 <style scoped>
 /* 챠트 */
-.trendAnalyPopup {
+/* .trendAnalyPopup {
   width: 100%;
   height: 100%;
   overflow: hidden;
@@ -255,7 +255,7 @@ export default {
   height: 300px;
   width: 100%;
   display: inline-block;
-}
+} */
 .cardTitle {
   display: inline-block;
   padding-top: 10px !important;
