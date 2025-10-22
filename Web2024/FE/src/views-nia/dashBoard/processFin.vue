@@ -16,7 +16,7 @@
           </el-col>
         </el-row>
       </el-card>
-      <el-card shadow="never" class="h-100" :body-style="{ padding: '10px' }">
+      <el-card shadow="never" style="height: 350px" :body-style="{ padding: '10px' }">
         <div slot="header">
           <span><i class="el-icon-document" /> 기타 조치내용 입력</span>
         </div>
@@ -25,9 +25,9 @@
             <el-input v-model="etcContent" :rows="4" type="textarea" placeholder="기타 조치내용 입력" />
           </el-col>
         </el-row>
-        <span style="color: red">※ 기타 조치내용 입력은 시스템 기능 개선에 큰 도움이 됩니다</span>
+        <span style="color: red; float: right">기타 조치내용 입력은 시스템 기능 개선에 큰 도움이 됩니다</span>
       </el-card>
-      <el-card shadow="never" style="height: 90%" :body-style="{ padding: '10px' }">
+      <el-card shadow="never" style="height: 100%" :body-style="{ padding: '10px' }">
         <div slot="header">
           <span><i class="el-icon-document" /> AI 결과 피드백</span>
         </div>
@@ -36,14 +36,10 @@
         <el-row class="p-2 d-flex">
           <el-date-picker v-model="period" type="datetimerange" range-separator="To" start-placeholder="시작 시간" end-placeholder="종료 시간" :disabled="aiFeedback === '0'" />
         </el-row>
-      </el-card>
-      <el-card shadow="never" class="h-100" :body-style="{ padding: '10px' }">
-        <div slot="header">
-          <span><i class="el-icon-document" /> 피드백 내용</span>
-        </div>
-        <el-row>
+        <el-row class="p-2">
+          <el-col style="text-align: left"><i class="el-icon-document" /> 피드백 내용</el-col>
           <el-col>
-            <el-input v-model="fault_type_content" :rows="4" type="textarea" :disabled="aiFeedback === '0'" placeholder="AI 결과 피드백 내용 입력" />
+            <el-input v-model="fault_type_content" :rows="6" type="textarea" :disabled="aiFeedback === '0'" placeholder="AI 결과 피드백 내용 입력" />
           </el-col>
         </el-row>
       </el-card>
@@ -65,7 +61,7 @@ import _ from 'lodash'
 import { apiSelectSopCode, apiSendMQ } from '@/api/nia'
 import ModalSopMng from '@/views-nia/modal/ModalSopMng'
 import constants from '@/min/constants'
-import { getAlarmFocusTicketData, getWindowActionList } from '@/views-nia/js/commonNiaFunction'
+import { getAlarmFocusTicketData, getWindowActionList, loadFirstSopData } from '@/views-nia/js/commonNiaFunction'
 import { mapState } from 'vuex'
 import niaObserverMixin from '@/mixin/niaObserverMixin'
 import { getInvisibleSpanParameter, getNiaRouterPathByName, showNumberText } from '@/views-nia/js/commonNiaFunction'
@@ -105,9 +101,9 @@ export default {
       etcContent: '',
       period: null,
       finSop: {
-        fault_classify: null,
-        fault_type: null,
-        fault_detail_content: null,
+        fault_classify: null, // 장애구분
+        fault_type: null, // 장애유형
+        fault_detail_content: null, // 조치내용
       },
     }
   },
@@ -155,8 +151,19 @@ export default {
     async setTicketDataForAlarmFocusTicketData(isChatbotGenerated) {
       await this.setFocusPopupParameter(isChatbotGenerated)
 
+      await this.onLoadSopCodeList()
+      await this.setSopCodeValue()
       this.setAiFeedBack()
-      this.onLoadSopCodeList()
+    },
+
+    async setSopCodeValue() {
+      const firstSopData = await loadFirstSopData(this.selectedRow)
+
+      if (firstSopData) {
+        this.finSop.fault_classify = firstSopData.fault_classify
+        this.finSop.fault_type = firstSopData.fault_type
+        this.finSop.fault_detail_content = firstSopData.fault_detail_content
+      }
     },
 
     async setFocusPopupParameter(isChatbotGenerated) {
