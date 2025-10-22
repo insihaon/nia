@@ -1,10 +1,9 @@
 import { niaRoute } from '@/router/nia/index'
 import router from '@/router'
-import { apiIpAlarmList } from '@/api/nia'
+import { apiIpAlarmList, apiSopSyslogHistList, apiSelectSopHistList } from '@/api/nia'
 import store from '@/store'
 import axios from 'axios'
 import { searchMessaging, errorMessaging1, errorMessaging2, errorMessaging3 } from '@/store/modules/chatbot.js'
-import constants from '@/min/constants'
 
 export function getInvisibleSpanParameter(routerPath, popupDialogName, action) {
     return `<span class="invisibleParameterSpan" style="display:none">[path]:${routerPath}, [popup]:${popupDialogName}, [action]:${action}</span>`
@@ -79,6 +78,21 @@ function isChatbotGenerated(wdata) {
     return wdata.params && wdata.params.isChatbotGenerated
 }
 
+export async function loadFirstSopData(selectedRow) {
+    let res
+    if (selectedRow.ticket_type === 'SYSLOG') {
+        const param = { ALARM_NO: selectedRow.alarmno }
+        res = await apiSopSyslogHistList(param)
+    } else {
+        const param = { TICKET_ID: selectedRow.ticket_id }
+        res = await apiSelectSopHistList(param)
+    }
+
+    if (res && res.result.length > 0) {
+        return res.result[0]
+    }
+}
+
 export async function getAlarmFocusTicketData(wdata) {
     if (!isModal(wdata) || !isChatbotGenerated(wdata)) {
         return
@@ -86,11 +100,18 @@ export async function getAlarmFocusTicketData(wdata) {
 
     const currentMode = store.state.chatbot.currentMode
     if (currentMode === 'alarmFocusMode') {
-        const ticket_id = store.state.chatbot.alarmFocusTicketData.ticket_id
-        const res = await apiIpAlarmList({ TICKET_ID: ticket_id })
+        const focusData = store.state.chatbot.alarmFocusTicketData
+        let res
+        if (focusData.ticket_type === 'SYSLOG') {
+            res = await apiIpAlarmList({ ALARMNO: focusData.alarmno })
+        } else {
+            res = await apiIpAlarmList({ TICKET_ID: focusData.ticket_id })
+        }
+
         if (res) {
             const ticketData = res.result[0]
-            ticketData.ticket_id = ticket_id
+            // ticketData.ticket_id = focusData.ticket_id
+            // ticketData.alarmno = focusData.alarmno
             return ticketData
         }
     } else {

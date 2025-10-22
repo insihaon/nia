@@ -5,10 +5,14 @@
         <h3>
           어시스턴트 <span :style="{ color: isQuestionMode ? 'red' : 'green' }">[{{ isQuestionMode ? 'OFF' : 'ON' }}]</span>
         </h3>
-        <p v-if="isQuestionMode">질문을 입력하고 답변을 받아보세요</p>
-        <p v-else>
-          [TICKET_ID: {{ alarmFocusMode_TicketData.ticket_id }}] [전표유형: {{ getTicketTypeHangle(alarmFocusMode_TicketData.ticket_type) }}] [장비명: {{ alarmFocusMode_TicketData.node_nm }}] [인터페이스명: {{ alarmFocusMode_TicketData.alarmloc }}]
-        </p>
+        <div v-if="isQuestionMode">질문을 입력하고 답변을 받아보세요</div>
+        <div v-else>
+          <span v-if="alarmFocusMode_TicketData.ticket_type == 'SYSLOG'">[ALARM NO: {{ alarmFocusMode_TicketData.alarmno }}]</span>
+          <span v-else>[TICKET_ID: {{ alarmFocusMode_TicketData.ticket_id }}]</span>
+          <span>[전표유형: {{ getTicketTypeHangle(alarmFocusMode_TicketData.ticket_type) }}]</span>
+          <span>[장비명: {{ alarmFocusMode_TicketData.node_nm }}]</span>
+          <span>[인터페이스명: {{ alarmFocusMode_TicketData.alarmloc }}]</span>
+        </div>
       </div>
 
       <div v-if="isQuestionMode" ref="chatMessagesBox" class="chat-messages">

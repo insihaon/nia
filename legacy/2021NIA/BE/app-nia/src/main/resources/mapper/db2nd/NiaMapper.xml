@@ -277,6 +277,9 @@
     <if test="TICKET_ID != null">
         AND T.TICKET_ID = #{TICKET_ID}
     </if>
+    <if test="ALARMNO != null">
+        AND T.ALARMNO = #{ALARMNO}
+    </if>
     ORDER BY ALARMTIME DESC
    </select>
 

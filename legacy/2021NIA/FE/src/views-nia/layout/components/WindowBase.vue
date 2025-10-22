@@ -204,7 +204,7 @@ export default {
   mounted() {},
   methods: {
     changeFocusTarget() {
-      window.changeFocusAlertMode(this.getCurrentWindowTicketId)
+      window.changeFocusAlertMode(this.wdata.params)
     },
 
     updateParams(params) {

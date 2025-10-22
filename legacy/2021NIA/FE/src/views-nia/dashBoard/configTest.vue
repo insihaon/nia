@@ -129,7 +129,7 @@ export default {
         { value: 'noshut', label: '포트리셋' }, // 자가회복(포트장애)
         { value: 'chngport', label: '포트변경' }, // 자가구성(이상트래픽)
         { value: 'ping', label: 'ping' }, // 핑 테스트
-        { value: 'ACL', label: 'ACL deny' }, // 접근제어 - 원격 차단 ??? 현재 동작안함, UI 엔진쪽에 처리코드 없음
+        { value: 'ACL', label: 'ACL deny' }, // 특정 트래픽 차단
       ],
       remoteControl: '',
       remoteParam: '',

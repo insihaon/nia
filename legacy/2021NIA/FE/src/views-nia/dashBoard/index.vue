@@ -177,12 +177,6 @@ export default {
               this.openNiaTopology(this.ipNetworkList)
             },
           },
-          {
-            name: 'AI 장애대응(신규)',
-            action: () => {
-              this.fn_openWindow('aiResponse2', Object.assign(event.node.data, { node_num: '1623913427068', if_num: '1720169357741' }))
-            },
-          },
         ]
 
         return menuItems
@@ -195,7 +189,7 @@ export default {
       const columns = [
         { type: '', prop: 'alarmno', name: '알람번호', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, formatter: (row) => { return row.alarmno ?? '-' }, },
         { type: '', prop: 'alarmtime', name: '장애 발생시간', width: 200, alignItems: 'center', fixed: false, suppressMenu: true, formatter: (row) => { return this.formatterTimeStamp(row.alarmtime, 'YYYY/MM/DD-HH:mm:ss') }, },
-        { type: '', prop: '', name: '어시스턴트', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '', icon: 'chat-dot-square', type: 'CHANGE_CHATBOT_FOCUS', action: this.iconClickChangeFocusAlertMode.bind(this) } },
+        { type: '', prop: '', name: '어시스턴트', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '', icon: 'chat-dot-square', type: 'CHANGE_CHATBOT_FOCUS', action: this.changeFocusAlertMode.bind(this) } },
         { type: '', prop: '', name: '마감', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '마감', icon: 'edit-outline', type: 'FIN', action: this.handleOpenEditModal.bind(this) }, },
         { type: '', prop: '', name: '조치', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '조치', icon: 'edit-outline', type: 'CONFIG_TEST', action: this.handleOpenEditModal.bind(this), }, },
         { type: '', prop: '', name: 'SOP이력', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: 'SOP', icon: 'circle-check', type: 'SOP', action: this.handleOpenEditModal.bind(this), }, },
@@ -494,48 +488,81 @@ export default {
       this.$store.dispatch('nia/insertIpNetworkList', this.ipNetworkList)
     },
 
-    iconClickChangeFocusAlertMode(row) {
-      if (this.alarmFocusTicketData.ticket_id === row.ticket_id) {
+    changeFocusAlertMode(row) {
+      if (row.ticket_type !== 'SYSLOG' && this.alarmFocusTicketData.ticket_id === row.ticket_id) {
         this.$message('이미 어시스턴트가 활성화된 티켓입니다')
-      } else {
-        this.changeFocusAlertMode(row.ticket_id)
       }
-    },
 
-    changeFocusAlertMode(ticketId) {
+      if (row.ticket_type === 'SYSLOG' && this.alarmFocusTicketData.alarmno === row.alarmno) {
+        this.$message('이미 어시스턴트가 활성화된 티켓입니다')
+      }
+
       const agGridElement = this.$refs.ipAgGrid.$el
 
       this.$refs.ipAgGrid.gridApi.forEachNode((node) => {
         const rowIndex = node.rowIndex
         const rowElement = agGridElement.querySelector(`.ag-center-cols-clipper .ag-row[row-index="${rowIndex}"]`)
         rowElement && rowElement.classList.remove('highlight-row')
-        if (node.data.ticket_id === ticketId) {
-          if (!this.alarmFocusTicketData.ticket_id) {
-            this.$store.dispatch('chatbot/newAlarmFocusChat', { ticketData: node.data })
-            this.fn_openWindow('chatbot')
-            rowElement.classList.add('highlight-row')
-          } else if (this.alarmFocusTicketData.ticket_id === node.data.ticket_id) {
-            this.$store.commit('chatbot/MODE_CHANGE', { newMode: 'alarmFocusMode' })
-          } else {
-            this.$confirm(
-              `
-              기존과 다른 Ticket입니다.
-              기존에 감시중이던 🟢팝업의 ticket_id가
-              <span style='color:red'>${ticketId}</span>로 변경되며 새로 데이터를 가져옵니다.
-              진행하시겠습니까?`,
-              '집중경보 전환',
-              {
-                confirmButtonText: '실행',
-                cancelButtonText: '취소',
-                dangerouslyUseHTMLString: true,
-                customClass: 'nia-message-box',
+
+        switch (row.ticket_type) {
+          case 'SYSLOG':
+            if (node.data.alarmno === row.alarmno) {
+              if (!this.alarmFocusTicketData.alarmno) {
+                this.$store.dispatch('chatbot/newAlarmFocusChat', { ticketData: node.data })
+                this.fn_openWindow('chatbot')
+                rowElement.classList.add('highlight-row')
+              } else if (this.alarmFocusTicketData.alarmno === node.data.alarmno) {
+                this.$store.commit('chatbot/MODE_CHANGE', { newMode: 'alarmFocusMode' })
+              } else {
+                this.$confirm(
+                  `
+              기존과 다른 Ticket입니다. 감시중이던 🟢팝업이
+              <span style='font-weight:bold'>[alarm No : ${row.alarmno}]</span>로 변경되며 
+              새로 데이터를 가져옵니다. 진행하시겠습니까?`,
+                  '집중경보 전환',
+                  {
+                    confirmButtonText: '실행',
+                    cancelButtonText: '취소',
+                    dangerouslyUseHTMLString: true,
+                    customClass: 'nia-message-box',
+                  }
+                ).then(() => {
+                  this.$store.dispatch('chatbot/newAlarmFocusChat', { ticketData: node.data, isNew: true })
+                  this.fn_openWindow('chatbot')
+                  rowElement.classList.add('highlight-row')
+                })
               }
-            ).then(() => {
-              this.$store.dispatch('chatbot/newAlarmFocusChat', { ticketData: node.data, isNew: true })
-              this.fn_openWindow('chatbot')
-              rowElement.classList.add('highlight-row')
-            })
-          }
+            }
+            break
+          default:
+            if (node.data.ticket_id === row.ticketId) {
+              if (!this.alarmFocusTicketData.ticket_id) {
+                this.$store.dispatch('chatbot/newAlarmFocusChat', { ticketData: node.data })
+                this.fn_openWindow('chatbot')
+                rowElement.classList.add('highlight-row')
+              } else if (this.alarmFocusTicketData.ticket_id === node.data.ticket_id) {
+                this.$store.commit('chatbot/MODE_CHANGE', { newMode: 'alarmFocusMode' })
+              } else {
+                this.$confirm(
+                  `
+              기존과 다른 Ticket입니다. 감시중이던 🟢팝업이
+              <span style='font-weight:bold'>[TICKET ID : ${row.ticketId}]</span>로 변경되며 
+              새로 데이터를 가져옵니다. 진행하시겠습니까?`,
+                  '집중경보 전환',
+                  {
+                    confirmButtonText: '실행',
+                    cancelButtonText: '취소',
+                    dangerouslyUseHTMLString: true,
+                    customClass: 'nia-message-box',
+                  }
+                ).then(() => {
+                  this.$store.dispatch('chatbot/newAlarmFocusChat', { ticketData: node.data, isNew: true })
+                  this.fn_openWindow('chatbot')
+                  rowElement.classList.add('highlight-row')
+                })
+              }
+            }
+            break
         }
       })
     },
@@ -882,7 +909,11 @@ export default {
       } else if (type === 'NTF') {
         this.fn_openWindow('requestForAction', row)
       } else if (type === 'ALARM') {
-        this.fn_openWindow('aiResponse', row)
+        if (row.ticket_type === 'ATT2_AIB') {
+          this.fn_openWindow('aiResponse2', Object.assign(row, { node_num: '1623913427068', if_num: '1720169357741' }))
+        } else {
+          this.fn_openWindow('aiResponse', row)
+        }
       } else if (type === 'FIN') {
         this.fn_openWindow('processFin', row)
       } else if (type === 'CONFIG_TEST') {
