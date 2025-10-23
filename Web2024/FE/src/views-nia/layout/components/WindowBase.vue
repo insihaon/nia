@@ -163,7 +163,11 @@ export default {
 
     isFocusWindow() {
       if (this.showAlarmFocusModeBtn) {
-        return this.alarmFocusTicketData?.ticket_id === this.getCurrentWindowTicketId
+        if (this.alarmFocusTicketData.ticket_type === 'SYSLOG') {
+          return this.alarmFocusTicketData?.alarmno === this.getCurrentWindowAlarmno
+        } else {
+          return this.alarmFocusTicketData?.ticket_id === this.getCurrentWindowTicketId
+        }
       } else {
         return false
       }
@@ -174,6 +178,16 @@ export default {
         return 'tickets'
       } else {
         return 'current'
+      }
+    },
+
+    getCurrentWindowAlarmno() {
+      // fn_openWindow 열때 설정되는 Param
+      switch (this.getParamTicketKey) {
+        case 'tickets': // niaTopology 전체보기 일때
+          return this.wdata.params[this.getParamTicketKey][0].alarmno
+        case 'current': // 가장 일반적인 popup열 때
+          return this.wdata.params.alarmno
       }
     },
 

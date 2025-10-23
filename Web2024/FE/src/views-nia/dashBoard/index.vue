@@ -535,7 +535,7 @@ export default {
             }
             break
           default:
-            if (node.data.ticket_id === row.ticketId) {
+            if (node.data.ticket_id === row.ticket_id) {
               if (!this.alarmFocusTicketData.ticket_id) {
                 this.$store.dispatch('chatbot/newAlarmFocusChat', { ticketData: node.data })
                 this.fn_openWindow('chatbot')
@@ -546,7 +546,7 @@ export default {
                 this.$confirm(
                   `
               기존과 다른 Ticket입니다. 감시중이던 🟢팝업이
-              <span style='font-weight:bold'>[TICKET ID : ${row.ticketId}]</span>로 변경되며 
+              <span style='font-weight:bold'>[TICKET ID : ${row.ticket_id}]</span>로 변경되며 
               새로 데이터를 가져옵니다. 진행하시겠습니까?`,
                   '집중경보 전환',
                   {
@@ -909,11 +909,12 @@ export default {
       } else if (type === 'NTF') {
         this.fn_openWindow('requestForAction', row)
       } else if (type === 'ALARM') {
-        if (row.ticket_type === 'ATT2_AIB') {
-          this.fn_openWindow('aiResponse2', Object.assign(row, { node_num: '1623913427068', if_num: '1720169357741' }))
-        } else {
-          this.fn_openWindow('aiResponse', row)
-        }
+        this.fn_openWindow('aiResponse2', Object.assign(row, { node_num: '1623913427068', if_num: '1720169357741' }))
+        // if (row.ticket_type === 'ATT2_AIB') {
+        //   this.fn_openWindow('aiResponse2', Object.assign(row, { node_num: '1623913427068', if_num: '1720169357741' }))
+        // } else {
+        //   this.fn_openWindow('aiResponse', row)
+        // }
       } else if (type === 'FIN') {
         this.fn_openWindow('processFin', row)
       } else if (type === 'CONFIG_TEST') {

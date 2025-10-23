@@ -3,7 +3,7 @@ import { niaRoute } from '@/router/nia/index'
 import _ from 'lodash'
 import constants from '@/min/constants'
 import { getInvisibleSpanParameter, getNiaRouterPathByName, showNumberText } from '@/views-nia/js/commonNiaFunction'
-import { apiSelectSopHistList } from '@/api/nia'
+import { apiSelectSopHistList, apiSopSyslogHistList } from '@/api/nia'
 
 const chatbotCommand = constants.nia.chatbotCommand
 const chatbotKeyMap = constants.nia.chatbotKeyMap
@@ -153,7 +153,13 @@ const mutations = {
     async SET_ALARM_FUCUS_CHAT_TICKET_DATA(state, { ticketData }) {
         state.alarmFocusTicketData = ticketData
 
-        const res = await apiSelectSopHistList({ NODE_NM: ticketData.node_nm })
+        let res
+        if (state.alarmFocusTicketData.ticket_type === 'SYSLOG') {
+            res = await apiSopSyslogHistList({ NODE_NM: ticketData.node_nm })
+        } else {
+            res = await apiSelectSopHistList({ NODE_NM: ticketData.node_nm })
+        }
+
         const sopDataList = res.result
         state.alarmFocusSopDataList.length = 0
         state.alarmFocusSopDataList.push(...sopDataList)

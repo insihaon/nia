@@ -1,6 +1,6 @@
 <template>
   <el-dialog :visible.sync="dialogVisible" custom-class="medium_dialog" center :modal="true" :show-close="true" :close-on-click-modal="false" :close-on-press-escape="false" :append-to-body="true" title="포트변경">
-    <div :class="{ [name]: true }" style="height: 500px">
+    <div :class="{ [name]: true }" style="height: 470px">
       <div class="d-flex flex-column h-full">
         <!-- prettier-ignore -->
         <CompInquiryPannel
@@ -60,7 +60,7 @@ export default {
         totalPages: null, // 전체 페이지 수
       },
       selectedRow: [],
-      item: {}
+      item: {},
     }
   },
   computed: {
@@ -187,6 +187,26 @@ export default {
 
 <style lang="scss" scoped>
 @import '~@/styles/animation.scss';
+
+::v-deep .el-dialog__header {
+  background: #05092e;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+
+  .el-dialog__title {
+    color: white;
+  }
+
+  .el-dialog__close {
+    color: white;
+  }
+}
+
+::v-deep .el-dialog {
+  margin-top: 15vh !important;
+  width: 600px;
+  border-radius: 20px;
+}
 
 .aiResponse2 {
   caret-color: transparent; /* 깜빡이는 커서 숨김 */
