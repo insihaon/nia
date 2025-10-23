@@ -292,15 +292,9 @@ export default {
         this.$emit('update:wdataParams', ticketData)
       }
 
-      if (this.selectedRow?.ticket_id) {
-        this.tapCurrent = 'ticket'
-        this.sopSearchModel.NODE_NM = this.selectedRow.node_nm
-        this.sopSearchModel.ALARMLOC = this.selectedRow.alarmloc
-      }
-      if (this.selectedRow?.ticket_type === 'SYSLOG') {
-        this.tapCurrent = 'syslog'
-        this.syslogSearchModel = { ALARM_NO: this.selectedRow.alarmno }
-      }
+      this.tapCurrent = this.selectedRow?.ticket_type === 'SYSLOG' ? 'syslog' : 'ticket'
+      this.sopSearchModel.NODE_NM = this.selectedRow.node_nm
+      this.syslogSearchModel = { NODE_NM: this.selectedRow.node_nm }
       this.$nextTick(() => {
         this.setSelectedOptions()
         this.setSelectedSyslogOptions()

@@ -7,10 +7,12 @@
         </h3>
         <div v-if="isQuestionMode">질문을 입력하고 답변을 받아보세요</div>
         <div v-else>
-          <span v-if="alarmFocusMode_TicketData.ticket_type == 'SYSLOG'">[ALARM NO: {{ alarmFocusMode_TicketData.alarmno }}]</span>
-          <span v-else>[TICKET_ID: {{ alarmFocusMode_TicketData.ticket_id }}]</span>
-          <span>[전표유형: {{ getTicketTypeHangle(alarmFocusMode_TicketData.ticket_type) }}]</span>
-          <span>[장비명: {{ alarmFocusMode_TicketData.node_nm }}]</span>
+          <span v-if="alarmFocusMode_TicketData.ticket_type == 'SYSLOG'">[ALARM NO: {{ alarmFocusMode_TicketData.alarmno }}] </span>
+          <span v-else>[TICKET_ID: {{ alarmFocusMode_TicketData.ticket_id }}] </span>
+          <span>[전표유형: {{ getTicketTypeHangle(alarmFocusMode_TicketData.ticket_type) }}] </span>
+          <br />
+          <span>[IP주소: {{ alarmFocusMode_TicketData.ip_addr }}] </span>
+          <span>[장비명: {{ alarmFocusMode_TicketData.node_nm }}] </span>
           <span>[인터페이스명: {{ alarmFocusMode_TicketData.alarmloc }}]</span>
         </div>
       </div>
@@ -26,7 +28,7 @@
         </div>
       </div>
       <div v-else ref="chatMessagesBox" class="chat-messages">
-        <DoughnutChart v-if="alarmFocusSopDataList.length > 0" ref="donutChart" :plugins="[centerTextPlugin]" class="chatbot-donut-chart" :chart-data="chartData" :options="chartOptions" />
+        <DoughnutChart v-if="alarmFocusSopDataList.length > 0" ref="donutChart" class="chatbot-donut-chart" :chart-data="chartData" :options="chartOptions" />
         <div v-for="(message, index) in alarmFocusMode_chatMessages" :key="index" :class="['message', message.type]">
           <div v-if="index === 0" class="message-content">
             <div v-if="alarmFocusSopDataList.length > 0">
@@ -37,26 +39,14 @@
                     <td>전체SOP</td>
                     <td>{{ alarmFocusSopDataList.length }}개</td>
                   </tr>
-                  <tr>
-                    <td>포트다운</td>
-                    <td>{{ chartData.datasets[0].data[0] }}개</td>
-                  </tr>
-                  <tr>
-                    <td>포트변경</td>
-                    <td>{{ chartData.datasets[0].data[1] }}개</td>
-                  </tr>
-                  <tr>
-                    <td>포트리셋</td>
-                    <td>{{ chartData.datasets[0].data[2] }}개</td>
-                  </tr>
-                  <tr>
-                    <td>기타</td>
-                    <td>{{ chartData.datasets[0].data[3] }}개</td>
+                  <tr v-for="(label, index) in chartData.labels" :key="label">
+                    <td>{{ label }}</td>
+                    <td>{{ chartData.datasets[0].data[index] }}개</td>
                   </tr>
                 </tbody>
               </table>
             </div>
-            <span v-else>SOP이력이 없어서 SOP통계자료가 제공되지않습니다</span>
+            <span v-else>해당 장비에 대한 SOP 이력이 없어 통계자료는 제공되지 않습니다.</span>
           </div>
           <div v-if="message.type !== botAlertText || isActiveBotAlert">
             <div class="message-content" @click="handlePathClick($event, message.content)" v-html="formatMessage(message.content)"></div>
@@ -527,27 +517,34 @@ export default {
     },
 
     setDonutChartData() {
-      this.chartData.datasets[0].data = [0, 0, 0, 0]
-
+      // faultType별 개수 계산
+      const faultTypeCount = {}
       this.alarmFocusSopDataList.forEach((data) => {
-        const datasets = this.chartData.datasets[0]
-        switch (data.faultType) {
-          case '포트다운':
-            datasets.data[0]++
-            break
-          case '포트변경':
-            datasets.data[1]++
-            break
-          case '포트리셋':
-            datasets.data[2]++
-            break
-          default: // 기타
-            datasets.data[3]++
-        }
+        const fault_type = data.fault_type
+        faultTypeCount[fault_type] = (faultTypeCount[fault_type] || 0) + 1
       })
 
-      console.log('Chart Data:', this.chartData)
-      console.log('Chart Options:', this.chartOptions)
+      // 개수 기준으로 내림차순 정렬하여 상위 3개 추출
+      const sortedFaultTypes = Object.entries(faultTypeCount)
+        .sort(([, a], [, b]) => b - a)
+        .slice(0, 3)
+
+      // 상위 3개 faultType과 기타 개수 계산
+      const top3FaultTypes = sortedFaultTypes.map(([fault_type]) => fault_type)
+      const top3Counts = sortedFaultTypes.map(([, count]) => count)
+
+      // 기타 개수 계산 (상위 3개가 아닌 나머지)
+      const othersCount = Object.entries(faultTypeCount)
+        .filter(([fault_type]) => !top3FaultTypes.includes(fault_type))
+        .reduce((sum, [, count]) => sum + count, 0)
+
+      // chartData 업데이트
+      this.chartData.labels = [...top3FaultTypes, '기타']
+      this.chartData.datasets[0].data = [...top3Counts, othersCount]
+
+      // 색상도 동적으로 설정 (기본 색상 + 기타용 회색)
+      const colors = ['#FF6384', '#36A2EB', '#FFCE56', 'gray']
+      this.chartData.datasets[0].backgroundColor = colors.slice(0, this.chartData.labels.length)
     },
 
     actionSwitch() {

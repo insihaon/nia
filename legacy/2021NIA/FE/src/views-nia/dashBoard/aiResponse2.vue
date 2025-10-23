@@ -385,7 +385,7 @@ export default {
   },
   computed: {
     isAtt() {
-      return this.selectedRow.ticket_type === 'ATT2'
+      return this.selectedRow.ticket_type === 'ATT2_AIB'
     },
 
     errorDirectionisIn() {

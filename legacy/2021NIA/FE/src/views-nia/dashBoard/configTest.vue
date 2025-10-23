@@ -415,9 +415,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-::v-deep .el-dialog {
-  margin-top: 3vh !important;
-}
 ::v-deep .el-input .el-input__inner {
   border: solid 0px;
   border-bottom: solid 1px lightgray;

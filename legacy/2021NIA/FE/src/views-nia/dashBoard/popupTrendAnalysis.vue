@@ -208,35 +208,50 @@ export default {
   },
 }
 </script>
+
 <style scoped>
-/* 챠트 */
-/* .trendAnalyPopup {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
+.medium_dialog .el-dialog__body {
+  /* el-dialog__body 내부의 레이아웃 컨테이너(el-row)에 대한 기본 설정 */
+  padding-top: 5px; /* 상단 여백 조정 */
+  padding-bottom: 5px;
+  height: auto; /* 내용에 맞게 높이 자동 조정 */
+  min-height: 350px; /* 차트 높이를 고려한 최소 높이 */
 }
-.trendAnalyPopup > ul {
+
+/* el-row를 사용하여 전체 레이아웃 컨테이너 스타일링 (기존 .trendAnalyPopup > ul 역할) */
+.el-row {
   position: relative;
   width: 100%;
   height: 100%;
-  display: inline-block;
-  text-align: center;
-  margin-top: 20px;
+  display: flex; /* flexbox를 사용하여 내부 el-col을 정렬 */
+  justify-content: center; /* 가운데 정렬 */
+  margin-top: 20px !important; /* 기존 ul의 margin-top: 20px 반영 */
 }
 
-.trendAnalyPopup > ul > li {
-  position: relative;
-  width: 46%;
+.el-col {
+  /* position: relative; */ /* el-col 자체에는 일반적으로 적용하지 않음 */
   height: 100%;
-  display: inline-block;
   text-align: center;
+  /* el-col의 너비는 span 속성으로 제어됩니다 (span="12" = 50%) */
 }
 
-.trendAnalyPopup > ul > li > span {
+/* el-card 스타일 조정 */
+.box-card {
+  height: 100%; /* 부모 el-col 높이 상속 */
+  text-align: left; /* 내부 요소 정렬을 위해 왼쪽 정렬로 변경 */
+}
+
+/* el-card 헤더의 span.cardTitle 스타일 (기존 .trendAnalyPopup > ul > li > span 역할) */
+.box-card .el-card__header {
+  padding: 0;
+  border-bottom: none;
+}
+
+.box-card .cardTitle {
   position: relative;
   text-align: center;
   font-size: 12px;
-  transform: rotate(-0.03deg);
+  /* transform: rotate(-0.03deg); */ /* 미세한 회전은 생략 */
   font-weight: 600;
   letter-spacing: -1px;
   display: inline-block;
@@ -245,17 +260,34 @@ export default {
   height: 35px;
   line-height: 35px;
   color: #ffffff;
+  /* 카드 헤더 내부에서 위치 조정이 필요할 수 있습니다. */
 }
-.trendAnalyPopup > ul > li > div.trendAnalyChart {
+
+/* LineChart 컴포넌트 영역 스타일링 (기존 .trendAnalyPopup > ul > li > div.trendAnalyChart 역할) */
+.trendAnalyChart {
   position: relative;
-  top: 10px;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 300px;
+  /* top: 10px; */ /* el-card body 내부에서 상단 여백으로 대체하는 것이 좋습니다. */
+  height: 300px; /* 기존 height: 300px 반영 */
   width: 100%;
-  display: inline-block;
-} */
+  /* display: inline-block; */
+}
+
+/* 단위 표시 legend 스타일 */
+.legend {
+  position: relative;
+  font-size: 12px;
+  margin-top: 10px;
+  text-align: right;
+  padding-right: 15px;
+}
+
+/* el-card__body에 상단 여백 추가 (trendAnalyChart의 top: 10px 대체) */
+.box-card .el-card__body {
+  padding-top: 10px;
+}
+</style>
+
+<style scoped>
 .cardTitle {
   display: inline-block;
   padding-top: 10px !important;
