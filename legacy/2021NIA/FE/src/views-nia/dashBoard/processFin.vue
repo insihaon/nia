@@ -18,14 +18,14 @@
       </el-card>
       <el-card shadow="never" style="height: 350px" :body-style="{ padding: '10px' }">
         <div slot="header">
-          <span><i class="el-icon-document" /> 기타 조치내용 입력</span>
+          <span><i class="el-icon-document" /> SOP 조치 상세내용</span>
         </div>
         <el-row>
           <el-col>
             <el-input v-model="etcContent" :rows="4" type="textarea" placeholder="기타 조치내용 입력" />
           </el-col>
         </el-row>
-        <span style="color: red; float: right">기타 조치내용 입력은 시스템 기능 개선에 큰 도움이 됩니다</span>
+        <span style="color: red; float: right">SOP 조치 상세내용 입력은 시스템 기능 개선에 큰 도움이 됩니다</span>
       </el-card>
       <el-card shadow="never" style="height: 100%" :body-style="{ padding: '10px' }">
         <div slot="header">
@@ -37,7 +37,7 @@
           <el-date-picker v-model="period" type="datetimerange" range-separator="To" start-placeholder="시작 시간" end-placeholder="종료 시간" :disabled="aiFeedback === '0'" />
         </el-row>
         <el-row class="p-2">
-          <el-col style="text-align: left"><i class="el-icon-document" /> 피드백 내용</el-col>
+          <el-col style="text-align: left"><i class="el-icon-document" /> AI 결과 피드백 상세내용</el-col>
           <el-col>
             <el-input v-model="fault_type_content" :rows="6" type="textarea" :disabled="aiFeedback === '0'" placeholder="AI 결과 피드백 내용 입력" />
           </el-col>
@@ -61,7 +61,7 @@ import _ from 'lodash'
 import { apiSelectSopCode, apiSendMQ } from '@/api/nia'
 import ModalSopMng from '@/views-nia/modal/ModalSopMng'
 import constants from '@/min/constants'
-import { getAlarmFocusTicketData, getWindowActionList, loadFirstSopData } from '@/views-nia/js/commonNiaFunction'
+import { getChatbotTicketData, getWindowActionList, loadFirstSopData } from '@/views-nia/js/commonNiaFunction'
 import { mapState } from 'vuex'
 import niaObserverMixin from '@/mixin/niaObserverMixin'
 import { getInvisibleSpanParameter, getNiaRouterPathByName, showNumberText } from '@/views-nia/js/commonNiaFunction'
@@ -168,7 +168,7 @@ export default {
 
     async setFocusPopupParameter(isChatbotGenerated) {
       if (isChatbotGenerated) this.wdata.params.isChatbotGenerated = isChatbotGenerated
-      const ticketData = await getAlarmFocusTicketData(this.wdata)
+      const ticketData = await getChatbotTicketData(this.wdata)
       if (ticketData) {
         this.selectedRow = ticketData
         this.$emit('update:wdataParams', ticketData)

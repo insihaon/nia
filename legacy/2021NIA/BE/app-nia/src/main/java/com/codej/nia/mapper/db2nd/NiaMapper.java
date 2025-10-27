@@ -66,6 +66,8 @@ public interface NiaMapper extends BaseDataMapper {
 
         public int INSERT_NIA_SYSLOG_RULE(HashMap<String, Object> map);
 
+        public int INSERT_CHATBOT_HISTORY(HashMap<String, Object> map);
+
         public List<ResultMap> SELECT_CHECK_RULE_NAME(HashMap<String, Object> map);
 
         public List<ResultMap> SELECT_SOP_CODE_LIST(HashMap<String, Object> map);

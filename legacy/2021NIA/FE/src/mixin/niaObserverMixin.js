@@ -9,7 +9,7 @@ var niaObserverMixin = {
     },
     computed: {
         ...mapState({
-            lastFocusModuleName: (state) => state.chatbot.lastFocusModule.name,
+            lastFocusPopupName: (state) => state.chatbot.lastFocusPopup.name,
             currentMode: (state) => state.chatbot.currentMode,
         }),
 
@@ -18,7 +18,7 @@ var niaObserverMixin = {
         }
     },
     watch: {
-        lastFocusModuleName(nVal, oVal) {
+        lastFocusPopupName(nVal, oVal) {
             if (typeof this.popupShowCommand === 'function') {
                 if (this.isFocusModeButNotFocus) {
                     return

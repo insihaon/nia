@@ -165,7 +165,7 @@ import CompChart from '@/components/chart/CompChart.vue'
 import dialogOpenMixin from '@/mixin/dialogOpenMixin'
 import { mapState } from 'vuex'
 import constants from '@/min/constants'
-import { getAlarmFocusTicketData, getWindowActionList } from '@/views-nia/js/commonNiaFunction'
+import { getChatbotTicketData, getWindowActionList } from '@/views-nia/js/commonNiaFunction'
 
 import niaObserverMixin from '@/mixin/niaObserverMixin'
 
@@ -450,7 +450,7 @@ export default {
   methods: {
     async setTicketDataForAlarmFocusTicketData(isChatbotGenerated) {
       if (isChatbotGenerated) this.wdata.params.isChatbotGenerated = isChatbotGenerated
-      const ticketData = await getAlarmFocusTicketData(this.wdata)
+      const ticketData = await getChatbotTicketData(this.wdata)
       if (ticketData) {
         this.selectedRow = ticketData
         this.$emit('update:wdataParams', ticketData)
