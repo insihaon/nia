@@ -59,8 +59,6 @@ public class NiaNoxiousTrafficHdlServiceImpl implements NiaNoxiousTrafficHdlServ
                             hashMap.put("strdPort", String.valueOf(noxiousTrafficVo.getStrd_port()));
                             hashMap.put("dateregdate", String.valueOf(noxiousTrafficVo.getDateregdate()));
 
-
-
                             cnt = trafficMapper.selectNoxiousTrafficCheck(hashMap);
 
                             LOGGER.info("==========>[NiaNoxiousTrafficHdlService] niaNoxiousTrafficeHdlProcessor check cnt : "+cnt+"<==============");
