@@ -1052,6 +1052,25 @@
                 </if>
         )
     </insert>
+    
+    <insert id="INSERT_CHATBOT_HISTORY" parameterType="java.util.HashMap">
+        INSERT INTO nia.tb_chatbot_history 
+        (
+            user_id
+            , reg_date
+            , chat_content
+            , chat_type
+            , chatbot_action_type
+        ) 
+        VALUES 
+        (
+            #{user_id}
+            , #{reg_date}::timestamp
+            , #{chat_content}
+            , #{chat_type}
+            , #{chatbot_action_type}
+        )
+    </insert>
 
     <!-- SYSLOG RULE NAME 중복 체크 -->
     <select id="SELECT_CHECK_RULE_NAME" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">

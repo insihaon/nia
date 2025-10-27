@@ -3,7 +3,9 @@ import { niaRoute } from '@/router/nia/index'
 import _ from 'lodash'
 import constants from '@/min/constants'
 import { getInvisibleSpanParameter, getNiaRouterPathByName, showNumberText } from '@/views-nia/js/commonNiaFunction'
-import { apiSelectSopHistList, apiSopSyslogHistList } from '@/api/nia'
+import { apiIpAlarmList, apiSelectSopHistList, apiSopSyslogHistList, apiInsertChatbotHistory } from '@/api/nia'
+import store from '@/store'
+import moment from 'moment'
 
 const chatbotCommand = constants.nia.chatbotCommand
 const chatbotKeyMap = constants.nia.chatbotKeyMap
@@ -60,22 +62,32 @@ const defaultQuestionModeChatMessages = {
 
 const state = {
     routerParameter,
-    lastFocusModule: { name: '', type: '' },
+    lastFocusPopup: { name: '', type: '' },
     currentMode: constants.nia.chatbotMode.questionMode,
     questionMode_chatMessages: [_.cloneDeep(defaultQuestionModeChatMessages)],
     alarmFocusMode_chatMessages: [getDefaultAlarmFocusModeFirstChatMessages()],
-    alarmFocusTicketData: {},
+    alarmFocusTicketData: {}, // 현재 선택된 경보의 ticket 정보
     alarmFocusSopDataList: [],
     actionType: constants.nia.chatbotActiontype.assist
+}
+
+async function loadTicketData(focusTicketData) {
+    return focusTicketData
+
+    // if (focusTicketData.ticket_type === 'SYSLOG') {
+    //     return await apiIpAlarmList({ ALARMNO: focusTicketData.alarmno })
+    // } else {
+    //     return await apiIpAlarmList({ TICKET_ID: focusTicketData.ticket_id })
+    // }
 }
 
 const mutations = {
     SET_LAST_FOCUS_MODULE(state, { name, type }) {
         if (name === 'chatbot') return
-        if (state.lastFocusModule.name === name && state.lastFocusModule.type === type) return
+        if (state.lastFocusPopup.name === name && state.lastFocusPopup.type === type) return
 
-        state.lastFocusModule.name = name
-        state.lastFocusModule.type = type
+        state.lastFocusPopup.name = name
+        state.lastFocusPopup.type = type
     },
 
     SWTICH_ACTION(state) {
@@ -129,6 +141,16 @@ const mutations = {
                     content: content,
                     time: getCurrentTime(),
                 })
+
+                if (content !== searchMessaging) {
+                    apiInsertChatbotHistory({
+                        user_id: store.state.user.info.uid,
+                        reg_date: moment().toISOString(),
+                        chat_content: content,
+                        chat_type: type,
+                        chatbot_action_type: state.actionType
+                    })
+                }
                 break
         }
 
@@ -150,8 +172,8 @@ const mutations = {
         state.currentMode = newMode
     },
 
-    async SET_ALARM_FUCUS_CHAT_TICKET_DATA(state, { ticketData }) {
-        state.alarmFocusTicketData = ticketData
+    async SET_ALARM_FOCUS_CHAT_TICKET_DATA(state, { ticketData }) {
+        state.alarmFocusTicketData = await loadTicketData(ticketData)
 
         let res
         if (state.alarmFocusTicketData.ticket_type === 'SYSLOG') {
@@ -237,7 +259,7 @@ const actions = {
     newAlarmFocusChat({ commit }, { ticketData }) {
         commit('MODE_CHANGE', { newMode: 'alarmFocusMode' })
         commit('RESET_CHAT')
-        commit('SET_ALARM_FUCUS_CHAT_TICKET_DATA', { ticketData })
+        commit('SET_ALARM_FOCUS_CHAT_TICKET_DATA', { ticketData })
     }
 }
 

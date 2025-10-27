@@ -23,7 +23,7 @@ import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
 import { apiAlarmCurAndHistList, apiSelectNodeList, apiSelectLinkList } from '@/api/nia'
 import { mapState } from 'vuex'
 import constants from '@/min/constants'
-import { getAlarmFocusTicketData, getWindowActionList, getInvisibleSpanParameter, getNiaRouterPathByName, showNumberText } from '@/views-nia/js/commonNiaFunction'
+import { getChatbotTicketData, getWindowActionList, getInvisibleSpanParameter, getNiaRouterPathByName, showNumberText } from '@/views-nia/js/commonNiaFunction'
 
 import niaObserverMixin from '@/mixin/niaObserverMixin'
 
@@ -171,7 +171,7 @@ export default {
     },
   },
   async mounted() {
-    const ticketData = await getAlarmFocusTicketData(this.wdata)
+    const ticketData = await getChatbotTicketData(this.wdata)
     if (ticketData) {
       this.selectedRow = ticketData
       this.$emit('update:wdataParams', ticketData)

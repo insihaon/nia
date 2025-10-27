@@ -97,7 +97,7 @@ import _ from 'lodash'
 import dialogOpenMixin from '@/mixin/dialogOpenMixin'
 import { apiIpsdnRequest, apiSelectAgencyIpList, apiRemote } from '@/api/nia'
 import constants from '@/min/constants'
-import { getAlarmFocusTicketData, getWindowActionList, getInvisibleSpanParameter, getNiaRouterPathByName, showNumberText } from '@/views-nia/js/commonNiaFunction'
+import { getChatbotTicketData, getWindowActionList, getInvisibleSpanParameter, getNiaRouterPathByName, showNumberText } from '@/views-nia/js/commonNiaFunction'
 import { mapState } from 'vuex'
 import niaObserverMixin from '@/mixin/niaObserverMixin'
 const routeName = constants.nia.chatbotKeyMap.configTest.parameterKey
@@ -222,7 +222,7 @@ export default {
   methods: {
     async setTicketDataForAlarmFocusTicketData(isChatbotGenerated) {
       if (isChatbotGenerated) this.wdata.params.isChatbotGenerated = isChatbotGenerated
-      const ticketData = await getAlarmFocusTicketData(this.wdata)
+      const ticketData = await getChatbotTicketData(this.wdata)
       if (ticketData) {
         this.selectedRow = ticketData
         this.$emit('update:wdataParams', ticketData)

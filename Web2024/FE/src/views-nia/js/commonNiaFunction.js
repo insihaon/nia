@@ -1,6 +1,6 @@
 import { niaRoute } from '@/router/nia/index'
 import router from '@/router'
-import { apiIpAlarmList, apiSopSyslogHistList, apiSelectSopHistList } from '@/api/nia'
+import { apiSopSyslogHistList, apiSelectSopHistList } from '@/api/nia'
 import store from '@/store'
 import axios from 'axios'
 import { searchMessaging, errorMessaging1, errorMessaging2, errorMessaging3 } from '@/store/modules/chatbot.js'
@@ -93,30 +93,36 @@ export async function loadFirstSopData(selectedRow) {
     }
 }
 
-export async function getAlarmFocusTicketData(wdata) {
-    if (!isModal(wdata) || !isChatbotGenerated(wdata)) {
+export async function getChatbotTicketData(wdata) {
+    if (isCurrentRouterDashboard() && (!isModal(wdata) || !isChatbotGenerated(wdata))) {
         return
-    }
-
-    const currentMode = store.state.chatbot.currentMode
-    if (currentMode === 'alarmFocusMode') {
-        const focusData = store.state.chatbot.alarmFocusTicketData
-        let res
-        if (focusData.ticket_type === 'SYSLOG') {
-            res = await apiIpAlarmList({ ALARMNO: focusData.alarmno })
-        } else {
-            res = await apiIpAlarmList({ TICKET_ID: focusData.ticket_id })
-        }
-
-        if (res) {
-            const ticketData = res.result[0]
-            // ticketData.ticket_id = focusData.ticket_id
-            // ticketData.alarmno = focusData.alarmno
-            return ticketData
-        }
     } else {
-        return
+        if (store.state.chatbot.currentMode === 'alarmFocusMode') {
+            return store.state.chatbot.alarmFocusTicketData
+        } else {
+            return null
+        }
     }
+
+    // const currentMode = store.state.chatbot.currentMode
+    // if (currentMode === 'alarmFocusMode') {
+    //     const focusTicketData = store.state.chatbot.alarmFocusTicketData
+    //     let res
+    //     if (focusTicketData.ticket_type === 'SYSLOG') {
+    //         res = await apiIpAlarmList({ ALARMNO: focusTicketData.alarmno })
+    //     } else {
+    //         res = await apiIpAlarmList({ TICKET_ID: focusTicketData.ticket_id })
+    //     }
+
+    //     if (res) {
+    //         const ticketData = res.result[0]
+    //         // ticketData.ticket_id = focusTicketData.ticket_id
+    //         // ticketData.alarmno = focusTicketData.alarmno
+    //         return ticketData
+    //     }
+    // } else {
+    //     return
+    // }
 }
 
 function isCurrentRouterDashboard() {

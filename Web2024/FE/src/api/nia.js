@@ -284,6 +284,16 @@ export function apiInsertSyslogRule(params = {}) {
   })
 }
 
+export function apiInsertChatbotHistory(params = {}) {
+  return http({
+    url: '/selectOne',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'INSERT_CHATBOT_HISTORY',
+    data: params
+  })
+}
+
 export function apiUpdateNodePosition(params = {}) {
   return http({
     url: '/selectOne',

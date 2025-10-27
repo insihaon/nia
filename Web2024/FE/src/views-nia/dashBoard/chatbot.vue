@@ -39,14 +39,17 @@
                     <td>전체SOP</td>
                     <td>{{ alarmFocusSopDataList.length }}개</td>
                   </tr>
-                  <tr v-for="(label, index) in chartData.labels" :key="label">
+                  <tr v-for="(label, index2) in chartData.labels" :key="label">
                     <td>{{ label }}</td>
-                    <td>{{ chartData.datasets[0].data[index] }}개</td>
+                    <td>{{ chartData.datasets[0].data[index2] }}개</td>
                   </tr>
                 </tbody>
               </table>
             </div>
-            <span v-else>해당 장비에 대한 SOP 이력이 없어 통계자료는 제공되지 않습니다.</span>
+            <div v-else>
+              <p>{{ alarmFocusMode_TicketData.node_nm }} 장비에 대한 SOP이력이 없어서</p>
+              <p>통계 데이터가 제공되지 않습니다.</p>
+            </div>
           </div>
           <div v-if="message.type !== botAlertText || isActiveBotAlert">
             <div class="message-content" @click="handlePathClick($event, message.content)" v-html="formatMessage(message.content)"></div>
@@ -275,7 +278,6 @@ export default {
       alarmFocusSopDataList: (state) => state.chatbot.alarmFocusSopDataList,
       currentMode: (state) => state.chatbot.currentMode,
       actionType: (state) => state.chatbot.actionType,
-      lastFocusModule: (state) => state.chatbot.lastFocusModule,
       windows: (state) => state.mdi.windows,
     }),
 
