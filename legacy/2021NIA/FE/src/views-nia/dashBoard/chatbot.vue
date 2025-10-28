@@ -66,7 +66,7 @@
         <button :disabled="isQuestionMode" class="utility-button" :style="{ 'background-color': isActiveBotAlert ? '#ff4949' : '#e5e7eb' }" @click="toggleIsActiveBotAlert">{{ isActiveBotAlert ? '경보 표시' : '경보 미표시' }}</button>
         <button :disabled="isQuestionMode" class="utility-button" @click="actionSwitch">{{ actionType === 'expert' ? '전문가모드' : '안내모드' }}</button>
         <button :disabled="isQuestionMode" class="utility-button" @click="resetChat">채팅초기화</button>
-        <button :disabled="isQuestionMode" class="utility-button" :style="{ 'background-color': isRecording ? '#ff4949' : '#e5e7eb' }" @click="switchVoiceRecording">음성인식({{ isRecording ? 'ON' : 'OFF' }})</button>
+        <button :disabled="isQuestionMode || true" class="utility-button" :style="{ 'background-color': isRecording ? '#ff4949' : '#e5e7eb' }" @click="switchVoiceRecording">음성인식({{ isRecording ? 'ON' : 'OFF' }})</button>
       </div>
 
       <div class="chat-input">
@@ -85,9 +85,10 @@ import { mapState } from 'vuex'
 import dialogOpenMixin from '@/mixin/dialogOpenMixin'
 import { Doughnut } from 'vue-chartjs'
 import { searchMessaging, errorMessaging1, errorMessaging2, errorMessaging3 } from '@/store/modules/chatbot.js'
-import { getNiaRouteNameByPath, getNiaRouteTitleByPath, getSpanFormatMessageForDB, getMatchMapOfspanFormatMessage, isSpanFormatChatMessage } from '@/views-nia/js/commonNiaFunction'
+import { getChatbotMdiObject, getNiaRouteNameByPath, getNiaRouteTitleByPath, getSpanFormatMessageForDB, getMatchMapOfspanFormatMessage, isSpanFormatChatMessage } from '@/views-nia/js/commonNiaFunction'
 import constants from '@/min/constants'
 import EventBus from '@/utils/event-bus'
+import hotkeys from 'hotkeys-js'
 
 const routeName = 'chatbot'
 
@@ -327,6 +328,28 @@ export default {
   created() {
     this.selectedRow = this.wdata.params
     this.scrollToBottom()
+
+    const chatbotPopup = getChatbotMdiObject()
+    hotkeys(`alt+q`, (e, h) => {
+      if (chatbotPopup) {
+        this.$store.dispatch('mdi/bringToFrontWindow', chatbotPopup.id)
+      }
+    })
+    hotkeys(`alt+w`, (e, h) => {
+      if (chatbotPopup) {
+        const heightValue = parseInt(chatbotPopup.height)
+        if (heightValue >= 800 && heightValue <= 1000) {
+          chatbotPopup.height = window.innerHeight - 70
+          chatbotPopup.x = 10
+          chatbotPopup.y = 10
+        } else {
+          chatbotPopup.height = '900'
+          chatbotPopup.width = '600'
+          chatbotPopup.x = 10
+          chatbotPopup.y = window.innerHeight - chatbotPopup.height - 60
+        }
+      }
+    })
   },
 
   mounted() {

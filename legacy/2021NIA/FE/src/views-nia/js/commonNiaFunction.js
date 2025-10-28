@@ -282,3 +282,7 @@ export function getMatchMapOfspanFormatMessage(userQuestion, spanFormatMessage) 
     return false
 }
 
+export function getChatbotMdiObject() {
+    const chatbotMdiObject = store.state.mdi.windows.find((w) => w.name === '어시스턴트')
+    return chatbotMdiObject
+}
