@@ -238,7 +238,7 @@ export default {
     this.addScript(['./extlib/map2d/lib/index_nia_bundle.js'], async)
   },
   async mounted() {
-    await this.setTicketDataForAlarmFocusTicketData()
+    await this.setTicketDataForChatbotTicketData()
 
     setTimeout(() => {
       this.onInit()
@@ -246,13 +246,17 @@ export default {
     }, 500)
   },
   methods: {
-    async setTicketDataForAlarmFocusTicketData(isChatbotGenerated) {
-      if (isChatbotGenerated) this.wdata.params.isChatbotGenerated = isChatbotGenerated
-      const ticketData = await getChatbotTicketData(this.wdata)
-      if (ticketData) {
-        this.paramTickets = [ticketData]
+    async setTicketDataForChatbotTicketData(isSwitchingTicket) {
+      if (isSwitchingTicket) this.wdata.params.isChatbotGenerated = isSwitchingTicket
+      const chatbotData = await getChatbotTicketData(this.wdata)
+      if (chatbotData) {
+        this.paramTickets = [chatbotData]
         this.paramShowFullTopology = false
-        this.$emit('update:wdataParams', ticketData)
+        this.$emit('update:wdataParams', chatbotData)
+
+        this.$store.dispatch('chatbot/botPushAnswerMessage', {
+          content: constants.nia.chatbotIcon.success + constants.nia.chatbotComment.parameterChange,
+        })
       }
 
       // this.topologyConstruct()

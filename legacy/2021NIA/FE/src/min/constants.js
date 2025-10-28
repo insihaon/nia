@@ -154,7 +154,8 @@ export default {
       'assist': 'assist'
     },
     chatbotComment: {
-      lastComment: `어떤 기능을 도와드릴까요?`
+      lastComment: `어떤 기능을 도와드릴까요?`,
+      parameterChange: `현재 감시중인 티켓에 맞게 파라미터를 변경하였습니다.`
     }
   },
   ipms: {

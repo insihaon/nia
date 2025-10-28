@@ -909,12 +909,12 @@ export default {
       } else if (type === 'NTF') {
         this.fn_openWindow('requestForAction', row)
       } else if (type === 'ALARM') {
-        this.fn_openWindow('aiResponse2', Object.assign(row, { node_num: '1623913427068', if_num: '1720169357741' }))
-        // if (row.ticket_type === 'ATT2_AIB') {
-        //   this.fn_openWindow('aiResponse2', Object.assign(row, { node_num: '1623913427068', if_num: '1720169357741' }))
-        // } else {
-        //   this.fn_openWindow('aiResponse', row)
-        // }
+        if (row.ticket_type === 'ATT2_AIB') {
+          // this.fn_openWindow('aiResponse2', Object.assign(row, { node_num: '1623913427068', if_num: '1720169357741' }))
+          this.fn_openWindow('aiResponse2', row)
+        } else {
+          this.fn_openWindow('aiResponse', row)
+        }
       } else if (type === 'FIN') {
         this.fn_openWindow('processFin', row)
       } else if (type === 'CONFIG_TEST') {
