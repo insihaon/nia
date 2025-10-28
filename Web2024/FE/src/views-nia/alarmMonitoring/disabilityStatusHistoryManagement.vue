@@ -171,16 +171,7 @@ export default {
     },
   },
   async mounted() {
-    const ticketData = await getChatbotTicketData(this.wdata)
-    if (ticketData) {
-      this.selectedRow = ticketData
-      this.$emit('update:wdataParams', ticketData)
-
-      if (this.selectedRow.ticket_id) {
-        this.searchModel.NODE_NM = this.selectedRow.node_nm
-        this.searchModel.ALARMLOC = this.selectedRow.alarmloc
-      }
-    }
+    await this.setTicketDataForChatbotTicketData()
 
     this.$nextTick(() => {
       this.setSelectedOptions()
@@ -189,6 +180,24 @@ export default {
     })
   },
   methods: {
+    async setTicketDataForChatbotTicketData(isSwitchingTicket) {
+      if (isSwitchingTicket) this.wdata.params.isChatbotGenerated = isSwitchingTicket
+      const chatbotData = await getChatbotTicketData(this.wdata)
+      if (chatbotData) {
+        this.selectedRow = chatbotData
+        this.$emit('update:wdataParams', chatbotData)
+
+        this.$store.dispatch('chatbot/botPushAnswerMessage', {
+          content: constants.nia.chatbotIcon.success + constants.nia.chatbotComment.parameterChange,
+        })
+
+        if (this.selectedRow.ticket_id) {
+          this.searchModel.NODE_NM = this.selectedRow.node_nm
+          this.searchModel.ALARMLOC = this.selectedRow.alarmloc
+        }
+      }
+    },
+
     selectChange(map) {
       if (map.model === 'NODE_NM') {
         this.chainSetInterfaceOptionList()

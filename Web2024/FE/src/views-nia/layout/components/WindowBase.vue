@@ -130,7 +130,7 @@ export default {
     },
 
     alarmFocusTicketData(nVal, oVal) {
-      // 과거에는 감시 대상이였는데, 현재는 감시대상이 아니게 되었다면,
+      // 기존 감시대상이 변경되었을 경우 감지하여 변경한다.
       if (this.showAlarmFocusModeBtn && oVal.ticket_id === this.getCurrentWindowTicketId && nVal.ticket_id !== this.getCurrentWindowTicketId) {
         console.log('감시대상이 변경되었네요! dialogNm : ' + this.wdata.dialogNm)
         // (1) 현재 윈도우에 셋팅된 티켓 데이터 this.wdata.params.ticket를 바꾸고
@@ -150,7 +150,7 @@ export default {
         })
 
         // (2) 자식 popup의 함수를 실행시켜서 기존 데이터를 reset하고, 새로운 티켓 정보로 다시 셋팅되도록 지시한다.
-        this.$refs.childComponent.setTicketDataForAlarmFocusTicketData(true)
+        this.$refs.childComponent.setTicketDataForChatbotTicketData(true)
       }
     },
   },

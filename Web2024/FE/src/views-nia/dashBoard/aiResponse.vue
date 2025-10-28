@@ -441,19 +441,23 @@ export default {
     }
   },
   async mounted() {
-    await this.setTicketDataForAlarmFocusTicketData()
+    await this.setTicketDataForChatbotTicketData()
 
     this.$nextTick(() => {
       this.popupShowCommand()
     })
   },
   methods: {
-    async setTicketDataForAlarmFocusTicketData(isChatbotGenerated) {
-      if (isChatbotGenerated) this.wdata.params.isChatbotGenerated = isChatbotGenerated
-      const ticketData = await getChatbotTicketData(this.wdata)
-      if (ticketData) {
-        this.selectedRow = ticketData
-        this.$emit('update:wdataParams', ticketData)
+    async setTicketDataForChatbotTicketData(isSwitchingTicket) {
+      if (isSwitchingTicket) this.wdata.params.isChatbotGenerated = isSwitchingTicket
+      const chatbotData = await getChatbotTicketData(this.wdata)
+      if (chatbotData) {
+        this.selectedRow = chatbotData
+        this.$emit('update:wdataParams', chatbotData)
+
+        this.$store.dispatch('chatbot/botPushAnswerMessage', {
+          content: constants.nia.chatbotIcon.success + constants.nia.chatbotComment.parameterChange,
+        })
       }
 
       if (this.isShowChartTicketType) {
