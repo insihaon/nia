@@ -130,7 +130,8 @@ import { AppOptions } from '@/class/appOptions'
 import dialogOpenMixin from '@/mixin/dialogOpenMixin'
 import _ from 'lodash'
 import { mapState } from 'vuex'
-import { getInvisibleSpanParameter, getNiaRouterPathByName, showNumberText } from '@/views-nia/js/commonNiaFunction'
+import { niaSimulationStart } from '@/views-nia/js/niaSimulationFunction'
+import hotkeys from 'hotkeys-js'
 
 const routeName = 'NiaMain'
 export default {
@@ -368,8 +369,12 @@ export default {
     NiaMainEventText(nVal, oVal) {
       switch (nVal) {
         case this.chatbotCommand.focusModeCheckAlarm.action:
-          this.fn_openWindow('niaTopology', this.alarmFocusTicketData, null, { addX: -580 })
-          this.fn_openWindow('aiResponse', this.alarmFocusTicketData, null, { addX: 580, addY: -20 })
+          // prettier-ignore
+          (async() => {
+            this.fn_openWindow('niaTopology', this.alarmFocusTicketData, null, { addX: -580 })
+            await new Promise(resolve => setTimeout(resolve, 1000))
+            this.fn_openWindow('aiResponse', this.alarmFocusTicketData, null, { addX: 580, addY: -20 })
+          })()
           break
       }
 
@@ -414,6 +419,8 @@ export default {
       this.setTransFilterGroup()
 
       window.changeFocusAlertMode = this.changeFocusAlertMode.bind(this)
+      window.niaSimulationStart = niaSimulationStart.bind(this)
+      hotkeys(`alt+t`, (e, h) => window.niaSimulationStart())
     })
   },
 

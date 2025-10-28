@@ -43,12 +43,14 @@ function getCurrentTime() {
 function getDefaultAlarmFocusModeFirstChatMessages() {
     return {
         type: constants.nia.chatType.botAnswer,
-        content: `<b>아래 메뉴를 통해 원하시는 업무를 선택하실 수 있습니다</b>
+        content: `<div class="chatbot-command-header">추천 명령어</div>
+        <b>아래 메뉴를 통해 원하시는 업무를 선택하실 수 있습니다</b>
     ` +
             showNumberText(1, `${chatbotCommand.focusModeCheckAlarm.label}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', chatbotCommand.focusModeCheckAlarm.action)}<br>`) +
             showNumberText(2, `${chatbotKeyMap.processFin.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), chatbotKeyMap.processFin.dialogNm, '')}<br>`) +
             showNumberText(3, `${chatbotKeyMap.configTest.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), chatbotKeyMap.configTest.dialogNm, '')}<br>`) +
             showNumberText(4, `${chatbotKeyMap.requestForAction.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), chatbotKeyMap.requestForAction.dialogNm, '')}<br>`) +
+            showNumberText(5, `${chatbotKeyMap.sopHistory.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), chatbotKeyMap.sopHistory.dialogNm, '')}<br>`) +
             `<br>${constants.nia.chatbotComment.lastComment}`,
         time: getCurrentTime(),
     }
@@ -74,11 +76,13 @@ const state = {
 async function loadTicketData(focusTicketData) {
     return focusTicketData
 
-    // if (focusTicketData.ticket_type === 'SYSLOG') {
-    //     return await apiIpAlarmList({ ALARMNO: focusTicketData.alarmno })
-    // } else {
-    //     return await apiIpAlarmList({ TICKET_ID: focusTicketData.ticket_id })
-    // }
+    // 만약 아래 로그를 해제하고 데이터를 직접 가져오면 , 시뮬레이션 모드의 경우 7일이 넘는 데이터는 테스트 불가능해짐
+
+    /* if (focusTicketData.ticket_type === 'SYSLOG') {
+        return await apiIpAlarmList({ ALARMNO: focusTicketData.alarmno })
+    } else {
+        return await apiIpAlarmList({ TICKET_ID: focusTicketData.ticket_id })
+    } */
 }
 
 const mutations = {
