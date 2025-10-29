@@ -140,7 +140,7 @@ public class AppDto extends ToStringFormatter {
     @Value("${myconf.api-server.ipsdn:}")
     private String ipsdnUrl;
 
-    @Value("${myconf.api-server.user:code}")
+    @Value("${myconf.api-server.user:codej}")
     private String ipsdnId;
 
     @Value("${myconf.api-server.pw:codej!@#}")
