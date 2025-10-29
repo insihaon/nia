@@ -87,7 +87,7 @@
         </el-col>
       </el-row>
     </div>
-    <pathSwitch ref="pathSwitch" :wdata="{ selectedRow: selectedRow, item: item }"></pathSwitch>
+    <pathSwitch ref="pathSwitch" :wdata="{ selectedRow: selectedRow, item: item }" @saveLocalStorage="saveLocalStorage"></pathSwitch>
   </div>
 </template>
 
@@ -100,6 +100,7 @@ import constants from '@/min/constants'
 import { getChatbotTicketData, getWindowActionList, getInvisibleSpanParameter, getNiaRouterPathByName, showNumberText } from '@/views-nia/js/commonNiaFunction'
 import { mapState } from 'vuex'
 import niaObserverMixin from '@/mixin/niaObserverMixin'
+
 const routeName = constants.nia.chatbotKeyMap.configTest.parameterKey
 
 export default {
@@ -355,8 +356,26 @@ export default {
             this.$alert('해당 기능은 현재 일시적으로 막아놓았습니다. Ping테스트 진행하겠습니다')
             this.remotePingTest()
             break
+          case 'chngport':
+            // 포트변경은 pathSwitch 팝업에서 진행함.
+            break
         }
+
+        const param = {
+          uid: this.$store.state.user.info.uid,
+          remoteControl: this.remoteControl,
+          nodeName: this.item.nodeName,
+          ifname: this.item.ifname,
+        }
+
+        this.saveLocalStorage(param)
       })
+    },
+
+    saveLocalStorage(param) {
+      if (param.uid && ['shoutdown', 'noshut', 'chngport'].includes(param.remoteControl)) {
+        localStorage.setItem('lastRemoteHistory' + '_' + param.uid + '_' + param.nodeName + '_' + param.ifname, JSON.stringify(param.remoteControl))
+      }
     },
 
     async actionRemote(remoteControl) {
@@ -366,10 +385,11 @@ export default {
         return
       }
 
+      const userId = this.$store.state.user.info.uid
       const res = await apiRemote(remoteControl, {
         ip: ipAddr,
         param: `nodename=${nodeName}&ifname=${ifname}`,
-        user_id: this.$store.state.user.info.uid,
+        user_id: userId,
       })
 
       if (res.success) {
@@ -399,7 +419,13 @@ export default {
         })
         if (res.success) {
           this.pingFileName = res.result
+          this.$alert('성공적으로 ping 테스트가 진행되었습니다.', '성공', {
+            confirmButtonText: '확인',
+          })
         } else {
+          this.$alert('ping 테스트가 실패했습니다.', '실패', {
+            confirmButtonText: '확인',
+          })
           this.pingFileName = null
           this.isShowFrame = false
         }
