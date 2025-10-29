@@ -70,7 +70,8 @@ const state = {
     alarmFocusMode_chatMessages: [getDefaultAlarmFocusModeFirstChatMessages()],
     alarmFocusTicketData: {}, // 현재 선택된 경보의 ticket 정보
     alarmFocusSopDataList: [],
-    actionType: constants.nia.chatbotActiontype.assist
+    actionType: constants.nia.chatbotActiontype.assist,
+    simulationStatus: 'OFF'
 }
 
 async function loadTicketData(focusTicketData) {
@@ -208,6 +209,10 @@ const mutations = {
                 }
                 break
         }
+    },
+
+    SWITCH_SIMULATION_STATUS(state) {
+        state.simulationStatus = state.simulationStatus === 'ON' ? 'OFF' : 'ON'
     }
 
 }
