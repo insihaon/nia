@@ -44,7 +44,7 @@
       </div>
       <div v-if="isViewport('>', 'md')" class="notice-title flex items-center">
         <el-tooltip class="item" effect="light" content="시스템 모니터링 필터" placement="top">
-          <i class="el-icon-s-tools m_icon" style="cursor: pointer; margin-right: 5px" @click="openSystemMonitoringModal" />
+          <i class="el-icon-s-tools m_icon" :style="{ color: simulationStatus === 'ON' ? 'red' : '#fff' }" style="cursor: pointer; margin-right: 5px" @click="openSystemMonitoringModal" />
         </el-tooltip>
       </div>
     </div>
@@ -85,6 +85,7 @@ export default {
     ...mapState({
       niaProcess: (state) => state.systemMonitoring.niaProcess,
       systemMonitoringMap: (state) => state.systemMonitoring.systemMonitoringMap,
+      simulationStatus: (state) => state.chatbot.simulationStatus,
     }),
   },
 
