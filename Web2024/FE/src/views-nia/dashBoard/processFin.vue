@@ -157,7 +157,32 @@ export default {
     },
 
     async setSopCodeValue() {
+      const { THIS } = this
       const firstSopData = await loadFirstSopData(this.selectedRow)
+
+      const remoteControl = localStorage.getItem('lastRemoteHistory' + '_' + this.$store.state.user.info.uid + '_' + this.selectedRow.node_nm + '_' + this.selectedRow.alarmloc)
+      if (remoteControl) {
+        const cleanRemoteControl = remoteControl.replace(/"/g, '').replace(/\s/g, '')
+        switch (cleanRemoteControl) {
+          case 'shoutdown':
+            this.finSop.fault_classify = '포트장애'
+            this.finSop.fault_type = '포트불량'
+            this.finSop.fault_detail_content = '포트다운'
+            break
+          case 'noshut':
+            this.finSop.fault_classify = '비장애'
+            this.finSop.fault_type = '포트다운'
+            this.finSop.fault_detail_content = '포트리셋'
+            break
+          case 'chngport':
+            this.finSop.fault_classify = '링크장애'
+            this.finSop.fault_type = 'config 불일치'
+            this.finSop.fault_detail_content = '포트변경'
+            break
+        }
+
+        return
+      }
 
       if (firstSopData) {
         this.finSop.fault_classify = firstSopData.fault_classify

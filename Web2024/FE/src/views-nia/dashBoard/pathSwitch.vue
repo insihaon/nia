@@ -140,6 +140,15 @@ export default {
         this.$alert('성공적으로 명령이 실행되었습니다.', '성공', {
           confirmButtonText: '확인',
         })
+
+        const param = {
+          uid: this.$store.state.user.info.uid,
+          remoteControl: this.remoteControl,
+          nodeName: this.item.nodeName,
+          ifname: this.item.ifname,
+        }
+
+        this.$emit('saveLocalStorage', param)
       } else {
         this.$alert('명령 실행이 실패했습니다.', '실패', {
           confirmButtonText: '확인',
