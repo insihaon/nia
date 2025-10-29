@@ -19,13 +19,25 @@ spring:
 
   rabbitmq:
     enabled: false
-# myconf:
-#   ssh:
-#     host: 116.89.191.47
-#     port: 16891
-#     user: codej8888
-#     password: zhfps!
-#   api-server:
-#     ipsdn: http://103.22.222.7:8088
-#     user: codej
-#     pw: codej!@#
+
+myconf:
+  project: nia
+  websocket:
+    enabled: false
+  auth:
+    use: true #auth.use
+    otp:
+      use: false #otp.use
+    single-only: false
+    expired-seconds: 86400 # 60*60*24
+    login: false
+  snapshot-Url: http://116.89.191.35:24888/download/
+  ssh:
+    host: 116.89.191.47
+    port: 16891
+    user: codej8888
+    password: zhfps!
+  api-server:
+    ipsdn: http://103.22.222.7:8088
+    user: codej
+    pw: codej!@#
