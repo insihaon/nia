@@ -38,6 +38,11 @@ myconf:
     user: codej8888
     password: zhfps!
   api-server:
-    ipsdn: http://103.22.222.7:8088
+    ipsdn: http://203.255.249.31:8088 #http://103.22.222.7:8088
     user: codej
     pw: codej!@#
+
+  api-server2:
+    server-path: http://203.255.249.31:8088 #http://103.22.222.7:8088
+    user: codej
+    pw: "!codej@" # yml에서 !표는 특수문자입니다.

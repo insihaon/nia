@@ -28,4 +28,8 @@ public class ApiServerProperites {
         return appDto.getIpsdnUrl();
     }
 
+    public String getApiServer2Path() {
+        return appDto.getApiServer2Path();
+    }
+
 }
