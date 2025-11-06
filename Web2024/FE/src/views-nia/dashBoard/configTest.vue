@@ -247,10 +247,13 @@ export default {
         case 'NTT': // 유해트래픽
           this.remoteControl = 'shoutdown'
           break
-        case 'RT': // 포트다운
+        case 'RT': // 장애
           if (alarmmsg === 'PORT_DOWN') {
             this.remoteControl = 'noshut'
           }
+          break
+        case 'SYSLOG':
+          this.remoteControl = 'noshut'
           break
       }
 

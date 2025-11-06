@@ -473,7 +473,7 @@ export default {
 
         this.$store.dispatch('mdi/setWindowOptions', {
           id: this.wdata.id,
-          options: { height: '400', width: '600' },
+          options: { height: '500', width: '700' },
         })
       }
     },

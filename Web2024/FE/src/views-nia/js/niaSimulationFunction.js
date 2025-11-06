@@ -1,4 +1,5 @@
 import store from '@/store'
+import EventBus from '@/utils/event-bus'
 
 const rt_alarm1 = { 'ticket_type': 'RT', 'root_cause_sysnamez': null, 'clusterno': '144093', 'alarmno': 'I25454', 'if_num': null, 'fault_time': null, 'node_nm': 'daejeon-n9k', 'root_cause_porta': null, 'ticket_rca_result_dtl_code': 'PORT 다운', 'alarmmsg': 'PORT_DOWN', 'ticket_rca_result_code': 'SWITCH_PORT_DOWN', 'fault_type': 'SwitchFail', 'root_cause_sysnamea': 'daejeon-n9k', 'ticket_id': '1671777', 'ai_accuracy': null, 'port': '1720408774278', 'alarmtime': '2025-10-28 12:02:46', 'root_cause_portz': null, 'zero1_entropy': null, 'alarmmsg_original': 'port down - (436221440)Ethernet1/28#436221440', 'node_num': '1623828015475', 'ip_addr': '116.89.161.24', 'alarmloc': 'Ethernet1/28', 'total_related_alarm_cnt': null, 'status': 'AUTO_FIN' }
 const rt_alarm2 = { 'ticket_type': 'RT', 'root_cause_sysnamez': null, 'clusterno': '144084', 'alarmno': 'I25453', 'if_num': null, 'fault_time': null, 'node_nm': 'pangyo-5812', 'root_cause_porta': null, 'ticket_rca_result_dtl_code': 'PORT 다운', 'alarmmsg': 'PORT_DOWN', 'ticket_rca_result_code': 'SWITCH_PORT_DOWN', 'fault_type': 'SwitchFail', 'root_cause_sysnamea': 'pangyo-5812', 'ticket_id': '1671775', 'ai_accuracy': null, 'port': '1720139332303', 'alarmtime': '2025-10-24 22:37:54', 'root_cause_portz': null, 'zero1_entropy': null, 'alarmmsg_original': 'port down - (10003)xe3#10003', 'node_num': '1623913556405', 'ip_addr': '116.89.169.33', 'alarmloc': 'xe3', 'total_related_alarm_cnt': null, 'status': 'AUTO_FIN' }
@@ -14,6 +15,7 @@ const syslog_alarm5 = { 'ticket_type': 'SYSLOG', 'root_cause_sysnamez': null, 'c
 const att_alarm1 = { 'ticket_type': 'ATT2', 'root_cause_sysnamez': '대전-광주', 'clusterno': null, 'alarmno': null, 'if_num': '1720413434118', 'fault_time': '2025-09-29 17:35:00', 'node_nm': 'daejeon-7712', 'root_cause_porta': 'ce4/1', 'ticket_rca_result_dtl_code': '이상 트래픽(이용기관)', 'alarmmsg': 'TrafficFail', 'ticket_rca_result_code': null, 'fault_type': 'TrafficFail', 'root_cause_sysnamea': 'daejeon-7712', 'ticket_id': '1671658', 'ai_accuracy': '0', 'port': null, 'alarmtime': '2025-09-29 18:25:22', 'root_cause_portz': 'ce4/1', 'zero1_entropy': 0.0008064021, 'alarmmsg_original': null, 'node_num': '1623913471006', 'ip_addr': '116.89.169.21', 'alarmloc': 'ce4/1', 'total_related_alarm_cnt': 1, 'status': 'AUTO_FIN' }
 const att_alarm2 = { 'ticket_type': 'ATT2', 'root_cause_sysnamez': '광주-대전', 'clusterno': null, 'alarmno': null, 'if_num': '1720141987296', 'fault_time': '2025-09-30 09:34:00', 'node_nm': 'gwangju-7712', 'root_cause_porta': 'ce2/1', 'ticket_rca_result_dtl_code': '이상 트래픽(이용기관)', 'alarmmsg': 'TrafficFail', 'ticket_rca_result_code': null, 'fault_type': 'TrafficFail', 'root_cause_sysnamea': 'gwangju-7712', 'ticket_id': '1671659', 'ai_accuracy': '0', 'port': null, 'alarmtime': '2025-09-30 09:40:43', 'root_cause_portz': 'ce2/1', 'zero1_entropy': 0.2324228527, 'alarmmsg_original': null, 'node_num': '1720140269083', 'ip_addr': '116.89.169.41', 'alarmloc': 'ce2/1', 'total_related_alarm_cnt': 1, 'status': 'AUTO_FIN' }
 const att_alarm3 = { 'ticket_type': 'ATT2', 'root_cause_sysnamez': '대전-광주', 'clusterno': null, 'alarmno': null, 'if_num': '1720413434118', 'fault_time': '2025-09-30 09:34:00', 'node_nm': 'daejeon-7712', 'root_cause_porta': 'ce4/1', 'ticket_rca_result_dtl_code': '이상 트래픽(이용기관)', 'alarmmsg': 'TrafficFail', 'ticket_rca_result_code': null, 'fault_type': 'TrafficFail', 'root_cause_sysnamea': 'daejeon-7712', 'ticket_id': '1671660', 'ai_accuracy': '0', 'port': null, 'alarmtime': '2025-09-30 09:40:46', 'root_cause_portz': 'ce4/1', 'zero1_entropy': 0.2750223166, 'alarmmsg_original': null, 'node_num': '1623913471006', 'ip_addr': '116.89.169.21', 'alarmloc': 'ce4/1', 'total_related_alarm_cnt': 1, 'status': 'AUTO_FIN' }
+const ntt_alarm1 = { 'ticket_type': 'NTT', 'root_cause_sysnamez': '대전-광주', 'clusterno': null, 'alarmno': null, 'if_num': '1720413434118', 'fault_time': '2025-09-29 17:35:00', 'node_nm': 'daejeon-7712', 'root_cause_porta': 'ce4/1', 'ticket_rca_result_dtl_code': '이상 트래픽(이용기관)', 'alarmmsg': 'TrafficFail', 'ticket_rca_result_code': null, 'fault_type': 'TrafficFail', 'root_cause_sysnamea': 'daejeon-7712', 'ticket_id': '1671658', 'ai_accuracy': '0', 'port': null, 'alarmtime': '2025-09-29 18:25:22', 'root_cause_portz': 'ce4/1', 'zero1_entropy': 0.0008064021, 'alarmmsg_original': null, 'node_num': '1623913471006', 'ip_addr': '116.89.169.21', 'alarmloc': 'ce4/1', 'total_related_alarm_cnt': 1, 'status': 'AUTO_FIN' }
 
 function nowDateTime() {
     const date = new Date()
@@ -28,12 +30,23 @@ function nowDateTime() {
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
 }
 
-const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms || 5000))
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms || 3000))
 
 async function unshiftFunction(alarm, param) {
+    const VueThis = this
+
     const simulationStatus = store.state.chatbot.simulationStatus
     if (simulationStatus === 'ON') {
-        this.ipNetworkList.unshift(Object.assign(alarm, { status: 'INIT', alarmtime: nowDateTime(), ticket_id: alarm.ticket_id ? param.maxTicketId++ : '' }))
+        const upsertParam = {
+            status: 'INIT',
+            alarmtime: nowDateTime(),
+            /* ticket_id 조정시 실제 티켓번호와 달라서 이상트래픽 차트가 표시안됨 */
+            // ticket_id: alarm.ticket_id ? param.maxTicketId++ : ''
+        }
+
+        const newTableData = Object.assign(alarm, upsertParam)
+        VueThis.ipNetworkList.unshift(newTableData)
+        EventBus.$emit('simulateTest', newTableData)
         await delay(param?.injectionDelay)
     } else {
         return
@@ -42,44 +55,51 @@ async function unshiftFunction(alarm, param) {
 
 // --------------------------------
 
-export async function niaSimulationStart(param) {
-    // [고성호] 시연 테스트용
+export async function niaSimulationStart(param = {}, isFull) {
+    const VueThis = this
+    if (isFull) {
+        const simulationStatus = store.state.chatbot.simulationStatus
 
-    const simulationStatus = store.state.chatbot.simulationStatus
-
-    if (simulationStatus === 'ON') {
-        store.commit('chatbot/SWITCH_SIMULATION_STATUS')
+        if (simulationStatus === 'ON') {
+            store.commit('chatbot/SWITCH_SIMULATION_STATUS')
+        } else {
+            store.commit('chatbot/SWITCH_SIMULATION_STATUS')
+            // prettier-ignore
+            await (injectionTableData.bind(VueThis))(param)
+        }
     } else {
-        store.commit('chatbot/SWITCH_SIMULATION_STATUS')
-        // prettier-ignore
-        await (injectionTableData.bind(this))(param)
+        await (unshiftFunction.bind(VueThis))(att_alarm1, param)
     }
 }
 
 async function injectionTableData(param = {}) {
-    const maxTicketObject = this.ipNetworkList.reduce((max, current) => {
+    const VueThis = this
+
+    const maxTicketObject = VueThis.ipNetworkList.reduce((max, current) => {
         if (!max || current.ticket_id > max.ticket_id) { return current }
         return max
     }, undefined)
     param.maxTicketId = maxTicketObject.ticket_id
 
-    await (unshiftFunction.bind(this))(syslog_alarm1, param)
-    await (unshiftFunction.bind(this))(rt_alarm1, param)
-    await (unshiftFunction.bind(this))(att_alarm1, param)
+    await (unshiftFunction.bind(VueThis))(ntt_alarm1, param)
 
-    await (unshiftFunction.bind(this))(syslog_alarm2, param)
-    await (unshiftFunction.bind(this))(rt_alarm2, param)
-    await (unshiftFunction.bind(this))(att_alarm2, param)
+    await (unshiftFunction.bind(VueThis))(att_alarm1, param)
+    await (unshiftFunction.bind(VueThis))(rt_alarm1, param)
+    await (unshiftFunction.bind(VueThis))(syslog_alarm1, param)
 
-    await (unshiftFunction.bind(this))(syslog_alarm3, param)
-    await (unshiftFunction.bind(this))(rt_alarm3, param)
-    await (unshiftFunction.bind(this))(att_alarm3, param)
+    await (unshiftFunction.bind(VueThis))(syslog_alarm2, param)
+    await (unshiftFunction.bind(VueThis))(rt_alarm2, param)
+    await (unshiftFunction.bind(VueThis))(att_alarm2, param)
 
-    await (unshiftFunction.bind(this))(rt_alarm4, param)
-    await (unshiftFunction.bind(this))(rt_alarm5, param)
-    await (unshiftFunction.bind(this))(rt_alarm6, param)
+    await (unshiftFunction.bind(VueThis))(syslog_alarm3, param)
+    await (unshiftFunction.bind(VueThis))(rt_alarm3, param)
+    await (unshiftFunction.bind(VueThis))(att_alarm3, param)
 
-    await (unshiftFunction.bind(this))(syslog_alarm4, param)
-    await (unshiftFunction.bind(this))(syslog_alarm5, param)
+    await (unshiftFunction.bind(VueThis))(rt_alarm4, param)
+    await (unshiftFunction.bind(VueThis))(rt_alarm5, param)
+    await (unshiftFunction.bind(VueThis))(rt_alarm6, param)
+
+    await (unshiftFunction.bind(VueThis))(syslog_alarm4, param)
+    await (unshiftFunction.bind(VueThis))(syslog_alarm5, param)
 }
 

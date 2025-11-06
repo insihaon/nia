@@ -122,16 +122,17 @@ const mutations = {
         state.routerParameter[name] = ''
     },
 
-    PUSH_CHAT_MESSAGE(state, { content, type, callBack }) {
-        if (type === constants.nia.chatType.botAlert) {
-            state.alarmFocusMode_chatMessages.push({
-                type: type,
-                content: content,
-                time: getCurrentTime(),
-            })
-            return
-        }
+    PUSH_CHAT_ALERT(state, { content, type, callBack }) {
+        state.alarmFocusMode_chatMessages.push({
+            type: type,
+            content: content,
+            time: getCurrentTime(),
+        })
 
+        if (callBack) callBack()
+    },
+
+    PUSH_CHAT_MESSAGE(state, { content, type, callBack }) {
         switch (state.currentMode) {
             case constants.nia.chatbotMode.questionMode:
                 state.questionMode_chatMessages.push({
@@ -255,14 +256,18 @@ const actions = {
         }
 
         if (addContent) { content += addContent }
-        if (state.currentMode === constants.nia.chatbotMode.questionMode) {
-            // 현재 질문 모드는 입력되는 것을 막아놓음
+
+        if (isAlert) {
+            commit('PUSH_CHAT_ALERT', { content, type: constants.nia.chatType.botAlert, callBack: callBack })
             return
+        } else {
+            if (state.currentMode === constants.nia.chatbotMode.questionMode) {
+                // 현재 질문 모드는 입력되는 것을 막아놓음
+                return
+            } else {
+                commit('PUSH_CHAT_MESSAGE', { content, type: constants.nia.chatType.botAnswer, callBack: callBack })
+            }
         }
-        commit('PUSH_CHAT_MESSAGE', {
-            content, type: isAlert ? constants.nia.chatType.botAlert : constants.nia.chatType.botAnswer,
-            callBack: callBack
-        })
     },
 
     newAlarmFocusChat({ commit }, { ticketData }) {

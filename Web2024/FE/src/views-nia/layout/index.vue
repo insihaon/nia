@@ -14,7 +14,7 @@
         <AppMain v-if="!popupLayout" ref="appmain" :style="{ height: appMainHeight }" />
         <BottomBar ref="bottombar" />
       </div>
-      <chatbotIcon v-show="!existChatbotPopup" />
+      <chatbotIcon v-show="!existChatbotPopup && isDebug" />
     </div>
     <WindowBase v-for="window in $store.getters.windows" :key="window.id" :type="window.type" :wdata="window" :target="window.target" />
   </div>
@@ -59,7 +59,6 @@ export default {
       AppOptions: AppOptions,
       closeNoticeSeq: [],
       popupNoticeArray: [],
-      simulateCnt: 0,
     }
   },
   computed: {
@@ -102,6 +101,10 @@ export default {
 
     existChatbotPopup() {
       return this.windows.find((w) => w.name === '어시스턴트')
+    },
+
+    isDebug() {
+      return AppOptions.instance.debug
     },
 
     ...mapState({
@@ -159,24 +162,15 @@ export default {
     this.removeWsEventListener(this.CONSTANTS.channels.TRANS_ALARM.name, this.onReceivedTransTicketEvent)
   },
   methods: {
-    simulateTest() {
-      if (this.simulateCnt % 2 === 0) {
-        // new 사용법 v.$parent.$parent.simulateTest
-        this.onReceivedIpsdnTicketEvent({
-          channelName: 'IPSDN_ALARM',
-          socketMessage: {
-            message: '{ "result":null,"properties":null,"ticketId":"1671626","eventType":"TICKET_NEW","ticketType":"...." }',
-          },
-        })
-      } else {
-        this.onReceivedIpsdnTicketEvent({
-          channelName: 'IPSDN_ALARM',
-          socketMessage: {
-            message: '{ "result":null,"properties":null,"ticketId":"1671626","eventType":"TICKET_NEW","ticketType":"...." }',
-          },
-        })
-      }
-      this.simulateCnt++
+    simulateTest(param) {
+      this.onReceivedIpsdnTicketEvent({
+        channelName: 'IPSDN_ALARM',
+        socketMessage: {
+          message: `{ "result":null,"properties":null,"ticketId": ${param.ticket_id ? '"' + param.ticket_id + '"' : null},"eventType":"TICKET_NEW","ticketType":"....", "alarmno": ${
+            param.alarmno ? '"' + param.alarmno + '"' : null
+          }, "isTest": true  }`,
+        },
+      })
     },
 
     subscribeEvent() {
@@ -222,7 +216,9 @@ export default {
 
     async pushChatbotAlert(data) {
       const param = {
-        TICKET_ID: data.ticketId,
+        TICKET_ID: data.ticketId ? data.ticketId + '' : null,
+        ALARMNO: data.alarmno ? data.alarmno + '' : null,
+        IS_TEST: data.isTest,
       }
       const res = await apiIpAlarmList(param)
       if (res) {
