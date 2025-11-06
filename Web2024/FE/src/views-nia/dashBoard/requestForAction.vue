@@ -1,5 +1,5 @@
 <template>
-  <div :class="{ [name]: true }" style="height: 100%">
+  <div v-loading="requestForActionLoading" :class="{ [name]: true }" style="height: 100%">
     <!-- <el-row class="w-full d-flex flex-column"> -->
     <!-- <el-row class="d-flex p-1">
         <i class="el-icon-document mr-2 text-base" />
@@ -209,6 +209,7 @@ export default {
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       visible: false,
       containerLoading: false,
+      requestForActionLoading: false,
       selectedRow: null,
       selectedUser: [],
       sendItem: {},
@@ -568,7 +569,6 @@ export default {
     },
     async onClickEmailSender() {
       const { uid, name } = this.$store.state.user.info
-      const _THIS = this
       const receiverUser = this.$refs.employeeTable.selection
       if (receiverUser.length === 0) {
         this.$alert('담당 직원을 선택해주세요.', '알림', {
@@ -597,12 +597,16 @@ export default {
         }),
       }
       try {
+        this.requestForActionLoading = true
         const res = await apiSendMQ('sendMail', param)
         this.$alert(`메일 전송에 ${res.success ? '성공' : '실패'} 하였습니다.`, '알림', {
           confirmButtonText: '확인',
+          customClass: 'nia-message-box',
         })
       } catch (error) {
         this.error(error)
+      } finally {
+        this.requestForActionLoading = false
       }
     },
     onClose() {
