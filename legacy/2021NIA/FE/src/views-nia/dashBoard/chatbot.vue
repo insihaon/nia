@@ -30,7 +30,7 @@
       <div v-else ref="chatMessagesBox" class="chat-messages">
         <DoughnutChart v-if="alarmFocusSopDataList.length > 0" ref="donutChart" class="chatbot-donut-chart" :chart-data="chartData" :options="chartOptions" />
         <div v-for="(message, index) in alarmFocusMode_chatMessages" :key="index" :class="['message', message.type]">
-          <div v-if="index === 0" class="message-content">
+          <div v-if="index === 0" class="message-content sopAnalysisBody">
             <div v-if="alarmFocusSopDataList.length > 0">
               <div style="background-color: #1e293b; font-weight: 600; text-align: center; color: white">{{ alarmFocusTicketData.node_nm }} 장비에 대한 SOP 조치내용 통계</div>
               <table class="sop-stats-table">
@@ -47,8 +47,9 @@
               </table>
             </div>
             <div v-else>
-              <p>{{ alarmFocusMode_TicketData.node_nm }} 장비에 대한 SOP이력이 없어서</p>
-              <p>통계 데이터가 제공되지 않습니다.</p>
+              <div style="background-color: #ee6666; font-weight: 600; text-align: center; color: white">{{ warningSignText }} {{ alarmFocusTicketData.node_nm }} SOP 통계 미보유 {{ warningSignText }}</div>
+              <br />
+              SOP이력이 없어서 통계 데이터가 제공되지 않습니다.
             </div>
           </div>
           <div v-if="message.type !== botAlertText || isActiveBotAlert">
@@ -66,13 +67,13 @@
         <button :disabled="isQuestionMode" class="utility-button" :style="{ 'background-color': isActiveBotAlert ? '#ff4949' : '#e5e7eb' }" @click="toggleIsActiveBotAlert">{{ isActiveBotAlert ? '경보 표시' : '경보 미표시' }}</button>
         <button :disabled="isQuestionMode" class="utility-button" @click="actionSwitch">{{ actionType === 'expert' ? '전문가모드' : '안내모드' }}</button>
         <button :disabled="isQuestionMode" class="utility-button" @click="resetChat">채팅초기화</button>
-        <button :disabled="isQuestionMode || true" class="utility-button" :style="{ 'background-color': isRecording ? '#ff4949' : '#e5e7eb' }" @click="switchVoiceRecording">음성인식({{ isRecording ? 'ON' : 'OFF' }})</button>
+        <!-- <button :disabled="isQuestionMode" class="utility-button" :style="{ 'background-color': isRecording ? '#ff4949' : '#e5e7eb' }" @click="switchVoiceRecording">음성인식({{ isRecording ? 'ON' : 'OFF' }})</button> -->
+        <button :disabled="isQuestionMode" class="utility-button" :style="{ 'background-color': recognizing ? '#ff4949' : '#e5e7eb' }" @click="toggleWebSpeechApiRecognition">음성인식 WSA({{ recognizing ? 'ON' : 'OFF' }})</button>
       </div>
 
       <div class="chat-input">
         <input v-model="userInput" :disabled="isQuestionMode" type="text" placeholder="질문을 입력하세요..." @keyup.enter="sendMessage" />
         <button :disabled="!userInput.trim() || isQuestionMode" @click="sendMessage">전송</button>
-        <button v-if="isDebug" @click="makeSimulationAlert">테스트 경보</button>
       </div>
     </div>
   </div>
@@ -86,8 +87,8 @@ import dialogOpenMixin from '@/mixin/dialogOpenMixin'
 import { Doughnut } from 'vue-chartjs'
 import { searchMessaging, errorMessaging1, errorMessaging2, errorMessaging3 } from '@/store/modules/chatbot.js'
 import { getChatbotMdiObject, getNiaRouteNameByPath, getNiaRouteTitleByPath, getSpanFormatMessageForDB, getMatchMapOfspanFormatMessage, isSpanFormatChatMessage } from '@/views-nia/js/commonNiaFunction'
+import { apiIpAlarmList } from '@/api/nia'
 import constants from '@/min/constants'
-import EventBus from '@/utils/event-bus'
 import hotkeys from 'hotkeys-js'
 
 const routeName = 'chatbot'
@@ -147,6 +148,7 @@ export default {
         },
       },
       mounted() {
+        // 이곳은 donutChart의 mounted
         const clonedData = this._cloneChartData(this.chartData)
         const clonedOptions = this._cloneOptionsPreservingFunctions(this.options)
         this.renderChart(clonedData, clonedOptions)
@@ -215,7 +217,7 @@ export default {
       isActiveBotAlert: false,
       centerTextPlugin: centerTextPlugin,
       chartData: {
-        labels: ['포트다운', '포트변경', '포트리셋', '기타'],
+        labels: [],
         datasets: [
           {
             backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', 'gray'],
@@ -230,6 +232,13 @@ export default {
       isRecording: false,
       transcribedText: '여기에 텍스트가 표시됩니다.', // UI 표시용
       /* --- 음성인식 End --- */
+
+      /* 음성인식 Web Speeach API Start*/
+      recognizing: false,
+      recognition: null,
+      recognitionTimeoutTimer: null,
+      bufferText: '',
+      /* 음성인식 Web Speeach API End*/
       chartOptions: {
         responsive: true,
         maintainAspectRatio: false,
@@ -304,6 +313,10 @@ export default {
     botAlertText() {
       return constants.nia.chatType.botAlert
     },
+
+    warningSignText() {
+      return constants.nia.chatbotIcon.WarningSign
+    },
   },
   watch: {
     questionMode_chatMessages(nval, oval) {
@@ -330,33 +343,99 @@ export default {
     this.scrollToBottom()
 
     const chatbotPopup = getChatbotMdiObject()
-    hotkeys(`alt+q`, (e, h) => {
-      if (chatbotPopup) {
-        this.$store.dispatch('mdi/bringToFrontWindow', chatbotPopup.id)
-      }
-    })
-    hotkeys(`alt+w`, (e, h) => {
-      if (chatbotPopup) {
-        const heightValue = parseInt(chatbotPopup.height)
-        if (heightValue >= 800 && heightValue <= 1000) {
-          chatbotPopup.height = window.innerHeight - 70
-          chatbotPopup.x = 10
-          chatbotPopup.y = 10
-        } else {
-          chatbotPopup.height = '900'
-          chatbotPopup.width = '600'
-          chatbotPopup.x = 10
-          chatbotPopup.y = window.innerHeight - chatbotPopup.height - 60
+    if (this.isDebug) {
+      hotkeys(`alt+q`, (e, h) => {
+        if (chatbotPopup) {
+          this.$store.dispatch('mdi/bringToFrontWindow', chatbotPopup.id)
         }
-      }
-    })
+      })
+      hotkeys(`alt+w`, (e, h) => {
+        if (chatbotPopup) {
+          const heightValue = parseInt(chatbotPopup.height)
+          if (heightValue >= 800 && heightValue <= 1000) {
+            chatbotPopup.height = window.innerHeight - 70
+            chatbotPopup.x = 10
+            chatbotPopup.y = 10
+          } else {
+            chatbotPopup.height = '900'
+            chatbotPopup.width = '600'
+            chatbotPopup.x = 10
+            chatbotPopup.y = window.innerHeight - chatbotPopup.height - 60
+          }
+        }
+      })
+    }
   },
 
   mounted() {
     this.setDonutChartData()
+
+    this.makeWebSpeechApiObj()
   },
 
   methods: {
+    makeWebSpeechApiObj() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+      if (SpeechRecognition) {
+        this.recognition = new SpeechRecognition()
+        this.recognition.lang = 'ko-KR'
+        this.recognition.interimResults = true
+        this.recognition.continuous = true
+      } else {
+        alert('이 브라우저는 음성인식을 지원하지 않습니다.')
+      }
+    },
+
+    toggleWebSpeechApiRecognition() {
+      if (!this.recognizing) this.startRecognition()
+      else this.stopRecognition()
+    },
+
+    resetSilenceTimer() {
+      if (this.recognitionTimeoutTimer) clearTimeout(this.recognitionTimeoutTimer)
+      this.recognitionTimeoutTimer = setTimeout(() => {
+        if (this.bufferText.trim() !== '') {
+          this.userInput = this.bufferText.trim()
+          this.bufferText = ''
+          this.sendMessage()
+        }
+      }, 1000)
+    },
+    startRecognition() {
+      this.bufferText = ''
+      this.recognition.start()
+      this.recognizing = true
+
+      this.recognition.onstart = () => {
+        console.log('음성인식 시작')
+      }
+
+      this.recognition.onresult = (event) => {
+        const result = event.results[event.results.length - 1][0].transcript
+        this.bufferText = result
+        this.resetSilenceTimer()
+      }
+
+      this.recognition.onend = () => {
+        if (this.recognizing) this.recognition.start() // 종료 후 자동재시작
+      }
+
+      this.recognition.onerror = (event) => {
+        console.error('Speech error:', event.error)
+      }
+    },
+
+    stopRecognition() {
+      this.recognizing = false
+      this.recognition.stop()
+      if (this.recognitionTimeoutTimer) clearTimeout(this.recognitionTimeoutTimer)
+
+      if (this.bufferText.trim() !== '') {
+        alert(this.bufferText.trim())
+      }
+      this.bufferText = ''
+    },
+
     async loadMediaRecorder() {
       try {
         // 표준 API: 사용자에게 마이크 접근 권한을 요청합니다.
@@ -472,23 +551,7 @@ export default {
      * 녹음 중지 후 호출되며, Blob을 생성하고 서버로 전송합니다.
      */
     handleRecordingStop() {
-      // 녹음된 오디오 조각(Chunks)을 하나의 Blob 파일로 합칩니다.
-      // mimeType은 녹음 시 사용된 코덱에 따라 결정됩니다.
-      const mimeType = this.mediaRecorder.mimeType || 'audio/wav'
-      const audioBlob = new Blob(this.audioChunks, { type: mimeType })
-
-      if (audioBlob.size === 0) {
-        this.transcribedText = '오디오 데이터가 녹음되지 않았습니다.'
-        return
-      }
-
-      // FormData를 사용하여 Blob을 파일 형태로 서버에 보낼 준비를 합니다.
-      const formData = new FormData()
-      // 파일 이름을 'recording.wav' 또는 'recording.webm' 등으로 지정합니다.
-      const fileExtension = mimeType.split('/')[1] || 'wav'
-      formData.append('audio_file', audioBlob, `recording.${fileExtension}`)
-
-      this.sendToPythonServer(formData)
+      this.sendToPythonServer()
     },
 
     // --- Blob 데이터를 파일로 다운로드하는 도우미 함수 ---
@@ -507,26 +570,57 @@ export default {
     /**
      * 녹음 데이터를 Python 서버로 전송하고 응답을 처리합니다.
      */
-    async sendToPythonServer(formData) {
-      const URL = '/api/stt_process' // Python 서버의 엔드포인트 경로
+    async sendToPythonServer() {
+      const mimeType = this.mediaRecorder.mimeType || 'audio/wav'
+      const audioBlob = new Blob(this.audioChunks, { type: mimeType })
+
+      if (audioBlob.size === 0) {
+        this.transcribedText = '오디오 데이터가 녹음되지 않았습니다.'
+        return
+      }
+
+      const formData = new FormData()
+      // 서버에서 webm;codecs=opus와 같은 확장자를 처리하기 위해 순수 확장자만 추출하는 로직 유지
+      const fileExtension = mimeType.split('/')[1].split(';')[0] || 'wav'
+      formData.append('audio_file', audioBlob, `recording.${fileExtension}`)
+
+      const URL = 'http://incodej-lab.iptime.org:25000/api/stt_process'
 
       try {
         this.transcribedText = '서버로 전송 중...'
-        // const response = await fetch(URL, {
-        //   method: 'POST',
-        //   body: formData, // FormData 객체를 전송
-        // })
 
-        // if (!response.ok) {
-        //   throw new Error(`HTTP error! status: ${response.status}`)
-        // }
+        // 1. 단일 요청 실행 (await를 사용하여 동기적으로 처리)
+        const response = await fetch(URL, {
+          method: 'POST',
+          body: formData, // FormData 객체 (오디오 파일 포함)
+        })
 
-        // const result = await response.json()
+        // 2. HTTP 상태 코드 확인 (400, 500 에러 처리)
+        if (!response.ok) {
+          // 서버에서 보낸 JSON 응답을 읽어 에러 메시지를 추출하려고 시도
+          let errorData = {}
+          try {
+            errorData = await response.json()
+          } catch {
+            // JSON 형식이 아닐 경우 무시
+          }
 
-        // // UI에 인식된 텍스트 표시
-        // this.transcribedText = result.text || '인식된 텍스트가 없습니다.'
+          const errorMessage = errorData.error || `HTTP 요청 실패, 상태 코드: ${response.status}`
+          throw new Error(errorMessage)
+        }
+
+        // 3. 응답 스트림에서 JSON 데이터 추출
+        const data = await response.json()
+
+        // 4. 데이터 사용
+        const recognizedText = data.text
+
+        // UI 업데이트
+        this.transcribedText = recognizedText
+        console.log('인식된 텍스트:', recognizedText)
       } catch (error) {
         console.error('STT 서버 통신 오류:', error)
+        // 사용자에게 오류 메시지 표시
         this.transcribedText = `오류 발생: ${error.message}`
       }
     },
@@ -545,8 +639,8 @@ export default {
       // faultType별 개수 계산
       const faultTypeCount = {}
       this.alarmFocusSopDataList.forEach((data) => {
-        const fault_type = data.fault_type
-        faultTypeCount[fault_type] = (faultTypeCount[fault_type] || 0) + 1
+        const fault_detail_content = data.fault_detail_content
+        faultTypeCount[fault_detail_content] = (faultTypeCount[fault_detail_content] || 0) + 1
       })
 
       // 개수 기준으로 내림차순 정렬하여 상위 3개 추출
@@ -555,12 +649,12 @@ export default {
         .slice(0, 3)
 
       // 상위 3개 faultType과 기타 개수 계산
-      const top3FaultTypes = sortedFaultTypes.map(([fault_type]) => fault_type)
+      const top3FaultTypes = sortedFaultTypes.map(([fault_detail_content]) => fault_detail_content)
       const top3Counts = sortedFaultTypes.map(([, count]) => count)
 
       // 기타 개수 계산 (상위 3개가 아닌 나머지)
       const othersCount = Object.entries(faultTypeCount)
-        .filter(([fault_type]) => !top3FaultTypes.includes(fault_type))
+        .filter(([fault_detail_content]) => !top3FaultTypes.includes(fault_detail_content))
         .reduce((sum, [, count]) => sum + count, 0)
 
       // chartData 업데이트
@@ -610,10 +704,6 @@ export default {
 
           break
       }
-    },
-
-    makeSimulationAlert() {
-      EventBus.$emit('simulateTest', {})
     },
 
     openSop() {
@@ -703,7 +793,6 @@ export default {
       }
 
       if (text.length === 0) text += '\n\n명령 실행에 실패했습니다.'
-
       return text
     },
 
@@ -746,7 +835,6 @@ export default {
       try {
         // 줄바꿈을 <br> 태그로 변환하고 HTML 태그 제거
         let formattedContent = content.replace(/\n/g, '<br>') // 줄바꿈을 <br>로 변환
-
         formattedContent = formattedContent.replace(/(\s+)([^<]+)\s+<span class="move-text">\[진행\]<\/span>/g, '$1$2 <a href="#" class="move-link" data-keyword="$2">[진행]</a>')
 
         return formattedContent
@@ -761,14 +849,60 @@ export default {
 
         if (event.target.innerHTML === '[진행]') {
           // 집중경보 모드 전환
-          const ticketMatch = content.match(/>티켓ID: (.*?)<\/span>/)
-          const ticketId = ticketMatch ? ticketMatch[1] : null
-          if (!ticketId) {
-            this.$alert(`예상치 못한 에러 해당 장비에 ticketId가 존재하지 않습니다. 내용 : ${content}`)
+          const ticketMatch = content.match(/>티켓종류: (.*?)<\/span>/)
+          const ticketType = ticketMatch ? ticketMatch[1] : null
+          if (!ticketType) {
+            this.$alert(`예상치 못한 에러 해당 장비에 ticketType이 존재하지 않습니다. 내용 : ${content}`, '오류', {
+              confirmButtonText: '실행',
+              cancelButtonText: '취소',
+              customClass: 'nia-message-box',
+            })
             return
           }
 
-          window.changeFocusAlertMode(ticketId)
+          let ticketId = null
+          let alarmno = null
+
+          if (ticketType === 'SYSLOG') {
+            const alarmMatch = content.match(/>알람번호: (.*?)<\/span>/)
+            alarmno = alarmMatch ? alarmMatch[1] : null
+            if (!alarmno) {
+              this.$alert(`예상치 못한 에러 해당 장비에 alarmno가 존재하지 않습니다. 내용 : ${content}`, '오류', {
+                confirmButtonText: '실행',
+                cancelButtonText: '취소',
+                customClass: 'nia-message-box',
+              })
+              return
+            }
+          } else {
+            const ticketMatch = content.match(/>티켓ID: (.*?)<\/span>/)
+            ticketId = ticketMatch ? ticketMatch[1] : null
+            if (!ticketId) {
+              this.$alert(`예상치 못한 에러 해당 장비에 ticketId가 존재하지 않습니다. 내용 : ${content}`, '오류', {
+                confirmButtonText: '실행',
+                cancelButtonText: '취소',
+                customClass: 'nia-message-box',
+              })
+              return
+            }
+          }
+
+          const res = await apiIpAlarmList({
+            TICKET_ID: ticketId,
+            ALARMNO: alarmno,
+            IS_TEST: true,
+          })
+
+          if (res && res.result.length > 0) {
+            const ticket = res.result[0]
+            window.changeFocusAlertMode(ticket)
+          } else {
+            this.$alert('해당 티켓에 대하여 집중경보 활성화에 실패하였습니다.', '오류', {
+              confirmButtonText: '실행',
+              cancelButtonText: '취소',
+              customClass: 'nia-message-box',
+            })
+          }
         }
       }
     },

@@ -300,6 +300,13 @@ export default {
       this.sopSearchModel.NODE_NM = this.selectedRow.node_nm
       this.syslogSearchModel = { NODE_NM: this.selectedRow.node_nm }
 
+      // 기본 기간: 현재 시점 기준 지난 7일 (UTC ISO 형식)
+      if (!this.sopSearchModel?.DATE || this.sopSearchModel.DATE.length === 0) {
+        const end = new Date()
+        const start = new Date(end.getTime() - 7 * 24 * 60 * 60 * 1000)
+        this.sopSearchModel.DATE = [start.toISOString(), end.toISOString()]
+      }
+
       this.$nextTick(() => {
         this.setSelectedOptions()
         this.setSelectedSyslogOptions()

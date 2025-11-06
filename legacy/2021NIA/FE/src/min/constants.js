@@ -136,7 +136,8 @@ export default {
       openPopup: '↗️',
       popupWarning: '❌',
       assistantIcon: '💬',
-      Information: 'ℹ️'
+      Information: 'ℹ️',
+      WarningSign: '⚠️'
     },
 
     chatType: {

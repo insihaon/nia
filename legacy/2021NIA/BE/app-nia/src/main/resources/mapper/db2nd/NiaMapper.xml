@@ -195,7 +195,9 @@
                 ACM.ALARMMSG_ORIGINAL
             FROM rca.tb_alarm_cur_mst ACM
             WHERE ALARMNO LIKE 'I%'
-                AND ALARMTIME <![CDATA[ > ]]> now() - INTERVAL '7' DAY
+                <if test="IS_TEST == null">
+                    AND ALARMTIME <![CDATA[ > ]]> now() - INTERVAL '7' DAY
+                </if>
             GROUP BY ACM.ALARMNO, ACM.SYSNAME, ACM.ALARMTIME, ACM.CLEARTIME, ACM.ALARMLOC, ACM.ALARMMSG, ACM.ALARMLEVEL, ACM.PORT, ACM.ALARMMSG_ORIGINAL
         ) ACM
         LEFT JOIN rca.tb_rca_ticket_current TC ON ACM.clusterno = TC.cluster_no
@@ -236,7 +238,9 @@
         LEFT JOIN nia.tb_sop SOP ON TC.TICKET_ID = SOP.TICKET_ID
         WHERE TC.TICKET_TYPE IN ('NFTT', 'FTT', 'ATT2', 'NTT', 'ATT2_AIB')
             AND TC.PARENT_TICKET_ID IS NULL
-            AND TC.TICKET_GENERATION_TIME <![CDATA[ >= ]]> now() - INTERVAL '7' DAY
+            <if test="IS_TEST == null">
+                AND TC.TICKET_GENERATION_TIME <![CDATA[ >= ]]> now() - INTERVAL '7' DAY
+            </if>
         UNION ALL
         SELECT 
             SAM.ALARMNO,
@@ -268,7 +272,9 @@
             NULL AS AI_ACCURACY
         FROM rca.tb_syslog_alarm_mst SAM
         LEFT JOIN resource.tb_node_mst NM ON NM.NODE_ID = SAM.NODE_NM
-        WHERE ALARMTIME <![CDATA[ > ]]> now() - INTERVAL '48' HOUR
+        <if test="IS_TEST == null">
+            WHERE ALARMTIME <![CDATA[ > ]]> now() - INTERVAL '48' HOUR
+        </if>
     ) T
     WHERE 1=1 
     <if test="IS_POLLING != null and IS_POLLING == true">
@@ -1380,7 +1386,7 @@
                 SELECT  NODE_NUM, NODE_NM, SDN_NODE_ID, IF_NUM, SDN_IF_ID, IF_NAME, 'OUT' AS DIRECTION, 0 AS RX_BIT_RATE, 0 AS RX_PKT_RATE, TX_BIT_RATE, TX_PKT_RATE, MEASURED_DATETIME
                 FROM    TRAFFIC_DATA ) T
         ORDER BY MEASURED_DATETIME DESC
-         <include refid="TotalCountSuffix"/>
+        <include refid="TotalCountSuffix"/>
     </select>
 
     <!-- 미확인 트래픽 조회 (국가) -->
@@ -2353,16 +2359,16 @@
             P.FLTPPSIN AS ppsin,
             P.FLTPPSOUT AS ppsout,
             CASE WHEN R.STRRESNAME LIKE '%-7712%' THEN '7712/5812'
-                 WHEN R.STRRESNAME LIKE '%-5812%' THEN '7712/5812'
-                 WHEN STRRESNAME LIKE '%-n9k%' THEN 'ngk'
-                 ELSE '' END AS equiptype,
+                WHEN R.STRRESNAME LIKE '%-5812%' THEN '7712/5812'
+                WHEN STRRESNAME LIKE '%-n9k%' THEN 'ngk'
+                ELSE '' END AS equiptype,
             P.fltbpsin,
             P.fltbpsout
         FROM rca.TB_ANOMALOUS_1MI_TRAFFIC P
-                 LEFT OUTER JOIN IP_YD.XE_CVNMS_RESOURCE R ON P.STRRESID = R.STRRESID
-                 LEFT OUTER JOIN IP_YD.XE_CVNMS_RESOURCE_IF I ON P.STRRESID = I.STRRESID  AND P.STRIFID = I.STRIFID
-                 LEFT OUTER JOIN RESOURCE.TB_PORT_MST PM ON PM.NODE_NUM = I.STRRESID AND PM.IF_NUM = I.STRIFID
-                 LEFT OUTER JOIN RESOURCE.TB_USER_ORGAN UO ON PM.NODE_ID=UO.NODE_ID AND PM.IF_ID = UO.IF_ID
+                LEFT OUTER JOIN IP_YD.XE_CVNMS_RESOURCE R ON P.STRRESID = R.STRRESID
+                LEFT OUTER JOIN IP_YD.XE_CVNMS_RESOURCE_IF I ON P.STRRESID = I.STRRESID  AND P.STRIFID = I.STRIFID
+                LEFT OUTER JOIN RESOURCE.TB_PORT_MST PM ON PM.NODE_NUM = I.STRRESID AND PM.IF_NUM = I.STRIFID
+                LEFT OUTER JOIN RESOURCE.TB_USER_ORGAN UO ON PM.NODE_ID=UO.NODE_ID AND PM.IF_ID = UO.IF_ID
         WHERE P.ticket_id = #{TICKET_ID}
     </select>
 

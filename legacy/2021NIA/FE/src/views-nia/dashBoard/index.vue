@@ -190,7 +190,6 @@ export default {
       const columns = [
         { type: '', prop: 'alarmno', name: '알람번호', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, formatter: (row) => { return row.alarmno ?? '-' }, },
         { type: '', prop: 'alarmtime', name: '장애 발생시간', width: 200, alignItems: 'center', fixed: false, suppressMenu: true, formatter: (row) => { return this.formatterTimeStamp(row.alarmtime, 'YYYY/MM/DD-HH:mm:ss') }, },
-        { type: '', prop: '', name: '어시스턴트', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '', icon: 'chat-dot-square', type: 'CHANGE_CHATBOT_FOCUS', action: this.changeFocusAlertMode.bind(this) } },
         { type: '', prop: '', name: '마감', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '마감', icon: 'edit-outline', type: 'FIN', action: this.handleOpenEditModal.bind(this) }, },
         { type: '', prop: '', name: '조치', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '조치', icon: 'edit-outline', type: 'CONFIG_TEST', action: this.handleOpenEditModal.bind(this), }, },
         { type: '', prop: '', name: 'SOP이력', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: 'SOP', icon: 'circle-check', type: 'SOP', action: this.handleOpenEditModal.bind(this), }, },
@@ -211,6 +210,21 @@ export default {
         { type: '', prop: 'ip_addr', name: 'IP주소', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'ai_accuracy', name: 'AI 결과 피드백', width: 100, fixed: false, suppressMenu: true, formatter: getSopAiAccuracy },
       ]
+
+      if (AppOptions.instance.debug) {
+        columns.splice(2, 0, {
+          type: '',
+          prop: '',
+          name: '어시스턴트',
+          width: 100,
+          alignItems: 'center',
+          fixed: false,
+          suppressMenu: true,
+          cellRendererFramework: 'CellRenderAibuttons',
+          cellRendererParams: { name: '', icon: 'chat-dot-square', type: 'CHANGE_CHATBOT_FOCUS', action: this.changeFocusAlertMode.bind(this) },
+        })
+      }
+
       const options = { name: this.name, checkable: false, rowGroupPanel: false }
       return {
         options,
@@ -420,7 +434,10 @@ export default {
 
       window.changeFocusAlertMode = this.changeFocusAlertMode.bind(this)
       window.niaSimulationStart = niaSimulationStart.bind(this)
-      hotkeys(`alt+t`, (e, h) => window.niaSimulationStart())
+      if (AppOptions.instance.debug) {
+        hotkeys(`alt+t`, (e, h) => window.niaSimulationStart(undefined, true))
+        hotkeys(`alt+y`, (e, h) => window.niaSimulationStart(undefined, false))
+      }
     })
   },
 
@@ -451,7 +468,11 @@ export default {
             (async () => {
               window.fn_openWindow = this.fn_openWindow
 
-              const res = await apiIpAlarmList({ TICKET_ID: data.ticketId })
+              const res = await apiIpAlarmList({
+                TICKET_ID: data.ticketId ? data.ticketId + '' : null,
+                ALARMNO: data.alarmno ? data.alarmno + '' : null,
+                IS_TEST: data.isTest,
+              })
               if (res) {
                   const ticketData = res.result[0]
                   const isSop = true
@@ -586,7 +607,7 @@ export default {
         message: makeAlertMessage(ticketData, isSop) +
           `<div style="display:flex; gap:8px; justify-content:flex-end; margin-top:8px;">` +
           /* `<button class='button--primary' onclick='window.fn_openWindow("configTest", ${JSON.stringify(ticketData)})'>진행</button>` + */
-          `<button class='button--primary' onclick='window.changeFocusAlertMode(${JSON.stringify(ticketData.ticket_id)})'>집중경보</button>` +
+          `<button class='button--primary' onclick='window.changeFocusAlertMode(${JSON.stringify(ticketData)})'>집중경보</button>` +
           /* (isSop ? `<button class='button--primary' onclick='window.notifyAlert_window(${JSON.stringify(ticketData)}, false)'>취소</button>` : '') + */
         '</div>',
         customClass: 'nia-notify',
@@ -917,9 +938,10 @@ export default {
         this.fn_openWindow('requestForAction', row)
       } else if (type === 'ALARM') {
         if (row.ticket_type === 'ATT2_AIB') {
-          // this.fn_openWindow('aiResponse2', Object.assign(row, { node_num: '1623913427068', if_num: '1720169357741' }))
+          this.fn_openWindow('aiResponse2', Object.assign(row, { node_num: '1623913427068', if_num: '1720169357741' }))
           this.fn_openWindow('aiResponse2', row)
         } else {
+          // this.fn_openWindow('aiResponse2', Object.assign(row, { node_num: '1623913427068', if_num: '1720169357741' }))
           this.fn_openWindow('aiResponse', row)
         }
       } else if (type === 'FIN') {
