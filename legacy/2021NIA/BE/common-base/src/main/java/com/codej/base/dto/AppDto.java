@@ -146,6 +146,15 @@ public class AppDto extends ToStringFormatter {
     @Value("${myconf.api-server.pw:codej!@#}")
     private String ipsdnPass;
 
+    @Value("${myconf.api-server2.server-path:}")
+    private String apiServer2Path;
+
+    @Value("${myconf.api-server2.user:codej}")
+    private String apiServer2Id;
+
+    @Value("${myconf.api-server2.pw:!codej@}")
+    private String apiServer2Pw;
+
     @Value("${myconf.api-server.kong:http://192.168.0.222:8000}")
     private String kongUrl;
 

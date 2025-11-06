@@ -47,6 +47,10 @@ myconf:
     ipsdn: http://103.22.222.7:8088
     user: codej
     pw: codej!@#
+  api-server2:
+    server-path: http://203.255.249.31:8088 #http://103.22.222.7:8088
+    user: codej
+    pw: "!codej@" # yml에 !표는 특수문자입니다.
   aimonitor-Url: http://116.89.191.45:82
   servermonitor-Url: http://116.89.191.40:3000
   snapshot-Url: http://116.89.191.35:24888/download/

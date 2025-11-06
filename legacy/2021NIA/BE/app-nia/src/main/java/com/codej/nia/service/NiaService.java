@@ -137,7 +137,7 @@ public class NiaService extends MainService {
     }
 
     public Map<String, Object> getIpsdnToken() {
-        String url = CommonUtil.format("{}/login", apiServerProperites.getIpsdnUrl());
+        String url = CommonUtil.format("{}/ipsdn/auth/login", apiServerProperites.getIpsdnUrl());
 
         Map<String, Object> param = new HashMap<String, Object>();
         param.put("loginid", appDto.getIpsdnId());
@@ -159,10 +159,33 @@ public class NiaService extends MainService {
         }
     }
 
+    public Map<String, Object> getApiServer2Token() {
+        String url = CommonUtil.format("{}/login", apiServerProperites.getApiServer2Path());
+
+        Map<String, Object> param = new HashMap<String, Object>();
+        param.put("loginid", appDto.getApiServer2Id());
+        param.put("password", appDto.getApiServer2Pw());
+        try {
+            ResponseEntity<?> responseEntity = HttpUtil.post(url, param);
+
+            String body = (String) responseEntity.getBody();
+
+            if (body == null || body.trim().isEmpty()) {
+                return new HashMap<String, Object>();
+            } else {
+                Map<String, Object> resMap = JsonUtil.convertJsonToMap(body);
+                return (Map<String, Object>) resMap.get("data");
+            }
+        } catch (Exception e) {
+            log.error(e.toString());
+            throw new CHttpRelayServiceFail("Unable to retrieve IPSDN Token.");
+        }
+    }
+
     public SingleResponse<Object> ipsdnPortSwitchRequest(HttpServletRequest request, Map<String, Object> map)
             throws Exception {
 
-        Map<String, Object> tokenMap = getIpsdnToken();
+        Map<String, Object> tokenMap = getApiServer2Token();
         return responseService.createSingleResponse(tokenMap);
 
         // String url = CommonUtil.format("{}/login",
