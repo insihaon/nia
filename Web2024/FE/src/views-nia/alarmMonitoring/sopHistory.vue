@@ -114,8 +114,7 @@ export default {
         NODE_NM: '',
         ALARMLOC: '',
         STATUS: '',
-        START_DATE: '',
-        END_DATE: '',
+        DATE: [],
       },
       equipmentOptionList: [],
       interfaceOptionList: [],
@@ -300,12 +299,7 @@ export default {
       this.sopSearchModel.NODE_NM = this.selectedRow.node_nm
       this.syslogSearchModel = { NODE_NM: this.selectedRow.node_nm }
 
-      // 기본 기간: 현재 시점 기준 지난 7일 (UTC ISO 형식)
-      if (!this.sopSearchModel?.DATE || this.sopSearchModel.DATE.length === 0) {
-        const end = new Date()
-        const start = new Date(end.getTime() - 7 * 24 * 60 * 60 * 1000)
-        this.sopSearchModel.DATE = [start.toISOString(), end.toISOString()]
-      }
+      this.setDefaultTime()
 
       this.$nextTick(() => {
         this.setSelectedOptions()
@@ -313,6 +307,18 @@ export default {
         this.onLoadSopHistList()
         this.onLoadSyslogHistList()
       })
+    },
+
+    setDefaultTime() {
+      const end = new Date()
+      const start = new Date(end.getTime() - 7 * 24 * 60 * 60 * 1000)
+      if (!this.sopSearchModel?.DATE || this.sopSearchModel.DATE.length === 0) {
+        this.sopSearchModel.DATE = [start.toISOString(), end.toISOString()]
+      }
+
+      if (!this.syslogSearchModel?.DATE || this.syslogSearchModel.DATE.length === 0) {
+        this.syslogSearchModel.DATE = [start.toISOString(), end.toISOString()]
+      }
     },
 
     selectChange(map) {
