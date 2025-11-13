@@ -125,7 +125,7 @@ export default {
       'processFin': { label: '마감', key: 'processFin' },
       'configTest': { label: '조치', key: 'configTest' },
       'aiResponse': { label: '장애대응', key: 'aiResponse' },
-      'aiResponse2': { label: 'AIB장애대응', key: 'aiResponse2' },
+      'aiResponse_ATT_AIB': { label: 'AIB장애대응', key: 'aiResponse_ATT_AIB' },
       'requestForAction': { label: '상황전파', key: 'requestForAction' },
       'niaTopology': { label: '토폴로지', key: 'niaTopology' },
     },

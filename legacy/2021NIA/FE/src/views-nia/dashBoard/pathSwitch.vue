@@ -217,7 +217,7 @@ export default {
   border-radius: 20px;
 }
 
-.aiResponse2 {
+.aiResponse_ATT_AIB {
   caret-color: transparent; /* 깜빡이는 커서 숨김 */
 }
 </style>
