@@ -9,6 +9,7 @@ import com.nia.engine.common.UtlDateHelper;
 import com.nia.engine.mapper.*;
 import com.nia.engine.service.*;
 import com.nia.engine.vo.*;
+import com.nia.engine.vo.aiTraffic.EngineNttTrafficResultVo;
 import com.nia.engine.vo.aiTraffic.anomalous.AnomalousTrafficListVo;
 import com.nia.engine.vo.aiTraffic.anomalous.AnomalousTrafficVo;
 import com.nia.engine.vo.aiTraffic.noxious.NoxiousTrafficListVo;
@@ -35,6 +36,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service("RcaTrafficTicketService")
@@ -111,7 +113,6 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
         RCATicketAl rcaTicketAl;
         UserOrganVo userOrganVo;
         BackboneLinkVo backboneLinkVo;
-        RcaTicketResult rcaTicketResult = null;
         RCAHandlingStatus rcaTicketStatus;
 
         Iterator<AnomalousTrafficVo> itr;
@@ -141,12 +142,6 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
 
                     faultTime  = Timestamp.valueOf(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(anomalousTrafficVo.getInttimestamp() * 1000L)));
 
-//                    String time1 = UtlDateHelper.timestampToString("yyyy-MM-dd", faultTime) + " 00:00:00";
-//                    String time2 = UtlDateHelper.timestampToString("yyyy-MM-dd", faultTime) + " 06:00:00";
-//                    Timestamp time3 = UtlDateHelper.stringToTimestamp(time1);
-//                    Timestamp time4 = UtlDateHelper.stringToTimestamp(time2);
-
-//                    if (faultTime.getTime() > time4.getTime()) {
                     rcaTicket = rcaTicketFactory.getObject();
                     ticketId = ticketService.selectTicketKey();
                     rcaTicket.setTicketId(ticketId);
@@ -183,7 +178,6 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
                             rcaTicketAl.setRootCausePortZ(backboneLinkVo.getSrcIfId());
                         }
                     }else{
-
                         parameterMap = new HashMap<String, String>();
                         parameterMap.put("nodeId", anomalousTrafficVo.getNodeId());
                         parameterMap.put("ifId", anomalousTrafficVo.getIfId());
@@ -215,13 +209,10 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
                     }
                     rcaTicket.setStatus(RcaCodeInfo.TICKET_STATUS_INIT);
 
-                    rcaTicketResult = rcaTicketMergeService.rcaTrafficeTicketMerge(rcaTicket);
-
+                    RcaTicketResult rcaTicketResult = rcaTicketMergeService.rcaTrafficeTicketMerge(rcaTicket);
                     if(rcaTicketResult != null && rcaTicketResult.isResult()){
-
                         rcaTicket.setParentTicketId(rcaTicketResult.getTicketId());
                         rcaTicket.setStatus(rcaTicketResult.getValue());
-
                         rcaEngineResult = new RcaEngineResult();
                         rcaEngineResult.setTicketId(rcaTicket.getParentTicketId());
                         rcaEngineResult.setEventType(RcaCodeInfo.UI_TICKET_TYPE_MERGE);
@@ -274,11 +265,56 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
                     ticketService.insertRCATicketHandlingStatusHist(rcaTicketStatus);
 
                     rcaTicketManagerService.uiSendTicketResult(rcaEngineResult);
-//                    }
                 }
             }
         }catch (Exception e) {
             LOGGER.error(">>>>>>>>>>[RcaTrafficTicketService] createAnomalousTrafficTicket error : " + ExceptionUtils.getStackTrace(e) +" <<<<<<<<<<<<<<<<<");
+        }
+    }
+
+    @Override
+    public void createNoxiousTrfficAiTicket(EngineNttTrafficResultVo engineNttTrafficResultVo){
+        LOGGER.info("==========>[RcaTrafficTicketService] createNoxiousTrfficAiTicket : " + engineNttTrafficResultVo + " <==============");
+
+        try{
+            String ticketId = ticketService.selectTicketKey();
+            LocalDateTime currentDateTime = LocalDateTime.now();
+            Timestamp faultTime = Timestamp.valueOf(currentDateTime);
+
+            rcaTicket = rcaTicketFactory.getObject();
+            rcaTicket.setTicketId(ticketId);
+            rcaTicket.setTicketType(RcaCodeInfo.TICKET_TYPE_NOXIOUS_TRAFFIC_TICKET);
+            rcaTicket.setFaultTime(faultTime);
+            rcaTicket.setRootCauseType(engineNttTrafficResultVo.getError_type());
+            rcaTicket.setRootCauseDomain(engineNttTrafficResultVo.getJsonKey());
+            rcaTicket.setTicketRcaResultCode("TRAFFIC_NOXIOUS_DETECTION(TEST)");
+            rcaTicket.setTicketRcaResultDtlCode("유해 트래픽 탐지(TEST)");
+            rcaTicket.setOccur(true);
+            rcaTicket.setStatus(RcaCodeInfo.TICKET_STATUS_INIT);
+
+            LOGGER.info("==========> createNoxiousTrfficAiTicket createTicket : " + rcaTicket.toString() + "<==============");
+            ticketService.insertRcaTicket(rcaTicket);
+
+            engineNttTrafficResultVo.setTicketId(ticketId);
+            LOGGER.info("==========> createNoxiousTrfficAiTicket craatRcaNttTicketDetailInfo : " + engineNttTrafficResultVo.toString() + "<==============");
+            ticketService.insertRcaNTTTicketDeatailInfo(engineNttTrafficResultVo);
+
+
+            HashMap<String, String> autoProcessInserMap = new HashMap<>();
+            if (rcaTicket.getParentTicketId() == null){
+                autoProcessInserMap.put("selfProcessGroup","SO");
+                autoProcessInserMap.put("selfProcessType","N");
+                autoProcessInserMap.put("occur_time", String.valueOf(rcaTicket.getTicketGenerationTime()));
+                autoProcessInserMap.put("ticketId",rcaTicket.getTicketId());
+                autoProcessInserMap.put("ticketType",rcaTicket.getTicketType());
+                autoProcessInserMap.put("alarmno",null);
+
+                autoProcessMapper.insertAutoProcess(autoProcessInserMap);
+
+                LOGGER.info("self_process insert ======> "+ rcaTicket.getTicketId());
+            }
+        }catch(Exception e){
+            LOGGER.error(">>>>>>>>>>[RcaTrafficTicketService] createNoxiousTrfficAiTicket error : " + ExceptionUtils.getStackTrace(e) +" <<<<<<<<<<<<<<<<<");
         }
     }
 
@@ -358,7 +394,6 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
                     rcaTicketResult = rcaTicketMergeService.rcaTrafficeTicketMerge(rcaTicket);
 
                     if(rcaTicketResult != null && rcaTicketResult.isResult()){
-
                         rcaTicket.setParentTicketId(rcaTicketResult.getTicketId());
                         rcaTicket.setStatus(rcaTicketResult.getValue());
 
@@ -458,7 +493,6 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
         Timestamp faultTime;
         RCATicketAl rcaTicketAl;
         RcaEngineResult rcaEngineResult;
-        RcaTicketResult rcaTicketResult = null;
 
         List<RCATicketAl> rcaTicketAlList = null;
         HashMap<String, String> parameterMap;
@@ -515,7 +549,7 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
                             rcaTicket.setTicketAlList(rcaTicketAlList);
                         }
 
-                        rcaTicketResult = rcaTicketMergeService.rcaTrafficeTicketMerge(rcaTicket);
+                        RcaTicketResult rcaTicketResult = rcaTicketMergeService.rcaTrafficeTicketMerge(rcaTicket);
 
                         if(rcaTicketResult != null && rcaTicketResult.isResult()){
 
@@ -601,7 +635,12 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
                     rcaTicket = rcaTicketFactory.getObject();
                     String ticketId = ticketService.selectTicketKey();
                     rcaTicket.setTicketId(ticketId);
-                    rcaTicket.setTicketType(RcaCodeInfo.TICKET_TYPE_ANOMALOUS2_TRAFFIC_TICKET);
+                    if(!gb.equals("Traffic_AIB")){
+                        rcaTicket.setTicketType(RcaCodeInfo.TICKET_TYPE_ANOMALOUS2_TRAFFIC_TICKET);
+                    }else{
+                        rcaTicket.setTicketType(RcaCodeInfo.TICKET_TYPE_ANOMALOUS2_AIB_TRAFFIC_TICKET);
+                    }
+
                     rcaTicket.setTicketGenerationTime(UtlDateHelper.getCurrentTime());
                     rcaTicket.setFaultTime(sdnTrafficInfoVo.getMeasuredDatetime());
                     rcaTicket.setRootCauseType(RcaCodeInfo.RCA_RESULT_TRAFFIC_FAIL);
@@ -700,11 +739,13 @@ public class RcaTrafficTicketServiceImpl implements RcaTrafficTicketService {
                     }
                     rcaTicketManagerService.uiSendTicketResult(rcaEngineResult);
 
-                    // 자가최적화(ATT2) 큐로 AI측 전송
-                    EngineToAiAnoVo engineToAiAnoVo = autoProcessMapper.selectEngineToAiAno(rcaTicket.getTicketId());
-                    engineToAiAnoVo.setNodeId(sdnTrafficInfoVo.getNodeid());
-                    engineToAiAnoVo.setIfId(sdnTrafficInfoVo.getStrifnm());
-                    niaEngineToAiAnoAmqp.sendMessageCmd(engineToAiAnoVo);
+                    // 큐로 AI측으로 이상트래픽 데이터 전송
+                    if(!gb.equals("Traffic_AIB")){
+                        EngineToAiAnoVo engineToAiAnoVo = autoProcessMapper.selectEngineToAiAno(rcaTicket.getTicketId());
+                        engineToAiAnoVo.setNodeId(sdnTrafficInfoVo.getNodeid());
+                        engineToAiAnoVo.setIfId(sdnTrafficInfoVo.getStrifnm());
+                        niaEngineToAiAnoAmqp.sendMessageCmd(engineToAiAnoVo);
+                    }
 
                     // 자가최적화(ATT2) 현황 테이블 저장
                     if (rcaTicket.getParentTicketId() == null){

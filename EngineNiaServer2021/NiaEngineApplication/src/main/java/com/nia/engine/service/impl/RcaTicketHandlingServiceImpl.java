@@ -109,7 +109,7 @@ public class RcaTicketHandlingServiceImpl implements RcaTicketHandlingService {
                         }
                     }
                 }
-            } else if ("NTT".equals(rcaTicketHandlingStatus.getTicketType()) || "ATT".equals(rcaTicketHandlingStatus.getTicketType()) || "ATT2".equals(rcaTicketHandlingStatus.getTicketType()) || "NFTT".equals(rcaTicketHandlingStatus.getTicketType())) {
+            } else if ("NTT".equals(rcaTicketHandlingStatus.getTicketType()) || "ATT".equals(rcaTicketHandlingStatus.getTicketType()) || "ATT2".equals(rcaTicketHandlingStatus.getTicketType()) || "NFTT".equals(rcaTicketHandlingStatus.getTicketType()) || "ATT2_AIB".equals(rcaTicketHandlingStatus.getTicketType())) {
                 status = rcaTicketHandlingStatus.getStatus();
 
                 /* set sopId , AI 추론 결과 */

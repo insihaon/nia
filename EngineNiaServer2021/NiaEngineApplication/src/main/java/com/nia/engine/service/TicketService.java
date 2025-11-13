@@ -2,6 +2,7 @@ package com.nia.engine.service;
 
 import com.nia.engine.vo.*;
 import com.nia.engine.vo.aiToEngine.AiToEngineAnoVo;
+import com.nia.engine.vo.aiTraffic.EngineNttTrafficResultVo;
 import com.nia.engine.vo.aiTraffic.anomalous.AnomalousTrafficVo;
 import com.nia.engine.vo.aiTraffic.noxious.NoxiousTrfficVo;
 import com.nia.engine.vo.profile.ProfileVo;
@@ -75,6 +76,9 @@ public interface TicketService {
      * @return
      */
     void insertRcaTicket (RCATicket rcaTicket) throws Exception;
+
+
+    void insertRcaNTTTicketDeatailInfo (EngineNttTrafficResultVo engineNttTrafficResultVo) throws Exception;
 
     /**
      * 티켓 데이터 알람 저장

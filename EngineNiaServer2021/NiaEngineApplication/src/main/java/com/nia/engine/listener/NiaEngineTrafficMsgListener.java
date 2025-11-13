@@ -47,7 +47,7 @@ public class NiaEngineTrafficMsgListener implements ChannelAwareMessageListener 
 				case "Traffic_N": case "Traffic_P":
 					rcaTrafficTicketService.createSdnTrafficTicket(engineTrafficeResultVo.getTrafficListVo(), engineTrafficeResultVo.getGb());
 					break;
-				case "Traffic_AI": // 이상트래픽 AIB 는 의도적으로 AIB로 함 AI로 넣으면 티켓 발행되는데 우선 막아놓음
+				case "Traffic_AIB": // 이상트래픽 AIB 는 의도적으로 AIB로 함 AI로 넣으면 티켓 발행되는데 우선 막아놓음
 					LOGGER.info("==========>[NiaEngineTrafficMsgListener] insert Traffice_AI : "+ new String(message.getBody())+"<==============");
 					rcaTrafficTicketService.createSdnTrafficTicket(engineTrafficeResultVo.getTrafficListVo(), engineTrafficeResultVo.getGb());
 					break;

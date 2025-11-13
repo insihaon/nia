@@ -5,6 +5,7 @@ import com.nia.engine.mapper.TicketMapper;
 import com.nia.engine.service.TicketService;
 import com.nia.engine.vo.*;
 import com.nia.engine.vo.aiToEngine.AiToEngineAnoVo;
+import com.nia.engine.vo.aiTraffic.EngineNttTrafficResultVo;
 import com.nia.engine.vo.aiTraffic.anomalous.AnomalousTrafficVo;
 import com.nia.engine.vo.aiTraffic.noxious.NoxiousTrfficVo;
 import com.nia.engine.vo.profile.ProfileVo;
@@ -102,6 +103,11 @@ public class TicketServiceImpl implements TicketService {
     @Override
     public void insertRcaTicket (RCATicket rcaTicket) throws Exception {
         ticketMapper.insertRcaTicket(rcaTicket);
+    }
+
+    @Override
+    public void insertRcaNTTTicketDeatailInfo (EngineNttTrafficResultVo engineNttTrafficResultVo) throws Exception {
+        ticketMapper.insertRcaNTTTicketDeatailInfo(engineNttTrafficResultVo);
     }
 
     /**

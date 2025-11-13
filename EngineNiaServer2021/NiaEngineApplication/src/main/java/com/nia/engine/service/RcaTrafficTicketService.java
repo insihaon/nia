@@ -1,5 +1,6 @@
 package com.nia.engine.service;
 
+import com.nia.engine.vo.aiTraffic.EngineNttTrafficResultVo;
 import com.nia.engine.vo.aiTraffic.anomalous.AnomalousTrafficListVo;
 import com.nia.engine.vo.aiTraffic.noxious.NoxiousTrafficListVo;
 import com.nia.engine.vo.sdn.factor.NodeFactorListVo;
@@ -11,6 +12,8 @@ public interface RcaTrafficTicketService {
     void createAnomalousTrafficTicket(AnomalousTrafficListVo anomalousTrafficListVo);
 
     void createNoxiousTrfficTicket(NoxiousTrafficListVo noxiousTrafficListVo);
+
+    void createNoxiousTrfficAiTicket(EngineNttTrafficResultVo engineNttTrafficResultVo);
 
     void createNodeFactorTicket(NodeFactorListVo nodeFactorListVo);
 
