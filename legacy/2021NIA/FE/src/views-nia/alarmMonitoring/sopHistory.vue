@@ -57,7 +57,7 @@ import constants from '@/min/constants'
 import { getChatbotTicketData, getWindowActionList, getInvisibleSpanParameter, getNiaRouterPathByName, showNumberText } from '@/views-nia/js/commonNiaFunction'
 import niaObserverMixin from '@/mixin/niaObserverMixin'
 
-const routeName = constants.nia.chatbotKeyMap.sopHistory.parameterKey
+const routeName = 'sopHistory' /* constants.nia.chatbotKeyMap.sopHistory.parameterKey */
 
 export default {
   name: routeName,
@@ -226,10 +226,10 @@ export default {
     },
     searchSopItems() {
       return [
-        { label: '티켓번호', type: 'input', size: 6, model: 'TICKET_ID' },
-        { label: 'DATE', type: 'date', size: 6, model: 'DATE' },
+        { label: '티켓번호', type: 'input', size: 5, model: 'TICKET_ID' },
+        { label: 'DATE', type: 'date', size: 8, model: 'DATE' },
         { label: '장비명', type: 'select', size: 6, model: 'NODE_NM', setting: { allOption: { toggle: true } }, options: this.equipmentOptionList },
-        { label: 'I/F', type: 'select', size: 6, model: 'ALARMLOC', setting: { allOption: { toggle: true } }, options: this.interfaceOptionList },
+        { label: 'I/F', type: 'select', size: 5, model: 'ALARMLOC', setting: { allOption: { toggle: true } }, options: this.interfaceOptionList },
       ]
     },
     searchSyslogItems() {
@@ -311,13 +311,31 @@ export default {
 
     setDefaultTime() {
       const end = new Date()
+      // 1. end 날짜를 현재 날짜의 23:59:59.999로 설정합니다.
+      // 이렇게 하면 오늘 하루 전체를 포함하게 됩니다.
+      end.setHours(23, 59, 59, 999)
+
+      // 2. start 날짜를 end 날짜(오늘) 기준 7일 전으로 설정합니다.
       const start = new Date(end.getTime() - 7 * 24 * 60 * 60 * 1000)
+
+      // 3. start 날짜를 7일 전 날짜의 00:00:00.000로 강제 설정합니다.
+      start.setHours(0, 0, 0, 0)
+
+      // 7일 전 00:00:00 KST
+      const startTimeKST = `${start.getFullYear()}-${String(start.getMonth() + 1).padStart(2, '0')}-${String(start.getDate()).padStart(2, '0')} 00:00:00`
+      // 오늘 23:59:59 KST
+      const endTimeKST = `${end.getFullYear()}-${String(end.getMonth() + 1).padStart(2, '0')}-${String(end.getDate()).padStart(2, '0')} 23:59:59.999`
+
+      // 4. 로직 적용
       if (!this.sopSearchModel?.DATE || this.sopSearchModel.DATE.length === 0) {
-        this.sopSearchModel.DATE = [start.toISOString(), end.toISOString()]
+        // ISOString은 UTC 기준 시간으로 변환되므로,
+        // 원하시는 시간대(로컬 시간)로 정확히 표시하려면 서버/프론트엔드에서 처리 방식에 따라 다를 수 있습니다.
+        // 여기서는 강제 셋팅된 로컬 시간을 ISOString으로 변환합니다.
+        this.sopSearchModel.DATE = [startTimeKST, endTimeKST]
       }
 
       if (!this.syslogSearchModel?.DATE || this.syslogSearchModel.DATE.length === 0) {
-        this.syslogSearchModel.DATE = [start.toISOString(), end.toISOString()]
+        this.syslogSearchModel.DATE = [startTimeKST, endTimeKST]
       }
     },
 
