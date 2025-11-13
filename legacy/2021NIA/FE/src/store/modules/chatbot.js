@@ -58,7 +58,7 @@ function getDefaultAlarmFocusModeFirstChatMessages() {
 
 const defaultQuestionModeChatMessages = {
     type: constants.nia.chatType.botAnswer,
-    content: `안녕하세요, 장애대응 어시스턴트입니다.<br> 현재 저는 <span style='font-weight:1000; color:red'>휴면 상태</span>로 설정되어 있습니다.<br> 실시간 응대가 필요하실 경우, 발행된 티켓 옆의 <span class="chatbotIcon"><i class="el-icon-chat-dot-square"></i></span> 아이콘을 눌러 저를 깨워주시면 즉시 응대를 시작하겠습니다.`,
+    content: `<div class="chatbot-command-header">안내</div><br>안녕하세요, 장애대응 어시스턴트입니다.<br> 현재 저는 <span style='font-weight:1000; color:red'>휴면 상태</span>로 설정되어 있습니다.<br> 실시간 응대가 필요하실 경우, 발행된 티켓 옆의 <span class="chatbotIcon"><i class="el-icon-chat-dot-square"></i></span> 아이콘을 눌러 저를 깨워주시면 즉시 응대를 시작하겠습니다.`,
     time: getCurrentTime(),
 }
 

@@ -119,23 +119,23 @@ export function makeAlertMessage(ticketData, isSop) {
   switch (ticketData.ticket_type) {
     case 'ATT2': // 이상 트래픽
       return `<span style="display: none">티켓ID: ${ticketData.ticket_id}</span><span style="display: none">티켓종류: ${ticketData.ticket_type}</span>유해트래픽 장애가 발생하였습니다.
-        <span>장비명(${ticketData.node_nm})의 포트명(${ticketData.root_cause_porta})장비에 대하여</span>
-        <b style=color:red>집중경보</b>를 진행할 수 있습니다. 진행하시겠습니까?`
+        <span>노드: ${ticketData.node_nm}, 포트: ${ticketData.root_cause_porta} 장비에 대하여</span>
+        <b style=color:red>집중경보</b>를 진행할 수 있습니다.`
     case 'NTT': // 유해 트래픽
       return `<span style="display: none">티켓ID: ${ticketData.ticket_id}</span><span style="display: none">티켓종류: ${ticketData.ticket_type}</span>유해트래픽 장애가 발생하였습니다.
-        장비명(${ticketData.node_nm})의 포트명(${ticketData.root_cause_porta})장비에 대하여
-        <b style=color:red>집중경보</b>를 진행할 수 있습니다. 진행하시겠습니까?`
+        노드: ${ticketData.node_nm}, 포트: ${ticketData.root_cause_porta} 장비에 대하여
+        <b style=color:red>집중경보</b>를 진행할 수 있습니다.`
     case 'RT': // 장애
       if (ticketData.alarmmsg === 'PORT_DOWN') {
-        return `<span style="display: none">티켓ID: ${ticketData.ticket_id}</span><span style="display: none">티켓종류: ${ticketData.ticket_type}</span>비정상적인 PORT_DOWN 장애가 발생하였습니다.
-            장비명(${ticketData.node_nm})의 포트명(${ticketData.root_cause_porta})장비에 대하여
-            <b style=color:red>집중경보</b>를 진행할 수 있습니다. 진행하시겠습니까?`
+        return `<span style="display: none">티켓ID: ${ticketData.ticket_id}</span><span style="display: none">티켓종류: ${ticketData.ticket_type}</span>PORT_DOWN 장애가 발생하였습니다.
+            노드: ${ticketData.node_nm}, 포트: ${ticketData.root_cause_porta} 장비에 대하여
+            <b style=color:red>집중경보</b>를 진행할 수 있습니다.`
       }
       break
     case 'SYSLOG':
       return `<span style="display: none">알람번호: ${ticketData.alarmno}</span><span style="display: none">티켓종류: ${ticketData.ticket_type}</span>Syslog 장애가 발생하였습니다.
-        <span>장비명(${ticketData.node_nm})의 포트명(${ticketData.root_cause_porta})장비에 대하여</span>
-        <b style=color:red>집중경보</b>를 진행할 수 있습니다. 진행하시겠습니까?`
+        <span>노드: ${ticketData.node_nm}, 포트: ${ticketData.root_cause_porta} 장비에 대하여</span>
+        <b style=color:red>집중경보</b>를 진행할 수 있습니다.`
   }
 
   console.error('유효하지 않은 ticketData')

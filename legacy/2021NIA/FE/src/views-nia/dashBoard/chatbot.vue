@@ -5,7 +5,7 @@
         <h3>
           어시스턴트 <span :style="{ color: isQuestionMode ? 'red' : 'green' }">[{{ isQuestionMode ? 'OFF' : 'ON' }}]</span>
         </h3>
-        <div v-if="isQuestionMode">질문을 입력하고 답변을 받아보세요</div>
+        <div v-if="isQuestionMode">현재 Chatbot은 휴면중입니다</div>
         <div v-else>
           <span v-if="alarmFocusMode_TicketData.ticket_type == 'SYSLOG'">[ALARM NO: {{ alarmFocusMode_TicketData.alarmno }}] </span>
           <span v-else>[TICKET_ID: {{ alarmFocusMode_TicketData.ticket_id }}] </span>
@@ -68,7 +68,7 @@
         <button :disabled="isQuestionMode" class="utility-button" @click="actionSwitch">{{ actionType === 'expert' ? '전문가모드' : '안내모드' }}</button>
         <button :disabled="isQuestionMode" class="utility-button" @click="resetChat">채팅초기화</button>
         <!-- <button :disabled="isQuestionMode" class="utility-button" :style="{ 'background-color': isRecording ? '#ff4949' : '#e5e7eb' }" @click="switchVoiceRecording">음성인식({{ isRecording ? 'ON' : 'OFF' }})</button> -->
-        <button :disabled="isQuestionMode" class="utility-button" :style="{ 'background-color': recognizing ? '#ff4949' : '#e5e7eb' }" @click="toggleWebSpeechApiRecognition">음성인식 WSA({{ recognizing ? 'ON' : 'OFF' }})</button>
+        <!-- <button :disabled="isQuestionMode" class="utility-button" :style="{ 'background-color': recognizing ? '#ff4949' : '#e5e7eb' }" @click="toggleWebSpeechApiRecognition">음성인식 WSA({{ recognizing ? 'ON' : 'OFF' }})</button> -->
       </div>
 
       <div class="chat-input">
