@@ -68,7 +68,7 @@
                             <th scope="col" style="width: 200px">SITE</th>
                             <th scope="col" style="width: 200px">I/F</th>
                           </tr>
-                          <tr v-for="(agency, index) in sortedAgencyList" :key="agency.nren_id" :class="{ 'animation-blink': paramTickets.some((t) => t.root_cause_sysnamez === agency.nren_name) }">
+                          <tr v-for="(agency, index) in sortedAgencyList" :key="agency.nren_id" :class="{ 'animation-blink': paramTickets.some((t) => t.node_nm === agency.node_id && t.alarmloc === agency.node_int) }">
                             <td>{{ index + 1 }}</td>
                             <td>{{ agency.nren_name }}</td>
                             <td>{{ agency.node_int }}</td>
@@ -851,7 +851,6 @@ export default {
       }
 
       const type = click === 'node' ? select.d.device_type : select.equiptype || this.map.data.nodes.find((v) => v.id === this.getAlarmSysname(select)).device_type
-
       const componentWapper = this.$refs.componentWapper
       Array.from(componentWapper.children).forEach((child) => {
         if (child.classList.contains('properties')) {
@@ -863,7 +862,6 @@ export default {
         case '2':
         case 'POTN':
           document.getElementById('templateUnitArea').innerHTML = document.querySelector('#template-2').innerHTML
-
           document.querySelectorAll('.potnSysname').forEach((element) => {
             element.innerHTML = click === 'node' ? select.d.id : select.sysname
           })
@@ -900,7 +898,7 @@ export default {
           show('templateUnitArea', true)
           show('templateAgentListArea', false)
           break
-        default:
+        default: // tyep이 1이거나 3인데, 1은 작동안함
           // prettier-ignore
           (() => {
             const nodeId = click === 'node' ? select.d.id : select.id
