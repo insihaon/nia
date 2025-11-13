@@ -84,7 +84,6 @@ public class UITicketMsgListener implements ChannelAwareMessageListener {
             rcaTicketHandlingStatus = (RCATicketHandlingStatus) obj;
 
             LOGGER.info("==========>[UITicketMsgListener] rcaTicketHandlingStatus : " + rcaTicketHandlingStatus + "<==============");
-
             if (RcaCodeInfo.UI_REQUEST_DATA_SNAPSHOT.equals(rcaTicketHandlingStatus.getEventType())) {
                 faultEventService.insertFaultEvent(String.valueOf(rcaTicketHandlingStatus.getStartTime()), String.valueOf(rcaTicketHandlingStatus.getEndTime()), rcaTicketHandlingStatus.getTitle(), rcaTicketHandlingStatus.getDetail());
             } else if (RcaCodeInfo.UI_REQUEST_DATA_TICKET.equals(rcaTicketHandlingStatus.getEventType())) {
@@ -101,14 +100,11 @@ public class UITicketMsgListener implements ChannelAwareMessageListener {
                     parameterMap.put("ticketId", rcaTicketHandlingStatus.getTicketId());
                     parameterMap.put("ticketType", rcaTicketHandlingStatus.getTicketType());
                     parameterMap.put("status", RcaCodeInfo.TICKET_STATUS_FIN);
-
                 } else {
                     rcaTicketHandlingService.ticketStatusModify(rcaTicketHandlingStatus);
                 }
             } else if (RcaCodeInfo.UI_REQUEST_DATA_SYSLOG.equals(rcaTicketHandlingStatus.getEventType())) {
-
                 LOGGER.info("==========>[UITicketMsgListener] rcaTicketHandlingStatus SYSLOG <==============");
-
                 rcaTicketHandlingService.syslogAlarmStatusModify(rcaTicketHandlingStatus);
                 rcaTicketHandlingService.syslogSopSave(rcaTicketHandlingStatus);
 

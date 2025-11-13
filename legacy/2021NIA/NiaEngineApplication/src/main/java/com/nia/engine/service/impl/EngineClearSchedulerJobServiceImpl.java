@@ -60,10 +60,8 @@ public class EngineClearSchedulerJobServiceImpl {
 
     public void clearTicketCheck(){
         /*
-        * 2025-07-10 고성호
-        * (추측) 사용자가 UI에서 수동마감했을때
-        * 상태가 변경된 것을 확인해서 Queue를 통해 UI로 변경되었다고 알리는 기능으로 보임
-        * (이상한점) 왜?
+        * 단순 확인해서 UI로 보내주는 로직
+	    * RT 티켓중에서 클러스터, RCA까지 확인해서 전부 clear되면 UI로 보내는 로직으로 추측
         * */
         try {
             LOGGER.info(">>>>>>>>> clearTicketCheck <<<<<<<<<<<<<<");
@@ -72,20 +70,12 @@ public class EngineClearSchedulerJobServiceImpl {
             RCATicket rcaTicket;
             ClearTicketResultVo clearTicketResultVo;
             List<String> clearTicketCheckList;
-            RCATicketHandlingStatus handlingStatus;
-            String rootCauseType;
-            String dtlCode;
-            List<String> topasticketNoList;
-            List<Map<String, String>> data = new ArrayList<>();
-
             RCATicketHandlingStatus rcaTicketHandlingStatus;
-
             clearTicketCheckList = ticketService.selectClearTicketCheckList();
 
             if (clearTicketCheckList != null && clearTicketCheckList.size() > 0){
                 for (String ticketId : clearTicketCheckList) {
                     rcaTicket = ticketService.selectRcaTicket(ticketId);
-
                     clearTicketResultVo = ticketService.fcClearTicketCheck(ticketId);
 
                     if(clearTicketResultVo != null){
@@ -93,15 +83,12 @@ public class EngineClearSchedulerJobServiceImpl {
                             LOGGER.info(">>>>>>>>>clearTicketCheck allClearAlarm : " + rcaTicket.getTicketId() +"<<<<<<<<<<<<<<");
                             rcaTicketHandlingStatus = rcaTicketHandlingStatusFactory.getObject();
                             rcaTicketHandlingStatus.setTicketId(rcaTicket.getTicketId());
-
                             rcaTicketHandlingStatus.setStatus(RcaCodeInfo.TICKET_STATUS_AUTO_FIN);
-
                             if(rcaTicket.getParentTicketId() != null){
                                 rcaTicketHandlingStatus.setTicketId(rcaTicket.getParentTicketId());
                             }
 
                             tmpRcaTicket = rcaTicketFactory.getObject();
-
                             if(rcaTicket.getParentTicketId() != null){
                                 tmpRcaTicket.setTicketId(rcaTicket.getParentTicketId());
                             }else {
@@ -120,7 +107,6 @@ public class EngineClearSchedulerJobServiceImpl {
                             rcaEngineResult.setEventType(RcaCodeInfo.UI_TICKET_TYPE_UPDATE);
                             rcaEngineResult.setProperties(properties);
                             rcaTicketManager.uiSendTicketResult(rcaEngineResult);
-
                         }
 
                         if(clearTicketResultVo.getClearAlarmTicket() != null){
@@ -135,9 +121,8 @@ public class EngineClearSchedulerJobServiceImpl {
     }
 
     public void clearTicket(){
-        /*
-        * RT의 자동마감
-        * */
+        // RT의 자동마감 근데, 상태만 자동마감 처리하고, SOP 기록은 없음
+
         try {
             LOGGER.info(">>>>>>>>> clearTicketCheck <<<<<<<<<<<<<<");
             RcaEngineResult rcaEngineResult;
@@ -146,36 +131,23 @@ public class EngineClearSchedulerJobServiceImpl {
             String clearTicketId;
             ClearTicketResultVo clearTicketResultVo;
             List<String> clearTicketCheckList;
-            RCATicketHandlingStatus handlingStatus;
-            String rootCauseType;
-            String dtlCode;
-            List<String> topasticketNoList;
-            List<Map<String, String>> data = new ArrayList<>();
-
             RCATicketHandlingStatus rcaTicketHandlingStatus;
 
             clearTicketCheckList = ticketService.selectClearTicketCheckList();
-
             if (clearTicketCheckList != null && clearTicketCheckList.size() > 0){
                 for (String ticketId : clearTicketCheckList) {
-
                     clearTicketId = ticketService.fcClearTicket(ticketId);
-
                     rcaTicket = ticketService.selectRcaTicket(ticketId);
-
                     Thread.sleep(100);
 
                     if(clearTicketId != null){
                         clearTicketResultVo = ticketService.fcClearTicketCheck(clearTicketId);
-
                         if(clearTicketResultVo != null){
                             if(clearTicketResultVo.getisAllClearTicket()){
                                 LOGGER.info(">>>>>>>>>clearTicketCheck allClearAlarm : " + rcaTicket.getTicketId() +"<<<<<<<<<<<<<<");
                                 rcaTicketHandlingStatus = rcaTicketHandlingStatusFactory.getObject();
                                 rcaTicketHandlingStatus.setTicketId(rcaTicket.getTicketId());
-
                                 rcaTicketHandlingStatus.setStatus(RcaCodeInfo.TICKET_STATUS_AUTO_FIN);
-
                                 if(rcaTicket.getParentTicketId() != null){
                                     rcaTicketHandlingStatus.setTicketId(rcaTicket.getParentTicketId());
                                 }
@@ -214,22 +186,15 @@ public class EngineClearSchedulerJobServiceImpl {
         }
     }
 
-    public void TicketClearPassing5Minute(){ //자가최적화 5분 지난 티켓 자동 클리어 & 포트다운
-        // 이상트래픽과 유해트래픽의 자동마감 프로세스
-        /*
-        * 2025-07-10 고성호
-        * 티켓을 마감 처리하는 것이면 자가 최적화가 아니라 자동마감.. 같은데..
-        * 그리고 자동마감이라면 포트다운이 아니라 포트 업이 맞는 것 같은데..
-        * */
+    public void TicketClearPassing5Minute(){
+        // 이상트래픽과 유해트래픽의 자가최적화(=포트다운) 프로세스 1시간 지난 티켓 자동 마감 & 포트다운
 
         List<RCATicket> rcaTicketList = null;
         HashMap<String,String> map;
         HashMap<String, String> updateMap;
         String sopId = "";
         try {
-            // 시험 전 까지는 48시간 현재는 1시간 주기 마감. (ATT2, NTT)
             rcaTicketList = ticketService.selectRca48Ticket();
-
             if (rcaTicketList.size() > 0){
                 map = new HashMap<>();
                 for (RCATicket ticketList : rcaTicketList){
@@ -276,7 +241,6 @@ public class EngineClearSchedulerJobServiceImpl {
                     LOGGER.info(">>>>>>>>>clear 5-min-old traffic ticket : " + ticketList.getTicketId() +"<<<<<<<<<<<<<<");
                     TicketPortDownCommand();
                     LOGGER.info(">>>>>>>>>tb_sop insert auto_fin : " + map.get("ticketId") +"<<<<<<<<<<<<<<");
-
                 }
             }
 
@@ -285,9 +249,10 @@ public class EngineClearSchedulerJobServiceImpl {
         }
 
     }
-// 포트다운 시험때까지 주석 스케줄러도 주석 풀어야함
+
     public void TicketPortDownCommand(){
-//        String serviceUrl = "http://203.255.249.31:8088/ipsdn/services/config/interfaces/shutdown?nodename=daejeon-5812&ifname=xe13";
+        // 포트다운 시험때까지 주석 스케줄러도 주석 풀어야함
+        // String serviceUrl = "http://203.255.249.31:8088/ipsdn/services/config/interfaces/shutdown?nodename=daejeon-5812&ifname=xe13";
         String serviceUrl = "";
         List<AutoTreatProcessVo> autoTreatProcessVoList;
 
@@ -310,23 +275,24 @@ public class EngineClearSchedulerJobServiceImpl {
 
 
 
-    public void SyslogClearPassing5MinuteAndRemoteCommand(){ //자가회복
+    public void SyslogClearPassing5MinuteAndRemoteCommand(){
+        // Syslog 자가최적화(=포트다운) 자동마감 프로세스였으나 포트다운은 주석처리
+        // 문제는 .. 현재 제대로 동작안함 ( daejeon-5812, xe13 에 대해서만 처리 )
+        // Syslog 자동마감은 다른곳에서 이루어짐
+
         List<SyslogAlarmVo> syslogAlarmVoList = null;
         HashMap<String,String> map;
-        HashMap<String, String> updateMap;
         try {
             syslogAlarmVoList = ticketService.selectRcaBefor5mSyslog();
 
             if (syslogAlarmVoList.size() > 0){
                 map = new HashMap<>();
                 for (SyslogAlarmVo ticketList : syslogAlarmVoList){
-
                     map.put("alarmno",ticketList.getAlarmno());
                     map.put("status",RcaCodeInfo.TICKET_STATUS_AUTO_FIN);
 
                     //tb_ticket_current 업데이트
                     ticketService.updateRcaTicketStatus(map);
-
                     AutoTreatProcessVo autoTreatProcessVo = autoProcessMapper.selectAutoProcess(ticketList.getAlarmno());
 
                     //tb_syslog_sop 등록
@@ -357,10 +323,6 @@ public class EngineClearSchedulerJobServiceImpl {
                         map.put("alarmloc",ticketList.getAlarmloc());
                     }
 
-
-
-
-
                     LOGGER.info(">>>>>>>>>clear 5-minutes-old syslog : " + ticketList.getAlarmno() +"<<<<<<<<<<<<<<");
 
 //                    String shutdownUrl = "http://203.255.249.31:8088/ipsdn/services/config/interfaces/shutdown?nodename=daejeon-5812&ifname=xe13";
@@ -380,16 +342,15 @@ public class EngineClearSchedulerJobServiceImpl {
     }
 
     public void SyslogPortDownCommand(){
-        //시스로그 알람 테이블 AUTO_FIN 이고, 자가처리 테이블에서 N인 데이터들 원격제어
-//        String shutdownUrl = "http://203.255.249.31:8088/ipsdn/services/config/interfaces/shutdown?nodename=daejeon-5812&ifname=xe13";
-//        String noshut = "http://203.255.249.31:8088/ipsdn/services/config/interfaces/noshut?nodename=daejeon-5812&ifname=xe13";
+        // 시스로그 알람 테이블 AUTO_FIN 이고, 자가처리 테이블에서 N인 데이터들 원격제어
+        // String shutdownUrl = "http://203.255.249.31:8088/ipsdn/services/config/interfaces/shutdown?nodename=daejeon-5812&ifname=xe13";
+        // String noshut = "http://203.255.249.31:8088/ipsdn/services/config/interfaces/noshut?nodename=daejeon-5812&ifname=xe13";
         String shutdownUrl = "";
         String noshut = "";
         List<AutoTreatProcessVo> autoTreatProcessVoList;
 
         try {
             autoTreatProcessVoList = autoProcessMapper.selectCommandtoSyslogList();
-
             if (autoTreatProcessVoList.size() > 0 && autoTreatProcessVoList != null ) {
                 for (AutoTreatProcessVo autoTreatProcessVo : autoTreatProcessVoList) {
                     if (autoTreatProcessVo.getTicketId() != null) {
@@ -403,7 +364,5 @@ public class EngineClearSchedulerJobServiceImpl {
         } catch (Exception e) {
             LOGGER.error(">>>>>>>>>>[EngineClearSchedulerJobServiceImpl] TicketPortDownCommand() error: " + ExceptionUtils.getStackTrace(e) + " <<<<<<<<<<<<<<<<<");
         }
-
     }
-
 }

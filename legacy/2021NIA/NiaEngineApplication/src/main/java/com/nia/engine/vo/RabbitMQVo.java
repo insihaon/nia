@@ -74,6 +74,8 @@ public class RabbitMQVo implements Serializable {
 	private String niaEngineTrafficRoutingKey;
 	@Value("${spring.rabbitmq.engineTrafficQueue}")
 	private String niaEngineTrafficQueue;
+	@Value("${spring.rabbitmq.engineAiNoxTicketInfoQueue}")
+	private String niaEngineAiNoxTicketInfoQueue;
 
 	@Value("${spring.rabbitmq.engineToAiAnoQueue}")
 	private String niaEngineToAiAnoQueue;

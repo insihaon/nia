@@ -149,6 +149,7 @@ spring:
 
     engineTrafficExchange: nia.exchangeEngineTrafficDirectly
     engineTrafficQueue: nia.EngineTrafficIndexDirectly
+    engineAiNoxTicketInfoQueue: nia.EngineAiNoxTicketInfoQueue
     engineTrafficRoutingKey: EngineTrafficIndexDirectly
 
     #이상 유해 4차 큐 쏘는 곳 (codej -> zero1)

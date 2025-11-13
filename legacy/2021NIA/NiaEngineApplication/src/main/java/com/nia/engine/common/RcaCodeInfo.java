@@ -232,6 +232,7 @@ public class RcaCodeInfo {
 	public static final String TICKET_TYPE_ANOMALOUS_TRAFFIC_TICKET = "ATT"; // RCA Ticket
 	//이상 트래픽
 	public static final String TICKET_TYPE_ANOMALOUS2_TRAFFIC_TICKET = "ATT2"; // RCA Ticket
+	public static final String TICKET_TYPE_ANOMALOUS2_AIB_TRAFFIC_TICKET = "ATT2_AIB"; // RCA Ticket
 	//이상 트래픽
 	public static final String TICKET_TYPE_NOXIOUS_TRAFFIC_TICKET = "NTT"; // RCA Ticket
 	//유해 트래픽

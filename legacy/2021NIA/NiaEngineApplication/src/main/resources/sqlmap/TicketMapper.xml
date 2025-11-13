@@ -344,6 +344,30 @@
         )
     </insert>
 
+
+    <insert id="insertRcaNTTTicketDeatailInfo" parameterType="java.util.HashMap">
+        INSERT INTO rca.tb_rca_ntt_ticket_detail_info
+        (
+            ticket_id,
+            json_key,
+            normal_traffic_ratio,
+            tcp_syn_flooding_ratio,
+            land_attack_ratio,
+            ping_of_death_ratio,
+            udp_flooding_ratio
+        )
+        VALUES
+        (
+            #{ticketId},
+            #{jsonKey},
+            #{noxiousAccuracyVo.normalTraffic},
+            #{noxiousAccuracyVo.tcpSynFlooding},
+            #{noxiousAccuracyVo.landAttack},
+            #{noxiousAccuracyVo.pingOfDeath},
+            #{noxiousAccuracyVo.udpFlooding}
+        )
+    </insert>
+
     <insert id="insertRcaTicketAl" parameterType="java.util.HashMap">
         <if test="rcaTicketAlList.size != 0">
             INSERT INTO RCA.tb_rca_ticket_al_current
