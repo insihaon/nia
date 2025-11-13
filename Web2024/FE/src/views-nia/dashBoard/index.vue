@@ -605,7 +605,7 @@ export default {
         title: '경보',
         dangerouslyUseHTMLString: true,
         message: makeAlertMessage(ticketData, isSop) +
-          `<div style="display:flex; gap:8px; justify-content:flex-end; margin-top:8px;">` +
+          `<div style="display:flex; gap:8px; justify-content:flex-end; margin-top:15px; margin-right: -15px">` +
           /* `<button class='button--primary' onclick='window.fn_openWindow("configTest", ${JSON.stringify(ticketData)})'>진행</button>` + */
           `<button class='button--primary' onclick='window.changeFocusAlertMode(${JSON.stringify(ticketData)})'>집중경보</button>` +
           /* (isSop ? `<button class='button--primary' onclick='window.notifyAlert_window(${JSON.stringify(ticketData)}, false)'>취소</button>` : '') + */
@@ -938,10 +938,10 @@ export default {
         this.fn_openWindow('requestForAction', row)
       } else if (type === 'ALARM') {
         if (row.ticket_type === 'ATT2_AIB') {
-          this.fn_openWindow('aiResponse2', Object.assign(row, { node_num: '1623913427068', if_num: '1720169357741' }))
-          this.fn_openWindow('aiResponse2', row)
+          this.fn_openWindow('aiResponse_ATT_AIB', Object.assign(row, { node_num: '1623913427068', if_num: '1720169357741' }))
+          this.fn_openWindow('aiResponse_ATT_AIB', row)
         } else {
-          // this.fn_openWindow('aiResponse2', Object.assign(row, { node_num: '1623913427068', if_num: '1720169357741' }))
+          // this.fn_openWindow('aiResponse_ATT_AIB', Object.assign(row, { node_num: '1623913427068', if_num: '1720169357741' }))
           this.fn_openWindow('aiResponse', row)
         }
       } else if (type === 'FIN') {

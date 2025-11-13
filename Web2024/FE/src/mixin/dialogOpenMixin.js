@@ -22,8 +22,8 @@ var dialogOpenMixin = {
           resizeble: true,
           chatbotParameterKeyName: constants.nia.chatbotKeyMap.aiResponse.parameterKey
         },
-        aiResponse2: {
-          component: () => import('@/views-nia/dashBoard/aiResponse2'),
+        aiResponse_ATT_AIB: {
+          component: () => import('@/views-nia/dashBoard/aiResponse_ATT_AIB'),
           pageTitle: 'AI 장애대응(신규)',
           width: '1100',
           height: '750',
