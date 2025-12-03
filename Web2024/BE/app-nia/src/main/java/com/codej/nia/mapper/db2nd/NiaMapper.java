@@ -16,6 +16,10 @@ public interface NiaMapper extends BaseDataMapper {
 
         public List<ResultMap> SELECT_IP_ALARM_LIST(HashMap<String, Object> map);
 
+        public List<ResultMap> SELECT_NTT_TICKET_TOTAL_DATA_LIST(HashMap<String, Object> map);
+
+        public List<ResultMap> SELECT_RCA_NTT_TICKET_DETAIL_INFO(HashMap<String, Object> map);
+
         public List<ResultMap> SELECT_TRANSMISSION_ALARM_LIST(HashMap<String, Object> map);
 
         public List<ResultMap> SELECT_TRANSMISSION_TICKET_DETAIL(HashMap<String, Object> map);
@@ -193,5 +197,9 @@ public interface NiaMapper extends BaseDataMapper {
         public List<ResultMap> SELECT_TOPOLOGY_LINK_LIST(HashMap<String, Object> map);
 
         public int DELETE_DATA_SNAPSHOT(HashMap<String, Object> map);
+
+        public List<ResultMap> SELECT_IPSDN_NODE_LIST(HashMap<String, Object> map);
+
+        public List<ResultMap> SELECT_IPSDN_INTERFACE_LIST(HashMap<String, Object> map);
 
 }

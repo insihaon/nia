@@ -32,6 +32,18 @@ export function getTicketType(row, col, value, index) {
   }
   return result
 }
+
+export function getModelType(row, col, value, index) {
+  switch (row.ticket_type) {
+    case 'ATT2': case 'NTT':
+      return 'Model-A'
+    case 'ATT2_AI': case 'NTT_AI':
+      return 'Model-C'
+    default:
+      return '-'
+  }
+}
+
 export function getAlarmType(row, col, value, index) {
   let result = ''
   switch (row.ticket_type) {
@@ -44,13 +56,10 @@ export function getAlarmType(row, col, value, index) {
     case 'PF':
       result = '광레벨'
       break
-    case 'ATT2':
-      result = '이상 트래픽(Model-A)'
+    case 'ATT2': case 'ATT2_AI':
+      result = '이상 트래픽'
       break
-    case 'ATT2_AIB':
-      result = '이상 트래픽(Model-C)'
-      break
-    case 'NTT':
+    case 'NTT': case 'NTT_AI':
       result = '유해 트래픽'
       break
     case 'NFTT':
@@ -117,14 +126,13 @@ export function getDecimalCalc(row, col, value, index) { // set Decimal point
 
 export function makeAlertMessage(ticketData, isSop) {
   switch (ticketData.ticket_type) {
-    case 'ATT2': // 이상 트래픽
-      return `<span style="display: none">티켓ID: ${ticketData.ticket_id}</span><span style="display: none">티켓종류: ${ticketData.ticket_type}</span>유해트래픽 장애가 발생하였습니다.
+    case 'ATT2': case 'ATT2_AI':
+      return `<span style="display: none">티켓ID: ${ticketData.ticket_id}</span><span style="display: none">티켓종류: ${ticketData.ticket_type}</span>이상트래픽 장애가 발생하였습니다.
         <span>노드: ${ticketData.node_nm}, 포트: ${ticketData.root_cause_porta} 장비에 대하여</span>
         <b style=color:red>집중경보</b>를 진행할 수 있습니다.`
-    case 'NTT': // 유해 트래픽
+    case 'NTT': case 'NTT_AI':
       return `<span style="display: none">티켓ID: ${ticketData.ticket_id}</span><span style="display: none">티켓종류: ${ticketData.ticket_type}</span>유해트래픽 장애가 발생하였습니다.
-        노드: ${ticketData.node_nm}, 포트: ${ticketData.root_cause_porta} 장비에 대하여
-        <b style=color:red>집중경보</b>를 진행할 수 있습니다.`
+        해당 티켓에 대하여 <b style=color:red>집중경보</b>를 진행할 수 있습니다.`
     case 'RT': // 장애
       if (ticketData.alarmmsg === 'PORT_DOWN') {
         return `<span style="display: none">티켓ID: ${ticketData.ticket_id}</span><span style="display: none">티켓종류: ${ticketData.ticket_type}</span>PORT_DOWN 장애가 발생하였습니다.

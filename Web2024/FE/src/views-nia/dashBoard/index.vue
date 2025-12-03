@@ -125,7 +125,7 @@ import BaseFilterGroup from '@/filters/baseFilterGroup'
 import CellRenderAibuttons from '@/views-nia/components/cellRenderer/CellRenderAibuttons'
 import CellRenderTicketDetail from '@/views-nia/components/cellRenderer/CellRenderTicketDetail'
 import { apiIpAlarmList, apiTransmissionAlarmList, apiDashboardStatistics, apiSelfProcessStatistics } from '@/api/nia'
-import { getAlarmType, getSopAiAccuracy, makeAlertMessage } from '@/views-nia/js/commonFormat'
+import { getAlarmType, getSopAiAccuracy, makeAlertMessage, getModelType } from '@/views-nia/js/commonFormat'
 import { AppOptions } from '@/class/appOptions'
 import dialogOpenMixin from '@/mixin/dialogOpenMixin'
 import _ from 'lodash'
@@ -197,7 +197,8 @@ export default {
         { type: '', prop: '', name: '상황전파', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '상황전파', icon: 'circle-check', type: 'NTF', action: this.handleOpenEditModal.bind(this), }, },
         { type: '', prop: 'ticket_id', name: 'TICKET_ID', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'status', name: '상태', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, formatter: this.getStatus, cellStyle: this.getCellStyle },
-        { type: '', prop: 'ticket_type', name: '전표 유형', width: 250, alignItems: 'center', fixed: false, suppressMenu: true, formatter: getAlarmType },
+        { type: '', prop: 'ticket_type', name: '전표 유형', width: 200, alignItems: 'center', fixed: false, suppressMenu: true, formatter: getAlarmType },
+        { type: '', prop: 'model_type', name: '모델 유형', width: 200, alignItems: 'center', fixed: false, suppressMenu: true, formatter: getModelType },
         { type: '', prop: 'fault_type', name: '장애유형', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'alarmmsg', name: '장애정보', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'alarmmsg_original', name: '알람 원본메시지', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
@@ -384,10 +385,17 @@ export default {
       switch (nVal) {
         case this.chatbotCommand.focusModeCheckAlarm.action:
           // prettier-ignore
-          (async() => {
-            this.fn_openWindow('niaTopology', this.alarmFocusTicketData, null, { addX: -580 })
-            await new Promise(resolve => setTimeout(resolve, 1000))
-            this.fn_openWindow('aiResponse', this.alarmFocusTicketData, null, { addX: 580, addY: -20 })
+          (async () => {
+            switch (this.alarmFocusTicketData.ticket_type) {
+              case 'NTT_AI': case 'NTT':
+                this.openAiResponse(this.alarmFocusTicketData, { addX: 100, addY: -20 })
+                break
+              default:
+                this.fn_openWindow('niaTopology', this.alarmFocusTicketData, null, { addX: -580 })
+                await new Promise(resolve => setTimeout(resolve, 1000))
+                this.openAiResponse(this.alarmFocusTicketData, { addX: 580, addY: -20 })
+                break
+            }
           })()
           break
       }
@@ -931,23 +939,33 @@ export default {
     handleOpenTicketDetail(row) {
       this.fn_openWindow('ticketDetail', row)
     },
+    openAiResponse(row, position) {
+      if (row.ticket_type === 'ATT2_AI') {
+        this.fn_openWindow('aiResponse_ATT_AI', row, null, position)
+      } else if (row.ticket_type === 'NTT') {
+        this.fn_openWindow('aiResponse_NTT', row, null, position)
+      } else {
+        this.fn_openWindow('aiResponse', row, null, position)
+      }
+    },
     handleOpenEditModal(row, type) {
-      if (type === 'SOP') {
-        this.fn_openWindow('sopHistory', row)
-      } else if (type === 'NTF') {
-        this.fn_openWindow('requestForAction', row)
-      } else if (type === 'ALARM') {
-        if (row.ticket_type === 'ATT2_AIB') {
-          this.fn_openWindow('aiResponse_ATT_AIB', Object.assign(row, { node_num: '1623913427068', if_num: '1720169357741' }))
-          this.fn_openWindow('aiResponse_ATT_AIB', row)
-        } else {
-          // this.fn_openWindow('aiResponse_ATT_AIB', Object.assign(row, { node_num: '1623913427068', if_num: '1720169357741' }))
-          this.fn_openWindow('aiResponse', row)
-        }
-      } else if (type === 'FIN') {
-        this.fn_openWindow('processFin', row)
-      } else if (type === 'CONFIG_TEST') {
-        this.fn_openWindow('configTest', row)
+      switch (type) {
+        case 'SOP':
+          this.fn_openWindow('sopHistory', row)
+          break
+        case 'NTF':
+          this.fn_openWindow('requestForAction', row)
+          break
+        case 'ALARM':
+          this.openAiResponse(row)
+
+          break
+        case 'FIN':
+          this.fn_openWindow('processFin', row)
+          break
+        case 'CONFIG_TEST':
+          this.fn_openWindow('configTest', row)
+          break
       }
     },
   },
