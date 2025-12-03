@@ -5,18 +5,36 @@
         <div slot="header">
           <span><i class="el-icon-document" /> 기본 정보</span>
         </div>
-        <el-row>
+        <el-row v-if="selectedRow.ticket_type === 'NTT_AI' || selectedRow.ticket_type === 'NTT'">
           <el-col :span="8" class="p-1 d-flex flex-column items-start">
             <label>장비 이름</label>
-            <el-input v-model="item.nodeName" readonly />
+            <el-select v-model="selectItem.nodeId" @change="changeNodeName($event)">
+              <el-option v-for="(option, i) in options.node" :key="i" :label="option.label" :value="option.value" />
+            </el-select>
           </el-col>
           <el-col :span="8" class="p-1 d-flex flex-column items-start">
             <label>IP 주소</label>
-            <el-input v-model="item.ipAddr" readonly />
+            <el-input v-model="selectItem.ipAddr" disabled />
           </el-col>
           <el-col :span="8" class="p-1 d-flex flex-column items-start">
             <label>인터페이스</label>
-            <el-input v-model="item.ifname" readonly />
+            <el-select v-model="selectItem.ifId">
+              <el-option v-for="(option, i) in options.interface" :key="i" :label="option.label" :value="option.value" />
+            </el-select>
+          </el-col>
+        </el-row>
+        <el-row v-else>
+          <el-col :span="8" class="p-1 d-flex flex-column items-start">
+            <label>장비 이름</label>
+            <el-input v-model="item.nodeName" disabled />
+          </el-col>
+          <el-col :span="8" class="p-1 d-flex flex-column items-start">
+            <label>IP 주소</label>
+            <el-input v-model="item.ipAddr" disabled />
+          </el-col>
+          <el-col :span="8" class="p-1 d-flex flex-column items-start">
+            <label>인터페이스</label>
+            <el-input v-model="item.ifname" disabled />
           </el-col>
         </el-row>
       </el-card>
@@ -75,9 +93,6 @@
             <el-button size="mini" type="primary" icon="el-icon-video-play" :disabled="remoteControl.length === 0 || remoteControl === 'chngport'" @click="onClickRemote">실행 </el-button>
           </el-col>
         </el-row>
-        <div v-if="isShowFrame" v-loading="frameLoading" style="height: 200px; width: 100%">
-          <iframe id="ping" scrolling="yes" :src="pingResultSrc" width="100%" height="100%" frameBorder="0" />
-        </div>
       </el-card>
       <el-row>
         <el-col align="right" class="mt-2">
@@ -95,7 +110,7 @@
 import { Base } from '@/min/Base'
 import _ from 'lodash'
 import dialogOpenMixin from '@/mixin/dialogOpenMixin'
-import { apiIpsdnRequest, apiSelectAgencyIpList, apiRemote } from '@/api/nia'
+import { apiIpsdnRequest, apiSelectAgencyIpList, apiRemote, apiSelectIpsdnNodeList, apiSelectIpsdnInterfaceList } from '@/api/nia'
 import constants from '@/min/constants'
 import { getChatbotTicketData, getWindowActionList, getInvisibleSpanParameter, getNiaRouterPathByName, showNumberText } from '@/views-nia/js/commonNiaFunction'
 import { mapState } from 'vuex'
@@ -141,22 +156,22 @@ export default {
         ipAddr: '',
         ifname: '',
       },
+      selectItem: {
+        nodeId: '',
+        ipAddr: '',
+        ifId: '',
+      },
+      options: {
+        node: [],
+        interface: [],
+      },
+      nodeIdIpAddrMappingBox: [],
       agencyIpList: [],
-      isShowFrame: false,
       frameLoading: false,
-      pingFileName: null,
-      pingResultSrc: '',
       activeProfile: null,
     }
   },
   computed: {
-    actionForm() {
-      return [
-        { label: '장애구분', model: 'fault_classify', options: this.selectOption.gubun },
-        { label: '장애유형', model: 'fault_type', options: this.selectOption.type },
-        { label: '조치내용', model: 'fault_detail_content', options: this.selectOption.content },
-      ]
-    },
     ...mapState({
       configTestEventText: (state) => state.chatbot.routerParameter[constants.nia.chatbotKeyMap.configTest.parameterKey],
     }),
@@ -176,39 +191,6 @@ export default {
         this.$store.commit('chatbot/CLEAR_ROUTER_PARAMETER', { name: constants.nia.chatbotKeyMap.configTest.parameterKey })
       }
     },
-
-    pingFileName(nVal, oVal) {
-      if (nVal === null) {
-        this.isShowFrame = false
-        this.pingResultSrc = ''
-      } else {
-        const host = this.$store.getters.server.sshHost
-        this.pingResultSrc = `http://${host}:18888/ping/${this.pingFileName}`
-      }
-    },
-    isShowFrame(nVal, oVal) {
-      if (nVal !== oVal) {
-        const curHeight = Number(this.wdata.height)
-        const setHeight = nVal ? curHeight + 200 : curHeight - 200
-        this.$set(this.wdata, 'height', setHeight)
-
-        let y = (window.innerHeight - this.wdata.height) * 0.5 + (this.$store.getters.windows.length - 1) * 20
-        if (y < 0) {
-          y = 85
-        }
-        this.$set(this.wdata, 'y', y)
-      }
-    },
-    remoteControl(nVAl, oVal) {
-      if (nVAl === 'chngport') {
-        this.$refs.pathSwitch.setVisible()
-        // this.fn_openWindow('pathSwitch', this.selectedRow, null, { addX: 800 })
-      } else {
-        if (nVAl !== 'ping') {
-          this.isShowFrame = false
-        }
-      }
-    },
   },
   created() {
     this.selectedRow = this.wdata?.params
@@ -216,11 +198,41 @@ export default {
   async mounted() {
     await this.setTicketDataForChatbotTicketData()
 
+    if (['NTT', 'NTT_AI'].includes(this.selectedRow.ticket_type)) {
+      await this.setIpsdnNodeList()
+      await this.setIpsdnInterfaceList()
+    }
+
     this.$nextTick(() => {
       this.popupShowCommand()
     })
   },
   methods: {
+    async setIpsdnNodeList() {
+      this.nodeIdIpAddrMappingBox = []
+      this.options.node = []
+      const res = await apiSelectIpsdnNodeList()
+      res.result.forEach((v) => {
+        this.nodeIdIpAddrMappingBox.push({ nodeId: v.id, addr: v.mgmt_addr })
+        this.options.node.push({ label: v.node_name, value: v.id })
+      })
+    },
+
+    async setIpsdnInterfaceList(param) {
+      this.options.interface = []
+      this.selectItem.ifId = ''
+      const res = await apiSelectIpsdnInterfaceList(param)
+      res.result.forEach((v) => {
+        this.options.interface.push({ label: v.if_name, value: v.id })
+      })
+    },
+
+    changeNodeName(node_id) {
+      const x = this.nodeIdIpAddrMappingBox.find((v) => { return v.nodeId === node_id })
+      this.selectItem.ipAddr = x.addr
+      this.setIpsdnInterfaceList({ nodeId: node_id })
+    },
+
     async setTicketDataForChatbotTicketData(isSwitchingTicket) {
       if (isSwitchingTicket) this.wdata.params.isChatbotGenerated = isSwitchingTicket
       const chatbotData = await getChatbotTicketData(this.wdata)
@@ -407,7 +419,6 @@ export default {
     },
 
     async remotePingTest() {
-      this.isShowFrame = true
       try {
         this.frameLoading = true
         const { nodeName, ipAddr, ifname } = this.item
@@ -421,7 +432,6 @@ export default {
           user_id: this.$store.state.user.info.uid,
         })
         if (res.success) {
-          this.pingFileName = res.result
           this.$alert('성공적으로 ping 테스트가 진행되었습니다.', '성공', {
             confirmButtonText: '확인',
           })
@@ -429,8 +439,6 @@ export default {
           this.$alert('ping 테스트가 실패했습니다.', '실패', {
             confirmButtonText: '확인',
           })
-          this.pingFileName = null
-          this.isShowFrame = false
         }
       } catch (error) {
         this.error(error)
@@ -440,7 +448,6 @@ export default {
     },
 
     onClose() {
-      this.isShowFrame = false
       this.remoteControl = ''
     },
   },

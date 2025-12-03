@@ -7,13 +7,20 @@
         </h3>
         <div v-if="isQuestionMode">현재 Chatbot은 휴면중입니다</div>
         <div v-else>
-          <span v-if="alarmFocusMode_TicketData.ticket_type == 'SYSLOG'">[ALARM NO: {{ alarmFocusMode_TicketData.alarmno }}] </span>
-          <span v-else>[TICKET_ID: {{ alarmFocusMode_TicketData.ticket_id }}] </span>
-          <span>[전표유형: {{ getTicketTypeHangle(alarmFocusMode_TicketData.ticket_type) }}] </span>
-          <br />
-          <span>[IP주소: {{ alarmFocusMode_TicketData.ip_addr }}] </span>
-          <span>[장비명: {{ alarmFocusMode_TicketData.node_nm }}] </span>
-          <span>[인터페이스명: {{ alarmFocusMode_TicketData.alarmloc }}]</span>
+          <div v-if="alarmFocusMode_TicketData.ticket_type == 'NTT_AI'">
+            <span>[TICKET_ID: {{ alarmFocusMode_TicketData.ticket_id }}] </span>
+            <span>[전표유형: {{ getTicketTypeHangle(alarmFocusMode_TicketData.ticket_type) }}] </span>
+            <span>[장애유형 : TCP SYN FLOODING]</span>
+          </div>
+          <div v-else>
+            <span v-if="alarmFocusMode_TicketData.ticket_type == 'SYSLOG'">[ALARM NO: {{ alarmFocusMode_TicketData.alarmno }}] </span>
+            <span v-else>[TICKET_ID: {{ alarmFocusMode_TicketData.ticket_id }}] </span>
+            <span>[전표유형: {{ getTicketTypeHangle(alarmFocusMode_TicketData.ticket_type) }}] </span>
+            <br />
+            <span>[IP주소: {{ alarmFocusMode_TicketData.ip_addr }}] </span>
+            <span>[장비명: {{ alarmFocusMode_TicketData.node_nm }}] </span>
+            <span>[인터페이스명: {{ alarmFocusMode_TicketData.alarmloc }}]</span>
+          </div>
         </div>
       </div>
 
@@ -28,30 +35,33 @@
         </div>
       </div>
       <div v-else ref="chatMessagesBox" class="chat-messages">
-        <DoughnutChart v-if="alarmFocusSopDataList.length > 0" ref="donutChart" class="chatbot-donut-chart" :chart-data="chartData" :options="chartOptions" />
+        <DoughnutChart v-if="alarmFocusSopDataList.length > 0 || alarmFocusTicketData.ticket_type === 'NTT_AI'" ref="donutChart" class="chatbot-donut-chart" :chart-data="chartData" :options="chartOptions" />
         <div v-for="(message, index) in alarmFocusMode_chatMessages" :key="index" :class="['message', message.type]">
-          <div v-if="index === 0" class="message-content sopAnalysisBody">
-            <div v-if="alarmFocusSopDataList.length > 0">
-              <div style="background-color: #1e293b; font-weight: 600; text-align: center; color: white">{{ alarmFocusTicketData.node_nm }} 장비에 대한 SOP 조치내용 통계</div>
-              <table class="sop-stats-table">
-                <tbody>
-                  <tr>
-                    <td>전체SOP</td>
-                    <td>{{ alarmFocusSopDataList.length }}개</td>
-                  </tr>
-                  <tr v-for="(label, index2) in chartData.labels" :key="label">
-                    <td>{{ label }}</td>
-                    <td>{{ chartData.datasets[0].data[index2] }}개</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div v-else>
-              <div style="background-color: #ee6666; font-weight: 600; text-align: center; color: white">{{ warningSignText }} {{ alarmFocusTicketData.node_nm }} SOP 통계 미보유 {{ warningSignText }}</div>
-              <br />
-              SOP이력이 없어서 통계 데이터가 제공되지 않습니다.
+          <div v-if="index === 0">
+            <div v-if="alarmFocusTicketData.ticket_type !== 'NTT_AI'" class="message-content sopAnalysisBody">
+              <div v-if="alarmFocusSopDataList.length > 0">
+                <div style="background-color: #1e293b; font-weight: 600; text-align: center; color: white">{{ alarmFocusTicketData.node_nm }} 장비에 대한 SOP 조치내용 통계</div>
+                <table class="sop-stats-table">
+                  <tbody>
+                    <tr>
+                      <td>전체SOP</td>
+                      <td>{{ alarmFocusSopDataList.length }}개</td>
+                    </tr>
+                    <tr v-for="(label, index2) in chartData.labels" :key="label">
+                      <td>{{ label }}</td>
+                      <td>{{ chartData.datasets[0].data[index2] }}개</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div v-else>
+                <div style="background-color: #ee6666; font-weight: 600; text-align: center; color: white">{{ warningSignText }} {{ alarmFocusTicketData.node_nm }} SOP 통계 미보유 {{ warningSignText }}</div>
+                <br />
+                SOP이력이 없어서 통계 데이터가 제공되지 않습니다.
+              </div>
             </div>
           </div>
+
           <div v-if="message.type !== botAlertText || isActiveBotAlert">
             <div class="message-content" @click="handlePathClick($event, message.content)" v-html="formatMessage(message.content)"></div>
             <div class="message-time">
@@ -110,7 +120,7 @@ const centerTextPlugin = {
 
       // 2. 텍스트 내용 정의
       const totalLabel = '전체'
-      const totalValue = total.toLocaleString() + '개'
+      const totalValue = total.toLocaleString()
 
       // 3. 중앙 좌표 계산
       const centerX = width / 2 + 62
@@ -220,7 +230,7 @@ export default {
         labels: [],
         datasets: [
           {
-            backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', 'gray'],
+            backgroundColor: ['#1569C7', '#FFAD99', '#FAFAD2', '#FFB6C1', '#BDBADF'],
             data: [0, 0, 0, 0],
           },
         ],
@@ -265,10 +275,6 @@ export default {
                     text: label + ': ' + counts[i] + '개',
                     fillStyle: data.datasets[0].backgroundColor[i],
                     hidden: isNaN(counts[i]) || counts[i] === 0,
-                    // Chart.js가 요구하는 기타 속성들...
-                    // lineCap: data.datasets[0].lineCap,
-                    // lineWidth: data.datasets[0].lineWidth,
-                    // strokeStyle: data.datasets[0].borderColor[i],
                     index: i,
                   }
                 })
@@ -369,7 +375,6 @@ export default {
 
   mounted() {
     this.setDonutChartData()
-
     this.makeWebSpeechApiObj()
   },
 
@@ -508,9 +513,7 @@ export default {
       requestAnimationFrame(this.checkVoiceActivity)
     },
 
-    /**
-     * 녹음을 시작하고 상태를 업데이트합니다.
-     */
+    /** * 녹음을 시작하고 상태를 업데이트합니다. */
     async startRecording() {
       // 마이크 스트림이 없다면 다시 로드 (stopRecording에서 해제되었을 경우)
       if (!this.audioStream) {
@@ -635,7 +638,60 @@ export default {
       }
     },
 
-    setDonutChartData() {
+    makeNTTDonutChartData() {
+      const res = {} /* [gosungho] apiSelectRcaNttTicketDetailInfo({ ticket_id: this.selectedRow.ticket_id }) */
+      let data
+      if (res.result) {
+        data = res.result
+      } else {
+        data = {
+          normal_traffic_ratio: '0',
+          tcp_syn_flooding_ratio: '80',
+          land_attack_ratio: '5',
+          ping_of_death_ratio: '5',
+          udp_flooding_ratio: '10',
+        }
+      }
+
+      // 1. 객체의 항목들을 { key, value } 형태의 배열로 변환하고 값(value)을 숫자로 파싱
+      const allRatios = Object.entries(data).map(([key, value]) => ({
+        key: key,
+        value: Number(value),
+      }))
+
+      // 2. value를 기준으로 내림차순(큰 값부터) 정렬
+      allRatios.sort((a, b) => b.value - a.value)
+
+      // 3. 정렬된 결과를 labels와 data 배열로 분리하여 구성
+      const sortedLabels = allRatios.map((item) => {
+        const key = item.key
+
+        if (key === 'normal_traffic_ratio') {
+          return '정상트래픽'
+        } else {
+          // 2. 나머지 항목: _ratio 제거 후 언더바를 공백으로 변환
+          return key
+            .replace(/_ratio$/, '') // _ratio 접미사 제거
+            .replace(/_/g, ' ') // 언더바를 공백으로 변경
+            .toUpperCase()
+        }
+      })
+
+      const sortedValues = allRatios.map((item) => item.value)
+
+      // 4. chartData에 적용
+      this.chartData.labels = sortedLabels
+      this.chartData.datasets[0].data = sortedValues
+      this.chartOptions.title.text = '유해트래픽 정확도(%)'
+
+      const colors = ['#1569C7', '#FFAD99', '#FAFAD2', '#FFB6C1', '#BDBADF']
+      this.chartData.datasets[0].backgroundColor = colors.slice(0, this.chartData.labels.length)
+
+      console.log('Transformed Labels:', this.chartData.labels)
+      console.log('Sorted Data:', this.chartData.datasets[0].data)
+    },
+
+    makeNotNTTDonutChartData() {
       // faultType별 개수 계산
       const faultTypeCount = {}
       this.alarmFocusSopDataList.forEach((data) => {
@@ -664,6 +720,15 @@ export default {
       // 색상도 동적으로 설정 (기본 색상 + 기타용 회색)
       const colors = ['#FF6384', '#36A2EB', '#FFCE56', 'gray']
       this.chartData.datasets[0].backgroundColor = colors.slice(0, this.chartData.labels.length)
+      this.chartOptions.title.text = 'SOP 조치내용 통계(개)'
+    },
+
+    setDonutChartData() {
+      if (this.alarmFocusTicketData.ticket_type === 'NTT_AI') {
+        this.makeNTTDonutChartData()
+      } else {
+        this.makeNotNTTDonutChartData()
+      }
     },
 
     actionSwitch() {
@@ -677,8 +742,10 @@ export default {
     getTicketTypeHangle(ticketType) {
       switch (ticketType) {
         case 'ATT2':
+        case 'ATT2_AI':
           return '이상트래픽'
         case 'NTT':
+        case 'NTT_AI':
           return '유해트래픽'
         case 'RT':
           return '장애'
@@ -772,11 +839,26 @@ export default {
         const hasWindow = this.windows.find((w) => w.dialogNm === matchMap.popup)
         let newName = ''
         if (hasWindow) {
-          text += `<br>${constants.nia.chatbotIcon.noAction} ${hasWindow.name} 팝업이 선택됩니다.`
+          text += `<br>${constants.nia.chatbotIcon.noAction} ${hasWindow.name} 팝업이 포커싱 됩니다.`
           this.$store.dispatch('mdi/bringToFrontWindow', hasWindow.id)
           newName = hasWindow.chatbotParameterKeyName
         } else {
-          this.fn_openWindow(matchMap.popup, { isChatbotGenerated: true })
+          let popupName = matchMap.popup
+          if (matchMap.popup === 'aiResponse') {
+            switch (this.alarmFocusTicketData.ticket_type) {
+              case 'NTT_AI':
+                popupName = 'aiResponse_NTT'
+                break
+              case 'ATT2_AI':
+                popupName = 'aiResponse_ATT_AI'
+                break
+              default:
+                popupName = 'aiResponse'
+                break
+            }
+          }
+
+          this.fn_openWindow(popupName, { isChatbotGenerated: true })
 
           const dialogKey = Object.keys(this.dialogList).find((key) => key === matchMap.popup)
           text += `<br>${constants.nia.chatbotIcon.openPopup} ${this.dialogList[dialogKey].pageTitle} 팝업을 활성화했습니다. `

@@ -49,6 +49,27 @@ export function apiIpAlarmList(params = {}) {
     data: params
   })
 }
+
+export function apiSelectNttTicketTotalDataList(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_NTT_TICKET_TOTAL_DATA_LIST',
+    data: params
+  })
+}
+
+export function apiSelectRcaNttTicketDetailInfo(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_RCA_NTT_TICKET_DETAIL_INFO',
+    data: params
+  })
+}
+
 export function apiTransmissionAlarmList(params = {}) {
   return http({
     url: '/selectList',
@@ -903,6 +924,26 @@ export function apiSelectTopologyLinkList(params = {}) {
     method: 'post',
     filePath: filePath,
     sqlId: 'SELECT_TOPOLOGY_LINK_LIST',
+    data: params
+  })
+}
+
+export function apiSelectIpsdnNodeList(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_IPSDN_NODE_LIST',
+    data: params
+  })
+}
+
+export function apiSelectIpsdnInterfaceList(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_IPSDN_INTERFACE_LIST',
     data: params
   })
 }

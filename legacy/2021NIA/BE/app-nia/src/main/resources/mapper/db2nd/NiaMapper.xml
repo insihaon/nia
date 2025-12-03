@@ -28,6 +28,7 @@
         </when>
    </choose>
    </sql>
+
    <!-- email발송 user list / 사용자 관리-->
     <select id="SELECT_USER_LIST" parameterType="hashmap" resultType="hashmap">
         SELECT
@@ -236,10 +237,44 @@
         INNER JOIN resource.tb_node_mst NM ON NM.NODE_ID = AL.ROOT_CAUSE_SYSNAMEA
         INNER JOIN resource.tb_port_mst PT ON AL.ROOT_CAUSE_PORTA = PT.IF_ID and PT.node_id = NM.node_id
         LEFT JOIN nia.tb_sop SOP ON TC.TICKET_ID = SOP.TICKET_ID
-        WHERE TC.TICKET_TYPE IN ('NFTT', 'FTT', 'ATT2', 'NTT', 'ATT2_AIB')
+        WHERE TC.TICKET_TYPE IN ('NFTT', 'FTT', 'ATT2', 'ATT2_AI')
             AND TC.PARENT_TICKET_ID IS NULL
             <if test="IS_TEST == null">
                 AND TC.TICKET_GENERATION_TIME <![CDATA[ >= ]]> now() - INTERVAL '7' DAY
+            </if>
+        UNION ALL
+        SELECT
+            NULL ALARMNO,
+            TC.TICKET_ID,
+            CLUSTER_NO AS CLUSTERNO,
+            '-' AS NODE_NUM,
+            '-' AS NODE_NM,
+            '-' AS ALARMLOC,
+            '-' AS IF_NUM,
+            TC.TICKET_TYPE,
+            TC.root_cause_type AS FAULT_TYPE,
+            TICKET_GENERATION_TIME AS ALARMTIME,
+            FAULT_TIME,
+            TC.root_cause_type AS ALARMMSG,
+            NULL PORT,
+            NULL ALARMMSG_ORIGINAL,
+            TC.STATUS,
+            TC.TICKET_RCA_RESULT_CODE,
+            TC.TICKET_RCA_RESULT_DTL_CODE,
+            TOTAL_RELATED_ALARM_CNT,
+            '-' AS ROOT_CAUSE_SYSNAMEA,
+            '-' AS ROOT_CAUSE_SYSNAMEZ,
+            '-' AS ROOT_CAUSE_PORTA,
+            '-' AS ROOT_CAUSE_PORTZ,
+            TC.ZERO1_ENTROPY,
+            '-' AS IP_ADDR,
+            SOP.AI_ACCURACY
+        FROM rca.tb_rca_ticket_current TC
+        LEFT JOIN nia.tb_sop SOP ON TC.TICKET_ID = SOP.TICKET_ID
+        WHERE TC.TICKET_TYPE IN ('NTT')
+            AND TC.PARENT_TICKET_ID IS NULL
+            <if test="IS_TEST == null">
+                AND TC.TICKET_GENERATION_TIME   <![CDATA[ >= ]]>   now() - INTERVAL '7' DAY
             </if>
         UNION ALL
         SELECT 
@@ -1256,8 +1291,51 @@
             <include refid="TotalCountSuffix"/>
     </select>
 
+    <select id="SELECT_NTT_TICKET_TOTAL_DATA_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap"> 
+        WITH TargetRange AS (
+            SELECT *
+            FROM GATHER.TB_SFLOW_COLLECT
+            WHERE
+                COLLECT_SEQ <![CDATA[ > ]]> '15971009583'
+                AND COLLECT_SEQ <![CDATA[ < ]]> '15971019839'
+        ),
+        Top5Dest AS (
+            SELECT DST_IP
+            FROM TargetRange 
+            GROUP BY DST_IP
+            ORDER BY COUNT(DST_IP) DESC
+            LIMIT 5
+        ),
+        RankedSrc AS (
+            SELECT
+                T.DST_IP,
+                T.SRC_IP,
+                ROW_NUMBER() OVER (PARTITION BY T.DST_IP ORDER BY COUNT(T.SRC_IP) DESC) AS RN
+            FROM TargetRange T
+            INNER JOIN Top5Dest D ON T.DST_IP = D.DST_IP
+            GROUP BY T.DST_IP, T.SRC_IP
+        )
+        SELECT TR.*
+        FROM TargetRange TR
+        INNER JOIN RankedSrc RS ON TR.SRC_IP = RS.SRC_IP AND TR.DST_IP = RS.DST_IP
+        WHERE RS.RN <![CDATA[ <= ]]> 20
+        ORDER BY TR.DST_IP, TR.COLLECT_SEQ;
+    </select>
 
-     <!-- 이용기관 리스트 -->
+    <select id="SELECT_RCA_NTT_TICKET_DETAIL_INFO" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap"> 
+        SELECT 
+            normal_traffic_ratio
+            , tcp_syn_flooding_ratio
+            , land_attack_ratio
+            , ping_of_death_ratio
+            , udp_flooding_ratio
+        FROM RCA.TB_RCA_NTT_TICKET_DETAIL_INFO
+        where ticket_id = #{ticket_id}
+        limit 1
+    </select>
+
+
+    <!-- 이용기관 리스트 -->
     <select id="SELECT_AGENCY_CODE_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap">
         SELECT 
             NREN_NAME AS NAME, 
@@ -2276,6 +2354,8 @@
             , model.node_num
             , model.if_num
             , model.ipsdn_if_id
+            , model.in_threshold_value
+            , model.out_threshold_value
             , DATE_TRUNC('hour', predict.ds) AS ds  
             , MAX(pm.if_speed) if_speed
             , MAX(model.predict_datetime) AS predict_datetime
@@ -2316,6 +2396,8 @@
             , model.if_num
             , model.ipsdn_if_id
             , DATE_TRUNC('hour', predict.ds)  
+            , model.in_threshold_value
+            , model.out_threshold_value
         ORDER BY ds ASC
     </select>
 
@@ -2616,5 +2698,29 @@
             AND topology_type = #{item.topology_type}
         </foreach>
     </update>
+
+    <select id="SELECT_IPSDN_NODE_LIST" parameterType="hashmap" resultType="hashmap">
+        SELECT 
+            id
+            , lower(node_name) node_name
+            , loop_back_addr
+            , mgmt_addr
+        FROM ip_sdn.tb_node
+    </select>
+
+    <select id="SELECT_IPSDN_INTERFACE_LIST" parameterType="hashmap" resultType="hashmap">
+        SELECT 
+            id
+            , if_name
+            , node_id
+            , ip_addr
+            , hw_if_id
+        FROM ip_sdn.tb_interface
+        WHERE
+            1=1
+            <if test="nodeId != null">
+                and node_id = #{nodeId}
+            </if>
+    </select>
 
 </mapper>

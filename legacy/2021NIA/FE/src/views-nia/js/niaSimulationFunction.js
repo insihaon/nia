@@ -16,7 +16,14 @@ const att_alarm1 = { 'ticket_type': 'ATT2', 'root_cause_sysnamez': '대전-광�
 const att_alarm2 = { 'ticket_type': 'ATT2', 'root_cause_sysnamez': '광주-대전', 'clusterno': null, 'alarmno': null, 'if_num': '1720141987296', 'fault_time': '2025-09-30 09:34:00', 'node_nm': 'gwangju-7712', 'root_cause_porta': 'ce2/1', 'ticket_rca_result_dtl_code': '이상 트래픽(이용기관)', 'alarmmsg': 'TrafficFail', 'ticket_rca_result_code': null, 'fault_type': 'TrafficFail', 'root_cause_sysnamea': 'gwangju-7712', 'ticket_id': '1671659', 'ai_accuracy': '0', 'port': null, 'alarmtime': '2025-09-30 09:40:43', 'root_cause_portz': 'ce2/1', 'zero1_entropy': 0.2324228527, 'alarmmsg_original': null, 'node_num': '1720140269083', 'ip_addr': '116.89.169.41', 'alarmloc': 'ce2/1', 'total_related_alarm_cnt': 1, 'status': 'AUTO_FIN' }
 const att_alarm3 = { 'ticket_type': 'ATT2', 'root_cause_sysnamez': '대전-광주', 'clusterno': null, 'alarmno': null, 'if_num': '1720413434118', 'fault_time': '2025-09-30 09:34:00', 'node_nm': 'daejeon-7712', 'root_cause_porta': 'ce4/1', 'ticket_rca_result_dtl_code': '이상 트래픽(이용기관)', 'alarmmsg': 'TrafficFail', 'ticket_rca_result_code': null, 'fault_type': 'TrafficFail', 'root_cause_sysnamea': 'daejeon-7712', 'ticket_id': '1671660', 'ai_accuracy': '0', 'port': null, 'alarmtime': '2025-09-30 09:40:46', 'root_cause_portz': 'ce4/1', 'zero1_entropy': 0.2750223166, 'alarmmsg_original': null, 'node_num': '1623913471006', 'ip_addr': '116.89.169.21', 'alarmloc': 'ce4/1', 'total_related_alarm_cnt': 1, 'status': 'AUTO_FIN' }
 const ntt_alarm1 = { 'ticket_type': 'NTT', 'root_cause_sysnamez': '대전-광주', 'clusterno': null, 'alarmno': null, 'if_num': '1720413434118', 'fault_time': '2025-09-29 17:35:00', 'node_nm': 'daejeon-7712', 'root_cause_porta': 'ce4/1', 'ticket_rca_result_dtl_code': '이상 트래픽(이용기관)', 'alarmmsg': 'TrafficFail', 'ticket_rca_result_code': null, 'fault_type': 'TrafficFail', 'root_cause_sysnamea': 'daejeon-7712', 'ticket_id': '1671658', 'ai_accuracy': '0', 'port': null, 'alarmtime': '2025-09-29 18:25:22', 'root_cause_portz': 'ce4/1', 'zero1_entropy': 0.0008064021, 'alarmmsg_original': null, 'node_num': '1623913471006', 'ip_addr': '116.89.169.21', 'alarmloc': 'ce4/1', 'total_related_alarm_cnt': 1, 'status': 'AUTO_FIN' }
-const test_alarm = { 'ticket_type': 'NTT', 'root_cause_sysnamez': 'Test-Branch-Z', 'clusterno': 'CL-001', 'alarmno': null, 'if_num': 'PORT-X1-IF01', 'fault_time': '2025-11-12 10:00:00', 'node_nm': 'test-gw-01', 'root_cause_porta': 'GigabitEthernet1/1', 'ticket_rca_result_dtl_code': '링크 다운(테스트)', 'alarmmsg': 'LinkDown', 'ticket_rca_result_code': 'RCA-001', 'fault_type': 'LinkDown', 'root_cause_sysnamea': 'Test Gateway 01', 'ticket_id': 'TEST_TICKET', 'ai_accuracy': '0', 'port': 'GigabitEthernet1/1', 'alarmtime': '2025-11-12 10:05:00', 'root_cause_portz': 'GigabitEthernet1/1', 'zero1_entropy': 0.0, 'alarmmsg_original': 'Port GigabitEthernet1/1 status changed to Down', 'node_num': 'NODE-A001', 'ip_addr': '192.168.1.254', 'alarmloc': 'GigabitEthernet1/1', 'total_related_alarm_cnt': 1, 'status': 'AUTO_FIN' }
+
+const ntt_test_alarm = { 'ticket_type': 'NTT_AI', 'root_cause_sysnamez': '-', 'clusterno': null, 'alarmno': null, 'if_num': '-', 'fault_time': '2025-11-28 14:55:31', 'node_nm': '-', 'root_cause_porta': '-', 'ticket_rca_result_dtl_code': '유해 트래픽 탐지(TEST)', 'alarmmsg': 'normalTraffic', 'ticket_rca_result_code': 'TRAFFIC_NOXIOUS_DETECTION(TEST)', 'fault_type': 'normalTraffic', 'root_cause_sysnamea': '-', 'ticket_id': 'TEST_TICKET', 'ai_accuracy': '0', 'port': null, 'alarmtime': '2025-11-28 14:55:31', 'root_cause_portz': '-', 'zero1_entropy': null, 'alarmmsg_original': null, 'node_num': '-', 'ip_addr': '-', 'alarmloc': '-', 'total_related_alarm_cnt': 0, 'status': 'AUTO_FIN' }
+const att_test_alarm = { 'ticket_type': 'ATT2_AI', 'root_cause_sysnamez': 'Unknown', 'clusterno': null, 'alarmno': null, 'if_num': '1720143960924', 'fault_time': '2025-12-02 01:14:21', 'node_nm': 'busan-5812', 'root_cause_porta': 'xe52/1', 'ticket_rca_result_dtl_code': '이상 트래픽(포트)', 'alarmmsg': 'TrafficFail', 'ticket_rca_result_code': '-', 'fault_type': 'TrafficFail', 'root_cause_sysnamea': 'busan-5812', 'ticket_id': '1672269', 'ai_accuracy': null, 'port': null, 'alarmtime': '2025-12-02 01:14:21', 'root_cause_portz': null, 'zero1_entropy': null, 'alarmmsg_original': null, 'node_num': '1720140009483', 'ip_addr': '116.89.169.63', 'alarmloc': 'xe52/1', 'total_related_alarm_cnt': 1, 'status': 'AUTO_FIN' }
+
+const alarmDataList = [
+    att_test_alarm,
+    ntt_test_alarm
+]
 
 function nowDateTime() {
     const date = new Date()
@@ -36,7 +43,6 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms || 3000))
 async function unshiftFunction(alarm, param) {
     const VueThis = this
 
-    const simulationStatus = store.state.chatbot.simulationStatus
     const upsertParam = {
         status: 'INIT',
         alarmtime: nowDateTime(),
@@ -62,14 +68,20 @@ export async function niaSimulationStart(param = {}, isFull) {
         } else {
             store.commit('chatbot/SWITCH_SIMULATION_STATUS')
             // prettier-ignore
-            await (injectionTableData.bind(VueThis))(param)
+            for (const alarmData of alarmDataList) {
+                const status = store.state.chatbot.simulationStatus
+                if (status === 'OFF') {
+                    return
+                }
+                await (injectionTableData.bind(VueThis))(param, alarmData)
+            }
         }
     } else {
-        await (unshiftFunction.bind(VueThis))(test_alarm, param)
+        await (unshiftFunction.bind(VueThis))(ntt_test_alarm, param)
     }
 }
 
-async function injectionTableData(param = {}) {
+async function injectionTableData(param = {}, alarmData) {
     const VueThis = this
 
     const maxTicketObject = VueThis.ipNetworkList.reduce((max, current) => {
@@ -78,25 +90,6 @@ async function injectionTableData(param = {}) {
     }, undefined)
     param.maxTicketId = maxTicketObject.ticket_id
 
-    await (unshiftFunction.bind(VueThis))(ntt_alarm1, param)
-
-    await (unshiftFunction.bind(VueThis))(att_alarm1, param)
-    await (unshiftFunction.bind(VueThis))(rt_alarm1, param)
-    await (unshiftFunction.bind(VueThis))(syslog_alarm1, param)
-
-    await (unshiftFunction.bind(VueThis))(syslog_alarm2, param)
-    await (unshiftFunction.bind(VueThis))(rt_alarm2, param)
-    await (unshiftFunction.bind(VueThis))(att_alarm2, param)
-
-    await (unshiftFunction.bind(VueThis))(syslog_alarm3, param)
-    await (unshiftFunction.bind(VueThis))(rt_alarm3, param)
-    await (unshiftFunction.bind(VueThis))(att_alarm3, param)
-
-    await (unshiftFunction.bind(VueThis))(rt_alarm4, param)
-    await (unshiftFunction.bind(VueThis))(rt_alarm5, param)
-    await (unshiftFunction.bind(VueThis))(rt_alarm6, param)
-
-    await (unshiftFunction.bind(VueThis))(syslog_alarm4, param)
-    await (unshiftFunction.bind(VueThis))(syslog_alarm5, param)
+    await (unshiftFunction.bind(VueThis))(alarmData, param)
 }
 
