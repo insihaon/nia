@@ -18,7 +18,15 @@ spring:
       com.codej.nia.test.dao,
 
   rabbitmq:
-    enabled: false
+    enabled: true
+    address: 116.89.191.47 # incodej-lab.iptime.org
+    port: 6786
+    username: niaadmin
+    password: niaadmin12#$
+    niaEngineToUi: nia.EngineToUiIndexDirectly
+    niaUiToEngine: nia.UiToEngineIndexDirectly
+    InspectorToUID: OPER#nia.InspectorToUIDirectly
+    TicketRestart: OPER#nia.NiaTicketReStartIndexDirectly
 
 myconf:
   project: nia

@@ -74,18 +74,6 @@ const state = {
     simulationStatus: 'OFF'
 }
 
-async function loadTicketData(focusTicketData) {
-    return focusTicketData
-
-    // 만약 아래 로그를 해제하고 데이터를 직접 가져오면 , 시뮬레이션 모드의 경우 7일이 넘는 데이터는 테스트 불가능해짐
-
-    /* if (focusTicketData.ticket_type === 'SYSLOG') {
-        return await apiIpAlarmList({ ALARMNO: focusTicketData.alarmno })
-    } else {
-        return await apiIpAlarmList({ TICKET_ID: focusTicketData.ticket_id })
-    } */
-}
-
 const mutations = {
     SET_LAST_FOCUS_MODULE(state, { name, type }) {
         if (name === 'chatbot') return
@@ -179,7 +167,7 @@ const mutations = {
     },
 
     async SET_ALARM_FOCUS_CHAT_TICKET_DATA(state, { ticketData }) {
-        state.alarmFocusTicketData = await loadTicketData(ticketData)
+        state.alarmFocusTicketData = ticketData
 
         let res
         if (state.alarmFocusTicketData.ticket_type === 'SYSLOG') {

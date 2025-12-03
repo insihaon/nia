@@ -179,11 +179,10 @@ export default {
     setVisible: function (params) {
       this.loading = false
       this.item = params.item
-      console.log(params)
       this.trendChartData.labels = params.trend.trendParseDate
       this.trendChartData.datasets[0].data = []
-      this.weeklyChartData.datasets[0].data = []
       this.trendChartData.datasets[0].data = params.trend.trendData
+      this.weeklyChartData.datasets[0].data = []
       for (var i = 0; i < params.weekly.length; i++) {
         this.weeklyChartData.datasets[0].data.push(params.weekly[i].cnt === 0 ? 0 : (params.weekly[i].data / params.weekly[i].cnt).toFixed(2))
       }
