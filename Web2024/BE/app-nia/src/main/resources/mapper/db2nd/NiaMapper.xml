@@ -271,7 +271,7 @@
             SOP.AI_ACCURACY
         FROM rca.tb_rca_ticket_current TC
         LEFT JOIN nia.tb_sop SOP ON TC.TICKET_ID = SOP.TICKET_ID
-        WHERE TC.TICKET_TYPE IN ('NTT')
+        WHERE TC.TICKET_TYPE IN ('NTT', 'NTT_AI')
             AND TC.PARENT_TICKET_ID IS NULL
             <if test="IS_TEST == null">
                 AND TC.TICKET_GENERATION_TIME   <![CDATA[ >= ]]>   now() - INTERVAL '7' DAY
@@ -820,25 +820,27 @@
             SOP.HANDLING_ACK_USER AS HANDLING_ACK_USER ,
             TO_CHAR(SOP.HANDLING_ACK_TIME, 'YYYY-MM-DD HH24:MI:SS') AS HANDLING_ACK_TIME ,
             SOP.HANDLING_FIN_USER AS HANDLING_FIN_USER ,
-            TO_CHAR(SOP.HANDLING_FIN_TIME, 'YYYY-MM-DD HH24:MI:SS') AS HANDLING_FIN_TIME 
+            TO_CHAR(SOP.HANDLING_FIN_TIME, 'YYYY-MM-DD HH24:MI:SS') AS HANDLING_FIN_TIME,
+            TRNTDI.TRAFFIC_TYPE AS TRAFFIC_TYPE
         FROM nia.tb_sop SOP
         LEFT JOIN rca.tb_rca_ticket_al_current AL ON SOP.TICKET_ID = AL.TICKET_ID
         LEFT JOIN rca.tb_rca_ticket_current TC    ON AL.TICKET_ID = TC.TICKET_ID
         LEFT JOIN resource.tb_node_mst NODEA ON NODEA.node_id = AL.ROOT_CAUSE_SYSNAMEA
         LEFT JOIN resource.tb_node_mst NODEZ ON NODEZ.node_id = AL.ROOT_CAUSE_SYSNAMEZ
+        LEFT JOIN RCA.TB_RCA_NTT_TICKET_DETAIL_INFO TRNTDI on TRNTDI.TICKET_ID = TC.TICKET_ID
         WHERE 1=1
             AND TC.PARENT_TICKET_ID IS NULL
         <if test="TICKET_ID != null">
             AND SOP.TICKET_ID LIKE '%' || #{TICKET_ID} || '%'
+        </if>
+        <if test="NTT_TRAFFIC_TYPE != null and NTT_TRAFFIC_TYPE != ''">
+            AND SOP.NTT_TYPE = #{NTT_TRAFFIC_TYPE}
         </if>
         <if test="NODE_NM != null and NODE_NM != ''">
             AND AL.ROOT_CAUSE_SYSNAMEA = #{NODE_NM}
         </if>
         <if test="ALARMLOC != null and ALARMLOC != ''">
             AND AL.ROOT_CAUSE_PORTA = #{ALARMLOC}
-        </if>
-        <if test="START_DATE == null and END_DATE == null">
-            AND AL.INSERT_TIME <![CDATA[ > ]]> now() - INTERVAL '7' day
         </if>
         <if test="START_DATE != null">
             AND AL.INSERT_TIME <![CDATA[ >= ]]> #{START_DATE}::TIMESTAMP
@@ -847,7 +849,7 @@
             AND AL.INSERT_TIME <![CDATA[ <= ]]> #{END_DATE}::TIMESTAMP
         </if>
         <if test="TICKET_TYPE != null">
-            AND TC.TICKET_TYPE IN (#{TICKET_TYPE})
+            AND TC.TICKET_TYPE = #{TICKET_TYPE}
         </if>
         <if test="ROOT_CAUSE_SYSNAMEA != null">
             AND AL.ROOT_CAUSE_SYSNAMEA <![CDATA[ = ]]> #{ROOT_CAUSE_SYSNAMEA}
@@ -1292,12 +1294,31 @@
     </select>
 
     <select id="SELECT_NTT_TICKET_TOTAL_DATA_LIST" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap"> 
-        WITH TargetRange AS (
+        WITH TargetKey AS (
+            SELECT 
+                CAST(json_key AS BIGINT) AS start_key 
+            FROM RCA.TB_RCA_NTT_TICKET_DETAIL_INFO
+            WHERE ticket_id = #{TICKET_ID}
+            LIMIT 1
+        ),
+        RowRange AS (
+            SELECT
+                h.row_cnt
+            FROM TargetKey T
+            INNER JOIN nia.tb_linkage_hist H ON
+                H.key_name = 'aiIpSdnSflowKey'
+                AND H.file_name = CONCAT('ipSdnSflow_', CAST(T.start_key AS TEXT), '.json')
+            LIMIT 1
+        ),
+        TargetRange AS (
             SELECT *
-            FROM GATHER.TB_SFLOW_COLLECT
+            FROM rca.tb_sflow_collect_hist
             WHERE
-                COLLECT_SEQ <![CDATA[ > ]]> '15971009583'
-                AND COLLECT_SEQ <![CDATA[ < ]]> '15971019839'
+                COLLECT_SEQ <![CDATA[ <= ]]> (SELECT T.start_key FROM TargetKey T)
+                AND COLLECT_SEQ <![CDATA[ >= ]]> (
+                    (SELECT T.start_key FROM TargetKey T)
+                    - (SELECT R.row_cnt FROM RowRange R)
+                )
         ),
         Top5Dest AS (
             SELECT DST_IP
@@ -1319,12 +1340,13 @@
         FROM TargetRange TR
         INNER JOIN RankedSrc RS ON TR.SRC_IP = RS.SRC_IP AND TR.DST_IP = RS.DST_IP
         WHERE RS.RN <![CDATA[ <= ]]> 20
-        ORDER BY TR.DST_IP, TR.COLLECT_SEQ;
+        ORDER BY TR.DST_IP, TR.COLLECT_SEQ
     </select>
 
     <select id="SELECT_RCA_NTT_TICKET_DETAIL_INFO" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap"> 
         SELECT 
-            normal_traffic_ratio
+            traffic_type
+            , normal_traffic_ratio
             , tcp_syn_flooding_ratio
             , land_attack_ratio
             , ping_of_death_ratio

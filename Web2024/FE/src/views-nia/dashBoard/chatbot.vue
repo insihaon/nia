@@ -10,7 +10,7 @@
           <div v-if="alarmFocusMode_TicketData.ticket_type == 'NTT_AI'">
             <span>[TICKET_ID: {{ alarmFocusMode_TicketData.ticket_id }}] </span>
             <span>[전표유형: {{ getTicketTypeHangle(alarmFocusMode_TicketData.ticket_type) }}] </span>
-            <span>[장애유형 : TCP SYN FLOODING]</span>
+            <span>[장애유형 : {{ alarmFocusNTTAIDetailInfo.traffic_type }}]</span>
           </div>
           <div v-else>
             <span v-if="alarmFocusMode_TicketData.ticket_type == 'SYSLOG'">[ALARM NO: {{ alarmFocusMode_TicketData.alarmno }}] </span>
@@ -100,6 +100,7 @@ import { getChatbotMdiObject, getNiaRouteNameByPath, getNiaRouteTitleByPath, get
 import { apiIpAlarmList } from '@/api/nia'
 import constants from '@/min/constants'
 import hotkeys from 'hotkeys-js'
+import _ from 'lodash'
 
 const routeName = 'chatbot'
 
@@ -254,7 +255,7 @@ export default {
         maintainAspectRatio: false,
         title: {
           display: true,
-          text: 'SOP 조치내용 통계',
+          text: 'SOP 조치내용 통계(개)',
           fontSize: 16,
           fontStyle: 'bold',
           fontColor: '#333',
@@ -271,8 +272,7 @@ export default {
                 const counts = data.datasets[0].data
                 return data.labels.map(function (label, i) {
                   return {
-                    // 라벨에 개수 추가 (예: '포트다운: 5개')
-                    text: label + ': ' + counts[i] + '개',
+                    text: label + ': ' + counts[i],
                     fillStyle: data.datasets[0].backgroundColor[i],
                     hidden: isNaN(counts[i]) || counts[i] === 0,
                     index: i,
@@ -292,6 +292,7 @@ export default {
       alarmFocusMode_chatMessages: (state) => state.chatbot.alarmFocusMode_chatMessages,
       alarmFocusTicketData: (state) => state.chatbot.alarmFocusTicketData,
       alarmFocusSopDataList: (state) => state.chatbot.alarmFocusSopDataList,
+      alarmFocusNTTAIDetailInfo: (state) => state.chatbot.alarmFocusNTTAIDetailInfo,
       currentMode: (state) => state.chatbot.currentMode,
       actionType: (state) => state.chatbot.actionType,
       windows: (state) => state.mdi.windows,
@@ -639,19 +640,8 @@ export default {
     },
 
     makeNTTDonutChartData() {
-      const res = {} /* [gosungho] apiSelectRcaNttTicketDetailInfo({ ticket_id: this.selectedRow.ticket_id }) */
-      let data
-      if (res.result) {
-        data = res.result
-      } else {
-        data = {
-          normal_traffic_ratio: '0',
-          tcp_syn_flooding_ratio: '80',
-          land_attack_ratio: '5',
-          ping_of_death_ratio: '5',
-          udp_flooding_ratio: '10',
-        }
-      }
+      const data = _.cloneDeep(this.alarmFocusNTTAIDetailInfo)
+      delete data.traffic_type
 
       // 1. 객체의 항목들을 { key, value } 형태의 배열로 변환하고 값(value)을 숫자로 파싱
       const allRatios = Object.entries(data).map(([key, value]) => ({

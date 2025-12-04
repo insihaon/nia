@@ -49,15 +49,31 @@
 import { Base } from '@/min/Base'
 import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
 import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
-import { apiSelectSopHistList, apiSopSyslogHistList, apiSyslogEquipmentList, apiSyslogInterfaceList, apiSelectNodeList, apiSelectLinkList } from '@/api/nia'
+import { apiSelectSopHistList, apiSopSyslogHistList, apiSyslogEquipmentList, apiSyslogInterfaceList, apiSelectNodeList, apiSelectLinkList, apiSelectRcaNttTicketDetailInfo } from '@/api/nia'
 import { getAlarmType, getTicketStatus, getSopAiAccuracy } from '@/views-nia/js/commonFormat'
 import ModalSopDetail from '@/views-nia/modal/ModalSopDetail.vue'
 import { mapState } from 'vuex'
 import constants from '@/min/constants'
 import { getChatbotTicketData, getWindowActionList, getInvisibleSpanParameter, getNiaRouterPathByName, showNumberText } from '@/views-nia/js/commonNiaFunction'
 import niaObserverMixin from '@/mixin/niaObserverMixin'
-
+import _ from 'lodash'
 const routeName = 'sopHistory' /* constants.nia.chatbotKeyMap.sopHistory.parameterKey */
+
+const sopSearchModel_default = {
+  TICKET_ID: '',
+  DATE: [],
+  NODE_NM: '',
+  ALARMLOC: '',
+  TICKET_TYPE: '',
+  NTT_TRAFFIC_TYPE: '',
+}
+const syslogSearchModel_default = {
+  ALARM_NO: '',
+  NODE_NM: '',
+  ALARMLOC: '',
+  STATUS: '',
+  DATE: [],
+}
 
 export default {
   name: routeName,
@@ -102,25 +118,29 @@ export default {
         pagerCount: 11,
       },
       selectedRow: [],
-
-      sopSearchModel: {
-        TICKET_ID: '',
-        DATE: [],
-        NODE_NM: '',
-        ALARMLOC: '',
-      },
-      syslogSearchModel: {
-        ALARM_NO: '',
-        NODE_NM: '',
-        ALARMLOC: '',
-        STATUS: '',
-        DATE: [],
-      },
+      sopSearchModel: _.cloneDeep(sopSearchModel_default),
+      syslogSearchModel: _.cloneDeep(syslogSearchModel_default),
       equipmentOptionList: [],
       interfaceOptionList: [],
       equipmentSyslogOptionList: [],
       interfaceSyslogOptionList: [],
       excelList: [],
+      ticketTypeList: [
+        { label: '전체', value: '-' },
+        { label: '이상 트래픽(Model-A)', value: 'ATT2' },
+        { label: '이상 트래픽(Model-C)', value: 'ATT2_AI' },
+        { label: '유해트래픽(Model-A)', value: 'NTT' },
+        { label: '유해트래픽(Model-C)', value: 'NTT_AI' },
+        { label: 'SYSLOG', value: 'SYSLOG' },
+        { label: '장애', value: 'RT' },
+      ],
+      nttTypeList: [
+        { label: 'NORMAL TRAFFIC', value: 'normalTraffic' },
+        { label: 'TCP SYN FLOODING', value: 'tcpSynFlooding' },
+        { label: 'LAND ATTACK RATIO', value: 'landAttack' },
+        { label: 'PING OF DEATH RATIO', value: 'pingOfDeath' },
+        { label: 'UDP FLOODING RATIO', value: 'udpFloodingRatio' },
+      ],
     }
   },
 
@@ -136,6 +156,7 @@ export default {
         { type: '', prop: 'ticket_id', name: '티켓번호', width: 150, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
         { type: '', prop: 'ticket_type', name: '티켓유형', width: 130, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false, format: getAlarmType },
         { type: '', prop: 'ticket_result', name: '장애내용', width: 200, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
+        { type: '', prop: 'traffic_type', name: '유해 장애유형', width: 200, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
         { type: '', prop: 'fault_classify', name: '장애구분', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
         { type: '', prop: 'fault_type', name: '장애유형', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: false },
         { type: '', prop: 'fault_detail_content', name: '조치내용', width: 100, suppressMenu: true, alignItems: 'center', sortable: true, filterable: true },
@@ -226,10 +247,12 @@ export default {
     },
     searchSopItems() {
       return [
-        { label: '티켓번호', type: 'input', size: 5, model: 'TICKET_ID' },
-        { label: 'DATE', type: 'date', size: 8, model: 'DATE' },
-        { label: '장비명', type: 'select', size: 6, model: 'NODE_NM', setting: { allOption: { toggle: true } }, options: this.equipmentOptionList },
-        { label: 'I/F', type: 'select', size: 5, model: 'ALARMLOC', setting: { allOption: { toggle: true } }, options: this.interfaceOptionList },
+        { label: '티켓번호', type: 'input', size: 8, model: 'TICKET_ID' },
+        { label: '장비명', type: 'select', size: 8, model: 'NODE_NM', setting: { allOption: { toggle: true } }, options: this.equipmentOptionList },
+        { label: '발생일', type: 'date', size: 8, model: 'DATE' },
+        { label: 'I/F', type: 'select', size: 8, model: 'ALARMLOC', setting: { allOption: { toggle: true } }, options: this.interfaceOptionList },
+        { label: '티켓유형', type: 'select', size: 8, model: 'TICKET_TYPE', options: this.ticketTypeList },
+        { label: '유해 장애유형', type: 'select', size: 8, model: 'NTT_TRAFFIC_TYPE', options: this.nttTypeList },
       ]
     },
     searchSyslogItems() {
@@ -296,11 +319,29 @@ export default {
       }
 
       this.tapCurrent = this.selectedRow?.ticket_type === 'SYSLOG' ? 'syslog' : 'ticket'
-      this.sopSearchModel.NODE_NM = this.selectedRow.node_nm
-      this.syslogSearchModel = { NODE_NM: this.selectedRow.node_nm }
+
+      this.sopSearchModel = _.cloneDeep(sopSearchModel_default)
+      this.syslogSearchModel = _.cloneDeep(syslogSearchModel_default)
+      switch (this.tapCurrent) {
+        case 'syslog':
+          this.syslogSearchModel = { NODE_NM: this.selectedRow.node_nm }
+          break
+        case 'ticket':
+          if (['NTT', 'NTT_AI'].includes(this.selectedRow?.ticket_type)) {
+            const res = await apiSelectRcaNttTicketDetailInfo({ ticket_id: this.selectedRow.ticket_id })
+            if (res && res.result) {
+              this.sopSearchModel.NTT_TRAFFIC_TYPE = res.result[0].traffic_type
+            }
+            this.sopSearchModel.TICKET_ID = this.selectedRow.ticket_id
+          } else {
+            this.sopSearchModel.NODE_NM = this.selectedRow.node_nm
+          }
+
+          this.sopSearchModel.TICKET_TYPE = this.selectedRow?.ticket_type
+          break
+      }
 
       this.setDefaultTime()
-
       this.$nextTick(() => {
         this.setSelectedOptions()
         this.setSelectedSyslogOptions()
@@ -419,40 +460,19 @@ export default {
         this.error(error)
       }
     },
-    getSopHistParam() {
-      const { pageSize: limit, currentPage: page } = this.sopPaginationInfo
-      const param = { limit, page }
-      const searchModel = this.$refs?.ticketSearch?.searchModel ?? {}
-      if (searchModel?.TICKET_ID) {
-        this._merge(param, { TICKET_ID: this.$refs.ticketSearch.searchModel.TICKET_ID })
-      }
-      if (searchModel?.NODE_NM) {
-        this._merge(param, { NODE_NM: this.$refs.ticketSearch.searchModel.NODE_NM })
-      }
-      if (searchModel?.ALARMLOC) {
-        this._merge(param, { ALARMLOC: this.$refs.ticketSearch.searchModel.ALARMLOC })
-      }
-      if (searchModel?.DATE) {
-        const dateTime = this.$refs.ticketSearch.searchModel.DATE
-        this._merge(param, { START_DATE: dateTime[0], END_DATE: dateTime[1] })
-      }
-      if (this.row !== null) {
-        this._merge(param, { TICKET_TYPE: this.row.ticket_type })
-      }
-      if (param.NODE_NM === 'ALL') {
-        param.NODE_NM = null
-      }
-
-      if (param.ALARMLOC === 'ALL') {
-        param.ALARMLOC = null
-      }
-
-      return param
-    },
     async onLoadSopHistList() {
       try {
         this.loading = true
-        const res = await apiSelectSopHistList(this.getSopHistParam())
+        const res = await apiSelectSopHistList({
+          limit: this.sopPaginationInfo.pageSize,
+          page: this.sopPaginationInfo.currentPage,
+          TICKET_ID: this.sopSearchModel.TICKET_ID,
+          NODE_NM: this.sopSearchModel.NODE_NM === 'ALL' ? null : this.sopSearchModel.NODE_NM,
+          ALARMLOC: this.sopSearchModel.ALARMLOC === 'ALL' ? null : this.sopSearchModel.ALARMLOC,
+          START_DATE: this.sopSearchModel.DATE && this.sopSearchModel.DATE[0],
+          END_DATE: this.sopSearchModel.DATE && this.sopSearchModel.DATE[1],
+          TICKET_TYPE: this.sopSearchModel.TICKET_TYPE === '-' ? null : this.sopSearchModel.TICKET_TYPE,
+        })
 
         this.sopHistList = res?.result
         this.sopPaginationInfo.totalCount = res.total
