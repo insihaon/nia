@@ -253,17 +253,12 @@ export default {
     },
     async setDonutChartData() {
       let data
-      if (this.selectedRow.ticket_id === 'TEST_TICKET') {
-        data = {
-          normal_traffic_ratio: '0',
-          tcp_syn_flooding_ratio: '80',
-          land_attack_ratio: '5',
-          ping_of_death_ratio: '5',
-          udp_flooding_ratio: '10',
-        }
+      if (this.selectedRow.ticket_id === 'NTT_SIMULATION') {
+        data = { normal_traffic_ratio: '0', tcp_syn_flooding_ratio: '80', land_attack_ratio: '5', ping_of_death_ratio: '5', udp_flooding_ratio: '10' }
       } else {
         const res = await apiSelectRcaNttTicketDetailInfo({ ticket_id: this.selectedRow.ticket_id })
-        data = res.result
+        data = res.result[0]
+        delete data.traffic_type
       }
 
       // 1. 객체의 항목들을 { key, value } 형태의 배열로 변환하고 값(value)을 숫자로 파싱
@@ -484,11 +479,11 @@ export default {
     },
 
     async loadNttTicketTotalDataList() {
-      if (this.selectedRow.ticket_id === 'TEST_TICKET') {
+      if (this.selectedRow.ticket_id === 'NTT_SIMULATION') {
         const [firstKey] = Object.keys(TEST_TICKET_SAMPLE)
         return TEST_TICKET_SAMPLE[firstKey]
       } else {
-        const res = await apiSelectNttTicketTotalDataList()
+        const res = await apiSelectNttTicketTotalDataList({ TICKET_ID: this.selectedRow.ticket_id })
         return res.result
       }
     },

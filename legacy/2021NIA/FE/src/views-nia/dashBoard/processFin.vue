@@ -58,7 +58,7 @@
 <script>
 import { Base } from '@/min/Base'
 import _ from 'lodash'
-import { apiSelectSopCode, apiSendMQ } from '@/api/nia'
+import { apiSelectSopCode, apiSendMQ, apiSelectRcaNttTicketDetailInfo } from '@/api/nia'
 import ModalSopMng from '@/views-nia/modal/ModalSopMng'
 import constants from '@/min/constants'
 import { getChatbotTicketData, getWindowActionList, loadFirstSopData } from '@/views-nia/js/commonNiaFunction'
@@ -264,7 +264,7 @@ export default {
         cancelButtonText: '취소',
         customClass: 'nia-message-box',
       }).then(async () => {
-        const param = this.getFinParam()
+        const param = await this.getFinParam()
         if (this.selectedTicket) {
           Object.assign(param, { ticket_id: this.selectedTicket.ticket_id })
         }
@@ -292,7 +292,7 @@ export default {
         }
       })
     },
-    getFinParam() {
+    async getFinParam() {
       const finType = this.selectedRow.ticket_type === 'SYSLOG' ? 'SYSLOG' : 'TICKET'
       const param = {
         eventType: `REQUEST_CHANGE_${finType}_STATUS`,
@@ -322,6 +322,14 @@ export default {
           ip_addr,
         })
       }
+
+      if (['NTT', 'NTT_AI'].includes(this.selectedRow.ticket_type)) {
+        const res = await apiSelectRcaNttTicketDetailInfo({ ticket_id: this.selectedRow.ticket_id })
+        if (res && res.result) {
+          param.ntt_type = res.result[0].traffic_type
+        }
+      }
+
       return param
     },
     setSopCode() {

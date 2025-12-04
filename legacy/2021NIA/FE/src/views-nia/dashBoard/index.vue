@@ -942,7 +942,7 @@ export default {
     openAiResponse(row, position) {
       if (row.ticket_type === 'ATT2_AI') {
         this.fn_openWindow('aiResponse_ATT_AI', row, null, position)
-      } else if (row.ticket_type === 'NTT') {
+      } else if (['NTT', 'NTT_AI'].includes(row.ticket_type)) {
         this.fn_openWindow('aiResponse_NTT', row, null, position)
       } else {
         this.fn_openWindow('aiResponse', row, null, position)
@@ -958,7 +958,6 @@ export default {
           break
         case 'ALARM':
           this.openAiResponse(row)
-
           break
         case 'FIN':
           this.fn_openWindow('processFin', row)

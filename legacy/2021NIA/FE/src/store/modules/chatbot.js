@@ -3,7 +3,7 @@ import { niaRoute } from '@/router/nia/index'
 import _ from 'lodash'
 import constants from '@/min/constants'
 import { getInvisibleSpanParameter, getNiaRouterPathByName, showNumberText } from '@/views-nia/js/commonNiaFunction'
-import { apiIpAlarmList, apiSelectSopHistList, apiSopSyslogHistList, apiInsertChatbotHistory } from '@/api/nia'
+import { apiIpAlarmList, apiSelectSopHistList, apiSopSyslogHistList, apiInsertChatbotHistory, apiSelectRcaNttTicketDetailInfo } from '@/api/nia'
 import store from '@/store'
 import moment from 'moment'
 
@@ -70,6 +70,7 @@ const state = {
     alarmFocusMode_chatMessages: [getDefaultAlarmFocusModeFirstChatMessages()],
     alarmFocusTicketData: {}, // 현재 선택된 경보의 ticket 정보
     alarmFocusSopDataList: [],
+    alarmFocusNTTAIDetailInfo: {},
     actionType: constants.nia.chatbotActiontype.assist,
     simulationStatus: 'OFF'
 }
@@ -169,8 +170,17 @@ const mutations = {
     async SET_ALARM_FOCUS_CHAT_TICKET_DATA(state, { ticketData }) {
         state.alarmFocusTicketData = ticketData
 
+        if (['NTT', 'NTT_AI'].includes(ticketData.ticket_type)) {
+            const res = await apiSelectRcaNttTicketDetailInfo({ ticket_id: ticketData.ticket_id })
+            if (res && res.result) {
+                state.alarmFocusNTTAIDetailInfo = res.result[0]
+            }
+        }
+    },
+
+    async SET_ALARM_FOCUS_SOP_DATA_LIST(state, { ticketData }) {
         let res
-        if (state.alarmFocusTicketData.ticket_type === 'SYSLOG') {
+        if (ticketData.ticket_type === 'SYSLOG') {
             res = await apiSopSyslogHistList({ NODE_NM: ticketData.node_nm })
         } else {
             res = await apiSelectSopHistList({ NODE_NM: ticketData.node_nm })
@@ -262,6 +272,7 @@ const actions = {
         commit('MODE_CHANGE', { newMode: 'alarmFocusMode' })
         commit('RESET_CHAT')
         commit('SET_ALARM_FOCUS_CHAT_TICKET_DATA', { ticketData })
+        commit('SET_ALARM_FOCUS_SOP_DATA_LIST', { ticketData })
     }
 }
 
