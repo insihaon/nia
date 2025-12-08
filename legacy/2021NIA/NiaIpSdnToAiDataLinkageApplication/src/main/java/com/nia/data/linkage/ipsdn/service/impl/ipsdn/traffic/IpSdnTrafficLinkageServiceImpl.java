@@ -99,8 +99,7 @@ public class IpSdnTrafficLinkageServiceImpl implements IpSdnTrafficLinkageServic
                 if (linkTrafficVoList != null && linkTrafficVoList.size() > 0) {
                     for (LinkTrafficVo list : linkTrafficVoList) {
                         if (list.getMeasuredDatetime() == null) {
-                            Timestamp timeItem =
-                                    linkTrafficVoList.get(linkTrafficVoList.size() - 1).getMeasuredDatetime();
+                            Timestamp timeItem = linkTrafficVoList.get(linkTrafficVoList.size() - 1).getMeasuredDatetime();
                             list.setMeasuredDatetime(timeItem);
                         }
                     }
