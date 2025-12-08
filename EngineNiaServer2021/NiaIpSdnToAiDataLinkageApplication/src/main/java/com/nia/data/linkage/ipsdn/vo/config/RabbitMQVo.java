@@ -19,10 +19,6 @@ public class RabbitMQVo implements Serializable {
     @Value("${spring.rabbitmq.password}")
     private String password;
 
-    @Value("${spring.rabbitmq.niaIpAlarmExchange}")
-    private String niaIpAlarmExchange;
-    @Value("${spring.rabbitmq.niaIpAlarmRoutingKey}")
-    private String niaIpAlarmRoutingKey;
-    @Value("${spring.rabbitmq.niaIpAlarmQueue}")
-    private String niaIpAlarmQueue;
+    @Value("${spring.rabbitmq.niaSflowJsonFileKeyDirectly}")
+    private String niaSflowJsonFileKeyDirectly;
 }

@@ -24,9 +24,7 @@ spring:
     username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
     password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
 
-    niaIpAlarmExchange: nia.exchangeNiaIpAlarmDirectly
-    niaIpAlarmQueue: nia.NiaIpAlarmIndexDirectly
-    niaIpAlarmRoutingKey: nia.NiaIpAlarmIndexDirectl
+    niaSflowJsonFileKeyDirectly: nia.NiaSflowJsonFileKeyDirectly
 
   task:
     poolSize: 100 
@@ -77,9 +75,7 @@ spring:
     username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
     password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
 
-    niaIpAlarmExchange: nia.exchangeNiaIpAlarmDirectly
-    niaIpAlarmQueue: nia.NiaIpAlarmIndexDirectly
-    niaIpAlarmRoutingKey: nia.NiaIpAlarmIndexDirectl
+    niaSflowJsonFileKeyDirectly: nia.NiaSflowJsonFileKeyDirectly
 
   task:
     poolSize: 100
@@ -126,62 +122,3 @@ spring:
           auth: true
           ssl:
             enable: true
-
-
-
-
-
-
-
-
----
-spring:
-  profiles: codej
-  logging:
-    config: classpath:logback-spring.xml
-
-  jasypt:
-    encryptor:
-      bean: jasyptStringEncryptor
-      property:
-        prefix: ENC(
-        suffix: )
-
-  rabbitmq:
-    address: 10.81.192.18
-    port: 5672
-    username: rcaadmin
-    password: rcaadmin12#$
-
-    niaIpAlarmExchange: nia.exchangeNiaIpAlarmDirectly
-    niaIpAlarmQueue: nia.NiaIpAlarmIndexDirectly
-    niaIpAlarmRoutingKey: nia.NiaIpAlarmIndexDirectl
-
-  task:
-    poolSize: 100
-    keepAlive: 600000
-    queueCapacity: 100
-    concurrency: 100
-
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://10.81.192.18:5433/niadb #운영
-    username: ENC(nM5TfLkdI8K26jnQlPUqUfRff1FyTWQG)
-    password: ENC(y53jmhEna1ehHnCzMIn7gnMy7aDI0qiQ)
-    maximumPoolSize: 10
-    idleTimeout: 6000
-
-  mybatis:
-    mapper-locations: classpath*:sqlmap/*.xml
-    mybatisConfig-locations: classpath:mybatis-config.xml
-    configuration:
-      mapUnderscoreToCamelCase: true
-
-  ftp:
-    host1: 116.89.186.206
-    host2: 116.89.186.207
-    port: 11689
-    user: zerooneai211202
-    password: ZeroOneAi11!@#
-    file-path: /home/zerooneai211202/data/
-    local-file-path: /home/codej8888/data/
