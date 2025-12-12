@@ -10,4 +10,6 @@ public interface NiaNodeMapper {
     void insertNode();
     void deleteNodeYd();
     void deleteNode();
+    void deleteAttAiTcaModel();
+    void insertAttAiTcaModel();
 }
