@@ -48,8 +48,10 @@ public class AiNoxiousTrafficMsgListener implements ChannelAwareMessageListener 
             noxiousTrafficListVo = (NoxiousTrafficListVo) obj;
 
             LOGGER.info(">>>>>>>>>>[AiNoxiousTrafficeMsgListener] onMessage : " + noxiousTrafficListVo.getData().size() + " <<<<<<<<<<<<<<<<<");
+            LOGGER.info(">>>>>>>>>>[AiNoxiousTrafficeMsgListener] First element of data 1----- ");
             if (noxiousTrafficListVo.getData() != null && noxiousTrafficListVo.getData().size() > 0) {
-                LOGGER.info(">>>>>>>>>>[AiNoxiousTrafficeMsgListener] First element of data: " + noxiousTrafficListVo.getData().get(0) + " <<<<<<<<<<<<<<<<<");
+                LOGGER.info(">>>>>>>>>>[AiNoxiousTrafficeMsgListener] First element of data 2----- ");
+                LOGGER.info(">>>>>>>>>>[AiNoxiousTrafficeMsgListener] First element of data: 3" + noxiousTrafficListVo.getData().get(0) + " <<<<<<<<<<<<<<<<<");
             }
 
             niaNoxiousTrafficHdlService.niaNoxiousTrafficeHdlProcessor(noxiousTrafficListVo);
