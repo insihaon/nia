@@ -50,7 +50,11 @@ public class InterfaceServiceImpl implements InterfaceService {
 
                 if(insertCnt > 0){
                     niaInterfaceMapper.deleteInterface();
+                    niaInterfaceMapper.deleteAttAiTcaModel();
+
                     niaInterfaceMapper.insertInterface();
+                    niaInterfaceMapper.insertAttAiTcaModel();
+
 
                     strHashMap = new HashMap<>();
                     strHashMap.put("key", "ipSdnInterfaceKey");
