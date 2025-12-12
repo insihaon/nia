@@ -13,6 +13,4 @@ public interface NiaInterfaceMapper {
     void insertInterface();
     void deleteInterface();
     void deleteInterfaceYd();
-    void deleteAttAiTcaModel();
-    void insertAttAiTcaModel();
 }
