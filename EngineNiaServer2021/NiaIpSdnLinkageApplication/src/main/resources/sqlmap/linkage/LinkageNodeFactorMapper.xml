@@ -9,8 +9,9 @@
     <select id="selectNodeFactorList" resultType="com.nia.ip.sdn.linkage.vo.NodeFactorVo" parameterType="int">
         SELECT Id, CpuUsage, MemUsage, Node_Id, MeasuredDateTime
           FROM optroute.nodefactor
-         WHERE Id <![CDATA[ > ]]> #{id}
-         ORDER BY Id
+        WHERE Id <![CDATA[ > ]]> #{id}
+        ORDER BY Id
+        LIMIT 1000
     </select>
 </mapper>
 
