@@ -24,6 +24,7 @@ public class NodeServiceImpl implements NodeService {
 
     @Autowired
     private NiaNodeMapper niaNodeMapper;
+
     @Autowired
     private NiaLinkageHistMapper niaLinkageHistMapper;
 
@@ -50,7 +51,10 @@ public class NodeServiceImpl implements NodeService {
 
                 if(insertCnt > 0){
                     niaNodeMapper.deleteNode();
+                    niaNodeMapper.deleteAttAiTcaModel();
+
                     niaNodeMapper.insertNode();
+                    niaNodeMapper.insertAttAiTcaModel();
 
                     strHashMap = new HashMap<>();
                     strHashMap.put("key", "ipSdnNodeKey");
