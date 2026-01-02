@@ -1,7 +1,7 @@
 <template>
   <div :class="{ [name]: true }" style="height: 100%">
     <div class="d-flex flex-column h-full">
-      <el-row style="overflow: hidden" :style="{ flex: isAtt ? '0 1 50%' : '1' }" :gutter="10">
+      <el-row style="overflow: hidden" :style="{ flex: '0 1 50%' }" :gutter="10">
         <el-col :span="12" style="height: 100%">
           <el-card shadow="never" style="height: 100%" :body-style="{ padding: '10px', height: '100%' }">
             <div slot="header">
@@ -18,13 +18,13 @@
                   <div style="float: left">
                     <div>{{ trafficInfo.root_cause_sysnamea }}</div>
                     <div>
-                      <span v-if="isAtt">({{ trafficInfo.root_cause_porta }})</span>
+                      <span v-if="trafficInfo.root_cause_porta">({{ trafficInfo.root_cause_porta }})</span>
                     </div>
                   </div>
                   <div style="float: right">
-                    <div>{{ isAtt ? trafficInfo.root_cause_sysnamea : trafficInfo.root_cause_sysnamez }}</div>
+                    <div>{{ trafficInfo.root_cause_sysnamea }}</div>
                     <div>
-                      <span v-if="isAtt">({{ trafficInfo.root_cause_portz }})</span>
+                      <span v-if="trafficInfo.root_cause_portz">({{ trafficInfo.root_cause_portz }})</span>
                     </div>
                   </div>
                 </div>
@@ -109,19 +109,23 @@
         </el-col>
       </el-row>
 
-      <el-row v-if="isAtt" :gutter="10" class="mt-2">
+      <el-row :gutter="10" class="mt-2">
         <el-col>
           <el-card shadow="never" style="height: 100%" :body-style="{ padding: '10px', height: '100%' }">
             <div slot="header">
               <span><i class="el-icon-document" />사용량 예측 분석</span>
             </div>
             <div class="usagePredAnaly">
-              <LineChart ref="LineChart" class="LineChart" :c-data="chartData" :plugins="[verticalLinePlugin]" :c-ver-line="chartVLData" />
+              <LineChart ref="LineChart" class="LineChart" :c-data="chartData" :plugins="[verticalLinePlugin]" :c-ver-line="chartVLData" :remove-duplicate-dates="true" />
               <div class="usagePredAnalyResult">
                 <div class="usagePredAnalyResultTitle" style="width: 80px">
                   <span>분석결과</span>
                 </div>
-                <div>
+                <div v-if="isTcaError">
+                  <span class="usagePredAnalyResultItem">장애 발생 시점</span>
+                  <span class="usagePredAnalyResultValue">{{ tcaModel.tca_alert_time.slice(0, 10) + ' ' + tcaModel.tca_alert_time.slice(11, 16) }}</span>
+                </div>
+                <div v-else>
                   <span class="usagePredAnalyResultItem">임계치 도달 예측 시점</span>
                   <span class="usagePredAnalyResultValue">{{ thresholdDate }}</span>
                 </div>
@@ -157,10 +161,9 @@
                   <div class="usagePredAnalyBottomTitle" style="width: 80px; margin-bottom: 2px">
                     <span style="width: 72px">경고임계치</span>
                   </div>
-
-                  <!-- <div class="usagePredAnalyBottomTitle" style="width: 80px">
+                  <div class="usagePredAnalyBottomTitle" style="width: 80px">
                     <span style="width: 72px">정확도</span>
-                  </div> -->
+                  </div>
                 </div>
 
                 <div style="width: 50%">
@@ -170,19 +173,18 @@
                         <span v-if="currentErrorDirection == 'in'">{{ recustSetValue.inmbpsrate }}Mbps(in)</span>
                         <span v-if="currentErrorDirection == 'out'">{{ recustSetValue.outmbpsrate }}Mbps(out)</span>
                       </li>
-                      <!-- <li style="line-height: 29px">
-                        <span>사전 알림 기준 : {{ recustSetValue.predictalarmtime }}일</span>
-                      </li> -->
                     </ul>
                   </div>
-
-                  <!-- <div class="usagePredAnalyBottomItem">
+                  <div class="usagePredAnalyBottomItem">
                     <ul>
-                      <li style="line-height: 25px">
-                        <span>{{ accuracyValue }} (현재값 : {{ currentValue }}, 예측값 : {{ predictValue }})</span>
+                      <li v-if="accuracyValue" style="line-height: 25px">
+                        <span>{{ accuracyValue }}%</span>
+                      </li>
+                      <li v-else style="line-height: 25px">
+                        <span>정확도값 없음</span>
                       </li>
                     </ul>
-                  </div> -->
+                  </div>
                 </div>
                 <div class="usagePredAnalyBottomTrendTitle" style="width: 120px" @click="openTrendAnalysisPopup()">
                   <span style="line-height: 58px"><i class="xi-search" /> 트렌드분석</span>
@@ -214,10 +216,10 @@
 import { Base } from '@/min/Base'
 import _ from 'lodash'
 import dialogOpenMixin from '@/mixin/dialogOpenMixin'
-import { apiSelectAiChartData, apiSelectCurrentChartData, apiSelfProcessTrafficInfo } from '@/api/nia'
-
-import { getChatbotTicketData } from '@/views-nia/js/commonNiaFunction'
-
+import { apiSelectAiChartData, apiSelectAttAiTcaModel, apiSelectCurrentChartData, apiSelfProcessTrafficInfo, apiSelectRealTrafficData } from '@/api/nia'
+import { mapState } from 'vuex'
+import { getChatbotTicketData, getWindowActionList } from '@/views-nia/js/commonNiaFunction'
+import niaObserverMixin from '@/mixin/niaObserverMixin'
 import constants from '@/min/constants'
 
 import moment from 'moment'
@@ -267,7 +269,7 @@ const verticalLinePlugin = {
   },
 }
 
-const routeName = 'aiResponse2'
+const routeName = 'aiResponse_ATT_AI'
 export default {
   name: routeName,
   // eslint-disable-next-line vue/no-unused-components
@@ -276,7 +278,7 @@ export default {
     popupTrendAnalysis: () => import('@/views-nia/dashBoard/popupTrendAnalysis'),
   },
   extends: Base,
-  mixins: [dialogOpenMixin],
+  mixins: [dialogOpenMixin, niaObserverMixin],
   props: {
     wdata: {
       type: Object,
@@ -299,7 +301,9 @@ export default {
       currentErrorDirection: 'in',
       noDataText: '-',
       thresholdDate: '-',
+      thresholdDateTime: '', // 임계치 도달 예측 시점의 원본 날짜/시간 값
       trendValue: '-',
+      isTcaAlarm: false,
       recustSetValue: { llalertpredictstandvalue: 0, /* predictalarmtime: 0, */ inmbpsrate: 0, outmbpsrate: 0 },
       analyDate: '',
       currentValue: '',
@@ -351,48 +355,23 @@ export default {
         ],
       },
       selectedRow: [],
-
       weeklyData: [
-        {
-          data: 0,
-          cnt: 0,
-        },
-        {
-          data: 0,
-          cnt: 0,
-        },
-        {
-          data: 0,
-          cnt: 0,
-        },
-        {
-          data: 0,
-          cnt: 0,
-        },
-        {
-          data: 0,
-          cnt: 0,
-        },
-        {
-          data: 0,
-          cnt: 0,
-        },
-        {
-          data: 0,
-          cnt: 0,
-        },
+        { data: 0, cnt: 0 },
+        { data: 0, cnt: 0 },
+        { data: 0, cnt: 0 },
+        { data: 0, cnt: 0 },
+        { data: 0, cnt: 0 },
+        { data: 0, cnt: 0 },
+        { data: 0, cnt: 0 },
       ],
       trendData: {
         trendParseDate: [],
         trendData: [],
       },
+      tcaModel: {},
     }
   },
   computed: {
-    isAtt() {
-      return this.selectedRow.ticket_type === 'ATT2_AI'
-    },
-
     errorDirectionisIn() {
       return this.currentErrorDirection === 'in'
     },
@@ -401,12 +380,48 @@ export default {
       return this.chartData.datasets
     },
 
+    isTcaError() {
+      return Object.keys(this.tcaModel).length > 0
+    },
+
     currentDate() {
       var today = moment().format('YYYY-MM-DD HH:mm:ss')
       var currentMinute = parseInt(today.substring(14, 16) / 15) * 15
       return today.substring(0, 10) + 'T' + today.substring(11, 13) + ':' + String(currentMinute).padStart(2, '0') + ':00'
     },
+    ...mapState({
+      aiResponseEventText: (state) => state.chatbot.routerParameter[constants.nia.chatbotKeyMap.aiResponse_ATT_AI.parameterKey],
+    }),
+    isModal() {
+      return !!this.wdata.params
+    },
   },
+  watch: {
+    aiResponseEventText(nVal, oVal) {
+      if (this.isModal) {
+        switch (nVal) {
+          case constants.nia.chatbotCommand.dataSnapshot.action:
+            this.fn_openWindow('snapShot', this._merge(this.selectedRow, this.trafficInfo))
+            break
+          case constants.nia.chatbotCommand.requestForAction.action:
+            this.fn_openWindow('requestForAction', this._merge(this.selectedRow, this.trafficInfo))
+            break
+          case constants.nia.chatbotCommand.configTest.action:
+            this.fn_openWindow('configTest', this._merge(this.selectedRow, this.trafficInfo))
+            break
+          case constants.nia.chatbotCommand.fin.action:
+            this.fn_openWindow('processFin', this._merge(this.selectedRow, this.trafficInfo))
+            break
+          case constants.nia.chatbotCommand.trendAnalysis.action:
+            this.openTrendAnalysisPopup()
+            break
+        }
+
+        this.$store.commit('chatbot/CLEAR_ROUTER_PARAMETER', { name: constants.nia.chatbotKeyMap.aiResponse_ATT_AI.parameterKey })
+      }
+    },
+  },
+
   created() {
     this.selectedRow = this.wdata?.params
   },
@@ -414,17 +429,27 @@ export default {
     await this.setTicketDataForChatbotTicketData()
 
     this.onLoadTrafficInfo()
+    this.loadChartData()
 
-    if (this.isAtt) {
-      this.loadChartData()
-    } else {
-      this.$store.dispatch('mdi/setWindowOptions', {
-        id: this.wdata.id,
-        options: { height: '400', width: '600' },
-      })
-    }
+    this.$nextTick(() => {
+      this.popupShowCommand()
+    })
   },
   methods: {
+    async popupShowCommand() {
+      if (!this.isFocusModeButNotFocus) {
+        this.$store.dispatch('chatbot/botPushAnswerMessage', {
+          content:
+            `<div class="chatbot-command-header">이상트래픽 AI 장애대응화면</div>
+          AI를 통해 해당장비의 14일간의 트래픽을 학습하고 이를 바탕으로 예측값과 예측임계값을 추론하며, 예측값이 임계값을 넘거나(예측 경보) 실제 트래픽이 임계값을 넘는경우(TCA 경보) 경보를 발행되며 해당 화면에서는 관련된 정보를 확인할 수 있습니다.
+          <br>${constants.nia.chatbotIcon.Information} 분석결과 : TCA 경보의 경우 장애발생시점이 언제인지, 예측경보의 경우 장애가 언제 발생될 것으로 예측되는지 표시
+          ${constants.nia.chatbotIcon.Information} 증감예측결과 : 앞으로 증감이 어떻게 변동될 것으로 예측되는지
+          ${constants.nia.chatbotIcon.Information} 조회조건 : 트래픽 in, out여부, 장비, 포트, 분석기간 정보
+          ${constants.nia.chatbotIcon.Information} 경고 임계치 : 경보 발행 기준이 되는 임계값.(현재는 과거 14일을 기준으로 값을 추정)
+          ` + (await getWindowActionList(constants.nia.chatbotKeyMap.aiResponse_ATT_AI.dialogNm, constants.nia.chatbotKeyMap.aiResponse_ATT_AI.popupName)),
+        })
+      }
+    },
     async setTicketDataForChatbotTicketData(isSwitchingTicket) {
       if (isSwitchingTicket) this.wdata.params.isChatbotGenerated = isSwitchingTicket
       const chatbotData = await getChatbotTicketData(this.wdata)
@@ -463,21 +488,275 @@ export default {
       this.CDS[1].data = [] // 예측값
       this.CDS[2].data = [] // 예측 상한값
       this.CDS[3].data = [] // 예측 하한값
+
+      this.trendData.trendParseDate = []
+      this.trendData.trendData = []
+      this.weeklyData = [
+        { data: 0, cnt: 0 },
+        { data: 0, cnt: 0 },
+        { data: 0, cnt: 0 },
+        { data: 0, cnt: 0 },
+        { data: 0, cnt: 0 },
+        { data: 0, cnt: 0 },
+        { data: 0, cnt: 0 },
+      ]
     },
 
-    async loadChartData() {
-      let okLoading = false
+    // LineChart 컴포넌트가 준비될 때까지 대기
+    async waitForLineChart() {
       let retryCount = 0
       const maxRetries = 50 // 5초 = 50 * 100ms
 
-      // $refs.LineChart가 없으면 최대 5초까지 대기
       while (!this.$refs.LineChart && retryCount < maxRetries) {
         console.log(`Waiting for LineChart... (${retryCount + 1}/${maxRetries})`)
         await new Promise((resolve) => setTimeout(resolve, 100))
         retryCount++
       }
 
-      if (this.$refs.LineChart) okLoading = true
+      return !!this.$refs.LineChart
+    },
+
+    // AI 차트 데이터 조회
+    async fetchAiChartData() {
+      if (this.selectedRow.ticket_rca_result_code === 'TCA Alarm') {
+        this.isTcaAlarm = true
+        const res1 = await apiSelectAttAiTcaModel({
+          NODE_NUM: this.selectedRow.node_num,
+          IF_NUM: this.selectedRow.if_num,
+          ALARM_TIME: this.selectedRow.fault_time,
+        })
+
+        this.tcaModel = res1.result[0]
+        const res2 = await apiSelectAiChartData({ MODEL_ID: Number(this.tcaModel.model_id) })
+
+        const aiChartData = res2.result
+        aiChartData[0].out_alertyn = this.tcaModel.tca_alert_direction === 'out' ? 'Y' : 'N'
+
+        const fitDateMinusOneDay = moment(aiChartData[0].fit_date).subtract(1, 'days').format('YYYY-MM-DD')
+        const res3 = await apiSelectRealTrafficData({ ipSdnIfId: aiChartData[0].ipsdn_if_id, fitDate: fitDateMinusOneDay })
+        const realTraffic = res3.result
+
+        // realTraffic 데이터를 aiChartData와 매칭하여 실제값 업데이트
+        if (realTraffic && realTraffic.length > 0) {
+          // realTraffic을 hour_bucket을 키로 하는 Map으로 변환 (빠른 검색을 위해)
+          const realTrafficMap = new Map()
+          realTraffic.forEach((item) => {
+            if (item.hour_bucket) {
+              // hour_bucket을 정규화하여 비교 (시간 단위로 표준화)
+              const normalizedBucket = new Date(item.hour_bucket)
+              normalizedBucket.setMinutes(0, 0, 0)
+              realTrafficMap.set(normalizedBucket.getTime(), item)
+            }
+          })
+
+          // aiChartData의 각 항목과 매칭
+          aiChartData.forEach((chartItem) => {
+            if (chartItem.ds) {
+              const dsDate = new Date(chartItem.ds)
+              dsDate.setMinutes(0, 0, 0)
+              const matchingRealTraffic = realTrafficMap.get(dsDate.getTime())
+
+              if (matchingRealTraffic) {
+                // 실제값 업데이트
+                if (matchingRealTraffic.in_y != null) {
+                  chartItem.in_y = matchingRealTraffic.in_y
+                }
+                if (matchingRealTraffic.out_y != null) {
+                  chartItem.out_y = matchingRealTraffic.out_y
+                }
+              }
+            }
+          })
+        }
+
+        return aiChartData
+      } else {
+        const res = await apiSelectAiChartData({
+          NODE_NUM: this.selectedRow.node_num,
+          IF_NUM: this.selectedRow.if_num,
+          ALARM_TIME: this.selectedRow.alarmtime,
+        })
+
+        return res.result
+      }
+    },
+
+    // 차트 데이터 초기화 및 기본 설정
+    initializeChartData(aiChartData) {
+      this.resetChartData()
+
+      this.currentErrorDirection = aiChartData[0].out_alertyn === 'Y' ? 'out' : 'in'
+      this.accuracyValue = aiChartData[0].out_alertyn === 'Y' ? aiChartData[0].out_accuracy_rate : aiChartData[0].in_accuracy_rate
+      this.analyDate = aiChartData[0].fit_sttime.substring(5, 7) + '.' + aiChartData[0].fit_sttime.substring(8, 10) + '~' + aiChartData[0].fit_endtime.substring(5, 7) + '.' + aiChartData[0].fit_endtime.substring(8, 10)
+      this.setThresholdDate(aiChartData)
+      this.setRecustSetValue(aiChartData)
+    },
+
+    // 세로선 기준 날짜/시간 결정
+    determineTargetDateTime() {
+      let targetDateTime = null
+      let targetDateLabel = ''
+
+      if (this.isTcaError) {
+        // TCA 에러인 경우: tcaModel.tca_alert_time 사용
+        targetDateTime = new Date(this.tcaModel.tca_alert_time)
+        targetDateLabel = this.tcaModel.tca_alert_time.slice(0, 10) + ' ' + this.tcaModel.tca_alert_time.slice(11, 16)
+      } else {
+        // 일반 에러인 경우: thresholdDateTime 사용
+        if (this.thresholdDateTime && this.thresholdDateTime !== '') {
+          targetDateTime = new Date(this.thresholdDateTime)
+          // thresholdDateTime 형식에 따라 라벨 생성 (YYYY-MM-DD HH:mm 형식 가정)
+          if (this.thresholdDateTime.length >= 16) {
+            targetDateLabel = this.thresholdDateTime.substring(0, 10) + ' ' + this.thresholdDateTime.substring(11, 16)
+          } else {
+            targetDateLabel = this.thresholdDateTime.substring(0, 10)
+          }
+        }
+      }
+
+      // targetDateTime이 없으면 현재 시간 사용 (기존 로직 유지)
+      if (!targetDateTime) {
+        targetDateTime = new Date(this.currentDate)
+        targetDateLabel = this.currentDate.substring(5, 7) + '.' + this.currentDate.substring(8, 10) + ' ' + this.currentDate.substring(11, 16)
+      }
+
+      // 시간 단위로 표준화
+      targetDateTime.setMinutes(0, 0, 0)
+
+      return {
+        targetDateTime: new Date(targetDateTime),
+        targetDateLabel,
+      }
+    },
+
+    // 차트 데이터 포인트 처리
+    processChartDataPoints(aiChartData, targetDateTime) {
+      let firstMax = 0
+      let lastMax = 0
+      let firstIndex = 0
+      let lastIndex = 0
+      let vlCurrentIndex = 0
+
+      const dateFormatTargetDate = new Date(targetDateTime)
+      dateFormatTargetDate.setMinutes(0, 0, 0)
+
+      for (let i = 0; i < aiChartData.length; i++) {
+        const aiData = aiChartData[i]
+        const parseDate = aiData.ds.substring(5, 7) + '.' + aiData.ds.substring(8, 10) + ' '
+        const tempDate = new Date(aiData.ds)
+        const weekly = this.errorDirectionisIn ? aiData.in_weekly : aiData.out_weekly
+        this.weeklyData[tempDate.getDay()].data = this.weeklyData[tempDate.getDay()].data + (weekly ?? 0)
+        this.weeklyData[tempDate.getDay()].cnt += 1
+        this.trendData.trendParseDate.push(parseDate)
+        const trend = this.errorDirectionisIn ? aiData.in_trend : aiData.out_trend
+        this.trendData.trendData.push((trend ?? 0).toFixed(2))
+
+        // 모든 데이터 포인트에 날짜 라벨 추가 (중복 제거는 LineChart.js의 callback에서 처리)
+        this.chartData.labels.push(parseDate)
+
+        const dsDate = new Date(aiData.ds)
+        dsDate.setMinutes(0, 0, 0)
+
+        // 세로선 위치 계산: targetDateTime과 일치하는 데이터 포인트 찾기
+        if (dsDate.getTime() === dateFormatTargetDate.getTime()) {
+          vlCurrentIndex = i / aiChartData.length
+        }
+
+        // in_y, out_y 값을 기준으로 실제값/예측값 구분
+        const actualValue = this.errorDirectionisIn ? aiData.in_y : aiData.out_y
+        // const tcaTime = this.isTcaAlarm ? '' : ''
+
+        // fit_date의 하루 전 날짜 계산
+        const fitDateMinusOneDay = moment(aiData.fit_date).subtract(1, 'days').format('YYYY-MM-DD')
+
+        if (this.isTcaAlarm ? new Date() >= dsDate.getTime() : fitDateMinusOneDay >= aiData.ds) {
+          // 실제값이 존재하는 경우: 실제값 표시
+          this.CDS[0].data.push(actualValue.toFixed(2))
+          this.CDS[1].data.push(null)
+          this.CDS[2].data.push(null)
+          this.CDS[3].data.push(null)
+        } else {
+          // 실제값이 없는 경우: 예측값 표시
+          // fit_date와의 관계는 유지 (firstIndex, lastIndex 계산용)
+          if (aiData.fit_date === aiData.ds.substring(0, 10)) {
+            if (firstIndex === 0) {
+              firstIndex = i
+              firstMax = this.errorDirectionisIn ? aiData.in_yhat : aiData.out_yhat
+            } else {
+              if (firstMax < this.errorDirectionisIn ? aiData.in_yhat : aiData.out_yhat) {
+                firstMax = this.errorDirectionisIn ? aiData.in_yhat : aiData.out_yhat
+              }
+            }
+          }
+
+          const predictLastDayDiffer = 6 // 15일 수집해서 7일 예측하므로, 7일 - 1
+          if (this.diffDate(aiData.fit_date, aiData.ds.substring(0, 10)) === predictLastDayDiffer) {
+            if (lastIndex === 0) {
+              lastIndex = i
+              lastMax = this.errorDirectionisIn ? aiData.in_yhat : aiData.out_yhat
+            } else {
+              if (lastMax < this.errorDirectionisIn ? aiData.in_yhat : aiData.out_yhat) {
+                lastMax = this.errorDirectionisIn ? aiData.in_yhat : aiData.out_yhat
+              }
+            }
+          }
+
+          this.CDS[0].data.push(null)
+          this.errorDirectionisIn ? this.CDS[1].data.push(aiData.in_yhat.toFixed(2)) : this.CDS[1].data.push(aiData.out_yhat.toFixed(2))
+          this.errorDirectionisIn ? this.CDS[2].data.push(aiData.in_yhat_upper.toFixed(2)) : this.CDS[2].data.push(aiData.out_yhat_upper.toFixed(2))
+          this.errorDirectionisIn ? this.CDS[3].data.push(aiData.in_yhat_lower.toFixed(2)) : this.CDS[3].data.push(aiData.out_yhat_lower.toFixed(2))
+        }
+      }
+
+      return { firstMax, lastMax, vlCurrentIndex }
+    },
+
+    // 트렌드 값 계산
+    calculateTrendValue(firstMax, lastMax) {
+      firstMax = firstMax.toFixed(2) === 0.0 ? 1 : firstMax.toFixed(2)
+      const tempValue = parseInt((lastMax.toFixed(2) / firstMax - 1) * 100)
+      if (Math.abs(tempValue) < 10) {
+        this.trendValue = '안정적 ( ' + tempValue + ' % )'
+      } else {
+        this.trendValue = (tempValue > 0 ? '증가 추세 ( ' : '감소 추세 ( ') + tempValue + ' % )'
+      }
+    },
+
+    // 세로선 라벨 및 위치 설정
+    updateChartVerticalLine(targetDateLabel, vlCurrentIndex) {
+      if (targetDateLabel) {
+        // targetDateLabel 형식에 맞게 변환 (YYYY-MM-DD HH:mm -> MM.DD HH:mm)
+        if (targetDateLabel.includes('-')) {
+          const dateParts = targetDateLabel.split(' ')
+          if (dateParts.length >= 1) {
+            const datePart = dateParts[0] // YYYY-MM-DD
+            const timePart = dateParts.length > 1 ? dateParts[1] : ''
+            this.chartVLData.nowDate = datePart.substring(5, 7) + '.' + datePart.substring(8, 10) + (timePart ? ' ' + timePart : '')
+          } else {
+            this.chartVLData.nowDate = targetDateLabel
+          }
+        } else {
+          this.chartVLData.nowDate = targetDateLabel
+        }
+      } else {
+        this.chartVLData.nowDate = this.currentDate.substring(5, 7) + '.' + this.currentDate.substring(8, 10) + ' ' + this.currentDate.substring(11, 16)
+      }
+      this.chartVLData.currentPositionX = vlCurrentIndex
+    },
+
+    // 차트 업데이트
+    updateChart() {
+      setTimeout(() => {
+        if (this.$refs.LineChart) {
+          // this.$refs.LineChart.optionUpdate && this.$refs.LineChart.optionUpdate()
+          this.$refs.LineChart.chartUpdate && this.$refs.LineChart.chartUpdate()
+          this.$refs.LineChart.makeLine && this.$refs.LineChart.makeLine()
+        }
+      }, 100)
+    },
+
+    async loadChartData() {
+      const okLoading = await this.waitForLineChart()
       const target = { vue: this.$refs.LineChart }
 
       try {
@@ -485,97 +764,20 @@ export default {
           this.openLoading(target, { text: '차트 불러오는 중..' })
         }
 
-        const res = await apiSelectAiChartData({ NODE_NUM: this.selectedRow.node_num, IF_NUM: this.selectedRow.if_num })
-        const aiChartData = res.result
+        const aiChartData = await this.fetchAiChartData()
+        this.initializeChartData(aiChartData)
 
-        this.resetChartData()
+        const { targetDateTime, targetDateLabel } = this.determineTargetDateTime()
+        const { firstMax, lastMax, vlCurrentIndex } = this.processChartDataPoints(aiChartData, targetDateTime)
 
-        this.currentErrorDirection = aiChartData[0].out_alertyn === 'Y' ? 'out' : 'in'
-        // this.currentErrorDirection = 'in'
-        this.analyDate = aiChartData[0].fit_sttime.substring(5, 7) + '.' + aiChartData[0].fit_sttime.substring(8, 10) + '~' + aiChartData[0].fit_endtime.substring(5, 7) + '.' + aiChartData[0].fit_endtime.substring(8, 10)
-        this.setThresholdDate(aiChartData)
-        this.setRecustSetValue(aiChartData)
-
-        let firstMax = 0
-        let lastMax = 0
-        let firstIndex = 0
-        let lastIndex = 0
-        let vlCurrentIndex = 0
-
-        const dateFormatCurrentDate = new Date(this.currentDate)
-        for (let i = 0; i < aiChartData.length; i++) {
-          const aiData = aiChartData[i]
-          this.chartData.labels.push(aiData.ds.substring(5, 7) + '.' + aiData.ds.substring(8, 10) + ' ')
-
-          const dsDate = new Date(aiData.ds)
-
-          // 두 날짜/시간 객체의 분, 초, 밀리초를 0으로 설정하여 시간(Hour) 단위로 표준화
-          dsDate.setMinutes(0, 0, 0)
-          dateFormatCurrentDate.setMinutes(0, 0, 0)
-
-          if (dsDate.getTime() === dateFormatCurrentDate.getTime()) {
-            vlCurrentIndex = i / aiChartData.length
-          }
-
-          if (aiData.fit_date >= aiData.ds) {
-            this.errorDirectionisIn ? this.CDS[0].data.push(aiData.in_y.toFixed(2)) : this.CDS[0].data.push(aiData.out_y.toFixed(2))
-            this.CDS[1].data.push(null)
-            this.CDS[2].data.push(null)
-            this.CDS[3].data.push(null)
-          } else {
-            if (aiData.fit_date === aiData.ds.substring(0, 10)) {
-              if (firstIndex === 0) {
-                firstIndex = i
-                firstMax = this.errorDirectionisIn ? aiData.in_yhat : aiData.out_yhat
-              } else {
-                if (firstMax < this.errorDirectionisIn ? aiData.in_yhat : aiData.out_yhat) {
-                  firstMax = this.errorDirectionisIn ? aiData.in_yhat : aiData.out_yhat
-                }
-              }
-            }
-
-            const predictLastDayDiffer = 6 // 15일 수집해서 7일 예측하므로, 7일 - 1
-            if (this.diffDate(aiData.fit_date, aiData.ds.substring(0, 10)) === predictLastDayDiffer) {
-              if (lastIndex === 0) {
-                lastIndex = i
-                lastMax = this.errorDirectionisIn ? aiData.in_yhat : aiData.out_yhat
-              } else {
-                if (lastMax < this.errorDirectionisIn ? aiData.in_yhat : aiData.out_yhat) {
-                  lastMax = this.errorDirectionisIn ? aiData.in_yhat : aiData.out_yhat
-                }
-              }
-            }
-
-            this.CDS[0].data.push(null)
-            this.errorDirectionisIn ? this.CDS[1].data.push(aiData.in_yhat.toFixed(2)) : this.CDS[1].data.push(aiData.out_yhat.toFixed(2))
-            this.errorDirectionisIn ? this.CDS[2].data.push(aiData.in_yhat_upper.toFixed(2)) : this.CDS[2].data.push(aiData.out_yhat_upper.toFixed(2))
-            this.errorDirectionisIn ? this.CDS[3].data.push(aiData.in_yhat_lower.toFixed(2)) : this.CDS[3].data.push(aiData.out_yhat_lower.toFixed(2))
-          }
-        }
-
-        firstMax = firstMax.toFixed(2) === 0.0 ? 1 : firstMax.toFixed(2)
-        var tempValue = parseInt((lastMax.toFixed(2) / firstMax - 1) * 100)
-        if (Math.abs(tempValue) < 10) {
-          this.trendValue = '안정적 ( ' + tempValue + ' % )'
-        } else {
-          this.trendValue = (tempValue > 0 ? '증가 추세 ( ' : '감소 추세 ( ') + tempValue + ' % )'
-        }
-
-        this.chartVLData.nowDate = this.currentDate.substring(5, 7) + '.' + this.currentDate.substring(8, 10) + ' ' + this.currentDate.substring(11, 16)
-        this.chartVLData.currentPositionX = vlCurrentIndex
+        this.calculateTrendValue(firstMax, lastMax)
+        this.updateChartVerticalLine(targetDateLabel, vlCurrentIndex)
 
         console.log('Chart VL Data:', this.chartVLData)
         console.log('Chart Data Labels Length:', this.chartData.labels.length)
 
-        // 차트 업데이트
-        setTimeout(() => {
-          if (this.$refs.LineChart) {
-            this.closeLoading(target)
-            // this.$refs.LineChart.optionUpdate && this.$refs.LineChart.optionUpdate()
-            this.$refs.LineChart.chartUpdate && this.$refs.LineChart.chartUpdate()
-            this.$refs.LineChart.makeLine && this.$refs.LineChart.makeLine()
-          }
-        }, 100)
+        this.updateChart()
+        this.closeLoading(target)
       } catch (error) {
         this.error(error)
       } finally {
@@ -589,11 +791,14 @@ export default {
 
         if (!predictreachdate || predictreachdate === '') {
           this.thresholdDate = '없음(30일 이내)'
+          this.thresholdDateTime = '' // 원본 날짜/시간 값도 초기화
         } else {
+          this.thresholdDateTime = predictreachdate // 원본 날짜/시간 값 저장
           this.thresholdDate = predictreachdate.substring(0, 4) + '.' + predictreachdate.substring(5, 7) + '.' + predictreachdate.substring(8, 10) + '(' + this.diffDate(aiChartData[0].fit_date, predictreachdate) + '일후)'
         }
       } else {
         this.thresholdDate = '없음(30일 이내)'
+        this.thresholdDateTime = '' // 원본 날짜/시간 값도 초기화
       }
     },
 
@@ -632,7 +837,7 @@ export default {
   padding: 7px 10px;
 }
 
-.aiResponse2 {
+.aiResponse_ATT_AI {
   caret-color: transparent; /* 깜빡이는 커서 숨김 */
 
   .LineChart {

@@ -9,7 +9,7 @@
           <div>
             <LineChart ref="trendAnalyChart" :c-data="trendChartData" :c-options="trendChartOptions" class="trendAnalyChart"></LineChart>
           </div>
-          <div class="legend">(단위 : {{ item == 'cpu' ? '%' : 'Mbps' }})</div>
+          <div class="legend">(단위 : 'Mbps')</div>
         </el-card>
       </el-col>
       <el-col :span="12">
@@ -168,7 +168,6 @@ export default {
           },
         ],
       },
-      item: '',
     }
   },
   computed: {},
@@ -178,7 +177,6 @@ export default {
   methods: {
     setVisible: function (params) {
       this.loading = false
-      this.item = params.item
       this.trendChartData.labels = params.trend.trendParseDate
       this.trendChartData.datasets[0].data = []
       this.trendChartData.datasets[0].data = params.trend.trendData
@@ -209,108 +207,52 @@ export default {
 </script>
 
 <style scoped>
-.medium_dialog .el-dialog__body {
-  /* el-dialog__body 내부의 레이아웃 컨테이너(el-row)에 대한 기본 설정 */
-  padding-top: 5px; /* 상단 여백 조정 */
-  padding-bottom: 5px;
-  height: auto; /* 내용에 맞게 높이 자동 조정 */
-  min-height: 350px; /* 차트 높이를 고려한 최소 높이 */
-}
-
-/* el-row를 사용하여 전체 레이아웃 컨테이너 스타일링 (기존 .trendAnalyPopup > ul 역할) */
-.el-row {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  display: flex; /* flexbox를 사용하여 내부 el-col을 정렬 */
-  justify-content: center; /* 가운데 정렬 */
-  margin-top: 20px !important; /* 기존 ul의 margin-top: 20px 반영 */
-}
-
-.el-col {
-  /* position: relative; */ /* el-col 자체에는 일반적으로 적용하지 않음 */
-  height: 100%;
-  text-align: center;
-  /* el-col의 너비는 span 속성으로 제어됩니다 (span="12" = 50%) */
-}
-
-/* el-card 스타일 조정 */
 .box-card {
-  height: 100%; /* 부모 el-col 높이 상속 */
-  text-align: left; /* 내부 요소 정렬을 위해 왼쪽 정렬로 변경 */
+  background: #ffffff;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05), 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
-/* el-card 헤더의 span.cardTitle 스타일 (기존 .trendAnalyPopup > ul > li > span 역할) */
-.box-card .el-card__header {
-  padding: 0;
-  border-bottom: none;
-}
-
-.box-card .cardTitle {
-  position: relative;
-  text-align: center;
-  font-size: 12px;
-  /* transform: rotate(-0.03deg); */ /* 미세한 회전은 생략 */
-  font-weight: 600;
-  letter-spacing: -1px;
-  display: inline-block;
-  background-color: #07acc5;
-  width: 60px;
-  height: 35px;
-  line-height: 35px;
-  color: #ffffff;
-  /* 카드 헤더 내부에서 위치 조정이 필요할 수 있습니다. */
-}
-
-/* LineChart 컴포넌트 영역 스타일링 (기존 .trendAnalyPopup > ul > li > div.trendAnalyChart 역할) */
-.trendAnalyChart {
-  position: relative;
-  /* top: 10px; */ /* el-card body 내부에서 상단 여백으로 대체하는 것이 좋습니다. */
-  height: 300px; /* 기존 height: 300px 반영 */
-  width: 100%;
-  /* display: inline-block; */
-}
-
-/* 단위 표시 legend 스타일 */
-.legend {
-  position: relative;
-  font-size: 12px;
-  margin-top: 10px;
-  text-align: right;
-  padding-right: 15px;
-}
-
-/* el-card__body에 상단 여백 추가 (trendAnalyChart의 top: 10px 대체) */
-.box-card .el-card__body {
-  padding-top: 10px;
-}
-</style>
-
-<style scoped>
 .cardTitle {
   display: inline-block;
-  padding-top: 10px !important;
-  font-size: 16px;
-  width: 100%;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  padding-bottom: 10px;
-}
-.cardTitle i {
-  background-color: #ffffff;
-  color: #00aac3;
-  padding: 1px 4px;
-  border-radius: 3px;
-  border: 2px solid #00aac3;
+  padding: 16px 0;
+  font-size: 18px;
   font-weight: 600;
+  width: 100%;
+  color: #0f172a;
+  letter-spacing: -0.4px;
+  border-bottom: 1px solid #e2e8f0;
+  position: relative;
+}
+.cardTitle::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 40px;
+  height: 2px;
+  background: #374151;
+}
+
+.trendAnalyChart {
+  position: relative;
+  height: 300px;
+  width: 100%;
+  padding: 20px 0;
 }
 
 .legend {
   position: absolute;
-  right: 40px;
-  top: 60px;
-  font-weight: 600;
-  transform: rotate(-0.03deg);
-  font-size: 10px;
-  color: #003f33;
+  left: 450px;
+  top: 130px;
+  font-weight: 500;
+  font-size: 11px;
+  color: #64748b;
+  background: #ffffff;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 </style>
