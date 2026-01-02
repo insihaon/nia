@@ -8,17 +8,17 @@
         <el-row v-if="selectedRow.ticket_type === 'NTT_AI' || selectedRow.ticket_type === 'NTT'">
           <el-col :span="8" class="p-1 d-flex flex-column items-start">
             <label>장비 이름</label>
-            <el-select v-model="selectItem.nodeId" @change="changeNodeName($event)">
+            <el-select v-model="item.nodeName" @change="changeNodeName($event)">
               <el-option v-for="(option, i) in options.node" :key="i" :label="option.label" :value="option.value" />
             </el-select>
           </el-col>
           <el-col :span="8" class="p-1 d-flex flex-column items-start">
             <label>IP 주소</label>
-            <el-input v-model="selectItem.ipAddr" disabled />
+            <el-input v-model="item.ipAddr" disabled />
           </el-col>
           <el-col :span="8" class="p-1 d-flex flex-column items-start">
             <label>인터페이스</label>
-            <el-select v-model="selectItem.ifId">
+            <el-select v-model="item.ifname">
               <el-option v-for="(option, i) in options.interface" :key="i" :label="option.label" :value="option.value" />
             </el-select>
           </el-col>
@@ -112,7 +112,7 @@ import _ from 'lodash'
 import dialogOpenMixin from '@/mixin/dialogOpenMixin'
 import { apiIpsdnRequest, apiSelectAgencyIpList, apiRemote, apiSelectIpsdnNodeList, apiSelectIpsdnInterfaceList } from '@/api/nia'
 import constants from '@/min/constants'
-import { getChatbotTicketData, getWindowActionList, getInvisibleSpanParameter, getNiaRouterPathByName, showNumberText } from '@/views-nia/js/commonNiaFunction'
+import { getChatbotTicketData, getWindowActionList, getInvisibleSpanParameter, getNiaRouterPathByName, showNumberText, showAlertBox } from '@/views-nia/js/commonNiaFunction'
 import { mapState } from 'vuex'
 import niaObserverMixin from '@/mixin/niaObserverMixin'
 
@@ -156,16 +156,11 @@ export default {
         ipAddr: '',
         ifname: '',
       },
-      selectItem: {
-        nodeId: '',
-        ipAddr: '',
-        ifId: '',
-      },
       options: {
         node: [],
         interface: [],
       },
-      nodeIdIpAddrMappingBox: [],
+      nodeNameIpAddrMappingBox: [],
       agencyIpList: [],
       frameLoading: false,
       activeProfile: null,
@@ -209,28 +204,30 @@ export default {
   },
   methods: {
     async setIpsdnNodeList() {
-      this.nodeIdIpAddrMappingBox = []
+      this.nodeNameIpAddrMappingBox = []
       this.options.node = []
       const res = await apiSelectIpsdnNodeList()
       res.result.forEach((v) => {
-        this.nodeIdIpAddrMappingBox.push({ nodeId: v.id, addr: v.mgmt_addr })
-        this.options.node.push({ label: v.node_name, value: v.id })
+        this.nodeNameIpAddrMappingBox.push({ nodeName: v.node_name, addr: v.mgmt_addr })
+        this.options.node.push({ label: v.node_name, value: v.node_name })
       })
     },
 
     async setIpsdnInterfaceList(param) {
       this.options.interface = []
-      this.selectItem.ifId = ''
+      this.item.ifname = ''
       const res = await apiSelectIpsdnInterfaceList(param)
       res.result.forEach((v) => {
-        this.options.interface.push({ label: v.if_name, value: v.id })
+        this.options.interface.push({ label: v.if_name, value: v.if_name })
       })
     },
 
-    changeNodeName(node_id) {
-      const x = this.nodeIdIpAddrMappingBox.find((v) => { return v.nodeId === node_id })
-      this.selectItem.ipAddr = x.addr
-      this.setIpsdnInterfaceList({ nodeId: node_id })
+    changeNodeName(node_name) {
+      const x = this.nodeNameIpAddrMappingBox.find((v) => {
+        return v.nodeName === node_name
+      })
+      this.item.ipAddr = x.addr
+      this.setIpsdnInterfaceList({ nodeName: node_name })
     },
 
     async setTicketDataForChatbotTicketData(isSwitchingTicket) {
@@ -253,19 +250,21 @@ export default {
       }
 
       switch (ticket_type) {
-        case 'ATT2': // 이상트래픽
-          this.remoteControl = 'chngport'
+        case 'ATT2':
+        case 'ATT2_AI':
+          this.remoteControl = 'chngport' // 포트변경
           break
-        case 'NTT': // 유해트래픽
-          this.remoteControl = 'shoutdown'
+        case 'NTT':
+        case 'NTT_AI': // 유해트래픽
+          this.remoteControl = 'shoutdown' // 포트다운
           break
         case 'RT': // 장애
           if (alarmmsg === 'PORT_DOWN') {
-            this.remoteControl = 'noshut'
+            this.remoteControl = 'noshut' // 포트리셋
           }
           break
         case 'SYSLOG':
-          this.remoteControl = 'noshut'
+          this.remoteControl = 'noshut' // 포트리셋
           break
       }
 
@@ -341,7 +340,6 @@ export default {
 
     makeConfirmMessage() {
       const { nodeName, ifname } = this.item
-
       const currentRemoteOption = this.remoteOptions.find((map) => map.value === this.remoteControl)
 
       let message = `장비(${nodeName})의 포트(${ifname})인 장비를<br>`
@@ -360,7 +358,7 @@ export default {
         switch (this.remoteControl) {
           case 'shoutdown': // 포트다운
           case 'noshut': // 포트리셋
-            this.$alert('해당 기능은 현재 일시적으로 막아놓았습니다. Ping테스트 진행하겠습니다')
+            showAlertBox('해당 기능은 현재 일시적으로 막아놓았습니다. Ping테스트 진행하겠습니다')
             // this.actionRemote(this.remoteControl)
             this.remotePingTest()
             break
@@ -368,7 +366,7 @@ export default {
             this.remotePingTest()
             break
           case 'ACL':
-            this.$alert('해당 기능은 현재 일시적으로 막아놓았습니다. Ping테스트 진행하겠습니다')
+            showAlertBox('해당 기능은 현재 일시적으로 막아놓았습니다. Ping테스트 진행하겠습니다')
             this.remotePingTest()
             break
           case 'chngport':
@@ -396,7 +394,7 @@ export default {
     async actionRemote(remoteControl) {
       const { nodeName, ipAddr, ifname } = this.item
       if (!ipAddr) {
-        this.$alert('해당 장비의 IP가 존재하지 않습니다.')
+        showAlertBox('해당 장비의 IP가 존재하지 않습니다.')
         return
       }
 
@@ -408,13 +406,9 @@ export default {
       })
 
       if (res.success) {
-        this.$alert('성공적으로 명령이 실행되었습니다.', '성공', {
-          confirmButtonText: '확인',
-        })
+        showAlertBox('성공적으로 명령이 실행되었습니다.', '성공')
       } else {
-        this.$alert('명령 실행이 실패했습니다.', '실패', {
-          confirmButtonText: '확인',
-        })
+        showAlertBox('명령 실행이 실패했습니다.', '실패')
       }
     },
 
@@ -432,13 +426,9 @@ export default {
           user_id: this.$store.state.user.info.uid,
         })
         if (res.success) {
-          this.$alert('성공적으로 ping 테스트가 진행되었습니다.', '성공', {
-            confirmButtonText: '확인',
-          })
+          showAlertBox('성공적으로 ping 테스트가 진행되었습니다.', '성공')
         } else {
-          this.$alert('ping 테스트가 실패했습니다.', '실패', {
-            confirmButtonText: '확인',
-          })
+          showAlertBox('Ping 테스트가 실패했습니다.', '실패')
         }
       } catch (error) {
         this.error(error)
@@ -459,6 +449,11 @@ export default {
   border: solid 0px;
   border-bottom: solid 1px lightgray;
   border-radius: 0px;
+
+  &:disabled {
+    color: black;
+    font-weight: bold;
+  }
 }
 ::v-deep .el-input.is-disabled .el-input__inner {
   width: 100% !important;
