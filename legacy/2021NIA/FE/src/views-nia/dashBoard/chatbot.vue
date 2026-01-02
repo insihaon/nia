@@ -35,7 +35,10 @@
         </div>
       </div>
       <div v-else ref="chatMessagesBox" class="chat-messages">
-        <DoughnutChart v-if="alarmFocusSopDataList.length > 0 || alarmFocusTicketData.ticket_type === 'NTT_AI'" ref="donutChart" class="chatbot-donut-chart" :chart-data="chartData" :options="chartOptions" />
+        <div ref="donutChartContainer" class="chatbot-donut-chart-container">
+          <DoughnutChart v-if="alarmFocusSopDataList.length > 0" ref="donutChart1" class="chatbot-donut-chart" :chart-data="chartData" :options="chartOptions" style="margin-bottom: 10px" />
+          <DoughnutChart v-if="alarmFocusTicketData.ticket_type === 'NTT_AI'" ref="donutChart2" class="chatbot-donut-chart" :chart-data="nttChartData" :options="nttChartOptions" />
+        </div>
         <div v-for="(message, index) in alarmFocusMode_chatMessages" :key="index" :class="['message', message.type]">
           <div v-if="index === 0">
             <div v-if="alarmFocusTicketData.ticket_type !== 'NTT_AI'" class="message-content sopAnalysisBody">
@@ -236,6 +239,15 @@ export default {
           },
         ],
       },
+      nttChartData: {
+        labels: [],
+        datasets: [
+          {
+            backgroundColor: ['#1569C7', '#FFAD99', '#FAFAD2', '#FFB6C1', '#BDBADF'],
+            data: [0, 0, 0, 0],
+          },
+        ],
+      },
       /* --- 음성인식 Start --- */
       mediaRecorder: null,
       audioChunks: [],
@@ -255,7 +267,7 @@ export default {
         maintainAspectRatio: false,
         title: {
           display: true,
-          text: 'SOP 조치내용 통계(개)',
+          text: '', // 소스에서 변경경
           fontSize: 16,
           fontStyle: 'bold',
           fontColor: '#333',
@@ -272,7 +284,41 @@ export default {
                 const counts = data.datasets[0].data
                 return data.labels.map(function (label, i) {
                   return {
-                    text: label + ': ' + counts[i],
+                    text: label + ': ' + counts[i] + '개',
+                    fillStyle: data.datasets[0].backgroundColor[i],
+                    hidden: isNaN(counts[i]) || counts[i] === 0,
+                    index: i,
+                  }
+                })
+              }
+              return []
+            },
+          },
+        },
+      },
+      nttChartOptions: {
+        responsive: true,
+        maintainAspectRatio: false,
+        title: {
+          display: true,
+          text: '', // 소스에서 지정
+          fontSize: 16,
+          fontStyle: 'bold',
+          fontColor: '#333',
+        },
+        legend: {
+          position: 'left',
+          align: 'center',
+          labels: {
+            usePointStyle: true,
+            padding: 20,
+            generateLabels: function (chart) {
+              const data = chart.data
+              if (data.labels.length && data.datasets.length) {
+                const counts = data.datasets[0].data
+                return data.labels.map(function (label, i) {
+                  return {
+                    text: label + ': ' + counts[i] + '%',
                     fillStyle: data.datasets[0].backgroundColor[i],
                     hidden: isNaN(counts[i]) || counts[i] === 0,
                     index: i,
@@ -639,7 +685,7 @@ export default {
       }
     },
 
-    makeNTTDonutChartData() {
+    makeNTTDonutChartData1() {
       const data = _.cloneDeep(this.alarmFocusNTTAIDetailInfo)
       delete data.traffic_type
 
@@ -669,16 +715,47 @@ export default {
 
       const sortedValues = allRatios.map((item) => item.value)
 
-      // 4. chartData에 적용
-      this.chartData.labels = sortedLabels
-      this.chartData.datasets[0].data = sortedValues
-      this.chartOptions.title.text = '유해트래픽 정확도(%)'
+      // 4. nttChartData에 적용
+      this.nttChartData.labels = sortedLabels
+      this.nttChartData.datasets[0].data = sortedValues
+      this.nttChartOptions.title.text = '유해트래픽 정확도 통계'
 
       const colors = ['#1569C7', '#FFAD99', '#FAFAD2', '#FFB6C1', '#BDBADF']
-      this.chartData.datasets[0].backgroundColor = colors.slice(0, this.chartData.labels.length)
+      this.nttChartData.datasets[0].backgroundColor = colors.slice(0, this.nttChartData.labels.length)
 
-      console.log('Transformed Labels:', this.chartData.labels)
-      console.log('Sorted Data:', this.chartData.datasets[0].data)
+      console.log('Transformed Labels:', this.nttChartData.labels)
+      console.log('Sorted Data:', this.nttChartData.datasets[0].data)
+    },
+
+    makeNTTDonutChartData2() {
+      // faultType별 개수 계산
+      const trafficTypeCount = {}
+      this.alarmFocusSopDataList.forEach((data) => {
+        trafficTypeCount[data.traffic_type] = (trafficTypeCount[data.traffic_type] || 0) + 1
+      })
+
+      // 개수 기준으로 내림차순 정렬하여 상위 3개 추출
+      const sortedTrafficTypes = Object.entries(trafficTypeCount)
+        .sort(([, a], [, b]) => b - a)
+        .slice(0, 3)
+
+      // 상위 3개 faultType과 기타 개수 계산
+      const top3TrafficTypes = sortedTrafficTypes.map(([traffic_type_content]) => traffic_type_content)
+      const top3Counts = sortedTrafficTypes.map(([, count]) => count)
+
+      // 기타 개수 계산 (상위 3개가 아닌 나머지)
+      const othersCount = Object.entries(trafficTypeCount)
+        .filter(([traffic_detail_content]) => !top3TrafficTypes.includes(traffic_detail_content))
+        .reduce((sum, [, count]) => sum + count, 0)
+
+      // chartData 업데이트
+      this.chartData.labels = [...top3TrafficTypes, '기타']
+      this.chartData.datasets[0].data = [...top3Counts, othersCount]
+
+      // 색상도 동적으로 설정 (기본 색상 + 기타용 회색)
+      const colors = ['#FF6384', '#36A2EB', '#FFCE56', 'gray']
+      this.chartData.datasets[0].backgroundColor = colors.slice(0, this.chartData.labels.length)
+      this.chartOptions.title.text = '유해트래픽 SOP 장애유형 통계'
     },
 
     makeNotNTTDonutChartData() {
@@ -710,15 +787,23 @@ export default {
       // 색상도 동적으로 설정 (기본 색상 + 기타용 회색)
       const colors = ['#FF6384', '#36A2EB', '#FFCE56', 'gray']
       this.chartData.datasets[0].backgroundColor = colors.slice(0, this.chartData.labels.length)
-      this.chartOptions.title.text = 'SOP 조치내용 통계(개)'
+      this.chartOptions.title.text = 'SOP 조치내용 통계'
     },
 
-    setDonutChartData() {
+    async setDonutChartData() {
+      const target = { vue: this.$refs.donutChartContainer }
+      this.openLoading(target)
+
+      await new Promise((resolve) => setTimeout(resolve, 3000))
+
       if (this.alarmFocusTicketData.ticket_type === 'NTT_AI') {
-        this.makeNTTDonutChartData()
+        this.makeNTTDonutChartData1()
+        this.makeNTTDonutChartData2()
       } else {
         this.makeNotNTTDonutChartData()
       }
+
+      this.closeLoading(target)
     },
 
     actionSwitch() {
@@ -985,6 +1070,10 @@ export default {
 <style lang="scss" scoped>
 .chatbot {
   caret-color: transparent; /* 깜빡이는 커서 숨김 */
+}
+
+.chatbot-donut-chart-container {
+  width: 400px;
 }
 
 ::v-deep .chatbot-donut-chart {

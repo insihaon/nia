@@ -135,11 +135,12 @@ export default {
         { label: '장애', value: 'RT' },
       ],
       nttTypeList: [
+        { label: '전체', value: 'ALL' },
         { label: 'NORMAL TRAFFIC', value: 'normalTraffic' },
         { label: 'TCP SYN FLOODING', value: 'tcpSynFlooding' },
-        { label: 'LAND ATTACK RATIO', value: 'landAttack' },
-        { label: 'PING OF DEATH RATIO', value: 'pingOfDeath' },
-        { label: 'UDP FLOODING RATIO', value: 'udpFloodingRatio' },
+        { label: 'LAND ATTACK', value: 'landAttack' },
+        { label: 'PING OF DEATH', value: 'pingOfDeath' },
+        { label: 'UDP FLOODING', value: 'udpFlooding' },
       ],
     }
   },
@@ -249,7 +250,7 @@ export default {
       return [
         { label: '티켓번호', type: 'input', size: 8, model: 'TICKET_ID' },
         { label: '장비명', type: 'select', size: 8, model: 'NODE_NM', setting: { allOption: { toggle: true } }, options: this.equipmentOptionList },
-        { label: '발생일', type: 'date', size: 8, model: 'DATE' },
+        { label: '마감일', type: 'date', size: 8, model: 'DATE' },
         { label: 'I/F', type: 'select', size: 8, model: 'ALARMLOC', setting: { allOption: { toggle: true } }, options: this.interfaceOptionList },
         { label: '티켓유형', type: 'select', size: 8, model: 'TICKET_TYPE', options: this.ticketTypeList },
         { label: '유해 장애유형', type: 'select', size: 8, model: 'NTT_TRAFFIC_TYPE', options: this.nttTypeList },
@@ -272,7 +273,7 @@ export default {
             { label: '수동', value: 'FIN' },
           ],
         },
-        { label: 'DATE', type: 'date', size: 8, model: 'DATE', placeholder: '' },
+        { label: '마감일', type: 'date', size: 8, model: 'DATE', placeholder: '' },
       ]
     },
     ...mapState({
@@ -327,12 +328,12 @@ export default {
           this.syslogSearchModel = { NODE_NM: this.selectedRow.node_nm }
           break
         case 'ticket':
-          if (['NTT', 'NTT_AI'].includes(this.selectedRow?.ticket_type)) {
+          if (['NTT_AI'].includes(this.selectedRow?.ticket_type)) {
             const res = await apiSelectRcaNttTicketDetailInfo({ ticket_id: this.selectedRow.ticket_id })
             if (res && res.result) {
               this.sopSearchModel.NTT_TRAFFIC_TYPE = res.result[0].traffic_type
             }
-            this.sopSearchModel.TICKET_ID = this.selectedRow.ticket_id
+            // this.sopSearchModel.TICKET_ID = this.selectedRow.ticket_id
           } else {
             this.sopSearchModel.NODE_NM = this.selectedRow.node_nm
           }
@@ -472,6 +473,7 @@ export default {
           START_DATE: this.sopSearchModel.DATE && this.sopSearchModel.DATE[0],
           END_DATE: this.sopSearchModel.DATE && this.sopSearchModel.DATE[1],
           TICKET_TYPE: this.sopSearchModel.TICKET_TYPE === '-' ? null : this.sopSearchModel.TICKET_TYPE,
+          NTT_TRAFFIC_TYPE: this.sopSearchModel.NTT_TRAFFIC_TYPE === 'ALL' ? null : this.sopSearchModel.NTT_TRAFFIC_TYPE,
         })
 
         this.sopHistList = res?.result

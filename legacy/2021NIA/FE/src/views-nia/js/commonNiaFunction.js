@@ -4,6 +4,7 @@ import { apiSopSyslogHistList, apiSelectSopHistList } from '@/api/nia'
 import store from '@/store'
 import axios from 'axios'
 import { searchMessaging, errorMessaging1, errorMessaging2, errorMessaging3 } from '@/store/modules/chatbot.js'
+import { MessageBox } from 'element-ui'
 
 export function getInvisibleSpanParameter(routerPath, popupDialogName, action) {
     return `<span class="invisibleParameterSpan" style="display:none">[path]:${routerPath}, [popup]:${popupDialogName}, [action]:${action}</span>`
@@ -78,7 +79,7 @@ function isChatbotGenerated(wdata) {
     return wdata.params && wdata.params.isChatbotGenerated
 }
 
-export async function loadFirstSopData(selectedRow) {
+export async function loadLatestSopData(selectedRow) {
     let res
     if (selectedRow.ticket_type === 'SYSLOG') {
         const param = { ALARM_NO: selectedRow.alarmno }
@@ -286,3 +287,11 @@ export function getChatbotMdiObject() {
     const chatbotMdiObject = store.state.mdi.windows.find((w) => w.name === '어시스턴트')
     return chatbotMdiObject
 }
+
+export function showAlertBox(content, header) {
+    MessageBox.alert(content, header || '알림', {
+        confirmButtonText: '확인',
+        customClass: 'nia-message-box',
+    })
+}
+
