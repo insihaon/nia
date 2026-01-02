@@ -173,6 +173,7 @@
             ACM.ALARMMSG_ORIGINAL,
             TC.STATUS,
             TC.TICKET_RCA_RESULT_CODE,
+
             TC.TICKET_RCA_RESULT_DTL_CODE,
             NULL TOTAL_RELATED_ALARM_CNT,
             AL.ROOT_CAUSE_SYSNAMEA,
@@ -794,8 +795,10 @@
         	SOP.SOP_ID ,
             SOP.TICKET_ID ,
             SOP.TICKET_TYPE ,
-            CASE WHEN SOP.TICKET_TYPE = 'ATT2' THEN '이상 트래픽'
-            WHEN SOP.TICKET_TYPE = 'NTT' THEN '유해 트래픽'
+            CASE WHEN SOP.TICKET_TYPE = 'ATT2' THEN '이상 트래픽(Model-A)'
+            WHEN SOP.TICKET_TYPE = 'ATT2_AI' THEN '이상 트래픽(Model-C)'
+            WHEN SOP.TICKET_TYPE = 'NTT' THEN '유해 트래픽(Model-A)'
+            WHEN SOP.TICKET_TYPE = 'NTT_AI' THEN '유해 트래픽(Model-C)'
             WHEN SOP.TICKET_TYPE = 'NFTT' THEN '장비 과부하 장애'
             WHEN SOP.TICKET_TYPE = 'FTT' THEN '비장애'
             ELSE '장애' END AS TICKETTYPE,
@@ -824,7 +827,7 @@
             TRNTDI.TRAFFIC_TYPE AS TRAFFIC_TYPE
         FROM nia.tb_sop SOP
         LEFT JOIN rca.tb_rca_ticket_al_current AL ON SOP.TICKET_ID = AL.TICKET_ID
-        LEFT JOIN rca.tb_rca_ticket_current TC    ON AL.TICKET_ID = TC.TICKET_ID
+        LEFT JOIN rca.tb_rca_ticket_current TC    ON SOP.TICKET_ID = TC.TICKET_ID
         LEFT JOIN resource.tb_node_mst NODEA ON NODEA.node_id = AL.ROOT_CAUSE_SYSNAMEA
         LEFT JOIN resource.tb_node_mst NODEZ ON NODEZ.node_id = AL.ROOT_CAUSE_SYSNAMEZ
         LEFT JOIN RCA.TB_RCA_NTT_TICKET_DETAIL_INFO TRNTDI on TRNTDI.TICKET_ID = TC.TICKET_ID
@@ -834,7 +837,7 @@
             AND SOP.TICKET_ID LIKE '%' || #{TICKET_ID} || '%'
         </if>
         <if test="NTT_TRAFFIC_TYPE != null and NTT_TRAFFIC_TYPE != ''">
-            AND SOP.NTT_TYPE = #{NTT_TRAFFIC_TYPE}
+            AND TRNTDI.TRAFFIC_TYPE = #{NTT_TRAFFIC_TYPE}
         </if>
         <if test="NODE_NM != null and NODE_NM != ''">
             AND AL.ROOT_CAUSE_SYSNAMEA = #{NODE_NM}
@@ -843,10 +846,10 @@
             AND AL.ROOT_CAUSE_PORTA = #{ALARMLOC}
         </if>
         <if test="START_DATE != null">
-            AND AL.INSERT_TIME <![CDATA[ >= ]]> #{START_DATE}::TIMESTAMP
+            AND COALESCE(SOP.RECEIVE_TIME, SOP.REQUEST_TIME)  <![CDATA[ >= ]]> #{START_DATE}::TIMESTAMP
         </if>
         <if test="END_DATE != null">
-            AND AL.INSERT_TIME <![CDATA[ <= ]]> #{END_DATE}::TIMESTAMP
+            AND COALESCE(SOP.RECEIVE_TIME, SOP.REQUEST_TIME)  <![CDATA[ <= ]]> #{END_DATE}::TIMESTAMP
         </if>
         <if test="TICKET_TYPE != null">
             AND TC.TICKET_TYPE = #{TICKET_TYPE}
@@ -2366,7 +2369,7 @@
             , rx_pkt_rate
             , measured_datetime
         FROM IP_SDN.TB_LINK_TRAFFIC
-        WHERE MEASURED_DATETIME >= CAST(${FIT_DATE} AS TIMESTAMP)
+        WHERE MEASURED_DATETIME <![CDATA[ >= ]]> CAST(${FIT_DATE} AS TIMESTAMP)
             AND if_id = ${IF_ID}
     </select>
 
@@ -2378,6 +2381,8 @@
             , model.ipsdn_if_id
             , model.in_threshold_value
             , model.out_threshold_value
+            , accuracy.in_accuracy_rate
+            , accuracy.out_accuracy_rate
             , DATE_TRUNC('hour', predict.ds) AS ds  
             , MAX(pm.if_speed) if_speed
             , MAX(model.predict_datetime) AS predict_datetime
@@ -2399,28 +2404,71 @@
             , AVG(predict.out_yhat_upper) AS out_yhat_upper
             , AVG(predict.out_trend) AS out_trend
             , AVG(predict.out_y) AS out_y
+            , AVG(predict.in_weekly) AS in_weekly
+            , AVG(predict.out_weekly) AS out_weekly
+            , AVG(predict.in_trend) AS in_trend
+            , AVG(predict.out_trend) AS out_trend
             , MAX(predict.reg_datetime) AS reg_datetime
         FROM nia.tb_ai_model model
+        LEFT OUTER JOIN nia.tb_ai_model_accuracy accuracy on model.model_id = accuracy.model_id
         INNER JOIN nia.tb_ai_predict predict ON model.model_id = predict.model_id
-        inner join resource.tb_port_mst pm on pm.if_num = model.if_num
+        INNER JOIN resource.tb_port_mst pm on pm.if_num = model.if_num
         WHERE 1=1
+        <if test="MODEL_ID != null">
+            AND model.model_id = #{MODEL_ID}
+        </if>
         <if test="NODE_NUM != null">
             AND model.NODE_NUM = #{NODE_NUM}
         </if>
         <if test="IF_NUM != null">
             AND model.IF_NUM = #{IF_NUM}
         </if>
-        AND predict.reg_datetime <![CDATA[ >= ]]> DATE_TRUNC('day', CURRENT_TIMESTAMP)
-        AND predict.reg_datetime <![CDATA[ < ]]> DATE_TRUNC('day', CURRENT_TIMESTAMP) + '1 day'::interval
+        <if test="ALARM_TIME != null">
+            AND predict.reg_datetime <![CDATA[ >= ]]> DATE_TRUNC('day', #{ALARM_TIME}::timestamp)
+            AND predict.reg_datetime <![CDATA[ < ]]> DATE_TRUNC('day', #{ALARM_TIME}::timestamp) + '1 day'::interval
+        </if>
         GROUP BY
             model.model_id
             , model.node_num
             , model.if_num
             , model.ipsdn_if_id
+            , accuracy.in_accuracy_rate
+            , accuracy.out_accuracy_rate
             , DATE_TRUNC('hour', predict.ds)  
             , model.in_threshold_value
             , model.out_threshold_value
         ORDER BY ds ASC
+    </select>
+
+    <select id="SELECT_REAL_TRAFFIC_DATA" parameterType ="hashmap" resultType="hashmap">
+    SELECT 
+        DATE_TRUNC('hour', measured_datetime) AS hour_bucket, <!--  시간대별로 묶기 -->
+        MAX(tx_bit_rate) AS out_y,                          <!--  해당 시간대의 최대 TX -->
+        MAX(rx_bit_rate) AS in_y                           <!--  해당 시간대의 최대 RX -->
+    FROM IP_SDN.TB_LINK_TRAFFIC
+    WHERE if_id = #{ipSdnIfId}
+        AND measured_datetime <![CDATA[ >= ]]> #{fitDate}::timestamp
+        AND measured_datetime <![CDATA[ < ]]> NOW()
+    GROUP BY 1  <!--  첫 번째 컬럼(DATE_TRUNC)을 기준으로 그룹화 -->
+    ORDER BY 1 ASC; <!--  시간 순서대로 정렬 -->
+    </select>
+
+    <select id="SELECT_ATT_AI_TCA_MODEL" parameterType="hashmap" resultType="hashmap">
+        SELECT 
+            id
+            , model_id
+            , node_num
+            , if_num
+            , tca_alert_yn
+            , tca_alert_direction
+            , tca_alert_time
+        FROM nia.tb_att_ai_tca_model
+        WHERE 1=1
+            AND node_num = #{NODE_NUM}
+            AND if_num = #{IF_NUM}
+            AND tca_alert_time <![CDATA[ >= ]]> DATE_TRUNC('day', #{ALARM_TIME}::timestamp)
+            AND tca_alert_time <![CDATA[ < ]]> DATE_TRUNC('day', #{ALARM_TIME}::timestamp) + '1 day'::interval
+        limit 1
     </select>
 
     <select id="SELECT_NIA_CABLE_ALARM_LIST" parameterType="hashmap" resultType="hashmap">
@@ -2742,6 +2790,9 @@
             1=1
             <if test="nodeId != null">
                 and node_id = #{nodeId}
+            </if>
+            <if test="nodeName != null">
+                and node_id in (select node_id from ip_sdn.tb_node where lower(node_name) = #{nodeName})
             </if>
     </select>
 

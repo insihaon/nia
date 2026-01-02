@@ -10,6 +10,10 @@ export default {
         cVerLine: {
             type: Object,
             default: () => { }
+        },
+        removeDuplicateDates: {
+            type: Boolean,
+            default: false
         }
     },
 
@@ -106,6 +110,28 @@ export default {
             const chartOptions = {
                 ...this.chartOptions,
                 cVerLine: this.cVerLine,
+            }
+
+            // removeDuplicateDates가 true인 경우에만 중복 제거 로직 적용
+            if (this.removeDuplicateDates) {
+                chartOptions.scales.xAxes[0].ticks.autoSkip = false
+                chartOptions.scales.xAxes[0].ticks.maxTicksLimit = 1000
+                const originalCallback = chartOptions.scales.xAxes[0].ticks.callback
+                chartOptions.scales.xAxes[0].ticks.callback = function (value, index, labels) {
+                    // 날짜 부분만 추출 (MM.DD 형식)
+                    const datePart = value ? value.substring(0, 6) : ''
+                    if (!datePart) {
+                        return ''
+                    }
+                    // 이전 라벨과 비교하여 중복 제거
+                    if (index > 0 && labels[index - 1]) {
+                        const prevDatePart = labels[index - 1] ? labels[index - 1].substring(0, 6) : ''
+                        if (datePart === prevDatePart) {
+                            return '' // 중복된 날짜는 빈 문자열 반환
+                        }
+                    }
+                    return datePart + ' '
+                }
             }
 
             // 2. 파괴

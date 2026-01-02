@@ -133,6 +133,15 @@ export function apiSelfProcessTrafficInfo(params = {}) {
     data: params
   })
 }
+export function apiSelectRealTrafficData(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_REAL_TRAFFIC_DATA',
+    data: params
+  })
+}
 export function apiSelfProcessSyslogInfo(params = {}) {
   return http({
     url: '/selectList',
@@ -815,6 +824,15 @@ export function apiSelectAiChartData(params = {}) {
     method: 'post',
     filePath: filePath,
     sqlId: 'SELECT_AI_CHART_DATA',
+    data: params
+  })
+}
+export function apiSelectAttAiTcaModel(params = {}) {
+  return http({
+    url: '/selectList',
+    method: 'post',
+    filePath: filePath,
+    sqlId: 'SELECT_ATT_AI_TCA_MODEL',
     data: params
   })
 }
