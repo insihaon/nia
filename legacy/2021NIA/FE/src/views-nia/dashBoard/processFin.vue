@@ -61,7 +61,7 @@ import _ from 'lodash'
 import { apiSelectSopCode, apiSendMQ, apiSelectRcaNttTicketDetailInfo } from '@/api/nia'
 import ModalSopMng from '@/views-nia/modal/ModalSopMng'
 import constants from '@/min/constants'
-import { getChatbotTicketData, getWindowActionList, loadFirstSopData } from '@/views-nia/js/commonNiaFunction'
+import { getChatbotTicketData, getWindowActionList, loadLatestSopData } from '@/views-nia/js/commonNiaFunction'
 import { mapState } from 'vuex'
 import niaObserverMixin from '@/mixin/niaObserverMixin'
 import { getInvisibleSpanParameter, getNiaRouterPathByName, showNumberText } from '@/views-nia/js/commonNiaFunction'
@@ -157,9 +157,7 @@ export default {
     },
 
     async setSopCodeValue() {
-      const { THIS } = this
-      const firstSopData = await loadFirstSopData(this.selectedRow)
-
+      // 1. 로컬 스토리지에 조치 내역이 있으면, 조치내역을 셋팅한다.
       const remoteControl = localStorage.getItem('lastRemoteHistory' + '_' + this.$store.state.user.info.uid + '_' + this.selectedRow.node_nm + '_' + this.selectedRow.alarmloc)
       if (remoteControl) {
         const cleanRemoteControl = remoteControl.replace(/"/g, '').replace(/\s/g, '')
@@ -184,10 +182,43 @@ export default {
         return
       }
 
-      if (firstSopData) {
-        this.finSop.fault_classify = firstSopData.fault_classify
-        this.finSop.fault_type = firstSopData.fault_type
-        this.finSop.fault_detail_content = firstSopData.fault_detail_content
+      // 2. 가장 최근의 SOP 이력이 있을 경우 가장 최근 SOP이력을 셋팅한다.
+      const latestSopData = await loadLatestSopData(this.selectedRow)
+      if (latestSopData) {
+        this.finSop.fault_classify = latestSopData.fault_classify
+        this.finSop.fault_type = latestSopData.fault_type
+        this.finSop.fault_detail_content = latestSopData.fault_detail_content
+
+        return
+      }
+
+      // 3. 각 장애유형별로 기본 값을 셋팅한다.
+      const ticketType = this.selectedRow.ticket_type
+      switch (ticketType) {
+        case 'ATT2':
+        case 'ATT2_AI': // 포트변경
+          this.finSop.fault_classify = '구성변경'
+          this.finSop.fault_type = '포트장애'
+          this.finSop.fault_detail_content = '포트변경'
+          break
+        case 'NTT':
+        case 'NTT_AI': // 포트다운
+          this.finSop.fault_classify = '포트불량'
+          this.finSop.fault_type = '포트장애'
+          this.finSop.fault_detail_content = '포트다운'
+          break
+        case 'RT': // 포트리셋
+          if (this.selectedRow.alarmmsg === 'PORT_DOWN') {
+            this.finSop.fault_classify = '포트불량'
+            this.finSop.fault_type = '포트장애'
+            this.finSop.fault_detail_content = '포트리셋'
+          }
+          break
+        case 'SYSLOG': // 포트리셋
+          this.finSop.fault_classify = '포트불량'
+          this.finSop.fault_type = '포트장애'
+          this.finSop.fault_detail_content = '포트리셋'
+          break
       }
     },
 
@@ -321,13 +352,6 @@ export default {
           etc,
           ip_addr,
         })
-      }
-
-      if (['NTT', 'NTT_AI'].includes(this.selectedRow.ticket_type)) {
-        const res = await apiSelectRcaNttTicketDetailInfo({ ticket_id: this.selectedRow.ticket_id })
-        if (res && res.result) {
-          param.ntt_type = res.result[0].traffic_type
-        }
       }
 
       return param

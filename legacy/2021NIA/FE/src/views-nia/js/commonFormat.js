@@ -125,26 +125,30 @@ export function getDecimalCalc(row, col, value, index) { // set Decimal point
 }
 
 export function makeAlertMessage(ticketData, isSop) {
-  switch (ticketData.ticket_type) {
-    case 'ATT2': case 'ATT2_AI':
-      return `<span style="display: none">티켓ID: ${ticketData.ticket_id}</span><span style="display: none">티켓종류: ${ticketData.ticket_type}</span>이상트래픽 장애가 발생하였습니다.
+  try {
+    switch (ticketData.ticket_type) {
+      case 'ATT2': case 'ATT2_AI':
+        return `<span style="display: none">티켓ID: ${ticketData.ticket_id}</span><span style="display: none">티켓종류: ${ticketData.ticket_type}</span>이상트래픽 장애가 발생하였습니다.
         <span>노드: ${ticketData.node_nm}, 포트: ${ticketData.root_cause_porta} 장비에 대하여</span>
         <b style=color:red>집중경보</b>를 진행할 수 있습니다.`
-    case 'NTT': case 'NTT_AI':
-      return `<span style="display: none">티켓ID: ${ticketData.ticket_id}</span><span style="display: none">티켓종류: ${ticketData.ticket_type}</span>유해트래픽 장애가 발생하였습니다.
+      case 'NTT': case 'NTT_AI':
+        return `<span style="display: none">티켓ID: ${ticketData.ticket_id}</span><span style="display: none">티켓종류: ${ticketData.ticket_type}</span>유해트래픽 장애가 발생하였습니다.
         해당 티켓에 대하여 <b style=color:red>집중경보</b>를 진행할 수 있습니다.`
-    case 'RT': // 장애
-      if (ticketData.alarmmsg === 'PORT_DOWN') {
-        return `<span style="display: none">티켓ID: ${ticketData.ticket_id}</span><span style="display: none">티켓종류: ${ticketData.ticket_type}</span>PORT_DOWN 장애가 발생하였습니다.
+      case 'RT': // 장애
+        if (ticketData.alarmmsg === 'PORT_DOWN') {
+          return `<span style="display: none">티켓ID: ${ticketData.ticket_id}</span><span style="display: none">티켓종류: ${ticketData.ticket_type}</span>PORT_DOWN 장애가 발생하였습니다.
             노드: ${ticketData.node_nm}, 포트: ${ticketData.root_cause_porta} 장비에 대하여
             <b style=color:red>집중경보</b>를 진행할 수 있습니다.`
-      }
-      break
-    case 'SYSLOG':
-      return `<span style="display: none">알람번호: ${ticketData.alarmno}</span><span style="display: none">티켓종류: ${ticketData.ticket_type}</span>Syslog 장애가 발생하였습니다.
+        }
+        break
+      case 'SYSLOG':
+        return `<span style="display: none">알람번호: ${ticketData.alarmno}</span><span style="display: none">티켓종류: ${ticketData.ticket_type}</span>Syslog 장애가 발생하였습니다.
         <span>노드: ${ticketData.node_nm}, 포트: ${ticketData.root_cause_porta} 장비에 대하여</span>
         <b style=color:red>집중경보</b>를 진행할 수 있습니다.`
-  }
+    }
 
-  console.error('유효하지 않은 ticketData')
+    throw new Error('유효하지 않은 TicketType')
+  } catch (e) {
+    console.error(e)
+  }
 }
