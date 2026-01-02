@@ -18,10 +18,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 @Service("RcaTicketHandlingService")
 public class RcaTicketHandlingServiceImpl implements RcaTicketHandlingService {
@@ -58,173 +55,177 @@ public class RcaTicketHandlingServiceImpl implements RcaTicketHandlingService {
         String status = "";
         try {
             LOGGER.info(">>>>>>>>> [RcaTicketHandlingService]   rcaTicketHandlingStatus : " + rcaTicketHandlingStatus.toString() + " <<<<<<<<<<<<<<<<<");
+            switch(rcaTicketHandlingStatus.getTicketType()){
+                case "PF":
+                    switch (rcaTicketHandlingStatus.getStatus()) {
+                        case "ACK":
+                            status = rcaTicketHandlingStatus.getStatus();
 
-            if ("PF".equals(rcaTicketHandlingStatus.getTicketType())) {
-                switch (rcaTicketHandlingStatus.getStatus()) {
-                    case "ACK":
-                        status = rcaTicketHandlingStatus.getStatus();
-
-                        sopId = ticketService.selectSopKey();
-                        rcaTicketHandlingStatus.setSopId(sopId);
-
-                        ticketService.insertSop(rcaTicketHandlingStatus);
-                        ticketService.insertSopPerformance(rcaTicketHandlingStatus);
-                        break;
-                    case "FIN":
-                    case "INIT":
-                        status = rcaTicketHandlingStatus.getStatus();
-
-                        if (StringUtils.isNotEmpty(rcaTicketHandlingStatus.getSopId())) {
                             sopId = ticketService.selectSopKey();
                             rcaTicketHandlingStatus.setSopId(sopId);
-                        }
-                        ticketService.upsertSop(rcaTicketHandlingStatus);
-                        break;
-                }
 
-                ticketService.updateRcaTicketCurrentState(rcaTicketHandlingStatus);
-                //                ticketService.insertRCATicketHandlingStatusHist(rcaTicketHandlingStatus);
+                            ticketService.insertSop(rcaTicketHandlingStatus);
+                            ticketService.insertSopPerformance(rcaTicketHandlingStatus);
+                            break;
+                        case "FIN":
+                        case "INIT":
+                            status = rcaTicketHandlingStatus.getStatus();
 
-                rcaEngineResult = rcaEngineResultFactory.getObject();
-                rcaEngineResult.setResult("success");
-                rcaEngineResult.setTicketId(rcaTicketHandlingStatus.getTicketId());
-                rcaEngineResult.setEventType(RcaCodeInfo.UI_TICKET_TYPE_UPDATE);
-
-                properties = new HashMap<String, String>();
-                properties.put("status", status);
-                properties.put("sop_id", rcaTicketHandlingStatus.getSopId());
-                rcaEngineResult.setProperties(properties);
-
-                engineToUiTicketPrdAmqp.sendMessageCmd(rcaEngineResult);
-
-                if (((ArrayList<RCATicket>) dataShareBean.getData(RcaCodeInfo.DATA_SHARE_NAME_TICKET_LIST)).size() > 0) {
-                    Iterator<RCATicket> itr =
-                            ((ArrayList<RCATicket>) dataShareBean.getData(RcaCodeInfo.DATA_SHARE_NAME_TICKET_LIST)).iterator();
-
-                    while (itr.hasNext()) {
-                        rcaTicket = itr.next();
-
-                        if (rcaTicket.getTicketId().equals(rcaTicketHandlingStatus.getTicketId())) {
-                            rcaTicket.setStatus(status);
-                        }
-                    }
-                }
-            } else if ("NTT".equals(rcaTicketHandlingStatus.getTicketType()) || "ATT".equals(rcaTicketHandlingStatus.getTicketType()) || "ATT2".equals(rcaTicketHandlingStatus.getTicketType()) || "NFTT".equals(rcaTicketHandlingStatus.getTicketType()) || "ATT2_AIB".equals(rcaTicketHandlingStatus.getTicketType())) {
-                status = rcaTicketHandlingStatus.getStatus();
-
-                /* set sopId , AI 추론 결과 */
-                sopId = ticketService.selectSopKey();
-                rcaTicketHandlingStatus.setSopId(sopId);
-                AiToEngineAnoVo aiResult = ticketService.selectAiTicketResult(rcaTicketHandlingStatus.getTicketId());
-                rcaTicketHandlingStatus.setZero1Model(aiResult.getZero1Model());
-                rcaTicketHandlingStatus.setZero1Entropy(aiResult.getZero1Entropy());
-
-                if (rcaTicketHandlingStatus.getFaultClassify() == null) {
-                    rcaTicketHandlingStatus.setFaultClassify("-");
-                }
-                if (rcaTicketHandlingStatus.getFaultDetailContent() == null) {
-                    rcaTicketHandlingStatus.setFaultDetailContent("-");
-                }
-                if (rcaTicketHandlingStatus.getFaultType() == null) {
-                    rcaTicketHandlingStatus.setFaultType("-");
-                }
-
-                try {
-                    LOGGER.info(">>>>>>>>> [RcaTicketHandlingService]   NTT/ATT2/NFTT UpsertSop");
-                    ticketService.upsertSop(rcaTicketHandlingStatus);
-                } catch (Exception e) {
-                    LOGGER.error("NTT/ATT2/NFTT UpsertSop err >>> " + e);
-                }
-
-                if ("INIT".equals(rcaTicketHandlingStatus.getStatus()) || "ACK".equals(rcaTicketHandlingStatus.getStatus())) {
-                    ticketService.insertSopMail(rcaTicketHandlingStatus);
-                }
-
-                ticketService.updateRcaTicketCurrentState(rcaTicketHandlingStatus);
-                //                ticketService.insertRCATicketHandlingStatusHist(rcaTicketHandlingStatus);
-
-                rcaEngineResult = rcaEngineResultFactory.getObject();
-                rcaEngineResult.setResult("success");
-                rcaEngineResult.setTicketId(rcaTicketHandlingStatus.getTicketId());
-                rcaEngineResult.setEventType(RcaCodeInfo.UI_TICKET_TYPE_UPDATE);
-
-                properties = new HashMap<String, String>();
-                properties.put("status", status);
-                properties.put("sop_id", rcaTicketHandlingStatus.getSopId());
-                rcaEngineResult.setProperties(properties);
-
-                HashMap<String, String> autoProcessUpdateMap;
-                autoProcessUpdateMap = new HashMap<>();
-                autoProcessUpdateMap.put("ticketId", rcaTicketHandlingStatus.getTicketId());
-                autoProcessMapper.updateAutoProcessTicket(autoProcessUpdateMap);
-
-                engineToUiTicketPrdAmqp.sendMessageCmd(rcaEngineResult);
-
-                if (((ArrayList<RCATicket>) dataShareBean.getData(RcaCodeInfo.DATA_SHARE_NAME_TICKET_LIST)).size() > 0) {
-                    Iterator<RCATicket> itr =
-                            ((ArrayList<RCATicket>) dataShareBean.getData(RcaCodeInfo.DATA_SHARE_NAME_TICKET_LIST)).iterator();
-
-                    while (itr.hasNext()) {
-                        rcaTicket = itr.next();
-
-                        if (rcaTicket.getTicketId().equals(rcaTicketHandlingStatus.getTicketId())) {
-                            rcaTicket.setStatus(status);
-                        }
-                    }
-                }
-            } else if ("RT".equals(rcaTicketHandlingStatus.getTicketType())) {
-                switch (rcaTicketHandlingStatus.getStatus()) {
-                    case "ACK":
-                        status = rcaTicketHandlingStatus.getStatus();
-
-                        sopId = ticketService.selectSopKey();
-                        rcaTicketHandlingStatus.setSopId(sopId);
-                        ticketService.insertSop(rcaTicketHandlingStatus);
-                        ticketService.insertSopMail(rcaTicketHandlingStatus);
-                        break;
-                    case "FIN":
-                        status = rcaTicketHandlingStatus.getStatus();
-
-                        if (StringUtils.isEmpty(rcaTicketHandlingStatus.getSopId())) {
-                            sopId = ticketService.selectSopKey();
-                            rcaTicketHandlingStatus.setSopId(sopId);
-                        }
-                        try {
-                            LOGGER.info(">>>>>>>>> [RcaTicketHandlingService]  RT UpsertSop");
+                            if (StringUtils.isNotEmpty(rcaTicketHandlingStatus.getSopId())) {
+                                sopId = ticketService.selectSopKey();
+                                rcaTicketHandlingStatus.setSopId(sopId);
+                            }
                             ticketService.upsertSop(rcaTicketHandlingStatus);
-                        } catch (Exception e) {
-                            LOGGER.error("RT UpsertSop err >>> " + e);
-                        }
-                        break;
-                }
+                            break;
+                    }
+                    ticketService.updateRcaTicketCurrentState(rcaTicketHandlingStatus);
+                    //                ticketService.insertRCATicketHandlingStatusHist(rcaTicketHandlingStatus);
 
-                ticketService.updateRcaTicketCurrentState(rcaTicketHandlingStatus);
-                //                ticketService.insertRCATicketHandlingStatusHist(rcaTicketHandlingStatus);
+                    rcaEngineResult = rcaEngineResultFactory.getObject();
+                    rcaEngineResult.setResult("success");
+                    rcaEngineResult.setTicketId(rcaTicketHandlingStatus.getTicketId());
+                    rcaEngineResult.setEventType(RcaCodeInfo.UI_TICKET_TYPE_UPDATE);
 
-                rcaEngineResult = rcaEngineResultFactory.getObject();
-                rcaEngineResult.setResult("success");
-                rcaEngineResult.setTicketId(rcaTicketHandlingStatus.getTicketId());
-                rcaEngineResult.setEventType(RcaCodeInfo.UI_TICKET_TYPE_UPDATE);
+                    properties = new HashMap<String, String>();
+                    properties.put("status", status);
+                    properties.put("sop_id", rcaTicketHandlingStatus.getSopId());
+                    rcaEngineResult.setProperties(properties);
 
-                properties = new HashMap<String, String>();
-                properties.put("status", status);
-                properties.put("sop_id", rcaTicketHandlingStatus.getSopId());
-                rcaEngineResult.setProperties(properties);
+                    engineToUiTicketPrdAmqp.sendMessageCmd(rcaEngineResult);
 
-                engineToUiTicketPrdAmqp.sendMessageCmd(rcaEngineResult);
+                    if (((ArrayList<RCATicket>) dataShareBean.getData(RcaCodeInfo.DATA_SHARE_NAME_TICKET_LIST)).size() > 0) {
+                        Iterator<RCATicket> itr =
+                                ((ArrayList<RCATicket>) dataShareBean.getData(RcaCodeInfo.DATA_SHARE_NAME_TICKET_LIST)).iterator();
 
-                if (((ArrayList<RCATicket>) dataShareBean.getData(RcaCodeInfo.DATA_SHARE_NAME_TICKET_LIST)).size() > 0) {
-                    Iterator<RCATicket> itr =
-                            ((ArrayList<RCATicket>) dataShareBean.getData(RcaCodeInfo.DATA_SHARE_NAME_TICKET_LIST)).iterator();
+                        while (itr.hasNext()) {
+                            rcaTicket = itr.next();
 
-                    while (itr.hasNext()) {
-                        rcaTicket = itr.next();
-
-                        if (rcaTicket.getTicketId().equals(rcaTicketHandlingStatus.getTicketId())) {
-                            rcaTicket.setStatus(status);
+                            if (rcaTicket.getTicketId().equals(rcaTicketHandlingStatus.getTicketId())) {
+                                rcaTicket.setStatus(status);
+                            }
                         }
                     }
-                }
+                    break;
+                case "NTT": case "NTT_AI": case "ATT": case "ATT2": case "ATT2_AI": case "NFTT":
+                    status = rcaTicketHandlingStatus.getStatus();
+
+                    /* set sopId , AI 추론 결과 */
+                    sopId = ticketService.selectSopKey();
+                    rcaTicketHandlingStatus.setSopId(sopId);
+                    AiToEngineAnoVo aiResult = ticketService.selectAiTicketResult(rcaTicketHandlingStatus.getTicketId());
+                    if (aiResult != null) {
+                        rcaTicketHandlingStatus.setZero1Model(aiResult.getZero1Model());
+                        rcaTicketHandlingStatus.setZero1Entropy(aiResult.getZero1Entropy());
+                    }
+
+                    if (rcaTicketHandlingStatus.getFaultClassify() == null) {
+                        rcaTicketHandlingStatus.setFaultClassify("-");
+                    }
+                    if (rcaTicketHandlingStatus.getFaultDetailContent() == null) {
+                        rcaTicketHandlingStatus.setFaultDetailContent("-");
+                    }
+                    if (rcaTicketHandlingStatus.getFaultType() == null) {
+                        rcaTicketHandlingStatus.setFaultType("-");
+                    }
+
+                    try {
+                        LOGGER.info(">>>>>>>>> [RcaTicketHandlingService] NTT/ATT2/NFTT UpsertSop");
+                        ticketService.upsertSop(rcaTicketHandlingStatus);
+                    } catch (Exception e) {
+                        LOGGER.error("NTT/ATT2/NFTT UpsertSop err >>> " + e);
+                    }
+
+                    if ("INIT".equals(rcaTicketHandlingStatus.getStatus()) || "ACK".equals(rcaTicketHandlingStatus.getStatus())) {
+                        ticketService.insertSopMail(rcaTicketHandlingStatus);
+                    }
+
+                    ticketService.updateRcaTicketCurrentState(rcaTicketHandlingStatus);
+                    //                ticketService.insertRCATicketHandlingStatusHist(rcaTicketHandlingStatus);
+
+                    rcaEngineResult = rcaEngineResultFactory.getObject();
+                    rcaEngineResult.setResult("success");
+                    rcaEngineResult.setTicketId(rcaTicketHandlingStatus.getTicketId());
+                    rcaEngineResult.setEventType(RcaCodeInfo.UI_TICKET_TYPE_UPDATE);
+
+                    properties = new HashMap<String, String>();
+                    properties.put("status", status);
+                    properties.put("sop_id", rcaTicketHandlingStatus.getSopId());
+                    rcaEngineResult.setProperties(properties);
+
+                    HashMap<String, String> autoProcessUpdateMap;
+                    autoProcessUpdateMap = new HashMap<>();
+                    autoProcessUpdateMap.put("ticketId", rcaTicketHandlingStatus.getTicketId());
+                    autoProcessMapper.updateAutoProcessTicket(autoProcessUpdateMap);
+
+                    engineToUiTicketPrdAmqp.sendMessageCmd(rcaEngineResult);
+
+                    if (((ArrayList<RCATicket>) dataShareBean.getData(RcaCodeInfo.DATA_SHARE_NAME_TICKET_LIST)).size() > 0) {
+                        Iterator<RCATicket> itr =
+                                ((ArrayList<RCATicket>) dataShareBean.getData(RcaCodeInfo.DATA_SHARE_NAME_TICKET_LIST)).iterator();
+
+                        while (itr.hasNext()) {
+                            rcaTicket = itr.next();
+
+                            if (rcaTicket.getTicketId().equals(rcaTicketHandlingStatus.getTicketId())) {
+                                rcaTicket.setStatus(status);
+                            }
+                        }
+                    }
+                    break;
+                case "RT":
+                    switch (rcaTicketHandlingStatus.getStatus()) {
+                        case "ACK":
+                            status = rcaTicketHandlingStatus.getStatus();
+
+                            sopId = ticketService.selectSopKey();
+                            rcaTicketHandlingStatus.setSopId(sopId);
+                            ticketService.insertSop(rcaTicketHandlingStatus);
+                            ticketService.insertSopMail(rcaTicketHandlingStatus);
+                            break;
+                        case "FIN":
+                            status = rcaTicketHandlingStatus.getStatus();
+
+                            if (StringUtils.isEmpty(rcaTicketHandlingStatus.getSopId())) {
+                                sopId = ticketService.selectSopKey();
+                                rcaTicketHandlingStatus.setSopId(sopId);
+                            }
+                            try {
+                                LOGGER.info(">>>>>>>>> [RcaTicketHandlingService]  RT UpsertSop");
+                                ticketService.upsertSop(rcaTicketHandlingStatus);
+                            } catch (Exception e) {
+                                LOGGER.error("RT UpsertSop err >>> " + e);
+                            }
+                            break;
+                    }
+
+                    ticketService.updateRcaTicketCurrentState(rcaTicketHandlingStatus);
+                    //                ticketService.insertRCATicketHandlingStatusHist(rcaTicketHandlingStatus);
+
+                    rcaEngineResult = rcaEngineResultFactory.getObject();
+                    rcaEngineResult.setResult("success");
+                    rcaEngineResult.setTicketId(rcaTicketHandlingStatus.getTicketId());
+                    rcaEngineResult.setEventType(RcaCodeInfo.UI_TICKET_TYPE_UPDATE);
+
+                    properties = new HashMap<String, String>();
+                    properties.put("status", status);
+                    properties.put("sop_id", rcaTicketHandlingStatus.getSopId());
+                    rcaEngineResult.setProperties(properties);
+
+                    engineToUiTicketPrdAmqp.sendMessageCmd(rcaEngineResult);
+
+                    if (((ArrayList<RCATicket>) dataShareBean.getData(RcaCodeInfo.DATA_SHARE_NAME_TICKET_LIST)).size() > 0) {
+                        Iterator<RCATicket> itr =
+                                ((ArrayList<RCATicket>) dataShareBean.getData(RcaCodeInfo.DATA_SHARE_NAME_TICKET_LIST)).iterator();
+
+                        while (itr.hasNext()) {
+                            rcaTicket = itr.next();
+
+                            if (rcaTicket.getTicketId().equals(rcaTicketHandlingStatus.getTicketId())) {
+                                rcaTicket.setStatus(status);
+                            }
+                        }
+                    }
+                    break;
             }
         } catch (Exception e) {
             LOGGER.error(">>>>>>>>>>[RcaTicketManager] ticketStatusModify() error : " + ExceptionUtils.getStackTrace(e) + " <<<<<<<<<<<<<<<<<");
