@@ -95,6 +95,8 @@ export default {
       save: { label: '저장', action: 'save' },
       linkZoomTest: { label: '링크 줌인 테스트', action: 'linkZoomTest' },
       labelToggle: { label: '라벨 토글', action: 'labelToggle' },
+      packetListAll: { label: '전체 패킷 리스트', action: 'packetListAll' },
+      trendAnalysis: { label: '트렌드 분석', action: 'trendAnalysis' },
 
       // [집중 경보]
       focusModeCheckAlarm: { label: '티켓상세확인', action: 'focusModeCheckAlarm' },
@@ -118,19 +120,21 @@ export default {
       configTest: { popupName: '조치', parameterKey: 'configTest', dialogNm: 'configTest' },
       requestForAction: { popupName: '상황전파', parameterKey: 'requestForAction', dialogNm: 'requestForAction' },
       aiResponse: { popupName: 'AI 장애대응', parameterKey: 'aiResponse', dialogNm: 'aiResponse' },
+      aiResponse_NTT: { popupName: 'AI 장애대응(유해트래픽)', parameterKey: 'aiResponse_NTT', dialogNm: 'aiResponse_NTT' },
+      aiResponse_ATT_AI: { popupName: 'AI 장애대응(이상트래픽)', parameterKey: 'aiResponse_ATT_AI', dialogNm: 'aiResponse_ATT_AI' },
       niaTopology: { popupName: '토폴로지', parameterKey: 'niaTopology', dialogNm: 'niaTopology' },
       disabilityStatusHistoryManagement: { popupName: '장애현황 및 이력관리', parameterKey: 'DisabilityStatusHistoryManagement', dialogNm: 'disabilityStatusHistoryManagement' },
     },
 
-    chatbotDashboardPopupMap: {
-      'sopHistory': { label: 'SOP이력', key: 'sopHistory' },
-      'processFin': { label: '마감', key: 'processFin' },
-      'configTest': { label: '조치', key: 'configTest' },
-      'aiResponse': { label: '장애대응', key: 'aiResponse' },
-      'aiResponse_ATT_AI': { label: 'AIB장애대응', key: 'aiResponse_ATT_AI' },
-      'requestForAction': { label: '상황전파', key: 'requestForAction' },
-      'niaTopology': { label: '토폴로지', key: 'niaTopology' },
-    },
+    // chatbotDashboardPopupMap: {
+    //   'sopHistory': { label: 'SOP이력', key: 'sopHistory' },
+    //   'processFin': { label: '마감', key: 'processFin' },
+    //   'configTest': { label: '조치', key: 'configTest' },
+    //   'aiResponse': { label: '장애대응', key: 'aiResponse' },
+    //   'aiResponse_ATT_AI': { label: 'AIB장애대응', key: 'aiResponse_ATT_AI' },
+    //   'requestForAction': { label: '상황전파', key: 'requestForAction' },
+    //   'niaTopology': { label: '토폴로지', key: 'niaTopology' },
+    // },
     chatbotIcon: {
       success: '✅',
       move: '➡️',

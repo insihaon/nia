@@ -25,7 +25,7 @@
           </el-card>
         </el-col>
         <el-col :span="18" style="height: 100%">
-          <el-card shadow="never" style="height: 100%" :body-style="{ padding: '10px', height: '100%', overflow: 'auto' }">
+          <el-card v-loading="isTopologyLoading" shadow="never" style="height: 100%" :body-style="{ padding: '10px', height: '100%', overflow: 'auto' }" element-loading-text="토폴로지 데이터를 불러오는 중...">
             <div slot="header">
               <span><i class="el-icon-document" />토폴로지 Map</span>
             </div>
@@ -153,6 +153,7 @@ export default {
       src: `webpack:///${__filename.replace(/\\/g, '/').replace(/\?.*$/, '')}`,
       selectedRow: null,
       ticketTotalData: [],
+      isTopologyLoading: false,
       chartData: {
         labels: [],
         datasets: [
@@ -201,34 +202,22 @@ export default {
   },
   computed: {
     ...mapState({
-      aiResponseEventText: (state) => state.chatbot.routerParameter[constants.nia.chatbotKeyMap.aiResponse.parameterKey],
+      aiResponseEventText: (state) => state.chatbot.routerParameter[constants.nia.chatbotKeyMap.aiResponse_NTT.parameterKey],
     }),
     isModal() {
       return !!this.wdata.params
     },
   },
   watch: {
-    // aiResponseEventText(nVal, oVal) {
-    //   if (this.isModal) {
-    //     switch (
-    //       nVal
-    //       // case constants.nia.chatbotCommand.dataSnapshot.action:
-    //       //   this.fn_openWindow('snapShot', this._merge(this.selectedRow, this.trafficInfo))
-    //       //   break
-    //       // case constants.nia.chatbotCommand.requestForAction.action:
-    //       //   this.fn_openWindow('requestForAction', this._merge(this.selectedRow, this.trafficInfo))
-    //       //   break
-    //       // case constants.nia.chatbotCommand.configTest.action:
-    //       //   this.fn_openWindow('configTest', this._merge(this.selectedRow, this.trafficInfo))
-    //       //   break
-    //       // case constants.nia.chatbotCommand.fin.action:
-    //       //   this.fn_openWindow('processFin', this._merge(this.selectedRow, this.trafficInfo))
-    //       //   break
-    //     ) {
-    //     }
-    //     // this.$store.commit('chatbot/CLEAR_ROUTER_PARAMETER', { name: constants.nia.chatbotKeyMap.aiResponse.parameterKey })
-    //   }
-    // },
+    aiResponseEventText(nVal, oVal) {
+      if (this.isModal) {
+        switch (nVal) {
+          case constants.nia.chatbotCommand.packetListAll.action:
+            this.visibleNttTicketDataList()
+            break
+        }
+      }
+    },
   },
 
   created() {
@@ -238,10 +227,23 @@ export default {
     await this.setTicketDataForChatbotTicketData()
     await this.setDonutChartData()
 
-    window.v.nttMap = this.initTopology()
-    this.ticketTotalData = await this.loadNttTicketTotalDataList()
-    const groupedData = this.processNetworkData(this.ticketTotalData)
-    this.makeTopologyEmlements(groupedData)
+    // 토폴로지 로딩 시작
+    this.isTopologyLoading = true
+    try {
+      window.v.nttMap = this.initTopology()
+      this.ticketTotalData = await this.loadNttTicketTotalDataList()
+      const groupedData = this.processNetworkData(this.ticketTotalData)
+      this.makeTopologyEmlements(groupedData)
+    } catch (error) {
+      console.error('토폴로지 로딩 중 오류 발생:', error)
+      this.$alert('토폴로지 데이터를 불러오는 중 오류가 발생했습니다.', '오류', {
+        confirmButtonText: '확인',
+        type: 'error',
+      })
+    } finally {
+      // 로딩 종료
+      this.isTopologyLoading = false
+    }
 
     this.$nextTick(() => {
       this.popupShowCommand()
@@ -489,18 +491,16 @@ export default {
     },
 
     async popupShowCommand() {
-      // if (!this.isFocusModeButNotFocus) {
-      //   this.$store.dispatch('chatbot/botPushAnswerMessage', {
-      //     content:
-      //       `<div class="chatbot-command-header">AI 장애대응화면</div>
-      //     AI에서 지정한 임계치를 초과한 시점의 실제 트래픽과 AI 임계치가 어느정도인지 차트를 통하여 확인할 수 있습니다.
-      //     <br>${constants.nia.chatbotIcon.Information} 차트 라벨을 클릭으로 차트를 표시하거나 숨깁니다.
-      //     ${constants.nia.chatbotIcon.Information} 장애 시점은 MBPS 차트에서 확인할 수 있으며 OUT, IN 중 장애가 발생한 정보만 초기에 표시합니다.
-      //     ${constants.nia.chatbotIcon.Information} BPS는 대역폭을 확인하여 대역폭 포화를 감지합니다.
-      //     ${constants.nia.chatbotIcon.Information} PPS는 Packet 개수로 DDOS공격을 확인합니다.<br>
-      //     ` + (await getWindowActionList(constants.nia.chatbotKeyMap.aiResponse.dialogNm, constants.nia.chatbotKeyMap.aiResponse.popupName)),
-      //   })
-      // }
+      if (!this.isFocusModeButNotFocus) {
+        this.$store.dispatch('chatbot/botPushAnswerMessage', {
+          content:
+            `<div class="chatbot-command-header">유해트래픽 AI 장애대응화면</div>
+          AI에서 발견한 유해트래픽 장애에 대한 정보를 확인할 수 있는 화면입니다.
+          <br>${constants.nia.chatbotIcon.Information} 유해트래픽 정확도 : 특정 종류의 장애가 발생한 것에 대한 정확도 차트와 통계 리스트입니다.
+          ${constants.nia.chatbotIcon.Information} 토폴로지 Map : 어떤 노드가 집중적으로 공격받는지에 대한 내용을 토폴로지로 표시합니다.
+          ` + (await getWindowActionList(constants.nia.chatbotKeyMap.aiResponse_NTT.dialogNm, constants.nia.chatbotKeyMap.aiResponse_NTT.popupName)),
+        })
+      }
     },
 
     onClose() {

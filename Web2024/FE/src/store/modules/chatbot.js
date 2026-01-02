@@ -170,7 +170,7 @@ const mutations = {
     async SET_ALARM_FOCUS_CHAT_TICKET_DATA(state, { ticketData }) {
         state.alarmFocusTicketData = ticketData
 
-        if (['NTT', 'NTT_AI'].includes(ticketData.ticket_type)) {
+        if (['NTT_AI'].includes(ticketData.ticket_type)) {
             const res = await apiSelectRcaNttTicketDetailInfo({ ticket_id: ticketData.ticket_id })
             if (res && res.result) {
                 state.alarmFocusNTTAIDetailInfo = res.result[0]
@@ -183,7 +183,11 @@ const mutations = {
         if (ticketData.ticket_type === 'SYSLOG') {
             res = await apiSopSyslogHistList({ NODE_NM: ticketData.node_nm })
         } else {
-            res = await apiSelectSopHistList({ NODE_NM: ticketData.node_nm })
+            if (ticketData.ticket_type === 'NTT_AI') {
+                res = await apiSelectSopHistList({ TICKET_TYPE: ticketData.ticket_type })
+            } else {
+                res = await apiSelectSopHistList({ NODE_NM: ticketData.node_nm })
+            }
         }
 
         const sopDataList = res.result
@@ -202,6 +206,7 @@ const mutations = {
                     const tempMessageArray = _.cloneDeep(state.alarmFocusMode_chatMessages)
                     state.alarmFocusMode_chatMessages.length = 1
                     state.alarmFocusMode_chatMessages.time = getCurrentTime()
+                    state.alarmFocusNTTAIDetailInfo = {}
 
                     const filterArray = tempMessageArray.filter((m) => { return m.type === constants.nia.chatType.botAlert })
                     state.alarmFocusMode_chatMessages.push(...filterArray)

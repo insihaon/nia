@@ -24,10 +24,11 @@ var dialogOpenMixin = {
         },
         aiResponse_ATT_AI: {
           component: () => import('@/views-nia/dashBoard/aiResponse_ATT_AI'),
-          pageTitle: 'AI 장애대응(신규)',
+          pageTitle: 'AI 이상트래픽 장애대응',
           width: '1100',
           height: '750',
           resizeble: true,
+          chatbotParameterKeyName: constants.nia.chatbotKeyMap.aiResponse_ATT_AI.parameterKey
         },
         aiResponse_NTT: {
           component: () => import('@/views-nia/dashBoard/aiResponse_NTT'),
@@ -35,6 +36,7 @@ var dialogOpenMixin = {
           width: '1800',
           height: '800',
           resizeble: true,
+          chatbotParameterKeyName: constants.nia.chatbotKeyMap.aiResponse_NTT.parameterKey
         },
         requestForAction: {
           component: () => import('@/views-nia/dashBoard/requestForAction'),
