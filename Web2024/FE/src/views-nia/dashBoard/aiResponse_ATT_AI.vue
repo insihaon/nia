@@ -1,116 +1,19 @@
 <template>
   <div :class="{ [name]: true }" style="height: 100%">
     <div class="d-flex flex-column h-full">
-      <el-row style="overflow: hidden" :style="{ flex: '0 1 50%' }" :gutter="10">
-        <el-col :span="12" style="height: 100%">
-          <el-card shadow="never" style="height: 100%" :body-style="{ padding: '10px', height: '100%' }">
-            <div slot="header">
-              <span><i class="el-icon-document" /> 작업 요청 구간</span>
-            </div>
-            <el-row class="d-flex flex-column justify-center h-100">
-              <div class="node-section d-flex justify-center">
-                <img src="@/assets/images/nia/node/switch.png" />
-                <div class="blinking mt-8" />
-                <img src="@/assets/images/nia/node/switch.png" />
-              </div>
-              <div class="node-info d-flex justify-evenly">
-                <div style="width: 390px">
-                  <div style="float: left">
-                    <div>{{ trafficInfo.root_cause_sysnamea }}</div>
-                    <div>
-                      <span v-if="trafficInfo.root_cause_porta">({{ trafficInfo.root_cause_porta }})</span>
-                    </div>
-                  </div>
-                  <div style="float: right">
-                    <div>{{ trafficInfo.root_cause_sysnamea }}</div>
-                    <div>
-                      <span v-if="trafficInfo.root_cause_portz">({{ trafficInfo.root_cause_portz }})</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </el-row>
-          </el-card>
-        </el-col>
-        <el-col :span="12" style="height: 100%">
+      <el-row style="overflow: hidden; flex: 0 0 140px" :gutter="10">
+        <el-col :span="24" style="height: 100%">
           <el-card shadow="never" style="height: 100%" :body-style="{ padding: '10px', height: '100%', overflow: 'auto' }">
             <div slot="header">
-              <span><i class="el-icon-document" />티켓 정보</span>
+              <span><i class="el-icon-document" />티켓 상세 정보</span>
             </div>
-            <table class="ticket-info-table">
-              <tbody>
-                <tr>
-                  <td>알람번호</td>
-                  <td>{{ selectedRow.alarmno || noDataText }}</td>
-                </tr>
-                <tr>
-                  <td>장애 발생시간</td>
-                  <td>{{ selectedRow.alarmtime || noDataText }}</td>
-                </tr>
-                <tr>
-                  <td>티켓ID</td>
-                  <td>{{ selectedRow.ticket_id || noDataText }}</td>
-                </tr>
-                <tr>
-                  <td>상태</td>
-                  <td>{{ selectedRow.status || noDataText }}</td>
-                </tr>
-                <tr>
-                  <td>티켓타입</td>
-                  <td>{{ selectedRow.ticket_type || noDataText }}</td>
-                </tr>
-                <tr>
-                  <td>장애유형</td>
-                  <td>{{ selectedRow.fault_type || noDataText }}</td>
-                </tr>
-                <tr>
-                  <td>장애정보</td>
-                  <td>{{ selectedRow.alarmmsg || noDataText }}</td>
-                </tr>
-                <tr>
-                  <td>알람 원본메시지</td>
-                  <td>{{ selectedRow.alarmmsg_original || noDataText }}</td>
-                </tr>
-                <tr>
-                  <td>장애내용</td>
-                  <td>{{ selectedRow.ticket_rca_result_code || noDataText }}</td>
-                </tr>
-                <tr>
-                  <td>장애원인</td>
-                  <td>{{ selectedRow.ticket_rca_result_dtl_code || noDataText }}</td>
-                </tr>
-                <tr>
-                  <td>장비ID</td>
-                  <td>{{ selectedRow.node_num || noDataText }}</td>
-                </tr>
-                <tr>
-                  <td>장비명</td>
-                  <td>{{ selectedRow.node_nm || noDataText }}</td>
-                </tr>
-                <tr>
-                  <td>인터페이스명</td>
-                  <td>{{ selectedRow.alarmloc || noDataText }}</td>
-                </tr>
-                <tr>
-                  <td>근원알람개수</td>
-                  <td>{{ selectedRow.total_related_alarm_cnt || noDataText }}</td>
-                </tr>
-                <tr>
-                  <td>IP주소</td>
-                  <td>{{ selectedRow.ip_addr || noDataText }}</td>
-                </tr>
-                <tr>
-                  <td>AI결과피드백</td>
-                  <td>{{ selectedRow.ai_accuracy || noDataText }}</td>
-                </tr>
-              </tbody>
-            </table>
+            <CompAgGrid ref="ticketGrid" v-model="ticketGrid" class="w-100 flex-fill" style="height: 80px" />
           </el-card>
         </el-col>
       </el-row>
 
-      <el-row :gutter="10" class="mt-2">
-        <el-col>
+      <el-row :gutter="10" class="mt-2" style="flex: 1">
+        <el-col style="height: 100%">
           <el-card shadow="never" style="height: 100%" :body-style="{ padding: '10px', height: '100%' }">
             <div slot="header">
               <span><i class="el-icon-document" />사용량 예측 분석</span>
@@ -118,76 +21,47 @@
             <div class="usagePredAnaly">
               <LineChart ref="LineChart" class="LineChart" :c-data="chartData" :plugins="[verticalLinePlugin]" :c-ver-line="chartVLData" :remove-duplicate-dates="true" />
               <div class="usagePredAnalyResult">
-                <div class="usagePredAnalyResultTitle" style="width: 80px">
+                <div class="usagePredAnalyResultTitle">
                   <span>분석결과</span>
                 </div>
-                <div v-if="isTcaError">
-                  <span class="usagePredAnalyResultItem">장애 발생 시점</span>
-                  <span class="usagePredAnalyResultValue">{{ tcaModel.tca_alert_time.slice(0, 10) + ' ' + tcaModel.tca_alert_time.slice(11, 16) }}</span>
-                </div>
-                <div v-else>
-                  <span class="usagePredAnalyResultItem">임계치 도달 예측 시점</span>
-                  <span class="usagePredAnalyResultValue">{{ thresholdDate }}</span>
-                </div>
-                <div>
-                  <span class="usagePredAnalyResultItem">증감 예측 결과</span>
-                  <span class="usagePredAnalyResultValue">{{ trendValue }}</span>
-                </div>
-              </div>
-              <div class="usagePredAnalyBottom">
-                <div class="usagePredAnalyBottomTitle" style="width: 80px; line-height: 58px">
-                  <span style="width: 72px">조회조건</span>
-                </div>
-                <div class="usagePredAnalyBottomItem" style="width: 50%">
-                  <ul>
-                    <li>
-                      <span :title="analyDate">분석기간 : {{ analyDate }}</span>
-                    </li>
-                    <li>
-                      <span :title="selectedRow.node_nm">대상 장비 : {{ selectedRow.node_nm }}</span>
-                    </li>
-                  </ul>
-                  <ul>
-                    <li>
-                      <span :title="currentErrorDirection + ' 트래픽'">분석항목 : {{ currentErrorDirection + ' 트래픽' }}</span>
-                    </li>
-                    <li>
-                      <span :title="selectedRow.alarmloc">대상 IF : {{ selectedRow.alarmloc }}</span>
-                    </li>
-                  </ul>
-                </div>
-
-                <div style="width: 80px">
-                  <div class="usagePredAnalyBottomTitle" style="width: 80px; margin-bottom: 2px">
-                    <span style="width: 72px">경고임계치</span>
+                <div class="usagePredAnalyResultContainer" style="width: calc(100% - 80px); display: flex">
+                  <div v-if="isTcaAlarm" class="usagePredAnalyResultBody">
+                    <span class="usagePredAnalyResultItem">
+                      장애 발생 시점
+                      <el-tooltip class="item" effect="dark" content="TCA 경보의 경우 장애 발생 시점이 언제인지 표시합니다" placement="top">
+                        <span class="tipIcon">{{ chatbotIcon.Tip }}</span>
+                      </el-tooltip>
+                    </span>
+                    <span class="usagePredAnalyResultValue">{{ tcaModel.tca_alert_time ? tcaModel.tca_alert_time.slice(0, 10) + ' ' + tcaModel.tca_alert_time.slice(11, 16) : '' }}</span>
                   </div>
-                  <div class="usagePredAnalyBottomTitle" style="width: 80px">
-                    <span style="width: 72px">정확도</span>
+                  <div v-else class="usagePredAnalyResultBody">
+                    <span class="usagePredAnalyResultItem">
+                      임계치 도달 예측 시점
+                      <el-tooltip class="item" effect="dark" content="예측 경보의 경우 장애가 언제 발생될 것으로 예측되는지 표시합니다" placement="top">
+                        <span class="tipIcon">{{ chatbotIcon.Tip }}</span>
+                      </el-tooltip>
+                    </span>
+                    <span class="usagePredAnalyResultValue">{{ thresholdDate }}</span>
                   </div>
-                </div>
-
-                <div style="width: 50%">
-                  <div class="usagePredAnalyBottomItem">
-                    <ul>
-                      <li style="line-height: 29px">
-                        <span v-if="currentErrorDirection == 'in'">{{ recustSetValue.inmbpsrate }}Mbps(in)</span>
-                        <span v-if="currentErrorDirection == 'out'">{{ recustSetValue.outmbpsrate }}Mbps(out)</span>
-                      </li>
-                    </ul>
+                  <div class="usagePredAnalyResultBody">
+                    <span class="usagePredAnalyResultItem">
+                      증감 예측 결과
+                      <el-tooltip class="item" effect="dark" content="앞으로 증감이 어떻게 변동될 것으로 예측되는지 표시합니다" placement="top">
+                        <span class="tipIcon">{{ chatbotIcon.Tip }}</span>
+                      </el-tooltip>
+                    </span>
+                    <span class="usagePredAnalyResultValue">{{ trendValue }}</span>
                   </div>
-                  <div class="usagePredAnalyBottomItem">
-                    <ul>
-                      <li v-if="accuracyValue" style="line-height: 25px">
-                        <span>{{ accuracyValue }}%</span>
-                      </li>
-                      <li v-else style="line-height: 25px">
-                        <span>정확도값 없음</span>
-                      </li>
-                    </ul>
+                  <div class="usagePredAnalyResultBody">
+                    <span class="usagePredAnalyResultItem">
+                      정확도
+                      <el-tooltip class="item" effect="dark" content="예측값과 실제값 사이의 정확도(하루 이후 계산)" placement="top">
+                        <span class="tipIcon">{{ chatbotIcon.Tip }}</span>
+                      </el-tooltip>
+                    </span>
+                    <span v-if="accuracyValue" class="usagePredAnalyResultValue">{{ accuracyValue }}</span>
+                    <span v-else class="usagePredAnalyResultValue">정확도값 없음</span>
                   </div>
-                </div>
-                <div class="usagePredAnalyBottomTrendTitle" style="width: 120px" @click="openTrendAnalysisPopup()">
-                  <span style="line-height: 58px"><i class="xi-search" /> 트렌드분석</span>
                 </div>
               </div>
               <div class="legend">(단위 : Mbps)</div>
@@ -198,6 +72,7 @@
 
       <el-row style="flex: 0 0 35px">
         <el-col align="right" class="mt-2">
+          <el-button size="mini" type="primary" @click.native="openTrendAnalysisPopup">트렌드분석</el-button>
           <el-button size="mini" type="primary" icon="el-icon-camera" @click.native="fn_openWindow('snapShot', _merge(selectedRow, trafficInfo))"> 데이터 스냅샷 </el-button>
           <el-button size="mini" type="primary" @click.native="fn_openWindow('requestForAction', _merge(selectedRow, trafficInfo))"> 상황전파 </el-button>
           <el-button size="mini" type="primary" @click.native="fn_openWindow('configTest', _merge(selectedRow, trafficInfo))"> 시험 </el-button>
@@ -221,7 +96,7 @@ import { mapState } from 'vuex'
 import { getChatbotTicketData, getWindowActionList } from '@/views-nia/js/commonNiaFunction'
 import niaObserverMixin from '@/mixin/niaObserverMixin'
 import constants from '@/min/constants'
-
+import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
 import moment from 'moment'
 
 const verticalLinePlugin = {
@@ -276,6 +151,7 @@ export default {
   components: {
     LineChart: () => import('@/views-nia/dashBoard/library/LineChart'),
     popupTrendAnalysis: () => import('@/views-nia/dashBoard/popupTrendAnalysis'),
+    CompAgGrid,
   },
   extends: Base,
   mixins: [dialogOpenMixin, niaObserverMixin],
@@ -303,19 +179,19 @@ export default {
       thresholdDate: '-',
       thresholdDateTime: '', // 임계치 도달 예측 시점의 원본 날짜/시간 값
       trendValue: '-',
-      isTcaAlarm: false,
       recustSetValue: { llalertpredictstandvalue: 0, /* predictalarmtime: 0, */ inmbpsrate: 0, outmbpsrate: 0 },
       analyDate: '',
       currentValue: '',
       predictValue: '',
       accuracyValue: '',
       chartVLData: { currentPositionX: 0, color: 'red', nowDate: '' },
+      chartDataOriginList: [],
       chartData: {
         labels: [],
         datasets: [
           {
             label: '실제값',
-            borderColor: '#3b82f6', // 파란색 - 신뢰할 수 있는 실제 데이터
+            borderColor: '#3b82f6', // 파란색
             borderWidth: 3,
             backgroundColor: 'rgba(59, 130, 246, 0.1)',
             data: [],
@@ -324,8 +200,8 @@ export default {
             tension: 0.1,
           },
           {
-            label: '예측값',
-            borderColor: '#10b981', // 초록색 - 긍정적인 예측
+            label: '-',
+            borderColor: '#10b981', // 초록색
             borderWidth: 3,
             backgroundColor: 'rgba(16, 185, 129, 0.1)',
             data: [],
@@ -333,23 +209,13 @@ export default {
             tension: 0.1,
           },
           {
-            label: '예측 상한값',
-            borderColor: '#f59e0b', // 주황색 - 주의가 필요한 상한선
+            label: '-',
+            borderColor: '#f59e0b', // 주황색
             borderWidth: 2,
             backgroundColor: 'rgba(245, 158, 11, 0.2)',
             data: [],
             radius: 0,
             fill: '+1',
-            tension: 0.1,
-          },
-          {
-            label: '예측 하한값',
-            borderColor: '#8b5cf6', // 보라색 - 안전한 하한선
-            borderWidth: 2,
-            backgroundColor: 'rgba(139, 92, 246, 0.2)',
-            data: [],
-            radius: 0,
-            fill: '-1',
             tension: 0.1,
           },
         ],
@@ -372,16 +238,63 @@ export default {
     }
   },
   computed: {
+    ticketGrid() {
+      // prettier-ignore
+      const columns = [
+        { type: '', prop: 'ticket_id', name: 'TICKET_ID', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
+        { type: '', prop: 'analyDate', name: '분석기간', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
+        { type: '', prop: 'alarmtime', name: '장애 발생시간', width: 200, alignItems: 'center', fixed: false, suppressMenu: true, formatter: (row) => { return this.formatterTimeStamp(row.alarmtime, 'YYYY/MM/DD-HH:mm:ss') }, },
+        { type: '', prop: 'errorDirection', name: '장애방향', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
+        { type: '', prop: 'errorRange', name: '장애구간', width: 400, alignItems: 'center', fixed: false, suppressMenu: true },
+        { type: '', prop: 'fault_type', name: '장애유형', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
+        { type: '', prop: 'alarmmsg', name: '장애정보', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
+        { type: '', prop: 'alarmmsg_original', name: '알람 원본메시지', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
+        { type: '', prop: 'ticket_rca_result_code', name: '장애내용', width: 200, alignItems: 'center', fixed: false, suppressMenu: true },
+        { type: '', prop: 'ticket_rca_result_dtl_code', name: '장애 원인', width: 200, alignItems: 'center', fixed: false, suppressMenu: true },
+        { type: '', prop: 'node_num', name: '장비ID', width: 200, alignItems: 'center', fixed: false, suppressMenu: true },
+        { type: '', prop: 'node_nm', name: '장비명', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
+        { type: '', prop: 'alarmloc', name: '인터페이스명', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
+        { type: '', prop: 'ip_addr', name: 'IP주소', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
+      ]
+
+      const options = { name: this.name, checkable: false, rowGroupPanel: false }
+
+      let errorRange = this.trafficInfo.root_cause_sysnamea + '(' + this.trafficInfo.root_cause_porta + ')'
+      if (this.trafficInfo.root_cause_sysnamez && this.trafficInfo.root_cause_sysnamez.length > 0 && this.trafficInfo.root_cause_sysnamez !== 'Unknown') {
+        errorRange += '->' + this.trafficInfo.root_cause_sysnamez
+        if (this.trafficInfo.root_cause_portz && this.trafficInfo.root_cause_portz.length > 0) {
+          errorRange += '(' + this.trafficInfo.root_cause_portz + ')'
+        }
+      } else {
+        errorRange += '[포트 이상장애]'
+      }
+
+      return {
+        options,
+        columns,
+        data: [
+          Object.assign(this.selectedRow, {
+            errorRange: errorRange,
+            analyDate: this.analyDate,
+            errorDirection: this.currentErrorDirection,
+          }),
+        ],
+      }
+    },
     errorDirectionisIn() {
       return this.currentErrorDirection === 'in'
+    },
+
+    chatbotIcon() {
+      return constants.nia.chatbotIcon
     },
 
     CDS() {
       return this.chartData.datasets
     },
 
-    isTcaError() {
-      return Object.keys(this.tcaModel).length > 0
+    isTcaAlarm() {
+      return ['TCA Alarm', '이상트래픽 TCA 경보'].includes(this.selectedRow.ticket_rca_result_code)
     },
 
     currentDate() {
@@ -429,7 +342,7 @@ export default {
     await this.setTicketDataForChatbotTicketData()
 
     this.onLoadTrafficInfo()
-    this.loadChartData()
+    this.drawingChart()
 
     this.$nextTick(() => {
       this.popupShowCommand()
@@ -485,9 +398,8 @@ export default {
     resetChartData() {
       this.chartData.labels = []
       this.CDS[0].data = [] // 실제값
-      this.CDS[1].data = [] // 예측값
-      this.CDS[2].data = [] // 예측 상한값
-      this.CDS[3].data = [] // 예측 하한값
+      this.CDS[1].data = []
+      this.CDS[2].data = []
 
       this.trendData.trendParseDate = []
       this.trendData.trendData = []
@@ -517,9 +429,8 @@ export default {
     },
 
     // AI 차트 데이터 조회
-    async fetchAiChartData() {
-      if (this.selectedRow.ticket_rca_result_code === 'TCA Alarm') {
-        this.isTcaAlarm = true
+    async loadAiChartData() {
+      if (this.isTcaAlarm) {
         const res1 = await apiSelectAttAiTcaModel({
           NODE_NUM: this.selectedRow.node_num,
           IF_NUM: this.selectedRow.if_num,
@@ -582,22 +493,32 @@ export default {
     },
 
     // 차트 데이터 초기화 및 기본 설정
-    initializeChartData(aiChartData) {
+    initializeChartData(aiData) {
+      this.setChartLabel()
       this.resetChartData()
 
-      this.currentErrorDirection = aiChartData[0].out_alertyn === 'Y' ? 'out' : 'in'
-      this.accuracyValue = aiChartData[0].out_alertyn === 'Y' ? aiChartData[0].out_accuracy_rate : aiChartData[0].in_accuracy_rate
-      this.analyDate = aiChartData[0].fit_sttime.substring(5, 7) + '.' + aiChartData[0].fit_sttime.substring(8, 10) + '~' + aiChartData[0].fit_endtime.substring(5, 7) + '.' + aiChartData[0].fit_endtime.substring(8, 10)
-      this.setThresholdDate(aiChartData)
-      this.setRecustSetValue(aiChartData)
+      this.currentErrorDirection = aiData.out_alertyn === 'Y' ? 'out' : 'in'
+      this.accuracyValue = aiData.out_alertyn === 'Y' ? aiData.out_accuracy_rate : aiData.in_accuracy_rate
+      this.analyDate = aiData.fit_sttime.substring(5, 7) + '.' + aiData.fit_sttime.substring(8, 10) + ' ~ ' + aiData.fit_endtime.substring(5, 7) + '.' + aiData.fit_endtime.substring(8, 10)
+      this.setThresholdDate(aiData)
+    },
+
+    setChartLabel() {
+      if (this.isTcaAlarm) {
+        this.chartData.datasets[1].label = '임계상한값'
+        this.chartData.datasets[2].label = '임계하한값'
+      } else {
+        this.chartData.datasets[1].label = '예측값'
+        this.chartData.datasets[2].label = '예측 임계값'
+      }
     },
 
     // 세로선 기준 날짜/시간 결정
-    determineTargetDateTime() {
+    drawVerticalLineLabelAndGetDateTime() {
       let targetDateTime = null
       let targetDateLabel = ''
 
-      if (this.isTcaError) {
+      if (this.isTcaAlarm) {
         // TCA 에러인 경우: tcaModel.tca_alert_time 사용
         targetDateTime = new Date(this.tcaModel.tca_alert_time)
         targetDateLabel = this.tcaModel.tca_alert_time.slice(0, 10) + ' ' + this.tcaModel.tca_alert_time.slice(11, 16)
@@ -623,107 +544,158 @@ export default {
       // 시간 단위로 표준화
       targetDateTime.setMinutes(0, 0, 0)
 
-      return {
-        targetDateTime: new Date(targetDateTime),
-        targetDateLabel,
-      }
+      targetDateLabel += this.isTcaAlarm ? '(장애발생시간)' : '(현재시간)'
+
+      this.setChartVLTimeStamp(targetDateLabel)
+
+      return new Date(targetDateTime)
     },
 
     // 차트 데이터 포인트 처리
-    processChartDataPoints(aiChartData, targetDateTime) {
-      let firstMax = 0
-      let lastMax = 0
-      let firstIndex = 0
-      let lastIndex = 0
-      let vlCurrentIndex = 0
+    setCharPoints(aiData, ingredient) {
+      const parseDate = aiData.ds.substring(5, 7) + '.' + aiData.ds.substring(8, 10) + ' '
+      const tempDate = new Date(aiData.ds)
+      const weekly = this.errorDirectionisIn ? aiData.in_weekly : aiData.out_weekly
+      const actualValue = this.errorDirectionisIn ? aiData.in_y : aiData.out_y
+      const yhatValue = this.errorDirectionisIn ? aiData.in_yhat : aiData.out_yhat
+      this.weeklyData[tempDate.getDay()].data = this.weeklyData[tempDate.getDay()].data + (weekly ?? 0)
+      this.weeklyData[tempDate.getDay()].cnt += 1
+      this.trendData.trendParseDate.push(parseDate)
+      const trend = this.errorDirectionisIn ? aiData.in_trend : aiData.out_trend
+      this.trendData.trendData.push((trend ?? 0).toFixed(2))
 
-      const dateFormatTargetDate = new Date(targetDateTime)
-      dateFormatTargetDate.setMinutes(0, 0, 0)
+      // 모든 데이터 포인트에 날짜 라벨 추가 (중복 제거는 LineChart.js의 callback에서 처리)
+      this.chartData.labels.push(parseDate)
 
-      for (let i = 0; i < aiChartData.length; i++) {
-        const aiData = aiChartData[i]
-        const parseDate = aiData.ds.substring(5, 7) + '.' + aiData.ds.substring(8, 10) + ' '
-        const tempDate = new Date(aiData.ds)
-        const weekly = this.errorDirectionisIn ? aiData.in_weekly : aiData.out_weekly
-        this.weeklyData[tempDate.getDay()].data = this.weeklyData[tempDate.getDay()].data + (weekly ?? 0)
-        this.weeklyData[tempDate.getDay()].cnt += 1
-        this.trendData.trendParseDate.push(parseDate)
-        const trend = this.errorDirectionisIn ? aiData.in_trend : aiData.out_trend
-        this.trendData.trendData.push((trend ?? 0).toFixed(2))
+      const dsDate = new Date(aiData.ds)
+      dsDate.setMinutes(0, 0, 0)
 
-        // 모든 데이터 포인트에 날짜 라벨 추가 (중복 제거는 LineChart.js의 callback에서 처리)
-        this.chartData.labels.push(parseDate)
+      // fit_date의 하루 전 날짜 계산
+      const fitDateMinusOneDay = moment(aiData.fit_date).subtract(1, 'days').format('YYYY-MM-DD')
 
-        const dsDate = new Date(aiData.ds)
-        dsDate.setMinutes(0, 0, 0)
-
-        // 세로선 위치 계산: targetDateTime과 일치하는 데이터 포인트 찾기
-        if (dsDate.getTime() === dateFormatTargetDate.getTime()) {
-          vlCurrentIndex = i / aiChartData.length
-        }
-
-        // in_y, out_y 값을 기준으로 실제값/예측값 구분
-        const actualValue = this.errorDirectionisIn ? aiData.in_y : aiData.out_y
-        // const tcaTime = this.isTcaAlarm ? '' : ''
-
-        // fit_date의 하루 전 날짜 계산
-        const fitDateMinusOneDay = moment(aiData.fit_date).subtract(1, 'days').format('YYYY-MM-DD')
-
-        if (this.isTcaAlarm ? new Date() >= dsDate.getTime() : fitDateMinusOneDay >= aiData.ds) {
-          // 실제값이 존재하는 경우: 실제값 표시
+      // 실제값 셋팅
+      if (new Date() >= dsDate.getTime()) {
+        if (this.isTcaAlarm) {
           this.CDS[0].data.push(actualValue.toFixed(2))
-          this.CDS[1].data.push(null)
-          this.CDS[2].data.push(null)
-          this.CDS[3].data.push(null)
         } else {
-          // 실제값이 없는 경우: 예측값 표시
-          // fit_date와의 관계는 유지 (firstIndex, lastIndex 계산용)
-          if (aiData.fit_date === aiData.ds.substring(0, 10)) {
-            if (firstIndex === 0) {
-              firstIndex = i
-              firstMax = this.errorDirectionisIn ? aiData.in_yhat : aiData.out_yhat
+          if (fitDateMinusOneDay >= aiData.ds) {
+            this.CDS[0].data.push(actualValue.toFixed(2))
+          } else {
+            if (!ingredient.isChangeFirst) {
+              ingredient.isChangeFirst = true
+              this.CDS[0].data.push(yhatValue)
             } else {
-              if (firstMax < this.errorDirectionisIn ? aiData.in_yhat : aiData.out_yhat) {
-                firstMax = this.errorDirectionisIn ? aiData.in_yhat : aiData.out_yhat
-              }
+              this.CDS[0].data.push(null)
             }
           }
-
-          const predictLastDayDiffer = 6 // 15일 수집해서 7일 예측하므로, 7일 - 1
-          if (this.diffDate(aiData.fit_date, aiData.ds.substring(0, 10)) === predictLastDayDiffer) {
-            if (lastIndex === 0) {
-              lastIndex = i
-              lastMax = this.errorDirectionisIn ? aiData.in_yhat : aiData.out_yhat
-            } else {
-              if (lastMax < this.errorDirectionisIn ? aiData.in_yhat : aiData.out_yhat) {
-                lastMax = this.errorDirectionisIn ? aiData.in_yhat : aiData.out_yhat
-              }
-            }
-          }
-
-          this.CDS[0].data.push(null)
-          this.errorDirectionisIn ? this.CDS[1].data.push(aiData.in_yhat.toFixed(2)) : this.CDS[1].data.push(aiData.out_yhat.toFixed(2))
-          this.errorDirectionisIn ? this.CDS[2].data.push(aiData.in_yhat_upper.toFixed(2)) : this.CDS[2].data.push(aiData.out_yhat_upper.toFixed(2))
-          this.errorDirectionisIn ? this.CDS[3].data.push(aiData.in_yhat_lower.toFixed(2)) : this.CDS[3].data.push(aiData.out_yhat_lower.toFixed(2))
         }
+      } else {
+        this.CDS[0].data.push(null)
       }
 
-      return { firstMax, lastMax, vlCurrentIndex }
+      // 예측값,예측임계값 vs 임계상한,임계하한
+      if (fitDateMinusOneDay >= aiData.ds) {
+        this.CDS[1].data.push(null)
+        this.CDS[2].data.push(null)
+      } else {
+        if (this.isTcaAlarm) {
+          // 임계상한값, 임계하한값
+          this.CDS[1].data.push(this.errorDirectionisIn ? aiData.in_yhat_upper.toFixed(2) : aiData.out_yhat_upper.toFixed(2))
+          this.CDS[2].data.push(this.errorDirectionisIn ? aiData.in_yhat_lower.toFixed(2) : aiData.out_yhat_lower.toFixed(2))
+        } else {
+          // 예측값, 예측임계값
+          this.CDS[1].data.push(yhatValue)
+          this.CDS[2].data.push(this.errorDirectionisIn ? aiData.in_threshold_value : aiData.out_threshold_value)
+        }
+      }
     },
 
     // 트렌드 값 계산
-    calculateTrendValue(firstMax, lastMax) {
-      firstMax = firstMax.toFixed(2) === 0.0 ? 1 : firstMax.toFixed(2)
-      const tempValue = parseInt((lastMax.toFixed(2) / firstMax - 1) * 100)
-      if (Math.abs(tempValue) < 10) {
-        this.trendValue = '안정적 ( ' + tempValue + ' % )'
-      } else {
-        this.trendValue = (tempValue > 0 ? '증가 추세 ( ' : '감소 추세 ( ') + tempValue + ' % )'
+    calculateTrendValue(aiData, i, ingredient) {
+      const yhatValue = this.errorDirectionisIn ? aiData.in_yhat : aiData.out_yhat
+
+      if (aiData.fit_date === aiData.ds.substring(0, 10)) {
+        if (ingredient.firstIndex === 0) {
+          ingredient.firstIndex = i
+          ingredient.firstMax = yhatValue
+        } else {
+          if (ingredient.firstMax < yhatValue) ingredient.firstMax = yhatValue
+        }
+      }
+
+      const predictLastDayDiffer = 6 // 15일 수집해서 7일 예측하므로, 7일 - 1
+      if (this.diffDate(aiData.fit_date, aiData.ds.substring(0, 10)) === predictLastDayDiffer) {
+        if (ingredient.lastIndex === 0) {
+          ingredient.lastIndex = i
+          ingredient.lastMax = yhatValue
+        } else {
+          if (ingredient.lastMax < yhatValue) ingredient.lastMax = yhatValue
+        }
+      }
+
+      if (i === this.chartDataOriginList.length - 1) {
+        ingredient.firstMax = ingredient.firstMax.toFixed(2) === 0.0 ? 1 : ingredient.firstMax.toFixed(2)
+        const tempValue = parseInt((ingredient.lastMax.toFixed(2) / ingredient.firstMax - 1) * 100)
+        if (Math.abs(tempValue) < 10) {
+          this.trendValue = '안정적 ( ' + tempValue + ' % )'
+        } else {
+          this.trendValue = (tempValue > 0 ? '증가 추세 ( ' : '감소 추세 ( ') + tempValue + ' % )'
+        }
       }
     },
 
     // 세로선 라벨 및 위치 설정
-    updateChartVerticalLine(targetDateLabel, vlCurrentIndex) {
+    setChartVerticalLinePosition(aiData, i, ingredient) {
+      const dsDate = new Date(aiData.ds)
+      dsDate.setMinutes(0, 0, 0)
+      // 세로선 위치 계산: targetDateTime과 일치하는 데이터 포인트 찾기
+      if (dsDate.getTime() === ingredient.verticalLineTargetDate.getTime()) {
+        ingredient.vlCurrentIndex = i / this.chartDataOriginList.length
+        this.chartVLData.currentPositionX = ingredient.vlCurrentIndex
+      }
+    },
+
+    // 차트 업데이트
+    updateChart() {
+      setTimeout(() => {
+        if (this.$refs.LineChart) {
+          // this.$refs.LineChart.optionUpdate && this.$refs.LineChart.optionUpdate()
+          this.$refs.LineChart.chartUpdate && this.$refs.LineChart.chartUpdate()
+          this.$refs.LineChart.makeLine && this.$refs.LineChart.makeLine()
+        }
+      }, 100)
+    },
+
+    async drawingChart() {
+      const okLoading = await this.waitForLineChart()
+      const target = { vue: this.$refs.LineChart }
+
+      try {
+        if (okLoading) this.openLoading(target, { text: '차트 불러오는 중..' })
+
+        this.chartDataOriginList = await this.loadAiChartData()
+        const verticalLineTargetDate = this.drawVerticalLineLabelAndGetDateTime()
+        const verticalingredient = { vlCurrentIndex: 0, verticalLineTargetDate }
+        const trendIngredient = { firstMax: 0, lastMax: 0, firstIndex: 0, lastIndex: 0 }
+        const chartPointIngredient = { isChangeFirst: false }
+
+        this.chartDataOriginList.forEach((aiData, i) => {
+          if (i === 0) this.initializeChartData(aiData)
+          this.setCharPoints(aiData, chartPointIngredient)
+          this.setChartVerticalLinePosition(aiData, i, verticalingredient)
+          this.calculateTrendValue(aiData, i, trendIngredient)
+        })
+
+        this.updateChart()
+        this.closeLoading(target)
+      } catch (error) {
+        this.error(error)
+      } finally {
+        this.closeLoading(target)
+      }
+    },
+
+    setChartVLTimeStamp(targetDateLabel) {
       if (targetDateLabel) {
         // targetDateLabel 형식에 맞게 변환 (YYYY-MM-DD HH:mm -> MM.DD HH:mm)
         if (targetDateLabel.includes('-')) {
@@ -741,71 +713,17 @@ export default {
       } else {
         this.chartVLData.nowDate = this.currentDate.substring(5, 7) + '.' + this.currentDate.substring(8, 10) + ' ' + this.currentDate.substring(11, 16)
       }
-      this.chartVLData.currentPositionX = vlCurrentIndex
     },
 
-    // 차트 업데이트
-    updateChart() {
-      setTimeout(() => {
-        if (this.$refs.LineChart) {
-          // this.$refs.LineChart.optionUpdate && this.$refs.LineChart.optionUpdate()
-          this.$refs.LineChart.chartUpdate && this.$refs.LineChart.chartUpdate()
-          this.$refs.LineChart.makeLine && this.$refs.LineChart.makeLine()
-        }
-      }, 100)
-    },
+    setThresholdDate(aiData) {
+      const predictreachdate = aiData.out_alertyn === 'Y' ? aiData.out_alert_datetime : aiData.in_alert_datetime
 
-    async loadChartData() {
-      const okLoading = await this.waitForLineChart()
-      const target = { vue: this.$refs.LineChart }
-
-      try {
-        if (okLoading) {
-          this.openLoading(target, { text: '차트 불러오는 중..' })
-        }
-
-        const aiChartData = await this.fetchAiChartData()
-        this.initializeChartData(aiChartData)
-
-        const { targetDateTime, targetDateLabel } = this.determineTargetDateTime()
-        const { firstMax, lastMax, vlCurrentIndex } = this.processChartDataPoints(aiChartData, targetDateTime)
-
-        this.calculateTrendValue(firstMax, lastMax)
-        this.updateChartVerticalLine(targetDateLabel, vlCurrentIndex)
-
-        console.log('Chart VL Data:', this.chartVLData)
-        console.log('Chart Data Labels Length:', this.chartData.labels.length)
-
-        this.updateChart()
-        this.closeLoading(target)
-      } catch (error) {
-        this.error(error)
-      } finally {
-        this.closeLoading(target)
-      }
-    },
-
-    setThresholdDate(aiChartData) {
-      if (aiChartData != null && aiChartData.length > 0) {
-        const predictreachdate = aiChartData[0].out_alertyn === 'Y' ? aiChartData[0].out_alert_datetime : aiChartData[0].in_alert_datetime
-
-        if (!predictreachdate || predictreachdate === '') {
-          this.thresholdDate = '없음(30일 이내)'
-          this.thresholdDateTime = '' // 원본 날짜/시간 값도 초기화
-        } else {
-          this.thresholdDateTime = predictreachdate // 원본 날짜/시간 값 저장
-          this.thresholdDate = predictreachdate.substring(0, 4) + '.' + predictreachdate.substring(5, 7) + '.' + predictreachdate.substring(8, 10) + '(' + this.diffDate(aiChartData[0].fit_date, predictreachdate) + '일후)'
-        }
-      } else {
+      if (!predictreachdate || predictreachdate === '') {
         this.thresholdDate = '없음(30일 이내)'
         this.thresholdDateTime = '' // 원본 날짜/시간 값도 초기화
-      }
-    },
-
-    setRecustSetValue(aiChartData) {
-      if (aiChartData != null && aiChartData.length > 0) {
-        this.recustSetValue.inmbpsrate = aiChartData[0].in_threshold_value
-        this.recustSetValue.outmbpsrate = aiChartData[0].out_threshold_value
+      } else {
+        this.thresholdDateTime = predictreachdate // 원본 날짜/시간 값 저장
+        this.thresholdDate = predictreachdate.substring(0, 4) + '.' + predictreachdate.substring(5, 7) + '.' + predictreachdate.substring(8, 10) + '(' + this.diffDate(aiData.fit_date, predictreachdate) + '일후)'
       }
     },
 
@@ -846,7 +764,7 @@ export default {
     left: 0;
     right: 0;
     bottom: 0;
-    height: 260px;
+    height: calc(100% - 90px);
     margin-bottom: 5px;
     width: 100%;
     text-align: center;
@@ -884,212 +802,105 @@ export default {
   width: 100%;
   z-index: 1;
   overflow: hidden;
-}
+  height: 100%;
+  /* 챠트 */
+  .usagePredAnalyChart {
+    position: relative;
+    top: 10px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 260px;
+    margin-bottom: 5px;
+    width: 100%;
+    text-align: center;
+    display: inline-block;
+  }
 
-/* 챠트 */
-div.usagePredAnaly div.usagePredAnalyChart {
-  position: relative;
-  top: 10px;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 260px;
-  margin-bottom: 5px;
-  width: 100%;
-  text-align: center;
-  display: inline-block;
-}
+  .usagePredAnalyResult {
+    position: relative;
+    width: 100%;
+    display: inline-block;
+    margin-bottom: 5px;
+    text-align: center;
 
-div.usagePredAnaly div.usagePredAnalyResult {
-  position: relative;
-  width: 100%;
-  display: inline-block;
-  margin-bottom: 5px;
-  text-align: center;
-}
-div.usagePredAnaly div.usagePredAnalyResult > div {
-  position: relative;
-  float: left;
-  line-height: 28px;
-}
-div.usagePredAnaly div.usagePredAnalyResult div:first-child {
-  width: 10%;
-}
-div.usagePredAnaly div.usagePredAnalyResult div:first-child > span {
-  text-align: center;
-  font-size: 12px;
-  transform: rotate(-0.03deg);
-  font-weight: 600;
-  letter-spacing: -0.5px;
-  display: inline-block;
-  background-color: #07acc5;
-  width: 90%;
-  color: #ffffff;
-  border-radius: 4px;
-}
-div.usagePredAnaly div.usagePredAnalyResult div:not(:first-child) {
-  width: 43.5%;
-}
-div.usagePredAnaly div.usagePredAnalyResult div:nth-child(2) {
-  margin-right: 3%;
-}
-div.usagePredAnaly div.usagePredAnalyResult div span {
-  display: inline-block;
-  // float: left;
-  position: relative;
-  width: 50%;
-  text-align: center;
-}
-div.usagePredAnaly div.usagePredAnalyResult span.usagePredAnalyResultItem {
-  background-color: rgb(217, 217, 217);
-  font-size: 12px;
-  letter-spacing: -1px;
-  transform: rotate(-0.03deg);
-  color: rgb(64, 64, 64);
-  text-shadow: 0px 0px 2px rgba(0, 0, 0, 0.25);
-}
-div.usagePredAnaly div.usagePredAnalyResult span.usagePredAnalyResultValue {
-  background-color: #2c3345;
-  text-align: center;
-  color: #ffffff;
-  font-size: 12px;
-  letter-spacing: 0px;
-  transform: rotate(-0.03deg);
-}
-div.usagePredAnaly div.usagePredAnalyResult span.usagePredAnalyResultValue::before {
-  content: '';
-  position: absolute;
-  background-color: rgb(217, 217, 217);
-  left: -10px;
-  top: 4px;
-  width: 20px;
-  height: 20px;
-  transform: rotate(45deg);
-}
-div.usagePredAnaly div.usagePredAnalyResult span.usagePredAnalyResultValue::after {
-  content: '';
-  position: absolute;
-  background-color: #2c3345;
-  right: -11px;
-  top: 4px;
-  width: 20px;
-  height: 20px;
-  transform: rotate(45deg);
-}
+    > div {
+      position: relative;
+      float: left;
+      line-height: 28px;
+    }
+    div.usagePredAnalyResultTitle {
+      width: 80px;
+    }
+    div.usagePredAnalyResultBody {
+      flex: 1;
+    }
 
-/* 하단 영역 */
-div.usagePredAnaly div.usagePredAnalyBottom {
-  position: relative;
-  width: 100%;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
-  padding-top: 6px;
-  display: flex;
-  align-items: top;
-  justify-content: top;
-}
+    div.usagePredAnalyResultTitle > span {
+      text-align: center;
+      font-size: 12px;
+      transform: rotate(-0.03deg);
+      font-weight: 600;
+      letter-spacing: -0.5px;
+      display: inline-block;
+      background-color: #07acc5;
+      width: 90%;
+      color: #ffffff;
+      border-radius: 4px;
+    }
 
-div.usagePredAnaly div.usagePredAnalyBottom div.usagePredAnalyBottomTitle {
-  position: relative;
-  width: 94px;
-  line-height: 28px;
-  margin-right: 10px;
-}
-div.usagePredAnaly div.usagePredAnalyBottom div.usagePredAnalyBottomTitle > span {
-  position: relative;
-  text-align: center;
-  font-size: 12px;
-  transform: rotate(-0.03deg);
-  font-weight: 600;
-  letter-spacing: -0.25px;
-  display: inline-block;
-  background-color: #07acc5;
-  width: 100%;
-  color: #ffffff;
-  border-radius: 3px;
-  height: 97%;
-}
-div.usagePredAnaly div.usagePredAnalyBottom div.usagePredAnalyBottomItem {
-  position: relative;
-  line-height: 28px;
-  /* width:50%; */
-}
+    div.usagePredAnalyResultContainer {
+      div.usagePredAnalyResultBody {
+        margin-right: 3%;
+      }
+      div span {
+        display: inline-block;
+        position: relative;
+        width: 50%;
+        text-align: center;
+      }
+      span.usagePredAnalyResultItem {
+        background-color: rgb(217, 217, 217);
+        font-size: 12px;
+        letter-spacing: -1px;
+        transform: rotate(-0.03deg);
+        color: rgb(64, 64, 64);
+        text-shadow: 0px 0px 2px rgba(0, 0, 0, 0.25);
+      }
+      span.tipIcon {
+        display: inline;
+      }
+      span.usagePredAnalyResultValue {
+        background-color: #2c3345;
+        text-align: center;
+        color: #ffffff;
+        font-size: 12px;
+        letter-spacing: 0px;
+        transform: rotate(-0.03deg);
 
-div.usagePredAnaly div.usagePredAnalyBottom div.usagePredAnalyBottomItem > ul {
-  position: relative;
-  width: 100%;
-  display: inline-block;
-  padding: 0;
-  margin: 0;
-  float: left;
-  height: 50%;
-}
-
-div.usagePredAnaly div.usagePredAnalyBottom div.usagePredAnalyBottomItem > ul > li {
-  float: left;
-  display: inline;
-  line-height: 18px;
-  margin-right: 10px;
-}
-
-div.usagePredAnaly div.usagePredAnalyBottom div.usagePredAnalyBottomItem > ul > li::before {
-  position: relative;
-  float: left;
-  display: inline-block;
-  content: '●';
-  font-size: 6px;
-  margin-right: 5px;
-  top: 2px;
-  transform: scale(0.75);
-  color: rgb(64, 64, 64);
-}
-
-div.usagePredAnaly div.usagePredAnalyBottom div.usagePredAnalyBottomItem > ul > li > span {
-  position: relative;
-  display: inline;
-  text-align: left;
-  color: #818286;
-  font-size: 12px;
-  letter-spacing: -0.5px;
-  transform: rotate(-0.03deg);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-div.usagePredAnaly div.usagePredAnalyBottom div.usagePredAnalyBottomItem > ul:nth-child(2) > li:nth-child(2) > span {
-  display: inline-block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* 트랜드분석 버튼 */
-div.usagePredAnaly div.usagePredAnalyBottom div.usagePredAnalyBottomTrendTitle {
-  position: relative;
-  width: 110px;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.25s;
-}
-div.usagePredAnaly div.usagePredAnalyBottom div.usagePredAnalyBottomTrendTitle:hover {
-  opacity: 0.7;
-  transition: all 0.25s;
-}
-
-div.usagePredAnaly div.usagePredAnalyBottom div.usagePredAnalyBottomTrendTitle > span {
-  position: relative;
-  text-align: center;
-  font-size: 12px;
-  transform: rotate(-0.03deg);
-  font-weight: 600;
-  letter-spacing: -1px;
-  display: inline-block;
-  background-color: #409eff;
-  width: 100%;
-  line-height: 28px;
-  color: #ffffff;
-  border-radius: 3px;
-  height: 97%;
+        &::before {
+          content: '';
+          position: absolute;
+          background-color: rgb(217, 217, 217);
+          left: -10px;
+          top: 4px;
+          width: 20px;
+          height: 20px;
+          transform: rotate(45deg);
+        }
+        &::after {
+          content: '';
+          position: absolute;
+          background-color: #2c3345;
+          right: -11px;
+          top: 4px;
+          width: 20px;
+          height: 20px;
+          transform: rotate(45deg);
+        }
+      }
+    }
+  }
 }
 .legend {
   position: absolute;
@@ -1099,33 +910,5 @@ div.usagePredAnaly div.usagePredAnalyBottom div.usagePredAnalyBottomTrendTitle >
   transform: rotate(-0.03deg);
   font-size: 10px;
   color: #003f33;
-}
-
-// 티켓 정보 테이블
-.ticket-info-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 6px;
-  overflow: auto;
-  height: calc(100% - 40px);
-
-  td {
-    padding: 4px 6px;
-    border-bottom: 1px solid #e2e8f0;
-    font-size: 12px;
-    color: #334155;
-
-    &:first-child {
-      width: 40%;
-      font-weight: 600;
-    }
-
-    &:last-child {
-      color: #0f172a;
-    }
-  }
-}
-.chartjs-render-monitor {
-  touch-action: none;
 }
 </style>
