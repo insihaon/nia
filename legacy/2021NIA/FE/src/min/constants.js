@@ -143,7 +143,8 @@ export default {
       popupWarning: '❌',
       assistantIcon: '💬',
       Information: 'ℹ️',
-      WarningSign: '⚠️'
+      WarningSign: '⚠️',
+      Tip: '💡'
     },
 
     chatType: {

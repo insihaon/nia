@@ -173,7 +173,6 @@
             ACM.ALARMMSG_ORIGINAL,
             TC.STATUS,
             TC.TICKET_RCA_RESULT_CODE,
-
             TC.TICKET_RCA_RESULT_DTL_CODE,
             NULL TOTAL_RELATED_ALARM_CNT,
             AL.ROOT_CAUSE_SYSNAMEA,

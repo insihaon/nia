@@ -24,7 +24,7 @@
       </el-col>
     </el-row>
     <span slot="footer" class="dialog-footer">
-      <el-button type="info" size="small" @click="cancel()"><i class="el-icon-close"></i> 닫기</el-button>
+      <el-button type="info" size="small" @click="cancel()"> <i class="el-icon-close"></i> 닫기 </el-button>
     </span>
   </el-dialog>
 </template>
@@ -254,5 +254,66 @@ export default {
   border-radius: 6px;
   border: 1px solid #e2e8f0;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+</style>
+
+<style>
+/* Dialog 스타일 개선 */
+.medium_dialog {
+  border-radius: 16px !important;
+  overflow: hidden;
+}
+
+.medium_dialog .el-dialog__header {
+  padding: 24px 24px 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.medium_dialog .el-dialog__title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.5px;
+  display: flex;
+  align-items: center;
+}
+
+.medium_dialog .el-dialog__title::before {
+  content: '📊';
+  margin-right: 10px;
+  font-size: 22px;
+}
+
+.medium_dialog .el-dialog__headerbtn {
+  top: 24px;
+  right: 24px;
+}
+
+.medium_dialog .el-dialog__headerbtn .el-dialog__close {
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.medium_dialog .el-dialog__headerbtn .el-dialog__close:hover {
+  color: #f0f0f0;
+}
+
+.medium_dialog .el-dialog__body {
+  padding: 24px;
+  background: #f8fafc;
+}
+
+.medium_dialog .el-dialog__footer {
+  padding: 16px 24px 20px;
+  background: #ffffff;
+  border-top: 1px solid #e2e8f0;
 }
 </style>
