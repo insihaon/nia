@@ -84,6 +84,7 @@
       </el-row>
     </div>
     <popupTrendAnalysis ref="popupTrendAnalysis"></popupTrendAnalysis>
+    <errorRangeWidget ref="errorRangeWidget"></errorRangeWidget>
   </div>
 </template>
 
@@ -98,6 +99,7 @@ import niaObserverMixin from '@/mixin/niaObserverMixin'
 import constants from '@/min/constants'
 import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
 import moment from 'moment'
+import CellRenderAibuttons from '@/views-nia/components/cellRenderer/CellRenderAibuttons'
 
 const verticalLinePlugin = {
   id: 'verticalLine',
@@ -147,11 +149,13 @@ const verticalLinePlugin = {
 const routeName = 'aiResponse_ATT_AI'
 export default {
   name: routeName,
-  // eslint-disable-next-line vue/no-unused-components
   components: {
+    // eslint-disable-next-line vue/no-unused-components
+    CellRenderAibuttons,
+    CompAgGrid,
     LineChart: () => import('@/views-nia/dashBoard/library/LineChart'),
     popupTrendAnalysis: () => import('@/views-nia/dashBoard/popupTrendAnalysis'),
-    CompAgGrid,
+    errorRangeWidget: () => import('@/views-nia/dashBoard/widget/errorRangeWidget'),
   },
   extends: Base,
   mixins: [dialogOpenMixin, niaObserverMixin],
@@ -245,7 +249,7 @@ export default {
         { type: '', prop: 'analyDate', name: '분석기간', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'alarmtime', name: '장애 발생시간', width: 200, alignItems: 'center', fixed: false, suppressMenu: true, formatter: (row) => { return this.formatterTimeStamp(row.alarmtime, 'YYYY/MM/DD-HH:mm:ss') }, },
         { type: '', prop: 'errorDirection', name: '장애방향', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
-        { type: '', prop: 'errorRange', name: '장애구간', width: 400, alignItems: 'center', fixed: false, suppressMenu: true },
+        { type: '', prop: 'errorRange', name: '장애구간', width: 150, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '장애구간', icon: 'circle-check', type: '', action: this.openErrorRangeWidget.bind(this) } },
         { type: '', prop: 'fault_type', name: '장애유형', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'alarmmsg', name: '장애정보', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
         { type: '', prop: 'alarmmsg_original', name: '알람 원본메시지', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
@@ -379,6 +383,11 @@ export default {
     openTrendAnalysisPopup() {
       this.$refs.popupTrendAnalysis.setVisible({ trend: this.trendData, item: '', weekly: this.weeklyData })
     },
+
+    openErrorRangeWidget() {
+      this.$refs.errorRangeWidget.setVisible({ trafficInfo: this.trafficInfo })
+    },
+
     async onLoadTrafficInfo() {
       // 자가 구성 조치 구간정보 조회
       if (!this.selectedRow?.ticket_id) {
@@ -769,31 +778,6 @@ export default {
     width: 100%;
     text-align: center;
     display: inline-block;
-  }
-}
-
-.node-section {
-  img {
-    width: 85px;
-    height: 80px;
-    border-radius: 50%;
-    padding: 5px 10px;
-    border: solid 7px #c7bdbd;
-  }
-  div {
-    height: 5px;
-    width: 195px;
-    border-bottom: 5px solid #e41f1f;
-    animation: blink 0.7s ease-in-out infinite alternate;
-  }
-}
-.node-info {
-  div {
-    font-size: 12px;
-    width: 110px;
-    color: #cb5252;
-    text-align: center;
-    font-weight: bolder;
   }
 }
 
