@@ -175,6 +175,12 @@ export default {
     },
   },
   watch: {
+    remoteControl(nVal, oVal) {
+      if (nVal === 'chngport') {
+        this.$refs.pathSwitch.setVisible()
+      }
+    },
+
     configTestEventText(nVal, oVal) {
       if (this.isModal) {
         switch (nVal) {
