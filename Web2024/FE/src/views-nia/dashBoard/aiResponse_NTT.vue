@@ -56,7 +56,7 @@
 import { Base } from '@/min/Base'
 import dialogOpenMixin from '@/mixin/dialogOpenMixin'
 import niaObserverMixin from '@/mixin/niaObserverMixin'
-import { Doughnut } from 'vue-chartjs'
+import { getChatbotDonutChart } from '@/views-nia/js/donutChartBunddle'
 import _ from 'lodash'
 import { apiSelectNttTicketTotalDataList, apiSelectRcaNttTicketDetailInfo } from '@/api/nia'
 import { getChatbotTicketData, getWindowActionList } from '@/views-nia/js/commonNiaFunction'
@@ -74,68 +74,7 @@ export default {
   // eslint-disable-next-line vue/no-unused-components
   components: {
     nttTicketDataList: () => import('@/views-nia/dashBoard/nttTicketDataList'),
-    DoughnutChart: {
-      extends: Doughnut,
-      props: {
-        chartData: {
-          type: Object,
-          required: true,
-        },
-        options: {
-          type: Object,
-          default: () => ({}),
-        },
-      },
-      mounted() {
-        // 이곳은 donutChart의 mounted
-        const clonedData = this._cloneChartData(this.chartData)
-        const clonedOptions = this._cloneOptionsPreservingFunctions(this.options)
-        this.renderChart(clonedData, clonedOptions)
-      },
-      watch: {
-        chartData: {
-          deep: true,
-          handler(newVal) {
-            const clonedData = this._cloneChartData(newVal)
-            const clonedOptions = this._cloneOptionsPreservingFunctions(this.options)
-            this.renderChart(clonedData, clonedOptions)
-          },
-        },
-        options: {
-          deep: true,
-          handler(newVal) {
-            const clonedData = this._cloneChartData(this.chartData)
-            const clonedOptions = this._cloneOptionsPreservingFunctions(newVal)
-            this.renderChart(clonedData, clonedOptions)
-          },
-        },
-      },
-      methods: {
-        _cloneOptionsPreservingFunctions(options) {
-          const generateLabelsFn = options && options.legend && options.legend.labels && options.legend.labels.generateLabels
-          const clonedOptions = JSON.parse(JSON.stringify(options || {}))
-          if (generateLabelsFn) {
-            if (!clonedOptions.legend) clonedOptions.legend = {}
-            if (!clonedOptions.legend.labels) clonedOptions.legend.labels = {}
-            clonedOptions.legend.labels.generateLabels = generateLabelsFn
-          }
-          return clonedOptions
-        },
-        _cloneChartData(data) {
-          return JSON.parse(JSON.stringify(data))
-        },
-        optionUpdate() {
-          const clonedData = this._cloneChartData(this.chartData)
-          const clonedOptions = this._cloneOptionsPreservingFunctions(this.options)
-          this.renderChart(clonedData, clonedOptions)
-        },
-        chartUpdate() {
-          const clonedData = this._cloneChartData(this.chartData)
-          const clonedOptions = this._cloneOptionsPreservingFunctions(this.options)
-          this.renderChart(clonedData, clonedOptions)
-        },
-      },
-    },
+    DoughnutChart: getChatbotDonutChart(),
   },
   extends: Base,
   mixins: [dialogOpenMixin, niaObserverMixin],
