@@ -33,14 +33,20 @@ export default Vue.extend({
     isShow() {
       const { data, type } = this.params
       let result = true
-      if (data.ticket_type === 'SYSLOG' && type === 'ALARM') {
-        // 장애대응 버튼 SYSLOG 비활성
-        result = false
+
+      switch (data.ticket_type) {
+        case 'SYSLOG':
+          if (type === 'ALARM') {
+            return false
+          }
+          break
+        case 'CONFIG_TEST':
+          if (!['ATT2', 'NTT', 'SYSLOG', 'RT', 'ATT2_AI', 'NTT_AI'].includes(data.ticket_type)) {
+            result = false
+          }
+          break
       }
-      if (!['ATT2', 'NTT', 'SYSLOG', 'RT'].includes(data.ticket_type) && type === 'CONFIG_TEST') {
-        // 시험기능 ATT2(이상트래픽), NTT(유해트래픽), SYSLOG 만 활성화
-        result = false
-      }
+
       return result
     },
     openModal(event, params) {
