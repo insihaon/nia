@@ -191,14 +191,16 @@ const mutations = {
 
     async SET_ALARM_FOCUS_SOP_DATA_LIST(state, { ticketData }) {
         let res
-        if (ticketData.ticket_type === 'SYSLOG') {
-            res = await apiSopSyslogHistList({ NODE_NM: ticketData.node_nm })
-        } else {
-            if (ticketData.ticket_type === 'NTT_AI') {
-                res = await apiSelectSopHistList({ TICKET_TYPE: ticketData.ticket_type })
-            } else {
+        switch (ticketData.ticket_type) {
+            case 'SYSLOG':
+                res = await apiSopSyslogHistList({ NODE_NM: ticketData.node_nm })
+                break
+            case 'NTT_AI':
+                res = await apiSelectSopHistList({ TICKET_TYPE: ticketData.ticket_type, NTT_TRAFFIC_TYPE: ticketData.alarmmsg })
+                break
+            default:
                 res = await apiSelectSopHistList({ NODE_NM: ticketData.node_nm })
-            }
+                break
         }
 
         const sopDataList = res.result
