@@ -30,13 +30,13 @@ var dialogOpenMixin = {
           resizeble: true,
           chatbotParameterKeyName: constants.nia.chatbotKeyMap.aiResponse_ATT_AI.parameterKey
         },
-        aiResponse_NTT: {
-          component: () => import('@/views-nia/dashBoard/aiResponse_NTT'),
+        aiResponse_NTT_AI: {
+          component: () => import('@/views-nia/dashBoard/aiResponse_NTT_AI'),
           pageTitle: '유해트래픽 AI 장애대응',
           width: '1800',
           height: '800',
           resizeble: true,
-          chatbotParameterKeyName: constants.nia.chatbotKeyMap.aiResponse_NTT.parameterKey
+          chatbotParameterKeyName: constants.nia.chatbotKeyMap.aiResponse_NTT_AI.parameterKey
         },
         requestForAction: {
           component: () => import('@/views-nia/dashBoard/requestForAction'),

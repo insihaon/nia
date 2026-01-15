@@ -19,10 +19,12 @@ const syslog_alarm1 = { 'ticket_type': 'SYSLOG', 'root_cause_sysnamez': null, 'c
 const syslog_alarm2 = { 'ticket_type': 'SYSLOG', 'root_cause_sysnamez': null, 'clusterno': null, 'alarmno': '397725868', 'if_num': null, 'fault_time': null, 'node_nm': 'seoul-s9510-1', 'root_cause_porta': null, 'ticket_rca_result_dtl_code': null, 'alarmmsg': 'IFMGR_IF_UP_4', 'ticket_rca_result_code': null, 'fault_type': null, 'root_cause_sysnamea': null, 'ticket_id': null, 'ai_accuracy': null, 'port': null, 'alarmtime': '2025-10-28 13:49:28', 'root_cause_portz': null, 'zero1_entropy': null, 'alarmmsg_original': 'Interface xe25 changed state to up', 'node_num': '1737605079007', 'ip_addr': '116.89.169.17', 'alarmloc': 'xe25', 'total_related_alarm_cnt': null, 'status': 'AUTO_FIN' }
 const ntt_simulation_alarm = { 'ticket_type': 'NTT_AI', 'root_cause_sysnamez': '-', 'clusterno': null, 'alarmno': null, 'if_num': '-', 'fault_time': '2025-11-28 14:55:31', 'node_nm': '-', 'root_cause_porta': '-', 'ticket_rca_result_dtl_code': '유해 트래픽 탐지(TEST)', 'alarmmsg': 'tcpSynFlooding', 'ticket_rca_result_code': 'TRAFFIC_NOXIOUS_DETECTION(TEST)', 'fault_type': 'normalTraffic', 'root_cause_sysnamea': '-', 'ticket_id': 'NTT_SIMULATION', 'ai_accuracy': '0', 'port': null, 'alarmtime': '2025-11-28 14:55:31', 'root_cause_portz': '-', 'zero1_entropy': null, 'alarmmsg_original': null, 'node_num': '-', 'ip_addr': '-', 'alarmloc': '-', 'total_related_alarm_cnt': 0, 'status': 'AUTO_FIN' }
 const ntt_test_alarm = { 'ticket_type': 'NTT_AI', 'root_cause_sysnamez': '-', 'clusterno': null, 'alarmno': null, 'if_num': '-', 'fault_time': '2025-11-28 14:55:31', 'node_nm': '-', 'root_cause_porta': '-', 'ticket_rca_result_dtl_code': '유해 트래픽 탐지(TEST)', 'alarmmsg': 'tcpSynFlooding', 'ticket_rca_result_code': 'TRAFFIC_NOXIOUS_DETECTION(TEST)', 'fault_type': 'normalTraffic', 'root_cause_sysnamea': '-', 'ticket_id': 'TEST_TICKET', 'ai_accuracy': '0', 'port': null, 'alarmtime': '2025-11-28 14:55:31', 'root_cause_portz': '-', 'zero1_entropy': null, 'alarmmsg_original': null, 'node_num': '-', 'ip_addr': '-', 'alarmloc': '-', 'total_related_alarm_cnt': 0, 'status': 'AUTO_FIN' }
-const att_test_alarm = { 'ticket_type': 'ATT2_AI', 'root_cause_sysnamez': 'Unknown', 'clusterno': null, 'alarmno': null, 'if_num': '1720143960924', 'fault_time': '2025-12-02 01:14:21', 'node_nm': 'busan-5812', 'root_cause_porta': 'xe52/1', 'ticket_rca_result_dtl_code': '이상 트래픽(포트)', 'alarmmsg': 'TrafficFail', 'ticket_rca_result_code': '-', 'fault_type': 'TrafficFail', 'root_cause_sysnamea': 'busan-5812', 'ticket_id': '1672269', 'ai_accuracy': null, 'port': null, 'alarmtime': '2025-12-02 01:14:21', 'root_cause_portz': null, 'zero1_entropy': null, 'alarmmsg_original': null, 'node_num': '1720140009483', 'ip_addr': '116.89.169.63', 'alarmloc': 'xe52/1', 'total_related_alarm_cnt': 1, 'status': 'AUTO_FIN' }
+const att_tca_test_alarm = { 'ticket_type': 'ATT2_AI', 'root_cause_sysnamez': 'Unknown', 'clusterno': null, 'alarmno': null, 'if_num': '1720143960924', 'fault_time': '2026-01-12 02:46:00', 'node_nm': 'busan-5812', 'root_cause_porta': 'xe52/1', 'ticket_rca_result_dtl_code': '이상 트래픽(포트)', 'alarmmsg': 'TrafficFail', 'ticket_rca_result_code': '이상트래픽 TCA 경보', 'fault_type': 'TrafficFail', 'root_cause_sysnamea': 'busan-5812', 'ticket_id': '1691876', 'ai_accuracy': null, 'port': null, 'alarmtime': '2026-01-12 02:45:17', 'root_cause_portz': null, 'zero1_entropy': null, 'alarmmsg_original': null, 'node_num': '1720140009483', 'ip_addr': '116.89.169.63', 'alarmloc': 'xe52/1', 'total_related_alarm_cnt': 1, 'status': 'AUTO_FIN' }
+
+const altYAlarm = att_tca_test_alarm
 
 const alarmDataList = [
-    att_test_alarm, // 시연용
+    att_tca_test_alarm, // 시연용
     ntt_simulation_alarm, // 시연용
     syslog_alarm1, // 시연용
     rt_alarm1
@@ -80,7 +82,7 @@ export async function niaSimulationStart(param = {}, isFull) {
             }
         }
     } else {
-        await (unshiftFunction.bind(VueThis))(ntt_simulation_alarm, param)
+        await (unshiftFunction.bind(VueThis))(altYAlarm, param)
     }
 }
 

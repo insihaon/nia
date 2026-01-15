@@ -357,7 +357,8 @@
      	WHERE ALARMNO LIKE 'T%' 
         <!-- AND RT.TICKET_ID IS NOT NULL -->
             <if test="IS_POLLING == null">
-                AND ALARMTIME <![CDATA[ > ]]>  NOW() - INTERVAL '14' day
+                <!-- AND ALARMTIME <![CDATA[ > ]]>  NOW() - INTERVAL '14' day -->
+                AND ALARMTIME <![CDATA[ > ]]>  NOW() - INTERVAL '4' month
             </if>
             <if test="IS_POLLING != null and IS_POLLING == true">
                 AND ALARMTIME <![CDATA[ >= ]]> (CURRENT_TIMESTAMP - INTERVAL '5 minutes')

@@ -65,7 +65,7 @@ import { mapState } from 'vuex'
 // import {  } from '@/views-nia/js/commonNiaFunction'
 import constants from '@/min/constants'
 import cytoscape from 'cytoscape'
-const routeName = 'aiResponse_NTT'
+const routeName = 'aiResponse_NTT_AI'
 
 import TEST_TICKET_SAMPLE from '@/views-nia/js/simulationData/TEST_TICKET_SELECT_NTT_TICKET_TOTAL_DATA_LIST.json'
 
@@ -141,7 +141,7 @@ export default {
   },
   computed: {
     ...mapState({
-      aiResponseEventText: (state) => state.chatbot.routerParameter[constants.nia.chatbotKeyMap.aiResponse_NTT.parameterKey],
+      aiResponseEventText: (state) => state.chatbot.routerParameter[constants.nia.chatbotKeyMap.aiResponse_NTT_AI.parameterKey],
     }),
     isModal() {
       return !!this.wdata.params
@@ -437,7 +437,7 @@ export default {
           AI에서 발견한 유해트래픽 장애에 대한 정보를 확인할 수 있는 화면입니다.
           <br>${constants.nia.chatbotIcon.Information} 유해트래픽 정확도 : 특정 종류의 장애가 발생한 것에 대한 정확도 차트와 통계 리스트입니다.
           ${constants.nia.chatbotIcon.Information} 토폴로지 Map : 어떤 노드가 집중적으로 공격받는지에 대한 내용을 토폴로지로 표시합니다.
-          ` + (await getWindowActionList(constants.nia.chatbotKeyMap.aiResponse_NTT.dialogNm, constants.nia.chatbotKeyMap.aiResponse_NTT.popupName)),
+          ` + (await getWindowActionList(constants.nia.chatbotKeyMap.aiResponse_NTT_AI.dialogNm, constants.nia.chatbotKeyMap.aiResponse_NTT_AI.popupName)),
         })
       }
     },
@@ -455,7 +455,7 @@ export default {
   padding: 7px 10px;
 }
 
-.aiResponse_NTT {
+.aiResponse_NTT_AI {
   caret-color: transparent; /* 깜빡이는 커서 숨김 */
 }
 
@@ -469,7 +469,7 @@ export default {
   width: 100%;
 }
 
-.aiResponse_NTT #doughnut-chart {
+.aiResponse_NTT_AI #doughnut-chart {
   height: 550px !important;
 }
 

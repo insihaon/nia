@@ -551,8 +551,7 @@ export default {
                 this.$store.commit('chatbot/MODE_CHANGE', { newMode: 'alarmFocusMode' })
               } else {
                 this.$confirm(
-                  `
-              기존과 다른 Ticket입니다. 감시중이던 🟢팝업이
+                  `기존과 다른 Ticket입니다. 감시중이던 🟢팝업이
               <span style='font-weight:bold'>[alarm No : ${row.alarmno}]</span>로 변경되며 
               새로 데이터를 가져옵니다. 진행하시겠습니까?`,
                   '집중경보 전환',
@@ -580,8 +579,7 @@ export default {
                 this.$store.commit('chatbot/MODE_CHANGE', { newMode: 'alarmFocusMode' })
               } else {
                 this.$confirm(
-                  `
-              기존과 다른 Ticket입니다. 감시중이던 🟢팝업이
+                  `기존과 다른 Ticket입니다. 감시중이던 🟢팝업이
               <span style='font-weight:bold'>[TICKET ID : ${row.ticket_id}]</span>로 변경되며 
               새로 데이터를 가져옵니다. 진행하시겠습니까?`,
                   '집중경보 전환',
@@ -943,7 +941,7 @@ export default {
       if (row.ticket_type === 'ATT2_AI') {
         this.fn_openWindow('aiResponse_ATT_AI', row, null, position)
       } else if (['NTT', 'NTT_AI'].includes(row.ticket_type)) {
-        this.fn_openWindow('aiResponse_NTT', row, null, position)
+        this.fn_openWindow('aiResponse_NTT_AI', row, null, position)
       } else {
         this.fn_openWindow('aiResponse', row, null, position)
       }

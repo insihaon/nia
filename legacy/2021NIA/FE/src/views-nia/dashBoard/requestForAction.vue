@@ -159,7 +159,6 @@
       <el-col align="right" class="mt-1">
         <el-button v-if="isSyslog" size="mini" type="primary" icon="el-icon-camera" @click.native="fn_openWindow('snapShot', selectedRow)"> 데이터 스냅샷 </el-button>
         <el-button v-if="isSyslog" size="mini" type="primary" @click.native="fn_openWindow('configTest', selectedRow)"> 시험 </el-button>
-        <el-button v-if="isSyslog" size="mini" type="primary" @click.native="fn_openWindow('processFin', selectedRow)"> 마감 </el-button>
         <el-button size="mini" icon="el-icon-edit-outline" @click.native="onClickFin()">
           {{ sendItem.status == 'FIN' || sendItem.status == 'AUTO_FIN' ? '수정' : '마감' }}
         </el-button>
@@ -322,8 +321,7 @@ export default {
           },
         },
       ]
-      const isSyslog = this.isSyslog
-      return isSyslog ? syslogCol : columns
+      return this.isSyslog ? syslogCol : columns
     },
     userInfoColumn() {
       return [
@@ -445,13 +443,7 @@ export default {
           <br>티켓 정보를 토대로, 요청내용을 자동 설정했습니다. 요청내용을 확인 수정 후 담당직원을 선택하고 메일전송을 해주시면 됩니다.
           <br>${constants.nia.chatbotIcon.Information} 요청내용은 직접 글자를 입력하여 수정할 수 있습니다.
           ${constants.nia.chatbotIcon.Information} 마감이 아직안되었으면 마감버튼을 선택하여 직접마감, 이미 마감되었다면 수정버튼을 클릭하여 마감된 내용 수정이 가능합니다.
-          ${constants.nia.chatbotIcon.Information} 장애에 대해 더 상세한 정보를 알고 싶으시면, <b>티켓 상세 확인</b>도 도와드릴 수 있습니다.<br>
-          ` +
-            (await getWindowActionList(
-              constants.nia.chatbotKeyMap.requestForAction.dialogNm,
-              constants.nia.chatbotKeyMap.requestForAction.popupName,
-              showNumberText(3, `${constants.nia.chatbotCommand.focusModeCheckAlarm.label}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', constants.nia.chatbotCommand.focusModeCheckAlarm.action)}<br>`)
-            )),
+          ` + (await getWindowActionList(constants.nia.chatbotKeyMap.requestForAction.dialogNm, constants.nia.chatbotKeyMap.requestForAction.popupName)),
         })
       }
     },

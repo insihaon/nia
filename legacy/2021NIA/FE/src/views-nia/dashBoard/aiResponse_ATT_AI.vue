@@ -67,7 +67,7 @@
                       </div>
                       <div class="usagePredAnalyResultBody">
                         <el-tooltip class="item" effect="dark" content="장애시점의 값 차이" placement="top">
-                          <span class="usagePredAnalyResultItem" style="text-decoration: underline">{{ (isTcaAlarm ? '실제값' : '예측값') + '   >   ' + (isTcaAlarm ? '임계상한값' :'임계값') }}</span>
+                          <span class="usagePredAnalyResultItem" style="text-decoration: underline">{{ (isTcaAlarm ? '실제값' : '예측값') + '   >   ' + (isTcaAlarm ? '임계상한값' : '임계값') }}</span>
                         </el-tooltip>
                         <span class="usagePredAnalyResultValue">
                           <span>{{ thresholdInfo.targetValue }} > {{ thresholdInfo.upperBound }} ({{ currentErrorDirection }})</span>
@@ -96,7 +96,7 @@
           <el-button size="mini" type="primary" @click.native="openTrendAnalysisPopup">트렌드분석</el-button>
           <el-button size="mini" type="primary" icon="el-icon-camera" @click.native="fn_openWindow('snapShot', _merge(selectedRow, trafficInfo))"> 데이터 스냅샷 </el-button>
           <el-button size="mini" type="primary" @click.native="fn_openWindow('requestForAction', _merge(selectedRow, trafficInfo))"> 상황전파 </el-button>
-          <el-button size="mini" type="primary" @click.native="fn_openWindow('configTest', _merge(selectedRow, trafficInfo))"> 시험 </el-button>
+          <el-button size="mini" type="primary" @click.native="fn_openWindow('configTest', _merge(selectedRow, trafficInfo))"> 조치 </el-button>
           <el-button size="mini" type="primary" @click.native="fn_openWindow('processFin', _merge(selectedRow, trafficInfo))"> 마감 </el-button>
           <el-button size="mini" type="info" icon="el-icon-close" @click.native="$emit('windowClose')">
             {{ $t('exit') }}
@@ -361,10 +361,7 @@ export default {
           content:
             `<div class="chatbot-command-header">이상트래픽 AI 장애대응화면</div>
           AI를 통해 해당장비의 14일간의 트래픽을 학습하고 이를 바탕으로 예측값과 예측임계값을 추론하며, 예측값이 임계값을 넘거나(예측 경보) 실제 트래픽이 임계값을 넘는경우(TCA 경보) 경보를 발행되며 해당 화면에서는 관련된 정보를 확인할 수 있습니다.
-          <br>${constants.nia.chatbotIcon.Information} 분석결과 : TCA 경보의 경우 장애발생시점이 언제인지, 예측경보의 경우 장애가 언제 발생될 것으로 예측되는지 표시
-          ${constants.nia.chatbotIcon.Information} 증감예측결과 : TCA 경보의 경우 예측상한값의 증감, 예측경보의 경우 예측값의 증감
-          ${constants.nia.chatbotIcon.Information} 조회조건 : 트래픽 in, out여부, 장비, 포트, 분석기간 정보
-          ${constants.nia.chatbotIcon.Information} 경고 임계치 : 경보 발행 기준이 되는 임계값.(현재는 과거 14일을 기준으로 값을 추정)
+          <br>${constants.nia.chatbotIcon.Information} 분석결과 : 밑줄 쳐진 텍스트에 마우스를 올리시면 각 속성별 의미를 확인하실 수 있습니다.
           ` + (await getWindowActionList(constants.nia.chatbotKeyMap.aiResponse_ATT_AI.dialogNm, constants.nia.chatbotKeyMap.aiResponse_ATT_AI.popupName)),
         })
       }

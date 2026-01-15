@@ -117,7 +117,7 @@ export default {
         totalPages: null, // 전체 페이지 수
         pagerCount: 11,
       },
-      selectedRow: [],
+      selectedRow: {},
       sopSearchModel: _.cloneDeep(sopSearchModel_default),
       syslogSearchModel: _.cloneDeep(syslogSearchModel_default),
       equipmentOptionList: [],
@@ -319,6 +319,8 @@ export default {
         })
       }
 
+      if (!this.selectedRow || Object.keys(this.selectedRow).length === 0) return
+
       this.tapCurrent = this.selectedRow?.ticket_type === 'SYSLOG' ? 'syslog' : 'ticket'
 
       this.sopSearchModel = _.cloneDeep(sopSearchModel_default)
@@ -403,15 +405,7 @@ export default {
             `<div class="chatbot-command-header">SOP이력조회 화면</div>
             장애 장비에 대한 과거 마감처리 이력을 표시합니다.<br>
             ${constants.nia.chatbotIcon.Information}탭 종류, 장비명, I/F는 현재 장애 정보를 기준으로 자동셋팅했습니다.
-            ${constants.nia.chatbotIcon.Information} 조치가 필요하시면 <b>조치 화면</b>으로 이동해 주세요.
-            ${constants.nia.chatbotIcon.Information} 장애에 대해 더 상세한 정보를 알고 싶으시면, <b>티켓 상세 확인</b>도 도와드릴 수 있습니다.<br>
-            ` +
-            (await getWindowActionList(
-              constants.nia.chatbotKeyMap.sopHistory.dialogNm,
-              constants.nia.chatbotKeyMap.sopHistory.popupName,
-              showNumberText(3, `${constants.nia.chatbotKeyMap.configTest.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), constants.nia.chatbotKeyMap.configTest.dialogNm, '')}`) +
-                showNumberText(4, `${constants.nia.chatbotCommand.focusModeCheckAlarm.label}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', constants.nia.chatbotCommand.focusModeCheckAlarm.action)}`)
-            )),
+            ` + (await getWindowActionList(constants.nia.chatbotKeyMap.sopHistory.dialogNm, constants.nia.chatbotKeyMap.sopHistory.popupName)),
         })
       }
     },
