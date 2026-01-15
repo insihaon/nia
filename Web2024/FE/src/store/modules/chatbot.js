@@ -40,19 +40,28 @@ function getCurrentTime() {
     })
 }
 
-function getDefaultAlarmFocusModeFirstChatMessages() {
+export function getRecommendedCommand(tikcetData) {
+    // 티켓상세확인 -> 상황전파 -> 조치 -> 마감 -> SOP 이력확인
+
+    const ticketType = tikcetData.ticket_type
+
     return {
         type: constants.nia.chatType.botAnswer,
         content: `<div class="chatbot-command-header">추천 명령어</div>
         <b>아래 메뉴를 통해 원하시는 업무를 선택하실 수 있습니다</b>
     ` +
-            showNumberText(1, `${chatbotCommand.focusModeCheckAlarm.label}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', chatbotCommand.focusModeCheckAlarm.action)}<br>`) +
-            showNumberText(2, `${chatbotKeyMap.processFin.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), chatbotKeyMap.processFin.dialogNm, '')}<br>`) +
+            (
+                ticketType === 'NTT_AI'
+                    ? showNumberText(1, `${chatbotKeyMap.aiResponse_NTT_AI.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), chatbotKeyMap.aiResponse_NTT_AI.dialogNm, '')}<br>`)
+                    : showNumberText(1, `${chatbotCommand.focusModeCheckAlarm.label}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', chatbotCommand.focusModeCheckAlarm.action)}<br>`)
+            ) +
+            showNumberText(2, `${chatbotKeyMap.requestForAction.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), chatbotKeyMap.requestForAction.dialogNm, '')}<br>`) +
             showNumberText(3, `${chatbotKeyMap.configTest.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), chatbotKeyMap.configTest.dialogNm, '')}<br>`) +
-            showNumberText(4, `${chatbotKeyMap.requestForAction.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), chatbotKeyMap.requestForAction.dialogNm, '')}<br>`) +
+            showNumberText(4, `${chatbotKeyMap.processFin.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), chatbotKeyMap.processFin.dialogNm, '')}<br>`) +
             showNumberText(5, `${chatbotKeyMap.sopHistory.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), chatbotKeyMap.sopHistory.dialogNm, '')}<br>`) +
             `<br>${constants.nia.chatbotComment.lastComment}`,
         time: getCurrentTime(),
+        isFirst: true
     }
 }
 
@@ -67,7 +76,7 @@ const state = {
     lastFocusPopup: { name: '', type: '' },
     currentMode: constants.nia.chatbotMode.questionMode,
     questionMode_chatMessages: [_.cloneDeep(defaultQuestionModeChatMessages)],
-    alarmFocusMode_chatMessages: [getDefaultAlarmFocusModeFirstChatMessages()],
+    alarmFocusMode_chatMessages: [],
     alarmFocusTicketData: {}, // 현재 선택된 경보의 ticket 정보
     alarmFocusSopDataList: [],
     alarmFocusNTTAIDetailInfo: {},
@@ -121,21 +130,23 @@ const mutations = {
         if (callBack) callBack()
     },
 
-    PUSH_CHAT_MESSAGE(state, { content, type, callBack }) {
+    PUSH_CHAT_MESSAGE(state, { content, type, callBack, isFirst }) {
+        const chatbotMap = {
+            type: type,
+            content: content,
+            time: getCurrentTime(),
+        }
+
         switch (state.currentMode) {
             case constants.nia.chatbotMode.questionMode:
-                state.questionMode_chatMessages.push({
-                    type: type,
-                    content: content,
-                    time: getCurrentTime(),
-                })
+                state.questionMode_chatMessages.push(chatbotMap)
                 break
             case constants.nia.chatbotMode.alarmFocusMode:
-                state.alarmFocusMode_chatMessages.push({
-                    type: type,
-                    content: content,
-                    time: getCurrentTime(),
-                })
+                if (isFirst) {
+                    state.alarmFocusMode_chatMessages.unshift(chatbotMap)
+                } else {
+                    state.alarmFocusMode_chatMessages.push(chatbotMap)
+                }
 
                 if (content !== searchMessaging) {
                     apiInsertChatbotHistory({
@@ -204,12 +215,13 @@ const mutations = {
             case constants.nia.chatbotMode.alarmFocusMode:
                 {
                     const tempMessageArray = _.cloneDeep(state.alarmFocusMode_chatMessages)
-                    state.alarmFocusMode_chatMessages.length = 1
-                    state.alarmFocusMode_chatMessages.time = getCurrentTime()
+                    state.alarmFocusMode_chatMessages.length = 0
                     state.alarmFocusNTTAIDetailInfo = {}
 
                     const filterArray = tempMessageArray.filter((m) => { return m.type === constants.nia.chatType.botAlert })
-                    state.alarmFocusMode_chatMessages.push(...filterArray)
+                    if (filterArray.length > 0) {
+                        state.alarmFocusMode_chatMessages.push(...filterArray)
+                    }
                 }
                 break
         }
@@ -276,6 +288,7 @@ const actions = {
     newAlarmFocusChat({ commit }, { ticketData }) {
         commit('MODE_CHANGE', { newMode: 'alarmFocusMode' })
         commit('RESET_CHAT')
+        commit('PUSH_CHAT_MESSAGE', _.cloneDeep(getRecommendedCommand(ticketData)))
         commit('SET_ALARM_FOCUS_CHAT_TICKET_DATA', { ticketData })
         commit('SET_ALARM_FOCUS_SOP_DATA_LIST', { ticketData })
     }

@@ -78,9 +78,12 @@
         <button :disabled="isQuestionMode" class="utility-button" @click="openSop">SOP화면</button>
         <button :disabled="isQuestionMode" class="utility-button" @click="openConfigTest">조치화면</button>
         <button :disabled="isQuestionMode" class="utility-button" :style="{ 'background-color': isActiveBotAlert ? '#ff4949' : '#e5e7eb' }" @click="toggleIsActiveBotAlert">{{ isActiveBotAlert ? '경보 표시' : '경보 미표시' }}</button>
-        <button :disabled="isQuestionMode" class="utility-button" @click="actionSwitch">{{ actionType === 'expert' ? '전문가모드' : '안내모드' }}</button>
+        <button :disabled="recognizing || isQuestionMode" class="utility-button" @click="actionSwitch">{{ actionType === 'expert' ? '전문가모드' : '안내모드' }}</button>
         <button :disabled="isQuestionMode" class="utility-button" @click="resetChat">채팅초기화</button>
-        <button :disabled="isQuestionMode" class="utility-button" :style="{ 'background-color': recognizing ? '#ff4949' : '#e5e7eb' }" @click="switchVoiceRecording">음성인식({{ recognizing ? 'ON' : 'OFF' }})</button>
+        <button :disabled="isQuestionMode" class="utility-button voice-btn" :style="{ 'background-color': recognizing ? '#ff4949' : '#e5e7eb', color: recognizing ? 'white' : '#4b5563' }" @click="switchVoiceRecording">
+          <i class="el-icon-mic" style="margin-right: 5px; font-weight: bold"></i>
+          ({{ recognizing ? 'ON' : 'OFF' }})
+        </button>
       </div>
 
       <div class="chat-input">
@@ -97,8 +100,8 @@ import { Modal } from '@/min/Modal.min'
 import { mapState } from 'vuex'
 import dialogOpenMixin from '@/mixin/dialogOpenMixin'
 import { getChatbotDonutChart, chatbotCenterTextPlugin } from '@/views-nia/js/donutChartBunddle'
-import { createVoiceRecognitionForVue } from '@/views-nia/js/chatbotVoiceRecognition'
-import { searchMessaging, errorMessaging1, errorMessaging2, errorMessaging3 } from '@/store/modules/chatbot.js'
+import { VoiceRecognition } from '@/views-nia/js/chatbotVoiceRecognition'
+import { searchMessaging, errorMessaging1, errorMessaging2, errorMessaging3, getRecommendedCommand } from '@/store/modules/chatbot.js'
 import { getChatbotMdiObject, getNiaRouteNameByPath, getNiaRouteTitleByPath, getSpanFormatMessageForDB, getMatchMapOfspanFormatMessage, isSpanFormatChatMessage } from '@/views-nia/js/commonNiaFunction'
 import { apiIpAlarmList } from '@/api/nia'
 import constants from '@/min/constants'
@@ -278,6 +281,14 @@ export default {
       },
       deep: true,
     },
+
+    recognizing(navl, oval) {
+      if (navl) {
+        if (this.actionType === constants.nia.chatbotActiontype.assist) {
+          this.actionSwitch()
+        }
+      }
+    },
   },
   created() {
     this.selectedRow = this.wdata.params
@@ -311,7 +322,7 @@ export default {
   mounted() {
     this.setDonutChartData()
     // 음성인식 초기화
-    this.voiceRecognition = createVoiceRecognitionForVue(this, {
+    this.voiceRecognition = new VoiceRecognition(this, {
       inputField: 'userInput', // 결과가 누적될 필드명
       statusField: 'recognizing', // 상태가 저장될 필드명
       lang: 'ko-KR',
@@ -326,10 +337,8 @@ export default {
   },
 
   methods: {
-    switchVoiceRecording() {
-      if (this.voiceRecognition) {
-        this.voiceRecognition.toggle()
-      }
+    async switchVoiceRecording() {
+      this.voiceRecognition.toggle()
     },
     makeNTTDonutChartData1() {
       const data = _.cloneDeep(this.alarmFocusNTTAIDetailInfo)
@@ -514,6 +523,11 @@ export default {
     async sendMessage() {
       if (!this.userInput.trim()) return
 
+      // 추가: 메시지 전송 시 음성인식 내부 버퍼도 초기화하여 꼬임 방지
+      if (this.voiceRecognition) {
+        this.voiceRecognition.clear()
+      }
+
       this.$store.dispatch('chatbot/userPushQuestionMessage', { content: this.userInput })
       const userQuestion = this.userInput
       this.userInput = ''
@@ -573,7 +587,7 @@ export default {
           if (matchMap.popup === 'aiResponse') {
             switch (this.alarmFocusTicketData.ticket_type) {
               case 'NTT_AI':
-                popupName = 'aiResponse_NTT'
+                popupName = 'aiResponse_NTT_AI'
                 break
               case 'ATT2_AI':
                 popupName = 'aiResponse_ATT_AI'
@@ -960,5 +974,24 @@ export default {
       color: #0f172a;
     }
   }
+}
+
+/* 버튼 내 아이콘 스타일 */
+.voice-btn i {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  background: #1e293b; /* 업로드하신 이미지의 검정색 느낌 */
+  color: white;
+  border-radius: 50%; /* 동그란 모양 */
+  font-size: 12px;
+}
+
+/* 인식 중일 때 아이콘 색상 변경 (선택 사항) */
+.voice-btn:not(:disabled).is-active i {
+  background: white;
+  color: #ff4949;
 }
 </style>

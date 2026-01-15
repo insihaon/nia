@@ -95,7 +95,7 @@ export async function loadLatestSopData(selectedRow) {
 }
 
 export async function getChatbotTicketData(wdata) {
-    if (isCurrentRouterDashboard() && (!isModal(wdata) || !isChatbotGenerated(wdata))) {
+    if (!isModal(wdata) || !isChatbotGenerated(wdata)) {
         return
     } else {
         if (store.state.chatbot.currentMode === 'alarmFocusMode') {
@@ -256,20 +256,25 @@ export function getMatchMapOfspanFormatMessage(userQuestion, spanFormatMessage) 
 
     if (!isSpanFormatChatMessage(spanFormatMessage)) return false
 
-    if (/^\d+$/.test(userQuestion)) {
-        const pattern = new RegExp(`${userQuestion}\\. (.*?)<span.*?\\[path\\]:(.*?)\\, \\[popup\\]:(.*?)\\, \\[action\\]:(.*?)\\<\\/span\\>`)
-        const match = spanFormatMessage.match(pattern)
+    const number = extractNumber(userQuestion)
 
-        if (match) {
-            matchMap.matchContext = match[1].trim()
-            matchMap.path = match[2].trim()
-            matchMap.popup = match[3].trim()
-            matchMap.action = match[4].trim()
-            return matchMap
-        }
+    if (number !== null) {
+        const result = matchByNumber(spanFormatMessage, number, matchMap)
+        if (result) return result
     } else {
-        const pattern = new RegExp(`\\d\\. ${userQuestion}<span.*?\\[path\\]:(.*?)\\, \\[popup\\]:(.*?)\\, \\[action\\]:(.*?)\\<\\/span\\>`)
-        const match = spanFormatMessage.match(pattern)
+        // 🔧 textMatch 부분 (개발중)
+        const noSpaceUserQuestion = userQuestion.replace(/\s+/g, '')
+
+        const noSpaceSpanFormatMessage = spanFormatMessage.replace(
+            /(\d+\.\s*)([가-힣\s]+)/g,
+            (_, prefix, text) => prefix + text.replace(/\s+/g, '')
+        )
+
+        const pattern = new RegExp(
+            `\\d\\. ${noSpaceUserQuestion}<span.*?\\[path\\]:(.*?)\\, \\[popup\\]:(.*?)\\, \\[action\\]:(.*?)<\\/span>`
+        )
+
+        const match = noSpaceSpanFormatMessage.match(pattern)
 
         if (match) {
             matchMap.matchContext = userQuestion
@@ -279,8 +284,48 @@ export function getMatchMapOfspanFormatMessage(userQuestion, spanFormatMessage) 
             return matchMap
         }
     }
+}
 
-    return false
+function extractNumber(userQuestion) {
+    // 1, 1번
+    const digitMatch = userQuestion.match(/^(\d+)(번)?$/)
+    if (digitMatch) return Number(digitMatch[1])
+
+    // 첫번째 ~ 아홉번째
+    const korMatch = userQuestion.match(/^(첫|두|세|네|다섯|여섯|일곱|여덟|아홉)번째$/)
+    if (korMatch) {
+        const korToNum = {
+            첫: 1,
+            두: 2,
+            세: 3,
+            네: 4,
+            다섯: 5,
+            여섯: 6,
+            일곱: 7,
+            여덟: 8,
+            아홉: 9
+        }
+        return korToNum[korMatch[1]]
+    }
+
+    return null
+}
+
+function matchByNumber(spanFormatMessage, number, matchMap) {
+    const pattern = new RegExp(
+        `${number}\\. (.*?)<span.*?\\[path\\]:(.*?)\\, \\[popup\\]:(.*?)\\, \\[action\\]:(.*?)<\\/span>`
+    )
+
+    const match = spanFormatMessage.match(pattern)
+
+    if (!match) return null
+
+    matchMap.matchContext = match[1].trim()
+    matchMap.path = match[2].trim()
+    matchMap.popup = match[3].trim()
+    matchMap.action = match[4].trim()
+
+    return matchMap
 }
 
 export function getChatbotMdiObject() {

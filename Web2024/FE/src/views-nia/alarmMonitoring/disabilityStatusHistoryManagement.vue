@@ -238,14 +238,7 @@ export default {
             `<div class="chatbot-command-header">장애현황 및 이력관리 화면</div>
             해당 장비, 포트에서 발생한 장애이력을 확인할 수 있는 화면입니다.
             <br> 해당 장애의 장비명, I/F를 자동으로 셋팅 후 조회했습니다.<br>
-          ` +
-            (await getWindowActionList(
-              constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.dialogNm,
-              constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.popupName,
-              showNumberText(3, `${constants.nia.chatbotKeyMap.configTest.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), constants.nia.chatbotKeyMap.configTest.dialogNm, '')}<br>`) +
-                showNumberText(4, `${constants.nia.chatbotKeyMap.sopHistory.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), constants.nia.chatbotKeyMap.sopHistory.dialogNm, '')}<br>`) +
-                showNumberText(5, `${constants.nia.chatbotCommand.focusModeCheckAlarm.label}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', constants.nia.chatbotCommand.focusModeCheckAlarm.action)}<br>`)
-            )),
+          ` + (await getWindowActionList(constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.dialogNm, constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.popupName)),
         })
       }
     },
