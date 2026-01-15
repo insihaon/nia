@@ -382,38 +382,7 @@ export default {
       console.log('Sorted Data:', this.nttChartData.datasets[0].data)
     },
 
-    makeNTTDonutChartData2() {
-      // faultType별 개수 계산
-      const trafficTypeCount = {}
-      this.alarmFocusSopDataList.forEach((data) => {
-        trafficTypeCount[data.traffic_type] = (trafficTypeCount[data.traffic_type] || 0) + 1
-      })
-
-      // 개수 기준으로 내림차순 정렬하여 상위 3개 추출
-      const sortedTrafficTypes = Object.entries(trafficTypeCount)
-        .sort(([, a], [, b]) => b - a)
-        .slice(0, 3)
-
-      // 상위 3개 faultType과 기타 개수 계산
-      const top3TrafficTypes = sortedTrafficTypes.map(([traffic_type_content]) => traffic_type_content)
-      const top3Counts = sortedTrafficTypes.map(([, count]) => count)
-
-      // 기타 개수 계산 (상위 3개가 아닌 나머지)
-      const othersCount = Object.entries(trafficTypeCount)
-        .filter(([traffic_detail_content]) => !top3TrafficTypes.includes(traffic_detail_content))
-        .reduce((sum, [, count]) => sum + count, 0)
-
-      // chartData 업데이트
-      this.chartData.labels = [...top3TrafficTypes, '기타']
-      this.chartData.datasets[0].data = [...top3Counts, othersCount]
-
-      // 색상도 동적으로 설정 (기본 색상 + 기타용 회색)
-      const colors = ['#FF6384', '#36A2EB', '#FFCE56', 'gray']
-      this.chartData.datasets[0].backgroundColor = colors.slice(0, this.chartData.labels.length)
-      this.chartOptions.title.text = '유해트래픽 SOP 장애유형 통계'
-    },
-
-    makeNotNTTDonutChartData() {
+    makeSopDonutChart() {
       // faultType별 개수 계산
       const faultTypeCount = {}
       let emptyCount = 0
@@ -457,10 +426,10 @@ export default {
       await new Promise((resolve) => setTimeout(resolve, 3000))
 
       if (this.alarmFocusTicketData.ticket_type === 'NTT_AI') {
+        this.makeSopDonutChart()
         this.makeNTTDonutChartData1()
-        this.makeNTTDonutChartData2()
       } else {
-        this.makeNotNTTDonutChartData()
+        this.makeSopDonutChart()
       }
 
       this.closeLoading(target)
