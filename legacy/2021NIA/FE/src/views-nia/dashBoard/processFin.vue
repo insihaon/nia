@@ -45,7 +45,7 @@
       </el-card>
       <el-row>
         <el-col align="right" class="mt-2">
-          <el-button size="mini" type="primary" class="el-icon-edit-outline" @click.native="onClickFin()"> 마감 </el-button>
+          <el-button size="mini" type="primary" class="el-icon-edit-outline" @click.native="onClickFin()"> 마감처리 </el-button>
           <el-button size="mini" type="info" icon="el-icon-close" @click.native="$emit('windowClose')">
             {{ $t('exit') }}
           </el-button>
@@ -239,7 +239,7 @@ export default {
       if (!this.isFocusModeButNotFocus) {
         this.$store.dispatch('chatbot/botPushAnswerMessage', {
           content:
-            `<div class="chatbot-command-header">마감처리화면</div>
+            `<div class="chatbot-command-header">마감화면</div>
             조치 내역을 최종적으로 SOP에 기록하는 단계입니다.<br>
             장애에 대한 <b>최신 SOP 이력</b>으로 조치SOP 영역을 자동 설정했습니다. 정보를 확인하신 후에 <b>마감 처리</b>를 진행해 주시면 됩니다.<br>
             ${constants.nia.chatbotIcon.Information} <b>기타 조치내용</b>을 입력 해주시면 추후 시스템 기능 개선에 큰 도움이 됩니다.
@@ -275,13 +275,13 @@ export default {
         })
         return
       }
-      if (this.etcContent.length === 0) {
+      /* if (this.etcContent.length === 0) {
         this.$alert('기타 조치내용 입력을 확인해주세요', '알림', {
           confirmButtonText: '확인',
           customClass: 'nia-message-box',
         })
         return
-      }
+      } */
       this.$confirm('확인 버튼 클릭 시 해당 티켓은 최종 마감처리 됩니다.', '알림', {
         confirmButtonText: '확인',
         cancelButtonText: '취소',

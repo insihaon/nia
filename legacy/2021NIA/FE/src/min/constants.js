@@ -116,7 +116,7 @@ export default {
           - DB의 popup값과 일치해야한다.
       */
       sopHistory: { popupName: 'SOP이력조회', parameterKey: 'SopHistory', dialogNm: 'sopHistory' },
-      processFin: { popupName: '마감처리', parameterKey: 'processFin', dialogNm: 'processFin' },
+      processFin: { popupName: '마감', parameterKey: 'processFin', dialogNm: 'processFin' },
       configTest: { popupName: '조치', parameterKey: 'configTest', dialogNm: 'configTest' },
       requestForAction: { popupName: '상황전파', parameterKey: 'requestForAction', dialogNm: 'requestForAction' },
       aiResponse: { popupName: 'AI 장애대응', parameterKey: 'aiResponse', dialogNm: 'aiResponse' },

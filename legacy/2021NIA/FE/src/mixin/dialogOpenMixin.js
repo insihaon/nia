@@ -48,7 +48,7 @@ var dialogOpenMixin = {
         },
         processFin: {
           component: () => import('@/views-nia/dashBoard/processFin'),
-          pageTitle: '마감 처리',
+          pageTitle: '마감',
           width: '600',
           height: '700',
           resizeble: true,
