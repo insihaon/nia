@@ -1,11 +1,5 @@
 <template>
   <div v-loading="requestForActionLoading" :class="{ [name]: true }" style="height: 100%">
-    <!-- <el-row class="w-full d-flex flex-column"> -->
-    <!-- <el-row class="d-flex p-1">
-        <i class="el-icon-document mr-2 text-base" />
-        {{ isSyslog ? 'SYSLOG 장애대응' : 'AI 장애대응' }} 조치 요청서
-        <hr>
-      </el-row> -->
     <el-row class="w-full">
       <el-col class="p-1" :span="isMobile ? 24 : 12">
         <el-card shadow="never" :body-style="{ padding: '10px' }">
@@ -42,9 +36,8 @@
               <div><i class="el-icon-document" /> 담당 직원 정보</div>
             </div>
           </div>
-
           <el-col class="style : 50%">
-            <el-table ref="employeeTable" :size="'mini'" :data="userList" class="w-100" :height="400" border fit>
+            <el-table ref="employeeTable" :size="'mini'" :data="userList" class="w-100" :height="400" border fit @selection-change="onChangeRowSelected">
               <el-table-column type="selection" align="center" width="40" />
               <el-table-column v-for="col in userInfoColumn" :key="col.prop" :prop="col.prop" :label="col.name" :width="col.width" />
             </el-table>
@@ -67,21 +60,23 @@
                 &nbsp;&nbsp;{{ sendItem.sender }}
               </div>
               <div>
-                <span class="sub-title font-semibold"><h4>&middot;AI 분석 결과 정보</h4></span>
-                <span class="font-italic font-semibold"> {{ getAlarmtxt }} </span>
-                <div v-if="sendItem.ticket_type === 'ATT2'">
-                  &emsp;<span>IN</span><br />
-                  &nbsp;&nbsp;- mbps: {{ aiDetection !== null ? sendItem.in_bps + ' MB' : '' }} <br />
-                  &nbsp;&nbsp;- Predict: {{ aiDetection !== null ? sendItem.in_predict + ' MB' : '' }}<br />
-                  &nbsp;&nbsp;- Threshold_Upper: {{ aiDetection !== null ? sendItem.in_threshold_upper + ' MB' : '' }}<br />
-                  &nbsp;&nbsp;- Threshold_Lower: {{ aiDetection !== null ? sendItem.in_threshold_lower + ' MB' : '' }}<br />
-                  - Anomaly: {{ aiDetection !== null ? sendItem.in_anomaly + '' : '' }}<br />
-                  &emsp;<span>OUT</span><br />
-                  &nbsp;&nbsp;- mbps: {{ aiDetection !== null ? sendItem.out_bps + ' MB' : '' }}<br />
-                  &nbsp;&nbsp;- Predict : {{ aiDetection !== null ? sendItem.out_predict + ' MB' : '' }}<br />
-                  &nbsp;&nbsp;- Threshold_Upper: {{ aiDetection !== null ? sendItem.out_threshold_upper + ' MB' : '' }}<br />
-                  &nbsp;&nbsp;- Threshold_Lower: {{ aiDetection !== null ? sendItem.out_threshold_lower + ' MB' : '' }}<br />
-                  &nbsp;&nbsp;- Anomaly: {{ aiDetection !== null ? sendItem.out_anomaly + '' : '' }}<br />
+                <div v-if="isLoadAiDetectionInfo">
+                  <span class="sub-title font-semibold"><h4>&middot;AI 분석 결과 정보</h4></span>
+                  <span class="font-italic font-semibold"> {{ getAlarmtxt }} </span>
+                  <div v-if="sendItem.ticket_type === 'ATT2'">
+                    &emsp;<span>IN</span><br />
+                    &nbsp;&nbsp;- mbps: {{ aiDetection !== null ? sendItem.in_bps + ' MB' : '' }} <br />
+                    &nbsp;&nbsp;- Predict: {{ aiDetection !== null ? sendItem.in_predict + ' MB' : '' }}<br />
+                    &nbsp;&nbsp;- Threshold_Upper: {{ aiDetection !== null ? sendItem.in_threshold_upper + ' MB' : '' }}<br />
+                    &nbsp;&nbsp;- Threshold_Lower: {{ aiDetection !== null ? sendItem.in_threshold_lower + ' MB' : '' }}<br />
+                    - Anomaly: {{ aiDetection !== null ? sendItem.in_anomaly + '' : '' }}<br />
+                    &emsp;<span>OUT</span><br />
+                    &nbsp;&nbsp;- mbps: {{ aiDetection !== null ? sendItem.out_bps + ' MB' : '' }}<br />
+                    &nbsp;&nbsp;- Predict : {{ aiDetection !== null ? sendItem.out_predict + ' MB' : '' }}<br />
+                    &nbsp;&nbsp;- Threshold_Upper: {{ aiDetection !== null ? sendItem.out_threshold_upper + ' MB' : '' }}<br />
+                    &nbsp;&nbsp;- Threshold_Lower: {{ aiDetection !== null ? sendItem.out_threshold_lower + ' MB' : '' }}<br />
+                    &nbsp;&nbsp;- Anomaly: {{ aiDetection !== null ? sendItem.out_anomaly + '' : '' }}<br />
+                  </div>
                 </div>
 
                 <div v-if="sendItem.ticket_type === 'ATT2' || sendItem.ticket_type === 'NTT'">
@@ -216,6 +211,7 @@ export default {
       relatedSopList: [],
       userList: [],
       mailToSystemUrl: null,
+      isLoadAiDetectionInfo: false,
       aiDetection: {
         in_threshold_upper: '',
         out_predict: '',
@@ -427,6 +423,7 @@ export default {
         }
         await this.onLoadSopHistList()
         await this.onLoadAiDetectionInfo()
+        this.setTemplateContent()
       } catch (error) {
         this.error(error)
       } finally {
@@ -540,14 +537,16 @@ export default {
       const { root_cause_sysnamea: START_NODE, root_cause_sysnamez: END_NODE, root_cause_porta: START_PORT, root_cause_portz: END_PORT } = this.trafficInfo
 
       if (!TICKET_ID) {
+        this.isLoadAiDetectionInfo = false
         return
+      } else {
+        this.isLoadAiDetectionInfo = true
       }
-      const row = this.selectedRow
-      const param = { TICKET_ID, START_NODE, START_PORT, FAULT_TIME }
+
       try {
+        const param = { TICKET_ID, START_NODE, START_PORT, FAULT_TIME }
         const res = await apiSelectAiDetectionInfo(param)
         this.aiDetection = res?.result[0] ?? null
-        this.setTemplateContent()
       } catch (error) {
         this.error(error)
       } finally {
