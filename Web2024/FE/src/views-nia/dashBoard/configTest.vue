@@ -5,40 +5,26 @@
         <div slot="header">
           <span><i class="el-icon-document" /> 기본 정보</span>
         </div>
-        <el-row v-if="selectedRow.ticket_type === 'NTT_AI' || selectedRow.ticket_type === 'NTT'">
-          <el-col :span="8" class="p-1 d-flex flex-column items-start">
+        <el-row>
+          <el-col v-loading="loading.ipsdnNodeLoading" :span="8" class="p-1 d-flex flex-column items-start">
             <label>장비 이름</label>
-            <el-select v-model="item.nodeName" @change="changeNodeName($event)">
+            <el-select v-model="item.nodeName" :disabled="selectedRow.ticket_type !== 'NTT_AI'" @change="changeDefaultInfoSelecter('NODENAME', $event)">
               <el-option v-for="(option, i) in options.node" :key="i" :label="option.label" :value="option.value" />
             </el-select>
           </el-col>
-          <el-col :span="8" class="p-1 d-flex flex-column items-start">
+          <el-col v-loading="loading.ipsdnNodeLoading" :span="8" class="p-1 d-flex flex-column items-start">
             <label>IP 주소</label>
             <el-input v-model="item.ipAddr" disabled />
           </el-col>
-          <el-col :span="8" class="p-1 d-flex flex-column items-start">
+          <el-col v-loading="loading.ipsdnInterfaceLoading" :span="8" class="p-1 d-flex flex-column items-start">
             <label>인터페이스</label>
-            <el-select v-model="item.ifname">
+            <el-select v-model="item.ifname" :disabled="selectedRow.ticket_type !== 'NTT_AI'" @change="changeDefaultInfoSelecter('IFNAME', $event)">
               <el-option v-for="(option, i) in options.interface" :key="i" :label="option.label" :value="option.value" />
             </el-select>
           </el-col>
         </el-row>
-        <el-row v-else>
-          <el-col :span="8" class="p-1 d-flex flex-column items-start">
-            <label>장비 이름</label>
-            <el-input v-model="item.nodeName" disabled />
-          </el-col>
-          <el-col :span="8" class="p-1 d-flex flex-column items-start">
-            <label>IP 주소</label>
-            <el-input v-model="item.ipAddr" disabled />
-          </el-col>
-          <el-col :span="8" class="p-1 d-flex flex-column items-start">
-            <label>인터페이스</label>
-            <el-input v-model="item.ifname" disabled />
-          </el-col>
-        </el-row>
       </el-card>
-      <el-card shadow="never" style="height: 30%" :body-style="{ padding: '10px' }">
+      <el-card v-loading="loading.crcSpeedLoading" shadow="never" style="height: 30%" :body-style="{ padding: '10px' }">
         <div slot="header">
           <span><i class="el-icon-document" />CRC/SPEED 체크</span>
         </div>
@@ -58,7 +44,7 @@
           <span><i class="el-icon-document" /> IP 불일치 체크</span>
         </div>
         <el-row>
-          <el-col :span="12">
+          <el-col v-loading="loading.equipInterfaceIpLoading" :span="12">
             <div class="font-bold text-center ip-title">장비 설정 IP정보</div>
             <div style="height: 130px; background: #f5f7fa; border-radius: 5px; border: solid 1px">
               <div v-for="(if_item, index) in if_config.equip_ip" :key="index" style="color: rgb(234, 78, 78)" class="font-bold">
@@ -66,7 +52,7 @@
               </div>
             </div>
           </el-col>
-          <el-col :span="12">
+          <el-col v-loading="loading.agencyIpLoading" :span="12">
             <div class="font-bold text-center ip-title">이용기관 등록 IP정보</div>
             <div style="height: 130px; background: #f5f7fa; border-radius: 5px; border: solid 1px; overflow-y: auto">
               <div v-for="(agencyItem, index) in agencyIpList" :key="index" style="color: rgb(234, 78, 78)" class="font-bold">
@@ -118,6 +104,8 @@ import niaObserverMixin from '@/mixin/niaObserverMixin'
 
 const routeName = constants.nia.chatbotKeyMap.configTest.parameterKey
 
+const defaultIfConfig = { speed: '', equip_ip: [] }
+
 export default {
   name: routeName,
   // eslint-disable-next-line vue/no-unused-components
@@ -150,7 +138,7 @@ export default {
       remoteControl: '',
       remoteParam: '',
       badCrc: '',
-      if_config: { speed: '', equip_ip: [] },
+      if_config: _.cloneDeep(defaultIfConfig),
       item: {
         nodeName: '',
         ipAddr: '',
@@ -164,6 +152,13 @@ export default {
       agencyIpList: [],
       frameLoading: false,
       activeProfile: null,
+      loading: {
+        ipsdnNodeLoading: false,
+        ipsdnInterfaceLoading: false,
+        crcSpeedLoading: false,
+        equipInterfaceIpLoading: false,
+        agencyIpLoading: false,
+      },
     }
   },
   computed: {
@@ -176,9 +171,9 @@ export default {
   },
   watch: {
     remoteControl(nVal, oVal) {
-      if (nVal === 'chngport') {
-        this.$refs.pathSwitch.setVisible()
-      }
+      // if (nVal === 'chngport') {
+      //   this.$refs.pathSwitch.setVisible()
+      // }
     },
 
     configTestEventText(nVal, oVal) {
@@ -199,41 +194,61 @@ export default {
   async mounted() {
     await this.setTicketDataForChatbotTicketData()
 
-    if (['NTT', 'NTT_AI'].includes(this.selectedRow.ticket_type)) {
-      await this.setIpsdnNodeList()
-      await this.setIpsdnInterfaceList()
-    }
-
     this.$nextTick(() => {
       this.popupShowCommand()
     })
   },
   methods: {
     async setIpsdnNodeList() {
-      this.nodeNameIpAddrMappingBox = []
-      this.options.node = []
-      const res = await apiSelectIpsdnNodeList()
-      res.result.forEach((v) => {
-        this.nodeNameIpAddrMappingBox.push({ nodeName: v.node_name, addr: v.mgmt_addr })
-        this.options.node.push({ label: v.node_name, value: v.node_name })
-      })
+      try {
+        this.loading.ipsdnNodeLoading = true
+        this.nodeNameIpAddrMappingBox = []
+        this.options.node = []
+        const res = await apiSelectIpsdnNodeList()
+        res.result.forEach((v) => {
+          this.nodeNameIpAddrMappingBox.push({ nodeName: v.node_name, addr: v.mgmt_addr })
+          this.options.node.push({ label: v.node_name, value: v.node_name })
+        })
+      } catch (e) {
+        console.error(e)
+      } finally {
+        this.loading.ipsdnNodeLoading = false
+      }
     },
 
     async setIpsdnInterfaceList(param) {
-      this.options.interface = []
-      this.item.ifname = ''
-      const res = await apiSelectIpsdnInterfaceList(param)
-      res.result.forEach((v) => {
-        this.options.interface.push({ label: v.if_name, value: v.if_name })
-      })
+      try {
+        this.loading.ipsdnInterfaceLoading = true
+        this.options.interface = []
+        this.item.ifname = ''
+        const res = await apiSelectIpsdnInterfaceList(param)
+        res.result.forEach((v) => {
+          this.options.interface.push({ label: v.if_name, value: v.if_name })
+        })
+      } catch (e) {
+        console.error(e)
+      } finally {
+        this.loading.ipsdnInterfaceLoading = false
+      }
     },
 
-    changeNodeName(node_name) {
-      const x = this.nodeNameIpAddrMappingBox.find((v) => {
-        return v.nodeName === node_name
-      })
-      this.item.ipAddr = x.addr
-      this.setIpsdnInterfaceList({ nodeName: node_name })
+    changeDefaultInfoSelecter(selecterType, node_name) {
+      switch (selecterType) {
+        case 'NODENAME':
+          {
+            const x = this.nodeNameIpAddrMappingBox.find((v) => {
+              return v.nodeName === node_name
+            })
+            this.item.ipAddr = x.addr
+            this.setIpsdnInterfaceList({ nodeName: node_name })
+            this.onLoadCRC()
+          }
+          break
+        case 'IFNAME':
+          this.onLoadEquipInterfaceIpLoading()
+          this.onLoadAgencyIpList()
+          break
+      }
     },
 
     async setTicketDataForChatbotTicketData(isSwitchingTicket) {
@@ -249,11 +264,6 @@ export default {
       }
 
       const { ticket_type, root_cause_sysnamea, node_nm, ip_addr, root_cause_porta, alarmloc, alarmmsg } = this.selectedRow
-      this.item = {
-        nodeName: ['SYSLOG', 'RT'].includes(ticket_type) ? node_nm : root_cause_sysnamea,
-        ipAddr: ip_addr,
-        ifname: ['SYSLOG', 'RT'].includes(ticket_type) ? alarmloc : root_cause_porta,
-      }
 
       switch (ticket_type) {
         case 'ATT2':
@@ -274,9 +284,20 @@ export default {
           break
       }
 
-      this.onLoadCRC()
-      this.onLoadInterface()
-      this.onLoadAgencyIpList()
+      if (['NTT', 'NTT_AI'].includes(this.selectedRow.ticket_type)) {
+        await this.setIpsdnNodeList()
+        await this.setIpsdnInterfaceList()
+      } else {
+        this.item = {
+          nodeName: ['SYSLOG', 'RT'].includes(ticket_type) ? node_nm : root_cause_sysnamea,
+          ipAddr: ip_addr,
+          ifname: ['SYSLOG', 'RT'].includes(ticket_type) ? alarmloc : root_cause_porta,
+        }
+
+        this.onLoadCRC()
+        this.onLoadEquipInterfaceIpLoading()
+        this.onLoadAgencyIpList()
+      }
     },
 
     async popupShowCommand() {
@@ -293,37 +314,48 @@ export default {
     async onLoadCRC() {
       const { nodeName, ifname } = this.item
       try {
+        this.loading.crcSpeedLoading = true
         const res = await apiIpsdnRequest({ servicePath: 'stat/badcrc', param: `nodename=${nodeName}&ifname=${ifname}` })
         this.badCrc = res?.result?.data ? res.result.data[0]?.ifStat?.badCrc : ''
-        console.log(res)
       } catch (error) {
         this.error(error)
+      } finally {
+        this.loading.crcSpeedLoading = false
       }
     },
-    async onLoadInterface() {
+    async onLoadEquipInterfaceIpLoading() {
       const { nodeName, ifname } = this.item
       try {
+        this.loading.equipInterfaceIpLoading = true
+        this.if_config = _.cloneDeep(defaultIfConfig)
+
         const res = await apiIpsdnRequest({ servicePath: 'config/interfaces', param: `nodename=${nodeName}&ifname=${ifname}` })
-        this.if_config = res.result?.data ? res.result?.data[0] : { speed: '', equip_ip: [] }
-        if (res.result && res.result?.data[0].ipAddr) {
-          if (Array.isArray(res.result?.data[0].ipAddr)) {
-            Object.assign(this.if_config, { equip_ip: res.result?.data[0].ipAddr })
-          } else {
-            Object.assign(this.if_config, { equip_ip: [{ ip: res.result?.data[0].ipAddr }] })
+        if (res && res.result && res.result.data && res.result.data.length > 0) {
+          this.if_config = res.result?.data[0]
+          if (res.result.data[0].ipAddr) {
+            if (Array.isArray(res.result?.data[0].ipAddr)) {
+              Object.assign(this.if_config, { equip_ip: res.result?.data[0].ipAddr })
+            } else {
+              Object.assign(this.if_config, { equip_ip: [{ ip: res.result?.data[0].ipAddr }] })
+            }
           }
         }
-        console.log(res)
       } catch (error) {
         this.error(error)
+      } finally {
+        this.loading.equipInterfaceIpLoading = false
       }
     },
     async onLoadAgencyIpList() {
       const { nodeName } = this.item
       try {
+        this.loading.agencyIpLoading = true
         const res = await apiSelectAgencyIpList({ node_id: nodeName })
         this.agencyIpList = res.result
       } catch (error) {
         this.error(error)
+      } finally {
+        this.loading.agencyIpLoading = false
       }
     },
 
