@@ -208,7 +208,7 @@ const mutations = {
         state.alarmFocusSopDataList.push(...sopDataList)
     },
 
-    RESET_CHAT(state) {
+    RESET_CHAT(state, { ticketData }) {
         switch (state.currentMode) {
             case constants.nia.chatbotMode.questionMode:
                 state.questionMode_chatMessages.length = 1
@@ -218,7 +218,7 @@ const mutations = {
                 {
                     const tempMessageArray = _.cloneDeep(state.alarmFocusMode_chatMessages)
                     state.alarmFocusMode_chatMessages.length = 0
-                    state.alarmFocusNTTAIDetailInfo = {}
+                    state.alarmFocusMode_chatMessages.unshift(getRecommendedCommand(ticketData))
 
                     const filterArray = tempMessageArray.filter((m) => { return m.type === constants.nia.chatType.botAlert })
                     if (filterArray.length > 0) {
@@ -289,8 +289,7 @@ const actions = {
 
     newAlarmFocusChat({ commit }, { ticketData }) {
         commit('MODE_CHANGE', { newMode: 'alarmFocusMode' })
-        commit('RESET_CHAT')
-        commit('PUSH_CHAT_MESSAGE', _.cloneDeep(getRecommendedCommand(ticketData)))
+        commit('RESET_CHAT', { ticketData })
         commit('SET_ALARM_FOCUS_CHAT_TICKET_DATA', { ticketData })
         commit('SET_ALARM_FOCUS_SOP_DATA_LIST', { ticketData })
     }

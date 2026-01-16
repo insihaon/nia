@@ -41,23 +41,26 @@
                         <span class="usagePredAnalyResultValue">{{ thresholdInfo.thresholdDate }}</span>
                       </div>
                       <div class="usagePredAnalyResultBody">
-                        <el-tooltip class="item" effect="dark" content="앞으로 증감이 어떻게 변동될 것으로 예측되는지 표시합니다" placement="top">
-                          <span class="usagePredAnalyResultItem" style="text-decoration: underline"> 증감 예측 결과 </span>
+                        <el-tooltip class="item" effect="dark" content="장애시점의 값 차이" placement="top">
+                          <span class="usagePredAnalyResultItem" style="text-decoration: underline">{{ (isTcaAlarm ? '실제값' : '예측값') + '   >   ' + (isTcaAlarm ? '임계상한값' : '임계값') }}</span>
                         </el-tooltip>
-                        <span class="usagePredAnalyResultValue">{{ trendValue }}</span>
+                        <span class="usagePredAnalyResultValue">
+                          <span>{{ thresholdInfo.targetValue }} > {{ thresholdInfo.upperBound }} (Mbps)</span>
+                        </span>
                       </div>
                       <div class="usagePredAnalyResultBody">
-                        <el-tooltip class="item" effect="dark" content="예측값과 실제값 사이의 정확도(하루 이후 계산)" placement="top">
-                          <span class="usagePredAnalyResultItem" style="text-decoration: underline"> 정확도 </span>
+                        <el-tooltip class="item" effect="dark" content="장애방향" placement="top">
+                          <span class="usagePredAnalyResultItem" style="text-decoration: underline">in/out</span>
                         </el-tooltip>
-                        <span v-if="accuracyValue" class="usagePredAnalyResultValue">{{ accuracyValue }}</span>
-                        <span v-else class="usagePredAnalyResultValue">정확도값 없음</span>
+                        <span class="usagePredAnalyResultValue">
+                          <span>{{ currentErrorDirection }}</span>
+                        </span>
                       </div>
                     </div>
                   </div>
                   <div class="usagePredAnalyResult">
                     <div class="usagePredAnalyResultContainerInner" style="display: flex">
-                      <div class="usagePredAnalyResultBody">
+                      <div v-if="isTcaAlarm" class="usagePredAnalyResultBody">
                         <el-tooltip class="item" effect="dark" content="장애정보" placement="top">
                           <span class="usagePredAnalyResultItem" style="text-decoration: underline">장애정보</span>
                         </el-tooltip>
@@ -65,13 +68,26 @@
                           <span>{{ selectedRow.alarmmsg }}</span>
                         </span>
                       </div>
-                      <div class="usagePredAnalyResultBody">
-                        <el-tooltip class="item" effect="dark" content="장애시점의 값 차이" placement="top">
-                          <span class="usagePredAnalyResultItem" style="text-decoration: underline">{{ (isTcaAlarm ? '실제값' : '예측값') + '   >   ' + (isTcaAlarm ? '임계상한값' : '임계값') }}</span>
+                      <div v-if="isTcaAlarm" class="usagePredAnalyResultBody">
+                        <el-tooltip class="item" effect="dark" content="장애유형" placement="top">
+                          <span class="usagePredAnalyResultItem" style="text-decoration: underline">장애유형</span>
                         </el-tooltip>
                         <span class="usagePredAnalyResultValue">
-                          <span>{{ thresholdInfo.targetValue }} > {{ thresholdInfo.upperBound }} ({{ currentErrorDirection }})</span>
+                          <span>{{ selectedRow.fault_type }}</span>
                         </span>
+                      </div>
+                      <div v-if="!isTcaAlarm" class="usagePredAnalyResultBody">
+                        <el-tooltip class="item" effect="dark" content="앞으로 증감이 어떻게 변동될 것으로 예측되는지 표시합니다" placement="top">
+                          <span class="usagePredAnalyResultItem" style="text-decoration: underline"> 증감 예측 결과 </span>
+                        </el-tooltip>
+                        <span class="usagePredAnalyResultValue">{{ trendValue }}</span>
+                      </div>
+                      <div v-if="!isTcaAlarm" class="usagePredAnalyResultBody">
+                        <el-tooltip class="item" effect="dark" content="예측값과 실제값 사이의 정확도(하루 이후 계산)" placement="top">
+                          <span class="usagePredAnalyResultItem" style="text-decoration: underline"> 정확도 </span>
+                        </el-tooltip>
+                        <span v-if="accuracyValue" class="usagePredAnalyResultValue">{{ accuracyValue }}</span>
+                        <span v-else class="usagePredAnalyResultValue">정확도값 없음</span>
                       </div>
                       <div class="usagePredAnalyResultBody">
                         <el-tooltip class="item" effect="dark" content="TCA: 실시간으로 티켓발행, 예측: 사전예측하여 티켓발행" placement="top">
@@ -270,13 +286,12 @@ export default {
     ticketGrid() {
       // prettier-ignore
       const columns = [
-        { type: '', prop: 'ticket_id', name: 'TICKET_ID', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
-        { type: '', prop: 'alarmtime', name: '티켓 발생시간', width: 200, alignItems: 'center', fixed: false, suppressMenu: true, formatter: (row) => { return this.formatterTimeStamp(row.alarmtime, 'YYYY/MM/DD-HH:mm:ss') }, },
-        { type: '', prop: 'errorRange', name: '장애구간', width: 150, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '장애구간', icon: 'circle-check', type: '', action: this.openErrorRangeWidget.bind(this) } },
-        { type: '', prop: 'fault_type', name: '장애유형', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
-        { type: '', prop: 'ticket_rca_result_dtl_code', name: '장애 원인', width: 200, alignItems: 'center', fixed: false, suppressMenu: true },
-        { type: '', prop: 'node_num', name: '장비ID', width: 200, alignItems: 'center', fixed: false, suppressMenu: true },
-        { type: '', prop: 'ip_addr', name: 'IP주소', width: 150, alignItems: 'center', fixed: false, suppressMenu: true },
+        { type: '', prop: 'ticket_id', name: 'TICKET_ID', width: 100, alignItems: 'center', fixed: false, suppressMenu: true, flex: 1 },
+        { type: '', prop: 'alarmtime', name: '티켓 발생시간', width: 200, alignItems: 'center', fixed: false, suppressMenu: true, formatter: (row) => { return this.formatterTimeStamp(row.alarmtime, 'YYYY/MM/DD-HH:mm:ss') }, flex: 1 },
+        { type: '', prop: 'errorRange', name: '장애구간', width: 150, alignItems: 'center', fixed: false, suppressMenu: true, cellRendererFramework: 'CellRenderAibuttons', cellRendererParams: { name: '장애구간', icon: 'circle-check', type: '', action: this.openErrorRangeWidget.bind(this) }, flex: 1 },
+        { type: '', prop: 'ticket_rca_result_dtl_code', name: '장애 원인', width: 200, alignItems: 'center', fixed: false, suppressMenu: true, flex: 1 },
+        { type: '', prop: 'node_num', name: '장비ID', width: 200, alignItems: 'center', fixed: false, suppressMenu: true, flex: 1 },
+        { type: '', prop: 'ip_addr', name: 'IP주소', width: 150, alignItems: 'center', fixed: false, suppressMenu: true, flex: 1 },
       ]
 
       const options = { name: this.name, checkable: false, rowGroupPanel: false }
@@ -591,17 +606,14 @@ export default {
         this.CDS[0].data.push(null)
       }
 
-      // 예측값,예측임계값 vs 임계상한,임계하한
-      if (fitDateMinusOneDay >= aiData.ds) {
-        this.CDS[1].data.push(null)
-        this.CDS[2].data.push(null)
+      if (this.isTcaAlarm) {
+        this.CDS[1].data.push(this.errorDirectionisIn ? aiData.in_yhat_upper.toFixed(2) : aiData.out_yhat_upper.toFixed(2))
+        this.CDS[2].data.push(this.errorDirectionisIn ? aiData.in_yhat_lower.toFixed(2) : aiData.out_yhat_lower.toFixed(2))
       } else {
-        if (this.isTcaAlarm) {
-          // 임계상한값, 임계하한값
-          this.CDS[1].data.push(this.errorDirectionisIn ? aiData.in_yhat_upper.toFixed(2) : aiData.out_yhat_upper.toFixed(2))
-          this.CDS[2].data.push(this.errorDirectionisIn ? aiData.in_yhat_lower.toFixed(2) : aiData.out_yhat_lower.toFixed(2))
+        if (fitDateMinusOneDay >= aiData.ds) {
+          this.CDS[1].data.push(null)
+          this.CDS[2].data.push(null)
         } else {
-          // 예측값, 예측임계값
           this.CDS[1].data.push(yhatValue)
           this.CDS[2].data.push(this.errorDirectionisIn ? aiData.in_threshold_value : aiData.out_threshold_value)
         }

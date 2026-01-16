@@ -5,7 +5,7 @@
         <h3>
           어시스턴트 <span :style="{ color: isQuestionMode ? 'red' : 'green' }">[{{ isQuestionMode ? 'OFF' : 'ON' }}]</span>
         </h3>
-        <div v-if="isQuestionMode">현재 Chatbot은 휴면중입니다</div>
+        <div v-if="isQuestionMode">현재 어시스턴트는 휴면중입니다</div>
         <div v-else>
           <div v-if="alarmFocusMode_TicketData.ticket_type == 'NTT_AI'">
             <span>[TICKET_ID: {{ alarmFocusMode_TicketData.ticket_id }}] </span>
@@ -26,7 +26,7 @@
 
       <div v-if="isQuestionMode" ref="chatMessagesBox" class="chat-messages">
         <div v-for="(message, index) in questionMode_chatMessages" :key="index" :class="['message', message.type]">
-          <div v-if="message.type !== botAlertText || isActiveBotAlert">
+          <div :style="{ display: message.type !== botAlertText || isActiveBotAlert ? visible : none }">
             <div class="message-content" @click="handlePathClick($event, message.content)" v-html="formatMessage(message.content)"></div>
             <div class="message-time">
               {{ message.time }}
@@ -35,20 +35,23 @@
         </div>
       </div>
       <div v-else ref="chatMessagesBox" class="chat-messages">
-        <div ref="donutChartContainer" class="chatbot-donut-chart-container">
+        <div v-loading="donutChartLoading" class="chatbot-donut-chart-container">
           <DoughnutChart v-if="alarmFocusSopDataList.length > 0" ref="donutChart1" class="chatbot-donut-chart" :chart-data="chartData" :options="chartOptions" style="margin-bottom: 10px" />
           <DoughnutChart v-if="alarmFocusTicketData.ticket_type === 'NTT_AI'" ref="donutChart2" class="chatbot-donut-chart" :chart-data="nttChartData" :options="nttChartOptions" />
         </div>
         <div v-for="(message, index) in alarmFocusMode_chatMessages" :key="index" :class="['message', message.type]">
-          <div v-if="index === 0">
-            <div v-if="alarmFocusTicketData.ticket_type !== 'NTT_AI'" class="message-content sopAnalysisBody">
-              <div v-if="alarmFocusSopDataList.length > 0">
-                <div style="background-color: #1e293b; font-weight: 600; text-align: center; color: white">{{ alarmFocusTicketData.node_nm }} 장비에 대한 SOP 조치내용 통계</div>
+          <!-- <div v-if="index === 0">
+            <div v-loading="donutChartLoading" class="message-content sopAnalysisBody">
+              <div v-if="alarmFocusSopDataList.length - sopEmptyDataCount > 0">
+                <div style="background-color: #1e293b; font-weight: 600; text-align: center; color: white">
+                  <span v-if="alarmFocusTicketData.ticket_type === 'NTT_AI'">장애유형 {{ alarmFocusNTTAIDetailInfo.traffic_type }}에 대한 SOP 조치내용 통계</span>
+                  <span v-else>{{ alarmFocusTicketData.node_nm }} 장비에 대한 SOP 조치내용 통계</span>
+                </div>
                 <table class="sop-stats-table">
                   <tbody>
                     <tr>
                       <td>전체SOP</td>
-                      <td>{{ alarmFocusSopDataList.length }}개</td>
+                      <td>{{ alarmFocusSopDataList.length - sopEmptyDataCount }}개</td>
                     </tr>
                     <tr v-for="(label, index2) in chartData.labels" :key="label">
                       <td>{{ label }}</td>
@@ -63,10 +66,10 @@
                 SOP이력이 없어서 통계 데이터가 제공되지 않습니다.
               </div>
             </div>
-          </div>
+          </div> -->
 
           <div v-if="message.type !== botAlertText || isActiveBotAlert">
-            <div class="message-content" @click="handlePathClick($event, message.content)" v-html="formatMessage(message.content)"></div>
+            <div ref="messageContent" class="message-content" @click="handlePathClick($event, message.content)" v-html="formatMessage(message.content)"></div>
             <div class="message-time">
               {{ message.time }}
             </div>
@@ -75,8 +78,6 @@
       </div>
 
       <div class="utility-buttons">
-        <button :disabled="isQuestionMode" class="utility-button" @click="openSop">SOP화면</button>
-        <button :disabled="isQuestionMode" class="utility-button" @click="openConfigTest">조치화면</button>
         <button :disabled="isQuestionMode" class="utility-button" :style="{ 'background-color': isActiveBotAlert ? '#ff4949' : '#e5e7eb' }" @click="toggleIsActiveBotAlert">{{ isActiveBotAlert ? '경보 표시' : '경보 미표시' }}</button>
         <button :disabled="recognizing || isQuestionMode" class="utility-button" @click="actionSwitch">{{ actionType === 'expert' ? '전문가모드' : '안내모드' }}</button>
         <button :disabled="isQuestionMode" class="utility-button" @click="resetChat">채팅초기화</button>
@@ -99,7 +100,7 @@ import elDragDialog from '@/directive/el-drag-dialog'
 import { Modal } from '@/min/Modal.min'
 import { mapState } from 'vuex'
 import dialogOpenMixin from '@/mixin/dialogOpenMixin'
-import { getChatbotDonutChart, chatbotCenterTextPlugin } from '@/views-nia/js/donutChartBunddle'
+import { getChatbotDonutChart } from '@/views-nia/js/donutChartBunddle'
 import { VoiceRecognition } from '@/views-nia/js/chatbotVoiceRecognition'
 import { searchMessaging, errorMessaging1, errorMessaging2, errorMessaging3, getRecommendedCommand } from '@/store/modules/chatbot.js'
 import { getChatbotMdiObject, getNiaRouteNameByPath, getNiaRouteTitleByPath, getSpanFormatMessageForDB, getMatchMapOfspanFormatMessage, isSpanFormatChatMessage } from '@/views-nia/js/commonNiaFunction'
@@ -107,6 +108,7 @@ import { apiIpAlarmList } from '@/api/nia'
 import constants from '@/min/constants'
 import hotkeys from 'hotkeys-js'
 import _ from 'lodash'
+import html2canvas from 'html2canvas'
 
 const routeName = 'chatbot'
 
@@ -118,6 +120,7 @@ export default {
   directives: { elDragDialog },
   extends: Modal,
   mixins: [dialogOpenMixin],
+
   props: {
     wdata: {
       type: Object,
@@ -134,7 +137,8 @@ export default {
       isActiveBotAlert: false,
       recognizing: false, // 음성인식 상태
       voiceRecognition: null, // VoiceRecognition 인스턴스
-      centerTextPlugin: chatbotCenterTextPlugin,
+      sopEmptyDataCount: 0,
+      donutChartLoading: false,
       chartData: {
         labels: [],
         datasets: [
@@ -156,15 +160,16 @@ export default {
       chartOptions: {
         responsive: true,
         maintainAspectRatio: false,
-        title: {
+        customTitle: {
           display: true,
           text: '', // 소스에서 변경경
           fontSize: 16,
           fontStyle: 'bold',
           fontColor: '#333',
         },
+        isShowCenterText: true,
         legend: {
-          position: 'left',
+          position: 'right',
           align: 'center',
           labels: {
             usePointStyle: true,
@@ -190,15 +195,16 @@ export default {
       nttChartOptions: {
         responsive: true,
         maintainAspectRatio: false,
-        title: {
+        customTitle: {
           display: true,
           text: '', // 소스에서 지정
           fontSize: 16,
           fontStyle: 'bold',
           fontColor: '#333',
         },
+        isShowCenterText: false,
         legend: {
-          position: 'left',
+          position: 'right',
           align: 'center',
           labels: {
             usePointStyle: true,
@@ -373,7 +379,7 @@ export default {
       // 4. nttChartData에 적용
       this.nttChartData.labels = sortedLabels
       this.nttChartData.datasets[0].data = sortedValues
-      this.nttChartOptions.title.text = '유해트래픽 정확도 통계'
+      this.nttChartOptions.customTitle.text = '유해트래픽 정확도 통계'
 
       const colors = ['#1569C7', '#FFAD99', '#FAFAD2', '#FFB6C1', '#BDBADF']
       this.nttChartData.datasets[0].backgroundColor = colors.slice(0, this.nttChartData.labels.length)
@@ -385,54 +391,56 @@ export default {
     makeSopDonutChart() {
       // faultType별 개수 계산
       const faultTypeCount = {}
-      let emptyCount = 0
+      this.sopEmptyDataCount = 0
       this.alarmFocusSopDataList.forEach((data) => {
         const fault_detail_content = data.fault_detail_content
         if (data.fault_detail_content && data.fault_detail_content.length > 0) {
           faultTypeCount[fault_detail_content] = (faultTypeCount[fault_detail_content] || 0) + 1
         } else {
-          emptyCount++
+          this.sopEmptyDataCount++
         }
       })
 
       // 개수 기준으로 내림차순 정렬하여 상위 3개 추출
       const sortedFaultTypes = Object.entries(faultTypeCount)
         .sort(([, a], [, b]) => b - a)
-        .slice(0, 3)
+        .slice(0, 4)
 
-      // 상위 3개 faultType과 기타 개수 계산
-      const top3FaultTypes = sortedFaultTypes.map(([fault_detail_content]) => fault_detail_content)
-      const top3Counts = sortedFaultTypes.map(([, count]) => count)
+      // 상위 4개 faultType과 기타 개수 계산
+      const top4FaultTypes = sortedFaultTypes.map(([fault_detail_content]) => fault_detail_content)
+      const top4Counts = sortedFaultTypes.map(([, count]) => count)
 
-      // 기타 개수 계산 (상위 3개가 아닌 나머지)
+      // 기타 개수 계산 (상위 4개가 아닌 나머지)
       const othersCount = Object.entries(faultTypeCount)
-        .filter(([fault_detail_content]) => !top3FaultTypes.includes(fault_detail_content))
+        .filter(([fault_detail_content]) => !top4FaultTypes.includes(fault_detail_content))
         .reduce((sum, [, count]) => sum + count, 0)
 
       // chartData 업데이트
-      this.chartData.labels = [...top3FaultTypes, '기타']
-      this.chartData.datasets[0].data = [...top3Counts, othersCount + emptyCount]
+      this.chartData.labels = [...top4FaultTypes, '기타']
+      this.chartData.datasets[0].data = [...top4Counts, othersCount]
 
       // 색상도 동적으로 설정 (기본 색상 + 기타용 회색)
       const colors = ['#FF6384', '#36A2EB', '#FFCE56', 'gray']
       this.chartData.datasets[0].backgroundColor = colors.slice(0, this.chartData.labels.length)
-      this.chartOptions.title.text = 'SOP 조치내용 통계'
+      this.chartOptions.customTitle.text = '장애 조치 내용별 현황'
     },
 
     async setDonutChartData() {
-      const target = { vue: this.$refs.donutChartContainer }
-      this.openLoading(target)
+      try {
+        this.donutChartLoading = true
+        await new Promise((resolve) => setTimeout(resolve, 3000))
 
-      await new Promise((resolve) => setTimeout(resolve, 3000))
-
-      if (this.alarmFocusTicketData.ticket_type === 'NTT_AI') {
-        this.makeSopDonutChart()
-        this.makeNTTDonutChartData1()
-      } else {
-        this.makeSopDonutChart()
+        if (this.alarmFocusTicketData.ticket_type === 'NTT_AI') {
+          this.makeSopDonutChart()
+          this.makeNTTDonutChartData1()
+        } else {
+          this.makeSopDonutChart()
+        }
+      } catch (e) {
+        console.error(e)
+      } finally {
+        this.donutChartLoading = false
       }
-
-      this.closeLoading(target)
     },
 
     actionSwitch() {
@@ -440,7 +448,7 @@ export default {
     },
 
     resetChat() {
-      this.$store.commit('chatbot/RESET_CHAT')
+      this.$store.commit('chatbot/RESET_CHAT', { ticketData: this.alarmFocusTicketData })
     },
 
     getTicketTypeHangle(ticketType) {
@@ -635,66 +643,93 @@ export default {
     },
 
     async handlePathClick(event, content) {
-      if (event.target.classList.contains('move-link')) {
-        event.preventDefault()
+      this.captureContentToClipboard()
 
-        if (event.target.innerHTML === '[진행]') {
-          // 집중경보 모드 전환
-          const ticketMatch = content.match(/>티켓종류: (.*?)<\/span>/)
-          const ticketType = ticketMatch ? ticketMatch[1] : null
-          if (!ticketType) {
-            this.$alert(`예상치 못한 에러 해당 장비에 ticketType이 존재하지 않습니다. 내용 : ${content}`, '오류', {
-              confirmButtonText: '실행',
-              cancelButtonText: '취소',
-              customClass: 'nia-message-box',
-            })
-            return
-          }
+      // if (event.target.classList.contains('move-link')) {
+      //   event.preventDefault()
 
-          let ticketId = null
-          let alarmno = null
+      //   if (event.target.innerHTML === '[진행]') {
+      //     // 집중경보 모드 전환
+      //     const ticketMatch = content.match(/>티켓종류: (.*?)<\/span>/)
+      //     const ticketType = ticketMatch ? ticketMatch[1] : null
+      //     if (!ticketType) {
+      //       this.$alert(`예상치 못한 에러 해당 장비에 ticketType이 존재하지 않습니다. 내용 : ${content}`, '오류', {
+      //         confirmButtonText: '실행',
+      //         cancelButtonText: '취소',
+      //         customClass: 'nia-message-box',
+      //       })
+      //       return
+      //     }
 
-          if (ticketType === 'SYSLOG') {
-            const alarmMatch = content.match(/>알람번호: (.*?)<\/span>/)
-            alarmno = alarmMatch ? alarmMatch[1] : null
-            if (!alarmno) {
-              this.$alert(`예상치 못한 에러 해당 장비에 alarmno가 존재하지 않습니다. 내용 : ${content}`, '오류', {
-                confirmButtonText: '실행',
-                cancelButtonText: '취소',
-                customClass: 'nia-message-box',
-              })
-              return
-            }
-          } else {
-            const ticketMatch = content.match(/>티켓ID: (.*?)<\/span>/)
-            ticketId = ticketMatch ? ticketMatch[1] : null
-            if (!ticketId) {
-              this.$alert(`예상치 못한 에러 해당 장비에 ticketId가 존재하지 않습니다. 내용 : ${content}`, '오류', {
-                confirmButtonText: '실행',
-                cancelButtonText: '취소',
-                customClass: 'nia-message-box',
-              })
-              return
-            }
-          }
+      //     let ticketId = null
+      //     let alarmno = null
 
-          const res = await apiIpAlarmList({
-            TICKET_ID: ticketId,
-            ALARMNO: alarmno,
-            IS_TEST: true,
-          })
+      //     if (ticketType === 'SYSLOG') {
+      //       const alarmMatch = content.match(/>알람번호: (.*?)<\/span>/)
+      //       alarmno = alarmMatch ? alarmMatch[1] : null
+      //       if (!alarmno) {
+      //         this.$alert(`예상치 못한 에러 해당 장비에 alarmno가 존재하지 않습니다. 내용 : ${content}`, '오류', {
+      //           confirmButtonText: '실행',
+      //           cancelButtonText: '취소',
+      //           customClass: 'nia-message-box',
+      //         })
+      //         return
+      //       }
+      //     } else {
+      //       const ticketMatch = content.match(/>티켓ID: (.*?)<\/span>/)
+      //       ticketId = ticketMatch ? ticketMatch[1] : null
+      //       if (!ticketId) {
+      //         this.$alert(`예상치 못한 에러 해당 장비에 ticketId가 존재하지 않습니다. 내용 : ${content}`, '오류', {
+      //           confirmButtonText: '실행',
+      //           cancelButtonText: '취소',
+      //           customClass: 'nia-message-box',
+      //         })
+      //         return
+      //       }
+      //     }
 
-          if (res && res.result.length > 0) {
-            const ticket = res.result[0]
-            window.changeFocusAlertMode(ticket)
-          } else {
-            this.$alert('해당 티켓에 대하여 집중경보 활성화에 실패하였습니다.', '오류', {
-              confirmButtonText: '실행',
-              cancelButtonText: '취소',
-              customClass: 'nia-message-box',
-            })
-          }
-        }
+      //     const res = await apiIpAlarmList({
+      //       TICKET_ID: ticketId,
+      //       ALARMNO: alarmno,
+      //       IS_TEST: true,
+      //     })
+
+      //     if (res && res.result.length > 0) {
+      //       const ticket = res.result[0]
+      //       window.changeFocusAlertMode(ticket)
+      //     } else {
+      //       this.$alert('해당 티켓에 대하여 집중경보 활성화에 실패하였습니다.', '오류', {
+      //         confirmButtonText: '실행',
+      //         cancelButtonText: '취소',
+      //         customClass: 'nia-message-box',
+      //       })
+      //     }
+      //   }
+      // }
+    },
+
+    async captureContentToClipboard() {
+      window.focus()
+      document.body.focus()
+
+      const el = this.$refs.messageContent
+      if (!el) return
+
+      try {
+        const canvas = await html2canvas(el, {
+          backgroundColor: null, // 투명 배경 유지
+          scale: window.devicePixelRatio, // 선명도 개선
+        })
+
+        const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/png'))
+
+        await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })])
+
+        this.$message?.success?.('클립보드에 캡처되었습니다')
+        // 또는 alert("클립보드에 복사됨")
+      } catch (err) {
+        console.error(err)
+        alert('캡처 실패 (HTTPS 환경인지 확인하세요)')
       }
     },
   },
@@ -716,7 +751,7 @@ export default {
   border-radius: 12px; /* 부드러운 모서리 */
   padding: 0px 10px; /* 차트와 주변 여백 확보 */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 은은한 그림자 효과 */
-  height: 200px;
+  height: 250px;
   width: 400px;
 }
 

@@ -68,27 +68,28 @@
         </div>
         <el-row>
           <el-col :span="7">
-            <el-select v-model="remoteControl">
+            <el-select v-model="remoteControl" @change="changeRemoteControlSelector">
               <el-option v-for="op in remoteOptions" :key="op.value" :label="op.label" :value="op.value" />
             </el-select>
           </el-col>
-          <el-col :span="14">
-            <el-input v-model="remoteParam" placeholder="입력 파라미터" :disabled="['shoutdown', 'noshut'].includes(remoteControl)" />
+          <el-col :span="remoteControl === 'chngport' ? 14 : 17">
+            <el-input v-model="remoteParam" placeholder="입력 파라미터" :disabled="['shoutdown', 'noshut', 'chngport'].includes(remoteControl)" />
           </el-col>
-          <el-col :span="3">
-            <el-button size="mini" type="primary" icon="el-icon-video-play" :disabled="remoteControl.length === 0 || remoteControl === 'chngport'" @click="onClickRemote">실행 </el-button>
+          <el-col v-if="remoteControl === 'chngport'" :span="3">
+            <el-button size="mini" type="primary" icon="el-icon-video-play" @click="openPathSwitchPopup">경로설정 </el-button>
           </el-col>
         </el-row>
       </el-card>
       <el-row>
         <el-col align="right" class="mt-2">
+          <el-button size="mini" type="primary" icon="el-icon-video-play" :disabled="remoteControl.length === 0 || (remoteControl === 'chngport' && remoteParam.length === 0)" @click="onClickRemote"> 실행 </el-button>
           <el-button size="mini" type="info" icon="el-icon-close" @click.native="$emit('windowClose')">
             {{ $t('exit') }}
           </el-button>
         </el-col>
       </el-row>
     </div>
-    <pathSwitch ref="pathSwitch" :wdata="{ selectedRow: selectedRow, item: item }" @saveLocalStorage="saveLocalStorage"></pathSwitch>
+    <pathSwitch ref="pathSwitch" :wdata="{ selectedRow: selectedRow, item: item }" @saveLocalStorage="saveLocalStorage" @actionPathSwitch="setpathSwitchRowData" />
   </div>
 </template>
 
@@ -148,6 +149,7 @@ export default {
         node: [],
         interface: [],
       },
+      pathSwitchRowData: {},
       nodeNameIpAddrMappingBox: [],
       agencyIpList: [],
       frameLoading: false,
@@ -170,12 +172,6 @@ export default {
     },
   },
   watch: {
-    remoteControl(nVal, oVal) {
-      // if (nVal === 'chngport') {
-      //   this.$refs.pathSwitch.setVisible()
-      // }
-    },
-
     configTestEventText(nVal, oVal) {
       if (this.isModal) {
         switch (nVal) {
@@ -199,6 +195,20 @@ export default {
     })
   },
   methods: {
+    changeRemoteControlSelector(val) {
+      this.remoteParam = ''
+    },
+
+    setpathSwitchRowData(selectData) {
+      this.pathSwitchRowData = selectData
+
+      this.remoteParam = '노드 ID : ' + this.pathSwitchRowData.node_id + ' 포트 ID : ' + this.pathSwitchRowData.if_id
+    },
+
+    openPathSwitchPopup() {
+      this.$refs.pathSwitch.setVisible()
+    },
+
     async setIpsdnNodeList() {
       try {
         this.loading.ipsdnNodeLoading = true
@@ -400,7 +410,8 @@ export default {
             this.remotePingTest()
             break
           case 'chngport':
-            // 포트변경은 pathSwitch 팝업에서 진행함.
+            // this.actionPortSwitch()
+            this.remotePingTest()
             break
         }
 
@@ -413,6 +424,39 @@ export default {
 
         this.saveLocalStorage(param)
       })
+    },
+
+    async actionPortSwitch() {
+      const { nodeName, ipAddr, ifname } = this.item
+      if (!ipAddr) {
+        this.$alert('해당 장비의 IP가 존재하지 않습니다.')
+        return
+      }
+
+      const res = await apiRemote(this.remoteControl, {
+        ip: ipAddr,
+        param: `nodename=${nodeName}&ifname=${ifname}`,
+        user_id: this.$store.state.user.info.uid,
+      })
+
+      if (res.success) {
+        this.$alert('성공적으로 명령이 실행되었습니다.', '성공', {
+          confirmButtonText: '확인',
+        })
+
+        const param = {
+          uid: this.$store.state.user.info.uid,
+          remoteControl: this.remoteControl,
+          nodeName: this.item.nodeName,
+          ifname: this.item.ifname,
+        }
+
+        this.$emit('saveLocalStorage', param)
+      } else {
+        this.$alert('명령 실행이 실패했습니다.', '실패', {
+          confirmButtonText: '확인',
+        })
+      }
     },
 
     saveLocalStorage(param) {

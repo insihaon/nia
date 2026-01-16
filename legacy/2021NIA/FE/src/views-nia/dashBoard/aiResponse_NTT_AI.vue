@@ -105,15 +105,15 @@ export default {
       chartOptions: {
         responsive: true,
         maintainAspectRatio: false,
-        title: {
+        customTitle: {
           display: true,
-          text: '',
+          text: '유해트래픽 정확도 통계',
           fontSize: 16,
           fontStyle: 'bold',
           fontColor: '#333',
         },
         legend: {
-          position: 'left',
+          position: 'right',
           align: 'center',
           labels: {
             usePointStyle: true,
