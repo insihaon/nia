@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :visible.sync="dialogVisible" custom-class="medium_dialog" center :modal="true" :show-close="true" :close-on-click-modal="false" :close-on-press-escape="false" :append-to-body="true" title="포트변경">
+  <el-dialog :visible.sync="dialogVisible" custom-class="medium_dialog" center :modal="true" :show-close="true" :close-on-click-modal="false" :close-on-press-escape="false" :append-to-body="true" title="포트변경" destroy-on-close>
     <div :class="{ [name]: true }" style="height: 470px">
       <div class="d-flex flex-column h-full">
         <!-- prettier-ignore -->
@@ -95,65 +95,24 @@ export default {
 
     rowClicked(row) {
       this.highlightRow(row)
-      this.$confirm('선택하신 포트로 경로를 변경하시겠습니까?', '포트변경', {
+
+      if (row.data.isSwitch !== 'Y') {
+        this.$alert(`우회가능하지 않은 포트입니다.`, '우회불가능', {
+          confirmButtonText: '확인',
+          cancelButtonText: '취소',
+          customClass: 'nia-message-box',
+        })
+      }
+
+      this.$confirm('선택하신 포트로 파라미터를 설정하시겠습니까?', '경로설정', {
         confirmButtonText: '실행',
         cancelButtonText: '취소',
         dangerouslyUseHTMLString: true,
         customClass: 'nia-message-box',
       }).then(() => {
-        this.actionPortSwitch('chngport', row)
-
-        // this.$alert('성공적으로 포트가 변경되었습니다.', '알림', {
-        //   confirmButtonText: '변경',
-        //   customClass: 'nia-message-box',
-        // })
-
-        // this.$store.dispatch('chatbot/botPushAnswerMessage', {
-        //   content:
-        //     `성공적으로 포트가 변경되었습니다.` +
-        //     nextMessage +
-        //     `
-
-        //     1. 마감처리
-        //     2. SOP 확인
-        //     `,
-        // })
+        this.$emit('actionPathSwitch', row.data)
+        this.onClose()
       })
-    },
-
-    async actionPortSwitch(remoteControl, row) {
-      const { nodeName, ipAddr, ifname } = this.item
-      if (!ipAddr) {
-        this.$alert('해당 장비의 IP가 존재하지 않습니다.')
-        return
-      }
-
-      const newIfId = row.if_id
-
-      const res = await apiRemote(remoteControl, {
-        ip: ipAddr,
-        param: `nodename=${nodeName}&ifname=${ifname}`,
-        user_id: this.$store.state.user.info.uid,
-      })
-
-      if (res.success) {
-        this.$alert('성공적으로 명령이 실행되었습니다.', '성공', {
-          confirmButtonText: '확인',
-        })
-
-        const param = {
-          uid: this.$store.state.user.info.uid,
-          remoteControl: this.remoteControl,
-          nodeName: this.item.nodeName,
-          ifname: this.item.ifname,
-        }
-
-        this.$emit('saveLocalStorage', param)
-      } else {
-        this.$alert('명령 실행이 실패했습니다.', '실패', {
-          confirmButtonText: '확인',
-        })
-      }
     },
 
     highlightRow(row) {
@@ -188,6 +147,7 @@ export default {
     },
 
     onClose() {
+      this.dialogVisible = false
       /* for Override */
     },
   },

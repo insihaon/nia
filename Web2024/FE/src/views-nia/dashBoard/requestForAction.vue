@@ -509,21 +509,32 @@ export default {
     },
     async onLoadSopHistList() {
       let param
+      let res
       try {
-        let res
-        if (this.isSyslog) {
-          const { node_nm: NODE_NM, alarmloc: ALARMLOC } = this.syslogInfo
-          param = { NODE_NM, ALARMLOC }
-          if (!NODE_NM && !ALARMLOC) return
-          res = await apiSopSyslogHistList(param)
-        } else {
-          const ticket = this.selectedRow
-          console.log(ticket)
-          const { /* ticket_id: TICKET_ID,  */ ticket_type: TICKET_TYPE, root_cause_sysnamea: ROOT_CAUSE_SYSNAMEA } = this.selectedRow
-          if (!TICKET_TYPE || !ROOT_CAUSE_SYSNAMEA) return
-          param = { TICKET_TYPE, ROOT_CAUSE_SYSNAMEA }
-          res = await apiSelectSopHistList(param)
+        switch (this.selectedRow.ticket_type) {
+          case 'SYSLOG':
+            {
+              const { node_nm: NODE_NM, alarmloc: ALARMLOC } = this.syslogInfo
+              param = { NODE_NM, ALARMLOC }
+              if (!NODE_NM && !ALARMLOC) return
+              res = await apiSopSyslogHistList(param)
+            }
+            break
+          case 'NTT_AI':
+            res = await apiSelectSopHistList({ TICKET_TYPE: this.selectedRow.ticket_type, NTT_TRAFFIC_TYPE: this.selectedRow.alarmmsg })
+            break
+          default:
+            {
+              const ticket = this.selectedRow
+              console.log(ticket)
+              const { ticket_type: TICKET_TYPE, root_cause_sysnamea: ROOT_CAUSE_SYSNAMEA } = this.selectedRow
+              if (!TICKET_TYPE || !ROOT_CAUSE_SYSNAMEA) return
+              param = { TICKET_TYPE, ROOT_CAUSE_SYSNAMEA }
+              res = await apiSelectSopHistList(param)
+            }
+            break
         }
+
         this.relatedSopList = res?.result ?? []
       } catch (error) {
         console.error(error)
