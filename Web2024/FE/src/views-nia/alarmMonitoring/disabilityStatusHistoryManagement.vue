@@ -235,10 +235,16 @@ export default {
       if (this.isModal && !this.isFocusModeButNotFocus) {
         this.$store.dispatch('chatbot/botPushAnswerMessage', {
           content:
-            `<div class="chatbot-command-header">장애현황 및 이력관리 화면</div>
-            해당 장비, 포트에서 발생한 장애이력을 확인할 수 있는 화면입니다.
-            <br> 해당 장애의 장비명, I/F를 자동으로 셋팅 후 조회했습니다.<br>
-          ` + (await getWindowActionList(constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.dialogNm, constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.popupName)),
+            '<div class="chatbot-command-header">장애현황 및 이력관리 화면 안내</div>' +
+            '<div class="chatbot-message-body">' +
+              '해당 장비, 포트에서 발생한 장애이력을 확인할 수 있는 화면입니다.' +
+              /* '<div class="chatbot-process">' +
+                '<b>[진행 순서]</b><br>' +
+                '1. <b>조치 SOP</b> 확인 → 2. <b>조치 SOP</b> 조정' +
+                '<br>→ 3. <b>조치 상세내용</b> 입력 → 4. <b>마감처리</b>' +
+              '</div>' + */
+            '</div>' +
+            (await getWindowActionList(constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.dialogNm, constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.popupName)),
         })
       }
     },

@@ -748,19 +748,24 @@ export default {
       }
       const formatStr = DATE_TYPE === 'DAY' ? 'YYYY-MM-DD' : 'YYYY-MM'
       const defaultSt = {
-        trans_alarm_cnt: 0,
-        link_ip_perf_cnt: 0,
-        link_total_alarm_cnt: 0,
-        ticket_ntt_cnt: 0,
-        ticket_att_cnt: 0,
-        ip_alarm_cnt: 0,
-        ticket_rt_cnt: 0,
-        link_total_resource_cnt: 0,
+        // 티켓 발생량
+        ticket_rt_cnt: 0, // 장애
+        ticket_pf_cnt: 0, // 광레벨 저하
+        ticket_att_cnt: 0, // 이상트래픽
+        ticket_ntt_cnt: 0, // 유해트래픽
+
+        // 데이터 수집량
         trans_perf_cnt: 0,
+        trans_alarm_cnt: 0,
         ip_resource_cnt: 0,
-        ticket_pf_cnt: 0,
+        ip_alarm_cnt: 0,
         ip_perf_cnt: 0,
         ip_sflow_cnt: 0,
+
+        // 데이터 제공량(데이터레이크 연계량)
+        link_total_resource_cnt: 0,
+        link_total_alarm_cnt: 0,
+        link_ip_perf_cnt: 0,
         link_trans_perf_cnt: 0,
       }
       try {

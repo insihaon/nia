@@ -435,15 +435,12 @@ export default {
       if (!this.isFocusModeButNotFocus) {
         this.$store.dispatch('chatbot/botPushAnswerMessage', {
           content:
-            '<div class="chatbot-command-header">📢 상황전파 화면 안내</div>' +
+            '<div class="chatbot-command-header">상황전파 화면 안내</div>' +
             '<div class="chatbot-message-body">' +
-              '<p style="margin:0 0 8px 0;">신속한 상황 공유를 위해 <b>장애 내역을 메일로 전파</b>하고,<br>조치 결과에 대한 <b>마감 및 수정</b>을 진행하는 화면입니다.</p>' +
+              '신속한 상황 공유를 위해 <b>장애 내역을 메일로 전파</b>하고,<br>조치 결과에 대한 <b>마감</b>을 진행하는 화면입니다.' +
               '<div class="chatbot-process">' +
                 '<b>[진행 순서]</b><br>' +
                 '1. <b>요청 내용</b> 확인 → 2. <b>담당자</b> 선택 → 3. <b>메일 전송</b>' +
-              '</div>' +
-              '<div style="font-size: 0.9em; color: #606266; line-height: 1.2;">' +
-                `${constants.nia.chatbotIcon.Information} <b>마감 전:</b> [마감] / <b>마감 후:</b> [수정] 가능` +
               '</div>' +
             '</div>' +
             (await getWindowActionList(constants.nia.chatbotKeyMap.requestForAction.dialogNm, constants.nia.chatbotKeyMap.requestForAction.popupName)),

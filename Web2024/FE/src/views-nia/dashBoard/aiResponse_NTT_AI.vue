@@ -433,11 +433,15 @@ export default {
       if (!this.isFocusModeButNotFocus) {
         this.$store.dispatch('chatbot/botPushAnswerMessage', {
           content:
-            `<div class="chatbot-command-header">유해트래픽 AI 장애대응화면</div>
-          AI에서 발견한 유해트래픽 장애에 대한 정보를 확인할 수 있는 화면입니다.
-          <br>${constants.nia.chatbotIcon.Information} 유해트래픽 정확도 : 특정 종류의 장애가 발생한 것에 대한 정확도 차트와 통계 리스트입니다.
-          ${constants.nia.chatbotIcon.Information} 토폴로지 Map : 어떤 노드가 집중적으로 공격받는지에 대한 내용을 토폴로지로 표시합니다.
-          ` + (await getWindowActionList(constants.nia.chatbotKeyMap.aiResponse_NTT_AI.dialogNm, constants.nia.chatbotKeyMap.aiResponse_NTT_AI.popupName)),
+          '<div class="chatbot-command-header">유해트래픽 AI 장애대응화면 안내</div>' +
+          '<div class="chatbot-message-body">' +
+            '유해 트래픽이 발생한 기간 동안 공격을 받은 노드 TOP 5를 표시하여, 장애 상황을 빠르게 파악할 수 있는 화면입니다.' +
+            '<div class="chatbot-process">' +
+              '<b>[진행 순서]</b><br>' +
+              '1. <b>공격받는 노드정보</b> 확인 → 2. <b>조치·대응을 위한</b> 화면전환' +
+            '</div>' +
+          '</div>' +
+          (await getWindowActionList(constants.nia.chatbotKeyMap.aiResponse_NTT_AI.dialogNm, constants.nia.chatbotKeyMap.aiResponse_NTT_AI.popupName)),
         })
       }
     },

@@ -305,6 +305,9 @@
   .animation-blink {
     animation: blinking 1s infinite;
   }
+  .animation-blink2 {
+    animation: blinking 1s infinite;
+  }
   @keyframes blinking {
     0% {
       background-color: rgba(255, 0, 0, 0.7);

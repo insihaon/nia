@@ -316,10 +316,17 @@ export default {
       if (!this.isFocusModeButNotFocus) {
         this.$store.dispatch('chatbot/botPushAnswerMessage', {
           content:
-            `<div class="chatbot-command-header">조치 화면</div>
-            <b>원격으로</b> 장비를 제어할 수 있습니다.<br>
-            장비에 대한 정보를 자동으로 설정했습니다. 정보를 확인하신 후에 <b>원격제어</b>를 진행해 주시면 됩니다.<br>
-            ` + (await getWindowActionList(constants.nia.chatbotKeyMap.configTest.dialogNm, constants.nia.chatbotKeyMap.configTest.popupName)),
+            '<div class="chatbot-command-header">조치 화면 안내</div>' +
+            '<div class="chatbot-message-body">' +
+              '장애가 발생한 장비에 대하여 <b>원격으로 제어</b>할 수 있는 화면입니다.' +
+              '<br><br>' +
+              constants.nia.chatbotIcon.Information + '장비에 대한 정보를 자동으로 설정했습니다. 정보를 확인하신 후에 <b>원격제어</b>를 진행해 주시면 됩니다.' +
+              '<div class="chatbot-process">' +
+                '<b>[진행 순서]</b><br>' +
+                '1. <b>설정 정보</b> 확인 → 2. <b>설정 항목</b> 조정 → 3. <b>원격제어</b>' +
+              '</div>' +
+            '</div>' +
+            (await getWindowActionList(constants.nia.chatbotKeyMap.configTest.dialogNm, constants.nia.chatbotKeyMap.configTest.popupName)),
         })
       }
     },
