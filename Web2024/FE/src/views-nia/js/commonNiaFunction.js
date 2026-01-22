@@ -173,7 +173,7 @@ export async function getSpanFormatMessageForDB(userQuestion) {
             }
         })
 
-        const spanFormatMessage = getSpanFormatMessage(response, '검색 결과를 찾았습니다\n\n', { showScore: true })
+        const spanFormatMessage = getSpanFormatMessage(response, '검색 결과를 찾았습니다\n\n', { showScore: false /* true */ })
 
         if (!isSpanFormatChatMessage(spanFormatMessage)) {
             throw new Error('DB 결과는 Span 형식이어야 합니다.')

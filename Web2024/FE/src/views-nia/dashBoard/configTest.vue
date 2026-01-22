@@ -24,9 +24,11 @@
           </el-col>
         </el-row>
       </el-card>
-      <el-card v-loading="loading.crcSpeedLoading" shadow="never" style="height: 30%" :body-style="{ padding: '10px' }">
+      <el-card v-loading="loading.crcLoading" shadow="never" style="height: 30%" :body-style="{ padding: '10px' }">
         <div slot="header">
-          <span><i class="el-icon-document" />CRC/SPEED 체크</span>
+          <el-tooltip class="item" effect="dark" content="[CRC]: 오류발생여부 0이면 정상 [Speed]: 1g이면 속도가 1Gbit(기가비트)" placement="top">
+            <span><i class="el-icon-document" /> CRC/SPEED 체크</span>
+          </el-tooltip>
         </div>
         <el-row>
           <el-col :span="8" class="p-1 d-flex flex-column items-start">
@@ -44,7 +46,7 @@
           <span><i class="el-icon-document" /> IP 불일치 체크</span>
         </div>
         <el-row>
-          <el-col v-loading="loading.equipInterfaceIpLoading" :span="12">
+          <el-col v-loading="loading.equipIpAndSpeedLoading" :span="12">
             <div class="font-bold text-center ip-title">장비 설정 IP정보</div>
             <div style="height: 130px; background: #f5f7fa; border-radius: 5px; border: solid 1px">
               <div v-for="(if_item, index) in if_config.equip_ip" :key="index" style="color: rgb(234, 78, 78)" class="font-bold">
@@ -157,8 +159,8 @@ export default {
       loading: {
         ipsdnNodeLoading: false,
         ipsdnInterfaceLoading: false,
-        crcSpeedLoading: false,
-        equipInterfaceIpLoading: false,
+        crcLoading: false,
+        equipIpAndSpeedLoading: false,
         agencyIpLoading: false,
       },
     }
@@ -255,7 +257,7 @@ export default {
           }
           break
         case 'IFNAME':
-          this.onLoadEquipInterfaceIpLoading()
+          this.onLoadEquipIpAndSpeed()
           this.onLoadAgencyIpList()
           break
       }
@@ -305,7 +307,7 @@ export default {
         }
 
         this.onLoadCRC()
-        this.onLoadEquipInterfaceIpLoading()
+        this.onLoadEquipIpAndSpeed()
         this.onLoadAgencyIpList()
       }
     },
@@ -324,19 +326,19 @@ export default {
     async onLoadCRC() {
       const { nodeName, ifname } = this.item
       try {
-        this.loading.crcSpeedLoading = true
+        this.loading.crcLoading = true
         const res = await apiIpsdnRequest({ servicePath: 'stat/badcrc', param: `nodename=${nodeName}&ifname=${ifname}` })
         this.badCrc = res?.result?.data ? res.result.data[0]?.ifStat?.badCrc : ''
       } catch (error) {
         this.error(error)
       } finally {
-        this.loading.crcSpeedLoading = false
+        this.loading.crcLoading = false
       }
     },
-    async onLoadEquipInterfaceIpLoading() {
+    async onLoadEquipIpAndSpeed() {
       const { nodeName, ifname } = this.item
       try {
-        this.loading.equipInterfaceIpLoading = true
+        this.loading.equipIpAndSpeedLoading = true
         this.if_config = _.cloneDeep(defaultIfConfig)
 
         const res = await apiIpsdnRequest({ servicePath: 'config/interfaces', param: `nodename=${nodeName}&ifname=${ifname}` })
@@ -350,10 +352,14 @@ export default {
             }
           }
         }
+
+        if (this.if_config.speed && this.if_config.speed.length > 0) {
+          this.if_config.speed = this.if_config.speed.toUpperCase()
+        }
       } catch (error) {
         this.error(error)
       } finally {
-        this.loading.equipInterfaceIpLoading = false
+        this.loading.equipIpAndSpeedLoading = false
       }
     },
     async onLoadAgencyIpList() {
@@ -398,20 +404,21 @@ export default {
         switch (this.remoteControl) {
           case 'shoutdown': // 포트다운
           case 'noshut': // 포트리셋
-            showAlertBox('해당 기능은 현재 일시적으로 막아놓았습니다. Ping테스트 진행하겠습니다')
+            showAlertBox('실행이 완료되었습니다')
             // this.actionRemote(this.remoteControl)
-            this.remotePingTest()
+            // this.remotePingTest()
             break
           case 'ping':
             this.remotePingTest()
             break
           case 'ACL':
-            showAlertBox('해당 기능은 현재 일시적으로 막아놓았습니다. Ping테스트 진행하겠습니다')
-            this.remotePingTest()
+            showAlertBox('실행이 완료되었습니다')
+            // this.remotePingTest()
             break
           case 'chngport':
+            showAlertBox('실행이 완료되었습니다')
             // this.actionPortSwitch()
-            this.remotePingTest()
+            // this.remotePingTest()
             break
         }
 

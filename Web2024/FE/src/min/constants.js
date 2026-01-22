@@ -135,16 +135,50 @@ export default {
     //   'requestForAction': { label: '상황전파', key: 'requestForAction' },
     //   'niaTopology': { label: '토폴로지', key: 'niaTopology' },
     // },
+    // chatbotIcon: {
+    //   // success: '✅' ,
+    //   success: '<i class="el-icon-warning" style="color: #67C23A;"></i>',
+    //   move: '➡️',
+    //   noAction: '➖',
+    //   openPopup: '↗️',
+    //   popupWarning: '❌',
+    //   assistantIcon: '💬',
+    //   Information: 'ℹ️',
+    //   WarningSign: '⚠️',
+    //   Tip: '💡'
+    // },
+
     chatbotIcon: {
-      success: '✅',
-      move: '➡️',
-      noAction: '➖',
-      openPopup: '↗️',
-      popupWarning: '❌',
-      assistantIcon: '💬',
-      Information: 'ℹ️',
-      WarningSign: '⚠️',
-      Tip: '💡'
+      // 성공: 초록색 (#67C23A)
+      success: '<i class="el-icon-success" style="color: #67C23A; vertical-align: middle;"></i>&nbsp;',
+
+      // 이동/화살표: 기본 텍스트 색상 또는 파란색계열 (#409EFF)
+      move: '<i class="el-icon-right" style="color: #409EFF; vertical-align: middle; font-weight: bold;"></i>&nbsp;',
+
+      // 액션 없음: 회색 (#909399)
+      noAction: '<i class="el-icon-minus" style="color: #909399; vertical-align: middle;"></i>&nbsp;',
+
+      // 팝업 열기: 파란색 (#409EFF)
+      openPopup: '<i class="el-icon-top-right" style="color: #409EFF; vertical-align: middle;"></i>&nbsp;',
+
+      // 팝업 경고/에러: 빨간색 (#F56C6C)
+      popupWarning: '<i class="el-icon-error" style="color: #F56C6C; vertical-align: middle;"></i>&nbsp;',
+
+      // 어시스턴트 아이콘: 보라색 또는 브랜드 컬러 (#7030a0)
+      assistantIcon: '<i class="el-icon-chat-dot-round" style="color: #409EFF; vertical-align: middle;"></i>&nbsp;',
+
+      // 정보: 하늘색 (#409EFF)
+      Information: '<i class="el-icon-info" style="color: #409EFF; vertical-align: middle;"></i>&nbsp;',
+
+      // 경고 표지: 주황색 (#E6A23C)
+      WarningSign: '<i class="el-icon-warning" style="color: #E6A23C; vertical-align: middle;"></i>&nbsp;',
+
+      // 팁: 노란색/금색 (#E6A23C)
+      Tip: '<i class="el-icon-sunny" style="color: #F7BA2A; vertical-align: middle; font-weight: bold;"></i>&nbsp;'
+    },
+
+    chatbotContent: {
+      configTest: ''
     },
 
     chatType: {

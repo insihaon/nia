@@ -70,9 +70,9 @@
 
           <div v-if="message.type !== botAlertText || isActiveBotAlert">
             <div ref="messageContent" class="message-content" @click="handlePathClick($event, message.content)" v-html="formatMessage(message.content)"></div>
-            <div class="message-time">
+            <!-- <div class="message-time">
               {{ message.time }}
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
@@ -643,7 +643,7 @@ export default {
     },
 
     async handlePathClick(event, content) {
-      this.captureContentToClipboard()
+      // this.captureContentToClipboard()
 
       // if (event.target.classList.contains('move-link')) {
       //   event.preventDefault()
@@ -760,6 +760,18 @@ export default {
   font-weight: 600;
   text-align: center;
   color: white;
+  margin-bottom: 10px;
+}
+
+::v-deep .chatbot-process {
+  margin: 8px 0;
+  padding: 8px;
+  background: #f9f9f9;
+  border-left: 4px solid #409EFF;
+}
+
+::v-deep .chatbot-message-body {
+  margin-bottom: 10px;
 }
 
 ::v-deep .chatbot-body {
