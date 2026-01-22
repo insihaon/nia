@@ -68,7 +68,7 @@
                             <th scope="col" style="width: 200px">SITE</th>
                             <th scope="col" style="width: 200px">I/F</th>
                           </tr>
-                          <tr v-for="(agency, index) in sortedAgencyList" :key="agency.nren_id" :class="{ 'animation-blink': paramTickets.some((t) => t.node_nm === agency.node_id && t.alarmloc === agency.node_int) }">
+                          <tr v-for="(agency, index) in sortedAgencyList" :key="agency.nren_id" :class="{ 'animation-blink': selectedRows.some((t) => t.node_nm === agency.node_id && t.alarmloc === agency.node_int) }">
                             <td>{{ index + 1 }}</td>
                             <td>{{ agency.nren_name }}</td>
                             <td>{{ agency.node_int }}</td>
@@ -92,11 +92,6 @@
 import { Base } from '@/min/Base.min'
 import {
   apiSelectNiaAlarmList,
-  apiSelectNiaCableAlarmList,
-  apiSelectNiaAbnormalTraffic2List,
-  apiSelectNiaBadTraffic2List,
-  apiNTTTrafficChart,
-  apiSelectNiaAbnormalTrafficList,
   apiSelectNiaTopologyCableList,
   apiSelectNiaPfTopologyCableList,
   apiSelectNiaAgencyList,
@@ -104,7 +99,6 @@ import {
   apiSelectTopologyLinkList,
   apiUpdateNodePosition,
   apiIpAlarmList,
-  apiSelectSyslogAlarmList,
 } from '@/api/nia'
 import niaTopologyTemplalate from './niaTopologyConfig/niaTopologyTemplate.vue'
 import { mapState } from 'vuex'
@@ -152,7 +146,7 @@ export default {
       mapData: null,
       slot: [],
       agencyList: [],
-      paramTickets: {},
+      selectedRows: {},
       paramShowFullTopology: false,
       filteredAgencyList: [],
       showNodeAllError: false, // 해당 Option을 true로 변경하면, 개별 ticket 장애에 대해서도 해당 노드에서 발생한 모든 경보의 총합을 표시
@@ -231,7 +225,7 @@ export default {
       return String(index) === key
     })
 
-    this.paramTickets = isAllNumericKeys ? Object.values(this.wdata?.params) : [this.wdata?.params]
+    this.selectedRows = isAllNumericKeys ? Object.values(this.wdata?.params) : [this.wdata?.params]
     this.paramShowFullTopology = isAllNumericKeys
 
     const async = false
@@ -250,7 +244,7 @@ export default {
       if (isSwitchingTicket) this.wdata.params.isChatbotGenerated = isSwitchingTicket
       const chatbotData = await getChatbotTicketData(this.wdata)
       if (chatbotData) {
-        this.paramTickets = [chatbotData]
+        this.selectedRows = [chatbotData]
         this.paramShowFullTopology = false
         this.$emit('update:wdataParams', chatbotData)
 
@@ -391,10 +385,10 @@ export default {
       const res = await apiSelectNiaAgencyList()
       if (res?.result) {
         const map = {}
-        res.result.forEach((v, i) => {
-          const array = map[v.node_id] || []
-          array.push(v)
-          map[v.node_id] = array
+        res.result.forEach((agencyData, i) => {
+          const array = map[agencyData.node_id] || []
+          array.push(agencyData)
+          map[agencyData.node_id] = array
         })
 
         this.agencyList = { ...map }
@@ -438,10 +432,9 @@ export default {
       })
 
       if (!this.paramShowFullTopology) {
-        // 개별 경보 더블 클릭
-        if (!this.paramTickets || this.paramTickets.length === 0) throw new Error('no Ticket')
-        var [alarms] = await this.loadNiaAlarmList(this.paramTickets[0])
-        var alarmLink = await this.loadNiaCableAlarmList(this.paramTickets[0])
+        if (!this.selectedRows || this.selectedRows.length === 0 || this.selectedRows.length > 1) throw new Error('selectedRows Error not correct')
+        var alarms = await this.loadNiaAlarmList(this.selectedRows[0])
+        var alarmLink = await this.loadNiaCableAlarmList(this.selectedRows[0])
 
         var alarmNode = null
         if (this.showNodeAllError) {
@@ -591,104 +584,12 @@ export default {
             ALARMNO: ticket.alarmno,
           }
           const res = await apiSelectNiaAlarmList(param)
-          this.ticketRtAlarms = res?.result
-          this.ticketAlarmsType = 'RT'
-          setTimeout(() => {
-            const rtAlarmTable = document.querySelector('table.alarm-table.rt-alarm')
-            if (rtAlarmTable) {
-              rtAlarmTable.addEventListener('scroll', this.resize.bind(this))
-            }
-          }, 1000)
+          if (res.result.length === 0) throw new Error('티켓에 경보가 없습니다.')
           if (res.result.length > 1) throw new Error('하나의 티켓에 경보는 하나여야합니다.')
-          return res?.result
+          return res.result[0]
         }
-        case 'PF': {
-          const param = {
-            TICKET_ID: ticket.ticket_id,
-          }
-          const res = await apiSelectNiaCableAlarmList(param)
-          this.ticketPFAlarms = res?.result
-          this.ticketAlarmsType = 'PF'
-          if (res.result.length > 1) throw new Error('하나의 티켓에 경보는 하나여야합니다.')
-          return res?.result
-        }
-        case 'ATT2': {
-          const param = {
-            TICKET_ID: ticket.ticket_id,
-          }
-          const res = await apiSelectNiaAbnormalTraffic2List(param)
-          this.ticketAbnormalTrafficAlarms = res?.result
-          this.ticketAlarmsType = 'ABNORMAL_TRAFFIC'
-          setTimeout(() => {
-            const trafficAbnormalTable = document.querySelector('table.alarm-table.traffic-abnormal-alarm')
-            if (trafficAbnormalTable) {
-              trafficAbnormalTable.addEventListener('scroll', this.resize.bind(this))
-            }
-          }, 1000)
-          if (res.result.length > 1) throw new Error('하나의 티켓에 경보는 하나여야합니다.')
-          return res?.result
-        }
-        case 'NTT': {
-          const param = {
-            TICKET_ID: ticket.ticket_id,
-          }
-          const res = await apiSelectNiaBadTraffic2List(param)
-          this.ticketBadTrafficAlarms = res?.result
-          this.ticketAlarmsType = 'BAD_TRAFFIC'
-          setTimeout(() => {
-            const trafficBadTable = document.querySelector('table.alarm-table.traffic-bad-alarm')
-            if (trafficBadTable) {
-              trafficBadTable.addEventListener('scroll', this.resize.bind(this))
-            }
-          }, 1000)
-          if (res.result.length > 1) throw new Error('하나의 티켓에 경보는 하나여야합니다.')
-          return res?.result
-        }
-        case 'TRAFFIC': {
-          // 사실상 의미없음 사용될 일이 없음
-          const param = {
-            TICKET_ID: ticket.ticket_id,
-          }
-
-          const res = (await ticket.ticket_rca_result_code) === 'TRAFFIC_BAD_DETECTION' ? apiNTTTrafficChart(param) : apiSelectNiaAbnormalTrafficList(param)
-          if (ticket.ticket_rca_result_code === 'TRAFFIC_BAD_DETECTION') {
-            this.ticketBadTrafficAlarms = res?.result
-            this.ticketAlarmsType = 'BAD_TRAFFIC'
-            setTimeout(() => {
-              const trafficBadTable = document.querySelector('table.alarm-table.traffic-bad-alarm')
-              if (trafficBadTable) {
-                trafficBadTable.addEventListener('scroll', this.resize.bind(this))
-              }
-            }, 1000)
-          } else {
-            this.ticketAbnormalTrafficAlarms = res?.result
-            this.ticketAlarmsType = 'ABNORMAL_TRAFFIC'
-            setTimeout(() => {
-              const trafficAbnormalTable = document.querySelector('table.alarm-table.traffic-abnormal-alarm')
-              if (trafficAbnormalTable) {
-                trafficAbnormalTable.addEventListener('scroll', this.resize.bind(this))
-              }
-            }, 1000)
-            if (res?.result) {
-              const [first] = res?.result
-              if (first) {
-                this.zoomByAlarm(res?.result[0])
-              } else {
-                this.map.resetZoom(750)
-              }
-            }
-          }
-          if (res.result.length > 1) throw new Error('하나의 티켓에 경보는 하나여야합니다.')
-          return res?.reuslt
-        }
-        case 'SYSLOG': {
-          const param = {
-            ALARMNO: ticket.alarmno,
-          }
-          const res = await apiSelectSyslogAlarmList(param)
-          if (res.result.length > 1) throw new Error('하나의 티켓에 경보는 하나여야합니다.')
-          return res?.result
-        }
+        default:
+          return { related_alarm: null, sysname: ticket.node_nm, ticket_type: ticket.ticket_type }
       }
     },
 
@@ -951,9 +852,9 @@ export default {
       }
 
       try {
-        if (alarm.equiptype === '7712/5812') {
+        if (/.*(5812|7712)$/.test(alarm.sysname) || alarm.equiptype === '7712/5812') {
           return alarm.sysname
-        } else if (alarm.sysname.includes('n9k') || alarm.sysname.includes('control') || alarm.sysname.includes('cxp') || alarm.sysname.includes('asr9k')) {
+        } else if (/n9k|control|cxp|asr9k/.test(alarm.sysname)) {
           return alarm.sysname
         } else {
           return alarm.sysname.split('-')[0]
