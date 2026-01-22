@@ -73,6 +73,11 @@
                             <td>{{ agency.nren_name }}</td>
                             <td>{{ agency.node_int }}</td>
                           </tr>
+                          <tr v-if="showEtcAgent" class="animation-blink2">
+                            <td>{{ sortedAgencyList.length + 1 }}</td>
+                            <td>기타</td>
+                            <td>{{ selectedRows[0].alarmloc }}</td>
+                          </tr>
                         </tbody>
                       </table>
                     </div>
@@ -147,7 +152,6 @@ export default {
       slot: [],
       agencyList: [],
       selectedRows: {},
-      paramShowFullTopology: false,
       filteredAgencyList: [],
       showNodeAllError: false, // 해당 Option을 true로 변경하면, 개별 ticket 장애에 대해서도 해당 노드에서 발생한 모든 경보의 총합을 표시
 
@@ -164,8 +168,25 @@ export default {
     }
   },
   computed: {
+    showEtcAgent() {
+      // 1. 기본 체크: 데이터가 아예 없으면 false 반환
+      if (!this.selectedRows || this.selectedRows.length === 0) return false
+
+      const selected = this.selectedRows[0]
+
+      if (!this.sortedAgencyList || this.sortedAgencyList.length === 0) return false
+      if (selected.node_nm !== this.sortedAgencyList[0].node_id) return false
+
+      // 2. Optional Chaining(?.)을 사용해 에러 방지
+      return !this.paramShowFullTopology && !this.sortedAgencyList.some(agency => selected?.node_nm === agency.node_id && selected?.alarmloc === agency.node_int)
+    },
+
     sortedAgencyList() {
-      return this.filteredAgencyList.slice().sort((a, b) => a.nren_name.localeCompare(b.nren_name))
+      return this.filteredAgencyList.slice().sort((a, b) => a.nren_name.localeCompare(b.nren_name)) || []
+    },
+
+    paramShowFullTopology() {
+      return this.selectedRows.length !== 1
     },
 
     isDebug() {
@@ -226,7 +247,6 @@ export default {
     })
 
     this.selectedRows = isAllNumericKeys ? Object.values(this.wdata?.params) : [this.wdata?.params]
-    this.paramShowFullTopology = isAllNumericKeys
 
     const async = false
     this.addScript(['./extlib/map2d/lib/index_nia_bundle.js'], async)
@@ -245,7 +265,6 @@ export default {
       const chatbotData = await getChatbotTicketData(this.wdata)
       if (chatbotData) {
         this.selectedRows = [chatbotData]
-        this.paramShowFullTopology = false
         this.$emit('update:wdataParams', chatbotData)
 
         this.$store.dispatch('chatbot/botPushAnswerMessage', {
@@ -261,9 +280,17 @@ export default {
       if (!this.isFocusModeButNotFocus) {
         this.$store.dispatch('chatbot/botPushAnswerMessage', {
           content:
-            `<div class="chatbot-command-header">토폴로지 화면</div>
-          장애가 발생한 노드의 위치를 표시하며, 연관된 노드와 링크를 토폴로지로 제공합니다.<br>
-          ` + (await getWindowActionList(constants.nia.chatbotKeyMap.niaTopology.dialogNm, constants.nia.chatbotKeyMap.niaTopology.popupName)),
+            '<div class="chatbot-command-header">토폴로지 화면 안내</div>' +
+            '<div class="chatbot-message-body">' +
+              '장애가 발생한 <b>노드와 링크</b>의 위치를 시각적으로 표시하여, 관련 노드 정보를 빠르고 직관적으로 확인할 수 있는 토폴로지 화면입니다.' +
+              '<div class="chatbot-process">' +
+                '<b>[진행 순서]</b><br>' +
+                '1. <b>장애 노드·링크</b> 확인' +
+                '<br>2. <b>연관 노드·링크</b> 관계파악' +
+                '<br>3. <b>조치·대응을 위한</b> 화면전환' +
+              '</div>' +
+            '</div>' +
+            (await getWindowActionList(constants.nia.chatbotKeyMap.niaTopology.dialogNm, constants.nia.chatbotKeyMap.niaTopology.popupName)),
         })
       }
     },

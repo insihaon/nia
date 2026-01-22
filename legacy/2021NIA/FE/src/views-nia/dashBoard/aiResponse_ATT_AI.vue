@@ -41,7 +41,7 @@
                         <span class="usagePredAnalyResultValue">{{ thresholdInfo.thresholdDate }}</span>
                       </div>
                       <div class="usagePredAnalyResultBody">
-                        <el-tooltip class="item" effect="dark" content="장애시점의 값 차이" placement="top">
+                        <el-tooltip class="item" effect="dark" content="장애가 발생한 원인에 대한 수치정보로 장애시점의 값 차이" placement="top">
                           <span class="usagePredAnalyResultItem" style="text-decoration: underline">{{ (isTcaAlarm ? '실제값' : '예측값') + '   >   ' + (isTcaAlarm ? '임계상한값' : '임계값') }}</span>
                         </el-tooltip>
                         <span class="usagePredAnalyResultValue">
@@ -374,10 +374,18 @@ export default {
       if (!this.isFocusModeButNotFocus) {
         this.$store.dispatch('chatbot/botPushAnswerMessage', {
           content:
-            `<div class="chatbot-command-header">이상트래픽 AI 장애대응화면</div>
-          AI를 통해 해당장비의 14일간의 트래픽을 학습하고 이를 바탕으로 예측값과 예측임계값을 추론하며, 예측값이 임계값을 넘거나(예측 경보) 실제 트래픽이 임계값을 넘는경우(TCA 경보) 경보를 발행되며 해당 화면에서는 관련된 정보를 확인할 수 있습니다.
-          <br>${constants.nia.chatbotIcon.Information} 분석결과 : 밑줄 쳐진 텍스트에 마우스를 올리시면 각 속성별 의미를 확인하실 수 있습니다.
-          ` + (await getWindowActionList(constants.nia.chatbotKeyMap.aiResponse_ATT_AI.dialogNm, constants.nia.chatbotKeyMap.aiResponse_ATT_AI.popupName)),
+            '<div class="chatbot-command-header">AI 이상트래픽 장애대응화면 안내</div>' +
+            '<div class="chatbot-message-body">' +
+              '장애가 발생한 특정 장비 인터페이스의 <b>상태 정보</b>와 <b>트래픽 변화</b>를 시각적으로 제공하여, 장애 상황을 직관적으로 파악하고 신속한 장애 대응을 지원하는 화면입니다.' +
+              '<br><br>' +
+              constants.nia.chatbotIcon.Information + '분석 결과의 밑줄 표시된 항목에 마우스를 올리면 각 속성의 의미를 확인할 수 있습니다.' +
+              '<div class="chatbot-process">' +
+                '<b>[진행 순서]</b><br>' +
+                '1. <b>장애 상태정보·트래픽 변화</b> 확인' +
+                '<br>2. <b>조치·대응을 위한</b> 화면전환' +
+              '</div>' +
+            '</div>' +
+            (await getWindowActionList(constants.nia.chatbotKeyMap.aiResponse_ATT_AI.dialogNm, constants.nia.chatbotKeyMap.aiResponse_ATT_AI.popupName)),
         })
       }
     },
