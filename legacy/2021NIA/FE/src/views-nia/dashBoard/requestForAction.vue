@@ -435,12 +435,18 @@ export default {
       if (!this.isFocusModeButNotFocus) {
         this.$store.dispatch('chatbot/botPushAnswerMessage', {
           content:
-            `<div class="chatbot-command-header">상황전파화면</div>
-          메일로 장애를 전파하여 조치를 요청하고, 조치 이후 마감하거나 마감된 사항을 수정하는 화면입니다.
-          <br>티켓 정보를 토대로, 요청내용을 자동 설정했습니다. 요청내용을 확인 수정 후 담당직원을 선택하고 메일전송을 해주시면 됩니다.
-          <br>${constants.nia.chatbotIcon.Information} 요청내용은 직접 글자를 입력하여 수정할 수 있습니다.
-          ${constants.nia.chatbotIcon.Information} 마감이 아직안되었으면 마감버튼을 선택하여 직접마감, 이미 마감되었다면 수정버튼을 클릭하여 마감된 내용 수정이 가능합니다.
-          ` + (await getWindowActionList(constants.nia.chatbotKeyMap.requestForAction.dialogNm, constants.nia.chatbotKeyMap.requestForAction.popupName)),
+            '<div class="chatbot-command-header">📢 상황전파 화면 안내</div>' +
+            '<div class="chatbot-message-body">' +
+              '<p style="margin:0 0 8px 0;">신속한 상황 공유를 위해 <b>장애 내역을 메일로 전파</b>하고,<br>조치 결과에 대한 <b>마감 및 수정</b>을 진행하는 화면입니다.</p>' +
+              '<div class="chatbot-process">' +
+                '<b>[진행 순서]</b><br>' +
+                '1. <b>요청 내용</b> 확인 → 2. <b>담당자</b> 선택 → 3. <b>메일 전송</b>' +
+              '</div>' +
+              '<div style="font-size: 0.9em; color: #606266; line-height: 1.2;">' +
+                `${constants.nia.chatbotIcon.Information} <b>마감 전:</b> [마감] / <b>마감 후:</b> [수정] 가능` +
+              '</div>' +
+            '</div>' +
+            (await getWindowActionList(constants.nia.chatbotKeyMap.requestForAction.dialogNm, constants.nia.chatbotKeyMap.requestForAction.popupName)),
         })
       }
     },

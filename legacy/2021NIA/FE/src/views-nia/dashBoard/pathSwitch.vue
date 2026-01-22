@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :visible.sync="dialogVisible" custom-class="medium_dialog" center :modal="true" :show-close="true" :close-on-click-modal="false" :close-on-press-escape="false" :append-to-body="true" title="포트변경" destroy-on-close>
+  <el-dialog :visible.sync="dialogVisible" custom-class="medium_dialog" center :modal="true" :show-close="true" :close-on-click-modal="false" :close-on-press-escape="false" :append-to-body="true" title="경로설정" destroy-on-close>
     <div :class="{ [name]: true }" style="height: 470px">
       <div class="d-flex flex-column h-full">
         <!-- prettier-ignore -->
@@ -102,6 +102,7 @@ export default {
           cancelButtonText: '취소',
           customClass: 'nia-message-box',
         })
+        return
       }
 
       this.$confirm('선택하신 포트로 파라미터를 설정하시겠습니까?', '경로설정', {
@@ -135,7 +136,7 @@ export default {
         const res = await apiSelectPortList({ node_id: this.selectedRow.node_id || this.selectedRow.node_nm })
 
         this.pathSwitchList = res.result.map((r) => {
-          r.isSwitch = 'Y'
+          r.isSwitch = r.if_oper_status === 'up' ? 'Y' : 'N'
           return r
         })
         this.pathSwitchPaginationInfo.totalCount = res.total

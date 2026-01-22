@@ -300,12 +300,12 @@ export default {
               customClass: 'nia-message-box',
             })
 
-            if (!this.isFocusModeButNotFocus) {
-              this.$store.dispatch('chatbot/botPushAnswerMessage', {
-                content: `${constants.nia.chatbotIcon.success} ${constants.nia.chatbotKeyMap.processFin.popupName}에서 성공적으로 ${constants.nia.chatbotCommand.fin.label}했습니다.`,
-                callBack: this.popupShowCommand,
-              })
-            }
+            // if (!this.isFocusModeButNotFocus) {
+            //   this.$store.dispatch('chatbot/botPushAnswerMessage', {
+            //     content: `${constants.nia.chatbotIcon.success} ${constants.nia.chatbotKeyMap.processFin.popupName}에서 성공적으로 ${constants.nia.chatbotCommand.fin.label}했습니다.`,
+            //     callBack: this.popupShowCommand,
+            //   })
+            // }
           }
         } catch (error) {
           this.$alert('저장에 실패하였습니다.', '알림', {
