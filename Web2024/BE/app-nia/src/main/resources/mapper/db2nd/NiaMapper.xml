@@ -1380,15 +1380,37 @@
     </select>
 
     <select id="SELECT_RCA_NTT_TICKET_DETAIL_INFO" parameterType="hashmap" resultType="com.codej.base.dto.model.ResultMap"> 
+        WITH TicketData AS (
+            SELECT
+                T.traffic_type,
+                T.json_key,
+                T.normal_traffic_ratio,
+                T.tcp_syn_flooding_ratio,
+                T.land_attack_ratio,
+                T.ping_of_death_ratio,
+                T.udp_flooding_ratio,
+                CAST(T.json_key AS BIGINT) start_key,
+                H.row_cnt,        
+                T.TICKET_ID
+            FROM RCA.TB_RCA_NTT_TICKET_DETAIL_INFO T
+            INNER JOIN nia.tb_linkage_hist H ON
+                H.key_name = 'aiIpSdnSflowKey'
+                AND H.file_name = CONCAT('ipSdnSflow_', CAST(T.json_key AS TEXT), '.json')
+            WHERE T.TICKET_ID = #{ticket_id}
+        ),
+        TimeRange AS (
+            SELECT 
+                MIN(collect_timestamp) as oldest_timestamp, 
+                MAX(collect_timestamp) as latest_timestamp
+            FROM rca.tb_sflow_collect_hist
+            WHERE COLLECT_SEQ <![CDATA[ <= ]]> (SELECT start_key FROM TicketData)
+            AND COLLECT_SEQ <![CDATA[ >= ]]> ((SELECT start_key FROM TicketData) - (SELECT row_cnt FROM TicketData))
+        )
         SELECT 
-            traffic_type
-            , normal_traffic_ratio
-            , tcp_syn_flooding_ratio
-            , land_attack_ratio
-            , ping_of_death_ratio
-            , udp_flooding_ratio
-        FROM RCA.TB_RCA_NTT_TICKET_DETAIL_INFO
-        where ticket_id = #{ticket_id}
+            t.*, 
+            r.oldest_timestamp, 
+            r.latest_timestamp 
+        FROM TicketData t, TimeRange r
         limit 1
     </select>
 

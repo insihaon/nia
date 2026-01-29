@@ -11,6 +11,9 @@
             <span>[TICKET_ID: {{ alarmFocusMode_TicketData.ticket_id }}] </span>
             <span>[전표유형: {{ getTicketTypeHangle(alarmFocusMode_TicketData.ticket_type) }}] </span>
             <span>[장애유형 : {{ alarmFocusNTTAIDetailInfo.traffic_type }}]</span>
+            <br />
+            <span>[탐지기간 : {{ formatterTimeStamp(alarmFocusNTTAIDetailInfo.oldest_timestamp, 'YY/MM/DD-HH:mm:ss') }} ~ {{ formatterTimeStamp(alarmFocusNTTAIDetailInfo.latest_timestamp, 'YY/MM/DD-HH:mm:ss') }}]</span>
+            <span>[탐지량 : {{ alarmFocusNTTAIDetailInfo.row_cnt }}]</span>
           </div>
           <div v-else>
             <span v-if="alarmFocusMode_TicketData.ticket_type == 'SYSLOG'">[ALARM NO: {{ alarmFocusMode_TicketData.alarmno }}] </span>
@@ -350,10 +353,18 @@ export default {
       const data = _.cloneDeep(this.alarmFocusNTTAIDetailInfo)
       delete data.traffic_type
 
-      // 1. 객체의 항목들을 { key, value } 형태의 배열로 변환하고 값(value)을 숫자로 파싱
-      const allRatios = Object.entries(data).map(([key, value]) => ({
+      const targetKeys = [
+        'normal_traffic_ratio',
+        'tcp_syn_flooding_ratio',
+        'land_attack_ratio',
+        'ping_of_death_ratio',
+        'udp_flooding_ratio'
+      ]
+
+      // 2. targetKeys를 순회하며 data에서 값을 찾아 배열로 변환
+      const allRatios = targetKeys.map(key => ({
         key: key,
-        value: Number(value),
+        value: Number(data[key] || 0) // 데이터가 없을 경우를 대비해 기본값 0 설정
       }))
 
       // 2. value를 기준으로 내림차순(큰 값부터) 정렬
@@ -768,6 +779,20 @@ export default {
   padding: 8px;
   background: #f9f9f9;
   border-left: 4px solid #409EFF;
+}
+
+::v-deep .chatbot-command-section {
+  margin: 10px 0;
+  padding: 8px 10px;
+  background: #f8fafc;
+  border-left: 4px solid #67C23A; /* 안정적인 그린 */
+}
+
+::v-deep .chatbot-command-title {
+  font-weight: 700;
+  font-size: 13px;
+  color: #303133;
+  margin-bottom: 6px;
 }
 
 ::v-deep .chatbot-message-body {
