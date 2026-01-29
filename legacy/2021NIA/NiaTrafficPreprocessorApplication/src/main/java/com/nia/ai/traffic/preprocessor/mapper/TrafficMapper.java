@@ -29,8 +29,5 @@ public interface TrafficMapper {
     int selectSdnTrafficCheck(HashMap<String, String> map);
     int selectNodeFactorCheck(HashMap<String, String> map);
     
-    // 시스템 현황 모니터링
-    void updateLinkageYdKey(HashMap<String,String> strHashMap);
-
     int selectThreeTimesCntCheck(SdnTrafficVo sdnTrafficVo);
 }

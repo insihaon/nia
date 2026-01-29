@@ -17,7 +17,9 @@ public interface RcaTrafficTicketService {
 
     void createNodeFactorTicket(NodeFactorListVo nodeFactorListVo);
 
-    void createSdnTrafficTicket(SdnTrafficListVo sdnTrafficListVo, String gb);
+    void createSdnTrafficTicket(SdnTrafficListVo sdnTrafficListVo);
+
+    void createAttAiTicket(SdnTrafficListVo sdnTrafficListVo, String gb);
 
     void createSyslogTicket(SyslogListVo syslogListVo);
 }

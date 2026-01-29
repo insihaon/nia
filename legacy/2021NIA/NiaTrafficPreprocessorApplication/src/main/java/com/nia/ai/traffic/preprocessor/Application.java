@@ -3,12 +3,14 @@ package com.nia.ai.traffic.preprocessor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * 
  * @author 
  *
  */
+@EnableScheduling
 @SpringBootApplication
 public class Application implements CommandLineRunner{
 

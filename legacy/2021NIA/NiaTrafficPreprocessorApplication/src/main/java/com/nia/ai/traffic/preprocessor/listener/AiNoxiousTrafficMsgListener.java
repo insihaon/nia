@@ -1,6 +1,7 @@
 package com.nia.ai.traffic.preprocessor.listener;
 
 import com.nia.ai.traffic.preprocessor.common.UtlCommon;
+import com.nia.ai.traffic.preprocessor.mapper.CommonDataMapper;
 import com.nia.ai.traffic.preprocessor.mapper.TrafficMapper;
 import com.nia.ai.traffic.preprocessor.service.NiaNoxiousTrafficHdlService;
 import com.nia.ai.traffic.preprocessor.vo.noxious.NoxiousTrafficListVo;
@@ -33,6 +34,9 @@ public class AiNoxiousTrafficMsgListener implements ChannelAwareMessageListener 
     @Autowired
     private TrafficMapper trafficMapper;
 
+    @Autowired
+    private CommonDataMapper commonMapper;
+
     @Override
     public void onMessage (Message message, Channel channel) {
 
@@ -58,8 +62,7 @@ public class AiNoxiousTrafficMsgListener implements ChannelAwareMessageListener 
 
             strHashMap = new HashMap<>();
             strHashMap.put("key", "aiTrafficNoxKey");
-            trafficMapper.updateLinkageYdKey(strHashMap);
-
+            commonMapper.updateLinkageYdKey(strHashMap);
         } catch (Exception e) {
             LOGGER.error("=====> [AiNoxiousTrafficeMsgListener] onMessage error " + ExceptionUtils.getStackTrace(e) + "<=====");
         }

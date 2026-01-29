@@ -79,6 +79,7 @@ public interface TicketService {
 
 
     void insertRcaNTTTicketDeatailInfo (EngineNttTrafficResultVo engineNttTrafficResultVo) throws Exception;
+    void insertTbSflowCollectHist (EngineNttTrafficResultVo engineNttTrafficResultVo) throws Exception;
 
     /**
      * 티켓 데이터 알람 저장

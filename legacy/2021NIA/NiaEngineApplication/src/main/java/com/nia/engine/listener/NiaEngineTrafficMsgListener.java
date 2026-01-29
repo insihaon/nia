@@ -39,17 +39,19 @@ public class NiaEngineTrafficMsgListener implements ChannelAwareMessageListener 
 //					rcaTrafficTicketService.createAnomalousTrafficTicket(engineTrafficeResultVo.getPerfListVo());
 					break;
 				case "noxious": // 유해 트래픽
+					// 현재 절대 사용안되고 있음. 그래서 신규로 Queue 따로 개발					
+					LOGGER.info("==========>[NiaEngineTrafficMsgListener] insert " + engineTrafficeResultVo.getGb() + ": " + new String(message.getBody())+"<==============");
 					rcaTrafficTicketService.createNoxiousTrfficTicket(engineTrafficeResultVo.getNoxiousListVo());
 					break;
 				case "nodefactor": // nodefactor
 					rcaTrafficTicketService.createNodeFactorTicket(engineTrafficeResultVo.getNodeFactorListVo());
 					break;
 				case "Traffic_N": case "Traffic_P":
-					rcaTrafficTicketService.createSdnTrafficTicket(engineTrafficeResultVo.getTrafficListVo(), engineTrafficeResultVo.getGb());
+					rcaTrafficTicketService.createSdnTrafficTicket(engineTrafficeResultVo.getTrafficListVo());
 					break;
-				case "Traffic_AIB": // 이상트래픽 AIB 는 의도적으로 AIB로 함 AI로 넣으면 티켓 발행되는데 우선 막아놓음
-					LOGGER.info("==========>[NiaEngineTrafficMsgListener] insert Traffice_AI : "+ new String(message.getBody())+"<==============");
-					rcaTrafficTicketService.createSdnTrafficTicket(engineTrafficeResultVo.getTrafficListVo(), engineTrafficeResultVo.getGb());
+				case "Traffic_AI": case "Traffic_AI_TCA":
+					LOGGER.info("==========>[NiaEngineTrafficMsgListener] insert "+ engineTrafficeResultVo.getGb() + ": " + new String(message.getBody())+"<==============");
+					rcaTrafficTicketService.createAttAiTicket(engineTrafficeResultVo.getTrafficListVo(), engineTrafficeResultVo.getGb());
 					break;
 				default:
 					LOGGER.error("예상치 못한 Gb ..." + engineTrafficeResultVo.getGb());

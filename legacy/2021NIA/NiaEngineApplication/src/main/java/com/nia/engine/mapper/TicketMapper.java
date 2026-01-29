@@ -101,6 +101,7 @@ public interface TicketMapper {
     void insertRcaTicket (RCATicket rcaTicket);
 
     void insertRcaNTTTicketDeatailInfo (EngineNttTrafficResultVo engineNttTrafficResultVo);
+    void insertTbSflowCollectHist (EngineNttTrafficResultVo engineNttTrafficResultVo);
 
     /**
      * 티켓 데이터 알람 저장
