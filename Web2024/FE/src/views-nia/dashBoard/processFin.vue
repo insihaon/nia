@@ -12,7 +12,7 @@
             </el-select>
           </el-col>
           <el-col :span="3">
-            <el-button class="edit" size="mini" type="primary" icon="el-icon-edit-outline" @click.native="$refs.ModalSopMng.open()"> 편집 </el-button>
+            <el-button class="edit" size="mini" type="primary" icon="el-icon-edit-outline" @click.native="openSopMng"> 편집 </el-button>
           </el-col>
         </el-row>
       </el-card>
@@ -132,6 +132,9 @@ export default {
           case constants.nia.chatbotCommand.fin.action:
             this.onClickFin()
             break
+          case constants.nia.chatbotCommand.sopEdit.action:
+            this.openSopMng()
+            break
         }
         this.$store.commit('chatbot/CLEAR_ROUTER_PARAMETER', { name: constants.nia.chatbotKeyMap.processFin.parameterKey })
       }
@@ -148,6 +151,10 @@ export default {
     })
   },
   methods: {
+    openSopMng() {
+      this.$refs.ModalSopMng.open()
+    },
+
     async setTicketDataForChatbotTicketData(isSwitchingTicket) {
       await this.setFocusPopupParameter(isSwitchingTicket)
 
@@ -239,18 +246,22 @@ export default {
       if (!this.isFocusModeButNotFocus) {
         this.$store.dispatch('chatbot/botPushAnswerMessage', {
           content:
-            '<div class="chatbot-command-header">마감 화면 안내</div>' +
+            '<div class="chatbot-command-header">마감 팝업 안내</div>' +
             '<div class="chatbot-message-body">' +
-              '원격으로 조치한 장비에 대하여 SOP이력을 남기는 화면입니다.' +
+              '원격으로 조치한 장비에 대하여 SOP이력을 남기는 팝업입니다.' +
               '<br><br>' +
-              constants.nia.chatbotIcon.Information + '조치 SOP 정보를 자동으로 설정했습니다. 정보를 확인하신 후에 SOP 조치 상세내용을 입력해주시고 마감처리해 주시면 됩니다.' +
+              constants.nia.chatbotIcon.Information + '조치 SOP 정보를 자동으로 설정했습니다.' +
               '<div class="chatbot-process">' +
-                '<b>[진행 순서]</b><br>' +
+                constants.nia.chatbotContent.processHeaderText + '<br><br>' +
                 '1. <b>조치 SOP</b> 확인 → 2. <b>조치 SOP</b> 조정' +
                 '<br>→ 3. <b>조치 상세내용</b> 입력 → 4. <b>마감처리</b>' +
               '</div>' +
             '</div>' +
-            (await getWindowActionList(constants.nia.chatbotKeyMap.processFin.dialogNm, constants.nia.chatbotKeyMap.processFin.popupName)),
+            (await getWindowActionList(constants.nia.chatbotKeyMap.processFin.dialogNm, constants.nia.chatbotKeyMap.processFin.popupName,
+              showNumberText(3, `${constants.nia.chatbotKeyMap.sopHistory.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', constants.nia.chatbotKeyMap.sopHistory.dialogNm)}`) +
+              showNumberText(4, `${constants.nia.chatbotKeyMap.sopHistory.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', constants.nia.chatbotKeyMap.sopHistory.dialogNm)}`) +
+              showNumberText(5, `${constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.dialogNm)}`)
+            )),
         })
       }
     },

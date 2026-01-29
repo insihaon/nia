@@ -108,7 +108,7 @@ import {
 import niaTopologyTemplalate from './niaTopologyConfig/niaTopologyTemplate.vue'
 import { mapState } from 'vuex'
 import constants from '@/min/constants'
-import { getChatbotTicketData, getWindowActionList } from '@/views-nia/js/commonNiaFunction'
+import { getChatbotTicketData, getWindowActionList, showNumberText, getInvisibleSpanParameter, getNiaRouterPathByName } from '@/views-nia/js/commonNiaFunction'
 import nia_topology_data from '@/views-nia/dashBoard/niaTopologyConfig/json/nia_topology_data'
 import niaObserverMixin from '@/mixin/niaObserverMixin'
 
@@ -280,17 +280,21 @@ export default {
       if (!this.isFocusModeButNotFocus) {
         this.$store.dispatch('chatbot/botPushAnswerMessage', {
           content:
-            '<div class="chatbot-command-header">토폴로지 화면 안내</div>' +
+            '<div class="chatbot-command-header">토폴로지 팝업 안내</div>' +
             '<div class="chatbot-message-body">' +
               '장애가 발생한 <b>노드와 링크</b>의 위치를 시각적으로 표시하여, 관련 노드 정보를 빠르고 직관적으로 확인할 수 있는 토폴로지 화면입니다.' +
               '<div class="chatbot-process">' +
-                '<b>[진행 순서]</b><br>' +
+                constants.nia.chatbotContent.processHeaderText + '<br><br>' +
                 '1. <b>장애 노드·링크</b> 확인' +
                 '<br>2. <b>연관 노드·링크</b> 관계파악' +
                 '<br>3. <b>조치·대응을 위한</b> 화면전환' +
               '</div>' +
             '</div>' +
-            (await getWindowActionList(constants.nia.chatbotKeyMap.niaTopology.dialogNm, constants.nia.chatbotKeyMap.niaTopology.popupName)),
+            (await getWindowActionList(constants.nia.chatbotKeyMap.niaTopology.dialogNm, constants.nia.chatbotKeyMap.niaTopology.popupName,
+              showNumberText(8, `${constants.nia.chatbotKeyMap.requestForAction.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', constants.nia.chatbotKeyMap.requestForAction.dialogNm)}`) +
+              showNumberText(9, `${constants.nia.chatbotKeyMap.sopHistory.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', constants.nia.chatbotKeyMap.sopHistory.dialogNm)}`) +
+              showNumberText(10, `${constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.dialogNm)}`)
+            )),
         })
       }
     },

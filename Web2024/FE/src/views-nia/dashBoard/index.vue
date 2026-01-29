@@ -73,7 +73,7 @@
             </div>
           </template>
         </filterBar>
-        <CompAgGrid ref="ipAgGrid" v-model="ipAgGrid" class="w-100 flex-fill" @rowClicked="selectedTicket" @rowDoubleClicked="agGridRowDoubleClicked" />
+        <CompAgGrid ref="ipAgGrid" v-model="ipAgGrid" class="w-100 flex-fill" @rowClicked="selectedIpNetworkTicket" @rowDoubleClicked="agGridRowDoubleClicked" />
         <!-- top-container content -->
       </template>
       <template slot="bottom-container">
@@ -397,6 +397,21 @@ export default {
                 break
             }
           })()
+          break
+        case this.chatbotKeyMap.configTest.dialogNm:
+          this.fn_openWindow('configTest', { isChatbotGenerated: true })
+          break
+        case this.chatbotKeyMap.requestForAction.dialogNm:
+          this.fn_openWindow('requestForAction', { isChatbotGenerated: true })
+          break
+        case this.chatbotKeyMap.processFin.dialogNm:
+          this.fn_openWindow('processFin', { isChatbotGenerated: true })
+          break
+        case this.chatbotKeyMap.sopHistory.dialogNm:
+          this.fn_openWindow('sopHistory', { isChatbotGenerated: true })
+          break
+        case this.chatbotKeyMap.disabilityStatusHistoryManagement.dialogNm:
+          this.fn_openWindow('disabilityStatusHistoryManagement', { isChatbotGenerated: true })
           break
       }
 
@@ -932,7 +947,7 @@ export default {
       }
       return { 'background-color': background, color: color, 'font-weight': 600 }
     },
-    selectedTicket(param) {
+    selectedIpNetworkTicket(param) {
       this.selectedItem = param
     },
     agGridRowDoubleClicked(selectedItems) {

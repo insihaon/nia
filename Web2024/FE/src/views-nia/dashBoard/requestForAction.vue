@@ -435,15 +435,21 @@ export default {
       if (!this.isFocusModeButNotFocus) {
         this.$store.dispatch('chatbot/botPushAnswerMessage', {
           content:
-            '<div class="chatbot-command-header">상황전파 화면 안내</div>' +
+            '<div class="chatbot-command-header">상황전파 팝업 안내</div>' +
             '<div class="chatbot-message-body">' +
               '신속한 상황 공유를 위해 <b>장애 내역을 메일로 전파</b>하고,<br>조치 결과에 대한 <b>마감</b>을 진행하는 화면입니다.' +
+              '<br><br>' +
+              constants.nia.chatbotIcon.Information + '장애내용은 티켓과 SOP 정보를 통해 자동 설정했습니다.' +
               '<div class="chatbot-process">' +
-                '<b>[진행 순서]</b><br>' +
+                constants.nia.chatbotContent.processHeaderText + '<br><br>' +
                 '1. <b>요청 내용</b> 확인 → 2. <b>담당자</b> 선택 → 3. <b>메일 전송</b>' +
               '</div>' +
             '</div>' +
-            (await getWindowActionList(constants.nia.chatbotKeyMap.requestForAction.dialogNm, constants.nia.chatbotKeyMap.requestForAction.popupName)),
+            (await getWindowActionList(constants.nia.chatbotKeyMap.requestForAction.dialogNm, constants.nia.chatbotKeyMap.requestForAction.popupName,
+              showNumberText(3, `${constants.nia.chatbotKeyMap.configTest.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', constants.nia.chatbotKeyMap.configTest.dialogNm)}<br>`) +
+              showNumberText(4, `${constants.nia.chatbotKeyMap.sopHistory.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', constants.nia.chatbotKeyMap.sopHistory.dialogNm)}`) +
+              showNumberText(5, `${constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.dialogNm)}`)
+            ))
         })
       }
     },

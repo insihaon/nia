@@ -80,7 +80,7 @@ export const niaRoute = Object.freeze([
         path: 'disabilityStatusHistoryManagement',
         component: () => import('@/views-nia/alarmMonitoring/disabilityStatusHistoryManagement'),
         name: 'DisabilityStatusHistoryManagement',
-        meta: { title: '장애현황 및 이력관리' },
+        meta: { title: '장애이력' },
       },
       {
         path: 'syslogHistoryInquiry',

@@ -208,9 +208,14 @@ export async function getWindowActionList(dialogNm, popupName, additionActionLis
             }
         })
 
-        const spanFormatMessage = getSpanFormatMessage(response, `<b>${popupName} 화면에서 활용가능한 명령어입니다.</b><br>`, { showScore: false })
+        const spanFormatMessage = getSpanFormatMessage(response, `<div class="chatbot-command-section"><span class="chatbot-command-title">화면 명령어 : 현재팝업에서 활용가능한 명령어</span><br>`, { showScore: false })
 
-        return spanFormatMessage + additionActionList + '<br><br>다음 명령을 입력해주시면 실행을 도와드리며, 다른 작업을 원하시면 말씀해주세요.'
+        let recommandActionList = ''
+        if (additionActionList.length !== 0) {
+            recommandActionList = `<br><br><span class="chatbot-command-title">연관 명령어 : 현재팝업과 연관된 명령어</span><br>` + additionActionList
+        }
+
+        return spanFormatMessage + recommandActionList + '</div>' + '다음 명령을 입력해주시면 실행을 도와드립니다, 원하시는 작업을 말씀해주세요.'
     } catch (error) {
         console.error('ElasticSearch 검색 오류:', error)
         throw error
@@ -266,7 +271,7 @@ export function getMatchMapOfspanFormatMessage(userQuestion, spanFormatMessage) 
         const noSpaceUserQuestion = userQuestion.replace(/\s+/g, '')
 
         const noSpaceSpanFormatMessage = spanFormatMessage.replace(
-            /(\d+\.\s*)([가-힣\s]+)/g,
+            /(\d+\.\s*)([가-힣a-zA-Z0-9\s]+)/g,
             (_, prefix, text) => prefix + text.replace(/\s+/g, '')
         )
 
@@ -313,7 +318,7 @@ function extractNumber(userQuestion) {
 
 function matchByNumber(spanFormatMessage, number, matchMap) {
     const pattern = new RegExp(
-        `${number}\\. (.*?)<span.*?\\[path\\]:(.*?)\\, \\[popup\\]:(.*?)\\, \\[action\\]:(.*?)<\\/span>`
+        `${number}\\.\\s*([^<]+?)\\s*<span[^>]*class="invisibleParameterSpan"[^>]*>\\[path\\]:(.*?)\\, \\[popup\\]:(.*?)\\, \\[action\\]:(.*?)<\\/span>`
     )
 
     const match = spanFormatMessage.match(pattern)
