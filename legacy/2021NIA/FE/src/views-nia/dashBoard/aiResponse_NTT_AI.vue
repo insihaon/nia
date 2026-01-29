@@ -27,7 +27,7 @@
         <el-col :span="18" style="height: 100%">
           <el-card v-loading="isTopologyLoading" shadow="never" style="height: 100%" :body-style="{ padding: '10px', height: '100%', overflow: 'auto' }" element-loading-text="토폴로지 데이터를 불러오는 중...">
             <div slot="header">
-              <span><i class="el-icon-document" />토폴로지 Map</span>
+              <span><i class="el-icon-document" /> Top5 Node 토폴로지 Map [탐지량 : {{ alarmFocusNTTAIDetailInfo.row_cnt }}] [탐지기간 : {{ formatterTimeStamp(alarmFocusNTTAIDetailInfo.oldest_timestamp, 'YY/MM/DD-HH:mm:ss') }} ~ {{ formatterTimeStamp(alarmFocusNTTAIDetailInfo.latest_timestamp, 'YY/MM/DD-HH:mm:ss') }}]</span>
             </div>
             <div id="nttMap"></div>
           </el-card>
@@ -59,7 +59,7 @@ import niaObserverMixin from '@/mixin/niaObserverMixin'
 import { getChatbotDonutChart } from '@/views-nia/js/donutChartBunddle'
 import _ from 'lodash'
 import { apiSelectNttTicketTotalDataList, apiSelectRcaNttTicketDetailInfo } from '@/api/nia'
-import { getChatbotTicketData, getWindowActionList } from '@/views-nia/js/commonNiaFunction'
+import { getChatbotTicketData, getWindowActionList, showNumberText, getInvisibleSpanParameter, getNiaRouterPathByName } from '@/views-nia/js/commonNiaFunction'
 // import { formatterTime } from '@/views-nia/js/commonFormat'
 import { mapState } from 'vuex'
 // import {  } from '@/views-nia/js/commonNiaFunction'
@@ -142,6 +142,7 @@ export default {
   computed: {
     ...mapState({
       aiResponseEventText: (state) => state.chatbot.routerParameter[constants.nia.chatbotKeyMap.aiResponse_NTT_AI.parameterKey],
+      alarmFocusNTTAIDetailInfo: (state) => state.chatbot.alarmFocusNTTAIDetailInfo,
     }),
     isModal() {
       return !!this.wdata.params
@@ -433,15 +434,19 @@ export default {
       if (!this.isFocusModeButNotFocus) {
         this.$store.dispatch('chatbot/botPushAnswerMessage', {
           content:
-          '<div class="chatbot-command-header">유해트래픽 AI 장애대응화면 안내</div>' +
+          '<div class="chatbot-command-header">유해트래픽 AI 장애대응팝업 안내</div>' +
           '<div class="chatbot-message-body">' +
             '유해 트래픽이 발생한 기간 동안 공격을 받은 노드 TOP 5를 표시하여, 장애 상황을 빠르게 파악할 수 있는 화면입니다.' +
             '<div class="chatbot-process">' +
-              '<b>[진행 순서]</b><br>' +
+              constants.nia.chatbotContent.processHeaderText + '<br><br>' +
               '1. <b>공격받는 노드정보</b> 확인 → 2. <b>조치·대응을 위한</b> 화면전환' +
             '</div>' +
           '</div>' +
-          (await getWindowActionList(constants.nia.chatbotKeyMap.aiResponse_NTT_AI.dialogNm, constants.nia.chatbotKeyMap.aiResponse_NTT_AI.popupName)),
+            (await getWindowActionList(constants.nia.chatbotKeyMap.aiResponse_NTT_AI.dialogNm, constants.nia.chatbotKeyMap.aiResponse_NTT_AI.popupName,
+              showNumberText(2, `${constants.nia.chatbotKeyMap.requestForAction.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', constants.nia.chatbotKeyMap.requestForAction.dialogNm)}`) +
+              showNumberText(3, `${constants.nia.chatbotKeyMap.sopHistory.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', constants.nia.chatbotKeyMap.sopHistory.dialogNm)}`) +
+              showNumberText(4, `${constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.dialogNm)}`)
+            )),
         })
       }
     },
