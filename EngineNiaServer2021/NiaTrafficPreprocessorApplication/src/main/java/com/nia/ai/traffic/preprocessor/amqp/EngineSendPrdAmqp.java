@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.HashMap;
+
 @Configuration()
 public class EngineSendPrdAmqp {
 	private static final Logger LOGGER = LoggerFactory.getLogger(EngineSendPrdAmqp.class);
@@ -22,6 +24,18 @@ public class EngineSendPrdAmqp {
 
 		try {
 			rabbitTemplate.convertAndSend(engineTrafficeResultVo);
+		} catch (Exception e) {
+			LOGGER.error("=====> [EngineSendPrdAmqp] sendMessageCmd error : " +ExceptionUtils.getStackTrace(e)+ " <=====");
+			e.printStackTrace();
+		}
+	}
+
+
+	public void sendMessageCmdAttAiTca(HashMap hashMap) {
+		LOGGER.info("==========>[EngineSendPrdAmqp] sendMessageCmd gb : "+hashMap.get("gb")+"<==============");
+
+		try {
+			rabbitTemplate.convertAndSend(hashMap);
 		} catch (Exception e) {
 			LOGGER.error("=====> [EngineSendPrdAmqp] sendMessageCmd error : " +ExceptionUtils.getStackTrace(e)+ " <=====");
 			e.printStackTrace();

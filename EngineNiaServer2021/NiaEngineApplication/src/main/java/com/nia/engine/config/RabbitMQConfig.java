@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.HashMap;
+
 @Configuration
 public class RabbitMQConfig {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RabbitMQConfig.class);
@@ -96,7 +98,19 @@ public class RabbitMQConfig {
     public Queue NiaEngineTrafficQueue() { return new Queue(rabbitMQVo.getNiaEngineTrafficQueue()); }
 
     @Bean(name="NiaEngineAiNoxTicketInfo_Queue")
-    public Queue NiaEngineAiNoxTicketInfoQueue() { return new Queue(rabbitMQVo.getNiaEngineAiNoxTicketInfoQueue()); }
+    public Queue NiaEngineAiNoxTicketInfoQueue() {
+        // 1. x-single-active-consumer 인자 맵 생성
+        HashMap<String, Object> arguments = new HashMap<>();
+        arguments.put("x-single-active-consumer", true); // 서버와 일치하도록 설정
+
+        return new Queue(
+                rabbitMQVo.getNiaEngineAiNoxTicketInfoQueue(),
+                true,
+                false,
+                false,
+                arguments
+        );
+    }
 
     @Bean(name = "NiaEngineToAiAno_Queue")
     public Queue NiaEngineToAiAnoQueue(){return new Queue(rabbitMQVo.getNiaEngineToAiAnoQueue()); }

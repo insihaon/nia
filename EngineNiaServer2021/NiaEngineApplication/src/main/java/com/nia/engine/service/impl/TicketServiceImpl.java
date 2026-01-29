@@ -110,6 +110,11 @@ public class TicketServiceImpl implements TicketService {
         ticketMapper.insertRcaNTTTicketDeatailInfo(engineNttTrafficResultVo);
     }
 
+    @Override
+    public void insertTbSflowCollectHist (EngineNttTrafficResultVo engineNttTrafficResultVo) throws Exception {
+        ticketMapper.insertTbSflowCollectHist(engineNttTrafficResultVo);
+    }
+
     /**
      * 티켓 데이터 알람 저장
      *

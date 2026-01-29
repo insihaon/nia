@@ -350,6 +350,7 @@
         (
             ticket_id,
             json_key,
+            traffic_type,
             normal_traffic_ratio,
             tcp_syn_flooding_ratio,
             land_attack_ratio,
@@ -360,11 +361,37 @@
         (
             #{ticketId},
             #{jsonKey},
-            #{noxiousAccuracyVo.normalTraffic},
-            #{noxiousAccuracyVo.tcpSynFlooding},
-            #{noxiousAccuracyVo.landAttack},
-            #{noxiousAccuracyVo.pingOfDeath},
-            #{noxiousAccuracyVo.udpFlooding}
+            #{traffic_type},
+            #{normalTrafficProbability},
+            #{tcpSynFloodingProbability},
+            #{landAttackProbability},
+            #{pingOfDeathProbability},
+            #{udpFloodingProbability}
+        )
+    </insert>
+
+    <insert id="insertTbSflowCollectHist" parameterType="java.util.HashMap">
+        INSERT INTO rca.tb_sflow_collect_hist (
+            ticket_id, collect_seq, collect_host, agent_address, ether_type, header_protocol, input_ifindex,
+            output_ifindex, sample_direction, src_ip, src_mac, src_port, source_id_type, source_id_index,
+            dst_ip, dst_mac, dst_port, packet_bytes, packet_drops, frame_length, header_length, ip_dscp,
+            ip_ecn, ip_flags, ip_fragment_offset, ip_total_length, ip_ttl, sampling_rate, tcp_header_length,
+            tcp_urgent_pointer, tcp_window_size, collect_timestamp, partition_key
+        )
+        WITH RowRange AS (
+            SELECT row_cnt
+            FROM nia.tb_linkage_hist
+            WHERE key_name = 'aiIpSdnSflowKey'
+              AND file_name = CONCAT('ipSdnSflow_', #{jsonKey}, '.json')
+        )
+        SELECT
+            'TEST_TICKET' AS ticket_id,
+            T.*
+        FROM gather.tb_sflow_collect T
+        WHERE T.collect_seq <![CDATA[ <= ]]> #{jsonKey}::BIGINT
+          AND T.collect_seq <![CDATA[ >= ]]> (
+            SELECT #{jsonKey}::BIGINT - row_cnt
+            FROM RowRange
         )
     </insert>
 
@@ -677,12 +704,12 @@
         , FAULT_TYPE_CONTENT = #{faultTypeContent}
         , START_TIME = #{startTime}
         , END_TIME = #{endTime}
-        , ZERO1_MODEL = #{zero1Model} , ZERO1_ENTROPY = #{zero1Entropy}
+        , ZERO1_MODEL = #{zero1Model}
+        , ZERO1_ENTROPY = #{zero1Entropy}
         <if test="handlingAckUser != null">
             , HANDLING_ACK_USER = #{handlingAckUser}
             , HANDLING_ACK_TIME = now()
         </if>
-
         <if test="handlingFinUser != null">
             , HANDLING_FIN_USER = #{handlingFinUser}
             , HANDLING_FIN_TIME = now()

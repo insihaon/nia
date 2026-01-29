@@ -166,14 +166,6 @@
 
     </insert>
 
-    <!-- 시스템 현황 모니터링 -->
-    <update id="updateLinkageYdKey" parameterType="java.util.HashMap">
-        UPDATE NIA.TB_LINKAGE_SEQ
-        SET VALUE_NAME = TO_CHAR(now(), 'YYYY-MM-DD HH24:MI:SS.MS +0900')
-            , YD_DATE = now()
-        WHERE KEY_NAME = #{key}
-    </update>
-
     <select id="selectThreeTimesCntCheck" parameterType="java.util.HashMap" resultType="int">
         SELECT count(1) cnt
         FROM RCA.TB_ANOMALOUS_AI_RESULT AIRES

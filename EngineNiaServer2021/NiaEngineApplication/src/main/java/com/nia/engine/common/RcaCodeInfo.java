@@ -229,18 +229,22 @@ public class RcaCodeInfo {
 	//RCA Ticket Type
 	public static final String TICKET_TYPE_PERFORMACE = "PF"; // Cable Inspecter Ticket
 	public static final String TICKET_TYPE_RCATICKET = "RT"; // RCA Ticket ( 스위치 장애 )
+
+	//이상 트래픽
 	public static final String TICKET_TYPE_ANOMALOUS_TRAFFIC_TICKET = "ATT"; // RCA Ticket
-	//이상 트래픽
 	public static final String TICKET_TYPE_ANOMALOUS2_TRAFFIC_TICKET = "ATT2"; // RCA Ticket
-	public static final String TICKET_TYPE_ANOMALOUS2_AIB_TRAFFIC_TICKET = "ATT2_AIB"; // RCA Ticket
-	//이상 트래픽
-	public static final String TICKET_TYPE_NOXIOUS_TRAFFIC_TICKET = "NTT"; // RCA Ticket
+	public static final String TICKET_TYPE_ANOMALOUS2_AIB_TRAFFIC_TICKET = "ATT2_AI"; // RCA Ticket
+	public static final String TICKET_TYPE_ANOMALOUS2_AIB_TRAFFIC_GB = "Traffic_AI"; // RCA Ticket
+
 	//유해 트래픽
-	public static final String TICKET_TYPE_NODE_FACTOR_TICKET = "NFTT"; //장비 과부하
-	public static final String TICKET_TYPE_SYSLOG_TICKET = "SYSTT";
+	public static final String TICKET_TYPE_NOXIOUS_TRAFFIC_TICKET = "NTT"; // RCA Ticket
+	public static final String TICKET_TYPE_NOXIOUS_TRAFFIC_TICKET_AI = "NTT_AI"; // RCA Ticket
+
+	//장비 과부하
+	public static final String TICKET_TYPE_NODE_FACTOR_TICKET = "NFTT";
+
 	//SYSLOG 티켓
-
-
+	public static final String TICKET_TYPE_SYSLOG_TICKET = "SYSTT";
 
 	//RCA Ticket Status Code
 	public static final String TICKET_STATUS_INIT = "INIT"; //시작
