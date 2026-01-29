@@ -235,16 +235,18 @@ export default {
       if (this.isModal && !this.isFocusModeButNotFocus) {
         this.$store.dispatch('chatbot/botPushAnswerMessage', {
           content:
-            '<div class="chatbot-command-header">장애현황 및 이력관리 화면 안내</div>' +
+            '<div class="chatbot-command-header">장애이력 팝업 안내</div>' +
             '<div class="chatbot-message-body">' +
               '해당 장비, 포트에서 발생한 장애이력을 확인할 수 있는 화면입니다.' +
               /* '<div class="chatbot-process">' +
-                '<b>[진행 순서]</b><br>' +
+                constants.nia.chatbotContent.processHeaderText + '<br><br>' +
                 '1. <b>조치 SOP</b> 확인 → 2. <b>조치 SOP</b> 조정' +
                 '<br>→ 3. <b>조치 상세내용</b> 입력 → 4. <b>마감처리</b>' +
               '</div>' + */
             '</div>' +
-            (await getWindowActionList(constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.dialogNm, constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.popupName)),
+            (await getWindowActionList(constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.dialogNm, constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.popupName,
+              showNumberText(3, `${constants.nia.chatbotKeyMap.sopHistory.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', constants.nia.chatbotKeyMap.sopHistory.dialogNm)}`)
+            )),
         })
       }
     },

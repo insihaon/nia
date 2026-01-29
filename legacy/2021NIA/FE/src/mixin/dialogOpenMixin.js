@@ -115,7 +115,7 @@ var dialogOpenMixin = {
         },
         disabilityStatusHistoryManagement: {
           component: () => import('@/views-nia/alarmMonitoring/disabilityStatusHistoryManagement'),
-          pageTitle: '장애현황 및 이력관리',
+          pageTitle: '장애이력',
           width: '1200',
           height: '900',
           resizeble: true,

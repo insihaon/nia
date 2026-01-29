@@ -97,13 +97,14 @@ export default {
       labelToggle: { label: '라벨 토글', action: 'labelToggle' },
       packetListAll: { label: '전체 패킷 리스트', action: 'packetListAll' },
       trendAnalysis: { label: '트렌드 분석', action: 'trendAnalysis' },
+      sopEdit: { label: 'SOP 편집 팝업', action: 'sopEdit' },
 
       // [집중 경보]
       focusModeCheckAlarm: { label: '티켓상세확인', action: 'focusModeCheckAlarm' },
 
       // 대시보드
       onReceivedIpsdnTicketEvent: { label: 'IP-SDN 경보 발생', action: 'onReceivedIpsdnTicketEvent' },
-      onReceivedTransTicketEvent: { label: 'Trans 경보 발생', action: 'onReceivedTransTicketEvent' }
+      onReceivedTransTicketEvent: { label: 'Trans 경보 발생', action: 'onReceivedTransTicketEvent' },
     },
     chatbotKeyMap: {
       /*
@@ -115,15 +116,15 @@ export default {
           - dialogOpenMixin에 등록된 dialog의 key이다.
           - DB의 popup값과 일치해야한다.
       */
-      sopHistory: { popupName: 'SOP이력조회', parameterKey: 'SopHistory', dialogNm: 'sopHistory' },
-      processFin: { popupName: '마감', parameterKey: 'processFin', dialogNm: 'processFin' },
-      configTest: { popupName: '조치', parameterKey: 'configTest', dialogNm: 'configTest' },
-      requestForAction: { popupName: '상황전파', parameterKey: 'requestForAction', dialogNm: 'requestForAction' },
-      aiResponse: { popupName: 'AI 장애대응', parameterKey: 'aiResponse', dialogNm: 'aiResponse' },
-      aiResponse_NTT_AI: { popupName: 'AI 장애대응', parameterKey: 'aiResponse_NTT_AI', dialogNm: 'aiResponse_NTT_AI' },
-      aiResponse_ATT_AI: { popupName: 'AI 장애대응', parameterKey: 'aiResponse_ATT_AI', dialogNm: 'aiResponse_ATT_AI' },
-      niaTopology: { popupName: '토폴로지', parameterKey: 'niaTopology', dialogNm: 'niaTopology' },
-      disabilityStatusHistoryManagement: { popupName: '장애현황 및 이력관리', parameterKey: 'DisabilityStatusHistoryManagement', dialogNm: 'disabilityStatusHistoryManagement' },
+      sopHistory: { popupName: 'SOP이력조회 팝업', parameterKey: 'SopHistory', dialogNm: 'sopHistory' },
+      processFin: { popupName: '마감 팝업', parameterKey: 'processFin', dialogNm: 'processFin' },
+      configTest: { popupName: '조치 팝업', parameterKey: 'configTest', dialogNm: 'configTest' },
+      requestForAction: { popupName: '상황전파 팝업', parameterKey: 'requestForAction', dialogNm: 'requestForAction' },
+      aiResponse: { popupName: 'AI 장애대응 팝업', parameterKey: 'aiResponse', dialogNm: 'aiResponse' },
+      aiResponse_NTT_AI: { popupName: 'AI 장애대응 팝업', parameterKey: 'aiResponse_NTT_AI', dialogNm: 'aiResponse_NTT_AI' },
+      aiResponse_ATT_AI: { popupName: 'AI 장애대응 팝업', parameterKey: 'aiResponse_ATT_AI', dialogNm: 'aiResponse_ATT_AI' },
+      niaTopology: { popupName: '토폴로지 팝업', parameterKey: 'niaTopology', dialogNm: 'niaTopology' },
+      disabilityStatusHistoryManagement: { popupName: '장애이력 팝업', parameterKey: 'DisabilityStatusHistoryManagement', dialogNm: 'disabilityStatusHistoryManagement' },
     },
 
     // chatbotDashboardPopupMap: {
@@ -178,7 +179,7 @@ export default {
     },
 
     chatbotContent: {
-      configTest: ''
+      processHeaderText: '<span style="font-size:15px; font-weight: 700; margin-bottom: 3px">작업 흐름</span>'
     },
 
     chatType: {

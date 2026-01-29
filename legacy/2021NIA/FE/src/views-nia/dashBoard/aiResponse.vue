@@ -165,8 +165,7 @@ import CompChart from '@/components/chart/CompChart.vue'
 import dialogOpenMixin from '@/mixin/dialogOpenMixin'
 import { mapState } from 'vuex'
 import constants from '@/min/constants'
-import { getChatbotTicketData, getWindowActionList } from '@/views-nia/js/commonNiaFunction'
-
+import { getChatbotTicketData, getWindowActionList, showNumberText, getInvisibleSpanParameter, getNiaRouterPathByName } from '@/views-nia/js/commonNiaFunction'
 import niaObserverMixin from '@/mixin/niaObserverMixin'
 
 const routeName = constants.nia.chatbotKeyMap.aiResponse.parameterKey
@@ -482,7 +481,7 @@ export default {
       if (!this.isFocusModeButNotFocus) {
         this.$store.dispatch('chatbot/botPushAnswerMessage', {
           content:
-            '<div class="chatbot-command-header">장애대응 화면 안내</div>' +
+            '<div class="chatbot-command-header">장애대응 팝업 안내</div>' +
             '<div class="chatbot-message-body">' +
             'AI에서 지정한 임계치를 초과한 시점의 실제 트래픽과 AI 임계치가 어느정도인지 차트를 통하여 확인할 수 있습니다.' +
             '<br><br>' + constants.nia.chatbotIcon.Information + '차트 라벨을 클릭으로 차트를 표시하거나 숨깁니다.' +
@@ -490,7 +489,9 @@ export default {
             '<br>' + constants.nia.chatbotIcon.Information + 'BPS는 대역폭을 확인하여 대역폭 포화를 감지합니다.' +
             '<br>' + constants.nia.chatbotIcon.Information + 'PPS는 Packet 개수로 DDOS공격을 확인합니다.' +
             '</div>' +
-            (await getWindowActionList(constants.nia.chatbotKeyMap.aiResponse.dialogNm, constants.nia.chatbotKeyMap.aiResponse.popupName)),
+            (await getWindowActionList(constants.nia.chatbotKeyMap.aiResponse.dialogNm, constants.nia.chatbotKeyMap.aiResponse.popupName,
+              showNumberText(5, `${constants.nia.chatbotKeyMap.requestForAction.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', constants.nia.chatbotKeyMap.requestForAction.dialogNm)}`)
+            )),
         })
       }
     },

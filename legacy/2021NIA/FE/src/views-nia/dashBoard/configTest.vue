@@ -316,17 +316,22 @@ export default {
       if (!this.isFocusModeButNotFocus) {
         this.$store.dispatch('chatbot/botPushAnswerMessage', {
           content:
-            '<div class="chatbot-command-header">조치 화면 안내</div>' +
+            '<div class="chatbot-command-header">조치 팝업 안내</div>' +
             '<div class="chatbot-message-body">' +
-              '장애가 발생한 장비에 대하여 <b>원격으로 제어</b>할 수 있는 화면입니다.' +
-              '<br><br>' +
-              constants.nia.chatbotIcon.Information + '장비에 대한 정보를 자동으로 설정했습니다. 정보를 확인하신 후에 <b>원격제어</b>를 진행해 주시면 됩니다.' +
+              '장애가 발생한 장비에 대하여 <b>원격으로 제어</b>할 수 있는 팝업입니다.' +
+            '<br><br>' +
+              (this.selectedRow.ticket_type !== 'NTT_AI' ? constants.nia.chatbotIcon.Information + '장비에 대한 정보를 자동으로 설정했습니다. 정보를 확인하신 후에 <b>원격제어</b>를 진행해 주시면 됩니다.'
+                : constants.nia.chatbotIcon.Information + '유해트래픽의 경우 장비이름과 인터페이스를 직접 선택해주셔야 합니다.') +
               '<div class="chatbot-process">' +
-                '<b>[진행 순서]</b><br>' +
+                constants.nia.chatbotContent.processHeaderText + '<br><br>' +
                 '1. <b>설정 정보</b> 확인 → 2. <b>설정 항목</b> 조정 → 3. <b>원격제어</b>' +
               '</div>' +
             '</div>' +
-            (await getWindowActionList(constants.nia.chatbotKeyMap.configTest.dialogNm, constants.nia.chatbotKeyMap.configTest.popupName)),
+            (await getWindowActionList(constants.nia.chatbotKeyMap.configTest.dialogNm, constants.nia.chatbotKeyMap.configTest.popupName,
+              showNumberText(2, `${constants.nia.chatbotKeyMap.processFin.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', constants.nia.chatbotKeyMap.processFin.dialogNm)}`) +
+              showNumberText(3, `${constants.nia.chatbotKeyMap.sopHistory.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', constants.nia.chatbotKeyMap.sopHistory.dialogNm)}`) +
+              showNumberText(4, `${constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.dialogNm)}`)
+            )),
         })
       }
     },
