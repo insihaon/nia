@@ -72,6 +72,9 @@ spring:
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      max-poll-records: 1000 # 한 번에 최대 1000개의 레코드를 가져옴
+    listener:
+      type: batch
     producer:
       bootstrap-servers: 116.89.191.47:9392
       key-serializer: org.apache.kafka.common.serialization.StringDeserializer
