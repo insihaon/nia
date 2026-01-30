@@ -13,6 +13,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class NiaSyslogDataMsgListener {
 
@@ -26,20 +29,23 @@ public class NiaSyslogDataMsgListener {
     private org.springframework.beans.factory.ObjectFactory<SyslogDataVo> syslogDataVoObjectFactory;
 
     @KafkaListener(topics = "telegraf-syslog", groupId = "syslogData")
-    public void onMessege(String message){
-        SyslogDataVo syslogDataVo;
+    public void onMessege(List<String> messages){
+        List<SyslogDataVo> syslogDataVoList = new ArrayList<>();
 
         try {
-            LOGGER.info(">>>>>>>>>>[NiaSyslogDataMsgListener] onMessage : " + message.toString() + " <<<<<<<<<<<<<<<<<");
+            LOGGER.info(">>>>>>>>>>[NiaSyslogDataMsgListener] Batch size: " + messages.size() + " <<<<<<<<<<<<<<<<<");
 
-            Object obj;
-            syslogDataVo = syslogDataVoObjectFactory.getObject();
+            // 1. 메시지 리스트를 순회하며 개별 객체로 변환하고 리스트에 추가
+            for (String message : messages) {
+                SyslogDataVo syslogDataVo = syslogDataVoObjectFactory.getObject();
+                Object obj = UtlCommon.jsonToObject(syslogDataVo, message);
+                syslogDataVo = (SyslogDataVo)obj;
 
-            obj = UtlCommon.jsonToObject(syslogDataVo, message);
-            syslogDataVo = (SyslogDataVo) obj;
+                // 객체 리스트에 추가
+                syslogDataVoList.add(syslogDataVo);
+            }
 
-            ipSdnSyslogService.syslogDataHdlProcessor(syslogDataVo);
-
+            ipSdnSyslogService.syslogDataHdlProcessor(syslogDataVoList);
         }catch (Exception e){
             LoggerPrint.errorLog(e);
 
