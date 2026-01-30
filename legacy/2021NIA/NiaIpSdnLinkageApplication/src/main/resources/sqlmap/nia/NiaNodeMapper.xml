@@ -22,19 +22,6 @@
         SELECT * FROM IP_SDN.TB_NODE_YD
     </insert>
 
-    <!-- 신규 AIB 이상트래픽 TCA 발행을 위한 테이블에 최신 노드정보 추가 -->
-    <insert id="insertAttAiTcaModel">
-        INSERT INTO NIA.TB_ATT_AI_TCA_MODEL
-            (NODE_NUM, IF_NUM)
-        SELECT A.NODE_NUM NODE_NUM, C.IF_NUM IF_NUM
-        FROM RESOURCE.TB_NODE_MST A
-                 INNER JOIN (
-            SELECT LOWER(NODE_NAME) NODE_ID
-            FROM IP_SDN.TB_NODE
-        ) B ON A.NODE_ID = B.NODE_ID
-                 INNER JOIN RESOURCE.TB_PORT_MST C ON A.NODE_NUM = C.NODE_NUM
-    </insert>
-
     <delete id="deleteNodeYd">
         TRUNCATE TABLE IP_SDN.TB_NODE_YD
     </delete>
@@ -43,9 +30,6 @@
         TRUNCATE TABLE IP_SDN.TB_NODE
     </delete>
 
-    <delete id="deleteAttAiTcaModel">
-        TRUNCATE TABLE NIA.TB_ATT_AI_TCA_MODEL
-    </delete>
 </mapper>
 
 

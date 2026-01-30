@@ -43,7 +43,7 @@ public class AlarmServiceImpl implements AlarmService {
 
     @Autowired
     private AlarmMapper alarmMapper;
-//
+
 //    @Autowired
 //    private AlarmPrdAmqp alarmPrdAmqp;
 
@@ -60,10 +60,8 @@ public class AlarmServiceImpl implements AlarmService {
     public void getAlarmData() {
         LOGGER.info("==========>[AlarmService] getAlarmData <==============");
         ResponseEntity<String> responseEntity;
-        String requestData;
         Object obj;
         String msg;
-        HttpHeaders httpHeaders;
         AlarmHitsDataVo alarmHitsDataVo;
         String fromDate;
         String toDate;
@@ -83,7 +81,9 @@ public class AlarmServiceImpl implements AlarmService {
 
             List<HttpMessageConverter<?>> converters = restTemplate.getMessageConverters();
             for (HttpMessageConverter<?> converter : converters) {
-                System.out.println(">>> Converter check: " + (converter == null ? "NULL" : converter.getClass().getName()));
+                if(converter == null){
+                    LOGGER.info(">>> Converter null check !!");
+                }
             }
 
             restTemplate.getMessageConverters()
@@ -100,11 +100,9 @@ public class AlarmServiceImpl implements AlarmService {
 
                 // 요청 전송
                 responseEntity = restTemplate.exchange(fullUrl, HttpMethod.GET, null, String.class);
-
-//                responseEntity = restTemplate.exchange(alarmUrl+"_search?q=(date["+fromDate+"+TO+"+toDate+"]) AND almType:\"alm\"&size=1000&pretty", HttpMethod.GET, null, String.class);
-
-//                LOGGER.info("==========>[AlarmService] getAlarmData result: "+ responseEntity.getBody() +"<==============");
             }catch (ResourceAccessException rae){
+                LOGGER.error("==========>[AlarmService] error : " + rae);
+
                 Thread.sleep(3000);
                 restTemplate.getMessageConverters()
                             .add(0, new StringHttpMessageConverter(Charset.forName("UTF-8")));
@@ -134,8 +132,6 @@ public class AlarmServiceImpl implements AlarmService {
             }else{
                 LOGGER.info("==========>[AlarmService] alarmHitsDataVo null ");
             }
-
-
         }catch (Exception e){
             LOGGER.error("=====> [AlarmService] getAlarmData error "+ ExceptionUtils.getStackTrace(e)+ "<=====");
         }
@@ -154,8 +150,8 @@ public class AlarmServiceImpl implements AlarmService {
                 alarmVoList = new ArrayList<AlarmVo>();
                 for(AlarmHitsVo alarmHitsVo : histList){
                     switch (alarmHitsVo.getAlarmVo().getAlmType()){
-                       // case "alm_eqpt":
                         case "alm" :
+                            LOGGER.info("==========>[AlarmService] setAlarmData alm <==============");
 
                             elkAlarmId = alarmMapper.selectElkAlarmCheck(alarmHitsVo.getId());
 
@@ -165,17 +161,6 @@ public class AlarmServiceImpl implements AlarmService {
                                 alarmVo.setAlarmlevel(setAlarmLvl(alarmHitsVo.getAlarmVo().getSev()));
                                 alarmVo.setAlarmloc(alarmHitsVo.getAlarmVo().getAid());
                                 alarmVo.setAlarmmsg(alarmHitsVo.getAlarmVo().getLogType());
-//                                switch (alarmHitsVo.getAlarmVo().getAlmType()) {
-////                                    case "alm_eqpt":
-////                                        alarmVo.setAlarmtime(UtlDateHelper.stringToTimestamp(alarmHitsVo.getAlarmVo().getOcrdat() + " " + alarmHitsVo.getAlarmVo().getOcrtm()));
-////                                        alarmVo.setUnit(alarmHitsVo.getAlarmVo().getBid());
-////                                        break;
-//                                    case "alm":
-//                                        alarmVo.setReceivetime(UtlDateHelper.stringToTimestamp(alarmHitsVo.getAlarmVo().getDate()));
-//                                        alarmVo.setAlarmtime(UtlDateHelper.stringToTimestamp(alarmHitsVo.getAlarmVo().getDate()));
-//                                        alarmVo.setUnit(alarmHitsVo.getAlarmVo().getUnit());
-//                                        break;
-//                                }
                                 alarmVo.setReceivetime(UtlDateHelper.stringToTimestamp(alarmHitsVo.getAlarmVo().getDate()));
                                 alarmVo.setAlarmtime(UtlDateHelper.stringToTimestamp(alarmHitsVo.getAlarmVo().getDate()));
                                 alarmVo.setUnit(alarmHitsVo.getAlarmVo().getUnit());
@@ -195,6 +180,7 @@ public class AlarmServiceImpl implements AlarmService {
             }
 
             if(alarmVoList != null && alarmVoList.size() > 0){
+                LOGGER.info("==========>[AlarmService] setAlarmData insertAlarm <==============");
                 paramMap = new HashMap<String, Object>();
                 paramMap.put("alarmVoList", alarmVoList);
                 alarmMapper.insertAlarm(paramMap);

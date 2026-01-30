@@ -118,6 +118,9 @@ public class TopologyServiceImpl implements TopologyService {
                             .add(0, new StringHttpMessageConverter(Charset.forName("UTF-8")));
 
                 responseEntity = restTemplate.exchange(topologyUrl, HttpMethod.GET, request, String.class);
+            }catch (Exception e){
+                LOGGER.error("==========>[TopologyService] 45.248.75.202에서 토폴로지 데이터 접근 실패 :  " + e);
+                return;
             }
 
             msg = new String(responseEntity.getBody());

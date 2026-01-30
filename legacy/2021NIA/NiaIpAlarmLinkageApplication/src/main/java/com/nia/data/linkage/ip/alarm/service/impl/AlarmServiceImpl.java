@@ -37,8 +37,6 @@ public class AlarmServiceImpl implements AlarmService {
 
     @Override
     public void getAlarmData() {
-        LOGGER.info("==========>[AlarmService] getAlarmData <==============");
-
         String interrIdx = null;
 
         ArrayList<AlarmVo> alarmList;
@@ -49,6 +47,8 @@ public class AlarmServiceImpl implements AlarmService {
 
         try {
             interrIdx = niaAlarmMapper.selectAlarmYdKey("ipAlarmKey");
+
+            LOGGER.info("==========>[AlarmService] getAlarmData interrIdx: "+ interrIdx + " <==============");
 
             if(StringUtils.isNotEmpty(interrIdx)){
                 alarmList = linkageAlarmMapper.selectAlarmList(Integer.parseInt(interrIdx));
