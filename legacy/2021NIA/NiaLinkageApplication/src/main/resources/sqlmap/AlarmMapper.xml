@@ -8,10 +8,10 @@
 
     <insert id="insertAlarm" parameterType="java.util.HashMap">
       <if test="alarmVoList.size != 0">
-        INSERT INTO NIA.TB_ALARM_MST(ALARMNO, SYSNAME, EQUIPTYPE, UNIT, ALARMTIME, RECEIVETIME, ALARMLOC, ALARMMSG, ALARMLEVEL)
+        INSERT INTO NIA.TB_ALARM_MST(ALARMNO, SYSNAME, EQUIPTYPE, UNIT, ALARMTIME, RECEIVETIME, ALARMLOC, ALARMMSG, ALARMLEVEL, insert_module_name)
         VALUES
         <foreach collection="alarmVoList" item="item" separator=",">
-           ((SELECT NEXTVAL('nia.seq_alarmno') ::VARCHAR), #{item.sysname}, #{item.equiptype}, #{item.unit}, #{item.alarmtime}, #{item.receivetime}, #{item.alarmloc}, #{item.alarmmsg}, #{item.alarmlevel})
+           ((SELECT NEXTVAL('nia.seq_alarmno') ::VARCHAR), #{item.sysname}, #{item.equiptype}, #{item.unit}, #{item.alarmtime}, #{item.receivetime}, #{item.alarmloc}, #{item.alarmmsg}, #{item.alarmlevel}, 'NiaLinkageApplication')
        </foreach>
       </if>
     </insert>
