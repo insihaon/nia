@@ -16,6 +16,7 @@ import com.nia.ems.linkage.vo.alarm.AlarmVo;
 import com.nia.ems.linkage.vo.performance.PerformaceVo;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.commons.net.ntp.TimeStamp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,8 +94,6 @@ public class RoadmEmsMmcPasingServiceImpl  implements RoadmEmsMmcPasingService {
         List<PerformaceVo> performaceVoList;
         HashMap<String, Object> paramObjMap;
         HashMap<String, String> paramStrMap;
-        String yyyyMMddHH;
-        Timestamp ocrTime = null;
 
         String sysnamea = null;
         String jsonData;
@@ -172,8 +171,6 @@ public class RoadmEmsMmcPasingServiceImpl  implements RoadmEmsMmcPasingService {
                         mmcMsgLineArr = mmcResult.split("\n");
 
                         if(mmcMsgLineArr != null && mmcMsgLineArr.length > 0) {
-
-                            yyyyMMddHH = (UtlDateHelper.getCurrentDateTime()+"").substring(0,14);
                             for (String mmcStr : mmcMsgLineArr) {
                                 if(mmcStr.contains("SH") && !mmcStr.contains("-PM")){
                                     mmcStr = UtlCommon.lTrim(mmcStr);
@@ -186,28 +183,15 @@ public class RoadmEmsMmcPasingServiceImpl  implements RoadmEmsMmcPasingService {
                                     performaceVo.setPort(mmcMsgLineDataArr[0].replaceAll("\"","").replaceAll("\\s",""));
                                     performaceVo.setUnit(mmcMsgLineDataArr[1].split(":")[0]);
                                     performaceVo.setTmper(mmcMsgLineDataArr[2]);
-                                    performaceVo.setRxCur(Double.parseDouble(mmcMsgLineDataArr[3]));
-                                    performaceVo.setRxMin(Double.parseDouble(mmcMsgLineDataArr[4]));
-                                    performaceVo.setRxMax(Double.parseDouble(mmcMsgLineDataArr[5]));
-                                    performaceVo.setRxAve(Double.parseDouble(mmcMsgLineDataArr[6]));
-                                    performaceVo.setTxCur(Double.parseDouble(mmcMsgLineDataArr[7]));
-                                    performaceVo.setTxMin(Double.parseDouble(mmcMsgLineDataArr[8]));
-                                    performaceVo.setTxMax(Double.parseDouble(mmcMsgLineDataArr[9]));
-                                    performaceVo.setTxAve(Double.parseDouble(mmcMsgLineDataArr[10]));
-
-                                    if(UtlDateHelper.stringToTimestamp(yyyyMMddHH+"00:00").getTime() <= UtlDateHelper.getCurrentDateTime().getTime()
-                                            && UtlDateHelper.stringToTimestamp(yyyyMMddHH+"15:00").getTime() > UtlDateHelper.getCurrentDateTime().getTime()){
-                                        ocrTime = UtlDateHelper.stringToTimestamp(yyyyMMddHH+"00:00");
-                                    }else if(UtlDateHelper.stringToTimestamp(yyyyMMddHH+"15:00").getTime() <= UtlDateHelper.getCurrentDateTime().getTime()
-                                            && UtlDateHelper.stringToTimestamp(yyyyMMddHH+"30:00").getTime() > UtlDateHelper.getCurrentDateTime().getTime()){
-                                        ocrTime = UtlDateHelper.stringToTimestamp(yyyyMMddHH+"15:00");
-                                    }else if(UtlDateHelper.stringToTimestamp(yyyyMMddHH+"30:00").getTime() <= UtlDateHelper.getCurrentDateTime().getTime()
-                                            && UtlDateHelper.stringToTimestamp(yyyyMMddHH+"45:00").getTime() > UtlDateHelper.getCurrentDateTime().getTime()){
-                                        ocrTime = UtlDateHelper.stringToTimestamp(yyyyMMddHH+"30:00");
-                                    }else if(UtlDateHelper.stringToTimestamp(yyyyMMddHH+"45:00").getTime() <= UtlDateHelper.getCurrentDateTime().getTime()){
-                                        ocrTime = UtlDateHelper.stringToTimestamp(yyyyMMddHH+"45:00");
-                                    }
-                                    performaceVo.setOcrtime(ocrTime);
+                                    performaceVo.setRxCur(parseDoubleOrZero(mmcMsgLineDataArr[3]));
+                                    performaceVo.setRxMin(parseDoubleOrZero(mmcMsgLineDataArr[4]));
+                                    performaceVo.setRxMax(parseDoubleOrZero(mmcMsgLineDataArr[5]));
+                                    performaceVo.setRxAve(parseDoubleOrZero(mmcMsgLineDataArr[6]));
+                                    performaceVo.setTxCur(parseDoubleOrZero(mmcMsgLineDataArr[7]));
+                                    performaceVo.setTxMin(parseDoubleOrZero(mmcMsgLineDataArr[8]));
+                                    performaceVo.setTxMax(parseDoubleOrZero(mmcMsgLineDataArr[9]));
+                                    performaceVo.setTxAve(parseDoubleOrZero(mmcMsgLineDataArr[10]));
+                                    performaceVo.setOcrtime(getPmTime());
                                     performaceVoList.add(performaceVo);
                                 }
                             }
@@ -555,5 +539,36 @@ public class RoadmEmsMmcPasingServiceImpl  implements RoadmEmsMmcPasingService {
             default:
                 break;
         }
+    }
+
+    private double parseDoubleOrZero(String value) {
+        if (value == null || value.trim().isEmpty()) {
+            return 0.0;
+        }
+        try {
+            return Double.parseDouble(value);
+        } catch (NumberFormatException e) {
+            return 0.0;
+        }
+    }
+
+    public static Timestamp getPmTime(){
+        Timestamp ocrTime = null;
+        String yyyyMMddHH = (UtlDateHelper.getCurrentDateTime()+"").substring(0,14);
+
+        if(UtlDateHelper.stringToTimestamp(yyyyMMddHH+"00:00").getTime() <= UtlDateHelper.getCurrentDateTime().getTime()
+                && UtlDateHelper.stringToTimestamp(yyyyMMddHH+"15:00").getTime() > UtlDateHelper.getCurrentDateTime().getTime()){
+            ocrTime = UtlDateHelper.stringToTimestamp(yyyyMMddHH+"00:00");
+        }else if(UtlDateHelper.stringToTimestamp(yyyyMMddHH+"15:00").getTime() <= UtlDateHelper.getCurrentDateTime().getTime()
+                && UtlDateHelper.stringToTimestamp(yyyyMMddHH+"30:00").getTime() > UtlDateHelper.getCurrentDateTime().getTime()){
+            ocrTime = UtlDateHelper.stringToTimestamp(yyyyMMddHH+"15:00");
+        }else if(UtlDateHelper.stringToTimestamp(yyyyMMddHH+"30:00").getTime() <= UtlDateHelper.getCurrentDateTime().getTime()
+                && UtlDateHelper.stringToTimestamp(yyyyMMddHH+"45:00").getTime() > UtlDateHelper.getCurrentDateTime().getTime()){
+            ocrTime = UtlDateHelper.stringToTimestamp(yyyyMMddHH+"30:00");
+        }else if(UtlDateHelper.stringToTimestamp(yyyyMMddHH+"45:00").getTime() <= UtlDateHelper.getCurrentDateTime().getTime()){
+            ocrTime = UtlDateHelper.stringToTimestamp(yyyyMMddHH+"45:00");
+        }
+
+        return ocrTime;
     }
 }

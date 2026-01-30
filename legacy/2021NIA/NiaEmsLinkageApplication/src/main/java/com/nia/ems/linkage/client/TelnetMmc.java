@@ -87,7 +87,7 @@ public class TelnetMmc {
     }
 
     public String sendCommand (String command, Boolean isFlush) {
-        LOGGER.info("=====> [TelnetMmc] sendCommand(" + command + ") <=====");
+        LOGGER.info("=====> [TelnetMmc] sendCommand (start) (" + command + ") <=====");
         String msg = null;
         OutputStream output;
 
@@ -101,7 +101,7 @@ public class TelnetMmc {
 //                output.write(command.getBytes("EUC-KR"));
 //                output.flush();
 
-                LOGGER.info("=====> [TelnetMmc] sendCommand :  " + command + " OK <=====");
+                LOGGER.info("=====> [TelnetMmc] sendCommand (middle)  " + command + " OK <=====");
 
                 try {
                     // 1초의 시간동안, streamConnectorMmc에서 Queue에 데이터 쌓음
@@ -111,7 +111,7 @@ public class TelnetMmc {
                 }
 
                 msg = readStream();
-                LOGGER.info("=====> [TelnetMmc] sendCommand msg :  " + msg);
+                LOGGER.info("=====> [TelnetMmc] sendCommand (last) msg :  " + msg);
             }
         } catch (Exception e) {
             LOGGER.error("=====> [TelnetMmc] sendCommand() " + ExceptionUtils.getStackTrace(e) + "<=====");
