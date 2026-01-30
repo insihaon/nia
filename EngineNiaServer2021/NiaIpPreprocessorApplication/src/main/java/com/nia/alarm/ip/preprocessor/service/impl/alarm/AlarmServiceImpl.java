@@ -3,14 +3,11 @@ package com.nia.alarm.ip.preprocessor.service.impl.alarm;
 
 import com.nia.alarm.ip.preprocessor.amqp.EngineClearPrdAmqp;
 import com.nia.alarm.ip.preprocessor.common.NiaCodeInfo;
-import com.nia.alarm.ip.preprocessor.common.UtlDateHelper;
 import com.nia.alarm.ip.preprocessor.mapper.AlarmMapper;
 import com.nia.alarm.ip.preprocessor.service.alarm.AlarmService;
-import com.nia.alarm.ip.preprocessor.service.impl.pasing.PasingServiceImpl;
 import com.nia.alarm.ip.preprocessor.vo.alarm.AlNormalizerVo;
 import com.nia.alarm.ip.preprocessor.vo.alarm.AlarmVo;
 import com.nia.alarm.ip.preprocessor.vo.alarm.BasicAlarmVo;
-import com.nia.alarm.ip.preprocessor.vo.alarm.ClearAlarmVo;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

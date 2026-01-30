@@ -40,48 +40,37 @@ public class NiaAiLinkageSchdulerServiceImpl {
     private IpSdnAlarmToAiLinkageService ipSdnAlarmToAiLinkageService;
 
 
-//   Resource
+    // Resource Node정보 - 1
     @Scheduled(cron = "0 0 3 * * *") //초(0-59) 분(0-59) 시간(0-23) 일(1-31) 월(1-12) 요일(0-7)
-    public void conJobIpsdnNodeData() {
-        ipSdnResourceLinkageService.sendNodeData();
-    }
+    public void conJobIpsdnNodeData() {ipSdnResourceLinkageService.sendNodeData();}
+
+    // Resource Interface정보 - 2
     @Scheduled(cron = "0 10 3 * * *") //초(0-59) 분(0-59) 시간(0-23) 일(1-31) 월(1-12) 요일(0-7)
-    public void conJobIpsdnInterfaceData() {
-        ipSdnResourceLinkageService.sendInterfaceData();
-    }
+    public void conJobIpsdnInterfaceData() {ipSdnResourceLinkageService.sendInterfaceData();}
 
+    // Resource Link정보 - 3
     @Scheduled(cron = "0 50 2 * * *") //초(0-59) 분(0-59) 시간(0-23) 일(1-31) 월(1-12) 요일(0-7)
-    public void conJobIpsdnLinkData() {
-        ipSdnResourceLinkageService.sendLinkData();
-    }
+    public void conJobIpsdnLinkData() {ipSdnResourceLinkageService.sendLinkData();}
 
-//   Factor,Traffic
+    // Factor
     @Scheduled(cron = "0 0/1 * * * *") //초(0-59) 분(0-59) 시간(0-23) 일(1-31) 월(1-12) 요일(0-7)
-    public void conJobIpsdnFactorData() {
-        ipSdnFactorLinkageService.sendFactorData();
-    }
+    public void conJobIpsdnFactorData() {ipSdnFactorLinkageService.sendFactorData();}
 
+    // Traffic
     @Scheduled(cron = "0 0/1 * * * *") //초(0-59) 분(0-59) 시간(0-23) 일(1-31) 월(1-12) 요일(0-7)
-    public void conJobIpsdnTrafficData() {
-        ipSdnTrafficLinkageService.sendTrafficData();
-    }
+    public void conJobIpsdnTrafficData() {ipSdnTrafficLinkageService.sendTrafficData();}
 
-//   Syslog, Sflow
+    // Sflow
     @Scheduled(cron = "0 0/1 * * * *") //초(0-59) 분(0-59) 시간(0-23) 일(1-31) 월(1-12) 요일(0-7)
-    public void conJobIpsdnSyslogData() {
-        ipSdnSyslogLinkageService.sendSyslogData();
-    }
+    public void conJobIpsdnSflowData() {ipSdnSflowLinkageService.sendSflowData();}
 
+    // Syslog 수집 정보
     @Scheduled(cron = "0 0/1 * * * *") //초(0-59) 분(0-59) 시간(0-23) 일(1-31) 월(1-12) 요일(0-7)
-    public void conJobIpsdnSflowData() {
-        ipSdnSflowLinkageService.sendSflowData();
-    }
+    public void conJobIpsdnSyslogData() {ipSdnSyslogLinkageService.sendSyslogData();}
 
-//  Syslog  Alarm
+    // Syslog 티켓 발행 정보 전송
     @Scheduled(cron = "0 0/1 * * * *") //초(0-59) 분(0-59) 시간(0-23) 일(1-31) 월(1-12) 요일(0-7)
-    public void conJobIpsdnSyslogAlarm(){
-        ipSdnAlarmToAiLinkageService.sendAlarmData();
-    }
+    public void conJobIpsdnSyslogAlarm() {ipSdnAlarmToAiLinkageService.sendAlarmData();}
 
 
 

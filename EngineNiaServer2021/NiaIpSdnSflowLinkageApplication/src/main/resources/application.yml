@@ -6,45 +6,6 @@ logging:
     root: INFO
 ---
 spring:
-  profiles: local
-
-  jasypt:
-    encryptor:
-      bean: jasyptStringEncryptor
-      property:
-        prefix: ENC(
-        suffix: )
-
-  kafka:
-    consumer:
-      bootstrap-servers: 192.168.10.6:9392
-      group-id: sflowData
-      auto-offset-reset: earliest
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-    #      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-    producer:
-      bootstrap-servers: 192.168.10.6:9392
-      key-serializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-serializer: org.apache.kafka.common.serialization.StringDeserializer
-  #      value-serializer: org.springframework.kafka.support.serializer.JsonDeserializer
-
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://192.168.10.6:5433/niadb
-    username: niaadmin
-    password: niaadmin12
-    maximumPoolSize: 10
-    idleTimeout: 6000
-
-  mybatis:
-    mapper-locations: classpath*:sqlmap/*.xml
-    mybatisConfig-locations : classpath:mybatis-config.xml
-    configuration:
-      mapUnderscoreToCamelCase: true
-
----
-spring:
   profiles: dev
 
   jasypt:
@@ -100,7 +61,9 @@ spring:
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      max-poll-interval-ms: 500000
+      max-poll-records: 1000 # 한 번에 최대 1000개의 레코드를 가져옴
+    listener:
+      type: batch
     producer:
       bootstrap-servers: 116.89.191.47:9392
       key-serializer: org.apache.kafka.common.serialization.StringDeserializer
