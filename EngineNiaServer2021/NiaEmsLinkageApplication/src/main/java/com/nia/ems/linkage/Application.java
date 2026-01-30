@@ -40,8 +40,9 @@ public class Application implements CommandLineRunner {
     @Override
     public void run (String... arg0) throws Exception {
         bootSettingService.init();
-//        roadmEmsMmcService.roadmPmMMC();
-//		roadmEmsEventMsgService.eventMsgListener();
+        roadmEmsEventMsgService.eventMsgListener();
+//      roadmEmsMmcService.roadmPmMMC();
+
 //		roadmEmsPmMmcCheckService.pmMmcLinkageCheck();
 
 //        roadmEmsTNMmcService.roadmPmMMC();

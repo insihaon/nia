@@ -41,7 +41,7 @@ public class MessageListenerThreadImpl implements NiaEmsLinkageThread {
 	public void sendMsg(){
 		try {
 			if(!((Queue<StringBuffer>)dataShareBean.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_ROADM_ALARM_MSG_QUE)).isEmpty()){
-				LOGGER.info("=====> [MessageListenerThreadImpl] DATA_SHARE_NAME_EMS_ROADM_ALARM_MSG_QUE " + (Queue<StringBuffer>)dataShareBean.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_ROADM_ALARM_MSG_QUE) +" <=====");
+//				LOGGER.info("=====> [MessageListenerThreadImpl] DATA_SHARE_NAME_EMS_ROADM_ALARM_MSG_QUE " + (Queue<StringBuffer>)dataShareBean.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_ROADM_ALARM_MSG_QUE) +" <=====");
 
 				((Queue<StringBuffer>)dataShareBean.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_ROADM_ALARM_QUE))
 						.offer(((Queue<StringBuffer>)dataShareBean.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_ROADM_ALARM_MSG_QUE)).poll());
@@ -54,7 +54,7 @@ public class MessageListenerThreadImpl implements NiaEmsLinkageThread {
 
 
 			if(!((Queue<String>)dataShareBean.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_MMC_MSG_QUE)).isEmpty()){
-				LOGGER.info("=====> [MessageListenerThreadImpl] DATA_SHARE_NAME_EMS_MMC_MSG_QUE " + (Queue<String>)dataShareBean.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_MMC_MSG_QUE) +" <=====");
+//				LOGGER.info("=====> [MessageListenerThreadImpl] DATA_SHARE_NAME_EMS_MMC_MSG_QUE " + (Queue<String>)dataShareBean.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_MMC_MSG_QUE) +" <=====");
 
 				((Queue<String>)dataShareBean.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_MMC_QUE))
 						.offer(((Queue<String>)dataShareBean.getData(LinkageCodeInfo.DATA_SHARE_NAME_EMS_MMC_MSG_QUE)).poll());

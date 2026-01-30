@@ -6,6 +6,7 @@ import com.nia.ems.linkage.common.UtlDateHelper;
 import com.nia.ems.linkage.data.DataShareBean;
 import com.nia.ems.linkage.mapper.CommonMapper;
 import com.nia.ems.linkage.mapper.EquipmentMapper;
+import com.nia.ems.linkage.mapper.MbaMapper;
 import com.nia.ems.linkage.service.RoadmEmsMmcService;
 import com.nia.ems.linkage.vo.equipment.EquipInfoVo;
 import com.nia.ems.linkage.vo.equipment.EquipSipcVo;
@@ -28,6 +29,9 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
 
     @Autowired
     private EquipmentMapper equipmentMapper;
+
+    @Autowired
+    private MbaMapper mbaMapper;
 
     @Autowired
     private CommonMapper commonMapper;
@@ -77,10 +81,10 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
                         }
                     }
                 } else {
+                    LOGGER.info("=====> [RoadmEmsMmcService] roadmSipcMMC login fail <=====");
                     if (roadmEmsTL1Client != null && roadmEmsTL1Client.isConnected()) {
                         roadmEmsTL1Client.logout();
                     }
-                    LOGGER.info("=====> [RoadmEmsMmcService] roadmSipcMMC login fail <=====");
                 }
             }
         } catch (Exception e) {
@@ -151,6 +155,9 @@ public class RoadmEmsMmcServiceImpl implements RoadmEmsMmcService {
 
                     if (roadmEmsTL1Client != null && roadmEmsTL1Client.isConnected()) {
                         roadmEmsTL1Client.logout();
+
+                        mbaMapper.setPerformancePreprocessor(RoadmEmsMmcPasingServiceImpl.getPmTime());
+                        LOGGER.info("=====> mbaMapper.setPerformancePreprocessor <=====");
 
                         // emsPm
                         HashMap<String, String> strHashMap = new HashMap<>();

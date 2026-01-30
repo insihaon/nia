@@ -89,6 +89,7 @@ public class RoadmEmsTL1Client {
                         mmcResult = telnet.sendCommand(pw + "\r\n", false);
 
                         if (mmcResult.contains("TL1>")) {
+                            LOGGER.info("=====> [RoadmEmsTL1Client] telnet contains TL1>");
                             isLoginOk = true;
                         } else if (mmcResult.contains("LOGIN:")) {
                             telnet.closeConnection();
@@ -119,6 +120,8 @@ public class RoadmEmsTL1Client {
         } catch (Exception e) {
             LOGGER.error("=====> [RoadmEmsTL1Client] login error() " + ExceptionUtils.getStackTrace(e) + "<=====");
         }
+
+        LOGGER.info("=====> [RoadmEmsTL1Client] telnet isLoginOk : " + isLoginOk);
         return isLoginOk;
     }
 
