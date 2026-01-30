@@ -11,6 +11,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class NiaSflowDataMsgListener {
 	private static final Logger LOGGER = LoggerFactory.getLogger(NiaSflowDataMsgListener.class);
@@ -23,17 +26,23 @@ public class NiaSflowDataMsgListener {
 	private org.springframework.beans.factory.ObjectFactory<SflowDataVo> pingRowDataVoObjectFactory;
 
 	@KafkaListener(topics = "telegraf-sflow", groupId = "sflowData")
-	public void onMessage(String message) {
-		SflowDataVo sflowDataVo;
+	public void onMessage(List<String> messages) {
+		List<SflowDataVo> sflowDataVoList = new ArrayList<>();
 
 		try {
-			LOGGER.info(">>>>>>>>>>[NiaSflowDataMsgListener] onMessage : " + message.toString() + " <<<<<<<<<<<<<<<<<");
-			Object obj;
-			sflowDataVo = pingRowDataVoObjectFactory.getObject();
+			LOGGER.info(">>>>>>>>>>[NiaSflowDataMsgListener] Batch size: " + messages.size() + " <<<<<<<<<<<<<<<<<");
 
-			obj = UtlCommon.jsonToObject(sflowDataVo, message);
-			sflowDataVo = (SflowDataVo)obj;
-			ipSdnSflowService.sflowDataHdlProcessor(sflowDataVo);
+			// 1. 메시지 리스트를 순회하며 개별 객체로 변환하고 리스트에 추가
+			for (String message : messages) {
+				SflowDataVo sflowDataVo = pingRowDataVoObjectFactory.getObject();
+				Object obj = UtlCommon.jsonToObject(sflowDataVo, message);
+				sflowDataVo = (SflowDataVo)obj;
+
+				// 객체 리스트에 추가
+				sflowDataVoList.add(sflowDataVo);
+			}
+
+			ipSdnSflowService.sflowDataHdlProcessor(sflowDataVoList);
 		} catch (Exception e) {
 			LOGGER.error("=====> [NiaSflowDataMsgListener] onMessage error "+ ExceptionUtils.getStackTrace(e)+ "<=====");
 		}
