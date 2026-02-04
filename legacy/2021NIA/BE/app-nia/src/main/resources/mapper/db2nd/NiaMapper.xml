@@ -35,11 +35,11 @@
             U.NAME
             , U.EMAIL
             , U.AGENCY_NAME
-                ,U.ID
-                , U.PW
-                , U.LVL
-                , TO_CHAR(U.LAST_LOGIN, 'YYYY-MM-DD HH24:MI:SS') AS LAST_LOGIN
-                , U.PHONE_NUMBER
+            , U.ID
+            , U.PW
+            , U.LVL
+            , TO_CHAR(U.LAST_LOGIN, 'YYYY-MM-DD HH24:MI:SS') AS LAST_LOGIN
+            , U.PHONE_NUMBER
         FROM nia.tb_user U
         <where>
             <if test="AGENCY_NAME != null">
