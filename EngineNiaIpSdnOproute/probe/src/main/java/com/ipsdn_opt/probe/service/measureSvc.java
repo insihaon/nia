@@ -158,18 +158,24 @@ public class measureSvc {
     }
     
     public Response measureFactors(LocalDateTime measuredTime) {
+        log.info("[NodeFactor Flow] measureSvc.measureFactors() 시작 - 측정시간: {}", measuredTime);
         long probeNumber = Long.parseLong(applicationArguments.getOptionValues("probe.number").get(0));
         Probe sendProbe = probeRepository.findById(probeNumber).get();
+        log.info("[NodeFactor Flow] Probe 조회 완료 - Probe ID: {}, Node ID: {}", sendProbe.getId(), sendProbe.getNode_id());
         List<Node> nodes = nodeRepository.findAll();
         HashMap<Long, Node> nodeMap = new HashMap<>();
         nodes.forEach(node -> {
             nodeMap.put(node.getId(), node);
         });
         List<LinkNode> links = linkNodeRepository.findLinkNodeByNodeid(sendProbe.getNode_id());
+        log.info("[NodeFactor Flow] LinkNode 조회 완료 - 총 {}개 링크", links.size());
         List<String> runMessages;
         try {
+            log.info("[NodeFactor Flow] measureSvc.measureNow() 호출 시작");
             runMessages = measureNow(sendProbe, links, measuredTime);
+            log.info("[NodeFactor Flow] measureSvc.measureNow() 완료 - 메시지 수: {}", runMessages.size());
         } catch(Exception e) {
+            log.error("[NodeFactor Flow] measureSvc.measureNow() 실패: {}", e.getMessage(), e);
             return new Response(false, "Remote Measurement Command Execution Fail. -> " + e.getMessage(), null);
         }
         // JSONObject result = new JSONObject();
@@ -192,6 +198,8 @@ public class measureSvc {
         return new Response(true, "Remote Probe Latency Measuring Complete.", runMessages);
     }
     public List<String> measureNow(Probe sendProbe, List<LinkNode> links, LocalDateTime measureDateTime) throws Exception {
+        log.info("[NodeFactor Flow] measureSvc.measureNow() 시작 - Probe ID: {}, 측정시간: {}, 링크 수: {}", 
+            sendProbe.getId(), measureDateTime, links.size());
         CommandServer cmdServer = sendProbe.getCommnadserver();
         List<Probe> probes = probeRepository.findAll();
         HashMap<Long, Probe> probeMap = new HashMap<>();
@@ -207,10 +215,16 @@ public class measureSvc {
 
         if(cmdServer!=null) {
             cmdServer.setPassword(commandServerRepository.findPasswordById(cmdServer.getId()));
+            log.info("[NodeFactor Flow] CommandServer 설정 완료 - Server: {}", cmdServer.getIpaddr());
         }
-        else throw new Exception(String.format("Server of owampd is not defined for probe %d (%s:%d).", sendProbe.getId(), sendProbe.getIpaddr(), sendProbe.getPort()));
+        else {
+            log.error("[NodeFactor Flow] CommandServer가 정의되지 않음 - Probe ID: {}", sendProbe.getId());
+            throw new Exception(String.format("Server of owampd is not defined for probe %d (%s:%d).", sendProbe.getId(), sendProbe.getIpaddr(), sendProbe.getPort()));
+        }
 
         Node sendNode = nodeMap.get(sendProbe.getNode_id());
+        log.info("[NodeFactor Flow] Node 정보 조회 완료 - Node: {}, MgmtAddr: {}", 
+            sendNode.getNodename(), sendNode.getMgmtaddr());
         List<Thread> threads = new ArrayList<>();
         List<String> runMessages = new ArrayList<>();
         for(LinkNode link : links) {
@@ -259,9 +273,12 @@ public class measureSvc {
         }
 
         NodeFactor nf = new NodeFactor(sendNode.getId(), measureDateTime);
+        log.info("[NodeFactor Flow] NodeFactor 객체 생성 - Node ID: {}, 측정시간: {}", sendNode.getId(), measureDateTime);
         Map<String, String> factors = new HashMap<>();
         factors.put("cpu", "iso.3.6.1.4.1.36673.100.1.2.5.1.3.1");
         factors.put("memory", "iso.3.6.1.4.1.36673.100.1.2.4.1.2.1");
+        log.info("[NodeFactor Flow] SNMP 측정 시작 - Node: {}, OID: CPU={}, Memory={}", 
+            sendNode.getNodename(), factors.get("cpu"), factors.get("memory"));
         factors.forEach((key, value) -> {
             Thread nodeThread = new Thread(new Runnable() {
                 @Override
@@ -271,8 +288,12 @@ public class measureSvc {
                         sw = sm.getShellWorker(cmdServer, RandomStringUtils.randomAlphanumeric(10));
                         sw.getSession();
                         String cmd = String.format("snmpwalk -v2c -c sdnkoren %s %s", sendNode.getMgmtaddr(), value);
+                        log.info("[NodeFactor Flow] SNMP 명령 실행 - Node: {}, Factor: {}, Command: {}", 
+                            sendNode.getNodename(), key, cmd);
                         
                         String strRet = sw.sendCommand(cmd, 7000);
+                        log.debug("[NodeFactor Flow] SNMP 명령 결과 - Node: {}, Factor: {}, Result: {}", 
+                            sendNode.getNodename(), key, strRet);
                         String strVal = strRet.split(":")[1];
                         strVal = strVal.split("\r\n")[0];
                         strVal = strVal.strip();
@@ -285,18 +306,26 @@ public class measureSvc {
                             if(key.equals("cpu")) {
                                 fVal = Float.parseFloat(strVal)/10000;
                                 nf.setCpuusage(fVal);
+                                log.info("[NodeFactor Flow] CPU 값 파싱 완료 - Node: {}, 원본값: {}, 변환값: {}%", 
+                                    sendNode.getNodename(), strVal, fVal);
                             }
                             else {
                                 fVal = Float.parseFloat(strVal)/100;
                                 nf.setMemusage(fVal);
+                                log.info("[NodeFactor Flow] Memory 값 파싱 완료 - Node: {}, 원본값: {}, 변환값: {}%", 
+                                    sendNode.getNodename(), strVal, fVal);
                             }
                             runMessages.add(String.format("Node [%s:%s] Measuring of node-factors(%s) is completed.", sendNode.getNodename(), sendNode.getMgmtaddr(), key));
                         }
                         else {
+                            log.warn("[NodeFactor Flow] SNMP 값 파싱 실패 - Node: {}, Factor: {}, 값: {}", 
+                                sendNode.getNodename(), key, strVal);
                             runMessages.add(String.format("Node [%s:%s] Measuring of node-factors is Fail. => %s", sendNode.getNodename(), sendNode.getMgmtaddr(), strVal));
                             log.info(String.format("Node [%s:%s] Measuring of node-factors is Fail. => %s", sendNode.getNodename(), sendNode.getMgmtaddr(), strVal));
                         }
                     } catch(Exception e) {
+                        log.error("[NodeFactor Flow] SNMP 명령 실행 예외 - Node: {}, Factor: {}, Error: {}", 
+                            sendNode.getNodename(), key, e.getMessage(), e);
                         runMessages.add(String.format("Error: From[%s] Node [%s:%s] %s => %s", cmdServer.getIpaddr(), key, sendNode.getNodename(), sendNode.getMgmtaddr(), e.getMessage()));
                     }
                     finally {
@@ -315,7 +344,11 @@ public class measureSvc {
                 throw e;
             }
         }
+        log.info("[NodeFactor Flow] DB 저장 시작 - NodeFactor: CPU={}%, Memory={}%", 
+            nf.getCpuusage(), nf.getMemusage());
         nodeFactorRepository.save(nf);
+        log.info("[NodeFactor Flow] DB INSERT 완료 - NodeFactor 저장 성공 (Node ID: {}, 측정시간: {})", 
+            nf.getNode_id(), nf.getMeasureddatetime());
         linkFactorRepository.saveAll(linkfactors);
         ProbeActivity pa = new ProbeActivity(sendProbe.getId(), measureDateTime);
         probeActivityRepository.save(pa);
