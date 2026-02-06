@@ -691,16 +691,11 @@
         SET SOP_ID = #{sopId}
         , RECEIVE_TIME = now()
         , STATUS = #{status}
-        , FAULT_CLASSIFY = (case when #{faultClassify} is null then FAULT_CLASSIFY else
-        #{faultClassify} end)
-        , FAULT_TYPE = (case when #{faultType} is null then FAULT_TYPE when #{faultType}
-        = '' then FAULT_TYPE else #{faultType} end)
-        , FAULT_DETAIL_CONTENT = (case when #{faultDetailContent} is null then
-        FAULT_DETAIL_CONTENT when #{faultDetailContent} = '' then FAULT_DETAIL_CONTENT else #{faultDetailContent} end)
-        , ETC_CONTENT = (case when #{etcContent} is null then ETC_CONTENT when #{etcContent} = '' then ETC_CONTENT else
-        #{etcContent} end)
-        , AI_ACCURACY = (case when #{aiAccuracy}::varchar = 'NULL' then AI_ACCURACY when #{aiAccuracy}::varchar = ''
-        then AI_ACCURACY else #{aiAccuracy}::varchar end)
+        , FAULT_CLASSIFY = COALESCE(#{faultClassify}, FAULT_CLASSIFY)
+        , FAULT_TYPE = COALESCE(NULLIF(#{faultType}, ''), FAULT_TYPE)
+        , FAULT_DETAIL_CONTENT = COALESCE(NULLIF(#{faultDetailContent}, ''), FAULT_DETAIL_CONTENT)
+        , ETC_CONTENT = COALESCE(NULLIF(#{etcContent}, ''), ETC_CONTENT)
+        , AI_ACCURACY = COALESCE(NULLIF(NULLIF(#{aiAccuracy}, ''), 'NULL')::varchar, AI_ACCURACY)
         , FAULT_TYPE_CONTENT = #{faultTypeContent}
         , START_TIME = #{startTime}
         , END_TIME = #{endTime}
