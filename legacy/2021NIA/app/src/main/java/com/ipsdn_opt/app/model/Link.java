@@ -22,13 +22,16 @@ public class Link {
     private Integer ospfmetric;
     private double latencystd;
     private boolean usaged;
+    private Boolean activestandby; // ActiveStandby 필드 추가
 
     public Link() {
+        this.activestandby = false; // 기본값 설정
     }
     public Link(long sif_id, long rif_id, Integer ospfmetric, boolean usaged) {
         this.sif_id = sif_id;
         this.rif_id = rif_id;
         this.ospfmetric = ospfmetric;
         this.usaged = usaged;
+        this.activestandby = false; // 기본값 설정
     }
 }

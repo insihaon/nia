@@ -15,7 +15,10 @@ import com.ipsdn_opt.probe.model.RegexTest;
 import com.ipsdn_opt.probe.model.Response;
 import com.ipsdn_opt.probe.service.measureSvc;
 
+import lombok.extern.slf4j.Slf4j;
+
 @RestController
+@Slf4j
 public class measureController {
     @Autowired
     measureSvc measureSvc;
@@ -27,8 +30,11 @@ public class measureController {
 
     @GetMapping("/ipsdn/opt/probe/linklatency")
     public Response linkLatency(@RequestParam(name = "measured_time", required = false) String strMeasuredTime) {
+        log.info("[NodeFactor Flow] measureController.linkLatency() 호출 - measured_time: {}", strMeasuredTime);
         LocalDateTime measuredTime = LocalDateTime.parse(strMeasuredTime);
-        return measureSvc.measureFactors(measuredTime);
+        Response response = measureSvc.measureFactors(measuredTime);
+        log.info("[NodeFactor Flow] measureController.linkLatency() 완료 - status: {}", response.isStatus());
+        return response;
     }
     @GetMapping("/ipsdn/opt/probe/e2elatency")
     public Response e2eLatency(@RequestParam(name = "measured_time") String strMeasuredTime, @RequestParam(name = "destnode_id", required = false) Long destNode_id) {
