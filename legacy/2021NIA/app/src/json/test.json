@@ -1,0 +1,1210 @@
+[
+    {
+        "unit_currency": "KRW",
+        "balance": "1977",
+        "avg_buy_price": "0",
+        "currency": "P",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "5980948.81515775",
+        "avg_buy_price": "0",
+        "currency": "KRW",
+        "locked": "21289538.38127025",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00001796",
+        "avg_buy_price": "44230",
+        "currency": "ETC",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00006942",
+        "avg_buy_price": "709",
+        "currency": "XRP",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.0000179",
+        "avg_buy_price": "891467",
+        "currency": "BCH",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00000226",
+        "avg_buy_price": "6970",
+        "currency": "QTUM",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00000847",
+        "avg_buy_price": "802",
+        "currency": "EOS",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00001261",
+        "avg_buy_price": "206",
+        "currency": "TRX",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00006199",
+        "avg_buy_price": "660",
+        "currency": "KNC",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00008042",
+        "avg_buy_price": "515",
+        "currency": "GLM",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00002134",
+        "avg_buy_price": "58.18",
+        "currency": "WAXP",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00001117",
+        "avg_buy_price": "295",
+        "currency": "POWR",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00002772",
+        "avg_buy_price": "355.6",
+        "currency": "LRC",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00000659",
+        "avg_buy_price": "418",
+        "currency": "STEEM",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00004157",
+        "avg_buy_price": "776",
+        "currency": "ZRX",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00008379",
+        "avg_buy_price": "608",
+        "currency": "ADA",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00009535",
+        "avg_buy_price": "3021",
+        "currency": "THETA",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00006975",
+        "avg_buy_price": "73.73",
+        "currency": "LOOM",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00009185",
+        "avg_buy_price": "2061",
+        "currency": "WAVES",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00003549",
+        "avg_buy_price": "22360",
+        "currency": "LINK",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00002491",
+        "avg_buy_price": "71.24",
+        "currency": "VET",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00002598",
+        "avg_buy_price": "1221",
+        "currency": "MTL",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.0000857",
+        "avg_buy_price": "68150",
+        "currency": "BSV",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00005852",
+        "avg_buy_price": "38.8",
+        "currency": "ORBS",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00020704",
+        "avg_buy_price": "86.83",
+        "currency": "ANKR",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00001355",
+        "avg_buy_price": "286.9",
+        "currency": "CHR",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.0000433",
+        "avg_buy_price": "7.867",
+        "currency": "MBL",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00008018",
+        "avg_buy_price": "312",
+        "currency": "SXP",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00000136",
+        "avg_buy_price": "60.48",
+        "currency": "ARPA",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00001225",
+        "avg_buy_price": "22.77",
+        "currency": "CKB",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00000573",
+        "avg_buy_price": "147.8",
+        "currency": "AERGO",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00008354",
+        "avg_buy_price": "21050",
+        "currency": "UNI",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.70032393",
+        "avg_buy_price": "3891",
+        "currency": "UMA",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00005908",
+        "avg_buy_price": "184600",
+        "currency": "AAVE",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00001476",
+        "avg_buy_price": "2883",
+        "currency": "BAL",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00005902",
+        "avg_buy_price": "9.334",
+        "currency": "RSR",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00000162",
+        "avg_buy_price": "23359",
+        "currency": "NMR",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00008913",
+        "avg_buy_price": "4702",
+        "currency": "RLC",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00002498",
+        "avg_buy_price": "1288",
+        "currency": "BEL",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00006944",
+        "avg_buy_price": "660",
+        "currency": "GRT",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.0000226",
+        "avg_buy_price": "98.58",
+        "currency": "OXT",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00006522",
+        "avg_buy_price": "21190",
+        "currency": "LPT",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00005088",
+        "avg_buy_price": "2273",
+        "currency": "SUSHI",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00002359",
+        "avg_buy_price": "1057",
+        "currency": "FRONT",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00002329",
+        "avg_buy_price": "1436",
+        "currency": "ALICE",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.0000584",
+        "avg_buy_price": "119",
+        "currency": "OGN",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00004334",
+        "avg_buy_price": "146",
+        "currency": "COTI",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00007092",
+        "avg_buy_price": "652.7",
+        "currency": "BNT",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00002047",
+        "avg_buy_price": "99.03",
+        "currency": "CHZ",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00000532",
+        "avg_buy_price": "0.0184",
+        "currency": "SHIB",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00006788",
+        "avg_buy_price": "552",
+        "currency": "POL",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00002599",
+        "avg_buy_price": "253",
+        "currency": "WOO",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00004638",
+        "avg_buy_price": "26.1",
+        "currency": "ACH",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00005598",
+        "avg_buy_price": "143",
+        "currency": "XLM",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00009376",
+        "avg_buy_price": "271",
+        "currency": "ONT",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00006888",
+        "avg_buy_price": "464",
+        "currency": "ONG",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.000036",
+        "avg_buy_price": "243",
+        "currency": "ALGO",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00009046",
+        "avg_buy_price": "141",
+        "currency": "DOGE",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.08921831",
+        "avg_buy_price": "42050",
+        "currency": "KSM",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00000681",
+        "avg_buy_price": "23.94",
+        "currency": "SUN",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00004055",
+        "avg_buy_price": "0.0459",
+        "currency": "XEC",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00002244",
+        "avg_buy_price": "192300",
+        "currency": "SOL",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00004454",
+        "avg_buy_price": "44570",
+        "currency": "EGLD",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00004603",
+        "avg_buy_price": "7910",
+        "currency": "MASK",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "1.29343207",
+        "avg_buy_price": "373",
+        "currency": "1INCH",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00007095",
+        "avg_buy_price": "372.2",
+        "currency": "CRV",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00006826",
+        "avg_buy_price": "1350",
+        "currency": "DYDX",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00008545",
+        "avg_buy_price": "650.8",
+        "currency": "MINA",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.25948872",
+        "avg_buy_price": "1858",
+        "currency": "FLOW",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.000056",
+        "avg_buy_price": "1639",
+        "currency": "JOE",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00001308",
+        "avg_buy_price": "57.39",
+        "currency": "GALA",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00009405",
+        "avg_buy_price": "23460",
+        "currency": "ENS",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00001355",
+        "avg_buy_price": "42.5",
+        "currency": "JASMY",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00004675",
+        "avg_buy_price": "88650",
+        "currency": "AVAX",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00009589",
+        "avg_buy_price": "71.22",
+        "currency": "HBAR",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00000657",
+        "avg_buy_price": "30.4",
+        "currency": "T",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.0000749",
+        "avg_buy_price": "188",
+        "currency": "GMT",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00005534",
+        "avg_buy_price": "205",
+        "currency": "DAR",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.0000843",
+        "avg_buy_price": "1229",
+        "currency": "SFP",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00006534",
+        "avg_buy_price": "11820",
+        "currency": "APT",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00006163",
+        "avg_buy_price": "266",
+        "currency": "BLUR",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00007866",
+        "avg_buy_price": "555",
+        "currency": "HOOK",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00002925",
+        "avg_buy_price": "6495",
+        "currency": "OP",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00003169",
+        "avg_buy_price": "38000",
+        "currency": "GMX",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00008104",
+        "avg_buy_price": "2375",
+        "currency": "STX",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00008614",
+        "avg_buy_price": "1675",
+        "currency": "ARB",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00005015",
+        "avg_buy_price": "1806",
+        "currency": "IMX",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00009789",
+        "avg_buy_price": "178.7",
+        "currency": "CFX",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00007303",
+        "avg_buy_price": "1181",
+        "currency": "CELO",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00006848",
+        "avg_buy_price": "2770",
+        "currency": "LDO",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.0000664",
+        "avg_buy_price": "1416",
+        "currency": "FTM",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.0000879",
+        "avg_buy_price": "1595",
+        "currency": "FET",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00002244",
+        "avg_buy_price": "3022",
+        "currency": "SUI",
+        "locked": "33.0906",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00001077",
+        "avg_buy_price": "0.2145",
+        "currency": "FLOKI",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00009829",
+        "avg_buy_price": "556",
+        "currency": "ID",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00006952",
+        "avg_buy_price": "14695",
+        "currency": "RENDER",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00000575",
+        "avg_buy_price": "392.7",
+        "currency": "STG",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00005825",
+        "avg_buy_price": "96.36",
+        "currency": "RDNT",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00009",
+        "avg_buy_price": "134",
+        "currency": "ASTR",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00006515",
+        "avg_buy_price": "2726",
+        "currency": "WLD",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00008657",
+        "avg_buy_price": "49530",
+        "currency": "AR",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00001096",
+        "avg_buy_price": "2.982",
+        "currency": "LEVER",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00009943",
+        "avg_buy_price": "839.1",
+        "currency": "EDU",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00009211",
+        "avg_buy_price": "495",
+        "currency": "SEI",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00008077",
+        "avg_buy_price": "0.0059",
+        "currency": "PEPE",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00002735",
+        "avg_buy_price": "5720",
+        "currency": "CYBER",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00005255",
+        "avg_buy_price": "2442",
+        "currency": "ARKM",
+        "locked": "40.95",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.0000045",
+        "avg_buy_price": "87.42",
+        "currency": "IOTX",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00008774",
+        "avg_buy_price": "2679",
+        "currency": "HIGH",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00003847",
+        "avg_buy_price": "5525",
+        "currency": "PENDLE",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00009932",
+        "avg_buy_price": "513",
+        "currency": "STORJ",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00009549",
+        "avg_buy_price": "2241",
+        "currency": "GTC",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00001591",
+        "avg_buy_price": "14542",
+        "currency": "ICP",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00000429",
+        "avg_buy_price": "22230",
+        "currency": "NEO",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00004355",
+        "avg_buy_price": "5525",
+        "currency": "GAS",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00001885",
+        "avg_buy_price": "724.8",
+        "currency": "HIFI",
+        "locked": "1053.4694",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00000892",
+        "avg_buy_price": "176",
+        "currency": "BIGTIME",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00005554",
+        "avg_buy_price": "822",
+        "currency": "ZETA",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00005608",
+        "avg_buy_price": "657",
+        "currency": "ARK",
+        "locked": "152.207",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00005285",
+        "avg_buy_price": "533",
+        "currency": "KAVA",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00003105",
+        "avg_buy_price": "8.571",
+        "currency": "STMX",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00009",
+        "avg_buy_price": "727",
+        "currency": "MAGIC",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00000094",
+        "avg_buy_price": "1340",
+        "currency": "USDT",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00003134",
+        "avg_buy_price": "2408",
+        "currency": "LSK",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00006456",
+        "avg_buy_price": "3416",
+        "currency": "ACE",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00007579",
+        "avg_buy_price": "547.9",
+        "currency": "PYTH",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.0000359",
+        "avg_buy_price": "1438",
+        "currency": "MANTA",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00003985",
+        "avg_buy_price": "2744",
+        "currency": "JTO",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00004021",
+        "avg_buy_price": "1475",
+        "currency": "JUP",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00003044",
+        "avg_buy_price": "543",
+        "currency": "STRK",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00003729",
+        "avg_buy_price": "0.0328",
+        "currency": "BONK",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00000398",
+        "avg_buy_price": "188.2",
+        "currency": "ZK",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00005954",
+        "avg_buy_price": "979",
+        "currency": "ONDO",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00010476",
+        "avg_buy_price": "7749",
+        "currency": "NEAR",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.0000213",
+        "avg_buy_price": "351.6",
+        "currency": "FIDA",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00009",
+        "avg_buy_price": "0",
+        "currency": "STRAX",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00001907",
+        "avg_buy_price": "473.9",
+        "currency": "XAI",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00009997",
+        "avg_buy_price": "511",
+        "currency": "W",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00009805",
+        "avg_buy_price": "354",
+        "currency": "POLYX",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00009083",
+        "avg_buy_price": "2333",
+        "currency": "ETHFI",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00006272",
+        "avg_buy_price": "9.105",
+        "currency": "MEW",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00003656",
+        "avg_buy_price": "6620",
+        "currency": "ZRO",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00004611",
+        "avg_buy_price": "2530",
+        "currency": "IO",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00003134",
+        "avg_buy_price": "0",
+        "currency": "KLY",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00004076",
+        "avg_buy_price": "2421",
+        "currency": "TAIKO",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00001686",
+        "avg_buy_price": "131.3",
+        "currency": "BRETT",
+        "locked": "228527.8526",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00006711",
+        "avg_buy_price": "82.76",
+        "currency": "ATH",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.0001",
+        "avg_buy_price": "267",
+        "currency": "AVAIL",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00004136",
+        "avg_buy_price": "59.36",
+        "currency": "G",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00009297",
+        "avg_buy_price": "5290",
+        "currency": "EIGEN",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    },
+    {
+        "unit_currency": "KRW",
+        "balance": "0.00002044",
+        "avg_buy_price": "894",
+        "currency": "UXLINK",
+        "locked": "0",
+        "avg_buy_price_modified": false
+    }
+]
