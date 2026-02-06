@@ -64,11 +64,9 @@ public class IpSdnResourceLinkageServiceImpl implements IpSdnResourceLinkageServ
 
     public void sendNodeData() {
         LOGGER.info("==========>[IpSdnResourceLinkageService] sendNodeData <==============");
-        SFTPSession sftpSession;
 
         String dataKey = null;
         String jsonData;
-//        String ftpUpdatePath = uploadPath+"tb_backbone_link/";
         String ftpUpdatePath = uploadPath+"node/";
         ArrayList<NodeVo> nodeVoList;
 
@@ -91,38 +89,12 @@ public class IpSdnResourceLinkageServiceImpl implements IpSdnResourceLinkageServ
                 jsonData = mapper.writeValueAsString(nodeListVo);
 
                 putFile = createJsonFile("node", jsonData, ftpUpdatePath);
-                sftpSession = sftpSessionObjectFactory.getObject();
 
-                    try {
-                        sftpSession.init(host1, port, user, pw);
+                SFTPSession sftpSession1 = sftpSessionObjectFactory.getObject();
+                sftpSession1.sftpUpload(host1, port, user, pw, putFile, folder, ftpUpdatePath, "IpSdnResourceLinkageService", "sendNodeData");
 
-                        if (putFile != null) {
-                            if(!folder.exists()){
-                                folder.mkdirs();
-                            }
-
-                            sftpSession.upload(ftpUpdatePath, putFile);
-                            LOGGER.info("=====> [IpSdnResourceLinkageService] sendNodeData upload(" + host1.split("\\.")[3] + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
-                        }
-
-                        sftpSession.disconnection();
-                    } catch (Exception e1) {
-                        LOGGER.error("=====> [IpSdnResourceLinkageService] sendNodeData upload(" + host1.split("\\.")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
-                    }
-
-                    try {
-                        sftpSession.init(host2, port, user, pw);
-
-                        if (putFile != null) {
-                            sftpSession.upload(ftpUpdatePath, putFile);
-                            LOGGER.info("=====> [IpSdnResourceLinkageService] sendNodeData upload(" + host2.split("\\.")[3] + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
-                        }
-
-                        sftpSession.disconnection();
-                    } catch (Exception e1) {
-                        LOGGER.error("=====> [IpSdnResourceLinkageService] sendNodeData upload(" + host2.split("\\.")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
-                    }
-
+                SFTPSession sftpSession2 = sftpSessionObjectFactory.getObject();
+                sftpSession2.sftpUpload(host2, port, user, pw, putFile, folder, ftpUpdatePath, "IpSdnResourceLinkageService", "sendNodeData");
 
                 if(putFile.exists()){
                     putFile.delete();
@@ -138,7 +110,6 @@ public class IpSdnResourceLinkageServiceImpl implements IpSdnResourceLinkageServ
     @Override
     public void sendInterfaceData() {
         LOGGER.info("==========>[IpSdnResourceLinkageService] sendInterfaceData <==============");
-        SFTPSession sftpSession;
         String jsonData;
         String ftpUpdatePath = uploadPath+"interface/";
 
@@ -164,39 +135,11 @@ public class IpSdnResourceLinkageServiceImpl implements IpSdnResourceLinkageServ
 
                 putFile = createJsonFile("interface", jsonData, ftpUpdatePath);
 
-                sftpSession = sftpSessionObjectFactory.getObject();
+                SFTPSession sftpSession1 = sftpSessionObjectFactory.getObject();
+                sftpSession1.sftpUpload(host1, port, user, pw, putFile, folder, ftpUpdatePath, "IpSdnResourceLinkageService", "sendInterfaceData");
 
-
-                try {
-                    sftpSession.init(host1, port, user, pw);
-
-                    if (putFile != null) {
-                        if(!folder.exists()){
-                            folder.mkdirs();
-                        }
-                            sftpSession.upload(ftpUpdatePath, putFile);
-                        LOGGER.info("=====> [IpSdnResourceLinkageService] sendInterfaceData upload(" + host1.split("\\.")[3] + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
-                    }
-
-                    sftpSession.disconnection();
-                } catch (Exception e1) {
-                    LOGGER.error("=====> [IpSdnResourceLinkageService] sendInterfaceData upload(" + host1.split("\\.")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
-                }
-
-                try {
-                    sftpSession.init(host2, port, user, pw);
-
-                    if (putFile != null) {
-                            sftpSession.upload(ftpUpdatePath, putFile);
-                        LOGGER.info("=====> [IpSdnResourceLinkageService] sendInterfaceData upload(" + host2.split("\\.")[3] + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
-                    }
-
-                    sftpSession.disconnection();
-                } catch (Exception e1) {
-                    LOGGER.error("=====> [IpSdnResourceLinkageService] sendInterfaceData upload(" + host2.split("\\.")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
-                }
-
-
+                SFTPSession sftpSession2 = sftpSessionObjectFactory.getObject();
+                sftpSession2.sftpUpload(host2, port, user, pw, putFile, folder, ftpUpdatePath, "IpSdnResourceLinkageService", "sendInterfaceData");
 
                 if(putFile.exists()){
                     putFile.delete();
@@ -211,7 +154,6 @@ public class IpSdnResourceLinkageServiceImpl implements IpSdnResourceLinkageServ
     public void sendLinkData() {
         LOGGER.info("==========>[IpSdnResourceLinkageService] sendLinkData <==============");
 
-        SFTPSession sftpSession;
         String jsonData;
         String ftpUpdatePath = uploadPath+"link/";
 
@@ -237,38 +179,11 @@ public class IpSdnResourceLinkageServiceImpl implements IpSdnResourceLinkageServ
 
                 putFile = createJsonFile("link", jsonData, ftpUpdatePath);
 
-                sftpSession = sftpSessionObjectFactory.getObject();
+                SFTPSession sftpSession1 = sftpSessionObjectFactory.getObject();
+                sftpSession1.sftpUpload(host1, port, user, pw, putFile, folder, ftpUpdatePath, "IpSdnResourceLinkageService", "sendInterfaceData");
 
-                try {
-                    sftpSession.init(host1, port, user, pw);
-
-                    if (putFile != null) {
-                        if(!folder.exists()){
-                            folder.mkdirs();
-                        }
-
-                            sftpSession.upload(ftpUpdatePath, putFile);
-                        LOGGER.info("=====> [IpSdnResourceLinkageService] sendLinkData upload(" + host1.split("\\.")[3] + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
-                    }
-
-                    sftpSession.disconnection();
-                } catch (Exception e1) {
-                    LOGGER.error("=====> [IpSdnResourceLinkageService] sendLinkData upload(" + host1.split("\\.")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
-                }
-
-                try {
-                    sftpSession.init(host2, port, user, pw);
-
-                    if (putFile != null) {
-                            sftpSession.upload(ftpUpdatePath, putFile);
-                        LOGGER.info("=====> [IpSdnResourceLinkageService] sendLinkData upload(" + host2.split("\\.")[3] + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
-                    }
-
-                    sftpSession.disconnection();
-                } catch (Exception e1) {
-                    LOGGER.error("=====> [IpSdnResourceLinkageService] sendLinkData upload(" + host2.split("\\.")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
-                }
-
+                SFTPSession sftpSession2 = sftpSessionObjectFactory.getObject();
+                sftpSession2.sftpUpload(host2, port, user, pw, putFile, folder, ftpUpdatePath, "IpSdnResourceLinkageService", "sendInterfaceData");
 
                 if(putFile.exists()){
                     putFile.delete();
