@@ -228,6 +228,30 @@ public class RcaTicketManagerServiceImpl implements RcaTicketManagerService {
 
                     ticketService.insertRcaTicket(rcaTicket);
 
+                    // ticketCableList를 RCATicketAl로 변환하여 insertRcaTicketAl 호출
+                    if (ticketCableList != null && ticketCableList.size() > 0) {
+                        List<RCATicketAl> rcaTicketAlList = new ArrayList<RCATicketAl>();
+                        RCATicketAl rcaTicketAl;
+
+                        for (TicketCableVo cableVo : ticketCableList) {
+                            rcaTicketAl = rcaTicketAlFactory.getObject();
+                            rcaTicketAl.setTicketId(cableVo.getTicketId());
+                            rcaTicketAl.setRootCauseSysnameA(cableVo.getSysnamea());
+                            rcaTicketAl.setRootCausePortA(cableVo.getPorta());
+                            rcaTicketAl.setRootCauseSysnameZ(cableVo.getSysnamez());
+                            rcaTicketAl.setRootCausePortZ(cableVo.getPortz());
+
+                            rcaTicketAlList.add(rcaTicketAl);
+                        }
+
+                        if (rcaTicketAlList != null && rcaTicketAlList.size() > 0) {
+                            rcaTicket.setTicketAlList(rcaTicketAlList);
+                            LOGGER.info("==========>[RcaTicketManager] createPerformanceTicket rcaTicketAlList : "
+                                    + rcaTicketAlList + "<==============");
+                            ticketService.insertRcaTicketAl(rcaTicketAlList);
+                        }
+                    }
+
 //                    for(TicketCableVo ticketCableVo1 : ticketCableList) {
 //                        LOGGER.info("==========>[RcaTicketManager] createPerformanceTicket ticketCableVo : " + ticketCableVo1 + "<==============");
 //                        performanceTicketService.insertPerformanceTicket(ticketCableVo1);
