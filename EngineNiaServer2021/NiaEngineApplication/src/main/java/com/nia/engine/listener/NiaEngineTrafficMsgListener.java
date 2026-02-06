@@ -1,6 +1,7 @@
 package com.nia.engine.listener;
 
 import com.nia.engine.common.UtlCommon;
+import com.nia.engine.mapper.CommonDataMapper;
 import com.nia.engine.service.RcaTrafficTicketService;
 import com.nia.engine.vo.aiTraffic.EngineTrafficeResultVo;
 import com.rabbitmq.client.Channel;
@@ -12,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+
 @Service
 public class NiaEngineTrafficMsgListener implements ChannelAwareMessageListener {
 	private static final Logger LOGGER = LoggerFactory.getLogger(NiaEngineTrafficMsgListener.class);
@@ -22,6 +25,9 @@ public class NiaEngineTrafficMsgListener implements ChannelAwareMessageListener 
 	@Autowired
 	@Qualifier("RcaTrafficTicketService")
 	private RcaTrafficTicketService rcaTrafficTicketService;
+
+	@Autowired
+	private CommonDataMapper commonMapper;
 
 	@Override
 	public void onMessage(Message message, Channel channel) {
@@ -50,6 +56,12 @@ public class NiaEngineTrafficMsgListener implements ChannelAwareMessageListener 
 					rcaTrafficTicketService.createSdnTrafficTicket(engineTrafficeResultVo.getTrafficListVo());
 					break;
 				case "Traffic_AI": case "Traffic_AI_TCA":
+					if(engineTrafficeResultVo.getGb().equals("Traffic_AI")){
+						HashMap<String, String> strHashMap = new HashMap<>();
+						strHashMap.put("key", "aiTrafficAnoKey2");
+						commonMapper.updateLinkageYdKey(strHashMap);
+					}
+
 					LOGGER.info("==========>[NiaEngineTrafficMsgListener] insert "+ engineTrafficeResultVo.getGb() + ": " + new String(message.getBody())+"<==============");
 					rcaTrafficTicketService.createAttAiTicket(engineTrafficeResultVo.getTrafficListVo(), engineTrafficeResultVo.getGb());
 					break;
