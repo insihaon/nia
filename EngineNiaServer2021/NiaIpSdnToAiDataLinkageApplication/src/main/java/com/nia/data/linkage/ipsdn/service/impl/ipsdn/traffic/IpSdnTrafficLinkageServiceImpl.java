@@ -123,8 +123,7 @@ public class IpSdnTrafficLinkageServiceImpl implements IpSdnTrafficLinkageServic
                     sftpSession2.sftpUpload(host2, port, user, pw, putFile, folder, ftpUpdatePath, "IpSdnTrafficLinkageService", "sendTrafficData");
 
                     Comparator<LinkTrafficVo> comparatorById = Comparator.comparingInt(LinkTrafficVo::getId);
-                    maxLinkTrafficVo =
-                            linkTrafficVoList.stream().max(comparatorById).orElseThrow(NoSuchElementException::new);
+                    maxLinkTrafficVo = linkTrafficVoList.stream().max(comparatorById).orElseThrow(NoSuchElementException::new);
 
                     if (maxLinkTrafficVo.getId() != 0) {
                         strHashMap = new HashMap<>();
