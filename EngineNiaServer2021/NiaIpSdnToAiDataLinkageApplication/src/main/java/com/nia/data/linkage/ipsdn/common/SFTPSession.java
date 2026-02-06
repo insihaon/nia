@@ -195,4 +195,23 @@ public void upload(String dir, File file) {
             LOGGER.error(">>>>>>>>>>>> SFTPSession disconnection()  error : "+ ExceptionUtils.getStackTrace(e)+" <<<<<<<<<<<<<<<<");
         }
     }
+
+    public void sftpUpload(String host, int port, String user, String pw, File putFile, File folder, String ftpUpdatePath, String javaFileName, String functionName){
+        try {
+            init(host, port, user, pw);
+            if (putFile != null) {
+                if(!folder.exists()){
+                    folder.mkdirs();
+                }
+
+                upload(ftpUpdatePath, putFile);
+                LOGGER.info("=====> + [" + javaFileName + "] " + functionName +  " upload(" + host.split("\\.")[3] + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
+            }
+        } catch (Exception e1) {
+            LOGGER.error("=====> + [" + javaFileName + "] " + functionName +  " upload(" + host.split("\\.")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
+        }finally{
+            disconnection();
+        }
+    }
+
 }

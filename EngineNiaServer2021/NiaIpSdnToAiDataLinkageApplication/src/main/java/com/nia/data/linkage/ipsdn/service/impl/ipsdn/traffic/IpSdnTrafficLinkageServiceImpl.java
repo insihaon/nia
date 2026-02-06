@@ -65,7 +65,6 @@ public class IpSdnTrafficLinkageServiceImpl implements IpSdnTrafficLinkageServic
 
     public void sendTrafficData() {
         LOGGER.info("==========>[IpSdnTrafficLinkageService] sendTrafficLinkData <==============");
-        SFTPSession sftpSession;
 
         String dataKey = null;
         String jsonData;
@@ -82,7 +81,6 @@ public class IpSdnTrafficLinkageServiceImpl implements IpSdnTrafficLinkageServic
         LinkTrafficVo maxLinkTrafficVo;//max값 받는 변수
         LinkTrafficListVo linkTrafficListVo;
 
-
         try {
             Thread.sleep(15 * 1000);
             //15초
@@ -93,7 +91,6 @@ public class IpSdnTrafficLinkageServiceImpl implements IpSdnTrafficLinkageServic
                     "<==============");
 
             if (StringUtils.isNotEmpty(dataKey)) {
-                //                linkTrafficVoList = ipsdnDataMapper.selectTrafficList(Integer.parseInt(dataKey));
                 linkTrafficVoList = ipsdnDataMapper.selectTrafficUserOrganList(Integer.parseInt(dataKey));
 
                 if (linkTrafficVoList != null && linkTrafficVoList.size() > 0) {
@@ -111,7 +108,6 @@ public class IpSdnTrafficLinkageServiceImpl implements IpSdnTrafficLinkageServic
                     mapper = new ObjectMapper();
                     jsonData = mapper.writeValueAsString(linkTrafficListVo);
 
-
                     LOGGER.info("==========>[IpSdnTrafficLinkageService] sendTrafficData getMeasuredDatetime()" + linkTrafficVoList.get(linkTrafficVoList.size() - 1).getMeasuredDatetime() + ") <==============");
                     LOGGER.info("==========>[IpSdnTrafficLinkageService] sendTrafficData getMeasuredDatetime().getTime()" + linkTrafficVoList.get(linkTrafficVoList.size() - 1).getMeasuredDatetime().getTime() + ") <==============");
 
@@ -120,59 +116,22 @@ public class IpSdnTrafficLinkageServiceImpl implements IpSdnTrafficLinkageServic
                             linkTrafficVoList.get(linkTrafficVoList.size() - 1).getMeasuredDatetime().getTime() + "",
                             ftpUpdatePath);
 
-                    sftpSession = sftpSessionObjectFactory.getObject();
+                    SFTPSession sftpSession1 = sftpSessionObjectFactory.getObject();
+                    sftpSession1.sftpUpload(host1, port, user, pw, putFile, folder, ftpUpdatePath, "IpSdnTrafficLinkageService", "sendTrafficData");
 
-                    try {
-                        sftpSession.init(host1, port, user, pw);
-
-                        if (putFile != null) {
-                            if (!folder.exists()) {
-                                folder.mkdirs();
-                            }
-
-                            sftpSession.upload(ftpUpdatePath, putFile);
-                            LOGGER.info("=====> [IpSdnTrafficLinkageService] sendTrafficData upload(" + host1.split(
-                                    "\\.")[3] + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
-                        }
-
-                        sftpSession.disconnection();
-                    } catch (Exception e1) {
-                        LOGGER.error("=====> [IpSdnTrafficLinkageService] sendTrafficData upload(" + host1.split("\\" + ".")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
-                    }
-
-                    try {
-                        sftpSession.init(host2, port, user, pw);
-
-                        if (putFile != null) {
-                            if (!folder.exists()) {
-                                folder.mkdirs();
-                            }
-
-                            sftpSession.upload(ftpUpdatePath, putFile);
-                            LOGGER.info("=====> [IpSdnTrafficLinkageService] sendTrafficData upload(" + host2.split(
-                                    "\\.")[3] + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
-                        }
-
-                        sftpSession.disconnection();
-                    } catch (Exception e1) {
-                        LOGGER.error("=====> [IpSdnTrafficLinkageService] sendTrafficData upload(" + host2.split("\\" + ".")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
-                    }
-
+                    SFTPSession sftpSession2 = sftpSessionObjectFactory.getObject();
+                    sftpSession2.sftpUpload(host2, port, user, pw, putFile, folder, ftpUpdatePath, "IpSdnTrafficLinkageService", "sendTrafficData");
 
                     Comparator<LinkTrafficVo> comparatorById = Comparator.comparingInt(LinkTrafficVo::getId);
                     maxLinkTrafficVo =
                             linkTrafficVoList.stream().max(comparatorById).orElseThrow(NoSuchElementException::new);
 
-
                     if (maxLinkTrafficVo.getId() != 0) {
                         strHashMap = new HashMap<>();
                         strHashMap.put("key", "aiIpSdnTrafficeKey");
-                        //                    strHashMap.put("value", linkTrafficVoList.get(linkTrafficVoList.size()
-                        //                    -1).getId()+"");
                         strHashMap.put("value", maxLinkTrafficVo.getId() + "");
                         commonMapper.updateLinkageYdKey(strHashMap);
                     }
-
 
                     if (putFile.exists()) {
                         fileSize = (putFile.length()) / 1024;

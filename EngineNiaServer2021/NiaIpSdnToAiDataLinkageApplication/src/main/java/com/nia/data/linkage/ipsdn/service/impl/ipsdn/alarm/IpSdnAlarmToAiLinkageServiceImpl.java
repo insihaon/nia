@@ -70,7 +70,6 @@ public class IpSdnAlarmToAiLinkageServiceImpl implements IpSdnAlarmToAiLinkageSe
     @Override
     public void sendAlarmData() {
         LOGGER.info("==========>[IpSdnAlarmToAiLinkageService] sendSyslogData <==============");
-        SFTPSession sftpSession;
 
         String dataKey = null;
         String jsonData;
@@ -105,41 +104,11 @@ public class IpSdnAlarmToAiLinkageServiceImpl implements IpSdnAlarmToAiLinkageSe
 
                     putFile = createJsonFile("ipSdnSyslogAlarm", jsonData, alarmDataVoList.get(alarmDataVoList.size() - 1).getAlarmno() + "", ftpUpdatePath);
 
-                    sftpSession = sftpSessionObjectFactory.getObject();
+                    SFTPSession sftpSession1 = sftpSessionObjectFactory.getObject();
+                    sftpSession1.sftpUpload(host1, port, user, pw, putFile, folder, ftpUpdatePath, "IpSdnAlarmToAiLinkageService", "sendAlarmData");
 
-                    try {
-                        sftpSession.init(host1, port, user, pw);
-
-                        if (putFile != null) {
-                            if (!folder.exists()) {
-                                folder.mkdirs();
-                            }
-
-                            sftpSession.upload(ftpUpdatePath, putFile);
-                            LOGGER.info("=====> [IpSdnAlarmToAiLinkageService] sendAlarmData upload(" + host1.split("\\.")[3] + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
-                        }
-
-                    } catch (Exception e) {
-                        LOGGER.error("=====> [IpSdnAlarmToAiLinkageService] sendAlarmData upload(" + host1.split("\\.")[3] + ") error() " + ExceptionUtils.getStackTrace(e) + "<=====");
-                    }
-
-
-                    try {
-                        sftpSession.init(host2, port, user, pw);
-
-                        if (putFile != null) {
-                            if (!folder.exists()) {
-                                folder.mkdirs();
-                            }
-
-                            sftpSession.upload(ftpUpdatePath, putFile);
-                            LOGGER.info("=====> [IpSdnAlarmToAiLinkageService] sendAlarmData upload(" + host2.split("\\.")[3] + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
-                        }
-
-                        sftpSession.disconnection();
-                    } catch (Exception e1) {
-                        LOGGER.error("=====> [IpSdnAlarmToAiLinkageService] sendAlarmData upload(" + host2.split("\\.")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
-                    }
+                    SFTPSession sftpSession2 = sftpSessionObjectFactory.getObject();
+                    sftpSession2.sftpUpload(host2, port, user, pw, putFile, folder, ftpUpdatePath, "IpSdnAlarmToAiLinkageService", "sendAlarmData");
 
 //                    Comparator<AlarmDataVo> comparatorById = Comparator.comparingInt(Integer.parseInt(AlarmDataVo::getAlarmno));
 //                    maxAlarmDataVo = alarmDataVoList.stream()
@@ -149,12 +118,10 @@ public class IpSdnAlarmToAiLinkageServiceImpl implements IpSdnAlarmToAiLinkageSe
                     maxAlarmDataVo = alarmDataVoList.get(alarmDataVoList.size() - 1);
                     LOGGER.info("=================> maxAlarmData" + maxAlarmDataVo);
 
-
                     strHashMap = new HashMap<>();
                     strHashMap.put("key", "aiIpSdnSyslogAlarmKey");
                     strHashMap.put("value", maxAlarmDataVo.getAlarmno() + "");
                     commonMapper.updateLinkageYdKey(strHashMap);
-
 
                     if (putFile.exists()) {
                         fileSize = (putFile.length()) / 1024;
@@ -169,11 +136,8 @@ public class IpSdnAlarmToAiLinkageServiceImpl implements IpSdnAlarmToAiLinkageSe
 
                         putFile.delete();
                     }
-
                 }
             }
-
-
         } catch (Exception e) {
             LOGGER.error("=====> [IpSdnAlarmToAiLinkageService] sendAlarmData error() " + ExceptionUtils.getStackTrace(e) + "<=====");
         }

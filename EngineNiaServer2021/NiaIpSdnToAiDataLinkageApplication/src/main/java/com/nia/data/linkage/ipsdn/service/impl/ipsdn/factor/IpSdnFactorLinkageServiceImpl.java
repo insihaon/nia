@@ -101,50 +101,16 @@ public class IpSdnFactorLinkageServiceImpl implements IpSdnFactorLinkageService 
 
                     putFile = createJsonFile("nodefactor", jsonData, nodeFactorVoList.get(nodeFactorVoList.size()-1).getMeasuredDatetime().getTime()+"", ftpUpdatePath);
 
-                    sftpSession = sftpSessionObjectFactory.getObject();
+                    SFTPSession sftpSession1 = sftpSessionObjectFactory.getObject();
+                    sftpSession1.sftpUpload(host1, port, user, pw, putFile, folder, ftpUpdatePath, "IpSdnFactorLinkageService", "sendFactorData");
 
-                        try {
-                            sftpSession.init(host1, port, user, pw);
-
-                            if (putFile != null) {
-                                if(!folder.exists()){
-                                    folder.mkdirs();
-                                }
-
-                                sftpSession.upload(ftpUpdatePath, putFile);
-                                LOGGER.info("=====> [IpSdnFactorLinkageService] sendFactorData upload(" + host1.split("\\.")[3] + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
-                            }
-
-                            sftpSession.disconnection();
-                        } catch (Exception e1) {
-                            LOGGER.error("=====> [IpSdnFactorLinkageService] sendFactorData upload(" + host1.split("\\.")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
-                        }
-
-                        try {
-                            sftpSession.init(host2, port, user, pw);
-
-                            if (putFile != null) {
-                                if(!folder.exists()){
-                                    folder.mkdirs();
-                                }
-
-                                sftpSession.upload(ftpUpdatePath, putFile);
-                                LOGGER.info("=====> [IpSdnFactorLinkageService] sendFactorData upload(" + host2.split("\\.")[3] + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
-                            }
-
-                            sftpSession.disconnection();
-                        } catch (Exception e1) {
-                            LOGGER.error("=====> [IpSdnFactorLinkageService] sendFactorData upload(" + host2.split("\\.")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
-                        }
-
-
+                    SFTPSession sftpSession2 = sftpSessionObjectFactory.getObject();
+                    sftpSession2.sftpUpload(host2, port, user, pw, putFile, folder, ftpUpdatePath, "IpSdnFactorLinkageService", "sendFactorData");
 
                     strHashMap = new HashMap<>();
                     strHashMap.put("key", "aiIpSdnNodeFactorKey");
                     strHashMap.put("value", nodeFactorVoList.get(nodeFactorVoList.size()-1).getId()+"");
                     commonMapper.updateLinkageYdKey(strHashMap);
-
-
 
                     if(putFile.exists()){
                         fileSize = (putFile.length()) / 1024;

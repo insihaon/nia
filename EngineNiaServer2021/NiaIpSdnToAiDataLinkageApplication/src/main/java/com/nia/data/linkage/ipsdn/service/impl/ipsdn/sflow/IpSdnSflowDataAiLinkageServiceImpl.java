@@ -1,6 +1,7 @@
 package com.nia.data.linkage.ipsdn.service.impl.ipsdn.sflow;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nia.data.linkage.ipsdn.amqp.SflowJsonFileKeyAmqp;
 import com.nia.data.linkage.ipsdn.common.SFTPSession;
 import com.nia.data.linkage.ipsdn.mapper.common.CommonMapper;
 import com.nia.data.linkage.ipsdn.mapper.ipsdn.IpsdnDataMapper;
@@ -36,7 +37,8 @@ public class IpSdnSflowDataAiLinkageServiceImpl implements IpSdnSflowLinkageServ
     private org.springframework.beans.factory.ObjectFactory<SflowDataListVo> ipSflowDataListVoObjectFactory;
 
 
-
+    @Autowired
+    private SflowJsonFileKeyAmqp SflowJsonFileKeyAmqp;
 
     @Autowired
     private org.springframework.beans.factory.ObjectFactory<SFTPSession> sftpSessionObjectFactory;
@@ -70,7 +72,6 @@ public class IpSdnSflowDataAiLinkageServiceImpl implements IpSdnSflowLinkageServ
 
     public void sendSflowData() {
         LOGGER.info("==========>[IpSdnSflowLinkageService] sendSflowData <==============");
-        SFTPSession sftpSession;
 
         String dataKey = null;
         String jsonData;
@@ -108,43 +109,13 @@ public class IpSdnSflowDataAiLinkageServiceImpl implements IpSdnSflowLinkageServ
 
                     putFile = createJsonFile("ipSdnSflow", jsonData, sflowDataVoList.get(sflowDataVoList.size()-1).getCollectSeq()+"", ftpUpdatePath);
 
-                    sftpSession = sftpSessionObjectFactory.getObject();
+                    SFTPSession sftpSession1 = sftpSessionObjectFactory.getObject();
+                    sftpSession1.sftpUpload(host1, port, user, pw, putFile, folder, ftpUpdatePath, "IpSdnSflowLinkageService", "sendSflowData");
 
-                    try {
-                        sftpSession.init(host1, port, user, pw);
+                    SFTPSession sftpSession2 = sftpSessionObjectFactory.getObject();
+                    sftpSession2.sftpUpload(host2, port, user, pw, putFile, folder, ftpUpdatePath, "IpSdnSflowLinkageService", "sendSflowData");
 
-                        if (putFile != null) {
-                            if(!folder.exists()){
-                                folder.mkdirs();
-                            }
-
-                            sftpSession.upload(ftpUpdatePath, putFile);
-                            LOGGER.info("=====> [IpSdnSflowLinkageService] sendSflowData upload(" + host1.split("\\.")[3] + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
-                        }
-
-                        sftpSession.disconnection();
-                    } catch (Exception e1) {
-                        LOGGER.error("=====> [IpSdnSflowLinkageService] sendSflowData upload(" + host1.split("\\.")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
-                    }
-
-                    try {
-                        sftpSession.init(host2, port, user, pw);
-
-                        if (putFile != null) {
-                            if(!folder.exists()){
-                                folder.mkdirs();
-                            }
-
-                            sftpSession.upload(ftpUpdatePath, putFile);
-                            LOGGER.info("=====> [IpSdnSflowLinkageService] sendSflowData upload(" + host2.split("\\.")[3] + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
-                        }
-
-                        sftpSession.disconnection();
-                    } catch (Exception e1) {
-                        LOGGER.error("=====> [IpSdnSflowLinkageService] sendSflowData upload(" + host2.split("\\.")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
-                    }
-
-                    Comparator<SflowDataVo> comparatorById  = Comparator.comparingLong(SflowDataVo::getCollectSeq);
+                    Comparator<SflowDataVo> comparatorById = Comparator.comparingLong(SflowDataVo::getCollectSeq);
                     maxSflowVo = sflowDataVoList.stream()
                             .max(comparatorById)
                             .orElseThrow(NoSuchElementException::new);
@@ -153,8 +124,6 @@ public class IpSdnSflowDataAiLinkageServiceImpl implements IpSdnSflowLinkageServ
                     strHashMap.put("key", "aiIpSdnSflowKey");
                     strHashMap.put("value", maxSflowVo.getCollectSeq()+"");
                     commonMapper.updateLinkageYdKey(strHashMap);
-
-
 
                     if(putFile.exists()){
                         fileSize = (putFile.length()) / 1024;
@@ -166,6 +135,7 @@ public class IpSdnSflowDataAiLinkageServiceImpl implements IpSdnSflowLinkageServ
                         strHashMap.put("rowCnt", sflowDataVoList.size()+"");
 
                         commonMapper.insertLinkageHist(strHashMap);
+                        SflowJsonFileKeyAmqp.sendMessageCmd(sflowDataVoList.get(sflowDataVoList.size()-1).getCollectSeq() +"");
 
                         putFile.delete();
                     }

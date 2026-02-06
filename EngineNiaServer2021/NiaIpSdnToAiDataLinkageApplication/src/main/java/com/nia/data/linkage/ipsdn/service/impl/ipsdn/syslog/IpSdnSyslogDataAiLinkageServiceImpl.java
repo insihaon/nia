@@ -32,9 +32,6 @@ public class IpSdnSyslogDataAiLinkageServiceImpl implements IpSdnSyslogLinkageSe
     @Autowired
     private org.springframework.beans.factory.ObjectFactory<SyslogDataListVo> ipSyslogListVoObjectFactory;
 
-
-
-
     @Autowired
     private org.springframework.beans.factory.ObjectFactory<SFTPSession> sftpSessionObjectFactory;
 
@@ -67,7 +64,6 @@ public class IpSdnSyslogDataAiLinkageServiceImpl implements IpSdnSyslogLinkageSe
 
     public void sendSyslogData() {
         LOGGER.info("==========>[IpSdnSyslogLinkageService] sendSyslogData <==============");
-        SFTPSession sftpSession;
 
         String dataKey = null;
         String jsonData;
@@ -104,41 +100,11 @@ public class IpSdnSyslogDataAiLinkageServiceImpl implements IpSdnSyslogLinkageSe
 
                     putFile = createJsonFile("ipSdnSyslog", jsonData, syslogDataVoList.get(syslogDataVoList.size()-1).getCollectSeq()+"", ftpUpdatePath);
 
-                    sftpSession = sftpSessionObjectFactory.getObject();
+                    SFTPSession sftpSession1 = sftpSessionObjectFactory.getObject();
+                    sftpSession1.sftpUpload(host1, port, user, pw, putFile, folder, ftpUpdatePath, "IpSdnSyslogLinkageService", "sendSyslogData");
 
-                    try {
-                        sftpSession.init(host1, port, user, pw);
-
-                        if (putFile != null) {
-                            if(!folder.exists()){
-                                folder.mkdirs();
-                            }
-
-                            sftpSession.upload(ftpUpdatePath, putFile);
-                            LOGGER.info("=====> [IpSdnSyslogLinkageService] sendSyslogData upload(" + host1.split("\\.")[3] + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
-                        }
-
-                        sftpSession.disconnection();
-                    } catch (Exception e1) {
-                        LOGGER.error("=====> [IpSdnSyslogLinkageService] sendSyslogData upload(" + host1.split("\\.")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
-                    }
-
-                    try {
-                        sftpSession.init(host2, port, user, pw);
-
-                        if (putFile != null) {
-                            if(!folder.exists()){
-                                folder.mkdirs();
-                            }
-
-                            sftpSession.upload(ftpUpdatePath, putFile);
-                            LOGGER.info("=====> [IpSdnSyslogLinkageService] sendSyslogData upload(" + host2.split("\\.")[3] + ") : " + ftpUpdatePath + putFile.getName() + "<=====");
-                        }
-
-                        sftpSession.disconnection();
-                    } catch (Exception e1) {
-                        LOGGER.error("=====> [IpSdnSyslogLinkageService] sendSyslogData upload(" + host2.split("\\.")[3] + ") error() " + ExceptionUtils.getStackTrace(e1) + "<=====");
-                    }
+                    SFTPSession sftpSession2 = sftpSessionObjectFactory.getObject();
+                    sftpSession2.sftpUpload(host2, port, user, pw, putFile, folder, ftpUpdatePath, "IpSdnSyslogLinkageService", "sendSyslogData");
 
                     Comparator<SyslogDataVo> comparatorById  = Comparator.comparingInt(SyslogDataVo::getCollectSeq);
                     maxSyslogVo = syslogDataVoList.stream()
@@ -149,8 +115,6 @@ public class IpSdnSyslogDataAiLinkageServiceImpl implements IpSdnSyslogLinkageSe
                     strHashMap.put("key", "aiIpSdnSyslogKey");
                     strHashMap.put("value", maxSyslogVo.getCollectSeq()+"");
                     commonMapper.updateLinkageYdKey(strHashMap);
-
-
 
                     if(putFile.exists()){
                         fileSize = (putFile.length()) / 1024;
