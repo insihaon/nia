@@ -35,6 +35,7 @@ import chatbotIcon from '@/views-nia/dashBoard/chatbotIcon.vue'
 import _lo from 'lodash'
 import { mapState, mapGetters } from 'vuex'
 import EventBus from '@/utils/event-bus'
+import { chatbotTitle } from '@/mixin/dialogOpenMixin'
 
 export const _ = { AppOptions }
 
@@ -100,7 +101,7 @@ export default {
     },
 
     existChatbotPopup() {
-      return this.windows.find((w) => w.name === '어시스턴트')
+      return this.windows.find((w) => w.name === chatbotTitle)
     },
 
     isDebug() {

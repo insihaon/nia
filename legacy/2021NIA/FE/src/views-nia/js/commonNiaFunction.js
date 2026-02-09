@@ -5,6 +5,9 @@ import store from '@/store'
 import axios from 'axios'
 import { searchMessaging, errorMessaging1, errorMessaging2, errorMessaging3 } from '@/store/modules/chatbot.js'
 import { MessageBox } from 'element-ui'
+import constants from '@/min/constants'
+
+import { chatbotTitle } from '@/mixin/dialogOpenMixin'
 
 export function getInvisibleSpanParameter(routerPath, popupDialogName, action) {
     return `<span class="invisibleParameterSpan" style="display:none">[path]:${routerPath}, [popup]:${popupDialogName}, [action]:${action}</span>`
@@ -127,7 +130,7 @@ export async function getChatbotTicketData(wdata) {
 }
 
 function isCurrentRouterDashboard() {
-    return router.history.current.name === 'NiaMain'
+    return router.currentRoute.name === 'NiaMain'
 }
 
 function getFilter() {
@@ -151,15 +154,31 @@ export async function getSpanFormatMessageForDB(userQuestion) {
             headers: { 'Content-Type': 'application/json' },
         })
 
+        const must = [
+            { match: { keyword: userQuestion } },
+            { term: { 'action.keyword': '' } }
+        ]
+
+        const mustNot = []
+
+        if (isCurrentRouterDashboard()) {
+            mustNot.push({
+                bool: {
+                    must: [
+                        { term: { 'type.keyword': 'screenMove' } },
+                        { term: { 'isMoveDisabledInMain': true } }
+                    ]
+                }
+            })
+        }
+
         const response = await esClient.post('/chatbot_index/_search', {
             query: {
                 function_score: {
                     query: {
                         bool: {
-                            must: [
-                                { match: { keyword: userQuestion } },
-                                { term: { 'action.keyword': '' } },
-                            ],
+                            must,
+                            must_not: mustNot
                         }
                     },
                     functions: [
@@ -208,11 +227,11 @@ export async function getWindowActionList(dialogNm, popupName, additionActionLis
             }
         })
 
-        const spanFormatMessage = getSpanFormatMessage(response, `<div class="chatbot-command-section"><span class="chatbot-command-title">화면 명령어 : 현재팝업에서 활용가능한 명령어</span><br>`, { showScore: false })
+        const spanFormatMessage = getSpanFormatMessage(response, `<div class="chatbot-command-section"><span class="chatbot-command-title">${popupName} 명령어 : 현재팝업에서 활용가능한 명령어</span><br>`, { showScore: false })
 
         let recommandActionList = ''
         if (additionActionList.length !== 0) {
-            recommandActionList = `<br><br><span class="chatbot-command-title">연관 명령어 : 현재팝업과 연관된 명령어</span><br>` + additionActionList
+            recommandActionList = `<br><br><span class="chatbot-command-title">${popupName} 연관 명령어 : 현재팝업과 연관된 명령어</span><br>` + additionActionList
         }
 
         return spanFormatMessage + recommandActionList + '</div>' + '다음 명령을 입력해주시면 실행을 도와드립니다, 원하시는 작업을 말씀해주세요.'
@@ -224,6 +243,15 @@ export async function getWindowActionList(dialogNm, popupName, additionActionLis
 
 export function showNumberText(number, text) {
     return `<span style="border: 1px solid #ddd; border-radius: 50px; background-color: #f7f7f7; padding: 5px; font-weight: 600; line-height: 15px; display:inline-block; margin: 2px 2px 2px 0px">${number}. ${text}</span>`
+}
+
+export function makeOpenPopupNumberText(number, key) {
+    if (!constants.nia.chatbotKeyMap[key]) {
+        throw new Error('key 가 없어요...')
+    }
+
+    const map = constants.nia.chatbotKeyMap[key]
+    return showNumberText(number, map.popupName + getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), map.dialogNm, ''))
 }
 
 function getSpanFormatMessage(response, messagePrefix, customObj = {}) {
@@ -334,7 +362,7 @@ function matchByNumber(spanFormatMessage, number, matchMap) {
 }
 
 export function getChatbotMdiObject() {
-    const chatbotMdiObject = store.state.mdi.windows.find((w) => w.name === '어시스턴트')
+    const chatbotMdiObject = store.state.mdi.windows.find((w) => w.name === chatbotTitle)
     return chatbotMdiObject
 }
 

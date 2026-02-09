@@ -100,7 +100,7 @@ export default {
   mounted() {
   },
   methods: {
-      onOpenPopup(ticketRow) {
+    onOpenPopup(ticketRow) {
       this.contentView = false
       this.$modal.show('editMonitoringExcludeAlarm', { ticketRow: ticketRow })
     },

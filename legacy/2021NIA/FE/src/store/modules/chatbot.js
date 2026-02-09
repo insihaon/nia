@@ -2,7 +2,7 @@
 import { niaRoute } from '@/router/nia/index'
 import _ from 'lodash'
 import constants from '@/min/constants'
-import { getInvisibleSpanParameter, getNiaRouterPathByName, showNumberText } from '@/views-nia/js/commonNiaFunction'
+import { getInvisibleSpanParameter, getNiaRouterPathByName, showNumberText, makeOpenPopupNumberText } from '@/views-nia/js/commonNiaFunction'
 import { apiIpAlarmList, apiSelectSopHistList, apiSopSyslogHistList, apiInsertChatbotHistory, apiSelectRcaNttTicketDetailInfo } from '@/api/nia'
 import store from '@/store'
 import moment from 'moment'
@@ -51,13 +51,13 @@ export function getRecommendedCommand(tikcetData) {
             '<b>아래 메뉴를 통해 원하시는 업무를 선택하실 수 있습니다</b>' +
             (
                 ticketType === 'NTT_AI'
-                    ? showNumberText(1, `${chatbotKeyMap.aiResponse_NTT_AI.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), chatbotKeyMap.aiResponse_NTT_AI.dialogNm, '')}<br>`)
+                    ? (makeOpenPopupNumberText(1, chatbotKeyMap.aiResponse_NTT_AI.key))
                     : showNumberText(1, `${chatbotCommand.focusModeCheckAlarm.label}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', chatbotCommand.focusModeCheckAlarm.action)}<br>`)
             ) +
-            showNumberText(2, `${chatbotKeyMap.requestForAction.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), chatbotKeyMap.requestForAction.dialogNm, '')}<br>`) +
-            showNumberText(3, `${chatbotKeyMap.configTest.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), chatbotKeyMap.configTest.dialogNm, '')}<br>`) +
-            showNumberText(4, `${chatbotKeyMap.processFin.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), chatbotKeyMap.processFin.dialogNm, '')}<br>`) +
-            showNumberText(5, `${chatbotKeyMap.sopHistory.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), chatbotKeyMap.sopHistory.dialogNm, '')}<br>`) +
+            makeOpenPopupNumberText(2, chatbotKeyMap.requestForAction.key) +
+            makeOpenPopupNumberText(3, chatbotKeyMap.configTest.key) +
+            makeOpenPopupNumberText(4, chatbotKeyMap.processFin.key) +
+            makeOpenPopupNumberText(5, chatbotKeyMap.sopHistory.key) +
             `<br>${constants.nia.chatbotComment.lastComment}`,
         time: getCurrentTime(),
         isFirst: true
@@ -66,7 +66,7 @@ export function getRecommendedCommand(tikcetData) {
 
 const defaultQuestionModeChatMessages = {
     type: constants.nia.chatType.botAnswer,
-    content: `<div class="chatbot-command-header">안내</div><br>안녕하세요, 장애대응 어시스턴트입니다.<br> 현재 저는 <span style='font-weight:1000; color:red'>휴면 상태</span>로 설정되어 있습니다.<br> 실시간 응대가 필요하실 경우, 발행된 티켓 옆의 <span class="chatbotIcon"><i class="el-icon-chat-dot-square"></i></span> 아이콘을 눌러 저를 깨워주시면 즉시 응대를 시작하겠습니다.`,
+    content: `<div class="chatbot-command-header">안내</div>안녕하세요, 장애대응 어시스턴트입니다.<br> 현재 저는 <span style='font-weight:1000; color:red'>휴면 상태</span>로 설정되어 있습니다.<br> 실시간 응대가 필요하실 경우, 발행된 티켓 옆의 <span class="chatbotIcon"><i class="el-icon-chat-dot-square"></i></span> 아이콘을 눌러 저를 깨워주시면 즉시 응대를 시작하겠습니다.`,
     time: getCurrentTime(),
 }
 

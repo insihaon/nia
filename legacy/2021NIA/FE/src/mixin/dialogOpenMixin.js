@@ -1,6 +1,8 @@
 import constants from '@/min/constants'
 import store from '@/store'
 
+export const chatbotTitle = '어시스턴트'
+
 var dialogOpenMixin = {
   data() {
     return {
@@ -123,7 +125,7 @@ var dialogOpenMixin = {
         },
         chatbot: {
           component: () => import('@/views-nia/dashBoard/chatbot'),
-          pageTitle: '어시스턴트',
+          pageTitle: chatbotTitle,
           width: '600',
           height: '900',
           resizeble: true,
@@ -142,7 +144,7 @@ var dialogOpenMixin = {
       tmpWindowData.target = this.dialogList[dialogNm]['component']
       tmpWindowData.dialogNm = customStyle.dialogNm || dialogNm
       tmpWindowData.type = customStyle.type || this.dialogList[dialogNm]
-      tmpWindowData.width = customStyle.width || this.isMobile ? window.innerWidth : this.dialogList[dialogNm]['width']
+      tmpWindowData.width = customStyle.width || (this.isMobile ? window.innerWidth : this.dialogList[dialogNm]['width'])
       tmpWindowData.height = customStyle.height || this.dialogList[dialogNm]['height']
       tmpWindowData.minWidth = customStyle.minWidth || this.dialogList[dialogNm]['minWidth']
       tmpWindowData.minHeight = customStyle.minHeight || this.dialogList[dialogNm]['minHeight']
@@ -182,6 +184,12 @@ var dialogOpenMixin = {
       if (customStyle.addY) tmpWindowData.y = tmpWindowData.y + customStyle.addY
 
       tmpWindowData.params = Object.assign({}, data)
+
+      const chatbot = store.state.mdi.windows.find((w) => w.name === chatbotTitle)
+      if (chatbot) {
+        const chatbotWidth = Number(chatbot.width) + 20
+        if (tmpWindowData.x < chatbotWidth) tmpWindowData.x = chatbotWidth
+      }
 
       this.$store.dispatch('mdi/addWindow', tmpWindowData)
     },

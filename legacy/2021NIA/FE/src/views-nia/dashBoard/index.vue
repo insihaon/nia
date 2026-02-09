@@ -387,32 +387,29 @@ export default {
           // prettier-ignore
           (async () => {
             switch (this.alarmFocusTicketData.ticket_type) {
-              case 'NTT_AI': case 'NTT':
-                this.openAiResponse(this.alarmFocusTicketData, { addX: 100, addY: -20 })
-                break
               default:
-                this.fn_openWindow('niaTopology', this.alarmFocusTicketData, null, { addX: -580 })
+                this.fn_openWindow('niaTopology', this.alarmFocusTicketData, null, { /* width: 800, height: 580, */ addX: -580, addY: -150 })
                 await new Promise(resolve => setTimeout(resolve, 1000))
-                this.openAiResponse(this.alarmFocusTicketData, { addX: 580, addY: -20 })
+                this.openAiResponse(this.alarmFocusTicketData, { addX: 700, addY: 170 })
                 break
             }
           })()
           break
-        case this.chatbotKeyMap.configTest.dialogNm:
-          this.fn_openWindow('configTest', { isChatbotGenerated: true })
-          break
-        case this.chatbotKeyMap.requestForAction.dialogNm:
-          this.fn_openWindow('requestForAction', { isChatbotGenerated: true })
-          break
-        case this.chatbotKeyMap.processFin.dialogNm:
-          this.fn_openWindow('processFin', { isChatbotGenerated: true })
-          break
-        case this.chatbotKeyMap.sopHistory.dialogNm:
-          this.fn_openWindow('sopHistory', { isChatbotGenerated: true })
-          break
-        case this.chatbotKeyMap.disabilityStatusHistoryManagement.dialogNm:
-          this.fn_openWindow('disabilityStatusHistoryManagement', { isChatbotGenerated: true })
-          break
+        // case this.chatbotKeyMap.configTest.dialogNm:
+        //   this.fn_openWindow('configTest', { isChatbotGenerated: true })
+        //   break
+        // case this.chatbotKeyMap.requestForAction.dialogNm:
+        //   this.fn_openWindow('requestForAction', { isChatbotGenerated: true })
+        //   break
+        // case this.chatbotKeyMap.processFin.dialogNm:
+        //   this.fn_openWindow('processFin', { isChatbotGenerated: true })
+        //   break
+        // case this.chatbotKeyMap.sopHistory.dialogNm:
+        //   this.fn_openWindow('sopHistory', { isChatbotGenerated: true })
+        //   break
+        // case this.chatbotKeyMap.disabilityStatusHistoryManagement.dialogNm:
+        //   this.fn_openWindow('disabilityStatusHistoryManagement', { isChatbotGenerated: true })
+        //   break
       }
 
       switch (nVal.actionName) {
@@ -539,6 +536,10 @@ export default {
       this.$store.dispatch('nia/insertIpNetworkList', this.ipNetworkList)
     },
 
+    openChatbot() {
+      this.fn_openWindow('chatbot', null, null, { height: window.innerHeight - 135 })
+    },
+
     changeFocusAlertMode(row) {
       if (row.ticket_type !== 'SYSLOG' && this.alarmFocusTicketData.ticket_id === row.ticket_id) {
         this.$message('이미 어시스턴트가 활성화된 티켓입니다')
@@ -560,7 +561,7 @@ export default {
             if (node.data.alarmno === row.alarmno) {
               if (!this.alarmFocusTicketData.alarmno) {
                 this.$store.dispatch('chatbot/newAlarmFocusChat', { ticketData: node.data })
-                this.fn_openWindow('chatbot')
+                this.openChatbot()
                 rowElement.classList.add('highlight-row')
               } else if (this.alarmFocusTicketData.alarmno === node.data.alarmno) {
                 this.$store.commit('chatbot/MODE_CHANGE', { newMode: 'alarmFocusMode' })
@@ -578,7 +579,7 @@ export default {
                   }
                 ).then(() => {
                   this.$store.dispatch('chatbot/newAlarmFocusChat', { ticketData: node.data, isNew: true })
-                  this.fn_openWindow('chatbot')
+                  this.openChatbot()
                   rowElement.classList.add('highlight-row')
                 })
               }
@@ -588,7 +589,7 @@ export default {
             if (node.data.ticket_id === row.ticket_id) {
               if (!this.alarmFocusTicketData.ticket_id) {
                 this.$store.dispatch('chatbot/newAlarmFocusChat', { ticketData: node.data })
-                this.fn_openWindow('chatbot')
+                this.openChatbot()
                 rowElement.classList.add('highlight-row')
               } else if (this.alarmFocusTicketData.ticket_id === node.data.ticket_id) {
                 this.$store.commit('chatbot/MODE_CHANGE', { newMode: 'alarmFocusMode' })
@@ -606,7 +607,7 @@ export default {
                   }
                 ).then(() => {
                   this.$store.dispatch('chatbot/newAlarmFocusChat', { ticketData: node.data, isNew: true })
-                  this.fn_openWindow('chatbot')
+                  this.openChatbot()
                   rowElement.classList.add('highlight-row')
                 })
               }

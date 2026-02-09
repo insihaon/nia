@@ -5,7 +5,7 @@ export class VoiceRecognition {
       inputField: options.inputField || 'userInput',
       statusField: options.statusField || 'recognizing',
       lang: options.lang || 'ko-KR',
-      autoSendDelay: options.autoSendDelay || 3000,
+      autoSendDelay: options.autoSendDelay || 1000,
       ...options
     }
 
@@ -17,12 +17,23 @@ export class VoiceRecognition {
 
     // 숫자 변환 맵 (짧은 발음 대응)
     this.numberMap = {
-      '일': '1', '하나': '1', '첫': '1',
-      '이': '2', '둘': '2',
-      '삼': '3', '셋': '3',
-      '사': '4', '넷': '4',
-      '오': '5', '다섯': '5'
+      '일': '1', '하나': '1', '첫번째': '1', '일번': '1',
+      '이': '2', '둘': '2', '둘번째': '2', '이번': '2',
+      '삼': '3', '셋': '3', '셋번째': '3', '삼번': '3',
+      '사': '4', '넷': '4', '넷번째': '4', '사번': '4',
+      '오': '5', '다섯': '5', '다섯번째': '5', '오번': '5',
+      '육': '6', '여섯': '6', '여섯번째': '6', '육번': '6',
+      '칠': '7', '일곱': '7', '일곱번째': '7', '칠번': '7',
+      '팔': '8', '여덟': '8', '여덟번째': '8', '팔번': '8',
+      '구': '9', '아홉': '9', '아홉번째': '9', '구번': '9',
+      '십': '10', '열': '10', '열번째': '10', '십번': '10'
     }
+
+    this.exceptionMap = {
+      '좋지': '조치'
+    }
+
+    this.fullException = { ...this.numberMap, ...this.exceptionMap }
 
     this.init()
     this.setupWatcher()
@@ -90,7 +101,7 @@ export class VoiceRecognition {
     // "일 번", "이 번" 처럼 띄어쓰기 된 경우 붙여줌
     let processed = text.replace(/\s(번|번째)/g, '$1')
 
-    for (const [key, value] of Object.entries(this.numberMap)) {
+    for (const [key, value] of Object.entries(this.fullException)) {
       // 문장이 해당 숫자로 시작하거나, 그 숫자 자체일 때
       if (processed.startsWith(key)) {
         // "일번" -> "1번", "일" -> "1"
@@ -110,6 +121,7 @@ export class VoiceRecognition {
           this.clear()
           if (typeof this.vue.sendMessage === 'function') {
             this.vue.sendMessage()
+            this.toggle()
           }
         }
       }, this.options.autoSendDelay)

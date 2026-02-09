@@ -116,15 +116,15 @@ export default {
           - dialogOpenMixin에 등록된 dialog의 key이다.
           - DB의 popup값과 일치해야한다.
       */
-      sopHistory: { popupName: 'SOP이력조회 팝업', parameterKey: 'SopHistory', dialogNm: 'sopHistory' },
-      processFin: { popupName: '마감 팝업', parameterKey: 'processFin', dialogNm: 'processFin' },
-      configTest: { popupName: '조치 팝업', parameterKey: 'configTest', dialogNm: 'configTest' },
-      requestForAction: { popupName: '상황전파 팝업', parameterKey: 'requestForAction', dialogNm: 'requestForAction' },
-      aiResponse: { popupName: 'AI 장애대응 팝업', parameterKey: 'aiResponse', dialogNm: 'aiResponse' },
-      aiResponse_NTT_AI: { popupName: 'AI 장애대응 팝업', parameterKey: 'aiResponse_NTT_AI', dialogNm: 'aiResponse_NTT_AI' },
-      aiResponse_ATT_AI: { popupName: 'AI 장애대응 팝업', parameterKey: 'aiResponse_ATT_AI', dialogNm: 'aiResponse_ATT_AI' },
-      niaTopology: { popupName: '토폴로지 팝업', parameterKey: 'niaTopology', dialogNm: 'niaTopology' },
-      disabilityStatusHistoryManagement: { popupName: '장애이력 팝업', parameterKey: 'DisabilityStatusHistoryManagement', dialogNm: 'disabilityStatusHistoryManagement' },
+      sopHistory: { key: 'sopHistory', popupName: 'SOP이력조회 팝업', parameterKey: 'SopHistory', dialogNm: 'sopHistory' },
+      processFin: { key: 'processFin', popupName: '마감 팝업', parameterKey: 'processFin', dialogNm: 'processFin' },
+      configTest: { key: 'configTest', popupName: '조치 팝업', parameterKey: 'configTest', dialogNm: 'configTest' },
+      requestForAction: { key: 'requestForAction', popupName: '상황전파 팝업', parameterKey: 'requestForAction', dialogNm: 'requestForAction' },
+      aiResponse: { key: 'aiResponse', popupName: 'AI 장애대응 팝업', parameterKey: 'aiResponse', dialogNm: 'aiResponse' },
+      aiResponse_NTT_AI: { key: 'aiResponse_NTT_AI', popupName: 'AI 장애대응 팝업', parameterKey: 'aiResponse_NTT_AI', dialogNm: 'aiResponse_NTT_AI' },
+      aiResponse_ATT_AI: { key: 'aiResponse_ATT_AI', popupName: 'AI 장애대응 팝업', parameterKey: 'aiResponse_ATT_AI', dialogNm: 'aiResponse_ATT_AI' },
+      niaTopology: { key: 'niaTopology', popupName: '토폴로지 팝업', parameterKey: 'niaTopology', dialogNm: 'niaTopology' },
+      disabilityStatusHistoryManagement: { key: 'disabilityStatusHistoryManagement', popupName: '장애이력 팝업', parameterKey: 'DisabilityStatusHistoryManagement', dialogNm: 'disabilityStatusHistoryManagement' },
     },
 
     // chatbotDashboardPopupMap: {
@@ -175,11 +175,16 @@ export default {
       WarningSign: '<i class="el-icon-warning" style="color: #E6A23C; vertical-align: middle;"></i>&nbsp;',
 
       // 팁: 노란색/금색 (#E6A23C)
-      Tip: '<i class="el-icon-sunny" style="color: #F7BA2A; vertical-align: middle; font-weight: bold;"></i>&nbsp;'
+      Tip: '<i class="el-icon-sunny" style="color: #F7BA2A; vertical-align: middle; font-weight: bold;"></i>&nbsp;',
+
+      // 포커싱 (대안): 별 모양 강조 (#F7BA2A)
+      focusing: '<i class="el-icon-aim" style="color: #F7BA2A; vertical-align: middle; font-weight: bold;"></i>&nbsp;',
+
     },
 
     chatbotContent: {
-      processHeaderText: '<span style="font-size:15px; font-weight: 700; margin-bottom: 3px">작업 흐름</span>'
+      processHeaderText: '<span style="font-size:15px; font-weight: 700; margin-bottom: 3px">작업 흐름</span>',
+      analysisTipHeaderText: '<span style="font-size:15px; font-weight: 700; margin-bottom: 3px">분석 팁</span>'
     },
 
     chatType: {
@@ -198,7 +203,7 @@ export default {
     },
     chatbotComment: {
       lastComment: `어떤 기능을 도와드릴까요?`,
-      parameterChange: `현재 감시중인 티켓에 맞게 파라미터를 변경하였습니다.`
+      parameterChange: `현재 감시 중인 티켓 기준으로 정보가 자동 반영되었습니다.`
     }
   },
   ipms: {

@@ -64,7 +64,7 @@ import constants from '@/min/constants'
 import { getChatbotTicketData, getWindowActionList, loadLatestSopData } from '@/views-nia/js/commonNiaFunction'
 import { mapState } from 'vuex'
 import niaObserverMixin from '@/mixin/niaObserverMixin'
-import { getInvisibleSpanParameter, getNiaRouterPathByName, showNumberText } from '@/views-nia/js/commonNiaFunction'
+import { getInvisibleSpanParameter, getNiaRouterPathByName, makeOpenPopupNumberText } from '@/views-nia/js/commonNiaFunction'
 
 const routeName = constants.nia.chatbotKeyMap.processFin.parameterKey
 
@@ -235,10 +235,6 @@ export default {
       if (chatbotData) {
         this.selectedRow = chatbotData
         this.$emit('update:wdataParams', chatbotData)
-
-        this.$store.dispatch('chatbot/botPushAnswerMessage', {
-          content: constants.nia.chatbotIcon.success + constants.nia.chatbotComment.parameterChange,
-        })
       }
     },
 
@@ -253,14 +249,12 @@ export default {
               constants.nia.chatbotIcon.Information + '조치 SOP 정보를 자동으로 설정했습니다.' +
               '<div class="chatbot-process">' +
                 constants.nia.chatbotContent.processHeaderText + '<br><br>' +
-                '1. <b>조치 SOP</b> 확인 → 2. <b>조치 SOP</b> 조정' +
-                '<br>→ 3. <b>조치 상세내용</b> 입력 → 4. <b>마감처리</b>' +
+                '<span style="font-size: 13px;">1. <b>조치 SOP</b> 확인·조정 → 2. <b>조치 상세내용</b> 입력 → 3. <b>마감처리</b></span>' +
               '</div>' +
             '</div>' +
             (await getWindowActionList(constants.nia.chatbotKeyMap.processFin.dialogNm, constants.nia.chatbotKeyMap.processFin.popupName,
-              showNumberText(3, `${constants.nia.chatbotKeyMap.sopHistory.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', constants.nia.chatbotKeyMap.sopHistory.dialogNm)}`) +
-              showNumberText(4, `${constants.nia.chatbotKeyMap.sopHistory.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', constants.nia.chatbotKeyMap.sopHistory.dialogNm)}`) +
-              showNumberText(5, `${constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.dialogNm)}`)
+              makeOpenPopupNumberText(3, constants.nia.chatbotKeyMap.sopHistory.key) +
+              makeOpenPopupNumberText(4, constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.key)
             )),
         })
       }

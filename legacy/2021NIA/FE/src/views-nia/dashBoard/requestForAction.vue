@@ -2,30 +2,29 @@
   <div v-loading="requestForActionLoading" :class="{ [name]: true }" style="height: 100%">
     <el-row class="w-full">
       <el-col class="p-1" :span="isMobile ? 24 : 12">
-        <el-card shadow="never" :body-style="{ padding: '10px' }">
+        <el-card shadow="never" :body-style="{ padding: '10px' }" style="height: 150px">
           <div slot="header">
             <div>
               <span><i class="el-icon-document" /> {{ isSyslog ? '알람' : '티켓' }} 상세 정보</span>
             </div>
           </div>
-          <el-col class="style : 20%">
+          <el-col>
             <el-table v-if="isSyslog" ref="table" size="mini" :data="[syslogInfo]" class="w-100" :height="90" border fit>
               <el-table-column v-for="col in defineSyslogDetailTable" :key="col.prop" :prop="col.prop" :label="col.name" :width="col.width" />
             </el-table>
-            <el-table v-else ref="table" size="mini" :data="[sendItem]" class="w-100" :height="90" border fit>
+            <el-table v-else ref="table" size="mini" :data="[sendItem]" class="w-100" :height="80" border fit>
               <el-table-column v-for="col in defineTicketDetailTable" :key="col.prop" :prop="col.prop" :formatter="col.formatter" :label="col.name" :width="col.width" />
             </el-table>
           </el-col>
         </el-card>
-
-        <el-card shadow="never" :body-style="{ padding: '10px', height: '200px' }" :class="{ 'mt-1': isSyslog }">
+        <el-card shadow="never" :body-style="{ padding: '10px', height: '250px' }" class="mt-1">
           <div slot="header">
             <div>
               <span><i class="el-icon-document" /> 연관 SOP 리스트</span>
             </div>
           </div>
           <el-col class="style : 30%">
-            <el-table ref="sopTable" :size="'mini'" :data="relatedSopList" class="w-100" :height="250" border fit>
+            <el-table ref="sopTable" :size="'mini'" :data="relatedSopList" class="w-100" :height="230" border fit>
               <el-table-column v-for="col in sopHistColumn" :key="col.name" :prop="col.prop" :label="col.name" :width="col.width" :formatter="col.formatter" />
             </el-table>
           </el-col>
@@ -36,8 +35,8 @@
               <div><i class="el-icon-document" /> 담당 직원 정보</div>
             </div>
           </div>
-          <el-col class="style : 50%">
-            <el-table ref="employeeTable" :size="'mini'" :data="userList" class="w-100" :height="400" border fit @selection-change="onChangeRowSelected">
+          <el-col style="height: 100%">
+            <el-table ref="employeeTable" :size="'mini'" :data="userList" class="w-100" :height="480" border fit @selection-change="onChangeRowSelected">
               <el-table-column type="selection" align="center" width="40" />
               <el-table-column v-for="col in userInfoColumn" :key="col.prop" :prop="col.prop" :label="col.name" :width="col.width" />
             </el-table>
@@ -57,78 +56,78 @@
               <div class="text-xl font-bold"><h2>장애 상세내역 및 조치 요청서</h2></div>
               <div>
                 <span class="sub-title font-semibold"><h4>&middot;발신</h4></span>
-                &nbsp;&nbsp;{{ sendItem.sender }}
+                <span style="margin-left: 20px">{{ sendItem.sender }}</span>
               </div>
               <div>
                 <div v-if="isLoadAiDetectionInfo">
                   <span class="sub-title font-semibold"><h4>&middot;AI 분석 결과 정보</h4></span>
-                  <span class="font-italic font-semibold"> {{ getAlarmtxt }} </span>
+                  <span class="font-italic font-semibold" style="margin-left: 20px"> {{ getAlarmtxt }} </span>
                   <div v-if="sendItem.ticket_type === 'ATT2'">
                     &emsp;<span>IN</span><br />
-                    &nbsp;&nbsp;- mbps: {{ aiDetection !== null ? sendItem.in_bps + ' MB' : '' }} <br />
-                    &nbsp;&nbsp;- Predict: {{ aiDetection !== null ? sendItem.in_predict + ' MB' : '' }}<br />
-                    &nbsp;&nbsp;- Threshold_Upper: {{ aiDetection !== null ? sendItem.in_threshold_upper + ' MB' : '' }}<br />
-                    &nbsp;&nbsp;- Threshold_Lower: {{ aiDetection !== null ? sendItem.in_threshold_lower + ' MB' : '' }}<br />
+                    <span style="margin-left: 20px">- mbps: {{ aiDetection !== null ? sendItem.in_bps + ' MB' : '' }} <br /></span>
+                    <span style="margin-left: 20px">- Predict: {{ aiDetection !== null ? sendItem.in_predict + ' MB' : '' }}<br /></span>
+                    <span style="margin-left: 20px">- Threshold_Upper: {{ aiDetection !== null ? sendItem.in_threshold_upper + ' MB' : '' }}<br /></span>
+                    <span style="margin-left: 20px">- Threshold_Lower: {{ aiDetection !== null ? sendItem.in_threshold_lower + ' MB' : '' }}<br /></span>
                     - Anomaly: {{ aiDetection !== null ? sendItem.in_anomaly + '' : '' }}<br />
                     &emsp;<span>OUT</span><br />
-                    &nbsp;&nbsp;- mbps: {{ aiDetection !== null ? sendItem.out_bps + ' MB' : '' }}<br />
-                    &nbsp;&nbsp;- Predict : {{ aiDetection !== null ? sendItem.out_predict + ' MB' : '' }}<br />
-                    &nbsp;&nbsp;- Threshold_Upper: {{ aiDetection !== null ? sendItem.out_threshold_upper + ' MB' : '' }}<br />
-                    &nbsp;&nbsp;- Threshold_Lower: {{ aiDetection !== null ? sendItem.out_threshold_lower + ' MB' : '' }}<br />
-                    &nbsp;&nbsp;- Anomaly: {{ aiDetection !== null ? sendItem.out_anomaly + '' : '' }}<br />
+                    <span style="margin-left: 20px">- mbps: {{ aiDetection !== null ? sendItem.out_bps + ' MB' : '' }}<br /></span>
+                    <span style="margin-left: 20px">- Predict : {{ aiDetection !== null ? sendItem.out_predict + ' MB' : '' }}<br /></span>
+                    <span style="margin-left: 20px">- Threshold_Upper: {{ aiDetection !== null ? sendItem.out_threshold_upper + ' MB' : '' }}<br /></span>
+                    <span style="margin-left: 20px">- Threshold_Lower: {{ aiDetection !== null ? sendItem.out_threshold_lower + ' MB' : '' }}<br /></span>
+                    <span style="margin-left: 20px">- Anomaly: {{ aiDetection !== null ? sendItem.out_anomaly + '' : '' }}<br /></span>
                   </div>
                 </div>
 
                 <div v-if="sendItem.ticket_type === 'ATT2' || sendItem.ticket_type === 'NTT'">
-                  <span class="font-semibold">&nbsp;&nbsp;&middot;장애 유무 판단 확률</span><br />
-                  &nbsp;&nbsp;&nbsp;- 유효 확률 : {{ sendItem.zero1_entropy ? ((1 - sendItem.zero1_entropy) * 100).toFixed(1) + '%' : '' }}<br />
-                  &nbsp;&nbsp;&nbsp;- 무효 확률 : {{ sendItem.zero1_entropy ? (sendItem.zero1_entropy * 100).toFixed(1) + '%' : '' }}
+                  <span class="font-semibold"><span style="margin-left: 20px">&middot;장애 유무 판단 확률</span><br /></span>
+                  <span style="margin-left: 20px">&nbsp;- 유효 확률 : {{ sendItem.zero1_entropy ? ((1 - sendItem.zero1_entropy) * 100).toFixed(1) + '%' : '' }}<br /></span>
+                  <span style="margin-left: 20px">&nbsp;- 무효 확률 : {{ sendItem.zero1_entropy ? (sendItem.zero1_entropy * 100).toFixed(1) + '%' : '' }}</span>
                 </div>
 
                 <div v-if="sendItem.ticket_type === 'FTT'">
-                  &nbsp;&nbsp;- 장애 확률 : {{ sendItem.zero1_entropy ? (sendItem.zero1_entropy * 100).toFixed(1) + '%' : '' }}<br />
-                  &nbsp;&nbsp;- 비장애 확률 : {{ sendItem.zero1_entropy ? ((1 - sendItem.zero1_entropy) * 100).toFixed(1) + '%' : '' }}
+                  <span style="margin-left: 20px">- 장애 확률 : {{ sendItem.zero1_entropy ? (sendItem.zero1_entropy * 100).toFixed(1) + '%' : '' }}<br /></span>
+                  <span style="margin-left: 20px">- 비장애 확률 : {{ sendItem.zero1_entropy ? ((1 - sendItem.zero1_entropy) * 100).toFixed(1) + '%' : '' }}</span>
                 </div>
 
                 <div v-if="sendItem.ticket_type === 'NFTT'">
-                  &nbsp;&nbsp;- Measured Time : {{ sendItem.measured_datetime }} <br />
-                  &nbsp;&nbsp;- CPU 예측값 : {{ sendItem.cpu_predicted }} <br />
-                  &nbsp;&nbsp;- Mem 예측값 : {{ sendItem.mem_predicted }} <br />
+                  <span style="margin-left: 20px">- Measured Time : {{ sendItem.measured_datetime }} <br /></span>
+                  <span style="margin-left: 20px">- CPU 예측값 : {{ sendItem.cpu_predicted }} <br /></span>
+                  <span style="margin-left: 20px">- Mem 예측값 : {{ sendItem.mem_predicted }} <br /></span>
                 </div>
               </div>
               <div>
                 <span class="sub-title font-semibold"><h4>&middot;수신</h4></span>
                 <span v-for="user in selectedUser" :key="user.email">
-                  <span v-if="selectedUser.length > 0">
+                  <span v-if="selectedUser.length > 0" style="margin-left : 20px">
                     {{ user.name }}
                   </span>
-                  <span v-else>수신자 없음</span>
+                  <span v-else style="margin-left : 20px">수신자 없음</span>
                 </span>
               </div>
               <div>
                 <span class="sub-title font-semibold"><h4>&middot;작업 요청 내용</h4></span>
                 <div v-if="isSyslog">
-                  &nbsp;&nbsp;- 발생 시간 : {{ formatterTimeStamp(syslogInfo.alarmtime) }}<br />
-                  &nbsp;&nbsp;- 알람 번호 : {{ syslogInfo.alarmno }} <br />
-                  &nbsp;&nbsp;- 장비명 : {{ syslogInfo.node_nm }}<br />
-                  &nbsp;&nbsp;- 장비 번호 : {{ syslogInfo.node_num }}<br />
-                  &nbsp;&nbsp;- 인터페이스 : {{ syslogInfo.alarmloc }}<br />
-                  &nbsp;&nbsp;- 알람 메시지 : {{ syslogInfo.alarmmsg }}<br />
-                  &nbsp;&nbsp;- 원본 메시지 : {{ syslogInfo.etc }}<br />
-                  &nbsp;&nbsp;- 상세 내용 :
+                  <span style="margin-left: 20px">- 발생 시간 : {{ formatterTimeStamp(syslogInfo.alarmtime) }}<br /></span>
+                  <span style="margin-left: 20px">- 알람 번호 : {{ syslogInfo.alarmno }} <br /></span>
+                  <span style="margin-left: 20px">- 장비명 : {{ syslogInfo.node_nm }}<br /></span>
+                  <span style="margin-left: 20px">- 장비 번호 : {{ syslogInfo.node_num }}<br /></span>
+                  <span style="margin-left: 20px">- 인터페이스 : {{ syslogInfo.alarmloc }}<br /></span>
+                  <span style="margin-left: 20px">- 알람 메시지 : {{ syslogInfo.alarmmsg }}<br /></span>
+                  <span style="margin-left: 20px">- 원본 메시지 : {{ syslogInfo.etc }}<br /></span>
+                  <span style="margin-left: 20px">- 상세 내용 :</span>
                 </div>
                 <div v-else>
-                  &nbsp;&nbsp;- 작업 요청 구간 : {{ (trafficInfo.root_cause_sysnamea || '') + '(' + (trafficInfo.root_cause_porta || '') + ')' }} → {{ (trafficInfo.root_cause_sysnamez || '') + '(' + (trafficInfo.root_cause_portz || '') + ')' }}<br />
-                  &nbsp;&nbsp;- 티켓 번호 : {{ sendItem.ticket_id }} <br />
-                  &nbsp;&nbsp;- 티켓 타입 : {{ sendItem.ticket_type }}<br />
-                  &nbsp;&nbsp;- 발생 원인 : {{ sendItem.ticket_result || sendItem.ticket_rca_result_dtl_code }}<br />
-                  &nbsp;&nbsp;- 발생 시간 : {{ formatterTimeStamp(sendItem.fault_time) }}<br />
-                  &nbsp;&nbsp;- 상세 내용 :
+                  <span v-if="!['NTT_AI'].includes(sendItem.ticket_type)" style="margin-left: 20px">- 작업 요청 구간 : {{ (trafficInfo.root_cause_sysnamea || '') + '(' + (trafficInfo.root_cause_porta || '') + ')' }} → {{ (trafficInfo.root_cause_sysnamez || '') + '(' + (trafficInfo.root_cause_portz || '') + ')' }}<br /></span>
+                  <span style="margin-left: 20px">- 티켓 번호 : {{ sendItem.ticket_id }}<br /></span>
+                  <span style="margin-left: 20px">- 티켓 타입 : {{ sendItem.ticket_type }}<br /></span>
+                  <span style="margin-left: 20px">- 발생 원인 : {{ sendItem.ticket_result || sendItem.ticket_rca_result_dtl_code }}<br /></span>
+                  <span style="margin-left: 20px">- 발생 시간 : {{ formatterTimeStamp(sendItem.fault_time) }}<br /></span>
+                  <span style="margin-left: 20px">- 상세 내용 :</span>
                 </div>
               </div>
               <div v-if="isSyslog">
                 <span class="sub-title font-semibold"><h4>&middot;장애 구역</h4></span>
-                <div>&nbsp;&nbsp;- 장애 구역:{{ sendItem.node_nm + '(' + sendItem.alarmloc + ')' }}</div>
+                <div><span style="margin-left: 20px">- 장애 구역:{{ sendItem.node_nm + '(' + sendItem.alarmloc + ')' }}</span></div>
               </div>
               <div v-if="['NTT', 'ATT2'].includes(sendItem.ticket_type)">
                 <span class="sub-title font-semibold"><h4>&middot;장애 구간</h4></span>
@@ -137,9 +136,9 @@
               <div>
                 <span class="sub-title font-semibold"><h4>&middot;연관 SOP</h4></span>
                 <div>
-                  &nbsp;&nbsp;- 장애 구분: {{ sendItem.fault_classify || '' }}<br />
-                  &nbsp;&nbsp;- 장애 유형: {{ sendItem.fault_type || '' }}<br />
-                  &nbsp;&nbsp;- 조치 내용: {{ sendItem.fault_detail_content || '' }}
+                  <span style="margin-left: 20px">- 장애 구분: {{ sendItem.fault_classify || '' }}<br /></span>
+                  <span style="margin-left: 20px">- 장애 유형: {{ sendItem.fault_type || '' }}<br /></span>
+                  <span style="margin-left: 20px">- 조치 내용: {{ sendItem.fault_detail_content || '' }}</span>
                 </div>
               </div>
             </div>
@@ -176,7 +175,7 @@ import dialogOpenMixin from '@/mixin/dialogOpenMixin'
 
 import { mapState } from 'vuex'
 import constants from '@/min/constants'
-import { getChatbotTicketData, getWindowActionList, getInvisibleSpanParameter, getNiaRouterPathByName, showNumberText } from '@/views-nia/js/commonNiaFunction'
+import { getChatbotTicketData, getWindowActionList, getInvisibleSpanParameter, getNiaRouterPathByName, makeOpenPopupNumberText } from '@/views-nia/js/commonNiaFunction'
 
 import _ from 'lodash'
 
@@ -244,7 +243,7 @@ export default {
         { type: '', prop: 'etc', name: '원본메시지', width: 230 },
       ],
       defineTicketDetailTable: [
-        { type: '', prop: 'ticket_id', name: '티켓번호', width: 100 },
+        { type: '', prop: 'ticket_id', name: '티켓번호', width: 150 },
         {
           type: '',
           prop: 'fault_time',
@@ -287,7 +286,7 @@ export default {
         { type: '', prop: 'etc', name: 'syslog 원본메시지', width: 250 },
       ]
       const columns = [
-        { type: '', prop: 'ticket_id', name: '티켓번호', width: 100 },
+        { type: '', prop: 'ticket_id', name: '티켓번호', width: 150 },
         {
           type: '',
           prop: '',
@@ -403,10 +402,6 @@ export default {
       if (chatbotData) {
         this.selectedRow = chatbotData
         this.$emit('update:wdataParams', chatbotData)
-
-        this.$store.dispatch('chatbot/botPushAnswerMessage', {
-          content: constants.nia.chatbotIcon.success + constants.nia.chatbotComment.parameterChange,
-        })
       }
 
       const { uid, name, mobile, email, agencyName } = this.$store.state.user.info
@@ -446,9 +441,9 @@ export default {
               '</div>' +
             '</div>' +
             (await getWindowActionList(constants.nia.chatbotKeyMap.requestForAction.dialogNm, constants.nia.chatbotKeyMap.requestForAction.popupName,
-              showNumberText(3, `${constants.nia.chatbotKeyMap.configTest.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', constants.nia.chatbotKeyMap.configTest.dialogNm)}<br>`) +
-              showNumberText(4, `${constants.nia.chatbotKeyMap.sopHistory.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', constants.nia.chatbotKeyMap.sopHistory.dialogNm)}`) +
-              showNumberText(5, `${constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.dialogNm)}`)
+              makeOpenPopupNumberText(3, constants.nia.chatbotKeyMap.configTest.key) +
+              makeOpenPopupNumberText(4, constants.nia.chatbotKeyMap.sopHistory.key) +
+              makeOpenPopupNumberText(5, constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.key)
             ))
         })
       }
@@ -584,6 +579,7 @@ export default {
       if (receiverUser.length === 0) {
         this.$alert('담당 직원을 선택해주세요.', '알림', {
           confirmButtonText: '확인',
+          customClass: 'nia-message-box',
         })
         return
       }

@@ -84,10 +84,11 @@
         <button :disabled="isQuestionMode" class="utility-button" :style="{ 'background-color': isActiveBotAlert ? '#ff4949' : '#e5e7eb' }" @click="toggleIsActiveBotAlert">{{ isActiveBotAlert ? '경보 표시' : '경보 미표시' }}</button>
         <button :disabled="recognizing || isQuestionMode" class="utility-button" @click="actionSwitch">{{ actionType === 'expert' ? '전문가모드' : '안내모드' }}</button>
         <button :disabled="isQuestionMode" class="utility-button" @click="resetChat">채팅초기화</button>
-        <button :disabled="isQuestionMode" class="utility-button voice-btn" :style="{ 'background-color': recognizing ? '#ff4949' : '#e5e7eb', color: recognizing ? 'white' : '#4b5563' }" @click="switchVoiceRecording">
+        <button :disabled="isQuestionMode" class="utility-button" @click="showWindowList">창목록</button>
+        <!-- <button :disabled="isQuestionMode" class="utility-button voice-btn" :style="{ 'background-color': recognizing ? '#ff4949' : '#e5e7eb', color: recognizing ? 'white' : '#4b5563' }" @click="switchVoiceRecording">
           <i class="el-icon-mic" style="margin-right: 5px; font-weight: bold"></i>
           ({{ recognizing ? 'ON' : 'OFF' }})
-        </button>
+        </button> -->
       </div>
 
       <div class="chat-input">
@@ -105,9 +106,8 @@ import { mapState } from 'vuex'
 import dialogOpenMixin from '@/mixin/dialogOpenMixin'
 import { getChatbotDonutChart } from '@/views-nia/js/donutChartBunddle'
 import { VoiceRecognition } from '@/views-nia/js/chatbotVoiceRecognition'
-import { searchMessaging, errorMessaging1, errorMessaging2, errorMessaging3, getRecommendedCommand } from '@/store/modules/chatbot.js'
-import { getChatbotMdiObject, getNiaRouteNameByPath, getNiaRouteTitleByPath, getSpanFormatMessageForDB, getMatchMapOfspanFormatMessage, isSpanFormatChatMessage } from '@/views-nia/js/commonNiaFunction'
-import { apiIpAlarmList } from '@/api/nia'
+import { errorMessaging1 } from '@/store/modules/chatbot.js'
+import { getChatbotMdiObject, getNiaRouteNameByPath, getNiaRouteTitleByPath, getSpanFormatMessageForDB, getMatchMapOfspanFormatMessage, isSpanFormatChatMessage, makeOpenPopupNumberText } from '@/views-nia/js/commonNiaFunction'
 import constants from '@/min/constants'
 import hotkeys from 'hotkeys-js'
 import _ from 'lodash'
@@ -307,11 +307,13 @@ export default {
     if (this.isDebug) {
       hotkeys(`alt+q`, (e, h) => {
         if (chatbotPopup) {
-          this.$store.dispatch('mdi/bringToFrontWindow', chatbotPopup.id)
+          // 챗봇 팝업 앞으로
+          this.allWaysFrontWindowChatbot()
         }
       })
       hotkeys(`alt+w`, (e, h) => {
         if (chatbotPopup) {
+          // 챗봇 사이즈 조정
           const heightValue = parseInt(chatbotPopup.height)
           if (heightValue >= 800 && heightValue <= 1000) {
             chatbotPopup.height = window.innerHeight - 70
@@ -323,6 +325,24 @@ export default {
             chatbotPopup.x = 10
             chatbotPopup.y = window.innerHeight - chatbotPopup.height - 60
           }
+        }
+      })
+      hotkeys(`alt+z`, (e, h) => {
+        if (chatbotPopup) {
+          // 채팅초기화
+          this.resetChat()
+        }
+      })
+      hotkeys(`alt+v`, (e, h) => {
+        if (chatbotPopup) {
+          // voice ON/OFF
+          this.switchVoiceRecording()
+        }
+      })
+      hotkeys(`alt+l`, (e, h) => {
+        if (chatbotPopup) {
+          // 창 목록
+          this.showWindowList()
         }
       })
     }
@@ -346,6 +366,19 @@ export default {
   },
 
   methods: {
+    showWindowList() {
+      let count = 0
+      let text = '<div class="chatbot-command-header">열려있는 창 목록</div>'
+      this.windows.forEach((w) => {
+        if (w.dialogNm === 'chatbot') return
+        text += makeOpenPopupNumberText(++count, w.dialogNm)
+      })
+
+      this.$store.dispatch('chatbot/botPushAnswerMessage', {
+        content: text,
+      })
+    },
+
     async switchVoiceRecording() {
       this.voiceRecognition.toggle()
     },
@@ -530,20 +563,17 @@ export default {
           content: errorMessaging1,
         })
         console.error('ElasticSearch 검색 오류:', error)
+      } finally {
+        setTimeout(() => {
+          this.allWaysFrontWindowChatbot()
+        }, 1000)
       }
     },
 
-    getLastAnswerObj() {
-      const botAnswer = this.getCurrentChatMessageArray.filter((m) => {
-        if (m.type !== constants.nia.chatType.botAnswer) return
-        if (m.content.includes(searchMessaging)) return
-        if (m.content.includes(errorMessaging1)) return
-        if (m.content.includes(errorMessaging2)) return
-        if (m.content.includes(errorMessaging3)) return
-        return true
-      })
-
-      return botAnswer.at(-1)
+    allWaysFrontWindowChatbot() {
+      // 항상 챗봇을 맨 위로
+      const chatbotPopup = getChatbotMdiObject()
+      this.$store.dispatch('mdi/bringToFrontWindow', chatbotPopup.id)
     },
 
     runSpanAction(matchMap) {
@@ -555,7 +585,7 @@ export default {
         const routerName = getNiaRouteNameByPath(matchMap.path)
         if (this.$router.history.current.path === matchMap.path) {
           routerParameterTargetName = routerName
-          text = `<br><br>` + `${constants.nia.chatbotIcon.noAction} ${getNiaRouteTitleByPath(matchMap.path)}화면에서 명령을 실행합니다.`
+          text = `<br><br>` + `${constants.nia.chatbotIcon.noAction} ${getNiaRouteTitleByPath(matchMap.path)}화면에서`
         } else {
           this.$router.push({ name: routerName })
           routerParameterTargetName = routerName
@@ -567,10 +597,15 @@ export default {
         const hasWindow = this.windows.find((w) => w.dialogNm === matchMap.popup)
         let newName = ''
         if (hasWindow) {
-          text += `<br>${constants.nia.chatbotIcon.noAction} ${hasWindow.name} 팝업이 포커싱 됩니다.`
+          this.minimizeOtherPopups()
+          this.openMinimizedPopup(hasWindow)
+
+          text += `<br>${constants.nia.chatbotIcon.focusing} ${hasWindow.name} 팝업에 포커스를 맞췄습니다.`
           this.$store.dispatch('mdi/bringToFrontWindow', hasWindow.id)
           newName = hasWindow.chatbotParameterKeyName
         } else {
+          this.minimizeOtherPopups()
+
           let popupName = matchMap.popup
           if (matchMap.popup === 'aiResponse') {
             switch (this.alarmFocusTicketData.ticket_type) {
@@ -590,6 +625,7 @@ export default {
 
           const dialogKey = Object.keys(this.dialogList).find((key) => key === matchMap.popup)
           text += `<br>${constants.nia.chatbotIcon.openPopup} ${this.dialogList[dialogKey].pageTitle} 팝업을 활성화했습니다. `
+          text += `<br>${constants.nia.chatbotIcon.success} ${constants.nia.chatbotComment.parameterChange}`
           newName = this.dialogList[dialogKey].chatbotParameterKeyName
         }
 
@@ -597,6 +633,14 @@ export default {
       }
 
       if (matchMap.action.length > 0) {
+        if (constants.nia.chatbotCommand[matchMap.action]) {
+          text += `<br>${constants.nia.chatbotIcon.success} ${constants.nia.chatbotCommand[matchMap.action].label} 명령을 실행합니다.`
+        } else if (constants.nia.chatbotKeyMap[matchMap.action]) {
+          text += `<br>${constants.nia.chatbotIcon.success} ${constants.nia.chatbotKeyMap[matchMap.action].popupName} 명령을 실행합니다.`
+        } else {
+          throw new Error(`chatbotCommand또는 chatbotKeyMap에 ${matchMap.action}이 없습니다. 등록하세요`)
+        }
+
         setTimeout(() => {
           this.$store.commit('chatbot/SWITCH_ROUTER_PARAMETER', { name: routerParameterTargetName, parameter: matchMap.action })
         }, 1000)
@@ -606,11 +650,34 @@ export default {
       return text
     },
 
-    async SearchAndAction(userQuestion) {
-      const lastAnswerObj = this.getLastAnswerObj()
+    openMinimizedPopup(hasWindow) {
+      if (hasWindow.windowState === 'minimize') {
+        this.$set(hasWindow, 'windowState', 'normal')
+      }
+    },
 
-      if (isSpanFormatChatMessage(lastAnswerObj.content)) {
-        const matchMap = getMatchMapOfspanFormatMessage(userQuestion, lastAnswerObj.content)
+    minimizeOtherPopups() {
+      this.windows.forEach((w) => {
+        if (w.dialogNm === 'chatbot') return
+        this.$set(w, 'windowState', 'minimize')
+      })
+    },
+
+    getLastSpanFormatChatMessage() {
+      const botAnswer = this.getCurrentChatMessageArray.filter((m) => {
+        if (m.type !== constants.nia.chatType.botAnswer) return false
+        if (!m.content) return false
+        if (isSpanFormatChatMessage(m.content)) return true
+      })
+
+      return botAnswer.at(-1)
+    },
+
+    async SearchAndAction(userQuestion) {
+      const lastSpanFormatMessage = this.getLastSpanFormatChatMessage()
+
+      if (isSpanFormatChatMessage(lastSpanFormatMessage.content)) {
+        const matchMap = getMatchMapOfspanFormatMessage(userQuestion, lastSpanFormatMessage.content)
         if (matchMap) {
           const actionProcessMessage = this.runSpanAction(matchMap)
           return `<b>` + matchMap.matchContext + ' 명령을 실행했습니다.</b>' + actionProcessMessage

@@ -35,7 +35,7 @@ export default {
   },
   methods: {
     toggleChatbot() {
-      this.fn_openWindow('chatbot')
+      this.fn_openWindow('chatbot', null, null, { height: window.innerHeight - 135 })
     },
     startFollow() {
       this.isFollowing = true

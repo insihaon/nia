@@ -84,7 +84,7 @@
       </el-card>
       <el-row>
         <el-col align="right" class="mt-2">
-          <el-button size="mini" type="primary" icon="el-icon-video-play" :disabled="remoteControl.length === 0 || (remoteControl === 'chngport' && remoteParam.length === 0)" @click="onClickRemote"> 실행 </el-button>
+          <el-button size="mini" type="primary" icon="el-icon-video-play" :disabled="remoteButtonDisable" @click="onClickRemote"> 실행 </el-button>
           <el-button size="mini" type="info" icon="el-icon-close" @click.native="$emit('windowClose')">
             {{ $t('exit') }}
           </el-button>
@@ -101,7 +101,7 @@ import _ from 'lodash'
 import dialogOpenMixin from '@/mixin/dialogOpenMixin'
 import { apiIpsdnRequest, apiSelectAgencyIpList, apiRemote, apiSelectIpsdnNodeList, apiSelectIpsdnInterfaceList } from '@/api/nia'
 import constants from '@/min/constants'
-import { getChatbotTicketData, getWindowActionList, getInvisibleSpanParameter, getNiaRouterPathByName, showNumberText, showAlertBox } from '@/views-nia/js/commonNiaFunction'
+import { getChatbotTicketData, getWindowActionList, getInvisibleSpanParameter, getNiaRouterPathByName, makeOpenPopupNumberText, showAlertBox } from '@/views-nia/js/commonNiaFunction'
 import { mapState } from 'vuex'
 import niaObserverMixin from '@/mixin/niaObserverMixin'
 
@@ -172,6 +172,10 @@ export default {
     isModal() {
       return !!this.wdata.params
     },
+
+    remoteButtonDisable() {
+      return this.remoteControl.length === 0 || (this.remoteControl === 'chngport' && this.remoteParam.length === 0)
+    }
   },
   watch: {
     configTestEventText(nVal, oVal) {
@@ -269,10 +273,6 @@ export default {
       if (chatbotData) {
         this.selectedRow = chatbotData
         this.$emit('update:wdataParams', chatbotData)
-
-        this.$store.dispatch('chatbot/botPushAnswerMessage', {
-          content: constants.nia.chatbotIcon.success + constants.nia.chatbotComment.parameterChange,
-        })
       }
 
       const { ticket_type, root_cause_sysnamea, node_nm, ip_addr, root_cause_porta, alarmloc, alarmmsg } = this.selectedRow
@@ -328,9 +328,9 @@ export default {
               '</div>' +
             '</div>' +
             (await getWindowActionList(constants.nia.chatbotKeyMap.configTest.dialogNm, constants.nia.chatbotKeyMap.configTest.popupName,
-              showNumberText(2, `${constants.nia.chatbotKeyMap.processFin.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', constants.nia.chatbotKeyMap.processFin.dialogNm)}`) +
-              showNumberText(3, `${constants.nia.chatbotKeyMap.sopHistory.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', constants.nia.chatbotKeyMap.sopHistory.dialogNm)}`) +
-              showNumberText(4, `${constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.dialogNm)}`)
+              makeOpenPopupNumberText(2, constants.nia.chatbotKeyMap.processFin.key) +
+              makeOpenPopupNumberText(3, constants.nia.chatbotKeyMap.sopHistory.key) +
+              makeOpenPopupNumberText(4, constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.key)
             )),
         })
       }
@@ -391,8 +391,8 @@ export default {
       this.$store.dispatch('chatbot/botPushAnswerMessage', {
         content:
           `<b>${constants.nia.chatbotCommand.configTest.label} 실행 후 추천명령어 입니다</b><br><br>` +
-          showNumberText(1, `${constants.nia.chatbotKeyMap.processFin.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), constants.nia.chatbotKeyMap.processFin.dialogNm, '')}<br>`) +
-          showNumberText(2, `${constants.nia.chatbotKeyMap.sopHistory.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), constants.nia.chatbotKeyMap.sopHistory.dialogNm, '')}<br>`),
+          makeOpenPopupNumberText(1, constants.nia.chatbotKeyMap.processFin.key) +
+          makeOpenPopupNumberText(2, constants.nia.chatbotKeyMap.sopHistory.key)
       })
     },
 
@@ -407,6 +407,14 @@ export default {
     },
 
     async onClickRemote() {
+      if (this.remoteButtonDisable) {
+        this.$alert('실행버튼이 활성화되어야합니다.', '경고', {
+          customClass: 'nia-message-box',
+        })
+
+        return
+      }
+
       this.$confirm(this.makeConfirmMessage(), '명령어전송', {
         confirmButtonText: '실행',
         cancelButtonText: '취소',
