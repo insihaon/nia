@@ -165,7 +165,7 @@ import CompChart from '@/components/chart/CompChart.vue'
 import dialogOpenMixin from '@/mixin/dialogOpenMixin'
 import { mapState } from 'vuex'
 import constants from '@/min/constants'
-import { getChatbotTicketData, getWindowActionList, showNumberText, getInvisibleSpanParameter, getNiaRouterPathByName } from '@/views-nia/js/commonNiaFunction'
+import { getChatbotTicketData, getWindowActionList, makeOpenPopupNumberText, getInvisibleSpanParameter, getNiaRouterPathByName } from '@/views-nia/js/commonNiaFunction'
 import niaObserverMixin from '@/mixin/niaObserverMixin'
 
 const routeName = constants.nia.chatbotKeyMap.aiResponse.parameterKey
@@ -453,10 +453,6 @@ export default {
       if (chatbotData) {
         this.selectedRow = chatbotData
         this.$emit('update:wdataParams', chatbotData)
-
-        this.$store.dispatch('chatbot/botPushAnswerMessage', {
-          content: constants.nia.chatbotIcon.success + constants.nia.chatbotComment.parameterChange,
-        })
       }
 
       if (this.isShowChartTicketType) {
@@ -490,7 +486,7 @@ export default {
             '<br>' + constants.nia.chatbotIcon.Information + 'PPS는 Packet 개수로 DDOS공격을 확인합니다.' +
             '</div>' +
             (await getWindowActionList(constants.nia.chatbotKeyMap.aiResponse.dialogNm, constants.nia.chatbotKeyMap.aiResponse.popupName,
-              showNumberText(5, `${constants.nia.chatbotKeyMap.requestForAction.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', constants.nia.chatbotKeyMap.requestForAction.dialogNm)}`)
+              makeOpenPopupNumberText(5, constants.nia.chatbotKeyMap.requestForAction.key)
             )),
         })
       }

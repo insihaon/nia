@@ -23,7 +23,7 @@ import CompInquiryPannel from '@/views-nia/components/CompInquiryPannel'
 import { apiAlarmCurAndHistList, apiSelectNodeList, apiSelectLinkList } from '@/api/nia'
 import { mapState } from 'vuex'
 import constants from '@/min/constants'
-import { getChatbotTicketData, getWindowActionList, getInvisibleSpanParameter, getNiaRouterPathByName, showNumberText } from '@/views-nia/js/commonNiaFunction'
+import { getChatbotTicketData, getWindowActionList, getInvisibleSpanParameter, getNiaRouterPathByName, makeOpenPopupNumberText } from '@/views-nia/js/commonNiaFunction'
 
 import niaObserverMixin from '@/mixin/niaObserverMixin'
 
@@ -187,10 +187,6 @@ export default {
         this.selectedRow = chatbotData
         this.$emit('update:wdataParams', chatbotData)
 
-        this.$store.dispatch('chatbot/botPushAnswerMessage', {
-          content: constants.nia.chatbotIcon.success + constants.nia.chatbotComment.parameterChange,
-        })
-
         if (this.selectedRow.ticket_id) {
           this.searchModel.NODE_NM = this.selectedRow.node_nm
           this.searchModel.ALARMLOC = this.selectedRow.alarmloc
@@ -245,7 +241,7 @@ export default {
               '</div>' + */
             '</div>' +
             (await getWindowActionList(constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.dialogNm, constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.popupName,
-              showNumberText(3, `${constants.nia.chatbotKeyMap.sopHistory.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', constants.nia.chatbotKeyMap.sopHistory.dialogNm)}`)
+              makeOpenPopupNumberText(3, constants.nia.chatbotKeyMap.sopHistory.key)
             )),
         })
       }

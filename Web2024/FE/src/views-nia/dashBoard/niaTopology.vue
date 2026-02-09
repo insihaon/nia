@@ -108,7 +108,7 @@ import {
 import niaTopologyTemplalate from './niaTopologyConfig/niaTopologyTemplate.vue'
 import { mapState } from 'vuex'
 import constants from '@/min/constants'
-import { getChatbotTicketData, getWindowActionList, showNumberText, getInvisibleSpanParameter, getNiaRouterPathByName } from '@/views-nia/js/commonNiaFunction'
+import { getChatbotTicketData, getWindowActionList, makeOpenPopupNumberText, getInvisibleSpanParameter, getNiaRouterPathByName } from '@/views-nia/js/commonNiaFunction'
 import nia_topology_data from '@/views-nia/dashBoard/niaTopologyConfig/json/nia_topology_data'
 import niaObserverMixin from '@/mixin/niaObserverMixin'
 
@@ -121,6 +121,9 @@ const roadm_slots = {
   '192.168.200.218': ['MRPA-A', 'MRPA-A', 'MRSA-2A', 'MRSA-2A', 'OCPMA-4', 'BLK', 'OM24A', 'OM24A', 'BLK', 'BLK', 'BLK', 'BLK', 'BLK', 'BLK', 'BLK', 'BLK', 'BLK', 'BLK'],
   '192.168.200.210': ['MRPA-A', 'MRPA-A', 'MRSA-2A', 'OCPMA-4', 'OTUC1A-L', 'OTUC1A-L', 'OTUC1A-L', 'OTUC2A-L', 'OM2C2A-L', 'OM2C2A-L', 'OM24A', 'OM24A', 'BLK', 'BLK', 'BLK', 'BLK'],
 }
+
+const topologyScale = 1000
+const zoomScale = 3 // 커지면 확대
 
 export default {
   name: routeName,
@@ -266,10 +269,6 @@ export default {
       if (chatbotData) {
         this.selectedRows = [chatbotData]
         this.$emit('update:wdataParams', chatbotData)
-
-        this.$store.dispatch('chatbot/botPushAnswerMessage', {
-          content: constants.nia.chatbotIcon.success + constants.nia.chatbotComment.parameterChange,
-        })
       }
 
       // this.topologyConstruct()
@@ -282,18 +281,16 @@ export default {
           content:
             '<div class="chatbot-command-header">토폴로지 팝업 안내</div>' +
             '<div class="chatbot-message-body">' +
-              '장애가 발생한 <b>노드와 링크</b>의 위치를 시각적으로 표시하여, 관련 노드 정보를 빠르고 직관적으로 확인할 수 있는 토폴로지 화면입니다.' +
+              '토폴로지 화면은 <b>장애 발생 시 네트워크 전반의 영향 범위를 직관적으로 파악</b>하기 위한 분석 화면입니다. <b>화면 표시 옵션을 조정</b>하여 장애 영향 범위를 <b>효율적으로 분석</b>할 수 있도록 지원합니다.' +
               '<div class="chatbot-process">' +
-                constants.nia.chatbotContent.processHeaderText + '<br><br>' +
-                '1. <b>장애 노드·링크</b> 확인' +
-                '<br>2. <b>연관 노드·링크</b> 관계파악' +
-                '<br>3. <b>조치·대응을 위한</b> 화면전환' +
+                constants.nia.chatbotContent.analysisTipHeaderText + '<br><br>' +
+                '<b>선택한 장애 노드·링크를 중심으로</b>, 직접 또는 간접적으로 연결된 <b>연관 노드·링크</b>를 따라가며 <b>장애 영향 범위를 구조적으로 파악</b>할 수 있습니다.' +
               '</div>' +
             '</div>' +
             (await getWindowActionList(constants.nia.chatbotKeyMap.niaTopology.dialogNm, constants.nia.chatbotKeyMap.niaTopology.popupName,
-              showNumberText(8, `${constants.nia.chatbotKeyMap.requestForAction.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', constants.nia.chatbotKeyMap.requestForAction.dialogNm)}`) +
-              showNumberText(9, `${constants.nia.chatbotKeyMap.sopHistory.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', constants.nia.chatbotKeyMap.sopHistory.dialogNm)}`) +
-              showNumberText(10, `${constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.dialogNm)}`)
+              makeOpenPopupNumberText(8, constants.nia.chatbotKeyMap.requestForAction.key) +
+              makeOpenPopupNumberText(9, constants.nia.chatbotKeyMap.sopHistory.key) +
+              makeOpenPopupNumberText(10, constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.key)
             )),
         })
       }
@@ -320,18 +317,18 @@ export default {
           this.loadTicketAlarm()
           break
         case 'resetZoom':
-          this.map.resetZoom(750)
+          this.map.resetZoom(topologyScale)
           break
         case 'nodeZoomTest':
           {
             const node = this.map.data.nodes.find((v) => v.device_name === '수원성균관대')
-            this.map.zoomInByNode(node, 5, 1000)
+            this.map.zoomInByNode(node, zoomScale, topologyScale + 250)
           }
           break
         case 'linkZoomTest':
           {
             const node = this.map.data.links.find((v) => String(v.id) === '44')
-            this.map.zoomInByLink(node, 5, 1000)
+            this.map.zoomInByLink(node, zoomScale, topologyScale + 250)
           }
           break
         case 'toggleLabel':
@@ -490,13 +487,13 @@ export default {
       setTimeout(() => {
         if (alarmLink) {
           this.map.selectElement(alarmLink, 'link', true)
-          this.map.zoomInByLink(alarmLink, 5, 750)
+          this.map.zoomInByLink(alarmLink, zoomScale, topologyScale)
         } else if (alarmNode && alarmNode.visible) {
           this.map.selectElement(alarmNode, 'node', true)
-          this.map.zoomInByNode(alarmNode, 5, 750)
+          this.map.zoomInByNode(alarmNode, zoomScale, topologyScale)
           this.map.setInfomation('node', alarmNode, null, this.slot)
         } else {
-          this.map.resetZoom(750)
+          this.map.resetZoom(topologyScale)
         }
       }, 200)
     },

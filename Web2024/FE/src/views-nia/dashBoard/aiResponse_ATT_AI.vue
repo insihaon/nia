@@ -131,7 +131,7 @@ import _ from 'lodash'
 import dialogOpenMixin from '@/mixin/dialogOpenMixin'
 import { apiSelectAiChartData, apiSelectAttAiTcaModel, apiSelfProcessTrafficInfo, apiSelectRealTrafficData } from '@/api/nia'
 import { mapState } from 'vuex'
-import { getChatbotTicketData, getWindowActionList, showNumberText, getInvisibleSpanParameter, getNiaRouterPathByName } from '@/views-nia/js/commonNiaFunction'
+import { getChatbotTicketData, getWindowActionList, makeOpenPopupNumberText, getInvisibleSpanParameter, getNiaRouterPathByName } from '@/views-nia/js/commonNiaFunction'
 import niaObserverMixin from '@/mixin/niaObserverMixin'
 import constants from '@/min/constants'
 import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
@@ -378,18 +378,16 @@ export default {
             '<div class="chatbot-command-header">AI 이상트래픽 장애대응팝업 안내</div>' +
             '<div class="chatbot-message-body">' +
               '장애가 발생한 특정 장비 인터페이스의 <b>상태 정보</b>와 <b>트래픽 변화</b>를 시각적으로 제공하여, 장애 상황을 직관적으로 파악하고 신속한 장애 대응을 지원하는 화면입니다.' +
-              '<br><br>' +
-              constants.nia.chatbotIcon.Information + '분석 결과의 밑줄 표시된 항목에 마우스를 올리면 각 속성의 의미를 확인할 수 있습니다.' +
+              '<br>' +
               '<div class="chatbot-process">' +
-                constants.nia.chatbotContent.processHeaderText + '<br><br>' +
-                '1. <b>장애 상태정보·트래픽 변화</b> 확인' +
-                '<br>2. <b>조치·대응을 위한</b> 화면전환' +
+                constants.nia.chatbotContent.analysisTipHeaderText + '<br><br>' +
+                '<b>분석 결과</b>의 <b>밑줄</b> 표시된 항목에 마우스를 올리면 각 속성의 의미를 확인할 수 있습니다.' +
               '</div>' +
             '</div>' +
             (await getWindowActionList(constants.nia.chatbotKeyMap.aiResponse_ATT_AI.dialogNm, constants.nia.chatbotKeyMap.aiResponse_ATT_AI.popupName,
-              showNumberText(6, `${constants.nia.chatbotKeyMap.requestForAction.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', constants.nia.chatbotKeyMap.requestForAction.dialogNm)}`) +
-              showNumberText(7, `${constants.nia.chatbotKeyMap.sopHistory.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', constants.nia.chatbotKeyMap.sopHistory.dialogNm)}`) +
-              showNumberText(8, `${constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.dialogNm)}`)
+              makeOpenPopupNumberText(6, constants.nia.chatbotKeyMap.requestForAction.key) +
+              makeOpenPopupNumberText(7, constants.nia.chatbotKeyMap.sopHistory.key) +
+              makeOpenPopupNumberText(8, constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.key)
             ))
         })
       }
@@ -400,10 +398,6 @@ export default {
       if (chatbotData) {
         this.selectedRow = chatbotData
         this.$emit('update:wdataParams', chatbotData)
-
-        this.$store.dispatch('chatbot/botPushAnswerMessage', {
-          content: constants.nia.chatbotIcon.success + constants.nia.chatbotComment.parameterChange,
-        })
       }
     },
 

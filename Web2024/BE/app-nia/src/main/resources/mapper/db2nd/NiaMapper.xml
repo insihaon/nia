@@ -370,9 +370,9 @@
             UNION ALL
             SELECT 
                 NULL ALARMNO
-                , NULL SYSNAME
+                , AL.root_cause_sysnamea SYSNAME
                 , TICKET_GENERATION_TIME AS ALARMTIME
-                , NULL ALARMLOC
+                , AL.root_cause_porta ALARMLOC
                 , TC.root_cause_type AS ALARMMSG
                 , NULL ALARMMSG_ORIGINAL
                 , TC.TICKET_ID
@@ -387,6 +387,7 @@
                 , TC.TICKET_RCA_RESULT_DTL_CODE
                 , TO_CHAR(TC.TICKET_UPDATE_TIME, 'YYYY-MM-DD HH24:MI:SS') AS TICKET_UPDATE_TIME
             FROM RCA.TB_RCA_TICKET_CURRENT TC
+            LEFT OUTER JOIN rca.tb_rca_ticket_al_current AL ON AL.TICKET_ID = TC.TICKET_ID
             WHERE TICKET_TYPE = 'PF'
         ) T
         WHERE 1=1
@@ -435,6 +436,7 @@
             KEY_NAME
             , TO_CHAR(YD_DATE, 'YYYY-MM-DD HH24:MI:SS') AS YD_DATE
             , YD_DATE AS YD_DATE1
+            , NORMAL_TIME_LIMIT
         FROM NIA.TB_LINKAGE_SEQ
         WHERE KEY_NAME IN (
             'aiIpSdnTrafficeKey',
@@ -443,6 +445,8 @@
             'aiIpSdnNodeFactorKey',
             'aiTrafficNoxKey',
             'aiTrafficAnoKey',
+            'aiTrafficNoxKey2',
+            'aiTrafficAnoKey2',
             'aiIpPerfKey',
             'aiIpResourceIfKey',
             'aiIpResourceKey',

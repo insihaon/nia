@@ -54,7 +54,7 @@ import { getAlarmType, getTicketStatus, getSopAiAccuracy } from '@/views-nia/js/
 import ModalSopDetail from '@/views-nia/modal/ModalSopDetail.vue'
 import { mapState } from 'vuex'
 import constants from '@/min/constants'
-import { getChatbotTicketData, getWindowActionList, getInvisibleSpanParameter, getNiaRouterPathByName, showNumberText } from '@/views-nia/js/commonNiaFunction'
+import { getChatbotTicketData, getWindowActionList, getInvisibleSpanParameter, getNiaRouterPathByName, makeOpenPopupNumberText } from '@/views-nia/js/commonNiaFunction'
 import niaObserverMixin from '@/mixin/niaObserverMixin'
 import _ from 'lodash'
 const routeName = 'sopHistory' /* constants.nia.chatbotKeyMap.sopHistory.parameterKey */
@@ -313,10 +313,6 @@ export default {
       if (chatbotData) {
         this.selectedRow = chatbotData
         this.$emit('update:wdataParams', chatbotData)
-
-        this.$store.dispatch('chatbot/botPushAnswerMessage', {
-          content: constants.nia.chatbotIcon.success + constants.nia.chatbotComment.parameterChange,
-        })
       }
 
       if (!this.selectedRow || Object.keys(this.selectedRow).length === 0) return
@@ -413,8 +409,8 @@ export default {
               '</div>' +
             '</div>' +
             (await getWindowActionList(constants.nia.chatbotKeyMap.sopHistory.dialogNm, constants.nia.chatbotKeyMap.sopHistory.popupName,
-              showNumberText(3, `${constants.nia.chatbotKeyMap.requestForAction.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', constants.nia.chatbotKeyMap.requestForAction.dialogNm)}`) +
-              showNumberText(4, `${constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.dialogNm)}`)
+              makeOpenPopupNumberText(3, constants.nia.chatbotKeyMap.requestForAction.key) +
+              makeOpenPopupNumberText(4, constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.key)
             )),
         })
       }

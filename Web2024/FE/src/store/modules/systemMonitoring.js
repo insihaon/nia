@@ -5,17 +5,19 @@ import { AppOptions } from '@/class/appOptions'
 import Encrypt from '@/assets/libs/Encrypt.min'
 
 const systemMonitoringMapDefault = {
-    'LinkTraffic': { key: 'ipSdnTrafficeKey', show: true },
-    'Sflow': { key: 'ipSdnSflowKey', show: true },
-    'Syslog': { key: 'ipSdnSyslogKey', show: true },
-    'NodeFactor': { key: 'ipSdnNodeFactorKey', show: true },
-    'AI_Traffic_유해': { key: 'aiTrafficNoxKey', show: true },
-    'AI_Traffic_이상': { key: 'aiTrafficAnoKey', show: true },
-    'IPSDN_Perf': { key: 'ipPerfKey', show: true },
-    'IPSDN_ResourceIf': { key: 'ipResourceIfKey', show: true },
-    'IPSDN_Resource': { key: 'ipResourceKey', show: true },
-    'EMS_SIPC': { key: 'emsSipcKey', show: false, hide: true },
-    'EMS_PM': { key: 'emsPmKey', show: false, hide: true },
+    'LinkTraffic': { key: 'ipSdnTrafficeKey', show: true, group: '수집/전송' },
+    'Sflow': { key: 'ipSdnSflowKey', show: true, group: '수집/전송' },
+    'Syslog': { key: 'ipSdnSyslogKey', show: true, group: '수집/전송' },
+    'NodeFactor': { key: 'ipSdnNodeFactorKey', show: true, group: '수집/전송' },
+    'IPSDN_Perf': { key: 'ipPerfKey', show: true, group: '수집/전송' },
+    'IPSDN_ResourceIf': { key: 'ipResourceIfKey', show: true, group: '수집/전송' },
+    'IPSDN_Resource': { key: 'ipResourceKey', show: true, group: '수집/전송' },
+    'EMS_SIPC': { key: 'emsSipcKey', show: false, hide: true, group: '수집/전송' },
+    'EMS_PM': { key: 'emsPmKey', show: false, hide: true, group: '수집/전송' },
+    '유해 Taffic AI(A)': { key: 'aiTrafficNoxKey', show: true, group: 'AI연동' },
+    '유해 Taffic AI(C)': { key: 'aiTrafficNoxKey2', show: true, group: 'AI연동' },
+    '이상 Taffic AI(A)': { key: 'aiTrafficAnoKey', show: true, group: 'AI연동' },
+    '이상 Taffic AI(C)': { key: 'aiTrafficAnoKey2', show: true, group: 'AI연동' },
 }
 
 const state = {
@@ -23,149 +25,178 @@ const state = {
 
     niaProcess: {
         ipSdnTrafficeKey: {
-            name: 'LinkTraffic', status: 'red', cycle: 5 * 60 * 1000,
-            firstTime: '', secondTime: '', secondSycle: '',
+            name: 'LinkTraffic', status: 'red',
             tooltip: `
             <div style="font-size: 13px; text-align: left">
                 <span style="color:red">빨강</span> : 수집 실패<br>
-                <span style="color:orange">주황</span> : 연동 실패<br>
-                <span style="color:lime">초록</span> : AI 연동 성공
+                <span style="color:orange">주황</span> : SFTP 전송 실패<br>
+                <span style="color:lime">초록</span> : 수집/전송 성공
             </div>
             `,
-            secondStep: {
-                key: 'aiIpSdnTrafficeKey',
-                cycle: 5 * 60 * 1000,
-            },
+            steps: [
+                { key: 'ipSdnTrafficeKey', time: null, cycle: null },
+                { key: 'aiIpSdnTrafficeKey', time: null, cycle: null },
+            ],
         },
         ipSdnSflowKey: {
-            name: 'Sflow', status: 'red', cycle: 10 * 60 * 1000,
-            firstTime: '', secondTime: '', secondSycle: '',
+            name: 'Sflow', status: 'red',
             tooltip: `
             <div style="font-size: 13px; text-align: left">
                 <span style="color:red">빨강</span> : 수집 실패<br>
-                <span style="color:orange">주황</span> : 연동 실패<br>
-                <span style="color:lime">초록</span> : AI 연동 성공
+                <span style="color:orange">주황</span> : SFTP 전송 실패<br>
+                <span style="color:lime">초록</span> : 수집/전송 성공
             </div>
             `,
-            secondStep: {
-                key: 'aiIpSdnSflowKey',
-                cycle: 10 * 60 * 1000,
-            },
+            steps: [
+                { key: 'ipSdnSflowKey', time: null, cycle: null },
+                { key: 'aiIpSdnSflowKey', time: null, cycle: null },
+            ],
         },
         ipSdnSyslogKey: {
-            name: 'Syslog', status: 'red', cycle: 10 * 60 * 1000,
-            firstTime: '', secondTime: '', secondSycle: '',
+            name: 'Syslog', status: 'red',
             tooltip: `
             <div style="font-size: 13px; text-align: left">
                 <span style="color:red">빨강</span> : 수집 실패<br>
-                <span style="color:orange">주황</span> : 연동 실패<br>
-                <span style="color:lime">초록</span> : AI 연동 성공
+                <span style="color:orange">주황</span> : SFTP 전송 실패<br>
+                <span style="color:lime">초록</span> : 수집/전송 성공
             </div>
             `,
-            secondStep: {
-                key: 'aiIpSdnSyslogKey',
-                cycle: 10 * 60 * 1000,
-            },
+            steps: [
+                { key: 'ipSdnSyslogKey', time: null, cycle: null },
+                { key: 'aiIpSdnSyslogKey', time: null, cycle: null },
+            ],
         },
         ipSdnNodeFactorKey: {
-            name: 'NodeFactor', status: 'red', cycle: 10 * 60 * 1000,
-            firstTime: '', secondTime: '', secondSycle: '',
+            name: 'NodeFactor', status: 'red',
             tooltip: `
             <div style="font-size: 13px; text-align: left">
                 <span style="color:red">빨강</span> : 수집 실패<br>
-                <span style="color:orange">주황</span> : 연동 실패<br>
-                <span style="color:lime">초록</span> : AI 연동 성공
+                <span style="color:orange">주황</span> : SFTP 전송 실패<br>
+                <span style="color:lime">초록</span> : 수집/전송 성공
             </div>
             `,
-            secondStep: {
-                key: 'aiIpSdnNodeFactorKey',
-                cycle: 10 * 60 * 1000,
-            },
+            steps: [
+                { key: 'ipSdnNodeFactorKey', time: null, cycle: null },
+                { key: 'aiIpSdnNodeFactorKey', time: null, cycle: null },
+            ],
         },
         aiTrafficNoxKey: {
-            name: 'AI_Traffic_유해', status: 'red', cycle: 5 * 60 * 1000,
-            firstTime: '', secondTime: '', secondSycle: '',
+            name: '유해 Taffic AI(A)', status: 'red',
             tooltip: `
             <div style="font-size: 13px; text-align: left">
+                <span>기존 유해트래픽 AI모델 연동 상태</span><br><br>
                 <span style="color:red">빨강</span> : AI 연동 실패<br>
                 <span style="color:lime">초록</span> : AI 연동 성공
             </div>
             `,
+            steps: [
+                { key: 'aiTrafficNoxKey', time: null, cycle: null },
+            ],
         },
         aiTrafficAnoKey: {
-            name: 'AI_Traffic_이상', status: 'red', cycle: 5 * 60 * 1000,
-            firstTime: '', secondTime: '', secondSycle: '',
+            name: '이상 Taffic AI(A)', status: 'red',
             tooltip: `
             <div style="font-size: 13px; text-align: left">
+                <span>기존 이상트래픽 AI모델 연동 상태</span><br><br>
                 <span style="color:red">빨강</span> : AI 연동 실패<br>
                 <span style="color:lime">초록</span> : AI 연동 성공
             </div>
             `,
+            steps: [
+                { key: 'aiTrafficAnoKey', time: null, cycle: null },
+            ],
+        },
+        aiTrafficNoxKey2: {
+            name: '유해 Taffic AI(C)', status: 'red',
+            tooltip: `
+            <div style="font-size: 13px; text-align: left">
+                <span>신규 유해트래픽 AI모델 연동 상태</span><br><br>
+                <span style="color:red">빨강</span> : AI 연동 실패<br>
+                <span style="color:lime">초록</span> : AI 연동 성공
+            </div>
+            `,
+            steps: [
+                { key: 'aiTrafficNoxKey2', time: null, cycle: null },
+            ],
+        },
+        aiTrafficAnoKey2: {
+            name: '이상 Taffic AI(C)', status: 'red',
+            tooltip: `
+            <div style="font-size: 13px; text-align: left">
+                <span>신규 유해트래픽 AI모델 연동 상태</span><br><br>
+                <span style="color:red">빨강</span> : AI 연동 실패<br>
+                <span style="color:lime">초록</span> : AI 연동 성공
+            </div>
+            `,
+            steps: [
+                { key: 'aiTrafficAnoKey2', time: null, cycle: null },
+            ],
         },
         ipPerfKey: {
-            name: 'IPSDN_Perf', status: 'red', cycle: 10 * 60 * 1000,
-            firstTime: '', secondTime: '', secondSycle: '',
+            name: 'IPSDN_Perf', status: 'red',
             tooltip: `
             <div style="font-size: 13px; text-align: left">
                 <span style="color:red">빨강</span> : 수집 실패<br>
-                <span style="color:orange">주황</span> : 연동 실패<br>
-                <span style="color:lime">초록</span> : AI 연동 성공
+                <span style="color:orange">주황</span> : SFTP 전송 실패<br>
+                <span style="color:lime">초록</span> : 수집/전송 성공
             </div>
             `,
-            secondStep: {
-                key: 'aiIpPerfKey',
-                cycle: 10 * 60 * 1000,
-            },
+            steps: [
+                { key: 'ipPerfKey', time: null, cycle: null },
+                { key: 'aiIpPerfKey', time: null, cycle: null },
+            ],
         },
         ipResourceIfKey: {
-            name: 'IPSDN_ResourceIf', status: 'red', cycle: moment().set({ hour: 0, minute: 15, second: 0, millisecond: 0 }),
-            firstTime: '', secondTime: '', secondSycle: '',
+            name: 'IPSDN_ResourceIf', status: 'red',
             tooltip: `
             <div style="font-size: 13px; text-align: left">
                 <span style="color:red">빨강</span> : 수집 실패 <br>
-                <span style="color:orange">주황</span> : 연동 실패<br>
-                <span style="color:lime">초록</span> : AI 연동 성공
+                <span style="color:orange">주황</span> : SFTP 전송 실패<br>
+                <span style="color:lime">초록</span> : 수집/전송 성공
             </div>
             `,
-            secondStep: {
-                key: 'aiIpResourceIfKey',
-                cycle: moment().set({ hour: 2, minute: 40, second: 0, millisecond: 0 })
-            },
+            steps: [
+                { key: 'ipResourceIfKey', time: null, cycle: null },
+                { key: 'aiIpResourceIfKey', time: null, cycle: null },
+            ],
         },
         ipResourceKey: {
-            name: 'IPSDN_Resource', status: 'red', cycle: moment().set({ hour: 0, minute: 5, second: 0, millisecond: 0 }),
-            firstTime: '', secondTime: '', secondSycle: '',
+            name: 'IPSDN_Resource', status: 'red',
             tooltip: `
             <div style="font-size: 13px; text-align: left">
                 <span style="color:red">빨강</span> : 수집 실패<br>
-                <span style="color:orange">주황</span> : 연동 실패<br>
-                <span style="color:lime">초록</span> : AI 연동 성공
+                <span style="color:orange">주황</span> : SFTP 전송 실패<br>
+                <span style="color:lime">초록</span> : 수집/전송 성공
             </div>
             `,
-            secondStep: {
-                key: 'aiIpResourceKey',
-                cycle: moment().set({ hour: 2, minute: 30, second: 0, millisecond: 0 })
-            },
+            steps: [
+                { key: 'ipResourceKey', time: null, cycle: null },
+                { key: 'aiIpResourceKey', time: null, cycle: null },
+            ],
         },
         emsSipcKey: {
-            name: 'EMS_SIPC', status: 'red', cycle: 18 * 60 * 1000,
-            firstTime: '', secondTime: '', secondSycle: '',
+            name: 'EMS_SIPC', status: 'red',
             tooltip: `
             <div style="font-size: 13px; text-align: left">
                 <span style="color:red">빨강</span> : EMS SIPC 수집 실패<br>
                 <span style="color:lime">초록</span> : EMS SIPC 수집 성공
             </div>
             `,
+            steps: [
+                { key: 'emsSipcKey', time: null, cycle: null },
+            ],
         },
         emsPmKey: {
-            name: 'EMS_PM', status: 'red', cycle: 18 * 60 * 1000,
-            firstTime: '', secondTime: '', secondSycle: '',
+            name: 'EMS_PM', status: 'red',
             tooltip: `
             <div style="font-size: 13px; text-align: left">
                 <span style="color:red">빨강</span> : EMS PM 수집 실패<br>
                 <span style="color:lime">초록</span> : EMS PM 수집 성공
             </div>
             `,
+            steps: [
+                { key: 'emsPmKey', time: null, cycle: null },
+            ],
         },
     },
 }
@@ -183,6 +214,11 @@ const mutations = {
     SET_NIA_PROCESS(state, { processKey, mapKey, value }) {
         state.niaProcess[processKey][mapKey] = value
     },
+    SET_NIA_PROCESS_STEP(state, { processKey, stepIndex, stepData }) {
+        if (state.niaProcess[processKey] && state.niaProcess[processKey].steps) {
+            state.niaProcess[processKey].steps[stepIndex] = { ...state.niaProcess[processKey].steps[stepIndex], ...stepData }
+        }
+    },
     RESET_SYSTEM_MONITORING_MAP(state) {
         state.systemMonitoringMap = _.cloneDeep(systemMonitoringMapDefault)
     },
@@ -198,6 +234,10 @@ const actions = {
 
     setNiaProcess({ commit }, { processKey, mapKey, value }) {
         commit('SET_NIA_PROCESS', { processKey, mapKey, value })
+    },
+
+    setNiaProcessStep({ commit }, { processKey, stepIndex, stepData }) {
+        commit('SET_NIA_PROCESS_STEP', { processKey, stepIndex, stepData })
     },
 
     checkSaveState({ commit }) {

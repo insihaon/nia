@@ -1,24 +1,52 @@
 <template>
   <div :class="{ [name]: true, 'w-full h-full': true }">
-    <ul class="city-buttons">
-      <li
-        v-for="key in Object.keys(systemMonitoringMap)"
-        v-show="!systemMonitoringMap[key].hide"
-        :key="key"
-      >
-        <div class="atom">
-          <label>
-            {{ key }}
-          </label>
-          <input
-            type="checkbox"
-            :value="systemMonitoringMap[key].show"
-            :checked="systemMonitoringMap[key].show"
-            @input="switchState(key)"
-          >
-        </div>
-      </li>
-    </ul>
+    <!-- AI연동 그룹 -->
+    <div class="filter-group">
+      <h3 class="group-title">AI연동</h3>
+      <ul class="city-buttons">
+        <li
+          v-for="key in getGroupKeys('AI연동')"
+          v-show="!systemMonitoringMap[key].hide"
+          :key="key"
+        >
+          <div class="atom">
+            <label>
+              {{ key }}
+            </label>
+            <input
+              type="checkbox"
+              :value="systemMonitoringMap[key].show"
+              :checked="systemMonitoringMap[key].show"
+              @input="switchState(key)"
+            >
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- 수집/전송 그룹 -->
+    <div class="filter-group">
+      <h3 class="group-title">수집/전송</h3>
+      <ul class="city-buttons">
+        <li
+          v-for="key in getGroupKeys('수집/전송')"
+          v-show="!systemMonitoringMap[key].hide"
+          :key="key"
+        >
+          <div class="atom">
+            <label>
+              {{ key }}
+            </label>
+            <input
+              type="checkbox"
+              :value="systemMonitoringMap[key].show"
+              :checked="systemMonitoringMap[key].show"
+              @input="switchState(key)"
+            >
+          </div>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -62,6 +90,11 @@ export default {
   methods: {
     switchState(key) {
       this.$store.dispatch('systemMonitoring/switchShowState', key)
+    },
+    getGroupKeys(groupName) {
+      return Object.keys(this.systemMonitoringMap).filter(
+        key => this.systemMonitoringMap[key].group === groupName
+      )
     }
   },
 }
@@ -71,11 +104,30 @@ export default {
 
 .systemMonitoringFilter{
   caret-color: transparent; /* 깜빡이는 커서 숨김 */
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.filter-group {
+  margin-bottom: 2rem;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.group-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e2e8f0;
 }
 
 .city-buttons {
   list-style: none;
-  padding: 1rem;
+  padding: 0;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 1rem;

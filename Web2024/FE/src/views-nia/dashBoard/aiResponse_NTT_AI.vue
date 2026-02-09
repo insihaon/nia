@@ -4,23 +4,43 @@
       <!-- Layer 1: 요청구간, 데이터 -->
       <el-row style="overflow: hidden; flex: 1" :gutter="10">
         <el-col :span="6" style="height: 100%">
-          <el-card shadow="never" style="height: 100%" :body-style="{ padding: '10px', height: '100%' }">
+          <el-card shadow="never" style="height: 50%" :body-style="{ padding: '10px', height: '100%' }">
             <div slot="header">
-              <span><i class="el-icon-document" />유해트래픽 정확도</span>
-            </div>
-            <div style="height: 350px">
-              <DoughnutChart ref="donutChart" class="chatbot-donut-chart" :chart-data="chartData" :options="chartOptions" />
+              <span><i class="el-icon-document" />&nbsp;&nbsp;유해트래픽 정확도 통계</span>
             </div>
             <div style="height: 200px; margin-top: 10px">
-              <div style="background-color: #1e293b; font-weight: 600; text-align: center; color: white">유해트래픽 정확도 통계</div>
               <table class="sop-stats-table">
                 <tbody>
-                  <tr v-for="(label, index2) in chartData.labels" :key="label">
-                    <td :style="{ background: index2 === 0 ? 'red' : 'white', color: index2 === 0 ? 'white' : 'black' }">{{ label }}</td>
-                    <td :style="{ background: index2 === 0 ? 'red' : 'white', color: index2 === 0 ? 'white' : 'black' }">{{ chartData.datasets[0].data[index2] }}%</td>
+                  <tr v-for="(label, index1) in chartData.labels" :key="label">
+                    <td :style="{ background: index1 === 0 ? 'red' : 'white', color: index1 === 0 ? 'white' : 'black' }">{{ label }}</td>
+                    <td :style="{ background: index1 === 0 ? 'red' : 'white', color: index1 === 0 ? 'white' : 'black' }">{{ chartData.datasets[0].data[index1] }}%</td>
                   </tr>
                 </tbody>
               </table>
+            </div>
+          </el-card>
+          <el-card shadow="never" style="height: 50%" :body-style="{ padding: '10px', height: '100%' }">
+            <div slot="header">
+              <span><i class="el-icon-document" />&nbsp;&nbsp;토폴로지 패킷 정보</span>
+            </div>
+            <div style="height: calc(100% - 50px); margin-top: 10px; overflow: auto">
+              <CompAgGrid ref="packetTableGrid" v-model="packetTableGrid" class="w-100 flex-fill" style="height: 100%" />
+              <!-- <table class="sop-stats-table">
+                <thead>
+                  <tr>
+                    <th>출발지IP</th>
+                    <th>목적지IP</th>
+                    <th>패킷수</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(pData) in packetTableData" :key="pData">
+                    <td>{{ pData.src_ip }}</td>
+                    <td>{{ pData.dst_ip }}</td>
+                    <td>{{ pData.dataCount }}</td>
+                  </tr>
+                </tbody>
+              </table> -->
             </div>
           </el-card>
         </el-col>
@@ -56,13 +76,13 @@
 import { Base } from '@/min/Base'
 import dialogOpenMixin from '@/mixin/dialogOpenMixin'
 import niaObserverMixin from '@/mixin/niaObserverMixin'
-import { getChatbotDonutChart } from '@/views-nia/js/donutChartBunddle'
 import _ from 'lodash'
 import { apiSelectNttTicketTotalDataList, apiSelectRcaNttTicketDetailInfo } from '@/api/nia'
-import { getChatbotTicketData, getWindowActionList, showNumberText, getInvisibleSpanParameter, getNiaRouterPathByName } from '@/views-nia/js/commonNiaFunction'
+import { getChatbotTicketData, getWindowActionList, makeOpenPopupNumberText, getInvisibleSpanParameter, getNiaRouterPathByName } from '@/views-nia/js/commonNiaFunction'
 // import { formatterTime } from '@/views-nia/js/commonFormat'
 import { mapState } from 'vuex'
 // import {  } from '@/views-nia/js/commonNiaFunction'
+import CompAgGrid from '@/components/aggrid/CompAgGrid.vue'
 import constants from '@/min/constants'
 import cytoscape from 'cytoscape'
 const routeName = 'aiResponse_NTT_AI'
@@ -74,7 +94,7 @@ export default {
   // eslint-disable-next-line vue/no-unused-components
   components: {
     nttTicketDataList: () => import('@/views-nia/dashBoard/nttTicketDataList'),
-    DoughnutChart: getChatbotDonutChart(),
+    CompAgGrid
   },
   extends: Base,
   mixins: [dialogOpenMixin, niaObserverMixin],
@@ -93,6 +113,7 @@ export default {
       selectedRow: null,
       ticketTotalData: [],
       isTopologyLoading: false,
+      packetTableData: [],
       chartData: {
         labels: [],
         datasets: [
@@ -147,6 +168,15 @@ export default {
     isModal() {
       return !!this.wdata.params
     },
+    packetTableGrid() {
+      const columns = [
+        { type: '', prop: 'src_ip', name: '출발지IP', width: 200, alignItems: 'center', fixed: false, suppressMenu: true },
+        { type: '', prop: 'dst_ip', name: '목적지IP', width: 200, alignItems: 'center', fixed: false, suppressMenu: true },
+        { type: '', prop: 'dataCount', name: '패킷수', width: 100, alignItems: 'center', fixed: false, suppressMenu: true },
+      ]
+      const options = { name: this.name, checkable: false, rowGroupPanel: false }
+      return { options, columns, data: this.packetTableData }
+    }
   },
   watch: {
     aiResponseEventText(nVal, oVal) {
@@ -174,6 +204,7 @@ export default {
       this.ticketTotalData = await this.loadNttTicketTotalDataList()
       const groupedData = this.processNetworkData(this.ticketTotalData)
       this.makeTopologyEmlements(groupedData)
+      this.makePacketTableData(groupedData)
     } catch (error) {
       console.error('토폴로지 로딩 중 오류 발생:', error)
       this.$alert('토폴로지 데이터를 불러오는 중 오류가 발생했습니다.', '오류', {
@@ -190,6 +221,16 @@ export default {
     })
   },
   methods: {
+    makePacketTableData(groupedData) {
+      this.packetTableData = Object.keys(groupedData).reduce((acc, k) => {
+        groupedData[k].forEach((srcData) => {
+          acc.push({ src_ip: srcData.src_ip, dst_ip: k, dataCount: srcData.dataCount })
+        })
+
+        return acc
+      }, [])
+    },
+
     visibleNttTicketDataList() {
       this.$refs.nttTicketDataList.setVisible()
     },
@@ -243,10 +284,27 @@ export default {
       if (chatbotData) {
         this.selectedRow = chatbotData
         this.$emit('update:wdataParams', chatbotData)
+      }
+    },
 
-        this.$store.dispatch('chatbot/botPushAnswerMessage', {
-          content: constants.nia.chatbotIcon.success + constants.nia.chatbotComment.parameterChange,
-        })
+    // dataCount에 따라 색상을 계산하는 함수
+    // 상위 30%: 진한 빨강, 중간 40%: 주황빨강, 하위 30%: 연한 빨강
+    // sortedDataCounts: 정렬된 dataCount 배열 (내림차순)
+    calculateEdgeColor(dataCount, sortedDataCounts) {
+      if (sortedDataCounts.length === 0) {
+        return '#dc2626' // 기본값: 진한 빨강
+      }
+
+      // 현재 dataCount보다 크거나 같은 값들의 개수를 세어서 percentile 계산
+      const higherOrEqualCount = sortedDataCounts.filter((val) => val >= dataCount).length
+      const percentile = (higherOrEqualCount / sortedDataCounts.length) * 100
+
+      if (percentile <= 30) {
+        return '#dc2626'
+      } else if (percentile <= 70) {
+        return '#f97316'
+      } else {
+        return '#facc15'
       }
     },
 
@@ -256,6 +314,15 @@ export default {
       if (!groupedData || Object.keys(groupedData).length === 0) {
         return
       }
+
+      // 모든 dataCount 수집하여 정렬 (내림차순)
+      const allDataCounts = []
+      Object.values(groupedData).forEach((srcIpList) => {
+        srcIpList.forEach((item) => {
+          allDataCounts.push(item.dataCount)
+        })
+      })
+      const sortedDataCounts = [...allDataCounts].sort((a, b) => b - a) // 내림차순 정렬
 
       const dstIpList = Object.keys(groupedData)
       const colsPerRow = 3 // 가로축에 배치할 dst_ip 개수
@@ -308,6 +375,9 @@ export default {
             })
           }
 
+          // dataCount에 따른 색상 계산
+          const edgeColor = this.calculateEdgeColor(dataCount, sortedDataCounts)
+
           // 엣지(연결) 생성
           window.v.nttMap.add({
             group: 'edges',
@@ -317,6 +387,7 @@ export default {
               target: dst_ip,
               count: dataCount + 'Packets',
               weight: 3,
+              edgeColor: edgeColor, // 색상 값을 데이터에 저장
             },
           })
         })
@@ -346,14 +417,18 @@ export default {
             style: {
               'curve-style': 'bezier',
               'target-arrow-shape': 'triangle', // 방향을 나타내는 화살표
-              'line-color': 'red',
+              'line-color': function (ele) {
+                return ele.data('edgeColor') || '#dc2626' // 기본값: 진한 빨강
+              },
               color: 'white',
               width: function (ele) {
                 return ele.data('weight') + 'px'
               },
               label: 'data(count)', // 엣지에 빈도수 표시
               'font-size': '10px',
-              'target-arrow-color': 'red',
+              'target-arrow-color': function (ele) {
+                return ele.data('edgeColor') || '#dc2626' // 기본값: 진한 빨강
+              },
             },
           },
           {
@@ -438,14 +513,17 @@ export default {
           '<div class="chatbot-message-body">' +
             '유해 트래픽이 발생한 기간 동안 공격을 받은 노드 TOP 5를 표시하여, 장애 상황을 빠르게 파악할 수 있는 화면입니다.' +
             '<div class="chatbot-process">' +
-              constants.nia.chatbotContent.processHeaderText + '<br><br>' +
-              '1. <b>공격받는 노드정보</b> 확인 → 2. <b>조치·대응을 위한</b> 화면전환' +
+            constants.nia.chatbotContent.analysisTipHeaderText + '<br><br>' +
+              '• <b>공격받는 노드</b> 중심으로 <b>이상 징후</b> 파악<br>' +
+              '• <b>전체 패킷리스트</b>로 <b>전체 패킷 정보</b>확인<br>' +
+              '• <b>유해트래픽 정확도 통계</b>로 AI모델이 유추한 정확도 확인<br>' +
+              '• <b>토폴로지 색상</b> - 빨: 상위 30%, 주: 상위 40%, 노: 하위30%' +
             '</div>' +
           '</div>' +
             (await getWindowActionList(constants.nia.chatbotKeyMap.aiResponse_NTT_AI.dialogNm, constants.nia.chatbotKeyMap.aiResponse_NTT_AI.popupName,
-              showNumberText(2, `${constants.nia.chatbotKeyMap.requestForAction.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', constants.nia.chatbotKeyMap.requestForAction.dialogNm)}`) +
-              showNumberText(3, `${constants.nia.chatbotKeyMap.sopHistory.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', constants.nia.chatbotKeyMap.sopHistory.dialogNm)}`) +
-              showNumberText(4, `${constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.popupName}${getInvisibleSpanParameter(getNiaRouterPathByName('NiaMain'), '', constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.dialogNm)}`)
+              makeOpenPopupNumberText(2, constants.nia.chatbotKeyMap.requestForAction.key) +
+              makeOpenPopupNumberText(3, constants.nia.chatbotKeyMap.sopHistory.key) +
+              makeOpenPopupNumberText(4, constants.nia.chatbotKeyMap.disabilityStatusHistoryManagement.key)
             )),
         })
       }
